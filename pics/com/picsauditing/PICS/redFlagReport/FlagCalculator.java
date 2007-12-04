@@ -1,0 +1,296 @@
+package com.picsauditing.PICS.redFlagReport;
+
+import java.sql.ResultSet;
+import java.util.*;
+import com.picsauditing.PICS.*;
+import com.picsauditing.PICS.pqf.*;
+
+public class FlagCalculator extends com.picsauditing.PICS.DataBean{
+	public com.picsauditing.PICS.OSHABean osBean = new com.picsauditing.PICS.OSHABean();
+	public FlagOshaCriteriaDO redFlagOshaCriteriaDO = null;
+	public FlagOshaCriteriaDO amberFlagOshaCriteriaDO = null;
+
+	public String conID = "";
+
+	public String flagStatus = "Green";
+	public boolean isGreenFlagListed = false;
+	public boolean isAmberFlagListed = false;
+	public boolean isRedFlagListed = false;
+	public String dateExpires = "";
+
+	public Map<String,String> qIDToFlagMap = null;
+	public Map<String,String> qIDToAnswerMap = null;
+
+	String getSelectQuery(FlagCriteria flagCriteria){
+		StringBuffer fromQuery = new StringBuffer();
+		StringBuffer joinQuery = new StringBuffer();
+		if (flagCriteria.flagCriteriaMap.keySet().contains(FlagCriteria.EMR_AVE_QUESTION_ID)){
+			if (!flagCriteria.flagCriteriaMap.keySet().contains(Constants.EMR_2006)){
+				joinQuery.append("LEFT JOIN pqfData q").append(Constants.EMR_2006).append(" ON (q").
+					append(Constants.EMR_2006).append(".conID=cons.id AND q").append(Constants.EMR_2006).
+					append(".questionID=").append(Constants.EMR_2006).append(") ");
+				fromQuery.append(",q").append(Constants.EMR_2006).append(".*");
+			}//if
+			if (!flagCriteria.flagCriteriaMap.keySet().contains(Constants.EMR_2005)){
+				joinQuery.append("LEFT JOIN pqfData q").append(Constants.EMR_2005).append(" ON (q").
+					append(Constants.EMR_2005).append(".conID=cons.id AND q").append(Constants.EMR_2005).
+					append(".questionID=").append(Constants.EMR_2005).append(") ");
+				fromQuery.append(",q").append(Constants.EMR_2005).append(".*");
+			}//if
+			if (!flagCriteria.flagCriteriaMap.keySet().contains(Constants.EMR_2004)){
+				joinQuery.append("LEFT JOIN pqfData q").append(Constants.EMR_2004).append(" ON (q").
+					append(Constants.EMR_2004).append(".conID=cons.id AND q").append(Constants.EMR_2004).
+					append(".questionID=").append(Constants.EMR_2004).append(") ");
+				fromQuery.append(",q").append(Constants.EMR_2004).append(".*");
+			}//if
+		}//if
+		for (String qID: flagCriteria.flagCriteriaMap.keySet()) {
+			if (!FlagCriteria.EMR_AVE_QUESTION_ID.equals(qID)){
+				joinQuery.append("LEFT JOIN pqfData q").append(qID).append(" ON (q").append(qID).
+					append(".conID=cons.id AND q").append(qID).append(".questionID=").append(qID).append(") ");
+				fromQuery.append(",q").append(qID).append(".*");
+			}//if
+		}//for
+		String returnString = "SELECT cons.id"+fromQuery.toString()+",OSHA.* "+
+	 			"FROM contractor_info cons LEFT JOIN OSHA ON OSHA.conID=cons.id AND location='Corporate' "+joinQuery.toString();
+		return returnString;
+	}//getSelectQuery
+
+	public void setConFlags(String cID, String opID) throws Exception{
+		try{
+			redFlagOshaCriteriaDO = new FlagOshaCriteriaDO();
+			amberFlagOshaCriteriaDO = new FlagOshaCriteriaDO();
+			redFlagOshaCriteriaDO.setFromDB(opID,"Red");
+			amberFlagOshaCriteriaDO.setFromDB(opID,"Amber");
+			ArrayList<String> tempAL = new ArrayList<String>();
+			tempAL.add("Amber");
+			tempAL.add("Red");
+			ResultSet rs = null;
+			DBReady();
+			qIDToFlagMap = new TreeMap<String,String>();
+			qIDToAnswerMap = new TreeMap<String,String>();
+			for (String thisFlag: tempAL) {
+				boolean flagged = false;
+				FlagCriteria flagCriteria = new FlagCriteria();
+				flagCriteria.setFromDB(opID, thisFlag);
+				FlagOshaCriteriaDO flagOshaCriteriaDO = new FlagOshaCriteriaDO();
+				flagOshaCriteriaDO.setFromDB(opID, thisFlag);
+				DBReady();
+				rs = SQLStatement.executeQuery(getSelectQuery(flagCriteria)+" WHERE id="+cID);
+				if (rs.next()){
+//					setFromResultSet(rs);
+					for (String questionID: flagCriteria.getCheckedQuestionIDsAL()) {
+						FlagCriteriaDO flagCriteriaDO = flagCriteria.getFlagCriteriaDO(questionID);
+						qIDToAnswerMap.put(questionID,flagCriteriaDO.getAnswer(rs));
+						if (flagCriteriaDO.isFlagged(rs)){
+							qIDToFlagMap.put(questionID,thisFlag);
+							if (!flagged)
+								flagged = true;
+						}//if
+					}//for
+				}//if
+				osBean.setFromResultSet(rs);
+				if (getIsOshaFlagged(flagged,flagOshaCriteriaDO))
+					flagStatus = thisFlag;
+				rs.close();
+			}//for
+			String selectQuery = "SELECT flagStatus,dateExpires FROM forcedFlagList WHERE opID="+opID+" AND conID="+cID+
+				" AND dateExpires>CURDATE();";
+			rs = SQLStatement.executeQuery(selectQuery);
+			if (rs.next()){
+				flagStatus = rs.getString("flagStatus");
+				dateExpires = DateBean.toShowFormat(rs.getString("dateExpires"));
+				if ("Red".equals(flagStatus))
+					isRedFlagListed = true;
+				else if ("Green".equals(flagStatus))
+					isGreenFlagListed = true;
+				else if ("Amber".equals(flagStatus))
+					isAmberFlagListed = true;
+				else
+					throw new Exception ("Invalid Flag Status: "+flagStatus);
+			}//if
+			rs.close();
+			selectQuery = "SELECT flag FROM flags WHERE opID="+opID+" AND conID="+cID+";";
+			rs = SQLStatement.executeQuery(selectQuery);
+			String oldFlagStatus = "";
+			if (rs.next())
+				oldFlagStatus = rs.getString("flag");
+			rs.close();
+			if (!flagStatus.equals(oldFlagStatus)){
+				SQLStatement.executeUpdate("DELETE FROM flags WHERE opID="+opID+" AND conID="+cID+";");
+				String insertQuery = "INSERT INTO flags (opID,conID,flag) VALUES ("+opID+","+cID+",'"+flagStatus+"');";
+				SQLStatement.executeUpdate(insertQuery);
+			}//if
+		}finally{
+			DBClose();
+		}//finally
+	}//setConFlags
+
+	public void recalculateFlags(String opID) throws Exception{
+		try{
+			System.out.println("calculating flags for operator: "+opID);
+			ForcedFlagList forcedFlagList = new ForcedFlagList(opID);
+			FlagCriteria flagCriteria = new FlagCriteria();
+			ArrayList<String> tempAL = new ArrayList<String>();
+			tempAL.add("Amber");
+			tempAL.add("Red");
+			Map<String,String> tempInsertFlagMap = new TreeMap<String,String>();
+			DBReady();
+			for (String thisFlag: tempAL) {
+				flagCriteria.setFromDB(opID, thisFlag);
+				ResultSet rs = SQLStatement.executeQuery(getSelectQuery(flagCriteria));
+				FlagOshaCriteriaDO flagOshaCriteriaDO = new FlagOshaCriteriaDO();
+				flagOshaCriteriaDO.setFromDB(opID, thisFlag);
+				while (rs.next()){
+					boolean flagged = false;
+					String conID = rs.getString("cons.id");
+					if (forcedFlagList.isForcedGreenFlag(conID)){
+						;
+					}else if (forcedFlagList.isForcedRedFlag(conID) && "Red".equals(thisFlag) ||
+							forcedFlagList.isForcedAmberFlag(conID) && "Amber".equals(thisFlag)){
+						flagged = true;
+					}else{
+						for (String questionID: flagCriteria.getCheckedQuestionIDsAL()) {
+							FlagCriteriaDO flagCriteriaDO = flagCriteria.getFlagCriteriaDO(questionID);
+							if (!flagged)
+								flagged = flagCriteriaDO.isFlagged(rs);
+						}//for
+						osBean.setFromResultSet(rs);
+						flagged = getIsOshaFlagged(flagged,flagOshaCriteriaDO);
+					}//else
+					if (flagged)
+						tempInsertFlagMap.put(conID,thisFlag);
+					else if(!"Red".equals(thisFlag))
+						tempInsertFlagMap.put(conID,"Green");						
+				}//while
+				rs.close();
+			}//for
+			StringBuffer insertQuery = new StringBuffer("INSERT INTO flags (opID,conID,flag) VALUES ");
+			for (Iterator i = tempInsertFlagMap.keySet().iterator();i.hasNext();){
+				String conID = (String)i.next();
+				String flag = tempInsertFlagMap.get(conID);
+				insertQuery.append("(").append(opID).append(",").append(conID).append(",'").append(flag).append("'),");
+			}//for
+			SQLStatement.executeUpdate("DELETE FROM flags WHERE opID="+opID+";");
+			if (tempInsertFlagMap.size()>0)
+				SQLStatement.executeUpdate(insertQuery.substring(0,insertQuery.length()-1));
+		}finally{
+			DBClose();
+		}//finally
+	}//recalculateFlags
+
+	boolean getIsOshaFlagged(boolean flagged,FlagOshaCriteriaDO flagOshaCriteriaDO){
+		if (!flagged && flagOshaCriteriaDO.flagLwcr()){
+			if (flagOshaCriteriaDO.isLwcrTimeAverage()){
+				if (isFlaggedRate(osBean.calcAverageRate(OSHABean.LOST_WORK_CASES),flagOshaCriteriaDO.lwcrHurdle))
+					flagged = true;
+			}else{
+				if (isFlaggedRate(osBean.calcRate(OSHABean.LOST_WORK_CASES,OSHABean.YEAR1), flagOshaCriteriaDO.lwcrHurdle) ||
+						isFlaggedRate(osBean.calcRate(OSHABean.LOST_WORK_CASES,OSHABean.YEAR2), flagOshaCriteriaDO.lwcrHurdle) ||
+						isFlaggedRate(osBean.calcRate(OSHABean.LOST_WORK_CASES,OSHABean.YEAR3), flagOshaCriteriaDO.lwcrHurdle))
+					flagged = true;
+			}//else
+		}//if
+		if (!flagged && flagOshaCriteriaDO.flagTrir()){
+			if (flagOshaCriteriaDO.isTrirTimeAverage()){
+				if (isFlaggedRate(osBean.calcAverageRate(OSHABean.RECORDABLE_TOTAL),flagOshaCriteriaDO.trirHurdle))
+					flagged = true;
+			}else{
+				if (isFlaggedRate(osBean.calcRate(OSHABean.RECORDABLE_TOTAL,OSHABean.YEAR1), flagOshaCriteriaDO.trirHurdle) ||
+						isFlaggedRate(osBean.calcRate(OSHABean.RECORDABLE_TOTAL,OSHABean.YEAR2), flagOshaCriteriaDO.trirHurdle) ||
+						isFlaggedRate(osBean.calcRate(OSHABean.RECORDABLE_TOTAL,OSHABean.YEAR3), flagOshaCriteriaDO.trirHurdle))
+					flagged = true;
+			}//else
+		}//if
+		if (!flagged && flagOshaCriteriaDO.flagFatalities()){
+			if (flagOshaCriteriaDO.isFatalitiesTimeAverage()){
+				if (isFlaggedRate(osBean.calcAverageStat(OSHABean.FATALITIES),flagOshaCriteriaDO.fatalitiesHurdle))
+					flagged = true;
+			}else{
+				if (isFlaggedRate(osBean.getStat(OSHABean.FATALITIES,OSHABean.YEAR1), flagOshaCriteriaDO.fatalitiesHurdle) ||
+						isFlaggedRate(osBean.getStat(OSHABean.FATALITIES,OSHABean.YEAR2), flagOshaCriteriaDO.fatalitiesHurdle) ||
+						isFlaggedRate(osBean.getStat(OSHABean.FATALITIES,OSHABean.YEAR3), flagOshaCriteriaDO.fatalitiesHurdle))
+					flagged = true;
+			}//else
+		}//if
+		return flagged;
+	}//getIsOshaFlagged
+	
+	private void setFromResultSet(ResultSet rs) throws Exception {
+		conID = rs.getString("id");
+		osBean.setFromResultSet(rs);
+	}//setFromResultSet
+
+	public boolean isFlaggedRate(String rate,String cutoff){
+		float tempRate = 0;
+		float tempCutoff = 0;
+		try{tempRate = Float.parseFloat(rate);}
+		catch (Exception e){return true;}
+		try{tempCutoff = Float.parseFloat(cutoff);}
+		catch (Exception e){return true;}
+		return (tempRate>tempCutoff);
+	}//getRedFlag
+
+	public boolean isFlaggedRateNoZeros(String rate,String cutoff){
+		float tempRate = 0;
+		float tempCutoff = 0;
+		try{tempRate = Float.parseFloat(rate);}
+		catch (Exception e){return true;}
+		try{tempCutoff = Float.parseFloat(cutoff);}
+		catch (Exception e){return true;}
+		return (tempRate>tempCutoff || 0==tempRate);
+	}//getRedFlagNoZeros
+
+	public boolean isFlaggedAnswerNo(String answer){
+		return (!"Yes".equals(answer));
+	}//getRedFlagAnswerNo
+
+	public String getFlagIcon(){
+		return "<img src=images/icon_"+flagStatus.toLowerCase()+"FlagBig.gif width=32 height=32>";
+	}//getFlagIcon
+	public String getAnswer(String qID){
+		return qIDToAnswerMap.get(qID);
+	}//getAnswer
+	public String getFlagIcon(String qID){
+		if (!qIDToFlagMap.containsKey(qID))
+			return "";
+		return "<img src=images/icon_"+qIDToFlagMap.get(qID).toLowerCase()+"Flag.gif>";
+	}//getFlagIcon
+
+	public String getOshaFlag(int oshaStat,int rate,String timeFrame){
+		String tempRate = Integer.toString(rate);
+		return getOshaFlag(oshaStat,tempRate,timeFrame);
+	}//getOshaFlag
+
+	public String getOshaFlag(int oshaStat,String rate,String timeFrame){
+		switch(oshaStat){
+			case OSHABean.LOST_WORK_CASES:
+				if (redFlagOshaCriteriaDO.lwcrTime.equals(timeFrame) && 
+						redFlagOshaCriteriaDO.flagLwcr() && 
+						isFlaggedRate(rate,redFlagOshaCriteriaDO.lwcrHurdle))
+					return rate+"</td><td><img src=images/icon_redFlag.gif>";
+				if (amberFlagOshaCriteriaDO.lwcrTime.equals(timeFrame) && 
+						amberFlagOshaCriteriaDO.flagLwcr() && 
+						isFlaggedRate(rate,amberFlagOshaCriteriaDO.lwcrHurdle))
+					return rate+"</td><td><img src=images/icon_amberFlag.gif>";
+				break;
+			case OSHABean.RECORDABLE_TOTAL:
+				if (redFlagOshaCriteriaDO.trirTime.equals(timeFrame) && 
+						redFlagOshaCriteriaDO.flagTrir() && 
+						isFlaggedRate(rate,redFlagOshaCriteriaDO.trirHurdle))
+					return rate+"</td><td><img src=images/icon_redFlag.gif>";
+				if (amberFlagOshaCriteriaDO.trirTime.equals(timeFrame) && 
+						amberFlagOshaCriteriaDO.flagTrir() && 
+						isFlaggedRate(rate,amberFlagOshaCriteriaDO.trirHurdle))
+					return rate+"</td><td><img src=images/icon_amberFlag.gif>";
+				break;
+			case OSHABean.FATALITIES:
+				if (redFlagOshaCriteriaDO.flagFatalities() && isFlaggedRate(rate,redFlagOshaCriteriaDO.fatalitiesHurdle))
+					return rate+"</td><td><img src=images/icon_redFlag.gif>";
+				if (amberFlagOshaCriteriaDO.flagFatalities() && isFlaggedRate(rate,amberFlagOshaCriteriaDO.fatalitiesHurdle))
+					return rate+"</td><td><img src=images/icon_amberFlag.gif>";
+				break;
+		}//switch
+		return rate+"</td><td>";
+	}//getOshaFlag
+}//FlagCalculator

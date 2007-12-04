@@ -1,0 +1,43 @@
+<project name="PICS" default="build-war" basedir=".">
+    <description>
+        Build picsauciting.com
+    </description>
+  <!-- set global properties for this build -->
+  <property name="src" location="WEB-INF/classes"/>
+  <property name="build" location="WEB-INF/classes"/>
+  <property name="wi" location="WEB-INF"/>	
+  <property name="su" location="WEB-INF/classes/com/jspsmart/upload"/>
+  <property name="tomcat" location="c:/apache-tomcat-5.5.20/common/lib"/>
+	
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+  	
+  </target>
+	
+	<target name="clean"
+	        description="clean up" >
+	    <!-- Delete the ${build} classes -->
+		<delete includeemptydirs="true">
+			<fileset dir="${build}" includes="**/*.class"/>
+			<!--<fileset dir="${build}/com" includes="**/SmartUpload.class"/>-->
+		  </delete>   
+	</target>	
+
+  <target name="compile" depends="init,clean"
+        description="compile the source " >
+    <!-- Compile the java code from ${src} into ${build} -->
+  	
+  	<javac srcdir="${src}" destdir="${build}"
+  		classpath="${tomcat}/servlet-api.jar:${tomcat}/naming-factory-dbcp.jar:${tomcat}/jsp-api.jar:${wi}/classes:${wi}/lib/mail.jar:${wi}/lib/activation.jar:${wi}/lib/jFdfTk.jar:${wi}/lib/jxl.jar:${wi}/lib/commons-logging.jar:${wi}/lib/ical4j.jar:${su}/*.class"
+  		          source="1.5"/>
+  </target>
+  
+  <target name="build-war" depends="compile">	
+	<war destfile="c:/apache-tomcat-5.5.20/webapps/ROOT.war" webxml="WEB-INF/web.xml">
+	  <fileset dir="."/>
+	  
+	</war>	
+  </target>
+	
+</project>

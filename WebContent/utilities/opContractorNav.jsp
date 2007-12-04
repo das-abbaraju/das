@@ -1,0 +1,53 @@
+<%	String thisPage = request.getServletPath();
+	String thisQuery = request.getQueryString();
+//	thisPage = thisPage.substring(thisPage.lastIndexOf('/')+1,thisPage.lastIndexOf('.'));
+    com.picsauditing.PICS.AccountBean acctBean = new com.picsauditing.PICS.AccountBean();
+%>
+  <center>
+<%
+	if (!pBean.isContractor() && !thisPage.contains("contractor_detail")){
+%>
+	<div class="blueHeader"><%=acctBean.getName(id)%></div>
+<% }//end if %>
+
+<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_detail.jsp",thisPage,id,"",thisQuery,"Contractor Details")%>
+<%	if  (pBean.canSeeSet.contains(id)) {
+		if (!cBean.certs.equals("0")) {
+%>			| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"certificates_view.jsp",thisPage,id,"",thisQuery,"Insurance Certificates")%>
+<%		}//if
+		if (pBean.isCorporate()) {
+%>			| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"con_selectFacilities.jsp",thisPage,id,"",thisQuery,"Add Facilities")%>
+<%//		}else if(pBean.isOperator() && !pBean.oBean.facilitiesAL.isEmpty()){%>
+<!--			| <%//=com.picsauditing.PICS.Utilities.getMenuTag(request,"report_operatorContractor.jsp",thisPage,id,"",thisQuery,"View Facilities")%>
+--><%		}//else%>
+			| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"con_redFlags.jsp",thisPage,id,"",thisQuery,"Red Flag Report")%>
+<br>
+<%		if (pBean.oBean.canSeePQF()){%>
+			<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"View PQF")%>
+			| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_viewAll.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"View Entire PQF")%>
+			| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_printAll.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"Print PQF")%><br>
+<%		}//if
+		if (pBean.oBean.canSeeDesktop()){
+			if (cBean.isDesktopStatusOldAuditStatus()){
+				if (cBean.isNewOfficeAudit() && cBean.isOfficeSubmitted()){%>
+					<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE,thisQuery,"View Desktop Audit")%>
+<%				}else if (cBean.AUDIT_STATUS_RQS.equals(cBean.getAuditStatus()) || cBean.AUDIT_STATUS_CLOSED.equals(cBean.getAuditStatus())){%>
+					<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"audit_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE,thisQuery,"View Desktop Audit")%>
+<%				}//else if
+			}else{
+%>				<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE,thisQuery,"View Desktop Audit")%>
+<%			}//if
+		}//if
+		if (pBean.oBean.canSeeOffice()){
+			if (cBean.isNewOfficeAudit() && cBean.isOfficeSubmitted()){%>
+				| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE,thisQuery,"View Office Audit")%><br>
+<%			}else if (cBean.AUDIT_STATUS_RQS.equals(cBean.getAuditStatus()) || cBean.AUDIT_STATUS_CLOSED.equals(cBean.getAuditStatus())){%>
+				| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"audit_view.jsp",thisPage,id,"",thisQuery,"View Office Audit")%>
+				| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"audit_viewRequirements.jsp",thisPage,id,"",thisQuery,"View Office Audit RQs")%><br>
+<%			}//if
+		}//if
+		if (pBean.oBean.canSeeDA() && cBean.isDaSubmitted()){%>
+				<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.DA_TYPE,thisQuery,"View D&A Audit")%>
+<%		}//if
+	}//if%>
+  </center>

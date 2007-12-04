@@ -1,0 +1,207 @@
+<%@ page language="java" errorPage="exception_handler.jsp"%>
+<%int whichPage = 0;%>
+
+<html>
+<head>
+  <title>PICS - Pacific Industrial Contractor Screening</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <link href="PICS.css" rel="stylesheet" type="text/css">
+  <script language="JavaScript" SRC="js/ImageSwap.js"></script>
+  <script src="Scripts/AC_RunActiveContent.js" type="text/javascript"></script>
+</head>
+
+<body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td height="72" bgcolor="#003366">&nbsp;</td>
+        </tr>
+    </table></td>
+    <td width="657" valign="top"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td valign="top"><form action="login.jsp" method="post">
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td width="146" height="218" align="center" valign="top"><a href="index.jsp"><img src="images/logo.gif" alt="Pics Logo" width="146" height="145" border="0"></a><br>
+                <table border="0" cellspacing="0" cellpadding="1">
+                    <tr><td height="5"></td><td></td></tr>
+				    <tr>
+                      <td align="right" valign="middle"><p><img src="images/login_user.gif" alt="User Name" width="50" height="9">&nbsp;</p></td>
+                      <td valign="middle"><p>
+                          <input name="username" type="text" class="loginForms" size="9">
+                      </p></td>
+                    </tr>
+                    <tr>
+                      <td align="right" valign="middle"><img src="images/login_pass.gif" alt="Password" width="50" height="9">&nbsp;</td>
+                      <td valign="middle"><p>
+                          <input name="password" type="password" class="loginForms" size="9">
+                      </p></td>
+                    </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                      <td>
+                              <input name="Submit" type="image" src="images/button_login.jpg" width="65" height="28" border="0">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" class="blueMain"></td>
+                    </tr>
+                  </table>                  </td>
+              <td valign="top"><table width="511" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td height="72"><table width="511" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td width="364" height="72"><script type="text/javascript">
+AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0','width','364','height','72','src','flash/NAV_HOME','quality','high','pluginspage','http://www.macromedia.com/go/getflashplayer','movie','flash/NAV_HOME' ); //end AC code
+</script><noscript><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" width="364" height="72">
+                        <param name="movie" value="flash/NAV_HOME.swf">
+                        <param name="quality" value="high">
+                        <embed src="flash/NAV_HOME.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="364" height="72"></embed>
+                      </object></noscript><script type="text/javascript" src="js/ieupdate.js"></script></td>
+                      <td><img src="images/squares_home.gif" width="147" height="72"></td>
+                    </tr>
+                  </table></td>
+                  </tr>
+                <tr>
+                  <td height="146"><img src="images/photo_news.jpg" width="510" height="146">
+                    <script type="text/javascript" src="js/ieupdate.js"></script></td></tr>
+              </table></td>
+            </tr>
+          </table>
+        </form></td>
+      </tr>
+      <tr>
+        <td>
+            <br>
+            <table border="0" align="center" cellpadding="0" cellspacing="0">
+              <tr>
+                <td height="7" colspan="3"><img src="images/header_news.gif" alt="header" width="657" height="7"></td>
+              </tr>
+              <tr>
+                <td bgcolor="#CCCCCC"><img src="images/spacer.gif" alt="spacer" width="1" height="1"></td>
+                <td valign="top" bgcolor="#FFFFFF"><table border="0" align="center" cellpadding="0" cellspacing="0">
+					  <tr>
+                      <td class="blueHome2"><strong>7/19/07</strong> <strong class="articleTitle">PICS hosts Managing Contractor Safety.</strong><br>
+                       PICS team members host the 2007 User Group Meeting in Huntington Beach, CA on July 19-20.  PICS is the leading provider of contractor Health & Safety audits in North America.  Representation from dozens of major hiring companies voiced their opinions and shared best practices from their own prequalification programs.</td>
+                    </tr>
+					  <tr>
+                      <td  bgcolor="#F8F8F8" class="blueHome2"><strong>6/26/07</strong> <strong class="articleTitle">PICS speaks at ASSE SAFETY 2007.</strong><br>
+                        PICS president John Moreland speaks at the ASSE 2007 national conference in Orlando, Florida. The topic is "Developing a Quality Prequalification Process." ASSE is the oldest and largest professional safety organization, with over 30,000 members in occupational health, safety and environmental issues.  </td>
+                    </tr>
+						<tr>
+                      <td class="blueHome2"><strong>6/15/07</strong> <strong class="articleTitle">Big West Oil joins PICS</strong><br>
+                       Big West Oil, a subsidiary of Flying J Inc, operates a 31,000 barrel per day refinery located in North Salt Lake, Utah. The refinery processes crude oils produced in Utah, Wyoming, Colorado, and Canada. </td>
+                    </tr>
+					  <tr>
+                      <td  bgcolor="#F8F8F8" class="blueHome2"><strong>6/01/07</strong> <strong class="articleTitle">Motorola USA joins PICS</strong><br>
+                        Motorola is a leader in the Manufacturing industry in communications and electronics, with 80 years of experience that spans many countries.  Motorola’s strategic sourcing partner, Jones Lang Lasalle, is also a general contractor member of com.picsauditing.PICS.  Jones, Lang, Lasalle is one of the world’s leading real estate services firms.  </td>
+                    </tr>
+                    <tr>
+                      <td class="blueHome2"><strong>5/01/07</strong> <strong class="articleTitle">Fluor Enterprises joins PICS</strong><br>
+                      Fluor Corporation is one of the world's largest, publicly owned engineering, procurement, construction, and maintenance services companies.  Its more than 35,000 employees have helped it grow to one of the most successful engineering companies of all time. </td>
+                    </tr>
+                                          <tr>
+                      <td class="blueHome2"><strong>3/26/07</strong> <strong class="articleTitle">March Point Cogeneration joins PICS</strong><br>
+                       A joint venture between Chevron, Shell and Edison, March Point operates a cogeneration facility in Anacortes, Washington.</td>
+                    </tr>
+					  <tr>
+                      <td  bgcolor="#F8F8F8" class="blueHome2"><strong>3/21/07</strong> <strong class="articleTitle">Big West of California joins PICS</strong><br>
+                        Big West of California, a subsidiary of Flying J Inc, operates a 66,000 BPD refinery in Bakersfield, California.</td>
+                    </tr>
+                    <tr>
+                      <td class="blueHome2"><strong>3/01/07</strong> <strong class="articleTitle">Tesoro Pipelines & Terminals joins PICS</strong><br>
+                       The pipelines group joins other Tesoro business units in using PICS to prequalify contractors. Tesoro operates 14 terminals and over 900 miles of crude and product pipelines transporting more than 380,000 barrels per day across their system.</td>
+                    </tr>
+					<tr>
+                      <td  bgcolor="#F8F8F8" class="blueHome2"><strong>12/14/06</strong> <strong class="articleTitle">Safety Audit Symposium</strong><br>
+                        PICS held its first annual Safety Audit Symposium in Irvine, CA. Safety professionals learned about regulatory updates, auditing manuals and records, as well as field audits, in a full-day seminar. PICS is the leading provider of contractor safety audits in the USA for the Oil & Gas Industry.</td>
+                    </tr>
+                    <tr>
+                      <td class="blueHome2"><strong>11/14/06</strong> <strong class="articleTitle">2006 API Contractor Safety Conference</strong><br>
+                        PICS  sponsored the American Petroleum Institute&rsquo;s Contractor Safety  conference held this year in Houston, Texas. 2006 represents the second  year that API has held this conference, and the second year that PICS  has sponsored the event. API has over 400 corporate members, all with  significant influence in the Oil &amp; Gas industry; for more than 75  years, API has led the development of petroleum and petrochemical  equipment and operating standards.</td>
+                    </tr>
+                    <tr>
+                      <td bgcolor="#F8F8F8" class="blueHome2"><strong>11/06/06</strong> <span class="articleTitle">2006 National Safety Council Congress &amp; Expo</span><br>
+                        PICS representatives joined 14,000 safety professionals to talk about  contractor safety on the jobsite. Held this year in San Diego,  California, NSC&rsquo;s Congress &amp; Expo is the largest annual event in  the world dedicated to the Safety, Health and Environmental industries.</td>
+                    </tr>
+                    <tr>
+                      <td valign="top" class="blueHome2"><strong>11/01/06</strong> <strong class="articleTitle">Jiffy Lube International joins PICS</strong><br>
+                        Jiffy Lube joined the PICS consortium to help centralize the contractor data management with the purpose of creating better, longer-term relationships with its contractors.</td>
+                    </tr>
+                    <tr>
+                      <td bgcolor="#F8F8F8"valign="top" class="blueHome2"><strong>9/15/06</strong> <strong class="articleTitle">Tesoro Kapolei Joins PICS<br>
+                      </strong>Tesoro Corporation&rsquo;s Kaploei Refinery in Hawaii implements PICS for contractor prequalifications.  Tesoro Corporation has six refineries and has a refining capacity close to 600,000 barrels per day.</td>
+                    </tr>
+                    <tr>
+                      <td class="blueHome2"><strong>9/01/06</strong> <strong class="articleTitle">BP Cherry Point Joins PICS<br>
+                      </strong> British Petroleum&rsquo;s Cherry Point Refinery in Blaine, WA joins other BP business units including BP Carson and BP Pipelines in using com.picsauditing.PICS.  The refinery was built in 1971, and is the biggest refinery in Washington, producing over 225,000 barrels a day.</td>
+                    </tr>
+                    <tr>
+                      <td bgcolor="#F8F8F8" class="blueHome2"><strong>9/01/06</strong> <strong class="articleTitle">CRI/Criterion Catalyst Joins PICS<br>
+                      </strong> CRI/Criterion's eight facilities in the United States join com.picsauditing.PICS.  CRI/Criterion is the world&rsquo;s largest supplier of hydroprocessing catalysts, which includes catalysts for hydrotreating, hydrocracking, hydrogenation, isomerization and naphtha reforming.</td>
+                    </tr>
+                    <tr>
+                      <td class="blueHome2"><strong>8/15/06</strong> <strong class="articleTitle">ConocoPhillips Rodeo Joins PICS<br>
+                      </strong> ConocoPhillips&rsquo; Rodeo business unit joins many other ConocoPhillips business units who utilize PICS&rsquo; service to reduce safety risk and cost.  Contractors are pleased, as the majority is already members of com.picsauditing.PICS.</td>
+                    </tr>
+                    <tr>
+                      <td bgcolor="#F8F8F8" class="blueHome2"><strong>7/01/06</strong> <strong class="articleTitle">Tesoro Anacortes Joins PICS<br>
+                      </strong> Tesoro Anacortes Refinery in Washington State joins PICS and implements PICS as the contractor prequalification process at their plant.  Other Tesoro Refineries were already members of com.picsauditing.PICS.</td>
+                    </tr>
+                    <tr>
+                      <td class="blueHome2"><strong>6/12/06</strong> <strong class="articleTitle">ASSE Conference<br>
+                      </strong> PICS attends ASSE conference, discussing contractor prequalification with many Fortune 500 companies&rsquo; representatives.  Founded in 1911, ASSE is the oldest and largest professional organization.</td>
+                    </tr>
+                    <tr>
+                      <td bgcolor="#F8F8F8" class="blueHome2"><strong>6/1/06</strong> <strong class="articleTitle">Shell Oil partnership<br>
+                      </strong> Shell Oil Products signs a strategic partnership with PICS to prequalify contractors who work at 26 Downstream Business Units in USA. Shell Oil Products is one of the leading petrochemical and energy companies in America, producing 1,640 barrels-per-day of refined product and 41 million lbs/day of chemicals.</td>
+                    <tr>
+                      <td class="blueHome2"><strong>5/18/06</strong> <strong class="articleTitle">BP Pipelines<br>
+                      </strong> BP Pipelines becomes PICS newest consortium member.  BP Pipelines  (North America) is the second largest liquids pipeline company in the U.S. transporting over 450 million barrel-miles of oil, refined products, natural gas liquids, carbon dioxide, and chemicals daily -- about 9 percent of the U.S. Liquids pipeline market.</td>
+                    </tr>
+                    <tr>
+                      <td bgcolor="#F8F8F8" class="blueHome2"><strong>5/3/06</strong> <strong class="articleTitle">PICS Sponsors NPRA Safety<br>
+                      </strong>PICS sponsors the annual National Petroleum and Refining Association (NPRA) Safety meeting held in Austin, Texas.  NPRA members include more than 450 companies, including virtually all U.S. refiners and petrochemical manufacturers.</td>
+                    <tr>
+                      <td class="blueHome2"><strong>5/1/06</strong> <strong class="articleTitle">BIC Magazine Article<br>
+                      </strong> BIC Magazine publishes an article on PICS services, and how PICS has proved cost savings up to $90,000 per year.  BIC Magazine is the leading  publication of the industrial construction industry. <a href="samples/BIC Article.pdf" target="_blank" class="homeNews">May 2006, page 99</a>.</td>
+                    </tr>
+                    <tr>
+                      <td bgcolor="#F8F8F8" class="blueHome2"><strong>1/1/06</strong> <strong class="articleTitle">New Online PQF<br>
+                        </strong> Today PICS launched a new online PQF.  &ldquo;Contractors&rsquo; data will be more searchable, better archived, and more user-friendly,&rdquo; states John Moreland, CEO.
+                        </p></td>
+                    </tr>
+                </table></td>
+                <td bgcolor="#CCCCCC"><img src="images/spacer.gif" alt="spacer" width="1" height="1"></td>
+              </tr>
+              <tr>
+                <td height="7" colspan="3"><img src="images/footer_news.gif" alt="footer" width="657" height="7"></td>
+              </tr>
+            </table>
+            <br>
+            <br>
+           
+          </div></td>
+      </tr>
+      
+    </table>
+    <br>
+    <br></td>
+    <td valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td height="72" bgcolor="#003366">&nbsp;</td>
+      </tr>
+    </table></td>
+  </tr>
+  <tr bgcolor="#003366">
+    <td height="72">&nbsp;</td>
+    <td height="72" align="center" valign="middle" class="footer">&copy; Copyright 2007 Pacific Industrial Contractor Screening | Site by: <a href="http://www.albumcreative.com" target="_blank" class="footer" title="Album Creative Studios">Album</a> </td>
+    <td height="72" valign="top">&nbsp;</td>
+  </tr>
+</table>
+
+<%@ include file="includes/statcounter.jsp"%>
+
+</body>
+</html>
