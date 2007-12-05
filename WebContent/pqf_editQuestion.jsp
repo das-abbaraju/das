@@ -132,11 +132,7 @@
                           <td align="right" class="redMain">Type:</td>
                           <td>
 							<%=pqBean.getPQFTypeSelect("questionType","blueMain",pqBean.questionType)%>
-<%/*	if (isAddingNew)
-		out.println(pqBean.getPQFTypeSelect("questionType","blueMain",pqBean.questionType));
-	else
-		out.println("<input type=hidden name=questionType value='" + pqBean.questionType + "'>" + pqBean.questionType);
-*/%>		                  </td>
+		                  </td>
                         </tr>
 <%//		if (!(isAddingNew && !isTypeSelected)) {
 %>                      <tr>

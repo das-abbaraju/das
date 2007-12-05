@@ -305,7 +305,7 @@ public class Inputs {
  
 	public static String getDateInput(String name, String classType, String value, String formName) {
 		return "<nobr><input name=\""+name+"\" id=\""+name+"\" type=text class=\""+classType+"\" size=8 onClick=\"cal1.select(document.forms('"+formName+"')."+name+",'"+name+"','M/d/yy','"+value+"'); return false;\" value=\""+value+"\">\n"+
-			"                          <input type=image src=/images/icon_calendar.gif width=18 height=15 onClick=\"cal1.select(document.forms('"+formName+"')."+name+",'"+name+"','M/d/yy','"+value+"'); return false;\"></nobr>\n";
+			"                          <input type=image src=\"images/icon_calendar.gif\" width=18 height=15 onClick=\"cal1.select(document.forms('"+formName+"')."+name+",'"+name+"','M/d/yy','"+value+"'); return false;\"></nobr>\n";
 	}//getDateInput
 
 	public static String getDateInput2(String name, String classType, String value, String formName) {

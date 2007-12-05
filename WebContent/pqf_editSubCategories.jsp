@@ -20,7 +20,6 @@
 	String orderBy = request.getParameter("orderBy");
 %>
 
-
 <html>
 <head>
   <title>PICS - Pacific Industrial Contractor Screening</title>
@@ -88,8 +87,8 @@
                       <tr class="blueMain" <%=psBean.getBGColor()%>> 
                         <td><input name="num_<%=psBean.subCatID%>" type="text" class="forms" id="num_<%=psBean.subCatID%>" value="<%=psBean.number%>" size="3"></td>
                         <td><a href="/pqf_editQuestions.jsp?editSubCatID=<%=psBean.subCatID%>&editCatID=<%=editCatID%>"><%=psBean.subCategory%></a></td>
-                        <td align="center"><a href="/pqf_editSubCategory.jsp?editID=<%=psBean.subCatID%>">Edit</a></td>
-                        <td align="center"><a href="/pqf_editSubCategories.jsp?deleteID=<%=psBean.subCatID%>&action=Delete&editCatID=<%=editCatID%>">Del</a></td>
+                        <td align="center"><a href="pqf_editSubCategory.jsp?editID=<%=psBean.subCatID%>">Edit</a></td>
+                        <td align="center"><a href="pqf_editSubCategories.jsp?deleteID=<%=psBean.subCatID%>&action=Delete&editCatID=<%=editCatID%>">Del</a></td>
                       </tr>
 <%		}//while
 		psBean.closeList(); %>

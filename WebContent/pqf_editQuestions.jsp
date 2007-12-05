@@ -119,8 +119,8 @@
                         <td><%=pqBean.question%></td>
                         <td><%=pqBean.questionType%></td>
                         <td><%=pqBean.isRequired%></td>
-                        <td align="center"><a href="/pqf_editQuestion.jsp?editID=<%=pqBean.questionID%>">Edit</a></td>
-                        <td align="center"><a href="/pqf_editQuestions.jsp?editCatID=<%=editCatID%>&editSubCatID=<%=editSubCatID%>&deleteID=<%=pqBean.questionID%>&action=Delete" onClick="return confirm('Hold on dude!! Are you sure you want to delete this question?  Cuz if you do, it is never coming back!');">Del</a></td>
+                        <td align="center"><a href="pqf_editQuestion.jsp?editID=<%=pqBean.questionID%>">Edit</a></td>
+                        <td align="center"><a href="pqf_editQuestions.jsp?editCatID=<%=editCatID%>&editSubCatID=<%=editSubCatID%>&deleteID=<%=pqBean.questionID%>&action=Delete" onClick="return confirm('Hold on dude!! Are you sure you want to delete this question?  Cuz if you do, it is never coming back!');">Del</a></td>
                       </tr>
 <%		}//while
 		pqBean.closeList();

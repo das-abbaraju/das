@@ -12,10 +12,11 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 
 	public static final String DEFAULT_TYPE = "--Type--";
 	static final String[] TYPE_ARRAY = {DEFAULT_TYPE,"Check Box","Country","Date","Decimal Number","Drop Down",
-		"File","Industry","License","Main Work","Manual","Money","Office","Radio","Service","State","Text",
+		"File","Industry","License","Main Work","Manual","Money","Office","Office Location","Radio","Service","State","Text",
 		"Text Area","Yes/No","Yes/No/NA"};	// must match ENUM in db
 	static final String[] YES_NO_OPTIONS_ARRAY = {"Yes","No"};
 	static final String[] YES_NO_NA_OPTIONS_ARRAY = {"Yes","No","NA"};
+	public static final String[] YES_NO_OFFICE_ARRAY = {"No","Yes","Yes with Office"};
 	public static final String[] YES_NO_DEPENDS_OPTIONS_ARRAY = {"Yes","No","Depends"};
 	public static final String[] DEPENDS_ANSWER_ARRAY = {"Yes","Yes","No","No","X","Checked"};
 //	public static final boolean VERIFIED_ANSWER = true;
@@ -478,6 +479,8 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 		}//if
 		if ("Office".equals(questionType))
 			return Inputs.getYesNoNARadio(inputName,"forms",value);
+		if ("Office Location".equals(questionType))
+			return Inputs.inputSelect(inputName,"forms",value,QuestionBean.YES_NO_OFFICE_ARRAY);
 		if ("Check Box".equals(questionType) || "Industry".equals(questionType) || "Main Work".equals(questionType))
 			return Inputs.getCheckBoxInput(inputName,"forms",value, "X");
 		if ("Service".equals(questionType)) {
