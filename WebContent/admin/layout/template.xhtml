@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich" lang="en" xml:lang="en">
+<head>
+<title>PICS Administration</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="stylesheet/theme.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+<h:form>
+<ui:include src="/admin/status.xhtml"/>
+	<rich:toolBar>
+		<h:outputText>
+			<a href="index.jsf" class="menu">PICS Dashboard</a>
+		</h:outputText>
+		<rich:toolBarGroup rendered="true">
+			<rich:dropDownMenu value="Accounts">
+				<rich:menuItem value="Operators" disabled="true" />
+				<rich:menuItem value="Contractors" disabled="true" />
+			</rich:dropDownMenu>
+			<rich:dropDownMenu value="Cust Service">
+				<rich:menuItem value="Activate Contractors" disabled="true" />
+				<rich:menuItem value="Mass Emailing" disabled="true" />
+				<rich:menuItem value="Schedule Audits" disabled="true" />
+				<rich:menuItem value="OSHA Verification" action="osha" />
+			</rich:dropDownMenu>
+			<rich:dropDownMenu value="Accounting">
+				<rich:menuItem value="Send Invoices" disabled="true" />
+				<rich:menuItem value="QuickBooks Integration" disabled="true" />
+				<rich:menuItem value="Record Payment" disabled="true" />
+			</rich:dropDownMenu>
+			<rich:dropDownMenu value="Management">
+				<rich:menuItem value="Manage Site Options" disabled="true" />
+				<rich:menuItem value="Manage Forms" disabled="true" />
+				<rich:menuItem value="Manage Audits" disabled="true" />
+			</rich:dropDownMenu>
+			<rich:dropDownMenu value="IT">
+				<rich:menuItem value="Manage Users" action="user_list" />
+				<rich:menuItem value="Manage Auditors" disabled="true" />
+				<rich:menuItem value="View Login History" action="login_history" />
+				<rich:menuItem value="Edit Permissions" disabled="true" />
+				<rich:menuItem value="Schedule Jobs" disabled="true" />
+				<rich:menuItem value="View Sessions" disabled="true" />
+			</rich:dropDownMenu>
+			<rich:dropDownMenu value="Preferences">
+				<rich:menuItem value="Edit Profile" disabled="true" />
+				<rich:menuItem value="View Permissions" disabled="true" />
+				<rich:menuItem value="View Login History" action="my_login_history" />
+				<rich:menuItem value="Change Password" disabled="true" />
+			</rich:dropDownMenu>
+		</rich:toolBarGroup>
+		<rich:toolBarGroup>
+			<rich:dropDownMenu value="Options">
+				<rich:menuItem value="Print Screen" disabled="true" />
+			</rich:dropDownMenu>
+		</rich:toolBarGroup>
+		<rich:toolBarGroup location="right">
+			<h:inputText />
+			<h:commandButton value="Search" disabled="true" />
+
+			<h:outputText rendered="true">
+				
+				<a href="../logout.jsp" class="menu">Logout</a>
+			</h:outputText>
+			<h:outputText rendered="true">
+				<a href="../login.jsp" class="menu">Login</a>
+			</h:outputText>
+		</rich:toolBarGroup>
+	</rich:toolBar>
+</h:form>
+
+<!-- Main Content Here -->
+<ui:insert name="body" />
+<br />
+<br />
+<br />
+<rich:toolBar>
+	&copy; Copyright 2007 Pacific Industrial Contractor Screening
+</rich:toolBar>
+</body>
+</html>

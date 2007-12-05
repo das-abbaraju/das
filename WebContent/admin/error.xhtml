@@ -1,0 +1,20 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich" template="layout/template.xhtml">
+
+	<ui:define name="body">
+		<br />
+		<br />
+		<rich:panel id="panel" style="margin: 10px; width: 80%;">
+			<f:facet name="header">
+				<h:outputText value="Error" />
+			</f:facet>
+			<p>An unexpected error occurred while processing your request.</p>
+
+			<h:messages styleClass="message" />
+		</rich:panel>
+	</ui:define>
+</ui:composition>
