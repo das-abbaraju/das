@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config version="1.2"
+              xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
+
+  <application>
+    <view-handler>
+      com.sun.facelets.FaceletViewHandler
+    </view-handler>    
+  </application> 
+  
+  <managed-bean>
+		<managed-bean-name>
+		contractorBean</managed-bean-name>
+		<managed-bean-class>
+		com.picsauditing.beans.ContractorBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<description>
+				Set the maximum results to be returned in any one db
+				find request
+			</description>
+			<property-name>maxResults</property-name>
+			<value>-1</value>
+		</managed-property>	
+		<managed-property>
+			<property-name>persistenceCtx</property-name>
+			<value>PicsDBJPA</value>
+		</managed-property>		
+	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>
+		oshaBean</managed-bean-name>
+		<managed-bean-class>
+		com.picsauditing.beans.OshaLogBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<property-name>persistenceCtx</property-name>
+			<value>PicsDBJPA</value>
+		</managed-property>		
+	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>
+		emrBean</managed-bean-name>
+		<managed-bean-class>
+		com.picsauditing.beans.EmrLogBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<property-name>persistenceCtx</property-name>
+			<value>PicsDBJPA</value>
+		</managed-property>		
+	</managed-bean>	
+	
+	<managed-bean>
+		<managed-bean-name>
+		textMgr1</managed-bean-name>
+		<managed-bean-class>
+		com.picsauditing.beans.TextManagerBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>		
+	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>
+		textMgr2</managed-bean-name>
+		<managed-bean-class>
+		com.picsauditing.beans.TextManagerBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>		
+	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>
+		textMgr3</managed-bean-name>
+		<managed-bean-class>
+		com.picsauditing.beans.TextManagerBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>		
+	</managed-bean>
+	
+	 <navigation-rule>
+    <from-view-id>/admin/*.*</from-view-id>
+    <navigation-case>
+      <from-outcome>osha</from-outcome>
+      <to-view-id>/admin/osha.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+</faces-config>
