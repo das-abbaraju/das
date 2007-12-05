@@ -1,5 +1,4 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
-<%//@ page language="java" import="com.picsauditing.PICS.*"%>
 <%@ include file="utilities/contractor_list_secure.jsp" %>
 
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="session"/>
@@ -26,7 +25,7 @@
 		sBean.orderBy = "name";
 	sBean.setHasCertSet((java.util.HashSet)session.getAttribute("hasCertSet"));
 	sBean.setCanSeeSet(pBean.canSeeSet);
-	sBean.doSearch(request, sBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
+	sBean.doSearch(request, SearchBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
 //***** do i need these
 	String showPage = request.getParameter("showPage");
 	if (showPage == null)	showPage = "1";
@@ -108,7 +107,7 @@
 <%	} if (pBean.oBean.canSeeDesktop()){%>
                 <td align="center" bgcolor="#6699CC"><nobr>Desktop Audit</nobr></td>
 <%	} if (pBean.oBean.canSeeDA()){%>
-                <td align="center" bgcolor="#6699CC"><nobr>D&A Audit</nobr></td>
+                <td align="center" bgcolor="#6699CC"><nobr>D&amp;A Audit</nobr></td>
 <%	} if (pBean.oBean.canSeeOffice()){%>
                 <td align="center" bgcolor="#6699CC"><nobr>Office Audit</nobr></td>
 <%	} if (pBean.oBean.canSeeInsurance()){%>
@@ -137,12 +136,12 @@
 <%	}//if%>
                 <td align="center"><a href=con_redFlags.jsp?id=<%=sBean.cBean.id%>><%=sBean.getFlagLink()%></a></td>
 <%	if (!pBean.oBean.isCorporate && false){%>
-                <form name="form2" method="post" action="contractor_list.jsp?changed=0&showPage=<%=showPage%>">
                 <td>
+                <form name="form2" method="post" action="contractor_list.jsp?changed=0&showPage=<%=showPage%>" style="margin: 0px">
                   <input name="action" type="submit" class="forms" value="Remove">
                   <input name="actionID" type="hidden" value="<%=sBean.aBean.id%>">
+                </form>
                 </td>
-                </form>				
 <%		}//if %>
               </tr>
 <%	}//while %>
