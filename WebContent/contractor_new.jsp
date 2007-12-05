@@ -197,14 +197,14 @@
 				}
 				%>
             	</select>
-            	<br />* Please choose one or more facility to apply to join their approved contractor list.  
+            	<br />* Please choose one or more facilities to apply to join their approved contractor list.
               	<br />  Hold the 'CTRL' key to select more than one.
               </td>
             </tr>
             <tr>
               <td class="blueMain" align="right" valign="top">Audit Requested By</td>
-              <td class="redMain"><select name="requestedByID" id="requestedByID" class="blueMain"><option></option></select>
-              	<br />Facility if any requesting that you apply for membership</td>
+              <td class="redMain"><select name="requestedByID" id="requestedByID" class="blueMain"></select>
+              	*<br />Facility requesting that you apply for membership</td>
             </tr>
             <tr>
               <td>&nbsp;</td>
@@ -287,14 +287,13 @@ function change() {
 	opt1 = document.getElementById('generalContractors');
 	opt2 = document.getElementById('requestedByID');
 	opt2.length = 0;
-	opt2.options[0] = new Option("");
 	for(i=0; i<opt1.length; i++) {
 		if (opt1[i].selected) {
 			opt2.options[opt2.length] = new Option(opt1[i].innerHTML, opt1[i].value);
 		}
 	}
 	annual_fee = "~";
-	facility_count = opt2.length - 1;
+	facility_count = opt2.length;
 	if (facility_count > 0) annual_fee = "399";
 	if (facility_count > 1) annual_fee = "599";
 	if (facility_count > 4) annual_fee = "799";
