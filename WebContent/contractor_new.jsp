@@ -187,17 +187,39 @@
               <td class="redMain"><%=tBean.getTradesNameSelect("main_trade", "blueMain", cBean.main_trade)%>*</td>
             </tr>
             <tr>
-              <td class="blueMain" align="right" valign="top">Audit Requested By</td>
-              <td class="redMain"><%=oBean.getRequestedBySelect("requestedByID","blueMain",cBean.requestedByID)%>*</td>
-            </tr>
-<!--            <tr>
-              <td class="blueMain" valign="top" colspan="2">All Facilities Currenty Working At:</td>
+              <td class="blueMain" valign="top">Currently working with</td>
+              <td class="redMain" valign="top">
+				<select id="generalContractors" name="generalContractors" class="blueMain" size="10" multiple onchange="change();">
+				<%
+				String[] generals = oBean.getOperatorsArray(com.picsauditing.PICS.OperatorBean.DONT_INCLUDE_PICS, com.picsauditing.PICS.OperatorBean.INCLUDE_ID, com.picsauditing.PICS.OperatorBean.INCLUDE_GENERALS, com.picsauditing.PICS.OperatorBean.INCLUDE_INACTIVE);
+				for(int i=0; i<generals.length; i++) {
+					%><option value="<%=generals[i] %><% i++; %>"><%=generals[i] %></option><%
+				}
+				%>
+            	</select>
+            	<br />* Please choose one or more facility to apply to join their approved contractor list.  
+              	<br />  Hold the 'CTRL' key to select more than one.
+              </td>
             </tr>
             <tr>
-              <td></td>
-              <td class="redMain" valign="top"><%//=aBean.getGeneralSelectMultiple("generalContractors", "blueMain",cBean.getGeneralContractorsArray())%> * Hold down 'CTRL' key to select multiple          
+              <td class="blueMain" align="right" valign="top">Audit Requested By</td>
+              <td class="redMain"><select name="requestedByID" id="requestedByID" class="blueMain"><option></option></select>
+              	<br />Facility if any requesting that you apply for membership</td>
             </tr>
--->            <tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td class="blueMain" align="right">Annual Membership Fee</td>
+              <td class="redMain"><span id="annualFee" class="blueMain" style="font-weight: bold; font-style: italic;">$~</span>
+              	This is based on the number of facilities you select above. <a href="">Click to view pricing</a></td>
+            </tr>
+            <tr>
+              <td class="blueMain" align="right">On-time Activation Fee</td>
+              <td class="blueMain" style="font-weight: bold; font-style: italic;">$99</td>
+            </tr>
+            <tr>
               <td>&nbsp;</td>
               <td>&nbsp;</td>
             </tr>
@@ -258,6 +280,32 @@
     <td height="72" valign="top">&nbsp;</td>
   </tr>
 </table>
+
+<script language="Javascript">
+<!--
+function change() {
+	opt1 = document.getElementById('generalContractors');
+	opt2 = document.getElementById('requestedByID');
+	opt2.length = 0;
+	opt2.options[0] = new Option("");
+	for(i=0; i<opt1.length; i++) {
+		if (opt1[i].selected) {
+			opt2.options[opt2.length] = new Option(opt1[i].innerHTML, opt1[i].value);
+		}
+	}
+	annual_fee = "~";
+	facility_count = opt2.length - 1;
+	if (facility_count > 0) annual_fee = "399";
+	if (facility_count > 1) annual_fee = "599";
+	if (facility_count > 4) annual_fee = "799";
+	if (facility_count > 8) annual_fee = "1099";
+	if (facility_count > 12) annual_fee = "1399";
+	if (facility_count > 19) annual_fee = "1699";
+
+	document.getElementById("annualFee").innerHTML = "$" + annual_fee;
+}
+//-->
+</script>
 <%@ include file="includes/statcounter.jsp"%>
 </body>
 </html>

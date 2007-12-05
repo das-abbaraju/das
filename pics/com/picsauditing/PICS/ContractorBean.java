@@ -1101,6 +1101,12 @@ public class ContractorBean extends DataBean {
 		isDescriptionChanged = true;
 		status = STATUS_INACTIVE;
 		main_trade = r.getParameter("main_trade");
+		String[] generalContractorsStrings = r.getParameterValues("generalContractors");
+		if (generalContractorsStrings != null) {
+			for(int i=0; i < generalContractorsStrings.length; i++) {
+				generalContractors.add(generalContractorsStrings[i]);
+			}
+		}
 		requestedByID = r.getParameter("requestedByID");
 //second contact
 		secondContact = r.getParameter("secondContact");
