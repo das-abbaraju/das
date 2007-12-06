@@ -1,0 +1,19 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:c="http://java.sun.com/jstl/core">
+
+
+	<rich:panel>
+		<rich:dataGrid value="#{emrBean.dataModel}" var="log" columns="2"
+			elements="10" rendered="#{emrBean.cid > 0}" styleClass="dr-pnl">
+			<h:panelGrid columns="1">
+				<h:outputText value="#{log.pqfquestion.question}" />
+				<h:inputText value="#{log.answer}" styleClass="forms" />
+			</h:panelGrid>
+		</rich:dataGrid>
+	</rich:panel>
+</ui:composition>

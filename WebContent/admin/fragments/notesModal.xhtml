@@ -10,7 +10,7 @@
 	<rich:modalPanel id="mp1" minHeight="460" minWidth="450" height="460"
 		width="500" zindex="2000">
 		<f:facet name="header">
-			<h:outputText value="Notes for #{currentYear - 1}" />
+			<h:outputText value="Notes for #{contratorBean.currentYear - 1}" />
 		</f:facet>
 		<a4j:form id="form1">
 			<h:panelGrid columns="1">
@@ -38,7 +38,7 @@
 	<rich:modalPanel id="mp2" minHeight="460" minWidth="450" height="460"
 		width="500" zindex="2000">
 		<f:facet name="header">
-			<h:outputText value="Notes for #{currentYear - 2}" />
+			<h:outputText value="Notes for #{contractorBean.currentYear - 2}" />
 		</f:facet>
 		<a4j:form id="form2">
 			<h:panelGrid columns="1">
@@ -66,7 +66,7 @@
 	<rich:modalPanel id="mp3" minHeight="460" minWidth="450" height="460"
 		width="500" zindex="2000">
 		<f:facet name="header">
-			<h:outputText value="Notes for #{currentYear - 3}" />
+			<h:outputText value="Notes for #{contractorBean.currentYear - 3}" />
 		</f:facet>
 		<a4j:form id="form3">
 			<h:panelGrid columns="1">

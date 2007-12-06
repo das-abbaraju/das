@@ -6,188 +6,200 @@
 	xmlns:rich="http://richfaces.org/rich"
 	xmlns:c="http://java.sun.com/jstl/core"
 	xmlns:a4j="http://richfaces.org/a4j">
+	
+  <style> 
+    .panel {
+        vertical-align:top;
+    }
+    
+   </style>
 
-<h:panelGrid columns="2" cellpadding="3" cellspacing="3">
-<a4j:form id="contractorTable">
-	<rich:dataTable onRowMouseOver="this.style.backgroundColor='#F1F1F1'" id="table"
-			onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'"
-			cellpadding="0" cellspacing="0" border="0" var="c" rows="10"
-			value="#{contractorBean.dataModel}" rowKeyVar="row" >
-			<f:facet name="header">
+   <h:panelGrid columns="2" cellpadding="3" cellspacing="3" columnClasses="panel">
+	<h:panelGrid>		
+		<a4j:form id="contractorTable">
+			<rich:dataTable onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+				id="table"
+				onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'"
+				cellpadding="0" cellspacing="0" border="0" var="c" rows="10"
+				value="#{contractorBean.dataModel}" rowKeyVar="row">
+				<f:facet name="header">
 
-				<rich:columnGroup>
+					<rich:columnGroup>
 
-					<rich:column rowspan="2">
-						<h:outputText value="Contractors" />
-					</rich:column>
+						<rich:column rowspan="2">
+							<h:outputText value="Contractors" />
+						</rich:column>
 
-					<rich:column colspan="3">
+						<rich:column colspan="3">
 
-						<h:outputText value="EMR Data" />
+							<h:outputText value="EMR Data" />
 
-					</rich:column>
+						</rich:column>
 
-					<rich:column colspan="6">
+						<rich:column colspan="6">
 
-						<h:outputText value="Oshs Logs" />
+							<h:outputText value="Oshs Logs" />
 
-					</rich:column>
+						</rich:column>
 
-					<rich:column breakBefore="true">
+						<rich:column breakBefore="true">
 
-						<h:outputText value="Date1" />
+							<h:outputText value="Date1" />
 
-					</rich:column>
+						</rich:column>
 
-					<rich:column>
+						<rich:column>
 
-						<h:outputText value="Date2" />
+							<h:outputText value="Date2" />
 
-					</rich:column>
-					<rich:column>
+						</rich:column>
+						<rich:column>
 
-						<h:outputText value="Date3" />
+							<h:outputText value="Date3" />
 
-					</rich:column>
-
-
-					<rich:column>
-
-						<h:outputText value="Location" />
-
-					</rich:column>
-
-					<rich:column>
-
-						<h:outputText value="Verified" />
-
-					</rich:column>
-
-					<rich:column>
-
-						<h:outputText value="Date1" />
-
-					</rich:column>
-
-					<rich:column>
-
-						<h:outputText value="Date2" />
-
-					</rich:column>
-
-					<rich:column>
-
-						<h:outputText value="Date3" />
-
-					</rich:column>
-
-					<rich:column>
-						<rich:spacer />
-					</rich:column>
+						</rich:column>
 
 
-				</rich:columnGroup>
+						<rich:column>
+
+							<h:outputText value="Location" />
+
+						</rich:column>
+
+						<rich:column>
+
+							<h:outputText value="Verified" />
+
+						</rich:column>
+
+						<rich:column>
+
+							<h:outputText value="Date1" />
+
+						</rich:column>
+
+						<rich:column>
+
+							<h:outputText value="Date2" />
+
+						</rich:column>
+
+						<rich:column>
+
+							<h:outputText value="Date3" />
+
+						</rich:column>
+
+						<rich:column>
+							<rich:spacer />
+						</rich:column>
 
 
-			</f:facet>
-
-			<rich:column>
-				<h:outputText value="#{row + 1}   " />
-				<h:outputLink
-					value="#{facesContext.externalContext.request.contextPath}/contractor_detail.jsp?id=#{c.id}">
-					<h:outputText value="#{c.account.name}" />
-				</h:outputLink>
-			</rich:column>
+					</rich:columnGroup>
 
 
-			<rich:column>
-				<h:outputText value="#{c.emrLogs[0].dateVerified}"
-					rendered="#{c.emrLogs[0] != null}">
-					<f:convertDateTime dateStyle="short" />
-				</h:outputText>
-			</rich:column>
+				</f:facet>
 
-			<rich:column>
-				<h:outputText value="#{c.emrLogs[1].dateVerified}"
-					rendered="#{c.emrLogs[1] != null}">
-					<f:convertDateTime dateStyle="short" />
-				</h:outputText>
-			</rich:column>
+				<rich:column>
+					<h:outputText value="#{row + 1}   " />
+					<h:outputLink
+						value="#{facesContext.externalContext.request.contextPath}/contractor_detail.jsp?id=#{c.id}">
+						<h:outputText value="#{c.account.name}" />
+					</h:outputLink>
+				</rich:column>
 
-			<rich:column>
-				<h:outputText value="#{c.emrLogs[2].dateVerified}"
-					rendered="#{c.emrLogs[2] != null}">
-					<f:convertDateTime dateStyle="short" />
-				</h:outputText>
-			</rich:column>
 
-			<rich:column colspan="5">
-				<rich:spacer />
-			</rich:column>
+				<rich:column>
+					<h:outputText value="#{c.emrLogs[0].dateVerified}"
+						rendered="#{c.emrLogs[0] != null}">
+						<f:convertDateTime dateStyle="short" />
+					</h:outputText>
+				</rich:column>
 
-			<rich:column>
-				<a4j:commandLink value="detail" action="#{contractorBean.select}" reRender="table,out">
-					<f:setPropertyActionListener target="#{oshaBean.cid}" value="#{c.id}"/>
-					<f:setPropertyActionListener target="#{emrBean.cid}" value="#{c.id}"/>
-				</a4j:commandLink>
-			</rich:column>
+				<rich:column>
+					<h:outputText value="#{c.emrLogs[1].dateVerified}"
+						rendered="#{c.emrLogs[1] != null}">
+						<f:convertDateTime dateStyle="short" />
+					</h:outputText>
+				</rich:column>
 
-			<rich:subTable value="#{c.oshaLogs}" var="logs" id="sub"
-				headerClass="blueSmall" rowClasses="list-row-sub">
-				<rich:column colspan="4">
+				<rich:column>
+					<h:outputText value="#{c.emrLogs[2].dateVerified}"
+						rendered="#{c.emrLogs[2] != null}">
+						<f:convertDateTime dateStyle="short" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column colspan="5">
 					<rich:spacer />
 				</rich:column>
 
 				<rich:column>
-
-					<h:outputText value="#{logs.location}" />
+					<a4j:commandLink value="detail" action="#{contractorBean.select}"
+						reRender="details">
+						<f:setPropertyActionListener target="#{oshaBean.cid}"
+							value="#{c.id}" />
+						<f:setPropertyActionListener target="#{emrBean.cid}"
+							value="#{c.id}" />
+					</a4j:commandLink>
 				</rich:column>
 
-				<rich:column>
+				<rich:subTable value="#{c.oshaLogs}" var="logs" id="sub"
+					headerClass="blueSmall" rowClasses="list-row-sub">
+					<rich:column colspan="4">
+						<rich:spacer />
+					</rich:column>
 
-					<h:outputText value="#{logs.verifiedDate}">
-						<f:convertDateTime dateStyle="short" />
-					</h:outputText>
-				</rich:column>
-				<rich:column>
+					<rich:column>
 
-					<h:outputText value="#{logs.verifiedDate1}">
-						<f:convertDateTime dateStyle="short" />
-					</h:outputText>
-				</rich:column>
-				<rich:column>
+						<h:outputText value="#{logs.location}" />
+					</rich:column>
 
-					<h:outputText value="#{logs.verifiedDate2}">
-						<f:convertDateTime dateStyle="short" />
-					</h:outputText>
-				</rich:column>
-				<rich:column>
+					<rich:column>
 
-					<h:outputText value="#{logs.verifiedDate3}">
-						<f:convertDateTime dateStyle="short" />
-					</h:outputText>
-				</rich:column>
+						<h:outputText value="#{logs.verifiedDate}">
+							<f:convertDateTime dateStyle="short" />
+						</h:outputText>
+					</rich:column>
+					<rich:column>
 
-			</rich:subTable>
+						<h:outputText value="#{logs.verifiedDate1}">
+							<f:convertDateTime dateStyle="short" />
+						</h:outputText>
+					</rich:column>
+					<rich:column>
+
+						<h:outputText value="#{logs.verifiedDate2}">
+							<f:convertDateTime dateStyle="short" />
+						</h:outputText>
+					</rich:column>
+					<rich:column>
+
+						<h:outputText value="#{logs.verifiedDate3}">
+							<f:convertDateTime dateStyle="short" />
+						</h:outputText>
+					</rich:column>
+
+				</rich:subTable>
 
 
-			<f:facet name="footer">
+				<f:facet name="footer">
 
-				<rich:datascroller></rich:datascroller>
+					<rich:datascroller></rich:datascroller>
 
-			</f:facet>
-		</rich:dataTable>	
-		
-	</a4j:form>
-	
-	<rich:panel id="details">
+				</f:facet>
+			</rich:dataTable>
+
+		</a4j:form>
+      </h:panelGrid>
+		<rich:panel id="details" >
 			<f:facet name="header">
 				<h:outputText
 					value="Detail for #{contractorBean.selectedItem.account.name}" />
 			</f:facet>
 			<ui:include src="oshaBlock.xhtml" />
 		</rich:panel>
-	</h:panelGrid>
-	  
 
+	
+  </h:panelGrid>
 </ui:composition>

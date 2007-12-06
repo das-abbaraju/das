@@ -26,7 +26,6 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 	private String searchBy = "";
 	private boolean doSearch = false;
 		
-	
 		
 	@Override
 	protected List<ContractorInfoReport> getList() {
@@ -56,8 +55,7 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		setSelectedItem((ContractorInfoReport)getDataModel().getRowData());		
         int rowKey = getDataModel().getRowIndex();
         ajaxKeys.add(rowKey);
-       
-       	return null;
+       	return "success";
 	}
 
 	@Override
@@ -135,7 +133,8 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		public void search(ActionEvent event) {
 			   doSearch = true;
 			   setFirstResult(0);
-		}	
+		}
+
 			
 		
 	

@@ -124,8 +124,7 @@ public abstract class JSFListDataModel<T> implements JSFDataModelable<T>{
 	}
 	
 	public int getCurrentYear() {
-		 Calendar cal = Calendar.getInstance();
-		 return cal.get(Calendar.YEAR);
+		return Utilities.getCurrentYear();
 	}//getCurrentYear
 	
 	

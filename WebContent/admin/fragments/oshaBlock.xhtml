@@ -41,11 +41,18 @@
 			   </rich:tab>	
 
 				<rich:tab label="EMR Data">
+				   <ui:include src="emrData.xhtml"/>
 				</rich:tab>				
 					
 			</rich:tabPanel>
 			
-			<h:commandButton styleClass="forms" value="Submit" action="#{contractorHome.update}"/>	
+			<h:commandButton styleClass="forms" value="Submit" action="save">
+				<f:attribute name="oshaDao" value="#{oshaBean.dao}" />
+				<f:attribute name="emrDao" value="#{emrBean.dao}" />
+				<f:actionListener
+					type="com.picsauditing.beans.OshaLogActionListener" />
+				<f:actionListener type="com.picsauditing.beans.EMRLogActionListener" />
+			</h:commandButton>
 		 
 		</h:form>
 	
