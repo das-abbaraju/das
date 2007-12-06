@@ -10,12 +10,12 @@
 	<rich:modalPanel id="mp1" minHeight="460" minWidth="450" height="460"
 		width="500" zindex="2000">
 		<f:facet name="header">
-			<h:outputText value="Notes for #{contratorBean.currentYear - 1}" />
+			<h:outputText value="Notes for #{oshaBean.currentYear - 1}" />
 		</f:facet>
 		<a4j:form id="form1">
 			<h:panelGrid columns="1">
 				<h:panelGrid columns="1">
-					<h:inputTextarea cols="45" rows="20" value="#{log.comment1}"
+					<h:inputTextarea cols="45" rows="20" value="#{oshaBean.notes1}"
 						binding="#{textMgr1.textArea}" />
 				</h:panelGrid>
 				<h:panelGrid columns="3">
@@ -38,12 +38,12 @@
 	<rich:modalPanel id="mp2" minHeight="460" minWidth="450" height="460"
 		width="500" zindex="2000">
 		<f:facet name="header">
-			<h:outputText value="Notes for #{contractorBean.currentYear - 2}" />
+			<h:outputText value="Notes for #{oshaBean.currentYear - 2}" />
 		</f:facet>
 		<a4j:form id="form2">
 			<h:panelGrid columns="1">
 				<h:panelGrid columns="1">
-					<h:inputTextarea cols="45" rows="20" value="#{log.comment2}"
+					<h:inputTextarea cols="45" rows="20" value="#{oshaBean.notes2}"
 						binding="#{textMgr2.textArea}" />
 				</h:panelGrid>
 				<h:panelGrid columns="3">
@@ -66,12 +66,12 @@
 	<rich:modalPanel id="mp3" minHeight="460" minWidth="450" height="460"
 		width="500" zindex="2000">
 		<f:facet name="header">
-			<h:outputText value="Notes for #{contractorBean.currentYear - 3}" />
+			<h:outputText value="Notes for #{oshaBean.currentYear - 3}" />
 		</f:facet>
 		<a4j:form id="form3">
 			<h:panelGrid columns="1">
 				<h:panelGrid columns="1">
-					<h:inputTextarea cols="45" rows="20" value="#{log.comment3}"
+					<h:inputTextarea cols="45" rows="20" value="#{oshaBean.notes3}"
 						binding="#{textMgr3.textArea}" />
 				</h:panelGrid>
 				<h:panelGrid columns="3">

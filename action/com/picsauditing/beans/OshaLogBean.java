@@ -60,7 +60,6 @@ public class OshaLogBean extends JSFListDataModel<VerifyOshaLog>{
 				
 	}
 	
-	
 
 	public ContractorInfoDAO getDao() {
 		return dao;

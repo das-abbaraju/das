@@ -7,6 +7,7 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/model"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/action"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/META-INF"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/tests"/>
         <property name="java-output-path" value="build/classes"/>
         <property name="context-root" value="picsWeb2"/>
     </wb-module>

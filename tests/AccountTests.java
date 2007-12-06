@@ -59,9 +59,5 @@ public class AccountTests extends TestCase {
 			
 			System.out.println(reports.size());	
 			
-		}
-	    
-	    
-
-	
+		}	
 }

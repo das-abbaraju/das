@@ -138,12 +138,9 @@
 				<f:validateLongRange minimum="0" />
 			</h:inputText>
 			<h:outputText styleClass="redMain" value="NA - No data available" />
-			<h:selectBooleanCheckbox
-				value="#{log.entity.na1 eq 'Yes' ? true : false}" styleClass="forms" />
-			<h:selectBooleanCheckbox
-				value="#{log.entity.na2 eq 'Yes' ? true : false}" styleClass="forms" />
-			<h:selectBooleanCheckbox
-				value="#{log.entity.na3 eq 'Yes' ? true : false}" styleClass="forms" />
+			<h:selectBooleanCheckbox value="#{log.na1}" styleClass="forms" />
+			<h:selectBooleanCheckbox value="#{log.na2}" styleClass="forms" />
+			<h:selectBooleanCheckbox value="#{log.na3}" styleClass="forms" />
 			<h:outputText styleClass="redMain" value="General Comments" />
 			<h:commandLink styleClass="forms" value="..."
 				onclick="showComment(1); return false;" immediate="true" />
@@ -168,9 +165,12 @@
 			<h:outputText styleClass="forms"
 				rendered="#{log.entity.file3yearAgo eq 'No'}" value="No" />
 			<h:outputText styleClass="redMain" value="Verify" />
-			<h:selectBooleanCheckbox value="" styleClass="forms" />
-			<h:selectBooleanCheckbox value="" styleClass="forms" />
-			<h:selectBooleanCheckbox value="" styleClass="forms" />
+			<h:selectBooleanCheckbox value="#{log.verifiedDate1}"
+				styleClass="forms" />
+			<h:selectBooleanCheckbox value="#{log.verifiedDate2}"
+				styleClass="forms" />
+			<h:selectBooleanCheckbox value="#{log.verifiedDate3}"
+				styleClass="forms" />
 		</h:panelGrid>
 		<f:facet name="footer">
 			<rich:datascroller></rich:datascroller>
