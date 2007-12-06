@@ -443,7 +443,7 @@ public class EmailBean extends DataBean{
 //			//////////////////////////////////////////////////////////////////////////////////////////////////////"\">http://www.picsauditing.com/login.jsp?uname="+aBean.username+"</a>"+endl+endl+
 			"http://www.picsauditing.com/login.jsp?uname="+aBean.username+endl+endl+
 			"Because we send important account info to this email, your account will not be activated until "+
-			"you have confirmed receipt of this email.  If the link does not work, please cut and past the url into your "+
+			"you have confirmed receipt of this email.  If the link does not work, please cut and paste the url into your "+
 			"web browser.  After that, you will be able to log into your account at www.picsauditing.com. Your username is \"" + aBean.username + 
 			"\" and your password is \"" + aBean.password + "\"." + endl + endl +
 			welcomeEmailBody + endl + endl + EMAIL_FOOTER;
