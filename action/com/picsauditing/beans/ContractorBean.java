@@ -1,5 +1,6 @@
 package com.picsauditing.beans;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,6 +14,7 @@ import javax.faces.event.ActionEvent;
 
 import com.picsauditing.dao.ContractorInfoReportDAO;
 import com.picsauditing.dao.DAOFactory;
+import com.picsauditing.dao.GenericJPADAO;
 import com.picsauditing.jpa.entities.ContractorInfoReport;
 import com.picsauditing.jsf.utils.JSFListDataModel;
 
@@ -21,17 +23,16 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 	
 	private static final int SORT_BY_NAME = 0;
 	private Set<Integer> ajaxKeys = null;
-	//private UIDataTable table;
 	private String acctName = null;
 	private String searchBy = "";
 	private boolean doSearch = false;
+	private ContractorInfoReportDAO dao;
 		
 		
 	@Override
 	protected List<ContractorInfoReport> getList() {
-		System.out.println("Entering.... ContractorBean:getList");
 		DAOFactory daof = DAOFactory.instance(DAOFactory.JPA, getPersistenceCtx());		
-		ContractorInfoReportDAO dao = daof.getContractorInfoReportDAO();		
+		dao = daof.getContractorInfoReportDAO();		
 		dao.setMax(getMaxResults());
 		List<ContractorInfoReport> reports = null;
 		if(!doSearch)
@@ -43,7 +44,7 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 			reports = dao.executeNamedQuery("contractorsBy" + searchBy, params);
 		}
 		
-		System.out.println("ContractorBean:getList:List = " + reports.size());
+		
 		return reports;
 		
 		
@@ -135,7 +136,12 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 			   setFirstResult(0);
 		}
 
-			
-		
+		public ContractorInfoReportDAO getDao() {
+			return dao;
+		}
+
+		public void setDao(ContractorInfoReportDAO dao) {
+			this.dao = dao;
+		}
 	
 }
