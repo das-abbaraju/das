@@ -58,6 +58,14 @@ public class EmailBean extends DataBean{
 	 	"fax: (949)269-9149"+endl2+endl+
 		"eorozco@picsauditing.com (Please add this email address to your address book to prevent it from being labeled as spam)"+endl2+endl+
 		"http://www.picsauditing.com";
+	public static final String JESSE_EMAIL_FOOTER =
+		"PICS - Pacific Industrial Contractor Screening"+endl2+endl+
+		"P.O. Box 51387"+endl2+endl+
+		"Irvine CA 92619-1387"+endl2+endl+
+		"(949)387-1940"+endl2+endl+
+	 	"fax: (949)269-9177"+endl2+endl+
+		"info@picsauditing.com (Please add this email address to your address book to prevent it from being labeled as spam)"+endl2+endl+
+		"http://www.picsauditing.com";
 
 	public static String welcomeEmailBody = "";
 	public static String welcomeEmailSubject = "";
@@ -1117,13 +1125,13 @@ public class EmailBean extends DataBean{
 			
 			to = request.getParameter("email");
 			from = "meetings@picsauditing.com";
-			subject = "Registration confirmation for Managing Contractor Safety";
+			subject = "Registration confirmation for Contractor User Group Meeting";
 			message = new StringBuffer();
 			
 			message.append("Hi, " + request.getParameter("name") + "\n\n\n");
-			message.append("Thanks for registering for Managing Contractor Safety, the PICS User Group Meeting 2007.\nIf you have any questions about your registration, please contact Jen Park\nat (949) 387-1940 x 711 or jpark@picsauditing.com.");
-			message.append("\n\nHave a great day,\nJared Smith\n\n");
-			message.append(EMAIL_FOOTER);
+			message.append("Thanks for registering for PICS Contractor User Group Meeting 2008.\nIf you have any questions about your registration, please contact Whitney Curry\nat (949)387-1940 x 714 or wcurry@picsauditing.com.");
+			message.append("\n\nHave a great day,\nJesse Cota\n\n");
+			message.append(JESSE_EMAIL_FOOTER);
 			
 			sendEmail(from, to, cc, subject, message.toString());
 		}//sendConfirmationEmail
