@@ -593,7 +593,7 @@ public class EmailBean extends DataBean{
 				message+=" at "+auditTime;
 			message+="."+endl+endl+
 				"Prior to the audit date please review the 'how to prepare for the onsite audit' "+
-				"and 'onsite audit form' in the forms and documents section of our website under com.picsauditing. "+
+				"and 'onsite audit form' in the forms and documents section of our website under PICS. "+
 				"You will need to log in with your username and password. It is important that you review these materials "+
 				"as we will be reviewing documentation to include inspection forms, training records, safety meeting sheets, etc."+
 				endl+endl+
@@ -748,7 +748,7 @@ public class EmailBean extends DataBean{
 			"feedback regarding the visit today and the overall prequalification process."+endl+endl+
 			"Please be honest with us as we want to create a better experience for you in the future and "+
 			"for others. Don't worry that your feedback, whether negative or positive, will affect your requirements "+
-			"needed or status with com.picsauditing. Here is the link to the survey:"+endl+endl+
+			"needed or status with PICS. Here is the link to the survey:"+endl+endl+
 			"<a href=http://www.surveymonkey.com/s.asp?u=929543410015>Take PICS feedback survey</a>"+endl+endl+
 			"If the link does not work, please copy and paste the following line into your browser:"+endl+
 			"http://www.surveymonkey.com/s.asp?u=929543410015"+endl+endl+
@@ -794,7 +794,7 @@ public class EmailBean extends DataBean{
 			"feedback regarding both the PQF on the website and the Desktop Audit."+endl+endl+
 			"Please be honest with us as we want to create a better experience for you in the future and "+
 			"for others. Don't worry that your feedback, whether negative or positive, will affect your requirements "+
-			"needed or status with com.picsauditing. Here is the link to the survey:"+endl+endl+
+			"needed or status with PICS. Here is the link to the survey:"+endl+endl+
 			"<a href=http://www.surveymonkey.com/s.asp?u=300363409969>Take PICS feedback survey</a>"+endl+endl+
 			"If the link does not work, please copy and paste the following line into your browser:"+endl+
 			"http://www.surveymonkey.com/s.asp?u=300363409969"+endl+endl+
@@ -1146,7 +1146,7 @@ public class EmailBean extends DataBean{
 		aBean.setFromDB(accountID);
 		String message = "Hi "+name+","+endl+endl+
 			"At the request of "+aBean.contact+", you have been issued login info for "+
-			"the "+aBean.name+" account with com.picsauditing."+endl+endl+
+			"the "+aBean.name+" account with PICS."+endl+endl+
 			"Your username: '"+username+"'"+endl+
 			"Your password: '"+pass+"'"+endl+endl+
 			"Attached is a training manual in case you have any questions."+endl+endl+
