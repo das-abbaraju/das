@@ -1,5 +1,5 @@
 <%	String[] adminReports = {
-		"admin/index.jsf?","New Admin Tools","No",
+		//"admin/index.jsf?","New Admin Tools","No",
 		"report_activation.jsp?","Activation","No",
 		"report_annualUpdate.jsp?","Annual Update","No",
 		"report_audits.jsp?","Audit Dates","No",
