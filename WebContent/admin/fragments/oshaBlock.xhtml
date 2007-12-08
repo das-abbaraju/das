@@ -49,9 +49,12 @@
 			<h:commandButton styleClass="forms" value="Submit" action="save">
 				<f:attribute name="oshaDao" value="#{oshaBean.dao}" />
 				<f:attribute name="emrDao" value="#{emrBean.dao}" />
+				<f:attribute name="crDao" value="#{contractorBean.dao}" />
+				<f:attribute name="cr" value="#{contractorBean.selectedItem}" />
 				<f:actionListener
 					type="com.picsauditing.beans.OshaLogActionListener" />
 				<f:actionListener type="com.picsauditing.beans.EMRLogActionListener" />
+				<f:actionListener type="com.picsauditing.beans.ContractorInfoReportActionListener" />
 			</h:commandButton>
 		 
 		</h:form>
