@@ -3,7 +3,7 @@
 
 <html>
 <head>
-  <title>PICS - Contractor Management</title>
+  <title>PICS - Pacific Industrial Contractor Screening</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <link href="PICS.css" rel="stylesheet" type="text/css">
   <script language="JavaScript" SRC="js/ImageSwap.js"></script>
@@ -130,14 +130,29 @@ sets the highest standards possible in regard to contractor qualifications as th
                   <td bgcolor="#CCCCCC"><img src="images/spacer.gif" width="1" height="1"></td>
                   <td valign="top" bgcolor="#FFFFFF"><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
 					                                        <tr>
-                                          <td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">10/17/07</span>2007 National Safety Congress & Expo</span><br>
+                                          <td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">12/01/07</span>Suncor Energy USA joins PICS.</span><br>
                                             <br> 
-                                          PICS joins NSC for their 95th Congress & Exp and 15,000 safety, health and environmental professionals.  The meeting was held in Chicago, IL this year and the three-day expo included industry reps from Manufacturing, Petrochemical, Mining, Pharmaceuticals, Construction, Paper & Pulp.</td></tr>
+                                          Suncor Energy USA operates a 90,000 barrel per day oil refinery in Commerce
+City, Colorado.    Suncor Energy has expanded both production and refining
+capacity recently, and markets its refined product through Sunoco and the
+Phillips 66 branded stations.</td></tr>
                                         <tr>
-                                          <td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">09/01/07</span>BP Whiting joins PICS</span><br>
+                                          <td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">12/01/07</span>BP Toledo joins PICS.</span><br>
                                             <br> 
-                                          The BP Whiting Refinery joins many other BP business units in the US in using PICS to help prequalify contractors.  The Whiting Refinery is the fourth-largest of all US refineries and is the second-largest among BP refineries worldwide.  The facility lies on 1,400 acres and employs about 1,200 people.  The refinery has the capability to process more than 400,000 barrels of crude oil daily.</td></tr>
+                                          BP Toledo refinery joins many other BP refineries and business groups who
+use PICS to supply an integrated, standardized solution to prequalify BP
+contractors.  The Toledo facility can process 160,000 barrels per day, and
+BP?s strong presence in Ohio has made BP the number one fuel retailer in the
+state.</td></tr>
 					<tr>
+					<tr>
+                                          <td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">11/01/07</span>Huntsman International partners with PICS</span><br>
+                                            <br> 
+                                          Huntsman Chemical partners with PICS to prequalify contractors at all 14
+production facilities throughout the US.  Huntsman has over 13,000 employees
+worldwide and has grown to revenues of over $13 billion in just 35 years;
+thousands of contractors perform various services on site each year.</td></tr>
+                                        <tr>
                       <td align="center" class="blueHome">&nbsp;<a href="featured_newsarchive.jsp" target="_self"><img src="images/NEWSARCHIVE_button3.gif" width="111" height="27" hspace="5" border="0"></a></td>
                     </tr>
                     </table></td>
