@@ -81,6 +81,14 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
               <tr>
                 <td bgcolor="#CCCCCC"><img src="images/spacer.gif" alt="spacer" width="1" height="1"></td>
                 <td valign="top" bgcolor="#FFFFFF"><table border="0" align="center" cellpadding="0" cellspacing="0">
+					  					  <tr>
+                      <td class="blueHome2"><strong>10/17/07</strong> <strong class="articleTitle">2007 National Safety Congress & Expo</strong><br>
+                       PICS joins NSC for their 95th Congress & Exp and 15,000 safety, health and environmental professionals.  The meeting was held in Chicago, IL this year and the three-day expo included industry reps from Manufacturing, Petrochemical, Mining, Pharmaceuticals, Construction, Paper & Pulp.</td>
+                    </tr>
+					  <tr>
+                      <td  bgcolor="#F8F8F8" class="blueHome2"><strong>9/01/07</strong> <strong class="articleTitle">BP Whiting joins PICS</strong><br>
+                        The BP Whiting Refinery joins many other BP business units in the US in using PICS to help prequalify contractors.  The Whiting Refinery is the fourth-largest of all US refineries and is the second-largest among BP refineries worldwide.  The facility lies on 1,400 acres and employs about 1,200 people.  The refinery has the capability to process more than 400,000 barrels of crude oil daily.</td>
+                    </tr>
 					  <tr>
                       <td class="blueHome2"><strong>7/19/07</strong> <strong class="articleTitle">PICS hosts Managing Contractor Safety.</strong><br>
                        PICS team members host the 2007 User Group Meeting in Huntington Beach, CA on July 19-20.  PICS is the leading provider of contractor Health & Safety audits in North America.  Representation from dozens of major hiring companies voiced their opinions and shared best practices from their own prequalification programs.</td>
@@ -95,7 +103,7 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
                     </tr>
 					  <tr>
                       <td  bgcolor="#F8F8F8" class="blueHome2"><strong>6/01/07</strong> <strong class="articleTitle">Motorola USA joins PICS</strong><br>
-                        Motorola is a leader in the Manufacturing industry in communications and electronics, with 80 years of experience that spans many countries.  Motorola’s strategic sourcing partner, Jones Lang Lasalle, is also a general contractor member of com.picsauditing.PICS.  Jones, Lang, Lasalle is one of the world’s leading real estate services firms.  </td>
+                        Motorola is a leader in the Manufacturing industry in communications and electronics, with 80 years of experience that spans many countries.  Motorola’s strategic sourcing partner, Jones Lang Lasalle, is also a general contractor member of PICS.  Jones, Lang, Lasalle is one of the world’s leading real estate services firms.  </td>
                     </tr>
                     <tr>
                       <td class="blueHome2"><strong>5/01/07</strong> <strong class="articleTitle">Fluor Enterprises joins PICS</strong><br>
@@ -135,19 +143,19 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
                     </tr>
                     <tr>
                       <td class="blueHome2"><strong>9/01/06</strong> <strong class="articleTitle">BP Cherry Point Joins PICS<br>
-                      </strong> British Petroleum&rsquo;s Cherry Point Refinery in Blaine, WA joins other BP business units including BP Carson and BP Pipelines in using com.picsauditing.PICS.  The refinery was built in 1971, and is the biggest refinery in Washington, producing over 225,000 barrels a day.</td>
+                      </strong> British Petroleum&rsquo;s Cherry Point Refinery in Blaine, WA joins other BP business units including BP Carson and BP Pipelines in using PICS.  The refinery was built in 1971, and is the biggest refinery in Washington, producing over 225,000 barrels a day.</td>
                     </tr>
                     <tr>
                       <td bgcolor="#F8F8F8" class="blueHome2"><strong>9/01/06</strong> <strong class="articleTitle">CRI/Criterion Catalyst Joins PICS<br>
-                      </strong> CRI/Criterion's eight facilities in the United States join com.picsauditing.PICS.  CRI/Criterion is the world&rsquo;s largest supplier of hydroprocessing catalysts, which includes catalysts for hydrotreating, hydrocracking, hydrogenation, isomerization and naphtha reforming.</td>
+                      </strong> CRI/Criterion's eight facilities in the United States join PICS.  CRI/Criterion is the world&rsquo;s largest supplier of hydroprocessing catalysts, which includes catalysts for hydrotreating, hydrocracking, hydrogenation, isomerization and naphtha reforming.</td>
                     </tr>
                     <tr>
                       <td class="blueHome2"><strong>8/15/06</strong> <strong class="articleTitle">ConocoPhillips Rodeo Joins PICS<br>
-                      </strong> ConocoPhillips&rsquo; Rodeo business unit joins many other ConocoPhillips business units who utilize PICS&rsquo; service to reduce safety risk and cost.  Contractors are pleased, as the majority is already members of com.picsauditing.PICS.</td>
+                      </strong> ConocoPhillips&rsquo; Rodeo business unit joins many other ConocoPhillips business units who utilize PICS&rsquo; service to reduce safety risk and cost.  Contractors are pleased, as the majority is already members of PICS.</td>
                     </tr>
                     <tr>
                       <td bgcolor="#F8F8F8" class="blueHome2"><strong>7/01/06</strong> <strong class="articleTitle">Tesoro Anacortes Joins PICS<br>
-                      </strong> Tesoro Anacortes Refinery in Washington State joins PICS and implements PICS as the contractor prequalification process at their plant.  Other Tesoro Refineries were already members of com.picsauditing.PICS.</td>
+                      </strong> Tesoro Anacortes Refinery in Washington State joins PICS and implements PICS as the contractor prequalification process at their plant.  Other Tesoro Refineries were already members of PICS.</td>
                     </tr>
                     <tr>
                       <td class="blueHome2"><strong>6/12/06</strong> <strong class="articleTitle">ASSE Conference<br>
