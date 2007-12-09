@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/safety_2007.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/Usergroup_2008.jsp");
 		if(dispatcher == null)
 			response.sendError(HttpServletResponse.SC_NO_CONTENT);
 		else
@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 	 * @see javax.servlet.http.HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/safety_2007.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/Usergroup_2008.jsp");
 		if(dispatcher == null)
 			response.sendError(HttpServletResponse.SC_NO_CONTENT);
 		else
