@@ -1,13 +1,13 @@
 <%//@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.PICS.redFlagReport.*"%>
 <%@ include file="utilities/adminGeneral_secure.jsp"%>
-<jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope ="application"/>
+<jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope="application"/>
 	
 <%	HurdleQuestions hurdleQuestions = null;
 try{
 	com.picsauditing.PICS.redFlagReport.FlagCriteria flagCriteria = new com.picsauditing.PICS.redFlagReport.FlagCriteria();
 	boolean isSubmitted = "Save".equals(request.getParameter("action"));
-	boolean canEditFlagCriteria = (pBean.isOperator() || pBean.isCorporate()) && pBean.usercom.picsauditing.access.hasAccess(com.picsauditing.access.OpPerms.EditFlagCriteria);
+	boolean canEditFlagCriteria = (pBean.isOperator() || pBean.isCorporate()) && pBean.userAccess.hasAccess(com.picsauditing.access.OpPerms.EditFlagCriteria);
 	String flagStatus = request.getParameter("flagStatus");
 	if (null==flagStatus)
 		flagStatus = "Red";
