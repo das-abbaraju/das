@@ -12,8 +12,8 @@ public class Utilities {
 	1/1/05 jj - moved getMenuTag method from ContractorBean.java to here and made static
 	
 */
-	static final boolean AUTO_SUBMIT = true;
-	static final boolean NO_AUTO_SUBMIT = false;
+	static final String AUTO_SUBMIT = "submit();";
+	static final String NO_ON_CHANGE_SCRIPT = "";
 	static final boolean ARRAY_WITH_VALUES = true;
 	static final boolean ARRAY_WITHOUT_VALUES = false;
 	static final boolean MULTIPLE = true;
@@ -294,7 +294,7 @@ public class Utilities {
 	}//checkSelected
 	
 	public static String inputSelectAll(String name, String classType, String selectedOption, String[] optionsArray,
-			String firstOption, String firstValue, boolean autoSubmit, boolean arrayWithValues, boolean multiple, 
+			String firstOption, String firstValue, String onChangeScript, boolean arrayWithValues, boolean multiple, 
 			String size, String[] selectedOptions) {
 		ArrayList<String> tempAL = new ArrayList<String>();
 		ArrayList<String> selectedOptionsAL = new ArrayList<String>();
@@ -309,8 +309,8 @@ public class Utilities {
 		tempAL.addAll(Arrays.asList(optionsArray));
 		StringBuffer temp = new StringBuffer();
 		temp.append(" <select name=\"").append(name).append("\" class=").append(classType);
-		if (autoSubmit)
-			temp.append(" onChange=\"submit()\"");
+		if (!NO_ON_CHANGE_SCRIPT.equals(onChangeScript))
+			temp.append(" onChange=\""+onChangeScript+"\"");
 		if (null != size)
 			temp.append(" size=").append(size);
 		if (multiple)
@@ -336,7 +336,7 @@ public class Utilities {
 	}//inputSelectAll
 
 	public static String inputSelect(String name, String classType, String selectedOption, String[] optionsArray) {
-		return inputSelectAll(name,classType,selectedOption,optionsArray,null,null,NO_AUTO_SUBMIT,
+		return inputSelectAll(name,classType,selectedOption,optionsArray,null,null,NO_ON_CHANGE_SCRIPT,
 			ARRAY_WITHOUT_VALUES,SINGLE,null,null);
 	}//inputSelect
 
@@ -346,18 +346,18 @@ public class Utilities {
 	}//inputSelect
 
 	public static String inputSelectFirst(String name, String classType, String selectedOption, String[] optionsArray, String firstOption) {
-		return inputSelectAll(name,classType,selectedOption,optionsArray,firstOption,null,NO_AUTO_SUBMIT,
+		return inputSelectAll(name,classType,selectedOption,optionsArray,firstOption,null,NO_ON_CHANGE_SCRIPT,
 			ARRAY_WITHOUT_VALUES,SINGLE,null,null);
 	}//inputSelectFist
 
 	public static String inputSelect2(String name, String classType, String selectedOption, String[] optionsArray) {
-		return inputSelectAll(name,classType,selectedOption,optionsArray,null,null,NO_AUTO_SUBMIT,
+		return inputSelectAll(name,classType,selectedOption,optionsArray,null,null,NO_ON_CHANGE_SCRIPT,
 			ARRAY_WITH_VALUES,SINGLE,null,null);
 	}//inputSelect2
 
 	public static String inputSelect2First(String name, String classType, String selectedOption, String[] optionsArray, 
 											String firstValue, String firstOption) {
-		return inputSelectAll(name,classType,selectedOption,optionsArray,firstOption,firstValue,NO_AUTO_SUBMIT,
+		return inputSelectAll(name,classType,selectedOption,optionsArray,firstOption,firstValue,NO_ON_CHANGE_SCRIPT,
 			ARRAY_WITH_VALUES,SINGLE,null,null);
 	}//inputSelect2First
 
@@ -368,17 +368,22 @@ public class Utilities {
 	}//inputSelect2FirstSubmit
 
 	public static String inputMultipleSelect(String name, String classType, String size, String selectedOption, String[] optionsArray) {
-		return inputSelectAll(name,classType,selectedOption,optionsArray,null,null,NO_AUTO_SUBMIT,
+		return inputSelectAll(name,classType,selectedOption,optionsArray,null,null,NO_ON_CHANGE_SCRIPT,
 			ARRAY_WITHOUT_VALUES,MULTIPLE,size,null);
 	}//inputMultipleSelect
 
 	public static String inputMultipleSelectMultiples(String name, String classType, String size, String[] selectedOptions, String[] optionsArray) {
-		return inputSelectAll(name,classType,null,optionsArray,null,null,NO_AUTO_SUBMIT,
+		return inputSelectAll(name,classType,null,optionsArray,null,null,NO_ON_CHANGE_SCRIPT,
 			ARRAY_WITHOUT_VALUES,MULTIPLE,size,selectedOptions);
 	}//inputMultipleSelectMulitples
 
 	public static String inputMultipleSelect2Multiples(String name, String classType, String size, String[] selectedOptions, String[] optionsArray) {
-		return inputSelectAll(name,classType,null,optionsArray,null,null,NO_AUTO_SUBMIT,
+		return inputSelectAll(name,classType,null,optionsArray,null,null,NO_ON_CHANGE_SCRIPT,
+			ARRAY_WITH_VALUES,MULTIPLE,size,selectedOptions);
+	}//inputMultipleSelect2Multiples
+
+	public static String inputMultipleSelect2MultiplesScript(String name, String classType, String size, String[] selectedOptions, String[] optionsArray, String onChangeScript) {
+		return inputSelectAll(name,classType,null,optionsArray,null,null,onChangeScript,
 			ARRAY_WITH_VALUES,MULTIPLE,size,selectedOptions);
 	}//inputMultipleSelect2Multiples
 

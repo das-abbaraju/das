@@ -6,14 +6,15 @@
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
+<jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope="application"/>
 <%
 	String s = request.getParameter("submit");
 	if (request.getParameter("submit") !=null) {
 		aBean.setFromUploadRequestClientNew(request);
-		cBean.setFromUploadRequestClientNewExt(request);
+		cBean.setFromUploadRequestClientNew(request);
 		if (!aBean.contractorNameExists(aBean.name) && aBean.isOK() && cBean.isOKClientCreate() && aBean.writeNewToDB()) {
 			cBean.id = aBean.id;
-			cBean.writeNewToDB();
+			cBean.writeNewToDB(FACILITIES);
 //			com.picsauditing.PICS.EmailBean.sendJohnNewAccountEmail(aBean.name);
 
 			response.sendRedirect("contractor_new_confirm.jsp?i="+aBean.id);
@@ -189,14 +190,7 @@
             <tr>
               <td class="blueMain" valign="top">Currently working with</td>
               <td class="redMain" valign="top">
-				<select id="generalContractors" name="generalContractors" class="blueMain" size="10" multiple onchange="change();">
-				<%
-				String[] generals = oBean.getOperatorsArray(com.picsauditing.PICS.OperatorBean.DONT_INCLUDE_PICS, com.picsauditing.PICS.OperatorBean.INCLUDE_ID, com.picsauditing.PICS.OperatorBean.INCLUDE_GENERALS, com.picsauditing.PICS.OperatorBean.INCLUDE_INACTIVE);
-				for(int i=0; i<generals.length; i++) {
-					%><option value="<%=generals[i] %><% i++; %>"><%=generals[i] %></option><%
-				}
-				%>
-            	</select>
+                <%=com.picsauditing.PICS.Utilities.inputMultipleSelect2MultiplesScript("generalContractors", "blueMain","10", cBean.getGeneralContractorsArray(), oBean.getOperatorsArray(com.picsauditing.PICS.OperatorBean.DONT_INCLUDE_PICS, com.picsauditing.PICS.OperatorBean.INCLUDE_ID, com.picsauditing.PICS.OperatorBean.INCLUDE_GENERALS, com.picsauditing.PICS.OperatorBean.INCLUDE_INACTIVE),"change();")%>
             	<br />* Please choose one or more facilities to apply to join their approved contractor list.
               	<br />  Hold the 'CTRL' key to select more than one.
               </td>
@@ -213,10 +207,10 @@
             <tr>
               <td class="blueMain" align="right">Annual Membership Fee</td>
               <td class="redMain"><span id="annualFee" class="blueMain" style="font-weight: bold; font-style: italic;">$~</span>
-				This is based on the number of facilities you select above. <a href="">Click to view pricing</a></td>
+				This is based on the number of facilities you select above. <a href="con_pricing.jsp">Click to view pricing</a></td>
             </tr>
             <tr>
-              <td class="blueMain" align="right">On-time Activation Fee</td>
+              <td class="blueMain" align="right">One-time Activation Fee</td>
               <td class="blueMain" style="font-weight: bold; font-style: italic;">$99</td>
             </tr>
             <tr>
@@ -286,7 +280,8 @@
 function change() {
 	opt1 = document.getElementById('generalContractors');
 	opt2 = document.getElementById('requestedByID');
-	opt2.length = 0;
+	opt2.options[0] = new Option("None", "0");
+	opt2.length = 1;
 	for(i=0; i<opt1.length; i++) {
 		if (opt1[i].selected) {
 			opt2.options[opt2.length] = new Option(opt1[i].innerHTML, opt1[i].value);
@@ -294,12 +289,12 @@ function change() {
 	}
 	annual_fee = "~";
 	facility_count = opt2.length;
-	if (facility_count > 0) annual_fee = "399";
-	if (facility_count > 1) annual_fee = "599";
-	if (facility_count > 4) annual_fee = "799";
-	if (facility_count > 8) annual_fee = "1099";
-	if (facility_count > 12) annual_fee = "1399";
-	if (facility_count > 19) annual_fee = "1699";
+	if (facility_count > 0) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(1)%>";
+	if (facility_count > 1) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(4)%>";
+	if (facility_count > 4) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(8)%>";
+	if (facility_count > 8) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(12)%>";
+	if (facility_count > 12) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(19)%>";
+	if (facility_count > 19) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(20)%>";
 
 	document.getElementById("annualFee").innerHTML = "$" + annual_fee;
 }

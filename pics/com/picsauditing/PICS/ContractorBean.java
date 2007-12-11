@@ -191,6 +191,15 @@ public class ContractorBean extends DataBean {
 			}//if
 		}//while
 	}//setGeneralContractorsFromCheckList
+	public void setGeneralContractorsFromStringArray(String[] s) {
+		newGeneralContractors = new ArrayList<String>();
+		if (s != null) {
+			int num = s.length;
+			for (int i = 1; i <= num; i++) {
+				newGeneralContractors.add(s[i-1]);
+			}//for
+		}//if
+	}//setGeneralContractors
 
 	public void setTradeString(String s) {trades = s;}//setTradeString
 	public void setSubTradeString(String s) {subTrades = s;}//setSubTradeString
@@ -979,20 +988,27 @@ public class ContractorBean extends DataBean {
 		}//finally
 	}//writeToDB
 
-	public void writeNewToDB() throws Exception {
+	public void writeNewToDB(Facilities FACILITIES) throws Exception {
 		try {
 			DBReady();
 			String Query = "INSERT INTO contractor_info (id) VALUES ('"+id+"');";
 			SQLStatement.executeUpdate(Query);
 			DBClose();
 			writeToDB();
-			if (!OperatorBean.PICS_OP_ID.equals(requestedByID)) {
-				DBReady();
-				String Query2 = "INSERT INTO generalContractors (subID,genID,dateAdded) VALUES ("+
-				id+","+requestedByID+",NOW());";
-				SQLStatement.executeUpdate(Query2);
-				DBClose();
-			}//if
+
+			DBReady();
+			String insertQuery = "INSERT INTO generalContractors (subID,genID,dateAdded) VALUES ";
+			boolean doInsert = false;
+			for (String genID: newGeneralContractors) {
+				doInsert = true;
+				insertQuery += "("+id+","+genID+",NOW()),";
+				addNote(id, "","Added this Contractor to "+FACILITIES.getNameFromID(genID)+"'s db at account registration", DateBean.getTodaysDateTime());
+			}//f
+			insertQuery = insertQuery.substring(0,insertQuery.length()-1) + ";";
+			if (doInsert)
+				SQLStatement.executeUpdate(insertQuery);
+			DBClose();
+			com.picsauditing.PICS.OperatorBean.resetSubCountTable();
 			com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
 			pcBean.generateDynamicCategories(id,com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
 		}finally{
@@ -1072,41 +1088,16 @@ public class ContractorBean extends DataBean {
 			}//finally
 		}//if
 	}//setFromUploadRequest
-
-	// New accounts default to inactive BJ 1-7-05
-	public void setFromUploadRequestClientNew(javax.servlet.http.HttpServletRequest r) throws Exception {
-		Map<String,String> m = (Map<String,String>)r.getAttribute("uploadfields");
-		taxID = m.get("taxID");
-		auditDate = "";
-		description = m.get("description");
-		isDescriptionChanged = true;
-		status = STATUS_INACTIVE;
-		main_trade = m.get("main_trade");
-		requestedByID = m.get("requestedByID");
-//second contact
-		secondContact = m.get("secondContact");
-		secondEmail = m.get("secondEmail");
-		secondPhone = m.get("secondPhone");
-//billing contact
-		billingContact = m.get("billingContact");
-		billingEmail = m.get("billingEmail");
-		billingPhone = m.get("billingPhone");
-	}//setFromUploadRequestClientNew
 	
 //	 New accounts default to inactive BJ 1-7-05
-	public void setFromUploadRequestClientNewExt(javax.servlet.http.HttpServletRequest r) throws Exception {
+	public void setFromUploadRequestClientNew(javax.servlet.http.HttpServletRequest r) throws Exception {
 		taxID = r.getParameter("taxID");
 		auditDate = "";
 		description = r.getParameter("description");
 		isDescriptionChanged = true;
 		status = STATUS_INACTIVE;
 		main_trade = r.getParameter("main_trade");
-		String[] generalContractorsStrings = r.getParameterValues("generalContractors");
-		if (generalContractorsStrings != null) {
-			for(int i=0; i < generalContractorsStrings.length; i++) {
-				generalContractors.add(generalContractorsStrings[i]);
-			}
-		}
+		setGeneralContractorsFromStringArray(r.getParameterValues("generalContractors"));
 		requestedByID = r.getParameter("requestedByID");
 //second contact
 		secondContact = r.getParameter("secondContact");
