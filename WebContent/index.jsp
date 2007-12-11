@@ -142,8 +142,9 @@ Phillips 66 branded stations.</td></tr>
                                           BP Toledo refinery joins many other BP refineries and business groups who
 use PICS to supply an integrated, standardized solution to prequalify BP
 contractors.  The Toledo facility can process 160,000 barrels per day, and
-BP?s strong presence in Ohio has made BP the number one fuel retailer in the
-state.</td></tr>
+BP's strong presence in Ohio has made BP the number one fuel retailer in the
+state.</td>
+                                        </tr>
 					<tr>
 					<tr>
                                           <td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">11/01/07</span>Huntsman International partners with PICS</span><br>
