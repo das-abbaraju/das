@@ -24,10 +24,10 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 	private static final int SORT_BY_NAME = 0;
 	private Set<Integer> ajaxKeys = null;
 	private String acctName = null;
+	private int searchId = 0;
 	private String searchBy = "";
 	private boolean doSearch = false;
 	private ContractorInfoReportDAO dao;
-		
 		
 	@Override
 	protected List<ContractorInfoReport> getList() {
@@ -36,12 +36,17 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		dao.setMax(getMaxResults());
 		List<ContractorInfoReport> reports = null;
 		if(!doSearch)
-			reports = dao.findAll();
+			reports = dao.executeNamedQuery("getActiveContractors", null);
+			//reports = dao.findAll();
 		else{
-			Map<String,Object> params = new HashMap<String,Object>(); 
-			params.put(searchBy.toLowerCase(), "%" +  acctName + "%");
-		
-			reports = dao.executeNamedQuery("contractorsBy" + searchBy, params);
+			if(searchBy.equals("Operator"))
+				reports = SearchFacadeBean.getContractorsByOperator(dao, searchId);
+			
+			if(searchBy.equals("Auditor"))
+				reports = SearchFacadeBean.getContractorsByAuditor(dao, searchId);
+			
+			if(searchBy.equals("Name"))
+				reports = SearchFacadeBean.getContractorsByName(dao, acctName);
 		}
 		
 		
@@ -125,6 +130,7 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		}
 
 		public void clear(ActionEvent event) {
+			  getDataModel().setWrappedData(null);
 			  doSearch = false;
 			  acctName = "";
 			  setFirstResult(0);
@@ -132,6 +138,7 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		}
 		
 		public void search(ActionEvent event) {
+			   getDataModel().setWrappedData(null);
 			   doSearch = true;
 			   setFirstResult(0);
 		}
@@ -143,5 +150,13 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		public void setDao(ContractorInfoReportDAO dao) {
 			this.dao = dao;
 		}
+
+		public int getSearchId() {
+			return searchId;
+		}
+
+		public void setSearchId(int searchId) {
+			this.searchId = searchId;
+		}		
 	
 }

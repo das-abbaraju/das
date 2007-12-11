@@ -47,6 +47,12 @@ public class JPADAOFactory extends DAOFactory {
 	public PqfLogReportDAO getPqfLogReportDAO() {
 		return (PqfLogReportDAO) instantiateDAO(PqfLogReportDAOJPA.class);
 	}
+	
+	@Override
+	public GeneralContractorDAO getGeneralContractorDAO() {
+		return (GeneralContractorDAO) instantiateDAO(GeneralContractorDAOJPA.class);
+	}
+
 
 
 

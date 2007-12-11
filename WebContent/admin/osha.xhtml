@@ -6,7 +6,8 @@
 	xmlns:rich="http://richfaces.org/rich" template="layout/template.xhtml">
 
 	<ui:define name="body">
-		<h:panelGrid columns="2" cellpadding="3" cellspacing="3">
+		<h:panelGrid cellpadding="3" cellspacing="3">
+		    <ui:include src="fragments/search.xhtml"/>
 			<ui:include src="fragments/osha_emr.xhtml" />
 		</h:panelGrid>
 	</ui:define>

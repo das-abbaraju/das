@@ -41,4 +41,5 @@ public abstract class DAOFactory {
 		public abstract AccountReportDAO getAccountReportDAO();
 		public abstract ContractorInfoReportDAO getContractorInfoReportDAO();
 		public abstract PqfLogReportDAO getPqfLogReportDAO();
+		public abstract GeneralContractorDAO getGeneralContractorDAO();
 }

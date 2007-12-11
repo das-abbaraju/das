@@ -1,0 +1,28 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+<a4j:form id="search" ajaxSubmit="true">
+	<h:panelGrid columns="4">
+		<h:selectOneMenu value="#{contractorBean.searchBy}" styleClass="forms">
+			<f:selectItem itemValue="Name" itemLabel="Contractor" />
+			<f:selectItem itemValue="Operator" itemLabel="Operator" />
+			<f:selectItem itemValue="Auditor" itemLabel="Auditor" />
+		</h:selectOneMenu>
+		<h:inputText value="#{contractorBean.acctName}" size="10" id="byName"
+			styleClass="forms" />		
+		<a4j:commandButton value="Search"
+			actionListener="#{contractorBean.search}" 
+			styleClass="forms" reRender="contractorTable"/>
+		<a4j:commandButton value="Clear"
+			actionListener="#{contractorBean.clear}" 
+			styleClass="forms" reRender="search,contractorTable"/>
+	</h:panelGrid>
+</a4j:form>
+
+</ui:composition>
