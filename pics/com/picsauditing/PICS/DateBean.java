@@ -95,6 +95,11 @@ public class DateBean {
 		return cal.get(Calendar.MONTH);
 	}//getCurrentMonth
 	
+	public static int getCurrentHour() {
+		Calendar cal = Calendar.getInstance();
+		return cal.get(Calendar.HOUR_OF_DAY);
+	}
+
 	public static String getMonthName(int monthInt) {
 		if (monthInt < 12)
 			 return MonthNames[monthInt];

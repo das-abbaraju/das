@@ -3,48 +3,62 @@ package com.picsauditing.PICS.redFlagReport;
 import java.sql.ResultSet;
 import java.util.*;
 
+/**
+ * Gets a list of forced flags for a given operator and organizes them by flag color 
+ * @author Jeff Jensen
+ *
+ */
 public class ForcedFlagList extends com.picsauditing.PICS.DataBean{
-	String opID = "";
-	Set<String> greenFlagList = null;
-	Set<String> amberFlagList = null;
-	Set<String> redFlagList = null;
-	public ForcedFlagList(String opID)throws Exception{
+	private String opID = "";
+	private Set<String> greenFlagList = null;
+	private Set<String> amberFlagList = null;
+	private Set<String> redFlagList = null;
+	private HashMap<String, String> contractorFlags = null;
+	
+	public ForcedFlagList(String opID)throws Exception {
 		this.opID = opID;
 		setFromDB(opID);
-	}//ForcedFlagListDO
+	}
 
-	public void setFromDB(String opID)throws Exception{
-		this.opID = opID;
-		String selectQuery = "SELECT conID, flagStatus FROM forcedFlagList WHERE opID="+opID+" AND dateExpires > CURDATE();";
+	public void setFromDB(String id)throws Exception {
+		this.opID = id;
+		String selectQuery = "SELECT conID, flagStatus FROM forcedFlagList " + 
+				"WHERE opID="+opID+" AND dateExpires > CURDATE() ORDER BY conID, flagStatus";
 		try{
 			DBReady();
 			ResultSet rs = SQLStatement.executeQuery(selectQuery);
 			greenFlagList = new HashSet<String>();
 			amberFlagList = new HashSet<String>();
 			redFlagList = new HashSet<String>();
-			while (rs.next()){
+			contractorFlags = new HashMap<String, String>();
+			while (rs.next()) {
 				String conID = rs.getString("conID");
 				String forcedFlagStatus = rs.getString("flagStatus");
+				
+				contractorFlags.put(conID, forcedFlagStatus);
 				if ("Green".equals(forcedFlagStatus))
 					greenFlagList.add(conID);
 				else if ("Amber".equals(forcedFlagStatus))
 					amberFlagList.add(conID);
 				else if ("Red".equals(forcedFlagStatus))
 					redFlagList.add(conID);
-			}//if
+			}
 			rs.close();
 		}finally{
 			DBClose();
-		}//finally
+		}
 	}//setFromDB
 
+	String getContractorFlag(String conID){
+		return this.contractorFlags.get(conID);
+	}//isForcedGreenFlag
 	boolean isForcedGreenFlag(String conID){
-		return greenFlagList.contains(conID);
+		return this.greenFlagList.contains(conID);
 	}//isForcedGreenFlag
 	boolean isForcedAmberFlag(String conID){
-		return amberFlagList.contains(conID);
+		return this.amberFlagList.contains(conID);
 	}//isForcedAmberFlag
 	boolean isForcedRedFlag(String conID){
-		return redFlagList.contains(conID);
+		return this.redFlagList.contains(conID);
 	}//isForcedRedFlag
 }//ForcedFlagListDO

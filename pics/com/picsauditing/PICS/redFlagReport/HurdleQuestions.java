@@ -3,6 +3,12 @@ package com.picsauditing.PICS.redFlagReport;
 import java.sql.*;
 import java.util.*;
 import com.picsauditing.PICS.*;
+
+/**
+ * The list of PQF questions that are marked as RedFlag report criteria questions
+ * 
+ * @author Jeff Jensen
+ */
 public class HurdleQuestions extends DataBean {
 	public String auditType = "";
 	public String questionID = "";
@@ -11,17 +17,13 @@ public class HurdleQuestions extends DataBean {
 	public String questionNum = "";
 	public String question = "";
 	public String questionType = "";
-	public Collection<String> qIDsAL = null;
+	public ArrayList<String> qIDsAL = null;
 	static final String[] COMPARISON_NUMBER_ARRAY = {">","<","="};
 	static final String[] COMPARISON_CHECKED_ARRAY = {"=","<>"};
 	static final String[] VALUE_CHECKED_ARRAY = {"X","Checked","-","Not Checked"};
 
 	public int count = 0;
 	ResultSet listRS = null;
-
-//	public String getDescription(){
-//		return question+")?";
-//	}//getDescription
 
 	public String getComparisonInput(String comparison){
 		if ("Decimal Number".equals(questionType))
@@ -42,7 +44,7 @@ public class HurdleQuestions extends DataBean {
 		return "<input type=hidden name=hurdleValueQ_"+questionID+" value=0>";
 	}//getValueInput
 	
-	public Collection getQIDsAL() throws Exception {
+	public ArrayList<String> getQIDsAL() throws Exception {
 		if (null != qIDsAL)
 			return qIDsAL;
 		qIDsAL = new ArrayList<String>();
@@ -53,11 +55,12 @@ public class HurdleQuestions extends DataBean {
 		return qIDsAL;
 	}//getQIDsAL
 
-	public void setList() throws Exception {
-		String selectQuery = "SELECT pc.auditType,pc.number,ps.number,pq.number,questionID,question,questionType "+
-				"FROM pqfCategories pc INNER JOIN pqfSubCategories ps ON (catID=categoryID) "+
+	private void setList() throws Exception {
+		String selectQuery = "SELECT pc.auditType, pc.number, ps.number, pq.number, questionID, question, questionType "+
+				"FROM pqfCategories pc " +
+				"INNER JOIN pqfSubCategories ps ON (catID=categoryID) "+
 				"INNER JOIN pqfQuestions pq ON (subCatID=subCategoryID) WHERE isRedFlagQuestion='Yes' "+
-				"ORDER BY pc.number,ps.number,pq.number";
+				"ORDER BY pc.number, ps.number, pq.number";
 		try{
 			DBReady();
 			listRS = SQLStatement.executeQuery(selectQuery);
@@ -65,10 +68,10 @@ public class HurdleQuestions extends DataBean {
 		}catch(Exception ex){
 			DBClose();
 			throw ex;
-		}//catch		
+		}//catch
 	}//setList
 
-	public boolean isNext() throws Exception {
+	private boolean isNext() throws Exception {
 		if (!listRS.next())
 			return false;
 		count++;
@@ -93,7 +96,7 @@ public class HurdleQuestions extends DataBean {
 		questionType = "Decimal Number";
 	}//setFromResultSet
 
-	public void closeList() throws Exception {
+	private void closeList() throws Exception {
 		count = 0;
 		if (null != listRS) {
 			listRS.close();

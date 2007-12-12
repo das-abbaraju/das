@@ -5,8 +5,13 @@ import java.util.*;
 import com.picsauditing.PICS.*;
 import com.picsauditing.PICS.pqf.*;
 
-public class FlagCalculator extends com.picsauditing.PICS.DataBean{
-	public com.picsauditing.PICS.OSHABean osBean = new com.picsauditing.PICS.OSHABean();
+/**
+ * Business engine to calculate operator flag color for contractors
+ * 
+ * @author Jeff Jensen
+ */
+public class FlagCalculator extends com.picsauditing.PICS.DataBean {
+	public OSHABean osBean = new OSHABean();
 	public FlagOshaCriteriaDO redFlagOshaCriteriaDO = null;
 	public FlagOshaCriteriaDO amberFlagOshaCriteriaDO = null;
 
@@ -27,7 +32,7 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean{
 	 * @param flagCriteria
 	 * @return
 	 */
-	String getSelectQuery(FlagCriteria flagCriteria){
+	private String getSelectQuery(FlagCriteria flagCriteria){
 		StringBuffer fromQuery = new StringBuffer();
 		StringBuffer joinQuery = new StringBuffer();
 		if (flagCriteria.flagCriteriaMap.keySet().contains(FlagCriteria.EMR_AVE_QUESTION_ID)){
@@ -69,27 +74,38 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean{
 	 */
 	public void setConFlags(String cID, String opID) throws Exception{
 		try{
+			ResultSet rs = null;
+			DBReady();
+
+			// Get this operator's Osha Critera for red flags
 			redFlagOshaCriteriaDO = new FlagOshaCriteriaDO();
-			amberFlagOshaCriteriaDO = new FlagOshaCriteriaDO();
 			redFlagOshaCriteriaDO.setFromDB(opID,"Red");
+			
+			// Get this operator's Osha Critera for amber flags
+			amberFlagOshaCriteriaDO = new FlagOshaCriteriaDO();
 			amberFlagOshaCriteriaDO.setFromDB(opID,"Amber");
+			
+			qIDToFlagMap = new TreeMap<String,String>();
+			qIDToAnswerMap = new TreeMap<String,String>();
+			
+			// We need to calculate both red and amber flags
 			ArrayList<String> tempAL = new ArrayList<String>();
 			tempAL.add("Amber");
 			tempAL.add("Red");
-			ResultSet rs = null;
-			DBReady();
-			qIDToFlagMap = new TreeMap<String,String>();
-			qIDToAnswerMap = new TreeMap<String,String>();
 			for (String thisFlag: tempAL) {
-				boolean flagged = false;
-				FlagCriteria flagCriteria = new FlagCriteria();
-				flagCriteria.setFromDB(opID, thisFlag);
+				// Get the Amber or Red Osha criteria for this Operator
 				FlagOshaCriteriaDO flagOshaCriteriaDO = new FlagOshaCriteriaDO();
 				flagOshaCriteriaDO.setFromDB(opID, thisFlag);
-				DBReady();
-				rs = SQLStatement.executeQuery(getSelectQuery(flagCriteria)+" WHERE id="+cID);
+				
+				// Get the Amber or Red criteria for this Operator
+				FlagCriteria flagCriteria = new FlagCriteria();
+				flagCriteria.setFromDB(opID, thisFlag);
+				
+				// Run a query against pqfData and OSHA data that considers the flagCriteria
+				String sql = getSelectQuery(flagCriteria);
+				rs = SQLStatement.executeQuery(sql+" WHERE id="+cID);
+				boolean flagged = false;
 				if (rs.next()){
-//					setFromResultSet(rs);
 					for (String questionID: flagCriteria.getCheckedQuestionIDsAL()) {
 						FlagCriteriaDO flagCriteriaDO = flagCriteria.getFlagCriteriaDO(questionID);
 						qIDToAnswerMap.put(questionID,flagCriteriaDO.getAnswer(rs));
@@ -97,19 +113,22 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean{
 							qIDToFlagMap.put(questionID,thisFlag);
 							if (!flagged)
 								flagged = true;
-						}//if
-					}//for
-				}//if
+						}
+					}
+				}
 				osBean.setFromResultSet(rs);
 				if (getIsOshaFlagged(flagged,flagOshaCriteriaDO))
 					flagStatus = thisFlag;
 				rs.close();
 			}//for
-			String selectQuery = "SELECT flagStatus,dateExpires FROM forcedFlagList WHERE opID="+opID+" AND conID="+cID+
-				" AND dateExpires>CURDATE();";
+			
+			String selectQuery = "SELECT flagStatus, dateExpires FROM forcedFlagList " + 
+				"WHERE opID="+opID+" AND conID="+cID+" AND dateExpires > CURDATE()";
 			rs = SQLStatement.executeQuery(selectQuery);
 			if (rs.next()){
-				flagStatus = rs.getString("flagStatus");
+				// An override exists, so set flagStatus and set the boolean flags 
+				// so we can show this info on the webpage too
+				this.flagStatus = rs.getString("flagStatus");
 				dateExpires = DateBean.toShowFormat(rs.getString("dateExpires"));
 				if ("Red".equals(flagStatus))
 					isRedFlagListed = true;
@@ -121,6 +140,8 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean{
 					throw new Exception ("Invalid Flag Status: "+flagStatus);
 			}//if
 			rs.close();
+			
+			// Determine if we need to change the existing contractor flag or not
 			selectQuery = "SELECT flag FROM flags WHERE opID="+opID+" AND conID="+cID+";";
 			rs = SQLStatement.executeQuery(selectQuery);
 			String oldFlagStatus = "";
@@ -129,12 +150,12 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean{
 			rs.close();
 			if (!flagStatus.equals(oldFlagStatus)){
 				SQLStatement.executeUpdate("DELETE FROM flags WHERE opID="+opID+" AND conID="+cID+";");
-				String insertQuery = "INSERT INTO flags (opID,conID,flag) VALUES ("+opID+","+cID+",'"+flagStatus+"');";
+				String insertQuery = "INSERT INTO flags (opID, conID, flag) VALUES ("+opID+","+cID+",'"+flagStatus+"')";
 				SQLStatement.executeUpdate(insertQuery);
-			}//if
+			}
 		}finally{
 			DBClose();
-		}//finally
+		}
 	}//setConFlags
 
 	/**
@@ -145,62 +166,79 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean{
 	public void recalculateFlags(String opID) throws Exception{
 		try{
 			System.out.println("calculating flags for operator: "+opID);
-			// Get the list of contractors that this operator has forced flags (Red, Amber, or Green)
-			ForcedFlagList forcedFlagList = new ForcedFlagList(opID);
-			FlagCriteria flagCriteria = new FlagCriteria();
+			
 			ArrayList<String> tempAL = new ArrayList<String>();
 			tempAL.add("Amber");
 			tempAL.add("Red");
 			Map<String,String> tempInsertFlagMap = new TreeMap<String,String>();
 			DBReady();
 			for (String thisFlag: tempAL) {
-				// Get all of the Red and Amber criterion
+				// Get the Amber or Red Osha criteria for this Operator
+				FlagOshaCriteriaDO flagOshaCriteriaDO = new FlagOshaCriteriaDO();
+				flagOshaCriteriaDO.setFromDB(opID, thisFlag);
+				
+				// Get the Amber or Red criteria for this Operator
+				FlagCriteria flagCriteria = new FlagCriteria();
 				flagCriteria.setFromDB(opID, thisFlag);
+				
 				// Run a query against pqfData and OSHA data that considers the flagCriteria
 				String sql = getSelectQuery(flagCriteria);
 				ResultSet rs = SQLStatement.executeQuery(sql);
-				FlagOshaCriteriaDO flagOshaCriteriaDO = new FlagOshaCriteriaDO();
-				flagOshaCriteriaDO.setFromDB(opID, thisFlag);
 				while (rs.next()){
 					boolean flagged = false;
 					String conID = rs.getString("cons.id");
-					if (forcedFlagList.isForcedGreenFlag(conID)){
-						;
-					}else if (forcedFlagList.isForcedRedFlag(conID) && "Red".equals(thisFlag) ||
-							forcedFlagList.isForcedAmberFlag(conID) && "Amber".equals(thisFlag)){
-						flagged = true;
-					}else{
-						for (String questionID: flagCriteria.getCheckedQuestionIDsAL()) {
-							FlagCriteriaDO flagCriteriaDO = flagCriteria.getFlagCriteriaDO(questionID);
-							if (!flagged)
-								flagged = flagCriteriaDO.isFlagged(rs);
-						}//for
-						osBean.setFromResultSet(rs);
-						flagged = getIsOshaFlagged(flagged,flagOshaCriteriaDO);
-					}//else
+					
+					// Calculate this contractor's flag color
+					for (String questionID: flagCriteria.getCheckedQuestionIDsAL()) {
+						FlagCriteriaDO flagCriteriaDO = flagCriteria.getFlagCriteriaDO(questionID);
+						if (!flagged)
+							flagged = flagCriteriaDO.isFlagged(rs);
+					}//for
+					osBean.setFromResultSet(rs);
+					flagged = getIsOshaFlagged(flagged,flagOshaCriteriaDO);
+					
 					if (flagged)
-						tempInsertFlagMap.put(conID,thisFlag);
+						tempInsertFlagMap.put(conID, thisFlag);
 					else if(!"Red".equals(thisFlag))
 						tempInsertFlagMap.put(conID,"Green");
 				}//while
 				rs.close();
 			}//for
+
+			// Get the list of contractors that this operator has forced flags (Red, Amber, or Green)
+			ForcedFlagList forcedFlagList = new ForcedFlagList(opID);
 			
 			// Delete ALL flags for this operator and Insert new ones for each contractor
 			StringBuffer insertQuery = new StringBuffer("INSERT INTO flags (opID,conID,flag) VALUES ");
 			for (Iterator i = tempInsertFlagMap.keySet().iterator();i.hasNext();){
 				String conID = (String)i.next();
 				String flag = tempInsertFlagMap.get(conID);
-				insertQuery.append("(").append(opID).append(",").append(conID).append(",'").append(flag).append("'),");
+				
+				// Does this contractor have a flag override?
+				String forcedFlag = forcedFlagList.getContractorFlag(conID);
+				if (!(forcedFlag == null)) {
+					flag = forcedFlag;
+				}
+				
+				insertQuery.append("("+opID+","+conID+",'"+flag+"'), ");
 			}
-			SQLStatement.executeUpdate("DELETE FROM flags WHERE opID="+opID+";");
-			if (tempInsertFlagMap.size() > 0)
-				SQLStatement.executeUpdate(insertQuery.substring(0,insertQuery.length()-1));
+			SQLStatement.executeUpdate("DELETE FROM flags WHERE opID="+opID);
+			if (tempInsertFlagMap.size() > 0) {
+				String sqlString = insertQuery.toString();
+				sqlString = sqlString.substring(0,sqlString.length()-2);
+				SQLStatement.executeUpdate(sqlString);
+			}
 		}finally{
 			DBClose();
 		}//finally
 	}//recalculateFlags
 
+	/**
+	 * 
+	 * @param flagged
+	 * @param flagOshaCriteriaDO
+	 * @return
+	 */
 	boolean getIsOshaFlagged(boolean flagged,FlagOshaCriteriaDO flagOshaCriteriaDO){
 		if (!flagged && flagOshaCriteriaDO.flagLwcr()){
 			if (flagOshaCriteriaDO.isLwcrTimeAverage()){

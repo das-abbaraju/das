@@ -1,8 +1,17 @@
 package com.picsauditing.PICS.redFlagReport;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 
+/**
+ * Basic data object containing a single row from the flagcriteria table
+ * Contains no CRUD ability
+ * 
+ * @see FlagCriteria
+ * @see "Table flagcriteria"
+ * @author Jeff Jensen
+ */
 public class FlagCriteriaDO{
 	String opID = "";
 	String questionID = "";
@@ -12,9 +21,12 @@ public class FlagCriteriaDO{
 	String comparison = "";
 	String value = "";
 	
-	public FlagCriteriaDO(){
-	}//FlagCriteriaDO Contructor
-
+	/**
+	 * empty constructor
+	 */
+	public FlagCriteriaDO() {
+	}
+	
 	public FlagCriteriaDO(String opID, String questionID, String flagStatus, String isFlagged, 
 				String questionType, String comparison, String value) {
 		this.opID = opID;
@@ -24,8 +36,9 @@ public class FlagCriteriaDO{
 		this.questionType = questionType;
 		this.comparison = comparison;
 		this.value = value;
-	}//FlagCriteriaDO Contructor
-	public void setFromResultSet(ResultSet rs) throws Exception {
+	}
+	
+	public void setFromResultSet(ResultSet rs) throws SQLException {
 		opID = rs.getString("opID");
 		questionID = rs.getString("questionID");
 		flagStatus = rs.getString("flagStatus");
@@ -34,11 +47,11 @@ public class FlagCriteriaDO{
 		comparison = rs.getString("comparison");
 		value = rs.getString("value");
 	}//setFromResultSet
-
+	
 	public boolean isChecked() {
 		return "Yes".equals(isChecked);
 	}//isChecked
-
+	
 	public String getAnswer(ResultSet rs)throws Exception{
 		if (FlagCriteria.EMR_AVE_QUESTION_ID.equals(questionID)){
 			try{
@@ -87,6 +100,7 @@ public class FlagCriteriaDO{
 		}//if
 		return false;
 	}//isFlagged
+	
 	public boolean isFlaggedRate(String rate,String cutoff){
 		float tempRate = 0;
 		float tempCutoff = 0;
@@ -100,7 +114,7 @@ public class FlagCriteriaDO{
 				return (tempRate<tempCutoff);
 		return (tempRate==tempCutoff);
 	}//isFlaggedRate
-
+	
 	public boolean isFlaggedRateNoZeros(String rate,String cutoff){
 		float tempRate = 0;
 		float tempCutoff = 0;
@@ -110,10 +124,11 @@ public class FlagCriteriaDO{
 		catch (Exception e){;}
 		return (tempRate>tempCutoff || 0==tempRate);
 	}//getRedFlagNoZeros
-
+	
 	public boolean isFlaggedAnswerNo(String answer){
 		return (!"Yes".equals(answer));
 	}//getRedFlagAnswerNo
+
 	public String toString(){
 		return "opID="+opID+","+
 		"questionID="+questionID+","+

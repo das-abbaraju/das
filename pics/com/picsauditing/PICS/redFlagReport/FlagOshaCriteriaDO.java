@@ -1,13 +1,25 @@
 package com.picsauditing.PICS.redFlagReport;
 
 import java.sql.ResultSet;
+import java.util.*;
 import com.picsauditing.PICS.*;
 
-import java.util.*;
-
+/**
+ * An operator's OSHA criteria in calculating contractor flags (Red/Amber)
+ * CRUD functionality to support the table `flagoshacriteria` 
+ * @author Jeff Jensen
+ * @see "Table flagoshacriteria"
+ */
 public class FlagOshaCriteriaDO extends DataBean {
+	/**
+	 * Operator ID
+	 */
 	public String opID = "";
+	/**
+	 * Is this criteria for Red or Amber
+	 */
 	public String flagStatus = "";
+	
 	public String lwcrHurdle = "";
 	public String lwcrTime = "1";
 	public String trirHurdle = "";
@@ -25,11 +37,13 @@ public class FlagOshaCriteriaDO extends DataBean {
 		return "No";
 	}//getIsChecked
 
-	public void setFromDB(String op_ID,String fStatus) throws Exception {
+	public void setFromDB(String op_ID,String fStatus) throws Exception, IllegalArgumentException {
 		opID = op_ID;
 		flagStatus = fStatus;
 		if ((null == op_ID) || ("".equals(op_ID)))
-			throw new Exception("Can't set FlagOshaCriteria from DB because opID is not set");
+			throw new IllegalArgumentException("Can't set FlagOshaCriteria from DB because opID is not set");
+		if (!flagStatus.equals("Red") && !flagStatus.equals("Amber"))
+			throw new IllegalArgumentException("Flag status must be either Red or Amber");
 		String selectQuery = "SELECT * FROM flagOshaCriteria WHERE opID="+Utilities.intToDB(opID)+" AND flagStatus='"+flagStatus+"'";
 		try{
 			DBReady();
@@ -39,7 +53,7 @@ public class FlagOshaCriteriaDO extends DataBean {
 			rs.close();
 		}finally{
 			DBClose();
-		}//finally
+		}
 	}//setFromDB
 
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
@@ -55,9 +69,9 @@ public class FlagOshaCriteriaDO extends DataBean {
 		flagFatalities = SQLResult.getString("flagFatalities");
 	}//setFromResultSet
 
-	public void writeToDB() throws Exception {
+	public void writeToDB() throws Exception, IllegalArgumentException {
 		if ((null == opID) || ("".equals(opID)))
-			throw new Exception("can't write operator info to DB because id is not set");
+			throw new IllegalArgumentException("can't write operator info to DB because id is not set");
 		String updateQuery = "REPLACE flagOshaCriteria SET "+
 			"flagStatus='"+flagStatus+
 			"',lwcrHurdle='"+lwcrHurdle+

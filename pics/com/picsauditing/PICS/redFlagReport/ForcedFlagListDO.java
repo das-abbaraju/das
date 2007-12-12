@@ -3,6 +3,13 @@ package com.picsauditing.PICS.redFlagReport;
 import java.util.Vector;
 import com.picsauditing.PICS.*;
 
+/**
+ * Basic data object containing a single row from the `forcedflaglist` table.
+ * Contains REPLACE and DELETE sql functionality
+ * 
+ * @author Jeff Jensen
+ * @see "Table forcedflaglist"
+ */
 public class ForcedFlagListDO extends com.picsauditing.PICS.DataBean{
 	String opID = "";
 	String conID = "";
@@ -11,14 +18,14 @@ public class ForcedFlagListDO extends com.picsauditing.PICS.DataBean{
 	String dateExpires = "";
 
 	public ForcedFlagListDO(){
-	}//ForcedFlagListDO
+	}
 
 	public ForcedFlagListDO(String opID, String conID, String flagStatus, String dateExpires){
 		this.opID = opID;
 		this.conID = conID;
 		this.flagStatus = flagStatus;
 		this.dateExpires = dateExpires;
-	}//ForcedFlagListDO Constructor
+	}
 
 	public void writeToDB()throws Exception{
 		try{
@@ -28,8 +35,8 @@ public class ForcedFlagListDO extends com.picsauditing.PICS.DataBean{
 			SQLStatement.executeUpdate(insertQuery);
 		}finally{
 			DBClose();
-		}//finally
-	}//writeToDB
+		}
+	}
 	
 	public void deleteFromDB(String opID, String conID, String flagStatus)throws Exception{
 		try{
@@ -39,16 +46,17 @@ public class ForcedFlagListDO extends com.picsauditing.PICS.DataBean{
 			SQLStatement.executeUpdate(deleteQuery);
 		}finally{
 			DBClose();
-		}//finally
-	}//deleteListEntry
-	public boolean isOK()throws Exception{
+		}
+	}
+	
+	public boolean isOK() {
 		errorMessages = new Vector<String>();
 		try{
 			if (!DateBean.isAfterToday(dateExpires))
 				errorMessages.add("Invalid Expiration Date - Must be a date after today");
-		}catch(Exception ex){
+		} catch(Exception ex) {
 			errorMessages.add("Invalid Expiration Date - Must be of the form 1/20/08");
-		}//catch
+		}
 		return (errorMessages.size() == 0);
-	}//isOK
+	}
 }//ForcedFlagListDO

@@ -1,16 +1,23 @@
 package com.picsauditing.PICS.redFlagReport;
 
 import java.sql.ResultSet;
+import java.util.*;
 import com.picsauditing.PICS.*;
 
-
-import java.util.*;
-
+/**
+ * A FlagCriteria is a set of criteria for a given Operator used to set contractors to a specific flag color
+ * SELECT, INSERT, and DELETE functionality is included for the flagCriteria database table
+ *  
+ * Stores the criteria in a FlagCriteriaDO map. This stores ALL criteria for an operator
+ * regardless if the operator uses the criteria or not (is checked).
+ * 
+ * @author Jeff Jensen
+ */
 public class FlagCriteria extends DataBean {
 	public String opID = "";
 	public String flagStatus = "";
 	public FlagOshaCriteriaDO flagOshaCriteriaDO = null;
-	public Map<String,FlagCriteriaDO> flagCriteriaMap = null;;
+	public Map<String,FlagCriteriaDO> flagCriteriaMap = null;
 	ArrayList<String> checkedQuestionIDsAL = null;
 
 	public static final String EMR_AVE_QUESTION_ID = "0";
@@ -34,8 +41,10 @@ public class FlagCriteria extends DataBean {
 			flagCriteriaMap = new TreeMap<String, FlagCriteriaDO>();
 			ResultSet rs = SQLStatement.executeQuery(selectQuery);
 			while (rs.next()){
+				// Create a data object and fill it with the result set
 				FlagCriteriaDO flagCriteriaDO = new FlagCriteriaDO();
 				flagCriteriaDO.setFromResultSet(rs);
+				// stuff the DO into the map using the questionID as the key
 				flagCriteriaMap.put(rs.getString("questionID"),flagCriteriaDO);
 			}//while
 			rs.close();
@@ -71,12 +80,10 @@ public class FlagCriteria extends DataBean {
 		if (null != flagCriteriaMap && flagCriteriaMap.size()>0)
 			doInsert = true;
 			for(FlagCriteriaDO flagCriteriaDO: flagCriteriaMap.values()) {
-			//for(Iterator i = flagCriteriaMap.values().iterator();i.hasNext();){
-				//FlagCriteriaDO flagCriteriaDO = (FlagCriteriaDO)i.next();
 				insertQuery.append("("+opID+",").append(flagCriteriaDO.questionID).append(",'").append(flagCriteriaDO.flagStatus).
 						append("','").append(flagCriteriaDO.isChecked).append("','").append(flagCriteriaDO.questionType).
 						append("','").append(flagCriteriaDO.comparison).append("','").append(flagCriteriaDO.value).append("'),");
-			}//for
+			}
 		try{
 			DBReady();
 			String deleteQuery = "DELETE FROM flagCriteria WHERE opID="+opID+" AND flagStatus='"+flagStatus+"';";
@@ -97,6 +104,12 @@ public class FlagCriteria extends DataBean {
 		return flagOshaCriteriaDO.isOK();
 	} // isOK
 	
+	/**
+	 * containing any questions from the flagCriteriaMap 
+	 * that are currently "checked" for this operator (ie active parameters)
+	 * 
+	 * @return list of PQF question IDs
+	 */
 	public ArrayList<String> getCheckedQuestionIDsAL(){
 		if (null == checkedQuestionIDsAL){
 			checkedQuestionIDsAL = new ArrayList<String>();
