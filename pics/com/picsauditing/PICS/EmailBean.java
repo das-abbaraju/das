@@ -21,13 +21,13 @@ public class EmailBean extends DataBean{
 	private static final String EMAIL_ACCOUNT_BACKUP4 = "info4@picsauditing.com";
 	private static final String EMAIL_ACCOUNT_BACKUP5 = "info5@picsauditing.com";
 	private static final String EMAIL_ACCOUNT_BACKUP6 = "info6@picsauditing.com";
-/*	private static final String EMAIL_ACCOUNT_BACKUP7 = "info7@picsauditing.com";
+	private static final String EMAIL_ACCOUNT_BACKUP7 = "info7@picsauditing.com";
 	private static final String EMAIL_ACCOUNT_BACKUP8 = "info8@picsauditing.com";
 	private static final String EMAIL_ACCOUNT_BACKUP9 = "info9@picsauditing.com";
 	private static final String EMAIL_ACCOUNT_BACKUP10 = "info10@picsauditing.com";
 	private static final String EMAIL_ACCOUNT_BACKUP11 = "info11@picsauditing.com";
 	private static final String EMAIL_ACCOUNT_BACKUP12 = "info12@picsauditing.com";
-*/	private static final String PASSWORD = "e3r4t5";
+	private static final String PASSWORD = "e3r4t5";
 	static final char endl = '\n';
 	static final char endl2 = '\r';
 	private static String rootPath = null;
@@ -1164,4 +1164,8 @@ public class EmailBean extends DataBean{
 		else
 			sendEmail(from, to, subject, message);			
 	}//sendWelcomeEmail
+	
+	public static void sendErrorMessage(String errorMessage) throws Exception {
+		sendEmail("errors@picsauditing.com", "errors@picsauditing.com", "PICS Exception Error", errorMessage);
+	}
 }//EmailBean
