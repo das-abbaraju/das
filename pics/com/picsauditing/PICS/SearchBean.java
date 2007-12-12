@@ -536,7 +536,7 @@ public class SearchBean {
 			Query = "SELECT SQL_CALC_FOUND_ROWS * FROM accounts "+joinQuery+pqfJoinQuery+oshaJoinQuery+ncmsJoinQuery+
 					"WHERE 1 "+whereQuery+groupByQuery+"ORDER BY "+orderBy+" LIMIT "+count+","+showNum+";";
 
-		System.out.println(Query);
+		//System.out.println(Query);
 		SQLResult = SQLStatement.executeQuery(Query);
 
 		ResultSet tempRS = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)

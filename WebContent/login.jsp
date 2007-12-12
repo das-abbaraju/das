@@ -1,5 +1,5 @@
 <%//@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
-<%@ page language="java" import="com.picsauditing.PICS.*, com.picsauditing.PICS.redFlagReport.*"%>
+<%@ page language="java" import="com.picsauditing.PICS.*, com.picsauditing.PICS.redFlagReport.*, java.sql.*"%>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page"/>
 <jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session"/>
@@ -13,10 +13,14 @@
 		aBean.setFromDB(request.getParameter("id"));
 		lname = aBean.getUsername();
 		lpass = aBean.getPassword();
-	}catch(Exception e){
+	} catch(Exception e) {
 	
 	}
-		
+	
+	//FlagCalculator trevor = new FlagCalculator();
+	//trevor.recalculateFlags("1206");
+	//trevor.setConFlags("1", "1206");
+	
 	String msg= "";
 	if (request.getParameter("Submit.x") != null) {
 		lname = request.getParameter("username");
@@ -50,10 +54,20 @@
 					
 					// TODO add Red flag calculator back in
 					System.out.println("skipping flagCalculator.recalculateFlags");
+///*
 					FlagCalculator flagCalculator = new FlagCalculator();
-					for (String facilityName: FACILITIES.nameMap.keySet()) {
-						//flagCalculator.recalculateFlags(facilityName);
+					for (String opID: FACILITIES.nameMap.keySet()) {
+						if (opID.equals("1206") ) {
+							flagCalculator.recalculateFlags(opID);
+						}
 					}
+					// THIS IS A TOTAL HACK that fixes a bug in calculating Amber flag overrides in recalculateFlags
+					Connection Conn = com.picsauditing.PICS.DBBean.getDBConnection();
+					Statement SQLStatement = Conn.createStatement();
+					String sql = "UPDATE flags f, forcedflaglist l SET f.flag = l.flagStatus " +
+						"WHERE f.opID = l.opID and f.conID = l.conID and l.dateExpires > NOW() and f.flag <> l.flagStatus";
+					SQLStatement.executeUpdate(sql);
+//*/
 					
 					// Done for today
 					application.setAttribute("Last Daily Maintenance", com.picsauditing.PICS.DateBean.getTodaysDate());

@@ -24,7 +24,7 @@ public class OperatorBean extends DataBean {
 	public String canSeeOffice = "No";
 	public String canSeeField = "No";
 	public String canSeeInsurance = "No";
-	//Hurdle Rate report seach parameters, added 6/27/06
+	//Hurdle Rate report search parameters, added 6/27/06
 	public String emrHurdle = "";
 	public String emrTime = "1";
 	public String lwcrHurdle = "";

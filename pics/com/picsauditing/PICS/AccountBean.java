@@ -439,7 +439,7 @@ public class AccountBean extends DataBean {
 			canSeeSet = new HashSet<String>();
 			if ("Contractor".equals(type))
 				canSeeSet.add(id);
-			selectQuery = "SELECT subID FROM accounts INNER JOIN generalContractors ON (id=subID) "+
+			selectQuery = "SELECT subID FROM accounts INNER JOIN generalcontractors ON (id=subID) "+
 			"WHERE active='Y' AND genID="+id+";";
 			SQLResult = SQLStatement.executeQuery(selectQuery);
 			while (SQLResult.next())

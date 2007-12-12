@@ -15,7 +15,7 @@ public class ForcedFlagList extends com.picsauditing.PICS.DataBean{
 
 	public void setFromDB(String opID)throws Exception{
 		this.opID = opID;
-		String selectQuery = "SELECT conID,flagStatus FROM forcedFlagList WHERE opID="+opID+" AND dateExpires>CURDATE();";
+		String selectQuery = "SELECT conID, flagStatus FROM forcedFlagList WHERE opID="+opID+" AND dateExpires > CURDATE();";
 		try{
 			DBReady();
 			ResultSet rs = SQLStatement.executeQuery(selectQuery);

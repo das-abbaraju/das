@@ -21,6 +21,12 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean{
 	public Map<String,String> qIDToFlagMap = null;
 	public Map<String,String> qIDToAnswerMap = null;
 
+	/**
+	 * Depending on the Red or Amber Flag criteria, construct and return a SQL string 
+	 * that can query contractor data from the PQF and OSHA tables
+	 * @param flagCriteria
+	 * @return
+	 */
 	String getSelectQuery(FlagCriteria flagCriteria){
 		StringBuffer fromQuery = new StringBuffer();
 		StringBuffer joinQuery = new StringBuffer();
@@ -51,11 +57,16 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean{
 				fromQuery.append(",q").append(qID).append(".*");
 			}//if
 		}//for
-		String returnString = "SELECT cons.id"+fromQuery.toString()+",OSHA.* "+
-	 			"FROM contractor_info cons LEFT JOIN OSHA ON OSHA.conID=cons.id AND location='Corporate' "+joinQuery.toString();
+		String returnString = "SELECT cons.id"+fromQuery.toString()+", OSHA.* "+
+ 			"FROM contractor_info cons LEFT JOIN OSHA ON OSHA.conID=cons.id AND location='Corporate' "+joinQuery.toString();
 		return returnString;
 	}//getSelectQuery
 
+	/**
+	 * Recalculates the flag for a single contractor and operator
+	 * @param opID
+	 * @throws Exception
+	 */
 	public void setConFlags(String cID, String opID) throws Exception{
 		try{
 			redFlagOshaCriteriaDO = new FlagOshaCriteriaDO();
@@ -126,9 +137,15 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean{
 		}//finally
 	}//setConFlags
 
+	/**
+	 * Recalculates all flags for a given operator's contractors
+	 * @param opID
+	 * @throws Exception
+	 */
 	public void recalculateFlags(String opID) throws Exception{
 		try{
 			System.out.println("calculating flags for operator: "+opID);
+			// Get the list of contractors that this operator has forced flags (Red, Amber, or Green)
 			ForcedFlagList forcedFlagList = new ForcedFlagList(opID);
 			FlagCriteria flagCriteria = new FlagCriteria();
 			ArrayList<String> tempAL = new ArrayList<String>();
@@ -137,8 +154,11 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean{
 			Map<String,String> tempInsertFlagMap = new TreeMap<String,String>();
 			DBReady();
 			for (String thisFlag: tempAL) {
+				// Get all of the Red and Amber criterion
 				flagCriteria.setFromDB(opID, thisFlag);
-				ResultSet rs = SQLStatement.executeQuery(getSelectQuery(flagCriteria));
+				// Run a query against pqfData and OSHA data that considers the flagCriteria
+				String sql = getSelectQuery(flagCriteria);
+				ResultSet rs = SQLStatement.executeQuery(sql);
 				FlagOshaCriteriaDO flagOshaCriteriaDO = new FlagOshaCriteriaDO();
 				flagOshaCriteriaDO.setFromDB(opID, thisFlag);
 				while (rs.next()){
@@ -161,18 +181,20 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean{
 					if (flagged)
 						tempInsertFlagMap.put(conID,thisFlag);
 					else if(!"Red".equals(thisFlag))
-						tempInsertFlagMap.put(conID,"Green");						
+						tempInsertFlagMap.put(conID,"Green");
 				}//while
 				rs.close();
 			}//for
+			
+			// Delete ALL flags for this operator and Insert new ones for each contractor
 			StringBuffer insertQuery = new StringBuffer("INSERT INTO flags (opID,conID,flag) VALUES ");
 			for (Iterator i = tempInsertFlagMap.keySet().iterator();i.hasNext();){
 				String conID = (String)i.next();
 				String flag = tempInsertFlagMap.get(conID);
 				insertQuery.append("(").append(opID).append(",").append(conID).append(",'").append(flag).append("'),");
-			}//for
+			}
 			SQLStatement.executeUpdate("DELETE FROM flags WHERE opID="+opID+";");
-			if (tempInsertFlagMap.size()>0)
+			if (tempInsertFlagMap.size() > 0)
 				SQLStatement.executeUpdate(insertQuery.substring(0,insertQuery.length()-1));
 		}finally{
 			DBClose();

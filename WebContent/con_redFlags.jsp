@@ -208,22 +208,22 @@ try{
                 <td></td>
               </tr>
               <tr class="blueMain" bgcolor="FFFFFF">
-                <form action="con_redFlags.jsp#forceFlagPart" method="post" name="greenListForm" id="greenListForm">
+              <form action="con_redFlags.jsp#forceFlagPart" method="post" name="greenListForm" id="greenListForm">
                 <td align="left" bgcolor="FFFFFF">Forced <span class="greenMain">Green</span> Flag List:</td>
                 <td align="left" bgcolor="FFFFFF" class="greenMain"><nobr>
 <%		if(flagCalculator.isGreenFlagListed)
 			out.println("On Forced Green Flag List until <strong>"+flagCalculator.dateExpires+"</strong>");
 %>                </nobr></td>
                 <td align="center">
-                  <nobr><input id="expirationDate" size="8" name="expirationDate" class="forms">
-                  <input name="image" type="image" onClick="cal1.select(document.forms('greenListForm').expirationDate,'expirationDate','M/d/yy',''); return false;" src="/images/icon_calendar.gif" width="18" height="15">
+                  <nobr><input id="greenExpirationDate" size="8" name="expirationDate" class="forms" />
+                  <a href="#forceFlagPart" onClick="cal1.select(document.getElementById('greenExpirationDate'),'greenExpirationDate','M/d/yy',''); return false;"><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
                   </nobr>
                 </td>
                 <td align="center"><input class="forms" type="submit" name="action" value="Add"></td>
                 <td align="center"><input class="forms" type="submit" name="action" value="Remove"></td>
                 <input type="hidden" name="flagStatus" value="Green">
                 <input type="hidden" name="id" value="<%=id%>">
-                </form>
+              </form>
               </tr>
               <tr class="blueMain">
                 <form action="con_redFlags.jsp#forceFlagPart" method="post" name="amberListForm" id="amberListForm">
@@ -233,8 +233,8 @@ try{
 			out.println("On Forced Amber Flag List until <strong>"+flagCalculator.dateExpires+"</strong>");
 %>                </nobr></td>
                 <td align="center">
-                  <nobr><input id="expirationDate" size="8" name="expirationDate" class="forms">
-                  <input name="image" type="image" onClick="cal1.select(document.forms('amberListForm').expirationDate,'expirationDate','M/d/yy',''); return false;" src="/images/icon_calendar.gif" width="18" height="15">
+                  <nobr><input id="amberExpirationDate" size="8" name="expirationDate" class="forms">
+                  <a href="#forceFlagPart" onClick="cal1.select(document.getElementById('amberExpirationDate'),'amberExpirationDate','M/d/yy',''); return false;"><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
                   </nobr>
                 </td>
                 <td align="center"><input class="forms" type="submit" name="action" value="Add"></td>
@@ -251,8 +251,8 @@ try{
 			out.println("On Forced Red Flag List until <strong>"+flagCalculator.dateExpires+"</strong>");
 %>                </td>
                 <td align="center">
-                  <input id="expirationDate" size="8" name="expirationDate" class="forms">
-                  <input name="image2" type="image" onClick="cal1.select(document.forms('redListForm').expirationDate,'expirationDate','M/d/yy',''); return false;" src="/images/icon_calendar.gif" width="18" height="15">
+                  <input id="redExpirationDate" size="8" name="expirationDate" class="forms">
+                  <a href="#" onClick="cal1.select(document.getElementById('redExpirationDate'),'redExpirationDate','M/d/yy',''); return false;"><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
                 </td>
                 <td align="center"><input class="forms" type="submit" name="action" value="Add"></td>
                 <td align="center"><input class="forms" type="submit" name="action" value="Remove"></td>

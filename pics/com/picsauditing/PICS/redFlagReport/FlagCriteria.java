@@ -101,12 +101,10 @@ public class FlagCriteria extends DataBean {
 		if (null == checkedQuestionIDsAL){
 			checkedQuestionIDsAL = new ArrayList<String>();
 			for(FlagCriteriaDO flagCriteriaDO: flagCriteriaMap.values()) {
-			//for(Iterator i = flagCriteriaMap.values().iterator();i.hasNext();){
-				//FlagCriteriaDO flagCriteriaDO = (FlagCriteriaDO)i.next();
 				if (flagCriteriaDO.isChecked())
 					checkedQuestionIDsAL.add(flagCriteriaDO.questionID);
-			}//for
-		}//if
+			}
+		}
 		return checkedQuestionIDsAL;
 	}//getFlaggedQuestionIDsAL
 

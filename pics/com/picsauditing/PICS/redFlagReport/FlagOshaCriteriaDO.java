@@ -30,7 +30,7 @@ public class FlagOshaCriteriaDO extends DataBean {
 		flagStatus = fStatus;
 		if ((null == op_ID) || ("".equals(op_ID)))
 			throw new Exception("Can't set FlagOshaCriteria from DB because opID is not set");
-		String selectQuery = "SELECT * FROM flagOshaCriteria WHERE opID="+Utilities.intToDB(opID)+" AND flagStatus='"+flagStatus+"';";
+		String selectQuery = "SELECT * FROM flagOshaCriteria WHERE opID="+Utilities.intToDB(opID)+" AND flagStatus='"+flagStatus+"'";
 		try{
 			DBReady();
 			ResultSet rs = SQLStatement.executeQuery(selectQuery);
