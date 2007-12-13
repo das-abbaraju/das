@@ -55,7 +55,7 @@ public class HurdleQuestions extends DataBean {
 		return qIDsAL;
 	}//getQIDsAL
 
-	private void setList() throws Exception {
+	public void setList() throws Exception {
 		String selectQuery = "SELECT pc.auditType, pc.number, ps.number, pq.number, questionID, question, questionType "+
 				"FROM pqfCategories pc " +
 				"INNER JOIN pqfSubCategories ps ON (catID=categoryID) "+
@@ -71,7 +71,7 @@ public class HurdleQuestions extends DataBean {
 		}//catch
 	}//setList
 
-	private boolean isNext() throws Exception {
+	public boolean isNext() throws Exception {
 		if (!listRS.next())
 			return false;
 		count++;
@@ -96,7 +96,7 @@ public class HurdleQuestions extends DataBean {
 		questionType = "Decimal Number";
 	}//setFromResultSet
 
-	private void closeList() throws Exception {
+	public void closeList() throws Exception {
 		count = 0;
 		if (null != listRS) {
 			listRS.close();
