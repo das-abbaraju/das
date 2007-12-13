@@ -85,6 +85,11 @@
       <to-view-id>/admin/osha.xhtml</to-view-id>
       <redirect/>
     </navigation-case>
+    <navigation-case>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/admin/osha.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
   </navigation-rule>
   
    

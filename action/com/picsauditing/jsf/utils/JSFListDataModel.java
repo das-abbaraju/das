@@ -133,6 +133,13 @@ public abstract class JSFListDataModel<T> implements JSFDataModelable<T>{
 		this.count = count;
 	}
 	
+	public String refreshModel(){
+		int row = dm.getRowIndex();
+		clearModel();
+		getDataModel();
+		dm.setRowIndex(row);
+		return "success";
+	}
 	
 }
 	

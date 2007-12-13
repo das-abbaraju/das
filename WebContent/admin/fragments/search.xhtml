@@ -6,10 +6,8 @@
 	xmlns:c="http://java.sun.com/jstl/core"
 	xmlns:a4j="http://richfaces.org/a4j">
 	
-	 <rich:panel height="20">
-         <f:facet name="header" >
-			<h:outputText value="Search" />
-	      </f:facet>
+	 <rich:simpleTogglePanel switchType="ajax" label="Search">
+         
 		<a4j:form id="search" ajaxSubmit="true">
 			<h:panelGrid columns="5" cellpadding="1" cellspacing="2" columnClasses="panel">
 			    <h:outputText value="Name"/>
@@ -35,6 +33,6 @@
 							reRender="search,contractorTable" />
 			</h:panelGrid>
 		</a4j:form>
-	</rich:panel>
+	</rich:simpleTogglePanel>
 
 </ui:composition>

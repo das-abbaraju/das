@@ -148,8 +148,9 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 			this.acctName = acctName;
 		}
 
-		public void clear(ActionEvent event) {
+		public void clear(ActionEvent event) {			  
 			  clearModel();
+			  dao.clear();
 			  doSearch = false;
 			  acctName = "";
 			  setFirstResult(0);			 
@@ -158,6 +159,7 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		
 		public void search(ActionEvent event){
 			clearModel();
+			dao.clear();
 			doSearch = true;
 			setFirstResult(0);			
 		}		
@@ -216,6 +218,11 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 			
 			return auditors;
 			
+		}
+		
+		public String refresh(){
+			search(null);
+			return "success";
 		}
 		
 	

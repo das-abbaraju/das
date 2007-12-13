@@ -37,9 +37,9 @@
         </tr>
         <tr>
           <td>Year</td>
-          <td colspan="2" class="redMain"><%=curYear-1%></td>
-          <td colspan="2" class="redMain"><%=curYear-2%></td>
-          <td colspan="2" class="redMain"><%=curYear-3%></td>
+          <td colspan="2" class="redMain"><%=curYear-1%> <%=oBean.isNa1() ? "NA" : "" %></td>
+          <td colspan="2" class="redMain"><%=curYear-2%> <%=oBean.isNa2() ? "NA" : "" %></td>
+          <td colspan="2" class="redMain"><%=curYear-3%> <%=oBean.isNa3() ? "NA" : "" %></td>
           <td colspan="2" class="redMain">3 Yr Average</td>
         </tr>
         <tr>

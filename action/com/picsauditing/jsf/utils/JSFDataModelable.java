@@ -19,5 +19,6 @@ public interface JSFDataModelable<T> {
 	public boolean isAscending();
 	public void setAscending(boolean ascending);
 	public void clearModel();
+	public String refreshModel();
 		
 }

@@ -22,6 +22,9 @@ public class OSHABean extends DataBean {
 	public String description = "";
 	public String verifiedDate = "";
 	public String auditorID = "";
+	public boolean na1 = false;
+	public boolean na2 = false;
+    public boolean na3 = false;
 
 	public static final int MAN_HOURS = 0;
 	public static final int FATALITIES = 1;
@@ -46,6 +49,7 @@ public class OSHABean extends DataBean {
 	public String file2YearAgo = "No";
 	public String file3YearAgo = "No";
 	public boolean isInDB = false;
+	private int numberNA = 0;
 
 	boolean showLinks = false;
 
@@ -72,8 +76,10 @@ public class OSHABean extends DataBean {
 		catch (Exception e) {return "";}//catch	
 	}//calcRate
 
-	public String calcAverageStat(int i) {
-		float temp = (float)(stats[i][YEAR1] + stats[i][YEAR2] + stats[i][YEAR3])/3;
+	public String calcAverageStat(int i) {		
+		int stats_sum = stats[i][YEAR1]  + stats[i][YEAR2] + stats[i][YEAR3];
+		
+		float temp = (float)(stats[i][YEAR1] + stats[i][YEAR2] + stats[i][YEAR3])/numberNA;
 		try {return decFormatter.format(temp);}
 		catch (Exception e) {return "";}//catch	
 	}//calcAverage
@@ -88,7 +94,7 @@ public class OSHABean extends DataBean {
 		float temp = ((float)stats[i][YEAR1]*200000)/stats[MAN_HOURS][YEAR1] + 
 			((float)stats[i][YEAR2]*200000)/stats[MAN_HOURS][YEAR2] + 
 			((float)stats[i][YEAR3]*200000)/stats[MAN_HOURS][YEAR3];
-		temp = temp/3;
+		temp = temp/numberNA;
 		try {return decFormatter.format(temp);}
 		catch (Exception e) {return "";}//catch	
 	}//calcAverage
@@ -162,30 +168,38 @@ public class OSHABean extends DataBean {
 		description = SQLResult.getString("OSHA.description");
 		verifiedDate = SQLResult.getString("verifiedDate");
 		auditorID = SQLResult.getString("auditorID");
+		na1 = SQLResult.getString("NA1").equals("Yes") ? true : false;
+		na2 = SQLResult.getString("NA2").equals("Yes") ? true : false;
+		na3 = SQLResult.getString("NA3").equals("Yes") ? true : false;
+		
+		boolean[] bna = {na1, na2, na3};
+		for(int i = 0; i < 3; i++)
+			if(bna[i])
+				numberNA++;
 
 		stats[MAN_HOURS][YEAR1] = SQLResult.getInt("manHours1");
 		stats[FATALITIES][YEAR1] = SQLResult.getInt("fatalities1");
 		stats[LOST_WORK_CASES][YEAR1] = SQLResult.getInt("lostWorkCases1");
 		stats[LOST_WORK_DAYS][YEAR1] = SQLResult.getInt("lostWorkDays1");
-		stats[INJURY_ILLNESS_CASES][YEAR1] = SQLResult.getInt("injuryIllnessCases1");
+		stats[INJURY_ILLNESS_CASES][YEAR1] =  SQLResult.getInt("injuryIllnessCases1");
 		stats[RESTRICTED_WORK_CASES][YEAR1] = SQLResult.getInt("restrictedWorkCases1");
 		stats[RECORDABLE_TOTAL][YEAR1] = SQLResult.getInt("recordableTotal1");
 
 		stats[MAN_HOURS][YEAR2] = SQLResult.getInt("manHours2");
-		stats[FATALITIES][YEAR2] = SQLResult.getInt("fatalities2");
+		stats[FATALITIES][YEAR2] =  SQLResult.getInt("fatalities2");
 		stats[LOST_WORK_CASES][YEAR2] = SQLResult.getInt("lostWorkCases2");
 		stats[LOST_WORK_DAYS][YEAR2] = SQLResult.getInt("lostWorkDays2");
 		stats[INJURY_ILLNESS_CASES][YEAR2] = SQLResult.getInt("injuryIllnessCases2");
-		stats[RESTRICTED_WORK_CASES][YEAR2] = SQLResult.getInt("restrictedWorkCases2");
+		stats[RESTRICTED_WORK_CASES][YEAR2] =  SQLResult.getInt("restrictedWorkCases2");
 		stats[RECORDABLE_TOTAL][YEAR2] = SQLResult.getInt("recordableTotal2");
 
-		stats[MAN_HOURS][YEAR3] = SQLResult.getInt("manHours3");
-		stats[FATALITIES][YEAR3] = SQLResult.getInt("fatalities3");
-		stats[LOST_WORK_CASES][YEAR3] = SQLResult.getInt("lostWorkCases3");
-		stats[LOST_WORK_DAYS][YEAR3] = SQLResult.getInt("lostWorkDays3");
-		stats[INJURY_ILLNESS_CASES][YEAR3] = SQLResult.getInt("injuryIllnessCases3");
-		stats[RESTRICTED_WORK_CASES][YEAR3] = SQLResult.getInt("restrictedWorkCases3");
-		stats[RECORDABLE_TOTAL][YEAR3] = SQLResult.getInt("recordableTotal3");
+		stats[MAN_HOURS][YEAR3] =  SQLResult.getInt("manHours3");
+		stats[FATALITIES][YEAR3] =  SQLResult.getInt("fatalities3");
+		stats[LOST_WORK_CASES][YEAR3] =  SQLResult.getInt("lostWorkCases3");
+		stats[LOST_WORK_DAYS][YEAR3] =  SQLResult.getInt("lostWorkDays3");
+		stats[INJURY_ILLNESS_CASES][YEAR3] =  SQLResult.getInt("injuryIllnessCases3");
+		stats[RESTRICTED_WORK_CASES][YEAR3] =  SQLResult.getInt("restrictedWorkCases3");
+		stats[RECORDABLE_TOTAL][YEAR3] =  SQLResult.getInt("recordableTotal3");
 		//Files
 		file1YearAgo = SQLResult.getString("file1YearAgo");
 		file2YearAgo = SQLResult.getString("file2YearAgo");
@@ -458,4 +472,18 @@ public class OSHABean extends DataBean {
 			return "";
 		return "<img src=images/okCheck.gif width=19 height=15><span class=greenMain>Verified on "+verifiedDate+"</span>";
 	}//getDateVerifiedView
+
+	public boolean isNa1() {
+		return na1;
+	}
+
+	public boolean isNa2() {
+		return na2;
+	}
+
+	public boolean isNa3() {
+		return na3;
+	}
+	
+	
 }//OSHABean
