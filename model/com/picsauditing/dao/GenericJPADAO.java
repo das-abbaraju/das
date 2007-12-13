@@ -239,5 +239,20 @@ public class GenericJPADAO<T, ID extends Serializable> implements GenericDAO<T, 
 			
 		return q.getResultList();	
 	}	
+	
+	@Override
+	public Object executeScalarQuery(String query, Map<String, Object> params){
+		Query q = getEntityManager().createQuery(query);
+		if(max > 0 ) {
+			q.setFirstResult(first);
+			q.setMaxResults(max);
+		}
+		
+		if(params != null)
+			for(String str : params.keySet())
+				q.setParameter(str, params.get(str));
+			
+		return q.getSingleResult();
+	}
 			
 }

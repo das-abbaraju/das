@@ -1,11 +1,7 @@
 package com.picsauditing.jsf.utils;
 
-import java.util.Calendar;
 import java.util.List;
 
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.ActionListener;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 
@@ -17,16 +13,15 @@ public abstract class JSFListDataModel<T> implements JSFDataModelable<T>{
 	private T selectedItem;
 	private boolean ascending = true;
 	private int sortBy = 0;
-	private DataModel dm = new ListDataModel();
+	private DataModel dm = new ListDataModel(); 
 	private String persistenceCtx;
+	private Long count = 0l;
 	
 		
 	@Override
-	public DataModel getDataModel() {
-		
-		if(dm.getRowCount() == -1)
-			dm.setWrappedData(getList());
-		
+	public DataModel getDataModel() {		
+		if(dm.getWrappedData() == null)
+			dm.setWrappedData(getList());				
 		return dm;
 	}
 		
@@ -77,6 +72,7 @@ public abstract class JSFListDataModel<T> implements JSFDataModelable<T>{
 	
 	@Override
 	public void setSelectedItem(T selectedItem){
+		System.out.println("SelectedItem: " + selectedItem.toString());
 		this.selectedItem = selectedItem;
 	}
 	
@@ -126,6 +122,16 @@ public abstract class JSFListDataModel<T> implements JSFDataModelable<T>{
 	public int getCurrentYear() {
 		return Utilities.getCurrentYear();
 	}//getCurrentYear
+
+
+	public Long getCount() {
+		return count;
+	}
+
+
+	public void setCount(Long count) {
+		this.count = count;
+	}
 	
 	
 }

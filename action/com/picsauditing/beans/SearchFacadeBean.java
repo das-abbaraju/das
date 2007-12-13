@@ -1,5 +1,6 @@
 package com.picsauditing.beans;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,7 @@ import com.picsauditing.jpa.entities.GeneralContractor;
 
 
 public class SearchFacadeBean {
-	
+		
 	public static List<ContractorInfoReport> getActiveContractors(
 			ContractorInfoReportDAO dao) {
 		
@@ -54,5 +55,6 @@ public class SearchFacadeBean {
 		return dao.executeNamedQuery("getOperators", null);
 		
 	}
-
+	
+	
 }

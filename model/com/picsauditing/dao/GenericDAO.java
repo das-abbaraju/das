@@ -12,6 +12,7 @@ public interface GenericDAO<T, ID extends Serializable> {
 	List<T> executeNamedQuery(String query, Map<String, Object> params);
 	List<T> executeNativeQuery(String query, Map<String, Object> params);
 	List<T> executeQuery(String query, Map<String, Object> params);
+	public Object executeScalarQuery(String query, Map<String, Object> params);
 	T makePersistent(T entity) throws Exception;
 	void makeTransient(T entity);
 	void flush() throws Exception;

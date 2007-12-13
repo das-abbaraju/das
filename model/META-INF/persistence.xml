@@ -57,9 +57,9 @@
          <property name="hibernate.cache.use_second_level_cache" value="false"/>
          <property name="hibernate.cache.use_query_cache" value="false"/>
          <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
-         <property name="hibernate.connection.password" value="pics1bean"/>
-         <property name="hibernate.connection.url" value="jdbc:mysql://204.15.101.106:3306/pics?zeroDateTimeBehavior=convertToNull&#38;jdbcCompliantTruncation=false"/>
-         <property name="hibernate.connection.username" value="root"/>
+         <property name="hibernate.connection.password" value="pics"/>
+         <property name="hibernate.connection.url" value="jdbc:mysql://alpha.picsauditing.com:3306/pics_alpha?zeroDateTimeBehavior=convertToNull&#38;jdbcCompliantTruncation=false"/>
+         <property name="hibernate.connection.username" value="pics"/>
         
              	 
       </properties>

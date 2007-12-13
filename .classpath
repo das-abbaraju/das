@@ -19,12 +19,12 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jst.jsf.core.internal.jsflibrarycontainer/JSF1.1">
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Hibernate">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Hibernate">
+	<classpathentry kind="con" path="org.eclipse.jst.jsf.core.internal.jsflibrarycontainer/Glassfish">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>

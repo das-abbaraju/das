@@ -25,8 +25,8 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @NamedQueries({	
-	@NamedQuery(name="getOperators", query="select ac.id, ac.name from Account ac where ac.type='Operator'"),
-	@NamedQuery(name="getAuditors", query="select ac.id, ac.name from Account ac where ac.type='Auditor'")
+	@NamedQuery(name="getOperators", query="select ac from Account ac where ac.type='Operator' order by ac.name"),
+	@NamedQuery(name="getAuditors", query="select ac from Account ac where ac.type='Auditor' order by ac.name")
 	}
 )
 @Table(name="accounts"

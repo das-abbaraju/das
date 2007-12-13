@@ -1,6 +1,5 @@
 package com.picsauditing.beans;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,11 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.faces.component.UISelectOne;
 import javax.faces.event.ActionEvent;
 
+import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorInfoReportDAO;
 import com.picsauditing.dao.DAOFactory;
-import com.picsauditing.dao.GenericJPADAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorInfoReport;
 import com.picsauditing.jsf.utils.JSFListDataModel;
 
@@ -23,30 +24,56 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 	
 	private static final int SORT_BY_NAME = 0;
 	private Set<Integer> ajaxKeys = null;
-	private String acctName = null;
-	private int searchId = 0;
-	private String searchBy = "";
+	private String acctName = "";
+	private int auditorId = 0;
+	private int operatorId = 0;
 	private boolean doSearch = false;
 	private ContractorInfoReportDAO dao;
+	private Map<String, Integer> operators = null;
+	private Map<String, Integer> auditors = null;
+	
 		
 	@Override
 	protected List<ContractorInfoReport> getList() {
+		
 		DAOFactory daof = DAOFactory.instance(DAOFactory.JPA, getPersistenceCtx());		
 		dao = daof.getContractorInfoReportDAO();		
 		dao.setMax(getMaxResults());
 		List<ContractorInfoReport> reports = null;
-		if(!doSearch)
-			reports = dao.executeNamedQuery("getActiveContractors", null);
-			//reports = dao.findAll();
-		else{
-			if(searchBy.equals("Operator"))
-				reports = SearchFacadeBean.getContractorsByOperator(dao, searchId);
+		String start = "select cr from ContractorInfoReport cr where ";
+		String startCount = "select count(cr) from ContractorInfoReport cr where ";
+		StringBuffer queryBuf = new StringBuffer();
+		
+		Map<String,Object>params = new HashMap<String,Object>();
+		if(doSearch){
+			if(acctName == "" && auditorId == 0 && operatorId == 0)
+				reports = dao.executeNamedQuery("getActiveContractors", null);			
+			else{
+				if(!acctName.equals("")){
+					params.put("name", acctName + "%");
+					queryBuf.append("cr.account.name like :name AND ");
+				}
+				
+				if(auditorId != 0){
+					params.put("pqfAuditorId", auditorId);
+					queryBuf.append("cr.pqfAuditorId=:pqfAuditorId AND ");
+				}
+				
+				if(operatorId != 0){
+					params.put("genId", operatorId );
+					queryBuf.append(":genId in (select gc.id.genId from cr.generalContractors gc) AND ");
+				}
+				
+				queryBuf.setLength(queryBuf.length()-5);
+				StringBuffer query = queryBuf.insert(0, start);
+				System.out.println("Query=" + query.toString());
+				reports = dao.executeQuery(query.toString(), params);
+			}
 			
-			if(searchBy.equals("Auditor"))
-				reports = SearchFacadeBean.getContractorsByAuditor(dao, searchId);
-			
-			if(searchBy.equals("Name"))
-				reports = SearchFacadeBean.getContractorsByName(dao, acctName);
+			//StringBuffer countBuf = queryBuf.insert(0, startCount);
+			//countBuf.setLength(countBuf.length() - 7);
+			//System.out.println("Query=" + countBuf.toString());
+			//setCount((Long)dao.executeScalarQuery(countBuf.toString(), params));
 		}
 		
 		
@@ -105,14 +132,6 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 			this.ajaxKeys = ajaxKeys;
 		}
 		
-		public String getSearchBy() {
-			return searchBy;
-		}
-
-		public void setSearchBy(String searchBy) {
-			this.searchBy = searchBy;
-		}
-
 		public boolean isDoSearch() {
 			return doSearch;
 		}
@@ -130,18 +149,18 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		}
 
 		public void clear(ActionEvent event) {
-			  getDataModel().setWrappedData(null);
+			  clearModel();
 			  doSearch = false;
 			  acctName = "";
-			  setFirstResult(0);
-			  searchBy = "";		  
-		}
+			  setFirstResult(0);			 
+			  
+		}		
 		
-		public void search(ActionEvent event) {
-			   getDataModel().setWrappedData(null);
-			   doSearch = true;
-			   setFirstResult(0);
-		}
+		public void search(ActionEvent event){
+			clearModel();
+			doSearch = true;
+			setFirstResult(0);			
+		}		
 
 		public ContractorInfoReportDAO getDao() {
 			return dao;
@@ -150,13 +169,54 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		public void setDao(ContractorInfoReportDAO dao) {
 			this.dao = dao;
 		}
-
-		public int getSearchId() {
-			return searchId;
+		
+		public int getAuditorId() {
+			return auditorId;
 		}
 
-		public void setSearchId(int searchId) {
-			this.searchId = searchId;
-		}		
+		public void setAuditorId(int auditorId) {
+			this.auditorId = auditorId;
+		}
+
+		public int getOperatorId() {
+			return operatorId;
+		}
+
+		public void setOperatorId(int operatorId) {
+			this.operatorId = operatorId;
+		}
+
+		public Map<String, Integer> getOperators(){
+			if(operators == null){
+				DAOFactory daof = DAOFactory.instance(DAOFactory.JPA, getPersistenceCtx());		
+				AccountDAO adao = daof.getAccountDAO();
+				List<Account> list =  SearchFacadeBean.getOperators(adao);
+				operators = new HashMap<String,Integer>();
+				operators.put(" ", 0);
+				for(Account a : list)
+					operators.put(a.getName(), a.getId());
+			}
+			
+			return operators;
+				
+			
+		}
+		
+		public Map<String,Integer> getAuditors(){
+			
+			if(auditors == null){
+				DAOFactory daof = DAOFactory.instance(DAOFactory.JPA, getPersistenceCtx());		
+				AccountDAO adao = daof.getAccountDAO();
+				List<Account> list =  SearchFacadeBean.getAuditors(adao);
+				auditors = new HashMap<String,Integer>();
+				auditors.put(" ", 0);
+				for(Account a : list)
+					auditors.put(a.getName(), a.getId());
+			}
+			
+			return auditors;
+			
+		}
+		
 	
 }
