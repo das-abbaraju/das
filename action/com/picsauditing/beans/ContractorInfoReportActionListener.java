@@ -7,6 +7,7 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
 
 import com.picsauditing.dao.ContractorInfoDAO;
+import com.picsauditing.dao.ContractorInfoReportDAO;
 import com.picsauditing.jpa.entities.ContractorInfoReport;
 
 public class ContractorInfoReportActionListener implements ActionListener {
@@ -14,7 +15,7 @@ public class ContractorInfoReportActionListener implements ActionListener {
 	@Override
 	public void processAction(ActionEvent arg0) throws AbortProcessingException {
 		Map<String,Object> attrs = arg0.getComponent().getAttributes();
-		ContractorInfoDAO dao = (ContractorInfoDAO)attrs.get("crDao");
+		ContractorInfoReportDAO dao = (ContractorInfoReportDAO)attrs.get("crDao");
 		ContractorInfoReport cr = (ContractorInfoReport)attrs.get("cr");
 		
 		try {

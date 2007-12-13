@@ -3,7 +3,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:rich="http://richfaces.org/rich"
-	xmlns:c="http://java.sun.com/jstl/core">
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j">
 
 
 	<style type="">
@@ -31,9 +32,9 @@
 </style>
 
 	
-		<h:form id="oshalogs">
+		<h:form id="oshalogs" name="logPanel">
 		   
-			<rich:tabPanel height="400px" width="550px" id="logs">
+			<rich:tabPanel height="400px" width="550px" id="logs" switchType="ajax">
 			   
 			   <rich:tab label="Osha Logs">				
 				   <ui:include src="oshaLog.xhtml"/>
@@ -45,7 +46,7 @@
 					
 			</rich:tabPanel>
 			
-			<h:commandButton styleClass="forms" value="Submit" action="save">
+			<a4j:commandButton styleClass="forms" value="Submit" action="save" reRender="logPanel">
 				<f:attribute name="oshaDao" value="#{oshaBean.dao}" />
 				<f:attribute name="emrDao" value="#{emrBean.dao}" />
 				<f:attribute name="crDao" value="#{contractorBean.dao}" />
@@ -54,7 +55,7 @@
 					type="com.picsauditing.beans.OshaLogActionListener" />
 				<f:actionListener type="com.picsauditing.beans.EMRLogActionListener" />
 				<f:actionListener type="com.picsauditing.beans.ContractorInfoReportActionListener" />
-			</h:commandButton>
+			</a4j:commandButton>
 		 
 		</h:form>
 	
