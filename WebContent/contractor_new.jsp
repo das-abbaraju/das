@@ -207,7 +207,7 @@
             <tr>
               <td class="blueMain" align="right">Annual Membership Fee</td>
               <td class="redMain"><span id="annualFee" class="blueMain" style="font-weight: bold; font-style: italic;">$~</span>
-				This is based on the number of facilities you select above. <a href="con_pricing.jsp">Click to view pricing</a></td>
+				This is based on the number of facilities you select above. <a target="_blank" href="con_pricing.jsp">Click to view pricing</a></td>
             </tr>
             <tr>
               <td class="blueMain" align="right">One-time Activation Fee</td>
