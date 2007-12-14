@@ -1,5 +1,4 @@
 <jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope ="session"/>
-
 <%
 	String adminName = (String)session.getAttribute("username");
 	if (null == pBean) 
@@ -7,4 +6,3 @@
 	if (!pBean.checkAccess(pBean.FULL,response))
 		return;
 %>
-

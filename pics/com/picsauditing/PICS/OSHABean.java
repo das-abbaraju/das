@@ -76,12 +76,23 @@ public class OSHABean extends DataBean {
 		catch (Exception e) {return "";}//catch	
 	}//calcRate
 
-	public String calcAverageStat(int i) {		
-		int stats_sum = stats[i][YEAR1]  + stats[i][YEAR2] + stats[i][YEAR3];
+	public String calcAverageStat(int i) {
+		if (numberNA == 3) return "N/A";
+		int s1 = stats[i][YEAR1];
+		int s2 = stats[i][YEAR2];
+		int s3 = stats[i][YEAR3];
 		
-		float temp = (float)(stats[i][YEAR1] + stats[i][YEAR2] + stats[i][YEAR3])/numberNA;
-		try {return decFormatter.format(temp);}
-		catch (Exception e) {return "";}//catch	
+		long total = s1 + s2 + s3;
+		total = stats[i][YEAR1] + stats[i][YEAR2] + stats[i][YEAR3];
+
+		float avg = total/(3-numberNA);
+		return decFormatter.format(avg);
+		
+		//int stats_sum = stats[i][YEAR1]  + stats[i][YEAR2] + stats[i][YEAR3];
+		
+		//float temp = (float)(stats[i][YEAR1] + stats[i][YEAR2] + stats[i][YEAR3])/numberNA;
+		//try {return decFormatter.format(temp);}
+		//catch (Exception e) {return "";}//catch	
 	}//calcAverage
 
 	public String calcTotalStat(int i) {
@@ -90,11 +101,20 @@ public class OSHABean extends DataBean {
 		catch (Exception e) {return "";}//catch	
 	}//calcAverage
 
+	private float calcRateTemp(int year, int manhours) {
+		float value = 0;
+		value = year*200000;
+		value = value/manhours;
+		return value;
+	}
 	public String calcAverageRate(int i) {
-		float temp = ((float)stats[i][YEAR1]*200000)/stats[MAN_HOURS][YEAR1] + 
-			((float)stats[i][YEAR2]*200000)/stats[MAN_HOURS][YEAR2] + 
-			((float)stats[i][YEAR3]*200000)/stats[MAN_HOURS][YEAR3];
-		temp = temp/numberNA;
+		if (numberNA == 3) return "N/A";
+		
+		float value1 = calcRateTemp(stats[i][YEAR1], stats[MAN_HOURS][YEAR1]);
+		float value2 = calcRateTemp(stats[i][YEAR2], stats[MAN_HOURS][YEAR2]);
+		float value3 = calcRateTemp(stats[i][YEAR3], stats[MAN_HOURS][YEAR3]);
+		
+		float temp = (value1 + value2 + value3) / (3 - numberNA); 
 		try {return decFormatter.format(temp);}
 		catch (Exception e) {return "";}//catch	
 	}//calcAverage

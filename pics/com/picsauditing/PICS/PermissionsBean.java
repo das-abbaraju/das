@@ -3,6 +3,9 @@ package com.picsauditing.PICS;
 import java.sql.*;
 import java.util.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+
 import com.picsauditing.access.OpPerms;
 
 
@@ -27,6 +30,8 @@ public class PermissionsBean extends DataBean {
 	public static final int LOGGED_IN = 6;
 	public static final int PQF_VIEW = 7;
 	public static final int OP_EDIT = 8;
+	public static final int BASIC = 9;
+
 
 	public String userID = "";
 	public String userName = "";
@@ -86,11 +91,16 @@ public class PermissionsBean extends DataBean {
 	}//setUserAccess
 
 	public String getCanSeeSetCount(){
+		if (canSeeSet == null) return "0";
 		return Integer.toString(canSeeSet.size());
 	}//getCanSeeSetCount
 
 	public boolean checkAccess(int access, javax.servlet.http.HttpServletResponse response) throws Exception {
 		if (!loggedIn) {
+			// TODO get the current URL
+			//Cookie fromCookie = new Cookie("from","contractor_list.jsp");
+			//fromCookie.setMaxAge(3600);
+			//response.addCookie(fromCookie);
 			response.sendRedirect("logout.jsp?msg=Your session has timed out.  Please log back in");
 			return false;
 		}//if
@@ -138,8 +148,11 @@ public class PermissionsBean extends DataBean {
 						userID != null && userID.equals(thisPageID)))
 				hasAccess = true;
 		}//if
+		if (BASIC == access) {
+				hasAccess = true;
+		}//if
 		if (!hasAccess) {
-			response.sendRedirect("/logout.jsp?msg=The requested page is not available");
+			response.sendRedirect("logout.jsp?msg=The requested page is not available");
 			return false;
 		}//if
 		return true;

@@ -6,6 +6,10 @@
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope="application"/>
 <%/* 12/16/04 jj - added triggered events by admin login once each day*/%>
 <%
+int i1 = 25000;
+int i2 = 25000;
+int i3 = 25000;
+
 	int whichPage = 2;
 	String lname = "";
 	String lpass = "";
@@ -37,7 +41,19 @@
 			session.setAttribute("canSeeSet", aBean.canSeeSet);
 			session.setAttribute("auditorCanSeeSet", aBean.auditorCanSeeSet);
 			session.setAttribute("hasCertSet", aBean.hasCertSet);
-			if (pBean.isAdmin()){
+			
+			// Redirect users to the previous page they were on
+			Cookie[] cookiesA = request.getCookies();
+			String fromURL = "";
+			for (int i=0;i<cookiesA.length;i++) {
+				if ("from".equals(cookiesA[i].getName())) {
+					fromURL = cookiesA[i].getValue();
+					Cookie fromCookie = new Cookie("from","");
+					response.addCookie(fromCookie);
+				}
+			}
+			
+			if (pBean.isAdmin()) {
 				session.setMaxInactiveInterval(3600);
 				pBean.oBean = new OperatorBean();
 				pBean.oBean.setAsAdmin();
@@ -65,14 +81,10 @@
 					// Done for today
 					application.setAttribute("Last Daily Maintenance", com.picsauditing.PICS.DateBean.getTodaysDate());
 				}//if
-				Cookie[] cookiesA = request.getCookies();
-				String from = "";
-				for (int i=0;i<cookiesA.length;i++) {
-					if ("from".equals(cookiesA[i].getName()))
-						from = cookiesA[i].getValue();
-				}//for
-				if (!"".equals(from))
-					response.sendRedirect(from);
+				if (fromURL.length() > 0) {
+					response.sendRedirect(fromURL);
+					return;
+				}
 				response.sendRedirect("reports.jsp");				
 				return;
 			}//if
