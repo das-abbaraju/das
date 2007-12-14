@@ -1,5 +1,4 @@
 <%	String[] adminReports = {
-		"admin/index.jsf?","New Admin Tools","No",
 		"report_activation.jsp?","Activation","No",
 		"report_annualUpdate.jsp?","Annual Update","No",
 		"report_audits.jsp?","Audit Dates","No",
@@ -19,7 +18,8 @@
 		"report_scheduleAudits.jsp?which="+com.picsauditing.PICS.SearchBean.RESCHEDULE_AUDITS+"&","Reschedule Audits","No",
 		"report_desktop.jsp?","Schedule Desktop Audit","No",
 		"report_scheduleAudits.jsp?","Schedule Office Audits","No",
-        "report_upgradePayment.jsp?","Upgrade Payment","No"};
+        "report_upgradePayment.jsp?","Upgrade Payment","No",
+		"admin/index.jsf?","Beta Admin Tool","No"};
 //		"report_RFR.jsp?","PQF Snapshot Report",
 //		"pqf_viewQuestions.jsp?id="+pBean.userID+"&","Create PQF Snapshot"};
 
