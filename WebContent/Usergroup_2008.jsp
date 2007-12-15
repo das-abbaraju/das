@@ -1,5 +1,5 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
-<%@ page language="java" import="PICS.*;"%>
+<%@ page language="java" import="com.picsauditing.PICS.*"%>
 <%
   	int whichPage = 0;
 	boolean isSubmitted = (null != request.getParameter("action") 
@@ -8,7 +8,6 @@
 	if (isSubmitted){
 		EmailBean.sendSafetyMeetingEmail(request);
 	}
-	
 %>
 <html>
 <head>
@@ -141,7 +140,7 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
               <tr>
                 <td width="375" class="blueMain" align="center"><div align="center" class="style1"><span class="style3">PICS CONTRACTOR USER GROUP MEETING </span><br>
                 Long Beach, California </div></td>
-                <td bgcolor="#CBE5FE" class="blueMain"><div align="center">FEBRUARY 7, 2007</div></td>
+                <td bgcolor="#CBE5FE" class="blueMain"><div align="center">FEBRUARY 7, 2008</div></td>
               </tr>
             </table>
 			            <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -158,7 +157,7 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
 		out.println("<span class='redMain'>Thank you for submitting your attendance information</span>");
 %>
   
-  <form id="safetyForm" action="safety_2007.jsp?action=rsvp" method="post">
+  <form id="safetyForm" action="Usergroup_2008.jsp?action=rsvp" method="post">
   <table class="blueMain" bgcolor="#CBE5FE" width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr>
       <td class="blueSafety"><strong>RSVP</strong></td>
@@ -226,7 +225,7 @@ Review of the PICS Process<br>
 How to Prepare for PICS Audits<br>
 Insurance Benefits by Going Through PICS<br>
 And More... </p><br><br>
-<p>Please mark your calendar to attend the PICS Contractor User Group Meeting in Long Beach, CA.  This is a great opportunity to meet the PICS team, review Desktop and Office Audit procedures, take part in a website Q & A, and provide feedback on the topics discussed.
+<p>Please mark your calendar to attend the PICS Contractor User Group Meeting in Long Beach, CA.  This is a great opportunity to meet the PICS team, review Desktop and Office Audit procedures, take part in a website Q&A, and provide feedback on the topics discussed.
 </p><br><br>
 <div class="Safetypics"><img src="images/hiltonpic3.jpg" width="100" height="125"/></div>
 <div class="Safetypics"><img src="images/hiltonpic2.jpg" width="100" height="125"/></div>
@@ -238,8 +237,7 @@ Long Beach - Airport<br>
 2640 N. Lakewood Blvd. <br>
 Long Beach, CA 90815<br>
 </p>
-<br>
-<p><span class="style2">We are looking forward to see you in Long Beach, California.</span></p>
+<p><span class="style2">We are look forward to seeing you in Long Beach, California.</span></p>
                 </div><br><br></td>
               </tr>
               <tr valign="top">
@@ -255,8 +253,7 @@ Long Beach, CA 90815<br>
                 <td class="blueHome">&nbsp;</td>
               </tr>
             </table>
-            <p><br>
-        </p></div></td>
+            </td>
       </tr>
       
     </table>
