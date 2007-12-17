@@ -90,6 +90,18 @@ public class DateBean {
 		 return cal.get(Calendar.YEAR);
 	}//getCurrentYear
 	
+	public static int getCurrentYear(int day, int month) {
+		Calendar cur = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance();		
+		cal.set(Calendar.DAY_OF_MONTH, day);
+		cal.set(Calendar.MONTH, month);
+		if(cur.after(cal))
+		  return cal.get(Calendar.YEAR);
+		else
+		  return cal.get(Calendar.YEAR) - 1;  
+		 
+	}//getCur
+	
 	public static int getCurrentMonth() {
 		Calendar cal = Calendar.getInstance();
 		return cal.get(Calendar.MONTH);

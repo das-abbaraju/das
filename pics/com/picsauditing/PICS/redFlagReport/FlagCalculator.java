@@ -36,23 +36,23 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 		StringBuffer fromQuery = new StringBuffer();
 		StringBuffer joinQuery = new StringBuffer();
 		if (flagCriteria.flagCriteriaMap.keySet().contains(FlagCriteria.EMR_AVE_QUESTION_ID)){
-			if (!flagCriteria.flagCriteriaMap.keySet().contains(Constants.EMR_2006)){
-				joinQuery.append("LEFT JOIN pqfData q").append(Constants.EMR_2006).append(" ON (q").
-					append(Constants.EMR_2006).append(".conID=cons.id AND q").append(Constants.EMR_2006).
-					append(".questionID=").append(Constants.EMR_2006).append(") ");
-				fromQuery.append(",q").append(Constants.EMR_2006).append(".*");
+			if (!flagCriteria.flagCriteriaMap.keySet().contains(Constants.EMR_YEAR1)){
+				joinQuery.append("LEFT JOIN pqfData q").append(Constants.EMR_YEAR1).append(" ON (q").
+					append(Constants.EMR_YEAR1).append(".conID=cons.id AND q").append(Constants.EMR_YEAR1).
+					append(".questionID=").append(Constants.EMR_YEAR1).append(") ");
+				fromQuery.append(",q").append(Constants.EMR_YEAR1).append(".*");
 			}//if
-			if (!flagCriteria.flagCriteriaMap.keySet().contains(Constants.EMR_2005)){
-				joinQuery.append("LEFT JOIN pqfData q").append(Constants.EMR_2005).append(" ON (q").
-					append(Constants.EMR_2005).append(".conID=cons.id AND q").append(Constants.EMR_2005).
-					append(".questionID=").append(Constants.EMR_2005).append(") ");
-				fromQuery.append(",q").append(Constants.EMR_2005).append(".*");
+			if (!flagCriteria.flagCriteriaMap.keySet().contains(Constants.EMR_YEAR2)){
+				joinQuery.append("LEFT JOIN pqfData q").append(Constants.EMR_YEAR2).append(" ON (q").
+					append(Constants.EMR_YEAR2).append(".conID=cons.id AND q").append(Constants.EMR_YEAR2).
+					append(".questionID=").append(Constants.EMR_YEAR2).append(") ");
+				fromQuery.append(",q").append(Constants.EMR_YEAR2).append(".*");
 			}//if
-			if (!flagCriteria.flagCriteriaMap.keySet().contains(Constants.EMR_2004)){
-				joinQuery.append("LEFT JOIN pqfData q").append(Constants.EMR_2004).append(" ON (q").
-					append(Constants.EMR_2004).append(".conID=cons.id AND q").append(Constants.EMR_2004).
-					append(".questionID=").append(Constants.EMR_2004).append(") ");
-				fromQuery.append(",q").append(Constants.EMR_2004).append(".*");
+			if (!flagCriteria.flagCriteriaMap.keySet().contains(Constants.EMR_YEAR3)){
+				joinQuery.append("LEFT JOIN pqfData q").append(Constants.EMR_YEAR3).append(" ON (q").
+					append(Constants.EMR_YEAR3).append(".conID=cons.id AND q").append(Constants.EMR_YEAR3).
+					append(".questionID=").append(Constants.EMR_YEAR3).append(") ");
+				fromQuery.append(",q").append(Constants.EMR_YEAR3).append(".*");
 			}//if
 		}//if
 		for (String qID: flagCriteria.flagCriteriaMap.keySet()) {

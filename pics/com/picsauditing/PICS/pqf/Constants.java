@@ -16,10 +16,12 @@ public class Constants {
 	public static final String MANUAL_REVISION_QID = "1599";
 	public static final String[] UPLOAD_CAT_IDS = {"33","93","75"};
 
-	public static final String EMR_2006 = "1519";
-	public static final String EMR_2005 = "889";
-	public static final String EMR_2004 = "126";
-	public static final String EMR_2003 = "127";
+	public static String EMR_YEAR1 = "1519";
+	public static String EMR_YEAR2 = "889";
+	public static String EMR_YEAR3 = "126";
+	public static String EMR_YEAR4 = "127";
+	
+	
 //	public static final String HURDLE = "1385";
 //	public static final String HURDLE = "318";
 

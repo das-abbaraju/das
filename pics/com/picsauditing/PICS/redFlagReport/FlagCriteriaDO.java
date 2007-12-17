@@ -56,11 +56,11 @@ public class FlagCriteriaDO{
 		if (FlagCriteria.EMR_AVE_QUESTION_ID.equals(questionID)){
 			try{
 				float temp = 0;
-				questionID = com.picsauditing.PICS.pqf.Constants.EMR_2006;
+				questionID = com.picsauditing.PICS.pqf.Constants.EMR_YEAR1;
 				temp += Float.parseFloat(getAnswer(rs));
-				questionID = com.picsauditing.PICS.pqf.Constants.EMR_2005;
+				questionID = com.picsauditing.PICS.pqf.Constants.EMR_YEAR2;
 				temp += Float.parseFloat(getAnswer(rs));
-				questionID = com.picsauditing.PICS.pqf.Constants.EMR_2004;
+				questionID = com.picsauditing.PICS.pqf.Constants.EMR_YEAR3;
 				temp += Float.parseFloat(getAnswer(rs));
 				questionID = FlagCriteria.EMR_AVE_QUESTION_ID;
 				temp = temp/3;

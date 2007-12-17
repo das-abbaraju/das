@@ -482,11 +482,11 @@ public class SearchBean {
 		}
 		if (isHurdleRatesReport){
 			pqfJoinQuery = "LEFT JOIN pqfData q1 ON (q1.conID=accounts.id AND q1.questionID="+
-				com.picsauditing.PICS.pqf.Constants.EMR_2006+") "+
+				com.picsauditing.PICS.pqf.Constants.EMR_YEAR1+") "+
 				"LEFT JOIN pqfData q2 ON (q2.conID=accounts.id AND q2.questionID="+
-				com.picsauditing.PICS.pqf.Constants.EMR_2005+") "+
+				com.picsauditing.PICS.pqf.Constants.EMR_YEAR2+") "+
 				"LEFT JOIN pqfData q3 ON (q3.conID=accounts.id AND q3.questionID="+
-				com.picsauditing.PICS.pqf.Constants.EMR_2004+") "+
+				com.picsauditing.PICS.pqf.Constants.EMR_YEAR3+") "+
 				"LEFT JOIN pqfData q1385 ON (q1385.conID=accounts.id AND q1385.questionID=1385) "+
 				"LEFT JOIN pqfData q318 ON (q318.conID=accounts.id AND q318.questionID=318) ";
 			if(!"".equals(searchEMRRate))
@@ -494,10 +494,10 @@ public class SearchBean {
 		}//if
 		if (isEMRRatesReport){
 			pqfJoinQuery = "LEFT JOIN pqfData q1 ON (q1.conID=accounts.id AND q1.questionID="+
-				com.picsauditing.PICS.pqf.Constants.EMR_2006+") LEFT JOIN pqfData q2 ON "+
-				"(q2.conID=accounts.id AND q2.questionID="+com.picsauditing.PICS.pqf.Constants.EMR_2005+
+				com.picsauditing.PICS.pqf.Constants.EMR_YEAR1+") LEFT JOIN pqfData q2 ON "+
+				"(q2.conID=accounts.id AND q2.questionID="+com.picsauditing.PICS.pqf.Constants.EMR_YEAR2+
 				") LEFT JOIN pqfData q3 ON (q3.conID=accounts.id AND q3.questionID="+
-				com.picsauditing.PICS.pqf.Constants.EMR_2004+") ";
+				com.picsauditing.PICS.pqf.Constants.EMR_YEAR3+") ";
 		}//if
 		if ("Contractor".equals(searchType))
 			joinQuery+="INNER JOIN contractor_info ON (accounts.id=contractor_info.id) ";

@@ -5,7 +5,9 @@
 		cID = "0";
 
 //	int curYear = com.picsauditing.PICS.DateBean.getCurrentYear();
-	int curYear = 2007;
+	int day = Integer.valueOf(this.getServletContext().getInitParameter("day"));
+	int month = Integer.valueOf(this.getServletContext().getInitParameter("month"));
+	int curYear = com.picsauditing.PICS.DateBean.getCurrentYear(day, month);
 	oBean.setListFromDB(cID);
 	oBean.setShowLinks(pBean);
 	int count = 1;
