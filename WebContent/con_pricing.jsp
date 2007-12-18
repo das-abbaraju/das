@@ -7,11 +7,11 @@
 
 <html>
 <head>
-  <title>PICS - Pacific Industrial Contractor Screening</title>
+  <title>PICS - Contractor Pricing</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <link href="PICS.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor="#EEEEEE" background="images/watermark.gif" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<body bgcolor="#EEEEEE" background="images/watermark.gif" vlink="#003366" alink="#003366" style="margin: 10px; text-align: center;">
   <table border="1" cellspacing="1" cellpadding="1">
 	<tr class="whiteTitle">
 	  <td colspan="3" bgcolor="#993300" align="center">PICS Annual Membership Price</td>
@@ -52,6 +52,9 @@
 	  <td>$99</td>
 	</tr>
   </table>
-	  <br><span class="redMain">* There is an account activation fee of $99 for new account registration, and $199 for reactivation</span>
+  <p class="redMain">* There is an account activation fee of $99 for new account registration, and $199 for reactivation</p>
+  <form>
+    <input type="button" value="Close" onClick="window.close()">
+  </form>
 </body>
 </html>

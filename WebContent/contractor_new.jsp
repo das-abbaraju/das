@@ -1,7 +1,6 @@
 <%//@ page language="java" errorPage="exception_handler.jsp"%>
-<%@ page language="java"%>
-<% int whichPage = 1;%>
-<%// 11-15-04 Brittney - Made Audit Requested By default to blank, added error if no operator/Pics selected%>
+<%@ page language="java" errorPage="exception_handler.jsp" import="com.picsauditing.PICS.*"%>
+
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
@@ -9,13 +8,12 @@
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope="application"/>
 <%
 	String s = request.getParameter("submit");
-	if (request.getParameter("submit") !=null) {
+	if (s != null) {
 		aBean.setFromUploadRequestClientNew(request);
 		cBean.setFromUploadRequestClientNew(request);
 		if (!aBean.contractorNameExists(aBean.name) && aBean.isOK() && cBean.isOKClientCreate() && aBean.writeNewToDB()) {
 			cBean.id = aBean.id;
 			cBean.writeNewToDB(FACILITIES);
-//			com.picsauditing.PICS.EmailBean.sendJohnNewAccountEmail(aBean.name);
 
 			response.sendRedirect("contractor_new_confirm.jsp?i="+aBean.id);
 			return;
@@ -190,9 +188,9 @@
             <tr>
               <td class="blueMain" valign="top">Currently working with</td>
               <td class="redMain" valign="top">
-                <%=com.picsauditing.PICS.Utilities.inputMultipleSelect2MultiplesScript("generalContractors", "blueMain","10", cBean.getGeneralContractorsArray(), oBean.getOperatorsArray(com.picsauditing.PICS.OperatorBean.DONT_INCLUDE_PICS, com.picsauditing.PICS.OperatorBean.INCLUDE_ID, com.picsauditing.PICS.OperatorBean.INCLUDE_GENERALS, com.picsauditing.PICS.OperatorBean.INCLUDE_INACTIVE),"change();")%>
-            	<br />* Please choose one or more facilities to apply to join their approved contractor list.
-              	<br />  Hold the 'CTRL' key to select more than one.
+                <%=Utilities.inputMultipleSelect2MultiplesScript("generalContractors", "blueMain","10", cBean.getGeneralContractorsArray(), oBean.getOperatorsArray(OperatorBean.DONT_INCLUDE_PICS, OperatorBean.INCLUDE_ID, OperatorBean.INCLUDE_GENERALS, OperatorBean.ONLY_ACTIVE),"change();")%>
+            	*<br />Please choose one or more facilities to apply to join their approved contractor list.
+              	<br />Hold the 'CTRL' key to select more than one.
               </td>
             </tr>
             <tr>
@@ -207,7 +205,9 @@
             <tr>
               <td class="blueMain" align="right">Annual Membership Fee</td>
               <td class="redMain"><span id="annualFee" class="blueMain" style="font-weight: bold; font-style: italic;">$~</span>
-				This is based on the number of facilities you select above. <a target="_blank" href="con_pricing.jsp">Click to view pricing</a></td>
+				This is based on the number of facilities you select above.<br />
+				<a href="javascript:popUp('con_pricing.jsp')">Click to view pricing (opens in new window)</a>
+			  </td>
             </tr>
             <tr>
               <td class="blueMain" align="right">One-time Activation Fee</td>
@@ -277,10 +277,16 @@
 
 <script language="Javascript">
 <!--
+function popUp(URL) {
+	day = new Date();
+	id = day.getTime();
+	eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=400');");
+}
+
 function change() {
 	opt1 = document.getElementById('generalContractors');
 	opt2 = document.getElementById('requestedByID');
-	opt2.options[0] = new Option("None", "0");
+	opt2.options[0] = new Option("", "0");
 	opt2.length = 1;
 	for(i=0; i<opt1.length; i++) {
 		if (opt1[i].selected) {
@@ -288,10 +294,10 @@ function change() {
 		}
 	}
 	annual_fee = "~";
-	facility_count = opt2.length;
-	if (facility_count > 0) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(1)%>";
-	if (facility_count > 1) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(4)%>";
-	if (facility_count > 4) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(8)%>";
+	facility_count = opt2.length - 1; //remove the blank option from the facility count
+	if (facility_count > 0) annual_fee = "<%=Billing.calcBillingAmount(1)%>";
+	if (facility_count > 1) annual_fee = "<%=Billing.calcBillingAmount(4)%>";
+	if (facility_count > 4) annual_fee = "<%=Billing.calcBillingAmount(8)%>";
 	if (facility_count > 8) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(12)%>";
 	if (facility_count > 12) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(19)%>";
 	if (facility_count > 19) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(20)%>";

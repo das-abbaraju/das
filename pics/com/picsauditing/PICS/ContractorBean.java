@@ -1146,7 +1146,7 @@ public class ContractorBean extends DataBean {
 		}//if
 		if (main_trade.equals(TradesBean.DEFAULT_SELECT_TRADE))
 			errorMessages.addElement("Please select a main trade");
-		if (requestedByID.length() == 0)
+		if (requestedByID == null || requestedByID.length() == 0)
 			errorMessages.addElement("Please select a choice for the Audit Requested By field");
 		return (errorMessages.size() == 0);
 	}//isOKClientCreate

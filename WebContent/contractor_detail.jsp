@@ -153,34 +153,6 @@ function MM_displayStatusMsg(msgStr) { //v1.0
 <%
 	}
 
-
-
-	// Trevor Allred Temporary code only for use on the Holcim sales demo
-	// Remove after 11/25/07
-	if (aBean.id.equals("1316")) {
-%>	<span class=redMain>
-	<strong>Evaluations:</strong>
-	<table class="blueMain" style="border: 1px solid black;" cellpadding="1" cellspacing="1">
-		<tr>
-			<td><a href="evaluation_view.jsp?id=45">Holcim Trident</a></td>
-			<td>11/5/07</td>
-		</tr>
-		<tr>
-			<td><a href="evaluation_view.jsp?id=47">Holcim Devil's Slide</a></td>
-			<td>11/5/07</td>
-		</tr>
-		<tr class="over">
-			<td colspan="2" align="center">
-				<a href="evaluation_edit.jsp?action=new">Begin New Evaluation</a>
-			</td>
-		</tr>
-	</table>
-	</span> <%
- 	}//if
-	// End of sales demo
-
-	
-	
  	if (pBean.isAdmin()
  			|| (!pBean.isContractor() && pBean.canSeeSet.contains(id))) {
  %>

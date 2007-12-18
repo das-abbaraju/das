@@ -299,7 +299,7 @@ public class Utilities {
 		ArrayList<String> tempAL = new ArrayList<String>();
 		ArrayList<String> selectedOptionsAL = new ArrayList<String>();
 		if (arrayWithValues && (null != firstValue))
-			tempAL.add(firstValue);			
+			tempAL.add(firstValue);
 		if (null != firstOption)
 			tempAL.add(firstOption);
 		if (null != selectedOptions)
@@ -308,9 +308,9 @@ public class Utilities {
 			selectedOptionsAL.add(selectedOption);	
 		tempAL.addAll(Arrays.asList(optionsArray));
 		StringBuffer temp = new StringBuffer();
-		temp.append(" <select name=\"").append(name).append("\" class=").append(classType);
+		temp.append(" <select id=\"").append(name).append("\" name=\"").append(name).append("\" class=").append(classType);
 		if (!NO_ON_CHANGE_SCRIPT.equals(onChangeScript))
-			temp.append(" onChange=\""+onChangeScript+"\"");
+			temp.append(" id=\"").append(name).append("\" onChange=\""+onChangeScript+"\"");
 		if (null != size)
 			temp.append(" size=").append(size);
 		if (multiple)
