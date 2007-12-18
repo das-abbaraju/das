@@ -8,28 +8,12 @@
 	
 	<!-- EMR Question ID's and Osha afterDate-->
 	<context-param>
-		<param-name>EMR_YEAR1</param-name>
-		<param-value>1519</param-value>
-	</context-param>
-	<context-param>
-		<param-name>EMR_YEAR2</param-name>
-		<param-value>889</param-value>
-	</context-param>
-	<context-param>
-		<param-name>EMR_YEAR3</param-name>
-		<param-value>126</param-value>
-	</context-param>
-	<context-param>
-		<param-name>EMR_YEAR4</param-name>
-		<param-value>127</param-value>
-	</context-param>
-	<context-param>
 		<param-name>currentYearStart</param-name>
 		<param-value>2/28</param-value>
 	</context-param>
 	<context-param>
 		<param-name>loginStartDate</param-name>
-		<param-value>12/1</param-value>
+		<param-value>1/1</param-value>
 	</context-param>
 	<!-- END EMR Question ID's -->
 	

@@ -731,7 +731,7 @@ public class AccountBean extends DataBean {
 	public boolean isFirstLoginOfYear(String strLoginStart) throws Exception {
 		if ("Contractor".equals(type) && !"".equals(accountDate)){
 			String loginStart = strLoginStart + "/" + String.valueOf(DateBean.getCurrentYear());			
-			if(!DateBean.isAfterToday(loginStart) && DateBean.isFirstBeforeSecond(loginStart, prevLastLogin))
+			if(DateBean.isFirstBeforeSecond(prevLastLogin,loginStart))
 				return true;
 		}
 		return false;
