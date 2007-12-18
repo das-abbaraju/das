@@ -81,7 +81,11 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
               <tr>
                 <td bgcolor="#CCCCCC"><img src="images/spacer.gif" alt="spacer" width="1" height="1"></td>
                 <td valign="top" bgcolor="#FFFFFF"><table border="0" align="center" cellpadding="0" cellspacing="0">
-					  					  <tr>
+					  					  					  <tr>
+                      <td  bgcolor="#F8F8F8" class="blueHome2"><strong>11/01/07</strong> <strong class="articleTitle">ConocoPhillips Billings joins PICS</strong><br>
+                        The Billings Refinery joins other COP business units in using PICS to help them increase safety, efficiency and compliance.  ConocoPhillips Billings represents the 4th ConocoPhillips refinery that has joined PICS, and has a refining capacity of 60,000 bpd.</td>
+                    </tr>
+										  <tr>
                       <td class="blueHome2"><strong>10/17/07</strong> <strong class="articleTitle">2007 National Safety Congress & Expo</strong><br>
                        PICS joins NSC for their 95th Congress & Exp and 15,000 safety, health and environmental professionals.  The meeting was held in Chicago, IL this year and the three-day expo included industry reps from Manufacturing, Petrochemical, Mining, Pharmaceuticals, Construction, Paper & Pulp.</td>
                     </tr>
