@@ -95,7 +95,9 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
                               BP Carson Refinery<br>
                               BP Pipelines &amp; Logistics<br>
                               BP Coke &amp; Marketing<br>
+							  BP Toledo Refinery<br>
                               BP Whiting Refinery<br>
+							  ConocoPhillips Billings Refinery<br>
                               ConocoPhillips Carson Refinery<br>
                               ConocoPhillips Wilmington Refinery<br>
                               ConocoPhillips Rodeo Refinery<br>
@@ -105,7 +107,12 @@ CRI<br>
 Empire Southwest (CAT)<br>
 Fluor Enterprises<br>
 Flying J<br>
-Huntsman International
+Huntsman International<br>
+Huntsman Auburn Hills<br>
+Huntsman Conroe<br>
+Huntsman Charlotte<br>
+Huntsman Dayton<br>
+Huntsman Derry<br>
 </td>
                           </tr>
                         </table>                          </td>
@@ -116,21 +123,31 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
                       <param name="quality" value="high">
                       <embed src="flash/client_logoflash.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="145" height="130"></embed>
                     </object></noscript><script type="text/javascript" src="js/ieupdate.js"></script><br><br>				
-
+Huntsman East Lansing<br>
+Huntsman Freeport<br>
+Huntsman Geismar<br>
+Huntsman High Point<br>
+Huntsman Los Angeles<br>
+Huntsman McIntosh<br>
+Huntsman Port Neches<br>
+Huntsman Ringwood (Chicago)<br>
+Huntsman Woodlands<br>
 IDS Real Estate<br>
 Jiffy Lube International<br>
 Kajima Construction Services<br>
-March Point Cogeneration Company<br>
+						March Point Cogeneration Company<br>
 						Martinez Catalyst Plant<br>
-						Motiva Convent Refinery<br>
-                          Motiva Norco Refinery<br>
-Motiva Port Arthur Refinery<br>
-Motiva Retail
+						Motiva Convent Refinery
+
 </td>
                         <td valign="top" nowrap class="blueClientList">
+						
+						Motiva Norco Refinery<br>
+						Motiva Port Arthur Refinery<br>
+						Motiva Retail<br>
 						Motiva SD&amp;CM<br>
 						Motorola USA<br>
-Shell Chemical Geismar<br>
+						Shell Chemical Geismar<br>
     Shell Chemical Mobile<br>
   Shell Chemical Norco<br>
 Shell Deer Park<br>
@@ -142,6 +159,7 @@ Shell Oil Products US RMT<br>
 Shell Puget Sound Refinery<br>
 Shell Retail<br>
 Suncor Energy<br>
+Suncor Energy Commerce City Refinery<br>
 Tesoro Anacortes Refinery<br>
 Tesoro Kapolei Refinery<br>
 Tesoro Martinez Refinery<br>
@@ -156,15 +174,7 @@ Watson Cogen</td>
                       <td> <img src="images/client_testimonial1.jpg" alt="Client Testimonial" width="322" height="90" hspace="1" vspace="20"></td>
                       <td align="right"> <img src="images/client_testimonial2.jpg" alt="Client Testimonial" width="322" height="90" hspace="1" vspace="20"></td>
                     </tr>
-                  </table>
-                  
-				                    <script type="text/javascript">
-AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0','width','655','height','330','title','Map of PICS National Reach','src','flash/map','quality','high','pluginspage','http://www.macromedia.com/go/getflashplayer','movie','flash/map' ); //end AC code
-</script><noscript><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0" width="655" height="330" title="Map of PICS National Reach">
-                    <param name="movie" value="flash/map.swf">
-                    <param name="quality" value="high">
-                    <embed src="flash/map.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="655" height="330"></embed>
-                  </object></noscript><script type="text/javascript" src="js/ieupdate.js"></script>
+                  </table> <img src="images/map_ot.jpg" width="656" height="331">
                   <br>
                   <br></td>
               </tr>
