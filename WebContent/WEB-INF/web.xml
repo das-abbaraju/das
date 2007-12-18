@@ -24,12 +24,12 @@
 		<param-value>127</param-value>
 	</context-param>
 	<context-param>
-		<param-name>day</param-name>
-		<param-value>28</param-value>
+		<param-name>currentYearStart</param-name>
+		<param-value>2/28</param-value>
 	</context-param>
 	<context-param>
-		<param-name>month</param-name>
-		<param-value>2</param-value>
+		<param-name>loginStartDate</param-name>
+		<param-value>12/1</param-value>
 	</context-param>
 	<!-- END EMR Question ID's -->
 	

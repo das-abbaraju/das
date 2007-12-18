@@ -57,7 +57,7 @@ public class AccountBean extends DataBean {
 	public String oldPassword = ""; // used for determining if the password has changed 
 	public String emailConfirmedDate = "";
 	boolean updatedPassword = false;
-	
+	public String prevLastLogin = "1/1/01";
 	public void setId(String s) {id = s;}//setId
 	public void setActive(String s) {active = s;}//setActive
 	public String getId() {return id;}//getId
@@ -410,9 +410,11 @@ public class AccountBean extends DataBean {
 			// Login attempt successful  //
 			///////////////////////////////
 			
+			
 			// set the account object and discard results
 			setFromResultSet(SQLResult);
 			SQLResult.close();
+			prevLastLogin = lastLogin;
 			
 			// Update the lastLogin attempt on both accounts and users tables
 			String updateQuery = "UPDATE accounts SET lastLogin=NOW() WHERE id="+id;
@@ -726,6 +728,16 @@ public class AccountBean extends DataBean {
 		return false;
 	}//isFirstLogin
 	
+	public boolean isFirstLoginOfYear(String strLoginStart) throws Exception {
+		if ("Contractor".equals(type) && !"".equals(accountDate)){
+			String loginStart = strLoginStart + "/" + String.valueOf(DateBean.getCurrentYear());			
+			if(!DateBean.isAfterToday(loginStart) && DateBean.isFirstBeforeSecond(loginStart, prevLastLogin))
+				return true;
+		}
+		return false;
+	}//isFirstLogin
+	
+	
 	public boolean mustSubmitPQF() {
 		if ("Contractor".equals(type) && "Yes".equals(canEditPrequal))
 			return true;
@@ -822,6 +834,14 @@ public class AccountBean extends DataBean {
 	public String getPassword() {
 		return password;
 	}
+	public String getPrevLastLogin() {
+		return lastLogin;
+	}
+	public void setPrevLastLogin(String lastLogin) {
+		this.lastLogin = lastLogin;
+	}
+	
+	
 	
 	
 }//AccountBean

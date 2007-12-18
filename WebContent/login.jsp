@@ -16,7 +16,7 @@ int i3 = 25000;
 	try{
 		aBean.setFromDB(request.getParameter("id"));
 		lname = aBean.getUsername();
-		lpass = aBean.getPassword();
+		lpass = aBean.getPassword();		
 	} catch(Exception e) {
 	
 	}
@@ -26,6 +26,7 @@ int i3 = 25000;
 		lname = request.getParameter("username");
 		lpass = request.getParameter("password");
 		if (aBean.checkLogin(lname, lpass, request)) {
+			
 			pBean.loggedIn = true;
 			pBean.setUserID(aBean.id);
 			pBean.setUserName(aBean.name);
@@ -89,6 +90,7 @@ int i3 = 25000;
 				return;
 			}//if
 			if (pBean.isContractor()){
+				
 				pBean.setAllFacilitiesFromDB(pBean.userID);
 				pBean.uBean = new UserBean();
 				pBean.uBean.name = aBean.contact;					
@@ -97,6 +99,12 @@ int i3 = 25000;
 				cBean.setFromDB(pBean.userID);
 				cBean.accountDate = DateBean.getTodaysDate();
 				cBean.writeToDB();
+				response.sendRedirect("con_selectFacilities.jsp?id="+aBean.id);
+				return;
+			}
+			if(aBean.isFirstLoginOfYear(this.getServletContext().getInitParameter("loginStartDate"))){
+				cBean.setFromDB(pBean.userID);
+				cBean.accountDate = DateBean.getTodaysDate();
 				response.sendRedirect("con_selectFacilities.jsp?id="+aBean.id);
 				return;
 			}

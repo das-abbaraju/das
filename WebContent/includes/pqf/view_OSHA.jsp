@@ -4,10 +4,8 @@
 	if (cID == null || "".equals(cID))
 		cID = "0";
 
-//	int curYear = com.picsauditing.PICS.DateBean.getCurrentYear();
-	int day = Integer.valueOf(this.getServletContext().getInitParameter("day"));
-	int month = Integer.valueOf(this.getServletContext().getInitParameter("month"));
-	int curYear = com.picsauditing.PICS.DateBean.getCurrentYear(day, month);
+//	int curYear = com.picsauditing.PICS.DateBean.getCurrentYear();	
+	int curYear = com.picsauditing.PICS.DateBean.getCurrentYear(this.getServletContext().getInitParameter("currentYearStart"));
 	oBean.setListFromDB(cID);
 	oBean.setShowLinks(pBean);
 	int count = 1;

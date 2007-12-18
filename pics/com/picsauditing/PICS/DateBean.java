@@ -90,15 +90,12 @@ public class DateBean {
 		 return cal.get(Calendar.YEAR);
 	}//getCurrentYear
 	
-	public static int getCurrentYear(int day, int month) {
-		Calendar cur = Calendar.getInstance();
-		Calendar cal = Calendar.getInstance();		
-		cal.set(Calendar.DAY_OF_MONTH, day);
-		cal.set(Calendar.MONTH, month);
-		if(cur.after(cal))
-		  return cal.get(Calendar.YEAR);
+	public static int getCurrentYear(String strCurrentYearStart) throws Exception{
+		String curYearStart = strCurrentYearStart + "/" +  String.valueOf(DateBean.getCurrentYear() + 1);
+		if(DateBean.isAfterToday(curYearStart))
+		  return DateBean.getCurrentYear();
 		else
-		  return cal.get(Calendar.YEAR) - 1;  
+		  return DateBean.getCurrentYear() - 1;  
 		 
 	}//getCur
 	

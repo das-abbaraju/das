@@ -12,9 +12,7 @@
 	String conID = request.getParameter("id");
 	String catID = request.getParameter("catID");
 //	int currentYear = com.picsauditing.PICS.DateBean.getCurrentYear();
-	int day = Integer.valueOf(this.getServletContext().getInitParameter("day"));
-	int month = Integer.valueOf(this.getServletContext().getInitParameter("month"));
-	int currentYear = com.picsauditing.PICS.DateBean.getCurrentYear(day, month);
+	int currentYear = com.picsauditing.PICS.DateBean.getCurrentYear(this.getServletContext().getInitParameter("currentYearStart"));
 	boolean isNew = "Yes".equals(request.getParameter("isNew"));
 	String action = request.getParameter("action");
 	if ("Save".equals(action) && "Yes".equals(request.getParameter("catDoesNotApply"))) {
