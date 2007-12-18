@@ -1,9 +1,15 @@
+<%@ page language="java" import="com.picsauditing.PICS.*" %>
 <jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope ="session"/>
 
 <%	if (null == pBean)
-		pBean = new com.picsauditing.PICS.PermissionsBean();
-	pBean.thisPageID = request.getParameter("id"); 
+		pBean = new PermissionsBean();
+	pBean.thisPageID = request.getParameter("id");
 	
+	if(!pBean.checkAccess(PermissionsBean.BASIC, response))
+		return; // make sure people are logged in at least
+	if(pBean.isContractor() && !pBean.checkAccess(PermissionsBean.OP_VIEW, response))
+		return;
+
 	String userID = (String)session.getAttribute("userid");
 	String utype = (String)session.getAttribute("usertype");
 	String uid = (String)session.getAttribute("userid");
@@ -16,20 +22,4 @@
 	boolean isContractor = "Contractor".equalsIgnoreCase(utype);
 	boolean isOperator = "Operator".equals(utype);
 	boolean isAuditor = "Auditor".equals(utype);
-	
-	if(pBean.isContractor() && !pBean.checkAccess(com.picsauditing.PICS.PermissionsBean.OP_VIEW, response))
-		return;
-
-
-/*	if (null == uid) {
-		response.sendRedirect("/logout.jsp");
-		return;
-	}//if
-	if (!(isAdmin ||
-			canSeeSet.contains(req_uid) || auditorCanSeeSet.contains(req_uid)
-			)) {
-		response.sendRedirect("/logout.jsp");
-		return;
-	}//if
-*/
 %>
