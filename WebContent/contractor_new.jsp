@@ -189,7 +189,7 @@
               <td class="blueMain" valign="top">Currently working with</td>
               <td class="redMain" valign="top">
                 <%=Utilities.inputMultipleSelect2MultiplesScript("generalContractors", "blueMain","10", cBean.getGeneralContractorsArray(), oBean.getOperatorsArray(OperatorBean.DONT_INCLUDE_PICS, OperatorBean.INCLUDE_ID, OperatorBean.INCLUDE_GENERALS, OperatorBean.ONLY_ACTIVE),"change();")%>
-            	*<br />Please choose one or more facilities to apply to join their approved contractor list.
+            	*<br />Choose all the facilities your company works at as well as those you want to apply to work at
               	<br />Hold the 'CTRL' key to select more than one.
               </td>
             </tr>
@@ -304,6 +304,7 @@ function change() {
 
 	document.getElementById("annualFee").innerHTML = "$" + annual_fee;
 }
+change();
 //-->
 </script>
 <%@ include file="includes/statcounter.jsp"%>
