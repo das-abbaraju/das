@@ -182,6 +182,10 @@ public class OSHABean extends DataBean {
 
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
 		OID = SQLResult.getString("OID");
+		if(OID == null){
+			OID = "";
+			return;
+		}
 		conID = SQLResult.getString("conID");
 		SHAType = SQLResult.getString("SHAType");
 		location = SQLResult.getString("location");
