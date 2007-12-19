@@ -53,6 +53,10 @@ public class JPADAOFactory extends DAOFactory {
 		return (GeneralContractorDAO) instantiateDAO(GeneralContractorDAOJPA.class);
 	}
 
+	@Override
+	public PqfquestionDAO getPqfquestionDAO() {
+		return (PqfquestionDAO) instantiateDAO(PqfquestionDAOJPA.class);
+	}
 
 
 

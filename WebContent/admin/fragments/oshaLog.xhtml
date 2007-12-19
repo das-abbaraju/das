@@ -40,9 +40,9 @@
 		</h:panelGrid>
 		<h:panelGrid columns="4" styleClass="blueHeader">
 			<h:outputText value="" styleClass="blueTitle" />
-			<h:outputText value="Date1" styleClass="blueTitle" />
-			<h:outputText value="Date2" styleClass="blueTitle" />
-			<h:outputText value="Date3" styleClass="blueTitle" />
+			<h:outputText value="#{contractorBean.currentYear - 1}" styleClass="blueTitle" />
+			<h:outputText value="#{contractorBean.currentYear - 2}" styleClass="blueTitle" />
+			<h:outputText value="#{contractorBean.currentYear - 3}" styleClass="blueTitle" />
 			<h:outputText styleClass="redMain" value="Man Hours Worked" />
 			<h:inputText label="manHours1" styleClass="formsNumber" size="12"
 				value="#{log.entity.manHours1}">

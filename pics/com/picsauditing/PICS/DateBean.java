@@ -91,11 +91,11 @@ public class DateBean {
 	}//getCurrentYear
 	
 	public static int getCurrentYear(String strCurrentYearStart) throws Exception{
-		String curYearStart = strCurrentYearStart + "/" +  String.valueOf(DateBean.getCurrentYear() + 1);
-		if(DateBean.isAfterToday(curYearStart))
-		  return DateBean.getCurrentYear();
+		String curYearStart = strCurrentYearStart + "/" +  String.valueOf(getCurrentYear());
+		if(isAfterToday(curYearStart))
+		  return getCurrentYear();
 		else
-		  return DateBean.getCurrentYear() - 1;  
+		  return getCurrentYear() + 1;  
 		 
 	}//getCur
 	

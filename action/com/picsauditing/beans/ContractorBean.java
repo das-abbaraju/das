@@ -31,6 +31,7 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 	private ContractorInfoReportDAO dao;
 	private Map<String, Integer> operators = null;
 	private Map<String, Integer> auditors = null;
+	private String dateStart = null;
 	
 		
 	@Override
@@ -70,10 +71,7 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 				reports = dao.executeQuery(query.toString(), params);
 			}
 			
-			//StringBuffer countBuf = queryBuf.insert(0, startCount);
-			//countBuf.setLength(countBuf.length() - 7);
-			//System.out.println("Query=" + countBuf.toString());
-			//setCount((Long)dao.executeScalarQuery(countBuf.toString(), params));
+			
 		}
 		
 		
@@ -224,6 +222,32 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 			search(null);
 			return "success";
 		}
+		
+		@Override
+		public int getCurrentYear(){
+			int yr = super.getCurrentYear();
+			String start = dateStart + "/" + String.valueOf(yr);
+			try{
+				if(!com.picsauditing.PICS.DateBean.isFirstBeforeSecond(com.picsauditing.PICS.DateBean.getTodaysDate(), start))
+					yr++;
+				
+			}catch(Exception ex){
+				
+			}
+			
+			return yr;
+		}
+
+		public String getDateStart() {
+			return dateStart;
+		}
+
+		public void setDateStart(String dateStart) {
+			this.dateStart = dateStart;
+		}
+		
+		
+		
 		
 	
 }

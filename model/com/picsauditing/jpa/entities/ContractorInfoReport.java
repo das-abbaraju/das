@@ -95,7 +95,7 @@ public void setAccount(AccountReport account) {
     @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     @JoinColumn(name="conID")
      //@Where(clause="questionID=126 or questionID=889 or questionID=1519")
-    @Where(clause="questionID in (126,889,1519)")
+    @Where(clause="questionID in (889,1519,1617)")
     public List<PqfLogReport> getEmrLogs() {
         return this.emrLogs;
     }

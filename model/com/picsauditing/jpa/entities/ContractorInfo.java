@@ -1001,7 +1001,7 @@ public class ContractorInfo  implements java.io.Serializable {
 //@OneToMany(fetch=FetchType.LAZY, mappedBy="contractorInfo")
 @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     @JoinColumn(name="conID")
-     @Where(clause="questionID in (123, 124, 125, 126, 872, 889, 891, 1519, 1522)")
+     @Where(clause="questionID in (123, 124, 125, 872, 889, 891, 1519, 1522, 1617, 1618)")
     public List<PqfLog> getPqfLogs() {
         return this.PqfLogs;
     }

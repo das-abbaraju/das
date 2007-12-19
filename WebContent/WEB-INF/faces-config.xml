@@ -1,20 +1,17 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<faces-config version="1.2"
-              xmlns="http://java.sun.com/xml/ns/javaee"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
 
-  <application>
-    <view-handler>
-      com.sun.facelets.FaceletViewHandler
-    </view-handler>    
-  </application> 
-  
-  <managed-bean>
-		<managed-bean-name>
-		contractorBean</managed-bean-name>
+	<application>
+		<view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
+	</application>
+
+	<managed-bean>
+		<managed-bean-name>contractorBean</managed-bean-name>
 		<managed-bean-class>
-		com.picsauditing.beans.ContractorBean</managed-bean-class>
+			com.picsauditing.beans.ContractorBean
+		</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 		<managed-property>
 			<description>
@@ -23,74 +20,94 @@
 			</description>
 			<property-name>maxResults</property-name>
 			<value>-1</value>
-		</managed-property>	
+		</managed-property>
 		<managed-property>
 			<property-name>persistenceCtx</property-name>
 			<value>PicsDBJPA</value>
-		</managed-property>		
+		</managed-property>
+		<managed-property>
+			<property-name>dateStart</property-name>
+			<value>12/18</value>
+		</managed-property>
 	</managed-bean>
-	
+
 	<managed-bean>
-		<managed-bean-name>
-		oshaBean</managed-bean-name>
+		<managed-bean-name>oshaBean</managed-bean-name>
 		<managed-bean-class>
-		com.picsauditing.beans.OshaLogBean</managed-bean-class>
+			com.picsauditing.beans.OshaLogBean
+		</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 		<managed-property>
 			<property-name>persistenceCtx</property-name>
 			<value>PicsDBJPA</value>
-		</managed-property>		
+		</managed-property>
 	</managed-bean>
-	
+
 	<managed-bean>
-		<managed-bean-name>
-		emrBean</managed-bean-name>
+		<managed-bean-name>emrBean</managed-bean-name>
 		<managed-bean-class>
-		com.picsauditing.beans.EmrLogBean</managed-bean-class>
+			com.picsauditing.beans.EmrLogBean
+		</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 		<managed-property>
 			<property-name>persistenceCtx</property-name>
 			<value>PicsDBJPA</value>
-		</managed-property>		
-	</managed-bean>	
-	
-	<managed-bean>
-		<managed-bean-name>
-		textMgr1</managed-bean-name>
-		<managed-bean-class>
-		com.picsauditing.beans.TextManagerBean</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>		
+		</managed-property>
+		<managed-property>
+			<property-name>questionIDs</property-name>
+			<list-entries>
+				<value-class>java.lang.Short</value-class>
+				<value>123</value>
+				<value>124</value>
+				<value>125</value>
+				<value>872</value>
+				<value>889</value>
+				<value>891</value>
+				<value>1519</value>
+				<value>1522</value>
+				<value>1617</value>
+				<value>1618</value>
+			</list-entries>
+		</managed-property>
 	</managed-bean>
-	
+
 	<managed-bean>
-		<managed-bean-name>
-		textMgr2</managed-bean-name>
+		<managed-bean-name>textMgr1</managed-bean-name>
 		<managed-bean-class>
-		com.picsauditing.beans.TextManagerBean</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>		
+			com.picsauditing.beans.TextManagerBean
+		</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-	
+
 	<managed-bean>
-		<managed-bean-name>
-		textMgr3</managed-bean-name>
+		<managed-bean-name>textMgr2</managed-bean-name>
 		<managed-bean-class>
-		com.picsauditing.beans.TextManagerBean</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>		
+			com.picsauditing.beans.TextManagerBean
+		</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-	
-	 <navigation-rule>
-    <from-view-id>/admin/*.*</from-view-id>
-    <navigation-case>
-      <from-outcome>osha</from-outcome>
-      <to-view-id>/admin/osha.xhtml</to-view-id>
-      <redirect/>
-    </navigation-case>
-    <navigation-case>
-      <from-outcome>success</from-outcome>
-      <to-view-id>/admin/osha.xhtml</to-view-id>
-      <redirect/>
-    </navigation-case>
-  </navigation-rule>
-  
-   
+
+	<managed-bean>
+		<managed-bean-name>textMgr3</managed-bean-name>
+		<managed-bean-class>
+			com.picsauditing.beans.TextManagerBean
+		</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+
+	<navigation-rule>
+		<from-view-id>/admin/*.*</from-view-id>
+		<navigation-case>
+			<from-outcome>osha</from-outcome>
+			<to-view-id>/admin/osha.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/admin/osha.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+	</navigation-rule>
+
+
 </faces-config>

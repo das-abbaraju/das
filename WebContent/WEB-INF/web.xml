@@ -9,7 +9,7 @@
 	<!-- EMR Question ID's and Osha afterDate-->
 	<context-param>
 		<param-name>currentYearStart</param-name>
-		<param-value>2/28</param-value>
+		<param-value>12/17</param-value>
 	</context-param>
 	<context-param>
 		<param-name>loginStartDate</param-name>
