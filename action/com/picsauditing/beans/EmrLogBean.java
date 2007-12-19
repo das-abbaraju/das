@@ -1,9 +1,11 @@
 package com.picsauditing.beans;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorInfoDAO;
 import com.picsauditing.dao.DAOFactory;
 import com.picsauditing.dao.PqfLogDAO;
@@ -30,7 +32,9 @@ public class EmrLogBean extends JSFListDataModel<PqfLog>{
 		dao = daof.getContractorInfoDAO();
 		PqfquestionDAO qdao = daof.getPqfquestionDAO();
 		PqfLogDAO ldao = daof.getPqfLogDAO();
+		AccountDAO adao = daof.getAccountDAO();		
 		ContractorInfo ci = dao.findById(cid, false);
+		Account auditor = adao.findById(ci.getPqfAuditorId(),false);
 		List<Short> existingIds = new ArrayList<Short>();
 		List<Short> missingIds = new ArrayList<Short>();
 		missingIds.addAll(0, questionIDs);
@@ -43,13 +47,9 @@ public class EmrLogBean extends JSFListDataModel<PqfLog>{
 				for(Short id : missingIds){
 					PqfLogId logId = new PqfLogId(ci.getId(), id);
 					Pqfquestion pqfq = qdao.findById(id, false);
-					PqfLog newLog = new PqfLog(logId, ci, pqfq, Short.valueOf("0"), null, null, null, null, null, null);
-					try{
-						ldao.makePersistent(newLog);
-						ci.getPqfLogs().add(newLog);
-					}catch(Exception ex){
-						
-					}
+					PqfLog newLog = new PqfLog(logId, ci, auditor, pqfq, Short.valueOf("0"), "", "", null, "", "", "");					
+					ci.getPqfLogs().add(newLog);
+					
 				}
 			}
 						

@@ -81,7 +81,8 @@ public class VerifyOshaLog extends Verifier<OshaLog, Short> implements Verifiabl
 
 			
 	public boolean isNa1() {
-		return getEntity().getNa1(). equals("Yes") ? true : false;
+		
+		return (getEntity().getNa1() != null && getEntity().getNa1(). equals("Yes")) ? true : false;
 	}
 
 	public void setNa1(boolean na1) {
@@ -93,7 +94,7 @@ public class VerifyOshaLog extends Verifier<OshaLog, Short> implements Verifiabl
 	}
 
 	public boolean isNa2() {
-		return getEntity().getNa2(). equals("Yes") ? true : false;
+		return (getEntity().getNa2() != null && getEntity().getNa2(). equals("Yes")) ? true : false;
 		
 	}
 
@@ -105,7 +106,7 @@ public class VerifyOshaLog extends Verifier<OshaLog, Short> implements Verifiabl
 	}
 
 	public boolean isNa3() {
-		return getEntity().getNa3(). equals("Yes") ? true : false;
+		return (getEntity().getNa3() != null && getEntity().getNa3(). equals("Yes")) ? true : false;
 	}
 
 	public void setNa3(boolean na3) {

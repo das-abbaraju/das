@@ -32,6 +32,15 @@ public class OshaLogBean extends JSFListDataModel<VerifyOshaLog>{
 			 out.add(vol);
 		 }
 		
+		if(out.size() == 0){
+			VerifyOshaLog vol = new VerifyOshaLog();
+			OshaLog log = new OshaLog();
+			log.setContractorInfo(ci);
+			log.setShatype("OSHA");
+			vol.setEntity(log);
+			out.add(vol);
+		}
+		
 		if(getSelectedItem() == null && out.size() > 0) 
 			setSelectedItem(out.get(0));
 		

@@ -19,9 +19,10 @@ public abstract class JSFListDataModel<T> implements JSFDataModelable<T>{
 	
 		
 	@Override
-	public DataModel getDataModel() {		
+	public DataModel getDataModel() {
 		if(dm.getWrappedData() == null)
-			dm.setWrappedData(getList());				
+			dm.setWrappedData(getList());
+				
 		return dm;
 	}
 		
@@ -72,7 +73,6 @@ public abstract class JSFListDataModel<T> implements JSFDataModelable<T>{
 	
 	@Override
 	public void setSelectedItem(T selectedItem){
-		System.out.println("SelectedItem: " + selectedItem.toString());
 		this.selectedItem = selectedItem;
 	}
 	
@@ -134,10 +134,10 @@ public abstract class JSFListDataModel<T> implements JSFDataModelable<T>{
 	}
 	
 	public String refreshModel(){
-		int row = dm.getRowIndex();
+		//int row = dm.getRowIndex();
 		clearModel();
-		getDataModel();
-		dm.setRowIndex(row);
+		//getDataModel();
+		//dm.setRowIndex(row);
 		return "success";
 	}
 	

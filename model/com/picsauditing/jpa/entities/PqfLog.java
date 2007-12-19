@@ -133,7 +133,7 @@ public class PqfLog  implements java.io.Serializable {
         this.comment = comment;
     }
     @Temporal(TemporalType.DATE)
-    @Column(name="dateVerified", nullable=false, length=10)
+    @Column(name="dateVerified", nullable=true, length=10)
     public Date getDateVerified() {
         return this.dateVerified;
     }

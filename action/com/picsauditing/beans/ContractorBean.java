@@ -67,7 +67,6 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 				
 				queryBuf.setLength(queryBuf.length()-5);
 				StringBuffer query = queryBuf.insert(0, start);
-				System.out.println("Query=" + query.toString());
 				reports = dao.executeQuery(query.toString(), params);
 			}
 			
@@ -82,10 +81,10 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 
 	@Override
 	public String select() {
-		ajaxKeys = new HashSet<Integer>();
+		//ajaxKeys = new HashSet<Integer>();
 		setSelectedItem((ContractorInfoReport)getDataModel().getRowData());		
-        int rowKey = getDataModel().getRowIndex();
-        ajaxKeys.add(rowKey);
+        //int rowKey = getDataModel().getRowIndex();
+        //ajaxKeys.add(rowKey);
        	return "success";
 	}
 
@@ -151,8 +150,7 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 			  dao.clear();
 			  doSearch = false;
 			  acctName = "";
-			  setFirstResult(0);			 
-			  
+			  setFirstResult(0);		  
 		}		
 		
 		public void search(ActionEvent event){

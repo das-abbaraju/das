@@ -137,7 +137,7 @@
 
 					<rich:column>
 						<a4j:commandLink value="detail" action="#{contractorBean.select}"
-							reRender="details">
+							reRender="details,contractorTable">
 							<f:setPropertyActionListener target="#{oshaBean.cid}"
 								value="#{c.id}" />
 							<f:setPropertyActionListener target="#{emrBean.cid}"
@@ -185,7 +185,7 @@
 
 
 					<f:facet name="footer">
-                        	<rich:datascroller></rich:datascroller>	
+                        	<rich:datascroller reRender="details,contractorTable"></rich:datascroller>	
 					</f:facet>
 				</rich:dataTable>
 
