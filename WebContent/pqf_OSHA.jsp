@@ -1,5 +1,5 @@
-<%//@ page language="java" import="com.picsauditing.PICS.*;" errorPage="exception_handler.jsp"%>
-<%@ page language="java" import="com.picsauditing.PICS.*;"%>
+<%//@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
+<%@ page language="java" import="com.picsauditing.PICS.*"%>
 <%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
 
