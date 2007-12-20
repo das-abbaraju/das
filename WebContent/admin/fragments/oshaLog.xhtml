@@ -159,11 +159,11 @@
 				rendered="#{log.entity.file3yearAgo eq 'Yes'}" value="Yes"
 				onclick="showFile(#{log.entity.contractorInfo.id}, #{log.entity.oid}, 'osha3', 'Osha300Logs');" />
 			<h:outputText styleClass="forms"
-				rendered="#{log.entity.file1yearAgo eq 'No'}" value="No" />
+				rendered="#{log.entity.file1yearAgo eq null || log.entity.file1yearAgo eq 'No'}" value="No" />
 			<h:outputText styleClass="forms"
-				rendered="#{log.entity.file2yearAgo eq 'No'}" value="No" />
+				rendered="#{log.entity.file2yearAgo eq null || log.entity.file2yearAgo eq 'No'}" value="No" />
 			<h:outputText styleClass="forms"
-				rendered="#{log.entity.file3yearAgo eq 'No'}" value="No" />
+				rendered="#{log.entity.file3yearAgo eq null || log.entity.file3yearAgo eq 'No'}" value="No" />
 			<h:outputText styleClass="redMain" value="Verify" />
 			<h:selectBooleanCheckbox value="#{log.verifiedDate1}"
 				styleClass="forms" />
