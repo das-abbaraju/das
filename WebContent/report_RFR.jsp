@@ -55,7 +55,7 @@
                 </td>
             </tr>
           </table>
-<%	int thisYear = com.picsauditing.PICS.DateBean.getCurrentYear(); %>
+<%	int thisYear = com.picsauditing.PICS.DateBean.getCurrentYear(this.getServletContext().getInitParameter("currentYearStart")); %>
 		  <form name="form1" method="post" action="report_EMRRates.jsp">
               <br>
               <br><%=sBean.getLinks()%>

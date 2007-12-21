@@ -59,7 +59,7 @@
           </table>
 		  </form>
 <%	}//if
-	int thisYear = com.picsauditing.PICS.DateBean.getCurrentYear();
+	int thisYear = com.picsauditing.PICS.DateBean.getCurrentYear(this.getServletContext().getInitParameter("currentYearStart"));
 %>
 		  <%=sBean.getLinks()%>
           <table width="657" border="0" cellpadding="1" cellspacing="1">

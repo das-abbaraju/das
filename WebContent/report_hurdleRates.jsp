@@ -73,7 +73,7 @@
 					</tr>
 <%	//		out.println(pBean.oBean.getFacilitySelect("generalContractorID","forms",sBean.selected_generalContractorID)+"<br><br>");
 	}//if
-	int thisYear = com.picsauditing.PICS.DateBean.getCurrentYear();
+	int thisYear = com.picsauditing.PICS.DateBean.getCurrentYear(this.getServletContext().getInitParameter("currentYearStart"));
 %>
 					<tr class="whiteTitle" bgcolor="#003366">
 						<td align="center" colspan="2">Question</td>

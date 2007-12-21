@@ -14,7 +14,8 @@
 	String conID = request.getParameter("id");
 	String catID = request.getParameter("catID");
 	String oID = request.getParameter("oID");
-	int currentYear = com.picsauditing.PICS.DateBean.getCurrentYear();
+	//int currentYear = com.picsauditing.PICS.DateBean.getCurrentYear();
+	int currentYear = com.picsauditing.PICS.DateBean.getCurrentYear(this.getServletContext().getInitParameter("currentYearStart"));
 	boolean isNew = "New".equals(oID);
 	cBean.setFromDB(conID);
 	aBean.setFromDB(conID);
