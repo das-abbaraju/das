@@ -29,30 +29,37 @@ public class Billing extends DataBean {
 	}//calcPayingFacilities
 
 	public static int calcBillingAmount(int facilities, String isExempt, 
-				String mustPay, boolean isPqfOnly) {
+				String mustPay, boolean isPqfOnly, ServletContext appServlet) throws Exception {
+		int price= Integer.valueOf(appServlet.getInitParameter("pqfOnlyPrice"));
 		if ("No".equals(mustPay))
 			return 0;
 		if ("Yes".equals(isExempt))
-			return 99;
+			return price;
 		if (isPqfOnly)
-			return 99;
-		return calcBillingAmount(facilities);
+			return price;
+		return calcBillingAmount(facilities, appServlet);
 	}//cacalcBillingAmount
 
-	public static int calcBillingAmount(int facilities){
+	public static int calcBillingAmount(int facilities, ServletContext appServlet) throws Exception{
 		if (0==facilities)
 			return 0;
 		if (facilities<=1)
-			return 399;
+			//return 399;
+			return Integer.valueOf(appServlet.getInitParameter("onePrice"));
 		if (facilities<=4)
-			return 599;
+			//return 599;
+			return Integer.valueOf(appServlet.getInitParameter("fourPrice"));
 		if (facilities<=8)
-			return 799;
+			//return 799;
+			return Integer.valueOf(appServlet.getInitParameter("eightPrice"));
 		if (facilities<=12)
-			return 1099;
+			//return 1099;
+			return Integer.valueOf(appServlet.getInitParameter("twelvePrice"));
 		if (facilities<=19)
-			return 1399;
-		return 1699;
+			//return 1399;
+			return Integer.valueOf(appServlet.getInitParameter("nineteenPrice"));
+		//return 1699;
+		return Integer.valueOf(appServlet.getInitParameter("twentyPrice"));
 	}//calcBillingAmount
 
 	/**
@@ -100,7 +107,7 @@ public class Billing extends DataBean {
 						// How many paying (non-PQF only) facilities are there?
 						int temp = calcPayingFacilities(F, generalContractors);
 						// Figure out how much this contractor should pay
-						int newBill = Billing.calcBillingAmount(temp,tempIsExempt,"Yes",isPqfOnly);
+						int newBill = Billing.calcBillingAmount(temp,tempIsExempt,"Yes",isPqfOnly, appServlet);
 						if (tempPayingFacilities != temp || tempNewBillingAmount != newBill) {
 							updateQueries.add("UPDATE contractor_info SET payingFacilities="+temp+
 									",newBillingAmount="+newBill+" WHERE id="+subID+";");
@@ -119,7 +126,7 @@ public class Billing extends DataBean {
 			if (!"".equals(subID)){
 				isPqfOnly = F.isPqfOnly(generalContractors);
 				int temp = calcPayingFacilities(F, generalContractors);
-				int newBill = Billing.calcBillingAmount(temp,tempIsExempt,"Yes",isPqfOnly);
+				int newBill = Billing.calcBillingAmount(temp,tempIsExempt,"Yes",isPqfOnly, appServlet);
 				if (tempPayingFacilities != temp || tempNewBillingAmount != newBill) {
 					updateQueries.add("UPDATE contractor_info SET payingFacilities="+temp+
 							",newBillingAmount="+newBill+" WHERE id="+subID+";");

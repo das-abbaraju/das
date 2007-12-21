@@ -1,6 +1,6 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%//@ page language="java" import="com.picsauditing.PICS.*"%>
-<%@include file="utilities/contractor_secure.jsp"%>
+<%//@include file="utilities/contractor_secure.jsp"%>
 <%	int count = 0;
 	ContractorBean c = new ContractorBean();
 %>
@@ -23,32 +23,32 @@
 	</tr>
 	<tr class=blueMain <%=Utilities.getBGColor(count++)%> align="center">
 	  <td>1</td>
-	  <td>$<%=Billing.calcBillingAmount(1)%></td>
+	  <td>$<%=Billing.calcBillingAmount(1,this.getServletContext())%></td>
 	  <td>$99</td>
 	</tr>
 	<tr class=blueMain <%=Utilities.getBGColor(count++)%> align="center">
 	  <td>2-4</td>
-	  <td>$<%=Billing.calcBillingAmount(4)%></td>
+	  <td>$<%=Billing.calcBillingAmount(4,this.getServletContext())%></td>
 	  <td>$99</td>
 	</tr>
 	<tr class=blueMain <%=Utilities.getBGColor(count++)%> align="center">
 	  <td>5-8</td>
-	  <td>$<%=Billing.calcBillingAmount(8)%></td>
+	  <td>$<%=Billing.calcBillingAmount(8,this.getServletContext())%></td>
 	  <td>$99</td>
 	</tr>
 	<tr class=blueMain <%=Utilities.getBGColor(count++)%> align="center">
 	  <td>9-12</td>
-	  <td>$<%=Billing.calcBillingAmount(12)%></td>
+	  <td>$<%=Billing.calcBillingAmount(12,this.getServletContext())%></td>
 	  <td>$99</td>
 	</tr>
 	<tr class=blueMain <%=Utilities.getBGColor(count++)%> align="center">
 	  <td>13-19</td>
-	  <td>$<%=Billing.calcBillingAmount(19)%></td>
+	  <td>$<%=Billing.calcBillingAmount(19,this.getServletContext())%></td>
 	  <td>$99</td>
 	</tr>
 	<tr class=blueMain <%=Utilities.getBGColor(count++)%> align="center">
 	  <td>20+</td>
-	  <td>$<%=Billing.calcBillingAmount(20)%></td>
+	  <td>$<%=Billing.calcBillingAmount(20,this.getServletContext())%></td>
 	  <td>$99</td>
 	</tr>
   </table>

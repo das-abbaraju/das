@@ -295,12 +295,12 @@ function change() {
 	}
 	annual_fee = "~";
 	facility_count = opt2.length - 1; //remove the blank option from the facility count
-	if (facility_count > 0) annual_fee = "<%=Billing.calcBillingAmount(1)%>";
-	if (facility_count > 1) annual_fee = "<%=Billing.calcBillingAmount(4)%>";
-	if (facility_count > 4) annual_fee = "<%=Billing.calcBillingAmount(8)%>";
-	if (facility_count > 8) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(12)%>";
-	if (facility_count > 12) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(19)%>";
-	if (facility_count > 19) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(20)%>";
+	if (facility_count > 0) annual_fee = "<%=Billing.calcBillingAmount(1,this.getServletContext())%>";
+	if (facility_count > 1) annual_fee = "<%=Billing.calcBillingAmount(4,this.getServletContext())%>";
+	if (facility_count > 4) annual_fee = "<%=Billing.calcBillingAmount(8,this.getServletContext())%>";
+	if (facility_count > 8) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(12,this.getServletContext())%>";
+	if (facility_count > 12) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(19,this.getServletContext())%>";
+	if (facility_count > 19) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(20,this.getServletContext())%>";
 
 	document.getElementById("annualFee").innerHTML = "$" + annual_fee;
 }

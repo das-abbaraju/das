@@ -6,7 +6,7 @@
 	<!-- Set the local upload directory to /wwwroot/www.picsauditing.com/ftp-bin -->
 	<!-- Modify for your local system -->
 	
-	<!-- EMR Question ID's and Osha afterDate-->
+	<!-- Osha dates-->
 	<context-param>
 		<param-name>currentYearStart</param-name>
 		<param-value>12/17</param-value>
@@ -15,7 +15,37 @@
 		<param-name>loginStartDate</param-name>
 		<param-value>1/1</param-value>
 	</context-param>
-	<!-- END EMR Question ID's -->
+	<!-- END Osha dates -->
+	<!-- Pricing -->
+		 <context-param>
+			<param-name>pqfOnlyPrice</param-name>
+			<param-value>99</param-value>
+		</context-param>
+		<context-param>
+			<param-name>onePrice</param-name>
+			<param-value>399</param-value>
+		</context-param>
+		<context-param>
+			<param-name>fourPrice</param-name>
+			<param-value>699</param-value>
+		</context-param>
+		<context-param>
+			<param-name>eightPrice</param-name>
+			<param-value>999</param-value>
+		</context-param>
+		<context-param>
+			<param-name>twelvePrice</param-name>
+			<param-value>1299</param-value>
+		</context-param>
+		<context-param>
+			<param-name>nineteenPrice</param-name>
+			<param-value>1699</param-value>
+		</context-param>
+		<context-param>
+			<param-name>twentyPrice</param-name>
+			<param-value>1999</param-value>
+		</context-param>
+	<!-- END Pricing -->
 	
     <context-param>
 		<param-name>org.richfaces.SKIN</param-name>

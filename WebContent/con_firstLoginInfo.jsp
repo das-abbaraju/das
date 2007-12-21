@@ -74,8 +74,8 @@
                     Membership</span><br>
 					Please choose a subscription time period (<a href=con_pricing.jsp target=_blank class=blueMain>See pricing table</a>)<br>
 					<input name=billingCycle type=radio value=3>
-                    $<%//=cBean.calcBillingAmount(cBean.facilitiesCount,"3","No")%>/3 years (discounted to $<%//=cBean.calcBillingAmount(cBean.facilitiesCount,"3","No")/3%>/year)<br>
-					<input name=billingCycle type=radio value=1> $<%//=cBean.calcBillingAmount(cBean.facilitiesCount,"1","No")%>/1 year<br>
+                    $<%//=cBean.calcBillingAmount(cBean.facilitiesCount,"3","No", this.getServletContext())%>/3 years (discounted to $<%//=cBean.calcBillingAmount(cBean.facilitiesCount,"3","No",this.getServletContext())/3%>/year)<br>
+					<input name=billingCycle type=radio value=1> $<%//=cBean.calcBillingAmount(cBean.facilitiesCount,"1","No",this.getServletContext())%>/1 year<br>
                     <input name=billingCycle type=radio value=E> $225/3 years (Exempt from onsite office audit*)<br><br>
                     <span class="redMain">* In order for you to choose exempt, 
                     you must have prior authorization from the requesting facility. 
