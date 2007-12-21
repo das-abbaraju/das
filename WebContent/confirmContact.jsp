@@ -1,23 +1,27 @@
-<%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@ page language="java" import="java.util.ArrayList, com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%//@ page language="java"%>
-<jsp:useBean id="eBean" class="com.picsauditing.PICS.EmailBean" scope ="page"/>
 <jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope ="page"/>
 <%
+	String sendTo = request.getParameter("sendTo");
+	ArrayList<String> toAddresses = new ArrayList<String>();
+	if (sendTo.equals("sales")) toAddresses.add("jmoreland@picsauditing.com");
+	if (sendTo.equals("sales")) toAddresses.add("jsmith@picsauditing.com");
+	if (sendTo.equals("billing")) toAddresses.add("jsmith@picsauditing.com");
+	if (sendTo.equals("billing")) toAddresses.add("gjepsen@picsauditing.com");
+	if (sendTo.equals("audits")) toAddresses.add("jcota@picsauditing.com");
+	if (sendTo.equals("general")) toAddresses.add("jfazeli@picsauditing.com");
+	if (sendTo.equals("tech")) toAddresses.add("jfazeli@picsauditing.com");
+	if (sendTo.equals("tech")) toAddresses.add("tallred@picsauditing.com");
+	
 	String name = request.getParameter("name");
 	String email = request.getParameter("email");
-	String sendTo = request.getParameter("sendTo");
+	String phone = request.getParameter("phone");
 	String message = "Company: "+request.getParameter("company")+'\n'+request.getParameter("message");
-	eBean.init(config);
+	EmailBean.init(config);
 //	eBean.sendContactUsEmail(name,email,sendTo,message);
-	int i = sendTo.indexOf(",");
-	if (-1 != i){
-		eBean.sendContactUsEmail(name,email,sendTo.substring(0,i),message);
-		eBean.sendContactUsEmail(name,email,sendTo.substring(i),message);
-	}else
-		eBean.sendContactUsEmail(name,email,sendTo,message);
+	for(String toAddress: toAddresses)
+		EmailBean.sendContactUsEmail(name,email,phone,toAddress,message);
 %>
-
-
 <html>
 <head>
 <title>PICS - Pacific Industrial Contractor Screening</title>

@@ -89,9 +89,8 @@ function MM_swapImgRestore() { //v3.0
 P.O. Box 51387<br>
 Irvine, CA 92619-1387<br>
 <br><strong>Office Location </strong><br> 
-16812
-Red Hill Ave. <br>
-Irvine, CA 92606<br>
+17701 Cowan Suite 140<br>
+Irvine, CA 92614<br>
 <br>
 <b>Phone:</b> 949.387.1940<br>
 <b>Toll Free:</b> 800.506.PICS (7427)<br>
@@ -102,22 +101,22 @@ Irvine, CA 92606<br>
                         <tr>
                           <td align="right" class="blueMain" valign="top">Send to</td>
                           <td class="blueMain">
-                            <input name="sendTo" type="radio" value="jmoreland@picsauditing.com" checked>
-                            Sales
-                            <input name="sendTo" type="radio" value="gjepsen@picsauditing.com,jsmith@picsauditing.com">
-                            Billing
-                            <input name="sendTo" type="radio" value="jcota@picsauditing.com">
-                            Audits<br>
-                            <input name="sendTo" type="radio" value="jfazeli@picsauditing.com">
-                            General Inquiries
-                            <input name="sendTo" type="radio" value="jfazeli@picsauditing.com">
-                            Technical Support<br>
+                            <input name="sendTo" type="radio" value="sales" checked>Sales
+                            <input name="sendTo" type="radio" value="billing">Billing
+                            <input name="sendTo" type="radio" value="audits">Audits<br>
+                            <input name="sendTo" type="radio" value="general">General Inquiries
+                            <input name="sendTo" type="radio" value="tech">Technical Support<br>
                           </td>
                         </tr>
                         <tr>
                           <td align="right" class="blueMain">Name</td>
                           <td class="blueMain">
                             <input name="name" type="text" class="forms" id="name" size="25"></td>
+                        </tr>
+                        <tr>
+                          <td align="right" class="blueMain">Telephone</td>
+                          <td class="blueMain">
+                            <input name="phone" type="text" class="forms" id="phone" size="25"></td>
                         </tr>
                         <tr>
                           <td align="right" class="blueMain">Email</td>

@@ -720,8 +720,8 @@ public class EmailBean extends DataBean{
 		}//generals for
 	}//sendActivationEmails
 */
-	public static void sendContactUsEmail(String name, String email, String sendTo, String message) throws Exception {
-		String text = "Name: "+name+"\nEmail:"+email+"\nMessage:\n"+message;
+	public static void sendContactUsEmail(String name, String email, String phone, String sendTo, String message) throws Exception {
+		String text = "Name: "+name+"\nEmail: "+email+"\nPhone: "+phone+"\nMessage:\n"+message;
 		sendEmail(email,sendTo,"","Email from PICS website",text);
 	}//sendContactUsEmail
 
