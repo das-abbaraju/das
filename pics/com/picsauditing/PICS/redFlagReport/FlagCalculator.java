@@ -25,6 +25,8 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 
 	public Map<String,String> qIDToFlagMap = null;
 	public Map<String,String> qIDToAnswerMap = null;
+	private int currentYearGrace  = 0;
+	private boolean duringGracePeriod = false;
 
 	/**
 	 * Depending on the Red or Amber Flag criteria, construct and return a SQL string 
@@ -353,4 +355,17 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 		}//switch
 		return rate+"</td><td>";
 	}//getOshaFlag
+
+	public int getCurrentYearGrace() {
+		return currentYearGrace;
+	}
+
+	public void setCurrentYear(int currentYear, int currentYearGrace) {
+		this.currentYearGrace = currentYearGrace;
+		if (this.osBean != null) {
+			// if the current year doesn't equal the grace year, then 
+			this.osBean.setDuringGracePeriod(currentYear != currentYearGrace);
+		}
+	}	
+
 }//FlagCalculator

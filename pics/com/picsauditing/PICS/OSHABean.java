@@ -43,13 +43,14 @@ public class OSHABean extends DataBean {
 	public static final int YEAR1 = 0;
 	public static final int YEAR2 = 1;
 	public static final int YEAR3 = 2;
+	public static final int YEAR4 = 3;
+	private boolean duringGracePeriod = false;
 	
-	public int[][] stats = new int[7][3];
+	public int[][] stats = new int[7][4];
 	public String file1YearAgo = "No";
 	public String file2YearAgo = "No";
 	public String file3YearAgo = "No";
 	public boolean isInDB = false;
-	private int numberNA = 0;
 
 	boolean showLinks = false;
 
@@ -66,8 +67,20 @@ public class OSHABean extends DataBean {
 	return location+"-"+description;
 	}//getLocationDescription
 
-	public String calcRate(int i, int j) {
-		try {return decFormatter.format(((float)stats[i][j]*200000)/stats[MAN_HOURS][j]);}
+	public String calcRate(int field, int year) {
+		float rate=0;
+		if (isDuringGracePeriod()) {
+			// During Jan/Feb use 2-4 instead
+			switch(year) {
+				case YEAR1: year=YEAR2; break;
+				case YEAR2: year=YEAR3; break;
+				case YEAR3: year=YEAR4; break;
+			}
+		}
+		rate = ((float)stats[field][year]*200000) / stats[MAN_HOURS][year];
+		try {
+			return decFormatter.format(rate);
+		}
 		catch (Exception e) {return "";}//catch	
 	}//calcRate
 
@@ -76,27 +89,38 @@ public class OSHABean extends DataBean {
 		catch (Exception e) {return "";}//catch	
 	}//calcRate
 
+	private int getNumberNA() {
+		int temp = 0;
+		boolean[] bna = {na1, na2, na3};
+		if (duringGracePeriod) {
+			// we're during the grace period, so use na2, na3,and na4 (which doesn't, so assume true)
+			bna[0] = na2;
+			bna[1]= na3;
+			bna[2] = false;
+		}
+		for(int i = 0; i < 3; i++)
+			if(bna[i])
+				temp++;
+
+		return temp;
+	}
 	public String calcAverageStat(int i) {
-		if (numberNA == 3) return "N/A";
+		if (getNumberNA() == 3) return "N/A";
 		int s1 = stats[i][YEAR1];
 		int s2 = stats[i][YEAR2];
 		int s3 = stats[i][YEAR3];
+		// if today is during the grace period (Jan-Feb), then use years 2,3,& 4 for avg
+		if (duringGracePeriod) s1 = stats[i][YEAR4];
 		
 		long total = s1 + s2 + s3;
-		total = stats[i][YEAR1] + stats[i][YEAR2] + stats[i][YEAR3];
 
-		float avg = total/(3-numberNA);
+		float avg = total/(3-getNumberNA());
 		return decFormatter.format(avg);
-		
-		//int stats_sum = stats[i][YEAR1]  + stats[i][YEAR2] + stats[i][YEAR3];
-		
-		//float temp = (float)(stats[i][YEAR1] + stats[i][YEAR2] + stats[i][YEAR3])/numberNA;
-		//try {return decFormatter.format(temp);}
-		//catch (Exception e) {return "";}//catch	
 	}//calcAverage
 
 	public String calcTotalStat(int i) {
 		float temp = (float)(stats[i][YEAR1] + stats[i][YEAR2] + stats[i][YEAR3]);
+		if (duringGracePeriod) temp = (float)(stats[i][YEAR2] + stats[i][YEAR3] + stats[i][YEAR4]);
 		try {return decFormatter.format(temp);}
 		catch (Exception e) {return "";}//catch	
 	}//calcAverage
@@ -108,13 +132,14 @@ public class OSHABean extends DataBean {
 		return value;
 	}
 	public String calcAverageRate(int i) {
-		if (numberNA == 3) return "N/A";
+		if (getNumberNA() == 3) return "N/A";
 		
 		float value1 = calcRateTemp(stats[i][YEAR1], stats[MAN_HOURS][YEAR1]);
 		float value2 = calcRateTemp(stats[i][YEAR2], stats[MAN_HOURS][YEAR2]);
 		float value3 = calcRateTemp(stats[i][YEAR3], stats[MAN_HOURS][YEAR3]);
+		if (duringGracePeriod) value1 = calcRateTemp(stats[i][YEAR4], stats[MAN_HOURS][YEAR4]);
 		
-		float temp = (value1 + value2 + value3) / (3 - numberNA); 
+		float temp = (value1 + value2 + value3) / (3 - getNumberNA());
 		try {return decFormatter.format(temp);}
 		catch (Exception e) {return "";}//catch	
 	}//calcAverage
@@ -196,11 +221,6 @@ public class OSHABean extends DataBean {
 		na2 = SQLResult.getString("NA2").equals("Yes") ? true : false;
 		na3 = SQLResult.getString("NA3").equals("Yes") ? true : false;
 		
-		boolean[] bna = {na1, na2, na3};
-		for(int i = 0; i < 3; i++)
-			if(bna[i])
-				numberNA++;
-
 		stats[MAN_HOURS][YEAR1] = SQLResult.getInt("manHours1");
 		stats[FATALITIES][YEAR1] = SQLResult.getInt("fatalities1");
 		stats[LOST_WORK_CASES][YEAR1] = SQLResult.getInt("lostWorkCases1");
@@ -224,6 +244,14 @@ public class OSHABean extends DataBean {
 		stats[INJURY_ILLNESS_CASES][YEAR3] =  SQLResult.getInt("injuryIllnessCases3");
 		stats[RESTRICTED_WORK_CASES][YEAR3] =  SQLResult.getInt("restrictedWorkCases3");
 		stats[RECORDABLE_TOTAL][YEAR3] =  SQLResult.getInt("recordableTotal3");
+		
+		stats[MAN_HOURS][YEAR4] =  SQLResult.getInt("manHours4");
+		stats[FATALITIES][YEAR4] =  SQLResult.getInt("fatalities4");
+		stats[LOST_WORK_CASES][YEAR4] =  SQLResult.getInt("lostWorkCases4");
+		stats[LOST_WORK_DAYS][YEAR4] =  SQLResult.getInt("lostWorkDays4");
+		stats[INJURY_ILLNESS_CASES][YEAR4] =  SQLResult.getInt("injuryIllnessCases4");
+		stats[RESTRICTED_WORK_CASES][YEAR4] =  SQLResult.getInt("restrictedWorkCases4");
+		stats[RECORDABLE_TOTAL][YEAR4] =  SQLResult.getInt("recordableTotal4");  
 		//Files
 		file1YearAgo = SQLResult.getString("file1YearAgo");
 		file2YearAgo = SQLResult.getString("file2YearAgo");
@@ -507,6 +535,14 @@ public class OSHABean extends DataBean {
 
 	public boolean isNa3() {
 		return na3;
+	}
+
+	public boolean isDuringGracePeriod() {
+		return duringGracePeriod;
+	}
+
+	public void setDuringGracePeriod(boolean duringGracePeriod) {
+		this.duringGracePeriod = duringGracePeriod;
 	}
 	
 	

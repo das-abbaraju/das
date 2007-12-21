@@ -46,7 +46,7 @@
 					
 			</rich:tabPanel>
 			
-			<a4j:commandButton styleClass="forms" value="Submit" action="#{contractorBean.refresh}" reRender="oshaLogs,contractorTable">
+			<a4j:commandButton styleClass="forms" value="Submit" action="#{contractorBean.refresh}" reRender="details,contractorTable">
 				<f:attribute name="oshaDao" value="#{oshaBean.dao}" />
 				<f:attribute name="emrDao" value="#{emrBean.dao}" />
 				<f:actionListener type="com.picsauditing.beans.OshaLogActionListener" />

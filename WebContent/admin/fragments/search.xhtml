@@ -27,10 +27,10 @@
 				</h:selectOneMenu>			
 			    <a4j:commandButton value="Search"
 							actionListener="#{contractorBean.search}"
-							styleClass="forms" reRender="contractorTable" />						
+							styleClass="forms" reRender="details,contractorTable" />						
 				<a4j:commandButton value="Clear"
 							actionListener="#{contractorBean.clear}" styleClass="forms"
-							reRender="search,contractorTable" />
+							reRender="search,details,contractorTable" />
 			</h:panelGrid>
 		</a4j:form>
 	</rich:simpleTogglePanel>

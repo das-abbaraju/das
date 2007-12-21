@@ -22,7 +22,10 @@ try{
 	FlagCalculator flagCalculator = new FlagCalculator();
 	flagCalculator.setConFlags(id,pBean.userID);
 	ForcedFlagListDO forcedFlagListDO = new ForcedFlagListDO();
-
+	int currentYear = DateBean.getCurrentYear(this.getServletContext());
+	int currentYearGrace = DateBean.getCurrentYearGrace(this.getServletContext());
+	flagCalculator.setCurrentYear(currentYear, currentYearGrace);
+	
 	if (addNote && canEditNotes){
 		String newNote = request.getParameter("newNote");
 		if (null != newNote && !"".equals(newNote)){
@@ -112,6 +115,7 @@ try{
 <%	}//if
 	OSHABean osBean = new OSHABean();
 	osBean.setListFromDB(id);
+	osBean.setDuringGracePeriod(currentYear!=currentYearGrace);
 	int count = 1;
 	while (osBean.hasNext() || 1==count){
 		count++;
@@ -119,9 +123,9 @@ try{
             <table width="657" border="0" cellpadding="2" cellspacing="1">
               <tr class="whiteTitle" bgcolor="#003366">
                 <td align="center"><%=osBean.SHAType%> Statistic for location: <%=osBean.getLocationDescription()%></td>
-                <td align="center" colspan=2>2006</td>
-                <td align="center" colspan=2>2005</td>
-                <td align="center" colspan=2>2004</td>
+                <td align="center" colspan=2><%=currentYearGrace - 1 %></td>
+                <td align="center" colspan=2><%=currentYearGrace - 2 %></td>
+                <td align="center" colspan=2><%=currentYearGrace - 3 %></td>
                 <td align="center" colspan=2>3 Yr Avg</td>
               </tr>
 <%		if (flagCalculator.redFlagOshaCriteriaDO.flagLwcr() || flagCalculator.amberFlagOshaCriteriaDO.flagLwcr()){%>

@@ -1,9 +1,9 @@
 package com.picsauditing.PICS;
 
 import java.util.*;
-import java.util.Calendar;
-import java.util.TimeZone;
 import java.text.SimpleDateFormat;
+
+import javax.servlet.ServletContext;
 
 public class DateBean {
 	public static String NULL_DATE = "0/0/00";
@@ -90,14 +90,48 @@ public class DateBean {
 		 return cal.get(Calendar.YEAR);
 	}//getCurrentYear
 	
+	/**
+	 * This allows setting the new year rollover before jan 1.
+	 * To set the rollover date, update currentYearStart in web.xml.
+	 * @param strCurrentYearStart
+	 * @return
+	 * @throws Exception
+	 * 
+	 */
+	public static int getCurrentYear(ServletContext context) throws Exception{
+		String strCurrentYearStart = context.getInitParameter("currentYearStart");
+		return getCurrentYear(strCurrentYearStart);
+	}//getCur
 	public static int getCurrentYear(String strCurrentYearStart) throws Exception{
 		String curYearStart = strCurrentYearStart + "/" +  String.valueOf(getCurrentYear());
 		if(isAfterToday(curYearStart))
 		  return getCurrentYear();
 		else
 		  return getCurrentYear() + 1;  
+		
+	}//getCur
+	
+	/**
+	 * This allows old data to remain valid during the grace period of the new year.
+	 * To set the grace period, update currentYearGrace in web.xml.
+	 * @param strCurrentYearGrace
+	 * @return
+	 * @throws Exception
+	 */
+	public static int getCurrentYearGrace(ServletContext context) throws Exception{
+		String strCurrentYearGrace = context.getInitParameter("currentYearGrace");
+		if(isDuringGrace(strCurrentYearGrace))
+		  return getCurrentYear() - 1;
+		else
+		  return getCurrentYear();
 		 
 	}//getCur
+	
+	public static boolean isDuringGrace(String strCurrentYearGrace) throws Exception{
+		String curYearGrace = strCurrentYearGrace + "/" +  String.valueOf(getCurrentYear());
+		return isAfterToday(curYearGrace);
+	}//getCur
+	
 	
 	public static int getCurrentMonth() {
 		Calendar cal = Calendar.getInstance();
@@ -174,6 +208,16 @@ public class DateBean {
 		java.util.Date today = cal.getTime();
 		java.util.Date testDate = showFormat.parse(testDateString);
 		return today.before(testDate);
+	}//isAfterToday
+	
+	public static boolean isBeforeToday(String testDateString) throws Exception {
+		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
+		if ("".equals(testDateString))
+			testDateString = NULL_DATE;
+		Calendar cal = Calendar.getInstance();
+		java.util.Date today = cal.getTime();
+		java.util.Date testDate = showFormat.parse(testDateString);
+		return today.after(testDate);
 	}//isAfterToday
 	public static boolean isFirstBeforeSecond(String dateString1, String dateString2) throws Exception {
 		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
