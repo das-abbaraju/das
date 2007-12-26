@@ -37,7 +37,17 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 	private String getSelectQuery(FlagCriteria flagCriteria){
 		StringBuffer fromQuery = new StringBuffer();
 		StringBuffer joinQuery = new StringBuffer();
+		for (String qID: flagCriteria.flagCriteriaMap.keySet()) {
+			// Include all of the criteria questions except the "average EMR" question
+			if (!FlagCriteria.EMR_AVE_QUESTION_ID.equals(qID)){
+				joinQuery.append("LEFT JOIN pqfData q").append(qID).append(" ON (q").append(qID).
+					append(".conID=cons.id AND q").append(qID).append(".questionID=").append(qID).append(") ");
+				fromQuery.append(",q").append(qID).append(".*");
+			}//if
+		}//for
 		if (flagCriteria.flagCriteriaMap.keySet().contains(FlagCriteria.EMR_AVE_QUESTION_ID)){
+			// The operator uses the Average EMR question
+			// If any of the EMR years aren't already included, then include them here
 			if (!flagCriteria.flagCriteriaMap.keySet().contains(Constants.EMR_YEAR1)){
 				joinQuery.append("LEFT JOIN pqfData q").append(Constants.EMR_YEAR1).append(" ON (q").
 					append(Constants.EMR_YEAR1).append(".conID=cons.id AND q").append(Constants.EMR_YEAR1).
@@ -57,13 +67,6 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 				fromQuery.append(",q").append(Constants.EMR_YEAR3).append(".*");
 			}//if
 		}//if
-		for (String qID: flagCriteria.flagCriteriaMap.keySet()) {
-			if (!FlagCriteria.EMR_AVE_QUESTION_ID.equals(qID)){
-				joinQuery.append("LEFT JOIN pqfData q").append(qID).append(" ON (q").append(qID).
-					append(".conID=cons.id AND q").append(qID).append(".questionID=").append(qID).append(") ");
-				fromQuery.append(",q").append(qID).append(".*");
-			}//if
-		}//for
 		String returnString = "SELECT cons.id"+fromQuery.toString()+", OSHA.* "+
  			"FROM contractor_info cons LEFT JOIN OSHA ON OSHA.conID=cons.id AND location='Corporate' "+joinQuery.toString();
 		return returnString;

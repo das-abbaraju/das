@@ -76,9 +76,9 @@
                 <td align="right"><%=sBean.count-1%></td>
 				<td>
 				  <a href="pqf_viewOSHA.jsp?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class="<%=thisClass%>" target="_blank"><%=sBean.aBean.name%></a></td>
-				<td><%=sBean.osBean.stats[OSHABean.FATALITIES][OSHABean.YEAR1]%></td>
-				<td><%=sBean.osBean.stats[OSHABean.FATALITIES][OSHABean.YEAR2]%></td>
-				<td><%=sBean.osBean.stats[OSHABean.FATALITIES][OSHABean.YEAR3]%></td>
+				<td><%=sBean.osBean.getStat(OSHABean.FATALITIES, OSHABean.YEAR1)%></td>
+				<td><%=sBean.osBean.getStat(OSHABean.FATALITIES, OSHABean.YEAR2)%></td>
+				<td><%=sBean.osBean.getStat(OSHABean.FATALITIES, OSHABean.YEAR3)%></td>
 		  	  </tr>
 
 <%	}//while %>

@@ -44,9 +44,9 @@
         </tr>
         <tr>
           <td class="redMain">Total Man Hours Worked</td>
-          <td colspan="2"><%=oBean.formatNumber(oBean.stats[oBean.MAN_HOURS][oBean.YEAR1])%></td>
-          <td colspan="2"><%=oBean.formatNumber(oBean.stats[oBean.MAN_HOURS][oBean.YEAR2])%></td>
-          <td colspan="2"><%=oBean.formatNumber(oBean.stats[oBean.MAN_HOURS][oBean.YEAR3])%></td>
+          <td colspan="2"><%=oBean.getStat(oBean.MAN_HOURS, oBean.YEAR1)%></td>
+          <td colspan="2"><%=oBean.getStat(oBean.MAN_HOURS, oBean.YEAR2)%></td>
+          <td colspan="2"><%=oBean.getStat(oBean.MAN_HOURS, oBean.YEAR3)%></td>
           <td colspan="2"><%=oBean.calcAverageStat(oBean.MAN_HOURS)%></td>
         </tr>
         <tr>
@@ -62,66 +62,66 @@
         </tr>
         <tr>
           <td class="redMain">Number of Fatalities</td>
-          <td><%=oBean.stats[oBean.FATALITIES][oBean.YEAR1]%></td>
+          <td><%=oBean.getStat(oBean.FATALITIES, oBean.YEAR1)%></td>
           <td><%=oBean.calcRate(oBean.FATALITIES,oBean.YEAR1)%></td>
-          <td><%=oBean.stats[oBean.FATALITIES][oBean.YEAR2]%></td>
+          <td><%=oBean.getStat(oBean.FATALITIES, oBean.YEAR2)%></td>
           <td><%=oBean.calcRate(oBean.FATALITIES,oBean.YEAR2)%></td>
-          <td><%=oBean.stats[oBean.FATALITIES][oBean.YEAR3]%></td>
+          <td><%=oBean.getStat(oBean.FATALITIES, oBean.YEAR3)%></td>
           <td><%=oBean.calcRate(oBean.FATALITIES,oBean.YEAR3)%></td>
           <td><%=oBean.calcAverageStat(oBean.FATALITIES)%></td>
           <td><%=oBean.calcAverageRate(oBean.FATALITIES)%></td>
         </tr>
         <tr>
           <td class="redMain">Number of Lost Workday Cases - Has lost days AND is <%=oBean.SHAType%> <%=descriptionText%></td>
-          <td><%=oBean.stats[oBean.LOST_WORK_CASES][oBean.YEAR1]%></td>
+          <td><%=oBean.getStat(oBean.LOST_WORK_CASES, oBean.YEAR1)%></td>
           <td><%=oBean.calcRate(oBean.LOST_WORK_CASES,oBean.YEAR1)%></td>
-          <td><%=oBean.stats[oBean.LOST_WORK_CASES][oBean.YEAR2]%></td>
+          <td><%=oBean.getStat(oBean.LOST_WORK_CASES, oBean.YEAR2)%></td>
           <td><%=oBean.calcRate(oBean.LOST_WORK_CASES,oBean.YEAR2)%></td>
-          <td><%=oBean.stats[oBean.LOST_WORK_CASES][oBean.YEAR3]%></td>
+          <td><%=oBean.getStat(oBean.LOST_WORK_CASES, oBean.YEAR3)%></td>
           <td><%=oBean.calcRate(oBean.LOST_WORK_CASES,oBean.YEAR3)%></td>
           <td><%=oBean.calcAverageStat(oBean.LOST_WORK_CASES)%></td>
           <td><%=oBean.calcAverageRate(oBean.LOST_WORK_CASES)%></td>
         </tr>
         <tr>
           <td class="redMain">Number of Lost Workdays - All lost workdays (regardless of restricted days) AND is <%=oBean.SHAType%> <%=descriptionText%></td>
-          <td><%=oBean.stats[oBean.LOST_WORK_DAYS][oBean.YEAR1]%></td>
+          <td><%=oBean.getStat(oBean.LOST_WORK_DAYS, oBean.YEAR1)%></td>
           <td><%=oBean.calcRate(oBean.LOST_WORK_DAYS,oBean.YEAR1)%></td>
-          <td><%=oBean.stats[oBean.LOST_WORK_DAYS][oBean.YEAR2]%></td>
+          <td><%=oBean.getStat(oBean.LOST_WORK_DAYS, oBean.YEAR2)%></td>
           <td><%=oBean.calcRate(oBean.LOST_WORK_DAYS,oBean.YEAR2)%></td>
-          <td><%=oBean.stats[oBean.LOST_WORK_DAYS][oBean.YEAR3]%></td>
+          <td><%=oBean.getStat(oBean.LOST_WORK_DAYS, oBean.YEAR3)%></td>
           <td><%=oBean.calcRate(oBean.LOST_WORK_DAYS,oBean.YEAR3)%></td>
           <td><%=oBean.calcAverageStat(oBean.LOST_WORK_DAYS)%></td>
           <td><%=oBean.calcAverageRate(oBean.LOST_WORK_DAYS)%></td>
         </tr>
         <tr>
           <td class="redMain">Injury & Illnesses Medical Cases - No lost OR restricted days AND is <%=oBean.SHAType%> <%=descriptionText%> (non-fatal)</td>
-          <td><%=oBean.stats[oBean.INJURY_ILLNESS_CASES][oBean.YEAR1]%></td>
+          <td><%=oBean.getStat(oBean.INJURY_ILLNESS_CASES, oBean.YEAR1)%></td>
           <td><%=oBean.calcRate(oBean.INJURY_ILLNESS_CASES,oBean.YEAR1)%></td>
-          <td><%=oBean.stats[oBean.INJURY_ILLNESS_CASES][oBean.YEAR2]%></td>
+          <td><%=oBean.getStat(oBean.INJURY_ILLNESS_CASES, oBean.YEAR2)%></td>
           <td><%=oBean.calcRate(oBean.INJURY_ILLNESS_CASES,oBean.YEAR2)%></td>
-          <td><%=oBean.stats[oBean.INJURY_ILLNESS_CASES][oBean.YEAR3]%></td>
+          <td><%=oBean.getStat(oBean.INJURY_ILLNESS_CASES, oBean.YEAR3)%></td>
           <td><%=oBean.calcRate(oBean.INJURY_ILLNESS_CASES,oBean.YEAR3)%></td>
           <td><%=oBean.calcAverageStat(oBean.INJURY_ILLNESS_CASES)%></td>
           <td><%=oBean.calcAverageRate(oBean.INJURY_ILLNESS_CASES)%></td>
         </tr>
         <tr>
           <td class="redMain">Restricted Cases - Has restricted days AND no lost days AND is <%=oBean.SHAType%> <%=descriptionText%></td>
-          <td><%=oBean.stats[oBean.RESTRICTED_WORK_CASES][oBean.YEAR1]%></td>
+          <td><%=oBean.getStat(oBean.RESTRICTED_WORK_CASES, oBean.YEAR1)%></td>
           <td><%=oBean.calcRate(oBean.RESTRICTED_WORK_CASES,oBean.YEAR1)%></td>
-          <td><%=oBean.stats[oBean.RESTRICTED_WORK_CASES][oBean.YEAR2]%></td>
+          <td><%=oBean.getStat(oBean.RESTRICTED_WORK_CASES, oBean.YEAR2)%></td>
           <td><%=oBean.calcRate(oBean.RESTRICTED_WORK_CASES,oBean.YEAR2)%></td>
-          <td><%=oBean.stats[oBean.RESTRICTED_WORK_CASES][oBean.YEAR3]%></td>
+          <td><%=oBean.getStat(oBean.RESTRICTED_WORK_CASES, oBean.YEAR3)%></td>
           <td><%=oBean.calcRate(oBean.RESTRICTED_WORK_CASES,oBean.YEAR3)%></td>
           <td><%=oBean.calcAverageStat(oBean.RESTRICTED_WORK_CASES)%></td>
           <td><%=oBean.calcAverageRate(oBean.RESTRICTED_WORK_CASES)%></td>
         </tr>
         <tr>
           <td class="redMain">Total <%=oBean.SHAType%> <%=descriptionText%> Injuries and Illnesses</td>
-          <td><%=oBean.stats[oBean.RECORDABLE_TOTAL][oBean.YEAR1]%></td>
+          <td><%=oBean.getStat(oBean.RECORDABLE_TOTAL, oBean.YEAR1)%></td>
           <td><%=oBean.calcRate(oBean.RECORDABLE_TOTAL,oBean.YEAR1)%></td>
-          <td><%=oBean.stats[oBean.RECORDABLE_TOTAL][oBean.YEAR2]%></td>
+          <td><%=oBean.getStat(oBean.RECORDABLE_TOTAL, oBean.YEAR2)%></td>
           <td><%=oBean.calcRate(oBean.RECORDABLE_TOTAL,oBean.YEAR2)%></td>
-          <td><%=oBean.stats[oBean.RECORDABLE_TOTAL][oBean.YEAR3]%></td>
+          <td><%=oBean.getStat(oBean.RECORDABLE_TOTAL, oBean.YEAR3)%></td>
           <td><%=oBean.calcRate(oBean.RECORDABLE_TOTAL,oBean.YEAR3)%></td>
           <td><%=oBean.calcAverageStat(oBean.RECORDABLE_TOTAL)%></td>
           <td><%=oBean.calcAverageRate(oBean.RECORDABLE_TOTAL)%></td>

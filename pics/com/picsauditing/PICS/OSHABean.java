@@ -46,7 +46,7 @@ public class OSHABean extends DataBean {
 	public static final int YEAR4 = 3;
 	private boolean duringGracePeriod = false;
 	
-	public int[][] stats = new int[7][4];
+	private int[][] stats = new int[7][4];
 	public String file1YearAgo = "No";
 	public String file2YearAgo = "No";
 	public String file3YearAgo = "No";
@@ -84,9 +84,17 @@ public class OSHABean extends DataBean {
 		catch (Exception e) {return "";}//catch	
 	}//calcRate
 
-	public String getStat(int i, int j) {
-		try {return Float.toString(stats[i][j]);}
-		catch (Exception e) {return "";}//catch	
+	public String getStat(int field, int year) {
+		if (isDuringGracePeriod()) {
+			// During Jan/Feb use 2-4 instead
+			switch(year) {
+				case YEAR1: year=YEAR2; break;
+				case YEAR2: year=YEAR3; break;
+				case YEAR3: year=YEAR4; break;
+			}
+		}
+		try {return Float.toString(stats[field][year]);}
+		catch (Exception e) {return "";}//catch
 	}//calcRate
 
 	private int getNumberNA() {

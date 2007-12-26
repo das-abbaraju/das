@@ -20,6 +20,10 @@ public class FlagCriteriaDO{
 	String questionType = "";
 	String comparison = "";
 	String value = "";
+	private boolean duringGracePeriod = false;
+	public void setDuringGracePeriod(boolean value) {
+		duringGracePeriod = value;
+	}
 	
 	/**
 	 * empty constructor
@@ -53,22 +57,42 @@ public class FlagCriteriaDO{
 	}//isChecked
 	
 	public String getAnswer(ResultSet rs)throws Exception{
+		// TODO fix the division of average EMR rate to be like OSHA N/A
 		if (FlagCriteria.EMR_AVE_QUESTION_ID.equals(questionID)){
 			try{
 				float temp = 0;
-				questionID = com.picsauditing.PICS.pqf.Constants.EMR_YEAR1;
-				temp += Float.parseFloat(getAnswer(rs));
+				String answer;
+				int yearCount = 0;
+				//if (!duringGracePeriod) {
+					// Don't include the 2007 numbers at the end or 2007 or start of 2008
+					questionID = com.picsauditing.PICS.pqf.Constants.EMR_YEAR1;
+					answer = getAnswer(rs);
+					if (!"-".equals(answer)) {
+						temp += Float.parseFloat(answer);
+						yearCount++;
+					}
+				//}
 				questionID = com.picsauditing.PICS.pqf.Constants.EMR_YEAR2;
-				temp += Float.parseFloat(getAnswer(rs));
+				answer = getAnswer(rs);
+				if (!"-".equals(answer)) {
+					temp += Float.parseFloat(answer);
+					yearCount++;
+				}
 				questionID = com.picsauditing.PICS.pqf.Constants.EMR_YEAR3;
-				temp += Float.parseFloat(getAnswer(rs));
+				answer = getAnswer(rs);
+				if (!"-".equals(answer)) {
+					temp += Float.parseFloat(answer);
+					yearCount++;
+				}
+				
 				questionID = FlagCriteria.EMR_AVE_QUESTION_ID;
-				temp = temp/3;
+				if (yearCount == 0) return "-";
+				temp = temp/yearCount;
 				DecimalFormat decFormatter = new DecimalFormat("###,##0.00");
 				return decFormatter.format(temp);
 			}catch(Exception ex){
 				questionID = FlagCriteria.EMR_AVE_QUESTION_ID;
-				return "-";				
+				return "-";
 			}//catch
 		}//if
 		String answer = rs.getString("q"+questionID+".verifiedAnswer");

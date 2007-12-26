@@ -152,9 +152,9 @@ try{
 %>
               <tr class="blueMain" <%=Utilities.getBGColor(rowCount++)%>>
                 <td align="right"><nobr>Fatalities</nobr></td>
-                <td align="center"><%=flagCalculator.getOshaFlag(OSHABean.FATALITIES,osBean.stats[OSHABean.FATALITIES][OSHABean.YEAR1],"1")%></td>
-                <td align="center"><%=flagCalculator.getOshaFlag(OSHABean.FATALITIES,osBean.stats[OSHABean.FATALITIES][OSHABean.YEAR2],"1")%></td>
-                <td align="center"><%=flagCalculator.getOshaFlag(OSHABean.FATALITIES,osBean.stats[OSHABean.FATALITIES][OSHABean.YEAR3],"1")%></td>
+                <td align="center"><%=flagCalculator.getOshaFlag(OSHABean.FATALITIES,osBean.getStat(OSHABean.FATALITIES, OSHABean.YEAR1),"1")%></td>
+                <td align="center"><%=flagCalculator.getOshaFlag(OSHABean.FATALITIES,osBean.getStat(OSHABean.FATALITIES, OSHABean.YEAR2),"1")%></td>
+                <td align="center"><%=flagCalculator.getOshaFlag(OSHABean.FATALITIES,osBean.getStat(OSHABean.FATALITIES, OSHABean.YEAR3),"1")%></td>
                 <td></td>
                 <td></td>
               </tr>

@@ -151,9 +151,9 @@
                       </tr>
                       <tr> 
                         <td class="redMain">Total Man Hours Worked</td>
-                        <td colspan="2"><input name="manHours1" type="text" class="forms" value="<%=oBean.formatNumber(oBean.stats[oBean.MAN_HOURS][oBean.YEAR1])%>" size="10"></td>
-                        <td colspan="2"><input name="manHours2" type="text" class="forms" value="<%=oBean.formatNumber(oBean.stats[oBean.MAN_HOURS][oBean.YEAR2])%>" size="10"></td>
-                        <td colspan="2"><input name="manHours3" type="text" class="forms" value="<%=oBean.formatNumber(oBean.stats[oBean.MAN_HOURS][oBean.YEAR3])%>" size="10"></td>
+                        <td colspan="2"><input name="manHours1" type="text" class="forms" value="<%=oBean.formatNumber(oBean.getStat(oBean.MAN_HOURS, oBean.YEAR1))%>" size="10"></td>
+                        <td colspan="2"><input name="manHours2" type="text" class="forms" value="<%=oBean.formatNumber(oBean.getStat(oBean.MAN_HOURS, oBean.YEAR2))%>" size="10"></td>
+                        <td colspan="2"><input name="manHours3" type="text" class="forms" value="<%=oBean.formatNumber(oBean.getStat(oBean.MAN_HOURS, oBean.YEAR3))%>" size="10"></td>
                       </tr>
                       <tr> 
                         <td class="redMain">&nbsp;</td>
@@ -166,56 +166,56 @@
                       </tr>
                       <tr>
                         <td class="redMain">Fatalities</td>
-                        <td><input name="fatalities1" type="text" class="forms" value="<%=oBean.stats[oBean.FATALITIES][oBean.YEAR1]%>" size="4"></td>
+                        <td><input name="fatalities1" type="text" class="forms" value="<%=oBean.getStat(oBean.FATALITIES, oBean.YEAR1)%>" size="4"></td>
                         <td><%=oBean.calcRate(oBean.FATALITIES,oBean.YEAR1)%></td>
-                        <td><input name="fatalities2" type="text" class="forms" value="<%=oBean.stats[oBean.FATALITIES][oBean.YEAR2]%>" size="4"></td>
+                        <td><input name="fatalities2" type="text" class="forms" value="<%=oBean.getStat(oBean.FATALITIES, oBean.YEAR2)%>" size="4"></td>
                         <td><%=oBean.calcRate(oBean.FATALITIES,oBean.YEAR2)%></td>
-                        <td><input name="fatalities3" type="text" class="forms" value="<%=oBean.stats[oBean.FATALITIES][oBean.YEAR3]%>" size="4"></td>
+                        <td><input name="fatalities3" type="text" class="forms" value="<%=oBean.getStat(oBean.FATALITIES, oBean.YEAR3)%>" size="4"></td>
                         <td><%=oBean.calcRate(oBean.FATALITIES,oBean.YEAR3)%></td>
                       </tr>
                       <tr>
                         <td class="redMain">Number of Lost Workday Cases - Has lost days AND is <%=SHAType%> <%=descriptionText%></td>
-                        <td><input name="lostWorkCases1" type="text" class="forms" value="<%=oBean.stats[oBean.LOST_WORK_CASES][oBean.YEAR1]%>" size="4"></td>
+                        <td><input name="lostWorkCases1" type="text" class="forms" value="<%=oBean.getStat(oBean.LOST_WORK_CASES, oBean.YEAR1)%>" size="4"></td>
                         <td><%=oBean.calcRate(oBean.LOST_WORK_CASES,oBean.YEAR1)%></td>
-                        <td><input name="lostWorkCases2" class="forms" type="text" value="<%=oBean.stats[oBean.LOST_WORK_CASES][oBean.YEAR2]%>" size="4"></td>
+                        <td><input name="lostWorkCases2" class="forms" type="text" value="<%=oBean.getStat(oBean.LOST_WORK_CASES, oBean.YEAR2)%>" size="4"></td>
                         <td><%=oBean.calcRate(oBean.LOST_WORK_CASES,oBean.YEAR2)%></td>
-                        <td><input name="lostWorkCases3" class="forms" type="text" value="<%=oBean.stats[oBean.LOST_WORK_CASES][oBean.YEAR3]%>" size="4"></td>
+                        <td><input name="lostWorkCases3" class="forms" type="text" value="<%=oBean.getStat(oBean.LOST_WORK_CASES, oBean.YEAR3)%>" size="4"></td>
                         <td><%=oBean.calcRate(oBean.LOST_WORK_CASES,oBean.YEAR3)%></td>
                       </tr>
                       <tr> 
                         <td class="redMain">Number of Lost Workdays - All lost workdays (regardless of restricted days) AND is <%=SHAType%> <%=descriptionText%></td>
-                        <td><input name="lostWorkDays1" type="text" class="forms" value="<%=oBean.stats[oBean.LOST_WORK_DAYS][oBean.YEAR1]%>" size="4"></td>
+                        <td><input name="lostWorkDays1" type="text" class="forms" value="<%=oBean.getStat(oBean.LOST_WORK_DAYS, oBean.YEAR1)%>" size="4"></td>
                         <td><%=oBean.calcRate(oBean.LOST_WORK_DAYS,oBean.YEAR1)%></td>
-                        <td><input name="lostWorkDays2" class="forms" type="text" value="<%=oBean.stats[oBean.LOST_WORK_DAYS][oBean.YEAR2]%>" size="4"></td>
+                        <td><input name="lostWorkDays2" class="forms" type="text" value="<%=oBean.getStat(oBean.LOST_WORK_DAYS, oBean.YEAR2)%>" size="4"></td>
                         <td><%=oBean.calcRate(oBean.LOST_WORK_DAYS,oBean.YEAR2)%></td>
-                        <td><input name="lostWorkDays3" class="forms" type="text" value="<%=oBean.stats[oBean.LOST_WORK_DAYS][oBean.YEAR3]%>" size="4"></td>
+                        <td><input name="lostWorkDays3" class="forms" type="text" value="<%=oBean.getStat(oBean.LOST_WORK_DAYS, oBean.YEAR3)%>" size="4"></td>
                         <td><%=oBean.calcRate(oBean.LOST_WORK_DAYS,oBean.YEAR3)%></td>
                       </tr>
                       <tr> 
                         <td class="redMain">Injury & Illnesses Medical Cases - No lost OR restricted days AND is <%=SHAType%> <%=descriptionText%> (non-fatal)</td>
-                        <td><input name="injuryIllnessCases1" class="forms" type="text" value="<%=oBean.stats[oBean.INJURY_ILLNESS_CASES][oBean.YEAR1]%>" size="4"></td>
+                        <td><input name="injuryIllnessCases1" class="forms" type="text" value="<%=oBean.getStat(oBean.INJURY_ILLNESS_CASES, oBean.YEAR1)%>" size="4"></td>
                         <td><%=oBean.calcRate(oBean.INJURY_ILLNESS_CASES,oBean.YEAR1)%></td>
-                        <td><input name="injuryIllnessCases2" class="forms" type="text" value="<%=oBean.stats[oBean.INJURY_ILLNESS_CASES][oBean.YEAR2]%>" size="4"></td>
+                        <td><input name="injuryIllnessCases2" class="forms" type="text" value="<%=oBean.getStat(oBean.INJURY_ILLNESS_CASES, oBean.YEAR2)%>" size="4"></td>
                         <td><%=oBean.calcRate(oBean.INJURY_ILLNESS_CASES,oBean.YEAR2)%></td>
-                        <td><input name="injuryIllnessCases3" class="forms" type="text" value="<%=oBean.stats[oBean.INJURY_ILLNESS_CASES][oBean.YEAR3]%>" size="4"></td>
+                        <td><input name="injuryIllnessCases3" class="forms" type="text" value="<%=oBean.getStat(oBean.INJURY_ILLNESS_CASES, oBean.YEAR3)%>" size="4"></td>
                         <td><%=oBean.calcRate(oBean.INJURY_ILLNESS_CASES,oBean.YEAR3)%></td>
                       </tr>
                       <tr> 
                         <td class="redMain">Restricted Cases - Has restricted days AND no lost days AND is <%=SHAType%> <%=descriptionText%></td>
-                        <td><input name="restrictedWorkCases1" class="forms" type="text" value="<%=oBean.stats[oBean.RESTRICTED_WORK_CASES][oBean.YEAR1]%>" size="4"></td>
+                        <td><input name="restrictedWorkCases1" class="forms" type="text" value="<%=oBean.getStat(oBean.RESTRICTED_WORK_CASES, oBean.YEAR1)%>" size="4"></td>
                         <td><%=oBean.calcRate(oBean.RESTRICTED_WORK_CASES,oBean.YEAR1)%></td>
-                        <td><input name="restrictedWorkCases2" class="forms" type="text" value="<%=oBean.stats[oBean.RESTRICTED_WORK_CASES][oBean.YEAR2]%>" size="4"></td>
+                        <td><input name="restrictedWorkCases2" class="forms" type="text" value="<%=oBean.getStat(oBean.RESTRICTED_WORK_CASES, oBean.YEAR2)%>" size="4"></td>
                         <td><%=oBean.calcRate(oBean.RESTRICTED_WORK_CASES,oBean.YEAR2)%></td>
-                        <td><input name="restrictedWorkCases3" class="forms" type="text" value="<%=oBean.stats[oBean.RESTRICTED_WORK_CASES][oBean.YEAR3]%>" size="4"></td>
+                        <td><input name="restrictedWorkCases3" class="forms" type="text" value="<%=oBean.getStat(oBean.RESTRICTED_WORK_CASES, oBean.YEAR3)%>" size="4"></td>
                         <td><%=oBean.calcRate(oBean.RESTRICTED_WORK_CASES,oBean.YEAR3)%></td>
                       </tr>
                       <tr> 
                         <td class="redMain">Total <%=SHAType%> <%=descriptionText%> Injuries and Illnesses</td>
-                        <td><input name="recordableTotal1" class="forms" type="text" value="<%=oBean.stats[oBean.RECORDABLE_TOTAL][oBean.YEAR1]%>" size="4"></td>
+                        <td><input name="recordableTotal1" class="forms" type="text" value="<%=oBean.getStat(oBean.RECORDABLE_TOTAL, oBean.YEAR1)%>" size="4"></td>
                         <td><%=oBean.calcRate(oBean.RECORDABLE_TOTAL,oBean.YEAR1)%></td>
-                        <td><input name="recordableTotal2" class="forms" type="text" value="<%=oBean.stats[oBean.RECORDABLE_TOTAL][oBean.YEAR2]%>" size="4"></td>
+                        <td><input name="recordableTotal2" class="forms" type="text" value="<%=oBean.getStat(oBean.RECORDABLE_TOTAL, oBean.YEAR2)%>" size="4"></td>
                         <td><%=oBean.calcRate(oBean.RECORDABLE_TOTAL,oBean.YEAR2)%></td>
-                        <td><input name="recordableTotal3" class="forms" type="text" value="<%=oBean.stats[oBean.RECORDABLE_TOTAL][oBean.YEAR3]%>" size="4"></td>
+                        <td><input name="recordableTotal3" class="forms" type="text" value="<%=oBean.getStat(oBean.RECORDABLE_TOTAL, oBean.YEAR3)%>" size="4"></td>
                         <td><%=oBean.calcRate(oBean.RECORDABLE_TOTAL,oBean.YEAR3)%></td>
                       </tr>
                       <tr> 
