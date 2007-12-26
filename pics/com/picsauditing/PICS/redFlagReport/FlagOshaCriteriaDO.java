@@ -40,7 +40,7 @@ public class FlagOshaCriteriaDO extends DataBean {
 	public void setFromDB(String op_ID,String fStatus) throws Exception, IllegalArgumentException {
 		opID = op_ID;
 		flagStatus = fStatus;
-		if ((null == op_ID) || ("".equals(op_ID)))
+		if ((null == opID) || ("".equals(opID)))
 			throw new IllegalArgumentException("Can't set FlagOshaCriteria from DB because opID is not set");
 		if (!flagStatus.equals("Red") && !flagStatus.equals("Amber"))
 			throw new IllegalArgumentException("Flag status must be either Red or Amber");

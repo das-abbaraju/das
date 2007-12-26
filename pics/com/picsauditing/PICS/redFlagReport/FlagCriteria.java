@@ -35,7 +35,7 @@ public class FlagCriteria extends DataBean {
 		checkedQuestionIDsAL = null;
 		try{
 			flagOshaCriteriaDO = new FlagOshaCriteriaDO();
-			flagOshaCriteriaDO.setFromDB(op_ID,fStatus);
+			flagOshaCriteriaDO.setFromDB(opID, flagStatus);
 			DBReady();
 			String selectQuery = "SELECT * FROM flagCriteria WHERE opID="+Utilities.intToDB(opID)+" AND flagStatus='"+flagStatus+"';";
 			flagCriteriaMap = new TreeMap<String, FlagCriteriaDO>();

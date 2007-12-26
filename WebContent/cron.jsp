@@ -14,8 +14,13 @@ new Billing().updateAllPayingFacilities(FACILITIES, application);
 %>Billing.updateAllPayingFacilities();<%
 
 FlagCalculator flagCalculator = new FlagCalculator();
+int currentYear = DateBean.getCurrentYear(this.getServletContext());
+int currentYearGrace = DateBean.getCurrentYearGrace(this.getServletContext());
+flagCalculator.setCurrentYear(currentYear, currentYearGrace);
+
 for (String opID: FACILITIES.nameMap.keySet()) {
 	%>FlagCalculator.recalculateFlags(<%=opID%>);<%
 	flagCalculator.recalculateFlags(opID);
 }
+
 %>

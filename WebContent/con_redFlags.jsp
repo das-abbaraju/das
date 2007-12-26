@@ -20,12 +20,13 @@ try{
 	cBean.setFromDB(id);
 	int rowCount = 0;
 	FlagCalculator flagCalculator = new FlagCalculator();
-	flagCalculator.setConFlags(id,pBean.userID);
 	ForcedFlagListDO forcedFlagListDO = new ForcedFlagListDO();
 	int currentYear = DateBean.getCurrentYear(this.getServletContext());
 	int currentYearGrace = DateBean.getCurrentYearGrace(this.getServletContext());
 	flagCalculator.setCurrentYear(currentYear, currentYearGrace);
-	
+
+	flagCalculator.setConFlags(id,pBean.userID);
+
 	if (addNote && canEditNotes){
 		String newNote = request.getParameter("newNote");
 		if (null != newNote && !"".equals(newNote)){
