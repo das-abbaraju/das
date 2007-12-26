@@ -94,7 +94,7 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
 							BP Cherry Point Refinery<br>
                               BP Carson Refinery<br>
                               BP Pipelines &amp; Logistics<br>
-                              BP Coke &amp; Marketing<br>
+                              BP Coke  Marketing<br>
 							  BP Toledo Refinery<br>
                               BP Whiting Refinery<br>
 							  ConocoPhillips Billings Refinery<br>
@@ -112,7 +112,6 @@ Huntsman Auburn Hills<br>
 Huntsman Conroe<br>
 Huntsman Charlotte<br>
 Huntsman Dayton<br>
-Huntsman Derry<br>
 </td>
                           </tr>
                         </table>                          </td>
@@ -123,6 +122,7 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
                       <param name="quality" value="high">
                       <embed src="flash/client_logoflash.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="145" height="130"></embed>
                     </object></noscript><script type="text/javascript" src="js/ieupdate.js"></script><br><br>				
+Huntsman Derry<br>
 Huntsman East Lansing<br>
 Huntsman Freeport<br>
 Huntsman Geismar<br>
@@ -134,7 +134,6 @@ Huntsman Ringwood (Chicago)<br>
 Huntsman Woodlands<br>
 IDS Real Estate<br>
 Jiffy Lube International<br>
-Kajima Construction Services<br>
 						March Point Cogeneration Company<br>
 						Martinez Catalyst Plant<br>
 						Motiva Convent Refinery
@@ -152,18 +151,20 @@ Kajima Construction Services<br>
   Shell Chemical Norco<br>
 Shell Deer Park<br>
 Shell Environmental Services<br>
-Tesoro Los Angeles Refinery<br>
 Shell Lubricants<br>
 Shell Martinez Refinery<br>
 Shell Oil Products US RMT<br>
 Shell Puget Sound Refinery<br>
 Shell Retail<br>
-Suncor Energy<br>
 Suncor Energy Commerce City Refinery<br>
 Tesoro Anacortes Refinery<br>
 Tesoro Kapolei Refinery<br>
+Tesoro Kenai Alaska Refinery<br>
+Tesoro Los Angeles Refinery<br>
 Tesoro Martinez Refinery<br>
 Tesoro Pipelines & Terminals<br>
+Tesoro Retail<br>
+Tesoro Salt Lake City Refinery<br>
 Watson Cogen</td>
                       </tr>
                     </table></td>
