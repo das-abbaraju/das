@@ -94,7 +94,7 @@ Irvine, CA 92614<br>
 <br>
 <b>Phone:</b> 949.387.1940<br>
 <b>Toll Free:</b> 800.506.PICS (7427)<br>
-<b>Fax:</b> 949.340.1172<br>
+<b>Fax:</b> 949.269.9177<br>
 <br>
 <br></td>
                         </tr>
