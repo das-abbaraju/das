@@ -145,5 +145,6 @@
   </tr>
 <%	}//if%>
 </table>
+<%@ include file="includes/statcounter.jsp" %>
 </body>
 </html>

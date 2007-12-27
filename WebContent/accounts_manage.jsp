@@ -274,6 +274,7 @@
       Pacific Industrial Contractor Screening | site design: <a href="http://www.albumcreative.com" title="Album Creative Studios"><font color="#336699">ACS</font></a><%//@ include file="includes/phplivesupport.jsp"%>
   </tr>
 </table>
+<%@ include file="includes/statcounter.jsp" %>
 </body>
 </html>
 <%	}finally{

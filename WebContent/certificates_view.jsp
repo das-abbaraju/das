@@ -126,6 +126,7 @@
  <area shape="rect" coords="73,4,142,70" href="logout.jsp">
 </map>
 	  
+<%@ include file="includes/statcounter.jsp" %>
 </body>
 </html>
 <%	}finally{

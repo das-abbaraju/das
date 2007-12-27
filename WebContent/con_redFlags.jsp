@@ -336,6 +336,7 @@ try{
 	</td>
   </tr>
 </table>
+<%@ include file="includes/statcounter.jsp" %>
 </body>
 </html>
 <%}finally{

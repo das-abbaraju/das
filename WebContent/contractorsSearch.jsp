@@ -203,6 +203,7 @@ try{
       Pacific Industrial Contractor Screening | site design: <a href="http://www.albumcreative.com" title="Album Creative Studios"><font color="#336699">ACS</font></a></td>
   </tr>
 </table>
+<%@ include file="includes/statcounter.jsp" %>
 </body>
 </html>
 <%}finally{

@@ -56,5 +56,6 @@
   <form>
     <input type="button" value="Close" onClick="window.close()">
   </form>
+<%@ include file="includes/statcounter.jsp" %>
 </body>
 </html>

@@ -197,7 +197,6 @@ Watson Cogen</td>
     <td height="72" valign="top">&nbsp;</td>
   </tr>
 </table>
-
-
+<%@ include file="includes/statcounter.jsp" %>
 </body>
 </html>

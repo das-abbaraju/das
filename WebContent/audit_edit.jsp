@@ -269,6 +269,7 @@ try{
   </tr>
 </table>
 </body>
+<%@ include file="includes/statcounter.jsp" %>
 </html>
 <%	}finally{
 		adBean.closeList();
