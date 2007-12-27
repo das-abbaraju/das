@@ -151,9 +151,9 @@
                       </tr>
                       <tr> 
                         <td class="redMain">Total Man Hours Worked</td>
-                        <td colspan="2"><input name="manHours1" type="text" class="forms" value="<%=oBean.formatNumber(oBean.getStat(oBean.MAN_HOURS, oBean.YEAR1))%>" size="10"></td>
-                        <td colspan="2"><input name="manHours2" type="text" class="forms" value="<%=oBean.formatNumber(oBean.getStat(oBean.MAN_HOURS, oBean.YEAR2))%>" size="10"></td>
-                        <td colspan="2"><input name="manHours3" type="text" class="forms" value="<%=oBean.formatNumber(oBean.getStat(oBean.MAN_HOURS, oBean.YEAR3))%>" size="10"></td>
+                        <td colspan="2"><input name="manHours1" type="text" class="forms" value="<%=oBean.getStat(oBean.MAN_HOURS, oBean.YEAR1)%>" size="10"></td>
+                        <td colspan="2"><input name="manHours2" type="text" class="forms" value="<%=oBean.getStat(oBean.MAN_HOURS, oBean.YEAR2)%>" size="10"></td>
+                        <td colspan="2"><input name="manHours3" type="text" class="forms" value="<%=oBean.getStat(oBean.MAN_HOURS, oBean.YEAR3)%>" size="10"></td>
                       </tr>
                       <tr> 
                         <td class="redMain">&nbsp;</td>
