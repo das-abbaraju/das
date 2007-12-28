@@ -16,7 +16,10 @@
 	String name = request.getParameter("name");
 	String email = request.getParameter("email");
 	String phone = request.getParameter("phone");
-	String message = "Company: "+request.getParameter("company")+'\n'+request.getParameter("message");
+	String message = "Contact about "+sendTo+". Sent to:\n";
+	for(String toAddress: toAddresses)
+		message = message + toAddress + "\n";
+	message = message + "\nCompany: "+request.getParameter("company")+'\n'+request.getParameter("message");
 	EmailBean.init(config);
 //	eBean.sendContactUsEmail(name,email,sendTo,message);
 	for(String toAddress: toAddresses)

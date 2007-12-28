@@ -58,30 +58,7 @@ int i3 = 25000;
 				session.setMaxInactiveInterval(3600);
 				pBean.oBean = new OperatorBean();
 				pBean.oBean.setAsAdmin();
-				// Only run the daily maintenance if it's before 7:00 AM in the morning and if it hasn't been run today yet
-				String lastDailyMaintenence = (String)application.getAttribute("Last Daily Maintenance");
-				if (DateBean.getCurrentHour() < 7 && !DateBean.getTodaysDate().equals(lastDailyMaintenence)) {
-///*
-					aBean.optimizeDB();
-
-					FACILITIES.setFacilitiesFromDB();
-					new Billing().updateAllPayingFacilities(FACILITIES, application);
-					
-					FlagCalculator flagCalculator = new FlagCalculator();
-					for (String opID: FACILITIES.nameMap.keySet()) {
-							flagCalculator.recalculateFlags(opID);
-					}
-					// THIS IS A TOTAL HACK that fixes a bug in calculating Amber flag overrides in recalculateFlags
-					//Connection Conn = com.picsauditing.PICS.DBBean.getDBConnection();
-					//Statement SQLStatement = Conn.createStatement();
-					//String sql = "UPDATE flags f, forcedflaglist l SET f.flag = l.flagStatus " +
-					//	"WHERE f.opID = l.opID and f.conID = l.conID and l.dateExpires > NOW() and f.flag <> l.flagStatus";
-					//SQLStatement.executeUpdate(sql);
-//*/
-					
-					// Done for today
-					application.setAttribute("Last Daily Maintenance", com.picsauditing.PICS.DateBean.getTodaysDate());
-				}//if
+				// Daily maintenence was moved to cron.jsp
 				if (fromURL.length() > 0) {
 					response.sendRedirect(fromURL);
 					return;
