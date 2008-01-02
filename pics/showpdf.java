@@ -95,12 +95,23 @@ public class showpdf extends HttpServlet {
 				
 		String ct = setContentType(ext);
 		response.setContentType(ct);
-		sFileName+= ext;
 		
-		File file = new File(sFileName); 
+		//Check for both upper and lower case extension
+		String filePath = sFileName + ext;
+		File file = new File(filePath);
+		if(!file.isFile()){
+			filePath = sFileName+ext.toLowerCase();
+			if(!file.isFile()){
+				o.print("The file you requested does not exist. Please contact PICS");
+			    o.flush();
+			    return;
+			}
+		}
+		//end check
+		
 		byte[] byteContents = new byte[(int)file.length()]; 		
 		response.setContentLength((int)file.length()); 
-		FileInputStream in = new FileInputStream(sFileName); 
+		FileInputStream in = new FileInputStream(filePath); 
 		in.read(byteContents); 		
 		in.close();
 		
