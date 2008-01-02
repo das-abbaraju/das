@@ -7,7 +7,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <link href="PICS.css" rel="stylesheet" type="text/css">
   <script language="JavaScript" SRC="js/ImageSwap.js"></script>
-  <script src="Scripts/AC_RunActiveContent.js" type="text/javascript"></script>
+  <script src="js/AC_RunActiveContent.js" type="text/javascript"></script>
 </head>
 
 <body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
