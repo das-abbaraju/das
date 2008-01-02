@@ -59,12 +59,8 @@
                   </td>
                 <td class="blueMain"><p>Congratulations, 
                     your account has been created! <br><span class="redMain">PICS 
-                    will review your submission and send you an invoice for $498
-                    ($399 for first year membership, plus one-time $99 activation fee) within 
-                    48 hours. Those of you that were requested by your Operator to be a 
-                    PQF-only contractor (i.e. no audits) will be sent an invoice for $198 
-                    ($99 for first year membership, plus one-time $99 activation fee). 
-                    This invoice must be paid before your account will be activated</span><br>
+                    will review your submission and send you an invoice within 
+                    48 hours. This invoice must be paid before your account will be activated</span><br>
                     <br>
                     You must confirm the email address that you provided us before your account
 					will be activated. If you have a spam filter, we suggest you add picsauditing.com
