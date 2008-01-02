@@ -271,6 +271,8 @@ public class ContractorBean extends DataBean {
 	public String getAuditDateShow() throws Exception {
 		if ("".equals(auditDate))
 			return auditStatus;
+		if ("".equals(auditCompletedDate) && !"".equals(auditValidUntilDate))
+			return auditStatus;
 		return auditDate+" ("+auditStatus+")";
 	}//getAuditDateShow
 	public String getDescriptionHTML() {return Utilities.escapeNewLines(description);}//getDescriptionHTML
@@ -531,6 +533,8 @@ public class ContractorBean extends DataBean {
 	public String calcOfficeStatus() throws Exception {
 		if (isExempt())
 			return AUDIT_STATUS_EXEMPT;
+		if (DateBean.isAfterToday(auditValidUntilDate))
+			return AUDIT_STATUS_CLOSED;
 		if (!isAuditCompleted()){
 			if (DateBean.isAfterToday(auditDate))
 				return AUDIT_STATUS_SCHEDULED;

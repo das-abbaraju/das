@@ -325,7 +325,6 @@ public class SearchBean {
 		if ((selected_status == null) || (selected_status.equals(DEFAULT_STATUS)) || ("".equals(selected_status)))
 			selected_status = DEFAULT_STATUS;
 		else{
-//****************** mimicks logic in ContractorBean.calcPICSStatusForOperator(PermissionBean)
 			if ("Active".equals(selected_status))
 				whereQuery+="AND (1 ";
 			else
@@ -334,20 +333,14 @@ public class SearchBean {
 				whereQuery += "AND (pqfSubmittedDate<>'0000-00-00' AND pqfSubmittedDate>'"+DateBean.PQF_EXPIRED_CUTOFF+"') ";
 			whereQuery += "AND (isExempt='Yes' OR (1 ";
 			if (permissions.oBean.canSeeDesktop())
-				whereQuery += "AND (auditValidUntilDate>CURDATE() OR desktopValidUntilDate>CURDATE() OR "+
-					"(desktopSubmittedDate<>'0000-00-00' AND desktopSubmittedDate>DATE_ADD(CURDATE(),INTERVAL -3 YEAR) "+
-					"AND desktopClosedDate<>'0000-00-00') OR (auditCompletedDate<>'0000-00-00' AND "+
-					"auditCompletedDate<'"+DateBean.OLD_OFFICE_CUTOFF+"' AND auditCompletedDate>DATE_ADD(CURDATE(),INTERVAL -3 YEAR) "+
-					"AND auditClosedDate<>'0000-00-00')) ";
+				whereQuery += "AND desktopValidUntilDate>=CURDATE() ";
 			if (permissions.oBean.canSeeDA())
 				whereQuery += "AND (daSubmittedDate<>'0000-00-00' AND daSubmittedDate>DATE_ADD(CURDATE(),INTERVAL -3 YEAR) "+
 					"AND daClosedDate<>'0000-00-00') ";
 			if (permissions.oBean.canSeeOffice())
-				whereQuery += "AND (auditValidUntilDate>CURDATE() OR " +
-						"(auditCompletedDate<>'0000-00-00' AND auditCompletedDate>DATE_ADD(CURDATE(),INTERVAL -3 YEAR) "+
-					"AND auditClosedDate<>'0000-00-00')) ";
+				whereQuery += "AND auditValidUntilDate>=CURDATE() ";
 			whereQuery+="))) ";
-//********************		
+//********************
 		}//else
 		if ((selected_auditStatus == null) || (selected_auditStatus.equals(DEFAULT_AUDIT_STATUS)) || ("".equals(selected_auditStatus)))
 			selected_auditStatus = DEFAULT_AUDIT_STATUS;
