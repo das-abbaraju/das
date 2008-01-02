@@ -697,6 +697,8 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 			}
 		}
 		
+		if(errorMessages.size() > 0)
+			return;
 		insertQuery = insertQuery.substring(0,insertQuery.length()-1);
 		insertQuery +=";";
 
