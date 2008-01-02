@@ -1274,6 +1274,13 @@ public class ContractorBean extends DataBean {
 			EmailBean.sendAuditSurveyEmail(conID);
 	}//submitPQF
 
+	/**
+	 * This closes all the other audits
+	 * @param conID
+	 * @param adminName
+	 * @param auditType
+	 * @throws Exception
+	 */
 	public void closeAudit(String conID, String adminName, String auditType) throws Exception {
 		setFromDB(conID);
 		if (auditType.equals(com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE))
@@ -1291,10 +1298,17 @@ public class ContractorBean extends DataBean {
 			EmailBean.sendDesktopClosedSurveyEmail(conID);
 	}//closeAudit
 
+	/**
+	 * This closes the orignal office audit
+	 * @param conID
+	 * @param adminName
+	 * @throws Exception
+	 * @Deprecated
+	 */
 	public void closeAudit(String conID, String adminName) throws Exception {
 		setFromDB(conID);
 		auditClosedDate=DateBean.getTodaysDate();
-		desktopValidUntilDate = DateBean.getThreeYearsAheadDate(auditCompletedDate);
+		auditValidUntilDate = DateBean.getThreeYearsAheadDate(auditCompletedDate);
 		addNote(conID, "("+adminName+")", "Office audit closed", DateBean.getTodaysDateTime());
 		writeToDB();
 		EmailBean.sendAuditClosedEmails(conID, adminName, com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE);
