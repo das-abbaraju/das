@@ -151,7 +151,7 @@ public class ContractorBean extends DataBean {
 
 	public ArrayList<String> generalContractors = new ArrayList<String>();
 	ArrayList<String> newGeneralContractors = null;
-	ArrayList blockedDates = new ArrayList();
+	ArrayList<String> blockedDates = new ArrayList<String>();
 	
 	public void setId(String s) {id = s;}//setId
 	public void setMain_trade(String s) {main_trade = s;}//setMain_trade
@@ -199,6 +199,7 @@ public class ContractorBean extends DataBean {
 				newGeneralContractors.add(s[i-1]);
 			}//for
 		}//if
+		generalContractors = newGeneralContractors;
 	}//setGeneralContractors
 
 	public void setTradeString(String s) {trades = s;}//setTradeString
@@ -367,7 +368,7 @@ public class ContractorBean extends DataBean {
 		setFacilitiesFromDB();
 		if (0==facilitiesCount)
 			return STATUS_INACTIVE;
-		ListIterator li = generalContractors.listIterator();
+		ListIterator<String> li = generalContractors.listIterator();
 		OperatorBean tempOBean = new OperatorBean();
 		while (li.hasNext()) {
 			String opID = (String)li.next();
@@ -382,7 +383,7 @@ public class ContractorBean extends DataBean {
 		setFacilitiesFromDB();
 		if (0==facilitiesCount)
 			return false;
-		ListIterator li = generalContractors.listIterator();
+		ListIterator<String> li = generalContractors.listIterator();
 		OperatorBean tempOBean = new OperatorBean();
 		while (li.hasNext()) {
 			String opID = (String)li.next();
@@ -397,7 +398,7 @@ public class ContractorBean extends DataBean {
 		setFacilitiesFromDB();
 		if (0==facilitiesCount)
 			return false;
-		ListIterator li = generalContractors.listIterator();
+		ListIterator<String> li = generalContractors.listIterator();
 		OperatorBean tempOBean = new OperatorBean();
 		while (li.hasNext()) {
 			String opID = (String)li.next();
@@ -412,7 +413,7 @@ public class ContractorBean extends DataBean {
 		setFacilitiesFromDB();
 		if (0==facilitiesCount)
 			return false;
-		ListIterator li = generalContractors.listIterator();
+		ListIterator<String> li = generalContractors.listIterator();
 		OperatorBean tempOBean = new OperatorBean();
 		while (li.hasNext()) {
 			String opID = (String)li.next();
@@ -427,7 +428,7 @@ public class ContractorBean extends DataBean {
 		setFacilitiesFromDB();
 		if (0==facilitiesCount)
 			return false;
-		ListIterator li = generalContractors.listIterator();
+		ListIterator<String> li = generalContractors.listIterator();
 		OperatorBean tempOBean = new OperatorBean();
 		while (li.hasNext()) {
 			String opID = (String)li.next();
@@ -1009,8 +1010,7 @@ public class ContractorBean extends DataBean {
 				SQLStatement.executeUpdate(insertQuery);
 			DBClose();
 			com.picsauditing.PICS.OperatorBean.resetSubCountTable();
-			com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
-			pcBean.generateDynamicCategories(id,com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
+			new com.picsauditing.PICS.pqf.CategoryBean().generateDynamicCategories(id,com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
 		}finally{
 			DBClose();
 		}//finally
@@ -1173,7 +1173,7 @@ public class ContractorBean extends DataBean {
 	public boolean writeGeneralContractorsToDB(PermissionsBean pBean,Facilities FACILITIES) throws Exception {
 		try {
 			DBReady();
-			ListIterator li = generalContractors.listIterator();
+			ListIterator<String> li = generalContractors.listIterator();
 			while (li.hasNext()) {
 				String oldGen = (String)li.next();
 				if (!newGeneralContractors.contains(oldGen)) {
@@ -1420,13 +1420,13 @@ public class ContractorBean extends DataBean {
 		try {
 			com.picsauditing.PICS.TradesBean tBean = new com.picsauditing.PICS.TradesBean();
 			tBean.setFromDB();
-			ArrayList tradesAL = tBean.trades;
+			ArrayList<String> tradesAL = tBean.trades;
 			String Query = "SELECT * FROM contractor_info;";
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(Query);
 			while (SQLResult.next()) {
 				setFromResultSet(SQLResult);
-				ListIterator li = tradesAL.listIterator();
+				ListIterator<String> li = tradesAL.listIterator();
 				String insertQuery = "REPLACE INTO pqfData (conID,questionID,answer) VALUES ";
 				boolean insert = false;
 				while (li.hasNext()) {
