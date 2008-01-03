@@ -33,7 +33,7 @@ public class OSHABean extends DataBean {
 	public static final int INJURY_ILLNESS_CASES = 4;
 	public static final int RESTRICTED_WORK_CASES = 5;
 	public static final int RECORDABLE_TOTAL = 6;
-
+		
 	public static final String[] OSHA_TYPE_ARRAY = {"Corporate","Division","Region","Site"};
 	public static final String SHA_TYPE_DEFAULT = "-Type-";
 	public static final String[] SHA_TYPE_ARRAY = {SHA_TYPE_DEFAULT,"OSHA","MSHA"};
@@ -236,7 +236,7 @@ public class OSHABean extends DataBean {
 		stats[INJURY_ILLNESS_CASES][YEAR1] =  SQLResult.getInt("injuryIllnessCases1");
 		stats[RESTRICTED_WORK_CASES][YEAR1] = SQLResult.getInt("restrictedWorkCases1");
 		stats[RECORDABLE_TOTAL][YEAR1] = SQLResult.getInt("recordableTotal1");
-
+		
 		stats[MAN_HOURS][YEAR2] = SQLResult.getInt("manHours2");
 		stats[FATALITIES][YEAR2] =  SQLResult.getInt("fatalities2");
 		stats[LOST_WORK_CASES][YEAR2] = SQLResult.getInt("lostWorkCases2");
@@ -244,7 +244,7 @@ public class OSHABean extends DataBean {
 		stats[INJURY_ILLNESS_CASES][YEAR2] = SQLResult.getInt("injuryIllnessCases2");
 		stats[RESTRICTED_WORK_CASES][YEAR2] =  SQLResult.getInt("restrictedWorkCases2");
 		stats[RECORDABLE_TOTAL][YEAR2] = SQLResult.getInt("recordableTotal2");
-
+		
 		stats[MAN_HOURS][YEAR3] =  SQLResult.getInt("manHours3");
 		stats[FATALITIES][YEAR3] =  SQLResult.getInt("fatalities3");
 		stats[LOST_WORK_CASES][YEAR3] =  SQLResult.getInt("lostWorkCases3");
@@ -294,6 +294,7 @@ public class OSHABean extends DataBean {
 				"',injuryIllnessCases1='"+stats[INJURY_ILLNESS_CASES][YEAR1]+
 				"',restrictedWorkCases1='"+stats[RESTRICTED_WORK_CASES][YEAR1]+
 				"',recordableTotal1='"+stats[RECORDABLE_TOTAL][YEAR1]+
+				"',NA1='"+convertNA(na1)+
 //Year 2
 				"',manHours2='"+stats[MAN_HOURS][YEAR2]+
 				"',fatalities2='"+stats[FATALITIES][YEAR2]+
@@ -302,6 +303,7 @@ public class OSHABean extends DataBean {
 				"',injuryIllnessCases2='"+stats[INJURY_ILLNESS_CASES][YEAR2]+
 				"',restrictedWorkCases2='"+stats[RESTRICTED_WORK_CASES][YEAR2]+
 				"',recordableTotal2='"+stats[RECORDABLE_TOTAL][YEAR2]+
+				"',NA2='"+convertNA(na2)+
 //Year 3
 				"',manHours3='"+stats[MAN_HOURS][YEAR3]+
 				"',fatalities3='"+stats[FATALITIES][YEAR3]+
@@ -310,10 +312,12 @@ public class OSHABean extends DataBean {
 				"',injuryIllnessCases3='"+stats[INJURY_ILLNESS_CASES][YEAR3]+
 				"',restrictedWorkCases3='"+stats[RESTRICTED_WORK_CASES][YEAR3]+
 				"',recordableTotal3='"+stats[RECORDABLE_TOTAL][YEAR3]+
+				"',NA3='"+convertNA(na3)+
 				"',verifiedDate='"+verifiedDate+
 				"',auditorID='"+auditorID+
 				
 				"' WHERE OID="+OID+";";
+				System.out.println("OshaBean:WriteToDB = " + updateQuery);
 				SQLStatement.executeUpdate(updateQuery);
 		}finally{
 			DBClose();
@@ -325,16 +329,35 @@ public class OSHABean extends DataBean {
 			return;
 		com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
 		int numRequired = Integer.parseInt(com.picsauditing.PICS.pqf.CategoryBean.OSHA_NUM_REQUIRED);
+		//Adjust for NA
+		int numNA = 0;
+		if(na1){
+			numRequired-=8;
+			numNA++;
+		}
+		if(na2){
+			numRequired-=8;
+			numNA++;
+		}
+		if(na3){
+			numRequired-=8;
+			numNA++;
+		}
+		
 		int requiredCompleted = 0;
 		if (0 != stats[MAN_HOURS][YEAR1])
-			requiredCompleted+=21;
-		if ("Yes".equals(file1YearAgo))
+			requiredCompleted+=21 - (7 * numNA);			
+		if ("Yes".equals(file1YearAgo) && !na1)
 			requiredCompleted++;
-		if ("Yes".equals(file2YearAgo))
+		if ("Yes".equals(file2YearAgo) && !na2)
 			requiredCompleted++;
-		if ("Yes".equals(file3YearAgo))
+		if ("Yes".equals(file3YearAgo) && !na3)
 			requiredCompleted++;
-		String percentCompleted = intFormatter.format(((float)requiredCompleted*100)/numRequired);
+		
+		String percentCompleted = "100";
+		if(numRequired !=0)			
+			percentCompleted = intFormatter.format(((float)requiredCompleted*100)/numRequired);
+		
 //		String requiredCompleted = Integer.toString(temp);
 //		String Query2 = "REPLACE INTO pqfCatData (catID,conID,applies,requiredCompleted,numRequired,percentCompleted) VALUES (29,"
 //			+cID+",'Yes',"+requiredCompleted+","+numRequired+","+percentCompleted+");";
@@ -357,6 +380,7 @@ public class OSHABean extends DataBean {
 		stats[INJURY_ILLNESS_CASES][YEAR1] = parseInt(r.getParameter("injuryIllnessCases1"));
 		stats[RESTRICTED_WORK_CASES][YEAR1] = parseInt(r.getParameter("restrictedWorkCases1"));
 		stats[RECORDABLE_TOTAL][YEAR1] = parseInt(r.getParameter("recordableTotal1"));
+		na1 = convertNA(r.getParameter("na1"));
 // Year 2
 		stats[MAN_HOURS][YEAR2] = parseInt(r.getParameter("manHours2"));
 		stats[FATALITIES][YEAR2] = parseInt(r.getParameter("fatalities2"));
@@ -365,6 +389,7 @@ public class OSHABean extends DataBean {
 		stats[INJURY_ILLNESS_CASES][YEAR2] = parseInt(r.getParameter("injuryIllnessCases2"));
 		stats[RESTRICTED_WORK_CASES][YEAR2] = parseInt(r.getParameter("restrictedWorkCases2"));
 		stats[RECORDABLE_TOTAL][YEAR2] = parseInt(r.getParameter("recordableTotal2"));
+		na2 = convertNA(r.getParameter("na2"));
 // Year 3
 		stats[MAN_HOURS][YEAR3] = parseInt(r.getParameter("manHours3"));
 		stats[FATALITIES][YEAR3] = parseInt(r.getParameter("fatalities3"));
@@ -373,6 +398,7 @@ public class OSHABean extends DataBean {
 		stats[INJURY_ILLNESS_CASES][YEAR3] = parseInt(r.getParameter("injuryIllnessCases3"));
 		stats[RESTRICTED_WORK_CASES][YEAR3] = parseInt(r.getParameter("restrictedWorkCases3"));
 		stats[RECORDABLE_TOTAL][YEAR3] = parseInt(r.getParameter("recordableTotal3"));
+		na3 = convertNA(r.getParameter("na3"));
 	}//setFromRequest
 
 	public boolean isOK() {
@@ -552,6 +578,21 @@ public class OSHABean extends DataBean {
 	public void setDuringGracePeriod(boolean duringGracePeriod) {
 		this.duringGracePeriod = duringGracePeriod;
 	}
+	
+	public String convertNA(boolean b){
+		if(b)
+			return "Yes";
+		else
+			return "No";
+	}
+	
+	private boolean convertNA(String str){
+		if(str.equals("Yes"))
+			return true;
+		else
+			return false;
+	}
+		
 	
 	
 }//OSHABean

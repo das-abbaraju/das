@@ -8,6 +8,15 @@
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean" scope ="page"/>
 <jsp:useBean id="helper" class="com.picsauditing.servlet.upload.UploadConHelper"/>
+<script language="javascript" type="text/javascript">
+<!--
+function popitup(url) {
+	window.open(url,'name','height=200,width=450,left=100,top=100');
+	return false;
+}
+
+// -->
+</script>
 <%
 	String auditType = com.picsauditing.PICS.pqf.Constants.PQF_TYPE;
 	String id = request.getParameter("id");
@@ -217,6 +226,12 @@
                         <td><%=oBean.calcRate(oBean.RECORDABLE_TOTAL,oBean.YEAR2)%></td>
                         <td><input name="recordableTotal3" class="forms" type="text" value="<%=oBean.getStat(oBean.RECORDABLE_TOTAL, oBean.YEAR3)%>" size="4"></td>
                         <td><%=oBean.calcRate(oBean.RECORDABLE_TOTAL,oBean.YEAR3)%></td>
+                      </tr>
+                      <tr> 
+                        <td class="redMain">Were you exempt from submitting OSHA Logs?&nbsp;&nbsp;<a href="reasons.html" onclick="return popitup('reasons.html')">Valid exemptions</a></td>
+                        <td colspan="2"><%=Utilities.getYesNoRadio("na1",oBean.convertNA(oBean.isNa1()))%></td>
+                       	<td colspan="2"><%=Utilities.getYesNoRadio("na2",oBean.convertNA(oBean.isNa2()))%></td>
+                        <td colspan="2"><%=Utilities.getYesNoRadio("na3",oBean.convertNA(oBean.isNa3()))%></td>
                       </tr>
                       <tr> 
                         <td align="center" colspan="7">

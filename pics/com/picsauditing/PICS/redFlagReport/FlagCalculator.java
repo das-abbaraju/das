@@ -256,9 +256,9 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 				if (isFlaggedRate(osBean.calcAverageRate(OSHABean.LOST_WORK_CASES),flagOshaCriteriaDO.lwcrHurdle))
 					flagged = true;
 			}else{
-				if (isFlaggedRate(osBean.calcRate(OSHABean.LOST_WORK_CASES,OSHABean.YEAR1), flagOshaCriteriaDO.lwcrHurdle) ||
-						isFlaggedRate(osBean.calcRate(OSHABean.LOST_WORK_CASES,OSHABean.YEAR2), flagOshaCriteriaDO.lwcrHurdle) ||
-						isFlaggedRate(osBean.calcRate(OSHABean.LOST_WORK_CASES,OSHABean.YEAR3), flagOshaCriteriaDO.lwcrHurdle))
+				if ((!osBean.isNa1() &&  isFlaggedRate(osBean.calcRate(OSHABean.LOST_WORK_CASES,OSHABean.YEAR1), flagOshaCriteriaDO.lwcrHurdle)) ||
+					(!osBean.isNa2() && isFlaggedRate(osBean.calcRate(OSHABean.LOST_WORK_CASES,OSHABean.YEAR2), flagOshaCriteriaDO.lwcrHurdle)) ||
+					(!osBean.isNa3() &&	isFlaggedRate(osBean.calcRate(OSHABean.LOST_WORK_CASES,OSHABean.YEAR3), flagOshaCriteriaDO.lwcrHurdle)))
 					flagged = true;
 			}//else
 		}//if
@@ -267,9 +267,9 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 				if (isFlaggedRate(osBean.calcAverageRate(OSHABean.RECORDABLE_TOTAL),flagOshaCriteriaDO.trirHurdle))
 					flagged = true;
 			}else{
-				if (isFlaggedRate(osBean.calcRate(OSHABean.RECORDABLE_TOTAL,OSHABean.YEAR1), flagOshaCriteriaDO.trirHurdle) ||
-						isFlaggedRate(osBean.calcRate(OSHABean.RECORDABLE_TOTAL,OSHABean.YEAR2), flagOshaCriteriaDO.trirHurdle) ||
-						isFlaggedRate(osBean.calcRate(OSHABean.RECORDABLE_TOTAL,OSHABean.YEAR3), flagOshaCriteriaDO.trirHurdle))
+				if ((!osBean.isNa1() && isFlaggedRate(osBean.calcRate(OSHABean.RECORDABLE_TOTAL,OSHABean.YEAR1), flagOshaCriteriaDO.trirHurdle)) ||
+					(!osBean.isNa2() && isFlaggedRate(osBean.calcRate(OSHABean.RECORDABLE_TOTAL,OSHABean.YEAR2), flagOshaCriteriaDO.trirHurdle)) ||
+					(!osBean.isNa3() && isFlaggedRate(osBean.calcRate(OSHABean.RECORDABLE_TOTAL,OSHABean.YEAR3), flagOshaCriteriaDO.trirHurdle)))
 					flagged = true;
 			}//else
 		}//if
@@ -278,9 +278,9 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 				if (isFlaggedRate(osBean.calcAverageStat(OSHABean.FATALITIES),flagOshaCriteriaDO.fatalitiesHurdle))
 					flagged = true;
 			}else{
-				if (isFlaggedRate(osBean.getStat(OSHABean.FATALITIES,OSHABean.YEAR1), flagOshaCriteriaDO.fatalitiesHurdle) ||
-						isFlaggedRate(osBean.getStat(OSHABean.FATALITIES,OSHABean.YEAR2), flagOshaCriteriaDO.fatalitiesHurdle) ||
-						isFlaggedRate(osBean.getStat(OSHABean.FATALITIES,OSHABean.YEAR3), flagOshaCriteriaDO.fatalitiesHurdle))
+				if ((!osBean.isNa1() && isFlaggedRate(osBean.getStat(OSHABean.FATALITIES,OSHABean.YEAR1), flagOshaCriteriaDO.fatalitiesHurdle)) ||
+					(!osBean.isNa2() && isFlaggedRate(osBean.getStat(OSHABean.FATALITIES,OSHABean.YEAR2), flagOshaCriteriaDO.fatalitiesHurdle)) ||
+					(!osBean.isNa2() && isFlaggedRate(osBean.getStat(OSHABean.FATALITIES,OSHABean.YEAR3), flagOshaCriteriaDO.fatalitiesHurdle)))
 					flagged = true;
 			}//else
 		}//if
