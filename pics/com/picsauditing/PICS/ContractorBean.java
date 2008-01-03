@@ -1503,6 +1503,14 @@ public class ContractorBean extends DataBean {
 		return "No";
 	}//getAuditClosedDate
 
+	public String getValidUntilDate(String auditType) throws Exception{
+		if (auditType.equals(com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE) && !DateBean.isBeforeToday(desktopValidUntilDate))
+			return "<br/>Valid Until: <span class='redMain'>"+desktopValidUntilDate+"</span>";
+		if (auditType.equals(com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE) && !DateBean.isBeforeToday(auditValidUntilDate))
+			return "<br/>Valid Until: <span class='redMain'>"+auditValidUntilDate+"</span>";
+		return "";
+	}//getValidUntilDate
+
 	public void setPercentComplete(String auditType, String percent) {
 		if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType))
 			pqfPercent = percent;
