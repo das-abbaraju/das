@@ -60,7 +60,10 @@
 			    <br><span class="redmain"><%=msg%></span></td>
               </tr>
               <tr align="center" class="blueMain">
-                <td class="blueMain">Audit Performed: <b><%=cBean.getAuditCompletedDateShow()%></b><br>Requirements Closed: <b><%=cBean.getAuditClosedDateShow()%></b></td>
+                <td class="blueMain">Audit Performed: <b><%=cBean.getAuditCompletedDateShow()%></b>
+                <br>Requirements Closed: <b><%=cBean.getAuditClosedDateShow()%></b>
+                <%=cBean.getValidUntilDate(com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE)%>
+                </td>
               </tr>
               <tr align="center">
 			    <td>

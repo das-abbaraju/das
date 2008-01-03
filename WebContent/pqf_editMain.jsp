@@ -130,7 +130,7 @@
 	                  </form>
                       Percent Complete: <span class="redMain"><%=cBean.getPercentComplete(auditType)%>%</span><br>
                       Date submitted: <span class="redMain"><%=cBean.getAuditSubmittedDate(auditType)%></span>
-
+                      <%=cBean.getValidUntilDate(auditType)%>
 <%		}//else%>
                     </td>
                   </tr>

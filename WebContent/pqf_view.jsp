@@ -76,7 +76,9 @@
                         </span></td>
               </tr>
               <tr align="center">
-                <td class="blueMain">Date Closed: <span class="redMain"><strong><%=cBean.getAuditClosedDate(auditType)%></strong></span></td>
+                <td class="blueMain">Date Closed: <span class="redMain"><strong><%=cBean.getAuditClosedDate(auditType)%></strong></span>
+                <%=cBean.getValidUntilDate(auditType)%>
+                </td>
               </tr>
 <%	}//if%>
 <%	if (!com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType)) { %>

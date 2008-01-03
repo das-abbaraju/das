@@ -65,7 +65,9 @@ ResultSetMetaData SQLResultMetaData = null;
                 <td class="blueHeader">NCMS Desktop Audit for <%=aBean.name%></td>
     		  </tr>
 	  		  <tr align="center">
-                <td class="blueMain">Date Audit Closed: <span class="redMain"><strong><%=cBean.desktopClosedDate%></strong></span></td>
+                <td class="blueMain">Date Audit Closed: <span class="redMain"><strong><%=cBean.desktopClosedDate%></strong></span>
+                <%=cBean.getValidUntilDate(auditType)%>
+                </td>
     		  </tr>
 				   <tr>
 				     <td>

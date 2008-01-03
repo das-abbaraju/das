@@ -146,7 +146,9 @@ try{
                   </td>
 				</tr>
                 <tr align="center" class="blueMain">
-                  <td class="blueHeader">Safety Audit for <%=aBean.name%></td>
+                  <td class="blueHeader">Safety Audit for <%=aBean.name%>
+                    <%=cBean.getValidUntilDate(com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE)%>
+                  </td>
                 </tr>
 	            <tr align="center">
                   <td class="redmain"><strong><%=errorMsg%></strong></td>
