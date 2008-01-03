@@ -1,5 +1,5 @@
 <%//@ page language="java" errorPage="exception_handler.jsp"%>
-<%@ page language="java" errorPage="exception_handler.jsp" import="com.picsauditing.PICS.*"%>
+<%@ page language="java" errorPage="exception_handler.jsp" import="com.picsauditing.PICS.*, java.util.*"%>
 
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
@@ -7,6 +7,31 @@
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope="application"/>
 <%
+	String action = request.getParameter("action");
+	if (action != null) {
+		if (action.equals("pricing")) {
+			String facilities = request.getParameter("facilities");
+			Collection<String> selectedFacilities = new ArrayList<String>();
+			String[] facilityArray = facilities.split(",");;
+			for(String facility: facilityArray) {
+				selectedFacilities.add(facility);
+			}
+			Billing billing = new Billing();
+			int facilityCount = billing.calcPayingFacilities(FACILITIES, selectedFacilities);
+			int amount = Billing.calcBillingAmount(facilityCount,this.getServletContext());
+			%>$<%=amount %><%
+			return;
+		}
+		if (action.equals("username")) {
+			String username = request.getParameter("username");
+			if (aBean.usernameExists(username)) {
+				%><%=username%> is NOT available. Please choose a different Username.<%
+			} else {
+				%><%=username%> is available<%
+			}
+			return;
+		}
+	}
 	String s = request.getParameter("submit");
 	if (s != null) {
 		aBean.setFromUploadRequestClientNew(request);
@@ -26,6 +51,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <link href="PICS.css" rel="stylesheet" type="text/css">
   <script language="JavaScript" SRC="js/ImageSwap.js"></script>
+  <script language="JavaScript" SRC="js/prototype.js"></script>
 </head>
 
 <body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
@@ -204,9 +230,13 @@
             </tr>
             <tr>
               <td class="blueMain" align="right">Annual Membership Fee</td>
-              <td class="redMain"><span id="annualFee" class="blueMain" style="font-weight: bold; font-style: italic;">$~</span>
-				This is based on the number of facilities you select above.<br />
-				<a href="javascript:popUp('con_pricing.jsp')">Click to view pricing (opens in new window)</a>
+              <td class="redMain">
+	              <table border="0">
+	              <tr><td id="annualFee" class="blueMain" style="font-weight: bold; font-style: italic; width: 50px"></td>
+	                  <td class="redMain">This is based on the number of facilities you select above.<br />
+						  <a href="javascript:popUp('con_pricing.jsp')">Click to view pricing (opens in new window)</a>
+					  </td>
+				  </tr></table>
 			  </td>
             </tr>
             <tr>
@@ -240,8 +270,8 @@
             </tr>
             <tr>
               <td class="blueMain" align="right">Username</td>
-              <td class="redMain"><input name="username" type="text" class="forms" size="15" value="<%=aBean.username%>">
-                * Please type in your desired user name</td>
+              <td class="redMain"><input name="username" id="username" type="text" class="forms" size="15" value="<%=aBean.username%>" onblur="checkUsername(this.value);">
+                * <span id="username_status">Please type in your desired user name</span></td>
             </tr>
             <tr>
               <td class="blueMain" align="right">Password</td>
@@ -283,26 +313,28 @@ function popUp(URL) {
 	eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=400');");
 }
 
+function checkUsername(username) {
+	$('username_status').innerHTML = 'checking availability of username...';
+	pars = 'action=username&username='+username;
+	var myAjax = new Ajax.Updater('username_status', 'contractor_new.jsp', {method: 'get', parameters: pars});
+}
+
 function change() {
-	opt1 = document.getElementById('generalContractors');
-	opt2 = document.getElementById('requestedByID');
+	opt1 = $('generalContractors');
+	opt2 = $('requestedByID');
+	pars = 'action=pricing&facilities=0';
+	
 	opt2.options[0] = new Option("", "0");
 	opt2.length = 1;
 	for(i=0; i<opt1.length; i++) {
 		if (opt1[i].selected) {
 			opt2.options[opt2.length] = new Option(opt1[i].innerHTML, opt1[i].value);
+			pars = pars + ',' + opt1[i].value;
 		}
 	}
-	annual_fee = "~";
-	facility_count = opt2.length - 1; //remove the blank option from the facility count
-	if (facility_count > 0) annual_fee = "<%=Billing.calcBillingAmount(1,this.getServletContext())%>";
-	if (facility_count > 1) annual_fee = "<%=Billing.calcBillingAmount(4,this.getServletContext())%>";
-	if (facility_count > 4) annual_fee = "<%=Billing.calcBillingAmount(8,this.getServletContext())%>";
-	if (facility_count > 8) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(12,this.getServletContext())%>";
-	if (facility_count > 12) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(19,this.getServletContext())%>";
-	if (facility_count > 19) annual_fee = "<%=com.picsauditing.PICS.Billing.calcBillingAmount(20,this.getServletContext())%>";
-
-	document.getElementById("annualFee").innerHTML = "$" + annual_fee;
+	$('annualFee').innerHTML = '...';
+	
+	var myAjax = new Ajax.Updater('annualFee', 'contractor_new.jsp', {method: 'get', parameters: pars});
 }
 change();
 //-->
