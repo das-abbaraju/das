@@ -328,41 +328,48 @@ public class OSHABean extends DataBean {
 		if (!"Corporate".equals(location))
 			return;
 		com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
-		int numRequired = Integer.parseInt(com.picsauditing.PICS.pqf.CategoryBean.OSHA_NUM_REQUIRED);
-		//Adjust for NA
-		int numNA = 0;
-		if(na1){
-			numRequired-=8;
-			numNA++;
-		}
-		if(na2){
-			numRequired-=8;
-			numNA++;
-		}
-		if(na3){
-			numRequired-=8;
-			numNA++;
-		}
-		
+		int numRequired = 9;
 		int requiredCompleted = 0;
-		if (0 != stats[MAN_HOURS][YEAR1])
-			requiredCompleted+=21 - (7 * numNA);			
-		if ("Yes".equals(file1YearAgo) && !na1)
-			requiredCompleted++;
-		if ("Yes".equals(file2YearAgo) && !na2)
-			requiredCompleted++;
-		if ("Yes".equals(file3YearAgo) && !na3)
-			requiredCompleted++;
+		//Adjust for NA
+		if(na1)
+			requiredCompleted+=3;
+		if(na2)
+			requiredCompleted+=3;		
+		if(na3)
+			requiredCompleted+=3;
 		
+		//Adjust for man hours
+		if(!na1 && 0 != stats[MAN_HOURS][YEAR1]){
+			requiredCompleted+=1;
+			numRequired = 6;
+		}		
+		if(!na2 && 0 != stats[MAN_HOURS][YEAR2]){
+			requiredCompleted+=1;
+			numRequired = 6;
+		}
+		if(!na3 && 0 != stats[MAN_HOURS][YEAR3]){
+			requiredCompleted+=1;
+			numRequired = 6;
+		}
+		
+		//Adjust for file uploads
+		if(!na1 && "Yes".equals(file1YearAgo)){
+			requiredCompleted+=1;
+			numRequired = 6;
+		}		
+		if(!na2 && "Yes".equals(file2YearAgo)){
+			requiredCompleted+=1;
+			numRequired = 6;
+		}
+		if(!na3 && "Yes".equals(file3YearAgo)){
+			requiredCompleted+=1;
+			numRequired = 6;
+		}
+					
 		String percentCompleted = "100";
 		if(numRequired !=0)			
-			percentCompleted = intFormatter.format(((float)requiredCompleted*100)/numRequired);
-		
-//		String requiredCompleted = Integer.toString(temp);
-//		String Query2 = "REPLACE INTO pqfCatData (catID,conID,applies,requiredCompleted,numRequired,percentCompleted) VALUES (29,"
-//			+cID+",'Yes',"+requiredCompleted+","+numRequired+","+percentCompleted+");";
-//		SQLStatement.executeUpdate(Query2);
-//		DBClose();
+			percentCompleted = intFormatter.format(((float)requiredCompleted*100)/numRequired);		
+
 		pcBean.replaceCatData("29",cID,"Yes",""+requiredCompleted,""+numRequired,percentCompleted);	
 	}//udpateNumRequired
 	

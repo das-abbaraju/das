@@ -14,12 +14,16 @@ public class OshaLogActionListener implements ActionListener {
 	public void processAction(ActionEvent arg0) throws AbortProcessingException {
 		Map<String,Object> attrs = arg0.getComponent().getAttributes();
 		ContractorInfoDAO dao = (ContractorInfoDAO)attrs.get("oshaDao");
-		
+		OshaLogBean oBean = (OshaLogBean)attrs.get("oBean");
 		try {
 			dao.flush();
+			oBean.updateNumRequired(oBean.getCid().toString(), oBean.getSelectedItem().getEntity().getLocation());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			throw new AbortProcessingException(e);			
 		}
+		
+		
+		
 	}
 }

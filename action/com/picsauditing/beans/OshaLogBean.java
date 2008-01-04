@@ -1,5 +1,6 @@
 package com.picsauditing.beans;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ public class OshaLogBean extends JSFListDataModel<VerifyOshaLog>{
 	
 	private Integer cid = 0;
 	ContractorInfoDAO dao;
+	DecimalFormat intFormatter = new DecimalFormat("###,##0");
 			
 	@Override
 	protected List<VerifyOshaLog> getList() {		
@@ -113,6 +115,59 @@ public class OshaLogBean extends JSFListDataModel<VerifyOshaLog>{
 		getSelectedItem().getEntity().setComment3(notes);
 	}
 	
+	public void updateNumRequired(String cID, String location) throws Exception {
+		if (!"Corporate".equals(location))
+			return;
+		com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
+		VerifyOshaLog osha = getSelectedItem();	
+		OshaLog log = osha.getEntity();
+	    int numRequired = 9;
+		int requiredCompleted = 0;
+		
+		//Adjust for NA
+		if(osha.isNa1())
+			requiredCompleted+=3;
+		if(osha.isNa2())
+			requiredCompleted+=3;		
+		if(osha.isNa3())
+			requiredCompleted+=3;
+		
+		//Adjust for man hours
+		if(!osha.isNa1() && 0 != log.getManHours1()){
+			requiredCompleted+=1;
+			numRequired = 6;
+		}		
+		if(!osha.isNa2() && 0 != log.getManHours2()){
+			requiredCompleted+=1;
+			numRequired = 6;
+		}
+		if(!osha.isNa3() && 0 != log.getManHours3()){
+			requiredCompleted+=1;
+			numRequired = 6;
+		}
+		
+		//Adjust for file uploads
+		if(!osha.isNa1() && "Yes".equals(log.getFile2yearAgo())){
+			requiredCompleted+=1;
+			numRequired = 6;
+		}		
+		if(!osha.isNa2() && "Yes".equals(log.getFile3yearAgo())){
+			requiredCompleted+=1;
+			numRequired = 6;
+		}
+		if(!osha.isNa3() && "Yes".equals(log.getFile3yearAgo())){
+			requiredCompleted+=1;
+			numRequired = 6;
+		}
+		
+		
+		
+		String percentCompleted = "100";
+		if(numRequired !=0)			
+			percentCompleted = intFormatter.format(((float)requiredCompleted*100)/numRequired);
+		
+		pcBean.replaceCatData("29",cID,"Yes",""+requiredCompleted,""+numRequired,percentCompleted);	
+	}//udpateNumRequired
 	
 	
 }

@@ -243,9 +243,4 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		public void setDateStart(String dateStart) {
 			this.dateStart = dateStart;
 		}
-		
-		
-		
-		
-	
 }
