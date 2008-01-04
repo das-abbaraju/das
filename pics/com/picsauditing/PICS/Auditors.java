@@ -14,7 +14,9 @@ public class Auditors extends DataBean{
 		if (null!=auditorsAL)
 			return;
 		auditorsAL = new ArrayList<String>();
-		String selectQuery = "SELECT id, name FROM accounts WHERE type = 'Auditor' AND active = 'Y' ORDER BY name ASC";
+		// USERMOVE
+		//String selectQuery = "SELECT id, name FROM accounts WHERE type = 'Auditor' AND active = 'Y' ORDER BY name ASC";
+		String selectQuery = "SELECT id, name FROM users WHERE isGroup = 'No' AND isActive = 'Yes' AND id IN (SELECT userID FROM usergroup WHERE groupID = '11') ORDER BY name ASC";
 		try{
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
