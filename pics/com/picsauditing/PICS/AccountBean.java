@@ -343,13 +343,6 @@ public class AccountBean extends DataBean {
 	}//usernameExists
 
 	public boolean checkLogin(String lname, String lpass, javax.servlet.http.HttpServletRequest req) throws Exception {
-		/*
-		String selectQuery = "SELECT accounts.*,users.id AS uID,users.isActive FROM accounts LEFT JOIN users "+
-		"ON accounts.id = users.accountID WHERE (accounts.username='"+eqDB(lname)+
-		"' AND accounts.password='"+eqDB(lpass)+"' AND type IN ('Admin','Contractor','Auditor')) "+
-		"OR (users.username='"+eqDB(lname)+"' AND users.password='"+eqDB(lpass)+"');";
-		*/
-
 		try {
 			boolean isUser;
 			/*
@@ -383,8 +376,12 @@ public class AccountBean extends DataBean {
 				return false;
 			}
 			// Is this result a user or an account?
-			isUser = SQLResult.getInt("uID") > 0;
 			boolean canLogin;
+			canLogin = SQLResult.getString("isActive").startsWith("Y");
+			password = SQLResult.getString("user_password");
+			userID = SQLResult.getString("uID");
+			/* USERMOVE
+			isUser = SQLResult.getInt("uID") > 0;
 			String password;
 			if (isUser) {
 				canLogin = SQLResult.getString("isActive").startsWith("Y");
@@ -395,6 +392,7 @@ public class AccountBean extends DataBean {
 				password = SQLResult.getString("password");
 				this.userID = "";
 			}
+			*/
 			
 			if (!canLogin) {
 				errorMessages.addElement("That account is currently inactive.<br>Please contact PICS to activate your account.");
