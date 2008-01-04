@@ -344,7 +344,7 @@ public class AccountBean extends DataBean {
 
 	public boolean checkLogin(String lname, String lpass, javax.servlet.http.HttpServletRequest req) throws Exception {
 		try {
-			boolean isUser;
+			boolean isUser = true;
 			/*
 			 * USERMOVE
 			String selectQuery = "SELECT accounts.*, users.id AS uID, users.isActive, users.password AS user_password "+
@@ -776,9 +776,12 @@ public class AccountBean extends DataBean {
 		}//finally		
 	}//updateEmailConfirmedDate
 	
+	public boolean contractorNameExists() throws Exception {
+		return this.contractorNameExists(this.name);
+	}
 	public boolean contractorNameExists(String company) throws Exception {
 		if (company.length()<3) {
-			errorMessages.addElement("Your company name must be at least 3 characters long");		
+			errorMessages.addElement("Your company name must be at least 3 characters long");
 			return true;
 		}//if
 		String selectQuery = "SELECT id FROM accounts WHERE UCASE(name) LIKE UCASE('"+eqDB(company)+"%');";
