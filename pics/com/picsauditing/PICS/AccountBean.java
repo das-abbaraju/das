@@ -352,12 +352,18 @@ public class AccountBean extends DataBean {
 
 		try {
 			boolean isUser;
+			/*
+			 * USERMOVE
 			String selectQuery = "SELECT accounts.*, users.id AS uID, users.isActive, users.password AS user_password "+
 			"FROM accounts JOIN users ON accounts.id = users.accountID "+
 			"WHERE users.username='"+eqDB(lname)+"' UNION " +
 			"SELECT *, null AS uID, null AS isActive, null AS user_password "+
 			"FROM accounts "+
 			"WHERE username='"+eqDB(lname)+"' AND type <> 'Operator' ";
+			*/
+			String selectQuery = "SELECT accounts.*, users.id AS uID, users.isActive, users.password AS user_password "+
+			"FROM accounts JOIN users ON accounts.id = users.accountID "+
+			"WHERE users.username='"+eqDB(lname)+"'";
 
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
