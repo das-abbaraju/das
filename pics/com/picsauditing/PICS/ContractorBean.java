@@ -49,6 +49,8 @@ public class ContractorBean extends DataBean {
 	public static final String[] AUDIT_LOCATION_ARRAY = {"On Site","Web"};	// must match ENUM in db, contractor_info.auditLocation 
 	boolean showLinks = false;
 	public static final int SETUP_FEE = 99;
+	public static final String[] RISK_LEVEL_ARRAY = {"Low","Med","Med-High"};
+	public static final String[] RISK_LEVEL_VALUES_ARRAY = {"1","2","3"};
 
 	public String id = "";
 	public String taxID = "";
@@ -134,6 +136,7 @@ public class ContractorBean extends DataBean {
 	public String lastAuditEmailDate = "";
 	public String lastInvoiceDate = "";
 	public String lastAnnualUpdateEmailDate = "";
+	public String riskLevel = "2";
 
 	int num_of_trades = 0;
 	int num_of_subTrades = 0;
@@ -283,6 +286,9 @@ public class ContractorBean extends DataBean {
 		else
 			return accountDate;}//getAccountDate
 	public String getNotesHTML() {return Utilities.escapeHTML(notes);}//getNotesHTM
+	public String getRiskLevelShow() {
+		return RISK_LEVEL_ARRAY[Integer.parseInt(riskLevel)];
+	}//getRiskLevelShow
 	public boolean canEditPrequal() {return "Yes".equals(canEditPrequal);}//canEditPrequal
 	public boolean canEditDesktop() {return "Yes".equals(canEditDesktop);}//canEditDesktop
 
@@ -897,6 +903,8 @@ public class ContractorBean extends DataBean {
 		billingEmail = SQLResult.getString("billingEmail");
 		payingFacilities = SQLResult.getString("payingFacilities");
 		newBillingAmount = SQLResult.getString("newBillingAmount");
+
+		riskLevel = SQLResult.getString("riskLevel");
 	}//setFromResultSet
 
 	public void writeToDB() throws Exception {
@@ -977,7 +985,8 @@ public class ContractorBean extends DataBean {
 //billing contact
 			"',billingContact='"+Utilities.escapeQuotes(billingContact)+
 			"',billingPhone='"+Utilities.escapeQuotes(billingPhone)+
-			"',billingEmail='"+Utilities.escapeQuotes(billingEmail);
+			"',riskLevel="+riskLevel+
+			",billingEmail='"+Utilities.escapeQuotes(billingEmail);
 		if (isDescriptionChanged)
 			updateQuery+="',description='"+Utilities.escapeQuotes(description);
 		if (isNotesChanged)
@@ -1058,6 +1067,8 @@ public class ContractorBean extends DataBean {
 		billingEmail = m.get("billingEmail");
 		billingPhone = m.get("billingPhone");
 
+		riskLevel = m.get("riskLevel");
+
 		//setTrades(m.getValues("trades"));
 // jj 10/28/06	setGeneralContractors(m.getValues("generalContractors"));
 		
@@ -1111,6 +1122,8 @@ public class ContractorBean extends DataBean {
 		billingContact = r.getParameter("billingContact");
 		billingEmail = r.getParameter("billingEmail");
 		billingPhone = r.getParameter("billingPhone");
+
+		riskLevel = r.getParameter("riskLevel");
 	}//setFromUploadRequestClientNew
 
 	public void setFromUploadRequestClientEdit(javax.servlet.http.HttpServletRequest r) throws Exception {

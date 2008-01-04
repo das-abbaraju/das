@@ -2,14 +2,14 @@
 <%@ page language="java" import="com.picsauditing.PICS.*"%>
 <%@ include file="utilities/admin_secure.jsp" %>
 <%//@ include file="utilities/contractor_secure.jsp"%>
-<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
-<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
-<jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
-<jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope ="application"/>
+<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page"/>
+<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page"/>
+<jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope="page"/>
+<jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope="page"/>
+<jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope="application"/>
 <jsp:useBean id="helper" class="com.picsauditing.servlet.upload.UploadConHelper"/>
 
-<%	
+<%
 	String id = request.getParameter("id");
 	String editID = request.getParameter("id");
 	boolean isSubmitted = "Yes".equals(request.getParameter("isSubmitted"));
@@ -191,6 +191,10 @@
                       <tr>
                         <td class="blueMain" align="right" valign="top">Main Trade</td>
                         <td><%=tBean.getTradesNameSelect("main_trade", "blueMain", cBean.main_trade)%></td>
+                      </tr>
+                      <tr>
+                        <td class="blueMain" align="right" valign="top">Risk Level</td>
+                        <td class="redMain"><%=Inputs.getRadioInputWithOptions("riskLevel","blueMain",cBean.riskLevel,ContractorBean.RISK_LEVEL_VALUES_ARRAY,ContractorBean.RISK_LEVEL_ARRAY)%></td>
                       </tr>
                       <tr>
                         <td class="blueMain" align="right">Requested by</td>

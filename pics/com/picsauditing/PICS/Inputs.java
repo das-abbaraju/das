@@ -51,7 +51,7 @@ public class Inputs {
 			"TX","Texas","UT","Utah","VT","Vermont","VA","Virginia","WA","Washington",
 			"DC","Washington D.C.","WV","West Virginia","WI","Wisconsin","WY","Wyoming","YT","Yukon"};
 
-	public static ArrayList getStateArrayList() {
+	public static ArrayList<String> getStateArrayList() {
 		ArrayList<String> tempAL = new ArrayList<String>();
 		tempAL.addAll(Arrays.asList(Inputs.STATE_ARRAY));
 		return tempAL;
@@ -135,7 +135,7 @@ public class Inputs {
 		if (multiple)
 			temp.append(" multiple");
 		temp.append(">\n");
-		ListIterator li = tempAL.listIterator();
+		ListIterator<String> li = tempAL.listIterator();
 		while (li.hasNext()) {
 			temp.append(" <option");
 			if (arrayWithValues) {
@@ -244,10 +244,10 @@ public class Inputs {
 		ArrayList<String> optionsAL = new ArrayList<String>();
 		if (null != optionsArray)
 			optionsAL.addAll(Arrays.asList(optionsArray));
-		ListIterator li = optionsAL.listIterator();
+		ListIterator<String> li = optionsAL.listIterator();
 		while (li.hasNext()) {
 			String option=(String)li.next();
-			temp.append("<nobr><input name=").append(name).append(" class=").append(classType);
+			temp.append("<nobr><input name=\"").append(name).append("\" class=").append(classType);
 			temp.append(" type=radio value=\"").append(option).append("\"");
 			if (option.equals(selected))
 				temp.append(" checked");
@@ -262,10 +262,10 @@ public class Inputs {
 		ArrayList<String> optionsAL = new ArrayList<String>();
 		if (null != optionsArray)
 			optionsAL.addAll(Arrays.asList(optionsArray));
-		ListIterator li = optionsAL.listIterator();
+		ListIterator<String> li = optionsAL.listIterator();
 		while (li.hasNext()) {
 			String option=(String)li.next();
-			temp.append("<nobr><input name=").append(name).append(" class=").append(classType);
+			temp.append("<nobr><input name=\"").append(name).append("\" class=").append(classType);
 			temp.append(" type=radio value=\"").append(option).append("\"");
 			if (option.equals(selected))
 				temp.append(" checked ");
@@ -275,20 +275,20 @@ public class Inputs {
 		return temp.toString();
 	}//getReadioInput
 
-	public static String getRadioInputWithOptions(String name, String classType, String selected, String[] optionsArray, String[] valueArray) {
+	public static String getRadioInputWithOptions(String name, String classType, String selected, String[] valueArray, String[] optionsArray) {
 		StringBuffer temp = new StringBuffer();
-		ArrayList<String> optionsAL = new ArrayList<String>();
-		if (null != optionsArray)
-			optionsAL.addAll(Arrays.asList(optionsArray));
-		ListIterator li = optionsAL.listIterator();
+		ArrayList<String> valuesAL = new ArrayList<String>();
+		if (null != valueArray)
+			valuesAL.addAll(Arrays.asList(valueArray));
+		ListIterator<String> li = valuesAL.listIterator();
 		int i = 0;
 		while (li.hasNext()) {
-			String option=(String)li.next();
-			temp.append("<nobr><input name=").append(name).append(" class=").append(classType);
-			temp.append(" type=radio value=\"").append(option).append("\"");
-			if (option.equals(selected))
+			String value=(String)li.next();
+			temp.append("<nobr><input name=\"").append(name).append("\" class=").append(classType);
+			temp.append(" type=radio value=\"").append(value).append("\"");
+			if (value.equals(selected))
 				temp.append(" checked");
-			temp.append(">").append((String)valueArray[i++]).append("</nobr>");
+			temp.append(">").append((String)optionsArray[i++]).append("</nobr>");
 		}//while
 		return temp.toString();
 	}//getReadioInput

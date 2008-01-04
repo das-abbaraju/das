@@ -1,11 +1,12 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@ include file="utilities/admin_secure.jsp" %>
-<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
-<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
-<jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
-<jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope ="application"/>
+<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page"/>
+<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page"/>
+<jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope="page"/>
+<jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope="page"/>
+<jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope="application"/>
 <jsp:useBean id="helper" class="com.picsauditing.servlet.upload.UploadConHelper"/>
+<jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope="application"/>
 
 <%
 	boolean isSubmitted = (null != request.getParameter("submit"));
@@ -27,7 +28,7 @@
 			if (aBean.isOK() && cBean.isOK() && aBean.writeNewToDB()) {
 				cBean.id = aBean.id;
 				request.setAttribute("id", cBean.id);
-				cBean.writeNewToDB();
+				cBean.writeNewToDB(FACILITIES);
 				//cBean.renameFile((String)request.getAttribute("brochure_file"));
 				//cBean.renameFile((String)request.getAttribute("logo_file"));
 				response.sendRedirect("accounts_manage.jsp");		
@@ -172,11 +173,15 @@
                       </tr>
                       <tr> 
                         <td class="blueMain" align="right">Industry</td>
-                        <td><%=aBean.getIndustrySelect("industry","forms",aBean.industry)%></td>
+                        <td><%=AccountBean.getIndustrySelect("industry","forms",aBean.industry)%></td>
                       </tr>
                       <tr> 
                         <td class="blueMain" align="right" valign="top">Main Trade</td>
                         <td><%=tBean.getTradesNameSelect("main_trade", "blueMain", cBean.main_trade)%></td>
+                      </tr>
+                      <tr>
+                        <td class="blueMain" align="right" valign="top">Risk Level</td>
+                        <td class="redMain"><%=Inputs.getRadioInputWithOptions("riskLevel","blueMain",cBean.riskLevel,ContractorBean.RISK_LEVEL_VALUES_ARRAY,ContractorBean.RISK_LEVEL_ARRAY)%></td>
                       </tr>
                       <tr> 
                         <td class="blueMain" align="right">Requested by</td>
@@ -222,7 +227,7 @@
 					  </tr>
                       <tr>
                         <td class="blueMain" align="right">Audit Location</td>
-                        <td class="blueMain" align="left"><%=Inputs.getRadioInput("auditLocation","blueMain",cBean.auditLocation,cBean.AUDIT_LOCATION_ARRAY)%></td>
+                        <td class="blueMain" align="left"><%=Inputs.getRadioInput("auditLocation","blueMain",cBean.auditLocation,ContractorBean.AUDIT_LOCATION_ARRAY)%></td>
                       <tr> 
                         <td class="blueMain" align="right">Co. Brochure</td>
                         <td><input name="brochure_file" type="FILE" class="forms" size="15"></td>

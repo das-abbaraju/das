@@ -1,10 +1,10 @@
 <%//@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ page language="java" errorPage="exception_handler.jsp" import="com.picsauditing.PICS.*, java.util.*"%>
 
-<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
-<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
-<jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
+<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page"/>
+<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page"/>
+<jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope="page"/>
+<jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope="page"/>
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope="application"/>
 <%
 	String action = request.getParameter("action");
@@ -122,7 +122,7 @@
               <td class="redMain">* - Indicates required information</td>
             </tr>
             <tr>
-              <td colspan="2" class="redMain"><%=aBean.getErrorMessages()+cBean.getErrorMessages()%></td>
+              <td align="center" colspan="2" class="redMain"><strong><%=aBean.getErrorMessages()+cBean.getErrorMessages()%></strong></td>
             </tr>
             <tr>
               <td align="right" class="blueMain">Company Name</td>
@@ -205,11 +205,30 @@
             </tr>
             <tr>
               <td class="blueMain" align="right">Industry</td>
-              <td><%=aBean.getIndustrySelect("industry","forms",aBean.industry)%></td>
+              <td><%=AccountBean.getIndustrySelect("industry","forms",aBean.industry)%></td>
             </tr>
             <tr>
               <td class="blueMain" align="right" valign="top">Main Trade</td>
               <td class="redMain"><%=tBean.getTradesNameSelect("main_trade", "blueMain", cBean.main_trade)%>*</td>
+            </tr>
+            <tr>
+              <td class="blueMain" align="right" valign="top">Risk Level</td>
+              <td class="redMain">
+		        <table border="1" cellpadding="1" cellspacing="0" bordercolor="white">
+                  <tr>
+                    <td valign="top" align="left" class="redMain"><label><input name=riskLevel class=blueMain type=radio value="<%=ContractorBean.RISK_LEVEL_VALUES_ARRAY[0]%>" <%=Inputs.getChecked(ContractorBean.RISK_LEVEL_VALUES_ARRAY[0],cBean.riskLevel)%>><nobr><%=ContractorBean.RISK_LEVEL_ARRAY[0]%></nobr></label></td>
+                    <td valign="top" align="left" class="blueMain">Delivery, janitorial, off site engineering, security, computer services, etc.</td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left" class="redMain"><label><input name=riskLevel class=blueMain type=radio value="<%=ContractorBean.RISK_LEVEL_VALUES_ARRAY[1]%>" <%=Inputs.getChecked(ContractorBean.RISK_LEVEL_VALUES_ARRAY[1],cBean.riskLevel)%>><nobr><%=ContractorBean.RISK_LEVEL_ARRAY[1]%></nobr></label></td>
+                    <td valign="top" align="left" class="blueMain">On site engineering, safety services, landscaping, inspection services, etc.</td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left" class="redMain"><label><input name=riskLevel class=blueMain type=radio value="<%=ContractorBean.RISK_LEVEL_VALUES_ARRAY[2]%>" <%=Inputs.getChecked(ContractorBean.RISK_LEVEL_VALUES_ARRAY[2],cBean.riskLevel)%>><nobr><%=ContractorBean.RISK_LEVEL_ARRAY[2]%></nobr></label></td>
+                    <td valign="top" align="left" class="blueMain">Mechanical contractor, remediation, industrial cleaning, general construction, etc.</td>
+                  </tr>
+                </table>
+              </td>
             </tr>
             <tr>
               <td class="blueMain" valign="top">Currently working with</td>
@@ -276,7 +295,7 @@
             <tr>
               <td class="blueMain" align="right">Password</td>
               <td class="redMain"><input name="password" type="text" class="forms" size="15" value="<%=aBean.password%>">
-                * At least <%=aBean.MIN_PASSWORD_LENGTH%> characters long and different from your username</td>
+                * At least <%=AccountBean.MIN_PASSWORD_LENGTH%> characters long and different from your username</td>
             </tr>
             <tr>
               <td>&nbsp;</td>
