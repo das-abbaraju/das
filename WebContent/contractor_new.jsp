@@ -320,18 +320,28 @@ function checkUsername(username) {
 }
 
 function change() {
+	var defaultRequestedBy = '<%=cBean.requestedByID%>';
 	opt1 = $('generalContractors');
 	opt2 = $('requestedByID');
-	pars = 'action=pricing&facilities=0';
+	var pars = 'action=pricing&facilities=0';
+	if (opt2.selectedIndex > 0) {
+		defaultRequestedBy = opt2.options[opt2.selectedIndex].value;
+	}
 	
-	opt2.options[0] = new Option("", "0");
+	opt2.options[0] = new Option("", "");
 	opt2.length = 1;
+	selected = 0;
 	for(i=0; i<opt1.length; i++) {
 		if (opt1[i].selected) {
-			opt2.options[opt2.length] = new Option(opt1[i].innerHTML, opt1[i].value);
+			var nextindex = opt2.length;
+			opt2.options[nextindex] = new Option(opt1[i].innerHTML, opt1[i].value);
+			if (defaultRequestedBy == opt1[i].value) {
+				opt2.options[nextindex].selected=true;
+			}
 			pars = pars + ',' + opt1[i].value;
 		}
 	}
+	
 	$('annualFee').innerHTML = '...';
 	
 	var myAjax = new Ajax.Updater('annualFee', 'contractor_new.jsp', {method: 'get', parameters: pars});
