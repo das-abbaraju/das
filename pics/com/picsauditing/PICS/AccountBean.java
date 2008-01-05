@@ -16,7 +16,7 @@ public class AccountBean extends DataBean {
 	public static final String ALL_ACCESS = "-1";
 	public static final String CREATED_BY_PICS = "PICS"; // Must match createdBy ENUM in DB table
 	public static final String CREATED_BY_INTERNET = "Internet"; // Must match createdBy ENUM in DB table
-	private static final int PASSWORD_DURATION = 365; // days between required password update
+	//private static final int PASSWORD_DURATION = 365; // days between required password update
 	public static final int MIN_PASSWORD_LENGTH = 5; // minimum required length of a passord
 	private static final boolean INCLUDE_PICS = true;
 	private static final boolean DONT_INCLUDE_PICS = false;
@@ -574,6 +574,7 @@ public class AccountBean extends DataBean {
 		}//while
 	}//deleteAccount
 
+	/* USERMOVE OBSOLETE TJA
 	public boolean mustChangePassword() throws Exception {
 		Calendar todayCal = Calendar.getInstance();
 		SimpleDateFormat toDBFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -590,6 +591,7 @@ public class AccountBean extends DataBean {
 			return true;
 		return false;
 	}//mustChangePassword
+	*/
 
 	public boolean newPasswordOK(String newPassword) {
 		if (newPassword.equalsIgnoreCase(password)) {
@@ -696,36 +698,57 @@ public class AccountBean extends DataBean {
 	}//getGeneralContractorsSelect3
 
 	public boolean isOK() throws Exception {
-			errorMessages = new Vector<String>();
-			if (name.length() == 0)
-				errorMessages.addElement("Please fill in the Company Name field");
-			if (name.length() < 3)
-				errorMessages.addElement("Your company name must be at least 3 characters long");
-			if (username.length() == 0)
-				errorMessages.addElement("Please fill in the Username field");
-			if (password.length() < MIN_PASSWORD_LENGTH)
-				errorMessages.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH + " characters in length.");
-			if (password.equalsIgnoreCase(username))
-				errorMessages.addElement("Please choose a password different from your username.");
-			//Don't chekc these fields if auditor BJ 10-28-04
-			if (!type.equals("Auditor")) {
-				if (contact.length() == 0)
-					errorMessages.addElement("Please fill in the Contact field");
-				if (address.length() == 0)
-					errorMessages.addElement("Please fill in the Address field");
-				if (city.length() == 0)
-					errorMessages.addElement("Please fill in the City field");
-				if (zip.length() == 0)
-					errorMessages.addElement("Please fill in the Zip field");
-				if (phone.length() == 0)
-					errorMessages.addElement("Please fill in the Phone field");
-				if (null == type)
-					errorMessages.addElement("Please indicate whether this is a general contractor or not");
-			} //end if not auditor
-			if ((email.length() == 0) || (!Utilities.isValidEmail(email)))
-				errorMessages.addElement("Please enter a valid email address. This is our main way of communicating with you so it must be valid");
-			return (errorMessages.size() == 0);
-		}//isOK
+		errorMessages = new Vector<String>();
+		
+		if (name.length() == 0)
+			errorMessages.addElement("Please fill in the Company Name field");
+		else if (name.length() < 3) {
+			errorMessages.addElement("Your company name must be at least 3 characters long");
+		} else {
+			String selectQuery = "SELECT id FROM accounts WHERE UCASE(name) LIKE UCASE('"+eqDB(name)+"%');";
+			try{
+				DBReady();
+				ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
+				if (SQLResult.next()) {
+					SQLResult.close();
+					errorMessages.addElement("Someone from your company has already created a PICS account.  Please contact us at: 949.387.1940");
+				} else {
+					SQLResult.close();
+				}//else
+			}finally{
+				DBClose();
+			}//finally
+		}
+		
+		/* USERMOVE
+		if (username.length() == 0)
+			errorMessages.addElement("Please fill in the Username field");
+		if (password.length() < MIN_PASSWORD_LENGTH)
+			errorMessages.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH + " characters in length.");
+		if (password.equalsIgnoreCase(username))
+			errorMessages.addElement("Please choose a password different from your username.");
+		if ((email.length() == 0) || (!Utilities.isValidEmail(email)))
+			errorMessages.addElement("Please enter a valid email address. This is our main way of communicating with you so it must be valid");
+		*/
+		if (null == type)
+			errorMessages.addElement("Please indicate the account type");
+		// Check these fields if contractor
+		if (type.equals("Contractor")) {
+			if (contact.length() == 0)
+				errorMessages.addElement("Please fill in the Contact field");
+			if (address.length() == 0)
+				errorMessages.addElement("Please fill in the Address field");
+			if (city.length() == 0)
+				errorMessages.addElement("Please fill in the City field");
+			if (zip.length() == 0)
+				errorMessages.addElement("Please fill in the Zip field");
+			if (phone.length() == 0)
+				errorMessages.addElement("Please fill in the Phone field");
+		} //end if not auditor
+		
+		return (errorMessages.size() == 0);
+	}//isOK
+	
 	public boolean isFirstLogin() {
 		if ("Contractor".equals(type) && "".equals(accountDate))
 			return true;
@@ -776,9 +799,7 @@ public class AccountBean extends DataBean {
 		}//finally		
 	}//updateEmailConfirmedDate
 	
-	public boolean contractorNameExists() throws Exception {
-		return this.contractorNameExists(this.name);
-	}
+	/* USERMOVE
 	public boolean contractorNameExists(String company) throws Exception {
 		if (company.length()<3) {
 			errorMessages.addElement("Your company name must be at least 3 characters long");
@@ -802,6 +823,7 @@ public class AccountBean extends DataBean {
 			DBClose();
 		}//finally		
 	}//contractorNameExists
+	*/
 
 	public String eqDB(String temp) {
 		return Utilities.escapeQuotes(temp);

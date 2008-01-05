@@ -1,12 +1,18 @@
 <%//@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ page language="java" errorPage="exception_handler.jsp" import="com.picsauditing.PICS.*, java.util.*"%>
 
-<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page"/>
-<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page"/>
-<jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope="page"/>
-<jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope="page"/>
+
+<jsp:useBean id="uBean" class="com.picsauditing.access.User" scope ="page"/>
+<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
+<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
+<jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
+<jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope="application"/>
 <%
+
+	////////////////////////
+	// AJAX Functionality //
+	////////////////////////
 	String action = request.getParameter("action");
 	if (action != null) {
 		if (action.equals("pricing")) {
@@ -24,7 +30,7 @@
 		}
 		if (action.equals("username")) {
 			String username = request.getParameter("username");
-			if (aBean.usernameExists(username)) {
+			if (uBean.usernameExists(username)) {
 				%><%=username%> is NOT available. Please choose a different Username.<%
 			} else {
 				%><%=username%> is available<%
@@ -32,18 +38,32 @@
 			return;
 		}
 	}
-	String s = request.getParameter("submit");
-	if (s != null) {
+	if (request.getParameter("submit") != null) {
+		//////////////////////////////////
+		// Save Contractor Registration //
+		//////////////////////////////////
+		
 		aBean.setFromUploadRequestClientNew(request);
+		aBean.isOK();
+		
 		cBean.setFromUploadRequestClientNew(request);
-		if (!aBean.contractorNameExists(aBean.name) && aBean.isOK() && cBean.isOKClientCreate() && aBean.writeNewToDB()) {
+		cBean.isOKClientCreate();
+		
+		uBean.setFromRequest(request);
+		uBean.isOK();
+		
+		if ( (aBean.getErrorMessages().length()+cBean.getErrorMessages().length()+uBean.getErrorMessages().length()) == 0) {
+			// TODO gracefully rollback saving errors
+			aBean.writeNewToDB();
 			cBean.id = aBean.id;
 			cBean.writeNewToDB(FACILITIES);
+			uBean.writeNewToDB(aBean.id, request);
 
 			response.sendRedirect("contractor_new_confirm.jsp?i="+aBean.id);
 			return;
 		}//if
 	}//if
+	
 %>
 <html>
 <head>
@@ -122,7 +142,7 @@
               <td class="redMain">* - Indicates required information</td>
             </tr>
             <tr>
-              <td align="center" colspan="2" class="redMain"><strong><%=aBean.getErrorMessages()+cBean.getErrorMessages()%></strong></td>
+              <td align="center" colspan="2" class="redMain"><strong><%=aBean.getErrorMessages()+cBean.getErrorMessages()+uBean.getErrorMessages()%></strong></td>
             </tr>
             <tr>
               <td align="right" class="blueMain">Company Name</td>

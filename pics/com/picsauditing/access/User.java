@@ -7,6 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import com.picsauditing.PICS.*;
 
 public class User extends DataBean {
+	private static final int PASSWORD_DURATION = 365; // days between required password update
+	private static final int MIN_PASSWORD_LENGTH = 5; // minimum required length of a passord
+	
 	public UserDO userDO = new UserDO();
 	String oldUsername = "";
 	public void setFromDB(String uID) throws Exception {
@@ -119,18 +122,18 @@ public class User extends DataBean {
 
 	public boolean isOK() throws Exception {
 		errorMessages = new Vector<String>();
-		if (userDO.name.length() < 5)
-			errorMessages.addElement("Please enter a name at least 5 characters long");
-		if ((0==userDO.email.length()) || (!Utilities.isValidEmail(userDO.email)))
-			errorMessages.addElement("Please enter a valid email address.");
 		if (userDO.username.length() < 5)
 			errorMessages.addElement("Please choose a username at least 5 characters long");
-		if (userDO.password.length() < 5)
-			errorMessages.addElement("Please choose a password at least 5 characters long.");
+		if (userDO.password.length() < MIN_PASSWORD_LENGTH)
+			errorMessages.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH + " characters in length.");
 		if (userDO.password.equalsIgnoreCase(userDO.username))
 			errorMessages.addElement("Please choose a password different from your username.");
 		if (!userDO.username.equals(oldUsername) && usernameExists(userDO.username))
 			errorMessages.addElement("That username already exists.<br>Please choose a different one.");
+		
+		if (userDO.email.length() == 0 || !Utilities.isValidEmail(userDO.email))
+			errorMessages.addElement("Please enter a valid email address.");
+
 		if (userDO.isActive == null)
 			errorMessages.addElement("Please select whether this user is active or not");
 		return (errorMessages.size() == 0);
