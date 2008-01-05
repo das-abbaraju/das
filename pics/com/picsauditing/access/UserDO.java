@@ -15,13 +15,15 @@ public class UserDO{
 	public String accountID = "";
 
 	public void setFromRequest(javax.servlet.http.HttpServletRequest request) throws Exception {
-		name =request.getParameter("name");
-		username = request.getParameter("username");
-		email = request.getParameter("email");
-		String newPassword = request.getParameter("newPassword");
-		if (!"".equals(newPassword))
-			password = newPassword;
-		isActive = request.getParameter("isActive");	
+		if (request.getParameter("name") != null) name = request.getParameter("name");
+		if (request.getParameter("username") != null) username = request.getParameter("username");
+		if (request.getParameter("email") != null) email = request.getParameter("email");
+		if (request.getParameter("newPassword") != null) {
+			String newPassword = request.getParameter("newPassword");
+			if (!"".equals(newPassword))
+				password = newPassword;
+		}
+		if (request.getParameter("isActive") != null) isActive = request.getParameter("isActive");
 	}//setFromRequest
 
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
