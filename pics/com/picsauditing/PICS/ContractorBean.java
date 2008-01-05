@@ -1153,10 +1153,10 @@ public class ContractorBean extends DataBean {
 
 	public boolean isOKClientCreate() throws Exception {
 		errorMessages = new Vector<String>();
-		if (taxIDExists(taxID))
-			errorMessages.addElement("The tax ID <b>"+taxID+"</b> already exists.  Please contact a company representative.");
 		if (!java.util.regex.Pattern.matches("\\d{9}", taxID))
 			errorMessages.addElement("Pleae enter your 9 digit tax ID with only digits 0-9, no dashes.");
+		else if (taxIDExists(taxID))
+			errorMessages.addElement("The tax ID <b>"+taxID+"</b> already exists.  Please contact a company representative.");
 		if (num_of_trades == 0) {
 			num_of_trades++;
 			trades = "1;"+main_trade+";";
