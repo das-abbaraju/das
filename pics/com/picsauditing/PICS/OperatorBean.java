@@ -4,12 +4,6 @@ import java.sql.*;
 import java.util.*;
 import java.text.DecimalFormat;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.io.FilenameUtils;
-
-import com.picsauditing.PICS.*;
-
 public class OperatorBean extends DataBean {
 	public static final String[] CONTRACTORS_PAY_ARRAY = {"Yes","No","Multiple"};
 	public String id = "";
@@ -118,7 +112,7 @@ public class OperatorBean extends DataBean {
 			DBReady();
 			SQLStatement.executeUpdate(deleteQuery);
 			if (!facilitiesAL.isEmpty()) {
-				ListIterator li = facilitiesAL.listIterator();
+				ListIterator<String> li = facilitiesAL.listIterator();
 				String insertQuery = "INSERT INTO facilities (corporateID,opID) VALUES ";
 				while (li.hasNext()) {
 					String opID = (String)li.next();
@@ -148,7 +142,7 @@ public class OperatorBean extends DataBean {
 	}//getFacilitiesArray
 
 	public String getFacilitiesSet(){
-		ListIterator li = facilitiesAL.listIterator();
+		ListIterator<String> li = facilitiesAL.listIterator();
 		if (!li.hasNext())
 			return "(0)";
 		String temp = "(";
@@ -159,8 +153,8 @@ public class OperatorBean extends DataBean {
 	}//getFacilitiesSet
 
 	public String getFormsSet(){
-		ListIterator li = facilitiesAL.listIterator();
-		ListIterator li2 = corporatesAL.listIterator();
+		ListIterator<String> li = facilitiesAL.listIterator();
+		ListIterator<String> li2 = corporatesAL.listIterator();
 		if (!li.hasNext() && !li2.hasNext())
 			return "(0)";
 		String temp = "(";
@@ -172,7 +166,7 @@ public class OperatorBean extends DataBean {
 		return temp;
 	}//getFormsSet
 
-	public HashSet getFacilitiesCanSeeSet() throws Exception{
+	public HashSet<String> getFacilitiesCanSeeSet() throws Exception{
 		HashSet<String> canSeeSet = new HashSet<String>();
 		String selectQuery = "SELECT subID FROM accounts INNER JOIN generalContractors ON (id=subID) "+
 				"WHERE active='Y' AND genID IN "+getFacilitiesSet()+";";
@@ -191,7 +185,7 @@ public class OperatorBean extends DataBean {
 	public String getFacilitySelect(String name, String classType, String selectedFacility) throws Exception {
 		setActiveGeneralsArrayFromDB();
 		ArrayList<String> tempAL = new ArrayList<String>();
-		ListIterator li = activeGeneralsArray.listIterator();
+		ListIterator<String> li = activeGeneralsArray.listIterator();
 		while (li.hasNext()) {
 			String opID = (String)li.next();
 			String operator = (String)li.next();
@@ -259,7 +253,7 @@ public class OperatorBean extends DataBean {
 			tempAL.add("PICS");
 		}//if
 				
-		ListIterator li = activeGeneralsArray.listIterator();
+		ListIterator<String> li = activeGeneralsArray.listIterator();
 		
 		while (li.hasNext()) {
 			String ID = (String)li.next();
@@ -288,10 +282,10 @@ public class OperatorBean extends DataBean {
 	}//getActiveGeneralsArray
 
 
-	public ArrayList getOperatorsAL() throws Exception {
+	public ArrayList<String> getOperatorsAL() throws Exception {
 		setActiveGeneralsArrayFromDB();
 		ArrayList<String> tempAL = new ArrayList<String>();
-		ListIterator li = activeGeneralsArray.listIterator();
+		ListIterator<String> li = activeGeneralsArray.listIterator();
 		while (li.hasNext()) {
 			String ID = (String)li.next();	
 			String operator = (String)li.next();

@@ -3,8 +3,6 @@
 <%//@ page language="java"%>
 <%@ include file="utilities/admin_secure.jsp" %>
 
-<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="session"/>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
 <jsp:useBean id="pqBean" class="com.picsauditing.PICS.pqf.QuestionBean" scope ="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
@@ -17,9 +15,10 @@
 	if ("Save".equals(request.getParameter("action")))
 		pcBean.saveMatrix(request.getParameterNames(),auditType);
 	pcBean.setCategoryMatrix(auditType);
-	if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType))
-		pcBean.setOpCategoryMatrix();
-
+	if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType)){
+		pcBean.setOpCategoryMatrixLowRisk();
+		pcBean.setOpCategoryMatrixHighRisk();
+	}//if
 //*************************************
 /*		WritableFont times16BoldFont = new WritableFont(WritableFont.TIMES, 10); 
 		WritableCellFormat times16BoldFormat = new WritableCellFormat (times16BoldFont); 
@@ -220,11 +219,11 @@
                 <td><input name="action" type="submit" value="Save"></td>
               </tr>
 <%
-		java.util.ArrayList operators = oBean.getOperatorsAL();
+		java.util.ArrayList<String> operators = oBean.getOperatorsAL();
 		int opCount = 0;
 //		rowCount++;//**********************
 //		count = 0; //*********
-		for (java.util.ListIterator li = operators.listIterator();li.hasNext();){
+		for (java.util.ListIterator<String> li = operators.listIterator();li.hasNext();){
 			String opID = (String)li.next();
 			String opName = (String)li.next();
 			opCount++;
@@ -251,14 +250,26 @@
               </tr>
 <%			}//if %>
 			  <tr style="font: Verdana, Arial, Helvetica, sans-serif; font-size:12px;" <%=Utilities.getBGColor(opCount)%>>
-                <td class="blueSmall" align="right"><nobr><%=opCount%>.<%=opName%></nobr></td>
+                <td class="blueSmall" align="right"><nobr><%=opCount%>.<%=opName%> - <strong><%=ContractorBean.RISK_LEVEL_ARRAY[1]%></strong></nobr></td>
 <%			pcBean.resetList();
 			while (pcBean.isNextRecord()) {
 //				colCount++; //*****************
 //				if ("checked".equals(pcBean.getMatrixChecked(pcBean.catID,pqBean.questionID,auditType))) //**************
 //					sheet.addCell(new Label(colCount,rowCount,"X",times16BoldFormat)); //**********
 %>
-                <td align="center"><input type="checkbox" name="opChecked_cID_<%=pcBean.catID%>_oID_<%=opID%>" <%=pcBean.getOpMatrixChecked(pcBean.catID,opID)%>></td>
+                <td align="center"><input type="checkbox" name="opChecked_<%=ContractorBean.RISK_LEVEL_VALUES_ARRAY[1]%>_cID_<%=pcBean.catID%>_oID_<%=opID%>" <%=pcBean.getOpMatrixHighRiskChecked(pcBean.catID,opID)%>></td>
+<%			}//while %>
+                <td class="blueSmall" align="left"><nobr><%=opCount%>.<%=opName%></nobr></td>
+              </tr>
+			  <tr style="font: Verdana, Arial, Helvetica, sans-serif; font-size:12px;" <%=Utilities.getBGColor(opCount)%>>
+                <td class="blueSmall" align="right"><nobr><%=opCount%>.<%=opName%> - <strong><%=ContractorBean.RISK_LEVEL_ARRAY[0]%></strong></nobr></td>
+<%			pcBean.resetList();
+			while (pcBean.isNextRecord()) {
+//				colCount++; //*****************
+//				if ("checked".equals(pcBean.getMatrixChecked(pcBean.catID,pqBean.questionID,auditType))) //**************
+//					sheet.addCell(new Label(colCount,rowCount,"X",times16BoldFormat)); //**********
+%>
+                <td align="center"><input type="checkbox" name="opChecked_<%=ContractorBean.RISK_LEVEL_VALUES_ARRAY[0]%>_cID_<%=pcBean.catID%>_oID_<%=opID%>" <%=pcBean.getOpMatrixLowRiskChecked(pcBean.catID,opID)%>></td>
 <%			}//while %>
                 <td class="blueSmall" align="left"><nobr><%=opCount%>.<%=opName%></nobr></td>
               </tr>

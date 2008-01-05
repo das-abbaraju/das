@@ -51,7 +51,7 @@
 	}//if
 	cBean.setFromDB(conID);
 	if (isDesktopReset){
-		pcBean.generateDynamicCategories(conID,com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE);
+		pcBean.generateDynamicCategories(conID,com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE, cBean.riskLevel);
 		cBean.desktopPercent = "0";
 		cBean.desktopVerifiedPercent = "0";
 		cBean.desktopSubmittedDate = "";
@@ -69,7 +69,7 @@
 		cBean.officeVerifiedPercent="0";
 		cBean.writeToDB();
 	} else if (isPQFRegen)
-		pcBean.generateDynamicCategories(conID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
+		pcBean.generateDynamicCategories(conID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE,cBean.riskLevel);
 	aBean.setFromDB(conID);
 	pdBean.setFilledOut(conID);
 %>

@@ -30,7 +30,8 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 	public ArrayList<String> categories = null;
 	public ArrayList<String> allCategories = null;
 	public ArrayList<String> categoryMatrixAL = null;
-	public ArrayList<String> opCategoryMatrixAL = null;
+	public ArrayList<String> opCategoryMatrixHighRiskAL = null;
+	public ArrayList<String> opCategoryMatrixLowRiskAL = null;
 	public TreeMap<String,String> numOfRequiredMap = null;
 	boolean isNumQuestionsMapSet = false;
 //	public TreeMap allCategoriesMap = null;
@@ -424,7 +425,7 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		return numResults;
 	}
 
-	public void saveMatrix(java.util.Enumeration e,String auditType) throws Exception {
+	public void saveMatrix(java.util.Enumeration<String> e,String auditType) throws Exception {
 //		String tableName = auditType.toLowerCase()+"Matrix";
 		String deleteQuery = "DELETE FROM desktopMatrix WHERE auditType='"+auditType+"';";
 		try {
@@ -437,7 +438,7 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 			boolean doDesktopInsert = false;
 			boolean doOpInsert = false;
 			String desktopInsertQuery = "INSERT INTO desktopMatrix (auditType,catID,qID)"+"VALUES ";
-			String opInsertQuery = "INSERT INTO pqfOpMatrix (catID,opID)"+"VALUES ";
+			String opInsertQuery = "INSERT INTO pqfOpMatrix (catID,opID,riskLevel)"+"VALUES ";
 			while (e.hasMoreElements()){
 				String temp = (String)e.nextElement();
 				if (temp.startsWith("checked_")) {
@@ -452,13 +453,16 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 				}//if
 				if (temp.startsWith("opChecked_")) {
 					doOpInsert = true;
+					int endRiskLevel = temp.indexOf("_cID");
 					int begCID = temp.indexOf("_cID")+5;
 					int endCID = temp.indexOf("_oID");
 					int begOID = temp.indexOf("_oID")+5;
+					String riskLevel = temp.substring(10, endRiskLevel);
+					System.out.println(riskLevel);
 					String cID = temp.substring(begCID, endCID);
 					String oID = temp.substring(begOID);
 					//pcBean.writeToDB(subCID, subQID);
-					opInsertQuery += "("+cID+","+oID+"),";
+					opInsertQuery += "("+cID+","+oID+","+riskLevel+"),";
 				}//if
 			}//while
 			if (doDesktopInsert){
@@ -482,13 +486,20 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		return "";
 	}//getMatrixChecked
 
-	public String getOpMatrixChecked(String catID,String opID) throws Exception {
-		if (null==opCategoryMatrixAL)
-			setOpCategoryMatrix();
-		if (opCategoryMatrixAL.contains(catID+"-"+opID))
+	public String getOpMatrixHighRiskChecked(String catID,String opID) throws Exception {
+		if (null==opCategoryMatrixHighRiskAL)
+			setOpCategoryMatrixHighRisk();
+		if (opCategoryMatrixHighRiskAL.contains(catID+"-"+opID))
 			return "checked";
 		return "";
-	}//getOpMatrixChecked
+	}//getOpMatrixHighRiskChecked
+	public String getOpMatrixLowRiskChecked(String catID,String opID) throws Exception {
+		if (null==opCategoryMatrixLowRiskAL)
+			setOpCategoryMatrixLowRisk();
+		if (opCategoryMatrixLowRiskAL.contains(catID+"-"+opID))
+			return "checked";
+		return "";
+	}//getOpMatrixLowRiskChecked
 
 	public void setCategoryMatrix(String auditType) throws Exception {
 		String selectQuery = "SELECT * FROM desktopMatrix WHERE auditType='"+auditType+"';";
@@ -507,21 +518,34 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		}//finally
 	}//setCategoryMatrix
 
-	public void setOpCategoryMatrix() throws Exception {
+	public void setOpCategoryMatrixHighRisk() throws Exception {
 		try{
-			String selectQuery = "SELECT * FROM pqfOpMatrix;";
+			String selectQuery = "SELECT * FROM pqfOpMatrix WHERE riskLevel="+ContractorBean.RISK_LEVEL_VALUES_ARRAY[1]+";";
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			opCategoryMatrixAL = new ArrayList<String>();
+			opCategoryMatrixHighRiskAL = new ArrayList<String>();
 			while (SQLResult.next())
-				opCategoryMatrixAL.add(SQLResult.getString("catID")+"-"+SQLResult.getString("opID"));
+				opCategoryMatrixHighRiskAL.add(SQLResult.getString("catID")+"-"+SQLResult.getString("opID"));
 			SQLResult.close();
 		}finally{
 			DBClose();
 		}//finally
-	}//setOpCategoryMatrix
+	}//setOpCategoryMatrixHighRisk
+	public void setOpCategoryMatrixLowRisk() throws Exception {
+		try{
+			String selectQuery = "SELECT * FROM pqfOpMatrix WHERE riskLevel="+ContractorBean.RISK_LEVEL_VALUES_ARRAY[0]+";";
+			DBReady();
+			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
+			opCategoryMatrixLowRiskAL = new ArrayList<String>();
+			while (SQLResult.next())
+				opCategoryMatrixLowRiskAL.add(SQLResult.getString("catID")+"-"+SQLResult.getString("opID"));
+			SQLResult.close();
+		}finally{
+			DBClose();
+		}//finally
+	}//setOpCategoryMatrixLowRisk
 
-	public void generateDynamicCategories(String conID, String auditType) throws Exception {
+	public void generateDynamicCategories(String conID, String auditType, String riskLevel) throws Exception {
 		try{
 			DBReady();
 			HashSet<String> catIDSet = new HashSet<String>();
@@ -539,7 +563,8 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 			if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType)){
 				String selectQuery = "SELECT catID FROM pqfOpMatrix INNER JOIN generalContractors ON "+
 					"(pqfOpMatrix.opID=generalContractors.genID "+
-					"AND generalContractors.subID="+conID+")";
+					"AND generalContractors.subID="+conID+" "+
+					"AND riskLevel="+riskLevel+")";
 				ResultSet SQLResult = SQLStatement.executeQuery(selectQuery );
 				while (SQLResult.next())
 					catIDSet.add(SQLResult.getString("catID"));
@@ -568,7 +593,7 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		}//finally
 	}//generateDynamicCategories
 
-	public void regenerateDAllPQFCategories() throws Exception {
+	public void regenerateAllPQFCategories() throws Exception {
 		ArrayList<String> conIDsAL = new ArrayList<String>();
 		String selectQuery = "SELECT id FROM accounts WHERE type='Contractor'";
 		try{
@@ -580,8 +605,10 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		}finally{
 			DBClose();
 		}//finally
-		for (String conID : conIDsAL)
-			generateDynamicCategories(conID,Constants.PQF_TYPE);
+		for (String conID : conIDsAL){
+			generateDynamicCategories(conID,Constants.PQF_TYPE,ContractorBean.RISK_LEVEL_VALUES_ARRAY[0]);
+			generateDynamicCategories(conID,Constants.PQF_TYPE,ContractorBean.RISK_LEVEL_VALUES_ARRAY[1]);
+		}//for
 	}//regenerateDAllPQFCategories
 
 	public String getPercentShow(String percent) {

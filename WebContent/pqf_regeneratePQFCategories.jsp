@@ -4,7 +4,7 @@
 <%	com.picsauditing.PICS.SearchBean sBean = new com.picsauditing.PICS.SearchBean();
 	sBean.doSearch(request, sBean.ACTIVE_AND_NOT, 20000, pBean, sBean.ADMIN_ID);
 	while (sBean.isNextRecord())
-		pcBean.generateDynamicCategories(sBean.aBean.id,com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
+		pcBean.generateDynamicCategories(sBean.aBean.id,com.picsauditing.PICS.pqf.Constants.PQF_TYPE,sBean.cBean.riskLevel);
 	sBean.closeSearch();	
 	if (pBean.isAdmin()){
 		response.sendRedirect("audit_selectType.jsp");

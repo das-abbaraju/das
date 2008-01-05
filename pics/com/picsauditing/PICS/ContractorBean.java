@@ -1023,7 +1023,7 @@ public class ContractorBean extends DataBean {
 				SQLStatement.executeUpdate(insertQuery);
 			DBClose();
 			com.picsauditing.PICS.OperatorBean.resetSubCountTable();
-			new com.picsauditing.PICS.pqf.CategoryBean().generateDynamicCategories(id,com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
+			new com.picsauditing.PICS.pqf.CategoryBean().generateDynamicCategories(id,com.picsauditing.PICS.pqf.Constants.PQF_TYPE, riskLevel);
 		}finally{
 			DBClose();
 		}//finally

@@ -16,7 +16,7 @@
 	if (isSubmitted){
 		cBean.setGeneralContractorsFromCheckList(request);
 		if (cBean.writeGeneralContractorsToDB(pBean,FACILITIES)){
-			pcBean.generateDynamicCategories(id,com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
+			pcBean.generateDynamicCategories(id, com.picsauditing.PICS.pqf.Constants.PQF_TYPE, cBean.riskLevel);
 			cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(id,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
 			cBean.canEditPrequal="Yes";
 			cBean.writeToDB();
@@ -35,7 +35,7 @@
 		AccountBean tempOpBean = new AccountBean();
 		tempOpBean.setFromDB(removeOpID);
 		cBean.addNote(id,"("+pBean.userName+" from PICS)", "Removed "+aBean.name+" from "+tempOpBean.name+"'s db", DateBean.getTodaysDateTime());
-		pcBean.generateDynamicCategories(id,com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
+		pcBean.generateDynamicCategories(id,com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pcBean.riskLevel);
 		cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(id,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
 		cBean.writeToDB();
 	}//if
