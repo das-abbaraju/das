@@ -905,11 +905,11 @@ public class EmailBean extends DataBean{
 			endl+endl+
 			"There are several items that must be updated annually. Upon logging in to your account, please follow these steps:"+
 			endl+endl+
-			"  1.	First click on the link “Facilities” from your details page, which will direct you to a page that will have "+
+			"  1.	First click on the [Facilities] link from your details page, which will direct you to a page that will have "+
 			"you indicate and verify which operators/facilities your company works for. If you do not choose the facilities they "+
 			"will not be able to view your information, which could prevent you from working there." +
 			endl+endl+
-			"  2.	Next, you will need to click on the 'Complete PQF' link from your details page. This will direct you to the "+
+			"  2.	Next, you will need to click on the [Complete PQF] link from your details page. This will direct you to the "+
 			"prequalification form (PQF). There are some new additions for 2007. You will need to complete all of the new questions "+
 			"and update anything that has changed in order to submit it. As a reminder each section must indicate 100% before you "+
 			"can resubmit the PQF. MAKE SURE YOU SUBMIT THE PQF WHEN COMPLETE."+

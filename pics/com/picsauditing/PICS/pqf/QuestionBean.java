@@ -527,11 +527,6 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 				value = "Uploaded";
 			return "<"+"input name="+inputName+" type=file class=forms size=19>";
 		}//if
-//		if ("Check Boxes".equals(questionType)) {
-//			OptionBean oBean = new OptionBean();
-//			return oBean.getCheckOptions(questionID,"forms",number);
-//		}//if
-//		return "<nobr> <input name="+inputName+" class=forms size=20 value=\""+value+"\"></nobr>";
 		return "<input type=text name="+inputName+" class=forms size=20 value=\""+value+"\">";
 	}//getInputElement
 
