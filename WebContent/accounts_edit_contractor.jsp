@@ -1,7 +1,5 @@
-<%//@ page language="java" import="com.jspsmart.upload.*, com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
-<%@ page language="java" import="com.picsauditing.PICS.*"%>
+<%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@ include file="utilities/admin_secure.jsp" %>
-<%//@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page"/>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope="page"/>
@@ -214,23 +212,19 @@
                       </tr>
                       <tr>
                         <td class="blueMain" align="right">Audit Date</td>
-                        <td class="blueMain"> <input name="auditDate" id="auditDate" type="text" class="forms" size="10" onClick="cal1.select(document.forms[0].auditDate,'auditDate','M/d/yy','<%=cBean.auditDate%>'); return false;" value="<%=cBean.auditDate%>">
-<!--                          <input type="image" src="images/icon_calendar.gif" width="18" height="15" onClick="cal1.select(document.forms[0].auditDate,'auditDate','M/d/yy','<%=cBean.auditDate%>'); return false;">
--->						</td>
+                        <td class="blueMain"><input name="auditDate" id="auditDate" type="text" class="forms" size="10" onClick="cal1.select(document.forms[0].auditDate,'auditDate','M/d/yy','<%=cBean.auditDate%>'); return false;" value="<%=cBean.auditDate%>"></td>
                       </tr>
 					  <tr>
                         <td class="blueMain" align="right">Last Audit Date</td>
-                        <td class="blueMain"> <a href="servlet/showpdf?id=<%=editID%>&file=audit"><%=cBean.lastAuditDate%></a></td>
+                        <td class="blueMain"><a href="servlet/showpdf?id=<%=editID%>&file=audit"><%=cBean.lastAuditDate%></a></td>
                       </tr>
                       <tr>
                         <td class="blueMain" align="right">Audit Valid Until</td>
-                        <td class="blueMain"> <input name="auditValidUntilDate" id="auditValidUntilDate" type="text" class="forms" size="10" onClick="cal1.select(document.forms[0].auditValidUntilDate,'auditValidUntilDate','M/d/yy','<%=cBean.auditValidUntilDate%>'); return false;" value="<%=cBean.auditValidUntilDate%>">
-						</td>
+                        <td class="blueMain"><input name="auditValidUntilDate" id="auditValidUntilDate" type="text" class="forms" size="10" onClick="cal1.select(document.forms[0].auditValidUntilDate,'auditValidUntilDate','M/d/yy','<%=cBean.auditValidUntilDate%>'); return false;" value="<%=cBean.auditValidUntilDate%>"></td>
                       </tr>
                       <tr>
                         <td class="blueMain" align="right">Desktop Valid Until</td>
-                        <td class="blueMain"> <input name="desktopValidUntilDate" id="desktopValidUntilDate" type="text" class="forms" size="10" onClick="cal1.select(document.forms[0].desktopValidUntilDate,'desktopValidUntilDate','M/d/yy','<%=cBean.desktopValidUntilDate%>'); return false;" value="<%=cBean.desktopValidUntilDate%>">
-						</td>
+                        <td class="blueMain"><input name="desktopValidUntilDate" id="desktopValidUntilDate" type="text" class="forms" size="10" onClick="cal1.select(document.forms[0].desktopValidUntilDate,'desktopValidUntilDate','M/d/yy','<%=cBean.desktopValidUntilDate%>'); return false;" value="<%=cBean.desktopValidUntilDate%>"></td>
                       </tr>
 					  <tr>
                         <td class="blueMain" align="right"><nobr>PQF Auditor</nobr></td>
@@ -272,11 +266,11 @@
                       </tr>
                       <tr>
                         <td class="blueMain" align="right">Username</td>
-                        <td><input name="username" type="text" class="forms" size="15" value="<%=aBean.username%>"></td>
+                        <td><input name="username" type="text" class="forms" size="15" value="<%=cBean.getUsername()%>"></td>
                       </tr>
                       <tr>
                         <td class="blueMain" align="right">Password</td>
-                        <td><input name="password" type="text" class="forms" size="15" value="<%=aBean.password%>"></td>
+                        <td><input name="password" type="text" class="forms" size="15" value="<%=cBean.getPassword()%>"></td>
                       </tr>
                       <tr>
                         <td>&nbsp;</td>
@@ -325,7 +319,7 @@
                       </tr>
                       <tr>
                         <td class="blueMain" align="right">Last Login:</td>
-                        <td class="redMain" align="left"><%=aBean.lastLogin%></td>
+                        <td class="redMain" align="left"><%=cBean.getLastLogin()%></td>
                       </tr>
                       <tr>
                         <td class="blueMain" align="right">Visible?</td>

@@ -21,7 +21,7 @@ public class Auditors extends DataBean{
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
 			while (SQLResult.next()){
-				auditorsAL.add(SQLResult.getString("accounts.id"));
+				auditorsAL.add(SQLResult.getString("id"));
 				auditorsAL.add(SQLResult.getString("name"));
 			}//while
 			SQLResult.close();
