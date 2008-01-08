@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FilenameUtils;
 
-import com.picsauditing.access.PermissionsBean;
 
 public class ContractorBean extends DataBean {
 /*	History

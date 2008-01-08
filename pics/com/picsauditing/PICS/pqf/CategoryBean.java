@@ -3,7 +3,6 @@ package com.picsauditing.PICS.pqf;
 import java.sql.*;
 import java.util.*;
 import com.picsauditing.PICS.*;
-import com.picsauditing.access.PermissionsBean;
 
 
 public class CategoryBean extends com.picsauditing.PICS.DataBean {

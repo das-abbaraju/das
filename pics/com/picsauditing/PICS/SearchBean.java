@@ -4,7 +4,6 @@ import java.sql.*;
 import java.util.*;
 
 import com.picsauditing.PICS.*;
-import com.picsauditing.access.PermissionsBean;
 import com.picsauditing.domain.IPicsDO;
 
 

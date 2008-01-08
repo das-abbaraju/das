@@ -6,7 +6,6 @@ import jxl.format.Colour;
 import java.sql.*;
 import java.util.*;
 
-import com.picsauditing.access.PermissionsBean;
 
 public class ExcelWriterBean {
 	static final String[] CP_REPORT_TITLES_ARRAY = {"License Number","Company Name","FedTaxIDNn",

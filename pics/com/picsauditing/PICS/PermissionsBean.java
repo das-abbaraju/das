@@ -1,4 +1,4 @@
-package com.picsauditing.access;
+package com.picsauditing.PICS;
 
 import java.sql.*;
 import java.util.*;
@@ -6,10 +6,9 @@ import java.util.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import com.picsauditing.PICS.DataBean;
-import com.picsauditing.PICS.OperatorBean;
-import com.picsauditing.PICS.UserBean;
-import com.picsauditing.PICS.Utilities;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.access.UserAccess;
 
 
 public class PermissionsBean extends DataBean {

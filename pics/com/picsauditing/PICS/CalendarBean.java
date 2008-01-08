@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.sql.*;
 import java.util.*;
 
-import com.picsauditing.access.PermissionsBean;
 
 public class CalendarBean extends DataBean {
   	public SearchBean sBean = new SearchBean();
