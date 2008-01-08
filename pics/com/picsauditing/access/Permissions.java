@@ -15,6 +15,7 @@ public class Permissions{
 	private String username;
 	private int accountID;
 	private String accountType;
+	private int adminID;
 	
 	public Permissions(){
 	}
@@ -71,7 +72,13 @@ public class Permissions{
 	public String getAccountType() {
 		return accountType;
 	}
-	
+	public int getAdminID() {
+		return adminID;
+	}
+	public void setAdminID(int adminID) {
+		this.adminID = adminID;
+	}
+
 	/**
 	 * Does this user have 'oType' access to 'opPerm'
 	 * @param opPerm OSHA, ContractorDetails, UserAdmin, etc

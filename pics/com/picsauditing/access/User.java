@@ -27,7 +27,7 @@ public class User extends DataBean {
 		return (userDO.id.length() > 0);
 	}
 	
-	public void selectFromDB(String selectQuery) throws Exception{		
+	private void selectFromDB(String selectQuery) throws Exception{		
 		ResultSet SQLResult = null;
 		try{
 			DBReady();
@@ -72,8 +72,8 @@ public class User extends DataBean {
 			SQLStatement.executeUpdate(updateQuery);
 		}finally{
 			DBClose();
-		}//finally
-	}//writeToDB
+		}
+	}
 
 	public void writeNewToDB(String accountID, HttpServletRequest request) throws Exception {
 		userDO.accountID = accountID;
@@ -118,6 +118,42 @@ public class User extends DataBean {
 			DBClose();
 		}//finally
 	}//deleteUser
+	
+	
+	public boolean sendPasswordEmail(String email) throws Exception {
+		if (!Utilities.isValidEmail(email)) {
+			errorMessages.addElement("Please enter a valid email address.");
+			return false;
+		}
+		SQLBuilder sql = new SQLBuilder();
+		sql.setFromTable("users");
+		sql.addField("accountID");
+		sql.addField("name");
+		sql.addField("username");
+		sql.addField("password");
+		sql.addWhere("email='"+email+"'");
+		
+		try {
+			DBReady();
+			ResultSet SQLResult = SQLStatement.executeQuery(sql.toString());
+			if (!SQLResult.next()) {
+				errorMessages.addElement("No user account in our records has that email address. " +
+					"Please verify it is the one you used when creating your PICS profile.");
+				SQLResult.close();
+				DBClose();
+				return false;
+			}//if
+			
+			EmailBean.sendPasswordEmail(SQLResult.getString("accountID"),SQLResult.getString("username"),SQLResult.getString("password"),email,SQLResult.getString("name"));
+			errorMessages.addElement("An email has been sent to: <b>" + email + "</b> with your " + 
+				"PICS login information");
+			SQLResult.close();
+			DBClose();
+			return true;
+		}finally{
+			DBClose();
+		}
+	}
 
 	public boolean isOK() throws Exception {
 		errorMessages = new Vector<String>();

@@ -36,10 +36,10 @@ public class AccountBean extends DataBean {
 	public String id = "";
 	public String type = "Contractor"; // is of type ENUM of ('Contractor','Operator','General')
 	public String name = "";
-	public String username = "";
-	public String password = "";
-	public String passwordChange = "";
-	public String lastLogin = "1/1/01";
+	//public String username = "";
+	//public String password = "";
+	//public String passwordChange = "";
+	//public String lastLogin = "1/1/01";
 	public String contact = "";
 	public String address = "";
 	public String city = "";
@@ -54,9 +54,9 @@ public class AccountBean extends DataBean {
 	public String active = "N";
 	public String createdBy = "";
 	public String dateCreated = "";
-	public String oldPassword = ""; // used for determining if the password has changed 
+	//public String oldPassword = ""; // used for determining if the password has changed 
 	public String emailConfirmedDate = "";
-	boolean updatedPassword = false;
+	//boolean updatedPassword = false;
 	public String prevLastLogin = "1/1/01";
 	public void setId(String s) {id = s;}//setId
 	public void setActive(String s) {active = s;}//setActive
@@ -134,10 +134,10 @@ public class AccountBean extends DataBean {
 			id = SQLResult.getString("id");
 			type = SQLResult.getString("type");
 			name = SQLResult.getString("name");
-			username = SQLResult.getString("username");
-			password = SQLResult.getString("password");
-			passwordChange = SQLResult.getString("passwordChange");
-			lastLogin = DateBean.toShowFormat(SQLResult.getString("lastLogin"));
+			//username = SQLResult.getString("username");
+			//password = SQLResult.getString("password");
+			//passwordChange = SQLResult.getString("passwordChange");
+			//lastLogin = DateBean.toShowFormat(SQLResult.getString("lastLogin"));
 			contact = SQLResult.getString("contact");
 			address = SQLResult.getString("address");
 			city = SQLResult.getString("city");
@@ -153,7 +153,7 @@ public class AccountBean extends DataBean {
 			createdBy = SQLResult.getString("createdBy");
 			dateCreated = DateBean.toShowFormat(SQLResult.getString("dateCreated"));
 			emailConfirmedDate = DateBean.toShowFormat(SQLResult.getString("emailConfirmedDate"));
-			oldPassword = password;
+			//oldPassword = password;
 		} catch (Exception ex) {
 			DBClose();
 			throw ex;
@@ -161,8 +161,17 @@ public class AccountBean extends DataBean {
 	}//setFromResultSet
 
 	public void writeToDB() throws Exception {
+		/*
 		String updateQuery = "UPDATE accounts SET type='"+type+"',name='"+eqDB(name)+
 			"',username='"+eqDB(username)+"',password='"+eqDB(password)+"',lastLogin='"+DateBean.toDBFormat(lastLogin)+
+			"',contact='"+eqDB(contact)+
+			"',address='"+eqDB(address)+"',city='"+eqDB(city)+"',state='"+eqDB(state)+"',zip='"+eqDB(zip)+
+			"',phone='"+eqDB(phone)+"',phone2='"+eqDB(phone2)+"',fax='"+eqDB(fax)+"',email='"+eqDB(email)+
+			"',web_URL='"+eqDB(web_URL)+"',industry='"+eqDB(industry)+
+			"',active='"+active+"',createdBy='"+createdBy+
+			"' WHERE id="+id+";";
+		*/
+		String updateQuery = "UPDATE accounts SET type='"+type+"',name='"+eqDB(name)+
 			"',contact='"+eqDB(contact)+
 			"',address='"+eqDB(address)+"',city='"+eqDB(city)+"',state='"+eqDB(state)+"',zip='"+eqDB(zip)+
 			"',phone='"+eqDB(phone)+"',phone2='"+eqDB(phone2)+"',fax='"+eqDB(fax)+"',email='"+eqDB(email)+
@@ -172,29 +181,35 @@ public class AccountBean extends DataBean {
 		try {
 			DBReady();
 			SQLStatement.executeUpdate(updateQuery);
-			if (!"".equals(oldPassword) && !oldPassword.equals(password))
-				changePassword(password);
+			//if (!"".equals(oldPassword) && !oldPassword.equals(password))
+			//	changePassword(password);
 		}finally{
 			DBClose();
 		}//finally
 	}//writeToDB
 
 	public void writeAuditorToDB() throws Exception {
+		/*
 		String updateQuery = "UPDATE accounts SET name='"+eqDB(name)+
-			"',username='"+eqDB(username)+"',password='"+eqDB(password)+
+		"',username='"+eqDB(username)+"',password='"+eqDB(password)+
+		"',email='"+eqDB(email)+"',active='"+active+
+		"' WHERE id='"+id+"';";
+		*/
+		String updateQuery = "UPDATE accounts SET name='"+eqDB(name)+
 			"',email='"+eqDB(email)+"',active='"+active+
 			"' WHERE id='"+id+"';";
 		try {
 			DBReady();
 			SQLStatement.executeUpdate(updateQuery);
-			if (!"".equals(oldPassword) && !oldPassword.equals(password))
-				changePassword(password);
+			//if (!"".equals(oldPassword) && !oldPassword.equals(password))
+			//	changePassword(password);
 		}finally{
 			DBClose();
 		}//finally
 	}//writeAuditorToDB
 
 	public boolean writeNewToDB() throws Exception {
+		/*
 		if (usernameExists(username)) {
 			errorMessages.addElement("The username <b>"+username+"</b> already exists.  Please choose another username.");
 			return false;
@@ -205,6 +220,13 @@ public class AccountBean extends DataBean {
 			"','"+eqDB(username)+"','"+eqDB(password)+"',NOW(),'"+DateBean.toDBFormat(lastLogin)+"','"+eqDB(contact)+"','"+eqDB(address)+"','"+city+
 			"','"+eqDB(state)+"','"+eqDB(zip)+"','"+eqDB(phone)+"','"+eqDB(phone2)+"','"+eqDB(fax)+"','"+eqDB(email)+"','"+eqDB(web_URL)+
 			"','"+eqDB(industry)+"','"+active+"','"+createdBy+"',NOW());";
+		*/
+		String insertQuery = "INSERT INTO accounts (type,name,contact,address,"+
+			"city,state,zip,phone,phone2,fax,email,web_URL,industry,active,createdBy,"+
+			"dateCreated) VALUES ('"+type+"','"+eqDB(name)+
+			"','"+eqDB(contact)+"','"+eqDB(address)+"','"+city+
+			"','"+eqDB(state)+"','"+eqDB(zip)+"','"+eqDB(phone)+"','"+eqDB(phone2)+"','"+eqDB(fax)+"','"+eqDB(email)+"','"+eqDB(web_URL)+
+			"','"+eqDB(industry)+"','"+active+"','"+createdBy+"',NOW())";
 		try {
 			DBReady();
 			SQLStatement.executeUpdate(insertQuery, Statement.RETURN_GENERATED_KEYS);
@@ -225,8 +247,8 @@ public class AccountBean extends DataBean {
 
 	public void setFromRequest(javax.servlet.http.HttpServletRequest r) throws Exception {
 		name = r.getParameter("name");
-		username = r.getParameter("username");
-		password = r.getParameter("password");
+		//username = r.getParameter("username");
+		//password = r.getParameter("password");
 		contact = r.getParameter("contact");
 		address = r.getParameter("address");
 		city = r.getParameter("city");
@@ -246,8 +268,8 @@ public class AccountBean extends DataBean {
 	public void setFromUploadRequest(HttpServletRequest r) throws Exception {
 		Map<String,String> m = (Map<String,String>)r.getAttribute("uploadfields");
 		name = m.get("name");
-		username = m.get("username");
-		password = m.get("password");
+		//username = m.get("username");
+		//password = m.get("password");
 		contact = m.get("contact");
 		address = m.get("address");
 		city = m.get("city");
@@ -266,8 +288,8 @@ public class AccountBean extends DataBean {
 
 	public void setFromUploadRequestClientNew(javax.servlet.http.HttpServletRequest r) throws Exception {
 		name = r.getParameter("name");
-		username = r.getParameter("username");
-		password = r.getParameter("password");
+		//username = r.getParameter("username");
+		//password = r.getParameter("password");
 		contact = r.getParameter("contact");
 		address = r.getParameter("address");
 		city = r.getParameter("city");
@@ -287,7 +309,7 @@ public class AccountBean extends DataBean {
 	public void setFromUploadRequestClientEdit(HttpServletRequest r) throws Exception {
 		Map<String,String> m = (Map<String,String>)r.getAttribute("uploadfields");
 		name = m.get("name");
-		password = m.get("password");
+		//password = m.get("password");
 		contact = m.get("contact");
 		address = m.get("address");
 		city = m.get("city");
@@ -303,8 +325,8 @@ public class AccountBean extends DataBean {
 
 	public void setFromRequestNewAuditor(javax.servlet.http.HttpServletRequest r) throws Exception {
 		name = r.getParameter("name");
-		username = r.getParameter("username");
-		password = r.getParameter("password");
+		//username = r.getParameter("username");
+		//password = r.getParameter("password");
 		email = r.getParameter("email");
 		active = r.getParameter("active");
 		type = "Auditor";
@@ -325,6 +347,7 @@ public class AccountBean extends DataBean {
 		return id;	
 	}//searchID
 
+	/*
 	public boolean usernameExists(String u_name) throws Exception {
 		boolean nameExists = false;
 		try {
@@ -345,15 +368,13 @@ public class AccountBean extends DataBean {
 	public boolean checkLogin(String lname, String lpass, javax.servlet.http.HttpServletRequest req) throws Exception {
 		try {
 			boolean isUser = true;
-			/*
-			 * USERMOVE
 			String selectQuery = "SELECT accounts.*, users.id AS uID, users.isActive, users.password AS user_password "+
 			"FROM accounts JOIN users ON accounts.id = users.accountID "+
 			"WHERE users.username='"+eqDB(lname)+"' UNION " +
 			"SELECT *, null AS uID, null AS isActive, null AS user_password "+
 			"FROM accounts "+
 			"WHERE username='"+eqDB(lname)+"' AND type <> 'Operator' ";
-			*/
+			
 			String selectQuery = "SELECT accounts.*, users.id AS uID, users.isActive, users.password AS user_password "+
 			"FROM accounts JOIN users ON accounts.id = users.accountID "+
 			"WHERE users.username='"+eqDB(lname)+"'";
@@ -368,7 +389,6 @@ public class AccountBean extends DataBean {
 				return false;
 			}
 			if (!SQLResult.isLast()) {
-				// TODO email us when this happens
 				errorMessages.addElement("We found more than one account with that username.<br>Please contact PICS to fix this problem.");
 				SQLResult.close();
 				logLoginAttempt(req,lname,"*","N");
@@ -380,7 +400,7 @@ public class AccountBean extends DataBean {
 			canLogin = SQLResult.getString("isActive").startsWith("Y");
 			password = SQLResult.getString("user_password");
 			userID = SQLResult.getString("uID");
-			/* USERMOVE
+			
 			isUser = SQLResult.getInt("uID") > 0;
 			String password;
 			if (isUser) {
@@ -392,7 +412,6 @@ public class AccountBean extends DataBean {
 				password = SQLResult.getString("password");
 				this.userID = "";
 			}
-			*/
 			
 			if (!canLogin) {
 				errorMessages.addElement("That account is currently inactive.<br>Please contact PICS to activate your account.");
@@ -429,8 +448,6 @@ public class AccountBean extends DataBean {
 				updateQuery = "UPDATE users SET lastLogin=NOW() WHERE id="+userID;
 				SQLStatement.executeUpdate(updateQuery);
 			}
-			
-			// TODO cleanup the following so it doesn't execute all of these every time.
 			
 			// set these for isFirstLogin(), and mustSubmitPQF()
 			selectQuery = "SELECT accountDate, canEditPrequal FROM contractor_info WHERE id="+id+";";
@@ -487,6 +504,7 @@ public class AccountBean extends DataBean {
 			DBClose();
 		}//finally
 	}//logLoginAttempt
+	*/
 
 	public String[] getActiveOperatorsArray(boolean includePICS) throws Exception {
 		setOBean();
@@ -591,7 +609,6 @@ public class AccountBean extends DataBean {
 			return true;
 		return false;
 	}//mustChangePassword
-	*/
 
 	public boolean newPasswordOK(String newPassword) {
 		if (newPassword.equalsIgnoreCase(password)) {
@@ -620,42 +637,7 @@ public class AccountBean extends DataBean {
 			DBClose();
 		}//finally
 	}//changePassword
-
-	public boolean sendPasswordEmail(String email) throws Exception {
-		if (!Utilities.isValidEmail(email)) {
-			errorMessages.addElement("Please enter a valid email address.");
-			return false;
-		}//if
-		String selectQuery = "SELECT * FROM accounts WHERE email='"+email+"';";
-		try{
-			DBReady();
-			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			if (!SQLResult.next()) {
-				selectQuery = "SELECT * FROM users LEFT OUTER JOIN permissions ON users.id=permissions.user_id WHERE email='"+email+"';";
-				SQLResult = SQLStatement.executeQuery(selectQuery);
-				if (!SQLResult.next()) {
-					errorMessages.addElement("No account in our records has that email address.  Please verify it is " +
-					"the one you used when creating your PICS company profile.");
-					SQLResult.close();
-					DBClose();
-					return false;		
-				}//if
-				UserBean uBean = new UserBean();
-				uBean.setFromResultSet(SQLResult);
-				com.picsauditing.PICS.EmailBean.sendPasswordEmail(uBean.accountID,uBean.username,uBean.password,uBean.email,uBean.name);
-			}else{
-				setFromResultSet(SQLResult);
-				com.picsauditing.PICS.EmailBean.sendPasswordEmail(id,username,password,email,contact);
-			}//else
-			errorMessages.addElement("An email has been sent to this address: <b>" + email + "</b> with your " +
-			"PICS account login information");
-			SQLResult.close();
-			DBClose();
-			return true;
-		}finally{
-			DBClose();
-		}//finally
-	}//sendPasswordEmail
+	*/
 
 	public static String getIndustrySelect(String name, String classType, String selectedIndustry) throws Exception {
 		return Utilities.inputSelect(name, classType, selectedIndustry, INDUSTRY_ARRAY);
@@ -764,7 +746,6 @@ public class AccountBean extends DataBean {
 		return false;
 	}//isFirstLogin
 	
-	
 	public boolean mustSubmitPQF() {
 		if ("Contractor".equals(type) && "Yes".equals(canEditPrequal))
 			return true;
@@ -857,6 +838,7 @@ public class AccountBean extends DataBean {
 		setFromDB(id);
 		return name;
 	}
+	/*
 	public String getUsername() {
 		return username;
 	}
@@ -869,8 +851,6 @@ public class AccountBean extends DataBean {
 	public void setPrevLastLogin(String lastLogin) {
 		this.lastLogin = lastLogin;
 	}
-	
-	
-	
+	*/
 	
 }//AccountBean

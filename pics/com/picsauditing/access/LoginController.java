@@ -1,8 +1,9 @@
 package com.picsauditing.access;
 
 
+import java.sql.ResultSet;
+
 import com.picsauditing.PICS.DataBean;
-import com.picsauditing.PICS.Utilities;
 
 /**
  * Populate the permissions object in session with appropriate login credentials and access/permission data
@@ -23,7 +24,7 @@ public class LoginController extends DataBean {
 		getErrors().clear();
 		String error = canLogin(user, username, password);
 		if (error.length() > 0) {
-			logLoginAttempt(request,null, "",username,password,"N",0);
+			logAttempt(permissions, password, request);
 			getErrors().add(error);
 			permissions.clear();
 			return;
@@ -35,8 +36,35 @@ public class LoginController extends DataBean {
 		request.getSession().setAttribute("usertype", permissions.getAccountType());
 		request.getSession().setAttribute("userid", permissions.getUserIdString());
 		
-		logLoginAttempt(request, null, "", username, "*", "Y", permissions.getUserId());
+		logAttempt(permissions, "", request);
 		user.updateLastLogin();
+	}
+	
+	public void loginByAdmin(String userID, javax.servlet.http.HttpServletRequest request) throws Exception {
+		// Set the permissions from the session or create a new one if necessary
+		Permissions permissions = (Permissions)request.getSession().getAttribute("permissions");
+		if (permissions == null) {
+			return;
+		}
+		
+		
+		if (permissions.hasPermission(OpPerms.AddContractors)) {
+			
+		}
+		int adminID = permissions.getUserId();
+
+		User user = new User();
+		user.setFromDB(userID);
+		if (user.userDO.id != userID) return;
+		
+		// Log the user in now
+		permissions.login(user);
+		permissions.setAdminID(adminID);
+		request.getSession().setAttribute("usertype", permissions.getAccountType());
+		request.getSession().setAttribute("userid", permissions.getUserIdString());
+		
+		logAttempt(permissions, "", request);
+		//user.updateLastLogin();
 	}
 	
 	private String canLogin(User user, String username, String password) throws Exception {
@@ -53,7 +81,7 @@ public class LoginController extends DataBean {
 			return "The password is not correct";
 		
 		if(!user.userDO.isActive.equals("Yes"))
-			return "This user does not have permission to login";
+			return "This user does not have permission to login.<br>Please contact PICS to activate your account.";
 		
 		return "";
 	}
@@ -63,22 +91,74 @@ public class LoginController extends DataBean {
 		permissions.clear();
 	}
 	
-	public void logLoginAttempt(javax.servlet.http.HttpServletRequest request, String accountName, String type, String lname, String lpass, 
-			String success, int userID) throws Exception {
-		String remoteAddress = null;
+	private void logAttempt(Permissions permissions, String password, javax.servlet.http.HttpServletRequest request) throws Exception {
+		String remoteAddress = "";
 		if(request != null)
 			remoteAddress = request.getRemoteAddr();
 		
-		String insertQuery = "INSERT INTO loginLog (company,type,username,password,"+ 
-		"successful,date,remoteAddress,id) VALUES ('"+
-			Utilities.escapeQuotes(accountName)+"','"+type+"','" +lname+"','"+lpass+"','"+success+"',NOW(),'"+ remoteAddress +
-			"'," + userID +");";
+		String strSuccess = "N";
+		if (permissions.isLoggedIn()) {
+			password = "*";
+			strSuccess = "Y";
+		}
+		
+		String insertQuery = "INSERT INTO loginLog SET " +
+				"username = '"+permissions.getUsername()+"', " + 
+				"password = '"+password+"', " + 
+				"successful = '"+strSuccess+"', " +
+				"date = NOW(), " +
+				"remoteAddress = '"+remoteAddress+"', " +
+				"id = '"+permissions.getUserIdString()+"', " +
+				"adminID = '"+permissions.getAdminID()+ "'";
 		//System.out.println(insertQuery);	
 		try {
 			DBReady();
 			SQLStatement.executeUpdate(insertQuery);
 		}finally{
 			DBClose();
-		}//finally
-	}//logLoginAttempt
-}//LoginController
+		}
+	}
+	
+	/*
+	public boolean checkLogin(String lname, String lpass, javax.servlet.http.HttpServletRequest req) throws Exception {
+		String selectQuery;
+		ResultSet SQLResult;
+		// set these for isFirstLogin(), and mustSubmitPQF()
+		selectQuery = "SELECT accountDate, canEditPrequal FROM contractor_info WHERE id="+id+";";
+		SQLResult = SQLStatement.executeQuery(selectQuery);
+		if (SQLResult.next()){
+			accountDate = DateBean.toShowFormat(SQLResult.getString("accountDate"));
+			canEditPrequal = SQLResult.getString("canEditPrequal");
+		}//if
+		SQLResult.close();
+		
+		// Set canSeeSet
+		canSeeSet = new HashSet<String>();
+		if ("Contractor".equals(type))
+			canSeeSet.add(id);
+		selectQuery = "SELECT subID FROM accounts INNER JOIN generalcontractors ON (id=subID) "+
+		"WHERE active='Y' AND genID="+id+";";
+		SQLResult = SQLStatement.executeQuery(selectQuery);
+		while (SQLResult.next())
+			canSeeSet.add(SQLResult.getString("subID"));
+		SQLResult.close();
+		
+		//Set auditorCanSeeSet BJ 10-28-04
+		auditorCanSeeSet = new HashSet<String>();
+		auditorCanSeeSet.add(id);
+		selectQuery = "SELECT id FROM contractor_info WHERE auditor_id="+id+" OR desktopAuditor_id="+id+" OR pqfAuditor_id="+id+";";
+		SQLResult = SQLStatement.executeQuery(selectQuery);
+		while (SQLResult.next())
+			auditorCanSeeSet.add(SQLResult.getString("id"));
+		SQLResult.close();
+		
+		// Set hasCertSet
+		hasCertSet = new HashSet<String>();
+		selectQuery = "SELECT contractor_id FROM certificates WHERE operator_id="+id+";";
+		SQLResult = SQLStatement.executeQuery(selectQuery);
+		while (SQLResult.next())
+			hasCertSet.add(SQLResult.getString("contractor_id"));
+		SQLResult.close();
+	}//checkLogin
+	*/
+}
