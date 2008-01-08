@@ -26,6 +26,7 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 	public String applies = "";
 	public String percentCompleted = "";
 	public String percentVerified = "";
+	public String riskLevel = "1";
 
 	public ArrayList<String> categories = null;
 	public ArrayList<String> allCategories = null;
