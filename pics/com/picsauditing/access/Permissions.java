@@ -8,32 +8,51 @@ import java.util.Set;
 
 public class Permissions{
 	
-	private int userid;
+	private int userID;
 	private boolean loggedIn = false;
 	private List<Integer> groups = new ArrayList();
 	private Set<Permission> permissions = new HashSet<Permission>();	
 	private String username;
 	private int accountID;
+	private String accountType;
 	
-	public Permissions(User user){
-		userid = Integer.parseInt(user.userDO.id);
-		loggedIn = true;
-		username = user.userDO.username;
-		accountID = Integer.parseInt(user.userDO.accountID);		
+	public Permissions(){
+	}
+	
+	public void login(User user) throws Exception {
 		try{
+			userID = Integer.parseInt(user.userDO.id);
+			loggedIn = true;
+			username = user.userDO.username;
+			accountID = Integer.parseInt(user.userDO.accountID);
+			accountType = user.userDO.accountType;
 			permissions = user.getPermissions();
 			List<User> temp = user.getGroups();
 			for(User u : temp)
 				groups.add(Integer.parseInt(u.userDO.id));
 		}catch(Exception ex){
-			
-		}		
-		
-	}	
-	
-	public int getUserid() {
-		return userid;
+			// All or nothing, if something went wrong, then clear it all
+			clear();
+			throw ex;
+		}
 	}
+	
+	public void clear() {
+		userID = 0;
+		loggedIn = false;
+		username = "";
+		accountID = 0;
+		permissions.clear();
+		groups.clear();
+	}
+	
+	public int getUserId() {
+		return userID;
+	}
+	public String getUserIdString() {
+		return Integer.toString(userID);
+	}
+	
 	public boolean isLoggedIn() {
 		return loggedIn;
 	}
@@ -43,29 +62,39 @@ public class Permissions{
 	public String getUsername() {
 		return username;
 	}
-	public int getAccountID() {
+	public int getAccountId() {
 		return accountID;
 	}
+	public String getAccountIdString() {
+		return Integer.toString(accountID);
+	}
+	public String getAccountType() {
+		return accountType;
+	}
 	
-	public boolean hasPermission(OpPerms opPerm, OpType oType){		
-		
-		boolean typeFlag = false;
-		for(Permission perm : permissions){
-			OpPerms permType = perm.getAccessType();			
-			if(oType == OpType.Grant)
-				 typeFlag =perm.isGrantFlag();
-			else if(oType == OpType.Edit)
-				typeFlag = perm.isEditFlag();			
-			else if(oType ==OpType.Delete)
-				typeFlag = perm.isDeleteFlag();
-			else 
-				typeFlag = perm.isViewFlag();		
-			
-			if(permType ==  opPerm && typeFlag)
-				return true;
+	/**
+	 * Does this user have 'oType' access to 'opPerm'
+	 * @param opPerm OSHA, ContractorDetails, UserAdmin, etc
+	 * @param oType View, Edit, Delete, or Grant
+	 * @return
+	 */
+	public boolean hasPermission(OpPerms opPerm, OpType oType) {
+		for(Permission perm : permissions) {
+			if (opPerm == perm.getAccessType()) {
+				if(oType == OpType.Edit)
+					return perm.isEditFlag();			
+				else if(oType ==OpType.Delete)
+					return perm.isDeleteFlag();
+				else if(oType == OpType.Grant)
+					return perm.isGrantFlag();
+				// Default to OpType.View
+				return perm.isViewFlag();
+			}
 		}
-		
 		return false;
+	}
+	public boolean hasPermission(OpPerms opPerm) {
+		return this.hasPermission(opPerm, OpType.View);
 	}
 	
 	public boolean hasGroup(Integer group){

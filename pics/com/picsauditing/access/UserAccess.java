@@ -4,16 +4,26 @@ import java.sql.ResultSet;
 import java.util.*;
 import com.picsauditing.PICS.Utilities;
 
+// DEPRECATED
+// This is largely a duplicate of what is not included in the Permissions class
 public class UserAccess extends com.picsauditing.PICS.DataBean{
 	public String userID = "0";
 	public String db = "userAccess";
 	Collection<OpPerms> accessSet = null;
 	Collection<OpPerms> oldAccessSet = null;
+	
+	private Permissions permissions;
 
 	public void setDB(String newDB){
 		this.db = newDB;
 	}//setDB
 	
+	/**
+	 * OBSOLETE
+	 * 
+	 * @param user_ID
+	 * @throws Exception
+	 */
 	public void setFromDB(String user_ID) throws Exception {
 		try{
 			this.userID = user_ID;
@@ -33,6 +43,12 @@ public class UserAccess extends com.picsauditing.PICS.DataBean{
 		}//finally
 	}//setFromDB
 
+	/**
+	 * OBSOLETE
+	 * 
+	 * @param request
+	 * @throws Exception
+	 */
 	public void setFromRequest(javax.servlet.http.HttpServletRequest request) throws Exception {
 		accessSet = new HashSet<OpPerms>();
 		for (OpPerms perm:OpPerms.values()){
@@ -41,6 +57,13 @@ public class UserAccess extends com.picsauditing.PICS.DataBean{
 		}//for
 	}//setFromRequest
 
+	/**
+	 * OBSOLETE
+	 * 
+	 * @param grantedByID
+	 * @param userID
+	 * @throws Exception
+	 */
 	public void writeNewToDB(String grantedByID,String userID) throws Exception{
 		try{
 			String insertQuery = "INSERT INTO "+db+" (userID,accessType,grantedByID) VALUES";
@@ -60,6 +83,12 @@ public class UserAccess extends com.picsauditing.PICS.DataBean{
 		}//finally
 	}//writeNewToDB
 
+	/**
+	 * OBSOLETE
+	 * 
+	 * @param grantedByID
+	 * @throws Exception
+	 */
 	public void writeToDB(String grantedByID) throws Exception{
 		try{
 			String deleteQuery = "DELETE FROM "+db+" WHERE userID="+userID+" AND accessType IN (";
@@ -90,12 +119,17 @@ public class UserAccess extends com.picsauditing.PICS.DataBean{
 			DBClose();
 		}//finally
 	}//writeToDB
+	
+	public void setPermissions(Permissions permissions) {
+		this.permissions = permissions;
+	}
 
 	public boolean hasAccess(OpPerms testAccess){
-		if (null == accessSet)
-			return false;
-		return (accessSet.contains(testAccess));
-	}//hasAccess	
+		return this.permissions.hasPermission(testAccess);
+		//if (null == accessSet)
+		//	return false;
+		//return (accessSet.contains(testAccess));
+	}//hasAccess
 
 	public String getChecked(OpPerms perm){
 		if (hasAccess(perm))

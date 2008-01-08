@@ -18,8 +18,9 @@ public enum OpPerms {
 	private String description;
 	public String getDescription(){
 		return description;
-	}//getDescription
+	}
 	OpPerms(String description){
+		// TJA do we need this??
 		this.description = description;
-	}//OperatorPermissions Constructor
-}//OperatorPermissions
+	}
+}

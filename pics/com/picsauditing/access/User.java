@@ -12,7 +12,7 @@ public class User extends DataBean {
 	
 	public UserDO userDO = new UserDO();
 	String oldUsername = "";
-	private Set<Permission> permissions = new HashSet<Permission>();
+	private Set<Permission> permissions;
 	private List<User> groups = new ArrayList<User>();
 	
 	
@@ -21,10 +21,11 @@ public class User extends DataBean {
 		selectFromDB(query);
 	}//setFromDB
 	
-	public void usernameExists(String u_name) throws Exception {
-		String query = "SELECT * FROM users WHERE username='"+Utilities.escapeQuotes(u_name)+"';";
-		selectFromDB(query);		
-	}//usernameExists
+	public boolean usernameExists(String u_name) throws Exception {
+		String query = "SELECT u.*, a.type FROM users u LEFT JOIN accounts a ON u.accountID = a.id WHERE u.username='"+Utilities.escapeQuotes(u_name)+"'";
+		selectFromDB(query);
+		return (userDO.id.length() > 0);
+	}
 	
 	public void selectFromDB(String selectQuery) throws Exception{		
 		ResultSet SQLResult = null;
@@ -138,57 +139,53 @@ public class User extends DataBean {
 	}//isOK
 
 	public Set<Permission> getPermissions() throws Exception{
-		if(permissions.size() > 0)
+		if(permissions != null)
 			return permissions;
 		
-		setPermissions();
-		return permissions;
-	}
-	
-	
-	public void setPermissions() throws Exception{
-		permissions.clear();
-				
+		// Our permissions are empty, so go get some
+		permissions = new HashSet<Permission>();
+		
 		try{
-			getGroups();
 			Set<Permission> tempPerms ;
+			getGroups(); // get all the groups this user (or group) is a part of
 			for(User group : groups){
 				tempPerms = group.getPermissions();	
 				for(Permission perm : tempPerms){
+					// add the parent group's permissions to the user's permissions
+					// if the user has two groups with the same perm type, 
+					// the last one will win
 					permissions.add(perm);
 				}
 			}
-			
 		}catch(Exception ex){
-			
+			// Eat the error...may not be good
 		}
 		
+		// READ the permissions assigned directly to this THIS user/group
 		ResultSet SQLResult = null;
-		String query = "select accessType, viewFlag, editFlag, deleteFlag, grantFlag from useraccess where userID=" + userDO.id;
+		String sql = "SELECT accessType, viewFlag, editFlag, deleteFlag, grantFlag " + 
+			"FROM useraccess where userID=" + userDO.id;
 		try{
 			DBReady();
-			SQLResult = SQLStatement.executeQuery(query);
+			SQLResult = SQLStatement.executeQuery(sql);
 			while(SQLResult.next()){
-				
 				Permission perm = new Permission();
 				perm.setFromResultSet(SQLResult);
-				
 				permissions.add(perm);
-				
 			}
 		}finally{
 			SQLResult.close();
 			DBClose();
 		}//finally
+		return permissions;
 	}
-
 	
 	public List<User> getGroups() throws Exception{
 		if(groups.size() > 0)
 			return groups;
 		
 		ResultSet SQLResult = null;
-		String query = "select * from users where id in (select groupID from usergroup where userID=" + userDO.id +")";
+		String query = "select u.*, null as type from users u where id in (select groupID from usergroup where userID=" + userDO.id +")";
 		try{
 			DBReady();
 			SQLResult = SQLStatement.executeQuery(query);
@@ -204,8 +201,6 @@ public class User extends DataBean {
 			SQLResult.close();
 			DBClose();
 		}//finally
-		
-		
 	}
 	
 	

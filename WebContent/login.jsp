@@ -1,26 +1,35 @@
 <%//@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
-<%@ page language="java" import="com.picsauditing.PICS.*, com.picsauditing.PICS.redFlagReport.*, java.sql.*"%>
+<%@ page language="java" import="com.picsauditing.PICS.*, com.picsauditing.access.*"%>
 <jsp:useBean id="loginCtrl" class="com.picsauditing.access.LoginController" scope="page"/>
-<jsp:useBean id="pBean" class="com.picsauditing.access.PermissionsBean" scope="session"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session"/>
+<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page"/>
 
 <%/* 12/16/04 jj - added triggered events by admin login once each day*/%>
 <%
+	// Stuff the session permissions object into the legacy pBean
+	pBean.setPermissions(permissions);
 
 	String lname = "";
 	String lpass = "";		
-	String msg= "";
+	String msg = "";
 	
 	if (request.getParameter("Submit.x") != null) {
+		// Attempt a login
 		lname = request.getParameter("username");
 		lpass = request.getParameter("password");
 		loginCtrl.login(lname, lpass, request);
-		pBean.permissions = loginCtrl.getPermissions(session);
-		if(pBean.permissions.isLoggedIn()){
-			pBean.userID = Integer.valueOf(pBean.permissions.getUserid()).toString();
+		if (loginCtrl.getErrors().size() > 0) {
+			for(String temp : loginCtrl.getErrors()) {
+				msg = msg + temp + " <br>";
+			}
+		}
+		if(permissions.isLoggedIn()) {
+			// We're logged in
 			
 			// Redirect users to the previous page they were on
+			// This doesn't work now
 			Cookie[] cookiesA = request.getCookies();
 			String fromURL = "";
 			for (int i=0;i<cookiesA.length;i++) {
@@ -44,13 +53,13 @@
 				return;
 			}//if
 			if (pBean.isContractor()){
-				aBean.id = Integer.valueOf(pBean.permissions.getAccountID()).toString();
+				aBean.id = permissions.getAccountIdString();
 				aBean.setFromDB();
-				pBean.setAllFacilitiesFromDB(pBean.userID);
+				pBean.setAllFacilitiesFromDB(permissions.getUserIdString());
 				pBean.uBean = new UserBean();
 				pBean.uBean.name = aBean.contact;					
 				if (aBean.isFirstLogin()){
-					cBean.setFromDB(Integer.valueOf(pBean.permissions.getAccountID()).toString());
+					cBean.setFromDB(permissions.getAccountIdString());
 					cBean.accountDate = DateBean.getTodaysDate();
 					cBean.writeToDB();
 					response.sendRedirect("con_selectFacilities.jsp?id="+aBean.id);
@@ -58,7 +67,7 @@
 				}
 				
 				if(aBean.isFirstLoginOfYear(this.getServletContext().getInitParameter("loginStartDate"))){
-					cBean.setFromDB(Integer.valueOf(pBean.permissions.getAccountID()).toString());
+					cBean.setFromDB(permissions.getAccountIdString());
 					cBean.accountDate = DateBean.getTodaysDate();
 					response.sendRedirect("con_selectFacilities.jsp?id="+aBean.id);
 					return;
@@ -83,13 +92,13 @@
 				if (!aBean.isMainAccount){
 					pBean.isMainAccount = false;
 					pBean.uBean = new UserBean();
-					pBean.uBean.setFromDB(aBean.userID);
-					pBean.setUserAccess(aBean.userID);
+					pBean.uBean.setFromDB(permissions.getUserIdString());
+					pBean.setUserAccess(permissions.getUserIdString());
 				}else{
 					pBean.uBean = new UserBean();
-					pBean.uBean.name = aBean.contact;					
+					pBean.uBean.name = aBean.contact;
 				}//else
-				if (pBean.userAccess.hasAccess(com.picsauditing.access.OpPerms.StatusOnly)){
+				if (permissions.hasPermission(OpPerms.StatusOnly, OpType.View)) {
 					response.sendRedirect("contractor_list_limited.jsp");
 					return;
 				}//if
@@ -98,11 +107,11 @@
 			}//if
 			if (pBean.isAuditor()){
 				pBean.setAuditorCanSeeSet(aBean.auditorCanSeeSet);
-				pBean.setAuditorPermissions(aBean.id);
+				pBean.setAuditorPermissions(permissions.getUserIdString());
 				session.setMaxInactiveInterval(3600);
 				response.sendRedirect("contractor_list_auditor.jsp");
 				return;
-			}//if 
+			}//if
 		} //if
 	}//if
 	String username_email = request.getParameter("uname");
@@ -114,6 +123,7 @@
 	if (null != temp && temp.length()>0)
 		msg = temp;
 %>
+<%@page import="com.picsauditing.access.OpType"%>
 <html>
 <head>
 <title>PICS - Pacific Industrial Contractor Screening</title>
@@ -165,7 +175,7 @@
 		  <table border="0" cellpadding="2" cellspacing="0">
             <tr>
               <td width="138" class="blueMain">&nbsp;</td>
-              <td class="redMain"><strong><%=aBean.getErrorMessages()%><%=msg%></strong></td>
+              <td class="redMain"><strong><%=msg%></strong></td>
             </tr>
             <tr>
               <td width="138" align="right"><img src="images/login_user.gif" alt="User Name" width="50" height="9">&nbsp;</td>

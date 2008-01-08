@@ -14,6 +14,7 @@ public class UserDO{
 	public String lastLogin = "";
 	public String accountID = "";
 	public String isGroup = "No";
+	public String accountType = "";
 	
 	public void setFromRequest(javax.servlet.http.HttpServletRequest request) throws Exception {
 		if (request.getParameter("name") != null) name = request.getParameter("name");
@@ -36,6 +37,7 @@ public class UserDO{
 		lastLogin = DateBean.toShowFormat(SQLResult.getString("lastLogin"));
 		accountID = SQLResult.getString("accountID");
 		isGroup = SQLResult.getString("isGroup");
+		accountType = SQLResult.getString("type");
 	}//setFromResultSet
 
 	public String toString(){

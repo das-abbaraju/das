@@ -34,11 +34,10 @@ public class PermissionsBean extends DataBean {
 	public static final int OP_EDIT = 8;
 	public static final int BASIC = 9;
 	
-	
+	// Temporary Groups for Users so we can be backwards compatible with USER_TYPES
 	private static final int GROUP_ADMIN = 10;
 	private static final int GROUP_AUDITOR = 11;
-	private static final int GROUP_CONTRACTOR = 12;
-
+	//private static final int GROUP_CONTRACTOR = 12;
 
 	public String userID = "";
 	public String userName = "";
@@ -56,7 +55,7 @@ public class PermissionsBean extends DataBean {
 	public ArrayList<String> allFacilitiesAL = null;
 
 	public com.picsauditing.access.UserAccess userAccess = null;
-	public Permissions permissions = null;
+	private Permissions permissions = null;
 	
 	
 
@@ -97,7 +96,8 @@ public class PermissionsBean extends DataBean {
 
 	public void setUserAccess(String userID) throws Exception{
 		userAccess = new com.picsauditing.access.UserAccess();
-		userAccess.setFromDB(userID);
+		//userAccess.setFromDB(userID);
+		userAccess.setPermissions(permissions);
 	}//setUserAccess
 
 	public String getCanSeeSetCount(){
@@ -106,7 +106,7 @@ public class PermissionsBean extends DataBean {
 	}//getCanSeeSetCount
 
 	public boolean checkAccess(int access, javax.servlet.http.HttpServletResponse response) throws Exception {
-		if (!permissions.isLoggedIn()) {
+		if (permissions == null || !permissions.isLoggedIn()) {
 			// TODO get the current URL
 			//Cookie fromCookie = new Cookie("from","contractor_list.jsp");
 			//fromCookie.setMaxAge(3600);
@@ -181,14 +181,23 @@ public class PermissionsBean extends DataBean {
 	public boolean isAdmin() {
 		if(permissions == null)
 			return false;
-		return permissions.hasGroup(GROUP_ADMIN);		
+		return permissions.hasGroup(GROUP_ADMIN);
 		//return ADMIN_TYPE.equals(userType);
 	}//isAdmin
-	public boolean isContractor() {
+	public boolean isAuditor() {
 		if(permissions == null)
 			return false;
-		return permissions.hasGroup(GROUP_CONTRACTOR);	
-		//return CONTRACTOR_TYPE.equals(userType);
+		return permissions.hasGroup(GROUP_AUDITOR);	
+		//return AUDITOR_TYPE.equals(userType);
+	}//isAuditor
+
+	public boolean isContractor() {
+		/*
+		if(permissions == null)
+			return false;
+		return permissions.hasGroup(GROUP_CONTRACTOR);
+		*/
+		return CONTRACTOR_TYPE.equals(userType);
 	}//isContractor
 	public boolean isOperator() {
 		return OPERATOR_TYPE.equals(userType);
@@ -196,12 +205,6 @@ public class PermissionsBean extends DataBean {
 	public boolean isCorporate() {
 		return CORPORATE_TYPE.equals(userType);
 	}//isCorporate
-	public boolean isAuditor() {
-		if(permissions == null)
-			return false;
-		return permissions.hasGroup(GROUP_AUDITOR);	
-		//return AUDITOR_TYPE.equals(userType);
-	}//isAuditor
 
 	public boolean canSeeAuditCategory(String catID, String conID) {
 		if (isAdmin())
@@ -297,4 +300,13 @@ public class PermissionsBean extends DataBean {
 		DBClose();
 	}//setOperatorPermissions
 */
+	public Permissions getPermissions() {
+		return permissions;
+	}
+	public void setPermissions(Permissions permissions) {
+		this.permissions = permissions;
+		this.userID = this.permissions.getUserIdString();
+		this.userType = this.permissions.getAccountType();
+	}
+	
 }//PermissionsBean

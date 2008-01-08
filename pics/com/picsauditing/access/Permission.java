@@ -2,7 +2,9 @@ package com.picsauditing.access;
 
 import java.sql.*;
 
-public class Permission{
+public class Permission {
+	// Warning: this class is stored in a Set<Permission> in session
+	// Make sure you keep the footprint very small
 	
 	private boolean viewFlag = false;
 	private boolean editFlag = false;
@@ -41,8 +43,7 @@ public class Permission{
 	public OpPerms getAccessType() {
 		return accessType;
 	}
-	
-	
+		
 	public boolean equals(Object obj){
 		if(this == obj)
 			return true;
@@ -57,8 +58,5 @@ public class Permission{
 
 	public int hashCode(){
 		return accessType.hashCode();
-	}
-	
-	
-	
+	}	
 }

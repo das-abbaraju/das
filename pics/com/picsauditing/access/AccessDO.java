@@ -2,6 +2,8 @@ package com.picsauditing.access;
 
 import java.sql.ResultSet;
 
+// This may be now duplicated in Permission.java
+
 public class AccessDO extends com.picsauditing.PICS.DataBean{
 	String userID = "";
 	String accessType = "";
