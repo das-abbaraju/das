@@ -10,6 +10,8 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.access.PermissionsBean;
+
 public class OSHABean extends DataBean {
 /*	History
 	12/15/04 jj - getFileNYearAgoIconLink()

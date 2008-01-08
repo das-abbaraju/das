@@ -12,22 +12,29 @@ public class User extends DataBean {
 	
 	public UserDO userDO = new UserDO();
 	String oldUsername = "";
+	private Set<Permission> permissions = new HashSet<Permission>();
+	private List<User> groups = new ArrayList<User>();
+	
+	
 	public void setFromDB(String uID) throws Exception {
-		userDO.id = uID;
-		setFromDB();
+		String query = "SELECT * FROM users WHERE id="+uID+";";
+		selectFromDB(query);
 	}//setFromDB
-
-	public void setFromDB() throws Exception {
-		String selectQuery = "SELECT * FROM users WHERE id="+userDO.id+";";
+	
+	public void usernameExists(String u_name) throws Exception {
+		String query = "SELECT * FROM users WHERE username='"+Utilities.escapeQuotes(u_name)+"';";
+		selectFromDB(query);		
+	}//usernameExists
+	
+	public void selectFromDB(String selectQuery) throws Exception{		
+		ResultSet SQLResult = null;
 		try{
 			DBReady();
-			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
+			SQLResult = SQLStatement.executeQuery(selectQuery);
 			if (SQLResult.next())
-				setFromResultSet(SQLResult);
-			else
-				throw new Exception("No user with id: "+userDO.id);
-			SQLResult.close();
+				setFromResultSet(SQLResult);			
 		}finally{
+			SQLResult.close();
 			DBClose();
 		}//finally
 	}//setFromDB
@@ -48,6 +55,17 @@ public class User extends DataBean {
 			"',email='"+Utilities.escapeQuotes(userDO.email)+
 			"',isActive='"+userDO.isActive+
 			"' WHERE id="+userDO.id+";";
+		try{
+			DBReady();
+			SQLStatement.executeUpdate(updateQuery);
+		}finally{
+			DBClose();
+		}//finally
+	}//writeToDB
+	
+	public void updateLastLogin() throws Exception {
+		
+		String updateQuery = "UPDATE users SET lastLogin=NOW() WHERE id="+userDO.id+" LIMIT 1;";		
 		try{
 			DBReady();
 			SQLStatement.executeUpdate(updateQuery);
@@ -100,26 +118,6 @@ public class User extends DataBean {
 		}//finally
 	}//deleteUser
 
-	public boolean usernameExists(String u_name) throws Exception {
-		boolean temp = false;
-		String selectQuery = "SELECT id FROM accounts WHERE username='"+Utilities.escapeQuotes(u_name)+"';";
-		try {
-			DBReady();
-			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			if (SQLResult.next())
-				temp = true;
-			SQLResult.close();
-			selectQuery = "SELECT id FROM users WHERE username='"+Utilities.escapeQuotes(u_name)+"';";
-			SQLResult = SQLStatement.executeQuery(selectQuery);
-			if (SQLResult.next())
-				temp = true;
-			SQLResult.close();
-		}finally{
-			DBClose();
-		}//finally
-		return temp;
-	}//usernameExists
-
 	public boolean isOK() throws Exception {
 		errorMessages = new Vector<String>();
 		if (userDO.username.length() < 5)
@@ -128,7 +126,7 @@ public class User extends DataBean {
 			errorMessages.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH + " characters in length.");
 		if (userDO.password.equalsIgnoreCase(userDO.username))
 			errorMessages.addElement("Please choose a password different from your username.");
-		if (!userDO.username.equals(oldUsername) && usernameExists(userDO.username))
+		if (!userDO.username.equals(oldUsername))
 			errorMessages.addElement("That username already exists.<br>Please choose a different one.");
 		
 		if (userDO.email.length() == 0 || !Utilities.isValidEmail(userDO.email))
@@ -138,4 +136,79 @@ public class User extends DataBean {
 			errorMessages.addElement("Please select whether this user is active or not");
 		return (errorMessages.size() == 0);
 	}//isOK
+
+	public Set<Permission> getPermissions() throws Exception{
+		if(permissions.size() > 0)
+			return permissions;
+		
+		setPermissions();
+		return permissions;
+	}
+	
+	
+	public void setPermissions() throws Exception{
+		permissions.clear();
+				
+		try{
+			getGroups();
+			Set<Permission> tempPerms ;
+			for(User group : groups){
+				tempPerms = group.getPermissions();	
+				for(Permission perm : tempPerms){
+					permissions.add(perm);
+				}
+			}
+			
+		}catch(Exception ex){
+			
+		}
+		
+		ResultSet SQLResult = null;
+		String query = "select accessType, viewFlag, editFlag, deleteFlag, grantFlag from useraccess where userID=" + userDO.id;
+		try{
+			DBReady();
+			SQLResult = SQLStatement.executeQuery(query);
+			while(SQLResult.next()){
+				
+				Permission perm = new Permission();
+				perm.setFromResultSet(SQLResult);
+				
+				permissions.add(perm);
+				
+			}
+		}finally{
+			SQLResult.close();
+			DBClose();
+		}//finally
+	}
+
+	
+	public List<User> getGroups() throws Exception{
+		if(groups.size() > 0)
+			return groups;
+		
+		ResultSet SQLResult = null;
+		String query = "select * from users where id in (select groupID from usergroup where userID=" + userDO.id +")";
+		try{
+			DBReady();
+			SQLResult = SQLStatement.executeQuery(query);
+			while(SQLResult.next()){
+				User group = new User();
+				group.userDO.setFromResultSet(SQLResult);
+				groups.add(group);
+			}
+			
+			return groups;
+			
+		}finally{
+			SQLResult.close();
+			DBClose();
+		}//finally
+		
+		
+	}
+	
+	
+	
+	
 }//UserBean

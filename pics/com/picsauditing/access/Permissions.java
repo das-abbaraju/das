@@ -1,26 +1,35 @@
 package com.picsauditing.access;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
-public class Permissions {
-	public enum PERMISSION {ADMINISTRATOR, AUDITOR, CONTRACTOR};
+public class Permissions{
 	
 	private int userid;
 	private boolean loggedIn = false;
 	private List<Integer> groups = new ArrayList();
-	private List<Integer> active_permissions = new ArrayList();
+	private Set<Permission> permissions = new HashSet<Permission>();	
 	private String username;
 	private int accountID;
 	
-	public Permissions(UserDO userDO){
-		userid = Integer.parseInt(userDO.id);
+	public Permissions(User user){
+		userid = Integer.parseInt(user.userDO.id);
 		loggedIn = true;
-		username = userDO.username;
-		accountID = Integer.parseInt(userDO.accountID);		
+		username = user.userDO.username;
+		accountID = Integer.parseInt(user.userDO.accountID);		
+		try{
+			permissions = user.getPermissions();
+			List<User> temp = user.getGroups();
+			for(User u : temp)
+				groups.add(Integer.parseInt(u.userDO.id));
+		}catch(Exception ex){
+			
+		}		
 		
-	}
+	}	
 	
 	public int getUserid() {
 		return userid;
@@ -38,12 +47,34 @@ public class Permissions {
 		return accountID;
 	}
 	
-	public boolean hasPermission(Integer permission){
-		for(Integer i : active_permissions)
-			if(i == permission)
+	public boolean hasPermission(OpPerms opPerm, OpType oType){		
+		
+		boolean typeFlag = false;
+		for(Permission perm : permissions){
+			OpPerms permType = perm.getAccessType();			
+			if(oType == OpType.Grant)
+				 typeFlag =perm.isGrantFlag();
+			else if(oType == OpType.Edit)
+				typeFlag = perm.isEditFlag();			
+			else if(oType ==OpType.Delete)
+				typeFlag = perm.isDeleteFlag();
+			else 
+				typeFlag = perm.isViewFlag();		
+			
+			if(permType ==  opPerm && typeFlag)
+				return true;
+		}
+		
+		return false;
+	}
+	
+	public boolean hasGroup(Integer group){
+		for(Integer i : groups)
+			if(i == group)
 				return true;
 		
 		return false;
 	}
+	
 	
 }

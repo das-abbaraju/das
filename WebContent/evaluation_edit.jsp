@@ -1,7 +1,7 @@
 <%@ page language="java" import="com.picsauditing.PICS.*"%>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope ="session"/>
+<jsp:useBean id="pBean" class="com.picsauditing.access.PermissionsBean" scope ="session"/>
 <%@ include file="includes/evaluation_data.jsp" %>
 <html>
 <head>

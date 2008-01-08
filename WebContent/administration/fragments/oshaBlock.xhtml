@@ -49,7 +49,7 @@
 			<a4j:commandButton styleClass="forms" value="Submit" action="#{contractorBean.refresh}" reRender="details,contractorTable">
 				<f:attribute name="oshaDao" value="#{oshaBean.dao}" />
 				<f:attribute name="emrDao" value="#{emrBean.dao}" />
-				<f:attribute name="oBean"  value="#{oshaBean};
+				<f:attribute name="oBean"  value="#{oshaBean}" />
 				<f:actionListener type="com.picsauditing.beans.OshaLogActionListener" />
 				<f:actionListener type="com.picsauditing.beans.EMRLogActionListener" />				
 			</a4j:commandButton>

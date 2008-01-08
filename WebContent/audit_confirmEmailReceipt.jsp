@@ -1,6 +1,6 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%//@ page language="java"%>
-<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope ="session"/>
+<jsp:useBean id="pBean" class="com.picsauditing.access.PermissionsBean" scope ="session"/>
 <%
 	String con_id = request.getParameter("id");
 	boolean isToAuditor = "true".equals(request.getParameter("isaud"));

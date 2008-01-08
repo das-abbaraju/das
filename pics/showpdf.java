@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.picsauditing.PICS.PermissionsBean;
+import com.picsauditing.access.PermissionsBean;
 
 public class showpdf extends HttpServlet {
 	/**
@@ -46,9 +46,9 @@ public class showpdf extends HttpServlet {
 	*/
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(true);
-		com.picsauditing.PICS.PermissionsBean pBean = (com.picsauditing.PICS.PermissionsBean)session.getAttribute("pBean");
+		com.picsauditing.access.PermissionsBean pBean = (com.picsauditing.access.PermissionsBean)session.getAttribute("pBean");
 		if (pBean == null) {
-		  pBean = new com.picsauditing.PICS.PermissionsBean();
+		  pBean = new com.picsauditing.access.PermissionsBean();
 		  session.setAttribute("pBean", pBean);
 		}//if
 		try{

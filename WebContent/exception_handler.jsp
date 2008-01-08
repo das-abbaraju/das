@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <%@ page isErrorPage="true" language="java"
 	import="com.picsauditing.PICS.*, java.util.*, java.io.*"%>
-<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean"
+<jsp:useBean id="pBean" class="com.picsauditing.access.PermissionsBean"
 	scope="session" />
 <html>
 <head>

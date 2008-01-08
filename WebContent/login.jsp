@@ -1,47 +1,24 @@
 <%//@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@ page language="java" import="com.picsauditing.PICS.*, com.picsauditing.PICS.redFlagReport.*, java.sql.*"%>
+<jsp:useBean id="loginCtrl" class="com.picsauditing.access.LoginController" scope="page"/>
+<jsp:useBean id="pBean" class="com.picsauditing.access.PermissionsBean" scope="session"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page"/>
-<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session"/>
-<jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope="application"/>
+
 <%/* 12/16/04 jj - added triggered events by admin login once each day*/%>
 <%
-int i1 = 25000;
-int i2 = 25000;
-int i3 = 25000;
 
-	int whichPage = 2;
 	String lname = "";
-	String lpass = "";
-	try{
-		aBean.setFromDB(request.getParameter("id"));
-		lname = aBean.getUsername();
-		lpass = aBean.getPassword();		
-	} catch(Exception e) {
-	
-	}
-	
+	String lpass = "";		
 	String msg= "";
+	
 	if (request.getParameter("Submit.x") != null) {
 		lname = request.getParameter("username");
 		lpass = request.getParameter("password");
-		if (aBean.checkLogin(lname, lpass, request)) {
-			
-			pBean.loggedIn = true;
-			pBean.setUserID(aBean.id);
-			pBean.setUserName(aBean.name);
-			pBean.setUserType(aBean.type);
-			pBean.setCanSeeSet(aBean.canSeeSet);
-
-			if (pBean.isAdmin())
-				session.setAttribute("usertype", "admin");
-			else
-				session.setAttribute("usertype",aBean.type);
-			session.setAttribute("userid", aBean.id);
-			session.setAttribute("username", aBean.name);
-			session.setAttribute("canSeeSet", aBean.canSeeSet);
-			session.setAttribute("auditorCanSeeSet", aBean.auditorCanSeeSet);
-			session.setAttribute("hasCertSet", aBean.hasCertSet);
+		loginCtrl.login(lname, lpass, request);
+		pBean.permissions = loginCtrl.getPermissions(session);
+		if(pBean.permissions.isLoggedIn()){
+			pBean.userID = Integer.valueOf(pBean.permissions.getUserid()).toString();
 			
 			// Redirect users to the previous page they were on
 			Cookie[] cookiesA = request.getCookies();
@@ -67,32 +44,35 @@ int i3 = 25000;
 				return;
 			}//if
 			if (pBean.isContractor()){
-				
+				aBean.id = Integer.valueOf(pBean.permissions.getAccountID()).toString();
+				aBean.setFromDB();
 				pBean.setAllFacilitiesFromDB(pBean.userID);
 				pBean.uBean = new UserBean();
 				pBean.uBean.name = aBean.contact;					
-			}//if
-			if (aBean.isFirstLogin()){
-				cBean.setFromDB(pBean.userID);
-				cBean.accountDate = DateBean.getTodaysDate();
-				cBean.writeToDB();
-				response.sendRedirect("con_selectFacilities.jsp?id="+aBean.id);
-				return;
-			}
-			if(aBean.isFirstLoginOfYear(this.getServletContext().getInitParameter("loginStartDate"))){
-				cBean.setFromDB(pBean.userID);
-				cBean.accountDate = DateBean.getTodaysDate();
-				response.sendRedirect("con_selectFacilities.jsp?id="+aBean.id);
-				return;
-			}
-			if (aBean.mustSubmitPQF()) {
-				response.sendRedirect("pqf_editMain.jsp?auditType=PQF&mustFinishPrequal=&id="+aBean.id);
-				return;
-			}//if
-			if (pBean.isContractor()) {
+				if (aBean.isFirstLogin()){
+					cBean.setFromDB(Integer.valueOf(pBean.permissions.getAccountID()).toString());
+					cBean.accountDate = DateBean.getTodaysDate();
+					cBean.writeToDB();
+					response.sendRedirect("con_selectFacilities.jsp?id="+aBean.id);
+					return;
+				}
+				
+				if(aBean.isFirstLoginOfYear(this.getServletContext().getInitParameter("loginStartDate"))){
+					cBean.setFromDB(Integer.valueOf(pBean.permissions.getAccountID()).toString());
+					cBean.accountDate = DateBean.getTodaysDate();
+					response.sendRedirect("con_selectFacilities.jsp?id="+aBean.id);
+					return;
+				}
+				
+				if (aBean.mustSubmitPQF()) {
+					response.sendRedirect("pqf_editMain.jsp?auditType=PQF&mustFinishPrequal=&id="+aBean.id);
+					return;
+				}//if
+				
 				response.sendRedirect("contractor_detail.jsp?id=" + aBean.id);
 				return;
 			}//if
+			
 			if (pBean.isOperator() || pBean.isCorporate()){
 //				pBean.setOperatorPermissions(aBean.id);
 				pBean.oBean = new OperatorBean();

@@ -15,15 +15,6 @@ public enum OpPerms {
 	EditUsers("Add/Edit User Accounts"),
 	StatusOnly("Can Only View Statuses");
 
-/*	CREATE TABLE `userAccess` (
-			  `userID` mediumint(9) NOT NULL,
-			  `accessType` mediumint(9) NOT NULL,
-			  `grantedByID` mediumint(9) NOT NULL,
-			  `lastUpdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-			  PRIMARY KEY  (`userID`,`accessType`)
-			) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-*///	'ViewFullPQF','EditForms','SearchContractors','AddContractors','RemoveContractors','InsuranceCerts','OfficeAuditCalendar','EditFlagCriteria','EditForcedFlags','EditNotes'
-
 	private String description;
 	public String getDescription(){
 		return description;

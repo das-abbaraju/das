@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FilenameUtils;
 
+import com.picsauditing.access.PermissionsBean;
+
 public class ContractorBean extends DataBean {
 /*	History
 	5/23/05 jj - moved requestedByID from aBean to cBean, automatically added sub of on new contractor creation

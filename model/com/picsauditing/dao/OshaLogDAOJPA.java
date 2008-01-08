@@ -2,7 +2,7 @@ package com.picsauditing.dao;
 
 import java.util.Map;
 
-import org.apache.commons.beanutils.BeanUtils;
+import com.sun.org.apache.commons.beanutils.BeanUtils;
 
 import com.picsauditing.jpa.entities.*;
 
