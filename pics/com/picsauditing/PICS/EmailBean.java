@@ -430,7 +430,7 @@ public class EmailBean extends DataBean{
 	}//writeTestEmail
 
 	public void sendWelcomeEmail(AccountBean aBean, String adminName) throws Exception {
-//String username, String pass, String companyName, String email
+		//String username, String pass, String companyName, String email
 		if (null == rootPath)
 			throw new Exception("Email Bean not initialized with path");
 		setFromDB();
@@ -449,11 +449,11 @@ public class EmailBean extends DataBean{
 			"Please click on this link to confirm your receipt of this email:"+endl+
 //			"<a href=\"http://www.picsauditing.com/login.jsp?uname="+aBean.username+
 //			//////////////////////////////////////////////////////////////////////////////////////////////////////"\">http://www.picsauditing.com/login.jsp?uname="+aBean.username+"</a>"+endl+endl+
-			"http://www.picsauditing.com/login.jsp?uname="+aBean.username+endl+endl+
+			"http://www.picsauditing.com/login.jsp?uname="+cBean.getUsername()+endl+endl+
 			"Because we send important account info to this email, your account will not be activated until "+
 			"you have confirmed receipt of this email.  If the link does not work, please cut and paste the url into your "+
-			"web browser.  After that, you will be able to log into your account at www.picsauditing.com. Your username is \"" + aBean.username + 
-			"\" and your password is \"" + aBean.password + "\"." + endl + endl +
+			"web browser.  After that, you will be able to log into your account at www.picsauditing.com. Your username is \"" + cBean.getUsername() + 
+			"\" and your password is \"" + cBean.getPassword() + "\"." + endl + endl +
 			welcomeEmailBody + endl + endl + EMAIL_FOOTER;
 
 		if ("Yes".equals(attachWelcomeEmailFile)) {

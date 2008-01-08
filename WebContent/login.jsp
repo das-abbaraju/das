@@ -87,7 +87,8 @@
 //				pBean.setOperatorPermissions(aBean.id);
 				pBean.oBean = new OperatorBean();
 				pBean.oBean.isCorporate = pBean.isCorporate();
-				pBean.oBean.setFromDB(pBean.userID);
+				pBean.oBean.setFromDB(pBean.getPermissions().getAccountIdString());
+				
 				if (pBean.isCorporate())
 					pBean.setCanSeeSet(pBean.oBean.getFacilitiesCanSeeSet());
 				if (!aBean.isMainAccount){
@@ -99,7 +100,7 @@
 					pBean.uBean = new UserBean();
 					pBean.uBean.name = aBean.contact;
 				}//else
-				if (permissions.hasPermission(OpPerms.StatusOnly, OpType.View)) {
+				if (permissions.hasPermission(OpPerms.StatusOnly)) {
 					response.sendRedirect("contractor_list_limited.jsp");
 					return;
 				}//if

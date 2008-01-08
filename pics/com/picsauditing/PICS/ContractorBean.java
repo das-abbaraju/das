@@ -8,10 +8,9 @@ import java.util.Enumeration;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Vector;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.io.FilenameUtils;
+import com.picsauditing.access.User;
 
 
 public class ContractorBean extends DataBean {
@@ -152,6 +151,8 @@ public class ContractorBean extends DataBean {
 	public String billingEmail = "";
 	public String payingFacilities = "";
 	public String newBillingAmount = "";
+	
+	private User primaryUser = new User();
 
 	public ArrayList<String> generalContractors = new ArrayList<String>();
 	ArrayList<String> newGeneralContractors = null;
@@ -1169,6 +1170,32 @@ public class ContractorBean extends DataBean {
 		return (errorMessages.size() == 0);
 	}//isOKClientCreate
 
+	public String getUsername() throws Exception {
+		if (primaryUser.userDO.id.length() == 0) setPrimaryUser();
+		return primaryUser.userDO.username;
+	}
+	
+	public String getPassword() throws Exception {
+		if (primaryUser.userDO.id.length() == 0) setPrimaryUser();
+		return primaryUser.userDO.password;
+	}
+	
+	private void setPrimaryUser() throws Exception {
+		SQLBuilder sql = new SQLBuilder();
+		sql.setFromTable("users");
+		sql.addWhere("accountID = '"+this.id+"'");
+		try {
+			DBReady();
+			ResultSet SQLResult = SQLStatement.executeQuery(sql.toString());
+			if (SQLResult.next()) {
+				primaryUser.setFromResultSet(SQLResult);
+			}
+			SQLResult.close();
+		} finally {
+			DBClose();
+		}//finally
+	}
+	
 	public boolean taxIDExists(String tID) throws Exception {
 		String selectQuery = "SELECT id FROM contractor_info WHERE taxID='"+tID+"';";
 		try {

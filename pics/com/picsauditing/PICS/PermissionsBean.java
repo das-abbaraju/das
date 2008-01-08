@@ -39,7 +39,7 @@ public class PermissionsBean extends DataBean {
 	private static final int GROUP_AUDITOR = 11;
 	//private static final int GROUP_CONTRACTOR = 12;
 
-	public String userID = "";
+	public String userID = ""; // user's accountID
 	public String userName = "";
 	public String userType = "";
 	public boolean seesAll = false;
@@ -305,7 +305,7 @@ public class PermissionsBean extends DataBean {
 	}
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
-		this.userID = this.permissions.getUserIdString();
+		this.userID = this.permissions.getAccountIdString();
 		this.userType = this.permissions.getAccountType();
 	}
 	
