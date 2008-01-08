@@ -56,7 +56,7 @@ public class Permission {
 		
 	}
 
-	public int hashCode(){
-		return accessType.hashCode();
-	}	
+	public int hashCode() {
+		return 984 + accessType.hashCode();
+	}
 }

@@ -12,7 +12,7 @@
 	pBean.setPermissions(permissions);
 
 	String lname = "";
-	String lpass = "";		
+	String lpass = "";
 	String msg = "";
 	
 	if (request.getParameter("Submit.x") != null) {
@@ -26,6 +26,7 @@
 			}
 		}
 		if(permissions.isLoggedIn()) {
+			pBean.setPermissions(permissions);
 			// We're logged in
 			
 			// Redirect users to the previous page they were on
