@@ -3,7 +3,7 @@ package com.picsauditing.access;
 import java.sql.*;
 import com.picsauditing.PICS.*;
 
-public class UserDO{
+public class UserDO {
 	public String id = "";
 	public String name = "";
 	public String email = "";
@@ -40,10 +40,9 @@ public class UserDO{
 		
 		try{
 			accountType = SQLResult.getString("type");
-		}catch (Exception e){
+		} catch (SQLException e) {
 			
 		}
-		
 	}//setFromResultSet
 
 	public String toString(){
