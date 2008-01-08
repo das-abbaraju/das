@@ -15,6 +15,17 @@
 	String lpass = "";
 	String msg = "";
 	
+	pBean.getPermissions().clear();
+	
+	try{
+		User user = new User();
+		user.setFromAccountID(request.getParameter("id"));
+		lname = user.userDO.username;
+		lpass = user.userDO.password;		
+	} catch(Exception e) {
+		
+	}
+	
 	if (request.getParameter("Submit.x") != null) {
 		// Attempt a login
 		lname = request.getParameter("username");
@@ -124,6 +135,8 @@
 	String temp = request.getParameter("msg");
 	if (null != temp && temp.length()>0)
 		msg = temp;
+	
+	
 %>
 <%@page import="com.picsauditing.access.OpType"%>
 <html>

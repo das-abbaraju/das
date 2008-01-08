@@ -21,6 +21,11 @@ public class User extends DataBean {
 		selectFromDB(query);
 	}//setFromDB
 	
+	public void setFromAccountID(String accountID) throws Exception {
+		String query = "SELECT * FROM users WHERE id="+accountID+";";
+		selectFromDB(query);
+	}//setFromDB
+	
 	public boolean usernameExists(String u_name) throws Exception {
 		String query = "SELECT u.*, a.type FROM users u LEFT JOIN accounts a ON u.accountID = a.id WHERE u.username='"+Utilities.escapeQuotes(u_name)+"'";
 		selectFromDB(query);

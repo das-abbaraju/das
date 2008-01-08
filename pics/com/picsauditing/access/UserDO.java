@@ -37,7 +37,13 @@ public class UserDO{
 		lastLogin = DateBean.toShowFormat(SQLResult.getString("lastLogin"));
 		accountID = SQLResult.getString("accountID");
 		isGroup = SQLResult.getString("isGroup");
-		accountType = SQLResult.getString("type");
+		
+		try{
+			accountType = SQLResult.getString("type");
+		}catch (Exception e){
+			
+		}
+		
 	}//setFromResultSet
 
 	public String toString(){
