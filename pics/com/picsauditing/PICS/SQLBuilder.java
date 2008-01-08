@@ -48,7 +48,10 @@ public class SQLBuilder {
 		if (this.SQL_CALC_FOUND_ROWS) {
 			sql.append("SQL_CALC_FOUND_ROWS ");
 		}
-		sql.append(combineArray(fields));
+		if (fields.size() > 0)
+			sql.append(combineArray(fields));
+		else 
+			sql.append("*");
 		sql.append(" FROM ");
 		sql.append(fromTable);
 		for(String joinSQL: this.joinClause) {

@@ -29,7 +29,9 @@ public class User extends DataBean {
 	public boolean usernameExists(String u_name) throws Exception {
 		String query = "SELECT u.*, a.type FROM users u LEFT JOIN accounts a ON u.accountID = a.id WHERE u.username='"+Utilities.escapeQuotes(u_name)+"'";
 		selectFromDB(query);
-		return (userDO.id.length() > 0);
+		if (userDO.id.length() > 0) this.isSet = true;
+		
+		return this.isSet;
 	}
 	
 	private void selectFromDB(String selectQuery) throws Exception{		
@@ -42,17 +44,19 @@ public class User extends DataBean {
 		}finally{
 			SQLResult.close();
 			DBClose();
-		}//finally
-	}//setFromDB
+		}
+	}
 
 	public void setFromRequest(HttpServletRequest request) throws Exception {
 		oldUsername = userDO.username;
 		userDO.setFromRequest(request);
-	}//setFromRequest
+		this.isSet = true;
+	}
 
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
 		userDO.setFromResultSet(SQLResult);
-	}//setFromResultSet
+		this.isSet = true;
+	}
 
 	public void writeToDB() throws Exception {
 		String updateQuery = "UPDATE users SET name='"+Utilities.escapeQuotes(userDO.name)+

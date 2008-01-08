@@ -1180,6 +1180,11 @@ public class ContractorBean extends DataBean {
 		return primaryUser.userDO.password;
 	}
 	
+	public String getLastLogin() throws Exception {
+		if (primaryUser.userDO.id.length() == 0) setPrimaryUser();
+		return primaryUser.userDO.lastLogin;
+	}
+	
 	private void setPrimaryUser() throws Exception {
 		SQLBuilder sql = new SQLBuilder();
 		sql.setFromTable("users");
@@ -1193,7 +1198,7 @@ public class ContractorBean extends DataBean {
 			SQLResult.close();
 		} finally {
 			DBClose();
-		}//finally
+		}
 	}
 	
 	public boolean taxIDExists(String tID) throws Exception {

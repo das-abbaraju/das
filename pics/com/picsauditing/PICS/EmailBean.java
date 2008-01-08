@@ -447,8 +447,6 @@ public class EmailBean extends DataBean{
 		String message = welcomeEmailGreeting + aBean.name +
 			"." + endl +endl + 
 			"Please click on this link to confirm your receipt of this email:"+endl+
-//			"<a href=\"http://www.picsauditing.com/login.jsp?uname="+aBean.username+
-//			//////////////////////////////////////////////////////////////////////////////////////////////////////"\">http://www.picsauditing.com/login.jsp?uname="+aBean.username+"</a>"+endl+endl+
 			"http://www.picsauditing.com/login.jsp?uname="+cBean.getUsername()+endl+endl+
 			"Because we send important account info to this email, your account will not be activated until "+
 			"you have confirmed receipt of this email.  If the link does not work, please cut and paste the url into your "+
