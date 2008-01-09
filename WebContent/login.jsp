@@ -6,7 +6,14 @@
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page"/>
 
-<%/* 12/16/04 jj - added triggered events by admin login once each day*/%>
+<%
+String url = request.getRequestURL().toString();
+if (url.startsWith("http://pics")) {
+	url = url.replaceFirst("http://pics", "http://www.pics");
+	response.sendRedirect(url);
+	return;
+}
+%>
 <%
 	// Stuff the session permissions object into the legacy pBean
 	pBean.setPermissions(permissions);
@@ -136,6 +143,13 @@
 	if (null != temp && temp.length()>0)
 		msg = temp;
 	
+	String url = request.getRequestURL().toString();
+	if (url.startsWith("http://pics")) {
+		url = url.replaceFirst("http://pics", "http://www.pics");
+		response.sendRedirect(url);
+		return;
+	}
+
 	
 %>
 <%@page import="com.picsauditing.access.OpType"%>

@@ -1,6 +1,13 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%int whichPage = 0;%>
-
+<%
+String url = request.getRequestURL().toString();
+if (url.startsWith("http://pics")) {
+	url = url.replaceFirst("http://pics", "http://www.pics");
+	response.sendRedirect(url);
+	return;
+}
+%>
 <html>
 <head>
   <title>PICS - Pacific Industrial Contractor Screening</title>
