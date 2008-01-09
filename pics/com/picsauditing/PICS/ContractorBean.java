@@ -1138,6 +1138,13 @@ public class ContractorBean extends DataBean {
 		billingEmail = m.get("billingEmail");
 		billingPhone = m.get("billingPhone");
 		setDescription(m.get("description"));
+		
+		if (!primaryUser.isSet)
+			primaryUser.setFromAccountID(this.id);
+		
+		primaryUser.userDO.password = m.get("password");
+		
+		
 	}//setFromUploadRequestClientEdit
 
 	public boolean isOK() {
@@ -1170,6 +1177,9 @@ public class ContractorBean extends DataBean {
 		return (errorMessages.size() == 0);
 	}//isOKClientCreate
 
+	public User getPrimaryUser() {
+		return this.primaryUser;
+	}
 	public String getUsername() throws Exception {
 		if (primaryUser.userDO.id.length() == 0) primaryUser.setFromAccountID(this.id);
 		return primaryUser.userDO.username;

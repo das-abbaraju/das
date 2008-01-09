@@ -1,6 +1,8 @@
 package com.picsauditing.access;
 
 import java.sql.*;
+import java.util.Map;
+
 import com.picsauditing.PICS.*;
 
 public class UserDO {
@@ -25,6 +27,7 @@ public class UserDO {
 		}
 		if (request.getParameter("isActive") != null) isActive = request.getParameter("isActive");
 	}//setFromRequest
+		
 
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
 		id = SQLResult.getString("id");

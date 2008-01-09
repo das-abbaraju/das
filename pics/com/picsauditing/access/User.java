@@ -57,12 +57,13 @@ public class User extends DataBean {
 		userDO.setFromRequest(request);
 		this.isSet = true;
 	}
-
+		
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
 		userDO.setFromResultSet(SQLResult);
 		this.isSet = true;
 	}
-
+	
+	
 	public void writeToDB() throws Exception {
 		String updateQuery = "UPDATE users SET name='"+Utilities.escapeQuotes(userDO.name)+
 			"',username='"+Utilities.escapeQuotes(userDO.username)+
@@ -177,8 +178,8 @@ public class User extends DataBean {
 			errorMessages.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH + " characters in length.");
 		if (userDO.password.equalsIgnoreCase(userDO.username))
 			errorMessages.addElement("Please choose a password different from your username.");
-		if (!userDO.username.equals(oldUsername))
-			errorMessages.addElement("That username already exists.<br>Please choose a different one.");
+		//if (!userDO.username.equals(oldUsername))
+		//	errorMessages.addElement("That username already exists.<br>Please choose a different one.");
 		
 		if (userDO.email.length() == 0 || !Utilities.isValidEmail(userDO.email))
 			errorMessages.addElement("Please enter a valid email address.");

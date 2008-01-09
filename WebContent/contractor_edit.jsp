@@ -12,8 +12,8 @@
 	//user.setFromDB(pBean.userID);
 	aBean.setFromDB(id);
 	cBean.setFromDB(id);
-	User user = new User();
-	user.setFromAccountID(id);
+	//User user = new User();
+	//user.setFromAccountID(id);
 	if (isSubmitted){
 //		Process form upload		
 		request.setAttribute("uploader", String.valueOf(com.picsauditing.servlet.upload.UploadProcessorFactory.CONTRACTOR));
@@ -22,13 +22,12 @@
 		
 		aBean.setFromUploadRequestClientEdit(request);
 		cBean.setFromUploadRequestClientEdit(request);
-		user.setFromRequest(request);
-		
-		if (aBean.isOK() && cBean.isOK() && user.isOK()) {
+				
+		if (aBean.isOK() && cBean.isOK() && cBean.getPrimaryUser().isOK()) {
 			aBean.writeToDB();
 			cBean.setUploadedFiles(request);
 			cBean.writeToDB();
-			user.writeToDB();
+			cBean.getPrimaryUser().writeToDB();
 			
 			response.sendRedirect("contractor_detail.jsp?id="+id);
 			return;
