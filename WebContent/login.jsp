@@ -143,14 +143,6 @@ if (url.startsWith("http://pics")) {
 	if (null != temp && temp.length()>0)
 		msg = temp;
 	
-	String url = request.getRequestURL().toString();
-	if (url.startsWith("http://pics")) {
-		url = url.replaceFirst("http://pics", "http://www.pics");
-		response.sendRedirect(url);
-		return;
-	}
-
-	
 %>
 <%@page import="com.picsauditing.access.OpType"%>
 <html>
