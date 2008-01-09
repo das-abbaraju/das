@@ -52,6 +52,8 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 	ResultSet listRS = null;
 	int numResults = 0;
 	int count = 0;
+	
+	String extArr = "pdf,doc,jpg,txt,xls";
 
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
 		conID = SQLResult.getString("conID");
@@ -642,7 +644,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 		HttpServletResponse response = (HttpServletResponse)pageContext.getResponse();		
 		UploadConHelper helper = new UploadConHelper();
 		request.setAttribute("uploader",String.valueOf(UploadProcessorFactory.PQF));
-		request.setAttribute("exts","pdf,doc,jpg,txt,xls");
+		request.setAttribute("exts",extArr);
 		request.setAttribute("directory", "files");
 		helper.init(request, response);
 	    Map<String,String> params = (Map<String,String>)request.getAttribute("uploadfields");
@@ -671,7 +673,10 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 				if (fileName != null) 
 			        fileName = FilenameUtils.getName(fileName);		        
 			   
-			
+				String ext = FilenameUtils.getExtension(fileName);
+				if(!checkExtension(ext, extArr ))
+					continue;
+				
 				String qID = key.substring(7);
 				String errorMsg = (String)request.getAttribute("error_" + qID);
 				boolean isRequired = "Yes".equals(params.get("isRequired_" + qID))
@@ -688,8 +693,8 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 				}else if(errorMsg != null && !errorMsg.equals("")){
 					errorMessages.addElement(errorMsg.replace("$", fileName));				
 				}else{
-					doUpdate = true;
-					insertQuery+= "('"+conID+"',"+qID+",'"+FilenameUtils.getExtension(fileName)+"'),";
+					doUpdate = true;					
+					insertQuery+= "('"+conID+"',"+qID+",'"+ext+"'),";
 					answeredCount++;
 					if (isRequired)
 						reqAnsweredCount++;
@@ -701,7 +706,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 			return;
 		insertQuery = insertQuery.substring(0,insertQuery.length()-1);
 		insertQuery +=";";
-
+		
 		try{
 			DBReady();
 			if (doUpdate)
@@ -1058,6 +1063,18 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 			DBClose();
 		}//finally
 	}//updatePercentageCompleted
+	
+	private boolean checkExtension(String ext, String exts){
+		if(exts == null || exts.equals(""))
+			return true;
+		
+		String[] list = exts.split(",");
+		for(int i = 0; i < list.length; i++)
+			if(list[i].equals(ext.toLowerCase()))
+				return true;
+		
+		return false;
+	}
 
 //SQL to get all the questions and their cateogry type
 //SELECT  * 
