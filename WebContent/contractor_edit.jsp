@@ -22,13 +22,11 @@
 		
 		aBean.setFromUploadRequestClientEdit(request);
 		cBean.setFromUploadRequestClientEdit(request);
-				
-		if (aBean.isOK() && cBean.isOK() && cBean.getPrimaryUser().isOK()) {
+		
+		if (aBean.isOK() && cBean.isOK()) {
 			aBean.writeToDB();
 			cBean.setUploadedFiles(request);
 			cBean.writeToDB();
-			cBean.getPrimaryUser().writeToDB();
-			
 			response.sendRedirect("contractor_detail.jsp?id="+id);
 			return;
 		}//if
@@ -86,7 +84,7 @@
                       </tr>
                       <tr> 
                         <td class="blueMain" align="right">Username:</td>
-                        <td class="blueMain"><b> <%=cBean.getUsername()%></b></td>
+                        <td class="blueMain"><b> <%=aBean.username%></b></td>
                       </tr>
                       <tr>
                         <td align="right" valign="top" class="blueMain">Tax ID:</td>
@@ -208,7 +206,7 @@
                       </tr>
                       <tr> 
                         <td class="blueMain" align="right">Password</td>
-                        <td><input name="password" type="text" class="forms" size="15" value="<%=cBean.getPassword()%>"></td>
+                        <td><input name="password" type="text" class="forms" size="15" value="<%=aBean.password%>"></td>
                       </tr>
                       <tr> 
                         <td>&nbsp;</td>

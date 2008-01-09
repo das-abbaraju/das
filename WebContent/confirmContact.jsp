@@ -1,6 +1,6 @@
 <%@ page language="java" import="java.util.ArrayList, com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%//@ page language="java"%>
-<jsp:useBean id="pBean" class="com.picsauditing.access.PermissionsBean" scope ="page"/>
+<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope ="page"/>
 <%
 	String sendTo = request.getParameter("sendTo");
 	ArrayList<String> toAddresses = new ArrayList<String>();

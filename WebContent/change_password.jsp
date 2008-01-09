@@ -2,7 +2,7 @@
 <%@ page language="java" %>
 <%//@ include file="utilities/login_secure.jsp"%>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
-<jsp:useBean id="pBean" class="com.picsauditing.access.PermissionsBean" scope ="session"/>
+<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope ="session"/>
 
 <%	String id = request.getParameter("id");
 	aBean.setFromDB(id);

@@ -8,10 +8,11 @@ import java.util.Enumeration;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Vector;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.io.FilenameUtils;
 import com.picsauditing.access.User;
-
 
 public class ContractorBean extends DataBean {
 /*	History
@@ -1138,12 +1139,12 @@ public class ContractorBean extends DataBean {
 		billingEmail = m.get("billingEmail");
 		billingPhone = m.get("billingPhone");
 		setDescription(m.get("description"));
-		
+		/*
 		if (!primaryUser.isSet)
 			primaryUser.setFromAccountID(this.id);
 		
 		primaryUser.userDO.password = m.get("password");
-		
+		*/
 		
 	}//setFromUploadRequestClientEdit
 

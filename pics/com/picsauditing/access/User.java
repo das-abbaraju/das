@@ -32,12 +32,32 @@ public class User extends DataBean {
 	}//setFromDB
 	
 	public boolean usernameExists(String u_name) throws Exception {
+		boolean temp = false;
+		String selectQuery = "SELECT id FROM accounts WHERE username='"+Utilities.escapeQuotes(u_name)+"';";
+		try {
+			DBReady();
+			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
+			if (SQLResult.next())
+				temp = true;
+			SQLResult.close();
+			selectQuery = "SELECT id FROM users WHERE username='"+Utilities.escapeQuotes(u_name)+"';";
+			SQLResult = SQLStatement.executeQuery(selectQuery);
+			if (SQLResult.next())
+				temp = true;
+			SQLResult.close();
+		}finally{
+			DBClose();
+		}//finally
+		return temp;
+		/*
 		String query = "SELECT u.*, a.type FROM users u LEFT JOIN accounts a ON u.accountID = a.id WHERE u.username='"+Utilities.escapeQuotes(u_name)+"'";
 		selectFromDB(query);
 		if (userDO.id.length() > 0) this.isSet = true;
 		
 		return this.isSet;
-	}
+	*/
+	
+	}//usernameExists
 	
 	private void selectFromDB(String selectQuery) throws Exception{		
 		ResultSet SQLResult = null;
@@ -168,7 +188,7 @@ public class User extends DataBean {
 		}finally{
 			DBClose();
 		}
-	}
+	}	
 
 	public boolean isOK() throws Exception {
 		errorMessages = new Vector<String>();

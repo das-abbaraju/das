@@ -30,7 +30,7 @@
 		}
 		if (action.equals("username")) {
 			String username = request.getParameter("username");
-			if (uBean.usernameExists(username)) {
+			if (aBean.usernameExists(username)) {
 				%><%=username%> is NOT available. Please choose a different Username.<%
 			} else {
 				%><%=username%> is available<%
@@ -49,15 +49,15 @@
 		cBean.setFromUploadRequestClientNew(request);
 		cBean.isOKClientCreate();
 		
-		uBean.setFromRequest(request);
-		uBean.isOK();
+		//uBean.setFromRequest(request);
+		//uBean.isOK();
 		
 		if ( (aBean.getErrorMessages().length()+cBean.getErrorMessages().length()+uBean.getErrorMessages().length()) == 0) {
 			// TODO gracefully rollback saving errors
 			aBean.writeNewToDB();
 			cBean.id = aBean.id;
 			cBean.writeNewToDB(FACILITIES);
-			uBean.writeNewToDB(aBean.id, request);
+			//uBean.writeNewToDB(aBean.id, request);
 
 			response.sendRedirect("contractor_new_confirm.jsp?i="+aBean.id);
 			return;
@@ -141,7 +141,7 @@
               <td class="redMain">* - Indicates required information</td>
             </tr>
             <tr>
-              <td align="center" colspan="2" class="redMain"><strong><%=aBean.getErrorMessages()+cBean.getErrorMessages()+uBean.getErrorMessages()%></strong></td>
+              <td align="center" colspan="2" class="redMain"><strong><%=aBean.getErrorMessages()+cBean.getErrorMessages()%></strong></td>
             </tr>
             <tr>
               <td align="right" class="blueMain">Company Name</td>

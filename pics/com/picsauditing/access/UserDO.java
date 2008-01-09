@@ -22,9 +22,12 @@ public class UserDO {
 		if (request.getParameter("name") != null) name = request.getParameter("name");
 		if (request.getParameter("username") != null) username = request.getParameter("username");
 		if (request.getParameter("email") != null) email = request.getParameter("email");
-		if (request.getParameter("password") != null) {
-			password = request.getParameter("password");
-		}
+		String newPassword = request.getParameter("newPassword");
+		if (!"".equals(newPassword))
+			password = newPassword;
+		//if (request.getParameter("password") != null) {
+		//	password = request.getParameter("password");
+		//}
 		if (request.getParameter("isActive") != null) isActive = request.getParameter("isActive");
 	}//setFromRequest
 		

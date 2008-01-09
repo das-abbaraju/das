@@ -212,7 +212,9 @@
                       </tr>
                       <tr>
                         <td class="blueMain" align="right">Audit Date</td>
-                        <td class="blueMain"><input name="auditDate" id="auditDate" type="text" class="forms" size="10" onClick="cal1.select(document.forms[0].auditDate,'auditDate','M/d/yy','<%=cBean.auditDate%>'); return false;" value="<%=cBean.auditDate%>"></td>
+                        <td class="blueMain"> <input name="auditDate" id="auditDate" type="text" class="forms" size="10" onClick="cal1.select(document.forms[0].auditDate,'auditDate','M/d/yy','<%=cBean.auditDate%>'); return false;" value="<%=cBean.auditDate%>">
+<!--                          <input type="image" src="images/icon_calendar.gif" width="18" height="15" onClick="cal1.select(document.forms[0].auditDate,'auditDate','M/d/yy','<%=cBean.auditDate%>'); return false;">
+-->						</td>
                       </tr>
 					  <tr>
                         <td class="blueMain" align="right">Last Audit Date</td>
@@ -266,11 +268,11 @@
                       </tr>
                       <tr>
                         <td class="blueMain" align="right">Username</td>
-                        <td><input name="username" type="text" class="forms" size="15" value="<%=cBean.getUsername()%>"></td>
+                        <td><input name="username" type="text" class="forms" size="15" value="<%=aBean.username%>"></td>
                       </tr>
                       <tr>
                         <td class="blueMain" align="right">Password</td>
-                        <td><input name="password" type="text" class="forms" size="15" value="<%=cBean.getPassword()%>"></td>
+                        <td><input name="password" type="text" class="forms" size="15" value="<%=aBean.password%>"></td>
                       </tr>
                       <tr>
                         <td>&nbsp;</td>
@@ -319,7 +321,7 @@
                       </tr>
                       <tr>
                         <td class="blueMain" align="right">Last Login:</td>
-                        <td class="redMain" align="left"><%=cBean.getLastLogin()%></td>
+                        <td class="redMain" align="left"><%=aBean.lastLogin%></td>
                       </tr>
                       <tr>
                         <td class="blueMain" align="right">Visible?</td>

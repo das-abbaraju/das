@@ -125,10 +125,10 @@ public class UserAccess extends com.picsauditing.PICS.DataBean{
 	}
 
 	public boolean hasAccess(OpPerms testAccess){
-		return this.permissions.hasPermission(testAccess);
-		//if (null == accessSet)
-		//	return false;
-		//return (accessSet.contains(testAccess));
+		//return this.permissions.hasPermission(testAccess);
+		if (null == accessSet)
+			return false;
+		return (accessSet.contains(testAccess));
 	}//hasAccess
 
 	public String getChecked(OpPerms perm){

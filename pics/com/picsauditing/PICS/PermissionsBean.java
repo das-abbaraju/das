@@ -96,8 +96,8 @@ public class PermissionsBean extends DataBean {
 
 	public void setUserAccess(String userID) throws Exception{
 		userAccess = new com.picsauditing.access.UserAccess();
-		//userAccess.setFromDB(userID);
-		userAccess.setPermissions(permissions);
+		userAccess.setFromDB(userID);
+		//userAccess.setPermissions(permissions);
 	}//setUserAccess
 
 	public String getCanSeeSetCount(){
@@ -106,7 +106,7 @@ public class PermissionsBean extends DataBean {
 	}//getCanSeeSetCount
 
 	public boolean checkAccess(int access, javax.servlet.http.HttpServletResponse response) throws Exception {
-		if (permissions == null || !permissions.isLoggedIn()) {
+		if (!loggedIn) {
 			// TODO get the current URL
 			//Cookie fromCookie = new Cookie("from","contractor_list.jsp");
 			//fromCookie.setMaxAge(3600);
@@ -179,24 +179,9 @@ public class PermissionsBean extends DataBean {
 	}//canEditPage
 
 	public boolean isAdmin() {
-		if(permissions == null)
-			return false;
-		return permissions.hasGroup(GROUP_ADMIN);
-		//return ADMIN_TYPE.equals(userType);
+		return ADMIN_TYPE.equals(userType);
 	}//isAdmin
-	public boolean isAuditor() {
-		if(permissions == null)
-			return false;
-		return permissions.hasGroup(GROUP_AUDITOR);	
-		//return AUDITOR_TYPE.equals(userType);
-	}//isAuditor
-
 	public boolean isContractor() {
-		/*
-		if(permissions == null)
-			return false;
-		return permissions.hasGroup(GROUP_CONTRACTOR);
-		*/
 		return CONTRACTOR_TYPE.equals(userType);
 	}//isContractor
 	public boolean isOperator() {
@@ -205,6 +190,9 @@ public class PermissionsBean extends DataBean {
 	public boolean isCorporate() {
 		return CORPORATE_TYPE.equals(userType);
 	}//isCorporate
+	public boolean isAuditor() {
+		return AUDITOR_TYPE.equals(userType);
+	}//isAuditor
 
 	public boolean canSeeAuditCategory(String catID, String conID) {
 		if (isAdmin())

@@ -1,7 +1,7 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%//@ page language="java" import="com.picsauditing.PICS.*"%>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<jsp:useBean id="pBean" class="com.picsauditing.access.PermissionsBean" scope ="session"/>
+<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope ="session"/>
 
 <%	String id = request.getParameter("id");
 	String ses_id = (String)session.getAttribute("temp_userid");
