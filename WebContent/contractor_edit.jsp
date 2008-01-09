@@ -1,4 +1,4 @@
-<%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@ page language="java" import="com.picsauditing.access.*" errorPage="exception_handler.jsp"%>
 <%//@ page language="java" import="com.jspsmart.upload.*"%>
 <%@ include file="utilities/contractor_edit_secure.jsp"%>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
@@ -9,8 +9,11 @@
 <%
 	String id = request.getParameter("id");
 	boolean isSubmitted = "Yes".equals(request.getParameter("isSubmitted"));
+	//user.setFromDB(pBean.userID);
 	aBean.setFromDB(id);
 	cBean.setFromDB(id);
+	User user = new User();
+	user.setFromAccountID(id);
 	if (isSubmitted){
 //		Process form upload		
 		request.setAttribute("uploader", String.valueOf(com.picsauditing.servlet.upload.UploadProcessorFactory.CONTRACTOR));
@@ -19,11 +22,14 @@
 		
 		aBean.setFromUploadRequestClientEdit(request);
 		cBean.setFromUploadRequestClientEdit(request);
+		user.setFromRequest(request);
 		
-		if (aBean.isOK() && cBean.isOK()) {
+		if (aBean.isOK() && cBean.isOK() && user.isOK()) {
 			aBean.writeToDB();
 			cBean.setUploadedFiles(request);
 			cBean.writeToDB();
+			user.writeToDB();
+			
 			response.sendRedirect("contractor_detail.jsp?id="+id);
 			return;
 		}//if
@@ -81,7 +87,7 @@
                       </tr>
                       <tr> 
                         <td class="blueMain" align="right">Username:</td>
-                        <td class="blueMain"><b> <%=aBean.username%></b></td>
+                        <td class="blueMain"><b> <%=cBean.getUsername()%></b></td>
                       </tr>
                       <tr>
                         <td align="right" valign="top" class="blueMain">Tax ID:</td>
@@ -203,7 +209,7 @@
                       </tr>
                       <tr> 
                         <td class="blueMain" align="right">Password</td>
-                        <td><input name="password" type="text" class="forms" size="15" value="<%=aBean.password%>"></td>
+                        <td><input name="password" type="text" class="forms" size="15" value="<%=cBean.getPassword()%>"></td>
                       </tr>
                       <tr> 
                         <td>&nbsp;</td>

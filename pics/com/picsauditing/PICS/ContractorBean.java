@@ -1171,34 +1171,18 @@ public class ContractorBean extends DataBean {
 	}//isOKClientCreate
 
 	public String getUsername() throws Exception {
-		if (primaryUser.userDO.id.length() == 0) setPrimaryUser();
+		if (primaryUser.userDO.id.length() == 0) primaryUser.setFromAccountID(this.id);
 		return primaryUser.userDO.username;
 	}
 	
 	public String getPassword() throws Exception {
-		if (primaryUser.userDO.id.length() == 0) setPrimaryUser();
+		if (primaryUser.userDO.id.length() == 0) primaryUser.setFromAccountID(this.id);
 		return primaryUser.userDO.password;
 	}
 	
 	public String getLastLogin() throws Exception {
-		if (primaryUser.userDO.id.length() == 0) setPrimaryUser();
+		if (primaryUser.userDO.id.length() == 0) primaryUser.setFromAccountID(this.id);
 		return primaryUser.userDO.lastLogin;
-	}
-	
-	private void setPrimaryUser() throws Exception {
-		SQLBuilder sql = new SQLBuilder();
-		sql.setFromTable("users");
-		sql.addWhere("accountID = '"+this.id+"'");
-		try {
-			DBReady();
-			ResultSet SQLResult = SQLStatement.executeQuery(sql.toString());
-			if (SQLResult.next()) {
-				primaryUser.setFromResultSet(SQLResult);
-			}
-			SQLResult.close();
-		} finally {
-			DBClose();
-		}
 	}
 	
 	public boolean taxIDExists(String tID) throws Exception {

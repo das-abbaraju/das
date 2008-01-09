@@ -21,8 +21,13 @@ public class User extends DataBean {
 		selectFromDB(query);
 	}//setFromDB
 	
+	/**
+	 * Grabs only the first user attached to this account like a contractor
+	 * @param accountID
+	 * @throws Exception
+	 */
 	public void setFromAccountID(String accountID) throws Exception {
-		String query = "SELECT * FROM users WHERE id="+accountID+";";
+		String query = "SELECT * FROM users WHERE accountID="+accountID +" LIMIT 1";
 		selectFromDB(query);
 	}//setFromDB
 	
