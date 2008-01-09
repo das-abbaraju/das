@@ -686,18 +686,20 @@ public class AccountBean extends DataBean {
 			errorMessages.addElement("Please fill in the Company Name field");
 		else if (name.length() < 3) {
 			errorMessages.addElement("Your company name must be at least 3 characters long");
-		} else {
-			String selectQuery = "SELECT id FROM accounts WHERE UCASE(name) LIKE UCASE('"+eqDB(name)+"%');";
+		} else if (this.id.length() == 0) {
+			SQLBuilder sql = new SQLBuilder();
+			sql.setFromTable("accounts");
+			sql.addField("id");
+			sql.addWhere("UCASE(name) LIKE UCASE('"+eqDB(name)+"%')");
+			
 			try{
 				DBReady();
-				ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-				if (SQLResult.next()) {
-					SQLResult.close();
-					errorMessages.addElement("Someone from your company has already created a PICS account.  Please contact us at: 949.387.1940");
-				} else {
-					SQLResult.close();
-				}//else
-			}finally{
+				ResultSet SQLResult = SQLStatement.executeQuery(sql.toString());
+				if (SQLResult.next())
+					errorMessages.addElement("Someone from your company has already created a PICS account. " +
+							"Please contact us at: 949.387.1940");
+				SQLResult.close();
+			} finally {
 				DBClose();
 			}//finally
 		}
