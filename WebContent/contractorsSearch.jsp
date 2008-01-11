@@ -35,7 +35,7 @@ try{
 		com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();
 		ContractorBean cBean = new ContractorBean();
 		cBean.setFromDB(actionID);
-		pcBean.generateDynamicCategories(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE,cBean.riskLevel);
+		pcBean.generateDynamicCategories(actionID, com.picsauditing.PICS.pqf.Constants.PQF_TYPE, cBean.riskLevel);
 		cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
 		cBean.canEditPrequal="Yes";
 		cBean.addNote(actionID,"("+pBean.getWhoIsDetail()+")", "Added this Contractor to "+aBean.name+"'s db", DateBean.getTodaysDateTime());
@@ -52,7 +52,7 @@ try{
 		cBean.addNote(actionID,"("+pBean.getWhoIsDetail()+")", "Removed this Contractor from "+aBean.name+"'s db", DateBean.getTodaysDateTime());
 		com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
 		com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();
-		pcBean.generateDynamicCategories(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
+		pcBean.generateDynamicCategories(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE, cBean.riskLevel);
 		cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
 		cBean.canEditPrequal="Yes";
 		cBean.writeToDB();
