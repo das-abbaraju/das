@@ -672,32 +672,34 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 				fileName = entry.getValue();
 				if (fileName != null) 
 			        fileName = FilenameUtils.getName(fileName);		        
-			   
-				String ext = FilenameUtils.getExtension(fileName);
-				if(!checkExtension(ext, extArr ))
+				else
 					continue;
+				
+				String ext = FilenameUtils.getExtension(fileName);		
 				
 				String qID = key.substring(7);
 				String errorMsg = (String)request.getAttribute("error_" + qID);
-				boolean isRequired = "Yes".equals(params.get("isRequired_" + qID))
-				|| "true".equals(params.get("isRequired_" + qID));
-				if (isRequired)
-					reqCount++;
-				if (fileName == null || fileName.equals("")) {
-					boolean isUploaded = "Uploaded".equals(params.get("isUploaded_"+qID));
-					if (isUploaded) {
+				if(ext.matches("[a-zA-Z_][a-zA-Z_0-9]*")){					
+					boolean isRequired = "Yes".equals(params.get("isRequired_" + qID))
+					|| "true".equals(params.get("isRequired_" + qID));
+					if (isRequired)
+						reqCount++;
+					if (fileName == null || fileName.equals("")) {
+						boolean isUploaded = "Uploaded".equals(params.get("isUploaded_"+qID));
+						if (isUploaded) {
+							answeredCount++;
+							if (isRequired)
+								reqAnsweredCount++;
+						}//if
+					}else if(errorMsg != null && !errorMsg.equals("")){
+						errorMessages.addElement(errorMsg.replace("$", fileName));				
+					}else{
+						doUpdate = true;					
+						insertQuery+= "('"+conID+"',"+qID+",'"+ext+"'),";
 						answeredCount++;
 						if (isRequired)
 							reqAnsweredCount++;
-					}//if
-				}else if(errorMsg != null && !errorMsg.equals("")){
-					errorMessages.addElement(errorMsg.replace("$", fileName));				
-				}else{
-					doUpdate = true;					
-					insertQuery+= "('"+conID+"',"+qID+",'"+ext+"'),";
-					answeredCount++;
-					if (isRequired)
-						reqAnsweredCount++;
+					}
 				}
 			}
 		}
@@ -1064,17 +1066,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 		}//finally
 	}//updatePercentageCompleted
 	
-	private boolean checkExtension(String ext, String exts){
-		if(exts == null || exts.equals(""))
-			return true;
-		
-		String[] list = exts.split(",");
-		for(int i = 0; i < list.length; i++)
-			if(list[i].equals(ext.toLowerCase()))
-				return true;
-		
-		return false;
-	}
+	
 
 //SQL to get all the questions and their cateogry type
 //SELECT  * 
