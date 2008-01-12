@@ -8,6 +8,7 @@ try{
 	String action = request.getParameter("action");
 	String actionID = request.getParameter("actionID");
 	String msg = request.getParameter("msg");
+	String newUserID = request.getParameter("newid");
 	if (null == msg)
 		msg = "";
 	if ("Edit".equals(action)){
@@ -25,8 +26,8 @@ try{
 	AccountBean aBean = new AccountBean();
 	aBean.setFromDB(opID);
 	userList.setList(opID);
+	msg = msg + "<div style='display: none' id='newUser'>"+newUserID+"</div>";
 %>
-
 <html>
   <head>
   <title>PICS - Pacific Industrial Contractor Screening</title>
