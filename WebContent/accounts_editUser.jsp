@@ -24,8 +24,8 @@
 			if (user.isOK()){
 				user.writeNewToDB(opID, request);
 				userAccess.writeNewToDB(opID,user.userDO.id);
-				response.sendRedirect("accounts_userList.jsp?id="+opID+"&msg="+
-						user.userDO.name+"'s account successfully created.<br>Login "+
+				response.sendRedirect("accounts_userList.jsp?id="+opID+"&newid="+user.userDO.id+
+						"&msg="+user.userDO.name+"'s account successfully created.<br>Login "+
 						"info and user manual have been sent to "+user.userDO.email);
 				return;
 			}//if
