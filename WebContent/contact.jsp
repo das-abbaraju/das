@@ -95,9 +95,6 @@ Irvine, CA 92614<br>
 <b>Phone:</b> 949.387.1940<br>
 <b>Toll Free:</b> 800.506.PICS (7427)<br>
 <b>Fax:</b> 949.269.9177<br>
-<p style="color: red">
-PLEASE NOTE: PICS IS MOVING TO A NEW OFFICE ON THURSDAY, JANUARY 10th. OUR PHONE SYSTEM WILL BE DOWN FROM 12PM TO 7PM (PST). PLEASE CONTACT US USING THE FORM BELOW DURING THAT TIME.  WE APOLOGIZE FOR ANY INCONVENIENCE.
-</p>
 <br></td>
                         </tr>
                         <tr>
