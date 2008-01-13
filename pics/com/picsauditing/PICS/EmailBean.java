@@ -887,15 +887,16 @@ public class EmailBean extends DataBean{
 		   cc = cBean.secondEmail;
 		String from = FROM_INFO;
 //		String subject = aBean.name+", time to update your PICS information";
-		String subject = "PICS PQF update, extended 2 more weeks";
+		String subject = "PICS PQF UPDATE.  Action Required";
 		String message =  "Hello "+aBean.contact+","+endl+endl+
 			"This is your last reminder to update your PQF on the PICS website."+endl+
 			"It is time for you to update "+aBean.name+"'s company information that PICS provides to your clients. "+
 			"Each January, the facilities you currently work at require your company to update your prequalification "+
-			"information online and resubmit it. If you do not update this information you will become inactive beginning March 16, which "+
+			"information online and resubmit it. If you do not update this information you will become inactive beginning March 1, which "+
 			"will remove you from your clients' approved contractor list until the forms are completed. As a reminder, "+
 			"audits are performed on a 3 year rotation as well."+
 			endl+endl+
+			"Please Log into the website at http://www.picsauditing.com. "+
 			"If you are unable to log in to your account, you may "+
 			"have forgotten your username and password. If this is the case, you can go to "+
 			"http://www.picsauditing.com/forgot_password.jsp. If this does not work you can call or email us."+
@@ -910,14 +911,15 @@ public class EmailBean extends DataBean{
 			"will not be able to view your information, which could prevent you from working there." +
 			endl+endl+
 			"  2.	Next, you will need to click on the [Complete PQF] link from your details page. This will direct you to the "+
-			"prequalification form (PQF). There are some new additions for 2007. You will need to complete all of the new questions "+
+			"prequalification form (PQF). There are some new additions for 2008. You will need to complete all of the new questions "+
 			"and update anything that has changed in order to submit it. As a reminder each section must indicate 100% before you "+
 			"can resubmit the PQF. MAKE SURE YOU SUBMIT THE PQF WHEN COMPLETE."+
+			"The most time-consuming item is to have your OSHA 300 log from 2007 filled out and your latest EMR."+
 			endl+endl+
 			"  3.	After submitting a completed PQF please review your details page where you can check on your company's status and "+
 			"review/edit your company details. Please update your details page to indicate a billing contact person for your company."+
 			endl+endl+
-			"Please make sure that you update all of this information and have it submitted by March 16 so that your company "+
+			"Please make sure that you update all of this information and have it submitted Feb 29 so that your company "+
 			"is not removed from any of the facilities' approved contractor list."+
 			endl+endl+
 			"If you have any questions or concerns, feel free to contact us."+endl+endl+
