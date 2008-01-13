@@ -532,7 +532,7 @@ public class ContractorBean extends DataBean {
 
 	public boolean isDesktopStatusOldAuditStatus() throws Exception{
 		if (isAuditCompleted() &&
-				!AUDIT_STATUS_CLOSED.equals(calcDesktopStatus()) &&
+				!"".equals(desktopClosedDate) &&
 				DateBean.isFirstBeforeSecond(auditCompletedDate,DateBean.toShowFormat(DateBean.OLD_OFFICE_CUTOFF)) && 
 				(AUDIT_STATUS_RQS.equals(calcOfficeStatus()) || AUDIT_STATUS_CLOSED.equals(calcOfficeStatus())))
 			return true;
