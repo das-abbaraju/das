@@ -12,7 +12,7 @@
   <link href="PICS.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor="#EEEEEE" background="images/watermark.gif" vlink="#003366" alink="#003366" style="margin: 10px; text-align: center;">
-  <table border="1" cellspacing="1" cellpadding="1">
+  <table border="0" cellspacing="1" cellpadding="1">
 	<tr class="whiteTitle">
 	  <td colspan="3" bgcolor="#993300" align="center">PICS Annual Membership Price</td>
 	</tr>

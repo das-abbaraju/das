@@ -80,42 +80,47 @@
                 <tr>
                   <td class="redMain" align="center">
 <%	if (pBean.isContractor() || pBean.isAdmin()){%>
-				    PICS membership pricing table:
-                    <table border="1" cellspacing="1" cellpadding="1">
-                      <tr class="whiteTitle">
-                        <td bgcolor="#993300" align="center"># of Facilities</td>
-                        <td bgcolor="#003366" align="center">Price/yr</td>
+                    <table border="0" cellspacing="1" cellpadding="1">
+                   	  <tr class="whiteTitle">
+                   	    <td colspan="3" bgcolor="#993300" align="center">PICS Annual Membership Price</td>
+                  	  </tr>
+                  	  <tr class="whiteTitle">
+	                    <td bgcolor="#993300" align="center">Facilities</td>
+                  	    <td bgcolor="#003366" align="center">Audited</td>
+                  	    <td bgcolor="#003366" align="center"><nobr>PQF-Only</nobr></td>
+                  	  </tr>
+                  	  <tr class=blueMain <%=Utilities.getBGColor(count++)%> align="center">
+                  	    <td>1</td>
+                  	    <td>$<%=Billing.calcBillingAmount(1,this.getServletContext())%></td>
+                  	    <td>$99</td>
+                  	  </tr>
+                  	  <tr class=blueMain <%=Utilities.getBGColor(count++)%> align="center">
+                  	    <td>2-4</td>
+                  	    <td>$<%=Billing.calcBillingAmount(4,this.getServletContext())%></td>
+                  	    <td>$99</td>
                       </tr>
-	                  <tr class=blueMain <%=Utilities.getBGColor(count++)%> align="center">
-	                    <td>Exempt</td>
-	                    <td>$99</td>
-	                  </tr>
-                      <tr class=blueMain <%=Utilities.getBGColor(count++)%> align="center">
-                        <td>1</td>
-                        <td>$<%=Billing.calcBillingAmount(1,this.getServletContext())%></td>
-                      </tr>
-                      <tr class=blueMain <%=Utilities.getBGColor(count++)%> align="center">
-                        <td>2-4</td>
-                        <td>$<%=Billing.calcBillingAmount(4,this.getServletContext())%></td>
-                      </tr>
-                      <tr class=blueMain <%=Utilities.getBGColor(count++)%> align="center">
-                        <td>5-8</td>
-                        <td>$<%=Billing.calcBillingAmount(8,this.getServletContext())%></td>
-                      </tr>
-                      <tr class=blueMain <%=Utilities.getBGColor(count++)%> align="center">
-                        <td>9-12</td>
-                        <td>$<%=Billing.calcBillingAmount(12,this.getServletContext())%></td>
-                      </tr>
-                      <tr class=blueMain <%=Utilities.getBGColor(count++)%> align="center">
-                        <td>13-19</td>
-                        <td>$<%=Billing.calcBillingAmount(19,this.getServletContext())%></td>
-                      </tr>
-                      <tr class=blueMain <%=Utilities.getBGColor(count++)%> align="center">
-                        <td>20+</td>
-                        <td>$<%=Billing.calcBillingAmount(20,this.getServletContext())%></td>
-                      </tr>
-                    </table>
-	               <br><span class="redMain">* There is an account activation fee of $99 for new account registration, and $199 for reactivation</span>
+                  	  <tr class=blueMain <%=Utilities.getBGColor(count++)%> align="center">
+                  	    <td>5-8</td>
+                  	    <td>$<%=Billing.calcBillingAmount(8,this.getServletContext())%></td>
+                  	    <td>$99</td>
+                  	  </tr>
+                  	  <tr class=blueMain <%=Utilities.getBGColor(count++)%> align="center">
+                  	    <td>9-12</td>
+                  	    <td>$<%=Billing.calcBillingAmount(12,this.getServletContext())%></td>
+                  	    <td>$99</td>
+                  	  </tr>
+                  	  <tr class=blueMain <%=Utilities.getBGColor(count++)%> align="center">
+                  	    <td>13-19</td>
+                  	    <td>$<%=Billing.calcBillingAmount(19,this.getServletContext())%></td>
+                  	    <td>$99</td>
+                  	  </tr>
+                  	  <tr class=blueMain <%=Utilities.getBGColor(count++)%> align="center">
+                  	    <td>20+</td>
+                  	    <td>$<%=Billing.calcBillingAmount(20,this.getServletContext())%></td>
+                  	    <td>$99</td>
+                  	  </tr>
+                   </table>
+                   <p class="redMain">* There is an account activation fee of $99 for new account registration, and $199 for reactivation</p>
                    <br>
 				   <b>Please select all facilities
                     where you work<br>(Currently <%=cBean.facilitiesCount%>)
