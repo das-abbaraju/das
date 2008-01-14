@@ -88,8 +88,8 @@ try{
                             <td><%=userList.userDO.name%></td>
                             <td align="center"><%=userList.userDO.lastLogin%></td>
                             <td align="center"><%=userList.userDO.isActive%></td>
-                            <td><input name="action" type="submit" class="buttons" value="Edit"></td>
-                            <td><input name="action" type="submit" class="buttons" value="Delete" onClick="return confirm('Are you sure you want to delete <%=userList.userDO.name%>?');"></td>
+                            <td><input name="action" type="submit" class="buttons" id="edit_<%=userList.userDO.id%>" value="Edit"></td>
+                            <td><input name="action" type="submit" class="buttons" id="delete_<%=userList.userDO.id%>" value="Delete" onClick="return confirm('Are you sure you want to delete <%=userList.userDO.name%>?');"></td>
 					      </tr>
 					      <input name="actionID" type="hidden" value="<%=userList.userDO.id%>">
 					      <input name="id" type="hidden" value="<%=opID%>">
