@@ -544,7 +544,8 @@ public class EmailBean extends DataBean{
 		String subject = "Reminder about PICS audit on " + auditDate;
 		String message;
 		if (toAuditor) {
-			AccountBean tempABean = new AccountBean();
+			 
+			UserBean tempABean = new UserBean();
 			tempABean.setFromDB(cBean.auditor_id);
 			to = tempABean.email;
 			cc = "";
@@ -621,7 +622,7 @@ public class EmailBean extends DataBean{
 		String companyName = aBean.name;
 		String contact;
 		if (isToAuditor) {
-			AccountBean tempABean = new AccountBean();
+			UserBean tempABean = new UserBean();
 			tempABean.setFromDB(cBean.auditor_id);
 			contact = tempABean.name+"(auditor)";
 		}//if
@@ -730,7 +731,7 @@ public class EmailBean extends DataBean{
 		aBean.setFromDB(conID);		
 		ContractorBean cBean = new ContractorBean();
 		cBean.setFromDB(conID);
-		AccountBean tempABean = new AccountBean();
+		UserBean tempABean = new UserBean();
 		tempABean.setFromDB(cBean.auditor_id);
 		String auditor = tempABean.name;
 		String to = aBean.email;

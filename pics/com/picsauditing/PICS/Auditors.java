@@ -32,6 +32,7 @@ public class Auditors extends DataBean{
 	}//setALFromDB
 
 	public String getNameFromID(String auditorID) throws Exception{
+		if (auditorID.length() == 0) return "";
 		setAuditorsALFromDB();
 		for (ListIterator li = auditorsAL.listIterator();li.hasNext();){
 			String tempID = (String)li.next();
@@ -39,7 +40,7 @@ public class Auditors extends DataBean{
 				return (String)li.next();
 			li.next();
 		}//for
-		return "";
+		throw new Exception("Failed to find auditor"+auditorID);
 	}//getNameFromID
 
 	public String getAuditorsSelect(String name, String classType, String selectedAuditorID) throws Exception {
