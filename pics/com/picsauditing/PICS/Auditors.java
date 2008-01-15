@@ -40,7 +40,8 @@ public class Auditors extends DataBean{
 				return (String)li.next();
 			li.next();
 		}//for
-		throw new Exception("Failed to find auditor"+auditorID);
+		//throw new Exception("Failed to find auditor"+auditorID);
+		return "";
 	}//getNameFromID
 
 	public String getAuditorsSelect(String name, String classType, String selectedAuditorID) throws Exception {
