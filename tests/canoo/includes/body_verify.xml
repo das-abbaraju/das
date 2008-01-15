@@ -1,0 +1,10 @@
+<not description="the word 'error' should not appear in the page">
+	<verifyText description="search for the word exception"
+		text="(?i:error)"
+		regex="true" />
+</not>
+<verifyText description="Checks for the copywrite in the footer"
+	text="&copy;" />
+<verifyText description="Checks for the existence of HTML body tags"
+	text="(?i:.*&lt;/body&gt;)"
+	regex="true" />

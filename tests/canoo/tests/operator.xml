@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<property name="login.username" value="kevin.dyer@shell.com"/>
+	<property name="conID" value="2459"/>
+	
+	<target name="test">
+		<webtest name="Operator Shell Kevin Dyer">
+			&config;
+			<steps>
+				&login;
+				<!--   CONTRACTOR LIST -->
+				&body_verify;
+				<verifyText description="Show 100 contractors"
+					text="Showing 1-100" />
+				<verifyText description="Check for atleast one Green flag"
+					text="icon_greenFlag.gif" />
+				<verifyText description="Check for atleast one Amber flag"
+					text="icon_amberFlag.gif" />
+				<verifyText description="Check for atleast one Red flag"
+					text="icon_redFlag.gif" />
+				
+				<!--   CONTRACTOR DETAILS -->
+				<clickLink description="Show contractor details"
+					href="contractor_detail.jsp?id=${conID}" />
+				&body_verify;
+				<verifyText description="Verify name of company"
+					text="Aaron Oil Company" />
+				
+				<clickLink description="Click Notes link"
+					href="add_notes.jsp?id=" />
+				&body_verify;
+				<verifyText description="Verify Notes exist"
+					text="Notes" />
+				
+				<clickLink description="Red Flag Report"
+					label="Red Flag Report" />
+				&body_verify;
+				
+				<clickLink description="View PQF"
+					label="View PQF" />
+				&body_verify;
+				
+				<clickLink description="View Entire PQF"
+					label="View Entire PQF" />
+				<!-- can't search for error because it gets other words like terrorist -->
+				<!-- &body_verify; -->
+
+				<clickLink description="View Desktop Audit"
+					label="View Desktop Audit" />
+				&body_verify;
+
+				<clickLink description="Print PQF"
+					label="Print PQF" />
+				<!-- can't search for error because it gets other words like terrorist -->
+				<!-- &body_verify; -->
+
+				<!--   Forms & Docs -->
+				<invoke
+					description="back to Contractor List"
+					url="contractor_list.jsp" />
+				<clickLink description="Forms &amp; Docs"
+					href="manage_forms.jsp" />
+				&body_verify;
+				<verifyText description="Edit an Existing Form"
+					text="Edit an Existing Form" />
+				
+				<!--   New Contractor Search -->
+				<clickLink description="Search For New Contractors"
+					label="Search For New Contractors" />
+				<setSelectField 
+					description="Choose Trade=Cranes &amp; Rigging"
+					name="trade"
+					value="489" />
+				<setSelectField 
+					description="Choose Self Performed"
+					name="performedBy"
+					value="Self Performed" />
+				<setSelectField 
+					description="Choose Green Flag"
+					name="flagStatus"
+					value="Green" />
+				<clickButton
+					name="imageField"
+					description="Click the Search button" />
+
+				&body_verify;
+				<verifyText description="Show more than 100 green crane operators"
+					text="Showing 1-100" />
+
+				<!--   View User Accounts -->
+				<clickLink description="Edit User Accounts"
+					label="Edit User Accounts" />
+				&body_verify;
+				<verifyText description="[Add User] link exists"
+					text="Add New User" />
+			</steps>
+		</webtest>
+	</target>
+</project>

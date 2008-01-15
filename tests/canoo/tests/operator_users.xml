@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<property name="login.username" value="kevin.dyer@shell.com"/>
+	<property name="newuser.username" value="webtest19374"/>
+	
+	<target name="test">
+		<webtest name="Operator User Management">
+			&config;
+			<steps>
+				&login;
+				<clickLink description="Edit User Accounts"
+					label="Edit User Accounts" />
+				<clickLink description="Add New User"
+					label="Add New User" />
+				
+				<clickButton description="Click the submit button with nothing entered"
+					name="submit" />
+				<verifyText description="Username error"
+					text="Please choose a username at least" />
+				<verifyText description="Password error"
+					text="Please choose a password" />
+				<verifyText description="Email error"
+					text="Please enter a valid email" />
+				
+				<!-- TODO add duplicate username -->
+
+				<setInputField description="set name"
+					name="name"
+					value="PICS Temp Test User" />
+				<setInputField description="set name"
+					name="email"
+					value="trevor1@picsauditing.com" />
+				<setInputField description="set name"
+					name="username"
+					value="${newuser.username}" />
+				<setInputField description="set name"
+					name="newPassword"
+					value="${login.password}" />
+				<clickButton description="Add new user"
+					name="submit" />
+				
+				<storeXPath description="Get new UserID from msg div"
+				            xpath="//div[@id='newUser']"
+				            property="newuser.id" />
+				<clickButton description="Edit User"
+					htmlId="edit_#{newuser.id}" />
+				<previousResponse description="Back to User list" />
+				<clickButton description="Delete the User"
+					htmlId="delete_#{newuser.id}" />
+			</steps>
+		</webtest>
+	</target>
+</project>

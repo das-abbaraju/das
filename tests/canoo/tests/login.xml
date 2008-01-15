@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<property name="login.username" value="tallred"/>
+	<target name="test">
+		<webtest name="Login">
+			&config;
+			<steps>
+				<invoke
+					description="get Homepage"
+					url="login.jsp" />
+				<clickButton 
+					htmlId="Submit"
+					description="Click the submit button" />
+				&body_verify;
+				<verifyText description="No account exists with that username"
+					text="No account exists with that username" />
+				
+				<setInputField description="set user name"
+					name="username"
+					value="${login.username}" />
+				<setInputField description="set bad password"
+					name="password"
+					value="BADPASS" />
+				<clickButton 
+					htmlId="Submit"
+					description="Click the submit button" />
+				&body_verify;
+				<verifyText description="Invalid password attempt"
+					text="Invalid password attempt" />
+				
+				<setInputField description="set user name"
+					name="username"
+					value="${login.username}" />
+				<setInputField description="set password"
+					name="password"
+					value="${login.password}" />
+				<clickButton 
+					htmlId="Submit"
+					description="Click the submit button" />
+				&body_verify;
+
+				<verifyText description="Showing Reports"
+					text="Click Report Name to Access" />
+			</steps>
+		</webtest>
+	</target>
+</project>

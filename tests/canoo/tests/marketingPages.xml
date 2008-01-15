@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<target name="test">
+		<webtest name="Marketing Site">
+			&config;
+			<steps>
+				<invoke
+					description="get Homepage"
+					url="index.jsp" />
+				<verifyTitle 
+					description="we should see the index page title"
+					text="PICS - Pacific Industrial Contractor Screening" />
+				&body_verify;
+				<invoke
+					description="get client page"
+					url="clients.jsp" />
+				&body_verify;
+				<invoke
+					description="get services page"
+					url="services.jsp" />
+				&body_verify;
+				<invoke
+					description="get contact page"
+					url="contact.jsp" />
+				&body_verify;
+			</steps>
+		</webtest>
+	</target>
+</project>

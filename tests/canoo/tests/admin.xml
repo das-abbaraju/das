@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<property name="login.username" value="tallred" />
+	<target name="test">
+		<webtest name="Admin">
+			&config;
+			<steps>
+				&login;
+				&body_verify;
+				
+				<storeProperty name="report_link" value="Activation" />
+				&click_report;
+				<storeProperty name="report_link" value="Annual Update" />
+				&click_report;
+				<storeProperty name="report_link" value="Audit Dates" />
+				&click_report;
+				<storeProperty name="report_link" value="Contractor Assignments" />
+				&click_report;
+				<storeProperty name="report_link" value="Contractor Contact Info" />
+				&click_report;
+				<storeProperty name="report_link" value="EMR Rates" />
+				&click_report;
+				<storeProperty name="report_link" value="Expired Audits" />
+				&click_report;
+				<storeProperty name="report_link" value="Expired Insurance Certificates" />
+				&click_report;
+				<storeProperty name="report_link" value="Fatalities" />
+				&click_report;
+				<storeProperty name="report_link" value="Incidence Rates" />
+				&click_report;
+				<storeProperty name="report_link" value="Incomplete Audits" />
+				&click_report;
+				<storeProperty name="report_link" value="Insurance Certificates" />
+				&click_report;
+				<storeProperty name="report_link" value="NCMS Data" />
+				&click_report;
+				<storeProperty name="report_link" value="Office Audit Calendar" />
+				&click_report;
+				<storeProperty name="report_link" value="Payment" />
+				&click_report;
+				<storeProperty name="report_link" value="Red Flag Criteria" />
+				&click_report;
+				<storeProperty name="report_link" value="Reschedule Audits" />
+				&click_report;
+				<storeProperty name="report_link" value="Schedule Desktop Audit" />
+				&click_report;
+				<storeProperty name="report_link" value="Schedule Office Audits" />
+				&click_report;
+				<storeProperty name="report_link" value="Upgrade Payment" />
+				&click_report;
+				<storeProperty name="report_link" value="Beta Admin Tool" />
+				&click_report;
+			</steps>
+		</webtest>
+	</target>
+</project>
