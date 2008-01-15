@@ -1,0 +1,5 @@
+DBURL=jdbc:mysql://alpha.picsauditing.com:3306/pics_alpha
+DBUSER=pics
+DBPASS=pics
+FTPDIR=/wwwroot/alpha.picsauditing.com/ftp-bin
+RUNTIME_MODE=test

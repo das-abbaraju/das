@@ -1,0 +1,6 @@
+DBURL=jdbc:mysql://db.picsauditing.com:3306/pics
+DBUSER=pics
+DBPASS=pics
+APPDIR=/wwwroot/beta.picsauditing.com/webapps
+FTPDIR=/wwwroot/beta.picsauditing.com/ftp-bin
+RUNTIME_MODE=test
