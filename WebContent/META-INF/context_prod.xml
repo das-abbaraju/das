@@ -3,7 +3,7 @@
 	<Resource name="jdbc/pics" auth="Container"
 		type="javax.sql.DataSource" maxActive="60" maxIdle="30"
 		maxWait="10000" removeAbandoned="true" removeAbandonedTimeout="20"
-		logAbandoned="true" username="root" password="pics1bean"
+		logAbandoned="true" username="pics" password="pics"
 		driverClassName="com.mysql.jdbc.Driver"
-		url="jdbc:mysql://www.picsauditing.com:3306/pics?zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false" />
+		url="jdbc:mysql://db.picsauditing.com:3306/pics?zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false" />
 </Context>
