@@ -431,13 +431,13 @@ public class Utilities {
 
 	public static String getYesNoRadio(String name, String selected) {
 		StringBuffer temp = new StringBuffer();
-		temp.append("<input name=").append(name).append(" type=radio value=Yes");
+		temp.append("<label><input name=").append(name).append(" type=radio value=Yes");
 		if ("Yes".equals(selected))
 			temp.append(" checked");
-		temp.append(">Yes<input name=").append(name).append(" type=radio value=No");
+		temp.append(">Yes</label><label><input name=").append(name).append(" type=radio value=No");
 		if ("No".equals(selected))
 			temp.append(" checked");
-		temp.append(">No\n");
+		temp.append(">No</label>\n");
 		return temp.toString();
 	}//getYesNoReadio
 
