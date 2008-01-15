@@ -96,6 +96,57 @@ public class EmrLogBean extends JSFListDataModel<PqfLog>{
 		this.questionIDs = questionIDs;
 	}
 	
+	public PqfLog getLog(short qID){
+		List<PqfLog> logs = ((List<PqfLog>)getDataModel().getWrappedData());
+		for(PqfLog log : logs)
+			if(log.getPqfquestion().getQuestionId() == qID)
+				return log;
+			
+		return null;
+	}
 	
+	public PqfLog getStateOfOrigin(){
+		return getLog(Short.parseShort("123"));
+	}
+	
+	public PqfLog getAnniversary(){
+		return getLog(Short.parseShort("124"));
+	}
+	
+	public PqfLog getCalculatedBy(){
+		return getLog(Short.parseShort("125"));
+	}
+	
+	public PqfLog getUpload2005(){
+		return getLog(Short.parseShort("872"));
+	}
+	
+	public PqfLog getEmr2005(){
+		return getLog(Short.parseShort("889"));
+	}
+	
+	public PqfLog getDoesMaintain(){
+		return getLog(Short.parseShort("891"));
+	}
+	
+	public PqfLog getEmr2006(){
+		return getLog(Short.parseShort("1519"));
+	}
+	
+	public PqfLog getUpload2006(){
+		return getLog(Short.parseShort("1522"));
+	}
+	
+	public PqfLog getEmr2007(){
+		return getLog(Short.parseShort("1617"));
+	}
+	
+	public PqfLog getUpload2007(){
+		return getLog(Short.parseShort("1618"));
+	}
+	
+	public int getClearCid(){
+		return 0;
+	}
 	
 }

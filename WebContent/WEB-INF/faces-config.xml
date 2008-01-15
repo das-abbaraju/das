@@ -70,6 +70,14 @@
 			</list-entries>
 		</managed-property>
 	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>celandarBean</managed-bean-name>
+		<managed-bean-class>
+			com.picsauditing.beans.CalendarBean
+		</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>		
+	</managed-bean>
 
 	<managed-bean>
 		<managed-bean-name>textMgr1</managed-bean-name>

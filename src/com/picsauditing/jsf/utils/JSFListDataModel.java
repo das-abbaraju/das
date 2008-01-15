@@ -22,6 +22,7 @@ public abstract class JSFListDataModel<T> implements JSFDataModelable<T>{
 	public DataModel getDataModel() {
 		if(dm.getWrappedData() == null)
 			dm.setWrappedData(getList());
+			
 				
 		return dm;
 	}
@@ -117,6 +118,7 @@ public abstract class JSFListDataModel<T> implements JSFDataModelable<T>{
 	
 	public void clearModel(){
 		dm = new ListDataModel();
+		
 	}
 	
 	public int getCurrentYear() {
@@ -134,10 +136,10 @@ public abstract class JSFListDataModel<T> implements JSFDataModelable<T>{
 	}
 	
 	public String refreshModel(){
-		//int row = dm.getRowIndex();
 		clearModel();
-		//getDataModel();
-		//dm.setRowIndex(row);
+		dm.setRowIndex(0);
+		setSelectedItem(null);
+		
 		return "success";
 	}
 	

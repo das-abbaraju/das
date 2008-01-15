@@ -11,11 +11,12 @@
 .panel {
 	vertical-align: top;
 }
+
 </style>
-   
+  
 	<h:panelGrid columns="2" cellpadding="1" cellspacing="3"
 		columnClasses="panel">
-		
+		 <rich:simpleTogglePanel switchType="ajax">
 			<a4j:form id="contractorTable">	
 				
 				<rich:dataTable
@@ -185,12 +186,17 @@
 
 
 					<f:facet name="footer">
-                        	<rich:datascroller reRender="details,contractorTable"></rich:datascroller>	
+                        	<rich:datascroller reRender="details,contractorTable" action="#{contractorBean.refreshModel}">
+                        		<f:setPropertyActionListener target="#{oshaBean.cid}"
+								value="#{oshaBean.clearCid}" />
+							<f:setPropertyActionListener target="#{emrBean.cid}"
+								value="#{emrBean.clearCid}" />
+                        	</rich:datascroller>	
 					</f:facet>
 				</rich:dataTable>
 
 			</a4j:form>
-		
+		</rich:simpleTogglePanel>
 		    <rich:panel id="details">
 			<f:facet name="header">
 				<h:outputText

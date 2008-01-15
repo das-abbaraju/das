@@ -11,6 +11,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -26,7 +28,7 @@ public class Pqfquestion  implements java.io.Serializable {
 
 
      private Short questionId;
-     private short subCategoryId;
+     private Pqfsubcategory subCategory;
      private short number;
      private String question;
      private String hasRequirement;
@@ -62,8 +64,8 @@ public class Pqfquestion  implements java.io.Serializable {
     }
 
 	
-    public Pqfquestion(short subCategoryId, short number, String question, String hasRequirement, String okAnswer, String requirement, String isRequired, short dependsOnQid, String dependsOnAnswer, String questionType, String isVisible, Date lastModified, String title, String isGroupedWithPrevious, String link, String linkText, String linkUrl1, String linkText1, String linkUrl2, String linkText2, String linkUrl3, String linkText3, String linkUrl4, String linkText4, String linkUrl5, String linkText5, String linkUrl6, String linkText6, Date dateCreated, String isRedFlagQuestion) {
-        this.subCategoryId = subCategoryId;
+    public Pqfquestion(Pqfsubcategory subCategory, short number, String question, String hasRequirement, String okAnswer, String requirement, String isRequired, short dependsOnQid, String dependsOnAnswer, String questionType, String isVisible, Date lastModified, String title, String isGroupedWithPrevious, String link, String linkText, String linkUrl1, String linkText1, String linkUrl2, String linkText2, String linkUrl3, String linkText3, String linkUrl4, String linkText4, String linkUrl5, String linkText5, String linkUrl6, String linkText6, Date dateCreated, String isRedFlagQuestion) {
+        this.subCategory = subCategory;
         this.number = number;
         this.question = question;
         this.hasRequirement = hasRequirement;
@@ -94,8 +96,8 @@ public class Pqfquestion  implements java.io.Serializable {
         this.dateCreated = dateCreated;
         this.isRedFlagQuestion = isRedFlagQuestion;
     }
-    public Pqfquestion(short subCategoryId, short number, String question, String hasRequirement, String okAnswer, String requirement, String isRequired, short dependsOnQid, String dependsOnAnswer, String questionType, String isVisible, Date lastModified, String title, String isGroupedWithPrevious, String link, String linkText, String linkUrl1, String linkText1, String linkUrl2, String linkText2, String linkUrl3, String linkText3, String linkUrl4, String linkText4, String linkUrl5, String linkText5, String linkUrl6, String linkText6, Date dateCreated, String isRedFlagQuestion, Set<PqfLog> pqfLogs) {
-       this.subCategoryId = subCategoryId;
+    public Pqfquestion(Pqfsubcategory subCategory, short number, String question, String hasRequirement, String okAnswer, String requirement, String isRequired, short dependsOnQid, String dependsOnAnswer, String questionType, String isVisible, Date lastModified, String title, String isGroupedWithPrevious, String link, String linkText, String linkUrl1, String linkText1, String linkUrl2, String linkText2, String linkUrl3, String linkText3, String linkUrl4, String linkText4, String linkUrl5, String linkText5, String linkUrl6, String linkText6, Date dateCreated, String isRedFlagQuestion, Set<PqfLog> pqfLogs) {
+       this.subCategory = subCategory;
        this.number = number;
        this.question = question;
        this.hasRequirement = hasRequirement;
@@ -139,13 +141,14 @@ public class Pqfquestion  implements java.io.Serializable {
         this.questionId = questionId;
     }
     
-    @Column(name="subCategoryID", nullable=false)
-    public short getSubCategoryId() {
-        return this.subCategoryId;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="subCategoryID", nullable=false, insertable=false, updatable=false)
+    public Pqfsubcategory getSubCategory() {
+        return this.subCategory;
     }
     
-    public void setSubCategoryId(short subCategoryId) {
-        this.subCategoryId = subCategoryId;
+    public void setSubCategory(Pqfsubcategory subCategory) {
+        this.subCategory = subCategory;
     }
     
     @Column(name="number", nullable=false)

@@ -166,8 +166,14 @@ public class OshaLogBean extends JSFListDataModel<VerifyOshaLog>{
 		if(numRequired !=0)			
 			percentCompleted = intFormatter.format(((float)requiredCompleted*100)/numRequired);
 		
-		pcBean.replaceCatData("29",cID,"Yes",""+requiredCompleted,""+numRequired,percentCompleted);	
+		pcBean.replaceCatData("29",cID,"Yes",""+requiredCompleted,""+numRequired,percentCompleted);
+		
+		
 	}//udpateNumRequired
+	
+	public int getClearCid(){
+		return 0;
+	}
 	
 	
 }

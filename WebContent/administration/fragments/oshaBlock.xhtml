@@ -29,12 +29,20 @@
 	text-align: right;
 }
 
+.rich-messages-marker img {padding-right:7px;}
+.rich-message-label {color:red;}
+.top {vertical-align:top;}
+
 </style>
 
 	
 		<h:form id="oshalogs">
-		   
-			<rich:tabPanel height="400px" width="550px" id="logs" switchType="client">
+		   <rich:messages layout="list"> 
+                    <f:facet name="errorMarker">
+                        <h:graphicImage value="/images/ajax_error.gif" /> 
+                    </f:facet>
+            </rich:messages>
+			<rich:tabPanel height="400px" width="700px" id="logs" switchType="client">
 			   
 			   <rich:tab label="Osha Logs">				
 				   <ui:include src="oshaLog.xhtml"/>
