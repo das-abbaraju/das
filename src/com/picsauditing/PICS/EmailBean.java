@@ -890,7 +890,7 @@ public class EmailBean extends DataBean{
 //		String subject = aBean.name+", time to update your PICS information";
 		String subject = "PICS PQF UPDATE.  Action Required";
 		String message =  "Hello "+aBean.contact+","+endl+endl+
-			"This is your last reminder to update your PQF on the PICS website."+endl+
+			//"This is your last reminder to update your PQF on the PICS website."+endl+
 			"It is time for you to update "+aBean.name+"'s company information that PICS provides to your clients. "+
 			"Each January, the facilities you currently work at require your company to update your prequalification "+
 			"information online and resubmit it. If you do not update this information you will become inactive beginning March 1, which "+
