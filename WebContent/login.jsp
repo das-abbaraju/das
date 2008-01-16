@@ -54,11 +54,6 @@ int i3 = 25000;
 				}
 			}
 			
-			EmailBean.sendPasswordEmail("19", "trevor", "pics12", "tallred@picsauditing.com", "Trevir Allred");
-			EmailBean.sendAnnualUpdateEmail("19", "tallred");
-			EmailBean eBean = new EmailBean();
-			eBean.sendWelcomeEmail(aBean, "tallred");
-				
 			if (pBean.isAdmin()) {
 				session.setMaxInactiveInterval(3600);
 				pBean.oBean = new OperatorBean();
