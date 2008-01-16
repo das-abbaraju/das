@@ -138,6 +138,7 @@ public class ContractorBean extends DataBean {
 	public String lastInvoiceDate = "";
 	public String lastAnnualUpdateEmailDate = "";
 	public String riskLevel = "2";
+	public int annualUpdateEmails = 0;
 
 	int num_of_trades = 0;
 	int num_of_subTrades = 0;
@@ -908,6 +909,7 @@ public class ContractorBean extends DataBean {
 		newBillingAmount = SQLResult.getString("newBillingAmount");
 
 		riskLevel = SQLResult.getString("riskLevel");
+		annualUpdateEmails = SQLResult.getInt("annualUpdateEmails");
 	}//setFromResultSet
 
 	public void writeToDB() throws Exception {
@@ -989,6 +991,7 @@ public class ContractorBean extends DataBean {
 			"',billingContact='"+Utilities.escapeQuotes(billingContact)+
 			"',billingPhone='"+Utilities.escapeQuotes(billingPhone)+
 			"',riskLevel="+riskLevel+
+			",annualUpdateEmails="+annualUpdateEmails+
 			",billingEmail='"+Utilities.escapeQuotes(billingEmail);
 		if (isDescriptionChanged)
 			updateQuery+="',description='"+Utilities.escapeQuotes(description);
@@ -999,6 +1002,7 @@ public class ContractorBean extends DataBean {
 		updateQuery+="' WHERE id="+id+";";
 		try {
 			DBReady();
+			System.out.println(updateQuery);
 			SQLStatement.executeUpdate(updateQuery);
 		}finally{
 			DBClose();

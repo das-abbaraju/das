@@ -797,6 +797,7 @@ public class EmailBean extends DataBean{
 		sendEmail(from, to, cc, subject, message);
 		cBean.addNote(conID, "("+adminName+")", "Annual update email sent to: "+to, DateBean.getTodaysDateTime());
 		cBean.lastAnnualUpdateEmailDate=DateBean.getTodaysDate();
+		cBean.annualUpdateEmails++;
 		cBean.writeToDB();
 	}//sendAnnualUpdateEmail
 

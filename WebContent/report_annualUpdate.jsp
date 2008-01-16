@@ -80,6 +80,7 @@
               <tr bgcolor="#003366" class="whiteTitle">
 			    <td colspan="2" align="center">Email<nobr><input name="checkAllBox" id="checkAllBox" type="checkbox" onclick="checkAll(document.form10)"></nobr></td>
                 <td align="center"><a href="?orderBy=lastAnnualUpdateEmailDate DESC" class="whiteTitle">Sent</a></td>
+                <td align="center"><a href="?orderBy=annualUpdateEmails" class="whiteTitle">Times</a></td>
                 <td width="150"><a href="?orderBy=name" class="whiteTitle">Contractor</a></td>
                 <td align="center"><a href="?orderBy=dateCreated DESC" class="whiteTitle">Created</a></td>
                 <td align="center"><a href="?orderBy=lastLogin DESC" class="whiteTitle">Last Login</a></td>
@@ -93,6 +94,7 @@
                   <input name="sendEmail_<%=sBean.aBean.id%>" id="sendEmail_<%=sBean.aBean.id%>" type="checkbox">
 			    </td>
                 <td align="center"><%=sBean.cBean.lastAnnualUpdateEmailDate%></td>
+                <td align="center"><%=sBean.cBean.annualUpdateEmails%></td>
                 <td><%=sBean.getActiveStar()%>
                   <a href="contractor_detail.jsp?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class="<%=sBean.getTextColor()%>"><%=sBean.aBean.name%></a></td>
                 <td align="center"><%=sBean.aBean.dateCreated%></td>
