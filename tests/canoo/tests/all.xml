@@ -10,7 +10,7 @@
 		<ant antfile="operator.xml"/>
 		<ant antfile="operator_users.xml"/>
 		<ant antfile="contractor.xml"/>
-		<ant antfile="auditor.xml"/>
 		<ant antfile="admin.xml"/>
+		<ant antfile="auditor.xml"/>
 	</target>
 </project>

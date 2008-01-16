@@ -16,7 +16,7 @@
 				            name="imageField"/>
 				&body_verify;
 				<verifyText description="Make sure there are multiple contractors found"
-					text="You have lt;stronggt;[1-9][0-9]*lt;//stronggt; contractors to audit" regex="true" />
+					text="You have .strong.[1-9][0-9]*..strong. contractors to audit" regex="true" />
 
 				<clickLink description="Open Calendar" label="Audit Calendar"/>
 				&body_verify;
