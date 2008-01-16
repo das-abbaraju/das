@@ -19,7 +19,7 @@
 		"report_desktop.jsp?","Schedule Desktop Audit","No",
 		"report_scheduleAudits.jsp?","Schedule Office Audits","No",
         "report_upgradePayment.jsp?","Upgrade Payment","No",
-		"administration/index.jsf?","Beta Admin Tool","No"};
+		"faces/administration/index.xhtml?","Beta Admin Tool","No"};
 //		"report_RFR.jsp?","PQF Snapshot Report",
 //		"pqf_viewQuestions.jsp?id="+pBean.userID+"&","Create PQF Snapshot"};
 

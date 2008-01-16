@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf11979175046850" configfile="/picsWeb2/WebContent/WEB-INF/faces-config.xml">
-  <nodes xsi:type="pageflow:PFPage" name="admin/*.*" x="122" y="178" id="pf11980191687870" referenceLink="//@navigationRule.0/@fromViewId|" outlinks="pf11980191687871 pf11980191687872" path="/admin/*.*"/>
-  <nodes xsi:type="pageflow:PFPage" name="admin/osha.xhtml" x="338" y="178" id="pf11980191687873" referenceLink="//@navigationRule.0/@navigationCase.1/@toViewId|" inlinks="pf11980191687871 pf11980191687872" path="/admin/osha.xhtml"/>
-  <links id="pf11980191687871" target="pf11980191687873" source="pf11980191687870" outcome="osha" redirect="true"/>
-  <links id="pf11980191687872" target="pf11980191687873" source="pf11980191687870" outcome="success" redirect="true"/>
+  <nodes xsi:type="pageflow:PFPage" name="admin/*.*" x="122" y="178" id="pf11980191687870" referenceLink="//@navigationRule.0/@fromViewId|" outlinks="pf12004370654390 pf12004370654391" path="/administration/*.*"/>
+  <nodes xsi:type="pageflow:PFPage" name="administration/osha.xhtml" id="pf12004370654392" referenceLink="//@navigationRule.0/@navigationCase.1/@toViewId|" inlinks="pf12004370654390 pf12004370654391" path="/administration/osha.xhtml"/>
+  <links id="pf12004370654390" target="pf12004370654392" source="pf11980191687870" outcome="osha" redirect="true"/>
+  <links id="pf12004370654391" target="pf12004370654392" source="pf11980191687870" outcome="success" redirect="true"/>
 </pageflow:Pageflow>

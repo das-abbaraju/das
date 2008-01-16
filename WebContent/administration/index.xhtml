@@ -3,10 +3,16 @@
 	xmlns:h="http://java.sun.com/jsf/html" template="layout/template.xhtml">
 
 	<ui:define name="body">
+	 <h:form>
 		<h2>Welcome to the PICS Administrative Dashboard</h2>
 		<h:panelGrid>
-			<a href="../reports.jsp">PICS Reports</a><br />
-			<a href="osha.jsf">OSHA Verification</a>
+			<h:outputLink class="menu" value="#{facesContext.externalContext.request.contextPath}/reports.jsp">
+                <h:outputText value="PICS Reports" />
+            </h:outputLink>	
+			<h:outputLink class="menu" value="osha.xhtml">
+                <h:outputText value="OHSA Verification" />
+            </h:outputLink>	
 		</h:panelGrid>
+	</h:form>
 	</ui:define>
 </ui:composition>

@@ -146,7 +146,7 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		}
 
 		public void clear(ActionEvent event) {			  
-			  clearModel();
+			  refreshModel();
 			  dao.clear();
 			  doSearch = false;
 			  acctName = "";

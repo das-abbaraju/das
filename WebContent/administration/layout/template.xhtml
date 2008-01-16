@@ -9,7 +9,7 @@
 <head>
 <title>PICS Administration</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<link href="stylesheet/theme.css" rel="stylesheet" type="text/css" />
+<link href="/stylesheet/theme.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <ui:include src="/administration/status.xhtml"/>
@@ -63,13 +63,13 @@
 			<h:inputText />
 			<h:commandButton value="Search" disabled="true" />
 
-			<h:outputText rendered="true">
+			<h:outputLink render="true" class="menu" value="#{facesContext.externalContext.request.contextPath}/logout.jsp">
+                <h:outputText value="Logout" />
+            </h:outputLink>
+            <h:outputLink render="true" class="menu" value="#{facesContext.externalContext.request.contextPath}/login.jsp">
+                <h:outputText value="Login" />
+            </h:outputLink>					
 				
-				<a href="../logout.jsp" class="menu">Logout</a>
-			</h:outputText>
-			<h:outputText rendered="true">
-				<a href="../login.jsp" class="menu">Login</a>
-			</h:outputText>
 		</rich:toolBarGroup>
 	</rich:toolBar>
 </h:form>
