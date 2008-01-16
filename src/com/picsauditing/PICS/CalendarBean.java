@@ -178,7 +178,7 @@ public class CalendarBean extends DataBean {
 			throw new Exception("Audit Date not set");
 		String selectQuery = "SELECT accounts.id AS id,accounts.name AS contractor_name,auditLocation,auditDate,auditHour,"+
 				"auditAmPm,auditor_id,a2.name AS auditor_name FROM contractor_info INNER JOIN accounts ON contractor_info.id=accounts.id "+
-				"LEFT OUTER JOIN accounts a2 ON contractor_info.auditor_id=a2.id WHERE YEAR(auditDate)='"+auditYear+
+				"LEFT OUTER JOIN users a2 ON contractor_info.auditor_id=a2.id WHERE YEAR(auditDate)='"+auditYear+
 				"' AND MONTH(auditDate)='"+(auditMonth+1)+"' ORDER BY auditDate,auditAmPm,auditHour";
 		int i = 0;
 		auditDates.clear();
