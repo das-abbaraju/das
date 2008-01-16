@@ -1275,7 +1275,7 @@ public class ContractorBean extends DataBean {
 	}//getStatusSelect
 
 	public String getAuditorsEmail() throws Exception {
-		String selectQuery = "SELECT email FROM accounts WHERE id = "+auditor_id;
+		String selectQuery = "SELECT email FROM users WHERE id = "+auditor_id;
 		String email = "";
 		try {
 			DBReady();
@@ -1452,7 +1452,7 @@ public class ContractorBean extends DataBean {
 					SQLResult.close();
 					Query = "SELECT contractor_info.id AS con_id, auditHour, auditAmPm, accounts.name AS name, "+
 					"a2.name AS auditor_name FROM contractor_info INNER JOIN accounts ON contractor_info.id=accounts.id "+
-					"LEFT OUTER JOIN accounts a2 ON contractor_info.auditor_id=a2.id WHERE auditDate='"+
+					"LEFT OUTER JOIN users a2 ON contractor_info.auditor_id=a2.id WHERE auditDate='"+
 					DateBean.toDBFormat(auditDate)+"' AND auditor_id=" + auditor_id;
 					SQLResult = SQLStatement.executeQuery(Query);
 					if 	(SQLResult.next()) 

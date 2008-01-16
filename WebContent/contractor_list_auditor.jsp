@@ -10,7 +10,7 @@
 	sBean.orderBy = request.getParameter("orderBy");
 	if (null==sBean.orderBy)
 		sBean.orderBy = "name";
-	sBean.doSearch(request, sBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
+	sBean.doSearch(request, sBean.ONLY_ACTIVE, 100, pBean, pBean.uBean.id);
 %>
 <html>
 <head>

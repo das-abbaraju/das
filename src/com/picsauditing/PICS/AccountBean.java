@@ -438,7 +438,9 @@ public class AccountBean extends DataBean {
 				canSeeSet.add(SQLResult.getString("subID"));
 			SQLResult.close();
 			
-			//Set auditorCanSeeSet BJ 10-28-04
+			/*
+			 * Moved to PermissionsBean
+			 * Trevor 1/16/2008
 			auditorCanSeeSet = new HashSet<String>();
 			auditorCanSeeSet.add(id);
 			selectQuery = "SELECT id FROM contractor_info WHERE auditor_id="+id+" OR desktopAuditor_id="+id+" OR pqfAuditor_id="+id+";";
@@ -446,6 +448,7 @@ public class AccountBean extends DataBean {
 			while (SQLResult.next())
 				auditorCanSeeSet.add(SQLResult.getString("id"));
 			SQLResult.close();
+			 */
 			
 			// Set hasCertSet
 			hasCertSet = new HashSet<String>();

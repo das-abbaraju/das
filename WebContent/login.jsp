@@ -118,12 +118,17 @@ int i3 = 25000;
 				return;
 			}//if
 			if (pBean.isAuditor()){
-				pBean.setAuditorCanSeeSet(aBean.auditorCanSeeSet);
-				pBean.setAuditorPermissions(aBean.id);
+				pBean.uBean = new UserBean();
+				pBean.uBean.setFromDB(aBean.userID);
+				pBean.setUserAccess(pBean.uBean.id);
+				
+				// moved auditorCanSeeSet to setAuditorPermissions Trevor 1/16/08
+				//pBean.setAuditorCanSeeSet(aBean.auditorCanSeeSet);
+				pBean.setAuditorPermissions();
 				session.setMaxInactiveInterval(3600);
 				response.sendRedirect("contractor_list_auditor.jsp");
 				return;
-			}//if 
+			}//if
 		} //if
 	}//if
 	String username_email = request.getParameter("uname");

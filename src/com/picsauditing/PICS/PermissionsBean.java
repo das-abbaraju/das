@@ -211,41 +211,56 @@ public class PermissionsBean extends DataBean {
 		return true;
 	}//canSeeAuditCategory
 
-	public void setAuditorPermissions(String id) throws Exception {
+	public void setAuditorPermissions() throws Exception {
 		auditorOfficeSet = new HashSet<String>();
-		String seelctQuery = "SELECT id FROM contractor_info WHERE auditor_id="+id+";";
+		auditorDesktopSet = new HashSet<String>();
+		auditorDaSet = new HashSet<String>();
+		auditorPQFSet = new HashSet<String>();
+		
+		auditorCanSeeSet = new HashSet<String>();
 		try{
+			String sql;
 			DBReady();
-			ResultSet SQLResult = SQLStatement.executeQuery(seelctQuery);
-			while (SQLResult.next())
+			
+			sql = "SELECT id FROM contractor_info WHERE auditor_id="+this.uBean.id+";";
+			ResultSet SQLResult = SQLStatement.executeQuery(sql);
+			while (SQLResult.next()) {
 				auditorOfficeSet.add(SQLResult.getString("id"));
-			SQLResult.close();
-			auditorDesktopSet = new HashSet<String>();
-			seelctQuery = "SELECT id FROM contractor_info WHERE desktopAuditor_id="+id+";";
-			SQLResult = SQLStatement.executeQuery(seelctQuery);
-			while (SQLResult.next())
 				auditorDesktopSet.add(SQLResult.getString("id"));
-			SQLResult.close();
-			auditorDesktopSet.addAll(auditorOfficeSet);
-
-			auditorDaSet = new HashSet<String>();
-			seelctQuery = "SELECT id FROM contractor_info WHERE daAuditor_id="+id+";";
-			SQLResult = SQLStatement.executeQuery(seelctQuery);
-			while (SQLResult.next())
-				auditorDaSet.add(SQLResult.getString("id"));
-			SQLResult.close();
-
-			auditorPQFSet = new HashSet<String>();
-			seelctQuery = "SELECT id FROM contractor_info WHERE pqfAuditor_id="+id+";";
-			SQLResult = SQLStatement.executeQuery(seelctQuery);
-			while (SQLResult.next())
 				auditorPQFSet.add(SQLResult.getString("id"));
+				auditorCanSeeSet.add(SQLResult.getString("id"));
+			}
 			SQLResult.close();
-			auditorPQFSet.addAll(auditorDesktopSet);
-		}finally{
+			
+			sql = "SELECT id FROM contractor_info WHERE desktopAuditor_id="+this.uBean.id+";";
+			SQLResult = SQLStatement.executeQuery(sql);
+			while (SQLResult.next()) {
+				auditorDesktopSet.add(SQLResult.getString("id"));
+				auditorPQFSet.add(SQLResult.getString("id"));
+				auditorCanSeeSet.add(SQLResult.getString("id"));
+			}
+			SQLResult.close();
+
+			sql = "SELECT id FROM contractor_info WHERE daAuditor_id="+this.uBean.id+";";
+			SQLResult = SQLStatement.executeQuery(sql);
+			while (SQLResult.next()) {
+				auditorDaSet.add(SQLResult.getString("id"));
+				auditorCanSeeSet.add(SQLResult.getString("id"));
+			}
+			SQLResult.close();
+
+			sql = "SELECT id FROM contractor_info WHERE pqfAuditor_id="+this.uBean.id+";";
+			SQLResult = SQLStatement.executeQuery(sql);
+			while (SQLResult.next()) {
+				auditorPQFSet.add(SQLResult.getString("id"));
+				auditorCanSeeSet.add(SQLResult.getString("id"));
+			}
+			SQLResult.close();
+			
+		} finally {
 			DBClose();
-		}//finally		
-	}//setAuditorPermissions
+		}
+	}
 	
 	public boolean canVerifyAudit(String auditType, String conID) {
 		if (isAdmin() ||

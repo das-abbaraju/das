@@ -8,8 +8,5 @@ Do not edit it else you risk to lose your changes.
 <!ENTITY body_verify SYSTEM "../includes/body_verify.xml">
 <!ENTITY click_report SYSTEM "../includes/click_report.xml">
 <!ENTITY config SYSTEM "../includes/config.xml">
-<!ENTITY config_alpha SYSTEM "../includes/config_alpha.xml">
-<!ENTITY config_local SYSTEM "../includes/config_local.xml">
-<!ENTITY config_prod SYSTEM "../includes/config_prod.xml">
 <!ENTITY login SYSTEM "../includes/login.xml">
 
