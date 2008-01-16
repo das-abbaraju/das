@@ -2,16 +2,33 @@
 <!DOCTYPE project SYSTEM "../dtd/Project.dtd">
 
 <project name="PICS" default="test">
-	<property name="login.username" value="tallred" />
+	<property name="login.username" value="Couch" />
 	<target name="test">
 		<webtest name="Contractor">
 			&config;
 			<steps>
-			    <emailSetConfig server="imap.gmail.com:993" delay="0" type="IMAP"
-			    password="${mail.password}" username="${mail.username}"/>
-				<emailStoreMessageId
-				        property="mid" messageIndex="0"/>
-		        <emailDeleteMessage messageId="#{mid}" />
+				&login;
+				&body_verify;
+				
+				<clickLink description="Edit My Account"
+					label="Edit My Account" />
+				&body_verify;
+				<clickLink description="Facilities"
+					label="Facilities" />
+				&body_verify;
+				<clickLink description="Complete PQF"
+					label="Complete PQF" />
+				&body_verify;
+				<clickLink description="PQF - COMPANY INFORMATION"
+					label="COMPANY INFORMATION" />
+				&body_verify;
+				
+				<clickLink description="Office Audit Requirements"
+					label="Office Audit Requirements" />
+				&body_verify;
+				<clickLink description="Forms and Docs"
+					label="Forms &amp; Docs" />
+				&body_verify;
 			</steps>
 		</webtest>
 	</target>

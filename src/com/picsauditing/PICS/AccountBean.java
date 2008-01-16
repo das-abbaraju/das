@@ -610,7 +610,7 @@ public class AccountBean extends DataBean {
 			errorMessages.addElement("Please enter a valid email address.");
 			return false;
 		}//if
-		String selectQuery = "SELECT * FROM accounts WHERE email='"+email+"';";
+		String selectQuery = "SELECT * FROM accounts WHERE email='"+email+"' LIMIT 2";
 		try{
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);

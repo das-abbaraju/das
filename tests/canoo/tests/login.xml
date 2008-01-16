@@ -17,6 +17,28 @@
 				<verifyText description="No account exists with that username"
 					text="No account exists with that username" />
 				
+				<!-- FORGOT PASSWORD -->
+				<clickLink description="Goto Forgot Password" label="click here"/>
+				<setInputField description="set email"
+					name="email"
+					value="${mail.username}" />
+				<clickButton name="submit"
+					description="Click the submit button" />
+
+				<emailSetConfig server="${mail.server}" delay="1" type="${mail.type}"
+					password="${mail.password}" username="${mail.username}"/>
+				<emailStoreMessageId description="Get Login email"
+					subject="PICS login info"
+					property="mid" messageIndex="0"/>
+				<emailMessageContentFilter save="plain" messageId="#{mid}" />
+				<emailDeleteMessage messageId="#{mid}" />
+				<verifyText description="Make sure email text is there" regex="true"
+					text="(?is:Attn.*?Your username is: \w*.*?password is: \w*)"/>
+
+				<!-- BAD LOGIN -->
+				<invoke description="Show Forgot password page again"
+					url="forgot_password.jsp"/>
+				<clickLink description="Return to Login Page" label="Return to Login Page"/>
 				<setInputField description="set user name"
 					name="username"
 					value="${login.username}" />
@@ -30,6 +52,7 @@
 				<verifyText description="Invalid password attempt"
 					text="Invalid password attempt" />
 				
+				<!-- GOOD LOGIN -->
 				<setInputField description="set user name"
 					name="username"
 					value="${login.username}" />

@@ -1,6 +1,5 @@
 <config 
-	host="alpha.picsauditing.com"
-	port="8080"
+	host="${host.name}"
+	port="${host.port}"
 	protocol="http"
-	basepath="" />
-	
+	basepath="${host.basepath}" />

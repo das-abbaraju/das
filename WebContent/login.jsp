@@ -6,6 +6,7 @@
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope="application"/>
 <%/* 12/16/04 jj - added triggered events by admin login once each day*/%>
 <%
+
 int i1 = 25000;
 int i2 = 25000;
 int i3 = 25000;

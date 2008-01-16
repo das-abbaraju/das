@@ -74,11 +74,12 @@
           <tr>
             <td class="redMain" align="right">Email address&nbsp;</td>
             <td><input name="email" type="text" class="forms" size="25">
-                <input name="submit" type="submit" class="forms" value="submit"></td>
+                <input name="submit" type="submit" class="forms" value="Send Password"></td>
           </tr>
                   </table>
                 </form>
                 <br>
+                <a href="login.jsp">Return to Login Page</a>
               </td>
               <td width="126" class="blueMain"> </td>
             </tr>
