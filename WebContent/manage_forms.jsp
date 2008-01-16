@@ -30,11 +30,6 @@
 			fBean.addFormEntry(pageContext);		
 		if ("Upload".equals(action)) {
 			fBean.uploadNewWelcomeEmail(pageContext);
-			eBean.writeWelcomeEmailValuesToDB(
-					fBean.newWelcomeEmailSubject,
-					fBean.newWelcomeEmailGreeting,
-					fBean.newWelcomeEmailBody,
-					fBean.newAttachWelcomeEmailFile);
 		}
 		if ("UploadUserManual".equals(action)) {
 			fBean.uploadNewUserManual(pageContext);
@@ -42,7 +37,7 @@
 		fBean.setFromDB();
 
 	}//if
-	eBean.setFromDB();
+	//eBean.setFromDB();
 %>
 <html>
 <head>
@@ -176,47 +171,13 @@
                     <table border="0" cellpadding="1" cellspacing="0">
                       <tr> 
                         <td colspan="2" align="center" class="redMain"><strong>Update
-                            the Welcome E-mail</strong></td>
-                      </tr>
-                      <tr> 
-                        <td align="right" valign="top" class="redMain">Subject:</td>
-                        <td><input name="welcomeEmailSubject" type="text" class="forms" size="80" value="<%=eBean.welcomeEmailSubject%>"></td>
-                      </tr>
-                      <tr> 
-                        <td align="right" valign="top" class="redMain">Text:</td>
-                        <td><textarea name="welcomeEmailGreeting" cols="80" rows="4" class="forms" id="welcomeEmailGreeting"><%=eBean.welcomeEmailGreeting%></textarea></td>
-                      </tr>
-                      <tr> 
-                        <td width="80" align="right" valign="top" class="redMain">Fixed:</td>
-                        <td class="blueMain">&lt;CompanyName&gt;. Please click 
-                          on this link to confirm your receipt of this email:<br>
-						  <u>Confirm Email Receipt</u><br>
-						  Because we send important account info to this email, your 
-						  account will not be activated until you have confirmed receipt
-						  of this email.  If the link does not work, please cut and past
-						  the url into your web browser.  After that, you will be able to
-						  log into your account at www.picsauditing.com. Your username is 
-						  "username" and your password is "yourpass".</td>
-                      </tr>
-                      <tr> 
-                        <td align="right" valign="top" class="redMain">Text:</td>
-                        <td><textarea name="welcomeEmailBody" cols="80" rows="6" class="forms" id="welcomeEmailBody"><%=eBean.welcomeEmailBody%></textarea></td>
-                      </tr>
-                      <tr> 
-                        <td width="80" align="right" valign="top" class="redMain">Fixed:</td>
-                        <td class="blueMain"><%=Utilities.escapeHTML(eBean.EMAIL_FOOTER)%></td>
+                            the Welcome File</strong></td>
                       </tr>
 	                  <tr> 
                         <td align="right" class="redMain">File:</td>
                         <td> <input name="welcomeEmailFile" type="file" class="forms" size="15"></td>
                       </tr>
-	                  <tr> 
-                        <td align="right" class="redMain">Attach File:</td>
-                        <td class="blueMain">
-						<input type="radio" name="attachWelcomeEmailFile" value="Yes" <%=Utilities.checked(eBean.attachWelcomeEmailFile,"Yes")%>> Yes
-                        <input type="radio" name="attachWelcomeEmailFile" value="No" <%=Utilities.checked(eBean.attachWelcomeEmailFile,"No")%>> No</td>
-                      </tr>
-                      <tr> 
+                      <tr>
                         <td>&nbsp;</td>
                         <td><input type="submit" class="forms" value="Upload"></td>
                       </tr>

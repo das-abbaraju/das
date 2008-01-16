@@ -29,7 +29,7 @@ public class CalendarBean extends DataBean {
 		int numRows;        // number of rows in cell table (4, 5, 6)
 		int numDays;        // number of days in month
 		int day = 1;
-		String dayStr = "";      
+		String dayStr = "";
 		int maxchars = 18;
 		int thismaxchars = 18;
 		int today = Calendar.getInstance().get(Calendar.DATE);	//used to change the background color of today
@@ -77,7 +77,7 @@ public class CalendarBean extends DataBean {
 						if (day == Integer.parseInt(auditDatesArray[i].substring(8, 10))){
 							if (pBean.isAdmin() || 
 									((pBean.isOperator() || pBean.isCorporate()) && pBean.canSeeSet.contains(conID)) ||
-									(pBean.isAuditor() && pBean.userID.equals(auditorID))){							 	
+									(pBean.isAuditor() && pBean.uBean.id.equals(auditorID))) {
 								if (contractorName.length() < maxchars)
 									thismaxchars = contractorName.length();
 								else

@@ -10,10 +10,14 @@
 				&login;
 				&body_verify;
 				
-				
-				<storeProperty name="report_link" value="Beta Admin Tool" />
-				&click_report;
-				
+				<setSelectField description="Choose Desktop"
+					name="auditType" value="Desktop" />
+				<clickButton description="Show Desktop Audits"
+				            name="imageField"/>
+				&body_verify;
+				<verifyText description="Make sure there are multiple contractors found"
+					text="You have lt;stronggt;[1-9][0-9]*lt;//stronggt; contractors to audit" regex="true" />
+
 				<clickLink description="Open Calendar" label="Audit Calendar"/>
 				&body_verify;
 			</steps>
