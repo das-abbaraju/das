@@ -532,6 +532,8 @@ public class ContractorBean extends DataBean {
 	}//calcDaStatus
 
 	public boolean isDesktopStatusOldAuditStatus() throws Exception{
+		if (!"".equals(auditValidUntilDate) && DateBean.isFirstBeforeSecond(auditValidUntilDate, DateBean.getThreeYearsAheadDate(DateBean.toShowFormat(DateBean.OLD_OFFICE_CUTOFF))))
+			return true;
 		if (isAuditCompleted() &&
 				!"".equals(desktopClosedDate) &&
 				DateBean.isFirstBeforeSecond(auditCompletedDate,DateBean.toShowFormat(DateBean.OLD_OFFICE_CUTOFF)) && 
