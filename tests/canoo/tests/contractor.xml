@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<property name="login.username" value="tallred" />
+	<target name="test">
+		<webtest name="Contractor">
+			&config;
+			<steps>
+			    <emailSetConfig server="imap.gmail.com:993" delay="0" type="IMAP"
+			    password="${mail.password}" username="${mail.username}"/>
+				<emailStoreMessageId
+				        property="mid" messageIndex="0"/>
+		        <emailDeleteMessage messageId="#{mid}" />
+			</steps>
+		</webtest>
+	</target>
+</project>

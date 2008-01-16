@@ -1,5 +1,5 @@
 <%//@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
-<%@ page language="java" import="com.picsauditing.PICS.*, com.picsauditing.PICS.redFlagReport.*, java.sql.*"%>
+<%@ page language="java" import="com.picsauditing.PICS.*"%>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page"/>
 <jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session"/>
@@ -54,6 +54,11 @@ int i3 = 25000;
 				}
 			}
 			
+			EmailBean.sendPasswordEmail("19", "trevor", "pics12", "tallred@picsauditing.com", "Trevir Allred");
+			EmailBean.sendAnnualUpdateEmail("19", "tallred");
+			EmailBean eBean = new EmailBean();
+			eBean.sendWelcomeEmail(aBean, "tallred");
+				
 			if (pBean.isAdmin()) {
 				session.setMaxInactiveInterval(3600);
 				pBean.oBean = new OperatorBean();

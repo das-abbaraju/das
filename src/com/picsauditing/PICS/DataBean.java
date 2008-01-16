@@ -52,7 +52,11 @@ public abstract class DataBean{
 			Conn = null;
 		}//if
 	}//DBClose
-	
+
+	public String eqDB(String temp) {
+		return Utilities.escapeQuotes(temp);
+	}//eqDB
+
 	public Vector<String> getErrors(){
 		return errorMessages;
 	}

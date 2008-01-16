@@ -4,6 +4,8 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import javax.servlet.http.HttpServletRequest;
 
+import java.text.Format;
+import java.util.Map;
 import java.util.Properties;
 import java.sql.*;
 
@@ -66,26 +68,7 @@ public class EmailBean extends DataBean{
 	 	"fax: (949)269-9177"+endl2+endl+
 		"info@picsauditing.com (Please add this email address to your address book to prevent it from being labeled as spam)"+endl2+endl+
 		"http://www.picsauditing.com";
-
-	public static String welcomeEmailBody = "";
-	public static String welcomeEmailSubject = "";
-	public static String welcomeEmailGreeting = "";
-	public static String attachWelcomeEmailFile = "";
-
-/*	public void sendTestEmail() throws Exception{
-		sendEmail("joe <joe@picsauditing.com>","jeffreyjensen@gmail.com","test","again1");
-	}//sentTestEmail
-	public static void sendAttachmentTest(String username, String pass, String email, String fileName) throws Exception {
-		if (null == rootPath) 
-			throw new Exception("Email Bean not initialized with path");
-		String path = rootPath + "attachments/";
-		String from = "joe@mama.com";
-		String to = "jeffreyjensen@hotmail.com";
-		String subject = "attachment";
-		String message = "test";
-		sendAttachment(from, to, subject, message, path, fileName);
-	}//sendAttachmentTest
-*/
+	
 	private static Properties getProperties(){
 		Properties props = new Properties();
 		props.put("mail.smtp.user", EMAIL_ACCOUNT);
@@ -189,37 +172,11 @@ public class EmailBean extends DataBean{
     	}//getPasswordAuthentication
 	}//SMTPAuthenticatorBackup6
 
-	/*	public void sendTestLoginEmail(String from, String to, String subject, String text) throws Exception {
-		from = FROM_INFO;
-//		to = "jjensen@picsauditing.com";
-//		to = "jeffjensen@byu.edu";
-		to = "elderjoemama@yahoo.com";
-		subject = "test9";
-		text = "test of authentication";
-		Properties props = new Properties();
-//		props.put("mail.smtp.host", "mail.picsauditing.com");
-		props.put("mail.smtp.host", "localhost");
-		props.put("mail.smtp.auth", "true");
-		Session s = Session.getInstance(props,null);
-//		s.setDebug(true);
-
-		MimeMessage message = new MimeMessage(s);
-		
-		InternetAddress f = new InternetAddress(from);
-		message.setFrom(f);
-		InternetAddress t = new InternetAddress(to);
-		message.addRecipient(Message.RecipientType.TO, t);		
-		message.setSubject(subject);
-		message.setText(text);
-
-		Transport transport = s.getTransport("smtp");
-		transport.connect("localhost", username, pass);
-//		transport.connect();
-//		transport.sendMessage(message, message.getAllRecipients());	
-	}//sendEmail
-*/
+	/**
+	 * Usage: eBean.init(config);
+	 * @param config
+	 */
 	public static void init(javax.servlet.ServletConfig config) {
-	// called eBean.init(config);
 		rootPath = config.getServletContext().getRealPath("/");
 	}//init
 	
@@ -430,10 +387,7 @@ public class EmailBean extends DataBean{
 	}//writeTestEmail
 
 	public void sendWelcomeEmail(AccountBean aBean, String adminName) throws Exception {
-		//String username, String pass, String companyName, String email
-		if (null == rootPath)
-			throw new Exception("Email Bean not initialized with path");
-		setFromDB();
+		//setFromDB();
 		ContractorBean cBean = new ContractorBean();
 		cBean.setFromDB(aBean.id);
 		String from = FROM_INFO;
@@ -441,27 +395,31 @@ public class EmailBean extends DataBean{
 		String cc = "";
 		if (null!=cBean.secondEmail)
 		   cc = cBean.secondEmail;
-//		String to = "jmoreland@picsauditing.com";
-		String subject = welcomeEmailSubject;
 		
-		String message = welcomeEmailGreeting + aBean.name +
-			"." + endl +endl + 
-			"Please click on this link to confirm your receipt of this email:"+endl+
-//			"<a href=\"http://www.picsauditing.com/login.jsp?uname="+aBean.username+
-//			//////////////////////////////////////////////////////////////////////////////////////////////////////"\">http://www.picsauditing.com/login.jsp?uname="+aBean.username+"</a>"+endl+endl+
-			"http://www.picsauditing.com/login.jsp?uname="+aBean.username+endl+endl+
-			"Because we send important account info to this email, your account will not be activated until "+
-			"you have confirmed receipt of this email.  If the link does not work, please cut and paste the url into your "+
-			"web browser.  After that, you will be able to log into your account at www.picsauditing.com. Your username is \"" + aBean.username + 
-			"\" and your password is \"" + aBean.password + "\"." + endl + endl +
-			welcomeEmailBody + endl + endl + EMAIL_FOOTER;
+		AppPropertiesBean props = new AppPropertiesBean();
+		
+		String subject = props.get("email_welcome_subject");
+		
+		String body = props.get("email_welcome_body");
+		body = body.replace("${user.name}", aBean.name);
+		body = body.replace("${user.username}", aBean.username);
+		body = body.replace("${user.password}", aBean.password);
+		
+		String footer = props.get("email_footer");
+		footer = footer.replace("${fax}", props.get("main_fax"));
+		footer = footer.replace("${email}", props.get("main_email"));
+		footer = footer.replace("${ext}", "");
+		body = body.replace("${email_footer}", footer);
 
-		if ("Yes".equals(attachWelcomeEmailFile)) {
+		boolean attachfile = props.get("email_welcome_attachfile").equals("1");
+		if (attachfile) {
+			if (null == rootPath)
+				throw new Exception("Email Bean not initialized with path");
 			String path = rootPath + "attachments/";
 			String fileName = "welcome.doc";
-			sendAttachment(from, to, cc, subject, message, path, fileName);		
+			sendAttachment(from, to, cc, subject, body, path, fileName);
 		} else {
-			sendEmail(from, to, cc, subject, message);	
+			sendEmail(from, to, cc, subject, body);
 		}//else
 		cBean.writeWelcomeEmailDateToDB(aBean.id, adminName);
 	}//sendWelcomeEmail
@@ -469,22 +427,31 @@ public class EmailBean extends DataBean{
 	public static void sendPasswordEmail(String id, String username, String pass, 
 				String email, String contact) throws Exception {
 		String from = FROM_INFO;
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(id);
 		String to = email;
 		String cc = "";
+		
+		// If contractor has secondEmail, cc them too
+		ContractorBean cBean = new ContractorBean();
+		cBean.setFromDB(id);
 		if (null!=cBean.secondEmail)
 		   cc = cBean.secondEmail;
-		String subject = "PICS login info";
-		String message = "Attn:" + contact + endl + endl +
-			"This is an automatically generated email to remind you of your username and password to log in " +
-			"to the Pacific Industrial Contractor Screening (PICS) website." + endl + endl +
-			"Your username is: " + username + endl +
-			"and your password is: " + pass + endl + endl +
-			"If you have any questions or did not request that this email be sent to you, please let us know." + 
-			endl + endl + EMAIL_FOOTER;
+		
+		AppPropertiesBean props = new AppPropertiesBean();
+		String subject = props.get("email_password_subject");
+		
+		String message = props.get("email_password_body");
+		message = message.replace("${username}", username);
+		message = message.replace("${password}", pass);
+		message = message.replace("${contact}", contact);
+		String footer = props.get("email_footer");
+		footer = footer.replace("${fax}", props.get("main_fax"));
+		footer = footer.replace("${email}", props.get("main_email"));
+		footer = footer.replace("${ext}", "");
+		message = message.replace("${email_footer}", footer);
+
 		sendEmail(from, to, cc, subject, message);
-		cBean.setFromDB(id);
+		
+		// If contractor, add a note to their account
 		cBean.addNote(id, "(PICS)", "Password email reminder sent to "+contact+" ("+email+")", DateBean.getTodaysDateTime());
 		cBean.writeToDB();
 	}//sendPasswordEmail
@@ -703,24 +670,6 @@ public class EmailBean extends DataBean{
 		sendEmails(from, to, cc, subject, message);
 	}//sendAuditClosedEmailToOperator
 
-	// 1/19/05 jj - sends emails to those operators wishing to be notified that this contractor was activated 
-	//				i took the code for this method from accounts_edit_contractor
-/*	public static void sendActivationEmails(String con_id) throws Exception {
-		AccountBean aBean = new AccountBean();
-		ContractorBean cBean = new ContractorBean();
-		aBean.setFromDB(con_id);
-		cBean.setFromDB(con_id);
-		String contractorName = aBean.name;
-		String[] generals = cBean.getGeneralContractorsArray();
-		for (int x = 0; x < generals.length; x++) {
-			aBean.setFromDB(generals[x]);
-			String to = aBean.activationEmails;
-			String operatorName = aBean.name;
-			if ("Y".equals(aBean.sendActivationEmail) && (null != to))
-				sendActivationEmailToOperator(con_id,to,contractorName,operatorName);	
-		}//generals for
-	}//sendActivationEmails
-*/
 	public static void sendContactUsEmail(String name, String email, String phone, String sendTo, String message) throws Exception {
 		String text = "Name: "+name+"\nEmail: "+email+"\nPhone: "+phone+"\nMessage:\n"+message;
 		sendEmail(email,sendTo,"","Email from PICS website",text);
@@ -823,60 +772,6 @@ public class EmailBean extends DataBean{
 		cBean.writeToDB();
 	}//sendDesktopClosedSurveyEmail
 
-/*	public static void sendWelcomeEmailAttachment(String subject, String message, String email) throws Exception {
-		if (null == rootPath) 
-			throw new Exception("Email Bean not initialized with path");
-			
-		String path = rootPath + "attachments/";
-		String fileName = "welcome.doc";
-		String from = "info@picsauditing.com";
-		String to = email;
-		String subject = "You successfully created a new PICS company account";
-		String message = "Welcome to Pacific Industrial Contractor Screening! (PICS)" + endl + endl + 
-			"We are happy to have you as a customer." + endl + endl +
-			"To log in to your account, go to www.picsauditing.com. Your username is \"" + username + 
-			"\" and your password is \"" + pass + "\"." + endl + endl +
-			"Attached is a letter explaining our services. Please review it. The first time you log in, " +
-			"you will be prompted to select the account type you would like to have." + endl +
-			"As always we appreciate your business and are here to answer any questions you may " +
-			"have." + endl + endl + EMAIL_FOOTER;
-		sendAttachment(from, to, subject, message, path, fileName);
-	}//sendAttachmentTest
-*/
-
-	public void writeWelcomeEmailValuesToDB(String newWelcomeEmailSubject, String welcomeEmailGreeting,
-				String newWelcomeEmailBody, String attachWelcomeEmailFile) throws Exception {
-		String updateQuery = "UPDATE adminValues SET welcomeEmailBody='"+Utilities.escapeQuotes(newWelcomeEmailBody)+
-				"', welcomeEmailSubject='"+Utilities.escapeQuotes(newWelcomeEmailSubject)+
-				"', attachWelcomeEmailFile='"+attachWelcomeEmailFile+
-				"', welcomeEmailGreeting='"+Utilities.escapeQuotes(welcomeEmailGreeting)+"';";
-		try{
-			DBReady();
-			SQLStatement.executeUpdate(updateQuery);
-		}finally{
-			DBClose();
-		}//finally
-	}//writeWelcomeEmailValuesToDB
-
-	public void setFromDB() throws Exception {
-		String Query = "SELECT * FROM adminValues;";
-		try{
-			DBReady();
-			ResultSet SQLResult = SQLStatement.executeQuery(Query);
-			if (SQLResult.next()) {
-				welcomeEmailBody = SQLResult.getString("welcomeEmailBody");
-				welcomeEmailSubject = SQLResult.getString("welcomeEmailSubject");
-				welcomeEmailGreeting = SQLResult.getString("welcomeEmailGreeting");
-				attachWelcomeEmailFile = SQLResult.getString("attachWelcomeEmailFile");
-			}//if
-			else
-				throw new Exception("No welcome email text in adminValues");
-			SQLResult.close();
-		}finally{
-			DBClose();
-		}//finally
-	}//setFromDB
-
 	public static void sendAnnualUpdateEmail(String conID, String adminName) throws Exception {
 		AccountBean aBean = new AccountBean();
 		aBean.setFromDB(conID);
@@ -887,44 +782,18 @@ public class EmailBean extends DataBean{
 		if (null!=cBean.secondEmail)
 		   cc = cBean.secondEmail;
 		String from = FROM_INFO;
-//		String subject = aBean.name+", time to update your PICS information";
-		String subject = "PICS PQF UPDATE.  Action Required";
-		String message =  "Hello "+aBean.contact+","+endl+endl+
-			//"This is your last reminder to update your PQF on the PICS website."+endl+
-			"It is time for you to update "+aBean.name+"'s company information that PICS provides to your clients. "+
-			"Each January, the facilities you currently work at require your company to update your prequalification "+
-			"information online and resubmit it. If you do not update this information you will become inactive beginning March 1, which "+
-			"will remove you from your clients' approved contractor list until the forms are completed. As a reminder, "+
-			"audits are performed on a 3 year rotation as well."+
-			endl+endl+
-			"Please Log into the website at http://www.picsauditing.com. "+
-			"If you are unable to log in to your account, you may "+
-			"have forgotten your username and password. If this is the case, you can go to "+
-			"http://www.picsauditing.com/forgot_password.jsp. If this does not work you can call or email us."+
-			endl+endl+
-			"PICS has made some changes to the website over the past year so please make sure that you check all of your "+
-			"company information, which will provide your clients with the most current details about your business."+
-			endl+endl+
-			"There are several items that must be updated annually. Upon logging in to your account, please follow these steps:"+
-			endl+endl+
-			"  1.	First click on the [Facilities] link from your details page, which will direct you to a page that will have "+
-			"you indicate and verify which operators/facilities your company works for. If you do not choose the facilities they "+
-			"will not be able to view your information, which could prevent you from working there." +
-			endl+endl+
-			"  2.	Next, you will need to click on the [Complete PQF] link from your details page. This will direct you to the "+
-			"prequalification form (PQF). There are some new additions for 2008. You will need to complete all of the new questions "+
-			"and update anything that has changed in order to submit it. As a reminder each section must indicate 100% before you "+
-			"can resubmit the PQF. MAKE SURE YOU SUBMIT THE PQF WHEN COMPLETE."+
-			"The most time-consuming item is to have your OSHA 300 log from 2007 filled out and your latest EMR."+
-			endl+endl+
-			"  3.	After submitting a completed PQF please review your details page where you can check on your company's status and "+
-			"review/edit your company details. Please update your details page to indicate a billing contact person for your company."+
-			endl+endl+
-			"Please make sure that you update all of this information and have it submitted Feb 29 so that your company "+
-			"is not removed from any of the facilities' approved contractor list."+
-			endl+endl+
-			"If you have any questions or concerns, feel free to contact us."+endl+endl+
-			"Thanks, and have a safe year!"+endl+endl+EMAIL_FOOTER;
+		
+		AppPropertiesBean props = new AppPropertiesBean();
+		String subject = props.get("email_annual_update_subject");
+		String message = props.get("email_annual_update_body");
+		message = message.replace("${aBean.contact}", aBean.contact);
+		message = message.replace("${aBean.name}", aBean.name);
+		String footer = props.get("email_footer");
+		footer = footer.replace("${fax}", props.get("main_fax"));
+		footer = footer.replace("${email}", props.get("main_email"));
+		footer = footer.replace("${ext}", "");
+		message = message.replace("${email_footer}", footer);
+
 		sendEmail(from, to, cc, subject, message);
 		cBean.addNote(conID, "("+adminName+")", "Annual update email sent to: "+to, DateBean.getTodaysDateTime());
 		cBean.lastAnnualUpdateEmailDate=DateBean.getTodaysDate();

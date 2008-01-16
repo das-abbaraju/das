@@ -1,11 +1,10 @@
 ﻿<?xml version="1.0"?>
 
 <project name="PICS Webtest" default="wt.full">
-	<property name="webtest.home" value="C:\java\webtest"/>
-	<property name="login.password" value="bigboy11"/>
+	<property file="build.properties" />
 
 	<import file="definitions.xml" description="Import custom definitions (if any)"/>
 	<import file="${webtest.home}/webtest.xml" description="Import all functionalities for a full build"/>
-	
+
 	<property name="wt.testInWork" value="tests/all.xml"/>
 </project>

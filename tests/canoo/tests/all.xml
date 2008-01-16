@@ -4,6 +4,7 @@
 	<target name="test" description="runs all the tests">
 	<!--
 		Comment out tests you don't want to run right now
+		<ant antfile="contractor.xml"/>
 	-->
 		<ant antfile="marketingPages.xml"/>
 		<ant antfile="login.xml"/>
