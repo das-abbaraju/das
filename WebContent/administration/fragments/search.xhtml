@@ -30,7 +30,12 @@
 							styleClass="forms" reRender="details,contractorTable" />						
 				<a4j:commandButton value="Clear"
 							actionListener="#{contractorBean.clear}" styleClass="forms"
-							reRender="search,details,contractorTable" />
+							reRender="search,details,contractorTable" >
+							<f:setPropertyActionListener target="#{oshaBean.cid}"
+								value="#{oshaBean.clearCid}" />
+							<f:setPropertyActionListener target="#{emrBean.cid}"
+								value="#{emrBean.clearCid}" />
+				</a4j:commandButton>
 			</h:panelGrid>
 		</a4j:form>
 	</rich:simpleTogglePanel>
