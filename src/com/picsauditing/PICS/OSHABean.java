@@ -369,7 +369,10 @@ public class OSHABean extends DataBean {
 					
 		String percentCompleted = "100";
 		if(numRequired !=0)			
-			percentCompleted = intFormatter.format(((float)requiredCompleted*100)/numRequired);		
+			percentCompleted = intFormatter.format(((float)requiredCompleted*100)/numRequired);
+		
+		if(Float.parseFloat(percentCompleted) > 100)
+			percentCompleted = "100";
 
 		pcBean.replaceCatData("29",cID,"Yes",""+requiredCompleted,""+numRequired,percentCompleted);	
 	}//udpateNumRequired
