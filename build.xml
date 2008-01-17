@@ -9,7 +9,7 @@
 	<property name="target.dir.local.conf" value="${target.dir.local}/conf"/>
 	<property name="target.dir.local.build" value="${target.dir.local}/build"/>
 	<property name="target.dir.local.lib" value="${target.dir.local}/lib"/>
-	<property name="target.dir.local.root" value="buildSDP"/>
+	<property name="target.dir.local.root" value="target"/>
 	<property name="target.dir.local.docs" value="${target.dir.local}/docs"/>
 	<property name="tomcat5.local.lib" value="${env.CATALINA_HOME}/common/lib" />
 	
