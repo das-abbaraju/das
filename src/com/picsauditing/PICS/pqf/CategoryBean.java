@@ -459,7 +459,6 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 					int endCID = temp.indexOf("_oID");
 					int begOID = temp.indexOf("_oID")+5;
 					String riskLevel = temp.substring(10, endRiskLevel);
-					System.out.println(riskLevel);
 					String cID = temp.substring(begCID, endCID);
 					String oID = temp.substring(begOID);
 					//pcBean.writeToDB(subCID, subQID);

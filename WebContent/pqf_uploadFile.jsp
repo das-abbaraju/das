@@ -27,6 +27,7 @@
 		pdBean.uploadPQFFile(pageContext,conID,catID);		
 		if (pdBean.isOK()) {
 			pdBean.savePQFUpload(request,conID,catID,auditType,pBean.userID);
+			pdBean.updatePercentageCompleted(conID,catID,auditType);
 			cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(conID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
 			cBean.setPercentVerified(auditType,pdBean.getPercentVerified(conID,auditType));			
 			cBean.writeToDB();
@@ -78,7 +79,7 @@
             <td>&nbsp;</td>
             <td colspan="3" align="center">
 			  <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
-			    <form name="formEdit" method="post" action="pqf_uploadFile.jsp?catID=<%=catID%>&id=<%=id%>&action=Save" enctype="multipart/form-data">
+			    <form name="formEdit" method="post" action="pqf_uploadFile.jsp?auditType=<%=auditType%>&catID=<%=catID%>&id=<%=id%>&action=Save" enctype="multipart/form-data">
                 <tr align="left" class="blueMain">
                   <td><%@ include file="includes/nav/secondNav.jsp"%></td>
 				</tr>
@@ -157,9 +158,6 @@
                     Click to save your work. You may still edit your information 
                     later. </td>
 				  </tr>
-			      <input type="hidden" name="catID" value="<%=catID%>">
-			      <input type="hidden" name="id" value="<%=conID%>">
-			      <input type="hidden" name="auditType" value="<%=auditType%>">
 			    </form>
 <%	}//if %>
 			  </table>
