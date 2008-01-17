@@ -548,6 +548,8 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 
 	public void generateDynamicCategories(String conID, String auditType, String riskLevel) throws Exception {
 		try{
+			if (riskLevel == ContractorBean.RISK_LEVEL_VALUES_ARRAY[2])
+				riskLevel = ContractorBean.RISK_LEVEL_VALUES_ARRAY[1];
 			DBReady();
 			HashSet<String> catIDSet = new HashSet<String>();
 			if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType)){
