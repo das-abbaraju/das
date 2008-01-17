@@ -1,13 +1,8 @@
 <project name="buildPics" default="buildSDP" basedir=".">
-	
-	<!--<property name="maven.repo.local" value="C:/Users/Glenn/.m2/repository"/>
-	<property name="hibernate.local" value="C:/Users/Glenn/usr/local/PicsWeb2 Libraries/Hibernate"/>
-	<property name="CATALINA_HOME" value="C:/Users/Glenn/usr/local/apache-tomcat-5.5.20/common/lib"/>
-	<property name="target.dir.local" value="C:/Users/Glenn/picsWeb2_target"/>
-	-->
+		
 	<property environment="env"/>
 	<property name="hibernate.local" value="${user.home}/Hibernate"/>
-	<property name="target.dir.local" value="${java.io.tmp}/picsWeb2"/>
+	<property name="target.dir.local" value="${java.io.tmpdir}/picsWeb2"/>
 	<property name="maven.repo.local" value="${user.home}/.m2/repository"/>	
 	<property name="target.dir.local.src" value="${target.dir.local}/src"/>	
 	<property name="target.dir.local.web" value="${target.dir.local}/web"/>	
