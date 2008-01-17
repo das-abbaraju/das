@@ -1,4 +1,4 @@
-<project name="buildPics" default="war" basedir=".">
+<project name="buildPics" default="buildWar" basedir=".">
 	
 	<property name="maven.repo.local" value="C:/Users/Glenn/.m2/repository"/>
 	<property name="hibernate.local" value="C:/Users/Glenn/usr/local/PicsWeb2 Libraries/Hibernate"/>
@@ -9,9 +9,11 @@
 	<property name="target.dir.local.conf" value="${target.dir.local}/conf"/>
 	<property name="target.dir.local.build" value="${target.dir.local}/build"/>
 	<property name="target.dir.local.lib" value="${target.dir.local}/lib"/>
+	<property name="target.dir.local.root" value="${target.dir.local}/ROOT"/>
 	<property name="svn.out" value="C:/Users/Glenn/workspace/picsWeb2" />
 	<property name="src" value="${target.dir.local.src}"/>
 	<property name="build" value="${target.dir.local.build}"/>
+	
 	
 	<path id="build.classpath">
 			<fileset dir="${maven.repo.local}">
@@ -108,7 +110,7 @@
 		</copy>
 	</target>
 	
-	<target name="war" depends="compile,copy_persistence" description="Create deploy directory" >
+	<target name="war" depends="compile,copy_persistence" description="Create war file" >
 		<war destfile="${target.dir.local}/ROOT.war" webxml="${target.dir.local.conf}/web.xml">
 		  <fileset dir="${target.dir.local.web}"/>
 		  <lib dir="${target.dir.local.lib}"/>	   
@@ -122,5 +124,10 @@
 		  </metainf>	
 		</war>		
 	</target>
+	
+	<target name="buildWar" depends="war" description="Create deploy directory for automated build">
+		<unzip src="${target.dir.local}/ROOT.war" dest="${target.dir.local.root}"/>
+	</target>
+	
 		
 </project>
