@@ -1,4 +1,4 @@
-<project name="buildPics" default="buildWar" basedir=".">
+<project name="buildPics" default="buildSDP" basedir=".">
 	
 	<property name="maven.repo.local" value="C:/Users/Glenn/.m2/repository"/>
 	<property name="hibernate.local" value="C:/Users/Glenn/usr/local/PicsWeb2 Libraries/Hibernate"/>
@@ -10,7 +10,7 @@
 	<property name="target.dir.local.conf" value="${target.dir.local}/conf"/>
 	<property name="target.dir.local.build" value="${target.dir.local}/build"/>
 	<property name="target.dir.local.lib" value="${target.dir.local}/lib"/>
-	<property name="target.dir.local.root" value="${target.dir.local}/ROOT"/>
+	<property name="target.dir.local.root" value="${target.dir.local}/target"/>
 	<property name="target.dir.local.docs" value="${target.dir.local}/docs"/>
 	
 	<property name="src" value="${target.dir.local.src}"/>
@@ -128,8 +128,8 @@
 		</war>		
 	</target>
 	
-	<target name="buildWar" depends="war" description="Create deploy directory for automated build">
-		<unzip src="${target.dir.local}/ROOT.war" dest="${target.dir.local.root}"/>
+	<target name="buildSDP" depends="war" description="Create deploy directory for automated build">
+		<unzip src="${target.dir.local}/ROOT.war" dest="${target.dir.local.root}"/>		
 	</target>
 	
 	<target name="buildDocs" description="Create javadocs">
