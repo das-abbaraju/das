@@ -134,18 +134,19 @@
 	</target>
 	
 	<target name="buildDocs" description="Create javadocs">
-	<javadoc destdir="${target.dir.local.docs}/api"
+		<javadoc destdir="docs"
 	           author="true"
 	           version="true"
+                   classpathref="build.classpath"
 	           use="true"
-		       windowtitle="PICS API">
-	    <fileset dir="${target.dir.local.src}" defaultexcludes="yes">
-	       <include name="com/picsauditing/**"/>
-	    </fileset>
-		
-		<doctitle><![CDATA[<h1>Test</h1>]]></doctitle>
-		<bottom><![CDATA[<i>Copyright &#169; 2008 Pacific Industrial Contractor Screening. All Rights Reserved.</i>]]></bottom>
-		<tag name="todo" scope="all" description="To do:"/>		
-	</javadoc>
- </target>		
+		   windowtitle="PICS API">
+			<fileset dir="src" defaultexcludes="yes">
+				<include name="com/picsauditing/PICS/**"/>
+			</fileset>
+
+			<doctitle><![CDATA[<h1>PICS Java Docs</h1>]]></doctitle>
+			<bottom><![CDATA[<i>Copyright &#169; 2008 Pacific Industrial Contractor Screening. All Rights Reserved.</i>]]></bottom>
+			<tag name="todo" scope="all" description="To do:"/>		
+		</javadoc>
+	</target>		
 </project>
