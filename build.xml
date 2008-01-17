@@ -1,24 +1,25 @@
 <project name="buildPics" default="buildSDP" basedir=".">
-	
-	<property name="maven.repo.local" value="C:/Users/Glenn/.m2/repository"/>
+	<property environment="env"/>
+	<!--<property name="maven.repo.local" value="C:/Users/Glenn/.m2/repository"/>
 	<property name="hibernate.local" value="C:/Users/Glenn/usr/local/PicsWeb2 Libraries/Hibernate"/>
-	<property name="tomcat5.local" value="C:/Users/Glenn/usr/local/apache-tomcat-5.5.20/common/lib"/>
+	<property name="tomcat5.local.lib" value="C:/Users/Glenn/usr/local/apache-tomcat-5.5.20/common/lib"/>
 	<property name="target.dir.local" value="C:/Users/Glenn/picsWeb2_target"/>
+	-->
 	
-	<property name="target.dir.local.src" value="${target.dir.local}/src"/>	
-	<property name="target.dir.local.web" value="${target.dir.local}/web"/>	
-	<property name="target.dir.local.conf" value="${target.dir.local}/conf"/>
-	<property name="target.dir.local.build" value="${target.dir.local}/build"/>
-	<property name="target.dir.local.lib" value="${target.dir.local}/lib"/>
-	<property name="target.dir.local.root" value="${target.dir.local}/target"/>
-	<property name="target.dir.local.docs" value="${target.dir.local}/docs"/>
+	<property name="target.dir.local.src" value="${env.target.dir.local}/src"/>	
+	<property name="target.dir.local.web" value="${env.target.dir.local}/web"/>	
+	<property name="target.dir.local.conf" value="${env.target.dir.local}/conf"/>
+	<property name="target.dir.local.build" value="${env.target.dir.local}/build"/>
+	<property name="target.dir.local.lib" value="${env.target.dir.local}/lib"/>
+	<property name="target.dir.local.root" value="${env.target.dir.local}/target"/>
+	<property name="target.dir.local.docs" value="${env.target.dir.local}/docs"/>
 	
 	<property name="src" value="${target.dir.local.src}"/>
 	<property name="build" value="${target.dir.local.build}"/>
 	
 	
 	<path id="build.classpath">
-			<fileset dir="${maven.repo.local}">
+			<fileset dir="${env.maven.repo.local}">
 				<include name="commons-io/commons-io/1.3.1/commons-io-1.3.1.jar" />
 				<include name="activation/activation/1.1/activation-1.1.jar" />
 				<include name="commons-fileupload/commons-fileupload/1.2/commons-fileupload-1.2.jar" />
@@ -38,17 +39,17 @@
 				<include name="richfaces/richfaces-impl/3.1.3.GA/richfaces-impl-3.1.3.GA.jar"/>
 				<include name="richfaces/richfaces-ui/3.1.3.GA/richfaces-ui-3.1.3.GA.jar"/>				
 			</fileset>
-		    <fileset dir="${hibernate.local}">
+		    <fileset dir="${env.hibernate.local}">
 		    	<include name="*.*"/>
 		    </fileset>
-		 	<fileset dir="${tomcat5.local}">
+		 	<fileset dir="${env.tomcat5.local.lib}">
 				<include name="*.*"/>
 			</fileset>
 		    
 	</path>
 	
 	<target name="init" description="Create the output directories">
-		<mkdir dir="${target.dir.local}" />	
+		<mkdir dir="${env.target.dir.local}" />	
 		<mkdir dir="${target.dir.local.src}" />
 		<mkdir dir="${target.dir.local.lib}" />	
 		<mkdir dir="${target.dir.local.web}" />
@@ -58,7 +59,7 @@
 	</target>
 	
 	<target name="clean" description="Clean the output directory">
-			<delete dir="${target.dir.local}" />
+			<delete dir="${env.target.dir.local}" />
 	</target>
 	
 	<target name="svn_out" depends="clean,init" description="Massage the svn source tree into the target directory tree">
@@ -72,7 +73,7 @@
 		    <fileset dir="WebContent" excludes="META-INF/**,WEB-INF/**"/>		  
 		</copy>
 		<copy todir="${target.dir.local.lib}" flatten="true">
-			<fileset dir="${maven.repo.local}">
+			<fileset dir="${env.maven.repo.local}">
 				<include name="commons-io/commons-io/1.3.1/commons-io-1.3.1.jar" />
 				<include name="activation/activation/1.1/activation-1.1.jar" />
 				<include name="commons-fileupload/commons-fileupload/1.2/commons-fileupload-1.2.jar" />
@@ -92,7 +93,7 @@
 				<include name="richfaces/richfaces-impl/3.1.3.GA/richfaces-impl-3.1.3.GA.jar"/>
 				<include name="richfaces/richfaces-ui/3.1.3.GA/richfaces-ui-3.1.3.GA.jar"/>				
 			</fileset>
-		    <fileset dir="${hibernate.local}">
+		    <fileset dir="${env.hibernate.local}">
 		    	<include name="*.*"/>
 		    </fileset>
 		  </copy>
@@ -114,7 +115,7 @@
 	</target>
 	
 	<target name="war" depends="compile,copy_persistence" description="Create war file" >
-		<war destfile="${target.dir.local}/ROOT.war" webxml="${target.dir.local.conf}/web.xml">
+		<war destfile="${env.target.dir.local}/ROOT.war" webxml="${target.dir.local.conf}/web.xml">
 		  <fileset dir="${target.dir.local.web}"/>
 		  <lib dir="${target.dir.local.lib}"/>	   
 		  <classes dir="${target.dir.local.build}"/>
@@ -129,7 +130,7 @@
 	</target>
 	
 	<target name="buildSDP" depends="war" description="Create deploy directory for automated build">
-		<unzip src="${target.dir.local}/ROOT.war" dest="${target.dir.local.root}"/>		
+		<unzip src="${env.target.dir.local}/ROOT.war" dest="${target.dir.local.root}"/>		
 	</target>
 	
 	<target name="buildDocs" description="Create javadocs">
