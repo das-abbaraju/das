@@ -4,13 +4,14 @@
 	<property name="hibernate.local" value="C:/Users/Glenn/usr/local/PicsWeb2 Libraries/Hibernate"/>
 	<property name="tomcat5.local" value="C:/Users/Glenn/usr/local/apache-tomcat-5.5.20/common/lib"/>
 	<property name="target.dir.local" value="C:/Users/Glenn/picsWeb2_target"/>
+	
 	<property name="target.dir.local.src" value="${target.dir.local}/src"/>	
 	<property name="target.dir.local.web" value="${target.dir.local}/web"/>	
 	<property name="target.dir.local.conf" value="${target.dir.local}/conf"/>
 	<property name="target.dir.local.build" value="${target.dir.local}/build"/>
 	<property name="target.dir.local.lib" value="${target.dir.local}/lib"/>
 	<property name="target.dir.local.root" value="${target.dir.local}/ROOT"/>
-	<property name="svn.out" value="C:/Users/Glenn/workspace/picsWeb2" />
+	
 	<property name="src" value="${target.dir.local.src}"/>
 	<property name="build" value="${target.dir.local.build}"/>
 	
@@ -60,13 +61,13 @@
 	
 	<target name="svn_out" depends="clean,init" description="Massage the svn source tree into the target directory tree">
 		<copy todir="${target.dir.local.src}" >
-		    <fileset dir="${svn.out}/src"/>
+		    <fileset dir="src"/>
 		</copy>		
 		<copy todir="${target.dir.local.conf}" >
-		    <fileset dir="${svn.out}/conf"/>
+		    <fileset dir="conf"/>
 		</copy>
 		<copy todir="${target.dir.local.web}">
-		    <fileset dir="${svn.out}/WebContent" excludes="META-INF/**,WEB-INF/**"/>		  
+		    <fileset dir="WebContent" excludes="META-INF/**,WEB-INF/**"/>		  
 		</copy>
 		<copy todir="${target.dir.local.lib}" flatten="true">
 			<fileset dir="${maven.repo.local}">
