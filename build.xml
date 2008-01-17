@@ -11,6 +11,7 @@
 	<property name="target.dir.local.build" value="${target.dir.local}/build"/>
 	<property name="target.dir.local.lib" value="${target.dir.local}/lib"/>
 	<property name="target.dir.local.root" value="${target.dir.local}/ROOT"/>
+	<property name="target.dir.local.docs" value="${target.dir.local}/docs"/>
 	
 	<property name="src" value="${target.dir.local.src}"/>
 	<property name="build" value="${target.dir.local.build}"/>
@@ -52,7 +53,8 @@
 		<mkdir dir="${target.dir.local.lib}" />	
 		<mkdir dir="${target.dir.local.web}" />
 		<mkdir dir="${target.dir.local.conf}" />
-		<mkdir dir="${target.dir.local.build}" />		
+		<mkdir dir="${target.dir.local.build}" />
+		<mkdir dir="${target.dir.local.docs}" />	
 	</target>
 	
 	<target name="clean" description="Clean the output directory">
@@ -130,5 +132,19 @@
 		<unzip src="${target.dir.local}/ROOT.war" dest="${target.dir.local.root}"/>
 	</target>
 	
+	<target name="buildDocs" description="Create javadocs">
+	<javadoc destdir="${target.dir.local.docs}/api"
+	           author="true"
+	           version="true"
+	           use="true"
+		       windowtitle="PICS API">
+	    <fileset dir="${target.dir.local.src}" defaultexcludes="yes">
+	       <include name="com/picsauditing/**"/>
+	    </fileset>
 		
+		<doctitle><![CDATA[<h1>Test</h1>]]></doctitle>
+		<bottom><![CDATA[<i>Copyright &#169; 2008 Pacific Industrial Contractor Screening. All Rights Reserved.</i>]]></bottom>
+		<tag name="todo" scope="all" description="To do:"/>		
+	</javadoc>
+ </target>		
 </project>
