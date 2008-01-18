@@ -133,16 +133,17 @@
             <td colspan="2" align="center"><%=oBean.isNa3()? "Yes" : "No" %></td>
         </tr>
         <tr>
-          <td class="redMain"><%=oBean.SHAType%> Log Files
-<%		if (!"".equals(oBean.OID) && (pBean.isAdmin() || cID.equals(pBean.userID) || (pBean.isAuditor() && pBean.canVerifyAudit(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,cID)))) { %>
-            <a href="pqf_OSHA.jsp?action=Edit&id=<%=conID%>&catID=<%=catID%>&oID=<%=oBean.OID%>">Click here to edit this location</a>
-<%		}//if %>		  </td>
-          
+          <td class="redMain"><%=oBean.SHAType%> Log Files</td>          
           <td colspan="2" align="center"><%=oBean.getFile1YearAgoLink()%></td>
           <td colspan="2" align="center"><%=oBean.getFile2YearAgoLink()%></td>
           <td colspan="2" align="center"><%=oBean.getFile3YearAgoLink()%></td>
           <td colspan="2">&nbsp;</td>
         </tr>
+        <tr>
+        	<td><%		if (!"".equals(oBean.OID) && (pBean.isAdmin() || cID.equals(pBean.userID) || (pBean.isAuditor() && pBean.canVerifyAudit(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,cID)))) { %>
+            <a href="pqf_OSHA.jsp?action=Edit&id=<%=conID%>&catID=<%=catID%>&oID=<%=oBean.OID%>">Click here to edit this location</a>
+<%		}//if %></td></tr>
+   
       </table>
     </td>
   </tr>

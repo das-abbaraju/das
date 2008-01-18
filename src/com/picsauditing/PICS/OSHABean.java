@@ -325,55 +325,29 @@ public class OSHABean extends DataBean {
 		}//finally
 	}//writeToDB
 
+	private int calcNumCompleted(boolean na, int manHours, String fileUpload) {
+		int i = 0;
+		if (na)
+			return 2;
+		if (manHours > 0) 
+			i++;
+		if (fileUpload.equals("No"))
+			i++;
+		
+		return i;		
+	}
+	
 	public void updateNumRequired(String cID) throws Exception {
 		if (!"Corporate".equals(location))
 			return;
 		com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
-		int numRequired = 9;
-		int requiredCompleted = 0;
-		//Adjust for NA
-		if(na1)
-			requiredCompleted+=3;
-		if(na2)
-			requiredCompleted+=3;		
-		if(na3)
-			requiredCompleted+=3;
+		int numRequired = 6;
+		float factor = 100f/6f;
+		int requiredCompleted = calcNumCompleted(na1,stats[MAN_HOURS][YEAR1],file1YearAgo);		
+		requiredCompleted+=calcNumCompleted(na2,stats[MAN_HOURS][YEAR2],file1YearAgo);
+		requiredCompleted+=calcNumCompleted(na3,stats[MAN_HOURS][YEAR3],file1YearAgo);
 		
-		//Adjust for man hours
-		if(!na1 && 0 != stats[MAN_HOURS][YEAR1]){
-			requiredCompleted+=1;
-			numRequired = 6;
-		}		
-		if(!na2 && 0 != stats[MAN_HOURS][YEAR2]){
-			requiredCompleted+=1;
-			numRequired = 6;
-		}
-		if(!na3 && 0 != stats[MAN_HOURS][YEAR3]){
-			requiredCompleted+=1;
-			numRequired = 6;
-		}
-		
-		//Adjust for file uploads
-		if(!na1 && "Yes".equals(file1YearAgo)){
-			requiredCompleted+=1;
-			numRequired = 6;
-		}		
-		if(!na2 && "Yes".equals(file2YearAgo)){
-			requiredCompleted+=1;
-			numRequired = 6;
-		}
-		if(!na3 && "Yes".equals(file3YearAgo)){
-			requiredCompleted+=1;
-			numRequired = 6;
-		}
-					
-		String percentCompleted = "100";
-		if(numRequired !=0)			
-			percentCompleted = intFormatter.format(((float)requiredCompleted*100)/numRequired);
-		
-		if(Float.parseFloat(percentCompleted) > 100)
-			percentCompleted = "100";
-
+		String percentCompleted = intFormatter.format(requiredCompleted * factor);
 		pcBean.replaceCatData("29",cID,"Yes",""+requiredCompleted,""+numRequired,percentCompleted);	
 	}//udpateNumRequired
 	
