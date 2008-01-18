@@ -19,7 +19,8 @@ public class SearchAccounts extends SearchRaw {
 
 	/**
 	 * Can only set the type of account search once
-	 * 
+	 * Contractor joins to contractor_info c
+	 * Operator joins to operators o
 	 * @param type
 	 */
 	public void setType(Type type) {
@@ -34,5 +35,9 @@ public class SearchAccounts extends SearchRaw {
 		if (type == Type.Operator) {
 			this.sql.addJoin("JOIN operators o ON a.id = o.id");
 		}
+	}
+	
+	public void addPQFQuestion() {
+		
 	}
 }

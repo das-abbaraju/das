@@ -547,8 +547,6 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 
 	public void generateDynamicCategories(String conID, String auditType, String riskLevel) throws Exception {
 		try{
-			if (riskLevel == ContractorBean.RISK_LEVEL_VALUES_ARRAY[2])
-				riskLevel = ContractorBean.RISK_LEVEL_VALUES_ARRAY[1];
 			DBReady();
 			HashSet<String> catIDSet = new HashSet<String>();
 			if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType)){
@@ -563,6 +561,15 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 				SQLResult.close();
 			}//if
 			if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType)){
+				// High uses the Medium riskLevel Trevor 1/18/2008
+				//if (riskLevel == ContractorBean.RISK_LEVEL_VALUES_ARRAY[2])
+				//	riskLevel = ContractorBean.RISK_LEVEL_VALUES_ARRAY[1];
+				//System.out.println(ContractorBean.RISK_LEVEL_VALUES_ARRAY[0]);
+				System.out.println(ContractorBean.RISK_LEVEL_VALUES_ARRAY[1]);
+				System.out.println(ContractorBean.RISK_LEVEL_VALUES_ARRAY[2]);
+				//System.out.println(ContractorBean.RISK_LEVEL_VALUES_ARRAY[3]);
+				if (riskLevel.equals("3")) riskLevel = "2";
+				
 				String selectQuery = "SELECT catID FROM pqfOpMatrix INNER JOIN generalContractors ON "+
 					"(pqfOpMatrix.opID=generalContractors.genID "+
 					"AND generalContractors.subID="+conID+" "+
@@ -593,25 +600,24 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		}finally{
 			DBClose();
 		}//finally
-	}//generateDynamicCategories
+	}
 
 	public void regenerateAllPQFCategories() throws Exception {
-		ArrayList<String> conIDsAL = new ArrayList<String>();
-		String selectQuery = "SELECT id FROM accounts WHERE type='Contractor'";
+		Map<String, String> list = new HashMap<String, String>();
+		String selectQuery = "SELECT id, riskLevel FROM contractor_info";
 		try{
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery );
 			while (SQLResult.next())
-				conIDsAL.add(SQLResult.getString("id"));
+				list.put(SQLResult.getString("id"), SQLResult.getString("riskLevel"));
 			SQLResult.close();
-		}finally{
+		} finally {
 			DBClose();
-		}//finally
-		for (String conID : conIDsAL){
-			generateDynamicCategories(conID,Constants.PQF_TYPE,ContractorBean.RISK_LEVEL_VALUES_ARRAY[0]);
-			generateDynamicCategories(conID,Constants.PQF_TYPE,ContractorBean.RISK_LEVEL_VALUES_ARRAY[1]);
-		}//for
-	}//regenerateDAllPQFCategories
+		}
+		for (Map.Entry<String, String> item : list.entrySet()) {
+			generateDynamicCategories(item.getKey(),Constants.PQF_TYPE,item.getValue());
+		}
+	}
 
 	public String getPercentShow(String percent) {
 		if ("No".equals(applies))

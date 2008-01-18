@@ -68,8 +68,10 @@
 		cBean.officePercent="0";
 		cBean.officeVerifiedPercent="0";
 		cBean.writeToDB();
-	} else if (isPQFRegen)
-		pcBean.generateDynamicCategories(conID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE,cBean.riskLevel);
+	} else if (isPQFRegen) {
+		pcBean.generateDynamicCategories(conID,Constants.PQF_TYPE,cBean.riskLevel);
+		cBean.setPercentComplete(Constants.PQF_TYPE, pdBean.getPercentComplete(conID,Constants.PQF_TYPE));
+	}
 	aBean.setFromDB(conID);
 	pdBean.setFilledOut(conID);
 %>
