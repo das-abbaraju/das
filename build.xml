@@ -1,21 +1,13 @@
 <project name="buildPics" default="buildSDP" basedir=".">
-		
+	
 	<property environment="env"/>
 	<property name="hibernate.local" value="${user.home}/Hibernate"/>
-	<property name="target.dir.local" value="${java.io.tmpdir}/picsWeb2"/>
 	<property name="maven.repo.local" value="${user.home}/.m2/repository"/>	
-	<property name="target.dir.local.src" value="${target.dir.local}/src"/>	
+	<property name="target.dir.local" value="${java.io.tmpdir}/picsWeb2"/>
 	<property name="target.dir.local.web" value="${target.dir.local}/web"/>	
 	<property name="target.dir.local.conf" value="${target.dir.local}/conf"/>
-	<property name="target.dir.local.build" value="${target.dir.local}/build"/>
 	<property name="target.dir.local.lib" value="${target.dir.local}/lib"/>
-	<property name="target.dir.local.root" value="target"/>
-	<property name="target.dir.local.docs" value="${target.dir.local}/docs"/>
 	<property name="tomcat5.local.lib" value="${env.CATALINA_HOME}/common/lib" />
-	
-	<property name="src" value="${target.dir.local.src}"/>
-	<property name="build" value="${target.dir.local.build}"/>
-	
 	
 	<path id="build.classpath">
 			<fileset dir="${maven.repo.local}">
@@ -49,22 +41,21 @@
 	
 	<target name="init" description="Create the output directories">
 		<mkdir dir="${target.dir.local}" />	
-		<mkdir dir="${target.dir.local.src}" />
 		<mkdir dir="${target.dir.local.lib}" />	
 		<mkdir dir="${target.dir.local.web}" />
 		<mkdir dir="${target.dir.local.conf}" />
-		<mkdir dir="${target.dir.local.build}" />
-		<mkdir dir="${target.dir.local.docs}" />	
+		<mkdir dir="build" />
 	</target>
 	
 	<target name="clean" description="Clean the output directory">
-			<delete dir="${target.dir.local}" />
+		<delete dir="${target.dir.local}" />
+		<delete dir="build" />
+		<delete dir="target" />
 	</target>
 	
-	<target name="svn_out" depends="clean,init" description="Massage the svn source tree into the target directory tree">
-		<copy todir="${target.dir.local.src}" >
-		    <fileset dir="src"/>
-		</copy>		
+	<target name="svn_out" unless="pics.target" description="Massage the svn source tree into the target directory tree">
+		<antcall target="clean" />
+		<antcall target="init" />
 		<copy todir="${target.dir.local.conf}" >
 		    <fileset dir="conf"/>
 		</copy>
@@ -96,17 +87,17 @@
 		    	<include name="*.*"/>
 		    </fileset>
 		  </copy>
+		<property name="pics.target" value="true"/>
 	</target>
 	
 	<target name="compile" depends="svn_out" description="Compile java classes">
-		<javac srcdir="${src}" destdir="${build}" debug="on" source="1.6">
+		<javac srcdir="src" destdir="build" debug="on" source="1.6">
 			<classpath refid="build.classpath"/>
 		</javac>
-		
 	</target>
 	
 	<target name="copy_persistence" description="Copy persistenc.xml to classes package">
-		<copy todir="${target.dir.local.build}/META-INF">
+		<copy todir="build/META-INF">
 			 <fileset dir="${target.dir.local.conf}">
 			 	<include name="persistence.xml"/>
 			 </fileset>
@@ -117,8 +108,8 @@
 		<war destfile="${target.dir.local}/ROOT.war" webxml="${target.dir.local.conf}/web.xml">
 		  <fileset dir="${target.dir.local.web}"/>
 		  <lib dir="${target.dir.local.lib}"/>	   
-		  <classes dir="${target.dir.local.build}"/>
-		  <webinf dir="${target.dir.local.conf}">
+		  <classes dir="build"/>
+		  <webinf dir="conf">
 		  	<include name="faces-config.xml"/>
 		  	<include name="log4j.xml"/>
 		  </webinf>
@@ -129,8 +120,22 @@
 	</target>
 	
 	<target name="buildSDP" depends="war" description="Create deploy directory for automated build">
-		<unzip src="${target.dir.local}/ROOT.war" dest="${target.dir.local.root}"/>	
+		<unzip src="${target.dir.local}/ROOT.war" dest="target"/>	
 		<delete dir="${target.dir.local}" />
+	</target>
+	
+	<target name="deployAlpha" depends="compile" description="Deploy Application to Alpha (local only)">
+		<move file="${target.dir.local.conf}/context_alpha.xml"
+		      tofile="${target.dir.local.conf}/context.xml" />
+		<move file="${target.dir.local.conf}/persistence_alpha.xml"
+		      tofile="${target.dir.local.conf}/persistence.xml" />
+		<antcall target="war" />
+
+		<move file="${target.dir.local}/ROOT.war" todir="${env.CATALINA_HOME}/webapps"/>
+		<delete dir="${target.dir.local}" />
+	</target>
+
+	<target name="testCopy" depends="svn_out">
 	</target>
 	
 	<target name="buildDocs" description="Create javadocs">
@@ -141,12 +146,14 @@
 	           use="true"
 		   windowtitle="PICS API">
 			<fileset dir="src" defaultexcludes="yes">
-				<include name="com/picsauditing/PICS/**"/>
+				<include name="*.java"/>
+				<include name="com/picsauditing/**"/>
 			</fileset>
 
 			<doctitle><![CDATA[<h1>PICS Java Docs</h1>]]></doctitle>
 			<bottom><![CDATA[<i>Copyright &#169; 2008 Pacific Industrial Contractor Screening. All Rights Reserved.</i>]]></bottom>
 			<tag name="todo" scope="all" description="To do:"/>		
 		</javadoc>
-	</target>		
+	</target>
 </project>
+
