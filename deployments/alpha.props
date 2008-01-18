@@ -1,4 +1,4 @@
-DBURL=jdbc:mysql://alpha.picsauditing.com:3306/pics_alpha
+DBURL=jdbc:mysql://localhost:3306/pics_alpha
 DBUSER=pics
 DBPASS=pics
 FTPDIR=/wwwroot/alpha.picsauditing.com/ftp-bin
