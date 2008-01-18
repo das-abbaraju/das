@@ -3,10 +3,9 @@
 	<property environment="env"/>
 	<property name="hibernate.local" value="${user.home}/Hibernate"/>
 	<property name="maven.repo.local" value="${user.home}/.m2/repository"/>	
-	<property name="target.dir.local" value="${java.io.tmpdir}/picsWeb2"/>
-	<property name="target.dir.local.web" value="${target.dir.local}/web"/>	
-	<property name="target.dir.local.conf" value="${target.dir.local}/conf"/>
-	<property name="target.dir.local.lib" value="${target.dir.local}/lib"/>
+	<property name="temp_dir" value="${java.io.tmpdir}/picsWeb2"/>
+	<property name="temp_dir.conf" value="${temp_dir}/conf"/>
+	<property name="temp_dir.lib" value="${temp_dir}/lib"/>
 	<property name="tomcat5.local.lib" value="${env.CATALINA_HOME}/common/lib" />
 	
 	<path id="build.classpath">
@@ -40,15 +39,14 @@
 	</path>
 	
 	<target name="init" description="Create the output directories">
-		<mkdir dir="${target.dir.local}" />	
-		<mkdir dir="${target.dir.local.lib}" />	
-		<mkdir dir="${target.dir.local.web}" />
-		<mkdir dir="${target.dir.local.conf}" />
+		<mkdir dir="${temp_dir}" />	
+		<mkdir dir="${temp_dir.lib}" />	
+		<mkdir dir="${temp_dir.conf}" />
 		<mkdir dir="build" />
 	</target>
 	
 	<target name="clean" description="Clean the output directory">
-		<delete dir="${target.dir.local}" />
+		<delete dir="${temp_dir}" />
 		<delete dir="build" />
 		<delete dir="target" />
 	</target>
@@ -56,13 +54,10 @@
 	<target name="svn_out" unless="pics.target" description="Massage the svn source tree into the target directory tree">
 		<antcall target="clean" />
 		<antcall target="init" />
-		<copy todir="${target.dir.local.conf}" >
+		<copy todir="${temp_dir.conf}" >
 		    <fileset dir="conf"/>
 		</copy>
-		<copy todir="${target.dir.local.web}">
-		    <fileset dir="WebContent" excludes="META-INF/**,WEB-INF/**"/>		  
-		</copy>
-		<copy todir="${target.dir.local.lib}" flatten="true">
+		<copy todir="${temp_dir.lib}" flatten="true">
 			<fileset dir="${maven.repo.local}">
 				<include name="commons-io/commons-io/1.3.1/commons-io-1.3.1.jar" />
 				<include name="activation/activation/1.1/activation-1.1.jar" />
@@ -98,41 +93,41 @@
 	
 	<target name="copy_persistence" description="Copy persistenc.xml to classes package">
 		<copy todir="build/META-INF">
-			 <fileset dir="${target.dir.local.conf}">
+			 <fileset dir="${temp_dir.conf}">
 			 	<include name="persistence.xml"/>
 			 </fileset>
 		</copy>
 	</target>
 	
 	<target name="war" depends="compile,copy_persistence" description="Create war file" >
-		<war destfile="${target.dir.local}/ROOT.war" webxml="${target.dir.local.conf}/web.xml">
-		  <fileset dir="${target.dir.local.web}"/>
-		  <lib dir="${target.dir.local.lib}"/>	   
+		<war destfile="${temp_dir}/ROOT.war" webxml="${temp_dir.conf}/web.xml">
+		<fileset dir="WebContent" excludes="META-INF/**,WEB-INF/**" />
+		  <lib dir="${temp_dir.lib}"/>	   
 		  <classes dir="build"/>
 		  <webinf dir="conf">
 		  	<include name="faces-config.xml"/>
 		  	<include name="log4j.xml"/>
 		  </webinf>
-		  <metainf dir="${target.dir.local.conf}">
+		  <metainf dir="${temp_dir.conf}">
 			<include name="context.xml"/>
 		  </metainf>	
 		</war>		
 	</target>
 	
 	<target name="buildSDP" depends="war" description="Create deploy directory for automated build">
-		<unzip src="${target.dir.local}/ROOT.war" dest="target"/>	
-		<delete dir="${target.dir.local}" />
+		<unzip src="${temp_dir}/ROOT.war" dest="target"/>	
+		<delete dir="${temp_dir}" />
 	</target>
 	
 	<target name="deployAlpha" depends="compile" description="Deploy Application to Alpha (local only)">
-		<move file="${target.dir.local.conf}/context_alpha.xml"
-		      tofile="${target.dir.local.conf}/context.xml" />
-		<move file="${target.dir.local.conf}/persistence_alpha.xml"
-		      tofile="${target.dir.local.conf}/persistence.xml" />
+		<move file="${temp_dir.conf}/context_alpha.xml"
+		      tofile="${temp_dir.conf}/context.xml" />
+		<move file="${temp_dir.conf}/persistence_alpha.xml"
+		      tofile="${temp_dir.conf}/persistence.xml" />
 		<antcall target="war" />
 
-		<move file="${target.dir.local}/ROOT.war" todir="${env.CATALINA_HOME}/webapps"/>
-		<delete dir="${target.dir.local}" />
+		<move file="${temp_dir}/ROOT.war" todir="${env.CATALINA_HOME}/webapps"/>
+		<delete dir="${temp_dir}" />
 	</target>
 
 	<target name="testCopy" depends="svn_out">
