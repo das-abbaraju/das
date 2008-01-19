@@ -80,6 +80,7 @@
 			</fileset>
 		    <fileset dir="${hibernate.local}">
 		    	<include name="*.*"/>
+		    	<exclude name="javaee.jar" />
 		    </fileset>
 		  </copy>
 		<property name="pics.target" value="true"/>
