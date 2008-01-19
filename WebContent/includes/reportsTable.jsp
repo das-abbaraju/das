@@ -16,6 +16,7 @@
 		"report_payment.jsp?","Payment","No",
 		"op_editFlagCriteria.jsp?","Red Flag Criteria","No",
 		"report_scheduleAudits.jsp?which="+com.picsauditing.PICS.SearchBean.RESCHEDULE_AUDITS+"&","Reschedule Audits","No",
+		"report_daAudit.jsp?","Schedule Drug and Alcohol Audit","No",
 		"report_desktop.jsp?","Schedule Desktop Audit","No",
 		"report_scheduleAudits.jsp?","Schedule Office Audits","No",
         "report_upgradePayment.jsp?","Upgrade Payment","No",

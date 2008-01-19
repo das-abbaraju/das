@@ -3,26 +3,26 @@
 <%@page import="com.picsauditing.PICS.SimpleResultRow"%>
 <%@page import="com.picsauditing.PICS.SearchAccounts"%>
 <%@ include file="utilities/adminGeneral_secure.jsp" %>
-<jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchAccounts" scope ="page" />
+<jsp:useBean id="search" class="com.picsauditing.PICS.SearchAccounts" scope ="page" />
 <%
 	// TODO Allow for dynamic order by columns
-	//sBean.addOrderBys(request.getParameter("orderBy"), "name");
-	sBean.sql.addOrderBy("a.name");
+	//search.addOrderBys(request.getParameter("orderBy"), "name");
+	search.sql.addOrderBy("a.name");
 
-	sBean.setType(SearchAccounts.Type.Contractor);
+	search.setType(SearchAccounts.Type.Contractor);
 	
-	sBean.sql.addJoin("JOIN ncms_desktop d ON (c.taxID = d.fedTaxID AND c.taxID != '') OR a.name=d.ContractorsName");
-	sBean.sql.addWhere("a.id IN ( " +
+	search.sql.addJoin("JOIN ncms_desktop d ON (c.taxID = d.fedTaxID AND c.taxID != '') OR a.name=d.ContractorsName");
+	search.sql.addWhere("a.id IN ( " +
 			"SELECT a.id FROM accounts a JOIN ncms_desktop d ON a.name = d.ContractorsName WHERE d.remove = 'No' " +
 			"UNION " +
 			"SELECT c.id FROM contractor_info c JOIN ncms_desktop d ON c.taxID = d.fedTaxID WHERE d.remove = 'No' " +
 			") ");
-	sBean.sql.addField("c.taxID");
-	sBean.sql.addField("d.fedTaxID");
-	sBean.sql.addField("d.ContractorsName");
-	sBean.sql.addField("d.lastReview");
+	search.sql.addField("c.taxID");
+	search.sql.addField("d.fedTaxID");
+	search.sql.addField("d.ContractorsName");
+	search.sql.addField("d.lastReview");
 
-	SimpleResultSet searchData = sBean.doSearch();
+	SimpleResultSet searchData = search.doSearch();
 	%>
 <html>
 <head>
@@ -34,7 +34,6 @@
   <link href="PICS.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<%//=sBean.Query%>
 <table width="100%" height="100%" border="1" cellpadding="0" cellspacing="0">
   <tr>
     <td valign="top">
@@ -65,20 +64,9 @@
                 </td>
               </tr>
 			  <tr><td colspan="2">&nbsp;</td></tr>
-              <tr>
-                <td align="right"><span class="redMain">Showing <%=sBean.getStartRow() %>-<%=sBean.getEndRow() %> of <%=sBean.getAllRows() %> results
-                <%
-                if (sBean.getPages() > 1) {
-	                for (int i=1; i<sBean.getPages(); i++) {
-	                	if (i == sBean.getCurrentPage())
-		                	out.print("<strong>"+i+"</strong> ");
-	                	else
-		                	out.print("<a href=\"?showPage="+i+"\">"+i+"</a> ");
-	                }
-                }
-                %>
-				</span>
-                </td>
+              <tr> 
+                <td height="30" align="left"><%=search.getStartsWithLinks()%></td>
+                <td align="right"><%=search.getPageLinks()%></td>
               </tr>
             </table>
             <table width="657" border="0" cellpadding="1" cellspacing="1" align="center">

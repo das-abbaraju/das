@@ -37,7 +37,12 @@ public class SearchAccounts extends SearchRaw {
 		}
 	}
 	
-	public void addPQFQuestion() {
-		
+	/**
+	 * JOINs to pqfdata for this contractor and adds q123.answer to the field list
+	 * @param questionID PQF question ID must be > 0
+	 */
+	public void addPQFQuestion(int questionID) {
+		sql.addJoin("LEFT JOIN pqfdata q"+questionID+" on q"+questionID+".conID = a.id AND questionID = " + questionID);
+		sql.addField("q"+questionID+".answer");
 	}
 }

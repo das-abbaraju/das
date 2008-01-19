@@ -132,6 +132,9 @@ public class SQLBuilder {
 		this.havingClause = havingClause;
 	}
 	
+	/**
+	 * @param join Example: JOIN user u ON u.user_id = t.user_id
+	 */
 	public void addJoin(String join) {
 		this.joinClause.add(join);
 	}
@@ -148,6 +151,9 @@ public class SQLBuilder {
 		this.fullClause = fullClause;
 	}
 
+	public String getOrderBy() {
+		return this.combineArray(this.orderBys);
+	}
 	public int getStartRow() {
 		return startRow;
 	}

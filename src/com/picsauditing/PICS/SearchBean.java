@@ -909,10 +909,10 @@ public class SearchBean {
 		} else
 			percent = cBean.getPercentComplete(auditType);
 		if ("100".equals(percent))
-			return "<a href=/pqf_view.jsp?id="+aBean.id+"&auditType="+auditType+
+			return "<a href=pqf_view.jsp?id="+aBean.id+"&auditType="+auditType+
 				"><img src=images/icon_"+auditType+".gif width=20 height=20 border=0></a>";
 		else
-			return "<a class="+getTextColor()+" href=/pqf_view.jsp?id="+aBean.id+"&auditType="+auditType+">"+percent+"%</a>";
+			return "<a class="+getTextColor()+" href=pqf_view.jsp?id="+aBean.id+"&auditType="+auditType+">"+percent+"%</a>";
 	}//getPercentCompleteLink
 	
 	public void pageResults(ResultSet sqlResult, int resultsOnPage, javax.servlet.http.HttpServletRequest r ) throws Exception{

@@ -1,6 +1,6 @@
 <form name="form1" method="post" action="">
   <table border="0" align="center" cellpadding="2" cellspacing="0">
-    <tr> 
+    <tr>
       <td><input name="name" type="text" class="forms" value="<%=sBean.selected_name%>" size="8" onFocus="clearText(this)">
         <%=sBean.getSearchIndustrySelect("industry","forms",sBean.selected_industry)%>
         <input name="zip" type="text" class="forms" value="<%=sBean.selected_zip%>" size="5" onFocus="clearText(this)">

@@ -5,6 +5,10 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 	<!-- Set the local upload directory to /wwwroot/www.picsauditing.com/ftp-bin -->
 	<!-- Modify for your local system -->
+	<context-param>
+		<param-name>svn_revision</param-name>
+		<param-value>@@SVN_REVISION@@</param-value>
+	</context-param>
 	
 	<!-- Osha, Grace dates-->
 	<context-param>

@@ -118,7 +118,7 @@
                 </tr>
               </table>
             </form>
-            <span class="blueMain">Starts with <%=sBean.getStartsWithLinks()%></span>
+            <span class="blueMain"><%=sBean.getStartsWithLinks()%></span>
             <span class="redMain"><br><%=message%></span>
 	        <table width="657" height="40" border="0" cellpadding="0" cellspacing="0">
 	          <tr>
