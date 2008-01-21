@@ -120,6 +120,17 @@
 		<delete dir="${temp_dir}" />
 	</target>
 	
+	<target name="buildProd" depends="compile" description="Build war ready to deploy to old tomcat server">
+		<move file="${temp_dir.conf}/context_prod.xml"
+		      tofile="${temp_dir.conf}/context.xml" />
+		<move file="${temp_dir.conf}/persistence_prod.xml"
+		      tofile="${temp_dir.conf}/persistence.xml" />
+		<antcall target="war" />
+
+		<move file="${temp_dir}/ROOT.war" todir="/var/backups"/>
+		<delete dir="${temp_dir}" />
+	</target>
+
 	<target name="deployAlpha" depends="compile" description="Deploy Application to Alpha (local only)">
 		<move file="${temp_dir.conf}/context_alpha.xml"
 		      tofile="${temp_dir.conf}/context.xml" />
