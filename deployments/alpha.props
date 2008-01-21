@@ -1,5 +1,0 @@
-DBURL=jdbc:mysql://localhost:3306/pics_alpha
-DBUSER=pics
-DBPASS=pics
-FTPDIR=/wwwroot/alpha.picsauditing.com/ftp-bin
-RUNTIME_MODE=test

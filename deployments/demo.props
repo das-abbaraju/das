@@ -3,4 +3,4 @@ DBUSER=pics
 DBPASS=pics
 APPDIR=/wwwroot/demo.picsauditing.com/webapps
 FTPDIR=/wwwroot/demo.picsauditing.com/ftp-bin
-RUNTIME_MODE=test
+RUNTIME_MODE=prod

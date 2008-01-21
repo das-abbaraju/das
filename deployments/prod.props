@@ -1,4 +1,4 @@
-DBURL=jdbc:mysql://www.picsauditing.com:3306/pics
+DBURL=jdbc:mysql://db.picsauditing.com:3306/pics
 DBUSER=pics
 DBPASS=pics
 APPDIR=/wwwroot/www.picsauditing.com/webapps
