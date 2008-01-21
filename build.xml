@@ -129,7 +129,7 @@
 		<replace dir="${temp_dir.conf}" token="@@FTPDIR@@" value="/wwwroot/www.picsauditing.com/ftp-bin"/>
 		<antcall target="war" />
 
-		<move file="${temp_dir}/ROOT.war" todir="/var/backups"/>
+		<move file="${temp_dir}/ROOT.war" todir="/wwwroot"/>
 		<delete dir="${temp_dir}" />
 	</target>
 
