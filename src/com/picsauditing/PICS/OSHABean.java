@@ -331,7 +331,7 @@ public class OSHABean extends DataBean {
 			return 2;
 		if (manHours > 0) 
 			i++;
-		if (fileUpload.equals("No"))
+		if (fileUpload.equals("Yes"))
 			i++;
 		
 		return i;		
@@ -344,8 +344,8 @@ public class OSHABean extends DataBean {
 		int numRequired = 6;
 		float factor = 100f/6f;
 		int requiredCompleted = calcNumCompleted(na1,stats[MAN_HOURS][YEAR1],file1YearAgo);		
-		requiredCompleted+=calcNumCompleted(na2,stats[MAN_HOURS][YEAR2],file1YearAgo);
-		requiredCompleted+=calcNumCompleted(na3,stats[MAN_HOURS][YEAR3],file1YearAgo);
+		requiredCompleted+=calcNumCompleted(na2,stats[MAN_HOURS][YEAR2],file2YearAgo);
+		requiredCompleted+=calcNumCompleted(na3,stats[MAN_HOURS][YEAR3],file3YearAgo);
 		
 		String percentCompleted = intFormatter.format(requiredCompleted * factor);
 		pcBean.replaceCatData("29",cID,"Yes",""+requiredCompleted,""+numRequired,percentCompleted);	
