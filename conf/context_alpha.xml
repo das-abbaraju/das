@@ -1,9 +1,0 @@
-<!-- The contents of this file will be loaded for each web application -->
-<Context path="/" reloadable="true">
-	<Resource name="jdbc/pics" auth="Container"
-		type="javax.sql.DataSource" maxActive="60" maxIdle="30"
-		maxWait="10000" removeAbandoned="true" removeAbandonedTimeout="20"
-		logAbandoned="true" driverClassName="com.mysql.jdbc.Driver"
-		url="jdbc:mysql://alpha.picsauditing.com:3306/pics_alpha?zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false"
-		username="pics" password="pics" />
-</Context>

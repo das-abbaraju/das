@@ -121,10 +121,12 @@
 	</target>
 	
 	<target name="buildProd" depends="compile" description="Build war ready to deploy to old tomcat server">
-		<move file="${temp_dir.conf}/context_prod.xml"
-		      tofile="${temp_dir.conf}/context.xml" />
-		<move file="${temp_dir.conf}/persistence_prod.xml"
-		      tofile="${temp_dir.conf}/persistence.xml" />
+		<replace dir="${temp_dir.conf}" token="@@RUNTIME_MODE@@" value="prod"/>
+		<replace dir="${temp_dir.conf}" token="@@DBUSER@@" value="pics"/>
+		<replace dir="${temp_dir.conf}" token="@@DBPASS@@" value="pics"/>
+		<replace dir="${temp_dir.conf}" token="@@DBURL@@" value="jdbc:mysql://db.picsauditing.com:3306/pics"/>
+		<replace dir="${temp_dir.conf}" token="@@APPDIR@@" value="/wwwroot/www.picsauditing.com/webapps"/>
+		<replace dir="${temp_dir.conf}" token="@@FTPDIR@@" value="/wwwroot/www.picsauditing.com/ftp-bin"/>
 		<antcall target="war" />
 
 		<move file="${temp_dir}/ROOT.war" todir="/var/backups"/>
@@ -132,10 +134,12 @@
 	</target>
 
 	<target name="deployAlpha" depends="compile" description="Deploy Application to Alpha (local only)">
-		<move file="${temp_dir.conf}/context_alpha.xml"
-		      tofile="${temp_dir.conf}/context.xml" />
-		<move file="${temp_dir.conf}/persistence_alpha.xml"
-		      tofile="${temp_dir.conf}/persistence.xml" />
+		<replace dir="${temp_dir.conf}" token="@@RUNTIME_MODE@@" value="dev"/>
+		<replace dir="${temp_dir.conf}" token="@@DBUSER@@" value="pics"/>
+		<replace dir="${temp_dir.conf}" token="@@DBPASS@@" value="pics"/>
+		<replace dir="${temp_dir.conf}" token="@@DBURL@@" value="jdbc:mysql://localhost:3306/pics_alpha"/>
+		<replace dir="${temp_dir.conf}" token="@@APPDIR@@" value="${env.CATALINA_HOME}/webapps"/>
+		<replace dir="${temp_dir.conf}" token="@@FTPDIR@@" value="/var/www/ftp-bin"/>
 		<antcall target="war" />
 
 		<move file="${temp_dir}/ROOT.war" todir="${env.CATALINA_HOME}/webapps"/>
