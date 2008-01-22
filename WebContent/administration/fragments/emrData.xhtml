@@ -12,11 +12,11 @@
 			styleClass="forms">
 			<h:panelGrid columns="4" cellpadding="3" cellspacing="3">
 			    <rich:spacer/>
-			    <rich:spacer/>
-			    <h:outputText value="Verified answer" />
-				<h:outputText value="Comment" />				
+			    <h:outputLabel value="Answer" style="color: #000000;"/>
+			    <h:outputLabel value="Verified answer" style="color: #000000;"/>
+				<h:outputLabel value="Comment" style="color: #000000;"/>				
 				
-				<h:outputText value="Do you maintain an EMR" />
+				<h:outputLabel value="Do you maintain an EMR" style="color: #993300;"/>
 				<h:outputText value="#{emrBean.doesMaintain.answer}"
 					styleClass="forms" />
 				<h:inputText value="#{emrBean.doesMaintain.verifiedAnswer}"
@@ -24,7 +24,7 @@
 				<h:inputText value="#{emrBean.doesMaintain.comment}"
 					styleClass="forms" />				
 
-				<h:outputText value="EMR calc formula" />
+				<h:outputText value="EMR calc formula" style="color: #993300;"/>
 				<h:outputText value="#{emrBean.calculatedBy.answer}"
 					styleClass="forms" />				
 				<h:inputText value="#{emrBean.calculatedBy.verifiedAnswer}"
@@ -32,7 +32,7 @@
 				<h:inputText value="#{emrBean.calculatedBy.comment}"
 					styleClass="forms" />
 
-				<h:outputText value="EMR state of origin" />
+				<h:outputText value="EMR state of origin" style="color: #993300;"/>
 				<h:outputText value="#{emrBean.stateOfOrigin.answer}"
 					styleClass="forms" />				
 				<h:inputText value="#{emrBean.stateOfOrigin.verifiedAnswer}"
@@ -40,35 +40,35 @@
 				<h:inputText value="#{emrBean.stateOfOrigin.comment}"
 					styleClass="forms" />
 
-				<h:outputText value="EMR anniversary date" />
-				<h:outputText value="#{emrBean.anniversary.answer}" styleClass="forms" />					
-                <h:inputText value="#{emrBean.anniversary.answer}" styleClass="forms" />
+				<h:outputText value="EMR anniversary date" style="color: #993300;"/>
+				<h:outputText value="#{emrBean.anniversary.answer}" styleClass="formsNumber" />					
+                <h:inputText value="#{emrBean.anniversary.answer}" styleClass="formsNumber" />
 				<h:inputText value="#{emrBean.anniversary.comment}"
 					styleClass="forms" />
 			</h:panelGrid>
-			<h:panelGrid columns="4">
+			<h:panelGrid columns="4" cellpadding="3" cellspacing="3">
 				<rich:spacer/>
-				<h:outputText value="#{contractorBean.currentYear - 1}" />
-				<h:outputText value="#{contractorBean.currentYear - 2}" />
-				<h:outputText value="#{contractorBean.currentYear - 3}" />
+				<h:outputText value="#{contractorBean.currentYear - 1}" style="color: #000000;"/>
+				<h:outputText value="#{contractorBean.currentYear - 2}" style="color: #000000;"/>
+				<h:outputText value="#{contractorBean.currentYear - 3}" style="color: #000000;"/>
 								
-				<h:outputText value="EMR in decimal format, eg .85" />
+				<h:outputText value="EMR in decimal format, eg .85  " style="color: #993300;"/>
 				<h:outputText value="#{emrBean.emr2007.answer}" styleClass="forms"/>					
 				<h:outputText value="#{emrBean.emr2006.answer}" styleClass="forms"/>
 				<h:outputText value="#{emrBean.emr2005.answer}" styleClass="forms"/>
 				
-				<h:outputText value="Verified answer"/>
-				<h:inputText value="#{emrBean.emr2007.verifiedAnswer}" styleClass="forms" >
+				<h:outputText value="Verified answer" style="color: #993300;"/>
+				<h:inputText value="#{emrBean.emr2007.verifiedAnswer}" styleClass="forms" size="4">
 					<f:validateDoubleRange minimum="0" />
 				</h:inputText>
-				<h:inputText value="#{emrBean.emr2006.verifiedAnswer}" styleClass="forms" >
+				<h:inputText value="#{emrBean.emr2006.verifiedAnswer}" styleClass="forms" size="4">
 					<f:validateDoubleRange minimum="0" />
 				</h:inputText>
-				<h:inputText value="#{emrBean.emr2005.verifiedAnswer}" styleClass="forms">
+				<h:inputText value="#{emrBean.emr2005.verifiedAnswer}" styleClass="forms"  size="4">
 					<f:validateDoubleRange minimum="0" />
 				</h:inputText>
 				
-				<h:outputText value="Comment" />
+				<h:outputText value="Comment" style="color: #993300;"/>
 				<h:inputText value="#{emrBean.emr2007.comment}" styleClass="forms" />
 				<h:inputText value="#{emrBean.emr2006.comment}" styleClass="forms" />
 				<h:inputText value="#{emrBean.emr2005.comment}" styleClass="forms" />
@@ -78,7 +78,7 @@
 				<rich:spacer />
 				<rich:spacer />
 				
-				<h:outputText value="Is EMR verification uploaded" />
+				<h:outputText value="Is EMR verification uploaded" style="color: #993300;"/>
 				<h:commandLink styleClass="forms"
 					rendered="#{!emrBean.upload2007.answer eq ''}" value="Yes"
 					onclick="showFile(#{log.entity.contractorInfo.id}, #{log.entity.oid}, 'osha1', 'Osha300Logs');" />

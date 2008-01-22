@@ -32,13 +32,13 @@
 	</script>
 	<rich:dataGrid value="#{oshaBean.dataModel}" var="log" elements="1"
 		rowKeyVar="row" rendered="#{oshaBean.cid > 0}">
-		<h:panelGrid columns="4">
-			<h:outputLabel value="Location" styleClass="forms" />
+		<h:panelGrid columns="4" cellpadding="3" cellspacing="3">
+			<h:outputLabel value="Location"/>
 			<h:inputText value="#{log.entity.location}" styleClass="forms" />
-			<h:outputLabel value="Description" styleClass="forms" />
+			<h:outputLabel value="Description" styleClass="redMain"/>
 			<h:inputText value="#{log.entity.description}" styleClass="forms" />
 		</h:panelGrid>
-		<h:panelGrid columns="4" styleClass="blueHeader">
+		<h:panelGrid columns="4" styleClass="blueHeader" cellpadding="3" cellspacing="3">
 			<h:outputText value="" styleClass="blueTitle" />
 			<h:outputText value="#{contractorBean.currentYear - 1}" styleClass="blueTitle" />
 			<h:outputText value="#{contractorBean.currentYear - 2}" styleClass="blueTitle" />
