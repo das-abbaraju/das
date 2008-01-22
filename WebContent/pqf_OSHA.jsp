@@ -11,7 +11,7 @@
 <script language="javascript" type="text/javascript">
 <!--
 function popitup(url) {
-	window.open(url,'name','height=900,width=800,left=100,top=100');
+	window.open(url,'name','resizable=1,scrollbars=1,width=800,height=600');
 	return false;
 }
 
