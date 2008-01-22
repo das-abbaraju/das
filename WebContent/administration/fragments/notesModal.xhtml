@@ -25,7 +25,7 @@
 						actionListener="#{textMgr1.saveAddText}"
 						onclick="javascript:Richfaces.hideModalPanel('mp1')"
 						disabled="#{!textMgr1.addingText}" />
-					<h:commandButton value="Cancel"
+					<a4j:commandButton value="Cancel"
 						actionListener="#{textMgr1.cancelAddText}"
 						onclick="javascript:Richfaces.hideModalPanel('mp1')" />
 				</h:panelGrid>
@@ -49,11 +49,11 @@
 					<a4j:commandButton value="Add Comment"
 						actionListener="#{textMgr2.addText}" reRender="form2"
 						disabled="#{textMgr2.addingText}" />
-					<h:commandButton value="OK"
+					<a4j:commandButton value="OK"
 						actionListener="#{textMgr2.saveAddText}"
 						onclick="javascript:Richfaces.hideModalPanel('mp2')"
 						disabled="#{!textMgr2.addingText}" />
-					<h:commandButton value="Cancel"
+					<a4j:commandButton value="Cancel"
 						actionListener="#{textMgr2.cancelAddText}"
 						onclick="javascript:Richfaces.hideModalPanel('mp2')" />
 				</h:panelGrid>
@@ -77,11 +77,11 @@
 					<a4j:commandButton value="Add Comment"
 						actionListener="#{textMgr3.addText}" reRender="form3,"
 						disabled="#{textMgr3.addingText}" />
-					<h:commandButton value="OK"
+					<a4j:commandButton value="OK"
 						actionListener="#{textMgr3.saveAddText}"
 						onclick="javascript:Richfaces.hideModalPanel('mp3')"
 						disabled="#{!textMgr3.addingText}" />
-					<h:commandButton value="Cancel"
+					<a4j:commandButton value="Cancel"
 						actionListener="#{textMgr3.cancelAddText}"
 						onclick="javascript:Richfaces.hideModalPanel('mp3')" />
 				</h:panelGrid>
