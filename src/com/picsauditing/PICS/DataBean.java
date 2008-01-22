@@ -56,6 +56,25 @@ public abstract class DataBean{
 	public String eqDB(String temp) {
 		return Utilities.escapeQuotes(temp);
 	}//eqDB
+	
+	/**
+	 * Get the columnName from the given ResultSet as a string
+	 * If the data is null, then it returns a empty string ("") instead
+	 * @param rs
+	 * @param columnName
+	 * @return
+	 */
+	protected String getString(ResultSet rs, String columnName) {
+		String value = "";
+		try {
+			value = rs.getString(columnName);
+			if (rs.wasNull()) value = "";
+		} catch (SQLException ex) {
+			System.out.println("Failed to find value for "+columnName+" : "+ex.getMessage());
+			return ex.getMessage();
+		}
+		return value;
+	}
 
 	public Vector<String> getErrors(){
 		return errorMessages;

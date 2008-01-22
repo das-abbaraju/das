@@ -703,17 +703,17 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 	public String onClickCorrectYesNoRadio(String qID, String questionType, String classType, String selected) throws Exception {
 		String name = "isCorrect_"+qID;
 		StringBuffer temp = new StringBuffer();
-		temp.append("<nobr><input name=").append(name).append(" class=").append(classType);
+		temp.append("<label><input name=").append(name).append(" class=").append(classType);
 		temp.append(" type=radio value=Yes");
 		if ("Yes".equals(selected))
 			temp.append(" checked");
 		temp.append(" onClick='document.all.verifiedAnswer_"+qID+".value=document.all.answer_"+qID+".value");
-		temp.append("'>Yes</nobr>");
-		temp.append("<nobr><input name=").append(name).append(" class=").append(classType);
+		temp.append("'>Yes</label>");
+		temp.append("<label><input name=").append(name).append(" class=").append(classType);
 		temp.append(" type=radio value=No");
 		if ("No".equals(selected))
 			temp.append(" checked");
-		temp.append(">No</nobr>");
+		temp.append(">No</label>");
 		return temp.toString();
 	}//onClickCorrectYesNoRadio
 

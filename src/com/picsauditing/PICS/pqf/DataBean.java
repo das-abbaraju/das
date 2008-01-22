@@ -58,14 +58,13 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
 		conID = SQLResult.getString("conID");
 		questionID = SQLResult.getString("questionID");
-//		num = SQLResult.getString("num");
-		answer = SQLResult.getString("answer");
-		comment = SQLResult.getString("comment");
-		dateVerified = com.picsauditing.PICS.DateBean.toShowFormat(SQLResult.getString("dateVerified"));
-		verifiedAnswer = SQLResult.getString("verifiedAnswer");
-		auditorID = SQLResult.getString("auditorID");
-		isCorrect = SQLResult.getString("isCorrect");
-		wasChanged = SQLResult.getString("wasChanged");
+		answer = this.getString(SQLResult, "answer");
+		comment = this.getString(SQLResult, "comment");
+		dateVerified = com.picsauditing.PICS.DateBean.toShowFormat(this.getString(SQLResult, "dateVerified"));
+		verifiedAnswer = this.getString(SQLResult, "verifiedAnswer");
+		auditorID = this.getString(SQLResult, "auditorID");
+		isCorrect = this.getString(SQLResult, "isCorrect");
+		wasChanged = this.getString(SQLResult, "wasChanged");
 	}//setFromResultSet
 
 	public void setFromDB(String conID, String catID) throws Exception {
@@ -1028,9 +1027,11 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 			DBReady();
 			rs = SQLStatement.executeQuery(selectQuery);
 			while (rs.next()) {
-				String answer = rs.getString("answer");
-				if (rs.wasNull())
-					answer = "";
+				//String answer = rs.getString("answer");
+				//if (rs.wasNull())
+				//	answer = "";
+				String answer = this.getString(rs, "answer");
+				
 				String tempIsRequired = rs.getString("isRequired");
 				boolean isRequired = "Yes".equals(tempIsRequired);
 				if ("Depends".equals(tempIsRequired)){
