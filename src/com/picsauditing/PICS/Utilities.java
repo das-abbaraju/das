@@ -310,7 +310,7 @@ public class Utilities {
 		StringBuffer temp = new StringBuffer();
 		temp.append(" <select id=\"").append(name).append("\" name=\"").append(name).append("\" class=").append(classType);
 		if (!NO_ON_CHANGE_SCRIPT.equals(onChangeScript))
-			temp.append(" id=\"").append(name).append("\" onChange=\""+onChangeScript+"\"");
+			temp.append(" onChange=\""+onChangeScript+"\"");
 		if (null != size)
 			temp.append(" size=").append(size);
 		if (multiple)

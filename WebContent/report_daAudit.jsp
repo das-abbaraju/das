@@ -11,7 +11,7 @@ if (action != null && action.equals("saveAuditor")) {
 	cBean.daAuditor_id = auditorID;
 	cBean.daAssignedDate = DateBean.getTodaysDate();
 	cBean.writeToDB();
-	%>saved auditor<%
+	%><%=cBean.daAssignedDate%><%
 	return;
 }
 SearchAccounts search = new SearchAccounts();
@@ -55,6 +55,20 @@ SimpleResultSet searchData = search.doSearch();
   <META Http-Equiv="Pragma" Content="no-cache">
   <META Http-Equiv="Expires" Content="0">
   <link href="PICS.css" rel="stylesheet" type="text/css">
+  <script src="js/prototype.js" type="text/javascript"></script>
+  <script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
+  <script type="text/javascript">
+	function selectAuditor(conID) {
+		var form = $('auditor_form'+conID);
+		var auditor = form['daAuditor_id'];
+		pars = 'action=saveAuditor&conID='+conID+'&auditorID='+$F(auditor);
+		
+		var divName = 'auditor_td'+conID;
+		$(divName).innerHTML = '<img src="images/ajax_process.gif" />';
+		var myAjax = new Ajax.Updater(divName, 'report_daAudit.jsp', {method: 'post', parameters: pars});
+		new Effect.Highlight($('auditor_tr'+conID), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+	}
+  </script>
   <style>
   .auditselect {
   	margin: 0px;
@@ -114,16 +128,19 @@ int counter = 0;
 for(SimpleResultRow row: searchData) {
 	counter++;
 %>
-			  <tr class="blueMain" <% if ((counter%2)==1) out.print("bgcolor=\"#FFFFFF\""); %> >
+			  <tr id="auditor_tr<%=row.get("id")%>" class="blueMain" <% if ((counter%2)==1) out.print("bgcolor=\"#FFFFFF\""); %> >
                 <td align="right"><%=counter%></td>
-			    <td><a href="accounts_edit_contractor.jsp?id=<%=row.get("id")%>"><% if(row.get("active").startsWith("Y")) { %>*<% } %><%=row.get("name")%></a></td>
+			    <td><a href="accounts_edit_contractor.jsp?id=<%=row.get("id")%>"><%=row.get("name")%></a></td>
 			    <td><%=DateBean.toShowFormat(row.get("lastPayment"))%></td>
 			    <td><%=DateBean.toShowFormat(row.get("pqfSubmittedDate"))%></td>
 			    <td><%=DateBean.toShowFormat(row.get("daSubmittedDate"))%></td>
 			    <td><%=DateBean.toShowFormat(row.get("daClosedDate"))%></td>
-			    <td div="auditor_tr<%=row.get("id")%>"><%=AUDITORS.getNameFromID(row.get("daAuditor_id"))%>
-			    	<form class="auditselect"><%=AUDITORS.getAuditorsSelect("assignAuditorID","forms",row.get("daAuditor_id"))%></form></td>
-			    <td><%=DateBean.toShowFormat(row.get("daAssignedDate"))%></td>
+			    <td>
+			    	<form class="auditselect" id="auditor_form<%=row.get("id")%>">
+			    		<%=AUDITORS.getAuditorsSelect("daAuditor_id","forms",row.get("daAuditor_id"),"selectAuditor("+row.get("id")+")")%>
+			    	</form>
+			    </td>
+			    <td id="auditor_td<%=row.get("id")%>"><%=DateBean.toShowFormat(row.get("daAssignedDate"))%></td>
 		  	  </tr>
 <%
 } // end foreach loop

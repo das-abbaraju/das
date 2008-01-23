@@ -48,5 +48,11 @@ public class Auditors extends DataBean{
 		setAuditorsALFromDB();
 		return Utilities.inputSelect2First(name,classType,selectedAuditorID,(String[])auditorsAL.toArray(new String[0]),
 			SearchBean.DEFAULT_AUDITOR_ID,SearchBean.DEFAULT_AUDITOR);
-	}//getAuditorsSelect
+	}
+	
+	public String getAuditorsSelect(String name, String classType, String selectedAuditorID, String onchange) throws Exception {
+		setAuditorsALFromDB();
+    	return Utilities.inputSelectAll(name,classType,selectedAuditorID,(String[])auditorsAL.toArray(new String[0]),
+			SearchBean.DEFAULT_AUDITOR,SearchBean.DEFAULT_AUDITOR_ID,onchange,true,false,null,null);
+	}
 }//Auditors
