@@ -23,7 +23,7 @@
 				}
 				
 				function showFile(conId, oid, file, name){
-		   			var href = "/servlet/showpdf?id=" + conId + "&OID=" + oid + "&file=" + file;
+		   			var href = "../../servlet/showpdf?id=" + conId + "&OID=" + oid + "&file=" + file;
 		   			window.open(href, name, "scrollbars=yes,resizable=yes,width=700,height=450");
 				}
 
@@ -149,21 +149,29 @@
 			<a4j:commandButton styleClass="forms" value="..."
 				onclick="showComment(3); return false;" immediate="true" />
 			<h:outputText styleClass="redMain" value="Logs Uploaded" />
-			<a4j:commandButton styleClass="forms"
-				rendered="#{log.entity.file1yearAgo eq 'Yes'}" value="Yes"
-				onclick="showFile(#{log.entity.contractorInfo.id}, #{log.entity.oid}, 'osha1', 'Osha300Logs');" />
-			<a4j:commandButton styleClass="forms"
-				rendered="#{log.entity.file2yearAgo eq 'Yes'}" value="Yes"
-				onclick="showFile(#{log.entity.contractorInfo.id}, #{log.entity.oid}, 'osha2', 'Osha300Logs');" />
-			<a4j:commandButton styleClass="forms"
-				rendered="#{log.entity.file3yearAgo eq 'Yes'}" value="Yes"
-				onclick="showFile(#{log.entity.contractorInfo.id}, #{log.entity.oid}, 'osha3', 'Osha300Logs');" />
-			<h:outputText styleClass="forms"
-				rendered="#{log.entity.file1yearAgo eq null || log.entity.file1yearAgo eq 'No'}" value="No" />
-			<h:outputText styleClass="forms"
-				rendered="#{log.entity.file2yearAgo eq null || log.entity.file2yearAgo eq 'No'}" value="No" />
-			<h:outputText styleClass="forms"
-				rendered="#{log.entity.file3yearAgo eq null || log.entity.file3yearAgo eq 'No'}" value="No" />
+			
+			<h:panelGrid>
+				<a4j:commandButton styleClass="forms"
+					rendered="#{log.entity.file1yearAgo eq 'Yes'}" value="Yes"
+					onclick="showFile(#{log.entity.contractorInfo.id}, #{log.entity.oid}, 'osha1', 'Osha300Logs');" />
+				<h:outputText styleClass="forms"
+					rendered="#{log.entity.file1yearAgo eq null || log.entity.file1yearAgo eq 'No'}" value="No" />
+			</h:panelGrid>
+			<h:panelGrid>
+				<a4j:commandButton styleClass="forms"
+					rendered="#{log.entity.file2yearAgo eq 'Yes'}" value="Yes"
+					onclick="showFile(#{log.entity.contractorInfo.id}, #{log.entity.oid}, 'osha2', 'Osha300Logs');" />
+				<h:outputText styleClass="forms"
+					rendered="#{log.entity.file2yearAgo eq null || log.entity.file2yearAgo eq 'No'}" value="No" />
+			</h:panelGrid>
+			<h:panelGrid>
+				<a4j:commandButton styleClass="forms"
+					rendered="#{log.entity.file3yearAgo eq 'Yes'}" value="Yes"
+					onclick="showFile(#{log.entity.contractorInfo.id}, #{log.entity.oid}, 'osha3', 'Osha300Logs');" />
+				<h:outputText styleClass="forms"
+					rendered="#{log.entity.file3yearAgo eq null || log.entity.file3yearAgo eq 'No'}" value="No" />
+			</h:panelGrid>
+			
 			<h:outputText styleClass="redMain" value="Verify" />
 			<h:selectBooleanCheckbox value="#{log.verifiedDate1}"
 				styleClass="forms" />

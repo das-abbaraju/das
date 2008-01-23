@@ -6,7 +6,16 @@
 	xmlns:rich="http://richfaces.org/rich"
 	xmlns:c="http://java.sun.com/jstl/core">
 
+<script type="text/javascript">
+  //<![CDATA[	
+	function showLog(conId, file, name){
+  			var href =  "../../servlet/showpdf?id=" + conId + "&file=" + file;
+  			window.open(href, name, "scrollbars=yes,resizable=yes,width=700,height=450");
+	}
 
+ //]]>
+      
+</script>
 	<rich:panel>
 		<h:panelGrid columns="1" rendered="#{emrBean.cid > 0}"
 			styleClass="forms">
@@ -107,16 +116,24 @@
 				</h:outputText>						
 								
 				<h:outputText value="Is EMR verification uploaded" style="color: #993300;"/>
-				<h:commandLink styleClass="forms"
-					rendered="#{!emrBean.upload2007.entity.answer eq ''}" value="Yes"
-					onclick="showFile(#{log.entity.contractorInfo.id}, #{log.entity.oid}, 'osha1', 'Osha300Logs');" />
-				<h:commandLink styleClass="forms"
-					rendered="#{!emrBean.upload2006.entity.answer eq ''}" value="Yes"
-					onclick="showFile(#{log.entity.contractorInfo.id}, #{log.entity.oid}, 'osha2', 'Osha300Logs');" />
-				<h:commandLink styleClass="forms"
-					rendered="#{!emrBean.upload2005.entity.answer eq ''}" value="Yes"
-					onclick="showFile(#{log.entity.contractorInfo.id}, #{log.entity.oid}, 'osha3', 'Osha300Logs');" />				
-							
+				<h:panelGrid>
+					<a4j:commandButton styleClass="forms" value="Yes"
+					    rendered="#{emrBean.upload2007.entity.answer ne ''}"
+						onclick="showLog(#{emrBean.upload2007.entity.contractorInfo.id},'pqf#{emrBean.upload2007.entity.answer}#{emrBean.upload2007.entity.pqfquestion.questionId}', 'EMR2007 Log');" />
+					<h:outputText styleClass="forms" rendered="#{emrBean.upload2007.entity.answer eq ''}" value="No"/>
+				</h:panelGrid>
+				<h:panelGrid>
+					<a4j:commandButton styleClass="forms" value="Yes"
+					    rendered="#{emrBean.upload2006.entity.answer ne ''}"
+						onclick="showLog(#{emrBean.upload2006.entity.contractorInfo.id},'pqf#{emrBean.upload2006.entity.answer}#{emrBean.upload2006.entity.pqfquestion.questionId}', 'EMR2006 Log');" />
+					<h:outputText styleClass="forms" rendered="#{emrBean.upload2006.entity.answer eq ''}" value="No"/>
+				</h:panelGrid>
+				<h:panelGrid>
+					<a4j:commandButton styleClass="forms" value="Yes"
+					    rendered="#{emrBean.upload2005.entity.answer ne ''}"
+						onclick="showLog(#{emrBean.upload2005.entity.contractorInfo.id},'pqf#{emrBean.upload2005.entity.answer}#{emrBean.upload2005.entity.pqfquestion.questionId}', 'EMR2005 Log');" />
+					<h:outputText styleClass="forms" rendered="#{emrBean.upload2005.entity.answer eq ''}" value="No"/>
+				</h:panelGrid>
 			</h:panelGrid>
 
 		</h:panelGrid>

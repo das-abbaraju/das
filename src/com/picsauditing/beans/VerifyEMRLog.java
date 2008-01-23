@@ -45,6 +45,9 @@ public class VerifyEMRLog extends Verifier<PqfLog, Short> implements Verifiable<
 	
 	
 	public boolean isCorrect() {
+		if(getEntity().getIsCorrect() == null)
+			return false;
+		
 		return getEntity().getIsCorrect().equals("Yes")? true : false;
 	}
 	
