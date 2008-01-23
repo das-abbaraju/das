@@ -35,7 +35,8 @@ search.sql.addField("c.daClosedDate");
 search.sql.addField("c.daPercent");
 search.sql.addField("c.daVerifiedPercent");
 
-search.addPQFQuestion(318); //q318.answer
+search.addPQFQuestion(894); //q318.answer
+search.sql.addWhere("q894.answer = 'Yes'");
 //search.setLimit(10);
 String showPage = request.getParameter("showPage");
 if (showPage != null) {
