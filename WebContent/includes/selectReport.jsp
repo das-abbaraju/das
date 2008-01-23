@@ -22,7 +22,8 @@
 						<option value="report_payment.jsp?changed=1">Payment</option>
       		            <option value="op_editFlagCriteria.jsp?changed=1">Red Flag Criteria</option>
 			            <option value="report_scheduleAudits.jsp?changed=1&which=<%=com.picsauditing.PICS.SearchBean.RESCHEDULE_AUDITS%>">Reschedule Audits</option>
-      		            <option value="report_desktop.jsp?changed=1">Schedule Desktop Audit</option>
+			            <option value="report_daAudit.jsp?changed=1">Schedule Drug &amp; Alcohol Audit</option>
+			            <option value="report_desktop.jsp?changed=1">Schedule Desktop Audit</option>
 			            <option value="report_scheduleAudits.jsp?changed=1">Schedule Office Audits</option>
       		            <option value="report_upgradePayment.jsp?changed=1">Upgrade Payment</option>
 <!-- 				        <option value="http://localhost:8480/PICSReportsProject">Osha Logs Verification</option>-->
