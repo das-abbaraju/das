@@ -1,8 +1,6 @@
 package com.picsauditing.beans;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.dao.AccountDAO;
@@ -18,15 +16,16 @@ import com.picsauditing.jpa.entities.Pqfquestion;
 import com.picsauditing.jsf.utils.JSFListDataModel;
 
 
-public class EmrLogBean extends JSFListDataModel<PqfLog>{
+public class EmrLogBean extends JSFListDataModel<VerifyEMRLog>{
 	
 	
 	private Integer cid = 0;
 	ContractorInfoDAO dao;
 	private List<Short> questionIDs;
 	
+	
 	@Override
-	protected List<PqfLog> getList() {		
+	protected List<VerifyEMRLog> getList() {		
 					
 		DAOFactory daof = DAOFactory.instance(DAOFactory.JPA, getPersistenceCtx());
 		dao = daof.getContractorInfoDAO();
@@ -52,10 +51,17 @@ public class EmrLogBean extends JSFListDataModel<PqfLog>{
 					
 				}
 			}
+			
+			List<VerifyEMRLog> out = new ArrayList<VerifyEMRLog>();
+			for(PqfLog log : ci.getPqfLogs()){
+				 VerifyEMRLog vemrl = new VerifyEMRLog();
+				 vemrl.setEntity(log);
+				 out.add(vemrl);
+			 }
 						
-			return ci.getPqfLogs();
+			return out;
 		}else
-			return new ArrayList<PqfLog>();
+			return new ArrayList<VerifyEMRLog>();
 		
 	}
 	
@@ -66,7 +72,7 @@ public class EmrLogBean extends JSFListDataModel<PqfLog>{
 	}
 
 	@Override
-	protected List<PqfLog> sortList(List<PqfLog> list) {
+	protected List<VerifyEMRLog> sortList(List<VerifyEMRLog> list) {
 		 return null;
 	}
 
@@ -96,57 +102,58 @@ public class EmrLogBean extends JSFListDataModel<PqfLog>{
 		this.questionIDs = questionIDs;
 	}
 	
-	public PqfLog getLog(short qID){
-		List<PqfLog> logs = ((List<PqfLog>)getDataModel().getWrappedData());
-		for(PqfLog log : logs)
-			if(log.getPqfquestion().getQuestionId() == qID)
+	public VerifyEMRLog getLog(short qID){
+		List<VerifyEMRLog> logs = ((List<VerifyEMRLog>)getDataModel().getWrappedData());
+		for(VerifyEMRLog log : logs)
+			if(log.getEntity().getPqfquestion().getQuestionId() == qID)
 				return log;
 			
 		return null;
 	}
 	
-	public PqfLog getStateOfOrigin(){
+	public VerifyEMRLog getStateOfOrigin(){
 		return getLog(Short.parseShort("123"));
 	}
 	
-	public PqfLog getAnniversary(){
+	public VerifyEMRLog getAnniversary(){
 		return getLog(Short.parseShort("124"));
 	}
 	
-	public PqfLog getCalculatedBy(){
+	public VerifyEMRLog getCalculatedBy(){
 		return getLog(Short.parseShort("125"));
 	}
 	
-	public PqfLog getUpload2005(){
+	public VerifyEMRLog getUpload2005(){
 		return getLog(Short.parseShort("872"));
 	}
 	
-	public PqfLog getEmr2005(){
+	public VerifyEMRLog getEmr2005(){
 		return getLog(Short.parseShort("889"));
 	}
 	
-	public PqfLog getDoesMaintain(){
+	public VerifyEMRLog getDoesMaintain(){
 		return getLog(Short.parseShort("891"));
 	}
 	
-	public PqfLog getEmr2006(){
+	public VerifyEMRLog getEmr2006(){
 		return getLog(Short.parseShort("1519"));
 	}
 	
-	public PqfLog getUpload2006(){
+	public VerifyEMRLog getUpload2006(){
 		return getLog(Short.parseShort("1522"));
 	}
 	
-	public PqfLog getEmr2007(){
+	public VerifyEMRLog getEmr2007(){
 		return getLog(Short.parseShort("1617"));
 	}
 	
-	public PqfLog getUpload2007(){
+	public VerifyEMRLog getUpload2007(){
 		return getLog(Short.parseShort("1618"));
 	}
 	
 	public int getClearCid(){
 		return 0;
-	}
+	}	
+	
 	
 }

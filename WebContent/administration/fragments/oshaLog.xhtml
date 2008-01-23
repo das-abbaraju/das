@@ -142,20 +142,20 @@
 			<h:selectBooleanCheckbox value="#{log.na2}" styleClass="forms" />
 			<h:selectBooleanCheckbox value="#{log.na3}" styleClass="forms" />
 			<h:outputText styleClass="redMain" value="General Comments" />
-			<h:commandLink styleClass="forms" value="..."
+			<a4j:commandButton styleClass="forms" value="..."
 				onclick="showComment(1); return false;" immediate="true" />
-			<h:commandLink styleClass="forms" value="..."
+			<a4j:commandButton styleClass="forms" value="..."
 				onclick="showComment(2); return false;" immediate="true" />
-			<h:commandLink styleClass="forms" value="..."
+			<a4j:commandButton styleClass="forms" value="..."
 				onclick="showComment(3); return false;" immediate="true" />
 			<h:outputText styleClass="redMain" value="Logs Uploaded" />
-			<h:commandLink styleClass="forms"
+			<a4j:commandButton styleClass="forms"
 				rendered="#{log.entity.file1yearAgo eq 'Yes'}" value="Yes"
 				onclick="showFile(#{log.entity.contractorInfo.id}, #{log.entity.oid}, 'osha1', 'Osha300Logs');" />
-			<h:commandLink styleClass="forms"
+			<a4j:commandButton styleClass="forms"
 				rendered="#{log.entity.file2yearAgo eq 'Yes'}" value="Yes"
 				onclick="showFile(#{log.entity.contractorInfo.id}, #{log.entity.oid}, 'osha2', 'Osha300Logs');" />
-			<h:commandLink styleClass="forms"
+			<a4j:commandButton styleClass="forms"
 				rendered="#{log.entity.file3yearAgo eq 'Yes'}" value="Yes"
 				onclick="showFile(#{log.entity.contractorInfo.id}, #{log.entity.oid}, 'osha3', 'Osha300Logs');" />
 			<h:outputText styleClass="forms"

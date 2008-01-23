@@ -10,83 +10,111 @@
 	<rich:panel>
 		<h:panelGrid columns="1" rendered="#{emrBean.cid > 0}"
 			styleClass="forms">
-			<h:panelGrid columns="4" cellpadding="3" cellspacing="3">
+			<h:panelGrid columns="6" cellpadding="3" cellspacing="3">
 			    <rich:spacer/>
 			    <h:outputLabel value="Answer" style="color: #000000;"/>
 			    <h:outputLabel value="Verified answer" style="color: #000000;"/>
-				<h:outputLabel value="Comment" style="color: #000000;"/>				
+				<h:outputLabel value="Comment" style="color: #000000;"/>
+				<h:outputLabel value="Verify" style="color: #000000;"/>
+				<h:outputLabel value="Verified Date" style="color: #000000;"/>				
 				
 				<h:outputLabel value="Do you maintain an EMR" style="color: #993300;"/>
-				<h:outputText value="#{emrBean.doesMaintain.answer}"
+				<h:outputText value="#{emrBean.doesMaintain.entity.answer}"
 					styleClass="forms" />
-				<h:inputText value="#{emrBean.doesMaintain.verifiedAnswer}"
+				<h:inputText value="#{emrBean.doesMaintain.entity.verifiedAnswer}"
 					styleClass="forms" />				
-				<h:inputText value="#{emrBean.doesMaintain.comment}"
-					styleClass="forms" />				
+				<h:inputText value="#{emrBean.doesMaintain.entity.comment}"
+					styleClass="forms" />
+				<h:selectBooleanCheckbox value="#{emrBean.doesMaintain.correct}" styleClass="forms" />
+				<h:outputText value="#{emrBean.doesMaintain.entity.dateVerified}" styleClass="formsNumber" >
+				  <f:convertDateTime dateStyle="short" />
+				</h:outputText>						
 
 				<h:outputText value="EMR calc formula" style="color: #993300;"/>
-				<h:outputText value="#{emrBean.calculatedBy.answer}"
+				<h:outputText value="#{emrBean.calculatedBy.entity.answer}"
 					styleClass="forms" />				
-				<h:inputText value="#{emrBean.calculatedBy.verifiedAnswer}"
+				<h:inputText value="#{emrBean.calculatedBy.entity.verifiedAnswer}"
 					styleClass="forms" />				
-				<h:inputText value="#{emrBean.calculatedBy.comment}"
+				<h:inputText value="#{emrBean.calculatedBy.entity.comment}"
 					styleClass="forms" />
+				<h:selectBooleanCheckbox value="#{emrBean.calculatedBy.correct}" styleClass="forms" />
+				<h:outputText value="#{emrBean.calculatedBy.entity.dateVerified}" styleClass="formsNumber" >
+				  <f:convertDateTime dateStyle="short" />
+				</h:outputText>							
 
 				<h:outputText value="EMR state of origin" style="color: #993300;"/>
-				<h:outputText value="#{emrBean.stateOfOrigin.answer}"
+				<h:outputText value="#{emrBean.stateOfOrigin.entity.answer}"
 					styleClass="forms" />				
-				<h:inputText value="#{emrBean.stateOfOrigin.verifiedAnswer}"
+				<h:inputText value="#{emrBean.stateOfOrigin.entity.verifiedAnswer}"
 					styleClass="forms" />
-				<h:inputText value="#{emrBean.stateOfOrigin.comment}"
+				<h:inputText value="#{emrBean.stateOfOrigin.entity.comment}"
 					styleClass="forms" />
+				<h:selectBooleanCheckbox value="#{emrBean.stateOfOrigin.correct}" styleClass="forms" />
+				<h:outputText value="#{emrBean.stateOfOrigin.entity.dateVerified}" styleClass="formsNumber" >
+				  <f:convertDateTime dateStyle="short" />
+				</h:outputText>							
 
 				<h:outputText value="EMR anniversary date" style="color: #993300;"/>
-				<h:outputText value="#{emrBean.anniversary.answer}" styleClass="formsNumber" />					
-                <h:inputText value="#{emrBean.anniversary.answer}" styleClass="formsNumber" />
-				<h:inputText value="#{emrBean.anniversary.comment}"
-					styleClass="forms" />
+				<h:outputText value="#{emrBean.anniversary.entity.answer}" styleClass="formsNumber" />					
+                <h:inputText value="#{emrBean.anniversary.entity.answer}" styleClass="formsNumber" />
+				<h:inputText value="#{emrBean.anniversary.entity.comment}"	styleClass="forms" />
+				<h:selectBooleanCheckbox value="#{emrBean.anniversary.correct}" styleClass="forms" />
+				<h:outputText value="#{emrBean.anniversary.entity.dateVerified}" styleClass="formsNumber" >
+				  <f:convertDateTime dateStyle="short" />
+				</h:outputText>		
 			</h:panelGrid>
-			<h:panelGrid columns="4" cellpadding="3" cellspacing="3">
+			<h:panelGrid border="1" columns="4" cellpadding="3" cellspacing="3">
 				<rich:spacer/>
 				<h:outputText value="#{contractorBean.currentYear - 1}" style="color: #000000;"/>
 				<h:outputText value="#{contractorBean.currentYear - 2}" style="color: #000000;"/>
 				<h:outputText value="#{contractorBean.currentYear - 3}" style="color: #000000;"/>
 								
 				<h:outputText value="EMR in decimal format, eg .85  " style="color: #993300;"/>
-				<h:outputText value="#{emrBean.emr2007.answer}" styleClass="forms"/>					
-				<h:outputText value="#{emrBean.emr2006.answer}" styleClass="forms"/>
-				<h:outputText value="#{emrBean.emr2005.answer}" styleClass="forms"/>
+				<h:outputText value="#{emrBean.emr2007.entity.answer}" styleClass="forms"/>					
+				<h:outputText value="#{emrBean.emr2006.entity.answer}" styleClass="forms"/>
+				<h:outputText value="#{emrBean.emr2005.entity.answer}" styleClass="forms"/>				
 				
 				<h:outputText value="Verified answer" style="color: #993300;"/>
-				<h:inputText value="#{emrBean.emr2007.verifiedAnswer}" styleClass="forms" size="4">
+				<h:inputText value="#{emrBean.emr2007.entity.verifiedAnswer}" styleClass="forms" size="4">
 					<f:validateDoubleRange minimum="0" />
 				</h:inputText>
-				<h:inputText value="#{emrBean.emr2006.verifiedAnswer}" styleClass="forms" size="4">
+				<h:inputText value="#{emrBean.emr2006.entity.verifiedAnswer}" styleClass="forms" size="4">
 					<f:validateDoubleRange minimum="0" />
 				</h:inputText>
-				<h:inputText value="#{emrBean.emr2005.verifiedAnswer}" styleClass="forms"  size="4">
+				<h:inputText value="#{emrBean.emr2005.entity.verifiedAnswer}" styleClass="forms"  size="4">
 					<f:validateDoubleRange minimum="0" />
 				</h:inputText>
 				
 				<h:outputText value="Comment" style="color: #993300;"/>
-				<h:inputText value="#{emrBean.emr2007.comment}" styleClass="forms" />
-				<h:inputText value="#{emrBean.emr2006.comment}" styleClass="forms" />
-				<h:inputText value="#{emrBean.emr2005.comment}" styleClass="forms" />
+				<h:inputText value="#{emrBean.emr2007.entity.comment}" styleClass="forms" />
+				<h:inputText value="#{emrBean.emr2006.entity.comment}" styleClass="forms" />
+				<h:inputText value="#{emrBean.emr2005.entity.comment}" styleClass="forms" />
 				
-				<rich:spacer />	
-				<rich:spacer />
-				<rich:spacer />
-				<rich:spacer />
+				<h:outputText value="Verify" style="color: #993300;"/>
+				<h:selectBooleanCheckbox value="#{emrBean.emr2007.correct}" styleClass="forms" />
+				<h:selectBooleanCheckbox value="#{emrBean.emr2006.correct}" styleClass="forms" />
+				<h:selectBooleanCheckbox value="#{emrBean.emr2005.correct}" styleClass="forms" />
 				
+				<h:outputText value="Verified Date" style="color: #993300;"/>
+				<h:outputText value="#{emrBean.emr2007.entity.dateVerified}" styleClass="formsNumber" >
+				  <f:convertDateTime dateStyle="short" />
+				</h:outputText>						
+				<h:outputText value="#{emrBean.emr2006.entity.dateVerified}" styleClass="formsNumber" >
+				  <f:convertDateTime dateStyle="short" />
+				</h:outputText>						
+				<h:outputText value="#{emrBean.emr2005.entity.dateVerified}" styleClass="formsNumber" >
+				  <f:convertDateTime dateStyle="short" />
+				</h:outputText>						
+								
 				<h:outputText value="Is EMR verification uploaded" style="color: #993300;"/>
 				<h:commandLink styleClass="forms"
-					rendered="#{!emrBean.upload2007.answer eq ''}" value="Yes"
+					rendered="#{!emrBean.upload2007.entity.answer eq ''}" value="Yes"
 					onclick="showFile(#{log.entity.contractorInfo.id}, #{log.entity.oid}, 'osha1', 'Osha300Logs');" />
 				<h:commandLink styleClass="forms"
-					rendered="#{!emrBean.upload2006.answer eq ''}" value="Yes"
+					rendered="#{!emrBean.upload2006.entity.answer eq ''}" value="Yes"
 					onclick="showFile(#{log.entity.contractorInfo.id}, #{log.entity.oid}, 'osha2', 'Osha300Logs');" />
 				<h:commandLink styleClass="forms"
-					rendered="#{!emrBean.upload2005.answer eq ''}" value="Yes"
+					rendered="#{!emrBean.upload2005.entity.answer eq ''}" value="Yes"
 					onclick="showFile(#{log.entity.contractorInfo.id}, #{log.entity.oid}, 'osha3', 'Osha300Logs');" />				
 							
 			</h:panelGrid>
