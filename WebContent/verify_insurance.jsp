@@ -23,7 +23,9 @@
 		cerBean.UpdateEditedCertificates(list);
 	}	
 	
-    cerBean.setListByAuditor(id);
+	//cerBean.setListByAuditor(id);
+	// I'm not sure why we would want to pass this id in here
+	cerBean.setListByAuditor(pBean.uBean.id);
 	sBean.pageResults(cerBean.getListRS(), 20, request);
 	
 %>
