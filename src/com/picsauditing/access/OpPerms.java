@@ -13,7 +13,10 @@ public enum OpPerms {
 	EditForcedFlags("Edit Forced Flags"),
 	EditNotes("Edit Contractor Notes"),
 	EditUsers("Add/Edit User Accounts"),
-	StatusOnly("Can Only View Statuses");
+	StatusOnly("Can Only View Statuses"),
+	
+	// New Permissions based on the new Model since 2007
+	AssignAudits("Audit Assignment");
 
 	private String description;
 	public String getDescription(){

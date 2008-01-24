@@ -9,6 +9,10 @@
 		<param-name>svn_revision</param-name>
 		<param-value>@@SVN_REVISION@@</param-value>
 	</context-param>
+	<context-param>
+		<param-name>environmentType</param-name>
+		<param-value>development</param-value>
+	</context-param>
 	
 	<!-- Osha, Grace dates-->
 	<context-param>

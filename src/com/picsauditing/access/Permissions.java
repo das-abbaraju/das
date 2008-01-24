@@ -104,6 +104,15 @@ public class Permissions{
 		return this.hasPermission(opPerm, OpType.View);
 	}
 	
+	public void tryPermission(OpPerms opPerm, OpType oType) throws NoRightsException {
+		if (this.hasPermission(opPerm, oType)) return;
+		throw new NoRightsException(opPerm, oType);
+	}
+	
+	public void tryPermission(OpPerms opPerm) throws NoRightsException {
+		this.tryPermission(opPerm, OpType.View);
+	}
+	
 	public boolean hasGroup(Integer group){
 		for(Integer i : groups)
 			if(i == group)
@@ -111,6 +120,4 @@ public class Permissions{
 		
 		return false;
 	}
-	
-	
 }
