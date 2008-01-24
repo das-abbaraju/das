@@ -22,52 +22,64 @@
 			<h:panelGrid columns="6" cellpadding="3" cellspacing="3">
 			    <rich:spacer/>
 			    <h:outputLabel value="Answer" style="color: #000000;"/>
+			    <h:outputLabel value="Is Correct" style="color: #000000;"/>
 			    <h:outputLabel value="Verified answer" style="color: #000000;"/>
-				<h:outputLabel value="Comment" style="color: #000000;"/>
-				<h:outputLabel value="Verify" style="color: #000000;"/>
+				<h:outputLabel value="Comment" style="color: #000000;"/>				
 				<h:outputLabel value="Verified Date" style="color: #000000;"/>				
 				
 				<h:outputLabel value="Do you maintain an EMR" styleClass="redMain"/>
 				<h:outputText value="#{emrBean.doesMaintain.entity.answer}"
 					styleClass="forms" />
-				<h:inputText value="#{emrBean.doesMaintain.entity.verifiedAnswer}"
+					<h:selectOneRadio value="#{emrBean.doesMaintain.correct}" onchange="submit()" immediate="true" >					
+					<f:selectItem itemValue="No" itemLabel="No"/>
+					<f:selectItem itemValue="Yes" itemLabel="Yes"/>
+				</h:selectOneRadio>
+				<h:inputText value="#{emrBean.doesMaintain.verifiedAnswer}"
 					styleClass="forms" />				
 				<h:inputText value="#{emrBean.doesMaintain.entity.comment}"
-					styleClass="forms" />
-				<h:selectBooleanCheckbox value="#{emrBean.doesMaintain.correct}" styleClass="forms" />
+					styleClass="forms" />				
 				<h:outputText value="#{emrBean.doesMaintain.entity.dateVerified}" styleClass="formsNumber" >
 				  <f:convertDateTime dateStyle="short" />
 				</h:outputText>						
 
 				<h:outputText value="EMR calc formula" style="color: #993300;"/>
-				<h:outputText value="#{emrBean.calculatedBy.entity.answer}"
-					styleClass="forms" />				
-				<h:inputText value="#{emrBean.calculatedBy.entity.verifiedAnswer}"
+				<h:outputText value="#{emrBean.calculatedBy.entity.answer}" styleClass="forms" />
+					<h:selectOneRadio value="#{emrBean.calculatedBy.correct}" onchange="submit()" immediate="true">
+					<f:selectItem itemValue="No" itemLabel="No"/>
+					<f:selectItem itemValue="Yes" itemLabel="Yes"/>
+				</h:selectOneRadio>				
+				<h:inputText value="#{emrBean.calculatedBy.verifiedAnswer}"
 					styleClass="forms" />				
 				<h:inputText value="#{emrBean.calculatedBy.entity.comment}"
-					styleClass="forms" />
-				<h:selectBooleanCheckbox value="#{emrBean.calculatedBy.correct}" styleClass="forms" />
+					styleClass="forms" />				
 				<h:outputText value="#{emrBean.calculatedBy.entity.dateVerified}" styleClass="formsNumber" >
 				  <f:convertDateTime dateStyle="short" />
 				</h:outputText>							
 
 				<h:outputText value="EMR state of origin" style="color: #993300;"/>
 				<h:outputText value="#{emrBean.stateOfOrigin.entity.answer}"
-					styleClass="forms" />				
-				<h:inputText value="#{emrBean.stateOfOrigin.entity.verifiedAnswer}"
+					styleClass="forms" />
+				<h:selectOneRadio value="#{emrBean.stateOfOrigin.correct}" onchange="submit()" immediate="true">
+					<f:selectItem itemValue="No" itemLabel="No"/>
+					<f:selectItem itemValue="Yes" itemLabel="Yes"/>
+				</h:selectOneRadio>				
+				<h:inputText value="#{emrBean.stateOfOrigin.verifiedAnswer}"
 					styleClass="forms" />
 				<h:inputText value="#{emrBean.stateOfOrigin.entity.comment}"
 					styleClass="forms" />
-				<h:selectBooleanCheckbox value="#{emrBean.stateOfOrigin.correct}" styleClass="forms" />
+				
 				<h:outputText value="#{emrBean.stateOfOrigin.entity.dateVerified}" styleClass="formsNumber" >
 				  <f:convertDateTime dateStyle="short" />
 				</h:outputText>							
 
 				<h:outputText value="EMR anniversary date" style="color: #993300;"/>
-				<h:outputText value="#{emrBean.anniversary.entity.answer}" styleClass="formsNumber" />					
-                <h:inputText value="#{emrBean.anniversary.entity.answer}" styleClass="formsNumber" />
-				<h:inputText value="#{emrBean.anniversary.entity.comment}"	styleClass="forms" />
-				<h:selectBooleanCheckbox value="#{emrBean.anniversary.correct}" styleClass="forms" />
+				<h:outputText value="#{emrBean.anniversary.entity.answer}" styleClass="formsNumber" />
+				<h:selectOneRadio value="#{emrBean.anniversary.correct}" onchange="submit()" immediate="true">
+					<f:selectItem itemValue="No" itemLabel="No"/>
+					<f:selectItem itemValue="Yes" itemLabel="Yes"/>
+				</h:selectOneRadio>					
+                <h:inputText value="#{emrBean.anniversary.verifiedAnswer}" styleClass="formsNumber" />
+				<h:inputText value="#{emrBean.anniversary.entity.comment}"	styleClass="forms" />				
 				<h:outputText value="#{emrBean.anniversary.entity.dateVerified}" styleClass="formsNumber" >
 				  <f:convertDateTime dateStyle="short" />
 				</h:outputText>		
@@ -84,13 +96,13 @@
 				<h:outputText value="#{emrBean.emr2005.entity.answer}" styleClass="forms"/>				
 				
 				<h:outputText value="Verified answer" style="color: #993300;"/>
-				<h:inputText value="#{emrBean.emr2007.entity.verifiedAnswer}" styleClass="forms" size="4">
+				<h:inputText value="#{emrBean.emr2007.verifiedAnswer}" styleClass="forms" size="4">
 					<f:validateDoubleRange minimum="0" />
 				</h:inputText>
-				<h:inputText value="#{emrBean.emr2006.entity.verifiedAnswer}" styleClass="forms" size="4">
+				<h:inputText value="#{emrBean.emr2006.verifiedAnswer}" styleClass="forms" size="4">
 					<f:validateDoubleRange minimum="0" />
 				</h:inputText>
-				<h:inputText value="#{emrBean.emr2005.entity.verifiedAnswer}" styleClass="forms"  size="4">
+				<h:inputText value="#{emrBean.emr2005.verifiedAnswer}" styleClass="forms"  size="4">
 					<f:validateDoubleRange minimum="0" />
 				</h:inputText>
 				
@@ -99,11 +111,20 @@
 				<h:inputText value="#{emrBean.emr2006.entity.comment}" styleClass="forms" />
 				<h:inputText value="#{emrBean.emr2005.entity.comment}" styleClass="forms" />
 				
-				<h:outputText value="Verify" style="color: #993300;"/>
-				<h:selectBooleanCheckbox value="#{emrBean.emr2007.correct}" styleClass="forms" />
-				<h:selectBooleanCheckbox value="#{emrBean.emr2006.correct}" styleClass="forms" />
-				<h:selectBooleanCheckbox value="#{emrBean.emr2005.correct}" styleClass="forms" />
-				
+				<h:outputText value="Is Correct" style="color: #993300;"/>
+				<h:selectOneRadio value="#{emrBean.emr2007.correct}" onchange="submit()" immediate="true">
+					<f:selectItem itemValue="No" itemLabel="No"/>
+					<f:selectItem itemValue="Yes" itemLabel="Yes"/>
+				</h:selectOneRadio>
+				<h:selectOneRadio value="#{emrBean.emr2006.correct}" onchange="submit()" immediate="true">
+					<f:selectItem itemValue="No" itemLabel="No"/>
+					<f:selectItem itemValue="Yes" itemLabel="Yes"/>
+				</h:selectOneRadio>
+				<h:selectOneRadio value="#{emrBean.emr2005.correct}" onchange="submit()" immediate="true">
+					<f:selectItem itemValue="No" itemLabel="No"/>
+					<f:selectItem itemValue="Yes" itemLabel="Yes"/>
+				</h:selectOneRadio>
+								
 				<h:outputText value="Verified Date" style="color: #993300;"/>
 				<h:outputText value="#{emrBean.emr2007.entity.dateVerified}" styleClass="formsNumber" >
 				  <f:convertDateTime dateStyle="short" />
@@ -117,22 +138,22 @@
 								
 				<h:outputText value="Is EMR verification uploaded" style="color: #993300;"/>
 				<h:panelGrid>
-					<a4j:commandButton styleClass="forms" value="Yes"
+					<a4j:commandButton styleClass="forms" value="Uploaded"
 					    rendered="#{emrBean.upload2007.entity.answer ne ''}"
 						onclick="showLog(#{emrBean.upload2007.entity.contractorInfo.id},'pqf#{emrBean.upload2007.entity.answer}#{emrBean.upload2007.entity.pqfquestion.questionId}', 'EMR2007 Log');" />
-					<h:outputText styleClass="forms" rendered="#{emrBean.upload2007.entity.answer eq ''}" value="No"/>
+					<h:outputText styleClass="forms" rendered="#{emrBean.upload2007.entity.answer eq ''}" value="Not Uploaded"/>
 				</h:panelGrid>
 				<h:panelGrid>
-					<a4j:commandButton styleClass="forms" value="Yes"
+					<a4j:commandButton styleClass="forms" value="Uploaded"
 					    rendered="#{emrBean.upload2006.entity.answer ne ''}"
 						onclick="showLog(#{emrBean.upload2006.entity.contractorInfo.id},'pqf#{emrBean.upload2006.entity.answer}#{emrBean.upload2006.entity.pqfquestion.questionId}', 'EMR2006 Log');" />
-					<h:outputText styleClass="forms" rendered="#{emrBean.upload2006.entity.answer eq ''}" value="No"/>
+					<h:outputText styleClass="forms" rendered="#{emrBean.upload2006.entity.answer eq ''}" value="Not Uploaded"/>
 				</h:panelGrid>
 				<h:panelGrid>
-					<a4j:commandButton styleClass="forms" value="Yes"
+					<a4j:commandButton styleClass="forms" value="Uploaded"
 					    rendered="#{emrBean.upload2005.entity.answer ne ''}"
 						onclick="showLog(#{emrBean.upload2005.entity.contractorInfo.id},'pqf#{emrBean.upload2005.entity.answer}#{emrBean.upload2005.entity.pqfquestion.questionId}', 'EMR2005 Log');" />
-					<h:outputText styleClass="forms" rendered="#{emrBean.upload2005.entity.answer eq ''}" value="No"/>
+					<h:outputText styleClass="forms" rendered="#{emrBean.upload2005.entity.answer eq ''}" value="Not Uploaded"/>
 				</h:panelGrid>
 			</h:panelGrid>
 
