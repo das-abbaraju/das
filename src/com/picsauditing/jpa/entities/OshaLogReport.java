@@ -40,7 +40,10 @@ public class OshaLogReport  implements java.io.Serializable {
         this.contractorInfo = contractorInfo;
         this.location = location;
         this.verifiedDate = verifiedDate;
+        
+        
     }
+    
     public OshaLogReport(ContractorInfoReport contractorInfo, String location, String verifiedDate, Date verifiedDate1, Date verifiedDate2, Date verifiedDate3) {
        this.contractorInfo = contractorInfo;
        this.location = location;
@@ -48,6 +51,7 @@ public class OshaLogReport  implements java.io.Serializable {
        this.verifiedDate1 = verifiedDate1;
        this.verifiedDate2 = verifiedDate2;
        this.verifiedDate3 = verifiedDate3;
+       
     }
    
      @Id @GeneratedValue(strategy=IDENTITY)
@@ -87,12 +91,13 @@ public class OshaLogReport  implements java.io.Serializable {
     public void setVerifiedDate(String verifiedDate) {
         this.verifiedDate = verifiedDate;
     }
-    @Temporal(TemporalType.DATE)
+    //@Temporal(TemporalType.DATE)
     @Column(name="verifiedDate1", length=10)
     public Date getVerifiedDate1() {
         return this.verifiedDate1;
     }
     
+    @Temporal(TemporalType.DATE)
     public void setVerifiedDate1(Date verifiedDate1) {
         this.verifiedDate1 = verifiedDate1;
     }

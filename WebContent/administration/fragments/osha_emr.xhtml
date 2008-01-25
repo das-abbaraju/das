@@ -31,6 +31,10 @@
 							<rich:column rowspan="2">
 							    <h:outputText value="Contractors" />
 							</rich:column>
+							
+							<rich:column rowspan="2">
+							    <h:outputText value="PQF Submitted" />
+							</rich:column>
 
 							<rich:column colspan="3">
 
@@ -109,8 +113,14 @@
 							<h:outputText value="#{c.account.name}" />
 						</h:outputLink>
 					</rich:column>
-
-
+					
+		            <rich:column>
+						<h:outputText value="#{c.pqfSubmittedDate}"
+						    rendered="#{c.pqfSubmittedDate != '0000-00-00'}">							
+							<f:convertDateTime dateStyle="short" />
+						</h:outputText>
+					</rich:column>
+		             
 					<rich:column>
 						<h:outputText value="#{c.emrLogs[2].dateVerified}"
 							rendered="#{c.emrLogs[2] != null}">

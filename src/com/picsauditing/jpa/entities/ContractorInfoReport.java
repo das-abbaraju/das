@@ -4,6 +4,7 @@ package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -17,6 +18,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Where;
 
@@ -27,9 +30,9 @@ import org.hibernate.annotations.Where;
  */
 @Entity
 @NamedQueries({
-	@NamedQuery(name="contractorsByName", query="select cr from ContractorInfoReport cr where cr.account.name like :name"),
-	@NamedQuery(name="contractorsByAuditor", query="select cr from ContractorInfoReport cr where cr.pqfAuditorId=:pqfAuditorId"),
-	@NamedQuery(name="getActiveContractors", query="select cr from ContractorInfoReport cr where cr.account.active='Y'")
+	@NamedQuery(name="contractorsByName", query="select cr from ContractorInfoReport cr where cr.account.name like :name order by cr.pqfSubmittedDate desc"),
+	@NamedQuery(name="contractorsByAuditor", query="select cr from ContractorInfoReport cr where cr.pqfAuditorId=:pqfAuditorId order by cr.pqfSubmittedDate desc"),
+	@NamedQuery(name="getActiveContractors", query="select cr from ContractorInfoReport cr where cr.account.active='Y' order by cr.pqfSubmittedDate desc"),
 	
 })
 
@@ -41,6 +44,7 @@ public class ContractorInfoReport  implements java.io.Serializable {
      private int id;
      private AccountReport account;
      private int pqfAuditorId;
+     private Date pqfSubmittedDate;
      private List<GeneralContractor> generalContractors = new ArrayList<GeneralContractor>(0);
      private Collection<OshaLogReport> oshaLogs = new ArrayList<OshaLogReport>(0);
      private List<PqfLogReport> emrLogs = new ArrayList<PqfLogReport>(0);
@@ -49,18 +53,20 @@ public class ContractorInfoReport  implements java.io.Serializable {
     }
 
 	
-    public ContractorInfoReport(int id, AccountReport account, int pqfAuditorId) {
+    public ContractorInfoReport(int id, AccountReport account, int pqfAuditorId, Date pqfSubmittedDate) {
         this.id = id;
         this.account = account;
         this.pqfAuditorId = pqfAuditorId;
+        this.pqfSubmittedDate = pqfSubmittedDate;
     }
-    public ContractorInfoReport(int id, AccountReport account, int pqfAuditorId, List<GeneralContractor> generalContractors, Collection<OshaLogReport> oshaLogs, List<PqfLogReport> emrLogs) {
+    public ContractorInfoReport(int id, AccountReport account, int pqfAuditorId, Date pqfSubmittedDate, List<GeneralContractor> generalContractors, Collection<OshaLogReport> oshaLogs, List<PqfLogReport> emrLogs) {
        this.id = id;
        this.account = account;
        this.pqfAuditorId = pqfAuditorId;
        this.generalContractors = generalContractors;
        this.oshaLogs = oshaLogs;
        this.emrLogs = emrLogs;
+       this.pqfSubmittedDate = pqfSubmittedDate;
     }
    
      @Id 
@@ -122,7 +128,15 @@ public void setAccount(AccountReport account) {
         this.generalContractors = generalContractors;
     }
 
+    @Temporal(TemporalType.DATE)
+    @Column(name="pqfSubmittedDate", nullable=false, length=10)
+    public Date getPqfSubmittedDate() {
+        return this.pqfSubmittedDate;
+    }
     
+    public void setPqfSubmittedDate(Date pqfSubmittedDate) {
+        this.pqfSubmittedDate = pqfSubmittedDate;
+    }
 
 
 }

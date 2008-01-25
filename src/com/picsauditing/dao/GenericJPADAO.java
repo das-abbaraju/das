@@ -2,6 +2,8 @@ package com.picsauditing.dao;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +13,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.LockModeType;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 
 
 public class GenericJPADAO<T, ID extends Serializable> implements GenericDAO<T, ID> {
@@ -204,8 +207,7 @@ public class GenericJPADAO<T, ID extends Serializable> implements GenericDAO<T, 
 		}
 		
 		if(params != null)
-			for(String str : params.keySet())
-				q.setParameter(str, params.get(str));
+			setQueryParams(q, params);
 			
 		return q.getResultList();	
 	}
@@ -219,8 +221,7 @@ public class GenericJPADAO<T, ID extends Serializable> implements GenericDAO<T, 
 		}
 		
 		if(params != null)
-			for(String str : params.keySet())
-				q.setParameter(str, params.get(str));
+			setQueryParams(q, params);
 			
 		return q.getResultList();	
 	}
@@ -228,14 +229,14 @@ public class GenericJPADAO<T, ID extends Serializable> implements GenericDAO<T, 
 	@Override
 	public List executeQuery(String query, Map<String, Object> params) {
 		Query q = getEntityManager().createQuery(query);
+		
 		if(max > 0 ) {
 			q.setFirstResult(first);
 			q.setMaxResults(max);
 		}
 		
 		if(params != null)
-			for(String str : params.keySet())
-				q.setParameter(str, params.get(str));
+			setQueryParams(q, params);
 			
 		return q.getResultList();	
 	}	
@@ -249,10 +250,21 @@ public class GenericJPADAO<T, ID extends Serializable> implements GenericDAO<T, 
 		}
 		
 		if(params != null)
-			for(String str : params.keySet())
-				q.setParameter(str, params.get(str));
+			setQueryParams(q, params);
 			
 		return q.getSingleResult();
+	}
+	
+	private void setQueryParams(Query q, Map<String, Object> params ){		
+		for(String str : params.keySet()){
+			Object param = params.get(str);
+			if(param instanceof Date)
+				q.setParameter(str, (Date)params.get(str), TemporalType.DATE);
+			else if(param instanceof Calendar)
+				q.setParameter(str, (Calendar)params.get(str), TemporalType.DATE);
+			else
+				q.setParameter(str, params.get(str));
+		}
 	}
 			
 }

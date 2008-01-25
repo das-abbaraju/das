@@ -13,7 +13,7 @@
 			    <h:outputText value="Name"/>
 			    <h:outputText value="Operator"/>
 			    <h:outputText value="Auditor"/>
-			    <h:outputText value=""/>
+			    <h:outputText value="Needs Verification"/>
 			    <h:outputText value=""/>
 				<h:inputText value="#{contractorBean.acctName}" size="10"
 					id="byName" styleClass="forms" />			
@@ -24,7 +24,8 @@
 				<h:selectOneMenu value="#{contractorBean.auditorId}"
 					styleClass="forms">
 					<f:selectItems value="#{contractorBean.auditors}" />
-				</h:selectOneMenu>			
+				</h:selectOneMenu>
+				<h:selectBooleanCheckbox value="#{contractorBean.needsOshaVerification}" styleClass="forms" />			
 			    <a4j:commandButton value="Search"
 							actionListener="#{contractorBean.search}"
 							styleClass="forms" reRender="details,contractorTable" />						
