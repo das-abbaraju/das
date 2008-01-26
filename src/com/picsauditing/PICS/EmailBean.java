@@ -821,8 +821,8 @@ public class EmailBean extends DataBean{
 			"the audit based on their knowledge of what your company does, but sometimes there are requirements listed that do "+
 			"not apply to the work your company performs. These items can often be rectified immediately so we encourage you to "+
 			"contact us to discuss any items you feel may not apply. In order to close out any requirements, please fax, email, "+
-			"or mail the documentation addressing the section in question.  Our overnight address is: 16812 Red Hill Avenue, Irvine, "+
-			"CA, 92606. You can log in to your account during the process to view any requirements that are still outstanding or to "+
+			"or mail the documentation addressing the section in question.  Our overnight address is: 17701 Cowan Suite 140, Irvine, "+
+			"CA, 92614. You can log in to your account during the process to view any requirements that are still outstanding or to "+
 			"check on your status."+endl+
 			"Again, if you have any questions or concerns, feel free to contact us."+endl+endl+
 			"Thanks, and have a safe year!"+endl+endl+EMAIL_FOOTER;
@@ -851,8 +851,8 @@ public class EmailBean extends DataBean{
 			"the audit based on their knowledge of what your company does, but sometimes there are requirements listed that do "+
 			"not apply to the work your company performs. These items can often be rectified immediately so we encourage you to "+
 			"contact us to discuss any items you feel may not apply. In order to close out any requirements, please fax, email, "+
-			"or mail the documentation addressing the section in question.  Our overnight address is: 16812 Red Hill Avenue, Irvine, "+
-			"CA, 92606. You can log in to your account during the process to view any requirements that are still outstanding or to "+
+			"or mail the documentation addressing the section in question.  Our overnight address is: 17701 Cowan Suite 140, Irvine, "+
+			"CA, 92614. You can log in to your account during the process to view any requirements that are still outstanding or to "+
 			"check on your status."+endl+
 			"Again, if you have any questions or concerns, feel free to contact us."+endl+endl+
 			"Thanks, and have a safe year!"+endl+endl+EMAIL_FOOTER;
