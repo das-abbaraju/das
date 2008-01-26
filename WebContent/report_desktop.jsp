@@ -107,7 +107,7 @@ function selectAuditor(conID) {
  			    <td align="center"><a href="?orderBy=desktopSubmittedDate DESC" class="whiteTitle">Submitted</a></td>
  			    <td align="center"><a href="?orderBy=desktopClosedDate DESC" class="whiteTitle">Closed</a></td>
  			    <td align="center"><a href="?orderBy=revisionDate DESC" class="whiteTitle">Revision</a></td>
- 			    <td align="center"><a href="?orderBy=answer" class="whiteTitle">Auditor</a></td>
+ 			    <td align="center"><a href="?orderBy=desktopAuditor_id" class="whiteTitle">Auditor</a></td>
  			    <td align="center"><a href="?orderBy=desktopAssignedDate DESC" class="whiteTitle">Assigned</a></td>
   			  </tr>
 <%
