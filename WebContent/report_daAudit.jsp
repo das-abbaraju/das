@@ -1,5 +1,4 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
-<%@page import="com.picsauditing.access.*"%>
 <jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session" />
 <jsp:useBean id="pageBean" class="com.picsauditing.PICS.WebPage" scope ="page"/>
 <jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope ="application"/>
@@ -20,6 +19,7 @@ if (action != null && action.equals("saveAuditor")) {
 	cBean.setFromDB(conID);
 	cBean.daAuditor_id = auditorID;
 	cBean.daAssignedDate = DateBean.getTodaysDate();
+	if (auditorID.equals("0")) cBean.daAssignedDate = "";
 	cBean.writeToDB();
 	%><%=cBean.daAssignedDate%><%
 	return;
@@ -33,29 +33,23 @@ if (orderBy != null) {
 search.sql.addOrderBy("c.pqfSubmittedDate DESC");
 
 search.setType(SearchAccounts.Type.Contractor);
-search.sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID");
-search.sql.addJoin("JOIN operators gc_o ON gc.genID = gc_o.id AND gc_o.canSeeDA = 'Yes'");
+search.sql.addWhere("a.id IN (SELECT gc.subID FROM generalcontractors gc JOIN operators gc_o ON gc.genID = gc_o.id AND gc_o.canSeeDA = 'Yes')");
 
 search.sql.addField("c.pqfSubmittedDate");
 search.sql.addField("c.daAuditor_id");
 search.sql.addField("c.daAssignedDate");
 search.sql.addField("c.daSubmittedDate");
 search.sql.addField("c.daClosedDate");
-search.sql.addField("c.daPercent");
-search.sql.addField("c.daVerifiedPercent");
 
 search.addPQFQuestion(894); //q318.answer
 search.sql.addWhere("q894.answer = 'Yes'");
 search.sql.addWhere("c.daSubmittedDate = '0000-00-00'");
-//search.setLimit(10);
 String showPage = request.getParameter("showPage");
 if (showPage != null) {
 	search.setCurrentPage(Integer.valueOf(showPage));
 }
-//String startsWith = request.getParameter("startsWith");
-//if (startsWith != null) {
-//	search.sql.addWhere("a.name LIKE '"+Utilities.escapeQuotes(startsWith)+"%'");
-//}
+search.startsWith(request.getParameter("startsWith"));
+
 SimpleResultSet searchData = search.doSearch();
 
 %>
@@ -78,28 +72,6 @@ function selectAuditor(conID) {
 	padding: 0px;
 }
 </style>
-<table width="100%" height="100%" border="1" cellpadding="0" cellspacing="0">
-  <tr>
-    <td valign="top">
-	  <table width="100%" border="0" cellpadding="0" cellspacing="0">
-        <tr>
-          <td width="50%" bgcolor="#993300">&nbsp;</td>
-          <td width="146" valign="top" rowspan="2"><a href="index.jsp"><img src="images/logo.gif" alt="HOME" width="146" height="145" border="0"></a></td>
-          <td width="364"><%@ include file="utilities/mainNavigation.jsp"%></td>
-          <td width="147"><%@ include file="utilities/rightUpperNav.jsp"%></td>
-          <td width="50%" bgcolor="#993300">&nbsp;</td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td valign="top" align="center"><img src="images/header_reports.gif" width="321" height="72"></td>
-          <td valign="top"><%@ include file="utilities/rightLowerNav.jsp"%></td>
-          <td>&nbsp;</td>
-        </tr>
-      </table>
-      <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
-        <tr> 
-          <td>&nbsp;</td>
-		  <td colspan="3" align="center" class="blueMain">
             <table width="657" border="0" cellpadding="0" cellspacing="0" align="center">
               <tr>
                 <td height="70" colspan="2" align="center" class="buttons"> 
@@ -108,15 +80,9 @@ function selectAuditor(conID) {
                 </td>
               </tr>
 			</table>
-            <table width="657" border="0" cellpadding="0" cellspacing="0" align="center">
-              <tr> 
-                <td height="30" align="left"><%=search.getStartsWithLinks()%></td>
-                <td align="right"><%=search.getPageLinks()%></td>
-              </tr>
-            </table>
-			<table width="657" border="0" cellpadding="1" cellspacing="1" align="center">
+			<table border="0" cellpadding="1" cellspacing="1" align="center">
               <tr bgcolor="#003366" class="whiteTitle"> 
-			    <td colspan=2><a href="?orderBy=a.name" class="whiteTitle">Contractor</a></td>
+			    <td><a href="?orderBy=a.name" class="whiteTitle">Contractor</a></td>
  			    <td align="center"><a href="?orderBy=pqfSubmittedDate DESC" class="whiteTitle">PQF</a></td>
  			    <td align="center"><a href="?orderBy=daSubmittedDate DESC" class="whiteTitle">Submitted</a></td>
  			    <td align="center"><a href="?orderBy=daClosedDate DESC" class="whiteTitle">Closed</a></td>
@@ -129,7 +95,6 @@ for(SimpleResultRow row: searchData) {
 	counter++;
 %>
 			  <tr id="auditor_tr<%=row.get("id")%>" class="blueMain" <% if ((counter%2)==1) out.print("bgcolor=\"#FFFFFF\""); %> >
-                <td align="right"><%=counter%></td>
 			    <td><a href="accounts_edit_contractor.jsp?id=<%=row.get("id")%>"><%=row.get("name")%></a></td>
 			    <td><%=DateBean.toShowFormat(row.get("pqfSubmittedDate"))%></td>
 			    <td><%=DateBean.toShowFormat(row.get("daSubmittedDate"))%></td>
@@ -145,11 +110,5 @@ for(SimpleResultRow row: searchData) {
 } // end foreach loop
 %>
 		    </table>
-		  </td>
-          <td>&nbsp;</td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
+            <p align="center"><%=search.getPageLinks()%></p>
 <%@ include file="includes/footer.jsp" %>

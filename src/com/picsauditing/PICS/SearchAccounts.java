@@ -3,7 +3,7 @@ package com.picsauditing.PICS;
 public class SearchAccounts extends SearchRaw {
 
 	private Type type;
-	public enum Type {Operator, Contractor, Admin, Auditor}
+	public enum Type {Operator, Contractor}
 
 	public SearchAccounts() {
 		super();
@@ -38,11 +38,37 @@ public class SearchAccounts extends SearchRaw {
 	}
 	
 	/**
-	 * JOINs to pqfdata for this contractor and adds q123.answer to the field list
+	 * JOIN to pqfdata for this contractor and add q123.answer to the field list
 	 * @param questionID PQF question ID must be > 0
+	 * @param require if true, do an INNER JOIN, else LEFT JOIN
+	 */
+	public void addPQFQuestion(int questionID, boolean require, String columnName) {
+		String join = "";
+		if (!require) join = "LEFT ";
+		join = join + "JOIN pqfdata q"+questionID+" on q"+questionID+".conID = a.id AND q"+questionID+".questionID = " + questionID;
+		sql.addJoin(join);
+		sql.addField("q"+questionID+".answer AS "+columnName);
+	}
+	/**
+	 * LEFT JOIN to pqfdata for this contractor and add q123.answer to the field list
+	 * @param questionID PQF question ID must be > 0
+	 * @param require if true, do an INNER JOIN, else LEFT JOIN
 	 */
 	public void addPQFQuestion(int questionID) {
-		sql.addJoin("LEFT JOIN pqfdata q"+questionID+" on q"+questionID+".conID = a.id AND questionID = " + questionID);
-		sql.addField("q"+questionID+".answer");
+		this.addPQFQuestion(questionID, false, "answer"+questionID);
+	}
+	public void addPQFQuestion(String questionID) {
+		int temp = Integer.parseInt(questionID);
+		this.addPQFQuestion(temp);
+	}
+	
+	/**
+	 * Support search by first character in the name
+	 * @param startsWith
+	 */
+	public void startsWith (String startsWith) {
+		if (startsWith != null && startsWith.length() > 0) {
+			this.sql.addWhere("a.name LIKE '"+Utilities.escapeQuotes(startsWith)+"%'");
+		}
 	}
 }
