@@ -18,7 +18,7 @@ public class SearchBean {
 	public AccountBean aBean = new AccountBean();
 	public ContractorBean cBean = new ContractorBean();
 	public OperatorBean oBean = new OperatorBean();
-	public OSHABean osBean = new OSHABean();
+	public OSHABean osBean = new OSHABean();	
 
 	public String emr1 = "";
 	public String emr2 = "";
@@ -523,15 +523,20 @@ public class SearchBean {
 		Conn = DBBean.getDBConnection();
 		SQLStatement = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		count = beginResults = (showPage-1)*showNum;
-		Query = "SELECT SQL_CALC_FOUND_ROWS * FROM accounts "+joinQuery+pqfJoinQuery+oshaJoinQuery+ncmsJoinQuery+
-				"WHERE 1 "+whereQuery+groupByQuery+"ORDER BY "+orderBy+" LIMIT "+count+","+showNum+";";
-		if ("Corporate".equals(accessType))
+		
+		if(!searchType.equals("Auditor")){
 			Query = "SELECT SQL_CALC_FOUND_ROWS * FROM accounts "+joinQuery+pqfJoinQuery+oshaJoinQuery+ncmsJoinQuery+
 					"WHERE 1 "+whereQuery+groupByQuery+"ORDER BY "+orderBy+" LIMIT "+count+","+showNum+";";
+			if ("Corporate".equals(accessType))
+				Query = "SELECT SQL_CALC_FOUND_ROWS * FROM accounts "+joinQuery+pqfJoinQuery+oshaJoinQuery+ncmsJoinQuery+
+						"WHERE 1 "+whereQuery+groupByQuery+"ORDER BY "+orderBy+" LIMIT "+count+","+showNum+";";
+		}else
+			Query = "SELECT * FROM users WHERE id IN (SELECT userID FROM usergroup WHERE groupID = '11') ORDER BY name ASC;";
 
 		//System.out.println(Query);
 		SQLResult = SQLStatement.executeQuery(Query);
-
+							
+			
 		ResultSet tempRS = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)
 				.executeQuery("SELECT FOUND_ROWS();");
 		tempRS.next();

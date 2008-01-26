@@ -225,4 +225,11 @@ public class DateBean {
 		java.util.Date date2 = showFormat.parse(dateString2);
 		return date1.before(date2);
 	}//isFirstBeforeSecond
+	
+	public static boolean isNullDate(Date dt){
+		if(dt == null || dt.toString().equals(""))
+				return true;
+		else 
+			return false;
+	}
 }//DateBean

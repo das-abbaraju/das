@@ -4,6 +4,7 @@
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="session"/>
 <jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean" scope ="page"/>
+<jsp:useBean id="usersDO" class="com.picsauditing.domain.UsersDO" scope="page" />
 
 <%	try{
 	com.picsauditing.PICS.pqf.QuestionTypeList statesLicensedInList = new com.picsauditing.PICS.pqf.QuestionTypeList();
@@ -244,17 +245,17 @@
                 <td>Auditor</td>
                 <td>Email</td>
               </tr>
-<%		while (sBean.isNextRecord()){%>
+<%		while (sBean.isNextRecord(usersDO)){%>
               <tr <%=sBean.getBGColor()%> class="active"> 
 			  <form name="form3" method="post" action="accounts_manage.jsp">                  
                 <td width="45" bgcolor = "#FFFFFF" align="center"> 
                   <input name="action" type="submit" class="buttons" value="Delete" onClick="return confirm('Are you sure you want to delete this account?');">
                 </td>
                 <td width="35" bgcolor = "#FFFFFF" align="center"><input name="action" type="submit" class="buttons" value="Edit"></td>
-                <td><%=sBean.getActiveStar()%><%=sBean.aBean.name%></td>
-                <td><%=sBean.aBean.email%></td>
-				<input name="action_type" type="hidden" value="Auditor">
-				<input name="action_id" type="hidden" value="<%=sBean.aBean.id%>">
+                <td><%=sBean.getActiveStar()%><%=usersDO.getName()%></td>
+                <td><%=usersDO.getEmail()%></td>
+                <input name="action_type" type="hidden" value="Auditor">
+				<input name="action_id" type="hidden" value="<%=usersDO.getId()%>">
               </form>
               </tr>
 <%		}//while%>

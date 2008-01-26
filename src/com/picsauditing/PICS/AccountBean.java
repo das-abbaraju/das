@@ -113,6 +113,11 @@ public class AccountBean extends DataBean {
 		id = aID;
 		setFromDB();
 	}//setFromDB
+	
+	public void setAuditorFromDB(String aID) throws Exception {
+		id = aID;
+		setFromDB();
+	}//setFromDB
 
 	public void setFromDB() throws Exception {
 		String selectQuery = "SELECT * FROM accounts WHERE id="+Utilities.intToDB(id)+";";
@@ -128,6 +133,22 @@ public class AccountBean extends DataBean {
 			DBClose();
 		}//finally
 	}//setFromDB
+	
+	public void setAuditorFromDB() throws Exception {
+		String selectQuery = "SELECT * FROM accounts WHERE id="+Utilities.intToDB(id)+";";
+		try {
+			DBReady();
+			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
+			if (SQLResult.next())
+				setFromResultSet(SQLResult);
+			else
+				throw new Exception("No account with id: "+id);
+			SQLResult.close();
+		}finally{
+			DBClose();
+		}//finally
+	}//setFromDB
+
 
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
 		try {

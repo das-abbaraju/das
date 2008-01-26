@@ -1,16 +1,18 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ include file="utilities/admin_secure.jsp" %>
-<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
+<jsp:useBean id="uBean" class="com.picsauditing.domain.UsersDO" scope ="page"/>
 <jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope ="application"/>
 
-<%	String edit_id = request.getParameter("id");
-	aBean.id = edit_id;
+<%	
+	String edit_id = request.getParameter("id");
+
+	uBean.setId(Integer.parseInt(edit_id));
 	if (request.getParameter("submit") == null)
-		aBean.setFromDB();
+		uBean.setFromDB();
 	else {
-		aBean.setFromRequest(request);
-		if (aBean.isOK()){
-			aBean.writeAuditorToDB();
+		uBean.setFromRequest(request);
+		if (uBean.isOK()){
+			uBean.writeToDB();
 			AUDITORS.resetAuditorsAL();
 			response.sendRedirect("accounts_manage.jsp?type=Auditor");
 			return;
@@ -29,7 +31,7 @@
   <tr>
     <td valign="top">
 <form name="form1" method="post" action="accounts_edit_auditor.jsp?id=<%=edit_id%>">
-<input name="createdBy" type="hidden" value="<%=aBean.createdBy%>">
+
 <input name="type" type="hidden" value="Auditor">
 	<table width="100%" border="0" cellpadding="0" cellspacing="0">
        <tr> 
@@ -73,7 +75,7 @@
                       </tr>
                       <tr> 
                         <td colspan="2" class="redMain"> <%	if (request.getParameter("submit") != null)
-							out.println(aBean.getErrorMessages());
+							out.println(uBean.getErrorMessages());
 						%> </td>
                       </tr>
                       <tr class="blueMain"> 
@@ -81,11 +83,11 @@
                       </tr>
                       <tr> 
                         <td class="blueMain" align="right">Name</td>
-                        <td> <input name="name" type="text" class="forms" size="20" value="<%=aBean.name%>"></td>
+                        <td> <input name="name" type="text" class="forms" size="20" value="<%=uBean.getName()%>"></td>
                       </tr>
                       <tr> 
                         <td class="blueMain" align="right">Email</td>
-                        <td><input name="email" type="text" class="forms" size="30" value="<%=aBean.email%>"></td>
+                        <td><input name="email" type="text" class="forms" size="30" value="<%=uBean.getEmail()%>"></td>
                       </tr>
                       <tr> 
                         <td>&nbsp;</td>
@@ -93,18 +95,18 @@
                       </tr>
                       <tr> 
                         <td class="blueMain" align="right">Username</td>
-                        <td><input name="username" type="text" class="forms" size="15" value="<%=aBean.username%>"></td>
+                        <td><input name="username" type="text" class="forms" size="15" value="<%=uBean.getUsername()%>"></td>
                       </tr>
                       <tr> 
                         <td class="blueMain" align="right">Password</td>
-                        <td><input name="password" type="text" class="forms" size="15" value="<%=aBean.password%>"></td>
+                        <td><input name="password" type="text" class="forms" size="15" value="<%=uBean.getPassword()%>"></td>
                       </tr>
 					   <tr> 
                         <td class="blueMain" align="right">Visible?</td>
                         <td class="blueMain" align="left">
-							<input name="active" type="radio" value="Y" <%=aBean.getActiveChecked()%>>
+							<input name="active" type="radio" value="Y" >
                           Yes 
-                          <input name="active" type="radio" value="N" <%=aBean.getNotActiveChecked()%>>
+                          <input name="active" type="radio" value="N" >
                           No </td>
                       </tr>
                       <tr> 

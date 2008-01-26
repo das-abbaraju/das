@@ -14,12 +14,14 @@ import java.util.Set;
 
 import javax.faces.component.UISelectOne;
 import javax.faces.event.ActionEvent;
+import javax.faces.model.DataModel;
 
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorInfoReportDAO;
 import com.picsauditing.dao.DAOFactory;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorInfoReport;
+import com.picsauditing.jpa.entities.OshaLogReport;
 import com.picsauditing.jsf.utils.JSFListDataModel;
 
 
@@ -46,13 +48,13 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		dao = daof.getContractorInfoReportDAO();		
 		dao.setMax(getMaxResults());
 		List<ContractorInfoReport> reports = null;
-		String start = "select cr from ContractorInfoReport cr where cr.account.active='Y' AND ";
+		String start = "select cr from ContractorInfoReport cr where cr.account.active='Y'";
 		String startCount = "select count(cr) from ContractorInfoReport cr where cr.account.active='Y'";
 		StringBuffer queryBuf = new StringBuffer();
 		
 		Map<String,Object>params = new HashMap<String,Object>();
 		if(doSearch){
-			if(acctName == "" && auditorId == 0 && operatorId == 0 && !needsOshaVerification && !needsEMRVerification)
+			if(acctName == "" && auditorId == 0 && operatorId == 0 && !needsOshaVerification)
 				reports = dao.executeNamedQuery("getActiveContractors", null);
 			else{
 							
@@ -69,24 +71,23 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 				if(operatorId != 0){
 					params.put("genId", operatorId );
 					queryBuf.append(":genId in (select gc.id.genId from cr.generalContractors gc) AND ");
-				}
+				}			
 				
-				if(needsOshaVerification){
-					params.put("verifiedDate1", new java.util.Date() );
-					//queryBuf.append(":verifiedDate1 in (select o.verifiedDate1 from cr.oshaLogs o) AND ");
-					queryBuf.append(":verifiedDate1 in (select o.verifiedDate1 from cr.oshaLogs o) AND cr.pqfSubmittedDate <> '0000-00-00' AND ");
-				}
+				StringBuffer query = new StringBuffer();
 				
-				if(needsEMRVerification){
-					params.put("isCorrect", "No");
-					queryBuf.append(":isCorrect in (select emr.isCorrect from cr.emrLogs emr ) AND ");
-					
-				}
+				if(queryBuf.length() > 0)
+					queryBuf.setLength(queryBuf.length() - 5 );	
 				
-				queryBuf.setLength(queryBuf.length()-5);
 				queryBuf.append(" order by cr.pqfSubmittedDate desc");
-				StringBuffer query = queryBuf.insert(0, start);
-				reports = dao.executeQuery(query.toString(), params);
+				
+				if(needsOshaVerification){					
+					query = queryBuf.insert(0, start);
+					reports = filter(query, params);
+				}else {								
+					query = queryBuf.insert(0, start + " AND ");
+					reports = dao.executeQuery(query.toString(), params);
+				}
+				
 			}
 			
 			
@@ -274,6 +275,22 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 
 		public void setNeedsEMRVerification(boolean needsEMRVerification) {
 			this.needsEMRVerification = needsEMRVerification;
-		}		
+		}
+		
+		private List<ContractorInfoReport> filter(StringBuffer query, Map<String,Object>params){
+			
+			List<ContractorInfoReport> temp = new ArrayList<ContractorInfoReport>();
+			
+			List<ContractorInfoReport> list = dao.executeQuery(query.toString(), params);
+			for(ContractorInfoReport cr : list){
+				for(OshaLogReport o : cr.getOshaLogs())
+					if(o.isNeedsVerification())
+						temp.add(cr);
+			}
+			
+			return temp;
+		}
+		
+		
 				
 }

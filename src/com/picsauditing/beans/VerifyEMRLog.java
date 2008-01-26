@@ -62,17 +62,17 @@ public class VerifyEMRLog extends Verifier<PqfLog, Short> implements Verifiable<
 	}
 	
 	public String getVerifiedAnswer(){
-		if(getEntity().getIsCorrect().equals("Yes"))
-			return getEntity().getAnswer();		
+		if(getEntity().getIsCorrect() == null || getEntity().getIsCorrect().equals("No"))
+			return getEntity().getVerifiedAnswer();		
 		else
-			return getEntity().getVerifiedAnswer();
+			return getEntity().getAnswer();
 	}
 	
 	public void setVerifiedAnswer(String answer){
-		if(getEntity().getIsCorrect().equals("Yes"))
-			getEntity().setVerifiedAnswer(getEntity().getAnswer());
-		else
+		if(getEntity().getIsCorrect() == null || getEntity().getIsCorrect().equals("No"))
 			getEntity().setVerifiedAnswer(answer);
+		else
+			getEntity().setVerifiedAnswer(getEntity().getAnswer());
 			
 	}
 
