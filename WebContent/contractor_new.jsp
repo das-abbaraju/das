@@ -16,6 +16,11 @@
 	String action = request.getParameter("action");
 	if (action != null) {
 		if (action.equals("pricing")) {
+			String riskLevel = request.getParameter("riskLevel");
+			if (riskLevel.equals("1")) {
+				%>$99<%
+				return;
+			}
 			String facilities = request.getParameter("facilities");
 			Collection<String> selectedFacilities = new ArrayList<String>();
 			String[] facilityArray = facilities.split(",");;
@@ -130,7 +135,7 @@
       </tr>
       <tr>
         <td><br>
-		<form name="form1" method="post" action="contractor_new.jsp">
+		<form id="form1" name="form1" method="post" action="contractor_new.jsp">
 		  <table border="0" cellpadding="1" cellspacing="0">
             <tr>
               <td width="145" class="blueHeader">&nbsp;</td>
@@ -235,15 +240,15 @@
               <td class="redMain">
 		        <table border="1" cellpadding="1" cellspacing="0" bordercolor="white">
                   <tr>
-                    <td valign="top" align="left" class="redMain"><label><input name=riskLevel class=blueMain type=radio value="<%=ContractorBean.RISK_LEVEL_VALUES_ARRAY[0]%>" <%=Inputs.getChecked(ContractorBean.RISK_LEVEL_VALUES_ARRAY[0],cBean.riskLevel)%>><nobr><%=ContractorBean.RISK_LEVEL_ARRAY[0]%></nobr></label></td>
+                    <td valign="top" align="left" class="redMain"><label><input name=riskLevel id=riskLow class=blueMain type=radio value="1" onclick="change()" <%=Inputs.getChecked(ContractorBean.RISK_LEVEL_VALUES_ARRAY[0],cBean.riskLevel)%>><nobr><%=ContractorBean.RISK_LEVEL_ARRAY[0]%></nobr></label></td>
                     <td valign="top" align="left" class="blueMain">Delivery, janitorial, off site engineering, security, computer services, etc.</td>
                   </tr>
                   <tr>
-                    <td valign="top" align="left" class="redMain"><label><input name=riskLevel class=blueMain type=radio value="<%=ContractorBean.RISK_LEVEL_VALUES_ARRAY[1]%>" <%=Inputs.getChecked(ContractorBean.RISK_LEVEL_VALUES_ARRAY[1],cBean.riskLevel)%>><nobr><%=ContractorBean.RISK_LEVEL_ARRAY[1]%></nobr></label></td>
+                    <td valign="top" align="left" class="redMain"><label><input name=riskLevel id=riskMed class=blueMain type=radio value="2" onclick="change()" <%=Inputs.getChecked(ContractorBean.RISK_LEVEL_VALUES_ARRAY[1],cBean.riskLevel)%>><nobr><%=ContractorBean.RISK_LEVEL_ARRAY[1]%></nobr></label></td>
                     <td valign="top" align="left" class="blueMain">On site engineering, safety services, landscaping, inspection services, etc.</td>
                   </tr>
                   <tr>
-                    <td valign="top" align="left" class="redMain"><label><input name=riskLevel class=blueMain type=radio value="<%=ContractorBean.RISK_LEVEL_VALUES_ARRAY[2]%>" <%=Inputs.getChecked(ContractorBean.RISK_LEVEL_VALUES_ARRAY[2],cBean.riskLevel)%>><nobr><%=ContractorBean.RISK_LEVEL_ARRAY[2]%></nobr></label></td>
+                    <td valign="top" align="left" class="redMain"><label><input name=riskLevel id=riskHigh class=blueMain type=radio value="3" onclick="change()" <%=Inputs.getChecked(ContractorBean.RISK_LEVEL_VALUES_ARRAY[2],cBean.riskLevel)%>><nobr><%=ContractorBean.RISK_LEVEL_ARRAY[2]%></nobr></label></td>
                     <td valign="top" align="left" class="blueMain">Mechanical contractor, remediation, industrial cleaning, general construction, etc.</td>
                   </tr>
                 </table>
@@ -358,10 +363,17 @@ function checkUsername(username) {
 }
 
 function change() {
+	var risks = $("form1")["riskLevel"];
+	var i=0;
+	var riskLevel=2; // default to medium
+	for(i=0; i < risks.length; i++) {
+		if ($F(risks[i]) != null) riskLevel = $F(risks[i]);
+	}
+	
 	var defaultRequestedBy = '<%=cBean.requestedByID%>';
 	opt1 = $('generalContractors');
 	opt2 = $('requestedByID');
-	var pars = 'action=pricing&facilities=0';
+	var pars = 'action=pricing&riskLevel='+riskLevel+'&facilities=0';
 	if (opt2.selectedIndex > 0) {
 		defaultRequestedBy = opt2.options[opt2.selectedIndex].value;
 	}
@@ -380,7 +392,7 @@ function change() {
 		}
 	}
 	
-	$('annualFee').innerHTML = '...';
+	$('annualFee').innerHTML = '<img src="images/ajax_process.gif" width="20" height="20">';
 	
 	var myAjax = new Ajax.Updater('annualFee', 'contractor_new.jsp', {method: 'get', parameters: pars});
 }
