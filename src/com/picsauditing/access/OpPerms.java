@@ -18,6 +18,7 @@ public enum OpPerms {
 	// New Permissions based on the new Model since 2007
 	AssignAudits("Audit Assignment"),
 	OSHAVerification("OSHA Verification"),
+	NCMS("NCMS Administration"),
 	SwitchUser("Switch to User");
 
 	private String description;

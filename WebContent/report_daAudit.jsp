@@ -1,18 +1,23 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
+<%@page import="org.apache.commons.beanutils.*"%>
+<%@page import="java.util.*"%>
+<%@page import="com.picsauditing.access.*"%>
 <jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session" />
-<jsp:useBean id="pageBean" class="com.picsauditing.PICS.WebPage" scope ="page"/>
 <jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope ="application"/>
+<jsp:useBean id="pageBean" class="com.picsauditing.PICS.WebPage" scope ="page"/>
 <%
-	if (null == pBean) pBean = new PermissionsBean();
-	pBean.checkAccess(PermissionsBean.FULL, response);
-	//pBean.getPermissions().tryPermission(OpPerms.AssignAudits);
-%>
-<%
+pBean.getPermissions().tryPermission(OpPerms.AssignAudits);
+boolean canEdit = pBean.getPermissions().hasPermission(OpPerms.AssignAudits, OpType.Edit);
+
 pageBean.setTitle("Schedule Drug &amp; Alcohol Audits");
 pageBean.includeScriptaculous(true);
 
 String action = request.getParameter("action");
 if (action != null && action.equals("saveAuditor")) {
+	if (!canEdit) {
+		%>no permission<%
+		return;
+	}
 	String auditorID = request.getParameter("auditorID");
 	String conID = request.getParameter("conID");
 	ContractorBean cBean = new ContractorBean();
@@ -49,8 +54,7 @@ if (showPage != null) {
 	search.setCurrentPage(Integer.valueOf(showPage));
 }
 search.startsWith(request.getParameter("startsWith"));
-
-SimpleResultSet searchData = search.doSearch();
+List<BasicDynaBean> searchData = search.doSearch();
 
 %>
 <%@ include file="includes/header.jsp" %>
@@ -72,43 +76,43 @@ function selectAuditor(conID) {
 	padding: 0px;
 }
 </style>
-            <table width="657" border="0" cellpadding="0" cellspacing="0" align="center">
-              <tr>
-                <td height="70" colspan="2" align="center" class="buttons"> 
-                  <%@ include file="includes/selectReport.jsp"%>
-                  <span class="blueHeader">Schedule Drug and Alcohol Audits</span>
-                </td>
-              </tr>
-			</table>
-			<table border="0" cellpadding="1" cellspacing="1" align="center">
-              <tr bgcolor="#003366" class="whiteTitle"> 
+<table width="657" border="0" cellpadding="0" cellspacing="0" align="center">
+  <tr>
+    <td height="70" colspan="2" align="center" class="buttons"> 
+      <%@ include file="includes/selectReport.jsp"%>
+      <span class="blueHeader">Schedule Drug and Alcohol Audits</span>
+    </td>
+  </tr>
+</table>
+<table border="0" cellpadding="1" cellspacing="1" align="center">
+	<tr bgcolor="#003366" class="whiteTitle"> 
 			    <td><a href="?orderBy=a.name" class="whiteTitle">Contractor</a></td>
  			    <td align="center"><a href="?orderBy=pqfSubmittedDate DESC" class="whiteTitle">PQF</a></td>
  			    <td align="center"><a href="?orderBy=daSubmittedDate DESC" class="whiteTitle">Submitted</a></td>
  			    <td align="center"><a href="?orderBy=daClosedDate DESC" class="whiteTitle">Closed</a></td>
  			    <td align="center"><a href="?orderBy=daAuditor_id DESC,name" class="whiteTitle">Auditor</a></td>
  			    <td align="center"><a href="?orderBy=daAssignedDate DESC" class="whiteTitle">Assigned</a></td>
-  			  </tr>
+	</tr>
 <%
 int counter = 0;
-for(SimpleResultRow row: searchData) {
+for(BasicDynaBean row: searchData) {
 	counter++;
 %>
-			  <tr id="auditor_tr<%=row.get("id")%>" class="blueMain" <% if ((counter%2)==1) out.print("bgcolor=\"#FFFFFF\""); %> >
+	<tr id="auditor_tr<%=row.get("id")%>" class="blueMain" <% if ((counter%2)==1) out.print("bgcolor=\"#FFFFFF\""); %> >
 			    <td><a href="accounts_edit_contractor.jsp?id=<%=row.get("id")%>"><%=row.get("name")%></a></td>
 			    <td><%=DateBean.toShowFormat(row.get("pqfSubmittedDate"))%></td>
 			    <td><%=DateBean.toShowFormat(row.get("daSubmittedDate"))%></td>
 			    <td><%=DateBean.toShowFormat(row.get("daClosedDate"))%></td>
 			    <td>
 			    	<form class="auditselect" id="auditor_form<%=row.get("id")%>">
-			    		<%=AUDITORS.getAuditorsSelect("daAuditor_id","forms",row.get("daAuditor_id"),"selectAuditor("+row.get("id")+")")%>
+			    		<%=AUDITORS.getAuditorsSelect("daAuditor_id","forms",row.get("daAuditor_id").toString(),"selectAuditor("+row.get("id")+")")%>
 			    	</form>
 			    </td>
 			    <td id="auditor_td<%=row.get("id")%>"><%=DateBean.toShowFormat(row.get("daAssignedDate"))%></td>
-		  	  </tr>
+	</tr>
 <%
-} // end foreach loop
+}
 %>
-		    </table>
-            <p align="center"><%=search.getPageLinks()%></p>
+</table>
+<p align="center"><%=search.getPageLinks()%></p>
 <%@ include file="includes/footer.jsp" %>
