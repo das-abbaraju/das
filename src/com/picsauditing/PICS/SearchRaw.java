@@ -1,6 +1,9 @@
 package com.picsauditing.PICS;
 
 import java.sql.*;
+
+import org.apache.commons.beanutils.RowSetDynaClass;
+
 import static java.lang.Math.*;
 
 /**
@@ -55,6 +58,7 @@ public class SearchRaw {
 			// Add the row to the set
 			dataSet.add(rowData);
 		}
+		
 		this.returnedRows = dataSet.size();
 		
 		if (this.sql.isSQL_CALC_FOUND_ROWS()) {
@@ -71,6 +75,24 @@ public class SearchRaw {
 		Conn.close();
 		return dataSet;
 	}// doSearch
+	
+	public RowSetDynaClass doSearchDynaSet() throws Exception {
+		Connection Conn = DBBean.getDBConnection();
+		Statement stmt = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+		
+		int startCount = 0;
+		startCount = (currentPage-1)*limit;
+		this.sql.setStartRow(startCount);
+		this.sql.setLimit(this.limit);
+		
+		ResultSet rs = stmt.executeQuery(this.sql.toString());		
+	    RowSetDynaClass rsdc = new RowSetDynaClass(rs);
+	    
+	    rs.close();
+	    stmt.close();
+	    Conn.close();
+	    return rsdc;
+	}
 
 	public int getAllRows() {
 		return this.allRows;
