@@ -1,7 +1,9 @@
 package com.picsauditing.PICS;
 
 import java.sql.*;
+import java.util.List;
 
+import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.RowSetDynaClass;
 
 import static java.lang.Math.*;
@@ -76,7 +78,7 @@ public class SearchRaw {
 		return dataSet;
 	}// doSearch
 	
-	public RowSetDynaClass doSearchDynaSet() throws Exception {
+	public List<BasicDynaBean> doSearchDynaSet() throws Exception {
 		Connection Conn = DBBean.getDBConnection();
 		Statement stmt = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		
@@ -86,12 +88,18 @@ public class SearchRaw {
 		this.sql.setLimit(this.limit);
 		
 		ResultSet rs = stmt.executeQuery(this.sql.toString());		
-	    RowSetDynaClass rsdc = new RowSetDynaClass(rs);
-	    
+	    RowSetDynaClass rsdc = new RowSetDynaClass(rs, false);
 	    rs.close();
-	    stmt.close();
+	    
+		if (this.sql.isSQL_CALC_FOUND_ROWS()) {
+			ResultSet tempRS = stmt.executeQuery("SELECT FOUND_ROWS()");
+			tempRS.next();
+			this.allRows = tempRS.getInt(1);
+			tempRS.close();
+		}
+		stmt.close();
 	    Conn.close();
-	    return rsdc;
+	    return rsdc.getRows();
 	}
 
 	public int getAllRows() {
