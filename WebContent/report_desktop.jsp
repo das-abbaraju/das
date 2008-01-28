@@ -1,13 +1,13 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@page import="org.apache.commons.beanutils.*"%>
 <%@page import="java.util.*"%>
+<%@page import="com.picsauditing.access.*"%>
 <jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session" />
-<jsp:useBean id="pageBean" class="com.picsauditing.PICS.WebPage" scope ="page"/>
 <jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope ="application"/>
+<jsp:useBean id="pageBean" class="com.picsauditing.PICS.WebPage" scope ="page"/>
 <%
-	if (null == pBean) pBean = new PermissionsBean();
-	pBean.checkAccess(PermissionsBean.FULL, response);
-	//pBean.getPermissions().tryPermission(OpPerms.AssignAudits);
+	pBean.getPermissions().tryPermission(OpPerms.AssignAudits);
+	boolean canEdit = pBean.getPermissions().hasPermission(OpPerms.AssignAudits, OpType.Edit);
 %>
 <%
 pageBean.setTitle("Schedule Desktop Audits");
@@ -15,6 +15,10 @@ pageBean.includeScriptaculous(true);
 
 String action = request.getParameter("action");
 if (action != null && action.equals("saveAuditor")) {
+	if (!canEdit) {
+		%>no permission<%
+		return;
+	}
 	String auditorID = request.getParameter("auditorID");
 	String conID = request.getParameter("conID");
 	ContractorBean cBean = new ContractorBean();
@@ -64,6 +68,7 @@ if (showPage != null) {
 	search.setCurrentPage(Integer.valueOf(showPage));
 }
 search.startsWith(request.getParameter("startsWith"));
+search.setLimit(50);
 
 //SimpleResultSet searchData = search.doSearch();
 List<BasicDynaBean> searchData = search.doSearch();
@@ -125,7 +130,13 @@ for(BasicDynaBean row: searchData) {
 			    <td><%=DateBean.toShowFormat(row.get("pqfSubmittedDate"))%></td>
 			    <td><%=DateBean.toShowFormat(row.get("desktopSubmittedDate"))%></td>
 			    <td><%=DateBean.toShowFormat(row.get("desktopClosedDate"))%></td>			   
-
+			    <td><%=DateBean.toShowFormat(row.get("revisionDate"))%></td>
+			    <td>
+			    	<form class="auditselect" id="auditor_form<%=row.get("id")%>">
+			    		<%=AUDITORS.getAuditorsSelect("auditorID","forms",row.get("desktopAuditor_id").toString(),"selectAuditor("+row.get("id")+")")%>
+			    	</form>
+			    </td>
+			    <td id="auditor_td<%=row.get("id")%>"><%=DateBean.toShowFormat(row.get("desktopAssignedDate"))%></td>
 		  	  </tr>
 <%
 } // end foreach loop

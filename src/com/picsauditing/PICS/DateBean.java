@@ -41,11 +41,13 @@ public class DateBean {
 	}//toDBFormat
 
 	public static String toShowFormat(Object date) throws Exception{
-		if(date == null || !( date instanceof Date))
+		if(date == null)
 			return "";
-		
-		return toShowFormat(date.toString()); 
-		
+		if(date instanceof Date) return toShowFormat(date.toString());
+		if(date instanceof String) {
+			return toShowFormat(date.toString());
+		}
+		return "";
 	}
 	
  	public static String toShowFormat(String dateString) throws Exception {

@@ -47,10 +47,9 @@ public class LoginController extends DataBean {
 			return;
 		}
 		
+		if (!permissions.hasPermission(OpPerms.SwitchUser))
+			return;
 		
-		if (permissions.hasPermission(OpPerms.AddContractors)) {
-			
-		}
 		int adminID = permissions.getUserId();
 
 		User user = new User();

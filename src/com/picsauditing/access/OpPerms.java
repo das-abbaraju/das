@@ -16,7 +16,9 @@ public enum OpPerms {
 	StatusOnly("Can Only View Statuses"),
 	
 	// New Permissions based on the new Model since 2007
-	AssignAudits("Audit Assignment");
+	AssignAudits("Audit Assignment"),
+	OSHAVerification("OSHA Verification"),
+	SwitchUser("Switch to User");
 
 	private String description;
 	public String getDescription(){

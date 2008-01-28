@@ -1,26 +1,27 @@
 <%//@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@ page language="java" import="com.picsauditing.PICS.*"%>
+<jsp:useBean id="loginCtrl" class="com.picsauditing.access.LoginController" scope="page"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page"/>
 <jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session"/>
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope="application"/>
-<%/* 12/16/04 jj - added triggered events by admin login once each day*/%>
 <%
+	// Stuff the session permissions object into the legacy pBean
+	pBean.setPermissions(permissions);
 
-int i1 = 25000;
-int i2 = 25000;
-int i3 = 25000;
-
-	int whichPage = 2;
 	String lname = "";
 	String lpass = "";
+	
+	/*
+	// Auto Login a contractor...HUGE security HOLE
 	try{
 		aBean.setFromDB(request.getParameter("id"));
 		lname = aBean.getUsername();
-		lpass = aBean.getPassword();		
+		lpass = aBean.getPassword();
 	} catch(Exception e) {
-	
 	}
+	*/
 	
 	String msg= "";
 	if (request.getParameter("Submit.x") != null) {
@@ -56,6 +57,12 @@ int i3 = 25000;
 			}
 			
 			if (pBean.isAdmin()) {
+				// Start using the new access.User permissions
+				// If the future, this will be replaced by LoginController.login()
+				com.picsauditing.access.User user = new com.picsauditing.access.User();
+				user.setFromAccountID(aBean.id);
+				permissions.login(user);
+				
 				session.setMaxInactiveInterval(3600);
 				pBean.oBean = new OperatorBean();
 				pBean.oBean.setAsAdmin();

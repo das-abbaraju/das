@@ -23,6 +23,7 @@ public class Permissions{
 	public void login(User user) throws Exception {
 		try{
 			userID = Integer.parseInt(user.userDO.id);
+			if (userID == 0) throw new Exception("Missing User");
 			loggedIn = true;
 			username = user.userDO.username;
 			accountID = Integer.parseInt(user.userDO.accountID);
