@@ -1,6 +1,6 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
-<%@page import="org.apache.commons.beanutils.BasicDynaBean"%>
-<%@page import="java.util.List"%>
+<%@page import="org.apache.commons.beanutils.*"%>
+<%@page import="java.util.*"%>
 <jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session" />
 <jsp:useBean id="pageBean" class="com.picsauditing.PICS.WebPage" scope ="page"/>
 <jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope ="application"/>
@@ -66,7 +66,7 @@ if (showPage != null) {
 search.startsWith(request.getParameter("startsWith"));
 
 //SimpleResultSet searchData = search.doSearch();
-List<BasicDynaBean> searchData = search.doSearchDynaSet();
+List<BasicDynaBean> searchData = search.doSearch();
 
 %>
 <%@ include file="includes/header.jsp" %>
@@ -120,11 +120,11 @@ for(BasicDynaBean row: searchData) {
 %>
 			  <tr id="auditor_tr<%=row.get("id")%>" class="blueMain" <% if ((counter%2)==1) out.print("bgcolor=\"#FFFFFF\""); %> >
                 <td align="right"><%=counter%></td>
-			    <td><a href="accounts_edit_contractor.jsp?id=<%=row.get("id")%>"><%=row.get("name")%></a></td>
-			    <td><%=DateBean.toShowFormat(row.get("lastPayment").toString())%></td>
-			    <td><%=DateBean.toShowFormat(row.get("pqfSubmittedDate").toString())%></td>
-			    <td><%=DateBean.toShowFormat(row.get("desktopSubmittedDate").toString())%></td>
-			    <td><%=DateBean.toShowFormat(row.get("desktopClosedDate").toString())%></td>
+			    <td><a href="accounts_edit_contractor.jsp?id=<%=row.get("id")%>"><%=row.get("name")%></a></td>			    
+			    <td><%=DateBean.toShowFormat(row.get("lastPayment"))%></td>
+			    <td><%=DateBean.toShowFormat(row.get("pqfSubmittedDate"))%></td>
+			    <td><%=DateBean.toShowFormat(row.get("desktopSubmittedDate"))%></td>
+			    <td><%=DateBean.toShowFormat(row.get("desktopClosedDate"))%></td>			   
 
 		  	  </tr>
 <%

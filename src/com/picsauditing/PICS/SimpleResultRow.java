@@ -1,8 +1,15 @@
 package com.picsauditing.PICS;
 
-import java.util.HashMap;
 
-public class SimpleResultRow extends HashMap<String, String> {
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.beanutils.DynaClass;
+
+public class SimpleResultRow extends BasicDynaBean {
+
+	public SimpleResultRow(DynaClass dynaClass) {
+		super(dynaClass);
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * 

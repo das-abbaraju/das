@@ -1,4 +1,6 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
+<%@page import="org.apache.commons.beanutils.*"%>
+<%@page import="java.util.*"%>
 <%//@ page language="java" import="com.picsauditing.PICS.*"%>
 <%@ include file="utilities/admin_secure.jsp" %>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
@@ -34,9 +36,18 @@
 			return;
 		}//if
 	}//if
+	
+	List<BasicDynaBean> searchData = null;
 	sBean.orderBy = "name";
 	sBean.searchType = request.getParameter("type");
-	sBean.doSearch(request, sBean.ACTIVE_AND_NOT, 100, pBean, sBean.ADMIN_ID);
+	
+	if(sBean.searchType != null && sBean.searchType.equals("Auditor")){
+		SearchUsers search = new SearchUsers();
+		search.addGroup(11);
+		searchData = search.doSearch();
+	}else		
+		sBean.doSearch(request, sBean.ACTIVE_AND_NOT, 100, pBean, sBean.ADMIN_ID);
+	
 %>
 <html>
 <head>
@@ -245,17 +256,17 @@
                 <td>Auditor</td>
                 <td>Email</td>
               </tr>
-<%		while (sBean.isNextRecord(usersDO)){%>
+<%		for(BasicDynaBean row: searchData){%>
               <tr <%=sBean.getBGColor()%> class="active"> 
 			  <form name="form3" method="post" action="accounts_manage.jsp">                  
                 <td width="45" bgcolor = "#FFFFFF" align="center"> 
                   <input name="action" type="submit" class="buttons" value="Delete" onClick="return confirm('Are you sure you want to delete this account?');">
                 </td>
                 <td width="35" bgcolor = "#FFFFFF" align="center"><input name="action" type="submit" class="buttons" value="Edit"></td>
-                <td><%=sBean.getActiveStar()%><%=usersDO.getName()%></td>
-                <td><%=usersDO.getEmail()%></td>
+                <td><%=sBean.getActiveStar()%><%=PropertyUtils.getSimpleProperty(row, "name")%></td>
+                <td><%=PropertyUtils.getSimpleProperty(row, "email")%></td>
                 <input name="action_type" type="hidden" value="Auditor">
-				<input name="action_id" type="hidden" value="<%=usersDO.getId()%>">
+				<input name="action_id" type="hidden" value="<%=PropertyUtils.getSimpleProperty(row, "id")%>">
               </form>
               </tr>
 <%		}//while%>

@@ -17,10 +17,10 @@ public class UsersDO extends DataBean implements IPicsDO {
 	private int id;
 	private String username;
 	private String password;
-	//private String isGroup;
+	private String isGroup;
 	private String email;
 	private String name;
-	//private String isActive;
+	private String isActive;
 	private Date dateCreated;
 	private Date lastLogin;
 	public String passwordChange = "";
@@ -39,10 +39,10 @@ public class UsersDO extends DataBean implements IPicsDO {
 		id = Integer.parseInt(request.getParameter("id"));
 		username = request.getParameter("username");
 		password = request.getParameter("password");
-		//isGroup = request.getParameter("isGroup");
+		isGroup = request.getParameter("isGroup");
 		email = request.getParameter("email");
 		name = request.getParameter("name");
-		//isActive = request.getParameter("isActive");
+		isActive = request.getParameter("isActive");
 		
 		try{
 			dateCreated = DBFormat.parse(request.getParameter("dateCreated"));
@@ -59,10 +59,10 @@ public class UsersDO extends DataBean implements IPicsDO {
 		id = SQLResult.getInt("id");
 		username = SQLResult.getString("username");
 		password = SQLResult.getString("password");
-		//isGroup = SQLResult.getString("isGroup");
+		isGroup = SQLResult.getString("isGroup");
 		email = SQLResult.getString("email");
 		name = SQLResult.getString("name");
-		//isActive = SQLResult.getString("isActive");
+		isActive = SQLResult.getString("isActive");
 		dateCreated = SQLResult.getDate("dateCreated");
 		lastLogin = SQLResult.getDate("lastLogin");
 		//accountID = SQLResult.getInt("accountID");
@@ -93,7 +93,7 @@ public class UsersDO extends DataBean implements IPicsDO {
 		this.password = password;
 	}
 
-	/*
+	
 	public String getIsGroup() {
 		return isGroup;
 	}
@@ -101,7 +101,7 @@ public class UsersDO extends DataBean implements IPicsDO {
 	public void setIsGroup(String isGroup) {
 		this.isGroup = isGroup;
 	}
-*/
+
 	public String getEmail() {
 		return email;
 	}
@@ -118,14 +118,14 @@ public class UsersDO extends DataBean implements IPicsDO {
 		this.name = name;
 	}
 
-	/*public String getIsActive() {
+	public String getIsActive() {
 		return isActive;
 	}
 
 	public void setIsActive(String isActive) {
 		this.isActive = isActive;
 	}
-*/
+
 	public Date getDateCreated() {
 		return dateCreated;
 	}

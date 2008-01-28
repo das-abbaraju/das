@@ -40,7 +40,15 @@ public class DateBean {
 		return temp;
 	}//toDBFormat
 
-	public static String toShowFormat(String dateString) throws Exception {
+	public static String toShowFormat(Object date) throws Exception{
+		if(date == null || !( date instanceof Date))
+			return "";
+		
+		return toShowFormat(date.toString()); 
+		
+	}
+	
+ 	public static String toShowFormat(String dateString) throws Exception {
 		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
 		SimpleDateFormat DBFormat = new SimpleDateFormat("yyyy-MM-dd");
 		if (null==dateString || "0000-00-00".equals(dateString) || "".equals(dateString))

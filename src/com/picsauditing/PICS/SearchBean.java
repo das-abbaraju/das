@@ -531,7 +531,8 @@ public class SearchBean {
 				Query = "SELECT SQL_CALC_FOUND_ROWS * FROM accounts "+joinQuery+pqfJoinQuery+oshaJoinQuery+ncmsJoinQuery+
 						"WHERE 1 "+whereQuery+groupByQuery+"ORDER BY "+orderBy+" LIMIT "+count+","+showNum+";";
 		}else
-			Query = "SELECT * FROM users WHERE id IN (SELECT userID FROM usergroup WHERE groupID = '11') ORDER BY name ASC;";
+			//Query = "SELECT * FROM users WHERE id IN (SELECT userID FROM usergroup WHERE groupID = '11') ORDER BY name ASC;";
+			return;
 
 		//System.out.println(Query);
 		SQLResult = SQLStatement.executeQuery(Query);

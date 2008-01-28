@@ -102,12 +102,9 @@
                         <td><input name="password" type="text" class="forms" size="15" value="<%=uBean.getPassword()%>"></td>
                       </tr>
 					   <tr> 
-                        <td class="blueMain" align="right">Visible?</td>
+                        <td class="blueMain" align="right">Active?</td>
                         <td class="blueMain" align="left">
-							<input name="active" type="radio" value="Y" >
-                          Yes 
-                          <input name="active" type="radio" value="N" >
-                          No </td>
+							<%=com.picsauditing.PICS.Inputs.getYesNoRadio("Active","forms", uBean.getIsActive())%>
                       </tr>
                       <tr> 
 						<td>&nbsp;</td>
