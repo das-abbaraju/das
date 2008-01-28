@@ -176,7 +176,7 @@ public class UsersDO extends DataBean implements IPicsDO {
 	public void writeToDB() throws Exception {
 		String updateQuery = "UPDATE users SET name='"+eqDB(name)+
 			"',username='"+eqDB(username)+"',password='"+eqDB(password)+
-			"',email='"+eqDB(email)+"' WHERE id="+id+";";
+			"',email='"+eqDB(email)+"',isActive='" + eqDB(isActive) + "' WHERE id="+id+";";
 		try {
 			DBReady();
 			SQLStatement.executeUpdate(updateQuery);

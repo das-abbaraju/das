@@ -104,7 +104,7 @@
 					   <tr> 
                         <td class="blueMain" align="right">Active?</td>
                         <td class="blueMain" align="left">
-							<%=com.picsauditing.PICS.Inputs.getYesNoRadio("Active","forms", uBean.getIsActive())%>
+							<%=com.picsauditing.PICS.Inputs.getYesNoRadio("isActive","forms", uBean.getIsActive())%>
                       </tr>
                       <tr> 
 						<td>&nbsp;</td>
