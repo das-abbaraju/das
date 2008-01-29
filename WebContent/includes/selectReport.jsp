@@ -26,10 +26,8 @@
 			            <option value="report_desktop.jsp?changed=1">Schedule Desktop Audit</option>
 			            <option value="report_scheduleAudits.jsp?changed=1">Schedule Office Audits</option>
       		            <option value="report_upgradePayment.jsp?changed=1">Upgrade Payment</option>
-<!-- 				        <option value="http://localhost:8480/PICSReportsProject">Osha Logs Verification</option>-->
-<%/*			            <option value="report_RFR.jsp">PQF Snapshot Report</option>
-						<option value="pqf_viewQuestions.jsp?id=<%=pBean.userID%">Create PQF Snapshot</option>
- */%>		  </select>
+      		            <option value="users_manage.jsp">User Management</option>
+	  </select>
 <%	} else {%>
 			          <select id="report" name="report" class="forms" onChange="this.form.submit()">
 			            <option>-- Select a report --</option>

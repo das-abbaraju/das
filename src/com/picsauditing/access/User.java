@@ -251,19 +251,46 @@ public class User extends DataBean {
 		return permissions;
 	}
 	
+	/**
+	 * Only return the permissions assigned directly to this User
+	 * @return
+	 * @throws Exception
+	 */
+	public Set<Permission> getOwnedPermissions() throws Exception {
+		Set<Permission> ownPermissions = new HashSet<Permission>();
+		
+		// READ the permissions assigned directly to this THIS user/group
+		ResultSet SQLResult = null;
+		String sql = "SELECT accessType, viewFlag, editFlag, deleteFlag, grantFlag " + 
+			"FROM useraccess where userID=" + userDO.id;
+		try{
+			DBReady();
+			SQLResult = SQLStatement.executeQuery(sql);
+			while(SQLResult.next()){
+				Permission perm = new Permission();
+				perm.setFromResultSet(SQLResult);
+				ownPermissions.add(perm);
+			}
+		}finally{
+			SQLResult.close();
+			DBClose();
+		}//finally
+		return ownPermissions;
+	}
+
 	public List<User> getGroups() throws Exception{
 		if(groups.size() > 0)
 			return groups;
 		
 		ResultSet SQLResult = null;
-		String query = "select u.*, null as type from users u where id in (select groupID from usergroup where userID=" + userDO.id +")";
+		String query = "select u.*, null as type from users u where id in (select groupID from usergroup where userID=" + userDO.id +") order by u.name";
 		try{
 			DBReady();
 			SQLResult = SQLStatement.executeQuery(query);
 			while(SQLResult.next()){
-				User group = new User();
-				group.userDO.setFromResultSet(SQLResult);
-				groups.add(group);
+				User temp = new User();
+				temp.userDO.setFromResultSet(SQLResult);
+				groups.add(temp);
 			}
 			
 			return groups;
@@ -273,8 +300,25 @@ public class User extends DataBean {
 			DBClose();
 		}//finally
 	}
-	
-	
-	
-	
+
+	public List<User> getMembers() throws Exception {
+		List<User> members = new ArrayList<User>();
+		
+		ResultSet SQLResult = null;
+		String query = "select u.*, null as type from users u where id in (select userID from usergroup where groupID=" + userDO.id +") order by u.isActive, u.name";
+		try{
+			DBReady();
+			SQLResult = SQLStatement.executeQuery(query);
+			while(SQLResult.next()){
+				User temp = new User();
+				temp.userDO.setFromResultSet(SQLResult);
+				members.add(temp);
+			}
+		}finally{
+			SQLResult.close();
+			DBClose();
+		}//finally
+		return members;
+	}
+		
 }//UserBean

@@ -3,6 +3,8 @@ package com.picsauditing.PICS;
 import java.sql.*;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.RowSetDynaClass;
 
@@ -51,6 +53,7 @@ public class SearchRaw {
 		}
 		stmt.close();
 	    Conn.close();
+	    this.returnedRows = rsdc.getRows().size();
 	    return rsdc.getRows();
 	}
 
@@ -167,11 +170,16 @@ public class SearchRaw {
 		return " <a href=\"?"+orderBy+"&showPage="+page+"\">"+page+"</a> ";
 	}
 	
+	public void setPageByResult(HttpServletRequest request) {
+		String showPage = request.getParameter("showPage");
+		if (showPage != null) {
+			this.setCurrentPage(Integer.valueOf(showPage));
+		}
+	}
 	/**
 	 * Return white if even numbers
 	 * @return bgcolor="#FFFFFF"
 	 */
-	/*
 	public String getBGColor() {
 		this.counter++;
 		if ((this.counter % 2) == 1)
@@ -179,5 +187,4 @@ public class SearchRaw {
 		else
 			return "";
 	}
-	*/
 }// SearchBean

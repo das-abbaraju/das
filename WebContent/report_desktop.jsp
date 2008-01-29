@@ -63,10 +63,7 @@ search.addPQFQuestion(manualQID, true, "manualUploaded");
 int revisionQID = Integer.parseInt(com.picsauditing.PICS.pqf.Constants.MANUAL_REVISION_QID);
 search.addPQFQuestion(revisionQID, false, "revisionDate");
 
-String showPage = request.getParameter("showPage");
-if (showPage != null) {
-	search.setCurrentPage(Integer.valueOf(showPage));
-}
+search.setPageByResult(request);
 search.startsWith(request.getParameter("startsWith"));
 search.setLimit(50);
 

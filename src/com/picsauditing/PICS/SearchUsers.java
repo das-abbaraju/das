@@ -7,15 +7,13 @@ public class SearchUsers extends SearchRaw {
 		this.sql.setFromTable("users u");
 		this.sql.addField("u.id");
 		this.sql.addField("u.name");
-		this.sql.addField("u.email");
-		this.sql.addField("u.isGroup");
 		this.sql.addField("u.isActive");
 	}
 	
-	
-	public void addGroup(int groupID){
-		this.sql.addWhere("u.id IN (SELECT userID FROM usergroup WHERE groupID = '" + groupID + "')");
-	}	
+	public void inGroups(String groupIDs) {
+		if (groupIDs.length() == 0) return;
+		this.sql.addWhere("u.id IN (SELECT userID FROM usergroup WHERE groupID IN (" + groupIDs + "))");
+	}
 	
 	/**
 	 * Support search by first character in the name
