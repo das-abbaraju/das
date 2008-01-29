@@ -25,6 +25,9 @@ search.sql.addField("d.fedTaxID");
 search.sql.addField("d.ContractorsName");
 search.sql.addField("d.lastReview");
 
+search.setPageByResult(request);
+search.startsWith(request.getParameter("startsWith"));
+
 List<BasicDynaBean> searchData = search.doSearch();
 pageBean.setTitle("NCMS Data");
 %>
@@ -35,6 +38,12 @@ pageBean.setTitle("NCMS Data");
       <%@ include file="includes/selectReport.jsp"%>
       <span class="blueHeader">NCMS Data</span>
     </td>
+  </tr>
+</table>
+<table border="0" cellpadding="5" cellspacing="0" align="center">
+  <tr> 
+    <td height="30" align="left"><%=search.getStartsWithLinks()%></td>
+    <td align="right"><%=search.getPageLinks()%></td>
   </tr>
 </table>
 <table width="657" border="0" cellpadding="1" cellspacing="1" align="center">
