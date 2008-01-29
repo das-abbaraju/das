@@ -227,6 +227,31 @@ public class GenericJPADAO<T, ID extends Serializable> implements GenericDAO<T, 
 	}
 	
 	@Override
+	public List executeNativeQuery(String queryName) {
+		Query q = getEntityManager().createNamedQuery(queryName);
+		if(max > 0 ) {
+			q.setFirstResult(first);
+			q.setMaxResults(max);
+		}
+				
+		return q.getResultList();	
+	}
+	
+	@Override
+	public List executeNativeQuery(String query, Map<String, Object> params, String mappingName) {
+		Query q = getEntityManager().createNativeQuery(query, mappingName);
+		if(max > 0 ) {
+			q.setFirstResult(first);
+			q.setMaxResults(max);
+		}
+		
+		if(params != null)
+			setQueryParams(q, params);
+			
+		return q.getResultList();	
+	}
+	
+	@Override
 	public List executeQuery(String query, Map<String, Object> params) {
 		Query q = getEntityManager().createQuery(query);
 		
@@ -239,7 +264,8 @@ public class GenericJPADAO<T, ID extends Serializable> implements GenericDAO<T, 
 			setQueryParams(q, params);
 			
 		return q.getResultList();	
-	}	
+	}
+	
 	
 	@Override
 	public Object executeScalarQuery(String query, Map<String, Object> params){

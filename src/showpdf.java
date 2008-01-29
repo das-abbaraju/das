@@ -81,6 +81,7 @@ public class showpdf extends HttpServlet {
 			String qID = file_type.substring(6);
 			ext = file_type.substring(3,6);
 			sFileName = context.getInitParameter("FTP_DIR") + "/files/pqf/qID_"+qID+"/"+qID+"_"+req_uid+".";
+			
 		}//else if
 		else {
 			sFileName = context.getInitParameter("FTP_DIR") + "/files/"+file_type+"s/"+file_type+"_"+req_uid+".";

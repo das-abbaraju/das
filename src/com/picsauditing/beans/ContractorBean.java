@@ -56,7 +56,7 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		Map<String,Object>params = new HashMap<String,Object>();
 		if(doSearch){
 			if(acctName == "" && auditorId == 0 && operatorId == 0 && !needsOshaVerification && !needsEMRVerification)
-				reports = dao.executeNamedQuery("getActiveContractors", null);
+				return dao.executeNamedQuery("getActiveContractors", null);
 			else if(acctName != "" || auditorId > 0 || operatorId > 0){
 				
 				needsOshaVerification = false;
@@ -76,23 +76,21 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 					params.put("genId", operatorId );
 					queryBuf.append(":genId in (select gc.id.genId from cr.generalContractors gc) AND ");
 				}
-			}else {
-							
-				if(needsOshaVerification){
+										
+				if(needsOshaVerification && !needsEMRVerification){
 					queryBuf.append("cr.id in (select o.contractorInfo.id from cr.oshaLogs o where o.verifiedDate1 IS NULL OR ");
 				    queryBuf.append("o.verifiedDate2 IS NULL OR o.verifiedDate3 IS NULL) OR  ");
-				}
+				}				
+			
+				queryBuf.setLength(queryBuf.length()-5);
+				queryBuf.append(" order by cr.pqfSubmittedDate desc");
+				StringBuffer query = queryBuf.insert(0, start);
+				reports = dao.executeQuery(query.toString(), params);
 				
-				if(needsEMRVerification){
-					queryBuf.append("cr.id in (select emr.contractorInfoReport.id from cr.emrLogs emr where emr.dateVerified='0000-00-00') AND ");					
-					
-				}
-			}
-				
-		    queryBuf.setLength(queryBuf.length()-5);
-		    queryBuf.append(" order by cr.pqfSubmittedDate desc");
-			StringBuffer query = queryBuf.insert(0, start);
-			reports = dao.executeQuery(query.toString(), params);			
+			}else if(needsEMRVerification && !needsOshaVerification)
+				reports = dao.executeNativeQuery("needsEmrVerification");
+			else
+				reports = dao.executeNativeQuery("needsOshaAndEmrVerification");
 				
 				
 		}	

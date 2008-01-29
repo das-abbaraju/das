@@ -11,6 +11,8 @@ public interface GenericDAO<T, ID extends Serializable> {
 	List<T> findByExample(T exampleInstance,String... excludeProperty);
 	List<T> executeNamedQuery(String query, Map<String, Object> params);
 	List<T> executeNativeQuery(String query, Map<String, Object> params);
+	List<T> executeNativeQuery(String query, Map<String, Object> params, String mappingName);
+	List<T> executeNativeQuery(String queryName);
 	List<T> executeQuery(String query, Map<String, Object> params);
 	public Object executeScalarQuery(String query, Map<String, Object> params);
 	T makePersistent(T entity) throws Exception;

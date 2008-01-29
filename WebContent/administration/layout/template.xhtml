@@ -29,7 +29,7 @@
 				<rich:menuItem value="Activate Contractors" disabled="true" />
 				<rich:menuItem value="Mass Emailing" disabled="true" />
 				<rich:menuItem value="Schedule Audits" disabled="true" />
-				<rich:menuItem value="OSHA Verification" submitMode="ajax" immediate="true" actionListener="#{admin.gotoVerification}"/>
+				<rich:menuItem value="OSHA Verification" submitMode="ajax" action="success"/>
 			</rich:dropDownMenu>
 			<rich:dropDownMenu value="Accounting">
 				<rich:menuItem value="Send Invoices" disabled="true" />
@@ -79,7 +79,8 @@
 </h:form>
 
 <!-- Main Content Here -->
-<ui:insert name="body" />
+
+<ui:insert name="body" ><h2>Welcome to the PICS Administrative Dashboard</h2></ui:insert>
 <br />
 <br />
 <br />
