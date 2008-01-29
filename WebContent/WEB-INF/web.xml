@@ -7,7 +7,7 @@
 	<!-- Modify for your local system -->
 	<context-param>
 		<param-name>svn_revision</param-name>
-		<param-value>@@SVN_REVISION@@</param-value>
+		<param-value>123</param-value>
 	</context-param>
 	<context-param>
 		<param-name>environmentType</param-name>
