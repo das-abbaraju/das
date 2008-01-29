@@ -32,8 +32,7 @@ import org.hibernate.annotations.Where;
 @NamedQueries({
 	@NamedQuery(name="contractorsByName", query="select cr from ContractorInfoReport cr where cr.account.name like :name order by cr.pqfSubmittedDate desc"),
 	@NamedQuery(name="contractorsByAuditor", query="select cr from ContractorInfoReport cr where cr.pqfAuditorId=:pqfAuditorId order by cr.pqfSubmittedDate desc"),
-	@NamedQuery(name="getActiveContractors", query="select cr from ContractorInfoReport cr where cr.account.active='Y' order by cr.pqfSubmittedDate desc"),
-	
+	@NamedQuery(name="getActiveContractors", query="select cr from ContractorInfoReport cr where cr.account.active='Y' order by cr.pqfSubmittedDate desc")
 })
 
 @Table(name="contractor_info"
