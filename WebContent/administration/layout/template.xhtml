@@ -29,7 +29,7 @@
 				<rich:menuItem value="Activate Contractors" disabled="true" />
 				<rich:menuItem value="Mass Emailing" disabled="true" />
 				<rich:menuItem value="Schedule Audits" disabled="true" />
-				<rich:menuItem value="OSHA Verification" action="osha" />
+				<rich:menuItem value="OSHA Verification" submitMode="ajax" immediate="true" actionListener="#{admin.gotoVerification}"/>
 			</rich:dropDownMenu>
 			<rich:dropDownMenu value="Accounting">
 				<rich:menuItem value="Send Invoices" disabled="true" />
@@ -64,7 +64,9 @@
 		<rich:toolBarGroup location="right">
 			<h:inputText />
 			<h:commandButton value="Search" disabled="true" />
-
+			<h:outputLink class="menu" value="#{facesContext.externalContext.request.contextPath}/reports.jsp">
+                <h:outputText value="PICS Reports" />
+            </h:outputLink>		
 			<h:outputLink render="true" class="menu" value="#{facesContext.externalContext.request.contextPath}/logout.jsp">
                 <h:outputText value="Logout" />
             </h:outputLink>

@@ -58,7 +58,7 @@ public class PqfLogReport  implements java.io.Serializable {
     public void setContractorInfoReport(ContractorInfoReport contractorInfoReport) {
         this.contractorInfoReport = contractorInfoReport;
     }
-    @Temporal(TemporalType.DATE)
+    //@Temporal(TemporalType.DATE)
     @Column(name="dateVerified", nullable=false, length=10)
     public Date getDateVerified() {
         return this.dateVerified;

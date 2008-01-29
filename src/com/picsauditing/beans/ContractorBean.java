@@ -16,6 +16,7 @@ import javax.faces.component.UISelectOne;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.DataModel;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorInfoReportDAO;
 import com.picsauditing.dao.DAOFactory;
@@ -38,7 +39,7 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 	private Map<String, Integer> auditors = null;
 	private String dateStart = null;
 	private boolean needsOshaVerification = true;
-	private boolean needsEMRVerification = false;
+	private boolean needsEMRVerification = true;
 	
 		
 	@Override
@@ -47,17 +48,20 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		DAOFactory daof = DAOFactory.instance(DAOFactory.JPA, getPersistenceCtx());		
 		dao = daof.getContractorInfoReportDAO();		
 		dao.setMax(getMaxResults());
-		List<ContractorInfoReport> reports = null;
-		String start = "select cr from ContractorInfoReport cr where cr.account.active='Y'";
+		List<ContractorInfoReport> reports = null;;
+		String start = "select cr from ContractorInfoReport cr where cr.account.active='Y' AND ";
 		String startCount = "select count(cr) from ContractorInfoReport cr where cr.account.active='Y'";
 		StringBuffer queryBuf = new StringBuffer();
 		
 		Map<String,Object>params = new HashMap<String,Object>();
 		if(doSearch){
-			if(acctName == "" && auditorId == 0 && operatorId == 0 && !needsOshaVerification)
+			if(acctName == "" && auditorId == 0 && operatorId == 0 && !needsOshaVerification && !needsEMRVerification)
 				reports = dao.executeNamedQuery("getActiveContractors", null);
-			else{
-							
+			else if(acctName != "" || auditorId > 0 || operatorId > 0){
+				
+				needsOshaVerification = false;
+				needsEMRVerification = false;
+				
 				if(!acctName.equals("")){
 					params.put("name", acctName + "%");
 					queryBuf.append("cr.account.name like :name AND ");
@@ -71,28 +75,27 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 				if(operatorId != 0){
 					params.put("genId", operatorId );
 					queryBuf.append(":genId in (select gc.id.genId from cr.generalContractors gc) AND ");
-				}			
-				
-				StringBuffer query = new StringBuffer();
-				
-				if(queryBuf.length() > 0)
-					queryBuf.setLength(queryBuf.length() - 5 );	
-				
-				queryBuf.append(" order by cr.pqfSubmittedDate desc");
-				
-				if(needsOshaVerification){					
-					query = queryBuf.insert(0, start);
-					reports = filter(query, params);
-				}else {								
-					query = queryBuf.insert(0, start + " AND ");
-					reports = dao.executeQuery(query.toString(), params);
+				}
+			}else {
+							
+				if(needsOshaVerification){
+					queryBuf.append("cr.id in (select o.contractorInfo.id from cr.oshaLogs o where o.verifiedDate1 IS NULL OR ");
+				    queryBuf.append("o.verifiedDate2 IS NULL OR o.verifiedDate3 IS NULL) OR  ");
 				}
 				
+				if(needsEMRVerification){
+					queryBuf.append("cr.id in (select emr.contractorInfoReport.id from cr.emrLogs emr where emr.dateVerified='0000-00-00') AND ");					
+					
+				}
 			}
-			
-			
-		}
-		
+				
+		    queryBuf.setLength(queryBuf.length()-5);
+		    queryBuf.append(" order by cr.pqfSubmittedDate desc");
+			StringBuffer query = queryBuf.insert(0, start);
+			reports = dao.executeQuery(query.toString(), params);			
+				
+				
+		}	
 		
 		return reports;
 		
@@ -275,22 +278,7 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 
 		public void setNeedsEMRVerification(boolean needsEMRVerification) {
 			this.needsEMRVerification = needsEMRVerification;
-		}
-		
-		private List<ContractorInfoReport> filter(StringBuffer query, Map<String,Object>params){
-			
-			List<ContractorInfoReport> temp = new ArrayList<ContractorInfoReport>();
-			
-			List<ContractorInfoReport> list = dao.executeQuery(query.toString(), params);
-			for(ContractorInfoReport cr : list){
-				for(OshaLogReport o : cr.getOshaLogs())
-					if(o.isNeedsVerification())
-						temp.add(cr);
-			}
-			
-			return temp;
-		}
-		
+		}	
 		
 				
 }

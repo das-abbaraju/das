@@ -11,14 +11,13 @@
 .panel {
 	vertical-align: top;
 }
-
 </style>
-  
+
 	<h:panelGrid columns="2" cellpadding="1" cellspacing="3"
 		columnClasses="panel">
-		 <rich:simpleTogglePanel switchType="ajax">
-			<a4j:form id="contractorTable">	
-				
+		<rich:simpleTogglePanel switchType="ajax">
+			<a4j:form id="contractorTable">
+
 				<rich:dataTable
 					onRowMouseOver="this.style.backgroundColor='#F1F1F1'" id="table"
 					onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'"
@@ -29,11 +28,11 @@
 						<rich:columnGroup>
 
 							<rich:column rowspan="2">
-							    <h:outputText value="Contractors" />
+								<h:outputText value="Contractors" />
 							</rich:column>
-							
+
 							<rich:column rowspan="2">
-							    <h:outputText value="PQF Submitted" />
+								<h:outputText value="PQF Submitted" />
 							</rich:column>
 
 							<rich:column colspan="3">
@@ -109,18 +108,18 @@
 					<rich:column>
 						<h:outputText value="#{row + 1}   " />
 						<h:outputLink
-							value="#{facesContext.externalContext.request.contextPath}/contractor_detail.jsp?id=#{c.id}">
+							value="#{facesContext.externalContext.request.contextPath}/contractor_detail.jsp?id=#{c.id}" target="_BLANK">
 							<h:outputText value="#{c.account.name}" />
 						</h:outputLink>
 					</rich:column>
-					
-		            <rich:column>
+
+					<rich:column>
 						<h:outputText value="#{c.pqfSubmittedDate}"
-						    rendered="#{c.pqfSubmittedDate != '0000-00-00'}">							
+							rendered="#{c.pqfSubmittedDate != '0000-00-00'}">
 							<f:convertDateTime dateStyle="short" />
 						</h:outputText>
 					</rich:column>
-		             
+
 					<rich:column>
 						<h:outputText value="#{c.emrLogs[2].dateVerified}"
 							rendered="#{c.emrLogs[2] != null}">
@@ -158,7 +157,7 @@
 
 					<rich:subTable value="#{c.oshaLogs}" var="logs" id="sub"
 						headerClass="blueSmall" rowClasses="list-row-sub">
-						<rich:column colspan="4">
+						<rich:column colspan="5">
 							<rich:spacer />
 						</rich:column>
 
@@ -196,18 +195,19 @@
 
 
 					<f:facet name="footer">
-                        	<rich:datascroller reRender="details,contractorTable" action="#{contractorBean.refreshModel}">
-                        		<f:setPropertyActionListener target="#{oshaBean.cid}"
+						<rich:datascroller reRender="details,contractorTable"
+							action="#{contractorBean.refreshModel}">
+							<f:setPropertyActionListener target="#{oshaBean.cid}"
 								value="#{oshaBean.clearCid}" />
 							<f:setPropertyActionListener target="#{emrBean.cid}"
 								value="#{emrBean.clearCid}" />
-                        	</rich:datascroller>	
+						</rich:datascroller>
 					</f:facet>
 				</rich:dataTable>
 
 			</a4j:form>
 		</rich:simpleTogglePanel>
-		    <rich:panel id="details">
+		<rich:panel id="details">
 			<f:facet name="header">
 				<h:outputText
 					value="Detail for #{contractorBean.selectedItem.account.name}" />
@@ -217,5 +217,5 @@
 
 
 	</h:panelGrid>
-   
+
 </ui:composition>

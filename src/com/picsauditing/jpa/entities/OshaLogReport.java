@@ -34,7 +34,7 @@ public class OshaLogReport  implements java.io.Serializable {
      private Date verifiedDate1;
      private Date verifiedDate2;
      private Date verifiedDate3;
-     private boolean needsVerification;
+    
      
     public OshaLogReport() {
     }
@@ -125,21 +125,7 @@ public class OshaLogReport  implements java.io.Serializable {
         this.verifiedDate3 = verifiedDate3;
     }
 
-    @Transient
-	public boolean isNeedsVerification() {
-		if(DateBean.isNullDate(this.verifiedDate1) || 
-			DateBean.isNullDate(this.verifiedDate2) ||
-			DateBean.isNullDate(this.verifiedDate3))
-			return true;
-		else
-			return false;
-    }
-
-
-	
-
     
-
 
 }
 

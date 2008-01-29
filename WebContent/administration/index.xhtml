@@ -3,20 +3,16 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:a4j="http://richfaces.org/a4j"
-	xmlns:rich="http://richfaces.org/rich"
-    template="layout/template.xhtml">
+	xmlns:rich="http://richfaces.org/rich" template="layout/template.xhtml">
 
 	<ui:define name="body">
-	 <h:form>
-		<h2>Welcome to the PICS Administrative Dashboard</h2>
-		<h:panelGrid>
-			<h:outputLink class="menu" value="#{facesContext.externalContext.request.contextPath}/reports.jsp">
-                <h:outputText value="PICS Reports" />
-            </h:outputLink>	
-			<h:outputLink class="menu" value="osha.xhtml">
-                <h:outputText value="OHSA Verification" />
-            </h:outputLink>	
-		</h:panelGrid>
-	</h:form>
+		<h:form>
+			<h2>Welcome to the PICS Administrative Dashboard</h2>
+			<h:panelGrid cellpadding="3" cellspacing="3" 
+				rendered="#{admin.showVerification}" name="verification">
+				<ui:include src="fragments/search.xhtml" />
+				<ui:include src="fragments/osha_emr.xhtml" />
+			</h:panelGrid>
+		</h:form>
 	</ui:define>
 </ui:composition>
