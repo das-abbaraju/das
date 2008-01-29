@@ -17,6 +17,10 @@ public class User extends DataBean {
 	
 	
 	public void setFromDB(String uID) throws Exception {
+		if (uID == null) return;
+		Integer temp = Integer.parseInt(uID);
+		if (temp < 1) return;
+		
 		String query = "SELECT * FROM users WHERE id="+uID+";";
 		selectFromDB(query);
 	}//setFromDB

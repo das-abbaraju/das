@@ -5,6 +5,9 @@ import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * @see Inputs not sure what the difference is
+ */
 public class Utilities {
 /*	History
 	5/631/05 jj - added getCountrySelect()

@@ -11,6 +11,9 @@ import java.util.*;
 // String printErrorMessages(Vector errorMessages)
 // boolean arrayContains(String[] array, String value)
 
+/**
+ * @see Utilities not sure what the difference is
+ */
 public class Inputs {
 /*	History
 	5/631/05 jj - added getCountrySelect()

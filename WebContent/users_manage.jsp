@@ -50,12 +50,17 @@ function showUser(userID) {
 	pars = 'id='+userID;
 	var myAjax = new Ajax.Updater('editUser', 'user_edit.jsp', {method: 'post', parameters: pars});
 }
+function removeGroup(userID) {
+	$('editUser').innerHTML = '<img src="images/ajax_process.gif" />';
+	pars = 'id='+userID;
+	var myAjax = new Ajax.Updater('editUser', 'user_edit.jsp', {method: 'post', parameters: pars});
+}
 </script>
 <table border="0">
 <tr valign="top"><td>
 <table border="0" cellpadding="1" cellspacing="1">
 	<tr>
-		<td colspan="2" align="right"><a href="user_edit.jsp">Add New</a></td>
+		<td colspan="2" align="right"><a href="#" onclick="showUser(0); return false;">Add New</a></td>
 	</tr>
 	<tr>
 		<td colspan="2"><%=search.getPageLinks()%></td>
@@ -68,7 +73,10 @@ function showUser(userID) {
 int counter = search.getStartRow();
 for(BasicDynaBean row: searchData) {
 %>
-	<tr bgcolor="#FFFFFF" class="active" style="cursor: pointer" onclick="showUser(<%=row.get("id")%>); return false;">
+	<tr bgcolor="#FFFFFF" 
+		class="active" 
+		style="cursor: pointer" 
+		onclick="showUser(<%=row.get("id")%>); return false;">
 		<td><%=counter++%></td>
 		<td<% if (row.get("isActive").toString().startsWith("N")) { %> style="font-style: italic; color: #999999"<% } %>><%=row.get("name")%></td>
 	</tr>

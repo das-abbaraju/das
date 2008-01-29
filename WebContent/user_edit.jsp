@@ -43,7 +43,7 @@ if (request.getParameter("submit") == null) {
 </tr>
 <tr>
 	<td class="blueMain" align="right">Is Group?</td>
-	<td class="blueMain" align="left"><%=com.picsauditing.PICS.Inputs.getYesNoRadio("isGroup","forms", uBean.userDO.isGroup)%></td>
+	<td class="blueMain" align="left"><%=Utilities.getYesNoRadio("isGroup",uBean.userDO.isGroup)%></td>
 </tr>
 <tr> 
 	<td class="blueMain" align="right">Name</td>
@@ -69,7 +69,7 @@ if (request.getParameter("submit") == null) {
 <% } %>
 <tr>
 	<td class="blueMain" align="right">Active?</td>
-	<td class="blueMain" align="left"><%=com.picsauditing.PICS.Inputs.getYesNoRadio("isActive","forms", uBean.userDO.isActive)%></td>
+	<td class="blueMain" align="left"><%=Utilities.getYesNoRadio("isActive",uBean.userDO.isActive)%></td>
 </tr>
 </table>
 
