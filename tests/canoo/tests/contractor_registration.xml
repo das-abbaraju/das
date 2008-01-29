@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<property name="register.username" value="canoo_contractor1" />
+	<property name="admin.username" value="tallred" />
+	<target name="test">
+		<webtest name="Contractor Registration">
+			&config;
+			<steps>
+				<invoke
+					description="Register Link"
+					url="contractor_new_instructions.jsp" />
+				&body_verify;
+				<clickButton description="Continue" name="submit" />
+				&body_verify;
+				<group description="Register and Save">
+					<!-- Register Correctly -->
+					<setInputField name="name" value="Canoo Test Contractor" />
+					<setInputField name="contact" value="John Doe" />
+					<setInputField name="address" value="123 Main Street" />
+					<setInputField name="city" value="Tester" />
+					<setSelectField name="state" text="Wyoming" />
+					<setInputField name="zip" value="54321" />
+					<setInputField name="phone" value="(949) 123-4567" />
+					<setInputField name="phone2" value="(949) 123-4568" />
+					<setInputField name="fax" value="(949) 123-4569" />
+					<setInputField name="email" value="${mail.username}" />
+					<setInputField name="secondContact" value="secondContact" />
+					<setInputField name="secondPhone" value="(949) 123-4570" />
+					<setInputField name="secondEmail" value="secondEmail@picsauditing.com" />
+					<setInputField name="billingContact" value="billingContact" />
+					<setInputField name="billingPhone" value="(949) 123-4571" />
+					<setInputField name="billingEmail" value="billingEmail@picsauditing.com" />
+					<setInputField name="web_URL" value="http://www.picsauditing.com/canoo/" />
+					<setInputField name="taxID" value="789456123" />
+					<setSelectField name="industry" text="Power" />
+					<setSelectField name="main_trade" text="Boiler Repair" />
+					<setInputField name="description" value="This is a test account from Canoo webtest. Please delete me." />
+					<setInputField name="username" value="${register.username}" />
+					<setInputField name="password" value="${login.password}" />
+					
+					<setSelectField description="BP Pipelines and Logistics" name="generalContractors" value="784" />
+					<setSelectField description="Shell Martinez Refinery" name="generalContractors" value="1197" multiselect="true" />
+					<setSelectField name="requestedByID" value="1197" />
+					
+					<clickButton description="Click Save/Submit" name="submit" />
+					&body_verify;
+				</group>
+					
+				<!-- Login inactive -->
+				<storeProperty description="Login inactive"
+					name="login.username"
+					propertyType="ant"
+					value="${register.username}"/>
+				&login;
+				&body_verify;
+				<verifyText  description="Verify you can't login yet"
+				      text="inactive" />
+				
+				<group description="Activate the new Account">
+					<storeProperty description="Activate Account" 
+						name="login.username" 
+						propertyType="ant"
+						value="${admin.username}"/>
+					&login;
+					<clickLink
+						description="Open Activation Report"
+						label="Activation Report" />
+				</group>
+				
+				<group description="Login correctly">
+					<storeProperty description="Login Correctly" 
+						name="login.username" 
+						propertyType="ant"
+						value="${register.username}"/>
+					&login;
+					&body_verify;
+				</group>
+				
+				<group description="Delete account">
+					<storeProperty description="Delete Account" 
+						name="login.username" 
+						propertyType="ant"
+						value="${admin.username}"/>
+					&login;
+					<invoke
+						description="Register Link"
+						url="accounts_manage.jsp" />
+					<setInputField name="name" value="Canoo Test Contractor" />
+					<clickButton description="Search for Contractor" name="imageField" />
+					<clickButton description="Delete Contract" label="D" />
+				</group>
+			</steps>
+		</webtest>
+	</target>
+</project>
