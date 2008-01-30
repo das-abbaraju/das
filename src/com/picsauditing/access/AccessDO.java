@@ -3,7 +3,10 @@ package com.picsauditing.access;
 import java.sql.ResultSet;
 
 // This may be now duplicated in Permission.java
-
+/**
+ * @see Permission
+ * @deprecated
+ */
 public class AccessDO extends com.picsauditing.PICS.DataBean{
 	String userID = "";
 	String accessType = "";
