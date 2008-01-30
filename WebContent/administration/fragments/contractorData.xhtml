@@ -1,0 +1,22 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:c="http://java.sun.com/jstl/core">
+
+	
+	<h:panelGrid columns="2" cellpadding="3" cellspacing="3">
+		<h:outputLabel value="Company:" style="color: #000000;"/>
+		<h:outputText value="#{contractorBean.selectedItem.account.name}" style="color: #000000;"/>
+		<h:outputLabel value="Contact" style="color: #000000;"/>
+		<h:outputText value="#{contractorBean.selectedItem.account.contact}" style="color: #000000;"/>
+		<h:outputLabel value="Phone" style="color: #000000;"/>
+		<h:outputText value="#{contractorBean.selectedItem.account.phone}" style="color: #000000;"/>				
+		<h:outputLabel value="Email" style="color: #000000;"/>		
+		<h:outputText value="#{contractorBean.selectedItem.account.email}" style="color: #000000;"/>				
+		
+	</h:panelGrid>			
+
+</ui:composition>

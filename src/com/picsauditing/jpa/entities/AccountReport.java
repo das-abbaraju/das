@@ -24,16 +24,22 @@ public class AccountReport  implements java.io.Serializable {
      private Integer id;
      private String type;
      private String name;
+     private String contact;
+     private String email;
+     private String phone;
      private ContractorInfoReport contractor;
      private char active;
 
     public AccountReport() {
     }
 
-    public AccountReport(String type, String name, ContractorInfoReport contractor, char active) {
+    public AccountReport(String type, String name, ContractorInfoReport contractor, String contact, String email, String phone, char active) {
        this.type = type;
        this.name = name;
        this.contractor = contractor;
+       this.contact = contact;
+       this.email = email;
+       this.phone = phone;
        this.active = active;
     }
    
@@ -84,7 +90,32 @@ public class AccountReport  implements java.io.Serializable {
         this.active = active;
     }
 
-
+    @Column(name="contact", nullable=false, length=50)
+    public String getContact() {
+        return this.contact;
+    }
+    
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+    @Column(name="phone", nullable=false, length=50)
+    public String getPhone() {
+        return this.phone;
+    }
+    
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    
+    @Column(name="email", nullable=false, length=50)
+    public String getEmail() {
+        return this.email;
+    }
+    
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
 
 
 }

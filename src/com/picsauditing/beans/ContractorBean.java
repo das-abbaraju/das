@@ -49,8 +49,8 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		dao = daof.getContractorInfoReportDAO();		
 		dao.setMax(getMaxResults());
 		List<ContractorInfoReport> reports = null;;
-		String start = "select cr from ContractorInfoReport cr where cr.account.active='Y' AND ";
-		String startCount = "select count(cr) from ContractorInfoReport cr where cr.account.active='Y'";
+		String start = "select cr from ContractorInfoReport cr where cr.account.active='Y' AND cr.pqfSubmittedDate <> '0000-00-00' AND ";
+		String startCount = "select count(cr) from ContractorInfoReport cr where cr.account.active='Y' AND cr.pqfSubmittedDate <> '0000-00-00' AND ";
 		StringBuffer queryBuf = new StringBuffer();
 		
 		Map<String,Object>params = new HashMap<String,Object>();
@@ -83,7 +83,7 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 				}				
 			
 				queryBuf.setLength(queryBuf.length()-5);
-				queryBuf.append(" order by cr.pqfSubmittedDate desc");
+				queryBuf.append(" order by cr.pqfSubmittedDate asc");
 				StringBuffer query = queryBuf.insert(0, start);
 				reports = dao.executeQuery(query.toString(), params);
 				
@@ -174,8 +174,8 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		public void search(ActionEvent event){
 			clearModel();
 			dao.clear();
-			doSearch = true;
-			setFirstResult(0);			
+			doSearch = true;		
+					
 		}		
 
 		public ContractorInfoReportDAO getDao() {

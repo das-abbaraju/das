@@ -40,15 +40,15 @@ import org.hibernate.annotations.Where;
 @NamedNativeQueries({		
 @NamedNativeQuery(name="needsOshaAndEmrVerification",
 		query="select c.id, c.pqfAuditor_id, c.pqfSubmittedDate from contractor_info c join accounts a on c.id=a.id and a.active='Y' "+
-		"join pqfdata e on c.id=e.conID and e.questionID in (889,1519,1617) and e.dateVerified='0000-00-00' where e.conID > 0 "+
+		"join pqfdata e on c.id=e.conID and e.questionID in (889,1519,1617) and e.dateVerified='0000-00-00' where pqfSubmittedDate <> '0000-00-00' "+
 		"union select c.id, c.pqfAuditor_id, c.pqfSubmittedDate from contractor_info c join accounts a on c.id=a.id and a.active='Y' "+
-		"left join osha o on c.id=o.conID and (o.verifiedDate1 is null or o.verifiedDate2 is null or o.verifiedDate3 is null) where o.conID > 0 "+
-		"order by pqfSubmittedDate desc",
+		"join osha o on c.id=o.conID and (o.verifiedDate1 is null or o.verifiedDate2 is null or o.verifiedDate3 is null) where pqfSubmittedDate <> '0000-00-00' "+
+		"order by pqfSubmittedDate asc",
 		resultSetMapping="needsOshaAndEmrVerificationMapping"),
 @NamedNativeQuery(name="needsEmrVerification",
-		query="select c.id, c.pqfAuditor_id, c.pqfSubmittedDate from contractor_info c join accounts a on c.id=a.id and a.active='Y'" +
-		" join pqfdata e on c.id=e.conID and e.questionID in (889,1519,1617) and e.dateVerified='0000-00-00' where e.conID > 0 "+
-		"order by pqfSubmittedDate desc",
+		query="select c.id, c.pqfAuditor_id, c.pqfSubmittedDate from contractor_info c join accounts a on c.id=a.id and a.active='Y' " +
+		" join pqfdata e on c.id=e.conID and e.questionID in (889,1519,1617) and e.dateVerified='0000-00-00' where pqfSubmittedDate <> '0000-00-00' "+
+		"order by pqfSubmittedDate asc",
 		resultSetMapping="needsOshaAndEmrVerificationMapping")
 })
 
@@ -57,9 +57,9 @@ import org.hibernate.annotations.Where;
 		resultSetMapping="needsOshaAndEmrVerificationMapping")
 */		
 @NamedQueries({
-	@NamedQuery(name="contractorsByName", query="select cr from ContractorInfoReport cr where cr.account.name like :name order by cr.pqfSubmittedDate desc"),
-	@NamedQuery(name="contractorsByAuditor", query="select cr from ContractorInfoReport cr where cr.pqfAuditorId=:pqfAuditorId order by cr.pqfSubmittedDate desc"),
-	@NamedQuery(name="getActiveContractors", query="select cr from ContractorInfoReport cr where cr.account.active='Y' order by cr.pqfSubmittedDate desc")
+	@NamedQuery(name="contractorsByName", query="select cr from ContractorInfoReport cr where cr.account.name like :name order by cr.pqfSubmittedDate asc"),
+	@NamedQuery(name="contractorsByAuditor", query="select cr from ContractorInfoReport cr where cr.pqfAuditorId=:pqfAuditorId order by cr.pqfSubmittedDate asc"),
+	@NamedQuery(name="getActiveContractors", query="select cr from ContractorInfoReport cr where cr.account.active='Y' AND cr.pqfSubmittedDate <> '0000-00-00' order by cr.pqfSubmittedDate asc")
 })
 
 @Table(name="contractor_info"

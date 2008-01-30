@@ -42,7 +42,7 @@
                         <h:graphicImage value="/images/ajax_error.gif" /> 
                     </f:facet>
             </rich:messages>
-			<rich:tabPanel height="400px" width="750px" id="logs" switchType="client">
+			<rich:tabPanel height="400px" width="800px" id="logs" switchType="client">
 			   
 			   <rich:tab label="Osha Logs">				
 				   <ui:include src="oshaLog.xhtml"/>
@@ -50,7 +50,11 @@
 
 				<rich:tab label="EMR Data">
 				   <ui:include src="emrData.xhtml"/>
-				</rich:tab>				
+				</rich:tab>
+				
+				<rich:tab label="Contractor Data">
+				   <ui:include src="contractorData.xhtml"/>
+				</rich:tab>					
 					
 			</rich:tabPanel>
 			
