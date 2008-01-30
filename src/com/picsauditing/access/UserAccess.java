@@ -4,30 +4,25 @@ import java.sql.ResultSet;
 import java.util.*;
 import com.picsauditing.PICS.Utilities;
 
-// DEPRECATED
-// This is largely a duplicate of what is not included in the Permissions class
-public class UserAccess extends com.picsauditing.PICS.DataBean{
+/**
+ * @deprecated
+ * @see PermissionDB
+ */
+public class UserAccess extends com.picsauditing.PICS.DataBean {
 	public String userID = "0";
-	public String db = "userAccess";
 	Collection<OpPerms> accessSet = null;
 	Collection<OpPerms> oldAccessSet = null;
 	
-	private Permissions permissions;
-
-	public void setDB(String newDB){
-		this.db = newDB;
-	}//setDB
-	
 	/**
-	 * OBSOLETE
-	 * 
+	 * @deprecated
+	 * @see Permissions
 	 * @param user_ID
 	 * @throws Exception
 	 */
 	public void setFromDB(String user_ID) throws Exception {
 		try{
 			this.userID = user_ID;
-			String selectQuery = "SELECT accessType FROM "+db+" WHERE userID="+
+			String selectQuery = "SELECT accessType FROM useraccess WHERE userID="+
 				Utilities.intToDB(userID)+";";
 			accessSet = new HashSet<OpPerms>();
 			DBReady();
@@ -44,7 +39,7 @@ public class UserAccess extends com.picsauditing.PICS.DataBean{
 	}//setFromDB
 
 	/**
-	 * OBSOLETE
+	 * @deprecated
 	 * 
 	 * @param request
 	 * @throws Exception
@@ -58,7 +53,7 @@ public class UserAccess extends com.picsauditing.PICS.DataBean{
 	}//setFromRequest
 
 	/**
-	 * OBSOLETE
+	 * @deprecated
 	 * 
 	 * @param grantedByID
 	 * @param userID
@@ -66,7 +61,7 @@ public class UserAccess extends com.picsauditing.PICS.DataBean{
 	 */
 	public void writeNewToDB(String grantedByID,String userID) throws Exception{
 		try{
-			String insertQuery = "INSERT INTO "+db+" (userID,accessType,grantedByID) VALUES";
+			String insertQuery = "INSERT INTO useraccess (userID,accessType,grantedByID) VALUES";
 			boolean isInsert = false;
 			for (OpPerms perm:OpPerms.values()){
 				if (accessSet.contains(perm)){
@@ -84,15 +79,15 @@ public class UserAccess extends com.picsauditing.PICS.DataBean{
 	}//writeNewToDB
 
 	/**
-	 * OBSOLETE
+	 * @deprecated
 	 * 
 	 * @param grantedByID
 	 * @throws Exception
 	 */
 	public void writeToDB(String grantedByID) throws Exception{
 		try{
-			String deleteQuery = "DELETE FROM "+db+" WHERE userID="+userID+" AND accessType IN (";
-			String insertQuery = "INSERT INTO "+db+" (userID,accessType,grantedByID) VALUES";
+			String deleteQuery = "DELETE FROM useraccess WHERE userID="+userID+" AND accessType IN (";
+			String insertQuery = "INSERT INTO useraccess (userID,accessType,grantedByID) VALUES";
 			boolean isDelete = false;
 			boolean isInsert = false;
 			for (OpPerms perm:OpPerms.values()){
@@ -120,17 +115,22 @@ public class UserAccess extends com.picsauditing.PICS.DataBean{
 		}//finally
 	}//writeToDB
 	
-	public void setPermissions(Permissions permissions) {
-		this.permissions = permissions;
-	}
-
-	public boolean hasAccess(OpPerms testAccess){
+	/**
+	 * @deprecated
+	 * 
+	 * @param testAccess
+	 * @return
+	 */
+	public boolean hasAccess(OpPerms testAccess) {
 		//return this.permissions.hasPermission(testAccess);
 		if (null == accessSet)
 			return false;
 		return (accessSet.contains(testAccess));
 	}//hasAccess
 
+	/**
+	 * @deprecated
+	 */
 	public String getChecked(OpPerms perm){
 		if (hasAccess(perm))
 			return "checked";

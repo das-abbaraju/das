@@ -76,6 +76,10 @@ public abstract class DataBean{
 		return value;
 	}
 
+	public boolean isSet() {
+		return this.isSet;
+	}
+	
 	public Vector<String> getErrors(){
 		return errorMessages;
 	}

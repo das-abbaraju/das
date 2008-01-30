@@ -19,35 +19,56 @@ public class UserDO {
 	public String accountType = "";
 	
 	public void setFromRequest(javax.servlet.http.HttpServletRequest request) throws Exception {
-		if (request.getParameter("name") != null) name = request.getParameter("name");
-		if (request.getParameter("username") != null) username = request.getParameter("username");
-		if (request.getParameter("email") != null) email = request.getParameter("email");
-		String newPassword = request.getParameter("newPassword");
-		if (!"".equals(newPassword))
-			password = newPassword;
-		//if (request.getParameter("password") != null) {
-		//	password = request.getParameter("password");
-		//}
-		if (request.getParameter("isActive") != null) isActive = request.getParameter("isActive");
+		try {
+			if (request.getParameter("id") != null) id = request.getParameter("id");
+			if (request.getParameter("name") != null) name = request.getParameter("name");
+			if (request.getParameter("username") != null) username = request.getParameter("username");
+			if (request.getParameter("email") != null) email = request.getParameter("email");
+			String newPassword = request.getParameter("newPassword");
+			if (!"".equals(newPassword))
+				password = newPassword;
+			if (request.getParameter("accountID") != null) accountID = request.getParameter("accountID");
+			if (request.getParameter("isGroup") != null) isGroup = request.getParameter("isGroup");
+			if (request.getParameter("isActive") != null) isActive = request.getParameter("isActive");
+		} catch (Exception ex) {
+			this.clear();
+			throw ex;
+		}
 	}//setFromRequest
-		
+
+	private void clear() {
+		id = "";
+		name = "";
+		email = "";
+		username = "";
+		password = "";
+		dateCreated = "";
+		lastLogin = "";
+		accountID = "";
+		accountType = "";
+	}
 
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
-		id = SQLResult.getString("id");
-		name = SQLResult.getString("name");
-		username = SQLResult.getString("username");
-		password = SQLResult.getString("password");
-		isActive = SQLResult.getString("isActive");
-		email = SQLResult.getString("email");
-		dateCreated = DateBean.toShowFormat(SQLResult.getString("dateCreated"));
-		lastLogin = DateBean.toShowFormat(SQLResult.getString("lastLogin"));
-		accountID = SQLResult.getString("accountID");
-		isGroup = SQLResult.getString("isGroup");
-		
-		try{
-			accountType = SQLResult.getString("type");
-		} catch (SQLException e) {
-			
+		try {
+			id = SQLResult.getString("id");
+			name = SQLResult.getString("name");
+			username = SQLResult.getString("username");
+			password = SQLResult.getString("password");
+			isActive = SQLResult.getString("isActive");
+			email = SQLResult.getString("email");
+			dateCreated = DateBean.toShowFormat(SQLResult.getString("dateCreated"));
+			lastLogin = DateBean.toShowFormat(SQLResult.getString("lastLogin"));
+			accountID = SQLResult.getString("accountID");
+			isGroup = SQLResult.getString("isGroup");
+		} catch (Exception ex) {
+			this.clear();
+			throw ex;
+		} finally {
+			try{
+				accountType = SQLResult.getString("type");
+			} catch (SQLException e) {
+				
+			}
 		}
 	}//setFromResultSet
 

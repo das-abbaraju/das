@@ -6,20 +6,7 @@
 <jsp:useBean id="pageBean" class="com.picsauditing.PICS.WebPage" scope ="page"/>
 
 <%
-pBean.getPermissions().tryPermission(OpPerms.EditUsers);
-
-String action = request.getParameter("action");
-String action_id = request.getParameter("action_id");
-String action_type = request.getParameter("action_type");
-
-if (("D".equals(action)) || ("Delete".equals(action)))
-	//sBean.deleteAccount(action_id, config.getServletContext().getRealPath("/"));
-if ("Edit".equals(action)){
-	if ("Auditor".equals(action_type)) {
-		response.sendRedirect("accounts_edit_auditor.jsp?id="+action_id);		
-		return;
-	}//if
-}//if
+//pBean.getPermissions().tryPermission(OpPerms.EditUsers);
 
 SearchUsers search = new SearchUsers();
 //search.sql.addField("u.username");
@@ -36,7 +23,7 @@ if (isGroup != null && isGroup.equals("Yes")) {
 // Only search for Auditors and Admins
 search.sql.addOrderBy("u.name");
 search.setPageByResult(request);
-search.setLimit(25);
+search.setLimit(20);
 
 List<BasicDynaBean> searchData = search.doSearch();
 
@@ -45,22 +32,49 @@ pageBean.includeScriptaculous(true);
 %>
 <%@ include file="includes/header.jsp" %>
 <script type="text/javascript">
-function showUser(userID) {
+var currentUser = 0;
+
+function getPage(pars) {
+	pars = 'userID='+currentUser+pars;
 	$('editUser').innerHTML = '<img src="images/ajax_process.gif" />';
-	pars = 'id='+userID;
 	var myAjax = new Ajax.Updater('editUser', 'user_edit.jsp', {method: 'post', parameters: pars});
 }
-function removeGroup(userID) {
-	$('editUser').innerHTML = '<img src="images/ajax_process.gif" />';
-	pars = 'id='+userID;
-	var myAjax = new Ajax.Updater('editUser', 'user_edit.jsp', {method: 'post', parameters: pars});
+
+function showUser(userID) {
+	currentUser = userID;
+	getPage('');
+}
+
+function addUser(isGroup) {
+	currentUser = 0;
+	pars = '&isGroup='+isGroup;
+	getPage(pars);
+}
+
+function saveUser() {
+	var pars = '&' + $('user').serialize();
+	getPage(pars);
+}
+
+function savePermissions() {
+	var pars = '&' + $('permissions').serialize();
+	getPage(pars);
+}
+
+function saveGroup(action, groupID, childID) {
+	pars = '&action='+action+'&groupID='+groupID;
+	if (action == "removeUserFromGroup") pars = pars + '&childID=' + childID;
+	getPage(pars);
 }
 </script>
 <table border="0">
 <tr valign="top"><td>
 <table border="0" cellpadding="1" cellspacing="1">
 	<tr>
-		<td colspan="2" align="right"><a href="#" onclick="showUser(0); return false;">Add New</a></td>
+		<td colspan="2" align="right" class="blueSmall" height="30">
+			<a href="#" onclick="addUser(true); return false;">Add Group</a>
+			<a href="#" onclick="addUser(false); return false;">Add User</a>
+		</td>
 	</tr>
 	<tr>
 		<td colspan="2"><%=search.getPageLinks()%></td>
@@ -83,9 +97,6 @@ for(BasicDynaBean row: searchData) {
 <%
 }
 %>
-	<tr>
-		<td colspan="2"><%=search.getPageLinks()%></td>
-	</tr>
 </table>
 </td>
 <td id="editUser" width="400" class="blueMain">

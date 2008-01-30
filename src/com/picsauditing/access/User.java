@@ -18,10 +18,10 @@ public class User extends DataBean {
 	
 	public void setFromDB(String uID) throws Exception {
 		if (uID == null) return;
-		Integer temp = Integer.parseInt(uID);
+		int temp = Integer.parseInt(uID);
 		if (temp < 1) return;
 		
-		String query = "SELECT * FROM users WHERE id="+uID+";";
+		String query = "SELECT * FROM users WHERE id = "+temp;
 		selectFromDB(query);
 	}//setFromDB
 	
@@ -79,7 +79,7 @@ public class User extends DataBean {
 	public void setFromRequest(HttpServletRequest request) throws Exception {
 		oldUsername = userDO.username;
 		userDO.setFromRequest(request);
-		this.isSet = true;
+		this.isSet = true; // we may want isSet to just mean we have a row in the database
 	}
 		
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
@@ -87,33 +87,46 @@ public class User extends DataBean {
 		this.isSet = true;
 	}
 	
-	
 	public void writeToDB() throws Exception {
-		String updateQuery = "UPDATE users SET name='"+Utilities.escapeQuotes(userDO.name)+
-			"',username='"+Utilities.escapeQuotes(userDO.username)+
-			"',password='"+Utilities.escapeQuotes(userDO.password)+
-			"',email='"+Utilities.escapeQuotes(userDO.email)+
-			"',isActive='"+userDO.isActive+
-			"' WHERE id="+userDO.id+";";
-		try{
-			DBReady();
-			SQLStatement.executeUpdate(updateQuery);
-		}finally{
-			DBClose();
-		}//finally
-	}//writeToDB
-	
-	public void updateLastLogin() throws Exception {
+		StringBuilder sql = new StringBuilder();
+
+		int userID = Integer.parseInt(Utilities.intToDB(userDO.id));
+		if (userID == 0) {
+			sql.append("INSERT");
+		} else {
+			sql.append("UPDATE");
+		}
+		sql.append(" users SET ");
+		sql.append(" name='").append(Utilities.escapeQuotes(userDO.name)).append("'");
+		sql.append(", isActive='").append(Utilities.escapeQuotes(userDO.isActive)).append("'");
+		sql.append(", accountID='").append(Utilities.intToDB(userDO.accountID)).append("'");
+		sql.append(", isGroup='").append(Utilities.escapeQuotes(userDO.isGroup)).append("'");
 		
-		String updateQuery = "UPDATE users SET lastLogin=NOW() WHERE id="+userDO.id+" LIMIT 1;";		
+		if (userDO.isGroup.equals("No")) {
+			sql.append(", username='").append(Utilities.escapeQuotes(userDO.username)).append("'");
+			sql.append(", password='").append(Utilities.escapeQuotes(userDO.password)).append("'");
+			sql.append(", email='").append(Utilities.escapeQuotes(userDO.email)).append("'");
+		} else {
+			sql.append(", username='GROUP").append(Utilities.escapeQuotes(userDO.name)).append("'");
+		}
+		
+		if (userID > 0) {
+			sql.append(" WHERE id=").append(userID);
+		}
 		try{
 			DBReady();
-			SQLStatement.executeUpdate(updateQuery);
+			SQLStatement.executeUpdate(sql.toString(), Statement.RETURN_GENERATED_KEYS);
+			if (userID == 0) {
+				ResultSet SQLResult = SQLStatement.getGeneratedKeys();
+				if (SQLResult.next())
+					userDO.id = SQLResult.getString("GENERATED_KEY");
+				SQLResult.close();
+			}
 		}finally{
 			DBClose();
 		}
 	}
-
+	
 	public void writeNewToDB(String accountID, HttpServletRequest request) throws Exception {
 		userDO.accountID = accountID;
 		String insertQuery = "INSERT INTO users (name,username,password,email,isActive,dateCreated,accountID) VALUES ('"+
@@ -137,27 +150,51 @@ public class User extends DataBean {
 			DBClose();
 		}//finally
 	}//addUser
-
-	public void deleteUser(String deleteID) throws Exception {
-		setFromDB(deleteID);
-		String insertQuery = "INSERT INTO deletedUsers(id,name,email," +
-				"accountID,dateCreated,dateDeleted) VALUES("+
-				deleteID+",'"+Utilities.escapeQuotes(userDO.name)+"','"+
-				Utilities.escapeQuotes(userDO.email)+"',"+
-				userDO.accountID+",'"+DateBean.toDBFormat(userDO.dateCreated)+"',NOW())";
-		String deleteQuery = "DELETE FROM users WHERE id="+deleteID+" LIMIT 1";
+	
+	public void updateLastLogin() throws Exception {
+		
+		String updateQuery = "UPDATE users SET lastLogin=NOW() WHERE id="+userDO.id+" LIMIT 1;";		
 		try{
 			DBReady();
+			SQLStatement.executeUpdate(updateQuery);
+		}finally{
+			DBClose();
+		}
+	}
+
+	public void deleteUser() throws Exception {
+		if (!this.isSet) return;
+		
+		try{
+			DBReady();
+			// With MyISAM we Auto commit anyways
+			String sql;
 			SQLStatement.getConnection().setAutoCommit(false);
-			SQLStatement.executeUpdate(insertQuery);
-			SQLStatement.executeUpdate(deleteQuery);
+			
+			sql = "DELETE FROM usergroup WHERE groupID="+userDO.id;
+			SQLStatement.executeUpdate(sql);
+
+			sql = "DELETE FROM usergroup WHERE userID="+userDO.id;
+			SQLStatement.executeUpdate(sql);
+
+			sql = "DELETE FROM useraccess WHERE userID="+userDO.id;
+			SQLStatement.executeUpdate(sql);
+			
+			sql = "INSERT INTO deletedUsers "+
+				"(id,name,email,accountID,dateCreated,dateDeleted) " +
+				"SELECT id,name,email,accountID,dateCreated,NOW() " +
+				"FROM users WHERE id="+userDO.id;
+			SQLStatement.executeUpdate(sql);
+			
+			sql = "DELETE FROM users WHERE id="+userDO.id;
+			SQLStatement.executeUpdate(sql);
+			
 			SQLStatement.getConnection().commit();
 			SQLStatement.getConnection().setAutoCommit(true);
 		}finally{
 			DBClose();
 		}//finally
-	}//deleteUser
-	
+	}
 	
 	public boolean sendPasswordEmail(String email) throws Exception {
 		if (!Utilities.isValidEmail(email)) {
@@ -196,20 +233,23 @@ public class User extends DataBean {
 
 	public boolean isOK() throws Exception {
 		errorMessages = new Vector<String>();
+		if (userDO.name.length()==0)
+			errorMessages.addElement("Please enter a name");
+		else if (userDO.name.length() < 3)
+			errorMessages.addElement("Please enter a name with more than 2 characters");
+		
+		if (userDO.isGroup.equals("Yes")) return (errorMessages.size() == 0);
+		
 		if (userDO.username.length() < 5)
 			errorMessages.addElement("Please choose a username at least 5 characters long");
 		if (userDO.password.length() < MIN_PASSWORD_LENGTH)
 			errorMessages.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH + " characters in length.");
 		if (userDO.password.equalsIgnoreCase(userDO.username))
 			errorMessages.addElement("Please choose a password different from your username.");
-		//if (!userDO.username.equals(oldUsername))
-		//	errorMessages.addElement("That username already exists.<br>Please choose a different one.");
 		
 		if (userDO.email.length() == 0 || !Utilities.isValidEmail(userDO.email))
 			errorMessages.addElement("Please enter a valid email address.");
 
-		if (userDO.isActive == null)
-			errorMessages.addElement("Please select whether this user is active or not");
 		return (errorMessages.size() == 0);
 	}//isOK
 
@@ -232,8 +272,8 @@ public class User extends DataBean {
 					permissions.add(perm);
 				}
 			}
-		}catch(Exception ex){
-			// Eat the error...may not be good
+		} finally {
+			
 		}
 		
 		// READ the permissions assigned directly to this THIS user/group
@@ -286,19 +326,20 @@ public class User extends DataBean {
 		if(groups.size() > 0)
 			return groups;
 		
+		if (!this.isSet) throw new IllegalStateException("userDO is not set");
+		
 		ResultSet SQLResult = null;
-		String query = "select u.*, null as type from users u where id in (select groupID from usergroup where userID=" + userDO.id +") order by u.name";
+		String query = "select * from users u where id in (select groupID from usergroup where userID=" + userDO.id +") order by u.name";
 		try{
 			DBReady();
 			SQLResult = SQLStatement.executeQuery(query);
 			while(SQLResult.next()){
 				User temp = new User();
 				temp.userDO.setFromResultSet(SQLResult);
+				temp.isSet = true;
 				groups.add(temp);
 			}
-			
 			return groups;
-			
 		}finally{
 			SQLResult.close();
 			DBClose();
@@ -325,4 +366,36 @@ public class User extends DataBean {
 		return members;
 	}
 		
-}//UserBean
+	/**
+	 * Add this user to a group, if it already exists, then just ignore the error
+	 * @param groupID
+	 * @throws Exception
+	 */
+	public void addToGroup(String groupID, Permissions byUser) throws Exception {
+		String sql = "INSERT IGNORE INTO usergroup (userID, groupID, creationDate, createdBy)" +
+				"VALUES (" + userDO.id + ", " + groupID +
+				", NOW()," + byUser.getUserId() + ")";
+		try{
+			DBReady();
+			SQLStatement.executeUpdate(sql);
+		}finally{
+			DBClose();
+		}
+	}
+	/**
+	 * Remove this user from the group identified by groupID
+	 * 
+	 * @param groupID
+	 * @throws Exception
+	 */
+	public void removeFromGroup(String groupID) throws Exception {
+		String sql = "DELETE FROM usergroup WHERE userID = " + userDO.id + " AND groupID = " + groupID;
+		try{
+			DBReady();
+			SQLStatement.executeUpdate(sql);
+		}finally{
+			DBClose();
+		}
+	}
+	
+}

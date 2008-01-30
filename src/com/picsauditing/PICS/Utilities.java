@@ -468,7 +468,10 @@ public class Utilities {
 
 	public static String getCheckBoxInput(String name, String classType, String value) {
 		return "<input type=checkbox class="+classType+" name="+name+" value=Y "+checked(value,"Y")+">";
-	}//getTextAreaInput
+	}
+	public static String getCheckBoxInput(String name, String classType, boolean value) {
+		return "<input type=checkbox class="+classType+" name="+name+ (value?" checked":"") +">";
+	}
 
 	public static String convertPercentToDecimal(String num){
 		float temp = 0;

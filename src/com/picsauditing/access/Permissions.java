@@ -5,8 +5,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
-public class Permissions{
+/**
+ * This is the main class that is stored for each user containing information 
+ * if they are logged in, which groups they're in, and what permission(s) they have
+ * 
+ * Warning: this class is stored in the session
+ * Make sure you keep the footprint very small
+ */
+public class Permissions {
 	
 	private int userID;
 	private boolean loggedIn = false;
@@ -121,4 +127,9 @@ public class Permissions{
 		
 		return false;
 	}
+
+	public Set<Permission> getPermissions() {
+		return permissions;
+	}
+	
 }

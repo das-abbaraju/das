@@ -1,25 +1,36 @@
 package com.picsauditing.access;
 
 import java.sql.*;
+import javax.servlet.http.HttpServletRequest;
 
+/**
+ * This controls the permission for a specific user or group of users to do a set of action
+ * View/Edit/Delete/Grant
+ * Edit means to Insert and Update
+ * Warning: this class is stored in a Set<Permission> in session
+ * Make sure you keep the footprint very small
+ */
 public class Permission {
-	// Warning: this class is stored in a Set<Permission> in session
-	// Make sure you keep the footprint very small
-	
 	private boolean viewFlag = false;
 	private boolean editFlag = false;
 	private boolean deleteFlag = false;
 	private boolean grantFlag = false;
 	private OpPerms accessType;
 	
-	public void setFromResultSet(ResultSet SQLResult){
-		try{
+	public void setFromResultSet(ResultSet SQLResult) {
+		try {
 			viewFlag = SQLResult.getShort("viewFlag") == 1 ? true : false;
 			editFlag = SQLResult.getShort("editFlag") == 1 ? true : false;
 			deleteFlag = SQLResult.getShort("deleteFlag") == 1 ? true : false;
 			grantFlag = SQLResult.getShort("grantFlag") == 1 ? true : false;
 			accessType = OpPerms.valueOf(SQLResult.getString("accesstype"));
-		}catch(Exception e){
+		} catch(Exception e){
+			
+		}
+	}
+	public void setFromRequest(HttpServletRequest request) {
+		try {
+		} catch(Exception e){
 			
 		}
 	}

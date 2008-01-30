@@ -304,6 +304,7 @@ public class PermissionsBean extends DataBean {
 	}//setOperatorPermissions
 */
 	public Permissions getPermissions() {
+		if (this.permissions == null) permissions = new Permissions();
 		return permissions;
 	}
 	public void setPermissions(Permissions permissions) {
