@@ -17,7 +17,6 @@ public class MenuItem {
 		this.permission = perm;
 	}
 	/**
-	 * @deprecated
 	 * @param url
 	 * @param prompt
 	 * @param inGroup
