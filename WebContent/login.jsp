@@ -88,7 +88,6 @@
 				return;
 			}
 			if (pBean.isAuditor()){
-				pBean.setUserAccess(pBean.uBean.id);
 				// moved auditorCanSeeSet to setAuditorPermissions Trevor 1/16/08
 				//pBean.setAuditorCanSeeSet(aBean.auditorCanSeeSet);
 				pBean.setAuditorPermissions();
