@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.access.UserAccess;
-
 
 public class PermissionsBean extends DataBean {
 /*	History
@@ -51,13 +49,8 @@ public class PermissionsBean extends DataBean {
 	public HashSet<String> auditorPQFSet = null;
 	public OperatorBean oBean = null;
 	public UserBean uBean = null;
-	public boolean isMainAccount = true;
 	public ArrayList<String> allFacilitiesAL = null;
-
-	public com.picsauditing.access.UserAccess userAccess = null;
 	private Permissions permissions = null;
-	
-	
 
 	public void setAllFacilitiesFromDB(String conID) throws Exception {
 		allFacilitiesAL = new ArrayList<String>();
@@ -93,12 +86,6 @@ public class PermissionsBean extends DataBean {
 	public void setAuditorOfficeSet(HashSet<String> s) {auditorOfficeSet = s;} 
 	public void setAuditorDesktopSet(HashSet<String> s) {auditorDesktopSet = s;}
 	public void setAuditorDaSet(HashSet<String> s) {auditorDaSet = s;}
-
-	public void setUserAccess(String userID) throws Exception{
-		userAccess = new com.picsauditing.access.UserAccess();
-		userAccess.setFromDB(userID);
-		//userAccess.setPermissions(permissions);
-	}//setUserAccess
 
 	public String getCanSeeSetCount(){
 		if (canSeeSet == null) return "0";
@@ -198,11 +185,9 @@ public class PermissionsBean extends DataBean {
 		if (isAdmin())
 			return true;
 		if (isOperator()){
-			if (isMainAccount)
-				return true;
 			return (!Utilities.arrayContains(RESTRICTED_AUDIT_CATEGORIES,catID) || 
-					userAccess.hasAccess(OpPerms.ViewFullPQF));
-		}//if
+					this.getPermissions().hasPermission(OpPerms.ViewFullPQF));
+		}
 		if (isAuditor())
 			return (!Utilities.arrayContains(RESTRICTED_AUDIT_CATEGORIES,catID) || auditorPQFSet.contains(conID));
 		if (isContractor())

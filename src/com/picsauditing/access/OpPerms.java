@@ -1,7 +1,7 @@
 package com.picsauditing.access;
 
 public enum OpPerms {
-//This list also must be the same as the enum accessType in userAccess table
+	// TODO search the code for each permission type and document what each one is for
 	ViewFullPQF("View Financial Info"),
 	EditForms("Edit Forms"),
 	SearchContractors("Search For New Contractors"),

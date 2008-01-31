@@ -5,13 +5,20 @@ import java.util.*;
 import com.picsauditing.PICS.Utilities;
 
 /**
+ * This class saves data into either the useraccess or the opaccess tables
+ * TODO figure out how to support operator/account permissions too
  * @deprecated
  * @see PermissionDB
  */
 public class UserAccess extends com.picsauditing.PICS.DataBean {
 	public String userID = "0";
+	public String db = "userAccess";
 	Collection<OpPerms> accessSet = null;
 	Collection<OpPerms> oldAccessSet = null;
+
+	public void setDB(String newDB){
+		this.db = newDB;
+	}//setDB
 	
 	/**
 	 * @deprecated
@@ -22,7 +29,7 @@ public class UserAccess extends com.picsauditing.PICS.DataBean {
 	public void setFromDB(String user_ID) throws Exception {
 		try{
 			this.userID = user_ID;
-			String selectQuery = "SELECT accessType FROM useraccess WHERE userID="+
+			String selectQuery = "SELECT accessType FROM "+db+" WHERE userID="+
 				Utilities.intToDB(userID)+";";
 			accessSet = new HashSet<OpPerms>();
 			DBReady();
@@ -61,7 +68,7 @@ public class UserAccess extends com.picsauditing.PICS.DataBean {
 	 */
 	public void writeNewToDB(String grantedByID,String userID) throws Exception{
 		try{
-			String insertQuery = "INSERT INTO useraccess (userID,accessType,grantedByID) VALUES";
+			String insertQuery = "INSERT INTO "+db+" (userID,accessType,grantedByID) VALUES";
 			boolean isInsert = false;
 			for (OpPerms perm:OpPerms.values()){
 				if (accessSet.contains(perm)){
@@ -86,8 +93,8 @@ public class UserAccess extends com.picsauditing.PICS.DataBean {
 	 */
 	public void writeToDB(String grantedByID) throws Exception{
 		try{
-			String deleteQuery = "DELETE FROM useraccess WHERE userID="+userID+" AND accessType IN (";
-			String insertQuery = "INSERT INTO useraccess (userID,accessType,grantedByID) VALUES";
+			String deleteQuery = "DELETE FROM "+db+" WHERE userID="+userID+" AND accessType IN (";
+			String insertQuery = "INSERT INTO "+db+" (userID,accessType,grantedByID) VALUES";
 			boolean isDelete = false;
 			boolean isInsert = false;
 			for (OpPerms perm:OpPerms.values()){

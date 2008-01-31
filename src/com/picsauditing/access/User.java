@@ -40,6 +40,7 @@ public class User extends DataBean {
 	
 	/**
 	 * Grabs only the first user attached to this account like a contractor
+	 * Don't use this if the account type isn't a contractor
 	 * @param accountID
 	 * @throws Exception
 	 */

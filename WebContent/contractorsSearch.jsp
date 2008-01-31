@@ -174,11 +174,11 @@ try{
                 <td align="center">
 <%			if (pBean.oBean.canAddContractors()){
 				if (!pBean.canSeeSet.contains(sBean.aBean.id) || pBean.isCorporate()){
-					if (pBean.userAccess.hasAccess(OpPerms.AddContractors)){%>
+					if (pBean.getPermissions().hasPermission(OpPerms.AddContractors)){%>
                   <input name="action" type="submit" class="buttons" value="Add">
 <%				}//if
 				}else{
-					if (pBean.userAccess.hasAccess(OpPerms.RemoveContractors)){%>
+					if (pBean.getPermissions().hasPermission(OpPerms.RemoveContractors)){%>
                   <input name="action" type="submit" class="buttons" value="Remove">
 <%					}//if
 				}//else

@@ -5,8 +5,8 @@
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
 <jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope ="application"/>
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope ="application"/>
-
-<%	String editID = request.getParameter("id");
+<%
+	String editID = request.getParameter("id");
 	UserAccess userAccess = new UserAccess();
 	userAccess.setDB("opAccess");
 	userAccess.setFromDB(editID);
@@ -16,7 +16,8 @@
 	if ("Corporate".equals(aBean.type))
 		oBean.isCorporate = true;
 	oBean.setFromDB(editID);
-	if (wasSubmitted){
+	
+	if (wasSubmitted) {
 		aBean.setFromRequest(request);
 		oBean.setFromRequest(request);
 		userAccess.setFromRequest(request);
@@ -101,15 +102,14 @@
                         <td colspan="2" class="redMain"><b><%=errorMsg%>
 <%	if (request.getParameter("submit") != null)
 		out.println(aBean.getErrorMessages());
-%>
-                        </b></td>
+%>                        </b></td>
                       </tr>
                       <tr class="blueMain"> 
                         <td colspan="2">&nbsp; </td>
                       </tr>
                       <tr> 
                         <td class="blueMain" align="right">Name</td>
-                        <td> <input name="name" type="text" class="forms" size="20" value="<%=aBean.name%>"></td>
+                        <td> <input name="name" type="text" class="forms" size="30" value="<%=aBean.name%>"></td>
                       </tr>
 					  <tr>
                         <td class="blueMain" align="right">Last Login:</td>
@@ -168,20 +168,10 @@
                         <td class="blueMain" align="right">Industry</td>
                         <td><%=aBean.getIndustrySelect("industry","forms",aBean.industry)%></td>
                       </tr>
-                      <tr> 
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                      </tr>
-                      <tr> 
-                        <td class="blueMain" align="right">Username</td>
-                        <td><input name="username" type="text" class="forms" size="15" value="<%=aBean.username%>"></td>
-                      </tr>
-                      <tr> 
-                        <td class="blueMain" align="right">Password</td>
-                        <td><input name="password" type="text" class="forms" size="15" value="<%=aBean.password%>"></td>
-                      </tr>
 					  <tr>
-					  	<td colspan="2" class="blueMain" align="center"><a href="accounts_userList.jsp?id=<%=editID%>">Add/Edit Additional Users</a>
+					  	<td colspan="2" class="blueMain" align="center">
+					  		<a href="accounts_userList.jsp?id=<%=editID%>">Manage Users</a>
+					  		<a href="users_manage.jsp?accountID=<%=editID%>">New Tool (beta)</a>
 					  	</td>
 					  </tr>
 					  <tr> 
@@ -272,7 +262,7 @@
                       </tr>
                       <tr> 
                         <td>&nbsp;</td>
-                        <td><input name="submit" type="submit" class="forms" value="submit"></td>
+                        <td><input name="submit" type="submit" class="forms" value="Save"></td>
                       </tr>
                       <tr>
 						<td>&nbsp;</td>
@@ -299,26 +289,10 @@
                       </tr>
                       <tr> 
                         <td>&nbsp;</td>
-                        <td><input name="submit" type="submit" class="forms" value="submit"></td>
+                        <td><input name="submit" type="submit" class="forms" value="Save"></td>
                       </tr>
                     </table>
                   </form>
-<%/*                  <form name="form2" method="post" action="accounts_edit_operator.jsp?id=<%=editID%&isFileUpload=Yes" enctype="multipart/form-data">
-                    <table width="0" border="0" cellspacing="0" cellpadding="1" bgcolor="#EEEEEE">
-                      <tr align="center" class="blueMain">
-                        <td colspan="2" class="blueHeader">File Upload</td>
-                      </tr>
-                      <tr>
-                        <td class="blueMain" align="right">User Manual</td>
-                        <td class="redMain"><input name="userManual" type="FILE" class="forms" size="15"> Uploaded: =oBean.isUserManualUploaded</td>
-                      </tr>
-                      <tr> 
-                        <td>&nbsp;</td>
-                        <td><input name="uploadFile" type="submit" class="forms" value="Upload File"></td>
-                      </tr>
-                    </table>
-                  </form>
-*/%>                </td>
                 <td width="126" align="center" valign="top" bgcolor="#DDDDDD" class="blueMain"></td>
               </tr>
             </table>

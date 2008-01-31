@@ -1,32 +1,49 @@
 <%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.access.*" errorPage="exception_handler.jsp"%>
-<%//@ page language="java"%>
+<%@page import="org.apache.commons.beanutils.*"%>
+<%@page import="java.util.*"%>
+<%@page import="com.picsauditing.access.*"%>
 <%@ include file="utilities/op_edit_secure.jsp" %>
 <%
-UserList userList = new UserList();
-try{
-	String opID = request.getParameter("id");
-	String action = request.getParameter("action");
-	String actionID = request.getParameter("actionID");
-	String msg = request.getParameter("msg");
-	String newUserID = request.getParameter("newid");
-	if (null == msg)
-		msg = "";
-	if ("Edit".equals(action)){
-		response.sendRedirect("accounts_editUser.jsp?action=Edit&id="+opID+"&uID="+actionID);
-		return;
-	}//if
-	if ("New".equals(action)){
-		response.sendRedirect("accounts_editUser.jsp?action=New&id="+opID);
-		return;
-	}//if
-	if ("Delete".equals(action)){
-		User user = new User();
-		user.deleteUser(actionID);
-	}//if
-	AccountBean aBean = new AccountBean();
-	aBean.setFromDB(opID);
-	userList.setList(opID);
+
+String opID = request.getParameter("id");
+String action = request.getParameter("action");
+String actionID = request.getParameter("actionID");
+
+if ("Edit".equals(action)){
+	response.sendRedirect("accounts_editUser.jsp?action=Edit&id="+opID+"&uID="+actionID);
+	return;
+}
+if ("New".equals(action)){
+	response.sendRedirect("accounts_editUser.jsp?action=New&id="+opID);
+	return;
+}
+if ("Delete".equals(action)){
+	User user = new User();
+	user.setFromDB(actionID);
+	user.deleteUser();
+}
+
+String msg = request.getParameter("msg");
+if (null == msg) msg = "";
+String newUserID = request.getParameter("newid");
+if (newUserID != null) {
+	//Add the most recently added user to a hidden div for testing purposes
 	msg = msg + "<div style='display: none' id='newUser'>"+newUserID+"</div>";
+}
+
+AccountBean aBean = new AccountBean();
+aBean.setFromDB(opID);
+
+SearchUsers search = new SearchUsers();
+search.sql.addField("lastLogin");
+search.sql.addWhere("isGroup = 'No' ");
+search.sql.addWhere("accountID = "+opID);
+
+search.sql.addOrderBy("u.name");
+search.setPageByResult(request);
+
+List<BasicDynaBean> userList = search.doSearch();
+
 %>
 <html>
   <head>
@@ -81,20 +98,25 @@ try{
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
 						  </tr>
-<%	while (userList.isNext()) {%>
-                          <form name="form_<%=userList.userDO.id%>" id="form_<%=userList.userDO.id%>" method="post" action="accounts_userList.jsp">
-						  <tr <%=Utilities.getBGColor(userList.count)%> class="blueMain">
-                            <td align=right><%=userList.count%></td>
-                            <td><%=userList.userDO.name%></td>
-                            <td align="center"><%=userList.userDO.lastLogin%></td>
-                            <td align="center"><%=userList.userDO.isActive%></td>
-                            <td><input name="action" type="submit" class="buttons" id="edit_<%=userList.userDO.id%>" value="Edit"></td>
-                            <td><input name="action" type="submit" class="buttons" id="delete_<%=userList.userDO.id%>" value="Delete" onClick="return confirm('Are you sure you want to delete <%=userList.userDO.name%>?');"></td>
+<%
+int counter = 1;
+for(BasicDynaBean row: userList) {
+%>
+                          <form name="form_<%=row.get("id")%>" id="form_<%=row.get("id")%>" method="post" action="accounts_userList.jsp">
+						      <input name="actionID" type="hidden" value="<%=row.get("id")%>" />
+						      <input name="id" type="hidden" value="<%=opID%>" />
+						  <tr <%=Utilities.getBGColor(counter)%> class="blueMain">
+							<td align="right"><%=counter++%>.</td>
+                            <td><%=row.get("name")%></td>
+                            <td align="center"><%=row.get("lastLogin")%></td>
+                            <td align="center"><%=row.get("isActive")%></td>
+                            <td><input name="action" type="submit" class="buttons" id="edit_<%=row.get("id")%>" value="Edit"></td>
+                            <td><input name="action" type="submit" class="buttons" id="delete_<%=row.get("id")%>" value="Delete" onClick="return confirm('Are you sure you want to delete <%=row.get("name")%>?');"></td>
 					      </tr>
-					      <input name="actionID" type="hidden" value="<%=userList.userDO.id%>">
-					      <input name="id" type="hidden" value="<%=opID%>">
 						  </form>
-<%	}//for%>
+<%
+}
+%>
 					    </table>
 					  </td>
 					</tr>
@@ -124,7 +146,3 @@ try{
 <%@ include file="includes/statcounter.jsp" %>
 </body>
 </html>
-<%	}finally{
-		userList.closeList();
-	}//finally
-%>

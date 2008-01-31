@@ -703,36 +703,39 @@ public class AccountBean extends DataBean {
 	}//getGeneralContractorsSelect3
 
 	public boolean isOK() throws Exception {
-			errorMessages = new Vector<String>();
-			if (name.length() == 0)
-				errorMessages.addElement("Please fill in the Company Name field");
-			if (name.length() < 3)
-				errorMessages.addElement("Your company name must be at least 3 characters long");
+		errorMessages = new Vector<String>();
+		if (null == type)
+			errorMessages.addElement("Please indicate the account type");
+		if (name.length() == 0)
+			errorMessages.addElement("Please fill in the Company Name field");
+		if (name.length() < 3)
+			errorMessages.addElement("Your company name must be at least 3 characters long");
+		if ("Contractor".equals(type)) {
 			if (username.length() == 0)
 				errorMessages.addElement("Please fill in the Username field");
 			if (password.length() < MIN_PASSWORD_LENGTH)
 				errorMessages.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH + " characters in length.");
 			if (password.equalsIgnoreCase(username))
 				errorMessages.addElement("Please choose a password different from your username.");
-			//Don't chekc these fields if auditor BJ 10-28-04
-			if (!type.equals("Auditor")) {
-				if (contact.length() == 0)
-					errorMessages.addElement("Please fill in the Contact field");
-				if (address.length() == 0)
-					errorMessages.addElement("Please fill in the Address field");
-				if (city.length() == 0)
-					errorMessages.addElement("Please fill in the City field");
-				if (zip.length() == 0)
-					errorMessages.addElement("Please fill in the Zip field");
-				if (phone.length() == 0)
-					errorMessages.addElement("Please fill in the Phone field");
-				if (null == type)
-					errorMessages.addElement("Please indicate whether this is a general contractor or not");
-			} //end if not auditor
-			if ((email.length() == 0) || (!Utilities.isValidEmail(email)))
-				errorMessages.addElement("Please enter a valid email address. This is our main way of communicating with you so it must be valid");
-			return (errorMessages.size() == 0);
-		}//isOK
+		}
+		//Don't chekc these fields if auditor BJ 10-28-04
+		if (!type.equals("Auditor")) {
+			if (contact.length() == 0)
+				errorMessages.addElement("Please fill in the Contact field");
+			if (address.length() == 0)
+				errorMessages.addElement("Please fill in the Address field");
+			if (city.length() == 0)
+				errorMessages.addElement("Please fill in the City field");
+			if (zip.length() == 0)
+				errorMessages.addElement("Please fill in the Zip field");
+			if (phone.length() == 0)
+				errorMessages.addElement("Please fill in the Phone field");
+		}
+		if ((email.length() == 0) || (!Utilities.isValidEmail(email)))
+			errorMessages.addElement("Please enter a valid email address. This is our main way of communicating with you so it must be valid");
+		return (errorMessages.size() == 0);
+	}
+	
 	public boolean isFirstLogin() {
 		if ("Contractor".equals(type) && "".equals(accountDate))
 			return true;

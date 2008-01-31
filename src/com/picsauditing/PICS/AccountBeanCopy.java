@@ -25,7 +25,6 @@ public class AccountBeanCopy extends DataBean {
 	OperatorBean o = null;
 	String accountDate = "";
 	String canEditPrequal = "";
-	public boolean isMainAccount = false; //used in check login to see if user is not in main accounts table, but in users table
 	public String userID = "0"; //used in check login, to set id for users not in main accounts table, but in users table
 	public HashSet<String> canSeeSet = new HashSet<String>(); // all sub contractors of a general contractor/operator
 	public HashSet<String> hasCertSet = new HashSet<String>(); // all contractors with insurance certs for a general contractor/operator
@@ -442,8 +441,6 @@ public class AccountBeanCopy extends DataBean {
 			// Update the lastLogin attempt on both accounts and users tables
 			String updateQuery = "UPDATE accounts SET lastLogin=NOW() WHERE id="+id;
 			SQLStatement.executeUpdate(updateQuery);
-			//isMainAccount = (lname.equalsIgnoreCase(username) && lpass.equalsIgnoreCase(password));
-			//if (!isMainAccount){
 			if (isUser) {
 				updateQuery = "UPDATE users SET lastLogin=NOW() WHERE id="+userID;
 				SQLStatement.executeUpdate(updateQuery);

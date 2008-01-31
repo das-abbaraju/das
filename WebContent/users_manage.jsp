@@ -108,7 +108,7 @@ for(BasicDynaBean row: searchData) {
 		class="active" 
 		style="cursor: pointer" 
 		onclick="showUser(<%=row.get("id")%>); return false;">
-		<td align="right"><%=counter%>.</td>
+		<td align="right"><%=counter++%>.</td>
 		<td<% if (row.get("isActive").toString().startsWith("N")) { %> style="font-style: italic; color: #999999"<% } %>><%=row.get("name")%></td>
 	</tr>
 <%

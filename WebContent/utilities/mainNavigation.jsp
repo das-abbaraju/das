@@ -29,7 +29,7 @@ function MM_swapImage() { //v3.0
 	if (pBean.isAdmin())
 		navString = "accounts_manage,ManageAccounts,manage_forms,ManageFormsTrade,report_auditors,Audits,reports,Reports";
 	else if (pBean.isOperator() || pBean.isCorporate()){
-		if (pBean.userAccess.hasAccess(com.picsauditing.access.OpPerms.StatusOnly))
+		if (pBean.getPermissions().hasPermission(com.picsauditing.access.OpPerms.StatusOnly))
 			navString = "contractor_list_limited,ContractorList";
 		else
 			navString = "reports,Reports,contractor_list,ContractorList,services,Services,clients,Clients,contact,Contact";

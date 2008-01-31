@@ -10,10 +10,10 @@ ContractorBean cBean = new ContractorBean();
 try{
 	String action = request.getParameter("action");
 	boolean addNote = "Add Note".equals(action);
-	boolean canEditNotes = (pBean.isOperator() || pBean.isCorporate()) && pBean.userAccess.hasAccess(com.picsauditing.access.OpPerms.EditNotes);
+	boolean canEditNotes = (pBean.isOperator() || pBean.isCorporate()) && pBean.getPermissions().hasPermission(com.picsauditing.access.OpPerms.EditNotes);
 	boolean deleteNote = "DeleteNote".equals(action);
 	boolean addToList = "Add".equals(action);
-	boolean canEditForcedFlags = (pBean.isOperator() || pBean.isCorporate()) && pBean.userAccess.hasAccess(com.picsauditing.access.OpPerms.EditForcedFlags);
+	boolean canEditForcedFlags = (pBean.isOperator() || pBean.isCorporate()) && pBean.getPermissions().hasPermission(com.picsauditing.access.OpPerms.EditForcedFlags);
 	boolean removeFromList = "Remove".equals(action);
 	String id = request.getParameter("id");
 	aBean.setFromDB(id);
@@ -101,7 +101,7 @@ try{
           <td colspan="3" align="center" class="blueMain">
 			<table width="657" border="0" cellpadding="0" cellspacing="0">
               <tr align="center" class="blueMain">
-<%	if (!pBean.userAccess.hasAccess(com.picsauditing.access.OpPerms.StatusOnly)){ %>
+<%	if (!pBean.getPermissions().hasPermission(com.picsauditing.access.OpPerms.StatusOnly)){ %>
                 <td align="left"><%@ include file="includes/nav/secondNav.jsp"%></td>
 <%	}%>
               </tr>

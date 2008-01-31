@@ -100,14 +100,8 @@ if (url.startsWith("http://pics")) {
 				
 				if (pBean.isCorporate())
 					pBean.setCanSeeSet(pBean.oBean.getFacilitiesCanSeeSet());
-				if (!aBean.isMainAccount){
-					pBean.isMainAccount = false;
-					pBean.uBean = new UserBean();
-					pBean.uBean.setFromDB(permissions.getUserIdString());
-					pBean.setUserAccess(permissions.getUserIdString());
-				}else{
-					pBean.uBean = new UserBean();
-					pBean.uBean.name = aBean.contact;
+				pBean.uBean = new UserBean();
+				pBean.uBean.name = aBean.contact;
 				}//else
 				if (permissions.hasPermission(OpPerms.StatusOnly)) {
 					response.sendRedirect("contractor_list_limited.jsp");

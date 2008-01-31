@@ -544,7 +544,7 @@ public class OperatorBean extends DataBean {
 		flagQ1385 = request.getParameter("flagQ1385");
 	}//setHurdlesFromRequest
 
-	public boolean isOK(){
+	public boolean isOK() {
 		errorMessages = new Vector<String>();		
 		return (errorMessages.size() == 0);
 	} // isOK
