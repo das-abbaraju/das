@@ -4,14 +4,13 @@
 <%@page import="com.picsauditing.PICS.Utilities"%>
 <jsp:useBean id="uBean" class="com.picsauditing.access.User" scope ="page"/>
 <jsp:useBean id="currentUser" class="com.picsauditing.access.User" scope ="page"/>
-<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session" />
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%
 if (!permissions.isLoggedIn()) {
 	%><a href="login.jsp" style="color: red; font-weight: bold;">You must log in again</a><%
 	return;
 }
-pBean.getPermissions().tryPermission(OpPerms.EditUsers, OpType.View);
+permissions.tryPermission(OpPerms.EditUsers, OpType.View);
 
 String userID;
 String action = request.getParameter("action");
@@ -19,7 +18,7 @@ if (action == null) action = "";
 
 if (action.equals("deleteUser")) {
 	// Delete the user
-	pBean.getPermissions().tryPermission(OpPerms.EditUsers, OpType.Delete);
+	permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
 	uBean.setFromDB(request.getParameter("userID"));
 	String name = uBean.userDO.name;
 	uBean.deleteUser();
@@ -29,7 +28,7 @@ if (action.equals("deleteUser")) {
 }
 
 if (!action.equals("")) {
-	pBean.getPermissions().tryPermission(OpPerms.EditUsers, OpType.Edit);
+	permissions.tryPermission(OpPerms.EditUsers, OpType.Edit);
 }
 
 userID = request.getParameter("userID");
@@ -49,12 +48,12 @@ if (action.equals("removeGroup")) {
 	uBean.removeFromGroup(request.getParameter("groupID"));
 }
 if (action.equals("addGroup")) {
-	uBean.addToGroup(request.getParameter("groupID"), pBean.getPermissions());
+	uBean.addToGroup(request.getParameter("groupID"), permissions);
 }
 if (action.equals("savePermissions")) {
 	PermissionDB permDB = new PermissionDB();
 	permDB.setUserID(request.getParameter("userID"));
-	permDB.save(request, pBean.getPermissions());
+	permDB.save(request, permissions);
 }
 if (action.equals("deletePermission")) {
 	PermissionDB permDB = new PermissionDB();
@@ -90,7 +89,7 @@ if (uBean.isSet()) {
 <form id="user" method="POST" action="user_edit.jsp">
 	<input type="hidden" name="action" value="saveUser" />
 	<input type="hidden" name="id" value="<%=uBean.userDO.id%>" />
-	<input type="hidden" name="accountID" value="<%=pBean.getPermissions().getAccountIdString() %>" />
+	<input type="hidden" name="accountID" value="<%=permissions.getAccountIdString() %>" />
 	<input type="hidden" name="isGroup" value="<%=(isGroup?"Yes":"No")%>" />
 <table border="0" cellspacing="0" cellpadding="1">
 	<tr>
@@ -137,13 +136,13 @@ if (uBean.isSet()) {
 if (!uBean.isSet()) return;
 // Don't show below data until, we've saved our user
 
-currentUser.setFromDB(pBean.getPermissions().getUserIdString());
+currentUser.setFromDB(permissions.getUserIdString());
 
 ////////////////////////////
 // Begin Permissions
 boolean canGrant = false;
 ArrayList<String> temp = new ArrayList<String>();
-for(Permission perm: pBean.getPermissions().getPermissions()) {
+for(Permission perm: permissions.getPermissions()) {
 	if (perm.isGrantFlag() && !myPerms.contains(perm)) {
 		canGrant = true;
 		temp.add(perm.getAccessType().name());
@@ -166,7 +165,7 @@ if (canGrant || myPerms.size() > 0) {
 	</tr>
 <%
 for (Permission perm: myPerms) {
-	if (pBean.getPermissions().hasPermission(perm.getAccessType(), OpType.Grant)) {
+	if (permissions.hasPermission(perm.getAccessType(), OpType.Grant)) {
 		String accessType = perm.getAccessType().toString();
 		%>
 		<tr class="active">
@@ -219,7 +218,7 @@ if (canGrant) {
 <p class="blueMain">Member of Group(s):
 <ul>
 <%
-// = pBean.getPermissions().
+// = permissions.
 Set<User> allGroups = currentUser.getAccountGroups();
 //allGroups.addAll(currentUser.getGroups());
 
@@ -266,7 +265,7 @@ for (User child: myMembers) {
 </p>
 <%
 }
-if (pBean.getPermissions().hasPermission(OpPerms.EditUsers, OpType.Delete)) {
+if (permissions.hasPermission(OpPerms.EditUsers, OpType.Delete)) {
 	%>
 	<br /><br /><br /><br />
 	<form>

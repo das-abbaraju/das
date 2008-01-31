@@ -15,12 +15,12 @@ search.sql.addField("u.isGroup");
 String isGroup = request.getParameter("isGroup");
 if (isGroup != null && isGroup.equals("Yes")) {
 	search.sql.addWhere("isGroup = 'Yes' ");
-	search.sql.addWhere("accountID = "+pBean.getPermissions().getAccountId());
+	search.sql.addWhere("accountID = "+permissions.getAccountId());
 } else {
 	// Default: users only
 	search.sql.addWhere("isGroup = 'No' ");
 	// Only search for Admin and Auditor users
-	search.sql.addWhere("accountID = "+pBean.getPermissions().getAccountId());
+	search.sql.addWhere("accountID = "+permissions.getAccountId());
 	//search.inGroups("10,11");
 }
 // Only search for Auditors and Admins
