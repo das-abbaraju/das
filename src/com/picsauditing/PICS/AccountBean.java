@@ -25,7 +25,6 @@ public class AccountBean extends DataBean {
 	OperatorBean o = null;
 	String accountDate = "";
 	String canEditPrequal = "";
-	public boolean isMainAccount = false; //used in check login to see if user is not in main accounts table, but in users table
 	public String userID = "0"; //used in check login, to set id for users not in main accounts table, but in users table
 	public HashSet<String> canSeeSet = new HashSet<String>(); // all sub contractors of a general contractor/operator
 	public HashSet<String> hasCertSet = new HashSet<String>(); // all contractors with insurance certs for a general contractor/operator
@@ -58,6 +57,7 @@ public class AccountBean extends DataBean {
 	public String emailConfirmedDate = "";
 	boolean updatedPassword = false;
 	public String prevLastLogin = "1/1/01";
+	
 	public void setId(String s) {id = s;}//setId
 	public void setActive(String s) {active = s;}//setActive
 	public String getId() {return id;}//getId
@@ -423,7 +423,6 @@ public class AccountBean extends DataBean {
 			// Login attempt successful  //
 			///////////////////////////////
 			
-			
 			// set the account object and discard results
 			setFromResultSet(SQLResult);
 			SQLResult.close();
@@ -432,8 +431,6 @@ public class AccountBean extends DataBean {
 			// Update the lastLogin attempt on both accounts and users tables
 			String updateQuery = "UPDATE accounts SET lastLogin=NOW() WHERE id="+id;
 			SQLStatement.executeUpdate(updateQuery);
-			//isMainAccount = (lname.equalsIgnoreCase(username) && lpass.equalsIgnoreCase(password));
-			//if (!isMainAccount){
 			if (isUser) {
 				updateQuery = "UPDATE users SET lastLogin=NOW() WHERE id="+userID;
 				SQLStatement.executeUpdate(updateQuery);
@@ -854,7 +851,4 @@ public class AccountBean extends DataBean {
 		this.lastLogin = lastLogin;
 	}
 	
-	
-	
-	
-}//AccountBean
+}

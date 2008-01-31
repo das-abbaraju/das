@@ -1,9 +1,12 @@
 package com.picsauditing.access;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.servlet.http.Cookie;
 
 /**
  * This is the main class that is stored for each user containing information 
@@ -16,7 +19,7 @@ public class Permissions {
 	
 	private int userID;
 	private boolean loggedIn = false;
-	private List<Integer> groups = new ArrayList();
+	private Set<Integer> groups = new HashSet<Integer>();
 	private Set<Permission> permissions = new HashSet<Permission>();	
 	private String username;
 	private int accountID;
@@ -35,7 +38,7 @@ public class Permissions {
 			accountID = Integer.parseInt(user.userDO.accountID);
 			accountType = user.userDO.accountType;
 			permissions = user.getPermissions();
-			List<User> temp = user.getGroups();
+			Set<User> temp = user.getGroups();
 			for(User u : temp)
 				groups.add(Integer.parseInt(u.userDO.id));
 		}catch(Exception ex){
@@ -64,7 +67,7 @@ public class Permissions {
 	public boolean isLoggedIn() {
 		return loggedIn;
 	}
-	public List<Integer> getGroups() {
+	public Set<Integer> getGroups() {
 		return groups;
 	}
 	public String getUsername() {
@@ -118,6 +121,21 @@ public class Permissions {
 	
 	public void tryPermission(OpPerms opPerm) throws NoRightsException {
 		this.tryPermission(opPerm, OpType.View);
+	}
+	
+	public boolean loginRequired(javax.servlet.http.HttpServletResponse response, String returnURL) throws IOException {
+		if (this.loggedIn) return true;
+		if (returnURL != null && returnURL.length() > 0) {
+			Cookie fromCookie = new Cookie("from",returnURL);
+			fromCookie.setMaxAge(3600);
+			response.addCookie(fromCookie);
+		}
+		response.sendRedirect("logout.jsp?msg=Your session has timed out. Please log back in");
+		return false;
+	}
+	public boolean loginRequired(javax.servlet.http.HttpServletResponse response) throws IOException {
+		// TODO get the current URL
+		return this.loginRequired(response, "");
 	}
 	
 	public boolean hasGroup(Integer group){

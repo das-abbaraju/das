@@ -35,6 +35,21 @@ public class Permission {
 		}
 	}
 
+	public void setViewFlag(boolean viewFlag) {
+		this.viewFlag = viewFlag;
+	}
+	public void setEditFlag(boolean editFlag) {
+		this.editFlag = editFlag;
+	}
+	public void setDeleteFlag(boolean deleteFlag) {
+		this.deleteFlag = deleteFlag;
+	}
+	public void setGrantFlag(boolean grantFlag) {
+		this.grantFlag = grantFlag;
+	}
+	public void setAccessType(OpPerms accessType) {
+		this.accessType = accessType;
+	}
 	public boolean isViewFlag() {
 		return viewFlag;
 	}

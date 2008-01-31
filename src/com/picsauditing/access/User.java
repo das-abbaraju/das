@@ -13,8 +13,21 @@ public class User extends DataBean {
 	public UserDO userDO = new UserDO();
 	String oldUsername = "";
 	private Set<Permission> permissions;
-	private List<User> groups = new ArrayList<User>();
+	private Set<User> groups = new HashSet<User>();
 	
+	public int hashCode() {
+		return 100 + Integer.parseInt(userDO.id);
+	}
+	public boolean equals(Object obj){
+		if(this == obj)
+			return true;
+		
+		if((obj == null) || (obj.getClass() != this.getClass()))
+				return false;
+	
+		User test = (User)obj;
+		return (userDO.id.equals(test.userDO.id));
+	}
 	
 	public void setFromDB(String uID) throws Exception {
 		if (uID == null) return;
@@ -322,7 +335,7 @@ public class User extends DataBean {
 		return ownPermissions;
 	}
 
-	public List<User> getGroups() throws Exception{
+	public Set<User> getGroups() throws Exception{
 		if(groups.size() > 0)
 			return groups;
 		
@@ -346,8 +359,30 @@ public class User extends DataBean {
 		}//finally
 	}
 
-	public List<User> getMembers() throws Exception {
-		List<User> members = new ArrayList<User>();
+	public Set<User> getAccountGroups() throws Exception {
+		if (!this.isSet) throw new IllegalStateException("userDO is not set");
+		
+		Set<User> accountGroups = this.getGroups();
+		ResultSet SQLResult = null;
+		String query = "select * from users u where isGroup='Yes' and accountID = '" + Utilities.intToDB(userDO.accountID) +"' order by u.name";
+		try{
+			DBReady();
+			SQLResult = SQLStatement.executeQuery(query);
+			while(SQLResult.next()){
+				User temp = new User();
+				temp.userDO.setFromResultSet(SQLResult);
+				temp.isSet = true;
+				accountGroups.add(temp);
+			}
+			return accountGroups;
+		}finally{
+			SQLResult.close();
+			DBClose();
+		}
+	}
+
+	public Set<User> getMembers() throws Exception {
+		Set<User> members = new HashSet<User>();
 		
 		ResultSet SQLResult = null;
 		String query = "select u.*, null as type from users u where id in (select userID from usergroup where groupID=" + userDO.id +") order by u.isActive, u.name";
@@ -362,10 +397,10 @@ public class User extends DataBean {
 		}finally{
 			SQLResult.close();
 			DBClose();
-		}//finally
+		}
 		return members;
 	}
-		
+	
 	/**
 	 * Add this user to a group, if it already exists, then just ignore the error
 	 * @param groupID

@@ -3,21 +3,26 @@
 <%@page import="java.util.*"%>
 <%@page import="com.picsauditing.PICS.Utilities"%>
 <jsp:useBean id="uBean" class="com.picsauditing.access.User" scope ="page"/>
+<jsp:useBean id="currentUser" class="com.picsauditing.access.User" scope ="page"/>
 <jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session" />
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%
-//pBean.getPermissions().tryPermission(OpPerms.EditUsers);
+if (!permissions.isLoggedIn()) {
+	%><a href="login.jsp" style="color: red; font-weight: bold;">You must log in again</a><%
+	return;
+}
+pBean.getPermissions().tryPermission(OpPerms.EditUsers, OpType.View);
 
 String userID;
 String action = request.getParameter("action");
 if (action == null) action = "";
 
-if (action.equals("DeleteUser")) {
+if (action.equals("deleteUser")) {
 	// Delete the user
 	pBean.getPermissions().tryPermission(OpPerms.EditUsers, OpType.Delete);
-	User user = new User();
-	user.setFromDB(request.getParameter("userID"));
-	String name = user.userDO.name;
-	user.deleteUser();
+	uBean.setFromDB(request.getParameter("userID"));
+	String name = uBean.userDO.name;
+	uBean.deleteUser();
 	%>Successfully deleted <%=name %><br />
 	<a href="users_manage.jsp">Refresh User List</a><%
 	return;
@@ -66,8 +71,8 @@ if (action.equals("removeUserFromGroup")) {
 // Display User and their groups and permissions //
 boolean isGroup = false;
 
-List<User> myGroups = new ArrayList<User>();
-List<User> myMembers = new ArrayList<User>();
+Set<User> myGroups = new HashSet<User>();
+Set<User> myMembers = new HashSet<User>();
 Set<Permission> myPerms = new HashSet<Permission>();
 if (uBean.isSet()) {
 	myGroups = uBean.getGroups();
@@ -80,6 +85,7 @@ if (uBean.isSet()) {
 		isGroup = request.getParameter("isGroup").equals("true") ? true : false;
 }
 %>
+<p style="font-style: italic">Note: Users must relogin for changes to take effect</p>
 <br /><br />
 <form id="user" method="POST" action="user_edit.jsp">
 	<input type="hidden" name="action" value="saveUser" />
@@ -131,6 +137,8 @@ if (uBean.isSet()) {
 if (!uBean.isSet()) return;
 // Don't show below data until, we've saved our user
 
+currentUser.setFromDB(pBean.getPermissions().getUserIdString());
+
 ////////////////////////////
 // Begin Permissions
 boolean canGrant = false;
@@ -147,7 +155,6 @@ if (canGrant || myPerms.size() > 0) {
 %>
 <form id="permissions" method="POST" action="user_edit.jsp">
 	<input type="hidden" name="action" value="savePermissions" />
-	<input type="hidden" name="id" value="<%=uBean.userDO.id%>" />
 <table>
 	<tr bgcolor="#003366" class="whiteTitle">
 		<td>Permission</td>
@@ -155,19 +162,20 @@ if (canGrant || myPerms.size() > 0) {
 		<td>Edit</td>
 		<td>Delete</td>
 		<td>Grant</td>
-		<td class="blueSmall"><input type="button" value="Save" onclick="savePermissions()" /></td>
+		<td class="blueSmall"><input type="button" value="Save" class="blueSmall" onclick="savePermissions()" /></td>
 	</tr>
 <%
 for (Permission perm: myPerms) {
 	if (pBean.getPermissions().hasPermission(perm.getAccessType(), OpType.Grant)) {
+		String accessType = perm.getAccessType().toString();
 		%>
 		<tr class="active">
-			<td><%=perm.getAccessType().getDescription()%></td>
-			<td><%=Utilities.getCheckBoxInput("viewFlag", "", perm.isViewFlag())%></td>
-			<td><%=Utilities.getCheckBoxInput("editFlag", "", perm.isEditFlag())%></td>
-			<td><%=Utilities.getCheckBoxInput("deleteFlag", "", perm.isDeleteFlag())%></td>
-			<td><%=Utilities.getCheckBoxInput("grantFlag", "", perm.isGrantFlag())%></td>
-			<td class=""><input type="button" value="Remove" class="blueSmall" onclick="savePermissions()" /></td>
+			<td><%=perm.getAccessType().getDescription()%><input type="hidden" name="accessType" value="<%=accessType %>" /></td>
+			<td><%=Utilities.getCheckBoxInput(accessType+"_viewFlag", "blueSmall", perm.isViewFlag())%></td>
+			<td><%=Utilities.getCheckBoxInput(accessType+"_editFlag", "blueSmall", perm.isEditFlag())%></td>
+			<td><%=Utilities.getCheckBoxInput(accessType+"_deleteFlag", "blueSmall", perm.isDeleteFlag())%></td>
+			<td><%=Utilities.getCheckBoxInput(accessType+"_grantFlag", "blueSmall", perm.isGrantFlag())%></td>
+			<td class=""><input type="button" value="Remove" class="blueSmall" onclick="deletePermission('<%=accessType%>')" /></td>
 		</tr>
 		<%
 	} else {
@@ -189,18 +197,19 @@ if (canGrant) {
 	%>
 	<tr class="active">
 		<td>
-		<%=Utilities.inputSelect2First("accessType", "forms", "", grantPerms, "", "- Choose Permission -")%>
+		<%=Utilities.inputSelect2First("new", "forms", "", grantPerms, "", "- Choose Permission -")%>
 		</td>
-		<td><%=Utilities.getCheckBoxInput("viewFlag", "", true)%></td>
-		<td><%=Utilities.getCheckBoxInput("editFlag", "", false)%></td>
-		<td><%=Utilities.getCheckBoxInput("deleteFlag", "", false)%></td>
-		<td><%=Utilities.getCheckBoxInput("grantFlag", "", false)%></td>
+		<td><%=Utilities.getCheckBoxInput("new_viewFlag", "blueSmall", true)%></td>
+		<td><%=Utilities.getCheckBoxInput("new_editFlag", "blueSmall", false)%></td>
+		<td><%=Utilities.getCheckBoxInput("new_deleteFlag", "blueSmall", false)%></td>
+		<td><%=Utilities.getCheckBoxInput("new_grantFlag", "blueSmall", false)%></td>
 		<td></td>
 	</tr>
 	<%
 }
 %>
 </table>
+</form>
 
 <%
 } // End Permissions
@@ -210,7 +219,12 @@ if (canGrant) {
 <p class="blueMain">Member of Group(s):
 <ul>
 <%
+// = pBean.getPermissions().
+Set<User> allGroups = currentUser.getAccountGroups();
+//allGroups.addAll(currentUser.getGroups());
+
 for (User group: myGroups) {
+	allGroups.remove(group);
 %>
 <li class="blueMain">
 	<a href="#" onclick="showUser(<%=group.userDO.id%>); return false;"><%=group.userDO.name%></a>
@@ -218,9 +232,14 @@ for (User group: myGroups) {
 </li>
 <%
 }
+for (User group: allGroups) {
 %>
-<li><a href="#" onclick="saveGroup('addGroup',10); return false;" style="font-style: italic;">Add to Admins</a></li>
-<li><a href="#" onclick="saveGroup('addGroup',11); return false;" style="font-style: italic;">Add to Auditors</a></li>
+<li class="blueMain">
+	<a href="#" onclick="saveGroup('addGroup',<%=group.userDO.id%>); return false;" style="font-style: italic; color: red;">Add to <%=group.userDO.name%></a>
+</li>
+<%
+}
+%>
 </ul>
 </p>
 
@@ -246,5 +265,13 @@ for (User child: myMembers) {
 </ul>
 </p>
 <%
+}
+if (pBean.getPermissions().hasPermission(OpPerms.EditUsers, OpType.Delete)) {
+	%>
+	<br /><br /><br /><br />
+	<form>
+		<input class="blueSmall" type="button" value="Delete User" onclick="deleteUser()" />
+	</form>
+	<%
 }
 %>

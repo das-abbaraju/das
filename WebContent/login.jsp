@@ -1,5 +1,6 @@
 <%//@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@ page language="java" import="com.picsauditing.PICS.*"%>
+<%@page import="com.picsauditing.access.*"%>
 <jsp:useBean id="loginCtrl" class="com.picsauditing.access.LoginController" scope="page"/>
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page"/>
@@ -35,6 +36,24 @@
 			pBean.setUserType(aBean.type);
 			pBean.setCanSeeSet(aBean.canSeeSet);
 
+			pBean.uBean = new UserBean();
+			if (aBean.userID.equals("")) {
+				pBean.uBean.name = aBean.contact;					
+			} else {
+				// Is a user account
+				pBean.uBean.setFromDB(aBean.userID);
+				pBean.setUserName(pBean.uBean.name);
+				
+				// Start using the new access.User permissions
+				// If the future, this will be replaced by LoginController.login()
+				// Login the current user into the new permissions object
+ 				User user = new User();
+				user.setFromDB(aBean.userID);
+				permissions.login(user);
+			}
+			
+			// We should try and eliminate the use of session attributes
+			// Try and use permissions object or atleast the pBean
 			if (pBean.isAdmin())
 				session.setAttribute("usertype", "admin");
 			else
@@ -57,12 +76,6 @@
 			}
 			
 			if (pBean.isAdmin()) {
-				// Start using the new access.User permissions
-				// If the future, this will be replaced by LoginController.login()
-				com.picsauditing.access.User user = new com.picsauditing.access.User();
-				user.setFromAccountID(aBean.id);
-				permissions.login(user);
-				
 				session.setMaxInactiveInterval(3600);
 				pBean.oBean = new OperatorBean();
 				pBean.oBean.setAsAdmin();
@@ -73,13 +86,21 @@
 				}
 				response.sendRedirect("reports.jsp");				
 				return;
-			}//if
+			}
+			if (pBean.isAuditor()){
+				pBean.setUserAccess(pBean.uBean.id);
+				// moved auditorCanSeeSet to setAuditorPermissions Trevor 1/16/08
+				//pBean.setAuditorCanSeeSet(aBean.auditorCanSeeSet);
+				pBean.setAuditorPermissions();
+				session.setMaxInactiveInterval(3600);
+				response.sendRedirect("contractor_list_auditor.jsp");
+				return;
+			}
+			
 			if (pBean.isContractor()){
-				
 				pBean.setAllFacilitiesFromDB(pBean.userID);
-				pBean.uBean = new UserBean();
-				pBean.uBean.name = aBean.contact;					
-			}//if
+			}
+			
 			if (aBean.isFirstLogin()){
 				cBean.setFromDB(pBean.userID);
 				cBean.accountDate = DateBean.getTodaysDate();
@@ -90,52 +111,34 @@
 			if(aBean.isFirstLoginOfYear(this.getServletContext().getInitParameter("loginStartDate"))){
 				cBean.setFromDB(pBean.userID);
 				cBean.accountDate = DateBean.getTodaysDate();
+				// shouldn't we writeToDB here? TJA 1/30/08
 				response.sendRedirect("con_selectFacilities.jsp?id="+aBean.id);
 				return;
 			}
 			if (aBean.mustSubmitPQF()) {
 				response.sendRedirect("pqf_editMain.jsp?auditType=PQF&mustFinishPrequal=&id="+aBean.id);
 				return;
-			}//if
+			}
 			if (pBean.isContractor()) {
 				response.sendRedirect("contractor_detail.jsp?id=" + aBean.id);
 				return;
-			}//if
-			if (pBean.isOperator() || pBean.isCorporate()){
+			}
+			if (pBean.isOperator() || pBean.isCorporate()) {
 //				pBean.setOperatorPermissions(aBean.id);
 				pBean.oBean = new OperatorBean();
 				pBean.oBean.isCorporate = pBean.isCorporate();
 				pBean.oBean.setFromDB(pBean.userID);
 				if (pBean.isCorporate())
 					pBean.setCanSeeSet(pBean.oBean.getFacilitiesCanSeeSet());
-				if (!aBean.isMainAccount){
-					pBean.isMainAccount = false;
-					pBean.uBean = new UserBean();
-					pBean.uBean.setFromDB(aBean.userID);
-					pBean.setUserAccess(aBean.userID);
-				}else{
-					pBean.uBean = new UserBean();
-					pBean.uBean.name = aBean.contact;					
-				}//else
-				if (pBean.userAccess.hasAccess(com.picsauditing.access.OpPerms.StatusOnly)){
+
+				pBean.uBean.name = aBean.contact;
+				if (pBean.userAccess.hasAccess(OpPerms.StatusOnly)){
 					response.sendRedirect("contractor_list_limited.jsp");
 					return;
-				}//if
+				}
 				response.sendRedirect("contractor_list.jsp");
 				return;
-			}//if
-			if (pBean.isAuditor()){
-				pBean.uBean = new UserBean();
-				pBean.uBean.setFromDB(aBean.userID);
-				pBean.setUserAccess(pBean.uBean.id);
-				
-				// moved auditorCanSeeSet to setAuditorPermissions Trevor 1/16/08
-				//pBean.setAuditorCanSeeSet(aBean.auditorCanSeeSet);
-				pBean.setAuditorPermissions();
-				session.setMaxInactiveInterval(3600);
-				response.sendRedirect("contractor_list_auditor.jsp");
-				return;
-			}//if
+			}
 		} //if
 	}//if
 	String username_email = request.getParameter("uname");

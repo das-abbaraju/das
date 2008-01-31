@@ -3,10 +3,11 @@
 <%@page import="java.util.*"%>
 <%@page import="com.picsauditing.access.*"%>
 <jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session" />
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <jsp:useBean id="pageBean" class="com.picsauditing.PICS.WebPage" scope ="page"/>
-
 <%
-//pBean.getPermissions().tryPermission(OpPerms.EditUsers);
+permissions.loginRequired(response, "users_manage.jsp");
+permissions.tryPermission(OpPerms.EditUsers, OpType.View);
 
 SearchUsers search = new SearchUsers();
 //search.sql.addField("u.username");
@@ -14,11 +15,13 @@ search.sql.addField("u.isGroup");
 String isGroup = request.getParameter("isGroup");
 if (isGroup != null && isGroup.equals("Yes")) {
 	search.sql.addWhere("isGroup = 'Yes' ");
+	search.sql.addWhere("accountID = "+pBean.getPermissions().getAccountId());
 } else {
 	// Default: users only
 	search.sql.addWhere("isGroup = 'No' ");
 	// Only search for Admin and Auditor users
-	search.inGroups("10,11");
+	search.sql.addWhere("accountID = "+pBean.getPermissions().getAccountId());
+	//search.inGroups("10,11");
 }
 // Only search for Auditors and Admins
 search.sql.addOrderBy("u.name");
@@ -55,9 +58,17 @@ function saveUser() {
 	var pars = '&' + $('user').serialize();
 	getPage(pars);
 }
+function deleteUser() {
+	var pars = '&action=deleteUser';
+	getPage(pars);
+}
 
 function savePermissions() {
 	var pars = '&' + $('permissions').serialize();
+	getPage(pars);
+}
+function deletePermission(accessType) {
+	var pars = '&action=deletePermission&accessType=' + accessType;
 	getPage(pars);
 }
 
@@ -70,6 +81,12 @@ function saveGroup(action, groupID, childID) {
 <table border="0">
 <tr valign="top"><td>
 <table border="0" cellpadding="1" cellspacing="1">
+	<tr>
+		<td colspan="2" align="right" class="blueSmall" height="30">
+			<a href="?isGroup=Yes">Groups</a>
+			<a href="?isGroup=No">Users</a>
+		</td>
+	</tr>
 	<tr>
 		<td colspan="2" align="right" class="blueSmall" height="30">
 			<a href="#" onclick="addUser(true); return false;">Add Group</a>
