@@ -11,6 +11,10 @@ public class MenuItem {
 	private OpPerms permission;
 	private OpType permType = OpType.View;
 	
+	public MenuItem(String url, String prompt) {
+		this.url = url;
+		this.prompt = prompt;
+	}
 	public MenuItem(String url, String prompt, OpPerms perm) {
 		this.url = url;
 		this.prompt = prompt;
@@ -26,6 +30,27 @@ public class MenuItem {
 		this.prompt = prompt;
 		this.inGroup = inGroup;
 	}
+	
+	/**
+	 * All specified permissions must be true for this to return true
+	 * If no permission or inGroup is set then it always returns true
+	 * @param permissions
+	 * @return
+	 */
+	public boolean canSee(Permissions permissions) {
+		if (this.permission != null) {
+			if (!permissions.hasPermission(permission, permType)) {
+				return false;
+			}
+		}
+		if (inGroup > 0) {
+			if (!permissions.hasGroup(inGroup)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public String getUrl() {
 		return url;
 	}

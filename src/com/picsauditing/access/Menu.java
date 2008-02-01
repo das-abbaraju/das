@@ -13,16 +13,13 @@ public class Menu {
 	 * @return
 	 */
 	public ArrayList<MenuItem> getValidItems() {
-		ArrayList<MenuItem> temp = new ArrayList<MenuItem>();
-		if (permissions == null) return temp;
+		ArrayList<MenuItem> validItems = new ArrayList<MenuItem>();
+		if (permissions == null) return validItems;
 		
-		for(MenuItem item : items) {
-			if (permissions.hasPermission(item.getPermission(), item.getPermType())
-				|| permissions.hasGroup(item.getInGroup())) {
-				temp.add(item);
-			}
-		}
-		return temp;
+		for(MenuItem item : items)
+			if (item.canSee(permissions))
+				validItems.add(item);
+		return validItems;
 	}
 	////////////////////////
 	// Getters and Setters
@@ -46,11 +43,14 @@ public class Menu {
 		this.subMenus = subMenus;
 	}
 	
-	public boolean addItem(String url, String prompt, OpPerms perm) {
+	private boolean addItem(String url, String prompt, OpPerms perm) {
 		return this.items.add(new MenuItem(url, prompt, perm));
 	}
-	public boolean addItem(String url, String prompt, int inGroup) {
+	private boolean addItem(String url, String prompt, int inGroup) {
 		return this.items.add(new MenuItem(url, prompt, inGroup));
+	}
+	private boolean addItem(String url, String prompt) {
+		return this.items.add(new MenuItem(url, prompt));
 	}
 	
 	public Permissions getPermissions() {
@@ -61,29 +61,25 @@ public class Menu {
 	}
 	
 	public void fillPicsMenu(Permissions perm) {
+		this.items.clear();
 		this.setPermissions(perm);
 
+		// TODO Create admin permissions for each of these reports
 		int adminGroup = 10;
-		int operatorGroup = 14;
 		this.addItem("report_activation.jsp?changed=1", "Activation Report", adminGroup);
 		this.addItem("report_annualUpdate.jsp?changed=1", "Annual Update Report", adminGroup);
 		this.addItem("report_audits.jsp?changed=1", "Audit Dates Report", adminGroup);
 		this.addItem("report_operatorContractor.jsp?changed=1", "Contractor Assignments", adminGroup);
-		this.addItem("report_contactInfo.jsp?changed=1", "Contractor Contact Info", adminGroup);
-		this.addItem("report_contactInfo.jsp?changed=1", "Contractor Contact Info", operatorGroup);
+		this.addItem("report_contactInfo.jsp?changed=1", "Contractor Contact Info");
 		this.addItem("contractorsSearch.jsp", "Contractor Search", OpPerms.SearchContractors);
-		this.addItem("report_operatorContractor.jsp?searchCorporate=Y", "Corporate Contractors Report", operatorGroup);
-		this.addItem("report_EMRRates.jsp?changed=1", "EMR Rates Report", adminGroup);
-		this.addItem("report_EMRRates.jsp?changed=1", "EMR Rates Report", operatorGroup);
-		this.addItem("report_expiredAudits.jsp?changed=1", "Expired Audits Report", adminGroup);
-		this.addItem("report_expiredAudits.jsp?changed=1", "Expired Audits Report", operatorGroup);
+		// I'm not sure if OpPerms.SearchContractors on the next item is correct
+		this.addItem("report_operatorContractor.jsp?searchCorporate=Y", "Corporate Contractors Report", OpPerms.SearchContractors);
+		this.addItem("report_EMRRates.jsp?changed=1", "EMR Rates Report");
+		this.addItem("report_expiredAudits.jsp?changed=1", "Expired Audits Report");
 		this.addItem("report_expiredCertificates.jsp?changed=1", "Expired Insurance Certificates", OpPerms.InsuranceCerts);
-		this.addItem("report_fatalities.jsp?changed=1", "Fatalities Report", adminGroup);
-		this.addItem("report_fatalities.jsp?changed=1", "Fatalities Report", operatorGroup);
-		this.addItem("report_incidenceRates.jsp?changed=1", "Incidence Rates Report", adminGroup);
-		this.addItem("report_incidenceRates.jsp?changed=1", "Incidence Rates Report", operatorGroup);
-		this.addItem("report_incompleteAudits.jsp?incompleteAfter=3&changed=1", "Incomplete Audits Report", adminGroup);
-		this.addItem("report_incompleteAudits.jsp?incompleteAfter=3&changed=1", "Incomplete Audits Report", operatorGroup);
+		this.addItem("report_fatalities.jsp?changed=1", "Fatalities Report");
+		this.addItem("report_incidenceRates.jsp?changed=1", "Incidence Rates Report");
+		this.addItem("report_incompleteAudits.jsp?incompleteAfter=3&changed=1", "Incomplete Audits Report");
 		this.addItem("report_certificates.jsp?changed=1", "Insurance Certificates", OpPerms.InsuranceCerts);
 		this.addItem("report_ncms.jsp", "NCMS Data Report", OpPerms.NCMS );
 		this.addItem("audit_calendar.jsp?changed=1", "Office Audit Calendar", OpPerms.OfficeAuditCalendar);
@@ -92,7 +88,7 @@ public class Menu {
 		this.addItem("report_scheduleAudits.jsp?changed=1&which="+com.picsauditing.PICS.SearchBean.RESCHEDULE_AUDITS, "Reschedule Audits", adminGroup);
 		this.addItem("report_daAudit.jsp", "Schedule Drug &amp; Alcohol Audits", OpPerms.AssignAudits);
 		this.addItem("report_desktop.jsp", "Schedule Desktop Audits", OpPerms.AssignAudits);
-		this.addItem("report_scheduleAudits.jsp?changed=1", "Schedule Office Audits", adminGroup);
+		this.addItem("report_scheduleAudits.jsp?changed=1", "Schedule Office Audits", OpPerms.OfficeAuditCalendar);
 		this.addItem("report_upgradePayment.jsp?changed=1", "Upgrade Payment Report", adminGroup);
 		this.addItem("users_manage.jsp", "Manage Users", OpPerms.EditUsers);
 		this.addItem("faces/administration/index.xhtml", "Administration Dashboard", adminGroup);
