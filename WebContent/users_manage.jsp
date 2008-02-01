@@ -6,7 +6,7 @@
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <jsp:useBean id="pageBean" class="com.picsauditing.PICS.WebPage" scope ="page"/>
 <%
-permissions.loginRequired(response, "users_manage.jsp");
+if (!permissions.loginRequired(response, request)) return;
 permissions.tryPermission(OpPerms.EditUsers, OpType.View);
 
 SearchUsers search = new SearchUsers();

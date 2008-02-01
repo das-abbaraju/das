@@ -1,11 +1,24 @@
-<%//@ page language="java" errorPage="exception_handler.jsp"%>
-<%@ page language="java"%>
-<%@ include file="utilities/contractor_list_auditor_secure.jsp" %>
+<%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@page import="com.picsauditing.access.*"%>
+<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope ="session"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="session"/>
 <jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope ="application"/>
 
-<%	try{
+<%
+permissions.loginRequired(response, request);
+if (!pBean.isAuditor()) {
+	throw new NoRightsException("PICS Auditor");
+}
+
+//String Gutype = (String)session.getAttribute("usertype");
+//String Guid = (String)session.getAttribute("userid");
+//String 	req_uid = request.getParameter("id");
+String Gutype = permissions.getAccountType();
+String Guid = permissions.getUserIdString();
+
+try{
 	tBean.setFromDB();
 	sBean.orderBy = request.getParameter("orderBy");
 	if (null==sBean.orderBy)
@@ -51,7 +64,6 @@
                       <td><input name="name" type="text" class="forms" value="<%=sBean.selected_name%>" size="20" onFocus="clearText(this)"></td>
                       <td><%=com.picsauditing.PICS.Inputs.inputSelectFirst("auditType","forms",sBean.selected_auditType,com.picsauditing.PICS.pqf.Constants.AUDIT_TYPE_ARRAY,com.picsauditing.PICS.pqf.Constants.DEFAULT_AUDIT)%></td>
                       <td><input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"></td>
-                      <td>&nbsp;&nbsp;<a href="verify_insurance.jsp?id=<%=pBean.userID%>" class="blueMain">Verify Insurance</a></td>
                     </tr>
                   </table>
                 </form>

@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.*;
 
 public class Auditors extends DataBean{
+	static public int groupID = 11;
 	ArrayList<String> auditorsAL = null;
 	
 	public void resetAuditorsAL() throws Exception{
@@ -16,7 +17,10 @@ public class Auditors extends DataBean{
 		auditorsAL = new ArrayList<String>();
 		// USERMOVE
 		//String selectQuery = "SELECT id, name FROM accounts WHERE type = 'Auditor' AND active = 'Y' ORDER BY name ASC";
-		String selectQuery = "SELECT id, name FROM users WHERE isGroup = 'No' AND isActive = 'Yes' AND id IN (SELECT userID FROM usergroup WHERE groupID = '11') ORDER BY name ASC";
+		String selectQuery = "SELECT id, name FROM users " +
+				"WHERE isGroup = 'No' AND isActive = 'Yes' " +
+				" AND id IN (SELECT userID FROM usergroup WHERE groupID = '"+groupID+"') " +
+				"ORDER BY name ASC";
 		try{
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);

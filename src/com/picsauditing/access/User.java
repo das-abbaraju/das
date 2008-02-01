@@ -276,22 +276,7 @@ public class User extends DataBean implements Comparable<User> {
 			for(User group : groups){
 				tempPerms = group.getPermissions();	
 				for(Permission perm : tempPerms){
-					if (permissions.contains(perm)) {
-						// Optimistic Granting
-						// if the user has two groups with the same perm type, 
-						// and one grants but the other revokes, then the users WILL be granted the right
-						for(Permission origPerm : permissions) {
-							if (origPerm.equals(perm)) {
-								if (perm.isViewFlag()) origPerm.setViewFlag(true);
-								if (perm.isEditFlag()) origPerm.setEditFlag(true);
-								if (perm.isDeleteFlag()) origPerm.setDeleteFlag(true);
-								if (perm.isGrantFlag()) origPerm.setGrantFlag(true);
-							}
-						}
-					} else {
-						// add the parent group's permissions to the user's permissions
-						permissions.add(perm);
-					}
+					this.add(permissions, perm);
 				}
 			}
 		} finally {
@@ -308,13 +293,33 @@ public class User extends DataBean implements Comparable<User> {
 			while(SQLResult.next()){
 				Permission perm = new Permission();
 				perm.setFromResultSet(SQLResult);
-				permissions.add(perm);
+				this.add(permissions, perm);
 			}
 		}finally{
 			SQLResult.close();
 			DBClose();
 		}//finally
 		return permissions;
+	}
+	
+	private void add(Set<Permission> permissions, Permission perm) {
+		if (!permissions.contains(perm)) {
+			// add the parent group's permissions to the user's permissions
+			permissions.add(perm);
+			return;
+		}
+		
+		// Optimistic Granting
+		// if the user has two groups with the same perm type, 
+		// and one grants but the other revokes, then the users WILL be granted the right
+		for(Permission origPerm : permissions) {
+			if (origPerm.equals(perm)) {
+				if (perm.isViewFlag()) origPerm.setViewFlag(true);
+				if (perm.isEditFlag()) origPerm.setEditFlag(true);
+				if (perm.isDeleteFlag()) origPerm.setDeleteFlag(true);
+				if (perm.isGrantFlag()) origPerm.setGrantFlag(true);
+			}
+		}
 	}
 	
 	/**

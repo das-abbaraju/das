@@ -327,14 +327,10 @@ public class CertificateBean extends DataBean {
 		}//catch
 	}//setList
 	
-	public void setListByAuditor(String auditor_id) throws Exception {
-		//StringBuffer buf = new StringBuffer("select certificates.*, accounts.name, accounts.id FROM certificates, accounts LEFT JOIN operators on (accounts.id=operators.id) where accounts.id=");
-		//buf.append(auditor_id + ";");
+	public void setList() throws Exception {
 		StringBuffer buf = new StringBuffer("select certificates.*, accounts.name, operators.insuranceAuditor_id from certificates ");
 		buf.append("LEFT JOIN accounts on certificates.contractor_id=accounts.id ");
-		buf.append("LEFT JOIN operators on operators.id=certificates.operator_id where operators.insuranceAuditor_id=");
-		buf.append(auditor_id);		
-		buf.append(" AND verified='No'");
+		buf.append("LEFT JOIN operators on operators.id=certificates.operator_id where verified='No'");
 		
 		if ((contractor_name == null) || (contractor_name.equals(DEFAULT_NAME)) || (contractor_name.length()<MIN_NAME_SEARCH_LENGTH))
 			contractor_name = DEFAULT_NAME;

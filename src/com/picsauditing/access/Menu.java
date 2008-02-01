@@ -81,6 +81,7 @@ public class Menu {
 		this.addItem("report_incidenceRates.jsp?changed=1", "Incidence Rates Report");
 		this.addItem("report_incompleteAudits.jsp?incompleteAfter=3&changed=1", "Incomplete Audits Report");
 		this.addItem("report_certificates.jsp?changed=1", "Insurance Certificates", OpPerms.InsuranceCerts);
+		this.addItem("verify_insurance.jsp", "Insurance Verification", OpPerms.InsuranceVerification);
 		this.addItem("report_ncms.jsp", "NCMS Data Report", OpPerms.NCMS );
 		this.addItem("audit_calendar.jsp?changed=1", "Office Audit Calendar", OpPerms.OfficeAuditCalendar);
 		this.addItem("report_payment.jsp?changed=1", "Payment Report", adminGroup);

@@ -1,33 +1,33 @@
 <%//@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ page language="java" import="java.util.*, com.picsauditing.domain.CertificateDO, com.picsauditing.PICS.Inputs"%>
-<%@ include file="utilities/contractor_list_auditor_secure.jsp" %>
+<%@page import="com.picsauditing.access.*"%>
 <jsp:useBean id="cerBean" class="com.picsauditing.PICS.CertificateBean" scope="page" />
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page" />
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope="session" />
 <jsp:useBean id="certDO" class="com.picsauditing.domain.CertificateDO"
 	scope="page" />
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page" />
+<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session" />
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
+<jsp:useBean id="pageBean" class="com.picsauditing.PICS.WebPage" scope ="page"/>
+<%
+if (!permissions.loginRequired(response, request)) return;
+permissions.tryPermission(OpPerms.InsuranceVerification, OpType.View);
 
-<%try{
+try{
 	cerBean.contractor_name = request.getParameter("name");
 	
-	String id = request.getParameter("id");
-	if(id == null)
-		id = pBean.userID;
-
 	if (null != request.getParameter("Submit")){
 		List<CertificateDO> list = cerBean.setCertificatesFromVerifiedList(request);
 		cerBean.UpdateVerifiedCertificates(list);			
 		
 		list = cerBean.setCertificatesFromEditList(request);
 		cerBean.UpdateEditedCertificates(list);
-	}	
+	}
 	
-	//cerBean.setListByAuditor(id);
 	// I'm not sure why we would want to pass this id in here
-	cerBean.setListByAuditor(pBean.uBean.id);
+	cerBean.setList();
 	sBean.pageResults(cerBean.getListRS(), 20, request);
-	
 %>
 <html>
 
