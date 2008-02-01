@@ -165,21 +165,35 @@ public class PermissionsBean extends DataBean {
 		return false;
 	}//canEditPage
 
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	public boolean isAdmin() {
+		if (this.permissions != null)
+			return this.permissions.hasGroup(this.GROUP_ADMIN);
 		return ADMIN_TYPE.equals(userType);
-	}//isAdmin
+	}
+	/**
+	 * @deprecated
+	 * @return
+	 */
+	public boolean isAuditor() {
+		if (this.permissions != null) {
+			if (this.permissions.hasGroup(this.GROUP_ADMIN)) return false;
+			return this.permissions.hasGroup(this.GROUP_AUDITOR);
+		}
+		return AUDITOR_TYPE.equals(userType);
+	}
 	public boolean isContractor() {
 		return CONTRACTOR_TYPE.equals(userType);
-	}//isContractor
+	}
 	public boolean isOperator() {
 		return OPERATOR_TYPE.equals(userType);
-	}//isOperator
+	}
 	public boolean isCorporate() {
 		return CORPORATE_TYPE.equals(userType);
-	}//isCorporate
-	public boolean isAuditor() {
-		return AUDITOR_TYPE.equals(userType);
-	}//isAuditor
+	}
 
 	public boolean canSeeAuditCategory(String catID, String conID) {
 		if (isAdmin())

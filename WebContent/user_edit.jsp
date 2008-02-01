@@ -106,7 +106,7 @@ if (uBean.isSet()) {
 	</tr>
 	<tr>
 		<td class="blueMain" align="right"><%= (isGroup?"Group":"User") %> name</td>
-		<td> <input name="name" type="text" class="forms" size="20" value="<%=uBean.userDO.name%>"></td>
+		<td> <input name="name" type="text" class="forms" size="30" value="<%=uBean.userDO.name%>"></td>
 	</tr>
 	<% if (!isGroup) { %>
 	<tr> 
