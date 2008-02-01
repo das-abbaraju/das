@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This is the main class that is stored for each user containing information 
@@ -134,6 +135,10 @@ public class Permissions {
 	public boolean loginRequired(javax.servlet.http.HttpServletResponse response) throws IOException {
 		// TODO get the current URL
 		return this.loginRequired(response, "");
+	}
+	public boolean loginRequired(javax.servlet.http.HttpServletResponse response, HttpServletRequest request) throws IOException {
+		String url = request.getRequestURI();
+		return this.loginRequired(response, url);
 	}
 	
 	public boolean hasGroup(Integer group){

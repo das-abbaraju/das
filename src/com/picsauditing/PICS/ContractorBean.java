@@ -117,7 +117,8 @@ public class ContractorBean extends DataBean {
 	public String daAssignedDate = "";
 	public String daSubmittedDate = "";
 	public String daClosedDate = "";
-
+	public String daRequired = "";
+	
 	public String assignedDate = "";
 	public String auditDate = "";
 	public String lastAuditDate = "";
@@ -367,7 +368,7 @@ public class ContractorBean extends DataBean {
 			else
 				if (!AUDIT_STATUS_CLOSED.equals(calcDesktopStatus()))
 					return STATUS_INACTIVE;
-		if (oBean.canSeeDA()&& !AUDIT_STATUS_CLOSED.equals(calcDaStatus()))
+		if (oBean.canSeeDA() && !AUDIT_STATUS_CLOSED.equals(calcDaStatus()))
 				return STATUS_INACTIVE;
 		if (oBean.canSeeOffice() && !AUDIT_STATUS_CLOSED.equals(officeStatus))
 			return STATUS_INACTIVE;
@@ -406,7 +407,16 @@ public class ContractorBean extends DataBean {
 		return false;
 	}//isDesktopRequired
 
+	/**
+	 * If any of this contractor's facilities canSeeDA and 
+	 * the contractor daRequired isn't set to No then return true
+	 * @return
+	 * @throws Exception
+	 */
 	public boolean isDARequired() throws Exception {
+		if (this.daRequired.equals("No"))
+			return false;
+		
 		setFacilitiesFromDB();
 		if (0==facilitiesCount)
 			return false;
@@ -520,6 +530,9 @@ public class ContractorBean extends DataBean {
 	}//calcDesktopStatus
 
 	public String calcDaStatus() throws Exception {
+		if ("No".equals(this.daRequired))
+			// The audit isn't required so assume it's closed
+			return AUDIT_STATUS_CLOSED;
 		if (isExempt())
 			return AUDIT_STATUS_EXEMPT;
 		if (!isDaSubmitted())
@@ -705,6 +718,8 @@ public class ContractorBean extends DataBean {
 	}//getDesktopLink
 
 	public String getDaLink(PermissionsBean pBean) throws Exception {
+		if ("No".equals(this.daRequired))
+			return "Not Required";
 		if ((pBean.isOperator() || pBean.isCorporate()) && !pBean.oBean.canSeeDA())
 			return "Contact PICS";
 		if (isExempt())
@@ -874,6 +889,7 @@ public class ContractorBean extends DataBean {
 		daAssignedDate = DateBean.toShowFormat(SQLResult.getString("daAssignedDate"));
 		daSubmittedDate = DateBean.toShowFormat(SQLResult.getString("daSubmittedDate"));
 		daClosedDate = DateBean.toShowFormat(SQLResult.getString("daClosedDate"));
+		daRequired = SQLResult.getString("daRequired");
 
 		assignedDate =  DateBean.toShowFormat(SQLResult.getString("assignedDate"));
 		auditDate = DateBean.toShowFormat(SQLResult.getString("auditDate"));
@@ -918,7 +934,7 @@ public class ContractorBean extends DataBean {
 		if ("".equals(auditLocation))
 			auditLocation= "On Site";	
 		String updateQuery = "UPDATE contractor_info SET "+
-			"taxID='"+Utilities.escapeQuotes(taxID)+
+			"taxID='"+eqDB(taxID)+
 			"',main_trade='"+main_trade+
 			"',trades='"+ trades+
 			"',subTrades='"+subTrades+ 
@@ -964,6 +980,7 @@ public class ContractorBean extends DataBean {
 			"',daAssignedDate='"+DateBean.toDBFormat(daAssignedDate)+
 			"',daSubmittedDate='"+DateBean.toDBFormat(daSubmittedDate)+
 			"',daClosedDate='"+DateBean.toDBFormat(daClosedDate)+
+			"',daRequired='"+eqDB(daRequired)+
 
 			"',assignedDate='"+DateBean.toDBFormat(assignedDate)+
 			"',auditDate='"+DateBean.toDBFormat(auditDate)+
@@ -986,21 +1003,21 @@ public class ContractorBean extends DataBean {
 			"',lastInvoiceDate='"+DateBean.toDBFormat(lastInvoiceDate)+
 			"',lastAnnualUpdateEmailDate='"+DateBean.toDBFormat(lastAnnualUpdateEmailDate)+
 //second contact
-			"',secondContact='"+Utilities.escapeQuotes(secondContact)+
-			"',secondPhone='"+Utilities.escapeQuotes(secondPhone)+
-			"',secondEmail='"+Utilities.escapeQuotes(secondEmail)+
+			"',secondContact='"+eqDB(secondContact)+
+			"',secondPhone='"+eqDB(secondPhone)+
+			"',secondEmail='"+eqDB(secondEmail)+
 //billing contact
-			"',billingContact='"+Utilities.escapeQuotes(billingContact)+
-			"',billingPhone='"+Utilities.escapeQuotes(billingPhone)+
+			"',billingContact='"+eqDB(billingContact)+
+			"',billingPhone='"+eqDB(billingPhone)+
 			"',riskLevel="+riskLevel+
 			",annualUpdateEmails="+annualUpdateEmails+
-			",billingEmail='"+Utilities.escapeQuotes(billingEmail);
+			",billingEmail='"+eqDB(billingEmail);
 		if (isDescriptionChanged)
-			updateQuery+="',description='"+Utilities.escapeQuotes(description);
+			updateQuery+="',description='"+eqDB(description);
 		if (isNotesChanged)
-			updateQuery+="',notes='"+Utilities.escapeQuotes(notes);
+			updateQuery+="',notes='"+eqDB(notes);
 		if (isAdminNotesChanged)
-			updateQuery+="',adminNotes='"+Utilities.escapeQuotes(adminNotes);
+			updateQuery+="',adminNotes='"+eqDB(adminNotes);
 		updateQuery+="' WHERE id="+id+";";
 		try {
 			DBReady();

@@ -3,32 +3,41 @@
 <%@page import="java.util.*"%>
 <%@page import="com.picsauditing.access.*"%>
 <jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session" />
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope ="application"/>
 <jsp:useBean id="pageBean" class="com.picsauditing.PICS.WebPage" scope ="page"/>
 <%
-pBean.getPermissions().tryPermission(OpPerms.AssignAudits);
-boolean canEdit = pBean.getPermissions().hasPermission(OpPerms.AssignAudits, OpType.Edit);
+permissions.loginRequired(response, request);
+permissions.tryPermission(OpPerms.AssignAudits);
+boolean canEdit = permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit);
 
 pageBean.setTitle("Schedule Drug &amp; Alcohol Audits");
 pageBean.includeScriptaculous(true);
 
 String action = request.getParameter("action");
-if (action != null && action.equals("saveAuditor")) {
-	if (!canEdit) {
-		%>no permission<%
-		return;
+if (action != null) {
+	String outputText = "<span=\"color: red\">no permission</span>";
+	if (canEdit) {
+		String conID = request.getParameter("conID");
+		ContractorBean cBean = new ContractorBean();
+		cBean.setFromDB(conID);
+		if (action.equals("saveAuditor")) {
+			String auditorID = request.getParameter("auditorID");
+			cBean.daAuditor_id = auditorID;
+			cBean.daAssignedDate = DateBean.getTodaysDate();
+			if (auditorID.equals("0")) cBean.daAssignedDate = "";
+			outputText = "<b>" + cBean.daAssignedDate + "</b>";
+		}
+		if (action.equals("notRequired")) {
+			cBean.daRequired = "No";
+			outputText = "<i>not required</i>";
+		}
+		cBean.writeToDB();
 	}
-	String auditorID = request.getParameter("auditorID");
-	String conID = request.getParameter("conID");
-	ContractorBean cBean = new ContractorBean();
-	cBean.setFromDB(conID);
-	cBean.daAuditor_id = auditorID;
-	cBean.daAssignedDate = DateBean.getTodaysDate();
-	if (auditorID.equals("0")) cBean.daAssignedDate = "";
-	cBean.writeToDB();
-	%><%=cBean.daAssignedDate%><%
+	%><%=outputText%><%
 	return;
 }
+
 SearchAccounts search = new SearchAccounts();
 
 String orderBy = request.getParameter("orderBy");
@@ -46,8 +55,8 @@ search.sql.addField("c.daAssignedDate");
 search.sql.addField("c.daSubmittedDate");
 search.sql.addField("c.daClosedDate");
 
-search.addPQFQuestion(894); //q318.answer
-search.sql.addWhere("q894.answer = 'Yes'");
+search.addPQFQuestion(894, false, "requiredAnswer"); //q318.answer
+search.sql.addWhere("q894.answer = 'Yes' OR c.daRequired IS NULL OR c.daRequired = 'Yes'");
 search.sql.addWhere("c.daSubmittedDate = '0000-00-00'");
 String showPage = request.getParameter("showPage");
 if (showPage != null) {
@@ -69,6 +78,14 @@ function selectAuditor(conID) {
 	var myAjax = new Ajax.Updater(divName, 'report_daAudit.jsp', {method: 'post', parameters: pars});
 	new Effect.Highlight($('auditor_tr'+conID), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 }
+function notRequired(conID) {
+	pars = 'action=notRequired&conID='+conID;
+	
+	var divName = 'auditor_td'+conID;
+	$(divName).innerHTML = '<img src="images/ajax_process.gif" />';
+	var myAjax = new Ajax.Updater(divName, 'report_daAudit.jsp', {method: 'post', parameters: pars});
+	new Effect.Highlight($('auditor_tr'+conID), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+}
 </script>
 <style>
 .auditselect {
@@ -80,7 +97,8 @@ function selectAuditor(conID) {
   <tr>
     <td height="70" colspan="2" align="center" class="buttons"> 
       <%@ include file="includes/selectReport.jsp"%>
-      <span class="blueHeader">Schedule Drug and Alcohol Audits</span>
+      <span class="blueHeader">Schedule Drug and Alcohol Audits</span><br>
+      <a href="report_daAudit.jsp" class="blueMain">Refresh</span>
     </td>
   </tr>
 </table>
@@ -92,6 +110,8 @@ function selectAuditor(conID) {
  			    <td align="center"><a href="?orderBy=daClosedDate DESC" class="whiteTitle">Closed</a></td>
  			    <td align="center"><a href="?orderBy=daAuditor_id DESC,name" class="whiteTitle">Auditor</a></td>
  			    <td align="center"><a href="?orderBy=daAssignedDate DESC" class="whiteTitle">Assigned</a></td>
+ 			    <td align="center"><a href="?orderBy=requiredAnswer, name" class="whiteTitle" title="Does your company have employees who are covered under DOT OQ requirements?">Rqd</a></td>
+ 			    <td align="center">Not Required</td>
 	</tr>
 <%
 int counter = 0;
@@ -109,6 +129,12 @@ for(BasicDynaBean row: searchData) {
 			    	</form>
 			    </td>
 			    <td id="auditor_td<%=row.get("id")%>"><%=DateBean.toShowFormat(row.get("daAssignedDate"))%></td>
+			    <td><%=row.get("requiredAnswer")%></td>
+			    <td>
+			    	<form class="auditselect" id="">
+			    		<input type="button" class="blueMain" value="Not Required" onclick="notRequired(<%=row.get("id")%>)" name="required_button<%=row.get("id")%>" />
+			    	</form>
+			    </td>
 	</tr>
 <%
 }

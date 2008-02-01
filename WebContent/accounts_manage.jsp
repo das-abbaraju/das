@@ -83,7 +83,6 @@
                     <option value="Contractor" <%="Contractor".equals(sBean.searchType)?"selected":""%>>Contractors</option>
                     <option value="Corporate" <%="Corporate".equals(sBean.searchType)?"selected":""%>>Corporate</option>
                     <option value="Operator" <%="Operator".equals(sBean.searchType)?"selected":""%>>Operators</option>
-                    <option value="Auditor" <%="Auditor".equals(sBean.searchType)?"selected":""%>>Auditors</option>
                   </select>
                 <input name="name" type="text" class="forms" value="<%=sBean.selected_name%>" size="8" onFocus="clearText(this)">
 			    <%=sBean.getSearchIndustrySelect("industry","forms",sBean.selected_industry)%>

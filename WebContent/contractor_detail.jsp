@@ -134,7 +134,7 @@ function MM_displayStatusMsg(msgStr) { //v1.0
 	}//if
 	if (!pBean.isContractor() || cBean.isDARequired()) {
 %>
-                         <nobr><span class=redMain>D&A Audit:</span> <%=cBean.getDaLink(pBean)%></nobr><br>
+                         <nobr><span class=redMain>D&amp;A Audit:</span> <%=cBean.getDaLink(pBean)%></nobr><br>
 <%
 	}//if
 	if (!pBean.isContractor() || cBean.isOfficeRequired()) {

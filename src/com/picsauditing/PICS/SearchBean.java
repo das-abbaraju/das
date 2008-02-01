@@ -881,9 +881,12 @@ public class SearchBean {
 		if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType) && cBean.isPQFSubmitted())
 			return "<a href=/pqf_view.jsp?id="+aBean.id+"&auditType="+auditType+
 				"><img src=images/icon_"+auditType+".gif width=20 height=20 border=0></a>";
-		if (com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(auditType) && cBean.isDaSubmitted())
-			return "<a href=/pqf_view.jsp?id="+aBean.id+"&auditType="+auditType+
-			"><img src=images/icon_"+auditType+".gif width=20 height=20 border=0></a>";
+		if (com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(auditType)) {
+			if ("No".equals(cBean.daRequired)) return "N/A";
+			if (cBean.isDaSubmitted())
+				return "<a href=/pqf_view.jsp?id="+aBean.id+"&auditType="+auditType+
+				"><img src=images/icon_"+auditType+".gif width=20 height=20 border=0></a>";
+		}
 		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType) && cBean.isDesktopStatusOldAuditStatus())
 			return getListLink(com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE);
 		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType) && cBean.isDesktopSubmitted())
@@ -904,8 +907,10 @@ public class SearchBean {
 		String percent = "";
 		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType))
 			percent = cBean.desktopVerifiedPercent;
-		if (com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(auditType))
-			percent = cBean.daVerifiedPercent;
+		if (com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(auditType)) {
+			if ("No".equals(cBean.daRequired)) return "N/A";
+			else percent = cBean.daVerifiedPercent;
+		}
 		else if (com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(auditType))
 			percent = cBean.officeVerifiedPercent;
 		else if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType)){

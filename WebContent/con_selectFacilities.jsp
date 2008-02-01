@@ -144,13 +144,12 @@
 <%	}//if%>
 					  </tr>
 <%	count = 0;
-	for (java.util.ListIterator li = operators.listIterator();li.hasNext();) {
-		String opID = (String)li.next();
-		String name = (String)li.next();
+	for (java.util.ListIterator<String> li = operators.listIterator();li.hasNext();) {
+		String opID = li.next();
+		String name = li.next();
 		String status = "";
 		if (pBean.isCorporate() && !pBean.oBean.facilitiesAL.contains(opID)){%>
                        <input type=hidden name=genID_<%=opID%> value=Yes>
-<%//		}else if(!(pBean.isOperator() && !pBean.oBean.facilitiesAL.contains(opID))){%>
 <%		}else{%>
 					  <tr class=blueMain <%=Utilities.getBGColor(count++)%>>
 					    <td><%=name%></td>
