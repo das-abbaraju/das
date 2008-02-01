@@ -231,7 +231,6 @@ for (User group: myGroups) {
 	<a href="#" onclick="showUser(<%=group.userDO.id%>); return false;"><%=group.userDO.name%></a>
 	(<a href="#" onclick="saveGroup('removeGroup', <%=group.userDO.id%>); return false;">remove</a>)
 </li>
-<li>
 <%
 }
 for (User group: allGroups) {
