@@ -12,6 +12,18 @@
 				&login;
 				<clickLink description="Edit User Accounts"
 					label="Edit User Accounts" />
+				<ifStep>
+					<condition>
+						<storeRegEx 
+						      description="Find existing user"
+						      text="(?si:&lt;td&gt;PICS Temp Test User.+delete_([0-9]+))"
+						      group="1"
+						      property="newuser.id" />
+					</condition>
+					<clickButton description="Delete the User"
+						htmlId="delete_#{newuser.id}" />
+				</ifStep>
+
 				<clickLink description="Add New User"
 					label="Add New User" />
 				

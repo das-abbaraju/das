@@ -11,7 +11,7 @@
 		<ant antfile="operator_users.xml"/>
 		<ant antfile="contractor_registration.xml"/>
 		<ant antfile="contractor.xml"/>
-		<ant antfile="admin.xml"/>
 		<ant antfile="auditor.xml"/>
+		<ant antfile="admin.xml"/>
 	</target>
 </project>
