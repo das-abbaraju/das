@@ -419,6 +419,7 @@ public class User extends DataBean implements Comparable<User> {
 	 * @throws Exception
 	 */
 	public void addToGroup(String groupID, Permissions byUser) throws Exception {
+		if (this.userDO.id.equals(groupID)) return;
 		String sql = "INSERT IGNORE INTO usergroup (userID, groupID, creationDate, createdBy)" +
 				"VALUES (" + userDO.id + ", " + groupID +
 				", NOW()," + byUser.getUserId() + ")";

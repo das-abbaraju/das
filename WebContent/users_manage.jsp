@@ -39,7 +39,7 @@ var currentUser = 0;
 
 function getPage(pars) {
 	pars = 'userID='+currentUser+pars;
-	$('editUser').innerHTML = '<img src="images/ajax_process.gif" />';
+	$('ajaxstatus').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
 	var myAjax = new Ajax.Updater('editUser', 'user_edit.jsp', {method: 'post', parameters: pars});
 }
 
@@ -117,6 +117,7 @@ function saveGroup(action, groupID, childID) {
 	</table>
 </td>
 <td id="editUser" width="400" class="blueMain">
+	<div id="ajaxstatus" style="height: 30px;"></div>
 </td>
 </tr>
 </table>

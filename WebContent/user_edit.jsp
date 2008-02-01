@@ -88,7 +88,7 @@ if (uBean.isSet()) {
 }
 %>
 <p style="font-style: italic">Note: Users must relogin for changes to take effect</p>
-<br /><br />
+	<div id="ajaxstatus" style="height: 30px;"></div>
 <form id="user" method="POST" action="user_edit.jsp">
 	<input type="hidden" name="action" value="saveUser" />
 	<input type="hidden" name="id" value="<%=uBean.userDO.id%>" />
@@ -221,9 +221,8 @@ if (canGrant) {
 <form id="addGroup">
 <ul>
 <%
-// = permissions.
 Set<User> allGroups = currentUser.getAccountGroups();
-//allGroups.addAll(currentUser.getGroups());
+allGroups.remove(uBean); // You can't add yourself to your own group
 
 for (User group: myGroups) {
 	allGroups.remove(group);
