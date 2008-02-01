@@ -293,7 +293,8 @@ public class User extends DataBean implements Comparable<User> {
 			while(SQLResult.next()){
 				Permission perm = new Permission();
 				perm.setFromResultSet(SQLResult);
-				this.add(permissions, perm);
+				if (perm.getAccessType() != null)
+					this.add(permissions, perm);
 			}
 		}finally{
 			SQLResult.close();
