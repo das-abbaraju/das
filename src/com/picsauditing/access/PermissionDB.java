@@ -1,8 +1,5 @@
 package com.picsauditing.access;
 
-import java.io.PrintWriter;
-import java.util.Enumeration;
-
 import javax.servlet.http.HttpServletRequest;
 
 public class PermissionDB extends com.picsauditing.PICS.DataBean {

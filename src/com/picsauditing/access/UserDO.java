@@ -17,6 +17,7 @@ public class UserDO {
 	public String accountID = "";
 	public String isGroup = "No";
 	public String accountType = "";
+	public String accountName = "";
 	
 	public void setFromRequest(javax.servlet.http.HttpServletRequest request) throws Exception {
 		try {
@@ -46,6 +47,7 @@ public class UserDO {
 		lastLogin = "";
 		accountID = "";
 		accountType = "";
+		accountName = "";
 	}
 
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
@@ -65,7 +67,8 @@ public class UserDO {
 			throw ex;
 		} finally {
 			try{
-				accountType = SQLResult.getString("type");
+				accountName = SQLResult.getString("account_name");
+				accountType = SQLResult.getString("account_type");
 			} catch (SQLException e) {
 				
 			}
@@ -75,9 +78,9 @@ public class UserDO {
 	public String toString(){
 		return "name="+name+","+
 			"username="+username+","+
-			"password="+password+","+
+			"username="+username+","+
 			"isActive="+isActive+","+
-			"accountID="+accountID+","+
+			"account="+accountName+","+
 			"email="+email;
 	}//toString
 }//UserBean

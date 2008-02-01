@@ -6,14 +6,14 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import com.picsauditing.PICS.*;
 
-public class User extends DataBean {
-	private static final int PASSWORD_DURATION = 365; // days between required password update
-	private static final int MIN_PASSWORD_LENGTH = 5; // minimum required length of a passord
+public class User extends DataBean implements Comparable<User> {
+	//private static final int PASSWORD_DURATION = 365; // days between required password update
+	private static final int MIN_PASSWORD_LENGTH = 5; // minimum required length of a password
 	
 	public UserDO userDO = new UserDO();
 	String oldUsername = "";
 	private Set<Permission> permissions;
-	private Set<User> groups = new HashSet<User>();
+	private Set<User> groups = new TreeSet<User>();
 	
 	public int hashCode() {
 		return 100 + Integer.parseInt(userDO.id);
@@ -34,7 +34,9 @@ public class User extends DataBean {
 		int temp = Integer.parseInt(uID);
 		if (temp < 1) return;
 		
-		String query = "SELECT * FROM users WHERE id = "+temp;
+		String query = "SELECT users.*, a.name account_name, a.type account_type " +
+				"FROM users LEFT JOIN accounts a ON users.accountID = a.id " +
+				"WHERE users.id = "+temp;
 		selectFromDB(query);
 	}//setFromDB
 	
@@ -51,9 +53,9 @@ public class User extends DataBean {
 	
 	public boolean usernameExists(String u_name) throws Exception {
 		boolean temp = false;
-		String selectQuery = "SELECT id FROM accounts WHERE username='"+Utilities.escapeQuotes(u_name)+"';";
 		try {
 			DBReady();
+			String selectQuery = "SELECT id FROM accounts WHERE username='"+Utilities.escapeQuotes(u_name)+"';";
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
 			if (SQLResult.next())
 				temp = true;
@@ -67,14 +69,6 @@ public class User extends DataBean {
 			DBClose();
 		}//finally
 		return temp;
-		/*
-		String query = "SELECT u.*, a.type FROM users u LEFT JOIN accounts a ON u.accountID = a.id WHERE u.username='"+Utilities.escapeQuotes(u_name)+"'";
-		selectFromDB(query);
-		if (userDO.id.length() > 0) this.isSet = true;
-		
-		return this.isSet;
-	*/
-	
 	}//usernameExists
 	
 	private void selectFromDB(String selectQuery) throws Exception{		
@@ -121,6 +115,8 @@ public class User extends DataBean {
 			sql.append(", password='").append(Utilities.escapeQuotes(userDO.password)).append("'");
 			sql.append(", email='").append(Utilities.escapeQuotes(userDO.email)).append("'");
 		} else {
+			// Every user/group must have a username, so just make one up
+			// We may need to try harder to make this unique like add in the accountID as well
 			sql.append(", username='GROUP").append(Utilities.escapeQuotes(userDO.name)).append("'");
 		}
 		
@@ -243,7 +239,7 @@ public class User extends DataBean {
 		}finally{
 			DBClose();
 		}
-	}	
+	}
 
 	public boolean isOK() throws Exception {
 		errorMessages = new Vector<String>();
@@ -272,7 +268,7 @@ public class User extends DataBean {
 			return permissions;
 		
 		// Our permissions are empty, so go get some
-		permissions = new HashSet<Permission>();
+		permissions = new TreeSet<Permission>();
 		
 		try{
 			Set<Permission> tempPerms ;
@@ -327,7 +323,7 @@ public class User extends DataBean {
 	 * @throws Exception
 	 */
 	public Set<Permission> getOwnedPermissions() throws Exception {
-		Set<Permission> ownPermissions = new HashSet<Permission>();
+		Set<Permission> ownPermissions = new TreeSet<Permission>();
 		
 		// READ the permissions assigned directly to this THIS user/group
 		ResultSet SQLResult = null;
@@ -395,10 +391,13 @@ public class User extends DataBean {
 	}
 
 	public Set<User> getMembers() throws Exception {
-		Set<User> members = new HashSet<User>();
+		Set<User> members = new TreeSet<User>();
 		
 		ResultSet SQLResult = null;
-		String query = "select u.*, null as type from users u where id in (select userID from usergroup where groupID=" + userDO.id +") order by u.isActive, u.name";
+		String query = "SELECT users.*, a.name account_name, a.type account_type " +
+			"FROM users LEFT JOIN accounts a ON users.accountID = a.id " +
+			"WHERE users.accountID = a.id AND users.id in (SELECT userID FROM usergroup WHERE groupID=" + userDO.id +") " +
+			"ORDER BY users.isActive, users.name";
 		try{
 			DBReady();
 			SQLResult = SQLStatement.executeQuery(query);
@@ -446,4 +445,19 @@ public class User extends DataBean {
 		}
 	}
 	
+	@Override
+	public int compareTo(User o) {
+		if (!this.userDO.isActive.equals(o.userDO.isActive)) {
+			// Sort Active before Inactive
+			if (this.userDO.isActive.equals("Yes")) return -1;
+			else return 1;
+		}
+		if (!this.userDO.isGroup.equals(o.userDO.isGroup)) {
+			// Sort Groups before Users
+			if (this.userDO.isGroup.equals("Yes")) return -1;
+			else return 1;
+		}
+		// Then sort by name
+		return this.userDO.name.compareToIgnoreCase(o.userDO.name);
+	}
 }

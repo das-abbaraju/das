@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
  * Warning: this class is stored in a Set<Permission> in session
  * Make sure you keep the footprint very small
  */
-public class Permission {
+public class Permission implements Comparable<Permission> {
 	private boolean viewFlag = false;
 	private boolean editFlag = false;
 	private boolean deleteFlag = false;
@@ -84,5 +84,10 @@ public class Permission {
 
 	public int hashCode() {
 		return 984 + accessType.hashCode();
+	}
+	
+	@Override
+	public int compareTo(Permission o) {
+		return this.accessType.getDescription().compareToIgnoreCase(o.accessType.getDescription());
 	}
 }

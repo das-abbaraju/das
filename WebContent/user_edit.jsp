@@ -73,9 +73,9 @@ if (action.equals("removeUserFromGroup")) {
 // Display User and their groups and permissions //
 boolean isGroup = false;
 
-Set<User> myGroups = new HashSet<User>();
-Set<User> myMembers = new HashSet<User>();
-Set<Permission> myPerms = new HashSet<Permission>();
+Set<User> myGroups = new TreeSet<User>();
+Set<User> myMembers = new TreeSet<User>();
+Set<Permission> myPerms = new TreeSet<Permission>();
 if (uBean.isSet()) {
 	myGroups = uBean.getGroups();
 	myPerms = uBean.getOwnedPermissions();
@@ -179,6 +179,7 @@ for (Permission perm: myPerms) {
 		</tr>
 		<%
 	} else {
+		// This user cannot grant(edit) this permission
 		%>
 		<tr class="active">
 			<td><%=perm.getAccessType().getDescription()%></td>
