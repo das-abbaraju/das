@@ -133,7 +133,6 @@ public class Permissions {
 		return false;
 	}
 	public boolean loginRequired(javax.servlet.http.HttpServletResponse response) throws IOException {
-		// TODO get the current URL
 		return this.loginRequired(response, "");
 	}
 	public boolean loginRequired(javax.servlet.http.HttpServletResponse response, HttpServletRequest request) throws IOException {
