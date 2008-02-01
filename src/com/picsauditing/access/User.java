@@ -280,9 +280,18 @@ public class User extends DataBean {
 			for(User group : groups){
 				tempPerms = group.getPermissions();	
 				for(Permission perm : tempPerms){
+					// Optimisic Granting
 					// add the parent group's permissions to the user's permissions
 					// if the user has two groups with the same perm type, 
-					// the last one will win
+					// and one grants and the other revokes, then the users will be granted the right
+					for(Permission origPerm : permissions) {
+						if (origPerm.equals(perm)) {
+							if (origPerm.isViewFlag()) perm.setViewFlag(true);
+							if (origPerm.isEditFlag()) perm.setEditFlag(true);
+							if (origPerm.isDeleteFlag()) perm.setDeleteFlag(true);
+							if (origPerm.isGrantFlag()) perm.setGrantFlag(true);
+						}
+					}
 					permissions.add(perm);
 				}
 			}

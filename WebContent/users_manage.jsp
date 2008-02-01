@@ -79,42 +79,42 @@ function saveGroup(action, groupID, childID) {
 }
 </script>
 <table border="0">
-<tr valign="top"><td>
-<table border="0" cellpadding="1" cellspacing="1">
-	<tr>
-		<td colspan="2" align="right" class="blueSmall" height="30">
-			<a href="?isGroup=Yes">Groups</a>
-			<a href="?isGroup=No">Users</a>
-		</td>
-	</tr>
-	<tr>
-		<td colspan="2" align="right" class="blueSmall" height="30">
-			<a href="#" onclick="addUser(true); return false;">Add Group</a>
-			<a href="#" onclick="addUser(false); return false;">Add User</a>
-		</td>
-	</tr>
-	<tr>
-		<td colspan="2"><%=search.getPageLinks()%></td>
-	</tr>
-	<tr bgcolor="#003366" class="whiteTitle">
-		<td>&nbsp;</td>
-		<td>User/Group</td>
-	</tr>
-<%
-int counter = search.getStartRow();
-for(BasicDynaBean row: searchData) {
-%>
-	<tr bgcolor="#FFFFFF" 
-		class="active" 
-		style="cursor: pointer" 
-		onclick="showUser(<%=row.get("id")%>); return false;">
-		<td align="right"><%=counter++%>.</td>
-		<td<% if (row.get("isActive").toString().startsWith("N")) { %> style="font-style: italic; color: #999999"<% } %>><%=row.get("name")%></td>
-	</tr>
-<%
-}
-%>
-</table>
+<tr valign="top"><td width="200">
+	<table border="0" cellpadding="1" cellspacing="1">
+		<tr>
+			<td colspan="2" align="center" class="blueSmall" height="30">
+				<a href="?isGroup=Yes">Show Groups</a>
+				<a href="?isGroup=No">Show Users</a>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center" class="blueSmall" height="30">
+				<a href="#" onclick="addUser(true); return false;">Add Group</a>
+				<a href="#" onclick="addUser(false); return false;">Add User</a>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"><%=search.getPageLinks()%></td>
+		</tr>
+		<tr bgcolor="#003366" class="whiteTitle">
+			<td>&nbsp;</td>
+			<td>User/Group</td>
+		</tr>
+	<%
+	int counter = search.getStartRow();
+	for(BasicDynaBean row: searchData) {
+	%>
+		<tr bgcolor="#FFFFFF" 
+			class="active" 
+			style="cursor: pointer" 
+			onclick="showUser(<%=row.get("id")%>); return false;">
+			<td align="right"><%=counter++%>.</td>
+			<td<% if (row.get("isActive").toString().startsWith("N")) { %> style="font-style: italic; color: #999999"<% } %>><%=row.get("name")%></td>
+		</tr>
+	<%
+	}
+	%>
+	</table>
 </td>
 <td id="editUser" width="400" class="blueMain">
 </td>

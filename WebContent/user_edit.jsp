@@ -32,6 +32,7 @@ if (!action.equals("")) {
 }
 
 userID = request.getParameter("userID");
+String msg = "";
 if (action.equals("saveUser")) {
 	// Insert or Update the User
 	// Delete user occurs on users_manage.jsp
@@ -40,6 +41,8 @@ if (action.equals("saveUser")) {
 		uBean.writeToDB();
 		userID = uBean.userDO.id;
 		//AUDITORS.resetAuditorsAL();
+	} else {
+		msg = uBean.getErrorMessages();
 	}
 }
 uBean.setFromDB(userID);
@@ -93,9 +96,7 @@ if (uBean.isSet()) {
 	<input type="hidden" name="isGroup" value="<%=(isGroup?"Yes":"No")%>" />
 <table border="0" cellspacing="0" cellpadding="1">
 	<tr>
-		<td colspan="2" class="redMain"><%
-			if (request.getParameter("submit") != null) out.println(uBean.getErrorMessages());
-		%></td>
+		<td colspan="2" class="redMain"><%=msg%></td>
 	</tr>
 	<tr>
 	  <td>&nbsp;</td>
@@ -196,7 +197,7 @@ if (canGrant) {
 	%>
 	<tr class="active">
 		<td>
-		<%=Utilities.inputSelect2First("new", "forms", "", grantPerms, "", "- Choose Permission -")%>
+			<%=Utilities.inputSelect2First("new", "forms", "", grantPerms, "", "- Grant/Revoke Permission -")%>
 		</td>
 		<td><%=Utilities.getCheckBoxInput("new_viewFlag", "blueSmall", true)%></td>
 		<td><%=Utilities.getCheckBoxInput("new_editFlag", "blueSmall", false)%></td>
@@ -216,6 +217,7 @@ if (canGrant) {
 
 %>
 <p class="blueMain">Member of Group(s):
+<form id="addGroup">
 <ul>
 <%
 // = permissions.
@@ -229,6 +231,7 @@ for (User group: myGroups) {
 	<a href="#" onclick="showUser(<%=group.userDO.id%>); return false;"><%=group.userDO.name%></a>
 	(<a href="#" onclick="saveGroup('removeGroup', <%=group.userDO.id%>); return false;">remove</a>)
 </li>
+<li>
 <%
 }
 for (User group: allGroups) {
@@ -240,6 +243,7 @@ for (User group: allGroups) {
 }
 %>
 </ul>
+</form>
 </p>
 
 <%
