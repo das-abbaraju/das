@@ -15,8 +15,8 @@ if (!pBean.isAuditor()) {
 //String Gutype = (String)session.getAttribute("usertype");
 //String Guid = (String)session.getAttribute("userid");
 //String 	req_uid = request.getParameter("id");
-String Gutype = permissions.getAccountType();
-String Guid = permissions.getUserIdString();
+//String Gutype = permissions.getAccountType();
+//String Guid = permissions.getUserIdString();
 
 try{
 	tBean.setFromDB();

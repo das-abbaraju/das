@@ -53,6 +53,7 @@ public class CalendarBean extends DataBean {
 					else
 						dayStr += "<td valign='top'><strong>"+String.valueOf(day)+"</strong>";
 					//check to see if blocked date
+					// TODO change this to a permission and check hasPermission instead
 					if (pBean.isAdmin() || pBean.isAuditor()){
 						for (int i=0; i < blockedDatesArray.length; i+=6){
 							if (day==Integer.parseInt(blockedDatesArray[i].substring(8,10))){

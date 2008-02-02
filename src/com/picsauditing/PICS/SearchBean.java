@@ -8,7 +8,12 @@ import com.picsauditing.domain.IPicsDO;
 
 
 
-public class SearchBean {
+/**
+ * @deprecated don't use this anymore, use SearchRaw instead
+ * @see SearchRaw
+ * @author Jeff Jensen
+ *
+ */public class SearchBean {
 /*	History
 	2/20/06 jj - eliminated other searches (operator, auditor, osha)
 	1/28/05 jj - added doOSHASearch for fatalities and incidence report
@@ -494,49 +499,43 @@ public class SearchBean {
 		}//if
 		if ("Contractor".equals(searchType))
 			joinQuery+="INNER JOIN contractor_info ON (accounts.id=contractor_info.id) ";
-		if (accessType.equals("Auditor")) {
+		if (permissions.isAuditor()) {
+			// This person is an auditor but not an admin
 			if (com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(selected_auditType))
 				whereQuery += "AND contractor_info.auditor_id="+accessID+" ";
-			else if (accessType.equals("Auditor") && com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(selected_auditType))
+			else if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(selected_auditType))
 				whereQuery += "AND contractor_info.desktopAuditor_id="+accessID+" ";
-			else if (accessType.equals("Auditor") && com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(selected_auditType))
+			else if (com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(selected_auditType))
 				whereQuery += "AND contractor_info.daAuditor_id="+accessID+" ";
-			else if (accessType.equals("Auditor") && com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(selected_auditType))
+			else if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(selected_auditType))
 				whereQuery += "AND contractor_info.pqfAuditor_id="+accessID+" ";
-			else
-				whereQuery += "AND 0 ";
-		}//if
+			else whereQuery += "AND 0 ";
+		}
 		if ("Operator".equals(accessType)) {
-//		else if (AccountBean.ALL_ACCESS !-accessID == !.equals("Admin")) {
 			joinQuery += "INNER JOIN generalContractors gc ON gc.subID=accounts.id "+
 				"LEFT JOIN flags ON flags.conID=accounts.id ";
 			whereQuery += "AND gc.genID="+accessID+" AND (flags.opID IS NULL OR flags.opID="+accessID+") ";
-		}//if
+		}
 		if ("Corporate".equals(accessType)) {
 			joinQuery += "INNER JOIN generalContractors gc ON gc.subID=accounts.id "+
 					"LEFT JOIN flags ON flags.conID=accounts.id ";
 			whereQuery+="AND gc.genID IN "+permissions.oBean.getFacilitiesSet()+" "+
 					"AND (flags.opID IS NULL OR flags.opID="+accessID+") ";
 			groupByQuery = "GROUP BY accounts.id ";
-		}//if
+		}
 
 		Conn = DBBean.getDBConnection();
 		SQLStatement = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		count = beginResults = (showPage-1)*showNum;
 		
-		if(!searchType.equals("Auditor")){
-			Query = "SELECT SQL_CALC_FOUND_ROWS * FROM accounts "+joinQuery+pqfJoinQuery+oshaJoinQuery+ncmsJoinQuery+
-					"WHERE 1 "+whereQuery+groupByQuery+"ORDER BY "+orderBy+" LIMIT "+count+","+showNum+";";
-			if ("Corporate".equals(accessType))
-				Query = "SELECT SQL_CALC_FOUND_ROWS * FROM accounts "+joinQuery+pqfJoinQuery+oshaJoinQuery+ncmsJoinQuery+
-						"WHERE 1 "+whereQuery+groupByQuery+"ORDER BY "+orderBy+" LIMIT "+count+","+showNum+";";
-		}else
-			//Query = "SELECT * FROM users WHERE id IN (SELECT userID FROM usergroup WHERE groupID = '11') ORDER BY name ASC;";
-			return;
+		
+		//////////////////////////////////////
+		// Construct the SQL statement now
+		Query = "SELECT SQL_CALC_FOUND_ROWS * FROM accounts "+joinQuery+pqfJoinQuery+oshaJoinQuery+ncmsJoinQuery+
+				"WHERE 1 "+whereQuery+groupByQuery+"ORDER BY "+orderBy+" LIMIT "+count+","+showNum+";";
 
 		//System.out.println(Query);
 		SQLResult = SQLStatement.executeQuery(Query);
-							
 			
 		ResultSet tempRS = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)
 				.executeQuery("SELECT FOUND_ROWS();");
