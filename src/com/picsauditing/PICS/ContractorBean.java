@@ -414,7 +414,7 @@ public class ContractorBean extends DataBean {
 	 * @throws Exception
 	 */
 	public boolean isDARequired() throws Exception {
-		if (this.daRequired.equals("No"))
+		if ("No".equals(this.daRequired))
 			return false;
 		
 		setFacilitiesFromDB();
