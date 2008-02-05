@@ -311,7 +311,7 @@ public class EmailBean extends DataBean{
 	}//sendEmail
 
 		//added for send activation emails to operators to multiple recipients
-	private static void sendEmails(String from, String to, String cc, String subject, String text) throws Exception {
+	public static void sendEmails(String from, String to, String cc, String subject, String text) throws Exception {
 		if (IS_TESTING){
 			writeTestEmail(from,to,cc,subject,text);
 			return;
@@ -1008,7 +1008,7 @@ public class EmailBean extends DataBean{
 			
 			sendEmail(from, to, cc, subject, message.toString());
 		}//sendConfirmationEmail
-
+	
 	public void sendNewUserEmail(HttpServletRequest request, String accountID, String name,
 				String username, String pass, String email) throws Exception {
 		String from = FROM_INFO;

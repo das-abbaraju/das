@@ -1,12 +1,36 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
-<%@ page language="java" import="PICS.*;"%>
+<%@page import="com.picsauditing.PICS.EmailBean;"%>
 <%
-  	int whichPage = 0;
 	boolean isSubmitted = (null != request.getParameter("action") 
-			&& request.getParameter("action").equals("rsvp"));
-
+				&& request.getParameter("action").equals("rsvp"));
 	if (isSubmitted){
-		EmailBean.sendSafetyMeetingEmail(request);
+			String to = "bescoubas@milestonepromise.com,jjacobs@milestonepromise.com,srahnama@milestonepromise.com,jsmith@picsauditing.com,jmoreland@picsauditing.com";
+			String cc = "";
+			String from = request.getParameter("email");
+			String subject = "PICS Milestone referral";
+
+			StringBuffer message = new StringBuffer();
+			message.append("Info:\n");
+			message.append("  First Name: ").append(request.getParameter("firstname")).append("\n");
+			message.append("  Last Name:  ").append(request.getParameter("lastname")).append("\n");
+			message.append("  Company:    ").append(request.getParameter("company")).append("\n");
+			message.append("  Title:      ").append(request.getParameter("title")).append("\n");
+			message.append("  Phone:      ").append(request.getParameter("phone")).append("\n");
+			message.append("  Email:      ").append(request.getParameter("email")).append("\n");
+			
+			EmailBean.sendEmails(from, to, cc, subject, message.toString());
+			
+			to = request.getParameter("email");
+			from = "info@picsauditing.com";
+			subject = "Confirmation of request for contact";
+			message = new StringBuffer();
+			message.append("Hi ").append(request.getParameter("firstname")).append("\n\n");
+			message.append("Thanks for requesting more information on the PICS Preferred Contractor Rate Program. ");
+			message.append("A representatve from Milestone will contact you shortly. ");
+			message.append("Additionally, if you would like to contact Milestone directly, please give them a call at (949)852-0909.");
+			message.append("\n\nThanks,\nPICS");
+
+			EmailBean.sendEmails(from, to, cc, subject, message.toString());
 	}
 	
 %>
@@ -189,10 +213,10 @@ ADDED INSURANCE BENEFITS</div></td>
 				<div class="Milestoneform">
 
 <%	if (isSubmitted)
-		out.println("<span class='redMain'>Thank you for submitting your attendance information</span>");
+		out.println("<span class='redMain'>Thank you for submitting your contact information</span>");
 %>
   
-  <form id="safetyForm" action="safety_2007.jsp?action=rsvp" method="post">
+  <form id="safetyForm" action="milestonepartnership.jsp?action=rsvp" method="post">
   <table class="blueMain" bgcolor="#CBE5FE" width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr>
       <td height="70" colspan="2" class="blueSafety2">Yes, I am interested to see if I qualify for the PICS Preferred Contractor Rate Program.  Please have a Milestone Representative contact me.</td>
