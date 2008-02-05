@@ -12,6 +12,11 @@ import com.picsauditing.PICS.DataBean;
 
 import com.picsauditing.PICS.Utilities;
 
+/**
+ * @deprecated
+ * @author Trevor
+ *
+ */
 public class UsersDO extends DataBean implements IPicsDO {
 	
 	private int id;
