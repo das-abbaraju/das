@@ -72,15 +72,40 @@ public class Note extends DataBean{
 		}//catch		
 	}//setList
 
+	/**
+	 * 
+	 * @param conID
+	 * @param permissions
+	 * @return columns: noteID, opID, whoIs, note, name
+	 * @throws Exception
+	 */
 	public List<BasicDynaBean> getContractorNotes(String conID, Permissions permissions) throws Exception {
-		String opID = permissions.getAccountIdString();
+		SQLBuilder sql = new SQLBuilder();
+		sql.setFromTable("notes n");
+		sql.addField("n.noteID");
+		sql.addField("n.opID");
+		sql.addField("n.whoIs");
+		sql.addField("n.note");
+		sql.addField("a.name");
+		sql.addField("DATE_FORMAT(n.timeStamp,'%c/%e/%y') AS formattedDate");
+		sql.addJoin("JOIN accounts a ON a.id = n.opID");
+		sql.addWhere("conID = '"+conID+"' AND isDeleted=0");
+		sql.addOrderBy("ORDER BY timeStamp DESC");
 		
-		String selectQuery = "SELECT *,DATE_FORMAT(timeStamp,'%c/%e/%y') AS formattedDate "+
-			"FROM notes WHERE opID="+opID+" AND conID="+conID+" AND isDeleted=false ORDER BY timeStamp DESC;";
-	    
+		if (permissions.isPicsEmployee()) {
+			// PICS employees can see ALL notes
+		} else {
+			String opID = permissions.getAccountIdString();
+			sql.addWhere("n.opID IN (" +
+				" SELECT opID FROM facilities WHERE corporateID in (SELECT corporateID FROM facilities where opID = "+opID+")" +
+				" UNION SELECT opID FROM facilities WHERE corporateID = "+opID +
+				" UNION SELECT "+opID+
+				")");
+		}
+		
 		try {
 			DBReady();
-			ResultSet rs = SQLStatement.executeQuery(selectQuery);
+			ResultSet rs = SQLStatement.executeQuery(sql.toString());
 		    RowSetDynaClass rsdc = new RowSetDynaClass(rs, false);
 		    rs.close();
 		    return rsdc.getRows();
