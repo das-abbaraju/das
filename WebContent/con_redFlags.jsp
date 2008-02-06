@@ -1,6 +1,11 @@
 <%//@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.PICS.redFlagReport.*"%>
+<%@page import="java.util.List"%>
+<%@page import="org.apache.commons.beanutils.BasicDynaBean"%>
 <%@ include file="utilities/contractor_secure.jsp"%>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
+<jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope ="application"/>
+
 
 <%
 Note note = new Note();
@@ -311,15 +316,20 @@ try{
                 <td class="redMain">Notes:</td>
                 <td></td>
               </tr>
-<%	note = new Note();
-	note.setList(pBean.userID,id);
-	while (note.isNext()){
+<%
+	List<BasicDynaBean> notesList = note.getContractorNotes(id,permissions);
+	count = 0;
+	for (BasicDynaBean row : notesList){
+		count++;
 %>
-              <tr <%=Utilities.getBGColor(note.count)%>>
-                <td class=blueMain><%=note.getNoteDisplay()%></td>
-                <td class=blueMain>
-<%		if(canEditNotes){%>
-                  <a href="?id=<%=id%>&action=DeleteNote&dID=<%=note.noteID%>">Delete</a>
+          <tr <%=Utilities.getBGColor(count)%>>
+            <td class=blueMain><%=row.get("formattedDate")%> 
+              (<%=row.get("whoIs")+","+FACILITIES.getNameFromID(row.get("opID").toString())%>)
+              :<%=row.get("note")%>
+            </td>
+            <td class=blueMain>
+<%		if(canEditNotes && row.get("opID").equals(permissions.getAccountIdString())){%>
+              <a href="?id=<%=id%>&action=DeleteNote&dID=<%=row.get("noteID")%>">Delete</a>
 <%		}//if%>
                 </td>
               </tr>
@@ -345,6 +355,5 @@ try{
 <%}finally{
 	if (null != hurdleQuestions)
 		hurdleQuestions.closeList();
-	note.closeList();
 }//finally
 %>
