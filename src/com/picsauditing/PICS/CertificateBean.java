@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.domain.CertificateDO;
 import com.picsauditing.servlet.upload.UploadConHelper;
 import com.picsauditing.servlet.upload.UploadProcessorFactory;
@@ -448,13 +449,13 @@ public class CertificateBean extends DataBean {
 					throws Exception {
 
 		javax.servlet.ServletRequest request = pageContext.getRequest();
-		String adminName = (String)pageContext.getSession().getAttribute("username");
+		Permissions permission = (Permissions)pageContext.getSession().getAttribute("permission");
 		Enumeration e = request.getParameterNames();
 		while (e.hasMoreElements()) {
 			String temp = (String)e.nextElement();
 			if (temp.startsWith("sendEmail_")) {
 				String cID = temp.substring(10);
-				sendReminderEmail(cID, adminName);
+				sendReminderEmail(cID, permission.getUsername());
 			}//if
 		}//while
 	}//processEmailForm

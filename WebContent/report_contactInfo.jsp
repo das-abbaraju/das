@@ -45,7 +45,7 @@
                   <span class="blueHeader">Contractor Contact Information Report</span><br>
                     <%=sBean.getExcelLink(pBean.userID)%><br>
                   <form name="form1" method="post" action="report_contactInfo.jsp">
-<%	if (isAdmin)
+<%	if (pBean.isAdmin())
 		out.println(SearchBean.getSearchGeneralSelect("generalContractorID", "blueMain", sBean.selected_generalContractorID));
 	if (pBean.isCorporate())
 		out.println(pBean.oBean.getFacilitySelect("generalContractorID","forms",sBean.selected_generalContractorID));

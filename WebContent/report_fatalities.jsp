@@ -8,7 +8,7 @@
 	sBean.orderBy = "Name";
 	sBean.setIsFatalitiesReport();
 	sBean.doSearch(request, sBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
-	if (!isAdmin)
+	if (!pBean.isAdmin())
 		sBean.setCanSeeSet(pBean.canSeeSet);
 %>
 <html>

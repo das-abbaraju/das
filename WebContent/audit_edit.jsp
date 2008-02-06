@@ -52,7 +52,7 @@ try{
 		if ((numQuestionsString != null)  && (!numQuestionsString.equals("")))
   	    	numQuestions = Integer.parseInt(numQuestionsString);
 		if (numQuestions==adBean.numAnswered && !"0".equals(cBean.auditor_id)) {
-			cBean.submitAudit(id, adminName);
+			cBean.submitAudit(id, pBean.userName);
 			response.sendRedirect("audit_editRequirements.jsp?id="+id);
 			return;
 		} else {
@@ -138,9 +138,9 @@ try{
               <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
                 <tr align="center" class="blueMain">
 				  <td>
-<%	if (isAdmin) {%>						
+<%	if (pBean.isAdmin()) {%>
 	 			    <%@ include file="utilities/adminContractorNav.jsp"%>
-<%	} else if (isAuditor ) {%>
+<%	} else if (pBean.isAuditor() ) {%>
 				    <%@ include file="utilities/auditorContractorNav.jsp"%>					
 <%	}//if %>
                   </td>
@@ -247,7 +247,7 @@ try{
 					<input type="hidden" name="numQuestions" value=<%=numQuestions%>>
     				<input name="action" type="submit" class="forms" value="Save"> click to save your work. You may still edit this audit later.
 	                <p><input name="action" type="submit" class="forms" value="Submit"> click to complete this phase of the audit & view the requirements.
-<%	if (isAdmin) { %>
+<%	if (pBean.isAdmin()) { %>
   	                <p><input name="action" type="submit" class="forms" value="Reset"> click to reset status of this audit to "Scheduled." This will delete all audit data.  
 <%	}//if %>
                     </span>

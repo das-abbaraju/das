@@ -5,6 +5,7 @@
 <jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 
 <%try{
 	String auditType = request.getParameter("auditType");
@@ -29,7 +30,7 @@
 	String message = "";
 	if (justSubmitted){
 		if (pdBean.isComplete(conID,auditType)){
-			cBean.submitPQF(conID, adminName, auditType);
+			cBean.submitPQF(conID, permissions.getUsername(), auditType);
 			if (Constants.PQF_TYPE.equals(auditType))
 				message = "Thank you for submitting your PQF.  If this is your first submittal, a PICS representative will be contacting you "+
 					"within 7 days to discuss the audit. If you have not heard from someone within this time period feel free to contact our office.";
@@ -44,7 +45,7 @@
 	}//if
 	if (justUpdated){
 		if (pdBean.isClosed(conID,auditType)){
-			cBean.closeAudit(conID, adminName,auditType);
+			cBean.closeAudit(conID, permissions.getUsername(),auditType);
 			message = "All the requirements on this audit have been closed";
 		} else
 			message = "You have not closed out all the requirements in the following categories:.<br>"+pdBean.getErrorMessages();

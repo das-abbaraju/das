@@ -19,7 +19,7 @@
 	boolean isOSHA = pcBean.OSHA_CATEGORY_ID.equals(catID);
 	//boolean isFileUpload = Utilities.arrayContains(com.picsauditing.PICS.pqf.Constants.UPLOAD_CAT_IDS,catID);
 	boolean isFileUpload = pdBean.isFileUpload(catID);
-	boolean canVerify = (isAdmin || isAuditor);
+	boolean canVerify = (pBean.isAdmin() || pBean.isAuditor());
 	if (isFileUpload){
 		response.sendRedirect("pqf_uploadFile.jsp?auditType="+auditType+"&catID="+catID+"&id="+conID);
 		return;

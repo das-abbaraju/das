@@ -10,7 +10,7 @@
 	sBean.orderBy = "name";
 	sBean.setIsOSHASearch();
 	sBean.doSearch(request, sBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
-	if (!isAdmin)
+	if (!pBean.isAdmin())
 		sBean.setCanSeeSet(pBean.canSeeSet);
 	//int thisYear = com.picsauditing.PICS.DateBean.getCurrentYear();
 	int thisYear = com.picsauditing.PICS.DateBean.getCurrentYear(this.getServletContext().getInitParameter("currentYearStart"));

@@ -5,16 +5,8 @@
 	if (!pBean.checkAccess(com.picsauditing.PICS.PermissionsBean.NOT_CON, response))
 		return;
 
-	String Gutype = (String)session.getAttribute("usertype");
-	String Guid = (String)session.getAttribute("userid");
-
-	boolean isContractor = "Contractor".equalsIgnoreCase(Gutype);
 	if (pBean.isContractor()) {
-		response.sendRedirect("contractor_detail.jsp?id=" + Guid);
+		response.sendRedirect("contractor_detail.jsp?id=" + pBean.userID);
 		return;
-	}//if
-
-	boolean isAdmin = "admin".equals(Gutype);
-	boolean isGeneral = "General".equalsIgnoreCase(Gutype);
-	boolean isOperator = "Operator".equals(Gutype);
+	}
 %>

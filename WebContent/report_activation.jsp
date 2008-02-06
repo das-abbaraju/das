@@ -4,6 +4,7 @@
 <%@ include file="utilities/admin_secure.jsp" %>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="session"/>
 <jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope ="application"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 
 <%	try{
 	new Billing().updateAllPayingFacilities(FACILITIES, application);
@@ -18,7 +19,7 @@
 		sBean.aBean.setFromDB(actionID);
 		EmailBean eBean = new com.picsauditing.PICS.EmailBean();
 		EmailBean.init(config);
-		eBean.sendWelcomeEmail(sBean.aBean, adminName);
+		eBean.sendWelcomeEmail(sBean.aBean, permissions.getUsername());
 		message += "A welcome email was sent to <b>" + sBean.aBean.name + "</b>";
 	}//if
 	if ("Called".equals(action)) {

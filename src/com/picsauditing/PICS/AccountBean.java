@@ -29,9 +29,6 @@ public class AccountBean extends DataBean {
 	public String userID = "0"; //used in check login, to set id for users not in main accounts table, but in users table
 	public HashSet<String> canSeeSet = new HashSet<String>(); // all sub contractors of a general contractor/operator
 	public HashSet<String> hasCertSet = new HashSet<String>(); // all contractors with insurance certs for a general contractor/operator
-	public HashSet<String> auditorCanSeeSet = new HashSet<String>(); // all contractors assigned  auditor
-	public HashSet<String> auditorOfficeSeeSet = new HashSet<String>(); // all contractors assigned  office auditor
-	public HashSet<String> auditorDesktopSeeSet = new HashSet<String>(); // all contractors assigned  desktop auditor
 	
 	public String id = "";
 	public String type = "Contractor"; // is of type ENUM of ('Contractor','Operator','General')

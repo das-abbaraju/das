@@ -8,10 +8,7 @@
 	String id = request.getParameter("id");
 	aBean.setFromDB(id);
 	cBean.setFromDB(id);
-	if (pBean.isAuditor())
-		;
-	//		cBean.setShowLinks(pBean.userType, pBean.auditorCanSeeSet);
-	else
+	if (!pBean.isAuditor())
 		cBean.setShowLinks(pBean);
 %>
 

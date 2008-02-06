@@ -1,6 +1,7 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%//@ page language="java" import="com.picsauditing.PICS.*"%>
 <%@ include file="utilities/contractor_secure.jsp"%>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <jsp:useBean id="prBean" class="com.picsauditing.PICS.pqf.RequirementBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
@@ -24,7 +25,7 @@
 	if ("Submit".equals(action)) {
 		prBean.updateRequirements(request, id);
 		if (request.getParameter("reqCount").equals(prBean.numReqCompleted)) {
-			cBean.closeAudit(id, adminName,auditType);
+			cBean.closeAudit(id, permissions.getUsername(),auditType);
 			errorMsg = "All the requirements on this audit have been closed";
 		} else
 			errorMsg = "Please complete all requirements before submitting";

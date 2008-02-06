@@ -1,6 +1,4 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
-<%//@ page language="java"%>
-<%//@ include file="utilities/admin_secure.jsp"%>
 <%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="adBean" class="com.picsauditing.PICS.AuditDataBean" scope ="page"/>
 <jsp:useBean id="aqBean" class="com.picsauditing.PICS.AuditQuestionBean" scope ="page"/>
@@ -25,9 +23,7 @@ try{
 		if (numReqString != null)
   	    	numReq = Integer.parseInt(numReqString);
 		if (numReq==adBean.numReqComplete) {
-//			cBean.closeAudit(id,request.getParameter("auditClosedDate"));
-//			cBean.closeAudit(id, adminName,com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE);
-			cBean.closeAudit(id, adminName);
+			cBean.closeAudit(id, pBean.userName);
 			response.sendRedirect("audit_view.jsp?id=" + id +"&msg=All the requirements on this audit have been closed.");
 		} else {
 //			errorMsg = numReq + "==" + adBean.numReqComplete + "Please complete all requirements before submitting";
@@ -69,10 +65,10 @@ try{
       <table border="0" cellspacing="0" cellpadding="1" class="blueMain" align="center">
         <tr align="center" class="blueMain">
           <td> 
-<%	if (isAdmin) {%>
+<%	if (pBean.isAdmin()) {%>
             <%@ include file="utilities/adminContractorNav.jsp"%>
 <%	}//if 
-	if (isAuditor && auditorCanSeeSet.contains(req_uid)) { %>
+	if (pBean.isAuditor() && pBean.auditorCanSeeSet.contains(request.getParameter("id"))) { %>
 	        <%@ include file="utilities/auditorContractorNav.jsp"%>
 <%	}//if %>
           </td>

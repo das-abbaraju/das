@@ -1,7 +1,7 @@
 <%@ page language="java" import="com.picsauditing.PICS.*,java.sql.*" errorPage="exception_handler.jsp"%>
-<%//@ page language="java" import="java.sql.*"%>
 <%@ include file="utilities/adminGeneral_secure.jsp" %>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 
 <%
 Connection Conn = null;
@@ -23,14 +23,11 @@ try{
 		cBean.desktopVerifiedPercent = "100";
 		cBean.desktopSubmittedDate = closedDate;
 		cBean.desktopClosedDate = closedDate;
-//		cBean.desktopCompletedDate = closedDate;
 		cBean.hasNCMSDesktop = "Yes";
-//		cBean.importNCMSDate= closedDate;
 
-		cBean.addNote(conID,"("+adminName+")","NCMS Desktop imported, approved",DateBean.getTodaysDateTime());
+		cBean.addNote(conID,"("+permissions.getUsername()+")","NCMS Desktop imported, approved",DateBean.getTodaysDateTime());
 		cBean.writeToDB();
 
-//		Query = "UPDATE NCMS_Desktop SET conID="+conID+" WHERE ContractorsName='"+com.picsauditing.PICS.Utilities.escapeQuotes(name)+"';";
 		Query = "UPDATE NCMS_Desktop SET remove='Yes',conID="+conID+",approved='Yes' WHERE ContractorsName='"+com.picsauditing.PICS.Utilities.escapeQuotes(name)+"';";
 		SQLStatement.executeUpdate(Query);
 
@@ -54,7 +51,7 @@ try{
 		Conn = null;
 
 		cBean.setFromDB(conID);
-		cBean.addNote(conID,"("+adminName+")","NCMS Desktop imported, approved",DateBean.getTodaysDateTime());
+		cBean.addNote(conID,"("+permissions.getUsername()+")","NCMS Desktop imported, approved",DateBean.getTodaysDateTime());
 		cBean.writeToDB();
 
 		response.sendRedirect("report_ncms.jsp");

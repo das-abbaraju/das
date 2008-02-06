@@ -2,6 +2,7 @@
 <%@ page language="java" import="com.picsauditing.PICS.*"%>
 <%@ include file="utilities/adminGeneral_secure.jsp" %>
 
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="session"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
@@ -18,7 +19,7 @@
 		sBean.orderBy = "status<>'Inactive' DESC,DAYOFYEAR(auditDate)=0 DESC,DAYOFYEAR(auditDate),name";
 	if ("Paid".equals(action)) {
 		String amount = request.getParameter("amount");
-		cBean.updateLastPayment(action_id, adminName, amount);
+		cBean.updateLastPayment(action_id, permissions.getUsername(), amount);
 	}//if Paid
 	if ("Inv".equals(action)) {
 		String invoiceAmount = request.getParameter("invoiceAmount");

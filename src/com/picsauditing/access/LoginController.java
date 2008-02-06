@@ -120,47 +120,4 @@ public class LoginController extends DataBean {
 			DBClose();
 		}
 	}
-	
-	/*
-	public boolean checkLogin(String lname, String lpass, javax.servlet.http.HttpServletRequest req) throws Exception {
-		String selectQuery;
-		ResultSet SQLResult;
-		// set these for isFirstLogin(), and mustSubmitPQF()
-		selectQuery = "SELECT accountDate, canEditPrequal FROM contractor_info WHERE id="+id+";";
-		SQLResult = SQLStatement.executeQuery(selectQuery);
-		if (SQLResult.next()){
-			accountDate = DateBean.toShowFormat(SQLResult.getString("accountDate"));
-			canEditPrequal = SQLResult.getString("canEditPrequal");
-		}//if
-		SQLResult.close();
-		
-		// Set canSeeSet
-		canSeeSet = new HashSet<String>();
-		if ("Contractor".equals(type))
-			canSeeSet.add(id);
-		selectQuery = "SELECT subID FROM accounts INNER JOIN generalcontractors ON (id=subID) "+
-		"WHERE active='Y' AND genID="+id+";";
-		SQLResult = SQLStatement.executeQuery(selectQuery);
-		while (SQLResult.next())
-			canSeeSet.add(SQLResult.getString("subID"));
-		SQLResult.close();
-		
-		//Set auditorCanSeeSet BJ 10-28-04
-		auditorCanSeeSet = new HashSet<String>();
-		auditorCanSeeSet.add(id);
-		selectQuery = "SELECT id FROM contractor_info WHERE auditor_id="+id+" OR desktopAuditor_id="+id+" OR pqfAuditor_id="+id+";";
-		SQLResult = SQLStatement.executeQuery(selectQuery);
-		while (SQLResult.next())
-			auditorCanSeeSet.add(SQLResult.getString("id"));
-		SQLResult.close();
-		
-		// Set hasCertSet
-		hasCertSet = new HashSet<String>();
-		selectQuery = "SELECT contractor_id FROM certificates WHERE operator_id="+id+";";
-		SQLResult = SQLStatement.executeQuery(selectQuery);
-		while (SQLResult.next())
-			hasCertSet.add(SQLResult.getString("contractor_id"));
-		SQLResult.close();
-	}//checkLogin
-	*/
 }

@@ -187,7 +187,7 @@
                   </table>
 		        </td>
 		      </tr>
-<%		if (isAuditor || isAdmin) { %>			       
+<%		if (pBean.isAdmin() || pBean.isAuditor()) { %>
 			      <input type="hidden" name="catID" value="<%=catID%>">
 			      <input type="hidden" name="id" value="<%=conID%>">
 			      <input type="hidden" name="auditType" value="<%=auditType%>">

@@ -1,23 +1,20 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%//@ page language="java"%>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <jsp:useBean id="eBean" class="com.picsauditing.PICS.EmailBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <%
-	eBean.init(config);
 	String id = request.getParameter("i");
 	if ((null == id) || ("".equals(id)))
 		throw new Exception("No contractor_id specified.");
 
-	aBean.setFromDB(id);	
-//	String email = aBean.email;
-//	email = "jeffjensen@byu.edu";
+	aBean.setFromDB(id);
 	if ((null == aBean.email) || ("".equals(aBean.email)))
 		throw new Exception("No email address specified.");
 
-	String adminName = (String)session.getAttribute("username");
-	eBean.sendWelcomeEmail(aBean, adminName);
-//	cBean.writeWelcomeEmailDateToDB(id);
+	eBean.init(config);
+	eBean.sendWelcomeEmail(aBean, permissions.getUsername());
 %>
 <html>
 <head>

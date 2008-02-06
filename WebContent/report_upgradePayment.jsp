@@ -6,6 +6,7 @@
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope ="application"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 
 <%	String action = request.getParameter("action");
 	String action_id = request.getParameter("action_id");
@@ -16,7 +17,7 @@
 		sBean.orderBy = "status<>'Inactive' DESC,DAYOFYEAR(auditDate)=0 DESC,DAYOFYEAR(auditDate),name";
 	if ("Paid".equals(action)){
 		String amount = request.getParameter("amount");
-		cBean.upgradePayment(action_id, adminName, amount);
+		cBean.upgradePayment(action_id, permissions.getUsername(), amount);
 	}//if
 	if ("Inv".equals(action)){
 		String invoiceAmount = request.getParameter("invoiceAmount");

@@ -63,18 +63,6 @@
 				permissions.login(user);
 			}
 			
-			// We should try and eliminate the use of session attributes
-			// Try and use permissions object or atleast the pBean
-			if (pBean.isAdmin())
-				session.setAttribute("usertype", "admin");
-			else
-				session.setAttribute("usertype",aBean.type);
-			session.setAttribute("userid", aBean.id);
-			session.setAttribute("username", aBean.name);
-			session.setAttribute("canSeeSet", aBean.canSeeSet);
-			session.setAttribute("auditorCanSeeSet", aBean.auditorCanSeeSet);
-			session.setAttribute("hasCertSet", aBean.hasCertSet);
-			
 			// Redirect users to the previous page they were on
 			Cookie[] cookiesA = request.getCookies();
 			String fromURL = "";
@@ -99,8 +87,6 @@
 				return;
 			}
 			if (pBean.isAuditor()){
-				// moved auditorCanSeeSet to setAuditorPermissions Trevor 1/16/08
-				//pBean.setAuditorCanSeeSet(aBean.auditorCanSeeSet);
 				pBean.setAuditorPermissions();
 				session.setMaxInactiveInterval(3600);
 				response.sendRedirect("contractor_list_auditor.jsp");

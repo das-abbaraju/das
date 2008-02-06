@@ -3,12 +3,13 @@
 <%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="cerBean" class="com.picsauditing.PICS.CertificateBean" scope ="page"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 
 <%try{
 	String id = request.getParameter("id");
 	String ses_id = (String)session.getAttribute("userid");
 	String operatorName = (String)session.getAttribute("username");
-	String userType = (String)session.getAttribute("usertype");
+	String userType = permissions.getAccountType();
 	if ("contractor".equalsIgnoreCase(userType) || "admin".equalsIgnoreCase(userType))
 		cerBean.setList(id);
 	else
@@ -58,13 +59,13 @@
 <table width="657" border="0" cellpadding="0" cellspacing="0">
                 <tr> 
                 <td><br>
-<%					if (isContractor ||	isGeneral && id.equals(ses_id)) {
+<%					if (pBean.isContractor() ||	"General".equalsIgnoreCase(pBean.userType) && id.equals(ses_id)) {
 %>				<%@ include file="utilities/contractorNav.jsp"%>
 <%					}//if
-					if (isAdmin) {
+					if (pBean.isAdmin()) {
 %>						<%@ include file="utilities/adminContractorNav.jsp"%>
 <%					}//if
-					if (isOperator || (isGeneral && !id.equals(ses_id))) {%>
+					if (pBean.isOperator() || ("General".equalsIgnoreCase(pBean.userType) && !id.equals(ses_id))) {%>
 							<%@ include file="utilities/opContractorNav.jsp"%>
 <%	}%>
 				</td>

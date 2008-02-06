@@ -1,8 +1,8 @@
 <%//@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@ page language="java" import="com.picsauditing.PICS.*"%>
 <%@ include file="utilities/adminGeneral_secure.jsp" %>
-<%//@ include file="utilities/operator_secure.jsp" %>
 
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="session"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
@@ -24,8 +24,8 @@
 		cBean.setFromDB(actionID);
 		EmailBean.sendAuditEmail(aBean,cBean,false);
 		if (!"0".equals(cBean.auditor_id))
-			EmailBean.sendAuditEmail(aBean,cBean,true);	
-		cBean.writeAuditEmailDateToDB(actionID, adminName);
+			EmailBean.sendAuditEmail(aBean,cBean,true);
+		cBean.writeAuditEmailDateToDB(actionID, permissions.getUsername());
 	}//if
 	if ("Update".equals(action)) {
 		cBean.setFromDB(actionID);
