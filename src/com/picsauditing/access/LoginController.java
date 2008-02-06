@@ -2,6 +2,7 @@ package com.picsauditing.access;
 
 
 import java.sql.ResultSet;
+import java.util.HashSet;
 
 import com.picsauditing.PICS.DataBean;
 
@@ -40,30 +41,32 @@ public class LoginController extends DataBean {
 		user.updateLastLogin();
 	}
 	
-	public void loginByAdmin(String userID, javax.servlet.http.HttpServletRequest request) throws Exception {
+	public boolean loginByAdmin(String userID, javax.servlet.http.HttpServletRequest request) throws Exception {
 		// Set the permissions from the session or create a new one if necessary
 		Permissions permissions = (Permissions)request.getSession().getAttribute("permissions");
 		if (permissions == null) {
-			return;
+			return false;
 		}
 		
-		if (!permissions.hasPermission(OpPerms.SwitchUser))
-			return;
+		permissions.tryPermission(OpPerms.SwitchUser);
 		
 		int adminID = permissions.getUserId();
 
 		User user = new User();
 		user.setFromDB(userID);
-		if (user.userDO.id != userID) return;
+		if (user.userDO.id != userID) return false;
 		
 		// Log the user in now
 		permissions.login(user);
 		permissions.setAdminID(adminID);
+		
+		// We should remove these next lines after we remove it from the application
 		request.getSession().setAttribute("usertype", permissions.getAccountType());
 		request.getSession().setAttribute("userid", permissions.getUserIdString());
 		
 		logAttempt(permissions, "", request);
 		//user.updateLastLogin();
+		return true;
 	}
 	
 	private String canLogin(User user, String username, String password) throws Exception {

@@ -1,11 +1,9 @@
 <%@ page language="java" errorPage="exception_handler.jsp" %>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session"/>
 <% 
-	session.removeAttribute("userid");
-	session.removeAttribute("username");
-	session.removeAttribute("usertype");
-	session.removeAttribute("accessID");
-	session.removeAttribute("canSeeSet");
-	session.removeAttribute("hasCertSet");
+	if (permissions.getAdminID() > 0) {
+		response.sendRedirect("login.jsp?switchUser=logout");
+	}
 	session.invalidate();
 	
 //	Cookie temp = new Cookie("from","contractor_detail.jsp?id=249");

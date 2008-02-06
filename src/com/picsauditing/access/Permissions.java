@@ -30,6 +30,7 @@ public class Permissions {
 	
 	public void login(User user) throws Exception {
 		try{
+			clear();
 			userID = Integer.parseInt(user.userDO.id);
 			if (userID == 0) throw new Exception("Missing User");
 			loggedIn = true;
@@ -139,13 +140,9 @@ public class Permissions {
 		String url = request.getRequestURI();
 		return this.loginRequired(response, url);
 	}
-	
+
 	public boolean hasGroup(Integer group){
-		for(Integer i : groups)
-			if(i == group)
-				return true;
-		
-		return false;
+		return groups.contains(group);
 	}
 
 	public Set<Permission> getPermissions() {

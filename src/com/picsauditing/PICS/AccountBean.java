@@ -1,6 +1,7 @@
 package com.picsauditing.PICS;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -445,29 +446,11 @@ public class AccountBean extends DataBean {
 			}//if
 			SQLResult.close();
 			
-			// Set canSeeSet
-			canSeeSet = new HashSet<String>();
-			if ("Contractor".equals(type))
-				canSeeSet.add(id);
-			selectQuery = "SELECT subID FROM accounts INNER JOIN generalcontractors ON (id=subID) "+
-			"WHERE active='Y' AND genID="+id+";";
-			SQLResult = SQLStatement.executeQuery(selectQuery);
-			while (SQLResult.next())
-				canSeeSet.add(SQLResult.getString("subID"));
-			SQLResult.close();
+			// Done in login.jsp now
+			//canSeeSet = this.canSeeSet();
+			// Moved Auditor canSee stuff to PermissionsBean Trevor 1/16/2008
 			
-			/*
-			 * Moved to PermissionsBean
-			 * Trevor 1/16/2008
-			auditorCanSeeSet = new HashSet<String>();
-			auditorCanSeeSet.add(id);
-			selectQuery = "SELECT id FROM contractor_info WHERE auditor_id="+id+" OR desktopAuditor_id="+id+" OR pqfAuditor_id="+id+";";
-			SQLResult = SQLStatement.executeQuery(selectQuery);
-			while (SQLResult.next())
-				auditorCanSeeSet.add(SQLResult.getString("id"));
-			SQLResult.close();
-			 */
-			
+			// REMOVE THIS CODE AFTER InsureGuard rewrite
 			// Set hasCertSet
 			hasCertSet = new HashSet<String>();
 			selectQuery = "SELECT contractor_id FROM certificates WHERE operator_id="+id+";";
@@ -481,6 +464,29 @@ public class AccountBean extends DataBean {
 		return true;
 	}//checkLogin
 
+	/**
+	 * @deprecated
+	 */
+	public HashSet<String> canSeeSet() throws Exception {
+		try {
+			DBReady();
+			HashSet<String> canSeeSet = new HashSet<String>();
+			canSeeSet = new HashSet<String>();
+			if ("Contractor".equals(type))
+				canSeeSet.add(id);
+			String selectQuery = "SELECT subID FROM accounts INNER JOIN generalcontractors ON (id=subID) "+
+			"WHERE active='Y' AND genID="+id+";";
+			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
+			while (SQLResult.next())
+				canSeeSet.add(SQLResult.getString("subID"));
+			SQLResult.close();
+			
+			return canSeeSet;
+		}finally{
+			DBClose();
+		}
+	}
+	
 	public void logLoginAttempt(javax.servlet.http.HttpServletRequest r, String lname, 
 								String lpass, String success) throws Exception {
 		String remoteAddress = r.getRemoteAddr();

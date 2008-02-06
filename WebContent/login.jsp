@@ -14,27 +14,38 @@
 	String lname = "";
 	String lpass = "";
 	
-	/*
-	// Auto Login a contractor...HUGE security HOLE
-	try{
-		aBean.setFromDB(request.getParameter("id"));
-		lname = aBean.getUsername();
-		lpass = aBean.getPassword();
-	} catch(Exception e) {
+	// This stuff below is not finished, we need to 
+	// solidify pBean/Accounts/contractor/users/etc before continuing
+	String switchUser = request.getParameter("switchUser");
+	boolean loginByAdmin = false;
+	if (switchUser != null) {
+		User user = new User();
+		if (switchUser.equals("logout")) {
+			user.setFromDB(Integer.toString(permissions.getAdminID()));
+		} else {
+			user.setFromDB(switchUser);
+		}
+		permissions.login(user);
 	}
-	*/
 	
 	String msg= "";
-	if (request.getParameter("Submit.x") != null) {
+	if (loginByAdmin || request.getParameter("Submit.x") != null) {
 		lname = request.getParameter("username");
 		lpass = request.getParameter("password");
-		if (aBean.checkLogin(lname, lpass, request)) {
-			
+		if (loginByAdmin || aBean.checkLogin(lname, lpass, request)) {
 			pBean.loggedIn = true;
-			pBean.setUserID(aBean.id);
-			pBean.setUserName(aBean.name);
-			pBean.setUserType(aBean.type);
-			pBean.setCanSeeSet(aBean.canSeeSet);
+			
+			if (loginByAdmin) {
+				aBean.setFromDB(permissions.getAccountIdString());
+				pBean.setUserID(permissions.getAccountIdString());
+				pBean.setUserName(permissions.getUsername());
+				pBean.setUserType(permissions.getAccountType());
+			} else {
+				pBean.setUserID(aBean.id);
+				pBean.setUserName(aBean.name);
+				pBean.setUserType(aBean.type);
+			}
+			pBean.setCanSeeSet(aBean.canSeeSet());
 
 			pBean.uBean = new UserBean();
 			if (aBean.userID.equals("")) {
