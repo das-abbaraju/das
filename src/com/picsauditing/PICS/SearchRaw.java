@@ -1,6 +1,7 @@
 package com.picsauditing.PICS;
 
 import java.sql.*;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,6 +56,15 @@ public class SearchRaw {
 	    Conn.close();
 	    this.returnedRows = rsdc.getRows().size();
 	    return rsdc.getRows();
+	}
+	
+	public HashMap<String, BasicDynaBean> doSearch(String keyName) throws Exception {
+		HashMap<String, BasicDynaBean> map = new HashMap<String, BasicDynaBean>();
+		List<BasicDynaBean> result = this.doSearch();
+		for (BasicDynaBean row : result) {
+			map.put(row.get(keyName).toString(), row);
+		}
+		return map;
 	}
 
 	public int getAllRows() {

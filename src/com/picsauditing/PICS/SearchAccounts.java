@@ -31,9 +31,11 @@ public class SearchAccounts extends SearchRaw {
 		this.sql.addWhere("a.type = '"+this.type.toString()+"'");
 		if (type == Type.Contractor) {
 			this.sql.addJoin("JOIN contractor_info c ON a.id = c.id");
+			this.sql.addWhere("a.type='Contractor'");
 		}
 		if (type == Type.Operator) {
 			this.sql.addJoin("JOIN operators o ON a.id = o.id");
+			this.sql.addWhere("a.type='Operator'");
 		}
 	}
 	
