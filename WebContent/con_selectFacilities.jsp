@@ -1,11 +1,12 @@
 <%//@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@ page language="java" import="com.picsauditing.PICS.*"%>
+<%@page import="org.apache.commons.beanutils.*"%>
+<%@page import="java.util.*"%>
+
 <%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
-<jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
-<jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean" scope ="page"/> 
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope ="application"/>
 
 <%	String id = request.getParameter("id");
@@ -16,6 +17,8 @@
 	if (isSubmitted){
 		cBean.setGeneralContractorsFromCheckList(request);
 		if (cBean.writeGeneralContractorsToDB(pBean,FACILITIES)){
+			com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
+			com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();
 			pcBean.generateDynamicCategories(id, com.picsauditing.PICS.pqf.Constants.PQF_TYPE, cBean.riskLevel);
 			cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(id,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
 			cBean.canEditPrequal="Yes";
@@ -30,6 +33,8 @@
 		}//if
 	}//if
 	if (pBean.isAdmin() && removeContractor){
+		com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
+		com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();
 		String removeOpID = request.getParameter("opID");
 		oBean.removeSubContractor(removeOpID,id);
 		AccountBean tempOpBean = new AccountBean();
@@ -42,6 +47,13 @@
 	cBean.setFromDB(id);
 	java.util.ArrayList operators = oBean.getOperatorsAL();
 	int count = 0;
+	SearchRaw search = new SearchRaw();
+	search.sql.setFromTable("flags");
+	search.sql.addWhere("conID="+cBean.id);
+	search.sql.addField("opID");
+	search.sql.addField("flag");
+	HashMap<String, BasicDynaBean> flagMap = search.doSearch("opID");
+
 %>
 <html>
 <head>
@@ -139,6 +151,7 @@
                         <td>Facility</td>
                         <td></td>
                         <td>Status</td>
+                        <td>Flag</td>
 <%	if (pBean.isAdmin()){%>
                         <td></td>
 <%	}//if%>
@@ -148,9 +161,45 @@
 		String opID = li.next();
 		String name = li.next();
 		String status = "";
-		if (pBean.isCorporate() && !pBean.oBean.facilitiesAL.contains(opID)){%>
+		if (cBean.generalContractors.contains(opID) && pBean.isCorporate() && !pBean.oBean.facilitiesAL.contains(opID)){%>
+                   <input type=hidden name=genID_<%=opID%> value=Yes>
+<%		}else if (cBean.generalContractors.contains(opID)){%>
+				  <tr class=blueMain <%=Utilities.getBGColor(count++)%>>
+				    <td><%=name%></td>
+					<td align="center">
+<%			if (cBean.generalContractors.contains(opID)){
+				oBean.setFromDB(opID);
+			status = cBean.calcPICSStatusForOperator(oBean);
+%>                         <img src=images/okCheck.gif width=19 height=15>
+                      <input type=hidden name=genID_<%=opID%> value=Yes>
+<%			}//if
+		if (!pBean.isAuditor() && !cBean.generalContractors.contains(opID)){%>
+			          <%=Inputs.getCheckBoxInput("genID_"+opID,"forms","","Yes")%>
+<%				status = "";
+		}//else
+%>
+				    </td>
+					<td class="<%=cBean.getTextColor(status)%>"><%=status%></td>
+					<td class="<%=cBean.getTextColor(status)%>" align="center">
+					  <a href="con_redFlags.jsp?id=<%=cBean.id%>" title="Click to view Flag Color details">
+                        <img src=images/icon_<%=flagMap.get(opID).get("flag").toString().toLowerCase()%>Flag.gif width=12 height=15 border=0>
+					  </a>
+					</td>
+                    <td>
+<%			if (pBean.isAdmin() && cBean.generalContractors.contains(opID)){%>
+                      <a href=con_selectFacilities.jsp?id=<%=id%>&action=Remove&opID=<%=opID%>>Remove</a>
+<%			}//if%>
+                    </td>
+				  </tr>
+<%		}//else
+	}//for
+	for (java.util.ListIterator<String> li = operators.listIterator();li.hasNext();) {
+		String opID = li.next();
+		String name = li.next();
+		String status = "";
+		if (!cBean.generalContractors.contains(opID) && pBean.isCorporate() && !pBean.oBean.facilitiesAL.contains(opID)){%>
                        <input type=hidden name=genID_<%=opID%> value=Yes>
-<%		}else{%>
+<%		}else if (!cBean.generalContractors.contains(opID)){%>
 					  <tr class=blueMain <%=Utilities.getBGColor(count++)%>>
 					    <td><%=name%></td>
 						<td align="center">
@@ -167,6 +216,8 @@
 %>
 					    </td>
 						<td class="<%=cBean.getTextColor(status)%>"><%=status%></td>
+						<td class="<%=cBean.getTextColor(status)%>">
+						</td>
                         <td>
 <%			if (pBean.isAdmin() && cBean.generalContractors.contains(opID)){%>
                           <a href=con_selectFacilities.jsp?id=<%=id%>&action=Remove&opID=<%=opID%>>Remove</a>

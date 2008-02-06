@@ -1,6 +1,6 @@
 <%//@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.PICS.redFlagReport.*"%>
-<%@ include file="utilities/adminGeneral_secure.jsp"%>
+<%@ include file="utilities/contractor_secure.jsp"%>
 
 <%
 Note note = new Note();
@@ -270,6 +270,7 @@ try{
             <a name="notesPart"></a>
             <br>
             <table width="657" border="0" cellpadding="2" cellspacing="1" bordercolor="FFFFFF">
+<% 	if (!pBean.isContractor()){%>
               <tr>
                 <td class="whiteTitle" bgcolor="#003366" align="center" colspan=2>Notes
                   <a href="help.htm#RFRNotes" title="Help" target="_blank">&nbsp;
@@ -277,7 +278,9 @@ try{
                   </a>
                 </td>
               </tr>
-<%	if(canEditNotes){%>
+<%	}//if
+	if(canEditNotes){
+%>
               <tr>
                 <td valign="top" colspan=2>
                   <form action="con_redFlags.jsp#notesPart" method="post" name="newNoteForm" id="newNoteForm">
