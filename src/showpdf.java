@@ -102,6 +102,7 @@ public class showpdf extends HttpServlet {
 		File file = new File(filePath);
 		if(!file.isFile()){
 			filePath = sFileName+ext.toLowerCase();
+			file = new File(filePath);
 			if(!file.isFile()){
 				o.print("The file you requested does not exist. Please contact PICS");
 			    o.flush();
