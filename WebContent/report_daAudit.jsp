@@ -98,7 +98,7 @@ function notRequired(conID) {
     <td height="70" colspan="2" align="center" class="buttons"> 
       <%@ include file="includes/selectReport.jsp"%>
       <span class="blueHeader">Schedule Drug and Alcohol Audits</span><br>
-      <a href="report_daAudit.jsp" class="blueMain">Refresh</span>
+      <a href="report_daAudit.jsp" class="blueMain">Refresh</a>
     </td>
   </tr>
 </table>

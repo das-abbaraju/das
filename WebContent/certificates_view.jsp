@@ -7,13 +7,10 @@
 
 <%try{
 	String id = request.getParameter("id");
-	String ses_id = (String)session.getAttribute("userid");
-	String operatorName = (String)session.getAttribute("username");
-	String userType = permissions.getAccountType();
-	if ("contractor".equalsIgnoreCase(userType) || "admin".equalsIgnoreCase(userType))
-		cerBean.setList(id);
+	if (permissions.isOperator())
+		cerBean.setList(id, permissions.getUsername());
 	else
-		cerBean.setList(id, operatorName);
+		cerBean.setList(id);
 	
 	cBean.setFromDB(id);
 %>
@@ -59,13 +56,13 @@
 <table width="657" border="0" cellpadding="0" cellspacing="0">
                 <tr> 
                 <td><br>
-<%					if (pBean.isContractor() ||	"General".equalsIgnoreCase(pBean.userType) && id.equals(ses_id)) {
+<%					if (pBean.isContractor() ||	"General".equalsIgnoreCase(pBean.userType) && id.equals(permissions.getUserIdString())) {
 %>				<%@ include file="utilities/contractorNav.jsp"%>
 <%					}//if
 					if (pBean.isAdmin()) {
 %>						<%@ include file="utilities/adminContractorNav.jsp"%>
 <%					}//if
-					if (pBean.isOperator() || ("General".equalsIgnoreCase(pBean.userType) && !id.equals(ses_id))) {%>
+					if (pBean.isOperator() || ("General".equalsIgnoreCase(pBean.userType) && !id.equals(permissions.getUserIdString()))) {%>
 							<%@ include file="utilities/opContractorNav.jsp"%>
 <%	}%>
 				</td>
@@ -83,7 +80,7 @@
                       <td bgcolor="#003366">Liability</td>
                       <td bgcolor="#003366">Named Ins.</td>
                       <td bgcolor="#003366">Waiver</td>
-<%	if (!"Contractor".equalsIgnoreCase(utype)) {
+<%	if (!permissions.isContractor()) {
 %>                    <td width="50" align="center" bgcolor="#993300"><strong><font color="#FFFFFF">File</font></strong></td>
 <%	}//if
 %>                  </tr>
@@ -96,7 +93,7 @@
                       <td align="right"><%=java.text.NumberFormat.getInstance().format(cerBean.getLiabilityLimit())%></td>
                       <td><%=cerBean.getNamedInsured()%></td>
                       <td><%=cerBean.getSubrogationWaived()%></td>
-<%	if (!"Contractor".equalsIgnoreCase(utype)) {
+<%	if (!permissions.isContractor()) {
 %>                    <td align="center"><a href="<%=cerBean.getDirPath()%>cert_<%=id%>_<%=cerBean.cert_id%>.<%=cerBean.getExt()%>" target="_blank"> 
                         <img src="images/icon_insurance.gif" width="20" height="20" border="0"></a> 
                       </td>

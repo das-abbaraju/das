@@ -2,6 +2,7 @@
 <%@ page language="java" import="com.picsauditing.PICS.*"%>
 <%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OSHABean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
@@ -29,7 +30,7 @@ function popitup(url) {
 	cBean.setFromDB(conID);
 	aBean.setFromDB(conID);
 	oBean.setFromDB(oID);
-	if (!"admin".equals(utype) && !cBean.canEditPrequal() && !pBean.canVerifyAudit(auditType,conID)) {
+	if (!permissions.isAdmin() && !cBean.canEditPrequal() && !pBean.canVerifyAudit(auditType,conID)) {
 		response.sendRedirect("login.jsp");
 		return;
 	}//if
@@ -237,7 +238,7 @@ function popitup(url) {
                         <td align="center" colspan="7">
                           <input name="OID" type="hidden" value="<%=oID%>">
                           <input name="action" type="submit" class="forms" value="Update">
-	 	  				  <% if (!isNew && "admin".equals(utype)){ %>
+	 	  				  <% if (!isNew && permissions.isAdmin()){ %>
 						  	<input name="action" type="submit" class="forms" value="Delete" onClick="return confirm('Are you sure you want to delete this location?');">
 						  <% }//if %>
 						</td>

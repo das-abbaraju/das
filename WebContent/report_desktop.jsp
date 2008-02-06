@@ -3,13 +3,14 @@
 <%@page import="java.util.*"%>
 <%@page import="com.picsauditing.access.*"%>
 <jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session" />
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope ="application"/>
 <jsp:useBean id="pageBean" class="com.picsauditing.PICS.WebPage" scope ="page"/>
 <%
-	pBean.getPermissions().tryPermission(OpPerms.AssignAudits);
-	boolean canEdit = pBean.getPermissions().hasPermission(OpPerms.AssignAudits, OpType.Edit);
-%>
-<%
+permissions.loginRequired(response, request);
+permissions.tryPermission(OpPerms.AssignAudits);
+boolean canEdit = permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit);
+
 pageBean.setTitle("Schedule Desktop Audits");
 pageBean.includeScriptaculous(true);
 

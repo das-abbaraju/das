@@ -1,8 +1,6 @@
 package com.picsaudting.PICS;
 
 import junit.framework.TestCase;
-import java.util.*;
-
 import com.picsauditing.PICS.SQLBuilder;
 
 /**
