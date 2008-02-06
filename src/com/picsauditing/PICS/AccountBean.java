@@ -369,7 +369,7 @@ public class AccountBean extends DataBean {
 			"WHERE users.username='"+eqDB(lname)+"' UNION " +
 			"SELECT *, null AS uID, null AS isActive, null AS user_password "+
 			"FROM accounts "+
-			"WHERE username='"+eqDB(lname)+"' AND type <> 'Operator' ";
+			"WHERE username='"+eqDB(lname)+"' AND type = 'Contractor' ";
 
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
