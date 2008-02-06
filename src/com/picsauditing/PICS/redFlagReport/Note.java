@@ -88,7 +88,7 @@ public class Note extends DataBean{
 		sql.addField("DATE_FORMAT(n.timeStamp,'%c/%e/%y') AS formattedDate");
 		sql.addJoin("JOIN accounts a ON a.id = n.opID");
 		sql.addWhere("conID = '"+conID+"' AND isDeleted=0");
-		sql.addOrderBy("ORDER BY timeStamp DESC");
+		sql.addOrderBy("timeStamp DESC");
 		
 		if (permissions.isPicsEmployee()) {
 			// PICS employees can see ALL notes
@@ -98,7 +98,7 @@ public class Note extends DataBean{
 				" SELECT opID FROM facilities WHERE corporateID in (SELECT corporateID FROM facilities where opID = "+opID+")" +
 				" UNION SELECT opID FROM facilities WHERE corporateID = "+opID +
 				" UNION SELECT "+opID+
-				")");
+				" UNION SELECT corporateID AS opID FROM facilities where opID="+opID+")");
 		}
 		
 		try {
@@ -110,7 +110,7 @@ public class Note extends DataBean{
 		} finally {
 			DBClose();
 		}//catch		
-	}//setList
+	}//getContractorNotes
 
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
 		noteID = SQLResult.getString("noteID");
