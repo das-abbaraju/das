@@ -59,7 +59,7 @@ public class showpdf extends HttpServlet {
 			response.sendRedirect("/login.jsp");
 			return;			
 		}//catch
-		String req_uid = request.getParameter("id"); 
+		String req_uid = request.getParameter("id");
 		String OID= request.getParameter("OID"); 
 		String file_type = request.getParameter("file");
 
@@ -94,14 +94,15 @@ public class showpdf extends HttpServlet {
 		    return;
 		}
 				
+		ext = ext.toLowerCase();
 		String ct = setContentType(ext);
 		response.setContentType(ct);
 		
-		//Check for both upper and lower case extension
 		String filePath = sFileName + ext;
 		File file = new File(filePath);
 		if(!file.isFile()){
-			filePath = sFileName+ext.toLowerCase();
+			//Check for both upper if the lower case file was not there
+			filePath = sFileName+ext.toUpperCase();
 			file = new File(filePath);
 			if(!file.isFile()){
 				o.print("The file you requested does not exist. Please contact PICS");
