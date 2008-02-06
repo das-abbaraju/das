@@ -144,6 +144,29 @@ public class Permissions {
 	public boolean hasGroup(Integer group){
 		return groups.contains(group);
 	}
+	public boolean isContractor() {
+		return "Contractor".equals(this.accountType);
+	}
+	public boolean isOperator() {
+		return "Operator".equals(this.accountType);
+	}
+	/**
+	 * @deprecated
+	 * @return
+	 */
+	public boolean isAdmin() {
+		return this.hasGroup(10);
+	}
+	/**
+	 * @deprecated
+	 * @return
+	 */
+	public boolean isAuditor() {
+		return this.hasGroup(11);
+	}
+	public boolean isPicsEmployee() {
+		return (1100 == this.accountID);
+	}
 
 	public Set<Permission> getPermissions() {
 		return permissions;

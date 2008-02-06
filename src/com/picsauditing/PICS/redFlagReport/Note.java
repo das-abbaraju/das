@@ -1,7 +1,15 @@
 package com.picsauditing.PICS.redFlagReport;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.List;
+
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.beanutils.RowSetDynaClass;
+
 import com.picsauditing.PICS.*;
+import com.picsauditing.access.Permissions;
 
 public class Note extends DataBean{
 	public String noteID = "";
@@ -61,6 +69,23 @@ public class Note extends DataBean{
 		} catch (Exception e) {
 			closeList();
 			throw e;
+		}//catch		
+	}//setList
+
+	public List<BasicDynaBean> getContractorNotes(String conID, Permissions permissions) throws Exception {
+		String opID = permissions.getAccountIdString();
+		
+		String selectQuery = "SELECT *,DATE_FORMAT(timeStamp,'%c/%e/%y') AS formattedDate "+
+			"FROM notes WHERE opID="+opID+" AND conID="+conID+" AND isDeleted=false ORDER BY timeStamp DESC;";
+	    
+		try {
+			DBReady();
+			ResultSet rs = SQLStatement.executeQuery(selectQuery);
+		    RowSetDynaClass rsdc = new RowSetDynaClass(rs, false);
+		    rs.close();
+		    return rsdc.getRows();
+		} finally {
+			DBClose();
 		}//catch		
 	}//setList
 
