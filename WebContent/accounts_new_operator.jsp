@@ -4,13 +4,15 @@
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope ="application"/>
-
+<%@page import="java.util.Random"%>
 <%	String accountType = request.getParameter("type");
 	oBean.isCorporate = "Corporate".equals(accountType);
 	
 	if (request.getParameter("submit") != null) {
 		aBean.setFromRequest(request);
 		oBean.setFromRequest(request);
+		aBean.username = Integer.toString(new Random().nextInt());
+		aBean.password = Integer.toString(new Random().nextInt());
 		if (aBean.isOK() && oBean.isOK() && aBean.writeNewToDB()) {
 			oBean.writeNewToDB(aBean.id);
 			FACILITIES.resetFacilities();
@@ -19,7 +21,6 @@
 		}//if
 	}//if
 %>
-
 <html>
 <head>
   <title>PICS - Pacific Industrial Contractor Screening</title>
@@ -123,14 +124,6 @@
                       <tr> 
                         <td class="blueMain" align="right">&nbsp;</td>
                         <td>&nbsp;</td>
-                      </tr>
-                      <tr> 
-                        <td class="blueMain" align="right">Username</td>
-                        <td><input name="username" type="text" class="forms" size="15" value="<%=aBean.username%>"></td>
-                      </tr>
-                      <tr> 
-                        <td class="blueMain" align="right">Password</td>
-                        <td><input name="password" type="text" class="forms" size="15" value="<%=aBean.password%>"></td>
                       </tr>
                       <tr> 
                         <td class="blueMain" align="right">Visible?</td>
