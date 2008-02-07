@@ -94,7 +94,7 @@ public class OSHABean extends DataBean {
 				case YEAR3: year=YEAR4; break;
 			}
 		}
-		try {return Float.toString(stats[field][year]);}
+		try {return decFormatter.format((stats[field][year]));}
 		catch (Exception e) {return "";}//catch
 	}//calcRate
 
