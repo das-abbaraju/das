@@ -1,6 +1,7 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%//@ page language="java"%>
 <%@ include file="utilities/contractor_edit_secure.jsp"%>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <jsp:useBean id="cerBean" class="com.picsauditing.PICS.CertificateBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:setProperty name="cerBean" property="*" />

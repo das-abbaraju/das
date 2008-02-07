@@ -6,6 +6,7 @@
 <jsp:useBean id="psBean" class="com.picsauditing.PICS.pqf.SubCategoryBean" scope ="page"/>
 <jsp:useBean id="uBean" class="com.picsauditing.PICS.Utilities" scope ="page"/>
 <jsp:useBean id="poBean" class="com.picsauditing.PICS.pqf.OptionBean" scope ="page"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session"/>
 
 <%try{
 	String action = request.getParameter("action");

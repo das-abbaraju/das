@@ -1,5 +1,6 @@
 <%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.PICS.pqf.*" errorPage="exception_handler.jsp"%>
 <%@ include file="utilities/adminGeneral_secure.jsp" %>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%	String auditType = request.getParameter("auditType");
 	String from = request.getParameter("from");
 	if (null == from)

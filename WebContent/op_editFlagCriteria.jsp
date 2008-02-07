@@ -2,6 +2,7 @@
 <%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.PICS.redFlagReport.*"%>
 <%@ include file="utilities/adminGeneral_secure.jsp"%>
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope="application"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session"/>
 	
 <%	HurdleQuestions hurdleQuestions = null;
 try{

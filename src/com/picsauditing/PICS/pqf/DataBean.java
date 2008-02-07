@@ -901,17 +901,14 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 	}//isClosed
 
 	public boolean isYes(String qID) throws Exception {
-// Created on 11/29/05 jj, used in pqf_redFlags.jsp
 		return ("Yes".equals(getAnswer(qID)));
 	}//isYes
 
 	public boolean isNotAnswered(String qID) throws Exception {
-// Created on 11/29/05 jj, used in pqf_redFlags.jsp
 		return ("".equals(getAnswer(qID)));
-	}//isNotAnswered
+	}
 
 	public String getFlag(String qID) throws Exception {
-// Created on 11/29/05 jj, used in pqf_redFlags.jsp
 		if (isYes(qID))
 			return "<img src=images/notOkCheck.gif width=19 height=15>";
 		if (isNotAnswered(qID))
@@ -920,7 +917,6 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 	}//getFlag
 
 	public String getFlagDandB(String value) throws Exception {
-// Created on 12/12/05 jj, used in pqf_redFlags.jsp, flags risky D&B ratins
 		if ("".equals(value))
 			return "<img src=images/notOkCheck.gif width=19 height=15 alt='Not Answered'>";
 		if (!Utilities.arrayContains(D_AND_B_OK, value))
@@ -929,7 +925,6 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 	}//getFlagDandB
 
 	public String getFlagOver(String value, float limit) throws Exception {
-// Created on 11/29/05 jj, used in pqf_redFlags.jsp
 		if ("".equals(value))
 			return "<img src=images/notOkCheck.gif width=19 height=15 alt='Not Answered'>";
 		float num;

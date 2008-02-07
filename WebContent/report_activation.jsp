@@ -2,7 +2,7 @@
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope ="application"/>
 <%//@ page language="java"%>
 <%@ include file="utilities/admin_secure.jsp" %>
-<jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="session"/>
+<jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope ="application"/>
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 

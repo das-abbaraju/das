@@ -2,9 +2,9 @@
 <%@ page language="java" import="com.picsauditing.PICS.*,jxl.*,jxl.write.*,jxl.format.Colour" errorPage="exception_handler.jsp"%>
 <%//@ page language="java"%>
 <%@ include file="utilities/admin_secure.jsp" %>
-
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="session"/>
+<jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
 <jsp:useBean id="pqBean" class="com.picsauditing.PICS.pqf.QuestionBean" scope ="page"/>
 

@@ -1,6 +1,4 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
-<%//@ page language="java" import="com.picsauditing.PICS.*"%>
-<%//@include file="utilities/contractor_secure.jsp"%>
 <%	int count = 0;
 	ContractorBean c = new ContractorBean();
 %>

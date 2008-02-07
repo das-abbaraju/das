@@ -21,6 +21,7 @@ public class Permissions {
 	private Set<Integer> groups = new HashSet<Integer>();
 	private Set<Permission> permissions = new HashSet<Permission>();	
 	private String username;
+	private String name;
 	private int accountID;
 	private String accountType;
 	private int adminID;
@@ -35,6 +36,7 @@ public class Permissions {
 			if (userID == 0) throw new Exception("Missing User");
 			loggedIn = true;
 			username = user.userDO.username;
+			name = user.userDO.name;
 			accountID = Integer.parseInt(user.userDO.accountID);
 			accountType = user.userDO.accountType;
 			permissions = user.getPermissions();
@@ -52,6 +54,7 @@ public class Permissions {
 		userID = 0;
 		loggedIn = false;
 		username = "";
+		name = "";
 		accountID = 0;
 		permissions.clear();
 		groups.clear();
@@ -87,6 +90,9 @@ public class Permissions {
 	}
 	public void setAdminID(int adminID) {
 		this.adminID = adminID;
+	}
+	public String getName() {
+		return name;
 	}
 
 	/**

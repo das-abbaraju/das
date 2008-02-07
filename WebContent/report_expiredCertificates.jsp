@@ -4,7 +4,8 @@
 <jsp:useBean id="cerBean" class="com.picsauditing.PICS.CertificateBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="certDO" class="com.picsauditing.domain.CertificateDO"scope="page" />
-<jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope="session" />
+<jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope="page" />
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%	try{
 	String action = request.getParameter("action");
 	if (null != request.getParameter("Submit"))

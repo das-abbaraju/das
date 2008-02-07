@@ -5,6 +5,7 @@
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
 <jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope ="application"/>
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope ="application"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%
 	String editID = request.getParameter("id");
 	UserAccess userAccess = new UserAccess();
@@ -21,7 +22,7 @@
 		aBean.setFromRequest(request);
 		oBean.setFromRequest(request);
 		userAccess.setFromRequest(request);
-		userAccess.writeToDB(pBean.userID);
+		userAccess.writeToDB(permissions);
 		if (aBean.isOK() && oBean.isOK()) {
 			aBean.writeToDB();
 			oBean.writeToDB();

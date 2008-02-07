@@ -3,6 +3,7 @@
 <%@ include file="includes/auditTypeSelected.jsp"%>
 <jsp:useBean id="psBean" class="com.picsauditing.PICS.pqf.SubCategoryBean" scope ="page"/>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session"/>
 
 <%	String action = request.getParameter("action");
 	String editID = request.getParameter("editID");

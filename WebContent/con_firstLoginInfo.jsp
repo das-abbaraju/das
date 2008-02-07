@@ -2,39 +2,24 @@
 <%//@ page language="java" import="com.picsauditing.PICS.*"%>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope ="session"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 
 <%	String id = request.getParameter("id");
 	String ses_id = (String)session.getAttribute("temp_userid");
 	if ((null == ses_id) || !ses_id.equals(id)) {
 		response.sendRedirect("logout.jsp");
 		return;
-	}//if
+	}
 	cBean.setFromDB(id);
 	boolean isSubmitted = (null != request.getParameter("submit.x"));
-//	boolean isSelected = (null != request.getParameter("billingCycle"));
-//	if (isSubmitted && isSelected) {
 	if (isSubmitted) {
 		session.removeAttribute("temp_userid");
 		session.setAttribute("userid",ses_id);
-		
-//		String billingCycle = request.getParameter("billingCycle");
-//		int billingAmount = cBean.calcBillingAmount(cBean.facilitiesCount,billingCycle,"No");
-//		if ("E".equals(billingCycle)) {
-//			billingAmount = 225;
-//			billingCycle = "3";
-//			cBean.isExempt="Yes";
-//		}//if
 		cBean.accountDate = DateBean.getTodaysDate();
-// set these when account created
-//		cBean.billingCycle = billingCycle;
-//		cBean.billingAmount = Integer.toString(billingAmount);
 		cBean.writeToDB();
 		response.sendRedirect("con_selectFacilities.jsp?id=" + id);
 		return;		
-	}//if
-//	String errMsg = "";
-//	if (isSubmitted && !isSelected)
-//		errMsg = "Please select your membership subscription";
+	}
 %>
 <html>
 <head>
@@ -70,21 +55,7 @@
                 </tr>
                 <tr> 
                   <td class="blueMain" align="left">
-<!--				  <span class="blueHeader">PICS 
-                    Membership</span><br>
-					Please choose a subscription time period (<a href=con_pricing.jsp target=_blank class=blueMain>See pricing table</a>)<br>
-					<input name=billingCycle type=radio value=3>
-                    $<%//=cBean.calcBillingAmount(cBean.facilitiesCount,"3","No", this.getServletContext())%>/3 years (discounted to $<%//=cBean.calcBillingAmount(cBean.facilitiesCount,"3","No",this.getServletContext())/3%>/year)<br>
-					<input name=billingCycle type=radio value=1> $<%//=cBean.calcBillingAmount(cBean.facilitiesCount,"1","No",this.getServletContext())%>/1 year<br>
-                    <input name=billingCycle type=radio value=E> $225/3 years (Exempt from onsite office audit*)<br><br>
-                    <span class="redMain">* In order for you to choose exempt, 
-                    you must have prior authorization from the requesting facility. 
-                    Only contractors such as gardeners, off-site engineers, janitorial, 
-                    some consultants, etc, may qualify as exempt. All exempt contractors 
-                    must still complete the prequalification forms each year. 
-                    </span><br>
-                    <br>
- -->                <span class="blueHeader">Thank you for creating a PICS contractor account<br>Your PICS Membership will include:</span>
+                  <span class="blueHeader">Thank you for creating a PICS contractor account<br>Your PICS Membership will include:</span>
                     <ul>
                         <li>Three year onsite office audit available for view by the operators</li>
                         <li>Company name listed on the web site</li>

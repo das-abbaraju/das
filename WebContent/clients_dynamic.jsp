@@ -1,5 +1,4 @@
 <%@ page language="java" import="java.sql.*, java.util.*" errorPage="exception_handler.jsp"%>
-
 <%
 	Connection Conn = com.picsauditing.PICS.DBBean.getDBConnection();
 	
@@ -7,16 +6,7 @@
 	String Query = "SELECT * FROM accounts WHERE type = 'Operator' ORDER BY name ASC;";
 
 	ResultSet SQLResult = SQLStatement.executeQuery(Query);
-
-/*	int numResults = 0;
-	while (SQLResult.next()) {
-//		if ("Y".equals(SQLResult.getString("active")))
-			numResults++;
-	}//while
-*/
 %>
-
-
 <html>
 <head>
 <title>PICS - Pacific Industrial Contractors Screening</title>

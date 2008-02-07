@@ -18,7 +18,6 @@ import com.picsauditing.domain.IPicsDO;
 	2/20/06 jj - eliminated other searches (operator, auditor, osha)
 	1/28/05 jj - added doOSHASearch for fatalities and incidence report
 	1/19/04 bj - changed scheduleAuditsReport variable to whichScheduleAuditsReport so schedule audit report can return either new or recsheduling audits
-	12/31/04 jj - reset incompleteAfter to "" in closeSearch, fixed bug of remembering incomplete audit search because SearchBean is session type
 */
 	public AccountBean aBean = new AccountBean();
 	public ContractorBean cBean = new ContractorBean();

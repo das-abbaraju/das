@@ -3,8 +3,9 @@
 <%@page import="java.util.*"%>
 <%//@ page language="java" import="com.picsauditing.PICS.*"%>
 <%@ include file="utilities/admin_secure.jsp" %>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
-<jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="session"/>
+<jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean" scope ="page"/>
 <jsp:useBean id="usersDO" class="com.picsauditing.domain.UsersDO" scope="page" />
 

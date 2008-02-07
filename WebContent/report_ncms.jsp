@@ -4,8 +4,9 @@
 <%@page import="com.picsauditing.access.*"%>
 <jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session" />
 <jsp:useBean id="pageBean" class="com.picsauditing.PICS.WebPage" scope ="page"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%
-pBean.getPermissions().tryPermission(OpPerms.NCMS);
+permissions.tryPermission(OpPerms.NCMS);
 
 // TODO Allow for dynamic order by columns
 //search.addOrderBys(request.getParameter("orderBy"), "name");

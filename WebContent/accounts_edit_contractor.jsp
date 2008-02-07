@@ -6,6 +6,7 @@
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope="page"/>
 <jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope="application"/>
 <jsp:useBean id="helper" class="com.picsauditing.servlet.upload.UploadConHelper"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 
 <%
 	String id = request.getParameter("id");

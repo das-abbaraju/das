@@ -4,6 +4,7 @@
 <%@ include file="includes/auditTypeSelected.jsp"%>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
 <jsp:useBean id="pcoBean" class="com.picsauditing.PICS.pqf.Constants" scope ="page"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session"/>
 <%try{
 	String action = request.getParameter("action");
 	if ("Change Numbering".equals(action)) {

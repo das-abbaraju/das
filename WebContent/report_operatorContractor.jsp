@@ -2,8 +2,9 @@
 <%//@ page language="java"%>
 <%@ include file="utilities/adminGeneral_secure.jsp" %>
 
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="session"/>
+<jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 
 <%	try{
 	OperatorBean oBean = new OperatorBean();

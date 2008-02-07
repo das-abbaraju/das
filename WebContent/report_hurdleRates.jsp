@@ -2,7 +2,8 @@
 	errorPage="exception_handler.jsp"%>
 <%@ include file="utilities/adminGeneral_secure.jsp"%>
 
-<jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope="session" />
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
+<jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope="page" />
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope="page" />
 
 <%	try{

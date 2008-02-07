@@ -1,8 +1,9 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@ include file="utilities/adminGeneral_secure.jsp" %>
-<jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="session"/>
+<jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
 <jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope ="application"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%	try{
 	tBean.setFromDB();
 	String assignAuditorID = request.getParameter("assignAuditorID");

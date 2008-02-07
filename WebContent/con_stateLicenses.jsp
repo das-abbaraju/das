@@ -8,6 +8,7 @@
 <jsp:useBean id="pconBean" class="com.picsauditing.PICS.pqf.Constants" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%try{
 	String conID = request.getParameter("id");
 	String id = request.getParameter("id");

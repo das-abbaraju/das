@@ -2,6 +2,7 @@
 <%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 
 <%
 	FlagDO flag = new FlagDO();
@@ -146,14 +147,6 @@ function MM_displayStatusMsg(msgStr) { //v1.0
 						<span class=redMain>Field Audit:</span> Contact PICS<br>
 <%
 	}
-
- 	if (pBean.isAdmin()
- 			|| (!pBean.isContractor() && pBean.canSeeSet.contains(id))) {
- %>
-<!-- 						<a href=pqf_redFlags.jsp?id=<%=id%>>PQF Red Flag Report</a><br>
- -->						<a href=con_stateLicenses.jsp?id=<%=id%>>Verify State Licenses</a><br>
-<%
-	}//if
 %>
 
 <%

@@ -2,7 +2,7 @@
 <%//@ page language="java"%>
 <%@ include file="utilities/adminGeneral_secure.jsp" %>
 
-<jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="session"/>
+<jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope ="application"/>
@@ -18,19 +18,19 @@
 	if ("Paid".equals(action)){
 		String amount = request.getParameter("amount");
 		cBean.upgradePayment(action_id, permissions.getUsername(), amount);
-	}//if
+	}
 	if ("Inv".equals(action)){
 		String invoiceAmount = request.getParameter("invoiceAmount");
 		cBean.setFromDB(action_id);
 		cBean.lastInvoiceDate = DateBean.getTodaysDate();
 		cBean.billingAmount = invoiceAmount;
-		cBean.addAdminNote(action_id, "("+adminName+")", "Invoiced for $"+cBean.billingAmount+" membership level",cBean.lastInvoiceDate);
+		cBean.addAdminNote(action_id, "("+permissions.getName()+")", "Invoiced for $"+cBean.billingAmount+" membership level",cBean.lastInvoiceDate);
 		if ("".equals(cBean.membershipDate)){
 			cBean.membershipDate = DateBean.getTodaysDate();
-			cBean.addNote(action_id, "("+adminName+")", "Membership Date set today to "+cBean.membershipDate,DateBean.getTodaysDateTime());
-		}//if
+			cBean.addNote(action_id, "("+permissions.getName()+")", "Membership Date set today to "+cBean.membershipDate,DateBean.getTodaysDateTime());
+		}
 		cBean.writeToDB();
-	}//if
+	}
 	if ("Recalculate Upgrade Amounts".equals(action)) {
 		application.setAttribute("updateAllPayingFacilities", null);
 		new Billing().updateAllPayingFacilities(FACILITIES, application);

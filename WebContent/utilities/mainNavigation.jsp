@@ -27,7 +27,7 @@ function MM_swapImage() { //v3.0
 <%	String navString = "";
 	String whichPage = "";
 	if (pBean.isAdmin())
-		navString = "accounts_manage,ManageAccounts,manage_forms,ManageFormsTrade,report_auditors,Audits,reports,Reports";
+		navString = "accounts_manage,ManageAccounts,manage_forms,ManageFormsTrade,report_audits,Audits,reports,Reports";
 	else if (pBean.isOperator() || pBean.isCorporate()){
 		if (pBean.getPermissions().hasPermission(com.picsauditing.access.OpPerms.StatusOnly))
 			navString = "contractor_list_limited,ContractorList";

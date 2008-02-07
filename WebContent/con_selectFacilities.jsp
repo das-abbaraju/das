@@ -2,7 +2,7 @@
 <%@ page language="java" import="com.picsauditing.PICS.*"%>
 <%@page import="org.apache.commons.beanutils.*"%>
 <%@page import="java.util.*"%>
-
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
