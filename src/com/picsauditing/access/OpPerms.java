@@ -13,6 +13,7 @@ public enum OpPerms {
 	EditForcedFlags("Edit Forced Flags"),
 	EditNotes("Edit Contractor Notes"),
 	EditUsers("Add/Edit User Accounts"),
+	EditAllUsers("Add/Edit All User Accounts"),
 	StatusOnly("Can Only View Statuses"),
 	
 	// New Permissions based on the new Model since 2007

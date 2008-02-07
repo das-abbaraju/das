@@ -12,6 +12,11 @@ if (!permissions.isLoggedIn()) {
 }
 permissions.tryPermission(OpPerms.EditUsers, OpType.View);
 
+String accountID = permissions.getAccountIdString();
+if (permissions.hasPermission(OpPerms.EditAllUsers) && request.getParameter("accountID") != null) {
+	accountID = Utilities.intToDB(request.getParameter("accountID"));
+}
+
 String userID;
 String action = request.getParameter("action");
 if (action == null) action = "";
@@ -92,7 +97,7 @@ if (uBean.isSet()) {
 <form id="user" method="POST" action="user_edit.jsp">
 	<input type="hidden" name="action" value="saveUser" />
 	<input type="hidden" name="id" value="<%=uBean.userDO.id%>" />
-	<input type="hidden" name="accountID" value="<%=permissions.getAccountIdString() %>" />
+	<input type="hidden" name="accountID" value="<%=accountID%>" />
 	<input type="hidden" name="isGroup" value="<%=(isGroup?"Yes":"No")%>" />
 <table border="0" cellspacing="0" cellpadding="1">
 	<tr>
@@ -103,6 +108,14 @@ if (uBean.isSet()) {
 	  <td><input type="button" class="forms" value="Save"
 	  	onclick="saveUser();" 
 	  	style="font-size: 14px; font-weight: bold;"></td>
+	</tr>
+	<tr  class="blueMain">
+		<td align="right">ID</td>
+		<td><%=uBean.userDO.id%></td>
+	</tr>
+	<tr>
+		<td class="blueMain" align="right">Date created</td>
+		<td class="blueMain"><%=uBean.userDO.dateCreated%></td>
 	</tr>
 	<tr>
 		<td class="blueMain" align="right"><%= (isGroup?"Group":"User") %> name</td>
@@ -124,6 +137,10 @@ if (uBean.isSet()) {
 	<tr> 
 		<td class="blueMain" align="right">Password</td>
 		<td><input name="newPassword" type="password" class="forms" size="15" value="<%=uBean.userDO.password%>"></td>
+	</tr>
+	<tr> 
+		<td class="blueMain" align="right">Last login</td>
+		<td class="blueMain"><%=uBean.userDO.lastLogin%></td>
 	</tr>
 	<% } %>
 	<tr>
@@ -216,38 +233,39 @@ if (canGrant) {
 } // End Permissions
 ////////////////////////////
 
-%>
-<p class="blueMain">Member of Group(s):
-<form id="addGroup">
-<ul>
-<%
 Set<User> allGroups = currentUser.getAccountGroups();
 allGroups.remove(uBean); // You can't add yourself to your own group
+if (allGroups.size() > 0) {
+	%>
+	<p class="blueMain">Member of Group(s):
+	<form id="addGroup">
+	<ul>
+	<%
+	for (User group: myGroups) {
+		allGroups.remove(group);
+		%>
+		<li class="blueMain">
+			<a href="#" onclick="showUser(<%=group.userDO.id%>); return false;"><%=group.userDO.name%></a>
+			(<a href="#" onclick="saveGroup('removeGroup', <%=group.userDO.id%>); return false;">remove</a>)
+		</li>
+		<%
+	}
+	
+	for (User group: allGroups) {
+		%>
+		<li class="blueMain">
+			<a href="#" onclick="saveGroup('addGroup',<%=group.userDO.id%>); return false;" style="font-style: italic; color: red;">Add to <%=group.userDO.name%></a>
+		</li>
+		<%
+	}
+	%>
+	</ul>
+	</form>
+	</p>
+	<%
+} //if
 
-for (User group: myGroups) {
-	allGroups.remove(group);
-%>
-<li class="blueMain">
-	<a href="#" onclick="showUser(<%=group.userDO.id%>); return false;"><%=group.userDO.name%></a>
-	(<a href="#" onclick="saveGroup('removeGroup', <%=group.userDO.id%>); return false;">remove</a>)
-</li>
-<%
-}
-for (User group: allGroups) {
-%>
-<li class="blueMain">
-	<a href="#" onclick="saveGroup('addGroup',<%=group.userDO.id%>); return false;" style="font-style: italic; color: red;">Add to <%=group.userDO.name%></a>
-</li>
-<%
-}
-%>
-</ul>
-</form>
-</p>
-
-<%
-
-if (isGroup) {
+if (isGroup && myMembers.size() > 0) {
 %>
 <p class="blueMain">Contains Member(s):
 <ul>

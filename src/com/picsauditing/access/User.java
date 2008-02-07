@@ -122,6 +122,8 @@ public class User extends DataBean implements Comparable<User> {
 		
 		if (userID > 0) {
 			sql.append(" WHERE id=").append(userID);
+		} else {
+			sql.append(", dateCreated=NOW()");
 		}
 		try{
 			DBReady();

@@ -113,6 +113,9 @@ public class SearchRaw {
 		return html;
 	}
 	public String getPageLinks() {
+		return getPageLinks("");
+	}
+	public String getPageLinks(String additionalParams) {
 		String temp = "<span class=\"redMain\">";
 		temp+="Found <b>"+this.allRows+"</b> results";
 		if (this.returnedRows == this.allRows) {
@@ -125,9 +128,9 @@ public class SearchRaw {
 		if (!this.sql.isSQL_CALC_FOUND_ROWS()) {
 			// We didn't calculate the total row count so just return
 			// TODO: add at least a next button
-			temp += addPageLink(this.currentPage-1);
-			temp += addPageLink(this.currentPage);
-			temp += addPageLink(this.currentPage+1);
+			temp += addPageLink(this.currentPage-1, additionalParams);
+			temp += addPageLink(this.currentPage, additionalParams);
+			temp += addPageLink(this.currentPage+1, additionalParams);
 			temp += "</span>";
 			return temp;
 		}
@@ -143,7 +146,7 @@ public class SearchRaw {
 		
 		// if currentPage = 10, print 1...
 		if (this.currentPage - SHOW_PAGES > 1) {
-			temp += addPageLink(1);
+			temp += addPageLink(1, additionalParams);
 			if (this.currentPage - SHOW_PAGES > 2) {
 				temp += " ... ";
 			}
@@ -151,7 +154,7 @@ public class SearchRaw {
 		
 		// if currentPage = 5, and SHOW_PAGES=2, print pages 3 4 5 6 7
 		for(int i=(this.currentPage-SHOW_PAGES); i <= this.currentPage+SHOW_PAGES; i++) {
-			temp += addPageLink(i);
+			temp += addPageLink(i, additionalParams);
 		}
 
 		// if currentPage = 10 and pageCount = 19, print ...19
@@ -159,14 +162,14 @@ public class SearchRaw {
 			if ((this.currentPage + SHOW_PAGES) < (this.getPages()-1) ) {
 				temp += " ... ";
 			}
-			temp += addPageLink(this.getPages());
+			temp += addPageLink(this.getPages(), additionalParams);
 		}
 
 		temp+="</span>";
 		return temp;
 	}
 	
-	private String addPageLink(int page) {
+	private String addPageLink(int page, String additionalParams) {
 		if (page == this.currentPage) {
 			return "<strong>"+this.currentPage+"</strong>";
 		}
@@ -177,7 +180,7 @@ public class SearchRaw {
 		if (orderBy.length() > 0)
 			orderBy = "orderBy=" + orderBy + "&";
 		
-		return " <a href=\"?"+orderBy+"&showPage="+page+"\">"+page+"</a> ";
+		return " <a href=\"?"+orderBy+"&showPage="+page+additionalParams+"\">"+page+"</a> ";
 	}
 	
 	public void setPageByResult(HttpServletRequest request) {
