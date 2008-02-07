@@ -2,12 +2,8 @@
 <%@page import="org.apache.commons.beanutils.*"%>
 <%@page import="java.util.*"%>
 <%@page import="com.picsauditing.access.*"%>
-<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session" />
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
-<jsp:useBean id="pageBean" class="com.picsauditing.PICS.WebPage" scope ="page"/>
-<jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope ="application"/>
+<%@ include file="includes/main.jsp" %>
 <%
-if (!permissions.loginRequired(response, request)) return;
 permissions.tryPermission(OpPerms.EditUsers, OpType.View);
 
 String getParams = ""; // Used when we go to Page 2,3,etc
