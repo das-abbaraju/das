@@ -27,6 +27,7 @@ search.sql.addField("u.isGroup");
 
 String isGroup = request.getParameter("isGroup");
 String isActive = request.getParameter("isActive");
+if (isActive == null) isActive = "Yes";
 if ("Yes".equals(isGroup) || "No".equals(isGroup)) {
 	search.sql.addWhere("isGroup = '"+isGroup+"' ");
 	getParams += "&isGroup="+isGroup;

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.picsauditing.PICS.*;
 
 public class User extends DataBean implements Comparable<User> {
+	private static final int SU_GROUP = 9; // Group that automatically has ALL grant privileges
 	//private static final int PASSWORD_DURATION = 365; // days between required password update
 	private static final int MIN_PASSWORD_LENGTH = 5; // minimum required length of a password
 	
@@ -273,17 +274,35 @@ public class User extends DataBean implements Comparable<User> {
 		// Our permissions are empty, so go get some
 		permissions = new TreeSet<Permission>();
 		
-		try{
-			Set<Permission> tempPerms ;
-			getGroups(); // get all the groups this user (or group) is a part of
-			for(User group : groups){
-				tempPerms = group.getPermissions();	
-				for(Permission perm : tempPerms){
-					this.add(permissions, perm);
+		if (this.userDO.id.equals(User.SU_GROUP)) {
+			// This is the Super User Group, which should have grant ability on ALL permissions
+			// Also grant view/edit/delete on EditUsers
+			// SuperUser group does not inherit from parent groups
+			for(OpPerms accessType : OpPerms.values()) {
+				Permission perm = new Permission();
+				perm.setAccessType(accessType);
+				if (accessType.equals(OpPerms.EditUsers)) {
+					perm.setViewFlag(true);
+					perm.setEditFlag(true);
+					perm.setDeleteFlag(true);
+				} else {
+					perm.setViewFlag(false);
+					perm.setEditFlag(false);
+					perm.setDeleteFlag(false);
 				}
+				perm.setGrantFlag(true);
+				permissions.add(perm);
 			}
-		} finally {
-			
+			return permissions;
+		}
+		
+		Set<Permission> tempPerms ;
+		getGroups(); // get all the groups this user (or group) is a part of
+		for(User group : groups){
+			tempPerms = group.getPermissions();	
+			for(Permission perm : tempPerms){
+				this.add(permissions, perm);
+			}
 		}
 		
 		// READ the permissions assigned directly to this THIS user/group
@@ -309,6 +328,7 @@ public class User extends DataBean implements Comparable<User> {
 	private void add(Set<Permission> permissions, Permission perm) {
 		if (!permissions.contains(perm)) {
 			// add the parent group's permissions to the user's permissions
+			if (perm.getAccessType() == null) return;
 			permissions.add(perm);
 			return;
 		}
@@ -344,7 +364,8 @@ public class User extends DataBean implements Comparable<User> {
 			while(SQLResult.next()){
 				Permission perm = new Permission();
 				perm.setFromResultSet(SQLResult);
-				ownPermissions.add(perm);
+				if (perm.getAccessType() != null)
+					this.add(ownPermissions, perm);
 			}
 		}finally{
 			SQLResult.close();
