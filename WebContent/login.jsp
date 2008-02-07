@@ -128,6 +128,10 @@
 					pBean.setCanSeeSet(pBean.oBean.getFacilitiesCanSeeSet());
 
 				pBean.uBean.name = aBean.contact;
+				if (fromURL.length() > 0) {
+					response.sendRedirect(fromURL);
+					return;
+				}
 				if (permissions.hasPermission(OpPerms.StatusOnly)){
 					response.sendRedirect("contractor_list_limited.jsp");
 					return;

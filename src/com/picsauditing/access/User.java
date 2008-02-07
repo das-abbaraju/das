@@ -139,7 +139,7 @@ public class User extends DataBean implements Comparable<User> {
 	
 	public void writeNewToDB(String accountID, HttpServletRequest request) throws Exception {
 		userDO.accountID = accountID;
-		String insertQuery = "INSERT INTO users (name,username,password,email,isActive,dateCreated,accountID) VALUES ('"+
+		String insertQuery = "INSERT INTO users (name, username, password, email, isActive, dateCreated, accountID) VALUES ('"+
 			Utilities.escapeQuotes(userDO.name)+"','"+
 			Utilities.escapeQuotes(userDO.username)+"','"+
 			Utilities.escapeQuotes(userDO.password)+"','"+
@@ -154,6 +154,7 @@ public class User extends DataBean implements Comparable<User> {
 			if (SQLResult.next())
 				userDO.id = SQLResult.getString("GENERATED_KEY");
 			SQLResult.close();
+			// TODO move this out to the JSP page
 			EmailBean eBean = new EmailBean();
 			eBean.sendNewUserEmail(request,accountID,userDO.name,userDO.username,userDO.password,userDO.email);
 		}finally{

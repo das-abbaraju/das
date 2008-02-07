@@ -2,10 +2,16 @@
 <%@page import="org.apache.commons.beanutils.*"%>
 <%@page import="java.util.*"%>
 <%@page import="com.picsauditing.access.*"%>
-<%@ include file="utilities/op_edit_secure.jsp" %>
+<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope ="session"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%
+if (!permissions.loginRequired(response, request)) return;
+permissions.tryPermission(OpPerms.EditUsers, OpType.View);
 
-String opID = request.getParameter("id");
+String opID = permissions.getAccountIdString();
+if (permissions.isAdmin() && request.getParameter("id") != null) {
+	opID = request.getParameter("id");
+}
 String action = request.getParameter("action");
 String actionID = request.getParameter("actionID");
 
@@ -41,13 +47,14 @@ search.sql.addWhere("accountID = "+opID);
 
 search.sql.addOrderBy("u.name");
 search.setPageByResult(request);
+search.sql.setSQL_CALC_FOUND_ROWS(false);
 
 List<BasicDynaBean> userList = search.doSearch();
 
 %>
 <html>
   <head>
-  <title>PICS - Pacific Industrial Contractor Screening</title>
+  <title>PICS - Manage Users</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <link href="PICS.css" rel="stylesheet" type="text/css">
 </head>

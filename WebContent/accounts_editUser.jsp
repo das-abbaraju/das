@@ -1,10 +1,16 @@
-<%//@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.access.*" errorPage="exception_handler.jsp"%>
-<%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.access.*"%>
-<%@ include file="utilities/op_edit_secure.jsp" %>
+<%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.access.*" errorPage="exception_handler.jsp"%>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
+<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope ="session"/>
+<%
+if (!permissions.loginRequired(response, request)) return;
+permissions.tryPermission(OpPerms.EditUsers);
 
-<%	String editID = request.getParameter("uID");
+String editID = request.getParameter("uID");
 	String action = request.getParameter("action");
-	String opID = request.getParameter("id");
+	String opID = permissions.getAccountIdString();
+	if (permissions.isAdmin() && request.getParameter("id") != null) {
+		opID = request.getParameter("id");
+	}
 	User user = new User();
 	UserAccess userAccess = new UserAccess();
 	UserAccess opAccess = new UserAccess();
@@ -23,8 +29,8 @@
 		if (isNew){
 			if (user.isOK()){
 				user.writeNewToDB(opID, request);
-				userAccess.writeNewToDB(opID,user.userDO.id);
-				response.sendRedirect("accounts_userList.jsp?id="+opID+"&newid="+user.userDO.id+
+				userAccess.writeNewToDB(permissions, user.userDO.id);
+				response.sendRedirect("accounts_userList.jsp?newid="+user.userDO.id+
 						"&msg="+user.userDO.name+"'s account successfully created.<br>Login "+
 						"info and user manual have been sent to "+user.userDO.email);
 				return;
@@ -32,17 +38,16 @@
 		}else if (isEdit){
 			if (user.isOK()){
 				user.writeToDB();
-				userAccess.writeToDB(opID);
-				response.sendRedirect("accounts_userList.jsp?id="+opID);
+				userAccess.writeToDB(permissions);
+				response.sendRedirect("accounts_userList.jsp");
 				return;
 			}//if
 		}//else if
 	}//if
 %>
-
 <html>
 <head>
-  <title>PICS - Pacific Industrial Contractor Screening</title>
+  <title>PICS - Edit User</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <link href="PICS.css" rel="stylesheet" type="text/css">
 </head>
@@ -51,7 +56,7 @@
   <tr>
     <td valign="top">
 	<table width="100%" border="0" cellpadding="0" cellspacing="0">
-       <tr> 
+       <tr>
           <td width="50%" bgcolor="#993300">&nbsp;</td>
           <td width="146" rowspan="2" valign="top"><a href="index.jsp"><img src="images/logo.gif" alt="HOME" width="146" height="145" border="0"></a></td>
           <td width="364"><%@ include file="utilities/mainNavigation.jsp"%></td>
@@ -71,10 +76,12 @@
                 <tr> 
                   <td width="126" align="center" valign="top" bgcolor="#DDDDDD" class="blueMain"></td>
                   <td align="center" valign="top" bgcolor="#FFFFFF" class="blueMain">
+                  	<a href="accounts_userList.jsp">Return to User List</a>
                     <form name="form1" method="post" action="accounts_editUser.jsp">
                     <input type=hidden name="action" value="<%=action%>">
                     <input type=hidden name="uID" value="<%=editID%>">
-                    <input type=hidden name="id" value="<%=opID%>">
+                    <input type=hidden name="id" value="<%=user.userDO.id%>">
+                    <input type=hidden name="accountID" value="<%=user.userDO.accountID%>">
                     <table width="0" border="0" cellspacing="0" cellpadding="1">
                       <tr align="center" class="blueMain">
                         <td colspan="2" class="blueHeader">Edit User</td>

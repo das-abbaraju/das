@@ -66,13 +66,13 @@ public class UserAccess extends com.picsauditing.PICS.DataBean {
 	 * @param userID
 	 * @throws Exception
 	 */
-	public void writeNewToDB(String grantedByID,String userID) throws Exception{
+	public void writeNewToDB(Permissions permissions,String userID) throws Exception{
 		try{
 			String insertQuery = "INSERT INTO "+db+" (userID,accessType,grantedByID) VALUES";
 			boolean isInsert = false;
 			for (OpPerms perm:OpPerms.values()){
 				if (accessSet.contains(perm)){
-					insertQuery += "("+userID+",'"+perm+"',"+grantedByID+"),";
+					insertQuery += "("+userID+",'"+perm+"',"+permissions.getUserId()+"),";
 					isInsert = true;
 				}//if
 			}//for
@@ -91,7 +91,7 @@ public class UserAccess extends com.picsauditing.PICS.DataBean {
 	 * @param grantedByID
 	 * @throws Exception
 	 */
-	public void writeToDB(String grantedByID) throws Exception{
+	public void writeToDB(Permissions permissions) throws Exception{
 		try{
 			String deleteQuery = "DELETE FROM "+db+" WHERE userID="+userID+" AND accessType IN (";
 			String insertQuery = "INSERT INTO "+db+" (userID,accessType,grantedByID) VALUES";
@@ -103,7 +103,7 @@ public class UserAccess extends com.picsauditing.PICS.DataBean {
 					isDelete = true;
 				}//if
 				if (accessSet.contains(perm) && !oldAccessSet.contains(perm)){
-					insertQuery += "("+userID+",'"+perm+"',"+grantedByID+"),";
+					insertQuery += "("+userID+",'"+perm+"',"+permissions.getUserId()+"),";
 					isInsert = true;
 				}//if
 			}//for

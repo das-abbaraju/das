@@ -6,6 +6,7 @@ import java.util.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 
@@ -149,8 +150,7 @@ public class PermissionsBean extends DataBean {
 				hasAccess = true;
 		}//if
 		if (!hasAccess) {
-			response.sendRedirect("logout.jsp?msg=The requested page is not available");
-			return false;
+			throw new NoRightsException("Unknown");
 		}//if
 		return true;
 	}//checkAccess

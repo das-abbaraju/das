@@ -119,7 +119,7 @@ if (uBean.isSet()) {
 	</tr>
 	<tr> 
 		<td class="blueMain" align="right">Username</td>
-		<td><input name="username" type="text" class="forms" size="15" value="<%=uBean.userDO.username%>"></td>
+		<td><input name="username" type="text" class="forms" size="30" value="<%=uBean.userDO.username%>"></td>
 	</tr>
 	<tr> 
 		<td class="blueMain" align="right">Password</td>
