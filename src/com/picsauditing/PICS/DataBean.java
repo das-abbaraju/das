@@ -3,6 +3,9 @@ package com.picsauditing.PICS;
 import java.sql.*;
 import java.util.*;
 
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.beanutils.RowSetDynaClass;
+
 public abstract class DataBean{
 	protected Vector<String> errorMessages = new Vector<String>();
 	protected boolean isSet = false;
@@ -17,26 +20,26 @@ public abstract class DataBean{
 		return temp.toString();
 	}//getErrorMessages
  
-	public void DBReady() throws Exception{
+	public void DBReady() throws SQLException{
 		try{
 			if (null == Conn){
 				Conn = DBBean.getDBConnection();
 				SQLStatement = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-			}//if
-		}catch (Exception ex){
+			}
+		}catch (SQLException ex){
 			DBClose();
 			throw ex;
-		}//catch		
-	}//DBReady
+		}
+	}
 
-	public void statement2Ready() throws Exception{
+	public void statement2Ready() throws SQLException{
 		try {
 			SQLStatement = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		} catch (Exception ex) {
+		} catch (SQLException ex) {
 			DBClose();
 			throw ex;
-		}//catch		
-	}//statement2Ready
+		}
+	}
 
 	public void DBClose() throws SQLException{
 		if (null != SQLStatement){
@@ -80,13 +83,22 @@ public abstract class DataBean{
 		return this.isSet;
 	}
 	
+	public List<BasicDynaBean> executeQuery(SQLBuilder sql) throws SQLException {
+		return executeQuery(sql.toString());
+	}
+	public List<BasicDynaBean> executeQuery(String sql) throws SQLException {
+		try{
+			DBReady();
+			ResultSet rs = SQLStatement.executeQuery(sql);
+		    RowSetDynaClass rsdc = new RowSetDynaClass(rs, false);
+		    rs.close();
+		    return rsdc.getRows();
+		}finally{
+			DBClose();
+		}
+	}
+	
 	public Vector<String> getErrors(){
 		return errorMessages;
 	}
-//	abstract void setFromDB(String s) throws Exception;
-//	abstract void writeToDB(String s) throws Exception;
-//	abstract void setFromDB() throws Exception;
-//	abstract void writeToDB() throws Exception;
-//	abstract void setFromRequest(javax.servlet.http.HttpServletRequest r) throws Exception;
-//	abstract boolean isOK();
-}//DataBean
+}

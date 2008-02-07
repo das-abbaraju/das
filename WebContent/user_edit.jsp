@@ -2,6 +2,7 @@
 <%@page import="com.picsauditing.access.*"%>
 <%@page import="java.util.*"%>
 <%@page import="com.picsauditing.PICS.Utilities"%>
+<%@page import="org.apache.commons.beanutils.BasicDynaBean"%>
 <jsp:useBean id="uBean" class="com.picsauditing.access.User" scope ="page"/>
 <jsp:useBean id="currentUser" class="com.picsauditing.access.User" scope ="page"/>
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
@@ -81,11 +82,14 @@ boolean isGroup = false;
 Set<User> myGroups = new TreeSet<User>();
 Set<User> myMembers = new TreeSet<User>();
 Set<Permission> myPerms = new TreeSet<Permission>();
+List<BasicDynaBean> loginLog = new ArrayList<BasicDynaBean>();
+
 if (uBean.isSet()) {
 	myGroups = uBean.getGroups();
 	myPerms = uBean.getOwnedPermissions();
 	myMembers = uBean.getMembers();
 	isGroup = uBean.userDO.isGroup.equals("Yes");
+	loginLog = uBean.getLoginLog(10);
 } else {
 	// This is a new User or Group
 	if (request.getParameter("isGroup") != null)
@@ -93,7 +97,7 @@ if (uBean.isSet()) {
 }
 %>
 <p style="font-style: italic">Note: Users must relogin for changes to take effect</p>
-	<div id="ajaxstatus" style="height: 30px;"></div>
+<div id="ajaxstatus" style="height: 20px;"></div>
 <form id="user" method="POST" action="user_edit.jsp">
 	<input type="hidden" name="action" value="saveUser" />
 	<input type="hidden" name="id" value="<%=uBean.userDO.id%>" />
@@ -286,6 +290,36 @@ for (User child: myMembers) {
 </p>
 <%
 }
+
+if (loginLog != null && loginLog.size() > 0) {
+	%>
+	<table class="blueMain">
+	<tr bgcolor="#003366" class="whiteTitle">
+		<td>Login Date/Time</td>
+		<td>IP Address</td>
+		<td>Notes</td>
+	</tr>
+	<%
+	for(BasicDynaBean row: loginLog) {
+		String notes = "";
+		if ("N".equals(row.get("successful"))) {
+			notes = "wrong password";
+		} else if (row.get("name") != null) {
+			notes = "admin login by "+row.get("name");
+		}
+		%>
+		<tr class="blueMain">
+			<td><%=row.get("date")%></td>
+			<td><%=row.get("remoteAddress")%></td>
+			<td><%=notes%></td>
+		</tr>
+		<%
+	}
+	%>
+	</table>
+	<%
+}
+
 if (permissions.hasPermission(OpPerms.EditUsers, OpType.Delete)) {
 	%>
 	<br /><br /><br /><br />

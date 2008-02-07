@@ -129,7 +129,7 @@ function saveGroup(action, groupID, childID) {
 		<a href="#" onclick="addUser(false); return false;">Add User</a>
 	</td>
 </tr>
-<tr valign="top"><td width="300">
+<tr valign="top"><td>
 	<table border="0" cellpadding="1" cellspacing="1">
 		<tr>
 			<td colspan="3"><%=search.getPageLinks(getParams)%></td>
@@ -153,7 +153,7 @@ function saveGroup(action, groupID, childID) {
 			onclick="showUser(<%=row.get("id")%>)">
 			<td align="right"><%=counter++%>.</td>
 			<td><%=rowGroup?"G":"U"%></td>
-			<td><%=row.get("name")%></td>
+			<td<%=rowGroup?" style=\"font-weight: bold \"":""%>><%=row.get("name")%></td>
 			<td><%=lastLogin%></td>
 		</tr>
 	<%
@@ -161,7 +161,7 @@ function saveGroup(action, groupID, childID) {
 	%>
 	</table>
 </td>
-<td id="editUser" width="400" class="blueMain">
+<td id="editUser" width="500" class="blueMain">
 	<div id="ajaxstatus" style="height: 30px;"></div>
 </td>
 </tr>

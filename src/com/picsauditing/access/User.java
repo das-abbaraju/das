@@ -4,6 +4,10 @@ import java.sql.*;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.beanutils.RowSetDynaClass;
+
 import com.picsauditing.PICS.*;
 
 public class User extends DataBean implements Comparable<User> {
@@ -490,5 +494,25 @@ public class User extends DataBean implements Comparable<User> {
 		}
 		// Then sort by name
 		return this.userDO.name.compareToIgnoreCase(o.userDO.name);
+	}
+	
+	/**
+	 * 
+	 * @param limit
+	 * @return Columns: successful, date, remoteAddress, name
+	 * @throws Exception
+	 */
+	public List<BasicDynaBean> getLoginLog(int limit) throws SQLException {
+		SQLBuilder sql = new SQLBuilder("loginlog l");
+		sql.addField("l.successful");
+		sql.addField("l.date");
+		sql.addField("l.remoteAddress");
+		sql.addField("a.name");
+		sql.addJoin("left join users a on l.adminID = a.id");
+		sql.addWhere("l.username = '"+this.userDO.username+"'");
+		sql.addOrderBy("l.date desc");
+		sql.setLimit(limit);
+		
+		return executeQuery(sql);
 	}
 }

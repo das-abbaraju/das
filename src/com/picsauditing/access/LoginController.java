@@ -104,7 +104,7 @@ public class LoginController extends DataBean {
 			strSuccess = "Y";
 		}
 		
-		String insertQuery = "INSERT INTO loginLog SET " +
+		String insertQuery = "INSERT INTO loginlog SET " +
 				"username = '"+permissions.getUsername()+"', " + 
 				"password = '"+password+"', " + 
 				"successful = '"+strSuccess+"', " +
