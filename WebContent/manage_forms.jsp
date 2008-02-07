@@ -1,11 +1,16 @@
 <%//@ page language="java" import="com.picsauditing.PICS.*,com.jspsmart.upload.*" errorPage="exception_handler.jsp"%>
 <%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.access.OpPerms"%>
-<%@ include file="utilities/op_edit_secure.jsp" %>
-
+<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope ="session"/>
 <jsp:useBean id="fBean" class="com.picsauditing.PICS.FormBean" scope ="page"/>
-<jsp:useBean id="eBean" class="com.picsauditing.PICS.EmailBean" scope ="page"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
+<%
+if (!permissions.loginRequired(response, request)) return;
 
-<%	String path = application.getInitParameter("FTP_DIR");
+pBean.thisPageID = request.getParameter("id");
+if (!pBean.checkAccess(PermissionsBean.OP_EDIT,response))
+	return;
+
+String path = application.getInitParameter("FTP_DIR");
 	boolean isSubmitted = "Yes".equals(request.getParameter("isSubmitted"));
 	fBean.setFromDB();
 	String editCatID = "";
@@ -37,7 +42,6 @@
 		fBean.setFromDB();
 
 	}//if
-	//eBean.setFromDB();
 %>
 <html>
 <head>

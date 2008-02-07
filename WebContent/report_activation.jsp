@@ -26,7 +26,7 @@
 		ContractorBean cBean = new ContractorBean();
 		cBean.setFromDB(actionID);
 		cBean.welcomeCallDate = DateBean.getTodaysDate();
-		cBean.addNote(actionID, "("+adminName+")", "Welcome call today:", DateBean.getTodaysDateTime());
+		cBean.addNote(actionID, "("+permissions.getUsername()+")", "Welcome call today:", DateBean.getTodaysDateTime());
 		cBean.writeToDB();
 		message += "Welcome call recorded";
 	}//if
@@ -34,7 +34,7 @@
 		ContractorBean cBean = new ContractorBean();
 		cBean.setFromDB(actionID);
 		cBean.welcomeAuditor_id = request.getParameter("assignedWelcomeAuditorID");
-		cBean.addNote(actionID, "("+adminName+")", AUDITORS.getNameFromID(cBean.welcomeAuditor_id)+" assigned to make welcome call", DateBean.getTodaysDateTime());
+		cBean.addNote(actionID, "("+permissions.getUsername()+")", AUDITORS.getNameFromID(cBean.welcomeAuditor_id)+" assigned to make welcome call", DateBean.getTodaysDateTime());
 		cBean.writeToDB();
 		message += AUDITORS.getNameFromID(cBean.welcomeAuditor_id)+" has been assigned a welcome call";
 	}//if
@@ -47,7 +47,7 @@
 	if ("Paid".equals(action)){
 		String amount = request.getParameter("amount");
 		ContractorBean cBean = new ContractorBean();
-		cBean.updateLastPayment(actionID, adminName, amount);
+		cBean.updateLastPayment(actionID, permissions.getUsername(), amount);
 	}//if Paid
 	if ("Inv".equals(action)){
 		String invoiceAmount = request.getParameter("invoiceAmount");
@@ -55,10 +55,10 @@
 		cBean.setFromDB(actionID);
 		cBean.lastInvoiceDate = DateBean.getTodaysDate();
 		cBean.billingAmount = invoiceAmount;
-		cBean.addAdminNote(actionID, "("+adminName+")", "Invoiced for $"+cBean.billingAmount+" membership level",cBean.lastInvoiceDate);
+		cBean.addAdminNote(actionID, "("+permissions.getUsername()+")", "Invoiced for $"+cBean.billingAmount+" membership level",cBean.lastInvoiceDate);
 		if ("".equals(cBean.membershipDate)){
 			cBean.membershipDate = DateBean.getTodaysDate();
-			cBean.addNote(actionID, "("+adminName+")", "Membership Date set today to "+cBean.membershipDate,DateBean.getTodaysDateTime());
+			cBean.addNote(actionID, "("+permissions.getUsername()+")", "Membership Date set today to "+cBean.membershipDate,DateBean.getTodaysDateTime());
 		}//if
 		cBean.writeToDB();
 	}//if Inv
