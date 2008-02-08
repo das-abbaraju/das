@@ -1,7 +1,6 @@
-<%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
-<%//@ page language="java" import="com.picsauditing.PICS.*"%>
-<%@ include file="utilities/contractor_secure.jsp"%>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
+<%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
+<%@include file="includes/main.jsp" %>
+<%@include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="prBean" class="com.picsauditing.PICS.pqf.RequirementBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>

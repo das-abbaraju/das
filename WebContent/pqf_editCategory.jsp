@@ -1,12 +1,10 @@
-<%@ page language="java"%>
-<%//@ page language="java" errorPage="exception_handler.jsp"%>
-<%@ include file="utilities/admin_secure.jsp"%>
-<%@ include file="includes/auditTypeSelected.jsp"%>
+<%@page language="java" errorPage="exception_handler.jsp"%>
+<%@include file="includes/main.jsp" %>
+<%@include file="utilities/admin_secure.jsp"%>
+<%@include file="includes/auditTypeSelected.jsp"%>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
 <jsp:useBean id="uBean" class="com.picsauditing.PICS.Utilities" scope ="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session"/>
-
 <%	String action = request.getParameter("action");
 	String editID = request.getParameter("editID");
  

@@ -1,11 +1,10 @@
-<%@ page language="java" errorPage="exception_handler.jsp"%>
-<%//@ page language="java"%>
-<%@ include file="utilities/admin_secure.jsp"%>
-<%@ include file="includes/auditTypeSelected.jsp"%>
+<%@page language="java" errorPage="exception_handler.jsp"%>
+<%@include file="includes/main.jsp" %>
+<%@include file="utilities/admin_secure.jsp"%>
+<%@include file="includes/auditTypeSelected.jsp"%>
 <jsp:useBean id="pqBean" class="com.picsauditing.PICS.pqf.QuestionBean" scope ="page"/>
 <jsp:useBean id="psBean" class="com.picsauditing.PICS.pqf.SubCategoryBean" scope ="page"/>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session"/>
 <%try{
 	String action = request.getParameter("action");
 	String editCatID = request.getParameter("editCatID");

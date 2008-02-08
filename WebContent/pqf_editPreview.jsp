@@ -1,13 +1,12 @@
-<%@ page language="java" errorPage="exception_handler.jsp"%>
-<%//@ page language="java" %>
-<%@ include file="utilities/contractor_secure.jsp"%>
-<%@ include file="includes/auditTypeSelected.jsp"%>
+<%@page language="java" errorPage="exception_handler.jsp"%>
+<%@include file="includes/main.jsp" %>
+<%@include file="utilities/contractor_secure.jsp"%>
+<%@include file="includes/auditTypeSelected.jsp"%>
 <jsp:useBean id="pqBean" class="com.picsauditing.PICS.pqf.QuestionBean" scope ="page"/>
 <jsp:useBean id="psBean" class="com.picsauditing.PICS.pqf.SubCategoryBean" scope ="page"/>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session"/>
 <%try{
 	boolean isViewAll = (null != request.getParameter("viewAll"));
 	String catID = request.getParameter("catID");

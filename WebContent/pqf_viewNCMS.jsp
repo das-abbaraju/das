@@ -1,9 +1,8 @@
-<%//@ page language="java" errorPage="exception_handler.jsp"%>
-<%@ page language="java" import="java.sql.*,com.picsauditing.PICS.*"%>
-<%@ include file="utilities/contractor_secure.jsp"%>
+<%@page language="java" import="java.sql.*,com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
+<%@include file="includes/main.jsp" %>
+<%@include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 
 <%	
 Connection Conn = null;

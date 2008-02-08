@@ -1,9 +1,6 @@
-<%//@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
-<%@ page language="java" import="com.picsauditing.PICS.*,jxl.*,jxl.write.*,jxl.format.Colour" errorPage="exception_handler.jsp"%>
-<%//@ page language="java"%>
-<%@ include file="utilities/admin_secure.jsp" %>
-
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session"/>
+<%@page language="java" import="com.picsauditing.PICS.*,jxl.*,jxl.write.*,jxl.format.Colour" errorPage="exception_handler.jsp"%>
+<%@include file="includes/main.jsp"%>
+<%@include file="utilities/admin_secure.jsp" %>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
 <jsp:useBean id="pqBean" class="com.picsauditing.PICS.pqf.QuestionBean" scope ="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
