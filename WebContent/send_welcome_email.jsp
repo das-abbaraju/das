@@ -1,6 +1,5 @@
-<%@ page language="java" errorPage="exception_handler.jsp"%>
-<%//@ page language="java"%>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
+<%@page language="java" errorPage="exception_handler.jsp"%>
+<%@include file="includes/main.jsp" %>
 <jsp:useBean id="eBean" class="com.picsauditing.PICS.EmailBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
