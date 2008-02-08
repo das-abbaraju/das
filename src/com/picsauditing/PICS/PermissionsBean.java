@@ -3,13 +3,14 @@ package com.picsauditing.PICS;
 import java.sql.*;
 import java.util.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 
+/**
+ * @deprecated
+ * @see Permissions
+ */
 public class PermissionsBean extends DataBean {
 /*	History
 	8/29/05 jj - created to control access to pages according to account type (admin,auditor,contractor,operator) and restrict privileges (write, read, none)
@@ -23,12 +24,6 @@ public class PermissionsBean extends DataBean {
 	private static final String[] RESTRICTED_AUDIT_CATEGORIES = {"2","6"};
 
 	public static final int OP_VIEW = 3;
-	public static final int PQF_VIEW = 7;
-	
-	// Temporary Groups for Users so we can be backwards compatible with USER_TYPES
-	private static final int GROUP_ADMIN = 10;
-	private static final int GROUP_AUDITOR = 11;
-	//private static final int GROUP_CONTRACTOR = 12;
 
 	public String userID = ""; // user's accountID
 	public String userName = "";
@@ -86,66 +81,32 @@ public class PermissionsBean extends DataBean {
 	}//getCanSeeSetCount
 
 	public boolean checkAccess(int access, javax.servlet.http.HttpServletResponse response) throws Exception {
-		if (!loggedIn) {
-			// TODO get the current URL
-			//Cookie fromCookie = new Cookie("from","contractor_list.jsp");
-			//fromCookie.setMaxAge(3600);
-			//response.addCookie(fromCookie);
-			response.sendRedirect("logout.jsp?msg=Your session has timed out.  Please log back in");
-			return false;
-		}//if
-		boolean hasAccess = false;
 		if (OP_VIEW == access) {
 			if (isAdmin()
 					|| seesAll
 					|| (isContractor() && userID != null && userID.equals(thisPageID))
 					|| (null!=canSeeSet && canSeeSet.contains(thisPageID))
 					|| (null!=auditorCanSeeSet && auditorCanSeeSet.contains(thisPageID)))
-				hasAccess = true;
-		}//if
-		if (PQF_VIEW == access) {
-			if (!isContractor()
-					&& (isAdmin()
-					|| seesAll
-					|| canSeeSet.contains(thisPageID)
-					|| auditorCanSeeSet.contains(thisPageID)))
-				hasAccess = true;
-		}//if
-		if (!hasAccess) {
-			throw new NoRightsException("Unknown");
-		}//if
-		return true;
+				return true;
+		}
+		throw new NoRightsException("Unknown");
 	}//checkAccess
-
-	public boolean canSeePage() {
-		return true;
-	}//canSeePage
-
-	public boolean canEditPage(String editID) {
-		if (isAdmin() || userID.equals(editID))
-			return true;
-		return false;
-	}//canEditPage
 
 	/**
 	 * @deprecated
 	 * @return
 	 */
 	public boolean isAdmin() {
-		if (this.permissions != null)
-			return this.permissions.hasGroup(this.GROUP_ADMIN);
-		return ADMIN_TYPE.equals(userType);
+		if (this.permissions == null) return false;
+		return this.permissions.isAdmin();
 	}
 	/**
 	 * @deprecated
 	 * @return
 	 */
 	public boolean isAuditor() {
-		if (this.permissions != null) {
-			if (this.permissions.hasGroup(this.GROUP_ADMIN)) return false;
-			return this.permissions.hasGroup(this.GROUP_AUDITOR);
-		}
-		return "Auditor".equals(userType);
+		if (this.permissions == null) return false;
+		return this.permissions.isAuditor();
 	}
 	public boolean isContractor() {
 		return CONTRACTOR_TYPE.equals(userType);
@@ -231,39 +192,14 @@ public class PermissionsBean extends DataBean {
 			isAuditor() && (com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(auditType) && auditorOfficeSet.contains(conID)))
 			return true;
 		return false;
-	}//canVerifyAudit
+	}
 
 	public String getWhoIsDetail(){
 		if (isAdmin() || isAuditor())
 			return userName+",PICS";			
 		return uBean.name+","+userName+","+userType;
 	}//getWhoIsDetail
-	/*
-	public void setOperatorPermissions(String id) throws Exception {
-		UserBean uBean = new UserBean();
-		
-		String Query = "SELECT * FROM userscontractor_info WHERE auditor_id="+id+";";
-		ResultSet SQLResult = SQLStatement.executeQuery(Query);
-		while (SQLResult.next())
-			auditorOfficeSet.add(SQLResult.getString("id"));
-		SQLResult.close();
-
-		auditorDesktopSet = new HashSet();
-		Query = "SELECT * FROM contractor_info WHERE desktopAuditor_id="+id+";";
-		SQLResult = SQLStatement.executeQuery(Query);
-		while (SQLResult.next())
-			auditorDesktopSet.add(SQLResult.getString("id"));
-		SQLResult.close();
-
-		auditorPQFSet = new HashSet();
-		Query = "SELECT * FROM contractor_info WHERE pqfAuditor_id="+id+";";
-		SQLResult = SQLStatement.executeQuery(Query);
-		while (SQLResult.next())
-			auditorPQFSet.add(SQLResult.getString("id"));
-		SQLResult.close();
-		DBClose();
-	}//setOperatorPermissions
-*/
+	
 	public Permissions getPermissions() {
 		if (this.permissions == null) permissions = new Permissions();
 		return permissions;
@@ -273,5 +209,4 @@ public class PermissionsBean extends DataBean {
 		this.userID = this.permissions.getAccountIdString();
 		this.userType = this.permissions.getAccountType();
 	}
-	
-}//PermissionsBean
+}
