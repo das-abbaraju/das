@@ -3,14 +3,10 @@
 <%@page import="java.util.*"%>
 <%@page import="com.picsauditing.PICS.Utilities"%>
 <%@page import="org.apache.commons.beanutils.BasicDynaBean"%>
+<%@ include file="includes/main_ajax.jsp" %>
 <jsp:useBean id="uBean" class="com.picsauditing.access.User" scope ="page"/>
 <jsp:useBean id="currentUser" class="com.picsauditing.access.User" scope ="page"/>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%
-if (!permissions.isLoggedIn()) {
-	%><a href="login.jsp" style="color: red; font-weight: bold;">You must log in again</a><%
-	return;
-}
 permissions.tryPermission(OpPerms.EditUsers, OpType.View);
 
 String accountID = permissions.getAccountIdString();
