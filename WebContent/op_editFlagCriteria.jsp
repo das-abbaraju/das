@@ -1,9 +1,6 @@
-<%//@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
-<%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.PICS.redFlagReport.*"%>
+<%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.PICS.redFlagReport.*"  errorPage="exception_handler.jsp"%>
+<%@ include file="includes/main.jsp" %>
 <%@ include file="utilities/adminGeneral_secure.jsp"%>
-<jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope="application"/>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session"/>
-	
 <%	HurdleQuestions hurdleQuestions = null;
 try{
 	com.picsauditing.PICS.redFlagReport.FlagCriteria flagCriteria = new com.picsauditing.PICS.redFlagReport.FlagCriteria();

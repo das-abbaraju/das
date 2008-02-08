@@ -1,7 +1,5 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
-<%//@ page language="java"%>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
-
 <%	String email= request.getParameter("email");
 	aBean.sendPasswordEmail(email);
 %>

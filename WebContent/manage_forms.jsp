@@ -1,8 +1,6 @@
-<%//@ page language="java" import="com.picsauditing.PICS.*,com.jspsmart.upload.*" errorPage="exception_handler.jsp"%>
-<%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.access.OpPerms"%>
-<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope ="session"/>
+<%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.access.OpPerms" errorPage="exception_handler.jsp"%>
+<%@ include file="includes/main.jsp" %>
 <jsp:useBean id="fBean" class="com.picsauditing.PICS.FormBean" scope ="page"/>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%
 if (!permissions.loginRequired(response, request)) return;
 
