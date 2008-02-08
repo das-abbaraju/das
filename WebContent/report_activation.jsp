@@ -1,6 +1,6 @@
-<%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
+<%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<%@ include file="utilities/admin_secure.jsp" %>
+<%@include file="utilities/admin_secure.jsp" %>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <%	try{
 	new Billing().updateAllPayingFacilities(FACILITIES, application);

@@ -1,6 +1,6 @@
-<%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
-<%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/adminGeneral_secure.jsp" %>
+<%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
+<%@include file="includes/main.jsp" %>
+<%@include file="utilities/adminGeneral_secure.jsp" %>
 
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>

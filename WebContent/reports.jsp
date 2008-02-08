@@ -1,6 +1,6 @@
-<%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
-<%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/adminGeneral_secure.jsp" %>
+<%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
+<%@include file="includes/main.jsp" %>
+<%@include file="utilities/adminGeneral_secure.jsp" %>
 
 <%	String report = request.getParameter("report");
 	if (null != report && !"-- Select a report --".equals(report)){
