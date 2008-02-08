@@ -125,7 +125,7 @@
                       </table>
                       </td>
                 <td align="right" valign="top"><br>
-                  <%@ include file="/utilities/rightUpperNav.jsp"%><br /><br />
+                  <br /><br />
 				  <form method="GET" name="intro" action="http://www.webconference.com/login.asp">
                     <input type="hidden" name="r" value="R239651519718247">
                     <br />
