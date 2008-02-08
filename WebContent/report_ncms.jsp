@@ -2,9 +2,7 @@
 <%@page import="org.apache.commons.beanutils.*"%>
 <%@page import="java.util.*"%>
 <%@page import="com.picsauditing.access.*"%>
-<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session" />
-<jsp:useBean id="pageBean" class="com.picsauditing.PICS.WebPage" scope ="page"/>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
+<%@ include file="includes/main.jsp" %>
 <%
 permissions.tryPermission(OpPerms.NCMS);
 

@@ -1,12 +1,12 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%//@ page language="java"%>
+<%@ include file="includes/main.jsp" %>
 <%@ include file="utilities/adminGeneral_secure.jsp" %>
 
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope ="application"/>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 
 <%	String action = request.getParameter("action");
 	String action_id = request.getParameter("action_id");

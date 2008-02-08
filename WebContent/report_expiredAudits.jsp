@@ -1,7 +1,6 @@
-<%@ page language="java" errorPage="exception_handler.jsp"%>
-<%//@ page language="java"%>
-<%@ include file="utilities/adminGeneral_secure.jsp" %>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
+<%@page language="java" errorPage="exception_handler.jsp"%>
+<%@include file="includes/main.jsp" %>
+<%@include file="utilities/adminGeneral_secure.jsp" %>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 
