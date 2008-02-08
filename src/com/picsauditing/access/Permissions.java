@@ -153,6 +153,9 @@ public class Permissions {
 	public boolean isContractor() {
 		return "Contractor".equals(this.accountType);
 	}
+	public boolean isCorporate() {
+		return "Corporate".equals(this.accountType);
+	}
 	public boolean isOperator() {
 		return "Operator".equals(this.accountType);
 	}

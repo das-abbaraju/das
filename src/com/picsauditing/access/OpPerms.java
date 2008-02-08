@@ -18,6 +18,7 @@ public enum OpPerms {
 	StatusOnly("Can Only View Statuses"),
 	
 	// New Permissions based on the new Model since 2007
+	ContractorAccounts("Administer Contractor Accounts"),
 	AssignAudits("Audit Assignment"),
 	OSHAVerification("OSHA Verification"),
 	InsuranceVerification("Insurance Certificate Verification"),

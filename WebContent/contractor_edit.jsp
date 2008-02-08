@@ -1,11 +1,12 @@
 <%@ page language="java" import="com.picsauditing.access.*" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/contractor_edit_secure.jsp"%>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
 <jsp:useBean id="helper" class="com.picsauditing.servlet.upload.UploadConHelper"/>
 <%
+	permissions.tryPermission(OpPerms.ContractorAccounts, OpType.Edit);
+
 	String id = request.getParameter("id");
 	boolean isSubmitted = "Yes".equals(request.getParameter("isSubmitted"));
 	aBean.setFromDB(id);
@@ -45,7 +46,7 @@
           <td width="50%" bgcolor="#993300">&nbsp;</td>
           <td width="146" rowspan="2" valign="top"><a href="index.jsp"><img src="images/logo.gif" alt="HOME" width="146" height="145" border="0"></a></td>
           <td width="364"><%@ include file="utilities/mainNavigation.jsp"%></td>
-          <td width="147"><%@ include file="utilities/rightUpperNav.jsp"%></td>
+          <td width="147"><img src="images/squares_rightUpperNav.gif" width="147" height="72" border="0"></td>
           <td width="50%" bgcolor="#993300">&nbsp;</td>
         </tr>
         <tr> 

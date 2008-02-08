@@ -4,42 +4,45 @@
 <%
 if (!permissions.loginRequired(response, request)) return;
 
-pBean.thisPageID = request.getParameter("id");
-if (!pBean.checkAccess(PermissionsBean.OP_EDIT,response))
-	return;
+String opID = request.getParameter("id");
+// TODO replace isAdmin with appropriate can manageForms permission
+if (permissions.isAdmin() || permissions.isOperator() || permissions.isCorporate()) {
+	if (!permissions.isAdmin()) {
+		opID = permissions.getAccountIdString();
+	}
+}
 
 String path = application.getInitParameter("FTP_DIR");
-	boolean isSubmitted = "Yes".equals(request.getParameter("isSubmitted"));
-	fBean.setFromDB();
-	String editCatID = "";
-	if (!pBean.isAdmin())
-		editCatID = pBean.userID;
-	
-	String opID = request.getParameter("id");
-	String editFormID = "";
-	String newFormCatID = "";
-	
-	if (isSubmitted){
-		String action = request.getParameter("action");
-		System.out.println("action: "+action);
-		request.setAttribute("uploader", String.valueOf(com.picsauditing.servlet.upload.UploadProcessorFactory.FORM));
-		request.setAttribute("directory","forms");
-		if ("Update".equals(action)){
-			fBean.updateAction(pageContext, path);
-			if(fBean.getEditCatID()!= "")
-		    	editCatID = fBean.getEditCatID();
-		}
-		if ("Add".equals(action))
-			fBean.addFormEntry(pageContext);		
-		if ("Upload".equals(action)) {
-			fBean.uploadNewWelcomeEmail(pageContext);
-		}
-		if ("UploadUserManual".equals(action)) {
-			fBean.uploadNewUserManual(pageContext);
-		}
-		fBean.setFromDB();
+boolean isSubmitted = "Yes".equals(request.getParameter("isSubmitted"));
+fBean.setFromDB();
+String editCatID = "";
+if (!pBean.isAdmin())
+	editCatID = pBean.userID;
 
-	}//if
+String editFormID = "";
+String newFormCatID = "";
+
+if (isSubmitted){
+	String action = request.getParameter("action");
+	System.out.println("action: "+action);
+	request.setAttribute("uploader", String.valueOf(com.picsauditing.servlet.upload.UploadProcessorFactory.FORM));
+	request.setAttribute("directory","forms");
+	if ("Update".equals(action)){
+		fBean.updateAction(pageContext, path);
+		if(fBean.getEditCatID()!= "")
+	    	editCatID = fBean.getEditCatID();
+	}
+	if ("Add".equals(action))
+		fBean.addFormEntry(pageContext);		
+	if ("Upload".equals(action)) {
+		fBean.uploadNewWelcomeEmail(pageContext);
+	}
+	if ("UploadUserManual".equals(action)) {
+		fBean.uploadNewUserManual(pageContext);
+	}
+	fBean.setFromDB();
+
+}//if
 %>
 <html>
 <head>
@@ -59,7 +62,7 @@ String path = application.getInitParameter("FTP_DIR");
           <td width="50%" bgcolor="#993300">&nbsp;</td>
           <td width="146" rowspan="2" valign="top"><a href="index.jsp"><img src="images/logo.gif" alt="HOME" width="146" height="145" border="0"></a></td>
           <td width="364"><%@ include file="utilities/mainNavigation.jsp"%></td>
-          <td width="147"><%@ include file="utilities/rightUpperNav.jsp"%></td>
+          <td width="147"><img src="images/squares_rightUpperNav.gif" width="147" height="72" border="0"></td>
           <td width="50%" bgcolor="#993300">&nbsp;</td>
         </tr>
         <tr> 

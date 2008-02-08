@@ -1,17 +1,18 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/contractor_edit_secure.jsp"%>
 <jsp:useBean id="cerBean" class="com.picsauditing.PICS.CertificateBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:setProperty name="cerBean" property="*" />
 <script src="js/Validate.js"></script>
 <script src="js/ValidateForms.js"></script>
-<%try{
+<%
+permissions.tryPermission(OpPerms.ContractorAccounts, OpType.Edit);
+
+try{
 	String id = request.getParameter("id");
 	cerBean.processForm(pageContext);
 	cBean.setFromDB(id);
 %>
-<%@page import="java.util.Enumeration"%>
 <html>
 <head>
 <title>PICS - Pacific Industrial Contractor Screening</title>
@@ -40,7 +41,7 @@
           <td width="50%" bgcolor="#993300">&nbsp;</td>
           <td width="146" rowspan="2" valign="top"><a href="index.jsp"><img src="images/logo.gif" alt="HOME" width="146" height="145" border="0"></a></td>
           <td width="364"><%@ include file="utilities/mainNavigation.jsp"%></td>
-          <td width="147"><%@ include file="utilities/rightUpperNav.jsp"%></td>
+          <td width="147"><img src="images/squares_rightUpperNav.gif" width="147" height="72" border="0"></td>
           <td width="50%" bgcolor="#993300">&nbsp;</td>
         </tr>
         <tr>

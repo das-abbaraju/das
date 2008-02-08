@@ -1,14 +1,15 @@
-<%	String thisPage = request.getServletPath();
-	String thisQuery = request.getQueryString();
-//	thisPage = thisPage.substring(thisPage.lastIndexOf('/')+1,thisPage.lastIndexOf('.'));
-    com.picsauditing.PICS.AccountBean acctBean = new com.picsauditing.PICS.AccountBean();
-%>
-			<center>
 <%
-	if (!pBean.isContractor() && !thisPage.contains("contractor_detail")){
+String thisPage = request.getServletPath();
+String thisQuery = request.getQueryString();
+com.picsauditing.PICS.AccountBean acctBean = new com.picsauditing.PICS.AccountBean();
 %>
+<center>
+<%
+if (!pBean.isContractor() && !thisPage.contains("contractor_detail")){
+	%>
 	<div class="blueHeader">%=acctBean.getName(id)%></div>
-<% }//end if %>
+	<%
+}//end if %>
 
 <%
 	if (!cBean.mustForceUpdatePQF()){
@@ -20,8 +21,6 @@
 			out.println(" | "+com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_upload_certificates.jsp",thisPage,id,"",thisQuery,"Insurance Certificates"));
 		if (cBean.canEditPrequal())
 			out.println(" | "+com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_editMain.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"<strong>Complete PQF</strong>"));
-//		if (cBean.canEditDesktop())
-//			out.println(com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_editMain.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE,thisQuery,"Complete Desktop Audit")+" | ");
 %><br><%
 		if (cBean.isDesktopSubmitted() && !cBean.isDesktopClosed())
 			out.println(" | "+com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE,thisQuery,"View Desktop Audit"));
@@ -32,7 +31,7 @@
 		else if (cBean.isOfficeRequired())
 			out.println(" | "+com.picsauditing.PICS.Utilities.getMenuTag(request,"audit_viewQuestions.jsp",thisPage,id,"",thisQuery,"Office Audit Questions")+" | ");
 	}else{
-//		out.println("My Details | Edit My Account | Facilities | ");
 		out.println(com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_editMain.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"<strong>Complete My Pre-qualification</strong>"));
 	}//else
-%>                  </center>
+%>
+</center>

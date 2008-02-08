@@ -15,23 +15,15 @@ public class PermissionsBean extends DataBean {
 	8/29/05 jj - created to control access to pages according to account type (admin,auditor,contractor,operator) and restrict privileges (write, read, none)
 */
 	private static final String ADMIN_TYPE = "Admin";
-	private static final String AUDITOR_TYPE = "Auditor";
 	private static final String CONTRACTOR_TYPE = "Contractor";
 	private static final String CORPORATE_TYPE = "Corporate";
 	private static final String OPERATOR_TYPE = "Operator";
-	private static final String[] USER_TYPES = {ADMIN_TYPE,AUDITOR_TYPE,CONTRACTOR_TYPE,CORPORATE_TYPE,OPERATOR_TYPE};
+	private static final String[] USER_TYPES = {ADMIN_TYPE,CONTRACTOR_TYPE,CORPORATE_TYPE,OPERATOR_TYPE};
 
 	private static final String[] RESTRICTED_AUDIT_CATEGORIES = {"2","6"};
 
-	public static final int FULL = 1;
-	public static final int CON_EDIT = 2;
 	public static final int OP_VIEW = 3;
-	public static final int AUD_VIEW = 4;
-	public static final int NOT_CON = 5;
-	public static final int LOGGED_IN = 6;
 	public static final int PQF_VIEW = 7;
-	public static final int OP_EDIT = 8;
-	public static final int BASIC = 9;
 	
 	// Temporary Groups for Users so we can be backwards compatible with USER_TYPES
 	private static final int GROUP_ADMIN = 10;
@@ -103,16 +95,6 @@ public class PermissionsBean extends DataBean {
 			return false;
 		}//if
 		boolean hasAccess = false;
-		if (FULL == access) {
-			if (isAdmin())
-				hasAccess = true;
-		}//if
-		if (CON_EDIT == access) {
-			if (isAdmin()
-					|| (isContractor()
-					&& userID.equals(thisPageID)))
-				hasAccess = true;
-		}//if
 		if (OP_VIEW == access) {
 			if (isAdmin()
 					|| seesAll
@@ -121,32 +103,12 @@ public class PermissionsBean extends DataBean {
 					|| (null!=auditorCanSeeSet && auditorCanSeeSet.contains(thisPageID)))
 				hasAccess = true;
 		}//if
-		if (NOT_CON == access) {
-			if (isAdmin()
-					|| isAuditor()
-					|| isOperator()
-					|| isCorporate())
-				hasAccess = true;
-		}//if
-		if (LOGGED_IN == access) {
-			if (userID.equals(thisPageID))
-				hasAccess = true;
-		}//if
 		if (PQF_VIEW == access) {
 			if (!isContractor()
 					&& (isAdmin()
 					|| seesAll
 					|| canSeeSet.contains(thisPageID)
 					|| auditorCanSeeSet.contains(thisPageID)))
-				hasAccess = true;
-		}//if
-		if (OP_EDIT == access) {
-			if (isAdmin()
-					|| ((isOperator() || isCorporate()) &&
-						userID != null && userID.equals(thisPageID)))
-				hasAccess = true;
-		}//if
-		if (BASIC == access) {
 				hasAccess = true;
 		}//if
 		if (!hasAccess) {
@@ -183,7 +145,7 @@ public class PermissionsBean extends DataBean {
 			if (this.permissions.hasGroup(this.GROUP_ADMIN)) return false;
 			return this.permissions.hasGroup(this.GROUP_AUDITOR);
 		}
-		return AUDITOR_TYPE.equals(userType);
+		return "Auditor".equals(userType);
 	}
 	public boolean isContractor() {
 		return CONTRACTOR_TYPE.equals(userType);

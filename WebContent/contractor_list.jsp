@@ -1,8 +1,10 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/contractor_list_secure.jsp" %>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
-<%	try{
+<%
+if (permissions.isContractor()) throw new com.picsauditing.access.NoRightsException("Not Contractor");
+
+try {
 	TradesBean tBean = new TradesBean();
 	com.picsauditing.PICS.pqf.QuestionTypeList statesLicensedInList = new com.picsauditing.PICS.pqf.QuestionTypeList();
 	tBean.setFromDB();
@@ -29,6 +31,7 @@
 	String showPage = request.getParameter("showPage");
 	if (showPage == null)	showPage = "1";
 %>
+<%@page import="com.picsauditing.access.NoRightsException"%>
 <html>
 <head>
 <title>PICS - Pacific Industrial Contractor Screening</title>
@@ -49,7 +52,7 @@
           <td width="50%" bgcolor="#993300">&nbsp;</td>
           <td width="146" valign="top" rowspan="2"><a href="index.jsp"><img src="images/logo.gif" alt="HOME" width="146" height="145" border="0"></a></td>
           <td width="364"><%@ include file="utilities/mainNavigation.jsp"%></td>
-          <td width="147"><%@ include file="utilities/rightUpperNav.jsp"%></td>
+          <td width="147"><img src="images/squares_rightUpperNav.gif" width="147" height="72" border="0"></td>
           <td width="50%" bgcolor="#993300">&nbsp;</td>
         </tr>
         <tr>
