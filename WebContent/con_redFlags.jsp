@@ -1,10 +1,8 @@
-<%//@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
-<%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.PICS.redFlagReport.*"%>
+<%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.PICS.redFlagReport.*" errorPage="exception_handler.jsp"%>
+<%@ include file="includes/main.jsp" %>
+<%@ include file="utilities/contractor_secure.jsp"%>
 <%@page import="java.util.List"%>
 <%@page import="org.apache.commons.beanutils.BasicDynaBean"%>
-<%@ include file="utilities/contractor_secure.jsp"%>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
-<jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope ="application"/>
 <%
 Note note = new Note();
 HurdleQuestions hurdleQuestions = null;

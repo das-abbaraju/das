@@ -1,7 +1,6 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
-<%//@ include file="utilities/contractor_edit_secure.jsp"%>
+<%@ include file="includes/main.jsp" %>
 <%@ include file="utilities/admin_secure.jsp" %>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <jsp:useBean id="aqBean" class="com.picsauditing.PICS.AuditQuestionBean" scope ="page"/>
 <jsp:useBean id="uBean" class="com.picsauditing.PICS.Utilities" scope ="page"/>
 

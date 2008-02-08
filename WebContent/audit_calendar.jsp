@@ -1,7 +1,7 @@
 <%//@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ page language="java"%>
+<%@ include file="includes/main.jsp" %>
 <%@ include file="utilities/adminGeneral_secure.jsp" %>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <jsp:useBean id="dBean" class="com.picsauditing.PICS.DateBean" scope ="page"/>
 <jsp:useBean id="calBean" class="com.picsauditing.PICS.CalendarBean" scope ="page"/>
 <%

@@ -1,9 +1,8 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@ include file="includes/main.jsp" %>
 <%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="cerBean" class="com.picsauditing.PICS.CertificateBean" scope ="page"/>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
-
 <%try{
 	String id = request.getParameter("id");
 	if (permissions.isOperator())

@@ -1,8 +1,7 @@
-<%//@ page language="java" errorPage="exception_handler.jsp"%>
-<%@ page language="java"%>
+<%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@ include file="includes/main.jsp" %>
 <jsp:useBean id="aqBean" class="com.picsauditing.PICS.AuditQuestionBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%
 try{
 	boolean isContractor = "Contractor".equalsIgnoreCase(permissions.getAccountType());

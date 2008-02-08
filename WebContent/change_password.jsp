@@ -1,9 +1,6 @@
-<%//@ page language="java" errorPage="exception_handler.jsp"%>
-<%@ page language="java" %>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
+<%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@ include file="includes/main.jsp" %>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
-<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope ="session"/>
-
 <%	String id = request.getParameter("id");
 	aBean.setFromDB(id);
 	if (request.getParameter("newPassword") != null) {

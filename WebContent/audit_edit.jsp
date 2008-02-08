@@ -1,11 +1,10 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
-<%//@ page language="java" %>
+<%@ include file="includes/main.jsp" %>
 <%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="adBean" class="com.picsauditing.PICS.AuditDataBean" scope ="page"/>
 <jsp:useBean id="aqBean" class="com.picsauditing.PICS.AuditQuestionBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%	
 try{
 	//3/5/05 if audit has not been submitted (questiosn frozen), the audit data is deleted and inserted rather than updated

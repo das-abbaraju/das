@@ -1,20 +1,15 @@
 <%@ page language="java" import="com.picsauditing.access.*" errorPage="exception_handler.jsp"%>
-<%//@ page language="java" import="com.jspsmart.upload.*"%>
+<%@ include file="includes/main.jsp" %>
 <%@ include file="utilities/contractor_edit_secure.jsp"%>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
 <jsp:useBean id="helper" class="com.picsauditing.servlet.upload.UploadConHelper"/>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
-
 <%
 	String id = request.getParameter("id");
 	boolean isSubmitted = "Yes".equals(request.getParameter("isSubmitted"));
-	//user.setFromDB(pBean.userID);
 	aBean.setFromDB(id);
 	cBean.setFromDB(id);
-	//User user = new User();
-	//user.setFromAccountID(id);
 	if (isSubmitted){
 //		Process form upload		
 		request.setAttribute("uploader", String.valueOf(com.picsauditing.servlet.upload.UploadProcessorFactory.CONTRACTOR));

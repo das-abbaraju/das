@@ -1,11 +1,8 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
-<%//@ page language="java" import="com.picsauditing.PICS.*"%>
+<%@ include file="includes/main.jsp" %>
 <%@ include file="utilities/contractor_list_secure.jsp" %>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
-
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
-
 <%	try{
 	tBean.setFromDB();
 	String action = request.getParameter("action");

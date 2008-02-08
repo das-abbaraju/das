@@ -1,14 +1,11 @@
-<%//@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
-<%@ page language="java" import="com.picsauditing.PICS.*"%>
+<%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
+<%@ include file="includes/main.jsp" %>
 <%@page import="org.apache.commons.beanutils.*"%>
 <%@page import="java.util.*"%>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
-<jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope ="application"/>
-
 <%	String id = request.getParameter("id");
 	cBean.setFromDB(id);
 	aBean.setFromDB(id);

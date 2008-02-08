@@ -1,9 +1,8 @@
 <%@ page language="java" import="com.picsauditing.PICS.redFlagReport.*" errorPage="exception_handler.jsp"%>
+<%@ include file="includes/main.jsp" %>
 <%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
-
 <%
 	FlagDO flag = new FlagDO();
 	String id = request.getParameter("id");
@@ -12,7 +11,6 @@
 	if (!pBean.isAuditor())
 		cBean.setShowLinks(pBean);
 %>
-
 <html>
 <head>
   <title>PICS - Pacific Industrial Contractor Screening</title>

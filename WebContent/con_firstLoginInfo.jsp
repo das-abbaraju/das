@@ -1,9 +1,6 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
-<%//@ page language="java" import="com.picsauditing.PICS.*"%>
+<%@ include file="includes/main.jsp" %>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope ="session"/>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
-
 <%	String id = request.getParameter("id");
 	String ses_id = (String)session.getAttribute("temp_userid");
 	if ((null == ses_id) || !ses_id.equals(id)) {

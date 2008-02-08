@@ -1,5 +1,5 @@
-<%//@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
-<%@ page language="java" import="com.picsauditing.PICS.*"%>
+<%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
+<%@ include file="includes/main.jsp" %>
 <%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="pqBean" class="com.picsauditing.PICS.pqf.QuestionBean" scope ="page"/>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
@@ -8,7 +8,6 @@
 <jsp:useBean id="pconBean" class="com.picsauditing.PICS.pqf.Constants" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%try{
 	String conID = request.getParameter("id");
 	String id = request.getParameter("id");
