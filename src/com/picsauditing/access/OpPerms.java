@@ -7,8 +7,8 @@ public enum OpPerms {
 	SearchContractors("Search For New Contractors"),
 	AddContractors("Add Contractors"),
 	RemoveContractors("Remove Contractors"),
-	InsuranceCerts("Insurance Certificate Management"),
-	InsuranceCertsAllOperators("Insurance Certificates for All Operators"),
+	InsuranceCerts("Manage Insurance Certificate"),
+	InsuranceCertsAllOperators("Manage Insurance Certificates for All Operators"),
 	OfficeAuditCalendar("View Office Audit Calendar"),
 	EditFlagCriteria("Edit Red Flag Report Criteria"),
 	EditForcedFlags("Edit Forced Flags"),
@@ -23,7 +23,8 @@ public enum OpPerms {
 	OSHAVerification("OSHA Verification"),
 	InsuranceVerification("Insurance Certificate Verification"),
 	NCMS("NCMS Administration"),
-	SwitchUser("Switch to User");
+	SwitchUser("Switch to User"),
+	ManageAudits("Manage Audits and Matrices");
 
 	private String description;
 	public String getDescription(){

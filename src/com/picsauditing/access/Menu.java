@@ -94,5 +94,6 @@ public class Menu {
 		this.addItem("audit_selectType.jsp", "Manage Audits", adminGroup);
 		this.addItem("users_manage.jsp", "Manage Users", OpPerms.EditUsers);
 		this.addItem("faces/administration/index.xhtml", "Administration Dashboard", adminGroup);
+		this.addItem("audit_selectType.jsp", "Manage Audits and Matrices", OpPerms.ManageAudits);
 	}
 }
