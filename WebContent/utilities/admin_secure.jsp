@@ -1,7 +1,5 @@
-<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope ="session"/>
+<%@page import="com.picsauditing.access.NoRightsException"%>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%
-	if (null == pBean) 
-		pBean = new com.picsauditing.PICS.PermissionsBean();
-	if (!pBean.checkAccess(pBean.FULL,response))
-		return;
+	if (!permissions.isAdmin()) throw new NoRightsException("Admin");
 %>

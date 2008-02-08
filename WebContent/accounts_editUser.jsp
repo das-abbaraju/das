@@ -1,8 +1,6 @@
 <%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.access.*" errorPage="exception_handler.jsp"%>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
-<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope ="session"/>
+<%@ include file="includes/main.jsp" %>
 <%
-if (!permissions.loginRequired(response, request)) return;
 permissions.tryPermission(OpPerms.EditUsers);
 
 String editID = request.getParameter("uID");

@@ -1,14 +1,11 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
+<%@ include file="includes/main.jsp" %>
 <%@ include file="utilities/admin_secure.jsp" %>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page"/>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope="page"/>
-<jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope="application"/>
 <jsp:useBean id="helper" class="com.picsauditing.servlet.upload.UploadConHelper"/>
-<jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope="application"/>
-
 <%
 	boolean isSubmitted = (null != request.getParameter("submit"));
 	if (isSubmitted){

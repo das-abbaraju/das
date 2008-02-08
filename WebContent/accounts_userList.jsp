@@ -2,10 +2,8 @@
 <%@page import="org.apache.commons.beanutils.*"%>
 <%@page import="java.util.*"%>
 <%@page import="com.picsauditing.access.*"%>
-<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope ="session"/>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
+<%@ include file="includes/main.jsp" %>
 <%
-if (!permissions.loginRequired(response, request)) return;
 permissions.tryPermission(OpPerms.EditUsers, OpType.View);
 
 String opID = permissions.getAccountIdString();
