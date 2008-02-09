@@ -910,7 +910,8 @@ public class EmailBean extends DataBean{
 	
 	public static void sendCertificateRejectedEmail(CertificateDO certDO,Permissions permissions) throws Exception {
 		AccountBean aBean = new AccountBean();		
-		aBean.setFromDB(certDO.getContractor_id());
+		String conID = certDO.getContractor_id();
+		aBean.setFromDB(conID);
 		String contactName = aBean.contact;
 		String contractor = aBean.name;
 		String email = aBean.email;
@@ -944,11 +945,16 @@ public class EmailBean extends DataBean{
 		//System.out.println("Subject:" + subject);
 		//System.out.println("Message:" + message);
 		sendEmail(from, to, subject, message);	
+		ContractorBean cBean = new ContractorBean();
+		cBean.setFromDB(conID);
+		cBean.addNote(conID, "("+permissions.getName()+")", certType+" Insurance Certificate rejected by "+operator+" for reason: "+reason, DateBean.getTodaysDateTime());
+		cBean.writeToDB();
 	}//sendCertificateRejectedEmail
 	
-	public static void sendCertificateAcceptedEmail(CertificateDO certDO) throws Exception {
+	public static void sendCertificateAcceptedEmail(CertificateDO certDO, Permissions permissions) throws Exception {
 		AccountBean aBean = new AccountBean();		
-		aBean.setFromDB(certDO.getContractor_id());
+		String conID = certDO.getContractor_id();
+		aBean.setFromDB(conID);
 		String contactName = aBean.contact;
 		String contractor = aBean.name;
 		String email = aBean.email;
@@ -972,13 +978,12 @@ public class EmailBean extends DataBean{
 		"Have a great day,"+endl+
 		"PICS Customer Service";
 		
-		//System.out.println("From:" + from);
-		//System.out.println("To:" + to);
-		//System.out.println("Subject:" + subject);
-		//System.out.println("Message:" + message);
-		
 		sendEmail(from, to, subject, message);
-	}//sendCertificateExpireEmail
+		ContractorBean cBean = new ContractorBean();
+		cBean.setFromDB(conID);
+		cBean.addNote(conID, "("+permissions.getName()+")", certType+" Insurance Certificate accepted by "+operator, DateBean.getTodaysDateTime());
+		cBean.writeToDB();
+	}//sendCertificateAcceptedEmail
 	
 	public static void sendSafetyMeetingEmail(HttpServletRequest request) throws Exception {
 			

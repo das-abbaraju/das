@@ -686,7 +686,7 @@ public class CertificateBean extends DataBean {
 			if(cdo.getStatus().equals("Rejected"))
 				EmailBean.sendCertificateRejectedEmail(cdo,permissions);
 			else
-				EmailBean.sendCertificateAcceptedEmail(cdo);
+				EmailBean.sendCertificateAcceptedEmail(cdo,permissions);
 		}
 	}
 
