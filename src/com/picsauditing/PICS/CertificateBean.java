@@ -26,9 +26,6 @@ import com.picsauditing.servlet.upload.UploadConHelper;
 import com.picsauditing.servlet.upload.UploadProcessorFactory;
 
 public class CertificateBean extends DataBean {
-//	static final String defaultSelectType = "SELECT A CATEGORY";
-//	static final String defaultSelect = "SELECT A FORM";
-//	static final String MAIL_REMINDER_DAYS = "30";
 	public static final boolean DO_SET_NAME= true;
 	public static final boolean DONT_SET_NAME= false;
 	public static final String ADMIN_ID = "-1";
@@ -58,53 +55,66 @@ public class CertificateBean extends DataBean {
 	private String verified = "No";
 	private String ext = "pdf";
 			
-	public void setTypes(String[] s) {
-		if (s == null) {
-			type = "";
-			numTypes = 0;
-			return;
-		}//if
-		for (int i = 1; i < s.length; i++) {
-			type += (s[i-1] + ", ");
-		}//for
-		type += (s[s.length-1]);
-		numTypes = s.length;
-	}//setTypes
-	
-	public String[] getTypes() {
-		String[] temp = new String[numTypes];
-		if (0 == numTypes)
-			return temp;
-		int i1 = 0, i2 = 0;
-		for (int i = 1; i < numTypes; i++) {
-			i1 = type.indexOf(",", i2);
-			temp[i-1] = type.substring(i2, i1);
-			i2 = i1+2;
-		}//for
-		temp[numTypes-1] = type.substring(i2);
-		return temp;
-	}//getTypes
+	public long getLiabilityLimit() {
+		return liabilityLimit;		
+	}
+	public void setLiabilityLimit(long liabilityLimit) {
+		this.liabilityLimit = liabilityLimit;
+	}
+	public String getNamedInsured() {
+		return namedInsured;
+	}
+	public void setNamedInsured(String namedInsured) {
+		this.namedInsured = namedInsured;
+	}
+	public String getExt() {
+		return ext;
+	}
+	public void setExt(String ext) {
+		this.ext = ext;
+	}
+	public String getSubrogationWaived() {
+		return subrogationWaived;
+	}
+	public void setSubrogationWaived(String subrogationWaived) {
+		this.subrogationWaived = subrogationWaived;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getVerified() {
+		return verified;
+	}
+	public void setVerified(String verified) {
+		this.verified = verified;
+	}
+	public ResultSet getListRS(){
+		return listRS;
+	}
+	public String getExpDateShow() throws Exception {
+		return DateBean.toShowFormat(expDate);
+	}
+	public String getDirPath() {
+		return "/" + dirPath + "/";
+	}
 	
 	ResultSet listRS = null;
 	int numResults = 0;
-	int count = 0;
+	public int count = 0;
 	
-	private String[] TYPE_ARRAY = {"Worker's Comp", "General Liability", "Automobile", "Professional Liability", "Pollution Liability", "E&O", };
-	private String[] MONTHS_ARRAY = {"01","Jan","02","Feb","03","Mar","04","Apr",
+	public static String[] TYPE_ARRAY = {"Worker's Comp", "General Liability", "Automobile", "Professional Liability", "Pollution Liability", "E&O", };
+	public static String[] MONTHS_ARRAY = {"01","Jan","02","Feb","03","Mar","04","Apr",
 									"05","May","06","Jun","07","Jul","08","Aug",
 									"09","Sep","10","Oct","11","Nov","12","Dec"};
-	private String[] DAYS_ARRAY = {"01","02","03","04","05","06","07","08","09","10",
+	public static String[] DAYS_ARRAY = {"01","02","03","04","05","06","07","08","09","10",
 								  "11","12","13","14","15","16","17","18","19","20",
 								  "21","22","23","24","25","26","27","28","29","30","31"};
-	private String[] YEARS_ARRAY = {"2005","2006","2007","2008","2009"};
-	
-	public String getExpDateShow() throws Exception {
-			return DateBean.toShowFormat(expDate);
-//		return expMonth + "/" + expDay + "/" + expYear;
-	}//getExpDateShow
-	
-	public boolean addCertificate(String contractor_id, String fileName) throws Exception {
-				
+	public static String[] YEARS_ARRAY = {"2005","2006","2007","2008","2009"};
+
+	public boolean addCertificate(String contractor_id, String fileName) throws Exception {				
 		String selectQuery = "SELECT name FROM accounts WHERE id="+operator_id+";";
 		String ext = FilenameUtils.getExtension(fileName);
 		boolean ret = false;
@@ -115,19 +125,19 @@ public class CertificateBean extends DataBean {
 			if (SQLResult.next()) {
 				operator = SQLResult.getString("name");
 				SQLResult.close();
-			}//if
+			}
 			else {
 				SQLResult.close();
 				DBClose();
 				throw new Exception("No operator account with id="+operator_id);
-			}//else
+			}
 			selectQuery = "SELECT * FROM certificates WHERE contractor_id="+contractor_id+" AND "+
 				"operator_id="+operator_id+" AND type='"+Utilities.escapeQuotes(type)+"';";
 			SQLResult = SQLStatement.executeQuery(selectQuery);
 			if (SQLResult.next()) {
 				errorMessages.addElement("A " + type + " certificate already exists for operator " + operator + ".");
-				return false;			
-			}//if
+				return false;
+			}
 			SQLResult.close();
 			String insertQuery = "INSERT INTO certificates (contractor_id,operator_id,operator,type,expDate,liabilityLimit,namedInsured,subrogationWaived, ext) VALUES ('"+
 				contractor_id+"','"+operator_id+"','"+Utilities.escapeQuotes(operator)+"','"+Utilities.escapeQuotes(type)+"','"+expDate+"'," +liabilityLimit+ ",'" 
@@ -137,29 +147,20 @@ public class CertificateBean extends DataBean {
 			if (SQLResult.next()) {
 				cert_id = SQLResult.getString("GENERATED_KEY");
 				SQLResult.close();
-			}//if
-			else {
+			}else{
 				SQLResult.close();
 				DBClose();
 				throw new Exception("No id returned after inserting new certificate");
-			}//else
+			}
 			String updateQuery = "UPDATE contractor_info SET certs = (certs+1) WHERE id = " + contractor_id + ";";
 			
 			SQLStatement.executeUpdate(updateQuery);
 			ret = true;
-		
 		}finally{
-			DBClose();
-			
-		}//finally
-		
-		
+			DBClose();			
+		}
 		return ret;
-		
 	}//addCertificate
-
-	public void setFromDB() throws Exception {
-	}//setFromDB
 
 	public void deleteCertificate(String delete_id, String con_id, String path) throws Exception {
 	// called cerBean.deleteCertificate(cert_id, contractor_id, config.getServletContext().getRealPath("/"));
@@ -170,10 +171,10 @@ public class CertificateBean extends DataBean {
 			if (1 == numDeleted) {
 				String updateQuery = "UPDATE contractor_info SET certs = (certs-1) WHERE id = " + con_id + ";";
 				SQLStatement.executeUpdate(updateQuery);
-			}//if
+			}
 		}finally{
 			DBClose();
-		}//finally		
+		}
 		// Delete file
 		java.io.File f = null;
 		f = new java.io.File(path + "cert_" + con_id + "_" + delete_id + ".pdf");
@@ -194,7 +195,7 @@ public class CertificateBean extends DataBean {
 				f = new java.io.File(path + "cert_" + con_id + "_" + delete_id + ".pdf");
 				if (f.exists())
 					f.delete();
-			}//while
+			}
 			SQLResult.close();
 			String deleteQuery = "DELETE FROM certificates WHERE contractor_id = '" + con_id + "';";
 			SQLStatement.executeUpdate(deleteQuery);
@@ -202,11 +203,10 @@ public class CertificateBean extends DataBean {
 			SQLStatement.executeUpdate(updateQuery);
 		}finally{
 			DBClose();
-		}//finally		
+		}	
 	}//deleteAllCertificates
 	
-	public void setFromUploadRequest(Map<String,String> m) throws Exception {
-		
+	public void setFromUploadRequest(Map<String,String> m) throws Exception {		
 		type = m.get("types");
 		operator_id = m.get("operator_id");
 		expDay = m.get("expDay");
@@ -250,7 +250,7 @@ public class CertificateBean extends DataBean {
 		}catch (Exception ex){
 			DBClose();
 			throw ex;
-		}//catch
+		}
 	}//setList
 	
 	public void setListAllExpired(String daysTilExpired, PermissionsBean pBean) throws Exception {
@@ -273,9 +273,8 @@ public class CertificateBean extends DataBean {
 		}catch (Exception ex){
 			DBClose();
 			throw ex;
-		}//catch
+		}
 	}//setListAll
-
 
 	public void setListAll(String operator_id) throws Exception {
 		String selectQuery = "";
@@ -312,6 +311,42 @@ public class CertificateBean extends DataBean {
 		}//catch
 	}//setListAll
 
+	public void setListByFacilities(String operator_id) throws Exception{
+		String selectQuery = "";
+		selectQuery = "SELECT certificates.*,accounts.id,accounts.name,contractor_info.status "+
+			"FROM certificates, accounts, contractor_info "+
+			"WHERE certificates.contractor_id=accounts.id AND contractor_info.id=accounts.id AND "+
+			"accounts.active='Y' ";
+		if ((contractor_name == null) || (contractor_name.equals(DEFAULT_NAME)) || (contractor_name.length()<MIN_NAME_SEARCH_LENGTH))
+			contractor_name = DEFAULT_NAME;
+		else
+			selectQuery+= "AND accounts.name LIKE '%"+Utilities.escapeQuotes(contractor_name)+"%' ";
+				
+		if(operator_id != null && !operator_id.equals("-2"))
+			selectQuery += "AND certificates.operator_id IN (SELECT opID from facilities where corporateID=" + operator_id+") AND certificates.verified='Yes' ";
+	
+		if(status == null || status.equals(""))
+			status = DEFAULT_STATUS;
+
+		selectQuery += "AND certificates.status='" + status + "' ";
+		selectQuery += "ORDER BY name ASC;";
+
+		try{
+			DBReady();
+			listRS = SQLStatement.executeQuery(selectQuery);
+			
+			numResults = 0;
+			while (listRS.next())
+				numResults++;
+			listRS.beforeFirst();
+			count = 0;
+		}catch (Exception ex){
+			DBClose();
+			throw ex;
+		}
+	}//setListByFacilities
+
+/*	jtj 2-7-08 removed this and changed to search on operator_id, not operator name 
 	public void setList(String con_id, String operator) throws Exception {
 		String selectQuery = "SELECT * FROM certificates WHERE contractor_id="+con_id+" AND operator='"+operator+"' AND verified='Yes' ORDER BY type ASC;";
 		try{
@@ -327,8 +362,24 @@ public class CertificateBean extends DataBean {
 			throw ex;
 		}//catch
 	}//setList
-	
-	public void setList() throws Exception {
+*/
+	public void setList(String con_id, String operator_id) throws Exception {
+		String selectQuery = "SELECT * FROM certificates WHERE contractor_id="+con_id+" AND operator_id='"+operator_id+"' ORDER BY type ASC;";
+		try{
+			DBReady();
+			listRS = SQLStatement.executeQuery(selectQuery);
+			numResults = 0;
+			while (listRS.next())
+				numResults++;
+			listRS.beforeFirst();
+			count = 0;
+		}catch (Exception ex){
+			DBClose();
+			throw ex;
+		}//catch
+	}//setList
+
+	public void setList(Permissions permissions) throws Exception {
 		StringBuffer buf = new StringBuffer("select certificates.*, accounts.name, operators.insuranceAuditor_id from certificates ");
 		buf.append("LEFT JOIN accounts on certificates.contractor_id=accounts.id ");
 		buf.append("LEFT JOIN operators on operators.id=certificates.operator_id where verified='No'");
@@ -337,9 +388,7 @@ public class CertificateBean extends DataBean {
 			contractor_name = DEFAULT_NAME;
 		else
 			buf.append(" AND accounts.name LIKE '%"+Utilities.escapeQuotes(contractor_name)+"%' ");
-		
-		buf.append(" ORDER BY name ASC;");
-		
+		buf.append(" ORDER BY name ASC;");		
 		try{
 			DBReady();
 			listRS = SQLStatement.executeQuery(buf.toString());
@@ -390,14 +439,6 @@ public class CertificateBean extends DataBean {
 		}//if
 		DBClose();
 	}//closeList
-	public String getBGColor() {
-		if ((count % 2) == 1)	return " bgcolor=\"#FFFFFF\"";
-		else	return "";
-	}//getBGColor
-
-	public String getTextColor() {
-		return ContractorBean.getTextColor(contractor_status);
-	}//getTextColor
 
 	@SuppressWarnings("unchecked")
 	public boolean processForm(javax.servlet.jsp.PageContext pageContext)
@@ -408,7 +449,7 @@ public class CertificateBean extends DataBean {
 		String action = request.getParameter("action");
 		String con_id = request.getParameter("id");		
 				
-		if(action != null && action.equals("add")){
+		if("add".equals(action)){
 			request.setAttribute("uploader", String.valueOf(UploadProcessorFactory.CERTIFICATE));
 			request.setAttribute("contractor_id", con_id);
 			request.setAttribute("exts","pdf,doc,txt,jpg");
@@ -429,19 +470,14 @@ public class CertificateBean extends DataBean {
 				if(ret)
 					renameCert(fn);
 			}
-			
 			return ret;
-		}//if
-		
-		
+		}	
 		if ("delete".equals(action)) {
 			String delete_id = request.getParameter("delete_id");
 			String dir = pageContext.getServletContext().getInitParameter("FTP_DIR") + getDirPath();
 			deleteCertificate(delete_id, con_id, dir);
-			
 			return true;
-		}//if
-		
+		}
 		return false;
 	}//processForm
 	
@@ -456,8 +492,8 @@ public class CertificateBean extends DataBean {
 			if (temp.startsWith("sendEmail_")) {
 				String cID = temp.substring(10);
 				sendReminderEmail(cID, permission.getUsername());
-			}//if
-		}//while
+			}
+		}
 	}//processEmailForm
 
 	public void sendReminderEmail(String certificate_id, String adminName) throws Exception {
@@ -469,26 +505,18 @@ public class CertificateBean extends DataBean {
 			if (SQLResult.next()) {
 				setFromResultSet(SQLResult);
 				String email = SQLResult.getString("email");
-//			String email = "elderjoemama@hotmail.com";
 				String contact = SQLResult.getString("contact");
 				EmailBean.sendCertificateExpireEmail(contractor_id,email,contact,type,getExpDateShow(),operator, adminName);
-//			String updateQuery = "UPDATE certificates SET sent = (sent+1), sentDates = " +
-//				"CONCAT('"+sentDates+" ',CURDATE()) WHERE cert_id = '" + certificate_id + "';";
 				String updateQuery = "UPDATE certificates SET sent = (sent+1), lastSentDate = NOW() WHERE cert_id = '" + certificate_id + "';";
 				SQLStatement.executeUpdate(updateQuery);
-				
-//			String newNote = "Expired " + type +" (" + getExpDateShow() + ") email sent";
-//			new ContractorBean().addNote(contractor_id, "(PICS)", newNote, DateBean.getTodaysDateTime());
-				
 				SQLResult.close();
-			}//if
-			else {
+			}else {
 				SQLResult.close();
 				throw new Exception("No certificate with ID: " + certificate_id);
-			}//else
+			}
 		}finally{
 			DBClose();
-		}//finally		
+		}
 	}//sendReminderEmail
 
 	public void makeExpiredCertificatesInactive() throws Exception {
@@ -528,108 +556,19 @@ public class CertificateBean extends DataBean {
 		}//finally		
 	}//makeExpiredCertificatesInactive
 
-	public String getGeneralSelect(String name, String classType, String selectedOperator) throws Exception {
-		AccountBean aBean = new AccountBean();
-		return aBean.getGeneralSelect(name, classType, selectedOperator);
-	}//getGeneralSelect
-
-	public String getGeneralSelect2(String name, String classType, String selectedOperator) throws Exception {
-		AccountBean aBean = new AccountBean();
-		return aBean.getGeneralSelect2(name, classType, selectedOperator, SearchBean.DONT_LIST_DEFAULT);
-	}//getGeneralSelect2
-	
-	public String getGeneralSelect3(String name, String classType, String selectedOperator, String contractor_id) throws Exception {
-		AccountBean aBean = new AccountBean();
-		return aBean.getGeneralSelect3(name, classType, selectedOperator, SearchBean.DONT_LIST_DEFAULT, contractor_id );
-	}//getGeneralSelect3
-	
-	public String getGeneralSelect4(String name, String classType, String selectedOperator, String contractor_id) throws Exception {
-		AccountBean aBean = new AccountBean();
-		return aBean.getGeneralSelect3(name, classType, selectedOperator, SearchBean.LIST_DEFAULT, contractor_id );
-	}//getGeneralSelect4
-	
-	/*public String getTypeSelect(String name, String classType, String size, String[] selectedTypes) {
-		//return Utilities.inputMultipleSelectMultiples(name, classType, size, selectedTypes, TYPE_ARRAY);
-		
-	}//getTypeSelect
-	*/
-	
-	public String getTypeSelect(String name, String classType, String selectedOption, String[] selectedTypes) {
-		return Utilities.inputSelect(name, classType, selectedOption, TYPE_ARRAY);
-		
-	}//getTypeSelect
-	
-	public String getDaySelect(String name, String classType, String selectedDay) {
-		return Utilities.inputSelect(name, classType, selectedDay, DAYS_ARRAY);
-	}//getDaySelect
-	
-	public String getMonthSelect(String name, String classType, String selectedMonth) {
-		return Utilities.inputSelect2(name, classType, selectedMonth, MONTHS_ARRAY);
-	}//getMonthSelect
-	public String getYearSelect(String name, String classType, String selectedYear) {
-		return Utilities.inputSelect(name, classType, selectedYear, YEARS_ARRAY);
-	}//getYearSelect
-	
-	public long getLiabilityLimit() {
-		return liabilityLimit;
-		
-	}
-
-	public void setLiabilityLimit(long liabilityLimit) {
-		this.liabilityLimit = liabilityLimit;
-	}
-
-	public String getNamedInsured() {
-		return namedInsured;
-	}
-
-	public void setNamedInsured(String namedInsured) {
-		this.namedInsured = namedInsured;
-	}
-
-	public String getSubrogationWaived() {
-		return subrogationWaived;
-	}
-
-	public void setSubrogationWaived(String subrogationWaived) {
-		this.subrogationWaived = subrogationWaived;
-	}
-
-	public String getDirPath() {
-		return "/" + dirPath + "/";
-	}
-	
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public String getVerified() {
-		return verified;
-	}
-
-	public void setVerified(String verified) {
-		this.verified = verified;
-	}
-	
 	private long formattedLiability(Map<String,String> m){
 		Locale loc = Locale.US;
 		String liability = m.get("liabilityLimit");
 		if(liability.startsWith("$"))
 			liability = liability.substring(1);
-		try {
+		try{
 	        Number number = NumberFormat.getInstance(loc).parse(liability);
-	             return number.longValue();
-	       
-	    } catch (ParseException e) {
+	        return number.longValue();
+	    }catch (ParseException e){
 	    	errorMessages.addElement("Liability limit must be a number optionally preceeded by a '$'.");	
 	    	return -1l;
 	    }
-	    
-	}
+	}//formattedLiability
 	
 	private long formattedLiability(String liability) throws Exception{
 		Locale loc = Locale.US;
@@ -637,20 +576,13 @@ public class CertificateBean extends DataBean {
 			liability = liability.substring(1);
 		try {
 	        Number number = NumberFormat.getInstance(loc).parse(liability);
-	             return number.longValue();
-	       
+	        return number.longValue();
 	    } catch (ParseException e) {
 	    	throw new Exception(e);
 	    }
-	}
-	
-	public ResultSet getListRS(){
-		return listRS;		
-		
-	}
+	}//formattedLiability
 	
 	public List<CertificateDO> setCertificatesFromCheckList(HttpServletRequest request){
-		
 		List<CertificateDO> certsToUpdate = new ArrayList<CertificateDO>();
 		CertificateDO certDO = null;	
 		Enumeration e =  request.getParameterNames();
@@ -666,15 +598,11 @@ public class CertificateBean extends DataBean {
 				String reason = request.getParameter("reason_" + id);
 				if(reason == null)
 					reason = "";
-				certDO.setReason(reason);			
-			
+				certDO.setReason(reason);
 				certsToUpdate.add(certDO);
 			}
-			
 		}
-		
 		return certsToUpdate;
-		
 	}//setCeretificatesFromCheckList
 	
 	public List<CertificateDO> setCertificatesFromVerifiedList(HttpServletRequest request){	
@@ -698,43 +626,35 @@ public class CertificateBean extends DataBean {
 	}//setCeretificatesFromVerifiedList
 
 	public List<CertificateDO> setCertificatesFromEditList(HttpServletRequest request){
-	List<CertificateDO> certsToUpdate = new ArrayList<CertificateDO>();
-		
-	Enumeration e =  request.getParameterNames();
-	
-	while(e.hasMoreElements()){
-		CertificateDO certDO = null;
-		String temp = (String)e.nextElement();
-		
-		if(temp.startsWith("oktoedit_") && request.getParameter(temp).equals("ok")){			
-			certDO = new CertificateDO();
-			String[] strlst = temp.split("_");
-			String id = strlst[strlst.length - 1];
-			certDO.setCert_id(id);
-			certDO.setExpMonth(request.getParameter("expMonth_" + id));
-			certDO.setExpDay(request.getParameter("expDay_" + id));
-			certDO.setExpYear(request.getParameter("expYear_" + id));
-			certDO.setExpDate(certDO.getExpYear() + "-" + certDO.getExpMonth() + "-" + certDO.getExpDay());
-			
-			long liability = 0l;;
-			try {
-				liability = formattedLiability(request.getParameter("liabilityLimit_" + id));
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			certDO.setLiabilityLimit(liability);
-			String namedIns = Utilities.escapeQuotes(request.getParameter("namedInsured_" + id));
-			certDO.setNamedInsured(namedIns);
-			certDO.setSubrogationWaived(request.getParameter("subrogationWaived_" + id));
-			
-			certsToUpdate.add(certDO);		
-		}
-	
-		
+		List<CertificateDO> certsToUpdate = new ArrayList<CertificateDO>();
+		Enumeration e =  request.getParameterNames();
+		while(e.hasMoreElements()){
+			CertificateDO certDO = null;
+			String temp = (String)e.nextElement();
+			if(temp.startsWith("oktoedit_") && request.getParameter(temp).equals("ok")){			
+				certDO = new CertificateDO();
+				String[] strlst = temp.split("_");
+				String id = strlst[strlst.length - 1];
+				certDO.setCert_id(id);
+				certDO.setExpMonth(request.getParameter("expMonth_" + id));
+				certDO.setExpDay(request.getParameter("expDay_" + id));
+				certDO.setExpYear(request.getParameter("expYear_" + id));
+				certDO.setExpDate(certDO.getExpYear() + "-" + certDO.getExpMonth() + "-" + certDO.getExpDay());
+				
+				long liability = 0l;;
+				try {
+					liability = formattedLiability(request.getParameter("liabilityLimit_" + id));
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				certDO.setLiabilityLimit(liability);
+				String namedIns = Utilities.escapeQuotes(request.getParameter("namedInsured_" + id));
+				certDO.setNamedInsured(namedIns);
+				certDO.setSubrogationWaived(request.getParameter("subrogationWaived_" + id));
+				certsToUpdate.add(certDO);		
+			}	
 		}
 		return certsToUpdate;
-
 	}//setCeretificatesFromEditList
 	public List<CertificateDO> sendEmailFromCheckList(HttpServletRequest request){
 		List<CertificateDO> emailList = new ArrayList<CertificateDO>();
@@ -761,65 +681,26 @@ public class CertificateBean extends DataBean {
 		return emailList;
 	}//setCeretificatesFromCheckList
 	
-	public void sendEmail(List<CertificateDO> list) throws Exception{
+	public void sendEmail(List<CertificateDO> list, Permissions permissions) throws Exception{
 		for(CertificateDO cdo : list){
 			if(cdo.getStatus().equals("Rejected"))
-				EmailBean.sendCertificateRejectedEmail(cdo);
+				EmailBean.sendCertificateRejectedEmail(cdo,permissions);
 			else
 				EmailBean.sendCertificateAcceptedEmail(cdo);
-			}
 		}
+	}
+
 	public int[] UpdateCertificates(List<CertificateDO> list) throws Exception{
-		
-		int[] updateCounts = null;
-		
+		int[] updateCounts = null;	
 		try{
 			DBReady();
 			SQLStatement.getConnection().setAutoCommit(false);
 			for(CertificateDO cdo : list)
-				    SQLStatement.addBatch("UPDATE certificates SET status='" + cdo.getStatus() + "', reason='" + Utilities.escapeQuotes(cdo.getReason()) + "' WHERE cert_id=" + cdo.getCert_id());
+				SQLStatement.addBatch("UPDATE certificates SET status='" + cdo.getStatus() + "', reason='" + Utilities.escapeQuotes(cdo.getReason()) + "' WHERE cert_id=" + cdo.getCert_id());
 
 			updateCounts = SQLStatement.executeBatch();
 			SQLStatement.getConnection().commit();
 			SQLStatement.getConnection().setAutoCommit(true);
-		} catch(BatchUpdateException b) {
-            System.out.println("----BatchUpdateException----");
-            System.out.println("SQLState:  " + b.getSQLState());
-            System.out.println("Message:  " + b.getMessage());
-            System.out.println("Vendor:  " + b.getErrorCode());
-            System.out.print("Update counts:  ");
-            for (int i = 0; i < updateCounts.length; i++) {
-                System.out.print(updateCounts[i] + "   ");
-            }//for
-            System.out.println("");
-            
-       } catch(SQLException ex) {
-            System.out.println("----SQLException----");
-            System.out.println("SQLState:  " + ex.getSQLState());
-            System.out.println("Message:  " + ex.getMessage());
-            System.out.println("Vendor:  " + ex.getErrorCode());
-            
-       }finally{
-			DBClose();
-       }//finally
-       return updateCounts;
-	}
-	
-public int[] UpdateVerifiedCertificates(List<CertificateDO> list) throws Exception{
-		
-		int[] updateCounts = null;
-		
-		try{
-			DBReady();
-			SQLStatement.getConnection().setAutoCommit(false);
-			for(CertificateDO cdo : list)
-				    SQLStatement.addBatch("UPDATE certificates SET verified='" + cdo.getVerified() + "' WHERE cert_id=" + cdo.getCert_id());
-			
-			
-			updateCounts = SQLStatement.executeBatch();
-			SQLStatement.getConnection().commit();
-			SQLStatement.getConnection().setAutoCommit(true);
-			
 		} catch(BatchUpdateException b) {
             System.out.println("----BatchUpdateException----");
             System.out.println("SQLState:  " + b.getSQLState());
@@ -830,7 +711,37 @@ public int[] UpdateVerifiedCertificates(List<CertificateDO> list) throws Excepti
                 System.out.print(updateCounts[i] + "   ");
             }
             System.out.println("");
-
+       }catch(SQLException ex){
+            System.out.println("----SQLException----");
+            System.out.println("SQLState:  " + ex.getSQLState());
+            System.out.println("Message:  " + ex.getMessage());
+            System.out.println("Vendor:  " + ex.getErrorCode());    
+       }finally{
+			DBClose();
+       }
+       return updateCounts;
+	}
+	
+	public int[] UpdateVerifiedCertificates(List<CertificateDO> list) throws Exception{
+		int[] updateCounts = null;
+		try{
+			DBReady();
+			SQLStatement.getConnection().setAutoCommit(false);
+			for(CertificateDO cdo : list)
+				    SQLStatement.addBatch("UPDATE certificates SET verified='" + cdo.getVerified() + "' WHERE cert_id=" + cdo.getCert_id());
+			updateCounts = SQLStatement.executeBatch();
+			SQLStatement.getConnection().commit();
+			SQLStatement.getConnection().setAutoCommit(true);
+			
+		} catch(BatchUpdateException b) {
+            System.out.println("----BatchUpdateException----");
+            System.out.println("SQLState:  " + b.getSQLState());
+            System.out.println("Message:  " + b.getMessage());
+            System.out.println("Vendor:  " + b.getErrorCode());
+            System.out.print("Update counts:  ");
+            for (int i = 0; i < updateCounts.length; i++)
+                System.out.print(updateCounts[i] + "   ");
+            System.out.println("");
        } catch(SQLException ex) {
             System.out.println("----SQLException----");
             System.out.println("SQLState:  " + ex.getSQLState());
@@ -838,58 +749,47 @@ public int[] UpdateVerifiedCertificates(List<CertificateDO> list) throws Excepti
             System.out.println("Vendor:  " + ex.getErrorCode());
        }finally{
 			DBClose();
-			
-		}
-       
+       }
        return updateCounts;
 	}
 
-public int[] UpdateEditedCertificates(List<CertificateDO> list) throws Exception{
-	
-	int[] updateCounts = null;
-	
-	try{
-		DBReady();
-		SQLStatement.getConnection().setAutoCommit(false);
-		for(CertificateDO cdo : list){
-			StringBuffer buf = new StringBuffer("UPDATE certificates SET expDate='");
-			buf.append(cdo.getExpDate());
-			buf.append("', liabilityLimit=").append(cdo.getLiabilityLimit()).append(", ");
-			buf.append("namedInsured='").append(cdo.getNamedInsured()).append("', ");
-			buf.append("subrogationWaived='").append(cdo.getSubrogationWaived());
-			buf.append("' WHERE cert_id='").append(cdo.getCert_id()).append("';");
-						
-			SQLStatement.addBatch(buf.toString());
-		}
-		
-		
-		updateCounts = SQLStatement.executeBatch();
-		SQLStatement.getConnection().commit();
-		SQLStatement.getConnection().setAutoCommit(true);
-		
-	} catch(BatchUpdateException b) {
-        System.out.println("----BatchUpdateException----");
-        System.out.println("SQLState:  " + b.getSQLState());
-        System.out.println("Message:  " + b.getMessage());
-        System.out.println("Vendor:  " + b.getErrorCode());
-        System.out.print("Update counts:  ");
-        for (int i = 0; i < updateCounts.length; i++) {
-            System.out.print(updateCounts[i] + "   ");
-        }
-        System.out.println("");
-
-   } catch(SQLException ex) {
-        System.out.println("----SQLException----");
-        System.out.println("SQLState:  " + ex.getSQLState());
-        System.out.println("Message:  " + ex.getMessage());
-        System.out.println("Vendor:  " + ex.getErrorCode());
-   }finally{
-		DBClose();
-		
+	public int[] UpdateEditedCertificates(List<CertificateDO> list) throws Exception{
+		int[] updateCounts = null;
+		try{
+			DBReady();
+			SQLStatement.getConnection().setAutoCommit(false);
+			for(CertificateDO cdo : list){
+				StringBuffer buf = new StringBuffer("UPDATE certificates SET expDate='");
+				buf.append(cdo.getExpDate());
+				buf.append("', liabilityLimit=").append(cdo.getLiabilityLimit()).append(", ");
+				buf.append("namedInsured='").append(cdo.getNamedInsured()).append("', ");
+				buf.append("subrogationWaived='").append(cdo.getSubrogationWaived());
+				buf.append("' WHERE cert_id='").append(cdo.getCert_id()).append("';");
+							
+				SQLStatement.addBatch(buf.toString());
+			}
+			updateCounts = SQLStatement.executeBatch();
+			SQLStatement.getConnection().commit();
+			SQLStatement.getConnection().setAutoCommit(true);	
+		} catch(BatchUpdateException b) {
+	        System.out.println("----BatchUpdateException----");
+	        System.out.println("SQLState:  " + b.getSQLState());
+	        System.out.println("Message:  " + b.getMessage());
+	        System.out.println("Vendor:  " + b.getErrorCode());
+	        System.out.print("Update counts:  ");
+	        for (int i = 0; i < updateCounts.length; i++)
+	        	System.out.print(updateCounts[i] + "   ");
+	        System.out.println("");
+	   } catch(SQLException ex) {
+	        System.out.println("----SQLException----");
+	        System.out.println("SQLState:  " + ex.getSQLState());
+	        System.out.println("Message:  " + ex.getMessage());
+	        System.out.println("Vendor:  " + ex.getErrorCode());
+	   }finally{
+		   DBClose();		
+	   }
+	   return updateCounts;
 	}
-   
-   return updateCounts;
-}
 	
 	public String getRadioInputWithOptions(String name, String classType, String selected, String[] optionsArray,
 				String[] valueArray, String[] onclickArray, String param) {
@@ -907,44 +807,9 @@ public int[] UpdateEditedCertificates(List<CertificateDO> list) throws Exception
 			if (option.equals(selected))
 				temp.append(" checked");
 			temp.append(">").append((String)valueArray[i++]).append("</nobr>");
-		} // while
+		}
 		return temp.toString();
-	} // getReadioInput
-
-	public void setListByFacilities(String operator_id) throws Exception{
-		String selectQuery = "";
-		selectQuery = "SELECT certificates.*,accounts.id,accounts.name,contractor_info.status "+
-			"FROM certificates, accounts, contractor_info "+
-			"WHERE certificates.contractor_id=accounts.id AND contractor_info.id=accounts.id AND "+
-			"accounts.active='Y' ";
-		if ((contractor_name == null) || (contractor_name.equals(DEFAULT_NAME)) || (contractor_name.length()<MIN_NAME_SEARCH_LENGTH))
-			contractor_name = DEFAULT_NAME;
-		else
-			selectQuery+= "AND accounts.name LIKE '%"+Utilities.escapeQuotes(contractor_name)+"%' ";
-				
-		if(operator_id != null && !operator_id.equals("-2"))
-			selectQuery += "AND certificates.operator_id IN (SELECT opID from facilities where corporateID=" + operator_id+") AND certificates.verified='Yes' ";
-	
-		if(status == null || status.equals(""))
-			status = DEFAULT_STATUS;
-
-		selectQuery += "AND certificates.status='" + status + "' ";
-		selectQuery += "ORDER BY name ASC;";
-
-		try{
-			DBReady();
-			listRS = SQLStatement.executeQuery(selectQuery);
-			
-			numResults = 0;
-			while (listRS.next())
-				numResults++;
-			listRS.beforeFirst();
-			count = 0;
-		}catch (Exception ex){
-			DBClose();
-			throw ex;
-		}//catch
-	}
+	}//getRadioInputWithOptions
 	
 	private void renameCert(String fileName){
 		File file = new File(fileName);
@@ -954,25 +819,6 @@ public int[] UpdateEditedCertificates(List<CertificateDO> list) throws Exception
 			String fn = names[0] + "_" + names[1] + "_" + cert_id + "." + ext;	
 			File newFile = new File(fn);
 			file.renameTo(newFile);
-			
 		}
 	}
-
-	public String getExt() {
-		return ext;
-	}
-
-	public void setExt(String ext) {
-		this.ext = ext;
-	}
-	
-	//  This is the SQL to check that contractor_info.certs = the number of certs for that contractor in the db
-//  SELECT  ce.*, ci.certs, count(*)
-//  FROM certificates ce, contractor_info ci
-//  WHERE ce.contractor_id = ci.id GROUP BY contractor_id ORDER by contractor_id;
-
-//	These two should be the same:
-//	SELECT SUM(certs) FROM contractor_info;
-//	SELECT count(*) FROM certificates;	
-
 }//CertificateBean

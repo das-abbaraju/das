@@ -1,16 +1,16 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
 <jsp:useBean id="cerBean" class="com.picsauditing.PICS.CertificateBean" scope ="page"/>
-<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:setProperty name="cerBean" property="*" />
 <script src="js/Validate.js"></script>
 <script src="js/ValidateForms.js"></script>
 <%
-permissions.tryPermission(OpPerms.ContractorAccounts, OpType.Edit);
+permissions.tryPermission(OpPerms.InsuranceCerts, OpType.Edit);
 
 try{
 	String id = request.getParameter("id");
 	cerBean.processForm(pageContext);
+	ContractorBean cBean = new ContractorBean();
 	cBean.setFromDB(id);
 %>
 <html>
@@ -66,16 +66,20 @@ try{
                     <table cellpadding="2" cellspacing="3">
                       <tr> 
                         <td class="blueMain">Type&nbsp;&nbsp;
-                        <%=cerBean.getTypeSelect("types","forms","Workers Compensation",cerBean.getTypes())%></td>                        
+                        <%=Utilities.inputSelect("types","forms","Workers Compensation",cerBean.TYPE_ARRAY)%></td>                        
                         <td class="blueMain">Operator&nbsp;&nbsp;
-                        <%=cerBean.getGeneralSelect3("operator_id","forms",cerBean.operator_id, id) %></td>
+<%	if (permissions.isOperator()){%>
+	                    <input type="hidden" name="operator_id" value="<%=permissions.getAccountId()%>">
+<%	}else{%>
+                        <%=new AccountBean().getGeneralSelect3("operator_id","forms",cerBean.operator_id,SearchBean.DONT_LIST_DEFAULT,id) %></td>
+<%	}//else%>
                       </tr>
                       <tr> 
                         <td class="blueMain">File (.pdf, .doc or .txt)&nbsp;&nbsp;
                           <input name="certificateFile" type="FILE" class="forms" size="15" required>
                         </td>
-                        <td class="blueMain">Expiration&nbsp;&nbsp;<%=cerBean.getMonthSelect("expMonth","forms",cerBean.expMonth)%>
-					      /<%=cerBean.getDaySelect("expDay","forms",cerBean.expDay)%>/<%=cerBean.getYearSelect("expYear","forms",cerBean.expYear)%>
+                        <td class="blueMain">Expiration&nbsp;&nbsp;<%=Utilities.inputSelect2("expMonth","forms",cerBean.expMonth, CertificateBean.MONTHS_ARRAY)%>
+					      /<%=Utilities.inputSelect("expDay","forms",cerBean.expDay, CertificateBean.DAYS_ARRAY)%>/<%=Utilities.inputSelect("expYear","forms",cerBean.expYear, CertificateBean.YEARS_ARRAY)%>
                         </td>
                       </tr>
                       <tr> 
@@ -108,7 +112,7 @@ try{
 <%	cerBean.setList(id);
 	while (cerBean.isNextRecord(false)) {
 %>
-                    <tr class="blueMain" <%=cerBean.getBGColor()%>> 
+                    <tr class="blueMain" <%=Utilities.getBGColor(cerBean.count)%>> 
                       <form name="deleteForm" method="post" action="contractor_upload_certificates.jsp?id=<%=id%>&action=delete">
                         <td> <input name="delete_id" type="hidden" value="<%=cerBean.cert_id%>"> 
                           <input name="Submit" type="submit" class="forms" value="Del"  onClick="return confirm('Are you sure you want to delete this file?');"> 

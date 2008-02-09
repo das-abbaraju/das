@@ -54,7 +54,7 @@ try{
                     <table cellpadding="2" cellspacing="0">
                       <tr> 
                         <td align="right" class="blueMain">Type</td>
-                        <td class="redMain"> <%=cerBean.getTypeSelect("types","forms","3",cerBean.getTypes())%>                        </td>
+                        <td class="redMain"> <%=Utilities.inputSelect("types","forms","3",CertificateBean.TYPE_ARRAY)%></td>
                       </tr>
                       <tr> 
                         <td>&nbsp;</td>
@@ -62,7 +62,7 @@ try{
                       </tr>
 					  <tr> 
                         <td align="right" class="blueMain">Operator</td>
-                        <td class="redMain"> <%=cerBean.getGeneralSelect2("operator_id","forms",cerBean.operator_id)%>
+                        <td class="redMain"> <%=new AccountBean().getGeneralSelect2("operator_id","forms",cerBean.operator_id,SearchBean.DONT_LIST_DEFAULT)%>
                         </td>
                       </tr>
                       <tr> 
@@ -72,8 +72,8 @@ try{
                         </td>
                       </tr>
                         <td align="right" class="blueMain">Expiration Date</td>
-                        <td class="redMain"> <%=cerBean.getMonthSelect("expMonth","forms",cerBean.expMonth)%>
-					/<%=cerBean.getDaySelect("expDay","forms",cerBean.expDay)%>/<%=cerBean.getYearSelect("expYear","forms",cerBean.expYear)%>
+                        <td class="redMain"> <%=Utilities.inputSelect2("expMonth","forms",cerBean.expMonth, CertificateBean.MONTHS_ARRAY)%>
+					/<%=Utilities.inputSelect("expDay","forms",cerBean.expDay, CertificateBean.DAYS_ARRAY)%>/<%=Utilities.inputSelect("expYear","forms",cerBean.expYear, CertificateBean.YEARS_ARRAY)%>
                         </td>
                       </tr>
                       <tr> 
@@ -93,7 +93,7 @@ try{
 <%	cerBean.setList(id);
 	while (cerBean.isNextRecord(false)) {
 %>
-                    <tr class="blueMain" <%=cerBean.getBGColor()%>> 
+                    <tr class="blueMain" <%=Utilities.getBGColor(cerBean.count)%>> 
                       <form name="deleteForm" method="post" action="contractor_certificates.jsp?id=<%=id%>&action=delete">
                         <td> <input name="delete_id" type="hidden" value="<%=cerBean.cert_id%>"> 
                           <input name="Submit" type="submit" class="forms" value="Del"  onClick="return confirm('Are you sure you want to delete this file?');"> 

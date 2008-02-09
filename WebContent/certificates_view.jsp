@@ -5,13 +5,63 @@
 <jsp:useBean id="cerBean" class="com.picsauditing.PICS.CertificateBean" scope ="page"/>
 <%try{
 	String id = request.getParameter("id");
-	if (permissions.isOperator())
-		cerBean.setList(id, permissions.getUsername());
+	String accountID = request.getParameter("accountID");
+	permissions.tryPermission(OpPerms.InsuranceCerts,OpType.View);
+	if (!permissions.hasPermission(OpPerms.InsuranceCertsAllOperators,OpType.View) || null == accountID)
+			cerBean.setList(id);
 	else
-		cerBean.setList(id);
+		cerBean.setList(id, accountID);
+/*				///////////////////////
+if (!permissions.loginRequired(response, request)) return;
+permissions.tryPermission(OpPerms.EditUsers, OpType.View);
+
+String getParams = ""; // Used when we go to Page 2,3,etc
+
+String accountID = permissions.getAccountIdString();
+if (permissions.hasPermission(OpPerms.InsuranceCertsAllOperators) && request.getParameter("accountID") != null) {
+	accountID = Utilities.intToDB(request.getParameter("accountID"));
+	getParams += "&accountID="+accountID;
+}
+
+FACILITIES.setFacilitiesFromDB();
+HashMap<String, String> facilityMap = FACILITIES.nameMap;
+
+SearchRaw search = new SearchRaw();
+search.sql.addField("u.lastLogin");
+search.sql.addField("u.isGroup");
+
+String isGroup = request.getParameter("isGroup");
+String isActive = request.getParameter("isActive");
+if ("Yes".equals(isGroup) || "No".equals(isGroup)) {
+	search.sql.addWhere("isGroup = '"+isGroup+"' ");
+	getParams += "&isGroup="+isGroup;
+}
+if ("Yes".equals(isActive) || "No".equals(isActive)) {
+	search.sql.addWhere("isActive = '"+isActive+"' ");
+	getParams += "&isActive="+isActive;
+}
+
+search.sql.addWhere("accountID = "+accountID);
+// Only search for Auditors and Admins
+search.sql.addOrderBy("u.name");
+search.setPageByResult(request);
+search.setLimit(20);
+
+List<BasicDynaBean> searchData = search.doSearch();
+
+////////////////////////////
+	*/	
+		
+		
+//	if (permissions.isOperator())
+//		cerBean.setList(id, permissions.getUsername());
+//	else
+//		cerBean.setList(id);
 	
 	cBean.setFromDB(id);
 %>
+<%@page import="com.picsauditing.access.OpPerms"%>
+<%@page import="com.picsauditing.access.OpType"%>
 <html>
 <head>
 <title>PICS - Pacific Industrial Contractor Screening</title>
@@ -84,7 +134,7 @@
 %>                  </tr>
 <%	while (cerBean.isNextRecord(cerBean.DONT_SET_NAME)) {
 %>
-                    <tr class="blueMain" <%=cerBean.getBGColor()%>> 
+                    <tr class="blueMain" <%=Utilities.getBGColor(cerBean.count)%>> 
                       <td><%=cerBean.type%></td>
                       <td><%=cerBean.operator%></td>
                       <td><%=cerBean.getExpDateShow()%></td>

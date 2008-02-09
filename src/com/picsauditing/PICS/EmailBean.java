@@ -11,6 +11,8 @@ import java.sql.*;
 
 import javax.activation.*;
 
+import com.picsauditing.access.Permissions;
+import com.picsauditing.access.User;
 import com.picsauditing.domain.CertificateDO;
 
 public class EmailBean extends DataBean{
@@ -906,7 +908,7 @@ public class EmailBean extends DataBean{
 		cBean.writeToDB();
 	}//sendUpdateDynamicPQFEmail
 	
-	public static void sendCertificateRejectedEmail(CertificateDO certDO) throws Exception {
+	public static void sendCertificateRejectedEmail(CertificateDO certDO,Permissions permissions) throws Exception {
 		AccountBean aBean = new AccountBean();		
 		aBean.setFromDB(certDO.getContractor_id());
 		String contactName = aBean.contact;
@@ -917,6 +919,8 @@ public class EmailBean extends DataBean{
 		String operator = aBean.name;
 		String operatorName = aBean.contact;
 		
+		User user = new User();
+		user.setFromDB(permissions.getUserIdString());
 		String reason = certDO.getReason();
 		String certType = certDO.getType();
 		String from = FROM_INFO;
@@ -930,8 +934,8 @@ public class EmailBean extends DataBean{
 		reason + endl+endl+	
 		"Please correct these issues and re-upload your insurance certificate to your " +endl+
 		"PICS account." + endl +
-	    "If you have any specific questions about" + operator + "'s insurance requirements, " + endl +
-	    "please contact " + operatorName + "."+endl+endl+
+	    "If you have any specific questions about " + operator + "'s insurance requirements, " + endl +
+	    "please contact " + permissions.getName() + " at "+user.userDO.email+"."+endl+endl+
 		"Have a great day,"+endl+
 		"PICS Customer Service";
 		
@@ -939,9 +943,8 @@ public class EmailBean extends DataBean{
 		//System.out.println("To:" + to);
 		//System.out.println("Subject:" + subject);
 		//System.out.println("Message:" + message);
-		sendEmail(from, to, subject, message);
-		
-}//sendCertificateExpireEmail
+		sendEmail(from, to, subject, message);	
+	}//sendCertificateRejectedEmail
 	
 	public static void sendCertificateAcceptedEmail(CertificateDO certDO) throws Exception {
 		AccountBean aBean = new AccountBean();		
