@@ -4,7 +4,7 @@
         <td><input name="name" type="text" class="forms" value="<%=cerBean.contractor_name%>" size="8" onFocus="clearText(this)">
         </td>
 <% if(pBean.isAdmin()) { %>
-        <td><%=cerBean.getGeneralSelect4("operator_id","forms", cerBean.operator_id, "" ) %>
+        <td><%=new AccountBean().getGeneralSelect3("operator_id","forms", cerBean.operator_id, SearchBean.LIST_DEFAULT,"" ) %>
       	</td>
 <% } %>
          <td class="blueMain">&nbsp;&nbsp;Status</td>

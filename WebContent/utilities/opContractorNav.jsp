@@ -12,7 +12,9 @@
 
 <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_detail.jsp",thisPage,id,"",thisQuery,"Contractor Details")%>
 <%	if  (pBean.canSeeSet.contains(id)) {
-		if (!cBean.certs.equals("0")) {
+		if (permissions.hasPermission(OpPerms.InsuranceCerts,OpType.Edit)){
+%>			| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_upload_certificates.jsp",thisPage,id,"",thisQuery,"Upload/Edit Certificates")%>
+<%		}else if(permissions.hasPermission(OpPerms.InsuranceCerts,OpType.View)){
 %>			| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"certificates_view.jsp",thisPage,id,"",thisQuery,"Insurance Certificates")%>
 <%		}//if
 		if (pBean.isCorporate()) {

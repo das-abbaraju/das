@@ -1,20 +1,14 @@
-<%//@ page language="java" errorPage="exception_handler.jsp"%>
-<%@ page language="java" import="java.util.*, com.picsauditing.domain.CertificateDO, com.picsauditing.PICS.Inputs"%>
+<%@ page language="java" import="java.util.*, com.picsauditing.domain.CertificateDO, com.picsauditing.PICS.Inputs" errorPage="exception_handler.jsp"%>
 <%@page import="com.picsauditing.access.*"%>
+<%@include file="includes/main.jsp"%>
 <jsp:useBean id="cerBean" class="com.picsauditing.PICS.CertificateBean" scope="page" />
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page" />
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope="page" />
-<jsp:useBean id="certDO" class="com.picsauditing.domain.CertificateDO"
-	scope="page" />
+<jsp:useBean id="certDO" class="com.picsauditing.domain.CertificateDO" scope="page" />
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page" />
-<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session" />
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
-<jsp:useBean id="pageBean" class="com.picsauditing.PICS.WebPage" scope ="page"/>
 <%
-if (!permissions.loginRequired(response, request)) return;
-permissions.tryPermission(OpPerms.InsuranceVerification, OpType.View);
-
 try{
+	permissions.tryPermission(OpPerms.InsuranceVerification, OpType.View);
 	cerBean.contractor_name = request.getParameter("name");
 	
 	if (null != request.getParameter("Submit")){
@@ -26,7 +20,7 @@ try{
 	}
 	
 	// I'm not sure why we would want to pass this id in here
-	cerBean.setList();
+	cerBean.setList(permissions);
 	sBean.pageResults(cerBean.getListRS(), 20, request);
 %>
 <html>
@@ -141,9 +135,8 @@ try{
 								<td><%=certDO.getType()%></td>
 								<td><%=certDO.getOperator()%></td>
 								<td><span name="noedit"><%=com.picsauditing.PICS.DateBean.toShowFormat(certDO.getExpDate())%></span>
-								<span name="editme" class="display_off"><%=cerBean.getMonthSelect("expMonth_" + certDO.getCert_id(),"forms",certDO.getExpMonth())%>
-					      			/<%=cerBean.getDaySelect("expDay_" + certDO.getCert_id(),"forms",certDO.getExpDay())%>/<%=cerBean.getYearSelect("expYear_" + certDO.getCert_id(),"forms",certDO.getExpYear())%></span></td>
-								
+								<span name="editme" class="display_off"><%=Utilities.inputSelect2("expMonth_" + certDO.getCert_id(),"forms",certDO.getExpMonth(),CertificateBean.MONTHS_ARRAY)%>
+					      			/<%=Utilities.inputSelect("expDay_" + certDO.getCert_id(),"forms",certDO.getExpDay(),CertificateBean.DAYS_ARRAY)%>/<%=Utilities.inputSelect("expYear_" + certDO.getCert_id(),"forms",certDO.getExpYear(),CertificateBean.YEARS_ARRAY)%></span></td>								
 								<td align="right"><span name="noedit"><%=java.text.NumberFormat.getInstance().format(certDO.getLiabilityLimit())%></span>
 									<span name="editme" class="display_off"><input type="text" name="liabilityLimit_<%=certDO.getCert_id() %>" class="formsNumber" value="<%=java.text.NumberFormat.getInstance().format(certDO.getLiabilityLimit())%>"></span></td>             
 								
