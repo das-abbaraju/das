@@ -264,63 +264,63 @@ import com.picsauditing.domain.IPicsDO;
 		if (null==searchType)
 			searchType = DEFAULT_TYPE;
 		whereQuery += "AND type='"+searchType+"' ";
-		if ((selected_name == null) || (selected_name.equals(DEFAULT_NAME)) || (selected_name.length()<MIN_NAME_SEARCH_LENGTH))
+		if (!isSet(selected_name, DEFAULT_NAME))
 			selected_name = DEFAULT_NAME;
 		else
 			whereQuery += "AND name LIKE '%"+Utilities.escapeQuotes(selected_name)+"%' ";
-		if ((selected_industry == null) || (selected_industry.equals(DEFAULT_INDUSTRY)))
+		if (!isSet(selected_industry, DEFAULT_INDUSTRY))
 			selected_industry = DEFAULT_INDUSTRY;
 		else
 			whereQuery += "AND industry='"+selected_industry+"' ";
-		if ((selected_trade == null) || (selected_trade.equals(DEFAULT_TRADE)))
+		if (!isSet(selected_trade, DEFAULT_TRADE))
 			selected_trade = DEFAULT_TRADE;
 		else {
-//////////////
 			whereQuery += "AND (tradeQ.questionID='"+selected_trade+"' ";
 			joinQuery += "INNER JOIN pqfData tradeQ ON (tradeQ.conID=accounts.id) ";
-			if ((selected_performedBy == null) || (selected_performedBy.equals(DEFAULT_PERFORMED_BY))){
+			if (!isSet(selected_performedBy, DEFAULT_PERFORMED_BY)) {
 				selected_performedBy = DEFAULT_PERFORMED_BY;
 				whereQuery += "AND tradeQ.answer<>'') ";
-			}else
+			} else {
 				if ("Sub Contracted".equals(selected_performedBy))
 					whereQuery += "AND tradeQ.answer IN (' S','C S')) ";
 				else if	("Self Performed".equals(selected_performedBy))
-					whereQuery += "AND tradeQ.answer IN ('C  ','C S')) ";					
-		}//else
-//////
-		if ((selected_stateLicensedIn == null) || (selected_stateLicensedIn.equals(DEFAULT_LICENSED_IN_ID)))
+					whereQuery += "AND tradeQ.answer IN ('C  ','C S')) ";
+			}
+		}
+		
+		if (!isSet(selected_stateLicensedIn, DEFAULT_LICENSED_IN_ID))
 			selected_stateLicensedIn = DEFAULT_LICENSED_IN_ID;
 		else {
 			whereQuery += "AND (licensedInQ.questionID='"+selected_stateLicensedIn+"' AND licensedInQ.answer<>'') ";
 			joinQuery += "INNER JOIN pqfData licensedInQ ON (licensedInQ.conID=accounts.id) ";
 		}//else
-		if ((selected_flagStatus == null) || (selected_flagStatus.equals(DEFAULT_FLAG_STATUS)))
+		if (!isSet(selected_flagStatus, DEFAULT_FLAG_STATUS))
 			selected_flagStatus = DEFAULT_FLAG_STATUS;
 		else
 			whereQuery += "AND flags.flag='"+selected_flagStatus+"' ";
-		if ((selected_taxID == null) || "".equals(selected_taxID) || (selected_taxID.equals(DEFAULT_TAX_ID)))
+		if (!isSet(selected_taxID, DEFAULT_TAX_ID))
 			selected_taxID = DEFAULT_TAX_ID;
 		else
 			whereQuery += "AND taxID='"+selected_taxID+"' ";		
-		if (selected_startsWith != null)
+		if (isSet(selected_startsWith, ""))
 			whereQuery += "AND name LIKE '"+Utilities.escapeQuotes(selected_startsWith)+"%' ";
-		if ((selected_zip == null) || (selected_zip.equals(DEFAULT_ZIP)) || ("".equals(selected_zip)))
+		if (!isSet(selected_zip, DEFAULT_ZIP))
 			selected_zip = DEFAULT_ZIP;
 		else
 			whereQuery += "AND zip LIKE '"+Utilities.escapeQuotes(selected_zip)+"%' ";
-		if ((selected_city == null) || (selected_city.equals(DEFAULT_CITY)) || ("".equals(selected_city)))
+		if (!isSet(selected_city, DEFAULT_CITY))
 			selected_city = DEFAULT_CITY;
 		else
 			whereQuery += "AND city LIKE '%"+Utilities.escapeQuotes(selected_city)+"%' ";
-		if ((selected_state == null) || (selected_state.equals(DEFAULT_STATE)) || ("".equals(selected_state)))
+		if (!isSet(selected_state, DEFAULT_STATE))
 			selected_state = DEFAULT_STATE;
 		else
 			whereQuery += "AND state='"+selected_state+"' ";
-		if ((selected_generalContractorID != null) && !"".equals(selected_generalContractorID) && !DEFAULT_GENERAL_VALUE.equals(selected_generalContractorID)) {
+		if (isSet(selected_generalContractorID, DEFAULT_GENERAL_VALUE)) {
 			accessID = selected_generalContractorID;
 			accessType = "Operator";
-		}//if
-		if ((selected_status == null) || (selected_status.equals(DEFAULT_STATUS)) || ("".equals(selected_status)))
+		}
+		if (isSet(selected_status, DEFAULT_STATUS))
 			selected_status = DEFAULT_STATUS;
 		else{
 			if ("Active".equals(selected_status))
@@ -340,23 +340,23 @@ import com.picsauditing.domain.IPicsDO;
 			whereQuery+="))) ";
 //********************
 		}//else
-		if ((selected_auditStatus == null) || (selected_auditStatus.equals(DEFAULT_AUDIT_STATUS)) || ("".equals(selected_auditStatus)))
+		if (!isSet(selected_auditStatus, DEFAULT_AUDIT_STATUS))
 			selected_auditStatus = DEFAULT_AUDIT_STATUS;
 		else
 			whereQuery += "AND auditStatus='"+selected_auditStatus+"' ";
-		if (selected_pqfAuditorID == null || selected_pqfAuditorID.equals(DEFAULT_AUDITOR_ID))
+		if (!isSet(selected_pqfAuditorID, DEFAULT_AUDITOR_ID))
 			selected_pqfAuditorID = DEFAULT_AUDITOR_ID;
 		else
 			whereQuery += "AND pqfAuditor_id="+selected_pqfAuditorID+" ";
-		if (selected_desktopAuditorID == null || selected_desktopAuditorID.equals(DEFAULT_AUDITOR_ID))
+		if (!isSet(selected_desktopAuditorID, DEFAULT_AUDITOR_ID))
 			selected_desktopAuditorID = DEFAULT_AUDITOR_ID;
 		else
 			whereQuery += "AND desktopAuditor_id="+selected_desktopAuditorID+" ";
-		if (selected_daAuditorID == null || selected_daAuditorID.equals(DEFAULT_AUDITOR_ID))
+		if (!isSet(selected_daAuditorID, DEFAULT_AUDITOR_ID))
 			selected_daAuditorID = DEFAULT_AUDITOR_ID;
 		else
 			whereQuery += "AND daAuditor_id="+selected_daAuditorID+" ";
-		if (selected_officeAuditorID == null || selected_officeAuditorID.equals(DEFAULT_AUDITOR_ID))
+		if (!isSet(selected_officeAuditorID, DEFAULT_AUDITOR_ID))
 			selected_officeAuditorID = DEFAULT_AUDITOR_ID;
 		else
 			whereQuery += "AND auditor_id="+selected_officeAuditorID+" ";
@@ -397,17 +397,17 @@ import com.picsauditing.domain.IPicsDO;
 						" MONTH) AND auditClosedDate='0000-00-00')";
 			whereQuery +=")";
 		}//if
-		if ((selected_invoicedStatus == null) || (selected_invoicedStatus.equals(DEFAULT_INVOICED_STATUS)))
+		if (!isSet(selected_invoicedStatus, DEFAULT_INVOICED_STATUS))
 			selected_invoicedStatus = DEFAULT_INVOICED_STATUS;
 		else if ("Invoiced".equals(selected_invoicedStatus))
 			whereQuery += "AND billingAmount=newBillingAmount ";
 		else if ("Not Invoiced".equals(selected_invoicedStatus))
 			whereQuery += "AND billingAmount<>newBillingAmount ";
-		if ((selected_auditLocation == null) || (selected_auditLocation.equals(DEFAULT_AUDIT_LOCATION)))
+		if (!isSet(selected_auditLocation, DEFAULT_AUDIT_LOCATION))
 			selected_auditLocation = DEFAULT_AUDIT_LOCATION;
 		else
 			whereQuery += "AND auditLocation='"+selected_auditLocation+"' ";
-		if ((selected_visible==null) || (selected_visible.equals(DEFAULT_VISIBLE)))
+		if (!isSet(selected_visible, DEFAULT_VISIBLE))
 			selected_visible = DEFAULT_VISIBLE;
 		else
 			whereQuery += "AND active='"+selected_visible+"' ";
@@ -443,11 +443,11 @@ import com.picsauditing.domain.IPicsDO;
 		//OSHA Queries
 		if (!"".equals(searchIncidenceRate)) {
 			whereQuery += "AND (0 ";
-			if ((selected_searchYear1 != null))
+			if (isSet(selected_searchYear1, ""))
 				whereQuery += "OR ((recordableTotal1*200000)/manHours1 >= "+searchIncidenceRate+") ";
-			if ((selected_searchYear2 != null))
+			if (isSet(selected_searchYear2, ""))
 				whereQuery += "OR ((recordableTotal2*200000)/manHours2 >= "+searchIncidenceRate+") ";
-			if ((selected_searchYear3 != null))
+			if (isSet(selected_searchYear3, ""))
 				whereQuery += "OR ((recordableTotal3*200000)/manHours3 >= "+searchIncidenceRate+") ";
 			whereQuery += ") ";
 		}//if
@@ -536,6 +536,13 @@ import com.picsauditing.domain.IPicsDO;
 			endResults = numResults;
 		thisPage = r.getContextPath() + r.getServletPath();
 	}//doSearch
+	
+	public boolean isSet(Object value, Object defaultValue) {
+		if (value == null) return false;
+		if (value.toString().length() == 0) return false;
+		if (value.equals(defaultValue)) return false;
+		return true;
+	}
 	
 	public String searchIncidenceRate = "";
 	public String searchEMRRate = "";
