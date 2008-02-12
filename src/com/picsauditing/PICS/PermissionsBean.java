@@ -89,8 +89,8 @@ public class PermissionsBean extends DataBean {
 					|| (null!=auditorCanSeeSet && auditorCanSeeSet.contains(thisPageID)))
 				return true;
 		}
-		throw new NoRightsException("Unknown");
-	}//checkAccess
+		throw new NoRightsException("OP_VIEW");
+	}
 
 	/**
 	 * @deprecated

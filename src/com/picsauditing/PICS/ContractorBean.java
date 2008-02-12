@@ -12,6 +12,9 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FilenameUtils;
+
+import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.access.User;
 
 public class ContractorBean extends DataBean {
@@ -1625,5 +1628,27 @@ public class ContractorBean extends DataBean {
 		fn = (String)request.getAttribute("brochure_file");
 		if(fn != null)
 			brochure_file = FilenameUtils.getName(fn);
+	}
+	
+	public void tryView(Permissions permissions) throws NoRightsException {
+		if (canView(permissions)) return;
+		throw new NoRightsException("Contractor");
+	}
+	public boolean canView(Permissions permissions) {
+		if (permissions.isAdmin()) return true;
+		if (permissions.isContractor()) {
+			return permissions.getAccountIdString().equals(this.id);
+		}
+		if (permissions.isOperator()) {
+			return generalContractors.contains(permissions.getAccountIdString());
+		}
+		
+		// The auditors can see this Contractor
+		if (permissions.getUserIdString().equals(this.auditor_id)) return true;
+		if (permissions.getUserIdString().equals(this.pqfAuditor_id)) return true;
+		if (permissions.getUserIdString().equals(this.daAuditor_id)) return true;
+		if (permissions.getUserIdString().equals(this.desktopAuditor_id)) return true;
+		
+		return false;
 	}
 }//ContractorBean

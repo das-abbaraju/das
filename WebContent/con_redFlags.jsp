@@ -1,6 +1,5 @@
 <%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.PICS.redFlagReport.*" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/contractor_secure.jsp"%>
 <%@page import="java.util.List"%>
 <%@page import="org.apache.commons.beanutils.BasicDynaBean"%>
 <%
@@ -19,6 +18,7 @@ try{
 	String id = request.getParameter("id");
 	aBean.setFromDB(id);
 	cBean.setFromDB(id);
+	cBean.tryView(permissions);
 	int rowCount = 0;
 	FlagCalculator flagCalculator = new FlagCalculator();
 	ForcedFlagListDO forcedFlagListDO = new ForcedFlagListDO();

@@ -1,15 +1,16 @@
 <%@ page language="java" import="com.picsauditing.PICS.redFlagReport.*" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <%
-	FlagDO flag = new FlagDO();
 	String id = request.getParameter("id");
-	aBean.setFromDB(id);
 	cBean.setFromDB(id);
+	cBean.tryView(permissions);
+	
+	aBean.setFromDB(id);
 	if (!pBean.isAuditor())
 		cBean.setShowLinks(pBean);
+	FlagDO flag = new FlagDO();
 %>
 <html>
 <head>

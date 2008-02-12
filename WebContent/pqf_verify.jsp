@@ -1,6 +1,5 @@
 <%@page language="java" import="com.picsauditing.PICS.*,com.picsauditing.PICS.pqf.*" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<%@include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="pqBean" class="com.picsauditing.PICS.pqf.QuestionBean" scope ="page"/>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
 <jsp:useBean id="psBean" class="com.picsauditing.PICS.pqf.SubCategoryBean" scope ="page"/>
@@ -22,6 +21,7 @@
 	boolean isServices = pcBean.SERVICES_CATEGORY_ID.equals(catID);
 	aBean.setFromDB(conID);
 	cBean.setFromDB(conID);
+	cBean.tryView(permissions);
 	String message = "";
 	if ("Save".equals(action)) {
 		if (pBean.canVerifyAudit(auditType,conID)) {

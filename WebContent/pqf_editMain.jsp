@@ -1,6 +1,5 @@
 <%@page language="java" import="com.picsauditing.PICS.*,com.picsauditing.PICS.pqf.*" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<%@include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
 <jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
@@ -50,6 +49,7 @@
 			message = "You have not closed out all the requirements in the following categories:.<br>"+pdBean.getErrorMessages();
 	}//if
 	cBean.setFromDB(conID);
+	cBean.tryView(permissions);
 	if (isDesktopReset){
 		pcBean.generateDynamicCategories(conID,com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE, cBean.riskLevel);
 		cBean.desktopPercent = "0";

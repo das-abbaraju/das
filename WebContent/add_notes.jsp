@@ -1,13 +1,14 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 
-<%	String ses_id = (String)session.getAttribute("userid");
+<%
+	String ses_id = (String)session.getAttribute("userid");
 	String id = request.getParameter("id");
 	String action = request.getParameter("action");
 	String todaysDate = com.picsauditing.PICS.DateBean.getTodaysDateTime();
 	cBean.setFromDB(id);
+	cBean.tryView(permissions);
 	String pre = "("+pBean.userName+")";
 	boolean canEditNotes = pBean.isAdmin() ||
 			(pBean.isAuditor() && pBean.auditorCanSeeSet.contains(id));
