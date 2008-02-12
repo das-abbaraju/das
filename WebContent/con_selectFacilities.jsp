@@ -178,7 +178,7 @@
 				    </td>
 					<td class="<%=cBean.getTextColor(status)%>"><%=status%></td>
 					<td class="<%=cBean.getTextColor(status)%>" align="center">
-					  <a href="con_redFlags.jsp?id=<%=cBean.id%>" title="Click to view Flag Color details">
+					  <a href="con_redFlags.jsp?id=<%=cBean.id%>&opID=<%=opID%>" title="Click to view Flag Color details">
                         <img src=images/icon_<%=flagMap.get(opID).get("flag").toString().toLowerCase()%>Flag.gif width=12 height=15 border=0>
 					  </a>
 					</td>

@@ -16,6 +16,9 @@ try{
 	boolean canEditForcedFlags = (pBean.isOperator() || pBean.isCorporate()) && pBean.getPermissions().hasPermission(com.picsauditing.access.OpPerms.EditForcedFlags);
 	boolean removeFromList = "Remove".equals(action);
 	String id = request.getParameter("id");
+	String opID = request.getParameter("opID");
+	if (null == opID)
+		opID = permissions.getAccountIdString();
 	aBean.setFromDB(id);
 	cBean.setFromDB(id);
 	cBean.tryView(permissions);
@@ -26,7 +29,7 @@ try{
 	int currentYearGrace = DateBean.getCurrentYearGrace(this.getServletContext());
 	flagCalculator.setCurrentYear(currentYear, currentYearGrace);
 
-	flagCalculator.setConFlags(id,pBean.userID);
+	flagCalculator.setConFlags(id,opID);
 
 	if (addNote && canEditNotes){
 		String newNote = request.getParameter("newNote");
@@ -307,16 +310,17 @@ try{
                   </form>
                 </td>
               </tr>
-<%	}//if %>
+<%	}//if
+	if (!permissions.isContractor()){
+%>
               <tr>
                 <td class="redMain">Notes:</td>
                 <td></td>
               </tr>
-<%
-	List<BasicDynaBean> notesList = note.getContractorNotes(id,permissions);
-	count = 0;
-	for (BasicDynaBean row : notesList){
-		count++;
+<%		List<BasicDynaBean> notesList = note.getContractorNotes(id,permissions);
+		count = 0;
+		for (BasicDynaBean row : notesList){
+			count++;
 %>
           <tr <%=Utilities.getBGColor(count)%>>
             <td class=blueMain><%=row.get("formattedDate")%> 
@@ -324,12 +328,14 @@ try{
               :<%=row.get("note")%>
             </td>
             <td class=blueMain>
-<%		if(canEditNotes && row.get("opID").equals(permissions.getAccountIdString())){%>
+<%			if(canEditNotes && row.get("opID").equals(permissions.getAccountIdString())){%>
               <a href="?id=<%=id%>&action=DeleteNote&dID=<%=row.get("noteID")%>">Delete</a>
-<%		}//if%>
+<%			}//if%>
                 </td>
               </tr>
-<%	}//while%>
+<%		}//for
+	}//if
+%>
                 </td>
               </tr>
             </table>
