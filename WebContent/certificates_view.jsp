@@ -1,67 +1,21 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@page import="com.picsauditing.access.OpPerms"%>
+<%@page import="com.picsauditing.access.OpType"%>
 <%@ include file="includes/main.jsp" %>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="cerBean" class="com.picsauditing.PICS.CertificateBean" scope ="page"/>
 <%try{
 	String id = request.getParameter("id");
 	String accountID = request.getParameter("accountID");
-	permissions.tryPermission(OpPerms.InsuranceCerts,OpType.View);
-	if (!permissions.hasPermission(OpPerms.InsuranceCertsAllOperators,OpType.View) || null == accountID)
-			cerBean.setList(id);
+	permissions.tryPermission(OpPerms.InsuranceCerts);
+	if (permissions.isOperator())
+		cerBean.setList(id, permissions.getAccountIdString());
 	else
-		cerBean.setList(id, accountID);
-/*				///////////////////////
-if (!permissions.loginRequired(response, request)) return;
-permissions.tryPermission(OpPerms.EditUsers, OpType.View);
-
-String getParams = ""; // Used when we go to Page 2,3,etc
-
-String accountID = permissions.getAccountIdString();
-if (permissions.hasPermission(OpPerms.InsuranceCertsAllOperators) && request.getParameter("accountID") != null) {
-	accountID = Utilities.intToDB(request.getParameter("accountID"));
-	getParams += "&accountID="+accountID;
-}
-
-FACILITIES.setFacilitiesFromDB();
-HashMap<String, String> facilityMap = FACILITIES.nameMap;
-
-SearchRaw search = new SearchRaw();
-search.sql.addField("u.lastLogin");
-search.sql.addField("u.isGroup");
-
-String isGroup = request.getParameter("isGroup");
-String isActive = request.getParameter("isActive");
-if ("Yes".equals(isGroup) || "No".equals(isGroup)) {
-	search.sql.addWhere("isGroup = '"+isGroup+"' ");
-	getParams += "&isGroup="+isGroup;
-}
-if ("Yes".equals(isActive) || "No".equals(isActive)) {
-	search.sql.addWhere("isActive = '"+isActive+"' ");
-	getParams += "&isActive="+isActive;
-}
-
-search.sql.addWhere("accountID = "+accountID);
-// Only search for Auditors and Admins
-search.sql.addOrderBy("u.name");
-search.setPageByResult(request);
-search.setLimit(20);
-
-List<BasicDynaBean> searchData = search.doSearch();
-
-////////////////////////////
-	*/	
-		
-		
-//	if (permissions.isOperator())
-//		cerBean.setList(id, permissions.getUsername());
-//	else
-//		cerBean.setList(id);
+		cerBean.setList(id);
 	
 	cBean.setFromDB(id);
 	cBean.tryView(permissions);
 %>
-<%@page import="com.picsauditing.access.OpPerms"%>
-<%@page import="com.picsauditing.access.OpType"%>
 <html>
 <head>
 <title>PICS - Pacific Industrial Contractor Screening</title>
