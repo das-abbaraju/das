@@ -51,7 +51,6 @@ import com.picsauditing.domain.IPicsDO;
 	public String selected_auditType = "";
 	public String selected_generalContractorID = ""; // only used when admin wants to see sub contractors of certain general contractor
 	public String selected_certsOnly = "";
-	public String selected_entireDB = "";
 	public String selected_pqfAuditorID = "";
 	public String selected_desktopAuditorID = "";
 	public String selected_daAuditorID = "";
@@ -210,6 +209,8 @@ import com.picsauditing.domain.IPicsDO;
 		String joinQuery = "";
 		String ncmsJoinQuery = "";
 
+		// We aren't caching the SearchBean in the session anymore, so we always need to rerun the search
+		// Added this back in
 		if ((null == changed) || ("1".equals(changed))) {
 // if it's a new search, reset all the search parameters
 			showPage = 1;
@@ -225,7 +226,6 @@ import com.picsauditing.domain.IPicsDO;
 			selected_auditType = r.getParameter("auditType");
 			selected_generalContractorID = r.getParameter("generalContractorID");
 			selected_certsOnly = r.getParameter("certsOnly");
-			selected_entireDB = r.getParameter("entireDB");
 			selected_pqfAuditorID = r.getParameter("pqfAuditorID");
 			selected_desktopAuditorID = r.getParameter("desktopAuditorID");
 			selected_daAuditorID = r.getParameter("daAuditorID");
@@ -258,13 +258,7 @@ import com.picsauditing.domain.IPicsDO;
 		else
 			showPage = Integer.parseInt(r.getParameter("showPage"));
 
-		if ("Y".equals(selected_entireDB)){
-			if (null == searchCorporate)
-				joinQuery += "LEFT JOIN flags ON flags.conID=accounts.id ";
-			whereQuery += "AND (flags.opID IS NULL OR flags.opID="+accessID+") ";
-			accessType = "Admin";
-		}//if
-//Set all the Queries
+		//Set all the Queries
 		if (onlyActive)
 			whereQuery += "AND active='Y' ";
 		if (null==searchType)
@@ -370,7 +364,7 @@ import com.picsauditing.domain.IPicsDO;
 			whereQuery += "AND isOnlyCerts='Yes' ";
 		if (EXCLUDE_CERTS.equals(selected_certsOnly))
 			whereQuery += "AND isOnlyCerts<>'Yes' ";
-		if (null != searchCorporate)
+		if ("1".equals(searchCorporate))
             accessType = "Corporate";
         if (isActivationReport) {
 			//whereQuery += "AND (accountDate='0000-00-00' OR welcomeCallDate='0000-00-00') ";
@@ -420,14 +414,7 @@ import com.picsauditing.domain.IPicsDO;
 		if (!"".equals(expiresInDays))
 			whereQuery += "AND (auditCompletedDate <> '0000-00-00' AND DATE_ADD(auditCompletedDate,INTERVAL 3 YEAR) < DATE_ADD(CURDATE(),INTERVAL "+
 					expiresInDays+" DAY)) ";
-//	jj 9/30/06		whereQuery += "AND ((DATE_ADD(auditDate,INTERVAL 3 YEAR) < DATE_ADD(CURDATE(),INTERVAL "+ expiresInDays +" DAY) AND auditDate <> '0000-00-00') OR (auditDate = '0000-00-00' AND DATE_ADD(lastAuditDate,INTERVAL 3 YEAR) < DATE_ADD(CURDATE(),INTERVAL "+ expiresInDays +" DAY)))  ";
-
-		//	expiresQuery = "AND auditDate < (CURDATE() - INTERVAL 33 MONTH) AND auditDate <> '0000-00-00' ";
-//	jj 7-7-06
-//		if (isAnnualUpdateReport)
-//			whereQuery += "AND (YEAR(pqfSubmittedDate) < YEAR(CURDATE())) ";
 		if (isDesktopReport) {
-//			whereQuery += "AND pqfSubmittedDate <> '0000-00-00' AND (desktopCompletedDate = '0000-000-00' OR desktopCompletedDate < DATE_ADD(CURDATE(),INTERVAL -34 MONTH)) ";
 			whereQuery += "AND isExempt='No' AND (desktopSubmittedDate='0000-000-00' OR desktopSubmittedDate < DATE_ADD(CURDATE(),INTERVAL -34 MONTH)) AND "+
 					"!(auditCompletedDate<>'0000-00-00' AND "+
 					"auditCompletedDate<'"+DateBean.OLD_OFFICE_CUTOFF+"' AND auditCompletedDate>DATE_ADD(CURDATE(),INTERVAL -3 YEAR)) ";
@@ -446,26 +433,22 @@ import com.picsauditing.domain.IPicsDO;
 			whereQuery += "AND EXTRACT(YEAR_MONTH FROM auditDate)='"+auditCalendarYear+"_"+auditCalendarMonth+"')";
 		//for schedule/reschedule audit report
 		if (RESCHEDULE_AUDITS.equals(whichScheduleAuditsReport))
-//		 	scheduleAuditsQuery = "AND auditStatus IN ('"+cBean.AUDIT_STATUS_RESCHEDULING+"','"+cBean.AUDIT_STATUS_RESCHEDULED+"') OR DATE_ADD(auditDate,INTERVAL 3 YEAR) < DATE_ADD(CURDATE(),INTERVAL 90 DAY) ";
 		 	whereQuery += "AND DATE_ADD(auditDate,INTERVAL 3 YEAR) < DATE_ADD(CURDATE(),INTERVAL 90 DAY) OR (auditDate > CURDATE() AND lastAuditDate <> '') ";
 		if (NEW_AUDITS.equals(whichScheduleAuditsReport)){
-// jj 7-6-06			whereQuery += "AND (auditDate>DATE_ADD(CURDATE(),INTERVAL -1 DAY) OR auditStatus IN ('"+cBean.AUDIT_STATUS_SCHEDULING+"','"+cBean.AUDIT_STATUS_SCHEDULED+"')) ";
 			whereQuery += "AND isExempt='No' AND pqfSubmittedDate>'"+DateBean.PQF_EXPIRED_CUTOFF+"' AND (auditCompletedDate='0000-00-00' OR auditCompletedDate<DATE_ADD(CURDATE(),INTERVAL -34 MONTH)) ";
 			groupByQuery = "GROUP BY accounts.id ";
 			joinQuery+="INNER JOIN generalContractors gcTable ON (gcTable.subID=accounts.id) INNER JOIN operators ON (genID=operators.id AND canSeeOffice='Yes') ";
 		}//if
-//OSHA Queries
+		
+		//OSHA Queries
 		if (!"".equals(searchIncidenceRate)) {
 			whereQuery += "AND (0 ";
 			if ((selected_searchYear1 != null))
 				whereQuery += "OR ((recordableTotal1*200000)/manHours1 >= "+searchIncidenceRate+") ";
-//				incidenceQuery += "OR ((injuryTotal1*200000)/manHours1 "+screenDirection+" "+searchIncidenceRate + ") " ;
 			if ((selected_searchYear2 != null))
 				whereQuery += "OR ((recordableTotal2*200000)/manHours2 >= "+searchIncidenceRate+") ";
-//				incidenceQuery += "OR ((injuryTotal2*200000)/manHours2 "+screenDirection+" "+searchIncidenceRate + ") " ;
 			if ((selected_searchYear3 != null))
 				whereQuery += "OR ((recordableTotal3*200000)/manHours3 >= "+searchIncidenceRate+") ";
-//				incidenceQuery += "OR ((injuryTotal3*200000)/manHours3 "+screenDirection+" "+searchIncidenceRate + ") " ;
 			whereQuery += ") ";
 		}//if
 		if (isFatalitiesReport)
