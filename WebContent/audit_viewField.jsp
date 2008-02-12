@@ -1,6 +1,5 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="aqBean" class="com.picsauditing.PICS.AuditQuestionBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
@@ -12,6 +11,8 @@
 	int numQuestions = 0;
 	aBean.setFromDB(id);
 	cBean.setFromDB(id);
+	cBean.tryView(permissions);
+	
 	String orderby = "num";
 %>
 <html>

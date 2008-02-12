@@ -1,6 +1,5 @@
 <%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<%@include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
 
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
@@ -22,6 +21,7 @@
 		return;
 	} // if
 	cBean.setFromDB(conID);
+	cBean.tryView(permissions);
 	aBean.setFromDB(conID);
 %>
 <html>

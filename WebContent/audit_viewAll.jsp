@@ -1,6 +1,5 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/contractor_secure.jsp"%>
 <%@ include file="includes/auditTypeSelected.jsp"%>
 <jsp:useBean id="pqBean" class="com.picsauditing.PICS.pqf.QuestionBean" scope ="page"/>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>

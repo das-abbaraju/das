@@ -1,8 +1,7 @@
 <%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<%@include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
-s<jsp:useBean id="oBean" class="com.picsauditing.PICS.OSHABean" scope ="page"/>
+<jsp:useBean id="oBean" class="com.picsauditing.PICS.OSHABean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean" scope ="page"/>
@@ -26,6 +25,8 @@ function popitup(url) {
 	int currentYear = com.picsauditing.PICS.DateBean.getCurrentYear(this.getServletContext().getInitParameter("currentYearStart"));
 	boolean isNew = "New".equals(oID);
 	cBean.setFromDB(conID);
+	cBean.tryView(permissions);
+	
 	aBean.setFromDB(conID);
 	oBean.setFromDB(oID);
 	if (!permissions.isAdmin() && !cBean.canEditPrequal() && !pBean.canVerifyAudit(auditType,conID)) {

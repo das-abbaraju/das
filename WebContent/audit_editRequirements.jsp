@@ -1,6 +1,5 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="adBean" class="com.picsauditing.PICS.AuditDataBean" scope ="page"/>
 <jsp:useBean id="aqBean" class="com.picsauditing.PICS.AuditQuestionBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
@@ -15,6 +14,8 @@ try{
 	String errorMsg = "";
 	aBean.setFromDB(id);
 	cBean.setFromDB(id);
+	cBean.tryView(permissions);
+	
 	if ("Save".equals(action))
 		adBean.updateRequirements(request, id);
 	if ("Submit".equals(action)) {

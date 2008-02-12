@@ -1,6 +1,5 @@
 <%@page language="java" import="java.sql.*,com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<%@include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 
@@ -27,6 +26,8 @@ ResultSetMetaData SQLResultMetaData = null;
 	String id = request.getParameter("id");
 	aBean.setFromDB(conID);
 	cBean.setFromDB(conID);
+	cBean.tryView(permissions);
+	
 	boolean hasTableEntry = SQLResult.next();
 	int count = 0;
 %>

@@ -1,6 +1,5 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="adBean" class="com.picsauditing.PICS.AuditDataBean" scope ="page"/>
 <jsp:useBean id="aqBean" class="com.picsauditing.PICS.AuditQuestionBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
@@ -17,7 +16,8 @@ try{
 	boolean frozen = false;
 	aBean.setFromDB(id);
 	cBean.setFromDB(id);
-
+	cBean.tryView(permissions);
+	
 	if (ContractorBean.AUDIT_STATUS_RQS.equals(cBean.auditStatus) || ContractorBean.AUDIT_STATUS_CLOSED.equals(cBean.auditStatus))
 		frozen = true;
 					 

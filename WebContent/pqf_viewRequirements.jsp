@@ -1,17 +1,17 @@
 <%@page language="java" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<%@include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="prBean" class="com.picsauditing.PICS.pqf.RequirementBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <%try{
-	Stringt auditType = request.getParameter("auditType");
+	String auditType = request.getParameter("auditType");
 	if (null==auditType || "".equals(auditType))
 		auditType = com.picsauditing.PICS.pqf.Constants.PQF_TYPE;
 	String conID = request.getParameter("id");
 	String id = request.getParameter("id");
 	aBean.setFromDB(conID);
 	cBean.setFromDB(conID);
+	cBean.tryView(permissions);
 	prBean.setList(conID, auditType);
 %>
 <html>

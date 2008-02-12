@@ -1,6 +1,5 @@
 <%@page language="java" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<%@include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="pqBean" class="com.picsauditing.PICS.pqf.QuestionBean" scope="page"/>
 <jsp:useBean id="psBean" class="com.picsauditing.PICS.pqf.SubCategoryBean" scope="page"/>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope="page"/>
@@ -23,6 +22,8 @@
 	int numSections = 0;
 	aBean.setFromDB(conID);
 	cBean.setFromDB(conID);
+	cBean.tryView(permissions);
+	
 	if ("Save".equals(action)){
 		pdBean.uploadPQFFile(pageContext,conID,catID);		
 		if (pdBean.isOK()) {

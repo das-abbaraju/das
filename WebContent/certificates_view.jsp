@@ -1,6 +1,5 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="cerBean" class="com.picsauditing.PICS.CertificateBean" scope ="page"/>
 <%try{
@@ -59,6 +58,7 @@ List<BasicDynaBean> searchData = search.doSearch();
 //		cerBean.setList(id);
 	
 	cBean.setFromDB(id);
+	cBean.tryView(permissions);
 %>
 <%@page import="com.picsauditing.access.OpPerms"%>
 <%@page import="com.picsauditing.access.OpType"%>

@@ -2,12 +2,12 @@
 <%@ include file="includes/main.jsp" %>
 <%@page import="org.apache.commons.beanutils.*"%>
 <%@page import="java.util.*"%>
-<%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <%	String id = request.getParameter("id");
 	cBean.setFromDB(id);
+	cBean.tryView(permissions);
 	aBean.setFromDB(id);
 	boolean isSubmitted = (null != request.getParameter("submit.x"));
 	boolean removeContractor = ("Remove".equals(request.getParameter("action")));

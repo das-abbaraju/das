@@ -1,12 +1,12 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="fBean" class="com.picsauditing.PICS.FormBean" scope ="page"/>
 <%	String id = request.getParameter("id");
 	cBean.setFromDB(id);
+	cBean.tryView(permissions);
 %>
 <html>
 <head>
