@@ -24,10 +24,10 @@
 		cBean.setFromDB(action_id);
 		cBean.lastInvoiceDate = DateBean.getTodaysDate();
 		cBean.billingAmount = invoiceAmount;
-		cBean.addAdminNote(action_id, "("+adminName+")", "Invoiced for $"+cBean.billingAmount+" membership level",cBean.lastInvoiceDate);
+		cBean.addAdminNote(action_id, "("+permissions.getUsername()+")", "Invoiced for $"+cBean.billingAmount+" membership level",cBean.lastInvoiceDate);
 		if ("".equals(sBean.cBean.membershipDate)){
 			sBean.cBean.membershipDate = DateBean.getTodaysDate();
-			sBean.cBean.addNote(action_id, "("+adminName+")", "Membership Date set to "+sBean.cBean.membershipDate,DateBean.getTodaysDateTime());
+			sBean.cBean.addNote(action_id, "("+permissions.getUsername()+")", "Membership Date set to "+sBean.cBean.membershipDate,DateBean.getTodaysDateTime());
 		}//if
 		cBean.writeToDB();
 	}//if Inv
