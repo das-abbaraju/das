@@ -498,7 +498,8 @@ import com.picsauditing.domain.IPicsDO;
 		}//if
 		if ("Contractor".equals(searchType))
 			joinQuery+="INNER JOIN contractor_info ON (accounts.id=contractor_info.id) ";
-		if (permissions.isAuditor()) {
+		
+		if (permissions.isAuditor() && !permissions.isAdmin()) {
 			// This person is an auditor but not an admin
 			if (com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(selected_auditType))
 				whereQuery += "AND contractor_info.auditor_id="+accessID+" ";

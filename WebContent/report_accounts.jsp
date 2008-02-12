@@ -59,7 +59,7 @@ List<BasicDynaBean> searchData = search.doSearch();
 	<tr id="auditor_tr<%=row.get("id")%>" class="blueMain"
 		<% if ((counter%2)==1) out.print("bgcolor=\"#FFFFFF\""); %>>
 		<td align="right"><%=counter%></td>
-		<td><a href="accounts_edit_contractor.jsp?id=<%=row.get("id")%>"><%=row.get("name")%></a></td>
+		<td><a href="accounts_edit_operator.jsp?id=<%=row.get("id")%>"><%=row.get("name")%></a></td>
 	</tr>
 	<%
 		counter++;
