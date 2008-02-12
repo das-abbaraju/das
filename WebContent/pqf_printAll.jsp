@@ -1,11 +1,11 @@
 <%@page language="java" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<%@include file="utilities/contractor_secure.jsp"%>
 <jsp:useBean id="pqBean" class="com.picsauditing.PICS.pqf.QuestionBean" scope ="page"/>
 <jsp:useBean id="psBean" class="com.picsauditing.PICS.pqf.SubCategoryBean" scope ="page"/>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
 <jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
+<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <%try{
 	String auditType = request.getParameter("auditType");
 	if (null==auditType || "".equals(auditType))
@@ -14,6 +14,8 @@
 	String conID = request.getParameter("id");
 	String id = request.getParameter("id");
 	aBean.setFromDB(conID);
+	cBean.setFromDB(conID);
+	cBean.tryView(permissions);
 %>
 
 <html>
