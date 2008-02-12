@@ -1,5 +1,6 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
+<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cerBean" class="com.picsauditing.PICS.CertificateBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <%
@@ -40,11 +41,9 @@ try{
             <td>&nbsp;</td>
             <td colspan="3">
               <table width="657" border="0" cellpadding="0" cellspacing="0">
-                <tr> 
-                <td class="blueMain"> 
-		<%@ include file="utilities/adminContractorNav.jsp"%>
-				  </td>
-                </tr>
+	              <tr align="center" class="blueMain">
+	                <td><%@ include file="includes/nav/secondNav.jsp"%></td>
+	              </tr>
               </table>
               <table width="657" border="0" cellpadding="15" cellspacing="1" bgcolor="#F8F8F8">
                 <tr bgcolor="#FFFFFF"> 

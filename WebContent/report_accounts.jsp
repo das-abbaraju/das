@@ -4,17 +4,42 @@
 <%@page import="com.picsauditing.access.*"%>
 <%@include file="includes/main.jsp" %>
 <%
+
+String action = request.getParameter("action");
+if ("Delete".equals(action)) {
+	AccountBean aBean = new AccountBean();
+	aBean.setFromDB(request.getParameter("accountID"));
+	
+	if (aBean.isOperator())
+		permissions.tryPermission(OpPerms.ManageOperators, OpType.Delete);
+	else if (aBean.isCorporate())
+		permissions.tryPermission(OpPerms.ManageCorporate, OpType.Delete);
+	else throw new NoPermissionException("Delete Account");
+	
+	aBean.deleteAccount(aBean.id, config.getServletContext().getRealPath("/"));
+}
+
 SearchAccounts search = new SearchAccounts();
 
 String accountType = request.getParameter("type");
 if (accountType == null) accountType = "Operator";
 
+boolean canEdit = false;
+boolean canDelete = false;
 if (accountType.equals("Operator")) {
 	permissions.tryPermission(OpPerms.ManageOperators);
+	canEdit = permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit);
+	canDelete = permissions.hasPermission(OpPerms.ManageCorporate, OpType.Delete);
 	pageBean.setTitle("List Operators");
+	search.sql.addJoin("LEFT JOIN (SELECT genID, count(*) as subCount FROM generalContractors GROUP BY genID) sub ON sub.genID = a.id");
+	search.sql.addField("subCount");
 } else if (accountType.equals("Corporate")) {
 	permissions.tryPermission(OpPerms.ManageCorporate);
+	canEdit = permissions.hasPermission(OpPerms.ManageCorporate, OpType.Edit);
+	canDelete = permissions.hasPermission(OpPerms.ManageCorporate, OpType.Delete);
 	pageBean.setTitle("List Corporate Accounts");
+	search.sql.addJoin("LEFT JOIN (SELECT corporateID, count(*) as subCount FROM facilities GROUP BY corporateID) sub ON sub.corporateID = a.id");
+	search.sql.addField("subCount");
 } else {
 	throw new Exception("invalid parameter type");
 }
@@ -24,6 +49,11 @@ if (orderBy != null) {
 	search.sql.addOrderBy(orderBy);
 }
 search.sql.addOrderBy("a.name");
+
+search.sql.addField("a.industry");
+search.sql.addField("a.city");
+search.sql.addField("a.state");
+search.sql.addField("a.contact");
 
 search.sql.addWhere("active='Y'");
 search.sql.addWhere("a.type='" + accountType + "'");
@@ -35,11 +65,12 @@ search.setLimit(50);
 List<BasicDynaBean> searchData = search.doSearch();
 %>
 <%@ include file="includes/header.jsp" %>
+<%@page import="javax.naming.NoPermissionException"%>
 <table width="657" border="0" cellpadding="0" cellspacing="0" align="center">
 	<tr>
 		<td height="70" colspan="2" align="center" class="buttons"><%@ include
 			file="includes/selectReport.jsp"%> <span
-			class="blueHeader"><%=pageBean.getTitle() %></span></td>
+			class="blueHeader">Manage <%=accountType%> Accounts</span></td>
 	</tr>
 </table>
 <table border="0" cellpadding="5" cellspacing="0" align="center">
@@ -51,20 +82,42 @@ List<BasicDynaBean> searchData = search.doSearch();
 <table border="0" cellpadding="1" cellspacing="1" align="center">
 	<tr bgcolor="#003366" class="whiteTitle">
 		<td colspan=2><a href="?type=<%=accountType%>&orderBy=a.name" class="whiteTitle">Name</a></td>
+		<td>Industry</td>
+		<td>City</td>
+		<td>State</td>
+		<td>Primary Contact</td>
+		<td><%=(accountType.startsWith("O"))?"Contractors":"Operators"%></td>
+		<td>&nbsp;</td>
 	</tr>
 	<%
 	int counter = search.getStartRow();
 	for (BasicDynaBean row : searchData) {
-	%>
-	<tr id="auditor_tr<%=row.get("id")%>" class="blueMain"
-		<% if ((counter%2)==1) out.print("bgcolor=\"#FFFFFF\""); %>>
-		<td align="right"><%=counter%></td>
-		<td><a href="accounts_edit_operator.jsp?id=<%=row.get("id")%>"><%=row.get("name")%></a></td>
-	</tr>
-	<%
+		%>
+		<tr id="auditor_tr<%=row.get("id")%>" class="blueMain"
+			<% if ((counter%2)==1) out.print("bgcolor=\"#FFFFFF\""); %>>
+			<td align="right"><%=counter%></td>
+			<td><a href="accounts_edit_operator.jsp?id=<%=row.get("id")%>"><%=row.get("name")%></a></td>
+			<td><%=row.get("industry")%></td>
+			<td><%=row.get("city")%></td>
+			<td><%=row.get("state")%></td>
+			<td><%=row.get("contact")%></td>
+			<td align="right"><%=row.get("subCount")%></td>
+			<td><% if (canDelete && row.get("subCount") == null) { %>
+				<form method="post" action="report_accounts.jsp" style="margin: 0px; padding: 0px;">
+					<input name="action_id" type="hidden" value="<%=row.get("id")%>">
+					<input id="delete<%=row.get("id")%>" name="action" type="submit" class="buttons" value="Delete" onClick="return confirm('Are you sure you want to delete this account?');">
+				</form>
+              <% } %>
+			</td>
+		</tr>
+		<%
 		counter++;
-	} // end foreach loop
+	}
 	%>
 </table>
-
+<%
+if (canEdit) {
+%><p align="center"><a href="accounts_new_operator.jsp?type=<%=accountType%>">Create New</a></p><%
+}
+%>
 <%@ include file="includes/footer.jsp" %>

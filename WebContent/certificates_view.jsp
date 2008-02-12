@@ -2,6 +2,7 @@
 <%@page import="com.picsauditing.access.OpPerms"%>
 <%@page import="com.picsauditing.access.OpType"%>
 <%@ include file="includes/main.jsp" %>
+<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="cerBean" class="com.picsauditing.PICS.CertificateBean" scope ="page"/>
 <%try{
@@ -57,17 +58,7 @@
             <td colspan="3">
 <table width="657" border="0" cellpadding="0" cellspacing="0">
                 <tr> 
-                <td><br>
-<%					if (pBean.isContractor() ||	"General".equalsIgnoreCase(pBean.userType) && id.equals(permissions.getUserIdString())) {
-%>				<%@ include file="utilities/contractorNav.jsp"%>
-<%					}//if
-					if (pBean.isAdmin()) {
-%>						<%@ include file="utilities/adminContractorNav.jsp"%>
-<%					}//if
-					if (pBean.isOperator() || ("General".equalsIgnoreCase(pBean.userType) && !id.equals(permissions.getUserIdString()))) {%>
-							<%@ include file="utilities/opContractorNav.jsp"%>
-<%	}%>
-				</td>
+                <td><%@ include file="includes/nav/secondNav.jsp"%></td>
                 </tr>
               </table>
               

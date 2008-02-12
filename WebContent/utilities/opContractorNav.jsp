@@ -2,7 +2,6 @@
 <%
 String thisPage = request.getServletPath();
 String thisQuery = request.getQueryString();
-//com.picsauditing.PICS.AccountBean acctBean = new com.picsauditing.PICS.AccountBean();
 
 if (permissions.isContractor() && !thisPage.contains("contractor_detail")) {
 	%>

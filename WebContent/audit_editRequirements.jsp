@@ -66,14 +66,7 @@ try{
       </table>
       <table border="0" cellspacing="0" cellpadding="1" class="blueMain" align="center">
         <tr align="center" class="blueMain">
-          <td> 
-<%	if (pBean.isAdmin()) {%>
-            <%@ include file="utilities/adminContractorNav.jsp"%>
-<%	}//if 
-	if (pBean.isAuditor() && pBean.auditorCanSeeSet.contains(request.getParameter("id"))) { %>
-	        <%@ include file="utilities/auditorContractorNav.jsp"%>
-<%	}//if %>
-          </td>
+          <td><%@ include file="includes/nav/secondNav.jsp"%></td>
         </tr>
         <tr> 
           <td align="center" class="blueHeader">Office Audit for <%=aBean.name%></td>

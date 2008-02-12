@@ -15,22 +15,14 @@
 	String action_id = request.getParameter("action_id");
 	String action_type = request.getParameter("action_type");
 
-	if (("D".equals(action)) || ("Delete".equals(action)))
-		sBean.deleteAccount(action_id, config.getServletContext().getRealPath("/"));
+	if (("D".equals(action)) || ("Delete".equals(action))) {
+		AccountBean aBean = new AccountBean();
+		aBean.deleteAccount(action_id, config.getServletContext().getRealPath("/"));
+	}
 	if ("Edit".equals(action)){
-		if ("Contractor".equals(action_type) || "General".equals(action_type)){
-			response.sendRedirect("accounts_edit_contractor.jsp?id="+action_id);
-			return;
-		}//if
-		if ("Operator".equals(action_type)){
-			response.sendRedirect("accounts_edit_operator.jsp?id="+action_id);		
-			return;
-		}//if
-		if ("Corporate".equals(action_type)){
-			response.sendRedirect("accounts_edit_operator.jsp?type=Corporate&id="+action_id);		
-			return;
-		}//if
-	}//if
+		response.sendRedirect("accounts_edit_contractor.jsp?id="+action_id);
+		return;
+	}
 	
 	List<BasicDynaBean> searchData = null;
 	sBean.orderBy = "name";
@@ -78,11 +70,6 @@
             <table border="0" align="center" cellpadding="2" cellspacing="0">
               <tr>
                 <td align="left">
-                  <select name="type" class="forms">
-                    <option value="Contractor" <%="Contractor".equals(sBean.searchType)?"selected":""%>>Contractors</option>
-                    <option value="Corporate" <%="Corporate".equals(sBean.searchType)?"selected":""%>>Corporate</option>
-                    <option value="Operator" <%="Operator".equals(sBean.searchType)?"selected":""%>>Operators</option>
-                  </select>
                 <input name="name" type="text" class="forms" value="<%=sBean.selected_name%>" size="8" onFocus="clearText(this)">
 			    <%=sBean.getSearchIndustrySelect("industry","forms",sBean.selected_industry)%>
                 <%=tBean.getTradesSelect("trade", "forms", sBean.selected_trade)%>
@@ -112,13 +99,10 @@
             </form>
 			<center><%=sBean.getStartsWithLinks()%></center>
 			<table width="657" height="40" border="0" cellpadding="0" cellspacing="0">
-				  <tr>
-				<td></td>
-<%/*				<td align="center"><span class="blueMain"><strong><%=sBean.getNumCResults()%</strong> contractors &amp; <strong><%=sBean.getNumOResults()%</strong> operators&nbsp; | &nbsp;</span><%=sBean.getLinks()% */%>
+			  <tr>
 				<td align="right"><%=sBean.getLinks()%></td>
 			  </tr>
 			</table>
-<%	if (sBean.searchType.equals("Contractor")) { %>
             <table width="757" border="0" cellpadding="1" cellspacing="1">
               <tr bgcolor="#003366" class="whiteTitle">
                 <td height="25" colspan="2" align="center" bgcolor="#993300"><a href="accounts_new_contractor.jsp" class="whiteTitleSmall">Add New</a></td>
@@ -165,66 +149,8 @@
 		}// while
 %>			</table>
 			<br><center><%=sBean.getLinks()%></center><br>			  
-<%	}else if (sBean.searchType.equals("Operator")){%>
-            <table width="657" border="0" cellpadding="1" cellspacing="1">
-              <tr bgcolor="#003366" class="whiteTitle"> 
-                <td height="25" colspan="2" align="center" bgcolor="#993300"><a href="accounts_new_operator.jsp?type=Operator" class="whiteTitle">New Operator</a></td>
-                <td>Operator</td>
-                <td>Industry</td>
-                <td>City</td>
-                <td>State</td>
-                <td>Sub (<%=sBean.oBean.getTotalSubCount()%>)</td>
-              </tr>
-<%		while (sBean.isNextRecord()) {%>
-              <tr <%=sBean.getBGColor()%> class="active"> 
-			  <form name="form3" method="post" action="accounts_manage.jsp">
-                <td width="45" bgcolor = "#FFFFFF" align="center"> 
-                  <input name="action" type="submit" class="buttons" value="Delete" onClick="return confirm('Are you sure you want to delete this account?');">
-                </td>
-                <td width="35" bgcolor = "#FFFFFF" align="center"> 
-                  <input name="action" type="submit" class="buttons" value="Edit">
-                </td>
-                <td><%=sBean.getActiveStar()%><%=sBean.aBean.name%></td>
-                <td><%=sBean.aBean.industry%></td>
-                <td><%=sBean.aBean.city%></td>
-                <td><%=sBean.aBean.state%></td>
-                <td><%=sBean.oBean.getSubCount(sBean.aBean.id)%></td>
-				<input name="action_type" type="hidden" value="<%=sBean.aBean.type%>">
-				<input name="action_id" type="hidden" value="<%=sBean.aBean.id%>">
-              </form>
-              </tr>
-<%		}//while%>
-			</table>
-<%	}else if (sBean.searchType.equals("Corporate")){%>
-            <table width="657" border="0" cellpadding="1" cellspacing="1">
-              <tr bgcolor="#003366" class="whiteTitle"> 
-                <td height="25" colspan="2" align="center" bgcolor="#993300"><a href="accounts_new_operator.jsp?type=Corporate" class="whiteTitle">New Corporate</a></td>
-                <td>Operator</td>
-                <td>Industry</td>
-                <td>City</td>
-                <td>State</td>
-              </tr>
-<%		while(sBean.isNextRecord()){%>
-              <tr <%=sBean.getBGColor()%> class="active"> 
-			  <form name="form3" method="post" action="accounts_manage.jsp">  
-                <td width="45" bgcolor = "#FFFFFF" align="center"> 
-                  <input name="action" type="submit" class="buttons" value="Delete" onClick="return confirm('Are you sure you want to delete this account?');">
-                </td>
-                <td width="35" bgcolor = "#FFFFFF" align="center"> 
-                  <input name="action" type="submit" class="buttons" value="Edit">
-                </td>
-                <td><%=sBean.getActiveStar()%><%=sBean.aBean.name%></td>
-                <td><%=sBean.aBean.industry%></td>
-                <td><%=sBean.aBean.city%></td>
-                <td><%=sBean.aBean.state%></td>
-				<input name="action_type" type="hidden" value="<%=sBean.aBean.type%>">
-				<input name="action_id" type="hidden" value="<%=sBean.aBean.id%>">
-              </form>
-              </tr>
-<%		}//while%>
-			</table>
-<%	}//else
-	sBean.closeSearch();
+<%
+sBean.closeSearch();
 %>
 		  </td>
 		  <td>&nbsp;</td>

@@ -1,18 +1,15 @@
+<center>
 <%
 String thisPage = request.getServletPath();
 String thisQuery = request.getQueryString();
 com.picsauditing.PICS.AccountBean acctBean = new com.picsauditing.PICS.AccountBean();
-%>
-<center>
-<%
+
 if (!pBean.isContractor() && !thisPage.contains("contractor_detail")){
 	%>
 	<div class="blueHeader">%=acctBean.getName(id)%></div>
 	<%
-}//end if %>
-
-<%
-	if (!cBean.mustForceUpdatePQF()){
+}
+if (!cBean.mustForceUpdatePQF()){
 		out.println(com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_detail.jsp",thisPage,id,"",thisQuery,"My Details")+" | "+
 		com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_edit.jsp",thisPage,id,"",thisQuery,"Edit My Account")+" | "+
 		com.picsauditing.PICS.Utilities.getMenuTag(request,"con_selectFacilities.jsp",thisPage,id,"",thisQuery,"Facilities")+" | "+

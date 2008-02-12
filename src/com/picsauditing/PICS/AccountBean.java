@@ -857,4 +857,13 @@ public class AccountBean extends DataBean {
 		this.lastLogin = lastLogin;
 	}
 	
+	public boolean isOperator() {
+		return "Operator".equals(this.type);
+	}
+	public boolean isCorporate() {
+		return "Corporate".equals(this.type);
+	}
+	public boolean isContractor() {
+		return "Contractor".equals(this.type);
+	}
 }

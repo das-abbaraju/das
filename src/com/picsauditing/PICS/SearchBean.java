@@ -745,10 +745,6 @@ import com.picsauditing.domain.IPicsDO;
 		return new AccountBean().getGeneralSelect2(name, classType, selectedGeneral, LIST_DEFAULT);
 	}//getSearchOperatorSelect
 
-	public void deleteAccount(String delete_id, String path) throws Exception {
-		aBean.deleteAccount(delete_id, path);
-	}//deleteAccount
-
 	public void setHasCertSet(HashSet temp) {
 		hasCertSet = temp;
 	}//setHasCertSet

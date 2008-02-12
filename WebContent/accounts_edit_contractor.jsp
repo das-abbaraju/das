@@ -78,7 +78,7 @@
         <tr> 
           <td>&nbsp;</td>
             <td colspan="3" class="blueMain">
-              <%@ include file="utilities/adminContractorNav.jsp"%>
+              <%@ include file="includes/nav/secondNav.jsp"%>
               <table width="657" cellpadding="10" cellspacing="0">
                 <tr>
                   <td width="126" align="center" valign="top" bgcolor="#DDDDDD" class="blueMain"><br></td>

@@ -81,7 +81,7 @@
           <td colspan="3" align="center"> 
 			<table width="657" border="0" cellpadding="0" cellspacing="0">
               <tr align="center" class="blueMain">
-                <td align="left"><%@ include file="includes/nav/secondNav.jsp"%></td>
+                <td><%@ include file="includes/nav/secondNav.jsp"%></td>
               </tr>
             </table>
             <form name="form1" method="post" action="con_selectFacilities.jsp?id=<%=id%>">

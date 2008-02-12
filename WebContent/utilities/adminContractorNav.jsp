@@ -5,7 +5,7 @@ com.picsauditing.PICS.AccountBean acctBean = new com.picsauditing.PICS.AccountBe
 %>
 <center>
 <%
-if (!pBean.isContractor() && !thisPage.contains("contractor_detail")){
+if (!thisPage.contains("contractor_detail")){
 	%>
 	<div class="blueHeader"><%=acctBean.getName(id)%></div>
 	<%
@@ -19,6 +19,7 @@ cBean.setShowLinks(pBean);
 <%	if (cBean.isCertRequired()) { %>
 		<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_upload_certificates.jsp",thisPage,id,"",thisQuery,"Upload/Edit Certificates")%><br/>
 <%		}//if
+%><br /><%
 	if (!cBean.isExempt()) { %>
 		<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"audit_edit.jsp",thisPage,id,"",thisQuery,"Edit Office Audit")%>
 <%		if (cBean.isAuditCompleted()) { %>

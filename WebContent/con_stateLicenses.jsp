@@ -48,13 +48,7 @@
           <td colspan="3" align="center">
 			<table border="0" cellspacing="0" cellpadding="1" class="blueMain">
               <tr align="center" class="blueMain">
-			    <td width="676">
-<%	if (pBean.isAdmin()) { %>						
-	 		    <%@ include file="utilities/adminContractorNav.jsp"%>
-<%	} else if (pBean.isAuditor()) { %>
-			    <%@ include file="utilities/auditorContractorNav.jsp"%>					
-<%	} //if%>
-				</td>
+			    <td><%@ include file="includes/nav/secondNav.jsp"%></td>
 			  </tr>
 <%	pcBean.setFromDB(catID); %>
     		  <tr align="center" class="blueMain">

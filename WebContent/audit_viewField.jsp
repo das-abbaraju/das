@@ -48,13 +48,7 @@
             <form name="form1" method="post" action="audit_edit.jsp?id=<%=id%>">
               <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
                 <tr align="center" class="blueMain">
-				  <td>
-<%	if (pBean.isAdmin()) {%>						
-	 			    <%@ include file="utilities/adminContractorNav.jsp"%>
-<%	} else if (pBean.isAuditor() ) {%>
-				    <%@ include file="utilities/auditorContractorNav.jsp"%>
-<%	}//if %>
-                  </td>
+				  <td><%@ include file="includes/nav/secondNav.jsp"%></td>
 				</tr>
                 <tr align="center" class="blueMain">
                   <td class="blueHeader">Safety Audit for <%=aBean.name%></td>

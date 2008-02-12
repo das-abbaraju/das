@@ -1,6 +1,5 @@
 <%	String thisPage = request.getServletPath();
 	String thisQuery = request.getQueryString();
-//	thisPage = thisPage.substring(thisPage.lastIndexOf('/')+1,thisPage.lastIndexOf('.'));
   	String tempAuditType = com.picsauditing.PICS.pqf.Constants.PQF_TYPE;
   	com.picsauditing.PICS.AccountBean acctBean = new com.picsauditing.PICS.AccountBean();
 %>
