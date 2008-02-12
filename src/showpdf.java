@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.PermissionsBean;
 
 public class showpdf extends HttpServlet {
@@ -46,30 +47,29 @@ public class showpdf extends HttpServlet {
 	*/
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(true);
-		com.picsauditing.PICS.PermissionsBean pBean = (com.picsauditing.PICS.PermissionsBean)session.getAttribute("pBean");
-		if (pBean == null) {
-		  pBean = new com.picsauditing.PICS.PermissionsBean();
-		  session.setAttribute("pBean", pBean);
-		}//if
-		try{
-			pBean.thisPageID = request.getParameter("id"); 
-			if (!pBean.checkAccess(PermissionsBean.OP_VIEW,response))
-				return;
-		}catch(Exception ex){
-			response.sendRedirect("/login.jsp");
-			return;			
-		}//catch
+
+		com.picsauditing.access.Permissions permissions = (com.picsauditing.access.Permissions)session.getAttribute("permissions");
+		if (permissions == null) {
+			permissions = new com.picsauditing.access.Permissions();
+			permissions.loginRequired(response);
+			return;
+		}
+
 		String req_uid = request.getParameter("id");
 		String OID= request.getParameter("OID"); 
 		String file_type = request.getParameter("file");
 
-		HashSet canSeeSet = null;
-		if (pBean.isAuditor())
-			canSeeSet = pBean.auditorCanSeeSet;
-		else
-			canSeeSet = pBean.canSeeSet;
-
 		ServletOutputStream o = response.getOutputStream(); 
+		
+		try {
+			com.picsauditing.PICS.ContractorBean cBean = new ContractorBean();
+			cBean.setFromDB(req_uid);
+			cBean.tryView(permissions);
+		} catch (Exception e) {
+			o.print("You don't have permission to view contractor "+req_uid);
+		    o.flush();
+			return;
+		}
 		
 		ServletContext context = getServletContext(); 
 		String sFileName = "";

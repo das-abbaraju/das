@@ -23,8 +23,6 @@ public class PermissionsBean extends DataBean {
 
 	private static final String[] RESTRICTED_AUDIT_CATEGORIES = {"2","6"};
 
-	public static final int OP_VIEW = 3;
-
 	public String userID = ""; // user's accountID
 	public String userName = "";
 	public String userType = "";
@@ -79,18 +77,6 @@ public class PermissionsBean extends DataBean {
 		if (canSeeSet == null) return "0";
 		return Integer.toString(canSeeSet.size());
 	}//getCanSeeSetCount
-
-	public boolean checkAccess(int access, javax.servlet.http.HttpServletResponse response) throws Exception {
-		if (OP_VIEW == access) {
-			if (isAdmin()
-					|| seesAll
-					|| (isContractor() && userID != null && userID.equals(thisPageID))
-					|| (null!=canSeeSet && canSeeSet.contains(thisPageID))
-					|| (null!=auditorCanSeeSet && auditorCanSeeSet.contains(thisPageID)))
-				return true;
-		}
-		throw new NoRightsException("OP_VIEW");
-	}
 
 	/**
 	 * @deprecated

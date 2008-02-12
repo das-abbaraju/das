@@ -19,9 +19,6 @@
 <%		}//if
 		if (pBean.isCorporate()) {
 %>			| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"con_selectFacilities.jsp",thisPage,id,"",thisQuery,"Add Facilities")%>
-<%//		}else if(pBean.isOperator() && !pBean.oBean.facilitiesAL.isEmpty()){%>
-<!--			| <%//=com.picsauditing.PICS.Utilities.getMenuTag(request,"report_operatorContractor.jsp",thisPage,id,"",thisQuery,"View Facilities")%>
---><%		}//else%>
 			| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"con_redFlags.jsp",thisPage,id,"",thisQuery,"Red Flag Report")%>
 <br>
 <%		if (pBean.oBean.canSeePQF()){%>
