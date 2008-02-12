@@ -24,8 +24,8 @@ public abstract class DataBean{
 		try{
 			if (null == Conn){
 				Conn = DBBean.getDBConnection();
-				SQLStatement = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			}
+			SQLStatement = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		}catch (SQLException ex){
 			DBClose();
 			throw ex;

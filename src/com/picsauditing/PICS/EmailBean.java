@@ -46,31 +46,6 @@ public class EmailBean extends DataBean{
 		"info@picsauditing.com (Please add this email address to your address book to prevent it from being labeled as spam)"+endl2+endl+
 		"http://www.picsauditing.com";
 
-	public static final String JAREDS_EMAIL_FOOTER =
-		"PICS - Pacific Industrial Contractor Screening"+endl2+endl+
-		"P.O. Box 51387"+endl2+endl+
-		"Irvine CA 92619-1387"+endl2+endl+
-		"(949)387-1940"+endl2+endl+
-	 	"fax: (949)480-2029"+endl2+endl+
-		"info@picsauditing.com (Please add this email address to your address book to prevent it from being labeled as spam)"+endl2+endl+
-		"http://www.picsauditing.com";
-	public static final String JEFF_POLLOCK_EMAIL_FOOTER =
-		"PICS - Pacific Industrial Contractor Screening"+endl2+endl+
-		"P.O. Box 51387"+endl2+endl+
-		"Irvine CA 92619-1387"+endl2+endl+
-		"(949)387-1940"+endl2+endl+
-	 	"fax: (949)269-9149"+endl2+endl+
-		"eorozco@picsauditing.com (Please add this email address to your address book to prevent it from being labeled as spam)"+endl2+endl+
-		"http://www.picsauditing.com";
-	public static final String JESSE_EMAIL_FOOTER =
-		"PICS - Pacific Industrial Contractor Screening"+endl2+endl+
-		"P.O. Box 51387"+endl2+endl+
-		"Irvine CA 92619-1387"+endl2+endl+
-		"(949)387-1940"+endl2+endl+
-	 	"fax: (949)269-9177"+endl2+endl+
-		"info@picsauditing.com (Please add this email address to your address book to prevent it from being labeled as spam)"+endl2+endl+
-		"http://www.picsauditing.com";
-	
 	private static Properties getProperties(){
 		Properties props = new Properties();
 		props.put("mail.smtp.user", EMAIL_ACCOUNT);
@@ -181,6 +156,10 @@ public class EmailBean extends DataBean{
 	public static void init(javax.servlet.ServletConfig config) {
 		rootPath = config.getServletContext().getRealPath("/");
 	}//init
+	
+	public static void sendEmail(Email email) throws Exception {
+		sendEmail(email.getFromAddress(), email.getToAddress(), email.getCcAddress(), email.getSubject(), email.getBody());
+	}
 	
 	private static void sendEmail(String from, String to, String cc, String subject, String text) throws Exception {
 		if (IS_TESTING){
@@ -471,6 +450,15 @@ public class EmailBean extends DataBean{
 
 	public static void sendCertificateExpireEmail(String conID, String email, String contact, String type,
 					String date, String operator, String adminName) throws Exception {
+		String JEFF_POLLOCK_EMAIL_FOOTER =
+			"PICS - Pacific Industrial Contractor Screening"+endl2+endl+
+			"P.O. Box 51387"+endl2+endl+
+			"Irvine CA 92619-1387"+endl2+endl+
+			"(949)387-1940"+endl2+endl+
+		 	"fax: (949)269-9149"+endl2+endl+
+			"eorozco@picsauditing.com (Please add this email address to your address book to prevent it from being labeled as spam)"+endl2+endl+
+			"http://www.picsauditing.com";
+		
 		ContractorBean cBean = new ContractorBean();
 		cBean.setFromDB(conID);
 		AccountBean aBean = new AccountBean();
@@ -774,116 +762,64 @@ public class EmailBean extends DataBean{
 		cBean.writeToDB();
 	}//sendDesktopClosedSurveyEmail
 
-	public static void sendAnnualUpdateEmail(String conID, String adminName) throws Exception {
-		AccountBean aBean = new AccountBean();
-		aBean.setFromDB(conID);
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(conID);
-		String to = aBean.email;
-		String cc = "";
-		if (null!=cBean.secondEmail)
-		   cc = cBean.secondEmail;
-		String from = FROM_INFO;
+	public static Email startContractorEmail(String conID, String propertyName) throws Exception {
+		Email email = new Email();
+		email.setFromAddress(FROM_INFO);
 		
-		AppPropertiesBean props = new AppPropertiesBean();
-		String subject = props.get("email_annual_update_subject");
-		String message = props.get("email_annual_update_body");
-		message = message.replace("${aBean.contact}", aBean.contact);
-		message = message.replace("${aBean.name}", aBean.name);
-		String footer = props.get("email_footer");
-		footer = footer.replace("${fax}", props.get("main_fax"));
-		footer = footer.replace("${email}", props.get("main_email"));
-		footer = footer.replace("${ext}", "");
-		message = message.replace("${email_footer}", footer);
+		email.setToAddress(email.getAccount(conID).email);
+		email.addTokens("aBean.name", email.getAccount().name);
+		email.addTokens("aBean.contact", email.getAccount().contact);
+		email.useDefaultFooter();
+		email.setEmailTypeProperty(propertyName);
+		
+		return email;
+	}
+	
+	public static void sendAnnualUpdateEmail(String conID, String adminName) throws Exception {
+		Email email = startContractorEmail(conID, "annual_update");
+		email.setCcAddress(email.getContractor(conID).secondEmail);
+		
+		sendEmail(email);
 
-		sendEmail(from, to, cc, subject, message);
-		cBean.addNote(conID, "("+adminName+")", "Annual update email sent to: "+to, DateBean.getTodaysDateTime());
-		cBean.lastAnnualUpdateEmailDate=DateBean.getTodaysDate();
-		cBean.annualUpdateEmails++;
-		cBean.writeToDB();
-	}//sendAnnualUpdateEmail
-
+		email.getContractor().addNote(conID, "("+adminName+")", "Annual update email sent to: "+email.getToAddress(), DateBean.getTodaysDateTime());
+		email.getContractor().lastAnnualUpdateEmailDate=DateBean.getTodaysDate();
+		email.getContractor().annualUpdateEmails++;
+		email.getContractor().writeToDB();
+	}
+	
 	public static void sendDesktopSubmittedEmail(String conID, String adminName) throws Exception {
-		AccountBean aBean = new AccountBean();
-		aBean.setFromDB(conID);
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(conID);
-		String to = aBean.email;		
-		String cc = "";
-		if (null!=cBean.getAuditorsEmail())
-			   cc = cBean.getAuditorsEmail();
-		String from = FROM_INFO;
-		String subject = "Your PICS desktop audit has been completed";
-		String message =  "Hello "+aBean.contact+","+endl+endl+
-			"PICS has completed a desktop audit of "+aBean.name+"'s safety manual. "+
-
-			"Please log in to our website, and click on the 'View Desktop Audit' link to see any categories that may have "+
-			"outstanding requirements to fulfill. Please feel free to contact us and review the desktop audit as there may "+
-			"be many items we can close out just by speaking over the phone. Our auditors have made every effort to perform "+
-			"the audit based on their knowledge of what your company does, but sometimes there are requirements listed that do "+
-			"not apply to the work your company performs. These items can often be rectified immediately so we encourage you to "+
-			"contact us to discuss any items you feel may not apply. In order to close out any requirements, please fax, email, "+
-			"or mail the documentation addressing the section in question.  Our overnight address is: 17701 Cowan Suite 140, Irvine, "+
-			"CA, 92614. You can log in to your account during the process to view any requirements that are still outstanding or to "+
-			"check on your status."+endl+
-			"Again, if you have any questions or concerns, feel free to contact us."+endl+endl+
-			"Thanks, and have a safe year!"+endl+endl+EMAIL_FOOTER;
-		sendEmail(from, to, cc, subject, message);
-		cBean.addNote(conID, "("+adminName+")", "Desktop submitted email sent to: "+to, DateBean.getTodaysDateTime());
-		cBean.writeToDB();
-	}//sendDesktopSubmittedEmail
+		Email email = startContractorEmail(conID, "desktopsubmit");
+		email.setCcAddress(email.getContractor(conID).getAuditorsEmail());
+		
+		sendEmail(email);
+		
+		email.getContractor().addNote(conID, "("+adminName+")", "Desktop submitted email sent to: "+email.getToAddress(), DateBean.getTodaysDateTime());
+		email.getContractor().writeToDB();
+	}
 
 	public static void sendDaSubmittedEmail(String conID, String adminName) throws Exception {
-		AccountBean aBean = new AccountBean();
-		aBean.setFromDB(conID);
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(conID);
-		String to = aBean.email;		
-		String cc = "";
-		if (null!=cBean.getAuditorsEmail())
-			   cc = cBean.getAuditorsEmail();
-		String from = FROM_INFO;
-		String subject = "Your PICS Drug and Alcohol audit has been completed";
-		String message =  "Hello "+aBean.contact+","+endl+endl+
-			"PICS has completed a D&A audit of "+aBean.name+"'s safety manual. "+
-
-			"Please log in to our website, and click on the 'View D&A Audit' link to see any categories that may have "+
-			"outstanding requirements to fulfill. Please feel free to contact us and review the D&A audit as there may "+
-			"be many items we can close out just by speaking over the phone. Our auditors have made every effort to perform "+
-			"the audit based on their knowledge of what your company does, but sometimes there are requirements listed that do "+
-			"not apply to the work your company performs. These items can often be rectified immediately so we encourage you to "+
-			"contact us to discuss any items you feel may not apply. In order to close out any requirements, please fax, email, "+
-			"or mail the documentation addressing the section in question.  Our overnight address is: 17701 Cowan Suite 140, Irvine, "+
-			"CA, 92614. You can log in to your account during the process to view any requirements that are still outstanding or to "+
-			"check on your status."+endl+
-			"Again, if you have any questions or concerns, feel free to contact us."+endl+endl+
-			"Thanks, and have a safe year!"+endl+endl+EMAIL_FOOTER;
-		sendEmail(from, to, cc, subject, message);
-		cBean.addNote(conID, "("+adminName+")", "D&A submitted email sent to: "+to, DateBean.getTodaysDateTime());
-		cBean.writeToDB();
-	}//sendDaSubmittedEmail
+		Email email = startContractorEmail(conID, "dasubmit");
+		email.setCcAddress(email.getContractor(conID).getAuditorsEmail());
+		
+		sendEmail(email);
+		
+		email.getContractor().addNote(conID, "("+adminName+")", "D&A submitted email sent to: "+email.getToAddress(), DateBean.getTodaysDateTime());
+		email.getContractor().writeToDB();
+	}
 	
 	public static void sendContractorAddedEmail(String conID, String opName, String userName) throws Exception {
-		AccountBean aBean = new AccountBean();
-		aBean.setFromDB(conID);
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(conID);
-		String to = aBean.email;
-		String cc = "";
-		if (null!=cBean.secondEmail)
-		   cc = cBean.secondEmail;
-		String from = FROM_INFO;
-		String subject = "A facility has added you to their PICS database";
-		String message =  "Hello "+aBean.contact+","+endl+endl+
-			"This is an automatically generated email to inform you that "+userName+" from "+opName+" has added your company, "+
-			aBean.name+", to their PICS database, and will have access to your PQF and audit information. "+
-			"If you do not want this facility/person to have access to your PICS information, please contact us immediately."+
-			endl+endl+
-			"Thanks, and have a safe year!"+endl+endl+EMAIL_FOOTER;
-		sendEmail(from, to, cc, subject, message);
-		cBean.addNote(conID, "", userName+" from "+opName+" added "+aBean.name+" to db, email sent to: "+to, DateBean.getTodaysDateTime());
-		cBean.writeToDB();
-	}//sendContractorAddedEmail
+		Email email = startContractorEmail(conID, null);
+		email.setCcAddress(email.getContractor(conID).secondEmail);
+		
+		email.addTokens("username", userName);
+		email.addTokens("opName", opName);
+		email.setEmailTypeProperty("contractoradded");
+		
+		sendEmail(email);
+		
+		email.getContractor().addNote(conID, "", userName+" from "+opName+" added "+email.getAccount().name+" to db, email sent to: "+email.getToAddress(), DateBean.getTodaysDateTime());
+		email.getContractor().writeToDB();
+	}
 
 	public static void sendUpdateDynamicPQFEmail(String conID) throws Exception {
 		AccountBean aBean = new AccountBean();
@@ -986,36 +922,45 @@ public class EmailBean extends DataBean{
 	}//sendCertificateAcceptedEmail
 	
 	public static void sendSafetyMeetingEmail(HttpServletRequest request) throws Exception {
-			
-			String to = "meetings@picsauditing.com";
-			String cc = "";
-			String from = request.getParameter("email");
-			String subject = request.getParameter("name") + " from " + request.getParameter("organization") + " registered";
-			
-			StringBuffer message = new StringBuffer();
-			message.append("Info:\n");
-			message.append("Name:          " + request.getParameter("name") + "\n");
-			message.append("Organization:  " +request.getParameter("organization") + "\n");
-			message.append("Phone:         " +request.getParameter("phone") + " " + request.getParameter("ext") + "\n");
-			message.append("Email:         " +request.getParameter("email") + "\n");
-			message.append("Number:        " +request.getParameter("howmany") + "\n");
-			message.append("Attendees:     " +request.getParameter("attendees") + "\n");
-			message.append("Special Needs: " +request.getParameter("specialneeds") + "\n");
-			
-			sendEmail(from, to, cc, subject, message.toString());
-			
-			to = request.getParameter("email");
-			from = "meetings@picsauditing.com";
-			subject = "Registration confirmation for Contractor User Group Meeting";
-			message = new StringBuffer();
-			
-			message.append("Hi, " + request.getParameter("name") + "\n\n\n");
-			message.append("Thanks for registering for PICS Contractor User Group Meeting 2008.\nIf you have any questions about your registration, please contact Whitney Curry\nat (949)387-1940 x 714 or wcurry@picsauditing.com.");
-			message.append("\n\nHave a great day,\nJesse Cota\n\n");
-			message.append(JESSE_EMAIL_FOOTER);
-			
-			sendEmail(from, to, cc, subject, message.toString());
-		}//sendConfirmationEmail
+		String JESSE_EMAIL_FOOTER =
+			"PICS - Pacific Industrial Contractor Screening"+endl2+endl+
+			"P.O. Box 51387"+endl2+endl+
+			"Irvine CA 92619-1387"+endl2+endl+
+			"(949)387-1940"+endl2+endl+
+		 	"fax: (949)269-9177"+endl2+endl+
+			"info@picsauditing.com (Please add this email address to your address book to prevent it from being labeled as spam)"+endl2+endl+
+			"http://www.picsauditing.com";
+	
+		
+		String to = "meetings@picsauditing.com";
+		String cc = "";
+		String from = request.getParameter("email");
+		String subject = request.getParameter("name") + " from " + request.getParameter("organization") + " registered";
+		
+		StringBuffer message = new StringBuffer();
+		message.append("Info:\n");
+		message.append("Name:          " + request.getParameter("name") + "\n");
+		message.append("Organization:  " +request.getParameter("organization") + "\n");
+		message.append("Phone:         " +request.getParameter("phone") + " " + request.getParameter("ext") + "\n");
+		message.append("Email:         " +request.getParameter("email") + "\n");
+		message.append("Number:        " +request.getParameter("howmany") + "\n");
+		message.append("Attendees:     " +request.getParameter("attendees") + "\n");
+		message.append("Special Needs: " +request.getParameter("specialneeds") + "\n");
+		
+		sendEmail(from, to, cc, subject, message.toString());
+		
+		to = request.getParameter("email");
+		from = "meetings@picsauditing.com";
+		subject = "Registration confirmation for Contractor User Group Meeting";
+		message = new StringBuffer();
+		
+		message.append("Hi, " + request.getParameter("name") + "\n\n\n");
+		message.append("Thanks for registering for PICS Contractor User Group Meeting 2008.\nIf you have any questions about your registration, please contact Whitney Curry\nat (949)387-1940 x 714 or wcurry@picsauditing.com.");
+		message.append("\n\nHave a great day,\nJesse Cota\n\n");
+		message.append(JESSE_EMAIL_FOOTER);
+		
+		sendEmail(from, to, cc, subject, message.toString());
+	}//sendConfirmationEmail
 	
 	public void sendNewUserEmail(HttpServletRequest request, String accountID, String name,
 				String username, String pass, String email) throws Exception {
@@ -1049,4 +994,5 @@ public class EmailBean extends DataBean{
 	public static void sendErrorMessage(String errorMessage) throws Exception {
 		sendEmail("errors@picsauditing.com", "errors@picsauditing.com", "PICS Exception Error", errorMessage);
 	}
+	
 }//EmailBean
