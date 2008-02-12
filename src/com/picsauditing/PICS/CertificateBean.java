@@ -388,6 +388,9 @@ public class CertificateBean extends DataBean {
 			contractor_name = DEFAULT_NAME;
 		else
 			buf.append(" AND accounts.name LIKE '%"+Utilities.escapeQuotes(contractor_name)+"%' ");
+		if (permissions.isOperator())
+			buf.append(" AND certificates.operator_id="+permissions.getAccountIdString());
+			
 		buf.append(" ORDER BY name ASC;");		
 		try{
 			DBReady();

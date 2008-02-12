@@ -6,6 +6,7 @@
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope="page" />
 <jsp:useBean id="certDO" class="com.picsauditing.domain.CertificateDO" scope="page" />
 <%	try{
+	permissions.tryPermission(OpPerms.InsuranceCerts);
 	String[] statusList = new String[] {"Neither","Requires Action","Approved","Approved","Rejected","Rejected"};
 	String status = request.getParameter("status");
 	if(status == null)

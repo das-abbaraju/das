@@ -4,10 +4,10 @@
 <jsp:setProperty name="cerBean" property="*" />
 <script src="js/Validate.js"></script>
 <script src="js/ValidateForms.js"></script>
-<%
-permissions.tryPermission(OpPerms.InsuranceCerts, OpType.Edit);
+<%try{
+	if (permissions.isOperator())
+		permissions.tryPermission(OpPerms.InsuranceCerts);
 
-try{
 	String id = request.getParameter("id");
 	cerBean.processForm(pageContext);
 	ContractorBean cBean = new ContractorBean();
@@ -69,7 +69,7 @@ try{
                         <%=Utilities.inputSelect("types","forms","Workers Compensation",cerBean.TYPE_ARRAY)%></td>                        
                         <td class="blueMain">Operator&nbsp;&nbsp;
 <%	if (permissions.isOperator()){%>
-	                    <input type="hidden" name="operator_id" value="<%=permissions.getAccountId()%>">
+	                    <input type="hidden" name="operator_id" value="<%=permissions.getAccountId()%>"><%=FACILITIES.getNameFromID(permissions.getAccountIdString())%>
 <%	}else{%>
                         <%=new AccountBean().getGeneralSelect3("operator_id","forms",cerBean.operator_id,SearchBean.DONT_LIST_DEFAULT,id) %></td>
 <%	}//else%>
@@ -109,7 +109,10 @@ try{
                       <td bgcolor="#003366">Waiver</td>
                       <td width="50" align="center" bgcolor="#993300">File</td>
                     </tr>
-<%	cerBean.setList(id);
+<%	if (permissions.isOperator())
+		cerBean.setList(id,permissions.getAccountIdString());	
+	else
+		cerBean.setList(id);
 	while (cerBean.isNextRecord(false)) {
 %>
                     <tr class="blueMain" <%=Utilities.getBGColor(cerBean.count)%>> 
