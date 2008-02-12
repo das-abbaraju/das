@@ -320,7 +320,7 @@ import com.picsauditing.domain.IPicsDO;
 			accessID = selected_generalContractorID;
 			accessType = "Operator";
 		}
-		if (isSet(selected_status, DEFAULT_STATUS))
+		if (!isSet(selected_status, DEFAULT_STATUS))
 			selected_status = DEFAULT_STATUS;
 		else{
 			if ("Active".equals(selected_status))
