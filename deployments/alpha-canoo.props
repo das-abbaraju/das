@@ -1,4 +1,4 @@
-webtest.home=C:/java/webtest
+webtest.home=/usr/local/webtest
 
 login.password=bigboy11
 
@@ -9,9 +9,5 @@ mail.password=bigboy11
 
 host.port=8080
 
-host.name=localhost
-host.basepath=picsWeb2
-
-#host.name=www.picsauditing.com
-#host.port=
-#host.basepath=
+host.name=alpha.picsauditing.com
+host.basepath=
