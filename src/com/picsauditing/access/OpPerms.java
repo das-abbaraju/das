@@ -24,6 +24,8 @@ public enum OpPerms {
 	InsuranceVerification("Insurance Certificate Verification"),
 	NCMS("NCMS Administration"),
 	SwitchUser("Switch to User"),
+	ManageOperators("Manage Operator Accounts"),
+	ManageCorporate("Manage Corporate Accounts"),
 	ManageAudits("Manage Audits and Matrices");
 
 	private String description;

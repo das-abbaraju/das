@@ -105,10 +105,17 @@ public class SearchRaw {
 	// This may need to go into a SearchHTML class, but I'm not sure
 	
 	public String getStartsWithLinks() {
+		return getStartsWithLinks("");
+	}
+	public String getStartsWithLinks(String additionalParams) {
 		String html = "<span class=\"blueMain\">Starts with: ";
-		html += "<a href=\"?\" class=blueMain title=\"Show All\">*</a> ";
+		html += "<a href=\"?"+additionalParams+"\" class=blueMain title=\"Show All\">*</a> ";
+		if (additionalParams != null && additionalParams.length() >= 3)
+			additionalParams = "&"+additionalParams;
+		else
+			additionalParams = "";
 		for (char c = 'A';c<='Z';c++)
-			html += "<a href=?startsWith="+c+" class=blueMain>"+c+"</a> ";
+			html += "<a href=?startsWith="+c+additionalParams+" class=blueMain>"+c+"</a> ";
 		html += " </span>";
 		return html;
 	}
@@ -180,7 +187,7 @@ public class SearchRaw {
 		if (orderBy.length() > 0)
 			orderBy = "orderBy=" + orderBy + "&";
 		
-		return " <a href=\"?"+orderBy+"&showPage="+page+additionalParams+"\">"+page+"</a> ";
+		return " <a href=\"?"+orderBy+"showPage="+page+additionalParams+"\">"+page+"</a> ";
 	}
 	
 	public void setPageByResult(HttpServletRequest request) {

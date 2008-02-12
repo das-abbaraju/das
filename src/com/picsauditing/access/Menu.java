@@ -82,6 +82,10 @@ public class Menu {
 		this.addItem("report_incompleteAudits.jsp?incompleteAfter=3&changed=1", "Incomplete Audits Report");
 		this.addItem("report_certificates.jsp?changed=1", "Insurance Certificates", OpPerms.InsuranceCerts);
 		this.addItem("verify_insurance.jsp", "Insurance Verification", OpPerms.InsuranceCerts);
+		this.addItem("audit_selectType.jsp", "Manage Audits and Matrices", OpPerms.ManageAudits);
+		this.addItem("report_accounts.jsp?type=Corporate", "Manage Corporate Accounts", OpPerms.ManageCorporate);
+		this.addItem("report_accounts.jsp?type=Operator", "Manage Operators", OpPerms.ManageOperators);
+		this.addItem("users_manage.jsp", "Manage Users", OpPerms.EditUsers);
 		this.addItem("report_ncms.jsp", "NCMS Data Report", OpPerms.NCMS );
 		this.addItem("audit_calendar.jsp?changed=1", "Office Audit Calendar", OpPerms.OfficeAuditCalendar);
 		this.addItem("report_payment.jsp?changed=1", "Payment Report", adminGroup);
@@ -91,9 +95,6 @@ public class Menu {
 		this.addItem("report_desktop.jsp", "Schedule Desktop Audits", OpPerms.AssignAudits);
 		this.addItem("report_scheduleAudits.jsp?changed=1", "Schedule Office Audits", OpPerms.OfficeAuditCalendar);
 		this.addItem("report_upgradePayment.jsp?changed=1", "Upgrade Payment Report", adminGroup);
-		this.addItem("audit_selectType.jsp", "Manage Audits", adminGroup);
-		this.addItem("users_manage.jsp", "Manage Users", OpPerms.EditUsers);
 		this.addItem("faces/administration/index.xhtml", "Administration Dashboard", adminGroup);
-		this.addItem("audit_selectType.jsp", "Manage Audits and Matrices", OpPerms.ManageAudits);
 	}
 }

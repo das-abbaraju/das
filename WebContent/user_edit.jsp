@@ -110,7 +110,7 @@ if (uBean.isSet()) {
 	  	style="font-size: 14px; font-weight: bold;"></td>
 	</tr>
 	<tr  class="blueMain">
-		<td align="right">ID</td>
+		<td align="right"><%= (isGroup?"Group":"User") %> #</td>
 		<td><%=uBean.userDO.id%></td>
 	</tr>
 	<tr>
@@ -118,7 +118,7 @@ if (uBean.isSet()) {
 		<td class="blueMain"><%=uBean.userDO.dateCreated%></td>
 	</tr>
 	<tr>
-		<td class="blueMain" align="right"><%= (isGroup?"Group":"User") %> name</td>
+		<td class="blueMain" align="right">Display name</td>
 		<td> <input name="name" type="text" class="forms" size="30" value="<%=uBean.userDO.name%>"></td>
 	</tr>
 	<% if (!isGroup) { %>
@@ -156,36 +156,37 @@ if (!uBean.isSet()) return;
 
 currentUser.setFromDB(permissions.getUserIdString());
 
-////////////////////////////
-// Begin Permissions
-boolean canGrant = false;
-ArrayList<String> temp = new ArrayList<String>();
-for(Permission perm: permissions.getPermissions()) {
-	if (perm.isGrantFlag() && !myPerms.contains(perm)) {
-		canGrant = true;
-		temp.add(perm.getAccessType().name());
-		temp.add(perm.getAccessType().getDescription());
+if (!uBean.isSuGroup()) {
+	////////////////////////////
+	// Begin Permissions
+	boolean canGrant = false;
+	ArrayList<String> temp = new ArrayList<String>();
+	for(Permission perm: permissions.getPermissions()) {
+		if (perm.isGrantFlag() && !myPerms.contains(perm)) {
+			canGrant = true;
+			temp.add(perm.getAccessType().name());
+			temp.add(perm.getAccessType().getDescription());
+		}
 	}
-}
-
-if (canGrant || myPerms.size() > 0) {
-%>
-<form id="permissions" method="POST" action="user_edit.jsp">
-	<input type="hidden" name="action" value="savePermissions" />
-<table>
-	<tr bgcolor="#003366" class="whiteTitle">
-		<td>Permission</td>
-		<td>Read</td>
-		<td>Edit</td>
-		<td>Delete</td>
-		<td>Grant</td>
-		<td class="blueSmall"><input type="button" value="Save" class="blueSmall" onclick="savePermissions()" /></td>
-	</tr>
-<%
-for (Permission perm: myPerms) {
-	if (permissions.hasPermission(perm.getAccessType(), OpType.Grant)) {
-		String accessType = perm.getAccessType().toString();
-		%>
+	
+	if (canGrant || myPerms.size() > 0) {
+	%>
+	<form id="permissions" method="POST" action="user_edit.jsp">
+		<input type="hidden" name="action" value="savePermissions" />
+	<table>
+		<tr bgcolor="#003366" class="whiteTitle">
+			<td>Permission</td>
+			<td>Read</td>
+			<td>Edit</td>
+			<td>Delete</td>
+			<td>Grant</td>
+			<td class="blueSmall"><input type="button" value="Save" class="blueSmall" onclick="savePermissions()" /></td>
+		</tr>
+	<%
+	for (Permission perm: myPerms) {
+		if (permissions.hasPermission(perm.getAccessType(), OpType.Grant)) {
+			String accessType = perm.getAccessType().toString();
+			%>
 		<tr class="active">
 			<td><%=perm.getAccessType().getDescription()%><input type="hidden" name="accessType" value="<%=accessType %>" /></td>
 			<td><%=Utilities.getCheckBoxInput(accessType+"_viewFlag", "blueSmall", perm.isViewFlag())%></td>
@@ -207,12 +208,12 @@ for (Permission perm: myPerms) {
 			<td>&nbsp;</td>
 		</tr>
 		<%
+		}
 	}
-}
-
-if (canGrant) {
-	String[] grantPerms = temp.toArray(new String[0]);
-	%>
+	
+	if (canGrant) {
+		String[] grantPerms = temp.toArray(new String[0]);
+		%>
 	<tr class="active">
 		<td>
 			<%=Utilities.inputSelect2First("new", "forms", "", grantPerms, "", "- Grant/Revoke Permission -")%>
@@ -224,46 +225,50 @@ if (canGrant) {
 		<td></td>
 	</tr>
 	<%
-}
-%>
-</table>
-</form>
-
-<%
-} // End Permissions
-////////////////////////////
-
-Set<User> allGroups = currentUser.getAccountGroups();
-allGroups.remove(uBean); // You can't add yourself to your own group
-if (allGroups.size() > 0) {
-	%>
-	<p class="blueMain">Member of Group(s):
-	<form id="addGroup">
-	<ul>
-	<%
-	for (User group: myGroups) {
-		allGroups.remove(group);
-		%>
-		<li class="blueMain">
-			<a href="#" onclick="showUser(<%=group.userDO.id%>); return false;"><%=group.userDO.name%></a>
-			(<a href="#" onclick="saveGroup('removeGroup', <%=group.userDO.id%>); return false;">remove</a>)
-		</li>
-		<%
-	}
-	
-	for (User group: allGroups) {
-		%>
-		<li class="blueMain">
-			<a href="#" onclick="saveGroup('addGroup',<%=group.userDO.id%>); return false;" style="font-style: italic; color: red;">Add to <%=group.userDO.name%></a>
-		</li>
-		<%
 	}
 	%>
-	</ul>
+	</table>
 	</form>
-	</p>
+	
 	<%
-} //if
+	} // End Permissions
+	////////////////////////////
+
+	
+	
+	Set<User> allGroups = currentUser.getAccountGroups();
+	allGroups.remove(uBean); // You can't add yourself to your own group
+	if (allGroups.size() > 0) {
+		%>
+		<p class="blueMain">Member of Group(s):
+		<form id="addGroup">
+		<ul>
+		<%
+		for (User group: myGroups) {
+			allGroups.remove(group);
+			%>
+			<li class="blueMain">
+				<a href="#" onclick="showUser(<%=group.userDO.id%>); return false;"><%=group.userDO.name%></a>
+				(<a href="#" onclick="saveGroup('removeGroup', <%=group.userDO.id%>); return false;">remove</a>)
+			</li>
+			<%
+		}
+		
+		for (User group: allGroups) {
+			%>
+			<li class="blueMain">
+				<a href="#" onclick="saveGroup('addGroup',<%=group.userDO.id%>); return false;" style="font-style: italic; color: red;">Add to <%=group.userDO.name%></a>
+			</li>
+			<%
+		}
+		%>
+		</ul>
+		</form>
+		</p>
+		<%
+	} //if
+
+}
 
 if (isGroup && myMembers.size() > 0) {
 %>

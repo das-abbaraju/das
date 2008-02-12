@@ -12,6 +12,10 @@ import com.picsauditing.PICS.*;
 
 public class User extends DataBean implements Comparable<User> {
 	private static final int SU_GROUP = 9; // Group that automatically has ALL grant privileges
+	public boolean isSuGroup() {
+		return Integer.parseInt(this.userDO.id) == SU_GROUP;
+	}
+	
 	//private static final int PASSWORD_DURATION = 365; // days between required password update
 	private static final int MIN_PASSWORD_LENGTH = 5; // minimum required length of a password
 	
@@ -278,7 +282,7 @@ public class User extends DataBean implements Comparable<User> {
 		// Our permissions are empty, so go get some
 		permissions = new TreeSet<Permission>();
 		
-		if (this.userDO.id.equals(User.SU_GROUP)) {
+		if (isSuGroup()) {
 			// This is the Super User Group, which should have grant ability on ALL permissions
 			// Also grant view/edit/delete on EditUsers
 			// SuperUser group does not inherit from parent groups

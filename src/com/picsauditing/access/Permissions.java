@@ -160,14 +160,14 @@ public class Permissions {
 		return "Operator".equals(this.accountType);
 	}
 	/**
-	 * @deprecated
+	 * @deprecated use isPicsEmployee Now
 	 * @return
 	 */
 	public boolean isAdmin() {
 		return this.hasGroup(10);
 	}
 	/**
-	 * @deprecated
+	 * @deprecated use isPicsEmployee Now
 	 * @return
 	 */
 	public boolean isAuditor() {
