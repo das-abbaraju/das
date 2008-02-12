@@ -1,6 +1,7 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
+<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 
 <%
 	String ses_id = (String)session.getAttribute("userid");
