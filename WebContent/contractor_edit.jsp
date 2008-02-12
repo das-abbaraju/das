@@ -5,14 +5,18 @@
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
 <jsp:useBean id="helper" class="com.picsauditing.servlet.upload.UploadConHelper"/>
 <%
-	permissions.tryPermission(OpPerms.ContractorAccounts, OpType.Edit);
-
 	String id = request.getParameter("id");
+	if (permissions.isContractor()) {
+		id = permissions.getAccountIdString();
+	} else {
+		permissions.tryPermission(OpPerms.ContractorAccounts, OpType.Edit);
+	}
+
 	boolean isSubmitted = "Yes".equals(request.getParameter("isSubmitted"));
 	aBean.setFromDB(id);
 	cBean.setFromDB(id);
 	if (isSubmitted){
-//		Process form upload		
+//		Process form upload
 		request.setAttribute("uploader", String.valueOf(com.picsauditing.servlet.upload.UploadProcessorFactory.CONTRACTOR));
 		request.setAttribute("directory", "files");
 		helper.init(request, response);			

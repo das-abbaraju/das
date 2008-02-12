@@ -48,8 +48,9 @@
 			pBean.setCanSeeSet(aBean.canSeeSet());
 
 			pBean.uBean = new UserBean();
-			if (aBean.userID.equals("")) {
-				pBean.uBean.name = aBean.contact;					
+			if (aBean.type.equals("Contractor")) {
+				pBean.uBean.name = aBean.contact;
+				permissions.login(aBean);
 			} else {
 				// Is a user account
 				pBean.uBean.setFromDB(aBean.userID);

@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.PICS.AccountBean;
+
 /**
  * This is the main class that is stored for each user containing information 
  * if they are logged in, which groups they're in, and what permission(s) they have
@@ -43,6 +45,26 @@ public class Permissions {
 			Set<User> temp = user.getGroups();
 			for(User u : temp)
 				groups.add(Integer.parseInt(u.userDO.id));
+		}catch(Exception ex){
+			// All or nothing, if something went wrong, then clear it all
+			clear();
+			throw ex;
+		}
+	}
+	
+	public void login(AccountBean aBean) throws Exception {
+		try{
+			if (!aBean.type.equals("Contractor")) return;
+			
+			clear();
+			userID = Integer.parseInt(aBean.id);
+			if (userID == 0) throw new Exception("Missing Account");
+			
+			loggedIn = true;
+			username = aBean.username;
+			name = aBean.name;
+			accountID = userID;
+			accountType = aBean.type;
 		}catch(Exception ex){
 			// All or nothing, if something went wrong, then clear it all
 			clear();
@@ -144,6 +166,8 @@ public class Permissions {
 	}
 	public boolean loginRequired(javax.servlet.http.HttpServletResponse response, HttpServletRequest request) throws IOException {
 		String url = request.getRequestURI();
+		if (request.getQueryString() != null)
+			url += "?" + request.getQueryString();
 		return this.loginRequired(response, url);
 	}
 

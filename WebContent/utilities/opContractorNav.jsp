@@ -6,7 +6,7 @@ String thisQuery = request.getQueryString();
 
 if (permissions.isContractor() && !thisPage.contains("contractor_detail")) {
 	%>
-	<div class="blueHeader"><%=aBean.name%></div>
+	<div class="blueHeader"><%=aBean.getName(id)%></div>
 	<%
 }
 %>
