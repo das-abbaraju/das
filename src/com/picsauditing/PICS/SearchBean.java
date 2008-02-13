@@ -51,6 +51,7 @@ import com.picsauditing.domain.IPicsDO;
 	public String selected_auditType = "";
 	public String selected_generalContractorID = ""; // only used when admin wants to see sub contractors of certain general contractor
 	public String selected_certsOnly = "";
+	public String selected_entireDB = "";
 	public String selected_pqfAuditorID = "";
 	public String selected_desktopAuditorID = "";
 	public String selected_daAuditorID = "";
@@ -226,6 +227,7 @@ import com.picsauditing.domain.IPicsDO;
 			selected_auditType = r.getParameter("auditType");
 			selected_generalContractorID = r.getParameter("generalContractorID");
 			selected_certsOnly = r.getParameter("certsOnly");
+			selected_entireDB = r.getParameter("entireDB");
 			selected_pqfAuditorID = r.getParameter("pqfAuditorID");
 			selected_desktopAuditorID = r.getParameter("desktopAuditorID");
 			selected_daAuditorID = r.getParameter("daAuditorID");
@@ -258,6 +260,12 @@ import com.picsauditing.domain.IPicsDO;
 		else
 			showPage = Integer.parseInt(r.getParameter("showPage"));
 
+		if ("Y".equals(selected_entireDB)){
+			if (null == searchCorporate)
+				joinQuery += "LEFT JOIN flags ON flags.conID=accounts.id ";
+			whereQuery += "AND (flags.opID IS NULL OR flags.opID="+accessID+") ";
+			accessType = "Admin";
+		}//if
 		//Set all the Queries
 		if (onlyActive)
 			whereQuery += "AND active='Y' ";
