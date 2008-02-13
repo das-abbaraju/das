@@ -1640,7 +1640,8 @@ public class ContractorBean extends DataBean {
 			return permissions.getAccountIdString().equals(this.id);
 		}
 		if (permissions.isOperator()) {
-			return generalContractors.contains(permissions.getAccountIdString());
+			return true;
+			//return generalContractors.contains(permissions.getAccountIdString());
 		}
 		
 		// The auditors can see this Contractor

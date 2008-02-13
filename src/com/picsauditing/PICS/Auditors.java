@@ -7,9 +7,16 @@ public class Auditors extends DataBean{
 	static public int groupID = 11;
 	ArrayList<String> auditorsAL = null;
 	
-	public void resetAuditorsAL() throws Exception{
+	public void resetAuditorsAL(String groupID) {
+		try {
+			if (Integer.parseInt(groupID) == Auditors.groupID)
+				resetAuditorsAL();
+		} finally {}
+	}
+	
+	public void resetAuditorsAL() {
 		auditorsAL = null;
-	}//resetAuditorsAL
+	}
 
 	public void setAuditorsALFromDB() throws Exception{
 		if (null!=auditorsAL)

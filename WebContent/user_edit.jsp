@@ -6,6 +6,7 @@
 <%@ include file="includes/main_ajax.jsp" %>
 <jsp:useBean id="uBean" class="com.picsauditing.access.User" scope ="page"/>
 <jsp:useBean id="currentUser" class="com.picsauditing.access.User" scope ="page"/>
+<jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope="application"/>
 <%
 permissions.tryPermission(OpPerms.EditUsers, OpType.View);
 
@@ -40,9 +41,14 @@ if (action.equals("saveUser")) {
 	// Delete user occurs on users_manage.jsp
 	uBean.setFromRequest(request);
 	if (uBean.isOK()){
+		boolean isNew = uBean.userDO.id.equals("");
+		boolean isGroup = uBean.userDO.isGroup.startsWith("Y");
 		uBean.writeToDB();
-		userID = uBean.userDO.id;
-		//AUDITORS.resetAuditorsAL();
+		if (isNew) {
+			%>Successfully Created New <%=isGroup?"Group":"User"%><br /><br />
+			<a href="users_manage.jsp?accountID=<%=uBean.userDO.accountID%>&isGroup=<%=uBean.userDO.isGroup%>&isActive=Yes">Click to Refresh List</a><%
+			return;
+		}
 	} else {
 		msg = uBean.getErrorMessages();
 	}
@@ -51,9 +57,11 @@ uBean.setFromDB(userID);
 
 if (action.equals("removeGroup")) {
 	uBean.removeFromGroup(request.getParameter("groupID"));
+	AUDITORS.resetAuditorsAL(request.getParameter("groupID"));
 }
 if (action.equals("addGroup")) {
 	uBean.addToGroup(request.getParameter("groupID"), permissions);
+	AUDITORS.resetAuditorsAL(request.getParameter("groupID"));
 }
 if (action.equals("savePermissions")) {
 	PermissionDB permDB = new PermissionDB();
@@ -69,6 +77,7 @@ if (action.equals("removeUserFromGroup")) {
 	User tempUser = new User();
 	tempUser.setFromDB(request.getParameter("childID"));
 	tempUser.removeFromGroup(request.getParameter("userID"));
+	AUDITORS.resetAuditorsAL(request.getParameter("groupID"));
 }
 
 ///////////////////////////////////////////////////
