@@ -29,7 +29,7 @@
 			oBean.writeToDB();
 			oBean.writeFacilitiesToDB();
 			FACILITIES.resetFacilities();
-			response.sendRedirect("accounts_manage.jsp?type="+aBean.type);
+			response.sendRedirect("report_accounts.jsp?type="+aBean.type);
 			return;
 		}//if
 	}//if
