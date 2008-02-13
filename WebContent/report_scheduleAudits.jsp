@@ -1,12 +1,11 @@
 <%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<%@include file="utilities/adminGeneral_secure.jsp" %>
-
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-
-<%	try{
+<%
+permissions.tryPermission(OpPerms.AssignAudits);
+try {
 	String action = request.getParameter("action");
 	String actionID = request.getParameter("actionID");
 	String which = request.getParameter("which");
@@ -26,6 +25,7 @@
 		cBean.writeAuditEmailDateToDB(actionID, permissions.getUsername());
 	}//if
 	if ("Update".equals(action)) {
+		permissions.tryPermission(OpPerms.AssignAudits, OpType.Edit);
 		cBean.setFromDB(actionID);
 		String newAuditDate = request.getParameter("auditDate_"+actionID);
 		if (!cBean.auditDate.equals(newAuditDate))
@@ -39,12 +39,6 @@
 		cBean.auditor_id = request.getParameter("auditor_"+actionID);
 		//check to see if audit doublescheduled bj 4-5-05
 		if ("".equals(cBean.checkDoubleAudit(actionID)) || "true".equals(doubleAuditOK)) {
-//			if (!"".equals(cBean.auditDate)) {
-//				if (cBean.STATUS_SCHEDULING.equals(cBean.status)) {
-//					cBean.setStatus(cBean.STATUS_PENDING);
-//					cBean.triggerAuditStatusChange(cBean.STATUS_PENDING);
-//				}//if
-//			}//if
 			cBean.writeToDB();
 		} else 
 			msg = cBean.checkDoubleAudit(actionID);	

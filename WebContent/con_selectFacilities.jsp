@@ -133,8 +133,7 @@
                    <br>
 				   <b>Please select all facilities
                     where you work<br>(Currently <%=cBean.facilitiesCount%>)
-<!--					<a href="#pricing"class=blueMain>See pricing table below</a>)
--->                  </b><br><br>
+                  </b><br><br>
 <%	}//if
 	if (pBean.isAuditor()){%>
 				   <strong><%=aBean.name%>'s</strong> facilities:<br><br>
@@ -174,12 +173,19 @@
 			          <%=Inputs.getCheckBoxInput("genID_"+opID,"forms","","Yes")%>
 <%				status = "";
 		}//else
+		
+		String flagColor = "red";
+		BasicDynaBean opFlag = flagMap.get(opID);
+		if (opFlag != null) {
+			Object temp = opFlag.get("flag");
+			flagColor = temp.toString().toLowerCase();
+		}
 %>
 				    </td>
 					<td class="<%=cBean.getTextColor(status)%>"><%=status%></td>
 					<td class="<%=cBean.getTextColor(status)%>" align="center">
 					  <a href="con_redFlags.jsp?id=<%=cBean.id%>&opID=<%=opID%>" title="Click to view Flag Color details">
-                        <img src=images/icon_<%=flagMap.get(opID).get("flag").toString().toLowerCase()%>Flag.gif width=12 height=15 border=0>
+                        <img src=images/icon_<%=flagColor%>Flag.gif width=12 height=15 border=0>
 					  </a>
 					</td>
                     <td>

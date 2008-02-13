@@ -93,7 +93,7 @@ public class Menu {
 		this.addItem("report_scheduleAudits.jsp?changed=1&which="+com.picsauditing.PICS.SearchBean.RESCHEDULE_AUDITS, "Reschedule Audits", adminGroup);
 		this.addItem("report_daAudit.jsp", "Schedule Drug &amp; Alcohol Audits", OpPerms.AssignAudits);
 		this.addItem("report_desktop.jsp", "Schedule Desktop Audits", OpPerms.AssignAudits);
-		this.addItem("report_scheduleAudits.jsp?changed=1", "Schedule Office Audits", OpPerms.OfficeAuditCalendar);
+		this.addItem("report_scheduleAudits.jsp?changed=1", "Schedule Office Audits", OpPerms.AssignAudits);
 		this.addItem("report_upgradePayment.jsp?changed=1", "Upgrade Payment Report", adminGroup);
 		this.addItem("faces/administration/index.xhtml", "Administration Dashboard", adminGroup);
 	}
