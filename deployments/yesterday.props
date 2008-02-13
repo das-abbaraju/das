@@ -1,4 +1,4 @@
-DBURL=jdbc:mysql://localhost:3306/yesterday
+DBURL=jdbc:mysql://db.picsauditing.com:3306/yesterday
 DBUSER=pics
 DBPASS=pics
 APPDIR=/wwwroot/yesterday.picsauditing.com/webapps
