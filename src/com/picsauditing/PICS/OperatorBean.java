@@ -182,6 +182,22 @@ public class OperatorBean extends DataBean {
 		return canSeeSet;
 	}//getFacilitiesCanSeeSet
 
+	public HashSet<String> getFacilitiesCanSeeSet(String genID) throws Exception{
+		HashSet<String> canSeeSet = new HashSet<String>();
+		String selectQuery = "SELECT subID FROM accounts INNER JOIN generalContractors ON (id=subID) "+
+				"WHERE active='Y' AND genID = '"+genID+"'";
+		try{
+			DBReady();
+			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
+			while (SQLResult.next())
+				canSeeSet.add(SQLResult.getString("subID"));
+			SQLResult.close();
+		}finally{
+			DBClose();
+		}//finally		
+		return canSeeSet;
+	}//getFacilitiesCanSeeSet
+	
 	public String getFacilitySelect(String name, String classType, String selectedFacility) throws Exception {
 		setActiveGeneralsArrayFromDB();
 		ArrayList<String> tempAL = new ArrayList<String>();
@@ -366,6 +382,7 @@ public class OperatorBean extends DataBean {
 			DBReady();
 			SQLStatement.executeUpdate(insertQuery);
 			// Reset canSeeSet
+			/*
 			canSeeSet = new HashSet<String>();
 			canSeeSet.add(genID);
 			String selectQuery = "SELECT * FROM generalContractors WHERE genID="+genID+";";
@@ -373,9 +390,11 @@ public class OperatorBean extends DataBean {
 			while (SQLResult.next())
 				canSeeSet.add(SQLResult.getString("subID"));
 			SQLResult.close();
+			*/
 		}finally{
 			DBClose();
 		}//finally
+		canSeeSet = this.getFacilitiesCanSeeSet(genID);
 		resetSubCountTable();
 	}//addSubContractor
 
@@ -384,16 +403,10 @@ public class OperatorBean extends DataBean {
 		try{
 			DBReady();
 			SQLStatement.executeUpdate(deleteQuery);
-			canSeeSet = new HashSet<String>();
-			canSeeSet.add(genID);
-			String selectQuery = "SELECT * FROM generalContractors WHERE genID="+genID+";";
-			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			while (SQLResult.next())
-				canSeeSet.add(SQLResult.getString("subID"));
-			SQLResult.close();
 		}finally{
 			DBClose();
 		}//finally
+		canSeeSet = this.getFacilitiesCanSeeSet(genID);
 		resetSubCountTable();
 	}//removeSubContractor
 
