@@ -4,6 +4,7 @@
 <%@ include file="utilities/admin_secure.jsp" %>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
+<%@page import="java.util.Random"%>
 <%
 	String editID = request.getParameter("id");
 	UserAccess userAccess = new UserAccess();
@@ -18,6 +19,8 @@
 	
 	if (wasSubmitted) {
 		aBean.setFromRequest(request);
+		aBean.username = Integer.toString(new Random().nextInt());
+		aBean.password = Integer.toString(new Random().nextInt());
 		oBean.setFromRequest(request);
 		userAccess.setFromRequest(request);
 		userAccess.writeToDB(permissions);
