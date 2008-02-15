@@ -1,10 +1,12 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
 <%@ include file="utilities/adminGeneral_secure.jsp" %>
+<%@page import="com.picsauditing.mail.*"%>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<%	try{
+<%
+try{
 	String action = request.getParameter("action");
 	sBean.orderBy = request.getParameter("orderBy");
 	if (null==sBean.orderBy)
@@ -16,8 +18,13 @@
 		while (e.hasMoreElements()) {
 			String temp = (String)e.nextElement();
 			if (temp.startsWith("sendEmail_")) {
-				String cID = temp.substring(10);
-				EmailBean.sendAnnualUpdateEmail(cID, permissions.getUsername());
+				String conID = temp.substring(10);
+				EmailContractorBean emailer = new EmailContractorBean();
+				emailer.sendMessage(EmailTemplates.annual_update, conID, permissions);
+				
+				emailer.getContractorBean().lastAnnualUpdateEmailDate=DateBean.getTodaysDate();
+				emailer.getContractorBean().annualUpdateEmails++;
+				emailer.getContractorBean().writeToDB();
 			}//if
 		}//while
 	}//if

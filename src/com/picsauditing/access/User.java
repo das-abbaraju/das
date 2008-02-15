@@ -165,9 +165,6 @@ public class User extends DataBean implements Comparable<User> {
 			if (SQLResult.next())
 				userDO.id = SQLResult.getString("GENERATED_KEY");
 			SQLResult.close();
-			// TODO move this out to the JSP page
-			EmailBean eBean = new EmailBean();
-			eBean.sendNewUserEmail(request,accountID,userDO.name,userDO.username,userDO.password,userDO.email);
 		}finally{
 			DBClose();
 		}//finally

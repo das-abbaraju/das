@@ -28,7 +28,7 @@
 	String message = "";
 	if (justSubmitted){
 		if (pdBean.isComplete(conID,auditType)){
-			cBean.submitPQF(conID, permissions.getUsername(), auditType);
+			cBean.submitPQF(conID, permissions, auditType);
 			if (Constants.PQF_TYPE.equals(auditType))
 				message = "Thank you for submitting your PQF.  If this is your first submittal, a PICS representative will be contacting you "+
 					"within 7 days to discuss the audit. If you have not heard from someone within this time period feel free to contact our office.";

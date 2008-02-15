@@ -2,6 +2,7 @@
 <%@page import="com.picsauditing.access.*"%>
 <%@page import="java.util.*"%>
 <%@page import="com.picsauditing.PICS.Utilities"%>
+<%@page import="com.picsauditing.PICS.EmailBean"%>
 <%@page import="org.apache.commons.beanutils.BasicDynaBean"%>
 <%@ include file="includes/main_ajax.jsp" %>
 <jsp:useBean id="uBean" class="com.picsauditing.access.User" scope ="page"/>
@@ -79,6 +80,10 @@ if (action.equals("removeUserFromGroup")) {
 	tempUser.removeFromGroup(request.getParameter("userID"));
 	AUDITORS.resetAuditorsAL(request.getParameter("groupID"));
 }
+if (action.equals("sendWelcomeEmail")) {
+	EmailBean eBean = new EmailBean();
+	eBean.sendNewUserEmail(request, uBean, permissions);
+}
 
 ///////////////////////////////////////////////////
 // Display User and their groups and permissions //
@@ -124,7 +129,7 @@ if (uBean.isSet()) {
 	</tr>
 	<tr>
 		<td class="blueMain" align="right">Date created</td>
-		<td class="blueMain"><%=uBean.userDO.dateCreated%></td>
+		<td class="blueMain"><%=uBean.userDO.dateCreated%> <a href="#" onclick="sendWelcomeEmail(); return false;">Send Welcome Email</a></td>
 	</tr>
 	<tr>
 		<td class="blueMain" align="right">Display name</td>

@@ -1,6 +1,7 @@
 <%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.access.OpPerms" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
 <%@ include file="utilities/adminGeneral_secure.jsp" %>
+<%@page import="com.picsauditing.mail.*"%>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
 <%	
@@ -29,7 +30,15 @@ try{
 		pBean.oBean.addSubContractor(pBean.userID, actionID);
 		pBean.canSeeSet = pBean.oBean.canSeeSet;
 		doSearch = true;
-		EmailBean.sendContractorAddedEmail(actionID, pBean.userName, pBean.uBean.name);
+		
+		// Send the contractors an email that the operator added them
+		EmailContractorBean emailer = new EmailContractorBean();
+		emailer.setData(actionID, permissions);
+		emailer.setMerge(EmailTemplates.contractoradded);
+		emailer.addTokens("opName", pBean.uBean.name);
+		emailer.sendMail();
+		emailer.addNote(permissions.getUsername()+" from "+pBean.uBean.name+" added "+aBean.name+" to db, email sent to: "+ emailer.getSentTo());
+
 		com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
 		com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();
 		ContractorBean cBean = new ContractorBean();
@@ -39,7 +48,7 @@ try{
 		cBean.canEditPrequal="Yes";
 		cBean.addNote(actionID,"("+pBean.getWhoIsDetail()+")", "Added this Contractor to "+aBean.name+"'s db", DateBean.getTodaysDateTime());
 		cBean.writeToDB();
-		EmailBean.sendUpdateDynamicPQFEmail(actionID);
+		com.picsauditing.PICS.EmailBean.sendUpdateDynamicPQFEmail(actionID);
 	}//if
 	if ("Remove".equals(action) && pBean.oBean.canAddContractors()){
 		pBean.oBean.removeSubContractor(pBean.userID, actionID);
@@ -63,6 +72,7 @@ try{
 	String showPage = request.getParameter("showPage");
 	if (showPage == null)	showPage = "1";
 %>
+<%@page import="com.picsauditing.mail.EmailContractorBean"%>
 <html>
 <head>
 <title>PICS - Pacific Industrial Contractor Screening</title>

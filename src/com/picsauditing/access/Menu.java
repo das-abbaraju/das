@@ -74,6 +74,7 @@ public class Menu {
 		this.addItem("contractorsSearch.jsp", "Contractor Search", OpPerms.SearchContractors);
 		// I'm not sure if OpPerms.SearchContractors on the next item is correct
 		this.addItem("report_operatorContractor.jsp?searchCorporate=Y", "Corporate Contractors Report", OpPerms.SearchContractors);
+		this.addItem("email_templates.jsp", "Email Templates", OpPerms.EmailTemplates);
 		this.addItem("report_EMRRates.jsp?changed=1", "EMR Rates Report");
 		this.addItem("report_expiredAudits.jsp?changed=1", "Expired Audits Report");
 		this.addItem("report_expiredCertificates.jsp?changed=1", "Expired Insurance Certificates", OpPerms.InsuranceCerts);

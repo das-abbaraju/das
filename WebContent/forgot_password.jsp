@@ -5,7 +5,7 @@
 %>
 <html>
 <head>
-<title>PICS - Pacific Industrial Contractor Screening</title>
+<title>PICS - Forgot Password</title>
   <META Http-Equiv="Cache-Control" Content="no-cache">
   <META Http-Equiv="Pragma" Content="no-cache">
   <META Http-Equiv="Expires" Content="0">

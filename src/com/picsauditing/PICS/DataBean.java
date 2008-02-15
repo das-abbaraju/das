@@ -19,6 +19,10 @@ public abstract class DataBean{
 			temp.append(errorMessages.elementAt(i)).append("<br>");
 		return temp.toString();
 	}//getErrorMessages
+	
+	public void setConn(Connection value) {
+		this.Conn = value;
+	}
  
 	public void DBReady() throws SQLException{
 		try{

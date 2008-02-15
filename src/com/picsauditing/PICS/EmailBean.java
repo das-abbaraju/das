@@ -25,12 +25,6 @@ public class EmailBean extends DataBean{
 	private static final String EMAIL_ACCOUNT_BACKUP4 = "info4@picsauditing.com";
 	private static final String EMAIL_ACCOUNT_BACKUP5 = "info5@picsauditing.com";
 	private static final String EMAIL_ACCOUNT_BACKUP6 = "info6@picsauditing.com";
-	private static final String EMAIL_ACCOUNT_BACKUP7 = "info7@picsauditing.com";
-	private static final String EMAIL_ACCOUNT_BACKUP8 = "info8@picsauditing.com";
-	private static final String EMAIL_ACCOUNT_BACKUP9 = "info9@picsauditing.com";
-	private static final String EMAIL_ACCOUNT_BACKUP10 = "info10@picsauditing.com";
-	private static final String EMAIL_ACCOUNT_BACKUP11 = "info11@picsauditing.com";
-	private static final String EMAIL_ACCOUNT_BACKUP12 = "info12@picsauditing.com";
 	private static final String PASSWORD = "e3r4t5";
 	static final char endl = '\n';
 	static final char endl2 = '\r';
@@ -86,37 +80,6 @@ public class EmailBean extends DataBean{
 		props.put("mail.smtp.user", EMAIL_ACCOUNT_BACKUP6);
 		return props;
 	}//getPropertiesBackup6
-/*	private static Properties getPropertiesBackup7(){
-		Properties props = getProperties();
-		props.put("mail.smtp.user", EMAIL_ACCOUNT_BACKUP7);
-		return props;
-	}//getPropertiesBackup7
-	private static Properties getPropertiesBackup8(){
-		Properties props = getProperties();
-		props.put("mail.smtp.user", EMAIL_ACCOUNT_BACKUP8);
-		return props;
-	}//getPropertiesBackup8
-	private static Properties getPropertiesBackup9(){
-		Properties props = getProperties();
-		props.put("mail.smtp.user", EMAIL_ACCOUNT_BACKUP9);
-		return props;
-	}//getPropertiesBackup9
-	private static Properties getPropertiesBackup10(){
-		Properties props = getProperties();
-		props.put("mail.smtp.user", EMAIL_ACCOUNT_BACKUP10);
-		return props;
-	}//getPropertiesBackup10
-	private static Properties getPropertiesBackup11(){
-		Properties props = getProperties();
-		props.put("mail.smtp.user", EMAIL_ACCOUNT_BACKUP11);
-		return props;
-	}//getPropertiesBackup11
-	private static Properties getPropertiesBackup12(){
-		Properties props = getProperties();
-		props.put("mail.smtp.user", EMAIL_ACCOUNT_BACKUP12);
-		return props;
-	}//getPropertiesBackup12
-*/
 	private static class SMTPAuthenticator extends javax.mail.Authenticator{
 	    public PasswordAuthentication getPasswordAuthentication(){ 
       	  return new PasswordAuthentication(EMAIL_ACCOUNT,PASSWORD);
@@ -156,10 +119,6 @@ public class EmailBean extends DataBean{
 	public static void init(javax.servlet.ServletConfig config) {
 		rootPath = config.getServletContext().getRealPath("/");
 	}//init
-	
-	public static void sendEmail(Email email) throws Exception {
-		sendEmail(email.getFromAddress(), email.getToAddress(), email.getCcAddress(), email.getSubject(), email.getBody());
-	}
 	
 	private static void sendEmail(String from, String to, String cc, String subject, String text) throws Exception {
 		if (IS_TESTING){
@@ -360,51 +319,6 @@ public class EmailBean extends DataBean{
 		out.close();
 	}//writeTestEmail
 	
-	private static void writeTestEmail(String from, String to, String subject, String text) throws Exception {
-		java.io.BufferedWriter out = new java.io.BufferedWriter(new java.io.FileWriter(EMAIL_OUT,true));
-			out.write("Date/Time:"+DateBean.getTodaysDateTime()+endl2+endl+"From: "+from+endl2+endl+"Subject: "+subject+endl2+endl+"Text: "+text);
-	    out.write(endl2+endl+"*******************************************************"+endl2+endl+endl2+endl);
-		out.close();
-	}//writeTestEmail
-
-	public void sendWelcomeEmail(AccountBean aBean, String adminName) throws Exception {
-		//setFromDB();
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(aBean.id);
-		String from = FROM_INFO;
-		String to = aBean.email;
-		String cc = "";
-		if (null!=cBean.secondEmail)
-		   cc = cBean.secondEmail;
-		
-		AppPropertiesBean props = new AppPropertiesBean();
-		
-		String subject = props.get("email_welcome_subject");
-		
-		String body = props.get("email_welcome_body");
-		body = body.replace("${user.name}", aBean.name);
-		body = body.replace("${user.username}", aBean.username);
-		body = body.replace("${user.password}", aBean.password);
-		
-		String footer = props.get("email_footer");
-		footer = footer.replace("${fax}", props.get("main_fax"));
-		footer = footer.replace("${email}", props.get("main_email"));
-		footer = footer.replace("${ext}", "");
-		body = body.replace("${email_footer}", footer);
-
-		boolean attachfile = props.get("email_welcome_attachfile").equals("1");
-		if (attachfile) {
-			if (null == rootPath)
-				throw new Exception("Email Bean not initialized with path");
-			String path = rootPath + "attachments/";
-			String fileName = "welcome.doc";
-			sendAttachment(from, to, cc, subject, body, path, fileName);
-		} else {
-			sendEmail(from, to, cc, subject, body);
-		}//else
-		cBean.writeWelcomeEmailDateToDB(aBean.id, adminName);
-	}//sendWelcomeEmail
-
 	public static void sendPasswordEmail(String id, String username, String pass, 
 				String email, String contact) throws Exception {
 		String from = FROM_INFO;
@@ -762,65 +676,6 @@ public class EmailBean extends DataBean{
 		cBean.writeToDB();
 	}//sendDesktopClosedSurveyEmail
 
-	public static Email startContractorEmail(String conID, String propertyName) throws Exception {
-		Email email = new Email();
-		email.setFromAddress(FROM_INFO);
-		
-		email.setToAddress(email.getAccount(conID).email);
-		email.addTokens("aBean.name", email.getAccount().name);
-		email.addTokens("aBean.contact", email.getAccount().contact);
-		email.useDefaultFooter();
-		email.setEmailTypeProperty(propertyName);
-		
-		return email;
-	}
-	
-	public static void sendAnnualUpdateEmail(String conID, String adminName) throws Exception {
-		Email email = startContractorEmail(conID, "annual_update");
-		email.setCcAddress(email.getContractor(conID).secondEmail);
-		
-		sendEmail(email);
-
-		email.getContractor().addNote(conID, "("+adminName+")", "Annual update email sent to: "+email.getToAddress(), DateBean.getTodaysDateTime());
-		email.getContractor().lastAnnualUpdateEmailDate=DateBean.getTodaysDate();
-		email.getContractor().annualUpdateEmails++;
-		email.getContractor().writeToDB();
-	}
-	
-	public static void sendDesktopSubmittedEmail(String conID, String adminName) throws Exception {
-		Email email = startContractorEmail(conID, "desktopsubmit");
-		email.setCcAddress(email.getContractor(conID).getAuditorsEmail());
-		
-		sendEmail(email);
-		
-		email.getContractor().addNote(conID, "("+adminName+")", "Desktop submitted email sent to: "+email.getToAddress(), DateBean.getTodaysDateTime());
-		email.getContractor().writeToDB();
-	}
-
-	public static void sendDaSubmittedEmail(String conID, String adminName) throws Exception {
-		Email email = startContractorEmail(conID, "dasubmit");
-		email.setCcAddress(email.getContractor(conID).getAuditorsEmail());
-		
-		sendEmail(email);
-		
-		email.getContractor().addNote(conID, "("+adminName+")", "D&A submitted email sent to: "+email.getToAddress(), DateBean.getTodaysDateTime());
-		email.getContractor().writeToDB();
-	}
-	
-	public static void sendContractorAddedEmail(String conID, String opName, String userName) throws Exception {
-		Email email = startContractorEmail(conID, null);
-		email.setCcAddress(email.getContractor(conID).secondEmail);
-		
-		email.addTokens("username", userName);
-		email.addTokens("opName", opName);
-		email.setEmailTypeProperty("contractoradded");
-		
-		sendEmail(email);
-		
-		email.getContractor().addNote(conID, "", userName+" from "+opName+" added "+email.getAccount().name+" to db, email sent to: "+email.getToAddress(), DateBean.getTodaysDateTime());
-		email.getContractor().writeToDB();
-	}
-
 	public static void sendUpdateDynamicPQFEmail(String conID) throws Exception {
 		AccountBean aBean = new AccountBean();
 		aBean.setFromDB(conID);
@@ -962,20 +817,20 @@ public class EmailBean extends DataBean{
 		sendEmail(from, to, cc, subject, message.toString());
 	}//sendConfirmationEmail
 	
-	public void sendNewUserEmail(HttpServletRequest request, String accountID, String name,
-				String username, String pass, String email) throws Exception {
+	public void sendNewUserEmail(HttpServletRequest request, 
+			com.picsauditing.access.User user, Permissions permissions) throws Exception {
 		String from = FROM_INFO;
-		String to = email;
+		String to = user.userDO.email;
 		String cc = "";
 		String subject = "New PICS User Account Created";
 		AccountBean aBean = new AccountBean();
-		aBean.setFromDB(accountID);
-		String message = "Hi "+name+","+endl+endl+
-			"At the request of "+aBean.contact+", you have been issued login info for "+
-			"the "+aBean.name+" account with PICS."+endl+endl+
-			"Your username: '"+username+"'"+endl+
-			"Your password: '"+pass+"'"+endl+endl+
-			"Attached is a training manual in case you have any questions."+endl+endl+
+		aBean.setFromDB(user.userDO.accountID);
+		String message = "Hi "+user.userDO.name+","+endl+endl+
+			permissions.getName()+ " has issued you a login for "+
+			"the "+aBean.name+" account on PICS."+endl+endl+
+			"Your username: '"+user.userDO.username+"'"+endl+
+			"Your password: '"+user.userDO.password+"'"+endl+endl+
+			"Attached is a User's Manual in case you have any questions."+endl+endl+
 			"Have a great week,"+endl+
 			"PICS Customer Service"+endl+endl+
 			EMAIL_FOOTER;
@@ -989,7 +844,7 @@ public class EmailBean extends DataBean{
 			sendAttachment(from, to, cc, subject, message, path, fileName);
 		else
 			sendEmail(from, to, subject, message);			
-	}//sendWelcomeEmail
+	}
 	
 	public static void sendErrorMessage(String errorMessage) throws Exception {
 		sendEmail("errors@picsauditing.com", "errors@picsauditing.com", "PICS Exception Error", errorMessage);

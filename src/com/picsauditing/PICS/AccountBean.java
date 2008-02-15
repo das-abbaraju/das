@@ -12,6 +12,11 @@ import java.util.Map;
 import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.mail.EmailTemplates;
+import com.picsauditing.mail.EmailUserBean;
+import com.picsauditing.mail.EmailContractorBean;
+import com.picsauditing.access.Permissions;
+
 public class AccountBean extends DataBean {
 	protected static final String ADMIN_ID = "-1";
 	public static final String ALL_ACCESS = "-1";
@@ -634,12 +639,14 @@ public class AccountBean extends DataBean {
 			errorMessages.addElement("Please enter a valid email address.");
 			return false;
 		}//if
-		String selectQuery = "SELECT * FROM accounts WHERE email='"+email+"' LIMIT 2";
-		try{
+		String selectQuery = "SELECT id FROM accounts WHERE email='"+email+"' and type='Contractor' LIMIT 2";
+		try {
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
 			if (!SQLResult.next()) {
-				selectQuery = "SELECT * FROM users LEFT OUTER JOIN permissions ON users.id=permissions.user_id WHERE email='"+email+"';";
+				// Send an email to the user
+				//selectQuery = "SELECT * FROM users LEFT OUTER JOIN permissions ON users.id=permissions.user_id WHERE email='"+email+"';";
+				selectQuery = "SELECT * FROM users WHERE email='"+email+"' LIMIT 2";
 				SQLResult = SQLStatement.executeQuery(selectQuery);
 				if (!SQLResult.next()) {
 					errorMessages.addElement("No account in our records has that email address.  Please verify it is " +
@@ -651,14 +658,16 @@ public class AccountBean extends DataBean {
 				UserBean uBean = new UserBean();
 				uBean.setFromResultSet(SQLResult);
 				com.picsauditing.PICS.EmailBean.sendPasswordEmail(uBean.accountID,uBean.username,uBean.password,uBean.email,uBean.name);
-			}else{
-				setFromResultSet(SQLResult);
-				com.picsauditing.PICS.EmailBean.sendPasswordEmail(id,username,password,email,contact);
-			}//else
-			errorMessages.addElement("An email has been sent to this address: <b>" + email + "</b> with your " +
-			"PICS account login information");
+			} else {
+				// Send an email to the contractor
+				String accountID = SQLResult.getString("id");
+				EmailContractorBean mailer = new EmailContractorBean();
+				mailer.sendMessage(EmailTemplates.password, accountID, new Permissions());
+			}
 			SQLResult.close();
 			DBClose();
+			errorMessages.addElement("An email has been sent to this address: <b>" + email + "</b> with your " +
+			"PICS account login information");
 			return true;
 		}finally{
 			DBClose();

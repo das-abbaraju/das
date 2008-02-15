@@ -13,7 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FilenameUtils;
 
+import com.picsauditing.mail.EmailContractorBean;
+import com.picsauditing.mail.EmailTemplates;
 import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.User;
 
@@ -1279,13 +1282,6 @@ public class ContractorBean extends DataBean {
 		}//finally
 	}//writeGeneralContractorsToDB
 
-	public void writeWelcomeEmailDateToDB(String conID, String adminName) throws Exception {
-		setFromDB(conID);
-		welcomeEmailDate = DateBean.getTodaysDate();
-		addNote(conID, "("+adminName+")", "Welcome email sent", DateBean.getTodaysDateTime());
-		writeToDB();
-	}//writeWelcomeEmailDateToDB
-
 	public void writeAuditEmailDateToDB(String conID, String adminName) throws Exception {
 		setFromDB(conID);
 		lastAuditEmailDate = DateBean.getTodaysDate();
@@ -1310,8 +1306,8 @@ public class ContractorBean extends DataBean {
 			return email;
 		}finally{
 			DBClose();
-		}//finally
-	}//getAuditorsEmail 	
+		}
+	}
 	
 	public void addNote(String conID, String pre, String newNote, String notesDate) throws Exception {
 		notes = notesDate+" "+pre+": "+newNote+"\n"+notes;
@@ -1323,7 +1319,7 @@ public class ContractorBean extends DataBean {
 		isAdminNotesChanged = true;
 	}//addAdminNote
 	
-	public void submitPQF(String conID, String adminName, String auditType) throws Exception {
+	public void submitPQF(String conID, Permissions permissions, String auditType) throws Exception {
 		setFromDB(conID);
 		if (auditType.equals(com.picsauditing.PICS.pqf.Constants.PQF_TYPE)) {
 			canEditPrequal = "No";
@@ -1336,13 +1332,17 @@ public class ContractorBean extends DataBean {
 			officeSubmittedDate = DateBean.getTodaysDate();
 			isNewOfficeAudit = "Yes";
 		}//elseif
-		addNote(conID, "("+adminName+")",auditType+" submitted", DateBean.getTodaysDateTime());
+		addNote(conID, "("+permissions.getName()+")",auditType+" submitted", DateBean.getTodaysDateTime());
 		writeToDB();
+		
+		// Send email too
+		EmailContractorBean emailer = new EmailContractorBean();
 		if (auditType.equals(com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE))
-			EmailBean.sendDesktopSubmittedEmail(conID, adminName);
+			emailer.sendMessage(EmailTemplates.desktopsubmit, conID, permissions);
 		else if (auditType.equals(com.picsauditing.PICS.pqf.Constants.DA_TYPE))
-			EmailBean.sendDaSubmittedEmail(conID, adminName);
+			emailer.sendMessage(EmailTemplates.dasubmit, conID, permissions);
 		else if (auditType.equals(com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE))
+			//emailer.sendMessage(EmailTemplates.desktopsubmit, conID, permissions);
 			EmailBean.sendAuditSurveyEmail(conID);
 	}//submitPQF
 
@@ -1635,6 +1635,8 @@ public class ContractorBean extends DataBean {
 		throw new NoRightsException("Contractor");
 	}
 	public boolean canView(Permissions permissions) {
+		if (permissions.hasPermission(OpPerms.AllContractors)) return true;
+		
 		if (permissions.isAdmin()) return true;
 		if (permissions.isContractor()) {
 			return permissions.getAccountIdString().equals(this.id);
@@ -1642,6 +1644,9 @@ public class ContractorBean extends DataBean {
 		if (permissions.isOperator()) {
 			return true;
 			//return generalContractors.contains(permissions.getAccountIdString());
+		}
+		if (permissions.isCorporate()) {
+			return true;
 		}
 		
 		// The auditors can see this Contractor

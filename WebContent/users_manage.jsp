@@ -82,6 +82,10 @@ function deletePermission(accessType) {
 	var pars = '&action=deletePermission&accessType=' + accessType;
 	getPage(pars);
 }
+function sendWelcomeEmail() {
+	var pars = '&action=sendWelcomeEmail';
+	getPage(pars);
+}
 
 function saveGroup(action, groupID, childID) {
 	pars = '&action='+action+'&groupID='+groupID;

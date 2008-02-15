@@ -14,7 +14,7 @@ public class AppPropertiesBeanTest extends TestCase {
 		super.setUp();
 		
 		props = new AppPropertiesBean();
-		props.setConnection(DefaultDatabase.getConnection());
+		props.setConn(DefaultDatabase.getConnection());
 	}
 
 	protected void tearDown() throws Exception {
@@ -24,11 +24,6 @@ public class AppPropertiesBeanTest extends TestCase {
 
 	public void testDesktopSubmitEmail() {
 		try {
-			props.addToken("contact_name", "Trevor Allred");
-			props.addToken("account_name", "Allred Crane");
-			props.addToken("email", "${main_email}");
-			props.addToken("fax", "${main_fax}");
-			props.addToken("ext", "");
 			String body = props.get("email_desktopsubmit_body");
 			
 			assertFalse(body.contains("${"));

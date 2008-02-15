@@ -24,8 +24,10 @@ public enum OpPerms {
 	InsuranceVerification("Insurance Certificate Verification"),
 	NCMS("NCMS Administration"),
 	SwitchUser("Switch to User"),
+	EmailTemplates("Email Templates"),
 	ManageOperators("Manage Operator Accounts"),
 	ManageCorporate("Manage Corporate Accounts"),
+	AllContractors("All Contractors"), // Can view/edit/delete all contractors in the database
 	ManageAudits("Manage Audits and Matrices");
 
 	private String description;

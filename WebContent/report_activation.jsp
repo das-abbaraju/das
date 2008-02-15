@@ -1,6 +1,7 @@
 <%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
 <%@include file="utilities/admin_secure.jsp" %>
+<%@page import="com.picsauditing.mail.*"%>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <%	try{
 	new Billing().updateAllPayingFacilities(FACILITIES, application);
@@ -12,12 +13,16 @@
 	if (null==sBean.orderBy)
 		sBean.orderBy = "dateCreated DESC";
 	if ("Send".equals(action)) {
-		sBean.aBean.setFromDB(actionID);
-		EmailBean eBean = new com.picsauditing.PICS.EmailBean();
-		EmailBean.init(config);
-		eBean.sendWelcomeEmail(sBean.aBean, permissions.getUsername());
-		message += "A welcome email was sent to <b>" + sBean.aBean.name + "</b>";
-	}//if
+		EmailContractorBean emailer = new EmailContractorBean();
+		/*
+		if (email_welcome_attachfile)
+			String fileName = "attachments/welcome.doc";
+		*/
+		emailer.sendMessage(EmailTemplates.welcome, actionID, permissions);
+		message += "A welcome email was sent to "+emailer.getSentTo();
+		emailer.getContractorBean().welcomeEmailDate = DateBean.getTodaysDate();
+		emailer.getContractorBean().writeToDB();
+	}
 	if ("Called".equals(action)) {
 		ContractorBean cBean = new ContractorBean();
 		cBean.setFromDB(actionID);
@@ -70,6 +75,7 @@
 	sBean.setIsActivationReport();
 	sBean.doSearch(request, SearchBean.ACTIVE_AND_NOT, 100, pBean, pBean.userID);
 %>
+<%@page import="com.picsauditing.mail.EmailContractorBean"%>
 <html>
 <head>
 <title>PICS - Pacific Industrial Contractor Screening</title>
