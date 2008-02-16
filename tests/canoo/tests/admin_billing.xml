@@ -4,7 +4,7 @@
 <project name="PICS" default="test">
 	<property name="login.username" value="gjepsen" />
 	<target name="test">
-		<webtest name="Admin">
+		<webtest name="Admin Billing">
 			&config;
 			<steps>
 				&login;
