@@ -76,7 +76,7 @@ public class EmailContractorBean extends EmailBean {
 			ccAddress = cBean.getAuditorsEmail();
 		
 		this.sendMail();
-		this.addNote(emailType.toString() + " email sent to: "+ this.getSentTo());
+		this.addNote(emailType.getDescription() + " email sent to: "+ this.getSentTo());
 	}
 
 	/**

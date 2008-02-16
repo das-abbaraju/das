@@ -447,12 +447,8 @@ public class AccountBean extends DataBean {
 				canEditPrequal = SQLResult.getString("canEditPrequal");
 			}//if
 			SQLResult.close();
-			
-			// Done in login.jsp now
-			//canSeeSet = this.canSeeSet();
-			// Moved Auditor canSee stuff to PermissionsBean Trevor 1/16/2008
-			
-			// REMOVE THIS CODE AFTER InsureGuard rewrite
+
+			// TODO REMOVE THIS CODE AFTER InsureGuard rewrite
 			// Set hasCertSet
 			hasCertSet = new HashSet<String>();
 			selectQuery = "SELECT contractor_id FROM certificates WHERE operator_id="+id+";";

@@ -35,8 +35,8 @@ public class EmailUserBean extends EmailBean {
 	 * @param perms
 	 * @throws Exception
 	 */
-	public void sendMessage(EmailTemplates emailType, String accountID, Permissions perms) throws Exception {
-		this.setData(accountID, perms);
+	public void sendMessage(EmailTemplates emailType, String userID, Permissions perms) throws Exception {
+		this.setData(userID, perms);
 		this.setMerge(emailType);
 		this.sendMail();
 	}

@@ -59,7 +59,9 @@ public class EmailMerge {
 	
 	private String replaceTokens(String text) {
 		for(String key : this.tokens.keySet()) {
-			text = text.replace("${"+key+"}", this.tokens.get(key));
+			String value = this.tokens.get(key);
+			value = (value==null) ? "" : value;
+			text = text.replace("${"+key+"}", value);
 		}
 		return text;
 	}
