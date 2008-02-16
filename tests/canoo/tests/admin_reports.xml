@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<property name="login.username" value="tallred" />
+	<target name="test">
+		<webtest name="Admin">
+			&config;
+			<steps>
+				&login;
+				&body_verify;
+				
+				<storeProperty name="report_link" value="Contractor Assignments" />
+				&click_report;
+				<storeProperty name="report_link" value="Contractor Contact Info" />
+				&click_report;
+				<storeProperty name="report_link" value="EMR Rates Report" />
+				&click_report;
+				<storeProperty name="report_link" value="Fatalities Report" />
+				&click_report;
+				<storeProperty name="report_link" value="Incidence Rates Report" />
+				&click_report;
+			</steps>
+		</webtest>
+	</target>
+</project>

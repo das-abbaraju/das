@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<property name="login.username" value="gjepsen" />
+	<target name="test">
+		<webtest name="Admin">
+			&config;
+			<steps>
+				&login;
+				&body_verify;
+				
+				<storeProperty name="report_link" value="Activation Report" />
+				&click_report;
+				<storeProperty name="report_link" value="Payment Report" />
+				&click_report;
+				<storeProperty name="report_link" value="Upgrade Payment Report" />
+				&click_report;
+			</steps>
+		</webtest>
+	</target>
+</project>

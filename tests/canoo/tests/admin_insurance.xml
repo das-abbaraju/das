@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<property name="login.username" value="eorozco" />
+	<target name="test">
+		<webtest name="Admin">
+			&config;
+			<steps>
+				&login;
+				
+				<storeProperty name="report_link" value="Expired Insurance Certificates" />
+				&click_report;
+				<storeProperty name="report_link" value="Insurance Certificates" />
+				&click_report;
+			</steps>
+		</webtest>
+	</target>
+</project>

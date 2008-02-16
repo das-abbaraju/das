@@ -9,48 +9,18 @@
 			<steps>
 				&login;
 				&body_verify;
-				
-				<storeProperty name="report_link" value="Activation Report" />
+				<storeProperty name="report_link" value="Manage Corporate Accounts" />
 				&click_report;
+				<storeProperty name="report_link" value="Manage Operators" />
+				&click_report;
+				<storeProperty name="report_link" value="Manage Users" />
+				&click_report;
+				<storeProperty name="report_link" value="Email Templates" />
+				&click_report;
+				
 				<storeProperty name="report_link" value="Annual Update Report" />
 				&click_report;
-				<storeProperty name="report_link" value="Audit Dates Report" />
-				&click_report;
-				<storeProperty name="report_link" value="Contractor Assignments" />
-				&click_report;
-				<storeProperty name="report_link" value="Contractor Contact Info" />
-				&click_report;
-				<storeProperty name="report_link" value="EMR Rates Report" />
-				&click_report;
-				<storeProperty name="report_link" value="Expired Audits Report" />
-				&click_report;
-				<storeProperty name="report_link" value="Expired Insurance Certificates" />
-				&click_report;
-				<storeProperty name="report_link" value="Fatalities Report" />
-				&click_report;
-				<storeProperty name="report_link" value="Incidence Rates Report" />
-				&click_report;
-				<storeProperty name="report_link" value="Incomplete Audits Report" />
-				&click_report;
-				<storeProperty name="report_link" value="Insurance Certificates" />
-				&click_report;
-				<storeProperty name="report_link" value="NCMS Data Report" />
-				&click_report;
-				<storeProperty name="report_link" value="Office Audit Calendar" />
-				&click_report;
-				<storeProperty name="report_link" value="Payment Report" />
-				&click_report;
 				<storeProperty name="report_link" value="Red Flag Criteria" />
-				&click_report;
-				<storeProperty name="report_link" value="Reschedule Audits" />
-				&click_report;
-				<storeProperty name="report_link" value="Schedule Drug &amp; Alcohol Audits" />
-				&click_report;
-				<storeProperty name="report_link" value="Schedule Desktop Audits" />
-				&click_report;
-				<storeProperty name="report_link" value="Schedule Office Audits" />
-				&click_report;
-				<storeProperty name="report_link" value="Upgrade Payment Report" />
 				&click_report;
 				<storeProperty name="report_link" value="Administration Dashboard" />
 				&click_report;
