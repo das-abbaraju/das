@@ -18,14 +18,10 @@ import com.picsauditing.mail.EmailContractorBean;
 import com.picsauditing.access.Permissions;
 
 public class AccountBean extends DataBean {
-	protected static final String ADMIN_ID = "-1";
-	public static final String ALL_ACCESS = "-1";
 	public static final String CREATED_BY_PICS = "PICS"; // Must match createdBy ENUM in DB table
 	public static final String CREATED_BY_INTERNET = "Internet"; // Must match createdBy ENUM in DB table
 	private static final int PASSWORD_DURATION = 365; // days between required password update
 	public static final int MIN_PASSWORD_LENGTH = 5; // minimum required length of a passord
-	private static final boolean INCLUDE_PICS = true;
-	private static final boolean DONT_INCLUDE_PICS = false;
 	static final String[] INDUSTRY_ARRAY = {"Petrochemical","Mining","Power","General",
 											"Construction","Manufacturing"};
 	OperatorBean o = null;
@@ -72,11 +68,6 @@ public class AccountBean extends DataBean {
 			o = new OperatorBean();
 	}//setOBean
 
-//	jj 6-12-06
-//	public String getAccessID() {
-//		if ("Y".equals(seesAll))	return ALL_ACCESS;
-//		else	return id;
-//	}//getAccessID
 	public boolean isActive() {
 		if ((active != null) && ("N".equals(active)))
 			return false;
@@ -530,11 +521,11 @@ public class AccountBean extends DataBean {
 	}//getAuditorContractors
 
 	public String getOperatorSelect(String name, String classType, String selectedOperator) throws Exception {
-		return Utilities.inputSelect(name, classType, selectedOperator, getActiveOperatorsArray(DONT_INCLUDE_PICS));
-	}//getOperatorSelect
+		return Utilities.inputSelect(name, classType, selectedOperator, getActiveOperatorsArray(OperatorBean.DONT_INCLUDE_PICS));
+	}
 
 	public String getGeneralSelect(String name, String classType, String selectedOperator) throws Exception {
-		return Utilities.inputSelect(name, classType, selectedOperator, getActiveGeneralsArray(DONT_INCLUDE_PICS));
+		return Utilities.inputSelect(name, classType, selectedOperator, getActiveGeneralsArray(OperatorBean.DONT_INCLUDE_PICS));
 	}//getGeneralSelect
 
 	public void deleteAccount(String deleteID, String path) throws Exception {
@@ -764,10 +755,6 @@ public class AccountBean extends DataBean {
 		return false;
 	}//mustSubmitPQF
 
-	public static boolean isAdminID(String s) {
-		return (ADMIN_ID.equals(s));
-	}//isAdminID
-	
 	// 1/15/05 jj - defrags tables
 	public void optimizeDB() throws Exception{
 		String optimizeQuery = "OPTIMIZE TABLE OSHA,accounts,adminValues,auditCategories,auditData,auditQuestions,certificates,contractor_info,"+

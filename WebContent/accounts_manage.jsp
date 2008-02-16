@@ -28,7 +28,7 @@
 	sBean.orderBy = "name";
 	sBean.searchType = request.getParameter("type");
 	
-	sBean.doSearch(request, sBean.ACTIVE_AND_NOT, 100, pBean, sBean.ADMIN_ID);
+	sBean.doSearch(request, SearchBean.ACTIVE_AND_NOT, 100, pBean, "-1");
 	
 %>
 <html>

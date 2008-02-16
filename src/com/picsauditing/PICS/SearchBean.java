@@ -136,7 +136,6 @@ import com.picsauditing.domain.IPicsDO;
 	public static final boolean SHOW_ALL = true;
 	public static final boolean DONT_SHOW_ALL = false;
 	public boolean showAll = false;
-	public static final String ADMIN_ID = AccountBean.ADMIN_ID;
 	static final String[] INDUSTRY_SEARCH_ARRAY = {DEFAULT_INDUSTRY,"Petrochemical","Mining","Power","General",
 											"Construction","Manufacturing"};		
 	static final String[] ZIP_SEARCH_ARRAY = {DEFAULT_ZIP,"9","8","7","6","5","4","3","2","1","0"};		

@@ -31,7 +31,6 @@ import com.picsauditing.servlet.upload.UploadProcessorFactory;
 public class CertificateBean extends DataBean {
 	public static final boolean DO_SET_NAME= true;
 	public static final boolean DONT_SET_NAME= false;
-	public static final String ADMIN_ID = "-1";
 	public static final int MIN_NAME_SEARCH_LENGTH = 3;
 	public static final String DEFAULT_NAME = "- Name - ";
 	public static final String DEFAULT_STATUS = "Neither";
