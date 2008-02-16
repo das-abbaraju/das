@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +23,8 @@ import org.apache.commons.io.FilenameUtils;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.domain.CertificateDO;
+import com.picsauditing.mail.EmailContractorBean;
+import com.picsauditing.mail.EmailTemplates;
 import com.picsauditing.servlet.upload.UploadConHelper;
 import com.picsauditing.servlet.upload.UploadProcessorFactory;
 
@@ -493,34 +496,36 @@ public class CertificateBean extends DataBean {
 		while (e.hasMoreElements()) {
 			String temp = (String)e.nextElement();
 			if (temp.startsWith("sendEmail_")) {
-				String cID = temp.substring(10);
-				sendReminderEmail(cID, permission.getUsername());
+				String certificate_id = temp.substring(10);
+				String selectQuery = "SELECT certificates.*, accounts.id FROM certificates, accounts " +
+					"WHERE cert_id = '"+certificate_id+"' AND certificates.contractor_id = accounts.id ";
+				try{
+					DBReady();
+					ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
+					if (SQLResult.next()) {
+						setFromResultSet(SQLResult);
+						
+						String accountID = SQLResult.getString("contractor_id");
+						EmailContractorBean mailer = new EmailContractorBean();
+						HashMap<String, String> tokens = new HashMap<String, String>();
+						tokens.put("opName", operator);
+						tokens.put("expiration_date", getExpDateShow());
+						tokens.put("certificate_type", type);
+						mailer.sendMessage(EmailTemplates.certificate_expire, accountID, permission, tokens);
+						
+						String updateQuery = "UPDATE certificates SET sent = (sent+1), lastSentDate = NOW() WHERE cert_id = '" + certificate_id + "'";
+						SQLStatement.executeUpdate(updateQuery);
+						SQLResult.close();
+					} else {
+						SQLResult.close();
+						throw new Exception("No certificate with ID: " + certificate_id);
+					}
+				}finally{
+					DBClose();
+				}
 			}
 		}
 	}//processEmailForm
-
-	public void sendReminderEmail(String certificate_id, String adminName) throws Exception {
-		String selectQuery = "SELECT certificates.*,accounts.id,accounts.email,accounts.contact FROM certificates, accounts " +
-						"WHERE cert_id = '"+certificate_id+"' AND certificates.contractor_id = accounts.id;";
-		try{
-			DBReady();
-			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			if (SQLResult.next()) {
-				setFromResultSet(SQLResult);
-				String email = SQLResult.getString("email");
-				String contact = SQLResult.getString("contact");
-				EmailBean.sendCertificateExpireEmail(contractor_id,email,contact,type,getExpDateShow(),operator, adminName);
-				String updateQuery = "UPDATE certificates SET sent = (sent+1), lastSentDate = NOW() WHERE cert_id = '" + certificate_id + "';";
-				SQLStatement.executeUpdate(updateQuery);
-				SQLResult.close();
-			}else {
-				SQLResult.close();
-				throw new Exception("No certificate with ID: " + certificate_id);
-			}
-		}finally{
-			DBClose();
-		}
-	}//sendReminderEmail
 
 	public void makeExpiredCertificatesInactive() throws Exception {
 //		These multitable updates would to this, but we have MySQL 3.28, and this isn't supported until  4.08

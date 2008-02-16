@@ -14,7 +14,7 @@ public class EmailBeanTest extends TestCase {
 			aBean.setFromDB(accountID);
 			EmailBean emailer = new EmailBean();
 			emailer.setConn(DefaultDatabase.getConnection());
-			emailer.sendWelcomeEmail(aBean, "junit Tester");
+			//emailer.sendWelcomeEmail(aBean, "junit Tester");
 		} catch (Exception e) {
 			fail("Exception thrown: "+e.getMessage());
 		}

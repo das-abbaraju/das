@@ -638,26 +638,25 @@ public class AccountBean extends DataBean {
 		if (!Utilities.isValidEmail(email)) {
 			errorMessages.addElement("Please enter a valid email address.");
 			return false;
-		}//if
-		String selectQuery = "SELECT id FROM accounts WHERE email='"+email+"' and type='Contractor' LIMIT 2";
+		}
 		try {
 			DBReady();
+			String selectQuery = "SELECT id FROM accounts WHERE email='"+email+"' and type='Contractor' LIMIT 2";
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
 			if (!SQLResult.next()) {
-				// Send an email to the user
-				//selectQuery = "SELECT * FROM users LEFT OUTER JOIN permissions ON users.id=permissions.user_id WHERE email='"+email+"';";
-				selectQuery = "SELECT * FROM users WHERE email='"+email+"' LIMIT 2";
+				selectQuery = "SELECT id FROM users WHERE email='"+email+"' LIMIT 2";
 				SQLResult = SQLStatement.executeQuery(selectQuery);
 				if (!SQLResult.next()) {
 					errorMessages.addElement("No account in our records has that email address.  Please verify it is " +
 					"the one you used when creating your PICS company profile.");
 					SQLResult.close();
 					DBClose();
-					return false;		
-				}//if
-				UserBean uBean = new UserBean();
-				uBean.setFromResultSet(SQLResult);
-				com.picsauditing.PICS.EmailBean.sendPasswordEmail(uBean.accountID,uBean.username,uBean.password,uBean.email,uBean.name);
+					return false;
+				}
+				// Send an email to the user
+				String userID = SQLResult.getString("id");
+				EmailUserBean mailer = new EmailUserBean();
+				mailer.sendMessage(EmailTemplates.password, userID, new Permissions());
 			} else {
 				// Send an email to the contractor
 				String accountID = SQLResult.getString("id");
@@ -671,12 +670,12 @@ public class AccountBean extends DataBean {
 			return true;
 		}finally{
 			DBClose();
-		}//finally
-	}//sendPasswordEmail
+		}
+	}
 
 	public static String getIndustrySelect(String name, String classType, String selectedIndustry) throws Exception {
 		return Utilities.inputSelect(name, classType, selectedIndustry, INDUSTRY_ARRAY);
-	}//getIndustrySelect
+	}
 
 	public String getGeneralSelectMultiple(String name, String classType, String[] selectedContractors) throws Exception {
 		setOBean();

@@ -3,10 +3,12 @@ package com.picsauditing.mail;
 import java.util.HashMap;
 
 import com.picsauditing.PICS.DataBean;
+import com.picsauditing.access.Permissions;
 
 public class EmailBean extends DataBean {
 	protected EmailMerge merge = new EmailMerge();
 	protected Email email = new Email();
+	protected Permissions permissions;
 	protected String toAddress;
 	protected String ccAddress;
 	protected boolean testMode = false;

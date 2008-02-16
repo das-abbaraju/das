@@ -1,13 +1,14 @@
 package com.picsauditing.mail;
 
 public enum EmailTemplates {
+	welcome("Account Activation"),
 	annual_update("Annual Update"),
-	contractoradded("Facility added Contractor"),
+	certificate_expire("Certificate Expired"),
 	dasubmit("D&A Audit Submitted"),
 	desktopsubmit("Desktop Audit Submitted"),
-	newuser("Welcome New User"),
+	contractoradded("Facility added Contractor"),
 	password("Forgot Password"),
-	welcome("Account Activation");
+	newuser("Welcome New User");
 
 	private String description;
 	public String getDescription(){

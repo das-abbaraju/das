@@ -9,6 +9,8 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.RowSetDynaClass;
 
 import com.picsauditing.PICS.*;
+import com.picsauditing.mail.EmailTemplates;
+import com.picsauditing.mail.EmailUserBean;
 
 public class User extends DataBean implements Comparable<User> {
 	private static final int SU_GROUP = 9; // Group that automatically has ALL grant privileges
@@ -222,10 +224,6 @@ public class User extends DataBean implements Comparable<User> {
 		}
 		SQLBuilder sql = new SQLBuilder();
 		sql.setFromTable("users");
-		sql.addField("accountID");
-		sql.addField("name");
-		sql.addField("username");
-		sql.addField("password");
 		sql.addWhere("email='"+email+"'");
 		
 		try {
@@ -237,11 +235,12 @@ public class User extends DataBean implements Comparable<User> {
 				SQLResult.close();
 				DBClose();
 				return false;
-			}//if
+			}
 			
-			EmailBean.sendPasswordEmail(SQLResult.getString("accountID"),SQLResult.getString("username"),SQLResult.getString("password"),email,SQLResult.getString("name"));
-			errorMessages.addElement("An email has been sent to: <b>" + email + "</b> with your " + 
-				"PICS login information");
+			String userID = SQLResult.getString("id");
+			EmailUserBean mailer = new EmailUserBean();
+			mailer.sendMessage(EmailTemplates.password, userID, new Permissions());
+			errorMessages.addElement("An email has been sent to: <b>" + email + "</b> with your PICS login information");
 			SQLResult.close();
 			DBClose();
 			return true;

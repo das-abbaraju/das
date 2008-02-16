@@ -5,19 +5,27 @@
 <%@page import="com.picsauditing.mail.EmailTemplates"%>
 <%@page import="com.picsauditing.mail.EmailContractorBean"%>
 <%@page import="com.picsauditing.mail.EmailUserBean"%>
+<jsp:useBean id="props" class="com.picsauditing.PICS.AppPropertiesBean" scope ="page"/>
 <%
 permissions.tryPermission(OpPerms.EmailTemplates);
 
 EmailTemplates template = null;
-Email emailSample = new Email();
-HashMap<String, String> tokens = new HashMap<String, String>();
 try {
 	template = EmailTemplates.valueOf(request.getParameter("template"));
 } catch (Exception e) {}
 
+if ("save".equals(request.getParameter("action"))) {
+	props.save("email_"+template+"_body", request.getParameter("body"));
+	props.save("email_"+template+"_subject", request.getParameter("subject"));
+}
+
+HashMap<String, String> tokens = new HashMap<String, String>();
+Email emailSample = new Email();
 String accountID = request.getParameter("accountID");
 String userID = request.getParameter("userID");
 String emailBody = "";
+String subjectTemplate = "";
+String bodyTemplate = "";
 
 if (template != null) {
 	if (accountID!=null && accountID.length() > 0) {
@@ -26,10 +34,13 @@ if (template != null) {
 		tokens = mailer.getMerge().getTokens();
 	} else if (userID!=null && userID.length() > 0) {
 		EmailUserBean mailer = new EmailUserBean();
-		//emailSample = mailer.testMessage(template, accountID, permissions);
+		emailSample = mailer.testMessage(template, userID, permissions);
+		tokens = mailer.getMerge().getTokens();
 	}
 	emailBody = emailSample.getBody();
 	//emailBody.replaceAll("r", "<br />");
+	subjectTemplate = props.get("email_"+template+"_subject");
+	bodyTemplate = props.get("email_"+template+"_body");
 }
 
 pageBean.setTitle("Manage Email Templates");
@@ -70,6 +81,16 @@ for(String key : tokens.keySet()) {
 <b>Subject:</b> <%= emailSample.getSubject() %><br />
 <b>Body:</b><br />
 <textarea rows="20" cols="75"><%= emailSample.getBody() %></textarea>
+<br><br>
+<form action="email_templates.jsp" method="post">
+	<input type="hidden" name="action" value="save" />
+	<input type="hidden" name="userID" value="<%=userID %>" />
+	<input type="hidden" name="accountID" value="<%=accountID %>" />
+	<input type="hidden" name="template" value="<%=template %>" />
+	<input type="text" name="subject" size="50" value="<%=subjectTemplate %>" /><br>
+	<textarea name="body" rows="20" cols="75"><%= bodyTemplate %></textarea>
+	<input type="submit" value="Save Template" />
+</form>
 </td>
 </tr>
 </table>

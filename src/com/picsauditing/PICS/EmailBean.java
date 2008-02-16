@@ -16,9 +16,6 @@ import com.picsauditing.access.User;
 import com.picsauditing.domain.CertificateDO;
 
 public class EmailBean extends DataBean{
-	static final boolean IS_TESTING = false;
-	static final String EMAIL_OUT = "c:\\emailOut.txt";
-
 	private static final String EMAIL_ACCOUNT = "info@picsauditing.com";
 	private static final String EMAIL_ACCOUNT_BACKUP2 = "info2@picsauditing.com";
 	private static final String EMAIL_ACCOUNT_BACKUP3 = "info3@picsauditing.com";
@@ -121,10 +118,6 @@ public class EmailBean extends DataBean{
 	}//init
 	
 	private static void sendEmail(String from, String to, String cc, String subject, String text) throws Exception {
-		if (IS_TESTING){
-			writeTestEmail(from,to,cc,subject,text);
-			return;
-		}//if
 		try{
 			Authenticator auth = new SMTPAuthenticator();
 			Session s = Session.getInstance(getProperties(),auth);
@@ -250,12 +243,7 @@ public class EmailBean extends DataBean{
 		sendEmail(from, to, "", subject, text);
 	}//sendEmail
 
-		//added for send activation emails to operators to multiple recipients
 	public static void sendEmails(String from, String to, String cc, String subject, String text) throws Exception {
-		if (IS_TESTING){
-			writeTestEmail(from,to,cc,subject,text);
-			return;
-		}//if
 		Authenticator auth = new SMTPAuthenticator();
 		Session s = Session.getInstance(getProperties(),auth);
 		MimeMessage message = new MimeMessage(s);
@@ -272,14 +260,10 @@ public class EmailBean extends DataBean{
 		Transport transport = s.getTransport("smtp");
 		transport.connect();
 		transport.sendMessage(message, message.getAllRecipients());	
-	}//sendEmail
+	}
 
 	private static void sendAttachment(String from, String to, String cc, String subject, String text, 
 										String path, String fileName) throws Exception {
-		if (IS_TESTING){
-			writeTestEmail(from,to,"","Attach file:"+fileName+endl2+endl+subject,text);
-			return;
-		}//if
 	
 		Authenticator auth = new SMTPAuthenticator();
 		Session s = Session.getInstance(getProperties(),auth);
@@ -308,99 +292,7 @@ public class EmailBean extends DataBean{
 		transport.connect();
 		transport.sendMessage(message, message.getAllRecipients());	
 	}//sendAttachment
-
-	private static void writeTestEmail(String from, String to, String cc, String subject, String text) throws Exception {
-		java.io.BufferedWriter out = new java.io.BufferedWriter(new java.io.FileWriter(EMAIL_OUT,true));
-		if (Utilities.isValidEmail(cc))
-			out.write("Date/Time:"+DateBean.getTodaysDateTime()+endl2+endl+"From: "+from+endl2+endl+"To: "+to+endl+"CC: "+cc+endl+"Subject: "+subject+endl2+endl+"Text: "+text);
-		else
-			out.write("Date/Time:"+DateBean.getTodaysDateTime()+endl2+endl+"From: "+from+endl2+endl+"Subject: "+subject+endl2+endl+"Text: "+text);
-	    out.write(endl2+endl+"*******************************************************"+endl2+endl+endl2+endl);
-		out.close();
-	}//writeTestEmail
 	
-	public static void sendPasswordEmail(String id, String username, String pass, 
-				String email, String contact) throws Exception {
-		String from = FROM_INFO;
-		String to = email;
-		String cc = "";
-		
-		// If contractor has secondEmail, cc them too
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(id);
-		if (null!=cBean.secondEmail)
-		   cc = cBean.secondEmail;
-		
-		AppPropertiesBean props = new AppPropertiesBean();
-		String subject = props.get("email_password_subject");
-		
-		String message = props.get("email_password_body");
-		message = message.replace("${username}", username);
-		message = message.replace("${password}", pass);
-		message = message.replace("${contact}", contact);
-		String footer = props.get("email_footer");
-		footer = footer.replace("${fax}", props.get("main_fax"));
-		footer = footer.replace("${email}", props.get("main_email"));
-		footer = footer.replace("${ext}", "");
-		message = message.replace("${email_footer}", footer);
-
-		sendEmail(from, to, cc, subject, message);
-		
-		// If contractor, add a note to their account
-		cBean.addNote(id, "(PICS)", "Password email reminder sent to "+contact+" ("+email+")", DateBean.getTodaysDateTime());
-		cBean.writeToDB();
-	}//sendPasswordEmail
-
-	public static void sendJohnNewAccountEmail(String name) throws Exception {
-		String from = FROM_INFO;
-		String to = "jcota@picsauditing.com";
-		String cc = "";
-		String subject = "Jesse, are you having trouble satisfying your woman?";
-		String message = "Take advantage of this one time offer.  You'll be amazed at the results. "+
-			"Guaranteed to increase your performance, and her pleasure.  Oh yeah, and "+name+" has created an account online. "+
-			"PICS operators are standing by. Call our ED expert now, at 949-933-9600.  Ask for Jared.";
-		sendEmail(from, to, cc, subject, message);
-	}//sendJohnNewAccountEmail
-
-	public static void sendCertificateExpireEmail(String conID, String email, String contact, String type,
-					String date, String operator, String adminName) throws Exception {
-		String JEFF_POLLOCK_EMAIL_FOOTER =
-			"PICS - Pacific Industrial Contractor Screening"+endl2+endl+
-			"P.O. Box 51387"+endl2+endl+
-			"Irvine CA 92619-1387"+endl2+endl+
-			"(949)387-1940"+endl2+endl+
-		 	"fax: (949)269-9149"+endl2+endl+
-			"eorozco@picsauditing.com (Please add this email address to your address book to prevent it from being labeled as spam)"+endl2+endl+
-			"http://www.picsauditing.com";
-		
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(conID);
-		AccountBean aBean = new AccountBean();
-		aBean.setFromDB(conID);
-		String from = FROM_INFO;
-		String to = email;
-		String cc = "";
-		if (Utilities.isValidEmail(cBean.secondEmail))
-		   cc = cBean.secondEmail;
-		String subject = operator + " insurance certificate about to expire";
-		String message = "Attn: "+contact+" ("+aBean.name+")"+endl+endl+
-			"This is an automatically generated email from "+operator+
-			" to remind you that your company has an insurance "+
-			"certificate that has expired or is about to expire."+endl+endl+
-			"The "+type+" Certificate of Insurance for "+operator+" expires on "+date+". "+
-			"Please mail, email or fax us a new insurance certificate listing "+operator+" as the additional "+ 
-			"insured."+endl+endl+
-			"If we do not receive this certificate prior to the expiration date you will not"+
-			"be permitted to work for us."+endl+endl+
-			"As always we appreciate your services and are here to answer any questions you may "+
-			"have."+endl+endl+operator+" c/o"+JEFF_POLLOCK_EMAIL_FOOTER;
-		sendEmail(from, to, cc, subject, message);
-		cBean.addNote(conID, "("+adminName+")", "Expired "+type+" ("+date+") email sent", DateBean.getTodaysDateTime());
-		cBean.writeToDB();
-	}//sendCertificateExpireEmail
-
-	// 12-7-04 Brittney - Changed text, seperate email for auditor. 
-	// 1/6/04 jj - changed method paramets to be references to account and contractor Beans, added contact phone # and address to email
 	public static void sendAuditEmail(AccountBean aBean, ContractorBean cBean, boolean toAuditor) throws Exception {
 		String con_id = aBean.id;
 		String contact = aBean.contact;
@@ -484,8 +376,6 @@ public class EmailBean extends DataBean{
 	}//sendAuditEmail
 
 	public static void sendConfirmationEmail(String conID, boolean isToAuditor) throws Exception {
-	// 6/27/05 jj - updated sendConfirmationEmail() to write to notes
-	// 1/7/05 jj - updated sendConfirmationEmail() to include audit date and time
 		AccountBean aBean = new AccountBean();
 		ContractorBean cBean = new ContractorBean();
 		aBean.setFromDB(conID);
@@ -509,11 +399,7 @@ public class EmailBean extends DataBean{
 		sendEmail(from, to, cc, subject, message);
 		cBean.addNote(conID, "(PICS)", "Audit email received by "+contact+" for "+companyName, DateBean.getTodaysDateTime());
 		cBean.writeToDB();
-//		to = "msandwall@picsauditing.com";	
-//		sendEmail(from, to, subject, message);
-		//to = "brittney_jensen@hotmail.com";			
-		//sendEmail(from, to, subject, message);
-	}//sendConfirmationEmail
+	}
 
 	public static void sendAuditClosedEmails(String conID, String adminName, String auditType) throws Exception {
 		AccountBean aBean = new AccountBean();
@@ -731,16 +617,12 @@ public class EmailBean extends DataBean{
 		"Have a great day,"+endl+
 		"PICS Customer Service";
 		
-		//System.out.println("From:" + from);
-		//System.out.println("To:" + to);
-		//System.out.println("Subject:" + subject);
-		//System.out.println("Message:" + message);
 		sendEmail(from, to, subject, message);	
 		ContractorBean cBean = new ContractorBean();
 		cBean.setFromDB(conID);
 		cBean.addNote(conID, "("+permissions.getName()+")", certType+" Insurance Certificate rejected by "+operator+" for reason: "+reason, DateBean.getTodaysDateTime());
 		cBean.writeToDB();
-	}//sendCertificateRejectedEmail
+	}
 	
 	public static void sendCertificateAcceptedEmail(CertificateDO certDO, Permissions permissions) throws Exception {
 		AccountBean aBean = new AccountBean();		
@@ -815,7 +697,7 @@ public class EmailBean extends DataBean{
 		message.append(JESSE_EMAIL_FOOTER);
 		
 		sendEmail(from, to, cc, subject, message.toString());
-	}//sendConfirmationEmail
+	}
 	
 	public void sendNewUserEmail(HttpServletRequest request, 
 			com.picsauditing.access.User user, Permissions permissions) throws Exception {
