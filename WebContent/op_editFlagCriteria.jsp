@@ -5,7 +5,7 @@
 try{
 	com.picsauditing.PICS.redFlagReport.FlagCriteria flagCriteria = new com.picsauditing.PICS.redFlagReport.FlagCriteria();
 	boolean isSubmitted = "Save".equals(request.getParameter("action"));
-	boolean canEditFlagCriteria = (pBean.isOperator() || pBean.isCorporate()) && pBean.getPermissions().hasPermission(com.picsauditing.access.OpPerms.EditFlagCriteria);
+	boolean canEditFlagCriteria = (pBean.isOperator() || pBean.isCorporate()) && permissions.hasPermission(com.picsauditing.access.OpPerms.EditFlagCriteria);
 	String flagStatus = request.getParameter("flagStatus");
 	if (null==flagStatus)
 		flagStatus = "Red";

@@ -36,15 +36,12 @@
           <td valign="top"><%@ include file="utilities/rightLowerNav.jsp"%></td>
           <td>&nbsp;</td>
         </tr>
-        <tr> 
-          <td>&nbsp;</td>
-		<td colspan="3" align="center">
-<%@ include file="includes/reportsTable.jsp"%>
-            <br>
-		  <center>
-            </center>
-          </td>
-            <td>&nbsp;</td>
+        <tr>
+	        <td>&nbsp;</td>
+			<td colspan="3" align="center">
+				<%@ include file="includes/reportsTable.jsp"%>
+	        </td>
+	        <td>&nbsp;</td>
         </tr>
       </table>
         <br>

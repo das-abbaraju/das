@@ -210,10 +210,6 @@ public class AccountBean extends DataBean {
 	}//writeAuditorToDB
 
 	public boolean writeNewToDB() throws Exception {
-		if (usernameExists(username)) {
-			errorMessages.addElement("The username <b>"+username+"</b> already exists.  Please choose another username.");
-			return false;
-		}//if
 		String insertQuery = "INSERT INTO accounts (id,type,name,username,password,passwordChange,lastLogin,"+
 			"contact,address,city,state,zip,phone,phone2,fax,email,web_URL,industry,active,createdBy,"+
 			"dateCreated) VALUES (''+0,'"+type+"','"+eqDB(name)+
@@ -340,118 +336,20 @@ public class AccountBean extends DataBean {
 		return id;	
 	}//searchID
 
-	public boolean usernameExists(String u_name) throws Exception {
-		boolean nameExists = false;
+	public int findID(String username) throws SQLException {
+		int id = 0;
 		try {
 			DBReady();
-			String selectQuery = "SELECT id FROM accounts WHERE username='"+eqDB(u_name)+"' "+
-				"UNION "+
-				"SELECT id FROM users WHERE username='"+eqDB(u_name)+"' ";
-			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
+			String sql = "SELECT id FROM accounts WHERE username='"+Utilities.escapeQuotes(username)+"';";
+			ResultSet SQLResult = SQLStatement.executeQuery(sql);
 			if (SQLResult.next())
-				nameExists = true;
+				id = SQLResult.getInt("id");
 			SQLResult.close();
 		}finally{
 			DBClose();
-		}//finally
-		return nameExists;
-	}//usernameExists
-
-	public boolean checkLogin(String lname, String lpass, javax.servlet.http.HttpServletRequest req) throws Exception {
-		try {
-			boolean isUser;
-			String selectQuery = "SELECT accounts.*, users.id AS uID, users.isActive, users.password AS user_password "+
-			"FROM accounts JOIN users ON accounts.id = users.accountID "+
-			"WHERE users.username='"+eqDB(lname)+"' UNION " +
-			"SELECT *, null AS uID, null AS isActive, null AS user_password "+
-			"FROM accounts "+
-			"WHERE username='"+eqDB(lname)+"' AND type = 'Contractor' ";
-
-			DBReady();
-			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			
-			if (!SQLResult.next()) {
-				errorMessages.addElement("No account exists with that username");
-				SQLResult.close();
-				logLoginAttempt(req,lname,lpass,"N");
-				return false;
-			}
-			if (!SQLResult.isLast()) {
-				errorMessages.addElement("We found more than one account with that username.<br>Please contact PICS to fix this problem.");
-				SQLResult.close();
-				logLoginAttempt(req,lname,"*","N");
-				DBClose();
-				return false;
-			}
-			// Is this result a user or an account?
-			isUser = SQLResult.getInt("uID") > 0;
-			boolean canLogin;
-			String password;
-			if (isUser) {
-				canLogin = SQLResult.getString("isActive").startsWith("Y");
-				password = SQLResult.getString("user_password");
-				userID = SQLResult.getString("uID");
-			} else {
-				canLogin = SQLResult.getString("active").startsWith("Y");
-				password = SQLResult.getString("password");
-				this.userID = "";
-			}
-			
-			if (!canLogin) {
-				errorMessages.addElement("That account is currently inactive.<br>Please contact PICS to activate your account.");
-				SQLResult.close();
-				logLoginAttempt(req,lname,"*","N");
-				DBClose();
-				return false;
-			}
-			
-			if (!password.equals(lpass)) {
-				errorMessages.addElement("Invalid password attempt");
-				SQLResult.close();
-				logLoginAttempt(req,lname,lpass,"N");
-				DBClose();
-				return false;
-			}//if not active
-			
-			///////////////////////////////
-			// Login attempt successful  //
-			///////////////////////////////
-			
-			// set the account object and discard results
-			setFromResultSet(SQLResult);
-			SQLResult.close();
-			prevLastLogin = lastLogin;
-			
-			// Update the lastLogin attempt on both accounts and users tables
-			String updateQuery = "UPDATE accounts SET lastLogin=NOW() WHERE id="+id;
-			SQLStatement.executeUpdate(updateQuery);
-			if (isUser) {
-				updateQuery = "UPDATE users SET lastLogin=NOW() WHERE id="+userID;
-				SQLStatement.executeUpdate(updateQuery);
-			}
-			
-			// set these for isFirstLogin(), and mustSubmitPQF()
-			selectQuery = "SELECT accountDate, canEditPrequal FROM contractor_info WHERE id="+id+";";
-			SQLResult = SQLStatement.executeQuery(selectQuery);
-			if (SQLResult.next()){
-				accountDate = DateBean.toShowFormat(SQLResult.getString("accountDate"));
-				canEditPrequal = SQLResult.getString("canEditPrequal");
-			}//if
-			SQLResult.close();
-
-			// TODO REMOVE THIS CODE AFTER InsureGuard rewrite
-			// Set hasCertSet
-			hasCertSet = new HashSet<String>();
-			selectQuery = "SELECT contractor_id FROM certificates WHERE operator_id="+id+";";
-			SQLResult = SQLStatement.executeQuery(selectQuery);
-			while (SQLResult.next())
-				hasCertSet.add(SQLResult.getString("contractor_id"));
-			SQLResult.close();
-		}finally{
-			DBClose();
-		}//finally
-		return true;
-	}//checkLogin
+		}
+		return id;
+	}
 
 	/**
 	 * @deprecated
@@ -476,20 +374,6 @@ public class AccountBean extends DataBean {
 		}
 	}
 	
-	public void logLoginAttempt(javax.servlet.http.HttpServletRequest r, String lname, 
-								String lpass, String success) throws Exception {
-		String remoteAddress = r.getRemoteAddr();
-		String insertQuery = "INSERT INTO loginLog (company,type,username,password,successful,date,remoteAddress," +
-			"id) VALUES ('"+eqDB(name)+"','"+type+"','"+eqDB(lname)+"','"+eqDB(lpass)+"','"+success+"',NOW(),'"+remoteAddress+
-			"',"+Utilities.intToDB(id)+");";
-		try {
-			DBReady();
-			SQLStatement.executeUpdate(insertQuery);
-		}finally{
-			DBClose();
-		}//finally
-	}//logLoginAttempt
-
 	public String[] getActiveOperatorsArray(boolean includePICS) throws Exception {
 		setOBean();
 		return o.getOperatorsArray(includePICS, OperatorBean.DONT_INCLUDE_ID, OperatorBean.DONT_INCLUDE_GENERALS, OperatorBean.ONLY_ACTIVE);
@@ -856,5 +740,17 @@ public class AccountBean extends DataBean {
 	}
 	public boolean isContractor() {
 		return "Contractor".equals(this.type);
+	}
+	public void updateLastLogin() throws SQLException {
+		if (id == null || id.equals("")) return;
+		
+		try {
+			DBReady();
+			String sql = "UPDATE accounts SET lastLogin=NOW() WHERE id="+id;
+			SQLStatement.executeUpdate(sql);
+		} finally {
+			DBClose();
+		}
+		
 	}
 }

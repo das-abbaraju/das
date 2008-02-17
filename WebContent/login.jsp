@@ -1,152 +1,37 @@
 <%//@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@ page language="java" import="com.picsauditing.PICS.*"%>
 <%@page import="com.picsauditing.access.*"%>
-<jsp:useBean id="loginCtrl" class="com.picsauditing.access.LoginController" scope="page"/>
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session"/>
-<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page"/>
-<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page"/>
 <jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session"/>
-<jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope="application"/>
+<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page"/>
 <%
-	// Stuff the session permissions object into the legacy pBean
-	pBean.setPermissions(permissions);
-
 	String lname = "";
 	String lpass = "";
+	String msg= "";
 	
 	// This stuff below is not finished, we need to 
 	// solidify pBean/Accounts/contractor/users/etc before continuing
 	String switchUser = request.getParameter("switchUser");
 	boolean loginByAdmin = false;
 	if (switchUser != null) {
-		User user = new User();
-		if (switchUser.equals("logout")) {
-			user.setFromDB(Integer.toString(permissions.getAdminID()));
-		} else {
-			user.setFromDB(switchUser);
-		}
-		permissions.login(user);
+		LoginController loginCtrl = new LoginController();
+		if (loginCtrl.loginByAdmin(switchUser, request, response))
+			return;
+		else
+			msg = "Failed to login by Admin";
 	}
 	
-	String msg= "";
-	if (loginByAdmin || request.getParameter("Submit.x") != null) {
-		lname = request.getParameter("username");
-		lpass = request.getParameter("password");
-		if (loginByAdmin || aBean.checkLogin(lname, lpass, request)) {
-			pBean.loggedIn = true;
-			
-			if (loginByAdmin) {
-				aBean.setFromDB(permissions.getAccountIdString());
-				pBean.setUserID(permissions.getAccountIdString());
-				pBean.setUserName(permissions.getUsername());
-				pBean.setUserType(permissions.getAccountType());
-			} else {
-				pBean.setUserID(aBean.id);
-				pBean.setUserName(aBean.name);
-				pBean.setUserType(aBean.type);
-			}
-			pBean.setCanSeeSet(aBean.canSeeSet());
-
-			pBean.uBean = new UserBean();
-			if (aBean.type.equals("Contractor")) {
-				pBean.uBean.name = aBean.contact;
-				permissions.login(aBean);
-			} else {
-				// Is a user account
-				pBean.uBean.setFromDB(aBean.userID);
-				pBean.setUserName(pBean.uBean.name);
-				
-				// Start using the new access.User permissions
-				// If the future, this will be replaced by LoginController.login()
-				// Login the current user into the new permissions object
- 				User user = new User();
-				user.setFromDB(aBean.userID);
-				permissions.login(user);
-			}
-			
-			// Redirect users to the previous page they were on
-			Cookie[] cookiesA = request.getCookies();
-			String fromURL = "";
-			for (int i=0;i<cookiesA.length;i++) {
-				if ("from".equals(cookiesA[i].getName())) {
-					fromURL = cookiesA[i].getValue();
-					Cookie fromCookie = new Cookie("from","");
-					response.addCookie(fromCookie);
-				}
-			}
-			
-			if (pBean.isAdmin()) {
-				session.setMaxInactiveInterval(3600);
-				pBean.oBean = new OperatorBean();
-				pBean.oBean.setAsAdmin();
-				// Daily maintenence was moved to cron.jsp
-				if (fromURL.length() > 0) {
-					response.sendRedirect(fromURL);
-					return;
-				}
-				response.sendRedirect("reports.jsp");				
-				return;
-			}
-			if (pBean.isAuditor()){
-				pBean.setAuditorPermissions();
-				session.setMaxInactiveInterval(3600);
-				response.sendRedirect("contractor_list_auditor.jsp");
-				return;
-			}
-			
-			if (pBean.isContractor()){
-				pBean.setAllFacilitiesFromDB(pBean.userID);
-			}
-			
-			if (aBean.isFirstLogin()){
-				cBean.setFromDB(pBean.userID);
-				cBean.accountDate = DateBean.getTodaysDate();
-				cBean.writeToDB();
-				response.sendRedirect("con_selectFacilities.jsp?id="+aBean.id);
-				return;
-			}
-			if(aBean.isFirstLoginOfYear(this.getServletContext().getInitParameter("loginStartDate"))){
-				cBean.setFromDB(pBean.userID);
-				cBean.accountDate = DateBean.getTodaysDate();
-				// shouldn't we writeToDB here? TJA 1/30/08
-				response.sendRedirect("con_selectFacilities.jsp?id="+aBean.id);
-				return;
-			}
-			if (aBean.mustSubmitPQF()) {
-				response.sendRedirect("pqf_editMain.jsp?auditType=PQF&mustFinishPrequal=&id="+aBean.id);
-				return;
-			}
-			if (pBean.isContractor()) {
-				response.sendRedirect("contractor_detail.jsp?id=" + aBean.id);
-				return;
-			}
-			if (pBean.isOperator() || pBean.isCorporate()) {
-//				pBean.setOperatorPermissions(aBean.id);
-				pBean.oBean = new OperatorBean();
-				pBean.oBean.isCorporate = pBean.isCorporate();
-				pBean.oBean.setFromDB(pBean.userID);
-				if (pBean.isCorporate())
-					pBean.setCanSeeSet(pBean.oBean.getFacilitiesCanSeeSet());
-
-				pBean.uBean.name = aBean.contact;
-				if (fromURL.length() > 0) {
-					response.sendRedirect(fromURL);
-					return;
-				}
-				if (permissions.hasPermission(OpPerms.StatusOnly)){
-					response.sendRedirect("contractor_list_limited.jsp");
-					return;
-				}
-				response.sendRedirect("contractor_list.jsp");
-				return;
-			}
-		} //if
-	}//if
+	if (request.getParameter("username") != null) {
+		LoginController loginCtrl = new LoginController();
+		if (loginCtrl.login(request.getParameter("username"), request.getParameter("password"), request, response))
+			return;
+	}
+	
 	String username_email = request.getParameter("uname");
 	if (!"".equals(username_email) && null!=username_email) {
 		aBean.updateEmailConfirmedDate(username_email);
 		msg= "Thank you for confirming your email address. Please login to access the site.";
-	}//if
+	}
 	String temp = request.getParameter("msg");
 	if (null != temp && temp.length()>0)
 		msg = temp;

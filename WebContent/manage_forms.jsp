@@ -86,7 +86,7 @@ if (isSubmitted){
                   <b><%=fBean.getErrorMessages()%></b>
 				</td>
 			  </tr>
-<%	if (pBean.getPermissions().hasPermission(OpPerms.EditForms)){%>
+<%	if (permissions.hasPermission(OpPerms.EditForms)){%>
               <tr> 
                 <td width="50%" align="center" valign="top" bgcolor="#DDDDDD" class="blueMain"> 
                   <form name="form1" method="post" action="manage_forms.jsp?isSubmitted=Yes&action=Add&id=<%=opID%>" enctype="multipart/form-data">

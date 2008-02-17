@@ -62,25 +62,33 @@ public class User extends DataBean implements Comparable<User> {
 		selectFromDB(query);
 	}//setFromDB
 	
-	public boolean usernameExists(String u_name) throws Exception {
-		boolean temp = false;
+	public int findID(String username) throws SQLException {
+		int id = 0;
 		try {
 			DBReady();
-			String selectQuery = "SELECT id FROM accounts WHERE username='"+Utilities.escapeQuotes(u_name)+"';";
-			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
+			String sql = "SELECT id FROM users WHERE username='"+Utilities.escapeQuotes(username)+"';";
+			ResultSet SQLResult = SQLStatement.executeQuery(sql);
 			if (SQLResult.next())
-				temp = true;
-			SQLResult.close();
-			selectQuery = "SELECT id FROM users WHERE username='"+Utilities.escapeQuotes(u_name)+"';";
-			SQLResult = SQLStatement.executeQuery(selectQuery);
-			if (SQLResult.next())
-				temp = true;
+				id = SQLResult.getInt("id");
 			SQLResult.close();
 		}finally{
 			DBClose();
-		}//finally
-		return temp;
-	}//usernameExists
+		}
+		return id;
+	}
+	
+	public boolean usernameExists(String username, int currentID) throws SQLException {
+		int id = this.findID(username);
+		if (id == 0) {
+			AccountBean aBean = new AccountBean();
+			id = aBean.findID(username);
+		}
+		if (id==currentID) return false;
+		return (id==0);
+	}
+	public boolean usernameExists(String username) throws SQLException {
+		return this.usernameExists(username, -1);
+	}
 	
 	private void selectFromDB(String selectQuery) throws Exception{		
 		ResultSet SQLResult = null;

@@ -1,6 +1,6 @@
 <%
 com.picsauditing.access.Menu reportMenu = new com.picsauditing.access.Menu();
-reportMenu.fillPicsMenu(pBean.getPermissions());
+reportMenu.fillPicsMenu(permissions);
 %>
 <table border="0" cellpadding="0" cellspacing="0">
 <tr>
