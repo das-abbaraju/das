@@ -1,9 +1,9 @@
-<% if (pBean.isAdmin()) { %>
+<% if (permissions.isAdmin()) { %>
 <%@ include file="/utilities/adminContractorNav.jsp"%>
-<% } else if (pBean.isAuditor()) { %>
+<% } else if (permissions.isAuditor()) { %>
 <%@ include file="/utilities/auditorContractorNav.jsp"%>
-<% } else if (pBean.isContractor()) { %>
+<% } else if (permissions.isContractor()) { %>
 <%@ include file="/utilities/contractorNav.jsp"%>
-<% } else if (pBean.isOperator() || pBean.isCorporate()) { %>
+<% } else if (permissions.isOperator() || permissions.isCorporate()) { %>
 <%@ include file="/utilities/opContractorNav.jsp"%>
 <% } %>

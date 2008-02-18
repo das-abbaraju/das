@@ -13,7 +13,17 @@
 				<clickButton 
 					htmlId="Submit"
 					description="Click the submit button" />
-				&body_verify;
+				<verifyText description="Attempt login without a username"
+					text="Enter a username" />
+				<setInputField description="set user name"
+					name="username"
+					value="usernamethatdoesnotexist" />
+				<setInputField description="set bad password"
+					name="password"
+					value="BADPASS" />
+				<clickButton 
+					htmlId="Submit"
+					description="Click the submit button" />
 				<verifyText description="No account exists with that username"
 					text="No account exists with that username" />
 				

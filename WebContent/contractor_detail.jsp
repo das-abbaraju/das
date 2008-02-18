@@ -92,35 +92,25 @@ function MM_displayStatusMsg(msgStr) { //v1.0
                       </td>
                       <td width="172" valign="top" class="blueMain">
                         <nobr><span class=redMain>PICS Status:</span>
-<%
-	if (pBean.isAdmin() || pBean.isAuditor() || pBean.isCorporate()
-			|| pBean.isOperator()) {
-%>
+				<% if (!permissions.isContractor()) { %>
 						<span class="<%=cBean.getTextColor(cBean.calcPICSStatus(pBean))%>"><strong><%=cBean.getDetailsStatus(pBean)%></strong></span>
-<%
-	}//if
-	if (pBean.isContractor() || pBean.isAuditor()) {
-%>
+				<% }
+				if (!permissions.isOperator() && !permissions.isCorporate()) { %>
 						<a class="<%=cBean.getTextColor(cBean.calcPICSStatus(pBean))%>" href="con_selectFacilities.jsp?id=<%=id%>">See Facilities</a>
-<%
-	}//if
-	if (pBean.isAdmin() || pBean.isAuditor()
-			|| (!pBean.isContractor() && pBean.canSeeSet.contains(id)))
-		out.println(cBean.getNotesIcon());
-%>
-						</nobr><br>
-<%
-	if ((pBean.isOperator() || pBean.isCorporate())
-			&& pBean.canSeeSet.contains(id)) {
-%>
+				<% }
+				if (!permissions.isContractor() && cBean.canView(permissions, "notes"))
+					out.println(cBean.getNotesIcon());
+				%>
+				</nobr><br>
+				<%
+				if (permissions.isOperator() || permissions.isCorporate()) {
+					%>
 	                    <span class=redMain>Flagged Status:</span>
-                          <a href=con_redFlags.jsp?id=<%=id%>>
-                            <img src=images/icon_<%=flag.getFlagStatus(id,pBean.userID).toLowerCase()%>Flag.gif width=12 height=15 border=0>
-                          </a><br>
-<%
-	}//if
-%>
-						<span class=redMain>Pre-Qualification:</span> <%=cBean.getPQFLink(pBean)%><br>
+                          <a href=con_redFlags.jsp?id=<%=id%>><img 
+                          	src=images/icon_<%=flag.getFlagStatus(id,pBean.userID).toLowerCase()%>Flag.gif width=12 height=15 border=0></a><br>
+					<%
+				} %>
+				<span class=redMain>Pre-Qualification:</span> <%=cBean.getPQFLink(pBean)%><br>
 <%
 	if (!pBean.isContractor() || cBean.isDesktopRequired()) {
 %>

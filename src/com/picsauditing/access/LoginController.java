@@ -1,5 +1,8 @@
 package com.picsauditing.access;
 
+import java.sql.ResultSet;
+import java.util.HashSet;
+
 import javax.servlet.http.*;
 import com.picsauditing.PICS.DataBean;
 import com.picsauditing.PICS.DateBean;
@@ -166,8 +169,7 @@ public class LoginController extends DataBean {
 		pBean.setUserID(permissions.getAccountIdString());
 		pBean.setUserName(permissions.getUsername());
 		pBean.setUserType(permissions.getAccountType());
-		// TODO ADD THE canSeeSet back in
-		//pBean.setCanSeeSet(aBean.canSeeSet());
+		pBean.setCanSeeSet(canSeeSet());
 	}
 		
 	/**
@@ -222,7 +224,7 @@ public class LoginController extends DataBean {
 			response.sendRedirect("contractor_list_limited.jsp");
 			return;
 		}
-		if (pBean.isOperator() || pBean.isCorporate()) {
+		if (permissions.isOperator() || permissions.isCorporate()) {
 			response.sendRedirect("contractor_list.jsp");
 			return;
 		}
@@ -268,4 +270,27 @@ public class LoginController extends DataBean {
 		}
 	}
 
+	/**
+	 * @deprecated
+	 */
+	private HashSet<String> canSeeSet() throws Exception {
+		try {
+			String id = permissions.getAccountIdString();
+			DBReady();
+			HashSet<String> canSeeSet = new HashSet<String>();
+			canSeeSet = new HashSet<String>();
+			if (!isUser)
+				canSeeSet.add(id);
+			String selectQuery = "SELECT subID FROM accounts JOIN generalcontractors ON (id=subID) "+
+				"WHERE active='Y' AND genID="+id;
+			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
+			while (SQLResult.next())
+				canSeeSet.add(SQLResult.getString("subID"));
+			SQLResult.close();
+			
+			return canSeeSet;
+		}finally{
+			DBClose();
+		}
+	}
 }

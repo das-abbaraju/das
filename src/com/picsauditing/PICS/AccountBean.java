@@ -350,29 +350,6 @@ public class AccountBean extends DataBean {
 		}
 		return id;
 	}
-
-	/**
-	 * @deprecated
-	 */
-	public HashSet<String> canSeeSet() throws Exception {
-		try {
-			DBReady();
-			HashSet<String> canSeeSet = new HashSet<String>();
-			canSeeSet = new HashSet<String>();
-			if ("Contractor".equals(type))
-				canSeeSet.add(id);
-			String selectQuery = "SELECT subID FROM accounts INNER JOIN generalcontractors ON (id=subID) "+
-			"WHERE active='Y' AND genID="+id+";";
-			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			while (SQLResult.next())
-				canSeeSet.add(SQLResult.getString("subID"));
-			SQLResult.close();
-			
-			return canSeeSet;
-		}finally{
-			DBClose();
-		}
-	}
 	
 	public String[] getActiveOperatorsArray(boolean includePICS) throws Exception {
 		setOBean();

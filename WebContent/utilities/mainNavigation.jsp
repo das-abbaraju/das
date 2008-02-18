@@ -26,17 +26,17 @@ function MM_swapImage() { //v3.0
 </script>
 <%	String navString = "";
 	String whichPage = "";
-	if (pBean.isAdmin())
+	if (permissions.isAdmin())
 		navString = "accounts_manage,ManageAccounts,manage_forms,ManageFormsTrade,report_audits,Audits,reports,Reports";
-	else if (pBean.isOperator() || pBean.isCorporate()){
+	else if (permissions.isOperator() || permissions.isCorporate()){
 		if (permissions.hasPermission(com.picsauditing.access.OpPerms.StatusOnly))
 			navString = "contractor_list_limited,ContractorList";
 		else
 			navString = "reports,Reports,contractor_list,ContractorList,services,Services,clients,Clients,contact,Contact";
-	} else if (pBean.isContractor()) {
+	} else if (permissions.isContractor()) {
 		navString = "contractor_new_instructions,Register,contractor_detail,Contractors,services,Services,clients,Clients,contact,Contact";
 		whichPage = "Contractors";
-	} else if (pBean.isAuditor()) {
+	} else if (permissions.isAuditor()) {
 		navString = " , ";
 	} else {
 		navString = "contractor_new_instructions,Register,contractor_detail,Contractors,services,Services,clients,Clients,contact,Contact";

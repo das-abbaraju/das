@@ -19,7 +19,7 @@ if (permissions.hasPermission(OpPerms.InsuranceCerts, OpType.Edit)) {
 	<%
 }
 
-if (pBean.isCorporate()) {
+if (permissions.isCorporate()) {
 	%> | <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"con_selectFacilities.jsp",thisPage,id,"",thisQuery,"Add Facilities")%>
 	<%
 }
