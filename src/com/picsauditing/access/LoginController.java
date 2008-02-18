@@ -97,7 +97,7 @@ public class LoginController extends DataBean {
 			aBean = new AccountBean();
 			id = aBean.findID(username);
 			if (id == 0)
-				return username + "is not a valid username";
+				return "No account exists with that username";
 			isUser = false;
 			aBean.setFromDB(id.toString());
 		}
@@ -155,7 +155,8 @@ public class LoginController extends DataBean {
 			this.aBean.updateLastLogin();
 			
 			// Most (if not all) of this below should eventually be phased out
-			pBean.setAllFacilitiesFromDB(pBean.userID);
+			pBean.userID = permissions.getAccountIdString();
+			pBean.setAllFacilitiesFromDB(permissions.getAccountIdString());
 			pBean.uBean = new com.picsauditing.PICS.UserBean();
 			pBean.uBean.name = aBean.contact;
 		}

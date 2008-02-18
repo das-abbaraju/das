@@ -8,8 +8,6 @@
 	cBean.tryView(permissions);
 	
 	aBean.setFromDB(id);
-	if (!pBean.isAuditor())
-		cBean.setShowLinks(pBean);
 	FlagDO flag = new FlagDO();
 %>
 <html>

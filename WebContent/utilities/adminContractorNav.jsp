@@ -10,8 +10,6 @@ if (!thisPage.contains("contractor_detail")){
 	<div class="blueHeader"><%=acctBean.getName(id)%></div>
 	<%
 }
-
-cBean.setShowLinks(pBean);
 %>
 	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_detail.jsp",thisPage,id,"",thisQuery,"Contractor Details")%> |
 	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"accounts_edit_contractor.jsp",thisPage,id,"",thisQuery,"Edit Account Info")%> |

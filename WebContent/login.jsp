@@ -9,22 +9,21 @@
 	String lpass = "";
 	String msg= "";
 	
-	// This stuff below is not finished, we need to 
-	// solidify pBean/Accounts/contractor/users/etc before continuing
 	String switchUser = request.getParameter("switchUser");
-	boolean loginByAdmin = false;
 	if (switchUser != null) {
 		LoginController loginCtrl = new LoginController();
 		if (loginCtrl.loginByAdmin(switchUser, request, response))
 			return;
 		else
-			msg = "Failed to login by Admin";
+			msg = loginCtrl.getErrorMessages();
 	}
 	
 	if (request.getParameter("username") != null) {
 		LoginController loginCtrl = new LoginController();
 		if (loginCtrl.login(request.getParameter("username"), request.getParameter("password"), request, response))
 			return;
+		else
+			msg = loginCtrl.getErrorMessages();
 	}
 	
 	String username_email = request.getParameter("uname");

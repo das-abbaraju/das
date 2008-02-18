@@ -7,7 +7,6 @@
 //	int curYear = com.picsauditing.PICS.DateBean.getCurrentYear();	
 	int curYear = com.picsauditing.PICS.DateBean.getCurrentYear(this.getServletContext().getInitParameter("currentYearStart"));
 	oBean.setListFromDB(cID);
-	oBean.setShowLinks(pBean);
 	int count = 1;
 	while (oBean.hasNext() || 1==count) {
 	String descriptionText = "Recordable";

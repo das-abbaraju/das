@@ -3,6 +3,8 @@ package com.picsauditing.PICS;
 import java.sql.*;
 import java.util.*;
 
+import org.jboss.util.NullArgumentException;
+
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
@@ -39,6 +41,8 @@ public class PermissionsBean extends DataBean {
 	private Permissions permissions = null;
 
 	public void setAllFacilitiesFromDB(String conID) throws Exception {
+		if (conID == null || conID.equals(""))
+			throw new NullArgumentException("oonID must be set when calling setAllFacilitiesFromDB");
 		allFacilitiesAL = new ArrayList<String>();
 	    String selectQuery = "SELECT genID FROM generalContractors WHERE subID="+conID+";";
 		try{
@@ -53,7 +57,7 @@ public class PermissionsBean extends DataBean {
 			while (SQLResult.next())
 				allFacilitiesAL.add(SQLResult.getString("corporateID"));
 			SQLResult.close();
-		}finally{
+		} finally {
 			DBClose();
 		}//finally		
 	}//setAllFacilitiesFromDB

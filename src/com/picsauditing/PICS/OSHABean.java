@@ -439,7 +439,7 @@ public class OSHABean extends DataBean {
 			showLinks = true;
 		if (pBean.isContractor() && pBean.userID.equals(conID))
 			showLinks = true;
-	}//setShowLinks
+	}
 
 	public String getFile1YearAgoLink() {
 		if ("No".equals(file1YearAgo))	return "No";

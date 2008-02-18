@@ -4,7 +4,7 @@ public enum OpPerms {
 	// TODO search the code for each permission type and document what each one is for
 	ViewFullPQF("View Financial Info"),
 	EditForms("Edit Forms"),
-	SearchContractors("Search For New Contractors"),
+	SearchContractors("Search For New Contractors"), // also let's you see the summary page
 	AddContractors("Add Contractors"),
 	RemoveContractors("Remove Contractors"),
 	InsuranceCerts("Manage Insurance Certificate"),

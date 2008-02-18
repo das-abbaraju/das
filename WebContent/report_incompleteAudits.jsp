@@ -15,7 +15,6 @@
 		sBean.doSearch(request, sBean.ACTIVE_AND_NOT, 100, pBean, pBean.userID);
 	else
 		sBean.doSearch(request, sBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
-	sBean.cBean.setShowLinks(pBean);
 %>
 <html>
 <head>

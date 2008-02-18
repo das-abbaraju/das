@@ -21,18 +21,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.access.User;
 
 public class ContractorBean extends DataBean {
-/*	History
-	5/23/05 jj - moved requestedByID from aBean to cBean, automatically added sub of on new contractor creation
-	3/19/05 jj - added mustPay variable
-	3/11/05 jj - fixed null pointer exception is writeNewToDB() method
-	2/2/05 jj - replaced paid variable with lastPayment variable, added updateLastPayment() method
-	1/22/05 bj - added setOldAuditor, inorporated updte auditor logic into writetodb();
-	1/15/05 jj - removed paymentMethod, accountType, newAccountComplete and any related methods
-	1/1/05 jj - moved getMenuTag method to Utilities.java
-	12/18/04 jj - added checks for showLinks in getAuditLink()
-	12/16/04 jj - deleted all oshaN_file references, osha methods, and oshaN_file fields from DB
-	12/15/04 jj - commented out upload osha files because osha files now controlled through prequal process, need to remove, also osha_file variables
-*/
 	public static final String STATUS_ACTIVE = "Active"; // these should match the ENUM for status in the DB table
 	public static final String STATUS_INACTIVE = "Inactive"; // these should match the ENUM for status in the DB table
 	static final String[] STATUS_ARRAY = {STATUS_ACTIVE,STATUS_INACTIVE};
@@ -48,13 +36,12 @@ public class ContractorBean extends DataBean {
 	public static final String AUDIT_STATUS_EXPIRED = "Expired";
 	static final String[] AUDIT_STATUS_ARRAY = {AUDIT_STATUS_EXEMPT,AUDIT_STATUS_PQF_PENDING,AUDIT_STATUS_PQF_INCOMPLETE,AUDIT_STATUS_SCHEDULING,AUDIT_STATUS_SCHEDULED,
 												AUDIT_STATUS_RQS,AUDIT_STATUS_CLOSED};
-	//This is so contractors can be removed from the activation rport without actually entering a valid login date.
+	//This is so contractors can be removed from the activation report without actually entering a valid login date.
 	//It's a hack, but what John wants doesn't make sense, and hopefully this is temporary BJ 2-15-05
 	public static final String REMOVE_FROM_REPORT = "1/1/50";
 	public static final boolean SHOW_AUDIT_DATE = true;
 	public static final boolean DONT_SHOW_AUDIT_DATE = false;
 	public static final String[] AUDIT_LOCATION_ARRAY = {"On Site","Web"};	// must match ENUM in db, contractor_info.auditLocation 
-	boolean showLinks = false;
 	public static final int SETUP_FEE = 99;
 	public static final String[] RISK_LEVEL_ARRAY = {"Low","Med","Med-High"};
 	public static final String[] RISK_LEVEL_VALUES_ARRAY = {"1","2","3"};
@@ -641,38 +628,6 @@ public class ContractorBean extends DataBean {
 		else	return "<font color=red>*</font>";
 	}//getIsBrochureFile
 
-	public void setShowLinks(PermissionsBean pBean) {
-//	public void setShowLinks(String userType, HashSet canSeeSet) {
-		if (pBean.isAdmin())
-			showLinks = true;
-		else if ((pBean.isOperator() || pBean.isCorporate()) && pBean.canSeeSet.contains(id))
-			showLinks = true;
-		else if (pBean.isContractor() && pBean.userID.equals(id))
-			showLinks = true;
-	}//setShowLinks
-
-	public String getAuditLink(boolean showDate, boolean isContractor) throws Exception {
-		String linkText = "View Audit";
-		String thisClass= "blueMain";
-		if (showDate) {
-			linkText = getAuditDateShow();
-			thisClass = getTextColor();
-		}//if
-		if (AUDIT_STATUS_EXEMPT.equals(auditStatus))	return AUDIT_STATUS_EXEMPT;
-		//online audit completed
-		if (AUDIT_STATUS_RQS.equals(auditStatus) || AUDIT_STATUS_CLOSED.equals(auditStatus)) {
-//		else if (AUDIT_STATUS_PERFORMED.equals(getAuditStatus()) || AUDIT_STATUS_REQUIREMENTS_CLOSED.equals(getAuditStatus())) {
-			if (isContractor) //if contractor link to audit requirements
-				return "<a href=audit_viewRequirements.jsp?id="+id+" class="+thisClass+">"+linkText+"</a>";
-			else if (!showLinks) // 12/18/04 jj - only show the text, don't activate the link if they don't have access to this contractor 
-				return "";
-			else //link to view audit
-				return "<a href=audit_view.jsp?id="+id+" class="+thisClass+">"+linkText+"</a>";
-		} else if (isContractor)	
-			return linkText;
-		return "";
-	}//getAuditLink
-
 	public String getPQFLink(PermissionsBean pBean) throws Exception{
 		if ((pBean.isOperator() || pBean.isCorporate()) && !pBean.oBean.canSeePQF())
 			return "Contact PICS";
@@ -680,7 +635,7 @@ public class ContractorBean extends DataBean {
 		String thisClass = "inactive";
 		if (AUDIT_STATUS_CLOSED.equals(status))
 			thisClass = "active";
-		if (showLinks)
+		if (this.canView(pBean.getPermissions(), "pqf"))
 			return "<a class="+thisClass+" href=pqf_view.jsp?id="+id+">"+pqfSubmittedDate+"</a>";
 		return pqfSubmittedDate;
 	}//getPQFLink
@@ -697,7 +652,7 @@ public class ContractorBean extends DataBean {
 				status = calcOfficeStatusNew();
 			if (AUDIT_STATUS_CLOSED.equals(status))
 				thisClass = "active";
-			if (!showLinks)
+			if (!this.canView(pBean.getPermissions(), "desktop"))
 				if (!isNewOfficeAudit() && isAuditCompleted())
 					return "Yes";
 				else if (isNewOfficeAudit() && isOfficeSubmitted())
@@ -717,7 +672,7 @@ public class ContractorBean extends DataBean {
 			thisClass = "active";
 		if (AUDIT_STATUS_VERIFICATION_PENDING.equals(status))
 			return "No";
-		else if (!showLinks)
+		else if (!this.canView(pBean.getPermissions(), "desktop"))
 			return "Yes";
 		else
 			return "<a href=pqf_view.jsp?auditType=Desktop&id="+id+" class="+thisClass+">"+desktopSubmittedDate+" ("+status+")"+"</a>";
@@ -736,7 +691,7 @@ public class ContractorBean extends DataBean {
 			thisClass = "active";
 		if (AUDIT_STATUS_VERIFICATION_PENDING.equals(status))
 			return "No";
-		else if (!showLinks)
+		else if (!this.canView(pBean.getPermissions(), "daaudit"))
 			return "Yes";
 		else
 			return "<a href=pqf_view.jsp?auditType=DA&id="+id+" class="+thisClass+">"+daSubmittedDate+" ("+status+")"+"</a>";
@@ -753,7 +708,7 @@ public class ContractorBean extends DataBean {
 			status = calcOfficeStatusNew();
 		if (AUDIT_STATUS_CLOSED.equals(status))
 			thisClass = "active";
-		if (!showLinks)
+		if (!this.canView(pBean.getPermissions(), "office"))
 			if (!isNewOfficeAudit() && isAuditCompleted())
 				return "Yes";
 			else if (isNewOfficeAudit() && isOfficeSubmitted())
@@ -771,8 +726,8 @@ public class ContractorBean extends DataBean {
 	public String getDetailsStatus(PermissionsBean pBean) throws Exception {
 		String tempStatus = calcPICSStatus(pBean);
 		if (pBean.userID.equals(id))	return tempStatus;
-		if (!showLinks)			return "";
-		else					return tempStatus;
+		if (!this.canView(pBean.getPermissions(), "daaudit")) return "";
+		else return tempStatus;
 	}//getDetailsStatus
 
 	public String getBrochureLink() {
@@ -1631,30 +1586,41 @@ public class ContractorBean extends DataBean {
 	}
 	
 	public void tryView(Permissions permissions) throws NoRightsException {
-		if (canView(permissions)) return;
+		if (canView(permissions, "summary")) return;
 		throw new NoRightsException("Contractor");
 	}
 	public boolean canView(Permissions permissions) {
+		return canView(permissions, "summary");
+	}
+	public boolean canView(Permissions permissions, String what) {
 		if (permissions.hasPermission(OpPerms.AllContractors)) return true;
 		
+		// OR
 		if (permissions.isAdmin()) return true;
 		if (permissions.isContractor()) {
 			return permissions.getAccountIdString().equals(this.id);
 		}
-		if (permissions.isOperator()) {
-			return true;
-			//return generalContractors.contains(permissions.getAccountIdString());
-		}
-		if (permissions.isCorporate()) {
-			return true;
-		}
-		
 		// The auditors can see this Contractor
 		if (permissions.getUserIdString().equals(this.auditor_id)) return true;
 		if (permissions.getUserIdString().equals(this.pqfAuditor_id)) return true;
 		if (permissions.getUserIdString().equals(this.daAuditor_id)) return true;
 		if (permissions.getUserIdString().equals(this.desktopAuditor_id)) return true;
 		
+		if (permissions.isOperator() || permissions.isCorporate()) {
+			// I don't really like this way. It's a bit confusing
+			// Basically, if all we're doing is searching for contractors
+			// and looking at their summary page, then it's OK
+			// If we want to look at their detail, like PQF data
+			// Then we have to add them first (generalContractors).
+			if ("summary".equals(what)) {
+				// Until we figure out Contractor viewing permissions better, this will have to do
+				return true;
+			}
+			// To see anything other than the summary, you need to be on their list
+			return generalContractors.contains(permissions.getAccountIdString());
+		}
+
 		return false;
 	}
+	
 }//ContractorBean

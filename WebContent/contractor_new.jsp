@@ -34,11 +34,18 @@
 		}
 		if (action.equals("username")) {
 			String username = request.getParameter("username");
-			if (aBean.usernameExists(username)) {
-				%><%=username%> is NOT available. Please choose a different Username.<%
-			} else {
-				%><%=username%> is available<%
+			
+			// Check the users table
+			Integer id = uBean.findID(username);
+			if (id == 0) {
+				// Check the accounts table
+				id = aBean.findID(username);
+				if (id == 0) {
+					%><%=username%> is available<%
+					return;
+				}
 			}
+			%><%=username%> is NOT available. Please choose a different Username.<%
 			return;
 		}
 	}

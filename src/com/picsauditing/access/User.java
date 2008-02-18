@@ -62,6 +62,12 @@ public class User extends DataBean implements Comparable<User> {
 		selectFromDB(query);
 	}//setFromDB
 	
+	/**
+	 * Return the userID with the matching username or 0 if no match is found
+	 * @param username
+	 * @return
+	 * @throws SQLException
+	 */
 	public int findID(String username) throws SQLException {
 		int id = 0;
 		try {
