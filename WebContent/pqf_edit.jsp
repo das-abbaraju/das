@@ -6,23 +6,27 @@
 <jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<%try{
-	// 12/20/04 jj - 
+<%
+try{
 	String auditType = request.getParameter("auditType");
 	if (null==auditType || "".equals(auditType))
 		auditType = com.picsauditing.PICS.pqf.Constants.PQF_TYPE;
-	String conID = request.getParameter("id");
 	String id = request.getParameter("id");
+	String conID = id;
 	String catID = request.getParameter("catID");
 	String action = request.getParameter("action");
-	boolean isOSHA = pcBean.OSHA_CATEGORY_ID.equals(catID);
-	//boolean isFileUpload = Utilities.arrayContains(com.picsauditing.PICS.pqf.Constants.UPLOAD_CAT_IDS,catID);
+	boolean isCategorySelected = (null != catID && !"0".equals(catID));
+	if (!isCategorySelected) {
+		response.sendRedirect("pqf_editMain.jsp?auditType="+auditType+"&id="+conID);
+		return;
+	}
+	boolean isOSHA = CategoryBean.OSHA_CATEGORY_ID.equals(catID);
 	boolean isFileUpload = pdBean.isFileUpload(catID);
-	boolean canVerify = (pBean.isAdmin() || pBean.isAuditor());
-	if (isFileUpload){
+	boolean canVerify = (permissions.isAdmin() || permissions.isAuditor());
+	if (isFileUpload) {
 		response.sendRedirect("pqf_uploadFile.jsp?auditType="+auditType+"&catID="+catID+"&id="+conID);
 		return;
-	}//if
+	}
 	if (isOSHA) {
 		OSHABean oBean = new OSHABean();
 		oBean.setListFromDB(conID);
@@ -31,12 +35,7 @@
 		else
 			response.sendRedirect("pqf_OSHA.jsp?action=Edit&oID=New&id="+conID+"&catID="+catID);
 		return;
-	}//if
-	boolean isCategorySelected = (null != catID && !"0".equals(catID));
-	if (!isCategorySelected) {
-		response.sendRedirect("pqf_editMain.jsp?auditType="+auditType+"&id="+conID);
-		return;
-	}//if
+	}
 	int numQuestions = 0;
 	int numSections = 0;
 	int requiredCount = 0;
@@ -175,7 +174,7 @@
                 <input type="hidden" name="requiredCount" value="<%=requiredCount%>">
                 <input type="hidden" name="auditType" value="<%=auditType%>">
               </form>
-<%	}//if %>
+<%	} %>
               </table>
             </td>
             <td>&nbsp;</td>
@@ -191,8 +190,8 @@
   </table>
 </body>
 </html>
-<%	}finally{
+<%	} finally{
 		pqBean.closeList();
 		pcBean.closeList();
-	}//finally
+	}
 %>

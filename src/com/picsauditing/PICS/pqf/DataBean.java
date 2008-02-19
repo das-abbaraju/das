@@ -724,8 +724,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 		}//fnally
 	
 		return;
-		
-	}//uploadPQFFile
+	}
 
 	public void deletePQFFile(javax.servlet.ServletConfig config, String conID, String qID, String ext) throws Exception {
 		String deleteQuery = "DELETE FROM pqfData WHERE conID="+conID+" and questionID="+qID+" LIMIT 1";
@@ -940,11 +939,11 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 
 	public boolean isOK() {
 		return (errorMessages.size() == 0);
-	}//isOK
+	}
 
 	public String eqDB(String temp) {
 		return Utilities.escapeQuotes(temp);
-	}//eqDB
+	}
 
 	public String getShowPercent(int num, int den) {
 		if (num==den)
@@ -955,7 +954,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 	
 	public boolean isFileUpload(String catID) throws Exception{
 		if ((null == catID) || ("".equals(catID)))
-			throw new Exception("Can't set pqfData from DB because conID is not set");
+			throw new Exception("Can't set pqfData from DB because catID is not set");
 		
 		String query = "select categoryID from pqfsubcategories where pqfsubcategories.subCatID IN (Select subCategoryID from pqfquestions where questionType='File');";
 		ResultSet SQLResult = null;;

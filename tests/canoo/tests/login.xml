@@ -60,7 +60,7 @@
 					description="Click the submit button" />
 				&body_verify;
 				<verifyText description="Invalid password attempt"
-					text="Invalid password attempt" />
+					text="The password is not correct" />
 				
 				<!-- GOOD LOGIN -->
 				<setInputField description="set user name"

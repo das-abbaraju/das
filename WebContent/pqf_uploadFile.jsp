@@ -6,10 +6,10 @@
 <jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean" scope="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page"/>
-<%try{
-	// 12/20/04 jj - added timeOutWarning, timeOut javascripts, timedOut hidden form field
-	String conID = request.getParameter("id");
+<%
+try{
 	String id = request.getParameter("id");
+	String conID = id;
 	String catID = request.getParameter("catID");
 	String action = request.getParameter("action");
 	String auditType = request.getParameter("auditType");
@@ -34,8 +34,8 @@
 			cBean.writeToDB();
 			response.sendRedirect("pqf_editMain.jsp?id="+conID+"&auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
 			return;
-		}//if
-	}//if
+		}
+	}
 	if ("Delete".equals(action)){
 		String qID = request.getParameter("qID");
 		String ext = request.getParameter("ext");
