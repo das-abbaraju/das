@@ -1,12 +1,19 @@
 <%@page language="java" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
 <jsp:useBean id="eBean" class="com.picsauditing.mail.EmailContractorBean" scope ="page"/>
+<%@page import="com.picsauditing.mail.*"%>
 <%
 String id = request.getParameter("i");
 if ((null == id) || ("".equals(id)))
 	throw new Exception("No contractor_id specified.");
 
-eBean.sendWelcome(id, permissions);
+//eBean.sendWelcome(id, permissions);
+
+EmailContractorBean emailer = new EmailContractorBean();
+emailer.sendMessage(EmailTemplates.welcome, id, permissions);
+emailer.getContractorBean().welcomeEmailDate = DateBean.getTodaysDate();
+emailer.getContractorBean().writeToDB();
+
 %>
 <html>
 <head>
