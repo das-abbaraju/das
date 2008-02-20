@@ -56,7 +56,7 @@
 				&login;
 				&body_verify;
 				<verifyText  description="Verify you can't login yet"
-				      text="inactive" />
+				      text="activate your account" />
 				
 				<group description="Activate the new Account">
 					<storeProperty description="Activate Account" 
