@@ -11,6 +11,7 @@ if ((null == id) || ("".equals(id)))
 
 EmailContractorBean emailer = new EmailContractorBean();
 emailer.sendMessage(EmailTemplates.welcome, id, permissions);
+String message = "A welcome email was sent to "+emailer.getSentTo();
 emailer.getContractorBean().welcomeEmailDate = DateBean.getTodaysDate();
 emailer.getContractorBean().writeToDB();
 
@@ -21,7 +22,7 @@ emailer.getContractorBean().writeToDB();
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 <body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-	<center>A welcome email has been sent to: <b><%=eBean.getSentTo()%></b><br>
+	<center><%=message%><br>
 	<br>
 	<a href="javascript:window.close();" class="blueMain">Close This Window</a>
 	</center>
