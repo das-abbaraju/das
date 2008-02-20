@@ -48,11 +48,11 @@ public class LoginController extends DataBean {
 		permissions.tryPermission(OpPerms.SwitchUser);
 		this.loginByAdmin = this.permissions.getUserId();
 		
+		if (!getAccountByID(userID)) return false;
+		
 		setupPerms(request);
 		permissions.setAdminID(loginByAdmin);
 
-		getAccountByID(userID);
-		
 		///////////////////
 		this.doLogin(request.getSession());
 		logAttempt(permissions, "", request);

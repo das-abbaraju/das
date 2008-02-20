@@ -267,7 +267,9 @@
                       </tr>
                       <tr>
                         <td class="blueMain" align="right">Username</td>
-                        <td><input name="username" type="text" class="forms" size="15" value="<%=aBean.username%>"></td>
+                        <td><input name="username" type="text" class="forms" size="15" value="<%=aBean.username%>">
+	                        <% if (permissions.hasPermission(OpPerms.SwitchUser)) { %><a class="blueMain" href="login.jsp?switchUser=<%=aBean.id %>">Switch User</a><% } %>
+                        </td>
                       </tr>
                       <tr>
                         <td class="blueMain" align="right">Password</td>

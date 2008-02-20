@@ -142,6 +142,7 @@ public class AccountBean extends DataBean {
 
 
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
+		this.isSet = false;
 		try {
 			id = SQLResult.getString("id");
 			type = SQLResult.getString("type");
@@ -166,6 +167,7 @@ public class AccountBean extends DataBean {
 			dateCreated = DateBean.toShowFormat(SQLResult.getString("dateCreated"));
 			emailConfirmedDate = DateBean.toShowFormat(SQLResult.getString("emailConfirmedDate"));
 			oldPassword = password;
+			this.isSet = true;
 		} catch (Exception ex) {
 			DBClose();
 			throw ex;
