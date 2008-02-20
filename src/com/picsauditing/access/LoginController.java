@@ -35,6 +35,7 @@ public class LoginController extends DataBean {
 			return false;
 		}
 		
+		///////////////////
 		this.doLogin(request.getSession());
 		logAttempt(permissions, "", request);
 		postLogin(request, response);
@@ -43,11 +44,16 @@ public class LoginController extends DataBean {
 	}
 	
 	public boolean loginByAdmin(String userID, javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws Exception {
-		setupPerms(request);
+		permissions = (Permissions)request.getSession().getAttribute("permissions");
 		permissions.tryPermission(OpPerms.SwitchUser);
 		this.loginByAdmin = this.permissions.getUserId();
-		permissions.setAdminID(loginByAdmin);
 		
+		setupPerms(request);
+		permissions.setAdminID(loginByAdmin);
+
+		getAccountByID(userID);
+		
+		///////////////////
 		this.doLogin(request.getSession());
 		logAttempt(permissions, "", request);
 		postLogin(request, response);
@@ -91,22 +97,8 @@ public class LoginController extends DataBean {
 		if(username.length() < 4)
 			return "Enter a username with atleast 4 characters";
 		
-		user = new User();
-		aBean = new AccountBean();
-		Integer id = user.findID(username);
-		if (id > 0) {
-			user.setFromDB(id.toString());
-			aBean.setFromDB(user.userDO.accountID);
-		} else {
-			// Wait this could be a contractor trying to login, check the accounts table
-			user = null;
-			id = aBean.findID(username);
-			if (id == 0)
-				return "No account exists with that username";
-			isUser = false;
-			aBean.setFromDB(id.toString());
-		}
-		// The user or account we want to login as is now set as private variables
+		if (!getAccountByUsername(username))
+			return "No account exists with that username";
 		
 		if (isUser) {
 			if(!user.userDO.password.equals(password))
@@ -126,6 +118,61 @@ public class LoginController extends DataBean {
 		return "";
 	}
 
+	private boolean getAccountByUsername(String username) throws Exception {
+		user = new User();
+		aBean = new AccountBean();
+		Integer id = user.findID(username);
+		if (id > 0) {
+			user.setFromDB(id.toString());
+			aBean.setFromDB(user.userDO.accountID);
+		} else {
+			// Wait this could be a contractor trying to login, check the accounts table
+			id = aBean.findID(username);
+			if (id == 0)
+				return false;
+			aBean.setFromDB(id.toString());
+			user = null;
+			isUser = false;
+		}
+		// The user or account we want to login as is now set as private variables
+		
+		if (isUser) {
+			if(!user.userDO.isActive.startsWith("Y"))
+				return false;
+		} else {
+			if(!aBean.active.startsWith("Y"))
+				return false;
+		}
+
+		return true;
+	}
+	private boolean getAccountByID(String id) throws Exception {
+		aBean = new AccountBean();
+		user = new User();
+		user.setFromDB(id);
+		if (user.isSet()) {
+			aBean.setFromDB(user.userDO.accountID);
+		} else {
+			// Wait this could be a contractor trying to login, check the accounts table
+			aBean.setFromDB(id);
+			if (!aBean.isSet())
+				return false;
+			user = null;
+			isUser = false;
+		}
+		// The user or account we want to login as is now set as private variables
+		
+		if (isUser) {
+			if(!user.userDO.isActive.startsWith("Y"))
+				return false;
+		} else {
+			if(!aBean.active.startsWith("Y"))
+				return false;
+		}
+
+		return true;
+	}
+	
 	/**
 	 * Perform the actual login process...store any info in the session that will be required in later pages
 	 */
@@ -244,9 +291,25 @@ public class LoginController extends DataBean {
 		return;
 	}
 	
-	public void logout(javax.servlet.http.HttpSession session) {
-		Permissions permissions = (Permissions)session.getAttribute("permissions");
+	public void logout(Permissions permissions, javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws Exception {
+		Integer adminID = permissions.getAdminID();
 		permissions.clear();
+		request.getSession().invalidate();
+		if (adminID > 0) {
+			setupPerms(request);
+			if (!getAccountByID(adminID.toString()));
+			
+			this.doLogin(request.getSession());
+			logAttempt(permissions, "", request);
+			postLogin(request, response);
+			return;
+		}
+		
+		String temp = request.getParameter("msg");
+		String query = "";
+		if (null != temp && temp.length()>0)
+			query = "?msg="+temp;
+		response.sendRedirect("login.jsp"+query);
 	}
 	
 	private void logAttempt(Permissions permissions, String password, javax.servlet.http.HttpServletRequest request) throws Exception {

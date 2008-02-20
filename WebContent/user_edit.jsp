@@ -163,10 +163,13 @@ if (uBean.isSet()) {
 	</tr>
 </table>
 </form>
-
 <%
 if (!uBean.isSet()) return;
 // Don't show below data until, we've saved our user
+
+if (permissions.hasPermission(OpPerms.SwitchUser)) {
+	%><p><a href="login.jsp?switchUser=<%= uBean.userDO.id %>">Switch to this User</a></p><%
+}
 
 currentUser.setFromDB(permissions.getUserIdString());
 

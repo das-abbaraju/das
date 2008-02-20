@@ -181,7 +181,7 @@ try{
                 <form name="form2" method="post" action="contractorsSearch.jsp?changed=0&showPage=<%=showPage%>">
                 <td align="center"><%=sBean.getFlagLink()%></td>
                 <td align="center">
-<%			if (pBean.oBean.canAddContractors()){
+<%			if (pBean.oBean.canAddContractors()) {
 				if (!pBean.canSeeSet.contains(sBean.aBean.id) || pBean.isCorporate()){
 					if (permissions.hasPermission(OpPerms.AddContractors)){%>
                   <input name="action" type="submit" class="buttons" value="Add">
