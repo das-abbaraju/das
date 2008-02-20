@@ -19,6 +19,7 @@ public class LoginController extends DataBean {
 	private User user;
 	private AccountBean aBean;
 	private int loginByAdmin = 0;
+	private String prevLastLogin = "1/1/01";
 	
 	private Permissions permissions;
 	private PermissionsBean pBean;
@@ -91,13 +92,14 @@ public class LoginController extends DataBean {
 			return "Enter a username with atleast 4 characters";
 		
 		user = new User();
+		aBean = new AccountBean();
 		Integer id = user.findID(username);
 		if (id > 0) {
 			user.setFromDB(id.toString());
+			aBean.setFromDB(user.userDO.accountID);
 		} else {
 			// Wait this could be a contractor trying to login, check the accounts table
 			user = null;
-			aBean = new AccountBean();
 			id = aBean.findID(username);
 			if (id == 0)
 				return "No account exists with that username";
@@ -130,7 +132,9 @@ public class LoginController extends DataBean {
 	private void doLogin(javax.servlet.http.HttpSession session) throws Exception {
 		if (isUser) {
 			permissions.login(this.user);
+			this.prevLastLogin = this.user.userDO.lastLogin;
 			this.user.updateLastLogin();
+			this.aBean.updateLastLogin();
 			
 			// Most (if not all) of this below should eventually be phased out
 			pBean.oBean = new com.picsauditing.PICS.OperatorBean();
@@ -155,6 +159,7 @@ public class LoginController extends DataBean {
 		} else {
 			// Contractors
 			permissions.login(this.aBean);
+			this.prevLastLogin = this.aBean.lastLogin;
 			this.aBean.updateLastLogin();
 			
 			// Most (if not all) of this below should eventually be phased out
@@ -162,6 +167,7 @@ public class LoginController extends DataBean {
 			pBean.setAllFacilitiesFromDB(permissions.getAccountIdString());
 			pBean.uBean = new com.picsauditing.PICS.UserBean();
 			pBean.uBean.name = aBean.contact;
+			
 		}
 		
 		// Most (if not all) of this below should eventually be phased out
@@ -177,21 +183,22 @@ public class LoginController extends DataBean {
 	 */
 	private void postLogin(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws Exception {
 		if (!isUser) {
-			if (aBean.isFirstLogin()) {
-				com.picsauditing.PICS.ContractorBean cBean = new com.picsauditing.PICS.ContractorBean();
-				cBean.setFromDB(permissions.getAccountIdString());
+			com.picsauditing.PICS.ContractorBean cBean = new com.picsauditing.PICS.ContractorBean();
+			cBean.setFromDB(permissions.getAccountIdString());
+			
+			if ("".equals(cBean.accountDate)) {
 				cBean.accountDate = DateBean.getTodaysDate();
 				cBean.writeToDB();
 				response.sendRedirect("con_selectFacilities.jsp?id="+permissions.getAccountIdString());
 				return;
 			}
-			String loginStartDate = "1/1";
+			String loginStartDate = "1/1" + "/" + String.valueOf(DateBean.getCurrentYear());
 			//String loginStartDate = this.getServletContext().getInitParameter("loginStartDate");
-			if (aBean.isFirstLoginOfYear(loginStartDate)) {
+			if(DateBean.isFirstBeforeSecond(prevLastLogin,loginStartDate)) {
 				response.sendRedirect("con_selectFacilities.jsp?id="+permissions.getAccountIdString());
 				return;
 			}
-			if (aBean.mustSubmitPQF()) {
+			if (cBean.canEditPrequal()) {
 				response.sendRedirect("pqf_editMain.jsp?auditType=PQF&mustFinishPrequal=&id="+aBean.id);
 				return;
 			}

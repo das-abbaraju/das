@@ -1,8 +1,7 @@
 <%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
+<%@include file="includes/main.jsp" %>
 <%@page import="org.apache.commons.beanutils.*"%>
 <%@page import="java.util.*"%>
-<%@page import="com.picsauditing.access.*"%>
-<%@include file="includes/main.jsp" %>
 <%
 permissions.tryPermission(OpPerms.AssignAudits);
 boolean canEdit = permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit);

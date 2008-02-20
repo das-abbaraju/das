@@ -26,10 +26,8 @@ public class AccountBean extends DataBean {
 											"Construction","Manufacturing"};
 	OperatorBean o = null;
 	String accountDate = "";
-	String canEditPrequal = "";
 	public String userID = "0"; //used in check login, to set id for users not in main accounts table, but in users table
 	public HashSet<String> canSeeSet = new HashSet<String>(); // all sub contractors of a general contractor/operator
-	public HashSet<String> hasCertSet = new HashSet<String>(); // all contractors with insurance certs for a general contractor/operator
 	
 	public String id = "";
 	public String type = "Contractor"; // is of type ENUM of ('Contractor','Operator','General')
@@ -55,7 +53,6 @@ public class AccountBean extends DataBean {
 	public String oldPassword = ""; // used for determining if the password has changed 
 	public String emailConfirmedDate = "";
 	boolean updatedPassword = false;
-	public String prevLastLogin = "1/1/01";
 	
 	public void setId(String s) {id = s;}//setId
 	public void setActive(String s) {active = s;}//setActive
@@ -595,27 +592,6 @@ public class AccountBean extends DataBean {
 		return (errorMessages.size() == 0);
 	}
 	
-	public boolean isFirstLogin() {
-		if ("Contractor".equals(type) && "".equals(accountDate))
-			return true;
-		return false;
-	}//isFirstLogin
-	
-	public boolean isFirstLoginOfYear(String strLoginStart) throws Exception {
-		if ("Contractor".equals(type) && !"".equals(accountDate)){
-			String loginStart = strLoginStart + "/" + String.valueOf(DateBean.getCurrentYear());			
-			if(DateBean.isFirstBeforeSecond(prevLastLogin,loginStart))
-				return true;
-		}
-		return false;
-	}//isFirstLogin
-	
-	public boolean mustSubmitPQF() {
-		if ("Contractor".equals(type) && "Yes".equals(canEditPrequal))
-			return true;
-		return false;
-	}//mustSubmitPQF
-
 	// 1/15/05 jj - defrags tables
 	public void optimizeDB() throws Exception{
 		String optimizeQuery = "OPTIMIZE TABLE OSHA,accounts,adminValues,auditCategories,auditData,auditQuestions,certificates,contractor_info,"+

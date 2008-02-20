@@ -121,7 +121,7 @@ public class ContractorBean extends DataBean {
 	public String officeSubmittedDate = "";
 	public String officeClosedDate = "";
 
-	public String accountDate = "";
+	public String accountDate = ""; // The first time a user logs into this Contractor account
 	public String membershipDate = "";
 	public String welcomeCallDate = "";
 	public String welcomeEmailDate = "";
@@ -1596,7 +1596,6 @@ public class ContractorBean extends DataBean {
 		if (permissions.hasPermission(OpPerms.AllContractors)) return true;
 		
 		// OR
-		if (permissions.isAdmin()) return true;
 		if (permissions.isContractor()) {
 			return permissions.getAccountIdString().equals(this.id);
 		}

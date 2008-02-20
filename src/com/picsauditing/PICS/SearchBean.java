@@ -33,7 +33,6 @@ import com.picsauditing.domain.IPicsDO;
 	public String manualRevisionDate = "";
 	public String tradePerformedBy = "";
 
-	HashSet hasCertSet = null;
 	HashSet canSeeSet = null;
 	HashSet auditorCanSeeSet = null;
 
@@ -177,16 +176,6 @@ import com.picsauditing.domain.IPicsDO;
 			return "<a href=\"/servlet/showpdf?id="+aBean.id+"&file=audit\" target=\"_blank\" class=\""+
 					getTextColor()+"\">"+cBean.getAuditDateShow()+"</a>";
 	}//getAuditDateLink
-
-	public String getCertsLink() {
-		if (null != hasCertSet && hasCertSet.contains(aBean.id))
-			if (!canSeeContractor())
-				return "<img src=\"images/iconGhost_insurance.gif\" width=\"20\" height=\"20\" border=\"0\"></a>";				
-			else
-				return "<a href=\"certificates_view.jsp?id="+aBean.id+"\">"+
-					"<img src=\"images/icon_insurance.gif\" width=\"20\" height=\"20\" border=\"0\"></a>";
-		return "";
-	}//getCertsLink
 
 	public String getCertsAdminLink() {
 		if ("0".equals(cBean.certs))
@@ -751,10 +740,6 @@ import com.picsauditing.domain.IPicsDO;
 	public static String getSearchGeneralSelect(String name, String classType, String selectedGeneral) throws Exception {
 		return new AccountBean().getGeneralSelect2(name, classType, selectedGeneral, LIST_DEFAULT);
 	}//getSearchOperatorSelect
-
-	public void setHasCertSet(HashSet temp) {
-		hasCertSet = temp;
-	}//setHasCertSet
 
 	public void setCanSeeSet(HashSet temp) {
 		canSeeSet = temp;

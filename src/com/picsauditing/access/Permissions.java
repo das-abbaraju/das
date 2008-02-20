@@ -184,11 +184,15 @@ public class Permissions {
 		return "Operator".equals(this.accountType);
 	}
 	/**
-	 * @deprecated use isPicsEmployee Now
+	 * @deprecated use seesAllContractors Now
 	 * @return
 	 */
 	public boolean isAdmin() {
-		return this.hasGroup(10);
+		//return this.hasGroup(10);
+		return seesAllContractors();
+	}
+	public boolean seesAllContractors() {
+		return this.hasPermission(OpPerms.AllContractors);
 	}
 	/**
 	 * @deprecated use isPicsEmployee Now
@@ -200,9 +204,17 @@ public class Permissions {
 	public boolean isPicsEmployee() {
 		return (1100 == this.accountID);
 	}
+	/**
+	 * Is the logged in user an non-PICS employee auditor?
+	 * @return
+	 */
+	public boolean isOnlyAuditor() {
+		if (!isPicsEmployee()) return false;
+		if (isAdmin()) return false;
+		return this.hasGroup(11);
+	}
 
 	public Set<Permission> getPermissions() {
 		return permissions;
 	}
-	
 }

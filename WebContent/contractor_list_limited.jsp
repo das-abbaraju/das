@@ -10,7 +10,6 @@ try{
 	String action = request.getParameter("action");
 	String actionID = request.getParameter("actionID");
 
-	sBean.setHasCertSet((java.util.HashSet)session.getAttribute("hasCertSet"));
 	sBean.setCanSeeSet(pBean.canSeeSet);
 	sBean.doSearch(request, sBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
 //***** do i need these

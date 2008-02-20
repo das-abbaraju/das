@@ -24,7 +24,6 @@ try {
 	sBean.orderBy = request.getParameter("orderBy");
 	if (null==sBean.orderBy)
 		sBean.orderBy = "name";
-	sBean.setHasCertSet((java.util.HashSet)session.getAttribute("hasCertSet"));
 	sBean.setCanSeeSet(pBean.canSeeSet);
 	sBean.doSearch(request, SearchBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
 //***** do i need these
@@ -134,7 +133,21 @@ try {
 <%	} if (pBean.oBean.canSeeOffice()){%>
                 <td align="center"><%=sBean.getListLink(com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE)%></td>
 <%	} if (pBean.oBean.canSeeInsurance()){%>
-                <td align="center"><%=sBean.getCertsLink()%></td>
+                <td align="center"><%
+                /*
+                TODO JEFF 
+                
+            		if (null != hasCertSet && hasCertSet.contains(aBean.id))
+            			if (!canSeeContractor())
+            				return "<img src=\"images/iconGhost_insurance.gif\" width=\"20\" height=\"20\" border=\"0\"></a>";				
+            			else
+            				return "<a href=\"certificates_view.jsp?id="+aBean.id+"\">"+
+            					"<img src=\"images/icon_insurance.gif\" width=\"20\" height=\"20\" border=\"0\"></a>";
+            		return "";
+
+*/
+                
+                %></td>
 <%	}//if%>
                 <td align="center"><a href="con_redFlags.jsp?id=<%=sBean.cBean.id%>" title="Click to view Flag Color details"><%=sBean.getFlagLink()%></a></td>
 <%	if (!pBean.oBean.isCorporate && false){%>

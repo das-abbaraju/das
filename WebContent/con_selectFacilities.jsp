@@ -5,7 +5,8 @@
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
-<%	String id = request.getParameter("id");
+<%
+	String id = request.getParameter("id");
 	cBean.setFromDB(id);
 	cBean.tryView(permissions);
 	aBean.setFromDB(id);
@@ -153,94 +154,84 @@
 <%	}//if%>
 					  </tr>
 <%	count = 0;
+	// Show Facilities selected
 	for (java.util.ListIterator<String> li = operators.listIterator();li.hasNext();) {
 		String opID = li.next();
 		String name = li.next();
 		String status = "";
-		if (cBean.generalContractors.contains(opID) && pBean.isCorporate() && !pBean.oBean.facilitiesAL.contains(opID)){%>
-                   <input type=hidden name=genID_<%=opID%> value=Yes>
-<%		}else if (cBean.generalContractors.contains(opID)){%>
-				  <tr class=blueMain <%=Utilities.getBGColor(count++)%>>
-				    <td><%=name%></td>
-					<td align="center">
-<%			if (cBean.generalContractors.contains(opID)){
-				oBean.setFromDB(opID);
+		if (cBean.generalContractors.contains(opID)) {
+			oBean.setFromDB(opID);
 			status = cBean.calcPICSStatusForOperator(oBean);
-%>                         <img src=images/okCheck.gif width=19 height=15>
-                      <input type=hidden name=genID_<%=opID%> value=Yes>
-<%			}//if
-		if (!pBean.isAuditor() && !cBean.generalContractors.contains(opID)){%>
-			          <%=Inputs.getCheckBoxInput("genID_"+opID,"forms","","Yes")%>
-<%				status = "";
-		}//else
-		
-		String flagColor = "red";
-		BasicDynaBean opFlag = flagMap.get(opID);
-		if (opFlag != null) {
-			Object temp = opFlag.get("flag");
-			flagColor = temp.toString().toLowerCase();
-		}
-%>
-				    </td>
-					<td class="<%=cBean.getTextColor(status)%>"><%=status%></td>
-					<td class="<%=cBean.getTextColor(status)%>" align="center">
-					  <a href="con_redFlags.jsp?id=<%=cBean.id%>&opID=<%=opID%>" title="Click to view Flag Color details">
-                        <img src=images/icon_<%=flagColor%>Flag.gif width=12 height=15 border=0>
-					  </a>
-					</td>
-                    <td>
-<%			if (pBean.isAdmin() && cBean.generalContractors.contains(opID)){%>
-                      <a href=con_selectFacilities.jsp?id=<%=id%>&action=Remove&opID=<%=opID%>>Remove</a>
-<%			}//if%>
-                    </td>
-				  </tr>
-<%		}//else
+			String flagColor = "red";
+			BasicDynaBean opFlag = flagMap.get(opID);
+			if (opFlag != null) {
+				Object temp = opFlag.get("flag");
+				flagColor = temp.toString().toLowerCase();
+			}
+			%>
+			<tr class="blueMain" <%=Utilities.getBGColor(count++)%>>
+		    	<td><%=name%></td>
+				<td align="center">
+					<input type="hidden" name="genID_<%=opID%>" value="Yes" />
+					<img src="images/okCheck.gif" width="19" height="15" />
+			    </td>
+				<td class="<%=cBean.getTextColor(status)%>"><%=status%></td>
+				<td align="center">
+					<a href="con_redFlags.jsp?id=<%=cBean.id%>&opID=<%=opID%>" title="Click to view Flag Color details"><img 
+						src=images/icon_<%=flagColor%>Flag.gif width=12 height=15 border=0></a>
+				</td>
+				<td>
+<%				if (pBean.isAdmin()) { %>
+					<a href=con_selectFacilities.jsp?id=<%=id%>&action=Remove&opID=<%=opID%>>Remove</a>
+<%				} %>
+				</td>
+			</tr>
+<%		}
 	}//for
+	
+	// Show Facilities NOT selected
 	for (java.util.ListIterator<String> li = operators.listIterator();li.hasNext();) {
 		String opID = li.next();
 		String name = li.next();
-		String status = "";
-		if (!cBean.generalContractors.contains(opID) && pBean.isCorporate() && !pBean.oBean.facilitiesAL.contains(opID)){%>
-                       <input type=hidden name=genID_<%=opID%> value=Yes>
-<%		}else if (!cBean.generalContractors.contains(opID)){%>
-					  <tr class=blueMain <%=Utilities.getBGColor(count++)%>>
-					    <td><%=name%></td>
-						<td align="center">
-<%			if (cBean.generalContractors.contains(opID)){
- 				oBean.setFromDB(opID);
-				status = cBean.calcPICSStatusForOperator(oBean);
-%>                         <img src=images/okCheck.gif width=19 height=15>
-                          <input type=hidden name=genID_<%=opID%> value=Yes>
-<%			}//if
-			if (!pBean.isAuditor() && !cBean.generalContractors.contains(opID)){%>
-				          <%=Inputs.getCheckBoxInput("genID_"+opID,"forms","","Yes")%>
-<%				status = "";
-			}//else
+		if (!cBean.generalContractors.contains(opID)) {
+			String flagColor = "red";
+			BasicDynaBean opFlag = flagMap.get(opID);
+			if (opFlag != null) {
+				Object temp = opFlag.get("flag");
+				flagColor = temp.toString().toLowerCase();
+			}
+			%>
+			<tr class=blueMain <%=Utilities.getBGColor(count++)%>>
+<%			if (permissions.isCorporate() && !pBean.oBean.facilitiesAL.contains(opID)) { %>
+				<input type=hidden name=genID_<%=opID%> value=Yes>
+<%			} %>
+				<td><%=name%></td>
+				<td align="center">
+<%				if (!permissions.isOnlyAuditor()) { %>
+					<%=Inputs.getCheckBoxInput("genID_"+opID,"forms","","Yes")%>
+<%				} %>
+			    </td>
+				<td>&nbsp;</td>
+				<td align="center">
+					<a href="con_redFlags.jsp?id=<%=cBean.id%>&opID=<%=opID%>" title="Click to view Flag Color details"><img 
+						src=images/icon_<%=flagColor%>Flag.gif width=12 height=15 border=0></a>
+				</td>
+				<td>&nbsp;</td>
+			</tr>
+<%		}
+	}
 %>
-					    </td>
-						<td class="<%=cBean.getTextColor(status)%>"><%=status%></td>
-						<td class="<%=cBean.getTextColor(status)%>">
-						</td>
-                        <td>
-<%			if (pBean.isAdmin() && cBean.generalContractors.contains(opID)){%>
-                          <a href=con_selectFacilities.jsp?id=<%=id%>&action=Remove&opID=<%=opID%>>Remove</a>
-<%			}//if%>
-                        </td>
-					  </tr>
-<%		}//else
-	}//for
-%>
-					</table>
+			</table>
 				  </td>
                 </tr>
                 <tr> 
                   <td>&nbsp;</td>
                 </tr>
-<%	if(pBean.isCorporate()|| pBean.isContractor()|| pBean.isAdmin()|| pBean.isOperator()){%>
+<%	if(!permissions.isOnlyAuditor()){%>
                 <tr> 
                   <td align="center"><input name="submit" type="image" src="images/button_submit.gif" value="submit"></td>
                 </tr>
-<%	}//if%>
+<%	} %>
               </table>
             </form>
           </td>
