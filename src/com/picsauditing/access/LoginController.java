@@ -135,15 +135,6 @@ public class LoginController extends DataBean {
 			isUser = false;
 		}
 		// The user or account we want to login as is now set as private variables
-		
-		if (isUser) {
-			if(!user.userDO.isActive.startsWith("Y"))
-				return false;
-		} else {
-			if(!aBean.active.startsWith("Y"))
-				return false;
-		}
-
 		return true;
 	}
 	private boolean getAccountByID(String id) throws Exception {
@@ -161,15 +152,6 @@ public class LoginController extends DataBean {
 			isUser = false;
 		}
 		// The user or account we want to login as is now set as private variables
-		
-		if (isUser) {
-			if(!user.userDO.isActive.startsWith("Y"))
-				return false;
-		} else {
-			if(!aBean.active.startsWith("Y"))
-				return false;
-		}
-
 		return true;
 	}
 	

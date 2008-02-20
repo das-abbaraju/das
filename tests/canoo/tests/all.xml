@@ -4,18 +4,18 @@
 	<target name="test" description="Run All PICS Web Tests">
 	<!--
 		Comment out tests you don't want to run right now
+	-->
 		<ant antfile="marketingPages.xml"/>
+		<ant antfile="login.xml"/>
 		<ant antfile="auditor.xml"/>
 		<ant antfile="operator_users.xml"/>
+		<ant antfile="operator.xml"/>
+		<ant antfile="contractor_registration.xml"/>
 		<ant antfile="contractor.xml"/>
 		<ant antfile="admin.xml"/>
 		<ant antfile="admin_audits.xml"/>
 		<ant antfile="admin_billing.xml"/>
 		<ant antfile="admin_insurance.xml"/>
 		<ant antfile="admin_reports.xml"/>
-	-->
-		<ant antfile="login.xml"/>
-		<ant antfile="operator.xml"/>
-		<ant antfile="contractor_registration.xml"/>
 	</target>
 </project>
