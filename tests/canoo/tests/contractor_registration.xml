@@ -16,7 +16,7 @@
 				&body_verify;
 				<group description="Register and Save">
 					<!-- Register Correctly -->
-					<setInputField name="name" value="Canoo Test Contractor" />
+					<setInputField name="name" value="Canoo's Test Contractor" />
 					<setInputField name="contact" value="John Doe" />
 					<setInputField name="address" value="123 Main Street" />
 					<setInputField name="city" value="Tester" />
@@ -67,6 +67,13 @@
 					<clickLink
 						description="Open Activation Report"
 						label="Activation Report" />
+					<setInputField name="name" value="Canoo's Test Contractor" />
+					<clickButton description="Search for Contractor" name="imageField" />
+					<clickButton description="Send Welcome Email" label="Send" />
+					
+					<setInputField name="name" value="Canoo's Test Contractor" />
+					<clickButton description="Search for Contractor" name="imageField" />
+					<clickButton description="Make Visible" label="Yes" />
 				</group>
 				
 				<group description="Login correctly">
@@ -77,7 +84,29 @@
 					&login;
 					&body_verify;
 				</group>
-				
+
+				<group description="Fill out PQF">
+					<clickLink
+						description="Open Activation Report"
+						label="Complete PQF" />
+					<clickLink
+						description="Edit Company Info"
+						label="COMPANY INFORMATION" />
+					<setInputField name="answer_635" value="Canoo's Test Contractor" />
+					<setInputField name="answer_603" value="949-123-4567" />
+					<setInputField name="answer_37" value="A really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, long company name goes here" />
+					<setInputField name="answer_38" value="" />
+					<clickButton description="Save PQF" label="Save" />
+					
+					<clickLink
+						description="Edit Osha"
+						label="OSHA/MSHA INJURY AND ILLNESS DATA" />
+					<setInputField name="manHours1" value="400000" />
+					<setInputField name="manHours2" value="300000" />
+					<setRadioButton name="na3" value="Yes" />
+					<clickButton description="Save PQF" label="Update" />
+				</group>
+
 				<group description="Delete account">
 					<storeProperty description="Delete Account" 
 						name="login.username" 
@@ -87,7 +116,7 @@
 					<invoke
 						description="Register Link"
 						url="accounts_manage.jsp" />
-					<setInputField name="name" value="Canoo Test Contractor" />
+					<setInputField name="name" value="Canoo's Test Contractor" />
 					<clickButton description="Search for Contractor" name="imageField" />
 					<clickButton description="Delete Contract" label="D" />
 				</group>

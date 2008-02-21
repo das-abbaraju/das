@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<property name="login.username" value="Wkraus"/>
+	<!-- Acuren Inspection -->
+	<property name="conID" value="81"/>
+	
+	<target name="test">
+		<webtest name="Corporate Tesoro - Bill Kraus">
+			&config;
+			<steps>
+				&login;
+				<!--   CONTRACTOR LIST -->
+				&body_verify;
+				<verifyText description="You have ### contractors in your database"
+					regex="true" text="You have \x3Cstrong[\x3C\x3E][1-9][0-9][0-9]\x3C/strong[\x3C\x3E] contractors in your database" />
+				<verifyText description="Check for atleast one Green flag"
+					text="icon_greenFlag.gif" />
+				<verifyText description="Check for atleast one Red flag"
+					text="icon_redFlag.gif" />
+				
+				<!--   CONTRACTOR DETAILS -->
+				<previousResponse />
+				<clickLink description="Show contractor details"
+					href="contractor_detail.jsp?id=${conID}" />
+				&body_verify;
+				<verifyText description="Verify name of company"
+					text="Acuren Inspection" />
+				
+				<clickLink description="Red Flag Report"
+					label="Red Flag Report" />
+				&body_verify;
+				<verifyText description="Show big red flag"
+					text="icon_redFlagBig.gif" />
+				
+				<clickLink description="View PQF"
+					label="View PQF" />
+				&body_verify;
+				
+				<clickLink description="View Entire PQF"
+					label="View Entire PQF" />
+				<!-- can't search for error because it gets other words like terrorist -->
+				<!-- &body_verify; -->
+
+				<clickLink description="View Desktop Audit"
+					label="View Desktop Audit" />
+				&body_verify;
+
+				<!--   Forms & Docs -->
+				<invoke
+					description="back to Contractor List"
+					url="contractor_list.jsp" />
+				<clickLink description="Forms &amp; Docs"
+					href="manage_forms.jsp" />
+				&body_verify;
+				<verifyText description="Edit an Existing Form"
+					text="Edit an Existing Form" />
+				
+				<!--   New Contractor Search -->
+				<clickLink description="Search For New Contractors"
+					label="Search For New Contractors" />
+				<setSelectField 
+					description="Choose Trade=Cranes &amp; Rigging"
+					name="trade"
+					value="489" />
+				<setSelectField 
+					description="Choose Self Performed"
+					name="performedBy"
+					value="Self Performed" />
+				<setSelectField 
+					description="Choose Green Flag"
+					name="flagStatus"
+					value="Green" />
+				<clickButton
+					name="imageField"
+					description="Click the Search button" />
+
+				&body_verify;
+				<verifyText description="Show more than 100 green crane operators"
+					text="Showing 1-100" />
+				
+			</steps>
+		</webtest>
+	</target>
+</project>
