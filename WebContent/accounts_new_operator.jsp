@@ -135,7 +135,7 @@
 					  <tr>
                         <td class="blueMain" align="right">Receive email when contractor is activated:</td>
                         <td class="blueMain" align="left" valign="bottom">
-                          <%=Inputs.getRadioInput("doContractorsPay","forms",oBean.doContractorsPay,OperatorBean.CONTRACTORS_PAY_ARRAY)%>
+                          <%=Inputs.getYesNoRadio("doSendActivationEmail","forms",oBean.doSendActivationEmail)%>
                         </td>
                       </tr>
 					  <tr>
@@ -166,6 +166,12 @@
                         <td class="blueMain" align="right">Contractors pay:</td>
                         <td class="blueMain" align="left" valign="bottom">
                           <%=Inputs.getYesNoRadio("doContractorsPay","forms",oBean.doContractorsPay)%>
+                        </td>
+                      </tr>
+					  <tr>
+                        <td class="blueMain" align="right">Cons Require Approval:</td>
+                        <td class="blueMain" align="left" valign="bottom">
+						  <%=Inputs.getYesNoRadio("approvesRelationships","forms",oBean.approvesRelationships)%>
                         </td>
                       </tr>
 					  <tr>

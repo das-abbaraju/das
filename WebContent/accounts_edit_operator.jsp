@@ -226,6 +226,12 @@
                         </td>
                       </tr>
 					  <tr>
+                        <td class="blueMain" align="right">Cons Require Approval:</td>
+                        <td class="blueMain" align="left" valign="bottom">
+						  <%=Inputs.getYesNoRadio("approvesRelationships","forms",oBean.approvesRelationships)%>
+                        </td>
+                      </tr>
+					  <tr>
                         <td class="blueMain" align="right">Sees PQF:</td>
                         <td class="blueMain" align="left" valign="bottom">
                           <%=Inputs.getYesNoRadio("canSeePQF","forms",oBean.canSeePQF)%>

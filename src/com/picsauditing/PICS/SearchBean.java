@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.*;
 
 import com.picsauditing.PICS.*;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.domain.IPicsDO;
 
 
@@ -503,7 +504,10 @@ import com.picsauditing.domain.IPicsDO;
 			groupByQuery = "GROUP BY accounts.id ";
 		}
 
-		Conn = DBBean.getDBConnection();
+		if(!permissions.getPermissions().hasPermission(OpPerms.ViewRedFlagged))
+			whereQuery += "AND flags.flag!='Red' ";
+		
+			Conn = DBBean.getDBConnection();
 		SQLStatement = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		count = beginResults = (showPage-1)*showNum;
 		
