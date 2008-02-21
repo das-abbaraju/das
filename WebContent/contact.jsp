@@ -79,7 +79,8 @@ function MM_swapImgRestore() { //v3.0
           <tr>
             <td valign="top"><br>              <br>              <table width="100%" border="0" cellpadding="0" cellspacing="0">
               <tr>
-                <td valign="top" class="blueMainServices">                  <form action="confirmContact.jsp" method="post" name="emailForm" id="emailForm">
+                <td valign="top" class="blueMainServices">
+                <form action="confirmContact.jsp" method="post" name="emailForm" id="emailForm">
                       <table border="0" cellpadding="2" cellspacing="0">
                       <tr>
                           <td width="65" class="blueMain">
@@ -104,7 +105,8 @@ Irvine, CA 92614<br>
                             <label><input name="sendTo" type="radio" value="sales">Sales</label>
                             <label><input name="sendTo" type="radio" value="billing">Billing</label><br />
                             <label><input name="sendTo" type="radio" value="audits">Audits</label>
-                            <label><input name="sendTo" type="radio" value="tech">Technical Support</label>
+                            <label><input name="sendTo" type="radio" value="tech">Tech Support</label>
+                            <label><input name="sendTo" type="radio" value="careers">Careers</label>
                           </td>
                         </tr>
                         <tr>

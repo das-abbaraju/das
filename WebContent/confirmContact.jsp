@@ -11,6 +11,7 @@
 	if (sendTo.equals("general")) toAddresses.add("jfazeli@picsauditing.com");
 	if (sendTo.equals("tech")) toAddresses.add("jfazeli@picsauditing.com");
 	if (sendTo.equals("tech")) toAddresses.add("tallred@picsauditing.com");
+	if (sendTo.equals("careers")) toAddresses.add("careers@picsauditing.com");
 	
 	String name = request.getParameter("name");
 	String email = request.getParameter("email");
