@@ -28,6 +28,8 @@ public enum OpPerms {
 	EmailTemplates("Email Templates"),
 	ManageOperators("Manage Operator Accounts"),
 	ManageCorporate("Manage Corporate Accounts"),
+	ContractorApproval("Operator Approval of Contractors", "Allows operator users to approve contractors. This approval may factor into their Red Flag calculation.", false, false),
+	ViewRedFlagged("Red-Flagged Contractors", "Users can only view contractors who are NOT red flagged unless this permission is granted.", false, false),
 	AllContractors("All Contractors", "Can view all contractors in the database", false, false),
 	// Can view/edit/delete all contractors in the database ... replaces isAdmin
 	ManageAudits("Manage Audits and Matrices");

@@ -68,6 +68,7 @@ public class Menu {
 		int adminGroup = 10;
 		this.addItem("report_activation.jsp?changed=1", "Activation Report", adminGroup);
 		this.addItem("report_annualUpdate.jsp?changed=1", "Annual Update Report", adminGroup);
+		this.addItem("con_approvals.jsp", "Approve Contractors", OpPerms.ContractorApproval);
 		this.addItem("report_audits.jsp?changed=1", "Audit Dates Report", adminGroup);
 		this.addItem("report_operatorContractor.jsp?changed=1", "Contractor Assignments", adminGroup);
 		this.addItem("report_contactInfo.jsp?changed=1", "Contractor Contact Info");
