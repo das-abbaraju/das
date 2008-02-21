@@ -99,13 +99,14 @@ try{
               </tr>
 <%	while (sBean.isNextRecord()) {
 		String auditStatus = "";
-		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(sBean.selected_auditType))
-			auditStatus = sBean.cBean.getDesktopStatus();
-		else if (com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(sBean.selected_auditType))
+		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(sBean.selected_auditType)){
+			if (sBean.cBean.isDesktopClosed())
+				auditStatus = ContractorBean.AUDIT_STATUS_CLOSED;
+		}else if (com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(sBean.selected_auditType))
 			auditStatus = sBean.cBean.auditStatus;
 %>
 			  <tr <%=sBean.getBGColor()%> class="<%=sBean.getTextColor()%>">
-<%		if (auditStatus.equals(sBean.cBean.AUDIT_STATUS_CLOSED)) { %>
+<%		if (auditStatus.equals(ContractorBean.AUDIT_STATUS_CLOSED)) { %>
 				<td><%=sBean.count-1%></td>
 				<td><span class="cantSee"><%=sBean.aBean.name%></span></td>
 <%		} else { %>
