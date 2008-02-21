@@ -2,6 +2,7 @@ package com.picsauditing.resultset;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class ResultSet {
 	private ArrayList<ResultSetRow> rows = new ArrayList<ResultSetRow>();
@@ -14,6 +15,8 @@ public class ResultSet {
 		ArrayList<String> validTypes = new ArrayList<String>();
 		validTypes.add("String");
 		validTypes.add("Integer");
+		validTypes.add("Collection<String>");
+		validTypes.add("Collection<Integer>");
 		
 		if (validTypes.contains(type))
 			columns.put(name, type);

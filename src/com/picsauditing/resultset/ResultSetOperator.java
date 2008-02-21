@@ -2,10 +2,14 @@ package com.picsauditing.resultset;
 
 public enum ResultSetOperator {
 	Any,
-	//Contains,
-	//StartsWith,
+	IsTrue,
+	IsFalse,
+	Contains,
+	StartsWith,
 	Equals,
 	NotEquals,
 	GreaterThan,
-	LessThan
+	GreaterThanEqual,
+	LessThan,
+	LessThanEqual
 }

@@ -3,18 +3,6 @@ package com.picsauditing.resultset;
 public class ResultSetQuestion {
 	private ResultSetOperator operator = ResultSetOperator.Any;
 	private Object value;
-	public ResultSetOperator getOperator() {
-		return operator;
-	}
-	public void setOperator(ResultSetOperator operator) {
-		this.operator = operator;
-	}
-	public Object getValue() {
-		return value;
-	}
-	public void setValue(Object value) {
-		this.value = value;
-	}
 	
 	public ResultSetQuestion() {
 		this.operator = ResultSetOperator.Any;
@@ -24,6 +12,9 @@ public class ResultSetQuestion {
 	public ResultSetQuestion(ResultSetOperator operator, Object value) {
 		this.operator = operator;
 		this.value = value;
+	}
+	public ResultSetQuestion(ResultSetOperator operator) {
+		this.operator = operator;
 	}
 	
 	public boolean equals(Object parameter) {
@@ -56,5 +47,19 @@ public class ResultSetQuestion {
 			System.out.println("Failed to evaluate ResultSetQuestion "+this.toString()+" "+e.getMessage());
 			return false;
 		}
+	}
+	
+	
+	public ResultSetOperator getOperator() {
+		return operator;
+	}
+	public void setOperator(ResultSetOperator operator) {
+		this.operator = operator;
+	}
+	public Object getValue() {
+		return value;
+	}
+	public void setValue(Object value) {
+		this.value = value;
 	}
 }

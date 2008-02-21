@@ -112,15 +112,15 @@ public class Billing extends DataBean {
 							updateQueries.add("UPDATE contractor_info SET payingFacilities="+temp+
 									",newBillingAmount="+newBill+" WHERE id="+subID+";");
 						}
-					}//if
+					}
 					subID = tempSubID;
 					tempPayingFacilities = SQLResult.getInt("payingFacilities");
 					tempNewBillingAmount = SQLResult.getInt("newBillingAmount");
 					tempIsExempt = SQLResult.getString("isExempt");
 					generalContractors.clear();
-				}//if
+				}
 				generalContractors.add(SQLResult.getString("genID"));
-			}//while
+			}
 			SQLResult.close();
 			// Process the last row here
 			if (!"".equals(subID)){
@@ -137,6 +137,6 @@ public class Billing extends DataBean {
 				SQLStatement.executeUpdate(updateQuery);
 		}finally{
 			DBClose();
-		}//finally
-	}//updateAllPayingFacilities
-}//Billing
+		}
+	}
+}
