@@ -12,7 +12,7 @@
 	aBean.setFromDB(id);
 	boolean isSubmitted = (null != request.getParameter("submit.x"));
 	boolean removeContractor = ("Remove".equals(request.getParameter("action")));
-	if (isSubmitted){
+	if (isSubmitted) {
 		cBean.setGeneralContractorsFromCheckList(request);
 		if (cBean.writeGeneralContractorsToDB(pBean,FACILITIES)){
 			com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
@@ -212,10 +212,7 @@
 <%				} %>
 			    </td>
 				<td>&nbsp;</td>
-				<td align="center">
-					<a href="con_redFlags.jsp?id=<%=cBean.id%>&opID=<%=opID%>" title="Click to view Flag Color details"><img 
-						src=images/icon_<%=flagColor%>Flag.gif width=12 height=15 border=0></a>
-				</td>
+				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 			</tr>
 <%		}

@@ -6,7 +6,8 @@
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 
-<%	try{
+<%
+try {
 	new Billing().updateAllPayingFacilities(FACILITIES, application);
 	String action = request.getParameter("action");
 	String action_id = request.getParameter("action_id");

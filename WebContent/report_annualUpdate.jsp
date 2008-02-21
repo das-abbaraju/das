@@ -6,7 +6,7 @@
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <%
-try{
+try {
 	String action = request.getParameter("action");
 	sBean.orderBy = request.getParameter("orderBy");
 	if (null==sBean.orderBy)
@@ -14,6 +14,7 @@ try{
 	if (null!=request.getParameter("startsWith"))
 		sBean.orderBy = "name";
 	if ("Send Emails".equals(action)) {
+		
 		java.util.Enumeration e = request.getParameterNames();
 		while (e.hasMoreElements()) {
 			String temp = (String)e.nextElement();
@@ -25,9 +26,9 @@ try{
 				emailer.getContractorBean().lastAnnualUpdateEmailDate=DateBean.getTodaysDate();
 				emailer.getContractorBean().annualUpdateEmails++;
 				emailer.getContractorBean().writeToDB();
-			}//if
-		}//while
-	}//if
+			}
+		}
+	}
 
 	sBean.setNoInsuranceOnly();
 	sBean.doSearch(request, sBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
