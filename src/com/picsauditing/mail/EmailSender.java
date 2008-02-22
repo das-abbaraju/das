@@ -23,7 +23,7 @@ public class EmailSender extends GMailSender {
 		try {
 			this.sendMail(email.getSubject(), email.getBody(), getSender(), email.getToAddress());
 		} catch (Exception e) {
-			System.out.println("Send Mail Exception:"+e.getMessage());
+			System.out.println("Send Mail Exception with account"+currentDefaultSender+": "+e.getMessage());
 			changeSender();
 			this.sendMail(email);
 		}
