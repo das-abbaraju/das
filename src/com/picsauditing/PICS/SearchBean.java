@@ -504,7 +504,8 @@ import com.picsauditing.domain.IPicsDO;
 			groupByQuery = "GROUP BY accounts.id ";
 		}
 
-		if(!permissions.getPermissions().hasPermission(OpPerms.ViewRedFlagged))
+		if(!permissions.getPermissions().hasPermission(OpPerms.ViewRedFlagged) &&
+				("Corporate".equals(accessType) || "Operator".equals(accessType)))
 			whereQuery += "AND flags.flag!='Red' ";
 		
 			Conn = DBBean.getDBConnection();
