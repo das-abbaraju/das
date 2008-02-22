@@ -211,7 +211,7 @@ try{
               <tr class="blueMain" <%=Utilities.getBGColor(rowCount++)%>>
                 <td align="right"></td>
                 <td align="left">Is this contractor approved?
-                <a href="con_approvals.jsp?searchConID=<%=id%>"><%=linkText%></a>
+                <a href="con_approvals.jsp?searchStatus=All&searchConID=<%=id%>"><%=linkText%></a>
                 </td>
                 <td align="center"><%=answer%></td>
                 <td align="center"><%=flagImage%></td>

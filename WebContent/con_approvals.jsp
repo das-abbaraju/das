@@ -42,17 +42,28 @@ search.sql.addField("u.name as user_displayname");
 search.sql.addField("gc.approvedDate");
 
 search.sql.addWhere("active='Y'");
-String status = request.getParameter("status");
-if (status==null || status.equals(""))
+
+String filter = "";
+String searchStatus = request.getParameter("searchStatus");
+if (searchStatus!=null) filter += "&searchStatus="+searchStatus;
+if (searchStatus==null || searchStatus.equals(""))
 	search.sql.addWhere("gc.approvedStatus IS NULL OR gc.approvedStatus = ''");
-else if (status.equals("Yes") || status.equals("No"))
-	search.sql.addWhere("gc.approvedStatus = '"+status+"'");
+else if (searchStatus.equals("Yes") || searchStatus.equals("No"))
+	search.sql.addWhere("gc.approvedStatus = '"+searchStatus+"'");
 
 String searchConID = request.getParameter("searchConID");
+if (searchConID!=null) filter += "&searchConID="+searchConID;
 if (!(searchConID==null  || "".equals(searchConID)))
 	search.sql.addWhere("gc.subID="+searchConID);
+String searchName = request.getParameter("searchName");
+if (searchName!=null) filter += "&searchName="+searchName;
+if (!(searchName==null  || "".equals(searchName)))
+	search.sql.addWhere("a.name LIKE '"+Utilities.escapeQuotes(searchName)+"%'");
+
 search.setPageByResult(request);
 search.setLimit(50);
+
+
 
 List<BasicDynaBean> searchData = search.doSearch();
 %>
@@ -86,30 +97,30 @@ form.smallform {
 	<tr>
 		<td class="blueMain">
 		<form action="con_approvals.jsp" method="get">
-			Name: <input type="text" name="name" value="" size="20" class="blueMain" />
-			<select name="status" class="blueMain">
+			Name: <input type="text" name="searchName" value="" size="20" class="blueMain" />
+			<select name="searchStatus" class="blueMain">
 				<option value="">Pending Approval</option>
-				<option value="Yes"<%="Yes".equals(status)?" SELECTED":"" %>>Approved</option>
-				<option value="No"<%="No".equals(status)?" SELECTED":"" %>>Not Approved</option>
-				<option value="All"<%="All".equals(status)?" SELECTED":"" %>>All</option>
+				<option value="Yes"<%="Yes".equals(searchStatus)?" SELECTED":"" %>>Approved</option>
+				<option value="No"<%="No".equals(searchStatus)?" SELECTED":"" %>>Not Approved</option>
+				<option value="All"<%="All".equals(searchStatus)?" SELECTED":"" %>>All</option>
 			</select>
 			<input type="submit" value="Show" class="blueMain">
 		</form>
 		</td>
 	</tr>
 	<tr>
-		<td align="right"><%=search.getPageLinks()%></td>
+		<td align="right"><%=search.getPageLinks(filter)%></td>
 	</tr>
 </table>
 <table border="0" cellpadding="1" cellspacing="1" align="center">
 	<tr bgcolor="#003366" class="whiteTitle">
-		<td colspan=2><a href="?orderBy=a.name" class="whiteTitle">Contractor</a></td>
-		<td align="center"><a href="?"
+		<td colspan=2><a href="?orderBy=a.name<%=filter %>" class="whiteTitle">Contractor</a></td>
+		<td align="center"><a href="?<%=filter %>"
 			class="whiteTitle">Date Added</a></td>
-		<td align="center"><a href="?orderBy=approvedStatus"
+		<td align="center"><a href="?orderBy=approvedStatus<%=filter %>"
 			class="whiteTitle">Approved</a></td>
-		<td align="center"><a href="?orderBy=approvedDate DESC"
-			class="whiteTitle">Date / By</a></td>
+		<td align="center"><a href="?orderBy=approvedDate DESC<%=filter %>"
+			class="whiteTitle">Date / Approved By</a></td>
 	</tr>
 	<%
 		int counter = 0;
