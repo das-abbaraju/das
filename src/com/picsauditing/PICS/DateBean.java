@@ -84,16 +84,14 @@ public class DateBean {
 		return showFormat.format(cal.getTime());
 	}//getThreeYearsAheadDate
 
-	public static String getTodaysDateTime() throws Exception {
+	public static String getTodaysDateTime() {
 		Calendar cal = Calendar.getInstance();
 		TimeZone tz = TimeZone.getTimeZone("America/Los_Angeles");
 		SimpleDateFormat format = new SimpleDateFormat("M/d/yy h:mm a z");
 		format.setTimeZone(tz);
 		String temp = format.format(cal.getTime());
-//		System.out.println("Todays date/time: "+temp);
 		return temp;
-//		return cal.getTimeZone().getDisplayName();
-	}//getTodaysDateTime
+	}
 
 	public static int getCurrentYear() {
 		 Calendar cal = Calendar.getInstance();

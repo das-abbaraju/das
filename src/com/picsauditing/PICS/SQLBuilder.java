@@ -121,11 +121,13 @@ public class SQLBuilder {
 	}
 
 	public void addWhere(String whereClause) {
-		this.whereClause.add(whereClause);
+		if (whereClause != null && whereClause.length() > 0)
+			this.whereClause.add(whereClause);
 	}
 
 	public void addGroupBy(String groupBy) {
-		this.groupByFields.add(groupBy);
+		if (groupBy != null && groupBy.length() > 0)
+			this.groupByFields.add(groupBy);
 	}
 
 	public void setHavingClause(String havingClause) {
@@ -136,15 +138,18 @@ public class SQLBuilder {
 	 * @param join Example: JOIN user u ON u.user_id = t.user_id
 	 */
 	public void addJoin(String join) {
-		this.joinClause.add(join);
+		if (join != null && join.length() > 0)
+			this.joinClause.add(join);
 	}
 	
 	public void addField(String field) {
-		this.fields.add(field);
+		if (field != null && field.length() > 0)
+			this.fields.add(field);
 	}
 
 	public void addOrderBy(String field) {
-		this.orderBys.add(field);
+		if (field != null && field.length() > 0)
+			this.orderBys.add(field);
 	}
 
 	public void setFullClause(String fullClause) {

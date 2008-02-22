@@ -34,7 +34,6 @@ if (orderBy != null) {
 search.sql.addOrderBy("c.desktopSubmittedDate DESC");
 
 search.setType(SearchAccounts.Type.Contractor);
-//search.sql.addWhere("a.id IN (SELECT gc.subID FROM generalcontractors gc JOIN operators gc_o ON gc.genID = gc_o.id AND gc_o.canSeeDesktop = 'Yes')");
 
 search.sql.addField("c.lastPayment");
 search.sql.addField("c.pqfSubmittedDate");

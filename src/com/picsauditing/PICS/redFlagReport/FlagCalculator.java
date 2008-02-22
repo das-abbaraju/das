@@ -189,7 +189,6 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 				// Run a query against pqfData and OSHA data that considers the flagCriteria
 				String sql = getSelectQuery(flagCriteria);
 				// We actually calculate flags for ALL contractors regardless if they are on the operator list or not
-				//sql = sql + " WHERE cons.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID = "+opID+")";
 				// For testing purposes
 				//sql = sql + " AND cons.id IN (SELECT id FROM accounts WHERE name like 'A%')";
 				ResultSet rs = SQLStatement.executeQuery(sql);
