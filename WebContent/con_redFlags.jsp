@@ -199,15 +199,20 @@ try{
 		boolean temp = flagCalculator.isFlaggedNotApprovedSetDB(opID,id);
 		String answer;
 		String flagImage = ""; 
+		String linkText = "";
 		if (temp){
 			answer = "No";
 			flagImage = "<img src=images/icon_redFlag.gif>";
 		}else
 			answer = "Yes";
+		if (permissions.hasPermission(OpPerms.ContractorApproval) && "No".equals(temp))
+			linkText = "Click to Approve";
 %>
               <tr class="blueMain" <%=Utilities.getBGColor(rowCount++)%>>
                 <td align="right"></td>
-                <td align="left">Is this contractor approved?</td>
+                <td align="left">Is this contractor approved?
+                <a href="con_approvals.jsp"><%=linkText%></a>
+                </td>
                 <td align="center"><%=answer%></td>
                 <td align="center"><%=flagImage%></td>
               </tr>
