@@ -10,6 +10,7 @@ pageBean.includeScriptaculous(true);
 
 String action = request.getParameter("action");
 if (action != null && action.equals("save")) {
+	permissions.tryPermission(OpPerms.ContractorApproval, OpType.Edit);
 	GeneralContractor gcBean = new GeneralContractor();
 	gcBean.setConID(Integer.parseInt(request.getParameter("conID")));
 	gcBean.setOpID(permissions.getAccountId());
@@ -82,6 +83,7 @@ form.smallform {
 	<tr>
 		<td>
 		<form action="con_approvals.jsp" method="get">
+			Name: <input type="text" name="name" value="" size="20" class="blueMain" />
 			<select name="status" class="blueMain">
 				<option value="">Pending Approval</option>
 				<option value="Yes"<%="Yes".equals(status)?" SELECTED":"" %>>Approved</option>
@@ -118,12 +120,14 @@ form.smallform {
 		<td><a href="contractor_detail.jsp?id=<%=rowID%>"><%=row.get("name")%></a></td>
 		<td><%=DateBean.toShowFormat(row.get("dateAdded"))%></td>
 		<td>
+		<% if (permissions.hasPermission(OpPerms.ContractorApproval, OpType.Edit)) { %>
 			<form class="smallform">
 				<label><input type="radio" name="approveStatus" onClick="saveApproval(<%=rowID%>, 'Yes')"
 					value="Yes"<%="Yes".equals(row.get("approvedStatus"))?" checked ":""%>>Yes</label>
 				<label><input type="radio" name="approveStatus" onClick="saveApproval(<%=rowID%>, 'No')"
 					value="No"<%="No".equals(row.get("approvedStatus"))?" checked ":""%>>No</label>
 			</form>
+		<% } %>
 		</td>
 		<td id="result_td<%=rowID%>" style="font-style: italic;">
 		<% if (row.get("approvedStatus") != null) { %>

@@ -2,6 +2,8 @@ package com.picsauditing.mail;
 
 public class EmailSender extends GMailSender {
 	private static int currentDefaultSender = 1;
+	private int attempts = 0;
+	private static final int numberOfGmailAccounts = 6;
 	private static String defaultPassword = "e3r4t5";
 	
 	public EmailSender() {
@@ -18,9 +20,10 @@ public class EmailSender extends GMailSender {
 	 * @throws Exception
 	 */
 	public void sendMail(Email email) throws Exception {
-		if (currentDefaultSender > 6)
+		if (attempts > numberOfGmailAccounts)
 			throw new Exception("Failed to send email, used all possible senders. See log file for more info.");
 		try {
+			attempts++;
 			this.sendMail(email.getSubject(), email.getBody(), getSender(), email.getToAddress());
 		} catch (Exception e) {
 			System.out.println("Send Mail Exception with account"+currentDefaultSender+": "+e.getMessage());

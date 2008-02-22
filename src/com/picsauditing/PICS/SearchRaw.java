@@ -141,12 +141,6 @@ public class SearchRaw {
 			temp += "</span>";
 			return temp;
 		}
-		/*
-		this.allRows;
-		this.currentPage;
-		this.limit;
-		this.returnedRows;
-		*/
 		
 		int SHOW_PAGES = 2;
 		// If all Rows = 1000 and limit = 100, then lastPage = 999/101
