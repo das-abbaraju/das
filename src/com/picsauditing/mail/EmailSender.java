@@ -2,8 +2,7 @@ package com.picsauditing.mail;
 
 public class EmailSender extends GMailSender {
 	private static int currentDefaultSender = 1;
-	private int attempts = 0;
-	private static final int numberOfGmailAccounts = 6;
+	private static final int NUMBER_OF_GMAIL_ACOUNTS = 6;
 	private static String defaultPassword = "e3r4t5";
 	
 	public EmailSender() {
@@ -19,17 +18,21 @@ public class EmailSender extends GMailSender {
 	 * @param email
 	 * @throws Exception
 	 */
-	public void sendMail(Email email) throws Exception {
-		if (attempts > numberOfGmailAccounts)
+	private void sendMail(Email email, int attempts) throws Exception {
+		attempts++;
+		if (attempts > NUMBER_OF_GMAIL_ACOUNTS)
 			throw new Exception("Failed to send email, used all possible senders. See log file for more info.");
 		try {
-			attempts++;
 			this.sendMail(email.getSubject(), email.getBody(), getSender(), email.getToAddress());
 		} catch (Exception e) {
-			System.out.println("Send Mail Exception with account"+currentDefaultSender+": "+e.getMessage());
+			System.out.println("Send Mail Exception with account "+currentDefaultSender+": "+e.getMessage());
 			changeSender();
-			this.sendMail(email);
+			this.sendMail(email, attempts);
 		}
+	}
+	public void sendMail(Email email) throws Exception {
+		int attempts = 0;
+		this.sendMail(email, attempts);
 	}
 	
 	public static String getSender() {
@@ -39,6 +42,6 @@ public class EmailSender extends GMailSender {
 			return "info@picsauditing.com";
 	}
 	public static void changeSender() {
-		currentDefaultSender++;
+		currentDefaultSender = (currentDefaultSender % NUMBER_OF_GMAIL_ACOUNTS)+1;
 	}
 }
