@@ -2,6 +2,9 @@
 <%@ include file="includes/main.jsp" %>
 <%@ include file="utilities/adminGeneral_secure.jsp" %>
 <%@page import="com.picsauditing.mail.*"%>
+<%@page import="com.picsauditing.PICS.redFlagReport.FlagCalculator"%>
+<%@page import="com.picsauditing.PICS.EmailBean"%>
+
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
 <%	
@@ -48,7 +51,8 @@ try{
 		cBean.canEditPrequal="Yes";
 		cBean.addNote(actionID,"("+pBean.getWhoIsDetail()+")", "Added this Contractor to "+aBean.name+"'s db", DateBean.getTodaysDateTime());
 		cBean.writeToDB();
-		com.picsauditing.PICS.EmailBean.sendUpdateDynamicPQFEmail(actionID);
+		EmailBean.sendUpdateDynamicPQFEmail(actionID);
+		new FlagCalculator().setConFlags(actionID,permissions.getAccountIdString());
 	}//if
 	if ("Remove".equals(action) && pBean.oBean.canAddContractors()){
 		pBean.oBean.removeSubContractor(pBean.userID, actionID);
@@ -72,7 +76,6 @@ try{
 	String showPage = request.getParameter("showPage");
 	if (showPage == null)	showPage = "1";
 %>
-<%@page import="com.picsauditing.mail.EmailContractorBean"%>
 <html>
 <head>
 <title>PICS - Pacific Industrial Contractor Screening</title>
