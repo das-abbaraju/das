@@ -205,13 +205,13 @@ try{
 			flagImage = "<img src=images/icon_redFlag.gif>";
 		}else
 			answer = "Yes";
-		if (permissions.hasPermission(OpPerms.ContractorApproval) && "No".equals(temp))
+		if (permissions.hasPermission(OpPerms.ContractorApproval))
 			linkText = "Click to Approve";
 %>
               <tr class="blueMain" <%=Utilities.getBGColor(rowCount++)%>>
                 <td align="right"></td>
                 <td align="left">Is this contractor approved?
-                <a href="con_approvals.jsp"><%=linkText%></a>
+                <a href="con_approvals.jsp?searchConID=<%=id%>"><%=linkText%></a>
                 </td>
                 <td align="center"><%=answer%></td>
                 <td align="center"><%=flagImage%></td>

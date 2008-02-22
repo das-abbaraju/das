@@ -48,6 +48,9 @@ if (status==null || status.equals(""))
 else if (status.equals("Yes") || status.equals("No"))
 	search.sql.addWhere("gc.approvedStatus = '"+status+"'");
 
+String searchConID = request.getParameter("searchConID");
+if (!(searchConID==null  || "".equals(searchConID)))
+	search.sql.addWhere("gc.subID="+searchConID);
 search.setPageByResult(request);
 search.setLimit(50);
 
@@ -81,7 +84,7 @@ form.smallform {
 
 <table border="0" cellpadding="5" cellspacing="0" align="center">
 	<tr>
-		<td>
+		<td class="blueMain">
 		<form action="con_approvals.jsp" method="get">
 			Name: <input type="text" name="name" value="" size="20" class="blueMain" />
 			<select name="status" class="blueMain">
