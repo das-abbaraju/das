@@ -17,6 +17,8 @@ if (action != null && action.equals("save")) {
 	if (gcBean.getApprovedStatus().length() > 0)
 		gcBean.setApprovedByID(permissions.getUserId());
 	gcBean.save();
+	FlagCalculator fcBean = new FlagCalculator();
+	fcBean.setConFlags(request.getParameter("conID"), permissions.getAccountIdString());
 	%> on <%=DateBean.getTodaysDate() %> by <%=permissions.getName() %> <%
 	return;
 }
@@ -51,6 +53,7 @@ search.setLimit(50);
 List<BasicDynaBean> searchData = search.doSearch();
 %>
 <%@ include file="includes/header.jsp" %>
+<%@page import="com.picsauditing.PICS.redFlagReport.FlagCalculator"%>
 <script type="text/javascript">
 function saveApproval(conID, status) {
 	pars = 'action=save&conID='+conID+'&status='+status;
