@@ -20,7 +20,7 @@ if (action != null && action.equals("save")) {
 	gcBean.save();
 	FlagCalculator fcBean = new FlagCalculator();
 	fcBean.setConFlags(request.getParameter("conID"), permissions.getAccountIdString());
-	%> on <%=DateBean.getTodaysDate() %> by <%=permissions.getName() %> <%
+	%><%=DateBean.getTodaysDate() %> by <%=permissions.getName() %><%
 	return;
 }
 SearchAccounts search = new SearchAccounts();
