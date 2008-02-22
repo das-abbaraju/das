@@ -7,18 +7,20 @@ Note note = new Note();
 HurdleQuestions hurdleQuestions = null;
 AccountBean aBean = new AccountBean();
 ContractorBean cBean = new ContractorBean();
+OperatorBean oBean = new OperatorBean();
 try{
 	String action = request.getParameter("action");
 	boolean addNote = "Add Note".equals(action);
-	boolean canEditNotes = (pBean.isOperator() || pBean.isCorporate()) && permissions.hasPermission(com.picsauditing.access.OpPerms.EditNotes);
+	boolean canEditNotes = (permissions.isOperator() || permissions.isCorporate()) && permissions.hasPermission(com.picsauditing.access.OpPerms.EditNotes);
 	boolean deleteNote = "DeleteNote".equals(action);
 	boolean addToList = "Add".equals(action);
-	boolean canEditForcedFlags = (pBean.isOperator() || pBean.isCorporate()) && permissions.hasPermission(com.picsauditing.access.OpPerms.EditForcedFlags);
+	boolean canEditForcedFlags = (permissions.isOperator() || permissions.isCorporate()) && permissions.hasPermission(com.picsauditing.access.OpPerms.EditForcedFlags);
 	boolean removeFromList = "Remove".equals(action);
 	String id = request.getParameter("id");
 	String opID = request.getParameter("opID");
 	if (null == opID)
 		opID = permissions.getAccountIdString();
+	oBean.setFromDB(opID);
 	aBean.setFromDB(id);
 	cBean.setFromDB(id);
 	cBean.tryView(permissions);
@@ -173,7 +175,7 @@ try{
 <%	hurdleQuestions = new HurdleQuestions();
 	hurdleQuestions.setEmrAveQuestion();
 	flagCalculator.qIDToAnswerMap.keySet();
-		if (flagCalculator.qIDToAnswerMap.keySet().contains(hurdleQuestions.questionID)){
+	if (flagCalculator.qIDToAnswerMap.keySet().contains(hurdleQuestions.questionID)){
 %>
               <tr class="blueMain" <%=Utilities.getBGColor(rowCount++)%>>
                 <td></td>
@@ -181,7 +183,7 @@ try{
                 <td align="center"><%=flagCalculator.getAnswer(hurdleQuestions.questionID)%></td>
                 <td align="center"><%=flagCalculator.getFlagIcon(hurdleQuestions.questionID)%></td>
               </tr>
-<%		}//if
+<%	}//if
 	hurdleQuestions.setList();
 	while (hurdleQuestions.isNext()){
 		if (flagCalculator.qIDToAnswerMap.keySet().contains(hurdleQuestions.questionID)){
@@ -193,7 +195,23 @@ try{
               </tr>
 <%		}//if
 	}//while
+	if (oBean.isApprovesRelationships()){
+		boolean temp = flagCalculator.isFlaggedNotApprovedSetDB(opID,id);
+		String answer;
+		String flagImage = ""; 
+		if (temp){
+			answer = "No";
+			flagImage = "<img src=images/icon_redFlag.gif>";
+		}else
+			answer = "Yes";
 %>
+              <tr class="blueMain" <%=Utilities.getBGColor(rowCount++)%>>
+                <td align="right"></td>
+                <td align="left">Is this contractor approved?</td>
+                <td align="center"><%=answer%></td>
+                <td align="center"><%=flagImage%></td>
+              </tr>
+<%	}//if%>
               <tr class="blueMain">
                 <td align="right">&nbsp;</td>
               </tr>
@@ -274,7 +292,7 @@ try{
             <a name="notesPart"></a>
             <br>
             <table width="657" border="0" cellpadding="2" cellspacing="1" bordercolor="FFFFFF">
-<% 	if (!pBean.isContractor()){%>
+<% 	if (!permissions.isContractor()){%>
               <tr>
                 <td class="whiteTitle" bgcolor="#003366" align="center" colspan=2>Notes
                   <a href="help.htm#RFRNotes" title="Help" target="_blank">&nbsp;

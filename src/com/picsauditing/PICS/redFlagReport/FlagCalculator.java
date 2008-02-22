@@ -25,8 +25,6 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 
 	public Map<String,String> qIDToFlagMap = null;
 	public Map<String,String> qIDToAnswerMap = null;
-	private int currentYearGrace  = 0;
-	private boolean duringGracePeriod = false;
 
 	/**
 	 * Depending on the Red or Amber Flag criteria, construct and return a SQL string 
@@ -108,8 +106,10 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 				
 				// Run a query against pqfData and OSHA data that considers the flagCriteria
 				String sql = getSelectQuery(flagCriteria);
-				rs = SQLStatement.executeQuery(sql+" WHERE id="+cID);
 				boolean flagged = false;
+				if ("Red".equals(thisFlag))
+					flagged = isFlaggedNotApproved(opID, cID);
+				rs = SQLStatement.executeQuery(sql+" WHERE id="+cID);
 				if (rs.next()){
 					for (String questionID: flagCriteria.getCheckedQuestionIDsAL()) {
 						FlagCriteriaDO flagCriteriaDO = flagCriteria.getFlagCriteriaDO(questionID);
@@ -191,16 +191,21 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 				// We actually calculate flags for ALL contractors regardless if they are on the operator list or not
 				// For testing purposes
 				//sql = sql + " AND cons.id IN (SELECT id FROM accounts WHERE name like 'A%')";
+				
+				Set<String> flaggedConsMap = getFlaggedNotApprovedCons(opID);
 				ResultSet rs = SQLStatement.executeQuery(sql);
 				while (rs.next()){
 					String conID = rs.getString("cons.id");
 					boolean flagged = false;
+					if ("Red".equals(thisFlag))
+						flagged = flaggedConsMap.contains(conID);
 					
 					// Calculate this contractor's flag color
 					for (String questionID: flagCriteria.getCheckedQuestionIDsAL()) {
-						FlagCriteriaDO flagCriteriaDO = flagCriteria.getFlagCriteriaDO(questionID);
-						if (!flagged)
+						if (!flagged){
+							FlagCriteriaDO flagCriteriaDO = flagCriteria.getFlagCriteriaDO(questionID);
 							flagged = flagCriteriaDO.isFlagged(rs);
+						}
 					}//for
 					osBean.setFromResultSet(rs);
 					flagged = getIsOshaFlagged(flagged,flagCriteria.flagOshaCriteriaDO);
@@ -220,7 +225,7 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 			
 			// Delete ALL flags for this operator and Insert new ones for each contractor
 			StringBuffer insertQuery = new StringBuffer("INSERT INTO flags (opID,conID,flag) VALUES ");
-			for (Iterator i = tempInsertFlagMap.keySet().iterator();i.hasNext();){
+			for (Iterator<String> i = tempInsertFlagMap.keySet().iterator();i.hasNext();){
 				String conID = (String)i.next();
 				String flag = tempInsertFlagMap.get(conID);
 				
@@ -285,12 +290,37 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 		}//if
 		return flagged;
 	}//getIsOshaFlagged
-	
-	private void setFromResultSet(ResultSet rs) throws Exception {
-		conID = rs.getString("id");
-		osBean.setFromResultSet(rs);
-	}//setFromResultSet
 
+	public boolean isFlaggedNotApproved(String opID, String conID) throws Exception{
+		String selectQuery = "SELECT gc.approvedStatus " +
+				"FROM operators o, generalContractors gc WHERE o.id=gc.genID "+
+				"AND gc.subID="+conID+" AND gc.genID="+opID+" AND o.approvesRelationships='Yes' "+
+				"AND (gc.approvedStatus='No' OR gc.approvedStatus IS NULL)";
+		ResultSet isNotApprovedRS = SQLStatement.executeQuery(selectQuery);
+		boolean temp = isNotApprovedRS.next();
+		isNotApprovedRS.close();
+		return temp;
+	}
+
+	public Set<String> getFlaggedNotApprovedCons(String opID) throws Exception{
+		Set<String> temp = new HashSet<String>();
+		String selectQuery = "SELECT gc.subID " +
+				"FROM operators o, generalContractors gc WHERE o.id=gc.genID "+
+				"AND gc.genID="+opID+" AND o.approvesRelationships='Yes' "+
+				"AND (gc.approvedStatus='No' OR gc.approvedStatus IS NULL)";
+		ResultSet isNotApprovedRS = SQLStatement.executeQuery(selectQuery);
+		while (isNotApprovedRS.next())
+			temp.add(isNotApprovedRS.getString("subID"));
+		isNotApprovedRS.close();
+		return temp;
+	}
+
+	public boolean isFlaggedNotApprovedSetDB(String opID, String conID) throws Exception{
+		DBReady();
+		boolean temp = isFlaggedNotApproved(opID,conID);
+		DBClose();
+		return temp;
+	}
 	public boolean isFlaggedRate(String rate,String cutoff){
 		float tempRate = 0;
 		float tempCutoff = 0;
@@ -364,16 +394,10 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 		return rate+"</td><td>";
 	}//getOshaFlag
 
-	public int getCurrentYearGrace() {
-		return currentYearGrace;
-	}
-
 	public void setCurrentYear(int currentYear, int currentYearGrace) {
-		this.currentYearGrace = currentYearGrace;
 		if (this.osBean != null) {
 			// if the current year doesn't equal the grace year, then 
 			this.osBean.setDuringGracePeriod(currentYear != currentYearGrace);
 		}
-	}	
-
+	}
 }//FlagCalculator
