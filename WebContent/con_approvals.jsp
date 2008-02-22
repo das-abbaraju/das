@@ -41,7 +41,7 @@ search.sql.addField("gc.approvedDate");
 search.sql.addWhere("active='Y'");
 String status = request.getParameter("status");
 if (status==null || status.equals(""))
-	search.sql.addWhere("gc.approvedStatus = null");
+	search.sql.addWhere("gc.approvedStatus IS NULL OR gc.approvedStatus = ''");
 else if (status.equals("Yes") || status.equals("No"))
 	search.sql.addWhere("gc.approvedStatus = '"+status+"'");
 
@@ -117,12 +117,12 @@ form.smallform {
 		<td>
 			<form class="smallform">
 				<label><input type="radio" name="approveStatus" onClick="saveApproval(<%=rowID%>, 'Yes')"
-					value="Yes"<%="Yes".equals(row.get("approvedStatus"))?" SELECTED":""%>>Yes</label>
+					value="Yes"<%="Yes".equals(row.get("approvedStatus"))?" checked ":""%>>Yes</label>
 				<label><input type="radio" name="approveStatus" onClick="saveApproval(<%=rowID%>, 'No')"
-					value="No"<%="No".equals(row.get("approvedStatus"))?" SELECTED":""%>>No</label>
+					value="No"<%="No".equals(row.get("approvedStatus"))?" checked ":""%>>No</label>
 			</form>
 		</td>
-		<td id="result_td<%=rowID%>">sd
+		<td id="result_td<%=rowID%>" style="font-style: italic;">
 		<% if (row.get("approvedStatus") != null) { %>
 			<%=DateBean.toShowFormat(row.get("approvedDate"))%>
 			<%=row.get("user_displayname")%>
