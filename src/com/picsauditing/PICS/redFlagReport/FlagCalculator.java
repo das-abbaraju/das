@@ -107,10 +107,11 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 				// Run a query against pqfData and OSHA data that considers the flagCriteria
 				String sql = getSelectQuery(flagCriteria);
 				boolean flagged = false;
-				if ("Red".equals(thisFlag))
+/*	jj 2-22-08 commented out approved code
+ * 				if ("Red".equals(thisFlag))
 					flagged = isFlaggedNotApproved(opID, cID);
 				rs = SQLStatement.executeQuery(sql+" WHERE id="+cID);
-				if (rs.next()){
+*/				if (rs.next()){
 					for (String questionID: flagCriteria.getCheckedQuestionIDsAL()) {
 						FlagCriteriaDO flagCriteriaDO = flagCriteria.getFlagCriteriaDO(questionID);
 						qIDToAnswerMap.put(questionID,flagCriteriaDO.getAnswer(rs));
@@ -192,14 +193,16 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 				// For testing purposes
 				//sql = sql + " AND cons.id IN (SELECT id FROM accounts WHERE name like 'A%')";
 				
+/*	jj 2-22-08 commented out approved code
 				Set<String> flaggedConsMap = getFlaggedNotApprovedCons(opID);
-				ResultSet rs = SQLStatement.executeQuery(sql);
+*/				ResultSet rs = SQLStatement.executeQuery(sql);
 				while (rs.next()){
 					String conID = rs.getString("cons.id");
 					boolean flagged = false;
+/*	jj 2-22-08 commented out approved code
 					if ("Red".equals(thisFlag))
 						flagged = flaggedConsMap.contains(conID);
-					
+*/					
 					// Calculate this contractor's flag color
 					for (String questionID: flagCriteria.getCheckedQuestionIDsAL()) {
 						if (!flagged){
@@ -290,7 +293,7 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 		}//if
 		return flagged;
 	}//getIsOshaFlagged
-
+/*
 	public boolean isFlaggedNotApproved(String opID, String conID) throws Exception{
 		String selectQuery = "SELECT gc.approvedStatus " +
 				"FROM operators o, generalContractors gc WHERE o.id=gc.genID "+
@@ -300,6 +303,19 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 		boolean temp = isNotApprovedRS.next();
 		isNotApprovedRS.close();
 		return temp;
+	}
+
+	public String getConApprovedStatus(String opID, String conID) throws Exception{
+		String selectQuery = "SELECT gc.approvedStatus " +
+				"FROM operators o, generalContractors gc WHERE o.id=gc.genID "+
+				"AND gc.subID="+conID+" AND gc.genID="+opID+" AND o.approvesRelationships='Yes' "+
+				"AND gc.approvedStatus IS NOT NULL";
+		ResultSet approvedStatusRS = SQLStatement.executeQuery(selectQuery);
+		if (approvedStatusRS.next()){
+			approvedStatusRS.close();
+			return approvedStatusRS.getString("approvedStatus");
+		}
+		return "null";
 	}
 
 	public Set<String> getFlaggedNotApprovedCons(String opID) throws Exception{
@@ -321,6 +337,7 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 		DBClose();
 		return temp;
 	}
+*/	
 	public boolean isFlaggedRate(String rate,String cutoff){
 		float tempRate = 0;
 		float tempCutoff = 0;
