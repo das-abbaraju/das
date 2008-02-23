@@ -603,19 +603,19 @@ public class EmailBean extends DataBean{
 		String certType = certDO.getType();
 		String from = FROM_INFO;
 		String to = email;
-		String subject = operator + " insurance certificate rejected";
-		String message = "Hello " + contactName + ","+endl+endl+
-		contractor + "'s " + certType + endl + 
-		"Insurance Certificate has been rejected by "+ endl+
-		operatorName + " from " +operator + endl +
-		"for the following reasons:" + endl+ endl+
-		reason + endl+endl+	
-		"Please correct these issues and re-upload your insurance certificate to your " +endl+
-		"PICS account." + endl +
-	    "If you have any specific questions about " + operator + "'s insurance requirements, " + endl +
-	    "please contact " + permissions.getName() + " at "+user.userDO.email+"."+endl+endl+
-		"Have a great day,"+endl+
-		"PICS Customer Service";
+		String subject = operator+" insurance certificate rejected";
+		String message = "Hello "+contactName+","+endl+endl+
+			contractor+"'s "+certType+endl+ 
+			"Insurance Certificate has been rejected by "+endl+
+			operatorName+" from "+operator+endl+
+			"for the following reasons:"+endl+endl+
+			reason+endl+endl+	
+			"Please correct these issues and re-upload your insurance certificate to your "+endl+
+			"PICS account."+endl+
+			"If you have any specific questions about "+operator+"'s insurance requirements, "+endl+
+			"please contact "+permissions.getName()+" at "+user.userDO.email+"."+endl+endl+
+			"Have a great day,"+endl+
+			"PICS Customer Service";
 		
 		sendEmail(from, to, subject, message);	
 		ContractorBean cBean = new ContractorBean();
@@ -635,26 +635,29 @@ public class EmailBean extends DataBean{
 		aBean.setFromDB(certDO.getOperator_id());
 		String operator = aBean.name;
 		String operatorName = aBean.contact;
+		String reason = certDO.getReason();
 				
 		String certType = certDO.getType();
 		String from = FROM_INFO;
 		String to = email;
 		
-		String subject = operator + " insurance certificate accepted";
-		String message = "Hello " + contactName + ","+endl+endl+
-		operatorName + " from " + operator + endl +
-		"has approved " + contractor + "'s " + endl + 
-		certType + " insurance requirements " + endl +
-		"to work at " + operator + "." + endl+endl+
-		"Please make sure that you keep up-to-date in PICS by uploading your "+endl+
-		"insurance certificate when you renew your policy." + endl+endl+		 
-		"Have a great day,"+endl+
-		"PICS Customer Service";
+		String subject = operator+" insurance certificate accepted";
+		String message = "Hello "+contactName+","+endl+endl+
+			contractor+"'s "+certType+endl+ 
+			"Insurance Certificate has been accepted by "+endl+
+			operatorName+" from "+operator+endl;
+		if (!"".equals(reason))
+			message += "for the following reasons:"+endl+endl+reason+endl+endl;
+				
+		message += "Please make sure that you keep up-to-date in PICS by uploading your "+endl+
+			"insurance certificate when you renew your policy." + endl+endl+		 
+			"Have a great day,"+endl+
+			"PICS Customer Service";
 		
 		sendEmail(from, to, subject, message);
 		ContractorBean cBean = new ContractorBean();
 		cBean.setFromDB(conID);
-		cBean.addNote(conID, "("+permissions.getName()+")", certType+" Insurance Certificate accepted by "+operator, DateBean.getTodaysDateTime());
+		cBean.addNote(conID, "("+permissions.getName()+")", certType+" Insurance Certificate accepted by "+operator+" for reason: "+reason, DateBean.getTodaysDateTime());
 		cBean.writeToDB();
 	}//sendCertificateAcceptedEmail
 	

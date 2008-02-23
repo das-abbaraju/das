@@ -35,14 +35,15 @@ public class OperatorBean extends DataBean {
 	public boolean isCorporate = false;
 	public String insuranceAuditor_id = "";
 	public String isUserManualUploaded = "No";
-	public String approvesRelationships = "No";
+// jj 2-22-08	public String approvesRelationships = "No";
 	public boolean isUserManualUploaded(){
 		return "Yes".equals(isUserManualUploaded);
 	}//isUserManualUploaded
+/*	jj 2-22-08 commented out approved code
 	public boolean isApprovesRelationships(){
 		return "Yes".equals(approvesRelationships);
 	}//isApprovesRelationships
-	
+*/	
 	DecimalFormat decFormatter = new DecimalFormat("###,##0.00");
 
 	public ArrayList<String> facilitiesAL = null;
@@ -476,7 +477,7 @@ public class OperatorBean extends DataBean {
 		flagQ1385 = SQLResult.getString("flagQ1385");
 		insuranceAuditor_id = SQLResult.getString("insuranceAuditor_id");
 		isUserManualUploaded = SQLResult.getString("isUserManualUploaded");
-		approvesRelationships = SQLResult.getString("approvesRelationships");
+// jj 2-22-08		approvesRelationships = SQLResult.getString("approvesRelationships");
 		}//setFromResultSet
 
 	public void writeToDB() throws Exception {
@@ -509,7 +510,7 @@ public class OperatorBean extends DataBean {
 			"',flagQ1385='"+flagQ1385+
 			"',insuranceAuditor_id='"+insuranceAuditor_id+
 			"',isUserManualUploaded='"+isUserManualUploaded+
-			"',approvesRelationships='"+approvesRelationships+
+// jj 2-22-08			"',approvesRelationships='"+approvesRelationships+
 			"' WHERE id="+id+";";
 		try{
 			DBReady();
@@ -545,7 +546,7 @@ public class OperatorBean extends DataBean {
 		canSeeInsurance = request.getParameter("canSeeInsurance");
 		setFacilities(request.getParameterValues("facilities"));
 		insuranceAuditor_id = request.getParameter("insuranceAuditor_id");
-		approvesRelationships = request.getParameter("approvesRelationships");
+// jj 2-22-08		approvesRelationships = request.getParameter("approvesRelationships");
 	}//setFromRequest
 
 	public void setHurdlesFromRequest(javax.servlet.http.HttpServletRequest request) throws Exception {

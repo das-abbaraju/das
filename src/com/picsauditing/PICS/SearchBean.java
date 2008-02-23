@@ -504,10 +504,11 @@ import com.picsauditing.domain.IPicsDO;
 			groupByQuery = "GROUP BY accounts.id ";
 		}
 
-		if(!permissions.getPermissions().hasPermission(OpPerms.ViewRedFlagged) &&
+/*	jj 2-22-08 not polished enough yet for release
+ 		if(!permissions.getPermissions().hasPermission(OpPerms.ViewRedFlagged) &&
 				("Corporate".equals(accessType) || "Operator".equals(accessType)))
 			whereQuery += "AND flags.flag!='Red' ";
-		
+*/		
 			Conn = DBBean.getDBConnection();
 		SQLStatement = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		count = beginResults = (showPage-1)*showNum;

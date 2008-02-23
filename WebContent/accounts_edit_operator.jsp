@@ -225,13 +225,13 @@
                           <%=Inputs.getRadioInput("doContractorsPay","forms",oBean.doContractorsPay,OperatorBean.CONTRACTORS_PAY_ARRAY)%>
                         </td>
                       </tr>
-					  <tr>
+<!-- 					  <tr>
                         <td class="blueMain" align="right">Cons Require Approval:</td>
                         <td class="blueMain" align="left" valign="bottom">
-						  <%=Inputs.getYesNoRadio("approvesRelationships","forms",oBean.approvesRelationships)%>
+						  <%//=Inputs.getYesNoRadio("approvesRelationships","forms",oBean.approvesRelationships)%>
                         </td>
                       </tr>
-					  <tr>
+ -->					  <tr>
                         <td class="blueMain" align="right">Sees PQF:</td>
                         <td class="blueMain" align="left" valign="bottom">
                           <%=Inputs.getYesNoRadio("canSeePQF","forms",oBean.canSeePQF)%>
