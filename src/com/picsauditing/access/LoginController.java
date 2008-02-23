@@ -178,8 +178,6 @@ public class LoginController extends DataBean {
 			} else if (permissions.isOperator() || permissions.isCorporate()) {
 				pBean.oBean.isCorporate = permissions.isCorporate();
 				pBean.oBean.setFromDB(permissions.getAccountIdString());
-				if (pBean.isCorporate())
-					pBean.setCanSeeSet(pBean.oBean.getFacilitiesCanSeeSet());
 			}
 			// TODO we should allow each account to set their own timeouts
 			// ie..session.setMaxInactiveInterval(user.getAccountTimeout());
@@ -331,10 +329,15 @@ public class LoginController extends DataBean {
 			DBReady();
 			HashSet<String> canSeeSet = new HashSet<String>();
 			canSeeSet = new HashSet<String>();
-			if (!isUser)
+			if (!isUser) {
 				canSeeSet.add(id);
-			String selectQuery = "SELECT subID FROM accounts JOIN generalcontractors ON (id=subID) "+
-				"WHERE active='Y' AND genID="+id;
+				return canSeeSet;
+			}
+			if (permissions.isCorporate()) {
+			    id = "SELECT opID FROM facilities WHERE corporateID="+id;
+			}
+			String selectQuery = "SELECT subID FROM accounts JOIN generalcontractors ON id=subID "+
+				"WHERE active='Y' AND genID IN ("+id+")";
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
 			while (SQLResult.next())
 				canSeeSet.add(SQLResult.getString("subID"));

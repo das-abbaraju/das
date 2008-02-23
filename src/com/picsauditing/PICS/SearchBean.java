@@ -204,6 +204,10 @@ import com.picsauditing.domain.IPicsDO;
 		if ((null == changed) || ("1".equals(changed))) {
 // if it's a new search, reset all the search parameters
 			showPage = 1;
+			try {
+				showPage = Integer.parseInt(r.getParameter("showPage"));
+			} catch (Exception e) {}
+			
 			selected_name = r.getParameter("name");
 			selected_industry = r.getParameter("industry");
 			selected_trade = r.getParameter("trade");
@@ -588,18 +592,23 @@ import com.picsauditing.domain.IPicsDO;
 	}//getActiveStar
 
 	public String getLinks(){
+		return getLinks("");
+	}
+	public String getLinks(String filter){
 		int SHOW_PAGES = 4;
 		int lastPage = (numResults-1)/showNum+1;
 		String orderByQuery = "";
 		if (null != orderBy && !"".equals(orderBy))
-			orderByQuery = "&orderBy="+orderBy;
+			orderByQuery = "orderBy="+orderBy;
 		String temp = "<span class=\"redMain\">";
 		temp+="Showing "+beginResults+"-"+endResults+" of <b>"+numResults+"</b> results | ";
+		
 		int startIndex = 1;
 		if (showPage-1 > SHOW_PAGES){
 			startIndex = showPage-SHOW_PAGES;
-			temp+="<a href=\""+thisPage+"?changed=0"+orderByQuery+"&showPage=1\">1</A> << ";
-		}//if
+			temp+="<a href=\""+thisPage+"?"+orderByQuery+filter+"\">1</A> << ";
+		}
+		
 		int endIndex = lastPage;
 		if (lastPage-showPage > SHOW_PAGES)
 			endIndex = showPage+SHOW_PAGES;
@@ -607,14 +616,15 @@ import com.picsauditing.domain.IPicsDO;
 			if (i==showPage)
 				temp+=" <strong>"+i+"</strong> ";
 			else{
-				temp+="<a href=\""+thisPage+"?changed=0"+orderByQuery+"&showPage="+i+"\">"+i+"</A> ";
-			}//else
-		}//for
+				temp+="<a href=\""+thisPage+"?"+orderByQuery+filter+"&showPage="+i+"\">"+i+"</A> ";
+			}
+		}
+		
 		if (lastPage-showPage > SHOW_PAGES)
-			temp+=" >> <a href=\""+thisPage+"?changed=0"+orderByQuery+"&showPage="+lastPage+"\">"+lastPage+"</A> ";
+			temp+=" >> <a href=\""+thisPage+"?"+orderByQuery+filter+"&showPage="+lastPage+"\">"+lastPage+"</A> ";
 		temp+="</span>";
 		return temp;
-	}//getLinks
+	}
 
 	public String getStartsWithLinks() {
 		String temp = "<span class=\"blueMain\">Starts with: ";

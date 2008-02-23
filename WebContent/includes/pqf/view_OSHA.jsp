@@ -1,5 +1,6 @@
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OSHABean" scope ="page"/>
 <%
+	oBean.setShowLinks(pBean);
 	String cID = request.getParameter("id");
 	if (cID == null || "".equals(cID))
 		cID = "0";

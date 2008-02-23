@@ -7,7 +7,6 @@
 	tBean.setFromDB();
 	String assignAuditorID = request.getParameter("assignAuditorID");
 	String action = request.getParameter("action");
-	String filter = "";
 	
 	boolean doAssignments = "Assign Checked Audits".equals(action) && !assignAuditorID.equals(sBean.DEFAULT_AUDITOR_ID) && pBean.isAdmin();
 	if(doAssignments){
@@ -38,12 +37,13 @@
 	if (null==sBean.orderBy)
 		sBean.orderBy = "name";
 	else {
-		filter += "&orderBy="+sBean.orderBy;
+		//filter += "&orderBy="+sBean.orderBy;
 		sBean.orderBy += ",name";
 	}
 	
 	sBean.doSearch(request, sBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
 
+	String filter = "";
 	if (!"0".equals(sBean.selected_pqfAuditorID))
 		filter += "&pqfAuditorID="+sBean.selected_pqfAuditorID;
 	if (!"0".equals(sBean.selected_desktopAuditorID))
@@ -118,10 +118,10 @@
                   <%=sBean.getStartsWithLinks()%>
 <%	}//if %>
                 </td>
-                <td align="center"><%=sBean.getLinks()%></td>
+                <td align="center"><%=sBean.getLinks(filter)%></td>
               </tr>
             </table>
-            <form name="form2" method="post" action="report_audits.jsp">
+            <form name="form2" method="post" action="report_audits.jsp?<%=filter%>">
               Assign Checked Audits to: <%=AUDITORS.getAuditorsSelect("assignAuditorID","forms","")%>
               <input name="action" type="submit" class="buttons" value="Assign Checked Audits" onClick="return confirm('Are you sure you want to assign these audits?');"><br>
             <table border="0" cellpadding="1" cellspacing="1">

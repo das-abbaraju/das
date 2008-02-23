@@ -170,38 +170,6 @@ public class OperatorBean extends DataBean {
 		temp = temp.substring(0,temp.length()-1)+")";
 		return temp;
 	}//getFormsSet
-
-	public HashSet<String> getFacilitiesCanSeeSet() throws Exception{
-		HashSet<String> canSeeSet = new HashSet<String>();
-		String selectQuery = "SELECT subID FROM accounts INNER JOIN generalContractors ON (id=subID) "+
-				"WHERE active='Y' AND genID IN "+getFacilitiesSet()+";";
-		try{
-			DBReady();
-			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			while (SQLResult.next())
-				canSeeSet.add(SQLResult.getString("subID"));
-			SQLResult.close();
-		}finally{
-			DBClose();
-		}//finally		
-		return canSeeSet;
-	}//getFacilitiesCanSeeSet
-
-	public HashSet<String> getFacilitiesCanSeeSet(String genID) throws Exception{
-		HashSet<String> canSeeSet = new HashSet<String>();
-		String selectQuery = "SELECT subID FROM accounts INNER JOIN generalContractors ON (id=subID) "+
-				"WHERE active='Y' AND genID = '"+genID+"'";
-		try{
-			DBReady();
-			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			while (SQLResult.next())
-				canSeeSet.add(SQLResult.getString("subID"));
-			SQLResult.close();
-		}finally{
-			DBClose();
-		}//finally		
-		return canSeeSet;
-	}//getFacilitiesCanSeeSet
 	
 	public String getFacilitySelect(String name, String classType, String selectedFacility) throws Exception {
 		setActiveGeneralsArrayFromDB();
@@ -387,19 +355,10 @@ public class OperatorBean extends DataBean {
 			DBReady();
 			SQLStatement.executeUpdate(insertQuery);
 			// Reset canSeeSet
-			/*
-			canSeeSet = new HashSet<String>();
-			canSeeSet.add(genID);
-			String selectQuery = "SELECT * FROM generalContractors WHERE genID="+genID+";";
-			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			while (SQLResult.next())
-				canSeeSet.add(SQLResult.getString("subID"));
-			SQLResult.close();
-			*/
+			canSeeSet.add(subID);
 		}finally{
 			DBClose();
 		}//finally
-		canSeeSet = this.getFacilitiesCanSeeSet(genID);
 		resetSubCountTable();
 	}//addSubContractor
 
@@ -408,16 +367,16 @@ public class OperatorBean extends DataBean {
 		try{
 			DBReady();
 			SQLStatement.executeUpdate(deleteQuery);
+			canSeeSet.remove(subID);
 		}finally{
 			DBClose();
 		}//finally
-		canSeeSet = this.getFacilitiesCanSeeSet(genID);
 		resetSubCountTable();
 	}//removeSubContractor
 
 	public static void resetSubCountTable() {
 		subCountTable = null;
-	}//resetSubCountTable
+	}
 
 	public String getRequestedBySelect(String name, String classType, String selectedCompany) throws Exception {
 		String[] generals = getOperatorsArray(DONT_INCLUDE_PICS, INCLUDE_ID, INCLUDE_GENERALS, ONLY_ACTIVE);

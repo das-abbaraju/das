@@ -23,8 +23,6 @@
 			cBean.writeToDB();
 			EmailBean.sendUpdateDynamicPQFEmail(id);
 		}//if
-		if (permissions.isCorporate())
-			pBean.setCanSeeSet(pBean.oBean.getFacilitiesCanSeeSet());
 		if (permissions.isContractor()) {
 			response.sendRedirect("pqf_editMain.jsp?auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE+"&mustFinishPrequal=&id="+aBean.id);
 			return;
