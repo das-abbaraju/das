@@ -7,6 +7,8 @@
 	tBean.setFromDB();
 	String assignAuditorID = request.getParameter("assignAuditorID");
 	String action = request.getParameter("action");
+	String filter = "";
+	
 	boolean doAssignments = "Assign Checked Audits".equals(action) && !assignAuditorID.equals(sBean.DEFAULT_AUDITOR_ID) && pBean.isAdmin();
 	if(doAssignments){
 		java.util.Enumeration e = request.getParameterNames();
@@ -35,15 +37,25 @@
 	sBean.orderBy = request.getParameter("orderBy");
 	if (null==sBean.orderBy)
 		sBean.orderBy = "name";
-	else
+	else {
+		filter += "&orderBy="+sBean.orderBy;
 		sBean.orderBy += ",name";
-//	if (onlyNeedsDesktop)
-//		sBean.setIsDesktopReport();
+	}
+	
 	sBean.doSearch(request, sBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
+
+	if (!"0".equals(sBean.selected_pqfAuditorID))
+		filter += "&pqfAuditorID="+sBean.selected_pqfAuditorID;
+	if (!"0".equals(sBean.selected_desktopAuditorID))
+		filter += "&desktopAuditorID="+sBean.selected_desktopAuditorID;
+	if (!"0".equals(sBean.selected_daAuditorID))
+		filter += "&daAuditorID="+sBean.selected_daAuditorID;
+	if (!"0".equals(sBean.selected_officeAuditorID))
+		filter += "&officeAuditorID="+sBean.selected_officeAuditorID;
 %>
 <html>
 <head>
-<title>PICS - Pacific Industrial Contractor Screening</title>
+<title>PICS - Audit Report</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <META Http-Equiv="Cache-Control" Content="no-cache">
   <META Http-Equiv="Pragma" Content="no-cache">
@@ -94,9 +106,7 @@
                         Desktop:<%=AUDITORS.getAuditorsSelect("desktopAuditorID","forms", sBean.selected_desktopAuditorID)%>
                         D&A:<%=AUDITORS.getAuditorsSelect("daAuditorID","forms", sBean.selected_daAuditorID)%>
                         Office:<%=AUDITORS.getAuditorsSelect("officeAuditorID","forms", sBean.selected_officeAuditorID)%>
-<!--                    <%=sBean.getStatusSelect("status","blueMain", sBean.selected_status)%>
-                        <%=sBean.getAuditStatusSelect("auditStatus", "blueMain", sBean.selected_auditStatus)%>
--->					  </td>
+					  </td>
                     </tr>
                   </table>
                   </form>
@@ -126,23 +136,24 @@
 <%	}//if%>
   			  </tr>
               <tr bgcolor="#003366" class="whiteTitle"> 
-                <td colspan=2><a href="?changed=0&showPage=1&orderBy=name" class="whiteTitle">Contractor</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?changed=0&showPage=1&orderBy=pqfSubmittedDate DESC" class="whiteTitleSmall">Submit</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?changed=0&showPage=1&orderBy=pqfAuditor_id DESC" class="whiteTitleSmall">Auditor</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?changed=0&showPage=1&orderBy=desktopAssignedDate DESC" class="whiteTitleSmall">Assign</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?changed=0&showPage=1&orderBy=desktopAuditor_id DESC" class="whiteTitleSmall">Auditor</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?changed=0&showPage=1&orderBy=desktopSubmittedDate DESC" class="whiteTitleSmall">Perform</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?changed=0&showPage=1&orderBy=desktopClosedDate DESC" class="whiteTitleSmall">Close</a></td>
+                <td colspan=2><a href="?orderBy=name<%=filter%>" class="whiteTitle">Contractor</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="?orderBy=pqfSubmittedDate DESC<%=filter%>" class="whiteTitleSmall">Submit</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="?orderBy=pqfAuditor_id<%=filter%>" class="whiteTitleSmall">Auditor</a></td>
 
-                <td align="center" bgcolor="#6699CC"><a href="?changed=0&showPage=1&orderBy=daAssignedDate DESC" class="whiteTitleSmall">Assign</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?changed=0&showPage=1&orderBy=daAuditor_id DESC" class="whiteTitleSmall">Auditor</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?changed=0&showPage=1&orderBy=daSubmittedDate DESC" class="whiteTitleSmall">Perform</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?changed=0&showPage=1&orderBy=daClosedDate DESC" class="whiteTitleSmall">Close</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="?orderBy=desktopAssignedDate DESC<%=filter%>" class="whiteTitleSmall">Assign</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="?orderBy=desktopAuditor_id<%=filter%>" class="whiteTitleSmall">Auditor</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="?orderBy=desktopSubmittedDate DESC<%=filter%>" class="whiteTitleSmall">Perform</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="?orderBy=desktopClosedDate DESC<%=filter%>" class="whiteTitleSmall">Close</a></td>
 
-                <td align="center" bgcolor="#6699CC"><a href="?changed=0&showPage=1&orderBy=assignedDate DESC" class="whiteTitleSmall">Assign</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?changed=0&showPage=1&orderBy=auditor_id DESC" class="whiteTitleSmall">Auditor</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?changed=0&showPage=1&orderBy=auditCompletedDate DESC" class="whiteTitleSmall">Perform</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?changed=0&showPage=1&orderBy=auditClosedDate DESC" class="whiteTitleSmall">Close</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="?orderBy=daAssignedDate DESC<%=filter%>" class="whiteTitleSmall">Assign</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="?orderBy=daAuditor_id<%=filter%>" class="whiteTitleSmall">Auditor</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="?orderBy=daSubmittedDate DESC<%=filter%>" class="whiteTitleSmall">Perform</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="?orderBy=daClosedDate DESC<%=filter%>" class="whiteTitleSmall">Close</a></td>
+
+                <td align="center" bgcolor="#6699CC"><a href="?orderBy=assignedDate DESC<%=filter%>" class="whiteTitleSmall">Assign</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="?orderBy=auditor_id<%=filter%>" class="whiteTitleSmall">Auditor</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="?orderBy=auditCompletedDate DESC<%=filter%>" class="whiteTitleSmall">Perform</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="?orderBy=auditClosedDate DESC<%=filter%>" class="whiteTitleSmall">Close</a></td>
 <%	if (pBean.isAdmin()){%>
                 <td align="center" bgcolor="#6699CC" class="whiteTitleSmall">PQF</td>
                 <td align="center" bgcolor="#6699CC" class="whiteTitleSmall">Dsktp</td>
