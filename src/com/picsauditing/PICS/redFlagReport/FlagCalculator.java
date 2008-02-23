@@ -110,8 +110,8 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 /*	jj 2-22-08 commented out approved code
  * 				if ("Red".equals(thisFlag))
 					flagged = isFlaggedNotApproved(opID, cID);
-				rs = SQLStatement.executeQuery(sql+" WHERE id="+cID);
-*/				if (rs.next()){
+*/				rs = SQLStatement.executeQuery(sql+" WHERE id="+cID);
+				if (rs.next()){
 					for (String questionID: flagCriteria.getCheckedQuestionIDsAL()) {
 						FlagCriteriaDO flagCriteriaDO = flagCriteria.getFlagCriteriaDO(questionID);
 						qIDToAnswerMap.put(questionID,flagCriteriaDO.getAnswer(rs));
