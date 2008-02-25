@@ -11,6 +11,8 @@ import org.apache.commons.beanutils.RowSetDynaClass;
 import com.picsauditing.PICS.*;
 import com.picsauditing.mail.EmailTemplates;
 import com.picsauditing.mail.EmailUserBean;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.search.SelectUser;
 
 public class User extends DataBean implements Comparable<User> {
 	private static final int SU_GROUP = 9; // Group that automatically has ALL grant privileges
@@ -236,8 +238,7 @@ public class User extends DataBean implements Comparable<User> {
 			errorMessages.addElement("Please enter a valid email address.");
 			return false;
 		}
-		SQLBuilder sql = new SQLBuilder();
-		sql.setFromTable("users");
+		SelectUser sql = new SelectUser();
 		sql.addWhere("email='"+email+"'");
 		
 		try {
@@ -517,7 +518,7 @@ public class User extends DataBean implements Comparable<User> {
 	 * @throws Exception
 	 */
 	public List<BasicDynaBean> getLoginLog(int limit) throws SQLException {
-		SQLBuilder sql = new SQLBuilder("loginlog l");
+		SelectSQL sql = new SelectSQL("loginlog l");
 		sql.addField("l.successful");
 		sql.addField("l.date");
 		sql.addField("l.remoteAddress");
@@ -527,6 +528,6 @@ public class User extends DataBean implements Comparable<User> {
 		sql.addOrderBy("l.date desc");
 		sql.setLimit(limit);
 		
-		return executeQuery(sql);
+		return executeQuery(sql.toString());
 	}
 }

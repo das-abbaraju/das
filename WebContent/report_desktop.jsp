@@ -59,7 +59,6 @@ report.setOrderBy(request.getParameter("orderBy"), "c.desktopSubmittedDate DESC"
 report.setPageByResult(request);
 report.setLimit(50);
 
-//SimpleResultSet searchData = search.doSearch();
 List<BasicDynaBean> searchData = report.getPage();
 
 %>

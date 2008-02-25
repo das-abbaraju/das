@@ -1,14 +1,9 @@
-package com.picsaudting.PICS;
+package com.picsauditing.search;
 
 import junit.framework.TestCase;
-import com.picsauditing.PICS.SQLBuilder;
 
-/**
- * @author Trevor
- *
- */
-public class SQLBuilderTest extends TestCase {
-	protected SQLBuilder builder = new SQLBuilder();
+public class SelectSQLTest extends TestCase {
+	protected SelectSQL builder = new SelectSQL();
 	
 	public void testBasic() {
 		builder.setFromTable("test_from");

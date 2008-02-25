@@ -1,6 +1,7 @@
 <%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
 <%@page import="org.apache.commons.beanutils.*"%>
+<%@page import="com.picsauditing.search.*"%>
 <%@page import="java.util.*"%>
 <%
 permissions.tryPermission(OpPerms.AssignAudits);
@@ -33,32 +34,31 @@ if (action != null) {
 	return;
 }
 
-SearchAccounts search = new SearchAccounts();
+SelectAccount sql = new SelectAccount();
 
-String orderBy = request.getParameter("orderBy");
-if (orderBy != null) {
-	search.sql.addOrderBy(orderBy);
-}
-search.sql.addOrderBy("c.pqfSubmittedDate DESC");
+sql.setType(SelectAccount.Type.Contractor);
+sql.addWhere("a.id IN (SELECT gc.subID FROM generalcontractors gc JOIN operators gc_o ON gc.genID = gc_o.id AND gc_o.canSeeDA = 'Yes')");
 
-search.setType(SearchAccounts.Type.Contractor);
-search.sql.addWhere("a.id IN (SELECT gc.subID FROM generalcontractors gc JOIN operators gc_o ON gc.genID = gc_o.id AND gc_o.canSeeDA = 'Yes')");
+sql.addField("c.pqfSubmittedDate");
+sql.addField("c.daAuditor_id");
+sql.addField("c.daAssignedDate");
+sql.addField("c.daSubmittedDate");
+sql.addField("c.daClosedDate");
 
-search.sql.addField("c.pqfSubmittedDate");
-search.sql.addField("c.daAuditor_id");
-search.sql.addField("c.daAssignedDate");
-search.sql.addField("c.daSubmittedDate");
-search.sql.addField("c.daClosedDate");
+sql.addPQFQuestion(894, false, "requiredAnswer"); //q318.answer
+sql.addWhere("q894.answer = 'Yes' OR c.daRequired IS NULL OR c.daRequired = 'Yes'");
+sql.addWhere("c.daSubmittedDate = '0000-00-00'");
 
-search.addPQFQuestion(894, false, "requiredAnswer"); //q318.answer
-search.sql.addWhere("q894.answer = 'Yes' OR c.daRequired IS NULL OR c.daRequired = 'Yes'");
-search.sql.addWhere("c.daSubmittedDate = '0000-00-00'");
-String showPage = request.getParameter("showPage");
-if (showPage != null) {
-	search.setCurrentPage(Integer.valueOf(showPage));
-}
-search.startsWith(request.getParameter("startsWith"));
-List<BasicDynaBean> searchData = search.doSearch();
+sql.startsWith(request.getParameter("startsWith"));
+
+Report report = new Report();
+report.setSql(sql);
+report.setOrderBy(request.getParameter("orderBy"), "c.pqfSubmittedDate DESC");
+
+report.setPageByResult(request);
+report.setLimit(50);
+
+List<BasicDynaBean> searchData = report.getPage();
 
 %>
 <%@ include file="includes/header.jsp" %>
@@ -109,11 +109,10 @@ function notRequired(conID) {
  			    <td align="center">Not Required</td>
 	</tr>
 <%
-int counter = 0;
+com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlternater();
 for(BasicDynaBean row: searchData) {
-	counter++;
 %>
-	<tr id="auditor_tr<%=row.get("id")%>" class="blueMain" <% if ((counter%2)==1) out.print("bgcolor=\"#FFFFFF\""); %> >
+	<tr id="auditor_tr<%=row.get("id")%>" class="blueMain" <%=color.nextBgColor()%>>
 			    <td><a href="accounts_edit_contractor.jsp?id=<%=row.get("id")%>"><%=row.get("name")%></a></td>
 			    <td><%=DateBean.toShowFormat(row.get("pqfSubmittedDate"))%></td>
 			    <td><%=DateBean.toShowFormat(row.get("daSubmittedDate"))%></td>
@@ -135,5 +134,5 @@ for(BasicDynaBean row: searchData) {
 }
 %>
 </table>
-<p align="center"><%=search.getPageLinks()%></p>
+<p align="center"><%=report.getPageLinks()%></p>
 <%@ include file="includes/footer.jsp" %>

@@ -8,6 +8,7 @@ import org.apache.commons.beanutils.RowSetDynaClass;
 
 import com.picsauditing.PICS.*;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.search.SelectSQL;
 
 public class Note extends DataBean{
 	public String noteID = "";
@@ -78,7 +79,7 @@ public class Note extends DataBean{
 	 * @throws Exception
 	 */
 	public List<BasicDynaBean> getContractorNotes(String conID, Permissions permissions) throws Exception {
-		SQLBuilder sql = new SQLBuilder();
+		SelectSQL sql = new SelectSQL();
 		sql.setFromTable("notes n");
 		sql.addField("n.noteID");
 		sql.addField("n.opID");

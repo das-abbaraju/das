@@ -6,6 +6,8 @@ import java.util.*;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.RowSetDynaClass;
 
+import com.picsauditing.search.SelectSQL;
+
 public abstract class DataBean{
 	protected Vector<String> errorMessages = new Vector<String>();
 	protected boolean isSet = false;
@@ -87,7 +89,7 @@ public abstract class DataBean{
 		return this.isSet;
 	}
 	
-	public List<BasicDynaBean> executeQuery(SQLBuilder sql) throws SQLException {
+	public List<BasicDynaBean> executeQuery(SelectSQL sql) throws SQLException {
 		return executeQuery(sql.toString());
 	}
 	public List<BasicDynaBean> executeQuery(String sql) throws SQLException {
