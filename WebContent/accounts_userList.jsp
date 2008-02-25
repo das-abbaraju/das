@@ -46,6 +46,7 @@ sql.addWhere("accountID = "+opID);
 sql.addOrderBy("u.name");
 
 Report search = new Report();
+search.setSql(sql);
 search.setPageByResult(request);
 
 List<BasicDynaBean> userList = search.getPage();

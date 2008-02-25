@@ -21,6 +21,7 @@ if ("Delete".equals(action)) {
 
 SelectAccount sql = new SelectAccount();
 Report search = new Report();
+search.setSql(sql);
 
 String accountType = request.getParameter("type");
 if (accountType == null) accountType = "Operator";
