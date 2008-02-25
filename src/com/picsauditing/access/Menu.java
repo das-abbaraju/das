@@ -80,6 +80,7 @@ public class Menu {
 		this.addItem("report_expiredAudits.jsp?changed=1", "Expired Audits Report");
 		this.addItem("report_expiredCertificates.jsp?changed=1", "Expired Insurance Certificates", OpPerms.InsuranceCerts);
 		this.addItem("report_fatalities.jsp?changed=1", "Fatalities Report");
+		this.addItem("manage_forms.jsp", "Forms &amp Docs", OpPerms.EditForms);
 		this.addItem("report_incidenceRates.jsp?changed=1", "Incidence Rates Report");
 		this.addItem("report_incompleteAudits.jsp?incompleteAfter=3&changed=1", "Incomplete Audits Report");
 		this.addItem("report_certificates.jsp?changed=1", "Insurance Certificates", OpPerms.InsuranceCerts);
@@ -87,7 +88,8 @@ public class Menu {
 		this.addItem("audit_selectType.jsp", "Manage Audits and Matrices", OpPerms.ManageAudits);
 		this.addItem("report_accounts.jsp?type=Corporate", "Manage Corporate Accounts", OpPerms.ManageCorporate);
 		this.addItem("report_accounts.jsp?type=Operator", "Manage Operators", OpPerms.ManageOperators);
-		this.addItem("users_manage.jsp", "Manage Users", OpPerms.EditUsers);
+		this.addItem("accounts_userList.jsp", "Manage Users", OpPerms.EditUsers);
+		this.addItem("users_manage.jsp", "Manage Users (beta)", OpPerms.EditUsers);
 		this.addItem("report_ncms.jsp", "NCMS Data Report", OpPerms.NCMS );
 		this.addItem("audit_calendar.jsp?changed=1", "Office Audit Calendar", OpPerms.OfficeAuditCalendar);
 		this.addItem("report_payment.jsp?changed=1", "Payment Report", adminGroup);

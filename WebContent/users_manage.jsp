@@ -13,8 +13,23 @@ if (permissions.hasPermission(OpPerms.EditAllUsers) && request.getParameter("acc
 	getParams += "&accountID="+accountID;
 }
 
-FACILITIES.setFacilitiesFromDB();
-HashMap<String, String> facilityMap = FACILITIES.nameMap;
+List<BasicDynaBean> facilityMap;
+if ("filterOperators".equals(request.getParameter("action"))) {
+	String filter = request.getParameter("filter");
+	String where = "";
+	if (filter != null && filter.length() > 3) {
+		where = "a.id IN (SELECT accountID FROM users WHERE name LIKE '%"+Utilities.escapeQuotes(filter)+"%' OR username LIKE '%"+Utilities.escapeQuotes(filter)+"%' OR email LIKE '%"+Utilities.escapeQuotes(filter)+"%')";
+	}
+	facilityMap = FACILITIES.listAll(where);
+	%>
+		<option value="1100">PICS Employees</option>
+		<% for(BasicDynaBean row : facilityMap) { %>
+		<option value="<%=row.get("id")%>"<%=(row.get("id").equals(accountID))?" SELECTED":""%>><%=row.get("name")%></option>
+		<% } %>
+	<%
+	return;
+}
+facilityMap = FACILITIES.listAll();
 
 SearchUsers search = new SearchUsers();
 search.sql.addField("u.lastLogin");
@@ -48,6 +63,10 @@ pageBean.includeScriptaculous(true);
 var currentUser = 0;
 var accountID = <%=accountID%>;
 
+function filterOperators() {
+	pars = '&action=filterOperators&filter='+$('filter').getValue();
+	var myAjax = new Ajax.Updater('operators', 'users_manage.jsp', {method: 'get', parameters: pars});
+}
 function getPage(pars) {
 	pars = 'userID='+currentUser+'&accountID='+accountID+pars;
 	$('ajaxstatus').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
@@ -98,11 +117,12 @@ function saveGroup(action, groupID, childID) {
 	<td colspan="2" align="center" class="blueSmall" height="30">
 		<form action="users_manage.jsp" method="get">
 			<% if (permissions.hasPermission(OpPerms.EditAllUsers)) { %>
-			Operator:
-			<select name="accountID" class="blueSmall">
+			Filter by User: <input type="text" name="filter" id="filter" class="blueSmall" onchange="filterOperators();" /><br />
+			Operator:	
+			<select id="operators" name="accountID" class="blueSmall">
 				<option value="1100">PICS Employees</option>
-				<% for(String key : facilityMap.keySet()) { %>
-				<option value="<%=key%>"<%=(key.equals(accountID))?" SELECTED":""%>><%=facilityMap.get(key)%></option>
+				<% for(BasicDynaBean row : facilityMap) { %>
+				<option value="<%=row.get("id")%>"<%=(row.get("id").equals(accountID))?" SELECTED":""%>><%=row.get("name")%></option>
 				<% } %>
 			</select> <br />
 			<% } %>

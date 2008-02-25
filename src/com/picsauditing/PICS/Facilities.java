@@ -1,13 +1,22 @@
 package com.picsauditing.PICS;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Collection;
+import java.util.List;
+import java.util.TreeMap;
+
+import org.apache.commons.beanutils.BasicDynaBean;
+
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectAccount;
 
 public class Facilities extends DataBean{
 	
-	boolean isSet = false;
 	HashSet<String> contractorsPaySet = new HashSet<String>();
 	HashSet<String> contractorsDontPaySet = new HashSet<String>();
 	HashSet<String> contractorsPayMultipleSet = new HashSet<String>();
@@ -17,28 +26,32 @@ public class Facilities extends DataBean{
 
 	public void resetFacilities() throws Exception{
 		isSet = false;
-	}//resetFacilities
+	}
 
 	public boolean isPaying(String opID) throws Exception{
 		setFacilitiesFromDB();
 		return contractorsPaySet.contains(opID);
-	}//isPaying
+	}
+	
 	public boolean isNotPaying(String opID) throws Exception{
 		setFacilitiesFromDB();
 		return contractorsDontPaySet.contains(opID);
-	}//isNotPaying
+	}
+	
 	public boolean isMultiple(String opID) throws Exception{
 		setFacilitiesFromDB();
 		return contractorsPayMultipleSet.contains(opID);
-	}//isMultiple
+	}
+	
 	public boolean isCorporate(String opID) throws Exception{
 		setFacilitiesFromDB();
 		return corporateSet.contains(opID);
-	}//isCorporate
+	}
+	
 	public boolean isPqfOnly(String opID) throws Exception{
 		setFacilitiesFromDB();
 		return pqfOnlySet.contains(opID);
-	}//ispqfOnly
+	}
 	
 	public boolean isPqfOnly(Collection<String> generalContractors) throws Exception{
 		setFacilitiesFromDB();
@@ -59,8 +72,8 @@ public class Facilities extends DataBean{
 		pqfOnlySet = new HashSet<String>();
 		nameMap = new HashMap<String,String>();
 		
-		String selectQuery = "SELECT * FROM accounts INNER JOIN operators USING(id) WHERE type IN('Operator','Corporate') ORDER BY name ASC;";
-		try{
+		String selectQuery = "SELECT id, name, type FROM accounts INNER JOIN operators USING(id) WHERE type IN('Operator','Corporate') ORDER BY name ASC";
+		try {
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
 			while (SQLResult.next()){
@@ -91,7 +104,23 @@ public class Facilities extends DataBean{
 		}//finally		
 		isSet = true;
 		return;
-	}//setFacilitiesFromDB
+	}
+
+	public List<BasicDynaBean> listAll() throws SQLException {
+		return listAll("");
+	}
+	public List<BasicDynaBean> listAll(String filter) throws SQLException {
+		SelectAccount sql = new SelectAccount();
+		sql.setType(SelectAccount.Type.Operator);
+		sql.addField("a.type");
+		sql.addWhere("a.type IN ('Operator','Corporate')");
+		sql.addWhere("a.active = 'Y'");
+		sql.addWhere(filter);
+		sql.addOrderBy("a.type, a.name");
+
+		Database db = new Database();
+		return db.select(sql.toString(), false);
+	}
 
 	public String getNameFromID(String facilityID) throws Exception{
 		setFacilitiesFromDB();
@@ -99,4 +128,4 @@ public class Facilities extends DataBean{
 			return "";
 		return (nameMap.get(facilityID));
 	}//getNameFromID
-}//Facilities
+}
