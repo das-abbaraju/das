@@ -19,7 +19,8 @@ if ("Delete".equals(action)) {
 	aBean.deleteAccount(aBean.id, config.getServletContext().getRealPath("/"));
 }
 
-SearchAccounts search = new SearchAccounts();
+SelectAccount sql = new SelectAccount();
+Report search = new Report();
 
 String accountType = request.getParameter("type");
 if (accountType == null) accountType = "Operator";
@@ -31,41 +32,40 @@ if (accountType.equals("Operator")) {
 	canEdit = permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit);
 	canDelete = permissions.hasPermission(OpPerms.ManageCorporate, OpType.Delete);
 	pageBean.setTitle("List Operators");
-	search.sql.addJoin("LEFT JOIN (SELECT genID, count(*) as subCount FROM generalContractors GROUP BY genID) sub ON sub.genID = a.id");
-	search.sql.addField("subCount");
+	sql.addJoin("LEFT JOIN (SELECT genID, count(*) as subCount FROM generalContractors GROUP BY genID) sub ON sub.genID = a.id");
+	sql.addField("subCount");
 } else if (accountType.equals("Corporate")) {
 	permissions.tryPermission(OpPerms.ManageCorporate);
 	canEdit = permissions.hasPermission(OpPerms.ManageCorporate, OpType.Edit);
 	canDelete = permissions.hasPermission(OpPerms.ManageCorporate, OpType.Delete);
 	pageBean.setTitle("List Corporate Accounts");
-	search.sql.addJoin("LEFT JOIN (SELECT corporateID, count(*) as subCount FROM facilities GROUP BY corporateID) sub ON sub.corporateID = a.id");
-	search.sql.addField("subCount");
+	sql.addJoin("LEFT JOIN (SELECT corporateID, count(*) as subCount FROM facilities GROUP BY corporateID) sub ON sub.corporateID = a.id");
+	sql.addField("subCount");
 } else {
 	throw new Exception("invalid parameter type");
 }
 
-String orderBy = request.getParameter("orderBy");
-if (orderBy != null) {
-	search.sql.addOrderBy(orderBy);
-}
-search.sql.addOrderBy("a.name");
+search.setOrderBy(request.getParameter("orderBy"), "a.name");
 
-search.sql.addField("a.industry");
-search.sql.addField("a.city");
-search.sql.addField("a.state");
-search.sql.addField("a.contact");
+sql.addField("a.industry");
+sql.addField("a.city");
+sql.addField("a.state");
+sql.addField("a.contact");
 
-search.sql.addWhere("active='Y'");
-search.sql.addWhere("a.type='" + accountType + "'");
+sql.addWhere("active='Y'");
+sql.addWhere("a.type='" + accountType + "'");
+sql.startsWith(request.getParameter("startsWith"));
 
+search.setSql(sql);
 search.setPageByResult(request);
-search.startsWith(request.getParameter("startsWith"));
 search.setLimit(50);
 
-List<BasicDynaBean> searchData = search.doSearch();
+List<BasicDynaBean> searchData = search.getPage();
 %>
 <%@ include file="includes/header.jsp" %>
 <%@page import="javax.naming.NoPermissionException"%>
+<%@page import="com.picsauditing.search.SelectAccount"%>
+<%@page import="com.picsauditing.search.Report"%>
 <table width="657" border="0" cellpadding="0" cellspacing="0" align="center">
 	<tr>
 		<td height="70" colspan="2" align="center" class="buttons"><%@ include
@@ -90,12 +90,13 @@ List<BasicDynaBean> searchData = search.doSearch();
 		<td>&nbsp;</td>
 	</tr>
 	<%
-	int counter = search.getStartRow();
+	com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlternater();
+	int counter = search.getSql().getStartRow();
 	for (BasicDynaBean row : searchData) {
 		%>
 		<tr id="auditor_tr<%=row.get("id")%>" class="blueMain"
-			<% if ((counter%2)==1) out.print("bgcolor=\"#FFFFFF\""); %>>
-			<td align="right"><%=counter%></td>
+			<%= color.nextBgColor()%>>
+			<td align="right"><%=color.getCounter()%>.</td>
 			<td><a href="accounts_edit_operator.jsp?id=<%=row.get("id")%>"><%=row.get("name")%></a></td>
 			<td><%=row.get("industry")%></td>
 			<td><%=row.get("city")%></td>

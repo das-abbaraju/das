@@ -1,6 +1,7 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
 <%@page import="org.apache.commons.beanutils.*"%>
+<%@page import="com.picsauditing.search.Report"%>
 <%@page import="java.util.*"%>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
@@ -43,14 +44,13 @@
 	cBean.setFromDB(id);
 	java.util.ArrayList<String> operators = oBean.getOperatorsAL();
 	int count = 0;
-	SearchRaw search = new SearchRaw();
-	search.sql.setFromTable("flags");
-	search.sql.addWhere("conID="+cBean.id);
-	search.sql.addField("opID");
-	search.sql.addField("flag");
-	HashMap<String, BasicDynaBean> flagMap = search.doSearch("opID");
+	
+	FlagDO flagDO = new FlagDO();
+	HashMap<String, FlagDO> flagMap = flagDO.getFlagByContractor(id);
 
 %>
+<%@page import="com.picsauditing.search.Database"%>
+<%@page import="com.picsauditing.PICS.redFlagReport.FlagDO"%>
 <html>
 <head>
   <title>PICS - Pacific Industrial Contractor Screening</title>
@@ -136,7 +136,6 @@
 <%	}//if
 	if (permissions.isAuditor()){%>
 				   <strong><%=aBean.name%>'s</strong> facilities:<br><br>
-				   
 <%	}//if
 	if (permissions.isAdmin() || permissions.isCorporate()){%>
 				    Assign <strong><%=aBean.name%></strong> to the following facilities:<br><br>
@@ -161,11 +160,10 @@
 			oBean.setFromDB(opID);
 			status = cBean.calcPICSStatusForOperator(oBean);
 			String flagColor = "red";
-			BasicDynaBean opFlag = flagMap.get(opID);
-			if (opFlag != null) {
-				Object temp = opFlag.get("flag");
-				flagColor = temp.toString().toLowerCase();
-			}
+			FlagDO opFlag = flagMap.get(opID);
+			if (opFlag != null)
+				flagColor = opFlag.getFlag().toLowerCase();
+			
 			if (permissions.isCorporate() && !pBean.oBean.facilitiesAL.contains(opID)){
 %>
 					<input type="hidden" name="genID_<%=opID%>" value="Yes" />
@@ -199,11 +197,9 @@
 			if (permissions.isCorporate() && pBean.oBean.facilitiesAL.contains(opID) ||
 					!permissions.isCorporate()){
 				String flagColor = "red";
-				BasicDynaBean opFlag = flagMap.get(opID);
-				if (opFlag != null) {
-					Object temp = opFlag.get("flag");
-					flagColor = temp.toString().toLowerCase();
-				}
+				FlagDO opFlag = flagMap.get(opID);
+				if (opFlag != null)
+					flagColor = opFlag.getFlag().toLowerCase();
 %>
 			<tr class=blueMain <%=Utilities.getBGColor(count++)%>>
 				<td><%=name%></td>

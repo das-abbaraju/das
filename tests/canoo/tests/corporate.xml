@@ -21,7 +21,6 @@
 					text="icon_redFlag.gif" />
 				
 				<!--   CONTRACTOR DETAILS -->
-				<previousResponse />
 				<clickLink description="Show contractor details"
 					href="contractor_detail.jsp?id=${conID}" />
 				&body_verify;

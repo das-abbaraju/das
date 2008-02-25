@@ -97,7 +97,7 @@ public class LoginController extends DataBean {
 		// We have 108 contractors with username length = 3, so we can't stop them from logging in
 		// But going forward we'll require 4 or more
 		if(username.length() < 3)
-			return "Enter a username with atleast 4 characters";
+			return "Enter a username with atleast 5 characters";
 		
 		if (!getAccountByUsername(username))
 			return "No account exists with that username";

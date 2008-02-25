@@ -300,7 +300,7 @@ public class OperatorBean extends DataBean {
 		try{
 			DBReady();
 			/*String selectQuery = "SELECT * FROM accounts WHERE type='Operator' ORDER BY name;";*/
-			String selectQuery = "SELECT * FROM accounts INNER JOIN operators on accounts.id=operators.id WHERE type='Operator' ORDER BY name;";
+			String selectQuery = "SELECT * FROM accounts INNER JOIN operators on accounts.id=operators.id WHERE type='Operator' ORDER BY name";
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
 			while (SQLResult.next()) {
 				activeGeneralsArray.add(SQLResult.getString("accounts.id"));

@@ -38,18 +38,21 @@ if (newUserID != null) {
 AccountBean aBean = new AccountBean();
 aBean.setFromDB(opID);
 
-SearchUsers search = new SearchUsers();
-search.sql.addField("lastLogin");
-search.sql.addWhere("isGroup = 'No' ");
-search.sql.addWhere("accountID = "+opID);
+SelectUser sql = new SelectUser();
+sql.addField("lastLogin");
+sql.addWhere("isGroup = 'No' ");
+sql.addWhere("accountID = "+opID);
 
-search.sql.addOrderBy("u.name");
+sql.addOrderBy("u.name");
+
+Report search = new Report();
 search.setPageByResult(request);
-search.sql.setSQL_CALC_FOUND_ROWS(false);
 
-List<BasicDynaBean> userList = search.doSearch();
+List<BasicDynaBean> userList = search.getPage();
 
 %>
+<%@page import="com.picsauditing.search.SelectUser"%>
+<%@page import="com.picsauditing.search.Report"%>
 <html>
   <head>
   <title>PICS - Manage Users</title>
@@ -104,14 +107,14 @@ List<BasicDynaBean> userList = search.doSearch();
 							<td>&nbsp;</td>
 						  </tr>
 <%
-int counter = 1;
+com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlternater();
 for(BasicDynaBean row: userList) {
 %>
                           <form name="form_<%=row.get("id")%>" id="form_<%=row.get("id")%>" method="post" action="accounts_userList.jsp">
 						      <input name="actionID" type="hidden" value="<%=row.get("id")%>" />
 						      <input name="id" type="hidden" value="<%=opID%>" />
-						  <tr <%=Utilities.getBGColor(counter)%> class="blueMain">
-							<td align="right"><%=counter++%>.</td>
+						  <tr <%=color.nextColor()%> class="blueMain">
+							<td align="right"><%=color.getCounter()%>.</td>
                             <td><%=row.get("name")%></td>
                             <td align="center"><%=row.get("lastLogin")%></td>
                             <td align="center"><%=row.get("isActive")%></td>
