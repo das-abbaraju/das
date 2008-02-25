@@ -72,10 +72,9 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
       	
       	boolean async = "yes".equals((String)request.getAttribute("async"));
 		//		 Parse the request
-		try {				
-			
+		try {
 			FileItemIterator iter = upload.getItemIterator(request);
-		   			
+		   	
 			while (iter.hasNext()) {
 				FileItemStream stream = iter.next();
 			    if (stream.isFormField()) {
@@ -86,9 +85,10 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 			    	System.out.println("StreamUploader.writeToFile:"+ writeToFile);
 			    	uploadable.uploadFile(stream, writeToFile, async);			    	
 			    }
-			}			
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+	    	System.out.println("Error in StreamUploader:"+ e.getMessage());
 			throw new ServletException(e);
 		} finally {			
 			uploadable.postProcess();

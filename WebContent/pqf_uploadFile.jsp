@@ -7,7 +7,7 @@
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page"/>
 <%
-try{
+try {
 	String id = request.getParameter("id");
 	String conID = id;
 	String catID = request.getParameter("catID");
