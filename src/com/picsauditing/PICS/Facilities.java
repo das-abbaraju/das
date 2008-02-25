@@ -72,7 +72,7 @@ public class Facilities extends DataBean{
 		pqfOnlySet = new HashSet<String>();
 		nameMap = new HashMap<String,String>();
 		
-		String selectQuery = "SELECT id, name, type FROM accounts INNER JOIN operators USING(id) WHERE type IN('Operator','Corporate') ORDER BY name ASC";
+		String selectQuery = "SELECT id, name, type, doContractorsPay FROM accounts INNER JOIN operators USING(id) WHERE type IN('Operator','Corporate') ORDER BY name ASC";
 		try {
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
