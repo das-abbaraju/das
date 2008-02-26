@@ -2,6 +2,8 @@
 <%@page import="org.apache.commons.beanutils.*"%>
 <%@page import="java.util.*"%>
 <%@include file="includes/main.jsp" %>
+<%@page import="com.picsauditing.search.SelectUser"%>
+<%@page import="com.picsauditing.search.Report"%>
 <%
 permissions.tryPermission(OpPerms.EditUsers, OpType.View);
 
@@ -22,7 +24,7 @@ if ("filterOperators".equals(request.getParameter("action"))) {
 	}
 	facilityMap = FACILITIES.listAll(where);
 	%>
-		<option value="1100">PICS Employees</option>
+<option value="1100">PICS Employees</option>
 		<% for(BasicDynaBean row : facilityMap) { %>
 		<option value="<%=row.get("id")%>"<%=(row.get("id").equals(accountID))?" SELECTED":""%>><%=row.get("name")%></option>
 		<% } %>
@@ -31,29 +33,32 @@ if ("filterOperators".equals(request.getParameter("action"))) {
 }
 facilityMap = FACILITIES.listAll();
 
-SearchUsers search = new SearchUsers();
-search.sql.addField("u.lastLogin");
-search.sql.addField("u.isGroup");
+SelectUser sql = new SelectUser();
+sql.addField("u.lastLogin");
+sql.addField("u.isGroup");
+
+Report search = new Report();
+search.setSql(sql);
 
 String isGroup = request.getParameter("isGroup");
 String isActive = request.getParameter("isActive");
 if (isActive == null) isActive = "Yes";
 if ("Yes".equals(isGroup) || "No".equals(isGroup)) {
-	search.sql.addWhere("isGroup = '"+isGroup+"' ");
+	sql.addWhere("isGroup = '"+isGroup+"' ");
 	getParams += "&isGroup="+isGroup;
 }
 if ("Yes".equals(isActive) || "No".equals(isActive)) {
-	search.sql.addWhere("isActive = '"+isActive+"' ");
+	sql.addWhere("isActive = '"+isActive+"' ");
 	getParams += "&isActive="+isActive;
 }
 
-search.sql.addWhere("accountID = "+accountID);
+sql.addWhere("accountID = "+accountID);
 // Only search for Auditors and Admins
-search.sql.addOrderBy("u.name");
+sql.addOrderBy("u.name");
 search.setPageByResult(request);
 search.setLimit(20);
 
-List<BasicDynaBean> searchData = search.doSearch();
+List<BasicDynaBean> searchData = search.getPage();
 
 pageBean.setTitle("Manage Users");
 pageBean.includeScriptaculous(true);
@@ -159,7 +164,7 @@ function saveGroup(action, groupID, childID) {
 			<td>Last Login</td>
 		</tr>
 	<%
-	int counter = search.getStartRow();
+	int counter = search.getSql().getStartRow();
 	for(BasicDynaBean row: searchData) {
 		String lastLogin = DateBean.toShowFormat(row.get("lastLogin"));
 		boolean rowGroup = "Yes".equals(row.get("isGroup"));
