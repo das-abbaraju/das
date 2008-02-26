@@ -123,14 +123,18 @@ if (uBean.isSet()) {
 	  	onclick="saveUser();" 
 	  	style="font-size: 14px; font-weight: bold;"></td>
 	</tr>
+	<% if (uBean.userDO.dateCreated.length() > 0) { %>
 	<tr  class="blueMain">
 		<td align="right"><%= (isGroup?"Group":"User") %> #</td>
 		<td><%=uBean.userDO.id%></td>
 	</tr>
 	<tr>
 		<td class="blueMain" align="right">Date created</td>
-		<td class="blueMain"><%=uBean.userDO.dateCreated%> <a href="#" onclick="sendWelcomeEmail(); return false;">Send Welcome Email</a></td>
+		<td class="blueMain"><%=uBean.userDO.dateCreated%>
+			<% if (!isGroup) { %><a href="#" onclick="sendWelcomeEmail(); return false;">Send Welcome Email</a><% } %>
+		</td>
 	</tr>
+	<% } %>
 	<tr>
 		<td class="blueMain" align="right">Display name</td>
 		<td> <input name="name" type="text" class="forms" size="30" value="<%=uBean.userDO.name%>"></td>
@@ -152,10 +156,12 @@ if (uBean.isSet()) {
 		<td class="blueMain" align="right">Password</td>
 		<td><input name="newPassword" type="password" class="forms" size="15" value="<%=uBean.userDO.password%>"></td>
 	</tr>
-	<tr> 
-		<td class="blueMain" align="right">Last login</td>
-		<td class="blueMain"><%=uBean.userDO.lastLogin%></td>
-	</tr>
+		<% if (uBean.userDO.dateCreated.length() > 0) { %>
+		<tr> 
+			<td class="blueMain" align="right">Last login</td>
+			<td class="blueMain"><%=uBean.userDO.lastLogin%></td>
+		</tr>
+		<% } %>
 	<% } %>
 	<tr>
 		<td class="blueMain" align="right">Active?</td>

@@ -38,9 +38,12 @@ try{
 		EmailContractorBean emailer = new EmailContractorBean();
 		emailer.setData(actionID, permissions);
 		emailer.setMerge(EmailTemplates.contractoradded);
-		emailer.addTokens("opName", pBean.uBean.name);
+		User currentUser = new User();
+		currentUser.setFromDB(permissions.getUserIdString());
+		emailer.addTokens("opName", currentUser.userDO.accountName);
+		emailer.addTokens("opUser", currentUser.userDO.name);
 		emailer.sendMail();
-		emailer.addNote(permissions.getUsername()+" from "+pBean.uBean.name+" added "+aBean.name+" to db, email sent to: "+ emailer.getSentTo());
+		emailer.addNote(currentUser.userDO.name+" from "+currentUser.userDO.accountName+" added "+aBean.name+", email sent to: "+ emailer.getSentTo());
 
 		com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
 		com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();
