@@ -486,11 +486,9 @@ public class CertificateBean extends DataBean {
 		return false;
 	}//processForm
 	
-	public void processEmailForm(javax.servlet.jsp.PageContext pageContext)
+	public void processEmailForm(javax.servlet.ServletRequest request, Permissions permissions)
 					throws Exception {
 
-		javax.servlet.ServletRequest request = pageContext.getRequest();
-		Permissions permission = (Permissions)pageContext.getSession().getAttribute("permission");
 		Enumeration e = request.getParameterNames();
 		while (e.hasMoreElements()) {
 			String temp = (String)e.nextElement();
@@ -510,9 +508,9 @@ public class CertificateBean extends DataBean {
 						tokens.put("opName", operator);
 						tokens.put("expiration_date", getExpDateShow());
 						tokens.put("certificate_type", type);
-						mailer.sendMessage(EmailTemplates.certificate_expire, accountID, permission, tokens);
+						mailer.sendMessage(EmailTemplates.certificate_expire, accountID, permissions, tokens);
 						
-						String updateQuery = "UPDATE certificates SET sent = (sent+1), lastSentDate = NOW() WHERE cert_id = '" + certificate_id + "'";
+						String updateQuery = "UPDATE certificates SET sent = (sent+1), lastSentDate = NOW() WHERE cert_id = '" + this.eqDB(certificate_id) + "'";
 						SQLStatement.executeUpdate(updateQuery);
 						SQLResult.close();
 					} else {

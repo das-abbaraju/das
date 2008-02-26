@@ -8,7 +8,7 @@
 <%	try{
 	String action = request.getParameter("action");
 	if (null != request.getParameter("Submit"))
-		cerBean.processEmailForm(pageContext);
+		cerBean.processEmailForm(request, permissions);
 //	String id = (String)session.getAttribute("userid");
 	if (pBean.isAdmin())
 		cerBean.setListAllExpired("14", pBean);
