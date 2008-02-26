@@ -524,7 +524,7 @@ public class User extends DataBean implements Comparable<User> {
 		sql.addField("l.remoteAddress");
 		sql.addField("a.name");
 		sql.addJoin("left join users a on l.adminID = a.id");
-		sql.addWhere("l.username = '"+this.userDO.username+"'");
+		sql.addWhere("l.username = '"+Utilities.escapeQuotes(this.userDO.username)+"'");
 		sql.addOrderBy("l.date desc");
 		sql.setLimit(limit);
 		

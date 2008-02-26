@@ -3,9 +3,10 @@
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <%
-if (permissions.isContractor()) throw new com.picsauditing.access.NoRightsException("Not Contractor");
+if (permissions.isContractor()) throw new com.picsauditing.access.NoRightsException("Contractor Not Allowed");
+if (permissions.isPicsEmployee()) throw new com.picsauditing.access.NoRightsException("PICS Employees Not Allowed");
 
-try{
+try {
 	tBean.setFromDB();
 	String action = request.getParameter("action");
 	String actionID = request.getParameter("actionID");

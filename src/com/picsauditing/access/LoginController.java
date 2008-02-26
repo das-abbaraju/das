@@ -306,8 +306,8 @@ public class LoginController extends DataBean {
 		}
 		
 		String insertQuery = "INSERT INTO loginlog SET " +
-				"username = '"+permissions.getUsername()+"', " + 
-				"password = '"+password+"', " + 
+				"username = '"+eqDB(permissions.getUsername())+"', " + 
+				"password = '"+eqDB(password)+"', " + 
 				"successful = '"+strSuccess+"', " +
 				"date = NOW(), " +
 				"remoteAddress = '"+remoteAddress+"', " +
