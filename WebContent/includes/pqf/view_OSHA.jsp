@@ -1,6 +1,5 @@
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OSHABean" scope ="page"/>
 <%
-	oBean.setShowLinks(pBean);
 	String cID = request.getParameter("id");
 	if (cID == null || "".equals(cID))
 		cID = "0";
@@ -8,6 +7,7 @@
 //	int curYear = com.picsauditing.PICS.DateBean.getCurrentYear();	
 	int curYear = com.picsauditing.PICS.DateBean.getCurrentYear(this.getServletContext().getInitParameter("currentYearStart"));
 	oBean.setListFromDB(cID);
+	oBean.setShowLinks(pBean);
 	int count = 1;
 	while (oBean.hasNext() || 1==count) {
 	String descriptionText = "Recordable";

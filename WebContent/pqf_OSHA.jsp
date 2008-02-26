@@ -29,6 +29,7 @@ function popitup(url) {
 	
 	aBean.setFromDB(conID);
 	oBean.setFromDB(oID);
+	oBean.setShowLinks(pBean);
 	if (!permissions.isAdmin() && !cBean.canEditPrequal() && !pBean.canVerifyAudit(auditType,conID)) {
 		response.sendRedirect("login.jsp");
 		return;
