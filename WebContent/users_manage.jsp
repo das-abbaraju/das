@@ -164,7 +164,7 @@ function saveGroup(action, groupID, childID) {
 			<td>Last Login</td>
 		</tr>
 	<%
-	int counter = search.getSql().getStartRow();
+	int counter = search.getSql().getStartRow()+1;
 	for(BasicDynaBean row: searchData) {
 		String lastLogin = DateBean.toShowFormat(row.get("lastLogin"));
 		boolean rowGroup = "Yes".equals(row.get("isGroup"));
