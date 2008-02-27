@@ -69,8 +69,7 @@ public class EmailContractorBean extends EmailBean {
 		this.setMerge(emailType);
 		
 		// This next line should really be moved back to the ContractorBean
-		if (emailType.equals(EmailTemplates.annual_update)
-			|| emailType.equals(EmailTemplates.dasubmit)
+		if (emailType.equals(EmailTemplates.dasubmit)
 			|| emailType.equals(EmailTemplates.desktopsubmit)
 			)
 			ccAddress = cBean.getAuditorsEmail();

@@ -11,6 +11,7 @@ public class EmailSender extends GMailSender {
 	public EmailSender(String user, String password) {
 		super(user, password);
 	}
+	
 	/**
 	 * Try sending with the first email address info@picsauditing.com
 	 * If it errors try info2, info3, ...info6.
@@ -37,9 +38,9 @@ public class EmailSender extends GMailSender {
 	
 	public static String getSender() {
 		if (EmailSender.currentDefaultSender > 2)
-			return "info"+currentDefaultSender+"@picsauditing.com";
+			return "PICS Info <info"+currentDefaultSender+"@picsauditing.com>";
 		else
-			return "info@picsauditing.com";
+			return "PICS Info <info@picsauditing.com>";
 	}
 	public static void changeSender() {
 		currentDefaultSender = (currentDefaultSender % NUMBER_OF_GMAIL_ACOUNTS)+1;
