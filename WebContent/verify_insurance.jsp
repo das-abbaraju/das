@@ -133,10 +133,11 @@ try{
                 </tr>
 <%  }//end while %>
               </table>
-              </form>
               <br>
               <center><%=sBean.getLinks()%></center>
-              <br><center><input name="Submit" type="submit" class="buttons" value="Submit" >
+              <br>
+              <center><input name="Submit" type="submit" class="buttons" value="Submit" >
+              </form>
               <br><br>
               <span class="blueMain"> You must have <a href="http://www.adobe.com/products/acrobat/readstep2.html" target="_blank">Adobe
                 Reader 6.0</a> or later to view the documents above.</span> 
