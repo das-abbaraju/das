@@ -1,45 +1,55 @@
 package com.picsauditing.search;
 
+import com.picsauditing.PICS.Utilities;
+
 public class SelectFilter {
 	private String name;
 	private String whereClause;
-	private String startingValue;
 	private String defaultValue;
-	private String value;
+	private String ignoreValue;
+	protected String value;
 	
-	public SelectFilter(String name) {
-		this.name = name;
-	}
-	public SelectFilter(String name, String whereClause, String startingValue,
-			String defaultValue) {
+	public SelectFilter(String name, String whereClause, String value, 
+			String defaultValue, String ignoreValue) {
 		this.name = name;
 		this.whereClause = whereClause;
-		this.startingValue = startingValue;
+		this.value = value;
 		this.defaultValue = defaultValue;
+		this.ignoreValue = ignoreValue;
+	}
+	public SelectFilter(String name, String whereClause, String value) {
+		this(name, whereClause, value, "", "");
 	}
 	
 	public String getName() {
 		return name;
 	}
-	public void setName(String name) {
-		this.name = name;
+	
+	public String getValue() {
+		if (this.ignoreValue != null && this.ignoreValue.equals(value))
+			return defaultValue;
+		return value;
 	}
-	public String getWhereClause() {
+	
+	public String getWhere() {
+		return getWhereRaw().replace("?", Utilities.escapeQuotes(value));
+	}
+	
+	protected String getWhereRaw() {
+		// Create a copy of the whereClause
+		if (!isSet())
+			return "";
+		if (whereClause == null)
+			return "";
+		
 		return whereClause;
 	}
-	public void setWhereClause(String whereClause) {
-		this.whereClause = whereClause;
-	}
-	public String getStartingValue() {
-		return startingValue;
-	}
-	public void setStartingValue(String startingValue) {
-		this.startingValue = startingValue;
-	}
-	public String getDefaultValue() {
-		return defaultValue;
-	}
-	public void setDefaultValue(String defaultValue) {
-		this.defaultValue = defaultValue;
+	
+	public boolean isSet() {
+		if (this.value==null)
+			return false;
+		if (this.ignoreValue != null && this.ignoreValue.equals(value))
+			return false;
+		return true;
 	}
 }

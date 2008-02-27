@@ -3,6 +3,7 @@ package com.picsauditing.search;
 import static java.lang.Math.ceil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,13 +16,13 @@ public class Report {
 	private int currentPage = 1;
 	private int returnedRows = 0;
 	private int allRows = 0;
-	private ArrayList<SelectFilter> filters = new ArrayList<SelectFilter>();
+	private HashMap<String, SelectFilter> filters = new HashMap<String, SelectFilter>();
 	private String orderBy;
 	
 	public List<BasicDynaBean> getPage() throws SQLException {
 		sql.addOrderBy(this.orderBy);
-		for(SelectFilter filter: filters) {
-			sql.addWhere(filter.getWhereClause());
+		for(String filter: filters.keySet()) {
+			sql.addWhere(filters.get(filter).getWhere());
 		}
 		sql.setLimit(this.limit);
 		sql.setStartRow((this.currentPage - 1) * this.limit);
@@ -57,7 +58,36 @@ public class Report {
 			this.setCurrentPage(Integer.valueOf(showPage));
 		}
 	}
+
 	
+	public String getFilterParams() {
+		StringBuilder params = new StringBuilder();
+		for(String name : this.filters.keySet()) {
+			if (filters.get(name).isSet()) {
+				params.append("&");
+				params.append(filters.get(name).getName());
+				params.append("=");
+				params.append(filters.get(name).getValue());
+			}
+		}
+		return params.toString();
+	}
+	public String getFilterValue(String name) {
+		return this.filters.get(name).getValue();
+	}
+	
+	public void addFilter(SelectFilter filter) {
+		this.filters.put(filter.getName(), filter);
+	}
+	
+	public HashMap<String, SelectFilter> getFilters() {
+		return filters;
+	}
+
+	public void setFilters(HashMap<String, SelectFilter> filters) {
+		this.filters = filters;
+	}
+
 	public void setCurrentPage(int value) {
 		this.currentPage = value;
 	}
@@ -80,12 +110,15 @@ public class Report {
 		return getStartsWithLinks("");
 	}
 	public String getStartsWithLinks(String additionalParams) {
-		String html = "<span class=\"blueMain\">Starts with: ";
-		html += "<a href=\"?"+additionalParams+"\" class=blueMain title=\"Show All\">*</a> ";
+		String filterParams = getFilterParams();
 		if (additionalParams != null && additionalParams.length() >= 3)
 			additionalParams = "&"+additionalParams;
 		else
 			additionalParams = "";
+		additionalParams += filterParams;
+		
+		String html = "<span class=\"blueMain\">Starts with: ";
+		html += "<a href=\"?"+additionalParams+"\" class=blueMain title=\"Show All\">*</a> ";
 		for (char c = 'A';c<='Z';c++)
 			html += "<a href=?startsWith="+c+additionalParams+" class=blueMain>"+c+"</a> ";
 		html += " </span>";
@@ -95,6 +128,9 @@ public class Report {
 		return getPageLinks("");
 	}
 	public String getPageLinks(String additionalParams) {
+		String filterParams = getFilterParams();
+		additionalParams += filterParams;
+
 		String temp = "<span class=\"redMain\">";
 		temp+="Found <b>"+this.allRows+"</b> results";
 		if (this.returnedRows == this.allRows) {
@@ -145,4 +181,6 @@ public class Report {
 		
 		return " <a href=\"?"+orderBy+"showPage="+page+additionalParams+"\">"+page+"</a> ";
 	}
+	
+	
 }
