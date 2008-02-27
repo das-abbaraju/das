@@ -29,7 +29,7 @@ public class UserAccess extends com.picsauditing.PICS.DataBean {
 	public void setFromDB(String user_ID) throws Exception {
 		try{
 			this.userID = user_ID;
-			String selectQuery = "SELECT accessType FROM "+db+" WHERE userID="+
+			String selectQuery = "SELECT accessType FROM "+db+" WHERE accessType > '' AND userID="+
 				Utilities.intToDB(userID)+";";
 			accessSet = new HashSet<OpPerms>();
 			DBReady();

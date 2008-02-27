@@ -11,11 +11,12 @@ OperatorBean oBean = new OperatorBean();
 try{
 	String action = request.getParameter("action");
 	boolean addNote = "Add Note".equals(action);
-	boolean canEditNotes = (permissions.isOperator() || permissions.isCorporate()) && permissions.hasPermission(com.picsauditing.access.OpPerms.EditNotes);
 	boolean deleteNote = "DeleteNote".equals(action);
 	boolean addToList = "Add".equals(action);
-	boolean canEditForcedFlags = (permissions.isOperator() || permissions.isCorporate()) && permissions.hasPermission(com.picsauditing.access.OpPerms.EditForcedFlags);
 	boolean removeFromList = "Remove".equals(action);
+	
+	boolean canEditNotes = permissions.hasPermission(com.picsauditing.access.OpPerms.EditNotes);
+	boolean canEditForcedFlags = permissions.hasPermission(com.picsauditing.access.OpPerms.EditForcedFlags);
 	String id = request.getParameter("id");
 	String opID = request.getParameter("opID");
 	if (null == opID)

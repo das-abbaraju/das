@@ -1,17 +1,14 @@
 <%//@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ page language="java"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/adminGeneral_secure.jsp" %>
 <jsp:useBean id="dBean" class="com.picsauditing.PICS.DateBean" scope ="page"/>
 <jsp:useBean id="calBean" class="com.picsauditing.PICS.CalendarBean" scope ="page"/>
 <%
+	permissions.tryPermission(OpPerms.OfficeAuditCalendar);
+
 	String format = request.getParameter("format");
 	String whichMonth = request.getParameter("whichMonth");
 	String whichYear = request.getParameter("whichYear");
-	if (!(pBean.isAdmin() || pBean.isAuditor() || pBean.isOperator() || pBean.isCorporate())){
-		response.sendRedirect("/logout.jsp");
-		return;
-	}//if
 	if (null==format)
 		format = "";
 	int thisMonth = dBean.getCurrentMonth();

@@ -469,11 +469,21 @@ public class User extends DataBean implements Comparable<User> {
 	 */
 	public void addToGroup(String groupID, Permissions byUser) throws Exception {
 		if (this.userDO.id.equals(groupID)) return;
-		String sql = "INSERT IGNORE INTO usergroup (userID, groupID, creationDate, createdBy)" +
-				"VALUES (" + userDO.id + ", " + groupID +
-				", NOW()," + byUser.getUserId() + ")";
+
+		// don't allow circular references
+		User group = new User();
+		group.setFromDB(groupID);
+		Set<User> children = group.getGroups();
+		if (children.contains(this))
+				return;
+		
 		try{
 			DBReady();
+
+			String sql;
+			sql = "INSERT IGNORE INTO usergroup (userID, groupID, creationDate, createdBy)" +
+					"VALUES (" + userDO.id + ", " + groupID +
+					", NOW()," + byUser.getUserId() + ")";
 			SQLStatement.executeUpdate(sql);
 		}finally{
 			DBClose();

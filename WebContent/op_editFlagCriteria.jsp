@@ -1,8 +1,8 @@
 <%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.PICS.redFlagReport.*"  errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/adminGeneral_secure.jsp"%>
 <%	HurdleQuestions hurdleQuestions = null;
-try{
+if (permissions.isContractor()) throw new com.picsauditing.access.NoRightsException("Not Contractor");
+try {
 	com.picsauditing.PICS.redFlagReport.FlagCriteria flagCriteria = new com.picsauditing.PICS.redFlagReport.FlagCriteria();
 	boolean isSubmitted = "Save".equals(request.getParameter("action"));
 	boolean canEditFlagCriteria = (pBean.isOperator() || pBean.isCorporate()) && permissions.hasPermission(com.picsauditing.access.OpPerms.EditFlagCriteria);

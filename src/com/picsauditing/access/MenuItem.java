@@ -37,7 +37,7 @@ public class MenuItem {
 	 * @param permissions
 	 * @return
 	 */
-	public boolean canSee(Permissions permissions) {
+	public boolean canSee(Permissions permissions) throws NoRightsException {
 		if (this.permission != null) {
 			if (!permissions.hasPermission(permission, permType)) {
 				return false;

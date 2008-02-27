@@ -3,6 +3,7 @@ package com.picsauditing.PICS.pqf;
 import java.sql.*;
 import java.util.*;
 import com.picsauditing.PICS.*;
+import com.picsauditing.access.OpPerms;
 
 
 public class CategoryBean extends com.picsauditing.PICS.DataBean {
@@ -230,7 +231,12 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 			return false;
 		count++;
 		setFromResultSet(listRS);
-		if (pBean.canSeeAuditCategory(catID, cID)) {
+		
+		// Require users to have the ViewFullPQF to see Work History
+		String catWorkHistory = "6";
+		if (!catWorkHistory.equals(catID)
+			|| pBean.isContractor()
+			|| pBean.getPermissions().hasPermission(OpPerms.ViewFullPQF)) {
 			if (isJoinedWithData) {
 				catID = listRS.getString("pqfCategories.catID");
 				setDataFromResultSet(listRS);
@@ -242,12 +248,12 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 					applies = "";
 					percentCompleted = "0";
 					percentVerified = "0";
-				}//if
-			}//if
+				}
+			}
 			return true;
 		} else
 			return isNextRecord(pBean,cID);
-	}//isNextRecord
+	}
 
 	public void closeList() throws Exception {
 		count = 0;

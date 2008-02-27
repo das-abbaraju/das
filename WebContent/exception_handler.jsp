@@ -1,8 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <%@ page isErrorPage="true" language="java"
 	import="com.picsauditing.PICS.*, java.util.*, java.io.*"%>
-<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean"
-	scope="session" />
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <html>
 <head>
 <title>PICS Error</title>
@@ -30,31 +29,31 @@
 	if (!debugging) {
 		try {
 			StringBuilder email = new StringBuilder();
-			email.append("An error occurred on PICS\n");
-			email.append("\nServerName: " + request.getServerName());
+			email.append("An error occurred on PICS\n\n");
+			email.append(message);
+			email.append("\n\nServerName: " + request.getServerName());
 			email.append("\nRequestURI: " + request.getRequestURI());
 			email.append("\nQueryString: " + request.getQueryString());
-			for (Enumeration e = request.getHeaderNames(); e.hasMoreElements();) {
-			    String headerName = (String)e.nextElement();
-				email.append("\nHeader-" + headerName + ": " + request.getHeader(headerName));
-			}
-			email.append("\nPathInfo: " + request.getPathInfo());
-			email.append("\nContextPath: " + request.getContextPath());
 			email.append("\nRemoteAddr: " + request.getRemoteAddr());
-			email.append("\nRemoteUser: " + request.getRemoteUser());
-			if (pBean.loggedIn) {
-				email.append("\nLogged in as:");
-				email.append("\nuserID: " + pBean.userID);
-				email.append("\nuserName: " + pBean.userName);
-				email.append("\nuserType: " + pBean.userType);
+			if (permissions.isLoggedIn()) {
+				email.append("\nName: " + permissions.getName());
+				email.append("\nUsername: " + permissions.getUsername());
+				email.append("\nAccountID: " + permissions.getAdminID());
+				email.append("\nType: " + permissions.getAccountType());
 			} else {
 				email.append("\nThe current user was NOT logged in.");
 			}
 	
+			if (stacktrace.length() > 0) {
+				email.append("\n\nTrace:\n");
+				email.append(stacktrace);
+			}
 			email.append("\n\n");
-			email.append(message);
-			email.append("\n\nTrace:\n\n");
-			email.append(stacktrace);
+			for (Enumeration e = request.getHeaderNames(); e.hasMoreElements();) {
+			    String headerName = (String)e.nextElement();
+				email.append("\nHeader-" + headerName + ": " + request.getHeader(headerName));
+			}
+			
 			EmailBean.sendErrorMessage(email.toString());
 		} catch (Exception e) {
 			// do nothing

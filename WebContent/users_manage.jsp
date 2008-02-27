@@ -68,6 +68,25 @@ pageBean.includeScriptaculous(true);
 var currentUser = 0;
 var accountID = <%=accountID%>;
 
+var permTypes = new Array();
+<%
+for(Permission perm: permissions.getPermissions()) {
+	if (perm.isGrantFlag()) {
+		OpPerms p = perm.getAccessType();
+		%>permTypes['<%=p.toString()%>'] = new Array("<%=p.getHelpText() %>",
+			<%=p.usesView() %>, <%=p.usesEdit() %>, <%=p.usesDelete() %>);
+		<%
+	}
+}
+%>
+function showPermDesc(item) {
+	var x = $F(item);
+	$('permDescription').innerHTML = permTypes[x][0];
+	$('new_viewFlag').disabled = !permTypes[x][1];
+	$('new_editFlag').disabled = !permTypes[x][2];
+	$('new_deleteFlag').disabled = !permTypes[x][3];
+}
+
 function filterOperators() {
 	pars = '&action=filterOperators&filter='+$('filter').getValue();
 	var myAjax = new Ajax.Updater('operators', 'users_manage.jsp', {method: 'get', parameters: pars});

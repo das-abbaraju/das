@@ -124,6 +124,13 @@ public class Permissions {
 	 * @return
 	 */
 	public boolean hasPermission(OpPerms opPerm, OpType oType) {
+		if (oType.equals(OpType.View) && !opPerm.usesView())
+			return false;
+		if (oType.equals(OpType.Edit) && !opPerm.usesEdit())
+			return false;
+		if (oType.equals(OpType.Delete) && !opPerm.usesDelete())
+			return false;
+		
 		for(Permission perm : permissions) {
 			if (opPerm == perm.getAccessType()) {
 				if(oType == OpType.Edit)

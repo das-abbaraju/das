@@ -12,7 +12,7 @@ public class Menu {
 	 * Only return items for which this person has permission to see
 	 * @return
 	 */
-	public ArrayList<MenuItem> getValidItems() {
+	public ArrayList<MenuItem> getValidItems() throws NoRightsException {
 		ArrayList<MenuItem> validItems = new ArrayList<MenuItem>();
 		if (permissions == null) return validItems;
 		
@@ -80,7 +80,7 @@ public class Menu {
 		this.addItem("report_expiredAudits.jsp?changed=1", "Expired Audits Report");
 		this.addItem("report_expiredCertificates.jsp?changed=1", "Expired Insurance Certificates", OpPerms.InsuranceCerts);
 		this.addItem("report_fatalities.jsp?changed=1", "Fatalities Report");
-		this.addItem("manage_forms.jsp", "Forms &amp Docs", OpPerms.EditForms);
+		this.addItem("manage_forms.jsp", "Forms &amp Docs", OpPerms.FormsAndDocs);
 		this.addItem("report_incidenceRates.jsp?changed=1", "Incidence Rates Report");
 		this.addItem("report_incompleteAudits.jsp?incompleteAfter=3&changed=1", "Incomplete Audits Report");
 		this.addItem("report_certificates.jsp?changed=1", "Insurance Certificates", OpPerms.InsuranceCerts);

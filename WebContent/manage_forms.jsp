@@ -86,7 +86,7 @@ if (isSubmitted){
                   <b><%=fBean.getErrorMessages()%></b>
 				</td>
 			  </tr>
-<%	if (permissions.hasPermission(OpPerms.EditForms)){%>
+<%	if (permissions.hasPermission(OpPerms.FormsAndDocs)){%>
               <tr> 
                 <td width="50%" align="center" valign="top" bgcolor="#DDDDDD" class="blueMain"> 
                   <form name="form1" method="post" action="manage_forms.jsp?isSubmitted=Yes&action=Add&id=<%=opID%>" enctype="multipart/form-data">
@@ -162,7 +162,9 @@ if (isSubmitted){
                         <td align="right">&nbsp;</td>
                         <td>
 						  <input name="action" type="submit" class="forms" value="Edit"> 
+<% if (permissions.hasPermission(OpPerms.FormsAndDocs, OpType.Delete)) {%>
                           <input name="action" type="submit" class="forms" value="Delete">
+<% } %>
 						</td>
                       </tr>
                     </table>

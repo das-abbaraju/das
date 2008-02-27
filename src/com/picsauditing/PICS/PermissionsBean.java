@@ -23,8 +23,6 @@ public class PermissionsBean extends DataBean {
 	private static final String OPERATOR_TYPE = "Operator";
 	private static final String[] USER_TYPES = {ADMIN_TYPE,CONTRACTOR_TYPE,CORPORATE_TYPE,OPERATOR_TYPE};
 
-	private static final String[] RESTRICTED_AUDIT_CATEGORIES = {"2","6"};
-
 	public String userID = ""; // user's accountID
 	public String userName = "";
 	public String userType = "";
@@ -107,21 +105,6 @@ public class PermissionsBean extends DataBean {
 	public boolean isCorporate() {
 		return CORPORATE_TYPE.equals(userType);
 	}
-
-	public boolean canSeeAuditCategory(String catID, String conID) {
-		if (isAdmin())
-			return true;
-		if (isOperator()){
-			return (!Utilities.arrayContains(RESTRICTED_AUDIT_CATEGORIES,catID) || 
-					this.getPermissions().hasPermission(OpPerms.ViewFullPQF));
-		}
-		if (isAuditor())
-			return (!Utilities.arrayContains(RESTRICTED_AUDIT_CATEGORIES,catID) || auditorPQFSet.contains(conID));
-		if (isContractor())
-// incomplete
-			return true;
-		return true;
-	}//canSeeAuditCategory
 
 	public void setAuditorPermissions() throws Exception {
 		auditorOfficeSet = new HashSet<String>();

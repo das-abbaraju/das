@@ -173,7 +173,7 @@ if (uBean.isSet()) {
 if (!uBean.isSet()) return;
 // Don't show below data until, we've saved our user
 
-if (permissions.hasPermission(OpPerms.SwitchUser)) {
+if (!isGroup && permissions.hasPermission(OpPerms.SwitchUser)) {
 	%><p><a href="login.jsp?switchUser=<%= uBean.userDO.id %>">Switch to this User</a></p><%
 }
 
@@ -211,10 +211,10 @@ if (!uBean.isSuGroup()) {
 			String accessType = perm.getAccessType().toString();
 			%>
 		<tr class="active">
-			<td><%=perm.getAccessType().getDescription()%><input type="hidden" name="accessType" value="<%=accessType %>" /></td>
-			<td><%=Utilities.getCheckBoxInput(accessType+"_viewFlag", "blueSmall", perm.isViewFlag())%></td>
-			<td><%=Utilities.getCheckBoxInput(accessType+"_editFlag", "blueSmall", perm.isEditFlag())%></td>
-			<td><%=Utilities.getCheckBoxInput(accessType+"_deleteFlag", "blueSmall", perm.isDeleteFlag())%></td>
+			<td><div style="cursor: help" title="<%=perm.getAccessType().getHelpText()%>"><%=perm.getAccessType().getDescription()%></div><input type="hidden" name="accessType" value="<%=accessType %>" /></td>
+			<td><%=(perm.getAccessType().usesView()) ? Utilities.getCheckBoxInput(accessType+"_viewFlag", "blueSmall", perm.isViewFlag()) : "N/A"%></td>
+			<td><%=(perm.getAccessType().usesEdit()) ? Utilities.getCheckBoxInput(accessType+"_editFlag", "blueSmall", perm.isEditFlag()) : "N/A"%></td>
+			<td><%=(perm.getAccessType().usesDelete()) ? Utilities.getCheckBoxInput(accessType+"_deleteFlag", "blueSmall", perm.isDeleteFlag()) : "N/A"%></td>
 			<td><%=Utilities.getCheckBoxInput(accessType+"_grantFlag", "blueSmall", perm.isGrantFlag())%></td>
 			<td class=""><input type="button" value="Remove" class="blueSmall" onclick="deletePermission('<%=accessType%>')" /></td>
 		</tr>
@@ -236,18 +236,22 @@ if (!uBean.isSuGroup()) {
 	
 	if (canGrant) {
 		String[] grantPerms = temp.toArray(new String[0]);
+		String selectOptions = com.picsauditing.PICS.Utilities.inputSelectAll("new", "forms", "", grantPerms,
+				"- Grant/Revoke Permission -", "", "showPermDesc(this);", true, false, null, new String[0]);
 		%>
-	<tr class="active">
-		<td>
-			<%=Utilities.inputSelect2First("new", "forms", "", grantPerms, "", "- Grant/Revoke Permission -")%>
-		</td>
-		<td><%=Utilities.getCheckBoxInput("new_viewFlag", "blueSmall", true)%></td>
-		<td><%=Utilities.getCheckBoxInput("new_editFlag", "blueSmall", false)%></td>
-		<td><%=Utilities.getCheckBoxInput("new_deleteFlag", "blueSmall", false)%></td>
-		<td><%=Utilities.getCheckBoxInput("new_grantFlag", "blueSmall", false)%></td>
-		<td></td>
-	</tr>
-	<%
+		<tr class="active">
+			<td><%=selectOptions%></td>
+			<td><input type=checkbox class="blueSmall" id="new_viewFlag" name="new_viewFlag" value="checked"></td>
+			<td><input type=checkbox class="blueSmall" id="new_editFlag" name="new_editFlag"></td>
+			<td><input type=checkbox class="blueSmall" id="new_deleteFlag" name="new_deleteFlag"></td>
+			<td><input type=checkbox class="blueSmall" id="new_grantFlag" name="new_grantFlag"></td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr class="active">
+			<td id="permDescription" colspan="6">
+			</td>
+		</tr>
+		<%
 	}
 	%>
 	</table>
