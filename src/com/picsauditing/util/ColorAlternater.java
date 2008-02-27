@@ -5,6 +5,13 @@ public class ColorAlternater {
 	private String color1 = "#FFFFFF";
 	private String color2 = "";
 	
+	public ColorAlternater() {
+		
+	}
+	public ColorAlternater(int counter) {
+		this.counter = counter;
+	}
+	
 	public String nextColor() {
 		this.counter++;
 		if ((this.counter % 2) == 1)
