@@ -806,15 +806,15 @@ public class CertificateBean extends DataBean {
 		int i = 0;
 		while (li.hasNext()) {
 			String option=(String)li.next();
-			temp.append("<nobr><input name=").append(name).append(" class=").append(classType);
+			temp.append("<nobr><label><input name=").append(name).append(" class=").append(classType);
 			temp.append(" type=radio value=\"").append(option).append("\"");
 			temp.append(" onclick=\"").append((String)onclickArray[i]+"(").append(param).append(")\"");
 			if (option.equals(selected))
 				temp.append(" checked");
-			temp.append(">").append((String)valueArray[i++]).append("</nobr>");
+			temp.append(">").append((String)valueArray[i++]).append("</label></nobr>");
 		}
 		return temp.toString();
-	}//getRadioInputWithOptions
+	}
 	
 	private void renameCert(String fileName){
 		File file = new File(fileName);
@@ -825,5 +825,19 @@ public class CertificateBean extends DataBean {
 			File newFile = new File(fn);
 			file.renameTo(newFile);
 		}
+	}
+	
+	public ArrayList<String> getContractorsByOperator(int opID) throws SQLException {
+		ArrayList<String> list = new ArrayList<String>();
+		String sql = "SELECT DISTINCT contractor_id FROM certificates WHERE operator_id = "+opID;
+		try{
+			DBReady();
+			ResultSet rs = SQLStatement.executeQuery(sql);
+			while(rs.next())
+				list.add(rs.getString(1));
+		} finally {
+			DBClose();
+		}
+		return list;
 	}
 }//CertificateBean

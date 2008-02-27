@@ -95,10 +95,11 @@
 //		pcBean.setFromDB(catID);
 %>
               <tr align="center">
-                <td class="blueMain"><%//include category specific links here
-		if ("18".equals(pcBean.number)) { %>
+                <td class="blueMain">
+                <%//include category specific links here
+				if (pcBean.showLicenses()) { %>
                   <a href="con_stateLicenses.jsp?id=<%=conID%>">Check Licenses</a>
-<%		}//if %>
+				<% } %>
                 </td>
               </tr>
               <tr align="center">

@@ -389,6 +389,14 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 			return (String)numOfRequiredMap.get(catID);
 		return "0";
 	}//getNumRequired
+	
+	public boolean showLicenses() {
+		if (this.catID.equals("21")) // CONTRACTOR'S LICENSING
+			return true;
+		if (this.catID.equals("27")) // STATES LICENSED IN (CONTRACTORS LICENSE)
+			return true;
+		return false;
+	}
 
 	public void updateNumRequiredCounts(String aType) throws Exception {
 		setNumRequiredMap();
