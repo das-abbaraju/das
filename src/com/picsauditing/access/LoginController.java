@@ -36,7 +36,7 @@ public class LoginController extends DataBean {
 		}
 		
 		///////////////////
-		this.doLogin(request.getSession());
+		this.doLogin(request.getSession(), true);
 		logAttempt(permissions, "", request);
 		postLogin(request, response);
 
@@ -54,7 +54,7 @@ public class LoginController extends DataBean {
 		permissions.setAdminID(loginByAdmin);
 
 		///////////////////
-		this.doLogin(request.getSession());
+		this.doLogin(request.getSession(), false);
 		logAttempt(permissions, "", request);
 		postLogin(request, response);
 
@@ -160,12 +160,14 @@ public class LoginController extends DataBean {
 	/**
 	 * Perform the actual login process...store any info in the session that will be required in later pages
 	 */
-	private void doLogin(javax.servlet.http.HttpSession session) throws Exception {
+	private void doLogin(javax.servlet.http.HttpSession session, boolean updateLastLogin) throws Exception {
 		if (isUser) {
 			permissions.login(this.user);
 			this.prevLastLogin = this.user.userDO.lastLogin;
-			this.user.updateLastLogin();
-			this.aBean.updateLastLogin();
+			if (updateLastLogin) {
+				this.user.updateLastLogin();
+				this.aBean.updateLastLogin();
+			}
 			
 			// Most (if not all) of this below should eventually be phased out
 			pBean.oBean = new com.picsauditing.PICS.OperatorBean();
@@ -189,7 +191,8 @@ public class LoginController extends DataBean {
 			// Contractors
 			permissions.login(this.aBean);
 			this.prevLastLogin = this.aBean.lastLogin;
-			this.aBean.updateLastLogin();
+			if (updateLastLogin)
+				this.aBean.updateLastLogin();
 			
 			// Most (if not all) of this below should eventually be phased out
 			pBean.userID = permissions.getAccountIdString();
@@ -281,8 +284,7 @@ public class LoginController extends DataBean {
 			setupPerms(request);
 			if (!getAccountByID(adminID.toString()));
 			
-			this.doLogin(request.getSession());
-			logAttempt(permissions, "", request);
+			this.doLogin(request.getSession(), false);
 			postLogin(request, response);
 			return;
 		}
