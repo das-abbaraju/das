@@ -523,9 +523,9 @@ import com.picsauditing.domain.IPicsDO;
 		Query = "SELECT SQL_CALC_FOUND_ROWS * FROM accounts "+joinQuery+pqfJoinQuery+oshaJoinQuery+ncmsJoinQuery+
 				"WHERE 1 "+whereQuery+groupByQuery+"ORDER BY "+orderBy+" LIMIT "+count+","+showNum+";";
 
-		//System.out.println(Query);
+		System.out.println(Query);
 		SQLResult = SQLStatement.executeQuery(Query);
-			
+		
 		ResultSet tempRS = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)
 				.executeQuery("SELECT FOUND_ROWS();");
 		tempRS.next();
@@ -925,10 +925,11 @@ import com.picsauditing.domain.IPicsDO;
 		showNum = resultsOnPage;
 		
 		changed = r.getParameter("changed");
-		if ((null == changed) || ("1".equals(changed))) {
-			showPage = 1;
-		}else
+		try {
 			showPage = Integer.parseInt(r.getParameter("showPage"));
+		} catch (Exception e) {
+			showPage = 1;
+		}
 		
 		while (SQLResult.next()) 
 			numResults++;

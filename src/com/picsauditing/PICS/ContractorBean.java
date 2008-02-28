@@ -982,7 +982,7 @@ public class ContractorBean extends DataBean {
 		updateQuery+="' WHERE id="+id+";";
 		try {
 			DBReady();
-			System.out.println(updateQuery);
+			//System.out.println(updateQuery);
 			SQLStatement.executeUpdate(updateQuery);
 		}finally{
 			DBClose();
