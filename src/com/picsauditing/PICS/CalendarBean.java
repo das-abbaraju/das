@@ -78,7 +78,7 @@ public class CalendarBean extends DataBean {
 						if (day == Integer.parseInt(auditDatesArray[i].substring(8, 10))){
 							if (pBean.isAdmin() || 
 									((pBean.isOperator() || pBean.isCorporate()) && pBean.canSeeSet.contains(conID)) ||
-									(pBean.isAuditor() && pBean.uBean.id.equals(auditorID))) {
+									(pBean.isAuditor() && pBean.getPermissions().getUserIdString().equals(auditorID))) {
 								if (contractorName.length() < maxchars)
 									thismaxchars = contractorName.length();
 								else

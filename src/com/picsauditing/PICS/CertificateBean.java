@@ -346,7 +346,7 @@ public class CertificateBean extends DataBean {
 			DBClose();
 			throw ex;
 		}
-	}//setListByFacilities
+	}
 
 /*	jtj 2-7-08 removed this and changed to search on operator_id, not operator name 
 	public void setList(String con_id, String operator) throws Exception {
@@ -524,25 +524,8 @@ public class CertificateBean extends DataBean {
 		}
 	}//processEmailForm
 
+	
 	public void makeExpiredCertificatesInactive() throws Exception {
-//		These multitable updates would to this, but we have MySQL 3.28, and this isn't supported until  4.08
-//		String Query = "UPDATE contractor_info, certificates SET status = 'Pending' WHERE contractor_id = id AND " +
-//						"expDate < (CURDATE() - INTERVAL 30 DAY) AND status IN ('Active','Exempt');";
-//		String Query2 = "UPDATE contractor_info, certificates SET status = 'Inactive' WHERE contractor_id = id AND " +
-//						"expDate < (CURDATE() - INTERVAL 45 DAY);";
-/*	
-		// First make those over 30 days expired pending
-		String Query = "SELECT contractor_id from certificates WHERE expDate < (CURDATE() - INTERVAL 30 DAY);";
-		ResultSet SQLResult = SQLStatement.executeQuery(Query);
-		String tempQuery = "UPDATE contractor_info SET status = 'Pending' WHERE status IN ('Active','Exempt') AND id IN ('0'";	
-		while (SQLResult.next()) {
-			String id = SQLResult.getString("contractor_id");
-			tempQuery += ",'" + id +"'";
-		}//while
-		SQLResult.close();
-		tempQuery+=");";
-		SQLStatement.executeUpdate(tempQuery);
-*/
 		// Now make those over 45 days expired inactive
 		String selectQuery = "SELECT contractor_id from certificates WHERE expDate < (CURDATE() - INTERVAL 45 DAY);";
 		try{
@@ -552,14 +535,14 @@ public class CertificateBean extends DataBean {
 			while (SQLResult.next()) {
 				String id = SQLResult.getString("contractor_id");
 				tempQuery+=",'"+id+"'";
-			}//while
+			}
 			SQLResult.close();
 			tempQuery+=");";
 			SQLStatement.executeUpdate(tempQuery);
 		}finally{
 			DBClose();
-		}//finally		
-	}//makeExpiredCertificatesInactive
+		}
+	}
 
 	private long formattedLiability(Map<String,String> m){
 		Locale loc = Locale.US;
@@ -840,4 +823,4 @@ public class CertificateBean extends DataBean {
 		}
 		return list;
 	}
-}//CertificateBean
+}

@@ -37,7 +37,7 @@ try{
 	if (addNote && canEditNotes){
 		String newNote = request.getParameter("newNote");
 		if (null != newNote && !"".equals(newNote)){
-			note = new Note(pBean.userID, id, pBean.uBean.name, newNote);
+			note = new Note(pBean.userID, id, permissions.getName(), newNote);
 			note.writeToDB();
 			response.sendRedirect("con_redFlags.jsp?id="+id);
 			return;
@@ -45,7 +45,7 @@ try{
 	}//if
 	if (deleteNote && canEditNotes){
 		String deleteID = request.getParameter("dID");
-		new Note().deleteNote(deleteID,pBean.uBean.name);
+		new Note().deleteNote(deleteID,permissions.getName());
 		response.sendRedirect("con_redFlags.jsp?id="+id);
 		return;
 	}//if
@@ -55,7 +55,7 @@ try{
 		forcedFlagListDO = new ForcedFlagListDO(pBean.userID,id,flagStatus,expirationDate);
 		if (forcedFlagListDO.isOK()){
 			forcedFlagListDO.writeToDB();
-			note = new Note(pBean.userID, id, pBean.uBean.name, aBean.name+" added to Forced "+flagStatus+" Flag List until "+expirationDate);
+			note = new Note(pBean.userID, id, permissions.getName(), aBean.name+" added to Forced "+flagStatus+" Flag List until "+expirationDate);
 			note.writeToDB();
 			response.sendRedirect("con_redFlags.jsp?id="+id);
 			return;
@@ -64,7 +64,7 @@ try{
 	if (removeFromList && canEditForcedFlags){
 		String flagStatus = request.getParameter("flagStatus");
 		forcedFlagListDO.deleteFromDB(pBean.userID,id,flagStatus);
-		note = new Note(pBean.userID, id, pBean.uBean.name, aBean.name+" removed from Forced "+flagStatus+" Flag List");
+		note = new Note(pBean.userID, id, permissions.getName(), aBean.name+" removed from Forced "+flagStatus+" Flag List");
 		note.writeToDB();
 		response.sendRedirect("con_redFlags.jsp?id="+id);
 		return;

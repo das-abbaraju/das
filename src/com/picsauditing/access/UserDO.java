@@ -83,4 +83,4 @@ public class UserDO {
 			"account="+accountName+","+
 			"email="+email;
 	}//toString
-}//UserBean
+}

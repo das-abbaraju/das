@@ -186,7 +186,7 @@ public class User extends DataBean implements Comparable<User> {
 		}finally{
 			DBClose();
 		}//finally
-	}//addUser
+	}
 	
 	public void updateLastLogin() throws Exception {
 		
@@ -233,37 +233,6 @@ public class User extends DataBean implements Comparable<User> {
 		}//finally
 	}
 	
-	public boolean sendPasswordEmail(String email) throws Exception {
-		if (!Utilities.isValidEmail(email)) {
-			errorMessages.addElement("Please enter a valid email address.");
-			return false;
-		}
-		SelectUser sql = new SelectUser();
-		sql.addWhere("email='"+email+"'");
-		
-		try {
-			DBReady();
-			ResultSet SQLResult = SQLStatement.executeQuery(sql.toString());
-			if (!SQLResult.next()) {
-				errorMessages.addElement("No user account in our records has that email address. " +
-					"Please verify it is the one you used when creating your PICS profile.");
-				SQLResult.close();
-				DBClose();
-				return false;
-			}
-			
-			String userID = SQLResult.getString("id");
-			EmailUserBean mailer = new EmailUserBean();
-			mailer.sendMessage(EmailTemplates.password, userID, new Permissions());
-			errorMessages.addElement("An email has been sent to: <b>" + email + "</b> with your PICS login information");
-			SQLResult.close();
-			DBClose();
-			return true;
-		}finally{
-			DBClose();
-		}
-	}
-
 	public boolean isOK() throws Exception {
 		errorMessages = new Vector<String>();
 		if (userDO.name.length()==0)

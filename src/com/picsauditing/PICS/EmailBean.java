@@ -308,9 +308,9 @@ public class EmailBean extends DataBean{
 		String message;
 		if (toAuditor) {
 			 
-			UserBean tempABean = new UserBean();
+			User tempABean = new User();
 			tempABean.setFromDB(cBean.auditor_id);
-			to = tempABean.email;
+			to = tempABean.userDO.email;
 			cc = "";
 			if (null!=cBean.secondEmail)
 			   cc = cBean.secondEmail;
@@ -383,11 +383,10 @@ public class EmailBean extends DataBean{
 		String companyName = aBean.name;
 		String contact;
 		if (isToAuditor) {
-			UserBean tempABean = new UserBean();
+			User tempABean = new User();
 			tempABean.setFromDB(cBean.auditor_id);
-			contact = tempABean.name+"(auditor)";
-		}//if
-		else
+			contact = tempABean.userDO.name+"(auditor)";
+		} else
 			contact = aBean.contact;
 		String to = "jcota@picsauditing.com";
 		String cc = "";
@@ -470,9 +469,9 @@ public class EmailBean extends DataBean{
 		aBean.setFromDB(conID);		
 		ContractorBean cBean = new ContractorBean();
 		cBean.setFromDB(conID);
-		UserBean tempABean = new UserBean();
+		User tempABean = new User();
 		tempABean.setFromDB(cBean.auditor_id);
-		String auditor = tempABean.name;
+		String auditor = tempABean.userDO.name;
 		String to = aBean.email;
 		String cc = "";
 		if (null!=cBean.secondEmail)

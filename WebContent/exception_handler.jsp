@@ -38,7 +38,7 @@
 			if (permissions.isLoggedIn()) {
 				email.append("\nName: " + permissions.getName());
 				email.append("\nUsername: " + permissions.getUsername());
-				email.append("\nAccountID: " + permissions.getAdminID());
+				email.append("\nAccountID: " + permissions.getAccountId());
 				email.append("\nType: " + permissions.getAccountType());
 			} else {
 				email.append("\nThe current user was NOT logged in.");

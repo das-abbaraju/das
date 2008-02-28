@@ -171,9 +171,7 @@ public class LoginController extends DataBean {
 			
 			// Most (if not all) of this below should eventually be phased out
 			pBean.oBean = new com.picsauditing.PICS.OperatorBean();
-			pBean.uBean = new com.picsauditing.PICS.UserBean();
-			pBean.uBean.setFromDB(permissions.getUserIdString());
-			pBean.setUserName(pBean.uBean.name);
+			pBean.setUserName(permissions.getName());
 			
 			if (permissions.isAdmin()) {
 				pBean.oBean.setAsAdmin();
@@ -197,9 +195,6 @@ public class LoginController extends DataBean {
 			// Most (if not all) of this below should eventually be phased out
 			pBean.userID = permissions.getAccountIdString();
 			pBean.setAllFacilitiesFromDB(permissions.getAccountIdString());
-			pBean.uBean = new com.picsauditing.PICS.UserBean();
-			pBean.uBean.name = aBean.contact;
-			
 		}
 		
 		// Most (if not all) of this below should eventually be phased out

@@ -14,7 +14,7 @@ try{
 	sBean.orderBy = request.getParameter("orderBy");
 	if (null==sBean.orderBy)
 		sBean.orderBy = "name";
-	sBean.doSearch(request, sBean.ONLY_ACTIVE, 100, pBean, pBean.uBean.id);
+	sBean.doSearch(request, sBean.ONLY_ACTIVE, 100, pBean, permissions.getUserIdString());
 %>
 <html>
 <head>

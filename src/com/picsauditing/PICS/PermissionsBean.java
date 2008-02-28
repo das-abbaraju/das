@@ -34,7 +34,6 @@ public class PermissionsBean extends DataBean {
 	public HashSet<String> auditorDaSet = null;
 	public HashSet<String> auditorPQFSet = null;
 	public OperatorBean oBean = null;
-	public UserBean uBean = null;
 	public ArrayList<String> allFacilitiesAL = null;
 	private Permissions permissions = null;
 
@@ -116,8 +115,9 @@ public class PermissionsBean extends DataBean {
 		try{
 			String sql;
 			DBReady();
+			String userID = getPermissions().getUserIdString();
 			
-			sql = "SELECT id FROM contractor_info WHERE auditor_id="+this.uBean.id+";";
+			sql = "SELECT id FROM contractor_info WHERE auditor_id="+userID+";";
 			ResultSet SQLResult = SQLStatement.executeQuery(sql);
 			while (SQLResult.next()) {
 				auditorOfficeSet.add(SQLResult.getString("id"));
@@ -127,7 +127,7 @@ public class PermissionsBean extends DataBean {
 			}
 			SQLResult.close();
 			
-			sql = "SELECT id FROM contractor_info WHERE desktopAuditor_id="+this.uBean.id+";";
+			sql = "SELECT id FROM contractor_info WHERE desktopAuditor_id="+userID+";";
 			SQLResult = SQLStatement.executeQuery(sql);
 			while (SQLResult.next()) {
 				auditorDesktopSet.add(SQLResult.getString("id"));
@@ -136,7 +136,7 @@ public class PermissionsBean extends DataBean {
 			}
 			SQLResult.close();
 
-			sql = "SELECT id FROM contractor_info WHERE daAuditor_id="+this.uBean.id+";";
+			sql = "SELECT id FROM contractor_info WHERE daAuditor_id="+userID+";";
 			SQLResult = SQLStatement.executeQuery(sql);
 			while (SQLResult.next()) {
 				auditorDaSet.add(SQLResult.getString("id"));
@@ -144,7 +144,7 @@ public class PermissionsBean extends DataBean {
 			}
 			SQLResult.close();
 
-			sql = "SELECT id FROM contractor_info WHERE pqfAuditor_id="+this.uBean.id+";";
+			sql = "SELECT id FROM contractor_info WHERE pqfAuditor_id="+userID+";";
 			SQLResult = SQLStatement.executeQuery(sql);
 			while (SQLResult.next()) {
 				auditorPQFSet.add(SQLResult.getString("id"));
@@ -168,10 +168,8 @@ public class PermissionsBean extends DataBean {
 	}
 
 	public String getWhoIsDetail(){
-		if (isAdmin() || isAuditor())
-			return userName+",PICS";			
-		return uBean.name+","+userName+","+userType;
-	}//getWhoIsDetail
+		return getPermissions().getName()+","+getPermissions().getUsername();
+	}
 	
 	public Permissions getPermissions() {
 		if (this.permissions == null) permissions = new Permissions();

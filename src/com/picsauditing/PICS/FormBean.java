@@ -31,12 +31,8 @@ public class FormBean extends DataBean {
 	public String opID = "";
 	public String opName = "";
 	
-	public String newWelcomeEmailSubject;
-	public String newWelcomeEmailGreeting;
 	public String newAttachWelcomeEmailFile;
-	public String newWelcomeEmailBody;
 	private String editCatID = "";
-	
 
 	public void setList() throws Exception{
 		setFromDB();
@@ -312,12 +308,8 @@ public class FormBean extends DataBean {
 		}
 		
 		Map<String,String>params = (Map<String,String>)request.getAttribute("uploadfields");
-		
-		newWelcomeEmailSubject = params.get("welcomeEmailSubject");
-		newWelcomeEmailGreeting = params.get("welcomeEmailGreeting");
-		newWelcomeEmailBody = params.get("welcomeEmailBody");
 		newAttachWelcomeEmailFile = params.get("attachWelcomeEmailFile");
-	}//uploadNewWelcomeEmail
+	}
 
 	public void uploadNewUserManual(javax.servlet.jsp.PageContext pageContext) throws Exception {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
@@ -332,18 +324,7 @@ public class FormBean extends DataBean {
 			errorMessages.addElement(errorMsg);
 	        return;
 		}//if
-	}//uploadNewUserManual
-
-	public void updateNewWelcomeEmailText(String newWelcomeEmailText, String newWelcomeEmailSubject) throws Exception {
-		String updateQuery = "UPDATE adminValues SET welcomeEmailText = '" + Utilities.escapeQuotes(newWelcomeEmailText) + 
-				"', welcomeEmailSubject = '" + Utilities.escapeQuotes(newWelcomeEmailSubject) +"';";
-		try{
-			DBReady();
-			SQLStatement.executeUpdate(updateQuery);
-		}finally{
-			DBClose();
-		}//finally
-	}//uploadNewWelcomeEmail
+	}
 
 	public String getEditCatID() {
 		return editCatID;
