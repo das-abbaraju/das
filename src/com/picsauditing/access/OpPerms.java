@@ -25,6 +25,7 @@ public enum OpPerms {
 	//InsuranceApproval("Insurance Approval"),
 	NCMS("NCMS Administration", "Can view and assign NCMS audits", true, false),
 	SwitchUser("Switch to User", "Can auto login as another user", false, false),
+	BillingUpgrades("Billing Upgrades", "Upgrade contractor subscriptions and send them invoices", true, false),
 	EmailAnnualUpdate("Email Annual Updates", "Send contractors reminder emails to update their PICS info. Edit permission is required to send the emails.", true, false),
 	EmailTemplates("Email Templates", "Allows PICS employees to edit the templates used to automatically send emails", true, false),
 	ManageOperators("Manage Operator Accounts", "Allows PICS employees to view/edit/delete Operator accounts"),

@@ -1242,11 +1242,11 @@ public class ContractorBean extends DataBean {
 		lastAuditEmailDate = DateBean.getTodaysDate();
 		addNote(conID, "("+adminName+")", "Audit email sent", DateBean.getTodaysDateTime());
 		writeToDB();
-	}//writeAuditEmailDateToDB
+	}
 
 	public static String getStatusSelect(String name, String classType, String selectedStatus) throws Exception {
 		return Utilities.inputSelect(name, classType, selectedStatus, STATUS_ARRAY);
-	}//getStatusSelect
+	}
 
 	public String getAuditorsEmail() throws Exception {
 		String selectQuery = "SELECT email FROM users WHERE id = "+auditor_id;

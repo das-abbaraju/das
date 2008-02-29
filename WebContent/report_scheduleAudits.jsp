@@ -19,11 +19,11 @@ try {
 	if ("Send".equals(action)) {
 		aBean.setFromDB(actionID);
 		cBean.setFromDB(actionID);
-		EmailBean.sendAuditEmail(aBean,cBean,false);
+		EmailBean.sendAuditEmail(aBean,cBean,false); // email to contractor
 		if (!"0".equals(cBean.auditor_id))
-			EmailBean.sendAuditEmail(aBean,cBean,true);
+			EmailBean.sendAuditEmail(aBean,cBean,true); // email to auditor
 		cBean.writeAuditEmailDateToDB(actionID, permissions.getUsername());
-	}//if
+	}
 	if ("Update".equals(action)) {
 		permissions.tryPermission(OpPerms.AssignAudits, OpType.Edit);
 		cBean.setFromDB(actionID);

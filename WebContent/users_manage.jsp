@@ -1,7 +1,7 @@
 <%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
+<%@include file="includes/main.jsp" %>
 <%@page import="org.apache.commons.beanutils.*"%>
 <%@page import="java.util.*"%>
-<%@include file="includes/main.jsp" %>
 <%@page import="com.picsauditing.search.SelectUser"%>
 <%@page import="com.picsauditing.search.Report"%>
 <%
@@ -26,7 +26,7 @@ if ("filterOperators".equals(request.getParameter("action"))) {
 	%>
 <option value="1100">PICS Employees</option>
 		<% for(BasicDynaBean row : facilityMap) { %>
-		<option value="<%=row.get("id")%>"<%=(row.get("id").equals(accountID))?" SELECTED":""%>><%=row.get("name")%></option>
+		<option value="<%=row.get("id")%>"<%=(row.get("id").toString().equals(accountID))?" SELECTED":""%>><%=row.get("name")%></option>
 		<% } %>
 	<%
 	return;
@@ -54,7 +54,7 @@ if ("Yes".equals(isActive) || "No".equals(isActive)) {
 
 sql.addWhere("accountID = "+accountID);
 // Only search for Auditors and Admins
-sql.addOrderBy("u.name");
+sql.addOrderBy("u.isGroup, u.name");
 search.setPageByResult(request);
 search.setLimit(20);
 
@@ -146,7 +146,7 @@ function saveGroup(action, groupID, childID) {
 			<select id="operators" name="accountID" class="blueSmall">
 				<option value="1100">PICS Employees</option>
 				<% for(BasicDynaBean row : facilityMap) { %>
-				<option value="<%=row.get("id")%>"<%=(row.get("id").equals(accountID))?" SELECTED":""%>><%=row.get("name")%></option>
+				<option value="<%=row.get("id")%>"<%=(row.get("id").toString().equals(accountID))?" SELECTED":""%>><%=row.get("name")%></option>
 				<% } %>
 			</select> <br />
 			<% } %>

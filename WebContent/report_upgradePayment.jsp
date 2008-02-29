@@ -1,12 +1,14 @@
 <%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<%@include file="utilities/adminGeneral_secure.jsp" %>
 
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 
-<%	String action = request.getParameter("action");
+<%
+	permissions.tryPermission(OpPerms.BillingUpgrades);
+
+	String action = request.getParameter("action");
 	String action_id = request.getParameter("action_id");
 	sBean.orderBy = request.getParameter("orderBy");
 	if (null==sBean.orderBy || "paymentExpires".equals(sBean.orderBy))
@@ -14,10 +16,12 @@
 	if ("auditDate".equals(sBean.orderBy))
 		sBean.orderBy = "status<>'Inactive' DESC,DAYOFYEAR(auditDate)=0 DESC,DAYOFYEAR(auditDate),name";
 	if ("Paid".equals(action)){
+		permissions.tryPermission(OpPerms.BillingUpgrades, OpType.Edit);
 		String amount = request.getParameter("amount");
 		cBean.upgradePayment(action_id, permissions.getUsername(), amount);
 	}
 	if ("Inv".equals(action)){
+		permissions.tryPermission(OpPerms.BillingUpgrades, OpType.Edit);
 		String invoiceAmount = request.getParameter("invoiceAmount");
 		cBean.setFromDB(action_id);
 		cBean.lastInvoiceDate = DateBean.getTodaysDate();
@@ -30,46 +34,17 @@
 		cBean.writeToDB();
 	}
 	if ("Recalculate Upgrade Amounts".equals(action)) {
+		permissions.tryPermission(OpPerms.BillingUpgrades, OpType.Edit);
 		application.setAttribute("updateAllPayingFacilities", null);
 		new Billing().updateAllPayingFacilities(FACILITIES, application);
 	}
 
 	sBean.isUpgradePaymentReport = true;
  	sBean.doSearch(request, sBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
+
+ 	pageBean.setTitle("Upgrade Payment Report");
 %>
-<html>
-<head>
-  <title>PICS - Pacific Industrial Contractor Screening</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <META Http-Equiv="Cache-Control" Content="no-cache">
-  <META Http-Equiv="Pragma" Content="no-cache">
-  <META Http-Equiv="Expires" Content="0">
-  <link href="PICS.css" rel="stylesheet" type="text/css">
-  <script language="JavaScript" SRC="js/ImageSwap.js"></script>
-</head>
-<body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table width="100%" height="100%" border="1" cellpadding="0" cellspacing="0">
-  <tr>
-    <td valign="top">
-	  <table width="100%" border="0" cellpadding="0" cellspacing="0">
-        <tr>
-          <td width="50%" bgcolor="#993300">&nbsp;</td>
-          <td width="146" valign="top" rowspan="2"><a href="index.jsp"><img src="images/logo.gif" alt="HOME" width="146" height="145" border="0"></a></td>
-          <td width="364"><%@ include file="utilities/mainNavigation.jsp"%></td>
-          <td width="147"><img src="images/squares_rightUpperNav.gif" width="147" height="72" border="0"></td>
-          <td width="50%" bgcolor="#993300">&nbsp;</td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td valign="top" align="center"><img src="images/header_reports.gif" width="321" height="72"></td>
-          <td valign="top"><%@ include file="utilities/rightLowerNav.jsp"%></td>
-          <td>&nbsp;</td>
-        </tr>
-      </table>
-      <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
-        <tr> 
-          <td>&nbsp;</td>
-		  <td colspan="3">
+<%@ include file="includes/header.jsp" %>
             <table width="657" border="0" cellpadding="0" cellspacing="0" align="center">
               <tr>
                 <td colspan="2" align="center" > 
@@ -135,6 +110,7 @@
                 <td><nobr><input type="text" class=forms value="<%=sBean.cBean.newBillingAmount%>" size=3 name=amount>
                 /<%=sBean.cBean.billingCycle%>yr</nobr></td>
                 <td valign="middle"><input name="action" type="submit" class="buttons" value="Paid"></td>
+                <input name="invoicedStatus" type="hidden" value="<%=sBean.selected_invoicedStatus%>">
                 <input name="action_id" type="hidden" value="<%=sBean.aBean.id%>">
                 <input name="orderBy" type="hidden" value="<%=sBean.orderBy%>">
               </form>
@@ -149,17 +125,4 @@
             </table>
             <br><center><%=sBean.getLinks()%></center>
 <%	sBean.closeSearch(); %>
-          </td>
-          <td>&nbsp;</td>
-        </tr>
-      </table>
-      <br><center><%@ include file="utilities/contractor_key.jsp"%></center><br><br>
-    </td>
-  </tr>
-  <tr>
-    <td height="72" align="center" bgcolor="#003366" class="copyrightInfo">&copy;2007 
-      Pacific Industrial Contractor Screening | site design: <a href="http://www.albumcreative.com" title="Album Creative Studios"><font color="#336699">ACS</font></a></td>
-  </tr>
-</table>
-</body>
-</html>
+<%@ include file="includes/footer.jsp"%>

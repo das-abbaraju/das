@@ -241,7 +241,7 @@ if (!uBean.isSuGroup()) {
 		%>
 		<tr class="active">
 			<td><%=selectOptions%></td>
-			<td><input type=checkbox class="blueSmall" id="new_viewFlag" name="new_viewFlag" value="checked"></td>
+			<td><input type=checkbox class="blueSmall" id="new_viewFlag" name="new_viewFlag" checked></td>
 			<td><input type=checkbox class="blueSmall" id="new_editFlag" name="new_editFlag"></td>
 			<td><input type=checkbox class="blueSmall" id="new_deleteFlag" name="new_deleteFlag"></td>
 			<td><input type=checkbox class="blueSmall" id="new_grantFlag" name="new_grantFlag"></td>
@@ -267,56 +267,59 @@ if (!uBean.isSuGroup()) {
 	allGroups.remove(uBean); // You can't add yourself to your own group
 	if (allGroups.size() > 0) {
 		%>
-		<p class="blueMain">Member of Group(s):
-		<form id="addGroup">
-		<ul>
+	<form id="addGroup">
+		<table>
+		<tr bgcolor="#003366" class="whiteTitle">
+			<td colspan="2">Member of Group(s):</td>
+		</tr>
 		<%
 		for (User group: myGroups) {
 			allGroups.remove(group);
 			%>
-			<li class="blueMain">
-				<a href="#" onclick="showUser(<%=group.userDO.id%>); return false;"><%=group.userDO.name%></a>
-				(<a href="#" onclick="saveGroup('removeGroup', <%=group.userDO.id%>); return false;">remove</a>)
-			</li>
+			<tr class="blueMain">
+				<td><a href="#" onclick="showUser(<%=group.userDO.id%>); return false;"><%=group.userDO.name%></a></td>
+				<td><a href="#" onclick="saveGroup('removeGroup', <%=group.userDO.id%>); return false;">remove</a></td>
+			</tr>
 			<%
 		}
 		
 		for (User group: allGroups) {
 			%>
-			<li class="blueMain">
-				<a href="#" onclick="saveGroup('addGroup',<%=group.userDO.id%>); return false;" style="font-style: italic; color: red;">Add to <%=group.userDO.name%></a>
-			</li>
+			<tr class="blueMain">
+				<td><a href="#" style="font-style: italic; color: red;" onclick="showUser(<%=group.userDO.id%>); return false;"><%=group.userDO.name%></a></td>
+				<td><a href="#" style="font-style: italic; color: red;" onclick="saveGroup('addGroup',<%=group.userDO.id%>); return false;">add</a></td>
+			</tr>
 			<%
 		}
 		%>
-		</ul>
 		</form>
-		</p>
+	</table>
 		<%
 	} //if
 
 }
 
 if (isGroup && myMembers.size() > 0) {
-%>
-<p class="blueMain">Contains Member(s):
-<ul>
-<%
-for (User child: myMembers) {
-%>
-<li class="blueMain">
-	<a href="#" 
-		onclick="showUser(<%=child.userDO.id%>); return false;"
-		<% if (child.userDO.isActive.startsWith("N")) { %> style="font-style: italic; color: #999999"<% } %>
-		><%=child.userDO.name%></a>
-	(<a href="#" class="blueSmall" onclick="saveGroup('removeUserFromGroup',null,<%=child.userDO.id%>); return false;">remove</a>)
-</li>
-<%
-}
-%>
-</ul>
-</p>
-<%
+	%>
+	<table>
+	<tr bgcolor="#003366" class="whiteTitle">
+		<td colspan="2">Contains Member(s):</td>
+	</tr>
+	<%
+	for (User child: myMembers) {
+		%>
+		<tr class="blueMain">
+			<td><a href="#" 
+				onclick="showUser(<%=child.userDO.id%>); return false;"
+				<% if (child.userDO.isActive.startsWith("N")) { %> style="font-style: italic; color: #999999"<% } %>
+				><%=child.userDO.name%></a></td>
+			<td><a href="#" class="blueSmall" onclick="saveGroup('removeUserFromGroup',<%=userID %>,<%=child.userDO.id%>); return false;">remove</a></td>
+		</tr>
+		<%
+	}
+	%>
+	</table>
+	<%
 }
 
 if (loginLog != null && loginLog.size() > 0) {

@@ -312,8 +312,9 @@ public class EmailBean extends DataBean{
 			tempABean.setFromDB(cBean.auditor_id);
 			to = tempABean.userDO.email;
 			cc = "";
-			if (null!=cBean.secondEmail)
-			   cc = cBean.secondEmail;
+			// According to Estevan, we shouldn't cc the contractor on this email
+			//if (null!=cBean.secondEmail)
+			//   cc = cBean.secondEmail;
 			message = "This is an automatically generated email from Pacific Industrial Contractor Screening "+
 				" (PICS) to remind you of an audit you have scheduled to perform with "+
 				companyName + " on " + auditDate;
