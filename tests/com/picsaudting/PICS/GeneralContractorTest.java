@@ -14,8 +14,7 @@ public class GeneralContractorTest extends TestCase {
 			gcBean.setConID(123);
 			gcBean.setOpID(123);
 			gcBean.save();
-			gcBean.setApprovedByID(1900);
-			gcBean.setApprovedStatus("Yes");
+			gcBean.setWorkStatus("Y");
 			gcBean.setConn(DefaultDatabase.getConnection());
 			gcBean.save();
 			gcBean.setConn(DefaultDatabase.getConnection());

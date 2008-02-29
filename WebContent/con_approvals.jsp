@@ -1,12 +1,10 @@
 <%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
 <%@page import="org.apache.commons.beanutils.*"%>
+<%@page import="com.picsauditing.search.*"%>
 <%@page import="java.util.*"%>
 <%
 permissions.tryPermission(OpPerms.ContractorApproval);
-
-pageBean.setTitle("Contractor Approvals");
-pageBean.includeScriptaculous(true);
 
 String action = request.getParameter("action");
 if (action != null && action.equals("save")) {
@@ -14,64 +12,41 @@ if (action != null && action.equals("save")) {
 	GeneralContractor gcBean = new GeneralContractor();
 	gcBean.setConID(Integer.parseInt(request.getParameter("conID")));
 	gcBean.setOpID(permissions.getAccountId());
-	gcBean.setApprovedStatus(request.getParameter("status"));
-	if (gcBean.getApprovedStatus().length() > 0)
-		gcBean.setApprovedByID(permissions.getUserId());
+	gcBean.setWorkStatus(request.getParameter("workStatus"));
 	gcBean.save();
-	FlagCalculator fcBean = new FlagCalculator();
-	fcBean.setConFlags(request.getParameter("conID"), permissions.getAccountIdString());
-	%><%=DateBean.getTodaysDate() %> by <%=permissions.getName() %><%
+	%>Saved<%
 	return;
 }
-SearchAccounts search = new SearchAccounts();
+SelectAccount sql = new SelectAccount();
 
-String orderBy = request.getParameter("orderBy");
-if (orderBy != null) {
-	search.sql.addOrderBy(orderBy);
-}
-search.sql.addOrderBy("gc.dateAdded DESC");
+sql.setType(SelectAccount.Type.Contractor);
+sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID="+ permissions.getAccountId());
 
-search.setType(SearchAccounts.Type.Contractor);
-search.sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID="+ permissions.getAccountId());
-search.sql.addJoin("LEFT JOIN users u ON gc.approvedByID = u.id");
+sql.addField("gc.dateAdded");
+sql.addField("gc.workStatus");
+sql.addWhere("active='Y'");
 
-search.sql.addField("gc.dateAdded");
-search.sql.addField("gc.approvedStatus");
-search.sql.addField("gc.approvedByID");
-search.sql.addField("u.name as user_displayname");
-search.sql.addField("gc.approvedDate");
+Report report = new Report();
+report.setSql(sql);
+report.setOrderBy(request.getParameter("orderBy"), "gc.dateAdded DESC");
 
-search.sql.addWhere("active='Y'");
+report.setPageByResult(request);
+report.setLimit(50);
 
-String filter = "";
-String searchStatus = request.getParameter("searchStatus");
-if (searchStatus!=null) filter += "&searchStatus="+searchStatus;
-if (searchStatus==null || searchStatus.equals(""))
-	search.sql.addWhere("gc.approvedStatus IS NULL OR gc.approvedStatus = ''");
-else if (searchStatus.equals("Yes") || searchStatus.equals("No"))
-	search.sql.addWhere("gc.approvedStatus = '"+searchStatus+"'");
+//report.addFilter(new SelectFilterInteger("conID", "gc.subID=?", request.getParameter("conID")));
+report.addFilter(new SelectFilter("workStatus", "gc.workStatus = '?'", request.getParameter("workStatus"), "P", ""));
+report.addFilter(new SelectFilter("name", "a.name LIKE '?%'", request.getParameter("name")));
 
-String searchConID = request.getParameter("searchConID");
-if (searchConID!=null) filter += "&searchConID="+searchConID;
-if (!(searchConID==null  || "".equals(searchConID)))
-	search.sql.addWhere("gc.subID="+searchConID);
-String searchName = request.getParameter("searchName");
-if (searchName!=null) filter += "&searchName="+searchName;
-if (!(searchName==null  || "".equals(searchName)))
-	search.sql.addWhere("a.name LIKE '"+Utilities.escapeQuotes(searchName)+"%'");
+List<BasicDynaBean> searchData = report.getPage();
 
-search.setPageByResult(request);
-search.setLimit(50);
-
-
-
-List<BasicDynaBean> searchData = search.doSearch();
+pageBean.setTitle("Contractor Approvals");
+pageBean.includeScriptaculous(true);
 %>
 <%@ include file="includes/header.jsp" %>
 <%@page import="com.picsauditing.PICS.redFlagReport.FlagCalculator"%>
 <script type="text/javascript">
 function saveApproval(conID, status) {
-	pars = 'action=save&conID='+conID+'&status='+status;
+	pars = 'action=save&conID='+conID+'&workStatus='+status;
 	
 	$('result_td'+conID).innerHTML = '<img src="images/ajax_process.gif" />';
 	var myAjax = new Ajax.Updater('result_td'+conID, 'con_approvals.jsp', {method: 'post', parameters: pars});
@@ -97,57 +72,55 @@ form.smallform {
 	<tr>
 		<td class="blueMain">
 		<form action="con_approvals.jsp" method="get">
-			Name: <input type="text" name="searchName" value="" size="20" class="blueMain" />
-			<select name="searchStatus" class="blueMain">
-				<option value="">Pending Approval</option>
-				<option value="Yes"<%="Yes".equals(searchStatus)?" SELECTED":"" %>>Approved</option>
-				<option value="No"<%="No".equals(searchStatus)?" SELECTED":"" %>>Not Approved</option>
-				<option value="All"<%="All".equals(searchStatus)?" SELECTED":"" %>>All</option>
+			Name: <input type="text" name="name" value="<%= report.getFilterValue("name") %>" size="20" class="blueMain" />
+			<select name="workStatus" class="blueMain">
+				<option value="">All</option>
+				<option value="P"<%="P".equals(report.getFilterValue("workStatus"))?" SELECTED":"" %>>Pending</option>
+				<option value="Y"<%="Y".equals(report.getFilterValue("workStatus"))?" SELECTED":"" %>>Yes</option>
+				<option value="N"<%="N".equals(report.getFilterValue("workStatus"))?" SELECTED":"" %>>No</option>
 			</select>
 			<input type="submit" value="Show" class="blueMain">
 		</form>
 		</td>
 	</tr>
 	<tr>
-		<td align="right"><%=search.getPageLinks(filter)%></td>
+		<td align="right"><%=report.getPageLinks()%></td>
 	</tr>
 </table>
+<p>
+Do the following companies work for <%= permissions.getAccountId() %>?
+</p>
 <table border="0" cellpadding="1" cellspacing="1" align="center">
 	<tr bgcolor="#003366" class="whiteTitle">
-		<td colspan=2><a href="?orderBy=a.name<%=filter %>" class="whiteTitle">Contractor</a></td>
-		<td align="center"><a href="?<%=filter %>"
+		<td colspan=2><a href="?orderBy=a.name<%=report.getFilterParams()%>" class="whiteTitle">Contractor</a></td>
+		<td align="center"><a href="?<%=report.getFilterParams() %>"
 			class="whiteTitle">Date Added</a></td>
-		<td align="center"><a href="?orderBy=approvedStatus<%=filter %>"
+		<td align="center"><a href="?orderBy=workStatus<%=report.getFilterParams() %>"
 			class="whiteTitle">Approved</a></td>
-		<td align="center"><a href="?orderBy=approvedDate DESC<%=filter %>"
-			class="whiteTitle">Date / Approved By</a></td>
 	</tr>
 	<%
-		int counter = 0;
+		com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlternater(sql.getStartRow());
 		for (BasicDynaBean row : searchData) {
-			counter++;
 			String rowID = row.get("id").toString();
 	%>
 	<tr id="result_tr<%=rowID%>" class="blueMain"
-		<% if ((counter%2)==1) out.print("bgcolor=\"#FFFFFF\""); %>>
-		<td align="right"><%=counter%></td>
+		<%= color.nextBgColor() %>>
+		<td align="right"><%=color.getCounter()%></td>
 		<td><a href="contractor_detail.jsp?id=<%=rowID%>"><%=row.get("name")%></a></td>
 		<td><%=DateBean.toShowFormat(row.get("dateAdded"))%></td>
 		<td>
 		<% if (permissions.hasPermission(OpPerms.ContractorApproval, OpType.Edit)) { %>
 			<form class="smallform">
-				<label><input type="radio" name="approveStatus" onClick="saveApproval(<%=rowID%>, 'Yes')"
-					value="Yes"<%="Yes".equals(row.get("approvedStatus"))?" checked ":""%>>Yes</label>
-				<label><input type="radio" name="approveStatus" onClick="saveApproval(<%=rowID%>, 'No')"
-					value="No"<%="No".equals(row.get("approvedStatus"))?" checked ":""%>>No</label>
+				<label><input type="radio" name="workStatus" onClick="saveApproval(<%=rowID%>, 'Y')"
+					value="Y"<%="Y".equals(row.get("workStatus"))?" checked ":""%>>Yes</label>
+				<label><input type="radio" name="workStatus" onClick="saveApproval(<%=rowID%>, 'N')"
+					value="N"<%="N".equals(row.get("workStatus"))?" checked ":""%>>No</label>
+				<label><input type="radio" name="workStatus" onClick="saveApproval(<%=rowID%>, 'P')"
+					value="P"<%="P".equals(row.get("workStatus"))?" checked ":""%>>Pending</label>
 			</form>
 		<% } %>
 		</td>
 		<td id="result_td<%=rowID%>" style="font-style: italic;">
-		<% if (row.get("approvedStatus") != null) { %>
-			<%=DateBean.toShowFormat(row.get("approvedDate"))%>
-			<%=row.get("user_displayname")%>
-		<% } %>
 		</td>
 	</tr>
 	<%

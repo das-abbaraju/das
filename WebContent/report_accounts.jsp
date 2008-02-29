@@ -91,8 +91,7 @@ List<BasicDynaBean> searchData = search.getPage();
 		<td>&nbsp;</td>
 	</tr>
 	<%
-	com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlternater();
-	int counter = search.getSql().getStartRow();
+	com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlternater(search.getSql().getStartRow());
 	for (BasicDynaBean row : searchData) {
 		%>
 		<tr id="auditor_tr<%=row.get("id")%>" class="blueMain"
@@ -113,7 +112,6 @@ List<BasicDynaBean> searchData = search.getPage();
 			</td>
 		</tr>
 		<%
-		counter++;
 	}
 	%>
 </table>

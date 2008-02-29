@@ -3,6 +3,7 @@ package com.picsauditing.mail;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -48,7 +49,7 @@ public class GMailSender extends javax.mail.Authenticator {
 	}
 
 	public synchronized void sendMail(String subject, String body,
-			String sender, String recipients) throws Exception {
+			String sender, String recipients) throws MessagingException {
 		MimeMessage message = new MimeMessage(session);
 		DataHandler handler = new DataHandler(new ByteArrayDataSource(body
 				.getBytes(), "text/plain"));

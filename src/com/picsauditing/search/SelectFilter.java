@@ -28,6 +28,8 @@ public class SelectFilter {
 	public String getValue() {
 		if (this.ignoreValue != null && this.ignoreValue.equals(value))
 			return defaultValue;
+		if ("null".equals(value))
+			return defaultValue;
 		return value;
 	}
 	

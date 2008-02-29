@@ -6,7 +6,7 @@ public class EmailSender extends GMailSender {
 	private static String defaultPassword = "e3r4t5";
 	
 	public EmailSender() {
-		super(getSender(), defaultPassword);
+		super(getDefaultSender(), defaultPassword);
 	}
 	public EmailSender(String user, String password) {
 		super(user, password);
@@ -24,10 +24,13 @@ public class EmailSender extends GMailSender {
 		if (attempts > NUMBER_OF_GMAIL_ACOUNTS)
 			throw new Exception("Failed to send email, used all possible senders. See log file for more info.");
 		try {
-			this.sendMail(email.getSubject(), email.getBody(), getSender(), email.getToAddress());
+			String fromAddress = "";
+			if (email.getFromAddress() != null && email.getFromAddress().length() > 7) fromAddress = email.getFromAddress();
+			else fromAddress = getDefaultSender();
+			this.sendMail(email.getSubject(), email.getBody(), fromAddress, email.getToAddress());
 		} catch (Exception e) {
-			System.out.println("Send Mail Exception with account "+currentDefaultSender+": "+e.getMessage());
-			changeSender();
+			System.out.println("Send Mail Exception with account "+currentDefaultSender+": "+ e.toString() +" "+ e.getMessage());
+			changeDefaultSender();
 			this.sendMail(email, attempts);
 		}
 	}
@@ -36,13 +39,13 @@ public class EmailSender extends GMailSender {
 		this.sendMail(email, attempts);
 	}
 	
-	public static String getSender() {
-		if (EmailSender.currentDefaultSender > 2)
-			return "PICS Info <info"+currentDefaultSender+"@picsauditing.com>";
+	private static String getDefaultSender() {
+		if (EmailSender.currentDefaultSender >= 2)
+			return "info"+currentDefaultSender+"@picsauditing.com";
 		else
-			return "PICS Info <info@picsauditing.com>";
+			return "info@picsauditing.com";
 	}
-	public static void changeSender() {
+	private static void changeDefaultSender() {
 		currentDefaultSender = (currentDefaultSender % NUMBER_OF_GMAIL_ACOUNTS)+1;
 	}
 }

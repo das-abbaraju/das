@@ -94,7 +94,8 @@ List<BasicDynaBean> userList = search.getPage();
                     </tr>
                     <tr class="blueMain"> 
                       <td colspan="2" align="center">
-                      <a href="accounts_editUser.jsp?id=<%=opID%>&action=New">Add New User</a>
+                      <a href="accounts_editUser.jsp?id=<%=opID%>&action=New">Add New User</a> |
+                      <a href="users_manage.jsp">Use the new tool (beta)</a>
                       </td>
                     </tr>
 					<tr>

@@ -1,4 +1,4 @@
-<%@ page language="java"%>
+<%@ page language="java" errorPage="exception_handler.jsp"%>
 <%@page import="com.picsauditing.access.*"%>
 <%@page import="java.util.*"%>
 <%@page import="com.picsauditing.PICS.Utilities"%>
@@ -117,12 +117,14 @@ if (uBean.isSet()) {
 	<tr>
 		<td colspan="2" class="redMain"><%=msg%></td>
 	</tr>
+	<% if (permissions.hasPermission(OpPerms.EditUsers, OpType.Edit)) { %>
 	<tr>
 	  <td>&nbsp;</td>
 	  <td><input type="button" class="forms" value="Save"
 	  	onclick="saveUser();" 
 	  	style="font-size: 14px; font-weight: bold;"></td>
 	</tr>
+	<% } %>
 	<% if (uBean.userDO.dateCreated.length() > 0) { %>
 	<tr  class="blueMain">
 		<td align="right"><%= (isGroup?"Group":"User") %> #</td>

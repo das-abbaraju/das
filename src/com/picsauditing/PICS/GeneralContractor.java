@@ -6,9 +6,7 @@ public class GeneralContractor extends DataBean {
 	private int conID;
 	private int opID;
 	private String dateAdded;
-	private int approvedByID = 0;
-	private String approvedStatus = "";
-	private String approvedDate = "";
+	private String workStatus = "P";
 	
 	public int getConID() {
 		return conID;
@@ -25,26 +23,12 @@ public class GeneralContractor extends DataBean {
 	public String getDateAdded() {
 		return dateAdded;
 	}
-	public int getApprovedByID() {
-		return approvedByID;
+	public String getWorkStatus() {
+		return workStatus;
 	}
-	public void setApprovedByID(int approvedByID) {
-		this.approvedByID = approvedByID;
-		try {
-			this.approvedDate = DateBean.toDBFormat(DateBean.getTodaysDateTime());
-		} catch (Exception e) {
-			this.approvedDate = "";
-		}
-	}
-	public String getApprovedStatus() {
-		return approvedStatus;
-	}
-	public void setApprovedStatus(String approvedStatus) {
-		if ("".equals(approvedStatus) || "Yes".equals(approvedStatus) || "No".equals(approvedStatus))
-			this.approvedStatus = approvedStatus;
-	}
-	public String getApprovedDate() {
-		return approvedDate;
+	public void setWorkStatus(String workStatus) {
+		if ("P".equals(workStatus) || "Y".equals(workStatus) || "N".equals(workStatus))
+			this.workStatus = workStatus;
 	}
 	
 	public boolean save() throws Exception {
@@ -52,11 +36,10 @@ public class GeneralContractor extends DataBean {
 		if (this.opID == 0) return false;
 		if (this.dateAdded == null) this.dateAdded = DateBean.toDBFormat(DateBean.getTodaysDateTime());
 		
-		String approvedDateSQL = "".equals(this.approvedDate) ? "NULL" : "'"+this.approvedDate+"'";
 		String sql = "INSERT INTO generalcontractors " +
-				"(subID, genID, dateAdded, approvedByID, approvedStatus, approvedDate) " +
-				"VALUES ("+conID+", "+opID+", NOW(), "+this.approvedByID+", '"+this.approvedStatus+"', "+approvedDateSQL+") " +
-				"ON DUPLICATE KEY UPDATE approvedByID="+this.approvedByID+", approvedStatus='"+this.approvedStatus+"', approvedDate="+approvedDateSQL;
+				"(subID, genID, dateAdded, workStatus) " +
+				"VALUES ("+conID+", "+opID+", NOW(), '"+this.workStatus+"') " +
+				"ON DUPLICATE KEY UPDATE workStatus='"+this.workStatus+"'";
 		try {
 			DBReady();
 			SQLStatement.executeUpdate(sql);

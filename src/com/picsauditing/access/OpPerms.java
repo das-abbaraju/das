@@ -19,6 +19,7 @@ public enum OpPerms {
 	EditNotes("Contractor Notes", "Allows users to add notes to a contractor's account. Currently, Read accoess is sufficient to Add and Delete notes too.", true, true),
 	
 	// Can view/edit/delete all contractors in the database ... replaces isAdmin
+	// These are usually used in tandem with another permission
 	AllContractors("All Contractors", "Can view all contractors in the database", false, false),
 	AllOperators("All Operators", "Can view all operators in the database", false, false),
 
