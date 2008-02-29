@@ -10,7 +10,7 @@ permissions.tryPermission(OpPerms.EditUsers, OpType.View);
 String getParams = ""; // Used when we go to Page 2,3,etc
 
 String accountID = permissions.getAccountIdString();
-if (permissions.hasPermission(OpPerms.EditAllUsers) && request.getParameter("accountID") != null) {
+if (permissions.hasPermission(OpPerms.AllOperators) && request.getParameter("accountID") != null) {
 	accountID = Utilities.intToDB(request.getParameter("accountID"));
 	getParams += "&accountID="+accountID;
 }
@@ -140,7 +140,7 @@ function saveGroup(action, groupID, childID) {
 <tr>
 	<td colspan="2" align="center" class="blueSmall" height="30">
 		<form action="users_manage.jsp" method="get">
-			<% if (permissions.hasPermission(OpPerms.EditAllUsers)) { %>
+			<% if (permissions.hasPermission(OpPerms.AllOperators)) { %>
 			Filter by User: <input type="text" name="filter" id="filter" class="blueSmall" onchange="filterOperators();" /><br />
 			Operator:	
 			<select id="operators" name="accountID" class="blueSmall">

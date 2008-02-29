@@ -12,7 +12,7 @@
 permissions.tryPermission(OpPerms.EditUsers, OpType.View);
 
 String accountID = permissions.getAccountIdString();
-if (permissions.hasPermission(OpPerms.EditAllUsers) && request.getParameter("accountID") != null) {
+if (permissions.hasPermission(OpPerms.AllOperators) && request.getParameter("accountID") != null) {
 	accountID = Utilities.intToDB(request.getParameter("accountID"));
 }
 
