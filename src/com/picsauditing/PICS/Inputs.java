@@ -53,6 +53,13 @@ public class Inputs {
 			"SK","Saskatchewan","SC","South Carolina","SD","South Dakota","TN","Tennessee",
 			"TX","Texas","UT","Utah","VT","Vermont","VA","Virginia","WA","Washington",
 			"DC","Washington D.C.","WV","West Virginia","WI","Wisconsin","WY","Wyoming","YT","Yukon"};
+	public static String[] MONTHS_ARRAY = {"01","Jan","02","Feb","03","Mar","04","Apr",
+			"05","May","06","Jun","07","Jul","08","Aug",
+			"09","Sep","10","Oct","11","Nov","12","Dec"};
+	public static String[] DAYS_ARRAY = {"01","02","03","04","05","06","07","08","09","10",
+			"11","12","13","14","15","16","17","18","19","20",
+			"21","22","23","24","25","26","27","28","29","30","31"};
+	public static String[] YEARS_ARRAY = {"2008","2009","2010","2011","2012"};
 
 	public static ArrayList<String> getStateArrayList() {
 		ArrayList<String> tempAL = new ArrayList<String>();
