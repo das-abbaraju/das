@@ -631,7 +631,20 @@ a.homeNews:visited {
 .display_on {
 	display: compact;
 }
-
-
-input.invalid { background: #faa; } /* Reddish background for invalid fields */
-input.valid { background: #afa; }   /* Greenish background for valid fields */
+	/*
+	 * Validate.js requires us to define styles for the "invalid" class to give
+	 * invalid fields a distinct visual appearance that the user will recognize.
+	 * We can optionally define styles for valid fields as well.
+	 */
+input.invalid { 
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #003366;
+	background: #faa; /* Reddish background for invalid fields */
+}
+input.valid {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #003366;
+	background: #fff;   /* White background for valid fields */
+}
