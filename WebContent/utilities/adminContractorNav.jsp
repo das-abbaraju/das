@@ -15,7 +15,7 @@ if (!thisPage.contains("contractor_detail")){
 	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"accounts_edit_contractor.jsp",thisPage,id,"",thisQuery,"Edit Account Info")%> |
 	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"con_selectFacilities.jsp",thisPage,id,"",thisQuery,"View Facilities")%> |
 <%	if (cBean.isCertRequired()) { %>
-		<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_upload_certificates.jsp",thisPage,id,"",thisQuery,"Upload/Edit Certificates")%><br/>
+		<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_upload_certificates.jsp",thisPage,id,"",thisQuery,"Insurance Certificates")%>
 <%		}//if
 %><br /><%
 	if (!cBean.isExempt()) { %>

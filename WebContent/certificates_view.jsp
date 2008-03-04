@@ -8,7 +8,7 @@
 <%try{
 	String id = request.getParameter("id");
 	String accountID = request.getParameter("accountID");
-	permissions.tryPermission(OpPerms.InsuranceCerts);
+	permissions.tryPermission(OpPerms.InsuranceCerts, OpType.View);
 	if (permissions.isOperator())
 		cerBean.setList(id, permissions.getAccountIdString());
 	else
@@ -73,12 +73,11 @@
                       <td bgcolor="#003366">Liability</td>
                       <td bgcolor="#003366">Named Ins.</td>
                       <td bgcolor="#003366">Waiver</td>
-<%	if (!permissions.isContractor()) {
-%>                    <td width="50" align="center" bgcolor="#993300"><strong><font color="#FFFFFF">File</font></strong></td>
-<%	}//if
-%>                  </tr>
-<%	while (cerBean.isNextRecord(cerBean.DONT_SET_NAME)) {
-%>
+<%	if (!permissions.isContractor()) {%>
+                    <td width="50" align="center" bgcolor="#993300"><strong><font color="#FFFFFF">File</font></strong></td>
+<%	}//if%>
+                  </tr>
+<%	while (cerBean.isNextRecord()) {%>
                     <tr class="blueMain" <%=Utilities.getBGColor(cerBean.count)%>> 
                       <td><%=cerBean.type%></td>
                       <td><%=cerBean.operator%></td>

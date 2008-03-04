@@ -40,8 +40,8 @@ public enum OpPerms {
 	// Insurance
 	InsuranceCerts("Insurance Certificates", "Allows users to view and manage the Insurance Certification process"),
 	//InsuranceCertsAllOperators("Manage Insurance Certificates for All Operators"),
-	//InsuranceVerification("Insurance Verification"),
-	//InsuranceApproval("Insurance Approval"),
+	InsuranceVerification("Insurance Verification"),
+	InsuranceApproval("Insurance Approval"),
 	
 	BillingUpgrades("Billing Upgrades", "Upgrade contractor subscriptions and send them invoices", true, false),
 	

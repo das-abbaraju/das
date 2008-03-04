@@ -4,7 +4,7 @@
 <jsp:useBean id="cerBean" class="com.picsauditing.PICS.CertificateBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <%
-permissions.tryPermission(OpPerms.EditUsers, OpType.View);
+permissions.tryPermission(OpPerms.InsuranceCerts, OpType.View);
 try{
 	String id = request.getParameter("id");
 	cerBean.processForm(pageContext);
@@ -90,7 +90,7 @@ try{
                       <td width="50" align="center" bgcolor="#993300">File</td>
                     </tr>
 <%	cerBean.setList(id);
-	while (cerBean.isNextRecord(false)) {
+	while (cerBean.isNextRecord()) {
 %>
                     <tr class="blueMain" <%=Utilities.getBGColor(cerBean.count)%>> 
                       <form name="deleteForm" method="post" action="contractor_certificates.jsp?id=<%=id%>&action=delete">

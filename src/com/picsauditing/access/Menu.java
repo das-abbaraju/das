@@ -78,13 +78,13 @@ public class Menu {
 		this.addItem("email_templates.jsp", "Email Templates", OpPerms.EmailTemplates);
 		this.addItem("report_EMRRates.jsp?changed=1", "EMR Rates Report");
 		this.addItem("report_expiredAudits.jsp?changed=1", "Expired Audits Report");
-		this.addItem("report_expiredCertificates.jsp?changed=1", "Expired Insurance Certificates", OpPerms.InsuranceCerts);
+		this.addItem("report_expiredCertificates.jsp?changed=1", "Expired Insurance Certificates", OpPerms.InsuranceApproval);
 		this.addItem("report_fatalities.jsp?changed=1", "Fatalities Report");
 		this.addItem("manage_forms.jsp", "Forms &amp Docs", OpPerms.FormsAndDocs);
 		this.addItem("report_incidenceRates.jsp?changed=1", "Incidence Rates Report");
 		this.addItem("report_incompleteAudits.jsp?incompleteAfter=3&changed=1", "Incomplete Audits Report");
-		this.addItem("report_certificates.jsp?changed=1", "Insurance Certificates", OpPerms.InsuranceCerts);
-		this.addItem("verify_insurance.jsp", "Insurance Verification", OpPerms.InsuranceCerts);
+		this.addItem("report_certificates.jsp?changed=1", "Insurance Approval", OpPerms.InsuranceApproval);
+		this.addItem("verify_insurance.jsp", "Insurance Verification", OpPerms.InsuranceVerification);
 		this.addItem("audit_selectType.jsp", "Manage Audits and Matrices", OpPerms.ManageAudits);
 		this.addItem("report_accounts.jsp?type=Corporate", "Manage Corporate Accounts", OpPerms.ManageCorporate);
 		this.addItem("report_accounts.jsp?type=Operator", "Manage Operators", OpPerms.ManageOperators);

@@ -168,6 +168,7 @@ public class CertificateDO implements IPicsDO{
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
 		cert_id = SQLResult.getString("cert_id");
 		contractor_id = SQLResult.getString("contractor_id");
+		operator_id = SQLResult.getString("operator_id");
 		contractor_name = SQLResult.getString("name");
 		type = SQLResult.getString("type");
 		operator = SQLResult.getString("operator");

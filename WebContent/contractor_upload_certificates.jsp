@@ -6,13 +6,20 @@
 <script src="js/Validate.js"></script>
 <script src="js/ValidateForms.js"></script>
 <%try{
+	Filter filter = new Filter();
 	if (permissions.isOperator())
-		permissions.tryPermission(OpPerms.InsuranceCerts);
+		permissions.tryPermission(OpPerms.InsuranceCerts,OpType.Edit);
 
 	String id = request.getParameter("id");
-	cerBean.processForm(pageContext);
+	if (request.getParameter("action") != null &&
+			permissions.hasPermission(OpPerms.InsuranceCerts,OpType.Edit))
+		cerBean.processForm(pageContext);
 	ContractorBean cBean = new ContractorBean();
 	cBean.setFromDB(id);
+	cBean.tryView(permissions);
+
+	filter.set("s_conID",id);
+	cerBean.setList(permissions,filter);
 %>
 <html>
 <head>
@@ -21,17 +28,7 @@
   <META Http-Equiv="Cache-Control" Content="no-cache">
   <META Http-Equiv="Pragma" Content="no-cache">
   <META Http-Equiv="Expires" Content="0">
-  <link href="PICS.css" rel="stylesheet" type="text/css">
- 
-	<style>
-	/*
-	 * Validate.js requires us to define styles for the "invalid" class to give
-	 * invalid fields a distinct visual appearance that the user will recognize.
-	 * We can optionally define styles for valid fields as well.
-	 */
-	input.invalid { background: #faa; } /* Reddish background for invalid fields */
-	input.valid { background: #fff; }   /* Greenish background for valid fields */
-	</style>
+  <link href="PICS.css" rel="stylesheet" type="text/css"> 
 </head>
 <body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
@@ -52,35 +49,35 @@
           <td>&nbsp;</td>
         </tr>
         <tr> 
-            <td>&nbsp;</td>
-            <td colspan="3">
-              <table width="657" border="0" cellpadding="0" cellspacing="0">
-                <tr> 
+          <td>&nbsp;</td>
+          <td colspan="3">
+            <table width="657" border="0" cellpadding="0" cellspacing="0">
+              <tr> 
                 <td align="left"><%@ include file="includes/nav/secondNav.jsp"%></td>
-                </tr>
-              </table>
-              <table width="657" border="0" cellpadding="15" cellspacing="1" bgcolor="#F8F8F8">
-                <tr bgcolor="#FFFFFF"> 
-				  
+              </tr>
+            </table>
+            <table width="657" border="0" cellpadding="15" cellspacing="1">
+              <tr>
                 <td align="center" valign="top" class="redMain"> <%=cerBean.getErrorMessages()%> 
+<%	if (permissions.hasPermission(OpPerms.InsuranceCerts,OpType.Edit) || permissions.isContractor()){ %>
                   <form name="addForm" method="post" action="contractor_upload_certificates.jsp?id=<%=id%>&action=add" enctype="multipart/form-data">
-                    <table cellpadding="2" cellspacing="3">
+                    <table cellpadding="2" cellspacing="3" bgcolor="FFFFFF">
                       <tr> 
                         <td class="blueMain">Type&nbsp;&nbsp;
-                        <%=Utilities.inputSelect("types","forms","Workers Compensation",cerBean.TYPE_ARRAY)%></td>                        
+                          <%=Utilities.inputSelect("types","forms","Workers Compensation",cerBean.TYPE_ARRAY)%></td>                        
                         <td class="blueMain">Operator&nbsp;&nbsp;
-<%	if (permissions.isOperator()){%>
+<%		if (permissions.isOperator()){%>
 	                    <input type="hidden" name="operator_id" value="<%=permissions.getAccountId()%>"><%=FACILITIES.getNameFromID(permissions.getAccountIdString())%>
-<%	}else{%>
+<%		}else{%>
                         <%=new AccountBean().getGeneralSelect3("operator_id","forms",cerBean.operator_id,SearchBean.DONT_LIST_DEFAULT,id) %></td>
-<%	}//else%>
+<%		}//else%>
                       </tr>
                       <tr> 
                         <td class="blueMain">File (.pdf, .doc or .txt)&nbsp;&nbsp;
                           <input name="certificateFile" type="FILE" class="forms" size="15" required>
                         </td>
-                        <td class="blueMain">Expiration&nbsp;&nbsp;<%=Utilities.inputSelect2("expMonth","forms",cerBean.expMonth, CertificateBean.MONTHS_ARRAY)%>
-					      /<%=Utilities.inputSelect("expDay","forms",cerBean.expDay, CertificateBean.DAYS_ARRAY)%>/<%=Utilities.inputSelect("expYear","forms",cerBean.expYear, CertificateBean.YEARS_ARRAY)%>
+                        <td class="blueMain">Expiration&nbsp;&nbsp;<%=Inputs.inputSelect2("expMonth","forms",cerBean.expMonth, Inputs.MONTHS_ARRAY)%>
+					      /<%=Inputs.inputSelect("expDay","forms",cerBean.expDay, Inputs.DAYS_ARRAY)%>/<%=Inputs.inputSelect("expYear","forms",cerBean.expYear, Inputs.YEARS_ARRAY)%>
                         </td>
                       </tr>
                       <tr> 
@@ -97,33 +94,41 @@
 					</table>
 					<hr>
 					  <input name="Submit" type="submit" class="forms" value="Add Certificate">
-                    
-                  	</form>    
-                  <table width="657" border="0" cellpadding="1" cellspacing="1">
+                  </form>
+<%	}//if %>
+                  <table width="657" border="0" cellpadding="1" cellspacing="1" bgcolor="#EEEEEE">
                     <tr class="whiteTitle">
+<%	if (permissions.hasPermission(OpPerms.InsuranceCerts,OpType.Delete)|| permissions.isContractor()){ %>
                       <td bgcolor="#003366">Delete</td>
+<%	}//if%>
                       <td bgcolor="#003366">Type</td>
-                      <td bgcolor="#003366">Operator</td>
+                      <td bgcolor="#003366">Facility</td>
+                      <td bgcolor="#003366">Verified</td>
+                      <td bgcolor="#003366">Status</td>
                       <td bgcolor="#003366">Expires</td>
                       <td bgcolor="#003366">Liability</td>
-                      <td bgcolor="#003366">Add'l Named Ins.</td>
+                      <td bgcolor="#003366">Named Ins.</td>
                       <td bgcolor="#003366">Waiver</td>
                       <td width="50" align="center" bgcolor="#993300">File</td>
                     </tr>
-<%	if (permissions.isOperator())
-		cerBean.setList(id,permissions.getAccountIdString());	
-	else
-		cerBean.setList(id);
-	while (cerBean.isNextRecord(false)) {
+<%//	if (permissions.isOperator())
+//		cerBean.setList(id,permissions.getAccountIdString());	
+//	else
+//		cerBean.setList(id);
 %>
+<%	while (cerBean.isNextRecord()) {%>
                     <tr class="blueMain" <%=Utilities.getBGColor(cerBean.count)%>> 
+<%		if (permissions.hasPermission(OpPerms.InsuranceCerts,OpType.Delete)){ %>
                       <form name="deleteForm" method="post" action="contractor_upload_certificates.jsp?id=<%=id%>&action=delete">
                         <td> <input name="delete_id" type="hidden" value="<%=cerBean.cert_id%>"> 
                           <input name="Submit" type="submit" class="forms" value="Del"  onClick="return confirm('Are you sure you want to delete this file?');"> 
                         </td>
                       </form>
+<%		}//if%>
                       <td><%=cerBean.type%></td>
-                      <td><%=cerBean.operator%></td>
+                      <td><%=FACILITIES.getNameFromID(cerBean.operator_id)%></td>
+                      <td><%=cerBean.verified%></td>
+                      <td><%=cerBean.status%></td>
                       <td><%=cerBean.getExpDateShow()%></td>
                       <td align="right"><%=java.text.NumberFormat.getInstance().format(cerBean.getLiabilityLimit())%></td>
                       <td><%=cerBean.getNamedInsured()%></td>

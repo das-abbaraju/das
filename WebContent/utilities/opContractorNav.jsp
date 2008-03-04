@@ -11,14 +11,10 @@ if (permissions.isContractor() && !thisPage.contains("contractor_detail")) {
 %>
 <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_detail.jsp",thisPage,id,"",thisQuery,"Contractor Details")%>
 <%
-if (permissions.hasPermission(OpPerms.InsuranceCerts, OpType.Edit)) {
-	%> | <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_upload_certificates.jsp",thisPage,id,"",thisQuery,"Upload/Edit Certificates")%>
-	<%
-} else if (permissions.hasPermission(OpPerms.InsuranceCerts,OpType.View)) {
-	%> | <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"certificates_view.jsp",thisPage,id,"",thisQuery,"Insurance Certificates")%>
+if (permissions.hasPermission(OpPerms.InsuranceCerts)) {
+	%> | <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_upload_certificates.jsp",thisPage,id,"",thisQuery,"Insurance Certificates")%>
 	<%
 }
-
 if (permissions.isCorporate()) {
 	%> | <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"con_selectFacilities.jsp",thisPage,id,"",thisQuery,"Add Facilities")%>
 	<%
