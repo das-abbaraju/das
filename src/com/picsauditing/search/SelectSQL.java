@@ -6,7 +6,7 @@ public class SelectSQL {
 	private String fromTable;
 	private ArrayList<String> whereClause = new ArrayList<String>();
 	private ArrayList<String> groupByFields = new ArrayList<String>();
-	private String havingClause;
+	private String havingClause = "";
 	private ArrayList<String> fields = new ArrayList<String>();
 	private ArrayList<String> joinClause = new ArrayList<String>();
 	private ArrayList<String> orderBys = new ArrayList<String>();
@@ -64,7 +64,7 @@ public class SelectSQL {
 		if (this.groupByFields.size() > 0) {
 			sql.append("\nGROUP BY ");
 			sql.append(this.combineArray(this.groupByFields));
-			if (havingClause.length() > 0) {
+			if (havingClause != null && havingClause.length() > 0) {
 				sql.append("\nHAVING ");
 				sql.append(this.havingClause);
 			}
