@@ -12,7 +12,7 @@ public class DateBean {
 	public static SimpleDateFormat DBFormat = new SimpleDateFormat("yyyy-MM-dd");
 	ArrayList<String> nextMonths = new ArrayList<String>();
 
-	public static String PQF_EXPIRED_CUTOFF = "2007-01-01";	
+	public static String PQF_EXPIRED_CUTOFF = "2008-01-01";	
 	public static String OLD_OFFICE_CUTOFF = "2006-08-27";
 	public static String MonthNames[] = {"January", "February", "March", "April", "May","June", "July", "August", "September", "October", "November", "December"};
 
