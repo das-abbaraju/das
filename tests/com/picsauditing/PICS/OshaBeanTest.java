@@ -1,4 +1,4 @@
-package com.picsaudting.PICS;
+package com.picsauditing.PICS;
 
 import com.picsauditing.PICS.OSHABean;
 
