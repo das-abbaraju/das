@@ -404,28 +404,28 @@ public class CertificateBean extends DataBean {
 		}//catch
 	}//setList
 */
-	public void setList(Permissions permissions, Filter filter) throws Exception {
+	public void setList(Permissions permissions, SearchFilter searchFilter) throws Exception {
 		String selectQuery = "SELECT certificates.*,accounts.id,accounts.name,contractor_info.status "+
 			"FROM certificates, accounts, contractor_info "+
 			"WHERE certificates.contractor_id=accounts.id AND contractor_info.id=accounts.id ";
 
 		if (permissions.isOperator())
-			filter.set("s_opID",permissions.getAccountIdString());
+			searchFilter.set("s_opID",permissions.getAccountIdString());
 		if (permissions.isCorporate())
 			selectQuery += "AND certificates.operator_id IN (SELECT opID from facilities where corporateID="+permissions.getAccountIdString()+") ";
 
-		if (filter.has("s_accountName"))
-			selectQuery += "AND accounts.name LIKE '%"+Utilities.escapeQuotes(filter.get("s_accountName"))+"%' ";
-		if (filter.has("s_opID"))
-			selectQuery += "AND certificates.operator_id="+filter.get("s_opID")+" ";
-		if (filter.has("s_certStatus"))
-			selectQuery += "AND certificates.status='"+filter.get("s_certStatus")+"' ";
-		if (filter.has("s_conID"))
-			selectQuery += "AND certificates.contractor_id="+filter.get("s_conID")+" ";
-		if (filter.has("s_certVerified"))
-			selectQuery += "AND certificates.verified='"+filter.get("s_certVerified")+"' ";
-		if (filter.has("s_daysTilExpired"))
-			selectQuery += "AND (TO_DAYS(expDate)-TO_DAYS(CURDATE())<"+filter.get("s_daysTilExpired")+") ";
+		if (searchFilter.has("s_accountName"))
+			selectQuery += "AND accounts.name LIKE '%"+Utilities.escapeQuotes(searchFilter.get("s_accountName"))+"%' ";
+		if (searchFilter.has("s_opID"))
+			selectQuery += "AND certificates.operator_id="+searchFilter.get("s_opID")+" ";
+		if (searchFilter.has("s_certStatus"))
+			selectQuery += "AND certificates.status='"+searchFilter.get("s_certStatus")+"' ";
+		if (searchFilter.has("s_conID"))
+			selectQuery += "AND certificates.contractor_id="+searchFilter.get("s_conID")+" ";
+		if (searchFilter.has("s_certVerified"))
+			selectQuery += "AND certificates.verified='"+searchFilter.get("s_certVerified")+"' ";
+		if (searchFilter.has("s_daysTilExpired"))
+			selectQuery += "AND (TO_DAYS(expDate)-TO_DAYS(CURDATE())<"+searchFilter.get("s_daysTilExpired")+") ";
 
 		selectQuery += "ORDER BY operator,type ASC;";
 

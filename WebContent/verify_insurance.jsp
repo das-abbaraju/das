@@ -1,12 +1,13 @@
 <%@ page language="java" import="java.util.*, com.picsauditing.domain.CertificateDO, com.picsauditing.PICS.Inputs" errorPage="exception_handler.jsp"%>
 <%@page import="com.picsauditing.access.*"%>
+<%@page import="com.picsauditing.PICS.*"%>
 <%@include file="includes/main.jsp"%>
 <jsp:useBean id="cerBean" class="com.picsauditing.PICS.CertificateBean" scope="page" />
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope="page" />
 <jsp:useBean id="certDO" class="com.picsauditing.domain.CertificateDO" scope="page" />
 <%
 try{
-	Filter filter = new Filter();
+	SearchFilter filter = new SearchFilter();
 	filter.setParams(request);
 
 	permissions.tryPermission(OpPerms.InsuranceCerts);

@@ -5,9 +5,10 @@
 <jsp:useBean id="cerBean" class="com.picsauditing.PICS.CertificateBean" scope="page" />
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope="page" />
 <jsp:useBean id="certDO" class="com.picsauditing.domain.CertificateDO" scope="page" />
-<%	try{
+<%
+	try{
 	permissions.tryPermission(OpPerms.InsuranceApproval);
-	com.picsauditing.PICS.Filter filter = new com.picsauditing.PICS.Filter();
+	SearchFilter filter = new SearchFilter();
 	filter.setParams(request);
 	
 	if(!filter.has("s_certStatus"))
@@ -28,10 +29,8 @@
 //    	cerBean.setListAll(selected_opID);
 
 	cerBean.setList(permissions,filter);
-	sBean.pageResults(cerBean.getListRS(), 20, request);	
-		
+	sBean.pageResults(cerBean.getListRS(), 20, request);
 %>
-<html>
 <head>
   <title>PICS - Pacific Industrial Contractor Screening</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">

@@ -6,7 +6,7 @@
 <jsp:useBean id="certDO" class="com.picsauditing.domain.CertificateDO"scope="page" />
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope="page" />
 <%	try{
-	Filter filter = new Filter();
+	SearchFilter filter = new SearchFilter();
 	filter.setParams(request);
 
 	if (null != request.getParameter("Submit"))

@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class Filter{
+public class SearchFilter{
 	String name = "";
 	public static final String[] DEFAULTS = {
 		"s_name","- Name - ",
