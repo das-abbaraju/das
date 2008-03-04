@@ -143,7 +143,7 @@ try {
 <%	} if (pBean.oBean.canSeeInsurance()){%>
                 <td align="center">
                 <% if (certList.contains(sBean.aBean.id)) { %>
-            		<a href="certificates_view.jsp?id=<%=sBean.aBean.id %>"><img 
+            		<a href="contractor_upload_certificates.jsp?id=<%=sBean.aBean.id %>"><img 
             			src="images/icon_insurance.gif" width="20" height="20" border="0"></a>
             	<% } else { %>N/A<% } %>
 				</td>

@@ -586,7 +586,7 @@ public class EmailBean extends DataBean{
 	}//sendUpdateDynamicPQFEmail
 	
 	public static void sendCertificateRejectedEmail(CertificateDO certDO,Permissions permissions) throws Exception {
-		AccountBean aBean = new AccountBean();		
+		AccountBean aBean = new AccountBean();
 		String conID = certDO.getContractor_id();
 		aBean.setFromDB(conID);
 		String contactName = aBean.contact;

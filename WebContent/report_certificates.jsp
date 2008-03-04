@@ -89,17 +89,16 @@
                         <tr class="whiteTitle">
 <%	if (permissions.isOperator() || permissions.isAdmin()) {
 		if (!"Approved".equals(filter.getInputValue("s_certStatus"))) { %>
-                          <td bgcolor="#003366">Approve</td>
-<%		}//if
+                          <td bgcolor="#003366" align="center">Approve</td>
+<%		}else{%>
+                          <td bgcolor="#003366" align="center">Resend</td>	
+<%		}//else
 		if (!"Rejected".equals(filter.getInputValue("s_certStatus"))) { %>
-                          <td bgcolor="#003366">Reject</td>
-<%		}//if%>
+                          <td bgcolor="#003366" align="center">Reject</td>
+<%		}else{%>
+                          <td bgcolor="#003366" align="center">Resend</td>
+<%		}//else%>
                           <td bgcolor="#003366">Reason</td>
-<%	}//if %>
-<%	if (permissions.isAdmin()) {  %>								
-<!--                           <td bgcolor="#003366">Sent</td>
-                          <td bgcolor="#003366">Last<nobr> Sent</nobr></td>
- -->
 <%	}//if %>
                           <td bgcolor="#003366">Contractor</td>
                           <td bgcolor="#003366">Type</td>
@@ -118,10 +117,9 @@
 <%			if ("Pending".equals(filter.getInputValue("s_certStatus"))) { %>
                           <td align="center"><input name="status_<%=certDO.getCert_id()%>" class=buttons type=radio value="Approved"></td>
                           <td align="center"><input name="status_<%=certDO.getCert_id()%>" class=buttons type=radio value="Rejected"></td>
-<%			}else if ("Approved".equals(filter.getInputValue("s_certStatus"))) { %>
-                          <td align="center"><%=Inputs.getCheckBoxInput("status_"+certDO.getCert_id(),"buttons",certDO.getStatus(),"Rejected")%></td>
-<%	    	}else if ("Rejected".equals(filter.getInputValue("s_certStatus"))) { %>
-                          <td align="center"><%=Inputs.getCheckBoxInput("status_"+certDO.getCert_id(),"buttons",certDO.getStatus(),"Approved")%></td>
+<%			}else{ %>
+                          <td align="center"><%=Inputs.getCheckBoxInput("status_"+certDO.getCert_id(),"buttons","","Approved")%></td>
+                          <td align="center"><%=Inputs.getCheckBoxInput("status_"+certDO.getCert_id(),"buttons","","Rejected")%></td>
 <%			}//if %>
                           <td>
                             <input type="text" id="reason_<%=certDO.getCert_id()%>" name="reason_<%=certDO.getCert_id()%>" 
@@ -130,15 +128,8 @@
                             <input type="hidden" name="contractor_id_<%=certDO.getCert_id()%>" value="<%=certDO.getContractor_id()%>"/>
                             <input type="hidden" name="type_<%=certDO.getCert_id()%>" value="<%=certDO.getType()%>"/>
                           </td>
-<%		}//if %>
-<%		if (permissions.isAdmin()) { %>
-<!-- jj 3-4-08, wasn't submitting form andyway
-                          <td><input name="sendEmail_<%=certDO.getCert_id()%>" type="checkbox"></td>
-                          <td><%=certDO.getSent()%></td>
-                          <td><%=com.picsauditing.PICS.DateBean.toShowFormat(certDO.getLastSentDate())%></td>
- -->
- <%		}//if %>
-<%		if(permissions.isCorporate()) { %>
+<%		}//if
+		if(permissions.isCorporate()) { %>
                           <td>&nbsp;&nbsp;</td>
 <%		}//if %>
                           <td><a href="contractor_detail.jsp?id=<%=certDO.getContractor_id()%>" class="<%=sBean.getTextColor()%>"><%=certDO.getContractor_name()%></a></td>
@@ -160,11 +151,7 @@
                       <br>
                       <center><%=sBean.getLinks(filter.getURLQuery())%></center>
                       <br>
-<%	if (permissions.isAdmin()) { %>
-                      <input name="action" type="submit" class="buttons" value="Send Emails"
-                       onClick="return confirm('Are you sure you want to send these emails?');" >
-<%	}//if
-	if (permissions.isOperator()) { %> 
+<%	if (permissions.isOperator() || permissions.isAdmin()) { %> 
                       <input name="action" type="submit" class="buttons" value="Submit" >
                       <input name="s_certStatus" type="hidden" value="<%=filter.getInputValue("s_certStatus")%>" >
 <%	}//if %>

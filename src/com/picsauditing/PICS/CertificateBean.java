@@ -666,7 +666,7 @@ public class CertificateBean extends DataBean {
 	}//setCeretificatesFromEditList
 	public List<CertificateDO> sendEmailFromCheckList(HttpServletRequest request){
 		List<CertificateDO> emailList = new ArrayList<CertificateDO>();
-		CertificateDO certDO = null;	
+		CertificateDO certDO = null;
 		Enumeration e =  request.getParameterNames();
 		while(e.hasMoreElements()){
 			String temp = (String)e.nextElement();

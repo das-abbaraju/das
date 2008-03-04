@@ -74,6 +74,8 @@ public class SearchFilter{
 		return "";
 	}
 	public void set(String paramName, String value){
+		if (null==params)
+			params = new HashMap<String,String>();
 		params.put(paramName,value);
 	}
 	public boolean has(String paramName){
