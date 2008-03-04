@@ -51,15 +51,14 @@ public class SearchFilter{
 			return (!getDefaultMap().get(param).equals(value));
 		return true;
 	}
-			
-	public void setParams(HttpServletRequest request){
+
+	public void setParams(Map<String,String> requestParams){
 		params = new HashMap<String,String>();
-		for (Enumeration e = request.getParameterNames();e.hasMoreElements();){
-			String temp = (String)e.nextElement();
-			if (temp.startsWith("s_")){
-				String value = request.getParameter(temp);
-				if (isSet(temp,value))
-					params.put(temp, value);
+		for (String name : requestParams.keySet()){
+			if (name.startsWith("s_")){
+				String value = requestParams.get(name);
+				if (isSet(name,value))
+					params.put(name, value);
 			}
 		}
 	}

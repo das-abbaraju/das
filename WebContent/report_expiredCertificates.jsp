@@ -7,7 +7,7 @@
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope="page" />
 <%	try{
 	SearchFilter filter = new SearchFilter();
-	filter.setParams(request);
+	filter.setParams(Utilities.requestParamsToMap(request));
 
 	if (null != request.getParameter("Submit"))
 		cerBean.processEmailForm(request, permissions);

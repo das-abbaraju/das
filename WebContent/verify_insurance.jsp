@@ -8,7 +8,7 @@
 <%
 try{
 	SearchFilter filter = new SearchFilter();
-	filter.setParams(request);
+	filter.setParams(Utilities.requestParamsToMap(request));
 
 	permissions.tryPermission(OpPerms.InsuranceCerts);
 	if (null != request.getParameter("Submit")){

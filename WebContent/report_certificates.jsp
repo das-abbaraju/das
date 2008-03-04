@@ -9,7 +9,7 @@
 	try{
 	permissions.tryPermission(OpPerms.InsuranceApproval);
 	SearchFilter filter = new SearchFilter();
-	filter.setParams(request);
+	filter.setParams(Utilities.requestParamsToMap(request));
 	
 	if(!filter.has("s_certStatus"))
 		filter.set("s_certStatus","Pending");

@@ -518,4 +518,14 @@ public class Utilities {
 		else
 			return str;
 	}
+
+	public static Map<String,String> requestParamsToMap(HttpServletRequest request){
+		Map <String,String> params = new HashMap<String,String>();
+		for (Enumeration e = request.getParameterNames();e.hasMoreElements();){
+			String name = (String)e.nextElement();
+			String value = request.getParameter(name);
+			params.put(name, value);
+		}
+		return params;
+	}
 }//Utilities
