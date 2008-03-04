@@ -10,7 +10,7 @@
 	filter.setParams(Utilities.requestParamsToMap(request));
 
 	if (null != request.getParameter("Submit"))
-		cerBean.processEmailForm(request, permissions);
+		cerBean.processEmailForm(Utilities.requestParamsToMap(request), permissions);
 	if (permissions.isAdmin())
 		filter.set("searchDaysTilExpired","14");
 	else

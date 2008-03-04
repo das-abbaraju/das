@@ -18,9 +18,9 @@
 //	String operator_id = request.getParameter("id");
 
 	if ("Submit".equals(request.getParameter("action"))){
-		List<CertificateDO> list = cerBean.setCertificatesFromCheckList(request);
+		List<CertificateDO> list = cerBean.setCertificatesFromCheckList(Utilities.requestParamsToMap(request));
 		cerBean.updateCertificates(list);
-		list = cerBean.sendEmailFromCheckList(request);
+		list = cerBean.sendEmailFromCheckList(Utilities.requestParamsToMap(request));
 		cerBean.sendEmail(list,permissions);
 	}
 //    if(permissions.isCorporate())

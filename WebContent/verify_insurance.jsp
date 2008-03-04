@@ -12,9 +12,9 @@ try{
 
 	permissions.tryPermission(OpPerms.InsuranceCerts);
 	if (null != request.getParameter("Submit")){
-		List<CertificateDO> list = cerBean.setCertificatesFromVerifiedList(request);
+		List<CertificateDO> list = cerBean.setCertificatesFromVerifiedList(Utilities.requestParamsToMap(request));
 		cerBean.updateVerifiedCertificates(list);
-		list = cerBean.setCertificatesFromEditList(request);
+		list = cerBean.setCertificatesFromEditList(Utilities.requestParamsToMap(request));
 		cerBean.UpdateEditedCertificates(list);
 	}
 	filter.set("s_certVerified","No");

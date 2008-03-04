@@ -7,7 +7,6 @@ import java.sql.Statement;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -232,178 +231,6 @@ public class CertificateBean extends DataBean {
 		ext = SQLResult.getString("ext");
 	}//setFromResultSet
 
-/*	public void setList(String con_id) throws Exception {
-		String selectQuery = "SELECT * FROM certificates WHERE contractor_id="+con_id+" ORDER BY " +
-						"type,operator ASC;";
-		try{
-			DBReady();
-			listRS = SQLStatement.executeQuery(selectQuery);
-			numResults = 0;
-			while (listRS.next())
-				numResults++;
-			listRS.beforeFirst();
-			count = 0;
-		}catch (Exception ex){
-			DBClose();
-			throw ex;
-		}
-	}//setList
-*/	
-/*	public void setListAllExpired(String daysTilExpired, PermissionsBean pBean) throws Exception {
-		String selectQuery = "SELECT certificates.*,accounts.id,accounts.name,contractor_info.status "+
-					"FROM certificates, accounts, contractor_info "+
-					"WHERE certificates.contractor_id=accounts.id AND contractor_info.id=accounts.id AND "+
-					"(TO_DAYS(expDate)-TO_DAYS(CURDATE()) < "+daysTilExpired+") AND accounts.active='Y' ";
-		if (!pBean.isAdmin())
-			selectQuery += "AND certificates.operator_id="+pBean.userID+" ";
-		selectQuery += "ORDER BY expDate ASC;";		
-
-		try{
-			DBReady();
-			listRS = SQLStatement.executeQuery(selectQuery);
-			numResults = 0;
-			while (listRS.next())
-				numResults++;
-			listRS.beforeFirst();
-			count = 0;
-		}catch (Exception ex){
-			DBClose();
-			throw ex;
-		}
-	}//setListAll
-*/
-/*	public void setListAll(String operator_id) throws Exception {
-		String selectQuery = "";
-		selectQuery = "SELECT certificates.*,accounts.id,accounts.name,contractor_info.status "+
-			"FROM certificates, accounts, contractor_info "+
-			"WHERE certificates.contractor_id=accounts.id AND contractor_info.id=accounts.id AND "+
-			"accounts.active='Y' ";
-		if ((contractor_name == null) || (contractor_name.equals(DEFAULT_NAME)) || (contractor_name.length()<MIN_NAME_SEARCH_LENGTH))
-			contractor_name = DEFAULT_NAME;
-		else
-			selectQuery+= "AND accounts.name LIKE '%"+Utilities.escapeQuotes(contractor_name)+"%' ";
-				
-		if(operator_id != null && !operator_id.equals("-2"))
-			selectQuery += "AND certificates.operator_id="+operator_id+" AND certificates.verified='Yes' ";
-	
-		if(status == null || status.equals(""))
-			status = DEFAULT_STATUS;
-
-		selectQuery += "AND certificates.status='" + status + "' ";
-		selectQuery += "ORDER BY name ASC;";
-
-		try{
-			DBReady();
-			listRS = SQLStatement.executeQuery(selectQuery);
-			
-			numResults = 0;
-			while (listRS.next())
-				numResults++;
-			listRS.beforeFirst();
-			count = 0;
-		}catch (Exception ex){
-			DBClose();
-			throw ex;
-		}//catch
-	}//setListAll
-*/
-/*	public void setListByFacilities(String operator_id) throws Exception{
-		String selectQuery = "";
-		selectQuery = "SELECT certificates.*,accounts.id,accounts.name,contractor_info.status "+
-			"FROM certificates, accounts, contractor_info "+
-			"WHERE certificates.contractor_id=accounts.id AND contractor_info.id=accounts.id AND "+
-			"accounts.active='Y' ";
-		if ((contractor_name == null) || (contractor_name.equals(DEFAULT_NAME)) || (contractor_name.length()<MIN_NAME_SEARCH_LENGTH))
-			contractor_name = DEFAULT_NAME;
-		else
-			selectQuery+= "AND accounts.name LIKE '%"+Utilities.escapeQuotes(contractor_name)+"%' ";
-				
-		if(operator_id != null && !operator_id.equals("-2"))
-			selectQuery += "AND certificates.operator_id IN (SELECT opID from facilities where corporateID=" + operator_id+") AND certificates.verified='Yes' ";
-	
-		if(status == null || status.equals(""))
-			status = DEFAULT_STATUS;
-
-		selectQuery += "AND certificates.status='" + status + "' ";
-		selectQuery += "ORDER BY name ASC;";
-
-		try{
-			DBReady();
-			listRS = SQLStatement.executeQuery(selectQuery);
-			
-			numResults = 0;
-			while (listRS.next())
-				numResults++;
-			listRS.beforeFirst();
-			count = 0;
-		}catch (Exception ex){
-			DBClose();
-			throw ex;
-		}
-	}
-*/
-/*	jtj 2-7-08 removed this and changed to search on operator_id, not operator name 
-	public void setList(String con_id, String operator) throws Exception {
-		String selectQuery = "SELECT * FROM certificates WHERE contractor_id="+con_id+" AND operator='"+operator+"' AND verified='Yes' ORDER BY type ASC;";
-		try{
-			DBReady();
-			listRS = SQLStatement.executeQuery(selectQuery);
-			numResults = 0;
-			while (listRS.next())
-				numResults++;
-			listRS.beforeFirst();
-			count = 0;
-		}catch (Exception ex){
-			DBClose();
-			throw ex;
-		}//catch
-	}//setList
-*/
-/*	public void setList(String con_id, String operator_id) throws Exception {
-		String selectQuery = "SELECT * FROM certificates WHERE contractor_id="+con_id+" AND operator_id='"+operator_id+"' ORDER BY type ASC;";
-		try{
-			DBReady();
-			listRS = SQLStatement.executeQuery(selectQuery);
-			numResults = 0;
-			while (listRS.next())
-				numResults++;
-			listRS.beforeFirst();
-			count = 0;
-		}catch (Exception ex){
-			DBClose();
-			throw ex;
-		}//catch
-	}//setList
-*/
-/*	public void setList(Permissions permissions) throws Exception {
-		StringBuffer buf = new StringBuffer("select certificates.*, accounts.name, operators.insuranceAuditor_id from certificates ");
-		buf.append("LEFT JOIN accounts on certificates.contractor_id=accounts.id ");
-		buf.append("LEFT JOIN operators on operators.id=certificates.operator_id where verified='No'");
-		
-		if ((contractor_name == null) || (contractor_name.equals(DEFAULT_NAME)) || (contractor_name.length()<MIN_NAME_SEARCH_LENGTH))
-			contractor_name = DEFAULT_NAME;
-		else
-			buf.append(" AND accounts.name LIKE '%"+Utilities.escapeQuotes(contractor_name)+"%' ");
-		if (permissions.isOperator())
-			buf.append(" AND certificates.operator_id="+permissions.getAccountIdString());
-		if (permissions.isCorporate())
-			buf.append("AND certificates.operator_id IN (SELECT opID from facilities where corporateID="+permissions.getAccountIdString()+")");
-			
-		buf.append(" ORDER BY name ASC;");		
-		try{
-			DBReady();
-			listRS = SQLStatement.executeQuery(buf.toString());
-			numResults = 0;
-			while (listRS.next())
-				numResults++;
-			listRS.beforeFirst();
-			count = 0;
-		}catch (Exception ex){
-			DBClose();
-			throw ex;
-		}//catch
-	}//setList
-*/
 	public void setList(Permissions permissions, SearchFilter searchFilter) throws Exception {
 		String selectQuery = "SELECT certificates.*,accounts.id,accounts.name,contractor_info.status "+
 			"FROM certificates, accounts, contractor_info "+
@@ -508,13 +335,10 @@ public class CertificateBean extends DataBean {
 		return false;
 	}//processForm
 
-	public void processEmailForm(javax.servlet.ServletRequest request, Permissions permissions)
-					throws Exception {
-		Enumeration e = request.getParameterNames();
-		while (e.hasMoreElements()) {
-			String temp = (String)e.nextElement();
-			if (temp.startsWith("sendEmail_")) {
-				String certificate_id = temp.substring(10);
+	public void processEmailForm(Map<String,String> params, Permissions permissions) throws Exception {
+		for (String param : params.keySet()) {
+			if (param.startsWith("sendEmail_")) {
+				String certificate_id = param.substring(10);
 				String selectQuery = "SELECT certificates.*, accounts.id FROM certificates, accounts " +
 					"WHERE cert_id = '"+certificate_id+"' AND certificates.contractor_id = accounts.id ";
 				try{
@@ -591,20 +415,17 @@ public class CertificateBean extends DataBean {
 	    }
 	}//formattedLiability
 	
-	public List<CertificateDO> setCertificatesFromCheckList(HttpServletRequest request){
+	public List<CertificateDO> setCertificatesFromCheckList(Map<String,String> params){
 		List<CertificateDO> certsToUpdate = new ArrayList<CertificateDO>();
 		CertificateDO certDO = null;	
-		Enumeration e =  request.getParameterNames();
-		while(e.hasMoreElements()){
-			String temp = (String)e.nextElement();
-			if(temp.startsWith("status_")){
+		for(String param : params.keySet()){
+			if(param.startsWith("status_")){
 				certDO = new CertificateDO();
-				String[] strlst = temp.split("_");
+				String[] strlst = param.split("_");
 				String id = strlst[strlst.length - 1];
 				certDO.setCert_id(id);
-				certDO.setStatus(request.getParameter(temp));
-				
-				String reason = request.getParameter("reason_" + id);
+				certDO.setStatus(params.get(param));
+				String reason = params.get("reason_"+id);
 				if(reason == null)
 					reason = "";
 				certDO.setReason(reason);
@@ -613,76 +434,70 @@ public class CertificateBean extends DataBean {
 		}
 		return certsToUpdate;
 	}//setCeretificatesFromCheckList
-	
-	public List<CertificateDO> setCertificatesFromVerifiedList(HttpServletRequest request){	
+
+	public List<CertificateDO> setCertificatesFromVerifiedList(Map<String,String> params){	
 		List<CertificateDO> certsToUpdate = new ArrayList<CertificateDO>();
-		Enumeration e =  request.getParameterNames();
-		while(e.hasMoreElements()){
-			CertificateDO certDO = null;	
-			String temp = (String)e.nextElement();
-						
-			if(temp.startsWith("verified_")){
+		for (String param : params.keySet()){
+			CertificateDO certDO = null;
+			if(param.startsWith("verified_")){
 				certDO = new CertificateDO();
-				String[] strlst = temp.split("_");
+				String[] strlst = param.split("_");
 				String id = strlst[strlst.length - 1];
 				certDO.setCert_id(id);
 				certDO.setVerified("Yes");
 				certsToUpdate.add(certDO);
-			}//if
-		}//while
+			}
+		}
 		return certsToUpdate;
 	}//setCeretificatesFromVerifiedList
 
-	public List<CertificateDO> setCertificatesFromEditList(HttpServletRequest request){
+	public List<CertificateDO> setCertificatesFromEditList(Map<String,String> params){
 		List<CertificateDO> certsToUpdate = new ArrayList<CertificateDO>();
-		Enumeration e =  request.getParameterNames();
-		while(e.hasMoreElements()){
+		for (String param : params.keySet()){
 			CertificateDO certDO = null;
-			String temp = (String)e.nextElement();
-			if(temp.startsWith("oktoedit_") && request.getParameter(temp).equals("ok")){			
+			if(param.startsWith("oktoedit_") && params.get(param).equals("ok")){			
 				certDO = new CertificateDO();
-				String[] strlst = temp.split("_");
+				String[] strlst = param.split("_");
 				String id = strlst[strlst.length - 1];
 				certDO.setCert_id(id);
-				certDO.setExpMonth(request.getParameter("expMonth_" + id));
-				certDO.setExpDay(request.getParameter("expDay_" + id));
-				certDO.setExpYear(request.getParameter("expYear_" + id));
+				certDO.setExpMonth(params.get("expMonth_" + id));
+				certDO.setExpDay(params.get("expDay_" + id));
+				certDO.setExpYear(params.get("expYear_" + id));
 				certDO.setExpDate(certDO.getExpYear() + "-" + certDO.getExpMonth() + "-" + certDO.getExpDay());
 				
 				long liability = 0l;;
 				try {
-					liability = formattedLiability(request.getParameter("liabilityLimit_" + id));
+					liability = formattedLiability(params.get("liabilityLimit_" + id));
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
 				certDO.setLiabilityLimit(liability);
-				String namedIns = Utilities.escapeQuotes(request.getParameter("namedInsured_" + id));
+				String namedIns = Utilities.escapeQuotes(params.get("namedInsured_" + id));
 				certDO.setNamedInsured(namedIns);
-				certDO.setSubrogationWaived(request.getParameter("subrogationWaived_" + id));
+				certDO.setSubrogationWaived(params.get("subrogationWaived_" + id));
 				certsToUpdate.add(certDO);		
 			}	
 		}
 		return certsToUpdate;
-	}//setCeretificatesFromEditList
-	public List<CertificateDO> sendEmailFromCheckList(HttpServletRequest request){
+	}//setCertificatesFromEditList
+
+	public List<CertificateDO> sendEmailFromCheckList(Map<String,String> params){
 		List<CertificateDO> emailList = new ArrayList<CertificateDO>();
 		CertificateDO certDO = null;
-		Enumeration e =  request.getParameterNames();
-		while(e.hasMoreElements()){
-			String temp = (String)e.nextElement();
-			if(temp.startsWith("status_")){
+		for (String param : params.keySet()){
+			if(param.startsWith("status_")){
 				certDO = new CertificateDO();
-				String[] strlst = temp.split("_");
+				String[] strlst = param.split("_");
 				String id = strlst[strlst.length - 1];
 				certDO.setCert_id(id); 
-				certDO.setStatus(request.getParameter(temp));
-				String reason = request.getParameter("reason_" + id);
+				certDO.setStatus(params.get(param));
+				String reason = params.get("reason_" + id);
 				if(reason == null)
 					reason = "";
 				certDO.setReason(reason);			
-				certDO.setContractor_id(request.getParameter("contractor_id_"+id));
-				certDO.setOperator_id(request.getParameter("operator_id_"+id));
-				certDO.setType(request.getParameter("type_"+id));
+				certDO.setContractor_id(params.get("contractor_id_"+id));
+				certDO.setOperator_id(params.get("operator_id_"+id));
+				certDO.setType(params.get("type_"+id));
 				emailList.add(certDO);
 			}//if
 		}//while
