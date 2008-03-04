@@ -418,8 +418,13 @@ public class CertificateBean extends DataBean {
 			selectQuery += "AND accounts.name LIKE '%"+Utilities.escapeQuotes(searchFilter.get("s_accountName"))+"%' ";
 		if (searchFilter.has("s_opID"))
 			selectQuery += "AND certificates.operator_id="+searchFilter.get("s_opID")+" ";
-		if (searchFilter.has("s_certStatus"))
-			selectQuery += "AND certificates.status='"+searchFilter.get("s_certStatus")+"' ";
+		if (searchFilter.has("s_certStatus")){
+// jj 3-3-08 added for backwards compatibility, can delete after one deployment cycle
+			if ("Neither".equals(searchFilter.get("s_certStatus")) || "Pending".equals(searchFilter.get("s_certStatus")))
+				selectQuery += "AND certificates.status IN ('Pending','Neither') ";
+			else
+				selectQuery += "AND certificates.status='"+searchFilter.get("s_certStatus")+"' ";
+		}
 		if (searchFilter.has("s_conID"))
 			selectQuery += "AND certificates.contractor_id="+searchFilter.get("s_conID")+" ";
 		if (searchFilter.has("s_certVerified"))
