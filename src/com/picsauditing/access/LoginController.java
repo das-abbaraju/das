@@ -74,10 +74,10 @@ public class LoginController extends DataBean {
 		pBean = (PermissionsBean)request.getSession().getAttribute("pBean");;
 		if (pBean == null) {
 			pBean = new PermissionsBean();
-			// Stuff the session permissions object into the legacy pBean
-			pBean.setPermissions(permissions);
 			request.getSession().setAttribute("pBean", pBean);
 		}
+		// Stuff the session permissions object into the legacy pBean
+		pBean.setPermissions(permissions);
 		// End of the pBean
 	}
 
