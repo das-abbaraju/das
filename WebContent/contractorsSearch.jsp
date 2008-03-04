@@ -1,13 +1,13 @@
 <%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.access.OpPerms" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/adminGeneral_secure.jsp" %>
 <%@page import="com.picsauditing.mail.*"%>
 <%@page import="com.picsauditing.PICS.redFlagReport.FlagCalculator"%>
 <%@page import="com.picsauditing.PICS.EmailBean"%>
 
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
-<%	
+<%
+if (permissions.isContractor()) throw new com.picsauditing.access.NoRightsException("Not Contractor");
 try{
 	com.picsauditing.PICS.pqf.QuestionTypeList statesLicensedInList = new com.picsauditing.PICS.pqf.QuestionTypeList();
 	tBean.setFromDB();
@@ -15,11 +15,16 @@ try{
 	String actionID = request.getParameter("actionID");
 	String searchName = request.getParameter("name");
 	String changed = request.getParameter("changed");
+	String filter = "&entireDB=Y";
 	if (null==searchName)
 		searchName = "";
+	else
+		filter += "&name="+searchName;
 	String searchTradeID = request.getParameter("trade");
 	if (null==searchTradeID)
 		searchTradeID = "";
+	else
+		filter += "&trade="+searchTradeID;
 	boolean isSearchNameOK = !("".equals(searchName)) && !sBean.DEFAULT_NAME.equals(searchName) && !(searchName.length()<sBean.MIN_NAME_SEARCH_LENGTH);
 	boolean isSearchTradeIDOK = !("".equals(searchTradeID)) && !tBean.DEFAULT_SELECT_TRADE_ID.equals(searchTradeID);
 	boolean doSearch = "0".equals(changed) || isSearchNameOK || isSearchTradeIDOK;
@@ -78,6 +83,10 @@ try{
 		sBean.doSearch(request, sBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
 	String showPage = request.getParameter("showPage");
 	if (showPage == null)	showPage = "1";
+	
+	//if (sBean.selected_taxID != null && sBean.selected_taxID.length() > 0)
+	//	filter += "&taxID=" + sBean.selected_taxID;
+	
 %>
 <html>
 <head>
@@ -159,7 +168,7 @@ try{
             <table>
               <tr> 
                 <td height="30"></td>
-                <td align="center"><%=sBean.getLinks()%></td>
+                <td align="center"><%=sBean.getLinks(filter)%></td>
               </tr>
             </table>
             <table width="657" border="0" cellpadding="1" cellspacing="1">
@@ -204,7 +213,7 @@ try{
               </tr>
 <%		}//while %>
             </table><br>
-		    <center><%=sBean.getLinks()%></center>
+		    <center><%=sBean.getLinks(filter)%></center>
 <%		sBean.closeSearch(); %>
 <%	}//if %>
 		  </td>
