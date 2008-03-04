@@ -10,6 +10,7 @@ public class SearchFilter{
 	String name = "";
 	public static final String[] DEFAULTS = {
 		"s_name","- Name - ",
+		"s_accountName","- Name - ",
 		"s_industry","- Industry -",
 		"s_type","Contractor",
 		"s_trade",TradesBean.DEFAULT_SELECT_TRADE_ID,
@@ -77,5 +78,13 @@ public class SearchFilter{
 	}
 	public boolean has(String paramName){
 		return params.containsKey(paramName);
+	}
+	public String getURLQuery(){
+		String returnString = "";
+		for (String param : params.keySet()){
+			String value = get(param);
+			returnString += "&"+param+"="+value;
+		}
+		return returnString;
 	}
 }

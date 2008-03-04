@@ -84,10 +84,10 @@
                     </form>
                     <form name="emailForm" method="post" action="report_certificates.jsp"><br>
                       <br>
-                      <%=sBean.getLinks()%>
+                      <%=sBean.getLinks(filter.getURLQuery())%>
                       <table ID="certTable" width="100%" border="0" cellpadding="1" cellspacing="1">
                         <tr class="whiteTitle">
-<%	if (permissions.isOperator()) {
+<%	if (permissions.isOperator() || permissions.isAdmin()) {
 		if (!"Approved".equals(filter.getInputValue("s_certStatus"))) { %>
                           <td bgcolor="#003366">Approve</td>
 <%		}//if
@@ -97,8 +97,9 @@
                           <td bgcolor="#003366">Reason</td>
 <%	}//if %>
 <%	if (permissions.isAdmin()) {  %>								
-                          <td bgcolor="#003366">Sent</td>
+<!--                           <td bgcolor="#003366">Sent</td>
                           <td bgcolor="#003366">Last<nobr> Sent</nobr></td>
+ -->
 <%	}//if %>
                           <td bgcolor="#003366">Contractor</td>
                           <td bgcolor="#003366">Type</td>
@@ -113,8 +114,8 @@
                         </tr>
 <%	while (sBean.isNextRecord(certDO)){%>
                         <tr id="<%=certDO.getCert_id()%>" <%=sBean.getBGColor()%> class="<%=sBean.getTextColor()%>">
-<%		if (permissions.isOperator()) { %>
-<%			if (!"Pending".equals(filter.getInputValue("s_certStatus"))) { %>
+<%		if (permissions.isOperator() || permissions.isAdmin()) { %>
+<%			if ("Pending".equals(filter.getInputValue("s_certStatus"))) { %>
                           <td align="center"><input name="status_<%=certDO.getCert_id()%>" class=buttons type=radio value="Approved"></td>
                           <td align="center"><input name="status_<%=certDO.getCert_id()%>" class=buttons type=radio value="Rejected"></td>
 <%			}else if ("Approved".equals(filter.getInputValue("s_certStatus"))) { %>
@@ -131,10 +132,12 @@
                           </td>
 <%		}//if %>
 <%		if (permissions.isAdmin()) { %>
+<!-- jj 3-4-08, wasn't submitting form andyway
                           <td><input name="sendEmail_<%=certDO.getCert_id()%>" type="checkbox"></td>
                           <td><%=certDO.getSent()%></td>
                           <td><%=com.picsauditing.PICS.DateBean.toShowFormat(certDO.getLastSentDate())%></td>
-<%		}//if %>
+ -->
+ <%		}//if %>
 <%		if(permissions.isCorporate()) { %>
                           <td>&nbsp;&nbsp;</td>
 <%		}//if %>
@@ -144,16 +147,9 @@
                           <td><%=certDO.getOperator()%></td>
 <%		}//if %>
                           <td><%=com.picsauditing.PICS.DateBean.toShowFormat(certDO.getExpDate())%></td>
-<%		if(permissions.isAdmin() || permissions.isCorporate()) { %>
-                          <td align="right"><%=java.text.NumberFormat.getInstance().format(certDO.getLiabilityLimit())%></td>             
-                          <td><%=com.picsauditing.PICS.Utilities.convertNullString(certDO.getNamedInsured(), "None")%></td>
-                          <td><%=certDO.getSubrogationWaived()%></td> 
-<%		}//if %> 
-<%		if(permissions.isOperator()) { %>           
                           <td id="liability" align="right"><%=java.text.NumberFormat.getInstance().format(certDO.getLiabilityLimit())%></td>             
                           <td id="namedInsured"><%=com.picsauditing.PICS.Utilities.convertNullString(certDO.getNamedInsured(), "None")%></td>
                           <td id="subrogation"><%=certDO.getSubrogationWaived()%></td> 
-<%		}//if%>
                           <td align="center">
                             <a href="/certificates/cert_<%=certDO.getContractor_id()%>_<%=certDO.getCert_id()%>.<%=certDO.getExt()%>" target="_blank">
                               <img src="images/icon_insurance.gif" width="20" height="20" border="0" alt=""></a>
@@ -162,7 +158,7 @@
 <%	}//while %>
                       </table>
                       <br>
-                      <center><%=sBean.getLinks()%></center>
+                      <center><%=sBean.getLinks(filter.getURLQuery())%></center>
                       <br>
 <%	if (permissions.isAdmin()) { %>
                       <input name="action" type="submit" class="buttons" value="Send Emails"
@@ -170,6 +166,7 @@
 <%	}//if
 	if (permissions.isOperator()) { %> 
                       <input name="action" type="submit" class="buttons" value="Submit" >
+                      <input name="s_certStatus" type="hidden" value="<%=filter.getInputValue("s_certStatus")%>" >
 <%	}//if %>
                     </form>
                   </td>

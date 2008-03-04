@@ -73,7 +73,7 @@ try{
                   <form name="form1" method="post" action="verify_insurance.jsp">
                   <table border="0" cellpadding="2" cellspacing="0">
                     <tr align="center"> 
-                      <td><input name="c_name" type="text" class="forms" value="<%=filter.getInputValue("s_name")%>" size="20" onFocus="clearText(this)"></td>
+                      <td><input name="s_accountName" type="text" class="forms" value="<%=filter.getInputValue("s_accountName")%>" size="20" onFocus="clearText(this)"></td>
 <%	if(pBean.isAdmin()){%>
                           <td><%=new AccountBean().getGeneralSelect3("s_opID","forms",filter.getInputValue("s_opID"),SearchBean.LIST_DEFAULT,"")%></td>
 <%	}//if%>
@@ -86,7 +86,7 @@ try{
               <tr>
                 <td></td>
                 <td>
-                  <span align="center" class="blueMain">You have <strong><%=sBean.getNumResults()%></strong> contractors to audit | &nbsp;</span><%=sBean.getLinks()%>
+                  <span align="center" class="blueMain">You have <strong><%=sBean.getNumResults()%></strong> contractors to audit | &nbsp;</span><%=sBean.getLinks(filter.getURLQuery())%>
                 </td>
               </tr>
               <tr>
@@ -134,7 +134,7 @@ try{
 <%  }//end while %>
               </table>
               <br>
-              <center><%=sBean.getLinks()%></center>
+              <center><%=sBean.getLinks(filter.getURLQuery())%></center>
               <br><center><input name="Submit" type="submit" class="buttons" value="Submit" ></center>
               </form>
               <br><br>
