@@ -6,7 +6,7 @@
 <script src="js/Validate.js"></script>
 <script src="js/ValidateForms.js"></script>
 <%try{
-	Filter filter = new Filter();
+	SearchFilter filter = new SearchFilter();
 	if (permissions.isOperator())
 		permissions.tryPermission(OpPerms.InsuranceCerts,OpType.Edit);
 
