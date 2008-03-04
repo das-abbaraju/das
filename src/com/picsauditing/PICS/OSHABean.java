@@ -66,7 +66,7 @@ public class OSHABean extends DataBean {
 	  if ("Corporate".equals(location))
 	  	return "Corporate";
 	return location+"-"+description;
-	}//getLocationDescription
+	}
 
 	public String calcRate(int field, int year) {
 		float rate=0;
@@ -78,12 +78,13 @@ public class OSHABean extends DataBean {
 				case YEAR3: year=YEAR4; break;
 			}
 		}
+		if (year==YEAR1 && na1) return "N/A";
+		if (year==YEAR2 && na2) return "N/A";
+		if (year==YEAR3 && na3) return "N/A";
+		
 		rate = ((float)stats[field][year]*200000) / stats[MAN_HOURS][year];
-		try {
-			return decFormatter.format(rate);
-		}
-		catch (Exception e) {return "";}//catch	
-	}//calcRate
+		return formatDecimal(rate);
+	}
 
 	public String getStat(int field, int year) {
 		if (isDuringGracePeriod()) {
@@ -94,8 +95,12 @@ public class OSHABean extends DataBean {
 				case YEAR3: year=YEAR4; break;
 			}
 		}
-		try {return decFormatter.format((stats[field][year]));}
-		catch (Exception e) {return "";}//catch
+		if (year==YEAR1 && na1) return "N/A";
+		if (year==YEAR2 && na2) return "N/A";
+		if (year==YEAR3 && na3) return "N/A";
+		//if (year==YEAR4 && na4) return "N/A";
+		
+		return formatDecimal(stats[field][year]);
 	}//calcRate
 
 	private int getNumberNA() {
@@ -124,17 +129,17 @@ public class OSHABean extends DataBean {
 		long total = s1 + s2 + s3;
 
 		float avg = total/(3-getNumberNA());
-		return decFormatter.format(avg);
-	}//calcAverage
+		return formatDecimal(avg);
+	}
 
 	public String calcTotalStat(int i) {
 		float temp = (float)(stats[i][YEAR1] + stats[i][YEAR2] + stats[i][YEAR3]);
 		if (duringGracePeriod) temp = (float)(stats[i][YEAR2] + stats[i][YEAR3] + stats[i][YEAR4]);
-		try {return decFormatter.format(temp);}
-		catch (Exception e) {return "";}//catch	
-	}//calcAverage
+		return formatDecimal(temp);
+	}
 
 	private float calcRateTemp(int year, int manhours) {
+		if (manhours <= 0) return 0;
 		float value = 0;
 		value = year*200000;
 		value = value/manhours;
@@ -149,9 +154,16 @@ public class OSHABean extends DataBean {
 		if (duringGracePeriod) value1 = calcRateTemp(stats[i][YEAR4], stats[MAN_HOURS][YEAR4]);
 		
 		float temp = (value1 + value2 + value3) / (3 - getNumberNA());
-		try {return decFormatter.format(temp);}
-		catch (Exception e) {return "";}//catch	
-	}//calcAverage
+		return formatDecimal(temp);
+	}
+	
+	public String formatDecimal(float value) {
+		try {
+			return decFormatter.format(value);
+		} catch (Exception e) {
+			return "E";
+		}
+	}
 
 	public boolean hasNext() throws Exception {
 		if (!li.hasNext())
@@ -446,68 +458,38 @@ public class OSHABean extends DataBean {
 		else if (!showLinks)	return "Yes";
 		else	return "<a href=\"#\" onClick=\"window.open('/servlet/showpdf?id="+conID+"&OID="+OID+ 
 			"&file=osha1','Osha300Logs','scrollbars=yes,resizable=yes,width=700,height=450')\" onMouseOver=\"status='Osha 300 Logs';return true\">Yes</a>";
-	}//getFile1YearAgoLink
+	}
 	public String getFile2YearAgoLink() {
 		if ("No".equals(file2YearAgo))	return "No";
 		else if (!showLinks)	return "Yes";
 		else	return "<a href=\"#\" onClick=\"window.open('/servlet/showpdf?id="+conID+"&OID="+OID+
 			"&file=osha2','Osha300Logs','scrollbars=yes,resizable=yes,width=700,height=450')\" onMouseOver=\"status='Osha 300 Logs';return true\">Yes</a>";
-	}//getFile2YearAgoLink
+	}
 	public String getFile3YearAgoLink() {
 		if ("No".equals(file3YearAgo))	return "No";
 		else if (!showLinks)	return "Yes";
 		else	return "<a href=\"#\" onClick=\"window.open('/servlet/showpdf?id="+conID+"&OID="+OID+
 			"&file=osha3','Osha300Logs','scrollbars=yes,resizable=yes,width=700,height=450')\" onMouseOver=\"status='Osha 300 Logs';return true\">Yes</a>";
-	}//getFile3YearAgoLink
+	}
 
 	public String getFile1YearAgoIconLink() {
 		if ("No".equals(file1YearAgo))	return "<img src=\"images/iconGhost_safety.gif\" width=\"20\" height=\"20\" border=\"0\">";
 		else	return "<a href=\"#\" onClick=\"window.open('/servlet/showpdf?id="+conID+"&OID="+OID+
 			"&file=osha1','Osha300Logs','scrollbars=yes,resizable=yes,width=700,height=450')\" onMouseOver=\"status='Osha 300 Logs';return true\">" + 
 			"<img src=\"images/icon_safety.gif\" width=\"20\" height=\"20\" border=\"0\"></a>";
-	}//getFile1YearAgoIconLink
+	}
 	public String getFile2YearAgoIconLink() {
 		if ("No".equals(file2YearAgo))	return "<img src=\"images/iconGhost_safety.gif\" width=\"20\" height=\"20\" border=\"0\">";
 		else	return "<a href=\"#\" onClick=\"window.open('/servlet/showpdf?id="+conID+"&OID="+OID+
 			"&file=osha2','Osha300Logs','scrollbars=yes,resizable=yes,width=700,height=450')\" onMouseOver=\"status='Osha 300 Logs';return true\">" + 
 			"<img src=\"images/icon_safety.gif\" width=\"20\" height=\"20\" border=\"0\"></a>";
-	}//getFile2YearAgoIconLink
+	}
 	public String getFile3YearAgoIconLink() {
 		if ("No".equals(file3YearAgo))	return "<img src=\"images/iconGhost_safety.gif\" width=\"20\" height=\"20\" border=\"0\">";
 		else	return "<a href=\"#\" onClick=\"window.open('/servlet/showpdf?id="+conID+"&OID="+OID+
 			"&file=osha3','Osha300Logs','scrollbars=yes,resizable=yes,width=700,height=450')\" onMouseOver=\"status='Osha 300 Logs';return true\">" + 
 			"<img src=\"images/icon_safety.gif\" width=\"20\" height=\"20\" border=\"0\"></a>";
-	}//getFile3YearAgoIconLink
-
-	public void test(String path) throws Exception {
-	// called oBean.test(config.getServletContext().getRealPath("/"));
-/*		DBReady();
-		String Query = "SELECT * FROM OSHA;";
-		ResultSet SQLResult = SQLStatement.executeQuery(Query);
-		int count = 1;
-		while (SQLResult.next()) {
-			setFromResultSet(SQLResult);
-			java.io.File f = null;
-			java.io.File newF = null;
-			f = new java.io.File(path+"files/oshas/osha2_"+conID+".pdf");
-			newF = new java.io.File(path+"files/oshas/osha2_"+OID+".pdf");
-			if (f.exists())
-				f.renameTo(newF);
-			f = new java.io.File(path+"files/oshas/osha3_"+conID+".pdf");
-			newF = new java.io.File(path+"files/oshas/osha3_"+OID+".pdf");
-			if (f.exists())
-				f.renameTo(newF);
-			f = new java.io.File(path+"files/oshas/osha4_"+conID+".pdf");
-			newF = new java.io.File(path+"files/oshas/osha4_"+OID+".pdf");
-			if (f.exists())
-				f.renameTo(newF);
-//			String Query2 = "UPDATE OSHA SET OID="+count+" WHERE conID="+conID+" LIMIT 1;";
-//			SQLStatement.executeUpdate(Query2);
-			count++;
-		}//if
-		SQLResult.close();
-		DBClose();
-*/	}//test
+	}
 
 	public void deleteLocation(String deleteID, String path) throws Exception {
 		String deleteQuery = "DELETE FROM OSHA WHERE OID="+deleteID+";";
@@ -516,7 +498,8 @@ public class OSHABean extends DataBean {
 			SQLStatement.executeUpdate(deleteQuery);
 		}finally{
 			DBClose();
-		}//finally
+		}
+		
 		// Delete OSHA files 
 		java.io.File f = null;
 		f = new java.io.File(path+"/files/oshas/osha1_"+deleteID+".pdf");

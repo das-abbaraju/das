@@ -81,7 +81,7 @@ pageBean.setTitle("Annual Update Emails");
 for (String key : report.getFilters().keySet()) {
 	if (report.getFilters().get(key).isSet()) {
 		%>
-		<input type="hidden" name="<% report.getFilters().get(key).getName() %>" value="<%=report.getFilters().get(key).getValue()%>" />
+		<input type="hidden" name="<%= report.getFilters().get(key).getName() %>" value="<%=report.getFilters().get(key).getValue()%>" />
 		<%
 	}
 }

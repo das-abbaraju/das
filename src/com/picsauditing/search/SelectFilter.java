@@ -16,7 +16,9 @@ public class SelectFilter {
 		this.value = value;
 		this.defaultValue = defaultValue;
 		this.ignoreValue = ignoreValue;
+		if (this.value == null) this.value = this.defaultValue;
 	}
+	
 	public SelectFilter(String name, String whereClause, String value) {
 		this(name, whereClause, value, "", "");
 	}

@@ -73,7 +73,8 @@ public class Report {
 		return params.toString();
 	}
 	public String getFilterValue(String name) {
-		return this.filters.get(name).getValue();
+		String value = this.filters.get(name).getValue();
+		return value == null ? "" : value;
 	}
 	
 	public void addFilter(SelectFilter filter) {
