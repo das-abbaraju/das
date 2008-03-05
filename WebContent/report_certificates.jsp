@@ -8,25 +8,20 @@
 <%
 	try{
 	permissions.tryPermission(OpPerms.InsuranceApproval);
+	boolean canEdit = permissions.hasPermission(OpPerms.InsuranceApproval,OpType.Edit);
+	
 	SearchFilter filter = new SearchFilter();
 	filter.setParams(Utilities.requestParamsToMap(request));
 	
 	if(!filter.has("s_certStatus"))
 		filter.set("s_certStatus","Pending");
 
-//	String id = request.getParameter("operator_id");
-//	String operator_id = request.getParameter("id");
-
-	if ("Submit".equals(request.getParameter("action"))){
+	if (canEdit && "Submit".equals(request.getParameter("action"))){
 		List<CertificateDO> list = cerBean.setCertificatesFromCheckList(Utilities.requestParamsToMap(request));
 		cerBean.updateCertificates(list);
 		list = cerBean.sendEmailFromCheckList(Utilities.requestParamsToMap(request));
 		cerBean.sendEmail(list,permissions);
 	}
-//    if(permissions.isCorporate())
-//    	cerBean.setListByFacilities(permissions.getAccountIdString());
-//    else
-//    	cerBean.setListAll(selected_opID);
 
 	cerBean.setList(permissions,filter);
 	sBean.pageResults(cerBean.getListRS(), 20, request);
@@ -55,15 +50,13 @@
 		  </tr>
 		  <tr>
             <td>&nbsp;</td>
-            <td valign="top" align="center">
-              <img src="images/header_reports.gif" width="321" height="72" alt="">
-            </td>
+            <td valign="top" align="center"><img src="images/header_insurance.gif" width="321" height="72" alt=""></td>
             <td valign="top"><%@ include file="utilities/rightLowerNav.jsp"%></td>
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td colspan="5">
-              <table width="100%" border="0" cellpadding="0" cellspacing="0">
+            <td colspan="5" align="center">
+              <table border="0" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center" valign="top" class="buttons">
                     <%@ include file="includes/selectReport.jsp"%>
@@ -83,11 +76,10 @@
                       </table>
                     </form>
                     <form name="emailForm" method="post" action="report_certificates.jsp"><br>
-                      <br>
                       <%=sBean.getLinks(filter.getURLQuery())%>
                       <table ID="certTable" width="100%" border="0" cellpadding="1" cellspacing="1">
                         <tr class="whiteTitle">
-<%	if (permissions.isOperator() || permissions.isAdmin()) {
+<%	if (canEdit) {
 		if (!"Approved".equals(filter.getInputValue("s_certStatus"))) { %>
                           <td bgcolor="#003366" align="center">Approve</td>
 <%		}else{%>
@@ -98,8 +90,10 @@
 <%		}else{%>
                           <td bgcolor="#003366" align="center">Resend</td>
 <%		}//else%>
+<%	}else{ %>
+                          <td bgcolor="#003366">Status</td>
+<%	}//else%>
                           <td bgcolor="#003366">Reason</td>
-<%	}//if %>
                           <td bgcolor="#003366">Contractor</td>
                           <td bgcolor="#003366">Type</td>
 <%	if (permissions.isAdmin() || permissions.isCorporate()){ %>
@@ -113,7 +107,7 @@
                         </tr>
 <%	while (sBean.isNextRecord(certDO)){%>
                         <tr id="<%=certDO.getCert_id()%>" <%=sBean.getBGColor()%> class="<%=sBean.getTextColor()%>">
-<%		if (permissions.isOperator() || permissions.isAdmin()) { %>
+<%		if (canEdit) { %>
 <%			if ("Pending".equals(filter.getInputValue("s_certStatus"))) { %>
                           <td align="center"><input name="status_<%=certDO.getCert_id()%>" class=buttons type=radio value="Approved"></td>
                           <td align="center"><input name="status_<%=certDO.getCert_id()%>" class=buttons type=radio value="Rejected"></td>
@@ -128,8 +122,11 @@
                             <input type="hidden" name="contractor_id_<%=certDO.getCert_id()%>" value="<%=certDO.getContractor_id()%>"/>
                             <input type="hidden" name="type_<%=certDO.getCert_id()%>" value="<%=certDO.getType()%>"/>
                           </td>
-<%		}//if
-		if(permissions.isCorporate()) { %>
+<%		}else{%>
+                          <td><%=certDO.getStatus()%></td>
+                          <td><%=certDO.getReason()%></td>
+<%		}//else
+	if(permissions.isCorporate()) { %>
                           <td>&nbsp;&nbsp;</td>
 <%		}//if %>
                           <td><a href="contractor_detail.jsp?id=<%=certDO.getContractor_id()%>" class="<%=sBean.getTextColor()%>"><%=certDO.getContractor_name()%></a></td>
@@ -151,7 +148,7 @@
                       <br>
                       <center><%=sBean.getLinks(filter.getURLQuery())%></center>
                       <br>
-<%	if (permissions.isOperator() || permissions.isAdmin()) { %> 
+<%	if (canEdit) { %>
                       <input name="action" type="submit" class="buttons" value="Submit" >
                       <input name="s_certStatus" type="hidden" value="<%=filter.getInputValue("s_certStatus")%>" >
 <%	}//if %>
@@ -170,8 +167,7 @@
       <td height="72" align="center" bgcolor="#003366" class="copyrightInfo">&copy;2007
 		Pacific Industrial Contractor Screening | site design: 
 		  <a href="http://www.albumcreative.com" title="Album Creative Studios">
-        <font
-			color="#336699">ACS</font></a></td>
+        <font color="#336699">ACS</font></a></td>
     </tr>
   </table>
 </body>

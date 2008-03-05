@@ -132,24 +132,27 @@ try {
                 <td>
 				  <a href="contractor_detail.jsp?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class="<%=thisClass%>"><%=sBean.aBean.name%></a>
                 </td>
-<%	if (pBean.oBean.canSeePQF()){%>
+<%		if (pBean.oBean.canSeePQF()){%>
                 <td align="center"><%=sBean.getListLink(com.picsauditing.PICS.pqf.Constants.PQF_TYPE)%></td>
-<%	} if (pBean.oBean.canSeeDesktop()){%>
+<%		} if (pBean.oBean.canSeeDesktop()){%>
                 <td align="center"><%=sBean.getListLink(com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE)%></td>
-<%	} if (pBean.oBean.canSeeDA()){%>
+<%		} if (pBean.oBean.canSeeDA()){%>
                 <td align="center"><%=sBean.getListLink(com.picsauditing.PICS.pqf.Constants.DA_TYPE)%></td>
-<%	} if (pBean.oBean.canSeeOffice()){%>
+<%		} if (pBean.oBean.canSeeOffice()){%>
                 <td align="center"><%=sBean.getListLink(com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE)%></td>
-<%	} if (pBean.oBean.canSeeInsurance()){%>
+<%		} if (pBean.oBean.canSeeInsurance()){%>
                 <td align="center">
-                <% if (certList.contains(sBean.aBean.id)) { %>
-            		<a href="contractor_upload_certificates.jsp?id=<%=sBean.aBean.id %>"><img 
-            			src="images/icon_insurance.gif" width="20" height="20" border="0"></a>
-            	<% } else { %>N/A<% } %>
+<%			if (certList.contains(sBean.aBean.id)) { %>
+                  <a href="contractor_upload_certificates.jsp?id=<%=sBean.aBean.id %>">
+                    <img src="images/icon_insurance.gif" width="20" height="20" border="0">
+                  </a>
+<%			}else{ %>
+                    <img src=images/notOkCheck.gif width=19 height=15 alt='Non Uploaded'>
+<%			}//else %>
 				</td>
-<%	}//if%>
+<%		}//if%>
                 <td align="center"><a href="con_redFlags.jsp?id=<%=sBean.cBean.id%>" title="Click to view Flag Color details"><%=sBean.getFlagLink()%></a></td>
-<%	if (!pBean.oBean.isCorporate && false){%>
+<%		if (!pBean.oBean.isCorporate && false){%>
                 <td>
                 <form name="form2" method="post" action="contractor_list.jsp?changed=0&showPage=<%=showPage%>" style="margin: 0px">
                   <input name="action" type="submit" class="forms" value="Remove">

@@ -7,11 +7,13 @@
 <jsp:useBean id="certDO" class="com.picsauditing.domain.CertificateDO" scope="page" />
 <%
 try{
+	permissions.tryPermission(OpPerms.InsuranceVerification);
+	boolean canEdit = permissions.hasPermission(OpPerms.InsuranceVerification,OpType.Edit);
+
 	SearchFilter filter = new SearchFilter();
 	filter.setParams(Utilities.requestParamsToMap(request));
 
-	permissions.tryPermission(OpPerms.InsuranceCerts);
-	if (null != request.getParameter("Submit")){
+	if (canEdit && null != request.getParameter("Submit")){
 		List<CertificateDO> list = cerBean.setCertificatesFromVerifiedList(Utilities.requestParamsToMap(request));
 		cerBean.updateVerifiedCertificates(list);
 		list = cerBean.setCertificatesFromEditList(Utilities.requestParamsToMap(request));
@@ -61,15 +63,16 @@ try{
         </tr>
         <tr>
           <td>&nbsp;</td>
-          <td valign="top" align="center"><img src="images/header_approvedContractors.gif" width="321" height="72"></td>
+          <td valign="top" align="center"><img src="images/header_insurance.gif" width="321" height="72" alt=""></td>
           <td valign="top"><%@ include file="utilities/rightLowerNav.jsp"%></td>
           <td>&nbsp;</td>
         </tr>
         <tr>
-          <td colspan="5">
-            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+          <td colspan="5" align="center">
+            <table border="0" cellpadding="0" cellspacing="0">
               <tr> 
                 <td height="70" colspan="2" align="center"> 
+                  <%@ include file="includes/selectReport.jsp"%>
                   <form name="form1" method="post" action="verify_insurance.jsp">
                   <table border="0" cellpadding="2" cellspacing="0">
                     <tr align="center"> 
@@ -83,21 +86,15 @@ try{
                   </form>
                 </td>
               </tr>
-              <tr>
-                <td></td>
-                <td>
-                  <span align="center" class="blueMain">You have <strong><%=sBean.getNumResults()%></strong> contractors to audit | &nbsp;</span><%=sBean.getLinks(filter.getURLQuery())%>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="2">&nbsp;</td>
-              </tr>
             </table>
             <form name="form2" method="post" action="verify_insurance.jsp?id=<%=pBean.userID %>">
+              <%=sBean.getLinks(filter.getURLQuery())%>
               <table ID="certTable" width="100%" border="0" cellpadding="1" cellspacing="1">
                 <tr class="whiteTitle">
+<%		if(canEdit){ %>
                   <td bgcolor="#003366">Verify</td>
                   <td bgcolor="#003366"></td>
+<%		}//if %>
                   <td bgcolor="#003366">Contractor</td>
                   <td bgcolor="#003366">Type</td>
                   <td bgcolor="#003366">Operator</td>
@@ -109,12 +106,12 @@ try{
                 </tr>
 <%	while (sBean.isNextRecord(certDO)) {%>
                 <tr id="<%=certDO.getCert_id()%>" <%=sBean.getBGColor()%> class="<%=sBean.getTextColor()%>">    
+<%		if(canEdit){ %>
                   <td align="center"><%=Inputs.getCheckBoxInput("verified_" + certDO.getCert_id(), "forms", "", certDO.getVerified())%></td>
                   <td><input type="button" class="forms" name="editCertificate_<%=certDO.getCert_id() %>" value="Edit" onclick="editCert(<%=certDO.getCert_id()%>)"/>
                     <input type="hidden" name="oktoedit_<%=certDO.getCert_id()%>" id="oktoedit_<%=certDO.getCert_id()%>"></td>
-                  <td>
-                    <a href="contractor_detail.jsp?id=<%=certDO.getContractor_id()%>" class="<%=sBean.getTextColor()%>"><%=certDO.getContractor_name()%></a>
-                  </td>
+<%		}//if %>
+                  <td><a href="contractor_detail.jsp?id=<%=certDO.getContractor_id()%>" class="<%=sBean.getTextColor()%>"><%=certDO.getContractor_name()%></a></td>
                   <td><%=certDO.getType()%></td>
                   <td><%=certDO.getOperator()%></td>
                   <td><span name="noedit"><%=com.picsauditing.PICS.DateBean.toShowFormat(certDO.getExpDate())%></span>
@@ -135,7 +132,10 @@ try{
               </table>
               <br>
               <center><%=sBean.getLinks(filter.getURLQuery())%></center>
-              <br><center><input name="Submit" type="submit" class="buttons" value="Submit" ></center>
+              <br>
+<%	if(canEdit){ %>
+              <center><input name="Submit" type="submit" class="buttons" value="Submit" ></center>
+<%	}//if %>
               </form>
               <br><br>
               <center><span class="blueMain"> You must have <a href="http://www.adobe.com/products/acrobat/readstep2.html" target="_blank">Adobe

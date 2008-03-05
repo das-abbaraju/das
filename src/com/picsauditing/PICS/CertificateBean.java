@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
 
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.domain.CertificateDO;
 import com.picsauditing.mail.EmailContractorBean;
@@ -229,6 +231,8 @@ public class CertificateBean extends DataBean {
 		namedInsured = SQLResult.getString("namedInsured");
 		subrogationWaived = SQLResult.getString("subrogationWaived");
 		ext = SQLResult.getString("ext");
+		status = SQLResult.getString("status");
+		verified = SQLResult.getString("verified");
 	}//setFromResultSet
 
 	public void setList(Permissions permissions, SearchFilter searchFilter) throws Exception {
@@ -245,13 +249,8 @@ public class CertificateBean extends DataBean {
 			selectQuery += "AND accounts.name LIKE '%"+Utilities.escapeQuotes(searchFilter.get("s_accountName"))+"%' ";
 		if (searchFilter.has("s_opID"))
 			selectQuery += "AND certificates.operator_id="+searchFilter.get("s_opID")+" ";
-		if (searchFilter.has("s_certStatus")){
-// jj 3-3-08 added for backwards compatibility, can delete after one deployment cycle
-			if ("Neither".equals(searchFilter.get("s_certStatus")) || "Pending".equals(searchFilter.get("s_certStatus")))
-				selectQuery += "AND certificates.status IN ('Pending','Neither') ";
-			else
-				selectQuery += "AND certificates.status='"+searchFilter.get("s_certStatus")+"' ";
-		}
+		if (searchFilter.has("s_certStatus"))
+			selectQuery += "AND certificates.status='"+searchFilter.get("s_certStatus")+"' ";
 		if (searchFilter.has("s_conID"))
 			selectQuery += "AND certificates.contractor_id="+searchFilter.get("s_conID")+" ";
 		if (searchFilter.has("s_certVerified"))
@@ -297,13 +296,13 @@ public class CertificateBean extends DataBean {
 	}//closeList
 
 	@SuppressWarnings("unchecked")
-	public boolean processForm(javax.servlet.jsp.PageContext pageContext)throws Exception {		
+	public boolean processForm(javax.servlet.jsp.PageContext pageContext, Permissions permissions)throws Exception {		
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 		HttpServletResponse response = (HttpServletResponse)pageContext.getResponse();
 		String action = request.getParameter("action");
 		String con_id = request.getParameter("id");		
 
-		if("add".equals(action)){
+		if("add".equals(action) && permissions.hasPermission(OpPerms.InsuranceCerts,OpType.Edit)){
 			request.setAttribute("uploader", String.valueOf(UploadProcessorFactory.CERTIFICATE));
 			request.setAttribute("contractor_id", con_id);
 			request.setAttribute("exts","pdf,doc,txt,jpg");
@@ -326,7 +325,7 @@ public class CertificateBean extends DataBean {
 			}
 			return ret;
 		}	
-		if ("delete".equals(action)) {
+		if ("delete".equals(action) && permissions.hasPermission(OpPerms.InsuranceCerts,OpType.Delete)) {
 			String delete_id = request.getParameter("delete_id");
 			String dir = pageContext.getServletContext().getInitParameter("FTP_DIR") + getDirPath();
 			deleteCertificate(delete_id, con_id, dir);

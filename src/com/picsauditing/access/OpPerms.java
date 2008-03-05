@@ -38,13 +38,12 @@ public enum OpPerms {
 	ViewFullPQF("View PQF Work History", "Can view the PQF category Work History, which contains financial and other sensitive information", false, false),
 	
 	// Insurance
-	InsuranceCerts("Insurance Certificates", "Allows users to view and manage the Insurance Certification process"),
-	//InsuranceCertsAllOperators("Manage Insurance Certificates for All Operators"),
-	InsuranceVerification("Insurance Verification"),
-	InsuranceApproval("Insurance Approval"),
-	
+	InsuranceCerts("Insurance Certificates", "Allows users to view (Read), upload (Edit), and delete insurance certificates"),
+	InsuranceVerification("Insurance Verification","Allows users to view the 'Insurance Verification' and 'Expired Insurance Certificates' reports (Read), and verify (Edit) the certificates",true,false),
+	InsuranceApproval("Insurance Approval","Allows users to view the Insurance Approval report (Read), and approve/reject (Edit) the insurance certificates",true,false),
+
 	BillingUpgrades("Billing Upgrades", "Upgrade contractor subscriptions and send them invoices", true, false),
-	
+
 	EmailAnnualUpdate("Email Annual Updates", "Send contractors reminder emails to update their PICS info. Edit permission is required to send the emails.", true, false),
 	EmailTemplates("Email Templates", "Allows PICS employees to edit the templates used to automatically send emails", true, false),
 	

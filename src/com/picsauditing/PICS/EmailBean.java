@@ -595,7 +595,6 @@ public class EmailBean extends DataBean{
 		
 		aBean.setFromDB(certDO.getOperator_id());
 		String operator = aBean.name;
-		String operatorName = aBean.contact;
 		
 		User user = new User();
 		user.setFromDB(permissions.getUserIdString());
@@ -605,10 +604,9 @@ public class EmailBean extends DataBean{
 		String to = email;
 		String subject = operator+" insurance certificate rejected";
 		String message = "Hello "+contactName+","+endl+endl+
-			contractor+"'s "+certType+endl+ 
-			"Insurance Certificate has been rejected by "+endl+
-			operatorName+" from "+operator+endl+
-			"for the following reasons:"+endl+endl+
+			contractor+"'s "+certType+ 
+			" Insurance Certificate has been rejected by "+operator+endl+
+			" for the following reasons:"+endl+endl+
 			reason+endl+endl+	
 			"Please correct these issues and re-upload your insurance certificate to your "+endl+
 			"PICS account."+endl+
@@ -634,21 +632,19 @@ public class EmailBean extends DataBean{
 		
 		aBean.setFromDB(certDO.getOperator_id());
 		String operator = aBean.name;
-		String operatorName = aBean.contact;
 		String reason = certDO.getReason();
 				
 		String certType = certDO.getType();
 		String from = FROM_INFO;
 		String to = email;
-		
+
 		String subject = operator+" insurance certificate accepted";
 		String message = "Hello "+contactName+","+endl+endl+
 			contractor+"'s "+certType+endl+ 
-			"Insurance Certificate has been accepted by "+endl+
-			operatorName+" from "+operator+endl;
+			"Insurance Certificate has been accepted by "+operator+endl;
 		if (!"".equals(reason))
-			message += "for the following reasons:"+endl+endl+reason+endl+endl;
-				
+			message += " for the following reasons:"+endl+endl+reason+endl+endl;
+
 		message += "Please make sure that you keep up-to-date in PICS by uploading your "+endl+
 			"insurance certificate when you renew your policy." + endl+endl+		 
 			"Have a great day,"+endl+

@@ -7,13 +7,14 @@
 <script src="js/ValidateForms.js"></script>
 <%try{
 	SearchFilter filter = new SearchFilter();
-	if (permissions.isOperator())
-		permissions.tryPermission(OpPerms.InsuranceCerts,OpType.Edit);
+	if (!permissions.isContractor())
+		permissions.tryPermission(OpPerms.InsuranceCerts,OpType.View);
 
+	boolean canEdit = permissions.hasPermission(OpPerms.InsuranceCerts,OpType.Edit) || permissions.isContractor();
+	boolean canDelete = permissions.hasPermission(OpPerms.InsuranceCerts,OpType.Delete) || permissions.isContractor();
 	String id = request.getParameter("id");
-	if (request.getParameter("action") != null &&
-			permissions.hasPermission(OpPerms.InsuranceCerts,OpType.Edit))
-		cerBean.processForm(pageContext);
+	if (request.getParameter("action") != null)
+		cerBean.processForm(pageContext,permissions);
 	ContractorBean cBean = new ContractorBean();
 	cBean.setFromDB(id);
 	cBean.tryView(permissions);
@@ -59,7 +60,7 @@
             <table width="657" border="0" cellpadding="15" cellspacing="1">
               <tr>
                 <td align="center" valign="top" class="redMain"> <%=cerBean.getErrorMessages()%> 
-<%	if (permissions.hasPermission(OpPerms.InsuranceCerts,OpType.Edit) || permissions.isContractor()){ %>
+<%	if (canEdit){ %>
                   <form name="addForm" method="post" action="contractor_upload_certificates.jsp?id=<%=id%>&action=add" enctype="multipart/form-data">
                     <table cellpadding="2" cellspacing="3" bgcolor="FFFFFF">
                       <tr> 
@@ -98,7 +99,7 @@
 <%	}//if %>
                   <table width="657" border="0" cellpadding="1" cellspacing="1" bgcolor="#EEEEEE">
                     <tr class="whiteTitle">
-<%	if (permissions.hasPermission(OpPerms.InsuranceCerts,OpType.Delete)|| permissions.isContractor()){ %>
+<%	if (canDelete){ %>
                       <td bgcolor="#003366">Delete</td>
 <%	}//if%>
                       <td bgcolor="#003366">Type</td>
@@ -118,7 +119,7 @@
 %>
 <%	while (cerBean.isNextRecord()) {%>
                     <tr class="blueMain" <%=Utilities.getBGColor(cerBean.count)%>> 
-<%		if (permissions.hasPermission(OpPerms.InsuranceCerts,OpType.Delete)){ %>
+<%		if (canDelete){ %>
                       <form name="deleteForm" method="post" action="contractor_upload_certificates.jsp?id=<%=id%>&action=delete">
                         <td> <input name="delete_id" type="hidden" value="<%=cerBean.cert_id%>"> 
                           <input name="Submit" type="submit" class="forms" value="Del"  onClick="return confirm('Are you sure you want to delete this file?');"> 
