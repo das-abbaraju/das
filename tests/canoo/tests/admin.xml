@@ -22,8 +22,6 @@
 				
 				<storeProperty name="report_link" value="Annual Update Report" />
 				&click_report;
-				<storeProperty name="report_link" value="Red Flag Criteria" />
-				&click_report;
 				<storeProperty name="report_link" value="Administration Dashboard" />
 				&click_report;
 			</steps>

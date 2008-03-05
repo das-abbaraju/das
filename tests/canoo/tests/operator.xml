@@ -95,6 +95,30 @@
 				&body_verify;
 				<verifyText description="[Add User] link exists"
 					text="Add New User" />
+				
+				<storeProperty name="report_link" value="Contractor Contact Info" />
+				&click_report;
+
+				<storeProperty name="report_link" value="Corporate Contractors Report" />
+				&click_report;
+				
+				<storeProperty name="report_link" value="EMR Rates Report" />
+				&click_report;
+
+				<storeProperty name="report_link" value="Expired Audits Report" />
+				&click_report;
+
+				<storeProperty name="report_link" value="Fatalities Report" />
+				&click_report;
+
+				<storeProperty name="report_link" value="Incidence Rates Report" />
+				&click_report;
+
+				<storeProperty name="report_link" value="Incomplete Audits Report" />
+				&click_report;
+
+				<storeProperty name="report_link" value="Red Flag Criteria" />
+				&click_report;
 			</steps>
 		</webtest>
 	</target>
