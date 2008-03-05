@@ -365,7 +365,7 @@ import com.picsauditing.domain.IPicsDO;
 			whereQuery += "AND isOnlyCerts='Yes' ";
 		if (EXCLUDE_CERTS.equals(selected_certsOnly))
 			whereQuery += "AND isOnlyCerts<>'Yes' ";
-		if ("1".equals(searchCorporate))
+		if (null != searchCorporate)
             accessType = "Corporate";
         if (isActivationReport) {
 			//whereQuery += "AND (accountDate='0000-00-00' OR welcomeCallDate='0000-00-00') ";
