@@ -15,6 +15,8 @@
 	
 	if(!filter.has("s_certStatus"))
 		filter.set("s_certStatus","Pending");
+	if(!filter.has("orderBy"))
+		filter.set("orderBy","name");
 
 	if (canEdit && "Submit".equals(request.getParameter("action"))){
 		List<CertificateDO> list = cerBean.setCertificatesFromCheckList(Utilities.requestParamsToMap(request));

@@ -258,7 +258,10 @@ public class CertificateBean extends DataBean {
 		if (searchFilter.has("s_daysTilExpired"))
 			selectQuery += "AND (TO_DAYS(expDate)-TO_DAYS(CURDATE())<"+searchFilter.get("s_daysTilExpired")+") ";
 
-		selectQuery += "ORDER BY operator,type ASC;";
+		if (searchFilter.has("orderBy"))
+			selectQuery += "ORDER BY "+searchFilter.get("orderBy");
+		else
+			selectQuery += "ORDER BY operator,type ASC";
 
 		try{
 			DBReady();
@@ -353,13 +356,13 @@ public class CertificateBean extends DataBean {
 						tokens.put("expiration_date", getExpDateShow());
 						tokens.put("certificate_type", type);
 						mailer.sendMessage(EmailTemplates.certificate_expire, accountID, permissions, tokens);
-						
-						String updateQuery = "UPDATE certificates SET sent = (sent+1), lastSentDate = NOW() WHERE cert_id = '" + this.eqDB(certificate_id) + "'";
+
+						String updateQuery = "UPDATE certificates SET sent=(sent+1),lastSentDate=NOW() WHERE cert_id='"+this.eqDB(certificate_id)+"'";
 						SQLStatement.executeUpdate(updateQuery);
 						SQLResult.close();
 					} else {
 						SQLResult.close();
-						throw new Exception("No certificate with ID: " + certificate_id);
+						throw new Exception("No certificate with ID: "+certificate_id);
 					}
 				}finally{
 					DBClose();

@@ -598,7 +598,7 @@ import com.picsauditing.domain.IPicsDO;
 		int SHOW_PAGES = 4;
 		int lastPage = (numResults-1)/showNum+1;
 		String orderByQuery = "";
-		if (null != orderBy && !"".equals(orderBy))
+		if (null != orderBy && !"".equals(orderBy) && !filter.contains("orderBy"))
 			orderByQuery = "orderBy="+orderBy;
 		String temp = "<span class=\"redMain\">";
 		temp+="Showing "+beginResults+"-"+endResults+" of <b>"+numResults+"</b> results | ";

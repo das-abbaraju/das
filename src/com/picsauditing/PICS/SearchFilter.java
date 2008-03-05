@@ -61,6 +61,8 @@ public class SearchFilter{
 				if (isSet(name,value))
 					params.put(name, value);
 			}
+			if (("orderBy".equals(name)))
+				params.put(name, requestParams.get(name));
 		}
 	}
 	public String get(String paramName){

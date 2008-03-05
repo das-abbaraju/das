@@ -12,6 +12,8 @@ try{
 
 	SearchFilter filter = new SearchFilter();
 	filter.setParams(Utilities.requestParamsToMap(request));
+	if(!filter.has("orderBy"))
+		filter.set("orderBy","name");
 
 	if (canEdit && null != request.getParameter("Submit")){
 		List<CertificateDO> list = cerBean.setCertificatesFromVerifiedList(Utilities.requestParamsToMap(request));

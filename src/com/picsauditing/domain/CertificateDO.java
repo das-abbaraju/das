@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.PICS.DateBean;
+
 public class CertificateDO implements IPicsDO{
 	public String cert_id = "";
 	public String contractor_id = "";
@@ -174,7 +176,7 @@ public class CertificateDO implements IPicsDO{
 		operator = SQLResult.getString("operator");
 		expDate = SQLResult.getString("expDate");
 		sent = SQLResult.getString("sent");
-		lastSentDate = SQLResult.getString("lastSentDate");
+		lastSentDate = DateBean.toShowFormat(SQLResult.getString("lastSentDate"));
 		expDay = expDate.substring(8);
 		expMonth = expDate.substring(5,7);
 		expYear = expDate.substring(0,4);
@@ -185,17 +187,8 @@ public class CertificateDO implements IPicsDO{
 		verified = SQLResult.getString("verified");
 		reason = SQLResult.getString("reason");
 		ext = SQLResult.getString("ext");
-		
 	}//setFromResultSet
-	
-	public String boolGetStatus(){
-					
-		if(status.equals("Approved"))
-			return "true";
-		
-		 return "false";
-	}
-	
+
 	public void setFromRequest(HttpServletRequest request){
 		cert_id = request.getParameter("cert_id");
 		contractor_id = request.getParameter("contractor_id");
@@ -215,10 +208,5 @@ public class CertificateDO implements IPicsDO{
 		verified = request.getParameter("verified");
 		reason = request.getParameter("reason");
 		ext = request.getParameter("ext");
-		
 	}//setFromResultSet
-	
-	public void setDirty(){
-		setIsDirty("Yes");
-	}
 }
