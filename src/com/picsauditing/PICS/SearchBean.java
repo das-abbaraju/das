@@ -254,7 +254,7 @@ import com.picsauditing.domain.IPicsDO;
 			showPage = Integer.parseInt(r.getParameter("showPage"));
 
 		if ("Y".equals(selected_entireDB)){
-			if (null == searchCorporate)
+			if ("Y".equals(searchCorporate))
 				joinQuery += "LEFT JOIN flags ON flags.conID=accounts.id ";
 			whereQuery += "AND (flags.opID IS NULL OR flags.opID="+accessID+") ";
 			accessType = "Admin";
