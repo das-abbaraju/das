@@ -24,6 +24,8 @@
   <META Http-Equiv="Pragma" Content="no-cache">
   <META Http-Equiv="Expires" Content="0">
   <link href="PICS.css" rel="stylesheet" type="text/css">
+  <script language="JavaScript" SRC="js/Search.js"></script>
+
 </head>
 <body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
@@ -65,13 +67,22 @@
                       <td><input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()">
                     </tr>
                   </table>
+                  
                   </form>
+                  
 	            </td>
               </tr>
 <%	}//if%>
+                  <form id="form1" action="report_operatorContractor.jsp" method="post">
+                  	<input type="hidden" name="searchCorporate" value="Y"/>
+                  	<input type="hidden" name="showPage" value="1"/>
+		          	<input type="hidden" name="startsWith" value=""/>
+		          	<input type="hidden" name="orderBy"  value="name"/>
+                  </form>
+
               <tr> 
                 <td></td>
-                <td align="center"><%=sBean.getLinks()%></td>
+                <td align="center"><%=sBean.getLinksWithDynamicForm()%></td>
               </tr>
             </table>
             <table width="657" border="0" cellpadding="1" cellspacing="1">
@@ -124,7 +135,7 @@
 <%	duplication += total-1;
 	} // while %>
             </table>
-			<br><center><%=sBean.getLinks()%></center><br>			  
+			<br><center><%=sBean.getLinksWithDynamicForm()%></center><br>			  
 <%	sBean.closeSearch(); %>
 		  </td>
         </tr>

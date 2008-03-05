@@ -39,6 +39,7 @@
   <META Http-Equiv="Pragma" Content="no-cache">
   <META Http-Equiv="Expires" Content="0">
   <link href="PICS.css" rel="stylesheet" type="text/css">
+  <script language="JavaScript" SRC="js/Search.js"></script>
   <script language="JavaScript" SRC="js/ImageSwap.js"></script>
 </head>
 <body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="MM_preloadImages('images/button_search_o.gif')">
@@ -66,7 +67,7 @@
           <td>&nbsp;</td>
           <td align="center">
 			<%@ include file="includes/selectReport.jsp"%>
-      		<form name="form1" method="post" action="accounts_manage.jsp">
+      		<form id="form1" name="form1" method="post" action="accounts_manage.jsp">
             <table border="0" align="center" cellpadding="2" cellspacing="0">
               <tr>
                 <td align="left">
@@ -75,7 +76,7 @@
                 <%=tBean.getTradesSelect("trade", "forms", sBean.selected_trade)%>
                 <%=Inputs.inputSelect("performedBy","forms",sBean.selected_performedBy,TradesBean.PERFORMED_BY_ARRAY)%>
 <!--			<td><%=sBean.getSearchZipSelect("zip","forms",sBean.selected_zip)%></td>
--->             <input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()"></td>
+-->             <input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0" onClick="runSearch( 'form1')" onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()"></td>
               </tr>
               <tr> 
                 <td>
@@ -96,11 +97,14 @@
                 </td>
               </tr>
             </table>
+            <input type="hidden" name="showPage" value="1"/>
+            <input type="hidden" name="startsWith" value="<%=sBean.selected_startsWith == null ? "" : sBean.selected_startsWith %>"/>
+            <input type="hidden" name="orderBy"  value="<%=sBean.orderBy == null ? "" : sBean.orderBy %>"/>
             </form>
-			<center><%=sBean.getStartsWithLinks()%></center>
+			<center><%=sBean.getStartsWithLinksWithDynamicForm()%></center>
 			<table width="657" height="40" border="0" cellpadding="0" cellspacing="0">
 			  <tr>
-				<td align="right"><%=sBean.getLinks()%></td>
+				<td align="right"><%=sBean.getLinksWithDynamicForm()%></td>
 			  </tr>
 			</table>
             <table width="757" border="0" cellpadding="1" cellspacing="1">
@@ -148,7 +152,7 @@
 <%
 		}// while
 %>			</table>
-			<br><center><%=sBean.getLinks()%></center><br>			  
+			<br><center><%=sBean.getLinksWithDynamicForm()%></center><br>			  
 <%
 sBean.closeSearch();
 %>
