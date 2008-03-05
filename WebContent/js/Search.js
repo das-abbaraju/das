@@ -1,0 +1,22 @@
+function changePage( formid, pageNum )
+{
+	document.getElementById( formid )['showPage'].value = pageNum;
+	document.getElementById( formid ).submit();
+	return false;
+}
+
+function changeStartsWith( formid, v )
+{
+	document.getElementById( formid )['startsWith'].value = v;
+	document.getElementById( formid )['showPage'].value = "1";
+	document.getElementById( formid ).submit();
+	return false;
+}
+
+function runSearch( formid )
+{
+	document.getElementById( formid )['orderBy'].value = null;
+	document.getElementById( formid )['showPage'].value = null;
+	document.getElementById( formid )['startsWith'].value = null;
+	return true;
+} 
