@@ -11,7 +11,7 @@ try {
 	tBean.setFromDB();
 	String action = request.getParameter("action");
 	String actionID = request.getParameter("actionID");
-	if ("Remove".equals(action)){
+	if ("Remove".equals(action)) {
 		pBean.oBean.removeSubContractor(pBean.userID, actionID);
 		pBean.canSeeSet = pBean.oBean.canSeeSet;
 		ContractorBean cBean = new ContractorBean();
@@ -121,8 +121,11 @@ try {
                 <td align="center" bgcolor="#6699CC"><nobr>Office Audit</nobr></td>
 <%	} if (pBean.oBean.canSeeInsurance()){%>
                 <td align="center" bgcolor="#6699CC"><nobr>Ins. Certs</nobr></td>
-<%	}//if%>
+<%	} %>
                 <td align="center" bgcolor="#6699CC"><a href="?orderBy=flag DESC" class="whiteTitle">Flag</a></td>
+<%	if (pBean.oBean.isApprovesRelationships() && permissions.hasPermission(OpPerms.ViewUnApproved)) { %>
+                <td align="center" bgcolor="#6699CC"><nobr>Approved</nobr></td>
+<%	} %>
               </tr>
 <%	while (sBean.isNextRecord()){
 		String thisClass = sBean.cBean.getTextColor(sBean.cBean.calcPICSStatusForOperator(pBean.oBean));
@@ -152,6 +155,9 @@ try {
 				</td>
 <%		}//if%>
                 <td align="center"><a href="con_redFlags.jsp?id=<%=sBean.cBean.id%>" title="Click to view Flag Color details"><%=sBean.getFlagLink()%></a></td>
+<%	if (pBean.oBean.isApprovesRelationships() && permissions.hasPermission(OpPerms.ViewUnApproved)) { %>
+                <td align="center"><%= sBean.getConWorkStatus() %></td>
+<%	} %>
 <%		if (!pBean.oBean.isCorporate && false){%>
                 <td>
                 <form name="form2" method="post" action="contractor_list.jsp?changed=0&showPage=<%=showPage%>" style="margin: 0px">

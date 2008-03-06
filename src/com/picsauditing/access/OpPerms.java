@@ -8,8 +8,9 @@ public enum OpPerms {
 	AddContractors("Add Contractors", "Allows operator and corporate account users to add new contractors to their facility's database. Requires the [Search For New Contractors] permission.", false, false),
 	RemoveContractors("Remove Contractors", "Allows operator and corporate account users to remove existing contractors from their facility's database", false, false),
 
-	ContractorApproval("Contractors Approval for Work", "Allows a user to change a Contractor's work status", true, false),
-	ViewNonWorking("Non-Working Contractors", "Allows users to view contractors who are NOT working for a facility. Note: the facility must track that information", false, false),
+	// Approving Contractors
+	ContractorApproval("Approve Contractors", "Allows a user to change a Contractor's work status", true, false),
+	ViewUnApproved("View UnApproved Contractors", "Allows users to view contractors who are NOT yet approved for work for a facility. Note: the facility must track that information for this option to apply", false, false),
 
 	StatusOnly("Can Only View Statuses", "Restricts users to only view a list of contractors and their flag color", true, false, false), // deprecated
 	

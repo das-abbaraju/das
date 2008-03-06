@@ -194,35 +194,9 @@ try{
                 <td align="center"><%=flagCalculator.getAnswer(hurdleQuestions.questionID)%></td>
                 <td align="center"><%=flagCalculator.getFlagIcon(hurdleQuestions.questionID)%></td>
               </tr>
-<%		}//if
-	}//while
-/*	jj 2-22-08 commented out approval stuff
-	if (oBean.isApprovesRelationships()){
-		boolean temp = flagCalculator.isFlaggedNotApprovedSetDB(opID,id);
-		String answer;
-		String flagImage = ""; 
-		String linkText = "";
-		if (temp){
-			answer = "No";
-			flagImage = "<img src=images/icon_redFlag.gif>";
-		}else
-			answer = "Yes";
-		if (permissions.hasPermission(OpPerms.ContractorApproval))
-			linkText = "Click to Approve";
-*/%>
- <!--              <tr class="blueMain" <%//=Utilities.getBGColor(rowCount++)%>>
-                <td align="right"></td>
-                <td align="left">Is this contractor approved?
-                <a href="con_approvals.jsp?searchStatus=All&searchConID=<%//=id%>"><%//=linkText%></a>
-                </td>
-                <td align="center"><%//=answer%></td>
-                <td align="center"><%//=flagImage%></td>
-              </tr>
- -->
- <%
-/*	jj 2-22-08 commented out
-	}//if
-*/%>
+<%		}
+	}
+%>
               <tr class="blueMain">
                 <td align="right">&nbsp;</td>
               </tr>

@@ -1,11 +1,11 @@
-<%//@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.access.*" errorPage="exception_handler.jsp"%>
-<%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.access.*"%>
+<%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.access.*" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/admin_secure.jsp" %>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
 <%@page import="java.util.Random"%>
 <%
+	permissions.tryPermission(OpPerms.ManageOperators);
+
 	String editID = request.getParameter("id");
 	UserAccess userAccess = new UserAccess();
 	userAccess.setDB("opAccess");
@@ -18,6 +18,7 @@
 	oBean.setFromDB(editID);
 	
 	if (wasSubmitted) {
+		permissions.tryPermission(OpPerms.ManageOperators, OpType.Edit);
 		aBean.setFromRequest(request);
 		aBean.username = Integer.toString(new Random().nextInt());
 		aBean.password = Integer.toString(new Random().nextInt());
@@ -34,24 +35,6 @@
 		}//if
 	}//if
 	String errorMsg = "";
-/*	Inidividual operator user manuals was requested, then unrequested, so i kept the code here
-	boolean isFileUpload = (null != request.getParameter("isFileUpload"));
-	if (isFileUpload){
-		request.setAttribute("uploader", String.valueOf(com.picsauditing.servlet.upload.UploadProcessorFactory.OPERATOR));
-		request.setAttribute("directory", "files");
-		request.setAttribute("exts","pdf");
-		com.picsauditing.servlet.upload.UploadConHelper helper = new com.picsauditing.servlet.upload.UploadConHelper();
-		helper.init(request, response);
-		errorMsg = (String)request.getAttribute("error_userManual");
-		if (errorMsg == null)
-			errorMsg = "";
-		if("".equals(errorMsg)){
-			oBean.isUserManualUploaded = "Yes";
-			oBean.writeToDB();
-			errorMsg = "User manual uploaded";
-		}//if
-	}//if
-*/
 %>
 
 <html>
@@ -225,13 +208,13 @@
                           <%=Inputs.getRadioInput("doContractorsPay","forms",oBean.doContractorsPay,OperatorBean.CONTRACTORS_PAY_ARRAY)%>
                         </td>
                       </tr>
-<!-- 					  <tr>
-                        <td class="blueMain" align="right">Cons Require Approval:</td>
+ 					  <tr>
+                        <td class="blueMain" align="right">Approves Contractors:</td>
                         <td class="blueMain" align="left" valign="bottom">
-						  <%//=Inputs.getYesNoRadio("approvesRelationships","forms",oBean.approvesRelationships)%>
+						  <%=Inputs.getYesNoRadio("approvesRelationships","forms",oBean.approvesRelationships)%>
                         </td>
                       </tr>
- -->					  <tr>
+					  <tr>
                         <td class="blueMain" align="right">Sees PQF:</td>
                         <td class="blueMain" align="left" valign="bottom">
                           <%=Inputs.getYesNoRadio("canSeePQF","forms",oBean.canSeePQF)%>

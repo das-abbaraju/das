@@ -107,10 +107,7 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 				// Run a query against pqfData and OSHA data that considers the flagCriteria
 				String sql = getSelectQuery(flagCriteria);
 				boolean flagged = false;
-/*	jj 2-22-08 commented out approved code
- * 				if ("Red".equals(thisFlag))
-					flagged = isFlaggedNotApproved(opID, cID);
-*/				rs = SQLStatement.executeQuery(sql+" WHERE id="+cID);
+				rs = SQLStatement.executeQuery(sql+" WHERE id="+cID);
 				if (rs.next()){
 					for (String questionID: flagCriteria.getCheckedQuestionIDsAL()) {
 						FlagCriteriaDO flagCriteriaDO = flagCriteria.getFlagCriteriaDO(questionID);
@@ -193,16 +190,10 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 				// For testing purposes
 				//sql = sql + " AND cons.id IN (SELECT id FROM accounts WHERE name like 'A%')";
 				
-/*	jj 2-22-08 commented out approved code
-				Set<String> flaggedConsMap = getFlaggedNotApprovedCons(opID);
-*/				ResultSet rs = SQLStatement.executeQuery(sql);
+				ResultSet rs = SQLStatement.executeQuery(sql);
 				while (rs.next()){
 					String conID = rs.getString("cons.id");
 					boolean flagged = false;
-/*	jj 2-22-08 commented out approved code
-					if ("Red".equals(thisFlag))
-						flagged = flaggedConsMap.contains(conID);
-*/					
 					// Calculate this contractor's flag color
 					for (String questionID: flagCriteria.getCheckedQuestionIDsAL()) {
 						if (!flagged){

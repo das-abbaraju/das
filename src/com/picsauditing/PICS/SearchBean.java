@@ -3,6 +3,7 @@ package com.picsauditing.PICS;
 import java.sql.*;
 import java.util.*;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.domain.IPicsDO;
 
 
@@ -499,9 +500,10 @@ import com.picsauditing.domain.IPicsDO;
 			else whereQuery += "AND 0 ";
 		}
 		if ("Operator".equals(accessType)) {
-			joinQuery += "INNER JOIN generalContractors gc ON gc.subID=accounts.id "+
-				"LEFT JOIN flags ON flags.conID=accounts.id ";
-			whereQuery += "AND gc.genID="+accessID+" AND (flags.opID IS NULL OR flags.opID="+accessID+") ";
+			boolean hideUnApproved = permissions.oBean.isApprovesRelationships() && !permissions.getPermissions().hasPermission(OpPerms.ViewUnApproved);
+			
+			joinQuery += "JOIN generalContractors gc ON gc.subID=accounts.id AND gc.genID="+accessID+ (hideUnApproved?" AND gc.workStatus = 'Y' ": " ")+
+				" LEFT JOIN flags ON flags.conID=accounts.id AND flags.opID="+accessID+" ";
 		}
 		if ("Corporate".equals(accessType)) {
 			joinQuery += "INNER JOIN generalContractors gc ON gc.subID=accounts.id "+
@@ -511,12 +513,7 @@ import com.picsauditing.domain.IPicsDO;
 			groupByQuery = "GROUP BY accounts.id ";
 		}
 
-/*	jj 2-22-08 not polished enough yet for release
- 		if(!permissions.getPermissions().hasPermission(OpPerms.ViewRedFlagged) &&
-				("Corporate".equals(accessType) || "Operator".equals(accessType)))
-			whereQuery += "AND flags.flag!='Red' ";
-*/		
-			Conn = DBBean.getDBConnection();
+		Conn = DBBean.getDBConnection();
 		SQLStatement = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		count = beginResults = (showPage-1)*showNum;
 		
@@ -924,6 +921,10 @@ import com.picsauditing.domain.IPicsDO;
 	public String getExcelLink(String id) throws Exception {
 		return ExcelWriterBean.getLink(id);
 	}//getExcelLink
+
+	public String getConWorkStatus() throws Exception {
+		return SQLResult.getString("workStatus");
+	}
 
 	public String getPQFAnswer() throws Exception {
 		if ("".equals(searchEMRRate))

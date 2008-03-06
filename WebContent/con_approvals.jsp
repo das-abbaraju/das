@@ -87,9 +87,9 @@ form.smallform {
 		<td align="right"><%=report.getPageLinks()%></td>
 	</tr>
 </table>
-<p>
-Do the following companies work for <%= permissions.getAccountId() %>?
-</p>
+
+<p>Are the following companies currently working or approved to work for you?</p>
+
 <table border="0" cellpadding="1" cellspacing="1" align="center">
 	<tr bgcolor="#003366" class="whiteTitle">
 		<td colspan=2><a href="?orderBy=a.name<%=report.getFilterParams()%>" class="whiteTitle">Contractor</a></td>
@@ -97,6 +97,7 @@ Do the following companies work for <%= permissions.getAccountId() %>?
 			class="whiteTitle">Date Added</a></td>
 		<td align="center"><a href="?orderBy=workStatus<%=report.getFilterParams() %>"
 			class="whiteTitle">Approved</a></td>
+		<td>&nbsp;</td>
 	</tr>
 	<%
 		com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlternater(sql.getStartRow());
