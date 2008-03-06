@@ -248,8 +248,13 @@ import com.picsauditing.domain.IPicsDO;
 			selected_taxID = r.getParameter("taxID");
 			selected_performedBy = r.getParameter("performedBy");
 		}//if
-		else
-			showPage = Integer.parseInt(r.getParameter("showPage"));
+		else {
+			try {
+				showPage = Integer.parseInt(r.getParameter("showPage"));
+			} catch (Exception e) {
+				showPage = 1;
+			}
+		}
 
 		if ("Y".equals(selected_entireDB)){
 			if (!"Y".equals(searchCorporate))
