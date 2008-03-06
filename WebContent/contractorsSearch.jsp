@@ -160,7 +160,7 @@ try{
                       </td>
                     </tr>
                   </table>
-                  <input name="entireDB" type="hidden" value="Y">
+                  <input type="hidden" name="entireDB" value="Y">
 				  <input type="hidden" name="showPage" value="1"/>
 		          <input type="hidden" name="startsWith" value=""/>
 		          <input type="hidden" name="orderBy"  value="name"/>

@@ -19,7 +19,7 @@
 <html>
 <head>
 <title>PICS - Pacific Industrial Contractor Screening</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <META Http-Equiv="Cache-Control" Content="no-cache">
   <META Http-Equiv="Pragma" Content="no-cache">
   <META Http-Equiv="Expires" Content="0">
@@ -51,10 +51,9 @@
             <span class="blueHeader">Corporate Contractors Report</span>
 			<br>
             <table width="657" height="40" border="0" cellpadding="0" cellspacing="0">
-<%	if (pBean.isAdmin() || pBean.isCorporate()){%>
               <tr> 
                 <td height="70" colspan="2" align="center">
-                <form name="form1" method="post" action="report_operatorContractor.jsp">
+                <form id="form1" name="form1" method="post" action="report_operatorContractor.jsp">
                   <table border="0" cellpadding="2" cellspacing="0">
                     <tr align="center">
                       <td>
@@ -67,19 +66,14 @@
                       <td><input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()">
                     </tr>
                   </table>
-                  
-                  </form>
-                  
-	            </td>
-              </tr>
-<%	}//if%>
-                  <form id="form1" action="report_operatorContractor.jsp" method="post">
-                  	<input type="hidden" name="searchCorporate" value="Y"/>
+                  	<input type="hidden" name="searchCorporate" value="<%=pBean.isAdmin() ? "N": "Y"%>"/>
                   	<input type="hidden" name="showPage" value="1"/>
 		          	<input type="hidden" name="startsWith" value=""/>
 		          	<input type="hidden" name="orderBy"  value="name"/>
                   </form>
-
+                  
+	            </td>
+              </tr>
               <tr> 
                 <td></td>
                 <td align="center"><%=sBean.getLinksWithDynamicForm()%></td>

@@ -2,7 +2,7 @@ function changePage( formid, pageNum )
 {
 	document.getElementById( formid )['showPage'].value = pageNum;
 	document.getElementById( formid ).submit();
-	return false;
+	return true;
 }
 
 function changeStartsWith( formid, v )
@@ -15,8 +15,8 @@ function changeStartsWith( formid, v )
 
 function runSearch( formid )
 {
-	document.getElementById( formid )['orderBy'].value = null;
-	document.getElementById( formid )['showPage'].value = null;
-	document.getElementById( formid )['startsWith'].value = null;
+	document.getElementById( formid )['orderBy'].value = "";
+	document.getElementById( formid )['showPage'].value = "";
+	document.getElementById( formid )['startsWith'].value = "";
 	return true;
 } 

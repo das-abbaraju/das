@@ -3,8 +3,6 @@ package com.picsauditing.PICS;
 import java.sql.*;
 import java.util.*;
 
-import com.picsauditing.PICS.*;
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.domain.IPicsDO;
 
 
@@ -254,7 +252,7 @@ import com.picsauditing.domain.IPicsDO;
 			showPage = Integer.parseInt(r.getParameter("showPage"));
 
 		if ("Y".equals(selected_entireDB)){
-			if ("Y".equals(searchCorporate))
+			if (!"Y".equals(searchCorporate))
 				joinQuery += "LEFT JOIN flags ON flags.conID=accounts.id ";
 			whereQuery += "AND (flags.opID IS NULL OR flags.opID="+accessID+") ";
 			accessType = "Admin";
@@ -365,7 +363,7 @@ import com.picsauditing.domain.IPicsDO;
 			whereQuery += "AND isOnlyCerts='Yes' ";
 		if (EXCLUDE_CERTS.equals(selected_certsOnly))
 			whereQuery += "AND isOnlyCerts<>'Yes' ";
-		if (null != searchCorporate)
+		if ("Y".equals(searchCorporate))
             accessType = "Corporate";
         if (isActivationReport) {
 			//whereQuery += "AND (accountDate='0000-00-00' OR welcomeCallDate='0000-00-00') ";
@@ -626,6 +624,55 @@ import com.picsauditing.domain.IPicsDO;
 		return temp;
 	}
 
+	
+	/**
+	 * Once we push this to all pages and hammer out any problems, we'll get rid of it and 
+	 * change/use getStartsWithLinks
+	 * @return
+	 */
+	public String getLinksWithDynamicForm(){
+		return getLinksWithDynamicForm("");
+	}
+
+	/**
+	 * Once we push this to all pages and hammer out any problems, we'll get rid of it and 
+	 * change/use getStartsWithLinks
+	 * @return
+	 */
+	public String getLinksWithDynamicForm(String filter){
+		int SHOW_PAGES = 4;
+		int lastPage = (numResults-1)/showNum+1;
+		String orderByQuery = "";
+		
+		
+		if (null != orderBy && !"".equals(orderBy))
+			orderByQuery = "orderBy="+orderBy;
+		StringBuffer sb = new StringBuffer("<span class=\"redMain\">");
+		sb.append("Showing "+beginResults+"-"+endResults+" of <b>"+numResults+"</b> results | ");
+		
+		int startIndex = 1;
+		if (showPage-1 > SHOW_PAGES){
+			startIndex = showPage-SHOW_PAGES;
+			sb.append("<a href=\"javascript: changePage('form1','1');\">1</A> << ");
+		}
+		
+		int endIndex = lastPage;
+		if (lastPage-showPage > SHOW_PAGES)
+			endIndex = showPage+SHOW_PAGES;
+		for (int i=startIndex;i<=endIndex;i++){
+			if (i==showPage)
+				sb.append(" <strong>"+i+"</strong> ");
+			else{
+				sb.append("<a href=\"javascript: changePage('form1','" + i + "');\">" + i + "</A> ");
+			}
+		}
+		
+		if (lastPage-showPage > SHOW_PAGES)
+			sb.append(">> <a href=\"javascript: changePage('form1','" + lastPage + "');\">" + lastPage + "</A>");
+			sb.append("</span>");
+		return sb.toString();
+	}
+	
 	public String getStartsWithLinks() {
 		String temp = "<span class=\"blueMain\">Starts with: ";
 		for (char c = 'A';c<='Z';c++)
@@ -634,6 +681,27 @@ import com.picsauditing.domain.IPicsDO;
 		return temp;
 	}//getStartsWithLinks
 
+	/**
+	 * Once we push this to all pages and hammer out any problems, we'll get rid of it and 
+	 * change/use getStartsWithLinks
+	 * @return
+	 */
+	public String getStartsWithLinksWithDynamicForm() {
+		StringBuffer temp = new StringBuffer("<span class=\"blueMain\">Starts with: ");
+
+		temp.append( "<a href=\"javascript: changeStartsWith('form1', '');\" class=\"blueMain\">All</a> " );
+		for (char c = 'A';c<='Z';c++)
+			temp.append( "<a href=\"javascript: changeStartsWith('form1', '" + c + "');\" class=\"blueMain\">"+c+"</a> " );
+
+		temp.append( "</span>" );
+		return temp.toString();
+	}//getStartsWithLinks
+	
+	
+	
+	
+	
+	
 	public static String getAccountsManageStartsWithLinks() {
 		String temp = "<span class=\"blueMain\">Starts with: ";
 		for (char c = 'A';c<='Z';c++)
@@ -960,4 +1028,6 @@ import com.picsauditing.domain.IPicsDO;
 			return "";
 		return "<img src=images/icon_"+flag.toLowerCase()+"Flag.gif width=12 height=15 border=0>";
 	}//getFlagLink
+	
+	
 }//SearchBean
