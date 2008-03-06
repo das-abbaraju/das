@@ -2,7 +2,7 @@ function changePage( formid, pageNum )
 {
 	document.getElementById( formid )['showPage'].value = pageNum;
 	document.getElementById( formid ).submit();
-	return true;
+	return false;
 }
 
 function changeStartsWith( formid, v )
