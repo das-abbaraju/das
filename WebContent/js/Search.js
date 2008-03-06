@@ -16,7 +16,7 @@ function changeStartsWith( formid, v )
 function runSearch( formid )
 {
 	document.getElementById( formid )['orderBy'].value = "";
-	document.getElementById( formid )['showPage'].value = "";
+	document.getElementById( formid )['showPage'].value = "1";
 	document.getElementById( formid )['startsWith'].value = "";
 	return true;
 } 

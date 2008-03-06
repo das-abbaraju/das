@@ -5,7 +5,10 @@
 <%@page import="com.picsauditing.PICS.EmailBean"%>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
+
 <%
+
+
 if (permissions.isContractor()) throw new com.picsauditing.access.NoRightsException("Not Contractor");
 try{
 	com.picsauditing.PICS.pqf.QuestionTypeList statesLicensedInList = new com.picsauditing.PICS.pqf.QuestionTypeList();
@@ -97,8 +100,35 @@ try{
   <META Http-Equiv="Pragma" Content="no-cache">
   <META Http-Equiv="Expires" Content="0">
   <link href="PICS.css" rel="stylesheet" type="text/css">
-  <script language="JavaScript" SRC="js/Search.js"></script>
+  <script language="JavaScript", b SRC="js/Search.js"></script>
   <script language="JavaScript" SRC="js/ImageSwap.js"></script>
+
+  <script language="JavaScript">
+	function addContractor( cid )
+	{	
+		var form = document.getElementById('form1');
+		form['action'].value="Add";		
+		form['actionID'].value=cid;		
+		form['showPage'].value=<%= showPage %>;		
+		
+					
+		form.submit();
+
+		return false;	
+	}
+	function removeContractor( cid )
+	{
+		var form = document.getElementById('form1');
+		form['action'].value="Remove";
+		form['actionID'].value=cid;
+		form['showPage'].value=<%= showPage %>;
+		
+		form.submit();
+	
+		return false;
+	}  
+  </script>
+  
 </head>
 <body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 <%//=sBean.Query %>
@@ -162,7 +192,11 @@ try{
                     </tr>
                   </table>
                   <input type="hidden" name="entireDB" value="Y">
-				  <input type="hidden" name="showPage" value="1"/>
+                  <input type="hidden" name="actionID" value="0">
+                  <input type="hidden" name="action" value="">
+     
+     
+     			  <input type="hidden" name="showPage" value="1"/>
 		          <input type="hidden" name="startsWith" value=""/>
 		          <input type="hidden" name="orderBy"  value="name"/>
                   </form>
@@ -190,7 +224,7 @@ try{
 			String thisClass = "cantSee";
 			if ((pBean.canSeeSet.contains(sBean.aBean.id)))
 				thisClass = sBean.cBean.getTextColor(sBean.cBean.calcPICSStatusForOperator(pBean.oBean));
-%>            <tr <%=sBean.getBGColor()%> class=<%=thisClass%>>
+%>            <span id="con_<%=sBean.aBean.id%>"><tr <%=sBean.getBGColor()%> class=<%=thisClass%>>
                 <td>
                   <a href="contractor_detail.jsp?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class=<%=thisClass%>><%=sBean.aBean.name%></a>
                 </td>
@@ -198,24 +232,21 @@ try{
                 <td align="center"><%=sBean.aBean.contact%></td>
                 <td align="center"><%=sBean.aBean.phone%><br><%=sBean.aBean.phone2%></td>
                 <td align="center"><%=sBean.tradePerformedBy%></td>
-                <form name="form2" method="post" action="contractorsSearch.jsp?changed=0&showPage=<%=showPage%>">
                 <td align="center"><%=sBean.getFlagLink()%></td>
                 <td align="center">
 <%			if (pBean.oBean.canAddContractors()) {
 				if (!pBean.canSeeSet.contains(sBean.aBean.id) || pBean.isCorporate()){
 					if (permissions.hasPermission(OpPerms.AddContractors)){%>
-                  <input name="action" type="submit" class="buttons" value="Add">
+                  <input name="action" type="submit" class="buttons" value="Add" onClick="return addContractor(<%=sBean.aBean.id%>);">
 <%				}//if
 				}else{
 					if (permissions.hasPermission(OpPerms.RemoveContractors)){%>
-                  <input name="action" type="submit" class="buttons" value="Remove">
+                  <input name="action" type="submit" class="buttons" value="Remove" onClick="return removeContractor(<%=sBean.aBean.id%>);">
 <%					}//if
 				}//else
 			}//if%>
-                  <input name="actionID" type="hidden" value="<%=sBean.aBean.id%>">
                 </td>
-                </form>				
-              </tr>
+              </tr></span>
 <%		}//while %>
             </table><br>
 		    <center><%=sBean.getLinksWithDynamicForm()%></center>
