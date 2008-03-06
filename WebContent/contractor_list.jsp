@@ -12,15 +12,16 @@ try {
 	String action = request.getParameter("action");
 	String actionID = request.getParameter("actionID");
 	if ("Remove".equals(action)) {
-		pBean.oBean.removeSubContractor(pBean.userID, actionID);
-		pBean.canSeeSet = pBean.oBean.canSeeSet;
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(actionID);
-		AccountBean aBean = new AccountBean();
-		aBean.setFromDB(pBean.userID);
-		cBean.addNote(actionID, "", pBean.userName+" from "+aBean.name+" removed contractor from its db", DateBean.getTodaysDateTime());
-		cBean.writeToDB();
-	}//if
+		if (pBean.oBean.removeSubContractor(permissions.getAccountId(), actionID)) {
+			pBean.canSeeSet.remove(actionID);
+			ContractorBean cBean = new ContractorBean();
+			cBean.setFromDB(actionID);
+			AccountBean aBean = new AccountBean();
+			aBean.setFromDB(pBean.userID);
+			cBean.addNote(actionID, "", pBean.userName+" from "+aBean.name+" removed contractor from its db", DateBean.getTodaysDateTime());
+			cBean.writeToDB();
+		}
+	}
 	
 	ArrayList<String> certList;
 	if (pBean.oBean.canSeeInsurance()) {

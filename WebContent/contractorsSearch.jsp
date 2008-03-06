@@ -3,7 +3,6 @@
 <%@page import="com.picsauditing.mail.*"%>
 <%@page import="com.picsauditing.PICS.redFlagReport.FlagCalculator"%>
 <%@page import="com.picsauditing.PICS.EmailBean"%>
-
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
 <%
@@ -29,53 +28,59 @@ try{
 	boolean isSearchTradeIDOK = !("".equals(searchTradeID)) && !tBean.DEFAULT_SELECT_TRADE_ID.equals(searchTradeID);
 	boolean doSearch = "0".equals(changed) || isSearchNameOK || isSearchTradeIDOK;
 	if ("Add".equals(action) && pBean.oBean.canAddContractors()){
-		if (pBean.oBean.isCorporate){
+		if (pBean.oBean.isCorporate) {
 			response.sendRedirect("con_selectFacilities.jsp?id="+actionID);
 			return;
-		}//if
-		AccountBean aBean = new AccountBean();
-		aBean.setFromDB(pBean.userID);
-		pBean.oBean.addSubContractor(pBean.userID, actionID);
-		pBean.canSeeSet = pBean.oBean.canSeeSet;
-		doSearch = true;
-		
-		// Send the contractors an email that the operator added them
-		EmailContractorBean emailer = new EmailContractorBean();
-		emailer.setData(actionID, permissions);
-		emailer.setMerge(EmailTemplates.contractoradded);
-		User currentUser = new User();
-		currentUser.setFromDB(permissions.getUserIdString());
-		emailer.addTokens("opName", currentUser.userDO.accountName);
-		emailer.addTokens("opUser", currentUser.userDO.name);
-		emailer.sendMail();
-		emailer.addNote(currentUser.userDO.name+" from "+currentUser.userDO.accountName+" added "+aBean.name+", email sent to: "+ emailer.getSentTo());
-
-		com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
-		com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(actionID);
-		pcBean.generateDynamicCategories(actionID, com.picsauditing.PICS.pqf.Constants.PQF_TYPE, cBean.riskLevel);
-		cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
-		cBean.canEditPrequal="Yes";
-		cBean.addNote(actionID,"("+pBean.getWhoIsDetail()+")", "Added this Contractor to "+aBean.name+"'s db", DateBean.getTodaysDateTime());
-		cBean.writeToDB();
-		EmailBean.sendUpdateDynamicPQFEmail(actionID);
-		new FlagCalculator().setConFlags(actionID,permissions.getAccountIdString());
-	}//if
+		}
+		if (pBean.oBean.addSubContractor(permissions.getAccountId(), actionID)) {
+			pBean.canSeeSet.add(actionID);
+			doSearch = true;
+			
+			AccountBean aBean = new AccountBean();
+			aBean.setFromDB(permissions.getAccountIdString());
+			
+			// Send the contractors an email that the operator added them
+			EmailContractorBean emailer = new EmailContractorBean();
+			emailer.setData(actionID, permissions);
+			emailer.setMerge(EmailTemplates.contractoradded);
+			User currentUser = new User();
+			currentUser.setFromDB(permissions.getUserIdString());
+			emailer.addTokens("opName", currentUser.userDO.accountName);
+			emailer.addTokens("opUser", currentUser.userDO.name);
+			emailer.sendMail();
+			emailer.addNote(currentUser.userDO.name+" from "+currentUser.userDO.accountName+" added "+aBean.name+", email sent to: "+ emailer.getSentTo());
+	
+			com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
+			com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();
+			ContractorBean cBean = new ContractorBean();
+			cBean.setFromDB(actionID);
+			pcBean.generateDynamicCategories(actionID, com.picsauditing.PICS.pqf.Constants.PQF_TYPE, cBean.riskLevel);
+			cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
+			cBean.canEditPrequal="Yes";
+			cBean.addNote(actionID,"("+pBean.getWhoIsDetail()+")", "Added this Contractor to "+aBean.name+"'s db", DateBean.getTodaysDateTime());
+			cBean.writeToDB();
+			EmailBean.sendUpdateDynamicPQFEmail(actionID);
+			new FlagCalculator().setConFlags(actionID,permissions.getAccountIdString());
+		}
+	}
+	
 	if ("Remove".equals(action) && pBean.oBean.canAddContractors()){
-		pBean.oBean.removeSubContractor(pBean.userID, actionID);
-		pBean.canSeeSet = pBean.oBean.canSeeSet;
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(actionID);
-		AccountBean aBean = new AccountBean();
-		aBean.setFromDB(pBean.userID);
-		cBean.addNote(actionID,"("+pBean.getWhoIsDetail()+")", "Removed this Contractor from "+aBean.name+"'s db", DateBean.getTodaysDateTime());
-		com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
-		com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();
-		pcBean.generateDynamicCategories(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE, cBean.riskLevel);
-		cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
-		cBean.canEditPrequal="Yes";
-		cBean.writeToDB();
+		if (pBean.oBean.removeSubContractor(permissions.getAccountId(), actionID)) {
+			pBean.canSeeSet.remove(actionID);
+			ContractorBean cBean = new ContractorBean();
+			cBean.setFromDB(actionID);
+			AccountBean aBean = new AccountBean();
+			aBean.setFromDB(pBean.userID);
+			cBean.addNote(actionID, "", pBean.userName+" from "+aBean.name+" removed contractor from its db", DateBean.getTodaysDateTime());
+			
+			com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
+			com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();
+			pcBean.generateDynamicCategories(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE, cBean.riskLevel);
+			cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
+			cBean.canEditPrequal="Yes";
+			
+			cBean.writeToDB();
+		}
 	}//if
 	sBean.orderBy = "name";
 	sBean.setCanSeeSet(pBean.canSeeSet);
@@ -83,10 +88,6 @@ try{
 		sBean.doSearch(request, sBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
 	String showPage = request.getParameter("showPage");
 	if (showPage == null)	showPage = "1";
-	
-	//if (sBean.selected_taxID != null && sBean.selected_taxID.length() > 0)
-	//	filter += "&taxID=" + sBean.selected_taxID;
-	
 %>
 <html>
 <head>

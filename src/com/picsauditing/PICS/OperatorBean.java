@@ -191,7 +191,6 @@ public class OperatorBean extends DataBean {
 	}//getFacilitySelect
 
  	public static Hashtable<String,String> subCountTable = null;
-	public HashSet<String> canSeeSet = new HashSet<String>(); // all sub contractors of a general contractor/operator
 	public int total = 0;
 	public ArrayList<String> activeGeneralsArray = null;
 	public static final boolean INCLUDE_PICS = true;
@@ -338,7 +337,7 @@ public class OperatorBean extends DataBean {
 	public int getTotalSubCount() throws Exception {
 		setSubCount();
 		return total;
-	}//getTotalSubCount
+	}
 
 	public String getSubCount(String operator_id) throws Exception {
 		setSubCount();
@@ -346,32 +345,36 @@ public class OperatorBean extends DataBean {
 			return (String)subCountTable.get(operator_id);
 		else
 			return "0";
-	}//getSubCount
+	}
 
-	public void addSubContractor(String genID, String subID) throws Exception {
-		String insertQuery = "INSERT IGNORE INTO generalContractors (subID,genID,dateAdded) VALUES ('"+subID+"','"+genID+"',NOW())";
-		try{
+	public boolean addSubContractor(int genID, String subID) throws Exception {
+		String insertQuery = "INSERT IGNORE INTO generalContractors (subID,genID,dateAdded) " +
+				"VALUES ('"+subID+"','"+genID+"',NOW())";
+		try {
 			DBReady();
 			SQLStatement.executeUpdate(insertQuery);
-			// Reset canSeeSet
-			canSeeSet.add(subID);
-		}finally{
+			resetSubCountTable();
+			return true;
+		} catch (Exception e) {
+			return false;
+		} finally {
 			DBClose();
-		}//finally
-		resetSubCountTable();
-	}//addSubContractor
+		}
+	}
 
-	public void removeSubContractor(String genID, String subID) throws Exception {
+	public boolean removeSubContractor(int genID, String subID) throws Exception {
 		String deleteQuery = "DELETE FROM generalContractors WHERE genID="+genID+" AND subID="+subID+";";
 		try{
 			DBReady();
 			SQLStatement.executeUpdate(deleteQuery);
-			canSeeSet.remove(subID);
-		}finally{
+			resetSubCountTable();
+			return true;
+		} catch (Exception e) {
+			return false;
+		} finally {
 			DBClose();
-		}//finally
-		resetSubCountTable();
-	}//removeSubContractor
+		}
+	}
 
 	public static void resetSubCountTable() {
 		subCountTable = null;
