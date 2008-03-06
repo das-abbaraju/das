@@ -71,7 +71,7 @@ public class LoginController extends DataBean {
 			permissions.clear();
 		
 		// Also set the pBean for backwards compatibility...remove when we phase out the pBean completely
-		pBean = (PermissionsBean)request.getSession().getAttribute("pBean");;
+		pBean = (PermissionsBean)request.getSession().getAttribute("pBean");
 		if (pBean == null) {
 			pBean = new PermissionsBean();
 			request.getSession().setAttribute("pBean", pBean);
@@ -328,7 +328,7 @@ public class LoginController extends DataBean {
 			DBReady();
 			HashSet<String> canSeeSet = new HashSet<String>();
 			canSeeSet = new HashSet<String>();
-			if (!isUser) {
+			if (permissions.isContractor()) {
 				canSeeSet.add(id);
 				return canSeeSet;
 			}

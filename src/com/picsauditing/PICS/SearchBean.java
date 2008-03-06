@@ -9,8 +9,6 @@ import com.picsauditing.domain.IPicsDO;
 
 
 /**
- * @deprecated don't use this anymore, use SearchRaw instead
- * @see SearchRaw
  * @author Jeff Jensen
  *
  */public class SearchBean {
@@ -829,7 +827,7 @@ import com.picsauditing.domain.IPicsDO;
 
 	public void setCanSeeSet(HashSet temp) {
 		canSeeSet = temp;
-	}//setCanSeeSet
+	}
 
 	public void setAuditorCanSeeSet(HashSet temp) {
 		auditorCanSeeSet = temp;

@@ -74,10 +74,10 @@ public class PermissionsBean extends DataBean {
 	public void setAuditorDesktopSet(HashSet<String> s) {auditorDesktopSet = s;}
 	public void setAuditorDaSet(HashSet<String> s) {auditorDaSet = s;}
 
-	public String getCanSeeSetCount(){
+	public String getCanSeeSetCount() {
 		if (canSeeSet == null) return "0";
 		return Integer.toString(canSeeSet.size());
-	}//getCanSeeSetCount
+	}
 
 	/**
 	 * @deprecated
