@@ -167,6 +167,7 @@ public class User extends DataBean implements Comparable<User> {
 	}
 	
 	public void writeNewToDB(String accountID, HttpServletRequest request) throws Exception {
+		accountID = Utilities.intToDB(accountID);
 		userDO.accountID = accountID;
 		String insertQuery = "INSERT INTO users (name, username, password, email, isActive, dateCreated, accountID) VALUES ('"+
 			Utilities.escapeQuotes(userDO.name)+"','"+

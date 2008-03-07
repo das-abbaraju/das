@@ -10,22 +10,6 @@ String opID = permissions.getAccountIdString();
 if (permissions.isAdmin() && request.getParameter("id") != null) {
 	opID = request.getParameter("id");
 }
-String action = request.getParameter("action");
-String actionID = request.getParameter("actionID");
-
-if ("Edit".equals(action)){
-	response.sendRedirect("accounts_editUser.jsp?action=Edit&id="+opID+"&uID="+actionID);
-	return;
-}
-if ("New".equals(action)){
-	response.sendRedirect("accounts_editUser.jsp?action=New&id="+opID);
-	return;
-}
-if ("Delete".equals(action)){
-	User user = new User();
-	user.setFromDB(actionID);
-	user.deleteUser();
-}
 
 String msg = request.getParameter("msg");
 if (null == msg) msg = "";
@@ -105,28 +89,20 @@ List<BasicDynaBean> userList = search.getPage();
 							<td colspan=2 align=center>Name</td>
 							<td align=center>Last Login</td>
 							<td align=center>Active</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
 						  </tr>
-<%
-com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlternater();
-for(BasicDynaBean row: userList) {
-%>
-                          <form name="form_<%=row.get("id")%>" id="form_<%=row.get("id")%>" method="post" action="accounts_userList.jsp">
-						      <input name="actionID" type="hidden" value="<%=row.get("id")%>" />
-						      <input name="id" type="hidden" value="<%=opID%>" />
-						  <tr <%=color.nextColor()%> class="blueMain">
+					<%
+					com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlternater();
+					for(BasicDynaBean row: userList) {
+						%>
+						  <tr <%=color.nextBgColor()%> class="blueMain">
 							<td align="right"><%=color.getCounter()%>.</td>
-                            <td><%=row.get("name")%></td>
+                            <td><a href="accounts_editUser.jsp?action=Edit&id=<%=row.get("id")%>"><%=row.get("name")%></a></td>
                             <td align="center"><%=row.get("lastLogin")%></td>
                             <td align="center"><%=row.get("isActive")%></td>
-                            <td><input name="action" type="submit" class="buttons" id="edit_<%=row.get("id")%>" value="Edit"></td>
-                            <td><input name="action" type="submit" class="buttons" id="delete_<%=row.get("id")%>" value="Delete" onClick="return confirm('Are you sure you want to delete <%=row.get("name")%>?');"></td>
 					      </tr>
-						  </form>
-<%
-}
-%>
+						<%
+					}
+					%>
 					    </table>
 					  </td>
 					</tr>

@@ -3,45 +3,45 @@
 <%
 permissions.tryPermission(OpPerms.EditUsers);
 
-String editID = request.getParameter("uID");
-	String action = request.getParameter("action");
-	String opID = permissions.getAccountIdString();
-	if (permissions.isAdmin() && request.getParameter("id") != null) {
-		opID = request.getParameter("id");
-	}
-	User user = new User();
-	UserAccess userAccess = new UserAccess();
-	UserAccess opAccess = new UserAccess();
-	opAccess.db = "opAccess";
-	opAccess.setFromDB(opID);
-	boolean isSubmitted = !(null == request.getParameter("submit"));
-	boolean isNew = "New".equals(action);
-	boolean isEdit = "Edit".equals(action);
-	if (isEdit){
-		user.setFromDB(editID);
-		userAccess.setFromDB(editID);
-	}//if
-	if (isSubmitted){
-		user.setFromRequest(request);
-		userAccess.setFromRequest(request);
-		if (isNew){
-			if (user.isOK()){
-				user.writeNewToDB(opID, request);
-				userAccess.writeNewToDB(permissions, user.userDO.id);
-				response.sendRedirect("accounts_userList.jsp?newid="+user.userDO.id+
-						"&msg="+user.userDO.name+"'s account successfully created.<br>Login "+
-						"info and user manual have been sent to "+user.userDO.email);
-				return;
-			}//if
-		}else if (isEdit){
-			if (user.isOK()){
-				user.writeToDB();
-				userAccess.writeToDB(permissions);
-				response.sendRedirect("accounts_userList.jsp");
-				return;
-			}//if
-		}//else if
-	}//if
+String editID = request.getParameter("id");
+String action = request.getParameter("action");
+String opID = permissions.getAccountIdString();
+if (permissions.isAdmin() && request.getParameter("accountID") != null) {
+	opID = request.getParameter("accountID");
+}
+User user = new User();
+UserAccess userAccess = new UserAccess();
+UserAccess opAccess = new UserAccess();
+opAccess.db = "opAccess";
+opAccess.setFromDB(opID);
+boolean isSubmitted = !(null == request.getParameter("submit"));
+boolean isNew = "New".equals(action);
+boolean isEdit = "Edit".equals(action);
+if (isEdit){
+	user.setFromDB(editID);
+	userAccess.setFromDB(editID);
+}//if
+if (isSubmitted){
+	user.setFromRequest(request);
+	userAccess.setFromRequest(request);
+	if (isNew){
+		if (user.isOK()){
+			user.writeNewToDB(opID, request);
+			userAccess.writeNewToDB(permissions, user.userDO.id);
+			response.sendRedirect("accounts_userList.jsp?newid="+user.userDO.id+
+					"&msg="+user.userDO.name+"'s account successfully created.<br>Login "+
+					"info and user manual have been sent to "+user.userDO.email);
+			return;
+		}
+	}else if (isEdit){
+		if (user.isOK()){
+			user.writeToDB();
+			userAccess.writeToDB(permissions);
+			response.sendRedirect("accounts_userList.jsp?id="+user.userDO.accountID);
+			return;
+		}
+	}//else if
+}//if
 %>
 <html>
 <head>
@@ -74,10 +74,9 @@ String editID = request.getParameter("uID");
                 <tr> 
                   <td width="126" align="center" valign="top" bgcolor="#DDDDDD" class="blueMain"></td>
                   <td align="center" valign="top" bgcolor="#FFFFFF" class="blueMain">
-                  	<a href="accounts_userList.jsp">Return to User List</a>
+                  	<a href="accounts_userList.jsp?id=<%=user.userDO.accountID %>">Return to User List</a>
                     <form name="form1" method="post" action="accounts_editUser.jsp">
                     <input type=hidden name="action" value="<%=action%>">
-                    <input type=hidden name="uID" value="<%=editID%>">
                     <input type=hidden name="id" value="<%=user.userDO.id%>">
                     <input type=hidden name="accountID" value="<%=user.userDO.accountID%>">
                     <table width="0" border="0" cellspacing="0" cellpadding="1">
