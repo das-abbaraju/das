@@ -32,10 +32,10 @@
 	if (permissions.isAdmin() && removeContractor){
 		com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
 		com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();
-		String removeOpID = request.getParameter("opID");
-		oBean.removeSubContractor(removeOpID,id);
+		Integer removeOpID = Integer.parseInt(request.getParameter("opID"));
+		oBean.removeSubContractor(removeOpID, id);
 		AccountBean tempOpBean = new AccountBean();
-		tempOpBean.setFromDB(removeOpID);
+		tempOpBean.setFromDB(removeOpID.toString());
 		cBean.addNote(id,"("+pBean.userName+" from PICS)", "Removed "+aBean.name+" from "+tempOpBean.name+"'s db", DateBean.getTodaysDateTime());
 		pcBean.generateDynamicCategories(id,com.picsauditing.PICS.pqf.Constants.PQF_TYPE, cBean.riskLevel);
 		cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(id,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
