@@ -8,7 +8,6 @@
 <%
 	try{
 	permissions.tryPermission(OpPerms.InsuranceApproval);
-	boolean canEdit = permissions.hasPermission(OpPerms.InsuranceApproval,OpType.Edit);
 	
 	SearchFilter filter = new SearchFilter();
 	filter.setParams(Utilities.requestParamsToMap(request));
@@ -17,6 +16,7 @@
 		filter.set("s_certStatus","Pending");
 	if(!filter.has("orderBy"))
 		filter.set("orderBy","name");
+	boolean canEdit = permissions.hasPermission(OpPerms.InsuranceApproval,OpType.Edit) && !"Expired".equals(filter.get("s_certStatus"));
 
 	if (canEdit && "Submit".equals(request.getParameter("action"))){
 		List<CertificateDO> list = cerBean.setCertificatesFromCheckList(Utilities.requestParamsToMap(request));
@@ -26,7 +26,7 @@
 	}
 
 	cerBean.setList(permissions,filter);
-	sBean.pageResults(cerBean.getListRS(), 20, request);
+	sBean.pageResults(cerBean.getListRS(), 50, request);
 %>
 <head>
   <title>PICS - Pacific Industrial Contractor Screening</title>
@@ -81,6 +81,7 @@
                       <%=sBean.getLinks(filter.getURLQuery())%>
                       <table ID="certTable" width="100%" border="0" cellpadding="1" cellspacing="1">
                         <tr class="whiteTitle">
+                          <td bgcolor="#003366">Num</td>
 <%	if (canEdit) {
 		if (!"Approved".equals(filter.getInputValue("s_certStatus"))) { %>
                           <td bgcolor="#003366" align="center">Approve</td>
@@ -109,6 +110,7 @@
                         </tr>
 <%	while (sBean.isNextRecord(certDO)){%>
                         <tr id="<%=certDO.getCert_id()%>" <%=sBean.getBGColor()%> class="<%=sBean.getTextColor()%>">
+                          <td align="right"><%=sBean.count-1%></td>
 <%		if (canEdit) { %>
 <%			if ("Pending".equals(filter.getInputValue("s_certStatus"))) { %>
                           <td align="center"><input name="status_<%=certDO.getCert_id()%>" class=buttons type=radio value="Approved"></td>
@@ -131,7 +133,7 @@
 	if(permissions.isCorporate()) { %>
                           <td>&nbsp;&nbsp;</td>
 <%		}//if %>
-                          <td><a href="contractor_detail.jsp?id=<%=certDO.getContractor_id()%>" class="<%=sBean.getTextColor()%>"><%=certDO.getContractor_name()%></a></td>
+                          <td><a href="contractor_upload_certificates.jsp?id=<%=certDO.getContractor_id()%>" class="<%=sBean.getTextColor()%>"><%=certDO.getContractor_name()%></a></td>
                           <td><%=certDO.getType()%></td>
 <%		if (permissions.isAdmin() || permissions.isCorporate()){ %>
                           <td><%=certDO.getOperator()%></td>

@@ -14,6 +14,7 @@ public class Note extends DataBean{
 	public String noteID = "";
 	String opID = "";
 	String conID = "";
+	String userID = "";
 	String whoIs = "";
 	String note = "";
 	String timeStamp = "";
@@ -25,9 +26,10 @@ public class Note extends DataBean{
 	public Note(){
 	}//Note
 
-	public Note(String opID, String conID, String whoIs, String note){
+	public Note(String opID, String conID, String userID, String whoIs, String note){
 		this.opID = opID;
 		this.conID = conID;
+		this.userID = userID;
 		this.whoIs = whoIs;
 		this.note = note;
 	}//Note
@@ -39,19 +41,19 @@ public class Note extends DataBean{
 	public void writeToDB()throws Exception{
 		try{
 			DBReady();
-			String insertQuery = "INSERT INTO notes (opID,conID,whoIs,note,timeStamp) VALUES("+
-				opID+","+conID+",'"+Utilities.escapeQuotes(whoIs)+"','"+Utilities.escapeQuotes(note)+"',NOW());";
+			String insertQuery = "INSERT INTO notes (opID,conID,userID,whoIs,note,timeStamp) VALUES("+
+				opID+","+conID+","+userID+",'"+Utilities.escapeQuotes(whoIs)+"','"+Utilities.escapeQuotes(note)+"',NOW());";
 			SQLStatement.executeUpdate(insertQuery);
 		}finally{
 			DBClose();
 		}//finally
 	}//writeToDB
 
-	public void deleteNote(String deleteID,String who)throws Exception{
+	public void deleteNote(String deleteID,Permissions permissions)throws Exception{
 		try{
 			DBReady();
-			String updateQuery = "UPDATE notes SET isDeleted=true, deletedDate=NOW(),whoDeleted='"+
-					Utilities.escapeQuotes(who)+"' WHERE noteID="+deleteID+" LIMIT 1";
+			String updateQuery = "UPDATE notes SET isDeleted=true, deletedDate=NOW(),deletedUserID="+permissions.getUserIdString()+
+			", whoDeleted='"+Utilities.escapeQuotes(permissions.getName())+"' WHERE noteID="+deleteID+" LIMIT 1";
 				SQLStatement.executeUpdate(updateQuery);
 		}finally{
 			DBClose();
@@ -60,7 +62,7 @@ public class Note extends DataBean{
 
 	public void setList(String opID,String conID) throws Exception {
 		String selectQuery = "SELECT *,DATE_FORMAT(timeStamp,'%c/%e/%y') AS formattedDate "+
-			"FROM notes WHERE opID="+opID+" AND conID="+conID+" AND isDeleted=false ORDER BY timeStamp DESC;";
+			"FROM notes WHERE opID="+opID+" AND conID="+conID+" AND isDeleted=0 ORDER BY timeStamp DESC;";
 		try{
 			DBReady();
 			listRS = SQLStatement.executeQuery(selectQuery);
@@ -83,6 +85,7 @@ public class Note extends DataBean{
 		sql.setFromTable("notes n");
 		sql.addField("n.noteID");
 		sql.addField("n.opID");
+		sql.addField("n.userId");
 		sql.addField("n.whoIs");
 		sql.addField("n.note");
 		sql.addField("a.name");
@@ -117,6 +120,7 @@ public class Note extends DataBean{
 		noteID = SQLResult.getString("noteID");
 		opID = SQLResult.getString("opID");
 		conID= SQLResult.getString("conID");
+		userID= SQLResult.getString("userID");
 		whoIs= SQLResult.getString("whoIs");
 		note = SQLResult.getString("note");
 		timeStamp = SQLResult.getString("formattedDate");

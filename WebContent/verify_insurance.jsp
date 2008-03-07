@@ -23,7 +23,7 @@ try{
 	}
 	filter.set("s_certVerified","No");
 	cerBean.setList(permissions,filter);
-	sBean.pageResults(cerBean.getListRS(), 20, request);
+	sBean.pageResults(cerBean.getListRS(), 50, request);
 %>
 <html>
 
@@ -93,6 +93,7 @@ try{
               <%=sBean.getLinks(filter.getURLQuery())%>
               <table ID="certTable" width="100%" border="0" cellpadding="1" cellspacing="1">
                 <tr class="whiteTitle">
+                  <td bgcolor="#003366">Num</td>
 <%		if(canEdit){ %>
                   <td bgcolor="#003366">Verify</td>
                   <td bgcolor="#003366"></td>
@@ -108,12 +109,13 @@ try{
                 </tr>
 <%	while (sBean.isNextRecord(certDO)) {%>
                 <tr id="<%=certDO.getCert_id()%>" <%=sBean.getBGColor()%> class="<%=sBean.getTextColor()%>">    
+                          <td align="right"><%=sBean.count-1%></td>
 <%		if(canEdit){ %>
                   <td align="center"><%=Inputs.getCheckBoxInput("verified_" + certDO.getCert_id(), "forms", "", certDO.getVerified())%></td>
                   <td><input type="button" class="forms" name="editCertificate_<%=certDO.getCert_id() %>" value="Edit" onclick="editCert(<%=certDO.getCert_id()%>)"/>
                     <input type="hidden" name="oktoedit_<%=certDO.getCert_id()%>" id="oktoedit_<%=certDO.getCert_id()%>"></td>
 <%		}//if %>
-                  <td><a href="contractor_detail.jsp?id=<%=certDO.getContractor_id()%>" class="<%=sBean.getTextColor()%>"><%=certDO.getContractor_name()%></a></td>
+                  <td><a href="contractor_upload_certificates.jsp?id=<%=certDO.getContractor_id()%>" class="<%=sBean.getTextColor()%>"><%=certDO.getContractor_name()%></a></td>
                   <td><%=certDO.getType()%></td>
                   <td><%=certDO.getOperator()%></td>
                   <td><span name="noedit"><%=com.picsauditing.PICS.DateBean.toShowFormat(certDO.getExpDate())%></span>

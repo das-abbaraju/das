@@ -128,12 +128,12 @@
 <%		}//if%>
                       <td><%=cerBean.type%></td>
                       <td><%=FACILITIES.getNameFromID(cerBean.operator_id)%></td>
-                      <td><%=cerBean.verified%></td>
+                      <td align="center"><%=cerBean.verified%></td>
                       <td><%=cerBean.status%></td>
                       <td><%=cerBean.getExpDateShow()%></td>
                       <td align="right"><%=java.text.NumberFormat.getInstance().format(cerBean.getLiabilityLimit())%></td>
                       <td><%=cerBean.getNamedInsured()%></td>
-                      <td><%=cerBean.getSubrogationWaived()%></td>
+                      <td align="center"><%=cerBean.getSubrogationWaived()%></td>
                       <td align="center"><a href="<%=cerBean.getDirPath()%>cert_<%=id%>_<%=cerBean.cert_id%>.<%=cerBean.getExt()%>" target="_blank"> 
                         <img src="images/icon_insurance.gif" width="20" height="20" border="0"></a> 
                       </td>

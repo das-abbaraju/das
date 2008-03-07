@@ -16,7 +16,7 @@
 
 	if (canEdit && null != request.getParameter("Submit"))
 		cerBean.processEmailForm(Utilities.requestParamsToMap(request), permissions);
-	filter.set("s_daysTilExpired","-45");
+	filter.set("s_daysTilExpired","45");
 	cerBean.setList(permissions,filter);
 	sBean.pageResults(cerBean.getListRS(), 100, request);
 %>

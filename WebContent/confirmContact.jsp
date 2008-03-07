@@ -20,7 +20,6 @@
 	for(String toAddress: toAddresses)
 		message = message + toAddress + "\n";
 	message = message + "\nCompany: "+request.getParameter("company")+'\n'+request.getParameter("message");
-	EmailBean.init(config);
 //	eBean.sendContactUsEmail(name,email,sendTo,message);
 	for(String toAddress: toAddresses)
 		EmailBean.sendContactUsEmail(name,email,phone,toAddress,message);

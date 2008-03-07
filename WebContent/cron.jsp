@@ -1,11 +1,13 @@
 <%@ page language="java" import="com.picsauditing.PICS.*, com.picsauditing.PICS.redFlagReport.*"%>
-<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page"/>
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope="application"/>
 <%
 // Unsecured (no login required) webpage that can run scheduled tasks on a regular basis
 
-aBean.optimizeDB();
+new AccountBean().optimizeDB();
 %>AccountBean.optimizeDB();<%
+
+new CertificateBean().makeExpiredCertificatesExpiredStatus();
+%>CertificateBean().makeExpiredCertificatesExpiredStatus();<%
 
 FACILITIES.setFacilitiesFromDB();
 %>Facilities.setFacilitiesFromDB();<%
@@ -22,5 +24,4 @@ for (String opID: FACILITIES.nameMap.keySet()) {
 	%>FlagCalculator.recalculateFlags(<%=opID%>);<%
 	flagCalculator.recalculateFlags(opID);
 }
-
 %>

@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
 
+import com.picsauditing.PICS.redFlagReport.Note;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
@@ -29,7 +30,7 @@ import com.picsauditing.servlet.upload.UploadProcessorFactory;
 public class CertificateBean extends DataBean {
 	public static final String DEFAULT_NAME = "- Name - ";
 	public static final String DEFAULT_STATUS = "Pending";
-	public static String[] STATUS_ARRAY = {"Pending","Requires Action","Approved","Approved","Rejected","Rejected"};
+	public static String[] STATUS_ARRAY = {"Pending","Requires Action","Approved","Approved","Rejected","Rejected","Expired","Expired"};
 	public static String[] TYPE_ARRAY = {"Worker's Comp","General Liability","Automobile","Professional Liability","Pollution Liability","E&O","Excess/Umbrella","Contractor Liability"};
 
 	public String cert_id = "";
@@ -256,7 +257,7 @@ public class CertificateBean extends DataBean {
 		if (searchFilter.has("s_certVerified"))
 			selectQuery += "AND certificates.verified='"+searchFilter.get("s_certVerified")+"' ";
 		if (searchFilter.has("s_daysTilExpired"))
-			selectQuery += "AND (TO_DAYS(expDate)-TO_DAYS(CURDATE())<"+searchFilter.get("s_daysTilExpired")+") ";
+			selectQuery += "AND TO_DAYS(expDate)<(TO_DAYS(CURDATE())+"+searchFilter.get("s_daysTilExpired")+") ";
 
 		if (searchFilter.has("orderBy"))
 			selectQuery += "ORDER BY "+searchFilter.get("orderBy");
@@ -348,14 +349,15 @@ public class CertificateBean extends DataBean {
 					ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
 					if (SQLResult.next()) {
 						setFromResultSet(SQLResult);
-						
-						String accountID = SQLResult.getString("contractor_id");
 						EmailContractorBean mailer = new EmailContractorBean();
 						HashMap<String, String> tokens = new HashMap<String, String>();
 						tokens.put("opName", operator);
 						tokens.put("expiration_date", getExpDateShow());
 						tokens.put("certificate_type", type);
-						mailer.sendMessage(EmailTemplates.certificate_expire, accountID, permissions, tokens);
+						mailer.sendMessage(EmailTemplates.certificate_expire, contractor_id, permissions, tokens);
+						String newNote = "Sent reminder email warning that "+type+" insurance certificate will expire on "+expDate;
+						Note note = new Note(permissions.getAccountIdString(), contractor_id, permissions.getUserIdString(), permissions.getName(), newNote);
+						note.writeToDB();
 
 						String updateQuery = "UPDATE certificates SET sent=(sent+1),lastSentDate=NOW() WHERE cert_id='"+this.eqDB(certificate_id)+"'";
 						SQLStatement.executeUpdate(updateQuery);
@@ -371,21 +373,17 @@ public class CertificateBean extends DataBean {
 		}
 	}//processEmailForm
 
-	
-	public void makeExpiredCertificatesInactive() throws Exception {
-		// Now make those over 45 days expired inactive
-		String selectQuery = "SELECT contractor_id from certificates WHERE expDate < (CURDATE() - INTERVAL 45 DAY);";
+	public void makeExpiredCertificatesExpiredStatus() throws Exception {
 		try{
 			DBReady();
-			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			String tempQuery = "UPDATE contractor_info SET hasExpiredCerts='Yes' WHERE id IN ('0'";
-			while (SQLResult.next()) {
-				String id = SQLResult.getString("contractor_id");
-				tempQuery+=",'"+id+"'";
-			}
-			SQLResult.close();
-			tempQuery+=");";
-			SQLStatement.executeUpdate(tempQuery);
+			String updateQuery = "UPDATE certificates SET status='Expired' WHERE expDate<CURDATE();";
+			SQLStatement.executeUpdate(updateQuery);
+			updateQuery = "UPDATE contractor_info SET hasExpiredCerts='Yes' WHERE id IN "+
+				"(SELECT contractor_id FROM certificates WHERE status='Expired')";
+			SQLStatement.executeUpdate(updateQuery);
+			updateQuery = "UPDATE contractor_info SET hasExpiredCerts='No' WHERE id NOT IN "+
+				"(SELECT contractor_id FROM certificates WHERE status='Expired')";
+			SQLStatement.executeUpdate(updateQuery);
 		}finally{
 			DBClose();
 		}
@@ -505,13 +503,16 @@ public class CertificateBean extends DataBean {
 		}//while
 		return emailList;
 	}//setCeretificatesFromCheckList
-	
+
 	public void sendEmail(List<CertificateDO> list, Permissions permissions) throws Exception{
 		for(CertificateDO cdo : list){
 			if(cdo.getStatus().equals("Rejected"))
 				EmailBean.sendCertificateRejectedEmail(cdo,permissions);
 			else
 				EmailBean.sendCertificateAcceptedEmail(cdo,permissions);
+			String newNote = cdo.getType()+" insurance certificate "+cdo.getStatus()+" by "+operator+" for reason: "+cdo.getReason();
+			Note note = new Note(cdo.getOperator_id(), cdo.getContractor_id(), permissions.getUserIdString(), permissions.getName(), newNote);
+			note.writeToDB();
 		}
 	}
 

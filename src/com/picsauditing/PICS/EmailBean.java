@@ -4,10 +4,7 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import javax.servlet.http.HttpServletRequest;
 
-import java.text.Format;
-import java.util.Map;
 import java.util.Properties;
-import java.sql.*;
 
 import javax.activation.*;
 
@@ -25,7 +22,6 @@ public class EmailBean extends DataBean{
 	private static final String PASSWORD = "e3r4t5";
 	static final char endl = '\n';
 	static final char endl2 = '\r';
-	private static String rootPath = null;
 	public static String FROM_INFO = "PICS <"+"info@picsauditing.com>";
 
 	public static final String EMAIL_FOOTER =
@@ -109,14 +105,6 @@ public class EmailBean extends DataBean{
     	}//getPasswordAuthentication
 	}//SMTPAuthenticatorBackup6
 
-	/**
-	 * Usage: eBean.init(config);
-	 * @param config
-	 */
-	public static void init(javax.servlet.ServletConfig config) {
-		rootPath = config.getServletContext().getRealPath("/");
-	}//init
-	
 	private static void sendEmail(String from, String to, String cc, String subject, String text) throws Exception {
 		try{
 			Authenticator auth = new SMTPAuthenticator();
@@ -598,16 +586,14 @@ public class EmailBean extends DataBean{
 		
 		User user = new User();
 		user.setFromDB(permissions.getUserIdString());
-		String reason = certDO.getReason();
-		String certType = certDO.getType();
 		String from = FROM_INFO;
 		String to = email;
 		String subject = operator+" insurance certificate rejected";
 		String message = "Hello "+contactName+","+endl+endl+
-			contractor+"'s "+certType+ 
+			contractor+"'s "+certDO.getType()+
 			" Insurance Certificate has been rejected by "+operator+endl+
 			" for the following reasons:"+endl+endl+
-			reason+endl+endl+	
+			certDO.getReason()+endl+endl+	
 			"Please correct these issues and re-upload your insurance certificate to your "+endl+
 			"PICS account."+endl+
 			"If you have any specific questions about "+operator+"'s insurance requirements, "+endl+
@@ -616,10 +602,6 @@ public class EmailBean extends DataBean{
 			"PICS Customer Service";
 		
 		sendEmail(from, to, subject, message);	
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(conID);
-		cBean.addNote(conID, "("+permissions.getName()+")", certType+" Insurance Certificate rejected by "+operator+" for reason: "+reason, DateBean.getTodaysDateTime());
-		cBean.writeToDB();
 	}
 	
 	public static void sendCertificateAcceptedEmail(CertificateDO certDO, Permissions permissions) throws Exception {
@@ -632,18 +614,16 @@ public class EmailBean extends DataBean{
 		
 		aBean.setFromDB(certDO.getOperator_id());
 		String operator = aBean.name;
-		String reason = certDO.getReason();
-				
-		String certType = certDO.getType();
+
 		String from = FROM_INFO;
 		String to = email;
 
 		String subject = operator+" insurance certificate accepted";
 		String message = "Hello "+contactName+","+endl+endl+
-			contractor+"'s "+certType+endl+ 
+			contractor+"'s "+certDO.getType()+endl+ 
 			"Insurance Certificate has been accepted by "+operator+endl;
-		if (!"".equals(reason))
-			message += " for the following reasons:"+endl+endl+reason+endl+endl;
+		if (!"".equals(certDO.getReason()))
+			message += " for the following reasons:"+endl+endl+certDO.getReason()+endl+endl;
 
 		message += "Please make sure that you keep up-to-date in PICS by uploading your "+endl+
 			"insurance certificate when you renew your policy." + endl+endl+		 
@@ -651,10 +631,6 @@ public class EmailBean extends DataBean{
 			"PICS Customer Service";
 		
 		sendEmail(from, to, subject, message);
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(conID);
-		cBean.addNote(conID, "("+permissions.getName()+")", certType+" Insurance Certificate accepted by "+operator+" for reason: "+reason, DateBean.getTodaysDateTime());
-		cBean.writeToDB();
 	}//sendCertificateAcceptedEmail
 	
 	public static void sendSafetyMeetingEmail(HttpServletRequest request) throws Exception {
