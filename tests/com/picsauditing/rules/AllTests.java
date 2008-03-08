@@ -6,11 +6,11 @@ import junit.framework.TestSuite;
 public class AllTests {
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for com.picsauditing.resultset");
+		TestSuite suite = new TestSuite("Test for com.picsauditing.Rules");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(ResultSetRowTest.class);
-		suite.addTestSuite(ResultSetTest.class);
-		suite.addTestSuite(ResultSetQuestionTest.class);
+		suite.addTestSuite(RulesRowTest.class);
+		suite.addTestSuite(RulesTest.class);
+		suite.addTestSuite(RulesQuestionTest.class);
 		//$JUnit-END$
 		return suite;
 	}

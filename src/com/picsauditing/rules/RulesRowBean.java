@@ -1,6 +1,6 @@
 package com.picsauditing.rules;
 
-public class RulesRowBean {
+public class RulesRowBean implements java.io.Serializable {
 	private String notes;
 	private String result;
 	private RulesOperator operator1;
@@ -11,6 +11,9 @@ public class RulesRowBean {
 	private String value3;
 	private RulesOperator operator4;
 	private String value4;
+	private RulesOperator operator5;
+	private String value5;
+
 	public String getNotes() {
 		return notes;
 	}
@@ -70,6 +73,18 @@ public class RulesRowBean {
 	}
 	public void setValue4(String value4) {
 		this.value4 = value4;
+	}
+	public RulesOperator getOperator5() {
+		return operator5;
+	}
+	public void setOperator5(RulesOperator operator5) {
+		this.operator5 = operator5;
+	}
+	public String getValue5() {
+		return value5;
+	}
+	public void setValue5(String value5) {
+		this.value5 = value5;
 	}
 
 }

@@ -4,9 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public class BillingRules {
-	private RulesSet rs;
-	
+public class BillingRules extends RulesEngine {
 	public int calculate(int facilityCount, HashSet<Integer> facilities, int riskLevel, boolean mustPay, boolean isOnlyCerts) {
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("facilityCount", facilityCount);
@@ -37,5 +35,4 @@ public class BillingRules {
 			rs.addRow(rsRow);
 		}
 	}
-	
 }
