@@ -3,15 +3,15 @@ package com.picsauditing.rules;
 public class RulesRowBean implements java.io.Serializable {
 	private String notes;
 	private String result;
-	private RulesOperator operator1;
+	private RulesOperator operator1 = RulesOperator.Any;
 	private String value1;
-	private RulesOperator operator2;
+	private RulesOperator operator2 = RulesOperator.Any;
 	private String value2;
-	private RulesOperator operator3;
+	private RulesOperator operator3 = RulesOperator.Any;
 	private String value3;
-	private RulesOperator operator4;
+	private RulesOperator operator4 = RulesOperator.Any;
 	private String value4;
-	private RulesOperator operator5;
+	private RulesOperator operator5 = RulesOperator.Any;
 	private String value5;
 
 	public String getNotes() {

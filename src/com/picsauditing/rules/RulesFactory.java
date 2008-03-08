@@ -4,13 +4,14 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 public class RulesFactory {
+	/*
 	public static RulesEngine getRulesEngine(String engineName) throws Exception {
 		if (engineName == null) return new RulesEngine();
 		
 		RulesRowDAO dao = new RulesRowDAO();
 		List<RulesRowBean> rowList = dao.getRowsByTable(engineName);
 		if (engineName.equals("pricing")) {
-			BillingRules engine = new BillingRules();
+			BillingEngine engine = new BillingEngine();
 			engine.setUp(rowList);
 			return engine;
 		}
@@ -26,4 +27,5 @@ public class RulesFactory {
 	public static void setRulesEngine(HttpSession session, String engineName, RulesEngine engine) {
 		session.setAttribute("ENGINE_"+engineName, engine);
 	}
+	*/
 }

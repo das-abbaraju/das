@@ -55,6 +55,12 @@ public class RulesQuestion {
 			if (operator.equals(RulesOperator.StartsWith)) {
 				return parameter.toString().startsWith(value.toString());
 			}
+			if (operator.equals(RulesOperator.IsTrue)) {
+				return parameter.toString().equals("true");
+			}
+			if (operator.equals(RulesOperator.IsFalse)) {
+				return parameter.toString().equals("false");
+			}
 			
 			return false;
 		} catch (Exception e) {

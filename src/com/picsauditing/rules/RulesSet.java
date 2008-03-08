@@ -33,8 +33,7 @@ public class RulesSet {
 	public Object evaluate(HashMap<String, Object> parameters) {
 		for(String key : parameters.keySet()) {
 			// TODO verify that all parameters match a valid column and the types are correct 
-			parameters.get(key).getClass();
-			columns.get(key);
+			parameters.get(key).getClass().toString().contains(columns.get(key));
 		}
 		
 		for(RulesRow row : rows) {
@@ -46,6 +45,8 @@ public class RulesSet {
 				return row.getValue();
 			}
 		}
+		if (this.returnType.equals("Integer"))
+			return 0;
 		return null;
 	}
 

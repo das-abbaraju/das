@@ -2,14 +2,10 @@ package com.picsauditing.rules;
 
 import java.util.List;
 
-public class RulesEngine {
+abstract class RulesEngine {
 	protected RulesSet rs;
 	
-	public Object calculate() {
-		return null;
-	}
+	abstract Object calculate(Object o1, Object o2, Object o3, Object o4, Object o5);
 
-	public void setUp(List<RulesRowBean> rows) throws Exception {
-		rs = new RulesSet();
-	}
+	abstract void setUp(List<RulesRowBean> rows) throws Exception;
 }

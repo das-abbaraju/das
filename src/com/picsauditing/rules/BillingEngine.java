@@ -4,14 +4,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public class BillingRules extends RulesEngine {
-	public int calculate(int facilityCount, HashSet<Integer> facilities, int riskLevel, boolean mustPay, boolean isOnlyCerts) {
+public class BillingEngine {
+	protected RulesSet rs;
+	
+	public int calculate(boolean mustPay, boolean needsAudit, HashSet<Integer> facilities, int facilityCount) {
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put("facilityCount", facilityCount);
-		parameters.put("facilities", facilities);
-		parameters.put("riskLevel", riskLevel);
 		parameters.put("mustPay", mustPay);
-		parameters.put("isOnlyCerts", isOnlyCerts);
+		parameters.put("needsAudit", needsAudit);
+		parameters.put("facilities", facilities);
+		parameters.put("facilityCount", facilityCount);
 		int result = (Integer)rs.evaluate(parameters);
 		return result;
 	}
@@ -34,5 +35,10 @@ public class BillingRules extends RulesEngine {
 			rsRow.setValue(row.getResult());
 			rs.addRow(rsRow);
 		}
+	}
+	public void setUp() throws Exception {
+		RulesRowDAO dao = new RulesRowDAO();
+		List<RulesRowBean> rows = dao.getRowsByTable("pricing");
+		setUp(rows);
 	}
 }
