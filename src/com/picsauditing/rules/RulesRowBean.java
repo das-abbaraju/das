@@ -1,15 +1,15 @@
 package com.picsauditing.rules;
 
-public class RuleRowBean {
+public class RulesRowBean {
 	private String notes;
 	private String result;
-	private ResultSetOperator operator1;
+	private RulesOperator operator1;
 	private String value1;
-	private ResultSetOperator operator2;
+	private RulesOperator operator2;
 	private String value2;
-	private ResultSetOperator operator3;
+	private RulesOperator operator3;
 	private String value3;
-	private ResultSetOperator operator4;
+	private RulesOperator operator4;
 	private String value4;
 	public String getNotes() {
 		return notes;
@@ -23,10 +23,10 @@ public class RuleRowBean {
 	public void setResult(String result) {
 		this.result = result;
 	}
-	public ResultSetOperator getOperator1() {
+	public RulesOperator getOperator1() {
 		return operator1;
 	}
-	public void setOperator1(ResultSetOperator operator1) {
+	public void setOperator1(RulesOperator operator1) {
 		this.operator1 = operator1;
 	}
 	public String getValue1() {
@@ -35,10 +35,10 @@ public class RuleRowBean {
 	public void setValue1(String value1) {
 		this.value1 = value1;
 	}
-	public ResultSetOperator getOperator2() {
+	public RulesOperator getOperator2() {
 		return operator2;
 	}
-	public void setOperator2(ResultSetOperator operator2) {
+	public void setOperator2(RulesOperator operator2) {
 		this.operator2 = operator2;
 	}
 	public String getValue2() {
@@ -47,10 +47,10 @@ public class RuleRowBean {
 	public void setValue2(String value2) {
 		this.value2 = value2;
 	}
-	public ResultSetOperator getOperator3() {
+	public RulesOperator getOperator3() {
 		return operator3;
 	}
-	public void setOperator3(ResultSetOperator operator3) {
+	public void setOperator3(RulesOperator operator3) {
 		this.operator3 = operator3;
 	}
 	public String getValue3() {
@@ -59,10 +59,10 @@ public class RuleRowBean {
 	public void setValue3(String value3) {
 		this.value3 = value3;
 	}
-	public ResultSetOperator getOperator4() {
+	public RulesOperator getOperator4() {
 		return operator4;
 	}
-	public void setOperator4(ResultSetOperator operator4) {
+	public void setOperator4(RulesOperator operator4) {
 		this.operator4 = operator4;
 	}
 	public String getValue4() {

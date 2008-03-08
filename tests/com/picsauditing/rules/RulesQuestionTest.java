@@ -1,36 +1,36 @@
 package com.picsauditing.rules;
 
-import com.picsauditing.rules.ResultSetOperator;
-import com.picsauditing.rules.ResultSetQuestion;
+import com.picsauditing.rules.RulesOperator;
+import com.picsauditing.rules.RulesQuestion;
 
 import junit.framework.TestCase;
 
-public class ResultSetQuestionTest extends TestCase {
+public class RulesQuestionTest extends TestCase {
 
-	public ResultSetQuestionTest(String name) {
+	public RulesQuestionTest(String name) {
 		super(name);
 	}
 
 	public final void testEqualsAny() {
-		ResultSetQuestion question;
-		question = new ResultSetQuestion(ResultSetOperator.Any, "FOO");
+		RulesQuestion question;
+		question = new RulesQuestion(RulesOperator.Any, "FOO");
 		assertTrue(question.equals("BAR"));
 	}
 	public final void testEqualsEquals() {
-		ResultSetQuestion question;
-		question = new ResultSetQuestion(ResultSetOperator.Equals, "FOO");
+		RulesQuestion question;
+		question = new RulesQuestion(RulesOperator.Equals, "FOO");
 		assertTrue(question.equals("FOO"));
 
-		question = new ResultSetQuestion(ResultSetOperator.Equals, "FOO");
+		question = new RulesQuestion(RulesOperator.Equals, "FOO");
 		assertFalse(question.equals("BAR"));
 
-		question = new ResultSetQuestion(ResultSetOperator.Equals, 1);
+		question = new RulesQuestion(RulesOperator.Equals, 1);
 		assertTrue(question.equals(1));
 		
 	}
 	public final void testEqualsNotEquals() {
-		ResultSetQuestion question;
-		question = new ResultSetQuestion(ResultSetOperator.NotEquals, "FOO");
+		RulesQuestion question;
+		question = new RulesQuestion(RulesOperator.NotEquals, "FOO");
 		assertTrue(question.equals("BAR"));
 	}
 }

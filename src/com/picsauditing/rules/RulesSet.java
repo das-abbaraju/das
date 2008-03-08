@@ -2,9 +2,8 @@ package com.picsauditing.rules;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
-public class ResultSet {
+public class RulesSet {
 	private ArrayList<RulesRow> rows = new ArrayList<RulesRow>();
 	private HashMap<String, String> columns = new HashMap<String, String>();
 	private String returnType = "String";
@@ -18,7 +17,6 @@ public class ResultSet {
 		validTypes.add("Collection<String>");
 		validTypes.add("Collection<Integer>");
 		validTypes.add("Boolean");
-		Boolean e = true;
 		if (validTypes.contains(type))
 			columns.put(name, type);
 	}

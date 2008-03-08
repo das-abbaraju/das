@@ -2,24 +2,24 @@ package com.picsauditing.rules;
 
 import java.util.HashMap;
 
-import com.picsauditing.rules.ResultSetOperator;
-import com.picsauditing.rules.ResultSetQuestion;
+import com.picsauditing.rules.RulesOperator;
+import com.picsauditing.rules.RulesQuestion;
 import com.picsauditing.rules.RulesRow;
 
 import junit.framework.TestCase;
 
-public class ResultSetRowTest extends TestCase {
+public class RulesRowTest extends TestCase {
 	private RulesRow row = new RulesRow(); 
 
-	public ResultSetRowTest(String name) {
+	public RulesRowTest(String name) {
 		super(name);
 	}
 	
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		row.addQuestion("name", new ResultSetQuestion(ResultSetOperator.Equals, "FOO"));
-		row.addQuestion("age", new ResultSetQuestion(ResultSetOperator.Equals, 1));
+		row.addQuestion("name", new RulesQuestion(RulesOperator.Equals, "FOO"));
+		row.addQuestion("age", new RulesQuestion(RulesOperator.Equals, 1));
 	}
 
 	protected void tearDown() throws Exception {

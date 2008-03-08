@@ -4,10 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import org.apache.commons.beanutils.BasicDynaBean;
-
-public class BillingRS {
-	private RulesTable rs;
+public class BillingRules {
+	private RulesSet rs;
 	
 	public int calculate(int facilityCount, HashSet<Integer> facilities, int riskLevel, boolean mustPay, boolean isOnlyCerts) {
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
@@ -20,8 +18,8 @@ public class BillingRS {
 		return result;
 	}
 
-	public void setUp(List<RuleRowBean> rows) throws Exception {
-		rs = new RulesTable();
+	public void setUp(List<RulesRowBean> rows) throws Exception {
+		rs = new RulesSet();
 		// Setup the columns
 		rs.addColumn("mustPay", "Boolean");
 		rs.addColumn("needsAudit", "Boolean");
@@ -29,12 +27,12 @@ public class BillingRS {
 		rs.addColumn("facilityCount", "Integer");
 		rs.setReturnType("Integer"); // Price
 		
-		for (RuleRowBean row: rows) {
+		for (RulesRowBean row: rows) {
 			RulesRow rsRow = new RulesRow();
-			rsRow.addQuestion("mustPay", new ResultSetQuestion(row.getOperator1(), row.getValue1()));
-			rsRow.addQuestion("needsAudit", new ResultSetQuestion(row.getOperator2(), row.getValue2()));
-			rsRow.addQuestion("facilities", new ResultSetQuestion(row.getOperator3(), row.getValue3()));
-			rsRow.addQuestion("facilityCount", new ResultSetQuestion(row.getOperator4(), row.getValue4()));
+			rsRow.addQuestion("mustPay", new RulesQuestion(row.getOperator1(), row.getValue1()));
+			rsRow.addQuestion("needsAudit", new RulesQuestion(row.getOperator2(), row.getValue2()));
+			rsRow.addQuestion("facilities", new RulesQuestion(row.getOperator3(), row.getValue3()));
+			rsRow.addQuestion("facilityCount", new RulesQuestion(row.getOperator4(), row.getValue4()));
 			rsRow.setValue(row.getResult());
 			rs.addRow(rsRow);
 		}

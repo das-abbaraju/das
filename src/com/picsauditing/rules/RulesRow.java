@@ -2,14 +2,14 @@ package com.picsauditing.rules;
 
 import java.util.HashMap;
 
-public class ResultSetRow {
-	private HashMap<String, ResultSetQuestion> questions = new HashMap<String, ResultSetQuestion>();
+public class RulesRow {
+	private HashMap<String, RulesQuestion> questions = new HashMap<String, RulesQuestion>();
 	private Object value;
 	
-	public HashMap<String, ResultSetQuestion> getQuestions() {
+	public HashMap<String, RulesQuestion> getQuestions() {
 		return questions;
 	}
-	public void addQuestion(String column, ResultSetQuestion question) {
+	public void addQuestion(String column, RulesQuestion question) {
 		this.questions.put(column, question);
 	}
 	public Object getValue() {

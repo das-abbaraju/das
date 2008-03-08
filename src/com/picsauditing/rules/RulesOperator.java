@@ -1,6 +1,6 @@
 package com.picsauditing.rules;
 
-public enum ResultSetOperator {
+public enum RulesOperator {
 	Any,
 	IsTrue,
 	IsFalse,

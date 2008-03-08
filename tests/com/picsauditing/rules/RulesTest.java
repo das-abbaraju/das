@@ -2,17 +2,17 @@ package com.picsauditing.rules;
 
 import java.util.HashMap;
 
-import com.picsauditing.rules.RulesTable;
-import com.picsauditing.rules.ResultSetOperator;
-import com.picsauditing.rules.ResultSetQuestion;
+import com.picsauditing.rules.RulesSet;
+import com.picsauditing.rules.RulesOperator;
+import com.picsauditing.rules.RulesQuestion;
 import com.picsauditing.rules.RulesRow;
 
 import junit.framework.TestCase;
 
-public class ResultSetTest extends TestCase {
-	private RulesTable rs = new RulesTable();
+public class RulesTest extends TestCase {
+	private RulesSet rs = new RulesSet();
 
-	public ResultSetTest(String name) {
+	public RulesTest(String name) {
 		super(name);
 	}
 
@@ -24,7 +24,7 @@ public class ResultSetTest extends TestCase {
 		// =M     >20 200
 		// ANY    ANY 100
 		
-		rs = new RulesTable();
+		rs = new RulesSet();
 		rs.addColumn("gender", "String");
 		rs.addColumn("age", "Integer");
 		rs.setReturnType("Integer"); // Price
@@ -32,14 +32,14 @@ public class ResultSetTest extends TestCase {
 		RulesRow row;
 		
 		row = new RulesRow();
-		row.addQuestion("gender", new ResultSetQuestion());
-		row.addQuestion("age", new ResultSetQuestion(ResultSetOperator.GreaterThan, 50));
+		row.addQuestion("gender", new RulesQuestion());
+		row.addQuestion("age", new RulesQuestion(RulesOperator.GreaterThan, 50));
 		row.setValue(500);
 		rs.addRow(row);
 		
 		row = new RulesRow();
-		row.addQuestion("gender", new ResultSetQuestion(ResultSetOperator.Equals, "M"));
-		row.addQuestion("age", new ResultSetQuestion(ResultSetOperator.GreaterThan, 20));
+		row.addQuestion("gender", new RulesQuestion(RulesOperator.Equals, "M"));
+		row.addQuestion("age", new RulesQuestion(RulesOperator.GreaterThan, 20));
 		row.setValue(200);
 		rs.addRow(row);
 	}

@@ -2,49 +2,49 @@ package com.picsauditing.rules;
 
 import java.util.Collection;
 
-public class ResultSetQuestion {
-	private ResultSetOperator operator = ResultSetOperator.Any;
+public class RulesQuestion {
+	private RulesOperator operator = RulesOperator.Any;
 	private Object value;
 	
-	public ResultSetQuestion() {
-		this.operator = ResultSetOperator.Any;
+	public RulesQuestion() {
+		this.operator = RulesOperator.Any;
 		this.value = null;
 	}
 	
-	public ResultSetQuestion(ResultSetOperator operator, Object value) {
+	public RulesQuestion(RulesOperator operator, Object value) {
 		this.operator = operator;
 		this.value = value;
 	}
-	public ResultSetQuestion(ResultSetOperator operator) {
+	public RulesQuestion(RulesOperator operator) {
 		this.operator = operator;
 	}
 	
 	public boolean equals(Object parameter) {
 		try {
-			if (operator.equals(ResultSetOperator.Any))
+			if (operator.equals(RulesOperator.Any))
 				return true;
 			
-			if (operator.equals(ResultSetOperator.Equals)) {
+			if (operator.equals(RulesOperator.Equals)) {
 				return this.value.equals(parameter);
 			}
 			
-			if (operator.equals(ResultSetOperator.NotEquals)) {
+			if (operator.equals(RulesOperator.NotEquals)) {
 				return !this.value.equals(parameter);
 			}
 			
-			if (operator.equals(ResultSetOperator.GreaterThan)) {
+			if (operator.equals(RulesOperator.GreaterThan)) {
 				int parameterInt = Integer.parseInt(parameter.toString());
 				int valueInt = Integer.parseInt(this.value.toString());
 				return parameterInt > valueInt;
 			}
 
-			if (operator.equals(ResultSetOperator.LessThan)) {
+			if (operator.equals(RulesOperator.LessThan)) {
 				int parameterInt = Integer.parseInt(parameter.toString());
 				int valueInt = Integer.parseInt(this.value.toString());
 				return parameterInt < valueInt;
 			}
 			
-			if (operator.equals(ResultSetOperator.Contains)) {
+			if (operator.equals(RulesOperator.Contains)) {
 				if (parameter instanceof Collection) {
 					Collection<Object> temp = (Collection<Object>)parameter;
 					return temp.contains(value);
@@ -52,22 +52,22 @@ public class ResultSetQuestion {
 				return parameter.toString().contains(value.toString());
 			}
 			
-			if (operator.equals(ResultSetOperator.StartsWith)) {
+			if (operator.equals(RulesOperator.StartsWith)) {
 				return parameter.toString().startsWith(value.toString());
 			}
 			
 			return false;
 		} catch (Exception e) {
-			System.out.println("Failed to evaluate ResultSetQuestion "+this.toString()+" "+e.getMessage());
+			System.out.println("Failed to evaluate RulesQuestion "+this.toString()+" "+e.getMessage());
 			return false;
 		}
 	}
 	
 	
-	public ResultSetOperator getOperator() {
+	public RulesOperator getOperator() {
 		return operator;
 	}
-	public void setOperator(ResultSetOperator operator) {
+	public void setOperator(RulesOperator operator) {
 		this.operator = operator;
 	}
 	public Object getValue() {
