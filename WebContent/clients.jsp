@@ -112,6 +112,8 @@ Huntsman Auburn Hills<br>
 Huntsman Conroe<br>
 Huntsman Charlotte<br>
 Huntsman Dayton<br>
+Huntsman Derry<br>
+Huntsman East Lansing<br>
 </td>
                           </tr>
                         </table>                          </td>
@@ -122,8 +124,6 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
                       <param name="quality" value="high">
                       <embed src="flash/client_logoflash.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="145" height="130"></embed>
                     </object></noscript><script type="text/javascript" src="js/ieupdate.js"></script><br><br>				
-Huntsman Derry<br>
-Huntsman East Lansing<br>
 Huntsman Freeport<br>
 Huntsman Geismar<br>
 Huntsman High Point<br>
@@ -136,16 +136,17 @@ IDS Real Estate<br>
 Jiffy Lube International<br>
 						March Point Cogeneration Company<br>
 						Martinez Catalyst Plant<br>
-						Motiva Convent Refinery
+						Motiva Convent Refinery<br>
+						Motiva Norco Refinery<br>
+						Motiva Port Arthur Refinery<br>
+						Motiva Retail
+
 
 </td>
                         <td valign="top" nowrap class="blueClientList">
-						
-						Motiva Norco Refinery<br>
-						Motiva Port Arthur Refinery<br>
-						Motiva Retail<br>
 						Motiva SD&amp;CM<br>
 						Motorola USA<br>
+						Roquette America<br>
 						Shell Chemical Geismar<br>
     Shell Chemical Mobile<br>
   Shell Chemical Norco<br>
@@ -156,6 +157,7 @@ Shell Martinez Refinery<br>
 Shell Oil Products US RMT<br>
 Shell Puget Sound Refinery<br>
 Shell Retail<br>
+Sikorsky Aircraft Corporation<br>
 Suncor Energy Commerce City Refinery<br>
 Tesoro Anacortes Refinery<br>
 Tesoro Kapolei Refinery<br>
