@@ -136,30 +136,23 @@ sets the highest standards possible in regard to contractor qualifications as th
                 <tr>
                   <td bgcolor="#CCCCCC"><img src="images/spacer.gif" width="1" height="1"></td>
                   <td valign="top" bgcolor="#FFFFFF"><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
-					                                        <tr>
+                                        <tr>
+                                          <td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">02/01/08</span>Sikorsky Aircraft Corporation joins PICS</span><br>
+                                            <br> 
+Sikorsky Aircraft Corporation, a UTC Company, has partnered with PICS to prequalify contractors at all domestic facilities. Sikorsky has a global workforce topping 14,000 and is a world leader in the design, manufacture and service of military and commercial helicopters. Their helicopters have saved an estimated 2 million lives since performing the world's first helicopter rescue in 1944.</td>
+                                        </tr>
+					<tr>
+					<tr>
+                                          <td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">01/01/08</span>Roquette America joins PICS</span><br>
+                                            <br> 
+                                          Roquette is one of the world's most advanced starch and starch-derivatives businesses. Using the latest technology, Roquette transforms four key crops - maize, wheat, pea and potatoes - into products for the food, pharmaceutical, paper, corrugated board, fermentation, chemical and industrial sectors. Roquette America has manufacturing facilities in Keokuk, IA and Gurnee, IL.</td></tr>
+										  					                                        <tr>
                                           <td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">12/01/07</span>Suncor Energy USA joins PICS.</span><br>
                                             <br> 
                                           Suncor Energy USA operates a 90,000 barrel per day oil refinery in Commerce
 City, Colorado.    Suncor Energy has expanded both production and refining
 capacity recently, and markets its refined product through Sunoco and the
 Phillips 66 branded stations.</td></tr>
-                                        <tr>
-                                          <td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">12/01/07</span>BP Toledo joins PICS.</span><br>
-                                            <br> 
-                                          BP Toledo refinery joins many other BP refineries and business groups who
-use PICS to supply an integrated, standardized solution to prequalify BP
-contractors.  The Toledo facility can process 160,000 barrels per day, and
-BP's strong presence in Ohio has made BP the number one fuel retailer in the
-state.</td>
-                                        </tr>
-					<tr>
-					<tr>
-                                          <td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">11/01/07</span>Huntsman International partners with PICS</span><br>
-                                            <br> 
-                                          Huntsman Chemical partners with PICS to prequalify contractors at all 14
-production facilities throughout the US.  Huntsman has over 13,000 employees
-worldwide and has grown to revenues of over $13 billion in just 35 years;
-thousands of contractors perform various services on site each year.</td></tr>
                                         <tr>
                       <td align="center" class="blueHome">&nbsp;<a href="featured_newsarchive.jsp" target="_self"><img src="images/NEWSARCHIVE_button3.gif" width="111" height="27" hspace="5" border="0"></a></td>
                     </tr>
