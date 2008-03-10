@@ -11,9 +11,9 @@ public class AllTests {
 		suite.addTestSuite(RulesQuestionTest.class);
 		suite.addTestSuite(RulesRowTest.class);
 		suite.addTestSuite(RulesTest.class);
-		suite.addTestSuite(RulesRowDAO.class);
+		suite.addTestSuite(RulesRowDAOTest.class);
+		suite.addTestSuite(BillingEngineTest.class);
 		//$JUnit-END$
 		return suite;
 	}
-
 }
