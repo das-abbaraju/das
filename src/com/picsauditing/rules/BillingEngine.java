@@ -7,7 +7,8 @@ import java.util.List;
 public class BillingEngine {
 	protected RulesSet rs;
 	
-	public int calculate(boolean mustPay, boolean needsAudit, HashSet<Integer> facilities, int facilityCount) {
+	public int calculate(boolean mustPay, boolean needsAudit, HashSet<Integer> facilities, int facilityCount) throws Exception {
+		setUp();
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("mustPay", mustPay);
 		parameters.put("needsAudit", needsAudit);
@@ -15,6 +16,9 @@ public class BillingEngine {
 		parameters.put("facilityCount", facilityCount);
 		int result = (Integer)rs.evaluate(parameters);
 		return result;
+	}
+	public int calculate(int facilityCount) throws Exception {
+		return calculate(true, true, new HashSet<Integer>(), facilityCount);
 	}
 
 	public void setUp(List<RulesRowBean> rows) throws Exception {
@@ -37,6 +41,7 @@ public class BillingEngine {
 		}
 	}
 	public void setUp() throws Exception {
+		if (rs != null) return;
 		RulesRowDAO dao = new RulesRowDAO();
 		List<RulesRowBean> rows = dao.getRowsByTable("pricing");
 		setUp(rows);
