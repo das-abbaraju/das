@@ -1,17 +1,12 @@
 package com.picsauditing.beans;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.Stateless;
-
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorInfoReportDAO;
-import com.picsauditing.dao.GeneralContractorDAO;
 import com.picsauditing.jpa.entities.ContractorInfoReport;
-import com.picsauditing.jpa.entities.GeneralContractor;
 
 
 public class SearchFacadeBean {
