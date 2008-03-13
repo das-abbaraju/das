@@ -12,7 +12,7 @@ new CertificateBean().makeExpiredCertificatesExpiredStatus();
 FACILITIES.setFacilitiesFromDB();
 %>Facilities.setFacilitiesFromDB();<%
 
-new Billing().updateAllPayingFacilities(FACILITIES, application);
+new Billing().updateAllPayingFacilities(application);
 %>Billing.updateAllPayingFacilities();<%
 
 FlagCalculator flagCalculator = new FlagCalculator();

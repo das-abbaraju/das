@@ -133,6 +133,9 @@ public class ContractorBean extends DataBean {
 	public String lastAnnualUpdateEmailDate = "";
 	public String riskLevel = "2";
 	public int annualUpdateEmails = 0;
+	
+	// 22.1.1  	Does your company have employees who are covered under DOT OQ requirements?
+	public String oqEmployees = "";
 
 	int num_of_trades = 0;
 	int num_of_subTrades = 0;
@@ -150,6 +153,7 @@ public class ContractorBean extends DataBean {
 	
 	private User primaryUser = new User();
 
+	private ArrayList<OperatorBean> facilities;
 	public ArrayList<String> generalContractors = new ArrayList<String>();
 	ArrayList<String> newGeneralContractors = null;
 	ArrayList<String> blockedDates = new ArrayList<String>();
@@ -191,7 +195,8 @@ public class ContractorBean extends DataBean {
 				newGeneralContractors.add(opID);
 			}//if
 		}//while
-	}//setGeneralContractorsFromCheckList
+	}
+	
 	public void setGeneralContractorsFromStringArray(String[] s) {
 		newGeneralContractors = new ArrayList<String>();
 		if (s != null) {
@@ -201,7 +206,23 @@ public class ContractorBean extends DataBean {
 			}//for
 		}//if
 		generalContractors = newGeneralContractors;
-	}//setGeneralContractors
+	}
+	
+	public ArrayList<OperatorBean> getFacilities() throws Exception {
+		if (this.facilities == null) {
+			OperatorBean oBean = new OperatorBean();
+			facilities = oBean.getListByWhere("id IN (SELECT genID FROM generalContractors WHERE subID = '"+Utilities.intToDB(this.id)+"')");
+		}
+		return facilities;
+	}
+	public void setFacilities(ArrayList<String> newFacilities) throws Exception {
+		String sqlList = "0";
+		for(String opID : newFacilities)
+			sqlList += "," + Utilities.intToDB(opID);
+		facilities = new ArrayList<OperatorBean>();
+		OperatorBean oBean = new OperatorBean();
+		facilities = oBean.getListByWhere("id IN ("+sqlList+")");
+	}
 
 	public void setTradeString(String s) {trades = s;}//setTradeString
 	public void setSubTradeString(String s) {subTrades = s;}//setSubTradeString
@@ -366,7 +387,7 @@ public class ContractorBean extends DataBean {
 		if (oBean.canSeeOffice() && !AUDIT_STATUS_CLOSED.equals(officeStatus))
 			return STATUS_INACTIVE;
 		return STATUS_ACTIVE;
-	}//calcPICSStatusForOperator
+	}
 
 	public String calcPICSStatus(PermissionsBean pBean) throws Exception {
 		if (pBean.isOperator())
@@ -1015,7 +1036,19 @@ public class ContractorBean extends DataBean {
 		}finally{
 			DBClose();
 		}//finally
-	}//writeNewToDB
+	}
+	
+	public void writeBillingToDB() throws Exception {
+		try {
+			DBReady();
+			String updateQuery = "UPDATE contractor_info SET payingFacilities="+Utilities.intToDB(this.payingFacilities)+
+					", newBillingAmount="+Utilities.intToDB(this.newBillingAmount)+", isExempt='"+eqDB(isExempt)+"' " +
+					"WHERE id="+Utilities.intToDB(this.id);
+			SQLStatement.executeUpdate(updateQuery);
+		}finally{
+			DBClose();
+		}
+	}
 
 	public void setFromUploadRequest(HttpServletRequest r) throws Exception {
 		Map<String,String> m = (Map<String,String>)r.getAttribute("uploadfields");
@@ -1451,11 +1484,25 @@ public class ContractorBean extends DataBean {
 		}finally{
 			DBClose();
 		}//finally
-	}// checkDoubleAudit
+	}
 
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	public boolean isExempt() {
-		return "Yes".equals(isExempt);
-	}//isExempt
+		return isAudited();
+	}
+	
+	public boolean isAudited() {
+		return "Yes".equals(this.isExempt);
+	}
+	public void isAudited(boolean value) {
+		if (value)
+			this.isExempt = "No";
+		else
+			this.isExempt = "Yes";
+	}
 
 	public void convertTrades() throws Exception {
 		try {
@@ -1621,5 +1668,4 @@ public class ContractorBean extends DataBean {
 
 		return false;
 	}
-	
 }//ContractorBean

@@ -4,6 +4,9 @@ import java.sql.*;
 import java.util.*;
 import java.text.DecimalFormat;
 
+import com.picsauditing.search.SelectAccount;
+import com.picsauditing.search.SelectSQL;
+
 public class OperatorBean extends DataBean {
 	public static final String[] CONTRACTORS_PAY_ARRAY = {"Yes","No","Multiple"};
 	public String id = "";
@@ -310,8 +313,8 @@ public class OperatorBean extends DataBean {
 			SQLResult.close();
 		}finally{
 			DBClose();
-		}//finally		
-	}//setActiveGeneralsArray
+		}		
+	}
 	
 	public void setSubCount() throws Exception {
 		if (null != subCountTable)
@@ -405,8 +408,8 @@ public class OperatorBean extends DataBean {
 			SQLResult.close();
 		}finally{
 			DBClose();
-		}//finally
-	}//setFromDB
+		}
+	}
 
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
 		id = SQLResult.getString("id");
@@ -613,21 +616,35 @@ public class OperatorBean extends DataBean {
 	}//flagTrir
 	public boolean flagFatalities(){
 		return "Yes".equals(flagFatalities);
-	}//flagFatalities
-
+	}
 	public boolean flagQ318(){
 		return "Yes".equals(flagQ318);
-	}//flagQ318
+	}
 	public boolean flagQ1385(){
 		return "Yes".equals(flagQ1385);
-	}//flagQ1385
+	}
 	
-	public void setAsAdmin() throws Exception {
-		canSeePQF = "Yes";
-		canSeeDesktop = "Yes";
-		canSeeDA = "Yes";
-		canSeeOffice = "Yes";
-		canSeeField = "Yes";
-		canSeeInsurance = "Yes";
-	}//setFromResultSet
-}//OperatorBean
+	public ArrayList<OperatorBean> getListByWhere(String where) throws Exception {
+		ArrayList<OperatorBean> list = new ArrayList<OperatorBean>();
+		SelectSQL sql = new SelectSQL("operators");
+		if (where != null && where.length() > 0) sql.addWhere(where);
+		
+		try{
+			DBReady();
+			ResultSet SQLResult = SQLStatement.executeQuery(sql.toString());
+			while(SQLResult.next()) {
+				OperatorBean e = new OperatorBean();
+				e.setFromResultSet(SQLResult);
+				list.add(e);
+			}
+			SQLResult.close();
+		}finally{
+			DBClose();
+		}
+		return list;
+	}
+
+	public ArrayList<OperatorBean> getAll() throws Exception {
+		return getListByWhere("");
+	}
+}
