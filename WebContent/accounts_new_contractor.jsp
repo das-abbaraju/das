@@ -266,10 +266,6 @@
                         <td class="blueMain" align="left">&nbsp;</td>
                       </tr>
                       <tr>
-                        <td class="blueMain" align="right">Exempt?</td>
-                        <td class="blueMain" align="left"><%=Inputs.getYesNoRadio("isExempt","forms",cBean.isExempt)%></td>
-                      </tr>
-                      <tr>
                         <td class="blueMain" align="right">Can Edit PQG</td>
                         <td class="blueMain" align="left"><%=Inputs.getYesNoRadio("canEditPrequal","blueMain",cBean.canEditPrequal)%></td>
                       </tr>

@@ -332,10 +332,6 @@
                           No </td>
                       </tr>
                       <tr>
-                        <td class="blueMain" align="right">Exempt?</td>
-                        <td class="blueMain" align="left"><%=Inputs.getYesNoRadio("isExempt","forms",cBean.isExempt)%></td>
-                      </tr>
-                      <tr>
                         <td class="blueMain" align="right"><nobr>Only Certificates?</nobr></td>
                         <td class="blueMain" align="left"> <%=Inputs.getYesNoRadio("isOnlyCerts","forms",cBean.isOnlyCerts)%></td>
                       </tr>

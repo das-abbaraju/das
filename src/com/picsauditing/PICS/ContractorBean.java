@@ -938,7 +938,8 @@ public class ContractorBean extends DataBean {
 			"',requestedByID='"+requestedByID+
 			"',billingAmount='"+billingAmount+
 			"',billingCycle='"+billingCycle+
-			"',isExempt='"+isExempt+
+			// We now save this in writeBillingToDB()
+			//"',isExempt='"+isExempt+
 			"',hasExpiredCerts='"+hasExpiredCerts+
 			"',isOnlyCerts='"+isOnlyCerts+
 			"',auditLocation='"+auditLocation+
@@ -1075,7 +1076,8 @@ public class ContractorBean extends DataBean {
 		requestedByID = m.get("requestedByID");
 		billingAmount = m.get("billingAmount");
 		billingCycle = m.get("billingCycle");
-		isExempt = m.get("isExempt");
+		// We only set this via the BillingContractor class now
+		//isExempt = m.get("isExempt");
 		isOnlyCerts = m.get("isOnlyCerts");
 		auditLocation = m.get("auditLocation");
 		setTrades = m.get("trades");

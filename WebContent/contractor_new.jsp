@@ -1,12 +1,12 @@
 <%//@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ page language="java" errorPage="exception_handler.jsp" import="com.picsauditing.PICS.*, java.util.*"%>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <jsp:useBean id="uBean" class="com.picsauditing.access.User" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope="application"/>
+<jsp:useBean id="BILLING_ENGINE" class="com.picsauditing.rules.BillingEngine" scope="application" />
 <%
 
 	////////////////////////
@@ -15,21 +15,20 @@
 	String action = request.getParameter("action");
 	if (action != null) {
 		if (action.equals("pricing")) {
-			String riskLevel = request.getParameter("riskLevel");
-			if (riskLevel.equals("1")) {
-				%>$99<%
-				return;
-			}
+			BillContractor billing = new BillContractor();
+			
+			billing.getContractor().riskLevel = request.getParameter("riskLevel");
+			billing.getContractor().oqEmployees = request.getParameter("oqEmployees");
+			
 			String facilities = request.getParameter("facilities");
-			Collection<String> selectedFacilities = new ArrayList<String>();
+			ArrayList<String> selectedFacilities = new ArrayList<String>();
 			String[] facilityArray = facilities.split(",");;
 			for(String facility: facilityArray) {
 				selectedFacilities.add(facility);
 			}
-			Billing billing = new Billing();
-			int facilityCount = billing.calcPayingFacilities(FACILITIES, selectedFacilities);
-			int amount = Billing.calcBillingAmount(facilityCount,this.getServletContext());
-			%>$<%=amount %><%
+			billing.setSelectedFacilities(selectedFacilities);
+			
+			%>$<%=billing.calculatePrice()%><%
 			return;
 		}
 		if (action.equals("username")) {
@@ -242,6 +241,13 @@
               <td class="redMain"><%=tBean.getTradesNameSelect("main_trade", "blueMain", cBean.main_trade)%>*</td>
             </tr>
             <tr>
+              <td class="blueMain" align="right" valign="top">DOT OQ</td>
+              <td class="redMain">Does your company have employees who are covered under DOT OQ requirements?<br />
+	              <label><input name="oqEmployees" id="oqYes" class="blueMain" type="radio" value="Yes" onclick="change()" <%=Inputs.getChecked("Yes" ,cBean.oqEmployees)%>>Yes</label>
+	              <label><input name="oqEmployees" id="oqNo" class="blueMain" type="radio" value="No" onclick="change()" <%=Inputs.getChecked("No" ,cBean.oqEmployees)%>>No</label>
+              </td>
+            </tr>
+            <tr>
               <td class="blueMain" align="right" valign="top">Risk Level</td>
               <td class="redMain">
 		        <table border="1" cellpadding="1" cellspacing="0" bordercolor="white">
@@ -376,10 +382,16 @@ function change() {
 		if ($F(risks[i]) != null) riskLevel = $F(risks[i]);
 	}
 	
+	
+	var oq = $('oqYes').getValue();
+	if (oq == null) oq = $('oqNo').getValue();
+	if (oq == null) oq = '';
+	
+	var pars = 'action=pricing&riskLevel='+riskLevel+'&oqEmployees='+oq+'&facilities=0';
+	
 	var defaultRequestedBy = '<%=cBean.requestedByID%>';
 	opt1 = $('generalContractors');
 	opt2 = $('requestedByID');
-	var pars = 'action=pricing&riskLevel='+riskLevel+'&facilities=0';
 	if (opt2.selectedIndex > 0) {
 		defaultRequestedBy = opt2.options[opt2.selectedIndex].value;
 	}
