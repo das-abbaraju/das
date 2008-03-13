@@ -5,6 +5,14 @@ function changePage( formid, pageNum )
 	return false;
 }
 
+function changeOrderBy( formid, orderBy )
+{
+	document.getElementById( formid )['showPage'].value = "1";
+	document.getElementById( formid )['orderBy'].value = orderBy;
+	document.getElementById( formid ).submit();
+	return false;
+}
+
 function changeStartsWith( formid, v )
 {
 	document.getElementById( formid )['startsWith'].value = v;
@@ -15,7 +23,7 @@ function changeStartsWith( formid, v )
 
 function runSearch( formid )
 {
-	document.getElementById( formid )['orderBy'].value = "";
+	//document.getElementById( formid )['orderBy'].value = "";
 	document.getElementById( formid )['showPage'].value = "1";
 	document.getElementById( formid )['startsWith'].value = "";
 	return true;
