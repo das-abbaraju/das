@@ -173,9 +173,7 @@ public class LoginController extends DataBean {
 			pBean.oBean = new com.picsauditing.PICS.OperatorBean();
 			pBean.setUserName(permissions.getName());
 			
-			if (permissions.isAdmin()) {
-				pBean.oBean.setAsAdmin();
-			} else if (permissions.isAuditor()) {
+			if (permissions.isAuditor()) {
 				pBean.setAuditorPermissions();
 			} else if (permissions.isOperator() || permissions.isCorporate()) {
 				pBean.oBean.isCorporate = permissions.isCorporate();
