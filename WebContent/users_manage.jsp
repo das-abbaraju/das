@@ -51,6 +51,10 @@ if ("Yes".equals(isActive) || "No".equals(isActive)) {
 	sql.addWhere("isActive = '"+isActive+"' ");
 	getParams += "&isActive="+isActive;
 }
+else
+{
+	getParams += "&isActive=";
+}
 
 sql.addWhere("accountID = "+accountID);
 // Only search for Auditors and Admins
