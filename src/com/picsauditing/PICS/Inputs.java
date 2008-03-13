@@ -257,11 +257,11 @@ public class Inputs {
 		ListIterator<String> li = optionsAL.listIterator();
 		while (li.hasNext()) {
 			String option=(String)li.next();
-			temp.append("<nobr><input name=\"").append(name).append("\" class=").append(classType);
+			temp.append("<nobr><label><input name=\"").append(name).append("\" class=").append(classType);
 			temp.append(" type=radio value=\"").append(option).append("\"");
 			if (option.equals(selected))
 				temp.append(" checked");
-			temp.append(">").append(option).append("</nobr>");
+			temp.append(">").append(option).append("</label></nobr>");
 		}//while
 		return temp.toString();
 	}//getReadioInput

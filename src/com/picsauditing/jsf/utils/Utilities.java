@@ -8,13 +8,12 @@ public class Utilities {
 	public static int getCurrentYear() {
 		 Calendar cal = Calendar.getInstance();
 		 return cal.get(Calendar.YEAR);
-	}//getCurrentYear
+	}
 	
 	public static String getTodaysDate() throws Exception {
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat format = new SimpleDateFormat("M/d/yy");
 		String temp = format.format(cal.getTime());
 		return temp;
-	}//getTodaysDate
-	
+	}
 }

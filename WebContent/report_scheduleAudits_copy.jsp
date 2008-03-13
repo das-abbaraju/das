@@ -60,7 +60,6 @@ sql.setType(SelectAccount.Type.Contractor);
 sql.addField("c.lastPayment");
 
 sql.addWhere("active='Y'");
-sql.addWhere("isExempt='No'");
 sql.addWhere("c.desktopSubmittedDate='0000-00-00' OR c.desktopSubmittedDate < DATE_ADD(CURDATE(),INTERVAL -34 MONTH)");
 sql.addWhere("!(auditCompletedDate<>'0000-00-00' AND auditCompletedDate<'"+DateBean.OLD_OFFICE_CUTOFF+"' AND auditCompletedDate>DATE_ADD(CURDATE(),INTERVAL -3 YEAR))");
 
