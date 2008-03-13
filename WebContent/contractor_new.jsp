@@ -402,7 +402,7 @@ function change() {
 	for(i=0; i<opt1.length; i++) {
 		if (opt1[i].selected) {
 			var nextindex = opt2.length;
-			opt2.options[nextindex] = new Option(opt1[i].innerHTML, opt1[i].value);
+			opt2.options[nextindex] = new Option(opt1[i].text, opt1[i].value);
 			if (defaultRequestedBy == opt1[i].value) {
 				opt2.options[nextindex].selected=true;
 			}
