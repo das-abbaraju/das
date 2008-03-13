@@ -36,10 +36,10 @@
 	sBean.orderBy = request.getParameter("orderBy");
 	if (null==sBean.orderBy)
 		sBean.orderBy = "name";
-	else {
+	//else {  //put the secondary sort in the changeSort calls...Otherwise, it turns into "order by field1, name, name, name....."
 		//filter += "&orderBy="+sBean.orderBy;
-		sBean.orderBy += ",name";
-	}
+		//sBean.orderBy += ",name";
+	//}
 	
 	sBean.doSearch(request, sBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
 
@@ -62,6 +62,7 @@
   <META Http-Equiv="Expires" Content="0">
   <link href="PICS.css" rel="stylesheet" type="text/css">
   <script language="JavaScript" SRC="js/ImageSwap.js"></script>
+  <script language="JavaScript" SRC="js/Search.js"></script>
 </head>
 <body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
@@ -88,7 +89,7 @@
                 <td height="70" colspan="2" align="center"><%@ include file="includes/selectReport.jsp"%>
                   <%@ include file="includes/nav/editAuditNav.jsp"%><br>
                   <span class="blueHeader">Audit Report</span><br>
-                  <form name="form1" method="post" action="report_audits.jsp">
+                  <form id="form1" name="form1" method="post" action="report_audits.jsp">
 <%	if (pBean.isAdmin())
 		out.println(sBean.getSearchGeneralSelect("generalContractorID", "blueMain", sBean.selected_generalContractorID));
 	if (pBean.isCorporate())
@@ -109,6 +110,10 @@
 					  </td>
                     </tr>
                   </table>
+
+                  	<input type="hidden" name="showPage" value="1"/>
+		          	<input type="hidden" name="startsWith" value=""/>
+		          	<input type="hidden" name="orderBy" value="<%= sBean.orderBy %>"/>
                   </form>
 	            </td>
             </tr>
@@ -118,7 +123,7 @@
                   <%=sBean.getStartsWithLinks()%>
 <%	}//if %>
                 </td>
-                <td align="center"><%=sBean.getLinks(filter)%></td>
+                <td align="center"><%=sBean.getLinksWithDynamicForm()%></td>
               </tr>
             </table>
             <form name="form2" method="post" action="report_audits.jsp?<%=filter%>">
@@ -136,24 +141,24 @@
 <%	}//if%>
   			  </tr>
               <tr bgcolor="#003366" class="whiteTitle"> 
-                <td colspan=2><a href="?orderBy=name<%=filter%>" class="whiteTitle">Contractor</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?orderBy=pqfSubmittedDate DESC<%=filter%>" class="whiteTitleSmall">Submit</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?orderBy=pqfAuditor_id<%=filter%>" class="whiteTitleSmall">Auditor</a></td>
+                <td colspan=2><a href="javascript: changeOrderBy('form1','name');" class="whiteTitle">Contractor</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="javascript: changeOrderBy('form1','pqfSubmittedDate DESC, name');" class="whiteTitleSmall">Submit</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="javascript: changeOrderBy('form1','pqfAuditor_id, name');" class="whiteTitleSmall">Auditor</a></td>
 
-                <td align="center" bgcolor="#6699CC"><a href="?orderBy=desktopAssignedDate DESC<%=filter%>" class="whiteTitleSmall">Assign</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?orderBy=desktopAuditor_id<%=filter%>" class="whiteTitleSmall">Auditor</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?orderBy=desktopSubmittedDate DESC<%=filter%>" class="whiteTitleSmall">Perform</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?orderBy=desktopClosedDate DESC<%=filter%>" class="whiteTitleSmall">Close</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="javascript: changeOrderBy('form1','desktopAssignedDate DESC, name');" class="whiteTitleSmall">Assign</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="javascript: changeOrderBy('form1','desktopAuditor_id, name');" class="whiteTitleSmall">Auditor</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="javascript: changeOrderBy('form1','desktopSubmittedDate DESC, name');" class="whiteTitleSmall">Perform</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="javascript: changeOrderBy('form1','desktopClosedDate DESC, name');" class="whiteTitleSmall">Close</a></td>
 
-                <td align="center" bgcolor="#6699CC"><a href="?orderBy=daAssignedDate DESC<%=filter%>" class="whiteTitleSmall">Assign</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?orderBy=daAuditor_id<%=filter%>" class="whiteTitleSmall">Auditor</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?orderBy=daSubmittedDate DESC<%=filter%>" class="whiteTitleSmall">Perform</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?orderBy=daClosedDate DESC<%=filter%>" class="whiteTitleSmall">Close</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="javascript: changeOrderBy('form1','daAssignedDate DESC, name');" class="whiteTitleSmall">Assign</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="javascript: changeOrderBy('form1','daAuditor_id, name');" class="whiteTitleSmall">Auditor</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="javascript: changeOrderBy('form1','daSubmittedDate DESC, name');" class="whiteTitleSmall">Perform</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="javascript: changeOrderBy('form1','daClosedDate DESC, name');" class="whiteTitleSmall">Close</a></td>
 
-                <td align="center" bgcolor="#6699CC"><a href="?orderBy=assignedDate DESC<%=filter%>" class="whiteTitleSmall">Assign</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?orderBy=auditor_id<%=filter%>" class="whiteTitleSmall">Auditor</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?orderBy=auditCompletedDate DESC<%=filter%>" class="whiteTitleSmall">Perform</a></td>
-                <td align="center" bgcolor="#6699CC"><a href="?orderBy=auditClosedDate DESC<%=filter%>" class="whiteTitleSmall">Close</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="javascript: changeOrderBy('form1','assignedDate DESC, name');" class="whiteTitleSmall">Assign</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="javascript: changeOrderBy('form1','auditor_id, name');" class="whiteTitleSmall">Auditor</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="javascript: changeOrderBy('form1','auditCompletedDate DESC, name');" class="whiteTitleSmall">Perform</a></td>
+                <td align="center" bgcolor="#6699CC"><a href="javascript: changeOrderBy('form1','auditClosedDate DESC, name');" class="whiteTitleSmall">Close</a></td>
 <%	if (pBean.isAdmin()){%>
                 <td align="center" bgcolor="#6699CC" class="whiteTitleSmall">PQF</td>
                 <td align="center" bgcolor="#6699CC" class="whiteTitleSmall">Dsktp</td>
@@ -197,7 +202,7 @@
 <%	}//while %>
 		    </table><br>
 		    </form>
-			<center><%=sBean.getLinks()%></center>
+			<center><%=sBean.getLinksWithDynamicForm()%></center>
 <%	sBean.closeSearch(); %>
 		  </td>
         </tr>
