@@ -36,7 +36,7 @@
 	if ("Recalculate Upgrade Amounts".equals(action)) {
 		permissions.tryPermission(OpPerms.BillingUpgrades, OpType.Edit);
 		application.setAttribute("updateAllPayingFacilities", null);
-		new Billing().updateAllPayingFacilities(FACILITIES, application);
+		new Billing().updateAllPayingFacilities(application);
 	}
 
 	sBean.isUpgradePaymentReport = true;

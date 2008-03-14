@@ -1,14 +1,12 @@
 <%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<%@include file="utilities/adminGeneral_secure.jsp" %>
-
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-
 <%
+permissions.tryPermission(OpPerms.BillingUpgrades);
 try {
-	new Billing().updateAllPayingFacilities(FACILITIES, application);
+	new Billing().updateAllPayingFacilities(application);
 	String action = request.getParameter("action");
 	String action_id = request.getParameter("action_id");
 	sBean.orderBy = request.getParameter("orderBy");
