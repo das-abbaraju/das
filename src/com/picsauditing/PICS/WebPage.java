@@ -5,6 +5,7 @@ public class WebPage {
 	private boolean jsScriptaculous;
 	private boolean jsPrototype;
 	private boolean cached = true;
+	private boolean includeDynamicSearch = false;
 	
 	public String getTitle() {
 		return title;
@@ -25,6 +26,12 @@ public class WebPage {
 	}
 	public void includePrototype(boolean value) {
 		this.jsPrototype = value;
+	}
+	public boolean includeDynamicSearch() {
+		return includeDynamicSearch;
+	}
+	public void includeDynamicSearch( boolean v ) {
+		includeDynamicSearch = v;
 	}
 	public boolean isCached() {
 		return cached;
