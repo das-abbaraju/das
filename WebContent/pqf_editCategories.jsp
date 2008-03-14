@@ -1,10 +1,11 @@
 <%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp"%>
-<%@include file="utilities/admin_secure.jsp"%>
 <%@include file="includes/auditTypeSelected.jsp"%>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
 <jsp:useBean id="pcoBean" class="com.picsauditing.PICS.pqf.Constants" scope ="page"/>
-<%try{
+<%
+permissions.tryPermission(OpPerms.ManageAudits);
+try{
 	String action = request.getParameter("action");
 	if ("Change Numbering".equals(action)) {
 		pcBean.updateNumbering(request);

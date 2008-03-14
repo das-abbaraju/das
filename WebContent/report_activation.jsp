@@ -1,13 +1,11 @@
 <%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<%@include file="utilities/admin_secure.jsp" %>
 <%@page import="com.picsauditing.mail.*"%>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
-
-
 <%	
+if (!permissions.isAdmin()) throw new com.picsauditing.access.NoRightsException("Admin");
 try{
-	new Billing().updateAllPayingFacilities(FACILITIES, application);
+	new Billing().updateAllPayingFacilities(application);
 	
 	String action = request.getParameter("action");
 	String actionID = request.getParameter("actionID");

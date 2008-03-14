@@ -1,19 +1,14 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/admin_secure.jsp" %>
 <jsp:useBean id="aqBean" class="com.picsauditing.PICS.AuditQuestionBean" scope ="page"/>
-<jsp:useBean id="uBean" class="com.picsauditing.PICS.Utilities" scope ="page"/>
-
-<%	String action = request.getParameter("action");
+<%
+	permissions.tryPermission(OpPerms.ManageAudits);
+	String action = request.getParameter("action");
 	String id = request.getParameter("id");
 	String multireq = request.getParameter("multireq");
 	String editID = request.getParameter("editID");
 	String auditType = request.getParameter("auditType");
 	boolean isAuditTypeSelected = (null != auditType && !aqBean.DEFAULT_AUDIT_TYPE.equals(auditType));
-//	if (!isAuditTypeSelected) {
-//		auditType = "Field";
-//		isAuditTypeSelected = true;
-//	}//if
 	boolean isAddingNew = (null == editID || "null".equals(editID));
 	if (!isAddingNew) {
 		aqBean.setFromDB(editID);

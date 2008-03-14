@@ -1,12 +1,12 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/admin_secure.jsp" %>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page"/>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope="page"/>
 <jsp:useBean id="helper" class="com.picsauditing.servlet.upload.UploadConHelper"/>
 <%
+	permissions.tryPermission(OpPerms.ContractorAccounts);
 	String id = request.getParameter("id");
 	String editID = request.getParameter("id");
 	boolean isSubmitted = "Yes".equals(request.getParameter("isSubmitted"));
@@ -15,6 +15,7 @@
 	cBean.setFromDB(editID);
 	
 	if (isSubmitted){
+		permissions.tryPermission(OpPerms.ContractorAccounts, OpType.Edit);
 		//Process form upload
 		request.setAttribute("uploader", String.valueOf(com.picsauditing.servlet.upload.UploadProcessorFactory.CONTRACTOR));
 		request.setAttribute("directory", "files");

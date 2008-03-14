@@ -1,17 +1,19 @@
 <%@page language="java" import="com.picsauditing.PICS.*,jxl.*,jxl.write.*,jxl.format.Colour" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp"%>
-<%@include file="utilities/admin_secure.jsp" %>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
 <jsp:useBean id="pqBean" class="com.picsauditing.PICS.pqf.QuestionBean" scope ="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
-
-<%try{	
+<%
+permissions.tryPermission(OpPerms.ManageAudits);
+try{	
 	String questionType ="Industry";
 	String auditType = request.getParameter("auditType");
 	int REPEAT_COL_NUM = 20;
 	// save matrix
-	if ("Save".equals(request.getParameter("action")))
+	if ("Save".equals(request.getParameter("action"))) {
+		permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
 		pcBean.saveMatrix(request.getParameterNames(),auditType);
+	}
 	pcBean.setCategoryMatrix(auditType);
 	if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType)){
 		pcBean.setOpCategoryMatrixLowRisk();

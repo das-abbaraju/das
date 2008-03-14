@@ -64,6 +64,9 @@ public class BillContractor extends DataBean {
 	 * Office or Desktop from this operator
 	 */
 	private boolean requiresAuditForFacility(OperatorBean operator) throws Exception {
+		if (operator.canSeeDA() && "Yes".equals(cBean.oqEmployees))
+			return true;
+		
 		if (cBean.riskLevel.equals("1")) // low risk facilities are exempt from audits
 			return false;
 		
@@ -75,9 +78,6 @@ public class BillContractor extends DataBean {
 			return true;
 
 		if (operator.canSeeOffice())
-			return true;
-		
-		if (operator.canSeeDA() && "Yes".equals(cBean.oqEmployees))
 			return true;
 		
 		return false;

@@ -1,8 +1,10 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/admin_secure.jsp" %>
 <jsp:useBean id="aqBean" class="com.picsauditing.PICS.AuditQuestionBean" scope ="page"/>
-<%	String action = request.getParameter("action");
+<%
+	permissions.tryPermission(OpPerms.ManageAudits);
+
+	String action = request.getParameter("action");
 	String auditType = request.getParameter("auditType");
 	boolean isAuditTypeSelected = (null != auditType && !aqBean.DEFAULT_AUDIT_TYPE.equals(auditType));
 	if (!isAuditTypeSelected) {

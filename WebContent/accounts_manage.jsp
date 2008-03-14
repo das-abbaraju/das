@@ -2,12 +2,12 @@
 <%@page import="org.apache.commons.beanutils.*"%>
 <%@page import="java.util.*"%>
 <%@ include file="includes/main.jsp" %>
-<%@ include file="utilities/admin_secure.jsp" %>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean" scope ="page"/>
-<jsp:useBean id="usersDO" class="com.picsauditing.domain.UsersDO" scope="page" />
-<%	try{
+<%
+if (!permissions.isAdmin()) throw new com.picsauditing.access.NoRightsException("Admin");
+try{
 	com.picsauditing.PICS.pqf.QuestionTypeList statesLicensedInList = new com.picsauditing.PICS.pqf.QuestionTypeList();
 	tBean.setFromDB();
 

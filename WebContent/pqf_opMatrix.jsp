@@ -1,12 +1,12 @@
 <%@page language="java" import="com.picsauditing.PICS.*,jxl.*,jxl.write.*,jxl.format.Colour" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<%@include file="utilities/admin_secure.jsp" %>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
 <jsp:useBean id="pqBean" class="com.picsauditing.PICS.pqf.QuestionBean" scope ="page"/>
-
-<%try{
+<%
+permissions.tryPermission(OpPerms.ManageAudits);
+try{
 	String auditType = com.picsauditing.PICS.pqf.Constants.PQF_TYPE;
 	int REPEAT_COL_NUM = 20;
 	// save matrix
