@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.picsauditing.util.LinkBuilder;
+
 public class Report {
 	private SelectSQL sql;
 	private int limit = 100;
@@ -125,6 +127,12 @@ public class Report {
 		html += " </span>";
 		return html;
 	}
+	
+	public String getStartsWithLinksWithDynamicForm() {
+		return new LinkBuilder().getStartsWithLinks();
+	}
+
+	
 	public String getPageLinks() {
 		return getPageLinks("");
 	}
@@ -167,6 +175,15 @@ public class Report {
 
 		temp+="</span>";
 		return temp;
+	}
+
+	public String getPageLinksWithDynamicForm() {
+		return LinkBuilder.getPageNOfXLinks(
+						this.allRows, 
+						this.limit, 
+						this.limit * (this.currentPage - 1) + 1, 
+						( this.limit + 1 )* (this.currentPage) - 1 > this.allRows ? this.allRows : ( this.limit + 1 )* (this.currentPage) - 1, 
+						this.currentPage);
 	}
 	
 	private String addPageLink(int page, String additionalParams) {
