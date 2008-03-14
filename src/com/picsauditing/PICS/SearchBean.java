@@ -5,6 +5,7 @@ import java.util.*;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.domain.IPicsDO;
+import com.picsauditing.util.LinkBuilder;
 
 
 
@@ -625,52 +626,14 @@ import com.picsauditing.domain.IPicsDO;
 	}
 
 	
-	/**
-	 * Once we push this to all pages and hammer out any problems, we'll get rid of it and 
-	 * change/use getStartsWithLinks
-	 * @return
-	 */
-	public String getLinksWithDynamicForm(){
-		return getLinksWithDynamicForm("");
-	}
 
 	/**
 	 * Once we push this to all pages and hammer out any problems, we'll get rid of it and 
 	 * change/use getStartsWithLinks
 	 * @return
 	 */
-	public String getLinksWithDynamicForm(String filter){
-		int SHOW_PAGES = 4;
-		int lastPage = (numResults-1)/showNum+1;
-		String orderByQuery = "";
-		
-		
-		if (null != orderBy && !"".equals(orderBy))
-			orderByQuery = "orderBy="+orderBy;
-		StringBuffer sb = new StringBuffer("<span class=\"redMain\">");
-		sb.append("Showing "+beginResults+"-"+endResults+" of <b>"+numResults+"</b> results | ");
-		
-		int startIndex = 1;
-		if (showPage-1 > SHOW_PAGES){
-			startIndex = showPage-SHOW_PAGES;
-			sb.append("<a href=\"javascript: changePage('form1','1');\">1</A> << ");
-		}
-		
-		int endIndex = lastPage;
-		if (lastPage-showPage > SHOW_PAGES)
-			endIndex = showPage+SHOW_PAGES;
-		for (int i=startIndex;i<=endIndex;i++){
-			if (i==showPage)
-				sb.append(" <strong>"+i+"</strong> ");
-			else{
-				sb.append("<a href=\"javascript: changePage('form1','" + i + "');\">" + i + "</A> ");
-			}
-		}
-		
-		if (lastPage-showPage > SHOW_PAGES)
-			sb.append(">> <a href=\"javascript: changePage('form1','" + lastPage + "');\">" + lastPage + "</A>");
-			sb.append("</span>");
-		return sb.toString();
+	public String getLinksWithDynamicForm(){
+		return LinkBuilder.getPageNOfXLinks(numResults, showNum, beginResults, endResults, showPage);
 	}
 	
 	public String getStartsWithLinks() {
@@ -687,19 +650,8 @@ import com.picsauditing.domain.IPicsDO;
 	 * @return
 	 */
 	public String getStartsWithLinksWithDynamicForm() {
-		StringBuffer temp = new StringBuffer("<span class=\"blueMain\">Starts with: ");
-
-		temp.append( "<a href=\"javascript: changeStartsWith('form1', '');\" class=\"blueMain\">All</a> " );
-		for (char c = 'A';c<='Z';c++)
-			temp.append( "<a href=\"javascript: changeStartsWith('form1', '" + c + "');\" class=\"blueMain\">"+c+"</a> " );
-
-		temp.append( "</span>" );
-		return temp.toString();
-	}//getStartsWithLinks
-	
-	
-	
-	
+		return LinkBuilder.getStartsWithLinks();
+	}
 	
 	
 	public static String getAccountsManageStartsWithLinks() {
