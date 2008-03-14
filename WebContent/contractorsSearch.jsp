@@ -100,7 +100,7 @@ try{
   <META Http-Equiv="Pragma" Content="no-cache">
   <META Http-Equiv="Expires" Content="0">
   <link href="PICS.css" rel="stylesheet" type="text/css">
-  <script language="JavaScript", b SRC="js/Search.js"></script>
+  <script language="JavaScript" SRC="js/Search.js"></script>
   <script language="JavaScript" SRC="js/ImageSwap.js"></script>
 
   <script language="JavaScript">
@@ -269,5 +269,4 @@ try{
 <%}finally{
 	sBean.closeSearch();
 }//finally
-%>
 %>
