@@ -13,6 +13,9 @@
 	<%	if (pageBean.includeScriptaculous()) { %>
 	<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
 	<%	} %>
+	<%	if (pageBean.includeDynamicSearch()) { %>
+	<script src="js/Search.js" type="text/javascript"></script>
+	<%	} %>
 	<link href="PICS.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0"

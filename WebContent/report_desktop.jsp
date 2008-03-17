@@ -9,6 +9,7 @@ boolean canEdit = permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit);
 
 pageBean.setTitle("Schedule Desktop Audits");
 pageBean.includeScriptaculous(true);
+pageBean.includeDynamicSearch(true);
 
 String action = request.getParameter("action");
 if (action != null && action.equals("saveAuditor")) {
@@ -42,6 +43,12 @@ sql.addWhere("active='Y'");
 sql.addWhere("isExempt='No'");
 sql.addWhere("c.desktopSubmittedDate='0000-00-00' OR c.desktopSubmittedDate < DATE_ADD(CURDATE(),INTERVAL -34 MONTH)");
 sql.addWhere("!(auditCompletedDate<>'0000-00-00' AND auditCompletedDate<'"+DateBean.OLD_OFFICE_CUTOFF+"' AND auditCompletedDate>DATE_ADD(CURDATE(),INTERVAL -3 YEAR))");
+
+String startsWith = request.getParameter("startsWith"); 
+if( startsWith != null && startsWith.length() > 0 )
+{
+	sql.addWhere("a.name like '" + startsWith + "%'");
+}
 
 //Get from the PQF if they uploaded their manual and what the revision data of it was
 //Please upload your manual as a single pdf or word document.
@@ -81,7 +88,6 @@ function selectAuditor(conID) {
 	padding: 0px;
 }
 </style>
-
 <table width="657" border="0" cellpadding="0" cellspacing="0"
 	align="center">
 	<tr>
@@ -90,28 +96,36 @@ function selectAuditor(conID) {
 			class="blueHeader">Schedule Desktop Audits</span></td>
 	</tr>
 </table>
+
+<form id="form1" name="form1" action="report_desktop.jsp">
+	<input type="hidden" name="showPage" value="1"/>
+	<input type="hidden" name="startsWith" value="<%= request.getParameter("startsWith") == null ? "" : request.getParameter("startsWith") %>"/>
+	<input type="hidden" name="orderBy"  value="<%=request.getParameter("orderBy") == null ? "c.desktopSubmittedDate DESC" : request.getParameter("orderBy") %>"/>
+</form>
+
+
 <table border="0" cellpadding="5" cellspacing="0" align="center">
 	<tr>
-		<td height="30" align="left"><%=report.getStartsWithLinks()%></td>
-		<td align="right"><%=report.getPageLinks()%></td>
+		<td height="30" align="left"><%=report.getStartsWithLinksWithDynamicForm()%></td>
+		<td align="right"><%=report.getPageLinksWithDynamicForm()%></td>
 	</tr>
 </table>
 <table border="0" cellpadding="1" cellspacing="1" align="center">
 	<tr bgcolor="#003366" class="whiteTitle">
-		<td colspan=2><a href="?orderBy=a.name" class="whiteTitle">Contractor</a></td>
-		<td align="center"><a href="?orderBy=lastPayment DESC"
+		<td colspan=2><a href="javascript: changeOrderBy('form1','a.name');" class="whiteTitle">Contractor</a></td>
+		<td align="center"><a href="javascript: changeOrderBy('form1','lastPayment DESC');"
 			class="whiteTitle">Paid</a></td>
-		<td align="center"><a href="?orderBy=pqfSubmittedDate DESC"
+		<td align="center"><a href="javascript: changeOrderBy('form1','pqfSubmittedDate DESC');"
 			class="whiteTitle">PQF</a></td>
-		<td align="center"><a href="?orderBy=desktopSubmittedDate DESC"
+		<td align="center"><a href="javascript: changeOrderBy('form1','desktopSubmittedDate DESC');"
 			class="whiteTitle">Submitted</a></td>
-		<td align="center"><a href="?orderBy=desktopClosedDate DESC"
+		<td align="center"><a href="javascript: changeOrderBy('form1','desktopClosedDate DESC');"
 			class="whiteTitle">Closed</a></td>
-		<td align="center"><a href="?orderBy=revisionDate DESC"
+		<td align="center"><a href="javascript: changeOrderBy('form1','revisionDate DESC');"
 			class="whiteTitle">Revision</a></td>
-		<td align="center"><a href="?orderBy=desktopAuditor_id"
+		<td align="center"><a href="javascript: changeOrderBy('form1','desktopAuditor_id');"
 			class="whiteTitle">Auditor</a></td>
-		<td align="center"><a href="?orderBy=desktopAssignedDate DESC"
+		<td align="center"><a href="javascript: changeOrderBy('form1','desktopAssignedDate DESC');"
 			class="whiteTitle">Assigned</a></td>
 	</tr>
 	<%
