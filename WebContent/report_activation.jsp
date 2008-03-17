@@ -255,7 +255,7 @@ try{
 	        <table width="657" height="40" border="0" cellpadding="0" cellspacing="0">
 	          <tr>
 		        <td><span class="blueHeader">Contractors that haven't ever logged in</span></td>
-		        <td align="right"><span class="redMain"><%=sBean.getLinksWithDynamicForm()%></span></td>
+		        <td align="right"><span class="redMain"><%=sBean.getPageLinksWithDynamicForm()%></span></td>
 	          </tr>
 	        </table>
 	        <table width="657" border="0" cellpadding="1" cellspacing="1">
