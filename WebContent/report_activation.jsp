@@ -5,8 +5,6 @@
 <%	
 if (!permissions.isAdmin()) throw new com.picsauditing.access.NoRightsException("Admin");
 try{
-	new Billing().updateAllPayingFacilities(application);
-	
 	String action = request.getParameter("action");
 	String actionID = request.getParameter("actionID");
 	String message = "";
@@ -79,9 +77,11 @@ try{
 		sBean.cBean.writeToDB();
 		return;
 	}//if
+	//new Billing().updateAllPayingFacilities(application);
+	
 	sBean.setIsActivationReport();
 	
-	sBean.doSearch(request, SearchBean.ACTIVE_AND_NOT, 15, pBean, pBean.userID);
+	sBean.doSearch(request, SearchBean.ACTIVE_AND_NOT, 50, pBean, pBean.userID);
 %>
 <%@page import="com.picsauditing.mail.EmailContractorBean"%>
 <html>
@@ -255,7 +255,7 @@ try{
 	        <table width="657" height="40" border="0" cellpadding="0" cellspacing="0">
 	          <tr>
 		        <td><span class="blueHeader">Contractors that haven't ever logged in</span></td>
-		        <td align="right"><span class="redMain"><%=sBean.getPageLinksWithDynamicForm()%></span></td>
+		        <td align="right"><span class="redMain"><%=sBean.getLinksWithDynamicForm()%></span></td>
 	          </tr>
 	        </table>
 	        <table width="657" border="0" cellpadding="1" cellspacing="1">
