@@ -51,7 +51,12 @@ public class Luhn {
 			alternate = !alternate;
 		}
 
-		Integer remainder = sum % 10;
+		Integer remainder = 10 - (sum % 10);
+		if (remainder==10) return 0;
 		return remainder.toString().charAt(0);
+	}
+	public static String addCheckDigit(String number) {
+		Character checkDigit = Luhn.getCheckDigit(number);
+		return number.concat(checkDigit.toString());
 	}
 }

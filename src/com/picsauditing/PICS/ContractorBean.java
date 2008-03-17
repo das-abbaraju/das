@@ -223,6 +223,10 @@ public class ContractorBean extends DataBean {
 		OperatorBean oBean = new OperatorBean();
 		facilities = oBean.getListByWhere("id IN ("+sqlList+")");
 	}
+	
+	public String getLuhnId() {
+		return com.picsauditing.util.Luhn.addCheckDigit(id);
+	}
 
 	public void setTradeString(String s) {trades = s;}//setTradeString
 	public void setSubTradeString(String s) {subTrades = s;}//setSubTradeString
@@ -306,8 +310,12 @@ public class ContractorBean extends DataBean {
 			return accountDate;}//getAccountDate
 	public String getNotesHTML() {return Utilities.escapeHTML(notes);}//getNotesHTM
 	public String getRiskLevelShow() {
-		return RISK_LEVEL_ARRAY[Integer.parseInt(riskLevel)];
-	}//getRiskLevelShow
+		try {
+			return RISK_LEVEL_ARRAY[Integer.parseInt(riskLevel)-1];
+		} catch (Exception e) {
+			return "Unknown";
+		}
+	}
 	public boolean canEditPrequal() {return "Yes".equals(canEditPrequal);}//canEditPrequal
 	public boolean canEditDesktop() {return "Yes".equals(canEditDesktop);}//canEditDesktop
 
