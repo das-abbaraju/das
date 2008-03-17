@@ -15,10 +15,11 @@ public class Billing extends DataBean {
 		Date lastUpdate = (Date)appServlet.getAttribute("updateAllPayingFacilities");
 		if (lastUpdate != null) {
 			// If it has been more than an hour, then don't run this method
-			long timeSinceLastRun = new Date().getTime() - lastUpdate.getTime();
+			long milliSecsSinceLastRun = new Date().getTime() - lastUpdate.getTime();
+			float hoursSinceLastRun = (float)milliSecsSinceLastRun / (1000 * 60 * 60);
 			//System.out.println("lastUpdate: "+lastUpdate);
 			//System.out.println("timeSinceLastRun: "+timeSinceLastRun);
-			if (timeSinceLastRun < 30*1000)
+			if (hoursSinceLastRun < 24)
 				return;
 		}
 		// Set this to now
