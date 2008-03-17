@@ -77,6 +77,8 @@ try{
 		sBean.cBean.writeToDB();
 		return;
 	}//if
+	
+	// Don't run this here anymore
 	//new Billing().updateAllPayingFacilities(application);
 	
 	sBean.setIsActivationReport();
