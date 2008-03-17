@@ -91,6 +91,7 @@ function MM_displayStatusMsg(msgStr) { //v1.0
 						<%=cBean.getBrochureLink()%>
                       </td>
                       <td width="172" valign="top" class="blueMain">
+                        <span class=redMain>PICS Contractor ID:</span> <%= cBean.getLuhnId() %><br />
                         <nobr><span class=redMain>PICS Status:</span>
 				<% if (!permissions.isContractor()) { %>
 						<span class="<%=cBean.getTextColor(cBean.calcPICSStatus(pBean))%>"><strong><%=cBean.getDetailsStatus(pBean)%></strong></span>
@@ -137,21 +138,15 @@ function MM_displayStatusMsg(msgStr) { //v1.0
 %>
 
 <%
-	if (pBean.isAdmin() && cBean.isCertRequired()) {
+	if (cBean.isCertRequired() && (pBean.isAdmin() || pBean.isContractor()) ) {
 %>
-						<a class="<%=cBean.getTextColor(cBean.calcPICSStatus(pBean))%>" href="<%=request.getContextPath()%>/contractor_upload_certificates.jsp?id=<%=id%>">Insurance Certificates</a>
-
+						<a class="<%=cBean.getTextColor(cBean.calcPICSStatus(pBean))%>" 
+							href="contractor_upload_certificates.jsp?id=<%=id%>">Insurance Certificates</a><br>
 <%
 	}//if
 %>
-<%
-	if (pBean.isContractor() && cBean.isCertRequired()) {
-%>
-						<a class="<%=cBean.getTextColor(cBean.calcPICSStatus(pBean))%>" href="<%=request.getContextPath()%>/contractor_upload_certificates.jsp?id=<%=id%>">Insurance Certificates</a>
-
-<%
-	}//if
-%>
+                        <span class=redMain>Risk Level:</span> <%= cBean.getRiskLevelShow() %><br />
+					</td>
 					</tr>
                   </table>
 				</td>

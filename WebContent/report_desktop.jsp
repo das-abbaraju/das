@@ -59,6 +59,8 @@ sql.addPQFQuestion(manualQID, true, "manualUploaded");
 int revisionQID = Integer.parseInt(com.picsauditing.PICS.pqf.Constants.MANUAL_REVISION_QID);
 sql.addPQFQuestion(revisionQID, false, "revisionDate");
 
+sql.startsWith(request.getParameter("startsWith"));
+
 Report report = new Report();
 report.setSql(sql);
 report.setOrderBy(request.getParameter("orderBy"), "c.desktopSubmittedDate DESC");

@@ -180,8 +180,7 @@ try{
                     <tr>
                       <td>
                         <%=Inputs.inputSelect("flagStatus","forms", sBean.selected_flagStatus,SearchBean.FLAG_STATUS_ARRAY)%>
-<!--                         <%//=statesLicensedInList.getQuestionListQIDSelect("License","stateLicensedIn","forms", sBean.selected_stateLicensedIn,SearchBean.DEFAULT_LICENSED_IN)%>
-	-->                        <input name="taxID" type="text" class="forms" value="<%=sBean.selected_taxID%>" size="9" onFocus="clearText(this)"><span class=redMain>*must be 9 digits</span>
+                        <input name="taxID" type="text" class="forms" value="<%=sBean.selected_taxID%>" size="9" onFocus="clearText(this)"><span class=redMain>*must be 9 digits</span>
                       </td>
                       <td></td>
                     </tr>
@@ -250,7 +249,6 @@ try{
 <%		}//while %>
             </table><br>
 		    <center><%=sBean.getLinksWithDynamicForm()%></center>
-<%		sBean.closeSearch(); %>
 <%	}//if %>
 		  </td>
           <td>&nbsp;</td>
