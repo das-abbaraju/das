@@ -109,7 +109,7 @@ try{
 			</table>
             <table width="757" border="0" cellpadding="1" cellspacing="1">
               <tr bgcolor="#003366" class="whiteTitle">
-                <td height="25" colspan="2" align="center" bgcolor="#993300"><a href="accounts_new_contractor.jsp" class="whiteTitleSmall">Add New</a></td>
+                <td height="25" colspan="2" align="center" bgcolor="#993300"></td>
 			    <td colspan="2">Contractor</td>
 			    <td>Industry</td>
 			    <td>Trade</td>
