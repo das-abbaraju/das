@@ -249,6 +249,11 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 	 * @return
 	 */
 	boolean getIsOshaFlagged(boolean flagged,FlagOshaCriteriaDO flagOshaCriteriaDO){
+		if (osBean.isNa1() && osBean.isNa2() && osBean.isNa3()) {
+			// If all three years of OSHA data are N/A'd then just exit
+			return flagged;
+		}
+		
 		if (!flagged && flagOshaCriteriaDO.flagLwcr()){
 			if (flagOshaCriteriaDO.isLwcrTimeAverage()){
 				if (isFlaggedRate(osBean.calcAverageRate(OSHABean.LOST_WORK_CASES),flagOshaCriteriaDO.lwcrHurdle))
@@ -284,51 +289,7 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 		}//if
 		return flagged;
 	}//getIsOshaFlagged
-/*
-	public boolean isFlaggedNotApproved(String opID, String conID) throws Exception{
-		String selectQuery = "SELECT gc.approvedStatus " +
-				"FROM operators o, generalContractors gc WHERE o.id=gc.genID "+
-				"AND gc.subID="+conID+" AND gc.genID="+opID+" AND o.approvesRelationships='Yes' "+
-				"AND (gc.approvedStatus='No' OR gc.approvedStatus IS NULL)";
-		ResultSet isNotApprovedRS = SQLStatement.executeQuery(selectQuery);
-		boolean temp = isNotApprovedRS.next();
-		isNotApprovedRS.close();
-		return temp;
-	}
-
-	public String getConApprovedStatus(String opID, String conID) throws Exception{
-		String selectQuery = "SELECT gc.approvedStatus " +
-				"FROM operators o, generalContractors gc WHERE o.id=gc.genID "+
-				"AND gc.subID="+conID+" AND gc.genID="+opID+" AND o.approvesRelationships='Yes' "+
-				"AND gc.approvedStatus IS NOT NULL";
-		ResultSet approvedStatusRS = SQLStatement.executeQuery(selectQuery);
-		if (approvedStatusRS.next()){
-			approvedStatusRS.close();
-			return approvedStatusRS.getString("approvedStatus");
-		}
-		return "null";
-	}
-
-	public Set<String> getFlaggedNotApprovedCons(String opID) throws Exception{
-		Set<String> temp = new HashSet<String>();
-		String selectQuery = "SELECT gc.subID " +
-				"FROM operators o, generalContractors gc WHERE o.id=gc.genID "+
-				"AND gc.genID="+opID+" AND o.approvesRelationships='Yes' "+
-				"AND (gc.approvedStatus='No' OR gc.approvedStatus IS NULL)";
-		ResultSet isNotApprovedRS = SQLStatement.executeQuery(selectQuery);
-		while (isNotApprovedRS.next())
-			temp.add(isNotApprovedRS.getString("subID"));
-		isNotApprovedRS.close();
-		return temp;
-	}
-
-	public boolean isFlaggedNotApprovedSetDB(String opID, String conID) throws Exception{
-		DBReady();
-		boolean temp = isFlaggedNotApproved(opID,conID);
-		DBClose();
-		return temp;
-	}
-*/	
+	
 	public boolean isFlaggedRate(String rate,String cutoff){
 		float tempRate = 0;
 		float tempCutoff = 0;
@@ -371,32 +332,34 @@ public class FlagCalculator extends com.picsauditing.PICS.DataBean {
 	}//getOshaFlag
 
 	public String getOshaFlag(int oshaStat,String rate,String timeFrame){
+		if ("N/A".equals(rate))
+			return rate+"</td><td>";
 		switch(oshaStat){
 			case OSHABean.LOST_WORK_CASES:
 				if (redFlagOshaCriteriaDO.lwcrTime.equals(timeFrame) && 
 						redFlagOshaCriteriaDO.flagLwcr() && 
 						isFlaggedRate(rate,redFlagOshaCriteriaDO.lwcrHurdle))
-					return rate+"</td><td><img src=images/icon_redFlag.gif>";
+					return rate+"</td><td><img src='images/icon_redFlag.gif'>";
 				if (amberFlagOshaCriteriaDO.lwcrTime.equals(timeFrame) && 
 						amberFlagOshaCriteriaDO.flagLwcr() && 
 						isFlaggedRate(rate,amberFlagOshaCriteriaDO.lwcrHurdle))
-					return rate+"</td><td><img src=images/icon_amberFlag.gif>";
+					return rate+"</td><td><img src='images/icon_amberFlag.gif'>";
 				break;
 			case OSHABean.RECORDABLE_TOTAL:
 				if (redFlagOshaCriteriaDO.trirTime.equals(timeFrame) && 
 						redFlagOshaCriteriaDO.flagTrir() && 
 						isFlaggedRate(rate,redFlagOshaCriteriaDO.trirHurdle))
-					return rate+"</td><td><img src=images/icon_redFlag.gif>";
+					return rate+"</td><td><img src='images/icon_redFlag.gif'>";
 				if (amberFlagOshaCriteriaDO.trirTime.equals(timeFrame) && 
 						amberFlagOshaCriteriaDO.flagTrir() && 
 						isFlaggedRate(rate,amberFlagOshaCriteriaDO.trirHurdle))
-					return rate+"</td><td><img src=images/icon_amberFlag.gif>";
+					return rate+"</td><td><img src='images/icon_amberFlag.gif'>";
 				break;
 			case OSHABean.FATALITIES:
 				if (redFlagOshaCriteriaDO.flagFatalities() && isFlaggedRate(rate,redFlagOshaCriteriaDO.fatalitiesHurdle))
-					return rate+"</td><td><img src=images/icon_redFlag.gif>";
+					return rate+"</td><td><img src='images/icon_redFlag.gif'>";
 				if (amberFlagOshaCriteriaDO.flagFatalities() && isFlaggedRate(rate,amberFlagOshaCriteriaDO.fatalitiesHurdle))
-					return rate+"</td><td><img src=images/icon_amberFlag.gif>";
+					return rate+"</td><td><img src='images/icon_amberFlag.gif'>";
 				break;
 		}//switch
 		return rate+"</td><td>";
