@@ -27,9 +27,10 @@ public class FlagOshaCriteriaDO extends DataBean {
 	public String fatalitiesHurdle = "";
 	public String fatalitiesTime = "1";
 
-	public String flagLwcr = "Yes";
-	public String flagTrir = "Yes";
-	public String flagFatalities = "Yes";
+	// Assume we DON'T have any criteria, until we query some from DB
+	public String flagLwcr = "No";
+	public String flagTrir = "No";
+	public String flagFatalities = "No";
 
 	public String getIsChecked(String checkBox){
 		if ("Yes".equals(checkBox))
