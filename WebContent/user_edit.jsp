@@ -152,7 +152,9 @@ if (uBean.isSet()) {
 	</tr>
 	<tr> 
 		<td class="blueMain" align="right">Username</td>
-		<td><input name="username" type="text" class="forms" size="30" value="<%=uBean.userDO.username%>"></td>
+		<td class="redMain"><input name="username" id="username" type="text" class="forms" size="30" 
+			value="<%=uBean.userDO.username%>" onblur="checkUsername(this.value, <%=(uBean.userDO.id.length()>0 ? uBean.userDO.id : 0) %>);">
+			<span id="username_status"></span></td>
 	</tr>
 	<tr> 
 		<td class="blueMain" align="right">Password</td>
@@ -294,8 +296,8 @@ if (!uBean.isSuGroup()) {
 			<%
 		}
 		%>
-		</form>
 	</table>
+	</form>
 		<%
 	} //if
 

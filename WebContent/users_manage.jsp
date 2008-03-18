@@ -139,6 +139,12 @@ function saveGroup(action, groupID, childID) {
 	if (action == "removeUserFromGroup") pars = pars + '&childID=' + childID;
 	getPage(pars);
 }
+function checkUsername(username, userID) {
+	$('username_status').innerHTML = 'checking availability of username...';
+	pars = 'userID='+userID+'&username='+username;
+	var myAjax = new Ajax.Updater('username_status', 'user_ajax.jsp', {method: 'get', parameters: pars});
+}
+
 </script>
 <table border="0">
 <tr>

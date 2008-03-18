@@ -6,7 +6,6 @@
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope="application"/>
-<jsp:useBean id="BILLING_ENGINE" class="com.picsauditing.rules.BillingEngine" scope="application" />
 <%
 
 	////////////////////////
@@ -29,22 +28,6 @@
 			billing.setSelectedFacilities(selectedFacilities);
 			
 			%>$<%=billing.calculatePrice()%><%
-			return;
-		}
-		if (action.equals("username")) {
-			String username = request.getParameter("username");
-			
-			// Check the users table
-			Integer id = uBean.findID(username);
-			if (id == 0) {
-				// Check the accounts table
-				id = aBean.findID(username);
-				if (id == 0) {
-					%><%=username%> is available<%
-					return;
-				}
-			}
-			%><%=username%> is NOT available. Please choose a different Username.<%
 			return;
 		}
 	}
@@ -325,7 +308,8 @@
             </tr>
             <tr>
               <td class="blueMain" align="right">Username</td>
-              <td class="redMain"><input name="username" id="username" type="text" class="forms" size="15" value="<%=aBean.username%>" onblur="checkUsername(this.value);">
+              <td class="redMain"><input name="username" id="username" type="text" class="forms" size="15" 
+              	value="<%=aBean.username%>" onblur="checkUsername(this.value);">
                 * <span id="username_status">Please type in your desired user name</span></td>
             </tr>
             <tr>
@@ -370,8 +354,8 @@ function popUp(URL) {
 
 function checkUsername(username) {
 	$('username_status').innerHTML = 'checking availability of username...';
-	pars = 'action=username&username='+username;
-	var myAjax = new Ajax.Updater('username_status', 'contractor_new.jsp', {method: 'get', parameters: pars});
+	pars = 'userID=0&username='+username;
+	var myAjax = new Ajax.Updater('username_status', 'user_ajax.jsp', {method: 'get', parameters: pars});
 }
 
 function change() {
