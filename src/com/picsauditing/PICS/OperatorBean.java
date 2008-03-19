@@ -51,7 +51,13 @@ public class OperatorBean extends DataBean {
 	public ArrayList<String> facilitiesAL = null;
 	public ArrayList<String> corporatesAL = null;
 	public ArrayList<String> PQFCatIDsAL = null;
-
+	
+	/**
+	 * Set facilitiesAL with a list of facilities in your corporate umbrella
+	 * If you're a corporate account, then it's just your "child" operators
+	 * If you're an operator account, then it's your parent's "child" operators
+	 * @throws Exception
+	 */
 	public void setFacilitiesFromDB() throws Exception {
 		if (null != facilitiesAL)
 			return;
@@ -71,8 +77,8 @@ public class OperatorBean extends DataBean {
 			SQLResult.close();
 		}finally{
 			DBClose();
-		}//finally		
-	}//setFacilitiesFromDB
+		}		
+	}
 
 	public void setPQFCategoriesFromDB() throws Exception {
 		if (null != PQFCatIDsAL)
@@ -92,9 +98,14 @@ public class OperatorBean extends DataBean {
 			SQLResult.close();
 		}finally{
 			DBClose();
-		}//finally
-	}//setPQFCategoriesFromDB
+		}
+	}
 
+	/**
+	 * Sets corporatesAL, which is usually a single corporate account if you're an operator
+	 * or empty if you're a corporate account
+	 * @throws Exception
+	 */
 	public void setCorporatesFromDB() throws Exception {
 		if (null != corporatesAL)
 			return;
@@ -110,8 +121,41 @@ public class OperatorBean extends DataBean {
 			SQLResult.close();
 		}finally{
 			DBClose();
-		}//finally
-	}//setCorporatesFromDB
+		}
+	}
+
+	/**
+	 * Set what the corporate canSee permissions are based on the child operator perms
+	 * @throws Exception
+	 */
+	public void setCorporateCanSee() throws Exception {
+        if (!isCorporate)
+        	return;
+        String selectQuery = "SELECT * FROM operators WHERE id IN (SELECT opID FROM facilities WHERE corporateID="+id+")";
+		try{
+			DBReady();
+			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
+			this.canSeeDA = "No";
+			this.canSeeDesktop = "No";
+			this.canSeeField = "No";
+			this.canSeeInsurance = "No";
+			this.canSeeOffice = "No";
+			this.canSeePQF = "No";
+			while (SQLResult.next()) {
+				OperatorBean operator = new OperatorBean();
+				operator.setFromResultSet(SQLResult);
+				if (operator.canSeeDA.equals("Yes")) this.canSeeDA = "Yes";
+				if (operator.canSeeDesktop.equals("Yes")) this.canSeeDesktop = "Yes";
+				if (operator.canSeeField.equals("Yes")) this.canSeeField = "Yes";
+				if (operator.canSeeInsurance.equals("Yes")) this.canSeeInsurance = "Yes";
+				if (operator.canSeeOffice.equals("Yes")) this.canSeeOffice = "Yes";
+				if (operator.canSeePQF.equals("Yes")) this.canSeePQF = "Yes";
+			}
+			SQLResult.close();
+		}finally{
+			DBClose();
+		}
+	}
 
 	public void writeFacilitiesToDB() throws Exception {
 		String deleteQuery = "DELETE FROM facilities WHERE corporateID="+id+";";
@@ -208,28 +252,28 @@ public class OperatorBean extends DataBean {
 
 	public boolean canSeePQF() {
 		return "Yes".equals(canSeePQF);
-	}//canSeePQF
+	}
 	public boolean canSeeDesktop() {
 		return "Yes".equals(canSeeDesktop);
-	}//canSeeDesktop
+	}
 	public boolean canSeeDA() {
 		return "Yes".equals(canSeeDA);
-	}//canSeeDA
+	}
 	public boolean canSeeOffice() {
 		return "Yes".equals(canSeeOffice);
-	}//canSeeOffice
+	}
 	public boolean canSeeField() {
 		return "Yes".equals(canSeeField);
-	}//canSeeField
+	}
 	public boolean canSeeInsurance() {
 		return "Yes".equals(canSeeInsurance);
-	}//canSeeInsurance
+	}
 	public boolean seesAllContractors() {
 		return "Yes".equals(seesAllContractors);
-	}//seesAllContractors
+	}
 	public boolean canAddContractors() {
 		return "Yes".equals(canAddContractors);
-	}//canAddContractors
+	}
 	
 	
 	public String[] getOperatorsArray(boolean includePICS, boolean includeID, boolean includeGenerals, boolean onlyActive) throws Exception {
@@ -394,7 +438,8 @@ public class OperatorBean extends DataBean {
 		setFacilitiesFromDB();
 		setCorporatesFromDB();
 		setPQFCategoriesFromDB();
-	}//setFromDB
+		setCorporateCanSee();
+	}
 
 	public void setFromDB() throws Exception {
 		if ((null == id) || ("".equals(id)))

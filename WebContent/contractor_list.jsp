@@ -1,6 +1,8 @@
 <%@ page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.picsauditing.access.NoRightsException"%>
 <%
 if (!permissions.isOperator() && !permissions.isCorporate())
 	throw new com.picsauditing.access.NoRightsException("Operator or Corporate");
@@ -38,8 +40,6 @@ try {
 	String showPage = request.getParameter("showPage");
 	if (showPage == null)	showPage = "1";
 %>
-<%@page import="java.util.ArrayList"%>
-<%@page import="com.picsauditing.access.NoRightsException"%>
 <html>
 <head>
 <title>PICS - Pacific Industrial Contractor Screening</title>
@@ -89,12 +89,9 @@ try {
                     </tr>
                     <tr>
                       <td colspan=2 class=blueMain>
-                        <%=SearchBean.getStatusSelect("status","blueMain",sBean.selected_status)%>
-<!--                         <%//=statesLicensedInList.getQuestionListQIDSelect("License","stateLicensedIn","forms", sBean.selected_stateLicensedIn,SearchBean.DEFAULT_LICENSED_IN)%>
--->                        <%=Inputs.inputSelect("flagStatus","forms", sBean.selected_flagStatus,SearchBean.FLAG_STATUS_ARRAY)%>
 <%	if (pBean.isCorporate()){
 		out.println(pBean.oBean.getFacilitySelect("generalContractorID","forms",sBean.selected_generalContractorID));
-	}//if
+	}
 %>
                        <input name="taxID" type="text" class="forms" value="<%=sBean.selected_taxID%>" size="9" onFocus="clearText(this)"><span class=redMain>*must be 9 digits</span>
                       </td>
@@ -123,13 +120,16 @@ try {
 <%	} if (pBean.oBean.canSeeInsurance()){%>
                 <td align="center" bgcolor="#6699CC"><nobr>Ins. Certs</nobr></td>
 <%	} %>
+<%	if (permissions.isOperator()) {%>
                 <td align="center" bgcolor="#6699CC"><a href="?orderBy=flag DESC" class="whiteTitle">Flag</a></td>
+<%	} %>
 <%	if (pBean.oBean.isApprovesRelationships() && permissions.hasPermission(OpPerms.ViewUnApproved)) { %>
                 <td align="center" bgcolor="#6699CC"><nobr>Approved</nobr></td>
 <%	} %>
               </tr>
 <%	while (sBean.isNextRecord()){
-		String thisClass = sBean.cBean.getTextColor(sBean.cBean.calcPICSStatusForOperator(pBean.oBean));
+		String thisClass = ContractorBean.getTextColor(sBean.cBean.calcPICSStatusForOperator(pBean.oBean));
+		if (permissions.isCorporate()) thisClass = "blueMain";
 %>
               <tr <%=sBean.getBGColor()%> class="<%=thisClass%>">
 				<td align="right"><%=sBean.count-1%></td>
@@ -155,18 +155,12 @@ try {
 <%			}//else %>
 				</td>
 <%		}//if%>
+<%		if (permissions.isOperator()) {%>
                 <td align="center"><a href="con_redFlags.jsp?id=<%=sBean.cBean.id%>" title="Click to view Flag Color details"><%=sBean.getFlagLink()%></a></td>
-<%	if (pBean.oBean.isApprovesRelationships() && permissions.hasPermission(OpPerms.ViewUnApproved)) { %>
+<%		} %>
+<%		if (pBean.oBean.isApprovesRelationships() && permissions.hasPermission(OpPerms.ViewUnApproved)) { %>
                 <td align="center"><%= sBean.getConWorkStatus() %></td>
-<%	} %>
-<%		if (!pBean.oBean.isCorporate && false){%>
-                <td>
-                <form name="form2" method="post" action="contractor_list.jsp?changed=0&showPage=<%=showPage%>" style="margin: 0px">
-                  <input name="action" type="submit" class="forms" value="Remove">
-                  <input name="actionID" type="hidden" value="<%=sBean.aBean.id%>">
-                </form>
-                </td>
-<%		}//if %>
+<%		} %>
               </tr>
 <%	}//while %>
             </table><br>

@@ -18,8 +18,10 @@ if (permissions.hasPermission(OpPerms.InsuranceCerts)) {
 if (permissions.isCorporate()) {
 	%> | <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"con_selectFacilities.jsp",thisPage,id,"",thisQuery,"Add Facilities")%>
 	<%
-}
-%> | <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"con_redFlags.jsp",thisPage,id,"",thisQuery,"Red Flag Report")%>
+} else {
+	%> | <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"con_redFlags.jsp",thisPage,id,"",thisQuery,"Red Flag Report")%>
+	<%
+} %>
 <br>
 <%
 if (pBean.oBean.canSeePQF()) { 

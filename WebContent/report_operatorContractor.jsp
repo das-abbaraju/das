@@ -1,11 +1,10 @@
 <%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<%@include file="utilities/adminGeneral_secure.jsp" %>
-
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
-
-<%	try{
+<%
+if (permissions.isContractor()) throw new com.picsauditing.access.NoRightsException("Not Contractor");
+try{
 	OperatorBean oBean = new OperatorBean();
 	java.util.ArrayList opAL = oBean.getOperatorsAL();
 	String marker = " ";
@@ -15,83 +14,53 @@
 		sBean.doSearch(request, SearchBean.ACTIVE_AND_NOT, 100, pBean, pBean.userID);
 	else
 		sBean.doSearch(request, SearchBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
-%>
-<html>
-<head>
-<title>PICS - Pacific Industrial Contractor Screening</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <META Http-Equiv="Cache-Control" Content="no-cache">
-  <META Http-Equiv="Pragma" Content="no-cache">
-  <META Http-Equiv="Expires" Content="0">
-  <link href="PICS.css" rel="stylesheet" type="text/css">
-  <script language="JavaScript" SRC="js/Search.js"></script>
 
-</head>
-<body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
-  <tr>
-    <td valign="top" class="buttons"> 
-      <table width="100%" border="0" cellpadding="0" cellspacing="0">
-        <tr>
-          <td width="50%" bgcolor="#993300">&nbsp;</td>
-          <td width="146" valign="top" rowspan="2"><a href="index.jsp"><img src="images/logo.gif" alt="HOME" width="146" height="145" border="0"></a></td>
-          <td width="364"><%@ include file="utilities/mainNavigation.jsp"%></td>
-          <td width="147"><img src="images/squares_rightUpperNav.gif" width="147" height="72" border="0"></td>
-          <td width="50%" bgcolor="#993300">&nbsp;</td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td valign="top" align="center"><img src="images/header_reports.gif" width="321" height="72"></td>
-          <td valign="top"><%@ include file="utilities/rightLowerNav.jsp"%></td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr align="center">
-          <td colspan="5" align="center">
-            <%@ include file="includes/selectReport.jsp"%>
-            <span class="blueHeader">Corporate Contractors Report</span>
-			<br>
-            <table width="657" height="40" border="0" cellpadding="0" cellspacing="0">
-              <tr> 
-                <td height="70" colspan="2" align="center">
-                <form id="form1" name="form1" method="post" action="report_operatorContractor.jsp">
-                  <table border="0" cellpadding="2" cellspacing="0">
-                    <tr align="center">
-                      <td>
+	pageBean.setTitle("Corporate Contractors Report");
+	pageBean.includeDynamicSearch(true);
+%>
+<%@ include file="includes/header.jsp"%>
+<div align="center">
+	<form id="form1" name="form1" method="post" action="report_operatorContractor.jsp">
+		<table border="0" cellpadding="2" cellspacing="0">
+			<tr align="center">
+				<td>
 <%		if (pBean.isAdmin())
 			out.println(SearchBean.getSearchGeneralSelect("generalContractorID", "blueMain", sBean.selected_generalContractorID));
 		if (pBean.isCorporate())
 			out.println(pBean.oBean.getFacilitySelect("generalContractorID","forms",sBean.selected_generalContractorID));
 %>
-                      </td>
-                      <td><input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()">
-                    </tr>
-                  </table>
-                  	<input type="hidden" name="searchCorporate" value="<%=pBean.isAdmin() ? "N": "Y"%>"/>
-                  	<input type="hidden" name="showPage" value="1"/>
-		          	<input type="hidden" name="startsWith" value=""/>
-		          	<input type="hidden" name="orderBy"  value="name"/>
-                  </form>
-                  
-	            </td>
-              </tr>
-              <tr> 
-                <td></td>
-                <td align="center"><%=sBean.getLinksWithDynamicForm()%></td>
-              </tr>
-            </table>
-            <table width="657" border="0" cellpadding="1" cellspacing="1">
-              <tr>
-				<td colspan="2" bgcolor="#993300" align="left" class="whiteTitle">Contractor</td>
-<%	for (java.util.ListIterator li = opAL.listIterator();li.hasNext();){
+				</td>
+				<td><input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()">
+			</tr>
+		</table>
+		<% if (pBean.isOperator()) { %>
+			<input type="hidden" name="searchCorporate" value="<%= request.getParameter("searchCorporate")%>"/>
+		<% } %>
+		<input type="hidden" name="showPage" value="1"/>
+		<input type="hidden" name="startsWith" value=""/>
+		<input type="hidden" name="orderBy"  value="name"/>
+		<input type="hidden" name="changed"  value="1"/>
+	</form>
+            
+	<%=sBean.getLinksWithDynamicForm()%>
+</div>
+<table border="0" cellpadding="1" cellspacing="1">
+<tr>
+	<td colspan="2" bgcolor="#993300" align="left" class="whiteTitle">Contractor</td>
+	<%
+	int count = 0;
+	for (java.util.ListIterator li = opAL.listIterator();li.hasNext();){
 		String opID = (String)li.next();
 		String opName = (String)li.next();
 		if (pBean.isAdmin() || pBean.oBean.facilitiesAL.contains(opID)){
-%>
-                <td bgcolor="#003366" class="whiteTitleSmall" id="rotated_text"><nobr><%=opName%></nobr></td>
-<%		}//if
-	} // for %>
-                <td bgcolor="#003366" class="whiteTitleSmall" id="rotated_text">Total</td>
-              </tr>
+			%>
+			<td bgcolor="#003366" class="whiteTitleSmall"><%= opName %></td>
+			<%
+		}
+	}
+	%>
+	<td bgcolor="#003366" class="whiteTitleSmall">Total</td>
+</tr>
 <%	int duplication = 0;
 	int total = 0;
 	while (sBean.isNextRecord()) {
@@ -113,7 +82,8 @@
 			String opName = (String)li.next();
 			if (pBean.isAdmin() || pBean.oBean.facilitiesAL.contains(opID)){
 				if (sBean.cBean.generalContractors.contains(opID)) {
-					marker = "<strong>x</strong>";
+					//marker = "<img src=\"images/icon_"+flagColor+"Flag.gif width=12 height=15 border=0>";
+					marker = "<b>X</b>";
 					total++;
 		 		} else
 					marker = " ";
@@ -128,22 +98,11 @@
             </tr>
 <%	duplication += total-1;
 	} // while %>
-            </table>
-			<br><center><%=sBean.getLinksWithDynamicForm()%></center><br>			  
-<%	sBean.closeSearch(); %>
-		  </td>
-        </tr>
-      </table><br><br><br>
-    </td>
-  </tr>
-  <tr>
-    <td height="72" align="center" bgcolor="#003366" class="copyrightInfo">&copy;2007 
-      Pacific Industrial Contractor Screening | site design: <a href="http://www.albumcreative.com" title="Album Creative Studios"><font color="#336699">ACS</font></a></td>
-  </tr>
 </table>
-</body>
-</html>
+<br><center><%=sBean.getLinksWithDynamicForm()%></center><br>
+
 <%	}finally{
 		sBean.closeSearch();
-	}//finally
+	}
 %>
+<%@ include file="includes/footer.jsp"%>

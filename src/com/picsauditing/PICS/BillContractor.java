@@ -70,7 +70,7 @@ public class BillContractor extends DataBean {
 		if (cBean.riskLevel.equals("1")) // low risk facilities are exempt from audits
 			return false;
 		
-		if (operator.id.equals("4162") && cBean.riskLevel.equals("1"))
+		if (operator.id.equals("4162") && cBean.riskLevel.equals("2"))
 			// Sikorsky medium level risk don't require Office/Desktop
 			return false;
 		

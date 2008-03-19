@@ -68,20 +68,16 @@
           <td>&nbsp;</td>
         </tr>
         <tr> 
-          <td>&nbsp;</td>
-          <td colspan="3"><br>
-            <table width="657" cellpadding="10" cellspacing="0">
-              <tr> 
-                <td width="125" align="center" valign="top" bgcolor="#DDDDDD" class="blueMain"> 
-                  <br>
-                </td>
-                <td align="center" valign="top" bgcolor="#FFFFFF" class="blueMain">
+          <td colspan="5" align="center">
+            <table width="500" cellpadding="10" cellspacing="0">
+              <tr>
+                <td valign="top" bgcolor="#FFFFFF" class="blueMain">
                   <form name="form1" method="post" action="accounts_edit_operator.jsp?id=<%=editID%>">
                     <input name="createdBy" type="hidden" value="<%=aBean.createdBy%>">
                     <input name="type" type="hidden" value="<%=aBean.type%>">
-                    <table width="0" border="0" cellspacing="0" cellpadding="1">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
                       <tr align="center" class="blueMain"> 
-                        <td colspan="2" class="blueHeader">Edit Operator</td>
+                        <td colspan="2" class="blueHeader">Edit <%=aBean.type%></td>
                       </tr>
                       <tr> 
                         <td colspan="2" class="redMain"><b><%=errorMsg%>
@@ -92,6 +88,12 @@
                       <tr class="blueMain"> 
                         <td colspan="2">&nbsp; </td>
                       </tr>
+					  <tr>
+					  	<td colspan="2" class="blueMain" align="center">
+					  		<a href="accounts_userList.jsp?id=<%=editID%>">Manage Users</a> |
+					  		<a href="users_manage.jsp?accountID=<%=editID%>">New Tool (beta)</a>
+					  	</td>
+					  </tr>
                       <tr> 
                         <td class="blueMain" align="right">Name</td>
                         <td> <input name="name" type="text" class="forms" size="30" value="<%=aBean.name%>"></td>
@@ -99,10 +101,6 @@
 					  <tr>
                         <td class="blueMain" align="right">Last Login:</td>
                         <td class="redMain" align="left"><%=aBean.lastLogin%></td>
-                      </tr>
-                      <tr> 
-                        <td class="blueMain" align="right">Type:</td>
-                        <td class="blueMain"><%=aBean.type%></td>
                       </tr>
                       <tr> 
                         <td class="blueMain" align="right">Contact</td>
@@ -143,7 +141,7 @@
                       <tr> 
                         <td align="right" valign="top" class="blueMain">Web URL</td>
                         <td class="redMain"><input name="web_URL" type="text" class="forms" size="30" value="<%=aBean.web_URL%>">
-                        example: www.site.com</td>
+                        <br />example: www.site.com</td>
                       </tr>
                       <tr> 
                         <td>&nbsp;</td>
@@ -153,12 +151,6 @@
                         <td class="blueMain" align="right">Industry</td>
                         <td><%=aBean.getIndustrySelect("industry","forms",aBean.industry)%></td>
                       </tr>
-					  <tr>
-					  	<td colspan="2" class="blueMain" align="center">
-					  		<a href="accounts_userList.jsp?id=<%=editID%>">Manage Users</a>
-					  		<a href="users_manage.jsp?accountID=<%=editID%>">New Tool (beta)</a>
-					  	</td>
-					  </tr>
 					  <tr> 
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
@@ -166,11 +158,9 @@
                       <tr> 
                         <td class="blueMain" align="right">Visible:</td>
                         <td class="blueMain" align="left">
-						  <%//previously was Y/N =Inputs.getYesNoRadio("seesAllContractors","forms",oBean.seesAllContractors)%>
-							<input name="active" type="radio" value="Y" <%=aBean.getActiveChecked()%>>
-                          Yes 
-                          <input name="active" type="radio" value="N" <%=aBean.getNotActiveChecked()%>>
-                          No </td>
+							<label><input name="active" type="radio" value="Y" <%=aBean.getActiveChecked()%>>Yes</label>
+							<label><input name="active" type="radio" value="N" <%=aBean.getNotActiveChecked()%>>No</label>
+                        </td>
                       </tr>
 					  <tr>
                         <td class="blueMain" align="right">Receive email when contractor is activated:</td>
@@ -189,7 +179,7 @@
                         <td class="blueMain" align="right">Facilities</td>
                         <td><%=aBean.getGeneralSelectMultiple("facilities","blueMain",oBean.getFacilitiesArray())%>
                       </tr>
-<%	}//if%>
+<%	} else { %>
                       <tr> 
                         <td class="blueMain" align="right">Sees All:</td>
                         <td class="blueMain" align="left">
@@ -251,6 +241,7 @@
                           <span id="auditorID" class="display_off"><%=AUDITORS.getAuditorsSelect("insuranceAuditor_id", "forms", oBean.insuranceAuditor_id)%></span>
                         </td>
                       </tr>
+<% } %>
                       <tr> 
                         <td>&nbsp;</td>
                         <td><input name="submit" type="submit" class="forms" value="Save"></td>
@@ -260,7 +251,7 @@
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
-						<td colspan="2">
+						<td colspan="2" align="center">
 						  <table bgcolor="#EEEEEE" cellspacing="1" cellpadding="1">
 						    <tr class="whiteTitle">
                               <td align="center" bgcolor="#336699" colspan=2>Permission</td>
@@ -284,7 +275,7 @@
                       </tr>
                     </table>
                   </form>
-                <td width="126" align="center" valign="top" bgcolor="#DDDDDD" class="blueMain"></td>
+                </td>
               </tr>
             </table>
           </td>

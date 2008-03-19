@@ -76,11 +76,12 @@ function MM_displayStatusMsg(msgStr) { //v1.0
               <tr bgcolor="#FFFFFF">
                 <td width="647" bgcolor="#F8F8F8" class="blueMain">
 				  <table width="100%" border="0" cellpadding="0" cellspacing="0">
-                    <tr>
-                      <td width="453" valign="top" class="blueMain">
+                    <tr valign="top" class="blueMain">
+                      <td>
 					    <span class="blueHeader"><%=aBean.name%></span><br> 
                         <%=aBean.address%>, <%=aBean.city%>, <%=aBean.state%> <%=aBean.zip%>
-						 | <a href="http://www.mapquest.com/maps/map.adp?city=<%=aBean.city%>&state=<%=aBean.state%>&address=<%=aBean.address%>&zip=<%=aBean.zip%>&zoom=5" target=_blank class=redMain>map</a><br>
+						 [<a href="http://www.mapquest.com/maps/map.adp?city=<%=aBean.city%>&state=<%=aBean.state%>&address=<%=aBean.address%>&zip=<%=aBean.zip%>&zoom=5" 
+						 	target="_blank" class="redMain">map</a>]<br />
 						<span class="redMain">Contact:</span> <%=aBean.contact%><br>
 						<span class="redMain">Phone:</span> <%=aBean.phone%> 
 						<span class="redMain"><%=aBean.getPhone2Header()%></span> <%=aBean.phone2%><br>
@@ -90,27 +91,28 @@ function MM_displayStatusMsg(msgStr) { //v1.0
                         <a href="http://<%=aBean.web_URL%>" target="_blank"><%=aBean.web_URL%></a><br>
 						<%=cBean.getBrochureLink()%>
                       </td>
-                      <td width="172" valign="top" class="blueMain">
+                      <td>
                         <span class=redMain>PICS Contractor ID:</span> <%= cBean.getLuhnId() %><br />
                         <nobr><span class=redMain>PICS Status:</span>
-				<% if (!permissions.isContractor()) { %>
-						<span class="<%=cBean.getTextColor(cBean.calcPICSStatus(pBean))%>"><strong><%=cBean.getDetailsStatus(pBean)%></strong></span>
-				<% }
-				if (!permissions.isOperator() && !permissions.isCorporate()) { %>
-						<a class="<%=cBean.getTextColor(cBean.calcPICSStatus(pBean))%>" href="con_selectFacilities.jsp?id=<%=id%>">See Facilities</a>
-				<% }
-				if (!permissions.isContractor() && cBean.canView(permissions, "notes"))
-					out.println(cBean.getNotesIcon());
-				%>
-				</nobr><br>
-				<%
-				if (permissions.isOperator() || permissions.isCorporate()) {
-					%>
-	                    <span class=redMain>Flagged Status:</span>
-                          <a href=con_redFlags.jsp?id=<%=id%>><img 
-                          	src=images/icon_<%=flag.getFlagStatus(id,pBean.userID).toLowerCase()%>Flag.gif width=12 height=15 border=0></a><br>
+						<% if (!permissions.isContractor()) { %>
+								<span class="<%=cBean.getTextColor(cBean.calcPICSStatus(pBean))%>"><strong><%=cBean.getDetailsStatus(pBean)%></strong></span>
+						<% }
+						if (!permissions.isOperator()) { %>
+								<a class="<%=cBean.getTextColor(cBean.calcPICSStatus(pBean))%>" href="con_selectFacilities.jsp?id=<%=id%>">See Facilities</a>
+						<% }
+						if (!permissions.isContractor() && cBean.canView(permissions, "notes"))
+							out.println(cBean.getNotesIcon());
+						%>
+						</nobr><br>
 					<%
-				} %>
+					if (permissions.isOperator()) {
+						%>
+	                    <span class="redMain">Flagged Status:</span>
+                          <a href="con_redFlags.jsp?id=<%=id%>"><img 
+                          	src="images/icon_<%=flag.getFlagStatus(id,pBean.userID).toLowerCase()%>Flag.gif" width="12" height="15" border="0"></a><br>
+						<%
+					}
+					%>
 				<span class=redMain>Pre-Qualification:</span> <%=cBean.getPQFLink(pBean)%><br>
 <%
 	if (!pBean.isContractor() || cBean.isDesktopRequired()) {

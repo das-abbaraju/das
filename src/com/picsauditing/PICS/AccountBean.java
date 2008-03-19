@@ -525,8 +525,8 @@ public class AccountBean extends DataBean {
 	public String getGeneralSelectMultiple(String name, String classType, String[] selectedContractors) throws Exception {
 		setOBean();
 		String[] generals = o.getOperatorsArray(OperatorBean.DONT_INCLUDE_PICS, OperatorBean.INCLUDE_ID, OperatorBean.INCLUDE_GENERALS, OperatorBean.INCLUDE_INACTIVE);
-		return Utilities.inputMultipleSelect2Multiples(name, classType, "3", selectedContractors, generals);
-	}//getGeneralSelectMultiple
+		return Utilities.inputMultipleSelect2Multiples(name, classType, "10", selectedContractors, generals);
+	}
 
 //****** not sure to include only actives
 	public String getGeneralSelect2(String name, String classType, String selectedOption, boolean listDefault) throws Exception {

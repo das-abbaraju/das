@@ -631,9 +631,8 @@ public class ContractorBean extends DataBean {
 		if (subTrades.substring(0,1).equals("0"))
 			return "";
 		return subTrades.substring(subTrades.indexOf(";")+1,subTrades.length()-1).replaceAll(";",", ");
-//		return subTrades.substring(subTrades.indexOf(";")+1).replaceAll(";",", ");
-//		return subTrades.indexOf(";") + "," + (subTrades.length()-1);
-	}//getSubTradesList
+	}
+	
 	public String getTextColor() throws Exception {
 		return getTextColor(calcPICSStatus());
 	}//getTextColor
@@ -642,7 +641,7 @@ public class ContractorBean extends DataBean {
 		if (STATUS_ACTIVE.equals(s))
 			return "active";
 		return "inactive";
-	}//getTextColor
+	}
 	
 	public int getNumOfTrades() {return num_of_trades;}//getNumOfTrades
 	public int getNumOfSubTrades() {return num_of_subTrades;}//getNumOfSubTrades
@@ -757,7 +756,7 @@ public class ContractorBean extends DataBean {
 		if (pBean.userID.equals(id))	return tempStatus;
 		if (!this.canView(pBean.getPermissions(), "daaudit")) return "";
 		else return tempStatus;
-	}//getDetailsStatus
+	}
 
 	public String getBrochureLink() {
 		if (!"No".equals(brochure_file))
@@ -1671,6 +1670,20 @@ public class ContractorBean extends DataBean {
 			if ("summary".equals(what)) {
 				// Until we figure out Contractor viewing permissions better, this will have to do
 				return true;
+			}
+			if (permissions.isCorporate()) {
+				OperatorBean operator = new OperatorBean();
+				try {
+					operator.isCorporate = true;
+					operator.setFromDB(permissions.getAccountIdString());
+					// if any of this corporate operators can see this contractor, 
+					// then the corporate users can see them too
+					for (String id : operator.facilitiesAL) {
+						if (generalContractors.contains(id))
+							return true;
+					}
+				} catch (Exception e) {}
+				return false;
 			}
 			// To see anything other than the summary, you need to be on their list
 			return generalContractors.contains(permissions.getAccountIdString());
