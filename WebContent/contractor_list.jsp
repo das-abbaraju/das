@@ -89,6 +89,10 @@ try {
                     </tr>
                     <tr>
                       <td colspan=2 class=blueMain>
+<%		if (permissions.isOperator()) {%>
+                        <%=SearchBean.getStatusSelect("status","blueMain",sBean.selected_status)%>
+                        <%=Inputs.inputSelect("flagStatus","forms", sBean.selected_flagStatus,SearchBean.FLAG_STATUS_ARRAY)%>
+<% } %>
 <%	if (pBean.isCorporate()){
 		out.println(pBean.oBean.getFacilitySelect("generalContractorID","forms",sBean.selected_generalContractorID));
 	}

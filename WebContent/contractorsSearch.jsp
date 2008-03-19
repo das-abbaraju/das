@@ -174,6 +174,9 @@ try{
                         <input name="name" type="text" class="forms" value="<%=sBean.selected_name%>" size="20" onFocus="clearText(this)">
                         <%=tBean.getTradesSelect("trade", "forms", sBean.selected_trade)%>
                         <%=Inputs.inputSelect("performedBy","forms",sBean.selected_performedBy,TradesBean.PERFORMED_BY_ARRAY)%>
+<%		if (permissions.isOperator()) {%>
+                        <%=Inputs.inputSelect("flagStatus","forms", sBean.selected_flagStatus,SearchBean.FLAG_STATUS_ARRAY)%>
+<% } %>
                         <input name="taxID" type="text" class="forms" value="<%=sBean.selected_taxID%>" size="9" onFocus="clearText(this)"><span class=redMain>*must be 9 digits</span>
                       </td>
                       <td width="89"><input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0" onClick="runSearch('form1');" onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()">
@@ -226,7 +229,9 @@ try{
                 <td align="center"><%=sBean.aBean.phone%><br><%=sBean.aBean.phone2%></td>
                 <td align="center"><%=sBean.tradePerformedBy%></td>
                 <td align="center">
-                	<%=permissions.isCorporate() ? "<a href='con_selectFacilities.jsp?id="+sBean.aBean.id+"'>Show</a>" : sBean.getFlagLink()%>
+                	<%=permissions.isCorporate() 
+                	? "<a href='con_selectFacilities.jsp?id="+sBean.aBean.id+"'>Show</a>" 
+                	: sBean.getFlagLink()%>
                 </td>
                 <td align="center">
 <%			if (pBean.oBean.canAddContractors()) {
