@@ -1,0 +1,30 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	
+	<constant name="struts.objectFactory" value="spring" />
+    <constant name="struts.devMode" value="true" />
+	<constant name="struts.url.includeParams" value="none" />	
+	
+	<package name="com.picsauditing" extends="struts-default">
+
+		<!-- exception section... I wrote this once, no sense wishing I had it later 
+		<global-results>
+            <result name="Exception">/sports/exception.jsp</result>
+        </global-results>
+		
+		
+		<global-exception-mappings>
+            <exception-mapping exception="java.lang.Exception" result="Exception"/>
+        </global-exception-mappings>
+
+		-->
+		
+         <action name="TestStruts" class="com.picsauditing.actions.FirstStrutsAction">
+         	<result>testStruts.jsp</result>
+         </action>
+	</package>
+	
+</struts>
