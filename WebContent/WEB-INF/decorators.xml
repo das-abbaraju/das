@@ -1,0 +1,5 @@
+<decorators defaultdir="/decorators">
+	<decorator name="leaveitalone">
+		<pattern>*</pattern>
+	</decorator>
+</decorators>
