@@ -1,5 +1,22 @@
 <decorators defaultdir="/decorators">
-	<decorator name="leaveitalone">
-		<pattern>*</pattern>
+	<decorator name="marketing" page="marketing.jsp">
+		<pattern>/index.jsp</pattern>
+		<pattern>/clients.jsp</pattern>
+		<pattern>/contact.jsp</pattern>
+		<pattern>/confirmContact.jsp</pattern>
+		<pattern>/career_opportunity.jsp</pattern>
+		<pattern>/services.jsp</pattern>
+		<pattern>/login.jsp</pattern>
+		<pattern>/forgot_password.jsp</pattern>
+		<pattern>/contractor_new.jsp</pattern>
+		<pattern>/contractor_new_instructions.jsp</pattern>
+		<pattern>/contractor_new_confirm.jsp</pattern>
+	</decorator>
+	<decorator name="main" page="main.jsp">
+		<pattern>/reports.jsp</pattern>
+	</decorator>
+	<decorator name="ignoreMe">
+		<pattern>/*</pattern>
+		<pattern>/*ajax*</pattern>
 	</decorator>
 </decorators>

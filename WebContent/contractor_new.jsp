@@ -1,4 +1,3 @@
-<%//@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ page language="java" errorPage="exception_handler.jsp" import="com.picsauditing.PICS.*, java.util.*"%>
 <jsp:useBean id="uBean" class="com.picsauditing.access.User" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
@@ -7,30 +6,6 @@
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
 <jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope="application"/>
 <%
-
-	////////////////////////
-	// AJAX Functionality //
-	////////////////////////
-	String action = request.getParameter("action");
-	if (action != null) {
-		if (action.equals("pricing")) {
-			BillContractor billing = new BillContractor();
-			
-			billing.getContractor().riskLevel = request.getParameter("riskLevel");
-			billing.getContractor().oqEmployees = request.getParameter("oqEmployees");
-			
-			String facilities = request.getParameter("facilities");
-			ArrayList<String> selectedFacilities = new ArrayList<String>();
-			String[] facilityArray = facilities.split(",");;
-			for(String facility: facilityArray) {
-				selectedFacilities.add(facility);
-			}
-			billing.setSelectedFacilities(selectedFacilities);
-			
-			%>$<%=billing.calculatePrice()%><%
-			return;
-		}
-	}
 	if (request.getParameter("submit") != null) {
 		//////////////////////////////////
 		// Save Contractor Registration //
@@ -42,87 +17,26 @@
 		cBean.setFromUploadRequestClientNew(request);
 		cBean.isOKClientCreate();
 		
-		//uBean.setFromRequest(request);
-		//uBean.isOK();
-		
 		if ( (aBean.getErrorMessages().length()+cBean.getErrorMessages().length()+uBean.getErrorMessages().length()) == 0) {
 			// TODO gracefully rollback saving errors
 			aBean.writeNewToDB();
 			cBean.id = aBean.id;
 			cBean.writeNewToDB(FACILITIES);
-			//uBean.writeNewToDB(aBean.id, request);
 
 			response.sendRedirect("contractor_new_confirm.jsp?i="+aBean.id);
 			return;
-		}//if
-	}//if
+		}
+	}
 %>
 <html>
 <head>
-  <title>PICS - Pacific Industrial Contractor Screening</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <link href="PICS.css" rel="stylesheet" type="text/css">
-  <script language="JavaScript" SRC="js/ImageSwap.js"></script>
-  <script language="JavaScript" SRC="js/prototype.js"></script>
+<title>Contractor Registration</title>
+<meta name="color" content="#669966" />
+<meta name="flashName" content="REGISTER" />
+<meta name="iconName" content="register" />
+<script language="JavaScript" SRC="js/prototype.js"></script>
 </head>
-
-<body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
-  <tr>
-    <td valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0">
-        <tr>
-          <td height="72" bgcolor="#669966">&nbsp;</td>
-        </tr>
-    </table></td>
-    <td width="657" valign="top"><table width="100%" border="0" cellpadding="0" cellspacing="0">
-      <tr>
-        <td valign="top"><form action="login.jsp" method="post">
-          <table width="100%" border="0" cellspacing="0" cellpadding="0">
-            <tr>
-              <td width="146" height="218" align="center" valign="top"><a href="index.jsp"><img src="images/logo.gif" alt="Home" width="146" height="145" border="0"></a><br>
-                <table border="0" cellspacing="0" cellpadding="1">
-                    <tr><td height="5"></td><td></td></tr>
-				    <tr>
-                      <td align="right" valign="middle"><p><img src="images/login_user.gif" alt="User Name" width="50" height="9">&nbsp;</p></td>
-                      <td valign="middle"><input name="username" type="text" class="loginForms" size="9"></td>
-                    </tr>
-                    <tr>
-                      <td align="right" valign="middle"><img src="images/login_pass.gif" alt="Password" width="50" height="9">&nbsp;</td>
-                      <td valign="middle"><input name="password" type="password" class="loginForms" size="9"></td>
-                    </tr>
-                    <tr>
-                      <td>&nbsp;</td>
-                      <td>
-                        <input name="Submit" type="image" src="images/button_login.jpg" width="65" height="28" border="0">
-                      </td>
-                    </tr>
-                    <tr>
-                      <td colspan="2" class="blueMain"></td>
-                    </tr>
-                  </table>                  </td>
-              <td valign="top"><table width="511" border="0" cellspacing="0" cellpadding="0">
-                <tr>
-                  <td height="72"><table width="511" border="0" cellspacing="0" cellpadding="0">
-                    <tr>
-                      <td width="364"><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" width="364" height="72">
-                        <param name="movie" value="flash/NAV_REGISTER.swf">
-                        <param name="quality" value="high">
-                        <embed src="flash/NAV_REGISTER.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="364" height="72"></embed>
-                      </object><script type="text/javascript" src="js/ieupdate.js"></script></td>
-                      <td><img src="images/squares_home.gif" width="147" height="72"></td>
-                    </tr>
-                  </table></td>
-                  </tr>
-                <tr>
-                  <td height="146"><img src="images/photo_register.jpg" width="510" height="146"></td>
-                </tr>
-              </table></td>
-            </tr>
-          </table>
-        </form></td>
-      </tr>
-      <tr>
-        <td><br>
+<body>
 		<form id="form1" name="form1" method="post" action="contractor_new.jsp">
 		  <table border="0" cellpadding="1" cellspacing="0">
             <tr>
@@ -327,23 +241,6 @@
             </tr>
           </table>
 		</form><br><br>
-	    </td>
-        </tr>
-      </table>
-	</td>
-    <td valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0">
-      <tr>
-        <td height="72" bgcolor="#669966">&nbsp;</td>
-      </tr>
-    </table></td>
-  </tr>
-  <tr bgcolor="#003366">
-    <td height="72">&nbsp;</td>
-    <td height="72" align="center" valign="middle" class="footer">&copy; Copyright 2007 Pacific Industrial Contractor Screening | Site by: <a href="http://www.albumcreative.com" target="_blank" class="footer" title="Album Creative Studios">Album</a> </td>
-    <td height="72" valign="top">&nbsp;</td>
-  </tr>
-</table>
-
 <script language="Javascript">
 <!--
 function popUp(URL) {
@@ -396,11 +293,10 @@ function change() {
 	
 	$('annualFee').innerHTML = '<img src="images/ajax_process.gif" width="20" height="20">';
 	
-	var myAjax = new Ajax.Updater('annualFee', 'contractor_new.jsp', {method: 'get', parameters: pars});
+	var myAjax = new Ajax.Updater('annualFee', 'contractor_new_ajax.jsp', {method: 'get', parameters: pars});
 }
 change();
 //-->
 </script>
-<%@ include file="includes/statcounter.jsp"%>
 </body>
 </html>
