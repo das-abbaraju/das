@@ -1,11 +1,13 @@
 package com.picsauditing.actions;
 
+import java.util.List;
+
 import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.dao.RulesRowDAO;
 import com.picsauditing.beans.RulesRowBean;
 
 public class RulesAction extends ActionSupport {
-	protected RulesRowBean bean = null;
+	protected List<RulesRowBean> rulesRows = null;
 	protected RulesRowDAO dao = null;
 
 	public RulesAction(RulesRowDAO dao) {
@@ -13,22 +15,18 @@ public class RulesAction extends ActionSupport {
 	}
 
 	public String execute() throws Exception {
-		if (bean == null) {
-			bean = new RulesRowBean();
-
-			bean.setTableName("struts");
-		} else {
-			dao.save(bean);
-		}
+		rulesRows = dao.findAll();
 
 		return SUCCESS;
 	}
 
-	public RulesRowBean getRulesRowBean() {
-		return bean;
+	public List<RulesRowBean> getRulesRows() {
+		return rulesRows;
 	}
 
-	public void setTestBean(RulesRowBean bean) {
-		this.bean = bean;
+	public void setRulesRows(List<RulesRowBean> rulesRows) {
+		this.rulesRows = rulesRows;
 	}
+
+
 }

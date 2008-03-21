@@ -38,7 +38,7 @@ public class RulesRowDAO {
 	
 	@SuppressWarnings("unchecked")
     public List<RulesRowBean> findAll() {
-        Query query = getEntityManager().createQuery("select r FROM rules_row p");
+        Query query = getEntityManager().createQuery("select r FROM RulesRowBean r");
         return query.getResultList();
     }
 	

@@ -4,6 +4,13 @@
 <html>
 <head><title>Rules</title></head>
 <body>
-<s:property value="testBean.greeting"/>
+<table>
+<s:iterator value="rulesRows">
+	<tr>
+		<td><s:property value="rowID"/></td>
+		<td><s:property value="tableName"/></td>
+	</tr>
+</s:iterator>
+</table>
 </body>
 </html>

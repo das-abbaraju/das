@@ -14,6 +14,7 @@
 	</decorator>
 	<decorator name="main" page="main.jsp">
 		<pattern>/reports.jsp</pattern>
+		<pattern>/*action</pattern>
 	</decorator>
 	<decorator name="ignoreMe">
 		<pattern>/*</pattern>
