@@ -28,6 +28,17 @@
          <action name="RulesList" class="com.picsauditing.actions.RulesAction">
          	<result>rules.jsp</result>
          </action>
+         
+
+         <action name="UsersManage" class="com.picsauditing.actions.users.UsersManage">
+         	<result>users_manage.jsp</result>
+         </action>
+
+         <action name="AsyncFacilitiesGet" class="com.picsauditing.actions.operators.FacilitiesGet">
+         	<result>includes/facilitySelect.jsp</result>
+         </action>
+
+         
 	</package>
 	
 </struts>
