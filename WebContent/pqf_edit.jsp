@@ -61,39 +61,17 @@ try{
 
 <html>
 <head>
-  <title>PICS - Pacific Industrial Contractor Screening</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <link href="PICS.css" rel="stylesheet" type="text/css">
+  <title>Edit PQF</title>
   <script language="JavaScript" src="js/TimeOutWarning.js"></script>
   <SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
   <SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
   <SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
   <SCRIPT LANGUAGE="JavaScript" SRC="js/validateForms.js"></SCRIPT>
+<meta name="header_gif" content="header_prequalification.gif" />
 </head>
-<body bgcolor="#EEEEEE" background="images/watermark.gif" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"  onload="return window_onload();">
-  <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
-    <tr>
-      <td valign="top">
-        <table width="100%" border="0" cellpadding="0" cellspacing="0">
-          <tr> 
-            <td width="50%" bgcolor="#993300">&nbsp;</td>
-            <td width="146" valign="top" rowspan="2"><a href="index.jsp"><img src="images/logo.gif" alt="HOME" width="146" height="145" border="0"></a></td>
-            <td width="364"><%@ include file="utilities/mainNavigation.jsp"%></td>
-            <td><img src="images/squares_rightUpperNav.gif" width="147" height="72" border="0"></td>
-            <td width="147">&nbsp;</td>
-            <td width="50%" bgcolor="#993300">&nbsp;</td>
-          </tr>
-          <tr>
-            <td>&nbsp;</td>
-            <td valign="top" align="center">&nbsp;</td>
-            <td valign="top"><%@ include file="utilities/rightLowerNav.jsp"%></td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td>&nbsp;</td>
-            <td colspan="3" align="center">
-              <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
+<body onload="return window_onload();">
               <form name="formEdit" method="post" action="pqf_edit.jsp">
+              <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
                 <tr align="left" class="blueMain">
                   <td><%@ include file="includes/nav/secondNav.jsp"%></td>
                 </tr>
@@ -169,25 +147,13 @@ try{
 					<input name="action" type="submit" class="forms" value="Save"> Click to save your work. You may still edit your information later.
                   </td>
                 </tr>
+<%	} %>
+              </table>
                 <input type="hidden" name="catID" value="<%=catID%>">
                 <input type="hidden" name="id" value="<%=conID%>">
                 <input type="hidden" name="requiredCount" value="<%=requiredCount%>">
                 <input type="hidden" name="auditType" value="<%=auditType%>">
               </form>
-<%	} %>
-              </table>
-            </td>
-            <td>&nbsp;</td>
-          </tr>
-        </table>
-        <br><br>
-      </td>
-    </tr>
-    <tr>
-      <td height="72" align="center" bgcolor="#003366" class="copyrightInfo">&copy;2007 
-        Pacific Industrial Contractor Screening | site design: <a href="http://www.albumcreative.com" title="Album Creative Studios"><font color="#336699">ACS</font></a></td>
-    </tr>
-  </table>
 </body>
 </html>
 <%	} finally{

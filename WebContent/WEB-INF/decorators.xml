@@ -21,6 +21,7 @@
 		<pattern>/*</pattern>
 	</decorator>
 	<decorator name="ignoreMe">
+		<pattern>/pqf_printAll.jsp</pattern>
 		<pattern>/audit_calendar*</pattern>
 		<pattern>/*ajax*</pattern>
 	</decorator>

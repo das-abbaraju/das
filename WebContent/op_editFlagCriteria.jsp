@@ -28,43 +28,15 @@ try {
 %>
 <html>
 <head>
-  <title>PICS - Pacific Industrial Contractor Screening</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <META Http-Equiv="Cache-Control" Content="no-cache">
-  <META Http-Equiv="Pragma" Content="no-cache">
-  <META Http-Equiv="Expires" Content="0">
-  <link href="PICS.css" rel="stylesheet" type="text/css">
-  <script language="JavaScript" SRC="js/ImageSwap.js"></script>
+<title>Edit Flag Criteria</title>
+<script language="JavaScript" SRC="js/ImageSwap.js"></script>
 </head>
-<body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
-  <tr>
-    <td valign="top">
-      <table width="100%" border="0" cellpadding="0" cellspacing="0">
-        <tr>
-          <td width="50%" bgcolor="#993300">&nbsp;</td>
-          <td width="146" valign="top" rowspan="2">
-            <a href="index.jsp"><img src="images/logo.gif" alt="HOME" width="146" height="145" border="0"></a>
-          </td>
-          <td width="364"><%@ include file="utilities/mainNavigation.jsp"%></td>
-          <td width="147"><img src="images/squares_rightUpperNav.gif" width="147" height="72" border="0"></td>
-          <td width="50%" bgcolor="#993300">&nbsp;</td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td valign="top" align="center"><img src="images/header_reports.gif" width="321" height="72"></td>
-          <td valign="top"><%@ include file="utilities/rightLowerNav.jsp"%></td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td colspan="3" align="center" class="blueMain">
-              <%@ include file="includes/selectReport.jsp"%>
-              <br><span class="redMain"><%=flagCriteria.getErrorMessages()%></span>
-            <form name="changeFlagStatus" method="post" action="op_editFlagCriteria.jsp">
+<body>
+<span class="redMain"><%=flagCriteria.getErrorMessages()%></span>
+<form name="changeFlagStatus" method="post" action="op_editFlagCriteria.jsp">
               Edit <%=flagCriteria.getFlagStatusSelect("flagStatus","forms",flagStatus)%> Flag Criteria<br>
-            </form>
-            <form name="form1" method="post" action="op_editFlagCriteria.jsp">
+</form>
+<form name="form1" method="post" action="op_editFlagCriteria.jsp">
               <table width="586" border="0" cellpadding="2" cellspacing="1">
                 <tr class="whiteTitle" bgcolor="#003366">
                   <td align="center"> <%=flagStatus%> Flag OSHA Questions</td>
@@ -72,14 +44,7 @@ try {
                   <td align="center">Statistic</td>
                   <td width="62" align="center">Include?</td>
                 </tr>
-<!--                   <tr class="blueMain" bgcolor="FFFFFF">
-                    <td width="263" align="right" bgcolor="FFFFFF"><nobr>Experience Modification Rate (EMR) Cutoff:</nobr></td>
-                    <td width="30" bgcolor="FFFFFF"><input name="emrHurdle" type="text" class="forms" size="5" value=<%//=flagCriteria.flagOshaCriteriaDO.emrHurdle%>></td>
-                    <td width="67" bgcolor="FFFFFF">Timeframe:</td>
-                    <td width="200" bgcolor="FFFFFF"><%//=hurdleRates.getTimeRadio("emrTime","forms",flagCriteria.flagOshaCriteriaDO.emrTime)%></td>
-                    <td align="center"><%//=Inputs.getCheckBoxInput("flagEmr","forms",flagCriteria.flagOshaCriteriaDO.flagEmr,"Yes")%></td>
-                  </tr>
- -->                <tr class="blueMain" bgcolor="FFFFFF">
+                <tr class="blueMain" bgcolor="FFFFFF">
                   <td align="right"><nobr>Lost Workdays Case Rate (LWCR):</nobr></td>
                   <td align="center"><input name="lwcrHurdle" type="text" class="forms" size="5" value=<%=flagCriteria.flagOshaCriteriaDO.lwcrHurdle%>></td>
                   <td><nobr><%=flagCriteria.getTimeRadio("lwcrTime","forms",flagCriteria.flagOshaCriteriaDO.lwcrTime)%></nobr></td>
@@ -161,15 +126,6 @@ try {
               <br><br><input name="action" type="submit" class="forms" value="Recalculate For All Operators">
 <% 	}//if%>
             </form>
-            <br>
-          </td>
-          <td>&nbsp;</td>
-        </tr>
-      </table>
-      <br>
-    </td>
-  </tr>
-</table>
 </body>
 </html>
 <%}finally{

@@ -12,10 +12,9 @@
 %>
 <html>
 <head>
-  <title>PICS - Pacific Industrial Contractor Screening</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <link href="PICS.css" rel="stylesheet" type="text/css">
-  <script language="JavaScript">
+<title><%= aBean.name %></title>
+<meta name="header_gif" content="header_contractorDetails.gif" />
+<script language="JavaScript">
 <!--
 function MM_openBrWindow(theURL,winName,features) { //v2.0
   window.open(theURL,winName,features);
@@ -45,28 +44,7 @@ function MM_displayStatusMsg(msgStr) { //v1.0
 -->
 </script>
 </head>
-
-<body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
-  <tr>
-    <td valign="top">
-      <table width="100%" border="0" cellpadding="0" cellspacing="0">
-        <tr>
-          <td width="50%" bgcolor="#993300">&nbsp;</td>
-          <td width="146" valign="top" rowspan="2"><a href="index.jsp"><img src="images/logo.gif" alt="HOME" width="146" height="145" border="0"></a></td>
-          <td width="364"><%@ include file="utilities/mainNavigation.jsp"%></td>
-          <td width="147"><img src="images/squares_rightUpperNav.gif" width="147" height="72" border="0"></td>
-          <td width="50%" bgcolor="#993300">&nbsp;</td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td valign="top" align="center"><img src="images/header_contractorDetails.gif" width="321" height="72" border="0"></td>
-          <td valign="top"><%@ include file="utilities/rightLowerNav.jsp"%></td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td colspan="3">
+<body>
 			<table width="657" border="0" cellpadding="0" cellspacing="0">
               <tr align="center" class="blueMain">
                 <td align="left"><%@ include file="includes/nav/secondNav.jsp"%></td>
@@ -159,25 +137,11 @@ function MM_displayStatusMsg(msgStr) { //v1.0
 				  	// Uses logo size information from javascript at top
 				  %>
 				  <script language="JavaScript">
-//				  document.write('<img '+ sizetext + ' width=' + logowidth + ' src= "logos/<%=cBean.getDisplayLogo_file()%>" hspace="20" vspace="10" align="right" valign="top">');
-				  document.write('<img '+ sizetext + ' src="/logos/<%=cBean.getDisplayLogo_file()%>" hspace=20 vspace=10 align=right valign=top>');
+				 document.write('<img '+ sizetext + ' src="/logos/<%=cBean.getDisplayLogo_file()%>" hspace=20 vspace=10 align=right valign=top>');
 				  </script>
-			       <%=cBean.getDescriptionHTML()%>
+			       <%= cBean.getDescriptionHTML()%>
                 </td>
               </tr>
             </table>
-		  </td>
-          <td>&nbsp;</td>
-        </tr>
-      </table>
-      <br>
-      <br>
-    </td>
-  </tr>
-  <tr>
-    <td height="72" align="center" bgcolor="#003366" class="copyrightInfo">&copy;2007 
-      Pacific Industrial Contractor Screening | site design: <a href="http://www.albumcreative.com" title="Album Creative Studios"><font color="#336699">ACS</font></a></td>
-  </tr>
-</table>
 </body>
 </html>
