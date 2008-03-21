@@ -12,6 +12,9 @@
 	<bean class="com.picsauditing.dao.RulesRowDAO"/>
 
 
+	<bean class="com.picsauditing.PICS.Facilities"/>
+
+
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
 	<!--  JPA implementation -->
