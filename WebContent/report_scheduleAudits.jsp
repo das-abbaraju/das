@@ -4,6 +4,7 @@
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <%
+//MULTIAUDIT changes
 permissions.tryPermission(OpPerms.AssignAudits);
 try {
 	String action = request.getParameter("action");
