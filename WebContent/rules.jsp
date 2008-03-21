@@ -7,8 +7,9 @@
 <table>
 <s:iterator value="rulesRows">
 	<tr>
-		<td><s:property value="rowID"/></td>
+		<td><s:property value="sequence"/></td>
 		<td><s:property value="tableName"/></td>
+		<td><a href="RulesList.action?rowID=<s:property value="rowID"/>">Edit</a></td>
 	</tr>
 </s:iterator>
 </table>

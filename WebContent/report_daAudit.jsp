@@ -7,9 +7,6 @@
 permissions.tryPermission(OpPerms.AssignAudits);
 boolean canEdit = permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit);
 
-pageBean.setTitle("Schedule Drug &amp; Alcohol Audits");
-pageBean.includeScriptaculous(true);
-
 String action = request.getParameter("action");
 if (action != null) {
 	String outputText = "<span=\"color: red\">no permission</span>";
@@ -61,7 +58,11 @@ report.setLimit(50);
 List<BasicDynaBean> searchData = report.getPage();
 
 %>
-<%@ include file="includes/header.jsp" %>
+<html>
+<head>
+<title>Schedule Drug &amp; Alcohol Audits</title>
+<script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
 <script type="text/javascript">
 function selectAuditor(conID) {
 	var form = $('auditor_form'+conID);
@@ -88,11 +89,13 @@ function notRequired(conID) {
 	padding: 0px;
 }
 </style>
+</head>
+<body>
 <table width="657" border="0" cellpadding="0" cellspacing="0" align="center">
   <tr>
     <td height="70" colspan="2" align="center" class="buttons"> 
       <%@ include file="includes/selectReport.jsp"%>
-      <span class="blueHeader">Schedule Drug and Alcohol Audits</span><br>
+      <span class="blueHeader">Schedule Drug &amp; Alcohol Audits</span><br>
       <a href="report_daAudit.jsp" class="blueMain">Refresh</a>
     </td>
   </tr>
@@ -135,4 +138,5 @@ for(BasicDynaBean row: searchData) {
 %>
 </table>
 <p align="center"><%=report.getPageLinks()%></p>
-<%@ include file="includes/footer.jsp" %>
+</body>
+</html>

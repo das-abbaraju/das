@@ -1,27 +1,27 @@
-<%@page language="java" import="com.picsauditing.PICS.*"
-	errorPage="exception_handler.jsp"%>
+<%@page language="java" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp"%>
 <%@page import="org.apache.commons.beanutils.*"%>
 <%@page import="com.picsauditing.search.*"%>
 <%@page import="java.util.*"%>
 <%
+	SelectSQL sql = new SelectSQL("useraccess");
 
-SelectSQL sql = new SelectSQL("useraccess");
+	sql.addGroupBy("accessType");
+	sql.addField("accessType");
+	sql.addField("count(*) as total");
 
-sql.addGroupBy("accessType");
-sql.addField("accessType");
-sql.addField("count(*) as total");
+	Report report = new Report();
+	report.setSql(sql);
+	report.setOrderBy(request.getParameter("orderBy"), "accessType");
+	report.setPageByResult(request);
 
-Report report = new Report();
-report.setSql(sql);
-report.setOrderBy(request.getParameter("orderBy"), "accessType");
-report.setPageByResult(request);
-
-List<BasicDynaBean> searchData = report.getPage();
-
-pageBean.setTitle("Permission Types");
+	List<BasicDynaBean> searchData = report.getPage();
 %>
-<%@ include file="includes/header.jsp"%>
+<html>
+<head>
+<title>Permission Types</title>
+</head>
+<body>
 <h2 class="blueHeader">Permission Types</h2>
 <table border="0" cellpadding="5" cellspacing="0" align="center">
 	<tr>
@@ -29,8 +29,7 @@ pageBean.setTitle("Permission Types");
 		<td align="right"><%=report.getPageLinks()%></td>
 	</tr>
 </table>
-<table border="0" cellpadding="1" cellspacing="1"
-	align="center">
+<table border="0" cellpadding="1" cellspacing="1" align="center">
 	<tr bgcolor="#003366" class="whiteTitle">
 		<td width="150" colspan="2">Permission</td>
 		<td align="center">Use Count</td>
@@ -38,15 +37,16 @@ pageBean.setTitle("Permission Types");
 	<%
 		com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlternater();
 		for (BasicDynaBean row : searchData) {
-			%>
-			<tr class="blueMain" <%=color.nextBgColor()%>>
-				<td align="right"><%=color.getCounter()%></td>
-				<td><a href="#" onclick="return false;"><%=row.get("accessType")%></a></td>
-				<td><%=row.get("total")%></td>
-			</tr>
-			<%
+	%>
+	<tr class="blueMain" <%=color.nextBgColor()%>>
+		<td align="right"><%=color.getCounter()%></td>
+		<td><a href="#" onclick="return false;"><%=row.get("accessType")%></a></td>
+		<td><%=row.get("total")%></td>
+	</tr>
+	<%
 		}
 	%>
 </table>
 <p align="center"><%=report.getPageLinks()%></p>
-<%@ include file="includes/footer.jsp"%>
+</body>
+</html>

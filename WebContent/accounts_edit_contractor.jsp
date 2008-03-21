@@ -48,37 +48,13 @@
 		}
 	}//if
 %>
-
 <html>
 <head>
-  <title>PICS - Pacific Industrial Contractor Screening</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <link href="PICS.css" rel="stylesheet" type="text/css">
   <SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
   <SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
   <SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
 </head>
-<body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
-  <tr>
-    <td valign="top">
-	  <table width="100%" border="0" cellpadding="0" cellspacing="0">
-        <tr>
-          <td width="50%" bgcolor="#993300">&nbsp;</td>
-          <td width="146" valign="top" rowspan="2"><a href="index.jsp"><img src="images/logo.gif" alt="HOME" width="146" height="145" border="0"></a></td>
-          <td width="364"><%@ include file="utilities/mainNavigation.jsp"%></td>
-          <td width="147"><img src="images/squares_rightUpperNav.gif" width="147" height="72" border="0"></td>
-          <td width="50%" bgcolor="#993300">&nbsp;</td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td valign="top" align="center"><img src="images/header_manageAccounts.gif" width="252" height="72" border="0"></td>
-          <td valign="top"><%@ include file="utilities/rightLowerNav.jsp"%></td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr> 
-          <td>&nbsp;</td>
-            <td colspan="3" class="blueMain">
+<body>
               <%@ include file="includes/nav/secondNav.jsp"%>
               <table width="657" cellpadding="10" cellspacing="0">
                 <tr>
@@ -212,9 +188,8 @@
                       </tr>
                       <tr>
                         <td class="blueMain" align="right">Audit Date</td>
-                        <td class="blueMain"> <input name="auditDate" id="auditDate" type="text" class="forms" size="10" onClick="cal1.select(document.forms[0].auditDate,'auditDate','M/d/yy','<%=cBean.auditDate%>'); return false;" value="<%=cBean.auditDate%>">
-<!--                          <input type="image" src="images/icon_calendar.gif" width="18" height="15" onClick="cal1.select(document.forms[0].auditDate,'auditDate','M/d/yy','<%=cBean.auditDate%>'); return false;">
--->						</td>
+                        <td class="blueMain"><input name="auditDate" id="auditDate" type="text" class="forms" size="10" onClick="cal1.select(document.forms[0].auditDate,'auditDate','M/d/yy','<%=cBean.auditDate%>'); return false;" value="<%=cBean.auditDate%>">
+						</td>
                       </tr>
 					  <tr>
                         <td class="blueMain" align="right">Last Audit Date</td>
@@ -388,19 +363,6 @@
 				  </td>
                   <td width="125" align="center" valign="top" bgcolor="#DDDDDD" class="blueMain"></td>
                 </tr>
-              </table></td>
-          <td>&nbsp;</td>
-        </tr>
-      </table>
-      <br>
-      <br>
-    </td>
-  </tr>
-  <tr>
-    <td height="72" align="center" bgcolor="#003366" class="copyrightInfo">&copy;2007 
-      Pacific Industrial Contractor Screening | site design: <a href="http://www.albumcreative.com" title="Album Creative Studios"><font color="#336699">ACS</font></a></td>
-  </tr>
-</table>
-<%@ include file="includes/statcounter.jsp" %>
+              </table>
 </body>
 </html>

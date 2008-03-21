@@ -32,10 +32,12 @@ report.setPageByResult(request);
 report.setLimit(50);
 
 List<BasicDynaBean> searchData = report.getPage();
-
-pageBean.setTitle("NCMS Data");
 %>
-<%@ include file="includes/header.jsp"%>
+<html>
+<head>
+<title>NCMS Data</title>
+</head>
+<body>
 <table width="657" border="0" cellpadding="0" cellspacing="0"
 	align="center">
 	<tr>
@@ -83,4 +85,5 @@ pageBean.setTitle("NCMS Data");
 	%>
 </table>
 <p align="center"><%=report.getPageLinks()%></p>
-<%@ include file="includes/footer.jsp"%>
+</body>
+</html>

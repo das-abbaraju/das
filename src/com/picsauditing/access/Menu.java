@@ -88,8 +88,7 @@ public class Menu {
 		this.addItem("audit_selectType.jsp", "Manage Audits and Matrices", OpPerms.ManageAudits);
 		this.addItem("report_accounts.jsp?type=Corporate", "Manage Corporate Accounts", OpPerms.ManageCorporate);
 		this.addItem("report_accounts.jsp?type=Operator", "Manage Operators", OpPerms.ManageOperators);
-		this.addItem("accounts_userList.jsp", "Manage Users", OpPerms.EditUsers);
-		this.addItem("users_manage.jsp", "Manage Users (beta)", OpPerms.EditUsers);
+		this.addItem("users_manage.jsp", "Manage Users", OpPerms.EditUsers);
 		this.addItem("report_ncms.jsp", "NCMS Data Report", OpPerms.NCMS );
 		this.addItem("audit_calendar.jsp?changed=1", "Office Audit Calendar", OpPerms.OfficeAuditCalendar);
 		this.addItem("report_payment.jsp?changed=1", "Payment Report", adminGroup);

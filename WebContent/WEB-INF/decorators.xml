@@ -11,13 +11,17 @@
 		<pattern>/contractor_new.jsp</pattern>
 		<pattern>/contractor_new_instructions.jsp</pattern>
 		<pattern>/contractor_new_confirm.jsp</pattern>
+		<pattern>/milestonepartnership.jsp</pattern>
+		<pattern>/article_OSHA300.jsp</pattern>
+		<pattern>/Usergroup_2008.jsp</pattern>
 	</decorator>
 	<decorator name="main" page="main.jsp">
 		<pattern>/reports.jsp</pattern>
 		<pattern>/*action</pattern>
+		<pattern>/*</pattern>
 	</decorator>
 	<decorator name="ignoreMe">
-		<pattern>/*</pattern>
+		<pattern>/audit_calendar*</pattern>
 		<pattern>/*ajax*</pattern>
 	</decorator>
 </decorators>

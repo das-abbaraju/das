@@ -52,15 +52,15 @@ report.setPageByResult(request);
 report.setLimit(50);
 List<BasicDynaBean> searchData = report.getPage();
 
-pageBean.setTitle("Annual Update Emails");
-//<SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
-//<SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
-//<SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
 %>
-<%@ include file="includes/header.jsp"%>
+<html>
+<head>
+<title>Annual Update Emails</title>
 <script language="javascript" SRC="js/checkAllBoxes.js"></script>
+</head>
+<body>
 <center>
-<span class="blueHeader">Annual Update Report</span>
+<span class="blueHeader">Annual Update Emails</span>
 
 <form name="filter" method="get" action="report_annualUpdate.jsp">
 	Sent Email Range: <input type="text" name="minTimes" value="<%=report.getFilterValue("minTimes")%>" size="2" class="blueSmall" />
@@ -136,4 +136,5 @@ for (String key : report.getFilters().keySet()) {
 <p><%=report.getPageLinks()%></p>
 </center>
 
-<%@ include file="includes/footer.jsp"%>
+</body>
+</html>

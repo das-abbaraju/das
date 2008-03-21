@@ -7,10 +7,6 @@
 permissions.tryPermission(OpPerms.AssignAudits);
 boolean canEdit = permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit);
 
-pageBean.setTitle("Schedule Desktop Audits");
-pageBean.includeScriptaculous(true);
-pageBean.includeDynamicSearch(true);
-
 String action = request.getParameter("action");
 if (action != null && action.equals("saveAuditor")) {
 	if (!canEdit) {
@@ -70,7 +66,12 @@ report.setLimit(50);
 List<BasicDynaBean> searchData = report.getPage();
 
 %>
-<%@ include file="includes/header.jsp" %>
+<html>
+<head>
+<title>Schedule Desktop Audits</title>
+<script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
+<script src="js/Search.js" type="text/javascript"></script>
 <script type="text/javascript">
 function selectAuditor(conID) {
 	var form = $('auditor_form'+conID);
@@ -89,6 +90,8 @@ function selectAuditor(conID) {
 	padding: 0px;
 }
 </style>
+</head>
+<body>
 <table width="657" border="0" cellpadding="0" cellspacing="0"
 	align="center">
 	<tr>
@@ -155,4 +158,5 @@ function selectAuditor(conID) {
 	%>
 </table>
 
-<%@ include file="includes/footer.jsp"%>
+</body>
+</html>

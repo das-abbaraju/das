@@ -1,8 +1,10 @@
 <%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
+<%@include file="includes/main.jsp" %>
 <%@page import="org.apache.commons.beanutils.*"%>
 <%@page import="java.util.*"%>
-<%@page import="com.picsauditing.access.*"%>
-<%@include file="includes/main.jsp" %>
+<%@page import="javax.naming.NoPermissionException"%>
+<%@page import="com.picsauditing.search.SelectAccount"%>
+<%@page import="com.picsauditing.search.Report"%>
 <%
 
 String action = request.getParameter("action");
@@ -28,20 +30,21 @@ if (accountType == null) accountType = "Operator";
 
 boolean canEdit = false;
 boolean canDelete = false;
+String title = "";
 if (accountType.equals("Operator")) {
 	permissions.tryPermission(OpPerms.ManageOperators);
 	canEdit = permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit);
 	canDelete = permissions.hasPermission(OpPerms.ManageCorporate, OpType.Delete);
-	pageBean.setTitle("List Operators");
 	sql.addJoin("LEFT JOIN (SELECT genID, count(*) as subCount FROM generalContractors GROUP BY genID) sub ON sub.genID = a.id");
 	sql.addField("subCount");
+	title = "List Operators";
 } else if (accountType.equals("Corporate")) {
 	permissions.tryPermission(OpPerms.ManageCorporate);
 	canEdit = permissions.hasPermission(OpPerms.ManageCorporate, OpType.Edit);
 	canDelete = permissions.hasPermission(OpPerms.ManageCorporate, OpType.Delete);
-	pageBean.setTitle("List Corporate Accounts");
 	sql.addJoin("LEFT JOIN (SELECT corporateID, count(*) as subCount FROM facilities GROUP BY corporateID) sub ON sub.corporateID = a.id");
 	sql.addField("subCount");
+	title = "List Corporate Accounts";
 } else {
 	throw new Exception("invalid parameter type");
 }
@@ -63,10 +66,11 @@ search.setLimit(50);
 
 List<BasicDynaBean> searchData = search.getPage();
 %>
-<%@ include file="includes/header.jsp" %>
-<%@page import="javax.naming.NoPermissionException"%>
-<%@page import="com.picsauditing.search.SelectAccount"%>
-<%@page import="com.picsauditing.search.Report"%>
+<html>
+<head>
+<title><%=title%></title>
+</head>
+<body>
 <table width="657" border="0" cellpadding="0" cellspacing="0" align="center">
 	<tr>
 		<td height="70" colspan="2" align="center" class="buttons"><%@ include
@@ -120,4 +124,5 @@ if (canEdit) {
 %><p align="center"><a href="accounts_new_operator.jsp?type=<%=accountType%>">Create New</a></p><%
 }
 %>
-<%@ include file="includes/footer.jsp" %>
+</body>
+</html>

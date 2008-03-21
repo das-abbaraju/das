@@ -40,7 +40,7 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td valign="top" align="center"><img
-					src="images/header_reports.gif" width="321" height="72"></td>
+					src="images/<decorator:getProperty property="meta.header_gif" default="header_reports.gif" />" height="72"></td>
 				<td valign="top"><%@ include
 					file="../utilities/rightLowerNav.jsp"%></td>
 				<td>&nbsp;</td>
@@ -60,10 +60,9 @@
 		</table>
 		</td>
 	</tr>
-	<tr>
-		<td height="72" align="center" class="copyrightInfo">&copy;2007
-		PICS | <a href="index.jsp" class="copyrightInfo">Home</a> | <a
-			href="faqs.jsp" class="copyrightInfo">FAQs</a></td>
+	<tr bgcolor="#003366">
+		<td height="72" align="center" valign="middle" class="footer">&copy;
+		Copyright 2008 Pacific Industrial Contractor Screening</td>
 	</tr>
 </table>
 <%@ include file="../includes/statcounter.jsp"%>

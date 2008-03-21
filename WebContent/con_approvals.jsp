@@ -39,11 +39,13 @@ report.addFilter(new SelectFilter("name", "a.name LIKE '?%'", request.getParamet
 
 List<BasicDynaBean> searchData = report.getPage();
 
-pageBean.setTitle("Contractor Approvals");
-pageBean.includeScriptaculous(true);
 %>
-<%@ include file="includes/header.jsp" %>
 <%@page import="com.picsauditing.PICS.redFlagReport.FlagCalculator"%>
+<html>
+<head>
+<title>Contractor Approvals</title>
+<script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
 <script type="text/javascript">
 function saveApproval(conID, status) {
 	pars = 'action=save&conID='+conID+'&workStatus='+status;
@@ -59,6 +61,8 @@ form.smallform {
 	padding: 0px;
 }
 </style>
+</head>
+<body>
 <table width="657" border="0" cellpadding="0" cellspacing="0"
 	align="center">
 	<tr>
@@ -129,4 +133,5 @@ form.smallform {
 	%>
 </table>
 
-<%@ include file="includes/footer.jsp" %>
+</body>
+</html>

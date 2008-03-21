@@ -43,10 +43,12 @@ if (template != null) {
 	bodyTemplate = props.get("email_"+template+"_body");
 }
 
-pageBean.setTitle("Manage Email Templates");
 %>
-<%@ include file="includes/header.jsp" %>
-
+<html>
+<head>
+<title>Manage Email Templates</title>
+</head>
+<body>
 <table border="0">
 <tr valign="top">
 <td>
@@ -95,4 +97,5 @@ for(String key : tokens.keySet()) {
 </tr>
 </table>
 
-<%@ include file="includes/footer.jsp" %>
+</body>
+</html>

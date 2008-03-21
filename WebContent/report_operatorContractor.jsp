@@ -1,4 +1,4 @@
-<%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
+<%@page language="java" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
@@ -15,10 +15,13 @@ try{
 	else
 		sBean.doSearch(request, SearchBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
 
-	pageBean.setTitle("Corporate Contractors Report");
-	pageBean.includeDynamicSearch(true);
 %>
-<%@ include file="includes/header.jsp"%>
+<html>
+<head>
+<title>Corporate Contractors Report</title>
+<script src="js/Search.js" type="text/javascript"></script>
+</head>
+<body>
 <div align="center">
 	<form id="form1" name="form1" method="post" action="report_operatorContractor.jsp">
 		<table border="0" cellpadding="2" cellspacing="0">
@@ -105,4 +108,5 @@ try{
 		sBean.closeSearch();
 	}
 %>
-<%@ include file="includes/footer.jsp"%>
+</body>
+</html>

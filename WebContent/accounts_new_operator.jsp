@@ -24,34 +24,11 @@
 %>
 <html>
 <head>
-  <title>PICS - Pacific Industrial Contractor Screening</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <link href="PICS.css" rel="stylesheet" type="text/css">
+<title>Create Operator</title>
+<meta name="header_gif" content="header_manageAccounts.gif" />
 </head>
-<body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
-  <tr>
-    <td valign="top">
+<body>
       <form name="form1" method="post" action="accounts_new_operator.jsp">
-        <input type="hidden" name="createdBy" value="<%=aBean.CREATED_BY_PICS%>">
-        <input name="type" type="hidden" value="<%=accountType%>">
-      <table width="100%" border="0" cellpadding="0" cellspacing="0">
-        <tr>
-          <td width="50%" bgcolor="#993300">&nbsp;</td>
-          <td width="146" valign="top" rowspan="2"><a href="index.jsp"><img src="images/logo.gif" alt="HOME" width="146" height="145" border="0"></a></td>
-          <td width="364"><%@ include file="utilities/mainNavigation.jsp"%></td>
-          <td width="147"><img src="images/squares_rightUpperNav.gif" width="147" height="72" border="0"></td>
-          <td width="50%" bgcolor="#993300">&nbsp;</td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td valign="top" align="center"><img src="images/header_manageAccounts.gif" width="252" height="72" border="0"></td>
-          <td valign="top"><%@ include file="utilities/rightLowerNav.jsp"%></td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr> 
-          <td>&nbsp;</td>
-            <td colspan="3"><br>
               <table width="657" cellpadding="10" cellspacing="0">
                 <tr> 
                   <td width="125" align="center" bgcolor="#DDDDDD" class="blueMain"> 
@@ -150,7 +127,7 @@
                         <td class="blueMain" align="right">Facilities</td>
                         <td><%=aBean.getGeneralSelectMultiple("facilities","blueMain",oBean.getFacilitiesArray())%>
                       </tr>
-<%	}//if%>
+<%	} %>
                       <tr> 
                         <td class="blueMain" align="right">Sees All:</td>
                         <td class="blueMain" align="left">
@@ -169,13 +146,7 @@
                           <%=Inputs.getYesNoRadio("doContractorsPay","forms",oBean.doContractorsPay)%>
                         </td>
                       </tr>
-<!-- 					  <tr>
-                        <td class="blueMain" align="right">Cons Require Approval:</td>
-                        <td class="blueMain" align="left" valign="bottom">
-						  <%//=Inputs.getYesNoRadio("approvesRelationships","forms",oBean.approvesRelationships)%>
-                        </td>
-                      </tr>
- -->					  <tr>
+					  <tr>
                         <td class="blueMain" align="right">Sees PQF:</td>
                         <td class="blueMain" align="left" valign="bottom">
                           <%=Inputs.getYesNoRadio("canSeePQF","forms",oBean.canSeePQF)%>
@@ -224,19 +195,7 @@
                   </td>
                   <td width="126" bgcolor="#DDDDDD" class="blueMain"> </td>
                 </tr>
-              </table></td>
-          <td>&nbsp;</td>
-        </tr>
-      </table></form>
-      <br>
-      <br>
-    </td>
-  </tr>
-  <tr>
-    <td height="72" align="center" bgcolor="#003366" class="copyrightInfo">&copy;2007 
-      Pacific Industrial Contractor Screening | site design: <a href="http://www.albumcreative.com" title="Album Creative Studios"><font color="#336699">ACS</font></a></td>
-  </tr>
-</table>
-<%@ include file="includes/statcounter.jsp" %>
+              </table>
+              </form>
 </body>
 </html>
