@@ -25,6 +25,9 @@
          <action name="TestStruts" class="com.picsauditing.actions.FirstStrutsAction">
          	<result>testStruts.jsp</result>
          </action>
+         <action name="RulesList" class="com.picsauditing.actions.RulesAction">
+         	<result>rules.jsp</result>
+         </action>
 	</package>
 	
 </struts>

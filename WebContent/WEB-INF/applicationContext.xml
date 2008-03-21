@@ -8,9 +8,8 @@
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd" default-autowire="autodetect">
 
-
 	<bean class="com.picsauditing.dao.TestBeanDAO"/>
-							      					   
+	<bean class="com.picsauditing.dao.RulesRowDAO"/>
 
 
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
@@ -42,8 +41,4 @@
 
     <tx:annotation-driven transaction-manager="transactionManager" />
 
-
-
-
 </beans>
-
