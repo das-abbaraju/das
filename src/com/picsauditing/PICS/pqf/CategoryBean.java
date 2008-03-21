@@ -30,13 +30,10 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 	public String riskLevel = "1";
 
 	public ArrayList<String> categories = null;
-	public ArrayList<String> allCategories = null;
-	public ArrayList<String> categoryMatrixAL = null;
-	public ArrayList<String> opCategoryMatrixHighRiskAL = null;
-	public ArrayList<String> opCategoryMatrixLowRiskAL = null;
+	public Set<String> categoryMatrixSet = null;
+	public Set<String> opCategoryMatrixRiskSet = null;
 	public TreeMap<String,String> numOfRequiredMap = null;
 	boolean isNumQuestionsMapSet = false;
-//	public TreeMap allCategoriesMap = null;
 
 	ResultSet listRS = null;
 	int numResults = 0;
@@ -493,38 +490,31 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 	}//saveMatrix
 
 	public String getMatrixChecked(String catID,String qID,String auditType) throws Exception {
-		if (null==categoryMatrixAL)
+		if (null==categoryMatrixSet)
 			setCategoryMatrix(auditType);
-		if (categoryMatrixAL.contains(catID+"-"+qID))
+		if (categoryMatrixSet.contains(catID+"-"+qID))
 			return "checked";
 		return "";
 	}//getMatrixChecked
 
-	public String getOpMatrixHighRiskChecked(String catID,String opID) throws Exception {
-		if (null==opCategoryMatrixHighRiskAL)
-			setOpCategoryMatrixHighRisk();
-		if (opCategoryMatrixHighRiskAL.contains(catID+"-"+opID))
+	public String getOpMatrixRiskChecked(String catID,String opID, int riskLevel) throws Exception {
+		if (null==opCategoryMatrixRiskSet)
+			setOpCategoryMatrixRisk();
+		if (opCategoryMatrixRiskSet.contains(catID+"-"+opID+"-"+riskLevel))
 			return "checked";
 		return "";
-	}//getOpMatrixHighRiskChecked
-	public String getOpMatrixLowRiskChecked(String catID,String opID) throws Exception {
-		if (null==opCategoryMatrixLowRiskAL)
-			setOpCategoryMatrixLowRisk();
-		if (opCategoryMatrixLowRiskAL.contains(catID+"-"+opID))
-			return "checked";
-		return "";
-	}//getOpMatrixLowRiskChecked
+	}//getOpMatrixRiskChecked
 
 	public void setCategoryMatrix(String auditType) throws Exception {
 		String selectQuery = "SELECT * FROM desktopMatrix WHERE auditType='"+auditType+"';";
 		try{
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			categoryMatrixAL = new ArrayList<String>();
+			categoryMatrixSet = new HashSet<String>();
 			while (SQLResult.next()) {
 				String catID = SQLResult.getString("catID");
 				String qID = SQLResult.getString("qID");
-				categoryMatrixAL.add(catID+"-"+qID);
+				categoryMatrixSet.add(catID+"-"+qID);
 			}//while
 			SQLResult.close();
 		}finally{
@@ -532,32 +522,19 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		}//finally
 	}//setCategoryMatrix
 
-	public void setOpCategoryMatrixHighRisk() throws Exception {
+	public void setOpCategoryMatrixRisk() throws Exception {
 		try{
-			String selectQuery = "SELECT * FROM pqfOpMatrix WHERE riskLevel="+ContractorBean.RISK_LEVEL_VALUES_ARRAY[1]+";";
+			String selectQuery = "SELECT * FROM pqfOpMatrix";
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			opCategoryMatrixHighRiskAL = new ArrayList<String>();
+			opCategoryMatrixRiskSet = new HashSet<String>();
 			while (SQLResult.next())
-				opCategoryMatrixHighRiskAL.add(SQLResult.getString("catID")+"-"+SQLResult.getString("opID"));
+				opCategoryMatrixRiskSet.add(SQLResult.getString("catID")+"-"+SQLResult.getString("opID")+"-"+SQLResult.getString("riskLevel"));
 			SQLResult.close();
 		}finally{
 			DBClose();
 		}//finally
-	}//setOpCategoryMatrixHighRisk
-	public void setOpCategoryMatrixLowRisk() throws Exception {
-		try{
-			String selectQuery = "SELECT * FROM pqfOpMatrix WHERE riskLevel="+ContractorBean.RISK_LEVEL_VALUES_ARRAY[0]+";";
-			DBReady();
-			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			opCategoryMatrixLowRiskAL = new ArrayList<String>();
-			while (SQLResult.next())
-				opCategoryMatrixLowRiskAL.add(SQLResult.getString("catID")+"-"+SQLResult.getString("opID"));
-			SQLResult.close();
-		}finally{
-			DBClose();
-		}//finally
-	}//setOpCategoryMatrixLowRisk
+	}//setOpCategoryMatrixRisk
 
 	public void generateDynamicCategories(String conID, String auditType, String riskLevel) throws Exception {
 		try{
@@ -575,15 +552,6 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 				SQLResult.close();
 			}//if
 			if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType)){
-				// High uses the Medium riskLevel Trevor 1/18/2008
-				//if (riskLevel == ContractorBean.RISK_LEVEL_VALUES_ARRAY[2])
-				//	riskLevel = ContractorBean.RISK_LEVEL_VALUES_ARRAY[1];
-				//System.out.println(ContractorBean.RISK_LEVEL_VALUES_ARRAY[0]);
-				System.out.println(ContractorBean.RISK_LEVEL_VALUES_ARRAY[1]);
-				System.out.println(ContractorBean.RISK_LEVEL_VALUES_ARRAY[2]);
-				//System.out.println(ContractorBean.RISK_LEVEL_VALUES_ARRAY[3]);
-				if (riskLevel.equals("3")) riskLevel = "2";
-				
 				String selectQuery = "SELECT catID FROM pqfOpMatrix INNER JOIN generalContractors ON "+
 					"(pqfOpMatrix.opID=generalContractors.genID "+
 					"AND generalContractors.subID="+conID+" "+

@@ -15,10 +15,8 @@ try{
 		pcBean.saveMatrix(request.getParameterNames(),auditType);
 	}
 	pcBean.setCategoryMatrix(auditType);
-	if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType)){
-		pcBean.setOpCategoryMatrixLowRisk();
-		pcBean.setOpCategoryMatrixHighRisk();
-	}//if
+	if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType))
+		pcBean.setOpCategoryMatrixRisk();
 //*************************************
 /*		WritableFont times16BoldFont = new WritableFont(WritableFont.TIMES, 10); 
 		WritableCellFormat times16BoldFormat = new WritableCellFormat (times16BoldFont); 
@@ -231,7 +229,7 @@ try{
 //			rowCount++;//*************
 //			count++; //*********
 //			sheet.addCell(new Label(colCount,rowCount,count+"."+pqBean.question,times16BoldFormat)); //********
-		if ((opCount)%REPEAT_COL_NUM==0) {
+			if ((opCount)%REPEAT_COL_NUM==0) {
 				pcBean.resetList();
 %>
               <tr>
@@ -239,7 +237,7 @@ try{
                 <table>
             	  <tr>
             	    <td><input name="action" type="submit" value="Save"></td>
-            	    <td class="blueHeader" id="rotated_text" align="center" valign="middle">Category</td>
+	            	    <td class="blueHeader" id="rotated_text" align="center" valign="middle">Category</td>
             	  </tr>
                 </table>
                </td>
@@ -249,30 +247,20 @@ try{
             	 <td><input name="action" type="submit" value="Save"></td>
               </tr>
 <%			}//if %>
+<%			for (int riskLevel=1; riskLevel<=3; riskLevel++){ %>
 			  <tr style="font: Verdana, Arial, Helvetica, sans-serif; font-size:12px;" <%=Utilities.getBGColor(opCount)%>>
-                <td class="blueSmall" align="right"><nobr><%=opCount%>.<%=opName%> - <strong><%=ContractorBean.RISK_LEVEL_ARRAY[1]%></strong></nobr></td>
-<%			pcBean.resetList();
-			while (pcBean.isNextRecord()) {
+                <td class="blueSmall" align="right"><nobr><%=opCount%>.<%=opName%> - <strong><%=ContractorBean.RISK_LEVEL_ARRAY[riskLevel-1]%></strong></nobr></td>
+<%				pcBean.resetList();
+				while (pcBean.isNextRecord()) {
 //				colCount++; //*****************
 //				if ("checked".equals(pcBean.getMatrixChecked(pcBean.catID,pqBean.questionID,auditType))) //**************
 //					sheet.addCell(new Label(colCount,rowCount,"X",times16BoldFormat)); //**********
 %>
-                <td align="center"><input type="checkbox" name="opChecked_<%=ContractorBean.RISK_LEVEL_VALUES_ARRAY[1]%>_cID_<%=pcBean.catID%>_oID_<%=opID%>" <%=pcBean.getOpMatrixHighRiskChecked(pcBean.catID,opID)%>></td>
-<%			}//while %>
-                <td class="blueSmall" align="left"><nobr><%=opCount%>.<%=opName%></nobr></td>
+                <td align="center"><input type="checkbox" name="opChecked_<%=riskLevel%>_cID_<%=pcBean.catID%>_oID_<%=opID%>" <%=pcBean.getOpMatrixRiskChecked(pcBean.catID,opID,riskLevel)%>></td>
+<%				}//while %>
+                <td class="blueSmall" align="left"><nobr><%=opCount%>.<%=opName%> - <strong><%=ContractorBean.RISK_LEVEL_ARRAY[riskLevel-1]%></strong></nobr></td>
               </tr>
-			  <tr style="font: Verdana, Arial, Helvetica, sans-serif; font-size:12px;" <%=Utilities.getBGColor(opCount)%>>
-                <td class="blueSmall" align="right"><nobr><%=opCount%>.<%=opName%> - <strong><%=ContractorBean.RISK_LEVEL_ARRAY[0]%></strong></nobr></td>
-<%			pcBean.resetList();
-			while (pcBean.isNextRecord()) {
-//				colCount++; //*****************
-//				if ("checked".equals(pcBean.getMatrixChecked(pcBean.catID,pqBean.questionID,auditType))) //**************
-//					sheet.addCell(new Label(colCount,rowCount,"X",times16BoldFormat)); //**********
-%>
-                <td align="center"><input type="checkbox" name="opChecked_<%=ContractorBean.RISK_LEVEL_VALUES_ARRAY[0]%>_cID_<%=pcBean.catID%>_oID_<%=opID%>" <%=pcBean.getOpMatrixLowRiskChecked(pcBean.catID,opID)%>></td>
-<%			}//while %>
-                <td class="blueSmall" align="left"><nobr><%=opCount%>.<%=opName%></nobr></td>
-              </tr>
+<%			}//for %>
 <%		}//while 
 	}//if
 //*******************************
