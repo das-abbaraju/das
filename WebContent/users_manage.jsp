@@ -1,88 +1,21 @@
-<%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@page language="java" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<%@page import="org.apache.commons.beanutils.*"%>
-<%@page import="java.util.*"%>
-<%@page import="com.picsauditing.search.SelectUser"%>
-<%@page import="com.picsauditing.search.Report"%>
 <%
-permissions.tryPermission(OpPerms.EditUsers, OpType.View);
-
-String getParams = ""; // Used when we go to Page 2,3,etc
-
-String accountID = permissions.getAccountIdString();
-if (permissions.hasPermission(OpPerms.AllOperators) && request.getParameter("accountID") != null) {
-	accountID = Utilities.intToDB(request.getParameter("accountID"));
-	getParams += "&accountID="+accountID;
-}
-
-List<BasicDynaBean> facilityMap;
-if ("filterOperators".equals(request.getParameter("action"))) {
-	String filter = request.getParameter("filter");
-	String where = "";
-	if (filter != null && filter.length() > 3) {
-		where = "a.id IN (SELECT accountID FROM users WHERE name LIKE '%"+Utilities.escapeQuotes(filter)+"%' OR username LIKE '%"+Utilities.escapeQuotes(filter)+"%' OR email LIKE '%"+Utilities.escapeQuotes(filter)+"%')";
-	}
-	facilityMap = FACILITIES.listAll(where);
-	%>
-<option value="1100">PICS Employees</option>
-		<% for(BasicDynaBean row : facilityMap) { %>
-		<option value="<%=row.get("id")%>"<%=(row.get("id").toString().equals(accountID))?" SELECTED":""%>><%=row.get("name")%></option>
-		<% } %>
-	<%
-	return;
-}
-facilityMap = FACILITIES.listAll();
-
-SelectUser sql = new SelectUser();
-sql.addField("u.lastLogin");
-sql.addField("u.isGroup");
-
-Report search = new Report();
-search.setSql(sql);
-
-String isGroup = request.getParameter("isGroup");
-String isActive = request.getParameter("isActive");
-if (isActive == null) isActive = "Yes";
-if ("Yes".equals(isGroup) || "No".equals(isGroup)) {
-	sql.addWhere("isGroup = '"+isGroup+"' ");
-	getParams += "&isGroup="+isGroup;
-}
-if ("Yes".equals(isActive) || "No".equals(isActive)) {
-	sql.addWhere("isActive = '"+isActive+"' ");
-	getParams += "&isActive="+isActive;
-}
-else
-{
-	getParams += "&isActive=";
-}
-
-sql.addWhere("accountID = "+accountID);
-// Only search for Auditors and Admins
-sql.addOrderBy("u.isGroup, u.name");
-search.setPageByResult(request);
-search.setLimit(20);
-
-List<BasicDynaBean> searchData = search.getPage();
-
 pageBean.setTitle("Manage Users");
 pageBean.includeScriptaculous(true);
+pageBean.includeDynamicSearch(true);
 %>
 <%@ include file="includes/header.jsp" %>
 <script type="text/javascript">
 var currentUser = 0;
-var accountID = <%=accountID%>;
+var accountID = <s:property value="accountId"/>;
 
 var permTypes = new Array();
-<%
-for(Permission perm: permissions.getPermissions()) {
-	if (perm.isGrantFlag()) {
-		OpPerms p = perm.getAccessType();
-		%>permTypes['<%=p.toString()%>'] = new Array("<%=p.getHelpText() %>",
-			<%=p.usesView() %>, <%=p.usesEdit() %>, <%=p.usesDelete() %>);
-		<%
-	}
-}
-%>
+<s:iterator value="%{permissions.getPermissions()}">
+	<s:if test="grantFlag == true">permTypes['<s:property value="accessType.toString()"/>'] = new Array("<s:property value="accessType.helpText"/>",<s:property value="accessType.usesView()"/>,<s:property value="accessType.usesEdit()"/>,<s:property value="accessType.usesDelete()"/>);</s:if>
+</s:iterator>
+
 function showPermDesc(item) {
 	var x = $F(item);
 	$('permDescription').innerHTML = permTypes[x][0];
@@ -92,8 +25,9 @@ function showPermDesc(item) {
 }
 
 function filterOperators() {
-	pars = '&action=filterOperators&filter='+$('filter').getValue();
-	var myAjax = new Ajax.Updater('operators', 'users_manage.jsp', {method: 'get', parameters: pars});
+	pars = '&action=filterOperators&filter='+$('filter').getValue()+'&shouldIncludePICS=true';
+	
+	var myAjax = new Ajax.Updater('operators', 'AsyncFacilitiesGet.action', {method: 'get', parameters: pars});
 }
 function getPage(pars) {
 	pars = 'userID='+currentUser+'&accountID='+accountID+pars;
@@ -149,31 +83,31 @@ function checkUsername(username, userID) {
 <table border="0">
 <tr>
 	<td colspan="2" align="center" class="blueSmall" height="30">
-		<form action="users_manage.jsp" method="get">
-			<% if (permissions.hasPermission(OpPerms.AllOperators)) { %>
+		<s:form name="form1" id="form1" action="UsersManage" method="post">
+			<s:if test="hasAllOperators">
 			Filter by User: <input type="text" name="filter" id="filter" class="blueSmall" onchange="filterOperators();" /><br />
-			Operator:	
-			<select id="operators" name="accountID" class="blueSmall">
-				<option value="1100">PICS Employees</option>
-				<% for(BasicDynaBean row : facilityMap) { %>
-				<option value="<%=row.get("id")%>"<%=(row.get("id").toString().equals(accountID))?" SELECTED":""%>><%=row.get("name")%></option>
-				<% } %>
-			</select> <br />
-			<% } %>
+			Operator:<span id="operators"><s:action name="AsyncFacilitiesGet" executeResult="true" >
+				<s:param name="shouldIncludePICS" value="%{true}"/>
+			</s:action></span><br />
+			</s:if>
 			Type:
-			<select name="isGroup" class="blueSmall">
-				<option value="">All</option>
-				<option value="Yes"<%=("Yes".equals(isGroup))?" SELECTED":""%>>Groups</option>
-				<option value="No"<%=("No".equals(isGroup))?" SELECTED":""%>>Users</option>
-			</select>
+				<s:select name="isGroup"
+				       headerKey="" headerValue="All"
+				       list="#{'Yes':'Groups', 'No':'Users'}"
+				       value="isGroup"
+				/>
 			Status:
-			<select name="isActive" class="blueSmall">
-				<option value="">All</option>
-				<option value="Yes"<%=("Yes".equals(isActive))?" SELECTED":""%>>Active</option>
-				<option value="No"<%=("No".equals(isActive))?" SELECTED":""%>>Inactive</option>
-			</select>
+				<s:select name="isActive"
+				       headerKey="" headerValue="All"
+				       list="#{'Yes':'Active', 'No':'Inactive'}"
+				       value="isActive"
+				/>
 			<input type="submit" value="Show" class="blueSmall"/>
-		</form>
+			
+			<input type="hidden" name="showPage" value="1"/>
+			<input type="hidden" name="startsWith" value=""/>
+			<input type="hidden" name="orderBy"  value="name"/>
+		</s:form>
 	</td>
 </tr>
 <tr>
@@ -185,33 +119,35 @@ function checkUsername(username, userID) {
 <tr valign="top"><td>
 	<table border="0" cellpadding="1" cellspacing="1">
 		<tr>
-			<td colspan="3"><%=search.getPageLinks(getParams)%></td>
+			<td colspan="3"><s:property value="search.pageLinksWithDynamicForm" escape="false"/></td>
 		</tr>
 		<tr bgcolor="#003366" class="whiteTitle">
 			<td>&nbsp;</td>
 			<td colspan="2">User/Group</td>
 			<td>Last Login</td>
 		</tr>
-	<%
-	int counter = search.getSql().getStartRow()+1;
-	for(BasicDynaBean row: searchData) {
-		String lastLogin = DateBean.toShowFormat(row.get("lastLogin"));
-		boolean rowGroup = "Yes".equals(row.get("isGroup"));
-		if (rowGroup) lastLogin = "N/A";
-		else if(lastLogin.equals("")) lastLogin = "never";
-	%>
+	
+	<s:iterator value="searchData" status="stat">
 		<tr bgcolor="#FFFFFF" 
 			class="active" 
-			style="cursor: pointer; <%="No".equals(row.get("isActive"))?" font-style: italic; color: #999999":""%>"
-			onclick="showUser(<%=row.get("id")%>)">
-			<td align="right"><%=counter++%>.</td>
-			<td><%=rowGroup?"G":"U"%></td>
-			<td<%=rowGroup?" style=\"font-weight: bold \"":""%>><%=row.get("name")%></td>
-			<td><%=lastLogin%></td>
+			style="cursor: pointer; <s:if test="'No'.equals(isActive)">font-style: italic; color: #999999</s:if>"
+			onclick="showUser('<s:property value="[0].get('id')"/>')">
+			<td align="right"><s:property value="#stat.index + search.sql.startRow + 1" />.</td>
+			
+			<s:if test="'Yes'.equals([0].get('isGroup'))">
+				<td>G</td>
+				<td style="font-weight: bold "><s:property value="[0].get('name')"/></td>
+				<td>N/A</td>
+			</s:if>
+			<s:else>
+				<td>U</td>
+				<td><s:property value="[0].get('name')"/></td>
+				<td><s:if test="[0].get('lastLogin') != null"><s:date name="[0].get('lastLogin')" format="MM/dd/yy"/></s:if>
+						<s:else>never</s:else></td>
+			</s:else>
 		</tr>
-	<%
-	}
-	%>
+	</s:iterator>
+	
 	</table>
 </td>
 <td id="editUser" width="500" class="blueMain">
