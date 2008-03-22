@@ -51,7 +51,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td><decorator:body /></td>
+		<td align="center"><decorator:body /><br /><br /></td>
 	</tr>
 	<tr bgcolor="#003366">
 		<td height="72" align="center" valign="middle" class="footer">&copy;

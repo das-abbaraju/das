@@ -37,33 +37,15 @@ try{
 %>
 <html>
 <head>
+  <title>Audit</title>
   <SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
   <SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
   <SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
-
-  <title>CHANGEME</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <link href="PICS.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
   <tr> 
     <td valign="top">
-	  <table width="100%" border="0" cellpadding="0" cellspacing="0">
-        <tr> 
-          <td width="50%" bgcolor="#993300">&nbsp;</td>
-          <td width="146" valign="top" rowspan="2"><a href="index.jsp"><img src="images/logo.gif" alt="HOME" width="146" height="145" border="0"></a></td>
-          <td width="364"><%@ include file="utilities/mainNavigation.jsp"%></td>
-          <td width="147"><img src="images/squares_rightUpperNav.gif" width="147" height="72" border="0"></td>
-          <td width="50%" bgcolor="#993300">&nbsp;</td>
-        </tr>
-        <tr> 
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td valign="top"><%@ include file="utilities/rightLowerNav.jsp"%></td>
-          <td>&nbsp;</td>
-        </tr>
-      </table>
       <table border="0" cellspacing="0" cellpadding="1" class="blueMain" align="center">
         <tr align="center" class="blueMain">
           <td><%@ include file="includes/nav/secondNav.jsp"%></td>
@@ -80,16 +62,6 @@ try{
         <tr align="center">
           <td>
 		    <form name="form1" method="post" action="audit_editRequirements.jsp?id=<%=id%>">
-<%/*              <table>
-                <tr> 
-                  <td>
-                    <input name="auditClosedDate" id="auditClosedDate" type="text" class="forms" size="10" onClick="cal1.select(document.forms[0].auditClosedDate,'auditClosedDate','M/d/yy','<%=cBean.auditClosedDate%'); return false;" value="<%=cBean.auditClosedDate%">
-              <br><input name="action" type="submit" class="forms" value="Submit">
-              click to close this audit
-				  </td>
-                </tr>
-              </table>
-*/%>
               <table width="657" border="0" cellpadding="1" cellspacing="1">
                 <tr class="whiteTitle"> 
                   <td width="30" bgcolor="#003366">#</td>
@@ -185,15 +157,6 @@ try{
           <td>&nbsp;</td>
         </tr>
       </table>
-      <br> <br>
-	</td>
-  </tr>
-  <tr> 
-    <td height="72" align="center" bgcolor="#003366" class="copyrightInfo">&copy;2007 
-      Pacific Industrial Contractor Screening | site design: <a href="http://www.albumcreative.com" title="Album Creative Studios"><font color="#336699">ACS</font></a></td>
-  </tr>
-</table>
-<%@ include file="includes/statcounter.jsp" %>
 </body>
 </html>
 <%	}finally{

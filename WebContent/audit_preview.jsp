@@ -15,28 +15,13 @@ try{
 %>
 <html>
 <head>
-  <title>CHANGEME</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <link href="PICS.css" rel="stylesheet" type="text/css">
+<title>Audit Preview</title>
 </head>
 <body>
 <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
   <tr> 
     <td valign="top">
 	  <table width="100%" border="0" cellpadding="0" cellspacing="0">
-        <tr> 
-          <td width="50%" bgcolor="#993300">&nbsp;</td>
-          <td width="146" valign="top" rowspan="2"><a href="index.jsp"><img src="images/logo.gif" alt="HOME" width="146" height="145" border="0"></a></td>
-          <td width="364"><%@ include file="utilities/mainNavigation.jsp"%></td>
-          <td width="147"><img src="images/squares_rightUpperNav.gif" width="147" height="72" border="0"></td>
-          <td width="50%" bgcolor="#993300">&nbsp;</td>
-        </tr>
-        <tr> 
-          <td>&nbsp;</td>
-          <td valign="top" align="center">&nbsp;</td>
-          <td valign="top"><%@ include file="utilities/rightLowerNav.jsp"%></td>
-          <td>&nbsp;</td>
-        </tr>
         <tr> 
           <td>&nbsp;</td>
           <td colspan="3" align="center">
@@ -103,19 +88,6 @@ try{
             	</td>
               </tr>
             </table>
-		  </td>
-          <td>&nbsp;</td>
-        </tr>
-      </table>
-      <br> <br>
-	</td>
-  </tr>
-  <tr> 
-    <td height="72" align="center" bgcolor="#003366" class="copyrightInfo">&copy;2007 
-      Pacific Industrial Contractor Screening | site design: <a href="http://www.albumcreative.com" title="Album Creative Studios"><font color="#336699">ACS</font></a></td>
-  </tr>
-</table>
-<%@ include file="includes/statcounter.jsp" %>
 </body>
 </html>
 <%	}finally{

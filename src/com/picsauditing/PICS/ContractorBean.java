@@ -134,6 +134,7 @@ public class ContractorBean extends DataBean {
 	public String riskLevel = "2";
 	public int annualUpdateEmails = 0;
 	
+	// questionID=894 
 	// 22.1.1  	Does your company have employees who are covered under DOT OQ requirements?
 	public String oqEmployees = "";
 
@@ -1730,4 +1731,4 @@ public class ContractorBean extends DataBean {
 
 		return false;
 	}
-}//ContractorBean
+}

@@ -49,7 +49,7 @@
 %>
 <html>
 <head>
-<title>CHANGEME</title>
+<title>PQF Verify</title>
 <meta name="header_gif" content="header_prequalification.gif" />
 <SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
