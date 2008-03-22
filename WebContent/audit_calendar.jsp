@@ -26,12 +26,7 @@
 %>
 <html>
 <head>
-	<title>PICS - Pacific Industrial Contractor Screening</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<META Http-Equiv="Cache-Control" Content="no-cache">
-	<META Http-Equiv="Pragma" Content="no-cache">
-	<META Http-Equiv="Expires" Content="0">
-	<link href="PICS.css" rel="stylesheet" type="text/css">
+	<title>Audit Calendar</title>
 </head>
 <body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 <table width="100%" height="100%" border="1" cellpadding="0" cellspacing="0">

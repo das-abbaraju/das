@@ -21,14 +21,14 @@
 
 <html>
 <head>
-  <title>PICS - Pacific Industrial Contractor Screening</title>
+  <title>CHANGEME</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <link href="PICS.css" rel="stylesheet" type="text/css">
+  
   <SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
   <SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
   <SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
 </head>
-<body bgcolor="#EEEEEE" background="images/watermark.gif" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<body>
   <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
     <tr>
       <td valign="top">

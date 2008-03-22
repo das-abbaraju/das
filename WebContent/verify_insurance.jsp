@@ -28,7 +28,7 @@ try{
 <html>
 
 <head>
-<title>PICS - Pacific Industrial Contractor Screening</title>
+<title>Verify Insurance</title>
 <meta name="header_gif" content="header_insurance.gif" />
 <script language="JavaScript" SRC="js/ImageSwap.js" type="text/javascript"></script>
 <script language="JavaScript" SRC="js/DHTMLUtils.js" type="text/javascript"></script>

@@ -7,6 +7,7 @@
 		<pattern>/career_opportunity.jsp</pattern>
 		<pattern>/services.jsp</pattern>
 		<pattern>/login.jsp</pattern>
+		<pattern>/featured*</pattern>
 		<pattern>/forgot_password.jsp</pattern>
 		<pattern>/contractor_new.jsp</pattern>
 		<pattern>/contractor_new_instructions.jsp</pattern>
@@ -14,6 +15,7 @@
 		<pattern>/milestonepartnership.jsp</pattern>
 		<pattern>/article_OSHA300.jsp</pattern>
 		<pattern>/Usergroup_2008.jsp</pattern>
+		<pattern>/safety_2007.jsp</pattern>
 	</decorator>
 	<decorator name="main" page="main.jsp">
 		<pattern>/reports.jsp</pattern>
@@ -21,8 +23,11 @@
 		<pattern>/*</pattern>
 	</decorator>
 	<decorator name="ignoreMe">
+		<pattern>/*ajax*</pattern>
+		<pattern>/exception_handler.jsp</pattern>
 		<pattern>/pqf_printAll.jsp</pattern>
 		<pattern>/audit_calendar*</pattern>
-		<pattern>/*ajax*</pattern>
+		<pattern>/reasons.html</pattern>
+		<pattern>/send_welcome_email.jsp</pattern>
 	</decorator>
 </decorators>
