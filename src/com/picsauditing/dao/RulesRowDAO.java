@@ -5,7 +5,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
-import com.picsauditing.beans.RulesRowBean;
+
+import com.picsauditing.entities.RulesRow;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class RulesRowDAO {
         return em;
     }
 
-	public RulesRowBean save(RulesRowBean o) {
+	public RulesRow save(RulesRow o) {
 		if (o.getRowID() == 0) {
 			em.persist(o);
 		} else {
@@ -30,20 +31,20 @@ public class RulesRowDAO {
 		return o;
 	}
 	public void remove(int id) {
-		RulesRowBean row = find(id);
+		RulesRow row = find(id);
         if (row != null) {
             em.remove(row);
         }
     }
 	
 	@SuppressWarnings("unchecked")
-    public List<RulesRowBean> findAll() {
+    public List<RulesRow> findAll() {
         Query query = getEntityManager().createQuery("select r FROM RulesRowBean r");
         return query.getResultList();
     }
 	
-	public RulesRowBean find(int id) {
-        return em.find(RulesRowBean.class, id);
+	public RulesRow find(int id) {
+        return em.find(RulesRow.class, id);
     }
 
 }

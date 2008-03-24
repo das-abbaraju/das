@@ -1,4 +1,4 @@
-package com.picsauditing.beans;
+package com.picsauditing.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="rules_row")
-public class RulesRowBean {
+public class RulesRow {
 	@Id
 	@GeneratedValue( strategy=GenerationType.IDENTITY )
 	protected int rowID = 0;
@@ -118,6 +118,4 @@ public class RulesRowBean {
 	public void setValue5(String value5) {
 		this.value5 = value5;
 	}
-
-
 }

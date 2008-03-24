@@ -4,10 +4,10 @@ import java.util.List;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.dao.RulesRowDAO;
-import com.picsauditing.beans.RulesRowBean;
+import com.picsauditing.entities.RulesRow;
 
 public class RulesAction extends ActionSupport {
-	protected List<RulesRowBean> rulesRows = null;
+	protected List<RulesRow> rulesRows = null;
 	protected RulesRowDAO dao = null;
 
 	public RulesAction(RulesRowDAO dao) {
@@ -20,11 +20,11 @@ public class RulesAction extends ActionSupport {
 		return SUCCESS;
 	}
 
-	public List<RulesRowBean> getRulesRows() {
+	public List<RulesRow> getRulesRows() {
 		return rulesRows;
 	}
 
-	public void setRulesRows(List<RulesRowBean> rulesRows) {
+	public void setRulesRows(List<RulesRow> rulesRows) {
 		this.rulesRows = rulesRows;
 	}
 
