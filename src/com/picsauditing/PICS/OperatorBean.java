@@ -5,6 +5,7 @@ import java.util.*;
 import java.text.DecimalFormat;
 
 import com.picsauditing.entities.AuditOperator;
+import com.picsauditing.entities.AuditType;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
 
@@ -252,17 +253,25 @@ public class OperatorBean extends DataBean {
 	public static final boolean INCLUDE_INACTIVE = false;
 	public static final String PICS_OP_ID = "0";
 
+	private boolean canSeeAudit(int auditID) {
+		if (canSeeAudits == null || canSeeAudits.size() == 0) return false;
+		for (AuditOperator audit : canSeeAudits) {
+			if (audit.getAuditTypeID() == auditID)
+				return audit.getMinRiskLevel() > 0;
+		}
+		return false;
+	}
 	public boolean canSeePQF() {
-		return "Yes".equals(canSeePQF);
+		return canSeeAudit(AuditType.PQF);
 	}
 	public boolean canSeeDesktop() {
-		return "Yes".equals(canSeeDesktop);
+		return canSeeAudit(AuditType.DESKTOP);
 	}
 	public boolean canSeeDA() {
-		return "Yes".equals(canSeeDA);
+		return canSeeAudit(AuditType.DA);
 	}
 	public boolean canSeeOffice() {
-		return "Yes".equals(canSeeOffice);
+		return canSeeAudit(AuditType.OFFICE);
 	}
 	public boolean canSeeField() {
 		return "Yes".equals(canSeeField);
