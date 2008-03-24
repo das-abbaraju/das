@@ -17,17 +17,19 @@
 		<pattern>/Usergroup_2008.jsp</pattern>
 		<pattern>/safety_2007.jsp</pattern>
 	</decorator>
-	<decorator name="main" page="main.jsp">
-		<pattern>/reports.jsp</pattern>
-		<pattern>/*action</pattern>
-		<pattern>/*</pattern>
+	<decorator name="blank" page="async.jsp">
 	</decorator>
 	<decorator name="ignoreMe">
 		<pattern>/*ajax*</pattern>
+		<pattern>/faces*</pattern>
 		<pattern>/exception_handler.jsp</pattern>
 		<pattern>/pqf_printAll.jsp</pattern>
-		<pattern>/audit_calendar*</pattern>
 		<pattern>/reasons.html</pattern>
 		<pattern>/send_welcome_email.jsp</pattern>
+	</decorator>
+	<decorator name="main" page="main.jsp">
+		<pattern>/reports.jsp</pattern>
+		<pattern>/*action</pattern>
+		<pattern>/*.jsp</pattern>
 	</decorator>
 </decorators>

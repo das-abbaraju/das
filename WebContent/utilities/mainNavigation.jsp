@@ -50,13 +50,15 @@ function MM_swapImage() { //v3.0
 	for (int i=0;i<LINKS_ARRAY.length;i+=2) {
 		if (!" ".equals(LINKS_ARRAY[i])) {
 			if (!firstSquare) {
-%> <td width=1><img src=../images/spacer.gif width=1></td>
-<%			}//if %>
+%> <td width=1><img src="images/spacer.gif" width="1"></td>
+<%			} %>
     <td width="72"><%
 			if (LINKS_ARRAY[i+1].equals(whichPage)) { 
-    %><img src="images/square<%=LINKS_ARRAY[i+1]%>_2.gif" height="72" border="0"><%			} else {
-    %><a href="<%=LINKS_ARRAY[i]%>.jsp"><img name ="square<%=LINKS_ARRAY[i+1]%>" height="72" src="images/square<%=LINKS_ARRAY[i+1]%>.gif" border="0" onMouseOver="MM_swapImage('square<%=LINKS_ARRAY[i+1]%>','','images/square<%=LINKS_ARRAY[i+1]%>_2.gif',1)" onMouseOut="MM_swapImgRestore()"></a><%			} //else 
-  %></td>
+    %><img src="images/square<%=LINKS_ARRAY[i+1]%>_2.gif" height="72" border="0"><%
+		    } else {
+    %><a href="<%=LINKS_ARRAY[i]%>.jsp"><img name ="square<%=LINKS_ARRAY[i+1]%>" height="72" src="images/square<%=LINKS_ARRAY[i+1]%>.gif" border="0" onMouseOver="MM_swapImage('square<%=LINKS_ARRAY[i+1]%>','','images/square<%=LINKS_ARRAY[i+1]%>_2.gif',1)" onMouseOut="MM_swapImgRestore()"></a><%
+    		}
+    %></td>
 <%			firstSquare = false;
 			thiscount +=1;
 		}//if
