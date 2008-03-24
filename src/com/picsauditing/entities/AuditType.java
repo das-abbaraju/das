@@ -15,6 +15,17 @@ import javax.persistence.TemporalType;
 @Table( name="audit_type" )
 public class AuditType 
 {
+	@Deprecated
+	public static final int PQF = 1;
+	@Deprecated
+	public static final int DESKTOP = 2;
+	@Deprecated
+	public static final int OFFICE = 3;
+	@Deprecated
+	public static final int NCMS = 4;
+	@Deprecated
+	public static final int DA = 6;
+	
 	@Id
 	@GeneratedValue( strategy = GenerationType.IDENTITY )
 	protected int auditTypeID = 0;

@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.*;
 import java.text.DecimalFormat;
 
+import com.picsauditing.entities.AuditOperator;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
 
@@ -15,6 +16,7 @@ public class OperatorBean extends DataBean {
 	public String seesAllContractors = "No";
 	public String canAddContractors = "No";
 	public String doContractorsPay = "Yes";
+	private Set<AuditOperator> canSeeAudits;
 	public String canSeePQF = "No";
 	public String canSeeDesktop = "No";
 	public String canSeeDA = "No";
@@ -456,7 +458,7 @@ public class OperatorBean extends DataBean {
 		}
 	}
 
-	public void setFromResultSet(ResultSet SQLResult) throws Exception {
+	private void setFromResultSet(ResultSet SQLResult) throws Exception {
 		id = SQLResult.getString("id");
 		doSendActivationEmail = SQLResult.getString("doSendActivationEmail");
 		activationEmails = SQLResult.getString("activationEmails");
