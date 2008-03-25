@@ -21,7 +21,6 @@ public class Facilities extends DataBean{
 	HashSet<String> contractorsDontPaySet = new HashSet<String>();
 	HashSet<String> contractorsPayMultipleSet = new HashSet<String>();
 	HashSet<String> corporateSet = new HashSet<String>();
-	public Collection<String> pqfOnlySet = new HashSet<String>();
 	public java.util.HashMap<String,String> nameMap = new HashMap<String,String>();
 
 	public void resetFacilities() throws Exception{
@@ -48,20 +47,6 @@ public class Facilities extends DataBean{
 		return corporateSet.contains(opID);
 	}
 	
-	public boolean isPqfOnly(String opID) throws Exception{
-		setFacilitiesFromDB();
-		return pqfOnlySet.contains(opID);
-	}
-	
-	public boolean isPqfOnly(Collection<String> generalContractors) throws Exception{
-		setFacilitiesFromDB();
-		for (String facID : generalContractors) {
-			if (!isPqfOnly(facID))
-				return false;
-		}//if
-		return true;
-	}//ispqfOnly
-
 	public void setFacilitiesFromDB() throws Exception{
 		if (isSet)
 			return;
@@ -69,7 +54,6 @@ public class Facilities extends DataBean{
 		contractorsDontPaySet = new HashSet<String>();
 		contractorsPayMultipleSet = new HashSet<String>();
 		corporateSet = new HashSet<String>();
-		pqfOnlySet = new HashSet<String>();
 		nameMap = new HashMap<String,String>();
 		
 		String selectQuery = "SELECT id, name, type, doContractorsPay FROM accounts INNER JOIN operators USING(id) WHERE type IN('Operator','Corporate') ORDER BY name ASC";
@@ -91,13 +75,6 @@ public class Facilities extends DataBean{
 					corporateSet.add(opID);
 				nameMap.put(opID,name);
 			}//while
-			SQLResult.close();
-			selectQuery = "SELECT id FROM operators WHERE canSeePQF='Yes' "+
-				"AND canSeeDesktop='No' AND canSeeDA='No' AND "+
-				"canSeeOffice='No' AND canSeeField='No';";
-			SQLResult = SQLStatement.executeQuery(selectQuery);
-			while (SQLResult.next())
-				pqfOnlySet.add(SQLResult.getString("id"));
 			SQLResult.close();
 		}finally{
 			DBClose();

@@ -22,6 +22,7 @@ public class Permissions {
 	private boolean loggedIn = false;
 	private Set<Integer> groups = new HashSet<Integer>();
 	private Set<Permission> permissions = new HashSet<Permission>();	
+	private Set<Integer> canSeeAudits = new HashSet<Integer>();
 	private String username;
 	private String name;
 	private int accountID;
@@ -223,5 +224,17 @@ public class Permissions {
 
 	public Set<Permission> getPermissions() {
 		return permissions;
+	}
+
+	public boolean canSeeAudit(int auditType) {
+		if (isAdmin())
+			return true;
+		if (isOperator())
+			return canSeeAudits.contains(new Integer(auditType));
+		return false;
+	}
+	
+	public void setCanSeeAudit(Set<Integer> auditIds) {
+		canSeeAudits = auditIds;
 	}
 }

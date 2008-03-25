@@ -19,6 +19,7 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.User;
+import com.picsauditing.entities.AuditType;
 
 public class ContractorBean extends DataBean {
 	public static final String STATUS_ACTIVE = "Active"; // these should match the ENUM for status in the DB table
@@ -378,14 +379,14 @@ public class ContractorBean extends DataBean {
 
 	public String calcPICSStatusForOperator(OperatorBean oBean) throws Exception {
 		 //MULTIAUDIT change function calls to get individual audit status
-		if (oBean.canSeePQF() && !AUDIT_STATUS_CLOSED.equals(calcPQFStatus()))
+		if (oBean.isAuditRequired(AuditType.PQF,Integer.parseInt(riskLevel)) && !AUDIT_STATUS_CLOSED.equals(calcPQFStatus()))
 			return STATUS_INACTIVE;
 		if (isExempt())
 			return STATUS_ACTIVE;
 		String officeStatus = calcOfficeStatus();
 		if (isNewOfficeAudit())
 			officeStatus = calcOfficeStatusNew();
-		if (oBean.canSeeDesktop())
+		if (oBean.isAuditRequired(AuditType.DESKTOP,Integer.parseInt(riskLevel)))
 			if (isDesktopStatusOldAuditStatus()){
 				if (!AUDIT_STATUS_CLOSED.equals(officeStatus))
 					return STATUS_INACTIVE;
@@ -393,9 +394,9 @@ public class ContractorBean extends DataBean {
 			else
 				if (!AUDIT_STATUS_CLOSED.equals(calcDesktopStatus()))
 					return STATUS_INACTIVE;
-		if (oBean.canSeeDA() && !AUDIT_STATUS_CLOSED.equals(calcDaStatus()))
-				return STATUS_INACTIVE;
-		if (oBean.canSeeOffice() && !AUDIT_STATUS_CLOSED.equals(officeStatus))
+		if (oBean.isAuditRequired(AuditType.DA,Integer.parseInt(riskLevel)) && !AUDIT_STATUS_CLOSED.equals(calcDaStatus()))
+			return STATUS_INACTIVE;
+		if (oBean.isAuditRequired(AuditType.OFFICE,Integer.parseInt(riskLevel)) && !AUDIT_STATUS_CLOSED.equals(officeStatus))
 			return STATUS_INACTIVE;
 		return STATUS_ACTIVE;
 	}

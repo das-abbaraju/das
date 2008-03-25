@@ -40,6 +40,7 @@ try {
 	String showPage = request.getParameter("showPage");
 	if (showPage == null)	showPage = "1";
 %>
+<%@page import="com.picsauditing.entities.AuditType"%>
 <html>
 <head>
 <title>Contractor List</title>
@@ -88,13 +89,13 @@ try {
             <table width="657" border="0" cellpadding="1" cellspacing="1">
               <tr bgcolor="#003366" class="whiteTitle"> 
                 <td colspan="2"><a href="?orderBy=name" class="whiteTitle">Contractor</a></td>
-<%	if (pBean.oBean.canSeePQF()){%>
+<%	if (permissions.canSeeAudit(AuditType.PQF)){%>
                 <td align="center" bgcolor="#336699">PQF</td>
-<%	} if (pBean.oBean.canSeeDesktop()){%>
+<%	} if (permissions.canSeeAudit(AuditType.DESKTOP)){%>
                 <td align="center" bgcolor="#6699CC"><nobr>Desktop Audit</nobr></td>
-<%	} if (pBean.oBean.canSeeDA()){%>
+<%	} if (permissions.canSeeAudit(AuditType.DA)){%>
                 <td align="center" bgcolor="#6699CC"><nobr>D&amp;A Audit</nobr></td>
-<%	} if (pBean.oBean.canSeeOffice()){%>
+<%	} if (permissions.canSeeAudit(AuditType.OFFICE)){%>
                 <td align="center" bgcolor="#6699CC"><nobr>Office Audit</nobr></td>
 <%	} if (pBean.oBean.canSeeInsurance()){%>
                 <td align="center" bgcolor="#6699CC"><nobr>Ins. Certs</nobr></td>
@@ -115,13 +116,13 @@ try {
                 <td>
 				  <a href="contractor_detail.jsp?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class="<%=thisClass%>"><%=sBean.aBean.name%></a>
                 </td>
-<%		if (pBean.oBean.canSeePQF()){%>
+<%		if (permissions.canSeeAudit(AuditType.PQF)){%>
                 <td align="center"><%=sBean.getListLink(com.picsauditing.PICS.pqf.Constants.PQF_TYPE)%></td>
-<%		} if (pBean.oBean.canSeeDesktop()){%>
+<%		} if (permissions.canSeeAudit(AuditType.DESKTOP)){%>
                 <td align="center"><%=sBean.getListLink(com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE)%></td>
-<%		} if (pBean.oBean.canSeeDA()){%>
+<%		} if (permissions.canSeeAudit(AuditType.DA)){%>
                 <td align="center"><%=sBean.getListLink(com.picsauditing.PICS.pqf.Constants.DA_TYPE)%></td>
-<%		} if (pBean.oBean.canSeeOffice()){%>
+<%		} if (permissions.canSeeAudit(AuditType.OFFICE)){%>
                 <td align="center"><%=sBean.getListLink(com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE)%></td>
 <%		} if (pBean.oBean.canSeeInsurance()){%>
                 <td align="center">

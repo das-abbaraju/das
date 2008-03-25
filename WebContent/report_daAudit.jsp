@@ -34,7 +34,7 @@ if (action != null) {
 SelectAccount sql = new SelectAccount();
 
 sql.setType(SelectAccount.Type.Contractor);
-sql.addWhere("a.id IN (SELECT gc.subID FROM generalcontractors gc JOIN operators gc_o ON gc.genID = gc_o.id AND gc_o.canSeeDA = 'Yes')");
+sql.addWhere("a.id IN (SELECT gc.subID FROM generalcontractors gc JOIN operators gc_o ON gc.genID = gc_o.id JOIN audit_operator ON (genID=audit_operator.opID AND auditTypeID="+AuditType.DA+" AND minRiskLevel>1)) ");
 
 sql.addField("c.pqfSubmittedDate");
 sql.addField("c.daAuditor_id");
@@ -58,6 +58,7 @@ report.setLimit(50);
 List<BasicDynaBean> searchData = report.getPage();
 
 %>
+<%@page import="com.picsauditing.entities.AuditType"%>
 <html>
 <head>
 <title>Schedule Drug &amp; Alcohol Audits</title>

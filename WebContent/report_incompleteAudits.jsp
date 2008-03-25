@@ -14,6 +14,7 @@
 	else
 		sBean.doSearch(request, sBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
 %>
+<%@page import="com.picsauditing.entities.AuditType"%>
 <html>
 <head>
 <title>Contractors with Incomplete Requirements</title>
@@ -45,13 +46,13 @@
             <table width="657" border="0" cellpadding="1" cellspacing="1">
               <tr bgcolor="#003366" class="whiteTitle">
                 <td colspan="2"><a href="?changed=0&showPage=1&orderBy=name" class="whiteTitle">Contractor</a></td>
-<%	if (pBean.oBean.canSeeDesktop()){%>
+<%	if (permissions.canSeeAudit(AuditType.DESKTOP)){%>
                 <td align="center" bgcolor="#6699CC"><a href="?changed=0&showPage=1&orderBy=desktopSubmittedDate DESC" class="whiteTitle">Desktop Audit</a></td>
 <%	}//if
-	if (pBean.oBean.canSeeDA()){%>
+	if (permissions.canSeeAudit(AuditType.DA)){%>
                 <td align="center" bgcolor="#6699CC"><a href="?changed=0&showPage=1&orderBy=daSubmittedDate DESC" class="whiteTitle">D&A Audit</a></td>
 <%	}//if
-	if (pBean.oBean.canSeeOffice()){
+	if (permissions.canSeeAudit(AuditType.OFFICE)){
 %>                <td align="center" bgcolor="#6699CC"><a href="?changed=0&showPage=1&orderBy=auditCompletedDate DESC" class="whiteTitle">Office Audit</a></td>
 <%	}//if%>
               </tr>
@@ -63,13 +64,13 @@
                 <td><%=sBean.getActiveStar()%>
                   <a href="contractor_detail.jsp?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class="<%=thisClass%>"><%=sBean.aBean.name%></a>
 				</td>
-<%	if (pBean.oBean.canSeeDesktop()){%>
+<%	if (permissions.canSeeAudit(AuditType.DESKTOP)){%>
                 <td align="center"><%=sBean.cBean.getDesktopLink(pBean)%></td>
 <%	}//if
-	if (pBean.oBean.canSeeDA()){%>
+	if (permissions.canSeeAudit(AuditType.DA)){%>
                  <td align="center"><%=sBean.cBean.getDaLink(pBean)%></td>
 <%	}//if
-	if (pBean.oBean.canSeeOffice()){
+	if (permissions.canSeeAudit(AuditType.OFFICE)){
 %>
                 <td align="center"><%=sBean.cBean.getOfficeLink(pBean)%></td>
 <%	}//if%>

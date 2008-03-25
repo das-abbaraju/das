@@ -5,6 +5,7 @@ import java.util.*;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.domain.IPicsDO;
+import com.picsauditing.entities.AuditType;
 import com.picsauditing.util.LinkBuilder;
 
 
@@ -331,15 +332,15 @@ import com.picsauditing.util.LinkBuilder;
 				whereQuery+="AND (1 ";
 			else
 				whereQuery+="AND !(1 ";
-			if (permissions.oBean.canSeePQF())
+			if (permissions.getPermissions().canSeeAudit(AuditType.PQF))
 				whereQuery += "AND (pqfSubmittedDate<>'0000-00-00' AND pqfSubmittedDate>'"+DateBean.PQF_EXPIRED_CUTOFF+"') ";
 			whereQuery += "AND (isExempt='Yes' OR (1 ";
-			if (permissions.oBean.canSeeDesktop())
+			if (permissions.getPermissions().canSeeAudit(AuditType.DESKTOP))
 				whereQuery += "AND desktopValidUntilDate>=CURDATE() ";
-			if (permissions.oBean.canSeeDA())
+			if (permissions.getPermissions().canSeeAudit(AuditType.DA))
 				whereQuery += "AND (daSubmittedDate<>'0000-00-00' AND daSubmittedDate>DATE_ADD(CURDATE(),INTERVAL -3 YEAR) "+
 					"AND daClosedDate<>'0000-00-00') ";
-			if (permissions.oBean.canSeeOffice())
+			if (permissions.getPermissions().canSeeAudit(AuditType.OFFICE))
 				whereQuery += "AND auditValidUntilDate>=CURDATE() ";
 			whereQuery+="))) ";
 //********************
@@ -441,7 +442,7 @@ import com.picsauditing.util.LinkBuilder;
 		if (NEW_AUDITS.equals(whichScheduleAuditsReport)){
 			whereQuery += "AND isExempt='No' AND pqfSubmittedDate>'"+DateBean.PQF_EXPIRED_CUTOFF+"' AND (auditCompletedDate='0000-00-00' OR auditCompletedDate<DATE_ADD(CURDATE(),INTERVAL -34 MONTH)) ";
 			groupByQuery = "GROUP BY accounts.id ";
-			joinQuery+="INNER JOIN generalContractors gcTable ON (gcTable.subID=accounts.id) INNER JOIN operators ON (genID=operators.id AND canSeeOffice='Yes') ";
+			joinQuery+="INNER JOIN generalContractors gcTable ON (gcTable.subID=accounts.id) INNER JOIN operators ON (genID=operators.id) JOIN audit_operator ON(genID=audit_operator.opID AND auditTypeID="+AuditType.OFFICE+" AND minRiskLevel>1) ";
 		}//if
 		
 		//OSHA Queries

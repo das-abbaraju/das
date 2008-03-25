@@ -6,7 +6,6 @@ import java.text.DecimalFormat;
 
 import com.picsauditing.entities.AuditOperator;
 import com.picsauditing.entities.AuditType;
-import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
 
 public class OperatorBean extends DataBean {
@@ -18,11 +17,6 @@ public class OperatorBean extends DataBean {
 	public String canAddContractors = "No";
 	public String doContractorsPay = "Yes";
 	private Set<AuditOperator> canSeeAudits;
-	public String canSeePQF = "No";
-	public String canSeeDesktop = "No";
-	public String canSeeDA = "No";
-	public String canSeeOffice = "No";
-	public String canSeeField = "No";
 	public String canSeeInsurance = "No";
 	//Hurdle Rate report search parameters, added 6/27/06
 	public String emrHurdle = "";
@@ -42,6 +36,7 @@ public class OperatorBean extends DataBean {
 	public String insuranceAuditor_id = "";
 	public String isUserManualUploaded = "No";
 	public String approvesRelationships = "No";
+
 	public boolean isUserManualUploaded(){
 		return "Yes".equals(isUserManualUploaded);
 	}
@@ -81,6 +76,30 @@ public class OperatorBean extends DataBean {
 		}finally{
 			DBClose();
 		}		
+	}
+
+	public void setAuditOperatorsSetFromDB(String opID) throws Exception{
+		String selectQuery = "SELECT * FROM audit_operator WHERE opID="+opID;
+		canSeeAudits = new HashSet<AuditOperator>();
+		try{
+			DBReady();
+			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
+			while (SQLResult.next()){
+				AuditOperator tempRow = new AuditOperator();
+				tempRow.setAuditTypeID(SQLResult.getInt("auditTypeID"));
+				tempRow.setMinRiskLevel(SQLResult.getInt("minRiskLevel"));
+				canSeeAudits.add(tempRow);
+			}
+			SQLResult.close();
+		}finally{
+			DBClose();
+		}
+	}//setAuditOperatorsSetFromDB
+
+	public Set<AuditOperator> getCanSeeAudits(String opID)throws Exception{
+		if (null == canSeeAudits)
+			setAuditOperatorsSetFromDB(opID);
+		return canSeeAudits;
 	}
 
 	public void setPQFCategoriesFromDB() throws Exception {
@@ -134,30 +153,20 @@ public class OperatorBean extends DataBean {
 	public void setCorporateCanSee() throws Exception {
         if (!isCorporate)
         	return;
-        String selectQuery = "SELECT * FROM operators WHERE id IN (SELECT opID FROM facilities WHERE corporateID="+id+")";
+		String selectQuery = "SELECT * FROM audit_operator WHERE opID IN (SELECT opID FROM facilities WHERE corporateID="+id+")";
+		canSeeAudits = new HashSet<AuditOperator>();
 		try{
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			this.canSeeDA = "No";
-			this.canSeeDesktop = "No";
-			this.canSeeField = "No";
-			this.canSeeInsurance = "No";
-			this.canSeeOffice = "No";
-			this.canSeePQF = "No";
-			while (SQLResult.next()) {
-				OperatorBean operator = new OperatorBean();
-				operator.setFromResultSet(SQLResult);
-				if (operator.canSeeDA.equals("Yes")) this.canSeeDA = "Yes";
-				if (operator.canSeeDesktop.equals("Yes")) this.canSeeDesktop = "Yes";
-				if (operator.canSeeField.equals("Yes")) this.canSeeField = "Yes";
-				if (operator.canSeeInsurance.equals("Yes")) this.canSeeInsurance = "Yes";
-				if (operator.canSeeOffice.equals("Yes")) this.canSeeOffice = "Yes";
-				if (operator.canSeePQF.equals("Yes")) this.canSeePQF = "Yes";
+			while (SQLResult.next()){
+				AuditOperator tempRow = new AuditOperator();
+				tempRow.setAuditTypeID(SQLResult.getInt("auditTypeID"));
+				canSeeAudits.add(tempRow);
 			}
 			SQLResult.close();
 		}finally{
 			DBClose();
-		}
+		}	
 	}
 
 	public void writeFacilitiesToDB() throws Exception {
@@ -261,20 +270,39 @@ public class OperatorBean extends DataBean {
 		}
 		return false;
 	}
+
+	public boolean isAuditRequired(int auditID, int conRiskLevel) {
+		if (canSeeAudits == null || canSeeAudits.size() == 0) return false;
+		for (AuditOperator audit : canSeeAudits) {
+			if (audit.getAuditTypeID() == auditID)
+				return conRiskLevel >= audit.getMinRiskLevel();
+		}
+		return false;
+	}
+	
+	public Set<Integer> getCanSeeAuditIDSet() {
+		if (canSeeAudits == null || canSeeAudits.size() == 0) return null;
+		Set<Integer> canSeeAuditIds = new HashSet<Integer>();
+		for (AuditOperator audit : canSeeAudits)
+			canSeeAuditIds.add(audit.getAuditTypeID());
+		return canSeeAuditIds;
+	}
+
+	@Deprecated
 	public boolean canSeePQF() {
 		return canSeeAudit(AuditType.PQF);
 	}
+	@Deprecated
 	public boolean canSeeDesktop() {
 		return canSeeAudit(AuditType.DESKTOP);
 	}
+	@Deprecated
 	public boolean canSeeDA() {
 		return canSeeAudit(AuditType.DA);
 	}
+	@Deprecated
 	public boolean canSeeOffice() {
 		return canSeeAudit(AuditType.OFFICE);
-	}
-	public boolean canSeeField() {
-		return "Yes".equals(canSeeField);
 	}
 	public boolean canSeeInsurance() {
 		return "Yes".equals(canSeeInsurance);
@@ -450,6 +478,7 @@ public class OperatorBean extends DataBean {
 		setCorporatesFromDB();
 		setPQFCategoriesFromDB();
 		setCorporateCanSee();
+		setAuditOperatorsSetFromDB(opID);
 	}
 
 	public void setFromDB() throws Exception {
@@ -462,6 +491,7 @@ public class OperatorBean extends DataBean {
 			if (SQLResult.next())
 				setFromResultSet(SQLResult);
 			SQLResult.close();
+			setAuditOperatorsSetFromDB(id);
 		}finally{
 			DBClose();
 		}
@@ -474,11 +504,6 @@ public class OperatorBean extends DataBean {
 		seesAllContractors = SQLResult.getString("seesAllContractors");
 		canAddContractors = SQLResult.getString("canAddContractors");
 		doContractorsPay = SQLResult.getString("doContractorsPay");
-		canSeePQF = SQLResult.getString("canSeePQF");
-		canSeeDesktop = SQLResult.getString("canSeeDesktop");
-		canSeeDA = SQLResult.getString("canSeeDA");
-		canSeeOffice = SQLResult.getString("canSeeOffice");
-		canSeeField = SQLResult.getString("canSeeField");
 		canSeeInsurance = SQLResult.getString("canSeeInsurance");
 
 		emrHurdle = SQLResult.getString("emrHurdle");
@@ -498,6 +523,8 @@ public class OperatorBean extends DataBean {
 		insuranceAuditor_id = SQLResult.getString("insuranceAuditor_id");
 		isUserManualUploaded = SQLResult.getString("isUserManualUploaded");
 		approvesRelationships = SQLResult.getString("approvesRelationships");
+
+		
 	}
 
 	public void writeToDB() throws Exception {
@@ -509,11 +536,6 @@ public class OperatorBean extends DataBean {
 			"',seesAllContractors='"+seesAllContractors+
 			"',canAddContractors='"+canAddContractors+
 			"',doContractorsPay='"+doContractorsPay+ 
-			"',canSeePQF='"+canSeePQF+
-			"',canSeeDesktop='"+canSeeDesktop+
-			"',canSeeDA='"+canSeeDA+
-			"',canSeeOffice='"+canSeeOffice+
-			"',canSeeField='"+canSeeField+
 			"',canSeeInsurance='"+canSeeInsurance+
 			"',emrHurdle='"+emrHurdle+
 			"',emrTime='"+emrTime+
@@ -558,11 +580,6 @@ public class OperatorBean extends DataBean {
 		seesAllContractors = request.getParameter("seesAllContractors");
 		canAddContractors = request.getParameter("canAddContractors");
 		doContractorsPay = request.getParameter("doContractorsPay");
-		canSeePQF = request.getParameter("canSeePQF");
-		canSeeDesktop = request.getParameter("canSeeDesktop");
-		canSeeDA = request.getParameter("canSeeDA");
-		canSeeOffice = request.getParameter("canSeeOffice");
-		canSeeField = request.getParameter("canSeeField");
 		canSeeInsurance = request.getParameter("canSeeInsurance");
 		setFacilities(request.getParameterValues("facilities"));
 		insuranceAuditor_id = request.getParameter("insuranceAuditor_id");

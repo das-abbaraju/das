@@ -147,36 +147,6 @@
                         </td>
                       </tr>
 					  <tr>
-                        <td class="blueMain" align="right">Sees PQF:</td>
-                        <td class="blueMain" align="left" valign="bottom">
-                          <%=Inputs.getYesNoRadio("canSeePQF","forms",oBean.canSeePQF)%>
-                        </td>
-                      </tr>
-					  <tr>
-                        <td class="blueMain" align="right">Sees Desktop:</td>
-                        <td class="blueMain" align="left" valign="bottom">
-                          <%=Inputs.getYesNoRadio("canSeeDesktop","forms",oBean.canSeeDesktop)%>
-                        </td>
-                      </tr>
-					  <tr>
-                        <td class="blueMain" align="right">Sees D&A:</td>
-                        <td class="blueMain" align="left" valign="bottom">
-                          <%=Inputs.getYesNoRadio("canSeeDA","forms",oBean.canSeeDA)%>
-                        </td>
-                      </tr>
-					  <tr>
-                        <td class="blueMain" align="right">Sees Office Audit:</td>
-                        <td class="blueMain" align="left" valign="bottom">
-                          <%=Inputs.getYesNoRadio("canSeeOffice","forms",oBean.canSeeOffice)%>
-                        </td>
-                      </tr>
-					  <tr>
-                        <td class="blueMain" align="right">Sees Field Audit:</td>
-                        <td class="blueMain" align="left" valign="bottom">
-                          <%=Inputs.getYesNoRadio("canSeeField","forms",oBean.canSeeField)%>
-                        </td>
-                      </tr>
-					  <tr>
                         <td class="blueMain" align="right">Sees Ins. Certs:</td>
                         <td class="blueMain" align="left" valign="bottom">
                           <%=Inputs.getYesNoRadio("canSeeInsurance","forms",oBean.canSeeInsurance)%>

@@ -24,14 +24,14 @@ if (permissions.isCorporate()) {
 } %>
 <br>
 <%
-if (pBean.oBean.canSeePQF()) { 
+if (permissions.canSeeAudit(com.picsauditing.entities.AuditType.PQF)) { 
 	%> <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"View PQF")%>
 	| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_viewAll.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"View Entire PQF")%>
 	| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_printAll.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"Print PQF")%><br>
 	<%
 }
 
-if (pBean.oBean.canSeeDesktop()){
+if (permissions.canSeeAudit(com.picsauditing.entities.AuditType.DESKTOP)) { 
 	if (cBean.isDesktopStatusOldAuditStatus()){
 		if (cBean.isNewOfficeAudit() && cBean.isOfficeSubmitted()) {
 			%> <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE,thisQuery,"View Desktop Audit")%>
@@ -46,7 +46,7 @@ if (pBean.oBean.canSeeDesktop()){
 	}
 }
 
-if (pBean.oBean.canSeeOffice()){
+if (permissions.canSeeAudit(com.picsauditing.entities.AuditType.OFFICE)){
 	if (cBean.isNewOfficeAudit() && cBean.isOfficeSubmitted()) { 
 		%> | <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE,thisQuery,"View Office Audit")%><br>
 		<%
@@ -58,7 +58,7 @@ if (pBean.oBean.canSeeOffice()){
 	}
 }
 
-if (pBean.oBean.canSeeDA() && cBean.isDaSubmitted()) { 
+if (permissions.canSeeAudit(com.picsauditing.entities.AuditType.DA) && cBean.isDaSubmitted()) { 
 	%> <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.DA_TYPE,thisQuery,"View D&A Audit")%>
 	<%
 }

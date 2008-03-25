@@ -14,19 +14,12 @@ import javax.persistence.Table;
 @Table(name="operators"
 )
 public class Operator  implements java.io.Serializable {
-
-
      private int id;
      private String activationEmails;
      private String doSendActivationEmail;
      private String seesAllContractors;
      private String canAddContractors;
      private String doContractorsPay;
-     private String canSeePqf;
-     private String canSeeDesktop;
-     private String canSeeDa;
-     private String canSeeOffice;
-     private String canSeeField;
      private String canSeeInsurance;
      private String isCorporate;
      private String emrHurdle;
@@ -48,18 +41,13 @@ public class Operator  implements java.io.Serializable {
     public Operator() {
     }
 
-    public Operator(int id, String activationEmails, String doSendActivationEmail, String seesAllContractors, String canAddContractors, String doContractorsPay, String canSeePqf, String canSeeDesktop, String canSeeDa, String canSeeOffice, String canSeeField, String canSeeInsurance, String isCorporate, String emrHurdle, String emrTime, String lwcrTime, String lwcrHurdle, String trirHurdle, String trirTime, String fatalitiesHurdle, String flagEmr, String flagLwcr, String flagTrir, String flagFatalities, String flagQ318, String flagQ1385, int insuranceAuditorId, String isUserManualUploaded) {
+    public Operator(int id, String activationEmails, String doSendActivationEmail, String seesAllContractors, String canAddContractors, String doContractorsPay, String canSeeInsurance, String isCorporate, String emrHurdle, String emrTime, String lwcrTime, String lwcrHurdle, String trirHurdle, String trirTime, String fatalitiesHurdle, String flagEmr, String flagLwcr, String flagTrir, String flagFatalities, String flagQ318, String flagQ1385, int insuranceAuditorId, String isUserManualUploaded) {
        this.id = id;
        this.activationEmails = activationEmails;
        this.doSendActivationEmail = doSendActivationEmail;
        this.seesAllContractors = seesAllContractors;
        this.canAddContractors = canAddContractors;
        this.doContractorsPay = doContractorsPay;
-       this.canSeePqf = canSeePqf;
-       this.canSeeDesktop = canSeeDesktop;
-       this.canSeeDa = canSeeDa;
-       this.canSeeOffice = canSeeOffice;
-       this.canSeeField = canSeeField;
        this.canSeeInsurance = canSeeInsurance;
        this.isCorporate = isCorporate;
        this.emrHurdle = emrHurdle;
@@ -133,51 +121,6 @@ public class Operator  implements java.io.Serializable {
     
     public void setDoContractorsPay(String doContractorsPay) {
         this.doContractorsPay = doContractorsPay;
-    }
-    
-    @Column(name="canSeePQF", nullable=false, length=3)
-    public String getCanSeePqf() {
-        return this.canSeePqf;
-    }
-    
-    public void setCanSeePqf(String canSeePqf) {
-        this.canSeePqf = canSeePqf;
-    }
-    
-    @Column(name="canSeeDesktop", nullable=false, length=3)
-    public String getCanSeeDesktop() {
-        return this.canSeeDesktop;
-    }
-    
-    public void setCanSeeDesktop(String canSeeDesktop) {
-        this.canSeeDesktop = canSeeDesktop;
-    }
-    
-    @Column(name="canSeeDA", nullable=false, length=3)
-    public String getCanSeeDa() {
-        return this.canSeeDa;
-    }
-    
-    public void setCanSeeDa(String canSeeDa) {
-        this.canSeeDa = canSeeDa;
-    }
-    
-    @Column(name="canSeeOffice", nullable=false, length=3)
-    public String getCanSeeOffice() {
-        return this.canSeeOffice;
-    }
-    
-    public void setCanSeeOffice(String canSeeOffice) {
-        this.canSeeOffice = canSeeOffice;
-    }
-    
-    @Column(name="canSeeField", nullable=false, length=3)
-    public String getCanSeeField() {
-        return this.canSeeField;
-    }
-    
-    public void setCanSeeField(String canSeeField) {
-        this.canSeeField = canSeeField;
     }
     
     @Column(name="canSeeInsurance", nullable=false, length=3)
