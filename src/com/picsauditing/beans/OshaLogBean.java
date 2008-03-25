@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.dao.ContractorInfoDAO;
-import com.picsauditing.dao.DAOFactory;
 import com.picsauditing.jpa.entities.ContractorInfo;
 import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.jsf.utils.JSFListDataModel;
@@ -21,9 +20,12 @@ public class OshaLogBean extends JSFListDataModel<VerifyOshaLog>{
 	@Override
 	protected List<VerifyOshaLog> getList() {		
 		
-		DAOFactory daof = DAOFactory.instance(DAOFactory.JPA, getPersistenceCtx());
-		dao = daof.getContractorInfoDAO();		
-		ContractorInfo ci = dao.findById(cid, false);
+//		DAOFactory daof = DAOFactory.instance(DAOFactory.JPA, getPersistenceCtx());
+//		dao = daof.getContractorInfoDAO();		
+
+		dao = (ContractorInfoDAO) SpringJSFUtil.getSpringContext().getBean("ContractorInfoDAO");
+
+		ContractorInfo ci = dao.find(cid);
 		
 		List<OshaLog> list = ci.getOshaLogs();
 		

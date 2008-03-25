@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorInfoDAO;
-import com.picsauditing.dao.DAOFactory;
 import com.picsauditing.dao.PqfLogDAO;
 import com.picsauditing.dao.PqfquestionDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -27,13 +26,13 @@ public class EmrLogBean extends JSFListDataModel<VerifyEMRLog>{
 	@Override
 	protected List<VerifyEMRLog> getList() {		
 					
-		DAOFactory daof = DAOFactory.instance(DAOFactory.JPA, getPersistenceCtx());
-		dao = daof.getContractorInfoDAO();
-		PqfquestionDAO qdao = daof.getPqfquestionDAO();
-		PqfLogDAO ldao = daof.getPqfLogDAO();
-		AccountDAO adao = daof.getAccountDAO();		
-		ContractorInfo ci = dao.findById(cid, false);
-		Account auditor = adao.findById(ci.getPqfAuditorId(),false);
+		//DAOFactory daof = DAOFactory.instance(DAOFactory.JPA, getPersistenceCtx());
+		dao = (ContractorInfoDAO) SpringJSFUtil.getSpringContext().getBean("ContractorInfoDAO");
+		PqfquestionDAO qdao = (PqfquestionDAO) SpringJSFUtil.getSpringContext().getBean("PqfquestionDAO");
+		PqfLogDAO ldao = (PqfLogDAO) SpringJSFUtil.getSpringContext().getBean("PqfLogDAO");
+		AccountDAO adao = (AccountDAO) SpringJSFUtil.getSpringContext().getBean("AccountDAO");
+		ContractorInfo ci = dao.find(cid);
+		Account auditor = adao.find(ci.getPqfAuditorId());
 		List<Short> existingIds = new ArrayList<Short>();
 		List<Short> missingIds = new ArrayList<Short>();
 		missingIds.addAll(0, questionIDs);
@@ -45,7 +44,7 @@ public class EmrLogBean extends JSFListDataModel<VerifyEMRLog>{
 			if(missingIds.removeAll(existingIds)){
 				for(Short id : missingIds){
 					PqfLogId logId = new PqfLogId(ci.getId(), id);
-					Pqfquestion pqfq = qdao.findById(id, false);
+					Pqfquestion pqfq = qdao.find(id);
 					PqfLog newLog = new PqfLog(logId, ci, auditor, pqfq, Short.valueOf("0"), "", "", null, "", "", "");					
 					ci.getPqfLogs().add(newLog);
 					
@@ -154,6 +153,4 @@ public class EmrLogBean extends JSFListDataModel<VerifyEMRLog>{
 	public int getClearCid(){
 		return 0;
 	}	
-	
-	
 }

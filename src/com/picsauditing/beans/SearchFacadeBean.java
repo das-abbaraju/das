@@ -11,43 +11,45 @@ import com.picsauditing.jpa.entities.ContractorInfoReport;
 
 public class SearchFacadeBean {
 		
-	public static List<ContractorInfoReport> getActiveContractors(
-			ContractorInfoReportDAO dao) {
+	public static List<ContractorInfoReport> getActiveContractors() {
 		
-		return dao.executeNamedQuery("getActiveContractors", null);
+		ContractorInfoReportDAO dao = (ContractorInfoReportDAO) SpringJSFUtil.getSpringContext().getBean("ContractorInfoReportDAO");
+		return dao.findActiveContractors();
 	}
 
-	public static List getAuditors(AccountDAO dao) {
-		return dao.executeNamedQuery("getAuditors", null);
+	public static List getAuditors() 
+	{
+		AccountDAO d = (AccountDAO) SpringJSFUtil.getSpringContext().getBean("AccountDAO"); 
+		return d.findAuditors();
 	}
 	
-	public static List<ContractorInfoReport> getContractorsByAuditor(
-			ContractorInfoReportDAO dao, int id) {
+	public static List<ContractorInfoReport> getContractorsByAuditor(int id) {
 		
+		ContractorInfoReportDAO dao = (ContractorInfoReportDAO) SpringJSFUtil.getSpringContext().getBean("ContractorInfoReportDAO");
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("pqfAuditorId", id);
-		return dao.executeNamedQuery("contractorsByAuditor", params);
+		return null; //dao.findContractorsByAuditor(params);
 	}
 
-	public static List<ContractorInfoReport> getContractorsByName(
-			ContractorInfoReportDAO dao, String acctName) {
-		
+	public static List<ContractorInfoReport> getContractorsByName(String acctName) {
+
+		ContractorInfoReportDAO dao = (ContractorInfoReportDAO) SpringJSFUtil.getSpringContext().getBean("ContractorInfoReportDAO");
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("name", acctName + "%");
-		return dao.executeNamedQuery("contractorsByName", params);
+		return null;//;  dao.findContractorsByName(params);
 	}
 
-	public static List<ContractorInfoReport> getContractorsByOperator(
-			ContractorInfoReportDAO dao, int id) {
-		
+	public static List<ContractorInfoReport> getContractorsByOperator( int id) {
+		ContractorInfoReportDAO dao = (ContractorInfoReportDAO) SpringJSFUtil.getSpringContext().getBean("ContractorInfoReportDAO");
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("genId", id );
-		return dao.executeNamedQuery("contractorsByOperator", params);		
+		return null;//dao.findContractorsByOperator(params);		
 		
 	}
 
-	public static List getOperators(AccountDAO dao) {
-		return dao.executeNamedQuery("getOperators", null);
+	public static List getOperators() {
+		AccountDAO dao = (AccountDAO) SpringJSFUtil.getSpringContext().getBean("AccountDAO");
+		return dao.findOperators();
 		
 	}
 	

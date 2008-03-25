@@ -12,6 +12,8 @@ public class EMRLogActionListener implements ActionListener {
 
 	@Override
 	public void processAction(ActionEvent arg0) throws AbortProcessingException {
+
+		/*  killed this because transactions are handled for us now, and all this appeared to do was flush a transaction
 		Map<String,Object> attrs = arg0.getComponent().getAttributes();
 		ContractorInfoDAO dao = (ContractorInfoDAO)attrs.get("emrDao");
 		
@@ -21,7 +23,7 @@ public class EMRLogActionListener implements ActionListener {
 			// TODO Auto-generated catch block
 			throw new AbortProcessingException(e);			
 		}
-		
+		*/
 
 	}
 

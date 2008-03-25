@@ -15,11 +15,12 @@ public class ContractorInfoReportActionListener implements ActionListener {
 	@Override
 	public void processAction(ActionEvent arg0) throws AbortProcessingException {
 		Map<String,Object> attrs = arg0.getComponent().getAttributes();
-		ContractorInfoReportDAO dao = (ContractorInfoReportDAO)attrs.get("crDao");
+		//ContractorInfoReportDAO dao = (ContractorInfoReportDAO)attrs.get("crDao");
+		ContractorInfoReportDAO dao = (ContractorInfoReportDAO) SpringJSFUtil.getSpringContext().getBean("ContractorInfoReportDAO");
 		ContractorInfoReport cr = (ContractorInfoReport)attrs.get("cr");
 		
 		try {
-			dao.findById(cr.getId(), true);
+			dao.find(cr.getId());
 	
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

@@ -1,6 +1,5 @@
 package com.picsauditing.beans;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import com.picsauditing.jpa.entities.OshaLog;
