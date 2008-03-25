@@ -2,7 +2,9 @@ package com.picsauditing.dao;
 
 import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
-import com.picsauditing.entities.RulesRow;
+
+import com.picsauditing.jpa.entities.RulesRow;
+
 import java.util.List;
 
 @Transactional

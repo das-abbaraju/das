@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.dao.RulesRowDAO;
-import com.picsauditing.entities.RulesRow;
+import com.picsauditing.jpa.entities.RulesRow;
 
 public class RulesAction extends ActionSupport {
 	protected List<RulesRow> rulesRows = null;

@@ -3,7 +3,8 @@ package com.picsauditing.dao;
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
-import com.picsauditing.entities.AuditType;
+
+import com.picsauditing.jpa.entities.AuditType;
 
 import java.util.List;
 
