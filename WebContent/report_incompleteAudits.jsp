@@ -14,7 +14,7 @@
 	else
 		sBean.doSearch(request, sBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
 %>
-<%@page import="com.picsauditing.entities.AuditType"%>
+<%@page import="com.picsauditing.jpa.entities.AuditType"%>
 <html>
 <head>
 <title>Contractors with Incomplete Requirements</title>

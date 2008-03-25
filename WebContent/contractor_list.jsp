@@ -40,7 +40,7 @@ try {
 	String showPage = request.getParameter("showPage");
 	if (showPage == null)	showPage = "1";
 %>
-<%@page import="com.picsauditing.entities.AuditType"%>
+<%@page import="com.picsauditing.jpa.entities.AuditType"%>
 <html>
 <head>
 <title>Contractor List</title>

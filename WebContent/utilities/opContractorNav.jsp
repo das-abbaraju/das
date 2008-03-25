@@ -24,14 +24,14 @@ if (permissions.isCorporate()) {
 } %>
 <br>
 <%
-if (permissions.canSeeAudit(com.picsauditing.entities.AuditType.PQF)) { 
+if (permissions.canSeeAudit(com.picsauditing.jpa.entities.AuditType.PQF)) { 
 	%> <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"View PQF")%>
 	| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_viewAll.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"View Entire PQF")%>
 	| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_printAll.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"Print PQF")%><br>
 	<%
 }
 
-if (permissions.canSeeAudit(com.picsauditing.entities.AuditType.DESKTOP)) { 
+if (permissions.canSeeAudit(com.picsauditing.jpa.entities.AuditType.DESKTOP)) { 
 	if (cBean.isDesktopStatusOldAuditStatus()){
 		if (cBean.isNewOfficeAudit() && cBean.isOfficeSubmitted()) {
 			%> <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE,thisQuery,"View Desktop Audit")%>
@@ -46,7 +46,7 @@ if (permissions.canSeeAudit(com.picsauditing.entities.AuditType.DESKTOP)) {
 	}
 }
 
-if (permissions.canSeeAudit(com.picsauditing.entities.AuditType.OFFICE)){
+if (permissions.canSeeAudit(com.picsauditing.jpa.entities.AuditType.OFFICE)){
 	if (cBean.isNewOfficeAudit() && cBean.isOfficeSubmitted()) { 
 		%> | <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE,thisQuery,"View Office Audit")%><br>
 		<%
@@ -58,7 +58,7 @@ if (permissions.canSeeAudit(com.picsauditing.entities.AuditType.OFFICE)){
 	}
 }
 
-if (permissions.canSeeAudit(com.picsauditing.entities.AuditType.DA) && cBean.isDaSubmitted()) { 
+if (permissions.canSeeAudit(com.picsauditing.jpa.entities.AuditType.DA) && cBean.isDaSubmitted()) { 
 	%> <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.DA_TYPE,thisQuery,"View D&A Audit")%>
 	<%
 }

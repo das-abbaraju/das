@@ -58,7 +58,7 @@ report.setLimit(50);
 List<BasicDynaBean> searchData = report.getPage();
 
 %>
-<%@page import="com.picsauditing.entities.AuditType"%>
+<%@page import="com.picsauditing.jpa.entities.AuditType"%>
 <html>
 <head>
 <title>Schedule Drug &amp; Alcohol Audits</title>
