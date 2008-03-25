@@ -50,10 +50,6 @@
 		</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 		<managed-property>
-			<property-name>persistenceCtx</property-name>
-			<value>PicsDBJPA</value>
-		</managed-property>
-		<managed-property>
 			<property-name>questionIDs</property-name>
 			<list-entries>
 				<value-class>java.lang.Short</value-class>
