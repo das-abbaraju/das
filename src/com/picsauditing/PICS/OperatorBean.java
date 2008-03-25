@@ -4,8 +4,8 @@ import java.sql.*;
 import java.util.*;
 import java.text.DecimalFormat;
 
-import com.picsauditing.entities.AuditOperator;
-import com.picsauditing.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditOperator;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.search.SelectSQL;
 
 public class OperatorBean extends DataBean {

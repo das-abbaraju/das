@@ -2,6 +2,20 @@
 <persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
 	
     <persistence-unit name="punit">
+      <properties>
+         <property name="hibernate.hbm2ddl.auto" value=""/>
+         <property name="hibernate.show_sql" value="true"/>
+         <property name="jboss.entity.manager.factory.jndi.name" value="java:/PICSReportsJPAEntityManagerFactory"/>
+         <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLMyISAMDialect"/>
+         <property name="hibernate.cache.use_second_level_cache" value="false"/>
+         <property name="hibernate.cache.use_query_cache" value="false"/>
+         <property name="hibernate.max_fetch_depth" value="1"/>
+         <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
+         <property name="hibernate.connection.url" value="jdbc:mysql://alpha.picsauditing.com:3306/pics_alpha?zeroDateTimeBehavior=convertToNull&#38;jdbcCompliantTruncation=false"/>
+         <property name="hibernate.connection.username" value="pics"/>
+         <property name="hibernate.connection.password" value="pics"/>
+         <property name="hibernate.connection.autocommit" value="true"/>
+      </properties>
     </persistence-unit>
 	
 	<persistence-unit name="PicsDBJPA">	
@@ -36,23 +50,7 @@
       <class>
       	com.picsauditing.jpa.entities.Pqfsubcategory   	
       </class>
-      
-      <!--  <class>
-      	com.picsauditing.jpa.entities.PqfLogReport   	
-      </class>
-      
-       <class>
-      	com.picsauditing.jpa.entities.OshaLogReport   	
-      </class>
-      
-       <class>
-      	com.picsauditing.jpa.entities.AccountReport  	
-      </class>
-      
-       <class>
-      	com.picsauditing.jpa.entities.ContractorInfoReport 	
-      </class>-->
-                           	      	
+                                 	      	
       <properties>
          <property name="hibernate.hbm2ddl.auto" value=""/>
          <property name="hibernate.show_sql" value="false"/>
@@ -64,8 +62,6 @@
          <property name="hibernate.connection.url" value="jdbc:mysql://alpha.picsauditing.com:3306/pics_alpha?zeroDateTimeBehavior=convertToNull&#38;jdbcCompliantTruncation=false"/>
          <property name="hibernate.connection.username" value="pics"/>
          <property name="hibernate.connection.password" value="pics"/>
-        
-             	 
       </properties>
                	  
 	</persistence-unit>
