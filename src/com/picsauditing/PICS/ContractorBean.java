@@ -19,7 +19,7 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.User;
-import com.picsauditing.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditType;
 
 public class ContractorBean extends DataBean {
 	public static final String STATUS_ACTIVE = "Active"; // these should match the ENUM for status in the DB table

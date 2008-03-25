@@ -5,7 +5,7 @@ import java.util.*;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.domain.IPicsDO;
-import com.picsauditing.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.util.LinkBuilder;
 
 

@@ -1,44 +1,38 @@
 <!DOCTYPE struts PUBLIC
     "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
     "http://struts.apache.org/dtds/struts-2.0.dtd">
-
 <struts>
-	
 	<constant name="struts.objectFactory" value="spring" />
-    <constant name="struts.devMode" value="true" />
-	<constant name="struts.url.includeParams" value="none" />	
-	
+	<constant name="struts.devMode" value="true" />
+	<constant name="struts.url.includeParams" value="none" />
 	<package name="com.picsauditing" extends="struts-default">
-
 		<!-- exception section... I wrote this once, no sense wishing I had it later 
-		<global-results>
-            <result name="Exception">/sports/exception.jsp</result>
-        </global-results>
-		
-		
-		<global-exception-mappings>
-            <exception-mapping exception="java.lang.Exception" result="Exception"/>
-        </global-exception-mappings>
-
+			<global-results>
+			<result name="Exception">/sports/exception.jsp</result>
+			</global-results>
+			<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception" result="Exception"/>
+			</global-exception-mappings>
 		-->
-		
-         <action name="TestStruts" class="com.picsauditing.actions.FirstStrutsAction">
-         	<result>testStruts.jsp</result>
-         </action>
-         <action name="RulesList" class="com.picsauditing.actions.RulesAction">
-         	<result>rules.jsp</result>
-         </action>
-         
 
-         <action name="UsersManage" class="com.picsauditing.actions.users.UsersManage">
-         	<result>users_manage.jsp</result>
-         </action>
+		<action name="RulesList"
+			class="com.picsauditing.actions.RulesAction">
+			<result>rules.jsp</result>
+		</action>
 
-         <action name="AsyncFacilitiesGet" class="com.picsauditing.actions.operators.FacilitiesGet">
-         	<result>includes/facilitySelect.jsp</result>
-         </action>
+		<action name="UsersManage"
+			class="com.picsauditing.actions.users.UsersManage">
+			<result>users_manage.jsp</result>
+		</action>
 
-         
+		<action name="FacilitiesGetAjax"
+			class="com.picsauditing.actions.operators.FacilitiesGet">
+			<result>includes/facilitySelect.jsp</result>
+		</action>
+
+		<action name="AuditOperator"
+			class="com.picsauditing.actions.audits.AuditOperatorList">
+			<result>audit_operator.jsp</result>
+		</action>
 	</package>
-	
 </struts>

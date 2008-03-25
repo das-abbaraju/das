@@ -8,18 +8,13 @@
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd" default-autowire="autodetect">
 
-	<bean class="com.picsauditing.dao.AccountDAO"/>
+	<bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO"/>
 	<bean class="com.picsauditing.dao.AuditOperatorDAO"/>
 	<bean class="com.picsauditing.dao.AuditTypeDAO"/>
 	<bean class="com.picsauditing.dao.ContractorInfoDAO"/>
 	<bean class="com.picsauditing.dao.ContractorInfoReportDAO"/>
 	<bean class="com.picsauditing.dao.PqfLogDAO"/>
 	<bean class="com.picsauditing.dao.PqfquestionDAO"/>
-	<bean class="com.picsauditing.dao.DAO"/>
-	<bean class="com.picsauditing.dao.DAO"/>
-	<bean class="com.picsauditing.dao.DAO"/>
-	<bean class="com.picsauditing.dao.DAO"/>
-	<bean class="com.picsauditing.dao.DAO"/>
 	<bean class="com.picsauditing.dao.RulesRowDAO"/>
 	
 	<bean class="com.picsauditing.PICS.Facilities"/>
