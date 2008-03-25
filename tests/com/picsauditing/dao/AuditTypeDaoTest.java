@@ -20,7 +20,7 @@ public class AuditTypeDaoTest extends AbstractDaoTest {
 		tx.begin();
 	}
 	public void tearDown() {
-		tx.commit();
+		tx.rollback();
 		tx = null;
 		dao = null;
 		super.tearDown();
@@ -48,14 +48,15 @@ public class AuditTypeDaoTest extends AbstractDaoTest {
 	public final void testUpdate() {
 		try {
 			AuditType row = dao.find(1);
-			String name = row.getAuditName();
-			row.setAuditName(name + "Foo");
+			String name = "PQF";
+			row.setAuditName("PQF");
 			row = dao.save(row);
 			tx.commit();
 			row = dao.find(1);
 			assertEquals("PQFFoo", row.getAuditName());
-			//row.setAuditName("PQF");
-			//row = dao.save(row);
+			row.setAuditName("PQF");
+			row = dao.save(row);
+			tx.commit();
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
@@ -66,6 +67,7 @@ public class AuditTypeDaoTest extends AbstractDaoTest {
 			row.setAuditName("JUnit Test");
 			row.setDescription("this is a test");
 			row = dao.save(row);
+			tx.commit();
 			assertTrue(row.getAuditTypeID() > 0);
 		} catch (Exception e) {
 			fail(e.getMessage());

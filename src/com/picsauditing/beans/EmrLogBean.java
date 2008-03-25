@@ -5,12 +5,12 @@ import java.util.List;
 
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorInfoDAO;
-import com.picsauditing.dao.PqfLogDAO;
+import com.picsauditing.dao.PqfDataDAO;
 import com.picsauditing.dao.PqfquestionDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorInfo;
-import com.picsauditing.jpa.entities.PqfLog;
-import com.picsauditing.jpa.entities.PqfLogId;
+import com.picsauditing.jpa.entities.PqfData;
+import com.picsauditing.jpa.entities.PqfDataKey;
 import com.picsauditing.jpa.entities.Pqfquestion;
 import com.picsauditing.jsf.utils.JSFListDataModel;
 
@@ -29,7 +29,7 @@ public class EmrLogBean extends JSFListDataModel<VerifyEMRLog>{
 		//DAOFactory daof = DAOFactory.instance(DAOFactory.JPA, getPersistenceCtx());
 		dao = (ContractorInfoDAO) SpringJSFUtil.getSpringContext().getBean("ContractorInfoDAO");
 		PqfquestionDAO qdao = (PqfquestionDAO) SpringJSFUtil.getSpringContext().getBean("PqfquestionDAO");
-		PqfLogDAO ldao = (PqfLogDAO) SpringJSFUtil.getSpringContext().getBean("PqfLogDAO");
+		PqfDataDAO ldao = (PqfDataDAO) SpringJSFUtil.getSpringContext().getBean("PqfDataDAO");
 		AccountDAO adao = (AccountDAO) SpringJSFUtil.getSpringContext().getBean("AccountDAO");
 		ContractorInfo ci = dao.find(cid);
 		Account auditor = adao.find(ci.getPqfAuditorId());
@@ -37,22 +37,22 @@ public class EmrLogBean extends JSFListDataModel<VerifyEMRLog>{
 		List<Short> missingIds = new ArrayList<Short>();
 		missingIds.addAll(0, questionIDs);
 		if(ci != null && questionIDs != null){
-			List<PqfLog> logs = ci.getPqfLogs();
-			for(PqfLog log : logs)
+			List<PqfData> logs = ci.getPqfData();
+			for(PqfData log : logs)
 				existingIds.add(log.getPqfquestion().getQuestionId());
 			
 			if(missingIds.removeAll(existingIds)){
 				for(Short id : missingIds){
-					PqfLogId logId = new PqfLogId(ci.getId(), id);
+					PqfDataKey logId = new PqfDataKey(ci.getId(), id);
 					Pqfquestion pqfq = qdao.find(id);
-					PqfLog newLog = new PqfLog(logId, ci, auditor, pqfq, Short.valueOf("0"), "", "", null, "", "", "");					
-					ci.getPqfLogs().add(newLog);
+					PqfData newLog = new PqfData(logId, ci, auditor, pqfq, Short.valueOf("0"), "", "", null, "", "", "");					
+					ci.getPqfData().add(newLog);
 					
 				}
 			}
 			
 			List<VerifyEMRLog> out = new ArrayList<VerifyEMRLog>();
-			for(PqfLog log : ci.getPqfLogs()){
+			for(PqfData log : ci.getPqfData()){
 				 VerifyEMRLog vemrl = new VerifyEMRLog();
 				 vemrl.setEntity(log);
 				 out.add(vemrl);

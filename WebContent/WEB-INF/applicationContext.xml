@@ -13,7 +13,7 @@
 	<bean class="com.picsauditing.dao.AuditTypeDAO"/>
 	<bean class="com.picsauditing.dao.ContractorInfoDAO"/>
 	<bean class="com.picsauditing.dao.ContractorInfoReportDAO"/>
-	<bean class="com.picsauditing.dao.PqfLogDAO"/>
+	<bean class="com.picsauditing.dao.PqfDataDAO"/>
 	<bean class="com.picsauditing.dao.PqfquestionDAO"/>
 	<bean class="com.picsauditing.dao.RulesRowDAO"/>
 	

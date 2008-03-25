@@ -4,9 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.picsauditing.jpa.entities.PqfLog;
+import com.picsauditing.jpa.entities.PqfData;
 
-public class VerifyEMRLog extends Verifier<PqfLog, Short> implements Verifiable<Short> {
+public class VerifyEMRLog extends Verifier<PqfData, Short> implements Verifiable<Short> {
 	
 	private Short id;
 	
