@@ -1,12 +1,12 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@page language="java" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<%
-pageBean.setTitle("Manage Users");
-pageBean.includeScriptaculous(true);
-pageBean.includeDynamicSearch(true);
-%>
-<%@ include file="includes/header.jsp" %>
+<html>
+<head>
+<title>Manage Users</title>
+<script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
+<script src="js/Search.js" type="text/javascript"></script>
 <script type="text/javascript">
 var currentUser = 0;
 var accountID = <s:property value="accountId"/>;
@@ -26,8 +26,7 @@ function showPermDesc(item) {
 
 function filterOperators() {
 	pars = '&action=filterOperators&filter='+$('filter').getValue()+'&shouldIncludePICS=true';
-	
-	var myAjax = new Ajax.Updater('operators', 'AsyncFacilitiesGet.action', {method: 'get', parameters: pars});
+	var myAjax = new Ajax.Updater('operators', 'FacilitiesGetAjax.action', {method: 'get', parameters: pars});
 }
 function getPage(pars) {
 	pars = 'userID='+currentUser+'&accountID='+accountID+pars;
@@ -80,24 +79,26 @@ function checkUsername(username, userID) {
 }
 
 </script>
+</head>
+<body>
 <table border="0">
 <tr>
-	<td colspan="2" align="center" class="blueSmall" height="30">
+	<td colspan="2" align="center" class="blueSmall">
 		<s:form name="form1" id="form1" action="UsersManage" method="post">
 			<s:if test="hasAllOperators">
 			Filter by User: <input type="text" name="filter" id="filter" class="blueSmall" onchange="filterOperators();" /><br />
-			Operator:<span id="operators"><s:action name="AsyncFacilitiesGet" executeResult="true" >
+			Operator:<span id="operators"><s:action name="FacilitiesGetAjax" executeResult="true" >
 				<s:param name="shouldIncludePICS" value="%{true}"/>
 			</s:action></span><br />
 			</s:if>
 			Type:
-				<s:select name="isGroup"
+				<s:select name="isGroup" cssClass="blueSmall"
 				       headerKey="" headerValue="All"
 				       list="#{'Yes':'Groups', 'No':'Users'}"
 				       value="isGroup"
 				/>
 			Status:
-				<s:select name="isActive"
+				<s:select name="isActive" cssClass="blueSmall"
 				       headerKey="" headerValue="All"
 				       list="#{'Yes':'Active', 'No':'Inactive'}"
 				       value="isActive"
@@ -111,7 +112,7 @@ function checkUsername(username, userID) {
 	</td>
 </tr>
 <tr>
-	<td colspan="2" align="center" class="blueSmall" height="30">
+	<td colspan="2" align="center" class="blueSmall">
 		<a href="#" onclick="addUser(true); return false;">Add Group</a>
 		<a href="#" onclick="addUser(false); return false;">Add User</a>
 	</td>
@@ -155,4 +156,5 @@ function checkUsername(username, userID) {
 </td>
 </tr>
 </table>
-<%@ include file="includes/footer.jsp" %>
+</body>
+</html>
