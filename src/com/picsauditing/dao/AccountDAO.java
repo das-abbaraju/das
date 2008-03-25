@@ -38,10 +38,13 @@ public class AccountDAO extends PicsDAO {
         Query query = em.createQuery("select ac from Account ac where ac.type='Operator' order by ac.name");
         return query.getResultList();
     }
-	/*
-    public List<Account> findContractors() {
-        Query query = em.createQuery("select ac from Account ac where ac.type='Contractor' order by ac.name");
-        return query.getResultList();
+
+    public List<Account> findAuditors() {
+    	Query query = em.createQuery("select ac from Account ac where ac.type='Auditor' order by ac.name");
+    	return query.getResultList();
     }
-    */
+    
+    
+    
+    
 }
