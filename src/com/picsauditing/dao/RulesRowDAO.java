@@ -1,27 +1,12 @@
 package com.picsauditing.dao;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-
 import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.entities.RulesRow;
-
 import java.util.List;
 
 @Transactional
-public class RulesRowDAO {
-	EntityManager em = null;
-
-	@PersistenceContext
-	public void setEntityManager(EntityManager em) {
-		this.em = em;
-	}
-	private EntityManager getEntityManager() {
-        return em;
-    }
-
+public class RulesRowDAO extends PicsDAO {
 	public RulesRow save(RulesRow o) {
 		if (o.getRowID() == 0) {
 			em.persist(o);
@@ -39,7 +24,11 @@ public class RulesRowDAO {
 	
 	@SuppressWarnings("unchecked")
     public List<RulesRow> findAll() {
-        Query query = getEntityManager().createQuery("select r FROM RulesRowBean r");
+        Query query = em.createQuery("select r FROM RulesRow r");
+        return query.getResultList();
+    }
+    public List<RulesRow> findByTable(String tableName) {
+        Query query = em.createQuery("select r FROM RulesRow r WHERE tableName = '"+tableName+"'");
         return query.getResultList();
     }
 	

@@ -1,24 +1,22 @@
 package com.picsauditing.dao;
 
-import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.LockModeType;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
-import javax.persistence.TemporalType;
+import javax.persistence.PersistenceContext;
+import org.springframework.transaction.annotation.Transactional;
 
-
-public class GenericJPADAO<T, ID extends Serializable> implements GenericDAO<T, ID> {
+@Transactional
+abstract public class PicsDAO {
+	protected EntityManager em;
 	
-	private Class<T> persistentClass;
+	@PersistenceContext
+	public void setEntityManager( EntityManager em )
+	{
+		this.em = em;
+	}
+	
+	
+	/*
+		private Class<T> persistentClass;
 	private EntityManager entityManager;
 	private String persistenceUnit;
 	private int max = -1;
@@ -292,5 +290,6 @@ public class GenericJPADAO<T, ID extends Serializable> implements GenericDAO<T, 
 				q.setParameter(str, params.get(str));
 		}
 	}
-			
+
+	 */
 }

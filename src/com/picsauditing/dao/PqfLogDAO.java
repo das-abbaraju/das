@@ -1,7 +1,5 @@
 package com.picsauditing.dao;
 
-import com.picsauditing.jpa.entities.*;
-
-public interface PqfLogDAO extends GenericDAO<PqfLog, Integer> {
+public class PqfLogDAO extends PicsDAO {
 
 }
