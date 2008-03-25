@@ -6,16 +6,18 @@
 if (permissions.isContractor()) throw new com.picsauditing.access.NoRightsException("Not Contractor");
 try{
 	OperatorBean oBean = new OperatorBean();
-	java.util.ArrayList opAL = oBean.getOperatorsAL();
+	java.util.ArrayList<String> opAL = oBean.getOperatorsAL();
 	String marker = " ";
 	int ctr = 0;
 	sBean.orderBy = "Name";
-	if (pBean.isAdmin())
+	if (permissions.isAdmin())
 		sBean.doSearch(request, SearchBean.ACTIVE_AND_NOT, 100, pBean, pBean.userID);
 	else
 		sBean.doSearch(request, SearchBean.ONLY_ACTIVE, 100, pBean, pBean.userID);
 
 %>
+<%@page import="com.picsauditing.PICS.redFlagReport.FlagDO"%>
+<%@page import="java.util.Map"%>
 <html>
 <head>
 <title>Corporate Contractors Report</title>
@@ -27,16 +29,16 @@ try{
 		<table border="0" cellpadding="2" cellspacing="0">
 			<tr align="center">
 				<td>
-<%		if (pBean.isAdmin())
+<%		if (permissions.isAdmin())
 			out.println(SearchBean.getSearchGeneralSelect("generalContractorID", "blueMain", sBean.selected_generalContractorID));
-		if (pBean.isCorporate())
+		if (permissions.isCorporate())
 			out.println(pBean.oBean.getFacilitySelect("generalContractorID","forms",sBean.selected_generalContractorID));
 %>
 				</td>
 				<td><input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()">
 			</tr>
 		</table>
-		<% if (pBean.isOperator()) { %>
+		<% if (permissions.isOperator()) { %>
 			<input type="hidden" name="searchCorporate" value="<%= request.getParameter("searchCorporate")%>"/>
 		<% } %>
 		<input type="hidden" name="showPage" value="1"/>
@@ -52,10 +54,10 @@ try{
 	<td colspan="2" bgcolor="#993300" align="left" class="whiteTitle">Contractor</td>
 	<%
 	int count = 0;
-	for (java.util.ListIterator li = opAL.listIterator();li.hasNext();){
+	for (java.util.ListIterator<String> li = opAL.listIterator();li.hasNext();){
 		String opID = (String)li.next();
 		String opName = (String)li.next();
-		if (pBean.isAdmin() || pBean.oBean.facilitiesAL.contains(opID)){
+		if (permissions.isAdmin() || pBean.oBean.facilitiesAL.contains(opID)){
 			%>
 			<td bgcolor="#003366" class="whiteTitleSmall"><%= opName %></td>
 			<%
@@ -66,9 +68,12 @@ try{
 </tr>
 <%	int duplication = 0;
 	int total = 0;
+	
 	while (sBean.isNextRecord()) {
 		total = 0;
 		sBean.cBean.setFacilitiesFromDB();
+		FlagDO flagDO = new FlagDO();
+		Map<String, FlagDO> flagMap = flagDO.getFlagByContractor(sBean.cBean.id);
 		String thisClass = sBean.getTextColor();
 		if (!"cantSee".equals(thisClass))
 			thisClass = ContractorBean.getTextColor(sBean.cBean.calcPICSStatusForOperator(pBean.oBean));
@@ -80,13 +85,13 @@ try{
 			        <%=sBean.aBean.name%></a>
 				</td>
 <%//		cBean.setFromDB(sBean.aBean.id);
-		for (java.util.ListIterator li = opAL.listIterator();li.hasNext();) {
+		for (java.util.ListIterator<String> li = opAL.listIterator();li.hasNext();) {
 			String opID = (String)li.next();
 			String opName = (String)li.next();
-			if (pBean.isAdmin() || pBean.oBean.facilitiesAL.contains(opID)){
+			if (permissions.isAdmin() || pBean.oBean.facilitiesAL.contains(opID)){
 				if (sBean.cBean.generalContractors.contains(opID)) {
-					//marker = "<img src=\"images/icon_"+flagColor+"Flag.gif width=12 height=15 border=0>";
-					marker = "<b>X</b>";
+					marker = "<img src='images/icon_"+flagMap.get(opID).getFlag().toLowerCase()+"Flag.gif' width=12 height=15 border=0>";
+//					marker = "X";
 					total++;
 		 		} else
 					marker = " ";
