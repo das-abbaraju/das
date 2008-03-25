@@ -24,7 +24,7 @@
 </head>
 <body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
-	<tr>
+	<tr height="145">
 		<td valign="top">
 		<table width="100%" border="0" cellpadding="0" cellspacing="0">
 			<tr>
@@ -51,7 +51,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td align="center"><decorator:body /><br /><br /></td>
+		<td align="center" valign="top"><decorator:body /><br /><br /></td>
 	</tr>
 	<tr bgcolor="#003366">
 		<td height="72" align="center" valign="middle" class="footer">&copy;
