@@ -9,6 +9,10 @@ if (permissions.isContractor() && !thisPage.contains("contractor_detail")) {
 	<%
 }
 %>
+<%
+if  (pBean.canSeeSet.contains(id)) {
+%>
+
 <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_detail.jsp",thisPage,id,"",thisQuery,"Contractor Details")%>
 <%
 if (permissions.hasPermission(OpPerms.InsuranceCerts)) {
@@ -62,5 +66,7 @@ if (permissions.canSeeAudit(com.picsauditing.jpa.entities.AuditType.DA) && cBean
 	%> <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.DA_TYPE,thisQuery,"View D&A Audit")%>
 	<%
 }
+
+}//if
 %>
 </center>
