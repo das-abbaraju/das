@@ -1,28 +1,18 @@
 package com.picsauditing.beans;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.faces.component.UISelectOne;
 import javax.faces.event.ActionEvent;
-import javax.faces.model.DataModel;
 
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorInfoReportDAO;
-import com.picsauditing.dao.DAOFactory;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorInfoReport;
-import com.picsauditing.jpa.entities.OshaLogReport;
 import com.picsauditing.jsf.utils.JSFListDataModel;
 
 
@@ -45,9 +35,10 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 	@Override
 	protected List<ContractorInfoReport> getList() {
 		
-		DAOFactory daof = DAOFactory.instance(DAOFactory.JPA, getPersistenceCtx());		
-		dao = daof.getContractorInfoReportDAO();		
-		dao.setMax(getMaxResults());
+		//DAOFactory daof = DAOFactory.instance(DAOFactory.JPA, getPersistenceCtx());		
+		//dao = daof.getContractorInfoReportDAO();		
+		dao = (ContractorInfoReportDAO) SpringJSFUtil.getSpringContext().getBean("ContractorInfoReportDAO");
+		// JEFF SHELLEY NEEDS TO FIX THIS	dao.setMax(getMaxResults());
 		List<ContractorInfoReport> reports = null;;
 		String start = "select cr from ContractorInfoReport cr where cr.account.active='Y' AND cr.pqfSubmittedDate <> '0000-00-00' AND ";
 		String startCount = "select count(cr) from ContractorInfoReport cr where cr.account.active='Y' AND cr.pqfSubmittedDate <> '0000-00-00' AND ";
@@ -56,7 +47,8 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		Map<String,Object>params = new HashMap<String,Object>();
 		if(doSearch){
 			if(acctName == "" && auditorId == 0 && operatorId == 0 && !needsOshaVerification && !needsEMRVerification)
-				return dao.executeNamedQuery("getActiveContractors", null);
+				System.out.println("temp");
+				// JEFF SHELLEY NEEDS TO FIX THISreturn dao.executeNamedQuery("getActiveContractors", null);
 			else if(acctName != "" || auditorId > 0 || operatorId > 0){
 				
 				needsOshaVerification = false;
@@ -85,12 +77,15 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 				queryBuf.setLength(queryBuf.length()-5);
 				queryBuf.append(" order by cr.pqfSubmittedDate asc");
 				StringBuffer query = queryBuf.insert(0, start);
-				reports = dao.executeQuery(query.toString(), params);
+				
+				// JEFF SHELLEY NEEDS TO FIX THISreports = dao.executeQuery(query.toString(), params);
 				
 			}else if(needsEMRVerification && !needsOshaVerification)
-				reports = dao.executeNativeQuery("needsEmrVerification");
+				System.out.println("temp");
+				// JEFF SHELLEY NEEDS TO FIX THISreports = dao.executeNativeQuery("needsEmrVerification");
 			else
-				reports = dao.executeNativeQuery("needsOshaAndEmrVerification");
+				System.out.println("temp");
+				// JEFF SHELLEY NEEDS TO FIX THISreports = dao.executeNativeQuery("needsOshaAndEmrVerification");
 				
 				
 		}	
@@ -165,7 +160,7 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 
 		public void clear(ActionEvent event) {			  
 			  refreshModel();
-			  dao.clear();
+				// JEFF SHELLEY NEEDS TO FIX THISdao.clear();
 			  doSearch = false;
 			  acctName = "";
 			  setFirstResult(0);		  
@@ -173,7 +168,7 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		
 		public void search(ActionEvent event){
 			clearModel();
-			dao.clear();
+			// JEFF SHELLEY NEEDS TO FIX THISdao.clear();
 			doSearch = true;		
 					
 		}		
@@ -204,9 +199,9 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 
 		public Map<String, Integer> getOperators(){
 			if(operators == null){
-				DAOFactory daof = DAOFactory.instance(DAOFactory.JPA, getPersistenceCtx());		
-				AccountDAO adao = daof.getAccountDAO();
-				List<Account> list =  SearchFacadeBean.getOperators(adao);
+				//DAOFactory daof = DAOFactory.instance(DAOFactory.JPA, getPersistenceCtx());		
+				//AccountDAO adao = daof.getAccountDAO();
+				List<Account> list =  SearchFacadeBean.getOperators();
 				operators = new HashMap<String,Integer>();
 				operators.put(" ", 0);
 				for(Account a : list)
@@ -221,9 +216,9 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		public Map<String,Integer> getAuditors(){
 			
 			if(auditors == null){
-				DAOFactory daof = DAOFactory.instance(DAOFactory.JPA, getPersistenceCtx());		
-				AccountDAO adao = daof.getAccountDAO();
-				List<Account> list =  SearchFacadeBean.getAuditors(adao);
+				//DAOFactory daof = DAOFactory.instance(DAOFactory.JPA, getPersistenceCtx());		
+				//AccountDAO adao = daof.getAccountDAO();
+				List<Account> list =  SearchFacadeBean.getAuditors();
 				auditors = new HashMap<String,Integer>();
 				auditors.put(" ", 0);
 				for(Account a : list)
