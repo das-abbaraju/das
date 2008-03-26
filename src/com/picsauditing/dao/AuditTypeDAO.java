@@ -25,9 +25,9 @@ public class AuditTypeDAO extends PicsDAO {
         }
     }
 	
-	//@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
     public List<AuditType> findAll() {
-        Query query = em.createQuery("select t FROM AuditType t");
+        Query query = em.createQuery("select t FROM AuditType t ORDER BY t.auditName");
         return query.getResultList();
     }
 	

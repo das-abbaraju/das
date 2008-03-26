@@ -13,7 +13,6 @@ import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectUser;
 
 public class UsersManage extends PicsActionSupport {
-
 	protected String accountId = null;
 	protected String filter = null;
 

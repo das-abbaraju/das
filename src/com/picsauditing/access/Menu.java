@@ -98,6 +98,7 @@ public class Menu {
 		this.addItem("report_desktop.jsp", "Schedule Desktop Audits", OpPerms.AssignAudits);
 		this.addItem("report_scheduleAudits.jsp?changed=1", "Schedule Office Audits", OpPerms.AssignAudits);
 		this.addItem("report_upgradePayment.jsp?changed=1", "Upgrade Payment Report", OpPerms.BillingUpgrades);
-		this.addItem("faces/administration/index.xhtml", "Administration Dashboard", adminGroup);
+		this.addItem("faces/administration/osha.xhtml", "OSHA Verification", OpPerms.OSHAVerification);
+		this.addItem("AuditOperator.action", "Audit/Operator Assignment");
 	}
 }

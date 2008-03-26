@@ -129,5 +129,4 @@ public class AuditType {
 	public void setDateToExpire(Date dateToExpire) {
 		this.dateToExpire = dateToExpire;
 	}
-
 }

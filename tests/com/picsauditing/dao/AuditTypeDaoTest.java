@@ -9,9 +9,11 @@ import com.picsauditing.jpa.entities.AuditType;
 public class AuditTypeDaoTest extends AbstractDaoTest {
 	private AuditTypeDAO dao;
 	private EntityTransaction tx;
+
 	public AuditTypeDaoTest() {
 		super();
 	}
+
 	public void setUp() throws Exception {
 		super.setUp();
 		dao = new AuditTypeDAO();
@@ -19,24 +21,24 @@ public class AuditTypeDaoTest extends AbstractDaoTest {
 		tx = dao.em.getTransaction();
 		tx.begin();
 	}
+
 	public void tearDown() {
 		tx.rollback();
 		tx = null;
 		dao = null;
 		super.tearDown();
 	}
+
 	public final void testFind() {
-		try {
-			AuditType row = dao.find(1);
-			assertEquals("PQF", row.getAuditName());
-			assertEquals(false, row.isHasMultiple());
-			assertEquals(false, row.isScheduled());
-			assertEquals(false, row.isHasAuditor());
-			assertEquals("2009-03-01", row.getDateToExpire().toString());
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
+		AuditType row = dao.find(3);
+		assertEquals("Office", row.getAuditName());
+		assertEquals(false, row.isHasMultiple());
+		assertEquals(true, row.isScheduled());
+		assertEquals(null, row.getDateToExpire());
+		assertEquals(36, (int)row.getMonthsToExpire());
+		// assertEquals("2009-03-01", row.getDateToExpire().toString());
 	}
+
 	public final void testFindAll() {
 		try {
 			List<AuditType> rows = dao.findAll();
@@ -45,6 +47,7 @@ public class AuditTypeDaoTest extends AbstractDaoTest {
 			fail(e.getMessage());
 		}
 	}
+
 	public final void testUpdate() {
 		try {
 			AuditType row = dao.find(1);
@@ -61,6 +64,7 @@ public class AuditTypeDaoTest extends AbstractDaoTest {
 			fail(e.getMessage());
 		}
 	}
+
 	public final void testInsert() {
 		try {
 			AuditType row = new AuditType();

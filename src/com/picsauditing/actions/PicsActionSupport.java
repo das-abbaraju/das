@@ -8,17 +8,26 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.access.User;
 
 public class PicsActionSupport extends ActionSupport
 {
 	protected Permissions permissions = null;
 	//protected PermissionsBean pBean = null;
+	protected boolean autoLogin = false;
 	
 	protected boolean getPermissions(OpPerms opPerms, OpType opType) throws Exception
 	{
 		permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
-		if (permissions == null)
+		if (permissions == null) {
 			permissions = new Permissions();
+			if (this.autoLogin) {
+				// Auto Login tallred
+				User user = new User();
+				user.setFromDB("941"); //tallred
+				permissions.login(user);
+			}
+		}
 		
 		if ( !permissions.loginRequired(ServletActionContext.getResponse(), ServletActionContext.getRequest() ) ) 
 		{

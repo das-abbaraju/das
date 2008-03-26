@@ -29,10 +29,6 @@ abstract public class PicsDAO {
 		this.persistentClass = (Class<T>)( (ParameterizedType) getClass().getGenericSuperclass() ).getActualTypeArguments()[0];
 	}
 	
-	public void setEntityManager(EntityManager entityManager) {
-		this.entityManager = entityManager;
-	}
-	
 	protected EntityManager getEntityManager(){
 		if(persistenceUnit == null || persistenceUnit.equals(""))
 			return null;
