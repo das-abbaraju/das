@@ -8,6 +8,8 @@
 		<properties>
 			<property name="hibernate.hbm2ddl.auto" value="" />
 			<property name="hibernate.show_sql" value="true" />
+
+<!-- 
 			<property name="jboss.entity.manager.factory.jndi.name"
 				value="java:/PICSReportsJPAEntityManagerFactory" />
 			<property name="hibernate.dialect"
@@ -25,6 +27,7 @@
 			<property name="hibernate.connection.password" value="pics" />
 			<property name="hibernate.connection.autocommit"
 				value="true" />
+ -->
 		</properties>
 	</persistence-unit>
 

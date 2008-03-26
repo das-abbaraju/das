@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.Facilities;
 import com.picsauditing.access.OpPerms;
@@ -41,7 +42,7 @@ public class AuditOperatorList extends PicsActionSupport {
 		if (!getPermissions(OpPerms.ManageOperators, OpType.View))
 			return LOGIN;
 		
-		operators = facilityUtility.listAll("a.type = 'Operator'");
+		
 		//auditTypes = auditDAO.findAll();
 		auditTypes = new ArrayList<AuditType>();
 		
@@ -52,12 +53,19 @@ public class AuditOperatorList extends PicsActionSupport {
 			for(AuditOperator row : rawData) {
 				rawDataIndexed.put(row.getOpID(), row);
 			}
+			
+			operators = facilityUtility.listAll("a.type = 'Operator'");
+			
 			for(BasicDynaBean row : operators) {
 				AuditOperatorDO newRow = new AuditOperatorDO();
 				newRow.setAuditTypeID(auditId);
 				newRow.setOperatorID(Integer.parseInt(row.get("id").toString()));
 				newRow.setOperatorName(row.get("name").toString());
-				newRow.setRiskLevel(rawDataIndexed.get(newRow.getOperatorID()).getMinRiskLevel());
+				
+				if( rawDataIndexed.get(newRow.getOperatorID()) != null )
+				{
+					newRow.setRiskLevel( rawDataIndexed.get(newRow.getOperatorID()).getMinRiskLevel() );
+				}
 				data.add(newRow);
 			}
 		}

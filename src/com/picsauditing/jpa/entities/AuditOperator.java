@@ -1,14 +1,14 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.Date;
+
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "audit_operator")
@@ -17,11 +17,13 @@ public class AuditOperator {
 	@GeneratedValue( strategy = GenerationType.IDENTITY )
 	protected int auditOperatorID = 0;
 	protected int auditTypeID;
+	
 	protected int opID;
-	protected Account account;
+//	protected Account account;
 	protected int minRiskLevel = 1;
 	protected int orderedCount = -1;
-	protected Date orderedDate = null;
+	protected Date orderDate = null;
+
 	public int getAuditOperatorID() {
 		return auditOperatorID;
 	}
@@ -52,19 +54,24 @@ public class AuditOperator {
 	public void setOrderedCount(int orderedCount) {
 		this.orderedCount = orderedCount;
 	}
-	public Date getOrderedDate() {
-		return orderedDate;
-	}
-	public void setOrderedDate(Date orderedDate) {
-		this.orderedDate = orderedDate;
-	}
 	
-	@ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="opID", nullable=false, updatable=false)
+	@Temporal( value = TemporalType.DATE )
+	public Date getOrderDate() {
+		return orderDate;
+	}
+	public void setOrderDate(Date orderDate) {
+		this.orderDate = orderDate;
+	}
+
+	
+	/*
+	@ManyToOne
+    @JoinColumn(name="opID", nullable=false, updatable=false, insertable=false)
 	public Account getAccount() {
 		return account;
 	}
 	public void setAccount(Account account) {
 		this.account = account;
 	}
+	*/
 }
