@@ -381,23 +381,23 @@ import com.picsauditing.util.LinkBuilder;
 			whereQuery += "AND isOnlyCerts='No' ";
 		//for incomplete audit report
 		if (!"".equals(selected_incompleteAfter) && 
-				(permissions.oBean.canSeeDesktop() || permissions.oBean.canSeeDA() || permissions.oBean.canSeeOffice())){
+				(permissions.oBean.canSeeDesktop() || permissions.oBean.canSeeDA() || permissions.oBean.canSeeOffice() || permissions.isAdmin())){
 			whereQuery +="AND (";
-			if (permissions.oBean.canSeeDesktop())
+			if (permissions.oBean.canSeeDesktop() || permissions.isAdmin())
 				whereQuery += "((desktopSubmittedDate<>'0000-00-00' AND desktopSubmittedDate<DATE_ADD(CURDATE(),INTERVAL -"+selected_incompleteAfter+
 						" MONTH) "+"AND desktopClosedDate='0000-00-00') OR (desktopSubmittedDate='0000-00-00' AND "+
 						"auditCompletedDate<>'0000-00-00' AND "+
 						"auditCompletedDate<'"+DateBean.OLD_OFFICE_CUTOFF+"' AND auditCompletedDate<DATE_ADD(CURDATE(),INTERVAL -"+selected_incompleteAfter+
 						" MONTH) AND auditClosedDate='0000-00-00')) ";
-			if (permissions.oBean.canSeeDesktop() && permissions.oBean.canSeeDA())
+			if (permissions.oBean.canSeeDesktop() && permissions.oBean.canSeeDA() || permissions.isAdmin())
 				whereQuery +=" OR ";
-			if (permissions.oBean.canSeeDA())
+			if (permissions.oBean.canSeeDA() || permissions.isAdmin())
 				whereQuery += "(daSubmittedDate<>'0000-00-00' AND daSubmittedDate<DATE_ADD(CURDATE(),INTERVAL -"+selected_incompleteAfter+
 						" MONTH) AND daClosedDate='0000-00-00')";
 			if ((permissions.oBean.canSeeDesktop() || permissions.oBean.canSeeDA())
-						&& permissions.oBean.canSeeOffice())
+						&& permissions.oBean.canSeeOffice() || permissions.isAdmin())
 				whereQuery +=" OR ";
-			if (permissions.oBean.canSeeOffice())
+			if (permissions.oBean.canSeeOffice() || permissions.isAdmin())
 				whereQuery += "(auditCompletedDate<>'0000-00-00' AND auditCompletedDate<DATE_ADD(CURDATE(),INTERVAL -"+selected_incompleteAfter+
 						" MONTH) AND auditClosedDate='0000-00-00')";
 			whereQuery +=")";

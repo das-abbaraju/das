@@ -9,6 +9,7 @@
 	sBean.orderBy = request.getParameter("orderBy");
 	if (null==sBean.orderBy)
 		sBean.orderBy = "name";
+	sBean.selected_incompleteAfter = "2";
 	if (pBean.isAdmin())
 		sBean.doSearch(request, sBean.ACTIVE_AND_NOT, 100, pBean, pBean.userID);
 	else
@@ -17,6 +18,7 @@
 <%@page import="com.picsauditing.jpa.entities.AuditType"%>
 <html>
 <head>
+  <script language="JavaScript" SRC="js/Search.js"></script>
 <title>Contractors with Incomplete Requirements</title>
 <script language="JavaScript" SRC="js/ImageSwap.js"></script>
 </head>
@@ -36,11 +38,14 @@
                      <td><input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()"></td>
                    </tr>
                  </table>
+     			  <input type="hidden" name="showPage" value="1"/>
+		          <input type="hidden" name="startsWith" value=""/>
+		          <input type="hidden" name="orderBy"  value="name"/>
                  </form>
                 </td>
               </tr>
               <tr>
-                <td align="center"><%=sBean.getLinks()%></td>
+                <td align="center"><%=sBean.getLinksWithDynamicForm()%></td>
               </tr>
             </table>
             <table width="657" border="0" cellpadding="1" cellspacing="1">
@@ -77,7 +82,7 @@
               </tr>
 <%	}//while%>
             </table><br>
-            <center><%=sBean.getLinks()%></center>
+            <center><%=sBean.getLinksWithDynamicForm()%></center>
 <%	sBean.closeSearch(); %>
       <br><center><%@ include file="utilities/contractor_key.jsp"%></center>
 </body>
