@@ -70,6 +70,7 @@ public class Menu {
 		this.addItem("report_annualUpdate.jsp?changed=1", "Annual Update Report", OpPerms.EmailAnnualUpdate);
 		this.addItem("con_approvals.jsp", "Approve Contractors", OpPerms.ContractorApproval);
 		this.addItem("report_audits.jsp?changed=1", "Audit Dates Report", adminGroup);
+		this.addItem("AuditOperator.action", "Audit/Operator Assignment");
 		this.addItem("report_operatorContractor.jsp?changed=1", "Contractor Assignments", adminGroup);
 		this.addItem("report_contactInfo.jsp?changed=1", "Contractor Contact Info");
 		this.addItem("contractorsSearch.jsp", "Contractor Search", OpPerms.SearchContractors);
@@ -91,6 +92,7 @@ public class Menu {
 		this.addItem("UsersManage.action", "Manage Users", OpPerms.EditUsers);
 		this.addItem("report_ncms.jsp", "NCMS Data Report", OpPerms.NCMS );
 		this.addItem("audit_calendar.jsp?changed=1", "Office Audit Calendar", OpPerms.OfficeAuditCalendar);
+		this.addItem("faces/administration/osha.xhtml", "OSHA Verification", OpPerms.OSHAVerification);
 		this.addItem("report_payment.jsp?changed=1", "Payment Report", adminGroup);
 		this.addItem("op_editFlagCriteria.jsp", "Red Flag Criteria", OpPerms.EditFlagCriteria);
 		this.addItem("report_scheduleAudits.jsp?changed=1&which="+com.picsauditing.PICS.SearchBean.RESCHEDULE_AUDITS, "Reschedule Audits", adminGroup);
@@ -98,7 +100,5 @@ public class Menu {
 		this.addItem("report_desktop.jsp", "Schedule Desktop Audits", OpPerms.AssignAudits);
 		this.addItem("report_scheduleAudits.jsp?changed=1", "Schedule Office Audits", OpPerms.AssignAudits);
 		this.addItem("report_upgradePayment.jsp?changed=1", "Upgrade Payment Report", OpPerms.BillingUpgrades);
-		this.addItem("faces/administration/osha.xhtml", "OSHA Verification", OpPerms.OSHAVerification);
-		this.addItem("AuditOperator.action", "Audit/Operator Assignment");
 	}
 }
