@@ -20,6 +20,7 @@ try{
 <%@page import="java.util.Map"%>
 <html>
 <head>
+  <script language="JavaScript" SRC="js/Search.js"></script>
 <title>Corporate Contractors Report</title>
 <script src="js/Search.js" type="text/javascript"></script>
 </head>
@@ -29,6 +30,7 @@ try{
 		<table border="0" cellpadding="2" cellspacing="0">
 			<tr align="center">
 				<td>
+                  <input name="name" type="text" class="forms" value="<%=sBean.selected_name%>" size="20" onFocus="clearText(this)">
 <%		if (permissions.isAdmin())
 			out.println(SearchBean.getSearchGeneralSelect("generalContractorID", "blueMain", sBean.selected_generalContractorID));
 		if (permissions.isCorporate())
@@ -38,6 +40,7 @@ try{
 				<td><input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()">
 			</tr>
 		</table>
+        <%=sBean.getStartsWithLinks()%><br>
 		<% if (permissions.isOperator()) { %>
 			<input type="hidden" name="searchCorporate" value="<%= request.getParameter("searchCorporate")%>"/>
 		<% } %>

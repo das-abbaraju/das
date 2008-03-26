@@ -28,3 +28,9 @@ function runSearch( formid )
 	document.getElementById( formid )['startsWith'].value = "";
 	return true;
 } 
+
+function clearText(thefield)
+{
+	if (thefield.defaultValue==thefield.value)
+		thefield.value = ""
+}
