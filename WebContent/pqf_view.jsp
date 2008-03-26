@@ -22,6 +22,10 @@
 	aBean.setFromDB(conID);
 	cBean.setFromDB(conID);
 	cBean.tryView(permissions);
+	Set<String> showCategoryIDs = null;
+	if (permissions.isOperator()){
+		showCategoryIDs = pcBean.getCategoryForOpRiskLevel(permissions.getAccountIdString(),cBean.riskLevel);
+	}
 	//temporary to forward them to ncms imported data if it is linked up
 	if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType) && "Yes".equals(cBean.hasNCMSDesktop)) {
 		response.sendRedirect("pqf_viewNCMS.jsp?id="+conID+"&auditType="+auditType);
@@ -33,6 +37,7 @@
 		psBean.setPQFSubCategoriesArray(catID);
 		int catCount = 0;
 %>
+<%@page import="java.util.Set"%>
 <html>
 <head>
 <title>PQF for <%=aBean.name %></title>
@@ -154,10 +159,12 @@
                       <td bgcolor="#003366">Category</td>
                       <td bgcolor="#993300">% Complete</td>
                     </tr>
-<%		pcBean.setListWithData("number",auditType,conID);
+<%	pcBean.setListWithData("number",auditType,conID);
 		while (pcBean.isNextRecord(pBean,conID)){
 			if ((!com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType) || pBean.isAdmin() || "Yes".equals(pcBean.applies)) &&
-					(!com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType) || !(pBean.isOperator() || pBean.isCorporate()) || pBean.oBean.PQFCatIDsAL.contains(pcBean.catID))){
+					(!com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType) || !(pBean.isOperator() || pBean.isCorporate()) || 
+							(permissions.isCorporate() && pBean.oBean.PQFCatIDsAL.contains(pcBean.catID)) ||
+							(permissions.isOperator() && showCategoryIDs.contains(pcBean.catID)))){
 				catCount++;
 %>
                     <tr class="blueMain" <%=Utilities.getBGColor(catCount)%>>

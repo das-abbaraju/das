@@ -536,6 +536,21 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		}//finally
 	}//setOpCategoryMatrixRisk
 
+	public Set<String> getCategoryForOpRiskLevel(String opID, String riskLevel) throws Exception {
+		try{
+			String selectQuery = "SELECT catID FROM pqfOpMatrix WHERE opID="+opID+" AND riskLevel="+riskLevel;
+			DBReady();
+			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
+			Set<String> catIDs = new HashSet<String>();
+			while (SQLResult.next())
+				catIDs.add(SQLResult.getString("catID"));
+			SQLResult.close();
+			return catIDs;
+		}finally{
+			DBClose();
+		}//finally
+	}//getCategoryForOpRiskLevel
+
 	public void generateDynamicCategories(String conID, String auditType, String riskLevel) throws Exception {
 		try{
 			DBReady();

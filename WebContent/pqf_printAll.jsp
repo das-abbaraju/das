@@ -16,8 +16,12 @@
 	aBean.setFromDB(conID);
 	cBean.setFromDB(conID);
 	cBean.tryView(permissions);
+	Set<String> showCategoryIDs = null;
+	if (permissions.isOperator())
+		showCategoryIDs = pcBean.getCategoryForOpRiskLevel(permissions.getAccountIdString(),cBean.riskLevel);
 %>
 
+<%@page import="java.util.Set"%>
 <html>
 <head>
   <title>Print PQF</title>
@@ -34,7 +38,10 @@
 	int catCount = 0;
 	while (pcBean.isNextRecord(pBean,conID)){
 		if ("Yes".equals(pcBean.applies) && (!com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType) ||
-				!(pBean.isOperator() || pBean.isCorporate()) || pBean.oBean.PQFCatIDsAL.contains(pcBean.catID))){
+				!(pBean.isOperator() || pBean.isCorporate()) || 
+				(permissions.isCorporate() && pBean.oBean.PQFCatIDsAL.contains(pcBean.catID)) ||
+				(permissions.isOperator() && showCategoryIDs.contains(pcBean.catID))		
+				)){
 			catCount++;
 			String catID = pcBean.catID;
 			psBean.setPQFSubCategoriesArray(catID);
