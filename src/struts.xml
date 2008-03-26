@@ -34,5 +34,9 @@
 			class="com.picsauditing.actions.audits.AuditOperatorList">
 			<result>audit_operator.jsp</result>
 		</action>
+		<action name="AuditOperatorSaveAjax"
+			class="com.picsauditing.actions.audits.AuditOperatorSave">
+			<result>audit_operator_save.jsp</result>
+		</action>
 	</package>
 </struts>

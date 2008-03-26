@@ -1,0 +1,6 @@
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<%@page language="java" errorPage="exception_handler.jsp"%>
+<label><input <s:if test="riskLevel == 0">CHECKED</s:if> value="0" name="riskLevel<s:property value="id" />" type="radio" onchange="save('<s:property value="id" />', '<s:property value="auditTypeID" />', '<s:property value="operatorID" />', '<s:property value="auditOperatorID" />')" />None</label>
+<label><input <s:if test="riskLevel == 1">CHECKED</s:if> value="1" name="riskLevel<s:property value="id" />" type="radio" onchange="save('<s:property value="id" />', '<s:property value="auditTypeID" />', '<s:property value="operatorID" />', '<s:property value="auditOperatorID" />')" />Low</label>
+<label><input <s:if test="riskLevel == 2">CHECKED</s:if> value="2" name="riskLevel<s:property value="id" />" type="radio" onchange="save('<s:property value="id" />', '<s:property value="auditTypeID" />', '<s:property value="operatorID" />', '<s:property value="auditOperatorID" />')" />Med</label>
+<label><input <s:if test="riskLevel == 3">CHECKED</s:if> value="3" name="riskLevel<s:property value="id" />" type="radio" onchange="save('<s:property value="id" />', '<s:property value="auditTypeID" />', '<s:property value="operatorID" />', '<s:property value="auditOperatorID" />')" />High</label>

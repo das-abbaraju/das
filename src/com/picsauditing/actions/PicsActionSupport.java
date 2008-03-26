@@ -26,6 +26,7 @@ public class PicsActionSupport extends ActionSupport
 				User user = new User();
 				user.setFromDB("941"); //tallred
 				permissions.login(user);
+				ActionContext.getContext().getSession().put("permissions", permissions);
 			}
 		}
 		
