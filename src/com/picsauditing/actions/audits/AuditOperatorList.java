@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.Facilities;
 import com.picsauditing.access.OpPerms;
