@@ -1,22 +1,16 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "contractor_info")
@@ -100,9 +94,6 @@ public class ContractorInfo implements java.io.Serializable {
 	private short payingFacilities;
 	private Date welcomeCallDate;
 	private int welcomeAuditorId;
-	private List<GeneralContractor> generalContractors = new ArrayList<GeneralContractor>(0);
-	private List<OshaLog> oshaLogs = new ArrayList<OshaLog>(0);
-	private List<PqfData> pqfData = new ArrayList<PqfData>(0);
 
 
 	@Id
@@ -833,35 +824,4 @@ public class ContractorInfo implements java.io.Serializable {
 	public void setWelcomeAuditorId(int welcomeAuditorId) {
 		this.welcomeAuditorId = welcomeAuditorId;
 	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contractorInfo")
-	public List<GeneralContractor> getGeneralContractors() {
-		return this.generalContractors;
-	}
-
-	public void setGeneralContractors(List<GeneralContractor> generalContractors) {
-		this.generalContractors = generalContractors;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contractorInfo")
-	public List<OshaLog> getOshaLogs() {
-		return this.oshaLogs;
-	}
-
-	public void setOshaLogs(List<OshaLog> oshaLogs) {
-		this.oshaLogs = oshaLogs;
-	}
-
-	// @OneToMany(fetch=FetchType.LAZY, mappedBy="contractorInfo")
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "conID")
-	@Where(clause = "questionID in (123, 124, 125, 872, 889, 891, 1519, 1522, 1617, 1618)")
-	public List<PqfData> getPqfData() {
-		return this.pqfData;
-	}
-
-	public void setPqfData(List<PqfData> value) {
-		this.pqfData = value;
-	}
-
 }

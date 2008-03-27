@@ -24,7 +24,8 @@ public class AccountDAO extends PicsDAO {
     }
 	
 	public Account find(int id) {
-        return em.find(Account.class, id);
+		Account a = em.find(Account.class, id);
+        return a;
     }
 
     public List<Account> findWhere(String where) {

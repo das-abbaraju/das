@@ -18,10 +18,13 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 @Entity
 @Table(name = "accounts")
 public class Account implements java.io.Serializable {
-
+	
 	private Integer id;
 	private String type;
 	private String name;
@@ -47,8 +50,11 @@ public class Account implements java.io.Serializable {
 	private char sendActivationEmailB;
 	private String activationEmailsB;
 	private Date emailConfirmedDate;
-	private List<GeneralContractor> generalContractors = new ArrayList<GeneralContractor>(0);
-	private ContractorInfo contractorInfo;
+	
+	// Other tables
+	private ContractorInfo contractor;
+	private List<ContractorOperator> contractors;
+	private List<ContractorOperator> operators;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -280,22 +286,33 @@ public class Account implements java.io.Serializable {
 		this.emailConfirmedDate = emailConfirmedDate;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
-	public List<GeneralContractor> getGeneralContractors() {
-		return this.generalContractors;
+	//////////////////
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "operatorAccount")
+	public List<ContractorOperator> getContractors() {
+		return this.contractors;
 	}
 
-	public void setGeneralContractors(List<GeneralContractor> generalContractors) {
-		this.generalContractors = generalContractors;
+	public void setContractors(List<ContractorOperator> contractors) {
+		this.contractors = contractors;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contractorAccount")
+	public List<ContractorOperator> getOperators() {
+		return this.operators;
+	}
+
+	public void setOperators(List<ContractorOperator> operators) {
+		this.operators = operators;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id", nullable = false, insertable = false, updatable = false)
-	public ContractorInfo getContractorInfo() {
-		return this.contractorInfo;
+	public ContractorInfo getContractor() {
+		return this.contractor;
 	}
 
-	public void setContractorInfo(ContractorInfo contractorInfo) {
-		this.contractorInfo = contractorInfo;
+	public void setContractor(ContractorInfo contractor) {
+		this.contractor = contractor;
 	}
 }

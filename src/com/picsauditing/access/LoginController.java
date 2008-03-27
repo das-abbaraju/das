@@ -334,8 +334,8 @@ public class LoginController extends DataBean {
 			if (permissions.isCorporate()) {
 			    id = "SELECT opID FROM facilities WHERE corporateID="+id;
 			}
-			String selectQuery = "SELECT subID FROM accounts JOIN generalcontractors ON id=subID "+
-				"WHERE active='Y' AND genID IN ("+id+")";
+			String selectQuery = "SELECT subID FROM accounts a JOIN generalcontractors gc ON a.id=subID "+
+				"WHERE a.active='Y' AND genID IN ("+id+")";
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
 			while (SQLResult.next())
 				canSeeSet.add(SQLResult.getString("subID"));

@@ -6,13 +6,14 @@
 </head>
 <body>
 <h1>PQF Verification for <s:property value="contractor.name" /></h1>
-<p class="blueMain"><a href="pqf_verification.jsp">Return to List</a></p>
+<p class="blueMain"><a href="pqf_verification.jsp">Return to List</a>
 
-<s:property value="contractor.email" />
+<s:property value="contractor.email" /><br/>
 
-<s:iterator value="contractor.generalContractors">
-	<s:property value="account.name" /><br />
+<s:iterator value="contractor.operators">
+	<a href=""><s:property value="operatorAccount.name" /></a><br />
 </s:iterator>
 
+</p>
 </body>
 </html>
