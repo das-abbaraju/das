@@ -15,7 +15,7 @@ function save(id, aID, oID, pKey) {
 		value = radioGrp[i].value;
 	    }
 	}
-	pars = '&operatorID='+oID+'&auditTypeID='+aID+'&riskLevel='+value+'&auditOperatorID='+pKey;
+	pars = '&ao.account.id='+oID+'&ao.auditType.auditTypeID='+aID+'&ao.minRiskLevel='+value+'&ao.auditOperatorID='+pKey;
 	
 	var divName = 'td'+id;
 	$(divName).innerHTML = '<img src="images/ajax_process.gif" />';
