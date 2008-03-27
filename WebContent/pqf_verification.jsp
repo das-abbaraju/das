@@ -112,7 +112,7 @@ List<BasicDynaBean> searchData = report.getPage();
 	<tr id="auditor_tr<%=row.get("id")%>" class="blueMain"
 		<%=color.nextBgColor()%>>
 		<td align="right"><%=color.getCounter()%></td>
-		<td><a href="pqf_verification_detail.jsp?id=<%=row.get("id")%>"><%=row.get("name")%></a></td>
+		<td><a href="VerifyView.action?id=<%=row.get("id")%>"><%=row.get("name")%></a></td>
 		<td><%=DateBean.toShowFormat(row.get("pqfSubmittedDate"))%></td>
 		<td>0/0/00</td>
 		<td><%=Math.round(100*(float)verified/6)%>%</td>
