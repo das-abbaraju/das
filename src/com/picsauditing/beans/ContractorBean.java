@@ -10,12 +10,15 @@ import java.util.Set;
 
 import javax.faces.event.ActionEvent;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.picsauditing.dao.ContractorInfoReportDAO;
+import com.picsauditing.dao.QueryMetaData;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorInfoReport;
 import com.picsauditing.jsf.utils.JSFListDataModel;
 
-
+@Transactional
 public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 	
 	private static final int SORT_BY_NAME = 0;
@@ -38,56 +41,29 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		//DAOFactory daof = DAOFactory.instance(DAOFactory.JPA, getPersistenceCtx());		
 		//dao = daof.getContractorInfoReportDAO();		
 		dao = (ContractorInfoReportDAO) SpringJSFUtil.getSpringContext().getBean("ContractorInfoReportDAO");
-		// JEFF SHELLEY NEEDS TO FIX THIS	dao.setMax(getMaxResults());
-		List<ContractorInfoReport> reports = null;;
-		String start = "select cr from ContractorInfoReport cr where cr.account.active='Y' AND cr.pqfSubmittedDate <> '0000-00-00' AND ";
-		String startCount = "select count(cr) from ContractorInfoReport cr where cr.account.active='Y' AND cr.pqfSubmittedDate <> '0000-00-00' AND ";
-		StringBuffer queryBuf = new StringBuffer();
 		
-		Map<String,Object>params = new HashMap<String,Object>();
+		QueryMetaData qmd = new QueryMetaData();
+		qmd.setMaxRows(getMaxResults());
+		dao.setQueryMetaData(qmd);
+
+		List<ContractorInfoReport> reports = null;;
+		
 		if(doSearch){
 			if(acctName == "" && auditorId == 0 && operatorId == 0 && !needsOshaVerification && !needsEMRVerification)
-				System.out.println("temp");
-				// JEFF SHELLEY NEEDS TO FIX THISreturn dao.executeNamedQuery("getActiveContractors", null);
+				reports = dao.findActiveContractors();
 			else if(acctName != "" || auditorId > 0 || operatorId > 0){
 				
 				needsOshaVerification = false;
 				needsEMRVerification = false;
+
+				reports = dao.findContractInfoReports(acctName, auditorId, operatorId );
 				
-				if(!acctName.equals("")){
-					params.put("name", acctName + "%");
-					queryBuf.append("cr.account.name like :name AND ");
-				}
-				
-				if(auditorId != 0){
-					params.put("pqfAuditorId", auditorId);
-					queryBuf.append("cr.pqfAuditorId=:pqfAuditorId AND ");
-				}
-				
-				if(operatorId != 0){
-					params.put("genId", operatorId );
-					queryBuf.append(":genId in (select gc.id.genId from cr.generalContractors gc) AND ");
-				}
-										
-				if(needsOshaVerification && !needsEMRVerification){
-					queryBuf.append("cr.id in (select o.contractorInfo.id from cr.oshaLogs o where o.verifiedDate1 IS NULL OR ");
-				    queryBuf.append("o.verifiedDate2 IS NULL OR o.verifiedDate3 IS NULL) OR  ");
-				}				
-			
-				queryBuf.setLength(queryBuf.length()-5);
-				queryBuf.append(" order by cr.pqfSubmittedDate asc");
-				StringBuffer query = queryBuf.insert(0, start);
-				
-				// JEFF SHELLEY NEEDS TO FIX THISreports = dao.executeQuery(query.toString(), params);
-				
-			}else if(needsEMRVerification && !needsOshaVerification)
-				System.out.println("temp");
-				// JEFF SHELLEY NEEDS TO FIX THISreports = dao.executeNativeQuery("needsEmrVerification");
-			else
-				System.out.println("temp");
-				// JEFF SHELLEY NEEDS TO FIX THISreports = dao.executeNativeQuery("needsOshaAndEmrVerification");
-				
-				
+			}else if(needsEMRVerification && !needsOshaVerification) {
+				reports = dao.needsEmrVerification();
+			}
+			else {
+				reports = dao.needsOshaAndEmrVerification();
+			}
 		}	
 		
 		return reports;
@@ -160,7 +136,7 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 
 		public void clear(ActionEvent event) {			  
 			  refreshModel();
-				// JEFF SHELLEY NEEDS TO FIX THISdao.clear();
+			  //dao.clear();
 			  doSearch = false;
 			  acctName = "";
 			  setFirstResult(0);		  
@@ -168,7 +144,7 @@ public class ContractorBean extends JSFListDataModel<ContractorInfoReport>{
 		
 		public void search(ActionEvent event){
 			clearModel();
-			// JEFF SHELLEY NEEDS TO FIX THISdao.clear();
+			//dao.clear();
 			doSearch = true;		
 					
 		}		
