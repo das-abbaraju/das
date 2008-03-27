@@ -86,7 +86,8 @@ public class OperatorBean extends DataBean {
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
 			while (SQLResult.next()){
 				AuditOperator tempRow = new AuditOperator();
-				tempRow.setAuditTypeID(SQLResult.getInt("auditTypeID"));
+				tempRow.setAuditType(new AuditType());
+				tempRow.getAuditType().setAuditTypeID(SQLResult.getInt("auditTypeID"));
 				tempRow.setMinRiskLevel(SQLResult.getInt("minRiskLevel"));
 				canSeeAudits.add(tempRow);
 			}
@@ -160,7 +161,9 @@ public class OperatorBean extends DataBean {
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
 			while (SQLResult.next()){
 				AuditOperator tempRow = new AuditOperator();
-				tempRow.setAuditTypeID(SQLResult.getInt("auditTypeID"));
+				//tempRow.setAuditTypeID(SQLResult.getInt("auditTypeID"));
+				tempRow.setAuditType(new AuditType());
+				tempRow.getAuditType().setAuditTypeID(SQLResult.getInt("auditTypeID"));
 				canSeeAudits.add(tempRow);
 			}
 			SQLResult.close();
@@ -265,7 +268,7 @@ public class OperatorBean extends DataBean {
 	private boolean canSeeAudit(int auditID) {
 		if (canSeeAudits == null || canSeeAudits.size() == 0) return false;
 		for (AuditOperator audit : canSeeAudits) {
-			if (audit.getAuditTypeID() == auditID)
+			if (audit.getAuditType().getAuditTypeID() == auditID)
 				return audit.getMinRiskLevel() > 0;
 		}
 		return false;
@@ -274,7 +277,7 @@ public class OperatorBean extends DataBean {
 	public boolean isAuditRequired(int auditID, int conRiskLevel) {
 		if (canSeeAudits == null || canSeeAudits.size() == 0) return false;
 		for (AuditOperator audit : canSeeAudits) {
-			if (audit.getAuditTypeID() == auditID)
+			if (audit.getAuditType().getAuditTypeID() == auditID)
 				return conRiskLevel >= audit.getMinRiskLevel();
 		}
 		return false;
@@ -284,7 +287,7 @@ public class OperatorBean extends DataBean {
 		if (canSeeAudits == null || canSeeAudits.size() == 0) return null;
 		Set<Integer> canSeeAuditIds = new HashSet<Integer>();
 		for (AuditOperator audit : canSeeAudits)
-			canSeeAuditIds.add(audit.getAuditTypeID());
+			canSeeAuditIds.add(audit.getAuditType().getAuditTypeID());
 		return canSeeAuditIds;
 	}
 
