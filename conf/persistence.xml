@@ -5,18 +5,6 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
 	<persistence-unit name="PicsDBJPA">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<class>com.picsauditing.jpa.entities.Account</class>
-		<class>com.picsauditing.jpa.entities.ContractorInfo</class>
-		<class>com.picsauditing.jpa.entities.OshaLog</class>
-		<class>com.picsauditing.jpa.entities.Pqfquestion</class>
-		<class>com.picsauditing.jpa.entities.PqfData</class>
-		<class>com.picsauditing.jpa.entities.GeneralContractor</class>
-		<class>com.picsauditing.jpa.entities.Notes</class>
-		<class>com.picsauditing.jpa.entities.Operator</class>
-		<class>com.picsauditing.jpa.entities.Facility</class>
-		<class>com.picsauditing.jpa.entities.Pqfcategory</class>
-		<class>com.picsauditing.jpa.entities.Pqfsubcategory</class>
-
 		<properties>
 			<property name="hibernate.hbm2ddl.auto" value="" />
 			<property name="hibernate.show_sql" value="false" />

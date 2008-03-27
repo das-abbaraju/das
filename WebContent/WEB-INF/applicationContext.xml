@@ -12,7 +12,6 @@
 	<bean id="AuditOperatorDAO" class="com.picsauditing.dao.AuditOperatorDAO" scope="prototype"/>
 	<bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO" scope="prototype"/>
 	<bean id="ContractorInfoDAO" class="com.picsauditing.dao.ContractorInfoDAO" scope="prototype"/>
-	<bean id="ContractorInfoReportDAO" class="com.picsauditing.dao.ContractorInfoReportDAO" scope="prototype"/>
 	<bean id="PqfDataDAO" class="com.picsauditing.dao.PqfDataDAO" scope="prototype"/>
 	<bean id="PqfquestionDAO" class="com.picsauditing.dao.PqfquestionDAO" scope="prototype"/>
 	<bean id="RulesRowDAO" class="com.picsauditing.dao.RulesRowDAO" scope="prototype"/>
