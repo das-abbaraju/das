@@ -24,8 +24,6 @@ public class AuditType {
 	@Deprecated
 	public static final int DA = 6;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	protected int auditTypeID = 0;
 
 	protected String auditName = null;
@@ -37,9 +35,11 @@ public class AuditType {
 	protected boolean canContractorView = false;
 	protected boolean canContractorEdit = false;
 	protected Integer monthsToExpire = -1;
-	@Temporal(value = TemporalType.DATE)
 	protected Date dateToExpire = null;
 
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	public int getAuditTypeID() {
 		return auditTypeID;
 	}
@@ -120,6 +120,7 @@ public class AuditType {
 		this.monthsToExpire = monthsToExpire;
 	}
 
+	@Temporal(value = TemporalType.DATE)
 	public Date getDateToExpire() {
 		return dateToExpire;
 	}
