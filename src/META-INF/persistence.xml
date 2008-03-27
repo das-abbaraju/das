@@ -7,18 +7,13 @@
 	<persistence-unit name="punit">
 		<properties>
 			<property name="hibernate.hbm2ddl.auto" value="" />
+			<property name="hibernate.max_fetch_depth" value="1" />
 			<property name="hibernate.show_sql" value="true" />
-
 <!-- 
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLMyISAMDialect" />
+			
 			<property name="jboss.entity.manager.factory.jndi.name"
 				value="java:/PICSReportsJPAEntityManagerFactory" />
-			<property name="hibernate.dialect"
-				value="org.hibernate.dialect.MySQLMyISAMDialect" />
-			<property name="hibernate.cache.use_second_level_cache"
-				value="false" />
-			<property name="hibernate.cache.use_query_cache"
-				value="false" />
-			<property name="hibernate.max_fetch_depth" value="1" />
 			<property name="hibernate.connection.driver_class"
 				value="com.mysql.jdbc.Driver" />
 			<property name="hibernate.connection.url"
@@ -30,7 +25,7 @@
  -->
 		</properties>
 	</persistence-unit>
-
+<!-- 
 	<persistence-unit name="PicsDBJPA">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<class>com.picsauditing.jpa.entities.Account</class>
@@ -65,5 +60,6 @@
 		</properties>
 
 	</persistence-unit>
+	 -->
 </persistence>
 
