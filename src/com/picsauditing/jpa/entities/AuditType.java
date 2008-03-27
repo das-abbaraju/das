@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -72,6 +73,7 @@ public class AuditType {
 		this.hasMultiple = hasMultiple;
 	}
 
+	@Column( name="isScheduled")
 	public boolean isScheduled() {
 		return isScheduled;
 	}
