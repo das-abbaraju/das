@@ -63,7 +63,8 @@ public class AuditOperatorList extends PicsActionSupport {
 			rawData = dataDAO.findByAudit(aID);
 			HashMap<Integer, AuditOperator> rawDataIndexed = new HashMap<Integer, AuditOperator>();
 			for (AuditOperator row : rawData) {
-				rawDataIndexed.put(row.getOpID(), row);
+				//rawDataIndexed.put(row.getOpID(), row);
+				rawDataIndexed.put(row.getAccount().getId(), row);
 			}
 
 			for (BasicDynaBean row : operators) {
@@ -83,7 +84,7 @@ public class AuditOperatorList extends PicsActionSupport {
 			rawData = dataDAO.findByOperator(oID);
 			HashMap<Integer, AuditOperator> rawDataIndexed = new HashMap<Integer, AuditOperator>();
 			for (AuditOperator row : rawData) {
-				rawDataIndexed.put(row.getAuditTypeID(), row);
+				rawDataIndexed.put(row.getAuditType().getAuditTypeID(), row);
 			}
 			for (AuditType row : auditTypes) {
 				AuditOperatorDO newRow = new AuditOperatorDO();
