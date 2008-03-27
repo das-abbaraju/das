@@ -8,14 +8,14 @@
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd" default-autowire="autodetect">
 
-	<bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO"/>
-	<bean class="com.picsauditing.dao.AuditOperatorDAO"/>
-	<bean class="com.picsauditing.dao.AuditTypeDAO"/>
-	<bean class="com.picsauditing.dao.ContractorInfoDAO"/>
-	<bean class="com.picsauditing.dao.ContractorInfoReportDAO"/>
-	<bean class="com.picsauditing.dao.PqfDataDAO"/>
-	<bean class="com.picsauditing.dao.PqfquestionDAO"/>
-	<bean class="com.picsauditing.dao.RulesRowDAO"/>
+	<bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO" scope="prototype"/>
+	<bean id="AuditOperatorDAO" class="com.picsauditing.dao.AuditOperatorDAO" scope="prototype"/>
+	<bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO" scope="prototype"/>
+	<bean id="ContractorInfoDAO" class="com.picsauditing.dao.ContractorInfoDAO" scope="prototype"/>
+	<bean id="ContractorInfoReportDAO" class="com.picsauditing.dao.ContractorInfoReportDAO" scope="prototype"/>
+	<bean id="PqfDataDAO" class="com.picsauditing.dao.PqfDataDAO" scope="prototype"/>
+	<bean id="PqfquestionDAO" class="com.picsauditing.dao.PqfquestionDAO" scope="prototype"/>
+	<bean id="RulesRowDAO" class="com.picsauditing.dao.RulesRowDAO" scope="prototype"/>
 	
 	<bean class="com.picsauditing.PICS.Facilities"/>
 
@@ -29,8 +29,8 @@
         <property name="jpaVendorAdapter">
             <bean
                 class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                <property name="database" value="MYSQL" />
                 <property name="showSql" value="true" />
+                <property name="database" value="MYSQL" />
             </bean>
         </property>
     </bean>
