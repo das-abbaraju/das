@@ -92,7 +92,8 @@ public class Menu {
 		this.addItem("UsersManage.action", "Manage Users", OpPerms.EditUsers);
 		this.addItem("report_ncms.jsp", "NCMS Data Report", OpPerms.NCMS );
 		this.addItem("audit_calendar.jsp?changed=1", "Office Audit Calendar", OpPerms.OfficeAuditCalendar);
-		this.addItem("faces/administration/osha.xhtml", "OSHA Verification", OpPerms.OSHAVerification);
+		this.addItem("faces/administration/osha.xhtml", "OSHA Verification (Glenn)", OpPerms.OSHAVerification);
+		this.addItem("pqf_verification.jsp", "OSHA Verification", OpPerms.OSHAVerification);
 		this.addItem("report_payment.jsp?changed=1", "Payment Report", adminGroup);
 		this.addItem("op_editFlagCriteria.jsp", "Red Flag Criteria", OpPerms.EditFlagCriteria);
 		this.addItem("report_scheduleAudits.jsp?changed=1&which="+com.picsauditing.PICS.SearchBean.RESCHEDULE_AUDITS, "Reschedule Audits", adminGroup);
