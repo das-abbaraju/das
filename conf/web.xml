@@ -58,48 +58,12 @@
 		</context-param>
 	<!-- END Pricing -->
 	
-    <context-param>
-		<param-name>org.richfaces.SKIN</param-name>
-		<param-value>classic</param-value>
-	</context-param>
 	<!-- Set the local upload directory to /wwwroot/www.picsauditing.com/ftp-bin -->
 	<context-param>
 		<param-name>FTP_DIR</param-name>
 		<param-value>@@FTPDIR@@</param-value>
 	</context-param>
-	<!-- Use Documents Saved as *.xhtml -->
-	<context-param>
-		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
-		<param-value>.xhtml</param-value>
-	</context-param>
 
-	<!-- Special Debug Output for Development -->
-	<context-param>
-		<param-name>facelets.DEVELOPMENT</param-name>
-		<param-value>true</param-value>
-	</context-param>
-
-	<!-- Optional JSF-RI Parameters to Help Debug -->
-	<context-param>
-		<param-name>com.sun.faces.validateXml</param-name>
-		<param-value>true</param-value>
-	</context-param>
-	<context-param>
-		<param-name>com.sun.faces.verifyObjects</param-name>
-		<param-value>true</param-value>
-	</context-param>
-	<filter>
-		<display-name>Ajax4jsf Filter</display-name>
-		<filter-name>ajax4jsf</filter-name>
-		<filter-class>org.ajax4jsf.Filter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>ajax4jsf</filter-name>
-		<servlet-name>Faces Servlet</servlet-name>
-		<dispatcher>REQUEST</dispatcher>
-		<dispatcher>FORWARD</dispatcher>
-		<dispatcher>INCLUDE</dispatcher>
-	</filter-mapping>
 	<session-config>
 		<session-timeout>30</session-timeout>
 	</session-config>
@@ -129,17 +93,6 @@
 			com.picsauditing.servlet.upload.StreamUploader
 		</servlet-class>
 	</servlet>
-	<!-- Faces Servlet -->
-	<servlet>
-		<servlet-name>Faces Servlet</servlet-name>
-		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<!-- Faces Servlet Mapping -->
-	<servlet-mapping>
-		<servlet-name>Faces Servlet</servlet-name>
-		<url-pattern>/faces/*</url-pattern>
-	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>showpdf</servlet-name>
 		<url-pattern>/servlet/showpdf</url-pattern>

@@ -38,5 +38,11 @@
 			class="com.picsauditing.actions.audits.AuditOperatorSave">
 			<result>audit_operator_save.jsp</result>
 		</action>
+		
+		<action name="VerifyView"
+			class="com.picsauditing.actions.audits.VerifyView">
+			<result>pqf_verification_detail.jsp</result>
+			<result name="input">pqf_verification.jsp</result>
+		</action>
 	</package>
 </struts>
