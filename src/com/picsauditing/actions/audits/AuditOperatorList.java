@@ -37,10 +37,6 @@ public class AuditOperatorList extends PicsActionSupport {
 		return map;
 	}
 
-	/**
-	 * data for selected mountain
-	 */
-	public static final String SELECTED_MOUNTAIN = "Kangchenjunga";
 
 	public AuditOperatorList(Facilities facilityUtility, AuditTypeDAO auditDAO, AuditOperatorDAO dataDAO) {
 		this.autoLogin = true;
