@@ -1,4 +1,5 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
+<%int whichPage = 0;%>
 <%
 String url = request.getRequestURL().toString();
 if (url.startsWith("http://pics")) {
@@ -9,11 +10,10 @@ if (url.startsWith("http://pics")) {
 %>
 <html>
 <head>
-<meta name="color" content="#003366" />
-<meta name="flashName" content="HOME" />
-
-  <script SRC="js/ImageSwap.js" language="JavaScript"></script>
-  <script src="js/AC_RunActiveContent.js" type="text/javascript"></script>
+  <title>PICS - Pacific Industrial Contractor Screening</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <link href="PICS.css" rel="stylesheet" type="text/css">
+  <script language="JavaScript" SRC="js/ImageSwap.js"></script>
   <style type="text/css">
 <!--
 .style1 {
@@ -22,8 +22,79 @@ if (url.startsWith("http://pics")) {
 }
 -->
   </style>
+  <script src="js/AC_RunActiveContent.js" type="text/javascript"></script>
 </head>
-<body>
+
+<body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="document.login.username.focus();">	
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td height="72" bgcolor="#003366">&nbsp;</td>
+        </tr>
+    </table></td>
+    <td width="657" valign="top"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td valign="top"><form action="login.jsp" method="post" name="login" id="login">
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td width="146" height="218" align="center" valign="top"><img src="images/logo.gif" alt="Pics Logo" width="146" height="145"><br>
+                <table border="0" cellspacing="0" cellpadding="1">
+                    <tr><td height="5"></td><td></td></tr>
+				    <tr>
+                      <td align="right" valign="middle"><p><img src="images/login_user.gif" alt="User Name" width="50" height="9">&nbsp;</p></td>
+                      <td valign="middle"><p>
+                          <input name="username" type="text" class="loginForms" size="9">
+                      </p></td>
+                    </tr>
+                    <tr>
+                      <td align="right" valign="middle"><img src="images/login_pass.gif" alt="Password" width="50" height="9">&nbsp;</td>
+                      <td valign="middle"><p>
+                          <input name="password" type="password" class="loginForms" size="9">
+                      </p></td>
+                    </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                      <td>
+                              <input name="Submit" type="image" src="images/button_login.jpg" width="65" height="28" border="0">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" class="blueMain"></td>
+                    </tr>
+                  </table>
+                  </td>
+              <td valign="top"><table width="511" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td height="72"><table width="511" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td width="364" height="72"><script type="text/javascript">
+AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0','width','364','height','72','src','flash/NAV_HOME','quality','high','pluginspage','http://www.macromedia.com/go/getflashplayer','movie','flash/NAV_HOME' ); //end AC code
+</script><noscript><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" width="364" height="72">
+                        <param name="movie" value="flash/NAV_HOME.swf">
+                        <param name="quality" value="high">
+                        <embed src="flash/NAV_HOME.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="364" height="72"></embed>
+                      </object></noscript><script type="text/javascript" src="js/ieupdate.js"></script></td>
+                      <td><img src="images/squares_home.gif" width="147" height="72"></td>
+                    </tr>
+                  </table></td>
+                  </tr>
+                <tr>
+                  <td height="146"><script type="text/javascript">
+AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0','width','511','height','146','src','flash/home_feature','quality','high','pluginspage','http://www.macromedia.com/go/getflashplayer','movie','flash/home_feature' ); //end AC code
+</script><noscript><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" width="511" height="146">
+                    <param name="movie" value="flash/home_feature.swf">
+                    <param name="quality" value="high">
+                    <embed src="flash/home_feature.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="511" height="146"></embed>
+                  </object></noscript><script type="text/javascript" src="js/ieupdate.js"></script></td>
+                  </tr>
+              </table></td>
+            </tr>
+          </table>
+        </form></td>
+      </tr>
+      <tr>
+        <td><br>
         <table width="100%" border="0" cellpadding="0" cellspacing="0">
           <tr>
             <td width="200" valign="top"><table width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -66,22 +137,19 @@ sets the highest standards possible in regard to contractor qualifications as th
                   <td bgcolor="#CCCCCC"><img src="images/spacer.gif" width="1" height="1"></td>
                   <td valign="top" bgcolor="#FFFFFF"><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
                                         <tr>
+                                          <td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">3/01/08</span>Allergan, Inc. joins PICS</span><br>
+                                            <br> 
+                                          Allergan represents a global, $3 billion multi-specialty health care company with leading portfolios in eye care, neurosciences, medical dermatology, medical aesthetics, obesity intervention and urologics. Allergan has over7,500 employees and a presence in more than 100 countries.</td></tr>
+										
+										<tr>
                                           <td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">02/01/08</span>Sikorsky Aircraft Corporation joins PICS</span><br>
                                             <br> 
 Sikorsky Aircraft Corporation, a UTC Company, has partnered with PICS to prequalify contractors at all domestic facilities. Sikorsky has a global workforce topping 14,000 and is a world leader in the design, manufacture and service of military and commercial helicopters. Their helicopters have saved an estimated 2 million lives since performing the world's first helicopter rescue in 1944.</td>
                                         </tr>
 					<tr>
-					<tr>
                                           <td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">01/01/08</span>Roquette America joins PICS</span><br>
                                             <br> 
                                           Roquette is one of the world's most advanced starch and starch-derivatives businesses. Using the latest technology, Roquette transforms four key crops - maize, wheat, pea and potatoes - into products for the food, pharmaceutical, paper, corrugated board, fermentation, chemical and industrial sectors. Roquette America has manufacturing facilities in Keokuk, IA and Gurnee, IL.</td></tr>
-										  					                                        <tr>
-                                          <td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">12/01/07</span>Suncor Energy USA joins PICS.</span><br>
-                                            <br> 
-                                          Suncor Energy USA operates a 90,000 barrel per day oil refinery in Commerce
-City, Colorado.    Suncor Energy has expanded both production and refining
-capacity recently, and markets its refined product through Sunoco and the
-Phillips 66 branded stations.</td></tr>
                                         <tr>
                       <td align="center" class="blueHome">&nbsp;<a href="featured_newsarchive.jsp" target="_self"><img src="images/NEWSARCHIVE_button3.gif" width="111" height="27" hspace="5" border="0"></a></td>
                     </tr>
@@ -94,8 +162,26 @@ Phillips 66 branded stations.</td></tr>
                 </table></td>
           </tr>
         </table>
+        <br>
+        <br></td>
+      </tr>
+      
+    </table></td>
+    <td valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td height="72" bgcolor="#003366">&nbsp;</td>
+      </tr>
+    </table></td>
+  </tr>
+  <tr bgcolor="#003366">
+    <td height="72">&nbsp;</td>
+    <td height="72" align="center" valign="middle" class="footer">&copy; Copyright 2007 Pacific Industrial Contractor Screening | Site by: <a href="http://www.albumcreative.com" target="_blank" class="footer" title="Album Creative Studios">Album</a> </td>
+    <td height="72" valign="top">&nbsp;</td>
+  </tr>
+</table>
 
-<!-- document.login.username.focus()  -->
+<%@ include file="includes/statcounter.jsp"%>
+
 
 <map name="Map"><area shape="rect" coords="5,20,209,191" href="featured_template.jsp" target="_self">
 </map>
