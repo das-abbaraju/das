@@ -12,7 +12,6 @@ import com.picsauditing.jpa.entities.ContractorInfoReport;
 public class SearchFacadeBean {
 		
 	public static List<ContractorInfoReport> getActiveContractors() {
-		
 		ContractorInfoReportDAO dao = (ContractorInfoReportDAO) SpringJSFUtil.getSpringContext().getBean("ContractorInfoReportDAO");
 		return dao.findActiveContractors();
 	}
@@ -24,26 +23,18 @@ public class SearchFacadeBean {
 	}
 	
 	public static List<ContractorInfoReport> getContractorsByAuditor(int id) {
-		
 		ContractorInfoReportDAO dao = (ContractorInfoReportDAO) SpringJSFUtil.getSpringContext().getBean("ContractorInfoReportDAO");
-		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("pqfAuditorId", id);
-		return null; //dao.findContractorsByAuditor(params);
+		return dao.findContractorsByAuditor( id );
 	}
 
 	public static List<ContractorInfoReport> getContractorsByName(String acctName) {
-
 		ContractorInfoReportDAO dao = (ContractorInfoReportDAO) SpringJSFUtil.getSpringContext().getBean("ContractorInfoReportDAO");
-		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("name", acctName + "%");
-		return null;//;  dao.findContractorsByName(params);
+		return dao.findContractorsByName( acctName );
 	}
 
 	public static List<ContractorInfoReport> getContractorsByOperator( int id) {
 		ContractorInfoReportDAO dao = (ContractorInfoReportDAO) SpringJSFUtil.getSpringContext().getBean("ContractorInfoReportDAO");
-		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("genId", id );
-		return null;//dao.findContractorsByOperator(params);		
+		return dao.findContractorsByOperator(id);		
 		
 	}
 
@@ -52,6 +43,4 @@ public class SearchFacadeBean {
 		return dao.findOperators();
 		
 	}
-	
-	
 }
