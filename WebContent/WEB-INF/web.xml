@@ -149,11 +149,6 @@
 			com.picsauditing.servlet.upload.StreamUploader
 		</servlet-class>
 	</servlet>
-	<servlet>
-		<servlet-name>Faces Servlet</servlet-name>
-		<servlet-class>
-		javax.faces.webapp.FacesServlet</servlet-class>
-	</servlet>
 	<servlet-mapping>
 		<servlet-name>showpdf</servlet-name>
 		<url-pattern>/servlet/showpdf</url-pattern>
