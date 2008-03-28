@@ -28,8 +28,8 @@ function save(id, aID, oID, pKey) {
 <h1>Edit Operator/Audit Permissions</h1>
 <s:form>
 			<s:if test="oID > 0">
-				<s:select list="operators" listKey="[0].get('id')" cssClass="blueMain" onchange="location = '?oID='+this.options[this.selectedIndex].value;"
-				listValue="%{[0].get('name')}" value="oID"></s:select>
+				<s:select list="operators" listKey="id" cssClass="blueMain" onchange="location = '?oID='+this.options[this.selectedIndex].value;"
+				listValue="name" value="oID"></s:select>
 			</s:if>
 			<s:else>
 				<s:select list="auditTypes" listKey="auditTypeID" cssClass="blueMain" onchange="location = '?aID='+this.options[this.selectedIndex].value;"
@@ -48,27 +48,27 @@ function save(id, aID, oID, pKey) {
 			<tr class="blueMain" <s:if test="#stat.odd==true">bgcolor="#ffffff"</s:if> >
 				<s:if test="oID > 0">
 						<td><a
-						href="AuditOperator.action?aID=<s:property value="auditTypeID" />"><s:property
-						value="auditName" /></a></td>
+						href="AuditOperator.action?aID=<s:property value="auditType.auditTypeID" />"><s:property
+						value="auditType.auditName" /></a></td>
 				</s:if>
 				<s:else>
 					<td><a
-						href="AuditOperator.action?oID=<s:property value="operatorID" />"><s:property
-						value="operatorName" /></a></td>
+						href="AuditOperator.action?oID=<s:property value="account.id" />"><s:property
+						value="account.name" /></a></td>
 				</s:else>
-				<td id="td<s:property value="id" />"><label><input
-					<s:if test="riskLevel == 0">CHECKED</s:if> value="0"
-					name="riskLevel<s:property value="id" />" type="radio"
-					onchange="save('<s:property value="id" />', '<s:property value="auditTypeID" />', '<s:property value="operatorID" />', '<s:property value="auditOperatorID" />')" />None</label>
-				<label><input <s:if test="riskLevel == 1">CHECKED</s:if>
-					value="1" name="riskLevel<s:property value="id" />" type="radio"
-					onchange="save('<s:property value="id" />', '<s:property value="auditTypeID" />', '<s:property value="operatorID" />', '<s:property value="auditOperatorID" />')" />Low</label>
-				<label><input <s:if test="riskLevel == 2">CHECKED</s:if>
-					value="2" name="riskLevel<s:property value="id" />" type="radio"
-					onchange="save('<s:property value="id" />', '<s:property value="auditTypeID" />', '<s:property value="operatorID" />', '<s:property value="auditOperatorID" />')" />Med</label>
-				<label><input <s:if test="riskLevel == 3">CHECKED</s:if>
-					value="3" name="riskLevel<s:property value="id" />" type="radio"
-					onchange="save('<s:property value="id" />', '<s:property value="auditTypeID" />', '<s:property value="operatorID" />', '<s:property value="auditOperatorID" />')" />High</label>
+				<td id="td<s:property value="htmlID" />"><label><input
+					<s:if test="minRiskLevel == 0">CHECKED</s:if> value="0"
+					name="riskLevel<s:property value="htmlID" />" type="radio"
+					onchange="save('<s:property value="htmlID" />', '<s:property value="auditType.auditTypeID" />', '<s:property value="account.id" />', '<s:property value="auditOperatorID" />')" />None</label>
+				<label><input <s:if test="minRiskLevel == 1">CHECKED</s:if>
+					value="1" name="riskLevel<s:property value="htmlID" />" type="radio"
+					onchange="save('<s:property value="htmlID" />', '<s:property value="auditType.auditTypeID" />', '<s:property value="account.id" />', '<s:property value="auditOperatorID" />')" />Low</label>
+				<label><input <s:if test="minRiskLevel == 2">CHECKED</s:if>
+					value="2" name="riskLevel<s:property value="htmlID" />" type="radio"
+					onchange="save('<s:property value="htmlID" />', '<s:property value="auditType.auditTypeID" />', '<s:property value="account.id" />', '<s:property value="auditOperatorID" />')" />Med</label>
+				<label><input <s:if test="minRiskLevel == 3">CHECKED</s:if>
+					value="3" name="riskLevel<s:property value="htmlID" />" type="radio"
+					onchange="save('<s:property value="htmlID" />', '<s:property value="auditType.auditTypeID" />', '<s:property value="account.id" />', '<s:property value="auditOperatorID" />')" />High</label>
 				</td>
 			</tr>
 		</s:iterator>

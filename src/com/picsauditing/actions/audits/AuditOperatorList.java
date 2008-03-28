@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.beanutils.BasicDynaBean;
-
-import com.picsauditing.PICS.Facilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AuditOperatorDAO;
 import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditType;
 
@@ -20,13 +19,13 @@ public class AuditOperatorList extends PicsActionSupport {
 
 	protected int oID;
 	protected int aID = 1;
-	protected List<AuditOperator> rawData;
-	protected List<BasicDynaBean> operators;
+	
+	protected List<Account> operators;
 	protected List<AuditType> auditTypes;
+	protected AccountDAO operatorDAO = null;
 	private AuditTypeDAO auditDAO;
 	private AuditOperatorDAO dataDAO;
-	private List<AuditOperatorDO> data;
-	protected Facilities facilityUtility = null;
+	private List<AuditOperator> data;
 
 	public static final HashMap<Integer, String> getRiskLevels() {
 		HashMap<Integer, String> map = new HashMap<Integer, String>();
@@ -38,10 +37,8 @@ public class AuditOperatorList extends PicsActionSupport {
 	}
 
 
-	public AuditOperatorList(Facilities facilityUtility, AuditTypeDAO auditDAO, AuditOperatorDAO dataDAO) {
-		this.autoLogin = true;
-
-		this.facilityUtility = facilityUtility;
+	public AuditOperatorList(AccountDAO operatorDAO, AuditTypeDAO auditDAO, AuditOperatorDAO dataDAO) {
+		this.operatorDAO = operatorDAO;
 		this.auditDAO = auditDAO;
 		this.dataDAO = dataDAO;
 	}
@@ -50,46 +47,49 @@ public class AuditOperatorList extends PicsActionSupport {
 		if (!getPermissions(OpPerms.ManageOperators, OpType.View))
 			return LOGIN;
 
-		operators = facilityUtility.listAll("a.type = 'Operator'");
+		operators = operatorDAO.findOperators();
 		auditTypes = auditDAO.findAll();
-		// auditTypes = new ArrayList<AuditType>();
 
-		data = new ArrayList<AuditOperatorDO>();
+		data = new ArrayList<AuditOperator>();
+		HashMap<Integer, AuditOperator> rawDataIndexed = new HashMap<Integer, AuditOperator>();
 		if (aID > 0) {
-			rawData = dataDAO.findByAudit(aID);
-			HashMap<Integer, AuditOperator> rawDataIndexed = new HashMap<Integer, AuditOperator>();
+			AuditType selectedObject = new AuditType();
+			// Query the db for operators using this audit and index them by opID
+			List<AuditOperator> rawData = dataDAO.findByAudit(aID);
 			for (AuditOperator row : rawData) {
+				selectedObject = row.getAuditType();
 				//rawDataIndexed.put(row.getOpID(), row);
 				rawDataIndexed.put(row.getAccount().getId(), row);
 			}
+			rawData = null; // we don't need this anymore
 
-			for (BasicDynaBean row : operators) {
-				AuditOperatorDO newRow = new AuditOperatorDO();
-				newRow.setAuditTypeID(aID);
-				newRow.setOperatorID(Integer.parseInt(row.get("id").toString()));
-				newRow.setOperatorName(row.get("name").toString());
-
-				if (rawDataIndexed.get(newRow.getOperatorID()) != null) {
-					newRow.setAuditOperatorID(rawDataIndexed.get(newRow.getOperatorID()).getAuditOperatorID());
-					newRow.setRiskLevel(rawDataIndexed.get(newRow.getOperatorID()).getMinRiskLevel());
+			for (Account operator : operators) {
+				AuditOperator newRow = rawDataIndexed.get(operator.getId());
+				if (newRow == null) {
+					newRow = new AuditOperator();
+					newRow.setAccount(operator);
+					newRow.setAuditType(selectedObject);
 				}
 				data.add(newRow);
 			}
 		}
 		if (oID > 0) {
-			rawData = dataDAO.findByOperator(oID);
-			HashMap<Integer, AuditOperator> rawDataIndexed = new HashMap<Integer, AuditOperator>();
+			// Query the db for audits used by this operator and index them by typeID
+			Account selectedObject = new Account();
+			List<AuditOperator> rawData = dataDAO.findByOperator(oID);
 			for (AuditOperator row : rawData) {
+				selectedObject = row.getAccount();
 				rawDataIndexed.put(row.getAuditType().getAuditTypeID(), row);
 			}
-			for (AuditType row : auditTypes) {
-				AuditOperatorDO newRow = new AuditOperatorDO();
-				newRow.setAuditTypeID(row.getAuditTypeID());
-				newRow.setAuditName(row.getAuditName());
-				newRow.setOperatorID(oID);
-				if (rawDataIndexed.containsKey(row.getAuditTypeID())) {
-					newRow.setAuditOperatorID(rawDataIndexed.get(newRow.getAuditTypeID()).getAuditOperatorID());
-					newRow.setRiskLevel(rawDataIndexed.get(newRow.getAuditTypeID()).getMinRiskLevel());
+			rawData = null; // we don't need this anymore
+			
+			//AuditOperator temp = rawData.get(0);
+			for (AuditType aType : auditTypes) {
+				AuditOperator newRow = rawDataIndexed.get(aType.getAuditTypeID());
+				if (newRow == null) {
+					newRow = new AuditOperator();
+					newRow.setAccount(selectedObject);
+					newRow.setAuditType(aType);
 				}
 				data.add(newRow);
 			}
@@ -98,11 +98,11 @@ public class AuditOperatorList extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public List<BasicDynaBean> getOperators() {
+	public List<Account> getOperators() {
 		return operators;
 	}
 
-	public List<AuditOperatorDO> getData() {
+	public List<AuditOperator> getData() {
 		return data;
 	}
 
@@ -125,25 +125,22 @@ public class AuditOperatorList extends PicsActionSupport {
 	}
 
 	public String getOName() {
-		if (this.oID > 0) {
-			for(BasicDynaBean row : this.operators)
-				if (this.oID == Integer.parseInt(row.get("id").toString()))
-					return row.get("name").toString();
-		}
+		if (this.oID > 0)
+			for(Account row : this.operators)
+				if (this.oID == row.getId())
+					return row.getName();
 		return "";
 	}
 
 	public String getAName() {
-		if (this.aID > 0) {
+		if (this.aID > 0)
 			for(AuditType row : this.auditTypes)
 				if (this.aID == row.getAuditTypeID())
 					return row.getAuditName();
-		}
 		return "";
 	}
 
 	public List<AuditType> getAuditTypes() {
 		return auditTypes;
 	}
-
 }

@@ -27,13 +27,14 @@ public class AuditOperatorDAO extends PicsDAO {
 	
 	@SuppressWarnings("unchecked")
     public List<AuditOperator> findByOperator(int operatorID) {
-        Query query = em.createQuery("select t FROM AuditOperator t WHERE t.opID = "+operatorID);
+        Query query = em.createQuery("select t FROM AuditOperator t WHERE t.account.id = ?");
+        query.setParameter(1, operatorID);
         return query.getResultList();
     }
 	
 	@SuppressWarnings("unchecked")
     public List<AuditOperator> findByAudit(int auditId) {
-        Query query = em.createQuery("select t FROM AuditOperator t WHERE t.auditType.id = ?");
+        Query query = em.createQuery("select t FROM AuditOperator t WHERE t.auditType.auditTypeID = ?");
         query.setParameter(1, auditId);
         return query.getResultList();
     }
