@@ -265,8 +265,11 @@ public class OperatorBean extends DataBean {
 	public static final boolean INCLUDE_INACTIVE = false;
 	public static final String PICS_OP_ID = "0";
 
-	private boolean canSeeAudit(int auditID) {
-		if (canSeeAudits == null || canSeeAudits.size() == 0) return false;
+	public boolean canSeeAudit(int auditID) throws Exception{
+		if (canSeeAudits == null )
+			setAuditOperatorsSetFromDB(this.id);
+		if (canSeeAudits.size() == 0)
+			return false;
 		for (AuditOperator audit : canSeeAudits) {
 			if (audit.getAuditType().getAuditTypeID() == auditID)
 				return audit.getMinRiskLevel() > 0;
@@ -292,19 +295,19 @@ public class OperatorBean extends DataBean {
 	}
 
 	@Deprecated
-	public boolean canSeePQF() {
+	public boolean canSeePQF() throws Exception{
 		return canSeeAudit(AuditType.PQF);
 	}
 	@Deprecated
-	public boolean canSeeDesktop() {
+	public boolean canSeeDesktop() throws Exception{
 		return canSeeAudit(AuditType.DESKTOP);
 	}
 	@Deprecated
-	public boolean canSeeDA() {
+	public boolean canSeeDA() throws Exception{
 		return canSeeAudit(AuditType.DA);
 	}
 	@Deprecated
-	public boolean canSeeOffice() {
+	public boolean canSeeOffice() throws Exception{
 		return canSeeAudit(AuditType.OFFICE);
 	}
 	public boolean canSeeInsurance() {
@@ -722,5 +725,11 @@ public class OperatorBean extends DataBean {
 
 	public ArrayList<OperatorBean> getAll() throws Exception {
 		return getListByWhere("");
+	}
+	public Set<AuditOperator> getCanSeeAudits() {
+		return canSeeAudits;
+	}
+	public void setCanSeeAudits(Set<AuditOperator> canSeeAudits) {
+		this.canSeeAudits = canSeeAudits;
 	}
 }
