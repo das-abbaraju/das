@@ -9,32 +9,34 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "contractor_audit")
 public class ContractorAudit {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "auditID", nullable = false)
 	private int id = 0;
-
-	private int auditTypeID;
-	private int conID;
+	private AuditType auditType;
+	private Account contractorAccount;
 	private Date createdDate;
-	private String auditStatus;
+	private AuditStatus auditStatus;
 	private Date expiresDate;
-	@Enumerated(EnumType.ORDINAL)
-	private int auditorID;
+	private User auditor;
 	private Date assignedDate;
 	private Date scheduledDate;
 	private Date completedDate;
 	private Date closedDate;
-	private int requestedByOpID;
+	private Account requestingOpAccount;
 	private String auditLocation;
 	private String percentComplete;
 	private String percentVerified;
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "auditID", nullable = false)
 	public int getId() {
 		return id;
 	}
@@ -43,20 +45,24 @@ public class ContractorAudit {
 		this.id = id;
 	}
 
-	public int getAuditTypeID() {
-		return auditTypeID;
+	@ManyToOne
+	@JoinColumn(name = "auditTypeID")
+	public AuditType getAuditType() {
+		return auditType;
 	}
 
-	public void setAuditTypeID(int auditTypeID) {
-		this.auditTypeID = auditTypeID;
+	public void setAuditType(AuditType auditType) {
+		this.auditType = auditType;
 	}
 
-	public int getConID() {
-		return conID;
+	@ManyToOne
+	@JoinColumn(name = "conID")
+	public Account getContractorAccount() {
+		return contractorAccount;
 	}
 
-	public void setConID(int conID) {
-		this.conID = conID;
+	public void setContractorAccount(Account contractorAccount) {
+		this.contractorAccount = contractorAccount;
 	}
 
 	public Date getCreatedDate() {
@@ -67,11 +73,13 @@ public class ContractorAudit {
 		this.createdDate = createdDate;
 	}
 
-	public String getAuditStatus() {
+	@Enumerated(EnumType.STRING)
+	public AuditStatus getAuditStatus() {
 		return auditStatus;
 	}
 
-	public void setAuditStatus(String auditStatus) {
+	public void setAuditStatus(AuditStatus auditStatus) {
+		//this.auditStatus = AuditStatus.Exempt;
 		this.auditStatus = auditStatus;
 	}
 
@@ -83,12 +91,14 @@ public class ContractorAudit {
 		this.expiresDate = expiresDate;
 	}
 
-	public int getAuditorID() {
-		return auditorID;
+	@ManyToOne
+	@JoinColumn(name = "auditorID")
+	public User getAuditor() {
+		return auditor;
 	}
 
-	public void setAuditorID(int auditorID) {
-		this.auditorID = auditorID;
+	public void setAuditor(User auditor) {
+		this.auditor = auditor;
 	}
 
 	public Date getAssignedDate() {
@@ -123,12 +133,14 @@ public class ContractorAudit {
 		this.closedDate = closedDate;
 	}
 
-	public int getRequestedByOpID() {
-		return requestedByOpID;
+	@ManyToOne
+	@JoinColumn(name = "requestedByOpID")
+	public Account getRequestingOpAccount() {
+		return requestingOpAccount;
 	}
 
-	public void setRequestedByOpID(int requestedByOpID) {
-		this.requestedByOpID = requestedByOpID;
+	public void setRequestingOpAccount(Account requestingOpAccount) {
+		this.requestingOpAccount = requestingOpAccount;
 	}
 
 	public String getAuditLocation() {
@@ -154,5 +166,4 @@ public class ContractorAudit {
 	public void setPercentVerified(String percentVerified) {
 		this.percentVerified = percentVerified;
 	}
-
 }
