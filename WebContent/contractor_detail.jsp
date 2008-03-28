@@ -126,6 +126,7 @@ function MM_displayStatusMsg(msgStr) { //v1.0
 	}//if
 %>
                         <span class=redMain>Risk Level:</span> <%= cBean.getRiskLevelShow() %><br />
+                        <a href="ConAuditList.action?id=<%=id%>" class="blueMain">Audits &amp; Evaluations</a>
 					</td>
 					</tr>
                   </table>

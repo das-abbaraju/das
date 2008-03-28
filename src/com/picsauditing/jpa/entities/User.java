@@ -12,8 +12,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "users")
 public class User {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id=0;
 	private String username;
 	private String password;
@@ -24,6 +22,9 @@ public class User {
 	private Date dateCreated;
 	private Date lastLogin;
 	private Account account;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	public int getId() {
 		return id;
 	}
