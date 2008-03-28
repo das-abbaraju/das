@@ -44,5 +44,10 @@
 			<result>pqf_verification_detail.jsp</result>
 			<result name="input">pqf_verification.jsp</result>
 		</action>
+		
+		<action name="ConAuditList"
+			class="com.picsauditing.actions.audits.ConAuditList">
+			<result>contractor_audits.jsp</result>
+		</action>
 	</package>
 </struts>
