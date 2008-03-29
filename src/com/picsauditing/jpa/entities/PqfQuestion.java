@@ -24,8 +24,12 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "pqfquestions")
 public class PqfQuestion implements java.io.Serializable {
+	static public int EMR07 = 1618;
+	static public int EMR06 = 1618;
+	static public int EMR05 = 1618;
+	static public int EMR04 = 1618;
 
-	private Short questionId;
+	private int questionID;
 	private Pqfsubcategory subCategory;
 	private short number;
 	private String question;
@@ -60,13 +64,12 @@ public class PqfQuestion implements java.io.Serializable {
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "questionID", nullable = false)
-	public Short getQuestionId() {
-		return this.questionId;
+	public int getQuestionID() {
+		return this.questionID;
 	}
 
-	public void setQuestionId(Short questionId) {
-		this.questionId = questionId;
+	public void setQuestionID(int questionID) {
+		this.questionID = questionID;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

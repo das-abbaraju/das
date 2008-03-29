@@ -18,7 +18,7 @@ public class PqfData implements java.io.Serializable {
 	@Deprecated
 	private Account contractorAccount;
 	private ContractorAudit audit;
-	private PqfQuestion pqfquestion;
+	private PqfQuestion pqfQuestion;
 	private short num;
 	private String answer;
 	private Account auditor;
@@ -58,12 +58,12 @@ public class PqfData implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "questionID", nullable = false, updatable = false)
-	public PqfQuestion getPqfquestion() {
-		return pqfquestion;
+	public PqfQuestion getPqfQuestion() {
+		return pqfQuestion;
 	}
 
-	public void setPqfquestion(PqfQuestion pqfquestion) {
-		this.pqfquestion = pqfquestion;
+	public void setPqfQuestion(PqfQuestion pqfQuestion) {
+		this.pqfQuestion = pqfQuestion;
 	}
 
 	public short getNum() {

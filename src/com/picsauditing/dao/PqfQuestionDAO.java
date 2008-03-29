@@ -4,7 +4,7 @@ import com.picsauditing.jpa.entities.PqfQuestion;
 
 public class PqfQuestionDAO extends PicsDAO {
 	public PqfQuestion save(PqfQuestion o) {
-		if (o.getQuestionId() == 0) {
+		if (o.getQuestionID() == 0) {
 			em.persist(o);
 		} else {
 			o = em.merge(o);
