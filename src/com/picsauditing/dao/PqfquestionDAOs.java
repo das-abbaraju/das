@@ -2,7 +2,7 @@ package com.picsauditing.dao;
 
 import com.picsauditing.jpa.entities.PqfQuestion;
 
-public class PqfquestionDAO extends PicsDAO {
+public class PqfQuestionDAO extends PicsDAO {
 	public PqfQuestion save(PqfQuestion o) {
 		if (o.getQuestionId() == 0) {
 			em.persist(o);
