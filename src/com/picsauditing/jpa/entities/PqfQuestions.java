@@ -23,7 +23,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "pqfquestions")
-public class Pqfquestion implements java.io.Serializable {
+public class PqfQuestion implements java.io.Serializable {
 
 	private Short questionId;
 	private Pqfsubcategory subCategory;

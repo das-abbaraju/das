@@ -55,6 +55,7 @@ public class Account implements java.io.Serializable {
 	private ContractorInfo contractor;
 	private List<ContractorOperator> contractors;
 	private List<ContractorOperator> operators;
+	private List<OshaLog> oshas;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -315,4 +316,14 @@ public class Account implements java.io.Serializable {
 	public void setContractor(ContractorInfo contractor) {
 		this.contractor = contractor;
 	}
+
+	@OneToMany(mappedBy = "contractorAccount")
+	public List<OshaLog> getOshas() {
+		return oshas;
+	}
+
+	public void setOshas(List<OshaLog> oshas) {
+		this.oshas = oshas;
+	}
+
 }

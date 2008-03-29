@@ -1,10 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.Date;
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -17,112 +14,86 @@ import javax.persistence.TemporalType;
 @Table(name = "pqfdata")
 public class PqfData implements java.io.Serializable {
 
-	private PqfDataKey id;
-	private ContractorInfo contractorInfo;
-	private Account auditor;
-	private Pqfquestion pqfquestion;
+	private int dataID;
+	@Deprecated
+	private Account contractorAccount;
+	private ContractorAudit audit;
+	private PqfQuestion pqfquestion;
 	private short num;
 	private String answer;
+	private Account auditor;
 	private String comment;
 	private Date dateVerified;
 	private String verifiedAnswer;
-	private String isCorrect;
-	private String wasChanged;
+	private YesNo isCorrect;
+	private YesNo wasChanged;
 
-	public PqfData() {
+	public int getDataID() {
+		return dataID;
 	}
 
-	public PqfData(PqfDataKey id, ContractorInfo contractorInfo, Pqfquestion pqfquestion, short num, String answer,
-			String comment, Date dateVerified, String verifiedAnswer, String isCorrect, String wasChanged) {
-		this.id = id;
-		this.contractorInfo = contractorInfo;
-		this.pqfquestion = pqfquestion;
-		this.num = num;
-		this.answer = answer;
-		this.comment = comment;
-		this.dateVerified = dateVerified;
-		this.verifiedAnswer = verifiedAnswer;
-		this.isCorrect = isCorrect;
-		this.wasChanged = wasChanged;
-	}
-
-	public PqfData(PqfDataKey id, ContractorInfo contractorInfo, Account auditor, Pqfquestion pqfquestion, short num,
-			String answer, String comment, Date dateVerified, String verifiedAnswer, String isCorrect, String wasChanged) {
-		this.id = id;
-		this.contractorInfo = contractorInfo;
-		this.auditor = auditor;
-		this.pqfquestion = pqfquestion;
-		this.num = num;
-		this.answer = answer;
-		this.comment = comment;
-		this.dateVerified = dateVerified;
-		this.verifiedAnswer = verifiedAnswer;
-		this.isCorrect = isCorrect;
-		this.wasChanged = wasChanged;
-	}
-
-	@EmbeddedId
-	@AttributeOverrides( { @AttributeOverride(name = "conId", column = @Column(name = "conID", nullable = false)),
-			@AttributeOverride(name = "questionId", column = @Column(name = "questionID", nullable = false)) })
-	public PqfDataKey getId() {
-		return this.id;
-	}
-
-	public void setId(PqfDataKey id) {
-		this.id = id;
+	public void setDataID(int dataID) {
+		this.dataID = dataID;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "conID", nullable = false, insertable = false, updatable = false)
-	public ContractorInfo getContractorInfo() {
-		return this.contractorInfo;
+	public Account getContractorAccount() {
+		return contractorAccount;
 	}
 
-	public void setContractorInfo(ContractorInfo contractorInfo) {
-		this.contractorInfo = contractorInfo;
+	public void setContractorAccount(Account contractorAccount) {
+		this.contractorAccount = contractorAccount;
+	}
+
+	@ManyToOne()
+	@JoinColumn(name = "auditID", nullable = false, updatable = false)
+	public ContractorAudit getAudit() {
+		return audit;
+	}
+
+	public void setAudit(ContractorAudit audit) {
+		this.audit = audit;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "auditorID")
-	public Account getAuditor() {
-		return this.auditor;
+	@JoinColumn(name = "questionID", nullable = false, updatable = false)
+	public PqfQuestion getPqfquestion() {
+		return pqfquestion;
 	}
 
-	public void setAuditor(Account auditor) {
-		this.auditor = auditor;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "questionID", nullable = false, insertable = false, updatable = false)
-	public Pqfquestion getPqfquestion() {
-		return this.pqfquestion;
-	}
-
-	public void setPqfquestion(Pqfquestion pqfquestion) {
+	public void setPqfquestion(PqfQuestion pqfquestion) {
 		this.pqfquestion = pqfquestion;
 	}
 
-	@Column(name = "num", nullable = false)
 	public short getNum() {
-		return this.num;
+		return num;
 	}
 
 	public void setNum(short num) {
 		this.num = num;
 	}
 
-	@Column(name = "answer", nullable = false, length = 65535)
 	public String getAnswer() {
-		return this.answer;
+		return answer;
 	}
 
 	public void setAnswer(String answer) {
 		this.answer = answer;
 	}
 
-	@Column(name = "comment", nullable = false)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "auditorID")
+	public Account getAuditor() {
+		return auditor;
+	}
+
+	public void setAuditor(Account auditor) {
+		this.auditor = auditor;
+	}
+
 	public String getComment() {
-		return this.comment;
+		return comment;
 	}
 
 	public void setComment(String comment) {
@@ -130,39 +101,35 @@ public class PqfData implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "dateVerified", nullable = true, length = 10)
 	public Date getDateVerified() {
-		return this.dateVerified;
+		return dateVerified;
 	}
 
 	public void setDateVerified(Date dateVerified) {
 		this.dateVerified = dateVerified;
 	}
 
-	@Column(name = "verifiedAnswer", nullable = false, length = 65535)
 	public String getVerifiedAnswer() {
-		return this.verifiedAnswer;
+		return verifiedAnswer;
 	}
 
 	public void setVerifiedAnswer(String verifiedAnswer) {
 		this.verifiedAnswer = verifiedAnswer;
 	}
 
-	@Column(name = "isCorrect", nullable = false, length = 3)
-	public String getIsCorrect() {
-		return this.isCorrect;
+	public YesNo getIsCorrect() {
+		return isCorrect;
 	}
 
-	public void setIsCorrect(String isCorrect) {
+	public void setIsCorrect(YesNo isCorrect) {
 		this.isCorrect = isCorrect;
 	}
 
-	@Column(name = "wasChanged", nullable = false, length = 3)
-	public String getWasChanged() {
-		return this.wasChanged;
+	public YesNo getWasChanged() {
+		return wasChanged;
 	}
 
-	public void setWasChanged(String wasChanged) {
+	public void setWasChanged(YesNo wasChanged) {
 		this.wasChanged = wasChanged;
 	}
 

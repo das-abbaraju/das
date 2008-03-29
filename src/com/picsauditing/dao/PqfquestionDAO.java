@@ -1,9 +1,9 @@
 package com.picsauditing.dao;
 
-import com.picsauditing.jpa.entities.Pqfquestion;
+import com.picsauditing.jpa.entities.PqfQuestion;
 
 public class PqfquestionDAO extends PicsDAO {
-	public Pqfquestion save(Pqfquestion o) {
+	public PqfQuestion save(PqfQuestion o) {
 		if (o.getQuestionId() == 0) {
 			em.persist(o);
 		} else {
@@ -12,14 +12,14 @@ public class PqfquestionDAO extends PicsDAO {
 		return o;
 	}
 	public void remove(int id) {
-		Pqfquestion row = find(id);
+		PqfQuestion row = find(id);
         if (row != null) {
             em.remove(row);
         }
     }
 	
-	public Pqfquestion find(int id) {
-        return em.find(Pqfquestion.class, id);
+	public PqfQuestion find(int id) {
+        return em.find(PqfQuestion.class, id);
     }
 
 }
