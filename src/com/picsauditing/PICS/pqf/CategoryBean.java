@@ -158,7 +158,9 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 	public void setList(String orderBy, String aType) throws Exception {
 		if ("".equals(orderBy) || null == orderBy)
 			orderBy = "number";
-		String selectQuery = "SELECT * FROM pqfCategories WHERE auditType='"+aType+"' ORDER BY "+orderBy+";";
+		String selectQuery = "SELECT * FROM pqfCategories pc "+
+				"JOIN audit_type at ON at.auditTypeID=pc.auditTypeID "+
+				"WHERE legacyCode='"+aType+"' ORDER BY "+orderBy+";";
 		try{
 			DBReady();
 			listRS = SQLStatement.executeQuery(selectQuery);
@@ -176,8 +178,9 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 	public void setListWithData(String orderBy, String aType, String conID) throws Exception {
 		if ("".equals(orderBy) || null == orderBy)
 			orderBy = "number";
-		String Query = "SELECT * FROM pqfCategories LEFT JOIN pqfCatData ON pqfCategories.catID=pqfCatData.catID "+
-				"AND conID="+conID+" WHERE auditType='"+aType+"' ORDER BY "+orderBy+";";
+		String Query = "SELECT * FROM pqfCategories pc LEFT JOIN pqfCatData pd ON pc.catID=pd.catID "+
+				"AND conID="+conID+" JOIN audit_type at ON at.auditTypeID=pc.auditTypeID "+
+				"WHERE legacyCode='"+aType+"' ORDER BY "+orderBy+";";
 		try {
 			DBReady();
 			listRS = SQLStatement.executeQuery(Query);
