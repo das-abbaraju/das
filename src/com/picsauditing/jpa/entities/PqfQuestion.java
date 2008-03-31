@@ -2,18 +2,17 @@ package com.picsauditing.jpa.entities;
 
 // Generated Nov 15, 2007 2:20:12 PM by Hibernate Tools 3.2.0.b11
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -60,7 +59,6 @@ public class PqfQuestion implements java.io.Serializable {
 	private String linkText6;
 	private Date dateCreated;
 	private String isRedFlagQuestion;
-	private Set<PqfData> pqfData = new HashSet<PqfData>(0);
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -343,15 +341,6 @@ public class PqfQuestion implements java.io.Serializable {
 
 	public void setIsRedFlagQuestion(String isRedFlagQuestion) {
 		this.isRedFlagQuestion = isRedFlagQuestion;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pqfquestion")
-	public Set<PqfData> getPqfData() {
-		return this.pqfData;
-	}
-
-	public void setPqfData(Set<PqfData> value) {
-		this.pqfData = value;
 	}
 
 }
