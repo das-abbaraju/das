@@ -23,10 +23,11 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "pqfquestions")
 public class PqfQuestion implements java.io.Serializable {
-	static public int EMR07 = 1618;
-	static public int EMR06 = 1618;
-	static public int EMR05 = 1618;
-	static public int EMR04 = 1618;
+	static public int EMR03 = 127;
+	static public int EMR04 = 126;
+	static public int EMR05 = 889;
+	static public int EMR06 = 1519;
+	static public int EMR07 = 1617;
 
 	private int questionID;
 	private Pqfsubcategory subCategory;

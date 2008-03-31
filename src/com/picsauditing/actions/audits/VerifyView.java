@@ -43,11 +43,15 @@ public class VerifyView extends ContractorActionSupport {
 		emrQuestions.add(PqfQuestion.EMR06);
 		emrQuestions.add(PqfQuestion.EMR05);
 		emrQuestions.add(PqfQuestion.EMR04);
-		pqfDao.findAnswers(this.id, emrQuestions);
+		emr = pqfDao.findAnswers(this.id, emrQuestions);
 
 		return SUCCESS;
 	}
 
+	public OshaLog getOsha() {
+		return osha;
+	}
+	
 	public int getOshaID() {
 		return oshaID;
 	}
@@ -62,5 +66,21 @@ public class VerifyView extends ContractorActionSupport {
 
 	public void setEmr(HashMap<Integer, PqfData> emr) {
 		this.emr = emr;
+	}
+	
+	public PqfData getEmr07() {
+		return emr.get(PqfQuestion.EMR07);
+	}
+	
+	public PqfData getEmr06() {
+		return emr.get(PqfQuestion.EMR06);
+	}
+	
+	public PqfData getEmr05() {
+		return emr.get(PqfQuestion.EMR05);
+	}
+	
+	public PqfData getEmr04() {
+		return emr.get(PqfQuestion.EMR04);
 	}
 }

@@ -30,15 +30,19 @@ public class PqfDataDAO extends PicsDAO {
 	}
 
 	public HashMap<Integer, PqfData> findAnswers(int conID, List<Integer> questionIds) {
-		Query query = em.createQuery("SELECT d FROM PqfData d " + "WHERE contractorAccount = ? AND pqfQuestion.questionID IN ? ORDER BY pqfQuestion.question");
+		StringBuilder ids = new StringBuilder();
+		ids.append(0); // So we have a list like this 0,1,2
+		
+		for(Integer questionID : questionIds)
+			ids.append(",").append(questionID);
+		
+		Query query = em.createQuery("SELECT d FROM PqfData d " + "WHERE contractorAccount.id = ? AND pqfQuestion.questionID IN ("+ids.toString()+") ORDER BY pqfQuestion.question");
 		query.setParameter(1, conID);
-		query.setParameter(2, questionIds);
-		HashMap<Integer, PqfData> result = new HashMap<Integer, PqfData>();
-		for(Object data : query.getResultList()) {
-			PqfData data2 = (PqfData)data;
-			result.put(data2.getPqfQuestion().getQuestionID(), data2);
-		}
-		return result;
+		
+		List<PqfData> result = query.getResultList();
+		HashMap<Integer, PqfData> indexedResult = new HashMap<Integer, PqfData>();
+		for(PqfData row : result)
+			indexedResult.put(row.getPqfQuestion().getQuestionID(), row);
+		return indexedResult;
 	}
-
 }
