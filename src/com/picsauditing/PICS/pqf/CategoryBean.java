@@ -1,9 +1,20 @@
 package com.picsauditing.PICS.pqf;
 
-import java.sql.*;
-import java.util.*;
-import com.picsauditing.PICS.*;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.Vector;
+
+import com.picsauditing.PICS.PermissionsBean;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.AuditType;
 
 
 public class CategoryBean extends com.picsauditing.PICS.DataBean {
@@ -14,6 +25,7 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 
 	public String catID = "";
 	public String auditType = "";
+	public int auditTypeID;
 	public String category = "";
 	public String number = "";
 	public String numRequired = "";
@@ -43,12 +55,14 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 	public void setFromDB(String cID) throws Exception {
 		catID = cID;
 		setFromDB();
-	}//setFromDB
+	}
 	
 	public void setFromDB() throws Exception {
 		if ((null == catID) || ("".equals(catID)))
 			throw new Exception("Can't set PQF Category from DB because catID is not set");
-		String Query = "SELECT * FROM pqfCategories WHERE catID = " + catID + ";";
+		String Query = "SELECT * FROM pqfCategories " +
+			"JOIN audit_type at ON at.auditTypeID=pqfCategories.auditTypeID "+
+			"WHERE pqfCategories.catID = " + catID;
 		try {
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(Query);
@@ -63,8 +77,10 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 	public void setFromDBWithData(String catID, String cID) throws Exception {
 		if ((null == catID) || ("".equals(catID)))
 			throw new Exception("Can't set PQF Category from DB because catID is not set");
-		String Query = "SELECT * FROM pqfCategories LEFT JOIN pqfCatData ON pqfCategories.catID=pqfCatData.catID "+
-			"AND conID="+cID+" WHERE pqfCategories.catID="+catID+";";
+		String Query = "SELECT * FROM pqfCategories " +
+			"JOIN audit_type at ON at.auditTypeID=pqfCategories.auditTypeID "+
+			"LEFT JOIN pqfCatData ON pqfCategories.catID=pqfCatData.catID "+
+			"WHERE pqfCategories.catID = " + catID + " AND conID="+cID;
 		try {
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(Query);
@@ -81,16 +97,58 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		}finally{
 			DBClose();
 		}//finally
-	}//setFromDBWithData
+	}
+
+	public void setList(String orderBy, String aType) throws Exception {
+		if ("".equals(orderBy) || null == orderBy)
+			orderBy = "number";
+		String selectQuery = "SELECT * FROM pqfCategories pqfCategories "+
+				"JOIN audit_type at ON at.auditTypeID=pqfCategories.auditTypeID "+
+				"WHERE legacyCode='"+aType+"' ORDER BY "+orderBy+";";
+		try{
+			DBReady();
+			listRS = SQLStatement.executeQuery(selectQuery);
+			numResults = 0;
+			while (listRS.next())
+				numResults++;
+			listRS.beforeFirst();
+			count = 0;
+		} catch (Exception e) {
+			DBClose();
+			throw e;
+		}//catch		
+	}
+
+	public void setListWithData(String orderBy, String aType, String conID) throws Exception {
+		if ("".equals(orderBy) || null == orderBy)
+			orderBy = "number";
+		String Query = "SELECT * FROM pqfCategories pqfCategories LEFT JOIN pqfCatData pqfCatData ON pqfCategories.catID=pqfCatData.catID "+
+				"AND conID="+conID+" JOIN audit_type at ON at.auditTypeID=pqfCategories.auditTypeID "+
+				"WHERE legacyCode='"+aType+"' ORDER BY "+orderBy;
+		try {
+			DBReady();
+			listRS = SQLStatement.executeQuery(Query);
+			numResults = 0;
+			while (listRS.next())
+				numResults++;
+			listRS.beforeFirst();
+			count = 0;
+			isJoinedWithData = true;
+		} catch (Exception e) {
+			DBClose();
+			throw e;
+		}//catch		
+	}//setListWithData
 
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
 		catID = SQLResult.getString("catID");
-		auditType = SQLResult.getString("auditType");
+		auditTypeID = SQLResult.getInt("auditTypeID");
 		category = SQLResult.getString("category");
 		number = SQLResult.getString("number");
-		numRequired = SQLResult.getString("pqfCategories.numRequired");
+		numRequired = SQLResult.getString("numRequired");
 		numQuestions = SQLResult.getString("numQuestions");
-	}//setFromResultSet
+		auditType = SQLResult.getString("legacyCode");
+	}
 
 	public void setDataFromResultSet(ResultSet SQLResult) throws Exception {
 		conID = SQLResult.getString("conID");
@@ -100,9 +158,9 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		applies = SQLResult.getString("applies");
 		percentCompleted = SQLResult.getString("percentCompleted");
 		percentVerified = SQLResult.getString("percentVerified");
-	}//setDataFromResultSet
+	}
 
-	public void setDataEmpty() {
+	private void setDataEmpty() {
 		conID = "";
 		requiredCompleted = "";
 		dataNumRequired = "0";
@@ -110,7 +168,7 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		applies = "";
 		percentCompleted = "0";
 		percentVerified = "0";	
-	}//setDataEmpty
+	}
 
 	public void writeToDB() throws Exception {
 		String Query = "UPDATE pqfCategories SET "+
@@ -127,7 +185,7 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 	}//writeToDB
 
 	public void writeNewToDB(String aType) throws Exception {
-		String insertQuery = "INSERT INTO pqfCategories (auditType,category,number)" +
+		String insertQuery = "INSERT INTO pqfCategories (auditTypeID,category,number)" +
 			" VALUES ('"+aType+"','"+Utilities.escapeQuotes(category)+"',"+number+");";
 		try {
 			DBReady();
@@ -135,8 +193,8 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 			categories = null;
 		}finally{
 			DBClose();
-		}//finally
-	}//writeNewToDB
+		}
+	}
 
 	public void deleteCategory(String cID, String rootPath) throws Exception {
 		String deleteQuery = "DELETE FROM pqfCategories WHERE catID="+cID+" LIMIT 1;";
@@ -154,47 +212,6 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		category = r.getParameter("category");
 		number = r.getParameter("number");
 	}//setFromRequest
-
-	public void setList(String orderBy, String aType) throws Exception {
-		if ("".equals(orderBy) || null == orderBy)
-			orderBy = "number";
-		String selectQuery = "SELECT * FROM pqfCategories pc "+
-				"JOIN audit_type at ON at.auditTypeID=pc.auditTypeID "+
-				"WHERE legacyCode='"+aType+"' ORDER BY "+orderBy+";";
-		try{
-			DBReady();
-			listRS = SQLStatement.executeQuery(selectQuery);
-			numResults = 0;
-			while (listRS.next())
-				numResults++;
-			listRS.beforeFirst();
-			count = 0;
-		} catch (Exception e) {
-			DBClose();
-			throw e;
-		}//catch		
-	}//setList
-
-	public void setListWithData(String orderBy, String aType, String conID) throws Exception {
-		if ("".equals(orderBy) || null == orderBy)
-			orderBy = "number";
-		String Query = "SELECT * FROM pqfCategories pc LEFT JOIN pqfCatData pd ON pc.catID=pd.catID "+
-				"AND conID="+conID+" JOIN audit_type at ON at.auditTypeID=pc.auditTypeID "+
-				"WHERE legacyCode='"+aType+"' ORDER BY "+orderBy+";";
-		try {
-			DBReady();
-			listRS = SQLStatement.executeQuery(Query);
-			numResults = 0;
-			while (listRS.next())
-				numResults++;
-			listRS.beforeFirst();
-			count = 0;
-			isJoinedWithData = true;
-		} catch (Exception e) {
-			DBClose();
-			throw e;
-		}//catch		
-	}//setListWithData
 
 	public void replaceCatData(String t_catID, String t_conID, String t_applies, String t_reqComp, String t_numReq, String t_percComp) throws Exception {
 		String query = "REPLACE INTO pqfCatData (catID,conID,applies,requiredCompleted,numRequired,percentCompleted) VALUES ("+
@@ -222,9 +239,9 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 			setDataFromResultSet(listRS);
 			if (listRS.wasNull() || null==conID || "null".equals(conID))
 				setDataEmpty();
-		}//if
+		}
 		return true;
-	}//isNextRecord
+	}
 
 	public boolean isNextRecord(PermissionsBean pBean, String cID) throws Exception {
 		if (!(count <= numResults && listRS.next()))
@@ -241,13 +258,7 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 				catID = listRS.getString("pqfCategories.catID");
 				setDataFromResultSet(listRS);
 				if (listRS.wasNull() || null==conID || "null".equals(conID)) {
-					conID = "";
-					requiredCompleted = "";
-					dataNumRequired = "";
-					numAnswered = "";
-					applies = "";
-					percentCompleted = "0";
-					percentVerified = "0";
+					setDataEmpty();
 				}
 			}
 			return true;
@@ -324,7 +335,7 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		if (null != categories)
 			return;
 		categories = new ArrayList<String>();
-		String selectQuery = "SELECT catID,category FROM pqfCategories WHERE auditType='"+aType+"' ORDER BY number";
+		String selectQuery = "SELECT catID, category FROM pqfCategories WHERE auditTypeID IN (SELECT auditTypeID FROM audit_type WHERE legacyCode='"+aType+"') ORDER BY number";
 		try{
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
@@ -552,7 +563,7 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		}finally{
 			DBClose();
 		}//finally
-	}//getCategoryForOpRiskLevel
+	}
 
 	public void generateDynamicCategories(String conID, String auditType, String riskLevel) throws Exception {
 		try{
@@ -634,13 +645,10 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 	public boolean doesCatApply() {
 		return !"No".equals(applies);
 	}//doesCatApply
-/*
-SELECT  * 
-FROM pqfCategories AS cat
-JOIN pqfSubCategories AS sub
-JOIN pqfQuestions AS ques
-LEFT  JOIN pqfData ON ( ques.questionID = pqfData.questionID ) 
-WHERE categoryid = catID AND subCategoryID = subCatID AND isRequired =  'Yes'
-ORDER  BY category, sub.number, ques.number
-*/
-}//CategoryBean
+	
+	public String getAuditType() {
+		if (AuditType.DESKTOP ==  this.auditTypeID)
+			return "Desktop";
+		return "";
+	}
+}
