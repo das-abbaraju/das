@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd" default-autowire="autodetect">
+
+	<bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO" scope="prototype"/>
+	<bean id="AuditOperatorDAO" class="com.picsauditing.dao.AuditOperatorDAO" scope="prototype"/>
+	<bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO" scope="prototype"/>
+	<bean id="ContractorAuditDAO" class="com.picsauditing.dao.ContractorAuditDAO" scope="prototype"/>
+	<bean id="ContractorInfoDAO" class="com.picsauditing.dao.ContractorInfoDAO" scope="prototype"/>
+	<bean id="PqfDataDAO" class="com.picsauditing.dao.PqfDataDAO" scope="prototype"/>
+	<bean id="PqfQuestionDAO" class="com.picsauditing.dao.PqfQuestionDAO" scope="prototype"/>
+	<bean id="RulesRowDAO" class="com.picsauditing.dao.RulesRowDAO" scope="prototype"/>
+	
+<!-- 	<bean class="com.picsauditing.PICS.Facilities"/> -->
+
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+	<!--  JPA implementation -->
+    <bean id="entityManagerFactory"
+        class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="persistenceUnitName" value="punit"/>
+        <property name="jpaVendorAdapter">
+            <bean
+                class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+<!--                 <property name="showSql" value="true" />  -->
+                <property name="database" value="MYSQL" />
+            </bean>
+        </property>
+    </bean>
+
+ 	
+  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+    <property name="url" value="jdbc:mysql://alpha.picsauditing.com:3306/pics_alpha?zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false" />
+    <property name="username" value="pics" />
+    <property name="password" value="pics" />
+  </bean>
+
+    <bean id="transactionManager"
+        class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+</beans>
