@@ -1,180 +1,98 @@
 <project name="buildPics" default="buildSDP" basedir=".">
-	
-	<property environment="env"/>
-	<property name="hibernate.local" value="${user.home}/Hibernate"/>
-	<property name="maven.repo.local" value="${user.home}/.m2/repository"/>	
-	<property name="temp_dir" value="${java.io.tmpdir}/picsWeb2"/>
-	<property name="temp_dir.conf" value="${temp_dir}/conf"/>
-	<property name="temp_dir.lib" value="${temp_dir}/lib"/>
+
+	<property environment="env" />
+	<property name="hibernate.local" value="${user.home}/Hibernate" />
+	<property name="maven.repo.local" value="${user.home}/.m2/repository" />
+	<property name="temp_dir" value="${java.io.tmpdir}/picsWeb2" />
+	<property name="temp_dir.conf" value="${temp_dir}/conf" />
+	<property name="temp_dir.lib" value="${temp_dir}/lib" />
 	<property name="tomcat5.local.lib" value="${env.CATALINA_HOME}/common/lib" />
-	
+
 	<path id="build.classpath">
-			<fileset dir="${maven.repo.local}">
-				<include name="commons-io/commons-io/1.3.1/commons-io-1.3.1.jar" />
-				<include name="activation/activation/1.1/activation-1.1.jar" />
-				<include name="commons-fileupload/commons-fileupload/1.2/commons-fileupload-1.2.jar" />
-				<include name="jexcelapi/jxl/2.4.2/jxl-2.4.2.jar" />
-				<include name="commons-dbcp/commons-dbcp/1.2.2/commons-dbcp-1.2.2.jar" />
-				<include name="commons-collections/commons-collections/3.2/commons-collections-3.2.jar" />
-				<include name="commons-pool/commons-pool/1.3/commons-pool-1.3.jar" />				
-				<include name="el/el-api/1.1.1/el-api-1.1jar" />
-				<include name="el/el-ri/1.1/el-ri-1.1.jar" />
-				<include name="commons-io/commons-io/1.3.1/commons-io-1.3.1.jar" />
-				<include name="commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0.jar"/>
-				<include name="commons-digester/commons-digester/1.8/commons-digester-1.8.jar"/>
-			</fileset>
-		    <fileset dir="${hibernate.local}">
-		    	<include name="*.*"/>
-		    </fileset>
-		 	<fileset dir="${tomcat5.local.lib}">
-				<include name="*.*"/>
-			</fileset>
-		    
 	</path>
-	
+
 	<target name="init" description="Create the output directories">
-		<mkdir dir="${temp_dir}" />	
-		<mkdir dir="${temp_dir.lib}" />	
+		<mkdir dir="${temp_dir}" />
+		<mkdir dir="${temp_dir.lib}" />
 		<mkdir dir="${temp_dir.conf}" />
 		<mkdir dir="build" />
 	</target>
-	
+
 	<target name="clean" description="Clean the output directory">
 		<delete dir="${temp_dir}" />
 		<delete dir="build" />
 		<delete dir="target" />
 	</target>
-	
+
 	<target name="svn_out" unless="pics.target" description="Massage the svn source tree into the target directory tree">
 		<antcall target="clean" />
 		<antcall target="init" />
-		<copy todir="${temp_dir.conf}" >
-		    <fileset dir="conf"/>
+		<copy todir="${temp_dir.conf}">
+			<fileset dir="conf" />
 		</copy>
-		<copy todir="${temp_dir.lib}" flatten="true">
-			<fileset dir="${maven.repo.local}">
-				<include name="commons-io/commons-io/1.3.1/commons-io-1.3.1.jar" />
-				<include name="activation/activation/1.1/activation-1.1.jar" />
-				<include name="commons-fileupload/commons-fileupload/1.2/commons-fileupload-1.2.jar" />
-				<include name="jexcelapi/jxl/2.4.2/jxl-2.4.2.jar" />
-				<include name="commons-dbcp/commons-dbcp/1.2.2/commons-dbcp-1.2.2.jar" />
-				<include name="commons-collections/commons-collections/3.2/commons-collections-3.2.jar" />
-				<include name="commons-pool/commons-pool/1.3/commons-pool-1.3.jar" />				
-				<include name="el/el-api/1.1.1/el-api-1.1jar" />
-				<include name="el/el-ri/1.1/el-ri-1.1.jar" />				
-				<include name="commons-io/commons-io/1.3.1/commons-io-1.3.1.jar" />
-				<include name="commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0.jar"/>
-				<include name="commons-digester/commons-digester/1.8/commons-digester-1.8.jar"/>
-			</fileset>
-		    <fileset dir="${hibernate.local}">
-		    	<include name="*.*"/>
-		    	<exclude name="javaee.jar" />
-		    </fileset>
-		  </copy>
-		<property name="pics.target" value="true"/>
+		<property name="pics.target" value="true" />
 	</target>
-	
+
 	<target name="compile" depends="svn_out" description="Compile java classes">
 		<javac srcdir="src" destdir="build" debug="on" source="1.6">
-			<classpath refid="build.classpath"/>
+			<classpath refid="build.classpath" />
 		</javac>
 	</target>
-	
+
 	<target name="copy_persistence" description="Copy persistenc.xml to classes package">
 		<copy todir="build/META-INF">
-			 <fileset dir="${temp_dir.conf}">
-			 	<include name="persistence.xml"/>
-			 </fileset>
+			<fileset dir="${temp_dir.conf}">
+				<include name="persistence.xml" />
+			</fileset>
 		</copy>
 	</target>
-	
-	<target name="war" depends="compile,copy_persistence" description="Create war file" >
-		<war destfile="${temp_dir}/ROOT.war" webxml="${temp_dir.conf}/web.xml">
-		<fileset dir="WebContent" excludes="META-INF/**,WEB-INF/**" />
-		  <lib dir="${temp_dir.lib}"/>	   
-		  <classes dir="build"/>
-		  <webinf dir="conf">
-		  	<include name="log4j.xml"/>
-		  </webinf>
-		  <metainf dir="${temp_dir.conf}">
-			<include name="context.xml"/>
-		  </metainf>	
-		</war>		
-	</target>
-	
-	<target name="buildSDP" depends="war" description="Create deploy directory for automated build">
-		<unzip src="${temp_dir}/ROOT.war" dest="target"/>	
-		<delete dir="${temp_dir}" />
-	</target>
-	
-	<target name="buildProd" depends="compile" description="Build war ready to deploy to old tomcat server">
-		<replace dir="${temp_dir.conf}" token="@@RUNTIME_MODE@@" value="prod"/>
-		<replace dir="${temp_dir.conf}" token="@@DBUSER@@" value="pics"/>
-		<replace dir="${temp_dir.conf}" token="@@DBPASS@@" value="pics"/>
-		<replace dir="${temp_dir.conf}" token="@@DBURL@@" value="jdbc:mysql://db.picsauditing.com:3306/pics"/>
-		<replace dir="${temp_dir.conf}" token="@@APPDIR@@" value="/wwwroot/www.picsauditing.com/webapps"/>
-		<replace dir="${temp_dir.conf}" token="@@FTPDIR@@" value="/wwwroot/www.picsauditing.com/ftp-bin"/>
-		<antcall target="war" />
 
-		<move file="${temp_dir}/ROOT.war" todir="/wwwroot"/>
+	<target name="war" depends="compile,copy_persistence" description="Create war file">
+		<war destfile="${temp_dir}/ROOT.war" webxml="${temp_dir.conf}/web.xml">
+			<fileset dir="WebContent" excludes="META-INF/**,WEB-INF/**" />
+			<lib dir="${temp_dir.lib}" />
+			<classes dir="build" />
+			<webinf dir="conf">
+				<include name="log4j.xml" />
+			</webinf>
+			<metainf dir="${temp_dir.conf}">
+				<include name="context.xml" />
+			</metainf>
+		</war>
+	</target>
+
+	<target name="buildSDP" depends="war" description="Create deploy directory for automated build">
+		<unzip src="${temp_dir}/ROOT.war" dest="target" />
 		<delete dir="${temp_dir}" />
 	</target>
 
 	<target name="deployAlpha" depends="compile" description="Deploy Application to Alpha (local only)">
-		<replace dir="${temp_dir.conf}" token="@@RUNTIME_MODE@@" value="dev"/>
-		<replace dir="${temp_dir.conf}" token="@@DBUSER@@" value="pics"/>
-		<replace dir="${temp_dir.conf}" token="@@DBPASS@@" value="pics"/>
-		<replace dir="${temp_dir.conf}" token="@@DBURL@@" value="jdbc:mysql://localhost:3306/pics_alpha"/>
-		<replace dir="${temp_dir.conf}" token="@@APPDIR@@" value="${env.CATALINA_HOME}/webapps"/>
-		<replace dir="${temp_dir.conf}" token="@@FTPDIR@@" value="/var/www/ftp-bin"/>
+		<replace dir="${temp_dir.conf}" token="@@RUNTIME_MODE@@" value="dev" />
+		<replace dir="${temp_dir.conf}" token="@@DBUSER@@" value="pics" />
+		<replace dir="${temp_dir.conf}" token="@@DBPASS@@" value="pics" />
+		<replace dir="${temp_dir.conf}" token="@@DBURL@@" value="jdbc:mysql://localhost:3306/pics_alpha" />
+		<replace dir="${temp_dir.conf}" token="@@APPDIR@@" value="${env.CATALINA_HOME}/webapps" />
+		<replace dir="${temp_dir.conf}" token="@@FTPDIR@@" value="/var/www/ftp-bin" />
 		<antcall target="war" />
 
-		<move file="${temp_dir}/ROOT.war" todir="${env.CATALINA_HOME}/webapps"/>
+		<move file="${temp_dir}/ROOT.war" todir="${env.CATALINA_HOME}/webapps" />
 		<delete dir="${temp_dir}" />
 	</target>
 
 	<target name="testCopy" depends="svn_out">
 	</target>
-	
+
 	<target name="buildDocs" description="Create javadocs">
-		<javadoc destdir="docs"
-	           author="true"
-	           version="true"
-                   classpathref="build.classpath"
-	           use="true"
-		   windowtitle="PICS API">
+		<javadoc destdir="docs" author="true" version="true" classpathref="build.classpath" use="true" windowtitle="PICS API">
 			<fileset dir="src" defaultexcludes="yes">
-				<include name="*.java"/>
-				<include name="com/picsauditing/**"/>
+				<include name="*.java" />
+				<include name="com/picsauditing/**" />
 			</fileset>
 
 			<doctitle><![CDATA[<h1>PICS Java Docs</h1>]]></doctitle>
 			<bottom><![CDATA[<i>Copyright &#169; 2008 Pacific Industrial Contractor Screening. All Rights Reserved.</i>]]></bottom>
-			<tag name="todo" scope="all" description="To do:"/>		
+			<tag name="todo" scope="all" description="To do:" />
 		</javadoc>
 	</target>
-	
-	<target name="buildLib" description="Add required jars to lib directory of project">
-		<copy todir="WebContent/WEB-INF/lib" flatten="true">
-					<fileset dir="${maven.repo.local}">
-						<include name="commons-io/commons-io/1.3.1/commons-io-1.3.1.jar" />
-						<include name="activation/activation/1.1/activation-1.1.jar" />
-						<include name="commons-fileupload/commons-fileupload/1.2/commons-fileupload-1.2.jar" />
-						<include name="jexcelapi/jxl/2.4.2/jxl-2.4.2.jar" />
-						<include name="commons-dbcp/commons-dbcp/1.2.2/commons-dbcp-1.2.2.jar" />
-						<include name="commons-collections/commons-collections/3.2/commons-collections-3.2.jar" />
-						<include name="commons-pool/commons-pool/1.3/commons-pool-1.3.jar" />				
-						<include name="el/el-api/1.1.1/el-api-1.1jar" />
-						<include name="el/el-ri/1.1/el-ri-1.1.jar" />				
-						<include name="commons-io/commons-io/1.3.1/commons-io-1.3.1.jar" />
-						<include name="commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0.jar"/>
-						<include name="commons-digester/commons-digester/1.8/commons-digester-1.8.jar"/>
-					</fileset>
-				    <fileset dir="${hibernate.local}">
-				    	<include name="*.*"/>
-				    	<exclude name="javaee.jar" />
-				    </fileset>
-				  </copy>
-	       </target>
 </project>
 
