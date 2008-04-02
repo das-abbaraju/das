@@ -192,12 +192,18 @@ public class OshaLog implements java.io.Serializable {
 		this.recordableTotal1 = recordableTotal1;
 	}
 
-	public YesNo getFile1yearAgo() {
-		return file1yearAgo;
+	public boolean getFile1yearAgo() {
+		if (file1yearAgo.equals(YesNo.Yes))
+			return true;
+		else
+			return false;
 	}
 
-	public void setFile1yearAgo(YesNo file1yearAgo) {
-		this.file1yearAgo = file1yearAgo;
+	public void setFile1yearAgo(boolean file1yearAgo) {
+		if (file1yearAgo)
+			this.file1yearAgo = YesNo.Yes;
+		else
+			this.file1yearAgo = YesNo.No;
 	}
 
 	public Date getVerifiedDate1() {
@@ -216,12 +222,15 @@ public class OshaLog implements java.io.Serializable {
 		this.comment1 = comment1;
 	}
 
-	public YesNo getNa1() {
-		return na1;
+	public boolean getNa1() {
+		return YesNo.Yes.equals(na1);
 	}
 
-	public void setNa1(YesNo na1) {
-		this.na1 = na1;
+	public void setNa1(boolean na1) {
+		if (na1)
+			this.na1 = YesNo.Yes;
+		else
+			this.na1 = YesNo.No;
 	}
 
 	public int getManHours2() {
@@ -280,12 +289,18 @@ public class OshaLog implements java.io.Serializable {
 		this.recordableTotal2 = recordableTotal2;
 	}
 
-	public YesNo getFile2yearAgo() {
-		return file2yearAgo;
+	public boolean getFile2yearAgo() {
+		if (file2yearAgo.equals(YesNo.Yes))
+			return true;
+		else
+			return false;
 	}
 
-	public void setFile2yearAgo(YesNo file2yearAgo) {
-		this.file2yearAgo = file2yearAgo;
+	public void setFile2yearAgo(boolean file2yearAgo) {
+		if (file2yearAgo)
+			this.file2yearAgo = YesNo.Yes;
+		else
+			this.file2yearAgo = YesNo.No;
 	}
 
 	public Date getVerifiedDate2() {
@@ -304,12 +319,15 @@ public class OshaLog implements java.io.Serializable {
 		this.comment2 = comment2;
 	}
 
-	public YesNo getNa2() {
-		return na2;
+	public boolean getNa2() {
+		return YesNo.Yes.equals(na2);
 	}
 
-	public void setNa2(YesNo na2) {
-		this.na2 = na2;
+	public void setNa2(boolean na2) {
+		if (na2)
+			this.na2 = YesNo.Yes;
+		else
+			this.na2 = YesNo.No;
 	}
 
 	public int getManHours3() {
@@ -384,12 +402,18 @@ public class OshaLog implements java.io.Serializable {
 		this.recordableTotal3 = recordableTotal3;
 	}
 
-	public YesNo getFile3yearAgo() {
-		return file3yearAgo;
+	public boolean getFile3yearAgo() {
+		if (file3yearAgo.equals(YesNo.Yes))
+			return true;
+		else
+			return false;
 	}
 
-	public void setFile3yearAgo(YesNo file3yearAgo) {
-		this.file3yearAgo = file3yearAgo;
+	public void setFile3yearAgo(boolean file3yearAgo) {
+		if (file3yearAgo)
+			this.file3yearAgo = YesNo.Yes;
+		else
+			this.file3yearAgo = YesNo.No;
 	}
 
 	public Date getVerifiedDate3() {
@@ -408,12 +432,15 @@ public class OshaLog implements java.io.Serializable {
 		this.comment3 = comment3;
 	}
 
-	public YesNo getNa3() {
-		return na3;
+	public boolean getNa3() {
+		return YesNo.Yes.equals(na3);
 	}
 
-	public void setNa3(YesNo na3) {
-		this.na3 = na3;
+	public void setNa3(boolean na3) {
+		if (na3)
+			this.na3 = YesNo.Yes;
+		else
+			this.na3 = YesNo.No;
 	}
 
 	public int getManHours4() {

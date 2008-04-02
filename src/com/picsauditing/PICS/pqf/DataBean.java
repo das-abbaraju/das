@@ -610,18 +610,21 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 		}finally{
 			DBClose();
 		}//finally
-	}//getPercentComplete
+	}
 	
 
 	public String getPercentVerified(String conID, String auditType) throws Exception {
 		try{
-			String selectQuery = "SELECT COUNT(*) FROM pqfCategories pc INNER JOIN pqfCatData pd ON pc.catID = pd.catID WHERE "+
-				"auditType='"+auditType+"' AND conID="+conID+" AND percentVerified='100';";
+			String selectQuery = "SELECT COUNT(*)" +
+				"FROM pqfCategories pc " +
+				"JOIN pqfCatData pd ON pc.catID = pd.catID " +
+				"WHERE pc.auditTypeID IN (SELECT auditTypeID FROM audit_type WHERE legacyCode='"+auditType+"') " +
+				"  AND conID="+conID+" AND percentVerified='100'";
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
 			SQLResult.next();
 			int numCompleted = SQLResult.getInt(1);
-			String selectQuery2 = "SELECT COUNT(*) FROM pqfCategories WHERE auditType='"+auditType+"';";
+			String selectQuery2 = "SELECT COUNT(*) FROM pqfCategories WHERE auditTypeID IN (SELECT auditTypeID FROM audit_type WHERE legacyCode='"+auditType+"')";
 			SQLResult = SQLStatement.executeQuery(selectQuery2);
 			SQLResult.next();
 			int numCats = SQLResult.getInt(1);
@@ -1058,14 +1061,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 			SQLStatement.executeUpdate(updateQuery);
 		}finally{
 			DBClose();
-		}//finally
-	}//updatePercentageCompleted
-	
-	
-
-//SQL to get all the questions and their cateogry type
-//SELECT  * 
-//FROM pqfSubCategories s, pqfQuestions q, pqfCategories c
-//WHERE s.categoryID = c.catID AND q.subCategoryID=s.subCatID AND auditType='Desktop' ORDER BY questionID;
-}//DataBean
+		}
+	}
+}
 

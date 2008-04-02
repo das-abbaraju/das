@@ -3,6 +3,7 @@
 <%@page import="org.apache.commons.beanutils.*"%>
 <%@page import="com.picsauditing.search.*"%>
 <%@page import="java.util.*"%>
+<%@page import="com.picsauditing.jpa.entities.AuditType"%>
 <%
 permissions.tryPermission(OpPerms.AssignAudits);
 boolean canEdit = permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit);
@@ -58,7 +59,6 @@ report.setLimit(50);
 List<BasicDynaBean> searchData = report.getPage();
 
 %>
-<%@page import="com.picsauditing.jpa.entities.AuditType"%>
 <html>
 <head>
 <title>Schedule Drug &amp; Alcohol Audits</title>

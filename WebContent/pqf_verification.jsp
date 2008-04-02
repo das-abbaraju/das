@@ -4,6 +4,7 @@
 <%@page import="com.picsauditing.search.SelectAccount"%>
 <%@page import="com.picsauditing.search.Report"%>
 <%@page import="java.util.List"%>
+<%@page import="com.picsauditing.jpa.entities.AuditType"%>
 <%@page import="org.apache.commons.beanutils.BasicDynaBean"%>
 <%
 permissions.tryPermission(OpPerms.OSHAVerification);
@@ -11,10 +12,14 @@ permissions.tryPermission(OpPerms.OSHAVerification);
 SelectAccount sql = new SelectAccount();
 sql.setType(SelectAccount.Type.Contractor);
 
-sql.addField("c.pqfSubmittedDate");
 sql.addField("c.notes");
 sql.addWhere("active='Y'");
+
+sql.addJoin("LEFT JOIN contractor_audit ca ON ca.conID = a.id AND ca.auditTypeID = " + AuditType.PQF);
+sql.addField("ca.scheduledDate");
+//Todo: move to ca.completedDate
 sql.addWhere("c.pqfSubmittedDate >= '2008-01-01'");
+sql.addField("c.pqfSubmittedDate");
 
 sql.addJoin("LEFT JOIN osha os ON os.conID = a.id AND os.location = 'Corporate'");
 sql.addField("os.verifiedDate1");
@@ -61,8 +66,12 @@ List<BasicDynaBean> searchData = report.getPage();
 	<input type="hidden" name="startsWith" value="<%= request.getParameter("startsWith") == null ? "" : request.getParameter("startsWith") %>"/>
 	<input type="hidden" name="orderBy"  value="<%=request.getParameter("orderBy") == null ? "" : request.getParameter("orderBy") %>"/>
 	<p class="blueMain">Show Contractors that need:</p>
+	
+	<table border="0">
+		<tr>
+			<td>
 	<table border="0" cellpadding="2" cellspacing="0" class="blueMain">
-		<tr class="blueMain">
+		<tr>
 			<td></td>
 			<td>2007</td>
 			<td>2006</td>
@@ -81,6 +90,12 @@ List<BasicDynaBean> searchData = report.getPage();
 			<td><input type="checkbox" name="emr05" <%="on".equals(request.getParameter("emr05")) ? "checked" : "" %>></td>
 		</tr>
 	</table>
+	</td>
+	<td align="center" valign="bottom">
+	<input type="image" src="images/button_search.gif" width="70" height="23" />
+	</td>
+	</tr>
+	</table>
 </form>
 
 <table border="0" cellpadding="5" cellspacing="0" align="center">
@@ -93,7 +108,7 @@ List<BasicDynaBean> searchData = report.getPage();
 	<tr bgcolor="#003366" class="whiteTitle">
 		<td colspan=2><a href="#" onclick="changeOrderBy('form1','a.name'); return false;" class="whiteTitle">Contractor</a></td>
 		<td align="center"><a href="javascript: changeOrderBy('form1','pqfSubmittedDate');" class="whiteTitle">Submitted</a></td>
-		<td align="center"><a href="javascript: changeOrderBy('form1','followupDate');" class="whiteTitle">Followup</a></td>
+		<td align="center"><a href="javascript: changeOrderBy('form1','scheduledDate');" class="whiteTitle">Followup</a></td>
 		<td align="center">Verification Status</td>
 		<td align="center">Notes</td>
 	</tr>
@@ -114,7 +129,7 @@ List<BasicDynaBean> searchData = report.getPage();
 		<td align="right"><%=color.getCounter()%></td>
 		<td><a href="VerifyView.action?id=<%=row.get("id")%>"><%=row.get("name")%></a></td>
 		<td><%=DateBean.toShowFormat(row.get("pqfSubmittedDate"))%></td>
-		<td>0/0/00</td>
+		<td><%=DateBean.toShowFormat(row.get("scheduledDate"))%></td>
 		<td><%=Math.round(100*(float)verified/6)%>%</td>
 		<td><%=row.get("notes").toString().substring(0, 50)%>...</td>
 	</tr>

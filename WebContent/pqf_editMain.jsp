@@ -75,10 +75,9 @@
 	aBean.setFromDB(conID);
 	pdBean.setFilledOut(conID);
 %>
-
 <html>
 <head>
-<title>PQF</title>
+<title><%=auditType %></title>
 <meta name="header_gif" content="header_prequalification.gif" />
 </head>
 <body>
