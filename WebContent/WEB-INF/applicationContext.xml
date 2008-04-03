@@ -16,6 +16,7 @@
 	<bean id="PqfDataDAO" class="com.picsauditing.dao.PqfDataDAO" scope="prototype"/>
 	<bean id="PqfQuestionDAO" class="com.picsauditing.dao.PqfQuestionDAO" scope="prototype"/>
 	<bean id="RulesRowDAO" class="com.picsauditing.dao.RulesRowDAO" scope="prototype"/>
+	<bean id="UserDAO" class="com.picsauditing.dao.UserDAO" scope="prototype"/>
 	
 	<bean class="com.picsauditing.PICS.Facilities"/>
 
