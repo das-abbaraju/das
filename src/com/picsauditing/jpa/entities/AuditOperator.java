@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -71,7 +72,7 @@ public class AuditOperator {
 		this.orderDate = orderDate;
 	}
 
-	@ManyToOne
+	@ManyToOne( fetch=FetchType.LAZY)
 	@JoinColumn(name = "opID")
 	public Account getAccount() {
 		return account;
