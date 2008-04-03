@@ -13,6 +13,7 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.util.AuditTypeCache;
 
 public class AuditOperatorList extends PicsActionSupport {
 	private static final long serialVersionUID = -618269908092576272L;
@@ -48,8 +49,9 @@ public class AuditOperatorList extends PicsActionSupport {
 			return LOGIN;
 
 		operators = operatorDAO.findOperators();
-		auditTypes = auditDAO.findAll();
-
+		
+		auditTypes = new AuditTypeCache( auditDAO ).getAuditTypes();
+		
 		data = new ArrayList<AuditOperator>();
 		HashMap<Integer, AuditOperator> rawDataIndexed = new HashMap<Integer, AuditOperator>();
 		if (aID > 0) {
