@@ -100,12 +100,12 @@ try{
                         </tr>
                         <tr>
                           <td align="right" class="redMain">Category:</td>
-                          <td><%=pcBean.getPQFCategorySelectDefaultSubmit("catID","blueMain",catID,auditType)%></td>
+                          <td><%=pcBean.getPqfCategorySelectDefaultSubmit("catID","blueMain",catID,auditType)%></td>
                         </tr>
 <%	if (isCategorySelected) { %>
                         <tr>
                           <td align="right" class="redMain">Sub Category:</td>
-                          <td><%=psBean.getPQFSubCategorySelect("subCategoryID","blueMain",pqBean.subCategoryID,catID)%></td>
+                          <td><%=psBean.getPqfSubCategorySelect("subCategoryID","blueMain",pqBean.subCategoryID,catID)%></td>
                         </tr>
                         <tr>
                           <td align="right" class="redMain">Type:</td>

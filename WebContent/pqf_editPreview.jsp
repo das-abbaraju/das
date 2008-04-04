@@ -40,7 +40,7 @@
     			</tr>
 	  			<tr align="center">
 			      <form name="form1" method="post" action="">
-        	        <td><%=pcBean.getPQFCategorySelectDefaultSubmit("catID","blueMain",catID,auditType)%></td>
+        	        <td><%=pcBean.getPqfCategorySelectDefaultSubmit("catID","blueMain",catID,auditType)%></td>
 				  </form>
       			</tr>
     			<tr>

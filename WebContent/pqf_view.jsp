@@ -68,7 +68,7 @@
 <%	if (!com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType)) { %>
               <tr align="center">
                 <form name="form1" method="post" action="pqf_view.jsp">
-                  <td><%=pcBean.getPQFCategorySelectDefaultSubmit("catID","blueMain",catID,auditType)%></td>
+                  <td><%=pcBean.getPqfCategorySelectDefaultSubmit("catID","blueMain",catID,auditType)%></td>
                   <input type="hidden" name="id" value="<%=conID%>">
                   <input type="hidden" name="auditType" value="<%=auditType%>">
                 </form>

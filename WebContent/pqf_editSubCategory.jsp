@@ -67,7 +67,7 @@
 				        </tr>
 				        <tr>
 				          <td align="right" class="redMain">Category:</td>
-          				  <td><%=pcBean.getPQFCategorySelect("categoryID","forms",psBean.categoryID,auditType)%></td>
+          				  <td><%=pcBean.getPqfCategorySelect("categoryID","forms",psBean.categoryID,auditType)%></td>
 				        </tr>
         				<tr>
       				 	  <td align="right" class="redMain">Sub Category Name:</td>

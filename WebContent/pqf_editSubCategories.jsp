@@ -40,7 +40,7 @@ try{
 			    </tr>
 				<form name="form" method="post" action="pqf_editSubCategories.jsp">
     			  <tr>
-                    <td align="center"><%=pcBean.getPQFCategorySelectDefaultSubmit("editCatID","blueMain",editCatID,auditType)%></td>
+                    <td align="center"><%=pcBean.getPqfCategorySelectDefaultSubmit("editCatID","blueMain",editCatID,auditType)%></td>
 		    	  </tr>
 				</form>
 <%	if (isCategorySelected) { %>

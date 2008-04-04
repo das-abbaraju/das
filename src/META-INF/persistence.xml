@@ -37,8 +37,8 @@
 		<class>com.picsauditing.jpa.entities.Notes</class>
 		<class>com.picsauditing.jpa.entities.Operator</class>
 		<class>com.picsauditing.jpa.entities.Facility</class>
-		<class>com.picsauditing.jpa.entities.Pqfcategory</class>
-		<class>com.picsauditing.jpa.entities.Pqfsubcategory</class>
+		<class>com.picsauditing.jpa.entities.PqfCategory</class>
+		<class>com.picsauditing.jpa.entities.PqfSubCategory</class>
 
 		<properties>
 			<property name="hibernate.hbm2ddl.auto" value="" />

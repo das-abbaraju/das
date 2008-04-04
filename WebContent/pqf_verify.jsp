@@ -80,7 +80,7 @@
     		  </tr>
 <%/*	  	      <tr align="center">
 			    <form name="form1" method="post" action="pqf_verify.jsp">
-        	      <td><%=pcBean.getPQFCategorySelectDefaultSubmit("catID","blueMain",catID,auditType)%</td>
+        	      <td><%=pcBean.getPqfCategorySelectDefaultSubmit("catID","blueMain",catID,auditType)%</td>
 			      <input type="hidden" name="id" value="<%=conID%">
 			      <input type="hidden" name="auditType" value="<%=auditType%">
 				</form>

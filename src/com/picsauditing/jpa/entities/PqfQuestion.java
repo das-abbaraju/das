@@ -30,7 +30,7 @@ public class PqfQuestion implements java.io.Serializable {
 	static public int EMR07 = 1617;
 
 	private int questionID;
-	private Pqfsubcategory subCategory;
+	private PqfSubCategory subCategory;
 	private short number;
 	private String question;
 	private String hasRequirement;
@@ -73,11 +73,11 @@ public class PqfQuestion implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "subCategoryID", nullable = false, insertable = false, updatable = false)
-	public Pqfsubcategory getSubCategory() {
+	public PqfSubCategory getSubCategory() {
 		return this.subCategory;
 	}
 
-	public void setSubCategory(Pqfsubcategory subCategory) {
+	public void setSubCategory(PqfSubCategory subCategory) {
 		this.subCategory = subCategory;
 	}
 

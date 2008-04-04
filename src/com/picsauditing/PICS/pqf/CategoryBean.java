@@ -349,18 +349,18 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		}//finally
 	}//setPQFCategoriesArray
 
-	public String getPQFCategorySelect(String name, String classType, String selectedCategory, String aType) throws Exception {
+	public String getPqfCategorySelect(String name, String classType, String selectedCategory, String aType) throws Exception {
 		setPQFCategoriesArray(aType);
 		return Utilities.inputSelect2First(name, classType, selectedCategory, 
 			(String[])categories.toArray(new String[0]),"0",DEFAULT_CATEGORY);
-	}//getPQFCategorySelect
+	}//getPqfCategorySelect
 
-	public String getPQFCategorySelectDefaultSubmit(String name, String classType, 
+	public String getPqfCategorySelectDefaultSubmit(String name, String classType, 
 			String selectedCategory, String aType) throws Exception {
 		setPQFCategoriesArray(aType);
 		return Utilities.inputSelect2FirstSubmit(name, classType, selectedCategory, 
 				(String[])categories.toArray(new String[0]),"0",DEFAULT_CATEGORY);
-	}//getPQFCategorySelectDefaultSubmit
+	}//getPqfCategorySelectDefaultSubmit
 
 	public String getCategoryName(String cID, String aType) throws Exception {
 		setPQFCategoriesArray(aType);

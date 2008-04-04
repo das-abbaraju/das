@@ -13,9 +13,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.picsauditing.jpa.entities.AuditType;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/tests.xml")
+@ContextConfiguration(locations = "/tests.xml")
 public class AuditTypeDaoTest extends TestCase {
-
 	@Autowired
 	private AuditTypeDAO dao;
 
@@ -26,9 +25,9 @@ public class AuditTypeDaoTest extends TestCase {
 		assertEquals(false, row.isHasMultiple());
 		assertEquals(true, row.isScheduled());
 		assertEquals(null, row.getDateToExpire());
-		assertEquals(36, (int)row.getMonthsToExpire());
+		assertEquals(36, (int) row.getMonthsToExpire());
 		// assertEquals("2009-03-01", row.getDateToExpire().toString());
-		 
+
 	}
 
 	@Test

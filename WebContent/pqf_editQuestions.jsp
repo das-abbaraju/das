@@ -43,13 +43,13 @@ try{
     			</tr>
 				<form name="form" method="post" action="pqf_editQuestions.jsp">
     			  <tr>
-                    <td align="center"><%=pcBean.getPQFCategorySelectDefaultSubmit("editCatID","blueMain",editCatID,auditType)%></td>
+                    <td align="center"><%=pcBean.getPqfCategorySelectDefaultSubmit("editCatID","blueMain",editCatID,auditType)%></td>
 		    	  </tr>
 				</form>
 <%	if (isCategorySelected) { %>
 				<form name="form" method="post" action="pqf_editQuestions.jsp">
     			  <tr>
-                    <td align="center"><%=psBean.getPQFSubCategorySelectDefaultSubmit("editSubCatID","blueMain",editSubCatID,editCatID)%></td>
+                    <td align="center"><%=psBean.getPqfSubCategorySelectDefaultSubmit("editSubCatID","blueMain",editSubCatID,editCatID)%></td>
 		    	  </tr>
 				  <input type=hidden name=editCatID value=<%=editCatID%>>
 				</form>

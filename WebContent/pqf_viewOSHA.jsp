@@ -44,7 +44,7 @@
     		  </tr>
 <!--	  			<tr align="center">
 			      <form name="form1" method="post" action="pqf_edit.jsp">
-        	        <td colspan=2><%=pcBean.getPQFCategorySelectDefaultSubmit("catID","blueMain",catID,auditType)%></td>
+        	        <td colspan=2><%=pcBean.getPqfCategorySelectDefaultSubmit("catID","blueMain",catID,auditType)%></td>
 			      <input type="hidden" name="id" value="<%=conID%>">
 				  </form>
       			</tr>

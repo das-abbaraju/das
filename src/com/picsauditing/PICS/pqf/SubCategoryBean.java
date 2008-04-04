@@ -219,24 +219,24 @@ public class SubCategoryBean extends com.picsauditing.PICS.DataBean {
 		subCatArrayCatID = catID;
 	}//setPQFSubCategoriesArray
 
-	public String getPQFSubCategorySelect(String name, String classType, String selectedSubCategory, String catID) throws Exception {
+	public String getPqfSubCategorySelect(String name, String classType, String selectedSubCategory, String catID) throws Exception {
 		setPQFSubCategoriesArray(catID);
 		return Utilities.inputSelect2First(name, classType, selectedSubCategory, 
 			(String[])subCategories.toArray(new String[0]),"0",DEFAULT_SUBCATEGORY);
-	}//getPQFSubCategorySelect
+	}//getPqfSubCategorySelect
 
 //	public String getPQFAllSubCategorySelect(String name, String classType, String selectedSubCategory) throws Exception {
 //		setPQFSubCategoriesArray("0");
 //		return Utilities.inputSelect2First(name, classType, selectedSubCategory, 
 //			(String[])allSubCategories.toArray(new String[0]),"0",DEFAULT_SUBCATEGORY);
-//	}//getPQFSubCategorySelect
+//	}//getPqfSubCategorySelect
 
-	public String getPQFSubCategorySelectDefaultSubmit(String name, String classType, 
+	public String getPqfSubCategorySelectDefaultSubmit(String name, String classType, 
 			String selectedSubCategory, String catID) throws Exception {
 		setPQFSubCategoriesArray(catID);
 		return Utilities.inputSelect2FirstSubmit(name, classType, selectedSubCategory, 
 				(String[])subCategories.toArray(new String[0]),"0",DEFAULT_SUBCATEGORY);	
-	}//getPQFSubCategorySelectDefaultSubmit
+	}//getPqfSubCategorySelectDefaultSubmit
 
 	public String getSubCategoryName(String subCID) throws Exception {
 		setPQFSubCategoriesArray("0");
