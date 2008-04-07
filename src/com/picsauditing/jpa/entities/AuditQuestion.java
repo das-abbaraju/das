@@ -22,7 +22,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "pqfquestions")
-public class PqfQuestion implements java.io.Serializable {
+public class AuditQuestion implements java.io.Serializable {
 	static public int EMR03 = 127;
 	static public int EMR04 = 126;
 	static public int EMR05 = 889;
@@ -30,7 +30,7 @@ public class PqfQuestion implements java.io.Serializable {
 	static public int EMR07 = 1617;
 
 	private int questionID;
-	private PqfSubCategory subCategory;
+	private AuditSubCategory subCategory;
 	private short number;
 	private String question;
 	private String hasRequirement;
@@ -73,11 +73,11 @@ public class PqfQuestion implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "subCategoryID", nullable = false, insertable = false, updatable = false)
-	public PqfSubCategory getSubCategory() {
+	public AuditSubCategory getSubCategory() {
 		return this.subCategory;
 	}
 
-	public void setSubCategory(PqfSubCategory subCategory) {
+	public void setSubCategory(AuditSubCategory subCategory) {
 		this.subCategory = subCategory;
 	}
 

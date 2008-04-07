@@ -16,13 +16,13 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "pqfdata")
-public class PqfData implements java.io.Serializable {
+public class AuditData implements java.io.Serializable {
 
 	private int dataID;
 	@Deprecated
 	private Account contractorAccount;
 	private ContractorAudit audit;
-	private PqfQuestion pqfQuestion;
+	private AuditQuestion pqfQuestion;
 	private short num;
 	private String answer;
 	private Account auditor;
@@ -64,11 +64,11 @@ public class PqfData implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "questionID", nullable = false, updatable = false)
-	public PqfQuestion getPqfQuestion() {
+	public AuditQuestion getPqfQuestion() {
 		return pqfQuestion;
 	}
 
-	public void setPqfQuestion(PqfQuestion pqfQuestion) {
+	public void setPqfQuestion(AuditQuestion pqfQuestion) {
 		this.pqfQuestion = pqfQuestion;
 	}
 
