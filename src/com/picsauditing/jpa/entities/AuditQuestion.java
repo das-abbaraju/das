@@ -67,7 +67,7 @@ public class AuditQuestion implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "subCategoryID", nullable = false, insertable = false, updatable = false)
+	@JoinColumn(name = "subCategoryID", nullable = false)
 	public AuditSubCategory getSubCategory() {
 		return this.subCategory;
 	}
@@ -194,7 +194,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.isGroupedWithPrevious = isGroupedWithPrevious;
 	}
 
-	@Column(name = "link", nullable = false, length = 250)
+	@Column(name = "link")
 	public String getLink() {
 		return this.link;
 	}
@@ -203,7 +203,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.link = link;
 	}
 
-	@Column(name = "linkText", nullable = false, length = 250)
+	@Column(name = "linkText")
 	public String getLinkText() {
 		return this.linkText;
 	}
@@ -212,7 +212,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkText = linkText;
 	}
 
-	@Column(name = "linkURL1", nullable = false)
+	@Column(name = "linkURL1")
 	public String getLinkUrl1() {
 		return this.linkUrl1;
 	}
@@ -221,7 +221,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkUrl1 = linkUrl1;
 	}
 
-	@Column(name = "linkText1", nullable = false)
+	@Column(name = "linkText1")
 	public String getLinkText1() {
 		return this.linkText1;
 	}
@@ -230,7 +230,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkText1 = linkText1;
 	}
 
-	@Column(name = "linkURL2", nullable = false)
+	@Column(name = "linkURL2")
 	public String getLinkUrl2() {
 		return this.linkUrl2;
 	}
@@ -239,7 +239,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkUrl2 = linkUrl2;
 	}
 
-	@Column(name = "linkText2", nullable = false)
+	@Column(name = "linkText2")
 	public String getLinkText2() {
 		return this.linkText2;
 	}
@@ -248,7 +248,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkText2 = linkText2;
 	}
 
-	@Column(name = "linkURL3", nullable = false)
+	@Column(name = "linkURL3")
 	public String getLinkUrl3() {
 		return this.linkUrl3;
 	}
@@ -257,7 +257,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkUrl3 = linkUrl3;
 	}
 
-	@Column(name = "linkText3", nullable = false)
+	@Column(name = "linkText3")
 	public String getLinkText3() {
 		return this.linkText3;
 	}
@@ -266,7 +266,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkText3 = linkText3;
 	}
 
-	@Column(name = "linkURL4", nullable = false)
+	@Column(name = "linkURL4")
 	public String getLinkUrl4() {
 		return this.linkUrl4;
 	}
@@ -275,7 +275,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkUrl4 = linkUrl4;
 	}
 
-	@Column(name = "linkText4", nullable = false)
+	@Column(name = "linkText4")
 	public String getLinkText4() {
 		return this.linkText4;
 	}
@@ -284,7 +284,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkText4 = linkText4;
 	}
 
-	@Column(name = "linkURL5", nullable = false)
+	@Column(name = "linkURL5")
 	public String getLinkUrl5() {
 		return this.linkUrl5;
 	}
@@ -293,7 +293,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkUrl5 = linkUrl5;
 	}
 
-	@Column(name = "linkText5", nullable = false)
+	@Column(name = "linkText5")
 	public String getLinkText5() {
 		return this.linkText5;
 	}
@@ -302,7 +302,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkText5 = linkText5;
 	}
 
-	@Column(name = "linkURL6", nullable = false)
+	@Column(name = "linkURL6")
 	public String getLinkUrl6() {
 		return this.linkUrl6;
 	}
@@ -311,7 +311,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkUrl6 = linkUrl6;
 	}
 
-	@Column(name = "linkText6", nullable = false)
+	@Column(name = "linkText6")
 	public String getLinkText6() {
 		return this.linkText6;
 	}
