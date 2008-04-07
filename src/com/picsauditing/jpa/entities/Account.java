@@ -25,7 +25,7 @@ import org.hibernate.annotations.FetchMode;
 @Table(name = "accounts")
 public class Account implements java.io.Serializable {
 	
-	private Integer id;
+	private Integer id = 0;
 	private String type;
 	private String name;
 	private String username;
