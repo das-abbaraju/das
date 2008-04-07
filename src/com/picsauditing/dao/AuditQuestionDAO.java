@@ -29,7 +29,7 @@ public class AuditQuestionDAO extends PicsDAO {
 	}
 
 	public List<AuditQuestion> findBySubCategory(int subCategoryID) {
-		Query query = em.createQuery("select t FROM AuditQuestion t WHERE t.auditType.auditTypeID = ?");
+		Query query = em.createQuery("select t FROM AuditQuestion t WHERE t.subCategory.id = ?");
 		query.setParameter(1, subCategoryID);
 		return query.getResultList();
 	}
