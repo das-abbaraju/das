@@ -182,13 +182,13 @@ Details</a></p>
 		<td colspan="2"><a href="pqf_uploadFile.jsp?auditType=PQF&catID=10&id=<s:property value="id" />"
 		class="blueMain">Upload New Files</a></td>
 		<td class="highlight"><a href="#"
-		onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqfpdf<s:property value="emr1.pqfQuestion.questionID" />','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">Show File</a>
+		onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqfpdf<s:property value="emr1.question.questionID" />','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">Show File</a>
 		</td>
 		<td class="highlight"><a href="#"
-		onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqfpdf<s:property value="emr2.pqfQuestion.questionID" />','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">Show File</a>
+		onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqfpdf<s:property value="emr2.question.questionID" />','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">Show File</a>
 		</td>
 		<td class="highlight"><a href="#"
-		onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqfpdf<s:property value="emr3.pqfQuestion.questionID" />','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">Show File</a>
+		onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqfpdf<s:property value="emr3.question.questionID" />','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">Show File</a>
 		</td>
 	</tr>
 	<tr class="blueMain" align="right">

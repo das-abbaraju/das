@@ -31,7 +31,6 @@
 		response.sendRedirect("pqf_viewNCMS.jsp?id="+conID+"&auditType="+auditType);
 		return;
 	}//if	 
-//	pqBean.setSubList("number", catID);
 	pdBean.setFromDB(conID,catID);
 	if (isCategorySelected)
 		psBean.setPQFSubCategoriesArray(catID);

@@ -107,7 +107,6 @@ try{
 			numSections++;
 			String subCatID = (String)li.next();
 			String subCat = (String)li.next();
-//			pqBean.setSubList("number", subCatID);
 			pqBean.setSubListWithData("number",subCatID,conID);
 %>					  
                       <tr class="blueMain">

@@ -22,7 +22,7 @@ public class AuditData implements java.io.Serializable {
 	@Deprecated
 	private Account contractorAccount;
 	private ContractorAudit audit;
-	private AuditQuestion pqfQuestion;
+	private AuditQuestion question;
 	private short num;
 	private String answer;
 	private Account auditor;
@@ -64,12 +64,12 @@ public class AuditData implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "questionID", nullable = false, updatable = false)
-	public AuditQuestion getPqfQuestion() {
-		return pqfQuestion;
+	public AuditQuestion getQuestion() {
+		return question;
 	}
 
-	public void setPqfQuestion(AuditQuestion pqfQuestion) {
-		this.pqfQuestion = pqfQuestion;
+	public void setQuestion(AuditQuestion question) {
+		this.question = question;
 	}
 
 	public short getNum() {

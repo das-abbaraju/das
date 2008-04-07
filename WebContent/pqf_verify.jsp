@@ -113,7 +113,6 @@
 			String subCatID = (String)li.next();
 			String subCat = (String)li.next();
 			pqBean.setSubListWithData("number", subCatID,conID);
-//			pqBean.setSubList("number", subCatID);
 			if (isOSHA) { %>
                     <%@ include file="includes/pqf/view_OSHA.jsp"%>
 <%			} else { %>
