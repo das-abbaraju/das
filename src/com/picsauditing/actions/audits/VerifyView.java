@@ -5,19 +5,19 @@ import java.util.HashMap;
 
 import com.picsauditing.actions.ContractorActionSupport;
 import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.PqfDataDAO;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.OshaLog;
-import com.picsauditing.jpa.entities.PqfData;
-import com.picsauditing.jpa.entities.PqfQuestion;
+import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.YesNo;
 
 public class VerifyView extends ContractorActionSupport {
 	private int oshaID = 0;
 	private OshaLog osha;
-	private PqfDataDAO pqfDao;
-	private HashMap<Integer, PqfData> emr;
+	private AuditDataDAO pqfDao;
+	private HashMap<Integer, AuditData> emr;
 
-	public VerifyView(AccountDAO accountDao, PqfDataDAO pqfDao) {
+	public VerifyView(AccountDAO accountDao, AuditDataDAO pqfDao) {
 		this.accountDao = accountDao;
 		this.pqfDao = pqfDao;
 	}
@@ -40,10 +40,10 @@ public class VerifyView extends ContractorActionSupport {
 		
 		// Now get the EMR data
 		ArrayList<Integer> emrQuestions = new ArrayList<Integer>();
-		emrQuestions.add(PqfQuestion.EMR07);
-		emrQuestions.add(PqfQuestion.EMR06);
-		emrQuestions.add(PqfQuestion.EMR05);
-		emrQuestions.add(PqfQuestion.EMR04);
+		emrQuestions.add(AuditQuestion.EMR07);
+		emrQuestions.add(AuditQuestion.EMR06);
+		emrQuestions.add(AuditQuestion.EMR05);
+		emrQuestions.add(AuditQuestion.EMR04);
 		emr = pqfDao.findAnswers(this.id, emrQuestions);
 
 		return SUCCESS;
@@ -61,11 +61,11 @@ public class VerifyView extends ContractorActionSupport {
 		this.oshaID = oshaID;
 	}
 
-	public HashMap<Integer, PqfData> getEmr() {
+	public HashMap<Integer, AuditData> getEmr() {
 		return emr;
 	}
 
-	public void setEmr(HashMap<Integer, PqfData> emr) {
+	public void setEmr(HashMap<Integer, AuditData> emr) {
 		this.emr = emr;
 	}
 	
@@ -81,16 +81,16 @@ public class VerifyView extends ContractorActionSupport {
 		return this.getYear1() - 2;
 	}
 	
-	public PqfData getEmr1() {
-		return emr.get(PqfQuestion.EMR07);
+	public AuditData getEmr1() {
+		return emr.get(AuditQuestion.EMR07);
 	}
 	
-	public PqfData getEmr2() {
-		return emr.get(PqfQuestion.EMR06);
+	public AuditData getEmr2() {
+		return emr.get(AuditQuestion.EMR06);
 	}
 	
-	public PqfData getEmr3() {
-		return emr.get(PqfQuestion.EMR05);
+	public AuditData getEmr3() {
+		return emr.get(AuditQuestion.EMR05);
 	}
 	
 	public YesNo[] getYesNos() {

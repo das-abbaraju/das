@@ -9,12 +9,12 @@
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd" default-autowire="autodetect">
 
 	<bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO" scope="prototype"/>
+	<bean id="AuditDataDAO" class="com.picsauditing.dao.AuditDataDAO" scope="prototype"/>
 	<bean id="AuditOperatorDAO" class="com.picsauditing.dao.AuditOperatorDAO" scope="prototype"/>
+	<bean id="AuditQuestionDAO" class="com.picsauditing.dao.AuditQuestionDAO" scope="prototype"/>
 	<bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO" scope="prototype"/>
 	<bean id="ContractorAuditDAO" class="com.picsauditing.dao.ContractorAuditDAO" scope="prototype"/>
 	<bean id="ContractorInfoDAO" class="com.picsauditing.dao.ContractorInfoDAO" scope="prototype"/>
-	<bean id="PqfDataDAO" class="com.picsauditing.dao.PqfDataDAO" scope="prototype"/>
-	<bean id="PqfQuestionDAO" class="com.picsauditing.dao.PqfQuestionDAO" scope="prototype"/>
 	<bean id="RulesRowDAO" class="com.picsauditing.dao.RulesRowDAO" scope="prototype"/>
 	<bean id="UserDAO" class="com.picsauditing.dao.UserDAO" scope="prototype"/>
 	
