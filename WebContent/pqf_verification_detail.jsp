@@ -226,30 +226,29 @@ Details</a></p>
 		<td colspan="3">&nbsp;</td>
 	</tr>
 	<tr class="blueMain">
-		<td colspan="5"><s:textarea name="new_note" value="" rows="3"
-			cols="50" cssClass="blueMain" /></td>
+		<td colspan="5"></td>
 	</tr>
 </table>
 </s:form>
 
+
+<s:form action="VerifySaveFollowUp" method="POST">
 <table>
 <tr valign="top">
 <td>
 </td>
 <td class="blueMain">
-<input type="submit" value="Followup in" />
-<select>
+<input class="blueMain" type="submit" value="Followup in" />
+<select class="blueMain">
 	<option value="1">1 day</option>
 	<option value="3" selected="selected">3 days</option>
 	<option value="7">1 week</option>
 	<option value="14">2 weeks</option>
 	<option value="30">1 month</option>
-</select><br />
-
-
-</td>
+</select></td>
 </tr>
 </table>
+</s:form>
 
 <div id="notes" style="width: 600px; text-align: left;">
 <h3 class="blueHeader">Notes:</h3>

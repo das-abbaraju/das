@@ -309,7 +309,7 @@ public class AccountBean extends DataBean {
 		email = m.get("email");
 		web_URL = m.get("web_URL");
 		industry = m.get("industry");
-	}//setFromUploadRequestClientEdit
+	}
 
 	public void setFromRequestNewAuditor(javax.servlet.http.HttpServletRequest r) throws Exception {
 		name = r.getParameter("name");

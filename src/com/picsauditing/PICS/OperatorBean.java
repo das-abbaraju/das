@@ -95,7 +95,7 @@ public class OperatorBean extends DataBean {
 		}finally{
 			DBClose();
 		}
-	}//setAuditOperatorsSetFromDB
+	}
 
 	public Set<AuditOperator> getCanSeeAudits(String opID)throws Exception{
 		if (null == canSeeAudits)

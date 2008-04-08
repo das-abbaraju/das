@@ -2,7 +2,6 @@ package com.picsauditing.jpa.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,15 +16,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import com.picsauditing.util.Luhn;
 
 @Entity
 @Table(name = "accounts")
 public class Account implements java.io.Serializable {
 	
-	private Integer id = 0;
+	private int id;
 	private String type;
 	private String name;
 	private String username;
@@ -56,17 +55,24 @@ public class Account implements java.io.Serializable {
 	private List<ContractorOperator> contractors;
 	private List<ContractorOperator> operators;
 	private List<OshaLog> oshas;
+	private List<ContractorAudit> audits;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", nullable = false)
-	public Integer getId() {
+	public int getId() {
 		return this.id;
 	}
-
-	public void setId(Integer id) {
+	public void setId(int id) {
 		this.id = id;
 	}
+	
+	@Transient
+	public String getLuhnId() {
+		Integer value = this.id;
+		return Luhn.addCheckDigit(value.toString());
+	}
+
 
 	@Column(name = "type", nullable = false, length = 20)
 	public String getType() {
@@ -326,4 +332,12 @@ public class Account implements java.io.Serializable {
 		this.oshas = oshas;
 	}
 
+	@OneToMany(mappedBy = "contractorAccount")
+	public List<ContractorAudit> getAudits() {
+		return audits;
+	}
+
+	public void setAudits(List<ContractorAudit> audits) {
+		this.audits = audits;
+	}
 }

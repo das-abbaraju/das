@@ -25,6 +25,11 @@
 			<result>users_manage.jsp</result>
 		</action>
 
+		<action name="ContractorView"
+			class="com.picsauditing.actions.contractors.ContractorView">
+			<result>contractor_view.jsp</result>
+		</action>
+
 		<action name="FacilitiesGetAjax"
 			class="com.picsauditing.actions.operators.FacilitiesGet">
 			<result>includes/facilitySelect.jsp</result>
@@ -49,5 +54,6 @@
 			class="com.picsauditing.actions.audits.ConAuditList">
 			<result>contractor_audits.jsp</result>
 		</action>
+
 	</package>
 </struts>

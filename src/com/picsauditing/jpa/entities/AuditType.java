@@ -35,7 +35,7 @@ public class AuditType {
 
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public int getAuditTypeID() {
 		return auditTypeID;
 	}

@@ -243,8 +243,8 @@ public class ContractorBean extends DataBean {
 		if (s.length() != description.length() || !s.equals(description)){
 			description = s;
 			isDescriptionChanged = true;
-		}//if
-	}//setDescription
+		}
+	}
 	public void setStatus(String s) {status = s;}//setStatus
 	public void setAccountDate(String s) {accountDate = s;}//setAccountDate
 	public void setWelcomeEmailDate(String s) {welcomeEmailDate = s;}//setWelcomeEmailDate
@@ -941,6 +941,8 @@ public class ContractorBean extends DataBean {
 
 		riskLevel = SQLResult.getString("riskLevel");
 		annualUpdateEmails = SQLResult.getInt("annualUpdateEmails");
+		oqEmployees = SQLResult.getString("oqEmployees");
+		
 	}//setFromResultSet
 
 	public void writeToDB() throws Exception {
@@ -1025,7 +1027,8 @@ public class ContractorBean extends DataBean {
 			"',billingPhone='"+eqDB(billingPhone)+
 			"',riskLevel="+riskLevel+
 			",annualUpdateEmails="+annualUpdateEmails+
-			",billingEmail='"+eqDB(billingEmail);
+			",oqEmployees='"+eqDB(oqEmployees)+
+			"',billingEmail='"+eqDB(billingEmail);
 		if (isDescriptionChanged)
 			updateQuery+="',description='"+eqDB(description);
 		if (isNotesChanged)
@@ -1049,7 +1052,7 @@ public class ContractorBean extends DataBean {
 			SQLStatement.executeUpdate(Query);
 			DBClose();
 			writeToDB();
-
+			
 			DBReady();
 			String insertQuery = "INSERT INTO generalContractors (subID,genID,dateAdded) VALUES ";
 			boolean doInsert = false;
@@ -1057,17 +1060,29 @@ public class ContractorBean extends DataBean {
 				doInsert = true;
 				insertQuery += "("+id+","+genID+",NOW()),";
 				addNote(id, "","Added this Contractor to "+FACILITIES.getNameFromID(genID)+"'s db at account registration", DateBean.getTodaysDateTime());
-			}//f
+			}
 			insertQuery = insertQuery.substring(0,insertQuery.length()-1) + ";";
 			if (doInsert)
 				SQLStatement.executeUpdate(insertQuery);
 			DBClose();
 			writeToDB();
+			
+			DBReady();
+			
+			int nextYear = Calendar.getInstance().get(Calendar.YEAR) + 1;
+			// Create the starting PQF audit for this contractor (and any others we missed)
+			Query = "INSERT INTO contractor_audit (conID, auditTypeID, createdDate, expiresDate) " +
+				"SELECT id, 1, dateCreated, '"+nextYear+"-01-01' FROM accounts a WHERE type = 'Contractor' " +
+				"AND id not in (SELECT conID FROM contractor_audit WHERE auditTypeID = 1)";
+			SQLStatement.executeUpdate(Query);
+			DBClose();
+			writeToDB();
+			
 			com.picsauditing.PICS.OperatorBean.resetSubCountTable();
 			new com.picsauditing.PICS.pqf.CategoryBean().generateDynamicCategories(id,com.picsauditing.PICS.pqf.Constants.PQF_TYPE, riskLevel);
 		}finally{
 			DBClose();
-		}//finally
+		}
 	}
 	
 	public void writeBillingToDB() throws Exception {
@@ -1122,6 +1137,7 @@ public class ContractorBean extends DataBean {
 		billingPhone = m.get("billingPhone");
 
 		riskLevel = m.get("riskLevel");
+		oqEmployees = m.get("oqEmployees");
 
 		//setTrades(m.getValues("trades"));
 // jj 10/28/06	setGeneralContractors(m.getValues("generalContractors"));
@@ -1177,6 +1193,7 @@ public class ContractorBean extends DataBean {
 		billingEmail = r.getParameter("billingEmail");
 		billingPhone = r.getParameter("billingPhone");
 
+		oqEmployees = r.getParameter("oqEmployees");
 		riskLevel = r.getParameter("riskLevel");
 	}//setFromUploadRequestClientNew
 
@@ -1197,7 +1214,7 @@ public class ContractorBean extends DataBean {
 		primaryUser.userDO.password = m.get("password");
 		*/
 		
-	}//setFromUploadRequestClientEdit
+	}
 
 	public boolean isOK() {
 		errorMessages = new Vector<String>();		

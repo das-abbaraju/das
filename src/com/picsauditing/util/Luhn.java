@@ -52,7 +52,7 @@ public class Luhn {
 		}
 
 		Integer remainder = 10 - (sum % 10);
-		if (remainder==10) return 0;
+		if (remainder==10) return "0".charAt(0);
 		return remainder.toString().charAt(0);
 	}
 	public static String addCheckDigit(String number) {

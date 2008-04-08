@@ -11,6 +11,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import com.picsauditing.PICS.Utilities;
 
 @Entity
 @Table(name = "contractor_info")
@@ -23,6 +26,44 @@ public class ContractorInfo implements java.io.Serializable {
 	private String trades;
 	private String subTrades;
 	private String logoFile;
+	private String brochureFile;
+	private String description;
+	private String status;
+	private byte certs;
+	private Date welcomeEmailDate;
+	private Date emailConfirmedDate;
+	private String paid;
+	private Date lastPayment;
+	private short lastPaymentAmount;
+	private Date lastInvoiceDate;
+	private String canEditPrequal;
+	private String canEditDesktop;
+	private Date lastAuditEmailDate;
+	private Date accountDate;
+	private char accountNewComplete;
+	private String notes;
+	private String adminNotes;
+	private String mustPay;
+	private Date paymentExpires;
+	private byte billingCycle;
+	private short billingAmount;
+	private String isExempt;
+	private String hasExpiredCerts;
+	private String isOnlyCerts;
+	private String secondContact;
+	private String secondPhone;
+	private String secondEmail;
+	private String billingContact;
+	private String billingPhone;
+	private String billingEmail;
+	private Date membershipDate;
+	private short newBillingAmount;
+	private short payingFacilities;
+	private Date welcomeCallDate;
+	private int welcomeAuditorId;
+	private int riskLevel;
+
+	// Audit fields to be removed
 	private Date auditDate;
 	private Date lastAuditDate;
 	private String auditHour;
@@ -30,25 +71,6 @@ public class ContractorInfo implements java.io.Serializable {
 	private String prequalFile;
 	private Date pqfSubmittedDate;
 	private Date desktopSubmittedDate;
-	private String brochureFile;
-	private String description;
-	private String status;
-	private byte certs;
-	private Date accountDate;
-	private Date welcomeEmailDate;
-	private Date emailConfirmedDate;
-	private String paid;
-	private Date lastPayment;
-	private short lastPaymentAmount;
-	private Date lastInvoiceDate;
-	private char accountNewComplete;
-	private String notes;
-	private String adminNotes;
-	private String canEditPrequal;
-	private String canEditDesktop;
-	private Date lastAuditEmailDate;
-	private String mustPay;
-	private Date paymentExpires;
 	private Date lastAnnualUpdateEmailDate;
 	private int auditorId;
 	private int desktopAuditorId;
@@ -68,11 +90,6 @@ public class ContractorInfo implements java.io.Serializable {
 	private Date officeSubmittedDate;
 	private Date officeClosedDate;
 	private int requestedById;
-	private byte billingCycle;
-	private short billingAmount;
-	private String isExempt;
-	private String hasExpiredCerts;
-	private String isOnlyCerts;
 	private String auditLocation;
 	private byte desktopPercent;
 	private byte desktopVerifiedPercent;
@@ -83,18 +100,6 @@ public class ContractorInfo implements java.io.Serializable {
 	private byte pqfPercent;
 	private String hasNcmsdesktop;
 	private String isNewOfficeAudit;
-	private String secondContact;
-	private String secondPhone;
-	private String secondEmail;
-	private String billingContact;
-	private String billingPhone;
-	private String billingEmail;
-	private Date membershipDate;
-	private short newBillingAmount;
-	private short payingFacilities;
-	private Date welcomeCallDate;
-	private int welcomeAuditorId;
-
 
 	@Id
 	@Column(name = "id", nullable = false)
@@ -244,6 +249,11 @@ public class ContractorInfo implements java.io.Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@Transient
+	public String getDescriptionHTML() {
+		return Utilities.escapeNewLines(this.description);
 	}
 
 	@Column(name = "status", nullable = false, length = 9)
@@ -823,5 +833,31 @@ public class ContractorInfo implements java.io.Serializable {
 
 	public void setWelcomeAuditorId(int welcomeAuditorId) {
 		this.welcomeAuditorId = welcomeAuditorId;
+	}
+
+	public LowMedHigh getRiskLevel() {
+		switch (riskLevel) {
+			case 1:
+				return LowMedHigh.Low;
+			case 2:
+				return LowMedHigh.Med;
+			case 3:
+				return LowMedHigh.High;
+		}
+		return null;
+	}
+
+	public void setRiskLevel(LowMedHigh riskLevel) {
+		this.riskLevel = 2;
+		if (riskLevel == null)
+			return;
+		if (riskLevel.equals(LowMedHigh.Low)) {
+			this.riskLevel = 1;
+			return;
+		}
+		if (riskLevel.equals(LowMedHigh.High)) {
+			this.riskLevel = 3;
+			return;
+		}
 	}
 }
