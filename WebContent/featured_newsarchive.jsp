@@ -17,6 +17,11 @@
 		<td valign="top" bgcolor="#FFFFFF">
 		<table border="0" align="center" cellpadding="0" cellspacing="0">
 			<tr>
+				<td bgcolor="#F8F8F8" class="blueHome2"><strong>01/01/08</strong>
+				<strong class="articleTitle">Roquette America joins PICS</strong><br>
+				Roquette is one of the world's most advanced starch and starch-derivatives businesses. Using the latest technology, Roquette transforms four key crops - maize, wheat, pea and potatoes - into products for the food, pharmaceutical, paper, corrugated board, fermentation, chemical and industrial sectors. Roquette America has manufacturing facilities in Keokuk, IA and Gurnee, IL.</td>
+			</tr>
+			<tr>
 				<td class="blueHome2"><strong>12/01/07</strong> <strong
 					class="articleTitle">Suncor Energy USA joins PICS</strong><br>
 				Suncor Energy USA operates a 90,000 barrel per day oil refinery in
