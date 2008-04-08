@@ -4,6 +4,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -34,6 +35,7 @@ public class AuditData implements java.io.Serializable {
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "dataID", nullable = false, insertable = false, updatable = false)
 	public int getDataID() {
 		return dataID;
 	}
@@ -43,7 +45,7 @@ public class AuditData implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "conID", nullable = false, insertable = false, updatable = false)
+	@JoinColumn(name = "conID", nullable = false, insertable = false,updatable = false)
 	public Account getContractorAccount() {
 		return contractorAccount;
 	}
