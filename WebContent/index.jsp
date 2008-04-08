@@ -65,20 +65,21 @@ sets the highest standards possible in regard to contractor qualifications as th
                 <tr>
                   <td bgcolor="#CCCCCC"><img src="images/spacer.gif" width="1" height="1"></td>
                   <td valign="top" bgcolor="#FFFFFF"><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
-                                        <tr>
+                                        					<tr>
+                                          <td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">04/01/08</span>PICS presents at Texas Safety</span><br>
+                                            <br> 
+                                          PICS CFO, Jared Smith, was invited by the National Safety Council to present “The Dos and Don’ts of Contractor Prequalification” at the 2008 Texas Safety Conference & Expo.  NSC is one of the leading safety organizations in the world; there are 18,600 member companies of NSC, representing 8.5 million employ</td></tr>
+										
+										<tr>
                                           <td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">3/01/08</span>Allergan, Inc. joins PICS</span><br>
                                             <br> 
                                           Allergan represents a global, $3 billion multi-specialty health care company with leading portfolios in eye care, neurosciences, medical dermatology, medical aesthetics, obesity intervention and urologics. Allergan has over7,500 employees and a presence in more than 100 countries.</td></tr>
 										
 										<tr>
-                                          <td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">02/01/08</span>Sikorsky Aircraft Corporation joins PICS</span><br>
+                                          <td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">02/01/08</span>Sikorsky Aircraft Corporation joins PICS</span><br>
                                             <br> 
 Sikorsky Aircraft Corporation, a UTC Company, has partnered with PICS to prequalify contractors at all domestic facilities. Sikorsky has a global workforce topping 14,000 and is a world leader in the design, manufacture and service of military and commercial helicopters. Their helicopters have saved an estimated 2 million lives since performing the world's first helicopter rescue in 1944.</td>
                                         </tr>
-					<tr>
-                                          <td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">01/01/08</span>Roquette America joins PICS</span><br>
-                                            <br> 
-                                          Roquette is one of the world's most advanced starch and starch-derivatives businesses. Using the latest technology, Roquette transforms four key crops - maize, wheat, pea and potatoes - into products for the food, pharmaceutical, paper, corrugated board, fermentation, chemical and industrial sectors. Roquette America has manufacturing facilities in Keokuk, IA and Gurnee, IL.</td></tr>
                                         <tr>
                       <td align="center" class="blueHome">&nbsp;<a href="featured_newsarchive.jsp" target="_self"><img src="images/NEWSARCHIVE_button3.gif" width="111" height="27" hspace="5" border="0"></a></td>
                     </tr>
