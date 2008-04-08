@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Vector;
@@ -13,13 +15,18 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FilenameUtils;
 
-import com.picsauditing.mail.EmailContractorBean;
-import com.picsauditing.mail.EmailTemplates;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.User;
+import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.mail.EmailContractorBean;
+import com.picsauditing.mail.EmailTemplates;
+import com.picsauditing.util.SpringUtils;
 
 public class ContractorBean extends DataBean {
 	public static final String STATUS_ACTIVE = "Active"; // these should match the ENUM for status in the DB table
@@ -138,6 +145,8 @@ public class ContractorBean extends DataBean {
 	// questionID=894 
 	// 22.1.1  	Does your company have employees who are covered under DOT OQ requirements?
 	public String oqEmployees = "";
+	
+	private HashMap<Integer, ContractorAudit> audits;
 
 	int num_of_trades = 0;
 	int num_of_subTrades = 0;
@@ -1748,5 +1757,22 @@ public class ContractorBean extends DataBean {
 		}
 
 		return false;
+	}
+	
+	public HashMap<Integer, ContractorAudit> getAudits() throws Exception {
+		if (audits == null) {
+			audits = new HashMap<Integer, ContractorAudit>();
+			try {
+				AccountDAO dao = (AccountDAO)SpringUtils.getBean("AccountDAO");
+				Account account = dao.find(Integer.parseInt(id));
+				List<ContractorAudit> auditList = account.getAudits();
+				for(ContractorAudit cAudit : auditList) {
+					audits.put(cAudit.getAuditType().getAuditTypeID(), cAudit);
+				}
+			} finally {
+				DBClose();
+			}
+		}
+		return audits;
 	}
 }

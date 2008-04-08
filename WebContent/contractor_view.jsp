@@ -10,11 +10,10 @@
 
 <br />
 <br />
-<div class="blueMain"
-	style="width: 657px; padding: 15px; background-color: #F8F8F8; text-align: left;">
-<div class="blueMain" style="float: left">
+<table width="657" cellpadding="15" bgcolor="#F8F8F8">
+<tr class="blueMain" align="left" valign="top">
+<td>
 <h3 class="blueHeader"><s:property value="contractor.name" /></h3>
-
 <s:property value="contractor.address" />, <s:property
 	value="contractor.city" />, <s:property value="contractor.state" /> <s:property
 	value="contractor.zip" /> [<a
@@ -33,22 +32,28 @@
 	href="http://<s:property value="contractor.web_URL" />" target="_blank"><s:property
 	value="contractor.web_URL" /></a><br>
 <a target=_blank href="servlet/showpdf?id=<s:property value="id" />&file=brochure">Company
-Brochure</a></div>
-<div class="blueMain" style="padding-left: 20px;"><span class="redMain">PICS
-Contractor ID:</span> <s:property value="contractor.luhnId" /><br />
+Brochure</a></td>
+<td><span class="redMain">PICS Contractor ID:</span> <s:property value="contractor.luhnId" /><br />
 <span class="redMain">PICS Status:</span> <br>
+<span class="redMain">Risk Level:</span> <s:property value="contractor.contractor.riskLevel" /><br>
+
+<span class="redMain">Facilities:</span><br />
+<s:iterator value="contractor.operators">
+	<s:property value="operatorAccount.name" /><br />
+</s:iterator>
+...<a href="con_selectFacilities.jsp?id=<s:property value="id" />">see facilities</a><br />
 
 <s:iterator value="contractor.audits" id="audit">
 	<span class="redMain"><s:property value="auditType.auditName" />:</span>
 	<a href="<s:property value="id" />"><s:property value="auditStatus" /></a><br />
 </s:iterator>
+<a href="ConAuditList.action?id=<s:property value="id" />" class="blueMain">Audits &amp; Evaluations</a>
 
-<span class="redMain">Risk Level:</span> <s:property value="contractor.contractor.riskLevel" /><br>
+</td>
+</tr>
+</table>
+<div class="blueMain" style="width: 627px; padding: 15px; background-color: #FFFFFF; text-align: left;">
 
-<br clear="all" />
-</div>
-</div>
-<div class="blueMain" style="width: 657px; padding: 15px; background-color: #FFFFFF; text-align: left;"><s:property
-	value="contractor.contractor.descriptionHTML" escape="false" /></div>
+<s:property value="contractor.contractor.descriptionHTML" escape="false" /></div>
 </body>
 </html>

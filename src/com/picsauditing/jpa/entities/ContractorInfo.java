@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -61,7 +63,7 @@ public class ContractorInfo implements java.io.Serializable {
 	private short payingFacilities;
 	private Date welcomeCallDate;
 	private int welcomeAuditorId;
-	private int riskLevel;
+	private LowMedHigh riskLevel;
 
 	// Audit fields to be removed
 	private Date auditDate;
@@ -835,29 +837,12 @@ public class ContractorInfo implements java.io.Serializable {
 		this.welcomeAuditorId = welcomeAuditorId;
 	}
 
+	@Enumerated(EnumType.ORDINAL)
 	public LowMedHigh getRiskLevel() {
-		switch (riskLevel) {
-			case 1:
-				return LowMedHigh.Low;
-			case 2:
-				return LowMedHigh.Med;
-			case 3:
-				return LowMedHigh.High;
-		}
-		return null;
+		return riskLevel;
 	}
 
 	public void setRiskLevel(LowMedHigh riskLevel) {
-		this.riskLevel = 2;
-		if (riskLevel == null)
-			return;
-		if (riskLevel.equals(LowMedHigh.Low)) {
-			this.riskLevel = 1;
-			return;
-		}
-		if (riskLevel.equals(LowMedHigh.High)) {
-			this.riskLevel = 3;
-			return;
-		}
+		this.riskLevel = riskLevel;
 	}
 }
