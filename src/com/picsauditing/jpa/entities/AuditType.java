@@ -20,19 +20,19 @@ public class AuditType {
 	public static final int NCMS = 4;
 	public static final int DA = 6;
 
-	protected int auditTypeID = 0;
+	protected int auditTypeID;
 
-	protected String auditName = null;
-	protected String description = null;
-	protected boolean hasMultiple = false;
-	protected boolean isScheduled = false;
-	protected boolean hasAuditor = false;
-	protected boolean hasRequirements = false;
-	protected boolean canContractorView = false;
-	protected boolean canContractorEdit = false;
+	protected String auditName;
+	protected String description;
+	protected boolean hasMultiple;
+	protected boolean isScheduled;
+	protected boolean hasAuditor;
+	protected boolean hasRequirements;
+	protected boolean canContractorView;
+	protected boolean canContractorEdit;
 	protected Integer monthsToExpire = -1;
-	protected Date dateToExpire = null;
-
+	protected Date dateToExpire;
+	protected String legacyCode;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -125,4 +125,13 @@ public class AuditType {
 	public void setDateToExpire(Date dateToExpire) {
 		this.dateToExpire = dateToExpire;
 	}
+	
+	public String getLegacyCode() {
+		return legacyCode;
+	}
+
+	public void setLegacyCode(String legacyCode) {
+		this.legacyCode = legacyCode;
+	}
+
 }

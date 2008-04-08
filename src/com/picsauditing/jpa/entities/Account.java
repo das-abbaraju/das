@@ -6,15 +6,14 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -24,40 +23,41 @@ import com.picsauditing.util.Luhn;
 
 @Entity
 @Table(name = "accounts")
-public class Account implements java.io.Serializable {
+@DiscriminatorColumn(name="type")
+public abstract class Account implements java.io.Serializable {
 	
-	private int id;
-	private String type;
-	private String name;
-	private String username;
-	private String password;
-	private Date passwordChange;
-	private Date lastLogin;
-	private String contact;
-	private String address;
-	private String city;
-	private String state;
-	private String zip;
-	private String phone;
-	private String phone2;
-	private String fax;
-	private String email;
-	private String webUrl;
-	private String industry;
-	private char active;
-	private String createdBy;
-	private Date dateCreated;
-	private char seesAllB;
-	private char sendActivationEmailB;
-	private String activationEmailsB;
-	private Date emailConfirmedDate;
+	protected int id;
+	protected String type;
+	protected String name;
+	protected String username;
+	protected String password;
+	protected Date passwordChange;
+	protected Date lastLogin;
+	protected String contact;
+	protected String address;
+	protected String city;
+	protected String state;
+	protected String zip;
+	protected String phone;
+	protected String phone2;
+	protected String fax;
+	protected String email;
+	protected String webUrl;
+	protected String industry;
+	protected char active;
+	protected String createdBy;
+	protected Date dateCreated;
+	protected char seesAllB;
+	protected char sendActivationEmailB;
+	protected String activationEmailsB;
+	protected Date emailConfirmedDate;
 	
 	// Other tables
-	private ContractorInfo contractor;
-	private List<ContractorOperator> contractors;
-	private List<ContractorOperator> operators;
-	private List<OshaLog> oshas;
-	private List<ContractorAudit> audits;
+	protected ContractorAccount contractor;
+	protected List<ContractorOperator> contractors;
+	protected List<ContractorOperator> operators;
+	protected List<OshaLog> oshas;
+	protected List<ContractorAudit> audits;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -307,7 +307,7 @@ public class Account implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contractorAccount")
-	//@OrderBy(value = "operatorAccount.name")
+	//@OrderBy("operatorName")
 	public List<ContractorOperator> getOperators() {
 		return this.operators;
 	}
@@ -318,11 +318,11 @@ public class Account implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id", nullable = false, insertable = false, updatable = false)
-	public ContractorInfo getContractor() {
+	public ContractorAccount getContractor() {
 		return this.contractor;
 	}
 
-	public void setContractor(ContractorInfo contractor) {
+	public void setContractor(ContractorAccount contractor) {
 		this.contractor = contractor;
 	}
 

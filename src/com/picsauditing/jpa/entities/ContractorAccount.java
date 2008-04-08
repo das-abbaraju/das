@@ -3,13 +3,11 @@ package com.picsauditing.jpa.entities;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -19,10 +17,10 @@ import com.picsauditing.PICS.Utilities;
 
 @Entity
 @Table(name = "contractor_info")
-public class ContractorInfo implements java.io.Serializable {
-
-	private int id;
-	private Account account;
+@PrimaryKeyJoinColumn(name="id")
+@DiscriminatorValue(value="Contractor")
+public class ContractorAccount extends Account {
+	
 	private String taxId;
 	private String mainTrade;
 	private String trades;
@@ -102,26 +100,6 @@ public class ContractorInfo implements java.io.Serializable {
 	private byte pqfPercent;
 	private String hasNcmsdesktop;
 	private String isNewOfficeAudit;
-
-	@Id
-	@Column(name = "id", nullable = false)
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id", nullable = false, insertable = false, updatable = false)
-	public Account getAccount() {
-		return this.account;
-	}
-
-	public void setAccount(Account account) {
-		this.account = account;
-	}
 
 	@Column(name = "taxID", nullable = false, length = 100)
 	public String getTaxId() {

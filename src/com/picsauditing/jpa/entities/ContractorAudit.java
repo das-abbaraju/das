@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -33,6 +36,9 @@ public class ContractorAudit {
 	private String auditLocation;
 	private String percentComplete;
 	private String percentVerified;
+	
+	private List<AuditCatData> categories;
+	private List<AuditData> data;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -166,5 +172,23 @@ public class ContractorAudit {
 
 	public void setPercentVerified(String percentVerified) {
 		this.percentVerified = percentVerified;
+	}
+
+	@OneToMany(mappedBy = "audit")
+	public List<AuditCatData> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<AuditCatData> categories) {
+		this.categories = categories;
+	}
+
+	@OneToMany(mappedBy = "audit")
+	public List<AuditData> getData() {
+		return data;
+	}
+
+	public void setData(List<AuditData> data) {
+		this.data = data;
 	}
 }

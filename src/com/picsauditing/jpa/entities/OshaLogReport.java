@@ -18,7 +18,7 @@ import javax.persistence.TemporalType;
 public class OshaLogReport implements java.io.Serializable {
 
 	private Short oid;
-	private ContractorInfo contractorInfo;
+	private ContractorAccount contractorInfo;
 	private String location;
 	private String verifiedDate;
 	private Date verifiedDate1;
@@ -38,11 +38,11 @@ public class OshaLogReport implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "conID", nullable = false)
-	public ContractorInfo getContractorInfo() {
+	public ContractorAccount getContractorInfo() {
 		return this.contractorInfo;
 	}
 
-	public void setContractorInfo(ContractorInfo contractorInfo) {
+	public void setContractorInfo(ContractorAccount contractorInfo) {
 		this.contractorInfo = contractorInfo;
 	}
 
