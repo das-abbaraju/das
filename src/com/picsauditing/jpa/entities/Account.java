@@ -26,7 +26,7 @@ import com.picsauditing.util.Luhn;
 @Entity
 @Table(name = "accounts")
 @Inheritance(strategy=InheritanceType.JOINED)
-public abstract class Account implements java.io.Serializable {
+public class Account implements java.io.Serializable {
 	
 	protected int id;
 	protected String name;

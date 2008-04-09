@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @Table(name = "osha")
 public class OshaLog implements java.io.Serializable {
 	private int id;
-	private Account contractorAccount;
+	private ContractorAccount contractorAccount;
 	private OshaType type;
 	private String location;
 	private String description;
@@ -86,11 +86,11 @@ public class OshaLog implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "conID", nullable = false)
-	public Account getContractorAccount() {
+	public ContractorAccount getContractorAccount() {
 		return contractorAccount;
 	}
 
-	public void setContractorAccount(Account contractorAccount) {
+	public void setContractorAccount(ContractorAccount contractorAccount) {
 		this.contractorAccount = contractorAccount;
 	}
 

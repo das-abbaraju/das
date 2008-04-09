@@ -24,7 +24,7 @@ public class AuditData implements java.io.Serializable {
 	private AuditQuestion question;
 	private short num;
 	private String answer;
-	private Account auditor;
+	private User auditor;
 	private String comment;
 	private Date dateVerified;
 	private String verifiedAnswer;
@@ -80,11 +80,11 @@ public class AuditData implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "auditorID")
-	public Account getAuditor() {
+	public User getAuditor() {
 		return auditor;
 	}
 
-	public void setAuditor(Account auditor) {
+	public void setAuditor(User auditor) {
 		this.auditor = auditor;
 	}
 

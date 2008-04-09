@@ -49,6 +49,10 @@
 			<result>pqf_verification_detail.jsp</result>
 			<result name="input">pqf_verification.jsp</result>
 		</action>
+		<action name="VerifySaveFollowUp"
+			class="com.picsauditing.actions.audits.VerifySaveFollowUp">
+			<result>pqf_verification_detail.jsp</result>
+		</action>
 
 		<action name="ConAuditList"
 			class="com.picsauditing.actions.audits.ConAuditList">

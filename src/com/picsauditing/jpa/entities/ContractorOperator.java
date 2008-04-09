@@ -20,8 +20,8 @@ import javax.persistence.TemporalType;
 public class ContractorOperator implements java.io.Serializable {
 
 	private int id;
-	private Account operatorAccount;
-	private Account contractorAccount;
+	private OperatorAccount operatorAccount;
+	private ContractorAccount contractorAccount;
 	private Date dateAdded;
 
 	@Id
@@ -37,21 +37,21 @@ public class ContractorOperator implements java.io.Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "genID", nullable = false, updatable = false)
-	public Account getOperatorAccount() {
+	public OperatorAccount getOperatorAccount() {
 		return operatorAccount;
 	}
 
-	public void setOperatorAccount(Account operatorAccount) {
+	public void setOperatorAccount(OperatorAccount operatorAccount) {
 		this.operatorAccount = operatorAccount;
 	}
 
 	@ManyToOne
 	@JoinColumn(name = "subID", nullable = false, updatable = false)
-	public Account getContractorAccount() {
+	public ContractorAccount getContractorAccount() {
 		return contractorAccount;
 	}
 
-	public void setContractorAccount(Account contractorAccount) {
+	public void setContractorAccount(ContractorAccount contractorAccount) {
 		this.contractorAccount = contractorAccount;
 	}
 
