@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
@@ -24,8 +24,7 @@ public class AccountDAOTest extends TestCase {
 
 	@Test
 	public void testSaveAndRemove() {
-		Account account = new Account();
-		account.setType("Contractor");
+		Account account = new ContractorAccount();
 		account.setName("PICS");
 		account.setUsername("testpics112");
 		account.setPassword("testpics");
@@ -64,7 +63,6 @@ public class AccountDAOTest extends TestCase {
 	@Test
 	public void testFind() {
 		Account account = accountdao.find(43);
-		assertEquals("Contractor", account.getType());
 		assertEquals("90810", account.getZip());
 	}
 
