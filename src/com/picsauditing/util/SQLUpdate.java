@@ -11,12 +11,15 @@ import java.util.HashMap;
  */
 public class SQLUpdate {
 	private boolean log = true;
+	private Type updateType = Type.UPDATE;
 	private String tableName;
 	private boolean isLowPriority = false;
 	private boolean ignoreErrors = false;
 	private int limit = 0;
 	private ArrayList<String> whereClause = new ArrayList<String>();
 	private HashMap<String, String> fields = new HashMap<String, String>();
+	
+	public static enum Type {UPDATE, REPLACE, INSERT}
 	
 	public SQLUpdate(String tableName) {
 		super();
@@ -29,7 +32,7 @@ public class SQLUpdate {
 		
 		StringBuilder sql = new StringBuilder();
 		
-		sql.append("UPDATE ");
+		sql.append(this.updateType).append(" ");
 		if (this.isLowPriority) {
 			sql.append("LOW_PRIORITY ");
 		}
@@ -99,5 +102,13 @@ public class SQLUpdate {
 
 	public void addFields(String field, Integer value) {
 		this.fields.put(field, value.toString());
+	}
+
+	public Type getUpdateType() {
+		return updateType;
+	}
+
+	public void setUpdateType(Type updateType) {
+		this.updateType = updateType;
 	}
 }

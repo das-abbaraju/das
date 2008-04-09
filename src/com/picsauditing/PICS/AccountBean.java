@@ -613,8 +613,8 @@ public class AccountBean extends DataBean {
 					"active='Y' WHERE username='"+username+"'");
 		}finally{
 			DBClose();
-		}//finally		
-	}//updateEmailConfirmedDate
+		}
+	}
 	
 	public boolean contractorNameExists(String company) throws Exception {
 		if (company.length()<3) {

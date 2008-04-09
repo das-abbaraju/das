@@ -362,23 +362,23 @@ public class Utilities {
 											String firstValue, String firstOption) {
 		return inputSelectAll(name,classType,selectedOption,optionsArray,firstOption,firstValue,NO_ON_CHANGE_SCRIPT,
 			ARRAY_WITH_VALUES,SINGLE,null,null);
-	}//inputSelect2First
+	}
 
 	public static String inputSelect2FirstSubmit(String name, String classType, String selectedOption, String[] optionsArray, 
 											String firstValue, String firstOption) {
 		return inputSelectAll(name,classType,selectedOption,optionsArray,firstOption,firstValue,AUTO_SUBMIT,
 			ARRAY_WITH_VALUES,SINGLE,null,null);
-	}//inputSelect2FirstSubmit
+	}
 
 	public static String inputMultipleSelect(String name, String classType, String size, String selectedOption, String[] optionsArray) {
 		return inputSelectAll(name,classType,selectedOption,optionsArray,null,null,NO_ON_CHANGE_SCRIPT,
 			ARRAY_WITHOUT_VALUES,MULTIPLE,size,null);
-	}//inputMultipleSelect
+	}
 
 	public static String inputMultipleSelectMultiples(String name, String classType, String size, String[] selectedOptions, String[] optionsArray) {
 		return inputSelectAll(name,classType,null,optionsArray,null,null,NO_ON_CHANGE_SCRIPT,
 			ARRAY_WITHOUT_VALUES,MULTIPLE,size,selectedOptions);
-	}//inputMultipleSelectMulitples
+	}
 
 	public static String inputMultipleSelect2Multiples(String name, String classType, String size, String[] selectedOptions, String[] optionsArray) {
 		return inputSelectAll(name,classType,null,optionsArray,null,null,NO_ON_CHANGE_SCRIPT,
@@ -404,16 +404,12 @@ public class Utilities {
 			return "";
 	}//checked
 
-	//Brittney 11-17-04
-	//Used to create menu in adminContractNav.jsp
-	//returns either red text (if on page) or blue link 
-	// 1/1/05 jj - moved this method from ContractorBean to here and made static
 	public static String getMenuTag(HttpServletRequest req, String thisLink, String thisPage, String id, String queryString, String thisQuery, String title) {
 		if (null == thisLink)
 			thisLink = "";
 		if (null == thisQuery)
 			thisQuery = "";
-                String ctxPath = req.getContextPath();
+		String ctxPath = req.getContextPath();
 		thisLink =  ctxPath + "/" + thisLink;
 		if (null != id)
 			if ("".equals(queryString))

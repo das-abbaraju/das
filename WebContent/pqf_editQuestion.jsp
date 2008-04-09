@@ -1,15 +1,16 @@
 <%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<%@include file="includes/auditTypeSelected.jsp"%>
 <jsp:useBean id="pqBean" class="com.picsauditing.PICS.pqf.QuestionBean" scope ="page"/>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
 <jsp:useBean id="psBean" class="com.picsauditing.PICS.pqf.SubCategoryBean" scope ="page"/>
 <jsp:useBean id="uBean" class="com.picsauditing.PICS.Utilities" scope ="page"/>
 <jsp:useBean id="poBean" class="com.picsauditing.PICS.pqf.OptionBean" scope ="page"/>
+<jsp:useBean id="action" class="com.picsauditing.actions.auditType.AuditTypeLegacy" scope="page" />
 <%
 permissions.tryPermission(OpPerms.ManageAudits);
+action.setAuditTypeID(request.getParameter("auditTypeID"));
 try{
-	String action = request.getParameter("action");
+	String actionString = request.getParameter("action");
 	String editID = request.getParameter("editID");
 	String catID = request.getParameter("catID");
 	String subCatID = request.getParameter("subCategoryID");
@@ -35,37 +36,37 @@ try{
 	}//if
 	if (null == newOption)
 		newOption = "";
-	if ("Submit".equals(action)) {
+	if ("Submit".equals(actionString)) {
 		pqBean.setFromRequest(request);
 //		if (isTypeSelected)
 //			pqBean.questionType = request.getParameter("questionType");
 		if (pqBean.isOK()) {
 			if (isAddingNew) {
 				pqBean.writeNewToDB(pageContext);
-				pqBean.renumberPQF(pqBean.subCategoryID,auditType);
-				pcBean.updateNumRequiredCounts(auditType);
+				pqBean.renumberPQF(pqBean.subCategoryID,action.getAuditTypeID());
+				pcBean.updateNumRequiredCounts(action.getAuditTypeID());
 			} else {
 				pqBean.writeToDB();
-				pqBean.renumberPQF(pqBean.subCategoryID,auditType);
-				pcBean.updateNumRequiredCounts(auditType);
+				pqBean.renumberPQF(pqBean.subCategoryID,action.getAuditTypeID());
+				pcBean.updateNumRequiredCounts(action.getAuditTypeID());
 			}//else
 			response.sendRedirect("pqf_editQuestions.jsp?editSubCatID="+pqBean.subCategoryID+"&editCatID="+catID);
 			return;
 		}//if
 	}//if
-	if ("Add Option".equals(action)) {
+	if ("Add Option".equals(actionString)) {
 		poBean.setFromRequest(request);
 		if (poBean.isOK()) {
 			poBean.writeNewToDB();
 			poBean.renumberPQFOptions(editID);
 		}//if
 	}//if
-	if ("deleteOption".equals(action)) {
+	if ("deleteOption".equals(actionString)) {
 		String deleteOptionID = request.getParameter("deleteOptionID");
 		poBean.deleteOption(deleteOptionID);
 		poBean.renumberPQFOptions(editID);
 	}//if.
-	if ("Change Numbering".equals(action)) {
+	if ("Change Numbering".equals(actionString)) {
 		poBean.updateNumbering(request);
 		poBean.renumberPQFOptions(editID);
 	}//if
@@ -77,13 +78,15 @@ try{
 </head>
 <body>
 	          <form name="form1" method="post" action="pqf_editQuestion.jsp">
+				<input type="hidden" name="auditTypeID" value="<%=action.getAuditTypeID() %>" />
+				<input type="hidden" name="editID" value="<%=editID%>">
                 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
                   <tr align="center" class="blueMain">
                     <td class="blueHeader">
 <% 	if (isAddingNew) 		out.print("Add ");
 	else				out.print("Edit ");
 %>
-                    <%=auditType%> Question</td>
+                    <%=action.getAuditType().getAuditName()%> Question</td>
                   </tr>
                   <tr align="center" class="blueMain">                  
                     <td class="blueMain"><%@ include file="includes/nav/editPQFNav.jsp"%></td>
@@ -96,11 +99,11 @@ try{
                       <table border="1" cellpadding="5" cellspacing="0" bordercolor="#FFFFFF" class="blueMain">
                         <tr>
                           <td align="right" class="redMain">Audit Type:</td>
-                          <td align="left" class="blueMain"><%=auditType%></td>
+                          <td align="left" class="blueMain"><%=action.getAuditType().getAuditName()%></td>
                         </tr>
                         <tr>
                           <td align="right" class="redMain">Category:</td>
-                          <td><%=pcBean.getPqfCategorySelectDefaultSubmit("catID","blueMain",catID,auditType)%></td>
+                          <td><%=pcBean.getPqfCategorySelectDefaultSubmit("catID","blueMain",catID,action.getAuditTypeID())%></td>
                         </tr>
 <%	if (isCategorySelected) { %>
                         <tr>
@@ -164,7 +167,6 @@ try{
 						 </td>
 		 	           </tr>
 <%		}//for
-//	}// if
 	}//if
 %>
                         <tr>
@@ -173,14 +175,10 @@ try{
                         </tr>
                       </table>
                       <br>
-<%// 	if (!isAddingNew)
-//		out.println("<input name=editID type=hidden value=" + editID + ">");
-%>
                       <input name="action" type="submit" class="forms" value="Submit">
 	                </td>
                   </tr>
                 </table>
-				<input type=hidden name=editID value=<%=editID%>>
               </form>
 <%	if (!isAddingNew && pqBean.hasOptions()) {
 %>

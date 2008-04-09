@@ -161,9 +161,9 @@ public class SubCategoryBean extends com.picsauditing.PICS.DataBean {
 		}finally{
 			DBClose();
 		}//finally
-	}//updateNumbering
+	}
 	
-	public void renumberPQFSubCategories(String catID, String aType)  throws Exception {
+	public void renumberPQFSubCategories(String catID, int auditTypeID)  throws Exception {
 		String selectQuery = "SELECT subCatID FROM pqfSubCategories WHERE categoryID="+
 			catID+" ORDER BY number";
 		try{
@@ -183,7 +183,7 @@ public class SubCategoryBean extends com.picsauditing.PICS.DataBean {
 		}finally{
 			DBClose();
 		}//finally
-		new CategoryBean().updateNumRequiredCounts(aType);
+		new CategoryBean().updateNumRequiredCounts(auditTypeID);
 	}//renumberPQFSubCategories
 	
 	public boolean isOK() {
@@ -217,26 +217,20 @@ public class SubCategoryBean extends com.picsauditing.PICS.DataBean {
 			DBClose();
 		}//finally
 		subCatArrayCatID = catID;
-	}//setPQFSubCategoriesArray
+	}
 
 	public String getPqfSubCategorySelect(String name, String classType, String selectedSubCategory, String catID) throws Exception {
 		setPQFSubCategoriesArray(catID);
 		return Utilities.inputSelect2First(name, classType, selectedSubCategory, 
 			(String[])subCategories.toArray(new String[0]),"0",DEFAULT_SUBCATEGORY);
-	}//getPqfSubCategorySelect
-
-//	public String getPQFAllSubCategorySelect(String name, String classType, String selectedSubCategory) throws Exception {
-//		setPQFSubCategoriesArray("0");
-//		return Utilities.inputSelect2First(name, classType, selectedSubCategory, 
-//			(String[])allSubCategories.toArray(new String[0]),"0",DEFAULT_SUBCATEGORY);
-//	}//getPqfSubCategorySelect
+	}
 
 	public String getPqfSubCategorySelectDefaultSubmit(String name, String classType, 
 			String selectedSubCategory, String catID) throws Exception {
 		setPQFSubCategoriesArray(catID);
 		return Utilities.inputSelect2FirstSubmit(name, classType, selectedSubCategory, 
 				(String[])subCategories.toArray(new String[0]),"0",DEFAULT_SUBCATEGORY);	
-	}//getPqfSubCategorySelectDefaultSubmit
+	}
 
 	public String getSubCategoryName(String subCID) throws Exception {
 		setPQFSubCategoriesArray("0");
@@ -244,5 +238,5 @@ public class SubCategoryBean extends com.picsauditing.PICS.DataBean {
 		if (-1 == i)
 			return "Does not exist";
 		return (String)allSubCategories.get(i+1);
-	}//getSubCategoryName
-}//SubCategoryBean
+	}
+}

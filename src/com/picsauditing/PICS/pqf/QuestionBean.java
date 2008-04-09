@@ -371,7 +371,7 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 		}//finally
 	}//updateNumbering
 	
-	public void renumberPQF(String subCatID, String aType)  throws Exception {
+	public void renumberPQF(String subCatID, int auditTypeID)  throws Exception {
 		String selectQuery = "SELECT questionID FROM pqfQuestions WHERE subCategoryID="+
 			subCatID+" ORDER BY number";
 		ArrayList<String> updateQueries = new ArrayList<String>();
@@ -391,8 +391,8 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 		}finally{
 			DBClose();
 		}//finally
-		new CategoryBean().updateNumRequiredCounts(aType);
-	}//renumberPQF
+		new CategoryBean().updateNumRequiredCounts(auditTypeID);
+	}
 		
 	public boolean isOK() {
 		errorMessages = new Vector<String>();

@@ -55,5 +55,9 @@
 			<result>contractor_audits.jsp</result>
 		</action>
 
+		<action name="AuditTypeChoose"
+			class="com.picsauditing.actions.auditType.AuditTypeChoose">
+			<result>audit_selectType.jsp</result>
+		</action>
 	</package>
 </struts>

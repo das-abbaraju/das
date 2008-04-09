@@ -25,11 +25,13 @@ import com.picsauditing.servlet.upload.UploadProcessorFactory;
 // Added TreeMap verifiedMap, function getDateVerified to retreive PQF verification date
 public class DataBean extends com.picsauditing.PICS.DataBean {
 	public String conID = "";
+	public String auditID = "";
 	public String questionID = "";
 	public String dateVerified = "";
 //	public String num = "";
 	public String answer = "";
 	public String comment = "";
+	
 
 	public String verifiedAnswer = "";
 	public String auditorID = "";
@@ -67,11 +69,9 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 		wasChanged = this.getString(SQLResult, "wasChanged");
 	}//setFromResultSet
 
-	public void setFromDB(String conID, String catID) throws Exception {
-		if ((null == conID) || ("".equals(conID)))
-			throw new Exception("Can't set pqfData from DB because conID is not set");
+	public void setFromDB(int auditID, String conID, String catID) throws Exception {
 		try{
-			String Query = "SELECT * FROM pqfCatData WHERE conID="+conID+" AND catID="+catID+";";
+			String Query = "SELECT * FROM pqfCatData WHERE auditID="+auditID+" AND catID="+catID;
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(Query);
 			if (SQLResult.next()) {
@@ -81,26 +81,25 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 					catDoesNotApply  = "No";
 				else
 					catDoesNotApply  = "Yes";
-			}//if
+			}
 			SQLResult.close();
-			Query = "SELECT * FROM pqfData WHERE conID="+conID+" ORDER BY num;";
+			
+			Query = "SELECT * FROM pqfData WHERE conID="+conID+" ORDER BY num";
 			SQLResult = SQLStatement.executeQuery(Query);
 			QAMap = new TreeMap<String,String>();
 			QCMap = new TreeMap<String,String>();
 			verifiedMap = new TreeMap<String,String>();
-			//		questionTextAnswerMap = new TreeMap();
 			while (SQLResult.next()) {
 				setFromResultSet(SQLResult);
 				QAMap.put(questionID,answer);
 				QCMap.put(questionID,comment);
 				verifiedMap.put(questionID,dateVerified);
-//			questionTextAnswerMap.put(id,textAnswer);
-			}//while
+			}
 			SQLResult.close();
 		}finally{
 			DBClose();
-		}//finally
-	}//setFromDB
+		}
+	}
 
 	public String getAnswer(String qID) throws Exception {
 		if (null==QAMap)
@@ -175,8 +174,8 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 		else	return "";
 	}//getBGColor
 
-	public void setFilledOut(String conID) throws Exception {
-		String Query = "SELECT * FROM pqfCatData WHERE conID="+conID+";";
+	public void setFilledOut(int auditID) throws Exception {
+		String Query = "SELECT * FROM pqfCatData WHERE auditID="+auditID;
 		try{
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(Query);
@@ -234,11 +233,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 			return "NA <img src=images/okCheck.gif width=19 height=15>";
 		else if ("Not Completed".equals(numAnswered))
 			temp = "0%";
-//		else if ("0".equals(numRequired))
-//			temp = "100%";
 		else {
-//			int numerator = Integer.parseInt(numAnswered);
-//			int denominator= Integer.parseInt(numQuestions);
 			int numerator = Integer.parseInt(requiredCompleted);
 			int denominator= Integer.parseInt(numRequired);
 			if (0 == denominator)
@@ -260,23 +255,25 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 	
 	public void savePQF(javax.servlet.http.HttpServletRequest request, String conID, String catID, String auditType, String userID) throws Exception {
 		try{
+			ConAuditBean conAudit = new ConAuditBean(conID, auditType);
 			DBReady();
-			Enumeration e = request.getParameterNames();
-			String insertQuery = "REPLACE INTO pqfData (conID,questionID,answer,comment,wasChanged,dateVerified,auditorID,verifiedAnswer) VALUES ";
 			boolean doUpdate = false;
 			boolean catDoesNotApply = "Yes".equals(request.getParameter("catDoesNotApply"));
 			if (catDoesNotApply) {
-				String Query = "REPLACE INTO pqfCatData (catID,conID,applies,percentCompleted,percentVerified) VALUES ("+catID+","+conID+",'No',100,100);";
+				String Query = "REPLACE INTO pqfCatData (catID,auditID,applies,percentCompleted,percentVerified) VALUES ("+catID+","+conAudit.getAuditID()+",'No',100,100);";
 				SQLStatement.executeUpdate(Query);
 				DBClose();
 				return;
-			}//if
+			}
+			
+			String insertQuery = "REPLACE INTO pqfData (conID,questionID,answer,comment,wasChanged,dateVerified,auditorID,verifiedAnswer) VALUES ";
 			int requiredAnsweredCount = 0;
 			int answeredCount = 0;
 			int requiredCount = 0;
 			int yesNACount = 0;
-			TreeMap<String,String> tempQAMap = new TreeMap<String,String>();
 			//first set tempQAMap with all the answers
+			TreeMap<String,String> tempQAMap = new TreeMap<String,String>();
+			Enumeration e = request.getParameterNames();
 			while (e.hasMoreElements()) {
 				String temp = (String)e.nextElement();
 				if (temp.startsWith("pqfQuestionID_")) {
@@ -369,12 +366,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 					}//if
 					if (!"".equals(answer))
 						answeredCount++;
-	//				String qNum = request.getParameter("pqfQuestionNum_" + qID);
-	//				String question = request.getParameter("pqfQuestion_" + qID);
-	//				if (null != answer && answer.length() != 0)
-	//				else if ("Check Box".equals(questionType) && null == answer)
-	//					insertQuery += "('"+conID+"','"+question+"',"+qID+","+qNum+",'N'),";
-				}//if
+				}
 			}//while
 			insertQuery = insertQuery.substring(0,insertQuery.length()-1);
 			insertQuery +=";";
@@ -384,12 +376,12 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 			String tempPercentVerified = getShowPercent(yesNACount,requiredCount);
 			String updateQuery = "";
 			if (Constants.DESKTOP_TYPE.equals(auditType) || Constants.DA_TYPE.equals(auditType) || Constants.OFFICE_TYPE.equals(auditType))
-				updateQuery = "REPLACE INTO pqfCatData (catID,conID,applies,requiredCompleted,numAnswered,numRequired,percentCompleted,"+
-					"percentVerified) VALUES ("+catID+","+conID+",'Yes',"+requiredAnsweredCount+","+answeredCount+","+requiredCount+","+
+				updateQuery = "REPLACE INTO pqfCatData (catID,auditID,applies,requiredCompleted,numAnswered,numRequired,percentCompleted,"+
+					"percentVerified) VALUES ("+catID+","+conAudit.getAuditID()+",'Yes',"+requiredAnsweredCount+","+answeredCount+","+requiredCount+","+
 					tempPercentCompleted+","+tempPercentVerified+");";
 			else
-				updateQuery = "REPLACE INTO pqfCatData (catID,conID,applies,requiredCompleted,numAnswered,numRequired,percentCompleted) VALUES ("+
-					catID+","+conID+",'Yes',"+requiredAnsweredCount+","+answeredCount+","+requiredCount+","+tempPercentCompleted+");";
+				updateQuery = "REPLACE INTO pqfCatData (catID,auditID,applies,requiredCompleted,numAnswered,numRequired,percentCompleted) VALUES ("+
+					catID+","+conAudit.getAuditID()+",'Yes',"+requiredAnsweredCount+","+answeredCount+","+requiredCount+","+tempPercentCompleted+");";
 			SQLStatement.executeUpdate(updateQuery);
 		}finally{
 			DBClose();
@@ -615,16 +607,15 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 
 	public String getPercentVerified(String conID, String auditType) throws Exception {
 		try{
-			String selectQuery = "SELECT COUNT(*)" +
-				"FROM pqfCategories pc " +
-				"JOIN pqfCatData pd ON pc.catID = pd.catID " +
-				"WHERE pc.auditTypeID IN (SELECT auditTypeID FROM audit_type WHERE legacyCode='"+auditType+"') " +
-				"  AND conID="+conID+" AND percentVerified='100'";
+			ConAuditBean conAudit = new ConAuditBean(conID, auditType);
+			
+			String selectQuery = "SELECT COUNT(*) FROM pqfCategories pc " +
+				"JOIN pqfCatData pd ON pc.catID = pd.catID AND auditID = "+conAudit.getAuditID()+" AND percentVerified='100'";
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
 			SQLResult.next();
 			int numCompleted = SQLResult.getInt(1);
-			String selectQuery2 = "SELECT COUNT(*) FROM pqfCategories WHERE auditTypeID IN (SELECT auditTypeID FROM audit_type WHERE legacyCode='"+auditType+"')";
+			String selectQuery2 = "SELECT COUNT(*) FROM pqfCategories WHERE auditTypeID = "+conAudit.getAuditTypeID();
 			SQLResult = SQLStatement.executeQuery(selectQuery2);
 			SQLResult.next();
 			int numCats = SQLResult.getInt(1);
@@ -632,8 +623,8 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 			return getShowPercent(numCompleted,numCats);
 		}finally{
 			DBClose();
-		}//finally
-	}//getPercentVerified
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	public void uploadPQFFile(javax.servlet.jsp.PageContext pageContext, String conID, String catID) throws Exception {
@@ -877,8 +868,8 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 			return isComplete;
 		}finally{
 			DBClose();
-		}//finally
-	}//isComplete
+		}
+	}
 
 	public boolean isClosed(String conID, String auditType) throws Exception {
 		if ((null == conID) || ("".equals(conID)))
@@ -981,58 +972,46 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 		return false;
 	}
 
-	public Map<String,String> getAuditAnswerMap(String conID, String auditType)throws Exception {
-		Map<String,String> tempQAMap = new TreeMap<String,String>();
-		try{
-			DBReady();
-			String selectQuery = "SELECT pqfData.questionID,answer "+
-				"FROM pqfCategories INNER JOIN pqfSubCategories ON (catID=categoryID AND "+
-				"auditType='"+auditType+"') INNER JOIN pqfQuestions ON subCatID=subCategoryID "+
-				"LEFT JOIN pqfData ON(pqfQuestions.questionID=pqfData.questionID) "+
-				"WHERE conID="+conID+" ORDER BY questionID";
-			ResultSet rs = SQLStatement.executeQuery(selectQuery);
-			while (rs.next())
-				tempQAMap.put(rs.getString("questionID"),rs.getString("answer"));
-			rs.close();
-			return tempQAMap;
-		}finally{
-			DBClose();
-		}//finally
-	}//getAuditAnswerMap
-
-	public void updatePercentageCompleted(String conID, String catID, String auditType) throws Exception {
+	public void updatePercentageCompleted(int auditID, String catID) throws Exception {
 		try{
 			DBReady();
 			String selectQuery = "SELECT applies FROM pqfCatData "+
-				"WHERE catID="+catID+" AND conID="+conID+";";
+				"WHERE catID="+catID+" AND auditID="+auditID;
 			ResultSet rs = SQLStatement.executeQuery(selectQuery);
 			if (!rs.next() || !"Yes".equals(rs.getString("applies"))){
 				rs.close();
 				return;
-			}//if
+			}
 			rs.close();
 			int requiredAnsweredCount = 0;
 			int answeredCount = 0;
 			int requiredCount = 0;
 			int yesNACount = 0;
-			TreeMap<String,String> tempQAMap = (TreeMap<String,String>)getAuditAnswerMap(conID,auditType);
-			selectQuery = "SELECT pqfQuestions.questionID,answer,isRequired,dependsOnQID,dependsOnAnswer "+
-				"FROM pqfCategories INNER JOIN pqfSubCategories ON (catID=categoryID AND "+
-				"auditType='"+auditType+"') INNER JOIN pqfQuestions ON subCatID=subCategoryID "+
-				"LEFT JOIN pqfData ON(pqfQuestions.questionID=pqfData.questionID AND "+
-				"(conID="+conID+" OR conID IS NULL)) WHERE catID="+catID+";";
+			
+			// Get a map of all answers in this audit
+			DBReady();
+			TreeMap<Integer,String> tempQAMap = new TreeMap<Integer,String>();
+
+			selectQuery = "SELECT questionID, answer FROM pqfdata d WHERE auditID="+auditID;
+			rs = SQLStatement.executeQuery(selectQuery);
+			while (rs.next())
+				tempQAMap.put(rs.getInt("questionID"),rs.getString("answer"));
+			rs.close();
+			
+			// Get a list of questions/answers for this category
+			selectQuery = "SELECT q.questionID, d.answer, q.isRequired, q.dependsOnQID, q.dependsOnAnswer "+
+				"FROM pqfquestions q " +
+				"LEFT JOIN pqfdata d ON q.questionID=d.questionID AND d.auditID="+auditID+" "+
+				"WHERE q.subCategoryID IN (SELECT subCatID FROM pqfSubCategories WHERE categoryID =" + catID + ")";
 			DBReady();
 			rs = SQLStatement.executeQuery(selectQuery);
 			while (rs.next()) {
-				//String answer = rs.getString("answer");
-				//if (rs.wasNull())
-				//	answer = "";
 				String answer = this.getString(rs, "answer");
 				
 				String tempIsRequired = rs.getString("isRequired");
 				boolean isRequired = "Yes".equals(tempIsRequired);
 				if ("Depends".equals(tempIsRequired)){
-					String dependsOnQID = rs.getString("dependsOnQID");
+					int dependsOnQID = rs.getInt("dependsOnQID");
 					String dependsOnAnswer = rs.getString("dependsOnAnswer");
 					if (dependsOnAnswer.equals(tempQAMap.get(dependsOnQID)))
 						isRequired = true;
@@ -1050,16 +1029,15 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 			rs.close();
 			String tempPercentCompleted = getShowPercent(requiredAnsweredCount,requiredCount);
 			String tempPercentVerified = getShowPercent(yesNACount,requiredCount);
-			String updateQuery = "";
-			if (Constants.DESKTOP_TYPE.equals(auditType) || Constants.DA_TYPE.equals(auditType) || Constants.OFFICE_TYPE.equals(auditType))
-				updateQuery = "REPLACE INTO pqfCatData (catID,conID,applies,requiredCompleted,numAnswered,numRequired,percentCompleted,"+
-					"percentVerified) VALUES ("+catID+","+conID+",'Yes',"+requiredAnsweredCount+","+answeredCount+","+requiredCount+","+
-					tempPercentCompleted+","+tempPercentVerified+");";
-			else
-				updateQuery = "REPLACE INTO pqfCatData (catID,conID,applies,requiredCompleted,numAnswered,numRequired,percentCompleted) VALUES ("+
-					catID+","+conID+",'Yes',"+requiredAnsweredCount+","+answeredCount+","+requiredCount+","+tempPercentCompleted+");";
+			String updateQuery = "REPLACE INTO pqfcatdata " +
+					"(catID, auditID, applies, requiredCompleted, numAnswered, " +
+						"numRequired, percentCompleted, percentVerified) " +
+					"VALUES " +
+					"("+catID+", "+auditID+", 'Yes', "+requiredAnsweredCount+", "+answeredCount+", " +
+						""+requiredCount+", "+tempPercentCompleted+", "+tempPercentVerified+")";
+			System.out.println(updateQuery);
 			SQLStatement.executeUpdate(updateQuery);
-		}finally{
+		} finally {
 			DBClose();
 		}
 	}

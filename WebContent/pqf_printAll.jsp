@@ -6,13 +6,16 @@
 <jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<%try{
-	String auditType = request.getParameter("auditType");
-	if (null==auditType || "".equals(auditType))
-		auditType = com.picsauditing.PICS.pqf.Constants.PQF_TYPE;
+<%@page import="com.picsauditing.actions.audits.ContractorAuditLegacy"%>
+<%
+ContractorAuditLegacy action = new ContractorAuditLegacy();
+action.setAuditID(request.getParameter("auditID"));
+String auditType = action.getAudit().getAuditType().getLegacyCode();
+String conID = ((Integer)action.getAudit().getContractorAccount().getId()).toString();
+String id = conID;
+
+try {
 	boolean isViewAll = true;
-	String conID = request.getParameter("id");
-	String id = request.getParameter("id");
 	aBean.setFromDB(conID);
 	cBean.setFromDB(conID);
 	cBean.tryView(permissions);

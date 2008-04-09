@@ -65,11 +65,7 @@ public class ContractorBean extends DataBean {
 	public String description = "";
 	public boolean isDescriptionChanged = false;
 	public String status = STATUS_INACTIVE;
-//**status2
 	public String certs = "0";
-//** welcomeEmailDate2 - DELETED
-//**& emailConfirmedDate
-//	String paid = "No";
 	public String notes = "";
 	public String adminNotes = "";
 	public boolean isNotesChanged = false;
@@ -1652,6 +1648,9 @@ public class ContractorBean extends DataBean {
 		return "";
 	}//getValidUntilDate
 
+	public void setPercentComplete(String auditType, Integer percent) {
+		setPercentComplete(auditType, percent.toString());
+	}
 	public void setPercentComplete(String auditType, String percent) {
 		//MULTIAUDIT change
 		if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType))

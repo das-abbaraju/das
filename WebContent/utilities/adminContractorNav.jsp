@@ -1,48 +1,36 @@
+<%@page import="com.picsauditing.jpa.entities.ContractorAudit"%>
 <%
-String thisPage = request.getServletPath();
-String thisQuery = request.getQueryString();
-com.picsauditing.PICS.AccountBean acctBean = new com.picsauditing.PICS.AccountBean();
-%>
-<center>
-<%
-if (!thisPage.contains("contractor_detail")){
+String thisPage = "";
+if (!request.getServletPath().contains("contractor_detail")){
+	com.picsauditing.PICS.AccountBean acctBean = new com.picsauditing.PICS.AccountBean();
 	%>
-	<div class="blueHeader"><%=acctBean.getName(id)%></div>
+	<h2 class="blueHeader" style="text-align: center"><%=acctBean.getName(id)%></h2>
 	<%
 }
 %>
-	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_detail.jsp",thisPage,id,"",thisQuery,"Contractor Details")%> |
-	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"accounts_edit_contractor.jsp",thisPage,id,"",thisQuery,"Edit Account Info")%> |
-	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"con_selectFacilities.jsp",thisPage,id,"",thisQuery,"View Facilities")%> |
-<%	if (cBean.isCertRequired()) { %>
-		<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_upload_certificates.jsp",thisPage,id,"",thisQuery,"Insurance Certificates")%>
-<%		}//if
-%><br /><%
-	if (!cBean.isExempt()) { %>
-		<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"audit_edit.jsp",thisPage,id,"",thisQuery,"Edit Office Audit")%>
-<%		if (cBean.isAuditCompleted()) { %>
-			| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"audit_editRequirements.jsp",thisPage,id,"",thisQuery,"Edit Office RQs")%> |
-			<%=com.picsauditing.PICS.Utilities.getMenuTag(request, "audit_viewRequirements.jsp",thisPage,id,"",thisQuery,"View Office RQs")%>
-<%		}//if
-		if (cBean.isAuditCompleted()) {
-%>			| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"audit_view.jsp",thisPage,id,"",thisQuery,"View Office Audit")%>
-<%		} // if %>
-<%	}//if not exempt %>
-	<br />
-	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_editMain.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"Edit PQF")%> |
-	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_verify.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"Verify PQF")%> |
-	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"View PQF")%> |
-	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_viewAll.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"View Entire PQF")%> |
-	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_printAll.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"Print Entire PQF")%>
+<div class="blueMain" style="text-align: center">
+<a class="blueMain" href="contractor_detail.jsp?id=<%=id%>">Contractor Details</a> |
+<a class="blueMain" href="accounts_edit_contractor.jsp?id=<%=id%>">Edit Account</a> |
+<a class="blueMain" href="con_selectFacilities.jsp?id=<%=id%>">View Facilities</a> |
+<a class="blueMain" href="contractor_upload_certificates.jsp?id=<%=id%>">Insurance Certificates</a>
+<br/>
+<%
+for(int key : cBean.getAudits().keySet()) {
+	ContractorAudit pqf = cBean.getAudits().get(key);
+
+	%><strong><%=pqf.getAuditType().getAuditName() %></strong>:
+	<a class="blueMain" href="pqf_editMain.jsp?auditID=<%=pqf.getId()%>">Edit</a> |
+	<a class="blueMain" href="pqf_verify.jsp?auditID=<%=pqf.getId()%>">Verify</a> |
+	<a class="blueMain" href="pqf_view.jsp?auditID=<%=pqf.getId()%>">View</a> |
+	<a class="blueMain" href="pqf_viewAll.jsp?auditID=<%=pqf.getId()%>">View All</a> |
+	<a class="blueMain" href="pqf_printAll.jsp?auditID=<%=pqf.getId()%>">Print</a>
 	<br/>
-	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_editMain.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE,thisQuery,"Edit Desktop")%> |
-	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE,thisQuery,"View Desktop")%> |
-	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_viewAll.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE,thisQuery,"View Entire Desktop")%>
-	<br />
-	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_editMain.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE,thisQuery,"Edit New Office")%> |
-	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE,thisQuery,"View New Office")%> |
-	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_viewAll.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE,thisQuery,"View Entire New Office")%>
-	<br><%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_editMain.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.DA_TYPE,thisQuery,"Edit D&A")%> |
-	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.DA_TYPE,thisQuery,"View D&A")%> |
-	<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_viewAll.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.DA_TYPE,thisQuery,"View Entire D&A")%>
- </center>
+	<%
+}
+%>
+<strong>Office</strong>:
+<a class="blueMain" href="audit_edit.jsp?id=<%=id%>">Edit</a> |
+<a class="blueMain" href="audit_view.jsp?id=<%=id%>">View</a> |
+<a class="blueMain" href="audit_editRequirements.jsp?id=<%=id%>">Edit RQs</a> |
+<a class="blueMain" href="audit_viewRequirements.jsp?id=<%=id%>">View RQs</a>
+</center>
