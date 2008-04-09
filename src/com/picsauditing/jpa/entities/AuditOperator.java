@@ -22,7 +22,7 @@ public class AuditOperator {
 	protected AuditType auditType = null;
 
 	// protected int opID;
-	protected Account account;
+	protected Account operatoraccount;
 	protected int minRiskLevel = 1;
 	protected int orderedCount = -1;
 	protected Date orderDate = null;
@@ -74,12 +74,12 @@ public class AuditOperator {
 
 	@ManyToOne( fetch=FetchType.LAZY)
 	@JoinColumn(name = "opID")
-	public Account getAccount() {
-		return account;
+	public Account getOperatorAccount() {
+		return operatoraccount;
 	}
 
-	public void setAccount(Account account) {
-		this.account = account;
+	public void setOperatorAccount(Account account) {
+		this.operatoraccount = operatoraccount;
 	}
 	
 	private int htmlID = 0;
@@ -95,8 +95,8 @@ public class AuditOperator {
 		htmlID = 0;
 		if (getAuditType() != null)
 			htmlID = (getAuditType().getAuditTypeID() * 100000);
-		if (getAccount() != null)
-			htmlID += getAccount().getId();
+		if (getOperatorAccount() != null)
+			htmlID += getOperatorAccount().getId();
 		return htmlID;
 	}
 }
