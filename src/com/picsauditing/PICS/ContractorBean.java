@@ -19,10 +19,9 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.User;
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.mail.EmailContractorBean;
 import com.picsauditing.mail.EmailTemplates;
@@ -1763,8 +1762,8 @@ public class ContractorBean extends DataBean {
 		if (audits == null) {
 			audits = new HashMap<Integer, ContractorAudit>();
 			try {
-				AccountDAO dao = (AccountDAO)SpringUtils.getBean("AccountDAO");
-				Account account = dao.find(Integer.parseInt(id));
+				ContractorAccountDAO dao = (ContractorAccountDAO)SpringUtils.getBean("AccountDAO");
+				ContractorAccount account = dao.find(Integer.parseInt(id));
 				List<ContractorAudit> auditList = account.getAudits();
 				for(ContractorAudit cAudit : auditList) {
 					audits.put(cAudit.getAuditType().getAuditTypeID(), cAudit);
