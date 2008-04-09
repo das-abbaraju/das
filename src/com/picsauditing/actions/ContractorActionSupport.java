@@ -2,20 +2,20 @@ package com.picsauditing.actions;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorAccount;
 
-public class ContractorActionSupport extends PicsActionSupport
-{
+public class ContractorActionSupport extends PicsActionSupport {
 	protected int id = 0;
-	protected Account contractor;
+	protected ContractorAccount contractor;
 	@Autowired
-	protected AccountDAO accountDao;
-	
+	protected ContractorAccountDAO accountDao;
+
 	protected void findContractor() throws Exception {
 		contractor = accountDao.find(id);
 		if (contractor.getId() == 0)
-			throw new Exception("Contractor "+this.id+" not found");
+			throw new Exception("Contractor " + this.id + " not found");
 	}
 
 	public int getId() {
@@ -26,19 +26,19 @@ public class ContractorActionSupport extends PicsActionSupport
 		this.id = id;
 	}
 
-	public Account getContractor() {
+	public ContractorAccount getContractor() {
 		return contractor;
 	}
 
-	public void setContractor(Account contractor) {
+	public void setContractor(ContractorAccount contractor) {
 		this.contractor = contractor;
 	}
 
-	public AccountDAO getAccountDao() {
+	public ContractorAccountDAO getAccountDao() {
 		return accountDao;
 	}
 
-	public void setAccountDao(AccountDAO accountDao) {
+	public void setAccountDao(ContractorAccountDAO accountDao) {
 		this.accountDao = accountDao;
 	}
 }

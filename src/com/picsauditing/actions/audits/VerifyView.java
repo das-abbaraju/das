@@ -6,6 +6,8 @@ import java.util.HashMap;
 import com.picsauditing.actions.ContractorActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -17,7 +19,7 @@ public class VerifyView extends ContractorActionSupport {
 	private AuditDataDAO pqfDao;
 	private HashMap<Integer, AuditData> emr;
 
-	public VerifyView(AccountDAO accountDao, AuditDataDAO pqfDao) {
+	public VerifyView(ContractorAccountDAO accountDao, AuditDataDAO pqfDao) {
 		this.accountDao = accountDao;
 		this.pqfDao = pqfDao;
 	}
@@ -121,7 +123,7 @@ public class VerifyView extends ContractorActionSupport {
 	}
 	
 	public String getContractorNotes() {
-		String notes = this.contractor.getContractor().getNotes();
+		String notes = this.getContractor().getNotes();
 		notes = notes.replace("\n", "<br>");
 		
 		int position = 0;
