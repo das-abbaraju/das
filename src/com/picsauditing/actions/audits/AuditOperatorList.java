@@ -59,7 +59,7 @@ public class AuditOperatorList extends PicsActionSupport {
 			for (AuditOperator row : rawData) {
 				selectedObject = row.getAuditType();
 				//rawDataIndexed.put(row.getOpID(), row);
-				rawDataIndexed.put(row.getAccount().getId(), row);
+				rawDataIndexed.put(row.getOperatorAccount().getId(), row);
 			}
 			rawData = null; // we don't need this anymore
 
@@ -67,7 +67,7 @@ public class AuditOperatorList extends PicsActionSupport {
 				AuditOperator newRow = rawDataIndexed.get(operator.getId());
 				if (newRow == null) {
 					newRow = new AuditOperator();
-					newRow.setAccount(operator);
+					newRow.setOperatorAccount(operator);
 					newRow.setAuditType(selectedObject);
 				}
 				data.add(newRow);
@@ -78,7 +78,7 @@ public class AuditOperatorList extends PicsActionSupport {
 			Account selectedObject = new OperatorAccount();
 			List<AuditOperator> rawData = dataDAO.findByOperator(oID);
 			for (AuditOperator row : rawData) {
-				selectedObject = row.getAccount();
+				selectedObject = row.getOperatorAccount();
 				rawDataIndexed.put(row.getAuditType().getAuditTypeID(), row);
 			}
 			rawData = null; // we don't need this anymore
@@ -88,7 +88,7 @@ public class AuditOperatorList extends PicsActionSupport {
 				AuditOperator newRow = rawDataIndexed.get(aType.getAuditTypeID());
 				if (newRow == null) {
 					newRow = new AuditOperator();
-					newRow.setAccount(selectedObject);
+					newRow.setOperatorAccount(selectedObject);
 					newRow.setAuditType(aType);
 				}
 				data.add(newRow);
