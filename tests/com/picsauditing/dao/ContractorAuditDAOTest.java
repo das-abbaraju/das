@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
 
@@ -31,7 +31,7 @@ public class ContractorAuditDAOTest {
 		ContractorAudit contractoraudit = new ContractorAudit();
 		contractoraudit.setAuditType(new AuditType());
 		contractoraudit.getAuditType().setAuditTypeID(8);
-		contractoraudit.setContractorAccount(new Account());
+		contractoraudit.setContractorAccount(new ContractorAccount());
 		contractoraudit.getContractorAccount().setId(1003);
 		contractoraudit.setCreatedDate(Calendar.getInstance().getTime());
 		contractoraudit.setAuditStatus(AuditStatus.Active);
@@ -42,7 +42,7 @@ public class ContractorAuditDAOTest {
 		contractoraudit.setScheduledDate(new Date(2008 - 04 - 21));
 		contractoraudit.setCompletedDate(new Date());
 		contractoraudit.setClosedDate(new Date());
-		contractoraudit.setRequestingOpAccount(new Account());
+		contractoraudit.setRequestingOpAccount(new ContractorAccount());
 		contractoraudit.getRequestingOpAccount().setId(22);
 		contractoraudit.setAuditLocation("irvine");
 		contractoraudit.setPercentComplete("50");
