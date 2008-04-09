@@ -10,9 +10,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AuditOperatorDAO;
 import com.picsauditing.dao.AuditTypeDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AuditOperator;
-import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.AuditTypeCache;
 
 public class AuditOperatorList extends PicsActionSupport {
@@ -77,7 +75,7 @@ public class AuditOperatorList extends PicsActionSupport {
 		}
 		if (oID > 0) {
 			// Query the db for audits used by this operator and index them by typeID
-			Account selectedObject = new Account();
+			Account selectedObject = new OperatorAccount();
 			List<AuditOperator> rawData = dataDAO.findByOperator(oID);
 			for (AuditOperator row : rawData) {
 				selectedObject = row.getAccount();
