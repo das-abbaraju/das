@@ -1,12 +1,15 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -18,8 +21,7 @@ import com.picsauditing.PICS.Utilities;
 @Entity
 @Table(name = "contractor_info")
 @PrimaryKeyJoinColumn(name="id")
-@DiscriminatorValue(value="Contractor")
-public class ContractorAccount extends Account {
+public class ContractorAccount extends Account implements java.io.Serializable{
 	
 	private String taxId;
 	private String mainTrade;
@@ -29,12 +31,11 @@ public class ContractorAccount extends Account {
 	private String brochureFile;
 	private String description;
 	private String status;
-	private byte certs;
+	private int certs;
 	private Date welcomeEmailDate;
-	private Date emailConfirmedDate;
 	private String paid;
 	private Date lastPayment;
-	private short lastPaymentAmount;
+	private int lastPaymentAmount;
 	private Date lastInvoiceDate;
 	private String canEditPrequal;
 	private String canEditDesktop;
@@ -45,8 +46,8 @@ public class ContractorAccount extends Account {
 	private String adminNotes;
 	private String mustPay;
 	private Date paymentExpires;
-	private byte billingCycle;
-	private short billingAmount;
+	private int billingCycle;
+	private int billingAmount;
 	private String isExempt;
 	private String hasExpiredCerts;
 	private String isOnlyCerts;
@@ -57,12 +58,18 @@ public class ContractorAccount extends Account {
 	private String billingPhone;
 	private String billingEmail;
 	private Date membershipDate;
-	private short newBillingAmount;
-	private short payingFacilities;
+	private int newBillingAmount;
+	private int payingFacilities;
 	private Date welcomeCallDate;
 	private int welcomeAuditorId;
 	private LowMedHigh riskLevel;
-
+	
+	private int annualUpdateEmails;
+	private String daRequired;
+	private Date tempAuditDateTime;
+	private String oqEmployees;
+	
+	
 	// Audit fields to be removed
 	private Date auditDate;
 	private Date lastAuditDate;
@@ -91,17 +98,51 @@ public class ContractorAccount extends Account {
 	private Date officeClosedDate;
 	private int requestedById;
 	private String auditLocation;
-	private byte desktopPercent;
-	private byte desktopVerifiedPercent;
-	private byte officePercent;
-	private byte officeVerifiedPercent;
-	private byte daPercent;
-	private byte daVerifiedPercent;
-	private byte pqfPercent;
+	private int desktopPercent;
+	private int desktopVerifiedPercent;
+	private int officePercent;
+	private int officeVerifiedPercent;
+	private int daPercent;
+	private int daVerifiedPercent;
+	private int pqfPercent;
 	private String hasNcmsdesktop;
 	private String isNewOfficeAudit;
 
-	@Column(name = "taxID", nullable = false, length = 100)
+	protected List<OshaLog> oshas;
+	protected List<ContractorAudit> audits;
+	protected List<ContractorOperator> operators;
+	
+	
+	@OneToMany(mappedBy = "contractorAccount")
+	public List<OshaLog> getOshas() {
+		return oshas;
+	}
+
+	public void setOshas(List<OshaLog> oshas) {
+		this.oshas = oshas;
+	}
+
+	@OneToMany(mappedBy = "contractorAccount")
+	public List<ContractorAudit> getAudits() {
+		return audits;
+	}
+
+	public void setAudits(List<ContractorAudit> audits) {
+		this.audits = audits;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contractorAccount")
+	//@OrderBy("operatorName")
+	public List<ContractorOperator> getOperators() {
+		return this.operators;
+	}
+
+	public void setOperators(List<ContractorOperator> operators) {
+		this.operators = operators;
+	}
+	
+	///////////// GETTERS/SETTERS /////////////////
+	@Column(name = "taxID", nullable = true, length = 100)
 	public String getTaxId() {
 		return this.taxId;
 	}
@@ -110,7 +151,7 @@ public class ContractorAccount extends Account {
 		this.taxId = taxId;
 	}
 
-	@Column(name = "main_trade", nullable = false, length = 100)
+	@Column(name = "main_trade", nullable = true, length = 100)
 	public String getMainTrade() {
 		return this.mainTrade;
 	}
@@ -119,7 +160,7 @@ public class ContractorAccount extends Account {
 		this.mainTrade = mainTrade;
 	}
 
-	@Column(name = "trades", nullable = false, length = 65535)
+	@Column(name = "trades", nullable = true, length = 65535)
 	public String getTrades() {
 		return this.trades;
 	}
@@ -128,7 +169,7 @@ public class ContractorAccount extends Account {
 		this.trades = trades;
 	}
 
-	@Column(name = "subTrades", nullable = false, length = 65535)
+	@Column(name = "subTrades", nullable = true, length = 65535)
 	public String getSubTrades() {
 		return this.subTrades;
 	}
@@ -137,7 +178,7 @@ public class ContractorAccount extends Account {
 		this.subTrades = subTrades;
 	}
 
-	@Column(name = "logo_file", nullable = false, length = 50)
+	@Column(name = "logo_file", nullable = true, length = 50)
 	public String getLogoFile() {
 		return this.logoFile;
 	}
@@ -147,7 +188,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "auditDate", nullable = false, length = 10)
+	@Column(name = "auditDate", nullable = true, length = 10)
 	public Date getAuditDate() {
 		return this.auditDate;
 	}
@@ -157,7 +198,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "lastAuditDate", nullable = false, length = 10)
+	@Column(name = "lastAuditDate", nullable = true, length = 10)
 	public Date getLastAuditDate() {
 		return this.lastAuditDate;
 	}
@@ -166,7 +207,7 @@ public class ContractorAccount extends Account {
 		this.lastAuditDate = lastAuditDate;
 	}
 
-	@Column(name = "auditHour", nullable = false, length = 10)
+	@Column(name = "auditHour", nullable = true, length = 10)
 	public String getAuditHour() {
 		return this.auditHour;
 	}
@@ -175,7 +216,7 @@ public class ContractorAccount extends Account {
 		this.auditHour = auditHour;
 	}
 
-	@Column(name = "auditAmPm", nullable = false, length = 2)
+	@Column(name = "auditAmPm", nullable = true, length = 2)
 	public String getAuditAmPm() {
 		return this.auditAmPm;
 	}
@@ -184,7 +225,7 @@ public class ContractorAccount extends Account {
 		this.auditAmPm = auditAmPm;
 	}
 
-	@Column(name = "prequal_file", nullable = false, length = 3)
+	@Column(name = "prequal_file", nullable = true, length = 3)
 	public String getPrequalFile() {
 		return this.prequalFile;
 	}
@@ -194,7 +235,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "pqfSubmittedDate", nullable = false, length = 10)
+	@Column(name = "pqfSubmittedDate", nullable = true, length = 10)
 	public Date getPqfSubmittedDate() {
 		return this.pqfSubmittedDate;
 	}
@@ -204,7 +245,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "desktopSubmittedDate", nullable = false, length = 10)
+	@Column(name = "desktopSubmittedDate", nullable = true, length = 10)
 	public Date getDesktopSubmittedDate() {
 		return this.desktopSubmittedDate;
 	}
@@ -213,7 +254,7 @@ public class ContractorAccount extends Account {
 		this.desktopSubmittedDate = desktopSubmittedDate;
 	}
 
-	@Column(name = "brochure_file", nullable = false, length = 3)
+	@Column(name = "brochure_file", nullable = true, length = 3)
 	public String getBrochureFile() {
 		return this.brochureFile;
 	}
@@ -222,7 +263,7 @@ public class ContractorAccount extends Account {
 		this.brochureFile = brochureFile;
 	}
 
-	@Column(name = "description", nullable = false, length = 65535)
+	@Column(name = "description", nullable = true, length = 65535)
 	public String getDescription() {
 		return this.description;
 	}
@@ -236,7 +277,7 @@ public class ContractorAccount extends Account {
 		return Utilities.escapeNewLines(this.description);
 	}
 
-	@Column(name = "status", nullable = false, length = 9)
+	@Column(name = "status", nullable = true, length = 9)
 	public String getStatus() {
 		return this.status;
 	}
@@ -245,12 +286,12 @@ public class ContractorAccount extends Account {
 		this.status = status;
 	}
 
-	@Column(name = "certs", nullable = false)
-	public byte getCerts() {
+	@Column(name = "certs", nullable = true)
+	public int getCerts() {
 		return this.certs;
 	}
 
-	public void setCerts(byte certs) {
+	public void setCerts(int certs) {
 		this.certs = certs;
 	}
 
@@ -265,23 +306,13 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "welcomeEmailDate", nullable = false, length = 10)
+	@Column(name = "welcomeEmailDate", nullable = true, length = 10)
 	public Date getWelcomeEmailDate() {
 		return this.welcomeEmailDate;
 	}
 
 	public void setWelcomeEmailDate(Date welcomeEmailDate) {
 		this.welcomeEmailDate = welcomeEmailDate;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "emailConfirmedDate", nullable = false, length = 10)
-	public Date getEmailConfirmedDate() {
-		return this.emailConfirmedDate;
-	}
-
-	public void setEmailConfirmedDate(Date emailConfirmedDate) {
-		this.emailConfirmedDate = emailConfirmedDate;
 	}
 
 	@Column(name = "paid", nullable = false, length = 3)
@@ -294,7 +325,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "lastPayment", nullable = false, length = 10)
+	@Column(name = "lastPayment", nullable = true, length = 10)
 	public Date getLastPayment() {
 		return this.lastPayment;
 	}
@@ -303,17 +334,17 @@ public class ContractorAccount extends Account {
 		this.lastPayment = lastPayment;
 	}
 
-	@Column(name = "lastPaymentAmount", nullable = false)
-	public short getLastPaymentAmount() {
+	@Column(name = "lastPaymentAmount", nullable = true)
+	public int getLastPaymentAmount() {
 		return this.lastPaymentAmount;
 	}
 
-	public void setLastPaymentAmount(short lastPaymentAmount) {
+	public void setLastPaymentAmount(int lastPaymentAmount) {
 		this.lastPaymentAmount = lastPaymentAmount;
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "lastInvoiceDate", nullable = false, length = 10)
+	@Column(name = "lastInvoiceDate", nullable = true, length = 10)
 	public Date getLastInvoiceDate() {
 		return this.lastInvoiceDate;
 	}
@@ -322,7 +353,7 @@ public class ContractorAccount extends Account {
 		this.lastInvoiceDate = lastInvoiceDate;
 	}
 
-	@Column(name = "accountNewComplete", nullable = false, length = 1)
+	@Column(name = "accountNewComplete", nullable = true, length = 1)
 	public char getAccountNewComplete() {
 		return this.accountNewComplete;
 	}
@@ -331,7 +362,7 @@ public class ContractorAccount extends Account {
 		this.accountNewComplete = accountNewComplete;
 	}
 
-	@Column(name = "notes", nullable = false, length = 16277215)
+	@Column(name = "notes", nullable = true, length = 16277215)
 	public String getNotes() {
 		return this.notes;
 	}
@@ -340,7 +371,7 @@ public class ContractorAccount extends Account {
 		this.notes = notes;
 	}
 
-	@Column(name = "adminNotes", nullable = false, length = 16277215)
+	@Column(name = "adminNotes", nullable = true, length = 16277215)
 	public String getAdminNotes() {
 		return this.adminNotes;
 	}
@@ -349,7 +380,7 @@ public class ContractorAccount extends Account {
 		this.adminNotes = adminNotes;
 	}
 
-	@Column(name = "canEditPrequal", nullable = false, length = 4)
+	@Column(name = "canEditPrequal", nullable = true, length = 4)
 	public String getCanEditPrequal() {
 		return this.canEditPrequal;
 	}
@@ -358,7 +389,7 @@ public class ContractorAccount extends Account {
 		this.canEditPrequal = canEditPrequal;
 	}
 
-	@Column(name = "canEditDesktop", nullable = false, length = 4)
+	@Column(name = "canEditDesktop", nullable = true, length = 4)
 	public String getCanEditDesktop() {
 		return this.canEditDesktop;
 	}
@@ -368,7 +399,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "lastAuditEmailDate", nullable = false, length = 10)
+	@Column(name = "lastAuditEmailDate", nullable = true, length = 10)
 	public Date getLastAuditEmailDate() {
 		return this.lastAuditEmailDate;
 	}
@@ -377,7 +408,7 @@ public class ContractorAccount extends Account {
 		this.lastAuditEmailDate = lastAuditEmailDate;
 	}
 
-	@Column(name = "mustPay", nullable = false, length = 4)
+	@Column(name = "mustPay", nullable = true, length = 4)
 	public String getMustPay() {
 		return this.mustPay;
 	}
@@ -387,7 +418,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "paymentExpires", nullable = false, length = 10)
+	@Column(name = "paymentExpires", nullable = true, length = 10)
 	public Date getPaymentExpires() {
 		return this.paymentExpires;
 	}
@@ -397,7 +428,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "lastAnnualUpdateEmailDate", nullable = false, length = 10)
+	@Column(name = "lastAnnualUpdateEmailDate", nullable = true, length = 10)
 	public Date getLastAnnualUpdateEmailDate() {
 		return this.lastAnnualUpdateEmailDate;
 	}
@@ -406,7 +437,7 @@ public class ContractorAccount extends Account {
 		this.lastAnnualUpdateEmailDate = lastAnnualUpdateEmailDate;
 	}
 
-	@Column(name = "auditor_id", nullable = false)
+	@Column(name = "auditor_id", nullable = true)
 	public int getAuditorId() {
 		return this.auditorId;
 	}
@@ -415,7 +446,7 @@ public class ContractorAccount extends Account {
 		this.auditorId = auditorId;
 	}
 
-	@Column(name = "desktopAuditor_id", nullable = false)
+	@Column(name = "desktopAuditor_id", nullable = true)
 	public int getDesktopAuditorId() {
 		return this.desktopAuditorId;
 	}
@@ -424,7 +455,7 @@ public class ContractorAccount extends Account {
 		this.desktopAuditorId = desktopAuditorId;
 	}
 
-	@Column(name = "daAuditor_id", nullable = false)
+	@Column(name = "daAuditor_id", nullable = true)
 	public int getDaAuditorId() {
 		return this.daAuditorId;
 	}
@@ -433,7 +464,7 @@ public class ContractorAccount extends Account {
 		this.daAuditorId = daAuditorId;
 	}
 
-	@Column(name = "pqfAuditor_id", nullable = false)
+	@Column(name = "pqfAuditor_id", nullable = true)
 	public int getPqfAuditorId() {
 		return this.pqfAuditorId;
 	}
@@ -443,7 +474,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "assignedDate", nullable = false, length = 10)
+	@Column(name = "assignedDate", nullable = true, length = 10)
 	public Date getAssignedDate() {
 		return this.assignedDate;
 	}
@@ -452,7 +483,7 @@ public class ContractorAccount extends Account {
 		this.assignedDate = assignedDate;
 	}
 
-	@Column(name = "isPrequalOK", nullable = false, length = 1)
+	@Column(name = "isPrequalOK", nullable = true, length = 1)
 	public char getIsPrequalOk() {
 		return this.isPrequalOk;
 	}
@@ -461,7 +492,7 @@ public class ContractorAccount extends Account {
 		this.isPrequalOk = isPrequalOk;
 	}
 
-	@Column(name = "auditStatus", nullable = false, length = 14)
+	@Column(name = "auditStatus", nullable = true, length = 14)
 	public String getAuditStatus() {
 		return this.auditStatus;
 	}
@@ -471,7 +502,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "auditCompletedDate", nullable = false, length = 10)
+	@Column(name = "auditCompletedDate", nullable = true, length = 10)
 	public Date getAuditCompletedDate() {
 		return this.auditCompletedDate;
 	}
@@ -481,7 +512,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "auditClosedDate", nullable = false, length = 10)
+	@Column(name = "auditClosedDate", nullable = true, length = 10)
 	public Date getAuditClosedDate() {
 		return this.auditClosedDate;
 	}
@@ -491,7 +522,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "desktopAssignedDate", nullable = false, length = 10)
+	@Column(name = "desktopAssignedDate", nullable = true, length = 10)
 	public Date getDesktopAssignedDate() {
 		return this.desktopAssignedDate;
 	}
@@ -501,7 +532,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "desktopCompletedDate", nullable = false, length = 10)
+	@Column(name = "desktopCompletedDate", nullable = true, length = 10)
 	public Date getDesktopCompletedDate() {
 		return this.desktopCompletedDate;
 	}
@@ -511,7 +542,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "desktopClosedDate", nullable = false, length = 10)
+	@Column(name = "desktopClosedDate", nullable = true, length = 10)
 	public Date getDesktopClosedDate() {
 		return this.desktopClosedDate;
 	}
@@ -521,7 +552,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "daAssignedDate", nullable = false, length = 10)
+	@Column(name = "daAssignedDate", nullable = true, length = 10)
 	public Date getDaAssignedDate() {
 		return this.daAssignedDate;
 	}
@@ -531,7 +562,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "daSubmittedDate", nullable = false, length = 10)
+	@Column(name = "daSubmittedDate", nullable = true, length = 10)
 	public Date getDaSubmittedDate() {
 		return this.daSubmittedDate;
 	}
@@ -541,7 +572,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "daClosedDate", nullable = false, length = 10)
+	@Column(name = "daClosedDate", nullable = true, length = 10)
 	public Date getDaClosedDate() {
 		return this.daClosedDate;
 	}
@@ -551,7 +582,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "officeSubmittedDate", nullable = false, length = 10)
+	@Column(name = "officeSubmittedDate", nullable = true, length = 10)
 	public Date getOfficeSubmittedDate() {
 		return this.officeSubmittedDate;
 	}
@@ -561,7 +592,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "officeClosedDate", nullable = false, length = 10)
+	@Column(name = "officeClosedDate", nullable = true, length = 10)
 	public Date getOfficeClosedDate() {
 		return this.officeClosedDate;
 	}
@@ -570,7 +601,7 @@ public class ContractorAccount extends Account {
 		this.officeClosedDate = officeClosedDate;
 	}
 
-	@Column(name = "requestedByID", nullable = false)
+	@Column(name = "requestedByID", nullable = true)
 	public int getRequestedById() {
 		return this.requestedById;
 	}
@@ -580,20 +611,20 @@ public class ContractorAccount extends Account {
 	}
 
 	@Column(name = "billingCycle", nullable = false)
-	public byte getBillingCycle() {
+	public int getBillingCycle() {
 		return this.billingCycle;
 	}
 
-	public void setBillingCycle(byte billingCycle) {
+	public void setBillingCycle(int billingCycle) {
 		this.billingCycle = billingCycle;
 	}
 
-	@Column(name = "billingAmount", nullable = false)
-	public short getBillingAmount() {
+	@Column(name = "billingAmount", nullable = true)
+	public int getBillingAmount() {
 		return this.billingAmount;
 	}
 
-	public void setBillingAmount(short billingAmount) {
+	public void setBillingAmount(int billingAmount) {
 		this.billingAmount = billingAmount;
 	}
 
@@ -606,7 +637,7 @@ public class ContractorAccount extends Account {
 		this.isExempt = isExempt;
 	}
 
-	@Column(name = "hasExpiredCerts", nullable = false, length = 3)
+	@Column(name = "hasExpiredCerts", nullable = true, length = 3)
 	public String getHasExpiredCerts() {
 		return this.hasExpiredCerts;
 	}
@@ -615,7 +646,7 @@ public class ContractorAccount extends Account {
 		this.hasExpiredCerts = hasExpiredCerts;
 	}
 
-	@Column(name = "isOnlyCerts", nullable = false, length = 3)
+	@Column(name = "isOnlyCerts", nullable = true, length = 3)
 	public String getIsOnlyCerts() {
 		return this.isOnlyCerts;
 	}
@@ -624,7 +655,7 @@ public class ContractorAccount extends Account {
 		this.isOnlyCerts = isOnlyCerts;
 	}
 
-	@Column(name = "auditLocation", nullable = false, length = 8)
+	@Column(name = "auditLocation", nullable = true, length = 8)
 	public String getAuditLocation() {
 		return this.auditLocation;
 	}
@@ -633,70 +664,70 @@ public class ContractorAccount extends Account {
 		this.auditLocation = auditLocation;
 	}
 
-	@Column(name = "desktopPercent", nullable = false)
-	public byte getDesktopPercent() {
+	@Column(name = "desktopPercent", nullable = true)
+	public int getDesktopPercent() {
 		return this.desktopPercent;
 	}
 
-	public void setDesktopPercent(byte desktopPercent) {
+	public void setDesktopPercent(int desktopPercent) {
 		this.desktopPercent = desktopPercent;
 	}
 
-	@Column(name = "desktopVerifiedPercent", nullable = false)
-	public byte getDesktopVerifiedPercent() {
+	@Column(name = "desktopVerifiedPercent", nullable = true)
+	public int getDesktopVerifiedPercent() {
 		return this.desktopVerifiedPercent;
 	}
 
-	public void setDesktopVerifiedPercent(byte desktopVerifiedPercent) {
+	public void setDesktopVerifiedPercent(int desktopVerifiedPercent) {
 		this.desktopVerifiedPercent = desktopVerifiedPercent;
 	}
 
-	@Column(name = "officePercent", nullable = false)
-	public byte getOfficePercent() {
+	@Column(name = "officePercent", nullable = true)
+	public int getOfficePercent() {
 		return this.officePercent;
 	}
 
-	public void setOfficePercent(byte officePercent) {
+	public void setOfficePercent(int officePercent) {
 		this.officePercent = officePercent;
 	}
 
-	@Column(name = "officeVerifiedPercent", nullable = false)
-	public byte getOfficeVerifiedPercent() {
+	@Column(name = "officeVerifiedPercent", nullable = true)
+	public int getOfficeVerifiedPercent() {
 		return this.officeVerifiedPercent;
 	}
 
-	public void setOfficeVerifiedPercent(byte officeVerifiedPercent) {
+	public void setOfficeVerifiedPercent(int officeVerifiedPercent) {
 		this.officeVerifiedPercent = officeVerifiedPercent;
 	}
 
-	@Column(name = "daPercent", nullable = false)
-	public byte getDaPercent() {
+	@Column(name = "daPercent", nullable = true)
+	public int getDaPercent() {
 		return this.daPercent;
 	}
 
-	public void setDaPercent(byte daPercent) {
+	public void setDaPercent(int daPercent) {
 		this.daPercent = daPercent;
 	}
 
-	@Column(name = "daVerifiedPercent", nullable = false)
-	public byte getDaVerifiedPercent() {
+	@Column(name = "daVerifiedPercent", nullable = true)
+	public int getDaVerifiedPercent() {
 		return this.daVerifiedPercent;
 	}
 
-	public void setDaVerifiedPercent(byte daVerifiedPercent) {
+	public void setDaVerifiedPercent(int daVerifiedPercent) {
 		this.daVerifiedPercent = daVerifiedPercent;
 	}
 
-	@Column(name = "pqfPercent", nullable = false)
-	public byte getPqfPercent() {
+	@Column(name = "pqfPercent", nullable = true)
+	public int getPqfPercent() {
 		return this.pqfPercent;
 	}
 
-	public void setPqfPercent(byte pqfPercent) {
+	public void setPqfPercent(int pqfPercent) {
 		this.pqfPercent = pqfPercent;
 	}
 
-	@Column(name = "hasNCMSDesktop", nullable = false, length = 3)
+	@Column(name = "hasNCMSDesktop", nullable = true, length = 3)
 	public String getHasNcmsdesktop() {
 		return this.hasNcmsdesktop;
 	}
@@ -705,7 +736,7 @@ public class ContractorAccount extends Account {
 		this.hasNcmsdesktop = hasNcmsdesktop;
 	}
 
-	@Column(name = "isNewOfficeAudit", nullable = false, length = 3)
+	@Column(name = "isNewOfficeAudit", nullable = true, length = 3)
 	public String getIsNewOfficeAudit() {
 		return this.isNewOfficeAudit;
 	}
@@ -714,7 +745,7 @@ public class ContractorAccount extends Account {
 		this.isNewOfficeAudit = isNewOfficeAudit;
 	}
 
-	@Column(name = "secondContact", nullable = false, length = 50)
+	@Column(name = "secondContact", nullable = true, length = 50)
 	public String getSecondContact() {
 		return this.secondContact;
 	}
@@ -723,7 +754,7 @@ public class ContractorAccount extends Account {
 		this.secondContact = secondContact;
 	}
 
-	@Column(name = "secondPhone", nullable = false, length = 50)
+	@Column(name = "secondPhone", nullable = true, length = 50)
 	public String getSecondPhone() {
 		return this.secondPhone;
 	}
@@ -732,7 +763,7 @@ public class ContractorAccount extends Account {
 		this.secondPhone = secondPhone;
 	}
 
-	@Column(name = "secondEmail", nullable = false, length = 50)
+	@Column(name = "secondEmail", nullable = true, length = 50)
 	public String getSecondEmail() {
 		return this.secondEmail;
 	}
@@ -741,7 +772,7 @@ public class ContractorAccount extends Account {
 		this.secondEmail = secondEmail;
 	}
 
-	@Column(name = "billingContact", nullable = false, length = 50)
+	@Column(name = "billingContact", nullable = true, length = 50)
 	public String getBillingContact() {
 		return this.billingContact;
 	}
@@ -750,7 +781,7 @@ public class ContractorAccount extends Account {
 		this.billingContact = billingContact;
 	}
 
-	@Column(name = "billingPhone", nullable = false, length = 50)
+	@Column(name = "billingPhone", nullable = true, length = 50)
 	public String getBillingPhone() {
 		return this.billingPhone;
 	}
@@ -759,7 +790,7 @@ public class ContractorAccount extends Account {
 		this.billingPhone = billingPhone;
 	}
 
-	@Column(name = "billingEmail", nullable = false, length = 50)
+	@Column(name = "billingEmail", nullable = true, length = 50)
 	public String getBillingEmail() {
 		return this.billingEmail;
 	}
@@ -778,26 +809,26 @@ public class ContractorAccount extends Account {
 		this.membershipDate = membershipDate;
 	}
 
-	@Column(name = "newBillingAmount", nullable = false)
-	public short getNewBillingAmount() {
+	@Column(name = "newBillingAmount", nullable = true)
+	public int getNewBillingAmount() {
 		return this.newBillingAmount;
 	}
 
-	public void setNewBillingAmount(short newBillingAmount) {
+	public void setNewBillingAmount(int newBillingAmount) {
 		this.newBillingAmount = newBillingAmount;
 	}
 
 	@Column(name = "payingFacilities", nullable = false)
-	public short getPayingFacilities() {
+	public int getPayingFacilities() {
 		return this.payingFacilities;
 	}
 
-	public void setPayingFacilities(short payingFacilities) {
+	public void setPayingFacilities(int payingFacilities) {
 		this.payingFacilities = payingFacilities;
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "welcomeCallDate", nullable = false, length = 10)
+	@Column(name = "welcomeCallDate", nullable = true, length = 10)
 	public Date getWelcomeCallDate() {
 		return this.welcomeCallDate;
 	}
@@ -806,7 +837,7 @@ public class ContractorAccount extends Account {
 		this.welcomeCallDate = welcomeCallDate;
 	}
 
-	@Column(name = "welcomeAuditor_id", nullable = false)
+	@Column(name = "welcomeAuditor_id", nullable = true)
 	public int getWelcomeAuditorId() {
 		return this.welcomeAuditorId;
 	}
@@ -816,6 +847,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@Enumerated(EnumType.ORDINAL)
+	@Column(name = "riskLevel", nullable = false)
 	public LowMedHigh getRiskLevel() {
 		return riskLevel;
 	}
@@ -823,4 +855,47 @@ public class ContractorAccount extends Account {
 	public void setRiskLevel(LowMedHigh riskLevel) {
 		this.riskLevel = riskLevel;
 	}
+	@Column(name = "annualUpdateEmails", nullable = true)
+	public int getAnnualUpdateEmails() {
+		return annualUpdateEmails;
+	}
+
+	public void setAnnualUpdateEmails(int annualUpdateEmails) {
+		this.annualUpdateEmails = annualUpdateEmails;
+	}
+
+	
+	@Column(name = "daRequired", nullable = true)
+	public String getDaRequired() {
+		return daRequired;
+	}
+
+	public void setDaRequired(String daRequired) {
+		this.daRequired = daRequired;
+	}
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "tempAuditDateTime", nullable = true, length = 10)
+	public Date getTempAuditDateTime() {
+		return tempAuditDateTime;
+	}
+
+	public void setTempAuditDateTime(Date tempAuditDateTime) {
+		this.tempAuditDateTime = tempAuditDateTime;
+	}
+
+	@Column(name = "oqEmployees", nullable = true)
+	public String getOqEmployees() {
+		return oqEmployees;
+	}
+
+	public void setOqEmployees(String oqEmployees) {
+		this.oqEmployees = oqEmployees;
+	}
+
+	
+	
+	
+
+
 }
