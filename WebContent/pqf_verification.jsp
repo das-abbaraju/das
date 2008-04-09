@@ -15,7 +15,8 @@ sql.setType(SelectAccount.Type.Contractor);
 sql.addField("c.notes");
 sql.addWhere("active='Y'");
 
-sql.addJoin("LEFT JOIN contractor_audit ca ON ca.conID = a.id AND ca.auditTypeID = " + AuditType.PQF);
+sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id AND ca.auditTypeID = " + AuditType.PQF);
+sql.addField("ca.auditID");
 sql.addField("ca.scheduledDate");
 //Todo: move to ca.completedDate
 sql.addWhere("c.pqfSubmittedDate >= '2008-01-01'");
@@ -124,10 +125,10 @@ List<BasicDynaBean> searchData = report.getPage();
 		if (DateBean.toShowFormat(row.get("dateVerified06")).length() > 0) verified++;
 		if (DateBean.toShowFormat(row.get("dateVerified05")).length() > 0) verified++;
 	%>
-	<tr id="auditor_tr<%=row.get("id")%>" class="blueMain"
+	<tr id="auditor_tr<%=row.get("auditID")%>" class="blueMain"
 		<%=color.nextBgColor()%>>
 		<td align="right"><%=color.getCounter()%></td>
-		<td><a href="VerifyView.action?id=<%=row.get("id")%>"><%=row.get("name")%></a></td>
+		<td><a href="VerifyView.action?auditID=<%=row.get("auditID")%>"><%=row.get("name")%></a></td>
 		<td><%=DateBean.toShowFormat(row.get("pqfSubmittedDate"))%></td>
 		<td><%=DateBean.toShowFormat(row.get("scheduledDate"))%></td>
 		<td><%=Math.round(100*(float)verified/6)%>%</td>
