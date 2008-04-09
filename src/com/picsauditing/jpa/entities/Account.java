@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -23,11 +25,10 @@ import com.picsauditing.util.Luhn;
 
 @Entity
 @Table(name = "accounts")
-@DiscriminatorColumn(name="type")
+@Inheritance(strategy=InheritanceType.JOINED)
 public abstract class Account implements java.io.Serializable {
 	
 	protected int id;
-	protected String type;
 	protected String name;
 	protected String username;
 	protected String password;
@@ -53,11 +54,7 @@ public abstract class Account implements java.io.Serializable {
 	protected Date emailConfirmedDate;
 	
 	// Other tables
-	protected ContractorAccount contractor;
 	protected List<ContractorOperator> contractors;
-	protected List<ContractorOperator> operators;
-	protected List<OshaLog> oshas;
-	protected List<ContractorAudit> audits;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -73,16 +70,6 @@ public abstract class Account implements java.io.Serializable {
 	public String getLuhnId() {
 		Integer value = this.id;
 		return Luhn.addCheckDigit(value.toString());
-	}
-
-
-	@Column(name = "type", nullable = false, length = 20)
-	public String getType() {
-		return this.type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	@Column(name = "name", nullable = false, length = 50)
@@ -304,43 +291,5 @@ public abstract class Account implements java.io.Serializable {
 
 	public void setContractors(List<ContractorOperator> contractors) {
 		this.contractors = contractors;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contractorAccount")
-	//@OrderBy("operatorName")
-	public List<ContractorOperator> getOperators() {
-		return this.operators;
-	}
-
-	public void setOperators(List<ContractorOperator> operators) {
-		this.operators = operators;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id", nullable = false, insertable = false, updatable = false)
-	public ContractorAccount getContractor() {
-		return this.contractor;
-	}
-
-	public void setContractor(ContractorAccount contractor) {
-		this.contractor = contractor;
-	}
-
-	@OneToMany(mappedBy = "contractorAccount")
-	public List<OshaLog> getOshas() {
-		return oshas;
-	}
-
-	public void setOshas(List<OshaLog> oshas) {
-		this.oshas = oshas;
-	}
-
-	@OneToMany(mappedBy = "contractorAccount")
-	public List<ContractorAudit> getAudits() {
-		return audits;
-	}
-
-	public void setAudits(List<ContractorAudit> audits) {
-		this.audits = audits;
 	}
 }
