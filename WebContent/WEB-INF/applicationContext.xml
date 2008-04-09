@@ -16,7 +16,7 @@
 	<bean id="AuditQuestionDAO" class="com.picsauditing.dao.AuditQuestionDAO" scope="prototype"/>
 	<bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO" scope="prototype"/>
 	<bean id="ContractorAuditDAO" class="com.picsauditing.dao.ContractorAuditDAO" scope="prototype"/>
-	<bean id="ContractorInfoDAO" class="com.picsauditing.dao.ContractorInfoDAO" scope="prototype"/>
+	<bean id="ContractorAccountDAO" class="com.picsauditing.dao.ContractorAccountDAO" scope="prototype"/>
 	<bean id="RulesRowDAO" class="com.picsauditing.dao.RulesRowDAO" scope="prototype"/>
 	<bean id="UserDAO" class="com.picsauditing.dao.UserDAO" scope="prototype"/>
 

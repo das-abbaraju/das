@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.picsauditing.actions.ContractorActionSupport;
-import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.jpa.entities.YesNo;
 
 public class VerifyView extends ContractorActionSupport {

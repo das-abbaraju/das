@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -42,7 +43,7 @@ public class ContractorAuditDAOTest {
 		contractoraudit.setScheduledDate(new Date(2008 - 04 - 21));
 		contractoraudit.setCompletedDate(new Date());
 		contractoraudit.setClosedDate(new Date());
-		contractoraudit.setRequestingOpAccount(new ContractorAccount());
+		contractoraudit.setRequestingOpAccount(new OperatorAccount());
 		contractoraudit.getRequestingOpAccount().setId(22);
 		contractoraudit.setAuditLocation("irvine");
 		contractoraudit.setPercentComplete("50");

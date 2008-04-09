@@ -2,8 +2,8 @@ package com.picsauditing.actions;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 
 public class ContractorActionSupport extends PicsActionSupport {
@@ -34,11 +34,4 @@ public class ContractorActionSupport extends PicsActionSupport {
 		this.contractor = contractor;
 	}
 
-	public ContractorAccountDAO getAccountDao() {
-		return accountDao;
-	}
-
-	public void setAccountDao(ContractorAccountDAO accountDao) {
-		this.accountDao = accountDao;
-	}
 }

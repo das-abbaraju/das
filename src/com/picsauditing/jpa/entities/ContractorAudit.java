@@ -23,7 +23,7 @@ import javax.persistence.TemporalType;
 public class ContractorAudit {
 	private int id = 0;
 	private AuditType auditType;
-	private Account contractorAccount;
+	private ContractorAccount contractorAccount;
 	private Date createdDate;
 	private AuditStatus auditStatus;
 	private Date expiresDate;
@@ -32,7 +32,7 @@ public class ContractorAudit {
 	private Date scheduledDate;
 	private Date completedDate;
 	private Date closedDate;
-	private Account requestingOpAccount;
+	private OperatorAccount requestingOpAccount;
 	private String auditLocation;
 	private String percentComplete;
 	private String percentVerified;
@@ -63,11 +63,11 @@ public class ContractorAudit {
 
 	@ManyToOne
 	@JoinColumn(name = "conID")
-	public Account getContractorAccount() {
+	public ContractorAccount getContractorAccount() {
 		return contractorAccount;
 	}
 
-	public void setContractorAccount(Account contractorAccount) {
+	public void setContractorAccount(ContractorAccount contractorAccount) {
 		this.contractorAccount = contractorAccount;
 	}
 
@@ -142,11 +142,11 @@ public class ContractorAudit {
 
 	@ManyToOne
 	@JoinColumn(name = "requestedByOpID")
-	public Account getRequestingOpAccount() {
+	public OperatorAccount getRequestingOpAccount() {
 		return requestingOpAccount;
 	}
 
-	public void setRequestingOpAccount(Account requestingOpAccount) {
+	public void setRequestingOpAccount(OperatorAccount requestingOpAccount) {
 		this.requestingOpAccount = requestingOpAccount;
 	}
 

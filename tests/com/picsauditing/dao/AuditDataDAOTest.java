@@ -30,8 +30,8 @@ public class AuditDataDAOTest {
 	@Test
 	public void testSaveAndRemove() {
 		AuditData auditdata = new AuditData();
-		auditdata.setContractorAccount(new ContractorAccount());
-		auditdata.getContractorAccount().setId(744);
+		//auditdata.setContractorAccount(new ContractorAccount());
+		//auditdata.getContractorAccount().setId(744);
 		auditdata.setAudit(new ContractorAudit());
 		auditdata.getAudit().setId(3259);
 		auditdata.setQuestion(new AuditQuestion());

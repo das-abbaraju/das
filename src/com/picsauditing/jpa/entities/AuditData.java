@@ -20,8 +20,6 @@ import javax.persistence.TemporalType;
 public class AuditData implements java.io.Serializable {
 
 	private int dataID;
-	@Deprecated
-	private Account contractorAccount;
 	private ContractorAudit audit;
 	private AuditQuestion question;
 	private short num;
@@ -42,16 +40,6 @@ public class AuditData implements java.io.Serializable {
 
 	public void setDataID(int dataID) {
 		this.dataID = dataID;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "conID", nullable = false, insertable = false,updatable = false)
-	public Account getContractorAccount() {
-		return contractorAccount;
-	}
-
-	public void setContractorAccount(Account contractorAccount) {
-		this.contractorAccount = contractorAccount;
 	}
 
 	@ManyToOne()
