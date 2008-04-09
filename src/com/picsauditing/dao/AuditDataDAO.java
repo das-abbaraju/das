@@ -36,7 +36,7 @@ public class AuditDataDAO extends PicsDAO {
 		for(Integer questionID : questionIds)
 			ids.append(",").append(questionID);
 		
-		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE contractorAccount.id = ? AND question.questionID IN ("+ids.toString()+") ORDER BY question.question");
+		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.contractorAccount.id = ? AND question.questionID IN ("+ids.toString()+") ORDER BY question.question");
 		query.setParameter(1, conID);
 		
 		List<AuditData> result = query.getResultList();
