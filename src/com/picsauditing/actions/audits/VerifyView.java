@@ -1,12 +1,13 @@
 package com.picsauditing.actions.audits;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.actions.AuditActionSupport;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -31,14 +32,6 @@ public class VerifyView extends AuditActionSupport {
 	public String execute() throws Exception {
 		this.findConAudit();
 
-		if (followUp > 0) {
-			Calendar followUpCal = Calendar.getInstance();
-			followUpCal.add(Calendar.DAY_OF_MONTH, followUp);
-			conAudit.setScheduledDate(followUpCal.getTime());
-			contractorAuditDAO.save(conAudit);
-			return INPUT;
-		}
-		
 		if (osha != null)
 		{
 			for(OshaLog osha2 : conAudit.getContractorAccount().getOshas()) {
@@ -77,10 +70,19 @@ public class VerifyView extends AuditActionSupport {
 		emr = pqfDao.findAnswers(this.auditID, emrQuestions);
 
 		return SUCCESS;
+	}
 	
-	
-	
-	
+	public String saveFollowUp() throws Exception {
+		this.findConAudit();
+
+		if (followUp > 0) {
+			Calendar followUpCal = Calendar.getInstance();
+			followUpCal.add(Calendar.DAY_OF_MONTH, followUp);
+			conAudit.setScheduledDate(followUpCal.getTime());
+			contractorAuditDAO.save(conAudit);
+		}
+		message = new SimpleDateFormat("MM/dd").format(conAudit.getScheduledDate());
+		return SUCCESS;
 	}
 
 	public OshaLog getOsha() {
@@ -117,6 +119,18 @@ public class VerifyView extends AuditActionSupport {
 
 	public int getYear3() {
 		return this.getYear1() - 2;
+	}
+
+	public void setEmr1(AuditData emr) {
+		this.emr.put(AuditQuestion.EMR07, emr);
+	}
+
+	public void setEmr2(AuditData emr) {
+		this.emr.put(AuditQuestion.EMR06, emr);
+	}
+
+	public void setEmr3(AuditData emr) {
+		this.emr.put(AuditQuestion.EMR05, emr);
 	}
 
 	public AuditData getEmr1() {

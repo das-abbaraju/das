@@ -47,11 +47,10 @@
 		<action name="VerifyView"
 			class="com.picsauditing.actions.audits.VerifyView">
 			<result>pqf_verification_detail.jsp</result>
-			<result name="input">pqf_verification.jsp</result>
 		</action>
-		<action name="VerifySaveFollowUp"
-			class="com.picsauditing.actions.audits.VerifySaveFollowUp">
-			<result>pqf_verification_detail.jsp</result>
+		<action name="VerifySaveFollowUpAjax" method="saveFollowUp"
+			class="com.picsauditing.actions.audits.VerifyView">
+			<result>includes/blank.jsp</result>
 		</action>
 
 		<action name="ConAuditList"

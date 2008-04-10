@@ -3,6 +3,8 @@
 <html>
 <head>
 <title>PQF Verification for <s:property value="conAudit.contractorAccount.name" /></title>
+<script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
 <style>
 .oshanum {
 	width: 100px;
@@ -20,7 +22,11 @@
 <script type="text/javascript">
 
 function moveFile(type, year) {
-	alert("Successfully moved " + type+ year);
+	var newyear = $F('move'+type+year);
+	if (newyear=="") return;
+	pars = 'auditID=<s:property value="auditID" />&oldYear='+year;
+	//var myAjax = new Ajax.Updater('scheduleDate', 'VerifySaveFilesAjax.action', {method: 'post', parameters: pars});
+	alert("Successfully switched files");
 }
 
 function copyAnswer(selectedYear) {
@@ -33,6 +39,14 @@ function copyAnswer(selectedYear) {
 	var original = $('verify')['verify_emr'+selectedYear+'_answer'];
 	if (original.present())
 		$(answer).value = $F(original);
+}
+
+function saveFollowup() {
+	var x = $F('followUpInterval');
+	if (x==0) return;
+	pars = 'auditID=<s:property value="auditID" />&followUp='+x;
+	var myAjax = new Ajax.Updater('scheduleDate', 'VerifySaveFollowUpAjax.action', {method: 'post', parameters: pars});
+	new Effect.Highlight($('scheduleDate'), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 }
 </script>
 </head>
@@ -58,9 +72,6 @@ Details</a></p>
 		<tr class="blueMain" align="center">
 			<td align="right">Exempt:</td>
 			<td>&nbsp;</td>
-			<td class="highlight"><s:checkbox name="osha.na1" /></td>
-			<td><s:checkbox name="osha.na2" /></td>
-			<td class="highlight"><s:checkbox name="osha.na3" /></td>
 		</tr>
 		<tr class="blueMain" align="center" valign="top">
 			<td align="right"><a
@@ -70,7 +81,7 @@ Details</a></p>
 			<td class="highlight">
 			<s:if test="osha.file1yearAgo">
 			<a href="#" onClick="window.open('servlet/showpdf?id=<s:property value="id" />&OID=<s:property value="oshaID" />&file=osha1','Osha300Logs','scrollbars=yes,resizable=yes,width=700,height=450'); return false;" onMouseOver="status='Osha 300 Logs'">Show File</a>
-			<br />Switch with: <select id="moveOsha07" onchange="moveFile('osha', 1)"><option></option><option>2006</option><option>2005</option></select>
+			<br />Switch with: <select id="moveosha1" onchange="moveFile('osha', 1)" class="blueMain"><option></option><option>2006</option><option>2005</option></select>
 			</s:if>
 			<s:else>No File</s:else>
 			<td>
@@ -229,7 +240,7 @@ Details</a></p>
 	</tr>
 	<tr class="blueMain">
 		<td colspan="5">
-		<input class="blueMain" type="submit" value="Save" name="save" />
+		<input class="blueMain" type="submit" value="Save" />
 		
 		</td>
 	</tr>
@@ -237,21 +248,19 @@ Details</a></p>
 </s:form>
 
 
-<s:form action="VerifyView" method="POST">
-<s:hidden name="auditID" />
+<s:form>
 <table>
-<tr valign="top">
+<tr valign="top" class="blueMain">
 <td>
-</td>
-<td class="blueMain">
-<input class="blueMain" type="submit" value="Followup in" />
-<select class="blueMain" name="followUp" >
+<select class="blueMain" name="followUp" id="followUpInterval" onchange="saveFollowup();">
+	<option value="0" selected="selected">- Follow up -</option>
 	<option value="1">1 day</option>
-	<option value="3" selected="selected">3 days</option>
+	<option value="3">3 days</option>
 	<option value="7">1 week</option>
 	<option value="14">2 weeks</option>
 	<option value="30">1 month</option>
-</select></td>
+</select>
+<td id="scheduleDate"><s:date name="conAudit.scheduledDate" format="MM/dd" /></td>
 </tr>
 </table>
 </s:form>
