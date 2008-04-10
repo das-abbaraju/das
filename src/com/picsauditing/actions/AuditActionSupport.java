@@ -9,7 +9,7 @@ public class AuditActionSupport extends PicsActionSupport {
 	protected int auditID = 0;
 	protected ContractorAudit conAudit;
 	@Autowired
-	protected ContractorAuditDAO contractorauditDAO;
+	protected ContractorAuditDAO contractorAuditDAO;
 
 	protected void findConAudit() throws Exception {
 		conAudit = contractorAuditDAO.find(auditID);
