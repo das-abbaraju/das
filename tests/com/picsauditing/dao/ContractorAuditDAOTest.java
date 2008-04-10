@@ -18,6 +18,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.jpa.entities.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -75,5 +76,14 @@ public class ContractorAuditDAOTest {
 		ContractorAudit contractoraudit = contractorauditDAO.find(3259);
 		assertEquals("95", contractoraudit.getPercentComplete());
 	}
+	@Test
+	public void testUpdate()
+	{
+		ContractorAudit contractoraudit = contractorauditDAO.find(4657);
+		List<OshaLog> oshas=contractoraudit.getContractorAccount().getOshas();
+        oshas.get(0).setFatalities1(12345);
+        contractorauditDAO.save(contractoraudit.);
+	}
+
 
 }
