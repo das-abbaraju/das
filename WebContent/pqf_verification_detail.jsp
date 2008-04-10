@@ -72,6 +72,9 @@ Details</a></p>
 		<tr class="blueMain" align="center">
 			<td align="right">Exempt:</td>
 			<td>&nbsp;</td>
+			<td class="highlight"><s:checkbox name="osha.na1B" /></td>
+			<td><s:checkbox name="osha.na2B" /></td>
+			<td class="highlight"><s:checkbox name="osha.na3B" /></td>
 		</tr>
 		<tr class="blueMain" align="center" valign="top">
 			<td align="right"><a

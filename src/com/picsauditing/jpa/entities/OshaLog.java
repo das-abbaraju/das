@@ -4,6 +4,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Date;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "osha")
@@ -459,6 +462,15 @@ public class OshaLog implements java.io.Serializable {
 	public void setNa1(YesNo na1) {
 		this.na1 = na1;
 	}
+	
+	@Transient
+	public boolean getNa1B() {
+		return YesNo.Yes.equals(na1);
+	}
+	
+	public void setNa1B(boolean value) {
+		this.na1 = (value) ? YesNo.Yes : YesNo.No;
+	}
 
 	@Enumerated(EnumType.STRING)
 	public YesNo getFile2yearAgo() {
@@ -478,6 +490,15 @@ public class OshaLog implements java.io.Serializable {
 		this.na2 = na2;
 	}
 
+	@Transient
+	public boolean getNa2B() {
+		return YesNo.Yes.equals(na2);
+	}
+	
+	public void setNa2B(boolean value) {
+		this.na2 = (value) ? YesNo.Yes : YesNo.No;
+	}
+
 	@Enumerated(EnumType.STRING)
 	public YesNo getFile3yearAgo() {
 		return file3yearAgo;
@@ -494,6 +515,15 @@ public class OshaLog implements java.io.Serializable {
 
 	public void setNa3(YesNo na3) {
 		this.na3 = na3;
+	}
+
+	@Transient
+	public boolean getNa3B() {
+		return YesNo.Yes.equals(na3);
+	}
+	
+	public void setNa3B(boolean value) {
+		this.na3 = (value) ? YesNo.Yes : YesNo.No;
 	}
 
 	@Enumerated(EnumType.STRING)

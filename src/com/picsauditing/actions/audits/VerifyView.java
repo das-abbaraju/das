@@ -42,9 +42,9 @@ public class VerifyView extends AuditActionSupport {
 					osha2.setFatalities1(osha.getFatalities1());
 					osha2.setFatalities2(osha.getFatalities2());
 					osha2.setFatalities3(osha.getFatalities3());
-				
-				
-				
+					osha2.setNa1B(osha.getNa1B());
+					osha2.setNa2B(osha.getNa2B());
+					osha2.setNa3B(osha.getNa3B());
 				}
 			}
 			contractorAuditDAO.save(conAudit);
