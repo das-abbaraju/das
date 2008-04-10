@@ -3,12 +3,14 @@ package com.picsauditing.jpa.entities;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -112,8 +114,7 @@ public class ContractorAccount extends Account implements java.io.Serializable{
 	protected List<ContractorAudit> audits;
 	protected List<ContractorOperator> operators;
 	
-	
-	@OneToMany(mappedBy = "contractorAccount")
+	@OneToMany(mappedBy = "contractorAccount", cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
 	public List<OshaLog> getOshas() {
 		return oshas;
 	}
