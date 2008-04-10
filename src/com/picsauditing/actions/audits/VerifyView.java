@@ -1,7 +1,11 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.AuditActionSupport;
 import com.picsauditing.dao.AuditDataDAO;
@@ -13,24 +17,52 @@ import com.picsauditing.jpa.entities.YesNo;
 
 public class VerifyView extends AuditActionSupport {
 	private int oshaID = 0;
+	@Autowired
 	private OshaLog osha;
 	private AuditDataDAO pqfDao;
 	private HashMap<Integer, AuditData> emr;
+	private int followUp = 0;
 
-	public VerifyView(ContractorAuditDAO contractorauditDAO, AuditDataDAO pqfDao) {
-		this.contractorauditDAO = contractorauditDAO;
+	public VerifyView(ContractorAuditDAO contractorAuditDAO, AuditDataDAO pqfDao) {
+		this.contractorAuditDAO = contractorAuditDAO;
 		this.pqfDao = pqfDao;
 	}
 
 	public String execute() throws Exception {
 		this.findConAudit();
 
+		if (followUp > 0) {
+			Calendar followUpCal = Calendar.getInstance();
+			followUpCal.add(Calendar.DAY_OF_MONTH, followUp);
+			conAudit.setScheduledDate(followUpCal.getTime());
+			contractorAuditDAO.save(conAudit);
+			return INPUT;
+		}
+		
+		if (osha != null)
+		{
+			for(OshaLog osha2 : conAudit.getContractorAccount().getOshas()) {
+				if (osha2.getId() == osha.getId()) {
+					osha2.setManHours1(osha.getManHours1());
+					osha2.setManHours2(osha.getManHours2());
+					osha2.setManHours3(osha.getManHours3());
+					osha2.setFatalities1(osha.getFatalities1());
+					osha2.setFatalities2(osha.getFatalities2());
+					osha2.setFatalities3(osha.getFatalities3());
+				
+				
+				
+				}
+			}
+			contractorAuditDAO.save(conAudit);
+		}
 		// Retreive the osha record we selected
 		// or pick the only child if only one exists
 		if (oshaID > 0) {
 			for (OshaLog row : conAudit.getContractorAccount().getOshas())
 				if (row.getId() == oshaID)
 					osha = row;
+		
 		} else if (conAudit.getContractorAccount().getOshas().size() == 1) {
 			osha = conAudit.getContractorAccount().getOshas().get(0);
 			oshaID = osha.getId();
@@ -45,12 +77,20 @@ public class VerifyView extends AuditActionSupport {
 		emr = pqfDao.findAnswers(this.auditID, emrQuestions);
 
 		return SUCCESS;
+	
+	
+	
+	
 	}
 
 	public OshaLog getOsha() {
 		return osha;
 	}
 
+	public void setOsha(OshaLog oshalog){
+		this.osha = oshalog;
+	}
+	
 	public int getOshaID() {
 		return oshaID;
 	}
@@ -132,4 +172,14 @@ public class VerifyView extends AuditActionSupport {
 		notes = notes.substring(0, position);
 		return notes;
 	}
+
+	public int getFollowUp() {
+		return followUp;
+	}
+
+	public void setFollowUp(int followUp) {
+		this.followUp = followUp;
+
+	}
+
 }

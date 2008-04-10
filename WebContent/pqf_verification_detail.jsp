@@ -44,6 +44,8 @@ List</a> | <a href="contractor_detail.jsp?id=<s:property value="conAudit.contrac
 Details</a></p>
 
 <s:form id="verify">
+<s:hidden name="auditID" />
+<s:hidden name="osha.id" />
 
 <table border="0" cellpadding="1" cellspacing="1" align="center">
 	<s:if test="oshaID > 0">
@@ -226,20 +228,24 @@ Details</a></p>
 		<td colspan="3">&nbsp;</td>
 	</tr>
 	<tr class="blueMain">
-		<td colspan="5"></td>
+		<td colspan="5">
+		<input class="blueMain" type="submit" value="Save" name="save" />
+		
+		</td>
 	</tr>
 </table>
 </s:form>
 
 
-<s:form action="VerifySaveFollowUp" method="POST">
+<s:form action="VerifyView" method="POST">
+<s:hidden name="auditID" />
 <table>
 <tr valign="top">
 <td>
 </td>
 <td class="blueMain">
 <input class="blueMain" type="submit" value="Followup in" />
-<select class="blueMain">
+<select class="blueMain" name="followUp" >
 	<option value="1">1 day</option>
 	<option value="3" selected="selected">3 days</option>
 	<option value="7">1 week</option>
