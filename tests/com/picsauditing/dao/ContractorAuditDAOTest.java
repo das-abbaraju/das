@@ -77,8 +77,12 @@ public class ContractorAuditDAOTest {
 	@Test
 	public void testUpdate() {
 		ContractorAudit contractoraudit = contractorauditDAO.find(4657);
-		for(OshaLog osha : contractoraudit.getContractorAccount().getOshas())
-			osha.setFatalities1(12345);
+		OshaLog osha = new OshaLog();
+		osha.setId(1130);
+		osha.setFatalities1(120);
+		for(OshaLog osha2 : contractoraudit.getContractorAccount().getOshas())
+			if (osha2.getId() == osha.getId())
+				osha2 = osha;
 		contractorauditDAO.save(contractoraudit);
 	}
 }

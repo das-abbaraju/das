@@ -31,10 +31,10 @@ public class OshaLog implements java.io.Serializable {
 	private int injuryIllnessCases1;
 	private int restrictedWorkCases1;
 	private int recordableTotal1;
-	private YesNo file1yearAgo;
+	private YesNo file1yearAgo = YesNo.No;
 	private Date verifiedDate1;
 	private String comment1;
-	private YesNo na1;
+	private YesNo na1 = YesNo.No;
 
 	private int manHours2;
 	private int fatalities2;
@@ -43,10 +43,10 @@ public class OshaLog implements java.io.Serializable {
 	private int injuryIllnessCases2;
 	private int restrictedWorkCases2;
 	private int recordableTotal2;
-	private YesNo file2yearAgo;
+	private YesNo file2yearAgo = YesNo.No;
 	private Date verifiedDate2;
 	private String comment2;
-	private YesNo na2;
+	private YesNo na2 = YesNo.No;
 
 	private int manHours3;
 	private int fatalities3;
@@ -57,10 +57,10 @@ public class OshaLog implements java.io.Serializable {
 	private int injuryDays3;
 	private int illnessDays3;
 	private int recordableTotal3;
-	private YesNo file3yearAgo;
+	private YesNo file3yearAgo = YesNo.No;
 	private Date verifiedDate3;
 	private String comment3;
-	private YesNo na3;
+	private YesNo na3 = YesNo.No;
 
 	private int manHours4;
 	private int fatalities4;
@@ -71,7 +71,7 @@ public class OshaLog implements java.io.Serializable {
 	private int injuryDays4;
 	private int illnessDays4;
 	private int recordableTotal4;
-	private YesNo file4yearAgo;
+	private YesNo file4yearAgo = YesNo.No;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
