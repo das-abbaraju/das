@@ -2,7 +2,7 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <html>
 <head>
-<title>PQF Verification for <s:property value="contractor.name" /></title>
+<title>PQF Verification for <s:property value="conAudit.contractorAccount.name" /></title>
 <style>
 .oshanum {
 	width: 100px;
@@ -37,10 +37,10 @@ function copyAnswer(selectedYear) {
 </script>
 </head>
 <body>
-<h1>PQF Verification for <s:property value="contractor.name" /></h1>
+<h1>PQF Verification for <s:property value="conAudit.contractorAccount.name" /></h1>
 
 <p class="blueMain"><a href="pqf_verification.jsp">Return to
-List</a> | <a href="contractor_detail.jsp?id=<s:property value="id" />">Contractor
+List</a> | <a href="contractor_detail.jsp?id=<s:property value="conAudit.contractorAccount.id" />">Contractor
 Details</a></p>
 
 <s:form id="verify">
