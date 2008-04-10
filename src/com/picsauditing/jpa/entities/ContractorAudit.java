@@ -63,7 +63,8 @@ public class ContractorAudit {
 		this.auditType = auditType;
 	}
 
-	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE})
+	//@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE})
+	@ManyToOne
 	@JoinColumn(name = "conID")
 	public ContractorAccount getContractorAccount() {
 		return contractorAccount;
@@ -73,7 +74,6 @@ public class ContractorAudit {
 		this.contractorAccount = contractorAccount;
 	}
 
-	@Temporal(TemporalType.DATE)
 	public Date getCreatedDate() {
 		return createdDate;
 	}

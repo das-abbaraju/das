@@ -39,35 +39,32 @@ public class ContractorAuditDAOTest {
 		contractoraudit.setAuditStatus(AuditStatus.Active);
 		contractoraudit.setExpiresDate(new Date(2009 - 12 - 12));
 		contractoraudit.setAuditor(new User());
-		contractoraudit.getAuditor().setId(23);
+		contractoraudit.getAuditor().setId(941); // tallred
 		contractoraudit.setAssignedDate(new Date(2008 - 04 - 12));
 		contractoraudit.setScheduledDate(new Date(2008 - 04 - 21));
 		contractoraudit.setCompletedDate(new Date());
 		contractoraudit.setClosedDate(new Date());
 		contractoraudit.setRequestingOpAccount(new OperatorAccount());
-		contractoraudit.getRequestingOpAccount().setId(22);
+		contractoraudit.getRequestingOpAccount().setId(784);
 		contractoraudit.setAuditLocation("irvine");
 		contractoraudit.setPercentComplete("50");
 		contractoraudit.setPercentVerified("50");
 		contractorauditDAO.save(contractoraudit);
 		assertEquals("irvine", contractoraudit.getAuditLocation());
 		contractorauditDAO.remove(contractoraudit.getId());
-		ContractorAudit contractoraudit1 = contractorauditDAO
-				.find(contractoraudit.getId());
+		ContractorAudit contractoraudit1 = contractorauditDAO.find(contractoraudit.getId());
 		assertNull(contractoraudit1);
 	}
 
 	@Test
 	public void testFindByContractor() {
-		List<ContractorAudit> contractoraudit = contractorauditDAO
-				.findByContractor(707);
+		List<ContractorAudit> contractoraudit = contractorauditDAO.findByContractor(707);
 		assertEquals(3260, contractoraudit.get(0).getId());
 	}
 
 	@Test
 	public void testFindContractorActiveAudit() {
-		ContractorAudit contractoraudit = contractorauditDAO
-				.findContractorActiveAudit(3, 1);
+		ContractorAudit contractoraudit = contractorauditDAO.findContractorActiveAudit(3, 1);
 		assertEquals(3259, contractoraudit.getId());
 	}
 
@@ -76,14 +73,12 @@ public class ContractorAuditDAOTest {
 		ContractorAudit contractoraudit = contractorauditDAO.find(3259);
 		assertEquals("95", contractoraudit.getPercentComplete());
 	}
+
 	@Test
-	public void testUpdate()
-	{
+	public void testUpdate() {
 		ContractorAudit contractoraudit = contractorauditDAO.find(4657);
-		List<OshaLog> oshas=contractoraudit.getContractorAccount().getOshas();
-        oshas.get(0).setFatalities1(12345);
-        contractorauditDAO.save(contractoraudit.);
+		for(OshaLog osha : contractoraudit.getContractorAccount().getOshas())
+			osha.setFatalities1(12345);
+		contractorauditDAO.save(contractoraudit);
 	}
-
-
 }
