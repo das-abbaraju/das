@@ -29,15 +29,15 @@ public class AuditDataDAO extends PicsDAO {
 		return a;
 	}
 
-	public HashMap<Integer, AuditData> findAnswers(int conID, List<Integer> questionIds) {
+	public HashMap<Integer, AuditData> findAnswers(int auditID, List<Integer> questionIds) {
 		StringBuilder ids = new StringBuilder();
 		ids.append(0); // So we have a list like this 0,1,2
 		
 		for(Integer questionID : questionIds)
 			ids.append(",").append(questionID);
 		
-		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.contractorAccount.id = ? AND question.questionID IN ("+ids.toString()+") ORDER BY question.question");
-		query.setParameter(1, conID);
+		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id = ? AND question.questionID IN ("+ids.toString()+") ORDER BY question.question");
+		query.setParameter(1, auditID);
 		
 		List<AuditData> result = query.getResultList();
 		HashMap<Integer, AuditData> indexedResult = new HashMap<Integer, AuditData>();
