@@ -16,8 +16,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -38,7 +38,7 @@ public class AuditDataDAOTest {
 		auditdata.getQuestion().setQuestionID(48);
 		auditdata.setNum(Short.parseShort("300"));
 		auditdata.setAnswer("junit testing");
-		auditdata.setAuditor(new ContractorAccount());
+		auditdata.setAuditor(new User());
 		auditdata.getAuditor().setId(744);
 		auditdata.setComment("junit");
 		auditdata.setDateVerified(new Date(2008 - 04 - 07));
