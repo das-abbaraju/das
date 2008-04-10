@@ -12,7 +12,7 @@ public class AuditActionSupport extends PicsActionSupport {
 	protected ContractorAuditDAO contractorauditDAO;
 
 	protected void findConAudit() throws Exception {
-		conAudit = contractorauditDAO.find(auditID);
+		conAudit = contractorAuditDAO.find(auditID);
 		if (conAudit == null)
 			throw new Exception("Audit for this " + this.auditID + " not found");
 	}
