@@ -17,6 +17,7 @@
 	<bean id="ContractorInfoDAO" class="com.picsauditing.dao.ContractorAccountDAO" scope="prototype"/>
 	<bean id="RulesRowDAO" class="com.picsauditing.dao.RulesRowDAO" scope="prototype"/>
 	<bean id="UserDAO" class="com.picsauditing.dao.UserDAO" scope="prototype"/>
+	<bean id="OshaLogDAO" class="com.picsauditing.dao.OshaLogDAO" scope="prototype"/>
 	
 <!-- 	<bean class="com.picsauditing.PICS.Facilities"/> -->
 
