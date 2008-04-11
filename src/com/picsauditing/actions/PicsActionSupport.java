@@ -13,10 +13,9 @@ import com.picsauditing.access.User;
 public class PicsActionSupport extends ActionSupport {
 	protected Permissions permissions = null;
 	protected boolean autoLogin = false;
-	@Autowired
 	protected String message;
 
-	protected boolean getPermissions(OpPerms opPerms, OpType opType) throws Exception {
+	protected boolean getPermissions() throws Exception {
 		permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
 		if (permissions == null) {
 			permissions = new Permissions();
@@ -32,10 +31,16 @@ public class PicsActionSupport extends ActionSupport {
 		if (!permissions.loginRequired(ServletActionContext.getResponse(), ServletActionContext.getRequest())) {
 			return false;
 		}
-
-		permissions.tryPermission(opPerms, opType);
-
 		return true;
+	}
+	
+	protected void tryPermissions(OpPerms opPerms) throws Exception {
+		permissions.tryPermission(opPerms, OpType.View);
+	}
+
+	protected void tryPermissions(OpPerms opPerms, OpType opType) throws Exception {
+		getPermissions();
+		permissions.tryPermission(opPerms, opType);
 	}
 
 	public String getMessage() {

@@ -52,6 +52,14 @@
 			class="com.picsauditing.actions.audits.VerifyView">
 			<result>includes/blank.jsp</result>
 		</action>
+		<action name="VerifySwitchFilesAjax" method="switchFiles"
+			class="com.picsauditing.actions.contractors.SwitchFiles">
+			<result>includes/blank.jsp</result>
+		</action>
+		<action name="VerifySendEmailAjax" method="sendEmail"
+			class="com.picsauditing.actions.audits.VerifyView">
+			<result>includes/blank.jsp</result>
+		</action>
 
 		<action name="ConAuditList"
 			class="com.picsauditing.actions.audits.ConAuditList">

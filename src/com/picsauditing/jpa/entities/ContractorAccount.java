@@ -18,7 +18,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
+import com.picsauditing.access.Permissions;
 
 @Entity
 @Table(name = "contractor_info")
@@ -371,7 +373,18 @@ public class ContractorAccount extends Account implements java.io.Serializable{
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
-
+	/**
+	 * Append a new note to this contractor in the form of:
+	 * M/d/yy h:mm a z User Name: NOTE HERE
+	 * previous notes
+	 * 
+	 * @param username
+	 * @param note
+	 */
+	public void addNote(Permissions permissions, String note) {
+		this.notes = DateBean.getTodaysDateTime() + " " + permissions.getName() + ": " + note + "\n" + this.notes;
+	}
+	
 	@Column(name = "adminNotes", nullable = true, length = 16277215)
 	public String getAdminNotes() {
 		return this.adminNotes;

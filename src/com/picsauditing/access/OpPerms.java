@@ -34,7 +34,7 @@ public enum OpPerms {
 	ManageAudits("Manage Audits and Matrices", "Allow PICS employees view and edit the Audit questions and matrix", true, false),
 	AssignAudits("Audit Assignment", "Allows users to assign office, desktop, and other audits to PICS auditors", true, false),
 	NCMS("NCMS Administration", "Can view and assign NCMS audits", true, false),
-	OSHAVerification("OSHA Verification", "Not used yet", false, false),
+	AuditVerification("Audit Verification", "Verify answers to OSHA, EMR, and other Audit data ", true, false),
 	OfficeAuditCalendar("Office Audit Calendar", "Allows users to view the Office Audit Calendar", false, false),
 	ViewFullPQF("View PQF Work History", "Can view the PQF category Work History, which contains financial and other sensitive information", false, false),
 	

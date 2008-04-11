@@ -1,17 +1,9 @@
 package com.picsauditing.actions.users;
 
-import java.util.List;
-
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.struts2.ServletActionContext;
-
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.User;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.search.Report;
-import com.picsauditing.search.SelectUser;
 
 public class UserEdit extends PicsActionSupport {
 	protected String userId;
@@ -19,15 +11,12 @@ public class UserEdit extends PicsActionSupport {
 	protected String action;
 
 	public String execute() throws Exception {
-		if (getPermissions(OpPerms.EditUsers, OpType.View)) {
-			permissions.tryPermission(OpPerms.EditUsers, OpType.View);
-			if (!permissions.hasPermission(OpPerms.AllOperators)) {
-				accountId = permissions.getAccountIdString();
-			}
-			
-			return SUCCESS;
+		getPermissions();
+		permissions.tryPermission(OpPerms.EditUsers);
+		if (!permissions.hasPermission(OpPerms.AllOperators)) {
+			accountId = permissions.getAccountIdString();
 		}
-		return INPUT;
+		return SUCCESS;
 	}
 	
 	private void deleteUser() throws Exception {

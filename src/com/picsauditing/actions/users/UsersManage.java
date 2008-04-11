@@ -25,51 +25,48 @@ public class UsersManage extends PicsActionSupport {
 	protected boolean hasAllOperators = false;
 
 	public String execute() throws Exception {
-		String response = INPUT;
+		getPermissions();
+		permissions.tryPermission(OpPerms.EditUsers);
 
-		if (getPermissions(OpPerms.EditUsers, OpType.View)) {
-			String accountId = permissions.getAccountIdString();
-			if (permissions.hasPermission(OpPerms.AllOperators) && this.accountId != null) {
-				accountId = Utilities.intToDB(this.accountId);
-			}
-
-			this.accountId = accountId;// accountId is on the instance level
-										// AND in the execute method...watch out
-
-			SelectUser sql = new SelectUser();
-			sql.addField("u.lastLogin");
-			sql.addField("u.isGroup");
-
-			search = new Report();
-			search.setSql(sql);
-
-			if (isActive == null) {
-				isActive = "Yes";
-			}
-
-			if ("Yes".equals(isGroup) || "No".equals(isGroup)) {
-				sql.addWhere("isGroup = '" + isGroup + "' ");
-			}
-			if ("Yes".equals(isActive) || "No".equals(isActive)) {
-				sql.addWhere("isActive = '" + isActive + "' ");
-			}
-
-			sql.addWhere("accountID = " + accountId);
-			// Only search for Auditors and Admins
-			sql.addOrderBy("u.isGroup, u.name");
-			search.setPageByResult(ServletActionContext.getRequest());
-			search.setLimit(25);
-
-			searchData = search.getPage();
-
-			if (permissions.hasPermission(OpPerms.AllOperators)) {
-				hasAllOperators = true;
-			}
-
-			response = SUCCESS;
+		String accountId = permissions.getAccountIdString();
+		if (permissions.hasPermission(OpPerms.AllOperators) && this.accountId != null) {
+			accountId = Utilities.intToDB(this.accountId);
 		}
 
-		return response;
+		this.accountId = accountId;// accountId is on the instance level
+									// AND in the execute method...watch out
+
+		SelectUser sql = new SelectUser();
+		sql.addField("u.lastLogin");
+		sql.addField("u.isGroup");
+
+		search = new Report();
+		search.setSql(sql);
+
+		if (isActive == null) {
+			isActive = "Yes";
+		}
+
+		if ("Yes".equals(isGroup) || "No".equals(isGroup)) {
+			sql.addWhere("isGroup = '" + isGroup + "' ");
+		}
+		if ("Yes".equals(isActive) || "No".equals(isActive)) {
+			sql.addWhere("isActive = '" + isActive + "' ");
+		}
+
+		sql.addWhere("accountID = " + accountId);
+		// Only search for Auditors and Admins
+		sql.addOrderBy("u.isGroup, u.name");
+		search.setPageByResult(ServletActionContext.getRequest());
+		search.setLimit(25);
+
+		searchData = search.getPage();
+
+		if (permissions.hasPermission(OpPerms.AllOperators)) {
+			hasAllOperators = true;
+		}
+
+		return SUCCESS;
 	}
 
 	public String getAccountId() {

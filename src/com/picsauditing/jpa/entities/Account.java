@@ -62,6 +62,10 @@ public class Account implements java.io.Serializable {
 	public int getId() {
 		return this.id;
 	}
+	@Transient
+	public String getIdString() {
+		return ((Integer)this.id).toString();
+	}
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -273,7 +277,7 @@ public class Account implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "emailConfirmedDate", nullable = false, length = 10)
+	@Column(name = "emailConfirmedDate")
 	public Date getEmailConfirmedDate() {
 		return this.emailConfirmedDate;
 	}

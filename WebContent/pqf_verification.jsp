@@ -7,7 +7,7 @@
 <%@page import="com.picsauditing.jpa.entities.AuditType"%>
 <%@page import="org.apache.commons.beanutils.BasicDynaBean"%>
 <%
-permissions.tryPermission(OpPerms.OSHAVerification);
+permissions.tryPermission(OpPerms.AuditVerification);
 
 SelectAccount sql = new SelectAccount();
 sql.setType(SelectAccount.Type.Contractor);

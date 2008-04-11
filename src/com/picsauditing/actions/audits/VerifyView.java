@@ -8,6 +8,8 @@ import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.actions.AuditActionSupport;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -15,6 +17,8 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.mail.EmailContractorBean;
+import com.picsauditing.mail.EmailTemplates;
 
 public class VerifyView extends AuditActionSupport {
 	private int oshaID = 0;
@@ -34,6 +38,7 @@ public class VerifyView extends AuditActionSupport {
 
 		if (osha != null)
 		{
+			permissions.tryPermission(OpPerms.AuditVerification, OpType.Edit);
 			for(OshaLog osha2 : conAudit.getContractorAccount().getOshas()) {
 				if (osha2.getId() == osha.getId()) {
 					osha2.setManHours1(osha.getManHours1());
@@ -49,6 +54,13 @@ public class VerifyView extends AuditActionSupport {
 			}
 			contractorAuditDAO.save(conAudit);
 		}
+
+		loadData();
+
+		return SUCCESS;
+	}
+	
+	private void loadData() {
 		// Retreive the osha record we selected
 		// or pick the only child if only one exists
 		if (oshaID > 0) {
@@ -60,7 +72,7 @@ public class VerifyView extends AuditActionSupport {
 			osha = conAudit.getContractorAccount().getOshas().get(0);
 			oshaID = osha.getId();
 		}
-
+		
 		// Now get the EMR data
 		ArrayList<Integer> emrQuestions = new ArrayList<Integer>();
 		emrQuestions.add(AuditQuestion.EMR07);
@@ -68,8 +80,6 @@ public class VerifyView extends AuditActionSupport {
 		emrQuestions.add(AuditQuestion.EMR05);
 		emrQuestions.add(AuditQuestion.EMR04);
 		emr = pqfDao.findAnswers(this.auditID, emrQuestions);
-
-		return SUCCESS;
 	}
 	
 	public String saveFollowUp() throws Exception {
@@ -82,6 +92,27 @@ public class VerifyView extends AuditActionSupport {
 			contractorAuditDAO.save(conAudit);
 		}
 		message = new SimpleDateFormat("MM/dd").format(conAudit.getScheduledDate());
+		return SUCCESS;
+	}
+	
+	public String sendEmail() throws Exception {
+		this.findConAudit();
+		loadData();
+		
+		EmailContractorBean emailer = new EmailContractorBean();
+		String items = "";
+		items += "2007  OSHA 300 Incorrect form: Uploaded EMR" + "\n";
+		items += "2005  EMR Incorrect year: Uploaded 07" + "\n";
+		
+		emailer.addTokens("missing_items", items);
+		emailer.sendMessage(EmailTemplates.verifyPqf, this.conAudit.getContractorAccount().getIdString(), permissions);
+		
+		String note = "PQF Verification email sent to " + emailer.getSentTo();
+		this.conAudit.getContractorAccount().addNote(permissions, note);
+		this.contractorAuditDAO.save(conAudit);
+		
+		//message = conAudit.getContractorAccount().getNotes();
+		message = "The email was sent at and the contractor notes were stamped";
 		return SUCCESS;
 	}
 

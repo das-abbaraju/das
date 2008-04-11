@@ -18,10 +18,10 @@ public class AuditTypeChoose extends PicsActionSupport {
 	}
 	
 	public String execute() throws Exception {
+		getPermissions();
+		permissions.tryPermission(OpPerms.ManageAudits);
+		
 		auditTypes = auditTypeDAO.findAll();
-		this.getPermissions(OpPerms.ManageAudits, OpType.View);
-		//if (auditTypeID > 0)
-			//session.setAttribute("auditTypeID", auditTypeID);
 
 		return SUCCESS;
 	}

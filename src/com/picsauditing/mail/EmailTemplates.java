@@ -8,7 +8,8 @@ public enum EmailTemplates {
 	desktopsubmit("Desktop Audit Submitted"),
 	contractoradded("Facility added Contractor"),
 	password("Forgot Password"),
-	newuser("Welcome New User");
+	newuser("Welcome New User"),
+	verifyPqf("Verify PQF");
 
 	private String description;
 	public String getDescription(){
