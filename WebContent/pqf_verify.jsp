@@ -6,16 +6,16 @@
 <jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<%try{
-	//3/5/05 if audit has not been submitted (questiosn frozen), the audit data is deleted and inserted rather than updated
-	// 12/20/04 jj - added timeOutWarning, timeOut javascripts, timedOut hidden form field
-	String auditType = request.getParameter("auditType");
-	if (null==auditType || "".equals(auditType))
-		auditType = com.picsauditing.PICS.pqf.Constants.PQF_TYPE;
-	String conID = request.getParameter("id");
-	String id = request.getParameter("id");
+<%@page import="com.picsauditing.actions.audits.ContractorAuditLegacy"%>
+<%
+ContractorAuditLegacy action = new ContractorAuditLegacy();
+action.setAuditID(request.getParameter("auditID"));
+String auditType = action.getAudit().getAuditType().getLegacyCode();
+String conID = ((Integer) action.getAudit().getContractorAccount().getId()).toString();
+String id = conID;
+try {
 	String catID = request.getParameter("catID");
-	String action = request.getParameter("action");
+	String actionString = request.getParameter("action");
 	boolean isCategorySelected = (null != catID && !"0".equals(catID));
 	boolean isOSHA = pcBean.OSHA_CATEGORY_ID.equals(catID);
 	boolean isServices = pcBean.SERVICES_CATEGORY_ID.equals(catID);
@@ -23,29 +23,28 @@
 	cBean.setFromDB(conID);
 	cBean.tryView(permissions);
 	String message = "";
-	if ("Save".equals(action)) {
+	if ("Save".equals(actionString)) {
 		if (pBean.canVerifyAudit(auditType,conID)) {
 			pdBean.saveVerificationNoUpload(request,conID,pBean.userID);
 			cBean.setPercentVerified(auditType,pdBean.getPercentVerified(conID,auditType));
 			cBean.writeToDB();
-			response.sendRedirect("pqf_verify.jsp?auditType="+auditType+"&id="+conID);
+			response.sendRedirect("pqf_verify.jsp?auditTypeID=" + action.getAuditID());
 			return;
 		} else
 			message = "You do not have permission to verify this "+auditType+" Audit";
-	} // if
+	}
 	if (isCategorySelected)
 		psBean.setPQFSubCategoriesArray(catID);
-	boolean generateReqs = ("Generate Reqs".equals(request.getParameter("action")));
+	boolean generateReqs = ("Generate Reqs".equals(actionString));
 	if (generateReqs && pBean.canVerifyAudit(auditType,conID)) {
 		if (!"100".equals(cBean.desktopVerifiedPercent))
 			message="You must complete verifying all questions to generate requirements";
 		else {
-//			cBean.generateRequirements(conID, pBean.userName, auditType);
 			cBean.writeToDB();
-			response.sendRedirect("pqf_editRequirements.jsp?auditType="+auditType+"&id="+conID);
+			response.sendRedirect("pqf_editRequirements.jsp?auditTypeID=" + action.getAuditID());
 			return;
-		}//else
-	} // if
+		}
+	}
 %>
 <html>
 <head>
@@ -56,7 +55,7 @@
 <SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
 </head>
 <body>
-			<table border="0" cellspacing="0" cellpadding="1" class="blueMain">
+<table border="0" cellspacing="0" cellpadding="1" class="blueMain">
               <tr align="center" class="blueMain">
 			    <td width="676">
                   <%@ include file="includes/nav/secondNav.jsp"%>
@@ -78,14 +77,7 @@
 	  		  <tr align="center">
                 <td class="redMain"><strong><%=message%></strong></td>
     		  </tr>
-<%/*	  	      <tr align="center">
-			    <form name="form1" method="post" action="pqf_verify.jsp">
-        	      <td><%=pcBean.getPqfCategorySelectDefaultSubmit("catID","blueMain",catID,auditType)%</td>
-			      <input type="hidden" name="id" value="<%=conID%">
-			      <input type="hidden" name="auditType" value="<%=auditType%">
-				</form>
-              </tr>
-<%*/if (isCategorySelected) {
+<% if (isCategorySelected) {
 		int catCount = 0;
 		pcBean.setFromDBWithData(catID,conID);
 		if (pBean.isAuditor() || pBean.isAdmin()) {
@@ -166,15 +158,14 @@
 		        </td>
 		      </tr>
 <%		if (pBean.isAdmin() || pBean.isAuditor()) { %>
+			      <input type="hidden" name="auditID" value="<%=auditType%>">
 			      <input type="hidden" name="catID" value="<%=catID%>">
 			      <input type="hidden" name="id" value="<%=conID%>">
 			      <input type="hidden" name="auditType" value="<%=auditType%>">
 		      </form>
 <%		} //if 	 
 	} // if
-	if (!isCategorySelected) {
-//		pdBean.setFilledOut(conID);
-%>
+	if (!isCategorySelected) {%>
 			  <tr>
 			    <td>
 				  <table width="657" border="0" cellpadding="1" cellspacing="1">
@@ -188,10 +179,10 @@
 %>
                     <tr class="blueMain" <%=pcBean.getBGColor()%>>
                       <td align=right><%=pcBean.number%>.</td>
-                      <td><a href="pqf_verify.jsp?auditType=<%=auditType%>&catID=<%=pcBean.catID%>&id=<%=conID%>"><%=pcBean.category%></a></td>
+                      <td><a href="pqf_verify.jsp?auditID=<%=action.getAuditID() %>&catID=<%=pcBean.catID%>"><%=pcBean.category%></a></td>
                       <td><%=pcBean.getPercentShow(pcBean.percentVerified)%><%=pcBean.getPercentCheck(pcBean.percentVerified)%></td>
                     </tr>
-<%		} // while
+<%		}
 		pcBean.closeList();
 %>
                   </table>
@@ -202,17 +193,16 @@
 			    <input type="hidden" name="auditType" value="<%=auditType%>">
 				<input name="action" type="submit" class="forms" value="Generate Reqs">
               </form>
-
 <%		} // if %>
-				</td>
-		      </tr>
-<%	} // if %>
+		</td>
+	</tr>
+<%	}
 
-			</table>
+} finally {
+	pqBean.closeList();
+	pcBean.closeList();
+}
+%>
+</table>
 </body>
 </html>
-<%	}finally{
-		pqBean.closeList();
-		pcBean.closeList();
-	}//finally
-%>

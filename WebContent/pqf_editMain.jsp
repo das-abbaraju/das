@@ -163,20 +163,19 @@
 			%>
 			<tr class="blueMain" <%=Utilities.getBGColor(catCount)%>>
 				<td align=right><%=catCount%>.</td>
-				<td><a
-					href="<%=request.getContextPath()%>/pqf_edit.jsp?auditID=<%=action.getAuditID()%>&catID=<%=pcBean.catID%>"><%=pcBean.category%></a></td>
+				<td><a href="pqf_edit.jsp?auditID=<%=action.getAuditID()%>&catID=<%=pcBean.catID%>"><%=pcBean.category%></a></td>
 				<%
 					String showPercent = "";
-								if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType)
-										&& cBean.isDesktopSubmitted())
-									showPercent = pcBean.percentVerified;
-								else if (com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(auditType) && cBean.isDaSubmitted())
-									showPercent = pcBean.percentVerified;
-								else if (com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(auditType)
-										&& cBean.isOfficeSubmitted())
-									showPercent = pcBean.percentVerified;
-								else
-									showPercent = pcBean.percentCompleted;
+					if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType)
+							&& cBean.isDesktopSubmitted())
+						showPercent = pcBean.percentVerified;
+					else if (com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(auditType) && cBean.isDaSubmitted())
+						showPercent = pcBean.percentVerified;
+					else if (com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(auditType)
+							&& cBean.isOfficeSubmitted())
+						showPercent = pcBean.percentVerified;
+					else
+						showPercent = pcBean.percentCompleted;
 				%>
 				<td><%=pcBean.getPercentShow(showPercent)%><%=pcBean.getPercentCheck(showPercent)%></td>
 

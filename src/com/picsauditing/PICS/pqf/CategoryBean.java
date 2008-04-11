@@ -76,13 +76,13 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		}//finally
 	}//setFromDB
 
-	public void setFromDBWithData(String catID, String cID) throws Exception {
+	public void setFromDBWithData(String catID, int auditID) throws Exception {
 		if ((null == catID) || ("".equals(catID)))
 			throw new Exception("Can't set PQF Category from DB because catID is not set");
 		String Query = "SELECT * FROM pqfCategories " +
 			"JOIN audit_type at ON at.auditTypeID=pqfCategories.auditTypeID "+
-			"LEFT JOIN pqfCatData ON pqfCategories.catID=pqfCatData.catID "+
-			"WHERE pqfCategories.catID = " + catID + " AND conID="+cID;
+			"LEFT JOIN pqfCatData ON pqfCategories.catID=pqfCatData.catID AND auditID = "+auditID+
+			"WHERE pqfCategories.catID = " + catID;
 		try {
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(Query);
@@ -95,7 +95,7 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 				//	setDataEmpty();
 				//	isJoinedWithData = false;
 				//}//if
-			}//if
+			}
 			SQLResult.close();
 		}finally{
 			DBClose();

@@ -535,4 +535,15 @@ public class OshaLog implements java.io.Serializable {
 		this.file4yearAgo = file4yearAgo;
 	}
 
+	@Transient
+	public boolean getVerified1() {
+		return verifiedDate1 == null;
+	}
+
+	public void setVerified1(boolean verified) {
+		if (verified)
+			this.verifiedDate1 = new Date();
+		else
+			this.verifiedDate1 = null;
+	}
 }

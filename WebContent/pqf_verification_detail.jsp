@@ -191,6 +191,13 @@ Details</a></p>
 					list="yesNos" name="osha.verified3" /></td>
 			</tr>
 			<tr class="blueMain" align="center">
+				<td align="right">Verified Date:</td>
+				<td>&nbsp;</td>
+				<td class="highlight"><s:property value="osha.verifiedDate1" /></td>
+				<td><s:property value="osha.verifiedDate2" /></td>
+				<td class="highlight"><s:property value="osha.verifiedDate3" /></td>
+			</tr>
+			<tr class="blueMain" align="center">
 				<td align="right">Issue:</td>
 				<td>&nbsp;</td>
 				<td class="highlight"><s:select list="oshaProblems"

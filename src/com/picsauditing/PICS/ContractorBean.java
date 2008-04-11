@@ -1761,7 +1761,7 @@ public class ContractorBean extends DataBean {
 		if (audits == null) {
 			audits = new HashMap<Integer, ContractorAudit>();
 			try {
-				ContractorAccountDAO dao = (ContractorAccountDAO)SpringUtils.getBean("AccountDAO");
+				ContractorAccountDAO dao = (ContractorAccountDAO)SpringUtils.getBean("ContractorAccountDAO");
 				ContractorAccount account = dao.find(Integer.parseInt(id));
 				List<ContractorAudit> auditList = account.getAudits();
 				for(ContractorAudit cAudit : auditList) {

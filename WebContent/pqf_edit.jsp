@@ -15,7 +15,7 @@
 	String auditType = action.getAudit().getAuditType().getLegacyCode();
 	String conID = ((Integer) action.getAudit().getContractorAccount().getId()).toString();
 	String id = conID;
-
+	
 	try {
 		String catID = request.getParameter("catID");
 		String actionString = request.getParameter("action");
