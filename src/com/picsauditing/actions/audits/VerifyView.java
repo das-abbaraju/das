@@ -14,8 +14,9 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.OshaLog;
+import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailContractorBean;
 import com.picsauditing.mail.EmailTemplates;
 
@@ -89,6 +90,19 @@ public class VerifyView extends AuditActionSupport {
 		}
 
 		loadData();
+		if (osha.getNa1().equals(YesNo.Yes)
+				&& osha.getNa2().equals(YesNo.Yes)
+				&& osha.getNa3().equals(YesNo.Yes)
+				&& emr.get(AuditQuestion.EMR07).getIsCorrect()
+						.equals(YesNo.Yes)
+				&& emr.get(AuditQuestion.EMR06).getIsCorrect()
+						.equals(YesNo.Yes)
+				&& emr.get(AuditQuestion.EMR05).getIsCorrect()
+						.equals(YesNo.Yes))
+			conAudit.setAuditStatus(AuditStatus.Active);
+		else
+			conAudit.setAuditStatus(AuditStatus.Submitted);
+
 		return SUCCESS;
 	}
 
@@ -216,9 +230,9 @@ public class VerifyView extends AuditActionSupport {
 		return emr.get(AuditQuestion.EMR05);
 	}
 
-	 public YesNo[] getYesNos() {
-	 return YesNo.values();
-	 }
+	public YesNo[] getYesNos() {
+		return YesNo.values();
+	}
 
 	public ArrayList<String> getOshaProblems() {
 		ArrayList<String> list = new ArrayList<String>();
