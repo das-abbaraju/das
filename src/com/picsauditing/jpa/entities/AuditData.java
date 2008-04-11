@@ -6,6 +6,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -14,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "pqfdata")
@@ -113,6 +116,7 @@ public class AuditData implements java.io.Serializable {
 		this.verifiedAnswer = verifiedAnswer;
 	}
 
+	@Enumerated(EnumType.STRING)
 	public YesNo getIsCorrect() {
 		return isCorrect;
 	}
@@ -121,6 +125,16 @@ public class AuditData implements java.io.Serializable {
 		this.isCorrect = isCorrect;
 	}
 
+	@Transient
+	public boolean getIsCorrectBoolean() {
+		return YesNo.Yes.equals(isCorrect);
+	}
+
+	public void setIsCorrectBoolean(boolean isCorrect) {
+		this.isCorrect = isCorrect ? YesNo.Yes : YesNo.No;
+	}
+	
+	@Enumerated(EnumType.STRING)
 	public YesNo getWasChanged() {
 		return wasChanged;
 	}
