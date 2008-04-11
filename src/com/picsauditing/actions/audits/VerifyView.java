@@ -7,7 +7,6 @@ import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.AuditActionSupport;
@@ -15,8 +14,8 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.mail.EmailContractorBean;
 import com.picsauditing.mail.EmailTemplates;
 
@@ -27,6 +26,7 @@ public class VerifyView extends AuditActionSupport {
 	private AuditDataDAO pqfDao;
 	private HashMap<Integer, AuditData> emr = new HashMap<Integer, AuditData>();
 	private int followUp = 0;
+	
 
 	public VerifyView(ContractorAuditDAO contractorAuditDAO, AuditDataDAO pqfDao) {
 		this.contractorAuditDAO = contractorAuditDAO;
@@ -216,9 +216,9 @@ public class VerifyView extends AuditActionSupport {
 		return emr.get(AuditQuestion.EMR05);
 	}
 
-	// public YesNo[] getYesNos() {
-	// return YesNo.values();
-	// }
+	 public YesNo[] getYesNos() {
+	 return YesNo.values();
+	 }
 
 	public ArrayList<String> getOshaProblems() {
 		ArrayList<String> list = new ArrayList<String>();
