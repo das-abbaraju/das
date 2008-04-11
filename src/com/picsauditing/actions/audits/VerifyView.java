@@ -27,7 +27,6 @@ public class VerifyView extends AuditActionSupport {
 	private AuditDataDAO pqfDao;
 	private HashMap<Integer, AuditData> emr = new HashMap<Integer, AuditData>();
 	private int followUp = 0;
-	private AuditData auditdata;
 
 	public VerifyView(ContractorAuditDAO contractorAuditDAO, AuditDataDAO pqfDao) {
 		this.contractorAuditDAO = contractorAuditDAO;
@@ -68,6 +67,9 @@ public class VerifyView extends AuditActionSupport {
 					osha2.setNa1B(osha.getNa1B());
 					osha2.setNa2B(osha.getNa2B());
 					osha2.setNa3B(osha.getNa3B());
+					osha2.setComment1(osha.getComment1());
+					osha2.setComment2(osha.getComment2());
+					osha2.setComment3(osha.getComment3());
 				}
 			}
 			contractorAuditDAO.save(conAudit);
@@ -79,20 +81,20 @@ public class VerifyView extends AuditActionSupport {
 			emrQuestions.add(AuditQuestion.EMR06);
 			emrQuestions.add(AuditQuestion.EMR05);
 			emrQuestions.add(AuditQuestion.EMR04);
-			HashMap<Integer, AuditData> emrDB = pqfDao.findAnswers(this.auditID, emrQuestions);
+			HashMap<Integer, AuditData> emrDB = pqfDao.findAnswers(
+					this.auditID, emrQuestions);
 			saveAuditData(emrDB, AuditQuestion.EMR07);
 			saveAuditData(emrDB, AuditQuestion.EMR06);
 			saveAuditData(emrDB, AuditQuestion.EMR05);
 		}
-		
+
 		loadData();
 		return SUCCESS;
 	}
-	
+
 	private void saveAuditData(HashMap<Integer, AuditData> emrDB, int year) {
 		emrDB.get(year).setVerifiedAnswer(emr.get(year).getVerifiedAnswer());
 		emrDB.get(year).setComment(emr.get(year).getComment());
-		//emrDB.get(year).setIsCorrect(emr.get(year).getIsCorrect());
 		pqfDao.save(emrDB.get(year));
 	}
 
@@ -214,9 +216,9 @@ public class VerifyView extends AuditActionSupport {
 		return emr.get(AuditQuestion.EMR05);
 	}
 
-	public YesNo[] getYesNos() {
-		return YesNo.values();
-	}
+	// public YesNo[] getYesNos() {
+	// return YesNo.values();
+	// }
 
 	public ArrayList<String> getOshaProblems() {
 		ArrayList<String> list = new ArrayList<String>();
