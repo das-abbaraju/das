@@ -79,7 +79,7 @@ try {
     		  </tr>
 <% if (isCategorySelected) {
 		int catCount = 0;
-		pcBean.setFromDBWithData(catID,conID);
+		pcBean.setFromDBWithData(catID, action.getAuditID());
 		if (pBean.isAuditor() || pBean.isAdmin()) {
 %>			   		
               <form name="formEdit" method="post" action="pqf_verify.jsp">

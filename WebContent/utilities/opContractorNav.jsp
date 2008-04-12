@@ -1,72 +1,44 @@
-<center>
+<%@page import="com.picsauditing.jpa.entities.ContractorAudit"%>
 <%
-String thisPage = request.getServletPath();
-String thisQuery = request.getQueryString();
-
-if (permissions.isContractor() && !thisPage.contains("contractor_detail")) {
+String thisPage = "";
+if (!request.getServletPath().contains("contractor_detail")){
+	com.picsauditing.PICS.AccountBean acctBean = new com.picsauditing.PICS.AccountBean();
 	%>
-	<div class="blueHeader"><%=aBean.getName(id)%></div>
+	<h2 class="blueHeader" style="text-align: center"><%=acctBean.getName(id)%></h2>
 	<%
 }
 %>
-<%
-if  (pBean.canSeeSet.contains(id)) {
-%>
+<div class="blueMain" style="text-align: center">
+<a class="blueMain" href="contractor_detail.jsp?id=<%=id%>">Contractor Details</a> |
 
-<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_detail.jsp",thisPage,id,"",thisQuery,"Contractor Details")%>
-<%
-if (permissions.hasPermission(OpPerms.InsuranceCerts)) {
-	%> | <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_upload_certificates.jsp",thisPage,id,"",thisQuery,"Insurance Certificates")%>
-	<%
-}
-if (permissions.isCorporate()) {
-	%> | <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"con_selectFacilities.jsp",thisPage,id,"",thisQuery,"Add Facilities")%>
-	<%
-} else {
-	%> | <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"con_redFlags.jsp",thisPage,id,"",thisQuery,"Red Flag Report")%>
-	<%
-} %>
-<br>
-<%
-if (permissions.canSeeAudit(com.picsauditing.jpa.entities.AuditType.PQF)) { 
-	%> <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"View PQF")%>
-	| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_viewAll.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"View Entire PQF")%>
-	| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_printAll.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"Print PQF")%><br>
-	<%
-}
+<% if (permissions.hasPermission(OpPerms.InsuranceCerts)) { %>
+<a class="blueMain" href="contractor_upload_certificates.jsp?id=<%=id%>">Insurance Certificates</a> |
+<% } %>
 
-if (permissions.canSeeAudit(com.picsauditing.jpa.entities.AuditType.DESKTOP)) { 
-	if (cBean.isDesktopStatusOldAuditStatus()){
-		if (cBean.isNewOfficeAudit() && cBean.isOfficeSubmitted()) {
-			%> <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE,thisQuery,"View Desktop Audit")%>
-			<%
-		} else if (cBean.AUDIT_STATUS_RQS.equals(cBean.getAuditStatus()) || cBean.AUDIT_STATUS_CLOSED.equals(cBean.getAuditStatus())) { %>
-			<%=com.picsauditing.PICS.Utilities.getMenuTag(request,"audit_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE,thisQuery,"View Desktop Audit")%>
-			<%
-		}
-	} else {
-		%> <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE,thisQuery,"View Desktop Audit")%>
+<% if (permissions.isCorporate()) { %>
+<a class="blueMain" href="con_selectFacilities.jsp?id=<%=id%>">View Facilities</a>
+<% } else { %>
+<a class="blueMain" href="con_redFlags.jsp?id=<%=id%>">Red Flag Report</a>
+<% } %>
+
+<br/>
+<%
+for(int key : cBean.getAudits().keySet()) {
+	ContractorAudit pqf = cBean.getAudits().get(key);
+
+	if (permissions.canSeeAudit(pqf.getAuditType().getAuditTypeID())) {
+		%><strong><%=pqf.getAuditType().getAuditName() %></strong>:
+		<a class="blueMain" href="pqf_view.jsp?auditID=<%=pqf.getId()%>">View</a> |
+		<a class="blueMain" href="pqf_viewAll.jsp?auditID=<%=pqf.getId()%>">View All</a> |
+		<a class="blueMain" href="pqf_printAll.jsp?auditID=<%=pqf.getId()%>">Print</a>
+		<br/>
 		<%
 	}
 }
-
-if (permissions.canSeeAudit(com.picsauditing.jpa.entities.AuditType.OFFICE)){
-	if (cBean.isNewOfficeAudit() && cBean.isOfficeSubmitted()) { 
-		%> | <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE,thisQuery,"View Office Audit")%><br>
-		<%
-	} else if (cBean.AUDIT_STATUS_RQS.equals(cBean.getAuditStatus()) || cBean.AUDIT_STATUS_CLOSED.equals(cBean.getAuditStatus())) {
-		%> | <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"audit_view.jsp",thisPage,id,"",thisQuery,"View Office Audit")%>
-		| <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"audit_viewRequirements.jsp",thisPage,id,"",thisQuery,"View Office Audit RQs")%>
-		<br>
-		<%
-	}
-}
-
-if (permissions.canSeeAudit(com.picsauditing.jpa.entities.AuditType.DA) && cBean.isDaSubmitted()) { 
-	%> <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.DA_TYPE,thisQuery,"View D&A Audit")%>
-	<%
-}
-
-}//if
 %>
-</center>
+<strong>Office</strong>:
+<a class="blueMain" href="audit_edit.jsp?id=<%=id%>">Edit</a> |
+<a class="blueMain" href="audit_view.jsp?id=<%=id%>">View</a> |
+<a class="blueMain" href="audit_editRequirements.jsp?id=<%=id%>">Edit RQs</a> |
+<a class="blueMain" href="audit_viewRequirements.jsp?id=<%=id%>">View RQs</a>
+</div>

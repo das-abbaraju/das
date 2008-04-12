@@ -1,4 +1,5 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@page import="java.util.Set"%>
 <%@include file="includes/main.jsp" %>
 <jsp:useBean id="pqBean" class="com.picsauditing.PICS.pqf.QuestionBean" scope ="page"/>
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
@@ -6,14 +7,14 @@
 <jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<%try{
-	//3/5/05 if audit has not been submitted (questiosn frozen), the audit data is deleted and inserted rather than updated
-	// 12/20/04 jj - added timeOutWarning, timeOut javascripts, timedOut hidden form field
-	String auditType = request.getParameter("auditType");
-	if (null==auditType || "".equals(auditType))
-		auditType = com.picsauditing.PICS.pqf.Constants.PQF_TYPE;
-	String conID = request.getParameter("id");
-	String id = request.getParameter("id");
+<%@page import="com.picsauditing.actions.audits.ContractorAuditLegacy"%>
+<%
+ContractorAuditLegacy action = new ContractorAuditLegacy();
+action.setAuditID(request.getParameter("auditID"));
+String auditType = action.getAudit().getAuditType().getLegacyCode();
+String conID = ((Integer) action.getAudit().getContractorAccount().getId()).toString();
+String id = conID;
+try {
 	aBean.setFromDB(conID);
 	cBean.setFromDB(conID);
 	cBean.tryView(permissions);
@@ -21,20 +22,19 @@
 	if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType) && "Yes".equals(cBean.hasNCMSDesktop)) {
 		response.sendRedirect("pqf_viewNCMS.jsp?id="+conID+"&auditType="+auditType);
 		return;
-	}//if	 
-	pdBean.setFilledOut(conID);
+	}
+	pdBean.setFilledOut(action.getAuditID());
 	Set<String> showCategoryIDs = null;
 	if (permissions.isOperator())
 		showCategoryIDs = pcBean.getCategoryForOpRiskLevel(permissions.getAccountIdString(),cBean.riskLevel);
 %>
-<%@page import="java.util.Set"%>
 <html>
 <head>
-<title>PQF for <%=aBean.name %></title>
+<title><%=auditType%> for <%=aBean.name %></title>
 <meta name="header_gif" content="header_prequalification.gif" />
 </head>
 <body>
-            <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
+<table border="0" cellspacing="0" cellpadding="1" class="blueMain">
               <tr align="center" class="blueMain">
                 <td><%@ include file="includes/nav/secondNav.jsp"%></td>
               </tr>
@@ -64,7 +64,7 @@
 			
 			catCount++;
 			psBean.setPQFSubCategoriesArray(pcBean.catID);
-			pdBean.setFromDB(conID,pcBean.catID);
+			pdBean.setFromDB(action.getAuditID(), conID, pcBean.catID);
 			boolean isOSHA = pcBean.OSHA_CATEGORY_ID.equals(pcBean.catID);
 			boolean isServices = pcBean.SERVICES_CATEGORY_ID.equals(pcBean.catID);
 %>
@@ -108,7 +108,6 @@
                         <%=pqBean.getCommentView()%>
                       </td>
                       <td></td>
-                      <%//=pdBean.getAnswer(pqBean.questionID, pqBean.questionType)%>
                     </tr>
 <%						if ((com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType) || com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(auditType) || com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(auditType)) && pqBean.hasReq()){%>
                     <tr <%=pqBean.getGroupBGColor()%> class=blueMain>
@@ -126,10 +125,10 @@
 	pcBean.closeList();
 %>
 </table>
-</body>
-</html>
 <%	}finally{
 		pqBean.closeList();
 		pcBean.closeList();
 	}//finally
 %>
+</body>
+</html>

@@ -82,7 +82,7 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		String Query = "SELECT * FROM pqfCategories " +
 			"JOIN audit_type at ON at.auditTypeID=pqfCategories.auditTypeID "+
 			"LEFT JOIN pqfCatData ON pqfCategories.catID=pqfCatData.catID AND auditID = "+auditID+
-			"WHERE pqfCategories.catID = " + catID;
+			" WHERE pqfCategories.catID = " + catID;
 		try {
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(Query);

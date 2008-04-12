@@ -9,7 +9,6 @@
 
 	try {
 		TradesBean tBean = new TradesBean();
-		com.picsauditing.PICS.pqf.QuestionTypeList statesLicensedInList = new com.picsauditing.PICS.pqf.QuestionTypeList();
 		tBean.setFromDB();
 		String action = request.getParameter("action");
 		String actionID = request.getParameter("actionID");
@@ -25,6 +24,8 @@
 				cBean.writeToDB();
 			}
 		}
+		
+		com.picsauditing.PICS.pqf.QuestionTypeList statesLicensedInList = new com.picsauditing.PICS.pqf.QuestionTypeList();
 
 		ArrayList<String> certList;
 		if (pBean.oBean.canSeeInsurance()) {
@@ -77,13 +78,14 @@
 				%> <%=SearchBean.getStatusSelect("status", "blueMain", sBean.selected_status)%>
 				<%=Inputs.inputSelect("flagStatus", "forms", sBean.selected_flagStatus,
 									SearchBean.FLAG_STATUS_ARRAY)%> <%
- 	}
- %> <%
- 	if (permissions.isCorporate()) {
+	 	}
+	 	if (permissions.isCorporate()) {
  			out.println(pBean.oBean.getFacilitySelect("generalContractorID", "forms",
  					sBean.selected_generalContractorID));
  		}
- %> <input name="taxID" type="text" class="forms"
+		%>
+		<%=statesLicensedInList.getQuestionListQIDSelect("Office Location","worksIn","forms", sBean.selected_worksIn,SearchBean.DEFAULT_LICENSED_IN)%>
+		<input name="taxID" type="text" class="forms"
 					value="<%=sBean.selected_taxID%>" size="9"
 					onFocus="clearText(this)"><span class=redMain>*must
 				be 9 digits</span></td>
@@ -107,22 +109,22 @@
 		<td align="center" bgcolor="#336699">PQF</td>
 		<%
 			}
-			if (permissions.canSeeAudit(AuditType.DESKTOP)) {
+				if (permissions.canSeeAudit(AuditType.DESKTOP)) {
 		%>
 		<td align="center" bgcolor="#6699CC"><nobr>Desktop Audit</nobr></td>
 		<%
 			}
-			if (permissions.canSeeAudit(AuditType.DA)) {
+				if (permissions.canSeeAudit(AuditType.DA)) {
 		%>
 		<td align="center" bgcolor="#6699CC"><nobr>D&amp;A Audit</nobr></td>
 		<%
 			}
-			if (permissions.canSeeAudit(AuditType.OFFICE)) {
+				if (permissions.canSeeAudit(AuditType.OFFICE)) {
 		%>
 		<td align="center" bgcolor="#6699CC"><nobr>Office Audit</nobr></td>
 		<%
 			}
-			if (pBean.oBean.canSeeInsurance()) {
+				if (pBean.oBean.canSeeInsurance()) {
 		%>
 		<td align="center" bgcolor="#6699CC"><nobr>Ins. Certs</nobr></td>
 		<%
@@ -161,17 +163,17 @@
 		<td align="center"><%=sBean.getListLink(com.picsauditing.PICS.pqf.Constants.PQF_TYPE)%></td>
 		<%
 			}
-			if (permissions.canSeeAudit(AuditType.DESKTOP)) {
+					if (permissions.canSeeAudit(AuditType.DESKTOP)) {
 		%>
 		<td align="center"><%=sBean.getListLink(com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE)%></td>
 		<%
 			}
-			if (permissions.canSeeAudit(AuditType.DA)) {
+					if (permissions.canSeeAudit(AuditType.DA)) {
 		%>
 		<td align="center"><%=sBean.getListLink(com.picsauditing.PICS.pqf.Constants.DA_TYPE)%></td>
 		<%
 			}
-			if (permissions.canSeeAudit(AuditType.OFFICE)) {
+					if (permissions.canSeeAudit(AuditType.OFFICE)) {
 		%>
 		<td align="center"><%=sBean.getListLink(com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE)%></td>
 		<%

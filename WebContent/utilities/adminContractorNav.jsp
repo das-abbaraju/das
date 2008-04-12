@@ -33,4 +33,4 @@ for(int key : cBean.getAudits().keySet()) {
 <a class="blueMain" href="audit_view.jsp?id=<%=id%>">View</a> |
 <a class="blueMain" href="audit_editRequirements.jsp?id=<%=id%>">Edit RQs</a> |
 <a class="blueMain" href="audit_viewRequirements.jsp?id=<%=id%>">View RQs</a>
-</center>
+</div>

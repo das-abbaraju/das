@@ -6,15 +6,14 @@
 <jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<%try{
-	//3/5/05 if audit has not been submitted (questiosn frozen), the audit data is deleted and inserted rather than updated
-	// 12/20/04 jj - added timeOutWarning, timeOut javascripts, timedOut hidden form field
-	
-	String auditType = request.getParameter("auditType");
-	if (null==auditType || "".equals(auditType))
-		auditType = com.picsauditing.PICS.pqf.Constants.PQF_TYPE;
-	String conID = request.getParameter("id");
-	String id = request.getParameter("id");
+<%@page import="com.picsauditing.actions.audits.ContractorAuditLegacy"%>
+<%
+ContractorAuditLegacy action = new ContractorAuditLegacy();
+action.setAuditID(request.getParameter("auditID"));
+String auditType = action.getAudit().getAuditType().getLegacyCode();
+String conID = ((Integer) action.getAudit().getContractorAccount().getId()).toString();
+String id = conID;
+try {
 	String catID = request.getParameter("catID");
 	boolean isCategorySelected = (null != catID && !"0".equals(catID));
 	boolean isOSHA = pcBean.OSHA_CATEGORY_ID.equals(catID);
@@ -31,7 +30,7 @@
 		response.sendRedirect("pqf_viewNCMS.jsp?id="+conID+"&auditType="+auditType);
 		return;
 	}//if	 
-	pdBean.setFromDB(conID,catID);
+	pdBean.setFromDB(action.getAuditID(), conID, catID);
 	if (isCategorySelected)
 		psBean.setPQFSubCategoriesArray(catID);
 		int catCount = 0;
@@ -66,16 +65,16 @@
 <%	}//if%>
 <%	if (!com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType)) { %>
               <tr align="center">
-                <form name="form1" method="post" action="pqf_view.jsp">
-                  <td><%=pcBean.getPqfCategorySelectDefaultSubmit("catID","blueMain",catID,auditType)%></td>
+                <td><form name="form1" method="post" action="pqf_view.jsp">
+                  <%=pcBean.getPqfCategorySelectDefaultSubmit("catID","blueMain",catID, action.getAuditID())%>
                   <input type="hidden" name="id" value="<%=conID%>">
                   <input type="hidden" name="auditType" value="<%=auditType%>">
                 </form>
+                </td>
               </tr>
 <%	}//if
 	if (isCategorySelected) {
-		pcBean.setFromDBWithData(catID,conID);
-//		pcBean.setFromDB(catID);
+		pcBean.setFromDBWithData(catID, action.getAuditID());
 %>
               <tr align="center">
                 <td class="blueMain">
@@ -168,7 +167,7 @@
 %>
                     <tr class="blueMain" <%=Utilities.getBGColor(catCount)%>>
                       <td align=right><%=catCount%>.</td>
-                      <td><a href="pqf_view.jsp?auditType=<%=auditType%>&catID=<%=pcBean.catID%>&id=<%=conID%>"><%=pcBean.category%></a></td>
+                      <td><a href="pqf_view.jsp?auditID=<%=action.getAuditID()%>&catID=<%=pcBean.catID%>"><%=pcBean.category%></a></td>
 <%				String showPercent = "";
 				if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType) || com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(auditType) || com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(auditType))
 					showPercent = pcBean.percentVerified;
