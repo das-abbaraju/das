@@ -187,46 +187,6 @@
                         <td><input name="logo_file" type="FILE" class="forms" size="15"></td>
                       </tr>
                       <tr>
-                        <td class="blueMain" align="right">Audit Date</td>
-                        <td class="blueMain"><input name="auditDate" id="auditDate" type="text" class="forms" size="10" onClick="cal1.select(document.forms[0].auditDate,'auditDate','M/d/yy','<%=cBean.auditDate%>'); return false;" value="<%=cBean.auditDate%>">
-						</td>
-                      </tr>
-					  <tr>
-                        <td class="blueMain" align="right">Last Audit Date</td>
-                        <td class="blueMain"><a href="servlet/showpdf?id=<%=editID%>&file=audit"><%=cBean.lastAuditDate%></a></td>
-                      </tr>
-                      <tr>
-                        <td class="blueMain" align="right">Audit Valid Until</td>
-                        <td class="blueMain"><input name="auditValidUntilDate" id="auditValidUntilDate" type="text" class="forms" size="10" onClick="cal1.select(document.forms[0].auditValidUntilDate,'auditValidUntilDate','M/d/yy','<%=cBean.auditValidUntilDate%>'); return false;" value="<%=cBean.auditValidUntilDate%>"></td>
-                      </tr>
-                      <tr>
-                        <td class="blueMain" align="right">Desktop Valid Until</td>
-                        <td class="blueMain"><input name="desktopValidUntilDate" id="desktopValidUntilDate" type="text" class="forms" size="10" onClick="cal1.select(document.forms[0].desktopValidUntilDate,'desktopValidUntilDate','M/d/yy','<%=cBean.desktopValidUntilDate%>'); return false;" value="<%=cBean.desktopValidUntilDate%>"></td>
-                      </tr>
-					  <tr>
-                        <td class="blueMain" align="right"><nobr>PQF Auditor</nobr></td>
-					    <td class="blueMain"><%=AUDITORS.getAuditorsSelect("pqfAuditor_id", "blueMain",cBean.pqfAuditor_id)%></td>
-					  </tr>
-					  <tr>
-                        <td class="blueMain" align="right"><nobr>Desktop Auditor</nobr><input type="hidden" name="oldDesktopAuditor_id" value="<%=cBean.desktopAuditor_id%>"></td>
-					    <td class="blueMain"><%=AUDITORS.getAuditorsSelect("desktopAuditor_id", "blueMain",cBean.desktopAuditor_id)%>
-						  Assigned: <%=cBean.desktopAssignedDate%></td>
-					  </tr>
-					  <tr>
-                        <td class="blueMain" align="right"><nobr>D&A Auditor</nobr><input type="hidden" name="oldDaAuditor_id" value="<%=cBean.daAuditor_id%>"></td>
-					    <td class="blueMain"><%=AUDITORS.getAuditorsSelect("daAuditor_id", "blueMain",cBean.daAuditor_id)%>
-						  Assigned: <%=cBean.daAssignedDate%></td>
-					  </tr>
-					  <tr>
-                        <td class="blueMain" align="right"><nobr>Office Auditor</nobr><input type="hidden" name="oldAuditor_id" value="<%=cBean.auditor_id%>"></td>
-					    <td class="blueMain"><%=AUDITORS.getAuditorsSelect("auditor_id", "blueMain",cBean.auditor_id)%>
-						  Assigned: <%=cBean.assignedDate%></td>
-					  </tr>
-                      <tr>
-                        <td class="blueMain" align="right">Audit Location</td>
-                        <td class="blueMain" align="left"><%=Inputs.getRadioInput("auditLocation","blueMain",cBean.auditLocation,ContractorBean.AUDIT_LOCATION_ARRAY)%></td>
-                      </tr>
-                      <tr>
                         <td class="blueMain" align="right">Co. Brochure<%=cBean.getIsBrochureFile()%></td>
                         <td><input name="brochure_file" type="FILE" class="forms" size="15"></td>
                       </tr>
@@ -285,18 +245,6 @@
                         <td class="redMain" align="left"><%=cBean.getAccountDate()%></td>
                       </tr>
                       <tr>
-                        <td class="blueMain" align="right">PQF Date:</td>
-                        <td class="redMain" align="left"><%=cBean.pqfSubmittedDate%></td>
-                      </tr>
-                      <tr>
-                        <td class="blueMain" align="right">Audit Completed:</td>
-                        <td class="redMain" align="left"><%=cBean.auditCompletedDate%></td>
-                      </tr>
-                      <tr>
-                        <td class="blueMain" align="right">RQs Closed:</td>
-                        <td class="redMain" align="left"><%=cBean.auditClosedDate%></td>
-                      </tr>
-                      <tr>
                         <td class="blueMain" align="right">Last Login:</td>
                         <td class="redMain" align="left"><%=aBean.lastLogin%></td>
                       </tr>
@@ -310,14 +258,6 @@
                       <tr>
                         <td class="blueMain" align="right"><nobr>Only Certificates?</nobr></td>
                         <td class="blueMain" align="left"> <%=Inputs.getYesNoRadio("isOnlyCerts","forms",cBean.isOnlyCerts)%></td>
-                      </tr>
-                      <tr>
-                        <td class="blueMain" align="right">Can Edit PQF</td>
-                        <td class="blueMain" align="left"><%=Inputs.getYesNoRadio("canEditPrequal","blueMain",cBean.canEditPrequal)%></td>
-                      </tr>
-                      <tr>
-                        <td class="blueMain" align="right">Can Edit Desktop</td>
-                        <td class="blueMain" align="left"><%=Inputs.getYesNoRadio("canEditDesktop","blueMain",cBean.canEditDesktop)%></td>
                       </tr>
                       <tr>
                         <td class="blueMain" align="right">Must Pay</td>

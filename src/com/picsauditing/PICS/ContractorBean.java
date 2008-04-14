@@ -851,18 +851,12 @@ public class ContractorBean extends DataBean {
 		trades = SQLResult.getString("trades");
 		subTrades = SQLResult.getString("subTrades");
 		logo_file = SQLResult.getString("logo_file");
-		auditor_id = SQLResult.getString("auditor_id"); //MULTIAUDIT remove
 		welcomeAuditor_id = SQLResult.getString("welcomeAuditor_id");
-		desktopAuditor_id = SQLResult.getString("desktopAuditor_id"); //MULTIAUDIT remove
-		daAuditor_id = SQLResult.getString("daAuditor_id"); //MULTIAUDIT remove
-		pqfAuditor_id = SQLResult.getString("pqfAuditor_id"); //MULTIAUDIT remove
-		auditHour = SQLResult.getString("auditHour"); //MULTIAUDIT remove
-		auditAmPm = SQLResult.getString("auditAmPm"); //MULTIAUDIT remove
 		brochure_file = SQLResult.getString("brochure_file");
 		//fix ms word apostrophes changed to ?
 		description = SQLResult.getString("description");
 		//fix ms word cut & paste bug, change ? back to apostrophes 
-		//checks to see if space after ? so real question marks aren't changed		
+		//checks to see if space after ? so real question marks aren't changed
 		//bj 2-21-05
 	//	if (description.indexOf('?') > -1)  {
 	//		if (!(description.charAt(description.indexOf('?')+1) ==  ' '))					
@@ -875,48 +869,13 @@ public class ContractorBean extends DataBean {
 
 		notes = SQLResult.getString("notes");
 		adminNotes = SQLResult.getString("adminNotes");
-		canEditPrequal = SQLResult.getString("canEditPrequal"); //MULTIAUDIT remove
-		canEditDesktop = SQLResult.getString("canEditDesktop"); //MULTIAUDIT remove
 		mustPay = SQLResult.getString("mustPay");
-		auditStatus = SQLResult.getString("auditStatus"); //MULTIAUDIT remove
 		requestedByID = SQLResult.getString("requestedByID");
 		billingAmount = SQLResult.getString("billingAmount");
 		billingCycle = SQLResult.getString("billingCycle");
 		isExempt = SQLResult.getString("isExempt");
 		hasExpiredCerts = SQLResult.getString("hasExpiredCerts");
 		isOnlyCerts = SQLResult.getString("isOnlyCerts");
-		auditLocation = SQLResult.getString("auditLocation"); //MULTIAUDIT remove
-		desktopPercent = SQLResult.getString("desktopPercent"); //MULTIAUDIT remove
-		desktopVerifiedPercent = SQLResult.getString("desktopVerifiedPercent"); //MULTIAUDIT remove
-		officePercent = SQLResult.getString("officePercent"); //MULTIAUDIT remove
-		officeVerifiedPercent = SQLResult.getString("officeVerifiedPercent"); //MULTIAUDIT remove
-		daPercent = SQLResult.getString("daPercent"); //MULTIAUDIT remove
-		daVerifiedPercent = SQLResult.getString("daVerifiedPercent"); //MULTIAUDIT remove
-		pqfPercent = SQLResult.getString("pqfPercent"); //MULTIAUDIT remove
-		hasNCMSDesktop = SQLResult.getString("hasNCMSDesktop"); //MULTIAUDIT remove
-		isNewOfficeAudit = SQLResult.getString("isNewOfficeAudit"); //MULTIAUDIT remove
-
-		pqfSubmittedDate = DateBean.toShowFormat(SQLResult.getString("pqfSubmittedDate")); //MULTIAUDIT remove
-		desktopAssignedDate = DateBean.toShowFormat(SQLResult.getString("desktopAssignedDate")); //MULTIAUDIT remove
-		desktopSubmittedDate = DateBean.toShowFormat(SQLResult.getString("desktopSubmittedDate")); //MULTIAUDIT remove
-		desktopCompletedDate = DateBean.toShowFormat(SQLResult.getString("desktopCompletedDate")); //MULTIAUDIT remove
-		desktopClosedDate = DateBean.toShowFormat(SQLResult.getString("desktopClosedDate")); //MULTIAUDIT remove
-		desktopValidUntilDate = DateBean.toShowFormat(SQLResult.getString("desktopValidUntilDate")); //MULTIAUDIT remove
-		
-		daAssignedDate = DateBean.toShowFormat(SQLResult.getString("daAssignedDate")); //MULTIAUDIT remove
-		daSubmittedDate = DateBean.toShowFormat(SQLResult.getString("daSubmittedDate")); //MULTIAUDIT remove
-		daClosedDate = DateBean.toShowFormat(SQLResult.getString("daClosedDate")); //MULTIAUDIT remove
-		daRequired = SQLResult.getString("daRequired"); //MULTIAUDIT remove
-
-		assignedDate =  DateBean.toShowFormat(SQLResult.getString("assignedDate")); //MULTIAUDIT remove
-		auditDate = DateBean.toShowFormat(SQLResult.getString("auditDate")); //MULTIAUDIT remove
-		lastAuditDate = DateBean.toShowFormat(SQLResult.getString("lastAuditDate")); //MULTIAUDIT remove
-		auditCompletedDate = DateBean.toShowFormat(SQLResult.getString("auditCompletedDate")); //MULTIAUDIT remove
-		auditClosedDate = DateBean.toShowFormat(SQLResult.getString("auditClosedDate")); //MULTIAUDIT remove
-		auditValidUntilDate = DateBean.toShowFormat(SQLResult.getString("auditValidUntilDate")); //MULTIAUDIT remove
-		
-		officeSubmittedDate = DateBean.toShowFormat(SQLResult.getString("officeSubmittedDate")); //MULTIAUDIT remove
-		officeClosedDate = DateBean.toShowFormat(SQLResult.getString("officeClosedDate")); //MULTIAUDIT remove
 
 		accountDate = DateBean.toShowFormat(SQLResult.getString("accountDate"));
 		membershipDate = DateBean.toShowFormat(SQLResult.getString("membershipDate"));
@@ -926,10 +885,10 @@ public class ContractorBean extends DataBean {
 		lastPaymentAmount = SQLResult.getString("lastPaymentAmount");
 		
 		paymentExpires = DateBean.toShowFormat(SQLResult.getString("paymentExpires"));
-		lastAuditEmailDate = DateBean.toShowFormat(SQLResult.getString("lastAuditEmailDate")); //MULTIAUDIT remove
 		lastInvoiceDate = DateBean.toShowFormat(SQLResult.getString("lastInvoiceDate"));
 		lastAnnualUpdateEmailDate = DateBean.toShowFormat(SQLResult.getString("lastAnnualUpdateEmailDate"));
 
+		auditStatus = SQLResult.getString("auditStatus"); //MULTIAUDIT remove
 		auditStatus = calcAuditStatus(); //MULTIAUDIT might change
 		
 //second contact
@@ -946,32 +905,20 @@ public class ContractorBean extends DataBean {
 		riskLevel = SQLResult.getString("riskLevel");
 		annualUpdateEmails = SQLResult.getInt("annualUpdateEmails");
 		oqEmployees = SQLResult.getString("oqEmployees");
-		
 	}//setFromResultSet
 
 	public void writeToDB() throws Exception {
-		if ("".equals(auditLocation)) //MULTIAUDIT remove
-			auditLocation= "On Site";	
 		String updateQuery = "UPDATE contractor_info SET "+
 			"taxID='"+eqDB(taxID)+
 			"',main_trade='"+main_trade+
 			"',trades='"+ trades+
 			"',subTrades='"+subTrades+ 
 			"',logo_file='"+logo_file+
-			"',auditHour='"+auditHour+ //MULTIAUDIT remove
-			"',auditAmPm='"+auditAmPm+ //MULTIAUDIT remove
 			"',brochure_file='"+brochure_file+
 			"',status='"+calcPICSStatus()+
-			"',auditStatus='"+calcAuditStatus()+ //MULTIAUDIT remove
 			"',certs='"+certs+
-			"',canEditPrequal='"+canEditPrequal+ //MULTIAUDIT remove
-			"',canEditDesktop='"+canEditDesktop+ //MULTIAUDIT remove
 			"',mustPay='"+mustPay+
-			"',auditor_id='"+auditor_id+ //MULTIAUDIT remove
 			"',welcomeAuditor_id='"+welcomeAuditor_id+
-			"',desktopAuditor_id='"+desktopAuditor_id+ //MULTIAUDIT remove
-			"',daAuditor_id='"+daAuditor_id+ //MULTIAUDIT remove
-			"',pqfAuditor_id='"+pqfAuditor_id+ //MULTIAUDIT remove
 			"',requestedByID='"+requestedByID+
 			"',billingAmount='"+billingAmount+
 			"',billingCycle='"+billingCycle+
@@ -979,38 +926,6 @@ public class ContractorBean extends DataBean {
 			//"',isExempt='"+isExempt+
 			"',hasExpiredCerts='"+hasExpiredCerts+
 			"',isOnlyCerts='"+isOnlyCerts+
-			"',auditLocation='"+auditLocation+ //MULTIAUDIT remove
-			"',desktopPercent='"+desktopPercent+ //MULTIAUDIT remove
-			"',desktopVerifiedPercent='"+desktopVerifiedPercent+ //MULTIAUDIT remove
-			"',officePercent='"+officePercent+ //MULTIAUDIT remove
-			"',officeVerifiedPercent='"+officeVerifiedPercent+ //MULTIAUDIT remove
-			"',daPercent='"+daPercent+ //MULTIAUDIT remove
-			"',daVerifiedPercent='"+daVerifiedPercent+ //MULTIAUDIT remove
-			"',pqfPercent='"+pqfPercent+ //MULTIAUDIT remove
-			"',hasNCMSDesktop='"+hasNCMSDesktop+ //MULTIAUDIT remove
-			"',isNewOfficeAudit='"+isNewOfficeAudit+ //MULTIAUDIT remove
-
-			"',pqfSubmittedDate='"+DateBean.toDBFormat(pqfSubmittedDate)+ //MULTIAUDIT remove
-			"',desktopAssignedDate='"+DateBean.toDBFormat(desktopAssignedDate)+ //MULTIAUDIT remove
-			"',desktopSubmittedDate='"+DateBean.toDBFormat(desktopSubmittedDate)+ //MULTIAUDIT remove
-			"',desktopCompletedDate='"+DateBean.toDBFormat(desktopCompletedDate)+ //MULTIAUDIT remove
-			"',desktopClosedDate='"+DateBean.toDBFormat(desktopClosedDate)+ //MULTIAUDIT remove
-			"',desktopValidUntilDate='"+DateBean.toDBFormat(desktopValidUntilDate)+ //MULTIAUDIT remove
-			
-			"',daAssignedDate='"+DateBean.toDBFormat(daAssignedDate)+ //MULTIAUDIT remove
-			"',daSubmittedDate='"+DateBean.toDBFormat(daSubmittedDate)+ //MULTIAUDIT remove
-			"',daClosedDate='"+DateBean.toDBFormat(daClosedDate)+ //MULTIAUDIT remove
-			"',daRequired='"+eqDB(daRequired)+ //MULTIAUDIT remove
-
-			"',assignedDate='"+DateBean.toDBFormat(assignedDate)+ //MULTIAUDIT remove
-			"',auditDate='"+DateBean.toDBFormat(auditDate)+ //MULTIAUDIT remove
-			"',lastAuditDate='"+DateBean.toDBFormat(lastAuditDate)+ //MULTIAUDIT remove
-			"',auditCompletedDate='"+DateBean.toDBFormat(auditCompletedDate)+ //MULTIAUDIT remove
-			"',auditClosedDate='"+DateBean.toDBFormat(auditClosedDate)+ //MULTIAUDIT remove
-			"',auditValidUntilDate='"+DateBean.toDBFormat(auditValidUntilDate)+ //MULTIAUDIT remove
-			
-			"',officeSubmittedDate='"+DateBean.toDBFormat(officeSubmittedDate)+ //MULTIAUDIT remove
-			"',officeClosedDate='"+DateBean.toDBFormat(officeClosedDate)+ //MULTIAUDIT remove
 
 			"',accountDate='"+DateBean.toDBFormat(accountDate)+
 			"',membershipDate='"+DateBean.toDBFormat(membershipDate)+
@@ -1019,7 +934,6 @@ public class ContractorBean extends DataBean {
 			"',lastPayment='"+DateBean.toDBFormat(lastPayment) +
 			"',lastPaymentAmount='"+lastPaymentAmount+
 			"',paymentExpires='"+DateBean.toDBFormat(paymentExpires)+
-			"',lastAuditEmailDate='"+DateBean.toDBFormat(lastAuditEmailDate)+ //MULTIAUDIT remove
 			"',lastInvoiceDate='"+DateBean.toDBFormat(lastInvoiceDate)+
 			"',lastAnnualUpdateEmailDate='"+DateBean.toDBFormat(lastAnnualUpdateEmailDate)+
 //second contact
@@ -1042,7 +956,6 @@ public class ContractorBean extends DataBean {
 		updateQuery+="' WHERE id="+id+";";
 		try {
 			DBReady();
-			//System.out.println(updateQuery);
 			SQLStatement.executeUpdate(updateQuery);
 		}finally{
 			DBClose();
@@ -1105,13 +1018,6 @@ public class ContractorBean extends DataBean {
 		Map<String,String> m = (Map<String,String>)r.getAttribute("uploadfields");
 		taxID = m.get("taxID");
 		main_trade = m.get("main_trade");
-		auditDate = m.get("auditDate"); //MULTIAUDIT remove
-		auditValidUntilDate = m.get("auditValidUntilDate"); //MULTIAUDIT remove
-		desktopValidUntilDate = m.get("desktopValidUntilDate"); //MULTIAUDIT remove
-		pqfAuditor_id = m.get("pqfAuditor_id"); //MULTIAUDIT remove
-		desktopAuditor_id = m.get("desktopAuditor_id"); //MULTIAUDIT remove
-		daAuditor_id = m.get("daAuditor_id"); //MULTIAUDIT remove
-		auditor_id = m.get("auditor_id"); //MULTIAUDIT remove
 		setDescription(m.get("description"));
 		status = m.get("status");
 		mustPay = m.get("mustPay");
@@ -1121,15 +1027,12 @@ public class ContractorBean extends DataBean {
 		
 		membershipDate = m.get("membershipDate");
 		lastInvoiceDate = m.get("lastInvoiceDate");
-		canEditPrequal = m.get("canEditPrequal"); //MULTIAUDIT remove
-		canEditDesktop = m.get("canEditDesktop"); //MULTIAUDIT remove
 		requestedByID = m.get("requestedByID");
 		billingAmount = m.get("billingAmount");
 		billingCycle = m.get("billingCycle");
 		// We only set this via the BillingContractor class now
 		//isExempt = m.get("isExempt");
 		isOnlyCerts = m.get("isOnlyCerts");
-		auditLocation = m.get("auditLocation"); //MULTIAUDIT remove
 		setTrades = m.get("trades");
 //		second contact
 		secondContact = m.get("secondContact");
@@ -1146,13 +1049,6 @@ public class ContractorBean extends DataBean {
 		//setTrades(m.getValues("trades"));
 // jj 10/28/06	setGeneralContractors(m.getValues("generalContractors"));
 		
-		if (!desktopAuditor_id.equals(m.get("oldDesktopAuditor_id"))) //MULTIAUDIT remove
-			desktopAssignedDate = DateBean.getTodaysDate();
-		if (!daAuditor_id.equals(m.get("oldDaAuditor_id"))) //MULTIAUDIT remove
-			daAssignedDate = DateBean.getTodaysDate();
-		if (!auditor_id.equals(m.get("oldAuditor_id"))) //MULTIAUDIT remove
-			assignedDate = DateBean.getTodaysDate();
-
 		if (num_of_trades == 0){
 			num_of_trades++;
 			trades = "1;" + main_trade + ";";
@@ -1546,22 +1442,18 @@ public class ContractorBean extends DataBean {
 		}//finally
 	}
 
-	public boolean isExempt() {
-	//MULTIAUDIT remove
-		return isAudited();
-	}
 	
 	public boolean isAudited() {
 	//MULTIAUDIT remove
-		return "Yes".equals(this.isExempt);
+//		return "Yes".equals(this.isExempt);
 	}
 	public void isAudited(boolean value) {
 	//MULTIAUDIT remove
-		if (value)
+/*		if (value)
 			this.isExempt = "No";
 		else
 			this.isExempt = "Yes";
-	}
+*/	}
 
 	public void convertTrades() throws Exception {
 		try {
@@ -1602,14 +1494,14 @@ public class ContractorBean extends DataBean {
 
 	public boolean mustForceUpdatePQF() throws Exception {
 	//MULTIAUDIT remove
-		if ("".equals(pqfSubmittedDate))
+/*		if ("".equals(pqfSubmittedDate))
 			return false;
 		try{
 			return DateBean.isFirstBeforeSecond(pqfSubmittedDate,"12/31/05");
 		}catch(Exception ex){
 			return false;
 		}//catch
-	}//mustForceUpatePFQ
+*/	}//mustForceUpatePFQ
 
 	public String getAuditSubmittedDate(String auditType) {
 		//MULTIAUDIT change
