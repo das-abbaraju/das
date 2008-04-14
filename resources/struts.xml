@@ -25,6 +25,11 @@
 			<result>users_manage.jsp</result>
 		</action>
 
+		<action name="ContractorView"
+			class="com.picsauditing.actions.contractors.ContractorView">
+			<result>contractor_view.jsp</result>
+		</action>
+
 		<action name="FacilitiesGetAjax"
 			class="com.picsauditing.actions.operators.FacilitiesGet">
 			<result>includes/facilitySelect.jsp</result>
@@ -42,12 +47,28 @@
 		<action name="VerifyView"
 			class="com.picsauditing.actions.audits.VerifyView">
 			<result>pqf_verification_detail.jsp</result>
-			<result name="input">pqf_verification.jsp</result>
 		</action>
-		
+		<action name="VerifySaveFollowUpAjax" method="saveFollowUp"
+			class="com.picsauditing.actions.audits.VerifyView">
+			<result>includes/blank.jsp</result>
+		</action>
+		<action name="VerifySwitchFilesAjax" method="switchFiles"
+			class="com.picsauditing.actions.contractors.SwitchFiles">
+			<result>includes/blank.jsp</result>
+		</action>
+		<action name="VerifySendEmailAjax" method="sendEmail"
+			class="com.picsauditing.actions.audits.VerifyView">
+			<result>includes/blank.jsp</result>
+		</action>
+
 		<action name="ConAuditList"
 			class="com.picsauditing.actions.audits.ConAuditList">
 			<result>contractor_audits.jsp</result>
+		</action>
+
+		<action name="AuditTypeChoose"
+			class="com.picsauditing.actions.auditType.AuditTypeChoose">
+			<result>audit_selectType.jsp</result>
 		</action>
 	</package>
 </struts>
