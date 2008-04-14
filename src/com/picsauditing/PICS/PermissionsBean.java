@@ -167,10 +167,6 @@ public class PermissionsBean extends DataBean {
 		return false;
 	}
 
-	public String getWhoIsDetail(){
-		return getPermissions().getName()+","+getPermissions().getUsername();
-	}
-	
 	public Permissions getPermissions() {
 		if (this.permissions == null) permissions = new Permissions();
 		return permissions;

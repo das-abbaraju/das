@@ -60,7 +60,7 @@ try{
 			pcBean.generateDynamicCategories(actionID, com.picsauditing.PICS.pqf.Constants.PQF_TYPE, cBean.riskLevel);
 			cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
 			cBean.canEditPrequal="Yes";
-			cBean.addNote(actionID,"("+pBean.getWhoIsDetail()+")", "Added this Contractor to "+aBean.name+"'s db", DateBean.getTodaysDateTime());
+			cBean.addNote(actionID, permissions.getUsername(), "Added this Contractor to "+aBean.name+"'s db", DateBean.getTodaysDateTime());
 			cBean.writeToDB();
 			EmailBean.sendUpdateDynamicPQFEmail(actionID);
 			new FlagCalculator().setConFlags(actionID,permissions.getAccountIdString());
@@ -74,7 +74,7 @@ try{
 			cBean.setFromDB(actionID);
 			AccountBean aBean = new AccountBean();
 			aBean.setFromDB(pBean.userID);
-			cBean.addNote(actionID, "", pBean.userName+" from "+aBean.name+" removed contractor from its db", DateBean.getTodaysDateTime());
+			cBean.addNote(actionID, "", permissions.getUsername()+" from "+aBean.name+" removed contractor from its db", DateBean.getTodaysDateTime());
 			
 			com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
 			com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();

@@ -52,7 +52,7 @@ for(int key : cBean.getAudits().keySet()) {
 }
 
 String tempAuditType = com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE;
-if (pBean.canVerifyAudit(tempAuditType, id) && !cBean.isAuditClosed()) {
+if (pBean.canVerifyAudit(tempAuditType, id)) {
 	%>
 	<strong>Office</strong>:
 	<a class="blueMain" href="audit_edit.jsp?id=<%=id%>">Edit</a>

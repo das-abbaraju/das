@@ -7,7 +7,7 @@
 <jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean" scope ="page"/>
 <%
 if (!permissions.isAdmin()) throw new com.picsauditing.access.NoRightsException("Admin");
-try{
+try {
 	com.picsauditing.PICS.pqf.QuestionTypeList statesLicensedInList = new com.picsauditing.PICS.pqf.QuestionTypeList();
 	tBean.setFromDB();
 

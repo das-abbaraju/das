@@ -1311,7 +1311,7 @@ public class ContractorBean extends DataBean {
 				while (li.hasNext()) {
 					String genID = (String)li.next();
 					replaceQuery += "("+id+","+genID+",NOW()),";
-					addNote(id,"("+pBean.getWhoIsDetail()+")", "Added this Contractor to "+FACILITIES.getNameFromID(genID)+"'s db", DateBean.getTodaysDateTime());
+					addNote(id,pBean.getPermissions().getUsername(), "Added this Contractor to "+FACILITIES.getNameFromID(genID)+"'s db", DateBean.getTodaysDateTime());
 				}//while
 				replaceQuery = replaceQuery.substring(0,replaceQuery.length()-1) + ";";
 				SQLStatement.executeUpdate(replaceQuery);
@@ -1355,12 +1355,12 @@ public class ContractorBean extends DataBean {
 	public void addNote(String conID, String pre, String newNote, String notesDate) throws Exception {
 		notes = notesDate+" "+pre+": "+newNote+"\n"+notes;
 		isNotesChanged = true;
-	}//addNote
+	}
 
 	public void addAdminNote(String conID, String pre, String newNote, String notesDate) throws Exception {
 		adminNotes = notesDate+" "+pre+": "+newNote+"\n"+adminNotes;
 		isAdminNotesChanged = true;
-	}//addAdminNote
+	}
 	
 	public void submitPQF(String conID, Permissions permissions, String auditType) throws Exception {
 	//MULTIAUDIT change
