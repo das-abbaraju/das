@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -20,6 +21,7 @@ import com.picsauditing.jpa.entities.OshaLog;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
+@Transactional
 public class ContractorAccountDAOTest {
 	@Autowired
 	ContractorAccountDAO contractoraccountDAO;
@@ -78,9 +80,9 @@ public class ContractorAccountDAOTest {
 	@Test
 	public void testFind() {
 		ContractorAccount contractoraccount = contractoraccountDAO.find(3);
-		//for (OshaLog osha : contractoraccount.getOshas()) {
-		//	assertEquals(0, osha.getFatalities1());
-		//}
+		for (OshaLog osha : contractoraccount.getOshas()) {
+			assertEquals(0, osha.getFatalities1());
+		}
 		assertEquals("123456789", contractoraccount.getTaxId());
 	}
 
