@@ -6,7 +6,6 @@ import com.picsauditing.search.SelectAccount;
 public class ReportAccountNCMS extends ReportAccount {
 	
 	public ReportAccountNCMS(Report report, SelectAccount sql) {
-		super();
 		this.report = report;
 		this.sql = sql;
 	}
@@ -27,6 +26,6 @@ public class ReportAccountNCMS extends ReportAccount {
 		sql.addField("d.ContractorsName");
 		sql.addField("d.lastReview");
 		
-		return super.execute();
+		return run();
 	}
 }

@@ -16,7 +16,7 @@ public class ReportAccount extends ReportActionSupport {
 		this.sql = sql;
 	}
 
-	public String execute() throws Exception {
+	public String run() throws Exception {
 		if (this.orderBy == null)
 			this.orderBy = "a.name";
 		sql.setType(SelectAccount.Type.Contractor);

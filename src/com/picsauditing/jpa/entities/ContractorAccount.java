@@ -24,9 +24,9 @@ import com.picsauditing.access.Permissions;
 
 @Entity
 @Table(name = "contractor_info")
-@PrimaryKeyJoinColumn(name="id")
-public class ContractorAccount extends Account implements java.io.Serializable{
-	
+@PrimaryKeyJoinColumn(name = "id")
+public class ContractorAccount extends Account implements java.io.Serializable {
+
 	private String taxId;
 	private String mainTrade;
 	private String trades;
@@ -36,20 +36,19 @@ public class ContractorAccount extends Account implements java.io.Serializable{
 	private String description;
 	private String status;
 	private int certs;
+	private Date accountDate;
 	private Date welcomeEmailDate;
 	private String paid;
 	private Date lastPayment;
 	private int lastPaymentAmount;
 	private Date lastInvoiceDate;
-	private String canEditPrequal;
-	private String canEditDesktop;
-	private Date lastAuditEmailDate;
-	private Date accountDate;
 	private char accountNewComplete;
 	private String notes;
 	private String adminNotes;
 	private String mustPay;
 	private Date paymentExpires;
+	private Date lastAnnualUpdateEmailDate;
+	private int requestedById;
 	private int billingCycle;
 	private int billingAmount;
 	private String isExempt;
@@ -67,56 +66,15 @@ public class ContractorAccount extends Account implements java.io.Serializable{
 	private Date welcomeCallDate;
 	private int welcomeAuditorId;
 	private LowMedHigh riskLevel;
-	
+
 	private int annualUpdateEmails;
-	private String daRequired;
-	private Date tempAuditDateTime;
 	private String oqEmployees;
-	
-	
-	// Audit fields to be removed
-	private Date auditDate;
-	private Date lastAuditDate;
-	private String auditHour;
-	private String auditAmPm;
-	private String prequalFile;
-	private Date pqfSubmittedDate;
-	private Date desktopSubmittedDate;
-	private Date lastAnnualUpdateEmailDate;
-	private int auditorId;
-	private int desktopAuditorId;
-	private int daAuditorId;
-	private int pqfAuditorId;
-	private Date assignedDate;
-	private char isPrequalOk;
-	private String auditStatus;
-	private Date auditCompletedDate;
-	private Date auditClosedDate;
-	private Date desktopAssignedDate;
-	private Date desktopCompletedDate;
-	private Date desktopClosedDate;
-	private Date daAssignedDate;
-	private Date daSubmittedDate;
-	private Date daClosedDate;
-	private Date officeSubmittedDate;
-	private Date officeClosedDate;
-	private int requestedById;
-	private String auditLocation;
-	private int desktopPercent;
-	private int desktopVerifiedPercent;
-	private int officePercent;
-	private int officeVerifiedPercent;
-	private int daPercent;
-	private int daVerifiedPercent;
-	private int pqfPercent;
-	private String hasNcmsdesktop;
-	private String isNewOfficeAudit;
 
 	protected List<OshaLog> oshas;
 	protected List<ContractorAudit> audits;
 	protected List<ContractorOperator> operators;
-	
-	@OneToMany(mappedBy = "contractorAccount", cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+
+	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
 	public List<OshaLog> getOshas() {
 		return oshas;
 	}
@@ -133,9 +91,9 @@ public class ContractorAccount extends Account implements java.io.Serializable{
 	public void setAudits(List<ContractorAudit> audits) {
 		this.audits = audits;
 	}
-	
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contractorAccount")
-	//@OrderBy("operatorName")
+	// @OrderBy("operatorName")
 	public List<ContractorOperator> getOperators() {
 		return this.operators;
 	}
@@ -143,8 +101,8 @@ public class ContractorAccount extends Account implements java.io.Serializable{
 	public void setOperators(List<ContractorOperator> operators) {
 		this.operators = operators;
 	}
-	
-	///////////// GETTERS/SETTERS /////////////////
+
+	// /////////// GETTERS/SETTERS /////////////////
 	@Column(name = "taxID", nullable = true, length = 100)
 	public String getTaxId() {
 		return this.taxId;
@@ -188,73 +146,6 @@ public class ContractorAccount extends Account implements java.io.Serializable{
 
 	public void setLogoFile(String logoFile) {
 		this.logoFile = logoFile;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "auditDate", nullable = true, length = 10)
-	public Date getAuditDate() {
-		return this.auditDate;
-	}
-
-	public void setAuditDate(Date auditDate) {
-		this.auditDate = auditDate;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "lastAuditDate", nullable = true, length = 10)
-	public Date getLastAuditDate() {
-		return this.lastAuditDate;
-	}
-
-	public void setLastAuditDate(Date lastAuditDate) {
-		this.lastAuditDate = lastAuditDate;
-	}
-
-	@Column(name = "auditHour", nullable = true, length = 10)
-	public String getAuditHour() {
-		return this.auditHour;
-	}
-
-	public void setAuditHour(String auditHour) {
-		this.auditHour = auditHour;
-	}
-
-	@Column(name = "auditAmPm", nullable = true, length = 2)
-	public String getAuditAmPm() {
-		return this.auditAmPm;
-	}
-
-	public void setAuditAmPm(String auditAmPm) {
-		this.auditAmPm = auditAmPm;
-	}
-
-	@Column(name = "prequal_file", nullable = true, length = 3)
-	public String getPrequalFile() {
-		return this.prequalFile;
-	}
-
-	public void setPrequalFile(String prequalFile) {
-		this.prequalFile = prequalFile;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "pqfSubmittedDate", nullable = true, length = 10)
-	public Date getPqfSubmittedDate() {
-		return this.pqfSubmittedDate;
-	}
-
-	public void setPqfSubmittedDate(Date pqfSubmittedDate) {
-		this.pqfSubmittedDate = pqfSubmittedDate;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "desktopSubmittedDate", nullable = true, length = 10)
-	public Date getDesktopSubmittedDate() {
-		return this.desktopSubmittedDate;
-	}
-
-	public void setDesktopSubmittedDate(Date desktopSubmittedDate) {
-		this.desktopSubmittedDate = desktopSubmittedDate;
 	}
 
 	@Column(name = "brochure_file", nullable = true, length = 3)
@@ -373,10 +264,10 @@ public class ContractorAccount extends Account implements java.io.Serializable{
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
+
 	/**
-	 * Append a new note to this contractor in the form of:
-	 * M/d/yy h:mm a z User Name: NOTE HERE
-	 * previous notes
+	 * Append a new note to this contractor in the form of: M/d/yy h:mm a z User
+	 * Name: NOTE HERE previous notes
 	 * 
 	 * @param username
 	 * @param note
@@ -384,7 +275,7 @@ public class ContractorAccount extends Account implements java.io.Serializable{
 	public void addNote(Permissions permissions, String note) {
 		this.notes = DateBean.getTodaysDateTime() + " " + permissions.getName() + ": " + note + "\n" + this.notes;
 	}
-	
+
 	@Column(name = "adminNotes", nullable = true, length = 16277215)
 	public String getAdminNotes() {
 		return this.adminNotes;
@@ -392,34 +283,6 @@ public class ContractorAccount extends Account implements java.io.Serializable{
 
 	public void setAdminNotes(String adminNotes) {
 		this.adminNotes = adminNotes;
-	}
-
-	@Column(name = "canEditPrequal", nullable = true, length = 4)
-	public String getCanEditPrequal() {
-		return this.canEditPrequal;
-	}
-
-	public void setCanEditPrequal(String canEditPrequal) {
-		this.canEditPrequal = canEditPrequal;
-	}
-
-	@Column(name = "canEditDesktop", nullable = true, length = 4)
-	public String getCanEditDesktop() {
-		return this.canEditDesktop;
-	}
-
-	public void setCanEditDesktop(String canEditDesktop) {
-		this.canEditDesktop = canEditDesktop;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "lastAuditEmailDate", nullable = true, length = 10)
-	public Date getLastAuditEmailDate() {
-		return this.lastAuditEmailDate;
-	}
-
-	public void setLastAuditEmailDate(Date lastAuditEmailDate) {
-		this.lastAuditEmailDate = lastAuditEmailDate;
 	}
 
 	@Column(name = "mustPay", nullable = true, length = 4)
@@ -449,170 +312,6 @@ public class ContractorAccount extends Account implements java.io.Serializable{
 
 	public void setLastAnnualUpdateEmailDate(Date lastAnnualUpdateEmailDate) {
 		this.lastAnnualUpdateEmailDate = lastAnnualUpdateEmailDate;
-	}
-
-	@Column(name = "auditor_id", nullable = true)
-	public int getAuditorId() {
-		return this.auditorId;
-	}
-
-	public void setAuditorId(int auditorId) {
-		this.auditorId = auditorId;
-	}
-
-	@Column(name = "desktopAuditor_id", nullable = true)
-	public int getDesktopAuditorId() {
-		return this.desktopAuditorId;
-	}
-
-	public void setDesktopAuditorId(int desktopAuditorId) {
-		this.desktopAuditorId = desktopAuditorId;
-	}
-
-	@Column(name = "daAuditor_id", nullable = true)
-	public int getDaAuditorId() {
-		return this.daAuditorId;
-	}
-
-	public void setDaAuditorId(int daAuditorId) {
-		this.daAuditorId = daAuditorId;
-	}
-
-	@Column(name = "pqfAuditor_id", nullable = true)
-	public int getPqfAuditorId() {
-		return this.pqfAuditorId;
-	}
-
-	public void setPqfAuditorId(int pqfAuditorId) {
-		this.pqfAuditorId = pqfAuditorId;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "assignedDate", nullable = true, length = 10)
-	public Date getAssignedDate() {
-		return this.assignedDate;
-	}
-
-	public void setAssignedDate(Date assignedDate) {
-		this.assignedDate = assignedDate;
-	}
-
-	@Column(name = "isPrequalOK", nullable = true, length = 1)
-	public char getIsPrequalOk() {
-		return this.isPrequalOk;
-	}
-
-	public void setIsPrequalOk(char isPrequalOk) {
-		this.isPrequalOk = isPrequalOk;
-	}
-
-	@Column(name = "auditStatus", nullable = true, length = 14)
-	public String getAuditStatus() {
-		return this.auditStatus;
-	}
-
-	public void setAuditStatus(String auditStatus) {
-		this.auditStatus = auditStatus;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "auditCompletedDate", nullable = true, length = 10)
-	public Date getAuditCompletedDate() {
-		return this.auditCompletedDate;
-	}
-
-	public void setAuditCompletedDate(Date auditCompletedDate) {
-		this.auditCompletedDate = auditCompletedDate;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "auditClosedDate", nullable = true, length = 10)
-	public Date getAuditClosedDate() {
-		return this.auditClosedDate;
-	}
-
-	public void setAuditClosedDate(Date auditClosedDate) {
-		this.auditClosedDate = auditClosedDate;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "desktopAssignedDate", nullable = true, length = 10)
-	public Date getDesktopAssignedDate() {
-		return this.desktopAssignedDate;
-	}
-
-	public void setDesktopAssignedDate(Date desktopAssignedDate) {
-		this.desktopAssignedDate = desktopAssignedDate;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "desktopCompletedDate", nullable = true, length = 10)
-	public Date getDesktopCompletedDate() {
-		return this.desktopCompletedDate;
-	}
-
-	public void setDesktopCompletedDate(Date desktopCompletedDate) {
-		this.desktopCompletedDate = desktopCompletedDate;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "desktopClosedDate", nullable = true, length = 10)
-	public Date getDesktopClosedDate() {
-		return this.desktopClosedDate;
-	}
-
-	public void setDesktopClosedDate(Date desktopClosedDate) {
-		this.desktopClosedDate = desktopClosedDate;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "daAssignedDate", nullable = true, length = 10)
-	public Date getDaAssignedDate() {
-		return this.daAssignedDate;
-	}
-
-	public void setDaAssignedDate(Date daAssignedDate) {
-		this.daAssignedDate = daAssignedDate;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "daSubmittedDate", nullable = true, length = 10)
-	public Date getDaSubmittedDate() {
-		return this.daSubmittedDate;
-	}
-
-	public void setDaSubmittedDate(Date daSubmittedDate) {
-		this.daSubmittedDate = daSubmittedDate;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "daClosedDate", nullable = true, length = 10)
-	public Date getDaClosedDate() {
-		return this.daClosedDate;
-	}
-
-	public void setDaClosedDate(Date daClosedDate) {
-		this.daClosedDate = daClosedDate;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "officeSubmittedDate", nullable = true, length = 10)
-	public Date getOfficeSubmittedDate() {
-		return this.officeSubmittedDate;
-	}
-
-	public void setOfficeSubmittedDate(Date officeSubmittedDate) {
-		this.officeSubmittedDate = officeSubmittedDate;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "officeClosedDate", nullable = true, length = 10)
-	public Date getOfficeClosedDate() {
-		return this.officeClosedDate;
-	}
-
-	public void setOfficeClosedDate(Date officeClosedDate) {
-		this.officeClosedDate = officeClosedDate;
 	}
 
 	@Column(name = "requestedByID", nullable = true)
@@ -667,96 +366,6 @@ public class ContractorAccount extends Account implements java.io.Serializable{
 
 	public void setIsOnlyCerts(String isOnlyCerts) {
 		this.isOnlyCerts = isOnlyCerts;
-	}
-
-	@Column(name = "auditLocation", nullable = true, length = 8)
-	public String getAuditLocation() {
-		return this.auditLocation;
-	}
-
-	public void setAuditLocation(String auditLocation) {
-		this.auditLocation = auditLocation;
-	}
-
-	@Column(name = "desktopPercent", nullable = true)
-	public int getDesktopPercent() {
-		return this.desktopPercent;
-	}
-
-	public void setDesktopPercent(int desktopPercent) {
-		this.desktopPercent = desktopPercent;
-	}
-
-	@Column(name = "desktopVerifiedPercent", nullable = true)
-	public int getDesktopVerifiedPercent() {
-		return this.desktopVerifiedPercent;
-	}
-
-	public void setDesktopVerifiedPercent(int desktopVerifiedPercent) {
-		this.desktopVerifiedPercent = desktopVerifiedPercent;
-	}
-
-	@Column(name = "officePercent", nullable = true)
-	public int getOfficePercent() {
-		return this.officePercent;
-	}
-
-	public void setOfficePercent(int officePercent) {
-		this.officePercent = officePercent;
-	}
-
-	@Column(name = "officeVerifiedPercent", nullable = true)
-	public int getOfficeVerifiedPercent() {
-		return this.officeVerifiedPercent;
-	}
-
-	public void setOfficeVerifiedPercent(int officeVerifiedPercent) {
-		this.officeVerifiedPercent = officeVerifiedPercent;
-	}
-
-	@Column(name = "daPercent", nullable = true)
-	public int getDaPercent() {
-		return this.daPercent;
-	}
-
-	public void setDaPercent(int daPercent) {
-		this.daPercent = daPercent;
-	}
-
-	@Column(name = "daVerifiedPercent", nullable = true)
-	public int getDaVerifiedPercent() {
-		return this.daVerifiedPercent;
-	}
-
-	public void setDaVerifiedPercent(int daVerifiedPercent) {
-		this.daVerifiedPercent = daVerifiedPercent;
-	}
-
-	@Column(name = "pqfPercent", nullable = true)
-	public int getPqfPercent() {
-		return this.pqfPercent;
-	}
-
-	public void setPqfPercent(int pqfPercent) {
-		this.pqfPercent = pqfPercent;
-	}
-
-	@Column(name = "hasNCMSDesktop", nullable = true, length = 3)
-	public String getHasNcmsdesktop() {
-		return this.hasNcmsdesktop;
-	}
-
-	public void setHasNcmsdesktop(String hasNcmsdesktop) {
-		this.hasNcmsdesktop = hasNcmsdesktop;
-	}
-
-	@Column(name = "isNewOfficeAudit", nullable = true, length = 3)
-	public String getIsNewOfficeAudit() {
-		return this.isNewOfficeAudit;
-	}
-
-	public void setIsNewOfficeAudit(String isNewOfficeAudit) {
-		this.isNewOfficeAudit = isNewOfficeAudit;
 	}
 
 	@Column(name = "secondContact", nullable = true, length = 50)
@@ -869,6 +478,7 @@ public class ContractorAccount extends Account implements java.io.Serializable{
 	public void setRiskLevel(LowMedHigh riskLevel) {
 		this.riskLevel = riskLevel;
 	}
+
 	@Column(name = "annualUpdateEmails", nullable = true)
 	public int getAnnualUpdateEmails() {
 		return annualUpdateEmails;
@@ -876,26 +486,6 @@ public class ContractorAccount extends Account implements java.io.Serializable{
 
 	public void setAnnualUpdateEmails(int annualUpdateEmails) {
 		this.annualUpdateEmails = annualUpdateEmails;
-	}
-
-	
-	@Column(name = "daRequired", nullable = true)
-	public String getDaRequired() {
-		return daRequired;
-	}
-
-	public void setDaRequired(String daRequired) {
-		this.daRequired = daRequired;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "tempAuditDateTime", nullable = true, length = 10)
-	public Date getTempAuditDateTime() {
-		return tempAuditDateTime;
-	}
-
-	public void setTempAuditDateTime(Date tempAuditDateTime) {
-		this.tempAuditDateTime = tempAuditDateTime;
 	}
 
 	@Column(name = "oqEmployees", nullable = true)
@@ -906,10 +496,5 @@ public class ContractorAccount extends Account implements java.io.Serializable{
 	public void setOqEmployees(String oqEmployees) {
 		this.oqEmployees = oqEmployees;
 	}
-
-	
-	
-	
-
 
 }

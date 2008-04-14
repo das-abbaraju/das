@@ -8,6 +8,7 @@ import org.jboss.util.NullArgumentException;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.AuditType;
 
 /**
  * @deprecated
@@ -113,42 +114,27 @@ public class PermissionsBean extends DataBean {
 		
 		auditorCanSeeSet = new HashSet<String>();
 		try{
-			String sql;
-			DBReady();
-			String userID = getPermissions().getUserIdString();
+			String sql = "SELECT auditTypeID, conID FROM contractor_audit " +
+				"WHERE auditorID = "+getPermissions().getUserId();
 			
-			sql = "SELECT id FROM contractor_info WHERE auditor_id="+userID+";";
+			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(sql);
 			while (SQLResult.next()) {
-				auditorOfficeSet.add(SQLResult.getString("id"));
-				auditorDesktopSet.add(SQLResult.getString("id"));
-				auditorPQFSet.add(SQLResult.getString("id"));
-				auditorCanSeeSet.add(SQLResult.getString("id"));
-			}
-			SQLResult.close();
-			
-			sql = "SELECT id FROM contractor_info WHERE desktopAuditor_id="+userID+";";
-			SQLResult = SQLStatement.executeQuery(sql);
-			while (SQLResult.next()) {
-				auditorDesktopSet.add(SQLResult.getString("id"));
-				auditorPQFSet.add(SQLResult.getString("id"));
-				auditorCanSeeSet.add(SQLResult.getString("id"));
-			}
-			SQLResult.close();
-
-			sql = "SELECT id FROM contractor_info WHERE daAuditor_id="+userID+";";
-			SQLResult = SQLStatement.executeQuery(sql);
-			while (SQLResult.next()) {
-				auditorDaSet.add(SQLResult.getString("id"));
-				auditorCanSeeSet.add(SQLResult.getString("id"));
-			}
-			SQLResult.close();
-
-			sql = "SELECT id FROM contractor_info WHERE pqfAuditor_id="+userID+";";
-			SQLResult = SQLStatement.executeQuery(sql);
-			while (SQLResult.next()) {
-				auditorPQFSet.add(SQLResult.getString("id"));
-				auditorCanSeeSet.add(SQLResult.getString("id"));
+				String conID = SQLResult.getString("conID");
+				int auditTypeID = SQLResult.getInt("auditTypeID");
+				auditorCanSeeSet.add(conID);
+				if (AuditType.PQF == auditTypeID || AuditType.DESKTOP == auditTypeID || AuditType.OFFICE == auditTypeID) {
+					auditorPQFSet.add(conID);
+				}
+				if (AuditType.DESKTOP == auditTypeID) {
+					auditorDesktopSet.add(conID);
+				}
+				if (AuditType.OFFICE == auditTypeID) {
+					auditorOfficeSet.add(conID);
+				}
+				if (AuditType.DA == auditTypeID) {
+					auditorDaSet.add(conID);
+				}
 			}
 			SQLResult.close();
 			
