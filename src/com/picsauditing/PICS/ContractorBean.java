@@ -887,9 +887,6 @@ public class ContractorBean extends DataBean {
 		paymentExpires = DateBean.toShowFormat(SQLResult.getString("paymentExpires"));
 		lastInvoiceDate = DateBean.toShowFormat(SQLResult.getString("lastInvoiceDate"));
 		lastAnnualUpdateEmailDate = DateBean.toShowFormat(SQLResult.getString("lastAnnualUpdateEmailDate"));
-
-		auditStatus = SQLResult.getString("auditStatus"); //MULTIAUDIT remove
-		auditStatus = calcAuditStatus(); //MULTIAUDIT might change
 		
 //second contact
 		secondContact = SQLResult.getString("secondContact");
@@ -1442,18 +1439,22 @@ public class ContractorBean extends DataBean {
 		}//finally
 	}
 
+	public boolean isExempt() {
+	//MULTIAUDIT remove
+		return isAudited();
+	}
 	
 	public boolean isAudited() {
 	//MULTIAUDIT remove
-//		return "Yes".equals(this.isExempt);
+		return "Yes".equals(this.isExempt);
 	}
 	public void isAudited(boolean value) {
 	//MULTIAUDIT remove
-/*		if (value)
+		if (value)
 			this.isExempt = "No";
 		else
 			this.isExempt = "Yes";
-*/	}
+	}
 
 	public void convertTrades() throws Exception {
 		try {
@@ -1494,14 +1495,14 @@ public class ContractorBean extends DataBean {
 
 	public boolean mustForceUpdatePQF() throws Exception {
 	//MULTIAUDIT remove
-/*		if ("".equals(pqfSubmittedDate))
+		if ("".equals(pqfSubmittedDate))
 			return false;
 		try{
 			return DateBean.isFirstBeforeSecond(pqfSubmittedDate,"12/31/05");
 		}catch(Exception ex){
 			return false;
 		}//catch
-*/	}//mustForceUpatePFQ
+	}//mustForceUpatePFQ
 
 	public String getAuditSubmittedDate(String auditType) {
 		//MULTIAUDIT change
