@@ -902,32 +902,46 @@ import com.picsauditing.util.LinkBuilder;
 	}//getPQFAnswer
 
 	public String getListLink(String auditType) throws Exception {
+		int auditID = 0;
+		String newAuditLink = "pqf_view.jsp?id="+aBean.id+"&auditID="+auditID;
+		// this needs to change to auditID using the new multi-audits
+		newAuditLink = "pqf_view.jsp?id="+aBean.id+"&auditType="+auditType;
+		
 		if (!canSeeContractor())
 			return "";
 		if (cBean.isExempt() && !com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType))
 			return "N/A";
 		if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType) && cBean.isPQFSubmitted())
-			return "<a href=/pqf_view.jsp?id="+aBean.id+"&auditType="+auditType+
-				"><img src=images/icon_"+auditType+".gif width=20 height=20 border=0></a>";
+			return getLink("icon_"+auditType, newAuditLink);
 		if (com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(auditType)) {
 			if ("No".equals(cBean.daRequired)) return "N/A";
 			if (cBean.isDaSubmitted())
-				return "<a href=/pqf_view.jsp?id="+aBean.id+"&auditType="+auditType+
-				"><img src=images/icon_"+auditType+".gif width=20 height=20 border=0></a>";
+				return getLink("icon_"+auditType, newAuditLink);
 		}
 		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType) && cBean.isDesktopStatusOldAuditStatus())
 			return getListLink(com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE);
 		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType) && cBean.isDesktopSubmitted())
-			return "<a href=/pqf_view.jsp?id="+aBean.id+"&auditType="+auditType+
-				"><img src=images/icon_"+auditType+".gif width=20 height=20 border=0></a>";
+			return getLink("icon_"+auditType, newAuditLink);
 		if (com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(auditType) && cBean.isAuditCompleted())
 			if (cBean.isNewOfficeAudit())
-				return "<a href=/pqf_view.jsp?id="+aBean.id+"&auditType="+auditType+
-					"><img src=images/icon_"+auditType+".gif width=20 height=20 border=0></a>";			
+				return getLink("icon_"+auditType, newAuditLink);
 			else
-				return "<a href=/audit_view.jsp?id="+aBean.id+"><img src=images/icon_"+auditType+".gif width=20 height=20 border=0></a>";
-		return "<img src=images/notOkCheck.gif width=19 height=15 alt='Not Complete'>";
-	}//getListLink
+				return getLink("icon_"+auditType, "audit_view.jsp?id="+aBean.id);
+		return getLink("notOkCheck", null);
+	}
+	
+	private String getLink(String icon, String url) {
+		StringBuilder link = new StringBuilder();
+		boolean hasURL = false;
+		if (url != null && url.length() > 0) hasURL = true;
+		
+		if (hasURL)
+			link.append("<a href=\"").append(url).append("\">");
+		link.append("<img src=\"images/").append(icon).append(".gif\" width=\"20\" height=\"20\" border=\"0\">");
+		if (hasURL)
+			link.append("</a>");
+		return link.toString();
+	}
 
 	public String getPercentCompleteLink(String auditType) throws Exception {
 		if (!canSeeContractor())

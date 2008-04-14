@@ -331,26 +331,26 @@ public class ContractorBean extends DataBean {
 
 	public boolean isAuditClosed() { //MULTIAUDIT remove
 		return !"".equals(auditClosedDate);
-	}//isAuditClosed
+	}
 
 	public boolean isDesktopSubmitted() { //MULTIAUDIT remove
 		return !"".equals(desktopSubmittedDate);
-	}//isDesktopSubmitted
+	}
 	public boolean isDesktopCompleted() { //MULTIAUDIT remove
 		return !"".equals(desktopCompletedDate);
-	}//isDesktopCompleted
+	}
 	public boolean isDesktopClosed() throws Exception{ //MULTIAUDIT remove
 		return !("".equals(desktopClosedDate) ||
 				DateBean.isFirstBeforeSecond(desktopClosedDate, desktopSubmittedDate));
-	}//isDesktopClosed
+	}
 
 	public boolean isDaSubmitted() { //MULTIAUDIT remove
 		return !"".equals(daSubmittedDate);
-	}//isDaSubmitted
+	}
 	public boolean isDaClosed() throws Exception{ //MULTIAUDIT remove
 		return !("".equals(daClosedDate) ||
 				DateBean.isFirstBeforeSecond(daClosedDate, daSubmittedDate));
-	}//isDaClosed
+	}
 
 	public boolean isPQFSubmitted() { //MULTIAUDIT remove
 		return !"".equals(pqfSubmittedDate);
@@ -1546,10 +1546,6 @@ public class ContractorBean extends DataBean {
 		}//finally
 	}
 
-	/**
-	 * @deprecated
-	 * @return
-	 */
 	public boolean isExempt() {
 	//MULTIAUDIT remove
 		return isAudited();
