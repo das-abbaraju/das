@@ -15,15 +15,7 @@ import com.picsauditing.jpa.entities.AuditType;
  * @see Permissions
  */
 public class PermissionsBean extends DataBean {
-/*	History
-	8/29/05 jj - created to control access to pages according to account type (admin,auditor,contractor,operator) and restrict privileges (write, read, none)
-*/
-	private static final String ADMIN_TYPE = "Admin";
-	private static final String CONTRACTOR_TYPE = "Contractor";
-	private static final String CORPORATE_TYPE = "Corporate";
-	private static final String OPERATOR_TYPE = "Operator";
-	private static final String[] USER_TYPES = {ADMIN_TYPE,CONTRACTOR_TYPE,CORPORATE_TYPE,OPERATOR_TYPE};
-
+	
 	public String userID = ""; // user's accountID
 	public String userName = "";
 	public String userType = "";
@@ -80,30 +72,23 @@ public class PermissionsBean extends DataBean {
 		return Integer.toString(canSeeSet.size());
 	}
 
-	/**
-	 * @deprecated
-	 * @return
-	 */
 	public boolean isAdmin() {
 		if (this.permissions == null) return false;
 		return this.permissions.isAdmin();
 	}
-	/**
-	 * @deprecated
-	 * @return
-	 */
+	
 	public boolean isAuditor() {
 		if (this.permissions == null) return false;
 		return this.permissions.isAuditor();
 	}
 	public boolean isContractor() {
-		return CONTRACTOR_TYPE.equals(userType);
+		return permissions.isContractor();
 	}
 	public boolean isOperator() {
-		return OPERATOR_TYPE.equals(userType);
+		return permissions.isOperator();
 	}
 	public boolean isCorporate() {
-		return CORPORATE_TYPE.equals(userType);
+		return permissions.isCorporate();
 	}
 
 	public void setAuditorPermissions() throws Exception {

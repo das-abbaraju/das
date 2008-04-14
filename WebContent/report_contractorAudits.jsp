@@ -54,10 +54,10 @@ List<BasicDynaBean> searchData = report.getPage();
 		%>
 		<tr id="auditor_tr<%=row.get("id")%>" class="blueMain" <%=color.nextBgColor()%>>
 		    <td><a href="pqf_view.jsp?auditID=<%=row.get("auditID")%>"><%=row.get("name")%></a></td>
-		    <td><%=DateBean.toShowFormat(row.get("auditName"))%></td>
+		    <td><%=row.get("auditName")%></td>
 		    <td><%=DateBean.toShowFormat(row.get("createdDate"))%></td>
-		    <td><%=DateBean.toShowFormat(row.get("auditStatus"))%></td>
-		    <td><%=DateBean.toShowFormat(row.get("auditorName"))%></td>
+		    <td><%=row.get("auditStatus")%></td>
+		    <td><%=row.get("auditorName")%></td>
 		</tr>
 		<%
 	}
