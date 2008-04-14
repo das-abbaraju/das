@@ -77,5 +77,10 @@
 			<result>audit_selectType.jsp</result>
 		</action>
 
+		<action name="ReportNCMS"
+			class="com.picsauditing.actions.report.ReportAccountNCMS">
+			<result>report_ncms.jsp</result>
+		</action>
+
 	</package>
 </struts>

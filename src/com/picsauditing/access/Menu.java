@@ -71,6 +71,7 @@ public class Menu {
 		this.addItem("con_approvals.jsp", "Approve Contractors", OpPerms.ContractorApproval);
 		this.addItem("report_audits.jsp?changed=1", "Audit Dates Report", adminGroup);
 		this.addItem("AuditOperator.action", "Audit/Operator Assignment");
+		this.addItem("report_contractorAudits.jsp", "Contractor Audits", adminGroup);
 		this.addItem("report_operatorContractor.jsp?changed=1", "Contractor Assignments", adminGroup);
 		this.addItem("report_contactInfo.jsp?changed=1", "Contractor Contact Info");
 		this.addItem("contractorsSearch.jsp", "Contractor Search", OpPerms.SearchContractors);

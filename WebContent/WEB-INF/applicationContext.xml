@@ -20,6 +20,9 @@
 	<bean id="RulesRowDAO" class="com.picsauditing.dao.RulesRowDAO" scope="prototype"/>
 	<bean id="UserDAO" class="com.picsauditing.dao.UserDAO" scope="prototype"/>
 
+	<bean id="SelectAccount" class="com.picsauditing.search.SelectAccount" scope="prototype"/>
+	<bean id="Report" class="com.picsauditing.search.Report" scope="prototype"/>
+
 	<bean class="com.picsauditing.PICS.Facilities"/>
 
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
