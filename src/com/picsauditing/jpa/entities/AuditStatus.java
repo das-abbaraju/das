@@ -1,7 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 public enum AuditStatus {
-	New,
+	Pending,
 	Submitted,
 	Active,
 	Exempt,
