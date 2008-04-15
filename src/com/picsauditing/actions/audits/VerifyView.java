@@ -71,6 +71,22 @@ public class VerifyView extends AuditActionSupport {
 					osha2.setComment1(osha.getComment1());
 					osha2.setComment2(osha.getComment2());
 					osha2.setComment3(osha.getComment3());
+					
+					if( osha2.getVerified1() != osha.getVerified1() )
+					{
+						osha2.setVerified1(osha.getVerified1());
+					}
+					
+					if( osha2.getVerified2() != osha.getVerified2() )
+					{
+						osha2.setVerified2(osha.getVerified2());
+					}
+					
+					if( osha2.getVerified3() != osha.getVerified3() )
+					{
+						osha2.setVerified3(osha.getVerified3());
+					}
+					
 				}
 			}
 			contractorAuditDAO.save(conAudit);
