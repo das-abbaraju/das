@@ -29,9 +29,20 @@ report.setOrderBy(request.getParameter("orderBy"), "a.name");
 
 report.addFilter(new SelectFilter("name", "a.name LIKE '%?%'", request.getParameter("name"), SearchBean.DEFAULT_NAME, SearchBean.DEFAULT_NAME));
 report.addFilter(new SelectFilter("industry", "a.industry = '?'", request.getParameter("industry"), SearchBean.DEFAULT_INDUSTRY, SearchBean.DEFAULT_INDUSTRY));
-//report.addFilter(new SelectFilter("trade", "c.main_trade = '?'", request.getParameter("trade"), TradesBean.DEFAULT_SELECT_TRADE, SearchBean.DEFAULT_INDUSTRY));
-
-
+String performedBy = request.getParameter("performedBy");
+String answerFilter = "";
+if (TradesBean.DEFAULT_PERFORMED_BY.equals(performedBy) || performedBy == null) {
+	performedBy = TradesBean.DEFAULT_PERFORMED_BY;
+	answerFilter = "_%";
+} else {
+	if ("Sub Contracted".equals(performedBy))
+		answerFilter = "%S";
+	else if	("Self Performed".equals(performedBy))
+		answerFilter = "C%";
+}
+String tradeWhere = "a.id IN (SELECT conID FROM pqfdata WHERE questionID=? AND answer LIKE '"+answerFilter+"')";
+report.addFilter(new SelectFilter("trade", tradeWhere, request.getParameter("trade"), TradesBean.DEFAULT_SELECT_TRADE, TradesBean.DEFAULT_SELECT_TRADE));
+report.addFilter(new SelectFilter("status", "c.status = '?'", request.getParameter("status"), SearchBean.DEFAULT_STATUS, SearchBean.DEFAULT_STATUS));
 
 List<BasicDynaBean> searchData = report.getPage();
 
@@ -54,7 +65,16 @@ TradesBean tBean = new TradesBean();
 <input name="name" type="text" class="forms" value="<%=report.getFilterValue("name")%>" size="8" onFocus="clearText(this)">
 <%=SearchBean.getSearchIndustrySelect("industry", "forms", report.getFilterValue("industry"))%>
 <%=tBean.getTradesSelect("trade", "forms", report.getFilterValue("trade"))%>
-<input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0" onClick="runSearch( 'form1')" onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()"></td>
+<%=Inputs.inputSelect("performedBy", "forms", performedBy, TradesBean.PERFORMED_BY_ARRAY)%>
+
+<input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0" onClick="runSearch( 'form1')" onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()">
+</td>
+</tr>
+<tr>
+<td>
+<%=SearchBean.getStatusSelect("status","blueMain", report.getFilterValue("status"))%>
+
+</td>
 </tr>
 </table>
 	<input type="hidden" name="showPage" value="1"/>
