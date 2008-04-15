@@ -183,29 +183,32 @@ Details</a></p>
 			<tr class="blueMain" align="center">
 				<td align="right">Is Correct:</td>
 				<td>&nbsp;</td>
-				<td class="highlight" style="font-size: 14px; font-weight: bolder;"><s:radio
-					list="yesNos" name="osha.verified1" /></td>
-				<td style="font-size: 14px; font-weight: bolder;"><s:radio
-					list="yesNos" name="osha.verified2" /></td>
-				<td class="highlight" style="font-size: 14px; font-weight: bolder;"><s:radio
-					list="yesNos" name="osha.verified3" /></td>
+				<td class="highlight" style="font-size: 14px; font-weight: bolder;">
+					<input type="radio" name="osha.verified1" value="true" <s:if test="osha.verified1">checked</s:if>/>Yes
+					<input type="radio" name="osha.verified1" value="false" <s:if test="osha.verified1 == null || ! osha.verified1">checked</s:if>/>No
+					</td>
+				<td style="font-size: 14px; font-weight: bolder;">
+					<input type="radio" name="osha.verified2" value="true" <s:if test="osha.verified2">checked</s:if>/>Yes
+					<input type="radio" name="osha.verified2" value="false" <s:if test="osha.verified2 == null || ! osha.verified2">checked</s:if>/>No
+					</td>
+				<td class="highlight" style="font-size: 14px; font-weight: bolder;">
+					<input type="radio" name="osha.verified3" value="true" <s:if test="osha.verified3">checked</s:if>/>Yes
+					<input type="radio" name="osha.verified3" value="false" <s:if test="osha.verified3 == null || ! osha.verified3">checked</s:if>/>No
+					</td>
 			</tr>
 			<tr class="blueMain" align="center">
 				<td align="right">Verified Date:</td>
 				<td>&nbsp;</td>
-				<td class="highlight"><s:property value="osha.verifiedDate1" /></td>
-				<td><s:property value="osha.verifiedDate2" /></td>
-				<td class="highlight"><s:property value="osha.verifiedDate3" /></td>
+				<td class="highlight"><s:date name="osha.verifiedDate1" format="MM/dd/yyyy"/></td>
+				<td><s:date name="osha.verifiedDate2" format="MM/dd/yyyy"/></td>
+				<td class="highlight"><s:date name="osha.verifiedDate3" format="MM/dd/yyyy"/></td>
 			</tr>
 			<tr class="blueMain" align="center">
 				<td align="right">Issue:</td>
 				<td>&nbsp;</td>
-				<td class="highlight"><s:select list="oshaProblems"
-					headerValue="" value="osha.comment1" cssClass="blueMain" /></td>
-				<td><s:select list="oshaProblems" headerValue=""
-					value="osha.comment2" cssClass="blueMain" /></td>
-				<td class="highlight"><s:select list="oshaProblems"
-					headerValue="" value="osha.comment3" cssClass="blueMain" /></td>
+				<td class="highlight"><s:select list="oshaProblems" name="osha.comment1" cssClass="blueMain" /></td>
+				<td><s:select list="oshaProblems" name="osha.comment2" cssClass="blueMain" /></td>
+				<td class="highlight"><s:select list="oshaProblems" name="osha.comment3" cssClass="blueMain" /></td>
 			</tr>
 		</s:if>
 		<s:else>
