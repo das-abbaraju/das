@@ -1,6 +1,7 @@
 package com.picsauditing.search;
 
 import com.picsauditing.PICS.Utilities;
+import com.picsauditing.jpa.entities.AuditType;
 
 public class SelectAccount extends SelectSQL {
 	private Type type;
@@ -61,6 +62,14 @@ public class SelectAccount extends SelectSQL {
 	public void addPQFQuestion(String questionID) {
 		int temp = Integer.parseInt(questionID);
 		this.addPQFQuestion(temp);
+	}
+
+	public void addAudit(int auditTypeID) {
+		String join = "LEFT JOIN contractor_audit ca"+auditTypeID+" on ca"+auditTypeID+".conID = a.id AND ca"+auditTypeID+".auditStatus IN ('New')";
+		this.addJoin(join);
+		this.addField("ca"+auditTypeID+".auditID AS ca"+auditTypeID+"_auditID");
+		this.addField("ca"+auditTypeID+".auditStatus AS ca"+auditTypeID+"_auditStatus");
+		this.addField("ca"+auditTypeID+".percentComplete AS ca"+auditTypeID+"_percentComplete");
 	}
 	
 	/**

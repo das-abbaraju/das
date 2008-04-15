@@ -33,6 +33,9 @@
 			return;
 		}
 	}
+	if ("Delete".equals("action")) {
+		aBean.deleteAccount(action_id, config.getServletContext().getRealPath("/"));
+	}
 %>
 
 <html>

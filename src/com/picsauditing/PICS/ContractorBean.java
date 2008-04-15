@@ -19,7 +19,7 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.User;
-import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -1646,20 +1646,32 @@ public class ContractorBean extends DataBean {
 		return false;
 	}
 	
-	public HashMap<Integer, ContractorAudit> getAudits() throws Exception {
+	/**
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public HashMap<Integer, ContractorAudit> getValidAudits() {
 		if (audits == null) {
+			ContractorAuditDAO dao = (ContractorAuditDAO)SpringUtils.getBean("ContractorAuditDAO");
+			// Get list of PQF, Office, Desktop, DA that are in the Verified or Exempt status
+			List<ContractorAudit> auditList = dao.findByContractor(Integer.parseInt(id));
 			audits = new HashMap<Integer, ContractorAudit>();
-			try {
-				ContractorAccountDAO dao = (ContractorAccountDAO)SpringUtils.getBean("ContractorAccountDAO");
-				ContractorAccount account = dao.find(Integer.parseInt(id));
-				List<ContractorAudit> auditList = account.getAudits();
-				for(ContractorAudit cAudit : auditList) {
+			for(ContractorAudit cAudit : auditList) {
+				if (!cAudit.getAuditType().isHasMultiple())
 					audits.put(cAudit.getAuditType().getAuditTypeID(), cAudit);
-				}
-			} finally {
-				DBClose();
 			}
 		}
 		return audits;
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ContractorAudit> getAudits() {
+		ContractorAuditDAO dao = (ContractorAuditDAO)SpringUtils.getBean("ContractorAuditDAO");
+		return dao.findByContractor(Integer.parseInt(id));
 	}
 }
