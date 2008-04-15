@@ -21,7 +21,7 @@ sql.addField("a.industry");
 
 Report report = new Report();
 report.setSql(sql);
-report.setPageByResult(request);
+report.setPageByResult(request.getParameter("showPage"));
 report.setOrderBy(request.getParameter("orderBy"), "a.name DESC");
 
 List<BasicDynaBean> searchData = report.getPage();
