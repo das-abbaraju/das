@@ -21,7 +21,7 @@ sql.addField("au.name as auditorName");
 
 Report report = new Report();
 report.setSql(sql);
-report.setPageByResult(request);
+report.setPageByResult(request.getParameter("showPage"));
 report.setOrderBy(request.getParameter("orderBy"), "ca.createdDate DESC");
 
 List<BasicDynaBean> searchData = report.getPage();
