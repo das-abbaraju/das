@@ -29,7 +29,7 @@ report.setOrderBy(request.getParameter("orderBy"), "a.name");
 
 report.addFilter(new SelectFilter("name", "a.name LIKE '%?%'", request.getParameter("name"), SearchBean.DEFAULT_NAME, SearchBean.DEFAULT_NAME));
 report.addFilter(new SelectFilter("industry", "a.industry = '?'", request.getParameter("industry"), SearchBean.DEFAULT_INDUSTRY, SearchBean.DEFAULT_INDUSTRY));
-report.addFilter(new SelectFilter("trade", "c.main_trade = '?'", request.getParameter("trade"), TradesBean.DEFAULT_SELECT_TRADE, SearchBean.DEFAULT_INDUSTRY));
+//report.addFilter(new SelectFilter("trade", "c.main_trade = '?'", request.getParameter("trade"), TradesBean.DEFAULT_SELECT_TRADE, SearchBean.DEFAULT_INDUSTRY));
 
 
 
