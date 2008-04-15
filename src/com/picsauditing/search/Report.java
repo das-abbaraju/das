@@ -2,12 +2,10 @@ package com.picsauditing.search;
 
 import static java.lang.Math.ceil;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import java.sql.SQLException;
 import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.picsauditing.util.LinkBuilder;
@@ -54,13 +52,12 @@ public class Report {
 		return this.currentPage;
 	}
 	
-	public void setPageByResult(HttpServletRequest request) {
-		String showPage = request.getParameter("showPage");
+	public void setPageByResult(String page) {
+		String showPage = page;
 		if (showPage != null) {
 			this.setCurrentPage(Integer.valueOf(showPage));
 		}
 	}
-
 	
 	public String getFilterParams() {
 		StringBuilder params = new StringBuilder();
