@@ -5,6 +5,8 @@ import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.jpa.entities.AuditType;
+
 /**
  * @see Inputs not sure what the difference is
  */
@@ -524,4 +526,21 @@ public class Utilities {
 		}
 		return params;
 	}
-}//Utilities
+	
+	public String getPercentCompleteLink(int auditID, int auditTypeID, int percentComplete, int percentVerified) {
+		if (auditID == 0)
+			return "";
+		
+		int percent = 0;
+		if (AuditType.PQF == auditTypeID)
+			percent = percentComplete;
+		else
+			percent = percentVerified;
+		
+		String icon = percent+"%";
+		if (percent == 100)
+			icon = "<img src=\"images/"+AuditType.getIcon(auditTypeID)+"\" width=\"20\" height=\"20\" border=\"0\">";
+		
+		return "<a href=\"pqf_view.jsp?auditID="+auditID+"\" class=\"active\">"+icon+"</a>";
+	}
+}
