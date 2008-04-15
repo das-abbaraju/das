@@ -1,8 +1,9 @@
 <%@ page language="java" import="com.picsauditing.PICS.redFlagReport.*" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
-<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
-<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <%
+	AccountBean aBean = new AccountBean();
+	ContractorBean cBean = new ContractorBean();
+	
 	String id = request.getParameter("id");
 	cBean.setFromDB(id);
 	cBean.tryView(permissions);
@@ -81,7 +82,7 @@ function MM_displayStatusMsg(msgStr) { //v1.0
 						if (!permissions.isContractor() && cBean.canView(permissions, "notes"))
 							out.println(cBean.getNotesIcon());
 						%>
-						</nobr><br>
+						</nobr><br/>
 					<%
 					if (permissions.isOperator()) {
 						%>
@@ -90,34 +91,16 @@ function MM_displayStatusMsg(msgStr) { //v1.0
                           	src="images/icon_<%=flag.getFlagStatus(id,pBean.userID).toLowerCase()%>Flag.gif" width="12" height="15" border="0"></a><br>
 						<%
 					}
-					%>
-				<span class=redMain>Pre-Qualification:</span> <%=cBean.getPQFLink(pBean)%><br>
-<%
-	if (!pBean.isContractor() || cBean.isDesktopRequired()) {
 %>
-						<nobr><span class=redMain>Desktop Audit:</span> <%=cBean.getDesktopLink(pBean)%></nobr><br>
-<%
-	}//if
-	if (!pBean.isContractor() || cBean.isDARequired()) {
+                    <a href="ConAuditList.action?id=<%=id%>" class="blueMain">Audits &amp; Evaluations</a><br/>
+<%	for(ContractorAudit audit: cBean.getAudits()) {
+		if (permissions.canSeeAudit(audit.getAuditType().getAuditTypeID())){
 %>
-                         <nobr><span class=redMain>D&amp;A Audit:</span> <%=cBean.getDaLink(pBean)%></nobr><br>
+						<nobr><span class=redMain><%=audit.getAuditType().getAuditName()%> Audit:</span>
+						<a class="blueMain" href="pqf_editMain.jsp?auditID=<%=audit.getId()%>"><%=audit.getAuditStatus()%></a></nobr><br>
 <%
-	}//if
-	if (!pBean.isContractor() || cBean.isOfficeRequired()) {
-%>
-						<nobr><span class=redMain>Office Audit:</span> <%=cBean.getOfficeLink(pBean)%></nobr><br>
-<%
-	}//if
-%>
-<%
-	if (pBean.isOperator() || pBean.isCorporate()) {
-%>
-						<span class=redMain>Field Audit:</span> Contact PICS<br>
-<%
-	}
-%>
-
-<%
+		}//if
+	}//for
 	if (cBean.isCertRequired() && (pBean.isAdmin() || pBean.isContractor()) ) {
 %>
 						<a class="<%=cBean.getTextColor(cBean.calcPICSStatus(pBean))%>" 
@@ -126,7 +109,6 @@ function MM_displayStatusMsg(msgStr) { //v1.0
 	}//if
 %>
                         <span class=redMain>Risk Level:</span> <%= cBean.getRiskLevelShow() %><br />
-                        <a href="ConAuditList.action?id=<%=id%>" class="blueMain">Audits &amp; Evaluations</a>
 					</td>
 					</tr>
                   </table>

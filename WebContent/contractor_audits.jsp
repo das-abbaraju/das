@@ -15,15 +15,19 @@
 		<td>Type</td>
 		<td>Auditor</td>
 		<td>Status</td>
+		<td>Completed</td>
+		<td>Closed</td>
 		<td>Expires</td>
 	</tr>
 <s:iterator value="audits">
 	<tr class="blueMain">
-		<td><s:property value="createdDate" /></td>
+		<td><s:date name="createdDate" format="M/d/yy" /></td>
 		<td><s:property value="auditType.auditName" /></td>
 		<td><s:property value="auditor.name" /></td>
 		<td><s:property value="auditStatus" /></td>
-		<td><s:property value="expiresDate" /></td>
+		<td><s:date name="completedDate" format="M/d/yy" /></td>
+		<td><s:date name="closedDate" format="M/d/yy" /></td>
+		<td><s:date name="expiresDate" format="M/d/yy" /></td>
 	</tr>
 </s:iterator>
 </table>

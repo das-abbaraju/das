@@ -27,8 +27,7 @@ if (!request.getServletPath().contains("contractor_detail")){
 
 <br/>
 <%
-for(int key : cBean.getAudits().keySet()) {
-	ContractorAudit pqf = cBean.getAudits().get(key);
+for(ContractorAudit pqf: cBean.getAudits()) {
 
 	if (permissions.isAdmin()
 		|| pqf.getAuditor().getId() == permissions.getUserId()
