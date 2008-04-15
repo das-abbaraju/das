@@ -537,13 +537,58 @@ public class OshaLog implements java.io.Serializable {
 
 	@Transient
 	public boolean getVerified1() {
-		return verifiedDate1 == null;
+		return verifiedDate1 != null;
 	}
 
 	public void setVerified1(boolean verified) {
 		if (verified)
-			this.verifiedDate1 = new Date();
+		{
+			if( this.verifiedDate1 == null )
+			{
+				this.verifiedDate1 = new Date();
+			}
+		}
 		else
+		{
 			this.verifiedDate1 = null;
+		}
+	}
+
+	@Transient
+	public boolean getVerified2() {
+		return verifiedDate2 != null;
+	}
+	
+	public void setVerified2(boolean verified) {
+		if (verified)
+		{
+			if( this.verifiedDate2 == null )
+			{
+				this.verifiedDate2 = new Date();
+			}
+		}
+		else
+		{
+			this.verifiedDate2 = null;
+		}
+	}
+
+	@Transient
+	public boolean getVerified3() {
+		return verifiedDate3 != null;
+	}
+	
+	public void setVerified3(boolean verified) {
+		if (verified)
+		{
+			if( this.verifiedDate3 == null )
+			{
+				this.verifiedDate3 = new Date();
+			}
+		}
+		else
+		{
+			this.verifiedDate3 = null;
+		}
 	}
 }
