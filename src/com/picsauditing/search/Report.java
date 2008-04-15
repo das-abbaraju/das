@@ -96,6 +96,11 @@ public class Report {
 		this.limit = value;
 	}
 
+	public String getOrderBy() {
+		return this.orderBy;		
+	}
+	
+	
 	public void setOrderBy(String value, String defaultValue) {
 		if (value != null && value.length() > 0)
 			this.orderBy = value;
