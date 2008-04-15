@@ -64,7 +64,7 @@ public class ContractorAuditDAOTest {
 
 	@Test
 	public void testFindContractorActiveAudit() {
-		ContractorAudit contractoraudit = contractorauditDAO.findContractorActiveAudit(3, 1);
+		ContractorAudit contractoraudit = contractorauditDAO.findActiveByContractor(3, 1);
 		assertEquals(3259, contractoraudit.getId());
 	}
 
