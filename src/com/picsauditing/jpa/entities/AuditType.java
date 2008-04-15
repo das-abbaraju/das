@@ -134,4 +134,21 @@ public class AuditType {
 		this.legacyCode = legacyCode;
 	}
 
+	/**
+	 * Return the name of the icon we use on reports for each audit type
+	 * @param auditTypeID
+	 * @return
+	 */
+	public static String getIcon(int auditTypeID) {
+		String auditType = "";
+		if (auditTypeID == AuditType.PQF)
+			auditType = "PQF";
+		if (auditTypeID == AuditType.DESKTOP)
+			auditType = "Desktop";
+		if (auditTypeID == AuditType.OFFICE)
+			auditType = "Office";
+		if (auditTypeID == AuditType.DA)
+			auditType = "DA";
+		return "icon_"+auditType+".gif";
+	}
 }
