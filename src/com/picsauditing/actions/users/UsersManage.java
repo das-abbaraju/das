@@ -57,7 +57,8 @@ public class UsersManage extends PicsActionSupport {
 		sql.addWhere("accountID = " + accountId);
 		// Only search for Auditors and Admins
 		sql.addOrderBy("u.isGroup, u.name");
-		search.setPageByResult(ServletActionContext.getRequest());
+		search.setPageByResult(ServletActionContext.getRequest().getParameter("showPage"));
+		
 		search.setLimit(25);
 
 		searchData = search.getPage();
