@@ -48,7 +48,7 @@ report.addFilter(new SelectFilterInteger("maxTimes", "c.annualUpdateEmails <= '?
 report.addFilter(new SelectFilterDate("pqfDate", "c.pqfSubmittedDate < '?'", request.getParameter("pqfDate"), "1/1/2008", ""));
 report.addFilter(new SelectFilterDate("dateCreated", "a.dateCreated < '?'", request.getParameter("dateCreated"), "1/1/2008", ""));
 
-report.setPageByResult(request);
+report.setPageByResult(request.getParameter("showPage"));
 report.setLimit(50);
 List<BasicDynaBean> searchData = report.getPage();
 

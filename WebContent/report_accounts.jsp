@@ -61,7 +61,7 @@ sql.addWhere("a.type='" + accountType + "'");
 sql.startsWith(request.getParameter("startsWith"));
 
 search.setSql(sql);
-search.setPageByResult(request);
+search.setPageByResult(request.getParameter("showPage"));
 search.setLimit(50);
 
 List<BasicDynaBean> searchData = search.getPage();

@@ -30,7 +30,7 @@ Report report = new Report();
 report.setSql(sql);
 report.setOrderBy(request.getParameter("orderBy"), "gc.dateAdded DESC");
 
-report.setPageByResult(request);
+report.setPageByResult(request.getParameter("showPage"));
 report.setLimit(50);
 
 //report.addFilter(new SelectFilterInteger("conID", "gc.subID=?", request.getParameter("conID")));

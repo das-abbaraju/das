@@ -13,7 +13,7 @@
 	Report report = new Report();
 	report.setSql(sql);
 	report.setOrderBy(request.getParameter("orderBy"), "accessType");
-	report.setPageByResult(request);
+	report.setPageByResult(request.getParameter("showPage"));
 
 	List<BasicDynaBean> searchData = report.getPage();
 %>

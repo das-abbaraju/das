@@ -48,7 +48,7 @@ Report report = new Report();
 report.setSql(sql);
 report.setOrderBy(request.getParameter("orderBy"), "c.pqfSubmittedDate");
 
-report.setPageByResult(request);
+report.setPageByResult(request.getParameter("showPage"));
 report.setLimit(50);
 
 List<BasicDynaBean> searchData = report.getPage();
