@@ -21,7 +21,7 @@ sql.addField("d.fedTaxID");
 sql.addField("d.ContractorsName");
 sql.addField("d.lastReview");
 
-sql.startsWith(request.getParameter("startsWith"));
+sql.setStartsWith(request.getParameter("startsWith"));
 
 Report report = new Report();
 report.setSql(sql);
