@@ -33,7 +33,7 @@ function moveFile(type, year) {
 
 function copyAnswer(selectedYear) {
 	// If the answer is correct and hasn't been filled in yet, then default it
-	if ($F('verify_emr'+selectedYear+'_isCorrectYes') == null) return;
+	if ($F('verify_emr'+selectedYear+'_isCorrectBoolean') == null) return;
 	
 	var answer = $('verify')['verify_emr'+selectedYear+'_verifiedAnswer'];
 	if (answer.present()) return;
@@ -259,21 +259,24 @@ Details</a></p>
 		</tr>
 		<tr class="blueMain" align="center">
 			<td align="right" colspan="2">Is Correct:</td>
-			<td class="highlight" style="font-size: 14px; font-weight: bolder;"><s:radio
-				list="yesNos" name="emr1.isCorrect" onchange="copyAnswer(1);" /></td>
-			<td style="font-size: 14px; font-weight: bolder;"><s:radio
-				list="yesNos" name="emr2.isCorrect" onchange="copyAnswer(2);" /></td>
-			<td class="highlight" style="font-size: 14px; font-weight: bolder;"><s:radio
-				list="yesNos" name="emr3.isCorrect" onchange="copyAnswer(3);" /></td>
+			<td class="highlight" style="font-size: 14px; font-weight: bolder;">
+				<input id="verify_emr1_isCorrectBoolean" type="radio" name="emr1.isCorrectBoolean" value="true" <s:if test="emr1.isCorrectBoolean">checked</s:if> onchange="copyAnswer(1);"/>Yes
+				<input type="radio" name="emr1.isCorrectBoolean" value="false" <s:if test="emr1.isCorrectBoolean == null || ! emr1.isCorrectBoolean">checked</s:if>/>No
+			</td>
+			<td style="font-size: 14px; font-weight: bolder;">
+				<input id="verify_emr2_isCorrectBoolean" type="radio" name="emr2.isCorrectBoolean" value="true" <s:if test="emr2.isCorrectBoolean">checked</s:if> onchange="copyAnswer(2);"/>Yes
+				<input type="radio" name="emr2.isCorrectBoolean" value="false" <s:if test="emr2.isCorrectBoolean == null || ! emr2.isCorrectBoolean">checked</s:if>/>No
+			</td>
+			<td class="highlight" style="font-size: 14px; font-weight: bolder;">
+				<input id="verify_emr3_isCorrectBoolean" type="radio" name="emr3.isCorrectBoolean" value="true" <s:if test="emr3.isCorrectBoolean">checked</s:if> onchange="copyAnswer(3);"/>Yes
+				<input type="radio" name="emr3.isCorrectBoolean" value="false" <s:if test="emr3.isCorrectBoolean == null || ! emr3.isCorrectBoolean">checked</s:if>/>No
+			</td>
 		</tr>
 		<tr class="blueMain">
 			<td align="right" colspan="2">Issue:</td>
-			<td class="highlight"><s:select list="emrProblems"
-				headerValue="" value="emr1.comment" cssClass="blueMain" /></td>
-			<td><s:select list="emrProblems" headerValue=""
-				value="emr2.comment" cssClass="blueMain" /></td>
-			<td class="highlight"><s:select list="emrProblems"
-				headerValue="" value="emr3.comment" cssClass="blueMain" /></td>
+			<td class="highlight"><s:select list="emrProblems" name="emr1.comment" cssClass="blueMain" /></td>
+			<td><s:select list="emrProblems" name="emr2.comment" cssClass="blueMain" /></td>
+			<td class="highlight"><s:select list="emrProblems" name="emr3.comment" cssClass="blueMain" /></td>
 		</tr>
 		<tr class="blueMain">
 			<td colspan="5" align="center"><input class="blueMain"
