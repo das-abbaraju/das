@@ -42,7 +42,7 @@ if ("on".equals(request.getParameter("emr07"))) sql.addWhere("q1617.dateVerified
 if ("on".equals(request.getParameter("emr06"))) sql.addWhere("q1519.dateVerified IS NULL OR q1519.dateVerified='0000-00-00'");
 if ("on".equals(request.getParameter("emr05"))) sql.addWhere("q889.dateVerified IS NULL OR q889.dateVerified='0000-00-00'");
 
-sql.startsWith(request.getParameter("startsWith"));
+sql.setStartsWith(request.getParameter("startsWith"));
 
 Report report = new Report();
 report.setSql(sql);

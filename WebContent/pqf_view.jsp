@@ -51,18 +51,12 @@ try {
                 <td class="blueMain">Safety Manual: <span class="redMain"><%=pdBean.getUploadLink()%>
                         </span></td>
               </tr>
-              <tr align="center">
-                <td class="blueMain">Date Closed: <span class="redMain"><strong><%=cBean.getAuditClosedDate(auditType)%></strong></span>
-                <%=cBean.getValidUntilDate(auditType)%>
-                </td>
-              </tr>
 <%	}//if%>
 <%	if (!com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType)) { %>
               <tr align="center">
                 <td><form name="form1" method="post" action="pqf_view.jsp">
-                  <%=pcBean.getPqfCategorySelectDefaultSubmit("catID","blueMain",catID, action.getAuditID())%>
-                  <input type="hidden" name="id" value="<%=conID%>">
-                  <input type="hidden" name="auditType" value="<%=auditType%>">
+                  <%=pcBean.getPqfCategorySelectDefaultSubmit("catID","blueMain",catID, action.getAudit().getAuditType().getAuditTypeID())%>
+                  <input type="hidden" name="auditID" value="<%=action.getAuditID()%>">
                 </form>
                 </td>
               </tr>

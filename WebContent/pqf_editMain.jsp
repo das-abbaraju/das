@@ -2,28 +2,34 @@
 	import="com.picsauditing.PICS.*,com.picsauditing.PICS.pqf.*"
 	errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp"%>
-<jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope="page" />
-<jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean" scope="page" />
-<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page" />
-<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page" />
+<jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean"
+	scope="page" />
+<jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean"
+	scope="page" />
+<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean"
+	scope="page" />
+<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean"
+	scope="page" />
 <%@page import="com.picsauditing.actions.audits.ContractorAuditLegacy"%>
 <%
 	ContractorAuditLegacy action = new ContractorAuditLegacy();
 	action.setAuditID(request.getParameter("auditID"));
 	String auditType = action.getAudit().getAuditType().getLegacyCode();
-	String conID = ((Integer)action.getAudit().getContractorAccount().getId()).toString();
+	String conID = ((Integer) action.getAudit().getContractorAccount().getId()).toString();
 	String id = conID;
-	
+
 	try {
 		String orderBy = request.getParameter("orderBy");
 		String catID = request.getParameter("catID");
 		boolean mustFinishPrequal = (request.getParameter("mustFinishPrequal") != null);
 		boolean justSubmitted = ("Submit".equals(request.getParameter("action")));
 		boolean justUpdated = ("Update".equals(request.getParameter("action")));
-		boolean isDesktopReset = ("Reset Desktop".equals(request.getParameter("action")) && permissions.isAdmin());
+		boolean isDesktopReset = ("Reset Desktop".equals(request.getParameter("action")) && permissions
+				.isAdmin());
 		boolean isDaReset = ("Reset DA".equals(request.getParameter("action")) && permissions.isAdmin());
 		boolean isOfficeReset = ("Reset Office".equals(request.getParameter("action")) && permissions.isAdmin());
-		boolean isPQFRegen = ("Regenerate Dynamic PQF".equals(request.getParameter("action")) && permissions.isAdmin());
+		boolean isPQFRegen = ("Regenerate Dynamic PQF".equals(request.getParameter("action")) && permissions
+				.isAdmin());
 		boolean isCategorySelected = (null != catID && !"0".equals(catID));
 		if (isCategorySelected) {
 			response.sendRedirect("pqf_edit.jsp?auditTypeID=" + action.getAuditID() + "&catID=" + catID);
@@ -40,7 +46,7 @@
 					message = "The Desktop Audit has now been submitted.";
 				else if (Constants.OFFICE_TYPE.equals(auditType))
 					message = "The Office Audit has now been submitted.";
-				else if ( Constants.DA_TYPE.equals(auditType))
+				else if (Constants.DA_TYPE.equals(auditType))
 					message = "The D&A Audit has now been submitted.";
 			} else
 				message = "You have not completed all the required sections.<br>Please fill out the following categories and resubmit:<br>"
@@ -84,66 +90,40 @@
 %>
 <html>
 <head>
-<title><%=action.getAudit().getAuditType().getAuditName() %></title>
+<title><%=action.getAudit().getAuditType().getAuditName()%></title>
 <meta name="header_gif" content="header_prequalification.gif" />
 </head>
 <body>
+<%@ include file="includes/nav/pqfHeader.jsp"%>
+
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
-	<tr align="center" class="blueMain">
-		<td align="left"><%@ include file="includes/nav/secondNav.jsp"%></td>
-	</tr>
-	<tr align="center" class="blueMain">
-		<td class="blueHeader"><%=action.getAudit().getAuditType().getAuditName()%> for <%=aBean.name%></td>
-	</tr>
 	<tr>
 		<td align="center">
+		<form name="form1" method="post" action="pqf_editMain.jsp"><input
+			name="auditID" type="hidden" value="<%=action.getAuditID()%>">
 		<%
 			if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType)
-						&& cBean.AUDIT_STATUS_RQS.equals(cBean.getDesktopStatus())
+						&& ContractorBean.AUDIT_STATUS_RQS.equals(cBean.getDesktopStatus())
 						|| com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(auditType)
-						&& cBean.AUDIT_STATUS_RQS.equals(cBean.getDaStatus())
+						&& ContractorBean.AUDIT_STATUS_RQS.equals(cBean.getDaStatus())
 						|| com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(auditType)
-						&& cBean.AUDIT_STATUS_RQS.equals(cBean.getOfficeStatusNew())) {
-		%>
-		<form name="form1" method="post" action="pqf_editMain.jsp"><input
-			name="auditID" type="hidden" value="<%=action.getAuditID()%>"> <input
-			name="action" type="submit" class="forms" value="Update"></form>
-		Percent Closed: <span class="redMain"><%=cBean.getPercentVerified(auditType)%>%</span><br>
-		Date submitted: <span class="redMain"><%=cBean.getAuditSubmittedDate(auditType)%></span>
+						&& ContractorBean.AUDIT_STATUS_RQS.equals(cBean.getOfficeStatusNew())) {
+		%> <input name="action" type="submit" class="forms" value="Update">
 		<%
 			} else {
-		%>
-		<form name="form1" method="post" action="pqf_editMain.jsp"><input
-			name="auditID" type="hidden" value="<%=action.getAuditID()%>"> <input
-			name="action" type="submit" class="forms" value="Submit">
-		</form>
-		Percent Complete: <span class="redMain"><%=cBean.getPercentComplete(auditType)%>%</span><br>
-		Date submitted: <span class="redMain"><%=cBean.getAuditSubmittedDate(auditType)%></span>
-		<%=cBean.getValidUntilDate(auditType)%> <%
- 	}//else
- %>
-		</td>
-	</tr>
-	<tr>
-		<td align="center">
+		%> <input name="action" type="submit" class="forms" value="Submit">
 		<%
-			if (mustFinishPrequal) {
-		%> <strong>Please update your
-		prequalification with your current information.</strong><br>
+			}
+				if (mustFinishPrequal) {
+		%><strong>Please update your prequalification with your
+		current information.</strong><br>
 		<%
-			}//if
-		%> <b>Be sure to submit your information when you have
-		completed filling it out.</b><br>
-		<span class="redMain"><strong><%=message%></strong></span><br>
+			}
+		%> <b>Be sure to submit your information when you have completed
+		filling it out.</b><br>
+
+		<span class="redMain"><strong><%=message%></strong></span></form>
 		</td>
-	</tr>
-	<tr align="left">
-		<td><a
-			href="pqf_printAll.jsp?auditID=<%=action.getAuditID()%>"
-			target="_blank">Click here to print the entire <%=auditType%> <%
- 	if (!com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType))
- 			out.println("Audit");
- %> </a></td>
 	</tr>
 	<tr align="center">
 		<td>
@@ -163,19 +143,20 @@
 			%>
 			<tr class="blueMain" <%=Utilities.getBGColor(catCount)%>>
 				<td align=right><%=catCount%>.</td>
-				<td><a href="pqf_edit.jsp?auditID=<%=action.getAuditID()%>&catID=<%=pcBean.catID%>"><%=pcBean.category%></a></td>
+				<td><a
+					href="pqf_edit.jsp?auditID=<%=action.getAuditID()%>&catID=<%=pcBean.catID%>"><%=pcBean.category%></a></td>
 				<%
 					String showPercent = "";
-					if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType)
-							&& cBean.isDesktopSubmitted())
-						showPercent = pcBean.percentVerified;
-					else if (com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(auditType) && cBean.isDaSubmitted())
-						showPercent = pcBean.percentVerified;
-					else if (com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(auditType)
-							&& cBean.isOfficeSubmitted())
-						showPercent = pcBean.percentVerified;
-					else
-						showPercent = pcBean.percentCompleted;
+								if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType)
+										&& cBean.isDesktopSubmitted())
+									showPercent = pcBean.percentVerified;
+								else if (com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(auditType) && cBean.isDaSubmitted())
+									showPercent = pcBean.percentVerified;
+								else if (com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(auditType)
+										&& cBean.isOfficeSubmitted())
+									showPercent = pcBean.percentVerified;
+								else
+									showPercent = pcBean.percentCompleted;
 				%>
 				<td><%=pcBean.getPercentShow(showPercent)%><%=pcBean.getPercentCheck(showPercent)%></td>
 
@@ -193,8 +174,8 @@
 						&& pBean.isAdmin()) {
 		%>
 		<form name="form1" method="post" action="pqf_editMain.jsp"><input
-			name="auditID" type="hidden" value="<%=action.getAuditID()%>"> <input
-			name="action" type="submit" class="forms"
+			name="auditID" type="hidden" value="<%=action.getAuditID()%>">
+		<input name="action" type="submit" class="forms"
 			value="Reset <%=auditType%>"
 			onClick="return confirm('Are you sure you want to reset this audit?  All previously saved information will be lost');">
 		</form>
@@ -204,8 +185,8 @@
  	if (pBean.isAdmin() && (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType))) {
  %>
 		<form name="form1" method="post" action="pqf_editMain.jsp"><input
-			name="auditID" type="hidden" value="<%=action.getAuditID()%>"> <input
-			name="action" type="submit" class="forms"
+			name="auditID" type="hidden" value="<%=action.getAuditID()%>">
+		<input name="action" type="submit" class="forms"
 			value="Regenerate Dynamic PQF"
 			onClick="return confirm('Are you sure you want to regenerate the pqf categories?');">
 		</form>
