@@ -3,7 +3,9 @@
 <%@page import="org.apache.commons.beanutils.*"%>
 <%@page import="java.util.List"%>
 <%@page import="com.picsauditing.search.*"%>
-<%@page import="com.picsauditing.jpa.entities.AuditType"%>
+`<%@page import="com.picsauditing.jpa.entities.AuditType"%>
+<jsp:useBean id="questionList" class="com.picsauditing.PICS.pqf.QuestionTypeList" scope="page"/>
+
 <%
 if (!permissions.isAdmin()) throw new com.picsauditing.access.NoRightsException("Admin");
 
@@ -21,6 +23,7 @@ sql.addField("ca"+AuditType.OFFICE+".percentVerified AS ca"+AuditType.OFFICE+"_p
 sql.addField("c.main_trade");
 sql.addField("a.industry");
 sql.addField("c.certs");
+
 
 Report report = new Report();
 report.setSql(sql);
@@ -41,15 +44,25 @@ if (TradesBean.DEFAULT_PERFORMED_BY.equals(performedBy) || performedBy == null) 
 		answerFilter = "C%";
 }
 String tradeWhere = "a.id IN (SELECT conID FROM pqfdata WHERE questionID=? AND answer LIKE '"+answerFilter+"')";
-report.addFilter(new SelectFilter("trade", tradeWhere, request.getParameter("trade"), TradesBean.DEFAULT_SELECT_TRADE, TradesBean.DEFAULT_SELECT_TRADE));
-report.addFilter(new SelectFilter("status", "c.status = '?'", request.getParameter("status"), SearchBean.DEFAULT_STATUS, SearchBean.DEFAULT_STATUS));
+report.addFilter(new SelectFilter("trade", tradeWhere, request.getParameter("trade"), TradesBean.DEFAULT_SELECT_TRADE_ID, TradesBean.DEFAULT_SELECT_TRADE_ID));
+report.addFilter(new SelectFilterInteger("generalContractorID", "a.id IN (SELECT subID FROM generalcontractors WHERE genID = ? )", request.getParameter("generalContractorID"), SearchBean.DEFAULT_GENERAL_VALUE, SearchBean.DEFAULT_GENERAL_VALUE));
+report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", request.getParameter("city"), SearchBean.DEFAULT_CITY, SearchBean.DEFAULT_CITY));
+report.addFilter(new SelectFilter("state", "a.state = '?'", request.getParameter("state"), "", ""));
+report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", request.getParameter("zip"), SearchBean.DEFAULT_ZIP, SearchBean.DEFAULT_ZIP));
+report.addFilter(new SelectFilter("certsOnly", "c.isOnlyCerts = '?'", request.getParameter("certsOnly"), "", ""));
+report.addFilter(new SelectFilter("visible", "a.active = '?'", request.getParameter("visible"), SearchBean.DEFAULT_VISIBLE,SearchBean.DEFAULT_VISIBLE));
+
+report.addFilter(new SelectFilter("stateLicensedIn", "a.id IN (SELECT conID FROM pqfdata WHERE questionID=? AND answer <> '')", request.getParameter("stateLicensedIn"), QuestionTypeList.DEFAULT_SELECT_QUESTION_ID, QuestionTypeList.DEFAULT_SELECT_QUESTION_ID));
+report.addFilter(new SelectFilter("worksIn", "a.id IN (SELECT conID FROM pqfdata WHERE questionID=? AND answer LIKE 'Yes%')", request.getParameter("worksIn"), QuestionTypeList.DEFAULT_SELECT_QUESTION_ID, QuestionTypeList.DEFAULT_SELECT_QUESTION_ID));
+report.addFilter(new SelectFilter("taxID", "c.taxID = '?'", request.getParameter("taxID"), SearchBean.DEFAULT_TAX_ID, SearchBean.DEFAULT_TAX_ID));
 
 List<BasicDynaBean> searchData = report.getPage();
 
 TradesBean tBean = new TradesBean();
-//com.picsauditing.PICS.pqf.QuestionTypeList statesLicensedInList = new com.picsauditing.PICS.pqf.QuestionTypeList();
+
 //tBean.setFromDB();
 %>
+<%@page import="com.picsauditing.PICS.pqf.QuestionTypeList"%>
 <html>
 <head>
 <title>Accounts Manage</title>
@@ -66,16 +79,22 @@ TradesBean tBean = new TradesBean();
 <%=SearchBean.getSearchIndustrySelect("industry", "forms", report.getFilterValue("industry"))%>
 <%=tBean.getTradesSelect("trade", "forms", report.getFilterValue("trade"))%>
 <%=Inputs.inputSelect("performedBy", "forms", performedBy, TradesBean.PERFORMED_BY_ARRAY)%>
-
 <input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0" onClick="runSearch( 'form1')" onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()">
-</td>
-</tr>
-<tr>
-<td>
-<%=SearchBean.getStatusSelect("status","blueMain", report.getFilterValue("status"))%>
-
-</td>
-</tr>
+</td></tr>
+<tr><td>
+<%=SearchBean.getSearchGeneralSelect("generalContractorID", "forms", report.getFilterValue("generalContractorID"))%>
+<input name="city" type="text" class="forms" value="<%=report.getFilterValue("city")%>" size="15" onFocus="clearText(this)">
+<%=SearchBean.getStateSelect("state","forms", report.getFilterValue("state"))%>
+<input name="zip" type="text" class="forms" value="<%=report.getFilterValue("zip")%>" size="5" onFocus="clearText(this)">
+</td></tr>
+<tr><td>
+<%=Inputs.inputSelect2("certsOnly","forms",report.getFilterValue("certsOnly"), new String[] {"","- Default Certs -","Yes", "Only Certs","No","Exclude Certs"})%>
+<%=Inputs.inputSelect("visible", "forms", report.getFilterValue("visible"), SearchBean.VISIBLE_SEARCH_ARRAY)%>
+<%=questionList.getQuestionListQIDSelect("License","stateLicensedIn","forms", report.getFilterValue("stateLicensedIn"),SearchBean.DEFAULT_LICENSED_IN)%>
+<input name="taxID" type="text" class="forms" value="<%=report.getFilterValue("taxID")%>" size="9" onFocus="clearText(this)"><span class=redMain>*must be 9 digits</span>
+</td></tr>
+<tr><td>
+<%=questionList.getQuestionListQIDSelect("Office Location", "worksIn", "forms", report.getFilterValue("worksIn"),SearchBean.DEFAULT_WORKS_IN)%>
 </table>
 	<input type="hidden" name="showPage" value="1"/>
 	<input type="hidden" name="startsWith" value="<%=sql.getStartsWith()%>"/>
