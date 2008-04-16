@@ -7,7 +7,7 @@
 SelectAccount sql = new SelectAccount();
 
 sql.setType(SelectAccount.Type.Contractor);
-sql.startsWith(request.getParameter("startsWith"));
+sql.setStartsWith(request.getParameter("startsWith"));
 sql.addJoin("JOIN contractor_audit ca ON a.id = ca.conID");
 sql.addJoin("JOIN audit_type at ON ca.auditTypeID = at.auditTypeID");
 
