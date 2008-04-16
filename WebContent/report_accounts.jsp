@@ -58,7 +58,7 @@ sql.addField("a.contact");
 
 sql.addWhere("active='Y'");
 sql.addWhere("a.type='" + accountType + "'");
-sql.startsWith(request.getParameter("startsWith"));
+sql.setStartsWith(request.getParameter("startsWith"));
 
 search.setSql(sql);
 search.setPageByResult(request.getParameter("showPage"));
