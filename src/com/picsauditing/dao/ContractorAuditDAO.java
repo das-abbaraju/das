@@ -33,7 +33,7 @@ public class ContractorAuditDAO extends PicsDAO {
 	public List<ContractorAudit> findByContractor(int conID) {
 		Query query = em.createQuery("SELECT t FROM ContractorAudit t " +
 				"WHERE t.contractorAccount.id = ? " +
-				"AND auditStatus <> 'Expired' ORDER BY auditTypeID");
+				"ORDER BY auditTypeID");
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}

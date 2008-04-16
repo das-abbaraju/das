@@ -3,6 +3,7 @@ package com.picsauditing.actions.audits;
 import java.util.List;
 
 import org.apache.struts2.config.Result;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.ContractorActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
