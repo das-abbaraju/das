@@ -125,6 +125,7 @@ public class VerifyView extends AuditActionSupport {
 	private void saveAuditData(HashMap<Integer, AuditData> emrDB, int year) {
 		emrDB.get(year).setVerifiedAnswer(emr.get(year).getVerifiedAnswer());
 		emrDB.get(year).setComment(emr.get(year).getComment());
+		emrDB.get(year).setIsCorrect(emr.get(year).getIsCorrect());
 		pqfDao.save(emrDB.get(year));
 	}
 
@@ -169,10 +170,60 @@ public class VerifyView extends AuditActionSupport {
 		loadData();
 
 		EmailContractorBean emailer = new EmailContractorBean();
-		String items = "";
-		items += "2007  OSHA 300 Incorrect form: Uploaded EMR" + "\n";
-		items += "2005  EMR Incorrect year: Uploaded 07" + "\n";
-
+		
+		StringBuffer sb = new StringBuffer("");
+		
+		if( ! osha.getVerified1() )
+		{
+			sb.append(getYear1());
+			sb.append( " OSHA - ");
+			sb.append(osha.getComment1());
+			sb.append("\n");
+		}
+		if( ! osha.getVerified2() )
+		{
+			sb.append(getYear2());
+			sb.append( " OSHA - ");
+			sb.append(osha.getComment2());
+			sb.append("\n");
+		}
+		if( ! osha.getVerified3() )
+		{
+			sb.append(getYear3());
+			sb.append( " OSHA - ");
+			sb.append(osha.getComment3());
+			sb.append("\n");
+		}
+		
+		AuditData temp = emr.get(AuditQuestion.EMR07);
+		if( ! temp.getIsCorrectBoolean() )
+		{
+			sb.append(getYear1());
+			sb.append( " EMR - ");
+			sb.append(temp.getComment());
+			sb.append("\n");
+		}
+		
+		temp = emr.get(AuditQuestion.EMR06);
+		if( ! temp.getIsCorrectBoolean() )
+		{
+			sb.append(getYear2());
+			sb.append( " EMR - ");
+			sb.append(temp.getComment());
+			sb.append("\n");
+		}
+		
+		temp = emr.get(AuditQuestion.EMR05);
+		if( ! temp.getIsCorrectBoolean() )
+		{
+			sb.append(getYear3());
+			sb.append( " EMR - ");
+			sb.append(temp.getComment());
+			sb.append("\n");
+		}
+		
+		String items = sb.toString();
+		
 		emailer.addTokens("missing_items", items);
 		emailer.sendMessage(EmailTemplates.verifyPqf, this.conAudit
 				.getContractorAccount().getIdString(), permissions);
