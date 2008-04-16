@@ -28,6 +28,8 @@ if ("Send Emails".equals(action)) {
 
 SelectAccount sql = new SelectAccount();
 
+sql.addAudit(AuditType.PQF);
+sql.addAudit(AuditType.OFFICE);
 sql.setType(SelectAccount.Type.Contractor);
 sql.addWhere("active='Y' AND isOnlyCerts='No'");
 
@@ -35,8 +37,10 @@ sql.addField("a.dateCreated");
 sql.addField("a.lastLogin");
 sql.addField("c.lastAnnualUpdateEmailDate");
 sql.addField("c.annualUpdateEmails");
-sql.addField("c.pqfSubmittedDate");
-sql.addField("c.auditDate");
+//sql.addField("c.pqfSubmittedDate");
+sql.addField("ca"+AuditType.PQF+".completedDate AS pqfSubmittedDate");
+//sql.addField("c.auditDate");
+sql.addField("ca"+AuditType.OFFICE+".completedDate AS auditDate");
 
 Report report = new Report();
 report.setSql(sql);
@@ -45,7 +49,7 @@ report.setOrderBy(request.getParameter("orderBy"), "lastLogin DESC");
 report.addFilter(new SelectFilter("startsWith", "a.name LIKE '?%'", request.getParameter("startsWith")));
 report.addFilter(new SelectFilterInteger("minTimes", "c.annualUpdateEmails >= '?'", request.getParameter("minTimes"), "0", "0"));
 report.addFilter(new SelectFilterInteger("maxTimes", "c.annualUpdateEmails <= '?'", request.getParameter("maxTimes"), "9", ""));
-report.addFilter(new SelectFilterDate("pqfDate", "c.pqfSubmittedDate < '?'", request.getParameter("pqfDate"), "1/1/2008", ""));
+report.addFilter(new SelectFilterDate("pqfDate", "ca"+AuditType.PQF+".completedDate < '?'", request.getParameter("pqfDate"), "1/1/2008", ""));
 report.addFilter(new SelectFilterDate("dateCreated", "a.dateCreated < '?'", request.getParameter("dateCreated"), "1/1/2008", ""));
 
 report.setPageByResult(request.getParameter("showPage"));
@@ -53,6 +57,7 @@ report.setLimit(50);
 List<BasicDynaBean> searchData = report.getPage();
 
 %>
+<%@page import="com.picsauditing.jpa.entities.AuditType"%>
 <html>
 <head>
 <title>Annual Update Emails</title>
@@ -99,10 +104,10 @@ for (String key : report.getFilters().keySet()) {
 			class="whiteTitle">Created</a></td>
 		<td align="center"><a href="?orderBy=lastLogin DESC"
 			class="whiteTitle">Last Login</a></td>
-		<td align="center"><a href="?orderBy=pqfSubmittedDate DESC"
+		<td align="center"><a href="?orderBy=ca<%=AuditType.PQF%>.completedDate DESC"
 			class="whiteTitle">PQF</a></td>
 		<td align="center" bgcolor="#6699CC"><a
-			href="?orderBy=auditDate DESC" class="whiteTitle">Audit</a></td>
+			href="?orderBy=ca<%=AuditType.OFFICE%>.completedDate DESC" class="whiteTitle">Audit</a></td>
 		<td>Preview</td>
 	</tr>
 	<%
