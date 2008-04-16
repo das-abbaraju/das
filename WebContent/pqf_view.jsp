@@ -42,17 +42,11 @@ try {
 <meta name="header_gif" content="header_prequalification.gif" />
 </head>
 <body>
-            <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
-              <tr align="center" class="blueMain">
-                <td width="676"><%@ include file="includes/nav/secondNav.jsp"%></td>
-              </tr>
-              <tr align="center" class="blueMain">
-                <td class="blueHeader"><%=auditType%> for <%=aBean.name%></td>
-              </tr>
-              <tr align="center">
-                <td class="blueMain">Date Submitted: <span class="redMain"><strong><%=cBean.getAuditSubmittedDate(auditType)%></strong></span></td>
-              </tr>
-<%	if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType) || com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(auditType)) {%>
+<%@ include file="includes/nav/pqfHeader.jsp"%>
+
+<table border="0" cellspacing="0" cellpadding="1" class="blueMain">
+<%
+	if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType) || com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(auditType)) { %>
 			  <tr align="center">
                 <td class="blueMain">Safety Manual: <span class="redMain"><%=pdBean.getUploadLink()%>
                         </span></td>
@@ -185,7 +179,7 @@ try {
               </tr> 
 <%	
 	}//if %>
-            </table>
+</table>
 <%	}finally{
 		pqBean.closeList();
 		pcBean.closeList();
