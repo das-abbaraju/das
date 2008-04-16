@@ -46,6 +46,7 @@ List<BasicDynaBean> searchData = report.getPage();
 <title>Contractor Approvals</title>
 <script src="js/prototype.js" type="text/javascript"></script>
 <script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
+<script src="js/Search.js" type="text/javascript"></script>
 <script type="text/javascript">
 function saveApproval(conID, status) {
 	pars = 'action=save&conID='+conID+'&workStatus='+status;
@@ -75,20 +76,25 @@ form.smallform {
 <table border="0" cellpadding="5" cellspacing="0" align="center">
 	<tr>
 		<td class="blueMain">
-		<form action="con_approvals.jsp" method="get">
+		<form id="form1" name="form1" action="con_approvals.jsp" method="get">
 			Name: <input type="text" name="name" value="<%= report.getFilterValue("name") %>" size="20" class="blueMain" />
 			<select name="workStatus" class="blueMain">
-				<option value="">All</option>
-				<option value="P"<%="P".equals(report.getFilterValue("workStatus"))?" SELECTED":"" %>>Pending</option>
-				<option value="Y"<%="Y".equals(report.getFilterValue("workStatus"))?" SELECTED":"" %>>Yes</option>
-				<option value="N"<%="N".equals(report.getFilterValue("workStatus"))?" SELECTED":"" %>>No</option>
+				<option value="" <%="".equals(request.getParameter("workStatus"))?" SELECTED":"" %>>All</option>
+				<option value="P"<%="P".equals(request.getParameter("workStatus"))?" SELECTED":"" %>>Pending</option>
+				<option value="Y"<%="Y".equals(request.getParameter("workStatus"))?" SELECTED":"" %>>Yes</option>
+				<option value="N"<%="N".equals(request.getParameter("workStatus"))?" SELECTED":"" %>>No</option>
 			</select>
-			<input type="submit" value="Show" class="blueMain">
+			<input type="submit" value="Show" onClick="runSearch( 'form1')" class="blueMain">
+
+			<input type="hidden" name="showPage" value="1"/>
+			<input type="hidden" name="startsWith" value=""/>
+			<input type="hidden" name="orderBy"  value="<%=request.getParameter("orderBy") == null ? "gc.dateAdded DESC" : request.getParameter("orderBy") %>"/>
 		</form>
+
 		</td>
 	</tr>
 	<tr>
-		<td align="right"><%=report.getPageLinks()%></td>
+		<td align="right"><%=report.getPageLinksWithDynamicForm()%></td>
 	</tr>
 </table>
 
@@ -96,11 +102,9 @@ form.smallform {
 
 <table border="0" cellpadding="1" cellspacing="1" align="center">
 	<tr bgcolor="#003366" class="whiteTitle">
-		<td colspan=2><a href="?orderBy=a.name<%=report.getFilterParams()%>" class="whiteTitle">Contractor</a></td>
-		<td align="center"><a href="?<%=report.getFilterParams() %>"
-			class="whiteTitle">Date Added</a></td>
-		<td align="center"><a href="?orderBy=workStatus<%=report.getFilterParams() %>"
-			class="whiteTitle">Approved</a></td>
+		<td colspan=2><a href="javascript: changeOrderBy('form1','a.name');" class="whiteTitle">Contractor</a></td>
+		<td align="center"><a href="javascript: changeOrderBy('form1','gc.dateAdded DESC');" class="whiteTitle">Date Added</a></td>
+		<td align="center"><a href="javascript: changeOrderBy('form1','workStatus');" class="whiteTitle">Approved</a></td>
 		<td>&nbsp;</td>
 	</tr>
 	<%
