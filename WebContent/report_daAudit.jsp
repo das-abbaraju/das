@@ -47,7 +47,7 @@ sql.addPQFQuestion(894, false, "requiredAnswer"); //q318.answer
 sql.addWhere("q894.answer = 'Yes' OR c.daRequired IS NULL OR c.daRequired = 'Yes'");
 sql.addWhere("c.daSubmittedDate = '0000-00-00'");
 
-sql.startsWith(request.getParameter("startsWith"));
+sql.setStartsWith(request.getParameter("startsWith"));
 
 Report report = new Report();
 report.setSql(sql);
