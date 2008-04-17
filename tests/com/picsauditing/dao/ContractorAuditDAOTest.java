@@ -47,8 +47,8 @@ public class ContractorAuditDAOTest {
 		contractoraudit.setRequestingOpAccount(new OperatorAccount());
 		contractoraudit.getRequestingOpAccount().setId(784);
 		contractoraudit.setAuditLocation("irvine");
-		contractoraudit.setPercentComplete("50");
-		contractoraudit.setPercentVerified("50");
+		contractoraudit.setPercentComplete(50);
+		contractoraudit.setPercentVerified(50);
 		contractorauditDAO.save(contractoraudit);
 		assertEquals("irvine", contractoraudit.getAuditLocation());
 		contractorauditDAO.remove(contractoraudit.getId());

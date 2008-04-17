@@ -36,8 +36,8 @@ public class ContractorAudit {
 	private Date closedDate;
 	private OperatorAccount requestingOpAccount;
 	private String auditLocation;
-	private String percentComplete;
-	private String percentVerified;
+	private int percentComplete;
+	private int percentVerified;
 	
 	private List<AuditCatData> categories;
 	private List<AuditData> data;
@@ -160,19 +160,19 @@ public class ContractorAudit {
 		this.auditLocation = auditLocation;
 	}
 
-	public String getPercentComplete() {
+	public int getPercentComplete() {
 		return percentComplete;
 	}
 
-	public void setPercentComplete(String percentComplete) {
+	public void setPercentComplete(int percentComplete) {
 		this.percentComplete = percentComplete;
 	}
 
-	public String getPercentVerified() {
+	public int getPercentVerified() {
 		return percentVerified;
 	}
 
-	public void setPercentVerified(String percentVerified) {
+	public void setPercentVerified(int percentVerified) {
 		this.percentVerified = percentVerified;
 	}
 
