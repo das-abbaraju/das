@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -21,6 +22,7 @@ import com.picsauditing.jpa.entities.OshaLog;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
+@TransactionConfiguration(defaultRollback = false)
 @Transactional
 public class ContractorAccountDAOTest {
 	@Autowired
@@ -33,9 +35,9 @@ public class ContractorAccountDAOTest {
 	public void testSaveAndRemove() {
 		contractoraccount = new ContractorAccount();
 		contractoraccount.setName("PICS");
-		contractoraccount.setUsername("testpics112");
+		contractoraccount.setUsername("testpics120");
 		contractoraccount.setPassword("testpics");
-		contractoraccount.setPasswordChange(new Date(12 - 12 - 2008));
+		contractoraccount.setPasswordChange(new Date(2008,01,12));
 		contractoraccount.setLastLogin(Calendar.getInstance().getTime());
 		contractoraccount.setContact("pics admin");
 		contractoraccount.setAddress("17701 cowan");
@@ -50,21 +52,21 @@ public class ContractorAccountDAOTest {
 		contractoraccount.setIndustry("contracting");
 		contractoraccount.setActive('y');
 		contractoraccount.setCreatedBy("pics");
-		contractoraccount.setDateCreated(new Date(2008 - 04 - 04));
+		contractoraccount.setDateCreated(new Date(2008,04,04));
 		contractoraccount.setSeesAllB('n');
 		contractoraccount.setActivationEmailsB("pics@picsauditing.com");
 		contractoraccount.setSendActivationEmailB('n');
-		contractoraccount.setEmailConfirmedDate(new Date(2008 - 12 - 42));
+		contractoraccount.setEmailConfirmedDate(new Date(2008,12,42));
 		contractoraccount.setTaxId("test17701");
 		contractoraccount.setMainTrade("Consulting");
 		contractoraccount.setTrades("Contractors Prescreening");
 		contractoraccount.setSubTrades("junit testing");
-		contractoraccount.setAccountDate(new Date(2008 - 04 - 19));
+		contractoraccount.setAccountDate(new Date(2008,04,19));
 		contractoraccount.setPaid("yes");
-		contractoraccount.setLastPayment(new Date(2008 - 04 - 26));
+		contractoraccount.setLastPayment(new Date(2008,04,26));
 		contractoraccount.setBillingCycle(3);
 		contractoraccount.setIsExempt("no");
-		contractoraccount.setMembershipDate(new Date(2004 - 12 - 12));
+		contractoraccount.setMembershipDate(new Date(2004,12,12));
 		contractoraccount.setPayingFacilities(10);
 		contractoraccount.setRiskLevel(LowMedHigh.Med);
 		contractoraccount = (ContractorAccount) accountDAO
