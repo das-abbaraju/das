@@ -56,7 +56,6 @@ sql.addField("a.city");
 sql.addField("a.state");
 sql.addField("a.contact");
 
-sql.addWhere("active='Y'");
 sql.addWhere("a.type='" + accountType + "'");
 sql.setStartsWith(request.getParameter("startsWith"));
 
