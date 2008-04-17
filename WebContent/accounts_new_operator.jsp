@@ -17,7 +17,7 @@
 		if (aBean.isOK() && oBean.isOK() && aBean.writeNewToDB()) {
 			oBean.writeNewToDB(aBean.id);
 			FACILITIES.resetFacilities();
-			response.sendRedirect("accounts_manage.jsp?type="+accountType);
+			response.sendRedirect("report_accounts.jsp?type=" + aBean.type);
 			return;
 		}//if
 	}//if
