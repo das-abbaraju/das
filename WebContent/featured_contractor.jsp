@@ -13,7 +13,7 @@
 			width="150" height="81"></td>
 		<td bgcolor="#CBE5FE" class="blueSmall">"Bigge is able to provide
 		a consistent, quality audit to all our clients through
-		com.picsauditing.PICS."<br>
+		PICS."<br>
 		<br>
 		<div align="right"><strong>Jim Coenen</strong> - Safety Manager</div>
 		</td>
@@ -21,7 +21,7 @@
 </table>
 <table width="100%" border="0" cellspacing="20" cellpadding="0">
 	<tr>
-		<td class="blueHome"><span class="blueMain"><strong>Bigge.
+		<td class="blueHome"><span class="blueMain"><strong>Bigge
 		</strong>| JULY 2007</span></td>
 	</tr>
 </table>
@@ -63,11 +63,11 @@
 		<p>As a strong supporter of PICS, Bigge recognizes the value that
 		PICS brings to the industry, both the contractor and the operator.
 		Coenen is able to <strong>“provide a consistent, quality
-		audit to all our clients through com.picsauditing.PICS. We support the
+		audit to all our clients through PICS. We support the
 		consortium idea for owners and will continue to point new potential
-		consortium members to com.picsauditing.PICS. They are a leader in the
+		consortium members to PICS. They are a leader in the
 		industry, and we are proud to be associated with
-		com.picsauditing.PICS.”</strong></p>
+		PICS.”</strong></p>
 
 		</div>
 		</td>
