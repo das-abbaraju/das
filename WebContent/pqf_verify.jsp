@@ -6,9 +6,8 @@
 <jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-<%@page import="com.picsauditing.actions.audits.ContractorAuditLegacy"%>
+<jsp:useBean id="action" class="com.picsauditing.actions.audits.ContractorAuditLegacy" scope="page" />
 <%
-ContractorAuditLegacy action = new ContractorAuditLegacy();
 action.setAuditID(request.getParameter("auditID"));
 String auditType = action.getAudit().getAuditType().getLegacyCode();
 String conID = ((Integer) action.getAudit().getContractorAccount().getId()).toString();
@@ -55,18 +54,11 @@ try {
 <SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
 </head>
 <body>
+<%@ include file="includes/nav/pqfHeader.jsp"%>
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
-              <tr align="center" class="blueMain">
-			    <td width="676">
-                  <%@ include file="includes/nav/secondNav.jsp"%>
-				</td>
-			  </tr>
-    		  <tr align="center" class="blueMain">
-                <td class="blueHeader"><%=auditType%> for <%=aBean.name%></td>
-    		  </tr>
 <%	if (!isCategorySelected) { %>
 	  		  <tr align="center">
-                <td class="blueMain">Date Submitted: <span class="redMain"><%=cBean.getAuditSubmittedDate(auditType)%></span><br>
+                <td class="blueMain">
 <%		if (Constants.DESKTOP_TYPE.equals(auditType)) { %>
                   Percent Verified: <span class="redMain"><%=cBean.desktopVerifiedPercent%>%</span><br>
                   Date RQs Generated: <span class="redMain"><%=cBean.getAuditSubmittedDate(auditType)%></span>

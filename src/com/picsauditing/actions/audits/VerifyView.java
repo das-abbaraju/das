@@ -110,9 +110,9 @@ public class VerifyView extends AuditActionSupport {
 		if (osha.getVerified1()) verified++;
 		if (osha.getVerified2()) verified++;
 		if (osha.getVerified3()) verified++;
-		if (YesNo.Yes.equals(getEmr1().getIsCorrect())) verified++;
-		if (YesNo.Yes.equals(getEmr2().getIsCorrect())) verified++;
-		if (YesNo.Yes.equals(getEmr3().getIsCorrect())) verified++;
+		if (getEmr1() != null && YesNo.Yes.equals(getEmr1().getIsCorrect())) verified++;
+		if (getEmr2() != null && YesNo.Yes.equals(getEmr2().getIsCorrect())) verified++;
+		if (getEmr3() != null && YesNo.Yes.equals(getEmr3().getIsCorrect())) verified++;
 		
 		int verifyTotal = 6;
 
