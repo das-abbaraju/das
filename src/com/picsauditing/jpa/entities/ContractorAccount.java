@@ -74,7 +74,12 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	protected List<ContractorAudit> audits;
 	protected List<ContractorOperator> operators;
 
-	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
+	public ContractorAccount() {
+		this.type = "Contractor";
+	}
+
+	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.PERSIST,
+			CascadeType.MERGE, CascadeType.REMOVE })
 	public List<OshaLog> getOshas() {
 		return oshas;
 	}
@@ -273,7 +278,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 * @param note
 	 */
 	public void addNote(Permissions permissions, String note) {
-		this.notes = DateBean.getTodaysDateTime() + " " + permissions.getName() + ": " + note + "\n" + this.notes;
+		this.notes = DateBean.getTodaysDateTime() + " " + permissions.getName()
+				+ ": " + note + "\n" + this.notes;
 	}
 
 	@Column(name = "adminNotes", nullable = true, length = 16277215)

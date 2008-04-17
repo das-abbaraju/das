@@ -25,9 +25,9 @@ import com.picsauditing.util.Luhn;
 
 @Entity
 @Table(name = "accounts")
-@Inheritance(strategy=InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Account implements java.io.Serializable {
-	
+
 	protected int id;
 	protected String name;
 	protected String username;
@@ -52,9 +52,10 @@ public class Account implements java.io.Serializable {
 	protected char sendActivationEmailB;
 	protected String activationEmailsB;
 	protected Date emailConfirmedDate;
-	
+	protected String type;
+
 	// Other tables
-	protected List<ContractorOperator> contractors;
+	// protected List<ContractorOperator> contractors;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -62,14 +63,16 @@ public class Account implements java.io.Serializable {
 	public int getId() {
 		return this.id;
 	}
+
 	@Transient
 	public String getIdString() {
-		return ((Integer)this.id).toString();
+		return ((Integer) this.id).toString();
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	@Transient
 	public String getLuhnId() {
 		Integer value = this.id;
@@ -286,14 +289,23 @@ public class Account implements java.io.Serializable {
 		this.emailConfirmedDate = emailConfirmedDate;
 	}
 
-	//////////////////
-	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "operatorAccount")
-	public List<ContractorOperator> getContractors() {
-		return this.contractors;
+	@Column(name = "type")
+	public String getType() {
+		return type;
 	}
 
-	public void setContractors(List<ContractorOperator> contractors) {
-		this.contractors = contractors;
+	public void setType(String type) {
+		this.type = type;
 	}
+
+	// ////////////////
+
+	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "operatorAccount")
+	// public List<ContractorOperator> getContractors() {
+	// return this.contractors;
+	// }
+	//
+	// public void setContractors(List<ContractorOperator> contractors) {
+	// this.contractors = contractors;
+	// }
 }

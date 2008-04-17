@@ -1,21 +1,28 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.List;
+
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "operators")
 @PrimaryKeyJoinColumn(name = "id")
-public class OperatorAccount extends Account implements java.io.Serializable{
+public class OperatorAccount extends Account implements java.io.Serializable {
 	private String activationEmails;
 	private String doSendActivationEmail;
 	private String seesAllContractors;
-	private String canAddContractors;
+	private YesNo canAddContractors;
 	private String doContractorsPay;
-	private String canSeeInsurance;
-	private String isCorporate;
+	private YesNo canSeeInsurance;
+	private YesNo isCorporate;
 	private String emrHurdle;
 	private String emrTime;
 	private String lwcrTime;
@@ -23,14 +30,25 @@ public class OperatorAccount extends Account implements java.io.Serializable{
 	private String trirHurdle;
 	private String trirTime;
 	private String fatalitiesHurdle;
-	private String flagEmr;
-	private String flagLwcr;
-	private String flagTrir;
-	private String flagFatalities;
-	private String flagQ318;
-	private String flagQ1385;
+	private YesNo flagEmr;
+	private YesNo flagLwcr;
+	private YesNo flagTrir;
+	private YesNo flagFatalities;
+	private YesNo flagQ318;
+	private YesNo flagQ1385;
 	private int insuranceAuditorId;
-	private String isUserManualUploaded;
+	private YesNo isUserManualUploaded;
+	private YesNo canSeePQF;
+	private YesNo canSeeDesktop;
+	private YesNo canSeeDA;
+	private YesNo canSeeoffice;
+	private YesNo canSeeField;
+	private YesNo approvesRelationships;
+	protected List<ContractorOperator> contractors;
+
+	public OperatorAccount() {
+		this.type = "Operator";
+	}
 
 	@Column(name = "activationEmails", nullable = false)
 	public String getActivationEmails() {
@@ -59,12 +77,13 @@ public class OperatorAccount extends Account implements java.io.Serializable{
 		this.seesAllContractors = seesAllContractors;
 	}
 
-	@Column(name = "canAddContractors", nullable = false, length = 3)
-	public String getCanAddContractors() {
+	@Column(name = "canAddContractors", nullable = false)
+	@Enumerated(EnumType.STRING)
+	public YesNo getCanAddContractors() {
 		return this.canAddContractors;
 	}
 
-	public void setCanAddContractors(String canAddContractors) {
+	public void setCanAddContractors(YesNo canAddContractors) {
 		this.canAddContractors = canAddContractors;
 	}
 
@@ -77,21 +96,23 @@ public class OperatorAccount extends Account implements java.io.Serializable{
 		this.doContractorsPay = doContractorsPay;
 	}
 
-	@Column(name = "canSeeInsurance", nullable = false, length = 3)
-	public String getCanSeeInsurance() {
+	@Column(name = "canSeeInsurance", nullable = false)
+	@Enumerated(EnumType.STRING)
+	public YesNo getCanSeeInsurance() {
 		return this.canSeeInsurance;
 	}
 
-	public void setCanSeeInsurance(String canSeeInsurance) {
+	public void setCanSeeInsurance(YesNo canSeeInsurance) {
 		this.canSeeInsurance = canSeeInsurance;
 	}
 
-	@Column(name = "isCorporate", nullable = false, length = 3)
-	public String getIsCorporate() {
+	@Column(name = "isCorporate", nullable = false)
+	@Enumerated(EnumType.STRING)
+	public YesNo getIsCorporate() {
 		return this.isCorporate;
 	}
 
-	public void setIsCorporate(String isCorporate) {
+	public void setIsCorporate(YesNo isCorporate) {
 		this.isCorporate = isCorporate;
 	}
 
@@ -158,57 +179,63 @@ public class OperatorAccount extends Account implements java.io.Serializable{
 		this.fatalitiesHurdle = fatalitiesHurdle;
 	}
 
-	@Column(name = "flagEmr", nullable = false, length = 3)
-	public String getFlagEmr() {
+	@Column(name = "flagEmr", nullable = false)
+	@Enumerated(EnumType.STRING)
+	public YesNo getFlagEmr() {
 		return this.flagEmr;
 	}
 
-	public void setFlagEmr(String flagEmr) {
+	public void setFlagEmr(YesNo flagEmr) {
 		this.flagEmr = flagEmr;
 	}
 
-	@Column(name = "flagLwcr", nullable = false, length = 3)
-	public String getFlagLwcr() {
+	@Column(name = "flagLwcr", nullable = false)
+	@Enumerated(EnumType.STRING)
+	public YesNo getFlagLwcr() {
 		return this.flagLwcr;
 	}
 
-	public void setFlagLwcr(String flagLwcr) {
+	public void setFlagLwcr(YesNo flagLwcr) {
 		this.flagLwcr = flagLwcr;
 	}
 
-	@Column(name = "flagTrir", nullable = false, length = 3)
-	public String getFlagTrir() {
+	@Column(name = "flagTrir", nullable = false)
+	@Enumerated(EnumType.STRING)
+	public YesNo getFlagTrir() {
 		return this.flagTrir;
 	}
 
-	public void setFlagTrir(String flagTrir) {
+	public void setFlagTrir(YesNo flagTrir) {
 		this.flagTrir = flagTrir;
 	}
 
-	@Column(name = "flagFatalities", nullable = false, length = 3)
-	public String getFlagFatalities() {
+	@Column(name = "flagFatalities", nullable = false)
+	@Enumerated(EnumType.STRING)
+	public YesNo getFlagFatalities() {
 		return this.flagFatalities;
 	}
 
-	public void setFlagFatalities(String flagFatalities) {
+	public void setFlagFatalities(YesNo flagFatalities) {
 		this.flagFatalities = flagFatalities;
 	}
 
-	@Column(name = "flagQ318", nullable = false, length = 3)
-	public String getFlagQ318() {
+	@Column(name = "flagQ318", nullable = false)
+	@Enumerated(EnumType.STRING)
+	public YesNo getFlagQ318() {
 		return this.flagQ318;
 	}
 
-	public void setFlagQ318(String flagQ318) {
+	public void setFlagQ318(YesNo flagQ318) {
 		this.flagQ318 = flagQ318;
 	}
 
-	@Column(name = "flagQ1385", nullable = false, length = 3)
-	public String getFlagQ1385() {
+	@Column(name = "flagQ1385", nullable = false)
+	@Enumerated(EnumType.STRING)
+	public YesNo getFlagQ1385() {
 		return this.flagQ1385;
 	}
 
-	public void setFlagQ1385(String flagQ1385) {
+	public void setFlagQ1385(YesNo flagQ1385) {
 		this.flagQ1385 = flagQ1385;
 	}
 
@@ -221,13 +248,83 @@ public class OperatorAccount extends Account implements java.io.Serializable{
 		this.insuranceAuditorId = insuranceAuditorId;
 	}
 
-	@Column(name = "isUserManualUploaded", nullable = false, length = 3)
-	public String getIsUserManualUploaded() {
+	@Column(name = "isUserManualUploaded", nullable = false)
+	@Enumerated(EnumType.STRING)
+	public YesNo getIsUserManualUploaded() {
 		return this.isUserManualUploaded;
 	}
 
-	public void setIsUserManualUploaded(String isUserManualUploaded) {
+	public void setIsUserManualUploaded(YesNo isUserManualUploaded) {
 		this.isUserManualUploaded = isUserManualUploaded;
+	}
+
+	@Column(name = "canSeePQF", nullable = false)
+	@Enumerated(EnumType.STRING)
+	public YesNo getCanSeePQF() {
+		return canSeePQF;
+	}
+
+	public void setCanSeePQF(YesNo canSeePQF) {
+		this.canSeePQF = canSeePQF;
+	}
+
+	@Column(name = "canSeeDesktop", nullable = false)
+	@Enumerated(EnumType.STRING)
+	public YesNo getCanSeeDesktop() {
+		return canSeeDesktop;
+	}
+
+	public void setCanSeeDesktop(YesNo canSeeDesktop) {
+		this.canSeeDesktop = canSeeDesktop;
+	}
+
+	@Column(name = "canSeeDA", nullable = false)
+	@Enumerated(EnumType.STRING)
+	public YesNo getCanSeeDA() {
+		return canSeeDA;
+	}
+
+	public void setCanSeeDA(YesNo canSeeDA) {
+		this.canSeeDA = canSeeDA;
+	}
+
+	@Column(name = "canSeeOffice", nullable = false)
+	@Enumerated(EnumType.STRING)
+	public YesNo getCanSeeoffice() {
+		return canSeeoffice;
+	}
+
+	public void setCanSeeoffice(YesNo canSeeoffice) {
+		this.canSeeoffice = canSeeoffice;
+	}
+
+	@Column(name = "canSeeField", nullable = false)
+	@Enumerated(EnumType.STRING)
+	public YesNo getCanSeeField() {
+		return canSeeField;
+	}
+
+	public void setCanSeeField(YesNo canSeeField) {
+		this.canSeeField = canSeeField;
+	}
+
+	@Column(name = "approvesRelationships", nullable = false)
+	@Enumerated(EnumType.STRING)
+	public YesNo getApprovesRelationships() {
+		return approvesRelationships;
+	}
+
+	public void setApprovesRelationships(YesNo approvesRelationships) {
+		this.approvesRelationships = approvesRelationships;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "operatorAccount")
+	public List<ContractorOperator> getContractors() {
+		return this.contractors;
+	}
+
+	public void setContractors(List<ContractorOperator> contractors) {
+		this.contractors = contractors;
 	}
 
 }
