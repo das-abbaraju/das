@@ -629,7 +629,6 @@ public class Utilities {
 	public static int getInt(BasicDynaBean row, String columnName) {
 		Object columnValue = row.get(columnName);
 		if (columnValue == null){
-			System.out.println("Column Not Found: " + columnName);
 			return 0;
 		}
 		return Integer.parseInt(columnValue.toString());
