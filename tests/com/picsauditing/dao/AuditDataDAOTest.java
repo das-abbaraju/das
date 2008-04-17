@@ -3,6 +3,7 @@ package com.picsauditing.dao;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -29,19 +30,28 @@ public class AuditDataDAOTest {
 
 	@Test
 	public void testSaveAndRemove() {
+		// remove any old data before starting the test
+		
+		ArrayList<Integer> questions = new ArrayList<Integer>();
+		questions.add(48);
+		HashMap<Integer, AuditData> existingData = auditdataDAO.findAnswers(
+				3259, questions);
+		for (Integer key : existingData.keySet()) {
+			auditdataDAO.remove(existingData.get(key).getDataID());
+		}
+		
+		// Create a new AuditData object and save it
 		AuditData auditdata = new AuditData();
-		//auditdata.setContractorAccount(new ContractorAccount());
-		//auditdata.getContractorAccount().setId(744);
 		auditdata.setAudit(new ContractorAudit());
 		auditdata.getAudit().setId(3259);
 		auditdata.setQuestion(new AuditQuestion());
 		auditdata.getQuestion().setQuestionID(48);
-		auditdata.setNum(Short.parseShort("300"));
+		auditdata.setNum(300);
 		auditdata.setAnswer("junit testing");
 		auditdata.setAuditor(new User());
 		auditdata.getAuditor().setId(744);
 		auditdata.setComment("junit");
-		auditdata.setDateVerified(new Date(2008 - 04 - 07));
+		auditdata.setDateVerified(new Date());
 		auditdata.setVerifiedAnswer("test");
 		auditdata.setIsCorrect(YesNo.No);
 		auditdata.setWasChanged(YesNo.No);
@@ -52,6 +62,7 @@ public class AuditDataDAOTest {
 		assertNull(auditdata1);
 	}
 
+	
 	@Test
 	public void testFind() {
 		AuditData auditdata = auditdataDAO.find(15);

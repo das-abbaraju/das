@@ -25,7 +25,7 @@ public class AuditData implements java.io.Serializable {
 	private int dataID;
 	private ContractorAudit audit;
 	private AuditQuestion question;
-	private short num;
+	private int num;
 	private String answer;
 	private User auditor;
 	private String comment;
@@ -65,11 +65,11 @@ public class AuditData implements java.io.Serializable {
 		this.question = question;
 	}
 
-	public short getNum() {
+	public int getNum() {
 		return num;
 	}
 
-	public void setNum(short num) {
+	public void setNum(int num) {
 		this.num = num;
 	}
 
