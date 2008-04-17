@@ -1,5 +1,13 @@
+<%@page language="java" errorPage="exception_handler.jsp"%>
+<%@include file="includes/main.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<%@ page language="java" errorPage="exception_handler.jsp"%>
+<jsp:useBean id="action" class="com.picsauditing.actions.audits.ContractorAuditLegacy" scope="page" />
+<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page" />
+<%
+action.setAuditID(request.getParameter("auditID"));
+String id = action.getAudit().getContractorAccount().getIdString();
+cBean.setFromDB(id);
+%>
 <html>
 <head>
 <title>PQF Verification for <s:property
@@ -59,13 +67,9 @@ function sendEmail() {
 </script>
 </head>
 <body>
-<h1>PQF Verification for <s:property
-	value="conAudit.contractorAccount.name" /></h1>
+<%@ include file="includes/nav/pqfHeader.jsp"%>
 
-<p class="blueMain"><a href="pqf_verification.jsp">Return to
-List</a> | <a
-	href="contractor_detail.jsp?id=<s:property value="conAudit.contractorAccount.id" />">Contractor
-Details</a></p>
+<p class="blueMain"><a href="pqf_verification.jsp">PQF Verification Report</a></p>
 
 <s:form id="verify">
 	<s:hidden name="auditID" />
@@ -228,7 +232,7 @@ Details</a></p>
 		</tr>
 		<tr class="blueMain" align="center" valign="top">
 			<td colspan="2"><a
-				href="pqf_uploadFile.jsp?auditType=PQF&catID=10&id=<s:property value="id" />"
+				href="pqf_uploadFile.jsp?catID=10&auditID=<s:property value="auditID" />"
 				class="blueMain">Upload New Files</a></td>
 			<td class="highlight"><a href="#"
 				onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqfpdf<s:property value="emr1.question.questionID" />','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">Show

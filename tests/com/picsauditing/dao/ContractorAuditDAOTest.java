@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.validator.AssertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +38,11 @@ public class ContractorAuditDAOTest {
 		contractoraudit.getContractorAccount().setId(1003);
 		contractoraudit.setCreatedDate(Calendar.getInstance().getTime());
 		contractoraudit.setAuditStatus(AuditStatus.Active);
-		contractoraudit.setExpiresDate(new Date(2009 - 12 - 12));
+		contractoraudit.setExpiresDate(new Date());
 		contractoraudit.setAuditor(new User());
 		contractoraudit.getAuditor().setId(941); // tallred
-		contractoraudit.setAssignedDate(new Date(2008 - 04 - 12));
-		contractoraudit.setScheduledDate(new Date(2008 - 04 - 21));
+		contractoraudit.setAssignedDate(new Date());
+		contractoraudit.setScheduledDate(new Date());
 		contractoraudit.setCompletedDate(new Date());
 		contractoraudit.setClosedDate(new Date());
 		contractoraudit.setRequestingOpAccount(new OperatorAccount());
@@ -50,7 +51,7 @@ public class ContractorAuditDAOTest {
 		contractoraudit.setPercentComplete(50);
 		contractoraudit.setPercentVerified(50);
 		contractorauditDAO.save(contractoraudit);
-		assertEquals("irvine", contractoraudit.getAuditLocation());
+		assertEquals(true, contractoraudit.getId() > 0);
 		contractorauditDAO.remove(contractoraudit.getId());
 		ContractorAudit contractoraudit1 = contractorauditDAO.find(contractoraudit.getId());
 		assertNull(contractoraudit1);

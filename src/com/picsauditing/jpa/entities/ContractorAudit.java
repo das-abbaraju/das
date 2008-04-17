@@ -18,8 +18,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.annotations.Cascade;
-
 @Entity
 @Table(name = "contractor_audit")
 public class ContractorAudit {
@@ -88,6 +86,26 @@ public class ContractorAudit {
 	}
 
 	public void setAuditStatus(AuditStatus auditStatus) {
+		if (auditStatus != null && this.auditStatus != null && !auditStatus.equals(this.auditStatus)) {
+			// If we're changing the status to Submitted or Active, then we need to set the dates
+			if (auditStatus.equals(AuditStatus.Submitted)) {
+				// If we're going "forward" then (re)set the closedDate
+				if (completedDate == null)
+					completedDate = new Date();
+			}
+			if (auditStatus.equals(AuditStatus.Active)) {
+				// If we're going "forward" then (re)set the closedDate
+				if (closedDate == null
+						|| this.auditStatus.equals(AuditStatus.Submitted)
+						|| this.auditStatus.equals(AuditStatus.Pending))
+					closedDate = new Date();
+				
+				// If we're closed, there should always be a completedDate, 
+				// so fill it in if it hasn't already been set
+				if (completedDate == null)
+					completedDate = closedDate;
+			}
+		}
 		this.auditStatus = auditStatus;
 	}
 

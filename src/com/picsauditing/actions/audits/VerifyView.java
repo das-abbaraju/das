@@ -27,7 +27,6 @@ public class VerifyView extends AuditActionSupport {
 	private AuditDataDAO pqfDao;
 	private HashMap<Integer, AuditData> emr = new HashMap<Integer, AuditData>();
 	private int followUp = 0;
-	
 
 	public VerifyView(ContractorAuditDAO contractorAuditDAO, AuditDataDAO pqfDao) {
 		this.contractorAuditDAO = contractorAuditDAO;
@@ -73,19 +72,13 @@ public class VerifyView extends AuditActionSupport {
 					osha2.setComment3(osha.getComment3());
 					
 					if( osha2.getVerified1() != osha.getVerified1() )
-					{
 						osha2.setVerified1(osha.getVerified1());
-					}
 					
 					if( osha2.getVerified2() != osha.getVerified2() )
-					{
 						osha2.setVerified2(osha.getVerified2());
-					}
 					
 					if( osha2.getVerified3() != osha.getVerified3() )
-					{
 						osha2.setVerified3(osha.getVerified3());
-					}
 					
 				}
 			}
@@ -106,20 +99,31 @@ public class VerifyView extends AuditActionSupport {
 		}
 
 		loadData();
-		if (osha.getNa1().equals(YesNo.Yes)
-				&& osha.getNa2().equals(YesNo.Yes)
-				&& osha.getNa3().equals(YesNo.Yes)
-				&& emr.get(AuditQuestion.EMR07).getIsCorrect()
-						.equals(YesNo.Yes)
-				&& emr.get(AuditQuestion.EMR06).getIsCorrect()
-						.equals(YesNo.Yes)
-				&& emr.get(AuditQuestion.EMR05).getIsCorrect()
-						.equals(YesNo.Yes))
-			conAudit.setAuditStatus(AuditStatus.Active);
-		else
-			conAudit.setAuditStatus(AuditStatus.Submitted);
-
+		
+		setVerifiedPercent();
 		return SUCCESS;
+	}
+
+	private void setVerifiedPercent() {
+		int verified = 0;
+		
+		if (osha.getVerified1()) verified++;
+		if (osha.getVerified2()) verified++;
+		if (osha.getVerified3()) verified++;
+		if (YesNo.Yes.equals(getEmr1().getIsCorrect())) verified++;
+		if (YesNo.Yes.equals(getEmr2().getIsCorrect())) verified++;
+		if (YesNo.Yes.equals(getEmr3().getIsCorrect())) verified++;
+		
+		int verifyTotal = 6;
+
+		conAudit.setPercentVerified(Math.round((float)(100 * verified) / verifyTotal));
+		
+		if (conAudit.getPercentVerified() == 100) {
+			conAudit.setAuditStatus(AuditStatus.Active);
+		} else
+			conAudit.setAuditStatus(AuditStatus.Submitted);
+		
+		contractorAuditDAO.save(conAudit);
 	}
 
 	private void saveAuditData(HashMap<Integer, AuditData> emrDB, int year) {
@@ -149,8 +153,9 @@ public class VerifyView extends AuditActionSupport {
 		emrQuestions.add(AuditQuestion.EMR05);
 		emrQuestions.add(AuditQuestion.EMR04);
 		emr = pqfDao.findAnswers(this.auditID, emrQuestions);
+		
 	}
-
+	
 	public String saveFollowUp() throws Exception {
 		this.findConAudit();
 
@@ -195,7 +200,7 @@ public class VerifyView extends AuditActionSupport {
 			sb.append("\n");
 		}
 		
-		AuditData temp = emr.get(AuditQuestion.EMR07);
+		AuditData temp = getEmr1();
 		if( ! temp.getIsCorrectBoolean() )
 		{
 			sb.append(getYear1());
@@ -204,7 +209,7 @@ public class VerifyView extends AuditActionSupport {
 			sb.append("\n");
 		}
 		
-		temp = emr.get(AuditQuestion.EMR06);
+		temp = getEmr2();
 		if( ! temp.getIsCorrectBoolean() )
 		{
 			sb.append(getYear2());
@@ -213,7 +218,7 @@ public class VerifyView extends AuditActionSupport {
 			sb.append("\n");
 		}
 		
-		temp = emr.get(AuditQuestion.EMR05);
+		temp = getEmr3();
 		if( ! temp.getIsCorrectBoolean() )
 		{
 			sb.append(getYear3());

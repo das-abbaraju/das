@@ -1,6 +1,8 @@
 package com.picsauditing.search;
 
 import com.picsauditing.PICS.Utilities;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditType;
 
 public class SelectAccount extends SelectSQL {
@@ -111,6 +113,27 @@ public class SelectAccount extends SelectSQL {
 			this.startsWith = startsWith;
 			this.addWhere("a.name LIKE '" + Utilities.escapeQuotes(startsWith)
 					+ "%'");
+		}
+	}
+	
+	public void setPermissions(Permissions permissions) {
+		if (permissions.hasPermission(OpPerms.AllContractors))
+			return;
+		if (permissions.isOperator()) {
+			addWhere("a.id IN (SELECT subID FROM generalcontractors " +
+					"WHERE genID = "+permissions.getAccountId()+")");
+			return;
+		}
+		if (permissions.isCorporate()) {
+			addWhere("a.id IN (SELECT subID FROM generalcontractors " +
+					"WHERE genID IN (SELECT opID FROM facilities " +
+					"WHERE corporateID = "+permissions.getAccountId()+"))");
+			return;
+		}
+		
+		if (permissions.isContractor()) {
+			addWhere("a.id = "+permissions.getAccountId());
+			return;
 		}
 	}
 

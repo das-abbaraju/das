@@ -9,6 +9,7 @@ td.label {
 </style>
 <%@page import="com.picsauditing.jpa.entities.ContractorAudit"%>
 <%@page import="com.picsauditing.jpa.entities.User"%>
+<%@page import="com.picsauditing.jpa.entities.AuditType"%>
 <%
 	ContractorAudit conAudit = action.getAudit();
 	User auditor = conAudit.getAuditor();
@@ -90,22 +91,24 @@ td.label {
 	</tr>
 </table>
 
-<a class="blueMain" href="pqf_view.jsp?auditID=<%=conAudit.getId()%>">View</a>
-|
+<a class="blueMain" href="pqf_view.jsp?auditID=<%=conAudit.getId()%>">View</a> |
 <%
-	if (permissions.isPicsEmployee()) {
+if (permissions.isPicsEmployee()) {
+	%>
+	<a class="blueMain"	href="pqf_editMain.jsp?auditID=<%=conAudit.getId()%>">Edit</a> |
+	<%
+}
+if (permissions.hasPermission(OpPerms.AuditVerification)) {
+	%>
+	<a class="blueMain" href="pqf_verify.jsp?auditID=<%=conAudit.getId()%>">Verify</a> |
+	<%
+}
+if (permissions.hasPermission(OpPerms.AuditVerification)
+		&& conAudit.getAuditType().getAuditTypeID() == AuditType.PQF) {
+	%>
+	<a class="blueMain" href="VerifyView.action?auditID=<%=conAudit.getId()%>">Verify PQF</a> |
+	<%
+}
 %>
-<a class="blueMain"
-	href="pqf_editMain.jsp?auditID=<%=conAudit.getId()%>">Edit</a>
-|
-<a class="blueMain" href="pqf_verify.jsp?auditID=<%=conAudit.getId()%>">Verify</a>
-|
-<%
-	}
-%>
-<a class="blueMain" href="pqf_viewAll.jsp?auditID=<%=conAudit.getId()%>">View
-All</a>
-|
-<a class="blueMain"
-	href="pqf_printAll.jsp?auditID=<%=conAudit.getId()%>">Print</a>
-
+<a class="blueMain" href="pqf_viewAll.jsp?auditID=<%=conAudit.getId()%>">View All</a> |
+<a class="blueMain"	href="pqf_printAll.jsp?auditID=<%=conAudit.getId()%>">Print</a>

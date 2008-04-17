@@ -1,29 +1,23 @@
 package com.picsauditing.search;
 
-import com.picsauditing.search.SelectAccount.Type;
-
-public class SelectContractorAudit extends SelectSQL {
-	private int auditTypeID;
+public class SelectContractorAudit extends SelectAccount {
 
 	public SelectContractorAudit() {
 		super();
-		this.setFromTable("contractor_audit ca");
+		this.setType(Type.Contractor);
+		
+		this.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
+		this.addJoin("JOIN audit_type at ON ca.auditTypeID = at.auditTypeID");
+
 		this.addField("ca.auditID");
 		this.addField("ca.auditTypeID");
-		this.addField("ca.conID");
+		this.addField("at.auditName");
+		// use a.id so it will be compatible with SelectAccount
 		this.addField("ca.auditStatus");
 
-		this.addJoin("JOIN accounts a ON a.id = ca.conID");
-		this.addField("a.name");
-	}
-
-	public int getAuditTypeID() {
-		return auditTypeID;
 	}
 
 	public void setAuditTypeID(int auditTypeID) {
-		this.auditTypeID = auditTypeID;
 		this.addWhere("ca.auditTypeID="+auditTypeID);
 	}
-	
 }
