@@ -8,6 +8,11 @@
 permissions.tryPermission(OpPerms.AssignAudits);
 boolean canEdit = permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit);
 
+if (request.getParameter("action") != null) {
+	out.print("**");
+	return;
+}
+/* TODO update for multiaudit
 String action = request.getParameter("action");
 if (action != null) {
 	String outputText = "<span=\"color: red\">no permission</span>";
@@ -28,30 +33,32 @@ if (action != null) {
 		}
 		cBean.writeToDB();
 	}
-	%><%=outputText%><%
+	out.print(outputText);
 	return;
 }
+*/
+SelectContractorAudit sql = new SelectContractorAudit();
 
-SelectAccount sql = new SelectAccount();
+sql.setAuditTypeID(AuditType.DA);
+sql.addField("createdDate");
+sql.addField("auditorID");
+sql.addField("assignedDate");
+sql.addField("completedDate");
+sql.addField("closedDate");
+sql.addWhere("auditStatus='Pending'");
+//sql.addField("c.pqfSubmittedDate");
+//sql.addField("c.daAuditor_id");
+//sql.addField("c.daAssignedDate");
+//sql.addField("c.daSubmittedDate");//sql.addField("c.daClosedDate");
 
-sql.setType(SelectAccount.Type.Contractor);
-sql.addWhere("a.id IN (SELECT gc.subID FROM generalcontractors gc JOIN operators gc_o ON gc.genID = gc_o.id JOIN audit_operator ON (genID=audit_operator.opID AND auditTypeID="+AuditType.DA+" AND minRiskLevel>1)) ");
-
-sql.addField("c.pqfSubmittedDate");
-sql.addField("c.daAuditor_id");
-sql.addField("c.daAssignedDate");
-sql.addField("c.daSubmittedDate");
-sql.addField("c.daClosedDate");
-
-sql.addPQFQuestion(894, false, "requiredAnswer"); //q318.answer
-sql.addWhere("q894.answer = 'Yes' OR c.daRequired IS NULL OR c.daRequired = 'Yes'");
-sql.addWhere("c.daSubmittedDate = '0000-00-00'");
-
-sql.setStartsWith(request.getParameter("startsWith"));
+//TODO make some logic in a cron job or something that creates the DA audits
+//  according to the criteria below, ie they answered yes on question 894
+//sql.addPQFQuestion(894, false, "requiredAnswer"); //q318.answer
+//sql.addWhere("q894.answer = 'Yes' OR c.daRequired IS NULL OR c.daRequired = 'Yes'");
 
 Report report = new Report();
 report.setSql(sql);
-report.setOrderBy(request.getParameter("orderBy"), "c.pqfSubmittedDate DESC");
+report.setOrderBy(request.getParameter("orderBy"), "createdDate");
 
 report.setPageByResult(request.getParameter("showPage"));
 report.setLimit(50);
@@ -65,23 +72,23 @@ List<BasicDynaBean> searchData = report.getPage();
 <script src="js/prototype.js" type="text/javascript"></script>
 <script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
 <script type="text/javascript">
-function selectAuditor(conID) {
-	var form = $('auditor_form'+conID);
-	var auditor = form['daAuditor_id'];
-	pars = 'action=saveAuditor&conID='+conID+'&auditorID='+$F(auditor);
+function selectAuditor(auditID) {
+	var form = $('auditor_form'+auditID);
+	var auditor = form['auditorID'];
+	pars = 'action=saveAuditor&auditID='+auditID+'&auditorID='+$F(auditor);
 	
-	var divName = 'auditor_td'+conID;
+	var divName = 'auditor_td'+auditID;
 	$(divName).innerHTML = '<img src="images/ajax_process.gif" />';
 	var myAjax = new Ajax.Updater(divName, 'report_daAudit.jsp', {method: 'post', parameters: pars});
-	new Effect.Highlight($('auditor_tr'+conID), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+	new Effect.Highlight($('auditor_tr'+auditID), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 }
-function notRequired(conID) {
-	pars = 'action=notRequired&conID='+conID;
+function notRequired(auditID) {
+	pars = 'action=notRequired&auditID='+auditID;
 	
-	var divName = 'auditor_td'+conID;
+	var divName = 'auditor_td'+auditID;
 	$(divName).innerHTML = '<img src="images/ajax_process.gif" />';
 	var myAjax = new Ajax.Updater(divName, 'report_daAudit.jsp', {method: 'post', parameters: pars});
-	new Effect.Highlight($('auditor_tr'+conID), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+	new Effect.Highlight($('auditor_tr'+auditID), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 }
 </script>
 <style>
@@ -104,39 +111,39 @@ function notRequired(conID) {
 <table border="0" cellpadding="1" cellspacing="1" align="center">
 	<tr bgcolor="#003366" class="whiteTitle"> 
 			    <td><a href="?orderBy=a.name" class="whiteTitle">Contractor</a></td>
- 			    <td align="center"><a href="?orderBy=pqfSubmittedDate DESC" class="whiteTitle">PQF</a></td>
- 			    <td align="center"><a href="?orderBy=daSubmittedDate DESC" class="whiteTitle">Submitted</a></td>
- 			    <td align="center"><a href="?orderBy=daClosedDate DESC" class="whiteTitle">Closed</a></td>
- 			    <td align="center"><a href="?orderBy=daAuditor_id DESC,name" class="whiteTitle">Auditor</a></td>
- 			    <td align="center"><a href="?orderBy=daAssignedDate DESC" class="whiteTitle">Assigned</a></td>
- 			    <td align="center"><a href="?orderBy=requiredAnswer, name" class="whiteTitle" title="Does your company have employees who are covered under DOT OQ requirements?">Rqd</a></td>
+ 			    <td align="center"><a href="?orderBy=createdDate DESC" class="whiteTitle">Submitted</a></td>
+ 			    <td align="center"><a href="?orderBy=completedDate DESC" class="whiteTitle">Submitted</a></td>
+ 			    <td align="center"><a href="?orderBy=closedDate DESC" class="whiteTitle">Closed</a></td>
+ 			    <td align="center"><a href="?orderBy=auditorID DESC,name" class="whiteTitle">Auditor</a></td>
+ 			    <td align="center"><a href="?orderBy=assignedDate DESC" class="whiteTitle">Assigned</a></td>
  			    <td align="center">Not Required</td>
 	</tr>
-<%
-com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlternater();
-for(BasicDynaBean row: searchData) {
+<%	com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlternater();
+	for(BasicDynaBean row: searchData) {
+		String auditorID;
+		if (null==row.get("auditorID"))
+			auditorID = "";
+		else
+			auditorID = row.get("auditorID").toString();
 %>
-	<tr id="auditor_tr<%=row.get("id")%>" class="blueMain" <%=color.nextBgColor()%>>
-			    <td><a href="accounts_edit_contractor.jsp?id=<%=row.get("id")%>"><%=row.get("name")%></a></td>
-			    <td><%=DateBean.toShowFormat(row.get("pqfSubmittedDate"))%></td>
-			    <td><%=DateBean.toShowFormat(row.get("daSubmittedDate"))%></td>
-			    <td><%=DateBean.toShowFormat(row.get("daClosedDate"))%></td>
+	<tr id="auditor_tr<%=row.get("auditID")%>" class="blueMain" <%=color.nextBgColor()%>>
+			    <td><a href="accounts_edit_contractor.jsp?id=<%=row.get("conID")%>"><%=row.get("name")%></a></td>
+			    <td><%=DateBean.toShowFormat(row.get("createdDate"))%></td>
+			    <td><%=DateBean.toShowFormat(row.get("completedDate"))%></td>
+			    <td><%=DateBean.toShowFormat(row.get("closedDate"))%></td>
 			    <td>
-			    	<form class="auditselect" id="auditor_form<%=row.get("id")%>">
-			    		<%=AUDITORS.getAuditorsSelect("daAuditor_id","forms",row.get("daAuditor_id").toString(),"selectAuditor("+row.get("id")+")")%>
+			    	<form class="auditselect" id="auditor_form<%=row.get("auditID")%>">
+			    		<%=AUDITORS.getAuditorsSelect("auditorID","forms",auditorID,"selectAuditor("+row.get("auditID")+")")%>
 			    	</form>
 			    </td>
-			    <td id="auditor_td<%=row.get("id")%>"><%=DateBean.toShowFormat(row.get("daAssignedDate"))%></td>
-			    <td><%=row.get("requiredAnswer")%></td>
+			    <td id="auditor_td<%=row.get("auditID")%>"><%=DateBean.toShowFormat(row.get("assignedDate"))%></td>
 			    <td>
 			    	<form class="auditselect" id="">
-			    		<input type="button" class="blueMain" value="Not Required" onclick="notRequired(<%=row.get("id")%>)" name="required_button<%=row.get("id")%>" />
+			    		<input type="button" class="blueMain" value="Not Required" onclick="notRequired(<%=row.get("auditID")%>)" name="required_button<%=row.get("auditID")%>" />
 			    	</form>
 			    </td>
 	</tr>
-<%
-}
-%>
+<%	}%>
 </table>
 <p align="center"><%=report.getPageLinks()%></p>
 </body>

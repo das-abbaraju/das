@@ -36,7 +36,7 @@ public class AccountDAO extends PicsDAO {
     }
     
     public List<Account> findOperators() {
-        Query query = em.createQuery("select ac from Account ac where ac.type='Operator' order by ac.name");
+        Query query = em.createQuery("select ac from OperatorAccount ac order by ac.name");
         return query.getResultList();
     }
 

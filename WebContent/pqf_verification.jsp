@@ -11,6 +11,7 @@ permissions.tryPermission(OpPerms.AuditVerification);
 
 SelectAccount sql = new SelectAccount();
 sql.setType(SelectAccount.Type.Contractor);
+sql.addAudit(AuditType.PQF);
 
 sql.addField("c.notes");
 sql.addWhere("active='Y'");
@@ -18,9 +19,10 @@ sql.addWhere("active='Y'");
 sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id AND ca.auditTypeID = " + AuditType.PQF);
 sql.addField("ca.auditID");
 sql.addField("ca.scheduledDate");
-//Todo: move to ca.completedDate
-sql.addWhere("c.pqfSubmittedDate >= '2008-01-01'");
-sql.addField("c.pqfSubmittedDate");
+//sql.addWhere("c.pqfSubmittedDate >= '2008-01-01'");
+sql.addWhere("ca"+AuditType.PQF+".completedDate >= '2008-01-01'");
+//sql.addField("c.pqfSubmittedDate");
+sql.addField("ca"+AuditType.PQF+".completedDate AS pqfSubmittedDate");
 
 sql.addJoin("LEFT JOIN osha os ON os.conID = a.id AND os.location = 'Corporate'");
 sql.addField("os.verifiedDate1");
@@ -46,7 +48,7 @@ sql.setStartsWith(request.getParameter("startsWith"));
 
 Report report = new Report();
 report.setSql(sql);
-report.setOrderBy(request.getParameter("orderBy"), "c.pqfSubmittedDate");
+report.setOrderBy(request.getParameter("orderBy"), "ca"+AuditType.PQF+".completedDate");
 
 report.setPageByResult(request.getParameter("showPage"));
 report.setLimit(50);
@@ -108,7 +110,7 @@ List<BasicDynaBean> searchData = report.getPage();
 <table border="0" cellpadding="1" cellspacing="1" align="center">
 	<tr bgcolor="#003366" class="whiteTitle">
 		<td colspan=2><a href="#" onclick="changeOrderBy('form1','a.name'); return false;" class="whiteTitle">Contractor</a></td>
-		<td align="center"><a href="javascript: changeOrderBy('form1','pqfSubmittedDate');" class="whiteTitle">Submitted</a></td>
+		<td align="center"><a href="javascript: changeOrderBy('form1','ca<%=AuditType.PQF%>.completedDate');" class="whiteTitle">Submitted</a></td>
 		<td align="center"><a href="javascript: changeOrderBy('form1','scheduledDate');" class="whiteTitle">Followup</a></td>
 		<td align="center">Verification Status</td>
 		<td align="center">Notes</td>
