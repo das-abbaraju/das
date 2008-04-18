@@ -77,7 +77,7 @@
 		</action>
 
 		<action name="AuditSaveAjax"
-			class="com.picsauditing.actions.auditType.AuditSave">
+			class="com.picsauditing.actions.audits.AuditSave">
 			<result>includes/blank.jsp</result>
 		</action>
 		

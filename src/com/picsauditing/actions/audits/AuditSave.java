@@ -1,4 +1,4 @@
-package com.picsauditing.actions.auditType;
+package com.picsauditing.actions.audits;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
