@@ -87,7 +87,7 @@ public class Menu {
 		this.addItem("report_incompleteAudits.jsp?incompleteAfter=3&changed=1", "Incomplete Audits Report");
 		this.addItem("report_certificates.jsp?changed=1", "Insurance Approval", OpPerms.InsuranceApproval);
 		this.addItem("verify_insurance.jsp", "Insurance Verification", OpPerms.InsuranceVerification);
-		this.addItem("audit_selectType.jsp", "Manage Audits and Matrices", OpPerms.ManageAudits);
+		this.addItem("AuditTypeChoose.action", "Manage Audits and Matrices", OpPerms.ManageAudits);
 		this.addItem("report_accounts.jsp?type=Corporate", "Manage Corporate Accounts", OpPerms.ManageCorporate);
 		this.addItem("report_accounts.jsp?type=Operator", "Manage Operators", OpPerms.ManageOperators);
 		this.addItem("UsersManage.action", "Manage Users", OpPerms.EditUsers);

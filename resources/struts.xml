@@ -66,12 +66,6 @@
 			<result>contractor_audits.jsp</result>
 		</action>
 
-		<action name="Foobar"
-			class="com.picsauditing.actions.Foobar">
-			<result>includes/blank.jsp</result>
-			<result name="input">includes/blank.jsp</result>
-		</action>
-
 		<action name="AuditTypeChoose"
 			class="com.picsauditing.actions.auditType.AuditTypeChoose">
 			<result>audit_selectType.jsp</result>
@@ -82,5 +76,10 @@
 			<result>report_ncms.jsp</result>
 		</action>
 
+		<action name="AuditSaveAjax"
+			class="com.picsauditing.actions.auditType.AuditSave">
+			<result>includes/blank.jsp</result>
+		</action>
+		
 	</package>
 </struts>
