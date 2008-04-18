@@ -44,7 +44,7 @@
 </table>
 <table border="0" cellpadding="1" cellspacing="1">
 <tr bgcolor="#993300" class="whiteTitle">
-	<td colspan="2">Contractor</td>
+	<td colspan="2">Contractor Name</td>
 	<td></td>
 	<td>Industry</td>
 	<td>Trade</td>
@@ -65,9 +65,29 @@
 		</td>
 		<td><s:property value="[0].get('industry')"/></td>
 		<td><s:property value="[0].get('main_trade')"/></td>
-		<td><a href="ConAuditList.action?id=<s:property value="[0].get('id')"/>">Audits</a></td> 
-		
-			
+		<td><a href="ConAuditList.action?id=<s:property value="[0].get('id')"/>">Audits</a></td>
+		<td align="center"><s:if test="[0].get('ca1_auditID') > 0">
+			<s:if test="[0].get('ca1_auditStatus').equals('Exempt')">N/A</s:if>
+			<s:else><a 
+				href="pqf_view.jsp?auditID=<s:property value="[0].get('ca1_auditID')"/>"><img 
+				src="images/icon_PQF.gif" width="20" height="20" border="0"></a></s:else>
+		</s:if></td>
+		<td align="center"><s:if test="[0].get('ca2_auditID') > 0">
+			<s:if test="[0].get('ca2_auditStatus').equals('Exempt')">N/A</s:if>
+			<s:else><a 
+				href="pqf_view.jsp?auditID=<s:property value="[0].get('ca2_auditID')"/>"><img 
+				src="images/icon_Desktop.gif" width="20" height="20" border="0"></a></s:else>
+		</s:if></td>
+		<td align="center"><s:if test="[0].get('ca3_auditID') > 0">
+			<s:if test="[0].get('ca3_auditStatus').equals('Exempt')">N/A</s:if>
+			<s:else><a 
+				href="pqf_view.jsp?auditID=<s:property value="[0].get('ca3_auditID')"/>"><img 
+				src="images/icon_Office.gif" width="20" height="20" border="0"></a></s:else>
+		</s:if></td>
+		<td align="center"><s:if test="[0].get('certs') > 0"><a 
+			href="contractor_upload_certificates.jsp?id=<s:property value="[0].get('id')"/>"><img 
+			src="images/icon_insurance.gif" width="20" height="20" border="0"></a>
+		</s:if></td>
 	</tr>
 </s:iterator>
 

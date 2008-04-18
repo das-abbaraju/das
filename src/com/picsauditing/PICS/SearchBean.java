@@ -957,7 +957,7 @@ import com.picsauditing.util.LinkBuilder;
 				"><img src=images/icon_"+auditType+".gif width=20 height=20 border=0></a>";
 		else
 			return "<a class="+getTextColor()+" href=pqf_view.jsp?id="+aBean.id+"&auditType="+auditType+">"+percent+"%</a>";
-	}//getPercentCompleteLink
+	}
 	
 	public void pageResults(ResultSet sqlResult, int resultsOnPage, javax.servlet.http.HttpServletRequest r ) throws Exception{
 		

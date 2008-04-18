@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "contractor_audit")
@@ -192,6 +193,16 @@ public class ContractorAudit {
 
 	public void setPercentVerified(int percentVerified) {
 		this.percentVerified = percentVerified;
+	}
+	
+	@Transient
+	public int getPercent() {
+		if (AuditStatus.Pending.equals(auditStatus))
+			return this.percentComplete;
+		if (AuditStatus.Submitted.equals(auditStatus))
+			return this.percentVerified;
+		
+		return 100;
 	}
 
 	@OneToMany(mappedBy = "audit")

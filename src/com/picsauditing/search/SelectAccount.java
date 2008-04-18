@@ -95,8 +95,6 @@ public class SelectAccount extends SelectSQL {
 				+ "_auditID");
 		this.addField("ca" + auditTypeID + ".auditStatus AS ca" + auditTypeID
 				+ "_auditStatus");
-		this.addField("ca" + auditTypeID + ".percentComplete AS ca"
-				+ auditTypeID + "_percentComplete");
 	}
 
 	public String getStartsWith() {
