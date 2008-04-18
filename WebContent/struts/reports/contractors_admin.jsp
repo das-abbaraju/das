@@ -72,6 +72,8 @@
 </s:iterator>
 
 </table>
-
+<center>
+<s:property value="report.pageLinksWithDynamicForm" escape="false"/>
+</center>
 </body>
 </html>
