@@ -68,12 +68,12 @@ sets the highest standards possible in regard to contractor qualifications as th
                                         					<tr>
                                           <td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">04/01/08</span>PICS presents at Texas Safety</span><br>
                                             <br> 
-                                          PICS CFO, Jared Smith, was invited by the National Safety Council to present &#147;The Dos and Don’ts of Contractor Prequalification&#148; at the 2008 Texas Safety Conference & Expo.  NSC is one of the leading safety organizations in the world; there are 18,600 member companies of NSC, representing 8.5 million employees.</td></tr>
+                                          PICS CFO, Jared Smith, was invited by the National Safety Council to present <i>The Dos and Don'ts of Contractor Prequalification</i> at the 2008 Texas Safety Conference &amp; Expo.  NSC is one of the leading safety organizations in the world; there are 18,600 member companies of NSC, representing 8.5 million employees.</td></tr>
 										
 										<tr>
                                           <td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">3/01/08</span>Allergan, Inc. joins PICS</span><br>
                                             <br> 
-                                          Allergan represents a global, $3 billion multi-specialty health care company with leading portfolios in eye care, neurosciences, medical dermatology, medical aesthetics, obesity intervention and urologics. Allergan has over7,500 employees and a presence in more than 100 countries.</td></tr>
+                                          Allergan represents a global, $3 billion multi-specialty health care company with leading portfolios in eye care, neurosciences, medical dermatology, medical aesthetics, obesity intervention and urologics. Allergan has over 7,500 employees and a presence in more than 100 countries.</td></tr>
 										
 										<tr>
                                           <td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">02/01/08</span>Sikorsky Aircraft Corporation joins PICS</span><br>
