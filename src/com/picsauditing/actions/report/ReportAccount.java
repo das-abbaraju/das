@@ -23,6 +23,7 @@ import com.picsauditing.util.SpringUtils;
 
 public class ReportAccount extends ReportActionSupport {
 
+	protected String startsWith;
 	protected String name;
 	protected String industry;
 	protected String performedBy;
@@ -110,14 +111,23 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	// Getters and setters for filter criteria
+	public String getStartsWith() {
+		return startsWith;
+	}
+
+	public void setStartsWith(String startsWith) {
+		report.addFilter(new SelectFilter("name", "a.name LIKE '?%'", startsWith));
+		this.startsWith = startsWith;
+	}
+
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
-		this.name = name;
 		report.addFilter(new SelectFilter("name", "a.name LIKE '%?%'", name,
 				SearchBean.DEFAULT_NAME, SearchBean.DEFAULT_NAME));
+		this.name = name;
 	}
 
 	public String getIndustry() {

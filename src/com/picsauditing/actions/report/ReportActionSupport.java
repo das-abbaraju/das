@@ -16,7 +16,6 @@ public class ReportActionSupport extends PicsActionSupport {
 	protected Report report = new Report();
 	protected List<BasicDynaBean> data;
 
-	protected String startsWith;
 	protected String orderBy;
 	protected int showPage;
 	protected ColorAlternater color = new ColorAlternater();
@@ -47,14 +46,6 @@ public class ReportActionSupport extends PicsActionSupport {
 
 	public void setReport(Report report) {
 		this.report = report;
-	}
-
-	public String getStartsWith() {
-		return startsWith;
-	}
-
-	public void setStartsWith(String startsWith) {
-		this.startsWith = startsWith;
 	}
 
 	public void run(SelectSQL sql) throws SQLException {

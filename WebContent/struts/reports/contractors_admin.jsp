@@ -33,7 +33,7 @@
 <s:select list="worksInList" cssClass="forms" name="worksIn" />
 </table>
 	<s:hidden name="showPage" value="1"/>
-	<s:hidden name="startsWith" value = "sql.startsWith" />
+	<s:hidden name="startsWith" />
 	<s:hidden name="orderBy" />
 </s:form>
 <center><s:property value="report.startsWithLinksWithDynamicForm" escape="false"/></center>
