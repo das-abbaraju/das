@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.YesNo;
@@ -98,5 +99,13 @@ public class OperatorAccountDAOTest {
 		assertNull(operatoraccount1);
 
 	}
+
+	@Test
+	public void testFindWhere() {
+		List<OperatorAccount> account = operatoraccountDAO.findWhere("id = 2475");
+		assertTrue(account.size() > 0);
+	}
+
+
 
 }
