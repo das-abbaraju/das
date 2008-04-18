@@ -82,7 +82,7 @@
 		</action>
 		
 		<action name="ContractorListAdmin"
-			class="com.picsauditing.actions.report.ReportAccount">
+			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<result>struts/reports/contractors_admin.jsp</result>
 		</action>
 		

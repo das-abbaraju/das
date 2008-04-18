@@ -56,9 +56,6 @@ public class ReportAccount extends ReportActionSupport {
 		if (this.orderBy == null)
 			this.orderBy = "a.name";
 		sql.setType(SelectAccount.Type.Contractor);
-
-		sql.addField("industry");
-
 		this.run(sql);
 
 		return SUCCESS;
@@ -89,9 +86,9 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public Map<Integer, String> getOperatorList() throws Exception {
-		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
-		List<OperatorAccount> operators = dao.findWhere("active='y'");
-
+		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils
+				.getBean("OperatorAccountDAO");
+		List<OperatorAccount> operators = dao.findWhere("active='Y'");
 		Map<Integer, String> operatorMap = new TreeMap<Integer, String>();
 		operatorMap.put(0, OperatorAccount.DEFAULT_NAME);
 		for (OperatorAccount op : operators)
@@ -104,7 +101,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public String[] getCertsOptions() {
-		return new String[] { "", "- Default Certs -", "Yes", "Only Certs", "No", "Exclude Certs" };
+		return new String[] { "", "- Default Certs -", "Yes", "Only Certs",
+				"No", "Exclude Certs" };
 	}
 
 	public String[] getVisibleOptions() {
@@ -118,8 +116,8 @@ public class ReportAccount extends ReportActionSupport {
 
 	public void setName(String name) {
 		this.name = name;
-		report.addFilter(new SelectFilter("name", "a.name LIKE '%?%'", name, SearchBean.DEFAULT_NAME,
-				SearchBean.DEFAULT_NAME));
+		report.addFilter(new SelectFilter("name", "a.name LIKE '%?%'", name,
+				SearchBean.DEFAULT_NAME, SearchBean.DEFAULT_NAME));
 	}
 
 	public String getIndustry() {
@@ -127,8 +125,10 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setIndustry(String industry) {
-		report.addFilter(new SelectFilter("industry", "a.industry = '?'", industry, Industry.DEFAULT_INDUSTRY,
-				Industry.DEFAULT_INDUSTRY));
+		report
+				.addFilter(new SelectFilter("industry", "a.industry = '?'",
+						industry, Industry.DEFAULT_INDUSTRY,
+						Industry.DEFAULT_INDUSTRY));
 		this.industry = industry;
 	}
 
@@ -145,9 +145,11 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setTrade(int trade) {
-		String performedBy = ServletActionContext.getRequest().getParameter("performedBy");
+		String performedBy = ServletActionContext.getRequest().getParameter(
+				"performedBy");
 		String answerFilter = "";
-		if (TradesBean.DEFAULT_PERFORMED_BY.equals(performedBy) || performedBy == null) {
+		if (TradesBean.DEFAULT_PERFORMED_BY.equals(performedBy)
+				|| performedBy == null) {
 			performedBy = TradesBean.DEFAULT_PERFORMED_BY;
 			answerFilter = "_%";
 		} else {
@@ -156,11 +158,9 @@ public class ReportAccount extends ReportActionSupport {
 			else if ("Self Performed".equals(performedBy))
 				answerFilter = "C%";
 		}
-		report
-				.addFilter(new SelectFilterInteger(
-						"trade",
-						"a.id IN (SELECT conID FROM pqfdata WHERE questionID=? AND answer LIKE '" + answerFilter + "')",
-						trade));
+		report.addFilter(new SelectFilterInteger("trade",
+				"a.id IN (SELECT conID FROM pqfdata WHERE questionID=? AND answer LIKE '"
+						+ answerFilter + "')", trade));
 
 		this.trade = trade;
 	}
@@ -170,8 +170,11 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setOperator(int operator) {
-		report.addFilter(new SelectFilterInteger("generalContractorID",
-				"a.id IN (SELECT subID FROM generalcontractors WHERE genID = ? )", operator));
+		report
+				.addFilter(new SelectFilterInteger(
+						"generalContractorID",
+						"a.id IN (SELECT subID FROM generalcontractors WHERE genID = ? )",
+						operator));
 		this.operator = operator;
 	}
 
@@ -180,8 +183,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setCity(String city) {
-		report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", city, SearchBean.DEFAULT_CITY,
-				SearchBean.DEFAULT_CITY));
+		report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", city,
+				SearchBean.DEFAULT_CITY, SearchBean.DEFAULT_CITY));
 		this.city = city;
 	}
 
@@ -199,8 +202,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setZip(String zip) {
-		report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", zip, SearchBean.DEFAULT_ZIP,
-				SearchBean.DEFAULT_ZIP));
+		report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", zip,
+				SearchBean.DEFAULT_ZIP, SearchBean.DEFAULT_ZIP));
 		this.zip = zip;
 	}
 
@@ -209,7 +212,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setCertsOnly(String certsOnly) {
-		report.addFilter(new SelectFilter("certsOnly", "c.isOnlyCerts = '?'", certsOnly));
+		report.addFilter(new SelectFilter("certsOnly", "c.isOnlyCerts = '?'",
+				certsOnly));
 		this.certsOnly = certsOnly;
 	}
 
@@ -218,8 +222,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setVisible(String visible) {
-		report.addFilter(new SelectFilter("visible", "a.active = '?'", visible, SearchBean.DEFAULT_VISIBLE,
-				SearchBean.DEFAULT_VISIBLE));
+		report.addFilter(new SelectFilter("visible", "a.active = '?'", visible,
+				SearchBean.DEFAULT_VISIBLE, SearchBean.DEFAULT_VISIBLE));
 		this.visible = visible;
 	}
 
@@ -228,8 +232,11 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setStateLicensedIn(int stateLicensedIn) {
-		report.addFilter(new SelectFilterInteger("stateLicensedIn",
-				"a.id IN (SELECT conID FROM pqfdata WHERE questionID=? AND answer <> '')", stateLicensedIn));
+		report
+				.addFilter(new SelectFilterInteger(
+						"stateLicensedIn",
+						"a.id IN (SELECT conID FROM pqfdata WHERE questionID=? AND answer <> '')",
+						stateLicensedIn));
 		this.stateLicensedIn = stateLicensedIn;
 	}
 
@@ -238,8 +245,11 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setWorksIn(int worksIn) {
-		report.addFilter(new SelectFilterInteger("worksIn",
-				"a.id IN (SELECT conID FROM pqfdata WHERE questionID=? AND answer LIKE 'Yes%')", worksIn));
+		report
+				.addFilter(new SelectFilterInteger(
+						"worksIn",
+						"a.id IN (SELECT conID FROM pqfdata WHERE questionID=? AND answer LIKE 'Yes%')",
+						worksIn));
 		this.worksIn = worksIn;
 	}
 
@@ -248,8 +258,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setTaxID(String taxID) {
-		report.addFilter(new SelectFilter("taxID", "c.taxID = '?'", taxID, SearchBean.DEFAULT_TAX_ID,
-				SearchBean.DEFAULT_TAX_ID));
+		report.addFilter(new SelectFilter("taxID", "c.taxID = '?'", taxID,
+				SearchBean.DEFAULT_TAX_ID, SearchBean.DEFAULT_TAX_ID));
 		this.taxID = taxID;
 	}
 
