@@ -81,5 +81,10 @@
 			<result>includes/blank.jsp</result>
 		</action>
 		
+		<action name="ContractorListAdmin"
+			class="com.picsauditing.actions.report.ReportAccount">
+			<result>struts/reports/contractors_admin.jsp</result>
+		</action>
+		
 	</package>
 </struts>

@@ -13,7 +13,7 @@ import com.picsauditing.util.ColorAlternater;
 
 public class ReportActionSupport extends PicsActionSupport {
 	@Autowired
-	protected Report report;
+	protected Report report = new Report();
 	protected List<BasicDynaBean> data;
 
 	protected String startsWith;
@@ -58,11 +58,20 @@ public class ReportActionSupport extends PicsActionSupport {
 	}
 
 	public void run(SelectSQL sql) throws SQLException {
+		report.setOrderBy(this.orderBy, null);
 		report.setSql(sql);
 		
 		if (showPage > 0)
 			report.setCurrentPage(showPage);
 
 		data = report.getPage();
+	}
+
+	public ColorAlternater getColor() {
+		return color;
+	}
+
+	public void setColor(ColorAlternater color) {
+		this.color = color;
 	}
 }

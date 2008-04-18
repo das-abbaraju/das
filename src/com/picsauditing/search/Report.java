@@ -18,50 +18,50 @@ public class Report {
 	private int allRows = 0;
 	private HashMap<String, SelectFilter> filters = new HashMap<String, SelectFilter>();
 	private String orderBy;
-	
+
 	public List<BasicDynaBean> getPage() throws SQLException {
 		sql.addOrderBy(this.orderBy);
-		for(String filter: filters.keySet()) {
+		for (String filter : filters.keySet()) {
 			sql.addWhere(filters.get(filter).getWhere());
 		}
 		sql.setLimit(this.limit);
 		sql.setStartRow((this.currentPage - 1) * this.limit);
-		
+
 		Database db = new Database();
 		List<BasicDynaBean> pageData = db.select(sql.toString(), true);
-	    returnedRows = pageData.size();
-	    allRows = db.getAllRows();
+		returnedRows = pageData.size();
+		allRows = db.getAllRows();
 		return pageData;
 	}
-	
+
 	public SelectSQL getSql() {
 		return sql;
 	}
-	
+
 	public void setSql(SelectSQL sql) {
 		this.sql = sql;
 		this.sql.setSQL_CALC_FOUND_ROWS(true);
 	}
-	
+
 	private int getPages() {
-		double pages = (double)this.allRows / (double)this.limit;
-		return (int)ceil(pages);
+		double pages = (double) this.allRows / (double) this.limit;
+		return (int) ceil(pages);
 	}
 
 	public int getCurrentPage() {
 		return this.currentPage;
 	}
-	
+
 	public void setPageByResult(String page) {
 		String showPage = page;
 		if (showPage != null) {
 			this.setCurrentPage(Integer.valueOf(showPage));
 		}
 	}
-	
+
 	public String getFilterParams() {
 		StringBuilder params = new StringBuilder();
-		for(String name : this.filters.keySet()) {
+		for (String name : this.filters.keySet()) {
 			if (filters.get(name).isSet()) {
 				params.append("&");
 				params.append(filters.get(name).getName());
@@ -71,15 +71,18 @@ public class Report {
 		}
 		return params.toString();
 	}
+
 	public String getFilterValue(String name) {
-		String value = this.filters.get(name).getValue();
-		return value == null ? "" : value;
+		SelectFilter selectFilter = this.filters.get(name);
+		if (selectFilter == null)
+			return "";
+		return selectFilter.getValue() == null ? "" : selectFilter.getValue();
 	}
-	
+
 	public void addFilter(SelectFilter filter) {
 		this.filters.put(filter.getName(), filter);
 	}
-	
+
 	public HashMap<String, SelectFilter> getFilters() {
 		return filters;
 	}
@@ -97,63 +100,65 @@ public class Report {
 	}
 
 	public String getOrderBy() {
-		return this.orderBy;		
+		return this.orderBy;
 	}
-	
-	
+
 	public void setOrderBy(String value, String defaultValue) {
 		if (value != null && value.length() > 0)
 			this.orderBy = value;
 		else
 			this.orderBy = defaultValue;
 	}
-	
-	/// Various HTML Utilities for displaying search results on an HTML Page
+
+	// / Various HTML Utilities for displaying search results on an HTML Page
 	// This may need to go into a SearchHTML class, but I'm not sure
-	
+
 	public String getStartsWithLinks() {
 		return getStartsWithLinks("");
 	}
+
 	public String getStartsWithLinks(String additionalParams) {
 		String filterParams = getFilterParams();
 		if (additionalParams != null && additionalParams.length() >= 3)
-			additionalParams = "&"+additionalParams;
+			additionalParams = "&" + additionalParams;
 		else
 			additionalParams = "";
 		additionalParams += filterParams;
-		
+
 		String html = "<span class=\"blueMain\">Starts with: ";
-		html += "<a href=\"?"+additionalParams+"\" class=blueMain title=\"Show All\">*</a> ";
-		for (char c = 'A';c<='Z';c++)
-			html += "<a href=?startsWith="+c+additionalParams+" class=blueMain>"+c+"</a> ";
+		html += "<a href=\"?" + additionalParams
+				+ "\" class=blueMain title=\"Show All\">*</a> ";
+		for (char c = 'A'; c <= 'Z'; c++)
+			html += "<a href=?startsWith=" + c + additionalParams
+					+ " class=blueMain>" + c + "</a> ";
 		html += " </span>";
 		return html;
 	}
-	
+
 	public String getStartsWithLinksWithDynamicForm() {
 		return new LinkBuilder().getStartsWithLinks();
 	}
 
-	
 	public String getPageLinks() {
 		return getPageLinks("");
 	}
+
 	public String getPageLinks(String additionalParams) {
 		String filterParams = getFilterParams();
 		additionalParams += filterParams;
 
 		String temp = "<span class=\"redMain\">";
-		temp+="Found <b>"+this.allRows+"</b> results";
+		temp += "Found <b>" + this.allRows + "</b> results";
 		if (this.returnedRows == this.allRows) {
 			// We're showing all the results, just return
 			temp += "</span>";
 			return temp;
 		}
 		temp += ": Page ";
-		
+
 		int SHOW_PAGES = 2;
 		// If all Rows = 1000 and limit = 100, then lastPage = 999/101
-		
+
 		// if currentPage = 10, print 1...
 		if (this.currentPage - SHOW_PAGES > 1) {
 			temp += addPageLink(1, additionalParams);
@@ -161,46 +166,48 @@ public class Report {
 				temp += " ... ";
 			}
 		}
-		
+
 		// if currentPage = 5, and SHOW_PAGES=2, print pages 3 4 5 6 7
-		for(int i=(this.currentPage-SHOW_PAGES); i <= this.currentPage+SHOW_PAGES; i++) {
+		for (int i = (this.currentPage - SHOW_PAGES); i <= this.currentPage
+				+ SHOW_PAGES; i++) {
 			temp += addPageLink(i, additionalParams);
 		}
 
 		// if currentPage = 10 and pageCount = 19, print ...19
-		if ((this.currentPage + SHOW_PAGES) < this.getPages() ) {
-			if ((this.currentPage + SHOW_PAGES) < (this.getPages()-1) ) {
+		if ((this.currentPage + SHOW_PAGES) < this.getPages()) {
+			if ((this.currentPage + SHOW_PAGES) < (this.getPages() - 1)) {
 				temp += " ... ";
 			}
 			temp += addPageLink(this.getPages(), additionalParams);
 		}
 
-		temp+="</span>";
+		temp += "</span>";
 		return temp;
 	}
 
 	public String getPageLinksWithDynamicForm() {
-		return LinkBuilder.getPageNOfXLinks(
-						this.allRows, 
-						this.limit, 
-						this.limit * (this.currentPage - 1) + 1, 
-						( this.limit + 1 )* (this.currentPage) - 1 > this.allRows ? this.allRows : ( this.limit + 1 )* (this.currentPage) - 1, 
-						this.currentPage);
+		return LinkBuilder.getPageNOfXLinks(this.allRows, this.limit,
+				this.limit * (this.currentPage - 1) + 1, (this.limit + 1)
+						* (this.currentPage) - 1 > this.allRows ? this.allRows
+						: (this.limit + 1) * (this.currentPage) - 1,
+				this.currentPage);
 	}
-	
+
 	private String addPageLink(int page, String additionalParams) {
 		if (page == this.currentPage) {
-			return "<strong>"+this.currentPage+"</strong>";
+			return "<strong>" + this.currentPage + "</strong>";
 		}
-		if (page < 1) return "";
-		if (page > this.getPages()) return "";
-		
+		if (page < 1)
+			return "";
+		if (page > this.getPages())
+			return "";
+
 		String orderBy = this.sql.getOrderBy();
 		if (orderBy.length() > 0)
 			orderBy = "orderBy=" + orderBy + "&";
-		
-		return " <a href=\"?"+orderBy+"showPage="+page+additionalParams+"\">"+page+"</a> ";
+
+		return " <a href=\"?" + orderBy + "showPage=" + page + additionalParams
+				+ "\">" + page + "</a> ";
 	}
-	
-	
+
 }
