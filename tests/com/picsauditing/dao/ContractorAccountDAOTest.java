@@ -17,6 +17,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OshaLog;
 
@@ -49,7 +50,7 @@ public class ContractorAccountDAOTest {
 		contractoraccount.setFax("999-999-9999");
 		contractoraccount.setEmail("pics@picsauditing.com");
 		contractoraccount.setWebUrl("www.picsauditing.com");
-		contractoraccount.setIndustry("contracting");
+		contractoraccount.setIndustry(Industry.Construction);
 		contractoraccount.setActive('y');
 		contractoraccount.setCreatedBy("pics");
 		contractoraccount.setDateCreated(new Date(2008,04,04));

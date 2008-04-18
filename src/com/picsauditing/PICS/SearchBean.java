@@ -664,15 +664,6 @@ import com.picsauditing.util.LinkBuilder;
 		return LinkBuilder.getStartsWithLinks();
 	}
 	
-	
-	public static String getAccountsManageStartsWithLinks() {
-		String temp = "<span class=\"blueMain\">Starts with: ";
-		for (char c = 'A';c<='Z';c++)
-			temp += "<a href=accounts_manage.jsp?startsWith="+c+"&changed=1 class=blueMain>"+c+"</a> ";
-		temp +="</span>";
-		return temp;
-	}//getAccountsManageStartsWithLinks
-
 	public boolean isNextRecord() throws Exception {
 		if (!(count <= endResults && SQLResult.next()))
 			return false;

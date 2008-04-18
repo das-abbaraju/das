@@ -16,6 +16,8 @@ import javax.persistence.Table;
 @Table(name = "operators")
 @PrimaryKeyJoinColumn(name = "id")
 public class OperatorAccount extends Account implements java.io.Serializable {
+	public static final String DEFAULT_NAME = "- Operator -";
+
 	private String activationEmails;
 	private String doSendActivationEmail;
 	private String seesAllContractors;

@@ -7,6 +7,7 @@ public class TradesBean extends DataBean {
 	public static final String DEFAULT_SELECT_TRADE = "- Trade -";
 	public static final String DEFAULT_SELECT_TRADE_ID = "0";
 	public ArrayList<String> trades = new ArrayList<String>();
+	public Map<Integer, String> tradeMap = new TreeMap<Integer, String>();
 	public static final String DEFAULT_PERFORMED_BY = "- Performed By -";
 	public static final String[] PERFORMED_BY_ARRAY = {DEFAULT_PERFORMED_BY,"Self Performed","Sub Contracted"};
 	
@@ -21,7 +22,8 @@ public class TradesBean extends DataBean {
 			while (SQLResult.next()) {
 				trades.add(SQLResult.getString("questionID"));
 				trades.add(SQLResult.getString("question"));
-			}//while
+				tradeMap.put(SQLResult.getInt("questionID"), SQLResult.getString("question"));
+			}
 			SQLResult.close();
 		}finally{
 			DBClose();
@@ -63,4 +65,12 @@ public class TradesBean extends DataBean {
 		return Inputs.inputSelectFirst(name, classType, selectedTrade,(String[])tempAL.toArray(new String[0]),
 			DEFAULT_SELECT_TRADE);
 	}//getTradesNameSelect
-}//TradesBean
+
+	public Map<Integer, String> getTradeList() throws Exception {
+		setFromDB();
+		Map<Integer, String> list = new TreeMap<Integer, String>();
+		list.put(0, DEFAULT_SELECT_TRADE);
+		list.putAll(tradeMap);
+		return list;
+	}
+}

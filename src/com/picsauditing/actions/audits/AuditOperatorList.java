@@ -10,6 +10,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AuditOperatorDAO;
 import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.AuditTypeCache;
 
@@ -19,9 +20,9 @@ public class AuditOperatorList extends PicsActionSupport {
 	protected int oID;
 	protected int aID = 1;
 	
-	protected List<Account> operators;
+	protected List<OperatorAccount> operators;
 	protected List<AuditType> auditTypes;
-	protected AccountDAO operatorDAO = null;
+	protected OperatorAccountDAO operatorDAO;
 	private AuditTypeDAO auditDAO;
 	private AuditOperatorDAO dataDAO;
 	private List<AuditOperator> data;
@@ -36,7 +37,7 @@ public class AuditOperatorList extends PicsActionSupport {
 	}
 
 
-	public AuditOperatorList(AccountDAO operatorDAO, AuditTypeDAO auditDAO, AuditOperatorDAO dataDAO) {
+	public AuditOperatorList(OperatorAccountDAO operatorDAO, AuditTypeDAO auditDAO, AuditOperatorDAO dataDAO) {
 		this.operatorDAO = operatorDAO;
 		this.auditDAO = auditDAO;
 		this.dataDAO = dataDAO;
@@ -46,7 +47,7 @@ public class AuditOperatorList extends PicsActionSupport {
 		getPermissions();
 		permissions.tryPermission(OpPerms.ManageOperators);
 
-		operators = operatorDAO.findOperators();
+		operators = operatorDAO.findWhere("");
 		
 		auditTypes = new AuditTypeCache( auditDAO ).getAuditTypes();
 		
@@ -98,7 +99,7 @@ public class AuditOperatorList extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public List<Account> getOperators() {
+	public List<OperatorAccount> getOperators() {
 		return operators;
 	}
 

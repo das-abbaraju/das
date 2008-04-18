@@ -7,6 +7,7 @@ public class QuestionTypeList extends com.picsauditing.PICS.DataBean {
 	public static final String DEFAULT_SELECT_QUESTION_ID = "0";
 	public String questionType = "";
 	public ArrayList<String> questionList = new ArrayList<String>();
+	public Map<Integer, String> questionMap = new TreeMap<Integer, String>();
 	
 	public void setFromDB(String questionType) throws Exception {
 		if (isSet) 
@@ -20,6 +21,7 @@ public class QuestionTypeList extends com.picsauditing.PICS.DataBean {
 			while (SQLResult.next()) {
 				questionList.add(SQLResult.getString("questionID"));
 				questionList.add(SQLResult.getString("question"));
+				questionMap.put(SQLResult.getInt("questionID"), SQLResult.getString("question"));
 			}//while
 			SQLResult.close();
 		}finally{
@@ -61,5 +63,16 @@ public class QuestionTypeList extends com.picsauditing.PICS.DataBean {
 			tempAL.add((String)questionList.get(i+1));
 		return com.picsauditing.PICS.Inputs.inputSelectFirst(name, classType, selectedQuestion,(String[])tempAL.toArray(new String[0]),
 			defaultQuestion);
-	}//getQuestionListSelect
-}//questionListBean
+	}
+	
+	public Map<Integer, String> getQuestionMap(String questionType, String defaultDescription) throws Exception {
+		setFromDB(questionType);
+		if (defaultDescription == null || defaultDescription.length() == 0) {
+			return questionMap;
+		}
+		Map<Integer, String> list = new TreeMap<Integer, String>();
+		list.put(0, defaultDescription);
+		list.putAll(questionMap);
+		return list;
+	}
+}

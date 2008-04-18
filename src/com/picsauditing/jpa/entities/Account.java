@@ -8,6 +8,8 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -44,7 +46,7 @@ public class Account implements java.io.Serializable {
 	protected String fax;
 	protected String email;
 	protected String webUrl;
-	protected String industry;
+	protected Industry industry;
 	protected char active;
 	protected String createdBy;
 	protected Date dateCreated;
@@ -216,11 +218,12 @@ public class Account implements java.io.Serializable {
 	}
 
 	@Column(name = "industry", nullable = false, length = 50)
-	public String getIndustry() {
+	@Enumerated(EnumType.STRING)
+	public Industry getIndustry() {
 		return this.industry;
 	}
 
-	public void setIndustry(String industry) {
+	public void setIndustry(Industry industry) {
 		this.industry = industry;
 	}
 
