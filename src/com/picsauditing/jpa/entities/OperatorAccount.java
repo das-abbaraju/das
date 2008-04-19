@@ -48,6 +48,8 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	private YesNo approvesRelationships;
 	protected List<ContractorOperator> contractors;
 
+	protected List<AuditQuestionOperatorAccount> auditquestion;
+
 	public OperatorAccount() {
 		this.type = "Operator";
 	}
@@ -327,6 +329,16 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 
 	public void setContractors(List<ContractorOperator> contractors) {
 		this.contractors = contractors;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "OperatorAccount")
+	public List<AuditQuestionOperatorAccount> getAuditquestion() {
+		return auditquestion;
+	}
+
+	public void setAuditquestion(
+			List<AuditQuestionOperatorAccount> auditquestion) {
+		this.auditquestion = auditquestion;
 	}
 
 }

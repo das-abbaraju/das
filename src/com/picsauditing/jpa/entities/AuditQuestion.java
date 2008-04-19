@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -55,6 +57,8 @@ public class AuditQuestion implements java.io.Serializable {
 	private String linkText6;
 	private Date dateCreated;
 	private String isRedFlagQuestion;
+
+	protected List<AuditQuestionOperatorAccount> operator;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -337,6 +341,15 @@ public class AuditQuestion implements java.io.Serializable {
 
 	public void setIsRedFlagQuestion(String isRedFlagQuestion) {
 		this.isRedFlagQuestion = isRedFlagQuestion;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "AuditQuestion")
+	public List<AuditQuestionOperatorAccount> getOperator() {
+		return operator;
+	}
+
+	public void setOperator(List<AuditQuestionOperatorAccount> operator) {
+		this.operator = operator;
 	}
 
 }
