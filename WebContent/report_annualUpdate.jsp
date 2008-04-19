@@ -37,9 +37,7 @@ sql.addField("a.dateCreated");
 sql.addField("a.lastLogin");
 sql.addField("c.lastAnnualUpdateEmailDate");
 sql.addField("c.annualUpdateEmails");
-//sql.addField("c.pqfSubmittedDate");
 sql.addField("ca"+AuditType.PQF+".completedDate AS pqfSubmittedDate");
-//sql.addField("c.auditDate");
 sql.addField("ca"+AuditType.OFFICE+".completedDate AS auditDate");
 
 Report report = new Report();
@@ -67,7 +65,7 @@ List<BasicDynaBean> searchData = report.getPage();
 <center>
 <span class="blueHeader">Annual Update Emails</span>
 
-<form name="filter" method="get" action="report_annualUpdate.jsp">
+<form name="filter" method="get" action="report_annualUpdate.jsp" class="forms">
 	Sent Email Range: <input type="text" name="minTimes" value="<%=report.getFilterValue("minTimes")%>" size="2" class="blueSmall" />
 		and <input type="text" name="maxTimes" value="<%=report.getFilterValue("maxTimes")%>" size="2" class="blueSmall" /><br />
 	PQF Submitted before: <input type="text" name="pqfDate" value="<%=report.getFilterValue("pqfDate")%>" size="10" class="blueSmall" /><br />
@@ -107,7 +105,7 @@ for (String key : report.getFilters().keySet()) {
 		<td align="center"><a href="?orderBy=ca<%=AuditType.PQF%>.completedDate DESC"
 			class="whiteTitle">PQF</a></td>
 		<td align="center" bgcolor="#6699CC"><a
-			href="?orderBy=ca<%=AuditType.OFFICE%>.completedDate DESC" class="whiteTitle">Audit</a></td>
+			href="?orderBy=ca<%=AuditType.OFFICE%>.completedDate DESC" class="whiteTitle">Office</a></td>
 		<td>Preview</td>
 	</tr>
 	<%
