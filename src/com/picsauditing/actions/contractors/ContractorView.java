@@ -11,6 +11,8 @@ public class ContractorView extends ContractorActionSupport {
 	
 	public String execute() throws Exception
 	{
+		getPermissions();
+		
 		findContractor();
 
 		return SUCCESS;

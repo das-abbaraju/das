@@ -46,6 +46,7 @@ function MM_displayStatusMsg(msgStr) { //v1.0
 </script>
 </head>
 <body>
+<a href="ContractorView.action?id=<%=id %>">New Page</a>
 			<table width="657" border="0" cellpadding="0" cellspacing="0">
               <tr align="center" class="blueMain">
                 <td align="left"><%@ include file="includes/nav/secondNav.jsp"%></td>

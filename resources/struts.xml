@@ -27,7 +27,7 @@
 
 		<action name="ContractorView"
 			class="com.picsauditing.actions.contractors.ContractorView">
-			<result>contractor_view.jsp</result>
+			<result>struts/contractors/con_view.jsp</result>
 		</action>
 
 		<action name="FacilitiesGetAjax"
