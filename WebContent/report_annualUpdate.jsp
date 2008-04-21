@@ -62,8 +62,7 @@ List<BasicDynaBean> searchData = report.getPage();
 <script language="javascript" SRC="js/checkAllBoxes.js"></script>
 </head>
 <body>
-<center>
-<span class="blueHeader">Annual Update Emails</span>
+<h1>Annual Update Emails</h1>
 
 <form name="filter" method="get" action="report_annualUpdate.jsp" class="forms">
 	Sent Email Range: <input type="text" name="minTimes" value="<%=report.getFilterValue("minTimes")%>" size="2" class="blueSmall" />
@@ -137,7 +136,6 @@ for (String key : report.getFilters().keySet()) {
 </form>
 
 <p><%=report.getPageLinks()%></p>
-</center>
 
 </body>
 </html>

@@ -39,11 +39,10 @@ try {
 <script language="JavaScript" SRC="js/ImageSwap.js"></script>
 </head>
 <body>
-            <table width="657" border="0" cellpadding="0" cellspacing="0" align="center">
+<table border="0" cellpadding="0" cellspacing="0">
               <tr>
                 <td height="70" colspan="2" align="center" class="buttons"> 
-                  <%@ include file="includes/selectReport.jsp"%>
-                  <span class="blueHeader">Payment Report</span>
+                  <h1>Payment Report</h1>
                   <form name="form1" method="post" action="report_payment.jsp">
                     <table border="0" cellpadding="2" cellspacing="0">
                       <tr align="center">
@@ -62,8 +61,8 @@ try {
                 <td height="20" align="left"><%=sBean.getStartsWithLinks()%></td>
                 <td align="right"><%=sBean.getLinks()%></td>
               </tr>
-            </table>
-            <table width="657" border="0" cellpadding="1" cellspacing="1" align="center">
+</table>
+<table border="0" cellpadding="1" cellspacing="1">
               <tr bgcolor="#003366" class="whiteTitle">
 			    <td colspan="2" width="150"><a href="?changed=0&showPage=1&orderBy=name" class="whiteTitle">Contractor</a></td>
                 <td align="center"><a href="?changed=0&showPage=1&orderBy=payingFacilities DESC" class="whiteTitle">Pay Fac</a></td>

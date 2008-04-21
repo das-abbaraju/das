@@ -1,0 +1,132 @@
+
+/* Navigation */
+
+#MainMenu {
+	width:100%;
+	height:31px;
+	background: #FFFFFF url("../images/bmid_022.gif");
+	margin: 0 0px 40px 0;
+	border:0;
+}
+#tab {
+	margin: 0 auto;
+	min-width: 890px;
+	max-width: 1150px;
+	width:expression(document.body.clientWidth < 892? "890px" : document.body.clientWidth > 1152? "1150px" : "auto");
+}
+
+#navbar {
+	margin-left: 130px;
+	}
+
+
+
+#tab ul {
+	margin:0;
+	padding:0;
+	list-style:none;
+	float:left;
+}
+
+#tab li {
+display:inline;
+	float:left;
+	margin:0;
+	padding:0;
+}
+#tab a {
+	background:#000000 url("../images/bright_022.gif") no-repeat right top;
+	margin:0;
+	padding:0;
+	text-decoration:none;
+	border:0;
+	display:block;
+	float:left;
+}
+#tab a span {
+	display:block;
+	background:url("../images/bleft_022.gif") no-repeat left top;
+	padding:0 18px 0 18px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+	color:#FFFFFF;
+	font-weight:bold;
+	line-height:31px;
+}
+
+#tab a:hover,#tab li.item_active a {
+	background-position:right bottom;
+	border-color:#000000;
+}
+
+#tab a:hover span,#tab li.item_active a span {
+	background-position:left bottom;
+	color:#ffffff;
+	font-weight:bold;
+	font-style:normal;
+	text-decoration:none;
+}
+
+.dropmenudiv {
+	position:absolute;
+	top:0;
+	float:left;
+	display:block;
+	visibility:hidden;
+	border:0 solid #330066;
+	background: #FFFFFF url("../images/bmid_022.gif");
+	color:#FFFFFF;
+	z-index:100;
+	text-decoration:none;
+	padding:0;
+}
+
+.dropmenudiv ul {
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+.dropmenudiv li {
+	display:inline;
+	margin:0;
+	padding:0;
+}
+.dropmenudiv a:link, .dropmenudiv a:visited{
+	width:180px;
+	margin:0;
+	padding:0;
+	display:block;
+	border:0 solid #000000;
+	color:#FFFFFF;
+	background:url("../images/bleft_022.gif") no-repeat left top;
+	font-weight:bold;
+	font-style:normal;
+	text-decoration:none;
+}
+.dropmenudiv a span {
+	float:left;
+	display:block;
+	line-height:31px;
+	background:url("../images/bright_022.gif") no-repeat right top;
+	padding:0 18px 0 18px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:11px;
+	color:#FFFFFF;
+}
+.dropmenudiv a span {
+	float:none;
+}
+.dropmenudiv a:hover {
+	border:0 solid #000000;
+	background-position:left bottom;
+	font-weight:bold;
+	font-style:normal;
+	text-decoration:none;
+	color:#ffffff;
+}
+.dropmenudiv a:hover span {
+	background-position:right bottom;
+	color:#ffffff;
+	font-weight:bold;
+}
+

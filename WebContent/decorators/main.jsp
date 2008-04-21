@@ -1,63 +1,96 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
+<%@page import="com.picsauditing.access.MenuComponent"%>
+<%@page import="com.picsauditing.access.PicsMenu"%>
 <%
-	if (!permissions.loginRequired(response, request))
-		return;
+	MenuComponent menu = PicsMenu.getMenu(permissions);
 %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator"	prefix="decorator"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
 <title>PICS - <decorator:title
 	default="Pacific Industrial Contractor Screening" /></title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-<link href="PICS.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/pics_legacy.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css" title="bluemenu"/>
+<script type="text/javascript" src="js/chrome.js" />
+<script type="text/javascript" src="js/Search.js" />
 <decorator:head />
-<%
-	/*
-	 <script src="js/prototype.js" type="text/javascript"></script>
-	 <script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
-	 <script src="js/Search.js" type="text/javascript"></script>
-	 */
-%>
 </head>
-<body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
-	<tr height="145">
-		<td valign="top">
-		<table width="100%" border="0" cellpadding="0" cellspacing="0">
-			<tr>
-				<td width="50%" bgcolor="#993300">&nbsp;</td>
-				<td width="146" valign="top" rowspan="2"><a href="index.jsp"><img
-					src="images/logo.gif" alt="HOME" width="146" height="145"
-					border="0"></a></td>
-				<td width="364"><%@ include
-					file="../utilities/mainNavigation.jsp"%></td>
-				<td width="147"><img src="images/squares_rightUpperNav.gif"
-					width="147" height="72" border="0"></td>
-				<td width="50%" bgcolor="#993300">&nbsp;</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td valign="top" align="center"><img
-					src="images/<decorator:getProperty property="meta.header_gif" default="header_reports.gif" />"
-					height="72"></td>
-				<td valign="top"><%@ include
-					file="../utilities/rightLowerNav.jsp"%></td>
-				<td>&nbsp;</td>
-			</tr>
-		</table>
-		</td>
-	</tr>
-	<tr>
-		<td align="center" valign="top"><decorator:body /><br /><br /></td>
-	</tr>
-	<tr bgcolor="#003366">
-		<td height="72" align="center" valign="middle" class="footer">&copy;
-		Copyright 2008 Pacific Industrial Contractor Screening</td>
-	</tr>
-</table>
-<%@ include file="../includes/statcounter.jsp"%>
+<body>
+<div id="header">
+<div id="headermain">
+<div id="masthead">
+<!-- !begin header -->
+<div id="smallnav"><p><% if (permissions.isLoggedIn()) { %>
+<span id="name">Welcome, <%=permissions.getName() %></span> | <a href="logout.jsp">Logout</a>
+<% } else { %>
+<span id="name">Welcome</span> | <a href="login.jsp">Login</a>
+<% } %></p></div>
+<div id="logo"> <img src="images/logo_r3.jpg" alt="image" width="105" height="112" /></div>
+</div></div></div>
+
+<!-- !begin navigation -->
+<div id="nav">		
+<div id="MainMenu">
+	<div id="tab">
+		<div id="navbar">		
+			<ul>
+			<%
+			for(MenuComponent item : menu.getChildren()) {
+				if (item.visible()) { %>
+				<li><a<%=item.hasUrl() ? (" href=\""+item.getUrl()+"\"") : "" %> onmouseover="cssdropdown.dropit(this,event,'menu<%= item.getId()%>')"><span><%=item.getName()%></span></a></li><%
+				}
+			}
+			%>
+			</ul>
+		</div>		
+	</div>
+</div>
+<!-- !end navigation -->
+
+<div id="main">
+<div id="bodyholder">
+<div id="content">
+<!-- !begin content -->
+<decorator:body />
+<!-- !end content -->
+</div>
+</div>
+</div>
+
+<!-- !begin footer -->
+<div class="footer">
+<div id="footermain">
+<div id="footercontent">
+Copyright &copy; 2008
+<a href="http://www.picsauditing.com/" class="footer">Pacific Industrial Contractor Screening</a> |
+<a href="about.jsp" class="footer">About PICS</a> |
+<a href="contact.jsp" class="footer">Contact Us</a>
+</div>
+</div>
+</div>
+
+<!-- !begin subnavigation -->
+<% for(MenuComponent submenu : menu.getChildren()) { %>
+<div id="menu<%= submenu.getId()%>" class="dropmenudiv">
+	<ul><%
+		for(MenuComponent item : submenu.getChildren()) {
+			if (item.visible()) { %>
+		<li><a <%=item.hasUrl() ? ("href=\""+item.getUrl()+"\"") : "" %>><span><%=item.getName()%></span></a></li><%
+			}
+		}
+		%>
+	</ul>
+</div>
+<% } %>
+<!-- !end subnavigation -->
+
 </body>
 </html>

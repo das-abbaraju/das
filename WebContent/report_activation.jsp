@@ -206,10 +206,9 @@ try{
   	}
   </script>
 </head>
-<body onLoad="MM_preloadImages('images/button_search_o.gif')">
-            <%@ include file="includes/selectReport.jsp"%>
-            <span class="blueHeader">Activation Report </span><br>
-            <form id="form1" name="form1" method="post" action="report_activation.jsp">
+<body>
+<h1>Activation Report </h1>
+<form id="form1" name="form1" method="post" action="report_activation.jsp">
               <table border="0" cellpadding="2" cellspacing="0">
                 <tr align="center">
                   <td><input name="name" type="text" class="forms" value="<%=sBean.selected_name%>" size="20" onFocus="clearText(this)">
@@ -227,13 +226,13 @@ try{
             </form>
             <span class="blueMain"><%=sBean.getStartsWithLinksWithDynamicForm()%></span>
             <span class="redMain"><br><%=message%></span>
-	        <table width="657" height="40" border="0" cellpadding="0" cellspacing="0">
+	        <table height="40" border="0" cellpadding="0" cellspacing="0">
 	          <tr>
 		        <td><span class="blueHeader">Contractors that haven't ever logged in</span></td>
 		        <td align="right"><span class="redMain"><%=sBean.getLinksWithDynamicForm()%></span></td>
 	          </tr>
 	        </table>
-	        <table width="657" border="0" cellpadding="1" cellspacing="1">
+	        <table border="0" cellpadding="1" cellspacing="1">
 			  <tr bgcolor="#003366" class="whiteTitle">
 				<td colspan="2" bgcolor="#003366"><a href="javascript: changeOrderBy('form1','name');" class="whiteTitle">Contractor</a></td>
 				<td align="center" bgcolor="#003366"><a href="javascript: changeOrderBy('form1','dateCreated DESC');" class="whiteTitle">Created</a></td>
@@ -277,14 +276,13 @@ try{
 				<td id="visible_<%= sBean.aBean.id %>" align="center"><%=sBean.aBean.active%></td>             
 				<td id="remove_<%= sBean.aBean.id %>" ><input name="action" type="submit" onclick="javascript: return removeCon( '<%= sBean.aBean.id %>' );" class="buttons" value="<%=BUTTON_VALUE%>"></td>
 			  </tr>
-<%	}//while %>
-			</table>
-		    <br><center><%=sBean.getLinks()%></center>
-<%	sBean.closeSearch(); %>
-	  <br><center><%@ include file="utilities/contractor_key.jsp"%><br><br></center>
-</body>
-</html>
+<%	} %>
+</table>
+<center><%=sBean.getLinks()%></center>
 <%	}finally{
 		sBean.closeSearch();
-	}//finally
+	}
 %>
+<br><center><%@ include file="utilities/contractor_key.jsp"%><br><br></center>
+</body>
+</html>

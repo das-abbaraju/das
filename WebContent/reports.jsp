@@ -16,22 +16,16 @@ reportMenu.fillPicsMenu(permissions);
 <title>Reports</title>
 </head>
 <body>
-<table border="0" cellpadding="1" cellspacing="1">
-	<tr bgcolor="#003366" class="whiteTitle">
-		<td colspan="2">Click Report Name to Access</td>
-	</tr>
+<h1>Reports</h1>
+<h3>Click Report Name to View</h3>
+<ol>
 	<%
-	int rowCount = 0;
 	for(com.picsauditing.access.MenuItem item : reportMenu.getValidItems()) {
-		rowCount++;
 		%>
-		<tr class="blueMain" <%=Utilities.getBGColor(rowCount)%>>
-			<td align="right"><%=rowCount%>.</td>
-			<td><a href="<%=item.getUrl()%>"><%=item.getPrompt()%></a></td>
-		</tr>
+		<li><a href="<%=item.getUrl()%>"><%=item.getPrompt()%></a></li>
 		<%
 	}
 	%>
-</table>
+</ol>
 </body>
 </html>
