@@ -343,7 +343,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.isRedFlagQuestion = isRedFlagQuestion;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "AuditQuestion")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "auditQuestion")
 	public List<AuditQuestionOperatorAccount> getOperator() {
 		return operator;
 	}

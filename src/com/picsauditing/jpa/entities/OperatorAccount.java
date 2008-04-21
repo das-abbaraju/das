@@ -331,7 +331,7 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.contractors = contractors;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "OperatorAccount")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "operatorAccount")
 	public List<AuditQuestionOperatorAccount> getAuditquestion() {
 		return auditquestion;
 	}
