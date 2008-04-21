@@ -23,20 +23,27 @@ import com.picsauditing.util.SpringUtils;
 
 public class ReportAccount extends ReportActionSupport {
 
+	public static final String DEFAULT_NAME = "- Name - ";
+	public static final String DEFAULT_ZIP = "- Zip -";
+	public static final String DEFAULT_CITY = "- City -";
+	public static final String DEFAULT_TAX_ID = "- Tax ID -";
+	public static final String DEFAULT_CERTS = "- Ins. Certs -";
+	public static final String DEFAULT_VISIBLE = "- Visible -";
+	
 	protected String startsWith;
-	protected String name;
+	protected String name = DEFAULT_NAME;
 	protected String industry;
 	protected String performedBy;
 	protected int trade;
 	protected int operator;
-	protected String city;
+	protected String city = DEFAULT_CITY;
 	protected String state;
-	protected String zip;
+	protected String zip = DEFAULT_ZIP;
 	protected String certsOnly;
 	protected String visible;
 	protected int stateLicensedIn;
 	protected int worksIn;
-	protected String taxID;
+	protected String taxID = DEFAULT_TAX_ID;
 
 	@Autowired
 	protected SelectAccount sql = new SelectAccount();
@@ -102,12 +109,12 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public String[] getCertsOptions() {
-		return new String[] { "", "- Default Certs -", "Yes", "Only Certs",
+		return new String[] { DEFAULT_CERTS, "Yes", "Only Certs",
 				"No", "Exclude Certs" };
 	}
 
 	public String[] getVisibleOptions() {
-		return SearchBean.VISIBLE_SEARCH_ARRAY;
+		return new String[] {DEFAULT_VISIBLE,"Y","N"};
 	}
 
 	// Getters and setters for filter criteria
@@ -126,7 +133,7 @@ public class ReportAccount extends ReportActionSupport {
 
 	public void setName(String name) {
 		report.addFilter(new SelectFilter("name", "a.name LIKE '%?%'", name,
-				SearchBean.DEFAULT_NAME, SearchBean.DEFAULT_NAME));
+				DEFAULT_NAME, DEFAULT_NAME));
 		this.name = name;
 	}
 
@@ -180,8 +187,7 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setOperator(int operator) {
-		report
-				.addFilter(new SelectFilterInteger(
+		report.addFilter(new SelectFilterInteger(
 						"generalContractorID",
 						"a.id IN (SELECT subID FROM generalcontractors WHERE genID = ? )",
 						operator));
@@ -193,8 +199,7 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setCity(String city) {
-		report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", city,
-				SearchBean.DEFAULT_CITY, SearchBean.DEFAULT_CITY));
+		report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", city, DEFAULT_CITY, DEFAULT_CITY));
 		this.city = city;
 	}
 
@@ -212,8 +217,7 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setZip(String zip) {
-		report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", zip,
-				SearchBean.DEFAULT_ZIP, SearchBean.DEFAULT_ZIP));
+		report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", zip, DEFAULT_ZIP, DEFAULT_ZIP));
 		this.zip = zip;
 	}
 
@@ -222,8 +226,7 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setCertsOnly(String certsOnly) {
-		report.addFilter(new SelectFilter("certsOnly", "c.isOnlyCerts = '?'",
-				certsOnly));
+		report.addFilter(new SelectFilter("certsOnly", "c.isOnlyCerts = '?'", certsOnly, DEFAULT_CERTS, DEFAULT_CERTS));
 		this.certsOnly = certsOnly;
 	}
 
@@ -242,8 +245,7 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setStateLicensedIn(int stateLicensedIn) {
-		report
-				.addFilter(new SelectFilterInteger(
+		report.addFilter(new SelectFilterInteger(
 						"stateLicensedIn",
 						"a.id IN (SELECT conID FROM pqfdata WHERE questionID=? AND answer <> '')",
 						stateLicensedIn));
@@ -268,8 +270,7 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setTaxID(String taxID) {
-		report.addFilter(new SelectFilter("taxID", "c.taxID = '?'", taxID,
-				SearchBean.DEFAULT_TAX_ID, SearchBean.DEFAULT_TAX_ID));
+		report.addFilter(new SelectFilter("taxID", "c.taxID = '?'", taxID, DEFAULT_TAX_ID, DEFAULT_TAX_ID));
 		this.taxID = taxID;
 	}
 

@@ -1,11 +1,11 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>Accounts Manage</title>
-<meta name="header_gif" content="header_manageAccounts.gif" />
-<script language="JavaScript" SRC="js/Search.js"></script>
+<title>Contractor Search - Admin</title>
 </head>
 <body>
+<h1>Contractor Search</h1>
+<h3>Admin Version</h3>
 <s:form id="form1" method="get">
 <table border="0" align="center" cellpadding="2" cellspacing="0">
 <tr>
@@ -14,7 +14,7 @@
 <s:select name="industry" list="industryList" cssClass="forms" />
 <s:select list="tradeList" cssClass="forms" name="trade" />
 <s:select list="tradePerformedByList" cssClass="forms" name="performedBy" />
-<s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch( 'form1')" onmouseover="MM_swapImage('imageField','','images/button_search_o.gif',1)" onmouseout="MM_swapImgRestore()" />
+<s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch( 'form1')" />
 </td></tr>
 <tr><td>
 <s:select list="operatorList" cssClass="forms" name="operator" />
@@ -26,7 +26,7 @@
 <s:select list="certsOptions" cssClass="forms" name="certsOnly" />
 <s:select list="visibleOptions" cssClass="forms" name="visible" />
 <s:select list="stateLicensesList" cssClass="forms" name="stateLicensedIn" />
-<s:textfield name="taxid" cssClass="forms" size="9" onfocus="clearText(this)" />
+<s:textfield name="taxID" cssClass="forms" size="9" onfocus="clearText(this)" />
 <span class="redMain">*must be 9 digits</span>
 </td></tr>
 <tr><td>
@@ -36,9 +36,10 @@
 	<s:hidden name="startsWith" />
 	<s:hidden name="orderBy" />
 </s:form>
-<center><s:property value="report.startsWithLinksWithDynamicForm" escape="false"/></center>
-<table width="657" height="40" border="0" cellpadding="0" cellspacing="0">
+
+<table border="0" cellpadding="0" cellspacing="0" width="900">
   <tr>
+	<td align="left"><s:property value="report.startsWithLinksWithDynamicForm" escape="false"/></td>
 	<td align="right"><s:property value="report.pageLinksWithDynamicForm" escape="false"/></td>
   </tr>
 </table>

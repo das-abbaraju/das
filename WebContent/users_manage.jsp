@@ -4,9 +4,9 @@
 <html>
 <head>
 <title>Manage Users</title>
-<script src="js/prototype.js" type="text/javascript"></script>
-<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
-<script src="js/Search.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/prototype.js" />
+<script type="text/javascript" src="js/scriptaculous/scriptaculous.js?load=effects" />
+<script type="text/javascript" src="js/Search.js" />
 <script type="text/javascript">
 var currentUser = 0;
 var accountID = <s:property value="accountId"/>;
