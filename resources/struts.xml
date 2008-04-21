@@ -30,6 +30,11 @@
 			<result>struts/contractors/con_view.jsp</result>
 		</action>
 
+		<action name="ReportAuditList"
+			class="com.picsauditing.actions.report.ReportContractorAudits">
+			<result>struts/reports/auditList.jsp</result>
+		</action>
+
 		<action name="FacilitiesGetAjax"
 			class="com.picsauditing.actions.operators.FacilitiesGet">
 			<result>includes/facilitySelect.jsp</result>

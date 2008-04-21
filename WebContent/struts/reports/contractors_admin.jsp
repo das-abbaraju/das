@@ -4,8 +4,9 @@
 <title>Contractor Search - Admin</title>
 </head>
 <body>
-<h1>Contractor Search</h1>
-<h3>Admin Version</h3>
+<h1>Contractor Search
+<span class="sub">Admin Version</span></h1>
+
 <s:form id="form1" method="get">
 <table border="0" align="center" cellpadding="2" cellspacing="0">
 <tr>
