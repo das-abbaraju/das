@@ -116,7 +116,7 @@ public class SelectAccount extends SelectSQL {
 	
 	/**
 	 * Limit contractor search to the accounts I can see based on my perms
-	 * If I'm an operator join to flags.flag too
+	 * If I'm an operator join to flags.flag and gc.workStatus too
 	 * @param permissions
 	 */
 	public void setPermissions(Permissions permissions) {
@@ -128,14 +128,15 @@ public class SelectAccount extends SelectSQL {
 			this.addJoin("LEFT JOIN flags ON flags.conID = a.id AND flags.opID = "+permissions.getAccountId());
 			this.addField("flags.flag");
 			
-			addWhere("a.id IN (SELECT subID FROM generalcontractors " +
-					"WHERE genID = "+permissions.getAccountId()+")");
+			this.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = "+permissions.getAccountId());
+			this.addField("gc.workStatus");
 			return;
 		}
 		if (permissions.isCorporate()) {
-			addWhere("a.id IN (SELECT subID FROM generalcontractors " +
-					"WHERE genID IN (SELECT opID FROM facilities " +
-					"WHERE corporateID = "+permissions.getAccountId()+"))");
+			this.addJoin("JOIN generalcontractors gc ON gc.subID = a.id " +
+					"AND gc.genID IN (SELECT opID FROM facilities " +
+					"WHERE corporateID = "+permissions.getAccountId()+")");
+			this.addField("gc.workStatus");
 			return;
 		}
 		
