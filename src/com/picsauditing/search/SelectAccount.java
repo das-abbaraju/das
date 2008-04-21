@@ -114,10 +114,20 @@ public class SelectAccount extends SelectSQL {
 		}
 	}
 	
+	/**
+	 * Limit contractor search to the accounts I can see based on my perms
+	 * If I'm an operator join to flags.flag too
+	 * @param permissions
+	 */
 	public void setPermissions(Permissions permissions) {
 		if (permissions.hasPermission(OpPerms.AllContractors))
 			return;
 		if (permissions.isOperator()) {
+			// Anytime we query contractor accounts as an operator, 
+			// we should always read the flag color/status at the same time
+			this.addJoin("LEFT JOIN flags ON flags.conID = a.id AND flags.opID = "+permissions.getAccountId());
+			this.addField("flags.flag");
+			
 			addWhere("a.id IN (SELECT subID FROM generalcontractors " +
 					"WHERE genID = "+permissions.getAccountId()+")");
 			return;
