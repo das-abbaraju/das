@@ -48,9 +48,9 @@ public class OperatorAccountDAO extends PicsDAO {
 		String where;
 		
 		if (operator.getType().equals("Corporate")) {
-			where = "operatorAccount = ?";
-		} else {
 			where = "operatorAccount IN (SELECT operator FROM Facility WHERE corporate = ?)";
+		} else {
+			where = "operatorAccount = ?";
 		}
 
 		Query query = em.createQuery("SELECT count(c) FROM ContractorAccount c " +
