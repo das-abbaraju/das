@@ -26,6 +26,10 @@ public class PicsActionSupport extends ActionSupport {
 		if (permissions == null) {
 			permissions = new Permissions();
 			
+			// To configure this setting in Eclipse, add "-DautoLogin=USER_ID_TO_AUTO_LOGIN" 
+			// to the end of the "start" VMArgument
+			// Run...Open Run Dialog...Arguments.VMArguments
+			// Then restart Tomcat (also remember to pick the right Server when editing above)
 			String autoLogin = System.getProperty("autoLogin");
 			
 			if( autoLogin != null && autoLogin.length() != 0 )
@@ -34,7 +38,6 @@ public class PicsActionSupport extends ActionSupport {
 				{
 					Integer loginId = new Integer( autoLogin );
 					
-					// Auto Login tallred
 					com.picsauditing.access.User user = new com.picsauditing.access.User();
 					user.setFromDB(autoLogin);
 					permissions.login(user);

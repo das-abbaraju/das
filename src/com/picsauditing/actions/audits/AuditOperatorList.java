@@ -64,7 +64,7 @@ public class AuditOperatorList extends PicsActionSupport {
 			}
 			rawData = null; // we don't need this anymore
 
-			for (Account operator : operators) {
+			for (OperatorAccount operator : operators) {
 				AuditOperator newRow = rawDataIndexed.get(operator.getId());
 				if (newRow == null) {
 					newRow = new AuditOperator();
@@ -76,7 +76,7 @@ public class AuditOperatorList extends PicsActionSupport {
 		}
 		if (oID > 0) {
 			// Query the db for audits used by this operator and index them by typeID
-			Account selectedObject = new OperatorAccount();
+			OperatorAccount selectedObject = new OperatorAccount();
 			List<AuditOperator> rawData = dataDAO.findByOperator(oID);
 			for (AuditOperator row : rawData) {
 				selectedObject = row.getOperatorAccount();
