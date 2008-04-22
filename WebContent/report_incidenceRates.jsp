@@ -17,17 +17,10 @@
 <html>
 <head>
 <title>Incidence Rates</title>
-<script language="JavaScript" SRC="js/ImageSwap.js"></script>
 </head>
 <body>
-            <table width="657" border="0" cellpadding="0" cellspacing="0">
-              <tr> 
-                <td height="70" colspan="2" align="center"><%@ include file="includes/selectReport.jsp"%>
-                  <span class="blueHeader">Incidence Rates Report</span>
-			   </td>
-              </tr>
-            </table>
-		    <form name="form1" method="post" action="report_incidenceRates.jsp">
+<h1>Incidence Rates Report</h1>
+<form name="form1" method="post" action="report_incidenceRates.jsp">
 <%	if (pBean.isCorporate())
 		out.println(pBean.oBean.getFacilitySelect("generalContractorID","forms",sBean.selected_generalContractorID));
 %>
@@ -35,7 +28,7 @@
 			  <tr class="blueMain">
 				<td align="right">Incidence Rate Cutoff:</td>
 				<td><input name="searchIncidenceRate" type="text" size="5" value=<%=sBean.searchIncidenceRate%>></td>
-				<td><input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()"></td>
+				<td><input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"></td>
 			  </tr>
 		    </table>
             <strong>Check next to the years to search</strong>

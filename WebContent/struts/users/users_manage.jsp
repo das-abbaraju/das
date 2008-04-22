@@ -1,12 +1,12 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@page language="java" errorPage="exception_handler.jsp"%>
-<%@include file="includes/main.jsp" %>
 <html>
 <head>
 <title>Manage Users</title>
-<script type="text/javascript" src="js/prototype.js" />
-<script type="text/javascript" src="js/scriptaculous/scriptaculous.js?load=effects" />
-<script type="text/javascript" src="js/Search.js" />
+<script type="text/javascript" src="js/prototype.js"></script>
+<script type="text/javascript" src="js/scriptaculous/scriptaculous.js?load=effects"></script>
+<script type="text/javascript" src="js/Search.js"></script>
 <script type="text/javascript">
 var currentUser = 0;
 var accountID = <s:property value="accountId"/>;
@@ -82,16 +82,18 @@ function checkUsername(username, userID) {
 </head>
 <body>
 <h1>Manage User Accounts</h1>
+
 <table border="0">
 <tr>
-	<td colspan="2" align="center" class="blueSmall">
-		<s:form name="form1" id="form1" action="UsersManage" method="post">
-			<s:if test="hasAllOperators">
+	<td colspan="2" align="center">
+		<s:form id="form1" method="post">
+		
+		<pics:permission perm="AllOperators">
 			Filter by User: <input type="text" name="filter" id="filter" class="blueSmall" onchange="filterOperators();" /><br />
 			Operator:<span id="operators"><s:action name="FacilitiesGetAjax" executeResult="true" >
 				<s:param name="shouldIncludePICS" value="%{true}"/>
 			</s:action></span><br />
-			</s:if>
+		</pics:permission>
 			Type:
 				<s:select name="isGroup" cssClass="blueSmall"
 				       headerKey="" headerValue="All"
@@ -152,8 +154,9 @@ function checkUsername(username, userID) {
 	
 	</table>
 </td>
-<td id="editUser" width="500" class="blueMain">
-	<div id="ajaxstatus" style="height: 30px;"></div>
+<td id="editUser" class="blueMain" style="margin: 30px; padding: 30px; vertical-align: top;">
+	<div id="ajaxstatus"></div>
+	Select a user or group from the left to view
 </td>
 </tr>
 </table>

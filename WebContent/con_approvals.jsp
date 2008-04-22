@@ -64,15 +64,7 @@ form.smallform {
 </style>
 </head>
 <body>
-<table width="657" border="0" cellpadding="0" cellspacing="0"
-	align="center">
-	<tr>
-		<td height="70" colspan="2" align="center" class="buttons"><%@ include
-			file="includes/selectReport.jsp"%> <span
-			class="blueHeader">Contractor Approvals</span></td>
-	</tr>
-</table>
-
+<h1>Contractor Approvals</h1>
 <table border="0" cellpadding="5" cellspacing="0" align="center">
 	<tr>
 		<td class="blueMain">

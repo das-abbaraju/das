@@ -7,8 +7,6 @@
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
 
 <%
-
-
 if (permissions.isContractor()) throw new com.picsauditing.access.NoRightsException("Not Contractor");
 try{
 	com.picsauditing.PICS.pqf.QuestionTypeList statesLicensedInList = new com.picsauditing.PICS.pqf.QuestionTypeList();
@@ -96,7 +94,6 @@ try{
 <head>
 <title>Search for Contractors</title>
   <script language="JavaScript" SRC="js/Search.js"></script>
-  <script language="JavaScript" SRC="js/ImageSwap.js"></script>
   <script language="JavaScript">
 	function addContractor( cid )
 	{	
@@ -124,11 +121,10 @@ try{
   </script>
 </head>
 <body>
+<h1>Search For New Contractors</h1>
             <table width="657" border="0" cellpadding="0" cellspacing="0">
               <tr>
                 <td height="70" colspan="2" align="center" class="blueMain">
-                  <%@ include file="includes/nav/opSecondNav.jsp"%>
-                  <span class="blueHeader">Search For New Contractors</span><br>
 <%	if (!doSearch){%>
                   <table border="0" cellpadding="0" cellspacing="0">
                     <tr align="left">
@@ -151,7 +147,7 @@ try{
 <% } %>
                         <input name="taxID" type="text" class="forms" value="<%=sBean.selected_taxID%>" size="9" onFocus="clearText(this)"><span class=redMain>*must be 9 digits</span>
                       </td>
-                      <td width="89"><input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0" onClick="runSearch('form1');" onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()">
+                      <td width="89"><input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0" onClick="runSearch('form1');">
                     </tr>
                     <tr>
                       <td class="blueMain" colspan="2" align="left"><%=Inputs.getCheckBoxInput("searchCorporate", "forms",sBean.searchCorporate,"Y")%>

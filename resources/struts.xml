@@ -22,7 +22,7 @@
 
 		<action name="UsersManage"
 			class="com.picsauditing.actions.users.UsersManage">
-			<result>users_manage.jsp</result>
+			<result>struts/users/users_manage.jsp</result>
 		</action>
 
 		<action name="ContractorView"
@@ -82,7 +82,7 @@
 
 		<action name="ReportNCMS"
 			class="com.picsauditing.actions.report.ReportAccountNCMS">
-			<result>report_ncms.jsp</result>
+			<result>struts/reports/report_ncms.jsp</result>
 		</action>
 
 		<action name="AuditSaveAjax"
@@ -97,7 +97,7 @@
 		
 		<action name="ProfileEdit"
 			class="com.picsauditing.actions.users.ProfileEdit">
-			<result>struts/profile_edit.jsp</result>
+			<result>struts/users/profile_edit.jsp</result>
 		</action>
 	</package>
 </struts>

@@ -19,8 +19,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics_legacy.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css" title="bluemenu"/>
-<script type="text/javascript" src="js/chrome.js" />
-<script type="text/javascript" src="js/Search.js" />
+<script type="text/javascript" src="js/chrome.js"></script>
 <decorator:head />
 </head>
 <body>

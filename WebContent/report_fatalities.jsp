@@ -16,13 +16,7 @@ try {
 <title>Fatalities</title>
 </head>
 <body>
-          <table width="657" border="0" cellpadding="0" cellspacing="0">
-            <tr> 
-              <td height="70" colspan="2" align="center"><%@ include file="includes/selectReport.jsp"%>
-	            <span class="blueHeader">Fatalities Report</span>
-	            </td>
-            </tr>
-          </table>
+<h1>Fatalities Report</h1>
 <%	if (pBean.isCorporate()){%>
 		  <form name="form1" method="post" action="report_fatalities.jsp">
           <table border="0" cellpadding="2" cellspacing="0">

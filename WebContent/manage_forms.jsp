@@ -50,13 +50,8 @@ if (isSubmitted){
 <meta name="header_gif" content="header_manageAccounts.gif" />
 </head>
 <body>
-            <table width="657" cellpadding="2" cellspacing="0">
-              <tr>
-                <td colspan="2" align="center" class="blueMain">
-                  <%@ include file="includes/nav/opSecondNav.jsp"%>
-	              <span class="blueHeader">Manage Forms & Documents</span><br>
-                </td>
-              </tr>
+<h1>Forms &amp; Documents</h1>
+<table width="657" cellpadding="2" cellspacing="0">
 			  <tr>
 			    <td colspan="2" align="center" valign="top" class="redMain">
                   <b><%=fBean.getErrorMessages()%></b>
@@ -207,9 +202,6 @@ if (isSubmitted){
                   </table>
 				</td>
               </tr>
-              <tr> 
-                <td>&nbsp;</td>
-              </tr>
-			</table>
+</table>
 </body>
 </html>

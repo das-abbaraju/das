@@ -16,17 +16,10 @@
 <html>
 <head>
 <title>EMR Rates</title>
-  <script language="JavaScript" SRC="js/ImageSwap.js"></script>
 </head>
 <body>
-            <table width="657" border="0" cellpadding="0" cellspacing="0">
-              <tr> 
-                <td height="70" colspan="2" align="center"><%@ include file="includes/selectReport.jsp"%>
-                  <span class="blueHeader">EMR Rates Report</span>
-                </td>
-              </tr>
-            </table>
-            <form name="form1" method="post" action="report_EMRRates.jsp">
+<h1>EMR Rates Report</h1>
+<form name="form1" method="post" action="report_EMRRates.jsp">
 <%	if (pBean.isCorporate())
 		out.println(pBean.oBean.getFacilitySelect("generalContractorID","forms",sBean.selected_generalContractorID));
 %>

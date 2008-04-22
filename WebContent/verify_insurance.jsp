@@ -29,8 +29,6 @@ try{
 
 <head>
 <title>Verify Insurance</title>
-<meta name="header_gif" content="header_insurance.gif" />
-<script language="JavaScript" SRC="js/ImageSwap.js" type="text/javascript"></script>
 <script language="JavaScript" SRC="js/DHTMLUtils.js" type="text/javascript"></script>
 <script language="javascript">
 	function editCert(cid){
@@ -47,10 +45,11 @@ try{
 </script> 
 </head>
 <body>
-            <table border="0" cellpadding="0" cellspacing="0">
+<h1>Verify Insurance Certificates
+<span class="sub">InsureGuard</span></h1>
+<table border="0" cellpadding="0" cellspacing="0">
               <tr> 
                 <td height="70" colspan="2" align="center"> 
-                  <%@ include file="includes/selectReport.jsp"%>
                   <form name="form1" method="post" action="verify_insurance.jsp">
                   <table border="0" cellpadding="2" cellspacing="0">
                     <tr align="center"> 

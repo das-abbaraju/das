@@ -28,10 +28,12 @@ try {
 %>
 <html>
 <head>
-<title>Edit Flag Criteria</title>
+<title></title>
 <script language="JavaScript" SRC="js/ImageSwap.js"></script>
 </head>
 <body>
+<h1>Flag Criteria</h1>
+
 <span class="redMain"><%=flagCriteria.getErrorMessages()%></span>
 <form name="changeFlagStatus" method="post" action="op_editFlagCriteria.jsp">
               Edit <%=flagCriteria.getFlagStatusSelect("flagStatus","forms",flagStatus)%> Flag Criteria<br>

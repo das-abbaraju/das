@@ -1,14 +1,12 @@
 <%@page language="java" import="com.picsauditing.PICS.*"
 	errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp"%>
-
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean"
 	scope="page" />
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean"
 	scope="page" />
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean"
 	scope="page" />
-
 <%
 	permissions.tryPermission(OpPerms.BillingUpgrades);
 
@@ -49,33 +47,27 @@
 %>
 <html>
 <head>
-<title>Upgrade Payment Report</title>
+<title>Upgrade Payments</title>
 </head>
 <body>
-
-<table width="657" border="0" cellpadding="0" cellspacing="0"
-	align="center">
+<h1>Upgrade Payments</h1>
+<table border="0" cellpadding="0" cellspacing="0">
 	<tr>
-		<td colspan="2" align="center"><%@ include
-			file="includes/selectReport.jsp"%> <span
-			class="blueHeader">Upgrade Payment Report</span>
+		<td colspan="2" align="center">
 		<form name="form1" method="post" action="report_upgradePayment.jsp">
 		<table border="0" cellpadding="2" cellspacing="0">
-			<tr align="center">
-				<td><input name="name" type="text" class="forms"
+			<tr>
+				<td style="vertical-align: top"><input name="name" type="text" class="forms"
 					value="<%=sBean.selected_name%>" size="20"
 					onFocus="clearText(this)"> <%=SearchBean.getSearchGeneralSelect("generalContractorID", "blueMain",
 							sBean.selected_generalContractorID)%>
 				<%=Inputs.inputSelect("invoicedStatus", "blueMain", sBean.selected_invoicedStatus,
 							SearchBean.INVOICED_SEARCH_ARRAY)%>
 				<input name="imageField" type="image" src="images/button_search.gif"
-					width="70" height="23" border="0"
-					onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)"
-					onMouseOut="MM_swapImgRestore()"></td>
+					width="70" height="23" border="0"></td>
 			</tr>
 		</table>
 		</form>
-		<form name="form5" method="post" action="report_upgradePayment.jsp">
 		<input class="forms" type="submit" name="action"
 			value="Recalculate Upgrade Amounts"></form>
 		</td>
@@ -85,8 +77,7 @@
 		<td align="right"><%=sBean.getLinks()%></td>
 	</tr>
 </table>
-<table width="657" border="0" cellpadding="1" cellspacing="1"
-	align="center">
+<table border="0" cellpadding="1" cellspacing="1">
 	<tr bgcolor="#003366" class="whiteTitle">
 		<td colspan="2" width="150"><a
 			href="?changed=0&showPage=1&orderBy=name" class="whiteTitle">Contractor</a></td>

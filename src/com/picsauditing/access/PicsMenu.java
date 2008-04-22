@@ -21,9 +21,7 @@ public class PicsMenu {
 		if (permissions.isAuditor())
 			subMenu.addChild("Auditor Search", "ContractorListAuditor.action");
 		if (permissions.isOperator() || permissions.isCorporate())
-			subMenu.addChild("Advanced Search", "ContractorListOperator.action");
-		if (!permissions.isContractor())
-			subMenu.addChild("Quick Search", "ContractorSearch.action");
+			subMenu.addChild("Contractor List", "ContractorListOperator.action");
 		if (permissions.isAdmin())
 			subMenu.addChild("Assignments", "report_operatorContractor.jsp?changed=1");
 
@@ -31,9 +29,9 @@ public class PicsMenu {
 			subMenu.addChild("Contact Info", "report_contactInfo.jsp?changed=1");
 
 		if (permissions.hasPermission(OpPerms.SearchContractors))
-			subMenu.addChild("Add Contractors", "contractorsSearch.jsp");
+			subMenu.addChild("Search For New", "contractorsSearch.jsp");
 		if (permissions.hasPermission(OpPerms.SearchContractors))
-			subMenu.addChild("Corporate Contractors", "report_operatorContractor.jsp?searchCorporate=Y");
+			subMenu.addChild("By Operator", "report_operatorContractor.jsp?searchCorporate=Y");
 
 		subMenu = menu.addChild("Auditing");
 		subMenu.addChild("Audit List", "ReportAuditList.action");
@@ -42,7 +40,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.OfficeAuditCalendar))
 			subMenu.addChild("Audit Calendar", "audit_calendar.jsp?changed=1");
 		if (permissions.hasPermission(OpPerms.NCMS))
-			subMenu.addChild("NCMS Audits", "report_ncms.jsp");
+			subMenu.addChild("NCMS Audits", "ReportNCMS.action");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
 			subMenu.addChild("PQF Verification", "pqf_verification.jsp");
 
@@ -54,9 +52,9 @@ public class PicsMenu {
 
 		subMenu = menu.addChild("Accounting");
 		if (permissions.isAdmin())
-			subMenu.addChild("Contractor Payments", "report_upgradePayment.jsp?changed=1");
+			subMenu.addChild("Contractor Payments", "report_payment.jsp?changed=1");
 		if (permissions.hasPermission(OpPerms.BillingUpgrades))
-			subMenu.addChild("Upgrade Payments", "report_payment.jsp?changed=1");
+			subMenu.addChild("Upgrade Payments", "report_upgradePayment.jsp?changed=1");
 
 		subMenu = menu.addChild("InsureGuard");
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))
@@ -76,10 +74,13 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.EditUsers))
 			subMenu.addChild("Users", "UsersManage.action");
 
-		if (permissions.hasPermission(OpPerms.ManageAudits))
-			subMenu.addChild("Audits and Matrices", "AuditTypeChoose.action");
 		if (permissions.hasPermission(OpPerms.FormsAndDocs))
 			subMenu.addChild("Forms &amp Docs", "manage_forms.jsp");
+		if (permissions.hasPermission(OpPerms.ManageAudits)) {
+			subMenu.addChild("Audit Definitions", "AuditTypeChoose.action");
+			subMenu.addChild("Desktop Matrix", "pqf_desktopMatrix.jsp");
+			subMenu.addChild("Re-gen PQF Cats", "pqf_regeneratePQFCategories.jsp");
+		}
 		if (permissions.hasPermission(OpPerms.EmailTemplates))
 			subMenu.addChild("Email Templates", "email_templates.jsp");
 
