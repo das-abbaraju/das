@@ -34,6 +34,10 @@
 			class="com.picsauditing.actions.report.ReportContractorAudits">
 			<result>struts/reports/auditList.jsp</result>
 		</action>
+		<action name="AuditAssignments"
+			class="com.picsauditing.actions.report.ReportContractorAuditAssignment">
+			<result>struts/reports/auditAssignments.jsp</result>
+		</action>
 
 		<action name="FacilitiesGetAjax"
 			class="com.picsauditing.actions.operators.FacilitiesGet">
