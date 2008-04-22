@@ -6,6 +6,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
 @Transactional
@@ -37,7 +38,25 @@ public class OperatorAccountDAO extends PicsDAO {
 		if (where.length() > 0)
 			where = "WHERE " + where;
 		Query query = em.createQuery("select a from OperatorAccount a " + where
-				+ " order by a.name");
+				+ " order by a.type, a.name");
 		return query.getResultList();
+	}
+	
+	public int getContractorCount(int id) {
+		Account operator = find(id);
+		
+		String where;
+		
+		if (operator.getType().equals("Corporate")) {
+			where = "operatorAccount = ?";
+		} else {
+			where = "operatorAccount IN (SELECT operator FROM Facility WHERE corporate = ?)";
+		}
+
+		Query query = em.createQuery("SELECT count(c) FROM ContractorAccount c " +
+				"WHERE c.active = 'Y' " +
+				"AND c IN (SELECT contractorAccount FROM ContractorOperator WHERE "+where+")");
+		query.setParameter(1, operator);
+		return Integer.parseInt(query.getSingleResult().toString());
 	}
 }
