@@ -7,7 +7,6 @@
   <persistence-unit name="punit">
   <class>com.picsauditing.jpa.entities.AuditType</class> 
   <class>com.picsauditing.jpa.entities.Account</class> 
-  <class>com.picsauditing.jpa.entities.AccountReport</class> 
   <class>com.picsauditing.jpa.entities.AuditOperator</class> 
   <class>com.picsauditing.jpa.entities.AuditStatus</class> 
   <class>com.picsauditing.jpa.entities.AuditType</class> 
@@ -16,7 +15,6 @@
   <class>com.picsauditing.jpa.entities.ContractorOperator</class> 
   <class>com.picsauditing.jpa.entities.OperatorAccount</class>
   <class>com.picsauditing.jpa.entities.Facility</class> 
-  <class>com.picsauditing.jpa.entities.FacilityId</class> 
   <class>com.picsauditing.jpa.entities.Notes</class> 
   <class>com.picsauditing.jpa.entities.OshaLog</class> 
   
