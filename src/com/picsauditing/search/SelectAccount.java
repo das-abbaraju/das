@@ -3,7 +3,9 @@ package com.picsauditing.search;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.YesNo;
 
 public class SelectAccount extends SelectSQL {
 	private Type type;
@@ -119,7 +121,7 @@ public class SelectAccount extends SelectSQL {
 	 * If I'm an operator join to flags.flag and gc.workStatus too
 	 * @param permissions
 	 */
-	public void setPermissions(Permissions permissions) {
+	public void setPermissions(Permissions permissions, Account account) {
 		if (permissions.hasPermission(OpPerms.AllContractors))
 			return;
 		if (permissions.isOperator()) {
@@ -130,13 +132,20 @@ public class SelectAccount extends SelectSQL {
 			
 			this.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = "+permissions.getAccountId());
 			this.addField("gc.workStatus");
+			
+			if (account.getType().equals("Operator")) {
+				OperatorAccount operator = (OperatorAccount)account;
+				if (YesNo.Yes.equals(operator.getApprovesRelationships()) 
+						&& !permissions.hasPermission(OpPerms.ViewUnApproved)) {
+					this.addWhere("gc.workStatus = 'Y'");
+				}
+			}
+			
 			return;
 		}
 		if (permissions.isCorporate()) {
-			this.addJoin("JOIN generalcontractors gc ON gc.subID = a.id " +
-					"AND gc.genID IN (SELECT opID FROM facilities " +
-					"WHERE corporateID = "+permissions.getAccountId()+")");
-			this.addField("gc.workStatus");
+			this.addJoin("a.id IN (SELECT gc.subID FROM generalcontractors gc " +
+					"JOIN facilities f ON f.opID = gc.genID AND f.corporateID = "+permissions.getAccountId()+")");
 			return;
 		}
 		

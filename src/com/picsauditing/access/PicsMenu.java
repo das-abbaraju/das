@@ -36,11 +36,11 @@ public class PicsMenu {
 			subMenu.addChild("Corporate Contractors", "report_operatorContractor.jsp?searchCorporate=Y");
 
 		subMenu = menu.addChild("Auditing");
+		subMenu.addChild("Audit List", "ReportAuditList.action");
 		if (permissions.hasPermission(OpPerms.AssignAudits))
-			subMenu.addChild("Schedule/Assign Audits", "report_scheduleAssignAudits.jsp");
-		subMenu.addChild("Contractor Audits", "report_contractorAudits.jsp");
+			subMenu.addChild("Sched. &amp; Assign", "AuditAssignments.action");
 		if (permissions.hasPermission(OpPerms.OfficeAuditCalendar))
-			subMenu.addChild("Office Audit Calendar", "audit_calendar.jsp?changed=1");
+			subMenu.addChild("Audit Calendar", "audit_calendar.jsp?changed=1");
 		if (permissions.hasPermission(OpPerms.NCMS))
 			subMenu.addChild("NCMS Audits", "report_ncms.jsp");
 		if (permissions.hasPermission(OpPerms.AuditVerification))

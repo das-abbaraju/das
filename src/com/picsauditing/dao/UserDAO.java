@@ -3,6 +3,8 @@ package com.picsauditing.dao;
 import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.User;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Transactional
@@ -30,8 +32,21 @@ public class UserDAO extends PicsDAO {
     public List<User> findWhere(String where) {
     	if (where == null) where = "";
     	if (where.length() > 0) where = "WHERE " + where;
-        Query query = em.createQuery("select u from User u "+where+" order by u.name");
+        Query query = em.createQuery("SELECT u FROM User u "+where+" ORDER BY u.name");
         return query.getResultList();
     }
 
+    public List<User> findAuditors() {
+    	List<User> userList = new ArrayList<User>();
+		userList.add(new User(User.DEFAULT_AUDITOR));
+		
+        Query query = em.createQuery("FROM User u " +
+        		"WHERE u.isActive = 'Yes' " +
+        		"AND u.isGroup = 'No' " +
+        		"AND u IN (SELECT user FROM UserGroup WHERE group.id = "+User.GROUP_AUDITOR+") " +
+        		"ORDER BY u.name");
+        userList.addAll(query.getResultList());
+        
+        return userList;
+    }
 }

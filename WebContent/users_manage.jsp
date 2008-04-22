@@ -81,6 +81,7 @@ function checkUsername(username, userID) {
 </script>
 </head>
 <body>
+<h1>Manage User Accounts</h1>
 <table border="0">
 <tr>
 	<td colspan="2" align="center" class="blueSmall">

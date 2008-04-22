@@ -1,12 +1,6 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <%@ page isErrorPage="true" language="java"
 	import="com.picsauditing.PICS.*, java.util.*, java.io.*"%>
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
-<html>
-<head>
-<title>PICS Error</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="PICS.css" rel="stylesheet" type="text/css">
 <%
 	boolean debugging = application.getInitParameter("environmentType").equals("development");
 	String message = "";
@@ -61,37 +55,24 @@
 		}
 	}
 %>
+<html>
+<head>
+<title>PICS Error</title>
 </head>
+<body>
+<h1>An unexpected error occurred</h1>
 
-<body bgcolor="EEEEEE">
-<p>&nbsp;</p>
-<table width="500" border="0" align="center" cellpadding="15"
-	cellspacing="0" bordercolor="#CCCCCC" bgcolor="#FFFFFF">
-	<tr>
-		<td><a href="index.jsp"><img src="images/logo.gif" alt="HOME"
-			width="146" height="145" border="0"></a></td>
-		<td class="blueMain">
-		<h2>An unexpected error occurred</h2>
-	<% if (debugging) { %><%=stacktrace %><% } else { %>
-		<a href="#" onClick="history.back()">Click to return to the
-		previous page</a><br />
+<% if (debugging) { %>
+	<p><%=stacktrace %></p>
+<% } else { %>
+	<p><a href="#" onClick="history.back()">Click to return to the
+		previous page</a><br /><br />
 		We apologize for this inconvenience and have notified our engineers of
 		your problem. <br>
 		<br>
 		If you continue to receive this error, please call Customer Service at
-		949.387.1940 ext 1
-		<table border="1">
-			<tr>
-				<td class="redMain">Error: <%=message%><br />
-				Caused by: <%=cause%></td>
-			</tr>
-		</table>
-	<% } %>
-		</td>
-	</tr>
-</table>
-<br>
-<br>
-<br>
+		949.387.1940 extension 1</p>
+		<p class="redMain">Error: <%=message%></p>
+<% } %>
 </body>
 </html>

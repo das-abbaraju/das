@@ -24,7 +24,6 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 	}
 
 	public void prepare() throws Exception {
-		this.autoLogin = true;
 		getPermissions();
 		if (permissions == null)
 			return;
