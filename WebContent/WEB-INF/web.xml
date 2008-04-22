@@ -129,6 +129,12 @@
 				/WEB-INF/sitemesh-decorator.tld
 			</taglib-location>
 		</taglib>
+		<taglib>
+			<taglib-uri>pics-taglib</taglib-uri>
+			<taglib-location>
+				/WEB-INF/pics.tld
+			</taglib-location>
+		</taglib>
 	</jsp-config>
 
 
