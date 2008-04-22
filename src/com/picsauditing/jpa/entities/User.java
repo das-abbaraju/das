@@ -12,16 +12,26 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "users")
 public class User {
+	public static String DEFAULT_AUDITOR = "- Auditor -";
+	public static int GROUP_ADMIN = 10;
+	public static int GROUP_AUDITOR = 11;
+	
 	private int id=0;
 	private String username;
 	private String password;
-	private String isGroup;
+	private YesNo isGroup;
 	private String email;
 	private String name;
-	private String isActive;
+	private YesNo isActive;
 	private Date dateCreated;
 	private Date lastLogin;
 	private Account account;
+	
+	public User() {}
+	
+	public User(String name) {
+		this.name = name;
+	}
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,10 +53,10 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getIsGroup() {
+	public YesNo getIsGroup() {
 		return isGroup;
 	}
-	public void setIsGroup(String isGroup) {
+	public void setIsGroup(YesNo isGroup) {
 		this.isGroup = isGroup;
 	}
 	public String getEmail() {
@@ -61,10 +71,10 @@ public class User {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getIsActive() {
+	public YesNo getIsActive() {
 		return isActive;
 	}
-	public void setIsActive(String isActive) {
+	public void setIsActive(YesNo isActive) {
 		this.isActive = isActive;
 	}
 	public Date getDateCreated() {

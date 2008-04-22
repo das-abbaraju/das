@@ -19,7 +19,15 @@ public class AuditType {
 	public static final int OFFICE = 3;
 	public static final int NCMS = 4;
 	public static final int DA = 6;
+	
+	public static String DEFAULT_AUDITTYPE = "- Audit -";
 
+	public AuditType() {}
+	
+	public AuditType(String name) {
+		this.auditName = name;
+	}
+	
 	protected int auditTypeID;
 
 	protected String auditName;

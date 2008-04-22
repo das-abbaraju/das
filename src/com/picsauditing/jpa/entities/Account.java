@@ -300,15 +300,19 @@ public class Account implements java.io.Serializable {
 	public void setType(String type) {
 		this.type = type;
 	}
-
-	// ////////////////
-
-	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "operatorAccount")
-	// public List<ContractorOperator> getContractors() {
-	// return this.contractors;
-	// }
-	//
-	// public void setContractors(List<ContractorOperator> contractors) {
-	// this.contractors = contractors;
-	// }
+	
+	@Transient
+	public boolean isContractor() {
+		return "Contractor".equals(type);
+	}
+	
+	@Transient
+	public boolean isOperator() {
+		return "Operator".equals(type);
+	}
+	
+	@Transient
+	public boolean isCorporate() {
+		return "Corporate".equals(type);
+	}
 }

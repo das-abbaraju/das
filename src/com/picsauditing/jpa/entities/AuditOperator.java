@@ -19,13 +19,15 @@ import javax.persistence.Transient;
 public class AuditOperator {
 
 	protected int auditOperatorID = 0;
-	protected AuditType auditType = null;
+	protected AuditType auditType;
 
-	// protected int opID;
-	protected Account operatoraccount;
+	protected OperatorAccount operatorAccount;
 	protected int minRiskLevel = 1;
+	protected FlagColor requiredForFlag;
 	protected int orderedCount = -1;
-	protected Date orderDate = null;
+	protected Date orderDate;
+
+	private int htmlID = 0;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -74,15 +76,21 @@ public class AuditOperator {
 
 	@ManyToOne( fetch=FetchType.LAZY)
 	@JoinColumn(name = "opID")
-	public Account getOperatorAccount() {
-		return operatoraccount;
+	public OperatorAccount getOperatorAccount() {
+		return operatorAccount;
 	}
 
-	public void setOperatorAccount(Account account) {
-		this.operatoraccount = operatoraccount;
+	public void setOperatorAccount(OperatorAccount account) {
+		this.operatorAccount = account;
 	}
-	
-	private int htmlID = 0;
+
+	public FlagColor getRequiredForFlag() {
+		return requiredForFlag;
+	}
+
+	public void setRequiredForFlag(FlagColor requiredForFlag) {
+		this.requiredForFlag = requiredForFlag;
+	}
 
 	/**
 	 * Unique ID used in HTML. We can't use the auditOperatorID because that may

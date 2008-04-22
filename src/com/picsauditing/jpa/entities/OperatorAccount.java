@@ -54,6 +54,10 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	public OperatorAccount() {
 		this.type = "Operator";
 	}
+	public OperatorAccount(String name) {
+		this.name = name;
+		this.type = "Operator";
+	}
 
 	@Column(name = "activationEmails", nullable = false)
 	public String getActivationEmails() {
