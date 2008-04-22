@@ -3,7 +3,6 @@ package com.picsauditing.actions.report;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,9 +57,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public String execute() throws Exception {
-		this.autoLogin = true; // TODO remove this before going live 
 		getPermissions();
-		sql.setPermissions(permissions);
+		sql.setPermissions(permissions, getAccount());
 		
 		if (this.orderBy == null)
 			this.orderBy = "a.name";
@@ -98,15 +96,15 @@ public class ReportAccount extends ReportActionSupport {
 		return SearchBean.FLAG_STATUS_ARRAY;
 	}
 
-	public Map<Integer, String> getOperatorList() throws Exception {
+	public List<OperatorAccount> getOperatorList() throws Exception {
+		List<OperatorAccount> opList = new ArrayList<OperatorAccount>();
+		opList.add(new OperatorAccount(OperatorAccount.DEFAULT_NAME));
+		
 		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils
 				.getBean("OperatorAccountDAO");
-		List<OperatorAccount> operators = dao.findWhere("active='Y'");
-		Map<Integer, String> operatorMap = new TreeMap<Integer, String>();
-		operatorMap.put(0, OperatorAccount.DEFAULT_NAME);
-		for (OperatorAccount op : operators)
-			operatorMap.put(op.getId(), op.getName());
-		return operatorMap;
+		opList.addAll(dao.findWhere("active='Y'"));
+		return opList;
+		
 	}
 
 	public Map<String, String> getStateList() {
@@ -188,7 +186,6 @@ public class ReportAccount extends ReportActionSupport {
 		this.trade = trade;
 	}
 
-	
 	public int getOperator() {
 		return operator;
 	}
@@ -281,9 +278,11 @@ public class ReportAccount extends ReportActionSupport {
 		this.taxID = taxID;
 	}
 
+	/**
+	 * Flag Color needs to now include the status of current audits
+	 * if the operator requires an audit, that audit must be Active/Exempt
+	 */ 
 	public String getFlagStatus() {
-		// Flag Color needs to now include the status of current audits
-		// if the operator requires an audit, that audit must be Active/Exempt
 		return flagStatus;
 	}
 
@@ -294,5 +293,17 @@ public class ReportAccount extends ReportActionSupport {
 
 	}
 
-	
+	/**
+	 * Return the number of active contractors visible to an Operator or a Corporate account
+	 * This method shouldn't be use be Admins, auditors, and contractors 
+	 * @return
+	 */
+	public int getContractorCount() {
+		if (permissions.isOperator() || permissions.isCorporate()) {
+			OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
+			return dao.getContractorCount(permissions.getAccountId());
+		}
+		// This method shouldn't be use be Admins, auditors, and contractors so just return 0
+		return 0;
+	}
 }
