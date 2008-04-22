@@ -16,7 +16,6 @@ import com.picsauditing.util.SpringUtils;
 
 public class PicsActionSupport extends ActionSupport {
 	protected Permissions permissions = null;
-	protected boolean autoLogin = false;
 	protected String message;
 	
 	private User user; // Current logged in user
@@ -26,12 +25,25 @@ public class PicsActionSupport extends ActionSupport {
 		permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
 		if (permissions == null) {
 			permissions = new Permissions();
-			if (this.autoLogin) {
-				// Auto Login tallred
-				com.picsauditing.access.User user = new com.picsauditing.access.User();
-				user.setFromDB("941"); // tallred
-				permissions.login(user);
-				ActionContext.getContext().getSession().put("permissions", permissions);
+			
+			String autoLogin = System.getProperty("autoLogin");
+			
+			if( autoLogin != null && autoLogin.length() != 0 )
+			{
+				try
+				{
+					Integer loginId = new Integer( autoLogin );
+					
+					// Auto Login tallred
+					com.picsauditing.access.User user = new com.picsauditing.access.User();
+					user.setFromDB(autoLogin);
+					permissions.login(user);
+					ActionContext.getContext().getSession().put("permissions", permissions);
+				}
+				catch( Exception e )
+				{
+					System.out.println("Problem autologging in.  Id supplied was: " + autoLogin );
+				}
 			}
 		}
 
