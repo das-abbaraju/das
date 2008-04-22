@@ -6,70 +6,9 @@
 <%@page import="java.util.*"%>	
 <%@page import="com.picsauditing.jpa.entities.AuditType"%>
 <%
-permissions.tryPermission(OpPerms.AssignAudits);
-boolean canEdit = permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit);
-
-if (request.getParameter("action") != null) {
-	out.print("**");
-	return;
-}
-/* TODO update for multiaudit
-String action = request.getParameter("action");
-if (action != null) {
-	String outputText = "<span=\"color: red\">no permission</span>";
-	if (canEdit) {
-		String conID = request.getParameter("conID");
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(conID);
-		if (action.equals("saveAuditor")) {
-			String auditorID = request.getParameter("auditorID");
-			cBean.daAuditor_id = auditorID;
-			cBean.daAssignedDate = DateBean.getTodaysDate();
-			if (auditorID.equals("0")) cBean.daAssignedDate = "";
-			outputText = "<b>" + cBean.daAssignedDate + "</b>";
-		}
-		if (action.equals("notRequired")) {
-			cBean.daRequired = "No";
-			outputText = "<i>not required</i>";
-		}
-		cBean.writeToDB();
-	}
-	out.print(outputText);
-	return;
-}
-*/
-SelectContractorAudit sql = new SelectContractorAudit();
-
-//sql.setAuditTypeID(AuditType.DA);
-sql.addField("createdDate");
-sql.addField("auditorID");
-sql.addField("assignedDate");
-sql.addField("completedDate");
-sql.addField("closedDate");
-sql.addField("conID");
-
-sql.addField("isScheduled");
-sql.addField("hasAuditor");
-sql.addWhere("auditStatus='Pending'");
-//sql.addField("c.pqfSubmittedDate");
-//sql.addField("c.daAuditor_id");
-//sql.addField("c.daAssignedDate");
-//sql.addField("c.daSubmittedDate");
-//sql.addField("c.daClosedDate");
-
-//TODO make some logic in a cron job or something that creates the DA audits
-//  according to the criteria below, ie they answered yes on question 894
-//sql.addPQFQuestion(894, false, "requiredAnswer"); //q318.answer
-//sql.addWhere("q894.answer = 'Yes' OR c.daRequired IS NULL OR c.daRequired = 'Yes'");
+boolean canEdit = true;
 
 Report report = new Report();
-report.setSql(sql);
-report.setOrderBy(request.getParameter("orderBy"), "createdDate");
-report.setPageByResult(request.getParameter("showPage"));
-report.addFilter(new SelectFilter("name", "a.name LIKE '%?%'", request.getParameter("name"), SearchBean.DEFAULT_NAME, SearchBean.DEFAULT_NAME));
-report.addFilter(new SelectFilterInteger("operatorID", "a.id IN (SELECT subID FROM generalcontractors WHERE genID = ? )", request.getParameter("operatorID"), SearchBean.DEFAULT_GENERAL_VALUE, SearchBean.DEFAULT_GENERAL_VALUE));
-report.setLimit(50);
-
 List<BasicDynaBean> searchData = report.getPage();
 
 %>

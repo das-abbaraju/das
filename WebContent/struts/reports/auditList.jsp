@@ -2,9 +2,25 @@
 <html>
 <head>
 <title>Audit List</title>
+<script type="text/javascript" src="js/Search.js" />
 </head>
 <body>
 <h1>Audit List</h1>
+
+<s:form id="form1" method="post">
+	<table>
+	<tr>
+		<td style="vertical-align: middle;"><s:textfield name="name" cssClass="forms" size="8" onfocus="clearText(this)" />
+			<s:select list="auditTypeList" cssClass="forms" name="auditTypeID" listKey="auditTypeID" listValue="auditName" />
+			<s:select list="operatorList" cssClass="forms" name="operator" listKey="id" listValue="name" />
+		</td>
+		<td><s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch( 'form1')" /></td>
+	</tr>
+	</table>
+	<s:hidden name="showPage" value="1"/>
+	<s:hidden name="startsWith" />
+	<s:hidden name="orderBy" />
+</s:form>
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
   <tr>

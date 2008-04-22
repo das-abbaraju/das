@@ -19,7 +19,7 @@
 <s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch( 'form1')" />
 </td></tr>
 <tr><td>
-<s:select list="operatorList" cssClass="forms" name="operator" />
+<s:select list="operatorList" cssClass="forms" name="operator" listKey="id" listValue="name" />
 <s:textfield name="city" cssClass="forms" size="15" onfocus="clearText(this)" />
 <s:select list="stateList" cssClass="forms" name="state" />
 <s:textfield name="zip" cssClass="forms" size="5" onfocus="clearText(this)" />

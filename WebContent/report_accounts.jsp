@@ -70,13 +70,7 @@ List<BasicDynaBean> searchData = search.getPage();
 <title><%=title%></title>
 </head>
 <body>
-<table width="657" border="0" cellpadding="0" cellspacing="0" align="center">
-	<tr>
-		<td height="70" colspan="2" align="center" class="buttons"><%@ include
-			file="includes/selectReport.jsp"%> <span
-			class="blueHeader">Manage <%=accountType%> Accounts</span></td>
-	</tr>
-</table>
+<h1>Manage <%=accountType%> Accounts</h1>
 <table border="0" cellpadding="5" cellspacing="0" align="center">
 	<tr>
 		<td height="30" align="left"><%=search.getStartsWithLinks("&type=" + accountType)%></td>
