@@ -124,6 +124,10 @@ public class SelectAccount extends SelectSQL {
 	public void setPermissions(Permissions permissions, Account account) {
 		if (permissions.hasPermission(OpPerms.AllContractors))
 			return;
+		
+		// Anyone other than admins should only be able to view visible/active accounts
+		this.addWhere("a.active='Y'");
+		
 		if (permissions.isOperator()) {
 			// Anytime we query contractor accounts as an operator, 
 			// we should always read the flag color/status at the same time
