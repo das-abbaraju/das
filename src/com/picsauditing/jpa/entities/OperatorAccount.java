@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "operators")
@@ -316,6 +317,11 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	@Enumerated(EnumType.STRING)
 	public YesNo getApprovesRelationships() {
 		return approvesRelationships;
+	}
+	
+	@Transient
+	public boolean isApprovesRelationships() {
+		return YesNo.Yes.equals(approvesRelationships);
 	}
 
 	public void setApprovesRelationships(YesNo approvesRelationships) {

@@ -3,6 +3,9 @@ package com.picsauditing.dao;
 import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.OperatorAccount;
+
 import java.util.List;
 
 @Transactional
@@ -27,6 +30,16 @@ public class AccountDAO extends PicsDAO {
 	public Account find(int id) {
 		Account a = em.find(Account.class, id);
 		return a;
+	}
+
+	public Account find(int id, String type) {
+		if ("Contractor".equals(type))
+			return em.find(ContractorAccount.class, id);
+		
+		if ("Operator".equals(type) || "Corporate".equals(type))
+			return em.find(OperatorAccount.class, id);
+		
+		return em.find(Account.class, id);
 	}
 
 	public List<Account> findWhere(String where) {

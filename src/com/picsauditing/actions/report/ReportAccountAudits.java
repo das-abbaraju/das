@@ -10,10 +10,28 @@ public class ReportAccountAudits extends ReportAccount {
 		sql.addAudit(AuditType.PQF);
 		sql.addAudit(AuditType.DESKTOP);
 		sql.addAudit(AuditType.OFFICE);
+		sql.addAudit(AuditType.DA);
 		sql.addField("c.main_trade");
 		sql.addField("a.industry");
 		sql.addField("c.certs");
 
 		return super.execute();
 	}
+	
+	public boolean isPqfVisible() {
+		return permissions.canSeeAudit(AuditType.PQF);
+	}
+
+	public boolean isDesktopVisible() {
+		return permissions.canSeeAudit(AuditType.DESKTOP);
+	}
+
+	public boolean isDaVisible() {
+		return permissions.canSeeAudit(AuditType.DA);
+	}
+
+	public boolean isOfficeVisible() {
+		return permissions.canSeeAudit(AuditType.OFFICE);
+	}
+
 }

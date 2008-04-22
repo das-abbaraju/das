@@ -8,7 +8,6 @@ import java.util.TreeMap;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.Inputs;
 import com.picsauditing.PICS.SearchBean;
 import com.picsauditing.PICS.TradesBean;
 import com.picsauditing.PICS.pqf.QuestionTypeList;
@@ -29,6 +28,7 @@ public class ReportAccount extends ReportActionSupport {
 	public static final String DEFAULT_TAX_ID = "- Tax ID -";
 	public static final String DEFAULT_CERTS = "- Ins. Certs -";
 	public static final String DEFAULT_VISIBLE = "- Visible -";
+	public static final String DEFAULT_FLAG_STATUS = "- Flag Status -";
 	
 	protected String startsWith;
 	protected String name = DEFAULT_NAME;
@@ -44,7 +44,8 @@ public class ReportAccount extends ReportActionSupport {
 	protected int stateLicensedIn;
 	protected int worksIn;
 	protected String taxID = DEFAULT_TAX_ID;
-
+	protected String flagStatus = DEFAULT_FLAG_STATUS;
+	
 	@Autowired
 	protected SelectAccount sql = new SelectAccount();
 
@@ -57,10 +58,10 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public String execute() throws Exception {
-		this.autoLogin = true;
+		this.autoLogin = true; // TODO remove this before going live 
 		getPermissions();
 		sql.setPermissions(permissions);
-
+		
 		if (this.orderBy == null)
 			this.orderBy = "a.name";
 		sql.setType(SelectAccount.Type.Contractor);
@@ -93,6 +94,10 @@ public class ReportAccount extends ReportActionSupport {
 		return TradesBean.PERFORMED_BY_ARRAY;
 	}
 
+	public String[] getFlagStatusList() throws Exception {
+		return SearchBean.FLAG_STATUS_ARRAY;
+	}
+
 	public Map<Integer, String> getOperatorList() throws Exception {
 		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils
 				.getBean("OperatorAccountDAO");
@@ -123,7 +128,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setStartsWith(String startsWith) {
-		report.addFilter(new SelectFilter("name", "a.name LIKE '?%'", startsWith));
+		report.addFilter(new SelectFilter("name", "a.name LIKE '?%'",
+				startsWith));
 		this.startsWith = startsWith;
 	}
 
@@ -182,6 +188,7 @@ public class ReportAccount extends ReportActionSupport {
 		this.trade = trade;
 	}
 
+	
 	public int getOperator() {
 		return operator;
 	}
@@ -274,4 +281,18 @@ public class ReportAccount extends ReportActionSupport {
 		this.taxID = taxID;
 	}
 
+	public String getFlagStatus() {
+		// Flag Color needs to now include the status of current audits
+		// if the operator requires an audit, that audit must be Active/Exempt
+		return flagStatus;
+	}
+
+	public void setFlagStatus(String flagStatus) {
+		this.flagStatus = flagStatus;
+		report.addFilter(new SelectFilter("flagStatus", "flags.flag = '?'",
+				flagStatus, DEFAULT_FLAG_STATUS, DEFAULT_FLAG_STATUS));
+
+	}
+
+	
 }
