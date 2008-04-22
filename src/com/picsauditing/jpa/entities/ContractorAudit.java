@@ -19,6 +19,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
+
 @Entity
 @Table(name = "contractor_audit")
 public class ContractorAudit {
@@ -81,11 +84,14 @@ public class ContractorAudit {
 		this.createdDate = createdDate;
 	}
 
+	@Type(type="com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", 
+			parameters= {@Parameter(name="enumClass", value = "com.picsauditing.jpa.entities.AuditStatus")})	
 	@Enumerated(EnumType.STRING)
 	public AuditStatus getAuditStatus() {
 		return auditStatus;
 	}
 
+	
 	public void setAuditStatus(AuditStatus auditStatus) {
 		if (auditStatus != null && this.auditStatus != null && !auditStatus.equals(this.auditStatus)) {
 			// If we're changing the status to Submitted or Active, then we need to set the dates
