@@ -11,6 +11,7 @@ import com.picsauditing.PICS.SearchBean;
 import com.picsauditing.PICS.TradesBean;
 import com.picsauditing.PICS.pqf.QuestionTypeList;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
@@ -27,8 +28,7 @@ public class ReportAccount extends ReportActionSupport {
 	public static final String DEFAULT_TAX_ID = "- Tax ID -";
 	public static final String DEFAULT_CERTS = "- Ins. Certs -";
 	public static final String DEFAULT_VISIBLE = "- Visible -";
-	public static final String DEFAULT_FLAG_STATUS = "- Flag Status -";
-	
+		
 	protected String startsWith;
 	protected String name = DEFAULT_NAME;
 	protected String industry;
@@ -43,7 +43,7 @@ public class ReportAccount extends ReportActionSupport {
 	protected int stateLicensedIn;
 	protected int worksIn;
 	protected String taxID = DEFAULT_TAX_ID;
-	protected String flagStatus = DEFAULT_FLAG_STATUS;
+	protected String flagStatus;
 	
 	@Autowired
 	protected SelectAccount sql = new SelectAccount();
@@ -92,8 +92,8 @@ public class ReportAccount extends ReportActionSupport {
 		return TradesBean.PERFORMED_BY_ARRAY;
 	}
 
-	public String[] getFlagStatusList() throws Exception {
-		return SearchBean.FLAG_STATUS_ARRAY;
+	public ArrayList<String> getFlagStatusList() throws Exception {
+		return FlagColor.getValuesWithDefault();
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {
@@ -140,7 +140,7 @@ public class ReportAccount extends ReportActionSupport {
 				DEFAULT_NAME, DEFAULT_NAME));
 		this.name = name;
 	}
-
+	
 	public String getIndustry() {
 		return industry;
 	}
@@ -288,8 +288,10 @@ public class ReportAccount extends ReportActionSupport {
 
 	public void setFlagStatus(String flagStatus) {
 		this.flagStatus = flagStatus;
-		report.addFilter(new SelectFilter("flagStatus", "flags.flag = '?'",
-				flagStatus, DEFAULT_FLAG_STATUS, DEFAULT_FLAG_STATUS));
+		report
+		.addFilter(new SelectFilter("flagStatus", "flags.flag = '?'",
+				flagStatus, FlagColor.DEFAULT_FLAG_STATUS,
+				FlagColor.DEFAULT_FLAG_STATUS));
 
 	}
 
