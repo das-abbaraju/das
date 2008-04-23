@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -74,6 +75,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	protected List<ContractorAudit> audits;
 	protected List<ContractorOperator> operators;
 	protected Map<AuditQuestion, AuditData> auditAnswers;
+	protected Map<Integer, ContractorOperatorFlag> flags;
 
 	public ContractorAccount() {
 		this.type = "Contractor";
@@ -513,4 +515,15 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.auditAnswers = auditAnswers;
 	}
 
+	@MapKey(name="id")
+	@OneToMany(mappedBy="contractorAccount")
+	public Map<Integer, ContractorOperatorFlag> getFlags() {
+		return flags;
+	}
+
+	public void setFlags(Map<Integer, ContractorOperatorFlag> flags) {
+		this.flags = flags;
+	}
+	
+	
 }

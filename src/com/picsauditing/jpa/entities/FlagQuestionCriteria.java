@@ -4,6 +4,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -45,6 +47,7 @@ public class FlagQuestionCriteria {
 		this.operatorAccount = operatorAccount;
 	}
 
+	@Column(name = "flagStatus", nullable = false)
 	public FlagColor getFlagColor() {
 		return flagColor;
 	}
@@ -53,6 +56,8 @@ public class FlagQuestionCriteria {
 		this.flagColor = flagColor;
 	}
 	
+	@ManyToOne(optional=false)
+	@JoinColumn(name="questionID", nullable=false)
 	public AuditQuestion getAuditQuestion() {
 		return auditQuestion;
 	}
@@ -61,6 +66,8 @@ public class FlagQuestionCriteria {
 		this.auditQuestion = auditQuestion;
 	}
 
+	@Column(name = "isChecked", nullable = false)
+	@Enumerated(EnumType.STRING)
 	public YesNo getChecked() {
 		return checked;
 	}

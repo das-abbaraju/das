@@ -14,6 +14,11 @@ public class PicsMenu {
 			subMenu = menu.addChild("Contact", "contact.jsp");
 			return menu;
 		}
+		
+		if (permissions.hasPermission(OpPerms.StatusOnly)) {
+			menu.addChild("Contractor List", "ContractorOperatorLimited.action");
+			return menu;
+		}
 
 		subMenu = menu.addChild("Contractors");
 		if (permissions.isPicsEmployee())

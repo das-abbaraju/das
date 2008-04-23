@@ -17,6 +17,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OshaLog;
@@ -85,6 +86,9 @@ public class ContractorAccountDAOTest {
 		ContractorAccount contractoraccount = contractoraccountDAO.find(3);
 		for (OshaLog osha : contractoraccount.getOshas()) {
 			assertEquals(0, osha.getFatalities1());
+		}
+		for (Integer operatorID : contractoraccount.getFlags().keySet()) {
+			System.out.println(contractoraccount.getFlags().get(operatorID).getFlagColor());
 		}
 		assertEquals("123456789", contractoraccount.getTaxId());
 	}

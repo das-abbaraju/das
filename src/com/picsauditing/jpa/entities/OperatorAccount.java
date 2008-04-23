@@ -50,6 +50,7 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	protected List<AuditQuestionOperatorAccount> auditQuestions = new ArrayList<AuditQuestionOperatorAccount>();
 	protected List<FlagQuestionCriteria> flagQuestionCriteria = new ArrayList<FlagQuestionCriteria>();
 	protected List<FlagOshaCriteria> flagOshaCriteria = new ArrayList<FlagOshaCriteria>();
+	protected List<AuditOperator> audits = new ArrayList<AuditOperator>();
 
 	public OperatorAccount() {
 		this.type = "Operator";
@@ -306,6 +307,15 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 
 	public void setFlagOshaCriteria(List<FlagOshaCriteria> flagOshaCriteria) {
 		this.flagOshaCriteria = flagOshaCriteria;
+	}
+
+	@OneToMany(mappedBy = "operatorAccount")
+	public List<AuditOperator> getAudits() {
+		return audits;
+	}
+
+	public void setAudits(List<AuditOperator> audits) {
+		this.audits = audits;
 	}
 
 }

@@ -40,4 +40,5 @@ public class ContractorAccountDAO extends PicsDAO {
 				+ " order by a.name");
 		return query.getResultList();
 	}
+	
 }

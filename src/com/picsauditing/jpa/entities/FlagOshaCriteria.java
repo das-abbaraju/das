@@ -44,6 +44,7 @@ public class FlagOshaCriteria {
 		this.operatorAccount = operatorAccount;
 	}
 
+	@Column(name = "flagStatus", nullable = false)
 	public FlagColor getFlagColor() {
 		return flagColor;
 	}

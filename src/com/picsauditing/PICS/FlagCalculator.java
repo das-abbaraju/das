@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
@@ -22,13 +25,15 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 public class FlagCalculator {
 	OperatorAccountDAO operatorDAO;
 	ContractorAccountDAO contractorDAO;
+	ContractorAuditDAO conAuditDAO;
 	
 	List<OperatorAccount> operators = new ArrayList<OperatorAccount>(); // List of operators to be processed
 	List<Integer> contractorIDs = new ArrayList<Integer>(); // List of contractors to be processed
 	
-	public FlagCalculator(OperatorAccountDAO operatorDAO, ContractorAccountDAO contractorDAO) {
+	public FlagCalculator(OperatorAccountDAO operatorDAO, ContractorAccountDAO contractorDAO, ContractorAuditDAO conAuditDAO) {
 		this.operatorDAO = operatorDAO;
 		this.contractorDAO = contractorDAO;
+		this.conAuditDAO = conAuditDAO;
 	}
 	
 	public void runAll() {
@@ -66,6 +71,12 @@ public class FlagCalculator {
 			contractors = null;
 		}
 		
+		// Create a list of questions that the operators want to ask
+		for(OperatorAccount operator : operators) {
+			
+		}
+		List<Integer> questionIDs = new ArrayList<Integer>(); // List of audit questions to be asked of contractors
+		
 		for(Integer conID : contractorIDs) {
 			ContractorAccount contractor = contractorDAO.find(conID);
 			for(OperatorAccount operator : operators) {
@@ -78,6 +89,24 @@ public class FlagCalculator {
 	public FlagColor calculate(ContractorAccount contractor, OperatorAccount operator) {
 		FlagColor flagColor = FlagColor.Green;
 		
+		List<ContractorAudit> conAudits = conAuditDAO.findNonExpiredByContractor(contractor.getId());
+		
+		for(AuditOperator audit : operator.getAudits()) {
+			if (contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel() ) {
+				boolean found = false;
+				for(ContractorAudit conAudit : conAudits) {
+					if (conAudit.getAuditType().equals(audit.getAuditType())) {
+						// We found a matching audit for this contractor
+						found = true;
+					}
+				}
+				if (!found)
+					setFlagColor(flagColor, audit.getRequiredForFlag());
+			}
+			if (flagColor.equals(FlagColor.Red))
+				return flagColor;
+		}
+		
 		for(FlagOshaCriteria criteria : operator.getFlagOshaCriteria()) {
 			criteria.getLwcr();
 			criteria.getTrir();
@@ -87,8 +116,10 @@ public class FlagCalculator {
 		// answer and see if it triggers the flag color
 		for(FlagQuestionCriteria criteria : operator.getFlagQuestionCriteria()) {
 			AuditData data = contractor.getAuditAnswers().get(criteria.getAuditQuestion());
-			if (criteria.isFlagged(data.getAnswer()))
-				flagColor = setFlagColor(flagColor, criteria.getFlagColor());
+			if (data != null)
+				// The contractor has answered this question so it must be correct
+				if (criteria.isFlagged(data.getAnswer()))
+					flagColor = setFlagColor(flagColor, criteria.getFlagColor());
 		}
 		
 		operator.getFlagQuestionCriteria();
