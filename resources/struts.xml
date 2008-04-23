@@ -112,5 +112,9 @@
 			<result>struts/users/profile_edit.jsp</result>
 		</action>
 
+		<action name="ContractorOperatorLimited"
+			class="com.picsauditing.actions.report.ReportAccountAudits">
+			<result>struts/reports/contractors_operator_limited.jsp</result>
+		</action>
 	</package>
 </struts>
