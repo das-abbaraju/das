@@ -1,19 +1,57 @@
 package com.picsauditing.jpa.entities;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "flagoshacriteria")
-public class FlagOshaCriteria extends FlagCriteria {
+public class FlagOshaCriteria {
+	protected int id;
+	protected OperatorAccount operatorAccount;
+	protected FlagColor flagColor;
 	protected FlagOshaCriterion lwcr;
 	protected FlagOshaCriterion trir;
 	protected FlagOshaCriterion fatalities;
 
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "criteriaID", nullable = false)
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	@ManyToOne(optional=false)
+	@JoinColumn(name="opID", nullable=false)
+	public OperatorAccount getOperatorAccount() {
+		return operatorAccount;
+	}
+
+	public void setOperatorAccount(OperatorAccount operatorAccount) {
+		this.operatorAccount = operatorAccount;
+	}
+
+	public FlagColor getFlagColor() {
+		return flagColor;
+	}
+
+	public void setFlagColor(FlagColor flagColor) {
+		this.flagColor = flagColor;
+	}
+	
 	@Embedded
 	@AttributeOverrides( { @AttributeOverride(name = "flag", column = @Column(name = "flaglwcr")),
 			@AttributeOverride(name = "hurdle", column = @Column(name = "lwcrHurdle")),

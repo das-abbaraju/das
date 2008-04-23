@@ -1,19 +1,58 @@
 package com.picsauditing.jpa.entities;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
 @Table(name = "flagcriteria")
-public class FlagQuestionCriteria extends FlagCriteria {
+public class FlagQuestionCriteria {
+	protected int id;
+	protected OperatorAccount operatorAccount;
 	protected AuditQuestion auditQuestion;
+	protected FlagColor flagColor;
 	protected YesNo checked;
 
 	protected String questionType;
 	protected String comparison;
 	protected String value;
 
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "criteriaID", nullable = false)
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	@ManyToOne(optional=false)
+	@JoinColumn(name="opID", nullable=false)
+	public OperatorAccount getOperatorAccount() {
+		return operatorAccount;
+	}
+
+	public void setOperatorAccount(OperatorAccount operatorAccount) {
+		this.operatorAccount = operatorAccount;
+	}
+
+	public FlagColor getFlagColor() {
+		return flagColor;
+	}
+
+	public void setFlagColor(FlagColor flagColor) {
+		this.flagColor = flagColor;
+	}
+	
 	public AuditQuestion getAuditQuestion() {
 		return auditQuestion;
 	}
