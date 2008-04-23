@@ -323,11 +323,6 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		return approvesRelationships;
 	}
 	
-	@Transient
-	public boolean isApprovesRelationships() {
-		return YesNo.Yes.equals(approvesRelationships);
-	}
-
 	public void setApprovesRelationships(YesNo approvesRelationships) {
 		this.approvesRelationships = approvesRelationships;
 	}

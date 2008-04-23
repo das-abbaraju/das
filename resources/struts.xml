@@ -95,9 +95,16 @@
 			<result>struts/reports/contractors_admin.jsp</result>
 		</action>
 		
+		<action name="ContractorListOperator"
+			class="com.picsauditing.actions.report.ReportAccountAudits">
+			<result>struts/reports/contractors_operator.jsp</result>
+		</action>
+	
+
 		<action name="ProfileEdit"
 			class="com.picsauditing.actions.users.ProfileEdit">
 			<result>struts/users/profile_edit.jsp</result>
 		</action>
+
 	</package>
 </struts>
