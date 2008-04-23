@@ -5,7 +5,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 public class ReportContractorAuditAuditor extends ReportContractorAudits {
 
 	public String execute() throws Exception {
-		getPermissions();
+		loadPermissions();
 		sql.addWhere("ca.auditorID=" + permissions.getUserId());
 		sql.addWhere("ca.auditStatus IN ('" 
 				+ AuditStatus.Active + "','" 

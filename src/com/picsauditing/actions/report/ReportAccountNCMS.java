@@ -5,7 +5,7 @@ import com.picsauditing.access.OpPerms;
 public class ReportAccountNCMS extends ReportAccount {
 
 	public String execute() throws Exception {
-		this.getPermissions();
+		this.loadPermissions();
 		permissions.tryPermission(OpPerms.NCMS);
 
 		sql.addJoin("JOIN ncms_desktop d " +

@@ -25,7 +25,7 @@ public class UsersManage extends PicsActionSupport {
 	protected boolean hasAllOperators = false;
 
 	public String execute() throws Exception {
-		getPermissions();
+		loadPermissions();
 		permissions.tryPermission(OpPerms.EditUsers);
 
 		String accountId = permissions.getAccountIdString();

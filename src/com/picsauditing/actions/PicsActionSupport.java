@@ -21,7 +21,7 @@ public class PicsActionSupport extends ActionSupport {
 	private User user; // Current logged in user
 	private Account account; // Current logged in user's account
 
-	protected boolean getPermissions() throws Exception {
+	protected boolean loadPermissions() throws Exception {
 		permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
 		if (permissions == null) {
 			permissions = new Permissions();
@@ -36,8 +36,6 @@ public class PicsActionSupport extends ActionSupport {
 			{
 				try
 				{
-					Integer loginId = new Integer( autoLogin );
-					
 					com.picsauditing.access.User user = new com.picsauditing.access.User();
 					user.setFromDB(autoLogin);
 					permissions.login(user);
@@ -61,7 +59,7 @@ public class PicsActionSupport extends ActionSupport {
 	}
 
 	protected void tryPermissions(OpPerms opPerms, OpType opType) throws Exception {
-		getPermissions();
+		loadPermissions();
 		permissions.tryPermission(opPerms, opType);
 	}
 
@@ -94,5 +92,9 @@ public class PicsActionSupport extends ActionSupport {
 		if (operator.getType().equals("Operator"))
 			return (OperatorAccount)operator;
 		return null;
+	}
+
+	public Permissions getPermissions() {
+		return permissions;
 	}
 }

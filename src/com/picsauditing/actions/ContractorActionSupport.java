@@ -1,16 +1,21 @@
 package com.picsauditing.actions;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 
 public class ContractorActionSupport extends PicsActionSupport {
 	protected int id = 0;
 	protected ContractorAccount contractor;
 	@Autowired
 	protected ContractorAccountDAO accountDao;
+	@Autowired
+	protected ContractorAuditDAO auditDao;
 
 	protected void findContractor() throws Exception {
 		contractor = accountDao.find(id);
@@ -32,6 +37,10 @@ public class ContractorActionSupport extends PicsActionSupport {
 
 	public void setContractor(ContractorAccount contractor) {
 		this.contractor = contractor;
+	}
+
+	public List<ContractorAudit> getActiveAudits() {
+		return auditDao.findNonExpiredByContractor(contractor.getId());
 	}
 
 }

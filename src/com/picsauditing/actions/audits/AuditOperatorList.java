@@ -44,7 +44,7 @@ public class AuditOperatorList extends PicsActionSupport {
 	}
 
 	public String execute() throws Exception {
-		getPermissions();
+		loadPermissions();
 		permissions.tryPermission(OpPerms.ManageOperators);
 
 		operators = operatorDAO.findWhere("type = 'Operator'");

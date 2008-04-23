@@ -57,7 +57,7 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public String execute() throws Exception {
-		getPermissions();
+		loadPermissions();
 		sql.setPermissions(permissions, getAccount());
 		
 		if (this.orderBy == null)

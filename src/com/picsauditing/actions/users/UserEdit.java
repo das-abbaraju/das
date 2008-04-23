@@ -11,7 +11,7 @@ public class UserEdit extends PicsActionSupport {
 	protected String action;
 
 	public String execute() throws Exception {
-		getPermissions();
+		loadPermissions();
 		permissions.tryPermission(OpPerms.EditUsers);
 		if (!permissions.hasPermission(OpPerms.AllOperators)) {
 			accountId = permissions.getAccountIdString();

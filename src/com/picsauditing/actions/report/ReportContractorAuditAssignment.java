@@ -21,7 +21,7 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 	private List<User> auditors;
 	
 	public String execute() throws Exception {
-		getPermissions();
+		loadPermissions();
 		permissions.tryPermission(OpPerms.AssignAudits);
 
 		sql.addWhere("auditStatus='Pending'");

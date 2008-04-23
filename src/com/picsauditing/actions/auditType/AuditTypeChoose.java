@@ -18,7 +18,7 @@ public class AuditTypeChoose extends PicsActionSupport {
 	}
 	
 	public String execute() throws Exception {
-		getPermissions();
+		loadPermissions();
 		permissions.tryPermission(OpPerms.ManageAudits);
 		
 		auditTypes = auditTypeDAO.findAll();
