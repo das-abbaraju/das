@@ -14,6 +14,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
+
 @Entity
 @Table(name = "operators")
 @PrimaryKeyJoinColumn(name = "id")
@@ -103,7 +106,7 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.doContractorsPay = doContractorsPay;
 	}
 
-	@Column(name = "canSeeInsurance", nullable = false)
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
 	@Enumerated(EnumType.STRING)
 	public YesNo getCanSeeInsurance() {
 		return this.canSeeInsurance;
@@ -266,7 +269,7 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.isUserManualUploaded = isUserManualUploaded;
 	}
 
-	@Column(name = "approvesRelationships", nullable = false)
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
 	@Enumerated(EnumType.STRING)
 	public YesNo getApprovesRelationships() {
 		return approvesRelationships;
@@ -281,7 +284,8 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		return auditQuestions;
 	}
 
-	public void setAuditQuestions(List<AuditQuestionOperatorAccount> auditQuestions) {
+	public void setAuditQuestions(
+			List<AuditQuestionOperatorAccount> auditQuestions) {
 		this.auditQuestions = auditQuestions;
 	}
 
@@ -290,7 +294,8 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		return flagQuestionCriteria;
 	}
 
-	public void setFlagQuestionCriteria(List<FlagQuestionCriteria> flagQuestionCriteria) {
+	public void setFlagQuestionCriteria(
+			List<FlagQuestionCriteria> flagQuestionCriteria) {
 		this.flagQuestionCriteria = flagQuestionCriteria;
 	}
 

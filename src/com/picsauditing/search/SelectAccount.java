@@ -133,7 +133,7 @@ public class SelectAccount extends SelectSQL {
 			// we should always read the flag color/status at the same time
 			this.addJoin("LEFT JOIN flags ON flags.conID = a.id AND flags.opID = "+permissions.getAccountId());
 			this.addField("flags.flag");
-			
+			this.addField("lower(flags.flag) AS lflag");
 			this.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = "+permissions.getAccountId());
 			this.addField("gc.workStatus");
 			
