@@ -18,7 +18,7 @@
 		String newNote = request.getParameter("newNote");
 		cBean.addNote(id, pre, newNote, notesDate);
 		cBean.writeToDB();
-		response.sendRedirect("contractor_detail.jsp?id=" + id);
+		response.sendRedirect("ContractorView.action?id=" + id);
 		return;
 	}//if
 	else if ("Change Notes".equals(action) && pBean.isAdmin()) {
@@ -26,7 +26,7 @@
 		cBean.notes = changedNotes;
 		cBean.isNotesChanged = true;
 		cBean.writeToDB();
-		response.sendRedirect("contractor_detail.jsp?id=" + id);
+		response.sendRedirect("ContractorView.action?id=" + id);
 		return;
 	}//if
 	if ("Add Internal Note".equals(action) && canEditNotes){
@@ -34,7 +34,7 @@
 		String newAdminNote = request.getParameter("newAdminNote");
 		cBean.addAdminNote(id, pre, newAdminNote, notesDate);
 		cBean.writeToDB();
-		response.sendRedirect("contractor_detail.jsp?id=" + id);
+		response.sendRedirect("ContractorView.action?id=" + id);
 		return;
 	}//if
 	else if ("Change Internal Notes".equals(action) && pBean.isAdmin()) {
@@ -42,7 +42,7 @@
 		cBean.adminNotes = changedAdminNotes;
 		cBean.isAdminNotesChanged = true;
 		cBean.writeToDB();
-		response.sendRedirect("contractor_detail.jsp?id=" + id);
+		response.sendRedirect("ContractorView.action?id=" + id);
 		return;
 	}//if
 	if ("Add Both Notes".equals(action) && canEditNotes){
@@ -52,7 +52,7 @@
 		cBean.addNote(id, pre, newNote, notesDate);
 		cBean.addAdminNote(id, pre, newAdminNote, notesDate);
 		cBean.writeToDB();
-		response.sendRedirect("contractor_detail.jsp?id=" + id);
+		response.sendRedirect("ContractorView.action?id=" + id);
 		return;
 	}//if
 %>

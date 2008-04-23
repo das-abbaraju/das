@@ -84,7 +84,7 @@ try{
                 <td align="right"><%=sBean.count-1%></td>
                 <td>
 				  <%=sBean.getActiveStar()%>
-				  <a href="contractor_detail.jsp?id=<%=sBean.aBean.id%>" class="<%=thisClass%>">
+				  <a href="ContractorView.action?id=<%=sBean.aBean.id%>" class="<%=thisClass%>">
 			        <%=sBean.aBean.name%></a>
 				</td>
 <%//		cBean.setFromDB(sBean.aBean.id);

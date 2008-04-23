@@ -117,7 +117,7 @@ for (String key : report.getFilters().keySet()) {
 				id="sendEmail_<%=row.get("id")%>" type="checkbox"></td>
 		<td align="center"><%=DateBean.toShowFormat(row.get("lastAnnualUpdateEmailDate"))%></td>
 		<td align="center"><%=row.get("annualUpdateEmails")%></td>
-		<td><a href="contractor_detail.jsp?id=<%=row.get("id")%>"
+		<td><a href="ContractorView.action?id=<%=row.get("id")%>"
 			class="active"><%=row.get("name")%></a></td>
 		<td align="center"><%=DateBean.toShowFormat(row.get("dateCreated"))%></td>
 		<td align="center"><%=DateBean.toShowFormat(row.get("lastLogin"))%></td>

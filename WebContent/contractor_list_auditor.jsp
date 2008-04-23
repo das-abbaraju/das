@@ -127,7 +127,7 @@
 			} else {
 		%>
 		<td><%=sBean.count - 1%></td>
-		<td><a href="contractor_detail.jsp?id=<%=sBean.aBean.id%>"
+		<td><a href="ContractorView.action?id=<%=sBean.aBean.id%>"
 			title="view <%=sBean.aBean.name%> details"
 			class="<%=sBean.getTextColor()%>"><%=sBean.aBean.name%></a></td>
 		<%

@@ -213,7 +213,7 @@
 		String thisClass = ContractorBean.getTextColor(sBean.cBean.calcPICSStatusForOperator(pBean.oBean));
 %>
 					<tr <%=sBean.getBGColor()%> class="<%=thisClass%>">
-						<td><a href="contractor_detail.jsp?id=<%=sBean.aBean.id%>"
+						<td><a href="ContractorView.action?id=<%=sBean.aBean.id%>"
 							title="view <%=sBean.aBean.name%> details" class="<%=thisClass%>"><%=sBean.aBean.name%></a></td>
 						<td><%=sBean.osBean.getLocationDescription()%></td>
 <%		if (oBean.flagEmr()) {

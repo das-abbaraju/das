@@ -6,7 +6,7 @@ String thisQuery = request.getQueryString();
 if (cBean.mustForceUpdatePQF()) {
 	out.println(com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_editMain.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"<strong>Complete My Pre-qualification</strong>"));
 } else {
-	out.println(com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_detail.jsp",thisPage,id,"",thisQuery,"My Details")+" | "+
+	out.println(com.picsauditing.PICS.Utilities.getMenuTag(request,"ContractorView.action",thisPage,id,"",thisQuery,"My Details")+" | "+
 		com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_edit.jsp",thisPage,id,"",thisQuery,"Edit My Account")+" | "+
 		com.picsauditing.PICS.Utilities.getMenuTag(request,"con_selectFacilities.jsp",thisPage,id,"",thisQuery,"Facilities")+" | "+
 		com.picsauditing.PICS.Utilities.getMenuTag(request,"con_viewForms.jsp",thisPage,id,"",thisQuery,"Forms & Docs"));

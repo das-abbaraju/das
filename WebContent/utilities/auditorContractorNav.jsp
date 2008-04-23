@@ -11,7 +11,7 @@
 	<div class="blueHeader"><%=acctBean.getName(id)%></div>
 <% }//end if %>
 
-      <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"contractor_detail.jsp",thisPage,id,"",thisQuery,"Contractor Details")%> |
+      <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"ContractorView.action",thisPage,id,"",thisQuery,"Contractor Details")%> |
 <%		if (pBean.canVerifyAudit(tempAuditType,id)) { %>
       <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_editMain.jsp",thisPage,id,"auditType="+tempAuditType,thisQuery,"Edit PQF")%> |
       <%=com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+tempAuditType,thisQuery,"View PQF")%> |

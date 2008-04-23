@@ -22,7 +22,7 @@
 				
 				<!--   CONTRACTOR DETAILS -->
 				<clickLink description="Show contractor details"
-					href="contractor_detail.jsp?id=${conID}" />
+					href="ContractorView.action?id=${conID}" />
 				&body_verify;
 				<verifyText description="Verify name of company"
 					text="Acuren Inspection" />

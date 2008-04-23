@@ -107,7 +107,7 @@ form.smallform {
 	<tr id="result_tr<%=rowID%>" class="blueMain"
 		<%= color.nextBgColor() %>>
 		<td align="right"><%=color.getCounter()%></td>
-		<td><a href="contractor_detail.jsp?id=<%=rowID%>"><%=row.get("name")%></a></td>
+		<td><a href="ContractorView.action?id=<%=rowID%>"><%=row.get("name")%></a></td>
 		<td><%=DateBean.toShowFormat(row.get("dateAdded"))%></td>
 		<td>
 		<% if (permissions.hasPermission(OpPerms.ContractorApproval, OpType.Edit)) { %>

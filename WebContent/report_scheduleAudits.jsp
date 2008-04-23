@@ -121,7 +121,7 @@ try {
 				  <input name="action" type="submit" class="buttons" value="Send" onClick="return confirm('Are you sure you want to send this email?');"> 
 				</td>
 				<td align="center"><%=sBean.cBean.lastAuditEmailDate%></td>
-				<td><a href="contractor_detail.jsp?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class="<%=sBean.getTextColor()%>"><%=sBean.aBean.name%></a></td>
+				<td><a href="ContractorView.action?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class="<%=sBean.getTextColor()%>"><%=sBean.aBean.name%></a></td>
 				<td align="center"><%=sBean.getPercentCompleteLink(com.picsauditing.PICS.pqf.Constants.PQF_TYPE)%></td>
 				<td align="center"><%=sBean.getPercentCompleteLink(com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE)%></td>
                 <td class="blueMain"><%=sBean.cBean.lastPayment%></td>

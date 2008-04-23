@@ -250,7 +250,7 @@ public class LoginController extends DataBean {
 		// dashboard page that changes depending on who is looking at it
 		if (permissions.isContractor()) {
 			// I'm not really sure why we need the id here at all
-			response.sendRedirect("contractor_detail.jsp?id=" + permissions.getAccountId());
+			response.sendRedirect("ContractorView.action?id=" + permissions.getAccountId());
 			return;
 		}
 		if (permissions.hasPermission(OpPerms.StatusOnly)){

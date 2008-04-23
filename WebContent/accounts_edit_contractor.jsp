@@ -41,7 +41,7 @@
 					aBean.writeToDB();
 					cBean.setUploadedFiles(request);
 					cBean.writeToDB();
-					response.sendRedirect("contractor_detail.jsp?id="+editID);
+					response.sendRedirect("ContractorView.action?id="+editID);
 					return;
 				}//else
 			}//if

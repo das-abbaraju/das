@@ -90,7 +90,7 @@
 			<s:property value="color.nextBgColor" escape="false" />>
 			<td align="right"><s:property value="color.counter" /></td>
 			<td align="center"><a
-				href="contractor_detail.jsp?id=<s:property value="[0].get('id')"/>"
+				href="ContractorView.action?id=<s:property value="[0].get('id')"/>"
 				class="blueMain"><s:property value="[0].get('name')" /></a></td>
 			<s:if test="pqfVisible">
 				<td align="center"><a

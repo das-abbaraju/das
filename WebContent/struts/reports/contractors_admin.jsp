@@ -60,7 +60,7 @@
 <s:iterator value="data">
 	<tr class="blueMain" <s:property value="color.nextBgColor" escape="false" />>
 		<td align="right"><s:property value="color.counter" /></td>
-		<td><a href="contractor_detail.jsp?id=<s:property value="[0].get('id')"/>" 
+		<td><a href="ContractorView.action?id=<s:property value="[0].get('id')"/>" 
 			class="blueMain"><s:property value="[0].get('name')"/></a>
 		</td>
 		<td>

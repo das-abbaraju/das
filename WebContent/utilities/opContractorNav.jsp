@@ -9,7 +9,7 @@ if (!request.getServletPath().contains("contractor_detail")){
 }
 %>
 <div class="blueMain" style="text-align: center">
-<a class="blueMain" href="contractor_detail.jsp?id=<%=id%>">Contractor Details</a> |
+<a class="blueMain" href="ContractorView.action?id=<%=id%>">Contractor Details</a> |
 
 <% if (permissions.hasPermission(OpPerms.InsuranceCerts)) { %>
 <a class="blueMain" href="contractor_upload_certificates.jsp?id=<%=id%>">Insurance Certificates</a> |

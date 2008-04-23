@@ -146,7 +146,7 @@
 %>
 			  <tr <%=sBean.getBGColor()%> class="<%=thisClass%>">
 				<td><%=sBean.count-1%></td>
-				<td><a href="contractor_detail.jsp?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class="<%=thisClass%>"><%=sBean.aBean.name%></a></td>
+				<td><a href="ContractorView.action?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class="<%=thisClass%>"><%=sBean.aBean.name%></a></td>
 				<td align="center"><%=sBean.cBean.pqfSubmittedDate%></td>
 				<td align="center"><%=AUDITORS.getNameFromID(sBean.cBean.pqfAuditor_id)%></td>
 				<td align="center"><%=sBean.cBean.desktopAssignedDate%></td>
