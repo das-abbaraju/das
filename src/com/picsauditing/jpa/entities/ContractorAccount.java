@@ -74,7 +74,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	protected List<OshaLog> oshas;
 	protected List<ContractorAudit> audits;
 	protected List<ContractorOperator> operators;
-	protected Map<AuditQuestion, AuditData> auditAnswers;
 	protected Map<Integer, ContractorOperatorFlag> flags;
 
 	public ContractorAccount() {
@@ -504,15 +503,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	public void setOqEmployees(String oqEmployees) {
 		this.oqEmployees = oqEmployees;
-	}
-
-	@Transient
-	public Map<AuditQuestion, AuditData> getAuditAnswers() {
-		return auditAnswers;
-	}
-
-	public void setAuditAnswers(Map<AuditQuestion, AuditData> auditAnswers) {
-		this.auditAnswers = auditAnswers;
 	}
 
 	@MapKey(name="id")

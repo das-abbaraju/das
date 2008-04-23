@@ -35,5 +35,11 @@ public class FlagOshaCriterion {
 	public void setTime(int time) {
 		this.time = time;
 	}
+	
+	public boolean isFlagged(String value) {
+		if (flag.equals(YesNo.No))
+			return false;
+		return true;
+	}
 
 }

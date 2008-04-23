@@ -1,19 +1,25 @@
 package com.picsauditing.PICS;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
+import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditQuestionOperatorAccount;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.YesNo;
 
 /**
  * Business Engine used to calculate the flag 
@@ -26,14 +32,17 @@ public class FlagCalculator {
 	OperatorAccountDAO operatorDAO;
 	ContractorAccountDAO contractorDAO;
 	ContractorAuditDAO conAuditDAO;
+	AuditDataDAO auditDataDAO;
 	
 	List<OperatorAccount> operators = new ArrayList<OperatorAccount>(); // List of operators to be processed
 	List<Integer> contractorIDs = new ArrayList<Integer>(); // List of contractors to be processed
+	List<Integer> questionIDs = new ArrayList<Integer>(); // List of questions required by these operators
 	
-	public FlagCalculator(OperatorAccountDAO operatorDAO, ContractorAccountDAO contractorDAO, ContractorAuditDAO conAuditDAO) {
+	public FlagCalculator(OperatorAccountDAO operatorDAO, ContractorAccountDAO contractorDAO, ContractorAuditDAO conAuditDAO, AuditDataDAO auditDataDAO) {
 		this.operatorDAO = operatorDAO;
 		this.contractorDAO = contractorDAO;
 		this.conAuditDAO = conAuditDAO;
+		this.auditDataDAO = auditDataDAO;
 	}
 	
 	public void runAll() {
@@ -73,9 +82,10 @@ public class FlagCalculator {
 		
 		// Create a list of questions that the operators want to ask
 		for(OperatorAccount operator : operators) {
-			
+			for(AuditQuestionOperatorAccount question : operator.getAuditQuestions()) {
+				questionIDs.add(question.getAuditQuestion().getQuestionID());
+			}
 		}
-		List<Integer> questionIDs = new ArrayList<Integer>(); // List of audit questions to be asked of contractors
 		
 		for(Integer conID : contractorIDs) {
 			ContractorAccount contractor = contractorDAO.find(conID);
@@ -86,6 +96,14 @@ public class FlagCalculator {
 		}
 	}
 	
+	/**
+	 * 1) Check to see all required audits are there
+	 * 2) OSHA Data
+	 * 3) AuditQuestions
+	 * @param contractor
+	 * @param operator
+	 * @return
+	 */
 	public FlagColor calculate(ContractorAccount contractor, OperatorAccount operator) {
 		FlagColor flagColor = FlagColor.Green;
 		
@@ -93,6 +111,7 @@ public class FlagCalculator {
 		
 		for(AuditOperator audit : operator.getAudits()) {
 			if (contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel() ) {
+				// The contractor requires this audit, make sure they have an active one
 				boolean found = false;
 				for(ContractorAudit conAudit : conAudits) {
 					if (conAudit.getAuditType().equals(audit.getAuditType())) {
@@ -100,29 +119,46 @@ public class FlagCalculator {
 						found = true;
 					}
 				}
+				// If an active audit doesn't exist, then set
+				// the contractor's flag to the required color
 				if (!found)
 					setFlagColor(flagColor, audit.getRequiredForFlag());
 			}
 			if (flagColor.equals(FlagColor.Red))
+				// Things can't get worse, just exit
 				return flagColor;
 		}
 		
 		for(FlagOshaCriteria criteria : operator.getFlagOshaCriteria()) {
-			criteria.getLwcr();
-			criteria.getTrir();
-			criteria.getTrir();
+			if (criteria.getLwcr().isFlagged("con.osha.lwcr"))
+				setFlagColor(flagColor, criteria.getFlagColor());
+			if (criteria.getTrir().isFlagged("con.osha.trir"))
+				setFlagColor(flagColor, criteria.getFlagColor());
+			if (criteria.getFatalities().isFlagged("con.osha.fatalities"))
+				setFlagColor(flagColor, criteria.getFlagColor());
+			if (flagColor.equals(FlagColor.Red))
+				// Things can't get worse, just exit
+				return flagColor;
 		}
+		
+		Map<Integer, AuditData> auditAnswers = auditDataDAO.findAnswers(contractor.getId(), questionIDs);
+		
 		// For each operator criteria, get the contractor's 
 		// answer and see if it triggers the flag color
 		for(FlagQuestionCriteria criteria : operator.getFlagQuestionCriteria()) {
-			AuditData data = contractor.getAuditAnswers().get(criteria.getAuditQuestion());
-			if (data != null)
-				// The contractor has answered this question so it must be correct
-				if (criteria.isFlagged(data.getAnswer()))
-					flagColor = setFlagColor(flagColor, criteria.getFlagColor());
+			if (criteria.getChecked().equals(YesNo.Yes)) {
+				// This question is required by the operator
+				AuditData data = auditAnswers.get(criteria.getAuditQuestion());
+				if (data != null)
+					// The contractor has answered this question so it needs to be correct
+					if (criteria.isFlagged(data.getAnswer()))
+						flagColor = setFlagColor(flagColor, criteria.getFlagColor());
+				
+				if (flagColor.equals(FlagColor.Red))
+					// Things can't get worse, just exit
+					return flagColor;
+			}
 		}
-		
-		operator.getFlagQuestionCriteria();
 		
 		return flagColor;
 	}
