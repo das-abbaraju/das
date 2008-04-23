@@ -53,8 +53,8 @@ function save(id, aID, oID, pKey) {
 				</s:if>
 				<s:else>
 					<td><a
-						href="AuditOperator.action?oID=<s:property value="account.id" />"><s:property
-						value="account.name" /></a></td>
+						href="AuditOperator.action?oID=<s:property value="operatorAccount.id" />"><s:property
+						value="operatorAccount.name" /></a></td>
 				</s:else>
 				<td id="td<s:property value="htmlID" />"><label><input
 					<s:if test="minRiskLevel == 0">CHECKED</s:if> value="0"

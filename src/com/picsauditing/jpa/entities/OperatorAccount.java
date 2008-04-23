@@ -1,17 +1,16 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name = "operators")
@@ -39,21 +38,18 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	private YesNo flagFatalities;
 	private YesNo flagQ318;
 	private YesNo flagQ1385;
-	private int insuranceAuditorId;
+	private User insuranceAuditor;
 	private YesNo isUserManualUploaded;
-	private YesNo canSeePQF;
-	private YesNo canSeeDesktop;
-	private YesNo canSeeDA;
-	private YesNo canSeeoffice;
-	private YesNo canSeeField;
 	private YesNo approvesRelationships;
-	protected List<ContractorOperator> contractors;
 
-	protected List<AuditQuestionOperatorAccount> auditquestion;
+	protected List<AuditQuestionOperatorAccount> auditQuestions = new ArrayList<AuditQuestionOperatorAccount>();
+	protected List<FlagQuestionCriteria> flagQuestionCriteria = new ArrayList<FlagQuestionCriteria>();
+	protected List<FlagOshaCriteria> flagOshaCriteria = new ArrayList<FlagOshaCriteria>();
 
 	public OperatorAccount() {
 		this.type = "Operator";
 	}
+
 	public OperatorAccount(String name) {
 		this.name = name;
 		this.type = "Operator";
@@ -248,13 +244,14 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.flagQ1385 = flagQ1385;
 	}
 
-	@Column(name = "insuranceAuditor_id", nullable = false)
-	public int getInsuranceAuditorId() {
-		return this.insuranceAuditorId;
+	@ManyToOne
+	@Column(name = "insuranceAuditor_id")
+	public User getInsuranceAuditor() {
+		return this.insuranceAuditor;
 	}
 
-	public void setInsuranceAuditorId(int insuranceAuditorId) {
-		this.insuranceAuditorId = insuranceAuditorId;
+	public void setInsuranceAuditor(User user) {
+		this.insuranceAuditor = user;
 	}
 
 	@Column(name = "isUserManualUploaded", nullable = false)
@@ -267,83 +264,41 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.isUserManualUploaded = isUserManualUploaded;
 	}
 
-	@Column(name = "canSeePQF", nullable = false)
-	@Enumerated(EnumType.STRING)
-	public YesNo getCanSeePQF() {
-		return canSeePQF;
-	}
-
-	public void setCanSeePQF(YesNo canSeePQF) {
-		this.canSeePQF = canSeePQF;
-	}
-
-	@Column(name = "canSeeDesktop", nullable = false)
-	@Enumerated(EnumType.STRING)
-	public YesNo getCanSeeDesktop() {
-		return canSeeDesktop;
-	}
-
-	public void setCanSeeDesktop(YesNo canSeeDesktop) {
-		this.canSeeDesktop = canSeeDesktop;
-	}
-
-	@Column(name = "canSeeDA", nullable = false)
-	@Enumerated(EnumType.STRING)
-	public YesNo getCanSeeDA() {
-		return canSeeDA;
-	}
-
-	public void setCanSeeDA(YesNo canSeeDA) {
-		this.canSeeDA = canSeeDA;
-	}
-
-	@Column(name = "canSeeOffice", nullable = false)
-	@Enumerated(EnumType.STRING)
-	public YesNo getCanSeeoffice() {
-		return canSeeoffice;
-	}
-
-	public void setCanSeeoffice(YesNo canSeeoffice) {
-		this.canSeeoffice = canSeeoffice;
-	}
-
-	@Column(name = "canSeeField", nullable = false)
-	@Enumerated(EnumType.STRING)
-	public YesNo getCanSeeField() {
-		return canSeeField;
-	}
-
-	public void setCanSeeField(YesNo canSeeField) {
-		this.canSeeField = canSeeField;
-	}
-
 	@Column(name = "approvesRelationships", nullable = false)
 	@Enumerated(EnumType.STRING)
 	public YesNo getApprovesRelationships() {
 		return approvesRelationships;
 	}
-	
+
 	public void setApprovesRelationships(YesNo approvesRelationships) {
 		this.approvesRelationships = approvesRelationships;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "operatorAccount")
-	public List<ContractorOperator> getContractors() {
-		return this.contractors;
+	@OneToMany(mappedBy = "operatorAccount")
+	public List<AuditQuestionOperatorAccount> getAuditQuestions() {
+		return auditQuestions;
 	}
 
-	public void setContractors(List<ContractorOperator> contractors) {
-		this.contractors = contractors;
+	public void setAuditQuestions(List<AuditQuestionOperatorAccount> auditQuestions) {
+		this.auditQuestions = auditQuestions;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "operatorAccount")
-	public List<AuditQuestionOperatorAccount> getAuditquestion() {
-		return auditquestion;
+	@OneToMany(mappedBy = "operatorAccount")
+	public List<FlagQuestionCriteria> getFlagQuestionCriteria() {
+		return flagQuestionCriteria;
 	}
 
-	public void setAuditquestion(
-			List<AuditQuestionOperatorAccount> auditquestion) {
-		this.auditquestion = auditquestion;
+	public void setFlagQuestionCriteria(List<FlagQuestionCriteria> flagQuestionCriteria) {
+		this.flagQuestionCriteria = flagQuestionCriteria;
+	}
+
+	@OneToMany(mappedBy = "operatorAccount")
+	public List<FlagOshaCriteria> getFlagOshaCriteria() {
+		return flagOshaCriteria;
+	}
+
+	public void setFlagOshaCriteria(List<FlagOshaCriteria> flagOshaCriteria) {
+		this.flagOshaCriteria = flagOshaCriteria;
 	}
 
 }

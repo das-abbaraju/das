@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -65,11 +66,6 @@ public class OperatorAccountDAOTest {
 		operatoraccount.setSeesAllContractors("Yes");
 		operatoraccount.setCanAddContractors(YesNo.Yes);
 		operatoraccount.setDoContractorsPay("Multiple");
-		operatoraccount.setCanSeePQF(YesNo.Yes);
-		operatoraccount.setCanSeeDesktop(YesNo.Yes);
-		operatoraccount.setCanSeeDA(YesNo.Yes);
-		operatoraccount.setCanSeeoffice(YesNo.Yes);
-		operatoraccount.setCanSeeField(YesNo.Yes);
 		operatoraccount.setCanSeeInsurance(YesNo.Yes);
 		operatoraccount.setIsCorporate(YesNo.Yes);
 		operatoraccount.setEmrHurdle("1.5");
@@ -85,7 +81,8 @@ public class OperatorAccountDAOTest {
 		operatoraccount.setFlagFatalities(YesNo.No);
 		operatoraccount.setFlagQ318(YesNo.No);
 		operatoraccount.setFlagQ1385(YesNo.Yes);
-		operatoraccount.setInsuranceAuditorId(123);
+		operatoraccount.setInsuranceAuditor(new User());
+		operatoraccount.getInsuranceAuditor().setId(941); //tallred
 		operatoraccount.setIsUserManualUploaded(YesNo.Yes);
 		operatoraccount.setApprovesRelationships(YesNo.No);
 		assertEquals("pics@picsauditing.com", operatoraccount

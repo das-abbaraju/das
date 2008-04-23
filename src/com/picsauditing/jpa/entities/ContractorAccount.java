@@ -1,16 +1,16 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -73,6 +73,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	protected List<OshaLog> oshas;
 	protected List<ContractorAudit> audits;
 	protected List<ContractorOperator> operators;
+	protected Map<AuditQuestion, AuditData> auditAnswers;
 
 	public ContractorAccount() {
 		this.type = "Contractor";
@@ -501,6 +502,15 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	public void setOqEmployees(String oqEmployees) {
 		this.oqEmployees = oqEmployees;
+	}
+
+	@Transient
+	public Map<AuditQuestion, AuditData> getAuditAnswers() {
+		return auditAnswers;
+	}
+
+	public void setAuditAnswers(Map<AuditQuestion, AuditData> auditAnswers) {
+		this.auditAnswers = auditAnswers;
 	}
 
 }

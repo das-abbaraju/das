@@ -20,14 +20,14 @@ public class PicsMenu {
 			subMenu.addChild("Search", "ContractorListAdmin.action");
 		if (permissions.isOperator() || permissions.isCorporate())
 			subMenu.addChild("Contractor List", "ContractorListOperator.action");
-		if (permissions.isAdmin())
-			subMenu.addChild("Assignments", "report_operatorContractor.jsp?changed=1");
 
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
 			subMenu.addChild("Contact Info", "report_contactInfo.jsp?changed=1");
 
 		if (permissions.hasPermission(OpPerms.SearchContractors))
 			subMenu.addChild("Search For New", "contractorsSearch.jsp");
+		if (permissions.isAdmin())
+			subMenu.addChild("By Operator", "report_operatorContractor.jsp?changed=1");
 		if (permissions.hasPermission(OpPerms.SearchContractors))
 			subMenu.addChild("By Operator", "report_operatorContractor.jsp?searchCorporate=Y");
 
@@ -66,10 +66,6 @@ public class PicsMenu {
 			subMenu.addChild("Expired Certificates", "report_expiredCertificates.jsp?changed=1");
 
 		subMenu = menu.addChild("Management");
-		if (permissions.hasPermission(OpPerms.ManageCorporate))
-			subMenu.addChild("Corporate Accounts", "report_accounts.jsp?type=Corporate");
-		if (permissions.hasPermission(OpPerms.ManageOperators))
-			subMenu.addChild("Operators", "report_accounts.jsp?type=Operator");
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
 			subMenu.addChild("Approve Contractors", "con_approvals.jsp");
 		if (permissions.hasPermission(OpPerms.EditUsers))
@@ -91,6 +87,10 @@ public class PicsMenu {
 		subMenu.addChild("Edit Profile", "ProfileEdit.action");
 
 		subMenu = menu.addChild("Operators");
+		if (permissions.hasPermission(OpPerms.ManageCorporate))
+			subMenu.addChild("Edit Corporate", "report_accounts.jsp?type=Corporate");
+		if (permissions.hasPermission(OpPerms.ManageOperators))
+			subMenu.addChild("Edit Operators", "report_accounts.jsp?type=Operator");
 		if (permissions.hasPermission(OpPerms.ManageOperators))
 			subMenu.addChild("Assign Audit/Operator", "AuditOperator.action");
 
