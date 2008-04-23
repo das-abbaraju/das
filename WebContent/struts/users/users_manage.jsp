@@ -90,9 +90,8 @@ function checkUsername(username, userID) {
 		
 		<pics:permission perm="AllOperators">
 			Filter by User: <input type="text" name="filter" id="filter" class="blueSmall" onchange="filterOperators();" /><br />
-			Operator:<span id="operators"><s:action name="FacilitiesGetAjax" executeResult="true" >
-				<s:param name="shouldIncludePICS" value="%{true}"/>
-			</s:action></span><br />
+			Operator:<span id="operators"><s:include value="../operators/facilitySelect.jsp" />
+			</span><br />
 		</pics:permission>
 			Type:
 				<s:select name="isGroup" cssClass="blueSmall"

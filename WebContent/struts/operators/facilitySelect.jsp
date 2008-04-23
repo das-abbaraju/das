@@ -6,8 +6,8 @@
 	   headerKey="1100"
 	   headerValue="PICS Employees"
        list="facilities"
-       listKey="[0].get('id')"
-       listValue="%{[0].get('name')}"
+       listKey="id"
+       listValue="name"
        />
 </s:if>
 <s:else>
@@ -15,8 +15,8 @@
        name="accountId"
        cssClass="blueSmall"
        list="facilities"
-       listKey="[0].get('id')"
-       listValue="%{[0].get('name')}"
+       listKey="id"
+       listValue="name"
        />
 </s:else>       
 

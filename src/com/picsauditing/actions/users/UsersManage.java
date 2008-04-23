@@ -1,5 +1,6 @@
 package com.picsauditing.actions.users;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -9,13 +10,16 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectUser;
 
 public class UsersManage extends PicsActionSupport {
 	protected String accountId = null;
 	protected String filter = null;
-
+	protected List<OperatorAccount> facilities = null;
+	private OperatorAccountDAO operatorDao;
 	protected Report search = null;
 	protected List<BasicDynaBean> searchData = null;
 
@@ -24,17 +28,22 @@ public class UsersManage extends PicsActionSupport {
 
 	protected boolean hasAllOperators = false;
 
+	public UsersManage(OperatorAccountDAO operatorDao) {
+		this.operatorDao = operatorDao;
+	}
+
 	public String execute() throws Exception {
 		loadPermissions();
 		permissions.tryPermission(OpPerms.EditUsers);
 
 		String accountId = permissions.getAccountIdString();
-		if (permissions.hasPermission(OpPerms.AllOperators) && this.accountId != null) {
+		if (permissions.hasPermission(OpPerms.AllOperators)
+				&& this.accountId != null) {
 			accountId = Utilities.intToDB(this.accountId);
 		}
 
 		this.accountId = accountId;// accountId is on the instance level
-									// AND in the execute method...watch out
+		// AND in the execute method...watch out
 
 		SelectUser sql = new SelectUser();
 		sql.addField("u.lastLogin");
@@ -57,8 +66,9 @@ public class UsersManage extends PicsActionSupport {
 		sql.addWhere("accountID = " + accountId);
 		// Only search for Auditors and Admins
 		sql.addOrderBy("u.isGroup, u.name");
-		search.setPageByResult(ServletActionContext.getRequest().getParameter("showPage"));
-		
+		search.setPageByResult(ServletActionContext.getRequest().getParameter(
+				"showPage"));
+
 		search.setLimit(25);
 
 		searchData = search.getPage();
@@ -124,6 +134,21 @@ public class UsersManage extends PicsActionSupport {
 
 	public void setHasAllOperators(boolean hasAllOperators) {
 		this.hasAllOperators = hasAllOperators;
+	}
+
+	public List<OperatorAccount> getFacilities() {
+		String where = null;
+		if (filter != null && filter.length() > 3) {
+			where = "a IN (SELECT account FROM User WHERE username LIKE '%"
+					+ Utilities.escapeQuotes(filter) + "%' OR username LIKE '%"
+					+ Utilities.escapeQuotes(filter) + "%' OR email LIKE '%"
+					+ Utilities.escapeQuotes(filter) + "%')";
+		}
+		facilities = new ArrayList<OperatorAccount>();
+		facilities.add(new OperatorAccount(OperatorAccount.DEFAULT_NAME));
+		facilities.addAll(operatorDao.findWhere(where));
+		return facilities;
+
 	}
 
 }

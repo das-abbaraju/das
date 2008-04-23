@@ -47,7 +47,7 @@
 
 		<action name="FacilitiesGetAjax"
 			class="com.picsauditing.actions.operators.FacilitiesGet">
-			<result>includes/facilitySelect.jsp</result>
+			<result>struts/operators/facilitySelect.jsp</result>
 		</action>
 
 		<action name="AuditOperator"
