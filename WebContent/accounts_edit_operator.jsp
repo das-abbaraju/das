@@ -44,16 +44,26 @@
 <html>
 <head>
 <title>Edit Operators</title>
-<meta name="header_gif" content="header_manageAccounts.gif" />
-<script language="JavaScript" SRC="js/ImageSwap.js"
-	type="text/javascript"></script>
 <script language="JavaScript" SRC="js/DHTMLUtils.js"
 	type="text/javascript"></script>
 <script language="JavaScript" SRC="js/verifyInsurance.js"
 	type="text/javascript"></script>
 </head>
 <body>
-<br>
+<h1>Edit <%=aBean.type%>
+<span class="sub"><%=aBean.name%></span>
+</h1>
+<div id="internalnavcontainer">
+<ul id="navlist">
+	<li><a class="current" href="accounts_edit_operator.jsp?id=<%=aBean.id%>">Edit</a></li>
+	<% if (!oBean.isCorporate) { %>
+	<li><a href="AuditOperator.action?oID=<%=aBean.id%>">Audits</a></li>
+	<% } %>
+	<li><a href="UsersManage.action?accountID=<%=aBean.id%>">Users</a></li>
+	<li><a href="report_accounts.jsp?type=<%=aBean.type%>">Return to List</a></li>
+</ul>
+</div>
+
 <table width="500" cellpadding="10" cellspacing="0">
 	<tr>
 		<td valign="top" bgcolor="#FFFFFF" class="blueMain">
@@ -62,9 +72,6 @@
 			name="createdBy" type="hidden" value="<%=aBean.createdBy%>">
 		<input name="type" type="hidden" value="<%=aBean.type%>">
 		<table width="100%" border="0" cellspacing="0" cellpadding="0">
-			<tr align="center" class="blueMain">
-				<td colspan="2" class="blueHeader">Edit <%=aBean.type%></td>
-			</tr>
 			<tr>
 				<td colspan="2" class="redMain"><b><%=errorMsg%> <%
  	if (request.getParameter("submit") != null)
@@ -73,10 +80,6 @@
 			</tr>
 			<tr class="blueMain">
 				<td colspan="2">&nbsp;</td>
-			</tr>
-			<tr>
-				<td colspan="2" class="blueMain" align="center"><a
-					href="users_manage.jsp?accountID=<%=editID%>">Manage Users</a></td>
 			</tr>
 			<tr>
 				<td class="blueMain" align="right">Name</td>
