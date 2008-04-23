@@ -29,7 +29,8 @@
 			<td><s:if test="operator">
 				<s:select list="flagStatusList" cssClass="forms" name="flagStatus" />
 			</s:if> <s:if test="corporate">
-				<s:select list="operatorList" cssClass="forms" name="operator" />
+				<s:select list="operatorList" cssClass="forms"
+				name="operator" listKey="id" listValue="name" />
 			</s:if> <s:select list="stateLicensesList" cssClass="forms"
 				name="stateLicensedIn" /><s:textfield name="taxID" cssClass="forms"
 				size="9" onfocus="clearText(this)" /> <span class="redMain">*must

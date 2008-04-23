@@ -148,7 +148,7 @@ public class SelectAccount extends SelectSQL {
 			return;
 		}
 		if (permissions.isCorporate()) {
-			this.addJoin("a.id IN (SELECT gc.subID FROM generalcontractors gc " +
+			this.addWhere("a.id IN (SELECT gc.subID FROM generalcontractors gc " +
 					"JOIN facilities f ON f.opID = gc.genID AND f.corporateID = "+permissions.getAccountId()+")");
 			return;
 		}
