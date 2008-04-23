@@ -28,9 +28,9 @@ public class ReportAccount extends ReportActionSupport {
 	public static final String DEFAULT_TAX_ID = "- Tax ID -";
 	public static final String DEFAULT_CERTS = "- Ins. Certs -";
 	public static final String DEFAULT_VISIBLE = "- Visible -";
-		
+
 	protected String startsWith;
-	protected String name = DEFAULT_NAME;
+	protected String accountname = DEFAULT_NAME;
 	protected String industry;
 	protected String performedBy;
 	protected int trade;
@@ -44,7 +44,7 @@ public class ReportAccount extends ReportActionSupport {
 	protected int worksIn;
 	protected String taxID = DEFAULT_TAX_ID;
 	protected String flagStatus;
-	
+
 	@Autowired
 	protected SelectAccount sql = new SelectAccount();
 
@@ -59,7 +59,7 @@ public class ReportAccount extends ReportActionSupport {
 	public String execute() throws Exception {
 		loadPermissions();
 		sql.setPermissions(permissions, getAccount());
-		
+
 		if (this.orderBy == null)
 			this.orderBy = "a.name";
 		sql.setType(SelectAccount.Type.Contractor);
@@ -99,12 +99,12 @@ public class ReportAccount extends ReportActionSupport {
 	public List<OperatorAccount> getOperatorList() throws Exception {
 		List<OperatorAccount> opList = new ArrayList<OperatorAccount>();
 		opList.add(new OperatorAccount(OperatorAccount.DEFAULT_NAME));
-		
+
 		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils
 				.getBean("OperatorAccountDAO");
 		opList.addAll(dao.findWhere("active='Y'"));
 		return opList;
-		
+
 	}
 
 	public Map<String, String> getStateList() {
@@ -112,12 +112,12 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public String[] getCertsOptions() {
-		return new String[] { DEFAULT_CERTS, "Yes", "Only Certs",
-				"No", "Exclude Certs" };
+		return new String[] { DEFAULT_CERTS, "Yes", "Only Certs", "No",
+				"Exclude Certs" };
 	}
 
 	public String[] getVisibleOptions() {
-		return new String[] {DEFAULT_VISIBLE,"Y","N"};
+		return new String[] { DEFAULT_VISIBLE, "Y", "N" };
 	}
 
 	// Getters and setters for filter criteria
@@ -131,16 +131,16 @@ public class ReportAccount extends ReportActionSupport {
 		this.startsWith = startsWith;
 	}
 
-	public String getName() {
-		return name;
+	public String getAccountName() {
+		return accountname;
 	}
 
-	public void setName(String name) {
-		report.addFilter(new SelectFilter("name", "a.name LIKE '%?%'", name,
+	public void setAccountName(String accountname) {
+		report.addFilter(new SelectFilter("accountname", "a.name LIKE '%?%'", accountname,
 				DEFAULT_NAME, DEFAULT_NAME));
-		this.name = name;
+		this.accountname = accountname;
 	}
-	
+
 	public String getIndustry() {
 		return industry;
 	}
@@ -191,7 +191,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setOperator(int operator) {
-		report.addFilter(new SelectFilterInteger(
+		report
+				.addFilter(new SelectFilterInteger(
 						"generalContractorID",
 						"a.id IN (SELECT subID FROM generalcontractors WHERE genID = ? )",
 						operator));
@@ -203,7 +204,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setCity(String city) {
-		report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", city, DEFAULT_CITY, DEFAULT_CITY));
+		report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", city,
+				DEFAULT_CITY, DEFAULT_CITY));
 		this.city = city;
 	}
 
@@ -221,7 +223,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setZip(String zip) {
-		report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", zip, DEFAULT_ZIP, DEFAULT_ZIP));
+		report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", zip,
+				DEFAULT_ZIP, DEFAULT_ZIP));
 		this.zip = zip;
 	}
 
@@ -230,7 +233,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setCertsOnly(String certsOnly) {
-		report.addFilter(new SelectFilter("certsOnly", "c.isOnlyCerts = '?'", certsOnly, DEFAULT_CERTS, DEFAULT_CERTS));
+		report.addFilter(new SelectFilter("certsOnly", "c.isOnlyCerts = '?'",
+				certsOnly, DEFAULT_CERTS, DEFAULT_CERTS));
 		this.certsOnly = certsOnly;
 	}
 
@@ -249,7 +253,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setStateLicensedIn(int stateLicensedIn) {
-		report.addFilter(new SelectFilterInteger(
+		report
+				.addFilter(new SelectFilterInteger(
 						"stateLicensedIn",
 						"a.id IN (SELECT conID FROM pqfdata WHERE questionID=? AND answer <> '')",
 						stateLicensedIn));
@@ -274,38 +279,42 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setTaxID(String taxID) {
-		report.addFilter(new SelectFilter("taxID", "c.taxID = '?'", taxID, DEFAULT_TAX_ID, DEFAULT_TAX_ID));
+		report.addFilter(new SelectFilter("taxID", "c.taxID = '?'", taxID,
+				DEFAULT_TAX_ID, DEFAULT_TAX_ID));
 		this.taxID = taxID;
 	}
 
 	/**
-	 * Flag Color needs to now include the status of current audits
-	 * if the operator requires an audit, that audit must be Active/Exempt
-	 */ 
+	 * Flag Color needs to now include the status of current audits if the
+	 * operator requires an audit, that audit must be Active/Exempt
+	 */
 	public String getFlagStatus() {
 		return flagStatus;
 	}
 
 	public void setFlagStatus(String flagStatus) {
 		this.flagStatus = flagStatus;
-		report
-		.addFilter(new SelectFilter("flagStatus", "flags.flag = '?'",
+		report.addFilter(new SelectFilter("flagStatus", "flags.flag = '?'",
 				flagStatus, FlagColor.DEFAULT_FLAG_STATUS,
 				FlagColor.DEFAULT_FLAG_STATUS));
 
 	}
 
 	/**
-	 * Return the number of active contractors visible to an Operator or a Corporate account
-	 * This method shouldn't be use be Admins, auditors, and contractors 
+	 * Return the number of active contractors visible to an Operator or a
+	 * Corporate account This method shouldn't be use be Admins, auditors, and
+	 * contractors
+	 * 
 	 * @return
 	 */
 	public int getContractorCount() {
 		if (permissions.isOperator() || permissions.isCorporate()) {
-			OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
+			OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils
+					.getBean("OperatorAccountDAO");
 			return dao.getContractorCount(permissions.getAccountId());
 		}
-		// This method shouldn't be use be Admins, auditors, and contractors so just return 0
+		// This method shouldn't be use be Admins, auditors, and contractors so
+		// just return 0
 		return 0;
 	}
 }

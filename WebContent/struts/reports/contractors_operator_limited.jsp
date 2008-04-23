@@ -4,6 +4,7 @@
 <title>Contractor Search - Operator</title>
 <script type="text/javascript" src="js/Search.js" />
 
+
 </head>
 <body>
 <h1>Contractor Limited Search <span class="sub">Operator
@@ -18,10 +19,10 @@ Version</span></h1>
 <s:form id="form1" method="post">
 	<table border="0" align="center" cellpadding="2" cellspacing="0">
 		<tr>
-			<td align="left"><s:textfield name="name" cssClass="forms"
-				size="8" onfocus="clearText(this)" /><s:select list="tradeList"
-				cssClass="forms" name="trade" /><s:submit name="imageField"
-				type="image" src="images/button_search.gif"
+			<td align="left"><s:textfield name="accountName"
+				cssClass="forms" size="8" onfocus="clearText(this)" /><s:select
+				list="tradeList" cssClass="forms" name="trade" /><s:submit
+				name="imageField" type="image" src="images/button_search.gif"
 				onclick="runSearch( 'form1')" /></td>
 		</tr>
 		<tr>
