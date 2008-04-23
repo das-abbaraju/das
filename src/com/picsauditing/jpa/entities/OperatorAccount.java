@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -245,7 +246,7 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.flagQ1385 = flagQ1385;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "insuranceAuditor_id")
 	public User getInsuranceAuditor() {
 		return this.insuranceAuditor;

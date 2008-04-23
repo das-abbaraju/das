@@ -27,17 +27,16 @@ import com.picsauditing.jpa.entities.YesNo;
 @TransactionConfiguration(defaultRollback = false)
 @Transactional
 public class OperatorAccountDAOTest {
-
+	
 	@Autowired
 	OperatorAccountDAO operatoraccountDAO;
-	OperatorAccount operatoraccount;
 	@Autowired
 	AccountDAO accountDAO;
 
 	@Test
 	public void testSaveAndRemove() {
 
-		operatoraccount = new OperatorAccount();
+		OperatorAccount operatoraccount = new OperatorAccount();
 		operatoraccount.setName("PICS");
 		operatoraccount.setUsername("29");
 		operatoraccount.setPassword("testpics");
@@ -99,7 +98,7 @@ public class OperatorAccountDAOTest {
 
 	@Test
 	public void testFindWhere() {
-		List<OperatorAccount> account = operatoraccountDAO.findWhere("id = 2475");
+		List<OperatorAccount> account = operatoraccountDAO.findWhere("active = 'Y'");
 		assertTrue(account.size() > 0);
 	}
 
