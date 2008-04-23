@@ -8,7 +8,7 @@
 <h1>Contractor Search
 <span class="sub">Admin Version</span></h1>
 
-<s:form id="form1" method="get">
+<s:form id="form1" method="post">
 <table border="0" align="center" cellpadding="2" cellspacing="0">
 <tr>
 <td align="left">
