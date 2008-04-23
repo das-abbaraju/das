@@ -262,7 +262,7 @@ public class LoginController extends DataBean {
 			return;
 		}
 		if (permissions.isAuditor() && !permissions.isAdmin()) {
-			response.sendRedirect("contractor_list_auditor.jsp");
+			response.sendRedirect("AuditListAuditor.action");
 			return;
 		}
 

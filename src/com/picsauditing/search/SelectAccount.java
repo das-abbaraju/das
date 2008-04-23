@@ -158,7 +158,7 @@ public class SelectAccount extends SelectSQL {
 			return;
 		}
 		// Anyone Else .ie, Independent Auditors  
-		addWhere("a.id IN (SELECT conID FROM contractor_audit WHERE auditID = "+permissions.getUserId()+")");
+		addWhere("a.id IN (SELECT conID FROM contractor_audit WHERE auditorID = "+permissions.getUserId()+")");
 	}
 
 }

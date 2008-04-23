@@ -16,10 +16,8 @@ public class PicsMenu {
 		}
 
 		subMenu = menu.addChild("Contractors");
-		if (permissions.isAdmin())
-			subMenu.addChild("Admin Search", "ContractorListAdmin.action");
-		if (permissions.isAuditor())
-			subMenu.addChild("Auditor Search", "ContractorListAuditor.action");
+		if (permissions.isPicsEmployee())
+			subMenu.addChild("Search", "ContractorListAdmin.action");
 		if (permissions.isOperator() || permissions.isCorporate())
 			subMenu.addChild("Contractor List", "ContractorListOperator.action");
 		if (permissions.isAdmin())
@@ -34,6 +32,9 @@ public class PicsMenu {
 			subMenu.addChild("By Operator", "report_operatorContractor.jsp?searchCorporate=Y");
 
 		subMenu = menu.addChild("Auditing");
+		if (permissions.isAuditor())
+			subMenu.addChild("My Audits", "AuditListAuditor.action");
+		
 		subMenu.addChild("Audit List", "ReportAuditList.action");
 		if (permissions.hasPermission(OpPerms.AssignAudits))
 			subMenu.addChild("Sched. &amp; Assign", "AuditAssignments.action");

@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterInteger;
 import com.picsauditing.util.SpringUtils;
 
 public class ReportContractorAudits extends ReportAccount {
 	protected int auditTypeID;
+	protected String auditStatus;
 	
 	public String execute() throws Exception {
 		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
@@ -54,6 +57,20 @@ public class ReportContractorAudits extends ReportAccount {
 		report.addFilter(new SelectFilterInteger("auditTypeID",
 				"ca.auditTypeID = ?", auditTypeID));
 		this.auditTypeID = auditTypeID;
+	}
+
+	public ArrayList<String> getAuditStatusList() {
+		return AuditStatus.getValuesWithDefault();
+	}
+	
+	public String getAuditStatus() {
+		return auditStatus;
+	}
+
+	public void setAuditStatus(String auditStatus) {
+		report.addFilter(new SelectFilter("auditStatus",
+				"ca.auditStatus = '?'", auditStatus, AuditStatus.DEFAULT, AuditStatus.DEFAULT));
+		this.auditStatus = auditStatus;
 	}
 	
 	
