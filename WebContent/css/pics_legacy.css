@@ -20,22 +20,9 @@ a.blueSmall:link {
 .redMain {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
-	color: #993300;
+	color: rgb(168,77,16);
 	line-height: 23px;
 }
-.amberMain {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
-	color: #CC9900;
-	line-height: 23px;
-}
-.greenMain {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
-	color: #009900;
-	line-height: 23px;
-}
-
 .whiteMain {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
