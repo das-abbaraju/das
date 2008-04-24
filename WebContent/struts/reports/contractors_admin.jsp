@@ -2,8 +2,6 @@
 <html>
 <head>
 <title>Contractor Search - Admin</title>
-<script type="text/javascript" src="js/Search.js" />
-
 </head>
 <body>
 <h1>Contractor Search <span class="sub">Admin Version</span></h1>

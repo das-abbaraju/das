@@ -95,7 +95,12 @@
 			class="com.picsauditing.actions.audits.AuditSave">
 			<result>includes/blank.jsp</result>
 		</action>
-		
+
+		<action name="ContractorSearch"
+			class="com.picsauditing.actions.report.ReportAccount">
+			<result>struts/reports/contractors_search.jsp</result>
+		</action>
+
 		<action name="ContractorListAdmin"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<result>struts/reports/contractors_admin.jsp</result>

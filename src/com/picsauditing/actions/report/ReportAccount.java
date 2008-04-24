@@ -65,6 +65,11 @@ public class ReportAccount extends ReportActionSupport {
 		sql.setType(SelectAccount.Type.Contractor);
 		this.run(sql);
 
+		if (this.data.size() == 1) {
+			// Forward the user to the Contractor Details page
+			ServletActionContext.getResponse().sendRedirect("ContractorView.action?id="+this.data.get(0).get("id"));
+		}
+			
 		return SUCCESS;
 	}
 

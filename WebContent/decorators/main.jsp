@@ -20,6 +20,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics_legacy.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css" title="bluemenu"/>
 <script type="text/javascript" src="js/chrome.js"></script>
+<script type="text/javascript" src="js/Search.js"></script>
 <decorator:head />
 </head>
 <body>
@@ -31,7 +32,14 @@
 <span id="name">Welcome, <%=permissions.getName() %></span> | <a href="logout.jsp">Logout</a>
 <% } else { %>
 <span id="name">Welcome</span> | <a href="login.jsp">Login</a>
-<% } %></p></div>
+<% } %></p>
+</div>
+<div id="headersearch">
+<form action="ContractorSearch.action" method="post">
+<input name="accountName" type="text" class="blueMain" size="20" value="- Contractor Search -" onfocus="clearText(this)" onblur="unclearText(this)"/>
+<input type="submit" value="Search" class="blueMain" />
+</form>
+</div>
 <div id="logo"> <img src="images/logo_r3.jpg" alt="image" width="105" height="112" /></div>
 </div></div></div>
 

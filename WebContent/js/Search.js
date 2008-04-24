@@ -34,3 +34,9 @@ function clearText(thefield)
 	if (thefield.defaultValue==thefield.value)
 		thefield.value = ""
 }
+
+function unclearText(thefield)
+{
+	if (thefield.value == "")
+		thefield.value = thefield.defaultValue;
+}
