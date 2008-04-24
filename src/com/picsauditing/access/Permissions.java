@@ -229,7 +229,7 @@ public class Permissions {
 	public boolean canSeeAudit(int auditType) {
 		if (isAdmin())
 			return true;
-		if (isOperator())
+		if (canSeeAudits != null)
 			return canSeeAudits.contains(new Integer(auditType));
 		return false;
 	}
