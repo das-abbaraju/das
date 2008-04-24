@@ -52,11 +52,11 @@
 
 		<action name="AuditOperator"
 			class="com.picsauditing.actions.audits.AuditOperatorList">
-			<result>audit_operator.jsp</result>
+			<result>struts/operators/audit_operator.jsp</result>
 		</action>
 		<action name="AuditOperatorSaveAjax"
 			class="com.picsauditing.actions.audits.AuditOperatorSave">
-			<result>audit_operator_save.jsp</result>
+			<result>struts/operators/audit_operator_save.jsp</result>
 		</action>
 		
 		<action name="VerifyView"

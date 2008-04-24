@@ -1,8 +1,10 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -144,4 +146,13 @@ public class AuditOperatorList extends PicsActionSupport {
 	public List<AuditType> getAuditTypes() {
 		return auditTypes;
 	}
+	
+	public Map<Integer, LowMedHigh> getRiskLevelList() {
+		return LowMedHigh.getMap();
+	}
+	
+	public FlagColor[] getFlagColorList() {
+		return FlagColor.values();
+	}
+	
 }

@@ -27,7 +27,7 @@ public class AuditOperatorDAO extends PicsDAO {
 	
 	@SuppressWarnings("unchecked")
     public List<AuditOperator> findByOperator(int operatorID) {
-        Query query = em.createQuery("select t FROM AuditOperator t WHERE t.operatorAccount.id = ?");
+        Query query = em.createQuery("FROM AuditOperator t WHERE t.operatorAccount.id = ?");
         query.setParameter(1, operatorID);
         return query.getResultList();
     }

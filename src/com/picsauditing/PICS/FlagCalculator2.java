@@ -28,7 +28,7 @@ import com.picsauditing.jpa.entities.YesNo;
  * @author Trevor
  *
  */
-public class FlagCalculator {
+public class FlagCalculator2 {
 	OperatorAccountDAO operatorDAO;
 	ContractorAccountDAO contractorDAO;
 	ContractorAuditDAO conAuditDAO;
@@ -38,7 +38,7 @@ public class FlagCalculator {
 	List<Integer> contractorIDs = new ArrayList<Integer>(); // List of contractors to be processed
 	List<Integer> questionIDs = new ArrayList<Integer>(); // List of questions required by these operators
 	
-	public FlagCalculator(OperatorAccountDAO operatorDAO, ContractorAccountDAO contractorDAO, ContractorAuditDAO conAuditDAO, AuditDataDAO auditDataDAO) {
+	public FlagCalculator2(OperatorAccountDAO operatorDAO, ContractorAccountDAO contractorDAO, ContractorAuditDAO conAuditDAO, AuditDataDAO auditDataDAO) {
 		this.operatorDAO = operatorDAO;
 		this.contractorDAO = contractorDAO;
 		this.conAuditDAO = conAuditDAO;

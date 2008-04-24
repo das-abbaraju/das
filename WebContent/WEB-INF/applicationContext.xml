@@ -24,7 +24,7 @@
 
 	<bean id="SelectAccount" class="com.picsauditing.search.SelectAccount" scope="prototype"/>
 	<bean id="Report" class="com.picsauditing.search.Report" scope="prototype"/>
-	<bean id="FlagCalculator" class="com.picsauditing.PICS.FlagCalculator" scope="prototype"/>
+	<bean id="FlagCalculator2" class="com.picsauditing.PICS.FlagCalculator2" scope="prototype"/>
 
 	<bean class="com.picsauditing.PICS.Facilities"/>
 

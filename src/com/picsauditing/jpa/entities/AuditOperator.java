@@ -3,6 +3,8 @@ package com.picsauditing.jpa.entities;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -40,7 +42,7 @@ public class AuditOperator {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "auditTypeID")
+	@JoinColumn(name = "auditTypeID", nullable=false)
 	public AuditType getAuditType() {
 		return auditType;
 	}
@@ -75,7 +77,7 @@ public class AuditOperator {
 	}
 
 	@ManyToOne( fetch=FetchType.LAZY)
-	@JoinColumn(name = "opID")
+	@JoinColumn(name = "opID", nullable=false)
 	public OperatorAccount getOperatorAccount() {
 		return operatorAccount;
 	}
@@ -84,6 +86,7 @@ public class AuditOperator {
 		this.operatorAccount = account;
 	}
 
+	@Enumerated(EnumType.STRING)
 	public FlagColor getRequiredForFlag() {
 		return requiredForFlag;
 	}
