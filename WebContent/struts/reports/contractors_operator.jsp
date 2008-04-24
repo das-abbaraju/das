@@ -5,6 +5,7 @@
 <title>Contractor Search - Operator</title>
 <script type="text/javascript" src="js/Search.js" />
 
+
 </head>
 <body>
 <h1>Contractor Search <span class="sub">Operator Version</span></h1>
@@ -29,16 +30,20 @@
 			<td><s:if test="operator">
 				<s:select list="flagStatusList" cssClass="forms" name="flagStatus" />
 			</s:if> <s:if test="corporate">
-				<s:select list="operatorList" cssClass="forms"
-				name="operator" listKey="id" listValue="name" />
-			</s:if> <s:select list="stateLicensesList" cssClass="forms"
-				name="stateLicensedIn" /><s:textfield name="taxID" cssClass="forms"
-				size="9" onfocus="clearText(this)" /> <span class="redMain">*must
-			be 9 digits</span></td>
+				<s:select list="operatorList" cssClass="forms" name="operator"
+					listKey="id" listValue="name" />
+			</s:if> <s:if test="operator">
+				<s:select list="stateLicensesList" cssClass="forms"
+					name="stateLicensedIn" />
+			</s:if><s:textfield name="taxID" cssClass="forms" size="9"
+				onfocus="clearText(this)" /> <span class="redMain">*must be
+			9 digits</span></td>
 		</tr>
 		<tr>
-			<td><s:select list="worksInList" cssClass="forms" name="worksIn" />
-			</td>
+			<s:if test="operator">
+				<td><s:select list="worksInList" cssClass="forms"
+					name="worksIn" /></td>
+			</s:if>
 		</tr>
 	</table>
 	<s:hidden name="showPage" value="1" />
@@ -91,32 +96,47 @@
 			<td align="center"><a
 				href="ContractorView.action?id=<s:property value="[0].get('id')"/>"
 				class="blueMain"><s:property value="[0].get('name')" /></a></td>
+
 			<s:if test="pqfVisible">
-				<td align="center"><a
-					href="pqf_view.jsp?auditID=<s:property 
-			value="[0].get('ca1_auditID')"/>"><img
-					src="images/icon_PQF.gif" width="20" height="20" border="0"></a>
-				</td>
+				<td align="center"><s:if test="[0].get('ca1_auditID') > 0">
+					<s:if test="[0].get('ca1_auditStatus').equals('Exempt')">N/A</s:if>
+					<s:else>
+						<a
+							href="pqf_view.jsp?auditID=<s:property value="[0].get('ca1_auditID')"/>"><img
+							src="images/icon_PQF.gif" width="20" height="20" border="0"></a>
+					</s:else>
+				</s:if></td>
 			</s:if>
 			<s:if test="desktopVisible">
-				<td align="center">&nbsp;<a
-					href="pqf_view.jsp?auditID=<s:property 
-			value="[0].get('ca2_auditID')"/>"><img
-					src="images/icon_Desktop.gif" width="20" height="20" border="0"></a>
-				</td>
+				<td align="center">&nbsp; <s:if
+					test="[0].get('ca2_auditID') > 0">
+					<s:if test="[0].get('ca2_auditStatus').equals('Exempt')">N/A</s:if>
+					<s:else>
+						<a
+							href="pqf_view.jsp?auditID=<s:property value="[0].get('ca2_auditID')"/>"><img
+							src="images/icon_Desktop.gif" width="20" height="20" border="0"></a>
+					</s:else>
+				</s:if></td>
 			</s:if>
 			<s:if test="daVisible">
-				<td align="center"><a
-					href="pqf_view.jsp?auditID=<s:property 
-			value="[0].get('ca6_auditID')"/>"><img
-					src="images/icon_DA.gif" width="20" height="20" border="0"></a></td>
+				<td align="center"><s:if test="[0].get('ca6_auditID') > 0">
+					<s:if test="[0].get('ca6_auditStatus').equals('Exempt')">N/A</s:if>
+					<s:else>
+						<a
+							href="pqf_view.jsp?auditID=<s:property value="[0].get('ca6_auditID')"/>"><img
+							src="images/icon_DA.gif" width="20" height="20" border="0"></a>
+					</s:else>
+				</s:if></td>
 			</s:if>
 			<s:if test="officeVisible">
-				<td align="center"><a
-					href="pqf_view.jsp?auditID=<s:property 
-			value="[0].get('ca3_auditID')"/>"><img
-					src="images/icon_Office.gif" width="20" height="20" border="0"></a>
-				</td>
+				<td align="center"><s:if test="[0].get('ca3_auditID') > 0">
+					<s:if test="[0].get('ca3_auditStatus').equals('Exempt')">N/A</s:if>
+					<s:else>
+						<a
+							href="pqf_view.jsp?auditID=<s:property value="[0].get('ca3_auditID')"/>"><img
+							src="images/icon_Office.gif" width="20" height="20" border="0"></a>
+					</s:else>
+				</s:if></td>
 			</s:if>
 			<td align="center"><s:if test="operatorAccount.canSeeInsurance">
 				&nbsp;&nbsp;<s:if test="[0].get('certs') > 0">
@@ -125,11 +145,8 @@
  					value="[0].get('id')"/>"><img
 						src="images/icon_insurance.gif" width="20" height="20" border="0"></a>
 				</s:if>
-				<s:else>
-					<img src="images/notOkCheck.gif" width="19" height="15"
-						alt='Non Uploaded'>
-				</s:else>
 			</s:if></td>
+
 			<td align="center"><s:if test="operator">
 				<a href="con_redFlags.jsp?id=<s:property value="[0].get('id')"/>"
 					title="Click to view Flag Color details"> <img
