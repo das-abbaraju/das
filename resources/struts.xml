@@ -45,6 +45,11 @@
 			<result>struts/reports/auditAssignments.jsp</result>
 		</action>
 
+		<action name="AuditAssignmentUpdateAjax"
+			class="com.picsauditing.actions.report.AuditAssignmentUpdate">
+			<result>/includes/simpleMessage.jsp</result>
+		</action>
+
 		<action name="FacilitiesGetAjax"
 			class="com.picsauditing.actions.operators.FacilitiesGet">
 			<result>struts/operators/facilitySelect.jsp</result>
@@ -121,5 +126,8 @@
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<result>struts/reports/contractors_operator_limited.jsp</result>
 		</action>
+		
+		
+		
 	</package>
 </struts>
