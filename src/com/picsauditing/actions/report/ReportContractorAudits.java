@@ -22,11 +22,13 @@ public class ReportContractorAudits extends ReportAccount {
 		sql.addField("ca.expiresDate");
 		sql.addField("ca.scheduledDate");
 		sql.addField("ca.completedDate");
+		sql.addField("ca.assignedDate");
 		sql.addField("ca.closedDate");
 		sql.addField("ca.auditLocation");
 		sql.addField("ca.percentComplete");
 		sql.addField("ca.percentVerified");
-
+		sql.addField("ca.auditorID");
+		
 		
 		sql.addJoin("LEFT JOIN audit_type atype ON atype.auditTypeID = ca.auditTypeID");
 		sql.addField("atype.auditTypeID");
@@ -37,6 +39,7 @@ public class ReportContractorAudits extends ReportAccount {
 		
 		sql.addJoin("LEFT JOIN users auditor ON auditor.id = ca.auditorID");
 		sql.addField("auditor.name auditor_name");
+		
 
 		return super.execute();
 	}

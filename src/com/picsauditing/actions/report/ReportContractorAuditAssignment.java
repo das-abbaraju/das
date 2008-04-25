@@ -1,5 +1,8 @@
 package com.picsauditing.actions.report;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +52,37 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		AuditTypeDAO dao = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
 		list.addAll(dao.findWhere("isScheduled = 1 OR hasAuditor = 1"));
 		return list;
+	}
+	
+	public String getBetterDate( String value, String format )
+	{
+		String response = null;
+		try
+		{
+			SimpleDateFormat sdf = new SimpleDateFormat( format );	
+			Date d = new Date( sdf.parse(value).getTime() );
+		
+			response = new SimpleDateFormat("MM/dd/yy").format(d);
+		}
+		catch( Exception e ) {}
+		
+		return response;
+	}
+	public String getBetterTime( String value, String format )
+	{
+		String response = null;
+		try
+		{
+			SimpleDateFormat sdf = new SimpleDateFormat( format );	
+			Date d = new Date( sdf.parse(value).getTime() );
+			
+			response = new SimpleDateFormat("hh:mm a").format(d);
+			
+			
+		}
+		catch( Exception e ) {}
+		
+		return response;
 	}
 }
 
