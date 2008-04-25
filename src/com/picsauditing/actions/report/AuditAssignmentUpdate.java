@@ -1,7 +1,10 @@
 package com.picsauditing.actions.report;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
+import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.ParameterAware;
 
 import com.opensymphony.xwork2.Preparable;
@@ -15,11 +18,14 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 
 	protected ContractorAudit contractorAudit = null;
 	protected User auditor = null;
+	protected User origAuditor = null;
 	
 	protected ContractorAuditDAO dao = null;
 	protected UserDAO userDao = null;
 
 	protected Map parameters = null;
+	
+	protected String message = null;
 	
 	
 	public AuditAssignmentUpdate( ContractorAuditDAO dao, UserDAO userDao )
@@ -32,11 +38,30 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 	
 	public String execute() throws Exception 
 	{
+		
 		auditor = userDao.find(auditor.getId());
+		
+		if( auditor != null )
+		{
+			if( origAuditor == null || ( origAuditor != null && ( origAuditor.getId() != auditor.getId() ) ) )
+			{
+				contractorAudit.setAssignedDate(new Date());
+			}
+		}
+		else
+		{
+			contractorAudit.setAssignedDate(null);
+		}
 		
 		contractorAudit.setAuditor(auditor);
 		
 		dao.save(contractorAudit);
+
+		if( contractorAudit.getAssignedDate() != null )
+		{
+			setMessage(new SimpleDateFormat("MM/dd/yy hh:mm a").format(contractorAudit.getAssignedDate()));
+		}
+
 		return SUCCESS;
 	}
 
@@ -50,6 +75,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 		{
 			int auditId = Integer.parseInt(ids[0]);
 			contractorAudit = dao.find( auditId );
+			origAuditor = contractorAudit.getAuditor();
 		}
 	}
 	
@@ -76,5 +102,18 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 	public void setAuditor(User auditor) {
 		this.auditor = auditor;
 	}
+
+
+
+	public String getMessage() {
+		return message;
+	}
+
+
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	
 }
 
