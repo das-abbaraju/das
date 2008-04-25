@@ -12,10 +12,7 @@
 		var pars = "contractorAudit.id=" + auditId;
 		
 		var auditor = $F($('auditor_' + auditId));
-		if( auditor != '' && auditor != 0)
-		{
-			pars = pars + "&auditor.id=" + auditor;
-		} 
+		pars = pars + "&auditor.id=" + auditor;
 
 		var thisdate = $F($('scheduled_date_' + auditId + '_date'));
 		if( thisdate != '' )
@@ -24,25 +21,20 @@
 			thisdate = thisdate + ' ' + thisTime;
 			pars = pars + "&contractorAudit.scheduledDate=" + thisdate;	
 		}
-
-		thisdate = $F($('assigned_date_' + auditId + '_date'));
-		if( thisdate != '' )
+		  
+		if( $('auditlocation_' + auditId + '_Onsite').checked == true )
 		{
-			var thisTime = $('assigned_date_' + auditId + '_time').options[$('assigned_date_' + auditId + '_time').selectedIndex].text;
-			thisdate = thisdate + ' ' + thisTime;
-			pars = pars + "&contractorAudit.assignedDate=" + thisdate;	
+			pars = pars + "&contractorAudit.auditLocation=Onsite";
 		}
-
-		var location = $F($('auditlocation_' + auditId));
-		if( location != '' )
+		else if( $('auditlocation_' + auditId + '_Web').checked == true )
 		{
-			pars = pars + "&contractorAudit.auditLocation=" + location;
+			pars = pars + "&contractorAudit.auditLocation=Web";
 		}
 
 		if( pars != "contractorAudit.id=" + auditId )
 		{
-			//alert( pars );
-			var myAjax = new Ajax.Request('AuditAssignmentUpdateAjax.action', {method: 'post', parameters: pars});	
+			var assignDateDiv = 'assignDate_'+auditId;
+			var myAjax = new Ajax.Updater(assignDateDiv,'AuditAssignmentUpdateAjax.action', {method: 'post', parameters: pars});
 		}
 
 		var divName = 'audit_'+auditId;
@@ -105,16 +97,9 @@ td.reportDate {
 		<td class="reportDate"><s:date name="[0].get('createdDate')" format="M/d/yy" /></td>
 		<td><s:select id="auditor_%{[0].get('auditID')}" list="auditorList" cssClass="forms" value="%{[0].get('auditorID')}" name="operator" listKey="id" listValue="name" /></td>
 		<td class="reportDate">
-				<nobr>
-					<input name="assigned_date_<s:property value="[0].get('auditID')"/>_date" id="assigned_date_<s:property value="[0].get('auditID')"/>_date" cssClass="forms"  size="5" type="text" 
-							onClick="cal1.select(this,'assigned_date_<s:property value="[0].get('auditID')"/>_date','M/d/yy'); return false;" 
-							value="<s:property value="getBetterDate( [0].get('assignedDate'), 'MM/dd/yy hh:mm:ss a.000')"/>"/>
-					  <s:select list="@com.picsauditing.PICS.DateBean@getBusinessTimes()" listKey="key" 
-					  		listValue="value" 
-					  		name="assigned_date_%{[0].get('auditID')}_time" 
-					  		id="assigned_date_%{[0].get('auditID')}_time"
-					  		value="%{@com.picsauditing.PICS.DateBean@getIndexForTime(getBetterTime( [0].get('assignedDate'), 'MM/dd/yy hh:mm:ss a.000')) }"
-					  		/>
+				<nobr><div id="assignDate_<s:property value="[0].get('auditID')"/>">
+					<s:property value="%{getBetterDate( [0].get('assignedDate'), 'MM/dd/yy hh:mm:ss a.000')}"/>
+					 <s:property value="%{getBetterTime( [0].get('assignedDate'), 'MM/dd/yy hh:mm:ss a.000')}"/></div>
 				</nobr>	 		
 		
 		</td>
@@ -130,9 +115,9 @@ td.reportDate {
 					  		/>
 				</nobr>
 		</td>
-		<td><s:textfield id="auditlocation_%{[0].get('auditID')}" value="%{[0].get('auditLocation')}" /></td>
+		<td><s:radio list="#{'Onsite':'On site', 'Web':'Web'}" id="auditlocation_%{[0].get('auditID')}_" value="%{[0].get('auditLocation')}" /></td>
 		<td></td>
-		<td id="1audit_<s:property value="[0].get('auditID')"/>"><s:submit value="Save" onclick="javascript: return saveAudit('%{[0].get('auditID')}');" cssClass="forms" /></td>
+		<td><s:submit value="Save" onclick="javascript: return saveAudit('%{[0].get('auditID')}');" cssClass="forms" /></td>
 	</tr>
 	</s:iterator>
 </table>
