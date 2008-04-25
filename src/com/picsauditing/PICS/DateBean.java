@@ -16,6 +16,38 @@ public class DateBean {
 	public static String OLD_OFFICE_CUTOFF = "2006-08-27";
 	public static String MonthNames[] = {"January", "February", "March", "April", "May","June", "July", "August", "September", "October", "November", "December"};
 
+	protected static Map<Integer, String> times = new TreeMap<Integer, String>();
+
+	static
+	{
+		times.put( 0,"06:00 AM" );
+		times.put( 1,"06:30 AM" );
+		times.put( 2,"07:00 AM" );
+		times.put( 3,"07:30 AM" );
+		times.put( 4,"08:00 AM" );
+		times.put( 5,"08:30 AM" );
+		times.put( 6,"09:00 AM" );
+		times.put( 7,"09:30 AM" );
+		times.put( 8,"10:00 AM" );
+		times.put( 9,"10:30 AM" );
+		times.put( 10,"11:00 AM" );
+		times.put( 11,"11:30 AM" );
+		times.put( 12,"12:00 PM" );
+		times.put( 13,"12:30 PM" );
+		times.put( 14,"01:00 PM" );
+		times.put( 15,"01:30 PM" );
+		times.put( 16,"02:00 PM" );
+		times.put( 17,"02:30 PM" );
+		times.put( 18,"03:00 PM" );
+		times.put( 19,"03:30 PM" );
+		times.put( 20,"04:00 PM" );
+		times.put( 21,"04:30 PM" );
+		times.put( 22,"05:00 PM" );
+		times.put( 23,"05:30 PM" );
+		times.put( 24,"06:00 PM" );
+	}
+	
+	
 	
 	public static String toDBFormat(String month, String day, String year) throws Exception{
 		return toDBFormat(year+ "-" + month + "-" + day);
@@ -240,4 +272,23 @@ public class DateBean {
 		else 
 			return false;
 	}
+	
+	//This will return a map of business hours
+	public static Map<Integer, String> getBusinessTimes()
+	{
+		return Collections.unmodifiableMap(times);
+	}
+	
+	public static int getIndexForTime( String time )
+	{
+		for( Integer i : times.keySet() )
+		{
+			if( times.get(i).equals(time))
+			{
+				return i;
+			}
+		}
+		return 12;
+	}
+	
 }//DateBean
