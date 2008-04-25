@@ -1,7 +1,10 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ page language="java" errorPage="exception_handler.jsp"%>
+<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean"
+	scope="page" />
 <%@include file="includes/main.jsp"%>
-<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page" />
+<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean"
+	scope="page" />
 <%
 	String id = request.getParameter("id");
 	cBean.setFromDB(id);
@@ -12,11 +15,9 @@
 <meta name="header_gif" content="header_contractorDetails.gif" />
 </head>
 <body>
-<table border="0" cellspacing="0" cellpadding="1" class="blueMain">
-	<tr align="center" class="blueMain">
-		<td width="676"><%@ include file="includes/nav/secondNav.jsp"%></td>
-	</tr>
-</table>
+<h1><%=aBean.getName(id)%><span class="sub">Contractor
+Audit/Evaluations</span></h1>
+<%@ include file="utilities/adminOperatorContractorNav.jsp"%>
 <table cellspacing="1" cellpadding="3" border="0">
 	<tr class="whiteTitle" bgcolor="#003366" align="center">
 		<td></td>
