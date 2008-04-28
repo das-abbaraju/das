@@ -17,9 +17,11 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaLog;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -29,13 +31,14 @@ import com.picsauditing.jpa.entities.OshaLog;
 public class ContractorAccountDAOTest {
 	@Autowired
 	ContractorAccountDAO contractoraccountDAO;
-	ContractorAccount contractoraccount;
+	@Autowired
+	ContractorOperatorFlagDAO flagDAO;
 	@Autowired
 	AccountDAO accountDAO;
 
 	@Test
 	public void testSaveAndRemove() {
-		contractoraccount = new ContractorAccount();
+		ContractorAccount contractoraccount = new ContractorAccount();
 		contractoraccount.setName("PICS");
 		contractoraccount.setUsername("testpics120");
 		contractoraccount.setPassword("testpics");
@@ -85,10 +88,11 @@ public class ContractorAccountDAOTest {
 	public void testFind() {
 		ContractorAccount contractoraccount = contractoraccountDAO.find(3);
 		for (OshaLog osha : contractoraccount.getOshas()) {
-			assertEquals(0, osha.getFatalities1());
+			assertEquals(0, osha.getYear1().getFatalities());
 		}
-		for (Integer operatorID : contractoraccount.getFlags().keySet()) {
-			System.out.println(contractoraccount.getFlags().get(operatorID).getFlagColor());
+
+		for (OperatorAccount operator : contractoraccount.getFlags().keySet()) {
+			System.out.println(contractoraccount.getFlags().get(operator).getFlagColor());
 		}
 		assertEquals("123456789", contractoraccount.getTaxId());
 	}
@@ -98,5 +102,21 @@ public class ContractorAccountDAOTest {
 		List<ContractorAccount> contractoraccount = contractoraccountDAO
 				.findWhere("mainTrade LIKE 'Engineering'");
 		assertEquals("Inactive", contractoraccount.get(0).getStatus());
+	}
+	
+	@Test
+	public void addContractorOperatorFlag() {
+		ContractorAccount contractoraccount = contractoraccountDAO.find(3);
+		OperatorAccount operator = new OperatorAccount();
+		operator.setId(1251);
+		
+		ContractorOperatorFlag coFlag = new ContractorOperatorFlag();
+		coFlag.setFlagColor(FlagColor.Red);
+		coFlag.setContractorAccount(contractoraccount);
+		coFlag.setOperatorAccount(operator);
+		contractoraccount.getFlags().put(operator, coFlag);
+
+		flagDAO.save(coFlag);
+		contractoraccountDAO.save(contractoraccount);
 	}
 }

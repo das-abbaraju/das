@@ -34,7 +34,7 @@ public class AuditQuestionDAOTest {
 		auditquestion.setOkAnswer("NA");
 		auditquestion.setRequirement("junit test");
 		auditquestion.setIsRequired("Depends");
-		auditquestion.setDependsOnQid(Short.parseShort("2"));
+		auditquestion.setDependsOnQid(2);
 		auditquestion.setDependsOnAnswer("fail or pass");
 		auditquestion.setQuestionType("text");
 		auditquestion.setIsVisible("no");

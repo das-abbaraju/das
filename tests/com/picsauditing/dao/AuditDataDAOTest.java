@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +35,7 @@ public class AuditDataDAOTest {
 		
 		ArrayList<Integer> questions = new ArrayList<Integer>();
 		questions.add(48);
-		HashMap<Integer, AuditData> existingData = auditdataDAO.findAnswers(
+		Map<Integer, AuditData> existingData = auditdataDAO.findAnswers(
 				3259, questions);
 		for (Integer key : existingData.keySet()) {
 			auditdataDAO.remove(existingData.get(key).getDataID());
@@ -83,5 +84,14 @@ public class AuditDataDAOTest {
 		assertEquals("Pacific Industrial Contractor Screening", auditdata.get(
 				37).getAnswer());
 	}
+	
+	@Test
+	public void findAnswersByContractor() {
+		ArrayList<Integer> questionIds = new ArrayList<Integer>();
+		questionIds.add(91);
+		questionIds.add(101);
+		Map<Integer, AuditData> data = auditdataDAO.findAnswersByContractor(2657, questionIds);
+		assertEquals(2, data.size());
+    }
 
 }

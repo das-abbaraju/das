@@ -2,10 +2,13 @@ package com.picsauditing.dao;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Query;
 
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 
 public class AuditDataDAO extends PicsDAO {
 	public AuditData save(AuditData o) {
@@ -29,20 +32,59 @@ public class AuditDataDAO extends PicsDAO {
 		return a;
 	}
 
-	public HashMap<Integer, AuditData> findAnswers(int auditID, List<Integer> questionIds) {
-		StringBuilder ids = new StringBuilder();
-		ids.append(0); // So we have a list like this 0,1,2
+	public Map<Integer, AuditData> findAnswersByContractor(int conID, List<Integer> questionIds) {
+		if (questionIds.size() == 0)
+			return new HashMap<Integer, AuditData>();
 		
-		for(Integer questionID : questionIds)
-			ids.append(",").append(questionID);
+		Query query = em.createQuery("FROM AuditData d " +
+				"WHERE audit IN (FROM ContractorAudit WHERE contractorAccount.id = ? AND auditStatus = 'Active') " +
+				"AND question.questionID IN ("+glue(questionIds)+")");
+		query.setParameter(1, conID);
 		
-		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id = ? AND question.questionID IN ("+ids.toString()+") ORDER BY question.question");
+		return mapData(query.getResultList());
+	}
+
+	public Map<Integer, AuditData> findAnswers(int auditID, List<Integer> questionIds) {
+		if (questionIds.size() == 0)
+			return new HashMap<Integer, AuditData>();
+		
+		if (questionIds.contains(AuditQuestion.EMR_AVG)) {
+			// We need to get the average EMR for the past 3 years
+			questionIds.remove(AuditQuestion.EMR_AVG);
+			questionIds.add(AuditQuestion.EMR07);
+			questionIds.add(AuditQuestion.EMR06);
+			questionIds.add(AuditQuestion.EMR05);
+		}
+		
+		Query query = em.createQuery("SELECT d FROM AuditData d " +
+				"WHERE audit.id = ? AND question.questionID IN ("+glue(questionIds)+")");
 		query.setParameter(1, auditID);
 		
-		List<AuditData> result = query.getResultList();
+		return mapData(query.getResultList());
+	}
+
+	/**
+	 * Convert a List into a Map
+	 * Note: this could be a good candidate to go into a Utility class
+	 * @return
+	 */
+	private Map<Integer, AuditData> mapData(List<AuditData> result) {
 		HashMap<Integer, AuditData> indexedResult = new HashMap<Integer, AuditData>();
 		for(AuditData row : result)
 			indexedResult.put(row.getQuestion().getQuestionID(), row);
 		return indexedResult;
+	}
+	
+	/**
+	 * Convert a List into a comma-delimited String
+	 * Note: this could be a good candidate to go into a Utility class
+	 * @return
+	 */
+	private String glue(List<Integer> listIDs) {
+		StringBuilder ids = new StringBuilder();
+		ids.append("-1"); // so we don't have to worry about this ',110,243'
+		for(Integer id : listIDs)
+			ids.append(",").append(id);
+		return ids.toString();
 	}
 }

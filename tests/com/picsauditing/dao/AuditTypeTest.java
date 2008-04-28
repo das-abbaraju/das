@@ -16,10 +16,19 @@ import com.picsauditing.jpa.entities.AuditType;
 @ContextConfiguration(locations = "/tests.xml")
 public class AuditTypeTest extends TestCase {
 	@Autowired
-	AuditTypeDAO dao = null;
+	AuditTypeDAO dao;
 
 	@Test
 	public void showDaoUsage() {
+		List<AuditType> auditTypes = dao.findAll();
+
+		for (AuditType at : auditTypes) {
+			System.out.println(at.getAuditName());
+		}
+	}
+
+	@Test
+	public void auditBuilder() {
 		List<AuditType> auditTypes = dao.findAll();
 
 		for (AuditType at : auditTypes) {
