@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.AuditActionSupport;
@@ -319,5 +320,5 @@ public class VerifyView extends AuditActionSupport {
 		this.followUp = followUp;
 
 	}
-
+	
 }
