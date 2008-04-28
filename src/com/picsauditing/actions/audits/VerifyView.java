@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,6 +17,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.OshaLog;
+import com.picsauditing.jpa.entities.OshaLogYear;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailContractorBean;
 import com.picsauditing.mail.EmailTemplates;
@@ -25,7 +27,7 @@ public class VerifyView extends AuditActionSupport {
 	@Autowired
 	private OshaLog osha;
 	private AuditDataDAO pqfDao;
-	private HashMap<Integer, AuditData> emr = new HashMap<Integer, AuditData>();
+	private Map<Integer, AuditData> emr = new HashMap<Integer, AuditData>();
 	private int followUp = 0;
 
 	public VerifyView(ContractorAuditDAO contractorAuditDAO, AuditDataDAO pqfDao) {
@@ -40,46 +42,9 @@ public class VerifyView extends AuditActionSupport {
 			permissions.tryPermission(OpPerms.AuditVerification, OpType.Edit);
 			for (OshaLog osha2 : conAudit.getContractorAccount().getOshas()) {
 				if (osha2.getId() == osha.getId()) {
-					osha2.setManHours1(osha.getManHours1());
-					osha2.setManHours2(osha.getManHours2());
-					osha2.setManHours3(osha.getManHours3());
-					osha2.setFatalities1(osha.getFatalities1());
-					osha2.setFatalities2(osha.getFatalities2());
-					osha2.setFatalities3(osha.getFatalities3());
-					osha2.setLostWorkCases1(osha.getLostWorkCases1());
-					osha2.setLostWorkCases2(osha.getLostWorkCases2());
-					osha2.setLostWorkCases3(osha.getLostWorkCases3());
-					osha2.setLostWorkDays1(osha.getLostWorkDays1());
-					osha2.setLostWorkDays2(osha.getLostWorkDays2());
-					osha2.setLostWorkDays3(osha.getLostWorkDays3());
-					osha2.setInjuryIllnessCases1(osha.getInjuryIllnessCases1());
-					osha2.setInjuryIllnessCases2(osha.getInjuryIllnessCases2());
-					osha2.setInjuryIllnessCases3(osha.getInjuryIllnessCases3());
-					osha2.setRestrictedWorkCases1(osha
-							.getRestrictedWorkCases1());
-					osha2.setRestrictedWorkCases2(osha
-							.getRestrictedWorkCases2());
-					osha2.setRestrictedWorkCases3(osha
-							.getRestrictedWorkCases3());
-					osha2.setRecordableTotal1(osha.getRecordableTotal1());
-					osha2.setRecordableTotal2(osha.getRecordableTotal2());
-					osha2.setRecordableTotal3(osha.getRecordableTotal3());
-					osha2.setNa1B(osha.getNa1B());
-					osha2.setNa2B(osha.getNa2B());
-					osha2.setNa3B(osha.getNa3B());
-					osha2.setComment1(osha.getComment1());
-					osha2.setComment2(osha.getComment2());
-					osha2.setComment3(osha.getComment3());
-					
-					if( osha2.getVerified1() != osha.getVerified1() )
-						osha2.setVerified1(osha.getVerified1());
-					
-					if( osha2.getVerified2() != osha.getVerified2() )
-						osha2.setVerified2(osha.getVerified2());
-					
-					if( osha2.getVerified3() != osha.getVerified3() )
-						osha2.setVerified3(osha.getVerified3());
-					
+					saveOSHA(osha2.getYear1(), osha.getYear1());
+					saveOSHA(osha2.getYear2(), osha.getYear2());
+					saveOSHA(osha2.getYear3(), osha.getYear3());
 				}
 			}
 			contractorAuditDAO.save(conAudit);
@@ -90,9 +55,7 @@ public class VerifyView extends AuditActionSupport {
 			emrQuestions.add(AuditQuestion.EMR07);
 			emrQuestions.add(AuditQuestion.EMR06);
 			emrQuestions.add(AuditQuestion.EMR05);
-			emrQuestions.add(AuditQuestion.EMR04);
-			HashMap<Integer, AuditData> emrDB = pqfDao.findAnswers(
-					this.auditID, emrQuestions);
+			Map<Integer, AuditData> emrDB = pqfDao.findAnswers(this.auditID, emrQuestions);
 			saveAuditData(emrDB, AuditQuestion.EMR07);
 			saveAuditData(emrDB, AuditQuestion.EMR06);
 			saveAuditData(emrDB, AuditQuestion.EMR05);
@@ -103,13 +66,27 @@ public class VerifyView extends AuditActionSupport {
 		setVerifiedPercent();
 		return SUCCESS;
 	}
+	
+	private void saveOSHA(OshaLogYear oldOsha, OshaLogYear newOsha) {
+		oldOsha.setManHours(newOsha.getManHours());
+		oldOsha.setFatalities(newOsha.getFatalities());
+		oldOsha.setLostWorkCases(newOsha.getLostWorkCases());
+		oldOsha.setLostWorkDays(newOsha.getLostWorkDays());
+		oldOsha.setInjuryIllnessCases(newOsha.getInjuryIllnessCases());
+		oldOsha.setRestrictedWorkCases(newOsha.getRestrictedWorkCases());
+		oldOsha.setRecordableTotal(newOsha.getRecordableTotal());
+		oldOsha.setNa(newOsha.getNa());
+		oldOsha.setComment(newOsha.getComment());
+		oldOsha.setVerified(newOsha.getVerified());
+	}
 
 	private void setVerifiedPercent() {
 		int verified = 0;
 		
-		if (osha.getVerified1()) verified++;
-		if (osha.getVerified2()) verified++;
-		if (osha.getVerified3()) verified++;
+		if (osha.getYear1().getVerified()) verified++;
+		if (osha.getYear2().getVerified()) verified++;
+		if (osha.getYear3().getVerified()) verified++;
+		
 		if (getEmr1() != null && YesNo.Yes.equals(getEmr1().getIsCorrect())) verified++;
 		if (getEmr2() != null && YesNo.Yes.equals(getEmr2().getIsCorrect())) verified++;
 		if (getEmr3() != null && YesNo.Yes.equals(getEmr3().getIsCorrect())) verified++;
@@ -126,7 +103,7 @@ public class VerifyView extends AuditActionSupport {
 		contractorAuditDAO.save(conAudit);
 	}
 
-	private void saveAuditData(HashMap<Integer, AuditData> emrDB, int year) {
+	private void saveAuditData(Map<Integer, AuditData> emrDB, int year) {
 		emrDB.get(year).setVerifiedAnswer(emr.get(year).getVerifiedAnswer());
 		emrDB.get(year).setComment(emr.get(year).getComment());
 		emrDB.get(year).setIsCorrect(emr.get(year).getIsCorrect());
@@ -151,7 +128,6 @@ public class VerifyView extends AuditActionSupport {
 		emrQuestions.add(AuditQuestion.EMR07);
 		emrQuestions.add(AuditQuestion.EMR06);
 		emrQuestions.add(AuditQuestion.EMR05);
-		emrQuestions.add(AuditQuestion.EMR04);
 		emr = pqfDao.findAnswers(this.auditID, emrQuestions);
 		
 	}
@@ -170,6 +146,15 @@ public class VerifyView extends AuditActionSupport {
 		return SUCCESS;
 	}
 
+	private void appendOsha(StringBuffer sb, OshaLogYear osha, int year) {
+		if( ! osha.getVerified() )
+		{
+			sb.append(year);
+			sb.append( " OSHA - ");
+			sb.append(osha.getComment());
+			sb.append("\n");
+		}
+	}
 	public String sendEmail() throws Exception {
 		this.findConAudit();
 		loadData();
@@ -178,27 +163,9 @@ public class VerifyView extends AuditActionSupport {
 		
 		StringBuffer sb = new StringBuffer("");
 		
-		if( ! osha.getVerified1() )
-		{
-			sb.append(getYear1());
-			sb.append( " OSHA - ");
-			sb.append(osha.getComment1());
-			sb.append("\n");
-		}
-		if( ! osha.getVerified2() )
-		{
-			sb.append(getYear2());
-			sb.append( " OSHA - ");
-			sb.append(osha.getComment2());
-			sb.append("\n");
-		}
-		if( ! osha.getVerified3() )
-		{
-			sb.append(getYear3());
-			sb.append( " OSHA - ");
-			sb.append(osha.getComment3());
-			sb.append("\n");
-		}
+		appendOsha(sb, osha.getYear1(), getYear1());
+		appendOsha(sb, osha.getYear2(), getYear2());
+		appendOsha(sb, osha.getYear3(), getYear3());
 		
 		AuditData temp = getEmr1();
 		if( ! temp.getIsCorrectBoolean() )
@@ -258,7 +225,7 @@ public class VerifyView extends AuditActionSupport {
 		this.oshaID = oshaID;
 	}
 
-	public HashMap<Integer, AuditData> getEmr() {
+	public Map<Integer, AuditData> getEmr() {
 		return emr;
 	}
 
