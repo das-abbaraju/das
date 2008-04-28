@@ -70,15 +70,15 @@
 		</action>
 		<action name="VerifySaveFollowUpAjax" method="saveFollowUp"
 			class="com.picsauditing.actions.audits.VerifyView">
-			<result>includes/blank.jsp</result>
+			<result>struts/blank.jsp</result>
 		</action>
 		<action name="VerifySwitchFilesAjax" method="switchFiles"
 			class="com.picsauditing.actions.contractors.SwitchFiles">
-			<result>includes/blank.jsp</result>
+			<result>struts/blank.jsp</result>
 		</action>
 		<action name="VerifySendEmailAjax" method="sendEmail"
 			class="com.picsauditing.actions.audits.VerifyView">
-			<result>includes/blank.jsp</result>
+			<result>struts/blank.jsp</result>
 		</action>
 
 		<action name="ConAuditList"
@@ -98,7 +98,7 @@
 
 		<action name="AuditSaveAjax"
 			class="com.picsauditing.actions.audits.AuditSave">
-			<result>includes/blank.jsp</result>
+			<result>struts/blank.jsp</result>
 		</action>
 
 		<action name="ContractorSearch"
