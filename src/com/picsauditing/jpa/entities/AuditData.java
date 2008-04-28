@@ -45,7 +45,7 @@ public class AuditData implements java.io.Serializable {
 		this.dataID = dataID;
 	}
 
-	@ManyToOne()
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "auditID", nullable = false, updatable = false)
 	public ContractorAudit getAudit() {
 		return audit;
@@ -142,5 +142,15 @@ public class AuditData implements java.io.Serializable {
 	public void setWasChanged(YesNo wasChanged) {
 		this.wasChanged = wasChanged;
 	}
-
+	
+	@Transient
+	public String getVerifiedAnswerOrAnswer() {
+		if (verifiedAnswer != null && verifiedAnswer.length() > 0)
+			return verifiedAnswer;
+		
+		if (answer != null)
+			return answer;
+		
+		return "";
+	}
 }

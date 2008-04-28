@@ -6,6 +6,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -21,7 +23,7 @@ public class ContractorOperatorFlag {
 	private OperatorAccount operatorAccount;
 	private ContractorAccount contractorAccount;
 	private FlagColor flagColor;
-	private Date lastUpdate;
+	private Date lastUpdate = new Date();
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -54,6 +56,7 @@ public class ContractorOperatorFlag {
 		this.contractorAccount = contractorAccount;
 	}
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "flag", nullable = false)
 	public FlagColor getFlagColor() {
 		return flagColor;

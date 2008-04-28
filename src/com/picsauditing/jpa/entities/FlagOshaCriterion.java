@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 @Embeddable
 public class FlagOshaCriterion {
@@ -17,6 +18,11 @@ public class FlagOshaCriterion {
 	public void setFlag(YesNo flag) {
 		this.flag = flag;
 	}
+	
+	@Transient
+	public boolean isRequired() {
+		return YesNo.Yes.equals(flag);
+	}
 
 	@Column(nullable=false)
 	public float getHurdle() {
@@ -31,15 +37,20 @@ public class FlagOshaCriterion {
 	public int getTime() {
 		return time;
 	}
-
+	
+	@Transient
+	public boolean isTimeAverage(){
+		return time == 3;
+	}
+	
 	public void setTime(int time) {
 		this.time = time;
 	}
 	
-	public boolean isFlagged(String value) {
-		if (flag.equals(YesNo.No))
+	public boolean isFlagged(float value) {
+		if (!isRequired() || isTimeAverage())
 			return false;
-		return true;
+		return value > hurdle;
 	}
 
 }

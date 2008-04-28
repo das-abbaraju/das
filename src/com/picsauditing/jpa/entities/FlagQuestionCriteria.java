@@ -107,7 +107,7 @@ public class FlagQuestionCriteria {
 				return value.equals(answer);
 			else
 				return !value.equals(answer);
-		if ("-".equals(answer))
+		if ("".equals(answer))
 			return true;
 		if ("Yes/No/NA".equals(questionType) || "Yes/No".equals(questionType) || "Manual".equals(questionType))
 			if ("=".equals(comparison))

@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "flagoshacriteria")
@@ -89,4 +90,11 @@ public class FlagOshaCriteria {
 		this.fatalities = fatalities;
 	}
 
+	@Transient
+	public boolean isRequired() {
+		return lwcr.isRequired() 
+			|| trir.isRequired() 
+			|| fatalities.isRequired();
+	}
+	
 }

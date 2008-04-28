@@ -25,6 +25,7 @@ public class AuditQuestion implements java.io.Serializable {
 	static public int EMR05 = 889;
 	static public int EMR06 = 1519;
 	static public int EMR07 = 1617;
+	static public int EMR_AVG = 0;
 
 	private int questionID;
 	private AuditSubCategory subCategory;
@@ -34,7 +35,7 @@ public class AuditQuestion implements java.io.Serializable {
 	private String okAnswer;
 	private String requirement;
 	private String isRequired;
-	private short dependsOnQid;
+	private Integer dependsOnQid;
 	private String dependsOnAnswer;
 	private String questionType;
 	private String isVisible;
@@ -135,11 +136,11 @@ public class AuditQuestion implements java.io.Serializable {
 	}
 
 	@Column(name = "dependsOnQID", nullable = false)
-	public short getDependsOnQid() {
+	public Integer getDependsOnQid() {
 		return this.dependsOnQid;
 	}
 
-	public void setDependsOnQid(short dependsOnQid) {
+	public void setDependsOnQid(Integer dependsOnQid) {
 		this.dependsOnQid = dependsOnQid;
 	}
 

@@ -28,8 +28,8 @@ public class ContractorAudit {
 	private int id = 0;
 	private AuditType auditType;
 	private ContractorAccount contractorAccount;
-	private Date createdDate;
-	private AuditStatus auditStatus;
+	private Date createdDate = new Date();
+	private AuditStatus auditStatus = AuditStatus.Pending;
 	private Date expiresDate;
 	private User auditor;
 	private Date assignedDate;

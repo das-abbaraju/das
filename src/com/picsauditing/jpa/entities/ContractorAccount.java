@@ -74,7 +74,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	protected List<OshaLog> oshas;
 	protected List<ContractorAudit> audits;
 	protected List<ContractorOperator> operators;
-	protected Map<Integer, ContractorOperatorFlag> flags;
+	protected Map<OperatorAccount, ContractorOperatorFlag> flags;
 
 	public ContractorAccount() {
 		this.type = "Contractor";
@@ -505,13 +505,16 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.oqEmployees = oqEmployees;
 	}
 
-	@MapKey(name="id")
+	/**
+	 * Map of Contractor Flags with OperatorID as the key
+	 */
+	@MapKey(name="operatorAccount")
 	@OneToMany(mappedBy="contractorAccount")
-	public Map<Integer, ContractorOperatorFlag> getFlags() {
+	public Map<OperatorAccount, ContractorOperatorFlag> getFlags() {
 		return flags;
 	}
 
-	public void setFlags(Map<Integer, ContractorOperatorFlag> flags) {
+	public void setFlags(Map<OperatorAccount, ContractorOperatorFlag> flags) {
 		this.flags = flags;
 	}
 	

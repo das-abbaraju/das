@@ -7,6 +7,8 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -14,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "generalcontractors")
@@ -23,10 +26,13 @@ public class ContractorOperator implements java.io.Serializable {
 	private OperatorAccount operatorAccount;
 	private ContractorAccount contractorAccount;
 	private Date dateAdded;
+	private FlagColor forceFlag;
+	private Date forceBegin;
+	private Date forceEnd;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", nullable = false)
+	@Column(nullable = false)
 	public int getId() {
 		return this.id;
 	}
@@ -56,7 +62,6 @@ public class ContractorOperator implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "dateAdded", nullable = false, length = 10)
 	public Date getDateAdded() {
 		return this.dateAdded;
 	}
@@ -65,4 +70,52 @@ public class ContractorOperator implements java.io.Serializable {
 		this.dateAdded = dateAdded;
 	}
 
+	@Enumerated(EnumType.STRING)
+	public FlagColor getForceFlag() {
+		return forceFlag;
+	}
+
+	public void setForceFlag(FlagColor forceFlag) {
+		this.forceFlag = forceFlag;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getForceBegin() {
+		return forceBegin;
+	}
+
+	public void setForceBegin(Date forceBegin) {
+		this.forceBegin = forceBegin;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getForceEnd() {
+		return forceEnd;
+	}
+
+	public void setForceEnd(Date forceEnd) {
+		this.forceEnd = forceEnd;
+	}
+
+	@Transient
+	public boolean isForcedFlag() {
+		Date now = new Date();
+
+		if (forceEnd != null) {
+			if (now.after(forceEnd)) {
+				// This force has expired, so remove it
+				forceBegin = null;
+				forceEnd = null;
+				forceFlag = null;
+				return false;
+			}
+		}
+		
+		if (forceBegin == null || now.compareTo(forceBegin) >= 0) {
+			// This flag is in effect as long as it's not null
+			return forceFlag != null;
+		}
+		// The flag is not yet in effect
+		return false;
+	}
 }
