@@ -40,7 +40,7 @@ public class OshaLogYear {
 		return !YesNo.Yes.equals(na);
 	}
 	
-	public void isApplicable(boolean value) {
+	public void setApplicable(boolean value) {
 		this.na = (value) ? YesNo.No : YesNo.Yes;
 	}
 
@@ -171,23 +171,5 @@ public class OshaLogYear {
 		
 		return 0;
 	}
-	
-	
-	@Transient
-	public boolean getNaBoolean()
-	{
-		if( this.na != null )
-		{
-			return this.na.equals(YesNo.Yes);
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
-	public void setNaBoolean( boolean value )
-	{
-		this.na = (value) ? YesNo.Yes : YesNo.No;
-	}
+
 }
