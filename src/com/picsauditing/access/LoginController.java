@@ -3,11 +3,14 @@ package com.picsauditing.access;
 import java.sql.ResultSet;
 import java.util.HashSet;
 
-import javax.servlet.http.*;
+import javax.servlet.http.Cookie;
+
+import com.picsauditing.PICS.AccountBean;
 import com.picsauditing.PICS.DataBean;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.AccountBean;
 import com.picsauditing.PICS.PermissionsBean;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAudit;
 
 /**
  * Populate the permissions object in session with appropriate login credentials and access/permission data
@@ -225,7 +228,7 @@ public class LoginController extends DataBean {
 				return;
 			}
 			if (cBean.canEditPrequal()) {
-				response.sendRedirect("pqf_editMain.jsp?auditType=PQF&mustFinishPrequal=&id="+aBean.id);
+				response.sendRedirect("pqf_editMain.jsp?auditID="+cBean.getAudit(AuditType.PQF).getId());
 				return;
 			}
 		}

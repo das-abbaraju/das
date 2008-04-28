@@ -1596,4 +1596,10 @@ public class ContractorBean extends DataBean {
 		ContractorAuditDAO dao = (ContractorAuditDAO)SpringUtils.getBean("ContractorAuditDAO");
 		return dao.findByContractor(Integer.parseInt(id));
 	}
+
+	public ContractorAudit getAudit(int auditTypeID) {
+		if (audits == null)
+			getValidAudits();
+		return audits.get(auditTypeID);
+}
 }
