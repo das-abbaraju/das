@@ -18,7 +18,7 @@
 <table width="657" border="0" cellpadding="0" cellspacing="0">
 	<tr align="center" class="blueMain">
 		<td align="left">
-		<h1><%=aBean.getName(id)%><span class="sub">Forms & Documents</span></h1>
+		<h1>Forms & Documents</h1>
 		<%@ include file="utilities/adminOperatorContractorNav.jsp"%></td>
 	</tr>
 	<tr>
