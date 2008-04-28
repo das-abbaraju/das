@@ -42,7 +42,7 @@
 
 		<action name="AuditAssignmentUpdateAjax"
 			class="com.picsauditing.actions.report.AuditAssignmentUpdate">
-			<result>/includes/blank.jsp</result>
+			<result>struts/blank.jsp</result>
 		</action>
 
 		<action name="FacilitiesGetAjax"
@@ -88,7 +88,7 @@
 
 		<action name="AuditTypeChoose"
 			class="com.picsauditing.actions.auditType.AuditTypeChoose">
-			<result>audit_selectType.jsp</result>
+			<result>struts/audits/audit_selectType.jsp</result>
 		</action>
 
 		<action name="ReportNCMS"
@@ -116,7 +116,6 @@
 			<result>struts/reports/contractors_operator.jsp</result>
 		</action>
 	
-
 		<action name="ProfileEdit"
 			class="com.picsauditing.actions.users.ProfileEdit">
 			<result>struts/users/profile_edit.jsp</result>
