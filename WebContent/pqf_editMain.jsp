@@ -93,7 +93,7 @@
 <meta name="header_gif" content="header_prequalification.gif" />
 </head>
 <body>
-<h1><%=aBean.getName(id)%><span class="sub">PQF</span></h1>
+<h1><%=aBean.getName(id)%></h1>
 <%@ include file="includes/nav/pqfHeader.jsp"%>
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
 	<tr>

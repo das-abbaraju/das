@@ -16,13 +16,10 @@ td.label {
 	background-color: #BBBBBB;
 }
 </style>
+<%@ include file="/utilities/adminOperatorContractorNav.jsp"%>
 <table border="0" cellspacing="0" cellpadding="1">
-	<tr class="blueMain">
-		<td width="676" colspan="2">
-		<%@ include file="/utilities/adminOperatorContractorNav.jsp"%></td>
-		</tr>
-	<tr align="center">
-		<td class="blueHeader" colspan="2"><%=action.getAudit().getAuditType().getAuditName()%></td>
+	<tr class="blueMain" align="center">
+		<td width="676" class="blueHeader" colspan="2"><%=action.getAudit().getAuditType().getAuditName()%></td>
 	</tr>
 	<tr valign="top">
 		<td align="right">

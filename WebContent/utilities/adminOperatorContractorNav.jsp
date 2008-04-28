@@ -57,14 +57,6 @@
 	<%
 		}
 	%>
-
-	<%
-		if (permissions.isContractor() && cBean.canEditPrequal()) {
-	%>
-	<li><a href="pqf_editMain.jsp?id=<%=id%>">Complete PQF</a></li>
-	<%
-		}
-	%>
 	<li><a href="ConAuditList.action?id=<%=id%>">Audits</a></li>
 	<%
 		for (ContractorAudit pqf : cBean.getAudits()) {
