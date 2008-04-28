@@ -1,6 +1,7 @@
 package com.picsauditing.PICS;
 
 import java.util.*;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.ServletContext;
@@ -98,7 +99,17 @@ public class DateBean {
 //		System.out.println("Valid DB Date format in DateBean.toShowFormat(): "+dateString+" to "+temp);
 		return temp;
 	}//toDBFormat
-
+ 	
+ 	public static String format(Date date, String format) {
+ 		if (format == null || format.equals(""))
+ 			format = "M/d/yy";
+ 		if (date == null)
+ 			return "";
+ 		
+		SimpleDateFormat formatter = new SimpleDateFormat(format);
+		return formatter.format(date);
+	}
+ 	
 	public static String getTodaysDate() throws Exception {
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat format = new SimpleDateFormat("M/d/yy");
