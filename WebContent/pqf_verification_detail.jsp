@@ -87,16 +87,17 @@ function sendEmail() {
 			<tr class="blueMain" align="center">
 				<td align="right">Exempt:</td>
 				<td>&nbsp;</td>
-				<td class="highlight"><s:checkbox name="osha.na1B" /></td>
-				<td><s:checkbox name="osha.na2B" /></td>
-				<td class="highlight"><s:checkbox name="osha.na3B" /></td>
+				
+				<td class="highlight"><s:checkbox name="osha.year1.naBoolean" value="osha.year1.naBoolean"/></td>
+				<td><s:checkbox name="osha.year2.naBoolean" value="osha.year2.naBoolean"/></td>
+				<td class="highlight"><s:checkbox name="osha.year3.naBoolean" value="osha.year3.naBoolean"/></td>
 			</tr>
 			<tr class="blueMain" align="center" valign="top">
 				<td align="right"><a
 					href="pqf_OSHA.jsp?action=Edit&catID=29&oID=<s:property value="oshaID" />&id=<s:property value="id" />#upload"
 					class="blueMain">Upload New Files</a></td>
 				<td>&nbsp;</td>
-				<td class="highlight"><s:if test="osha.file1yearAgo">
+				<td class="highlight"><s:if test="osha.year1.file && osha.year1.file.name().equals('Yes')">
 					<a href="#"
 						onClick="window.open('servlet/showpdf?id=<s:property value="id" />&OID=<s:property value="oshaID" />&file=osha1','Osha300Logs','scrollbars=yes,resizable=yes,width=700,height=450'); return false;"
 						onMouseOver="status='Osha 300 Logs'">Show File</a>
@@ -107,12 +108,12 @@ function sendEmail() {
 						<option>2005</option>
 					</select>
 				</s:if> <s:else>No File</s:else>
-				<td><s:if test="osha.file2yearAgo">
+				<td><s:if test="osha.year2.file && osha.year2.file.name().equals('Yes')">
 					<a href="#"
 						onClick="window.open('servlet/showpdf?id=<s:property value="id" />&OID=<s:property value="oshaID" />&file=osha2','Osha300Logs','scrollbars=yes,resizable=yes,width=700,height=450'); return false;"
 						onMouseOver="status='Osha 300 Logs'">Show File</a>
 				</s:if> <s:else>No File</s:else></td>
-				<td class="highlight"><s:if test="osha.file3yearAgo">
+				<td class="highlight"><s:if test="osha.year3.file && osha.year3.file.name().equals('Yes')">
 					<a href="#"
 						onClick="window.open('servlet/showpdf?id=<s:property value="id" />&OID=<s:property value="oshaID" />&file=osha3','Osha300Logs','scrollbars=yes,resizable=yes,width=700,height=450'); return false;"
 						onMouseOver="status='Osha 300 Logs'">Show File</a>
@@ -121,98 +122,98 @@ function sendEmail() {
 			<tr class="blueMain" align="right">
 				<td>Man Hours Worked:</td>
 				<td>&nbsp;</td>
-				<td class="highlight"><s:textfield name="osha.manHours1"
+				<td class="highlight"><s:textfield name="osha.year1.manHours"
 					cssClass="oshanum" /></td>
-				<td><s:textfield name="osha.manHours2" cssClass="oshanum" /></td>
-				<td class="highlight"><s:textfield name="osha.manHours3"
+				<td><s:textfield name="osha.year2.manHours" cssClass="oshanum" /></td>
+				<td class="highlight"><s:textfield name="osha.year3.manHours"
 					cssClass="oshanum" /></td>
 			</tr>
 			<tr class="blueMain" align="right">
 				<td>Number of Fatalities:</td>
 				<td align="center">G</td>
-				<td class="highlight"><s:textfield name="osha.fatalities1"
+				<td class="highlight"><s:textfield name="osha.year1.fatalities"
 					cssClass="oshanum" /></td>
-				<td><s:textfield name="osha.fatalities2" cssClass="oshanum" /></td>
-				<td class="highlight"><s:textfield name="osha.fatalities3"
+				<td><s:textfield name="osha.year2.fatalities" cssClass="oshanum" /></td>
+				<td class="highlight"><s:textfield name="osha.year3.fatalities"
 					cssClass="oshanum" /></td>
 			</tr>
 			<tr class="blueMain" align="right">
 				<td>Number of Lost Work Cases:</td>
 				<td align="center">H</td>
-				<td class="highlight"><s:textfield name="osha.lostWorkCases1"
+				<td class="highlight"><s:textfield name="osha.year1.lostWorkCases"
 					cssClass="oshanum" /></td>
-				<td><s:textfield name="osha.lostWorkCases2" cssClass="oshanum" /></td>
-				<td class="highlight"><s:textfield name="osha.lostWorkCases3"
+				<td><s:textfield name="osha.year2.lostWorkCases" cssClass="oshanum" /></td>
+				<td class="highlight"><s:textfield name="osha.year3.lostWorkCases"
 					cssClass="oshanum" /></td>
 			</tr>
 			<tr class="blueMain" align="right">
 				<td>Number of Lost Workdays:</td>
 				<td>K(L)</td>
-				<td class="highlight"><s:textfield name="osha.lostWorkDays1"
+				<td class="highlight"><s:textfield name="osha.year1.lostWorkDays"
 					cssClass="oshanum" /></td>
-				<td><s:textfield name="osha.lostWorkDays2" cssClass="oshanum" /></td>
-				<td class="highlight"><s:textfield name="osha.lostWorkDays3"
+				<td><s:textfield name="osha.year1.lostWorkDays" cssClass="oshanum" /></td>
+				<td class="highlight"><s:textfield name="osha.year3.lostWorkDays"
 					cssClass="oshanum" /></td>
 			</tr>
 			<tr class="blueMain" align="right">
 				<td>Injury &amp; Illnesses Medical Cases:</td>
 				<td align="center">J</td>
 				<td class="highlight"><s:textfield
-					name="osha.injuryIllnessCases1" cssClass="oshanum" /></td>
-				<td><s:textfield name="osha.injuryIllnessCases2"
+					name="osha.year1.injuryIllnessCases" cssClass="oshanum" /></td>
+				<td><s:textfield name="osha.year2.injuryIllnessCases"
 					cssClass="oshanum" /></td>
 				<td class="highlight"><s:textfield
-					name="osha.injuryIllnessCases3" cssClass="oshanum" /></td>
+					name="osha.year3.injuryIllnessCases" cssClass="oshanum" /></td>
 			</tr>
 			<tr class="blueMain" align="right">
 				<td>Restricted Work Cases:</td>
 				<td align="center">I</td>
 				<td class="highlight"><s:textfield
-					name="osha.restrictedWorkCases1" cssClass="oshanum" /></td>
-				<td><s:textfield name="osha.restrictedWorkCases2"
+					name="osha.year1.restrictedWorkCases" cssClass="oshanum" /></td>
+				<td><s:textfield name="osha.year2.restrictedWorkCases"
 					cssClass="oshanum" /></td>
 				<td class="highlight"><s:textfield
-					name="osha.restrictedWorkCases3" cssClass="oshanum" /></td>
+					name="osha.year3.restrictedWorkCases" cssClass="oshanum" /></td>
 			</tr>
 			<tr class="blueMain" align="right">
 				<td>Total Injuries and Illnesses:</td>
 				<td>&nbsp;</td>
-				<td class="highlight"><s:textfield name="osha.recordableTotal1"
+				<td class="highlight"><s:textfield name="osha.year1.recordableTotal"
 					cssClass="oshanum" /></td>
-				<td><s:textfield name="osha.recordableTotal2"
+				<td><s:textfield name="osha.year2.recordableTotal"
 					cssClass="oshanum" /></td>
-				<td class="highlight"><s:textfield name="osha.recordableTotal3"
+				<td class="highlight"><s:textfield name="osha.year3.recordableTotal"
 					cssClass="oshanum" /></td>
 			</tr>
 			<tr class="blueMain" align="center">
 				<td align="right">Is Correct:</td>
 				<td>&nbsp;</td>
 				<td class="highlight" style="font-size: 14px; font-weight: bolder;">
-					<input type="radio" name="osha.verified1" value="true" <s:if test="osha.verified1">checked</s:if>/>Yes
-					<input type="radio" name="osha.verified1" value="false" <s:if test="osha.verified1 == null || ! osha.verified1">checked</s:if>/>No
+					<input type="radio" name="osha.year1.verified" value="true"  <s:if test="osha.year1.verified">checked</s:if>/>Yes
+					<input type="radio" name="osha.year1.verified" value="false" <s:if test="!osha.year1.verified">checked</s:if>/>No
 					</td>
 				<td style="font-size: 14px; font-weight: bolder;">
-					<input type="radio" name="osha.verified2" value="true" <s:if test="osha.verified2">checked</s:if>/>Yes
-					<input type="radio" name="osha.verified2" value="false" <s:if test="osha.verified2 == null || ! osha.verified2">checked</s:if>/>No
+					<input type="radio" name="osha.year2.verified" value="true"  <s:if test="osha.year2.verified">checked</s:if>/>Yes
+					<input type="radio" name="osha.year2.verified"  value="false" <s:if test="!osha.year2.verified">checked</s:if>/>No
 					</td>
 				<td class="highlight" style="font-size: 14px; font-weight: bolder;">
-					<input type="radio" name="osha.verified3" value="true" <s:if test="osha.verified3">checked</s:if>/>Yes
-					<input type="radio" name="osha.verified3" value="false" <s:if test="osha.verified3 == null || ! osha.verified3">checked</s:if>/>No
+					<input type="radio" name="osha.year3.verified" value="true" <s:if test="osha.year3.verified">checked</s:if>/>Yes
+					<input type="radio" name="osha.year3.verified" value="false" <s:if test="!osha.year3.verified">checked</s:if>/>No
 					</td>
 			</tr>
 			<tr class="blueMain" align="center">
 				<td align="right">Verified Date:</td>
 				<td>&nbsp;</td>
-				<td class="highlight"><s:date name="osha.verifiedDate1" format="MM/dd/yyyy"/></td>
-				<td><s:date name="osha.verifiedDate2" format="MM/dd/yyyy"/></td>
-				<td class="highlight"><s:date name="osha.verifiedDate3" format="MM/dd/yyyy"/></td>
+				<td class="highlight"><s:date name="osha.year1.verifiedDate" format="MM/dd/yyyy"/></td>
+				<td><s:date name="osha.year2.verifiedDate" format="MM/dd/yyyy"/></td>
+				<td class="highlight"><s:date name="osha.year3.verifiedDate" format="MM/dd/yyyy"/></td>
 			</tr>
 			<tr class="blueMain" align="center">
 				<td align="right">Issue:</td>
 				<td>&nbsp;</td>
-				<td class="highlight"><s:select list="oshaProblems" name="osha.comment1" cssClass="blueMain" /></td>
-				<td><s:select list="oshaProblems" name="osha.comment2" cssClass="blueMain" /></td>
-				<td class="highlight"><s:select list="oshaProblems" name="osha.comment3" cssClass="blueMain" /></td>
+				<td class="highlight"><s:select list="oshaProblems" name="osha.year1.comment" cssClass="blueMain" /></td>
+				<td><s:select list="oshaProblems" name="osha.year2.comment" cssClass="blueMain" /></td>
+				<td class="highlight"><s:select list="oshaProblems" name="osha.year3.comment" cssClass="blueMain" /></td>
 			</tr>
 		</s:if>
 		<s:else>
