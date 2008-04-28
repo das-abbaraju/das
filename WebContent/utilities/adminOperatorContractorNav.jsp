@@ -1,4 +1,5 @@
 <%@page import="com.picsauditing.jpa.entities.ContractorAudit"%>
+<%@page import="com.picsauditing.jpa.entities.AuditStatus"%>
 <div id="internalnavcontainer">
 <ul id="navlist">
 	<li><a href="ContractorView.action?id=<%=id%>">Details</a></li>
@@ -42,18 +43,18 @@
 	<li><a href="ConAuditList.action?id=<%=id%>">Audits</a></li>
 	<%
 		for (ContractorAudit pqf : cBean.getAudits()) {
-			if (permissions.isAdmin()
-					|| pqf.getAuditor().getId() == permissions.getUserId()
-					|| permissions.canSeeAudit(pqf.getAuditType()
-							.getAuditTypeID())) {
-				boolean selected = false;
-				if (request.getRequestURI().contains("pqf")) {
-					String rAuditID = request.getParameter("auditID");
-					selected = pqf.getId() == Integer.parseInt(rAuditID);
-				}
+			if (!pqf.getAuditStatus().equals(AuditStatus.Expired)) {
+				if (permissions.isAdmin()
+					|| permissions.canSeeAudit(pqf.getAuditType().getAuditTypeID())) {
+					boolean selected = false;
+					if (request.getRequestURI().contains("pqf")) {
+						String rAuditID = request.getParameter("auditID");
+						selected = pqf.getId() == Integer.parseInt(rAuditID);
+					}
 	%><li><a <%= selected ? "class=\"current\"" : "" %>href="pqf_view.jsp?auditID=<%=pqf.getId()%>"><%=pqf.getAuditType().getAuditName()%></a></li>
 	<%
-		}
+				}
+			}
 		}
 	%>
 </ul>

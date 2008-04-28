@@ -1,12 +1,3 @@
-<style>
-td.label {
-	text-align: right;
-	padding-left: 6px;
-	padding-right: 4px;
-	font-weight: bold;
-	background-color: #BBBBBB;
-}
-</style>
 <%@page import="com.picsauditing.jpa.entities.ContractorAudit"%>
 <%@page import="com.picsauditing.jpa.entities.User"%>
 <%@page import="com.picsauditing.jpa.entities.AuditType"%>
@@ -16,13 +7,17 @@ td.label {
 %>
 <%@page import="com.picsauditing.PICS.Utilities"%>
 <%@page import="com.picsauditing.PICS.DateBean"%>
+<%@ include file="/utilities/adminOperatorContractorNav.jsp"%>
+<style>
+td.label {
+	text-align: right;
+	padding-left: 6px;
+	padding-right: 4px;
+	font-weight: bold;
+	background-color: #BBBBBB;
+}
+</style>
 <table border="0" cellspacing="0" cellpadding="1">
-	<tr align="center" class="blueMain">
-		<td width="676" colspan="2"><%@ include file="secondNav.jsp"%></td>
-	</tr>
-	<tr align="center">
-		<td class="blueHeader" colspan="2"><%=action.getAudit().getAuditType().getAuditName()%></td>
-	</tr>
 	<tr valign="top">
 		<td align="right">
 		<table border="0" cellspacing="2">
@@ -112,3 +107,4 @@ if (permissions.hasPermission(OpPerms.AuditVerification)
 %>
 <a class="blueMain" href="pqf_viewAll.jsp?auditID=<%=conAudit.getId()%>">View All</a> |
 <a class="blueMain"	href="pqf_printAll.jsp?auditID=<%=conAudit.getId()%>">Print</a>
+</ul>

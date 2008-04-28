@@ -55,8 +55,8 @@
 <meta name="header_gif" content="header_prequalification.gif" />
 </head>
 <body>
-<h1><%=aBean.getName(id)%><span class="sub">Contractor PQF</span></h1>
-<%@ include file="utilities/adminOperatorContractorNav.jsp"%>
+<h1><%=aBean.getName(id)%><span class="sub"><%=action.getAudit().getAuditType().getAuditName()%> - <%= DateBean.format(action.getAudit().getCreatedDate(), "MMM yyyy") %></span></h1>
+<%@ include file="includes/nav/pqfHeader.jsp"%>
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
 	<%
 		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE

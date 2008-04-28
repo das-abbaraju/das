@@ -1577,7 +1577,7 @@ public class ContractorBean extends DataBean {
 		if (audits == null) {
 			ContractorAuditDAO dao = (ContractorAuditDAO)SpringUtils.getBean("ContractorAuditDAO");
 			// Get list of PQF, Office, Desktop, DA that are in the Verified or Exempt status
-			List<ContractorAudit> auditList = dao.findByContractor(Integer.parseInt(id));
+			List<ContractorAudit> auditList = dao.findNonExpiredByContractor(Integer.parseInt(id));
 			audits = new HashMap<Integer, ContractorAudit>();
 			for(ContractorAudit cAudit : auditList) {
 				if (!cAudit.getAuditType().isHasMultiple())

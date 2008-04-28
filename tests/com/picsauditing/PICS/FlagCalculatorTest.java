@@ -1,8 +1,5 @@
 package com.picsauditing.PICS;
 
-import java.util.ArrayList;
-import java.util.Map;
-
 import junit.framework.TestCase;
 
 import org.junit.Test;
@@ -14,7 +11,6 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.jpa.entities.AuditData;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
