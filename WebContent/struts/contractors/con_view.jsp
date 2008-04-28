@@ -1,12 +1,13 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java"%>
+<%@ page language="java" errorPage="exception_handler.jsp"%>
 <html>
 <head>
 <title><s:property value="contractor.name" /></title>
 </head>
 <body>
-<h1><s:property value="contractor.name" /></h1>
+<h1><s:property value="contractor.name" />
+<span class="sub">Contractor Details</span></h1>
 
 <div id="internalnavcontainer">
 <ul id="navlist">
