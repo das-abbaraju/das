@@ -64,7 +64,7 @@ public class ContractorBean extends DataBean {
 	public String brochure_file = "No";
 	public String description = "";
 	public boolean isDescriptionChanged = false;
-	public String status = STATUS_INACTIVE;
+	//public String status = STATUS_INACTIVE;
 	public String certs = "0";
 	public String notes = "";
 	public String adminNotes = "";
@@ -78,7 +78,7 @@ public class ContractorBean extends DataBean {
 	public String desktopAuditor_id = "0"; //MULTIAUDIT remove
 	public String daAuditor_id = "0"; //MULTIAUDIT remove
 	public String pqfAuditor_id = "0"; //MULTIAUDIT remove
-	public String auditStatus = ""; //MULTIAUDIT remove?
+	//public String auditStatus = ""; //MULTIAUDIT remove?
 
 	public String requestedByID = "";
 	public String billingCycle = "";
@@ -249,7 +249,6 @@ public class ContractorBean extends DataBean {
 			isDescriptionChanged = true;
 		}
 	}
-	public void setStatus(String s) {status = s;}//setStatus
 	public void setAccountDate(String s) {accountDate = s;}//setAccountDate
 	public void setWelcomeEmailDate(String s) {welcomeEmailDate = s;}//setWelcomeEmailDate
 	public void setLastPayment(String s) {lastPayment = s;}//setLastPayment
@@ -300,15 +299,7 @@ public class ContractorBean extends DataBean {
 		else	return logo_file;
 	}//getDisplayLogo_file
 	public String getAuditTime() {return auditHour + " " + auditAmPm;}//getAuditTime //MULTIAUDIT remove
-	public String getAuditDateShow() throws Exception { //MULTIAUDIT remove
-		if ("".equals(auditDate))
-			return auditStatus;
-		if ("".equals(auditCompletedDate) && !"".equals(auditValidUntilDate))
-			return auditStatus;
-		return auditDate+" ("+auditStatus+")";
-	}//getAuditDateShow
 	public String getDescriptionHTML() {return Utilities.escapeNewLines(description);}//getDescriptionHTML
-	public String getStatus() {return status;}//getStatus
 	public String getAccountDate() {
 		if (REMOVE_FROM_REPORT.equals(accountDate))
 			return "";
@@ -693,45 +684,6 @@ public class ContractorBean extends DataBean {
 		return pqfSubmittedDate;
 	}//getPQFLink
 
-	public String getDesktopLink(PermissionsBean pBean) throws Exception {
-		//MULTIAUDIT rewrite
-		if ((pBean.isOperator() || pBean.isCorporate()) && !pBean.oBean.canSeeDesktop())
-			return "Contact PICS";
-		if (isExempt())
-			return "Exempt";
-		if (isDesktopStatusOldAuditStatus()){
-			String thisClass= "inactive";
-			String status = calcOfficeStatus();
-			if (isNewOfficeAudit())
-				status = calcOfficeStatusNew();
-			if (AUDIT_STATUS_CLOSED.equals(status))
-				thisClass = "active";
-			if (!this.canView(pBean.getPermissions(), "desktop"))
-				if (!isNewOfficeAudit() && isAuditCompleted())
-					return "Yes";
-				else if (isNewOfficeAudit() && isOfficeSubmitted())
-					return "Yes";
-				else
-					return "No";
-			if (isNewOfficeAudit() && isOfficeSubmitted())
-				return "<a href=pqf_view.jsp?id="+id+"&auditType="+com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE+" class="+thisClass+">"+officeSubmittedDate+" ("+status+")</a>";
-			else if (!isNewOfficeAudit() && isAuditCompleted())
-				return "<a href=audit_view.jsp?id="+id+" class="+thisClass+">"+auditCompletedDate+" ("+status+")</a>";
-			else
-				return "<span class="+thisClass+">"+getAuditDateShow()+"</span>";
-		}//if
-		String status = calcDesktopStatus();
-		String thisClass = "inactive";
-		if (AUDIT_STATUS_CLOSED.equals(status))
-			thisClass = "active";
-		if (AUDIT_STATUS_VERIFICATION_PENDING.equals(status))
-			return "No";
-		else if (!this.canView(pBean.getPermissions(), "desktop"))
-			return "Yes";
-		else
-			return "<a href=pqf_view.jsp?auditType=Desktop&id="+id+" class="+thisClass+">"+desktopSubmittedDate+" ("+status+")"+"</a>";
-	}//getDesktopLink
-
 	public String getDaLink(PermissionsBean pBean) throws Exception {
 		//MULTIAUDIT rewrite
 		if ("No".equals(this.daRequired))
@@ -751,33 +703,6 @@ public class ContractorBean extends DataBean {
 		else
 			return "<a href=pqf_view.jsp?auditType=DA&id="+id+" class="+thisClass+">"+daSubmittedDate+" ("+status+")"+"</a>";
 	}//getDaLink
-
-	public String getOfficeLink(PermissionsBean pBean) throws Exception {
-		//MULTIAUDIT rewrite
-		if ((pBean.isOperator() || pBean.isCorporate()) && !pBean.oBean.canSeeOffice())
-			return "Contact PICS";
-		if (isExempt())
-			return AUDIT_STATUS_EXEMPT;
-		String thisClass= "inactive";
-		String status = calcOfficeStatus();
-		if (isNewOfficeAudit())
-			status = calcOfficeStatusNew();
-		if (AUDIT_STATUS_CLOSED.equals(status))
-			thisClass = "active";
-		if (!this.canView(pBean.getPermissions(), "office"))
-			if (!isNewOfficeAudit() && isAuditCompleted())
-				return "Yes";
-			else if (isNewOfficeAudit() && isOfficeSubmitted())
-				return "Yes";
-			else
-				return "No";
-		if (isNewOfficeAudit() && isOfficeSubmitted())
-			return "<a href=pqf_view.jsp?id="+id+"&auditType="+com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE+" class="+thisClass+">"+officeSubmittedDate+" ("+status+")</a>";
-		else if (!isNewOfficeAudit() && isAuditCompleted())
-			return "<a href=audit_view.jsp?id="+id+" class="+thisClass+">"+auditCompletedDate+" ("+status+")</a>";
-		else
-			return "<span class="+thisClass+">"+getAuditDateShow()+"</span>";
-	}//getOfficeLink
 
 	public String getDetailsStatus(PermissionsBean pBean) throws Exception {
 		String tempStatus = calcPICSStatus(pBean);
@@ -862,7 +787,6 @@ public class ContractorBean extends DataBean {
 	//		if (!(description.charAt(description.indexOf('?')+1) ==  ' '))					
 				description = description.replace('?','\'');
 		//}
-		status = SQLResult.getString("status");
 		certs = SQLResult.getString("certs");
 //*************
 //db - 46 -4(2)
@@ -1016,7 +940,6 @@ public class ContractorBean extends DataBean {
 		taxID = m.get("taxID");
 		main_trade = m.get("main_trade");
 		setDescription(m.get("description"));
-		status = m.get("status");
 		mustPay = m.get("mustPay");
 		paymentExpires = m.get("paymentExpires");
 		lastPayment = m.get("lastPayment");
@@ -1077,7 +1000,6 @@ public class ContractorBean extends DataBean {
 		auditDate = "";
 		description = r.getParameter("description");
 		isDescriptionChanged = true;
-		status = STATUS_INACTIVE;
 		main_trade = r.getParameter("main_trade");
 		setGeneralContractorsFromStringArray(r.getParameterValues("generalContractors"));
 		requestedByID = r.getParameter("requestedByID");

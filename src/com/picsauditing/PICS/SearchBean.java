@@ -164,21 +164,6 @@ import com.picsauditing.util.LinkBuilder;
 		else return "";
 	}//getBGColor
 
-	public String getAuditDateLink() throws Exception {
-		String temp = cBean.auditStatus;
-		if (!canSeeContractor())
-			return "";
-		else if (ContractorBean.AUDIT_STATUS_EXEMPT.equals(temp) || ContractorBean.AUDIT_STATUS_PQF_PENDING.equals(temp) 
-				|| ContractorBean.AUDIT_STATUS_PQF_INCOMPLETE.equals(temp) 
-				|| ContractorBean.AUDIT_STATUS_SCHEDULING.equals(temp) || ContractorBean.AUDIT_STATUS_SCHEDULED.equals(temp))
-			return temp;
-		else if (ContractorBean.AUDIT_STATUS_RQS.equals(temp) || ContractorBean.AUDIT_STATUS_CLOSED.equals(temp))
-			return "<a href=audit_view.jsp?id="+aBean.id+" class=\""+getTextColor()+"\">"+cBean.getAuditDateShow()+"</a>" ;
-		else
-			return "<a href=\"/servlet/showpdf?id="+aBean.id+"&file=audit\" target=\"_blank\" class=\""+
-					getTextColor()+"\">"+cBean.getAuditDateShow()+"</a>";
-	}//getAuditDateLink
-
 	public String getCertsAdminLink() {
 		if ("0".equals(cBean.certs))
 			return "";
