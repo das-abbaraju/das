@@ -1531,11 +1531,6 @@ public class ContractorBean extends DataBean {
 		if (permissions.isContractor()) {
 			return permissions.getAccountIdString().equals(this.id);
 		}
-		// The auditors can see this Contractor
-		if (permissions.getUserIdString().equals(this.auditor_id)) return true;
-		if (permissions.getUserIdString().equals(this.pqfAuditor_id)) return true;
-		if (permissions.getUserIdString().equals(this.daAuditor_id)) return true;
-		if (permissions.getUserIdString().equals(this.desktopAuditor_id)) return true;
 		
 		if (permissions.isOperator() || permissions.isCorporate()) {
 			// I don't really like this way. It's a bit confusing
@@ -1564,6 +1559,10 @@ public class ContractorBean extends DataBean {
 			// To see anything other than the summary, you need to be on their list
 			return generalContractors.contains(permissions.getAccountIdString());
 		}
+		
+		// The auditors can see this Contractor
+		for(ContractorAudit audit : getAudits())
+			if (audit.getAuditor().getId() == permissions.getUserId()) return true;
 
 		return false;
 	}

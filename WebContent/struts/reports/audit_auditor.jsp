@@ -10,7 +10,7 @@
 <s:form id="form1" method="post">
 	<table>
 	<tr>
-		<td style="vertical-align: middle;"><s:textfield name="name" cssClass="forms" size="8" onfocus="clearText(this)" />
+		<td style="vertical-align: middle;"><s:textfield name="accountName" cssClass="forms" size="8" onfocus="clearText(this)" onblur="unclearText(this)" />
 			<s:select list="auditTypeList" cssClass="forms" name="auditTypeID" listKey="auditTypeID" listValue="auditName" />
 			<s:select list="auditStatusList" cssClass="forms" name="auditStatus" />
 			<s:select list="operatorList" cssClass="forms" name="operator" listKey="id" listValue="name" />
@@ -35,7 +35,6 @@
 		    <td align="center"><a href="?orderBy=at.auditName DESC" class="whiteTitle">Type</a></td>
 		    <td align="center"><a href="?orderBy=ca.createdDate DESC" class="whiteTitle">Created</a></td>
 		    <td align="center"><a href="?orderBy=ca.auditStatus DESC" class="whiteTitle">Status</a></td>
-		    <td align="center"><a href="?orderBy=au.name" class="whiteTitle">Auditor</a></td>
 	</tr>
 	<s:iterator value="data">
 	<tr class="blueMain" <s:property value="color.nextBgColor" escape="false" />>
@@ -46,7 +45,6 @@
 		<td><s:property value="[0].get('auditName')"/></td>
 		<td><s:date name="[0].get('createdDate')" format="M/d/yy" /></td>
 		<td><s:property value="[0].get('auditStatus')"/></td>
-		<td><s:property value="[0].get('auditorName')"/></td>
 	</tr>
 	</s:iterator>
 </table>

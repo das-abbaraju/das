@@ -10,7 +10,7 @@
 	<table border="0" align="center" cellpadding="2" cellspacing="0">
 		<tr>
 			<td align="left"><s:textfield name="accountName"
-				cssClass="forms" size="8" onfocus="clearText(this)" /> <s:select
+				cssClass="forms" size="8" onfocus="clearText(this)" onblur="unclearText(this)" /> <s:select
 				name="industry" list="industryList" cssClass="forms" /> <s:select
 				list="tradeList" cssClass="forms" name="trade" /> <s:select
 				list="tradePerformedByList" cssClass="forms" name="performedBy" />
@@ -20,9 +20,9 @@
 		<tr>
 			<td><s:select list="operatorList" cssClass="forms"
 				name="operator" listKey="id" listValue="name" /> <s:textfield
-				name="city" cssClass="forms" size="15" onfocus="clearText(this)" />
+				name="city" cssClass="forms" size="15" onfocus="clearText(this)" onblur="unclearText(this)" />
 			<s:select list="stateList" cssClass="forms" name="state" /> <s:textfield
-				name="zip" cssClass="forms" size="5" onfocus="clearText(this)" /></td>
+				name="zip" cssClass="forms" size="5" onfocus="clearText(this)" onblur="unclearText(this)" /></td>
 		</tr>
 		<tr>
 			<td><s:select list="certsOptions" cssClass="forms"
@@ -30,7 +30,7 @@
 				cssClass="forms" name="visible" /> <s:select
 				list="stateLicensesList" cssClass="forms" name="stateLicensedIn" />
 			<s:textfield name="taxID" cssClass="forms" size="9"
-				onfocus="clearText(this)" /> <span class="redMain">*must be
+				onfocus="clearText(this)" onblur="unclearText(this)" /> <span class="redMain">*must be
 			9 digits</span></td>
 		</tr>
 		<tr>
