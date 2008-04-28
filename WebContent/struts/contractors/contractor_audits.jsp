@@ -1,23 +1,35 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ page language="java" errorPage="exception_handler.jsp"%>
-<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean"
-	scope="page" />
-<%@include file="includes/main.jsp"%>
-<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean"
-	scope="page" />
-<%
-	String id = request.getParameter("id");
-	cBean.setFromDB(id);
-%>
 <html>
 <head>
 <title>Audit/Evaluations for <s:property value="contractor.name" /></title>
 <meta name="header_gif" content="header_contractorDetails.gif" />
 </head>
 <body>
-<h1><%=aBean.getName(id)%><span class="sub">Contractor
-Audit/Evaluations</span></h1>
-<%@ include file="utilities/adminOperatorContractorNav.jsp"%>
+<h1><s:property value="contractor.name" />
+<span class="sub">Contractor Audit &amp; Evaluations</span></h1>
+
+<div id="internalnavcontainer">
+<ul id="navlist">
+	<li><a href="ContractorView.action?id=<s:property value="id" />">Details</a></li>
+	<li><a href="accounts_edit_contractor.jsp?id=<s:property value="id" />">Edit</a></li>
+	<pics:permission perm="InsuranceCerts">
+	<li><a href="contractor_upload_certificates.jsp?id=<s:property value="id" />">InsureGuard</a></li>
+	</pics:permission>
+	<s:if test="permissions.operator">
+	<li><a href="con_redFlags.jsp?id=<s:property value="id" />">Flag Status</a></li>
+	</s:if>
+	<s:if test="permissions.admin">
+	<li><a href="con_selectFacilities.jsp?id=<s:property value="id" />">Facilities</a></li>
+	</s:if>
+	<li><a href="ConAuditList.action?id=<s:property value="id" />" class="current">Audits</a></li>
+	<s:iterator value="activeAudits">
+		<li><a href="pqf_view.jsp?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></li>
+	</s:iterator>
+</ul>
+</div>
+
 <table cellspacing="1" cellpadding="3" border="0">
 	<tr class="whiteTitle" bgcolor="#003366" align="center">
 		<td></td>
@@ -55,6 +67,5 @@ Audit/Evaluations</span></h1>
 		</tr>
 	</s:iterator>
 </table>
-
 </body>
 </html>

@@ -25,11 +25,6 @@
 			<result>struts/users/users_manage.jsp</result>
 		</action>
 
-		<action name="ContractorView"
-			class="com.picsauditing.actions.contractors.ContractorView">
-			<result>struts/contractors/con_view.jsp</result>
-		</action>
-
 		<action name="ReportAuditList"
 			class="com.picsauditing.actions.report.ReportContractorAudits">
 			<result>struts/reports/auditList.jsp</result>
@@ -81,9 +76,14 @@
 			<result>struts/blank.jsp</result>
 		</action>
 
+		<action name="ContractorView"
+			class="com.picsauditing.actions.contractors.ContractorView">
+			<result>struts/contractors/con_view.jsp</result>
+		</action>
+
 		<action name="ConAuditList"
-			class="com.picsauditing.actions.audits.ConAuditList">
-			<result>contractor_audits.jsp</result>
+			class="com.picsauditing.actions.contractors.ConAuditList">
+			<result>struts/contractors/contractor_audits.jsp</result>
 		</action>
 
 		<action name="AuditTypeChoose"
