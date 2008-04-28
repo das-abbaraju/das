@@ -61,7 +61,7 @@
 	<%
 		for (ContractorAudit pqf : cBean.getAudits()) {
 			if (!pqf.getAuditStatus().equals(AuditStatus.Expired)) {
-				if (permissions.isAdmin()
+				if (permissions.isPicsEmployee() || permissions.isContractor()
 					|| permissions.canSeeAudit(pqf.getAuditType().getAuditTypeID())) {
 					boolean selected = false;
 					if (request.getRequestURI().contains("pqf")) {

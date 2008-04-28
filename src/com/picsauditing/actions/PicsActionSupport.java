@@ -4,6 +4,7 @@ import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.inject.Context;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
@@ -22,6 +23,7 @@ public class PicsActionSupport extends ActionSupport {
 	private Account account; // Current logged in user's account
 
 	protected boolean loadPermissions() throws Exception {
+		
 		permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
 		if (permissions == null) {
 			permissions = new Permissions();
@@ -96,5 +98,9 @@ public class PicsActionSupport extends ActionSupport {
 
 	public Permissions getPermissions() {
 		return permissions;
+	}
+	
+	public String getRequestURI() {
+		return ServletActionContext.getRequest().getRequestURI();
 	}
 }
