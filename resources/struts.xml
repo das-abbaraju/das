@@ -47,7 +47,7 @@
 
 		<action name="AuditAssignmentUpdateAjax"
 			class="com.picsauditing.actions.report.AuditAssignmentUpdate">
-			<result>/includes/simpleMessage.jsp</result>
+			<result>/includes/blank.jsp</result>
 		</action>
 
 		<action name="FacilitiesGetAjax"
