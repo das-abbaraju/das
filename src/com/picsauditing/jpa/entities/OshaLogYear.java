@@ -7,6 +7,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
+
 @Embeddable
 public class OshaLogYear {
 	private YesNo na = YesNo.No;
@@ -21,6 +24,8 @@ public class OshaLogYear {
 	private Date verifiedDate;
 	private String comment;
 
+	@Type(type="com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", 
+			parameters= {@Parameter(name="enumClass", value = "com.picsauditing.jpa.entities.YesNo")})	
 	@Enumerated(EnumType.STRING)
 	public YesNo getNa() {
 		return na;
@@ -115,6 +120,8 @@ public class OshaLogYear {
 		this.recordableTotal = recordableTotal;
 	}
 
+	@Type(type="com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", 
+			parameters= {@Parameter(name="enumClass", value = "com.picsauditing.jpa.entities.YesNo")})
 	public YesNo getFile() {
 		return file;
 	}
@@ -163,5 +170,24 @@ public class OshaLogYear {
 		}
 		
 		return 0;
+	}
+	
+	
+	@Transient
+	public boolean getNaBoolean()
+	{
+		if( this.na != null )
+		{
+			return this.na.equals(YesNo.Yes);
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	public void setNaBoolean( boolean value )
+	{
+		this.na = (value) ? YesNo.Yes : YesNo.No;
 	}
 }
