@@ -17,15 +17,18 @@ public class ContractorAuditLegacy {
 		auditDao = (ContractorAuditDAO) com.picsauditing.util.SpringUtils.getBean("ContractorAuditDAO");
 	}
 	
-	public void setAuditID(String auditIdString) throws Exception {
-		int auditID = Integer.parseInt(auditIdString);
+	public void setAuditID(String auditIdString) throws IllegalArgumentException {
+		int auditID = 0;
+		try {
+			auditID = Integer.parseInt(auditIdString);
+		} catch (Exception e) {}
 		
 		if (auditID == 0)
-			throw new Exception("Missing auditID");
+			throw new IllegalArgumentException("Missing or invalid auditID " + auditIdString);
 
 		audit = auditDao.find(auditID);
 		if (audit == null)
-			throw new Exception("Failed to find ContractorAudit");
+			throw new IllegalArgumentException("Failed to find ContractorAudit " + auditID);
 	}
 
 	public int getAuditID() {
