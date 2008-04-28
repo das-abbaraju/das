@@ -85,12 +85,12 @@ function sendEmail() {
 				<td><s:property value="year3" /></td>
 			</tr>
 			<tr class="blueMain" align="center">
-				<td align="right">Exempt:</td>
+				<td align="right">Applicable:</td>
 				<td>&nbsp;</td>
 				
-				<td class="highlight"><s:checkbox name="osha.year1.naBoolean" value="osha.year1.naBoolean"/></td>
-				<td><s:checkbox name="osha.year2.naBoolean" value="osha.year2.naBoolean"/></td>
-				<td class="highlight"><s:checkbox name="osha.year3.naBoolean" value="osha.year3.naBoolean"/></td>
+				<td class="highlight"><s:checkbox name="osha.year1.applicable" value="osha.year1.applicable"/></td>
+				<td><s:checkbox name="osha.year2.applicable" value="osha.year2.applicable"/></td>
+				<td class="highlight"><s:checkbox name="osha.year3.applicable" value="osha.year3.applicable"/></td>
 			</tr>
 			<tr class="blueMain" align="center" valign="top">
 				<td align="right"><a
