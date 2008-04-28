@@ -20,8 +20,6 @@ public class ContractorView extends ContractorActionSupport {
 		
 		findContractor();
 		
-		//calculator.runByContractor(this.contractor.getId());
-
 		return SUCCESS;
 	}
 
