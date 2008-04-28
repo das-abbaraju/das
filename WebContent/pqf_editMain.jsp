@@ -15,7 +15,7 @@
 	action.setAuditID(request.getParameter("auditID"));
 	String auditType = action.getAudit().getAuditType().getLegacyCode();
 	String conID = ((Integer) action.getAudit().getContractorAccount().getId()).toString();
-	String id = conID;
+	String id = Integer.toString(action.getAuditID());
 
 	try {
 		String orderBy = request.getParameter("orderBy");
@@ -93,8 +93,8 @@
 <meta name="header_gif" content="header_prequalification.gif" />
 </head>
 <body>
+<h1><%=aBean.getName(id)%><span class="sub">PQF</span></h1>
 <%@ include file="includes/nav/pqfHeader.jsp"%>
-
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
 	<tr>
 		<td align="center">

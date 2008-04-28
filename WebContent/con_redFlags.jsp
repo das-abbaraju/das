@@ -82,7 +82,9 @@ try{
 			<table width="657" border="0" cellpadding="0" cellspacing="0">
               <tr align="center" class="blueMain">
 <%	if (!permissions.hasPermission(com.picsauditing.access.OpPerms.StatusOnly)){ %>
-                <td align="left"><%@ include file="includes/nav/secondNav.jsp"%></td>
+                <td align="left">
+                <h1><%=aBean.getName(id)%><span class="sub">Red Flags</span></h1>
+                <%@ include file="utilities/adminOperatorContractorNav.jsp"%></td>
 <%	}%>
               </tr>
             </table>

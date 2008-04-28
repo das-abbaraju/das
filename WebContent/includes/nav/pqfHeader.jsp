@@ -7,7 +7,6 @@
 %>
 <%@page import="com.picsauditing.PICS.Utilities"%>
 <%@page import="com.picsauditing.PICS.DateBean"%>
-<%@ include file="/utilities/adminOperatorContractorNav.jsp"%>
 <style>
 td.label {
 	text-align: right;
@@ -18,6 +17,13 @@ td.label {
 }
 </style>
 <table border="0" cellspacing="0" cellpadding="1">
+	<tr class="blueMain">
+		<td width="676" colspan="2">
+		<%@ include file="/utilities/adminOperatorContractorNav.jsp"%></td>
+		</tr>
+	<tr align="center">
+		<td class="blueHeader" colspan="2"><%=action.getAudit().getAuditType().getAuditName()%></td>
+	</tr>
 	<tr valign="top">
 		<td align="right">
 		<table border="0" cellspacing="2">

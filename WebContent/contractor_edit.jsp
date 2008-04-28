@@ -34,7 +34,7 @@
 		}
 	}
 	if ("Delete".equals("action")) {
-		aBean.deleteAccount(action_id, config.getServletContext().getRealPath("/"));
+		aBean.deleteAccount(id, config.getServletContext().getRealPath("/"));
 	}
 %>
 
@@ -47,18 +47,12 @@
 <form name="form1" method="post"
 	action="contractor_edit.jsp?id=<%=id%>&isSubmitted=Yes"
 	enctype="multipart/form-data">
-<table width="657" border="0" cellpadding="0" cellspacing="0">
-	<tr align="center" class="blueMain">
-		<td align="left"><%@ include file="includes/nav/secondNav.jsp"%></td>
-	</tr>
-</table>
+<h1><%=aBean.getName(id)%><span class="sub">Edit Account Information</span></h1>
+<%@ include file="utilities/adminOperatorContractorNav.jsp"%>
 <table width="657" cellpadding="10" cellspacing="0">
 	<tr>
 		<td align="center" valign="top" class="blueMain">
 		<table border="0" cellspacing="0" cellpadding="1">
-			<tr align="center" class="blueMain">
-				<td colspan="2" class="blueHeader">My Account Information</td>
-			</tr>
 			<tr>
 				<td colspan="2" class="redMain">
 				<%

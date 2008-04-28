@@ -9,10 +9,20 @@
 	<a class="blueMain" href="contractor_list_auditor.jsp">Return to
 	Contractors List</a>
 	<%
-		} else {
+		} 
 	%>
-	<li><a href="accounts_edit_contractor.jsp?id=<%=id%>" 
-		<%= request.getRequestURI().contains("accounts_edit_contractor") ? "class=\"current\"" : ""%>>Edit</a></li>
+	<%
+		if (permissions.isAdmin()) {
+	%>
+	<a href="accounts_edit_contractor.jsp?id=<%=id%>" 
+		<%= request.getRequestURI().contains("accounts_edit_contractor") ? "class=\"current\"" : ""%>>Edit</a>
+	<%
+		}
+	%>	
+	<%
+		if (permissions.isContractor()) {
+	%>
+	<li><a href="contractor_edit.jsp?id=<%=id%>">Edit</a></li>
 	<%
 		}
 	%>
@@ -33,10 +43,25 @@
 		}
 	%>
 	<%
-		if (permissions.isCorporate() || permissions.isAdmin()) {
+		if (!permissions.isOperator()) {
 	%>
 	<li><a href="con_selectFacilities.jsp?id=<%=id%>"
 		<%= request.getRequestURI().contains("con_selectFacilities") ? "class=\"current\"" : ""%>>Facilities</a></li>
+	<%
+		}
+	%>
+	<%
+		if (permissions.isContractor()) {
+	%>
+	<li><a href="con_viewForms.jsp?id=<%=id%>">Forms & Docs</a></li>
+	<%
+		}
+	%>
+
+	<%
+		if (permissions.isContractor() && cBean.canEditPrequal()) {
+	%>
+	<li><a href="pqf_editMain.jsp?id=<%=id%>">Complete PQF</a></li>
 	<%
 		}
 	%>
