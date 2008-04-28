@@ -4,8 +4,6 @@
 		<pattern>/*.jsp</pattern>
 		<pattern>/*action</pattern>
 	</decorator>
-	<decorator name="blank" page="async.jsp">
-	</decorator>
 	<decorator name="ignoreMe">
 		<pattern>/*Ajax.action</pattern>
 		<pattern>/*ajax*</pattern>

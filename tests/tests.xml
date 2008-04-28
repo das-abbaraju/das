@@ -19,6 +19,10 @@
 	<bean id="UserDAO" class="com.picsauditing.dao.UserDAO" scope="prototype"/>
 	<bean id="OshaLogDAO" class="com.picsauditing.dao.OshaLogDAO" scope="prototype"/>
 	<bean id="OperatorAccountDAO" class="com.picsauditing.dao.OperatorAccountDAO" scope="prototype"/>
+	<bean id="FlagCalculator2" class="com.picsauditing.PICS.FlagCalculator2" scope="prototype"/>
+	<bean id="ContractorOperatorFlagDAO" class="com.picsauditing.dao.ContractorOperatorFlagDAO" scope="prototype"/>
+	<bean id="AuditBuilder" class="com.picsauditing.PICS.AuditBuilder" scope="prototype"/>
+
 	
 <!-- 	<bean class="com.picsauditing.PICS.Facilities"/> -->
 
