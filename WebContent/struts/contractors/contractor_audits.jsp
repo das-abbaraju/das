@@ -1,6 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ taglib uri="WEB_INF/tiles.tld" prefix="tiles"%>
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <html>
 <head>
