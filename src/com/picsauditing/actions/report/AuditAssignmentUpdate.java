@@ -25,7 +25,6 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 
 	protected Map parameters = null;
 	
-	protected String message = null;
 	
 	
 	public AuditAssignmentUpdate( ContractorAuditDAO dao, UserDAO userDao )
@@ -101,18 +100,6 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 	}
 	public void setAuditor(User auditor) {
 		this.auditor = auditor;
-	}
-
-
-
-	public String getMessage() {
-		return message;
-	}
-
-
-
-	public void setMessage(String message) {
-		this.message = message;
 	}
 	
 }
