@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -29,13 +30,14 @@ public class VerifyView extends AuditActionSupport {
 	private Map<Integer, AuditData> emr = new HashMap<Integer, AuditData>();
 	private int followUp = 0;
 
-	public VerifyView(ContractorAuditDAO contractorAuditDAO, AuditDataDAO pqfDao) {
-		this.contractorAuditDAO = contractorAuditDAO;
+	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO, AuditDataDAO pqfDao) {
+		super(accountDao, contractorAuditDAO);
 		this.pqfDao = pqfDao;
 	}
 
 	public String execute() throws Exception {
 		this.findConAudit();
+		permissions.tryPermission(OpPerms.AuditVerification);
 
 		if (osha != null) {
 			permissions.tryPermission(OpPerms.AuditVerification, OpType.Edit);
@@ -46,7 +48,7 @@ public class VerifyView extends AuditActionSupport {
 					saveOSHA(osha2.getYear3(), osha.getYear3());
 				}
 			}
-			contractorAuditDAO.save(conAudit);
+			auditDao.save(conAudit);
 		}
 
 		if (emr.size() > 0) {
@@ -82,9 +84,11 @@ public class VerifyView extends AuditActionSupport {
 	private void setVerifiedPercent() {
 		int verified = 0;
 		
-		if (osha.getYear1().getVerified()) verified++;
-		if (osha.getYear2().getVerified()) verified++;
-		if (osha.getYear3().getVerified()) verified++;
+		if (osha != null) {
+			if (osha.getYear1() != null && osha.getYear1().getVerified()) verified++;
+			if (osha.getYear2() != null && osha.getYear2().getVerified()) verified++;
+			if (osha.getYear3() != null && osha.getYear3().getVerified()) verified++;
+		}
 		
 		if (getEmr1() != null && YesNo.Yes.equals(getEmr1().getIsCorrect())) verified++;
 		if (getEmr2() != null && YesNo.Yes.equals(getEmr2().getIsCorrect())) verified++;
@@ -99,7 +103,7 @@ public class VerifyView extends AuditActionSupport {
 		} else
 			conAudit.setAuditStatus(AuditStatus.Submitted);
 		
-		contractorAuditDAO.save(conAudit);
+		auditDao.save(conAudit);
 	}
 
 	private void saveAuditData(Map<Integer, AuditData> emrDB, int year) {
@@ -138,7 +142,7 @@ public class VerifyView extends AuditActionSupport {
 			Calendar followUpCal = Calendar.getInstance();
 			followUpCal.add(Calendar.DAY_OF_MONTH, followUp);
 			conAudit.setScheduledDate(followUpCal.getTime());
-			contractorAuditDAO.save(conAudit);
+			auditDao.save(conAudit);
 		}
 		message = new SimpleDateFormat("MM/dd").format(conAudit
 				.getScheduledDate());
@@ -201,7 +205,7 @@ public class VerifyView extends AuditActionSupport {
 
 		String note = "PQF Verification email sent to " + emailer.getSentTo();
 		this.conAudit.getContractorAccount().addNote(permissions, note);
-		this.contractorAuditDAO.save(conAudit);
+		this.auditDao.save(conAudit);
 
 		// message = conAudit.getContractorAccount().getNotes();
 		message = "The email was sent at and the contractor notes were stamped";
