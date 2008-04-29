@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%@ taglib uri="sitemesh-decorator" prefix="decorator"%>
 <decorator:usePage id="thisPage" />
 <html>
@@ -34,9 +35,10 @@
 						<td width="146" height="218" align="center" valign="top"><a
 							href="index.jsp"><img src="images/logo.gif" alt="Home"
 							width="146" height="145" border="0"></a><br>
-						<%	
-							if (!thisPage.getRequest().getRequestURI().contains("login")) {
-						%>
+						<%	if (permissions.isLoggedIn()) { %>
+						<a class="blueMain" href="Home.action">Back to PICS Online</a><br />
+						<a class="blueMain" href="logout.jsp">Logout</a>
+						<%	} else if (!thisPage.getRequest().getRequestURI().contains("login")) { %>
 						<table border="0" cellspacing="0" cellpadding="1">
 							<tr>
 								<td height="5"></td>
