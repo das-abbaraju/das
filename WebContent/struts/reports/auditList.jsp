@@ -2,12 +2,18 @@
 <html>
 <head>
 <title>Audit List</title>
-<script type="text/javascript" src="js/Search.js" />
+<script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects"
+	type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
 <h1>Audit List</h1>
 
-<s:form id="form1" method="post">
+<div id="search">
+<div id="showSearch"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
+<div id="hideSearch" style="display: none"><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
+<s:form id="form1" method="post" cssStyle="display: none">
 	<table>
 	<tr>
 		<td style="vertical-align: middle;"><s:textfield name="accountName" cssClass="forms" size="8" onfocus="clearText(this)" onblur="unclearText(this)" />
@@ -21,35 +27,39 @@
 	<s:hidden name="showPage" value="1"/>
 	<s:hidden name="startsWith" />
 	<s:hidden name="orderBy" />
+	<div class="alphapaging">
+	<s:property value="report.startsWithLinksWithDynamicForm" escape="false" />
+	</div>
 </s:form>
+</div>
 
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-  <tr>
-	<td align="left"><s:property value="report.startsWithLinksWithDynamicForm" escape="false"/></td>
-	<td align="right"><s:property value="report.pageLinksWithDynamicForm" escape="false"/></td>
-  </tr>
-</table>
-<table border="0" cellpadding="1" cellspacing="1" align="center" width="100%">
-	<tr bgcolor="#003366" class="whiteTitle">
-		    <td colspan="2"><a href="?orderBy=a.name" class="whiteTitle">Contractor</a></td>
-		    <td align="center"><a href="?orderBy=at.auditName DESC" class="whiteTitle">Type</a></td>
-		    <td align="center"><a href="?orderBy=ca.createdDate DESC" class="whiteTitle">Created</a></td>
-		    <td align="center"><a href="?orderBy=ca.auditStatus DESC" class="whiteTitle">Status</a></td>
-		    <td align="center"><a href="?orderBy=ca.percentComplete" class="whiteTitle">Comp%</a></td>
-		    <td align="center"><a href="?orderBy=ca.percentVerified" class="whiteTitle">Ver%</a></td>
-		    <td align="center"><a href="?orderBy=au.name" class="whiteTitle">Auditor</a></td>
+<div>
+<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+</div>
+<table class="report">
+	<thead>
+	<tr>
+		<td></td>
+	    <th><a href="?orderBy=a.name" >Contractor</a></th>
+	    <td><a href="?orderBy=at.auditName DESC" >Type</a></td>
+	    <td><a href="?orderBy=ca.createdDate DESC" >Created</a></td>
+	    <td><a href="?orderBy=ca.auditStatus DESC" >Status</a></td>
+	    <td><a href="?orderBy=ca.percentComplete" >Comp%</a></td>
+	    <td><a href="?orderBy=ca.percentVerified" >Ver%</a></td>
+	    <td><a href="?orderBy=au.name" >Auditor</a></td>
 	</tr>
-	<s:iterator value="data">
-	<tr class="blueMain" <s:property value="color.nextBgColor" escape="false" />>
-		<td align="right"><s:property value="color.counter" /></td>
+	</thead>
+	<s:iterator value="data" status="stat">
+	<tr>
+		<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 		<td><a href="pqf_view.jsp?auditID=<s:property value="[0].get('auditID')"/>" 
-			class="blueMain"><s:property value="[0].get('name')"/></a>
+			><s:property value="[0].get('name')"/></a>
 		</td>
 		<td><s:property value="[0].get('auditName')"/></td>
-		<td><s:date name="[0].get('createdDate')" format="M/d/yy" /></td>
+		<td class="center"><s:date name="[0].get('createdDate')" format="M/d/yy" /></td>
 		<td><s:property value="[0].get('auditStatus')"/></td>
-		<td><s:property value="[0].get('percentComplete')"/></td>
-		<td><s:property value="[0].get('percentVerified')"/></td>
+		<td class="right"><s:property value="[0].get('percentComplete')"/>%</td>
+		<td class="right"><s:property value="[0].get('percentVerified')"/>%</td>
 		<td><s:property value="[0].get('auditor_name')"/></td>
 	</tr>
 	</s:iterator>

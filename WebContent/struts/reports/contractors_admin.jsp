@@ -2,11 +2,18 @@
 <html>
 <head>
 <title>Contractor Search - Admin</title>
+<script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects"
+	type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
 <h1>Contractor Search <span class="sub">Admin Version</span></h1>
 
-<s:form id="form1" method="post">
+<div id="search">
+<div id="showSearch"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
+<div id="hideSearch" style="display: none"><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
+<s:form id="form1" method="post" cssStyle="display: none">
 	<table border="0" align="center" cellpadding="2" cellspacing="0">
 		<tr>
 			<td align="left"><s:textfield name="accountName"
@@ -39,43 +46,43 @@
 	<s:hidden name="showPage" value="1" />
 	<s:hidden name="startsWith" />
 	<s:hidden name="orderBy" />
+	<div class="alphapaging">
+	<s:property value="report.startsWithLinksWithDynamicForm" escape="false" />
+	</div>
 </s:form>
+</div>
 
-<table border="0" cellpadding="0" cellspacing="0" width="900">
+<div>
+<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+</div>
+<table class="report">
+	<thead>
 	<tr>
-		<td align="left"><s:property
-			value="report.startsWithLinksWithDynamicForm" escape="false" /></td>
-		<td align="right"><s:property
-			value="report.pageLinksWithDynamicForm" escape="false" /></td>
-	</tr>
-</table>
-<table border="0" cellpadding="1" cellspacing="1">
-	<tr bgcolor="#993300" class="whiteTitle">
 		<td colspan="2">Contractor Name</td>
 		<td></td>
 		<td>Industry</td>
 		<td>Trade</td>
-		<td align="center" bgcolor="#6699CC"></td>
-		<td align="center" bgcolor="#6699CC">PQF</td>
-		<td align="center" bgcolor="#6699CC">Desktop</td>
-		<td align="center" bgcolor="#6699CC">Office</td>
-		<td align="center" bgcolor="#6699CC">Insur</td>
+		<td></td>
+		<td>PQF</td>
+		<td>Desktop</td>
+		<td>Office</td>
+		<td>Insur</td>
 	</tr>
-	<s:iterator value="data">
-		<tr class="blueMain"
-			<s:property value="color.nextBgColor" escape="false" />>
-			<td align="right"><s:property value="color.counter" /></td>
+	</thead>
+	<s:iterator value="data" status="stat">
+		<tr>
+			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><a
 				href="ContractorView.action?id=<s:property value="[0].get('id')"/>"
-				class="blueMain"><s:property value="[0].get('name')" /></a></td>
+				><s:property value="[0].get('name')" /></a></td>
 			<td><a
 				href="accounts_edit_contractor.jsp?id=<s:property value="[0].get('id')"/>"
-				class="blueMain">Edit</a></td>
+				>Edit</a></td>
 			<td><s:property value="[0].get('industry')" /></td>
 			<td><s:property value="[0].get('main_trade')" /></td>
 			<td><a
 				href="ConAuditList.action?id=<s:property value="[0].get('id')"/>">Audits</a></td>
-			<td align="center"><s:if test="[0].get('ca1_auditID') > 0">
+			<td class="center"><s:if test="[0].get('ca1_auditID') > 0">
 				<s:if test="[0].get('ca1_auditStatus').equals('Exempt')">N/A</s:if>
 				<s:else>
 					<a
@@ -83,7 +90,7 @@
 						src="images/icon_PQF.gif" width="20" height="20" border="0"></a>
 				</s:else>
 			</s:if></td>
-			<td align="center"><s:if test="[0].get('ca2_auditID') > 0">
+			<td class="center"><s:if test="[0].get('ca2_auditID') > 0">
 				<s:if test="[0].get('ca2_auditStatus').equals('Exempt')">N/A</s:if>
 				<s:else>
 					<a
@@ -91,7 +98,7 @@
 						src="images/icon_Desktop.gif" width="20" height="20" border="0"></a>
 				</s:else>
 			</s:if></td>
-			<td align="center"><s:if test="[0].get('ca3_auditID') > 0">
+			<td class="center"><s:if test="[0].get('ca3_auditID') > 0">
 				<s:if test="[0].get('ca3_auditStatus').equals('Exempt')">N/A</s:if>
 				<s:else>
 					<a
@@ -99,7 +106,7 @@
 						src="images/icon_Office.gif" width="20" height="20" border="0"></a>
 				</s:else>
 			</s:if></td>
-			<td align="center"><s:if test="[0].get('certs') > 0">
+			<td class="center"><s:if test="[0].get('certs') > 0">
 				<a
 					href="contractor_upload_certificates.jsp?id=<s:property value="[0].get('id')"/>"><img
 					src="images/icon_insurance.gif" width="20" height="20" border="0"></a>
@@ -108,7 +115,8 @@
 	</s:iterator>
 
 </table>
-<center><s:property value="report.pageLinksWithDynamicForm"
-	escape="false" /></center>
+<div>
+<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+</div>
 </body>
 </html>

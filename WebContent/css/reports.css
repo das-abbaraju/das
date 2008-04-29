@@ -18,8 +18,9 @@ table.report {
 	margin: 10px;
 }
 table.report td, table.report th {
-	border: 1px dashed #A84D10;
+	border: thin solid #A84D10;
 	padding: 4px;
+	font-size: 13px;
 }
 table.report thead th, table.report thead td {
 	border: 1px solid #e0e0e0;
@@ -27,6 +28,14 @@ table.report thead th, table.report thead td {
 	font-weight: bold;
 	background: #003768;
 	color: #FFF;
+}
+table.report thead a {
+	color: #FFF;
+	text-decoration: none;
+}
+table.report thead a:hover {
+	color: #A84D10;
+	text-decoration: underline;
 }
 table.report tbody td a {
 	text-decoration: none;
@@ -38,6 +47,16 @@ table.report tbody tr:hover {
 	background: #EEE;
 	color: #A84D10;
 }
+
+table.report td.center {
+	text-align: center;
+	float: none;
+}
+table.report td.right {
+	text-align: right;
+	float: none;
+}
+
 
 /******************** Paging and Alpha Search  ************************/
 

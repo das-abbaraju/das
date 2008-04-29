@@ -20,13 +20,19 @@ try{
 <%@page import="java.util.Map"%>
 <html>
 <head>
-  <script language="JavaScript" SRC="js/Search.js"></script>
 <title>Corporate Contractors Report</title>
-<script src="js/Search.js" type="text/javascript"></script>
+<script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects"
+	type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
-<div align="center">
-	<form id="form1" name="form1" method="post" action="report_operatorContractor.jsp">
+<h1>Contractors by Facility</h1>
+<div id="search">
+<div id="showSearch"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
+<div id="hideSearch" style="display: none"><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
+
+<form id="form1" name="form1" method="post" style="display: none" action="report_operatorContractor.jsp">
 		<table border="0" cellpadding="2" cellspacing="0">
 			<tr align="center">
 				<td>
@@ -48,9 +54,11 @@ try{
 		<input type="hidden" name="startsWith" value=""/>
 		<input type="hidden" name="orderBy"  value="name"/>
 		<input type="hidden" name="changed"  value="1"/>
-	</form>
-            
-	<%=sBean.getLinksWithDynamicForm()%>
+</form>
+</div>
+
+<div>
+<%=sBean.getLinksWithDynamicForm()%>
 </div>
 <table border="0" cellpadding="1" cellspacing="1">
 <tr>

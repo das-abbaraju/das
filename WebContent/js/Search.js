@@ -40,3 +40,19 @@ function unclearText(thefield)
 	if (thefield.value == "")
 		thefield.value = thefield.defaultValue;
 }
+
+function showSearch()
+{
+	$('showSearch').hide();
+	$('hideSearch').show();
+	Effect.SlideDown('form1',{duration:.3});
+	return false;
+}
+
+function hideSearch()
+{
+	$('hideSearch').hide();
+	$('showSearch').show();
+	Effect.SlideUp('form1',{duration:.5});
+	return false;
+}

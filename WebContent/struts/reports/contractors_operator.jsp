@@ -18,8 +18,8 @@
 	</tr>
 </table>
 <div id="search">
-<div id="showSearch"><a href="#" onclick="$('showSearch').hide(); $('hideSearch').show(); Effect.SlideDown('form1',{duration:.3}); return false;">Show Filter Options</a></div>
-<div id="hideSearch" style="display: none"><a href="#" onclick="$('hideSearch').hide(); $('showSearch').show(); Effect.SlideUp('form1',{duration:.5}); return false;">Hide Filter Options</a></div>
+<div id="showSearch"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
+<div id="hideSearch" style="display: none"><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
 <s:form id="form1" method="post" cssStyle="display: none">
 	<table border="0" align="center" cellpadding="2" cellspacing="0">
 		<tr>
@@ -95,7 +95,7 @@
 	</thead>
 	<s:iterator value="data" status="stat">
 		<tr>
-			<td align="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
+			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><a
 				href="ContractorView.action?id=<s:property value="[0].get('id')"/>"
 				><s:property value="[0].get('name')" /></a></td>

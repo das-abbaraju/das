@@ -132,7 +132,7 @@ a img {
 	margin: 0;
 	padding: 5px;
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 13px;
+	font-size: 14px;
 	line-height: 24px;
 	color: #4C4D4D;
 }
@@ -153,15 +153,14 @@ div.container {
 	position: relative;
 }
 
-#maincontainer {
+div #maincontainer {
 	min-width: 790px;
 	max-width: 1150px;
 	width:expression(document.body.clientWidth < 892? "790px" : document.body.clientWidth > 1152? "1150px" : "auto");
-	padding: 40px 50px;
-	margin-top: -50px;
+	padding: 40px;
 	background-color: #797B7A;
 	font-family: Helvetica, Arial, sans-serif;
-	font-size: 13px;
+	font-size: 14px;
 	line-height: 28px;
 	color: #F7F7F7;
 }
@@ -380,14 +379,14 @@ ul#navlist {
 float:right;
 position:relative;
 white-space: nowrap;
-margin-top: -17px;
+margin-top: -16px;
 margin-right: 45px;
 display:block;
 margin-bottom: 20px;
 }
 
 #navlist li{
-font-size: 12px;
+font-size: 13px;
 border:0px;
 display: inline;
 list-style-type: none;
