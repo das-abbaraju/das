@@ -2,6 +2,7 @@
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%@page import="com.picsauditing.access.MenuComponent"%>
 <%@page import="com.picsauditing.access.PicsMenu"%>
+<%@page import="com.picsauditing.access.OpPerms"%>
 <%
 	MenuComponent menu = PicsMenu.getMenu(permissions);
 %>
@@ -34,7 +35,7 @@
 <span id="name">Welcome</span> | <a href="login.jsp">Login</a>
 <% } %></p>
 </div>
-<% if (!permissions.isContractor()) { %>
+<% if (!permissions.isContractor() && !permissions.hasPermission(OpPerms.StatusOnly)) { %>
 <div id="headersearch">
 <form action="ContractorSearch.action" method="post">
 <input name="accountName" type="text" class="blueMain" size="20" value="- Contractor Search -" onfocus="clearText(this)" onblur="unclearText(this)"/>
