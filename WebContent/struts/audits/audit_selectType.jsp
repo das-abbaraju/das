@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ page language="java" errorPage="exception_handler.jsp"%>
-<%@ include file="includes/main.jsp"%>
+<%@ include file="../../includes/main.jsp"%>
 <html>
 <head>
 <title>Audit Management</title>
@@ -10,7 +10,7 @@
 <table border="0" cellpadding="0" cellspacing="0">
 	<tr align="center" class="blueMain">
 		<td class="blueMain"><%@ include
-			file="includes/nav/editPQFNav.jsp"%></td>
+			file="../../includes/nav/editPQFNav.jsp"%></td>
 	</tr>
 	<tr>
 		<td align="center" class="redMain">Please select an Audit Type:
