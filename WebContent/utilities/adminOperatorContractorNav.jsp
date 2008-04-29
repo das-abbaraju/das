@@ -31,11 +31,11 @@
 		if (permissions.isOperator()) {
 	%>
 	<li><a href="con_redFlags.jsp?id=<%=id%>"
-	<%=request.getRequestURI().contains("con_redFlags") ? "class=\"current\"" : ""%>>Flag Status</a>
+	<%=request.getRequestURI().contains("con_redFlags") ? "class=\"current\"" : ""%>>Flag Status</a></li>
 	<%
 		} else {
 	%>
-	<a href="con_selectFacilities.jsp?id=<%=id%>"
+	<li><a href="con_selectFacilities.jsp?id=<%=id%>"
 		<%= request.getRequestURI().contains("con_selectFacilities") ? "class=\"current\"" : ""%>>Facilities</a></li>
 	<%
 		}
