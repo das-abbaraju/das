@@ -6,8 +6,8 @@
 <body>
 <table border="0" cellpadding="5" cellspacing="0" align="center">
 	<tr>
-		<td height="30" align="left"><s:property value="report.startsWithLinks" /></td>
-		<td align="right"><s:property value="report.pageLinks" /></td>
+		<td height="30" align="left"><s:property escape="false" value="report.startsWithLinks" /></td>
+		<td align="right"><s:property escape="false" value="report.pageLinks" /></td>
 	</tr>
 </table>
 <table width="657" border="0" cellpadding="1" cellspacing="1"
