@@ -57,12 +57,17 @@ List<BasicDynaBean> searchData = report.getPage();
 <html>
 <head>
 <title>PQF Verification</title>
-<script src="js/Search.js" type="text/javascript"></script>
+<script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
 <h1>PQF Verification</h1>
 
-<form id="form1" name="form1" action="pqf_verification.jsp">
+<div id="search">
+<div id="showSearch"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
+<div id="hideSearch" style="display: none"><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
+<form id="form1" name="form1" style="display: none">
 	<input type="hidden" name="showPage" value="1"/>
 	<input type="hidden" name="startsWith" value="<%= request.getParameter("startsWith") == null ? "" : request.getParameter("startsWith") %>"/>
 	<input type="hidden" name="orderBy"  value="<%=request.getParameter("orderBy") == null ? "" : request.getParameter("orderBy") %>"/>
@@ -92,27 +97,32 @@ List<BasicDynaBean> searchData = report.getPage();
 		</tr>
 	</table>
 	</td>
-	<td align="center" valign="bottom">
+	<td>
 	<input type="image" src="images/button_search.gif" width="70" height="23" />
 	</td>
 	</tr>
 	</table>
+	<div class="alphapaging">
+	<%=report.getStartsWithLinksWithDynamicForm()%>
+	</div>
 </form>
+</div>
 
-<table border="0" cellpadding="5" cellspacing="0" align="center">
+<div>
+<%=report.getPageLinksWithDynamicForm()%>
+</div>
+
+<table class="report">
+	<thead>
 	<tr>
-		<td align="center"><%=report.getStartsWithLinksWithDynamicForm()%><br />
-		<%=report.getPageLinksWithDynamicForm()%></td>
+		<td></td>
+		<td><a href="#" onclick="changeOrderBy('form1','a.name'); return false;" >Contractor</a></td>
+		<td ><a href="javascript: changeOrderBy('form1','ca<%=AuditType.PQF%>.completedDate');" >Submitted</a></td>
+		<td ><a href="javascript: changeOrderBy('form1','scheduledDate');" >Followup</a></td>
+		<td >% Verified</td>
+		<td >Notes</td>
 	</tr>
-</table>
-<table border="0" cellpadding="1" cellspacing="1" align="center">
-	<tr bgcolor="#003366" class="whiteTitle">
-		<td colspan=2><a href="#" onclick="changeOrderBy('form1','a.name'); return false;" class="whiteTitle">Contractor</a></td>
-		<td align="center"><a href="javascript: changeOrderBy('form1','ca<%=AuditType.PQF%>.completedDate');" class="whiteTitle">Submitted</a></td>
-		<td align="center"><a href="javascript: changeOrderBy('form1','scheduledDate');" class="whiteTitle">Followup</a></td>
-		<td align="center">% Verified</td>
-		<td align="center">Notes</td>
-	</tr>
+	</thead>
 	<%
 	com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlternater();
 
@@ -120,9 +130,8 @@ List<BasicDynaBean> searchData = report.getPage();
 		String notes = row.get("notes") == null ? "" : row.get("notes").toString().substring(0, 50)+"...";
 		
 	%>
-	<tr id="auditor_tr<%=row.get("auditID")%>" class="blueMain"
-		<%=color.nextBgColor()%>>
-		<td align="right"><%=color.getCounter()%></td>
+	<tr id="auditor_tr<%=row.get("auditID")%>" <%=color.nextBgColor()%>>
+		<td class="right"><%=color.getCounter()%></td>
 		<td><a href="VerifyView.action?auditID=<%=row.get("auditID")%>"><%=row.get("name")%></a></td>
 		<td><%=DateBean.toShowFormat(row.get("completedDate"))%></td>
 		<td><%=DateBean.toShowFormat(row.get("scheduledDate"))%></td>
@@ -133,10 +142,8 @@ List<BasicDynaBean> searchData = report.getPage();
 		}
 	%>
 </table>
-<table border="0" cellpadding="5" cellspacing="0" align="center">
-	<tr>
-		<td align="right"><%=report.getPageLinksWithDynamicForm()%></td>
-	</tr>
-</table>
+<div>
+<%=report.getPageLinksWithDynamicForm()%>
+</div>
 </body>
 </html>

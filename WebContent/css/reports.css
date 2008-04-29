@@ -34,7 +34,6 @@ table.report thead a {
 	text-decoration: none;
 }
 table.report thead a:hover {
-	color: #A84D10;
 	text-decoration: underline;
 }
 table.report tbody td a {
