@@ -15,6 +15,10 @@
 			</global-exception-mappings>
 		-->
 
+		<action name="Home">
+			<result>struts/home.jsp</result>
+		</action>
+		
 		<action name="RulesList"
 			class="com.picsauditing.actions.RulesAction">
 			<result>rules.jsp</result>

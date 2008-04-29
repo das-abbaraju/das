@@ -269,7 +269,7 @@ public class LoginController extends DataBean {
 			return;
 		}
 
-		response.sendRedirect("reports.jsp");
+		response.sendRedirect("Home.action");
 		return;
 	}
 	
