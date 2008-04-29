@@ -61,7 +61,7 @@
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
-<table class="box">
+<table class="report">
 	<thead>
 	<tr>
 		<td colspan="2">Contractor Name</td>

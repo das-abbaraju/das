@@ -14,7 +14,7 @@
 </s:form>
 
 <s:property value="report.pageLinks" escape="false" />
-<table class="box">
+<table class="report">
 	<thead>
 	<tr>
 		<td>Contractor Name</td>

@@ -12,7 +12,7 @@
 <s:include value="con_nav.jsp"></s:include>
 <s:property value="action"/>
 
-<table class="box">
+<table class="report">
 	<thead>
 	<tr>
 		<th>Type</td>

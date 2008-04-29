@@ -7,9 +7,9 @@
 	position:relative;
 }
 
-/******************** Primary Table class="box"  ************************/
+/******************** Primary Table class="report"  ************************/
 
-table.box {
+table.report {
 	border-collapse: collapse;
 	border: 2px solid #003768;
 	color: #4C4D4D;
@@ -17,24 +17,24 @@ table.box {
 	clear: both;
 	margin: 10px;
 }
-table.box td, table.box th {
+table.report td, table.report th {
 	border: 1px dashed #A84D10;
 	padding: 4px;
 }
-table.box thead th, table.box thead td {
+table.report thead th, table.report thead td {
 	border: 1px solid #e0e0e0;
 	text-align: center;
 	font-weight: bold;
 	background: #003768;
 	color: #FFF;
 }
-table.box tbody td a {
+table.report tbody td a {
 	text-decoration: none;
 }
-table.box tbody td a:hover {
+table.report tbody td a:hover {
 	text-decoration: underline;
 }
-table.box tbody tr:hover {
+table.report tbody tr:hover {
 	background: #EEE;
 	color: #A84D10;
 }
