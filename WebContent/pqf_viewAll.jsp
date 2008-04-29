@@ -36,11 +36,9 @@ try {
 <body>
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
               <tr align="center" class="blueMain">
-                <td><%@ include file="includes/nav/secondNav.jsp"%></td>
+                <td><h1><%=aBean.getName(id)%><span class="sub">PQF</span></h1>
+                <%@ include file="utilities/adminOperatorContractorNav.jsp"%></td>
               </tr>
-    		  <tr align="center" class="blueMain">
-                <td class="blueHeader"><%=auditType%> for <%=aBean.name%></td>
-    		  </tr>
               <tr align="center">
                 <td class="blueMain">Date Submitted: <span class="redMain"><strong><%=cBean.getAuditSubmittedDate(auditType)%></strong></span></td>
               </tr>
