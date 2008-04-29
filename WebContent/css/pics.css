@@ -292,6 +292,9 @@ a:hover, a:active {
 	color:  rgb(168,77,16);
 }
 
+b, strong {
+	font-weight: bold;
+}
 
 .sub {   /* used as a sub-header title */
 		font-size: 18px;
@@ -346,7 +349,7 @@ p.url a{
 	background: transparent url(../images/icon_link_ext.png) no-repeat right center;
 }
 
-	
+
 div.contact{
 	position: relative;
 	top:-3px;
@@ -377,15 +380,14 @@ ul#navlist {
 float:right;
 position:relative;
 white-space: nowrap;
-margin-top: -20px;
-#margin-top: -22px;
-margin-right: 50px;
+margin-top: -17px;
+margin-right: 45px;
 display:block;
-margin-bottom: 30px;
-	}
+margin-bottom: 20px;
+}
 
 #navlist li{
-font-size: 10px;
+font-size: 12px;
 border:0px;
 display: inline;
 list-style-type: none;

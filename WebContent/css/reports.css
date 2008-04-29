@@ -1,0 +1,88 @@
+#search {
+	display:block;
+	background-color:#EEEEEE;
+	border-top:1px solid #A84D10;
+	border-bottom:1px solid #A84D10;
+	width:75%;
+	position:relative;
+}
+
+/******************** Primary Table class="box"  ************************/
+
+table.box {
+	border-collapse: collapse;
+	border: 2px solid #003768;
+	color: #4C4D4D;
+	background: #f9f9f9;
+	clear: both;
+	margin: 10px;
+}
+table.box td, table.box th {
+	border: 1px dashed #A84D10;
+	padding: 4px;
+}
+table.box thead th, table.box thead td {
+	border: 1px solid #e0e0e0;
+	text-align: center;
+	font-weight: bold;
+	background: #003768;
+	color: #FFF;
+}
+table.box tbody td a {
+	text-decoration: none;
+}
+table.box tbody td a:hover {
+	text-decoration: underline;
+}
+table.box tbody tr:hover {
+	background: #EEE;
+	color: #A84D10;
+}
+
+/******************** Paging and Alpha Search  ************************/
+
+ul.alpha {
+	display:block;
+	white-space:nowrap;
+	vertical-align: middle;
+}
+ul.paging {
+	display:block;
+	white-space:nowrap;
+	vertical-align: middle;
+	margin-left: 30px;
+}
+ul.alpha li, ul.paging li {
+	display:inline;
+	list-style-type:none;
+}
+ul.alpha li a, ul.paging li a {
+	margin:1px;
+	padding:2px;
+	border: 1px solid #003768;
+	font-size:14px;
+	font-weight: bold;
+	text-decoration: none;
+	color: #003768;
+}
+ul.alpha li a:hover, ul.paging li a:hover {
+	margin:1px;
+	padding:2px;
+	font-size:14px;
+	font-weight: bold;
+	text-decoration: none;
+	color: #FFF;
+	background-color: #A84D10;
+	border:1px solid #A84D10;
+}
+
+ul.alpha li a.current, ul.paging li a.current {
+	margin:1px;
+	padding:2px;
+	font-size:14px;
+	font-weight: bold;
+	text-decoration: none;
+	color: #FFF;
+	background-color: #A84D10;
+	border:1px solid #A84D10;
+}

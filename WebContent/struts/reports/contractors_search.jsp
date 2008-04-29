@@ -2,6 +2,7 @@
 <html>
 <head>
 <title>Contractor Search</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
 <h1>Contractor Search <span class="sub">Quick Version</span></h1>
@@ -13,16 +14,17 @@
 </s:form>
 
 <s:property value="report.pageLinks" escape="false" />
-<table border="0" cellpadding="1" cellspacing="1">
-	<tr bgcolor="#993300" class="whiteTitle">
+<table class="box">
+	<thead>
+	<tr>
 		<td>Contractor Name</td>
 	</tr>
+	</thead>
 	<s:iterator value="data">
-		<tr class="blueMain"
-			<s:property value="color.nextBgColor" escape="false" />>
+		<tr>
 			<td><a
 				href="ContractorView.action?id=<s:property value="[0].get('id')"/>"
-				class="blueMain"><s:property value="[0].get('name')" /></a></td>
+				><s:property value="[0].get('name')" /></a></td>
 		</tr>
 	</s:iterator>
 </table>

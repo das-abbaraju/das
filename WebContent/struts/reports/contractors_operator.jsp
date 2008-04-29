@@ -3,9 +3,10 @@
 <html>
 <head>
 <title>Contractor Search - Operator</title>
-<script type="text/javascript" src="js/Search.js" />
-
-
+<script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects"
+	type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
 <h1>Contractor Search <span class="sub">Operator Version</span></h1>
@@ -16,7 +17,10 @@
 			value="contractorCount" /></strong> contractors in your database.</span></td>
 	</tr>
 </table>
-<s:form id="form1" method="post">
+<div id="search">
+<div id="showSearch"><a href="#" onclick="$('showSearch').hide(); $('hideSearch').show(); Effect.SlideDown('form1',{duration:.3}); return false;">Show Filter Options</a></div>
+<div id="hideSearch" style="display: none"><a href="#" onclick="$('hideSearch').hide(); $('showSearch').show(); Effect.SlideUp('form1',{duration:.5}); return false;">Hide Filter Options</a></div>
+<s:form id="form1" method="post" cssStyle="display: none">
 	<table border="0" align="center" cellpadding="2" cellspacing="0">
 		<tr>
 			<td align="left"><s:textfield name="accountName"
@@ -49,53 +53,52 @@
 	<s:hidden name="showPage" value="1" />
 	<s:hidden name="startsWith" />
 	<s:hidden name="orderBy" />
+	<div class="alphapaging">
+	<s:property value="report.startsWithLinksWithDynamicForm" escape="false" />
+	</div>
 </s:form>
-
-<table border="0" cellpadding="0" cellspacing="0" width="900">
+</div>
+<div>
+<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+</div>
+<table class="box">
+	<thead>
 	<tr>
-		<td align="left"><s:property
-			value="report.startsWithLinksWithDynamicForm" escape="false" /></td>
-		<td align="right"><s:property
-			value="report.pageLinksWithDynamicForm" escape="false" /></td>
-	</tr>
-</table>
-<table border="0" cellpadding="1" cellspacing="1">
-	<tr bgcolor="#003366" class="whiteTitle">
 		<td colspan="2">Contractor Name</td>
 		<s:if test="pqfVisible">
-			<td align="center" bgcolor="#336699">PQF</td>
+			<td>PQF</td>
 		</s:if>
 		<s:if test="desktopVisible">
-			<td align="center" bgcolor="#336699">Desktop</td>
+			<td>Desktop</td>
 		</s:if>
 		<s:if test="daVisible">
-			<td align="center" bgcolor="#336699">DA</td>
+			<td>DA</td>
 		</s:if>
 		<s:if test="officeVisible">
-			<td align="center" bgcolor="#336699">Office</td>
+			<td>Office</td>
 		</s:if>
 		<s:if test="operatorAccount.canSeeInsurance">
-			<td align="center" bgcolor="#6699CC">Ins. Certs</td>
+			<td>Ins. Certs</td>
 		</s:if>
 		<s:if test="operator">
-			<td align="center" bgcolor="#6699CC"><a
-				href="?orderBy=flag DESC" class="whiteTitle">Flag</a></td>
+			<td><a
+				href="?orderBy=flag DESC">Flag</a></td>
 		</s:if>
 
 		<s:if test="operatorAccount.approvesRelationships">
 			<pics:permission perm="ViewUnApproved">
-				<td align="center" bgcolor="#6699CC"><nobr>Approved</nobr></td>
+				<td><nobr>Approved</nobr></td>
 			</pics:permission>
 		</s:if>
 
 	</tr>
-	<s:iterator value="data">
-		<tr class="blueMain"
-			<s:property value="color.nextBgColor" escape="false" />>
-			<td align="right"><s:property value="color.counter" /></td>
-			<td align="center"><a
+	</thead>
+	<s:iterator value="data" status="stat">
+		<tr>
+			<td align="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
+			<td><a
 				href="ContractorView.action?id=<s:property value="[0].get('id')"/>"
-				class="blueMain"><s:property value="[0].get('name')" /></a></td>
+				><s:property value="[0].get('name')" /></a></td>
 
 			<s:if test="pqfVisible">
 				<td align="center"><s:if test="[0].get('ca1_auditID') > 0">
@@ -108,7 +111,7 @@
 				</s:if></td>
 			</s:if>
 			<s:if test="desktopVisible">
-				<td align="center">&nbsp; <s:if
+				<td>&nbsp; <s:if
 					test="[0].get('ca2_auditID') > 0">
 					<s:if test="[0].get('ca2_auditStatus').equals('Exempt')">N/A</s:if>
 					<s:else>
@@ -163,7 +166,9 @@
 		</tr>
 	</s:iterator>
 </table>
-<center><s:property value="report.pageLinksWithDynamicForm"
-	escape="false" /></center>
+<div>
+<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+</div>
+
 </body>
 </html>

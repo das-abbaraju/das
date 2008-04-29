@@ -52,6 +52,10 @@ public class Report {
 		return this.currentPage;
 	}
 
+	public int getFirstRowNumber() {
+		return ((currentPage - 1) * limit) + 1;
+	}
+	
 	public void setPageByResult(String page) {
 		String showPage = page;
 		if (showPage != null) {

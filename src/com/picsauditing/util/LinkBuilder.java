@@ -13,12 +13,12 @@ public class LinkBuilder
 	 * @return Html String containing the links
 	 */
 	public static String getStartsWithLinks() {
-		StringBuffer temp = new StringBuffer("<span class=\"blueMain\">Starts with: ");
+		StringBuffer temp = new StringBuffer("");
 
-		temp.append( "<a href=\"javascript: changeStartsWith('form1', '');\" class=\"blueMain\">All</a> " );
+		temp.append( "<ul class=\"alpha\"><li>Starts with:</li><li><a href=\"javascript: changeStartsWith('form1', '');\" class=\"blueMain\">All</a></li>" );
 		for (char c = 'A';c<='Z';c++)
-			temp.append( "<a href=\"javascript: changeStartsWith('form1', '" + c + "');\" class=\"blueMain\">"+c+"</a> " );
-		temp.append( "</span>" );
+			temp.append( "<li><a href=\"javascript: changeStartsWith('form1', '" + c + "');\" class=\"blueMain\">"+c+"</a></li>" );
+		temp.append( "</ul>" );
 		return temp.toString();
 	}
 	
@@ -33,29 +33,28 @@ public class LinkBuilder
 		String orderByQuery = "";
 		
 		
-		StringBuffer sb = new StringBuffer("<span class=\"redMain\">");
-		sb.append("Showing "+beginResults+"-"+endResults+" of <b>"+numResults+"</b> results | ");
+		StringBuffer sb = new StringBuffer("<ul class=\"paging\">");
+		sb.append("Showing "+beginResults+"-"+endResults+" of <strong>"+numResults+"</strong> results ");
 		
 		int startIndex = 1;
 		if (showPage-1 > SHOW_PAGES){
 			startIndex = showPage-SHOW_PAGES;
-			sb.append("<a href=\"javascript: changePage('form1','1');\">1</A> << ");
+			sb.append("<li><a href=\"javascript: changePage('form1','1');\">1</a></li>");
+			sb.append("<li>...</li>");
 		}
 		
 		int endIndex = lastPage;
 		if (lastPage-showPage > SHOW_PAGES)
 			endIndex = showPage+SHOW_PAGES;
 		for (int i=startIndex;i<=endIndex;i++){
-			if (i==showPage)
-				sb.append(" <strong>"+i+"</strong> ");
-			else{
-				sb.append("<a href=\"javascript: changePage('form1','" + i + "');\">" + i + "</A> ");
-			}
+			sb.append("<li><a "+((i==showPage)?"class=\"current\"":"")+"href=\"javascript: changePage('form1','" + i + "');\">" + i + "</a></li>");
 		}
 		
-		if (lastPage-showPage > SHOW_PAGES)
-			sb.append(">> <a href=\"javascript: changePage('form1','" + lastPage + "');\">" + lastPage + "</A>");
-			sb.append("</span>");
+		if (lastPage-showPage > SHOW_PAGES) {
+			sb.append("<li>...</li>");
+			sb.append("<li><a href=\"javascript: changePage('form1','" + lastPage + "');\">" + lastPage + "</a></li>");
+		}
+		sb.append("</ul>");
 		return sb.toString();
 	}
 
