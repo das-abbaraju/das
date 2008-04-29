@@ -54,6 +54,7 @@ try {
 <SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
 </head>
 <body>
+<h1><%=aBean.getName(id)%></h1>
 <%@ include file="includes/nav/pqfHeader.jsp"%>
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
 <%	if (!isCategorySelected) { %>
