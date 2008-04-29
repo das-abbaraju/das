@@ -1,6 +1,7 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.search.SelectAccount;
 
 public class ReportAccountNCMS extends ReportAccount {
 
@@ -8,6 +9,8 @@ public class ReportAccountNCMS extends ReportAccount {
 		this.loadPermissions();
 		permissions.tryPermission(OpPerms.NCMS);
 
+		sql.setType(SelectAccount.Type.Contractor);
+		
 		sql.addJoin("JOIN ncms_desktop d " +
 				"ON (c.taxID = d.fedTaxID AND c.taxID != '') OR a.name=d.ContractorsName");
 		sql.addWhere("a.id IN ( "
