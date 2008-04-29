@@ -5,12 +5,10 @@
 <%
 	permissions.tryPermission(OpPerms.OfficeAuditCalendar);
 
-	//String format = request.getParameter("format");
-	//if (!format.equals("popup")) {}
 	String whichMonth = request.getParameter("whichMonth");
 	String whichYear = request.getParameter("whichYear");
-	int thisMonth = dBean.getCurrentMonth();
-	int thisYear = dBean.getCurrentYear();
+	int thisMonth = DateBean.getCurrentMonth();
+	int thisYear = DateBean.getCurrentYear();
 	if (null == whichMonth)
 		whichMonth = Integer.toString(thisMonth);
 	if (null == whichYear)
@@ -23,52 +21,77 @@
 						.getParameter("endHour"), request.getParameter("endAmPm"));
 	if (!(null == request.getParameter("unblock")))
 		calBean.deleteBlockedDate(request.getParameter("unblock"));
+	calBean.setPermissions(permissions);
+	calBean.setAccountID(permissions.getAccountId());
 %>
 <html>
 <head>
 <title>Audit Calendar</title>
+<style>
+
+table.month {
+	border: 2px #000000 solid;
+}
+th.day {
+	text-align: center;
+	background-color: #003768;
+	font-size: 16px;
+	padding: 10px;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+td.day {
+	font-size: 11px;
+	padding: 5px;
+	border: 1px #777777 solid;
+	width: 10%;
+	height: 30px;
+}
+.daynum {
+	color: #A84D10;
+	font-size: 20px;
+}
+
+</style>
 </head>
 <body>
-<table width="657" border="0" cellpadding="0" cellspacing="0"
-	align="center">
+<h1><%=DateBean.getMonthName(auditMonth)%>
+<span class="sub">Audit Calendar</span></h1>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
+<div id="internalnavcontainer">
+<ul id="navlist">
+<%
+	String[] nextMonthsArray = dBean.getNextMonths(3);
+	for (int x = 0; x < nextMonthsArray.length; x += 2) {
+		int linkMonth = Integer.parseInt(nextMonthsArray[x]);
+		%><li><a href="?whichMonth=<%= nextMonthsArray[x] + "&whichYear=" + nextMonthsArray[x + 1] %>"<%
+		if (linkMonth == auditMonth) {
+			%> class="current"<%
+		}
+		%>><%=DateBean.getMonthName(linkMonth) %></a></li><%
+	}
+%>
+</ul>
+</div>
+<table class="month">
 	<tr>
-		<td class="blueHeader" align="center">Office Audit Calendar</td>
+		<th class="day">Sunday</th>
+		<th class="day">Monday</th>
+		<th class="day">Tuesday</th>
+		<th class="day">Wednesday</th>
+		<th class="day">Thursday</th>
+		<th class="day">Friday</th>
+		<th class="day">Saturday</th>
 	</tr>
-	<tr>
-		<td colspan="2">&nbsp;</td>
-	</tr>
-	<tr>
-		<td height="30" colspan="2" class="blueMain" align="center"><span
-			class="blueHeader"><%=dBean.getMonthName(auditMonth)%></span><br>
-		<%
-			String[] nextMonthsArray = dBean.getNextMonths(3);
-			for (int x = 0; x < nextMonthsArray.length; x += 2) {
-				int linkMonth = Integer.parseInt(nextMonthsArray[x]);
-				if (linkMonth == auditMonth)
-					out.println(dBean.getMonthName(linkMonth));
-				else
-					out.println("<a href='?whichMonth=" + nextMonthsArray[x] + "&whichYear=" + nextMonthsArray[x + 1]
-							+ "'>" + dBean.getMonthName(linkMonth) + "</a>");
-				if (x < 3)
-					out.println(" | ");
-			}//for
-		%>
-		</td>
-	</tr>
-</table>
-<table border="1" cellpadding="1" cellspacing="1" align="center">
-	<tr bgcolor="#003366" class="header">
-		<td width="90" align="center">Sunday</td>
-		<td width="90" align="center">Monday</td>
-		<td width="90" align="center">Tuesday</td>
-		<td width="90" align="center">Wednesday</td>
-		<td width="90" align="center">Thursday</td>
-		<td width="90" align="center">Friday</td>
-		<td width="90" align="center">Saturday</td>
-	</tr>
-	<%=calBean.writeCalendar(auditMonth, auditYear, pBean)%>
+	<%=calBean.writeCalendar(auditMonth, auditYear)%>
 </table>
 <%
+	if (permissions.isPicsEmployee()) {
+	%>
+	<p align="center" class="blueMain">'*' = Web Audit</p>
+	<%
+	}
 	if (permissions.isAdmin()) {
 %>
 <form name="form1" method="post"
@@ -79,13 +102,8 @@
 End Time: <nobr><%=com.picsauditing.PICS.Inputs.getHourSelect("endHour", "forms", "")%>
 <%=com.picsauditing.PICS.Inputs.getHourSelect("endAmPm", "forms", "")%></nobr>
 Description: <input type="text" name="description" size="12"> <input
-	type="submit" value="Block" name="submit"></p>
+	type="submit" value="Block" name="submit" class="blueMain"></p>
 </form>
-<%
-	}
-	if (permissions.isPicsEmployee()) {
-%>
-<p align="center" class="blueMain">'*' = Web Audit</p>
 <%
 	}
 %>
