@@ -35,6 +35,8 @@
 		    <td align="center"><a href="?orderBy=at.auditName DESC" class="whiteTitle">Type</a></td>
 		    <td align="center"><a href="?orderBy=ca.createdDate DESC" class="whiteTitle">Created</a></td>
 		    <td align="center"><a href="?orderBy=ca.auditStatus DESC" class="whiteTitle">Status</a></td>
+		    <td align="center"><a href="?orderBy=ca.percentComplete" class="whiteTitle">Comp%</a></td>
+		    <td align="center"><a href="?orderBy=ca.percentVerified" class="whiteTitle">Ver%</a></td>
 		    <td align="center"><a href="?orderBy=au.name" class="whiteTitle">Auditor</a></td>
 	</tr>
 	<s:iterator value="data">
@@ -46,6 +48,8 @@
 		<td><s:property value="[0].get('auditName')"/></td>
 		<td><s:date name="[0].get('createdDate')" format="M/d/yy" /></td>
 		<td><s:property value="[0].get('auditStatus')"/></td>
+		<td><s:property value="[0].get('percentComplete')"/></td>
+		<td><s:property value="[0].get('percentVerified')"/></td>
 		<td><s:property value="[0].get('auditor_name')"/></td>
 	</tr>
 	</s:iterator>
