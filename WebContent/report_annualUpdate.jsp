@@ -59,70 +59,74 @@ List<BasicDynaBean> searchData = report.getPage();
 <html>
 <head>
 <title>Annual Update Emails</title>
+<script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script language="javascript" SRC="js/checkAllBoxes.js"></script>
 </head>
 <body>
 <h1>Annual Update Emails</h1>
 
-<form name="filter" method="get" action="report_annualUpdate.jsp" class="forms">
+<div id="search">
+<div id="showSearch"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
+<div id="hideSearch" style="display: none"><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
+<form id="form1" name="form1" method="post" style="display: none">
 	Sent Email Range: <input type="text" name="minTimes" value="<%=report.getFilterValue("minTimes")%>" size="2" class="blueSmall" />
 		and <input type="text" name="maxTimes" value="<%=report.getFilterValue("maxTimes")%>" size="2" class="blueSmall" /><br />
 	PQF Submitted before: <input type="text" name="pqfDate" value="<%=report.getFilterValue("pqfDate")%>" size="10" class="blueSmall" /><br />
 	Registered before: <input type="text" name="dateCreated" value="<%=report.getFilterValue("dateCreated")%>" size="10" class="blueSmall" /><br />
-	<input type="submit" class="buttons" value="Filter" />
+	<input type="submit" value="Filter" />
+	<input type="hidden" name="showPage" value="1"/>
+	<input type="hidden" name="startsWith" />
+	<input type="hidden" name="orderBy"  value="<%=report.getOrderBy() %>"/>
+	<div class="alphapaging">
+	<%=report.getStartsWithLinksWithDynamicForm()%>
+	</div>
 </form>
-<table border="0" cellpadding="5" cellspacing="0" align="center">
+</div>
+
+<div>
+<%=report.getPageLinksWithDynamicForm()%>
+<form name="form10" id="form10" method="post">
+<table class="report">
+	<thead>
 	<tr>
-		<td align="left"><%=report.getStartsWithLinks()%></td>
-		<td align="right"><%=report.getPageLinks()%></td>
-	</tr>
-</table>
-<form name="form10" id="form10" method="post" action="report_annualUpdate.jsp">
-<%
-for (String key : report.getFilters().keySet()) {
-	if (report.getFilters().get(key).isSet()) {
-		%>
-		<input type="hidden" name="<%= report.getFilters().get(key).getName() %>" value="<%=report.getFilters().get(key).getValue()%>" />
-		<%
-	}
-}
-%>
-<table border="0" cellpadding="1" cellspacing="1">
-	<tr bgcolor="#003366" class="whiteTitle">
-		<td colspan="2" align="center">Email<nobr><input
+		<td></td>
+		<td>Email<nobr><input
 			name="checkAllBox" id="checkAllBox" type="checkbox"
 			onclick="checkAll(document.form10)"></nobr></td>
-		<td align="center"><a
-			href="?orderBy=lastAnnualUpdateEmailDate DESC" class="whiteTitle">Sent</a></td>
-		<td align="center"><a href="?orderBy=annualUpdateEmails"
-			class="whiteTitle">Times</a></td>
-		<td width="150"><a href="?orderBy=name" class="whiteTitle">Contractor</a></td>
-		<td align="center"><a href="?orderBy=dateCreated DESC"
-			class="whiteTitle">Created</a></td>
-		<td align="center"><a href="?orderBy=lastLogin DESC"
-			class="whiteTitle">Last Login</a></td>
-		<td align="center"><a href="?orderBy=ca<%=AuditType.PQF%>.completedDate DESC"
-			class="whiteTitle">PQF</a></td>
-		<td align="center" bgcolor="#6699CC"><a
-			href="?orderBy=ca<%=AuditType.OFFICE%>.completedDate DESC" class="whiteTitle">Office</a></td>
+		<td><a
+			href="?orderBy=lastAnnualUpdateEmailDate DESC" >Sent</a></td>
+		<td><a href="?orderBy=annualUpdateEmails"
+			>Times</a></td>
+		<td><a href="?orderBy=name" >Contractor</a></td>
+		<td><a href="?orderBy=dateCreated DESC"
+			>Created</a></td>
+		<td><a href="?orderBy=lastLogin DESC"
+			>Last Login</a></td>
+		<td><a href="?orderBy=ca<%=AuditType.PQF%>.completedDate DESC"
+			>PQF</a></td>
+		<td><a
+			href="?orderBy=ca<%=AuditType.OFFICE%>.completedDate DESC" >Office</a></td>
 		<td>Preview</td>
 	</tr>
+	</thead>
 	<%
 	com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlternater(report.getSql().getStartRow());
 	for (BasicDynaBean row : searchData) {
 	%>
 	<tr class="blueMain" <%=color.nextBgColor()%>>
 		<td><%=color.getCounter()%></td>
-		<td align="center"><input name="sendEmail_<%=row.get("id")%>" 
+		<td class="center"><input name="sendEmail_<%=row.get("id")%>" 
 				id="sendEmail_<%=row.get("id")%>" type="checkbox"></td>
-		<td align="center"><%=DateBean.toShowFormat(row.get("lastAnnualUpdateEmailDate"))%></td>
-		<td align="center"><%=row.get("annualUpdateEmails")%></td>
+		<td class="center"><%=DateBean.toShowFormat(row.get("lastAnnualUpdateEmailDate"))%></td>
+		<td class="center"><%=row.get("annualUpdateEmails")%></td>
 		<td><a href="ContractorView.action?id=<%=row.get("id")%>"
 			class="active"><%=row.get("name")%></a></td>
-		<td align="center"><%=DateBean.toShowFormat(row.get("dateCreated"))%></td>
-		<td align="center"><%=DateBean.toShowFormat(row.get("lastLogin"))%></td>
-		<td align="center"><%=DateBean.toShowFormat(row.get("pqfSubmittedDate"))%></td>
-		<td align="center"><%=DateBean.toShowFormat(row.get("auditDate"))%></td>
+		<td class="center"><%=DateBean.toShowFormat(row.get("dateCreated"))%></td>
+		<td class="center"><%=DateBean.toShowFormat(row.get("lastLogin"))%></td>
+		<td class="center"><%=DateBean.toShowFormat(row.get("pqfSubmittedDate"))%></td>
+		<td class="center"><%=DateBean.toShowFormat(row.get("auditDate"))%></td>
 		<td><a href="email_templates.jsp?template=annual_update&userID=&accountID=<%=row.get("id")%>">Preview</a></td>
 	</tr>
 	<%	}//while %>

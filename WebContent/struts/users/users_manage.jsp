@@ -6,7 +6,7 @@
 <title>Manage Users</title>
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript" src="js/scriptaculous/scriptaculous.js?load=effects"></script>
-<script type="text/javascript" src="js/Search.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script type="text/javascript">
 var currentUser = 0;
 var accountID = <s:property value="accountId"/>;
@@ -120,20 +120,19 @@ function checkUsername(username, userID) {
 	</td>
 </tr>
 <tr valign="top"><td>
-	<table border="0" cellpadding="1" cellspacing="1">
+	<div>
+	<s:property value="search.pageLinksWithDynamicForm" escape="false"/>
+	</div>
+	<table class="report">
+		<thead>
 		<tr>
-			<td colspan="3"><s:property value="search.pageLinksWithDynamicForm" escape="false"/></td>
-		</tr>
-		<tr bgcolor="#003366" class="whiteTitle">
 			<td>&nbsp;</td>
 			<td colspan="2">User/Group</td>
 			<td>Last Login</td>
 		</tr>
-	
+		</thead>
 	<s:iterator value="searchData" status="stat">
-		<tr bgcolor="#FFFFFF" 
-			class="active" 
-			style="cursor: pointer; <s:if test="'No'.equals(isActive)">font-style: italic; color: #999999</s:if>"
+		<tr style="cursor: pointer; <s:if test="'No'.equals(isActive)">font-style: italic; color: #999999</s:if>"
 			onclick="showUser('<s:property value="[0].get('id')"/>')">
 			<td align="right"><s:property value="#stat.index + search.sql.startRow + 1" />.</td>
 			

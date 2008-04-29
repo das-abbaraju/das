@@ -36,18 +36,18 @@
 		</div>
 	</div>
 	<div class="left info">
-		PICS Contractor ID: <strong><s:property value="contractor.luhnId" /></strong><br />
-		Risk Level: <strong><s:property value="contractor.riskLevel" /></strong><br />
-		Facilities:
-		<ul>
-			<s:iterator value="contractor.operators">
-			<li><s:property value="operatorAccount.name" /></li>
-			</s:iterator>
-			<li>...<a href="con_selectFacilities.jsp?id=<s:property value="id" />">see facilities</a></li>
-		</ul>
 		<div class="right" id="vcardimage"><a 
 			href="http://suda.co.uk/projects/X2V/get-vcard.php?uri=http://www.albumcreative.com/picscss/index.html"><img 
 			src="images/vcard.jpg" alt="image" width="130" height="38" /></a></div>
+		PICS Contractor ID: <strong><s:property value="contractor.luhnId" /></strong><br />
+		Risk Level: <strong><s:property value="contractor.riskLevel" /></strong><br />
+		Facilities:
+		<ul class="facilities">
+			<s:iterator value="contractor.operators">
+			<li><s:property value="operatorAccount.name" /></li>
+			</s:iterator>
+			...<a href="con_selectFacilities.jsp?id=<s:property value="id" />">see facilities</a>
+		</ul>
 	</div>
 </div>
 <br clear="all" />

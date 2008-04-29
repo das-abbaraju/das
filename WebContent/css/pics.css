@@ -295,6 +295,11 @@ b, strong {
 	font-weight: bold;
 }
 
+ul {
+	list-style-type: disc;
+	margin-left: 15px;
+}
+
 .sub {   /* used as a sub-header title */
 		font-size: 18px;
 		display: block;

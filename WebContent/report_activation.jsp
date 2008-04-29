@@ -89,11 +89,10 @@ try{
 <html>
 <head>
 <title>Activation</title>
-  <script language="JavaScript" SRC="js/ImageSwap.js"></script>
-  <script language="JavaScript" SRC="js/Search.js"></script>
-  <script src="js/prototype.js" type="text/javascript"></script>
-  <script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
-  <script language="JavaScript">
+<script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<script language="JavaScript">
   	function sendInvoice( conId, amountField )
   	{
 		var elm = document.getElementById( amountField );
@@ -204,11 +203,15 @@ try{
 				});
 		return false;
   	}
-  </script>
+</script>
 </head>
 <body>
-<h1>Activation Report </h1>
-<form id="form1" name="form1" method="post" action="report_activation.jsp">
+<h1>Activation Report
+<span class="sub">Contractors that haven't ever logged in</span></h1>
+<div id="search">
+<div id="showSearch"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
+<div id="hideSearch" style="display: none"><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
+<form id="form1" name="form1" method="post" style="display: none">
               <table border="0" cellpadding="2" cellspacing="0">
                 <tr align="center">
                   <td><input name="name" type="text" class="forms" value="<%=sBean.selected_name%>" size="20" onFocus="clearText(this)">
@@ -223,44 +226,49 @@ try{
      		  <input type="hidden" name="showPage" value="1"/>
 		      <input type="hidden" name="startsWith" value="<%=sBean.selected_startsWith == null ? "" : sBean.selected_startsWith %>"/>
 		      <input type="hidden" name="orderBy"  value="<%=sBean.orderBy == null ? "dateCreated DESC" : sBean.orderBy %>"/>
-            </form>
-            <span class="blueMain"><%=sBean.getStartsWithLinksWithDynamicForm()%></span>
-            <span class="redMain"><br><%=message%></span>
-	        <table height="40" border="0" cellpadding="0" cellspacing="0">
-	          <tr>
-		        <td><span class="blueHeader">Contractors that haven't ever logged in</span></td>
-		        <td align="right"><span class="redMain"><%=sBean.getLinksWithDynamicForm()%></span></td>
-	          </tr>
-	        </table>
-	        <table border="0" cellpadding="1" cellspacing="1">
-			  <tr bgcolor="#003366" class="whiteTitle">
-				<td colspan="2" bgcolor="#003366"><a href="javascript: changeOrderBy('form1','name');" class="whiteTitle">Contractor</a></td>
-				<td align="center" bgcolor="#003366"><a href="javascript: changeOrderBy('form1','dateCreated DESC');" class="whiteTitle">Created</a></td>
-				<td align="center" bgcolor="#003366"><a href="javascript: changeOrderBy('form1','membershipDate DESC');" class="whiteTitle">Member</a></td>
-				<td align="center" bgcolor="#003366"><a href="javascript: changeOrderBy('form1','requestedByID DESC');" class="whiteTitle">Requester</a></td>
- 			    <td align="center"><a href="javascript: changeOrderBy('form1','payingFacilities');" class="whiteTitle">Paying Fac.</a></td>
- 			    <td colspan=2 align="center"><a href="javascript: changeOrderBy('form1','lastInvoiceDate DESC');" class="whiteTitle"><nobr>Last Invoice</nobr></a></td>
- 			    <td colspan=2 align="center"><a href="javascript: changeOrderBy('form1','newBillingAmount DESC');" class="whiteTitle"><nobr>New Invoice</nobr></a></td>
- 			    <td colspan=2 align="center"><a href="javascript: changeOrderBy('form1','lastPayment DESC');" class="whiteTitle">Last Payment</a></td>
- 			    <td colspan=2 align="center"><a href="javascript: changeOrderBy('form1','billingCycle');" class="whiteTitle">New Payment</a></td>
-				<td colspan=4 align="center" bgcolor="#6699CC">Welcome Call</td>
-				<td colspan=2 align="center" bgcolor="#6699CC">Welcome Email</td>
-				<td align="center" bgcolor="#336699">Visible?</td>
-				<td width="25" align="center" bgcolor="#336699">Y/N</td>
-				<td>&nbsp;</td>
-			  </tr>
+	<div class="alphapaging">
+	<%=sBean.getStartsWithLinksWithDynamicForm()%>
+	</div>
+</form>
+</div>
+
+<div>
+<%=sBean.getLinksWithDynamicForm()%>
+</div>
+
+<span class="redMain"><br><%=message%></span>
+<table class="report">
+	<thead>
+	<tr>
+		<td></td>
+		<td colspan="2" bgcolor="#003366"><a href="javascript: changeOrderBy('form1','name');" class="whiteTitle">Contractor</a></td>
+		<td  bgcolor="#003366"><a href="javascript: changeOrderBy('form1','dateCreated DESC');" class="whiteTitle">Created</a></td>
+		<td  bgcolor="#003366"><a href="javascript: changeOrderBy('form1','membershipDate DESC');" class="whiteTitle">Member</a></td>
+		<td  bgcolor="#003366"><a href="javascript: changeOrderBy('form1','requestedByID DESC');" class="whiteTitle">Requester</a></td>
+		<td ><a href="javascript: changeOrderBy('form1','payingFacilities');" class="whiteTitle">Paying Fac.</a></td>
+		<td colspan=2 ><a href="javascript: changeOrderBy('form1','lastInvoiceDate DESC');" class="whiteTitle"><nobr>Last Invoice</nobr></a></td>
+		<td colspan=2 ><a href="javascript: changeOrderBy('form1','newBillingAmount DESC');" class="whiteTitle"><nobr>New Invoice</nobr></a></td>
+		<td colspan=2 ><a href="javascript: changeOrderBy('form1','lastPayment DESC');" class="whiteTitle">Last Payment</a></td>
+		<td colspan=2 ><a href="javascript: changeOrderBy('form1','billingCycle');" class="whiteTitle">New Payment</a></td>
+		<td colspan=4  bgcolor="#6699CC">Welcome Call</td>
+		<td colspan=2  bgcolor="#6699CC">Welcome Email</td>
+		<td  bgcolor="#336699">Visible?</td>
+		<td width="25"  bgcolor="#336699">Y/N</td>
+		<td>&nbsp;</td>
+	</tr>
+	</thead>
 <%	while (sBean.isNextRecord()){%>
-			  <tr <%=sBean.getBGColor()%> class="blueMain"> 
+			  <tr <%=sBean.getBGColor()%>> 
 			  <form name="form2" method="post" action="report_activation.jsp?changed=0&showPage=<%=sBean.showPage%>">
-				<td align="right"><%=sBean.count-1%></td>
+				<td class="right"><%=sBean.count-1%></td>
 		        <td class="<%=sBean.cBean.getTextColor()%>"><%=sBean.getActiveStar()%>
 				  <a target="_blank" href="accounts_edit_contractor.jsp?id=<%=sBean.aBean.id%>" class="<%=sBean.getTextColor()%>">
 				  <%=sBean.aBean.name%></a>
 				</td>
-				<td align="center"><%=sBean.aBean.dateCreated%></td>
-				<td align="center"><%=sBean.cBean.membershipDate%></td>
-				<td align="center"><%=FACILITIES.getNameFromID(sBean.cBean.requestedByID)%></td>
-			    <td align="center"><%=sBean.cBean.payingFacilities%></td>
+				<td class="center"><%=sBean.aBean.dateCreated%></td>
+				<td class="center"><%=sBean.cBean.membershipDate%></td>
+				<td class="center"><%=FACILITIES.getNameFromID(sBean.cBean.requestedByID)%></td>
+			    <td class="center"><%=sBean.cBean.payingFacilities%></td>
 			    <td id="inv_history_<%= sBean.aBean.id %>" align="center" colspan="2"><%=sBean.cBean.billingAmount%> on <%=sBean.cBean.lastInvoiceDate%></td>
 			    <td><input type="text" id="inv_amount_<%= sBean.cBean.id %>" class=forms value="<%=sBean.cBean.newBillingAmount%>" size=3 name=invoiceAmount></td>
 			    <td><input type="submit" onclick="javascript: return sendInvoice( '<%= sBean.aBean.id %>','inv_amount_<%= sBean.cBean.id %>');" class="buttons" value="Inv"/></td>
@@ -278,11 +286,12 @@ try{
 			  </tr>
 <%	} %>
 </table>
-<center><%=sBean.getLinks()%></center>
+<div>
+<%=sBean.getLinksWithDynamicForm()%>
+</div>
 <%	}finally{
 		sBean.closeSearch();
 	}
 %>
-<br><center><%@ include file="utilities/contractor_key.jsp"%><br><br></center>
 </body>
 </html>
