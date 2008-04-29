@@ -129,13 +129,13 @@ public class Report {
 			additionalParams = "";
 		additionalParams += filterParams;
 
-		String html = "<span class=\"blueMain\">Starts with: ";
-		html += "<a href=\"?" + additionalParams
-				+ "\" class=blueMain title=\"Show All\">*</a> ";
+		String html = "<ul class=\"paging\">Starts with: ";
+		html += "<li><a href=\"?" + additionalParams
+				+ "\" title=\"Show All\">*</a></li>";
 		for (char c = 'A'; c <= 'Z'; c++)
-			html += "<a href=?startsWith=" + c + additionalParams
-					+ " class=blueMain>" + c + "</a> ";
-		html += " </span>";
+			html += "<li><a href=?startsWith=" + c + additionalParams
+					+ " class=blueMain>" + c + "</a></li>";
+		html += " </ul>";
 		return html;
 	}
 
@@ -151,11 +151,11 @@ public class Report {
 		String filterParams = getFilterParams();
 		additionalParams += filterParams;
 
-		String temp = "<span class=\"redMain\">";
+		String temp = "<ul class=\"paging\">";
 		temp += "Found <b>" + this.allRows + "</b> results";
 		if (this.returnedRows == this.allRows) {
 			// We're showing all the results, just return
-			temp += "</span>";
+			temp += "</ul>";
 			return temp;
 		}
 		temp += ": Page ";
@@ -185,7 +185,7 @@ public class Report {
 			temp += addPageLink(this.getPages(), additionalParams);
 		}
 
-		temp += "</span>";
+		temp += "</ul>";
 		return temp;
 	}
 
@@ -198,9 +198,6 @@ public class Report {
 	}
 
 	private String addPageLink(int page, String additionalParams) {
-		if (page == this.currentPage) {
-			return "<strong>" + this.currentPage + "</strong>";
-		}
 		if (page < 1)
 			return "";
 		if (page > this.getPages())
@@ -210,8 +207,8 @@ public class Report {
 		if (orderBy.length() > 0)
 			orderBy = "orderBy=" + orderBy + "&";
 
-		return " <a href=\"?" + orderBy + "showPage=" + page + additionalParams
-				+ "\">" + page + "</a> ";
+		return "<li><a href=\"?" + orderBy + "showPage=" + page + additionalParams
+				+ "\">" + page + "</a></li>";
 	}
 
 }
