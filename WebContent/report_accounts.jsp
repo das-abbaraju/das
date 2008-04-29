@@ -1,3 +1,4 @@
+<%@ taglib prefix="s" uri="/struts-tags"%>
 <%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
 <%@page import="org.apache.commons.beanutils.*"%>
@@ -68,18 +69,30 @@ List<BasicDynaBean> searchData = search.getPage();
 <html>
 <head>
 <title><%=title%></title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
 <h1>Manage <%=accountType%> Accounts</h1>
-<table border="0" cellpadding="5" cellspacing="0" align="center">
+<s:form id="form1" method="post" cssStyle="display: none">
+	<input type="hidden" name="type" value="<%= accountType %>" />
+	<s:hidden name="showPage" value="1" />
+	<s:hidden name="startsWith" />
+	<s:hidden name="orderBy" />
+</s:form>
+<div>
+	<%= search.getStartsWithLinksWithDynamicForm() %>
+	<%= search.getPageLinksWithDynamicForm() %>
+<%
+if (canEdit) {
+%><div class="right"><a href="accounts_new_operator.jsp?type=<%=accountType%>">Create New</a></div><%
+}
+%>
+</div>
+
+<table class="report">
+	<thead>
 	<tr>
-		<td height="30" align="left"><%=search.getStartsWithLinks("&type=" + accountType)%></td>
-		<td align="right"><%=search.getPageLinks("&type=" + accountType)%></td>
-	</tr>
-</table>
-<table border="0" cellpadding="1" cellspacing="1" align="center">
-	<tr bgcolor="#003366" class="whiteTitle">
-		<td colspan=2><a href="?type=<%=accountType%>&orderBy=a.name" class="whiteTitle">Name</a></td>
+		<td colspan=2><a href="?type=<%=accountType%>&orderBy=a.name">Name</a></td>
 		<td>Industry</td>
 		<td>City</td>
 		<td>State</td>
@@ -87,19 +100,19 @@ List<BasicDynaBean> searchData = search.getPage();
 		<td><%=(accountType.startsWith("O"))?"Contractors":"Operators"%></td>
 		<td>&nbsp;</td>
 	</tr>
+	</thead>
 	<%
 	com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlternater(search.getSql().getStartRow());
 	for (BasicDynaBean row : searchData) {
 		%>
-		<tr id="auditor_tr<%=row.get("id")%>" class="blueMain"
-			<%= color.nextBgColor()%>>
-			<td align="right"><%=color.getCounter()%>.</td>
+		<tr id="auditor_tr<%=row.get("id")%>" <%= color.nextBgColor()%>>
+			<td class="right"><%=color.getCounter()%></td>
 			<td><a href="accounts_edit_operator.jsp?id=<%=row.get("id")%>"><%=row.get("name")%></a></td>
 			<td><%=row.get("industry")%></td>
 			<td><%=row.get("city")%></td>
 			<td><%=row.get("state")%></td>
 			<td><%=row.get("contact")%></td>
-			<td align="right"><%=row.get("subCount")%></td>
+			<td class="right"><%=row.get("subCount")%></td>
 			<td><% if (canDelete && row.get("subCount") == null) { %>
 				<form method="post" action="report_accounts.jsp" style="margin: 0px; padding: 0px;">
 					<input name="action_id" type="hidden" value="<%=row.get("id")%>">
@@ -112,10 +125,6 @@ List<BasicDynaBean> searchData = search.getPage();
 	}
 	%>
 </table>
-<%
-if (canEdit) {
-%><p align="center"><a href="accounts_new_operator.jsp?type=<%=accountType%>">Create New</a></p><%
-}
-%>
+
 </body>
 </html>

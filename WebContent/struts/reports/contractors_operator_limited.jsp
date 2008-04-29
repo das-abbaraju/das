@@ -2,9 +2,10 @@
 <html>
 <head>
 <title>Contractor Search - Operator</title>
-<script type="text/javascript" src="js/Search.js" />
-
-
+<script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects"
+	type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
 <h1>Contractor Limited Search <span class="sub">Operator
@@ -16,7 +17,10 @@ Version</span></h1>
 			value="contractorCount" /></strong> contractors in your database.</span></td>
 	</tr>
 </table>
-<s:form id="form1" method="post">
+<div id="search">
+<div id="showSearch"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
+<div id="hideSearch" style="display: none"><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
+<s:form id="form1" method="post" cssStyle="display: none">
 	<table border="0" align="center" cellpadding="2" cellspacing="0">
 		<tr>
 			<td align="left"><s:textfield name="accountName"
@@ -36,30 +40,29 @@ Version</span></h1>
 	<s:hidden name="showPage" value="1" />
 	<s:hidden name="startsWith" />
 	<s:hidden name="orderBy" />
+	<div class="alphapaging">
+	<s:property value="report.startsWithLinksWithDynamicForm" escape="false" />
+	</div>
 </s:form>
-
-<table border="0" cellpadding="0" cellspacing="0" width="900">
+</div>
+<div>
+<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+</div>
+<table class="report">
+	<thead>
 	<tr>
-		<td align="left"><s:property
-			value="report.startsWithLinksWithDynamicForm" escape="false" /></td>
-		<td align="right"><s:property
-			value="report.pageLinksWithDynamicForm" escape="false" /></td>
-	</tr>
-</table>
-<table border="0" cellpadding="1" cellspacing="1">
-	<tr bgcolor="#003366" class="whiteTitle">
 		<td colspan="2">Contractor Name</td>
 		<s:if test="operator">
 			<td align="center" bgcolor="#6699CC"><a
 				href="?orderBy=flag DESC" class="whiteTitle">Flag</a></td>
 		</s:if>
 	</tr>
-	<s:iterator value="data">
-		<tr class="blueMain"
-			<s:property value="color.nextBgColor" escape="false" />>
-			<td align="right"><s:property value="color.counter" /></td>
-			<td align="center"><s:property value="[0].get('name')" /></td>
-			<td align="center"><s:if test="operator">&nbsp;&nbsp;
+	</thead>
+	<s:iterator value="data" status="stat">
+		<tr>
+			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
+			<td><s:property value="[0].get('name')" /></td>
+			<td class="center"><s:if test="operator">&nbsp;&nbsp;
 				<a href="con_redFlags.jsp?id=<s:property value="[0].get('id')"/>"
 					title="Click to view Flag Color details"> <img
 					src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif"
@@ -68,7 +71,8 @@ Version</span></h1>
 		</tr>
 	</s:iterator>
 </table>
-<center><s:property value="report.pageLinksWithDynamicForm"
-	escape="false" /></center>
+<div>
+<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+</div>
 </body>
 </html>

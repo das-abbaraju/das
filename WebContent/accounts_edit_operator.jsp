@@ -40,7 +40,6 @@
 	}//if
 	String errorMsg = "";
 %>
-
 <html>
 <head>
 <title>Edit Operators</title>
@@ -48,6 +47,7 @@
 	type="text/javascript"></script>
 <script language="JavaScript" SRC="js/verifyInsurance.js"
 	type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
 <h1>Edit <%=aBean.type%>
@@ -64,14 +64,12 @@
 </ul>
 </div>
 
-<table width="500" cellpadding="10" cellspacing="0">
-	<tr>
-		<td valign="top" bgcolor="#FFFFFF" class="blueMain">
-		<form name="form1" method="post"
-			action="accounts_edit_operator.jsp?id=<%=editID%>"><input
-			name="createdBy" type="hidden" value="<%=aBean.createdBy%>">
-		<input name="type" type="hidden" value="<%=aBean.type%>">
-		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="form1" method="post"
+	action="accounts_edit_operator.jsp?id=<%=editID%>"><input
+	name="createdBy" type="hidden" value="<%=aBean.createdBy%>">
+<input name="type" type="hidden" value="<%=aBean.type%>">
+<div class="left">
+<table border="1" cellspacing="0" cellpadding="0">
 			<tr>
 				<td colspan="2" class="redMain"><b><%=errorMsg%> <%
  	if (request.getParameter("submit") != null)
@@ -214,29 +212,21 @@
 			<%
 				}
 			%>
-			<tr>
-				<td>&nbsp;</td>
-				<td><input name="submit" type="submit" class="forms"
-					value="Save"></td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-			</tr>
-			<tr>
-				<td colspan="2" align="center">
+</table>
+</div>
+<div class="right">
 				<table bgcolor="#EEEEEE" cellspacing="1" cellpadding="1">
 					<tr class="whiteTitle">
-						<td align="center" bgcolor="#336699" colspan=2>Permission</td>
-						<td align="center" bgcolor="#993300">Can Grant</td>
+						<td class="center" bgcolor="#336699" colspan=2>Permission</td>
+						<td class="center" bgcolor="#993300">Can Grant</td>
 					</tr>
 					<%
 						for (OpPerms perm : OpPerms.values()) {
 					%>
 					<tr <%=Utilities.getBGColor(perm.ordinal())%>>
-						<td class="blueMain" align="right"><%=perm.ordinal() + 1%></td>
-						<td class="blueMain" align="left"><%=perm.getDescription()%></td>
-						<td align="center"><input name="perm_<%=perm%>"
+						<td class="blueMain" class="right"><%=perm.ordinal() + 1%></td>
+						<td class="blueMain" class="left"><%=perm.getDescription()%></td>
+						<td class="center"><input name="perm_<%=perm%>"
 							type="checkbox" class="forms" value="checked"
 							<%=userAccess.getChecked(perm)%>></td>
 					</tr>
@@ -244,17 +234,10 @@
 						}//for
 					%>
 				</table>
-				</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td><input name="submit" type="submit" class="forms"
-					value="Save"></td>
-			</tr>
-		</table>
-		</form>
-		</td>
-	</tr>
-</table>
+</div>
+<br clear="all" />
+<input name="submit" type="submit" class="forms"
+					value="Save">
+</form>
 </body>
 </html>

@@ -60,9 +60,10 @@ try{
 <div>
 <%=sBean.getLinksWithDynamicForm()%>
 </div>
-<table border="0" cellpadding="1" cellspacing="1">
+<table class="report">
+<thead>
 <tr>
-	<td colspan="2" bgcolor="#993300" align="left" class="whiteTitle">Contractor</td>
+	<td colspan="2">Contractor</td>
 	<%
 	int count = 0;
 	for (java.util.ListIterator<String> li = opAL.listIterator();li.hasNext();){
@@ -70,13 +71,14 @@ try{
 		String opName = (String)li.next();
 		if (permissions.isAdmin() || pBean.oBean.facilitiesAL.contains(opID)){
 			%>
-			<td bgcolor="#003366" class="whiteTitleSmall"><%= opName %></td>
+			<td style="font-size: 10px;"><%= opName %></td>
 			<%
 		}
 	}
 	%>
-	<td bgcolor="#003366" class="whiteTitleSmall">Total</td>
+	<td>Total</td>
 </tr>
+</thead>
 <%	int duplication = 0;
 	int total = 0;
 	
@@ -89,36 +91,37 @@ try{
 		if (!"cantSee".equals(thisClass))
 			thisClass = ContractorBean.getTextColor(sBean.cBean.calcPICSStatusForOperator(pBean.oBean));
 %>            <tr <%=sBean.getBGColor()%> class="<%=thisClass%>"> 
-                <td align="right"><%=sBean.count-1%></td>
+                <td class="right"><%=sBean.count-1%></td>
                 <td>
 				  <%=sBean.getActiveStar()%>
 				  <a href="ContractorView.action?id=<%=sBean.aBean.id%>" class="<%=thisClass%>">
 			        <%=sBean.aBean.name%></a>
 				</td>
-<%//		cBean.setFromDB(sBean.aBean.id);
+<%
 		for (java.util.ListIterator<String> li = opAL.listIterator();li.hasNext();) {
 			String opID = (String)li.next();
 			String opName = (String)li.next();
 			if (permissions.isAdmin() || pBean.oBean.facilitiesAL.contains(opID)){
 				if (sBean.cBean.generalContractors.contains(opID)) {
 					marker = "<img src='images/icon_"+flagMap.get(opID).getFlag().toLowerCase()+"Flag.gif' width=12 height=15 border=0>";
-//					marker = "X";
 					total++;
 		 		} else
 					marker = " ";
 %>
-			  <td align="center"><%=marker%></td>
-<%			}//if
-		} // for
+			  <td class="center"><%=marker%></td>
+<%			}
+		}
 		if (total-1 < 0)
 			total = 1;
 %>
-			  <td align="center"><%=total%></td>
+			  <td class="right"><%=total%></td>
             </tr>
 <%	duplication += total-1;
 	} // while %>
 </table>
-<br><center><%=sBean.getLinksWithDynamicForm()%></center><br>
+<div>
+<%=sBean.getLinksWithDynamicForm()%>
+</div>
 
 <%	}finally{
 		sBean.closeSearch();
