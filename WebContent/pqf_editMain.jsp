@@ -16,7 +16,6 @@
 	String auditType = action.getAudit().getAuditType().getLegacyCode();
 	String conID = ((Integer) action.getAudit().getContractorAccount().getId()).toString();
 	String id = Integer.toString(action.getAuditID());
-
 	try {
 		String orderBy = request.getParameter("orderBy");
 		String catID = request.getParameter("catID");
@@ -84,6 +83,7 @@
 			pcBean.generateDynamicCategories(conID, Constants.PQF_TYPE, cBean.riskLevel);
 			cBean.setPercentComplete(Constants.PQF_TYPE, pdBean.getPercentComplete(conID, Constants.PQF_TYPE));
 		}
+		
 		aBean.setFromDB(conID);
 		pdBean.setFilledOut(action.getAuditID());
 %>
@@ -93,7 +93,7 @@
 <meta name="header_gif" content="header_prequalification.gif" />
 </head>
 <body>
-<h1><%=aBean.getName(id)%></h1>
+<h1><%=aBean.getName(conID)%></h1>
 <%@ include file="includes/nav/pqfHeader.jsp"%>
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
 	<tr>
