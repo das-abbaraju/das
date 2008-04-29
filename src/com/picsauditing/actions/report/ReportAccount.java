@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.SearchBean;
 import com.picsauditing.PICS.TradesBean;
 import com.picsauditing.PICS.pqf.QuestionTypeList;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Industry;
@@ -65,11 +66,12 @@ public class ReportAccount extends ReportActionSupport {
 		sql.setType(SelectAccount.Type.Contractor);
 		this.run(sql);
 
-		if (this.data.size() == 1) {
+		if (!permissions.hasPermission(OpPerms.StatusOnly)
+				&& this.data.size() == 1) {
 			// Forward the user to the Contractor Details page
-			ServletActionContext.getResponse().sendRedirect("ContractorView.action?id="+this.data.get(0).get("id"));
+			ServletActionContext.getResponse().sendRedirect(
+					"ContractorView.action?id=" + this.data.get(0).get("id"));
 		}
-			
 		return SUCCESS;
 	}
 
@@ -141,8 +143,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setAccountName(String accountname) {
-		report.addFilter(new SelectFilter("accountname", "a.name LIKE '%?%'", accountname,
-				DEFAULT_NAME, DEFAULT_NAME));
+		report.addFilter(new SelectFilter("accountname", "a.name LIKE '%?%'",
+				accountname, DEFAULT_NAME, DEFAULT_NAME));
 		this.accountname = accountname;
 	}
 
