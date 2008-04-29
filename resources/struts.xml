@@ -61,7 +61,7 @@
 		
 		<action name="VerifyView"
 			class="com.picsauditing.actions.audits.VerifyView">
-			<result>pqf_verification_detail.jsp</result>
+			<result>struts/contractors/pqf_verification_detail.jsp</result>
 		</action>
 		<action name="VerifySaveFollowUpAjax" method="saveFollowUp"
 			class="com.picsauditing.actions.audits.VerifyView">
