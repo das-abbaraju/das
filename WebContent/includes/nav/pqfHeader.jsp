@@ -18,9 +18,6 @@ td.label {
 </style>
 <%@ include file="/utilities/adminOperatorContractorNav.jsp"%>
 <table border="0" cellspacing="0" cellpadding="1">
-	<tr class="blueMain" align="center">
-		<td width="676" class="blueHeader" colspan="2"><%=action.getAudit().getAuditType().getAuditName()%></td>
-	</tr>
 	<tr valign="top">
 		<td align="right">
 		<table border="0" cellspacing="2">
@@ -33,7 +30,8 @@ td.label {
 			%>
 			<tr class="blueMain">
 				<td class="label">Auditor:</td>
-				<td><%=(conAudit.getAuditor() == null) ? "Not Assigned" : conAudit.getAuditor().getName()%></td>
+				<td><%=(conAudit.getAuditor() == null) ? "Not Assigned"
+						: conAudit.getAuditor().getName()%></td>
 			</tr>
 			<%
 				}
@@ -56,26 +54,26 @@ td.label {
 		</td>
 		<td>
 		<table border="0" cellspacing="2">
-				<%
-					if (conAudit.getRequestingOpAccount() != null) {
-				%>
+			<%
+				if (conAudit.getRequestingOpAccount() != null) {
+			%>
 			<tr class="blueMain">
 				<td class="label">For:</td>
 				<td><%=conAudit.getRequestingOpAccount().getName()%></td>
 			</tr>
-				<%
-					}
-				%>
-				<%
-					if (conAudit.getAuditType().isScheduled()) {
-				%>
+			<%
+				}
+			%>
+			<%
+				if (conAudit.getAuditType().isScheduled()) {
+			%>
 			<tr class="blueMain">
 				<td class="label">Scheduled:</td>
 				<td><%=DateBean.toShowFormat(conAudit.getScheduledDate())%> <%=conAudit.getAuditLocation()%></td>
 			</tr>
-				<%
-					}
-				%>
+			<%
+				}
+			%>
 			<tr class="blueMain">
 				<td class="label">Submitted:</td>
 				<td><%=DateBean.toShowFormat(conAudit.getCompletedDate())%> <%=conAudit.getPercentComplete()%>%</td>
@@ -89,25 +87,34 @@ td.label {
 	</tr>
 </table>
 
-<a class="blueMain" href="pqf_view.jsp?auditID=<%=conAudit.getId()%>">View</a> |
+<a class="blueMain" href="pqf_view.jsp?auditID=<%=conAudit.getId()%>">View</a>
+|
 <%
-if (permissions.isPicsEmployee()) {
-	%>
-	<a class="blueMain"	href="pqf_editMain.jsp?auditID=<%=conAudit.getId()%>">Edit</a> |
-	<%
-}
-if (permissions.hasPermission(OpPerms.AuditVerification)) {
-	%>
-	<a class="blueMain" href="pqf_verify.jsp?auditID=<%=conAudit.getId()%>">Verify</a> |
-	<%
-}
-if (permissions.hasPermission(OpPerms.AuditVerification)
-		&& conAudit.getAuditType().getAuditTypeID() == AuditType.PQF) {
-	%>
-	<a class="blueMain" href="VerifyView.action?auditID=<%=conAudit.getId()%>">Verify PQF</a> |
-	<%
-}
+	if (permissions.isPicsEmployee()) {
 %>
-<a class="blueMain" href="pqf_viewAll.jsp?auditID=<%=conAudit.getId()%>">View All</a> |
-<a class="blueMain"	href="pqf_printAll.jsp?auditID=<%=conAudit.getId()%>">Print</a>
+<a class="blueMain"
+	href="pqf_editMain.jsp?auditID=<%=conAudit.getId()%>">Edit</a>
+|
+<%
+	}
+	if (permissions.hasPermission(OpPerms.AuditVerification)) {
+%>
+<a class="blueMain" href="pqf_verify.jsp?auditID=<%=conAudit.getId()%>">Verify</a>
+|
+<%
+	}
+	if (permissions.hasPermission(OpPerms.AuditVerification)
+			&& conAudit.getAuditType().getAuditTypeID() == AuditType.PQF) {
+%>
+<a class="blueMain"
+	href="VerifyView.action?auditID=<%=conAudit.getId()%>">Verify PQF</a>
+|
+<%
+	}
+%>
+<a class="blueMain" href="pqf_viewAll.jsp?auditID=<%=conAudit.getId()%>">View
+All</a>
+|
+<a class="blueMain"
+	href="pqf_printAll.jsp?auditID=<%=conAudit.getId()%>">Print</a>
 </ul>

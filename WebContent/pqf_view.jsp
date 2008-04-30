@@ -55,7 +55,9 @@
 <meta name="header_gif" content="header_prequalification.gif" />
 </head>
 <body>
-<h1><%=aBean.getName(id)%><span class="sub"><%=action.getAudit().getAuditType().getAuditName()%> - <%= DateBean.format(action.getAudit().getCreatedDate(), "MMM yyyy") %></span></h1>
+<h1><%=aBean.getName(id)%><span class="sub"><%=action.getAudit().getAuditType().getAuditName()%>
+- <%=DateBean.format(action.getAudit().getCreatedDate(),
+								"MMM yyyy")%></span></h1>
 <%@ include file="includes/nav/pqfHeader.jsp"%>
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
 	<%
@@ -79,9 +81,8 @@
 		<td>
 		<form name="form1" method="post" action="pqf_view.jsp"><%=pcBean.getPqfCategorySelectDefaultSubmit("catID",
 									"blueMain", catID, action.getAudit()
-											.getAuditType().getAuditTypeID())%>
-		<input type="hidden" name="auditID" value="<%=action.getAuditID()%>">
-		</form>
+											.getAuditType().getAuditTypeID())%> <input type="hidden"
+			name="auditID" value="<%=action.getAuditID()%>"></form>
 		</td>
 	</tr>
 	<%
@@ -94,8 +95,7 @@
 		<%
 			//include category specific links here
 					if (pcBean.showLicenses()) {
-		%> <a
-			href="con_stateLicenses.jsp?id=<%=conID%>">Check Licenses</a> <%
+		%> <a href="con_stateLicenses.jsp?id=<%=conID%>">Check Licenses</a> <%
  	}
  %>
 		</td>
