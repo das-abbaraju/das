@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorOperator;
 
 public class ContractorActionSupport extends PicsActionSupport {
 	protected int id = 0;
@@ -52,4 +52,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 		return auditDao.findNonExpiredByContractor(contractor.getId());
 	}
 	
+	public List<ContractorOperator> getOperators() {
+		return accountDao.findOperators(contractor, permissions);
+	}
 }

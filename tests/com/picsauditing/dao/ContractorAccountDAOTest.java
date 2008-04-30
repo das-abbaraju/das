@@ -16,7 +16,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Industry;
@@ -91,8 +93,17 @@ public class ContractorAccountDAOTest {
 			assertEquals(0, osha.getYear1().getFatalities());
 		}
 
+		System.out.println("contractoraccount.getFlags()");
 		for (OperatorAccount operator : contractoraccount.getFlags().keySet()) {
 			System.out.println(contractoraccount.getFlags().get(operator).getFlagColor());
+		}
+		System.out.println("contractoraccount.getOperators()");
+		for (ContractorOperator operator : contractoraccount.getOperators()) {
+			System.out.println(operator.getOperatorAccount().getName() + operator.getFlag().getFlagColor());
+		}
+		System.out.println("contractoraccountDAO.findOperators");
+		for (ContractorOperator operator : contractoraccountDAO.findOperators(contractoraccount, new Permissions())) {
+			System.out.println(operator.getOperatorAccount().getName());
 		}
 		assertEquals("123456789", contractoraccount.getTaxId());
 	}

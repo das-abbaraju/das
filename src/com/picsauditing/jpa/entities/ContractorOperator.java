@@ -9,19 +9,26 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 @Entity
 @Table(name = "generalcontractors")
 public class ContractorOperator implements java.io.Serializable {
-
+	private static final long serialVersionUID = 7554304496743322510L;
+	
 	private int id;
 	private OperatorAccount operatorAccount;
 	private ContractorAccount contractorAccount;
@@ -29,6 +36,7 @@ public class ContractorOperator implements java.io.Serializable {
 	private FlagColor forceFlag;
 	private Date forceBegin;
 	private Date forceEnd;
+	private ContractorOperatorFlag flag;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -110,7 +118,7 @@ public class ContractorOperator implements java.io.Serializable {
 				return false;
 			}
 		}
-		
+
 		if (forceBegin == null || now.compareTo(forceBegin) >= 0) {
 			// This flag is in effect as long as it's not null
 			return forceFlag != null;
@@ -118,4 +126,19 @@ public class ContractorOperator implements java.io.Serializable {
 		// The flag is not yet in effect
 		return false;
 	}
+
+	@OneToOne
+	@Fetch(FetchMode.JOIN)
+	@JoinColumns({
+		@JoinColumn(name="genID", referencedColumnName="opID", insertable=false, updatable=false),
+		@JoinColumn(name="subID", referencedColumnName="conID", insertable=false, updatable=false)
+	})
+	public ContractorOperatorFlag getFlag() {
+		return flag;
+	}
+
+	public void setFlag(ContractorOperatorFlag flag) {
+		this.flag = flag;
+	}
+	
 }

@@ -42,9 +42,11 @@
 		PICS Contractor ID: <strong><s:property value="contractor.luhnId" /></strong><br />
 		Risk Level: <strong><s:property value="contractor.riskLevel" /></strong><br />
 		Facilities:
-		<ul class="facilities">
-			<s:iterator value="contractor.operators">
-			<li><s:property value="operatorAccount.name" /></li>
+		<ul style="list-style-type: none;">
+			<s:iterator value="operators">
+			<li><a href="con_redFlags.jsp?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><img src="images/icon_<s:property value="%{getFlag().getFlagColor().toString().toLowerCase()}" />Flag.gif" width="10" height="12" /></a>
+				<a href="con_redFlags.jsp?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="operatorAccount.name" /></a>
+			</li>
 			</s:iterator>
 			...<a href="con_selectFacilities.jsp?id=<s:property value="id" />">see facilities</a>
 		</ul>
