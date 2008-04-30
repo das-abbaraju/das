@@ -5,6 +5,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
+<h1>NCMS Data</h1> 
 <table border="0" cellpadding="5" cellspacing="0" align="center">
 	<tr>
 		<td height="30" align="left"><s:property escape="false" value="report.startsWithLinks" /></td>
@@ -33,6 +34,6 @@
 	</tr>
 	</s:iterator>
 </table>
-<p align="center"><s:property value="report.pageLinks" /></p>
+<div align="center"><s:property escape="false" value="report.pageLinks" /></div>
 </body>
 </html>

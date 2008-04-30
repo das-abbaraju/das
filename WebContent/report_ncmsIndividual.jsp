@@ -70,19 +70,19 @@ try{
   <title>NCMS</title>
 </head>
 <body>
+            <h1><%=name%><span class="sub">NCMS Data</span></h1>
             <table width="657" border="0" cellpadding="0" cellspacing="0" align="center">
               <tr>
                 <td height="70" align="center" class="forms"> 
-                  <%@ include file="includes/selectReport.jsp"%>
-			      <a class=forms href="report_ncms.jsp">&lt;&lt; Back to NCMS Reports</a><br>
-			    <form name="form1" method="post" action="report_ncmsIndividual.jsp">
+                <a class=forms href="ReportNCMS.action">Back to NCMS Reports</a><br/><br/><br/>
+                <form name="form1" method="post" action="report_ncmsIndividual.jsp">
 				    <input type=hidden name=conID value=<%=conID%>>
 				    <input type=hidden name=name value="<%=name%>">
 				    <input type=hidden name=closedDate value=<%=lastReview%>>
 					<input name="action" type="submit" class="forms" value="Approve">
 					<input name="action" type="submit" class="forms" value="Remove">
                   </form>
-				  <span class="blueHeader">NCMS Data For <%=name%></span>                </td>
+			  </td>
               </tr>
 			  <tr><td>&nbsp;</td></tr>
 			  <tr>
@@ -97,7 +97,6 @@ try{
               </tr>
 <%	}//for%>
 		    </table>
-      <br><center><%@ include file="utilities/contractor_key.jsp"%></center><br><br>
 </body>
 </html>
 <%	}finally{
