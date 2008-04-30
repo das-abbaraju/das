@@ -15,13 +15,13 @@
 <s:form id="form1" method="post" cssStyle="display: none">
 	<table border="0" align="center" cellpadding="2" cellspacing="0">
 		<tr>
-			<td align="left"><s:textfield name="accountName"
+			<td align="left"><nobr><s:textfield name="accountName"
 				cssClass="forms" size="8" onfocus="clearText(this)" onblur="unclearText(this)" /> <s:select
 				name="industry" list="industryList" cssClass="forms" /> <s:select
 				list="tradeList" cssClass="forms" name="trade" /> <s:select
 				list="tradePerformedByList" cssClass="forms" name="performedBy" />
 			<s:submit name="imageField" type="image"
-				src="images/button_search.gif" onclick="runSearch( 'form1')" /></td>
+				src="images/button_search.gif" onclick="runSearch( 'form1')" /></nobr></td>
 		</tr>
 		<tr>
 			<td><s:select list="operatorList" cssClass="forms"
