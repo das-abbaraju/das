@@ -71,11 +71,9 @@
 <body onload="return window_onload();">
 <form name="formEdit" method="post" action="pqf_edit.jsp">
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
-	<tr align="left" class="blueMain">
-		<td><%@ include file="includes/nav/secondNav.jsp"%></td>
-	</tr>
 	<tr align="center" class="blueMain">
-		<td class="blueHeader"><%=auditType%> for <%=aBean.name%></td>
+		<td align="left"><h1><%=aBean.getName(id)%><span class="sub"><%=auditType%> for <%=aBean.name%></span></h1>
+		<%@ include file="utilities/adminOperatorContractorNav.jsp"%></td>
 	</tr>
 	<tr align="center">
 		<td class="redmain"><strong><%=errorMsg%></strong></td>
