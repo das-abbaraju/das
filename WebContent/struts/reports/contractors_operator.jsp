@@ -77,9 +77,9 @@
 		<s:if test="officeVisible">
 			<td>Office</td>
 		</s:if>
-		<s:if test="operatorAccount.canSeeInsurance">
+		<pics:permission perm="InsuranceCerts">
 			<td>Ins. Certs</td>
-		</s:if>
+		</pics:permission>
 		<s:if test="operator">
 			<td><a
 				href="?orderBy=flag DESC">Flag</a></td>
@@ -141,15 +141,16 @@
 					</s:else>
 				</s:if></td>
 			</s:if>
-			<td align="center"><s:if test="operatorAccount.canSeeInsurance">
-				&nbsp;&nbsp;<s:if test="[0].get('certs') > 0">
+			<pics:permission perm="InsuranceCerts">
+			<td align="center">
+					&nbsp;&nbsp;<s:if test="[0].get('certs') > 0">
 					<a
 						href="contractor_upload_certificates.jsp?id=<s:property 
  					value="[0].get('id')"/>"><img
 						src="images/icon_insurance.gif" width="20" height="20" border="0"></a>
 				</s:if>
-			</s:if></td>
-
+			</td>
+			</pics:permission>
 			<td align="center"><s:if test="operator">
 				<a href="con_redFlags.jsp?id=<s:property value="[0].get('id')"/>"
 					title="Click to view Flag Color details"> <img
