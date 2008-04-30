@@ -2,6 +2,7 @@
 <html>
 <head>
 <title>NCMS Data</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
 <table border="0" cellpadding="5" cellspacing="0" align="center">
