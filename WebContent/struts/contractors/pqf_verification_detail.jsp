@@ -61,6 +61,7 @@ function sendEmail() {
 <body>
 <h1><s:property value="contractor.name" />
 <span class="sub">PQF Verification</span></h1>
+<s:push value="#request.current='Audits'"/>
 <s:include value="con_nav.jsp" />
 
 <p class="blueMain"><a href="pqf_verification.jsp">PQF Verification Report</a></p>

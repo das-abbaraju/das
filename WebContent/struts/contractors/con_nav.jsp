@@ -3,9 +3,8 @@
 <div id="internalnavcontainer">
 <ul id="navlist">
 	<li><a href="ContractorView.action?id=<s:property value="id" />" 
-	<s:if test="requestURI.contains('con_view')">class="current"</s:if>>Details</a></li>
-	<s:if test="permissions.auditor">
-	</s:if>	
+	<s:if test="#request.current.equals('Details')"> class="current" </s:if>>Details</a></li>
+	<s:property value="current"/>
 	<s:if test="permissions.contractor">
 	<li><a href="contractor_edit.jsp?id=<s:property value="id" />">Edit</a></li>
 	</s:if>
@@ -25,7 +24,7 @@
 	<li><a href="con_viewForms.jsp?id=<s:property value="id" />">Forms & Docs</a></li>
 	</s:if>
 	<li><a href="ConAuditList.action?id=<s:property value="id" />"
-	<s:if test="requestURI.contains('contractor_audits')">class="current"</s:if>>Audits</a></li>
+	<s:if test="#request.current.equals('Audits')"> class="current" </s:if>>Audits</a></li>
 	<s:iterator value="activeAudits">
 		<li><a href="pqf_view.jsp?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></li>
 	</s:iterator>

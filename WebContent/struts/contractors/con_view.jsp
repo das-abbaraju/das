@@ -8,7 +8,8 @@
 <body>
 <h1><s:property value="contractor.name" />
 <span class="sub">Contractor Details</span></h1>
-<s:include value="con_nav.jsp" />
+<s:push value="#request.current='Details'"/>
+<s:include value="con_nav.jsp"/>
 <div id="companyinfo">
 	<div class="contact">
 		<div class="left info">

@@ -9,8 +9,8 @@
 <body>
 <h1><s:property value="contractor.name" />
 <span class="sub">Contractor Audit &amp; Evaluations</span></h1>
-
-<s:include value="con_nav.jsp"></s:include>
+<s:push value="#request.current='Audits'"/>
+<s:include value="con_nav.jsp"/>
 <s:property value="action"/>
 
 <table class="report">
