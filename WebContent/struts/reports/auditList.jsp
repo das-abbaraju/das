@@ -19,7 +19,9 @@
 		<td style="vertical-align: middle;"><s:textfield name="accountName" cssClass="forms" size="8" onfocus="clearText(this)" onblur="unclearText(this)" />
 			<s:select list="auditTypeList" cssClass="forms" name="auditTypeID" listKey="auditTypeID" listValue="auditName" />
 			<s:select list="auditStatusList" cssClass="forms" name="auditStatus" />
+			<s:if test="%{value = !permissions.operator}">
 			<s:select list="operatorList" cssClass="forms" name="operator" listKey="id" listValue="name" />
+			</s:if>
 		</td>
 		<td><s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch( 'form1')" /></td>
 	</tr>
