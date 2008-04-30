@@ -6,12 +6,9 @@
 <title>Audit Management</title>
 </head>
 <body>
-
+<h1>Audit Management</h1>
+<s:include value="pqf_nav.jsp"/>
 <table border="0" cellpadding="0" cellspacing="0">
-	<tr align="center" class="blueMain">
-		<td class="blueMain"><%@ include
-			file="../../includes/nav/editPQFNav.jsp"%></td>
-	</tr>
 	<tr>
 		<td align="center" class="redMain">Please select an Audit Type:
 		<table border="0">

@@ -3,6 +3,7 @@
 <jsp:useBean id="pcBean" class="com.picsauditing.PICS.pqf.CategoryBean" scope ="page"/>
 <jsp:useBean id="pqBean" class="com.picsauditing.PICS.pqf.QuestionBean" scope ="page"/>
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope ="page"/>
+<%@page import="com.picsauditing.PICS.pqf.Constants" %>
 <%
 permissions.tryPermission(OpPerms.ManageAudits);
 try{	
@@ -42,12 +43,17 @@ try{
 <title>Audit Desktop Matrix</title>
 </head>
 <body>
-<%@ include file="includes/nav/editPQFNav.jsp"%>
-<span class="blueHeader"><%=auditType%> Matrix</span>
+<h1><%=auditType%> Matrix</h1>
+<div id="internalnavcontainer">
+<ul id="navlist">
+	<li><a href="pqf_desktopMatrix.jsp?auditType=<%=Constants.PQF_TYPE%>">Edit PQF Matrix</a></li>
+	<li><a href="pqf_desktopMatrix.jsp?auditType=<%=Constants.DESKTOP_TYPE%>">Edit Desktop Matrix</a></li>
+</ul>
+</div>
+<a class=forms href="AuditTypeChoose.action">Back to Audits</a><br/><br/><br/>
 <br>
 <form action="pqf_desktopMatrix.jsp?auditType=<%=auditType%>" method="post">
 <input name="action" type="submit" value="Save"><br><br>
-
 <table border="1" cellpadding="0" cellspacing="0" bordercolor="#777777">
 <tr>
 				<td bgcolor="#993300" align="right">
