@@ -58,15 +58,14 @@
 <html>
 <head>
 <title>Contractor Facilities</title>
-<meta name="header_gif" content="header_editAccount.gif" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
 <h1><%=aBean.getName(id)%> <span class="sub">Contractor
 Facilities</span></h1>
 <%@ include file="utilities/adminOperatorContractorNav.jsp"%>
 
-<div style="float: left; text-align: center; width: 250px;"
-	class="redMain">
+<div style="float: left; text-align: center; width: 250px;">
 <%
 	if (permissions.isContractor() || permissions.isAdmin()) {
 %> <%@ include file="includes/pricing_matrix.jsp"%><br>
@@ -76,122 +75,114 @@ Facilities</span></h1>
 </div>
 <form name="form1" method="post"
 	action="con_selectFacilities.jsp?id=<%=id%>">
-	<%
+<div>
+<%
 	if (permissions.isContractor()) {
-		%>Please select all facilities where you work:<%
+%>Please select all facilities where you work:<%
 	}
 	if (permissions.isAdmin() || permissions.isCorporate()) {
-		%>Assign <strong><%=aBean.name%></strong> to the following facilities:<%
+%>Assign <strong><%=aBean.name%></strong> to the following facilities:<%
 	}
+%>
+</div>
+<table class="report" style="clear: none">
+	<thead>
+	<tr>
+		<td>Flag</td>
+		<td>Facility</td>
+		<td></td>
+	</tr>
+	</thead>
+	<%
+		count = 0;
+		// Show Facilities selected
+		for (java.util.ListIterator<String> li = operators.listIterator(); li.hasNext();) {
+			String opID = li.next();
+			String name = li.next();
+			String status = "";
+			if (cBean.generalContractors.contains(opID)) {
+				oBean.setFromDB(opID);
+				status = cBean.calcPICSStatusForOperator(oBean);
+				String flagColor = "red";
+				FlagDO opFlag = flagMap.get(opID);
+				if (opFlag != null)
+					flagColor = opFlag.getFlag().toLowerCase();
+
+				if (permissions.isCorporate() && !pBean.oBean.facilitiesAL.contains(opID)) {
 	%>
-		<table border="0" cellpadding="1" cellspacing="1">
-			<tr bgcolor="#003366" class="whiteTitle">
-				<td>Facility</td>
-				<td></td>
-				<td>Status</td>
-				<td>Flag</td>
-				<%
-					if (permissions.isAdmin()) {
-				%>
-				<td></td>
-				<%
-					}//if
-				%>
-			</tr>
-			<%
-				count = 0;
-				// Show Facilities selected
-				for (java.util.ListIterator<String> li = operators.listIterator(); li.hasNext();) {
-					String opID = li.next();
-					String name = li.next();
-					String status = "";
-					if (cBean.generalContractors.contains(opID)) {
-						oBean.setFromDB(opID);
-						status = cBean.calcPICSStatusForOperator(oBean);
-						String flagColor = "red";
-						FlagDO opFlag = flagMap.get(opID);
-						if (opFlag != null)
-							flagColor = opFlag.getFlag().toLowerCase();
+	<input type="hidden" name="genID_<%=opID%>" value="Yes" />
+	<%
+		} else {
+	%>
+	<tr class="blueMain" <%=Utilities.getBGColor(count++)%>>
+		<td class="center"><a
+			href="con_redFlags.jsp?id=<%=cBean.id%>&opID=<%=opID%>"><img
+			src="images/icon_<%=flagColor%>Flag.gif" width="12" height="15"></a></td>
+		<td><a href="con_redFlags.jsp?id=<%=cBean.id%>&opID=<%=opID%>"><%=name%></a></td>
+		<td class="center"><input type="hidden" name="genID_<%=opID%>"
+			value="Yes" /><img src="images/okCheck.gif" width="19" height="15" />
+		<%
+			if (permissions.isAdmin()) {
+		%>
+		<a href="con_selectFacilities.jsp?id=<%=id%>&action=Remove&opID=<%=opID%>">Remove</a>
+		<%
+			}
+		%>
+		</td>
+	</tr>
+	<%
+		}
+			}
+		}//for
 
-						if (permissions.isCorporate() && !pBean.oBean.facilitiesAL.contains(opID)) {
-			%>
-			<input type="hidden" name="genID_<%=opID%>" value="Yes" />
-			<%
-				} else {
-			%>
-			<tr class="blueMain" <%=Utilities.getBGColor(count++)%>>
-				<td><%=name%></td>
-				<td align="center"><input type="hidden" name="genID_<%=opID%>"
-					value="Yes" /> <img src="images/okCheck.gif" width="19"
-					height="15" /></td>
-				<td class="<%=cBean.getTextColor(status)%>"><%=status%></td>
-				<td align="center">&nbsp;<a
-					href="con_redFlags.jsp?id=<%=cBean.id%>&opID=<%=opID%>"
-					title="Click to view Flag Color details"><img src="images/icon_
-					<%=flagColor%>Flag.gif" width=12 height=15 border=0></a></td>
-				<td>
-				<%
-					if (permissions.isAdmin()) {
-				%> <a href=con_selectFacilities.jsp?id= <%=id%>&action=Remove&opID=
-					<%=opID%>>Remove</a> <%
- 	}
- %>
-				</td>
-			</tr>
-			<%
-				}
-					}
-				}//for
-
-				// Show Facilities NOT selected
-				for (java.util.ListIterator<String> li = operators.listIterator(); li.hasNext();) {
-					String opID = li.next();
-					String name = li.next();
-					if (!cBean.generalContractors.contains(opID)) {
-						if (permissions.isCorporate() && pBean.oBean.facilitiesAL.contains(opID)
-								|| !permissions.isCorporate()) {
-							String flagColor = "red";
-							FlagDO opFlag = flagMap.get(opID);
-							if (opFlag != null)
-								flagColor = opFlag.getFlag().toLowerCase();
-			%>
-			<tr class=blueMain <%=Utilities.getBGColor(count++)%>>
-				<td><%=name%></td>
-				<td align="center">
-				<%
-					if (!permissions.isOnlyAuditor()) {
-				%> <%=Inputs.getCheckBoxInput("genID_" + opID, "forms", "", "Yes")%> <%
- 	}
- %>
-				</td>
-				<td>&nbsp;</td>
-				<td align="center">
-				<%
-					if (permissions.isPicsEmployee() || permissions.isCorporate()) {
-				%> <a href="con_redFlags.jsp?id=<%=cBean.id%>&opID=<%=opID%>"
-					title="Click to view Flag Color details"><img src=images/icon_
-					<%=flagColor%> Flag.gif width=12 height=15 border=0></a> <%
- 	}
- %>
-				</td>
-				<td>&nbsp;</td>
-			</tr>
-			<%
-				}
-					}
-				}
-			%>
+		// Show Facilities NOT selected
+		for (java.util.ListIterator<String> li = operators.listIterator(); li.hasNext();) {
+			String opID = li.next();
+			String name = li.next();
+			if (!cBean.generalContractors.contains(opID)) {
+				if (permissions.isCorporate() && pBean.oBean.facilitiesAL.contains(opID)
+						|| !permissions.isCorporate()) {
+					String flagColor = "red";
+					FlagDO opFlag = flagMap.get(opID);
+					if (opFlag != null)
+						flagColor = opFlag.getFlag().toLowerCase();
+	%>
+	<tr <%=Utilities.getBGColor(count++)%>>
+		<td class="center">
+		<%
+			if (permissions.isPicsEmployee() || permissions.isCorporate()) {
+		%><a href="con_redFlags.jsp?id=<%=cBean.id%>&opID=<%=opID%>"><img
+			src="images/icon_<%=flagColor%>Flag.gif" width=12 height=15 border=0></a>
+		<%
+			}
+		%>
+		</td>
+		<td><a href="con_redFlags.jsp?id=<%=cBean.id%>&opID=<%=opID%>"><%=name%></a></td>
+		<td class="center">
+		<%
+			if (!permissions.isOnlyAuditor()) {
+		%> <%=Inputs.getCheckBoxInput("genID_" + opID, "forms", "", "Yes")%>
+		<%
+			}
+		%>
+		</td>
+	</tr>
+	<%
+		}
+			}
+		}
+	%>
 	<%
 		if (!permissions.isOnlyAuditor()) {
 	%>
 	<tr>
-		<td style="text-align: right" colspan="3"><input name="submit" type="image"
-			src="images/button_submit.gif" value="submit"></td>
+		<td class="right" colspan="3"><input name="submit"
+			type="image" src="images/button_submit.gif" value="submit"></td>
 	</tr>
 	<%
 		}
 	%>
-		</table>
+</table>
 </form>
 </body>
 </html>
