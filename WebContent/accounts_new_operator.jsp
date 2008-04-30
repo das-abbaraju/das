@@ -28,6 +28,7 @@
 <meta name="header_gif" content="header_manageAccounts.gif" />
 </head>
 <body>
+      <h1>Create New Operator</h1>
       <form name="form1" method="post" action="accounts_new_operator.jsp">
               <table width="657" cellpadding="10" cellspacing="0">
                 <tr> 
@@ -35,10 +36,6 @@
                     <br>
                   </td>
                   <td align="center" bgcolor="#FFFFFF" class="blueMain"><table width="0" border="0" cellspacing="0" cellpadding="1">
-                      <tr class="blueMain"> 
-                        <td colspan="2" align="center" class="blueHeader">New 
-                          Operator</td>
-                      </tr>
                       <tr> 
                         <td colspan="2" class="redMain"> <%	if (request.getParameter("submit") != null)
 							out.println(aBean.getErrorMessages());
