@@ -1,12 +1,14 @@
 <%@page import="com.picsauditing.jpa.entities.ContractorAudit"%>
 <%@page import="com.picsauditing.jpa.entities.User"%>
 <%@page import="com.picsauditing.jpa.entities.AuditType"%>
+<%@page import="com.picsauditing.access.OpPerms"%>
+<%@page import="com.picsauditing.PICS.Utilities"%>
+<%@page import="com.picsauditing.PICS.DateBean"%>
+
 <%
 	ContractorAudit conAudit = action.getAudit();
 	User auditor = conAudit.getAuditor();
 %>
-<%@page import="com.picsauditing.PICS.Utilities"%>
-<%@page import="com.picsauditing.PICS.DateBean"%>
 <style>
 td.label {
 	text-align: right;

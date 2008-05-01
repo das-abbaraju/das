@@ -1,5 +1,13 @@
 <%@page language="java" errorPage="exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
+
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
+<jsp:useBean id="action"
+	class="com.picsauditing.actions.audits.ContractorAuditLegacy"
+	scope="page" />
+<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean"
+	scope="page" />
+
 <html>
 <head>
 <title>PQF Verification for <s:property
@@ -61,11 +69,22 @@ function sendEmail() {
 <body>
 <h1><s:property value="contractor.name" />
 <span class="sub">PQF Verification</span></h1>
-<s:push value="#request.current='Audits'"/>
-<s:include value="con_nav.jsp" />
+
+
+<%
+	action.setAuditID(request.getParameter("auditID"));
+	String id = request.getParameter("auditID");
+	
+	String conID = ((Integer) action.getAudit().getContractorAccount()
+			.getId()).toString();
+
+	cBean.setFromDB(conID);
+	cBean.tryView(permissions);
+
+%>
+<%@ include file="/includes/nav/pqfHeader.jsp"%>
 
 <p class="blueMain"><a href="pqf_verification.jsp">PQF Verification Report</a></p>
-
 <s:form id="verify">
 	<s:hidden name="auditID" />
 	<s:hidden name="osha.id" />
