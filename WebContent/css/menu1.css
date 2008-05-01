@@ -2,10 +2,12 @@
 /* Navigation */
 
 #MainMenu {
-	width:100%;
 	height:31px;
 	background: #FFFFFF url("../images/bmid_022.gif");
 	margin: 0 0px 40px 0;
+	min-width: 1175px;
+	max-width: 1400px;
+	
 	border:0;
 }
 #tab {
