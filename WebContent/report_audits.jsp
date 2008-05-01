@@ -58,25 +58,33 @@
 <title>Audit Report</title>
   <script language="JavaScript" SRC="js/ImageSwap.js"></script>
   <script language="JavaScript" SRC="js/Search.js"></script>
+<script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
             <table border="0" cellpadding="0" cellspacing="0">
               <tr> 
-                <td height="70" colspan="2" align="center"><%@ include file="includes/selectReport.jsp"%>
+                <td height="70" colspan="2" align="center">
+                  <h1>Audit Report</h1>
                   <%@ include file="includes/nav/editAuditNav.jsp"%><br>
-                  <span class="blueHeader">Audit Report</span><br>
+                  <div id="search">
+				<div id="showSearch"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
+				<div id="hideSearch" style="display: none"><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>              
                   <form id="form1" name="form1" method="post" action="report_audits.jsp">
 <%	if (pBean.isAdmin())
 		out.println(sBean.getSearchGeneralSelect("generalContractorID", "blueMain", sBean.selected_generalContractorID));
 	if (pBean.isCorporate())
 		out.println(pBean.oBean.getFacilitySelect("generalContractorID","forms",sBean.selected_generalContractorID));
 %>
+		<input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()">
                   <table border="0" cellpadding="2" cellspacing="0">
                     <tr align="center">
                       <td><input name="name" type="text" class="forms" value="<%=sBean.selected_name%>" size="20" onFocus="clearText(this)">
                       <%=tBean.getTradesSelect("trade", "forms", sBean.selected_trade)%>
 					  <%=sBean.getSearchIndustrySelect("industry","forms",sBean.selected_industry)%>
-                      <input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()">
+                      
+                    </td>
                     </tr>
                     <tr align="left">
                       <td class="blueMain">PQF:<%=AUDITORS.getAuditorsSelect("pqfAuditorID","forms", sBean.selected_pqfAuditorID)%>
@@ -90,6 +98,7 @@
                   	<input type="hidden" name="showPage" value="1"/>
 		          	<input type="hidden" name="startsWith" value=""/>
 		          	<input type="hidden" name="orderBy" value="<%= sBean.orderBy %>"/>
+                  </div>
                   </form>
 	            </td>
             </tr>
@@ -180,7 +189,6 @@
 		    </form>
 			<center><%=sBean.getLinksWithDynamicForm()%></center>
 <%	sBean.closeSearch(); %>
-      <br><center><%@ include file="utilities/contractor_key.jsp"%></center>
 </body>
 </html>
 <%	}finally{
