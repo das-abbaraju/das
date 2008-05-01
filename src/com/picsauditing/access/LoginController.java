@@ -260,14 +260,6 @@ public class LoginController extends DataBean {
 			response.sendRedirect("ContractorOperatorLimited.action");
 			return;
 		}
-		if (permissions.isOperator() || permissions.isCorporate()) {
-			response.sendRedirect("ContractorListOperator.action");
-			return;
-		}
-		if (permissions.isAuditor() && !permissions.isAdmin()) {
-			response.sendRedirect("AuditListAuditor.action");
-			return;
-		}
 
 		response.sendRedirect("Home.action");
 		return;

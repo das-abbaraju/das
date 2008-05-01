@@ -1,5 +1,7 @@
 package com.picsauditing.actions;
 
+import java.io.IOException;
+
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -22,7 +24,10 @@ public class PicsActionSupport extends ActionSupport {
 	private User user; // Current logged in user
 	private Account account; // Current logged in user's account
 
-	protected boolean loadPermissions() throws Exception {
+	protected void loadPermissions() {
+		if (permissions != null)
+			// Already set
+			return;
 		
 		permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
 		if (permissions == null) {
@@ -49,8 +54,17 @@ public class PicsActionSupport extends ActionSupport {
 				}
 			}
 		}
-
-		if (!permissions.loginRequired(ServletActionContext.getResponse(), ServletActionContext.getRequest())) {
+		
+	}
+	
+	protected boolean forceLogin() {
+		loadPermissions();
+		try {
+			if (!permissions.loginRequired(ServletActionContext.getResponse(), ServletActionContext.getRequest())) {
+				return false;
+			}
+		} catch (Exception e) {
+			System.out.println("PicsActionSupport: Error occurred trying to login:" + e.getMessage());
 			return false;
 		}
 		return true;
@@ -82,6 +96,7 @@ public class PicsActionSupport extends ActionSupport {
 	}
 	
 	public Account getAccount() {
+		loadPermissions();
 		if (account == null) {
 			AccountDAO dao = (AccountDAO)SpringUtils.getBean("AccountDAO");
 			account = dao.find(permissions.getAccountId(), permissions.getAccountType());
@@ -97,7 +112,13 @@ public class PicsActionSupport extends ActionSupport {
 	}
 
 	public Permissions getPermissions() {
-		return permissions;
+		try {
+			if (permissions == null)
+				loadPermissions();
+			return permissions;
+		} catch (Exception e) {
+			return new Permissions();
+		}
 	}
 	
 	public String getRequestURI() {
