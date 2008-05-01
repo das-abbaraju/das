@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -58,6 +59,19 @@ public class ContractorAccountDAO extends PicsDAO {
 		
 		Query query = em.createQuery("FROM ContractorOperator WHERE contractorAccount = ? "+where+" ORDER BY operatorAccount.name");
 		query.setParameter(1, contractor);
+		return query.getResultList();
+	}
+
+	public List<ContractorAccount> findNewContractors(Permissions permissions, int limit) {
+		if (permissions == null)
+			return new ArrayList<ContractorAccount>();
+		String where = "active='Y'";
+		if (permissions.isOperator())
+			where += " AND a IN (SELECT contractorAccount FROM ContractorOperator " +
+					"WHERE operatorAccount.id = "+permissions.getAccountId()+")";
+		
+		Query query = em.createQuery("FROM ContractorAccount a WHERE "+where+" ORDER BY accountDate DESC");
+		query.setMaxResults(limit);
 		return query.getResultList();
 	}
 }

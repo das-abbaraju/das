@@ -121,7 +121,7 @@ public class SelectAccount extends SelectSQL {
 	 * If I'm an operator join to flags.flag and gc.workStatus too
 	 * @param permissions
 	 */
-	public void setPermissions(Permissions permissions, Account account) {
+	public void setPermissions(Permissions permissions, Account operatorAccount) {
 		if (permissions.hasPermission(OpPerms.AllContractors))
 			return;
 		
@@ -137,8 +137,8 @@ public class SelectAccount extends SelectSQL {
 			this.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = "+permissions.getAccountId());
 			this.addField("gc.workStatus");
 			
-			if (account.getType().equals("Operator")) {
-				OperatorAccount operator = (OperatorAccount)account;
+			if (operatorAccount.getType().equals("Operator")) {
+				OperatorAccount operator = (OperatorAccount)operatorAccount;
 				if (YesNo.Yes.equals(operator.getApprovesRelationships()) 
 						&& !permissions.hasPermission(OpPerms.ViewUnApproved)) {
 					this.addWhere("gc.workStatus = 'Y'");
