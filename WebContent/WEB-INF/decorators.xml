@@ -11,6 +11,7 @@
 		<pattern>/pqf_printAll.jsp</pattern>
 		<pattern>/reasons.html</pattern>
 		<pattern>/send_welcome_email.jsp</pattern>
+		<pattern>/ChartXML*</pattern>
 	</decorator>
 	<decorator name="marketing" page="marketing.jsp">
 		<pattern>/index.jsp</pattern>
