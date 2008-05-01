@@ -30,7 +30,7 @@
 <div id="masthead">
 <!-- !begin header -->
 <div id="smallnav"><p><% if (permissions.isLoggedIn()) { %>
-<span id="name">Welcome, <%=permissions.getName() %></span> | <a href="logout.jsp">Logout</a>
+<span id="name">Welcome, <%=permissions.getName() %></span> | <a href="Home.action">Home</a> | <a href="logout.jsp">Logout</a>
 <% } else { %>
 <span id="name">Welcome</span> | <a href="login.jsp">Login</a>
 <% } %></p>
