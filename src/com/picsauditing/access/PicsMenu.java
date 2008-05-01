@@ -85,8 +85,8 @@ public class PicsMenu {
 			subMenu.addChild("Forms &amp Docs", "manage_forms.jsp");
 		if (permissions.hasPermission(OpPerms.ManageAudits)) {
 			subMenu.addChild("Audit Definitions", "AuditTypeChoose.action");
-			subMenu.addChild("Desktop Matrix", "pqf_desktopMatrix.jsp");
-			subMenu.addChild("Re-gen PQF Cats", "pqf_regeneratePQFCategories.jsp");
+			subMenu.addChild("Desktop Matrix", "pqf_desktopMatrix.jsp?auditType=Desktop");
+			subMenu.addChild("PQF Matrix", "pqf_desktopMatrix.jsp?auditType=PQF");
 		}
 		if (permissions.hasPermission(OpPerms.EmailTemplates))
 			subMenu.addChild("Email Templates", "email_templates.jsp");
