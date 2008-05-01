@@ -15,7 +15,8 @@
 			</global-exception-mappings>
 		-->
 
-		<action name="Home">
+		<action name="Home"
+			class="com.picsauditing.actions.Home">
 			<result>struts/home.jsp</result>
 		</action>
 		
@@ -130,7 +131,14 @@
 			<result>struts/reports/contractors_operator_limited.jsp</result>
 		</action>
 		
-		
-		
+		<action name="ChartXMLFlagCount"
+			class="com.picsauditing.actions.chart.ChartFlagCount">
+			<result>struts/chart_xml.jsp</result>
+		</action>
+
+		<action name="ContractorRegistrationAjax"
+			class="com.picsauditing.actions.contractors.ContractorsWidget">
+			<result>struts/widgets/new_contractors.jsp</result>
+		</action>
 	</package>
 </struts>

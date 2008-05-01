@@ -1,0 +1,84 @@
+#content div.column {
+	float: left;
+}
+
+#content div.panel_placeholder {
+	background:#ECECEC none repeat scroll 0%;
+	margin-bottom:5px;
+	padding:4px;
+}
+#content div.panel {
+	border: 1px solid #BBB;
+	margin:0px;
+	padding:0px;
+}
+#content div.panel_header {
+	//cursor: move;
+	height: 22px;
+	font-size:10pt;
+	color: #A84D10;
+	font-weight: bold;
+	overflow: hidden;
+	border-bottom:1px solid #B3B3B3;
+	padding:2px;
+	padding-left: 5px;
+	margin:0px;
+}
+#content div.panel_edit {
+	float: right;
+	padding: 0px;
+	font-size: 9px;
+}
+a.panel_edit {
+	padding: 1px;
+	margin: 1px;
+	font-weight: bold;
+	border: 1px solid #CCC;
+	text-decoration: none;
+	height: 16px;
+	background: #EEE;
+	top: 2px;
+}
+a:hover.panel_edit {
+	padding: 1px;
+	margin: 1px;
+	font-weight: bold;
+	border: 1px solid #555;
+	background: white;
+	text-decoration: none;
+	height: 16px;
+}
+
+#content div.panel_content {
+	background:#FFFFFF none repeat scroll 0%;
+	border-bottom:1px solid #B3B3B3;
+	font-size:10pt;
+	font-size-adjust:none;
+	font-stretch:normal;
+	font-style:normal;
+	font-variant:normal;
+	font-weight:normal;
+	line-height:150%;
+	overflow:hidden;
+	padding: 3px;
+	margin: 0px;
+	min-height: 100px;
+}
+#content div.panel_footer {
+	text-align:center;
+	cursor: pointer;
+	line-height:100%;
+	background:#DADADA none repeat scroll 0% 50%;
+	border-top:1px solid #EDEDED;
+	clear:both;
+	height:6px;
+	padding:0px;
+	margin:0px;
+}
+#content div.inprogress {
+	background-color: #CCC;
+	background-image: url("images/inprogress.gif");
+	background-repeat: no-repeat;
+	background-position: center;
+	height:100px;
+}
