@@ -28,6 +28,7 @@
 	<bean id="FlagCalculator2" class="com.picsauditing.PICS.FlagCalculator2" scope="prototype"/>
 
 	<bean id="AuditBuilder" class="com.picsauditing.PICS.AuditBuilder" scope="prototype"/>
+	<bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO" scope="prototype"/>
 
 	<bean class="com.picsauditing.PICS.Facilities"/>
 
