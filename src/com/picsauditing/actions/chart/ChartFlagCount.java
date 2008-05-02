@@ -7,14 +7,16 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.chart.Set;
 
 /**
  * Get a count of each flag color for this operator
+ * 
  * @author Trevor
  */
 public class ChartFlagCount extends ChartAction {
-	
+
 	public String execute() {
 		try {
 			loadPermissions();
@@ -27,25 +29,22 @@ public class ChartFlagCount extends ChartAction {
 			chart.getSets().add(set);
 			return SUCCESS;
 		}
-		
-		//SelectAccount sql = new SelectAccount();
-		//sql.setPermissions(permissions, this.getAccount());
+
 		SelectSQL sql = new SelectSQL("accounts a");
 		sql.addField("flag as label");
 		sql.addField("count(*) as value");
 		sql.addGroupBy("label");
 		sql.addOrderBy("label");
-		
-		sql.addJoin("JOIN generalcontractors gc on gc.subID = a.id");
-		sql.addJoin("JOIN flags f on f.opID = gc.genID and f.conID = gc.subID");
-		
-		sql.addWhere("a.active = 'Y'");
-		sql.addWhere("gc.genID = "+permissions.getAccountId());
-		
+
+		sql.addJoin("JOIN flags f ON f.conID = a.id AND f.opID = " + permissions.getAccountId());
+
+		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
+		sql.addWhere(permQuery.toString());
+
 		try {
 			Database db = new Database();
 			List<BasicDynaBean> data = db.select(sql.toString(), false);
-			for(BasicDynaBean row : data) {
+			for (BasicDynaBean row : data) {
 				String color = row.get("label").toString();
 				Set set = new Set();
 				set.setLabel(color);
@@ -59,7 +58,7 @@ public class ChartFlagCount extends ChartAction {
 			set.setValue(1);
 			chart.getSets().add(set);
 		}
-		
+
 		return super.execute();
 	}
 }

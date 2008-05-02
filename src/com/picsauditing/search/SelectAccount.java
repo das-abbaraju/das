@@ -6,6 +6,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.PermissionQueryBuilder;
 
 public class SelectAccount extends SelectSQL {
 	private Type type;
@@ -121,44 +122,10 @@ public class SelectAccount extends SelectSQL {
 	 * If I'm an operator join to flags.flag and gc.workStatus too
 	 * @param permissions
 	 */
-	public void setPermissions(Permissions permissions, Account operatorAccount) {
-		if (permissions.hasPermission(OpPerms.AllContractors))
-			return;
+	public void setPermissions(Permissions permissions) {
+		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
 		
-		// Anyone other than admins should only be able to view visible/active accounts
-		this.addWhere("a.active='Y'");
-		
-		if (permissions.isOperator()) {
-			// Anytime we query contractor accounts as an operator, 
-			// we should always read the flag color/status at the same time
-			this.addJoin("LEFT JOIN flags ON flags.conID = a.id AND flags.opID = "+permissions.getAccountId());
-			this.addField("flags.flag");
-			this.addField("lower(flags.flag) AS lflag");
-			this.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = "+permissions.getAccountId());
-			this.addField("gc.workStatus");
-			
-			if (operatorAccount.getType().equals("Operator")) {
-				OperatorAccount operator = (OperatorAccount)operatorAccount;
-				if (YesNo.Yes.equals(operator.getApprovesRelationships()) 
-						&& !permissions.hasPermission(OpPerms.ViewUnApproved)) {
-					this.addWhere("gc.workStatus = 'Y'");
-				}
-			}
-			
-			return;
-		}
-		if (permissions.isCorporate()) {
-			this.addWhere("a.id IN (SELECT gc.subID FROM generalcontractors gc " +
-					"JOIN facilities f ON f.opID = gc.genID AND f.corporateID = "+permissions.getAccountId()+")");
-			return;
-		}
-		
-		if (permissions.isContractor()) {
-			addWhere("a.id = "+permissions.getAccountId());
-			return;
-		}
-		// Anyone Else .ie, Independent Auditors  
-		addWhere("a.id IN (SELECT conID FROM contractor_audit WHERE auditorID = "+permissions.getUserId()+")");
+		this.addWhere(permQuery.toString());
 	}
 
 }

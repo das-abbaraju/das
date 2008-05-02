@@ -186,7 +186,7 @@ public class CalendarBean extends DataBean {
 		selectAudit.addJoin("LEFT JOIN users ua ON ca.auditorID = ua.id");
 		selectAudit.addField("ca.auditorID");
 		selectAudit.addField("ua.name as auditor_name");
-		selectAudit.setPermissions(permissions, account);
+		selectAudit.setPermissions(permissions);
 		
 		selectAudit.addWhere("year(ca.scheduledDate) = " + auditYear);
 		selectAudit.addWhere("month(ca.scheduledDate) = " + auditMonth);
