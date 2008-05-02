@@ -18,6 +18,7 @@ public class UserDO {
 	public String isGroup = "No";
 	public String accountType = "";
 	public String accountName = "";
+	public String approvesRelationships = "No";
 	
 	public void setFromRequest(javax.servlet.http.HttpServletRequest request) throws Exception {
 		try {
@@ -48,6 +49,7 @@ public class UserDO {
 		accountID = "";
 		accountType = "";
 		accountName = "";
+		approvesRelationships = "";
 	}
 
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
@@ -69,6 +71,7 @@ public class UserDO {
 			try{
 				accountName = SQLResult.getString("account_name");
 				accountType = SQLResult.getString("account_type");
+				approvesRelationships = SQLResult.getString("approvesRelationships");
 			} catch (SQLException e) {
 				
 			}

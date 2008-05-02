@@ -28,9 +28,7 @@ public class Permissions {
 	private int accountID;
 	private String accountType;
 	private int adminID;
-	
-	public Permissions(){
-	}
+	private boolean approvesRelationships = false;
 	
 	public void login(User user) throws Exception {
 		try{
@@ -42,6 +40,7 @@ public class Permissions {
 			name = user.userDO.name;
 			accountID = Integer.parseInt(user.userDO.accountID);
 			accountType = user.userDO.accountType;
+			approvesRelationships = "Yes".equals(user.userDO.approvesRelationships);
 			permissions = user.getPermissions();
 			Set<User> temp = user.getGroups();
 			for(User u : temp)
@@ -237,4 +236,9 @@ public class Permissions {
 	public void setCanSeeAudit(Set<Integer> auditIds) {
 		canSeeAudits = auditIds;
 	}
+
+	public boolean isApprovesRelationships() {
+		return approvesRelationships;
+	}
+
 }
