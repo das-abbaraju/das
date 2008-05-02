@@ -8,7 +8,7 @@
 <title>PICS - <decorator:title
 	default="Pacific Industrial Contractor Screening" /></title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<link href="PICS.css" rel="stylesheet" type="text/css" />
+<link href="css/marketing.css" rel="stylesheet" type="text/css" />
 <decorator:head />
 </head>
 <body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0"
