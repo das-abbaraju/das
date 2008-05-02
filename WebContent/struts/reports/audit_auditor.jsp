@@ -43,6 +43,7 @@
 	    <td><a href="?orderBy=a.name" >Contractor</a></td>
 	    <td><a href="?orderBy=at.auditName DESC" >Type</a></td>
 	    <td><a href="?orderBy=ca.createdDate DESC" >Created</a></td>
+		<td><a href="?orderBy=ca.assignedDate DESC">Assigned Date</a></td>
 	    <td><a href="?orderBy=ca.auditStatus DESC" >Status</a></td>
 	</tr>
 	</thead>
@@ -52,6 +53,7 @@
 			<td><a href="pqf_view.jsp?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="[0].get('name')"/></a></td>
 			<td><s:property value="[0].get('auditName')"/></td>
 			<td><s:date name="[0].get('createdDate')" format="M/d/yy" /></td>
+			<td><s:date name="[0].get('assignedDate')" format="M/d/yy" /></td>
 			<td><s:property value="[0].get('auditStatus')"/></td>
 		</tr>
 	</s:iterator>
