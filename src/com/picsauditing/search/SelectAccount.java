@@ -125,7 +125,7 @@ public class SelectAccount extends SelectSQL {
 	public void setPermissions(Permissions permissions) {
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
 		
-		this.addWhere(permQuery.toString());
+		this.addWhere("1 " +permQuery.toString());
 	}
 
 }

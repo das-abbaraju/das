@@ -75,7 +75,7 @@ public class PermissionQueryBuilder {
 		
 		String query = "";
 		if (activeContractorsOnly)
-			query = "AND " +accountAlias+".active = 'Y'";
+			query = "AND " +accountAlias+".active = 'Y' ";
 		
 		if (queryLanguage == HQL)
 			return query += "AND "+accountAlias+" IN ("+subquery+")";
