@@ -39,7 +39,7 @@ public class ChartFlagCount extends ChartAction {
 		sql.addJoin("JOIN flags f ON f.conID = a.id AND f.opID = " + permissions.getAccountId());
 
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
-		sql.addWhere(permQuery.toString());
+		sql.addWhere("1 " +permQuery.toString());
 
 		try {
 			Database db = new Database();

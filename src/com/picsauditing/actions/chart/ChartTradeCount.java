@@ -7,6 +7,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.chart.Set;
 
 /**
@@ -16,15 +17,20 @@ import com.picsauditing.util.chart.Set;
 public class ChartTradeCount extends ChartAction {
 	
 	public String execute() {
+		loadPermissions();
 		
 		chart.setRotateLabels(true);
 		
-		SelectSQL sql = new SelectSQL("contractor_info a");
-		sql.addField("substring(main_trade,1,20) as label");
+		SelectSQL sql = new SelectSQL("accounts a");
+		sql.addJoin("JOIN contractor_info c ON a.id = c.id");
+		sql.addField("substring(c.main_trade,1,20) as label");
 		sql.addField("count(*) as value");
 		sql.addGroupBy("label");
 		sql.addOrderBy("value DESC");
-		sql.addWhere("main_trade > ''");
+		sql.addWhere("c.main_trade > ''");
+		
+		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
+		sql.addWhere("1 " +permQuery.toString());
 		
 		try {
 			Database db = new Database();
@@ -45,7 +51,7 @@ public class ChartTradeCount extends ChartAction {
 			
 			if (sum > 0) {
 				Set set = new Set();
-				set.setLabel("Other");
+				set.setLabel("All others");
 				set.setValue(sum);
 				chart.getSets().add(set);
 			}

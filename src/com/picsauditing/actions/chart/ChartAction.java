@@ -25,6 +25,12 @@ public class ChartAction extends PicsActionSupport {
 	}
 
 	public String execute() {
+		if (chart.getSets().size() == 0 && chart.getDataSets().size() == 0) {
+			Set set = new Set();
+			set.setLabel("No Data");
+			set.setValue(0);
+			chart.addSet(set);
+		}
 		message = chart.toString();
 		
 		return SUCCESS;
