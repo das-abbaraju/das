@@ -13,6 +13,9 @@ import com.picsauditing.util.SpringUtils;
 public class ReportContractorAudits extends ReportAccount {
 	protected int auditTypeID;
 	protected String auditStatus;
+	protected int auditorId = 0;
+	
+	
 	
 	public String execute() throws Exception {
 		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
@@ -75,6 +78,22 @@ public class ReportContractorAudits extends ReportAccount {
 				"ca.auditStatus = '?'", auditStatus, AuditStatus.DEFAULT, AuditStatus.DEFAULT));
 		this.auditStatus = auditStatus;
 	}
+
+	public int getAuditorId() {
+		return auditorId;
+	}
+
+	public void setAuditorId(int auditorId) {
+		if( auditorId != 0)
+		{
+			report.addFilter(new SelectFilterInteger("auditorId",
+					"ca.auditorID = '?'", auditorId));
+		}
+		
+		this.auditorId = auditorId;
+	}
+	
+	
 	
 	
 }

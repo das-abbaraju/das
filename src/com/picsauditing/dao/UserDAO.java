@@ -38,7 +38,7 @@ public class UserDAO extends PicsDAO {
 
     public List<User> findAuditors() {
     	List<User> userList = new ArrayList<User>();
-		userList.add(new User(User.DEFAULT_AUDITOR));
+		
 		
         Query query = em.createQuery("FROM User u " +
         		"WHERE u.isActive = 'Yes' " +
