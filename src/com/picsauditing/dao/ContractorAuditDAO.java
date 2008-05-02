@@ -11,6 +11,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.util.PermissionQueryBuilder;
 
 @Transactional
 public class ContractorAuditDAO extends PicsDAO {
@@ -57,20 +58,24 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findUpcoming(int limit, Permissions permissions) {
-		// TODO handle the permissions correctly
-		Query query = em.createQuery("FROM ContractorAudit t "
-				+ "WHERE scheduledDate > NOW() ORDER BY scheduledDate ASC ");
-		query.setMaxResults(limit);
-		return query.getResultList();
+		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
+		return findWhere(limit, "auditStatus = 'Pending' AND scheduledDate IS NOT NULL " + permQuery.toString(), "scheduledDate");
+	}
+
+	public List<ContractorAudit> findRecentlyClosed(int limit, Permissions permissions) {
+		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
+		permQuery.setOnlyPendingAudits(false);
+		return findWhere(limit, "auditStatus = 'Active' AND closedDate < NOW() " + permQuery.toString(), "closedDate DESC");
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ContractorAudit> findRecentlyClosed(int limit, Permissions permissions) {
-		// TODO handle the permissions correctly
-		Query query = em.createQuery("FROM ContractorAudit t "
-				+ "WHERE auditStatus = 'Active' AND closedDate < NOW() ORDER BY closedDate DESC");
+	public List<ContractorAudit> findWhere(int limit, String where, String orderBy) {
+		String hql = "FROM ContractorAudit";
+		if (where.length() > 0) hql += " WHERE " + where;
+		if (orderBy.length() > 0) hql += " ORDER BY " + orderBy;
+		System.out.println("compiling: " + hql);
+		Query query = em.createQuery(hql);
 		query.setMaxResults(limit);
 		return query.getResultList();
 	}

@@ -81,4 +81,15 @@ public class ContractorAuditDAOTest {
 		contractoraudit.setClosedDate(new Date());
 		contractorauditDAO.save(contractoraudit);
 	}
+
+	@Test
+	public void testFindWhere() {
+		String where = "auditStatus = 'Pending' AND scheduledDate IS NOT NULL AND contractorAccount.active = 'Y' AND contractorAccount IN (SELECT ca.contractorAccount FROM ContractorAudit ca WHERE ca.auditor.id = 910)";
+		List<ContractorAudit> audits = contractorauditDAO.findWhere(10, where, "scheduledDate");
+		for(ContractorAudit audit : audits) {
+			System.out.println("audit " + audit.getId() + audit.getAuditType().getAuditName());
+		}
+		
+	}
+
 }

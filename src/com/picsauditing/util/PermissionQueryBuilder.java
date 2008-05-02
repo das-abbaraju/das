@@ -7,7 +7,7 @@ public class PermissionQueryBuilder {
 	static final public int SQL = 1;
 	static final public int HQL = 2;
 	private int queryLanguage = SQL;
-	private String accountAlias = "a"; // contractorAccount
+	private String accountAlias = "a"; // or contractorAccount
 	private boolean activeContractorsOnly = true;
 	private boolean onlyPendingAudits = true; // if auditor, then only show the pending or submitted audits
 	private Permissions permissions;
@@ -18,7 +18,7 @@ public class PermissionQueryBuilder {
 	
 	public PermissionQueryBuilder(Permissions permissions, int queryLanguage) {
 		this.permissions = permissions;
-		this.queryLanguage = queryLanguage;
+		setQueryLanguage(queryLanguage);
 	}
 	
 	public String toString() {
@@ -39,8 +39,8 @@ public class PermissionQueryBuilder {
 		
 		if (permissions.isOperator()) {
 			if (queryLanguage == HQL)
-				subquery = "SELECT contractorAccount FROM ContractorOperator " +
-						"WHERE operatorAccount.id = " + permissions.getAccountId();
+				subquery = "SELECT t.contractorAccount FROM ContractorOperator t " +
+						"WHERE t.operatorAccount.id = " + permissions.getAccountId();
 			else
 				subquery = "SELECT gc.subID FROM generalcontractors gc WHERE gc.genID = "+permissions.getAccountId();
 			
@@ -52,8 +52,8 @@ public class PermissionQueryBuilder {
 		
 		if (permissions.isCorporate()) {
 			if (queryLanguage == HQL)
-				subquery = "SELECT contractorAccount FROM ContractorOperator " +
-						"WHERE operatorAccount.facilities.corporate.id = " + permissions.getAccountId();
+				subquery = "SELECT t.contractorAccount FROM ContractorOperator t " +
+						"WHERE t.operatorAccount.facilities.corporate.id = " + permissions.getAccountId();
 			else
 				subquery = "SELECT gc.subID FROM generalcontractors gc " +
 						"JOIN facilities f ON f.opID = gc.genID AND f.corporateID = "+permissions.getAccountId();
@@ -61,7 +61,7 @@ public class PermissionQueryBuilder {
 		
 		if (permissions.isOnlyAuditor()) {
 			if (queryLanguage == HQL)
-				subquery = "SELECT contractorAccount FROM ContractorAudit WHERE auditor.id = "+permissions.getUserId();
+				subquery = "SELECT t.contractorAccount FROM ContractorAudit t WHERE t.auditor.id = "+permissions.getUserId();
 			else
 				subquery = "SELECT conID FROM contractor_audit WHERE auditorID = "+permissions.getUserId();
 			if (this.onlyPendingAudits)
@@ -88,6 +88,8 @@ public class PermissionQueryBuilder {
 	}
 
 	public void setQueryLanguage(int queryLanguage) {
+		if (queryLanguage == HQL)
+			this.accountAlias = "contractorAccount";
 		this.queryLanguage = queryLanguage;
 	}
 
@@ -107,10 +109,10 @@ public class PermissionQueryBuilder {
 		this.activeContractorsOnly = activeContractorsOnly;
 	}
 
-	public boolean isOnlyPendingAudits() {
-		return onlyPendingAudits;
-	}
-
+	/**
+	 * 
+	 * @param onlyPendingAudits Set to true (DEFAULT) if you want auditors to be restricted to "auditStatus IN ('Pending','Submitted')"
+	 */
 	public void setOnlyPendingAudits(boolean onlyPendingAudits) {
 		this.onlyPendingAudits = onlyPendingAudits;
 	}
