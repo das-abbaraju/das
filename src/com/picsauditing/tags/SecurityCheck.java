@@ -16,7 +16,9 @@ public class SecurityCheck implements Tag {
 	protected String perm = null;
 	protected String type = null;
 	protected boolean debug = false;
-
+	protected boolean negativeCheck = false;
+	
+	
 	protected OpPerms opPerms = null;
 	protected OpType opType = null;
 
@@ -26,9 +28,9 @@ public class SecurityCheck implements Tag {
 
 		if (session == null) {
 			System.out
-					.println("<pics:permissions> is returning false because there was no http session");
+					.println("<pics:permissions> is returning doesNotHavePermission() because there was no http session");
 
-			return SKIP_BODY;
+			return doesNotHavePermission();
 		}
 
 		Permissions permissions = (Permissions) session
@@ -39,10 +41,10 @@ public class SecurityCheck implements Tag {
 		if (permissions == null) {
 			if (debug) {
 				System.out
-						.println("<pics:permissions> is returning false because the permissions object was not in the session");
+						.println("<pics:permissions> is returning doesNotHavePermission() because the permissions object was not in the session");
 			}
 
-			return SKIP_BODY;
+			return doesNotHavePermission();
 		}
 
 		// build the opPerms object based on the perm string from the tag call
@@ -59,6 +61,7 @@ public class SecurityCheck implements Tag {
 
 		if (debug) {
 			System.out.println("<pics:permission> tag debug information: ");
+			System.out.println("\tisNegativeCheck = " + negativeCheck);
 			System.out.println("\tOpPerms = " + opPerms.name());
 			System.out.println("\tOpType = " + opType.name());
 		}
@@ -66,15 +69,15 @@ public class SecurityCheck implements Tag {
 		// run the check
 		if (permissions.hasPermission(opPerms, opType)) {
 			if (debug) {
-				System.out.println("\t\t\t\tPermission check successful");
+				System.out.println("\t\t\t\tUser has Permission");
 			}
 
-			return EVAL_BODY_INCLUDE;
+			return hasPermission();
 		} else {
 			if (debug) {
-				System.out.println("\t\t\t\tPermission check notsuccessful");
+				System.out.println("\t\t\t\tUser does not have Permission");
 			}
-			return SKIP_BODY;
+			return doesNotHavePermission();
 		}
 	}
 
@@ -148,4 +151,34 @@ public class SecurityCheck implements Tag {
 		this.debug = debug;
 	}
 
+	public boolean isNegativeCheck() {
+		return negativeCheck;
+	}
+
+	public void setNegativeCheck(boolean negativeCheck) {
+		this.negativeCheck = negativeCheck;
+	}
+
+	
+	//these methods make the jump from having a permission to whether or not to display the body of the tag.
+	protected int hasPermission()
+	{
+		if( negativeCheck )
+		{
+			return SKIP_BODY;
+		}
+		
+		return EVAL_BODY_INCLUDE;
+	}
+	protected int doesNotHavePermission()
+	{
+		if( negativeCheck )
+		{
+			return EVAL_BODY_INCLUDE;
+		}
+		return SKIP_BODY;
+	}
+	
+	
+	
 }

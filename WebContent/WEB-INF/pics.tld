@@ -36,5 +36,11 @@
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
     </attribute>
+    <attribute>
+    	<description>If true, the tag will test if the user does NOT have the permission.  If false, it tests if the user DOES have the permission.  Defaults to false.</description>
+        <name>negativeCheck</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
   </tag>
 </taglib>   
