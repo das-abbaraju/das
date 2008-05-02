@@ -103,10 +103,8 @@ td.reportDate {
 			<td><nobr><s:property value="[0].get('auditName')"/></nobr></td>
 			<td class="reportDate"><s:date name="[0].get('createdDate')" format="M/d/yy" /></td>
 			<td>
-			
 
-
-			<s:action name="AuditorsGet" executeResult="true">
+			<s:action name="AuditorsGet" executeResult="true" ignoreContextParams="true">
 					<s:param name="controlName" value="%{'auditor_'.concat([0].get('auditID'))}"/>
 					<s:param name="presetValue" value="%{[0].get('auditorID')}"/>
 			</s:action>
