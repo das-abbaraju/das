@@ -38,14 +38,6 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		return permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit);
 	}
 	
-	public List<User> getAuditorList() {
-		if (auditors == null) {
-			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
-			auditors = dao.findAuditors();
-		}
-		return auditors;
-	}
-
 	public List<AuditType> getAuditTypeList() {
 		List<AuditType> list = new ArrayList<AuditType>();
 		list.add(new AuditType(AuditType.DEFAULT_AUDITTYPE));
