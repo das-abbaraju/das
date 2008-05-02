@@ -77,7 +77,7 @@ a:hover.panel_edit {
 }
 #content div.inprogress {
 	background-color: #CCC;
-	background-image: url("images/inprogress.gif");
+	background-image: url("../images/inprogress.gif");
 	background-repeat: no-repeat;
 	background-position: center;
 	height:100px;
