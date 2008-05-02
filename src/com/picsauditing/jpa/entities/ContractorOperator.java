@@ -33,6 +33,7 @@ public class ContractorOperator implements java.io.Serializable {
 	private OperatorAccount operatorAccount;
 	private ContractorAccount contractorAccount;
 	private Date dateAdded;
+	private String workStatus;
 	private FlagColor forceFlag;
 	private Date forceBegin;
 	private Date forceEnd;
@@ -76,6 +77,14 @@ public class ContractorOperator implements java.io.Serializable {
 
 	public void setDateAdded(Date dateAdded) {
 		this.dateAdded = dateAdded;
+	}
+
+	public String getWorkStatus() {
+		return workStatus;
+	}
+
+	public void setWorkStatus(String workStatus) {
+		this.workStatus = workStatus;
 	}
 
 	@Enumerated(EnumType.STRING)

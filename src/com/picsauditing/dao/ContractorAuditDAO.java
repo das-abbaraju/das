@@ -7,6 +7,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -53,6 +54,24 @@ public class ContractorAuditDAO extends PicsDAO {
 				+ "WHERE t.contractorAccount.id = ? " + 
 				"AND auditStatus <> 'Expired'");
 		query.setParameter(1, conID);
+		return query.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ContractorAudit> findUpcoming(int limit, Permissions permissions) {
+		// TODO handle the permissions correctly
+		Query query = em.createQuery("FROM ContractorAudit t "
+				+ "WHERE scheduledDate > NOW() ORDER BY scheduledDate ASC ");
+		query.setMaxResults(limit);
+		return query.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ContractorAudit> findRecentlyClosed(int limit, Permissions permissions) {
+		// TODO handle the permissions correctly
+		Query query = em.createQuery("FROM ContractorAudit t "
+				+ "WHERE auditStatus = 'Active' AND closedDate < NOW() ORDER BY closedDate DESC");
+		query.setMaxResults(limit);
 		return query.getResultList();
 	}
 

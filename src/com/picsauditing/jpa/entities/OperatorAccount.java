@@ -51,6 +51,7 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	protected List<FlagQuestionCriteria> flagQuestionCriteria = new ArrayList<FlagQuestionCriteria>();
 	protected List<FlagOshaCriteria> flagOshaCriteria = new ArrayList<FlagOshaCriteria>();
 	protected List<AuditOperator> audits = new ArrayList<AuditOperator>();
+	protected List<Facility> facilities = new ArrayList<Facility>();
 
 	public OperatorAccount() {
 		this.type = "Operator";
