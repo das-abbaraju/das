@@ -344,12 +344,12 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 	}//closeList
 
 	public String getBGColor() {
-		if ((count % 2) == 1)	return " bgcolor=FFFFFF";
+		if ((count % 2) == 1)	return " bgcolor=#CCC";
 		else	return "";
 	}//getBGColor
 
 	public String getGroupBGColor() {
-		if ((groupCount % 2) == 1)	return " bgcolor=FFFFFF";
+		if ((groupCount % 2) == 1)	return " bgcolor=#CCC";
 		else	return "";
 	}//getBGColor
 
