@@ -62,7 +62,7 @@ public class PicsMenu {
 			subMenu.addChild("Annual Updates", "report_annualUpdate.jsp?changed=1");
 
 		subMenu = menu.addChild("Accounting");
-		if (permissions.isAdmin())
+		if (permissions.isAdmin() && permissions.hasPermission(OpPerms.BillingUpgrades))
 			subMenu.addChild("Contractor Payments", "report_payment.jsp?changed=1");
 		if (permissions.hasPermission(OpPerms.BillingUpgrades))
 			subMenu.addChild("Upgrade Payments", "report_upgradePayment.jsp?changed=1");
