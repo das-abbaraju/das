@@ -34,6 +34,7 @@ public class Chart extends AbstractElement {
 		append(xml, "subCaption", subCaption);
 		append(xml, "xAxisName", xAxisName);
 		append(xml, "yAxisName", yAxisName);
+		append(xml, "rotateLabels", rotateLabels);
 		
 		append(xml, "showPercentageValues", showPercentageValues);
 		

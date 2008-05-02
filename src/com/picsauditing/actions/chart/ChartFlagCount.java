@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
-import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -15,10 +14,6 @@ import com.picsauditing.util.chart.Set;
  * @author Trevor
  */
 public class ChartFlagCount extends ChartAction {
-	ContractorAccountDAO accountDao;
-	
-	public ChartFlagCount(ContractorAccountDAO accountDao) {
-	}
 	
 	public String execute() {
 		try {
