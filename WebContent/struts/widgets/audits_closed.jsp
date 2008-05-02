@@ -14,4 +14,9 @@
 			<td class="center"><s:date name="closedDate" format="M/d/yy" /></td>
 		</tr>
 	</s:iterator>
+	<s:if test="recentlyClosed.size == 0">
+		<tr>
+			<td colspan="4" class="center">No currently schedule audits</td>
+		</tr>
+	</s:if>
 </table>

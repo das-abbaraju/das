@@ -123,6 +123,15 @@ public class SelectAccount extends SelectSQL {
 	 * @param permissions
 	 */
 	public void setPermissions(Permissions permissions) {
+		if (permissions.isOperator()) {
+			// Anytime we query contractor accounts as an operator,
+			// get the flag color/status at the same time
+			this.addJoin("LEFT JOIN flags ON flags.conID = a.id AND flags.opID = "+permissions.getAccountId());
+			this.addField("flags.flag");
+			this.addField("lower(flags.flag) AS lflag");
+			this.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = "+permissions.getAccountId());
+			this.addField("gc.workStatus");
+		}
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
 		
 		this.addWhere("1 " +permQuery.toString());

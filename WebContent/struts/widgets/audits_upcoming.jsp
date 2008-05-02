@@ -16,4 +16,9 @@
 			<td><s:property value="auditLocation" /></td>
 		</tr>
 	</s:iterator>
+	<s:if test="upcoming.size == 0">
+		<tr>
+			<td colspan="4" class="center">No currently schedule audits</td>
+		</tr>
+	</s:if>
 </table>

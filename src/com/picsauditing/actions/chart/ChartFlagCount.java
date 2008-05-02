@@ -50,6 +50,7 @@ public class ChartFlagCount extends ChartAction {
 				set.setLabel(color);
 				set.setValue(Float.parseFloat(row.get("value").toString()));
 				set.setColor(FlagColor.valueOf(color).getHex());
+				set.setLink("ContractorListOperator.action?flagStatus="+color);
 				chart.getSets().add(set);
 			}
 		} catch (Exception e) {
