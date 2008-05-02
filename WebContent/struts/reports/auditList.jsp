@@ -24,7 +24,6 @@
 			</s:if>
 			<s:action name="AuditorsGet" executeResult="true">
 				<s:param name="controlName" value="%{'auditorId'}"/>
-				<s:param name="shouldIncludeHeader" value="true"/>
 			</s:action>
 		</td>
 		<td><s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch( 'form1')" /></td>

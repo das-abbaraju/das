@@ -1,5 +1,4 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
-<s:if test="shouldIncludeHeader">
 <s:select 
        name="%{controlName}"
        cssClass="forms"
@@ -8,14 +7,5 @@
        list="auditors"
        listKey="id"
        listValue="name"
+       value="presetValue"
        />
-</s:if>
-<s:else>
-<s:select 
-       name="%{controlName}"
-       cssClass="forms"
-       list="auditors"
-       listKey="id"
-       listValue="name"
-       />
-</s:else>       
