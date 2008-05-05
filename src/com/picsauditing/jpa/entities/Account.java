@@ -62,7 +62,7 @@ public class Account implements java.io.Serializable {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", nullable = false)
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 

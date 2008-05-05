@@ -33,6 +33,8 @@ public class OshaLog implements java.io.Serializable {
 	private OshaLogYear year2;
 	private OshaLogYear year3;
 
+	private FlagColor flagColor;
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "OID", nullable = false)
@@ -206,5 +208,14 @@ public class OshaLog implements java.io.Serializable {
 		if (getYear3().isApplicable())
 			years++;
 		return years;
+	}
+
+	@Transient
+	public FlagColor getFlagColor() {
+		return flagColor;
+	}
+
+	public void setFlagColor(FlagColor flagColor) {
+		this.flagColor = flagColor;
 	}
 }

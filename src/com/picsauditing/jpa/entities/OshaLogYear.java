@@ -23,7 +23,9 @@ public class OshaLogYear {
 	private YesNo file = YesNo.No;
 	private Date verifiedDate;
 	private String comment;
-
+	
+	private FlagColor flagColor;
+	
 	@Type(type="com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", 
 			parameters= {@Parameter(name="enumClass", value = "com.picsauditing.jpa.entities.YesNo")})	
 	@Enumerated(EnumType.STRING)
@@ -172,4 +174,12 @@ public class OshaLogYear {
 		return 0;
 	}
 
+	@Transient
+	public FlagColor getFlagColor() {
+		return flagColor;
+	}
+
+	public void setFlagColor(FlagColor flagColor) {
+		this.flagColor = flagColor;
+	}
 }

@@ -33,6 +33,8 @@ public class AuditData implements java.io.Serializable {
 	private String verifiedAnswer;
 	private YesNo isCorrect;
 	private YesNo wasChanged;
+	
+	private FlagColor flagColor;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -153,4 +155,14 @@ public class AuditData implements java.io.Serializable {
 		
 		return "";
 	}
+
+	@Transient
+	public FlagColor getFlagColor() {
+		return flagColor;
+	}
+
+	public void setFlagColor(FlagColor flagColor) {
+		this.flagColor = flagColor;
+	}
+	
 }

@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
@@ -319,4 +320,20 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.audits = audits;
 	}
 
+	/**
+	 * Get a list of QuestionIDs that are Verified or Checked as part of a Flag calculation
+	 * @return
+	 */
+	@Transient
+	public List<Integer> getQuestionIDs() {
+		List<Integer> questionIDs = new ArrayList<Integer>();
+		for(AuditQuestionOperatorAccount question : getAuditQuestions()) {
+			questionIDs.add(question.getAuditQuestion().getQuestionID());
+		}
+		for(FlagQuestionCriteria criteria : getFlagQuestionCriteria()) {
+			if (criteria.getChecked().equals(YesNo.Yes))
+				questionIDs.add(criteria.getAuditQuestion().getQuestionID());
+		}
+		return questionIDs;
+	}
 }

@@ -30,6 +30,7 @@ public class AuditOperator {
 	protected Date orderDate;
 
 	private int htmlID = 0;
+	private FlagColor contractorFlag;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -110,4 +111,16 @@ public class AuditOperator {
 			htmlID += getOperatorAccount().getId();
 		return htmlID;
 	}
+
+	@Transient
+	public FlagColor getContractorFlag() {
+		if (contractorFlag == null)
+			contractorFlag = requiredForFlag;
+		return contractorFlag;
+	}
+
+	public void setContractorFlag(FlagColor contractorFlag) {
+		this.contractorFlag = contractorFlag;
+	}
+	
 }

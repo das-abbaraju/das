@@ -24,5 +24,14 @@ public enum FlagColor {
 	public String getHex() {
 		return hex;
 	}
-
+	
+	public String getBigIcon() {
+		return "<img src=\"images/icon_"+this.toString().toLowerCase()+
+			"FlagBig.gif\" width=\"32\" height=\"32\" border=\"0\" />";
+	}
+	
+	public String getSmallIcon() {
+		return "<img src=\"images/icon_"+this.toString().toLowerCase()+
+			"Flag.gif\" width=\"10\" height=\"12\" border=\"0\" />";
+	}
 }
