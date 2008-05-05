@@ -54,13 +54,7 @@ try{
 </head>
 <body>
 <h1><%=auditType%> Matrix</h1>
-<div id="internalnavcontainer">
-<ul id="navlist">
-	<li><a href="pqf_desktopMatrix.jsp?auditType=<%=Constants.PQF_TYPE%>">Edit PQF Matrix</a></li>
-	<li><a href="pqf_desktopMatrix.jsp?auditType=<%=Constants.DESKTOP_TYPE%>">Edit Desktop Matrix</a></li>
-</ul>
-</div>
-<a class=forms href="AuditTypeChoose.action">Back to Audits</a><br/><br/><br/>
+<%@ include file="/includes/nav/pqf_nav.jsp"%>
 <br>
 <form action="pqf_desktopMatrix.jsp?auditType=<%=auditType%>" method="post">
 <input name="action" type="submit" value="Save"><input name="action" type="submit" value="Regenerate Categories">
