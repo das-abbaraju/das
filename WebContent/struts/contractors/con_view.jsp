@@ -27,11 +27,11 @@
 		 		<div class="telecommunications">
 					<p class="contact">Contact: <span class="value"><s:property value="contractor.contact" /></span></p>
 					<p class="tel">Phone: <span class="value"><s:property value="contractor.phone" /></span></p>
-					<p class="tel">Other Phone: <span class="value"><s:property value="contractor.phone2" /></span></p>
-					<p class="tel">Fax: <span class="value"><s:property value="contractor.fax" /></span></p>
+					<s:if test="contractor.phone2" ><p class="tel">Other Phone: <span class="value"><s:property value="contractor.phone2" /></span></p></s:if>
+					<s:if test="contractor.fax" ><p class="tel">Fax: <span class="value"><s:property value="contractor.fax" /></span></p></s:if>
  					<p class="email">Email: <strong><a href="mailto:<s:property value="contractor.email" />" class="value"><s:property value="contractor.email" /></a></strong></p>
-					<p class="url">Web site: <strong><a href="http://<s:property value="contractor.webUrl" />" class="value" target="_blank"><s:property value="contractor.webUrl" /></a></strong></p>
-					<p class="web"><strong><a href="servlet/showpdf?id=<s:property value="id" />&file=brochure" class="ext" target="_blank">Company Brochure</a></strong></p>
+					<s:if test="contractor.url" ><p class="url">Web site: <strong><a href="http://<s:property value="contractor.webUrl" />" class="value" target="_blank"><s:property value="contractor.webUrl" /></a></strong></p></s:if>
+					<s:if test="contractor.brochure_file == 'Yes' " ><p class="web"><strong><a href="servlet/showpdf?id=<s:property value="id" />&file=brochure" class="ext" target="_blank">Company Brochure</a></strong></p></s:if>
 				</div>
 			</div>
 		</div>
@@ -45,8 +45,8 @@
 		Facilities:
 		<ul style="list-style-type: none;">
 			<s:iterator value="operators">
-			<li><a href="con_redFlags.jsp?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><img src="images/icon_<s:property value="%{getFlag().getFlagColor().toString().toLowerCase()}" />Flag.gif" width="10" height="12" /></a>
-				<a href="con_redFlags.jsp?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="operatorAccount.name" /></a>
+			<li><a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="flag.flagColor.smallIcon" escape="false" /></a>
+				<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="operatorAccount.name" /></a>
 			</li>
 			</s:iterator>
 			...<a href="con_selectFacilities.jsp?id=<s:property value="id" />">see facilities</a>

@@ -18,7 +18,7 @@ if (!request.getServletPath().contains("contractor_detail")){
 <% if (permissions.isCorporate()) { %>
 <a class="blueMain" href="con_selectFacilities.jsp?id=<%=id%>">View Facilities</a>
 <% } else { %>
-<a class="blueMain" href="con_redFlags.jsp?id=<%=id%>">Red Flag Report</a>
+<a class="blueMain" href="ContractorFlag.action?id=<%=id%>">Red Flag Report</a>
 <% } %>
 
 <br/>

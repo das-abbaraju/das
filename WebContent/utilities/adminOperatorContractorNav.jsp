@@ -4,6 +4,14 @@
 <ul id="navlist">
 	<li><a href="ContractorView.action?id=<%=id%>">Details</a></li>
 	<%
+		if (!permissions.isContractor()) {
+	%>
+	<li><a href="add_notes.jsp?id=<%=id%>"
+	<%= request.getRequestURI().contains("add_notes") ? "class=\"current\"" : ""%>>Notes</a></li>
+	<%
+		}
+	%>
+	<%
 		if (permissions.isAdmin()) {
 	%>
 	<li><a href="accounts_edit_contractor.jsp?id=<%=id%>" 
@@ -30,7 +38,7 @@
 	<%
 		if (permissions.isOperator()) {
 	%>
-	<li><a href="con_redFlags.jsp?id=<%=id%>"
+	<li><a href="ContractorFlag.action?id=<%=id%>"
 	<%=request.getRequestURI().contains("con_redFlags") ? "class=\"current\"" : ""%>>Flag Status</a></li>
 	<%
 		} else {

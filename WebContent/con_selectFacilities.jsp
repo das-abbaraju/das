@@ -116,9 +116,9 @@ Facilities</span></h1>
 	%>
 	<tr class="blueMain" <%=Utilities.getBGColor(count++)%>>
 		<td class="center"><a
-			href="con_redFlags.jsp?id=<%=cBean.id%>&opID=<%=opID%>"><img
+			href="ContractorFlag.action?id=<%=cBean.id%>&opID=<%=opID%>"><img
 			src="images/icon_<%=flagColor%>Flag.gif" width="12" height="15"></a></td>
-		<td><a href="con_redFlags.jsp?id=<%=cBean.id%>&opID=<%=opID%>"><%=name%></a></td>
+		<td><a href="ContractorFlag.action?id=<%=cBean.id%>&opID=<%=opID%>"><%=name%></a></td>
 		<td class="center"><input type="hidden" name="genID_<%=opID%>"
 			value="Yes" /><img src="images/okCheck.gif" width="19" height="15" />
 		<%
@@ -151,13 +151,13 @@ Facilities</span></h1>
 		<td class="center">
 		<%
 			if (permissions.isPicsEmployee() || permissions.isCorporate()) {
-		%><a href="con_redFlags.jsp?id=<%=cBean.id%>&opID=<%=opID%>"><img
+		%><a href="ContractorFlag.action?id=<%=cBean.id%>&opID=<%=opID%>"><img
 			src="images/icon_<%=flagColor%>Flag.gif" width=12 height=15 border=0></a>
 		<%
 			}
 		%>
 		</td>
-		<td><a href="con_redFlags.jsp?id=<%=cBean.id%>&opID=<%=opID%>"><%=name%></a></td>
+		<td><a href="ContractorFlag.action?id=<%=cBean.id%>&opID=<%=opID%>"><%=name%></a></td>
 		<td class="center">
 		<%
 			if (!permissions.isOnlyAuditor()) {

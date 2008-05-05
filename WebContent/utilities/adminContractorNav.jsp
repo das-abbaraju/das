@@ -19,7 +19,7 @@ if (!request.getServletPath().contains("contractor_detail")){
 	<a class="blueMain" href="accounts_edit_contractor.jsp?id=<%=id%>">Edit</a> |
 <% } %>
 <% if (permissions.isOperator()) { %>
-	<a class="blueMain" href="con_redFlags.jsp?id=<%=id%>">Red Flag Report</a>
+	<a class="blueMain" href="ContractorFlag.action?id=<%=id%>">Red Flag Report</a>
 <% } %>
 <% if (permissions.isCorporate() || permissions.isAdmin()) { %>
 	<a class="blueMain" href="con_selectFacilities.jsp?id=<%=id%>">Facilities</a>
