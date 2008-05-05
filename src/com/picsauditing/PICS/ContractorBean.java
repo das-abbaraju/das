@@ -50,7 +50,7 @@ public class ContractorBean extends DataBean {
 	public static final boolean DONT_SHOW_AUDIT_DATE = false; //MULTIAUDIT remove
 	public static final String[] AUDIT_LOCATION_ARRAY = {"On Site","Web"};	// must match ENUM in db, contractor_info.auditLocation 
 	public static final int SETUP_FEE = 99;
-	public static final String[] RISK_LEVEL_ARRAY = {"Low","Med","Med-High"};
+	public static final String[] RISK_LEVEL_ARRAY = {"Low","Med","High"};
 	public static final String[] RISK_LEVEL_VALUES_ARRAY = {"1","2","3"};
 
 	public String id = "";

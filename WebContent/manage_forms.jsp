@@ -195,7 +195,7 @@ if (isSubmitted){
 %>
                     <tr class=blueMain align="center" <%=Utilities.getBGColor(fBean.count)%>>
                       <td align="right"><%=fBean.count%>.</td>
-                      <td align="left"><a href='/forms/<%=fBean.file%>' target=_blank><%=fBean.formName%></a></td>
+                      <td align="left"><a href="forms/<%=fBean.file%>" target="_blank"><%=fBean.formName%></a></td>
                       <td align="left"><%=fBean.opName%></td>
                     </tr>
 <%		}//while%>

@@ -4,9 +4,7 @@
 	scope="page" />
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean"
 	scope="page" />
-
 <%
-	String ses_id = (String) session.getAttribute("userid");
 	String id = request.getParameter("id");
 	String action = request.getParameter("action");
 	String todaysDate = com.picsauditing.PICS.DateBean
@@ -64,11 +62,16 @@
 <html>
 <head>
 <title>Notes</title>
-<meta name="header_notes.gif" content="header_manageAccounts.gif" />
 </head>
 <body>
-<h1><%=aBean.getName(id)%><span class="sub">Add Notes</span></h1>
+<h1><%=aBean.getName(id)%><span class="sub">Contractor Notes</span></h1>
 <%@ include file="utilities/adminOperatorContractorNav.jsp"%>
+
+<div>
+<%=com.picsauditing.PICS.Utilities.escapeNewLines(cBean.notes)%>
+</div>
+
+
 <table border="0" align="center" cellpadding="5" cellspacing="0">
 	<%
 		if (pBean.isAdmin()
@@ -156,9 +159,7 @@
 		}//if
 	%>
 	<tr>
-		<td valign="top" class="redMain" align="left">Notes:<br>
-		<span class="blueMain"><%=com.picsauditing.PICS.Utilities
-							.escapeNewLines(cBean.notes)%></span>
+		<td valign="top" class="redMain" align="left">
 		</td>
 		<td valign="top" class="redMain" align="left">
 		<%
