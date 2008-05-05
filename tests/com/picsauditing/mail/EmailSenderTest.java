@@ -7,6 +7,7 @@ public class EmailSenderTest extends TestCase {
 		super(name);
 	}
 	
+	/*
 	public void testEmail() {
 		String username = "tester@picsauditing.com";
 		String password = "bigboy11";
@@ -17,6 +18,7 @@ public class EmailSenderTest extends TestCase {
 			fail(e.getMessage());
 		}
     }
+    */
 
 	public void testInfoEmail() {
 		String username = "info@picsauditing.com";
@@ -25,8 +27,24 @@ public class EmailSenderTest extends TestCase {
 		try {
 			mailer.sendMail("Account Activation", 
 					"Welcome John Doe,\n\nPlease click on this link to confirm your receipt of this email:\nhttp://www.picsauditing.com/login.jsp?uname=canoo_contractor1", 
-					"PICS Info <info@picsauditing.com>", 
-					"tester@picsauditing.com");
+					"Trevor Allred <tallred@picsauditing.com>", 
+					"tallred@picsauditing.com");
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+    }
+
+
+	public void testSender() {
+		Email email = new Email();
+		email.setSubject("JUnit Test");
+		email.setBody("Test body");
+		email.setFromAddress("Trevor Allred <tallred@picsauditing.com>");
+		email.setToAddress("tester@picsauditing.com");
+		
+		EmailSender sender = new EmailSender();
+		try {
+			sender.sendMail(email);
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}

@@ -2,6 +2,7 @@ package com.picsauditing.mail;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -54,6 +55,9 @@ public class GMailSender extends javax.mail.Authenticator {
 		DataHandler handler = new DataHandler(new ByteArrayDataSource(body
 				.getBytes(), "text/plain"));
 		message.setSender(new InternetAddress(sender));
+		InternetAddress[] replyTo = {new InternetAddress(sender)};
+		message.setReplyTo(replyTo);
+		
 		message.setSubject(subject);
 		message.setDataHandler(handler);
 		if (recipients.indexOf(',') > 0)
