@@ -99,7 +99,7 @@ public class FlagCalculatorSingle {
 								flagColor = setFlagColor(flagColor, criteria.getFlagColor());
 						}
 						// TODO set the Average Flag color
-						//osha.setFlagColor(flagColor);
+						osha.setFlagColor(flagColor);
 						
 						// Make sure all three years pass the criteria
 						flagColor = setFlagColor(flagColor, verifyOsha(osha.getYear1(), criteria));

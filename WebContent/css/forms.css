@@ -1,0 +1,52 @@
+/******************** Primary Table class="forms"  ************************/
+
+table.forms {
+	border-collapse: collapse;
+	border: 2px solid #003768;
+	color: #4C4D4D;
+	background: #f9f9f9;
+	clear: both;
+	margin: 10px;
+}
+table.forms td, table.forms th {
+	border: thin solid #A84D10;
+	padding: 4px;
+	font-size: 13px;
+}
+tfoot th {
+	border: 1px solid #e0e0e0;
+	text-align: center;
+	font-weight: bold;
+	background: #003768;
+	color: #FFF;
+}
+table.forms thead th, table.forms thead td {
+	border: 1px solid #e0e0e0;
+	text-align: center;
+	font-weight: bold;
+	background: #003768;
+	color: #FFF;
+}
+table.forms thead a {
+	color: #FFF;
+	text-decoration: none;
+}
+table.forms thead a:hover {
+	text-decoration: underline;
+}
+table.forms tbody td a {
+	text-decoration: none;
+}
+table.forms tbody td a:hover {
+	text-decoration: underline;
+}
+
+table.forms td.center {
+	text-align: center;
+	float: none;
+}
+table.forms td.right {
+	text-align: right;
+	float: none;
+}
+

@@ -92,8 +92,8 @@ public class FlagCriteria extends DataBean {
 				SQLStatement.executeUpdate(insertQuery.substring(0,insertQuery.length()-1));
 		}finally{
 			DBClose();
-		}//finally
-	}//writeToDB
+		}
+	}
 
 	public void writeNewToDB(String op_ID) throws Exception {
 		opID = op_ID;
