@@ -29,7 +29,6 @@
               <table width="657" border="0" cellpadding="0" cellspacing="0">
               <tr> 
                 <td align="center" valign="top" class="buttons"> 
-                  <%@ include file="includes/selectReport.jsp"%>
                    <span class="blueHeader">Expired Insurance Report</span>
                    <br>
                     <form name="form1" method="post" action="report_expiredCertificates.jsp">
