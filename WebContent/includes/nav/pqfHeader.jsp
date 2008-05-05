@@ -88,18 +88,20 @@ td.label {
 		</td>
 	</tr>
 </table>
-
+<%
+	if (conAudit.isCanView(permissions)) {
+%>
 <a class="blueMain" href="pqf_view.jsp?auditID=<%=conAudit.getId()%>">View</a>
 |
 <%
-	if (permissions.isPicsEmployee()) {
+	}
+	if(conAudit.isCanEdit(permissions)) {
 %>
 <a class="blueMain"
 	href="pqf_editMain.jsp?auditID=<%=conAudit.getId()%>">Edit</a>
 |
 <%
-	}
-	if (permissions.hasPermission(OpPerms.AuditVerification)) {
+	} if(conAudit.isCanVerify(permissions)) {
 %>
 <a class="blueMain" href="pqf_verify.jsp?auditID=<%=conAudit.getId()%>">Verify</a>
 |
@@ -113,10 +115,14 @@ td.label {
 |
 <%
 	}
+	if (conAudit.isCanView(permissions)) {
 %>
 <a class="blueMain" href="pqf_viewAll.jsp?auditID=<%=conAudit.getId()%>">View
 All</a>
 |
+<%
+	}
+%>
 <a class="blueMain"
 	href="pqf_printAll.jsp?auditID=<%=conAudit.getId()%>">Print</a>
 </ul>

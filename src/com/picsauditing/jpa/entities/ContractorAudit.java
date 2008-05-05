@@ -22,6 +22,9 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
+
 @Entity
 @Table(name = "contractor_audit")
 public class ContractorAudit {
@@ -43,7 +46,7 @@ public class ContractorAudit {
 	
 	private List<AuditCatData> categories;
 	private List<AuditData> data;
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "auditID", nullable = false)
@@ -228,4 +231,35 @@ public class ContractorAudit {
 	public void setData(List<AuditData> data) {
 		this.data = data;
 	}
+
+	@Transient
+	public boolean isCanView(Permissions permissions){
+		if(permissions.isContractor() && (getAuditType().isCanContractorView() == false))
+			return false;
+		else
+			return true;	
+	}
+
+	@Transient
+	public boolean isCanEdit(Permissions permissions) {
+		if(permissions.isOnlyAuditor() && (permissions.getUserId() == getAuditor().getId()) && (getAuditType().isCanContractorEdit() == false)) 
+			return true;
+		if(permissions.isContractor() && (getAuditType().isCanContractorEdit() == true))
+			return true;
+		if(permissions.seesAllContractors())
+			return true;	
+		
+		return false;
+	}
+
+   @Transient
+   public boolean isCanVerify(Permissions permissions) {
+	   if(permissions.isOnlyAuditor() && (permissions.getUserId() == getAuditor().getId()) && (getAuditType().isCanContractorEdit() == false)) 
+			return true;
+	   if(permissions.seesAllContractors())
+			return true;
+	   	   
+	   return false;   
+   }
+
 }
