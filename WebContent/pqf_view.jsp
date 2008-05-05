@@ -18,9 +18,7 @@
 	ContractorAuditLegacy action = new ContractorAuditLegacy();
 	action.setAuditID(request.getParameter("auditID"));
 	String auditType = action.getAudit().getAuditType().getLegacyCode();
-	String conID = ((Integer) action.getAudit().getContractorAccount()
-			.getId()).toString();
-	String id = conID;
+	String conID = action.getAudit().getContractorAccount().getId().toString();
 	try {
 		String catID = request.getParameter("catID");
 		boolean isCategorySelected = (null != catID && !"0"
@@ -55,7 +53,7 @@
 <meta name="header_gif" content="header_prequalification.gif" />
 </head>
 <body>
-<h1><%=aBean.getName(id)%><span class="sub"><%=action.getAudit().getAuditType().getAuditName()%>
+<h1><%=action.getAudit().getContractorAccount().getName()%><span class="sub"><%=action.getAudit().getAuditType().getAuditName()%>
 - <%=DateBean.format(action.getAudit().getCreatedDate(),
 								"MMM yyyy")%></span></h1>
 <%@ include file="includes/nav/pqfHeader.jsp"%>

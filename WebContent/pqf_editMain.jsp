@@ -16,9 +16,7 @@
 <%
 	action.setAuditID(request.getParameter("auditID"));
 	String auditType = action.getAudit().getAuditType().getLegacyCode();
-	String conID = ((Integer) action.getAudit().getContractorAccount()
-			.getId()).toString();
-	String id = Integer.toString(action.getAuditID());
+	String conID = action.getAudit().getContractorAccount().getId().toString();
 	try {
 		String orderBy = request.getParameter("orderBy");
 		String catID = request.getParameter("catID");
@@ -107,10 +105,9 @@
 <meta name="header_gif" content="header_prequalification.gif" />
 </head>
 <body>
-<h1><%=aBean.getName(conID)%><span class="sub">Edit <%=auditType%>
+<h1><%=action.getAudit().getContractorAccount().getName()%><span class="sub">Edit <%=auditType%>
 - <%=DateBean.format(action.getAudit().getCreatedDate(),
 								"MMM yyyy")%></span></h1>
-</h1>
 <%@ include file="includes/nav/pqfHeader.jsp"%>
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
 	<tr>

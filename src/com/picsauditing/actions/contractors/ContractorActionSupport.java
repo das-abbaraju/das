@@ -25,6 +25,9 @@ public class ContractorActionSupport extends PicsActionSupport {
 	
 	protected void findContractor() throws Exception {
 		loadPermissions();
+		if (permissions.isContractor())
+			id = permissions.getAccountId();
+		
 		contractor = accountDao.find(id);
 		if (contractor.getId() == 0)
 			throw new Exception("Contractor " + this.id + " not found");

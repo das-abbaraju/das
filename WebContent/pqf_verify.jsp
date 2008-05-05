@@ -20,9 +20,7 @@
 <%
 	action.setAuditID(request.getParameter("auditID"));
 	String auditType = action.getAudit().getAuditType().getLegacyCode();
-	String conID = ((Integer) action.getAudit().getContractorAccount()
-			.getId()).toString();
-	String id = conID;
+	String conID = action.getAudit().getContractorAccount().getId().toString();
 	try {
 		String catID = request.getParameter("catID");
 		String actionString = request.getParameter("action");
@@ -72,7 +70,7 @@
 <SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
 </head>
 <body>
-<h1><%=aBean.getName(id)%><span class="sub">Verify <%=auditType%>
+<h1><%=action.getAudit().getContractorAccount().getName()%><span class="sub">Verify <%=auditType%>
 - <%=DateBean.format(action.getAudit().getCreatedDate(),
 								"MMM yyyy")%></span></h1>
 </h1>

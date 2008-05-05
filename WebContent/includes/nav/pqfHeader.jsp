@@ -8,6 +8,7 @@
 <%
 	ContractorAudit conAudit = action.getAudit();
 	User auditor = conAudit.getAuditor();
+	String id = conAudit.getContractorAccount().getId().toString();
 %>
 <style>
 td.label {

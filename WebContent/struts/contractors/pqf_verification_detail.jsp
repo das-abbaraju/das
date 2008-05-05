@@ -73,7 +73,6 @@ function sendEmail() {
 
 <%
 	action.setAuditID(request.getParameter("auditID"));
-	String id = request.getParameter("auditID");
 	
 	String conID = ((Integer) action.getAudit().getContractorAccount()
 			.getId()).toString();
