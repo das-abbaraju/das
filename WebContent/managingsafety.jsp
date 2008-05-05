@@ -198,7 +198,7 @@ input.valid {
 		The Queen Mary<br />
 		1126 Queens Highway<br />
 		Long Beach, CA 90802<br />
-		</p>
+		(800) 437-2934<br /></p>
 		<p><span class="style2">We are look forward to seeing you
 		in Long Beach, California.</span></p>
 		</div>
