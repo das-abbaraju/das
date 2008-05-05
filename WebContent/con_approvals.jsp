@@ -47,6 +47,7 @@ List<BasicDynaBean> searchData = report.getPage();
 <script src="js/prototype.js" type="text/javascript"></script>
 <script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
 <script src="js/Search.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script type="text/javascript">
 function saveApproval(conID, status) {
 	pars = 'action=save&conID='+conID+'&workStatus='+status;
@@ -68,7 +69,10 @@ form.smallform {
 <table border="0" cellpadding="5" cellspacing="0" align="center">
 	<tr>
 		<td class="blueMain">
-		<form id="form1" name="form1" action="con_approvals.jsp" method="get">
+		<div id="search">
+		<div id="showSearch"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
+		<div id="hideSearch" style="display: none"><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
+		<form id="form1" name="form1" action="con_approvals.jsp" method="get" cssStyle="display: none">
 			Name: <input type="text" name="name" value="<%= report.getFilterValue("name") %>" size="20" class="blueMain" />
 			<select name="workStatus" class="blueMain">
 				<option value="" <%="".equals(request.getParameter("workStatus"))?" SELECTED":"" %>>All</option>
@@ -76,20 +80,19 @@ form.smallform {
 				<option value="Y"<%="Y".equals(request.getParameter("workStatus"))?" SELECTED":"" %>>Yes</option>
 				<option value="N"<%="N".equals(request.getParameter("workStatus"))?" SELECTED":"" %>>No</option>
 			</select>
-			<input type="submit" value="Show" onClick="runSearch( 'form1')" class="blueMain">
-
+			<input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()">
 			<input type="hidden" name="showPage" value="1"/>
 			<input type="hidden" name="startsWith" value=""/>
 			<input type="hidden" name="orderBy"  value="<%=request.getParameter("orderBy") == null ? "gc.dateAdded DESC" : request.getParameter("orderBy") %>"/>
 		</form>
-
+		</div>
 		</td>
 	</tr>
+
 	<tr>
 		<td align="right"><%=report.getPageLinksWithDynamicForm()%></td>
 	</tr>
 </table>
-
 <p>Are the following companies currently working or approved to work for you?</p>
 
 <table border="0" cellpadding="1" cellspacing="1" align="center">
