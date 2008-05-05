@@ -1288,37 +1288,8 @@ public class ContractorBean extends DataBean {
 		addAdminNote(id, "("+adminName+")", "Payment upgraded from $"+lastPaymentAmount+" to $"+newAmount+" for "+payingFacilities+" facilities", lastPayment);
 		lastPaymentAmount = newAmount;
 		writeToDB();
-	}//upgradePayment
+	}
 
-/*	jj 1-10-07, revamped new payment expires calculation
-	public void updateLastPayment(String id, String adminName, String amount) throws Exception {
-		setFromDB(id);
-		Calendar monthAheadCal = Calendar.getInstance();
-		monthAheadCal.add(Calendar.DATE, 35);
-//		java.util.Date lastPaymentDate = DateBean.showFormat.parse(lastPayment);
-		Calendar newPaymentExpiresCal = Calendar.getInstance();
-		if (!"".equals(auditDate))
-			newPaymentExpiresCal.setTime(DateBean.showFormat.parse(auditDate));
-		while (newPaymentExpiresCal.before(monthAheadCal))
-			newPaymentExpiresCal.add(Calendar.YEAR, 1);
-		int additionalYears = Integer.parseInt(billingCycle) - 1;
-		newPaymentExpiresCal.add(Calendar.YEAR, additionalYears);
-		paymentExpires = DateBean.showFormat.format(newPaymentExpiresCal.getTime());
-		lastPayment = DateBean.getTodaysDate();
-		billingAmount = amount;
-//		addNote(id, "("+adminName+")", "Payment recorded for "+billingCycle+" years, expires on "+paymentExpires, DateBean.getTodaysDateTime());
-		writeToDB();
-
-//		monthAheadCal.add(Calendar.DAY, 35);
-//		java.util.Date today = cal.getTime();
-//		java.util.Date monthAhead = cal.getTime();
-//		java.util.Date newPaymentExpires = newPaymentExpiresCal.getTime();
-//		java.util.Date today = DateBean.showFormat.parse(lastPayment);
-//		String Query = "UPDATE contractor_info SET lastPayment = NOW() WHERE id = '" + id + "';";
-//		SQLStatement.executeUpdate(Query);
-//		DBClose();
-	}//updateLastPayment
-*/
 	//checks to see if auditor already has audit scheduled for this date. Called from report_scheduleAudits
 	//bj 4-5-05
 	public String checkDoubleAudit(String action_id) throws Exception {

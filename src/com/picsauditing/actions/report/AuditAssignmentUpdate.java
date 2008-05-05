@@ -37,7 +37,9 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 	
 	public String execute() throws Exception 
 	{
-		
+		// TODO check to see if auditor already has audit scheduled for this date
+		// See ContractoBean.checkDoubleAudit
+
 		auditor = userDao.find(auditor.getId());
 		
 		if( auditor != null )

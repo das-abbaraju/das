@@ -59,49 +59,4 @@ public class Menu {
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
 	}
-	
-	public void fillPicsMenu(Permissions perm) {
-		this.items.clear();
-		this.setPermissions(perm);
-
-		// TODO Create admin permissions for each of these reports
-		int adminGroup = 10;
-		this.addItem("report_activation.jsp?changed=1", "Activation Report", adminGroup);
-		this.addItem("report_annualUpdate.jsp?changed=1", "Annual Update Report", OpPerms.EmailAnnualUpdate);
-		this.addItem("con_approvals.jsp", "Approve Contractors", OpPerms.ContractorApproval);
-		this.addItem("AuditOperator.action", "Audit/Operator Assignment");
-		this.addItem("report_contractorAudits.jsp", "Contractor Audits", adminGroup);
-		this.addItem("report_operatorContractor.jsp?changed=1", "Contractor Assignments", adminGroup);
-		this.addItem("report_contactInfo.jsp?changed=1", "Contractor Contact Info");
-		this.addItem("contractorsSearch.jsp", "Contractor Search", OpPerms.SearchContractors);
-		// I'm not sure if OpPerms.SearchContractors on the next item is correct
-		this.addItem("report_operatorContractor.jsp?searchCorporate=Y", "Corporate Contractors Report", OpPerms.SearchContractors);
-		this.addItem("email_templates.jsp", "Email Templates", OpPerms.EmailTemplates);
-		this.addItem("report_EMRRates.jsp?changed=1", "EMR Rates Report");
-		this.addItem("report_expiredAudits.jsp?changed=1", "Expired Audits Report");
-		this.addItem("report_expiredCertificates.jsp?changed=1", "Expired Insurance Certificates", OpPerms.InsuranceApproval);
-		this.addItem("report_fatalities.jsp?changed=1", "Fatalities Report");
-		this.addItem("manage_forms.jsp", "Forms &amp Docs", OpPerms.FormsAndDocs);
-		this.addItem("report_incidenceRates.jsp?changed=1", "Incidence Rates Report");
-		this.addItem("report_certificates.jsp?changed=1", "Insurance Approval", OpPerms.InsuranceApproval);
-		this.addItem("verify_insurance.jsp", "Insurance Verification", OpPerms.InsuranceVerification);
-		this.addItem("AuditTypeChoose.action", "Manage Audits and Matrices", OpPerms.ManageAudits);
-		this.addItem("report_accounts.jsp?type=Corporate", "Manage Corporate Accounts", OpPerms.ManageCorporate);
-		this.addItem("report_accounts.jsp?type=Operator", "Manage Operators", OpPerms.ManageOperators);
-		this.addItem("UsersManage.action", "Manage Users", OpPerms.EditUsers);
-		this.addItem("report_ncms.jsp", "NCMS Data Report", OpPerms.NCMS );
-		this.addItem("audit_calendar.jsp?changed=1", "Office Audit Calendar", OpPerms.OfficeAuditCalendar);
-		this.addItem("report_payment.jsp?changed=1", "Payment Report", adminGroup);
-		this.addItem("pqf_verification.jsp", "PQF Verification", OpPerms.AuditVerification);
-		this.addItem("op_editFlagCriteria.jsp", "Red Flag Criteria", OpPerms.EditFlagCriteria);
-		this.addItem("report_scheduleAssignAudits.jsp", "Schedule/Assign Audits", OpPerms.AssignAudits);
-		this.addItem("report_upgradePayment.jsp?changed=1", "Upgrade Payment Report", OpPerms.BillingUpgrades);
-		
-		this.addItem("report_audits.jsp?changed=1", "OLD Audit Dates Report", adminGroup);
-		this.addItem("report_incompleteAudits.jsp?incompleteAfter=3&changed=1", "OLD Incomplete Audits Report");
-		this.addItem("report_scheduleAudits.jsp?changed=1&which="+com.picsauditing.PICS.SearchBean.RESCHEDULE_AUDITS, "OLD Reschedule Audits", adminGroup);
-		this.addItem("report_daAudit.jsp", "OLD Schedule Drug &amp; Alcohol Audits", OpPerms.AssignAudits);
-		this.addItem("report_desktop.jsp", "OLD Schedule Desktop Audits", OpPerms.AssignAudits);
-		this.addItem("report_scheduleAudits.jsp?changed=1", "OLD Schedule Office Audits", OpPerms.AssignAudits);
-	}
 }

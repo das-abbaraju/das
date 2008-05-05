@@ -31,12 +31,13 @@ function saveAudit(auditID) {
 	var myAjax = new Ajax.Updater(divName, 'AuditSaveAjax.action', {method: 'post', parameters: pars});
 	new Effect.Highlight($('auditor_tr'+auditID), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 }
+// TODO support setting D&A audits to Not required
 function notRequired(auditID) {
-	pars = 'action=notRequired&auditID='+auditID;
+	pars = 'audit.status=Exempt&audit.id='+auditID;
 	
 	var divName = 'auditor_td'+auditID;
 	$(divName).innerHTML = '<img src="images/ajax_process.gif" />';
-	var myAjax = new Ajax.Updater(divName, 'report_daAudit.jsp', {method: 'post', parameters: pars});
+	var myAjax = new Ajax.Updater(divName, 'AuditSaveAjax.action', {method: 'post', parameters: pars});
 	new Effect.Highlight($('auditor_tr'+auditID), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 }
 </script>
@@ -52,7 +53,6 @@ function notRequired(auditID) {
 <table width="657" border="0" cellpadding="0" cellspacing="0" align="center">
   <tr>
     <td height="70" colspan="2" align="center" class="buttons"> 
-      <%@ include file="includes/selectReport.jsp"%>
       <span class="blueHeader">Schedule Drug &amp; Alcohol Audits</span><br>
       <a href="report_daAudit.jsp" class="blueMain">Refresh</a>
     </td>

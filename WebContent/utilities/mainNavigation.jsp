@@ -26,21 +26,7 @@ function MM_swapImage() { //v3.0
 </script>
 <%	String navString = "";
 	String whichPage = "";
-	if (permissions.isAdmin())
-		navString = "accounts_manage,ManageAccounts,manage_forms,ManageFormsTrade,report_audits,Audits,reports,Reports";
-	else if (permissions.isOperator() || permissions.isCorporate()){
-		if (permissions.hasPermission(com.picsauditing.access.OpPerms.StatusOnly))
-			navString = "contractor_list_limited,ContractorList";
-		else
-			navString = "reports,Reports,contractor_list,ContractorList,services,Services,clients,Clients,contact,Contact";
-	} else if (permissions.isContractor()) {
-		navString = "contractor_new_instructions,Register,contractor_detail,Contractors,services,Services,clients,Clients,contact,Contact";
-		whichPage = "Contractors";
-	} else if (permissions.isAuditor()) {
-		navString = " , ";
-	} else {
-		navString = "contractor_new_instructions,Register,contractor_detail,Contractors,services,Services,clients,Clients,contact,Contact";
-	} //else
+	navString = "contractor_new_instructions,Register,contractor_detail,Contractors,services,Services,clients,Clients,contact,Contact";
 	String [] LINKS_ARRAY = navString.split(",");
 %>
 <table border="0" cellspacing="0" cellpadding="0" BGCOLOR="#EEEEEE">

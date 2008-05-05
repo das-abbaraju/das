@@ -112,19 +112,6 @@ public class PicsMenu {
 		if (!permissions.isContractor())
 			subMenu.addChild("Incidence Rates", "report_incidenceRates.jsp?changed=1");
 
-		// TODO get rid of these before we go live
-		if (permissions.isAdmin()) {
-			subMenu = menu.addChild("Obsolete");
-			subMenu.addChild("Audit Dates Report", "report_audits.jsp?changed=1");
-			subMenu.addChild("Expired Audits Report", "report_expiredAudits.jsp?changed=1");
-			subMenu.addChild("Incomplete Audits Report", "report_incompleteAudits.jsp?incompleteAfter=3&changed=1");
-			subMenu.addChild("Reschedule Audits", "report_scheduleAudits.jsp?changed=1&which="
-					+ com.picsauditing.PICS.SearchBean.RESCHEDULE_AUDITS);
-			subMenu.addChild("Schedule D&amp;A Audits", "report_daAudit.jsp");
-			subMenu.addChild("Schedule Desktop Audits", "report_desktop.jsp");
-			subMenu.addChild("Schedule Office Audits", "report_scheduleAudits.jsp?changed=1");
-		}
-
 		return menu;
 	}
 }
