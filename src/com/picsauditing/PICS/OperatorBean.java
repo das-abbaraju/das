@@ -19,19 +19,6 @@ public class OperatorBean extends DataBean {
 	private Set<AuditOperator> canSeeAudits;
 	public String canSeeInsurance = "No";
 	//Hurdle Rate report search parameters, added 6/27/06
-	public String emrHurdle = "";
-	public String emrTime = "1";
-	public String lwcrHurdle = "";
-	public String lwcrTime = "1";
-	public String trirHurdle = "";
-	public String trirTime = "1";
-	public String fatalitiesHurdle = "";
-	public String flagEmr = "";
-	public String flagLwcr = "";
-	public String flagTrir = "";
-	public String flagFatalities = "";
-	public String flagQ318 = "";
-	public String flagQ1385 = "";
 	public boolean isCorporate = false;
 	public String insuranceAuditor_id = "";
 	public String isUserManualUploaded = "No";
@@ -512,20 +499,6 @@ public class OperatorBean extends DataBean {
 		doContractorsPay = SQLResult.getString("doContractorsPay");
 		canSeeInsurance = SQLResult.getString("canSeeInsurance");
 
-		emrHurdle = SQLResult.getString("emrHurdle");
-		emrTime = SQLResult.getString("emrTime");
-		lwcrHurdle = SQLResult.getString("lwcrHurdle");
-		lwcrTime = SQLResult.getString("lwcrTime");
-		trirHurdle = SQLResult.getString("trirHurdle");
-		trirTime = SQLResult.getString("trirTime");
-		fatalitiesHurdle = SQLResult.getString("fatalitiesHurdle");
-
-		flagEmr = SQLResult.getString("flagEmr");
-		flagLwcr = SQLResult.getString("flagLwcr");
-		flagTrir = SQLResult.getString("flagTrir");
-		flagFatalities = SQLResult.getString("flagFatalities");
-		flagQ318 = SQLResult.getString("flagQ318");
-		flagQ1385 = SQLResult.getString("flagQ1385");
 		insuranceAuditor_id = SQLResult.getString("insuranceAuditor_id");
 		isUserManualUploaded = SQLResult.getString("isUserManualUploaded");
 		approvesRelationships = SQLResult.getString("approvesRelationships");
@@ -543,19 +516,6 @@ public class OperatorBean extends DataBean {
 			"',canAddContractors='"+canAddContractors+
 			"',doContractorsPay='"+doContractorsPay+ 
 			"',canSeeInsurance='"+canSeeInsurance+
-			"',emrHurdle='"+emrHurdle+
-			"',emrTime='"+emrTime+
-			"',lwcrHurdle='"+lwcrHurdle+
-			"',lwcrTime='"+lwcrTime+
-			"',trirHurdle='"+ trirHurdle+
-			"',trirTime='"+trirTime+
-			"',fatalitiesHurdle='"+fatalitiesHurdle+
-			"',flagEmr='"+flagEmr+
-			"',flagLwcr='"+flagLwcr+
-			"',flagTrir='"+flagTrir+
-			"',flagFatalities='"+flagFatalities+
-			"',flagQ318='"+flagQ318+
-			"',flagQ1385='"+flagQ1385+
 			"',insuranceAuditor_id='"+insuranceAuditor_id+
 			"',isUserManualUploaded='"+isUserManualUploaded+
 			"',approvesRelationships='"+approvesRelationships+
@@ -592,51 +552,8 @@ public class OperatorBean extends DataBean {
 		approvesRelationships = request.getParameter("approvesRelationships");
 	}//setFromRequest
 
-	public void setHurdlesFromRequest(javax.servlet.http.HttpServletRequest request) throws Exception {
-		emrHurdle = request.getParameter("emrHurdle");
-		emrTime = request.getParameter("emrTime");
-		lwcrHurdle = request.getParameter("lwcrHurdle");
-		lwcrTime = request.getParameter("lwcrTime");
-		trirHurdle = request.getParameter("trirHurdle");
-		trirTime = request.getParameter("trirTime");
-		fatalitiesHurdle = request.getParameter("fatalitiesHurdle");
-		flagEmr = request.getParameter("flagEmr");
-		flagLwcr = request.getParameter("flagLwcr");
-		flagTrir = request.getParameter("flagTrir");
-		flagFatalities = request.getParameter("flagFatalities");
-		flagQ318 = request.getParameter("flagQ318");
-		flagQ1385 = request.getParameter("flagQ1385");
-	}//setHurdlesFromRequest
-
 	public boolean isOK() {
 		errorMessages = new Vector<String>();		
-		return (errorMessages.size() == 0);
-	} // isOK
-
-	public boolean isHurdlesOK(){
-		errorMessages = new Vector<String>();
-
-//		DecimalFormat decFormatter = new DecimalFormat("###,##0.00");
-		try{Float.parseFloat(emrHurdle);}
-		catch (Exception e){
-			if (!"No".equals(flagEmr))
-				errorMessages.addElement("Please enter a valid number for the Incidence Rate Cutoff");
-		}//catch
-		try{Float.parseFloat(lwcrHurdle);}
-		catch (Exception e){
-			if (!"No".equals(flagLwcr))
-				errorMessages.addElement("Please enter a valid number for the OSHA Lost Workday Case Rate Cutoff");
-		}//catch
-		try{Float.parseFloat(trirHurdle);}
-		catch (Exception e){
-			if (!"No".equals(flagTrir))
-				errorMessages.addElement("Please enter a valid number for the OSHA TRIR Rate Cutoff");
-		}//catch
-		try{Float.parseFloat(fatalitiesHurdle);}
-		catch (Exception e){
-			if (!"No".equals(flagFatalities))
-				errorMessages.addElement("Please enter a valid number for the 3 Yr Fatalities Total Cutoff");
-		}//catch
 		return (errorMessages.size() == 0);
 	} // isOK
 
@@ -675,34 +592,6 @@ public class OperatorBean extends DataBean {
 		return "<span class=active>"+answer+"</span>";
 	}//getRedFlagAnswerNo
 
-	public boolean isEmrTimeAverage(){
-		return "3".equals(emrTime);
-	}//ifEmrTimeAverage
-	public boolean isTrirTimeAverage(){
-		return "3".equals(trirTime);
-	}//ifTrirTimeAverage
-	public boolean isLwcrTimeAverage(){
-		return "3".equals(lwcrTime);
-	}//isLwcrTimeAverage
-	public boolean flagEmr(){
-		return "Yes".equals(flagEmr);
-	}//flagEmr
-	public boolean flagLwcr(){
-		return "Yes".equals(flagLwcr);
-	}//flagLwcr
-	public boolean flagTrir(){
-		return "Yes".equals(flagTrir);
-	}//flagTrir
-	public boolean flagFatalities(){
-		return "Yes".equals(flagFatalities);
-	}
-	public boolean flagQ318(){
-		return "Yes".equals(flagQ318);
-	}
-	public boolean flagQ1385(){
-		return "Yes".equals(flagQ1385);
-	}
-	
 	public ArrayList<OperatorBean> getListByWhere(String where) throws Exception {
 		ArrayList<OperatorBean> list = new ArrayList<OperatorBean>();
 		SelectSQL sql = new SelectSQL("operators");
