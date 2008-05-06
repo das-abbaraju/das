@@ -51,13 +51,12 @@ Status at <s:property value="co.operatorAccount.name" /></span></h1>
 		</tr>
 	</thead>
 	<s:iterator value="co.operatorAccount.audits">
+		<s:if test="requiredForFlag && requiredForFlag.name() in {'Red', 'Amber'}">  
 			<tr class="<s:property value="contractorFlag" />">
 				<td class="center"><s:property value="contractorFlag.smallIcon"
 					escape="false" /></td>
 				<td><s:property value="auditType.auditName" /></td>
 			</tr>
-		<s:if test="%{!requiredForFlag.toString().equals('Green')}">
-		FIX ME
 		</s:if>
 	</s:iterator>
 </table>
@@ -95,11 +94,11 @@ Status at <s:property value="co.operatorAccount.name" /></span></h1>
 						<td class="right"><s:property value="year1.fatalities" /></td>
 					</s:if>
 					<s:if test="oshaLwcrUsed">
-						<td class="right"><s:property value="year1.lostWorkCasesRate" /></td>
+						<td class="right"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(year1.lostWorkCasesRate)}" /></td>
 					</s:if>
 					<s:if test="oshaTrirUsed">
 						<td class="right"><s:property
-							value="year1.recordableTotalRate" /></td>
+							value="%{new java.text.DecimalFormat('#,##0.0').format(year1.recordableTotalRate)}" /></td>
 					</s:if>
 				</tr>
 				<tr class="<s:property value="year2.flagColor" />">
@@ -110,11 +109,11 @@ Status at <s:property value="co.operatorAccount.name" /></span></h1>
 						<td class="right"><s:property value="year2.fatalities" /></td>
 					</s:if>
 					<s:if test="oshaLwcrUsed">
-						<td class="right"><s:property value="year2.lostWorkCasesRate" /></td>
+						<td class="right"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(year2.lostWorkCasesRate)}" /></td>
 					</s:if>
 					<s:if test="oshaTrirUsed">
 						<td class="right"><s:property
-							value="year2.recordableTotalRate" /></td>
+							value="%{new java.text.DecimalFormat('#,##0.0').format(year2.recordableTotalRate)}" /></td>
 					</s:if>
 				</tr>
 				<tr class="<s:property value="year3.flagColor" />">
@@ -125,11 +124,11 @@ Status at <s:property value="co.operatorAccount.name" /></span></h1>
 						<td class="right"><s:property value="year3.fatalities" /></td>
 					</s:if>
 					<s:if test="oshaLwcrUsed">
-						<td class="right"><s:property value="year3.lostWorkCasesRate" /></td>
+						<td class="right"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(year3.lostWorkCasesRate)}" /></td>
 					</s:if>
 					<s:if test="oshaTrirUsed">
 						<td class="right"><s:property
-							value="year3.recordableTotalRate" /></td>
+							value="%{new java.text.DecimalFormat('#,##0.0').format(year3.recordableTotalRate)}" /></td>
 					</s:if>
 				</tr>
 				<s:if test="oshaAveragesUsed">
