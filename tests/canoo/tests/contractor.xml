@@ -11,20 +11,20 @@
 				&body_verify;
 				
 				<clickLink description="Edit My Account"
-					label="Edit My Account" />
+					label="Edit" />
 				&body_verify;
 				<clickLink description="Facilities"
 					label="Facilities" />
 				&body_verify;
 				<clickLink description="Complete PQF"
-					label="Complete PQF" />
+					label="PQF" />
 				&body_verify;
-				<clickLink description="PQF - COMPANY INFORMATION"
-					label="COMPANY INFORMATION" />
+				<clickLink description="Audits"
+					label="Audits" />
 				&body_verify;
 				
 				<clickLink description="Office Audit Requirements"
-					label="Office Audit Requirements" />
+					label="Office Audit" />
 				&body_verify;
 				<clickLink description="Forms and Docs"
 					label="Forms &amp; Docs" />

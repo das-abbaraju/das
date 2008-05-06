@@ -11,14 +11,12 @@
 			&config;
 			<steps>
 				&login;
-				<!--   CONTRACTOR LIST -->
 				&body_verify;
+				<!--   CONTRACTOR LIST -->
+				<clickLink description="Contractor List"
+					label="Contractor List" />
 				<verifyText description="You have ### contractors in your database"
 					regex="true" text="You have \x3Cstrong[\x3C\x3E][1-9][0-9][0-9]\x3C/strong[\x3C\x3E] contractors in your database" />
-				<verifyText description="Check for atleast one Green flag"
-					text="icon_greenFlag.gif" />
-				<verifyText description="Check for atleast one Red flag"
-					text="icon_redFlag.gif" />
 				
 				<!--   CONTRACTOR DETAILS -->
 				<clickLink description="Show contractor details"
@@ -28,28 +26,27 @@
 					text="Acuren Inspection" />
 				
 				<clickLink description="Red Flag Report"
-					label="Red Flag Report" />
+					label="Tesoro Anacortes" />
 				&body_verify;
-				<verifyText description="Show big red flag"
-					text="icon_redFlagBig.gif" />
+				<verifyText description="Show big flag"
+					text="FlagBig.gif" />
 				
 				<clickLink description="View PQF"
-					label="View PQF" />
+					label="PQF" />
 				&body_verify;
 				
 				<clickLink description="View Entire PQF"
-					label="View Entire PQF" />
+					label="View All" />
 				<!-- can't search for error because it gets other words like terrorist -->
 				<!-- &body_verify; -->
 
+				<clickLink description="Audits"
+					label="Audits" />
 				<clickLink description="View Desktop Audit"
-					label="View Desktop Audit" />
+					label="Desktop Audit" />
 				&body_verify;
 
 				<!--   Forms & Docs -->
-				<invoke
-					description="back to Contractor List"
-					url="contractor_list.jsp" />
 				<clickLink description="Forms &amp; Docs"
 					href="manage_forms.jsp" />
 				&body_verify;
@@ -58,7 +55,7 @@
 				
 				<!--   New Contractor Search -->
 				<clickLink description="Search For New Contractors"
-					label="Search For New Contractors" />
+					label="Search For New" />
 				<setSelectField 
 					description="Choose Trade=Cranes &amp; Rigging"
 					name="trade"

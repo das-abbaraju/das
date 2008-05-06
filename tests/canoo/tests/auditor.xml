@@ -10,13 +10,16 @@
 				&login;
 				&body_verify;
 				
-				<setSelectField description="Choose Desktop"
-					name="auditType" value="Desktop" />
-				<clickButton description="Show Desktop Audits"
-				            name="imageField"/>
+				<clickLink description="Search" label="Search" />
+				&body_verify;
+				
+				<clickLink description="My Audits" label="My Audits" />
 				&body_verify;
 				<verifyText description="Make sure there are multiple contractors found"
 					text="You have .strong.[1-9][0-9]*..strong. contractors to audit" regex="true" />
+
+				<clickLink description="Audit List" label="Audit List" />
+				&body_verify;
 
 				<clickLink description="Open Calendar" label="Audit Calendar"/>
 				&body_verify;
