@@ -9,8 +9,6 @@
 	class="com.picsauditing.PICS.pqf.SubCategoryBean" scope="page" />
 <jsp:useBean id="pdBean" class="com.picsauditing.PICS.pqf.DataBean"
 	scope="page" />
-<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean"
-	scope="page" />
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean"
 	scope="page" />
 <%@page import="com.picsauditing.actions.audits.ContractorAuditLegacy"%>
@@ -25,7 +23,6 @@
 				.equals(catID));
 		boolean isOSHA = pcBean.OSHA_CATEGORY_ID.equals(catID);
 		boolean isServices = pcBean.SERVICES_CATEGORY_ID.equals(catID);
-		aBean.setFromDB(conID);
 		cBean.setFromDB(conID);
 		cBean.tryView(permissions);
 		Set<String> showCategoryIDs = null;
@@ -33,14 +30,10 @@
 			showCategoryIDs = pcBean.getCategoryForOpRiskLevel(
 					permissions.getAccountIdString(), cBean.riskLevel);
 		}
-		//temporary to forward them to ncms imported data if it is linked up
-		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE
-				.equals(auditType)
-				&& "Yes".equals(cBean.hasNCMSDesktop)) {
-			response.sendRedirect("pqf_viewNCMS.jsp?id=" + conID
-					+ "&auditType=" + auditType);
+		if (action.getAudit().getAuditType().getAuditTypeID() == AuditType.NCMS) {
+			response.sendRedirect("pqf_viewNCMS.jsp?auditID=" + action.getAudit());
 			return;
-		}//if	 
+		}
 		pdBean.setFromDB(action.getAuditID(), conID, catID);
 		if (isCategorySelected)
 			psBean.setPQFSubCategoriesArray(catID);
@@ -49,13 +42,9 @@
 <%@page import="java.util.Set"%>
 <html>
 <head>
-<title>PQF for <%=aBean.name%></title>
-<meta name="header_gif" content="header_prequalification.gif" />
+<title>PQF for <%=action.getAudit().getContractorAccount().getName()%></title>
 </head>
 <body>
-<h1><%=action.getAudit().getContractorAccount().getName()%><span class="sub"><%=action.getAudit().getAuditType().getAuditName()%>
-- <%=DateBean.format(action.getAudit().getCreatedDate(),
-								"MMM yyyy")%></span></h1>
 <%@ include file="includes/nav/pqfHeader.jsp"%>
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
 	<%

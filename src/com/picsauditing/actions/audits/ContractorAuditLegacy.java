@@ -38,8 +38,10 @@ public class ContractorAuditLegacy {
 	}
 
 	public void execute() {
-		
-
+	}
+	
+	public void saveAudit() {
+		audit = auditDao.save(this.audit);
 	}
 	
 	public boolean isComplete() {

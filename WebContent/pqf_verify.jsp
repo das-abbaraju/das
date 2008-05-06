@@ -34,11 +34,11 @@
 		String message = "";
 		if ("Save".equals(actionString)) {
 			if (pBean.canVerifyAudit(auditType, conID)) {
-				pdBean.saveVerificationNoUpload(request, conID,
-						pBean.userID);
-				cBean.setPercentVerified(auditType, pdBean
-						.getPercentVerified(conID, auditType));
-				cBean.writeToDB();
+				pdBean.saveVerificationNoUpload(request, conID, pBean.userID);
+				
+				String percent = pdBean.getPercentVerified(conID, auditType);
+				action.getAudit().setPercentVerified(new Integer(percent));
+				action.saveAudit();
 				response.sendRedirect("pqf_verify.jsp?auditTypeID="
 						+ action.getAuditID());
 				return;
@@ -50,12 +50,11 @@
 			psBean.setPQFSubCategoriesArray(catID);
 		boolean generateReqs = ("Generate Reqs".equals(actionString));
 		if (generateReqs && pBean.canVerifyAudit(auditType, conID)) {
-			if (!"100".equals(cBean.desktopVerifiedPercent))
+			if (action.getAudit().getPercentVerified() < 100)
 				message = "You must complete verifying all questions to generate requirements";
 			else {
 				cBean.writeToDB();
-				response
-						.sendRedirect("pqf_editRequirements.jsp?auditTypeID="
+				response.sendRedirect("pqf_editRequirements.jsp?auditTypeID="
 								+ action.getAuditID());
 				return;
 			}
@@ -64,36 +63,13 @@
 <html>
 <head>
 <title>PQF Verify</title>
-<meta name="header_gif" content="header_prequalification.gif" />
 <SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
 </head>
 <body>
-<h1><%=action.getAudit().getContractorAccount().getName()%><span class="sub">Verify <%=auditType%>
-- <%=DateBean.format(action.getAudit().getCreatedDate(),
-								"MMM yyyy")%></span></h1>
-</h1>
 <%@ include file="includes/nav/pqfHeader.jsp"%>
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
-	<%
-		if (!isCategorySelected) {
-	%>
-	<tr align="center">
-		<td class="blueMain">
-		<%
-			if (Constants.DESKTOP_TYPE.equals(auditType)) {
-		%> Percent Verified:
-		<span class="redMain"><%=cBean.desktopVerifiedPercent%>%</span><br>
-		Date RQs Generated: <span class="redMain"><%=cBean.getAuditSubmittedDate(auditType)%></span>
-		<%
-			}//if
-		%>
-		</td>
-	</tr>
-	<%
-		}//if
-	%>
 	<tr align="center">
 		<td class="redMain"><strong><%=message%></strong></td>
 	</tr>

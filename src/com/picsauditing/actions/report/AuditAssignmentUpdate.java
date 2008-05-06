@@ -38,7 +38,42 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 	public String execute() throws Exception 
 	{
 		// TODO check to see if auditor already has audit scheduled for this date
-		// See ContractoBean.checkDoubleAudit
+		
+		/*
+			String returnStr = "";
+			if (!"".equals(auditDate)) {
+				String Query = "SELECT * FROM blockedDates WHERE blockedDate='"+DateBean.toDBFormat(auditDate) +"';";
+				DBReady();
+				ResultSet SQLResult = SQLStatement.executeQuery(Query);
+				if 	(SQLResult.next()) {
+					returnStr =   "<b>"+SQLResult.getString("description")+"</b> is scheduled on "+auditDate;
+					if (!"0".equals(SQLResult.getString("startHour"))) 
+						returnStr +=" from "+ SQLResult.getString("startHour")+SQLResult.getString("startAmPm")+
+						" to "+ SQLResult.getString("endHour")+ SQLResult.getString("endAmPm")+".";
+				} else if (!"".equals(auditor_id) && !"0".equals(auditor_id)) {
+					SQLResult.close();
+					Query = "SELECT contractor_info.id AS con_id, auditHour, auditAmPm, accounts.name AS name, "+
+					"a2.name AS auditor_name FROM contractor_info INNER JOIN accounts ON contractor_info.id=accounts.id "+
+					"LEFT OUTER JOIN users a2 ON contractor_info.auditor_id=a2.id WHERE auditDate='"+
+					DateBean.toDBFormat(auditDate)+"' AND auditor_id=" + auditor_id;
+					SQLResult = SQLStatement.executeQuery(Query);
+					if 	(SQLResult.next()) 
+						if (!action_id.equals(SQLResult.getString("con_id")))
+							returnStr = "<b>"+SQLResult.getString("auditor_name")+"</b> has an audit scheduled on <b>"+
+							auditDate+"</b> at <b>"+SQLResult.getString("auditHour")+SQLResult.getString("auditAmPm")+
+							"</b> with <b>"+SQLResult.getString("name")+"</b>.";
+						else
+							returnStr = "";
+					else
+						returnStr = "";
+					SQLResult.close();
+				}
+				DBClose();
+			} else
+				returnStr = "";
+			return returnStr;
+
+		 */
 
 		auditor = userDao.find(auditor.getId());
 		

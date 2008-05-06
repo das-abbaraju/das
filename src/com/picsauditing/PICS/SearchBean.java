@@ -574,17 +574,16 @@ import com.picsauditing.util.LinkBuilder;
 		isDesktopReport = true;
 	}//setIsDesktopSearch
 
+	@Deprecated
 	public String getTextColor() throws Exception {
-		if (!canSeeContractor())
-			return "cantSee";
-		return cBean.getTextColor();
-	}//getTextColor
+		return "";
+	}
 
 	public String getActiveStar() {
 		if ("N".equals(aBean.active))
 			return "*";
 		return "";
-	}//getActiveStar
+	}
 
 	public String getLinks(){
 		return getLinks("");
@@ -748,14 +747,6 @@ import com.picsauditing.util.LinkBuilder;
 		return Inputs.inputSelect(name, classType, selectedZip, ZIP_SEARCH_ARRAY);
 	}//getSearchZipSelect
 
-	public static String getStatusSelect(String name, String classType, String selectedStatus) throws Exception {
-		return Inputs.inputSelectFirst(name, classType, selectedStatus, ContractorBean.STATUS_ARRAY, DEFAULT_STATUS);
-	}//getStatusSelect
-
-	public static String getAuditStatusSelect(String name, String classType, String selectedAuditStatus) throws Exception {
-		return Inputs.inputSelectFirst(name, classType, selectedAuditStatus, ContractorBean.AUDIT_STATUS_ARRAY, DEFAULT_AUDIT_STATUS);
-	}//getAuditStatusSelect
-	
 	public static String getStateSelect(String name, String classType, String selectedState) throws Exception {
 		return Inputs.inputSelect2First(name, classType, selectedState, Inputs.STATE_ARRAY, "",DEFAULT_STATE);
 	}//getStateSelect
@@ -877,35 +868,6 @@ import com.picsauditing.util.LinkBuilder;
 			return SQLResult.getString("questionID");
 	}//getPQFAnswer
 
-	public String getListLink(String auditType) throws Exception {
-		int auditID = 0;
-		String newAuditLink = "pqf_view.jsp?id="+aBean.id+"&auditID="+auditID;
-		// this needs to change to auditID using the new multi-audits
-		newAuditLink = "pqf_view.jsp?id="+aBean.id+"&auditType="+auditType;
-		
-		if (!canSeeContractor())
-			return "";
-		if (cBean.isExempt() && !com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType))
-			return "N/A";
-		if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType) && cBean.isPQFSubmitted())
-			return getLink("icon_"+auditType, newAuditLink);
-		if (com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(auditType)) {
-			if ("No".equals(cBean.daRequired)) return "N/A";
-			if (cBean.isDaSubmitted())
-				return getLink("icon_"+auditType, newAuditLink);
-		}
-		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType) && cBean.isDesktopStatusOldAuditStatus())
-			return getListLink(com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE);
-		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType) && cBean.isDesktopSubmitted())
-			return getLink("icon_"+auditType, newAuditLink);
-		if (com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(auditType) && cBean.isAuditCompleted())
-			if (cBean.isNewOfficeAudit())
-				return getLink("icon_"+auditType, newAuditLink);
-			else
-				return getLink("icon_"+auditType, "audit_view.jsp?id="+aBean.id);
-		return getLink("notOkCheck", null);
-	}
-	
 	private String getLink(String icon, String url) {
 		StringBuilder link = new StringBuilder();
 		boolean hasURL = false;
@@ -919,31 +881,6 @@ import com.picsauditing.util.LinkBuilder;
 		return link.toString();
 	}
 
-	public String getPercentCompleteLink(String auditType) throws Exception {
-		if (!canSeeContractor())
-			return "";
-		String percent = "";
-		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType))
-			percent = cBean.desktopVerifiedPercent;
-		if (com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(auditType)) {
-			if ("No".equals(cBean.daRequired)) return "N/A";
-			else percent = cBean.daVerifiedPercent;
-		}
-		else if (com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(auditType))
-			percent = cBean.officeVerifiedPercent;
-		else if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType)){
-			percent = cBean.getPercentComplete(auditType);
-			if (ContractorBean.AUDIT_STATUS_CLOSED.equals(cBean.calcPQFStatus()))
-				percent = "100";
-		} else
-			percent = cBean.getPercentComplete(auditType);
-		if ("100".equals(percent))
-			return "<a href=pqf_view.jsp?id="+aBean.id+"&auditType="+auditType+
-				"><img src=images/icon_"+auditType+".gif width=20 height=20 border=0></a>";
-		else
-			return "<a class="+getTextColor()+" href=pqf_view.jsp?id="+aBean.id+"&auditType="+auditType+">"+percent+"%</a>";
-	}
-	
 	public void pageResults(ResultSet sqlResult, int resultsOnPage, javax.servlet.http.HttpServletRequest r ) throws Exception{
 		
 		SQLResult = sqlResult; 

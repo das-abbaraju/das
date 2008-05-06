@@ -606,26 +606,6 @@ public class Utilities {
 		return params;
 	}
 
-	public static String getPercentCompleteLink(int auditID, int auditTypeID,
-			int percentComplete, int percentVerified) {
-		if (auditID == 0)
-			return "";
-
-		int percent = 0;
-		if (AuditType.PQF == auditTypeID)
-			percent = percentComplete;
-		else
-			percent = percentVerified;
-
-		String icon = percent + "%";
-		if (percent == 100)
-			icon = "<img src=\"images/" + AuditType.getIcon(auditTypeID)
-					+ "\" width=\"20\" height=\"20\" border=\"0\">";
-
-		return "<a href=\"pqf_view.jsp?auditID=" + auditID
-				+ "\" class=\"active\">" + icon + "</a>";
-	}
-
 	public static int getInt(BasicDynaBean row, String columnName) {
 		Object columnValue = row.get(columnName);
 		if (columnValue == null){

@@ -2,6 +2,10 @@
 	errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp"%>
 <%@page import="java.util.*"%>
+<%@page import="com.picsauditing.PICS.redFlagReport.FlagDO"%>
+<%@page import="com.picsauditing.util.SpringUtils"%>
+<%@page import="com.picsauditing.dao.OperatorAccountDAO"%>
+<%@page import="com.picsauditing.jpa.entities.OperatorAccount"%>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean"
 	scope="page" />
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean"
@@ -48,13 +52,15 @@
 		cBean.writeToDB();
 	}//if
 	cBean.setFromDB(id);
-	java.util.ArrayList<String> operators = oBean.getOperatorsAL();
+	OperatorAccountDAO operatorDao = (OperatorAccountDAO)SpringUtils.getBean("OperatorAccountDAO");
+	List<OperatorAccount> operators = operatorDao.findAll(permissions);
+	
+	//java.util.ArrayList<String> operators = oBean.getOperatorsAL();
 	int count = 0;
 
 	FlagDO flagDO = new FlagDO();
 	HashMap<String, FlagDO> flagMap = flagDO.getFlagByContractor(id);
 %>
-<%@page import="com.picsauditing.PICS.redFlagReport.FlagDO"%>
 <html>
 <head>
 <title>Contractor Facilities</title>
@@ -96,13 +102,11 @@ Facilities</span></h1>
 	<%
 		count = 0;
 		// Show Facilities selected
-		for (java.util.ListIterator<String> li = operators.listIterator(); li.hasNext();) {
-			String opID = li.next();
-			String name = li.next();
-			String status = "";
+		for (OperatorAccount operator : operators) {
+			String opID = operator.getId().toString();
+			String name = operator.getName();
 			if (cBean.generalContractors.contains(opID)) {
 				oBean.setFromDB(opID);
-				status = cBean.calcPICSStatusForOperator(oBean);
 				String flagColor = "red";
 				FlagDO opFlag = flagMap.get(opID);
 				if (opFlag != null)
@@ -136,9 +140,9 @@ Facilities</span></h1>
 		}//for
 
 		// Show Facilities NOT selected
-		for (java.util.ListIterator<String> li = operators.listIterator(); li.hasNext();) {
-			String opID = li.next();
-			String name = li.next();
+		for (OperatorAccount operator : operators) {
+			String opID = operator.getId().toString();
+			String name = operator.getName();
 			if (!cBean.generalContractors.contains(opID)) {
 				if (permissions.isCorporate() && pBean.oBean.facilitiesAL.contains(opID)
 						|| !permissions.isCorporate()) {

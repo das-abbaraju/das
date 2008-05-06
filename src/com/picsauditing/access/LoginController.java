@@ -227,10 +227,6 @@ public class LoginController extends DataBean {
 				response.sendRedirect("con_selectFacilities.jsp?id="+permissions.getAccountIdString());
 				return;
 			}
-			if (cBean.canEditPrequal()) {
-				response.sendRedirect("pqf_editMain.jsp?auditID="+cBean.getAudit(AuditType.PQF).getId());
-				return;
-			}
 		}
 
 		// Find out if the user previously timed out on a page, we'll forward back there below

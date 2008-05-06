@@ -187,7 +187,7 @@ try{
 <%		while (sBean.isNextRecord()){
 			String thisClass = "cantSee";
 			if ((pBean.canSeeSet.contains(sBean.aBean.id)))
-				thisClass = sBean.cBean.getTextColor(sBean.cBean.calcPICSStatusForOperator(pBean.oBean));
+				thisClass = ""; // TODO add in the FlagColor here
 %>            <span id="con_<%=sBean.aBean.id%>"><tr <%=sBean.getBGColor()%> class=<%=thisClass%>>
                 <td>
                   <a href="ContractorView.action?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class=<%=thisClass%>><%=sBean.aBean.name%></a>

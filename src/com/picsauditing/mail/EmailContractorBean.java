@@ -72,7 +72,8 @@ public class EmailContractorBean extends EmailBean {
 		if (emailType.equals(EmailTemplates.dasubmit)
 			|| emailType.equals(EmailTemplates.desktopsubmit)
 			)
-			ccAddress = cBean.getAuditorsEmail();
+			ccAddress = "";
+				String selectQuery = "SELECT email FROM users WHERE id = "+auditor_id;
 		
 		this.sendMail();
 		this.addNote(emailType.getDescription() + " email sent to: "+ this.getSentTo());

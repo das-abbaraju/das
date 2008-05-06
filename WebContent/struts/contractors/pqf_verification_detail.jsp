@@ -28,7 +28,6 @@
 	background-color: #BBB;
 }
 </style>
-<script src="js/prototype.js" type="text/javascript"></script>
 <script type="text/javascript">
 
 function moveFile(type, year) {
@@ -67,19 +66,10 @@ function sendEmail() {
 </script>
 </head>
 <body>
-<h1><s:property value="contractor.name" />
-<span class="sub">PQF Verification</span></h1>
-
-
 <%
 	action.setAuditID(request.getParameter("auditID"));
-	
-	String conID = ((Integer) action.getAudit().getContractorAccount()
-			.getId()).toString();
-
+	String conID = action.getAudit().getContractorAccount().getId().toString();
 	cBean.setFromDB(conID);
-	cBean.tryView(permissions);
-
 %>
 <%@ include file="/includes/nav/pqfHeader.jsp"%>
 

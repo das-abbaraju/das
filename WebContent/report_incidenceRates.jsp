@@ -43,7 +43,7 @@
                 <td><%=thisYear-3%><input name="searchYear3" type="checkbox" value="Y" <%=com.picsauditing.PICS.Utilities.checkedBox(sBean.selected_searchYear3)%> checked></td>
   			  </tr>
 <%	while (sBean.isNextRecord()){
-		String thisClass = sBean.cBean.getTextColor(sBean.cBean.calcPICSStatusForOperator(pBean.oBean));
+		String thisClass = ""; // TODO Add in the Contractor FlagColor
 %>
 			  <tr <%=sBean.getBGColor()%> class="<%=thisClass%>">
                 <td align="right"><%=sBean.count-1%></td>

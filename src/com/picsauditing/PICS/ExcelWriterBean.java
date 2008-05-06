@@ -115,36 +115,15 @@ public class ExcelWriterBean {
 
 		if (rowCount % 2 == 0) {
 			tempCell = whiteActiveCell;
-			if ("Inactive".equals(cBean.calcPICSStatusForOperator(pBean.oBean))) tempCell = whiteInactiveCell;
-		}//if
-		else {
+		} else {
 			tempCell = grayActiveCell;
-			if ("Inactive".equals(cBean.calcPICSStatusForOperator(pBean.oBean))) tempCell = grayInactiveCell;
-		}//else
+		}
 
 		sheet.addCell(new jxl.write.Number(colCount++, rowCount, rowCount-1, tempCell));
 		sheet.addCell(new Label(colCount++, rowCount, aBean.name, tempCell));
 		sheet.addCell(new Label(colCount++, rowCount, cBean.main_trade, tempCell));
-		sheet.addCell(new Label(colCount++, rowCount, cBean.calcPICSStatusForOperator(pBean.oBean), tempCell));
-		if (pBean.oBean.canSeePQF()){
-			sheet.addCell(new Label(colCount++, rowCount, cBean.calcPQFStatus(), tempCell));
-			sheet.addCell(new Label(colCount++, rowCount, cBean.pqfSubmittedDate, tempCell));
-		}//if
-		if (pBean.oBean.canSeeDesktop()){
-			sheet.addCell(new Label(colCount++, rowCount, cBean.calcDesktopStatus(), tempCell));
-			sheet.addCell(new Label(colCount++, rowCount, cBean.desktopClosedDate, tempCell));
-		}//if
-		if (pBean.oBean.canSeeOffice()){
-			if (cBean.isNewOfficeAudit()){
-				sheet.addCell(new Label(colCount++, rowCount, cBean.calcOfficeStatusNew(), tempCell));
-				sheet.addCell(new Label(colCount++, rowCount, cBean.officeSubmittedDate, tempCell));
-				sheet.addCell(new Label(colCount++, rowCount, cBean.officeClosedDate, tempCell));
-			}else{
-				sheet.addCell(new Label(colCount++, rowCount, cBean.calcOfficeStatus(), tempCell));
-				sheet.addCell(new Label(colCount++, rowCount, cBean.auditCompletedDate, tempCell));
-				sheet.addCell(new Label(colCount++, rowCount, cBean.auditClosedDate, tempCell));
-			}//else			
-		}//if
+		// TODO Add in the FlagColor for the contractor
+		// TODO, create an Excel download for Audit history
 		sheet.addCell(new Label(colCount++, rowCount, aBean.getFullAddress(), tempCell));
 		sheet.addCell(new Label(colCount++, rowCount, aBean.contact, tempCell));
 		sheet.addCell(new Label(colCount++, rowCount, aBean.email, tempCell));

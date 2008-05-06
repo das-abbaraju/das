@@ -6,8 +6,12 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.util.PermissionQueryBuilder;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -32,6 +36,21 @@ public class OperatorAccountDAO extends PicsDAO {
 		return em.find(OperatorAccount.class, id);
 	}
 
+	public List<OperatorAccount> findAll(Permissions permissions) {
+		String where = "";
+		if (permissions.isCorporate())
+			// Show corporate users operators in their facility
+			where = "operatorAccount IN (SELECT operator FROM Facility " +
+			"WHERE corporate = "+permissions.getAccountId()+")";
+		if (permissions.isOperator())
+			// Show operator users operators that share the same corporate facility
+			where = "(operatorAccount.id = "+permissions.getAccountId()+
+			" OR operatorAccount IN (SELECT operator FROM Facility " +
+			"WHERE corporate IN (SELECT corporate FROM Facility " +
+			"WHERE operator.id = "+permissions.getAccountId()+")))";
+		return findWhere(where);
+	}
+	
 	public List<OperatorAccount> findWhere(String where) {
 		if (where == null)
 			where = "";

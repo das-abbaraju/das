@@ -13,6 +13,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 		super(accountDao, auditDao);
 	}
 	
+	public String execute() throws Exception {
+		this.findConAudit();
+		return SUCCESS;
+	}
+
 	protected void findConAudit() throws Exception {
 		conAudit = auditDao.find(auditID);
 		if (conAudit == null)

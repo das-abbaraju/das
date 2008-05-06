@@ -261,7 +261,7 @@ try{
 			  <tr <%=sBean.getBGColor()%>> 
 			  <form name="form2" method="post" action="report_activation.jsp?changed=0&showPage=<%=sBean.showPage%>">
 				<td class="right"><%=sBean.count-1%></td>
-		        <td class="<%=sBean.cBean.getTextColor()%>"><%=sBean.getActiveStar()%>
+		        <td><%=sBean.getActiveStar()%>
 				  <a target="_blank" href="accounts_edit_contractor.jsp?id=<%=sBean.aBean.id%>" class="<%=sBean.getTextColor()%>">
 				  <%=sBean.aBean.name%></a>
 				</td>

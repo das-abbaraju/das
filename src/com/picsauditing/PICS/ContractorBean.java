@@ -28,28 +28,9 @@ import com.picsauditing.mail.EmailTemplates;
 import com.picsauditing.util.SpringUtils;
 
 public class ContractorBean extends DataBean {
-	public static final String STATUS_ACTIVE = "Active"; // these should match the ENUM for status in the DB table
-	public static final String STATUS_INACTIVE = "Inactive"; // these should match the ENUM for status in the DB table
-	static final String[] STATUS_ARRAY = {STATUS_ACTIVE,STATUS_INACTIVE};
-	public static final String AUDIT_STATUS_EXEMPT = "Exempt";
-	public static final String AUDIT_STATUS_NOT_SUBMITTED = "Not Submitted";
-	public static final String AUDIT_STATUS_VERIFICATION_PENDING= "Verification Pending";
-	public static final String AUDIT_STATUS_PQF_PENDING = "PQF Pending";
-	public static final String AUDIT_STATUS_PQF_INCOMPLETE = "PQF Incomplete";
-	public static final String AUDIT_STATUS_SCHEDULING = "Scheduling";
-	public static final String AUDIT_STATUS_SCHEDULED = "Scheduled";
-	public static final String AUDIT_STATUS_RQS = "RQs Pending";
-	public static final String AUDIT_STATUS_CLOSED = "Closed";
-	public static final String AUDIT_STATUS_EXPIRED = "Expired";
-	static final String[] AUDIT_STATUS_ARRAY = {AUDIT_STATUS_EXEMPT,AUDIT_STATUS_PQF_PENDING,AUDIT_STATUS_PQF_INCOMPLETE,AUDIT_STATUS_SCHEDULING,AUDIT_STATUS_SCHEDULED,
-												AUDIT_STATUS_RQS,AUDIT_STATUS_CLOSED};
 	//This is so contractors can be removed from the activation report without actually entering a valid login date.
 	//It's a hack, but what John wants doesn't make sense, and hopefully this is temporary BJ 2-15-05
 	public static final String REMOVE_FROM_REPORT = "1/1/50";
-	public static final boolean SHOW_AUDIT_DATE = true; //MULTIAUDIT remove
-	public static final boolean DONT_SHOW_AUDIT_DATE = false; //MULTIAUDIT remove
-	public static final String[] AUDIT_LOCATION_ARRAY = {"On Site","Web"};	// must match ENUM in db, contractor_info.auditLocation 
-	public static final int SETUP_FEE = 99;
 	public static final String[] RISK_LEVEL_ARRAY = {"Low","Med","High"};
 	public static final String[] RISK_LEVEL_VALUES_ARRAY = {"1","2","3"};
 
@@ -59,26 +40,16 @@ public class ContractorBean extends DataBean {
 	public String trades = "0;";
 	public String subTrades = "0;";
 	public String logo_file = "No";
-	public String auditHour = ""; //MULTIAUDIT remove
-	public String auditAmPm = ""; //MULTIAUDIT remove
 	public String brochure_file = "No";
 	public String description = "";
 	public boolean isDescriptionChanged = false;
-	//public String status = STATUS_INACTIVE;
 	public String certs = "0";
 	public String notes = "";
 	public String adminNotes = "";
 	public boolean isNotesChanged = false;
 	public boolean isAdminNotesChanged = false;
-	public String canEditPrequal = "Yes"; //MULTIAUDIT remove
-	public String canEditDesktop = "Yes"; //MULTIAUDIT remove
 	public String mustPay = "Yes";
-	public String auditor_id= "0"; //MULTIAUDIT remove
 	public String welcomeAuditor_id= "0";
-	public String desktopAuditor_id = "0"; //MULTIAUDIT remove
-	public String daAuditor_id = "0"; //MULTIAUDIT remove
-	public String pqfAuditor_id = "0"; //MULTIAUDIT remove
-	//public String auditStatus = ""; //MULTIAUDIT remove?
 
 	public String requestedByID = "";
 	public String billingCycle = "";
@@ -87,42 +58,7 @@ public class ContractorBean extends DataBean {
 	public String hasExpiredCerts = "No";
 	public int facilitiesCount = 0;
 	public String isOnlyCerts = "No";
-	public String auditLocation= "On Site"; //MULTIAUDIT remove
 	public String setTrades = ""; 
-//45
-
-	public String pqfPercent = ""; //MULTIAUDIT remove
-	public String desktopPercent = ""; //MULTIAUDIT remove
-	public String desktopVerifiedPercent = ""; //MULTIAUDIT remove
-	public String officePercent = ""; //MULTIAUDIT remove
-	public String officeVerifiedPercent = ""; //MULTIAUDIT remove
-	public String daPercent = ""; //MULTIAUDIT remove
-	public String daVerifiedPercent = ""; //MULTIAUDIT remove
-	public String hasNCMSDesktop = "No"; //MULTIAUDIT remove
-	public String isNewOfficeAudit = "No"; //MULTIAUDIT remove
-
-//	Dates
-	public String pqfSubmittedDate = ""; //MULTIAUDIT remove
-
-	public String desktopAssignedDate = ""; //MULTIAUDIT remove
-	public String desktopSubmittedDate = ""; //MULTIAUDIT remove
-	public String desktopCompletedDate = ""; //MULTIAUDIT remove
-	public String desktopClosedDate = ""; //MULTIAUDIT remove
-	public String desktopValidUntilDate = ""; //MULTIAUDIT remove
-
-	public String daAssignedDate = ""; //MULTIAUDIT remove
-	public String daSubmittedDate = ""; //MULTIAUDIT remove
-	public String daClosedDate = ""; //MULTIAUDIT remove
-	public String daRequired = ""; //MULTIAUDIT remove
-	
-	public String assignedDate = ""; //MULTIAUDIT remove
-	public String auditDate = ""; //MULTIAUDIT remove
-	public String lastAuditDate = ""; //MULTIAUDIT remove
-	public String auditCompletedDate = ""; //MULTIAUDIT remove
-	public String auditClosedDate = ""; //MULTIAUDIT remove
-	public String auditValidUntilDate = ""; //MULTIAUDIT remove
-	public String officeSubmittedDate = ""; //MULTIAUDIT remove
-	public String officeClosedDate = ""; //MULTIAUDIT remove
 
 	public String accountDate = ""; // The first time a user logs into this Contractor account
 	public String membershipDate = "";
@@ -131,12 +67,10 @@ public class ContractorBean extends DataBean {
 	public String lastPayment = "";
 	public String lastPaymentAmount = "";
 	public String paymentExpires = "";
-	public String lastAuditEmailDate = ""; //MULTIAUDIT remove
 	public String lastInvoiceDate = "";
 	public String lastAnnualUpdateEmailDate = "";
 	public String riskLevel = "2";
 	public int annualUpdateEmails = 0;
-	
 	// questionID=894 
 	// 22.1.1  	Does your company have employees who are covered under DOT OQ requirements?
 	public String oqEmployees = "";
@@ -146,11 +80,11 @@ public class ContractorBean extends DataBean {
 	int num_of_trades = 0;
 	int num_of_subTrades = 0;
 
-//	second contact
+	// second contact
 	public String secondContact = "";
 	public String secondPhone = "";
 	public String secondEmail = "";
-//billing contact	
+	// billing contact
 	public String billingContact = "";
 	public String billingPhone = "";
 	public String billingEmail = "";
@@ -237,11 +171,6 @@ public class ContractorBean extends DataBean {
 	public void setTradeString(String s) {trades = s;}//setTradeString
 	public void setSubTradeString(String s) {subTrades = s;}//setSubTradeString
 	public void setLogo_file(String s) {logo_file = s;}//setLogo_file
-	public void setAuditDate(String s) {auditDate = s;}//setAuditDate  //MULTIAUDIT remove
-	//public void setAuditTime(String s) {auditTime = s;}//setAuditTime  //MULTIAUDIT remove 
-	public void setAuditHour(String s) {auditHour = s;}//setAuditHour  //MULTIAUDIT remove
-	public void setAuditAmPm(String s) {auditAmPm = s;}//setAuditAmPm  //MULTIAUDIT remove
-	public void setAuditor(String s) {auditor_id = s;}//setAuditor  //MULTIAUDIT remove
 	public void setBrochure_file(String s) {brochure_file = s;}//setBrochure_file
 	public void setDescription(String s) {
 		if (s.length() != description.length() || !s.equals(description)){
@@ -253,8 +182,6 @@ public class ContractorBean extends DataBean {
 	public void setWelcomeEmailDate(String s) {welcomeEmailDate = s;}//setWelcomeEmailDate
 	public void setLastPayment(String s) {lastPayment = s;}//setLastPayment
 	public void setNotes(String s) {notes = s;}//setNotes
-	public void setCanEditPrequal(String s) {canEditPrequal = s;}//setCanEditPrequal
-	public void setLastAuditEmailDate(String s) {lastAuditEmailDate = s;}//setLastAuditEmailDate  //MULTIAUDIT remove
 	public void setMustPay(String s) {mustPay = s;}//setMustPay
 	public void setPaymentExpires(String s) {paymentExpires = s;}//setPaymentExpires
 	public String getId() {return id;}//getId
@@ -281,16 +208,6 @@ public class ContractorBean extends DataBean {
 		}//for
 		return temp;
 	}//getSubTrades
-	public String getAuditClosedDateShow() { //MULTIAUDIT remove
-		if ("".equals(auditClosedDate))
-			return "No";
-		return auditClosedDate;
-	}//getAuditClosedDateShow
-	public String getAuditCompletedDateShow() {  //MULTIAUDIT remove
-		if ("".equals(auditCompletedDate))
-			return "No";
-		return auditCompletedDate;
-	}//getRQClosedTitleDate
 	public String[] getGeneralContractorsArray() {
 		return (String[])generalContractors.toArray(new String[0]);
 	}//getGeneralContractorsArray
@@ -298,7 +215,6 @@ public class ContractorBean extends DataBean {
 		if ("No".equals(logo_file))	return "logo_default.gif";
 		else	return logo_file;
 	}//getDisplayLogo_file
-	public String getAuditTime() {return auditHour + " " + auditAmPm;}//getAuditTime //MULTIAUDIT remove
 	public String getDescriptionHTML() {return Utilities.escapeNewLines(description);}//getDescriptionHTML
 	public String getAccountDate() {
 		if (REMOVE_FROM_REPORT.equals(accountDate))
@@ -313,164 +229,7 @@ public class ContractorBean extends DataBean {
 			return "Unknown";
 		}
 	}
-	public boolean canEditPrequal() {return "Yes".equals(canEditPrequal);}//canEditPrequal //MULTIAUDIT remove
-	public boolean canEditDesktop() {return "Yes".equals(canEditDesktop);}//canEditDesktop //MULTIAUDIT remove
 
-	public boolean isAuditCompleted() { //MULTIAUDIT remove
-		return !"".equals(auditCompletedDate);
-	}//isAuditCompleted
-
-	public boolean isAuditClosed() { //MULTIAUDIT remove
-		return !"".equals(auditClosedDate);
-	}
-
-	public boolean isDesktopSubmitted() { //MULTIAUDIT remove
-		return !"".equals(desktopSubmittedDate);
-	}
-	public boolean isDesktopCompleted() { //MULTIAUDIT remove
-		return !"".equals(desktopCompletedDate);
-	}
-	public boolean isDesktopClosed() throws Exception{ //MULTIAUDIT remove
-		return !("".equals(desktopClosedDate) ||
-				DateBean.isFirstBeforeSecond(desktopClosedDate, desktopSubmittedDate));
-	}
-
-	public boolean isDaSubmitted() { //MULTIAUDIT remove
-		return !"".equals(daSubmittedDate);
-	}
-	public boolean isDaClosed() throws Exception{ //MULTIAUDIT remove
-		return !("".equals(daClosedDate) ||
-				DateBean.isFirstBeforeSecond(daClosedDate, daSubmittedDate));
-	}
-
-	public boolean isPQFSubmitted() { //MULTIAUDIT remove
-		return !"".equals(pqfSubmittedDate);
-	}//isPQFSubmitted
-
-	public boolean isOfficeSubmitted() { //MULTIAUDIT remove
-		return !"".equals(officeSubmittedDate);
-	}//isOfficeSubmitted
-
-	public boolean isOfficeClosed() { //MULTIAUDIT remove
-		return !"".equals(officeClosedDate);
-	}//isOfficeClosed
-
-	public boolean isNewOfficeAudit() { //MULTIAUDIT remove
-		return "Yes".equals(isNewOfficeAudit);
-	}//isNewOfficeAudit
-
-	public String calcPICSStatus() throws Exception {
-		 //MULTIAUDIT change function calls to get individual audit status
-		if ("Yes".equals(isOnlyCerts))
-			if ("Yes".equals(hasExpiredCerts))
-				return "Inactive";
-			else
-				return "Active";
-		String tempAuditStatus = calcAuditStatus();
-		if (AUDIT_STATUS_EXEMPT.equals(tempAuditStatus) || AUDIT_STATUS_CLOSED.equals(tempAuditStatus))
-			return "Active";
-		return "Inactive";
-	}//calcPICSStatus
-
-	public String calcPICSStatusForOperator(OperatorBean oBean) throws Exception {
-		 //MULTIAUDIT change function calls to get individual audit status
-		if (oBean.isAuditRequired(AuditType.PQF,Integer.parseInt(riskLevel)) && !AUDIT_STATUS_CLOSED.equals(calcPQFStatus()))
-			return STATUS_INACTIVE;
-		if (isExempt())
-			return STATUS_ACTIVE;
-		String officeStatus = calcOfficeStatus();
-		if (isNewOfficeAudit())
-			officeStatus = calcOfficeStatusNew();
-		if (oBean.isAuditRequired(AuditType.DESKTOP,Integer.parseInt(riskLevel)))
-			if (isDesktopStatusOldAuditStatus()){
-				if (!AUDIT_STATUS_CLOSED.equals(officeStatus))
-					return STATUS_INACTIVE;
-			}//if
-			else
-				if (!AUDIT_STATUS_CLOSED.equals(calcDesktopStatus()))
-					return STATUS_INACTIVE;
-		if (oBean.isAuditRequired(AuditType.DA,Integer.parseInt(riskLevel)) && !AUDIT_STATUS_CLOSED.equals(calcDaStatus()))
-			return STATUS_INACTIVE;
-		if (oBean.isAuditRequired(AuditType.OFFICE,Integer.parseInt(riskLevel)) && !AUDIT_STATUS_CLOSED.equals(officeStatus))
-			return STATUS_INACTIVE;
-		return STATUS_ACTIVE;
-	}
-
-	public String calcPICSStatus(PermissionsBean pBean) throws Exception {
-		 //MULTIAUDIT change function calls to get individual audit status
-		if (pBean.isOperator())
-			return calcPICSStatusForOperator(pBean.oBean);
-		setFacilitiesFromDB();
-		if (0==facilitiesCount)
-			return STATUS_INACTIVE;
-		ListIterator<String> li = generalContractors.listIterator();
-		OperatorBean tempOBean = new OperatorBean();
-		while (li.hasNext()) {
-			String opID = (String)li.next();
-			tempOBean.setFromDB(opID);
-			if (STATUS_INACTIVE.equals(calcPICSStatusForOperator(tempOBean)))
-				return STATUS_INACTIVE; 
-		}//while
-		return STATUS_ACTIVE;
-	}//calcPICSStatus
-
-	public boolean isDesktopRequired() throws Exception {
-		 //MULTIAUDIT remove method
-		setFacilitiesFromDB();
-		if (0==facilitiesCount)
-			return false;
-		ListIterator<String> li = generalContractors.listIterator();
-		OperatorBean tempOBean = new OperatorBean();
-		while (li.hasNext()) {
-			String opID = (String)li.next();
-			tempOBean.setFromDB(opID);
-			if (tempOBean.canSeeDesktop())
-				return true; 
-		}//while
-		return false;
-	}//isDesktopRequired
-
-	/**
-	 * If any of this contractor's facilities canSeeDA and 
-	 * the contractor daRequired isn't set to No then return true
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean isDARequired() throws Exception {
-		 //MULTIAUDIT remove method
-		if ("No".equals(this.daRequired))
-			return false;
-		
-		setFacilitiesFromDB();
-		if (0==facilitiesCount)
-			return false;
-		ListIterator<String> li = generalContractors.listIterator();
-		OperatorBean tempOBean = new OperatorBean();
-		while (li.hasNext()) {
-			String opID = (String)li.next();
-			tempOBean.setFromDB(opID);
-			if (tempOBean.canSeeDA())
-				return true; 
-		}//while
-		return false;
-	}//isDARequired
-	
-	public boolean isOfficeRequired() throws Exception {
-		 //MULTIAUDIT remove method
-		setFacilitiesFromDB();
-		if (0==facilitiesCount)
-			return false;
-		ListIterator<String> li = generalContractors.listIterator();
-		OperatorBean tempOBean = new OperatorBean();
-		while (li.hasNext()) {
-			String opID = (String)li.next();
-			tempOBean.setFromDB(opID);
-			if (tempOBean.canSeeOffice())
-				return true; 
-		}//while
-		return false;
-	}//isOfficeRequired
-	
 	public boolean isCertRequired() throws Exception {
 		setFacilitiesFromDB();
 		if (0==facilitiesCount)
@@ -484,178 +243,16 @@ public class ContractorBean extends DataBean {
 				return true; 
 		}//while
 		return false;
-	}//isOfficeRequired
+	}
 
-	public String getPICSStatus() throws Exception {
-		return calcPICSStatus();
-	}//getPICSStatus
-
-	public String getAuditStatus() throws Exception {
-	//MULTIAUDIT remove method
-		return calcAuditStatus();
-	}//getAuditStatus
-
-	public String getDesktopStatus() throws Exception {
-	//MULTIAUDIT remove method
-		return calcDesktopStatus();
-	}//getDesktopStatus
-	public String getDaStatus() throws Exception {
-	//MULTIAUDIT remove method
-		return calcDaStatus();
-	}//getDaStatus
-
-	public String getOfficeStatusNew() throws Exception {
-	//MULTIAUDIT remove method
-		return calcOfficeStatusNew();
-	}//getOfficeStatusNew
-
-	// audit status is now calculated based on db info, not a seperate column in db
-	public String calcAuditStatus() throws Exception {
-	//MULTIAUDIT remove method
-//		return auditDate;
-		boolean tempIsExempt = false;
-		if ("Yes".equals(isOnlyCerts))
-			return AUDIT_STATUS_EXEMPT;
-		if (isExempt())
-			tempIsExempt = true;
-		if ("".equals(pqfSubmittedDate))
-			return AUDIT_STATUS_PQF_PENDING;
-		if (DateBean.isPrequalExpired(pqfSubmittedDate))
-			return AUDIT_STATUS_PQF_INCOMPLETE;
-		if (tempIsExempt)
-			return AUDIT_STATUS_EXEMPT;
-		if (DateBean.isAfterToday(auditValidUntilDate))
-			return AUDIT_STATUS_CLOSED;
-		if (DateBean.isAuditExpired(auditCompletedDate) && !DateBean.isAfterToday(auditDate))
-			return AUDIT_STATUS_SCHEDULING;
-		if (DateBean.isAfterToday(auditDate))
-			return AUDIT_STATUS_SCHEDULED;
-		if (isAuditCompleted() && !isAuditClosed())
-			return AUDIT_STATUS_RQS;
-		if (isAuditClosed())
-			return AUDIT_STATUS_CLOSED;
-		return AUDIT_STATUS_SCHEDULED;	
-	}//calcAuditStatus
-
-	public String calcPQFStatus() throws Exception {
-	//MULTIAUDIT remove method
-		if (!isPQFSubmitted())
-			return AUDIT_STATUS_PQF_PENDING;
-		if (DateBean.isPrequalExpired(pqfSubmittedDate))
-			return AUDIT_STATUS_EXPIRED;
-		return AUDIT_STATUS_CLOSED;
-	}//calcPQFStatus
-
-	public String calcDesktopStatus() throws Exception {
-	//MULTIAUDIT remove method
-		if (isExempt())
-			return AUDIT_STATUS_EXEMPT;
-		if (DateBean.isAfterToday(desktopValidUntilDate))
-			return AUDIT_STATUS_CLOSED;
-		if (!isDesktopSubmitted())
-			return AUDIT_STATUS_VERIFICATION_PENDING;
-		if (DateBean.isAuditExpired(desktopSubmittedDate))
-			return AUDIT_STATUS_EXPIRED;
-		if (!isDesktopClosed())
-			return AUDIT_STATUS_RQS;
-		return AUDIT_STATUS_CLOSED;
-	}//calcDesktopStatus
-
-	public String calcDaStatus() throws Exception {
-	//MULTIAUDIT remove method
-		if ("No".equals(this.daRequired))
-			// The audit isn't required so assume it's closed
-			return AUDIT_STATUS_CLOSED;
-		if (isExempt())
-			return AUDIT_STATUS_EXEMPT;
-		if (!isDaSubmitted())
-			return AUDIT_STATUS_VERIFICATION_PENDING;
-		if (DateBean.isAuditExpired(daSubmittedDate))
-			return AUDIT_STATUS_EXPIRED;
-		if (!isDaClosed())
-			return AUDIT_STATUS_RQS;
-		return AUDIT_STATUS_CLOSED;
-	}//calcDaStatus
-
-	public boolean isDesktopStatusOldAuditStatus() throws Exception{
-	//MULTIAUDIT remove method
-		if (!"".equals(auditValidUntilDate) && DateBean.isFirstBeforeSecond(auditValidUntilDate, DateBean.getThreeYearsAheadDate(DateBean.toShowFormat(DateBean.OLD_OFFICE_CUTOFF))))
-			return true;
-		if (isAuditCompleted() &&
-				!"".equals(desktopClosedDate) &&
-				DateBean.isFirstBeforeSecond(auditCompletedDate,DateBean.toShowFormat(DateBean.OLD_OFFICE_CUTOFF)) && 
-				(AUDIT_STATUS_RQS.equals(calcOfficeStatus()) || AUDIT_STATUS_CLOSED.equals(calcOfficeStatus())))
-			return true;
-		return false;
-	}//isDesktopStatusOldAuditStatus
-
-	public String calcOfficeStatus() throws Exception {
-	//MULTIAUDIT rewrite
-		if (isExempt())
-			return AUDIT_STATUS_EXEMPT;
-		if (DateBean.isAfterToday(auditValidUntilDate))
-			return AUDIT_STATUS_CLOSED;
-		if (!isAuditCompleted()){
-			if (DateBean.isAfterToday(auditDate))
-				return AUDIT_STATUS_SCHEDULED;
-			else
-				return AUDIT_STATUS_SCHEDULING;
-		}//if
-		if (!isAuditClosed() && !DateBean.isAuditExpired(auditCompletedDate))
-			return AUDIT_STATUS_RQS;
-		if (isAuditClosed() && !DateBean.isAuditExpired(auditCompletedDate))
-			return AUDIT_STATUS_CLOSED;
-		if (DateBean.isAfterToday(auditDate))
-			return AUDIT_STATUS_SCHEDULED;
-		if (DateBean.isAuditExpired(auditCompletedDate))
-			return AUDIT_STATUS_EXPIRED;
-		return "";
-	}//calcOfficeStatus
-
-	public String calcOfficeStatusNew() throws Exception {
-	//MULTIAUDIT rewrite
-		if (isExempt())
-			return AUDIT_STATUS_EXEMPT;
-		if (!isOfficeSubmitted()){
-			if (DateBean.isAfterToday(auditDate))
-				return AUDIT_STATUS_SCHEDULED;
-			else
-				return AUDIT_STATUS_SCHEDULING;
-		}//if
-
-		if (!isOfficeClosed() && !DateBean.isAuditExpired(officeSubmittedDate))
-			return AUDIT_STATUS_RQS;
-		if (isOfficeClosed() && !DateBean.isAuditExpired(officeSubmittedDate))
-			return AUDIT_STATUS_CLOSED;
-		if (DateBean.isAfterToday(auditDate))
-			return AUDIT_STATUS_SCHEDULED;
-		if (DateBean.isAuditExpired(officeSubmittedDate))
-			return AUDIT_STATUS_EXPIRED;
-		return "";
-	}//calcOfficeStatusNew
-
-	//For audit status display purposes on contractor details BJ 1-20-05
-	public String getAuditStatusShow() throws Exception {
-		//MULTIAUDIT rewrite
-		return calcAuditStatus();
-	}//getAuditStatusShow
 	public String getTradesList() {
 		return trades.substring(trades.indexOf(";")+1,trades.length()-1).replaceAll(";",", ");
-	}//getTradesList
+	}
+	
 	public String getSubTradesList() {
 		if (subTrades.substring(0,1).equals("0"))
 			return "";
 		return subTrades.substring(subTrades.indexOf(";")+1,subTrades.length()-1).replaceAll(";",", ");
-	}
-	
-	public String getTextColor() throws Exception {
-		return getTextColor(calcPICSStatus());
-	}//getTextColor
-
-	public static String getTextColor(String s) {
-		if (STATUS_ACTIVE.equals(s))
-			return "active";
-		return "inactive";
 	}
 	
 	public int getNumOfTrades() {return num_of_trades;}//getNumOfTrades
@@ -671,73 +268,17 @@ public class ContractorBean extends DataBean {
 		else	return "<font color=red>*</font>";
 	}//getIsBrochureFile
 
-	public String getPQFLink(PermissionsBean pBean) throws Exception{
-		//MULTIAUDIT rewrite
-		if ((pBean.isOperator() || pBean.isCorporate()) && !pBean.oBean.canSeePQF())
-			return "Contact PICS";
-		String status = calcPQFStatus();
-		String thisClass = "inactive";
-		if (AUDIT_STATUS_CLOSED.equals(status))
-			thisClass = "active";
-		if (this.canView(pBean.getPermissions(), "pqf"))
-			return "<a class="+thisClass+" href=pqf_view.jsp?id="+id+">"+pqfSubmittedDate+"</a>";
-		return pqfSubmittedDate;
-	}//getPQFLink
-
-	public String getDaLink(PermissionsBean pBean) throws Exception {
-		//MULTIAUDIT rewrite
-		if ("No".equals(this.daRequired))
-			return "Not Required";
-		if ((pBean.isOperator() || pBean.isCorporate()) && !pBean.oBean.canSeeDA())
-			return "Contact PICS";
-		if (isExempt())
-			return "Exempt";
-		String status = calcDaStatus();
-		String thisClass = "inactive";
-		if (AUDIT_STATUS_CLOSED.equals(status))
-			thisClass = "active";
-		if (AUDIT_STATUS_VERIFICATION_PENDING.equals(status))
-			return "No";
-		else if (!this.canView(pBean.getPermissions(), "daaudit"))
-			return "Yes";
-		else
-			return "<a href=pqf_view.jsp?auditType=DA&id="+id+" class="+thisClass+">"+daSubmittedDate+" ("+status+")"+"</a>";
-	}//getDaLink
-
-	public String getDetailsStatus(PermissionsBean pBean) throws Exception {
-		String tempStatus = calcPICSStatus(pBean);
-		if (pBean.userID.equals(id))	return tempStatus;
-		if (!this.canView(pBean.getPermissions(), "daaudit")) return "";
-		else return tempStatus;
-	}
-
-	public String getBrochureLink() {
-		if (!"No".equals(brochure_file))
-			return "<a target=_blank href=servlet/showpdf?id="+id+"&file=brochure>Company Brochure</a>";
-		return "";
-	}//getBrochureLink
-
-	public String getNotesIcon() {
-		String temp = notes;
-		if (temp.length()>1005)
-			temp = temp.substring(0,1000);
-		if ("".equals(notes))
-			return "<a href=add_notes.jsp?id="+id+"><img src=images/iconGhost_notes.gif alt=Notes width=20 height=20 border=0></a>";
-		else
-			return "<a href=add_notes.jsp?id="+id+"><img src=images/icon_notes.gif alt=\""+temp+"\" width=20 height=20 border=0></a>";
-	}//getNotesIcon
-
 	public void setFromDB(String conID) throws Exception {
 		id = conID;
 		setFromDB();
-	}//setFromDB
+	}
 
 	public void setFromDB() throws Exception {
 		try{
 			if ((null == id) || ("".equals(id)))
 				throw new Exception("can't set contractor info from DB because id is not set");
 			DBReady();
-			String Query = "SELECT * FROM contractor_info WHERE id="+id+";";
+			String Query = "SELECT * FROM contractor_info WHERE id="+id;
 			ResultSet SQLResult = SQLStatement.executeQuery(Query);
 			if (SQLResult.next())
 				setFromResultSet(SQLResult);
@@ -745,8 +286,8 @@ public class ContractorBean extends DataBean {
 			setFacilitiesFromDB();
 		}finally{
 			DBClose();
-		}//finally
-	}//setFromDB
+		}
+	}
 
 	public void setFacilitiesFromDB() throws Exception {
 		// set the sub/generalContractors from the generalContractors table
@@ -761,17 +302,16 @@ public class ContractorBean extends DataBean {
 			while (SQLResult.next()) {
 				generalContractors.add(SQLResult.getString("genID"));
 				facilitiesCount++;
-			}//generals
+			}
 			SQLResult.close();
 		}finally{
 			DBClose();
-		}//finally
-	}//setFacilitiesFromDB
+		}
+	}
 
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
 		id = SQLResult.getString("id");
 		taxID = SQLResult.getString("taxID");
-//		setTaxIDParts(taxID);
 		main_trade = SQLResult.getString("main_trade");
 		trades = SQLResult.getString("trades");
 		subTrades = SQLResult.getString("subTrades");
@@ -780,16 +320,9 @@ public class ContractorBean extends DataBean {
 		brochure_file = SQLResult.getString("brochure_file");
 		//fix ms word apostrophes changed to ?
 		description = SQLResult.getString("description");
-		//fix ms word cut & paste bug, change ? back to apostrophes 
-		//checks to see if space after ? so real question marks aren't changed
-		//bj 2-21-05
-	//	if (description.indexOf('?') > -1)  {
-	//		if (!(description.charAt(description.indexOf('?')+1) ==  ' '))					
-				description = description.replace('?','\'');
+		description = description.replace('?','\'');
 		//}
 		certs = SQLResult.getString("certs");
-//*************
-//db - 46 -4(2)
 
 		notes = SQLResult.getString("notes");
 		adminNotes = SQLResult.getString("adminNotes");
@@ -826,7 +359,7 @@ public class ContractorBean extends DataBean {
 		riskLevel = SQLResult.getString("riskLevel");
 		annualUpdateEmails = SQLResult.getInt("annualUpdateEmails");
 		oqEmployees = SQLResult.getString("oqEmployees");
-	}//setFromResultSet
+	}
 
 	public void writeToDB() throws Exception {
 		String updateQuery = "UPDATE contractor_info SET "+
@@ -836,15 +369,12 @@ public class ContractorBean extends DataBean {
 			"',subTrades='"+subTrades+ 
 			"',logo_file='"+logo_file+
 			"',brochure_file='"+brochure_file+
-			"',status='"+calcPICSStatus()+
 			"',certs='"+certs+
 			"',mustPay='"+mustPay+
 			"',welcomeAuditor_id='"+welcomeAuditor_id+
 			"',requestedByID='"+requestedByID+
 			"',billingAmount='"+billingAmount+
 			"',billingCycle='"+billingCycle+
-			// We now save this in writeBillingToDB()
-			//"',isExempt='"+isExempt+
 			"',hasExpiredCerts='"+hasExpiredCerts+
 			"',isOnlyCerts='"+isOnlyCerts+
 
@@ -857,11 +387,9 @@ public class ContractorBean extends DataBean {
 			"',paymentExpires='"+DateBean.toDBFormat(paymentExpires)+
 			"',lastInvoiceDate='"+DateBean.toDBFormat(lastInvoiceDate)+
 			"',lastAnnualUpdateEmailDate='"+DateBean.toDBFormat(lastAnnualUpdateEmailDate)+
-//second contact
 			"',secondContact='"+eqDB(secondContact)+
 			"',secondPhone='"+eqDB(secondPhone)+
 			"',secondEmail='"+eqDB(secondEmail)+
-//billing contact
 			"',billingContact='"+eqDB(billingContact)+
 			"',billingPhone='"+eqDB(billingPhone)+
 			"',riskLevel="+riskLevel+
@@ -880,8 +408,8 @@ public class ContractorBean extends DataBean {
 			SQLStatement.executeUpdate(updateQuery);
 		}finally{
 			DBClose();
-		}//finally
-	}//writeToDB
+		}
+	}
 
 	public void writeNewToDB(Facilities FACILITIES) throws Exception {
 		try {
@@ -994,27 +522,22 @@ public class ContractorBean extends DataBean {
 		}//if
 	}//setFromUploadRequest
 	
-//	 New accounts default to inactive BJ 1-7-05
 	public void setFromUploadRequestClientNew(javax.servlet.http.HttpServletRequest r) throws Exception {
 		taxID = r.getParameter("taxID");
-		auditDate = "";
 		description = r.getParameter("description");
 		isDescriptionChanged = true;
 		main_trade = r.getParameter("main_trade");
 		setGeneralContractorsFromStringArray(r.getParameterValues("generalContractors"));
 		requestedByID = r.getParameter("requestedByID");
-//second contact
 		secondContact = r.getParameter("secondContact");
 		secondEmail = r.getParameter("secondEmail");
 		secondPhone = r.getParameter("secondPhone");
-//billing contact
 		billingContact = r.getParameter("billingContact");
 		billingEmail = r.getParameter("billingEmail");
 		billingPhone = r.getParameter("billingPhone");
-
 		oqEmployees = r.getParameter("oqEmployees");
 		riskLevel = r.getParameter("riskLevel");
-	}//setFromUploadRequestClientNew
+	}
 
 	public void setFromUploadRequestClientEdit(javax.servlet.http.HttpServletRequest r) throws Exception {
 		Map<String,String> m = (Map<String,String>)r.getAttribute("uploadfields");
@@ -1026,13 +549,6 @@ public class ContractorBean extends DataBean {
 		billingEmail = m.get("billingEmail");
 		billingPhone = m.get("billingPhone");
 		setDescription(m.get("description"));
-		/*
-		if (!primaryUser.isSet)
-			primaryUser.setFromAccountID(this.id);
-		
-		primaryUser.userDO.password = m.get("password");
-		*/
-		
 	}
 
 	public boolean isOK() {
@@ -1139,34 +655,6 @@ public class ContractorBean extends DataBean {
 		}//finally
 	}//writeGeneralContractorsToDB
 
-	public void writeAuditEmailDateToDB(String conID, String adminName) throws Exception {
-		setFromDB(conID);
-		lastAuditEmailDate = DateBean.getTodaysDate(); //MULTIAUDIT change
-		addNote(conID, "("+adminName+")", "Audit email sent", DateBean.getTodaysDateTime());
-		writeToDB();
-	}
-
-	public static String getStatusSelect(String name, String classType, String selectedStatus) throws Exception {
-		return Utilities.inputSelect(name, classType, selectedStatus, STATUS_ARRAY);
-	}
-
-	public String getAuditorsEmail() throws Exception {
-		//MULTIAUDIT change
-		String selectQuery = "SELECT email FROM users WHERE id = "+auditor_id;
-		String email = "";
-		try {
-			DBReady();
-			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			if (SQLResult.next())
-				email = SQLResult.getString("email");
-			SQLResult.close();
-			DBClose();
-			return email;
-		}finally{
-			DBClose();
-		}
-	}
-	
 	public void addNote(String conID, String pre, String newNote, String notesDate) throws Exception {
 		notes = notesDate+" "+pre+": "+newNote+"\n"+notes;
 		isNotesChanged = true;
@@ -1176,85 +664,6 @@ public class ContractorBean extends DataBean {
 		adminNotes = notesDate+" "+pre+": "+newNote+"\n"+adminNotes;
 		isAdminNotesChanged = true;
 	}
-	
-	public void submitPQF(String conID, Permissions permissions, String auditType) throws Exception {
-	//MULTIAUDIT change
-		setFromDB(conID);
-		if (auditType.equals(com.picsauditing.PICS.pqf.Constants.PQF_TYPE)) {
-			canEditPrequal = "No";
-			pqfSubmittedDate = DateBean.getTodaysDate();
-		} else if (auditType.equals(com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE))
-			desktopSubmittedDate = DateBean.getTodaysDate();
-		else if (auditType.equals(com.picsauditing.PICS.pqf.Constants.DA_TYPE))
-			daSubmittedDate = DateBean.getTodaysDate();
-		else if (auditType.equals(com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE)){
-			officeSubmittedDate = DateBean.getTodaysDate();
-			isNewOfficeAudit = "Yes";
-		}//elseif
-		addNote(conID, "("+permissions.getName()+")",auditType+" submitted", DateBean.getTodaysDateTime());
-		writeToDB();
-		
-		// Send email too
-		EmailContractorBean emailer = new EmailContractorBean();
-		if (auditType.equals(com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE))
-			emailer.sendMessage(EmailTemplates.desktopsubmit, conID, permissions);
-		else if (auditType.equals(com.picsauditing.PICS.pqf.Constants.DA_TYPE))
-			emailer.sendMessage(EmailTemplates.dasubmit, conID, permissions);
-		else if (auditType.equals(com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE))
-			//emailer.sendMessage(EmailTemplates.desktopsubmit, conID, permissions);
-			EmailBean.sendAuditSurveyEmail(conID);
-	}//submitPQF
-
-	/**
-	 * This closes all the other audits
-	 * @param conID
-	 * @param adminName
-	 * @param auditType
-	 * @throws Exception
-	 */
-	public void closeAudit(String conID, String adminName, String auditType) throws Exception {
-	//MULTIAUDIT change
-		setFromDB(conID);
-		if (auditType.equals(com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE))
-			officeClosedDate = DateBean.getTodaysDate();
-		else if (auditType.equals(com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE)){
-			desktopClosedDate = DateBean.getTodaysDate();
-			desktopValidUntilDate = DateBean.getThreeYearsAheadDate(desktopSubmittedDate);
-		}
-		else if (auditType.equals(com.picsauditing.PICS.pqf.Constants.DA_TYPE))
-			daClosedDate = DateBean.getTodaysDate();
-		addNote(id,"("+adminName+")",auditType+" Audit closed",DateBean.getTodaysDateTime());
-		writeToDB();
-		EmailBean.sendAuditClosedEmails(conID,adminName,auditType);
-		if (auditType.equals(com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE))
-			EmailBean.sendDesktopClosedSurveyEmail(conID);
-	}//closeAudit
-
-	/**
-	 * This closes the orignal office audit
-	 * @param conID
-	 * @param adminName
-	 * @throws Exception
-	 * @Deprecated
-	 */
-	public void closeAudit(String conID, String adminName) throws Exception {
-	//MULTIAUDIT change
-		setFromDB(conID);
-		auditClosedDate=DateBean.getTodaysDate();
-		auditValidUntilDate = DateBean.getThreeYearsAheadDate(auditCompletedDate);
-		addNote(conID, "("+adminName+")", "Office audit closed", DateBean.getTodaysDateTime());
-		writeToDB();
-		EmailBean.sendAuditClosedEmails(conID, adminName, com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE);
-	}//closeAudit
-
-	public void submitAudit(String conID, String adminName) throws Exception {
-		//MULTIAUDIT change
-		setFromDB(conID);
-		auditCompletedDate = DateBean.getTodaysDate();
-		addNote(id, "("+adminName+")", "Office audit completed", DateBean.getTodaysDateTime());
-		writeToDB();
-		EmailBean.sendAuditSurveyEmail(conID);
-	}//submitAudit
 
 	//Jeff  2/2/05
 	//Records a payment by a contrator, invoked on Schedule Audits report
@@ -1290,59 +699,19 @@ public class ContractorBean extends DataBean {
 		writeToDB();
 	}
 
-	//checks to see if auditor already has audit scheduled for this date. Called from report_scheduleAudits
-	//bj 4-5-05
-	public String checkDoubleAudit(String action_id) throws Exception {
-	//MULTIAUDIT change
-		try {
-			String returnStr = "";
-			if (!"".equals(auditDate)) {
-				String Query = "SELECT * FROM blockedDates WHERE blockedDate='"+DateBean.toDBFormat(auditDate) +"';";
-				DBReady();
-				ResultSet SQLResult = SQLStatement.executeQuery(Query);
-				if 	(SQLResult.next()) {
-					returnStr =   "<b>"+SQLResult.getString("description")+"</b> is scheduled on "+auditDate;
-					if (!"0".equals(SQLResult.getString("startHour"))) 
-						returnStr +=" from "+ SQLResult.getString("startHour")+SQLResult.getString("startAmPm")+
-						" to "+ SQLResult.getString("endHour")+ SQLResult.getString("endAmPm")+".";
-				} else if (!"".equals(auditor_id) && !"0".equals(auditor_id)) {
-					SQLResult.close();
-					Query = "SELECT contractor_info.id AS con_id, auditHour, auditAmPm, accounts.name AS name, "+
-					"a2.name AS auditor_name FROM contractor_info INNER JOIN accounts ON contractor_info.id=accounts.id "+
-					"LEFT OUTER JOIN users a2 ON contractor_info.auditor_id=a2.id WHERE auditDate='"+
-					DateBean.toDBFormat(auditDate)+"' AND auditor_id=" + auditor_id;
-					SQLResult = SQLStatement.executeQuery(Query);
-					if 	(SQLResult.next()) 
-						if (!action_id.equals(SQLResult.getString("con_id")))
-							returnStr = "<b>"+SQLResult.getString("auditor_name")+"</b> has an audit scheduled on <b>"+
-							auditDate+"</b> at <b>"+SQLResult.getString("auditHour")+SQLResult.getString("auditAmPm")+
-							"</b> with <b>"+SQLResult.getString("name")+"</b>.";
-						else
-							returnStr = "";
-					else
-						returnStr = "";
-					SQLResult.close();
-				}
-				DBClose();
-			} else
-				returnStr = "";
-			return returnStr;
-		}finally{
-			DBClose();
-		}//finally
-	}
-
+	@Deprecated
 	public boolean isExempt() {
-	//MULTIAUDIT remove
 		return isAudited();
 	}
 	
+	@Deprecated
 	public boolean isAudited() {
-	//MULTIAUDIT remove
+		// We should check the contractor's audits instead
 		return "Yes".equals(this.isExempt);
 	}
+	
+	@Deprecated
 	public void isAudited(boolean value) {
-	//MULTIAUDIT remove
 		if (value)
 			this.isExempt = "No";
 		else
@@ -1385,99 +754,6 @@ public class ContractorBean extends DataBean {
 			DBClose();
 		}//finally
 	}//convertTrades
-
-	public boolean mustForceUpdatePQF() throws Exception {
-	//MULTIAUDIT remove
-		if ("".equals(pqfSubmittedDate))
-			return false;
-		try{
-			return DateBean.isFirstBeforeSecond(pqfSubmittedDate,"12/31/05");
-		}catch(Exception ex){
-			return false;
-		}//catch
-	}//mustForceUpatePFQ
-
-	public String getAuditSubmittedDate(String auditType) {
-		//MULTIAUDIT change
-		if (auditType.equals(com.picsauditing.PICS.pqf.Constants.PQF_TYPE))
-			return pqfSubmittedDate;
-		if (auditType.equals(com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE))
-			return desktopSubmittedDate;
-		if (auditType.equals(com.picsauditing.PICS.pqf.Constants.DA_TYPE))
-			return daSubmittedDate;
-		if (auditType.equals(com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE))
-			return officeSubmittedDate;
-		return "No";
-	}//getAuditSubmittedDate
-
-	public String getAuditClosedDate(String auditType) {
-		//MULTIAUDIT change
-		if (auditType.equals(com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE))
-			return desktopClosedDate;
-		if (auditType.equals(com.picsauditing.PICS.pqf.Constants.DA_TYPE))
-			return daClosedDate;
-		if (auditType.equals(com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE))
-			return officeClosedDate;
-		return "No";
-	}//getAuditClosedDate
-
-	public String getValidUntilDate(String auditType) throws Exception{
-		//MULTIAUDIT change
-		if (auditType.equals(com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE) && !DateBean.isBeforeToday(desktopValidUntilDate))
-			return "<br/>Valid Until: <span class='redMain'>"+desktopValidUntilDate+"</span>";
-		if (auditType.equals(com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE) && !DateBean.isBeforeToday(auditValidUntilDate))
-			return "<br/>Valid Until: <span class='redMain'>"+auditValidUntilDate+"</span>";
-		return "";
-	}//getValidUntilDate
-
-	public void setPercentComplete(String auditType, Integer percent) {
-		setPercentComplete(auditType, percent.toString());
-	}
-	public void setPercentComplete(String auditType, String percent) {
-		//MULTIAUDIT change
-		if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType))
-			pqfPercent = percent;
-		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType))
-			desktopPercent = percent;
-		if (com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(auditType))
-			officePercent = percent;
-		if (com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(auditType))
-			daPercent = percent;
-	}//setPercentComplete
-
-	public String getPercentComplete(String auditType) {
-		//MULTIAUDIT change
-		if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType))
-			return pqfPercent;
-		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType))
-			return desktopPercent;
-		if (com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(auditType))
-			return officePercent;
-		if (com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(auditType))
-			return daPercent;
-		return "Invalid Audit Type";
-	}//getPercentComplete
-
-	public void setPercentVerified(String auditType, String percent) {
-		//MULTIAUDIT change
-		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType))
-			desktopVerifiedPercent = percent;
-		if (com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(auditType))
-			officeVerifiedPercent = percent;
-		if (com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(auditType))
-			daVerifiedPercent = percent;
-	}//setPercentVerified
-
-	public String getPercentVerified(String auditType) {
-		//MULTIAUDIT change
-		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType))
-			return desktopVerifiedPercent;
-		if (com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(auditType))
-			return officeVerifiedPercent;
-		if (com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(auditType))
-			return daVerifiedPercent;
-		return "Invalid Audit Type";
-	}//getPercentVerified
 
 	public void setUploadedFiles(HttpServletRequest request){
 		String fn = (String)request.getAttribute("logo_file");
@@ -1571,5 +847,6 @@ public class ContractorBean extends DataBean {
 		if (audits == null)
 			getValidAudits();
 		return audits.get(auditTypeID);
-}
+	}
+
 }

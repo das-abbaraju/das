@@ -43,6 +43,7 @@ public class ContractorAudit {
 	private String auditLocation;
 	private int percentComplete;
 	private int percentVerified;
+	private boolean canDelete;
 	
 	private List<AuditCatData> categories;
 	private List<AuditData> data;
@@ -203,7 +204,16 @@ public class ContractorAudit {
 	public void setPercentVerified(int percentVerified) {
 		this.percentVerified = percentVerified;
 	}
-	
+
+	public boolean isCanDelete() {
+		return canDelete;
+	}
+
+	public void setCanDelete(boolean canDelete) {
+		this.canDelete = canDelete;
+	}
+
+	/////////////////////////////////
 	@Transient
 	public int getPercent() {
 		if (AuditStatus.Pending.equals(auditStatus))
@@ -261,5 +271,6 @@ public class ContractorAudit {
 	   	   
 	   return false;   
    }
+
 
 }

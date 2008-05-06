@@ -89,7 +89,7 @@ try{
 		Map<String, FlagDO> flagMap = flagDO.getFlagByContractor(sBean.cBean.id);
 		String thisClass = sBean.getTextColor();
 		if (!"cantSee".equals(thisClass))
-			thisClass = ContractorBean.getTextColor(sBean.cBean.calcPICSStatusForOperator(pBean.oBean));
+			thisClass = ""; // TODO Add in the Contractor FlagColor
 %>            <tr <%=sBean.getBGColor()%> class="<%=thisClass%>"> 
                 <td class="right"><%=sBean.count-1%></td>
                 <td>

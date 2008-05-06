@@ -38,7 +38,7 @@ try {
               <td><%=thisYear-3%></td>
   			</tr>
 <%	while (sBean.isNextRecord()){
-		String thisClass = sBean.cBean.getTextColor(sBean.cBean.calcPICSStatusForOperator(pBean.oBean));
+		String thisClass = ""; // TODO Add in the Contractor FlagColor
 %>
 			  <tr <%=sBean.getBGColor()%> class="<%=thisClass%>">
                 <td align="right"><%=sBean.count-1%></td>

@@ -20,17 +20,13 @@
 	String auditType = action.getAudit().getAuditType().getLegacyCode();
 	String conID = ((Integer) action.getAudit().getContractorAccount()
 			.getId()).toString();
-	String id = conID;
 	try {
 		aBean.setFromDB(conID);
 		cBean.setFromDB(conID);
 		cBean.tryView(permissions);
 		//temporary to forward them to ncms imported data if it is linked up
-		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE
-				.equals(auditType)
-				&& "Yes".equals(cBean.hasNCMSDesktop)) {
-			response.sendRedirect("pqf_viewNCMS.jsp?id=" + conID
-					+ "&auditType=" + auditType);
+		if (action.getAudit().getAuditType().getAuditTypeID() == AuditType.NCMS) {
+			response.sendRedirect("pqf_viewNCMS.jsp?auditID=" + action.getAudit());
 			return;
 		}
 		pdBean.setFilledOut(action.getAuditID());
@@ -39,38 +35,15 @@
 			showCategoryIDs = pcBean.getCategoryForOpRiskLevel(
 					permissions.getAccountIdString(), cBean.riskLevel);
 %>
+<%@page import="com.picsauditing.jpa.entities.AuditType"%>
 <html>
 <head>
 <title><%=auditType%> for <%=aBean.name%></title>
-<meta name="header_gif" content="header_prequalification.gif" />
 </head>
 <body>
-<table border="0" cellspacing="0" cellpadding="1" class="blueMain">
-	<tr align="center" class="blueMain">
-		<td>
-		<h1><%=aBean.getName(id)%><span class="sub">View <%=auditType%>
-		- <%=DateBean.format(action.getAudit().getCreatedDate(),
-								"MMM yyyy")%></span></h1>
-		<%@ include file="utilities/adminOperatorContractorNav.jsp"%></td>
-	</tr>
-	<tr align="center">
-		<td class="blueMain">Date Submitted: <span class="redMain"><strong><%=cBean.getAuditSubmittedDate(auditType)%></strong></span></td>
-	</tr>
-	<%
-		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE
-					.equals(auditType)
-					|| com.picsauditing.PICS.pqf.Constants.DA_TYPE
-							.equals(auditType)
-					|| com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE
-							.equals(auditType)) {
-	%>
-	<tr align="center">
-		<td class="blueMain">Date Closed: <span class="redMain"><strong><%=cBean.getAuditClosedDate(auditType)%></strong></span></td>
-	</tr>
-	<%
-		}//if
-	%>
-	<tr align="center">
+<%@ include file="includes/nav/pqfHeader.jsp"%>
+<table class="blueMain">
+	<tr>
 		<td align="left">
 		<%
 			//	pcBean.setPQFCategoriesArray(auditType);

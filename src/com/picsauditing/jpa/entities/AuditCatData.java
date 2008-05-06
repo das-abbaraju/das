@@ -18,12 +18,12 @@ public class AuditCatData implements java.io.Serializable {
 	private AuditCategory category;
 	private ContractorAudit audit;
 	private YesNo applies = YesNo.No;
-	private int percentCompleted;
-	private int percentVerified;
-	private int percentClosed;
-	private int requiredCompleted;
-	private int numRequired;
-	private int numAnswered;
+	private int percentCompleted = 0;
+	private int percentVerified = 0;
+	private int percentClosed = 0;
+	private int requiredCompleted = 0;
+	private int numRequired = 0;
+	private int numAnswered = 0;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)

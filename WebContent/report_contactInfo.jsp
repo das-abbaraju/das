@@ -78,7 +78,7 @@ Filter Options</a></div>
 	</thead>
 	<%
 		while (sBean.isNextRecord()) {
-				String thisClass = ContractorBean.getTextColor(sBean.cBean.calcPICSStatusForOperator(pBean.oBean));
+				String thisClass = ""; // TODO Add in the Contractor FlagColor
 	%>
 	<tr <%=sBean.getBGColor()%> class="<%=thisClass%>">
 		<td class="right"><%=sBean.count - 1%></td>

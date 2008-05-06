@@ -15,7 +15,6 @@
     <td><input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()"></td>
   </tr>
   <tr> 
-    <td><%=sBean.getStatusSelect("status","blueMain", sBean.selected_status)%></td>
     <td colspan="2"><%=sBean.getSearchGeneralSelect("generalContractorID", "blueMain", sBean.selected_generalContractorID)%></td>
     <td><%=sBean.getAuditStatusSelect("auditStatus", "blueMain", sBean.selected_auditStatus)%> <input name="city" type="text" class="forms" value="<%=sBean.selected_city%>" size="15" onFocus="clearText(this)"></td>
     <td colspan="2"><%=sBean.getStateSelect("state","forms", sBean.selected_state)%></td>

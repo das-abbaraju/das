@@ -95,6 +95,12 @@
 			class="com.picsauditing.actions.contractors.ConAuditList">
 			<result>struts/contractors/contractor_audits.jsp</result>
 		</action>
+		
+		<action name="Audit"
+			class="com.picsauditing.actions.audits.AuditActionSupport">
+			<result>struts/contractors/con_audit.jsp</result>
+		</action>
+		
 
 		<action name="AuditTypeChoose"
 			class="com.picsauditing.actions.auditType.AuditTypeChoose">

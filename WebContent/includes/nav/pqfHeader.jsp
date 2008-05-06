@@ -4,7 +4,6 @@
 <%@page import="com.picsauditing.access.OpPerms"%>
 <%@page import="com.picsauditing.PICS.Utilities"%>
 <%@page import="com.picsauditing.PICS.DateBean"%>
-
 <%
 	ContractorAudit conAudit = action.getAudit();
 	User auditor = conAudit.getAuditor();
@@ -19,6 +18,10 @@ td.label {
 	background-color: #BBBBBB;
 }
 </style>
+<h1><%=conAudit.getContractorAccount().getName()%>
+<span class="sub"><%=conAudit.getAuditType().getAuditName()%>
+- <%=DateBean.format(conAudit.getCreatedDate(),	"MMM yyyy")%></span></h1>
+
 <%@ include file="/utilities/adminOperatorContractorNav.jsp"%>
 <table border="0" cellspacing="0" cellpadding="1">
 	<tr valign="top">
