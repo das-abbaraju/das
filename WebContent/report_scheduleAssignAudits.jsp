@@ -18,18 +18,57 @@ List<BasicDynaBean> searchData = report.getPage();
 <script src="js/prototype.js" type="text/javascript"></script>
 <script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
 <script type="text/javascript">
-function saveAudit(auditID) {
+function saveAuditor(auditID) {
 	var form = $('assignScheduleAuditsForm');
 	var auditorID = form['auditorID_'+auditID];
+	auditorID = $F(auditorID);
+	var auditorPars = '&audit.auditor=';
+	if (0 != auditorID)
+		auditorPars = '&audit.auditor.id='+auditorID
 	
-	pars = 'audit.id=<%=auditID%>&audit.scheduledDate=&auditID='+auditID+'&auditorID='+$F(auditorID);
+	pars = 'audit.id='+auditID+auditorPars;
+
+	var divName = 'assignedDateTd_'+auditID;
+	$(divName).innerHTML = '<img src="images/ajax_process.gif" />';
+
+	var myAjax = new Ajax.Updater(divName, 'AuditSaveAjax.action', {method: 'post', parameters: pars});
+	new Effect.Highlight($('auditTr_'+auditID), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+
+//	${'pars'}.innerHTML = pars;
 // AuditSaveAjax.action?audit.id=3260&audit.scheduledDate=&audit.auditor=
 // AuditSaveAjax.action?audit.id=3260&audit.scheduledDate=01/01/2008&audit.auditor.id=907
 	
-	var divName = 'dateAssigned_td'+auditID;
-	$(divName).innerHTML = '<img src="images/ajax_process.gif" />';
+}
+function saveAudit(auditID) {
+	var form = $('assignScheduleAuditsForm');
+	var auditorID = form['auditorID_'+auditID];
+	auditorID = $F(auditorID);
+	var auditorPars = '&audit.auditor=';
+	if (0 != auditorID)
+		auditorPars = '&audit.auditor.id='+auditorID
+	var scheduledDate = form['scheduledDate_'+auditID];
+	if (null == scheduledDate)
+		scheduledDate='';
+	else
+		scheduledDate = $F(scheduledDate);
+	var scheduledTime = form['scheduledTime_'+auditID];
+	if (null == scheduledTime)
+		scheduledTime='';
+	else
+		scheduledTime = $F(scheduledTime);
+	
+	pars = 'audit.id='+auditID+'&audit.scheduledDate='+scheduledDate+auditorPars;
+
+	var divName = 'status_'+auditID;
+//	$(divName).innerHTML = auditorID;
+
 	var myAjax = new Ajax.Updater(divName, 'AuditSaveAjax.action', {method: 'post', parameters: pars});
-	new Effect.Highlight($('auditor_tr'+auditID), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+//	new Effect.Highlight($('auditTr_'+auditID), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+
+	${'pars'}.innerHTML = pars;
+// AuditSaveAjax.action?audit.id=3260&audit.scheduledDate=&audit.auditor=
+// AuditSaveAjax.action?audit.id=3260&audit.scheduledDate=01/01/2008&audit.auditor.id=907
+	
 }
 // TODO support setting D&A audits to Not required
 function notRequired(auditID) {
@@ -47,7 +86,7 @@ function notRequired(auditID) {
 	padding: 0px;
 }	
 </style>
-<s:head theme="ajax"/>
+<s:head theme="ajax" debug="true"/>
 </head>
 <body>
 <table width="657" border="0" cellpadding="0" cellspacing="0" align="center">
@@ -83,6 +122,7 @@ function notRequired(auditID) {
  			    <td align="center"><a href="?orderBy=auditorID DESC,name" class="whiteTitle">Auditor</a></td>
  			    <td align="center"><a href="?orderBy=assignedDate DESC" class="whiteTitle">Assigned</a></td>
  			    <td align="center"><a href="?orderBy=scheduledDAte,name" class="whiteTitle">Scheduled</a></td>
+ 			    <td id="pars"></td>
 	</tr>
 <%	com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlternater();
 	for(BasicDynaBean row: searchData) {
@@ -94,7 +134,8 @@ function notRequired(auditID) {
 			auditorID = row.get("auditorID").toString();
 		boolean hasAuditor = (0 != Integer.parseInt(row.get("hasAuditor").toString()));
 		boolean isScheduled = (0 != Integer.parseInt(row.get("isScheduled").toString()));
-		pageContext.setAttribute("auditID",auditID);
+		pageContext.setAttribute("scheduledDate","scheduledDate_"+auditID);
+		pageContext.setAttribute("scheduledTime","scheduledTime_"+auditID);
 %>
 	<tr id="auditTr_<%=auditID%>" class="blueMain" <%=color.nextBgColor()%>>
 			    <td><a href="accounts_edit_contractor.jsp?id=<%=row.get("conID")%>"><%=row.get("name")%></a></td>
@@ -104,20 +145,19 @@ function notRequired(auditID) {
 			    <td><%=DateBean.toShowFormat(row.get("closedDate"))%></td>
 			    <td>
 <%		if (hasAuditor){ %>
-			    		<%=AUDITORS.getAuditorsSelect("auditorID_"+auditID,"forms",auditorID,"")%>
+			    		<%=AUDITORS.getAuditorsSelect("auditorID_"+auditID,"forms",auditorID,"saveAuditor("+auditID+")")%>
 <%		}//if%>
 			    </td>
-			    <td id="auditor_td<%=auditID%>"><%=DateBean.toShowFormat(row.get("assignedDate"))%></td>
-				<td align="center" id="scheduleAuditTd_<%=auditID%>
+			    <td id="'assignedDateTd_<%=auditID%>"><%=DateBean.toShowFormat(row.get("assignedDate"))%></td>
+				<td align="center" id="scheduleAuditTd_<%=auditID%>">
 <%		if (isScheduled){ %>
-					<s:datetimepicker name="scheduledDate+#attr.auditID" displayFormat="M/d/yy"/>
-					<s:datetimepicker name="scheduledTime+#attr.auditID" displayFormat="hh:mm a zzz" type="time""/>
+					<s:datetimepicker id="%{#attr.scheduledDate}" name="%{#attr.scheduleDate}"/>
+					<s:datetimepicker id="%{#attr.scheduledTime}" name="%{#attr.scheduleTime}"  type="time"/>
 <%		}//if%>
 				</td>
-				<td>
-				<input type="submit" name="submitAudit_<%=auditID%>" value="Save" onClick="saveAudit(<%=auditID%>);">
+				<td id="status_<%=auditID%>">
+				<input class="forms" type="button" value="Save" onClick="saveAudit(<%=auditID%>);">
 				</td>
-
 	</tr>
 <%	}%>
 </table>
