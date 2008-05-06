@@ -68,13 +68,14 @@ try{
 <html>
 <head>
   <title>NCMS</title>
+  <link rel="stylesheet" type="text/css" media="screen"
+	href="css/forms.css" />
 </head>
 <body>
             <h1><%=name%><span class="sub">NCMS Data</span></h1>
             <table width="657" border="0" cellpadding="0" cellspacing="0" align="center">
               <tr>
-                <td height="70" align="center" class="forms"> 
-                <a class=forms href="ReportNCMS.action">Back to NCMS Reports</a><br/><br/><br/>
+                <td height="70" align="center" class="forms"><br/><br/> 
                 <form name="form1" method="post" action="report_ncmsIndividual.jsp">
 				    <input type=hidden name=conID value=<%=conID%>>
 				    <input type=hidden name=name value="<%=name%>">
@@ -89,11 +90,11 @@ try{
 			    <td>&nbsp;</td>
 		      </tr>
             </table>
-            <table border=1 cellspacing=0 cellpadding=0 align=center>
+            <table class="forms">
 <% 	for (int i=1; i<=SQLResultMetaData.getColumnCount(); i++) {%>
-              <tr class=blueMain <%=com.picsauditing.PICS.Utilities.getBGColor(i)%>>
-                <td align=right><%=SQLResultMetaData.getColumnName(i)%>:</td>
-                <td>&nbsp;<%=SQLResult.getString(i)%></td>
+              <tr>
+              <th><%=SQLResultMetaData.getColumnName(i)%>:</th>
+               <td>&nbsp;<%=SQLResult.getString(i)%></td>
               </tr>
 <%	}//for%>
 		    </table>
