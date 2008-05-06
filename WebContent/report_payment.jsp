@@ -36,16 +36,23 @@ try {
 <html>
 <head>
 <title>Payments</title>
-<script language="JavaScript" SRC="js/ImageSwap.js"></script>
+<script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
+<h1>Payment Report</h1>
+<div id="search">
+<div id="showSearch"><a href="#" onclick="showSearch()">Show
+Filter Options</a></div>
+<div id="hideSearch" style="display: none"><a href="#"
+onclick="hideSearch()">Hide Filter Options</a></div>
+<form id="form1" name="form1" action="report_payment.jsp" method="post" cssStyle="display: none">
 <table border="0" cellpadding="0" cellspacing="0">
               <tr>
-                <td height="70" colspan="2" align="center" class="buttons"> 
-                  <h1>Payment Report</h1>
-                  <form name="form1" method="post" action="report_payment.jsp">
-                    <table border="0" cellpadding="2" cellspacing="0">
-                      <tr align="center">
+                <td> 
+                   <table border="0" cellpadding="2" cellspacing="0">
+                      <tr>
                         <td>
                           <input name="name" type="text" class="forms" value="<%=sBean.selected_name%>" size="20" onFocus="clearText(this)">
                           <%=SearchBean.getSearchGeneralSelect("generalContractorID", "blueMain", sBean.selected_generalContractorID)%>
@@ -54,17 +61,20 @@ try {
                         </td>
                       </tr>
                     </table>
-                  </form>
-                </td>
+                 </td>
               </tr>
-              <tr> 
-                <td height="20" align="left"><%=sBean.getStartsWithLinks()%></td>
-                <td align="right"><%=sBean.getLinks()%></td>
-              </tr>
-</table>
-<table border="0" cellpadding="1" cellspacing="1">
-              <tr bgcolor="#003366" class="whiteTitle">
-			    <td colspan="2" width="150"><a href="?changed=0&showPage=1&orderBy=name" class="whiteTitle">Contractor</a></td>
+              </table>
+              <div class="alphapaging"> 
+                <%=sBean.getStartsWithLinks()%>
+              </div>
+</form>
+</div>
+<div>
+<%=sBean.getLinksWithDynamicForm()%>
+</div>
+<table class="report">
+			<thead><tr>	
+                <td colspan="2" width="150"><a href="?changed=0&showPage=1&orderBy=name" class="whiteTitle">Contractor</a></td>
                 <td align="center"><a href="?changed=0&showPage=1&orderBy=payingFacilities DESC" class="whiteTitle">Pay Fac</a></td>
 				<td align="center"><a href="?changed=0&showPage=1&orderBy=membershipDate DESC" class="whiteTitle">Member Since</a></td>
  			    <td align="center"><a href="?changed=0&showPage=1&orderBy=paymentExpires" class="whiteTitle">Expires</a></td>
@@ -72,12 +82,12 @@ try {
  			    <td colspan=2 align="center"><a href="?changed=0&showPage=1&orderBy=newBillingAmount" class="whiteTitle"><nobr>New Inv</nobr> Level</a></td>
  			    <td colspan=2 align="center"><a href="?changed=0&showPage=1&orderBy=lastPayment DESC" class="whiteTitle">Last Pmt</a></td>
  			    <td colspan=2 align="center"><a href="?changed=0&showPage=1&orderBy=newBillingAmount" class="whiteTitle"><nobr>New Pmt</nobr> Level</a></td>
-  			  </tr>
+  			</tr></thead> 
 <%	int totalNewPayments = 0;
 	while (sBean.isNextRecord()){
 		totalNewPayments += Integer.parseInt(sBean.cBean.newBillingAmount);
 		sBean.cBean.setFacilitiesFromDB();
-%>			  <tr <%=sBean.getBGColor()%> class="blueMain" align="center">
+%>			  <tr <%=sBean.getBGColor()%>>
 		  	  <form name="form_<%=sBean.aBean.id%>" id="form_<%=sBean.aBean.id%>" method="post" action="report_payment.jsp?changed=0&showPage=<%=sBean.showPage%>">
                 <td align="right"><%=sBean.count-1%></td>
 			    <td><a href="accounts_edit_contractor.jsp?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class="<%=sBean.getTextColor()%>">
@@ -103,9 +113,8 @@ try {
                 <td align="left" colspan=3>$<%=totalNewPayments%></td>
               </tr>
 		    </table>
-		    <br><center><%=sBean.getLinks()%></center>
+		    <br><center><%=sBean.getLinksWithDynamicForm()%></center>
 <%	sBean.closeSearch(); %>
-      <br><center><%@ include file="utilities/contractor_key.jsp"%></center>
 </body>
 </html>
 <%	}finally{
