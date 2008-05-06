@@ -70,6 +70,7 @@ function sendEmail() {
 	action.setAuditID(request.getParameter("auditID"));
 	String conID = action.getAudit().getContractorAccount().getId().toString();
 	cBean.setFromDB(conID);
+	String catID = null;
 %>
 <%@ include file="/includes/nav/pqfHeader.jsp"%>
 
