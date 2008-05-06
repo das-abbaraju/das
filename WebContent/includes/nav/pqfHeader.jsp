@@ -97,9 +97,15 @@ td.label {
 <%
 	}
 	if(conAudit.isCanEdit(permissions)) {
+		if(catID == null) {
 %>
-<a class="blueMain"
+	<a class="blueMain"
 	href="pqf_editMain.jsp?auditID=<%=conAudit.getId()%>">Edit</a>
+	
+<% } else  { %>
+	<a class="blueMain"
+	href="pqf_edit.jsp?auditID=<%=conAudit.getId()%>&catID=<%=catID%>">Edit</a>	
+<% } %>
 |
 <%
 	} if(conAudit.isCanVerify(permissions)) {
