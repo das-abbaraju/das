@@ -12,18 +12,19 @@
 		<td align="right"><s:property escape="false" value="report.pageLinks" /></td>
 	</tr>
 </table>
-<table width="657" border="0" cellpadding="1" cellspacing="1"
-	align="center">
-	<tr bgcolor="#003366" class="whiteTitle">
-		<td width="150" colspan="2">Contractor</td>
-		<td width="150">NCMS Name</td>
-		<td align="center">PICS Tax ID</td>
-		<td align="center">NCMS Tax ID</td>
-		<td align="center">NCMS Last Review</td>
+<table class="report">
+	<thead>
+	<tr>
+		<td colspan="2">Contractor</td>
+		<td>NCMS Name</td>
+		<td>PICS Tax ID</td>
+		<td>NCMS Tax ID</td>
+		<td>NCMS Last Review</td>
 	</tr>
-	<s:iterator value="data">
-	<tr class="blueMain" <s:property value="color.nextBgColor" />>
-		<td align="right"><s:property value="color.counter" /></td>
+	</thead>
+	<s:iterator value="data" status="stat">
+	<tr>
+		<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 		<td><a href="accounts_edit_contractor.jsp?id=<s:property value="[0].get('id')"/>"
 			title="view <s:property value="[0].get('name')" /> details"><s:property value="[0].get('name')"/></a></td>
 		<td><a
