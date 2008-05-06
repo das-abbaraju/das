@@ -74,8 +74,10 @@
 					description="Click the submit button" />
 				&body_verify;
 
-				<verifyText description="Showing Reports"
-					text="Click Report Name to Access" />
+				<verifyText description="Verify logged in - Welcome"
+					text="Welcome" />
+				<verifyText description="Verify logged in - Logout"
+					text="Logout" />
 			</steps>
 		</webtest>
 	</target>

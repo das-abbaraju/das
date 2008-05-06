@@ -1,5 +1,3 @@
-<invoke description="Report Menu" url="reports.jsp"/>
-
 <clickLink description="#{report_link}"
 	label="#{report_link}" />
 &body_verify;

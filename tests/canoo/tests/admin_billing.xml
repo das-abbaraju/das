@@ -10,11 +10,11 @@
 				&login;
 				&body_verify;
 				
-				<storeProperty name="report_link" value="Activation Report" />
+				<storeProperty name="report_link" value="Activation" />
 				&click_report;
-				<storeProperty name="report_link" value="Payment Report" />
+				<storeProperty name="report_link" value="Contractor Payments" />
 				&click_report;
-				<storeProperty name="report_link" value="Upgrade Payment Report" />
+				<storeProperty name="report_link" value="Upgrade Payments" />
 				&click_report;
 			</steps>
 		</webtest>
