@@ -6,17 +6,6 @@
 <%
 permissions.tryPermission(OpPerms.ContractorApproval);
 
-String action = request.getParameter("action");
-if (action != null && action.equals("save")) {
-	permissions.tryPermission(OpPerms.ContractorApproval, OpType.Edit);
-	GeneralContractor gcBean = new GeneralContractor();
-	gcBean.setConID(Integer.parseInt(request.getParameter("conID")));
-	gcBean.setOpID(permissions.getAccountId());
-	gcBean.setWorkStatus(request.getParameter("workStatus"));
-	gcBean.save();
-	%>Saved<%
-	return;
-}
 SelectAccount sql = new SelectAccount();
 
 sql.setType(SelectAccount.Type.Contractor);
@@ -40,7 +29,6 @@ report.addFilter(new SelectFilter("name", "a.name LIKE '?%'", request.getParamet
 List<BasicDynaBean> searchData = report.getPage();
 
 %>
-<%@page import="com.picsauditing.PICS.redFlagReport.FlagCalculator"%>
 <html>
 <head>
 <title>Contractor Approvals</title>
@@ -50,11 +38,11 @@ List<BasicDynaBean> searchData = report.getPage();
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script type="text/javascript">
 function saveApproval(conID, status) {
-	pars = 'action=save&conID='+conID+'&workStatus='+status;
+	pars = 'conID='+conID+'&workStatus='+status;
 	
 	$('result_td'+conID).innerHTML = '<img src="images/ajax_process.gif" />';
-	var myAjax = new Ajax.Updater('result_td'+conID, 'con_approvals.jsp', {method: 'post', parameters: pars});
-	new Effect.Highlight($('result_tr'+conID), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+	var myAjax = new Ajax.Updater('result_td'+conID, 'con_approval_ajax.jsp', {method: 'post', parameters: pars});
+	new Effect.Highlight($('result_tr'+conID), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEE'});
 }
 </script>
 <style>
@@ -65,51 +53,45 @@ form.smallform {
 </style>
 </head>
 <body>
-<h1>Contractor Approvals</h1>
-<table border="0" cellpadding="5" cellspacing="0" align="center">
-	<tr>
-		<td class="blueMain">
-		<div id="search">
-		<div id="showSearch"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
-		<div id="hideSearch" style="display: none"><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
-		<form id="form1" name="form1" action="con_approvals.jsp" method="get" cssStyle="display: none">
-			Name: <input type="text" name="name" value="<%= report.getFilterValue("name") %>" size="20" class="blueMain" />
-			<select name="workStatus" class="blueMain">
-				<option value="" <%="".equals(request.getParameter("workStatus"))?" SELECTED":"" %>>All</option>
-				<option value="P"<%="P".equals(request.getParameter("workStatus"))?" SELECTED":"" %>>Pending</option>
-				<option value="Y"<%="Y".equals(request.getParameter("workStatus"))?" SELECTED":"" %>>Yes</option>
-				<option value="N"<%="N".equals(request.getParameter("workStatus"))?" SELECTED":"" %>>No</option>
-			</select>
-			<input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()">
-			<input type="hidden" name="showPage" value="1"/>
-			<input type="hidden" name="startsWith" value=""/>
-			<input type="hidden" name="orderBy"  value="<%=request.getParameter("orderBy") == null ? "gc.dateAdded DESC" : request.getParameter("orderBy") %>"/>
-		</form>
-		</div>
-		</td>
-	</tr>
+<h1>Contractor Approval</h1>
 
-	<tr>
-		<td align="right"><%=report.getPageLinksWithDynamicForm()%></td>
-	</tr>
-</table>
+<div id="search">
+<form id="form1" name="form1" action="con_approvals.jsp">
+	Name: <input type="text" name="name" value="<%= report.getFilterValue("name") %>" size="20" class="blueMain" />
+	<select name="workStatus" class="blueMain">
+		<option value="" <%="".equals(report.getFilterValue("workStatus"))?" SELECTED":"" %>>All</option>
+		<option value="P"<%="P".equals(report.getFilterValue("workStatus"))?" SELECTED":"" %>>Pending</option>
+		<option value="Y"<%="Y".equals(report.getFilterValue("workStatus"))?" SELECTED":"" %>>Yes</option>
+		<option value="N"<%="N".equals(report.getFilterValue("workStatus"))?" SELECTED":"" %>>No</option>
+	</select>
+	<input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()">
+	<input type="hidden" name="showPage" value="1"/>
+	<input type="hidden" name="startsWith" value=""/>
+	<input type="hidden" name="orderBy"  value="<%=request.getParameter("orderBy") == null ? "gc.dateAdded DESC" : request.getParameter("orderBy") %>"/>
+</form>
+</div>
+<div>
+<%=report.getPageLinksWithDynamicForm()%>
 <p>Are the following companies currently working or approved to work for you?</p>
+</div>
 
-<table border="0" cellpadding="1" cellspacing="1" align="center">
-	<tr bgcolor="#003366" class="whiteTitle">
+<table class="report">
+	<thead>
+	<tr>
 		<td colspan=2><a href="javascript: changeOrderBy('form1','a.name');" class="whiteTitle">Contractor</a></td>
-		<td align="center"><a href="javascript: changeOrderBy('form1','gc.dateAdded DESC');" class="whiteTitle">Date Added</a></td>
-		<td align="center"><a href="javascript: changeOrderBy('form1','workStatus');" class="whiteTitle">Approved</a></td>
+		<td class="center"><a href="javascript: changeOrderBy('form1','gc.dateAdded DESC');" class="whiteTitle">Date Added</a></td>
+		<td class="center"><a href="javascript: changeOrderBy('form1','workStatus');" class="whiteTitle">Approved</a></td>
 		<td>&nbsp;</td>
 	</tr>
+	</thead>
 	<%
 		com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlternater(sql.getStartRow());
 		for (BasicDynaBean row : searchData) {
 			String rowID = row.get("id").toString();
 	%>
-	<tr id="result_tr<%=rowID%>" class="blueMain"
+	<tr id="result_tr<%=rowID%>"
 		<%= color.nextBgColor() %>>
-		<td align="right"><%=color.getCounter()%></td>
+		<td class="right"><%=color.getCounter()%></td>
 		<td><a href="ContractorView.action?id=<%=rowID%>"><%=row.get("name")%></a></td>
 		<td><%=DateBean.toShowFormat(row.get("dateAdded"))%></td>
 		<td>

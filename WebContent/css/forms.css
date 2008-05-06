@@ -50,3 +50,10 @@ table.forms td.right {
 	float: none;
 }
 
+table.forms th {
+	text-align: right;
+	font-weight: bold;
+	background: #003768;
+	color: #FFF;
+}
+
