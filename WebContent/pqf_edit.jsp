@@ -12,7 +12,7 @@
 <%
 	action.setAuditID(request.getParameter("auditID"));
 	String auditType = action.getAudit().getAuditType().getLegacyCode();
-	String conID = ((Integer) action.getAudit().getContractorAccount().getId()).toString();
+	String conID = action.getAudit().getContractorAccount().getId().toString();
 	String id = conID;
 	
 	try {

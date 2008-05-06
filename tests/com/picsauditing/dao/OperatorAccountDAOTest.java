@@ -67,19 +67,6 @@ public class OperatorAccountDAOTest {
 		operatoraccount.setDoContractorsPay("Multiple");
 		operatoraccount.setCanSeeInsurance(YesNo.Yes);
 		operatoraccount.setIsCorporate(YesNo.Yes);
-		operatoraccount.setEmrHurdle("1.5");
-		operatoraccount.setEmrTime("1");
-		operatoraccount.setLwcrTime("12");
-		operatoraccount.setLwcrHurdle("10");
-		operatoraccount.setTrirHurdle("34.6");
-		operatoraccount.setTrirTime("1");
-		operatoraccount.setFatalitiesHurdle("1");
-		operatoraccount.setFlagEmr(YesNo.Yes);
-		operatoraccount.setFlagLwcr(YesNo.Yes);
-		operatoraccount.setFlagTrir(YesNo.Yes);
-		operatoraccount.setFlagFatalities(YesNo.No);
-		operatoraccount.setFlagQ318(YesNo.No);
-		operatoraccount.setFlagQ1385(YesNo.Yes);
 		operatoraccount.setInsuranceAuditor(new User());
 		operatoraccount.getInsuranceAuditor().setId(941); //tallred
 		operatoraccount.setIsUserManualUploaded(YesNo.Yes);
