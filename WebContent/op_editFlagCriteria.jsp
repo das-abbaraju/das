@@ -41,9 +41,9 @@
 <div id="internalnavcontainer">
 <ul id="navlist">
 	<li><a <%=flagStatus.equals("Red") ? "class=\"current\"" : "" %>
-		href="?flagStatus=Red">Red</a></li>
+		href="?flagStatus=Red&opID=<%=opID%>">Red</a></li>
 	<li><a <%=flagStatus.equals("Amber") ? "class=\"current\"" : "" %>
-		href="?flagStatus=Amber">Amber</a></li>
+		href="?flagStatus=Amber&opID=<%=opID%>">Amber</a></li>
 </ul>
 </div>
 
