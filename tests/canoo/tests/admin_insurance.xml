@@ -9,9 +9,11 @@
 			<steps>
 				&login;
 				
-				<storeProperty name="report_link" value="Expired Insurance Certificates" />
+				<storeProperty name="report_link" value="Expired Certificates" />
 				&click_report;
 				<storeProperty name="report_link" value="Insurance Certificates" />
+				&click_report;
+				<storeProperty name="report_link" value="Verification" />
 				&click_report;
 			</steps>
 		</webtest>

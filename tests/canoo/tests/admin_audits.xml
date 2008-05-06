@@ -10,25 +10,17 @@
 				&login;
 				&body_verify;
 				
-				<storeProperty name="report_link" value="Audit Dates Report" />
+				<storeProperty name="report_link" value="Audit List" />
 				&click_report;
-				<storeProperty name="report_link" value="Expired Audits Report" />
+				<storeProperty name="report_link" value="Audit Definitions" />
 				&click_report;
-				<storeProperty name="report_link" value="Incomplete Audits Report" />
+				<storeProperty name="report_link" value="NCMS Audits" />
 				&click_report;
-				<storeProperty name="report_link" value="Manage Audits and Matrices" />
+				<storeProperty name="report_link" value="Audit Calendar" />
 				&click_report;
-				<storeProperty name="report_link" value="NCMS Data Report" />
+				<storeProperty name="report_link" value="Sched. &amp; Assign" />
 				&click_report;
-				<storeProperty name="report_link" value="Office Audit Calendar" />
-				&click_report;
-				<storeProperty name="report_link" value="Reschedule Audits" />
-				&click_report;
-				<storeProperty name="report_link" value="Schedule Drug &amp; Alcohol Audits" />
-				&click_report;
-				<storeProperty name="report_link" value="Schedule Desktop Audits" />
-				&click_report;
-				<storeProperty name="report_link" value="Schedule Office Audits" />
+				<storeProperty name="report_link" value="PQF Verification" />
 				&click_report;
 			</steps>
 		</webtest>

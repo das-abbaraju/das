@@ -10,15 +10,11 @@
 				&login;
 				&body_verify;
 				
-				<storeProperty name="report_link" value="Contractor Assignments" />
+				<storeProperty name="report_link" value="EMR Rates" />
 				&click_report;
-				<storeProperty name="report_link" value="Contractor Contact Info" />
+				<storeProperty name="report_link" value="Fatalities" />
 				&click_report;
-				<storeProperty name="report_link" value="EMR Rates Report" />
-				&click_report;
-				<storeProperty name="report_link" value="Fatalities Report" />
-				&click_report;
-				<storeProperty name="report_link" value="Incidence Rates Report" />
+				<storeProperty name="report_link" value="Incidence Rates" />
 				&click_report;
 			</steps>
 		</webtest>

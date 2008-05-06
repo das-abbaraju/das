@@ -9,20 +9,18 @@
 			<steps>
 				&login;
 				&body_verify;
-				<storeProperty name="report_link" value="Manage Corporate Accounts" />
+				<storeProperty name="report_link" value="Edit Corporate" />
 				&click_report;
-				<storeProperty name="report_link" value="Manage Operators" />
+				<storeProperty name="report_link" value="Edit Operators" />
 				&click_report;
-				<storeProperty name="report_link" value="Manage Users" />
+				<storeProperty name="report_link" value="Assign Audit/Operator" />
 				&click_report;
-				<storeProperty name="report_link" value="Manage Users (beta)" />
+				<storeProperty name="report_link" value="Users" />
 				&click_report;
 				<storeProperty name="report_link" value="Email Templates" />
 				&click_report;
 				
-				<storeProperty name="report_link" value="Annual Update Report" />
-				&click_report;
-				<storeProperty name="report_link" value="Administration Dashboard" />
+				<storeProperty name="report_link" value="Annual Updates" />
 				&click_report;
 			</steps>
 		</webtest>
