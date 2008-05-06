@@ -172,7 +172,6 @@ Status at <s:property value="co.operatorAccount.name" /></span></h1>
 	</table>
 </s:if>
 
-<div><a href="ConAuditList.action?id=<s:property value="id"/>">View
-Audits</a> | <a href="op_editFlagCriteria.jsp">Edit Flag Criteria</a></div>
+<div><a href="op_editFlagCriteria.jsp?opID=<s:property value="opID" />">Edit Flag Criteria</a></div>
 </body>
 </html>
