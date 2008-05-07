@@ -13,6 +13,7 @@
 	<bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO" scope="prototype"/>
 	<bean id="AuditBuilder" class="com.picsauditing.PICS.AuditBuilder" scope="prototype"/>
 	<bean id="AuditDataDAO" class="com.picsauditing.dao.AuditDataDAO" scope="prototype"/>
+	<bean id="AuditCategoryDataDAO" class="com.picsauditing.dao.AuditCategoryDataDAO" scope="prototype"/>
 	<bean id="AuditOperatorDAO" class="com.picsauditing.dao.AuditOperatorDAO" scope="prototype"/>
 	<bean id="AuditQuestionDAO" class="com.picsauditing.dao.AuditQuestionDAO" scope="prototype"/>
 	<bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO" scope="prototype"/>

@@ -1,27 +1,18 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ page language="java" errorPage="exception_handler.jsp"%>
-<%@page import="com.picsauditing.access.OpPerms"%>
-<jsp:useBean id="permissions"
-	class="com.picsauditing.access.Permissions" scope="session" />
-<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean"
-	scope="page" />
 <html>
 <head>
 <title><s:property value="conAudit.auditType.auditName" /> for
 <s:property value="conAudit.contractor.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 </head>
 <body>
-<h1><s:property value="conAudit.contractorAccount.name" /> <span
-	class="sub"><s:property value="conAudit.auditType.auditName" />
-- <s:date name="conAudit.createdDate" format="MMM yyyy" /></span></h1>
-
-<%
-	String id = "1";
-	cBean.setFromDB(id);
-%>
-<%@ include file="/utilities/adminOperatorContractorNav.jsp"%>
+<s:include value="audit_header.jsp">
+	<s:param name="conAudit" value="conAudit" />
+	<s:param name="id" value="conAudit.contractorAccount.id" />
+</s:include>
 
 <span class="message"><s:property value="message" /></span>
 <table class="report">
@@ -31,15 +22,16 @@
 			</td>
 			<th>Category
 			</td>
-			<th>Complete
-			</td>
+			<th>Complete</th>
+			<th></th>
 		</tr>
 	</thead>
 	<s:iterator value="categories" status="rowStatus">
 		<tr>
-			<td><s:property value="auditType.auditName" /></td>
-			<td><s:property value="auditStatus" /></td>
-			<td><s:date name="createdDate" format="M/d/yy" /></td>
+			<td class="right"><s:property value="category.number" /></td>
+			<td><a href="pqf_view.jsp?auditID=<s:property value="auditID" />&catID=<s:property value="category.id" />"><s:property value="category.category" /></a></td>
+			<td class="right"><s:property value="percentCompleted" />%</td>
+			<td><s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if></td>
 		</tr>
 	</s:iterator>
 </table>
