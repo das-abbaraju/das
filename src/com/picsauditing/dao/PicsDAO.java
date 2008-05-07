@@ -44,4 +44,10 @@ abstract public class PicsDAO {
 			}
 		}
 	}
+	
+	protected static void setOptionalParameter(Query query, String name, Object value) {
+		try {
+			query.setParameter(name, value);
+		} catch (IllegalArgumentException e) {}
+	}
 }

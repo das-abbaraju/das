@@ -36,7 +36,7 @@ public class AuditCatData implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "catID", nullable = false)
 	public AuditCategory getCategory() {
 		return category;

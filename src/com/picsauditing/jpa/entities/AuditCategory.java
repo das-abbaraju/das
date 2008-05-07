@@ -14,6 +14,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "pqfcategories")
 public class AuditCategory implements java.io.Serializable {
+	public static final int WORK_HISTORY = 6;
+	
 	private int id;
 	private AuditType auditType;
 	private String category;

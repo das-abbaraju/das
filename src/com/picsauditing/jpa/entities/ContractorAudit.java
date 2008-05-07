@@ -44,10 +44,10 @@ public class ContractorAudit {
 	private int percentComplete;
 	private int percentVerified;
 	private boolean canDelete;
-	
+
 	private List<AuditCatData> categories;
 	private List<AuditData> data;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "auditID", nullable = false)
@@ -69,8 +69,8 @@ public class ContractorAudit {
 		this.auditType = auditType;
 	}
 
-	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE})
-	//@ManyToOne
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	// @ManyToOne
 	@JoinColumn(name = "conID")
 	public ContractorAccount getContractorAccount() {
 		return contractorAccount;
@@ -88,17 +88,16 @@ public class ContractorAudit {
 		this.createdDate = createdDate;
 	}
 
-	@Type(type="com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", 
-			parameters= {@Parameter(name="enumClass", value = "com.picsauditing.jpa.entities.AuditStatus")})	
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.AuditStatus") })
 	@Enumerated(EnumType.STRING)
 	public AuditStatus getAuditStatus() {
 		return auditStatus;
 	}
 
-	
 	public void setAuditStatus(AuditStatus auditStatus) {
 		if (auditStatus != null && this.auditStatus != null && !auditStatus.equals(this.auditStatus)) {
-			// If we're changing the status to Submitted or Active, then we need to set the dates
+			// If we're changing the status to Submitted or Active, then we need
+			// to set the dates
 			if (auditStatus.equals(AuditStatus.Submitted)) {
 				// If we're going "forward" then (re)set the closedDate
 				if (completedDate == null)
@@ -106,12 +105,11 @@ public class ContractorAudit {
 			}
 			if (auditStatus.equals(AuditStatus.Active)) {
 				// If we're going "forward" then (re)set the closedDate
-				if (closedDate == null
-						|| this.auditStatus.equals(AuditStatus.Submitted)
+				if (closedDate == null || this.auditStatus.equals(AuditStatus.Submitted)
 						|| this.auditStatus.equals(AuditStatus.Pending))
 					closedDate = new Date();
-				
-				// If we're closed, there should always be a completedDate, 
+
+				// If we're closed, there should always be a completedDate,
 				// so fill it in if it hasn't already been set
 				if (completedDate == null)
 					completedDate = closedDate;
@@ -213,14 +211,14 @@ public class ContractorAudit {
 		this.canDelete = canDelete;
 	}
 
-	/////////////////////////////////
+	// ///////////////////////////////
 	@Transient
 	public int getPercent() {
 		if (AuditStatus.Pending.equals(auditStatus))
 			return this.percentComplete;
 		if (AuditStatus.Submitted.equals(auditStatus))
 			return this.percentVerified;
-		
+
 		return 100;
 	}
 
@@ -243,34 +241,46 @@ public class ContractorAudit {
 	}
 
 	@Transient
-	public boolean isCanView(Permissions permissions){
-		if(permissions.isContractor() && (getAuditType().isCanContractorView() == false))
+	public boolean isCanView(Permissions permissions) {
+		if (permissions.isContractor() && (getAuditType().isCanContractorView() == false))
 			return false;
 		else
-			return true;	
+			return true;
 	}
 
 	@Transient
 	public boolean isCanEdit(Permissions permissions) {
-		if(permissions.isOnlyAuditor() && (permissions.getUserId() == getAuditor().getId()) && (getAuditType().isCanContractorEdit() == false)) 
+		if (permissions.isOnlyAuditor() && (permissions.getUserId() == getAuditor().getId())
+				&& (getAuditType().isCanContractorEdit() == false))
 			return true;
-		if(permissions.isContractor() && (getAuditType().isCanContractorEdit() == true))
+		if (permissions.isContractor() && (getAuditType().isCanContractorEdit() == true))
 			return true;
-		if(permissions.seesAllContractors())
-			return true;	
-		
+		if (permissions.seesAllContractors())
+			return true;
+
 		return false;
 	}
 
-   @Transient
-   public boolean isCanVerify(Permissions permissions) {
-	   if(permissions.isOnlyAuditor() && (permissions.getUserId() == getAuditor().getId()) && (getAuditType().isCanContractorEdit() == false)) 
+	@Transient
+	public boolean isCanVerify(Permissions permissions) {
+		if (permissions.isOnlyAuditor() && (permissions.getUserId() == getAuditor().getId())
+				&& (getAuditType().isCanContractorEdit() == false))
 			return true;
-	   if(permissions.seesAllContractors())
+		if (permissions.seesAllContractors())
 			return true;
-	   	   
-	   return false;   
+
+		return false;
+	}
+
+	@Transient
+	public Date getEffectiveDate() {
+	   if (auditStatus.equals(AuditStatus.Pending)) {
+		   if (auditor != null && assignedDate != null)
+			   return assignedDate;
+		   return createdDate;
+	   }
+	   if (auditStatus.equals(AuditStatus.Submitted))
+		   return completedDate;
+	   return closedDate;
    }
-
-
 }

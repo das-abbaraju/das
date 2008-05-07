@@ -20,12 +20,13 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "pqfquestions")
 public class AuditQuestion implements java.io.Serializable {
-	static public int EMR03 = 127;
-	static public int EMR04 = 126;
-	static public int EMR05 = 889;
-	static public int EMR06 = 1519;
-	static public int EMR07 = 1617;
-	static public int EMR_AVG = 0;
+	static public final int EMR03 = 127;
+	static public final int EMR04 = 126;
+	static public final int EMR05 = 889;
+	static public final int EMR06 = 1519;
+	static public final int EMR07 = 1617;
+	static public final int EMR_AVG = 0;
+	static public final int MANUAL_PQF = 1331;
 
 	private int questionID;
 	private AuditSubCategory subCategory;

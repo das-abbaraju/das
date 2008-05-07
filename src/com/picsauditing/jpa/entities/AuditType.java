@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "audit_type")
@@ -159,4 +160,14 @@ public class AuditType {
 			auditType = "DA";
 		return "icon_"+auditType+".gif";
 	}
+	
+	@Transient
+	public boolean isShowManual() {
+		if (this.auditTypeID == OFFICE)
+			return true;
+		if (this.auditTypeID == DESKTOP)
+			return true;
+		return false;
+	}
+
 }
