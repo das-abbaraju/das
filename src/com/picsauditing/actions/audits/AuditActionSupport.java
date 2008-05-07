@@ -11,6 +11,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 
 public class AuditActionSupport extends ContractorActionSupport {
@@ -53,6 +54,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	
 	public List<AuditCatData> getCategories() {
+		if (conAudit.getAuditStatus().equals(AuditStatus.Exempt))
+			return null;
+
 		if (categories == null) {
 			categories = catDataDao.findByAudit(conAudit, permissions);
 		}

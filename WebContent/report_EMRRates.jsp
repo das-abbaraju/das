@@ -67,7 +67,7 @@
               <tr <%=sBean.getBGColor()%> class="<%=thisClass%>">
                 <td align="right"><%=sBean.count-1%></td>
                 <td>
-                  <a href="pqf_view.jsp?auditID=<%=sBean.aBean.id%>&catID=10" title="view <%=sBean.aBean.name%> details" class="<%=thisClass%>" target="_blank"><%=sBean.aBean.name%></a>
+                  <a href="Audit.action?auditID=<%=sBean.aBean.id%>&catID=10" title="view <%=sBean.aBean.name%> details" class="<%=thisClass%>" target="_blank"><%=sBean.aBean.name%></a>
                 </td>
 <%		if (!"".equals(sBean.getPQFQuestionID())) {%>
                 <td>

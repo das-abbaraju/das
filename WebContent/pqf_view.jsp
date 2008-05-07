@@ -188,62 +188,6 @@
 	</tr>
 	<%
 		}//if
-			if (!isCategorySelected) {
-				//		pdBean.setFilledOut(conID);
-	%>
-	<tr>
-		<td>
-		<table width="657" border="0" cellpadding="1" cellspacing="1">
-			<tr class="whiteTitle">
-				<td bgcolor="#003366" width=1%>Num</td>
-				<td bgcolor="#003366">Category</td>
-				<td bgcolor="#993300">% Complete</td>
-			</tr>
-			<%
-				pcBean.setListWithData("number", auditType, conID);
-						while (pcBean.isNextRecord(pBean, conID)) {
-							if ((!com.picsauditing.PICS.pqf.Constants.PQF_TYPE
-									.equals(auditType)
-									|| pBean.isAdmin() || "Yes"
-									.equals(pcBean.applies))
-									&& (!com.picsauditing.PICS.pqf.Constants.PQF_TYPE
-											.equals(auditType)
-											|| !(pBean.isOperator() || pBean
-													.isCorporate())
-											|| (permissions.isCorporate() && pBean.oBean.PQFCatIDsAL
-													.contains(pcBean.catID)) || (permissions
-											.isOperator() && showCategoryIDs
-											.contains(pcBean.catID)))) {
-								catCount++;
-			%>
-			<tr class="blueMain" <%=Utilities.getBGColor(catCount)%>>
-				<td align=right><%=catCount%>.</td>
-				<td><a
-					href="pqf_view.jsp?auditID=<%=action.getAuditID()%>&catID=<%=pcBean.catID%>"><%=pcBean.category%></a></td>
-				<%
-					String showPercent = "";
-									if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE
-											.equals(auditType)
-											|| com.picsauditing.PICS.pqf.Constants.DA_TYPE
-													.equals(auditType)
-											|| com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE
-													.equals(auditType))
-										showPercent = pcBean.percentVerified;
-									else
-										showPercent = pcBean.percentCompleted;
-				%>
-				<td><%=pcBean.getPercentShow(showPercent)%><%=pcBean.getPercentCheck(showPercent)%></td>
-			</tr>
-			<%
-				}//if
-						}//while
-						pcBean.closeList();
-			%>
-		</table>
-		</td>
-	</tr>
-	<%
-		}//if
 	%>
 </table>
 <%
