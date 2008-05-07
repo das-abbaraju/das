@@ -33,7 +33,7 @@ for(ContractorAudit pqf: cBean.getAudits()) {
 		pqf.getAuditor().getId() == permissions.getUserId() ||
 		permissions.canSeeAudit(pqf.getAuditType().getAuditTypeID())
 		) {
-		%>| <a class="blueMain" href="pqf_view.jsp?auditID=<%=pqf.getId()%>"><%=pqf.getAuditType().getAuditName() %></a>
+		%>| <a class="blueMain" href="Audit.action?auditID=<%=pqf.getId()%>"><%=pqf.getAuditType().getAuditName() %></a>
 		<%
 	}
 }

@@ -57,7 +57,7 @@
 	<s:iterator value="data" status="stat">
 	<tr>
 		<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-		<td><a href="pqf_view.jsp?auditID=<s:property value="[0].get('auditID')"/>" 
+		<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>" 
 			><s:property value="[0].get('name')"/></a>
 		</td>
 		<td><s:property value="[0].get('auditName')"/></td>

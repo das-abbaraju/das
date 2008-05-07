@@ -67,7 +67,7 @@
 						String rAuditID = request.getParameter("auditID");
 						selected = pqf.getId() == Integer.parseInt(rAuditID);
 					}
-	%><li><a <%= selected ? "class=\"current\"" : "" %>href="pqf_view.jsp?auditID=<%=pqf.getId()%>"><%=pqf.getAuditType().getAuditName()%></a></li>
+	%><li><a <%= selected ? "class=\"current\"" : "" %>href="Audit.action?auditID=<%=pqf.getId()%>"><%=pqf.getAuditType().getAuditName()%></a></li>
 	<%
 				}
 			}

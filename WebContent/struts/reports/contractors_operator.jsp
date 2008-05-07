@@ -105,7 +105,7 @@
 					<s:if test="[0].get('ca1_auditStatus').equals('Exempt')">N/A</s:if>
 					<s:else>
 						<a
-							href="pqf_view.jsp?auditID=<s:property value="[0].get('ca1_auditID')"/>"><img
+							href="Audit.action?auditID=<s:property value="[0].get('ca1_auditID')"/>"><img
 							src="images/icon_PQF.gif" width="20" height="20" border="0"></a>
 					</s:else>
 				</s:if></td>
@@ -116,7 +116,7 @@
 					<s:if test="[0].get('ca2_auditStatus').equals('Exempt')">N/A</s:if>
 					<s:else>
 						<a
-							href="pqf_view.jsp?auditID=<s:property value="[0].get('ca2_auditID')"/>"><img
+							href="Audit.action?auditID=<s:property value="[0].get('ca2_auditID')"/>"><img
 							src="images/icon_Desktop.gif" width="20" height="20" border="0"></a>
 					</s:else>
 				</s:if></td>
@@ -126,7 +126,7 @@
 					<s:if test="[0].get('ca6_auditStatus').equals('Exempt')">N/A</s:if>
 					<s:else>
 						<a
-							href="pqf_view.jsp?auditID=<s:property value="[0].get('ca6_auditID')"/>"><img
+							href="Audit.action?auditID=<s:property value="[0].get('ca6_auditID')"/>"><img
 							src="images/icon_DA.gif" width="20" height="20" border="0"></a>
 					</s:else>
 				</s:if></td>
@@ -136,7 +136,7 @@
 					<s:if test="[0].get('ca3_auditStatus').equals('Exempt')">N/A</s:if>
 					<s:else>
 						<a
-							href="pqf_view.jsp?auditID=<s:property value="[0].get('ca3_auditID')"/>"><img
+							href="Audit.action?auditID=<s:property value="[0].get('ca3_auditID')"/>"><img
 							src="images/icon_Office.gif" width="20" height="20" border="0"></a>
 					</s:else>
 				</s:if></td>

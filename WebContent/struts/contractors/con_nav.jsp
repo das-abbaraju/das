@@ -35,7 +35,7 @@
 	<li><a href="ConAuditList.action?id=<s:property value="id" />"
 		<s:if test="#request.current.equals('Audits')"> class="current" </s:if>>Audits</a></li>
 	<s:iterator value="activeAudits">
-		<li><a href="pqf_view.jsp?auditID=<s:property value="id" />"><s:property
+		<li><a href="Audit.action?auditID=<s:property value="id" />"><s:property
 			value="auditType.auditName" /></a></li>
 	</s:iterator>
 </ul>

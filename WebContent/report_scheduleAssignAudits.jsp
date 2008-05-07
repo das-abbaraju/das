@@ -139,7 +139,7 @@ function notRequired(auditID) {
 %>
 	<tr id="auditTr_<%=auditID%>" class="blueMain" <%=color.nextBgColor()%>>
 			    <td><a href="accounts_edit_contractor.jsp?id=<%=row.get("conID")%>"><%=row.get("name")%></a></td>
-			    <td><a href="pqf_view.jsp?auditID=<%=auditID%>"><%=row.get("auditName")%></a></td>
+			    <td><a href="Audit.action?auditID=<%=auditID%>"><%=row.get("auditName")%></a></td>
 			    <td><%=DateBean.toShowFormat(row.get("createdDate"))%></td>
 			    <td><%=DateBean.toShowFormat(row.get("completedDate"))%></td>
 			    <td><%=DateBean.toShowFormat(row.get("closedDate"))%></td>

@@ -95,7 +95,7 @@ td.label {
 <%
 	if (conAudit.isCanView(permissions)) {
 %>
-<a class="blueMain" href="pqf_view.jsp?auditID=<%=conAudit.getId()%>">View</a>
+<a class="blueMain" href="Audit.action?auditID=<%=conAudit.getId()%>">View</a>
 |
 <%
 	}

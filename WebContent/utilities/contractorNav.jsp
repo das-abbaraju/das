@@ -16,9 +16,9 @@ if (cBean.mustForceUpdatePQF()) {
 		out.println(" | "+com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_editMain.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE,thisQuery,"<strong>Complete PQF</strong>"));
 	%><br><%
 	if (cBean.isDesktopSubmitted() && !cBean.isDesktopClosed())
-		out.println(" | "+com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE,thisQuery,"View Desktop Audit"));
+		out.println(" | "+com.picsauditing.PICS.Utilities.getMenuTag(request,"Audit.action",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE,thisQuery,"View Desktop Audit"));
 	if (cBean.isDaSubmitted() && !cBean.isDaClosed())
-		out.println(" | "+com.picsauditing.PICS.Utilities.getMenuTag(request,"pqf_view.jsp",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.DA_TYPE,thisQuery,"View D&A Audit"));
+		out.println(" | "+com.picsauditing.PICS.Utilities.getMenuTag(request,"Audit.action",thisPage,id,"auditType="+com.picsauditing.PICS.pqf.Constants.DA_TYPE,thisQuery,"View D&A Audit"));
 	if (cBean.AUDIT_STATUS_RQS.equals(cBean.getAuditStatus()) || ContractorBean.AUDIT_STATUS_CLOSED.equals(cBean.getAuditStatus())) 
 		out.println(" | "+com.picsauditing.PICS.Utilities.getMenuTag(request,"audit_viewRequirements.jsp",thisPage,id,"",thisQuery,"Office Audit Requirements"));
 }

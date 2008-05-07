@@ -48,6 +48,7 @@
 			</s:else></td>
 			<td><s:date name="expiresDate" format="M/d/yy" /></td>
 			<td><a href="pqf_view.jsp?auditID=<s:property value="id" />">View</a></td>
+			<td><a href="Audit.action?auditID=<s:property value="id" />">View</a></td>
 		</tr>
 	</s:iterator>
 </table>
