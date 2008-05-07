@@ -106,7 +106,7 @@ public class PicsMenu {
 
 		subMenu = menu.addChild("Reports");
 		if (!permissions.isContractor())
-			subMenu.addChild("EMR Rates", "report_EMRRates.jsp?changed=1");
+			subMenu.addChild("EMR Rates", "ReportEmr.action");
 		if (!permissions.isContractor())
 			subMenu.addChild("Fatalities", "report_fatalities.jsp?changed=1");
 		if (!permissions.isContractor())

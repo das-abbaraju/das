@@ -187,8 +187,9 @@
 			class="com.picsauditing.actions.FileUploadExample">
 			<result name="input">/struts/fileUpload.jsp</result>
 		</action>
-
-		
-		
+		<action name="ReportEmr"
+			class="com.picsauditing.actions.report.ReportEMRRates">
+			<result>/struts/reports/report_EMRRates.jsp</result>
+		</action>
 	</package>
 </struts>
