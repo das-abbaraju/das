@@ -173,5 +173,22 @@
 			<result>/struts/audits/auditorSelect.jsp</result>
 		</action>
 		
+		<action name="AuditorsGet"
+			class="com.picsauditing.actions.audits.AuditorsGet">
+			<result>/struts/audits/auditorSelect.jsp</result>
+		</action>
+		
+		<action name="FileUploadExample"
+			class="com.picsauditing.actions.FileUploadExample">
+			<result>/struts/fileUpload.jsp</result>
+		</action>
+
+		<action name="FileUploadExample_*" method="{1}"
+			class="com.picsauditing.actions.FileUploadExample">
+			<result name="input">/struts/fileUpload.jsp</result>
+		</action>
+
+		
+		
 	</package>
 </struts>
