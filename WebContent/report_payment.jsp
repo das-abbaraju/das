@@ -47,23 +47,27 @@ try {
 Filter Options</a></div>
 <div id="hideSearch" style="display: none"><a href="#"
 onclick="hideSearch()">Hide Filter Options</a></div>
-<form id="form1" name="form1" action="report_payment.jsp" method="post" cssStyle="display: none">
-<table border="0" cellpadding="0" cellspacing="0">
-              <tr>
-                <td> 
+<form id="form1" name="form1" action="report_payment.jsp" method="post" style="display: none">
                    <table border="0" cellpadding="2" cellspacing="0">
                       <tr>
                         <td>
                           <input name="name" type="text" class="forms" value="<%=sBean.selected_name%>" size="20" onFocus="clearText(this)">
                           <%=SearchBean.getSearchGeneralSelect("generalContractorID", "blueMain", sBean.selected_generalContractorID)%>
+                       	  <input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()">
+                          </td></tr>
+                          <tr><td>
                           <%=Inputs.inputSelect("invoicedStatus", "blueMain", sBean.selected_invoicedStatus,SearchBean.INVOICED_SEARCH_ARRAY)%>
-                          <input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()">
-                        </td>
+                       </td>
                       </tr>
                     </table>
-                 </td>
-              </tr>
-              </table>
+            <input type="hidden" name="actionID" value="0">
+			<input type="hidden" name="action" value="">
+			<input type="hidden" name="showPage" value="1"/>
+			<input type="hidden" name="startsWith" value="<%=sBean.selected_startsWith == null ? "" : sBean.selected_startsWith %>"/>
+			<input type="hidden" name="orderBy"  value="<%=sBean.orderBy == null ? "dateCreated DESC" : sBean.orderBy %>"/>
+              
+              
+              
               <div class="alphapaging"> 
                 <%=sBean.getStartsWithLinks()%>
               </div>

@@ -48,37 +48,49 @@
 <html>
 <head>
 <title>Upgrade Payments</title>
+<script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
 <h1>Upgrade Payments</h1>
-<table border="0" cellpadding="0" cellspacing="0">
-	<tr>
-		<td colspan="2" align="center">
-		<form name="form1" method="post" action="report_upgradePayment.jsp">
+<div id="search">
+<div id="showSearch"><a href="#" onclick="showSearch()">Show
+Filter Options</a></div>
+<div id="hideSearch" style="display: none"><a href="#"
+onclick="hideSearch()">Hide Filter Options</a></div>
+<form id="form1" name="form1" method="post" action="report_upgradePayment.jsp" style="display: none">
 		<table border="0" cellpadding="2" cellspacing="0">
 			<tr>
-				<td style="vertical-align: top"><input name="name" type="text" class="forms"
+				<td><input name="name" type="text" class="forms"
 					value="<%=sBean.selected_name%>" size="20"
 					onFocus="clearText(this)"> <%=SearchBean.getSearchGeneralSelect("generalContractorID", "blueMain",
 							sBean.selected_generalContractorID)%>
+					<input name="imageField" type="image" src="images/button_search.gif"
+					width="70" height="23" border="0"></td></tr>
+				<tr><td>			
 				<%=Inputs.inputSelect("invoicedStatus", "blueMain", sBean.selected_invoicedStatus,
 							SearchBean.INVOICED_SEARCH_ARRAY)%>
-				<input name="imageField" type="image" src="images/button_search.gif"
-					width="70" height="23" border="0"></td>
+				</td>
 			</tr>
 		</table>
-		</form>
-		<input class="forms" type="submit" name="action"
-			value="Recalculate Upgrade Amounts"></form>
-		</td>
-	</tr>
-	<tr>
-		<td height="20" align="left"><%=sBean.getStartsWithLinks()%></td>
-		<td align="right"><%=sBean.getLinks()%></td>
-	</tr>
-</table>
-<table border="0" cellpadding="1" cellspacing="1">
-	<tr bgcolor="#003366" class="whiteTitle">
+<input type="hidden" name="actionID" value="0">
+<input type="hidden" name="action" value="">
+<input type="hidden" name="showPage" value="1"/>
+<input type="hidden" name="startsWith" value="<%=sBean.selected_startsWith == null ? "" : sBean.selected_startsWith %>"/>
+<input type="hidden" name="orderBy"  value="<%=sBean.orderBy == null ? "dateCreated DESC" : sBean.orderBy %>"/>
+<div class="alphapaging">
+<%=sBean.getStartsWithLinksWithDynamicForm()%>
+</div>
+</form>
+</div>
+<div>
+<%=sBean.getLinksWithDynamicForm()%>
+</div>
+<input class="forms" type="submit" name="action"
+			value="Recalculate Upgrade Amounts">
+<table class="report">
+	<thead><tr>
 		<td colspan="2" width="150"><a
 			href="?changed=0&showPage=1&orderBy=name" class="whiteTitle">Contractor</a></td>
 		<td align="center"><a
@@ -103,7 +115,7 @@
 		<td colspan=2 align="center"><a
 			href="?changed=0&showPage=1&orderBy=newBillingAmount"
 			class="whiteTitle">New Pmt Level</a></td>
-	</tr>
+	</tr></thead>
 	<%
 		int totalNewInvoices = 0;
 		int totalToCollect = 0;
@@ -115,33 +127,23 @@
 			totalToCollect += toCollect;
 			totalNewInvoices += newInvoice;
 	%>
-	<tr <%=sBean.getBGColor()%> class="blueMain" align="center">
-		<form name="form_<%=sBean.aBean.id%>" id="form_<%=sBean.aBean.id%>"
-			method="post"
-			action="report_upgradePayment.jsp?changed=0&showPage=<%=sBean.showPage%>">
+	<tr <%=sBean.getBGColor()%>>
+		<form name="form_<%=sBean.aBean.id%>" id="form_<%=sBean.aBean.id%>" method="post" action="report_upgradePayment.jsp?changed=0&showPage=<%=sBean.showPage%>">
 		<td align="right"><%=sBean.count - 1%></td>
-		<td><a href="accounts_edit_contractor.jsp?id=<%=sBean.aBean.id%>"
-			title="view <%=sBean.aBean.name%> details"
-			class="<%=sBean.getTextColor()%>"> <%=sBean.getActiveStar()%><%=sBean.aBean.name%></a></td>
+		<td><a href="accounts_edit_contractor.jsp?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class="<%=sBean.getTextColor()%>"> <%=sBean.getActiveStar()%><%=sBean.aBean.name%></a></td>
 		<td><%=sBean.cBean.payingFacilities%></td>
 		<td><%=sBean.cBean.membershipDate%></td>
 		<td><%=sBean.cBean.paymentExpires%></td>
 		<td>$<%=sBean.cBean.billingAmount%></td>
 		<td><%=sBean.cBean.lastInvoiceDate%></td>
-		<td><input type="text" class=forms
-			value="<%=sBean.cBean.newBillingAmount%>" size=3 name=invoiceAmount></td>
-		<td><input name="action" type="submit" class="buttons"
-			value="Inv"></td>
+		<td><input type="text" class=forms value="<%=sBean.cBean.newBillingAmount%>" size=3 name=invoiceAmount></td>
+		<td><input name="action" type="submit" class="buttons" value="Inv"></td>
 		<td><nobr>$<%=newInvoice%></nobr></td>
 		<td>$<%=sBean.cBean.lastPaymentAmount%></td>
 		<td><%=sBean.cBean.lastPayment%></td>
-		<td><nobr><input type="text" class=forms
-			value="<%=sBean.cBean.newBillingAmount%>" size=3 name=amount>
-		/<%=sBean.cBean.billingCycle%>yr</nobr></td>
-		<td valign="middle"><input name="action" type="submit"
-			class="buttons" value="Paid"></td>
-		<input name="invoicedStatus" type="hidden"
-			value="<%=sBean.selected_invoicedStatus%>">
+		<td><nobr><input type="text" class=forms value="<%=sBean.cBean.newBillingAmount%>" size=3 name=amount>/<%=sBean.cBean.billingCycle%>yr</nobr></td>
+		<td valign="middle"><input name="action" type="submit" class="buttons" value="Paid"></td>
+		<input name="invoicedStatus" type="hidden" value="<%=sBean.selected_invoicedStatus%>">
 		<input name="action_id" type="hidden" value="<%=sBean.aBean.id%>">
 		<input name="orderBy" type="hidden" value="<%=sBean.orderBy%>">
 		</form>
@@ -149,14 +151,16 @@
 	<%
 		}//while
 	%>
-	<tr bgcolor="#003366" class="whiteTitle">
+<tr bgcolor="#003366" class="whiteTitle">
 		<td colspan="4">Total</td>
 		<td align="right" colspan="11">To Invoice: $<%=totalNewInvoices%>
 		| To Collect: $<%=totalToCollect%></td>
-	</tr>
+</tr>	
 </table>
 <br>
-<center><%=sBean.getLinks()%></center>
+<div>
+<%=sBean.getLinksWithDynamicForm()%>
+</div>
 <%
 	sBean.closeSearch();
 %>

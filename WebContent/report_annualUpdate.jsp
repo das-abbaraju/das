@@ -84,9 +84,8 @@ List<BasicDynaBean> searchData = report.getPage();
 	</div>
 </form>
 </div>
-
 <div>
-<%=report.getPageLinksWithDynamicForm()%>
+<%=report.getPageLinksWithDynamicForm()%></div>
 <form name="form10" id="form10" method="post">
 <table class="report">
 	<thead>
