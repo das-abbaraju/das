@@ -17,10 +17,12 @@
 <html>
 <head>
 <title>Incidence Rates</title>
+<script src="js/prototype.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
 <h1>Incidence Rates Report</h1>
-<form name="form1" method="post" action="report_incidenceRates.jsp">
+<form id="form1" name="form1" method="post" action="report_incidenceRates.jsp">
 <%	if (pBean.isCorporate())
 		out.println(pBean.oBean.getFacilitySelect("generalContractorID","forms",sBean.selected_generalContractorID));
 %>
@@ -30,18 +32,23 @@
 				<td><input name="searchIncidenceRate" type="text" size="5" value=<%=sBean.searchIncidenceRate%>></td>
 				<td><input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"></td>
 			  </tr>
+		    <input type="hidden" name="actionID" value="0">
+		  	<input type="hidden" name="action" value="">
+   		  	<input type="hidden" name="showPage" value="1">
 		    </table>
-            <strong>Check next to the years to search</strong>
-            <br><br><%=sBean.getLinks()%>
-            <table width="657" border="0" cellpadding="1" cellspacing="1">
-              <tr bgcolor="#003366" class="whiteTitle">
+		    <strong>Check next to the years to search</strong>
+            <br><br><div>
+			<%=sBean.getLinksWithDynamicForm()%>
+			</div>
+            <table class="report">
+              <thead><tr>
                 <td colspan="2">Contractor</td>
                 <td>Location</td>
                 <td>Type</td>
                 <td><%=thisYear-1%><input name="searchYear1" type="checkbox" value="Y" <%=com.picsauditing.PICS.Utilities.checkedBox(sBean.selected_searchYear1)%> checked></td>
                 <td><%=thisYear-2%><input name="searchYear2" type="checkbox" value="Y" <%=com.picsauditing.PICS.Utilities.checkedBox(sBean.selected_searchYear2)%> checked></td>
                 <td><%=thisYear-3%><input name="searchYear3" type="checkbox" value="Y" <%=com.picsauditing.PICS.Utilities.checkedBox(sBean.selected_searchYear3)%> checked></td>
-  			  </tr>
+  			  </tr></thead>
 <%	while (sBean.isNextRecord()){
 		String thisClass = ""; // TODO Add in the Contractor FlagColor
 %>
@@ -58,9 +65,11 @@
 <%	}//while %>
 		    </table><br>
 		    </form>
-		    <center><%=sBean.getLinks()%></center>
+		    <center>
+<div>
+<%=sBean.getLinksWithDynamicForm()%>
+</div></center>
 <%	sBean.closeSearch(); %>
-      <center><%@ include file="utilities/contractor_key.jsp"%></center>
 </body>
 </html>
 <%	}finally{

@@ -14,6 +14,8 @@ try {
 <html>
 <head>
 <title>Fatalities</title>
+<script src="js/prototype.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
 <h1>Fatalities Report</h1>
@@ -25,18 +27,24 @@ try {
               <td><input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()"></td>
             </tr>
           </table>
+          <input type="hidden" name="actionID" value="0">
+		  <input type="hidden" name="action" value="">
+   		  <input type="hidden" name="showPage" value="1"/>
+		<input type="hidden" name="orderBy"  value="<%=sBean.orderBy == null ? "dateCreated DESC" : sBean.orderBy %>"/>
 		  </form>
 <%	}//if
 	int thisYear = com.picsauditing.PICS.DateBean.getCurrentYear(this.getServletContext().getInitParameter("currentYearStart"));
 %>
-		  <%=sBean.getLinks()%>
-          <table width="657" border="0" cellpadding="1" cellspacing="1">
-            <tr bgcolor="#003366" class="whiteTitle"> 
+<div>
+<%=sBean.getLinksWithDynamicForm()%>
+</div>
+          <table class="report">
+            <thead><tr> 
               <td colspan="2">Contractor</td>
               <td><%=thisYear-1%></td>
               <td><%=thisYear-2%></td>
               <td><%=thisYear-3%></td>
-  			</tr>
+  			</tr></thead>
 <%	while (sBean.isNextRecord()){
 		String thisClass = ""; // TODO Add in the Contractor FlagColor
 %>
@@ -50,9 +58,9 @@ try {
 		  	  </tr>
 <%	}//while %>
 		  </table><br>
-		  <center><%=sBean.getLinks()%></center>
+		  <center><%=sBean.getLinksWithDynamicForm()%>
+</center>
 <%	sBean.closeSearch(); %>
-      <br><center><%@ include file="utilities/contractor_key.jsp"%></center><br><br>
 </body>
 </html>
 <%	}finally{
