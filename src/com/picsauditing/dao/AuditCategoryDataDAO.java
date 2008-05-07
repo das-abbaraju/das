@@ -44,25 +44,26 @@ public class AuditCategoryDataDAO extends PicsDAO {
 			// Contractors can see their full PQF
 			if (!permissions.isContractor()) {
 				if (!permissions.hasPermission(OpPerms.ViewFullPQF))
-					where += "AND category.id <> " + AuditCategory.WORK_HISTORY + " ";
+					where += "AND d.category.id <> " + AuditCategory.WORK_HISTORY + " ";
 				
 				if (permissions.isOperator()) {
-					where += "AND category IN (SELECT category FROM PqfOperator o " +
+					where += "AND d.category IN (SELECT category FROM PqfOperator o " +
 							"WHERE o.riskLevel = :risk AND o.operatorAccount.id = :id) ";
 				}
 				if (permissions.isCorporate()) {
-					where += "AND category IN (SELECT category FROM PqfOperator o " +
+					where += "AND d.category IN (SELECT category FROM PqfOperator o " +
 							"WHERE o.riskLevel = :risk AND o.operatorAccount IN (" +
 							"SELECT operator FROM Facility f WHERE corporate.id = :id)) ";
 				}
 			}
 		}
 		
-		Query query = em.createQuery("FROM AuditCatData d " +
-				"WHERE audit = :conAudit AND category.auditType = :auditType " + where +
-				"ORDER BY category.number");
-		query.setParameter("conAudit", contractorAudit);
-		query.setParameter("auditType", contractorAudit.getAuditType());
+		Query query = em.createQuery(" select d FROM AuditCatData d inner join fetch d.category " +
+				"WHERE d.audit.id = :conAudit AND d.category.auditType.id = :auditType " + where +
+				"ORDER BY d.category.number");
+		
+		query.setParameter("conAudit", contractorAudit.getId());
+		query.setParameter("auditType", contractorAudit.getAuditType().getAuditTypeID());
 		setOptionalParameter(query, "id", permissions.getAccountId());
 		setOptionalParameter(query, "risk", contractorAudit.getContractorAccount().getRiskLevel());
 		
