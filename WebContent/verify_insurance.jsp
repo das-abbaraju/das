@@ -29,7 +29,9 @@ try{
 
 <head>
 <title>Verify Insurance</title>
-<script language="JavaScript" SRC="js/DHTMLUtils.js" type="text/javascript"></script>
+<script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script language="javascript">
 	function editCert(cid){
 		var tr = document.getElementById(cid);
@@ -47,12 +49,14 @@ try{
 <body>
 <h1>Verify Insurance Certificates
 <span class="sub">InsureGuard</span></h1>
-<table border="0" cellpadding="0" cellspacing="0">
-              <tr> 
-                <td height="70" colspan="2" align="center"> 
-                  <form name="form1" method="post" action="verify_insurance.jsp">
+<div id="search">
+<div id="showSearch"><a href="#" onclick="showSearch()">Show
+Filter Options</a></div>
+<div id="hideSearch" style="display: none"><a href="#"
+onclick="hideSearch()">Hide Filter Options</a></div>
+                  <form id="form1" name="form1" method="post" action="verify_insurance.jsp" style="display: none">
                   <table border="0" cellpadding="2" cellspacing="0">
-                    <tr align="center"> 
+                    <tr> 
                       <td><input name="s_accountName" type="text" class="forms" value="<%=filter.getInputValue("s_accountName")%>" size="20" onFocus="clearText(this)"></td>
 <%	if(pBean.isAdmin()){%>
                           <td><%=new AccountBean().getGeneralSelect3("s_opID","forms",filter.getInputValue("s_opID"),SearchBean.LIST_DEFAULT,"")%></td>
@@ -60,14 +64,23 @@ try{
                       <td><input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"></td>
                     </tr>
                   </table>
-                  </form>
-                </td>
-              </tr>
-            </table>
+            <input type="hidden" name="actionID" value="0">
+			<input type="hidden" name="action" value="">
+			<input type="hidden" name="showPage" value="1"/>
+			<input type="hidden" name="startsWith" value="<%=sBean.selected_startsWith == null ? "" : sBean.selected_startsWith %>"/>
+			<input type="hidden" name="orderBy"  value="<%=sBean.orderBy == null ? "dateCreated DESC" : sBean.orderBy %>"/>
+  <div class="alphapaging"> 
+  <%=sBean.getStartsWithLinks()%>
+  </div>            
+  </form>
+</div>  
+<div>
+<%=sBean.getLinksWithDynamicForm()%>
+</div>
+
             <form name="form2" method="post" action="verify_insurance.jsp?id=<%=pBean.userID %>">
-              <%=sBean.getLinks(filter.getURLQuery())%>
-              <table ID="certTable" width="100%" border="0" cellpadding="1" cellspacing="1">
-                <tr class="whiteTitle">
+              <table ID="certTable" class="report">
+                <thead><tr>
                   <td bgcolor="#003366">Num</td>
 <%		if(canEdit){ %>
                   <td bgcolor="#003366">Verify</td>
@@ -81,7 +94,7 @@ try{
                   <td bgcolor="#003366">Add'l Named Ins.</td>
                   <td bgcolor="#003366">Waiver</td>								
                   <td align="center" bgcolor="#993300">File</td>
-                </tr>
+                </tr></thead>
 <%	while (sBean.isNextRecord(certDO)) {%>
                 <tr id="<%=certDO.getCert_id()%>" <%=sBean.getBGColor()%> class="<%=sBean.getTextColor()%>">    
                           <td align="right"><%=sBean.count-1%></td>
@@ -110,7 +123,7 @@ try{
 <%  }//end while %>
               </table>
               <br>
-              <center><%=sBean.getLinks(filter.getURLQuery())%></center>
+              <center><%=sBean.getLinksWithDynamicForm()%></center>
               <br>
 <%	if(canEdit){ %>
               <center><input name="Submit" type="submit" class="buttons" value="Submit" ></center>
