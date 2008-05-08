@@ -201,6 +201,10 @@
 			class="com.picsauditing.actions.report.ReportFatalities">
 			<result>/struts/reports/report_fatalities.jsp</result>
 		</action>
+		<action name="ReportIncidenceRate"
+			class="com.picsauditing.actions.report.ReportIncidenceRate">
+			<result>/struts/reports/report_incidenceRates.jsp</result>
+		</action>
 		
 	</package>
 </struts>
