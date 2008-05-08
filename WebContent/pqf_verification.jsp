@@ -142,8 +142,8 @@ List<BasicDynaBean> searchData = report.getPage();
 		}
 	%>
 </table>
-<div>
+<div><center>
 <%=report.getPageLinksWithDynamicForm()%>
-</div>
+</center></div>
 </body>
 </html>

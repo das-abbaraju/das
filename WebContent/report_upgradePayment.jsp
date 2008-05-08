@@ -158,9 +158,9 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 </tr>	
 </table>
 <br>
-<div>
+<div><center>
 <%=sBean.getLinksWithDynamicForm()%>
-</div>
+</center></div>
 <%
 	sBean.closeSearch();
 %>

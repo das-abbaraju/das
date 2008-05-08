@@ -18,13 +18,12 @@
 			<td align="left"><nobr><s:textfield name="accountName"
 				cssClass="forms" size="8" onfocus="clearText(this)" onblur="unclearText(this)" /> <s:select
 				name="industry" list="industryList" cssClass="forms" /> <s:select
-				list="tradeList" cssClass="forms" name="trade" /> <s:select
-				list="tradePerformedByList" cssClass="forms" name="performedBy" />
+				list="tradeList" cssClass="forms" name="trade" /> 
 			<s:submit name="imageField" type="image"
 				src="images/button_search.gif" onclick="runSearch( 'form1')" /></nobr></td>
 		</tr>
 		<tr>
-			<td><s:select list="operatorList" cssClass="forms"
+		<td><s:select list="operatorList" cssClass="forms"
 				name="operator" listKey="id" listValue="name" /> <s:textfield
 				name="city" cssClass="forms" size="15" onfocus="clearText(this)" onblur="unclearText(this)" />
 			<s:select list="stateList" cssClass="forms" name="state" /> <s:textfield
@@ -40,7 +39,8 @@
 			9 digits</span></td>
 		</tr>
 		<tr>
-			<td><s:select list="worksInList" cssClass="forms" name="worksIn" />
+			<td><s:select list="tradePerformedByList" cssClass="forms" name="performedBy" />
+			<s:select list="worksInList" cssClass="forms" name="worksIn" />
 	</table>
 	<s:hidden name="showPage" value="1" />
 	<s:hidden name="startsWith" />
@@ -114,8 +114,7 @@
 	</s:iterator>
 
 </table>
-<div>
-<s:property value="report.pageLinksWithDynamicForm" escape="false" />
-</div>
+<center><s:property value="report.pageLinksWithDynamicForm" escape="false" />
+</center>
 </body>
 </html>

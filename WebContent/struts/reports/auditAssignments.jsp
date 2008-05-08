@@ -136,9 +136,9 @@ td.reportDate {
 	</s:iterator>
 </table>
 </s:form>
-<div>
+<div><center>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
-</div>
+</center></div>
 
 </body>
 </html>
