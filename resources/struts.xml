@@ -191,5 +191,10 @@
 			class="com.picsauditing.actions.report.ReportEMRRates">
 			<result>/struts/reports/report_EMRRates.jsp</result>
 		</action>
+		<action name="ReportFatalities"
+			class="com.picsauditing.actions.report.ReportFatalities">
+			<result>/struts/reports/report_fatalities.jsp</result>
+		</action>
+		
 	</package>
 </struts>

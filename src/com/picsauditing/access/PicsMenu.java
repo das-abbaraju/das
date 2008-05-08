@@ -108,7 +108,7 @@ public class PicsMenu {
 		if (!permissions.isContractor())
 			subMenu.addChild("EMR Rates", "ReportEmr.action");
 		if (!permissions.isContractor())
-			subMenu.addChild("Fatalities", "report_fatalities.jsp?changed=1");
+			subMenu.addChild("Fatalities", "ReportFatalities.action");
 		if (!permissions.isContractor())
 			subMenu.addChild("Incidence Rates", "report_incidenceRates.jsp?changed=1");
 
