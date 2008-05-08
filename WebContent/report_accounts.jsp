@@ -6,6 +6,7 @@
 <%@page import="javax.naming.NoPermissionException"%>
 <%@page import="com.picsauditing.search.SelectAccount"%>
 <%@page import="com.picsauditing.search.Report"%>
+<jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <%
 
 String action = request.getParameter("action");
@@ -73,18 +74,15 @@ List<BasicDynaBean> searchData = search.getPage();
 </head>
 <body>
 <h1>Manage <%=accountType%> Accounts</h1>
-<s:form id="form1" method="post" cssStyle="display: none">
-	<input type="hidden" name="type" value="<%= accountType %>" />
-	<s:hidden name="showPage" value="1" />
-	<s:hidden name="startsWith" />
-	<s:hidden name="orderBy" />
-</s:form>
+<input type="hidden" name="actionID" value="0">
+			<input type="hidden" name="action" value="">
+			<input type="hidden" name="showPage" value="1"/>
+			<input type="hidden" name="orderBy"  value="<%=sBean.orderBy == null ? "dateCreated DESC" : sBean.orderBy %>"/>
 <div>
-	<%= search.getStartsWithLinksWithDynamicForm() %>
-	<%= search.getPageLinksWithDynamicForm() %>
+<%= search.getPageLinksWithDynamicForm() %>
 <%
 if (canEdit) {
-%><div class="right"><a href="accounts_new_operator.jsp?type=<%=accountType%>">Create New</a></div><%
+%><div><a href="accounts_new_operator.jsp?type=<%=accountType%>">Create New</a></div><%
 }
 %>
 </div>
