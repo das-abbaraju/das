@@ -30,6 +30,8 @@ public class ReportAccount extends ReportActionSupport {
 	public static final String DEFAULT_CERTS = "- Ins. Certs -";
 	public static final String DEFAULT_VISIBLE = "- Visible -";
 
+	protected boolean forwardSingleResults = true;
+	
 	protected String startsWith;
 	protected String accountname = DEFAULT_NAME;
 	protected String industry;
@@ -66,7 +68,8 @@ public class ReportAccount extends ReportActionSupport {
 		sql.setType(SelectAccount.Type.Contractor);
 		this.run(sql);
 
-		if (!permissions.hasPermission(OpPerms.StatusOnly)
+		if (forwardSingleResults
+				&& !permissions.hasPermission(OpPerms.StatusOnly)
 				&& this.data.size() == 1) {
 			// Forward the user to the Contractor Details page
 			ServletActionContext.getResponse().sendRedirect(

@@ -2,7 +2,7 @@ package com.picsauditing.util.chart;
 
 public class Set extends AbstractElement {
 	protected String label;
-	protected float value;
+	protected float value = 0;
 	
 	protected String borderColor;
 	protected String borderAlpha;

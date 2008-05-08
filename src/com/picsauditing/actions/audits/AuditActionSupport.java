@@ -29,6 +29,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	
 	public String execute() throws Exception {
 		this.findConAudit();
+
 		return SUCCESS;
 	}
 
@@ -36,8 +37,13 @@ public class AuditActionSupport extends ContractorActionSupport {
 		conAudit = auditDao.find(auditID);
 		if (conAudit == null)
 			throw new Exception("Audit for this " + this.auditID + " not found");
+		
 		this.id = conAudit.getContractorAccount().getId();
 		findContractor();
+		
+		// Where are we handling all other perms? ie for operators
+		if (permissions.isContractor() && !conAudit.getAuditType().isCanContractorView())
+			throw new Exception("Contractors cannot view a "+conAudit.getAuditType().getAuditName());
 	}
 
 	public int getAuditID() {
@@ -76,4 +82,44 @@ public class AuditActionSupport extends ContractorActionSupport {
 		AuditData data = auditDataDao.findAnswersByContractor(conAudit.getContractorAccount().getId(), ids).get(AuditQuestion.MANUAL_PQF);
 		return data.getAnswer();
 	}
+	
+	public String getCatUrl() {
+		if (conAudit.getAuditStatus().equals(AuditStatus.Pending))
+			return "pqf_editMain.jsp";
+		if (conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
+			if (isCanVerify())
+				return "pqf_verify.jsp";
+			else
+				return "pqf_view.jsp";
+		}
+		
+		// Active/Exempt/Expired
+		return "pqf_view.jsp";
+	}
+	
+	public boolean isCanVerify() {
+		if (permissions.isOnlyAuditor() && (permissions.getUserId() == conAudit.getAuditor().getId())
+			&& (conAudit.getAuditType().isCanContractorEdit() == false))
+			return true;
+		if (permissions.seesAllContractors())
+			return true;
+		return false;
+	}
+	
+	public boolean isCanEdit() {
+		if (permissions.seesAllContractors())
+			return true;
+		
+		if (permissions.isOnlyAuditor() 
+				&& permissions.getUserId() == conAudit.getAuditor().getId()
+				&& !conAudit.getAuditType().isCanContractorEdit())
+			return true;
+		
+		if (permissions.isContractor()
+				&& conAudit.getAuditType().isCanContractorEdit()
+				&& conAudit.getAuditStatus().equals(AuditStatus.Pending))
+			return true;
+		return false;
+	}
+
 }

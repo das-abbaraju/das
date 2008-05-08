@@ -10,7 +10,7 @@ abstract public class AbstractElement {
 	 */
 	protected static void append(StringBuilder xml, String name, String value) {
 		if (value != null)
-			xml.append(" ").append(name).append("=\"").append(value).append("\"");
+			xml.append(" ").append(name).append("='").append(value).append("'");
 	}
 
 	/**
@@ -20,7 +20,7 @@ abstract public class AbstractElement {
 	 * @param value
 	 */
 	protected static void append(StringBuilder xml, String name, boolean value) {
-		xml.append(" ").append(name).append("=\"").append(value ? 1 : 0).append("\"");
+		xml.append(" ").append(name).append("='").append(value ? 1 : 0).append("'");
 	}
 
 	/**
@@ -30,6 +30,6 @@ abstract public class AbstractElement {
 	 * @param value
 	 */
 	protected static void append(StringBuilder xml, String name, float value) {
-		xml.append(" ").append(name).append("=\"").append(value).append("\"");
+		xml.append(" ").append(name).append("='").append(value).append("'");
 	}
 }
