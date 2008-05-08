@@ -105,8 +105,10 @@ public class PicsMenu {
 			subMenu.addChild("Assign Audit/Operator", "AuditOperator.action");
 
 		subMenu = menu.addChild("Reports");
-		if (!permissions.isContractor())
-			subMenu.addChild("EMR Rates", "ReportEmr.action");
+		if (!permissions.isContractor()) {
+			subMenu.addChild("EMR Rates (Graph)", "GraphEmrRates.action");
+			subMenu.addChild("EMR Rates", "ReportEmrRates.action");
+		}
 		if (!permissions.isContractor())
 			subMenu.addChild("Fatalities", "ReportFatalities.action");
 		if (!permissions.isContractor())
