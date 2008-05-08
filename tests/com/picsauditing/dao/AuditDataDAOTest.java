@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
@@ -29,6 +30,26 @@ public class AuditDataDAOTest {
 	@Autowired
 	AuditDataDAO auditdataDAO;
 
+	
+	
+	
+	
+	@Test
+	public void testVerifiedAnswers()
+	{
+		ContractorAccount ca = new ContractorAccount();
+		ca.setId(589);
+		for( AuditData ad : auditdataDAO.findCustomPQFVerifications(ca))
+		{
+			System.out.println(ad.getQuestion().getSubCategory().getSubCategory());
+		}
+	}
+	
+	
+	
+	
+	
+	
 	@Test
 	public void testSaveAndRemove() {
 		// remove any old data before starting the test
