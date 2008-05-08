@@ -34,6 +34,8 @@
 		if (permissions.isOperator())
 			showCategoryIDs = pcBean.getCategoryForOpRiskLevel(
 					permissions.getAccountIdString(), cBean.riskLevel);
+		
+		String catID = null;
 %>
 <%@page import="com.picsauditing.jpa.entities.AuditType"%>
 <html>
@@ -99,7 +101,7 @@
 							for (java.util.ListIterator li = psBean.subCategories
 									.listIterator(); li.hasNext();) {
 								numSections++;
-								String catID = pcBean.catID;
+								catID = pcBean.catID;
 								String subCatID = (String) li.next();
 								String subCat = (String) li.next();
 								pqBean
