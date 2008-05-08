@@ -153,6 +153,16 @@
 			<result>struts/chart_xml.jsp</result>
 		</action>
 
+		<action name="GraphEmrRates"
+			class="com.picsauditing.actions.report.GraphEmrRates">
+			<result>struts/reports/graph_emr.jsp</result>
+		</action>
+		
+		<action name="ReportEmrRates"
+			class="com.picsauditing.actions.report.ReportEmrRates">
+			<result>struts/reports/report_emr.jsp</result>
+		</action>
+		
 		<action name="ContractorRegistrationAjax"
 			class="com.picsauditing.actions.contractors.ContractorsWidget">
 			<result>struts/widgets/new_contractors.jsp</result>
@@ -186,10 +196,6 @@
 		<action name="FileUploadExample_*" method="{1}"
 			class="com.picsauditing.actions.FileUploadExample">
 			<result name="input">/struts/fileUpload.jsp</result>
-		</action>
-		<action name="ReportEmr"
-			class="com.picsauditing.actions.report.ReportEMRRates">
-			<result>/struts/reports/report_EMRRates.jsp</result>
 		</action>
 		<action name="ReportFatalities"
 			class="com.picsauditing.actions.report.ReportFatalities">
