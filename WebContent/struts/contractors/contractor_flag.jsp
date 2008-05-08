@@ -5,6 +5,9 @@
 <head>
 <title>Flag Status for <s:property value="contractor.name" /></title>
 <script type="text/javascript" src="js/prototype.js"></script>
+<SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">var cal1 = new CalendarPopup();</SCRIPT>
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/reports.css" />
 </head>
@@ -22,10 +25,32 @@ Status at <s:property value="co.operatorAccount.name" /></span></h1>
 		<td><b>Overall Flag Status</b></td>
 	</tr>
 	<tr>
-		<td>
-		<div id="override" style="display: none">asdf</div>
-		<a href="#" onclick="show($('override')); return false;">Manually
-		Override Color</a></td>
+		<td style="font-style: italic">
+		<s:if test="co.forcedFlag">
+		<s:form cssStyle="border: 2px solid #A84D10; background-color: #FFC; font-style: italic; padding: 2px;">
+			Manual Override <s:property value="co.forceFlag.smallIcon" escape="false" /> until <s:date name="co.forceEnd" format="MMM d, yyyy" />
+			<s:hidden name="id" />
+			<s:hidden name="opID" />
+			<s:hidden name="action" value="deleteOverride" />
+			<s:submit value="Cancel Override" />
+		</s:form>
+		</s:if>
+		<s:else>
+		<div id="override" style="display: none">
+		<s:form id="form_override">
+			<s:hidden name="id" />
+			<s:hidden name="opID" />
+			<s:submit value="Override" />
+			<s:select list="flagList" name="forceFlag" />
+			until <input id="forceEnd" name="forceEnd" size="8" type="text"
+					onClick="cal1.select(this,'forceEnd','M/d/yy'); return false;" />
+		</s:form>
+		<a href="#" onclick="$('override_link').show(); $('override').hide(); return false;">Nevermind</a>
+		</div>
+		<a id="override_link" href="#" onclick="$('override').show(); this.hide(); return false;">Manually
+		Override Color</a>
+		</s:else>
+		</td>
 	</tr>
 </table>
 </div>

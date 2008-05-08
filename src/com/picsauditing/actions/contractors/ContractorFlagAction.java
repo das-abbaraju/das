@@ -1,5 +1,6 @@
 package com.picsauditing.actions.contractors;
 
+import java.util.Date;
 import java.util.Map;
 
 import com.picsauditing.PICS.FlagCalculatorSingle;
@@ -22,6 +23,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected FlagCalculatorSingle calculator = new FlagCalculatorSingle();
 	protected Map<Integer, AuditData> auditData;
 	protected ContractorOperatorFlagDAO coFlagDao;
+	protected String action = "";
+	
+	protected Date forceEnd;
+	protected FlagColor forceFlag;
 
 	public ContractorFlagAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorOperatorDAO contractorOperatorDao, AuditDataDAO auditDataDAO,
@@ -48,6 +53,17 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		auditData = auditDataDAO.findAnswersByContractor(contractor.getId(), co.getOperatorAccount().getQuestionIDs());
 		calculator.setAuditAnswers(auditData);
 
+		if ("deleteOverride".equals(action)) {
+			co.setForceBegin(null);
+			co.setForceEnd(null);
+			co.setForceFlag(null);
+		}
+		
+		if (forceFlag != null && forceEnd != null) {
+			co.setForceEnd(forceEnd);
+			co.setForceFlag(forceFlag);
+		}
+		
 		FlagColor newColor = calculator.calculate();
 		co.getFlag().setFlagColor(newColor);
 		contractorOperatorDao.save(co);
@@ -114,5 +130,33 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				return true;
 		}
 		return false;
+	}
+	
+	public FlagColor[] getFlagList() {
+		return FlagColor.values();
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	public Date getForceEnd() {
+		return forceEnd;
+	}
+
+	public void setForceEnd(Date forceEnd) {
+		this.forceEnd = forceEnd;
+	}
+
+	public FlagColor getForceFlag() {
+		return forceFlag;
+	}
+
+	public void setForceFlag(FlagColor forceFlag) {
+		this.forceFlag = forceFlag;
 	}
 }

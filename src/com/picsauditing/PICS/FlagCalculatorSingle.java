@@ -49,14 +49,6 @@ public class FlagCalculatorSingle {
 	public FlagColor calculate() {
 		debug("FlagCalculator.calculate("+contractor.getId()+","+operator.getId()+")");
 		
-		// First see if there are any forced flags for this operator
-		for(ContractorOperator co : contractor.getOperators()) {
-			if (co.getOperatorAccount().getId() == operator.getId())
-				// Found the operator, is it forced?
-				if (answerOnly && co.isForcedFlag())
-					return co.getForceFlag();
-		}
-
 		// Start positive and see if there are any violations
 		FlagColor flagColor = FlagColor.Green;
 		
@@ -168,6 +160,15 @@ public class FlagCalculatorSingle {
 				}
 			}
 		}
+		
+		// First see if there are any forced flags for this operator
+		for(ContractorOperator co : contractor.getOperators()) {
+			if (co.getOperatorAccount().equals(operator))
+				// Found the operator, is it forced?
+				if (co.isForcedFlag())
+					flagColor = co.getForceFlag();
+		}
+
 		return flagColor;
 	}
 	
