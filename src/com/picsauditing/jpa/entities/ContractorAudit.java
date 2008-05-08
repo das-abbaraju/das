@@ -241,6 +241,7 @@ public class ContractorAudit {
 	}
 
 	@Transient
+	// I think we should move this to AuditActionSupport instead (Trevor 5/7/08)
 	public boolean isCanView(Permissions permissions) {
 		if (permissions.isContractor() && (getAuditType().isCanContractorView() == false))
 			return false;
@@ -249,6 +250,7 @@ public class ContractorAudit {
 	}
 
 	@Transient
+	// I think we should move this to AuditActionSupport instead (Trevor 5/7/08)
 	public boolean isCanEdit(Permissions permissions) {
 		if (permissions.isOnlyAuditor() && (permissions.getUserId() == getAuditor().getId())
 				&& (getAuditType().isCanContractorEdit() == false))
@@ -262,6 +264,7 @@ public class ContractorAudit {
 	}
 
 	@Transient
+	// I think we should move this to AuditActionSupport instead (Trevor 5/7/08)
 	public boolean isCanVerify(Permissions permissions) {
 		if (permissions.isOnlyAuditor() && (permissions.getUserId() == getAuditor().getId())
 				&& (getAuditType().isCanContractorEdit() == false))

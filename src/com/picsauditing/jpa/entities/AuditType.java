@@ -170,4 +170,8 @@ public class AuditType {
 		return false;
 	}
 
+	@Transient
+	public boolean isPQF() {
+		return (auditTypeID == PQF);
+	}
 }
