@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -30,8 +31,8 @@ public class VerifyView extends AuditActionSupport {
 	private Map<Integer, AuditData> emr = new HashMap<Integer, AuditData>();
 	private int followUp = 0;
 
-	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO, AuditDataDAO pqfDao) {
-		super(accountDao, contractorAuditDAO);
+	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO, AuditDataDAO pqfDao, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao) {
+		super(accountDao, contractorAuditDAO, catDataDao, auditDataDao);
 		this.pqfDao = pqfDao;
 	}
 
