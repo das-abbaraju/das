@@ -73,7 +73,7 @@ public class EmailContractorBean extends EmailBean {
 			|| emailType.equals(EmailTemplates.desktopsubmit)
 			)
 			ccAddress = "";
-				String selectQuery = "SELECT email FROM users WHERE id = "+auditor_id;
+		//String selectQuery = "SELECT email FROM users WHERE id = "+auditor_id;
 		
 		this.sendMail();
 		this.addNote(emailType.getDescription() + " email sent to: "+ this.getSentTo());

@@ -63,7 +63,7 @@ public class FlagCalculatorSingle {
 		for(AuditOperator audit : operator.getAudits()) {
 			if (contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel() ) {
 				// The contractor requires this audit, make sure they have an active one
-				boolean found = false;
+				audit.setContractorFlag(audit.getRequiredForFlag());
 				for(ContractorAudit conAudit : conAudits) {
 					if (conAudit.getAuditType().equals(audit.getAuditType())
 							&& conAudit.getAuditStatus().equals(AuditStatus.Active)) {
@@ -73,7 +73,7 @@ public class FlagCalculatorSingle {
 				}
 				// If an active audit doesn't exist, then set
 				// the contractor's flag to the required color
-				setFlagColor(flagColor, audit.getContractorFlag());
+				flagColor = setFlagColor(flagColor, audit.getContractorFlag());
 			}
 			if (answerOnly && flagColor.equals(FlagColor.Red))
 				// Things can't get worse, just exit

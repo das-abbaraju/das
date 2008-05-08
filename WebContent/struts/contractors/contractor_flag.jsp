@@ -7,19 +7,6 @@
 <script type="text/javascript" src="js/prototype.js"></script>
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/reports.css" />
-<style>
-.Green {
-	color: #272;
-}
-
-.Amber {
-	color: #770;
-}
-
-.Red {
-	color: #900;
-}
-</style>
 </head>
 <body>
 <h1><s:property value="contractor.name" /> <span class="sub">Flag
@@ -47,7 +34,7 @@ Status at <s:property value="co.operatorAccount.name" /></span></h1>
 	<thead>
 		<tr>
 			<td>Flag</td>
-			<td>Required Audit</td>
+			<td>Missing/Incomplete Audits</td>
 		</tr>
 	</thead>
 	<s:iterator value="co.operatorAccount.audits">

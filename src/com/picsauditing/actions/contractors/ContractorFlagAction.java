@@ -7,6 +7,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -20,12 +21,15 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected ContractorOperator co;
 	protected FlagCalculatorSingle calculator = new FlagCalculatorSingle();
 	protected Map<Integer, AuditData> auditData;
+	protected ContractorOperatorFlagDAO coFlagDao;
 
 	public ContractorFlagAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			ContractorOperatorDAO contractorOperatorDao, AuditDataDAO auditDataDAO) {
+			ContractorOperatorDAO contractorOperatorDao, AuditDataDAO auditDataDAO,
+			ContractorOperatorFlagDAO contractorOperatorFlagDAO) {
 		super(accountDao, auditDao);
 		this.contractorOperatorDao = contractorOperatorDao;
 		this.auditDataDAO = auditDataDAO;
+		this.coFlagDao = contractorOperatorFlagDAO;
 	}
 
 	public String execute() throws Exception {

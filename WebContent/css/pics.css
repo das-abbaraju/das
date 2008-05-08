@@ -423,3 +423,16 @@ ul#navlist {
 	width:75%;
 	position:relative;
 }
+
+/*** FLAG Colors ***/
+.Green {
+	color: #272;
+}
+
+.Amber {
+	color: #770;
+}
+
+.Red {
+	color: #900;
+}

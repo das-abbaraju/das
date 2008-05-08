@@ -71,9 +71,6 @@
 		<s:if test="desktopVisible">
 			<td>Desktop</td>
 		</s:if>
-		<s:if test="daVisible">
-			<td>DA</td>
-		</s:if>
 		<s:if test="officeVisible">
 			<td>Office</td>
 		</s:if>
@@ -111,23 +108,13 @@
 				</s:if></td>
 			</s:if>
 			<s:if test="desktopVisible">
-				<td>&nbsp; <s:if
+				<td><s:if
 					test="[0].get('ca2_auditID') > 0">
 					<s:if test="[0].get('ca2_auditStatus').equals('Exempt')">N/A</s:if>
 					<s:else>
 						<a
 							href="Audit.action?auditID=<s:property value="[0].get('ca2_auditID')"/>"><img
 							src="images/icon_Desktop.gif" width="20" height="20" border="0"></a>
-					</s:else>
-				</s:if></td>
-			</s:if>
-			<s:if test="daVisible">
-				<td align="center"><s:if test="[0].get('ca6_auditID') > 0">
-					<s:if test="[0].get('ca6_auditStatus').equals('Exempt')">N/A</s:if>
-					<s:else>
-						<a
-							href="Audit.action?auditID=<s:property value="[0].get('ca6_auditID')"/>"><img
-							src="images/icon_DA.gif" width="20" height="20" border="0"></a>
 					</s:else>
 				</s:if></td>
 			</s:if>
@@ -151,18 +138,20 @@
 				</s:if>
 			</td>
 			</pics:permission>
-			<td align="center"><s:if test="operator">
-				<a href="ContractorFlag.action?id=<s:property value="[0].get('id')"/>"
-					title="Click to view Flag Color details"> <img
-					src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif"
-					width="12" height="15" border="0"></a>
-			</s:if></td>
+			<s:if test="operator">
+				<td class="center">
+					<a href="ContractorFlag.action?id=<s:property value="[0].get('id')"/>"
+						title="Click to view Flag Color details"> <img
+						src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif"
+						width="12" height="15" border="0"></a>
+				</td>
+			</s:if>
 			<s:if test="operatorAccount.approvesRelationships">
 				<pics:permission perm="ViewUnApproved">
 					<td align="center">&nbsp;&nbsp;&nbsp;&nbsp;<s:property
 						value="[0].get('workStatus')" />
+					</td>
 				</pics:permission>
-				</td>
 			</s:if>
 		</tr>
 	</s:iterator>
