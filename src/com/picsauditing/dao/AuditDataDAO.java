@@ -3,12 +3,13 @@ package com.picsauditing.dao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.persistence.Query;
 
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
 
 public class AuditDataDAO extends PicsDAO {
 	public AuditData save(AuditData o) {
@@ -44,6 +45,24 @@ public class AuditDataDAO extends PicsDAO {
 		return mapData(query.getResultList());
 	}
 
+	public List<AuditData> findCustomPQFVerifications(ContractorAccount contractor) {
+		
+		StringBuffer queryString = new StringBuffer();
+		
+		queryString.append("select d FROM AuditData d ");
+		queryString.append("inner join fetch d.question q ");
+		queryString.append("inner join fetch q.subCategory sc ");
+		queryString.append("inner join fetch sc.category cat ");
+		queryString.append("where d.audit.contractorAccount.id = ? ");
+		queryString.append("and EXISTS ( select a from AuditQuestionOperatorAccount a where a.auditQuestion.questionID = q.questionID ) ");
+		
+		Query query = em.createQuery(queryString.toString()) ;
+		
+		query.setParameter(1, contractor.getId());
+		
+		return query.getResultList();
+	}
+	
 	public Map<Integer, AuditData> findAnswers(int auditID, List<Integer> questionIds) {
 		if (questionIds.size() == 0)
 			return new HashMap<Integer, AuditData>();
