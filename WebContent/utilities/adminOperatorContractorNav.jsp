@@ -1,5 +1,6 @@
 <%@page import="com.picsauditing.jpa.entities.ContractorAudit"%>
 <%@page import="com.picsauditing.jpa.entities.AuditStatus"%>
+<%@page import="com.picsauditing.access.OpPerms;"%>
 <div id="internalnavcontainer">
 <ul id="navlist">
 	<li><a href="ContractorView.action?id=<%=id%>">Details</a></li>
@@ -18,7 +19,7 @@
 		<%= request.getRequestURI().contains("accounts_edit_contractor") ? "class=\"current\"" : ""%>>Edit</a></li>
 	<%
 		} 
-	%>	
+	%>
 	<%
 		if (permissions.isContractor()) {
 	%>

@@ -1,22 +1,12 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<%@page import="com.picsauditing.access.OpPerms"%>
-<jsp:useBean id="permissions"
-	class="com.picsauditing.access.Permissions" scope="session" />
-<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean"
-	scope="page" />
-<style>
-td.label {
-	text-align: right;
-	padding-left: 6px;
-	padding-right: 4px;
-	font-weight: bold;
-	background-color: #BBBBBB;
-}
-</style>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
+
 <h1><s:property value="conAudit.contractorAccount.name" /> <span
 	class="sub"><s:property value="conAudit.auditType.auditName" />
 - <s:date name="conAudit.effectiveDate" format="MMM yyyy" /></span></h1>
 
+<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page" />
 <%
 	String id = request.getParameter("id");
 	cBean.setFromDB(id);
@@ -88,10 +78,11 @@ td.label {
 </table>
 
 <div>
-<s:if test="conAudit.auditType.auditTypeID == AuditType.PQF">
-	if (permissions.hasPermission(OpPerms.AuditVerification)
-	<a href="VerifyView.action?auditID=<s:property value="auditID" />">Verify PQF</a> |
+  <a href="pqf_viewAll.jsp?auditID=<s:property value="auditID" />">View All</a>
+| <a href="pqf_printAll.jsp?auditID=<s:property value="auditID" />">Print</a>
+<s:if test="conAudit.auditType.PQF">
+	<pics:permission perm="AuditVerification">
+	| <a href="VerifyView.action?auditID=<s:property value="auditID" />">Verify PQF</a>
+	</pics:permission>
 </s:if>
-<a href="pqf_viewAll.jsp?auditID=<s:property value="auditID" />">View All</a> |
-<a href="pqf_printAll.jsp?auditID=<s:property value="auditID" />">Print</a>
 </div>

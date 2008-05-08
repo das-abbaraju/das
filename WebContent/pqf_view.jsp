@@ -19,24 +19,19 @@
 	String conID = action.getAudit().getContractorAccount().getId().toString();
 	try {
 		String catID = request.getParameter("catID");
-		boolean isCategorySelected = (null != catID && !"0"
-				.equals(catID));
+		if (catID == null || catID.length() == 0)
+			throw new Exception("Missing catID");
+		
 		boolean isOSHA = pcBean.OSHA_CATEGORY_ID.equals(catID);
 		boolean isServices = pcBean.SERVICES_CATEGORY_ID.equals(catID);
 		cBean.setFromDB(conID);
 		cBean.tryView(permissions);
-		Set<String> showCategoryIDs = null;
-		if (permissions.isOperator()) {
-			showCategoryIDs = pcBean.getCategoryForOpRiskLevel(
-					permissions.getAccountIdString(), cBean.riskLevel);
-		}
 		if (action.getAudit().getAuditType().getAuditTypeID() == AuditType.NCMS) {
 			response.sendRedirect("pqf_viewNCMS.jsp?auditID=" + action.getAudit());
 			return;
 		}
 		pdBean.setFromDB(action.getAuditID(), conID, catID);
-		if (isCategorySelected)
-			psBean.setPQFSubCategoriesArray(catID);
+		psBean.setPQFSubCategoriesArray(catID);
 		int catCount = 0;
 %>
 <%@page import="java.util.Set"%>
@@ -74,7 +69,6 @@
 	</tr>
 	<%
 		}//if
-			if (isCategorySelected) {
 				pcBean.setFromDBWithData(catID, action.getAuditID());
 	%>
 	<tr align="center">
@@ -186,9 +180,6 @@
 		</table>
 		</td>
 	</tr>
-	<%
-		}//if
-	%>
 </table>
 <%
 	} finally {

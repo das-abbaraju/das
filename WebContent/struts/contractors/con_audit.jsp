@@ -32,7 +32,9 @@
 	<s:iterator value="categories" status="rowStatus">
 		<tr>
 			<td class="right"><s:property value="category.number" /></td>
-			<td><a href="pqf_view.jsp?auditID=<s:property value="auditID" />&catID=<s:property value="category.id" />"><s:property value="category.category" /></a></td>
+			
+			<td><a href="<s:property value="catUrl" />?auditID=<s:property value="auditID" />&catID=<s:property value="category.id" />"><s:property value="category.category" /></a></td>
+			
 			<s:if test="conAudit.auditStatus.name() == 'Pending'">
 				<td class="right"><s:property value="percentCompleted" />%</td>
 				<td><s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if></td>
@@ -48,20 +50,3 @@
 </table>
 </body>
 </html>
-
-<%
-/*
-if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE
-		.equals(auditType)
-		|| com.picsauditing.PICS.pqf.Constants.DA_TYPE
-				.equals(auditType)
-		|| com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE
-				.equals(auditType))
-	showPercent = pcBean.percentVerified;
-else
-	showPercent = pcBean.percentCompleted;
-
-pcBean.getPercentShow(showPercent) pcBean.getPercentCheck(showPercent)
-*/
-%>
-				
