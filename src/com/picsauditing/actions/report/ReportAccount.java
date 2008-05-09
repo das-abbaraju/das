@@ -33,7 +33,7 @@ public class ReportAccount extends ReportActionSupport {
 	protected boolean forwardSingleResults = true;
 	
 	protected String startsWith;
-	protected String accountname = DEFAULT_NAME;
+	protected String accountName = DEFAULT_NAME;
 	protected String industry;
 	protected String performedBy;
 	protected int trade;
@@ -142,13 +142,15 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public String getAccountName() {
-		return accountname;
+		return accountName;
 	}
 
-	public void setAccountName(String accountname) {
-		report.addFilter(new SelectFilter("accountname", "a.name LIKE '%?%'",
-				accountname, DEFAULT_NAME, DEFAULT_NAME));
-		this.accountname = accountname;
+	public void setAccountName(String accountName) {
+		if(accountName == null || accountName.length() == 0)
+			accountName = DEFAULT_NAME;
+		report.addFilter(new SelectFilter("accountName", "a.name LIKE '%?%'",
+				accountName, DEFAULT_NAME, DEFAULT_NAME));
+		this.accountName = accountName;
 	}
 
 	public String getIndustry() {
@@ -214,6 +216,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setCity(String city) {
+		if(city == null || city.length() == 0)
+			city = DEFAULT_CITY;
 		report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", city,
 				DEFAULT_CITY, DEFAULT_CITY));
 		this.city = city;
@@ -233,6 +237,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setZip(String zip) {
+		if(zip == null || zip.length() == 0)
+			zip = DEFAULT_ZIP;
 		report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", zip,
 				DEFAULT_ZIP, DEFAULT_ZIP));
 		this.zip = zip;
@@ -289,6 +295,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setTaxID(String taxID) {
+		if(taxID == null || taxID.length() == 0)
+			taxID = DEFAULT_TAX_ID;
 		report.addFilter(new SelectFilter("taxID", "c.taxID = '?'", taxID,
 				DEFAULT_TAX_ID, DEFAULT_TAX_ID));
 		this.taxID = taxID;

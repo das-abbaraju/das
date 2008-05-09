@@ -53,7 +53,7 @@ onclick="hideSearch()">Hide Filter Options</a></div>
                         <td>
                           <input name="name" type="text" class="forms" value="<%=sBean.selected_name%>" size="20" onFocus="clearText(this)">
                           <%=SearchBean.getSearchGeneralSelect("generalContractorID", "blueMain", sBean.selected_generalContractorID)%>
-                       	  <input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()">
+                       	  <input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0">
                           </td></tr>
                           <tr><td>
                           <%=Inputs.inputSelect("invoicedStatus", "blueMain", sBean.selected_invoicedStatus,SearchBean.INVOICED_SEARCH_ARRAY)%>
@@ -68,9 +68,9 @@ onclick="hideSearch()">Hide Filter Options</a></div>
               
               
               
-              <div class="alphapaging"> 
-                <%=sBean.getStartsWithLinks()%>
-              </div>
+<div class="alphapaging">
+<%=sBean.getStartsWithLinksWithDynamicForm()%>
+</div>
 </form>
 </div>
 <div>

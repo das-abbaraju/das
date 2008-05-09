@@ -69,9 +69,9 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 			<input type="hidden" name="showPage" value="1"/>
 			<input type="hidden" name="startsWith" value="<%=sBean.selected_startsWith == null ? "" : sBean.selected_startsWith %>"/>
 			<input type="hidden" name="orderBy"  value="<%=sBean.orderBy == null ? "dateCreated DESC" : sBean.orderBy %>"/>
-  <div class="alphapaging"> 
-  <%=sBean.getStartsWithLinks()%>
-  </div>            
+<div class="alphapaging">
+<%=sBean.getStartsWithLinksWithDynamicForm()%>
+</div>           
   </form>
 </div>  
 <div>

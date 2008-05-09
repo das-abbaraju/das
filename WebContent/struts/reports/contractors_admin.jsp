@@ -15,28 +15,25 @@
 <s:form id="form1" method="get" cssStyle="display: none">
 	<table border="0" align="center" cellpadding="2" cellspacing="0">
 		<tr>
-			<td align="left"><nobr><s:textfield name="accountName"
-				cssClass="forms" size="8" onfocus="clearText(this)" onblur="unclearText(this)" /> <s:select
-				name="industry" list="industryList" cssClass="forms" /> <s:select
-				list="tradeList" cssClass="forms" name="trade" /> 
-			<s:submit name="imageField" type="image"
-				src="images/button_search.gif" onclick="runSearch( 'form1')" /></nobr></td>
+			<td align="left"><nobr>
+			<s:textfield name="accountName" cssClass="forms" size="8" onfocus="clearText(this)" />
+			 <s:select name="industry" list="industryList" cssClass="forms" />
+			 <s:select list="tradeList" cssClass="forms" name="trade" /> 
+			<s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch( 'form1')" />
+			</nobr></td>
 		</tr>
 		<tr>
-		<td><s:select list="operatorList" cssClass="forms"
-				name="operator" listKey="id" listValue="name" /> <s:textfield
-				name="city" cssClass="forms" size="15" onfocus="clearText(this)" onblur="unclearText(this)" />
-			<s:select list="stateList" cssClass="forms" name="state" /> <s:textfield
-				name="zip" cssClass="forms" size="5" onfocus="clearText(this)" onblur="unclearText(this)" /></td>
+		<td><s:select list="operatorList" cssClass="forms" name="operator" listKey="id" listValue="name" /> 
+			<s:textfield name="city" cssClass="forms" size="15" onfocus="clearText(this)"  />
+			<s:select list="stateList" cssClass="forms" name="state" />
+			<s:textfield name="zip" cssClass="forms" size="5" onfocus="clearText(this)" /></td>
 		</tr>
 		<tr>
-			<td><s:select list="certsOptions" cssClass="forms"
-				name="certsOnly" /> <s:select list="visibleOptions"
-				cssClass="forms" name="visible" /> <s:select
-				list="stateLicensesList" cssClass="forms" name="stateLicensedIn" />
-			<s:textfield name="taxID" cssClass="forms" size="9"
-				onfocus="clearText(this)" onblur="unclearText(this)" /> <span class="redMain">*must be
-			9 digits</span></td>
+			<td><s:select list="certsOptions" cssClass="forms" name="certsOnly" />
+			<s:select list="visibleOptions" cssClass="forms" name="visible" />
+			<s:select list="stateLicensesList" cssClass="forms" name="stateLicensedIn" />
+			<s:textfield name="taxID" cssClass="forms" size="9" onfocus="clearText(this)"  />
+			<span class="redMain">*must be 9 digits</span></td>
 		</tr>
 		<tr>
 			<td><s:select list="tradePerformedByList" cssClass="forms" name="performedBy" />

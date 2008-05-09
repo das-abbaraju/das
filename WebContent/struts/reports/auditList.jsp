@@ -16,17 +16,19 @@
 <s:form id="form1" method="post" cssStyle="display: none">
 	<table>
 	<tr>
-		<td style="vertical-align: middle;"><s:textfield name="accountName" cssClass="forms" size="8" onfocus="clearText(this)" onblur="unclearText(this)" />
+		<td style="vertical-align: middle;"><s:textfield name="accountName" cssClass="forms" size="8" onfocus="clearText(this)"  />
 			<s:select list="auditTypeList" cssClass="forms" name="auditTypeID" listKey="auditTypeID" listValue="auditName" />
 			<s:select list="auditStatusList" cssClass="forms" name="auditStatus" />
-			<s:if test="%{value = !permissions.operator}">
+			<s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch( 'form1')" />
+			</td></tr>
+			<tr><td><s:if test="%{value = !permissions.operator}">
 			<s:select list="operatorList" cssClass="forms" name="operator" listKey="id" listValue="name" />
 			</s:if>
 			<s:action name="AuditorsGet" executeResult="true">
 				<s:param name="controlName" value="%{'auditorId'}"/>
+				<s:param name="presetValue" value="auditorId"/>		
 			</s:action>
 		</td>
-		<td><s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch( 'form1')" /></td>
 	</tr>
 	</table>
 	<s:hidden name="showPage" value="1"/>
