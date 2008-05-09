@@ -46,7 +46,6 @@ try{
 				<td><input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0" >
 			</tr>
 		</table>
-        <%=sBean.getStartsWithLinks()%><br>
 		<% if (permissions.isOperator()) { %>
 			<input type="hidden" name="searchCorporate" value="<%= request.getParameter("searchCorporate")%>"/>
 		<% } %>
@@ -54,6 +53,9 @@ try{
 		<input type="hidden" name="startsWith" value=""/>
 		<input type="hidden" name="orderBy"  value="name"/>
 		<input type="hidden" name="changed"  value="1"/>
+<div class="alphapaging">
+<%=sBean.getStartsWithLinksWithDynamicForm()%>
+</div>
 </form>
 </div>
 
