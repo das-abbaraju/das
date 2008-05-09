@@ -30,9 +30,9 @@ Version</span></h1>
 				onclick="runSearch( 'form1')" /></td>
 		</tr>
 		<tr>
-			<td><s:if test="operator">
+			<td><s:if test="permissions.operator">
 				<s:select list="flagStatusList" cssClass="forms" name="flagStatus" />
-			</s:if> <s:if test="corporate">
+			</s:if> <s:if test="permissions.corporate">
 				<s:select list="operatorList" cssClass="forms" name="operator" />
 			</s:if></td>
 		</tr>
@@ -52,7 +52,7 @@ Version</span></h1>
 	<thead>
 	<tr>
 		<td colspan="2">Contractor Name</td>
-		<s:if test="operator">
+		<s:if test="permissions.operator">
 			<td align="center" bgcolor="#6699CC"><a
 				href="?orderBy=flag DESC" class="whiteTitle">Flag</a></td>
 		</s:if>
@@ -62,7 +62,7 @@ Version</span></h1>
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><s:property value="[0].get('name')" /></td>
-			<td class="center"><s:if test="operator">
+			<td class="center"><s:if test="permissions.operator">
 				<a href="ContractorFlag.action?id=<s:property value="[0].get('id')"/>"><img
 					src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif"
 					width="12" height="15" border="0"></a>

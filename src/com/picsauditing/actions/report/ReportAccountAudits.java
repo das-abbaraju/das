@@ -28,12 +28,5 @@ public class ReportAccountAudits extends ReportAccount {
 	public boolean isOfficeVisible() {
 		return permissions.canSeeAudit(AuditType.OFFICE);
 	}
-
-	public boolean isOperator() {
-		return permissions.isOperator();
-	}
-
-	public boolean isCorporate() {
-		return permissions.isCorporate();
-	}
+	
 }

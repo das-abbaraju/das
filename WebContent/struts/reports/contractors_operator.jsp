@@ -31,12 +31,12 @@
 				src="images/button_search.gif" onclick="runSearch( 'form1')" /></td>
 		</tr>
 		<tr>
-			<td><s:if test="operator">
+			<td><s:if test="permissions.operator">
 				<s:select list="flagStatusList" cssClass="forms" name="flagStatus" />
-			</s:if> <s:if test="corporate">
+			</s:if> <s:if test="permissions.corporate">
 				<s:select list="operatorList" cssClass="forms" name="operator"
 					listKey="id" listValue="name" />
-			</s:if> <s:if test="operator">
+			</s:if> <s:if test="permissions.operator">
 				<s:select list="stateLicensesList" cssClass="forms"
 					name="stateLicensedIn" />
 			</s:if><s:textfield name="taxID" cssClass="forms" size="9"
@@ -44,7 +44,7 @@
 			9 digits</span></td>
 		</tr>
 		<tr>
-			<s:if test="operator">
+			<s:if test="permissions.operator">
 				<td><s:select list="worksInList" cssClass="forms"
 					name="worksIn" /></td>
 			</s:if>
@@ -77,7 +77,7 @@
 		<pics:permission perm="InsuranceCerts">
 			<td>Ins. Certs</td>
 		</pics:permission>
-		<s:if test="operator">
+		<s:if test="permissions.operator">
 			<td><a
 				href="?orderBy=flag DESC">Flag</a></td>
 		</s:if>
