@@ -75,7 +75,7 @@ List<BasicDynaBean> searchData = report.getPage();
 		and <input type="text" name="maxTimes" value="<%=report.getFilterValue("maxTimes")%>" size="2" class="blueSmall" /><br />
 	PQF Submitted before: <input type="text" name="pqfDate" value="<%=report.getFilterValue("pqfDate")%>" size="10" class="blueSmall" /><br />
 	Registered before: <input type="text" name="dateCreated" value="<%=report.getFilterValue("dateCreated")%>" size="10" class="blueSmall" /><br />
-	<input type="submit" value="Filter" />
+	<input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0" >
 	<input type="hidden" name="showPage" value="1"/>
 	<input type="hidden" name="startsWith" />
 	<input type="hidden" name="orderBy"  value="<%=report.getOrderBy() %>"/>

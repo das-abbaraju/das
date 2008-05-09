@@ -86,7 +86,10 @@ function checkUsername(username, userID) {
 <table border="0">
 <tr>
 	<td colspan="2" align="center">
-		<s:form id="form1" method="post">
+		<div id="search">
+		<div id="showSearch"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
+		<div id="hideSearch" style="display: none"><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
+		<s:form id="form1" method="post" cssStyle="display: none">
 		
 		<pics:permission perm="AllOperators">
 			Filter by User: <input type="text" name="filter" id="filter" class="blueSmall" onchange="filterOperators();" /><br />
@@ -105,24 +108,26 @@ function checkUsername(username, userID) {
 				       list="#{'Yes':'Active', 'No':'Inactive'}"
 				       value="isActive"
 				/>
-			<input type="submit" value="Show" class="blueSmall"/>
-			
-			<input type="hidden" name="showPage" value="1"/>
-			<input type="hidden" name="startsWith" value=""/>
-			<input type="hidden" name="orderBy"  value="name"/>
+			<s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch( 'form1')" />
+			<s:hidden name="showPage" value="1"/>
+			<s:hidden name="startsWith" value=""/>
+			<s:hidden name="orderBy"  value="name"/>
 		</s:form>
+		</div>
 	</td>
 </tr>
+<tr><td>
+<div>
+<s:property value="search.pageLinksWithDynamicForm" escape="false"/>
+</div>
+</td></tr>
 <tr>
-	<td colspan="2" align="center" class="blueSmall">
+	<td colspan="2" align="center" class="blueMain">
 		<a href="#" onclick="addUser(true); return false;">Add Group</a>
-		<a href="#" onclick="addUser(false); return false;">Add User</a>
+		&nbsp;&nbsp;<a href="#" onclick="addUser(false); return false;">Add User</a>
 	</td>
 </tr>
 <tr valign="top"><td>
-	<div>
-	<s:property value="search.pageLinksWithDynamicForm" escape="false"/>
-	</div>
 	<table class="report">
 		<thead>
 		<tr>
