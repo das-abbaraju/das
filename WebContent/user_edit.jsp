@@ -47,7 +47,7 @@ if (action.equals("saveUser")) {
 		uBean.writeToDB();
 		if (isNew) {
 			%>Successfully Created New <%=isGroup?"Group":"User"%><br /><br />
-			<a href="users_manage.jsp?accountID=<%=uBean.userDO.accountID%>&isGroup=<%=uBean.userDO.isGroup%>&isActive=Yes">Click to Refresh List</a><%
+			<a href="UsersManage.action?accountID=<%=uBean.userDO.accountID%>&isGroup=<%=uBean.userDO.isGroup%>&isActive=Yes">Click to Refresh List</a><%
 			return;
 		}
 	} else {
