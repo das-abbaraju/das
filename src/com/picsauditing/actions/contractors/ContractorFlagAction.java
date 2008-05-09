@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Map;
 
 import com.picsauditing.PICS.FlagCalculatorSingle;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -54,12 +55,14 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		calculator.setAuditAnswers(auditData);
 
 		if ("deleteOverride".equals(action)) {
+			permissions.tryPermission(OpPerms.EditForcedFlags);
 			co.setForceBegin(null);
 			co.setForceEnd(null);
 			co.setForceFlag(null);
 		}
 		
 		if (forceFlag != null && forceEnd != null) {
+			permissions.tryPermission(OpPerms.EditForcedFlags);
 			co.setForceEnd(forceEnd);
 			co.setForceFlag(forceFlag);
 		}

@@ -22,7 +22,7 @@ Status at <s:property value="co.operatorAccount.name" /></span></h1>
 	<tr>
 		<td rowspan="2" style="vertical-align: middle;"><s:property
 			value="co.flag.flagColor.bigIcon" escape="false" /></td>
-		<td><b>Overall Flag Status</b></td>
+		<td style="vertical-align: middle;"><b>Overall Flag Status</b></td>
 	</tr>
 	<tr>
 		<td style="font-style: italic">
@@ -32,23 +32,27 @@ Status at <s:property value="co.operatorAccount.name" /></span></h1>
 			<s:hidden name="id" />
 			<s:hidden name="opID" />
 			<s:hidden name="action" value="deleteOverride" />
+			<pics:permission perm="EditForcedFlags">
 			<s:submit value="Cancel Override" />
+			</pics:permission>
 		</s:form>
 		</s:if>
 		<s:else>
-		<div id="override" style="display: none">
-		<s:form id="form_override">
-			<s:hidden name="id" />
-			<s:hidden name="opID" />
-			<s:submit value="Override" />
-			<s:select list="flagList" name="forceFlag" />
-			until <input id="forceEnd" name="forceEnd" size="8" type="text"
-					onClick="cal1.select(this,'forceEnd','M/d/yy'); return false;" />
-		</s:form>
-		<a href="#" onclick="$('override_link').show(); $('override').hide(); return false;">Nevermind</a>
-		</div>
-		<a id="override_link" href="#" onclick="$('override').show(); this.hide(); return false;">Manually
-		Override Color</a>
+			<pics:permission perm="EditForcedFlags">
+			<div id="override" style="display: none">
+			<s:form id="form_override">
+				<s:hidden name="id" />
+				<s:hidden name="opID" />
+				<s:submit value="Override" />
+				<s:select list="flagList" name="forceFlag" />
+				until <input id="forceEnd" name="forceEnd" size="8" type="text"
+						onClick="cal1.select(this,'forceEnd','M/d/yy'); return false;" />
+			</s:form>
+			<a href="#" onclick="$('override_link').show(); $('override').hide(); return false;">Nevermind</a>
+			</div>
+			<a id="override_link" href="#" onclick="$('override').show(); this.hide(); return false;">Manually
+			Override Color</a>
+			</pics:permission>
 		</s:else>
 		</td>
 	</tr>
@@ -79,6 +83,7 @@ Status at <s:property value="co.operatorAccount.name" /></span></h1>
 	Criteria for Audits</a></div>
 </pics:permission>
 
+<s:if test="oshaFatalitiesUsed || oshaLwcrUsed || oshaTrirUsed">
 <s:if test="contractor.oshas.size > 0">
 	<table class="report">
 		<thead>
@@ -149,19 +154,20 @@ Status at <s:property value="co.operatorAccount.name" /></span></h1>
 							escape="false" /></td>
 						<td>Avg</td>
 						<s:if test="oshaFatalitiesUsed">
-							<td class="right"><s:property value="averageFatalities" /></td>
+							<td></td>
 						</s:if>
 						<s:if test="oshaLwcrUsed">
-							<td class="right"><s:property value="averageLwcr" /></td>
+							<td class="right"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(averageLwcr)}" /></td>
 						</s:if>
 						<s:if test="oshaTrirUsed">
-							<td class="right"><s:property value="averageTrir" /></td>
+							<td class="right"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(averageTrir)}" /></td>
 						</s:if>
 					</tr>
 				</s:if>
 			</s:if>
 		</s:iterator>
 	</table>
+</s:if>
 </s:if>
 
 <s:if test="auditData.size > 0">
@@ -184,6 +190,8 @@ Status at <s:property value="co.operatorAccount.name" /></span></h1>
 	</table>
 </s:if>
 
+<pics:permission perm="EditFlagCriteria">
 <div><a href="op_editFlagCriteria.jsp?opID=<s:property value="opID" />">Edit Flag Criteria</a></div>
+</pics:permission>
 </body>
 </html>
