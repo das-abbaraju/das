@@ -2,7 +2,131 @@
 /* PRE                                          */
 /* ============================================ */
 
-/* ==== Create tables ====*/
+/* ==== Copy reference tables and data ====*/
+
+/** table data to bring over:
+ * This should be updated again if the pics_alpha data changes
+-app_properties
+-audit_type
+-pqfquestion_operator
+-tempauditquestionmigratemap
+-widget	
+-widget_user
+**/
+
+/*Table structure for table `app_properties` */
+
+DROP TABLE IF EXISTS `app_properties`;
+
+CREATE TABLE `app_properties` (
+  `property` varchar(100) NOT NULL,
+  `value` text NOT NULL,
+  PRIMARY KEY  (`property`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+/*Data for the table `app_properties` */
+
+/* SEE BOTTOM of SQL */
+
+/*Table structure for table `audit_type` */
+
+/* Create audit_type table */
+DROP TABLE IF EXISTS `audit_type`;
+
+CREATE TABLE `audit_type` (
+  `auditTypeID` int(10) unsigned NOT NULL auto_increment,
+  `auditName` varchar(100) NOT NULL,
+  `description` varchar(255) default NULL,
+  `hasMultiple` tinyint(3) unsigned NOT NULL,
+  `isScheduled` tinyint(3) unsigned NOT NULL,
+  `hasAuditor` tinyint(3) unsigned NOT NULL,
+  `hasRequirements` tinyint(3) unsigned NOT NULL,
+  `canContractorView` tinyint(3) unsigned NOT NULL,
+  `canContractorEdit` tinyint(3) unsigned NOT NULL,
+  `monthsToExpire` tinyint(3) default NULL,
+  `dateToExpire` datetime default NULL,
+  `legacyCode` varchar(7) default NULL,
+  PRIMARY KEY  (`auditTypeID`),
+  UNIQUE KEY `auditName` (`auditName`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `audit_type` */
+
+insert  into `audit_type`(`auditTypeID`,`auditName`,`description`,`hasMultiple`,`isScheduled`,`hasAuditor`,`hasRequirements`,`canContractorView`,`canContractorEdit`,`monthsToExpire`,`dateToExpire`,`legacyCode`) values (1,'PQF','prequalification that every contractor must fill out',0,0,0,1,1,1,NULL,'2009-03-01 00:00:00','PQF'),(2,'Desktop Audit','desktop audit',0,0,1,1,1,0,36,NULL,'Desktop'),(3,'Office Audit','office audit',0,1,1,1,1,0,36,NULL,'Office'),(4,'NCMS','old imported ncms desktop audits',0,0,0,0,1,0,36,NULL,NULL),(5,'Field Audit','generic field audit',1,1,1,1,1,0,36,NULL,'Field'),(6,'D&A Audit','drug and alcohol audit',0,0,1,1,1,0,36,NULL,'DA'),(7,'Evaluation','operator performed contractor evaluations',1,0,0,0,0,0,36,NULL,NULL);
+
+/*Table structure for table `pqfquestion_operator` */
+
+DROP TABLE IF EXISTS `pqfquestion_operator`;
+
+CREATE TABLE `pqfquestion_operator` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `opID` int(10) unsigned NOT NULL,
+  `questionID` int(10) unsigned NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `opIDquestion` (`opID`,`questionID`),
+  KEY `questionID` (`questionID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+/*Data for the table `pqfquestion_operator` */
+
+insert  into `pqfquestion_operator`(`id`,`opID`,`questionID`) values (1,1206,401),(2,1206,755);
+
+/*Table structure for table `tempauditquestionmigratemap` */
+
+DROP TABLE IF EXISTS `tempauditquestionmigratemap`;
+
+CREATE TABLE `tempauditquestionmigratemap` (
+  `auditQuestionID` mediumint(9) default NULL,
+  `pqfQuestionID` mediumint(9) default NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+/*Data for the table `tempauditquestionmigratemap` */
+
+insert  into `tempauditquestionmigratemap`(`auditQuestionID`,`pqfQuestionID`) values (319,1281),(321,1710),(19,1284),(4,1711),(18,1712),(23,1293),(27,1713),(24,1714),(98,1298),(110,1299),(21,1300),(26,1301),(29,1302),(30,1303),(31,1304),(65,1306),(87,1307),(94,1715),(97,1308),(111,1333),(33,1334),(34,1335),(36,1336),(39,1338),(72,1339),(150,1340),(43,1341),(45,1343),(46,1344),(47,1345),(48,1346),(49,1347),(50,1348),(63,1349),(52,1350),(57,1351),(58,1353),(59,1354),(66,1356),(67,1384),(68,1358),(69,1360),(70,1361),(71,1362),(73,1363),(76,1716),(78,1365),(79,1367),(88,1368),(89,1370),(92,1371),(93,1372),(38,1352),(51,1355),(77,1359),(35,1364),(40,1366),(60,1434),(85,1380),(117,1375),(124,1379),(122,1381);
+
+/*Table structure for table `widget` */
+
+DROP TABLE IF EXISTS `widget`;
+
+CREATE TABLE `widget` (
+  `widgetID` int(10) unsigned NOT NULL auto_increment,
+  `caption` varchar(50) NOT NULL,
+  `widgetType` varchar(30) NOT NULL,
+  `synchronous` tinyint(3) unsigned NOT NULL default '0',
+  `url` varchar(255) default NULL,
+  `requiredPermission` varchar(100) default NULL,
+  `chartType` varchar(30) default NULL,
+  PRIMARY KEY  (`widgetID`),
+  UNIQUE KEY `caption` (`caption`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+/*Data for the table `widget` */
+
+insert  into `widget`(`widgetID`,`caption`,`widgetType`,`synchronous`,`url`,`requiredPermission`,`chartType`) values (1,'Contractor Count by Flag Color','Chart',0,'ChartXMLFlagCount.action',NULL,'Pie2D'),(2,'Recently Registered Contractors','Html',0,'ContractorRegistrationAjax.action',NULL,NULL),(3,'Upcoming Audits','Html',0,'UpcomingAuditsAjax.action',NULL,NULL),(4,'Recently Closed Audits','Html',0,'ClosedAuditsAjax.action',NULL,NULL),(5,'Contractors by Trade','Chart',0,'ChartXMLTradeCount.action',NULL,'Column3D');
+
+/*Table structure for table `widget_user` */
+
+DROP TABLE IF EXISTS `widget_user`;
+
+CREATE TABLE `widget_user` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `widgetID` int(10) unsigned NOT NULL,
+  `userID` int(10) unsigned NOT NULL,
+  `expanded` tinyint(3) unsigned NOT NULL default '1',
+  `column` tinyint(4) NOT NULL default '1',
+  `sortOrder` tinyint(4) NOT NULL default '10',
+  `customConfig` varchar(255) default NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `widgetID` (`userID`,`widgetID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+/*Data for the table `widget_user` */
+
+insert  into `widget_user`(`id`,`widgetID`,`userID`,`expanded`,`column`,`sortOrder`,`customConfig`) values (9,5,616,1,2,15,NULL),(2,2,941,1,1,10,NULL),(3,3,910,1,1,10,NULL),(10,4,910,1,2,10,NULL),(5,1,616,1,1,10,NULL),(6,2,616,1,1,20,NULL),(7,3,616,1,2,10,NULL),(8,4,616,1,2,20,NULL);
+
+
+
+/* ==== Create new tables with empty data ====*/
 
 /* Create contractor_audit table */
 drop table IF EXISTS `contractor_audit`;
@@ -255,142 +379,6 @@ update pqfquestions set questionID=0
 
                                                                      
                                                                      
-                                                                     
-                                             
-/* ============================================ */
-/* DATA CONVERSION                              */
-/* ============================================ */
-
-/* ==== Copy tables ====*/
-
-/** table data to bring over:
- * This should be updated again if the pics_alpha data changes
--app_properties
--audit_type
--pqfquestion_operator
--tempauditquestionmigratemap
--widget	
--widget_user
-**/
-
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-
-/*Table structure for table `app_properties` */
-
-DROP TABLE IF EXISTS `app_properties`;
-
-CREATE TABLE `app_properties` (
-  `property` varchar(100) NOT NULL,
-  `value` text NOT NULL,
-  PRIMARY KEY  (`property`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `app_properties` */
-
-insert  into `app_properties`(`property`,`value`) values ('DEFAULT_SIGNATURE','PICS \r\nP.O. Box 51387\r\nIrvine CA 92619-1387\r\ntel: (949)387-1940\r\nfax: (949)269-9177\r\nhttp://www.picsauditing.com\r\nemail: info@picsauditing.com (Please add this email address to your address book to prevent it from being labeled as spam)\r\n'),('email_welcome_body','Welcome ${contact_name},\r\n\r\nPlease click on this link to confirm your receipt of this email:\r\nhttp://www.picsauditing.com/login.jsp?uname=${username}\r\n\r\nBecause we send important account info to this email, your account will not be activated until you have confirmed receipt of this email.  If the link does not work, please cut and paste the url into your web browser.  After that, you will be able to log into your account at www.picsauditing.com.\r\n\r\nYour username is ${username} and your password is ${password}\r\n\r\nUpon logging in you will want to review your company information and verify that it is accurate as well as pick the facilities your company performs work for. If you have any difficulties, please contact us and we will assist you. Keep in mind that your clients will be viewing this information, so make it as detailed and professional as possible. Everything on the website is password protected; therefore your information is only viewable by your clients and you.\r\n\r\nThe first page you will be taken to will list several sections of information that you will need to complete (PQF). You can save them as many times as needed before submitting them to us. You will be contacted after submitting your prequalification form (PQF) in reference to your audit. As requested by the owner/operators you will have approximately 2 weeks to complete the PQF (prequalification forms) in order to stay on the approved vendor/contractor list.\r\n\r\nRemember to click on save so you do not lose any of your information. (30 minute timeout)\r\n\r\nPlease contact your insurance company and upload your company\'s verification of your last 3 years EMR (experience modification rate) to us (as a single pdf). This will need to be on the insurance company\'s letterhead or may be a loss run report. This may take some time so you should start this immediately. If you are having problems with this you can fax it to 949-269-9146 or it can be emailed to info@picsauditing.com.\r\n\r\nThank you again for your business and feel free to contact us with any questions.\r\n\r\nRegards,\r\n\r\nDEFAULT_SIGNATURE'),('email_welcome_subject','Account Activation'),('email_password_subject','PICS login info'),('email_password_body','Attn: ${contact_name}\r\n\r\nThis is an automatically generated email to remind you of your username and password to log in to the Pacific Industrial Contractor Screening (PICS) website.\r\n\r\nYour username is: ${username}\r\nand your password is: ${password}\r\n\r\nIf you have any questions or did not request that this email be sent to you, please let us know.\r\n\r\nDEFAULT_SIGNATURE'),('email_annual_update_subject','PICS annual update - last week before you are deactivated'),('email_annual_update_body','Hello ${contact_name},\r\n\r\nIt is time for you to update your company\'s information that PICS provides to your clients. Each January, the facilities you currently work at require your company to update your prequalification information online and resubmit it. If you do not update this information you will become inactive beginning March 1, which will remove you from your clients\' approved contractor list until the forms are completed. As a reminder, audits are performed on a 3 year rotation as well.\r\n\r\nPlease Log into the website at http://www.picsauditing.com. If you are unable to log in to your account, you may have forgotten your username and password. If this is the case, you can go to http://www.picsauditing.com/forgot_password.jsp. If this does not work you can call or email us.\r\n\r\nPICS has made some changes to the website over the past year so please make sure that you check all of your company information, which will provide your clients with the most current details about your business.\r\n\r\nThere are several items that must be updated annually. Upon logging in to your account, please follow these steps:\r\n\r\n1. First click on the [Facilities] link from your details page, which will direct you to a page that will have you indicate and verify which operators/facilities your company works for. If you do not choose the facilities they will not be able to view your information, which could prevent you from working there.\r\n\r\n2. Next, you will need to click on the [Complete PQF] link from your details page. This will direct you to the prequalification form (PQF). There are some new additions for 2008. You will need to complete all of the new questions and update anything that has changed in order to submit it. As a reminder each section must indicate 100 percent before you can resubmit the PQF. MAKE SURE YOU SUBMIT THE PQF WHEN COMPLETE. The most time-consuming item is to have your OSHA 300 log from 2007 filled out and your latest EMR.\r\n\r\n3. After submitting a completed PQF please review your details page where you can check on your company\'s status and review/edit your company details. Please update your details page to indicate a billing contact person for your company.\r\n\r\nPlease make sure that you update all of this information and have it submitted Feb 29 so that your company is not removed from any of the facilities\' approved contractor list.\r\n\r\nIf you have any questions or concerns, feel free to contact us.\r\n\r\nThanks, and have a safe year!\r\n\r\nDEFAULT_SIGNATURE\r\n'),('email_newuser_subject','New PICS User Account Created'),('email_newuser_body','Hello ${contact_name},\r\n\r\n${permissions.display_name} has issued you a login for the ${display_name} account on PICS.\r\n\r\nYour username: ${username}\r\nYour password: ${password}\r\n\r\nAttached is a User\'s Manual in case you have any questions.\r\n\r\nHave a great week,\r\n\r\nDEFAULT_SIGNATURE\r\n'),('email_desktopsubmit_subject','Your PICS desktop audit has been completed'),('email_desktopsubmit_body','Hello ${contact_name},\r\n\r\nPICS has completed a desktop audit of ${display_name}\'s safety manual.\r\nPlease log in to our website, and click on the \'View Desktop Audit\' link to see any categories that may have outstanding requirements to fulfill. Please feel free to contact us and review the desktop audit as there may be many items we can close out just by speaking over the phone. Our auditors have made every effort to perform the audit based on their knowledge of what your company does, but sometimes there are requirements listed that do not apply to the work your company performs. These items can often be rectified immediately so we encourage you to contact us to discuss any items you feel may not apply. In order to close out any requirements, please fax, email, or mail the documentation addressing the section in question.  Our overnight address is: 17701 Cowan Suite 140, Irvine, CA, 92614. You can log in to your account during the process to view any requirements that are still outstanding or to check on your status.\r\nAgain, if you have any questions or concerns, feel free to contact us.\r\n\r\nThanks, and have a safe year!\r\n\r\nDEFAULT_SIGNATURE'),('email_dasubmit_subject','Your PICS Drug and Alcohol audit has been completed'),('email_dasubmit_body','Hello ${contact_name},\r\n\r\nPICS has completed a D&A audit of ${display_name}\'s safety manual.\r\nPlease log in to our website, and click on the \'View D&A Audit\' link to see any categories that may have outstanding requirements to fulfill. Please feel free to contact us and review the D&A audit as there may be many items we can close out just by speaking over the phone. Our auditors have made every effort to perform the audit based on their knowledge of what your company does, but sometimes there are requirements listed that do not apply to the work your company performs. These items can often be rectified immediately so we encourage you to contact us to discuss any items you feel may not apply. In order to close out any requirements, please fax, email, or mail the documentation addressing the section in question.  Our overnight address is: 17701 Cowan Suite 140, Irvine, CA, 92614. You can log in to your account during the process to view any requirements that are still outstanding or to check on your status.\r\nAgain, if you have any questions or concerns, feel free to contact us.\r\n\r\nThanks, and have a safe year!\r\n\r\nDEFAULT_SIGNATURE'),('email_contractoradded_subject','${opName} has added you to their PICS database'),('email_contractoradded_body','Hello ${contact_name},\r\n\r\nThis is an automatically generated email to inform you that ${opUser} from ${opName} has added your company, ${display_name}, to their PICS database, and will have access to your PQF and audit information.  If you do not want this facility/person to have access to your PICS information, please contact us immediately.\r\n\r\nThanks, and have a safe year!\r\n\r\nDEFAULT_SIGNATURE'),('email_certificate_expire_body','Attn: ${contact_name} (${display_name})\r\n\r\nThis is an automatically generated email from ${opName} to remind you that your company has an insurance certificate that has expired or is about to expire.\r\n\r\nThe ${certificate_type} Certificate of Insurance for ${opName} expires on ${expiration_date}. Please mail, email or fax us a new insurance certificate listing ${opName} as the additional insured.\r\n\r\nIf we do not receive this certificate prior to the expiration date you will not be permitted to work for us.\r\n\r\nAs always we appreciate your services and are here to answer any questions you may have.\r\n\r\n${opName} c/o PICS\r\nP.O. Box 51387\r\nIrvine CA 92619-1387\r\ntel: (949)387-1940\r\nfax: (949)269-9149\r\neorozco@picsauditing.com\r\nhttp://www.picsauditing.com\r\n'),('email_certificate_expire_subject','${opName} insurance certificate about to expire'),('email_verifyPqf_body','${contact_name}\r\n\r\nUpon review of your PQF I have noticed that there are a few items that need your attention. Please either email or fax the following items to me:\r\n\r\n${missing_items}\r\n\r\nPlease find the OSHA Forms in the below links.\r\n\r\nOSHA Forms in Excel Format\r\nhttp://www.picsauditing.com/forms/form284.xls\r\nOSHA Recordkeeping Assistance\r\nhttp://www.picsauditing.com/forms/form41.pdf\r\n\r\n\r\n\r\n${permissions.display_name}\r\nPICS\r\nP.O. Box 51387\r\nIrvine CA 92619-1387\r\ntel: (949)387-1940\r\nfax: (949)269-9149\r\n\r\nhttp://www.picsauditing.com\r\n'),('email_verifyPqf_subject','PQF Verification for ${display_name}');
-
-/*Table structure for table `audit_type` */
-
-/* Create audit_type table */
-DROP TABLE IF EXISTS `audit_type`;
-
-CREATE TABLE `audit_type` (
-  `auditTypeID` int(10) unsigned NOT NULL auto_increment,
-  `auditName` varchar(100) NOT NULL,
-  `description` varchar(255) default NULL,
-  `hasMultiple` tinyint(3) unsigned NOT NULL,
-  `isScheduled` tinyint(3) unsigned NOT NULL,
-  `hasAuditor` tinyint(3) unsigned NOT NULL,
-  `hasRequirements` tinyint(3) unsigned NOT NULL,
-  `canContractorView` tinyint(3) unsigned NOT NULL,
-  `canContractorEdit` tinyint(3) unsigned NOT NULL,
-  `monthsToExpire` tinyint(3) default NULL,
-  `dateToExpire` datetime default NULL,
-  `legacyCode` varchar(7) default NULL,
-  PRIMARY KEY  (`auditTypeID`),
-  UNIQUE KEY `auditName` (`auditName`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-/*Data for the table `audit_type` */
-
-insert  into `audit_type`(`auditTypeID`,`auditName`,`description`,`hasMultiple`,`isScheduled`,`hasAuditor`,`hasRequirements`,`canContractorView`,`canContractorEdit`,`monthsToExpire`,`dateToExpire`,`legacyCode`) values (1,'PQF','prequalification that every contractor must fill out',0,0,0,1,1,1,NULL,'2009-03-01 00:00:00','PQF'),(2,'Desktop Audit','desktop audit',0,0,1,1,1,0,36,NULL,'Desktop'),(3,'Office Audit','office audit',0,1,1,1,1,0,36,NULL,'Office'),(4,'NCMS','old imported ncms desktop audits',0,0,0,0,1,0,36,NULL,NULL),(5,'Field Audit','generic field audit',1,1,1,1,1,0,36,NULL,'Field'),(6,'D&A Audit','drug and alcohol audit',0,0,1,1,1,0,36,NULL,'DA'),(7,'Evaluation','operator performed contractor evaluations',1,0,0,0,0,0,36,NULL,NULL);
-
-/*Table structure for table `pqfquestion_operator` */
-
-DROP TABLE IF EXISTS `pqfquestion_operator`;
-
-CREATE TABLE `pqfquestion_operator` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `opID` int(10) unsigned NOT NULL,
-  `questionID` int(10) unsigned NOT NULL,
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `opIDquestion` (`opID`,`questionID`),
-  KEY `questionID` (`questionID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `pqfquestion_operator` */
-
-insert  into `pqfquestion_operator`(`id`,`opID`,`questionID`) values (1,1206,401),(2,1206,755);
-
-/*Table structure for table `tempauditquestionmigratemap` */
-
-DROP TABLE IF EXISTS `tempauditquestionmigratemap`;
-
-CREATE TABLE `tempauditquestionmigratemap` (
-  `auditQuestionID` mediumint(9) default NULL,
-  `pqfQuestionID` mediumint(9) default NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `tempauditquestionmigratemap` */
-
-insert  into `tempauditquestionmigratemap`(`auditQuestionID`,`pqfQuestionID`) values (319,1281),(321,1710),(19,1284),(4,1711),(18,1712),(23,1293),(27,1713),(24,1714),(98,1298),(110,1299),(21,1300),(26,1301),(29,1302),(30,1303),(31,1304),(65,1306),(87,1307),(94,1715),(97,1308),(111,1333),(33,1334),(34,1335),(36,1336),(39,1338),(72,1339),(150,1340),(43,1341),(45,1343),(46,1344),(47,1345),(48,1346),(49,1347),(50,1348),(63,1349),(52,1350),(57,1351),(58,1353),(59,1354),(66,1356),(67,1384),(68,1358),(69,1360),(70,1361),(71,1362),(73,1363),(76,1716),(78,1365),(79,1367),(88,1368),(89,1370),(92,1371),(93,1372),(38,1352),(51,1355),(77,1359),(35,1364),(40,1366),(60,1434),(85,1380),(117,1375),(124,1379),(122,1381);
-
-/*Table structure for table `widget` */
-
-DROP TABLE IF EXISTS `widget`;
-
-CREATE TABLE `widget` (
-  `widgetID` int(10) unsigned NOT NULL auto_increment,
-  `caption` varchar(50) NOT NULL,
-  `widgetType` varchar(30) NOT NULL,
-  `synchronous` tinyint(3) unsigned NOT NULL default '0',
-  `url` varchar(255) default NULL,
-  `requiredPermission` varchar(100) default NULL,
-  `chartType` varchar(30) default NULL,
-  PRIMARY KEY  (`widgetID`),
-  UNIQUE KEY `caption` (`caption`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `widget` */
-
-insert  into `widget`(`widgetID`,`caption`,`widgetType`,`synchronous`,`url`,`requiredPermission`,`chartType`) values (1,'Contractor Count by Flag Color','Chart',0,'ChartXMLFlagCount.action',NULL,'Pie2D'),(2,'Recently Registered Contractors','Html',0,'ContractorRegistrationAjax.action',NULL,NULL),(3,'Upcoming Audits','Html',0,'UpcomingAuditsAjax.action',NULL,NULL),(4,'Recently Closed Audits','Html',0,'ClosedAuditsAjax.action',NULL,NULL),(5,'Contractors by Trade','Chart',0,'ChartXMLTradeCount.action',NULL,'Column3D');
-
-/*Table structure for table `widget_user` */
-
-DROP TABLE IF EXISTS `widget_user`;
-
-CREATE TABLE `widget_user` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `widgetID` int(10) unsigned NOT NULL,
-  `userID` int(10) unsigned NOT NULL,
-  `expanded` tinyint(3) unsigned NOT NULL default '1',
-  `column` tinyint(4) NOT NULL default '1',
-  `sortOrder` tinyint(4) NOT NULL default '10',
-  `customConfig` varchar(255) default NULL,
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `widgetID` (`userID`,`widgetID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `widget_user` */
-
-insert  into `widget_user`(`id`,`widgetID`,`userID`,`expanded`,`column`,`sortOrder`,`customConfig`) values (9,5,616,1,2,15,NULL),(2,2,941,1,1,10,NULL),(3,3,910,1,1,10,NULL),(10,4,910,1,2,10,NULL),(5,1,616,1,1,10,NULL),(6,2,616,1,1,20,NULL),(7,3,616,1,2,10,NULL),(8,4,616,1,2,20,NULL);
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-
-
-
 /************************/
 /* remove orphaned pqfCatData */
 
@@ -582,6 +570,7 @@ insert into pqfData (conID,questionID,answer,comment,dateVerified,wasChanged)
 /* ==== Change foreigh keys - From conid to auditID ==== */
 
 /* update pqfData to use auditID instead of conId */
+/** This takes a Long time, probably the bulk of the conversion time right here **/
 update pqfCategories pc JOIN 
 	pqfSubCategories ON (catID=categoryID) JOIN
 	pqfQuestions ON (subCatID=subCategoryID) JOIN
@@ -671,3 +660,24 @@ alter table `operators`
 
 alter table `pqfcategories` 
 	drop column `auditType`, COMMENT='';
+
+
+
+
+insert  into `app_properties`(`property`,`value`) 
+values ('DEFAULT_SIGNATURE','PICS \r\nP.O. Box 51387\r\nIrvine CA 92619-1387\r\ntel: (949)387-1940\r\nfax: (949)269-9177\r\nhttp://www.picsauditing.com\r\nemail: info@picsauditing.com (Please add this email address to your address book to prevent it from being labeled as spam)\r\n'),
+('email_welcome_body','Welcome ${contact_name},\r\n\r\nPlease click on this link to confirm your receipt of this email:\r\nhttp://www.picsauditing.com/login.jsp?uname=${username}\r\n\r\nBecause we send important account info to this email, your account will not be activated until you have confirmed receipt of this email.  If the link does not work, please cut and paste the url into your web browser.  After that, you will be able to log into your account at www.picsauditing.com.\r\n\r\nYour username is ${username} and your password is ${password}\r\n\r\nUpon logging in you will want to review your company information and verify that it is accurate as well as pick the facilities your company performs work for. If you have any difficulties, please contact us and we will assist you. Keep in mind that your clients will be viewing this information, so make it as detailed and professional as possible. Everything on the website is password protected; therefore your information is only viewable by your clients and you.\r\n\r\nThe first page you will be taken to will list several sections of information that you will need to complete (PQF). You can save them as many times as needed before submitting them to us. You will be contacted after submitting your prequalification form (PQF) in reference to your audit. As requested by the owner/operators you will have approximately 2 weeks to complete the PQF (prequalification forms) in order to stay on the approved vendor/contractor list.\r\n\r\nRemember to click on save so you do not lose any of your information. (30 minute timeout)\r\n\r\nPlease contact your insurance company and upload your company\'s verification of your last 3 years EMR (experience modification rate) to us (as a single pdf). This will need to be on the insurance company\'s letterhead or may be a loss run report. This may take some time so you should start this immediately. If you are having problems with this you can fax it to 949-269-9146 or it can be emailed to info@picsauditing.com.\r\n\r\nThank you again for your business and feel free to contact us with any questions.\r\n\r\nRegards,\r\n\r\nDEFAULT_SIGNATURE'),
+('email_welcome_subject','Account Activation'),('email_password_subject','PICS login info'),('email_password_body','Attn: ${contact_name}\r\n\r\nThis is an automatically generated email to remind you of your username and password to log in to the Pacific Industrial Contractor Screening (PICS) website.\r\n\r\nYour username is: ${username}\r\nand your password is: ${password}\r\n\r\nIf you have any questions or did not request that this email be sent to you, please let us know.\r\n\r\nDEFAULT_SIGNATURE'),
+('email_annual_update_subject','PICS annual update - last week before you are deactivated'),
+('email_annual_update_body','Hello ${contact_name},\r\n\r\nIt is time for you to update your company\'s information that PICS provides to your clients. Each January, the facilities you currently work at require your company to update your prequalification information online and resubmit it. If you do not update this information you will become inactive beginning March 1, which will remove you from your clients\' approved contractor list until the forms are completed. As a reminder, audits are performed on a 3 year rotation as well.\r\n\r\nPlease Log into the website at http://www.picsauditing.com. If you are unable to log in to your account, you may have forgotten your username and password. If this is the case, you can go to http://www.picsauditing.com/forgot_password.jsp. If this does not work you can call or email us.\r\n\r\nPICS has made some changes to the website over the past year so please make sure that you check all of your company information, which will provide your clients with the most current details about your business.\r\n\r\nThere are several items that must be updated annually. Upon logging in to your account, please follow these steps:\r\n\r\n1. First click on the [Facilities] link from your details page, which will direct you to a page that will have you indicate and verify which operators/facilities your company works for. If you do not choose the facilities they will not be able to view your information, which could prevent you from working there.\r\n\r\n2. Next, you will need to click on the [Complete PQF] link from your details page. This will direct you to the prequalification form (PQF). There are some new additions for 2008. You will need to complete all of the new questions and update anything that has changed in order to submit it. As a reminder each section must indicate 100 percent before you can resubmit the PQF. MAKE SURE YOU SUBMIT THE PQF WHEN COMPLETE. The most time-consuming item is to have your OSHA 300 log from 2007 filled out and your latest EMR.\r\n\r\n3. After submitting a completed PQF please review your details page where you can check on your company\'s status and review/edit your company details. Please update your details page to indicate a billing contact person for your company.\r\n\r\nPlease make sure that you update all of this information and have it submitted Feb 29 so that your company is not removed from any of the facilities\' approved contractor list.\r\n\r\nIf you have any questions or concerns, feel free to contact us.\r\n\r\nThanks, and have a safe year!\r\n\r\nDEFAULT_SIGNATURE\r\n'),
+('email_newuser_subject','New PICS User Account Created'),
+('email_newuser_body','Hello ${contact_name},\r\n\r\n${permissions.display_name} has issued you a login for the ${display_name} account on PICS.\r\n\r\nYour username: ${username}\r\nYour password: ${password}\r\n\r\nAttached is a User\'s Manual in case you have any questions.\r\n\r\nHave a great week,\r\n\r\nDEFAULT_SIGNATURE\r\n'),
+('email_desktopsubmit_subject','Your PICS desktop audit has been completed'),
+('email_desktopsubmit_body','Hello ${contact_name},\r\n\r\nPICS has completed a desktop audit of ${display_name}\'s safety manual.\r\nPlease log in to our website, and click on the \'View Desktop Audit\' link to see any categories that may have outstanding requirements to fulfill. Please feel free to contact us and review the desktop audit as there may be many items we can close out just by speaking over the phone. Our auditors have made every effort to perform the audit based on their knowledge of what your company does, but sometimes there are requirements listed that do not apply to the work your company performs. These items can often be rectified immediately so we encourage you to contact us to discuss any items you feel may not apply. In order to close out any requirements, please fax, email, or mail the documentation addressing the section in question.  Our overnight address is: 17701 Cowan Suite 140, Irvine, CA, 92614. You can log in to your account during the process to view any requirements that are still outstanding or to check on your status.\r\nAgain, if you have any questions or concerns, feel free to contact us.\r\n\r\nThanks, and have a safe year!\r\n\r\nDEFAULT_SIGNATURE'),
+('email_dasubmit_subject','Your PICS Drug and Alcohol audit has been completed'),
+('email_dasubmit_body','Hello ${contact_name},\r\n\r\nPICS has completed a D&A audit of ${display_name}\'s safety manual.\r\nPlease log in to our website, and click on the \'View D&A Audit\' link to see any categories that may have outstanding requirements to fulfill. Please feel free to contact us and review the D&A audit as there may be many items we can close out just by speaking over the phone. Our auditors have made every effort to perform the audit based on their knowledge of what your company does, but sometimes there are requirements listed that do not apply to the work your company performs. These items can often be rectified immediately so we encourage you to contact us to discuss any items you feel may not apply. In order to close out any requirements, please fax, email, or mail the documentation addressing the section in question.  Our overnight address is: 17701 Cowan Suite 140, Irvine, CA, 92614. You can log in to your account during the process to view any requirements that are still outstanding or to check on your status.\r\nAgain, if you have any questions or concerns, feel free to contact us.\r\n\r\nThanks, and have a safe year!\r\n\r\nDEFAULT_SIGNATURE'),
+('email_contractoradded_subject','${opName} has added you to their PICS database'),
+('email_contractoradded_body','Hello ${contact_name},\r\n\r\nThis is an automatically generated email to inform you that ${opUser} from ${opName} has added your company, ${display_name}, to their PICS database, and will have access to your PQF and audit information.  If you do not want this facility/person to have access to your PICS information, please contact us immediately.\r\n\r\nThanks, and have a safe year!\r\n\r\nDEFAULT_SIGNATURE'),('email_certificate_expire_body','Attn: ${contact_name} (${display_name})\r\n\r\nThis is an automatically generated email from ${opName} to remind you that your company has an insurance certificate that has expired or is about to expire.\r\n\r\nThe ${certificate_type} Certificate of Insurance for ${opName} expires on ${expiration_date}. Please mail, email or fax us a new insurance certificate listing ${opName} as the additional insured.\r\n\r\nIf we do not receive this certificate prior to the expiration date you will not be permitted to work for us.\r\n\r\nAs always we appreciate your services and are here to answer any questions you may have.\r\n\r\n${opName} c/o PICS\r\nP.O. Box 51387\r\nIrvine CA 92619-1387\r\ntel: (949)387-1940\r\nfax: (949)269-9149\r\neorozco@picsauditing.com\r\nhttp://www.picsauditing.com\r\n'),
+('email_certificate_expire_subject','${opName} insurance certificate about to expire'),
+('email_verifyPqf_body','${contact_name}\r\n\r\nUpon review of your PQF I have noticed that there are a few items that need your attention. Please either email or fax the following items to me:\r\n\r\n${missing_items}\r\n\r\nPlease find the OSHA Forms in the below links.\r\n\r\nOSHA Forms in Excel Format\r\nhttp://www.picsauditing.com/forms/form284.xls\r\nOSHA Recordkeeping Assistance\r\nhttp://www.picsauditing.com/forms/form41.pdf\r\n\r\n\r\n\r\n${permissions.display_name}\r\nPICS\r\nP.O. Box 51387\r\nIrvine CA 92619-1387\r\ntel: (949)387-1940\r\nfax: (949)269-9149\r\n\r\nhttp://www.picsauditing.com\r\n'),
+('email_verifyPqf_subject','PQF Verification for ${display_name}');

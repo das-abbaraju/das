@@ -5,9 +5,11 @@
 		maxWait="10000" removeAbandoned="true" removeAbandonedTimeout="20"
 		driverClassName="com.mysql.jdbc.Driver"	logAbandoned="true" 
 		username="pics" password="pics"
-		url="jdbc:mysql://alpha.picsauditing.com:3306/pics_alpha?zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false" />
+		url="jdbc:mysql://alpha.picsauditing.com:3306/pics2?zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false" />
 </Context>
 <!-- 
+		url="jdbc:mysql://alpha.picsauditing.com:3306/pics_alpha?zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false" />
+
 		username="root" password=""
 		url="jdbc:mysql://localhost:3306/pics?zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false" />
  -->
