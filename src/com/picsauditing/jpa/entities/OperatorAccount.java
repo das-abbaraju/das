@@ -77,6 +77,7 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.seesAllContractors = seesAllContractors;
 	}
 
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
 	@Column(name = "canAddContractors", nullable = false)
 	@Enumerated(EnumType.STRING)
 	public YesNo getCanAddContractors() {
@@ -106,6 +107,7 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.canSeeInsurance = canSeeInsurance;
 	}
 
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
 	@Column(name = "isCorporate", nullable = false)
 	@Enumerated(EnumType.STRING)
 	public YesNo getIsCorporate() {
@@ -126,6 +128,7 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.insuranceAuditor = user;
 	}
 
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
 	@Column(name = "isUserManualUploaded", nullable = false)
 	@Enumerated(EnumType.STRING)
 	public YesNo getIsUserManualUploaded() {
