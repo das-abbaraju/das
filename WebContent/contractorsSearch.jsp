@@ -1,7 +1,6 @@
 <%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.access.OpPerms" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
 <%@page import="com.picsauditing.mail.*"%>
-<%@page import="com.picsauditing.PICS.redFlagReport.FlagCalculator"%>
 <%@page import="com.picsauditing.PICS.EmailBean"%>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>

@@ -1,11 +1,5 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
-<%@ page language="java" import="com.picsauditing.PICS.*"%>
-<%
-boolean isSubmitted = (null != request.getParameter("action") && request.getParameter("action").equals("rsvp"));
-if (isSubmitted) {
-	EmailBean.sendSafetyMeetingEmail(request);
-}
-%>
+<%@include file="includes/userGroups.jsp" %>
 <html>
 <head>
 <title>Managing Contractor Safety 2008 - PICS Auditing</title>

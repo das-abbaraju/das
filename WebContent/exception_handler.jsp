@@ -1,6 +1,7 @@
 <%@ page isErrorPage="true" language="java"
-	import="com.picsauditing.PICS.*, java.util.*, java.io.*"%>
+	import="java.util.*, java.io.*"%>
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
+<jsp:useBean id="mailer" class="com.picsauditing.mail.EmailSender" scope="page" />
 <%
 	boolean debugging = application.getInitParameter("environmentType").equals("development");
 	String message = "";
@@ -49,7 +50,8 @@
 				email.append("\nHeader-" + headerName + ": " + request.getHeader(headerName));
 			}
 			
-			EmailBean.sendErrorMessage(email.toString());
+			mailer.sendMail("PICS Exception Error", email.toString(), "errors@picsauditing.com", "errors@picsauditing.com");
+			
 		} catch (Exception e) {
 			// do nothing
 		}

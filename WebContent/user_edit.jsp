@@ -5,6 +5,9 @@
 <%@page import="com.picsauditing.PICS.EmailBean"%>
 <%@page import="org.apache.commons.beanutils.BasicDynaBean"%>
 <%@ include file="includes/main_ajax.jsp" %>
+<%@page import="com.picsauditing.mail.EmailContractorBean"%>
+<%@page import="com.picsauditing.mail.EmailTemplates"%>
+<%@page import="com.picsauditing.mail.EmailUserBean"%>
 <jsp:useBean id="uBean" class="com.picsauditing.access.User" scope ="page"/>
 <jsp:useBean id="currentUser" class="com.picsauditing.access.User" scope ="page"/>
 <jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope="application"/>
@@ -81,8 +84,9 @@ if (action.equals("removeUserFromGroup")) {
 	AUDITORS.resetAuditorsAL(request.getParameter("groupID"));
 }
 if (action.equals("sendWelcomeEmail")) {
-	EmailBean eBean = new EmailBean();
-	eBean.sendNewUserEmail(request, uBean, permissions);
+	// Send an email to the contractor
+	EmailUserBean mailer = new EmailUserBean();
+	mailer.sendMessage(EmailTemplates.newuser, userID, new Permissions());
 }
 
 ///////////////////////////////////////////////////

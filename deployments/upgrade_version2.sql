@@ -2,6 +2,9 @@
 /* PRE                                          */
 /* ============================================ */
 
+update operators set doSendActivationEmail = 'No'
+where doSendActivationEmail not in ('No', 'Yes');
+
 /* ==== Copy reference tables and data ====*/
 
 /** table data to bring over:
@@ -124,6 +127,8 @@ CREATE TABLE `widget_user` (
 
 insert  into `widget_user`(`id`,`widgetID`,`userID`,`expanded`,`column`,`sortOrder`,`customConfig`) values (9,5,616,1,2,15,NULL),(2,2,941,1,1,10,NULL),(3,3,910,1,1,10,NULL),(10,4,910,1,2,10,NULL),(5,1,616,1,1,10,NULL),(6,2,616,1,1,20,NULL),(7,3,616,1,2,10,NULL),(8,4,616,1,2,20,NULL);
 
+alter table `flagoshacriteria`
+	add UNIQUE KEY `opID`(`opID`,`flagStatus`);
 
 
 /* ==== Create new tables with empty data ====*/
@@ -146,6 +151,7 @@ create table `contractor_audit`(
 	`auditLocation` varchar(45) COLLATE latin1_swedish_ci NULL   , 
 	`percentComplete` tinyint(3) unsigned NOT NULL  DEFAULT '0'  , 
 	`percentVerified` tinyint(3) unsigned NOT NULL  DEFAULT '0'  , 
+	`canDelete` tinyint(3) unsigned   NOT NULL DEFAULT '1' ,
 	PRIMARY KEY (`auditID`) , 
 	UNIQUE KEY `auditTypeID_conID_createdDate`(`conID`,`auditTypeID`,`createdDate`) , 
 	KEY `auditTypeStatus`(`auditTypeID`,`auditStatus`) 
@@ -277,17 +283,22 @@ alter table `operators`
 	change `activationEmails` `activationEmails` varchar(255)  COLLATE latin1_swedish_ci NOT NULL after `isCorporate`, 
 	change `canSeeInsurance` `canSeeInsurance` enum('No','Yes')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No' after `doContractorsPay`, 
 	change `approvesRelationships` `approvesRelationships` enum('No','Yes')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No' after `canSeeInsurance`, 
-	change `flagEmr` `flagEmr` enum('No','Yes')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No' after `approvesRelationships`, 
-	change `emrHurdle` `emrHurdle` varchar(20)  COLLATE latin1_swedish_ci NULL after `flagEmr`, 
-	change `flagLwcr` `flagLwcr` enum('No','Yes')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No' after `emrTime`, 
-	change `lwcrHurdle` `lwcrHurdle` varchar(20)  COLLATE latin1_swedish_ci NULL after `flagLwcr`, 
-	change `lwcrTime` `lwcrTime` varchar(20)  COLLATE latin1_swedish_ci NULL after `lwcrHurdle`, 
-	change `flagTrir` `flagTrir` enum('No','Yes')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No' after `lwcrTime`, 
-	change `trirHurdle` `trirHurdle` varchar(20)  COLLATE latin1_swedish_ci NULL after `flagTrir`, 
-	change `flagFatalities` `flagFatalities` enum('No','Yes')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No' after `trirTime`, 
-	change `fatalitiesHurdle` `fatalitiesHurdle` varchar(10)  COLLATE latin1_swedish_ci NOT NULL DEFAULT '1' after `flagFatalities`, 
-	change `flagQ318` `flagQ318` enum('No','Yes')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No' after `fatalitiesHurdle`, 
-	change `insuranceAuditor_id` `insuranceAuditor_id` mediumint(8) unsigned   NULL after `flagQ1385`, COMMENT='';
+	change `doSendActivationEmail` `doSendActivationEmail` enum('No','Yes')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No' after `activationEmails`, 
+	change `seesAllContractors` `seesAllContractors` enum('No','Yes')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No' after `doSendActivationEmail`, 
+	change `insuranceAuditor_id` `insuranceAuditor_id` mediumint(8) unsigned   NULL after `approvesRelationships`, 
+	drop column `flagEmr`, 
+	drop column `emrHurdle`, 
+	drop column `emrTime`, 
+	drop column `flagLwcr`, 
+	drop column `lwcrHurdle`, 
+	drop column `lwcrTime`, 
+	drop column `flagTrir`, 
+	drop column `trirHurdle`, 
+	drop column `trirTime`, 
+	drop column `flagFatalities`, 
+	drop column `fatalitiesHurdle`, 
+	drop column `flagQ318`, 
+	drop column `flagQ1385`, COMMENT='';
 
 /* Alter pqfcateogies table - add auditTypeID */
 alter table `pqfcategories` 
@@ -344,6 +355,7 @@ alter table `pqfcatdata`
 	change `requiredCompleted` `requiredCompleted` smallint(6) unsigned   NOT NULL DEFAULT '0' after `auditID`, 
 	change `numRequired` `numRequired` smallint(6) unsigned   NOT NULL DEFAULT '0' after `requiredCompleted`, 
 	change `numAnswered` `numAnswered` smallint(6) unsigned   NOT NULL DEFAULT '0' after `numRequired`, 
+	change `applies` `applies` enum('Yes','No')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'Yes' after `numAnswered`, 
 	drop key `conID`, 
 	drop key `PRIMARY`, add PRIMARY KEY(`catDataID`), COMMENT='';
 
@@ -661,7 +673,25 @@ alter table `operators`
 alter table `pqfcategories` 
 	drop column `auditType`, COMMENT='';
 
+drop table `auditcategories`; 
 
+drop table `auditdata`; 
+
+drop table `auditquestions`; 
+
+alter table `contractor_info` 
+	drop column `tempAuditDateTime`;
+
+alter table `pqfcatdata` 
+	change `auditID` `auditID` mediumint(9) unsigned   NOT NULL after `catID`, 
+	drop column `conID`, 
+	add UNIQUE KEY `auditID`(`auditID`,`catID`), COMMENT='';
+
+alter table `pqfopmatrix` 
+	add column `id` int(10) unsigned   NOT NULL auto_increment first, 
+	change `catID` `catID` mediumint(8) unsigned   NOT NULL DEFAULT '0' after `id`, 
+	drop key `catID`, add UNIQUE KEY `catID`(`catID`,`opID`,`riskLevel`), 
+	drop key `PRIMARY`, add PRIMARY KEY(`id`), COMMENT='';
 
 
 insert  into `app_properties`(`property`,`value`) 

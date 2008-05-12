@@ -2,10 +2,6 @@ package com.picsauditing.PICS;
 
 import junit.framework.TestCase;
 
-import com.picsauditing.PICS.AccountBean;
-import com.picsauditing.PICS.EmailBean;
-import com.picsauditing.PICS.GeneralContractor;
-
 public class GeneralContractorTest extends TestCase {
 	public void testSave() {
 		try {

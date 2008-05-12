@@ -48,4 +48,20 @@ public class EmailSender extends GMailSender {
 	private static void changeDefaultSender() {
 		currentDefaultSender = (currentDefaultSender % NUMBER_OF_GMAIL_ACOUNTS)+1;
 	}
+	
+	public static void send(String fromAddress, String toAddress, String ccAddress, 
+			String subject, String body) throws Exception  {
+		EmailSender sender = new EmailSender();
+		Email email = new Email();
+		email.setSubject(subject);
+		email.setBody(body);
+		email.setToAddress(toAddress);
+		email.setFromAddress(fromAddress);
+		email.setCcAddress(ccAddress);
+		sender.sendMail(email);
+	}
+
+	public static void send(String toAddress, String subject, String body) throws Exception  {
+		send(null, toAddress, null, subject, body);
+	}
 }
