@@ -1,8 +1,7 @@
 <%@ page language="java"
 	import="java.util.ArrayList,com.picsauditing.PICS.*"
 	errorPage="exception_handler.jsp"%>
-<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean"
-	scope="page" />
+<%@page import="com.picsauditing.mail.EmailSender"%>
 <%
 	String sendTo = request.getParameter("sendTo");
 	ArrayList<String> toAddresses = new ArrayList<String>();
@@ -25,18 +24,21 @@
 	if (sendTo.equals("careers"))
 		toAddresses.add("careers@picsauditing.com");
 
-	String name = request.getParameter("name");
-	String email = request.getParameter("email");
-	String phone = request.getParameter("phone");
-	String message = "Contact about " + sendTo + ". Sent to:\n";
+	String body = "";
+	body += "Name: " + request.getParameter("name");
+	body += "\nCompany: " + request.getParameter("company");
+	body += "\nEmail: " + request.getParameter("email");
+	body += "\nPhone: " + request.getParameter("phone");
+	body += "\nMessage:\nContact about " + sendTo + ". Sent to:\n";
+	
 	for (String toAddress : toAddresses)
-		message = message + toAddress + "\n";
-	message = message + "\nCompany: " + request.getParameter("company")
-			+ '\n' + request.getParameter("message");
-	//	eBean.sendContactUsEmail(name,email,sendTo,message);
+		body += toAddress + "\n";
+	body += "\n" + request.getParameter("message");
+	
+	EmailSender mailer = new EmailSender();
+	
 	for (String toAddress : toAddresses)
-		EmailBean.sendContactUsEmail(name, email, phone, toAddress,
-				message);
+		mailer.sendMail("Email from PICS website", body, "", toAddress);
 %>
 <html>
 <head>
@@ -47,7 +49,7 @@
 </head>
 <body>
 <div style="text-align: center">
-	<p class="blueHeader">Thank you <%=name%>,</p>
+	<p class="blueHeader">Thank you,</p>
 	<p class="blueMain">We will contact you shortly.</p>
 	<a href="contact.jsp" class="blueMain">Return to Contact Page</a>
 </div>

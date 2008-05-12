@@ -280,6 +280,262 @@ public class EmailBean extends DataBean{
 		transport.connect();
 		transport.sendMessage(message, message.getAllRecipients());	
 	}//sendAttachment
+
+	public static void sendCertificateRejectedEmail(CertificateDO certDO,Permissions permissions) throws Exception {
+		AccountBean aBean = new AccountBean();
+		String conID = certDO.getContractor_id();
+		aBean.setFromDB(conID);
+		String contactName = aBean.contact;
+		String contractor = aBean.name;
+		String email = aBean.email;
+		
+		aBean.setFromDB(certDO.getOperator_id());
+		String operator = aBean.name;
+		
+		User user = new User();
+		user.setFromDB(permissions.getUserIdString());
+		String from = FROM_INFO;
+		String to = email;
+		String subject = operator+" insurance certificate rejected";
+		String message = "Hello "+contactName+","+endl+endl+
+			contractor+"'s "+certDO.getType()+
+			" Insurance Certificate has been rejected by "+operator+endl+
+			" for the following reasons:"+endl+endl+
+			certDO.getReason()+endl+endl+	
+			"Please correct these issues and re-upload your insurance certificate to your "+endl+
+			"PICS account."+endl+
+			"If you have any specific questions about "+operator+"'s insurance requirements, "+endl+
+			"please contact "+permissions.getName()+" at "+user.userDO.email+"."+endl+endl+
+			"Have a great day,"+endl+
+			"PICS Customer Service";
+		
+		sendEmail(from, to, subject, message);	
+	}
+	
+	public static void sendCertificateAcceptedEmail(CertificateDO certDO, Permissions permissions) throws Exception {
+		AccountBean aBean = new AccountBean();		
+		String conID = certDO.getContractor_id();
+		aBean.setFromDB(conID);
+		String contactName = aBean.contact;
+		String contractor = aBean.name;
+		String email = aBean.email;
+		
+		aBean.setFromDB(certDO.getOperator_id());
+		String operator = aBean.name;
+
+		String from = FROM_INFO;
+		String to = email;
+
+		String subject = operator+" insurance certificate accepted";
+		String message = "Hello "+contactName+","+endl+endl+
+			contractor+"'s "+certDO.getType()+endl+ 
+			"Insurance Certificate has been accepted by "+operator+endl;
+		if (!"".equals(certDO.getReason()))
+			message += " for the following reasons:"+endl+endl+certDO.getReason()+endl+endl;
+
+		message += "Please make sure that you keep up-to-date in PICS by uploading your "+endl+
+			"insurance certificate when you renew your policy." + endl+endl+		 
+			"Have a great day,"+endl+
+			"PICS Customer Service";
+		
+		sendEmail(from, to, subject, message);
+	}//sendCertificateAcceptedEmail
+	
+	public static void sendSafetyMeetingEmail(HttpServletRequest request) throws Exception {
+		String JESSE_EMAIL_FOOTER =
+			"PICS - Pacific Industrial Contractor Screening"+endl2+endl+
+			"P.O. Box 51387"+endl2+endl+
+			"Irvine CA 92619-1387"+endl2+endl+
+			"(949)387-1940"+endl2+endl+
+		 	"fax: (949)269-9177"+endl2+endl+
+			"info@picsauditing.com (Please add this email address to your address book to prevent it from being labeled as spam)"+endl2+endl+
+			"http://www.picsauditing.com";
+	
+		
+		String to = "meetings@picsauditing.com";
+		String cc = "";
+		String from = request.getParameter("email");
+		String subject = request.getParameter("name") + " from " + request.getParameter("organization") + " registered";
+		
+		StringBuffer message = new StringBuffer();
+		message.append("Info:\n");
+		message.append("Name:          " + request.getParameter("name") + "\n");
+		message.append("Organization:  " +request.getParameter("organization") + "\n");
+		message.append("Phone:         " +request.getParameter("phone") + " " + request.getParameter("ext") + "\n");
+		message.append("Email:         " +request.getParameter("email") + "\n");
+		message.append("Number:        " +request.getParameter("howmany") + "\n");
+		message.append("Attendees:     " +request.getParameter("attendees") + "\n");
+		message.append("Special Needs: " +request.getParameter("specialneeds") + "\n");
+		
+		sendEmail(from, to, cc, subject, message.toString());
+		
+		to = request.getParameter("email");
+		from = "meetings@picsauditing.com";
+		subject = "Registration confirmation for Contractor User Group Meeting";
+		message = new StringBuffer();
+		
+		message.append("Hi, " + request.getParameter("name") + "\n\n\n");
+		message.append("Thanks for registering for PICS Contractor User Group Meeting 2008.\nIf you have any questions about your registration, please contact Whitney Curry\nat (949)387-1940 x 714 or wcurry@picsauditing.com.");
+		message.append("\n\nHave a great day,\nJesse Cota\n\n");
+		message.append(JESSE_EMAIL_FOOTER);
+		
+		sendEmail(from, to, cc, subject, message.toString());
+	}
+	
+	public void sendNewUserEmail(HttpServletRequest request, 
+			com.picsauditing.access.User user, Permissions permissions) throws Exception {
+		String from = FROM_INFO;
+		String to = user.userDO.email;
+		String cc = "";
+		String subject = "New PICS User Account Created";
+		AccountBean aBean = new AccountBean();
+		aBean.setFromDB(user.userDO.accountID);
+		String message = "Hi "+user.userDO.name+","+endl+endl+
+			permissions.getName()+ " has issued you a login for "+
+			"the "+aBean.name+" account on PICS."+endl+endl+
+			"Your username: '"+user.userDO.username+"'"+endl+
+			"Your password: '"+user.userDO.password+"'"+endl+endl+
+			"Attached is a User's Manual in case you have any questions."+endl+endl+
+			"Have a great week,"+endl+
+			"PICS Customer Service"+endl+endl+
+			EMAIL_FOOTER;
+
+		String ftpDir = request.getSession().getServletContext().getInitParameter("FTP_DIR");
+		String path = ftpDir+"/attachments/";
+		String fileName = "userManual.pdf";
+
+		java.io.File userManual = new java.io.File(path+fileName);
+		if (userManual.exists())
+			sendAttachment(from, to, cc, subject, message, path, fileName);
+		else
+			sendEmail(from, to, subject, message);			
+	}
+	
+	public static void sendErrorMessage(String errorMessage) throws Exception {
+		sendEmail("errors@picsauditing.com", "errors@picsauditing.com", "PICS Exception Error", errorMessage);
+	}
+
+	/** Obsolete Methods
+	public static void sendUpdateDynamicPQFEmail(String conID) throws Exception {
+		AccountBean aBean = new AccountBean();
+		aBean.setFromDB(conID);
+		ContractorBean cBean = new ContractorBean();
+		cBean.setFromDB(conID);
+		String to = aBean.email;
+		String cc = "";
+		if (null!=cBean.secondEmail)
+		   cc = cBean.secondEmail;
+		String from = FROM_INFO;
+		String subject = "A facility has added you to their PICS database";
+		String message =  "Hello "+aBean.contact+","+endl+endl+
+			"This is an automatically generated email to inform you that your company has been added to a facility's PICS database. "+
+			"For this reason, there may be new sections for you to fill out in your PQF. "+
+			"Please log in, review your PQF, fill out any additional sections, and re-submit your pqf.  This will ensure that "+
+			"you meet the requirements for all your facilities and remain on their active contractors list."+
+			endl+endl+
+			"Thanks, and have a safe year!"+endl+endl+EMAIL_FOOTER;
+		sendEmail(from, to, cc, subject, message);
+		cBean.addNote(conID, "", "Update pqf email sent to: "+to, DateBean.getTodaysDateTime());
+		cBean.writeToDB();
+	}
+	
+	public static void sendAuditSurveyEmail(String conID) throws Exception {
+		AccountBean aBean = new AccountBean();
+		aBean.setFromDB(conID);		
+		ContractorBean cBean = new ContractorBean();
+		cBean.setFromDB(conID);
+		User tempABean = new User();
+		tempABean.setFromDB(cBean.auditor_id);
+		String auditor = tempABean.userDO.name;
+		String to = aBean.email;
+		String cc = "";
+		if (null!=cBean.secondEmail)
+		   cc = cBean.secondEmail;
+		String from = FROM_INFO;
+		String subject = "PICS Office Audit Follow Up";
+		String message =  "Hello "+aBean.contact+","+endl+endl+
+			"We want to hear from you!"+endl+endl+
+			"We hope that your visit today with our PICS auditor, "+auditor+", was beneficial for you. We try to help "+
+			"contractors like "+aBean.name+" to prequalify to work in the facilities that request PICS' service. "+
+			"My name is Jared Smith, and I represent PICS' effort to ensure that you have a good experience working with "+
+			"our employees and website. We would appreciate it if you could take a few minutes and provide us with "+
+			"feedback regarding the visit today and the overall prequalification process."+endl+endl+
+			"Please be honest with us as we want to create a better experience for you in the future and "+
+			"for others. Don't worry that your feedback, whether negative or positive, will affect your requirements "+
+			"needed or status with PICS. Here is the link to the survey:"+endl+endl+
+			"<a href=http://www.surveymonkey.com/s.asp?u=929543410015>Take PICS feedback survey</a>"+endl+endl+
+			"If the link does not work, please copy and paste the following line into your browser:"+endl+
+			"http://www.surveymonkey.com/s.asp?u=929543410015"+endl+endl+
+			"If you had any requirements to fulfill for your audit, you can log into your account at www.picsauditing.com "+
+			"and click on 'View Audit Requirements'.  This will indicate the current status of your pending requirements." +endl+endl+
+			"Also, we hope you were able to see the 'My Details' page where you can write some marketing paragraphs about your "+
+			"company's services. Your current and prospective clients will read what services your company provides. "+
+			"If you have any questions about what to include or what your clients and prospective clients see when they look at your "+
+			"'My Details' page, let me know."+endl+endl+
+			"Finally, we should mention that if you are asked by any other buyers (like other refineries, pipeline groups, power plants, "+
+			"etc) to go through any kind of prequalification, we have a letter that you can send to them requesting that we provide our "+
+			"PICS audit to them. It is on the 'Forms & Documents' page that you get by clicking on the 'Forms & Docs' link. "+
+			"Then click on the Form entitled 'Operator Referral Form Letter'.  "+
+			"You can also give them my contact info:"+endl+endl+
+			"Jared Smith"+endl+
+			"Email: jsmith@picsauditing.com"+endl+
+			"Phone: (949)387-1940 x706"+endl+
+			"Fax: (949)480-2029"+endl+endl+
+			"Warm Regards,"+endl+
+			"Jared";
+		sendEmail(from, to, cc, subject, message);
+		cBean.addAdminNote(conID, "(PICS)", "Office Audit survey email sent to: "+to, DateBean.getTodaysDateTime());
+		cBean.writeToDB();
+	}//sendAuditSurveyEmail
+
+	public static void sendDesktopClosedSurveyEmail(String conID) throws Exception {
+		AccountBean aBean = new AccountBean();
+		aBean.setFromDB(conID);		
+		ContractorBean cBean = new ContractorBean();
+		cBean.setFromDB(conID);
+		String to = aBean.email;
+		String cc = "";
+		if (null!=cBean.secondEmail)
+		   cc = cBean.secondEmail;
+		String from = FROM_INFO;
+		String subject = "PICS Desktop Audit Follow Up";
+		String message =  "Hello "+aBean.contact+","+endl+endl+
+			"We want to hear from you!"+endl+endl+
+			"Congratulations on closing out the Desktop Audit today! We try to help "+
+			"contractors like "+aBean.name+" to prequalify to work in the facilities that request PICS' service. "+
+			"My name is Jared Smith, and I represent PICS' effort to ensure that you have a good experience working with "+
+			"our employees and website. We would appreciate it if you could take a few minutes and provide us with "+
+			"feedback regarding both the PQF on the website and the Desktop Audit."+endl+endl+
+			"Please be honest with us as we want to create a better experience for you in the future and "+
+			"for others. Don't worry that your feedback, whether negative or positive, will affect your requirements "+
+			"needed or status with PICS. Here is the link to the survey:"+endl+endl+
+			"<a href=http://www.surveymonkey.com/s.asp?u=300363409969>Take PICS feedback survey</a>"+endl+endl+
+			"If the link does not work, please copy and paste the following line into your browser:"+endl+
+			"http://www.surveymonkey.com/s.asp?u=300363409969"+endl+endl+
+			"If you would like to check your status at any given facility, you can log into your account at "+
+			"www.picsauditing.com and click on the 'Facilities' link.  This will indicate your status for "+
+			"all the facilities where you work.  Some facilities also require the Office Audit, which may be why "+
+			"you are still Inactive. If you are Active, the facility does not require the Office Audit."+endl+endl+
+			"Also, we hope you were able to see the 'My Details' page where you can write some marketing paragraphs about your "+
+			"company's services. Your current and prospective clients will read what services your company provides. "+
+			"If you have any questions about what to include or what your clients and prospective clients see when they look at your "+
+			"'My Details' page, let me know."+endl+endl+
+			"Finally, we should mention that if you are asked by any other buyers (like other refineries, pipeline groups, power plants, "+
+			"etc) to go through any kind of prequalification, we have a letter that you can send to them requesting that we provide our "+
+			"PICS audit to them. It is on the 'Forms & Documents' page that you get by clicking on the 'Forms & Docs' link. "+
+			"Then click on the Form entitled 'Operator Referral Form Letter'.  "+
+			"You can also give them my contact info:"+endl+endl+
+			"Jared Smith"+endl+
+			"Email: jsmith@picsauditing.com"+endl+
+			"Phone: (949)387-1940 x706"+endl+
+			"Fax: (949)480-2029"+endl+endl+
+			"Warm Regards,"+endl+
+			"Jared";
+		sendEmail(from, to, cc, subject, message);
+		cBean.addAdminNote(conID, "(PICS)", "Desktop Audit survey email sent to: "+to, DateBean.getTodaysDateTime());
+		cBean.writeToDB();
+	}//sendDesktopClosedSurveyEmail
+
 	
 	public static void sendAuditEmail(AccountBean aBean, ContractorBean cBean, boolean toAuditor) throws Exception {
 		String con_id = aBean.id;
@@ -448,263 +704,6 @@ public class EmailBean extends DataBean{
 		sendEmails(from, to, cc, subject, message);
 	}//sendAuditClosedEmailToOperator
 
-	public static void sendContactUsEmail(String name, String email, String phone, String sendTo, String message) throws Exception {
-		String text = "Name: "+name+"\nEmail: "+email+"\nPhone: "+phone+"\nMessage:\n"+message;
-		sendEmail(email,sendTo,"","Email from PICS website",text);
-	}//sendContactUsEmail
-
-	public static void sendAuditSurveyEmail(String conID) throws Exception {
-		AccountBean aBean = new AccountBean();
-		aBean.setFromDB(conID);		
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(conID);
-		User tempABean = new User();
-		tempABean.setFromDB(cBean.auditor_id);
-		String auditor = tempABean.userDO.name;
-		String to = aBean.email;
-		String cc = "";
-		if (null!=cBean.secondEmail)
-		   cc = cBean.secondEmail;
-		String from = FROM_INFO;
-		String subject = "PICS Office Audit Follow Up";
-		String message =  "Hello "+aBean.contact+","+endl+endl+
-			"We want to hear from you!"+endl+endl+
-			"We hope that your visit today with our PICS auditor, "+auditor+", was beneficial for you. We try to help "+
-			"contractors like "+aBean.name+" to prequalify to work in the facilities that request PICS' service. "+
-			"My name is Jared Smith, and I represent PICS' effort to ensure that you have a good experience working with "+
-			"our employees and website. We would appreciate it if you could take a few minutes and provide us with "+
-			"feedback regarding the visit today and the overall prequalification process."+endl+endl+
-			"Please be honest with us as we want to create a better experience for you in the future and "+
-			"for others. Don't worry that your feedback, whether negative or positive, will affect your requirements "+
-			"needed or status with PICS. Here is the link to the survey:"+endl+endl+
-			"<a href=http://www.surveymonkey.com/s.asp?u=929543410015>Take PICS feedback survey</a>"+endl+endl+
-			"If the link does not work, please copy and paste the following line into your browser:"+endl+
-			"http://www.surveymonkey.com/s.asp?u=929543410015"+endl+endl+
-			"If you had any requirements to fulfill for your audit, you can log into your account at www.picsauditing.com "+
-			"and click on 'View Audit Requirements'.  This will indicate the current status of your pending requirements." +endl+endl+
-			"Also, we hope you were able to see the 'My Details' page where you can write some marketing paragraphs about your "+
-			"company's services. Your current and prospective clients will read what services your company provides. "+
-			"If you have any questions about what to include or what your clients and prospective clients see when they look at your "+
-			"'My Details' page, let me know."+endl+endl+
-			"Finally, we should mention that if you are asked by any other buyers (like other refineries, pipeline groups, power plants, "+
-			"etc) to go through any kind of prequalification, we have a letter that you can send to them requesting that we provide our "+
-			"PICS audit to them. It is on the 'Forms & Documents' page that you get by clicking on the 'Forms & Docs' link. "+
-			"Then click on the Form entitled 'Operator Referral Form Letter'.  "+
-			"You can also give them my contact info:"+endl+endl+
-			"Jared Smith"+endl+
-			"Email: jsmith@picsauditing.com"+endl+
-			"Phone: (949)387-1940 x706"+endl+
-			"Fax: (949)480-2029"+endl+endl+
-			"Warm Regards,"+endl+
-			"Jared";
-		sendEmail(from, to, cc, subject, message);
-		cBean.addAdminNote(conID, "(PICS)", "Office Audit survey email sent to: "+to, DateBean.getTodaysDateTime());
-		cBean.writeToDB();
-	}//sendAuditSurveyEmail
-
-	public static void sendDesktopClosedSurveyEmail(String conID) throws Exception {
-		AccountBean aBean = new AccountBean();
-		aBean.setFromDB(conID);		
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(conID);
-		String to = aBean.email;
-		String cc = "";
-		if (null!=cBean.secondEmail)
-		   cc = cBean.secondEmail;
-		String from = FROM_INFO;
-		String subject = "PICS Desktop Audit Follow Up";
-		String message =  "Hello "+aBean.contact+","+endl+endl+
-			"We want to hear from you!"+endl+endl+
-			"Congratulations on closing out the Desktop Audit today! We try to help "+
-			"contractors like "+aBean.name+" to prequalify to work in the facilities that request PICS' service. "+
-			"My name is Jared Smith, and I represent PICS' effort to ensure that you have a good experience working with "+
-			"our employees and website. We would appreciate it if you could take a few minutes and provide us with "+
-			"feedback regarding both the PQF on the website and the Desktop Audit."+endl+endl+
-			"Please be honest with us as we want to create a better experience for you in the future and "+
-			"for others. Don't worry that your feedback, whether negative or positive, will affect your requirements "+
-			"needed or status with PICS. Here is the link to the survey:"+endl+endl+
-			"<a href=http://www.surveymonkey.com/s.asp?u=300363409969>Take PICS feedback survey</a>"+endl+endl+
-			"If the link does not work, please copy and paste the following line into your browser:"+endl+
-			"http://www.surveymonkey.com/s.asp?u=300363409969"+endl+endl+
-			"If you would like to check your status at any given facility, you can log into your account at "+
-			"www.picsauditing.com and click on the 'Facilities' link.  This will indicate your status for "+
-			"all the facilities where you work.  Some facilities also require the Office Audit, which may be why "+
-			"you are still Inactive. If you are Active, the facility does not require the Office Audit."+endl+endl+
-			"Also, we hope you were able to see the 'My Details' page where you can write some marketing paragraphs about your "+
-			"company's services. Your current and prospective clients will read what services your company provides. "+
-			"If you have any questions about what to include or what your clients and prospective clients see when they look at your "+
-			"'My Details' page, let me know."+endl+endl+
-			"Finally, we should mention that if you are asked by any other buyers (like other refineries, pipeline groups, power plants, "+
-			"etc) to go through any kind of prequalification, we have a letter that you can send to them requesting that we provide our "+
-			"PICS audit to them. It is on the 'Forms & Documents' page that you get by clicking on the 'Forms & Docs' link. "+
-			"Then click on the Form entitled 'Operator Referral Form Letter'.  "+
-			"You can also give them my contact info:"+endl+endl+
-			"Jared Smith"+endl+
-			"Email: jsmith@picsauditing.com"+endl+
-			"Phone: (949)387-1940 x706"+endl+
-			"Fax: (949)480-2029"+endl+endl+
-			"Warm Regards,"+endl+
-			"Jared";
-		sendEmail(from, to, cc, subject, message);
-		cBean.addAdminNote(conID, "(PICS)", "Desktop Audit survey email sent to: "+to, DateBean.getTodaysDateTime());
-		cBean.writeToDB();
-	}//sendDesktopClosedSurveyEmail
-
-	public static void sendUpdateDynamicPQFEmail(String conID) throws Exception {
-		AccountBean aBean = new AccountBean();
-		aBean.setFromDB(conID);
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(conID);
-		String to = aBean.email;
-		String cc = "";
-		if (null!=cBean.secondEmail)
-		   cc = cBean.secondEmail;
-		String from = FROM_INFO;
-		String subject = "A facility has added you to their PICS database";
-		String message =  "Hello "+aBean.contact+","+endl+endl+
-			"This is an automatically generated email to inform you that your company has been added to a facility's PICS database. "+
-			"For this reason, there may be new sections for you to fill out in your PQF. "+
-			"Please log in, review your PQF, fill out any additional sections, and re-submit your pqf.  This will ensure that "+
-			"you meet the requirements for all your facilities and remain on their active contractors list."+
-			endl+endl+
-			"Thanks, and have a safe year!"+endl+endl+EMAIL_FOOTER;
-		sendEmail(from, to, cc, subject, message);
-		cBean.addNote(conID, "", "Update pqf email sent to: "+to, DateBean.getTodaysDateTime());
-		cBean.writeToDB();
-	}//sendUpdateDynamicPQFEmail
 	
-	public static void sendCertificateRejectedEmail(CertificateDO certDO,Permissions permissions) throws Exception {
-		AccountBean aBean = new AccountBean();
-		String conID = certDO.getContractor_id();
-		aBean.setFromDB(conID);
-		String contactName = aBean.contact;
-		String contractor = aBean.name;
-		String email = aBean.email;
-		
-		aBean.setFromDB(certDO.getOperator_id());
-		String operator = aBean.name;
-		
-		User user = new User();
-		user.setFromDB(permissions.getUserIdString());
-		String from = FROM_INFO;
-		String to = email;
-		String subject = operator+" insurance certificate rejected";
-		String message = "Hello "+contactName+","+endl+endl+
-			contractor+"'s "+certDO.getType()+
-			" Insurance Certificate has been rejected by "+operator+endl+
-			" for the following reasons:"+endl+endl+
-			certDO.getReason()+endl+endl+	
-			"Please correct these issues and re-upload your insurance certificate to your "+endl+
-			"PICS account."+endl+
-			"If you have any specific questions about "+operator+"'s insurance requirements, "+endl+
-			"please contact "+permissions.getName()+" at "+user.userDO.email+"."+endl+endl+
-			"Have a great day,"+endl+
-			"PICS Customer Service";
-		
-		sendEmail(from, to, subject, message);	
-	}
-	
-	public static void sendCertificateAcceptedEmail(CertificateDO certDO, Permissions permissions) throws Exception {
-		AccountBean aBean = new AccountBean();		
-		String conID = certDO.getContractor_id();
-		aBean.setFromDB(conID);
-		String contactName = aBean.contact;
-		String contractor = aBean.name;
-		String email = aBean.email;
-		
-		aBean.setFromDB(certDO.getOperator_id());
-		String operator = aBean.name;
-
-		String from = FROM_INFO;
-		String to = email;
-
-		String subject = operator+" insurance certificate accepted";
-		String message = "Hello "+contactName+","+endl+endl+
-			contractor+"'s "+certDO.getType()+endl+ 
-			"Insurance Certificate has been accepted by "+operator+endl;
-		if (!"".equals(certDO.getReason()))
-			message += " for the following reasons:"+endl+endl+certDO.getReason()+endl+endl;
-
-		message += "Please make sure that you keep up-to-date in PICS by uploading your "+endl+
-			"insurance certificate when you renew your policy." + endl+endl+		 
-			"Have a great day,"+endl+
-			"PICS Customer Service";
-		
-		sendEmail(from, to, subject, message);
-	}//sendCertificateAcceptedEmail
-	
-	public static void sendSafetyMeetingEmail(HttpServletRequest request) throws Exception {
-		String JESSE_EMAIL_FOOTER =
-			"PICS - Pacific Industrial Contractor Screening"+endl2+endl+
-			"P.O. Box 51387"+endl2+endl+
-			"Irvine CA 92619-1387"+endl2+endl+
-			"(949)387-1940"+endl2+endl+
-		 	"fax: (949)269-9177"+endl2+endl+
-			"info@picsauditing.com (Please add this email address to your address book to prevent it from being labeled as spam)"+endl2+endl+
-			"http://www.picsauditing.com";
-	
-		
-		String to = "meetings@picsauditing.com";
-		String cc = "";
-		String from = request.getParameter("email");
-		String subject = request.getParameter("name") + " from " + request.getParameter("organization") + " registered";
-		
-		StringBuffer message = new StringBuffer();
-		message.append("Info:\n");
-		message.append("Name:          " + request.getParameter("name") + "\n");
-		message.append("Organization:  " +request.getParameter("organization") + "\n");
-		message.append("Phone:         " +request.getParameter("phone") + " " + request.getParameter("ext") + "\n");
-		message.append("Email:         " +request.getParameter("email") + "\n");
-		message.append("Number:        " +request.getParameter("howmany") + "\n");
-		message.append("Attendees:     " +request.getParameter("attendees") + "\n");
-		message.append("Special Needs: " +request.getParameter("specialneeds") + "\n");
-		
-		sendEmail(from, to, cc, subject, message.toString());
-		
-		to = request.getParameter("email");
-		from = "meetings@picsauditing.com";
-		subject = "Registration confirmation for Contractor User Group Meeting";
-		message = new StringBuffer();
-		
-		message.append("Hi, " + request.getParameter("name") + "\n\n\n");
-		message.append("Thanks for registering for PICS Contractor User Group Meeting 2008.\nIf you have any questions about your registration, please contact Whitney Curry\nat (949)387-1940 x 714 or wcurry@picsauditing.com.");
-		message.append("\n\nHave a great day,\nJesse Cota\n\n");
-		message.append(JESSE_EMAIL_FOOTER);
-		
-		sendEmail(from, to, cc, subject, message.toString());
-	}
-	
-	public void sendNewUserEmail(HttpServletRequest request, 
-			com.picsauditing.access.User user, Permissions permissions) throws Exception {
-		String from = FROM_INFO;
-		String to = user.userDO.email;
-		String cc = "";
-		String subject = "New PICS User Account Created";
-		AccountBean aBean = new AccountBean();
-		aBean.setFromDB(user.userDO.accountID);
-		String message = "Hi "+user.userDO.name+","+endl+endl+
-			permissions.getName()+ " has issued you a login for "+
-			"the "+aBean.name+" account on PICS."+endl+endl+
-			"Your username: '"+user.userDO.username+"'"+endl+
-			"Your password: '"+user.userDO.password+"'"+endl+endl+
-			"Attached is a User's Manual in case you have any questions."+endl+endl+
-			"Have a great week,"+endl+
-			"PICS Customer Service"+endl+endl+
-			EMAIL_FOOTER;
-
-		String ftpDir = request.getSession().getServletContext().getInitParameter("FTP_DIR");
-		String path = ftpDir+"/attachments/";
-		String fileName = "userManual.pdf";
-
-		java.io.File userManual = new java.io.File(path+fileName);
-		if (userManual.exists())
-			sendAttachment(from, to, cc, subject, message, path, fileName);
-		else
-			sendEmail(from, to, subject, message);			
-	}
-	
-	public static void sendErrorMessage(String errorMessage) throws Exception {
-		sendEmail("errors@picsauditing.com", "errors@picsauditing.com", "PICS Exception Error", errorMessage);
-	}
-	
-}//EmailBean
+	**/
+}

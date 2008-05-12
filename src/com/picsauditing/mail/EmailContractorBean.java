@@ -7,8 +7,8 @@ import com.picsauditing.access.Permissions;
 import java.util.HashMap;
 
 public class EmailContractorBean extends EmailBean {
-	private AccountBean aBean;
-	private ContractorBean cBean;
+	protected AccountBean aBean;
+	protected ContractorBean cBean;
 	public AccountBean getAccountBean() {
 		return aBean;
 	}
