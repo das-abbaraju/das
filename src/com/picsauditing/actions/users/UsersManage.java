@@ -39,7 +39,7 @@ public class UsersManage extends PicsActionSupport {
 		String accountId = permissions.getAccountIdString();
 		if (permissions.hasPermission(OpPerms.AllOperators)
 				&& this.accountId != null) {
-			accountId = Utilities.intToDB(this.accountId);
+			accountId = Utilities.intToDB(accountId);
 		}
 
 		this.accountId = accountId;// accountId is on the instance level

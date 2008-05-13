@@ -182,12 +182,6 @@
 			class="com.picsauditing.actions.audits.AuditorsGet">
 			<result>/struts/audits/auditorSelect.jsp</result>
 		</action>
-		
-		<action name="AuditorsGet"
-			class="com.picsauditing.actions.audits.AuditorsGet">
-			<result>/struts/audits/auditorSelect.jsp</result>
-		</action>
-		
 		<action name="FileUploadExample"
 			class="com.picsauditing.actions.FileUploadExample">
 			<result>/struts/fileUpload.jsp</result>

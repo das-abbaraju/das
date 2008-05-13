@@ -29,7 +29,7 @@ if (action.equals("deleteUser")) {
 	String name = uBean.userDO.name;
 	uBean.deleteUser();
 	%>Successfully deleted <%=name %><br />
-	<a href="users_manage.jsp">Refresh User List</a><%
+	<a href="UsersManage.action">Refresh User List</a><%
 	return;
 }
 
