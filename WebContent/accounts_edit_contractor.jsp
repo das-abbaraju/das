@@ -42,17 +42,12 @@
 			if (aBean.isOK() && cBean.isOK()) {
 				java.util.Map<String, String> params = (java.util.Map<String, String>) request
 						.getAttribute("uploadfields");
-				String doubleAuditOK = params.get("doubleAuditOK");
-				if (!"".equals(cBean.auditDate) && !"".equals(cBean.auditor_id)
-						&& !"".equals(cBean.checkDoubleAudit(id)) && !"true".equals(doubleAuditOK))
-					msg = cBean.checkDoubleAudit(id);
-				else {
 					aBean.writeToDB();
 					cBean.setUploadedFiles(request);
 					cBean.writeToDB();
 					response.sendRedirect("ContractorView.action?id=" + editID);
 					return;
-				}//else
+				
 			}//if
 		}
 	}//if
