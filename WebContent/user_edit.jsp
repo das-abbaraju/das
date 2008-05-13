@@ -2,7 +2,6 @@
 <%@page import="com.picsauditing.access.*"%>
 <%@page import="java.util.*"%>
 <%@page import="com.picsauditing.PICS.Utilities"%>
-<%@page import="com.picsauditing.PICS.EmailBean"%>
 <%@page import="org.apache.commons.beanutils.BasicDynaBean"%>
 <%@ include file="includes/main_ajax.jsp" %>
 <%@page import="com.picsauditing.mail.EmailContractorBean"%>

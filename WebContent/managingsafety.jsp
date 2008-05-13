@@ -97,8 +97,7 @@ input.valid {
 				out.println("<span class='redMain'>Thank you for submitting your attendance information</span>");
 		%>
 
-		<form id="safetyForm" action="Usergroup_2008.jsp?action=rsvp"
-			method="post">
+		<form id="safetyForm" action="?action=rsvp" method="post">
 		<table class="blueMain" bgcolor="#CBE5FE" width="100%" border="0"
 			cellspacing="0" cellpadding="0">
 			<tr>

@@ -8,24 +8,30 @@
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd" default-autowire="autodetect">
 
+	<bean id="SpringUtils" class="com.picsauditing.util.SpringUtils" />
+	
 	<bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO" scope="prototype"/>
+	<bean id="AuditBuilder" class="com.picsauditing.PICS.AuditBuilder" scope="prototype"/>
 	<bean id="AuditDataDAO" class="com.picsauditing.dao.AuditDataDAO" scope="prototype"/>
+	<bean id="AuditCategoryDataDAO" class="com.picsauditing.dao.AuditCategoryDataDAO" scope="prototype"/>
 	<bean id="AuditOperatorDAO" class="com.picsauditing.dao.AuditOperatorDAO" scope="prototype"/>
 	<bean id="AuditQuestionDAO" class="com.picsauditing.dao.AuditQuestionDAO" scope="prototype"/>
 	<bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO" scope="prototype"/>
 	<bean id="ContractorAuditDAO" class="com.picsauditing.dao.ContractorAuditDAO" scope="prototype"/>
-	<bean id="ContractorInfoDAO" class="com.picsauditing.dao.ContractorAccountDAO" scope="prototype"/>
+	<bean id="ContractorAccountDAO" class="com.picsauditing.dao.ContractorAccountDAO" scope="prototype"/>
+	<bean id="ContractorOperatorDAO" class="com.picsauditing.dao.ContractorOperatorDAO" scope="prototype"/>
+	<bean id="ContractorOperatorFlagDAO" class="com.picsauditing.dao.ContractorOperatorFlagDAO" scope="prototype"/>
+	<bean id="OperatorAccountDAO" class="com.picsauditing.dao.OperatorAccountDAO" scope="prototype"/>
+	
 	<bean id="RulesRowDAO" class="com.picsauditing.dao.RulesRowDAO" scope="prototype"/>
 	<bean id="UserDAO" class="com.picsauditing.dao.UserDAO" scope="prototype"/>
-	<bean id="OshaLogDAO" class="com.picsauditing.dao.OshaLogDAO" scope="prototype"/>
-	<bean id="OperatorAccountDAO" class="com.picsauditing.dao.OperatorAccountDAO" scope="prototype"/>
-	<bean id="ContractorOperatorDAO" class="com.picsauditing.dao.ContractorOperatorDAO" scope="prototype"/>
+
+	<bean id="SelectAccount" class="com.picsauditing.search.SelectAccount" scope="prototype"/>
+	<bean id="Report" class="com.picsauditing.search.Report" scope="prototype"/>
 	<bean id="FlagCalculator2" class="com.picsauditing.PICS.FlagCalculator2" scope="prototype"/>
-	<bean id="ContractorOperatorFlagDAO" class="com.picsauditing.dao.ContractorOperatorFlagDAO" scope="prototype"/>
-	<bean id="AuditBuilder" class="com.picsauditing.PICS.AuditBuilder" scope="prototype"/>
+
 	<bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO" scope="prototype"/>
 
-	
 <!-- 	<bean class="com.picsauditing.PICS.Facilities"/> -->
 
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />

@@ -114,7 +114,7 @@ public class User extends DataBean implements Comparable<User> {
 	public void setFromRequest(HttpServletRequest request) throws Exception {
 		oldUsername = userDO.username;
 		userDO.setFromRequest(request);
-		this.isSet = true; // we may want isSet to just mean we have a row in the database
+		//this.isSet = true; // we may want isSet to just mean we have a row in the database
 	}
 		
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
@@ -159,6 +159,8 @@ public class User extends DataBean implements Comparable<User> {
 				ResultSet SQLResult = SQLStatement.getGeneratedKeys();
 				if (SQLResult.next())
 					userDO.id = SQLResult.getString("GENERATED_KEY");
+				if (userDO.id != null && !userDO.id.equals(""))
+					isSet = true;
 				SQLResult.close();
 			}
 		}finally{

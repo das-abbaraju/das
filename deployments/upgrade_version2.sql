@@ -609,11 +609,13 @@ update contractor_audit set auditStatus = 'Active'
 update contractor_audit set auditStatus = 'Expired'
 	where expiresDate < curDate();
 
+update contractor_audit set auditorID = null
+	where auditorID = 0;
+
+update pqfdata set auditorID = null
+	where auditorID = 0;
 
 
-                                                                     
-                                                                     
-                                                                     
 /* ============================================ */
 /* POST                                         */
 /* ============================================ */

@@ -32,6 +32,8 @@
 
 	<bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO" scope="prototype"/>
 
+	<bean id="ContractorInfoDAO" class="com.picsauditing.dao.ContractorAccountDAO" scope="prototype"/>
+	<bean id="OshaLogDAO" class="com.picsauditing.dao.OshaLogDAO" scope="prototype"/>
 
 	<bean class="com.picsauditing.PICS.Facilities"/>
 

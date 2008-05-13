@@ -39,7 +39,7 @@ public class AuditCategoryDataDAO extends PicsDAO {
 		if (contractorAudit.getAuditType().getAuditTypeID() == AuditType.PQF) {
 			// This is a PQF, so it has special query criteria
 			if (!permissions.isAdmin()) // TODO change this to be a permission
-				where += "AND applies = 'Yes' "; // Only show the admins the full PQF
+				where += "AND d.applies = 'Yes' "; // Only show the admins the full PQF
 
 			// Contractors can see their full PQF
 			if (!permissions.isContractor()) {
@@ -47,20 +47,21 @@ public class AuditCategoryDataDAO extends PicsDAO {
 					where += "AND d.category.id <> " + AuditCategory.WORK_HISTORY + " ";
 				
 				if (permissions.isOperator()) {
-					where += "AND d.category IN (SELECT category FROM PqfOperator o " +
+					where += "AND d.category IN (SELECT o.category FROM PqfOperator o " +
 							"WHERE o.riskLevel = :risk AND o.operatorAccount.id = :id) ";
 				}
 				if (permissions.isCorporate()) {
-					where += "AND d.category IN (SELECT category FROM PqfOperator o " +
+					where += "AND d.category IN (SELECT o.category FROM PqfOperator o " +
 							"WHERE o.riskLevel = :risk AND o.operatorAccount IN (" +
 							"SELECT operator FROM Facility f WHERE corporate.id = :id)) ";
 				}
 			}
 		}
 		
-		Query query = em.createQuery(" select d FROM AuditCatData d inner join fetch d.category " +
-				"WHERE d.audit.id = :conAudit AND d.category.auditType.id = :auditType " + where +
-				"ORDER BY d.category.number");
+		String queryString = "SELECT d FROM AuditCatData d inner join fetch d.category " +
+			"WHERE d.audit.id = :conAudit AND d.category.auditType.id = :auditType " + where +
+			" ORDER BY d.category.number";
+		Query query = em.createQuery(queryString);
 		
 		query.setParameter("conAudit", contractorAudit.getId());
 		query.setParameter("auditType", contractorAudit.getAuditType().getAuditTypeID());
@@ -68,6 +69,51 @@ public class AuditCategoryDataDAO extends PicsDAO {
 		setOptionalParameter(query, "risk", contractorAudit.getContractorAccount().getRiskLevel());
 		
 		return query.getResultList();
+	}
+	
+	public void findByAuditTest() {
+		String where = "";
+		String queryString;
+		Query query;
+
+		queryString = "SELECT d FROM AuditCatData d inner join fetch d.category " +
+			"WHERE d.audit.id = :conAudit AND d.category.auditType.id = :auditType " + where +
+			" ORDER BY d.category.number";
+		query = em.createQuery(queryString);
+		
+		where += "AND d.applies = 'Yes' "; // Only show the admins the full PQF
+
+		queryString = "SELECT d FROM AuditCatData d inner join fetch d.category " +
+			"WHERE d.audit.id = :conAudit AND d.category.auditType.id = :auditType " + where +
+			" ORDER BY d.category.number";
+		query = em.createQuery(queryString);
+	
+		if (true)
+			where += "AND d.category.id <> " + AuditCategory.WORK_HISTORY + " ";
+		
+		queryString = "SELECT d FROM AuditCatData d inner join fetch d.category " +
+			"WHERE d.audit.id = :conAudit AND d.category.auditType.id = :auditType " + where +
+			" ORDER BY d.category.number";
+		query = em.createQuery(queryString);
+		if (true) {
+			where += "AND d.category IN (SELECT o.category FROM PqfOperator o " +
+					"WHERE o.riskLevel = :risk AND o.operatorAccount.id = :id) ";
+		}
+		queryString = "SELECT d FROM AuditCatData d inner join fetch d.category " +
+			"WHERE d.audit.id = :conAudit AND d.category.auditType.id = :auditType " + where +
+			" ORDER BY d.category.number";
+		query = em.createQuery(queryString);
+	
+		if (true) {
+			where += "AND d.category IN (SELECT o.category FROM PqfOperator o " +
+					"WHERE o.riskLevel = :risk AND o.operatorAccount IN (" +
+					"SELECT operator FROM Facility f WHERE corporate.id = :id)) ";
+		}
+		queryString = "SELECT d FROM AuditCatData d inner join fetch d.category " +
+			"WHERE d.audit.id = :conAudit AND d.category.auditType.id = :auditType " + where +
+			" ORDER BY d.category.number";
+		query = em.createQuery(queryString);
+		
 	}
 
 	@SuppressWarnings("unchecked")
