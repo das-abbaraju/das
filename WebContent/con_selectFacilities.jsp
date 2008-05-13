@@ -6,12 +6,9 @@
 <%@page import="com.picsauditing.util.SpringUtils"%>
 <%@page import="com.picsauditing.dao.OperatorAccountDAO"%>
 <%@page import="com.picsauditing.jpa.entities.OperatorAccount"%>
-<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean"
-	scope="page" />
-<jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean"
-	scope="page" />
-<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean"
-	scope="page" />
+<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page" />
+<jsp:useBean id="oBean" class="com.picsauditing.PICS.OperatorBean" scope="page" />
+<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page" />
 <%
 	String id = request.getParameter("id");
 	cBean.setFromDB(id);
@@ -25,11 +22,13 @@
 			com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
 			com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();
 			pcBean.generateDynamicCategories(id, com.picsauditing.PICS.pqf.Constants.PQF_TYPE, cBean.riskLevel);
-			cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE, pdBean.getPercentComplete(
-					id, com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
-			cBean.canEditPrequal = "Yes";
-			cBean.writeToDB();
-			EmailBean.sendUpdateDynamicPQFEmail(id);
+			//TODO Open pqf when the new facilities are added.  
+			
+			//cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE, pdBean.getPercentComplete(
+			//		id, com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
+			//cBean.canEditPrequal = "Yes";
+		//	cBean.writeToDB();
+		//	EmailBean.sendUpdateDynamicPQFEmail(id);
 		}//if
 		if (permissions.isContractor()) {
 			response.sendRedirect("pqf_editMain.jsp?auditType=" + com.picsauditing.PICS.pqf.Constants.PQF_TYPE
@@ -37,7 +36,7 @@
 			return;
 		}//if
 	}//if
-	if (permissions.isAdmin() && removeContractor) {
+	if (permissions.seesAllContractors() && removeContractor) {
 		com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
 		com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();
 		Integer removeOpID = Integer.parseInt(request.getParameter("opID"));
@@ -47,8 +46,9 @@
 		cBean.addNote(id, "(" + pBean.userName + " from PICS)", "Removed " + aBean.name + " from "
 				+ tempOpBean.name + "'s db", DateBean.getTodaysDateTime());
 		pcBean.generateDynamicCategories(id, com.picsauditing.PICS.pqf.Constants.PQF_TYPE, cBean.riskLevel);
-		cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE, pdBean.getPercentComplete(id,
-				com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
+		//TODO Open pqf when the new facilities are added.  
+		//cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE, pdBean.getPercentComplete(id,
+		//		com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
 		cBean.writeToDB();
 	}//if
 	cBean.setFromDB(id);
