@@ -125,12 +125,26 @@ public class VerifyView extends AuditActionSupport {
 		
 		int verifyTotal = 6;
 
+		if( customVerification != null )
+		{
+			verifyTotal += customVerification.size();
+			
+			for( AuditData ad : customVerification.values() )
+			{
+				if( ad.getIsCorrectBoolean() ) verified++;
+			}
+		}
+		
+		
 		conAudit.setPercentVerified(Math.round((float)(100 * verified) / verifyTotal));
 		
 		if (conAudit.getPercentVerified() == 100) {
 			conAudit.setAuditStatus(AuditStatus.Active);
 		} else
 			conAudit.setAuditStatus(AuditStatus.Submitted);
+		
+		
+		
 		
 		auditDao.save(conAudit);
 	}
