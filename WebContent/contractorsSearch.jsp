@@ -93,7 +93,9 @@ try{
 <html>
 <head>
 <title>Search for Contractors</title>
-  <script language="JavaScript" SRC="js/Search.js"></script>
+<script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
   <script language="JavaScript">
 	function addContractor( cid )
 	{	
@@ -135,19 +137,25 @@ try{
                     </tr>
                   </table>
 <%	}//if %>
-                  <form id='form1' name="form1" method="post" action="contractorsSearch.jsp">
+				<div id="search">
+				<div id="showSearch"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
+				<div id="hideSearch" style="display: none"><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
+                  <form id='form1' name="form1" method="post" style="display: none">
                   <table border="0" cellpadding="2" cellspacing="0">
-                    <tr align="left">
+                    <tr>
                       <td>
                         <input name="name" type="text" class="forms" value="<%=sBean.selected_name%>" size="20" onFocus="clearText(this)">
+                       <% if (permissions.isOperator()) {%>
+                        <%=Inputs.inputSelect("flagStatus","forms", sBean.selected_flagStatus,SearchBean.FLAG_STATUS_ARRAY)%>
+						<% } %> 
+                        <input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0" onClick="runSearch('form1');">
+                        </td>
+                       </tr>
+                       <tr><td> 
                         <%=tBean.getTradesSelect("trade", "forms", sBean.selected_trade)%>
                         <%=Inputs.inputSelect("performedBy","forms",sBean.selected_performedBy,TradesBean.PERFORMED_BY_ARRAY)%>
-<%		if (permissions.isOperator()) {%>
-                        <%=Inputs.inputSelect("flagStatus","forms", sBean.selected_flagStatus,SearchBean.FLAG_STATUS_ARRAY)%>
-<% } %>
                         <input name="taxID" type="text" class="forms" value="<%=sBean.selected_taxID%>" size="9" onFocus="clearText(this)"><span class=redMain>*must be 9 digits</span>
                       </td>
-                      <td width="89"><input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0" onClick="runSearch('form1');">
                     </tr>
                     <tr>
                       <td class="blueMain" colspan="2" align="left"><%=Inputs.getCheckBoxInput("searchCorporate", "forms",sBean.searchCorporate,"Y")%>
@@ -164,6 +172,7 @@ try{
 		          <input type="hidden" name="startsWith" value=""/>
 		          <input type="hidden" name="orderBy"  value="name"/>
                   </form>
+                 </div> 
                 </td>
               </tr>
             </table>
@@ -174,8 +183,10 @@ try{
                 <td align="center"><%=sBean.getLinksWithDynamicForm()%></td>
               </tr>
             </table>
-            <table width="657" border="0" cellpadding="1" cellspacing="1">
-              <tr bgcolor="#003366" class="whiteTitle"> 
+            <table class="report">
+            <thead>
+              <tr> 
+                <td></td>
                 <td>Contractor</td>
                 <td>Address</td>
                 <td align="center" bgcolor="#6699CC">Contact</td>
@@ -184,11 +195,13 @@ try{
                 <td align="center" bgcolor="#336699">Flag</td>
                 <td align="center" bgcolor="#336699"></td>
               </tr>
+              </thead>
 <%		while (sBean.isNextRecord()){
 			String thisClass = "cantSee";
 			if ((pBean.canSeeSet.contains(sBean.aBean.id)))
 				thisClass = ""; // TODO add in the FlagColor here
 %>            <span id="con_<%=sBean.aBean.id%>"><tr <%=sBean.getBGColor()%> class=<%=thisClass%>>
+               <td class="right"><%=sBean.count-1%></td>
                 <td>
                   <a href="ContractorView.action?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class=<%=thisClass%>><%=sBean.aBean.name%></a>
                 </td>
