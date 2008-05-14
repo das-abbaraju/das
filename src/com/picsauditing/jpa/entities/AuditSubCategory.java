@@ -38,17 +38,17 @@ public class AuditSubCategory implements java.io.Serializable {
 	public void setSubCategory(String subCategory) {
 		this.subCategory = subCategory;
 	}
-/*
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "categoryID", nullable = false)
-	public PqfCategory getCategory() {
+	public AuditCategory getCategory() {
 		return category;
 	}
 
-	public void setCategory(PqfCategory category) {
+	public void setCategory(AuditCategory category) {
 		this.category = category;
 	}
-*/
+
 	public int getNumber() {
 		return number;
 	}

@@ -45,7 +45,20 @@ public class AuditDataDAO extends PicsDAO {
 		return mapData(query.getResultList());
 	}
 
-	public List<AuditData> findCustomPQFVerifications(ContractorAccount contractor) {
+	
+	public AuditData findAnswerToQuestion(int auditId, int questionId) {
+			
+		Query query = em.createQuery("FROM AuditData d " +
+				"WHERE audit.id = ? AND question.questionID =? ");
+		query.setParameter(1, auditId);
+		query.setParameter(2, questionId);
+		
+		return (AuditData) query.getSingleResult();
+	}
+
+	
+	//we may want to join over to the ContractorAudit in order to only pull the most recent answers
+	public List<AuditData> findCustomPQFVerifications(int auditId) {
 		
 		StringBuffer queryString = new StringBuffer();
 		
@@ -53,12 +66,12 @@ public class AuditDataDAO extends PicsDAO {
 		queryString.append("inner join fetch d.question q ");
 		queryString.append("inner join fetch q.subCategory sc ");
 		queryString.append("inner join fetch sc.category cat ");
-		queryString.append("where d.audit.contractorAccount.id = ? ");
+		queryString.append("where d.audit.id = ? ");
 		queryString.append("and EXISTS ( select a from AuditQuestionOperatorAccount a where a.auditQuestion.questionID = q.questionID ) ");
 		
 		Query query = em.createQuery(queryString.toString()) ;
 		
-		query.setParameter(1, contractor.getId());
+		query.setParameter(1, auditId);
 		
 		return query.getResultList();
 	}

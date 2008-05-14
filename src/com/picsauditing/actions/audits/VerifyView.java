@@ -3,8 +3,11 @@ package com.picsauditing.actions.audits;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,6 +32,7 @@ public class VerifyView extends AuditActionSupport {
 	private OshaLog osha;
 	private AuditDataDAO pqfDao;
 	private Map<Integer, AuditData> emr = new HashMap<Integer, AuditData>();
+	protected Map<Integer, AuditData> customVerification = null;
 	private int followUp = 0;
 
 	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO, AuditDataDAO pqfDao, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao) {
@@ -37,6 +41,9 @@ public class VerifyView extends AuditActionSupport {
 	}
 
 	public String execute() throws Exception {
+		
+		this.loadPermissions();
+		
 		this.findConAudit();
 		permissions.tryPermission(OpPerms.AuditVerification);
 
@@ -63,6 +70,27 @@ public class VerifyView extends AuditActionSupport {
 			saveAuditData(emrDB, AuditQuestion.EMR05);
 		}
 
+		if( customVerification != null )
+		{
+			for( Integer i : customVerification.keySet() )
+			{
+				AuditData aq = (AuditData) customVerification.get(i);
+				
+				AuditData toMerge = pqfDao.findAnswerToQuestion( this.auditID, i );
+				
+				toMerge.setVerifiedAnswer(aq.getVerifiedAnswer());
+				
+				
+				if( toMerge.getIsCorrectBoolean() != aq.getIsCorrectBoolean() )
+				{
+					toMerge.setDateVerified( aq.getIsCorrectBoolean() ? new Date() : null );
+					toMerge.setIsCorrectBoolean(aq.getIsCorrectBoolean() );
+				}
+				
+				pqfDao.save( toMerge );			
+			}
+		}
+		
 		loadData();
 		
 		setVerifiedPercent();
@@ -134,6 +162,15 @@ public class VerifyView extends AuditActionSupport {
 		emrQuestions.add(AuditQuestion.EMR05);
 		emr = pqfDao.findAnswers(this.auditID, emrQuestions);
 		
+		
+		List<AuditData> temp = pqfDao.findCustomPQFVerifications(this.auditID);
+		
+		customVerification = new TreeMap<Integer, AuditData>();
+		
+		for( AuditData ad : temp )
+		{
+			customVerification.put(ad.getQuestion().getQuestionID(), ad);
+		}
 	}
 	
 	public String saveFollowUp() throws Exception {
@@ -324,4 +361,14 @@ public class VerifyView extends AuditActionSupport {
 
 	}
 
+	public Map<Integer, AuditData> getCustomVerification() {
+		return customVerification;
+	}
+
+	public void setCustomVerification(Map<Integer, AuditData> customVerification) {
+		this.customVerification = customVerification;
+	}
+
+	
+	
 }
