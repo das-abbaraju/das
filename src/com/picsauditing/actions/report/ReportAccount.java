@@ -30,7 +30,7 @@ public class ReportAccount extends ReportActionSupport {
 	public static final String DEFAULT_CERTS = "- Ins. Certs -";
 	public static final String DEFAULT_VISIBLE = "- Visible -";
 
-	protected boolean forwardSingleResults = true;
+	protected boolean forwardSingleResults = false;
 	
 	protected String startsWith;
 	protected String accountName = DEFAULT_NAME;

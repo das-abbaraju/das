@@ -72,9 +72,9 @@ public class CalendarBean extends DataBean {
 											+ blockedDatesArray[i + 4] + blockedDatesArray[i + 5];
 								dayStr += "<br><a class='buttons' href='?whichMonth=" + auditMonth + "&whichYear="
 										+ auditYear + "&unblock=" + blockedDatesArray[i] + "'>unblock</a>";
-							}// if
-						}// for
-					}// if
+							}
+						}
+					}
 					for (CalendarEntry entry : auditDates) {
 						if (day == entry.getEntryDate().getDay()) {
 							if (entry.getConName().length() < maxchars)
@@ -83,13 +83,13 @@ public class CalendarBean extends DataBean {
 								thismaxchars = maxchars;
 							dayStr += "<span class='buttons'>";
 							if (permissions.isPicsEmployee()) {
-								dayStr += "<br><span class='buttons'><strong>" + DateBean.format(entry.getEntryDate(), "ha")
+								dayStr += "<br><span class='buttons'><strong>" + DateBean.format(entry.getEntryDate(), "h:mm a")
 										+ "</strong>";
 								if ("Web".equals(entry.getAuditLocation()))
 									dayStr += "*";
 								dayStr += " - ";
 							}
-							dayStr += entry.getConName().substring(0, thismaxchars);
+							dayStr += "<a href=\"ConAuditList.action?id="+entry.getAuditID()+"\">"+entry.getConName().substring(0, thismaxchars)+"</a>";
 							if (null != entry.getAuditorName())
 								dayStr += "<br>(" + entry.getAuditorName() + ")";
 							dayStr += "</span>";
@@ -190,6 +190,7 @@ public class CalendarBean extends DataBean {
 		
 		selectAudit.addWhere("year(ca.scheduledDate) = " + auditYear);
 		selectAudit.addWhere("month(ca.scheduledDate) = " + auditMonth);
+		selectAudit.addOrderBy("ca.scheduledDate");
 
 		auditDates.clear();
 		try {
@@ -197,11 +198,12 @@ public class CalendarBean extends DataBean {
 			ResultSet SQLResult = SQLStatement.executeQuery(selectAudit.toString());
 			while (SQLResult.next()) {
 				CalendarEntry entry = new CalendarEntry();
-				entry.setEntryDate(SQLResult.getDate("scheduledDate"));
+				entry.setEntryDate(SQLResult.getTimestamp("scheduledDate"));
 				entry.setConID(SQLResult.getInt("id"));
 				entry.setConName(SQLResult.getString("name"));
 				entry.setAuditorName(SQLResult.getString("auditor_name"));
 				entry.setAuditLocation(SQLResult.getString("auditLocation"));
+				entry.setAuditID(SQLResult.getInt("auditID"));
 				auditDates.add(entry);
 			}
 			SQLResult.close();

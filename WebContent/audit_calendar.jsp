@@ -1,4 +1,6 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ include file="includes/main.jsp"%>
 <jsp:useBean id="dBean" class="com.picsauditing.PICS.DateBean" scope="page" />
 <jsp:useBean id="calBean" class="com.picsauditing.PICS.CalendarBean" scope="page" />
@@ -28,7 +30,6 @@
 <head>
 <title>Audit Calendar</title>
 <style>
-
 table.month {
 	border: 2px #000000 solid;
 }
@@ -51,14 +52,11 @@ td.day {
 	color: #A84D10;
 	font-size: 20px;
 }
-
 </style>
 </head>
 <body>
 <h1><%=DateBean.getMonthName(auditMonth)%>
 <span class="sub">Audit Calendar</span></h1>
-<%@ taglib prefix="s" uri="/struts-tags"%>
-<%@ taglib prefix="pics" uri="pics-taglib"%>
 <div id="internalnavcontainer">
 <ul id="navlist">
 <%

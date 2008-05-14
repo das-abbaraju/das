@@ -118,7 +118,7 @@
 		</action>
 
 		<action name="ContractorSearch"
-			class="com.picsauditing.actions.report.ReportAccount">
+			class="com.picsauditing.actions.report.ReportAccountQuick">
 			<result>struts/reports/contractors_search.jsp</result>
 		</action>
 

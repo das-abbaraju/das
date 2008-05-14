@@ -662,7 +662,8 @@ alter table `contractor_info`
 	drop column `pqfPercent`, 
 	drop column `hasNCMSDesktop`, 
 	drop column `isNewOfficeAudit`, 
-	drop column `daRequired`, COMMENT='';
+	drop column `daRequired`,
+	drop column `tempAuditDateTime`;
 
 alter table `operators` 
 	drop column `canSeePQF`, 
@@ -680,9 +681,6 @@ drop table `auditcategories`;
 drop table `auditdata`; 
 
 drop table `auditquestions`; 
-
-alter table `contractor_info` 
-	drop column `tempAuditDateTime`;
 
 alter table `pqfcatdata` 
 	change `auditID` `auditID` mediumint(9) unsigned   NOT NULL after `catID`, 

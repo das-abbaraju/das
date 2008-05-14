@@ -65,8 +65,8 @@ public class OperatorBean extends DataBean {
 		}		
 	}
 
-	public void setAuditOperatorsSetFromDB(String opID) throws Exception{
-		String selectQuery = "SELECT * FROM audit_operator WHERE opID="+opID;
+	private void setAuditOperatorsSetFromDB() throws Exception{
+		String selectQuery = "SELECT * FROM audit_operator WHERE opID="+id;
 		canSeeAudits = new HashSet<AuditOperator>();
 		try{
 			DBReady();
@@ -84,10 +84,13 @@ public class OperatorBean extends DataBean {
 		}
 	}
 
-	public Set<AuditOperator> getCanSeeAudits(String opID)throws Exception{
+	public Set<AuditOperator> getCanSeeAudits() throws Exception {
 		if (null == canSeeAudits)
-			setAuditOperatorsSetFromDB(opID);
+			setAuditOperatorsSetFromDB();
 		return canSeeAudits;
+	}
+	public void setCanSeeAudits(Set<AuditOperator> canSeeAudits) {
+		this.canSeeAudits = canSeeAudits;
 	}
 
 	public void setPQFCategoriesFromDB() throws Exception {
@@ -254,7 +257,7 @@ public class OperatorBean extends DataBean {
 
 	public boolean canSeeAudit(int auditID) throws Exception{
 		if (canSeeAudits == null )
-			setAuditOperatorsSetFromDB(this.id);
+			setAuditOperatorsSetFromDB();
 		if (canSeeAudits.size() == 0)
 			return false;
 		for (AuditOperator audit : canSeeAudits) {
@@ -471,7 +474,7 @@ public class OperatorBean extends DataBean {
 		setCorporatesFromDB();
 		setPQFCategoriesFromDB();
 		setCorporateCanSee();
-		setAuditOperatorsSetFromDB(opID);
+		setAuditOperatorsSetFromDB();
 	}
 
 	public void setFromDB() throws Exception {
@@ -484,7 +487,7 @@ public class OperatorBean extends DataBean {
 			if (SQLResult.next())
 				setFromResultSet(SQLResult);
 			SQLResult.close();
-			setAuditOperatorsSetFromDB(id);
+			setAuditOperatorsSetFromDB();
 		}finally{
 			DBClose();
 		}
@@ -614,11 +617,5 @@ public class OperatorBean extends DataBean {
 
 	public ArrayList<OperatorBean> getAll() throws Exception {
 		return getListByWhere("");
-	}
-	public Set<AuditOperator> getCanSeeAudits() {
-		return canSeeAudits;
-	}
-	public void setCanSeeAudits(Set<AuditOperator> canSeeAudits) {
-		this.canSeeAudits = canSeeAudits;
 	}
 }
