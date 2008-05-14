@@ -92,7 +92,7 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 		totalNewPayments += Integer.parseInt(sBean.cBean.newBillingAmount);
 		sBean.cBean.setFacilitiesFromDB();
 %>			  <tr <%=sBean.getBGColor()%>>
-		  	  <form name="form_<%=sBean.aBean.id%>" id="form_<%=sBean.aBean.id%>" method="post" action="report_payment.jsp?changed=0&showPage=<%=sBean.showPage%>">
+		  	  <form name="form2" id="form2" method="post" action="report_payment.jsp?changed=0&showPage=<%=sBean.showPage%>">
                 <td align="right"><%=sBean.count-1%></td>
 			    <td><a href="accounts_edit_contractor.jsp?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class="<%=sBean.getTextColor()%>">
 			    <%=sBean.getActiveStar()%><%=sBean.aBean.name%></a></td>
