@@ -87,8 +87,9 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 <div>
 <%=sBean.getLinksWithDynamicForm()%>
 </div>
-<input class="forms" type="submit" name="action"
-			value="Recalculate Upgrade Amounts">
+
+<form name="form2" id="form2" method="post" action="report_upgradePayment.jsp?changed=0&showPage=<%=sBean.showPage%>">
+<input class="buttons" type="submit" name="action" value="Recalculate Upgrade Amounts">
 <table class="report">
 	<thead><tr>
 		<td colspan="2" width="150"><a
@@ -128,7 +129,7 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 			totalNewInvoices += newInvoice;
 	%>
 	<tr <%=sBean.getBGColor()%>>
-		<form name="form_<%=sBean.aBean.id%>" id="form_<%=sBean.aBean.id%>" method="post" action="report_upgradePayment.jsp?changed=0&showPage=<%=sBean.showPage%>">
+		
 		<td align="right"><%=sBean.count - 1%></td>
 		<td><a href="accounts_edit_contractor.jsp?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class="<%=sBean.getTextColor()%>"> <%=sBean.getActiveStar()%><%=sBean.aBean.name%></a></td>
 		<td><%=sBean.cBean.payingFacilities%></td>
@@ -146,7 +147,7 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 		<input name="invoicedStatus" type="hidden" value="<%=sBean.selected_invoicedStatus%>">
 		<input name="action_id" type="hidden" value="<%=sBean.aBean.id%>">
 		<input name="orderBy" type="hidden" value="<%=sBean.orderBy%>">
-		</form>
+		
 	</tr>
 	<%
 		}//while
@@ -157,6 +158,7 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 		| To Collect: $<%=totalToCollect%></td>
 </tr>	
 </table>
+</form>
 <br>
 <div><center>
 <%=sBean.getLinksWithDynamicForm()%>
