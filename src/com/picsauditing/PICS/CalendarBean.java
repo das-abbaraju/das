@@ -1,6 +1,7 @@
 package com.picsauditing.PICS;
 
 import java.sql.ResultSet;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -43,8 +44,8 @@ public class CalendarBean extends DataBean {
 
 		auditMonth = month;
 		auditYear = year;
-
-		setFromDB(auditMonth, auditYear);
+		setFromDB();
+		
 		// Get number of calendar rows needed for this month.
 		numRows = numberRowsNeeded(auditYear, auditMonth);
 		// Get number of days in month, adding one if February of leap year.
@@ -52,8 +53,10 @@ public class CalendarBean extends DataBean {
 		dayStr += "<tr>";
 
 		for (int rowcount = 1; rowcount <= numRows; rowcount++) {
+			// Loop through each week
 			dayStr += "<tr>";
 			for (int dayofweekcount = 1; dayofweekcount <= 7; dayofweekcount++) {
+				// Loop through each day of the week (Sun-Sat)
 				if ((rowcount == 1 && dayofweekcount >= (calcFirstOfMonth(auditYear, auditMonth) + 1))
 						|| (rowcount > 1 && day <= numDays)) {
 					if (day == today && (month == DateBean.getCurrentMonth()))
@@ -76,23 +79,25 @@ public class CalendarBean extends DataBean {
 						}
 					}
 					for (CalendarEntry entry : auditDates) {
-						if (day == entry.getEntryDate().getDay()) {
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(entry.getEntryDate());
+						
+						if (day == cal.get(Calendar.DAY_OF_MONTH)) {
 							if (entry.getConName().length() < maxchars)
 								thismaxchars = entry.getConName().length();
 							else
 								thismaxchars = maxchars;
 							dayStr += "<span class='buttons'>";
 							if (permissions.isPicsEmployee()) {
-								dayStr += "<br><span class='buttons'><strong>" + DateBean.format(entry.getEntryDate(), "h:mm a")
-										+ "</strong>";
 								if ("Web".equals(entry.getAuditLocation()))
-									dayStr += "*";
+									dayStr += "<br><i>" + DateBean.format(entry.getEntryDate(), "h:mm a") + "</i>";
+								else
+									dayStr += "<br><strong>" + DateBean.format(entry.getEntryDate(), "h:mm a") + "</strong>";
 								dayStr += " - ";
 							}
 							dayStr += "<a href=\"ConAuditList.action?id="+entry.getAuditID()+"\">"+entry.getConName().substring(0, thismaxchars)+"</a>";
 							if (null != entry.getAuditorName())
-								dayStr += "<br>(" + entry.getAuditorName() + ")";
-							dayStr += "</span>";
+								dayStr += " (" + entry.getAuditorName() + ")";
 						}
 					}
 					dayStr += "</td>";
@@ -103,7 +108,7 @@ public class CalendarBean extends DataBean {
 			dayStr += "</tr>\n";
 		}// for
 		return dayStr;
-	}// WriteCalendar
+	}
 
 	int numberRowsNeeded(int year, int month) {
 		int firstDay; // day of week for first day of month
@@ -189,7 +194,7 @@ public class CalendarBean extends DataBean {
 		selectAudit.setPermissions(permissions);
 		
 		selectAudit.addWhere("year(ca.scheduledDate) = " + auditYear);
-		selectAudit.addWhere("month(ca.scheduledDate) = " + auditMonth);
+		selectAudit.addWhere("month(ca.scheduledDate) = " + (auditMonth+1));
 		selectAudit.addOrderBy("ca.scheduledDate");
 
 		auditDates.clear();

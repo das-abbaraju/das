@@ -49,7 +49,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.AssignAudits))
 			subMenu.addChild("Sched. &amp; Assign", "AuditAssignments.action");
 		if (permissions.hasPermission(OpPerms.OfficeAuditCalendar))
-			subMenu.addChild("Audit Calendar", "audit_calendar.jsp?changed=1");
+			subMenu.addChild("Audit Calendar", "audit_calendar.jsp");
 		if (permissions.hasPermission(OpPerms.NCMS))
 			subMenu.addChild("NCMS Audits", "ReportNCMS.action");
 		if (permissions.hasPermission(OpPerms.AuditVerification))

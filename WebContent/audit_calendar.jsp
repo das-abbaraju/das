@@ -26,6 +26,7 @@
 	calBean.setPermissions(permissions);
 	calBean.setAccountID(permissions.getAccountId());
 %>
+<%@page import="java.util.Calendar"%>
 <html>
 <head>
 <title>Audit Calendar</title>
@@ -60,14 +61,14 @@ td.day {
 <div id="internalnavcontainer">
 <ul id="navlist">
 <%
-	String[] nextMonthsArray = dBean.getNextMonths(3);
-	for (int x = 0; x < nextMonthsArray.length; x += 2) {
-		int linkMonth = Integer.parseInt(nextMonthsArray[x]);
-		%><li><a href="?whichMonth=<%= nextMonthsArray[x] + "&whichYear=" + nextMonthsArray[x + 1] %>"<%
-		if (linkMonth == auditMonth) {
+	for (Calendar cal : DateBean.getNextMonths(3)) {
+		int month = cal.get(Calendar.MONTH);
+		
+		%><li><a href="?whichMonth=<%= month + "&whichYear=" + cal.get(Calendar.YEAR) %>"<%
+		if (auditMonth == month) {
 			%> class="current"<%
 		}
-		%>><%=DateBean.getMonthName(linkMonth) %></a></li><%
+		%>><%=DateBean.getMonthName(cal.get(Calendar.MONTH)) %></a></li><%
 	}
 %>
 </ul>
@@ -87,7 +88,7 @@ td.day {
 <%
 	if (permissions.isPicsEmployee()) {
 	%>
-	<p align="center" class="blueMain">'*' = Web Audit</p>
+	<p align="center" class="blueMain"><strong>Onsite</strong> | <i>Web Audit</i></p>
 	<%
 	}
 	if (permissions.isAdmin()) {
