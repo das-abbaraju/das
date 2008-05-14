@@ -130,6 +130,12 @@ public class BillContractor extends DataBean {
 		cBean.setFromDB(conID);
 		cBean.setFacilitiesFromDB();
 	}
+	
+	public void setContractor(ContractorBean cBean) throws Exception {
+		this.cBean = cBean;
+		// The facilities may already be there
+		cBean.setFacilitiesFromDB();
+	}
 
 	public void writeToDB() throws Exception {
 		this.cBean.writeBillingToDB();

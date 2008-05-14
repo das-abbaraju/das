@@ -435,7 +435,14 @@ public class ContractorBean extends DataBean {
 			
 			DBReady();
 			
+			BillContractor billing = new BillContractor();
+			if(this != null) {
+			billing.setContractor(this);
+			billing.calculatePrice();
+			billing.writeToDB();
+			}
 			int nextYear = Calendar.getInstance().get(Calendar.YEAR) + 1;
+			// TODO, call the AuditEngine instead
 			// Create the starting PQF audit for this contractor (and any others we missed)
 			Query = "INSERT INTO contractor_audit (conID, auditTypeID, createdDate, expiresDate) " +
 				"SELECT id, 1, dateCreated, '"+nextYear+"-01-01' FROM accounts a WHERE type = 'Contractor' " +
