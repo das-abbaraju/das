@@ -40,12 +40,12 @@ public class OperatorAccountDAO extends PicsDAO {
 		String where = "";
 		if (permissions.isCorporate())
 			// Show corporate users operators in their facility
-			where = "operatorAccount IN (SELECT operator FROM Facility " +
+			where = "a IN (SELECT operator FROM Facility " +
 			"WHERE corporate = "+permissions.getAccountId()+")";
 		if (permissions.isOperator())
 			// Show operator users operators that share the same corporate facility
-			where = "(operatorAccount.id = "+permissions.getAccountId()+
-			" OR operatorAccount IN (SELECT operator FROM Facility " +
+			where = "(a.id = "+permissions.getAccountId()+
+			" OR a IN (SELECT operator FROM Facility " +
 			"WHERE corporate IN (SELECT corporate FROM Facility " +
 			"WHERE operator.id = "+permissions.getAccountId()+")))";
 		return findWhere(where);
