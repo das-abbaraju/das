@@ -42,6 +42,18 @@ function copyAnswer(selectedYear) {
 	if (original.present())
 		$(answer).value = $F(original);
 }
+function copyCustomAnswer(questionId) {
+	// If the answer is correct and hasn't been filled in yet, then default it
+	if ($F('customVerification[' + questionId + '].isCorrectBoolean') == null) return;
+	
+	var verifyName = 'verify_customVerification_' + questionId + '__verifiedAnswer'; 
+	var answer = $( verifyName );
+	if (answer.present()) return;
+	
+	var original = $('verify_customVerification_' + questionId + '__answer');
+	if (original.present())
+		$(answer).value = $F(original);
+}
 
 function saveFollowup() {
 	var x = $F('followUpInterval');
@@ -274,6 +286,31 @@ function sendEmail() {
 			<td><s:select list="emrProblems" name="emr2.comment" cssClass="blueMain" /></td>
 			<td class="highlight"><s:select list="emrProblems" name="emr3.comment" cssClass="blueMain" /></td>
 		</tr>
+
+
+
+
+		<s:if test="customVerification && customVerification.size() > 0 ">
+			<tr bgcolor="#003366" class="whiteTitle" align="center">
+				<td colspan="2" align="left">Custom Verifications</td>
+				<td>Answer</td>
+				<td>Verified Answer</td>
+				<td>Correct</td>
+				
+			</tr>
+			
+			<s:iterator value="customVerification.values">
+			<tr class="blueMain">
+					<td align="left" colspan="2"><s:property value="question.subCategory.subCategory"/>/<s:property value="question.question"/></td>
+					<td><s:textfield name="%{'customVerification['.concat(question.questionID.toString().concat('].answer'))}" disabled="true" value="%{answer}"/></td>
+					<td><s:textfield name="%{'customVerification['.concat(question.questionID.toString().concat('].verifiedAnswer'))}" value="%{verifiedAnswer}"/></td>
+					<td><input type="radio" id="<s:property value="'customVerification['.concat(question.questionID.toString().concat('].isCorrectBoolean'))"/>" onchange="copyCustomAnswer(<s:property value="question.questionID"/>);" name="<s:property value="'customVerification['.concat(question.questionID.toString().concat('].isCorrectBoolean'))"/>" value="true" <s:if test="isCorrectBoolean">checked</s:if>/>Yes
+						<input type="radio" id="<s:property value="'customVerification['.concat(question.questionID.toString().concat('].isCorrectBoolean'))"/>" name="<s:property value="'customVerification['.concat(question.questionID.toString().concat('].isCorrectBoolean'))"/>" value="false" <s:if test="isCorrectBoolean == null || ! isCorrectBoolean">checked</s:if>/>No
+					</td>
+			</tr>
+			</s:iterator>
+		</s:if>
+
 		<tr class="blueMain">
 			<td colspan="5" align="center"><input class="blueMain"
 				type="submit" value="Save" /></td>
