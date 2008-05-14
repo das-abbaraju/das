@@ -138,12 +138,10 @@
 				</s:if>
 			</td>
 			</pics:permission>
-			<s:if test="operator">
+			<s:if test="permissions.operator">
 				<td class="center">
-					<a href="ContractorFlag.action?id=<s:property value="[0].get('id')"/>"
-						title="Click to view Flag Color details"> <img
-						src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif"
-						width="12" height="15" border="0"></a>
+					<a href="ContractorFlag.action?id=<s:property value="[0].get('id')"/>" title="Click to view Flag Color details">
+						<img src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif" width="12" height="15" border="0"></a>
 				</td>
 			</s:if>
 			<s:if test="operatorAccount.approvesRelationships">
