@@ -31,23 +31,14 @@ public class AuditDataDAOTest {
 	AuditDataDAO auditdataDAO;
 
 	
-	
-	
-	
 	@Test
 	public void testVerifiedAnswers()
 	{
-		ContractorAccount ca = new ContractorAccount();
-		ca.setId(589);
-		for( AuditData ad : auditdataDAO.findCustomPQFVerifications(ca))
+		for( AuditData ad : auditdataDAO.findCustomPQFVerifications(218))
 		{
 			System.out.println(ad.getQuestion().getSubCategory().getSubCategory());
 		}
 	}
-	
-	
-	
-	
 	
 	
 	@Test
