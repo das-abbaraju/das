@@ -6,6 +6,7 @@
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <%
 	String auditType = com.picsauditing.PICS.pqf.Constants.PQF_TYPE;
+	int auditTypeId = com.picsauditing.jpa.entities.AuditType.PQF;
 	String editID = request.getParameter("id");
 	String id = request.getParameter("id");
 	String conID = request.getParameter("id");
@@ -44,7 +45,7 @@
     		  </tr>
 <!--	  			<tr align="center">
 			      <form name="form1" method="post" action="pqf_edit.jsp">
-        	        <td colspan=2><%=pcBean.getPqfCategorySelectDefaultSubmit("catID","blueMain",catID,auditType)%></td>
+        	        <td colspan=2><%=pcBean.getPqfCategorySelectDefaultSubmit("catID","blueMain",catID,auditTypeId)%></td>
 			      <input type="hidden" name="id" value="<%=conID%>">
 				  </form>
       			</tr>
