@@ -1,6 +1,8 @@
 package com.picsauditing.actions;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -11,8 +13,10 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
@@ -23,6 +27,7 @@ public class PicsActionSupport extends ActionSupport {
 	
 	private User user; // Current logged in user
 	private Account account; // Current logged in user's account
+	private List<User> auditorList;
 
 	protected void loadPermissions() {
 		if (permissions != null)
@@ -124,4 +129,16 @@ public class PicsActionSupport extends ActionSupport {
 	public String getRequestURI() {
 		return ServletActionContext.getRequest().getRequestURI();
 	}
+	
+	public List<User> getAuditorList() {
+		if (auditorList == null) {
+			auditorList = new ArrayList<User>();
+			auditorList.add(new User(User.DEFAULT_AUDITOR));
+			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
+			auditorList.addAll(dao.findAuditors());
+		}
+		return auditorList;
+	}
+	
+
 }

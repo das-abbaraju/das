@@ -21,8 +21,6 @@ import com.picsauditing.util.SpringUtils;
 
 public class ReportContractorAuditAssignment extends ReportContractorAudits {
 
-	private List<User> auditors;
-	
 	public String execute() throws Exception {
 		loadPermissions();
 		permissions.tryPermission(OpPerms.AssignAudits);

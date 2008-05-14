@@ -2,9 +2,11 @@
 <html>
 <head>
 <title>Schedule &amp; Assign Audits</title>
-<script type="text/javascript" src="js/prototype.js" ></script> 
-<script type="text/javascript" src="js/scriptaculous/scriptaculous.js?load=effects" ></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<script type="text/javascript" src="js/prototype.js"></script>
+<script type="text/javascript"
+	src="js/scriptaculous/scriptaculous.js?load=effects"></script>
+<link rel="stylesheet" type="text/css" media="screen"
+	href="css/reports.css" />
 <SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
@@ -15,130 +17,130 @@
 		var auditor = $F($('auditor_' + auditId));
 		pars = pars + "&auditor.id=" + auditor;
 
-		var thisdate = $F($('scheduled_date_' + auditId + '_date'));
-		if( thisdate != '' )
-		{
-			var thisTime = $('scheduled_date_' + auditId + '_time').options[$('scheduled_date_' + auditId + '_time').selectedIndex].text;
-			thisdate = thisdate + ' ' + thisTime;
-			pars = pars + "&contractorAudit.scheduledDate=" + thisdate;	
-		}
-		  
-		if( $('auditlocation_' + auditId + '_Onsite').checked == true )
-		{
-			pars = pars + "&contractorAudit.auditLocation=Onsite";
-		}
-		else if( $('auditlocation_' + auditId + '_Web').checked == true )
-		{
-			pars = pars + "&contractorAudit.auditLocation=Web";
+		var scheduleDate = $('scheduled_date_' + auditId + '_date');
+		if (scheduleDate != null) {
+			var thisdate = $F($('scheduled_date_' + auditId + '_date'));
+			if( thisdate != '' )
+			{
+				var thisTime = $('scheduled_date_' + auditId + '_time').options[$('scheduled_date_' + auditId + '_time').selectedIndex].text;
+				thisdate = thisdate + ' ' + thisTime;
+				pars = pars + "&contractorAudit.scheduledDate=" + thisdate;	
+			}
+		
+			if( $('auditlocation_' + auditId + '_Onsite').checked == true )
+			{
+				pars = pars + "&contractorAudit.auditLocation=Onsite";
+			}
+			else if( $('auditlocation_' + auditId + '_Web').checked == true )
+			{
+				pars = pars + "&contractorAudit.auditLocation=Web";
+			}
 		}
 
-		if( pars != "contractorAudit.id=" + auditId )
-		{
-			var assignDateDiv = 'assignDate_'+auditId;
-			var myAjax = new Ajax.Updater(assignDateDiv,'AuditAssignmentUpdateAjax.action', {method: 'post', parameters: pars});
-		}
+		var assignDateDiv = 'assignDate_'+auditId;
+		var myAjax = new Ajax.Updater(assignDateDiv,'AuditAssignmentUpdateAjax.action', {method: 'post', parameters: pars});
 
 		var divName = 'audit_'+auditId;
 		new Effect.Highlight(divName, {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-
-		return false;
 	}
 </script>
-<style>
-td.reportDate {
-	text-align: center;
-}
-</style>
 </head>
 <body>
 <h1>Schedule &amp; Assign Audits</h1>
 
 <div id="search">
-<div id="showSearch"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
-<div id="hideSearch" style="display: none"><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
+<div id="showSearch"><a href="#" onclick="showSearch()">Show
+Filter Options</a></div>
+<div id="hideSearch" style="display: none"><a href="#"
+	onclick="hideSearch()">Hide Filter Options</a></div>
 <s:form id="form1" method="post" cssStyle="display: none">
 	<table>
-	<tr>
-		<td style="vertical-align: middle;"><s:textfield name="accountName" cssClass="forms" size="8" onfocus="clearText(this)" />
-			<s:select list="auditTypeList" cssClass="forms" name="auditTypeID" listKey="auditTypeID" listValue="auditName" />
-			<s:select list="operatorList" cssClass="forms" name="operator" listKey="id" listValue="name" />
-		</td>
-		<td><s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch( 'form1')" /></td>
-	</tr>
+		<tr>
+			<td style="vertical-align: middle;"><s:textfield
+				name="accountName" cssClass="forms" size="8"
+				onfocus="clearText(this)" /> <s:select list="auditTypeList"
+				cssClass="forms" name="auditTypeID" listKey="auditTypeID"
+				listValue="auditName" /> <s:select list="operatorList"
+				cssClass="forms" name="operator" listKey="id" listValue="name" /></td>
+			<td><s:submit name="imageField" type="image"
+				src="images/button_search.gif" onclick="runSearch( 'form1')" /></td>
+		</tr>
 	</table>
-	<s:hidden name="showPage" value="1"/>
+	<s:hidden name="showPage" value="1" />
 	<s:hidden name="startsWith" />
 	<s:hidden name="orderBy" />
-	<div class="alphapaging">
-	<s:property value="report.startsWithLinksWithDynamicForm" escape="false" />
-	</div>
-</s:form>
-</div>
+	<div class="alphapaging"><s:property
+		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
+</s:form></div>
 
-<div>
-<s:property value="report.pageLinksWithDynamicForm" escape="false" />
-</div>
+<div><s:property value="report.pageLinksWithDynamicForm"
+	escape="false" /></div>
 <s:form id="assignScheduleAuditsForm" method="post" cssClass="forms">
-<table class="report">
-	<thead>
-	<tr>
-		<td></td>
-		<td><a href="?orderBy=a.name" >Contractor</a></td>
-		<td align="center"><a href="?orderBy=auditType" >Type</a></td>
-		<td align="center"><a href="?orderBy=createdDate DESC" >Created</a></td>
-		<td align="center"><a href="?orderBy=auditorID DESC,name" >Auditor</a></td>
-		<td align="center"><a href="?orderBy=assignedDate DESC" >Assigned</a></td>
-		<td align="center"><a href="?orderBy=scheduledDate,a.name" >Scheduled</a></td>
-		<td align="center"><a href="?orderBy=auditLocation,a.name" >Location</a></td>
-		<td align="center">Exempt</td>
-		<td></td>
-	</tr>
-	</thead>
-	<s:iterator value="data" status="stat">
-		<tr>
-			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>" 
-				><s:property value="[0].get('name')"/></a>
-			</td>
-			<td><nobr><s:property value="[0].get('auditName')"/></nobr></td>
-			<td class="reportDate"><s:date name="[0].get('createdDate')" format="M/d/yy" /></td>
-			<td>
-
-			<s:action name="AuditorsGet" executeResult="true" ignoreContextParams="true">
-					<s:param name="controlName" value="%{'auditor_'.concat([0].get('auditID'))}"/>
-					<s:param name="presetValue" value="%{[0].get('auditorID')}"/>
-			</s:action>
-			
-			</td>
-			<td class="reportDate">
-					<nobr><div id="assignDate_<s:property value="[0].get('auditID')"/>">
-						<s:property value="%{getBetterDate( [0].get('assignedDate'), 'MM/dd/yy hh:mm:ss a.000')}"/>
-						 <s:property value="%{getBetterTime( [0].get('assignedDate'), 'MM/dd/yy hh:mm:ss a.000')}"/></div>
-					</nobr>	 		
-			
-			</td>
-			<td>
-				<nobr><input class="blueMain" name="scheduled_date_<s:property value="[0].get('auditID')"/>_date" id="scheduled_date_<s:property value="[0].get('auditID')"/>_date" cssClass="forms"  size="5" type="text" 
-							onClick="cal1.select(this,'scheduled_date_<s:property value="[0].get('auditID')"/>_date','M/d/yy'); return false;" 
-							value="<s:property value="getBetterDate( [0].get('scheduledDate'), 'MM/dd/yy hh:mm:ss a.000')"/>"/>
-					  <s:select list="@com.picsauditing.PICS.DateBean@getBusinessTimes()" listKey="key" 
-					  		listValue="value" cssClass="blueMain"
-					  		name="scheduled_date_%{[0].get('auditID')}_time" 
-					  		id="scheduled_date_%{[0].get('auditID')}_time"
-					  		value="%{@com.picsauditing.PICS.DateBean@getIndexForTime(getBetterTime( [0].get('scheduledDate'), 'MM/dd/yy hh:mm:ss a.000')) }"
-					  		/>
-				</nobr>
-			</td>
-			<td><s:radio list="#{'Onsite':'On site', 'Web':'Web'}" id="auditlocation_%{[0].get('auditID')}_" value="%{[0].get('auditLocation')}" /></td>
-			<td></td>
-			<td><s:submit value="Save" onclick="javascript: return saveAudit('%{[0].get('auditID')}');" cssClass="forms" /></td>
-		</tr>
-	</s:iterator>
-</table>
+	<table class="report">
+		<thead>
+			<tr>
+				<td></td>
+				<td><a href="?orderBy=a.name">Contractor</a></td>
+				<td align="center"><a href="?orderBy=auditType">Type</a></td>
+				<td align="center"><a href="?orderBy=createdDate DESC">Created</a></td>
+				<td align="center"><a href="?orderBy=auditorID DESC,name">Auditor</a></td>
+				<td align="center"><a href="?orderBy=assignedDate DESC">Assigned</a></td>
+				<td align="center"><a href="?orderBy=scheduledDate,a.name">Scheduled</a></td>
+				<td align="center"><a href="?orderBy=auditLocation,a.name">Location</a></td>
+				<td></td>
+			</tr>
+		</thead>
+		<s:iterator value="data" status="stat">
+			<tr id="audit_<s:property value="[0].get('auditID')"/>">
+				<td class="right"><s:property
+					value="#stat.index + report.firstRowNumber" /></td>
+				<td><a
+					href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property
+					value="[0].get('name')" /></a></td>
+				<td><nobr><s:property value="[0].get('auditName')" /></nobr></td>
+				<td class="reportDate"><s:date name="[0].get('createdDate')"
+					format="M/d/yy" /></td>
+				<td><s:if test="[0].get('hasAuditor')">
+					<s:select cssClass="blueMain" list="auditorList" listKey="id"
+						listValue="name" value="%{[0].get('auditorID')}"
+						id="%{'auditor_'.concat([0].get('auditID'))}" />
+				</s:if></td>
+				<td class="center" id="assignDate_<s:property value="[0].get('auditID')"/>"><s:if test="[0].get('hasAuditor')">
+					<nobr><s:property
+						value="%{getBetterDate( [0].get('assignedDate'), 'MM/dd/yy hh:mm:ss a.000')}" />
+					<s:property
+						value="%{getBetterTime( [0].get('assignedDate'), 'MM/dd/yy hh:mm:ss a.000')}" />
+					</div>
+					</nobr>
+				</s:if></td>
+				<td><s:if test="[0].get('isScheduled')">
+					<nobr><input class="blueMain" size="6" type="text"
+						name="scheduled_date_<s:property value="[0].get('auditID')"/>_date"
+						id="scheduled_date_<s:property value="[0].get('auditID')"/>_date"
+						onClick="cal1.select(this,'scheduled_date_<s:property value="[0].get('auditID')"/>_date','M/d/yy'); return false;"
+						value="<s:property value="getBetterDate( [0].get('scheduledDate'), 'MM/dd/yy hh:mm:ss a.000')"/>" />
+					<s:select list="@com.picsauditing.PICS.DateBean@getBusinessTimes()"
+						listKey="key" listValue="value" cssClass="blueMain"
+						name="scheduled_date_%{[0].get('auditID')}_time"
+						id="scheduled_date_%{[0].get('auditID')}_time"
+						value="%{@com.picsauditing.PICS.DateBean@getIndexForTime(getBetterTime( [0].get('scheduledDate'), 'MM/dd/yy hh:mm:ss a.000')) }" />
+					</nobr>
+				</s:if></td>
+				<td><s:if test="[0].get('isScheduled')">
+					<s:radio list="#{'Onsite':'On site', 'Web':'Web'}"
+						id="auditlocation_%{[0].get('auditID')}_"
+						value="%{[0].get('auditLocation')}" />
+				</s:if></td>
+				<td><input type="button" class="forms" value="Save" onclick="saveAudit('<s:property value="%{[0].get('auditID')}"/>'); return false;"/>
+				</td>
+			</tr>
+		</s:iterator>
+	</table>
 </s:form>
-<div><center>
-<s:property value="report.pageLinksWithDynamicForm" escape="false" />
-</center></div>
+<div>
+<center><s:property value="report.pageLinksWithDynamicForm"
+	escape="false" /></center>
+</div>
 
 </body>
 </html>
