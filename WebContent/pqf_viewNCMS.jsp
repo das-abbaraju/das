@@ -38,7 +38,7 @@ ResultSetMetaData SQLResultMetaData = null;
 <body>
 			<table border="0" cellspacing="0" cellpadding="1" class="blueMain">
               <tr align="center" class="blueMain">
-			    <td width="676"><%@ include file="includes/nav/secondNav.jsp"%></td>
+			    <td width="676"><%@ include file="utilities/adminOperatorContractorNav.jsp"%></td>
 			  </tr>
     		  <tr align="center" class="blueMain">
                 <td class="blueHeader">NCMS Desktop Audit for <%=aBean.name%></td>

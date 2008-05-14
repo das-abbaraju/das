@@ -60,7 +60,7 @@ try {
 			  <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
 			    <form name="formEdit" method="post" action="pqf_uploadFile.jsp?auditType=<%=auditType%>&catID=<%=catID%>&id=<%=id%>&action=Save" enctype="multipart/form-data">
                 <tr align="left" class="blueMain">
-                  <td><%@ include file="includes/nav/secondNav.jsp"%></td>
+                  <td><%@ include file="utilities/adminOperatorContractorNav.jsp"%></td>
 				</tr>
     			<tr align="center" class="blueMain">
                   <td class="blueHeader">PQF for <%=aBean.name%></td>

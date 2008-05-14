@@ -47,8 +47,9 @@
 		cBean.tryView(permissions);
 		if ("Save".equals(actionString)) {
 			pdBean.savePQF(request, conID, catID, auditType, pBean.userID);
-			cBean.setPercentComplete(auditType, action.getPercentComplete());
-			cBean.setPercentVerified(auditType, pdBean.getPercentVerified(conID, auditType));
+			//TODO Make a contractor edit a pqf. 
+			//cBean.setPercentComplete(auditType, action.getPercentComplete());
+			//cBean.setPercentVerified(auditType, pdBean.getPercentVerified(conID, auditType));
 			cBean.writeToDB();
 			pdBean.updatePercentageCompleted(action.getAuditID(), catID);
 			response.sendRedirect("pqf_editMain.jsp?auditID=" + action.getAuditID());

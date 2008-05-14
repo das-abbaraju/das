@@ -21,7 +21,7 @@
 <body>
 			<table border="0" cellspacing="0" cellpadding="1" class="blueMain">
               <tr align="center" class="blueMain">
-			    <td><%@ include file="includes/nav/secondNav.jsp"%></td>
+			    <td><%@ include file="utilities/adminOperatorContractorNav.jsp"%></td>
 			  </tr>
     		  <tr align="center" class="blueMain">
                 <td class="blueHeader"><%=auditType%> for <%=aBean.name%></td>

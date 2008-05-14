@@ -32,7 +32,7 @@
 <body>
 			<table width="657" border="0" cellpadding="0" cellspacing="0">
               <tr align="left" class="blueMain">
-                <td><%@ include file="includes/nav/secondNav.jsp"%></td>
+                <td><%@ include file="utilities/adminOperatorContractorNav.jsp"%></td>
 			  </tr>
 			</table>
 		    <table border="0" cellspacing="0" cellpadding="1" class="blueMain">

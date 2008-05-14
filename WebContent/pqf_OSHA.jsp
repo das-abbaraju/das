@@ -114,7 +114,7 @@ function popitup(url) {
 <body>
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
 	<tr align="left" class="blueMain">
-		<td colspan=2><%@ include file="includes/nav/secondNav.jsp"%></td>
+		<td colspan=2><%@ include file="utilities/adminOperatorContractorNav.jsp"%></td>
 	</tr>
 	<tr align="center" class="blueMain">
 		<td class="blueHeader" colspan=2>PQF for <%=aBean.name%></td>
