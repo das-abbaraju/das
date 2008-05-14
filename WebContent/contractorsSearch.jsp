@@ -1,7 +1,7 @@
 <%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.access.OpPerms" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
 <%@page import="com.picsauditing.mail.*"%>
-<%@page import="com.picsauditing.PICS.EmailBean"%>
+<!-- %@page import="com.picsauditing.PICS.EmailBean"% -->
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
 
@@ -55,12 +55,13 @@ try{
 			ContractorBean cBean = new ContractorBean();
 			cBean.setFromDB(actionID);
 			pcBean.generateDynamicCategories(actionID, com.picsauditing.PICS.pqf.Constants.PQF_TYPE, cBean.riskLevel);
-			cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
-			cBean.canEditPrequal="Yes";
+			//TODO contractor can edit their pqf.
+			//cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
+			//cBean.canEditPrequal="Yes";
 			cBean.addNote(actionID, permissions.getUsername(), "Added this Contractor to "+aBean.name+"'s db", DateBean.getTodaysDateTime());
 			cBean.writeToDB();
-			EmailBean.sendUpdateDynamicPQFEmail(actionID);
-			new FlagCalculator().setConFlags(actionID,permissions.getAccountIdString());
+			//EmailBean.sendUpdateDynamicPQFEmail(actionID);
+			//new FlagCalculator().setConFlags(actionID,permissions.getAccountIdString());
 		}
 	}
 	
@@ -76,8 +77,8 @@ try{
 			com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
 			com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();
 			pcBean.generateDynamicCategories(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE, cBean.riskLevel);
-			cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
-			cBean.canEditPrequal="Yes";
+			//cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
+			//cBean.canEditPrequal="Yes";
 			
 			cBean.writeToDB();
 		}
