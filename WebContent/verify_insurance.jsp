@@ -34,15 +34,14 @@ try{
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script language="javascript">
 	function editCert(cid){
-		var tr = document.getElementById(cid);
-		var spans = getElements(null, "span", tr);
-		var elems = getElementsByName(spans, "noedit");
-		for(var i = 0; i < elems.length; i++)
-			elems[i].className="display_off"
-		elems = getElementsByName(spans, "editme");
-		for(var i = 0; i < elems.length; i++)
-			elems[i].className="display_on";
-		document.getElementById("oktoedit_" + cid).value="ok";		
+	   $('noedit1_'+cid).hide();
+       $('editme1_'+cid).show();
+	   $('noedit2_'+cid).hide();
+       $('editme2_'+cid).show();
+	   $('noedit3_'+cid).hide();
+       $('editme3_'+cid).show();
+	   $('noedit4_'+cid).hide();
+       $('editme4_'+cid).show();
 	}
 </script> 
 </head>
@@ -106,15 +105,15 @@ onclick="hideSearch()">Hide Filter Options</a></div>
                   <td><a href="contractor_upload_certificates.jsp?id=<%=certDO.getContractor_id()%>" class="<%=sBean.getTextColor()%>"><%=certDO.getContractor_name()%></a></td>
                   <td><%=certDO.getType()%></td>
                   <td><%=certDO.getOperator()%></td>
-                  <td><span name="noedit"><%=com.picsauditing.PICS.DateBean.toShowFormat(certDO.getExpDate())%></span>
-                    <span name="editme" class="display_off"><%=Utilities.inputSelect2("expMonth_" + certDO.getCert_id(),"forms",certDO.getExpMonth(),Inputs.MONTHS_ARRAY)%>
+                  <td><span id="noedit1_<%=certDO.getCert_id()%>"><%=com.picsauditing.PICS.DateBean.toShowFormat(certDO.getExpDate())%></span>
+                    <span id="editme1_<%=certDO.getCert_id()%>" style="display: none"><%=Utilities.inputSelect2("expMonth_" + certDO.getCert_id(),"forms",certDO.getExpMonth(),Inputs.MONTHS_ARRAY)%>
                     /<%=Utilities.inputSelect("expDay_" + certDO.getCert_id(),"forms",certDO.getExpDay(),Inputs.DAYS_ARRAY)%>/<%=Utilities.inputSelect("expYear_" + certDO.getCert_id(),"forms",certDO.getExpYear(),Inputs.YEARS_ARRAY)%></span></td>								
-                  <td align="right"><span name="noedit"><%=java.text.NumberFormat.getInstance().format(certDO.getLiabilityLimit())%></span>
-                    <span name="editme" class="display_off"><input type="text" name="liabilityLimit_<%=certDO.getCert_id() %>" class="formsNumber" value="<%=java.text.NumberFormat.getInstance().format(certDO.getLiabilityLimit())%>"></span></td>             
-                  <td><span name="noedit"><%=com.picsauditing.PICS.Utilities.convertNullString(certDO.getNamedInsured(), "None")%></span>
-                    <span name="editme" class="display_off"><input name="namedInsured_<%=certDO.getCert_id()%>" value="<%=com.picsauditing.PICS.Utilities.convertNullString(certDO.getNamedInsured(), "None")%>" class="forms"></span></td>
-                  <td><span name="noedit"><%=certDO.getSubrogationWaived()%></span>
-                    <span name="editme" class="display_off"><%=Inputs.getYesNoRadio("subrogationWaived_" + certDO.getCert_id(), "forms", certDO.getSubrogationWaived())%></span></td>
+                  <td align="right"><span id="noedit2_<%=certDO.getCert_id()%>"><%=java.text.NumberFormat.getInstance().format(certDO.getLiabilityLimit())%></span>
+                    <span id="editme2_<%=certDO.getCert_id()%>" style="display: none"><input type="text" name="liabilityLimit_<%=certDO.getCert_id() %>" class="formsNumber" value="<%=java.text.NumberFormat.getInstance().format(certDO.getLiabilityLimit())%>"></span></td>             
+                  <td><span id="noedit3_<%=certDO.getCert_id()%>"><%=com.picsauditing.PICS.Utilities.convertNullString(certDO.getNamedInsured(), "None")%></span>
+                    <span id="editme3_<%=certDO.getCert_id()%>" style="display: none"><input name="namedInsured_<%=certDO.getCert_id()%>" value="<%=com.picsauditing.PICS.Utilities.convertNullString(certDO.getNamedInsured(), "None")%>" class="forms"></span></td>
+                  <td><span id="noedit4_<%=certDO.getCert_id()%>"><%=certDO.getSubrogationWaived()%></span>
+                    <span id="editme4_<%=certDO.getCert_id()%>" style="display: none"><%=Inputs.getYesNoRadio("subrogationWaived_" + certDO.getCert_id(), "forms", certDO.getSubrogationWaived())%></span></td>
                   <td align="center">
                     <a href="/certificates/cert_<%=certDO.getContractor_id()%>_<%=certDO.getCert_id()%>.<%=certDO.getExt()%>" target="_blank">
                       <img src="images/icon_insurance.gif" width="20" height="20" border="0" alt=""></a>
