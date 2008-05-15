@@ -91,31 +91,27 @@
 <table border="2" align="center" cellpadding="5" cellspacing="5" width="100%">
 <%if (!permissions.isContractor()){ %>
 <span class="redMain">Operator Notes:</span><br>
+<tr>
+<td class=blueMain>
+<div class="blueMain" style="width:350px;height:150px;overflow:auto;">
 <%
 List<BasicDynaBean> notesList = note.getContractorNotes(id,permissions);
 int count = 0;
 for (BasicDynaBean row : notesList){
 count++;
+String getNotes = row.get("formattedDate").toString()+"("+row.get("whoIs").toString()+","+FACILITIES.getNameFromID(row.get("opID").toString())+"):"+
+row.get("note").toString();
 %>
-<tr>
-<td class=blueMain>
-<div class="blueMain" style="width:350px;height:150px;overflow:auto;">
-<%=row.get("formattedDate")%> 
-(<%=row.get("whoIs")+","+FACILITIES.getNameFromID(row.get("opID").toString())%>)
-:<%=row.get("note")%>
-</div>
-</td>
-<td class=blueMain>
+<%=com.picsauditing.PICS.Utilities.escapeNewLines(getNotes)%>
 <%
-if(canOperatorEditNotes && row.get("opID").equals(permissions.getAccountIdString()))
+if(canOperatorEditNotes && permissions.isCorporate() || permissions.isOperator())
 {%>
-<a href="?id=<%=id%>&action=DeleteNote&dID=<%=row.get("noteID")%>">Delete</a>
-</td>
-</tr>
+&nbsp;&nbsp;&nbsp;<a href="?id=<%=id%>&action=DeleteNote&dID=<%=row.get("noteID")%>">Delete</a><br/>
 <%	
 }
 }//for
 %>
+</div>
 </td>
 </tr>
 <% } %>
