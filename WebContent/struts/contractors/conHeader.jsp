@@ -6,13 +6,6 @@
 	class="sub"><s:property value="conAudit.auditType.auditName" />
 - <s:date name="conAudit.effectiveDate" format="MMM yyyy" /></span></h1>
 
-<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page" />
-<%
-	String id = request.getParameter("id");
-	cBean.setFromDB(id);
-%>
-<%@ include file="/utilities/adminOperatorContractorNav.jsp"%>
-
 <table>
 	<tr>
 		<td style="vertical-align: top">
