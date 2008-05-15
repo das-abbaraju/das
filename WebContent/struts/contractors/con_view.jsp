@@ -6,10 +6,7 @@
 <title><s:property value="contractor.name" /></title>
 </head>
 <body>
-<h1><s:property value="contractor.name" />
-<span class="sub">Contractor Details</span></h1>
-<s:push value="#request.current='Details'"/>
-<s:include value="con_nav.jsp"/>
+<s:include value="conHeader.jsp" />
 <div id="companyinfo">
 	<div class="contact">
 		<div class="left info">

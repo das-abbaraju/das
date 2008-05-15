@@ -18,6 +18,8 @@ public class ContractorView extends ContractorActionSupport {
 			return LOGIN;
 		findContractor();
 		
+		this.subHeading = "Contractor Details";
+		
 		return SUCCESS;
 	}
 

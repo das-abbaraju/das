@@ -17,6 +17,8 @@ public class ContractorActionSupport extends PicsActionSupport {
 	@Autowired(required=true)
 	protected ContractorAccountDAO accountDao;
 	protected ContractorAuditDAO auditDao;
+	
+	protected String subHeading;
 
 	public ContractorActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
 		this.accountDao = accountDao;
@@ -27,6 +29,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 		loadPermissions();
 		if (permissions.isContractor())
 			id = permissions.getAccountId();
+		
 		
 		contractor = accountDao.find(id);
 		if (contractor.getId() == 0)
@@ -58,4 +61,13 @@ public class ContractorActionSupport extends PicsActionSupport {
 	public List<ContractorOperator> getOperators() {
 		return accountDao.findOperators(contractor, permissions);
 	}
+
+	public String getSubHeading() {
+		return subHeading;
+	}
+
+	public void setSubHeading(String subHeading) {
+		this.subHeading = subHeading;
+	}
+
 }

@@ -12,17 +12,15 @@
 	href="css/reports.css" />
 </head>
 <body>
-<h1><s:property value="contractor.name" /> <span class="sub">Flag
-Status at <s:property value="co.operatorAccount.name" /></span></h1>
-<s:push value="#request.current='Flag'" />
-<s:include value="con_nav.jsp" />
+<s:push value="#subHeading='Flag Status'" />
+<s:include value="conHeader.jsp" />
 
 <div style="text-align: center; width: 100%">
 <table border="1">
 	<tr>
 		<td rowspan="2" style="vertical-align: middle;"><s:property
 			value="co.flag.flagColor.bigIcon" escape="false" /></td>
-		<td style="vertical-align: middle;"><b>Overall Flag Status</b></td>
+		<td style="vertical-align: middle;"><b>Overall Flag Status at <s:property value="co.operatorAccount.name"/></b></td>
 	</tr>
 	<tr>
 		<td style="font-style: italic">

@@ -7,11 +7,8 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
-<h1><s:property value="contractor.name" />
-<span class="sub">Contractor Audit &amp; Evaluations</span></h1>
-<s:push value="#request.current='Audits'"/>
-<s:include value="con_nav.jsp"/>
-<s:property value="action"/>
+<s:push value="#subHeading='Contractor Forms, Audits & Evaluations'"/>
+<s:include value="conHeader.jsp" />
 
 <table class="report">
 	<thead>

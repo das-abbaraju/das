@@ -9,10 +9,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 </head>
 <body>
-<s:include value="audit_header.jsp">
-	<s:param name="conAudit" value="conAudit" />
-	<s:param name="id" value="conAudit.contractorAccount.id" />
-</s:include>
+<s:include value="conHeader.jsp" />
 
 <span class="message"><s:property value="message" /></span>
 <table class="report">
