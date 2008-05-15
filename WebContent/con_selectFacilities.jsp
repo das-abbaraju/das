@@ -119,10 +119,27 @@ Facilities</span></h1>
 		} else {
 	%>
 	<tr class="blueMain" <%=Utilities.getBGColor(count++)%>>
-		<td class="center"><a
+		<td class="center">
+		<%
+			if (permissions.isPicsEmployee() || permissions.isCorporate()) {
+		%>
+		<a
 			href="ContractorFlag.action?id=<%=cBean.id%>&opID=<%=opID%>"><img
-			src="images/icon_<%=flagColor%>Flag.gif" width="12" height="15"></a></td>
-		<td><a href="ContractorFlag.action?id=<%=cBean.id%>&opID=<%=opID%>"><%=name%></a></td>
+			src="images/icon_<%=flagColor%>Flag.gif" width="12" height="15"></a>
+		<% } else { %>
+			<img src="images/icon_<%=flagColor%>Flag.gif" width="12" height="15">
+		<% } %>	
+		</td>
+		<td>
+		<%
+			if (permissions.isPicsEmployee() || permissions.isCorporate()) {
+		%>
+		<a href="ContractorFlag.action?id=<%=cBean.id%>&opID=<%=opID%>"><%=name%></a>
+		<% } else { 
+			out.write( name );
+		} %>	
+		
+		</td>
 		<td class="center"><input type="hidden" name="genID_<%=opID%>"
 			value="Yes" /><img src="images/okCheck.gif" width="19" height="15" />
 		<%
@@ -161,7 +178,17 @@ Facilities</span></h1>
 			}
 		%>
 		</td>
-		<td><a href="ContractorFlag.action?id=<%=cBean.id%>&opID=<%=opID%>"><%=name%></a></td>
+		<td>
+		<% if( permissions.isPicsEmployee() || permissions.isCorporate() ) { %>
+		
+			<a href="ContractorFlag.action?id=<%=cBean.id%>&opID=<%=opID%>"><%=name%></a>
+		<% } else { 
+			out.write(name);
+		}
+		%>
+		
+		
+		</td>
 		<td class="center">
 		<%
 			if (!permissions.isOnlyAuditor()) {
