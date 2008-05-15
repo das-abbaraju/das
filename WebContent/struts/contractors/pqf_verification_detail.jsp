@@ -71,7 +71,13 @@ function sendEmail() {
 </script>
 </head>
 <body>
-<%@ include file="/includes/nav/pqfHeaderStruts.jsp"%>
+
+	
+<s:action name="ConHeader" executeResult="true">
+	<s:param name="auditID" value="conAudit.id"/>
+	<s:param name="id" value="conAudit.contractorAccount.id"/>
+</s:action>
+	
 
 <p class="blueMain"><a href="pqf_verification.jsp">PQF Verification Report</a></p>
 <s:form id="verify">
