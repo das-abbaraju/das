@@ -28,6 +28,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 	
 	public String execute() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
 		this.findConAudit();
 
 		return SUCCESS;

@@ -14,6 +14,8 @@ public class ConAuditList extends ContractorActionSupport {
 	}
 
 	public String execute() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
 		findContractor();
 
 		return SUCCESS;

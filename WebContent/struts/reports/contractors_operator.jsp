@@ -68,12 +68,6 @@
 		<s:if test="pqfVisible">
 			<td>PQF</td>
 		</s:if>
-		<s:if test="desktopVisible">
-			<td>Desktop</td>
-		</s:if>
-		<s:if test="officeVisible">
-			<td>Office</td>
-		</s:if>
 		<pics:permission perm="InsuranceCerts">
 			<td>Ins. Certs</td>
 		</pics:permission>
@@ -104,27 +98,6 @@
 						<a
 							href="Audit.action?auditID=<s:property value="[0].get('ca1_auditID')"/>"><img
 							src="images/icon_PQF.gif" width="20" height="20" border="0"></a>
-					</s:else>
-				</s:if></td>
-			</s:if>
-			<s:if test="desktopVisible">
-				<td><s:if
-					test="[0].get('ca2_auditID') > 0">
-					<s:if test="[0].get('ca2_auditStatus').equals('Exempt')">N/A</s:if>
-					<s:else>
-						<a
-							href="Audit.action?auditID=<s:property value="[0].get('ca2_auditID')"/>"><img
-							src="images/icon_Desktop.gif" width="20" height="20" border="0"></a>
-					</s:else>
-				</s:if></td>
-			</s:if>
-			<s:if test="officeVisible">
-				<td align="center"><s:if test="[0].get('ca3_auditID') > 0">
-					<s:if test="[0].get('ca3_auditStatus').equals('Exempt')">N/A</s:if>
-					<s:else>
-						<a
-							href="Audit.action?auditID=<s:property value="[0].get('ca3_auditID')"/>"><img
-							src="images/icon_Office.gif" width="20" height="20" border="0"></a>
 					</s:else>
 				</s:if></td>
 			</s:if>

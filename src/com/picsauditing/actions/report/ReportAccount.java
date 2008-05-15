@@ -60,7 +60,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public String execute() throws Exception {
-		loadPermissions();
+		if (!forceLogin())
+			return LOGIN;
 		sql.setPermissions(permissions);
 
 		if (this.orderBy == null)

@@ -8,8 +8,8 @@ public class ReportAccountAudits extends ReportAccount {
 
 	public String execute() throws Exception {
 		sql.addAudit(AuditType.PQF);
-		sql.addAudit(AuditType.DESKTOP);
-		sql.addAudit(AuditType.OFFICE);
+		//sql.addAudit(AuditType.DESKTOP);
+		//sql.addAudit(AuditType.OFFICE);
 		sql.addField("c.main_trade");
 		sql.addField("a.industry");
 		sql.addField("c.certs");
@@ -21,12 +21,12 @@ public class ReportAccountAudits extends ReportAccount {
 		return permissions.canSeeAudit(AuditType.PQF);
 	}
 
-	public boolean isDesktopVisible() {
+/*	public boolean isDesktopVisible() {
 		return permissions.canSeeAudit(AuditType.DESKTOP);
 	}
 
 	public boolean isOfficeVisible() {
 		return permissions.canSeeAudit(AuditType.OFFICE);
 	}
-	
+	*/
 }

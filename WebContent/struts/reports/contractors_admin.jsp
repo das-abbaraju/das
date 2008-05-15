@@ -60,8 +60,6 @@
 		<td>Trade</td>
 		<td></td>
 		<td>PQF</td>
-		<td>Desktop</td>
-		<td>Office</td>
 		<td>Insur</td>
 	</tr>
 	</thead>
@@ -86,22 +84,6 @@
 						src="images/icon_PQF.gif" width="20" height="20" border="0"></a>
 				</s:else>
 			</s:if></td>
-			<td class="center"><s:if test="[0].get('ca2_auditID') > 0">
-				<s:if test="[0].get('ca2_auditStatus').equals('Exempt')">N/A</s:if>
-				<s:else>
-					<a
-						href="Audit.action?auditID=<s:property value="[0].get('ca2_auditID')"/>"><img
-						src="images/icon_Desktop.gif" width="20" height="20" border="0"></a>
-				</s:else>
-			</s:if></td>
-			<td class="center"><s:if test="[0].get('ca3_auditID') > 0">
-				<s:if test="[0].get('ca3_auditStatus').equals('Exempt')">N/A</s:if>
-				<s:else>
-					<a
-						href="Audit.action?auditID=<s:property value="[0].get('ca3_auditID')"/>"><img
-						src="images/icon_Office.gif" width="20" height="20" border="0"></a>
-				</s:else>
-			</s:if></td>
 			<td class="center"><s:if test="[0].get('certs') > 0">
 				<a
 					href="contractor_upload_certificates.jsp?id=<s:property value="[0].get('id')"/>"><img
@@ -111,7 +93,8 @@
 	</s:iterator>
 
 </table>
-<center><s:property value="report.pageLinksWithDynamicForm" escape="false" />
-</center>
+<div>
+<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+</div>
 </body>
 </html>

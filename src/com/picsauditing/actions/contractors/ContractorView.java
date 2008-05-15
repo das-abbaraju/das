@@ -14,6 +14,8 @@ public class ContractorView extends ContractorActionSupport {
 	
 	public String execute() throws Exception
 	{
+		if (!forceLogin())
+			return LOGIN;
 		findContractor();
 		
 		return SUCCESS;
