@@ -89,6 +89,11 @@
 			<result>struts/contractors/contractor_flag.jsp</result>
 		</action>
 
+		<action name="ConHeader"
+			class="com.picsauditing.actions.contractors.ConHeader">
+			<result>struts/contractors/conHeader.jsp</result>
+		</action>
+		
 		<action name="ConAuditList"
 			class="com.picsauditing.actions.contractors.ConAuditList">
 			<result>struts/contractors/contractor_audits.jsp</result>

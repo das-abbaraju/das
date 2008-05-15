@@ -7,12 +7,12 @@
 <s:property value="conAudit.contractor.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
-
 </head>
 <body>
 <s:include value="audit_header.jsp">
 	<s:param name="conAudit" value="conAudit" />
 	<s:param name="id" value="conAudit.contractorAccount.id" />
+	<s:param name="auditID" value="auditID" />
 </s:include>
 
 <table class="report">
