@@ -19,7 +19,6 @@
 	String conID = request.getParameter("id");
 	String catID = request.getParameter("catID");
 	String oID = request.getParameter("oID");
-	//int currentYear = com.picsauditing.PICS.DateBean.getCurrentYear();
 	int currentYear = com.picsauditing.PICS.DateBean.getCurrentYear(this.getServletContext().getInitParameter(
 			"currentYearStart"));
 	boolean isNew = "New".equals(oID);
@@ -43,7 +42,7 @@
 			//cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE, pdBean.getPercentComplete(
 			//		conID, com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
 			//cBean.writeToDB();
-			response.sendRedirect("pqf_editMain.jsp?id=" + conID + "&auditType="
+			response.sendRedirect("pqf_edit.jsp?id=" + conID + "&auditType="
 					+ com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
 			return;
 		}//if
@@ -85,7 +84,7 @@
 				//cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE, pdBean
 				//		.getPercentComplete(conID, com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
 				//cBean.writeToDB();
-				response.sendRedirect("pqf_editMain.jsp?id=" + conID + "&auditType="
+				response.sendRedirect("pqf_edit.jsp?id=" + conID + "&auditType="
 						+ com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
 				return;
 			}

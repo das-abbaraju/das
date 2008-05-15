@@ -105,7 +105,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	
 	public String getCatUrl() {
 		if (conAudit.getAuditStatus().equals(AuditStatus.Pending))
-			return "pqf_editMain.jsp";
+			return "pqf_edit.jsp";
 		if (conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
 			if (isCanVerify())
 				return "pqf_verify.jsp";

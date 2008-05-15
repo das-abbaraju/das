@@ -31,7 +31,7 @@
 		//	EmailBean.sendUpdateDynamicPQFEmail(id);
 		}//if
 		if (permissions.isContractor()) {
-			response.sendRedirect("pqf_editMain.jsp?auditType=" + com.picsauditing.PICS.pqf.Constants.PQF_TYPE
+			response.sendRedirect("pqf_edit.jsp?auditType=" + com.picsauditing.PICS.pqf.Constants.PQF_TYPE
 					+ "&mustFinishPrequal=&id=" + aBean.id);
 			return;
 		}//if

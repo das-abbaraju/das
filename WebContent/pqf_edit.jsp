@@ -20,7 +20,7 @@
 		String actionString = request.getParameter("action");
 		boolean isCategorySelected = (null != catID && !"0".equals(catID));
 		if (!isCategorySelected) {
-			response.sendRedirect("pqf_editMain.jsp?auditID=" + action.getAuditID());
+			response.sendRedirect("pqf_edit.jsp?auditID=" + action.getAuditID());
 			return;
 		}
 		boolean isOSHA = CategoryBean.OSHA_CATEGORY_ID.equals(catID);
@@ -52,7 +52,7 @@
 			//cBean.setPercentVerified(auditType, pdBean.getPercentVerified(conID, auditType));
 			cBean.writeToDB();
 			pdBean.updatePercentageCompleted(action.getAuditID(), catID);
-			response.sendRedirect("pqf_editMain.jsp?auditID=" + action.getAuditID());
+			response.sendRedirect("pqf_edit.jsp?auditID=" + action.getAuditID());
 			return;
 		}//if
 		psBean.setPQFSubCategoriesArray(catID);

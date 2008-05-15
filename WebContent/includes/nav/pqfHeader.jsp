@@ -103,7 +103,7 @@ td.label {
 		if(catID == null) {
 %>
 	<a class="blueMain"
-	href="pqf_editMain.jsp?auditID=<%=conAudit.getId()%>">Edit</a>
+	href="pqf_edit.jsp?auditID=<%=conAudit.getId()%>">Edit</a>
 	
 <% } else  { %>
 	<a class="blueMain"

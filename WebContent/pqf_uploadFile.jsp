@@ -15,7 +15,7 @@ try {
 	String auditType = request.getParameter("auditType");
 	boolean isCategorySelected = (null != catID && !"0".equals(catID));
 	if (!isCategorySelected){
-		response.sendRedirect("pqf_editMain.jsp?id="+conID+"&auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
+		response.sendRedirect("pqf_edit.jsp?id="+conID+"&auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
 		return;
 	}//if
 	int numQuestions = 0;
@@ -32,7 +32,7 @@ try {
 			cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(conID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
 			cBean.setPercentVerified(auditType,pdBean.getPercentVerified(conID,auditType));			
 			cBean.writeToDB();
-			response.sendRedirect("pqf_editMain.jsp?id="+conID+"&auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
+			response.sendRedirect("pqf_edit.jsp?id="+conID+"&auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
 			return;
 		}
 	}
