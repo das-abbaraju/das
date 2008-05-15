@@ -409,7 +409,7 @@ create table `audit_operator`(
 	`auditTypeID` int(10) unsigned NOT NULL   , 
 	`opID` int(10) unsigned NOT NULL   , 
 	`minRiskLevel` tinyint(3) unsigned NOT NULL   , 
-	`orderedCount` int(10) unsigned NULL   , 
+	`orderedCount` int(10) unsigned NOT NULL DEFAULT '0'   , 
 	`orderDate` datetime NULL   , 
 	`requiredForFlag` varchar(10) COLLATE latin1_swedish_ci NULL   , 
 	PRIMARY KEY (`auditOperatorID`) , 

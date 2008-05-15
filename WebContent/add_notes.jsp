@@ -5,6 +5,9 @@
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean"
 	scope="page" />
 <%
+	// ADDED FROM con_redFlags
+	boolean canEditNotes = permissions.hasPermission(com.picsauditing.access.OpPerms.EditNotes);
+
 	String id = request.getParameter("id");
 	String action = request.getParameter("action");
 	String todaysDate = com.picsauditing.PICS.DateBean
@@ -56,6 +59,22 @@
 		cBean.addAdminNote(id, pre, newAdminNote, notesDate);
 		cBean.writeToDB();
 		response.sendRedirect("ContractorView.action?id=" + id);
+		return;
+	}//if
+	// ADDED FROM con_redFlags.jsp
+	if (addNote && canEditNotes){
+		String newNote = request.getParameter("newNote");
+		if (null != newNote && !"".equals(newNote)){
+			note = new Note(permissions.getAccountIdString(), id, permissions.getUserIdString(), permissions.getName(), newNote);
+			note.writeToDB();
+			response.sendRedirect("con_redFlags.jsp?id="+id);
+			return;
+		}//if
+	}//if
+	if (deleteNote && canEditNotes){
+		String deleteID = request.getParameter("dID");
+		new Note().deleteNote(deleteID,permissions);
+		response.sendRedirect("con_redFlags.jsp?id="+id);
 		return;
 	}//if
 %>
@@ -216,6 +235,61 @@
 	<%
 		}//if
 	%>
+
+<%	}//if
+	if(canEditNotes){
+%>
+              <tr>
+                <td valign="top" colspan=2>
+                  <form action="con_redFlags.jsp#notesPart" method="post" name="newNoteForm" id="newNoteForm">
+                    <table border="0" cellspacing="1" cellpadding="1">
+                      <tr>
+                        <td class="redMain" align="left"><b>Enter a new note about <%=aBean.name%></b></td>
+                      </tr>
+                      <tr>
+                        <td class="redMain" align="left">Date: <span class="blueMain"><%=com.picsauditing.PICS.DateBean.getTodaysDate()%></span></td>
+                      </tr>
+                      <tr>
+                        <td class="redMain" align="left" valign="top">
+                          New Note: <textarea name="newNote" cols="70" rows="5" class="forms" id="notes"></textarea>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td align=right>
+                          <input name="action" type="submit" class="buttons" value="Add Note">
+                          <input name="id" type="hidden" value="<%=id%>">
+                        </td>
+                      </tr>
+                    </table>
+                  </form>
+                </td>
+              </tr>
+<%	}//if
+	if (!permissions.isContractor()){
+%>
+              <tr>
+                <td class="redMain">Notes:</td>
+                <td></td>
+              </tr>
+<%		List<BasicDynaBean> notesList = note.getContractorNotes(id,permissions);
+		count = 0;
+		for (BasicDynaBean row : notesList){
+			count++;
+%>
+          <tr <%=Utilities.getBGColor(count)%>>
+            <td class=blueMain><%=row.get("formattedDate")%> 
+              (<%=row.get("whoIs")+","+FACILITIES.getNameFromID(row.get("opID").toString())%>)
+              :<%=row.get("note")%>
+            </td>
+            <td class=blueMain>
+<%			if(canEditNotes && row.get("opID").equals(permissions.getAccountIdString())){%>
+              <a href="?id=<%=id%>&action=DeleteNote&dID=<%=row.get("noteID")%>">Delete</a>
+<%			}//if%>
+                </td>
+              </tr>
+<%		}//for
+	}//if
+%>
 
 </table>
 </body>
