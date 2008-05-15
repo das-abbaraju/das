@@ -18,7 +18,7 @@
 	if ("Save".equals(action) && "Yes".equals(request.getParameter("catDoesNotApply"))) {
 		OSHABean tempOBean = new OSHABean();
 		tempOBean.setOSHAoesNotApply(conID);
-		response.sendRedirect("pqf_editMain.jsp?auditType="+auditType+"&id="+conID);
+		response.sendRedirect("pqf_edit.jsp?auditType="+auditType+"&id="+conID);
 		return;
 	} // if
 	cBean.setFromDB(conID);

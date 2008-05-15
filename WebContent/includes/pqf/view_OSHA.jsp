@@ -14,6 +14,7 @@
 	if ("MSHA".equals(oBean.SHAType))
 		descriptionText = "Reportable";
 %>
+	<table>
   <tr class="blueMain">
     <td bgcolor="#003366" colspan="2" align="center">
       <font color="#FFFFFF"><strong>Sub Category <%=count%> - <%=oBean.SHAType%> Injury and Illness Data for location: <%=oBean.getLocationDescription()%></strong></font>
@@ -149,3 +150,4 @@
   </tr>
 <%	count++;
 	}//while%>
+</table>	

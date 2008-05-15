@@ -29,7 +29,8 @@
 	aBean.setFromDB(conID);
 	oBean.setFromDB(oID);
 	oBean.setShowLinks(pBean);
-	if (!permissions.isAdmin() && !cBean.canEditPrequal() && !pBean.canVerifyAudit(auditType, conID)) {
+	// Removed !cBean.canEditPrequal() && for compiling. 
+	if (!permissions.isAdmin() && !pBean.canVerifyAudit(auditType, conID)) {
 		response.sendRedirect("login.jsp");
 		return;
 	}//if
@@ -38,9 +39,10 @@
 		if (oBean.isOK()) {
 			oBean.writeToDB(conID);
 			oBean.updateNumRequired(conID);
-			cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE, pdBean.getPercentComplete(
-					conID, com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
-			cBean.writeToDB();
+			//TODO calculate the pqf percent complete.
+			//cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE, pdBean.getPercentComplete(
+			//		conID, com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
+			//cBean.writeToDB();
 			response.sendRedirect("pqf_editMain.jsp?id=" + conID + "&auditType="
 					+ com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
 			return;
@@ -50,8 +52,9 @@
 		oBean.verifiedDate = com.picsauditing.PICS.DateBean.getTodaysDate();
 		oBean.writeToDB(conID);
 		pdBean.saveVerificationNoUpload(request, conID, pBean.userID);
-		cBean.setPercentVerified(auditType, pdBean.getPercentVerified(conID, auditType));
-		cBean.writeToDB();
+		//TODO calculate the pqf percent complete.
+		//cBean.setPercentVerified(auditType, pdBean.getPercentVerified(conID, auditType));
+		//cBean.writeToDB();
 		response.sendRedirect("pqf_verify.jsp?id=" + conID + "&auditType="
 				+ com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
 		return;
@@ -78,9 +81,10 @@
 			else {
 				oBean.updateFilesDB(request);
 				oBean.updateNumRequired(conID);
-				cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE, pdBean
-						.getPercentComplete(conID, com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
-				cBean.writeToDB();
+				//TODO calculate the pqf percent complete.
+				//cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE, pdBean
+				//		.getPercentComplete(conID, com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
+				//cBean.writeToDB();
 				response.sendRedirect("pqf_editMain.jsp?id=" + conID + "&auditType="
 						+ com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
 				return;
@@ -302,8 +306,7 @@ function popitup(url) {
 			action="pqf_OSHA.jsp?id=<%=conID%>&oID=<%=oID%>&action=add"
 			enctype="multipart/form-data">
 		<a name="upload" />
-		<table border="1" cellpadding="5" cellspacing="0"
-			bordercolor="#FFFFFF" class="redMain">
+		<table border="1" cellpadding="5" cellspacing="0" bordercolor="#FFFFFF" class="redMain">
 			<tr>
 				<td align="center" colspan="2">Upload <%=SHAType%> Log Files
 				(.pdf, .doc, .txt, .xls or .jpg)</td>
