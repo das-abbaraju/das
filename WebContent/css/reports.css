@@ -95,3 +95,10 @@ ul.alpha li a.current, ul.paging li a.current {
 	background-color: #A84D10;
 	border:1px solid #A84D10;
 }
+
+/** other */
+
+table.report tr.na {
+	color: #999;
+	font-style: italic;
+}

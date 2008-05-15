@@ -97,8 +97,11 @@
 		<action name="Audit"
 			class="com.picsauditing.actions.audits.AuditActionSupport">
 			<result>struts/contractors/con_audit.jsp</result>
+			<result name="NCMS">
+				struts/contractors/con_auditNCMS.jsp
+			</result>
 		</action>
-		
+
 
 		<action name="AuditTypeChoose"
 			class="com.picsauditing.actions.auditType.AuditTypeChoose">

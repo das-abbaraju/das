@@ -8,11 +8,14 @@ import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.NcmsCategoryDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.NcmsCategory;
 
 public class AuditActionSupport extends ContractorActionSupport {
 	protected int auditID = 0;
@@ -32,6 +35,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return LOGIN;
 		this.findConAudit();
 
+		if (this.conAudit.getAuditType().getAuditTypeID() == AuditType.NCMS)
+			return "NCMS";
 		return SUCCESS;
 	}
 
@@ -69,6 +74,19 @@ public class AuditActionSupport extends ContractorActionSupport {
 			categories = catDataDao.findByAudit(conAudit, permissions);
 		}
 		return categories;
+	}
+
+	public List<NcmsCategory> getNcmsCategories() {
+		try {
+			NcmsCategoryDAO dao = new NcmsCategoryDAO();
+			return dao.findCategories(this.id);
+		} catch (Exception e) {
+			List<NcmsCategory> error = new ArrayList<NcmsCategory>();
+			NcmsCategory cat = new NcmsCategory();
+			cat.setName("Error retrieving list");
+			error.add(cat);
+			return error;
+		}
 	}
 
 	public boolean isHasSafetyManual() {
