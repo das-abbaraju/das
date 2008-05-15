@@ -1,7 +1,31 @@
+<%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ page isErrorPage="true" language="java"
 	import="java.util.*, java.io.*"%>
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <jsp:useBean id="mailer" class="com.picsauditing.mail.EmailSender" scope="page" />
+
+
+<%
+/*
+	If the exception is coming from the non-struts world, the URI will be the actual JSP page
+	requested.  In the struts world, the uri will actually be this page, as a second action invocation.
+	
+	In normal JSP, the exception variable is an implicit variable on an error page, but coming from struts
+	we have to pull it off the value stack and assign it ourselves to fit struts exceptions into the same 
+	error page.
+*/
+	if( request.getRequestURI().endsWith("exception_handler.jsp" ) )  		
+	{																  		
+%>
+		<s:set name="exception" value="%{exception}" scope="page"/>			
+<%																			
+		exception = (Exception) pageContext.getAttribute( "exception" );	
+	}
+%>
+
+
+
+
 <%
 	boolean debugging = application.getInitParameter("environmentType").equals("development");
 	String message = "";
