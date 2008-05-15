@@ -22,7 +22,8 @@ import com.picsauditing.util.SpringUtils;
 public class ReportContractorAuditAssignment extends ReportContractorAudits {
 
 	public String execute() throws Exception {
-		loadPermissions();
+		if (!forceLogin())
+			return LOGIN;
 		permissions.tryPermission(OpPerms.AssignAudits);
 
 		sql.addWhere("auditStatus='Pending'");

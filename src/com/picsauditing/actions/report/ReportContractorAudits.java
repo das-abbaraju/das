@@ -43,7 +43,8 @@ public class ReportContractorAudits extends ReportAccount {
 		sql.addJoin("LEFT JOIN users auditor ON auditor.id = ca.auditorID");
 		sql.addField("auditor.name auditor_name");
 		
-		orderBy = "ca.createdDate DESC";
+		if (orderBy == null)
+			orderBy = "ca.createdDate DESC";
 		return super.execute();
 	}
 

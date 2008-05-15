@@ -8,9 +8,11 @@ public class ReportContractorAuditAuditor extends ReportContractorAudits {
 		loadPermissions();
 		sql.addWhere("ca.auditorID=" + permissions.getUserId());
 		sql.addWhere("ca.auditStatus IN ('" 
-				+ AuditStatus.Active + "','" 
 				+ AuditStatus.Pending + "','"
 				+ AuditStatus.Submitted + "')");
+		
+		if (orderBy == null)
+			orderBy = "ca.assignedDate DESC";
 
 		return super.execute();
 	}

@@ -11,35 +11,35 @@ com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlt
 		<td bgcolor="#003366" align="center">Audited</td>
 		<td bgcolor="#003366" align="center"><nobr>PQF-Only</nobr></td>
 	</tr>
-	<tr class=blueMain <%=color.nextBgColor()%> align="center">
-		<td>1</td>
-		<td>$<%=BillContractor.calculatePriceByFacilityCount(1)%></td>
-		<td>$99</td>
+	<tr class=blueMain <%=color.nextBgColor()%>>
+		<td class="center">1</td>
+		<td class="center">$<%=BillContractor.calculatePriceByFacilityCount(1)%></td>
+		<td class="center">$99</td>
 	</tr>
-	<tr class=blueMain <%=color.nextBgColor()%> align="center">
-		<td>2-4</td>
-		<td>$<%=BillContractor.calculatePriceByFacilityCount(4)%></td>
-		<td>$99</td>
+	<tr class=blueMain <%=color.nextBgColor()%>>
+		<td class="center">2-4</td>
+		<td class="center">$<%=BillContractor.calculatePriceByFacilityCount(4)%></td>
+		<td class="center">$99</td>
 	</tr>
-	<tr class=blueMain <%=color.nextBgColor()%> align="center">
-		<td>5-8</td>
-		<td>$<%=BillContractor.calculatePriceByFacilityCount(8)%></td>
-		<td>$99</td>
+	<tr class=blueMain <%=color.nextBgColor()%>>
+		<td class="center">5-8</td>
+		<td class="center">$<%=BillContractor.calculatePriceByFacilityCount(8)%></td>
+		<td class="center">$99</td>
 	</tr>
-	<tr class=blueMain <%=color.nextBgColor()%> align="center">
-		<td>9-12</td>
-		<td>$<%=BillContractor.calculatePriceByFacilityCount(12)%></td>
-		<td>$99</td>
+	<tr class=blueMain <%=color.nextBgColor()%>>
+		<td class="center">9-12</td>
+		<td class="center">$<%=BillContractor.calculatePriceByFacilityCount(12)%></td>
+		<td class="center">$99</td>
 	</tr>
-	<tr class=blueMain <%=color.nextBgColor()%> align="center">
-		<td>13-19</td>
-		<td>$<%=BillContractor.calculatePriceByFacilityCount(19)%></td>
-		<td>$99</td>
+	<tr class=blueMain <%=color.nextBgColor()%>>
+		<td class="center">13-19</td>
+		<td class="center">$<%=BillContractor.calculatePriceByFacilityCount(19)%></td>
+		<td class="center">$99</td>
 	</tr>
-	<tr class=blueMain <%=color.nextBgColor()%> align="center">
-		<td>20+</td>
-		<td>$<%=BillContractor.calculatePriceByFacilityCount(20)%></td>
-		<td>$99</td>
+	<tr class=blueMain <%=color.nextBgColor()%>>
+		<td class="center">20+</td>
+		<td class="center">$<%=BillContractor.calculatePriceByFacilityCount(20)%></td>
+		<td class="center">$99</td>
 	</tr>
 </table>
 <p class="redMain">* There is an account activation fee of $99 for new account registration, and $199 for reactivation</p>

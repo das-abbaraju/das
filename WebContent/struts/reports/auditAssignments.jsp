@@ -2,11 +2,11 @@
 <html>
 <head>
 <title>Schedule &amp; Assign Audits</title>
+<link rel="stylesheet" type="text/css" media="screen"
+	href="css/reports.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript"
 	src="js/scriptaculous/scriptaculous.js?load=effects"></script>
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/reports.css" />
 <SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
@@ -94,10 +94,8 @@ Filter Options</a></div>
 			<tr id="audit_<s:property value="[0].get('auditID')"/>">
 				<td class="right"><s:property
 					value="#stat.index + report.firstRowNumber" /></td>
-				<td><a
-					href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property
-					value="[0].get('name')" /></a></td>
-				<td><nobr><s:property value="[0].get('auditName')" /></nobr></td>
+				<td><a href="ContractorView.action?id=<s:property value="[0].get('id')"/>"><s:property value="[0].get('name')"/></a></td>
+				<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="[0].get('auditName')"/></a></td>
 				<td class="reportDate"><s:date name="[0].get('createdDate')"
 					format="M/d/yy" /></td>
 				<td><s:if test="[0].get('hasAuditor')">
@@ -110,7 +108,6 @@ Filter Options</a></div>
 						value="%{getBetterDate( [0].get('assignedDate'), 'MM/dd/yy hh:mm:ss a.000')}" />
 					<s:property
 						value="%{getBetterTime( [0].get('assignedDate'), 'MM/dd/yy hh:mm:ss a.000')}" />
-					</div>
 					</nobr>
 				</s:if></td>
 				<td><s:if test="[0].get('isScheduled')">
@@ -127,7 +124,7 @@ Filter Options</a></div>
 					</nobr>
 				</s:if></td>
 				<td><s:if test="[0].get('isScheduled')">
-					<s:radio list="#{'Onsite':'On site', 'Web':'Web'}"
+					<s:radio name="auditlocation_%{[0].get('auditID')}" list="#{'Onsite':'On site', 'Web':'Web'}"
 						id="auditlocation_%{[0].get('auditID')}_"
 						value="%{[0].get('auditLocation')}" />
 				</s:if></td>
@@ -138,8 +135,7 @@ Filter Options</a></div>
 	</table>
 </s:form>
 <div>
-<center><s:property value="report.pageLinksWithDynamicForm"
-	escape="false" /></center>
+<s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
 
 </body>

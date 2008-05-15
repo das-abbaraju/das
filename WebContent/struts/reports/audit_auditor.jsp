@@ -41,27 +41,27 @@
 	<thead>
 	<tr>
 		<td></td>
-	    <td><a href="?orderBy=a.name" >Contractor</a></td>
-	    <td><a href="?orderBy=at.auditName DESC" >Type</a></td>
-	    <td><a href="?orderBy=ca.createdDate DESC" >Created</a></td>
-		<td><a href="?orderBy=ca.assignedDate DESC">Assigned Date</a></td>
-	    <td><a href="?orderBy=ca.auditStatus DESC" >Status</a></td>
+	    <td><a href="?orderBy=a.name">Contractor</a></td>
+	    <td><a href="?orderBy=atype.auditName">Type</a></td>
+		<td><a href="?orderBy=ca.assignedDate DESC">Assigned</a></td>
+	    <td><a href="?orderBy=ca.completedDate DESC">Submitted</a></td>
+	    <td><a href="?orderBy=ca.auditStatus DESC">Status</a></td>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="[0].get('name')"/></a></td>
-			<td><s:property value="[0].get('auditName')"/></td>
-			<td><s:date name="[0].get('createdDate')" format="M/d/yy" /></td>
+			<td><a href="ContractorView.action?id=<s:property value="[0].get('id')"/>"><s:property value="[0].get('name')"/></a></td>
+			<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="[0].get('auditName')"/></a></td>
 			<td><s:date name="[0].get('assignedDate')" format="M/d/yy" /></td>
+			<td><s:date name="[0].get('completedDate')" format="M/d/yy" /></td>
 			<td><s:property value="[0].get('auditStatus')"/></td>
 		</tr>
 	</s:iterator>
 </table>
-<div><center>
+<div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
-</center></div>
+</div>
 
 </body>
 </html>
