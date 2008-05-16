@@ -36,7 +36,7 @@ public class CertificateBean extends DataBean {
 	public static String[] STATUS_ARRAY = { "Pending", "Requires Action", "Approved", "Approved", "Rejected",
 			"Rejected", "Expired", "Expired" };
 	public static String[] TYPE_ARRAY = { "Worker's Comp", "General Liability", "Automobile", "Professional Liability",
-			"Pollution Liability", "E&O", "Excess/Umbrella", "Contractor Liability" };
+			"Pollution Liability", "E&O", "Excess/Umbrella", "Contractor Liability","Employer's Liability"};
 
 	public String cert_id = "";
 	public String contractor_id = "";
