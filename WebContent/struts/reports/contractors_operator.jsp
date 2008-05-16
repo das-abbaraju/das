@@ -43,12 +43,13 @@
 				onfocus="clearText(this)" /> <span class="redMain">*must be
 			9 digits</span></td>
 		</tr>
-		<tr>
+		<tr><td>
 			<s:if test="permissions.operator">
-				<td><s:select list="worksInList" cssClass="forms"
-					name="worksIn" /></td>
+				<s:select list="worksInList" cssClass="forms"
+				name="worksIn" />
 			</s:if>
-		</tr>
+			<s:select list="stateList" cssClass="forms" name="state" />
+	   </td></tr>
 	</table>
 	<s:hidden name="showPage" value="1" />
 	<s:hidden name="startsWith" />

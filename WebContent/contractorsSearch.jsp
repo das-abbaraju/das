@@ -154,6 +154,7 @@ try{
                        <tr><td> 
                         <%=tBean.getTradesSelect("trade", "forms", sBean.selected_trade)%>
                         <%=Inputs.inputSelect("performedBy","forms",sBean.selected_performedBy,TradesBean.PERFORMED_BY_ARRAY)%>
+                       	<%=Inputs.inputSelect2First("state", "forms", sBean.selected_state, Inputs.STATE_ARRAY, "",SearchBean.DEFAULT_STATE)%>
                         <input name="taxID" type="text" class="forms" value="<%=sBean.selected_taxID%>" size="9" onFocus="clearText(this)"><span class=redMain>*must be 9 digits</span>
                       </td>
                     </tr>
