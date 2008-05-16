@@ -11,7 +11,7 @@
 <html>
 <head>
 <title>PICS - <decorator:title
-	default="Pacific Industrial Contractor Screening" /></title>
+	default="PICS" /></title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta http-equiv="Pragma" content="no-cache" />
@@ -80,7 +80,7 @@
 <div id="footermain">
 <div id="footercontent">
 Copyright &copy; 2008
-<a href="http://www.picsauditing.com/" class="footer">Pacific Industrial Contractor Screening</a> |
+<a href="http://www.picsauditing.com/" class="footer">PICS</a> |
 <a href="about.jsp" class="footer">About PICS</a> |
 <a href="contact.jsp" class="footer">Contact Us</a>
 </div>

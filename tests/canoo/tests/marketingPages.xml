@@ -11,7 +11,7 @@
 					url="index.jsp" />
 				<verifyTitle 
 					description="we should see the index page title"
-					text="PICS - Pacific Industrial Contractor Screening" />
+					text="PICS" />
 				&body_verify;
 				<invoke
 					description="get client page"

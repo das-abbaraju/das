@@ -5,7 +5,7 @@ if (isSubmitted) {
 	String newline = "\r\n";
 	
 	String JESSE_EMAIL_FOOTER =
-		"PICS - Pacific Industrial Contractor Screening"+newline+
+		"PICS"+newline+
 		"P.O. Box 51387"+newline+
 		"Irvine CA 92619-1387"+newline+
 		"(949)387-1940"+newline+

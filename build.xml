@@ -90,7 +90,7 @@
 			</fileset>
 
 			<doctitle><![CDATA[<h1>PICS Java Docs</h1>]]></doctitle>
-			<bottom><![CDATA[<i>Copyright &#169; 2008 Pacific Industrial Contractor Screening. All Rights Reserved.</i>]]></bottom>
+			<bottom><![CDATA[<i>Copyright &#169; 2008 PICS. All Rights Reserved.</i>]]></bottom>
 			<tag name="todo" scope="all" description="To do:" />
 		</javadoc>
 	</target>

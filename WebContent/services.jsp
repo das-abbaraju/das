@@ -10,7 +10,7 @@
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="35%" valign="top" class="blueMainServices">
-		<p>Pacific Industrial Contractor Screening (PICS) was established
+		<p>PICS was established
 		to assist companies with a thorough audit program for contractors
 		working at their facilities or job sites.</p>
 		<p>Our services are designed to standardize and centralize the

@@ -6,7 +6,7 @@
 <html>
 <head>
 <title>PICS - <decorator:title
-	default="Pacific Industrial Contractor Screening" /></title>
+	default="PICS" /></title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <link href="css/marketing.css" rel="stylesheet" type="text/css" />
 <decorator:head />
@@ -156,7 +156,7 @@
 	<tr bgcolor="#003366">
 		<td height="72">&nbsp;</td>
 		<td height="72" align="center" valign="middle" class="footer">&copy;
-		Copyright 2008 Pacific Industrial Contractor Screening</td>
+		Copyright 2008 PICS</td>
 		<td height="72" valign="top">&nbsp;</td>
 	</tr>
 </table>

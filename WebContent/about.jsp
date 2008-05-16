@@ -3,7 +3,7 @@
 <title>About</title>
 </head>
 <body>
-<h1>About Pacific Industrial Contractor Screening</h1>
+<h1>About PICS</h1>
 
 </body>
 </html>
