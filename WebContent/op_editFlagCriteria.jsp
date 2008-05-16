@@ -1,13 +1,19 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp"%>
 <%@page import="com.picsauditing.PICS.redFlagReport.*"%>
+<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page" />
 <%
 	String opID = null;
-	if (permissions.isAdmin()) opID = request.getParameter("opID").toString();
 	if (permissions.isOperator()) opID = permissions.getAccountIdString();
+	else opID = request.getParameter("opID").toString();
 	
 	if (opID == null)
 		throw new com.picsauditing.access.NoRightsException("Missing opID");
+	
+	if (permissions.isCorporate()) {
+		// TODO: make sure this operator is in this corporate group
+	}
+	aBean.setFromDB(opID);
 	
 	String flagStatus = request.getParameter("flagStatus");
 	if (null == flagStatus)
@@ -23,7 +29,7 @@
 			flagCriteria.writeToDB();
 		}
 	}
-
+	
 	boolean canEditFlagCriteria = permissions.hasPermission(OpPerms.EditFlagCriteria);
 	
 	HurdleQuestions hurdleQuestions = null;
@@ -36,8 +42,9 @@
 	href="css/forms.css" />
 </head>
 <body>
-<h1>Manage <%=flagStatus%> Flag Criteria</h1>
-
+<h1>Manage <%=flagStatus%> Flag Criteria
+<span class="sub"><%=aBean.name %></span>
+</h1>
 <div id="internalnavcontainer">
 <ul id="navlist">
 	<li><a <%=flagStatus.equals("Red") ? "class=\"current\"" : "" %>

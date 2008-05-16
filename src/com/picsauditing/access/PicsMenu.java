@@ -91,7 +91,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.EmailTemplates))
 			subMenu.addChild("Email Templates", "email_templates.jsp");
 
-		if (permissions.hasPermission(OpPerms.EditFlagCriteria))
+		if (permissions.hasPermission(OpPerms.EditFlagCriteria) && permissions.isOperator())
 			subMenu.addChild("Flag Criteria", "op_editFlagCriteria.jsp");
 
 		subMenu.addChild("Edit Profile", "ProfileEdit.action");

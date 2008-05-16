@@ -39,9 +39,9 @@
 				<td>
 				<a href="pqf_viewOSHA.jsp?auditID=<s:property value="[0].get('auditID')"/>"	><s:property value="[0].get('name')"/></a></td>
 <!--Need to fix this before the year end-->				
-				<td><s:property value="[0].get('fatalities1')" /></td>
-				<td><s:property value="[0].get('fatalities2')" /></td>
-				<td><s:property value="[0].get('fatalities3')" /></td>
+				<td class="center"><s:property value="[0].get('fatalities1')" /></td>
+				<td class="center"><s:property value="[0].get('fatalities2')" /></td>
+				<td class="center"><s:property value="[0].get('fatalities3')" /></td>
 		  	  </tr>
 </s:iterator>
 </table><br>

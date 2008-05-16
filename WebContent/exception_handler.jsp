@@ -14,12 +14,9 @@
 	we have to pull it off the value stack and assign it ourselves to fit struts exceptions into the same 
 	error page.
 */
-	if( request.getRequestURI().endsWith("exception_handler.jsp" ) )  		
-	{																  		
-%>
-		<s:set name="exception" value="%{exception}" scope="page"/>			
-<%																			
-		exception = (Exception) pageContext.getAttribute( "exception" );	
+	exception = (Exception) pageContext.getAttribute( "exception" );	
+	if( request.getRequestURI().endsWith("exception_handler.jsp" ) )
+	{
 	}
 %>
 

@@ -16,7 +16,7 @@ import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectUser;
 
 public class UsersManage extends PicsActionSupport {
-	protected String accountId = null;
+	protected int accountId = 0;
 	protected String filter = null;
 	protected List<OperatorAccount> facilities = null;
 	private OperatorAccountDAO operatorDao;
@@ -33,17 +33,15 @@ public class UsersManage extends PicsActionSupport {
 	}
 
 	public String execute() throws Exception {
-		loadPermissions();
+		if (!forceLogin())
+			return LOGIN;
 		permissions.tryPermission(OpPerms.EditUsers);
 
-		String accountId = permissions.getAccountIdString();
-		if (permissions.hasPermission(OpPerms.AllOperators)
-				&& this.accountId != null) {
-			accountId = Utilities.intToDB(accountId);
-		}
-
-		this.accountId = accountId;// accountId is on the instance level
-		// AND in the execute method...watch out
+		if (accountId == 0)
+			accountId = permissions.getAccountId();
+		
+		if (permissions.getAccountId() != accountId)
+			permissions.tryPermission(OpPerms.AllOperators);
 
 		SelectUser sql = new SelectUser();
 		sql.addField("u.lastLogin");
@@ -80,11 +78,11 @@ public class UsersManage extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public String getAccountId() {
+	public int getAccountId() {
 		return accountId;
 	}
 
-	public void setAccountId(String accountId) {
+	public void setAccountId(int accountId) {
 		this.accountId = accountId;
 	}
 
