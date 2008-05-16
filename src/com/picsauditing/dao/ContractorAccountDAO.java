@@ -70,7 +70,7 @@ public class ContractorAccountDAO extends PicsDAO {
 			where += " AND a IN (SELECT contractorAccount FROM ContractorOperator " +
 					"WHERE operatorAccount.id = "+permissions.getAccountId()+")";
 		
-		Query query = em.createQuery("FROM ContractorAccount a WHERE "+where+" ORDER BY accountDate DESC");
+		Query query = em.createQuery("FROM ContractorAccount a WHERE "+where+" ORDER BY dateCreated DESC");
 		query.setMaxResults(limit);
 		return query.getResultList();
 	}
