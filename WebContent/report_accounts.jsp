@@ -82,8 +82,15 @@ List<BasicDynaBean> searchData = search.getPage();
 <%= search.getPageLinksWithDynamicForm() %>
 <%
 if (canEdit) {
-%><div><a href="accounts_new_operator.jsp?type=<%=accountType%>">Create New Corporate</a></div><%
-}
+  if(accountType.equals("Corporate")) {%>
+<div><a href="accounts_new_operator.jsp?type=<%=accountType%>">Create New Corporate</a></div>
+<%
+  }	else {
+%>
+<div><a href="accounts_new_operator.jsp?type=<%=accountType%>">Create New</a></div>
+<%		
+	}
+	}
 %>
 </div>
 
