@@ -66,6 +66,7 @@
 	<thead>
 	<tr>
 		<td colspan="2">Contractor Name</td>
+		<td></td>
 		<s:if test="pqfVisible">
 			<td>PQF</td>
 		</s:if>
@@ -91,7 +92,8 @@
 			<td><a
 				href="ContractorView.action?id=<s:property value="[0].get('id')"/>"
 				><s:property value="[0].get('name')" /></a></td>
-
+			<td><a
+				href="ConAuditList.action?id=<s:property value="[0].get('id')"/>">Audits</a></td>
 			<s:if test="pqfVisible">
 				<td align="center"><s:if test="[0].get('ca1_auditID') > 0">
 					<s:if test="[0].get('ca1_auditStatus').equals('Exempt')">N/A</s:if>
