@@ -105,6 +105,9 @@
 			<result name="NCMS">
 				struts/contractors/con_auditNCMS.jsp
 			</result>
+			<result name="NoView">
+				struts/contractors/con_auditNoView.jsp
+			</result>
 		</action>
 
 

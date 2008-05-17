@@ -34,6 +34,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		this.findConAudit();
+		
+		// TODO add in permissions to see audits
+		boolean canAccess = permissions.canSeeAudit(conAudit.getAuditType().getAuditTypeID());
+		if (!canAccess)
+			return "NoView";
 
 		if (this.conAudit.getAuditType().getAuditTypeID() == AuditType.NCMS)
 			return "NCMS";
