@@ -23,14 +23,6 @@
 </style>
 <script type="text/javascript">
 
-function moveFile(type, year) {
-	var newyear = $F('move'+type+year);
-	if (newyear=="") return;
-	status.innerHTML = "Switching files...";
-	pars = 'oshaID=<s:property value="osha.id" />&type='+type+'&oldYear='+year+'&newYear='+newyear;
-	var myAjax = new Ajax.Updater('status', 'VerifySwitchFilesAjax.action', {method: 'post', parameters: pars});
-}
-
 function copyAnswer(selectedYear) {
 	// If the answer is correct and hasn't been filled in yet, then default it
 	if ($F('verify_emr'+selectedYear+'_isCorrectBoolean') == null) return;
@@ -69,11 +61,10 @@ function sendEmail() {
 	new Effect.Highlight($('emailStatus'), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 }
 </script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 </head>
 <body>
-
-	
-<s:include value="conHeader.jsp" />	
+<s:include value="conHeader.jsp" />
 
 <p class="blueMain"><a href="pqf_verification.jsp">PQF Verification Report</a></p>
 <s:form id="verify">
@@ -106,12 +97,6 @@ function sendEmail() {
 					<a href="#"
 						onClick="window.open('servlet/showpdf?id=<s:property value="id" />&OID=<s:property value="oshaID" />&file=osha1','Osha300Logs','scrollbars=yes,resizable=yes,width=700,height=450'); return false;"
 						onMouseOver="status='Osha 300 Logs'">Show File</a>
-					<br />Switch with: <select id="moveosha1"
-						onchange="moveFile('osha', 1)" class="blueMain">
-						<option></option>
-						<option>2006</option>
-						<option>2005</option>
-					</select>
 				</s:if> <s:else>No File</s:else>
 				<td><s:if test="osha.year2.file && osha.year2.file.name().equals('Yes')">
 					<a href="#"
