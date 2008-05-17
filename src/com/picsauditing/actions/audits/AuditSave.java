@@ -19,7 +19,8 @@ public class AuditSave extends PicsActionSupport implements Preparable {
 	}
 
 	public String execute() throws Exception {
-		// getPermissions();
+		if (!forceLogin())
+			return LOGIN;
 		// TODO add security
 		// TODO return an appropriate message
 
