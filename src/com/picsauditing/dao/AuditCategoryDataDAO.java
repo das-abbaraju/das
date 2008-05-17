@@ -48,23 +48,28 @@ public class AuditCategoryDataDAO extends PicsDAO {
 				
 				if (permissions.isOperator()) {
 					where += "AND d.category IN (SELECT o.category FROM PqfOperator o " +
-							"WHERE o.riskLevel = :risk AND o.operatorAccount.id = :id) ";
+							"WHERE o.category.auditType.id = :auditType AND o.riskLevel = :risk AND o.operatorAccount.id = :id) ";
 				}
 				if (permissions.isCorporate()) {
 					where += "AND d.category IN (SELECT o.category FROM PqfOperator o " +
-							"WHERE o.riskLevel = :risk AND o.operatorAccount IN (" +
+							"WHERE o.category.auditType.id = :auditType AND o.riskLevel = :risk AND o.operatorAccount IN (" +
 							"SELECT operator FROM Facility f WHERE corporate.id = :id)) ";
 				}
 			}
 		}
 		
+		// There is a strange bug when 
+		// If this is an operator or corporate, we already 
+		if (!where.contains(":auditType"))
+			where += "AND d.category.auditType.id = :auditType ";
+		
 		String queryString = "SELECT d FROM AuditCatData d inner join fetch d.category " +
-			"WHERE d.audit.id = :conAudit AND d.category.auditType.id = :auditType " + where +
+			"WHERE d.audit.id = :conAudit " + where +
 			" ORDER BY d.category.number";
 		Query query = em.createQuery(queryString);
 		
 		query.setParameter("conAudit", contractorAudit.getId());
-		query.setParameter("auditType", contractorAudit.getAuditType().getAuditTypeID());
+		setOptionalParameter(query, "auditType", contractorAudit.getAuditType().getAuditTypeID());
 		setOptionalParameter(query, "id", permissions.getAccountId());
 		setOptionalParameter(query, "risk", contractorAudit.getContractorAccount().getRiskLevel());
 		

@@ -9,7 +9,7 @@
 	<s:iterator value="newContractors">
 		<tr>
 			<td><a href="ContractorView.action?id=<s:property value="id"/>"><s:property value="name"/></a></td>
-			<td class="center"><s:date name="accountDate" format="M/d/yy" /></td>
+			<td class="center"><s:date name="dateCreated" format="M/d/yy" /></td>
 		</tr>
 	</s:iterator>
 </table>

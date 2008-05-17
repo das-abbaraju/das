@@ -140,11 +140,12 @@ public class VerifyView extends AuditActionSupport {
 		
 		if (conAudit.getPercentVerified() == 100) {
 			conAudit.setAuditStatus(AuditStatus.Active);
-		} else
-			conAudit.setAuditStatus(AuditStatus.Submitted);
-		
-		
-		
+		}
+		// Don't un-Activate it anymore, per conversation with Trevor, Jared, John 5/16/08
+		// This can cause more problems with PQFs that are already active during the year
+		// After we convert and get all our data reverified, we may be able to turn this back on
+		// else
+		//	conAudit.setAuditStatus(AuditStatus.Submitted);
 		
 		auditDao.save(conAudit);
 	}

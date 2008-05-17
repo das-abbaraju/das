@@ -46,7 +46,7 @@
 			<s:if test="requestURI.contains('con_viewForms')">class="current"</s:if>>Forms
 		& Docs</a></li>
 	</s:if>
-	<li><a <s:if test="requestURI.contains('audit')">class="current"</s:if> href="ConAuditList.action?id=<s:property value="id" />">Audits</a></li>
+	<li><a <s:if test="requestURI.contains('contractor_audits')">class="current"</s:if> href="ConAuditList.action?id=<s:property value="id" />">Audits</a></li>
 	<s:iterator value="activeAudits">
 		<li><a <s:if test="id == auditID">class="current"</s:if>
 			href="Audit.action?auditID=<s:property value="id"/>"><s:property

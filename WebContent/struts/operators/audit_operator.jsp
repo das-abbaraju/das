@@ -8,7 +8,7 @@
 	type="text/javascript"></script>
 <script type="text/javascript">
 function save(id, aID, oID, pKey) {
-	pars = '&ao.operatorAccount.id='+oID+'&ao.auditType.auditTypeID='+aID+'&ao.auditOperatorID='+pKey;
+	pars = '&operatorID='+oID+'&ao.auditType.auditTypeID='+aID+'&ao.auditOperatorID='+pKey;
 
 	var radioGrp = $('form1')['riskLevel'+id];
 	for(i=0; i < radioGrp.length; i++){
@@ -69,18 +69,11 @@ function save(id, aID, oID, pKey) {
 				</s:else>
 				</td>
 				<td id="td<s:property value="htmlID" />">
-					<table border="0">
-					<tr>
-					<td style="text-align: right">Minimum Risk Level:</td>
-					<td><s:radio name="riskLevel%{htmlID}" list="riskLevelList" value="minRiskLevel" 
-					onchange="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" /></td>
-					</tr>
-					<tr>
-					<td style="text-align: right">Flagged if Missing:</td>
-					<td><s:radio name="requiredForFlag%{htmlID}" list="FlagColorList" value="requiredForFlag"
-					onchange="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" /></td>
-					</tr>
-					</table>
+					<s:radio name="riskLevel%{htmlID}" list="riskLevelList" value="minRiskLevel" 
+					onchange="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
+					|
+					<s:radio name="requiredForFlag%{htmlID}" list="FlagColorList" value="requiredForFlag"
+					onchange="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
 				</td>
 			</tr>
 		</s:iterator>

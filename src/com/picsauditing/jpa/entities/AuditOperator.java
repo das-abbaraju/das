@@ -24,7 +24,7 @@ public class AuditOperator {
 	protected AuditType auditType;
 
 	protected OperatorAccount operatorAccount;
-	protected int minRiskLevel = 1;
+	protected int minRiskLevel = 0;
 	protected FlagColor requiredForFlag;
 	protected int orderedCount = -1;
 	protected Date orderDate;
