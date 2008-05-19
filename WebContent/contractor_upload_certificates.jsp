@@ -21,6 +21,7 @@
 				OpPerms.InsuranceCerts, OpType.Delete)
 				|| permissions.isContractor();
 		String id = request.getParameter("id");
+		String conID = id;
 		if (request.getParameter("action") != null)
 			cerBean.processForm(pageContext, permissions);
 		ContractorBean cBean = new ContractorBean();
@@ -36,9 +37,8 @@
 <meta name="header_gif" content="header_insurance.gif" />
 </head>
 <body>
-<h1><%=aBean.getName(id)%><span class="sub">Contractor
-Insurance</span></h1>
-<%@ include file="utilities/adminOperatorContractorNav.jsp"%>
+<% request.setAttribute("subHeading", "Contractor Insurance"); %>
+<%@ include file="includes/conHeaderLegacy.jsp"%>
 <table width="657" border="0" cellpadding="15" cellspacing="1">
 	<tr>
 		<td align="center" valign="top" class="redMain"><%=cerBean.getErrorMessages()%>
