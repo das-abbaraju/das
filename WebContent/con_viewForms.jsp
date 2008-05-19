@@ -12,14 +12,18 @@
 <html>
 <head>
 <title>View Forms &amp; Documents</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <meta name="header_gif" content="header_editAccount.gif" />
 </head>
 <body>
 <table width="657" border="0" cellpadding="0" cellspacing="0">
 	<tr align="center" class="blueMain">
 		<td align="left">
-		<h1>Forms & Documents</h1>
-		<%@ include file="utilities/adminOperatorContractorNav.jsp"%></td>
+		<% request.setAttribute("subHeading", "Forms%20%26%20Documents");
+			String conID = id;
+		%>
+		<%@ include file="includes/conHeaderLegacy.jsp"%>
 	</tr>
 	<tr>
 		<td align="center" class="blueHeader">&nbsp;</td>

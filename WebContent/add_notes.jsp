@@ -83,11 +83,15 @@
 <%@page import="java.util.List"%>
 <html>
 <head>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <title>Notes</title>
 </head>
 <body>
-<h1><%=aBean.getName(id)%><span class="sub">Contractor Notes</span></h1>
-<%@ include file="utilities/adminOperatorContractorNav.jsp"%>
+<% request.setAttribute("subHeading", "Contractor Notes");
+	String conID = id;
+%>
+<%@ include file="includes/conHeaderLegacy.jsp"%>
 <table border="2" align="center" cellpadding="5" cellspacing="5" width="100%">
 <%if (!permissions.isContractor()){ %>
 <span class="redMain">Operator Notes:</span><br>

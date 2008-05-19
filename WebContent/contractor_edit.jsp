@@ -41,14 +41,20 @@
 <html>
 <head>
 <title>Edit Account</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <meta name="header_gif" content="header_editAccount.gif" />
 </head>
 <body>
 <form name="form1" method="post"
 	action="contractor_edit.jsp?id=<%=id%>&isSubmitted=Yes"
 	enctype="multipart/form-data">
-<h1><%=aBean.getName(id)%><span class="sub">Edit Account Information</span></h1>
-<%@ include file="utilities/adminOperatorContractorNav.jsp"%>
+
+<% request.setAttribute("subHeading", "Edit Account Information");
+	String conID = id;
+%>
+<%@ include file="includes/conHeaderLegacy.jsp"%>
+
 <table width="657" cellpadding="10" cellspacing="0">
 	<tr>
 		<td align="center" valign="top" class="blueMain">

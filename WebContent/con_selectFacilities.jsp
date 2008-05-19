@@ -65,11 +65,16 @@
 <head>
 <title>Contractor Facilities</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
-<h1><%=aBean.getName(id)%> <span class="sub">Contractor
-Facilities</span></h1>
-<%@ include file="utilities/adminOperatorContractorNav.jsp"%>
+<% request.setAttribute("subHeading", "Contractor Facilities");
+	String conID = id;
+%>
+<%@ include file="includes/conHeaderLegacy.jsp"%>
+
 
 <div style="float: left; text-align: center; width: 250px;">
 <%
@@ -103,6 +108,9 @@ Facilities</span></h1>
 		count = 0;
 		// Show Facilities selected
 		for (OperatorAccount operator : operators) {
+			
+			if( ! operator.isOperator() ) continue;
+			
 			String opID = operator.getId().toString();
 			String name = operator.getName();
 			if (cBean.generalContractors.contains(opID)) {
@@ -112,6 +120,8 @@ Facilities</span></h1>
 				if (opFlag != null)
 					flagColor = opFlag.getFlag().toLowerCase();
 
+				
+				
 				if (permissions.isCorporate() && !pBean.oBean.facilitiesAL.contains(opID)) {
 	%>
 	<input type="hidden" name="genID_<%=opID%>" value="Yes" />
@@ -158,6 +168,7 @@ Facilities</span></h1>
 
 		// Show Facilities NOT selected
 		for (OperatorAccount operator : operators) {
+			if( ! operator.isOperator() ) continue;
 			String opID = operator.getId().toString();
 			String name = operator.getName();
 			if (!cBean.generalContractors.contains(opID)) {

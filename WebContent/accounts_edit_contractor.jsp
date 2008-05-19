@@ -15,6 +15,10 @@
 	permissions.tryPermission(OpPerms.ContractorAccounts);
 	String id = request.getParameter("id");
 	String editID = request.getParameter("id");
+
+	String conID = id;
+	String auditID = "0";
+	
 	boolean isSubmitted = "Yes".equals(request.getParameter("isSubmitted"));
 	String msg = "";
 	aBean.setFromDB(editID);
@@ -54,13 +58,15 @@
 %>
 <html>
 <head>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
 </head>
 <body>
-<h1><%=aBean.getName(id)%><span class="sub">Contractor Edit</span></h1>
-<%@ include file="utilities/adminOperatorContractorNav.jsp"%>
+<% request.setAttribute("subHeading", "Contractor Edit"); %>
+<%@ include file="includes/conHeaderLegacy.jsp"%>
 
 <form name="form1" method="post"
 	action="accounts_edit_contractor.jsp?id=<%=editID%>&isSubmitted=Yes"
