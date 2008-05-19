@@ -4,12 +4,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.access.MenuItem;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.YesNo;
 
 public class ContractorActionSupport extends PicsActionSupport {
 	protected int id = 0;
@@ -17,6 +20,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 	@Autowired(required=true)
 	protected ContractorAccountDAO accountDao;
 	protected ContractorAuditDAO auditDao;
+	private List<ContractorOperator> operators;
 	
 	protected String subHeading;
 
@@ -59,7 +63,9 @@ public class ContractorActionSupport extends PicsActionSupport {
 	}
 	
 	public List<ContractorOperator> getOperators() {
-		return accountDao.findOperators(contractor, permissions);
+		if (operators == null)
+			operators = accountDao.findOperators(contractor, permissions);
+		return operators;
 	}
 
 	public String getSubHeading() {
@@ -69,5 +75,20 @@ public class ContractorActionSupport extends PicsActionSupport {
 	public void setSubHeading(String subHeading) {
 		this.subHeading = subHeading;
 	}
+	/**
+	 * Only show the insurance link for contractors who are linked 
+	 * to an operator that collects insurance data. Also, don't show 
+	 * the link to users who don't have the InsuranceCerts permission.
+	 * 
+	 */
+	public boolean isHasInsurance() {
+		if (!permissions.isContractor() && !permissions.hasPermission(OpPerms.InsuranceCerts))
+			return false;
+		
+		for(ContractorOperator insurContractors : getOperators())
+	  		if(insurContractors.getOperatorAccount().getCanSeeInsurance().equals(YesNo.Yes))
+	  			return true;
 
+  		return false;	
+	}
 }

@@ -26,11 +26,11 @@
 		<li><a href="contractor_edit.jsp?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('edit')">class="current"</s:if>>Edit</a></li>
 	</s:if>
-	<pics:permission perm="InsuranceCerts">
+	<s:if test="hasInsurance">
 		<li><a
 			href="contractor_upload_certificates.jsp?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('cert')">class="current"</s:if>>InsureGuard</a></li>
-	</pics:permission>
+	</s:if>
 	<s:if test="permissions.operator">
 		<li><a href="ContractorFlag.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('flag')">class="current"</s:if>>Flag
