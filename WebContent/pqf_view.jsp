@@ -1,4 +1,4 @@
-<%@page language="java" import="com.picsauditing.PICS.*"
+<%@page language="java" import="com.picsauditing.PICS.*, com.picsauditing.jpa.entities.*"
 	errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp"%>
 <jsp:useBean id="pqBean" class="com.picsauditing.PICS.pqf.QuestionBean"
@@ -37,10 +37,12 @@
 <%@page import="java.util.Set"%>
 <html>
 <head>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <title>PQF for <%=action.getAudit().getContractorAccount().getName()%></title>
 </head>
 <body>
-<%@ include file="includes/nav/pqfHeader.jsp"%>
+<%@ include file="includes/conHeaderLegacy.jsp"%>
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
 	<%
 		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE
