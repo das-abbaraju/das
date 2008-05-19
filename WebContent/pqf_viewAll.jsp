@@ -40,10 +40,13 @@
 <%@page import="com.picsauditing.jpa.entities.AuditType"%>
 <html>
 <head>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <title><%=auditType%> for <%=aBean.name%></title>
 </head>
 <body>
-<%@ include file="includes/nav/pqfHeader.jsp"%>
+
+<%@ include file="includes/conHeaderLegacy.jsp"%>
 <table class="blueMain">
 	<tr>
 		<td align="left">
