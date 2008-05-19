@@ -9,7 +9,6 @@
 	scope="page" />
 <%
 	permissions.tryPermission(OpPerms.BillingUpgrades);
-
 	String action = request.getParameter("action");
 	String action_id = request.getParameter("action_id");
 	sBean.orderBy = request.getParameter("orderBy");
@@ -28,12 +27,10 @@
 		cBean.setFromDB(action_id);
 		cBean.lastInvoiceDate = DateBean.getTodaysDate();
 		cBean.billingAmount = invoiceAmount;
-		cBean.addAdminNote(action_id, "(" + permissions.getName() + ")", "Invoiced for $" + cBean.billingAmount
-				+ " membership level", cBean.lastInvoiceDate);
+		cBean.addAdminNote(action_id, "(" + permissions.getName() + ")", "Invoiced for $" + cBean.billingAmount+ " membership level", cBean.lastInvoiceDate);
 		if ("".equals(cBean.membershipDate)) {
 			cBean.membershipDate = DateBean.getTodaysDate();
-			cBean.addNote(action_id, "(" + permissions.getName() + ")", "Membership Date set today to "
-					+ cBean.membershipDate, DateBean.getTodaysDateTime());
+			cBean.addNote(action_id, "(" + permissions.getName() + ")", "Membership Date set today to "+ cBean.membershipDate, DateBean.getTodaysDateTime());
 		}
 		cBean.writeToDB();
 	}
@@ -51,6 +48,45 @@
 <script src="js/prototype.js" type="text/javascript"></script>
 <script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<script language="JavaScript">
+  	function sendInvoice( conId, amountField )
+  	{
+		var elm = document.getElementById( amountField );
+		  	
+		var pars = 'action_id='+conId+'&invoiceAmount='+ elm.value+'&action=Inv';
+		var divName = 'inv_history_'+conId;
+		var myAjax = new Ajax.Request('report_upgradePayment.jsp', 
+				{
+					method: 'post', 
+					parameters: pars,
+					onSuccess: function(transport) {
+						$(divName).innerHTML = "$"+elm.value; 
+						new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+					}
+				});
+
+		return false;
+  	}
+
+	function newPayment( conId, amountField )
+  	{
+  		var elm = document.getElementById( amountField );
+  		
+		var pars = 'action_id='+conId+'&amount='+elm.value+'&action=Paid';
+		var divName = 'pay_history_'+conId;
+		var myAjax = new Ajax.Request('report_upgradePayment.jsp',
+			{
+				method: 'post', 
+				parameters: pars, 
+				onComplete: function() {
+					$(divName).innerHTML = "$"+elm.value;			
+					new Effect.Highlight($(divName), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});		
+		}});
+		return false;
+  	}
+
+
+</script>  	
 </head>
 <body>
 <h1>Upgrade Payments</h1>
@@ -135,15 +171,15 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 		<td><%=sBean.cBean.payingFacilities%></td>
 		<td><%=sBean.cBean.membershipDate%></td>
 		<td><%=sBean.cBean.paymentExpires%></td>
-		<td>$<%=sBean.cBean.billingAmount%></td>
+		<td id="inv_history_<%= sBean.aBean.id %>">$<%=sBean.cBean.billingAmount%></td>
 		<td><%=sBean.cBean.lastInvoiceDate%></td>
-		<td><input type="text" class=forms value="<%=sBean.cBean.newBillingAmount%>" size=3 name=invoiceAmount></td>
-		<td><input name="action" type="submit" class="buttons" value="Inv"></td>
+		<td><input type="text" id="inv_amount_<%= sBean.cBean.id %>" class=forms value="<%=sBean.cBean.newBillingAmount%>" size=3 name=invoiceAmount></td>
+		<td><input type="submit" onclick="javascript: return sendInvoice( '<%= sBean.aBean.id %>','inv_amount_<%= sBean.cBean.id %>');" class="buttons" value="Inv"/></td>
 		<td><nobr>$<%=newInvoice%></nobr></td>
-		<td>$<%=sBean.cBean.lastPaymentAmount%></td>
+		<td id="pay_history_<%= sBean.aBean.id %>">$<%=sBean.cBean.lastPaymentAmount%></td>
 		<td><%=sBean.cBean.lastPayment%></td>
-		<td><nobr><input type="text" class=forms value="<%=sBean.cBean.newBillingAmount%>" size=3 name=amount>/<%=sBean.cBean.billingCycle%>yr</nobr></td>
-		<td valign="middle"><input name="action" type="submit" class="buttons" value="Paid"></td>
+		<td><nobr><input type="text" id="pay_amount_<%= sBean.aBean.id %>" class=forms value="<%=sBean.cBean.newBillingAmount%>" size=3 name=amount>/<%=sBean.cBean.billingCycle%>yr</nobr></td>
+		<td valign="middle"><input name="action" type="submit" onClick="javascript: return newPayment( '<%= sBean.aBean.id %>','pay_amount_<%= sBean.cBean.id %>');" class="buttons" value="Paid"></td>
 		<input name="invoicedStatus" type="hidden" value="<%=sBean.selected_invoicedStatus%>">
 		<input name="action_id" type="hidden" value="<%=sBean.aBean.id%>">
 		<input name="orderBy" type="hidden" value="<%=sBean.orderBy%>">
