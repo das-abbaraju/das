@@ -63,12 +63,18 @@
 <html>
 <head>
 <title>PQF Verify</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+
 <SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
 </head>
 <body>
-<%@ include file="includes/nav/pqfHeader.jsp"%>
+
+<%@ include file="includes/conHeaderLegacy.jsp"%>
+
+
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
 	<tr align="center">
 		<td class="redMain"><strong><%=message%></strong></td>
