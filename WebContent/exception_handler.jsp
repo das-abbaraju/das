@@ -1,22 +1,25 @@
-<%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ page isErrorPage="true" language="java"
-	import="java.util.*, java.io.*"%>
+	import="java.util.*, java.io.*, com.opensymphony.xwork2.ActionContext"%>
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <jsp:useBean id="mailer" class="com.picsauditing.mail.EmailSender" scope="page" />
 
 
 <%
 /*
-	If the exception is coming from the non-struts world, the URI will be the actual JSP page
-	requested.  In the struts world, the uri will actually be this page, as a second action invocation.
+	If the exception is coming from the non-struts world, ActionContext.getContext().getActionInvocation() will 
+	be null.
 	
 	In normal JSP, the exception variable is an implicit variable on an error page, but coming from struts
 	we have to pull it off the value stack and assign it ourselves to fit struts exceptions into the same 
 	error page.
 */
-	exception = (Exception) pageContext.getAttribute( "exception" );	
-	if( request.getRequestURI().endsWith("exception_handler.jsp" ) )
+	
+
+	if( ActionContext.getContext().getActionInvocation() != null )
 	{
+		pageContext.setAttribute( "exception", ActionContext.getContext().getValueStack().findValue("exception") );
+		
+		exception = (Exception) pageContext.getAttribute( "exception" );	
 	}
 %>
 
@@ -25,6 +28,7 @@
 
 <%
 	boolean debugging = application.getInitParameter("environmentType").equals("development");
+	
 	String message = "";
 	String cause = "Undetermined";
 	String stacktrace = "";
@@ -78,6 +82,7 @@
 		}
 	}
 %>
+<%@page import="com.opensymphony.xwork2.ActionContext"%>
 <html>
 <head>
 <title>PICS Error</title>
