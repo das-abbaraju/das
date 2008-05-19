@@ -4,10 +4,14 @@
 	var pars = "";
 	
 	<% if( request.getParameter( "auditID" ) != null ) { %>
-	pars = pars + "auditID=" + <%=request.getParameter("auditID") + "&" %>;
+	pars = pars + "auditID=" + <%=request.getParameter("auditID") %> + "&";
 	<% } %>
 	
-	pars = pars + "&id=" + <%= conID %>;
+	<% if( request.getAttribute( "subHeading" ) != null ) { %>
+	pars = pars + "subHeading=" + "<%= (String) request.getAttribute("subHeading") %>" + "&";
+	<% } %>
+	
+	pars = pars + "id=" + <%= conID %>;
 	
 	var divName = 'conHeader';
 	var myAjax = new Ajax.Updater(divName,'ConHeader.action', {method: 'post', parameters: pars});
