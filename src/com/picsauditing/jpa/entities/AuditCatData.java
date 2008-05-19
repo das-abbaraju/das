@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "pqfcatdata")
@@ -61,6 +62,11 @@ public class AuditCatData implements java.io.Serializable {
 		return applies;
 	}
 
+	@Transient
+	public boolean isAppliesB() {
+		return applies.equals(YesNo.Yes);
+	}
+	
 	public void setApplies(YesNo applies) {
 		this.applies = applies;
 	}

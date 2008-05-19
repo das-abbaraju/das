@@ -1,3 +1,5 @@
+Change this file to use the new struts conHeader instead
+
 <%@page import="com.picsauditing.jpa.entities.ContractorAudit"%>
 <%@page import="com.picsauditing.jpa.entities.User"%>
 <%@page import="com.picsauditing.jpa.entities.AuditType"%>

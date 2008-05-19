@@ -17,7 +17,7 @@ try {
 	if (!isCategorySelected){
 		response.sendRedirect("pqf_edit.jsp?id="+conID+"&auditType="+com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
 		return;
-	}//if
+	}
 	int numQuestions = 0;
 	int numSections = 0;
 	aBean.setFromDB(conID);
@@ -27,6 +27,7 @@ try {
 	if ("Save".equals(action)){
 		pdBean.uploadPQFFile(pageContext,conID,catID);		
 		if (pdBean.isOK()) {
+			pdBean.savePQF(request, action.getAudit(), permissions);
 			pdBean.savePQFUpload(request,conID,catID,auditType,pBean.userID);
 			pdBean.updatePercentageCompleted(conID,catID,auditType);
 			cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(conID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));

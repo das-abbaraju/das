@@ -75,15 +75,13 @@
 					<th>Created:</th>
 					<td><s:date name="conAudit.createdDate" format="MMM d, yyyy" /></td>
 				</tr>
-				<s:if test="conAudit.auditType.hasRequirements">
-					<tr>
-						<th>Verified:</th>
-						<td><s:if test="conAudit.closedDate">
-							<s:date name="conAudit.closedDate" format="MMM d, yyyy" />
-						</s:if><s:else>
-							<s:property value="conAudit.percentVerified" />
-						</s:else></td>
-					</tr>
+				<s:if test="conAudit.auditStatus.name() == 'Submitted'">
+					<s:if test="conAudit.auditType.PQF">
+						<tr>
+							<th>Verified:</th>
+							<td><s:property value="conAudit.percentVerified" />%</td>
+						</tr>
+					</s:if>
 				</s:if>
 			</table>
 			</td>

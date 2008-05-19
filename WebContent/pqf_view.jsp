@@ -12,6 +12,7 @@
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean"
 	scope="page" />
 <%@page import="com.picsauditing.actions.audits.ContractorAuditLegacy"%>
+<%@page import="java.util.Set"%>
 <%
 	ContractorAuditLegacy action = new ContractorAuditLegacy();
 	action.setAuditID(request.getParameter("auditID"));
@@ -34,7 +35,6 @@
 		psBean.setPQFSubCategoriesArray(catID);
 		int catCount = 0;
 %>
-<%@page import="java.util.Set"%>
 <html>
 <head>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
@@ -43,20 +43,15 @@
 </head>
 <body>
 <%@ include file="includes/conHeaderLegacy.jsp"%>
+
+<div>
+<a href="pqf_view.jsp?auditID=<%=action.getAuditID()%>&catID=<%=catID %>">View</a>
+| <a href="pqf_edit.jsp?auditID=<%=action.getAuditID()%>&catID=<%=catID %>">Edit</a>
+| <a href="pqf_verify.jsp?auditID=<%=action.getAuditID()%>&catID=<%=catID %>">Verify</a>
+</div>
+
+
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
-	<%
-		if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE
-					.equals(auditType)
-					|| com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE
-							.equals(auditType)) {
-	%>
-	<tr align="center">
-		<td class="blueMain">Safety Manual: <span class="redMain"><%=pdBean.getUploadLink()%>
-		</span></td>
-	</tr>
-	<%
-		}//if
-	%>
 	<%
 		if (!com.picsauditing.PICS.pqf.Constants.PQF_TYPE
 					.equals(auditType)) {
@@ -154,9 +149,6 @@
 				<%=pqBean.getOriginalAnswerView()%> <%=pqBean.getVerifiedAnswerView()%>
 				<%=pqBean.getCommentView()%></td>
 				<td></td>
-				<%
-					//=pdBean.getAnswer(pqBean.questionID, pqBean.questionType)
-				%>
 			</tr>
 			<%
 				if ((com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE

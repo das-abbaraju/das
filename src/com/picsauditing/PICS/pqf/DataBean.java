@@ -4,8 +4,6 @@ import java.sql.ResultSet;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Collection;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
 import java.util.Map.Entry;
@@ -15,8 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
 
-import com.picsauditing.PICS.*;
-
+import com.picsauditing.PICS.Utilities;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.audits.ContractorAuditLegacy;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.servlet.upload.UploadConHelper;
 import com.picsauditing.servlet.upload.UploadProcessorFactory;
 
@@ -253,20 +253,22 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 		return temp;
 	}//getFilledOut
 	
-	public void savePQF(javax.servlet.http.HttpServletRequest request, String conID, String catID, String auditType, String userID) throws Exception {
+	public void savePQF(javax.servlet.http.HttpServletRequest request, ContractorAudit conAudit, Permissions permissions) throws Exception {
+		this.conID = conAudit.getContractorAccount().getIdString();
+		this.auditID = new Integer(conAudit.getId()).toString();
 		try{
-			ConAuditBean conAudit = new ConAuditBean(conID, auditType);
+			String catID = request.getParameter("catID");
 			DBReady();
 			boolean doUpdate = false;
 			boolean catDoesNotApply = "Yes".equals(request.getParameter("catDoesNotApply"));
 			if (catDoesNotApply) {
-				String Query = "REPLACE INTO pqfCatData (catID,auditID,applies,percentCompleted,percentVerified) VALUES ("+catID+","+conAudit.getAuditID()+",'No',100,100);";
+				String Query = "REPLACE INTO pqfCatData (catID,auditID,applies,percentCompleted,percentVerified) VALUES ("+catID+","+auditID+",'No',100,100);";
 				SQLStatement.executeUpdate(Query);
 				DBClose();
 				return;
 			}
 			
-			String insertQuery = "REPLACE INTO pqfData (conID,questionID,answer,comment,wasChanged,dateVerified,auditorID,verifiedAnswer) VALUES ";
+			String insertQuery = "REPLACE INTO pqfData (auditID,questionID,conID,answer,comment,wasChanged,isCorrect,dateVerified,auditorID,verifiedAnswer) VALUES ";
 			int requiredAnsweredCount = 0;
 			int answeredCount = 0;
 			int requiredCount = 0;
@@ -298,7 +300,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 						answer = "";
 					tempQAMap.put(qID,answer);
 				}//if
-			}//while
+			}
 
 			e = request.getParameterNames();
 			while (e.hasMoreElements()) {
@@ -332,8 +334,8 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 					comment = request.getParameter("comment_"+qID);
 					wasChanged = request.getParameter("wasChanged_"+qID);
 					String oldWasChanged = wasChanged;
-					if ((Constants.DESKTOP_TYPE.equals(auditType) || Constants.DA_TYPE.equals(auditType) || 
-							Constants.OFFICE_TYPE.equals(auditType)) && "No".equals(answer))
+					
+					if (conAudit.getAuditType().isHasRequirements() && "No".equals(answer))
 						wasChanged = "Yes";
 					if (null == comment)
 						comment = "";
@@ -347,15 +349,15 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 					}//if
 					if (!answer.equals(oldAnswer) || !comment.equals(oldComment) || !wasChanged.equals(oldWasChanged)) {
 						doUpdate = true;
-						if ((Constants.DESKTOP_TYPE.equals(auditType) || Constants.DA_TYPE.equals(auditType) || 
-								Constants.OFFICE_TYPE.equals(auditType)) && "Yes".equals(answer) && "No".equals(oldAnswer)){
+						if (conAudit.getAuditType().isHasRequirements() && "Yes".equals(answer) && "No".equals(oldAnswer)){
 							dateVerified = com.picsauditing.PICS.DateBean.getTodaysDate();
-							auditorID = userID;
-						}//if
+							auditorID = permissions.getUserIdString();
+						}
 						if ("".equals(wasChanged))
 							wasChanged = "No";
-						insertQuery += "('"+conID+"',"+qID+",'"+eqDB(answer)+"','"+eqDB(comment)+"','"+eqDB(wasChanged)+
-								"','"+com.picsauditing.PICS.DateBean.toDBFormat(dateVerified)+"',"+Utilities.intToDB(auditorID)+",'"+eqDB(verifiedAnswer)+"'),";
+						// Column order auditID,questionID,conID,answer,comment,wasChanged,isCorrect,dateVerified,auditorID,verifiedAnswer";
+						insertQuery += "("+auditID+","+qID+","+conID+",'"+eqDB(answer)+"','"+eqDB(comment)+"','"+eqDB(wasChanged)+"',''," +
+								"'"+com.picsauditing.PICS.DateBean.toDBFormat(dateVerified)+"',"+Utilities.intToDB(auditorID)+",'"+eqDB(verifiedAnswer)+"'),";
 					}//if
 					if ("Yes".equals(answer) || "NA".equals(answer))
 						yesNACount++;
@@ -369,29 +371,31 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 				}
 			}//while
 			insertQuery = insertQuery.substring(0,insertQuery.length()-1);
-			insertQuery +=";";
 			if (doUpdate)
 				SQLStatement.executeUpdate(insertQuery);
 			String tempPercentCompleted = getShowPercent(requiredAnsweredCount,requiredCount);
 			String tempPercentVerified = getShowPercent(yesNACount,requiredCount);
 			String updateQuery = "";
-			if (Constants.DESKTOP_TYPE.equals(auditType) || Constants.DA_TYPE.equals(auditType) || Constants.OFFICE_TYPE.equals(auditType))
+			if (conAudit.getAuditType().isHasRequirements())
 				updateQuery = "REPLACE INTO pqfCatData (catID,auditID,applies,requiredCompleted,numAnswered,numRequired,percentCompleted,"+
-					"percentVerified) VALUES ("+catID+","+conAudit.getAuditID()+",'Yes',"+requiredAnsweredCount+","+answeredCount+","+requiredCount+","+
+					"percentVerified) VALUES ("+catID+","+auditID+",'Yes',"+requiredAnsweredCount+","+answeredCount+","+requiredCount+","+
 					tempPercentCompleted+","+tempPercentVerified+");";
 			else
 				updateQuery = "REPLACE INTO pqfCatData (catID,auditID,applies,requiredCompleted,numAnswered,numRequired,percentCompleted) VALUES ("+
-					catID+","+conAudit.getAuditID()+",'Yes',"+requiredAnsweredCount+","+answeredCount+","+requiredCount+","+tempPercentCompleted+");";
+					catID+","+auditID+",'Yes',"+requiredAnsweredCount+","+answeredCount+","+requiredCount+","+tempPercentCompleted+");";
 			SQLStatement.executeUpdate(updateQuery);
 		}finally{
 			DBClose();
-		}//finally
-	}//savePQF
+		}
+	}
 
 
 
-	public void savePQFUpload(javax.servlet.http.HttpServletRequest request, String conID, String catID, String auditType, String userID) throws Exception {
+	public void savePQFUpload(javax.servlet.http.HttpServletRequest request, ContractorAudit conAudit, Permissions permissions) throws Exception {
+		this.conID = conAudit.getContractorAccount().getIdString();
+		this.auditID = new Integer(conAudit.getId()).toString();
 		try{
+			String catID = request.getParameter("catID");
 			DBReady();
 			Enumeration e = request.getParameterNames();
 			Map<String,String> params = (Map<String,String>)request.getAttribute("uploadfields");
@@ -481,8 +485,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 					comment = params.get("comment_"+qID);
 					wasChanged = params.get("wasChanged_"+qID);
 					String oldWasChanged = wasChanged;
-					if ((Constants.DESKTOP_TYPE.equals(auditType) || Constants.DA_TYPE.equals(auditType) || 
-							Constants.OFFICE_TYPE.equals(auditType)) && "No".equals(answer))
+					if (conAudit.getAuditType().isHasRequirements() && "No".equals(answer))
 						wasChanged = "Yes";
 					if (null == comment)
 						comment = "";
@@ -496,10 +499,9 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 					}//if
 					if (!answer.equals(oldAnswer) || !comment.equals(oldComment) || !wasChanged.equals(oldWasChanged)) {
 						doUpdate = true;
-						if ((Constants.DESKTOP_TYPE.equals(auditType) || Constants.DA_TYPE.equals(auditType) || 
-								Constants.OFFICE_TYPE.equals(auditType)) && "Yes".equals(answer) && "No".equals(oldAnswer)){
+						if (conAudit.getAuditType().isHasRequirements() && "Yes".equals(answer) && "No".equals(oldAnswer)){
 							dateVerified = com.picsauditing.PICS.DateBean.getTodaysDate();
-							auditorID = userID;
+							auditorID = permissions.getUserIdString();
 						}//if
 						if ("".equals(wasChanged))
 							wasChanged = "No";
@@ -516,12 +518,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 					}//if
 					if (!"".equals(answer) || (isFileUpdate && !params.get("answer_"+qID).equals("")))
 						answeredCount++;
-	//				String qNum = params.get("pqfQuestionNum_" + qID);
-	//				String question = params.get("pqfQuestion_" + qID);
-	//				if (null != answer && answer.length() != 0)
-	//				else if ("Check Box".equals(questionType) && null == answer)
-	//					insertQuery += "('"+conID+"','"+question+"',"+qID+","+qNum+",'N'),";
-				}//if
+				}
 			}//while
 			insertQuery = insertQuery.substring(0,insertQuery.length()-1);
 			insertQuery +=";";
@@ -531,21 +528,19 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 			String tempPercentCompleted = getShowPercent(requiredAnsweredCount,requiredCount);
 			String tempPercentVerified = getShowPercent(yesNACount,requiredCount);
 			String updateQuery = "";
-			if (Constants.DESKTOP_TYPE.equals(auditType) || Constants.DA_TYPE.equals(auditType) || Constants.OFFICE_TYPE.equals(auditType))
-				updateQuery = "REPLACE INTO pqfCatData (catID,conID,applies,requiredCompleted,numAnswered,numRequired,percentCompleted,"+
-					"percentVerified) VALUES ("+catID+","+conID+",'Yes',"+requiredAnsweredCount+","+answeredCount+","+requiredCount+","+
+			if (conAudit.getAuditType().isHasRequirements())
+				updateQuery = "REPLACE INTO pqfCatData (catID,auditID,applies,requiredCompleted,numAnswered,numRequired,percentCompleted,"+
+					"percentVerified) VALUES ("+catID+","+auditID+",'Yes',"+requiredAnsweredCount+","+answeredCount+","+requiredCount+","+
 					tempPercentCompleted+","+tempPercentVerified+");";
-			else if(bUpdateCat)
-				updateQuery = "REPLACE INTO pqfCatData (catID,conID,applies,requiredCompleted,numAnswered,numRequired,percentCompleted) VALUES ("+
-					catID+","+conID+",'Yes',"+requiredAnsweredCount+","+answeredCount+","+requiredCount+","+tempPercentCompleted+");";
-			
-			if(!updateQuery.equals(""))
-				SQLStatement.executeUpdate(updateQuery);
+			else
+				updateQuery = "REPLACE INTO pqfCatData (catID,auditID,applies,requiredCompleted,numAnswered,numRequired,percentCompleted) VALUES ("+
+					catID+","+auditID+",'Yes',"+requiredAnsweredCount+","+answeredCount+","+requiredCount+","+tempPercentCompleted+");";
+			SQLStatement.executeUpdate(updateQuery);
 			
 		}finally{
 			DBClose();
-		}//finally
-	}//savePQF
+		}
+	}
 
 	public String getQuestionIDString(String auditType) throws Exception {
 		try{
@@ -733,7 +728,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 			DBClose();
 		}//finally
 		return;
-	}//deletePQFFile
+	}
 	
 	public String getUploadLink() throws Exception {
 		String answer = getAnswer(com.picsauditing.PICS.pqf.Constants.MANUAL_PQF_QID);
@@ -742,7 +737,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 		else
 			return "<a href=# onClick=window.open('servlet/showpdf?id="+conID+"&file=pqf"+answer+com.picsauditing.PICS.pqf.Constants.MANUAL_PQF_QID+
 				"','','scrollbars=yes,resizable=yes,width=700,height=450')>Uploaded</a>";
-	} // getUploadLink()
+	}
 
 
 	public void saveVerificationNoUpload(javax.servlet.http.HttpServletRequest request, String conID, String userID) throws Exception {

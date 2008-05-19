@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.util.PermissionQueryBuilder;
 
@@ -26,9 +27,12 @@ public class ContractorAuditDAO extends PicsDAO {
 
 	public void remove(int id) {
 		ContractorAudit row = find(id);
-		if (row != null) {
-			em.remove(row);
-		}
+		remove(row);
+	}
+
+	public void remove(ContractorAudit contractorAudit) {
+		if (contractorAudit != null)
+			em.remove(contractorAudit);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -82,5 +86,18 @@ public class ContractorAuditDAO extends PicsDAO {
 
 	public ContractorAudit find(int id) {
 		return em.find(ContractorAudit.class, id);
+	}
+	
+	public ContractorAudit addPending(int auditTypeID, ContractorAccount contractor) {
+		AuditType auditType = new AuditType();
+		auditType.setAuditTypeID(auditTypeID);
+		return this.addPending(auditType, contractor);
+	}
+
+	public ContractorAudit addPending(AuditType auditType, ContractorAccount contractor) {
+		ContractorAudit cAudit = new ContractorAudit();
+		cAudit.setContractorAccount(contractor);
+		cAudit.setAuditType(auditType);
+		return this.save(cAudit);
 	}
 }

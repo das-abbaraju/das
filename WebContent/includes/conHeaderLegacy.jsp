@@ -1,5 +1,8 @@
 <script type="text/javascript" src="js/prototype.js"></script>
-<div id="conHeader"> </div>
+<span id="conHeader" style="min-height: 100px">
+<img src="imgages/ajax_process.gif">
+...loading header information
+</span>
 <script type="text/javascript">
 	var pars = "";
 	

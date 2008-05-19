@@ -41,78 +41,28 @@ public class RequirementBean extends DataBean {
 		req1CompletedDate = DateBean.toShowFormat(SQLResult.getString("req1CompletedDate"));
 		requirement2 = SQLResult.getString("requirement2");
 		req2CompletedDate = DateBean.toShowFormat(SQLResult.getString("req2CompletedDate"));
-	}//setFromResultSet
-/*
-	public void setFromDB(String conID) throws Exception {
-		if ((null == conID) || ("".equals(conID)))
-			throw new Exception("Can't set pqfRequirement from DB because conID is not set");
-		DBReady();
-		String Query = "SELECT * FROM requirement WHERE conID="+conID+";";
-		ResultSet SQLResult = SQLStatement.executeQuery(Query);
-		if (SQLResult.next()) {
-			alreadySavedCat = true;
-			String temp = SQLResult.getString("applies");
-			if ("Yes".equals(temp))
-				catDoesNotApply  = "No";
-			else
-				catDoesNotApply  = "Yes";
-		}//if
-		SQLResult.close();
-		Query = "SELECT * FROM requirement WHERE conID="+conID+" ORDER BY num;";
-		SQLResult = SQLStatement.executeQuery(Query);
+	}
 
-		QAMap = new TreeMap();
-		verifiedMap = new TreeMap();
-//		questionTextAnswerMap = new TreeMap();
-		while (SQLResult.next()) {
-			setFromResultSet(SQLResult);
-			QAMap.put(questionID,answer);
-			verifiedMap.put(questionID,dateVerified);
-//			questionTextAnswerMap.put(id,textAnswer);
-		}//while
-		SQLResult.close();
-		DBClose();
-	}//setFromDB
-
-	public String getAnswer(String qID) throws Exception {
-		if (null==QAMap)
-			throw new Exception("QAMap is null");
-		if (QAMap.containsKey(qID))
-			return (String)QAMap.get(qID);
-		return "";
-	}//getAnswer
-
-	public String getDateVerified(String qID) throws Exception {
-		if (null==verifiedMap)
-			throw new Exception("verifiedMap is null");
-		if (verifiedMap.containsKey(qID))
-			return (String)verifiedMap.get(qID);
-		return "";
-	}//getDateVerified
-*/
-	public void setList(String conID, String auditType) throws Exception {
-		if ((null==conID) || ("".equals(conID)))
-			throw new Exception("Can't set requirement from DB because conID is not set");
-		if ((null==auditType) || ("".equals(auditType)))
-			throw new Exception("Can't set requirement from DB because auditType is not set");
-		String selectQuery = "SELECT * FROM pqfCategories AS c INNER JOIN pqfSubCategories AS s ON catID=categoryID "+
-			"INNER JOIN pqfQuestions AS q ON subCategoryID=subCatID INNER JOIN pqfData AS d ON q.questionID=d.questionID "+
-			"INNER JOIN requirements AS r ON r.questionID=q.questionID AND r.conID=d.conID "+
-			"WHERE auditType='"+auditType+"' AND r.conID="+conID+" ORDER BY r.num;";
+	public void setList(int auditID) throws Exception {
+		String selectQuery = "SELECT * FROM pqfCategories AS c " +
+				"JOIN pqfSubCategories AS s ON catID=categoryID "+
+				"JOIN pqfQuestions AS q ON subCategoryID=subCatID " +
+				"JOIN pqfData AS d ON q.questionID=d.questionID "+
+				"JOIN requirements AS r ON r.questionID=q.questionID AND r.conID=d.conID "+
+				"WHERE auditID = "+auditID+" ORDER BY r.num";
 		try{
 			DBReady();
 			listRS = SQLStatement.executeQuery(selectQuery);
 			numResults = 0;
-			while (listRS.next()) {
+			while (listRS.next())
 				numResults++;
-			}//while
 			listRS.beforeFirst();
 			count = 0;
 		}catch (Exception ex){
 			DBClose();
 			throw ex;
-		}//catch
-	}//setList
+		}
+	}
 
 
 	public void updateNumbering(String conID, String auditType) throws Exception {
@@ -143,8 +93,8 @@ public class RequirementBean extends DataBean {
 		}catch (Exception ex){
 			DBClose();
 			throw ex;
-		}//catch
-	}//isNextRecord
+		}
+	}
 
 	public void closeList() throws Exception {
 		count = 0;

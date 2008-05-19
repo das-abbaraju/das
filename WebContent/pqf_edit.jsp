@@ -18,11 +18,6 @@
 	try {
 		String catID = request.getParameter("catID");
 		String actionString = request.getParameter("action");
-		boolean isCategorySelected = (null != catID && !"0".equals(catID));
-		if (!isCategorySelected) {
-			response.sendRedirect("pqf_edit.jsp?auditID=" + action.getAuditID());
-			return;
-		}
 		boolean isOSHA = CategoryBean.OSHA_CATEGORY_ID.equals(catID);
 		boolean isFileUpload = pdBean.isFileUpload(catID);
 		if (isFileUpload) {
@@ -46,7 +41,7 @@
 		cBean.setFromDB(conID);
 		cBean.tryView(permissions);
 		if ("Save".equals(actionString)) {
-			pdBean.savePQF(request, conID, catID, auditType, pBean.userID);
+			pdBean.savePQF(request, action.getAudit(), permissions);
 			//TODO Make a contractor edit a pqf. 
 			//cBean.setPercentComplete(auditType, action.getPercentComplete());
 			//cBean.setPercentVerified(auditType, pdBean.getPercentVerified(conID, auditType));
@@ -62,34 +57,32 @@
 <html>
 <head>
 <title>Edit PQF</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <script language="JavaScript" src="js/TimeOutWarning.js"></script>
 <SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" SRC="js/validateForms.js"></SCRIPT>
-<meta name="header_gif" content="header_prequalification.gif" />
 </head>
-<body onload="return window_onload();">
+<body>
+<%@ include file="includes/conHeaderLegacy.jsp"%>
+
+<div>
+<a href="pqf_view.jsp?auditID=<%=action.getAuditID()%>&catID=<%=catID %>">View</a>
+| <a href="pqf_edit.jsp?auditID=<%=action.getAuditID()%>&catID=<%=catID %>">Edit</a>
+| <a href="pqf_verify.jsp?auditID=<%=action.getAuditID()%>&catID=<%=catID %>">Verify</a>
+</div>
+
 <form name="formEdit" method="post" action="pqf_edit.jsp">
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
-	<tr align="center" class="blueMain">
-		<td align="left"><h1><%=aBean.getName(id)%><span class="sub"><%=auditType%> for <%=aBean.name%></span></h1>
-		<%@ include file="utilities/adminOperatorContractorNav.jsp"%></td>
-	</tr>
 	<tr align="center">
 		<td class="redmain"><strong><%=errorMsg%></strong></td>
 	</tr>
-	<tr>
-		<td>&nbsp;</td>
-	</tr>
-	<%
-		if (isCategorySelected) {
-				pcBean.setFromDB(catID);
-	%>
 	<tr align="center">
 		<td align="left">
 		<%
-			if (pBean.isAdmin() || pBean.isAuditor()) {
+			if (permissions.isPicsEmployee()) {
 		%>
 		<center><input type="checkbox" name="catDoesNotApply"
 			value="Yes" <%=Inputs.getChecked("Yes",pdBean.catDoesNotApply)%>>
@@ -174,19 +167,16 @@
 		<input name="action" type="submit" class="forms" value="Save">
 		Click to save your work. You may still edit your information later.</td>
 	</tr>
-	<%
-		}
-	%>
 </table>
 <input type="hidden" name="catID" value="<%=catID%>"> <input
 	name="auditID" type="hidden" value="<%=action.getAuditID()%>">
 <input type="hidden" name="requiredCount" value="<%=requiredCount%>">
-</form>
-</body>
-</html>
 <%
 	} finally {
 		pqBean.closeList();
 		pcBean.closeList();
 	}
 %>
+</form>
+</body>
+</html>
