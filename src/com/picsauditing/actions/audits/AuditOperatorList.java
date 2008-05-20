@@ -52,6 +52,9 @@ public class AuditOperatorList extends PicsActionSupport {
 		operators = operatorDAO.findWhere("type = 'Operator'");
 		
 		auditTypes = new AuditTypeCache( auditDAO ).getAuditTypes();
+		for(AuditType audit : auditTypes)
+			if (audit.getAuditTypeID() == AuditType.NCMS)
+				auditTypes.remove(audit);
 		
 		data = new ArrayList<AuditOperator>();
 		HashMap<Integer, AuditOperator> rawDataIndexed = new HashMap<Integer, AuditOperator>();

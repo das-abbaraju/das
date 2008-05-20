@@ -4,14 +4,20 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import com.picsauditing.PICS.pqf.Constants;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.YesNo;
 
 public class ContractorAuditLegacy {
 	private ContractorAudit audit;
 	private ContractorAuditDAO auditDao;
+	private Permissions permissions;
 	
 	public ContractorAuditLegacy() {
 		auditDao = (ContractorAuditDAO) com.picsauditing.util.SpringUtils.getBean("ContractorAuditDAO");
@@ -81,5 +87,73 @@ public class ContractorAuditLegacy {
 
 	public ContractorAudit getAudit() {
 		return audit;
+	}
+	
+
+	public Permissions getPermissions() {
+		return permissions;
+	}
+
+	public void setPermissions(Permissions permissions) {
+		this.permissions = permissions;
+	}
+	
+	public boolean canView() {
+		AuditType type = audit.getAuditType();
+		
+		if (permissions.isContractor()) {
+			if (!type.isCanContractorView())
+				return false;
+			if (type.isPQF())
+				return true;
+			// Contractors can't see other audits while they are being filled out
+			if (audit.getAuditStatus().equals(AuditStatus.Pending))
+				return false;
+			return true;
+		}
+		
+		// Operators/Corporate/Auditors/Admins can see all audits for their contractors
+		return true;
+	}
+	
+	public boolean canEdit() {
+		if (audit.getAuditStatus().equals(AuditStatus.Expired))
+			return false;
+		
+		AuditType type = audit.getAuditType();
+		
+		// Auditors can edit their assigned audits
+		if (type.isHasAuditor() && permissions.getUserId() == audit.getAuditor().getId())
+			return true;
+		
+		if (permissions.isContractor()) {
+			if (type.isCanContractorEdit()) return true;
+			else return false;
+		}
+		
+		if (permissions.isCorporate())
+			return false;
+		
+		if (permissions.isOperator()) {
+			if (audit.getRequestingOpAccount().getId() == permissions.getAccountId()) return true;
+			else return false;
+		}
+
+		if (permissions.hasPermission(OpPerms.AllContractors))
+			return true;
+		
+		return false;
+	}
+	
+	/**
+	 * Only Auditors can Verify PQF audit data. No other audits are verifiable.
+	 * @param permissions
+	 * @return
+	 */
+	public boolean canVerify() {
+		if (this.audit.getAuditType().isPQF())
+			if (permissions.isAuditor())
+				return true;
+		return false;
 	}
 }

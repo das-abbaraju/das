@@ -3,6 +3,7 @@ package com.picsauditing.actions.audits;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -11,6 +12,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NcmsCategoryDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -35,8 +37,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return LOGIN;
 		this.findConAudit();
 		
-		// TODO add in permissions to see audits
 		boolean canAccess = permissions.canSeeAudit(conAudit.getAuditType().getAuditTypeID());
+		if (permissions.isOnlyAuditor()) {
+			for(ContractorAudit audit : auditDao.findByContractor(contractor.getId())) {
+				// Loop through con audits to see if assigned
+				if (audit.getAuditor().getId() == permissions.getUserId())
+					canAccess = true;
+			}
+		}
 		if (!canAccess)
 			return "NoView";
 
@@ -49,6 +57,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 		conAudit = auditDao.find(auditID);
 		if (conAudit == null)
 			throw new Exception("Audit for this " + this.auditID + " not found");
+		
+		if (conAudit.getExpiresDate() != null){
+			
+		}
 		
 		this.id = conAudit.getContractorAccount().getId();
 		findContractor();
@@ -109,11 +121,15 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 	
 	public String getCatUrl() {
+		if (!isCanEdit())
+			return "pqf_view.jsp";
+		
 		if (conAudit.getAuditStatus().equals(AuditStatus.Pending))
 			return "pqf_edit.jsp";
+		
 		if (conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
 			if (isCanVerify())
-				return "pqf_verify.jsp";
+				return "pqf_edit.jsp";
 			else
 				return "pqf_view.jsp";
 		}
@@ -123,28 +139,40 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 	
 	public boolean isCanVerify() {
-		if (permissions.isOnlyAuditor() && (permissions.getUserId() == conAudit.getAuditor().getId())
-			&& (conAudit.getAuditType().isCanContractorEdit() == false))
-			return true;
-		if (permissions.seesAllContractors())
-			return true;
+		if (conAudit.getAuditType().isPQF())
+			if (permissions.isAuditor())
+				return true;
 		return false;
 	}
 	
 	public boolean isCanEdit() {
+		if (conAudit.getAuditStatus().equals(AuditStatus.Expired))
+			return false;
+		
+		AuditType type = conAudit.getAuditType();
+		
+		// Auditors can edit their assigned audits
+		if (type.isHasAuditor() && !type.isCanContractorEdit() 
+				&& permissions.getUserId() == conAudit.getAuditor().getId())
+			return true;
+		
+		if (permissions.isContractor()) {
+			if (type.isCanContractorEdit()) return true;
+			else return false;
+		}
+		
+		if (permissions.isCorporate())
+			return false;
+		
+		if (permissions.isOperator()) {
+			if (conAudit.getRequestingOpAccount().getId() == permissions.getAccountId()) return true;
+			else return false;
+		}
+
 		if (permissions.seesAllContractors())
 			return true;
 		
-		if (permissions.isOnlyAuditor() 
-				&& permissions.getUserId() == conAudit.getAuditor().getId()
-				&& !conAudit.getAuditType().isCanContractorEdit())
-			return true;
-		
-		if (permissions.isContractor()
-				&& conAudit.getAuditType().isCanContractorEdit()
-				&& conAudit.getAuditStatus().equals(AuditStatus.Pending))
-			return true;
 		return false;
+		
 	}
-
 }

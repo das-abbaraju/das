@@ -226,8 +226,11 @@ public class Permissions {
 	}
 
 	public boolean canSeeAudit(int auditType) {
-		if (isAdmin())
+		if (isContractor())
 			return true;
+		if (hasPermission(OpPerms.AllContractors))
+			return true;
+		//
 		if (canSeeAudits != null)
 			return canSeeAudits.contains(new Integer(auditType));
 		return false;
