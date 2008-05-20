@@ -131,7 +131,7 @@
 	<tr class="blueMain" <%=Utilities.getBGColor(count++)%>>
 		<td class="center">
 		<%
-			if (permissions.isPicsEmployee() || permissions.isCorporate()) {
+			if (permissions.isPicsEmployee() || permissions.isCorporate() || permissions.isContractor()) {
 		%>
 		<a
 			href="ContractorFlag.action?id=<%=cBean.id%>&opID=<%=opID%>"><img
@@ -142,7 +142,7 @@
 		</td>
 		<td>
 		<%
-			if (permissions.isPicsEmployee() || permissions.isCorporate()) {
+			if (permissions.isPicsEmployee() || permissions.isCorporate() || permissions.isContractor()) {
 		%>
 		<a href="ContractorFlag.action?id=<%=cBean.id%>&opID=<%=opID%>"><%=name%></a>
 		<% } else { 
