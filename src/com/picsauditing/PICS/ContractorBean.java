@@ -436,27 +436,26 @@ public class ContractorBean extends DataBean {
 			DBReady();
 			
 			BillContractor billing = new BillContractor();
-			if(this != null) {
 			billing.setContractor(this);
 			billing.calculatePrice();
 			billing.writeToDB();
-			}
-			int nextYear = Calendar.getInstance().get(Calendar.YEAR) + 1;
+			//int nextYear = Calendar.getInstance().get(Calendar.YEAR) + 1;
 			// TODO, call the AuditEngine instead
 			// Create the starting PQF audit for this contractor (and any others we missed)
-			Query = "INSERT INTO contractor_audit (conID, auditTypeID, createdDate, expiresDate) " +
-				"SELECT id, 1, dateCreated, '"+nextYear+"-01-01' FROM accounts a WHERE type = 'Contractor' " +
-				"AND id not in (SELECT conID FROM contractor_audit WHERE auditTypeID = 1)";
-			SQLStatement.executeUpdate(Query);
-			DBClose();
-			writeToDB();
-			
+//			Query = "INSERT INTO contractor_audit (conID, auditTypeID, createdDate, expiresDate) " +
+//				"SELECT id, 1, dateCreated, '"+nextYear+"-01-01' FROM accounts a WHERE type = 'Contractor' " +
+//				"AND id not in (SELECT conID FROM contractor_audit WHERE auditTypeID = 1)";
+//			SQLStatement.executeUpdate(Query);
+//			DBClose();
+//			writeToDB();
+//			AuditBuilder builder = new AuditBuilder();
+//			builder.buildAudits(Integer.parseInt(this.id));
 			com.picsauditing.PICS.OperatorBean.resetSubCountTable();
-			new com.picsauditing.PICS.pqf.CategoryBean().generateDynamicCategories(id,com.picsauditing.PICS.pqf.Constants.PQF_TYPE, riskLevel);
+//			new com.picsauditing.PICS.pqf.CategoryBean().generateDynamicCategories(id, com.picsauditing.PICS.pqf.Constants.PQF_TYPE, riskLevel);
 		}finally{
 			DBClose();
 		}
-	}
+}
 	
 	public void writeBillingToDB() throws Exception {
 		try {
