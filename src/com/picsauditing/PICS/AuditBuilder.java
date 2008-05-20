@@ -25,9 +25,9 @@ public class AuditBuilder {
 	 * Create new/remove unneeded audits for a given contractor
 	 * @param conID
 	 */
-	public void getAudits(int conID) {
+	public void buildAudits(int conID) {
 		ContractorAccount contractor = contractorDAO.find(conID);
-		
+
 		List<ContractorAudit> currentAudits = contractor.getAudits();
 		
 		List<AuditStatus> okStatuses = new ArrayList<AuditStatus>();

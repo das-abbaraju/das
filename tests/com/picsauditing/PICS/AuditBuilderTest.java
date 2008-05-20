@@ -17,7 +17,7 @@ public class AuditBuilderTest extends TestCase {
 
 	@Test
 	public void build() {
-		builder.getAudits(1467);
+		builder.buildAudits(1467);
 	}
 
 }
