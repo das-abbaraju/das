@@ -30,11 +30,9 @@ Version</span></h1>
 				onclick="runSearch( 'form1')" /></td>
 		</tr>
 		<tr>
-			<td><s:if test="permissions.operator">
+			<td>
 				<s:select list="flagStatusList" cssClass="forms" name="flagStatus" />
-			</s:if> <s:if test="permissions.corporate">
-				<s:select list="operatorList" cssClass="forms" name="operator" />
-			</s:if></td>
+			</td>
 		</tr>
 	</table>
 	<s:hidden name="showPage" value="1" />
@@ -62,11 +60,10 @@ Version</span></h1>
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><s:property value="[0].get('name')" /></td>
-			<td class="center"><s:if test="permissions.operator">
-				<a href="ContractorFlag.action?id=<s:property value="[0].get('id')"/>"><img
-					src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif"
-					width="12" height="15" border="0"></a>
-			</s:if></td>
+			<td class="center">
+				<img src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif"
+					width="12" height="15" border="0">
+			</td>
 		</tr>
 	</s:iterator>
 </table>
