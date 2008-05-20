@@ -11,9 +11,9 @@
 <h1>Audit List</h1>
 
 <div id="search">
-<div id="showSearch"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
-<div id="hideSearch" style="display: none"><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
-<s:form id="form1" method="post" cssStyle="display: none">
+<div id="showSearch" onclick="showSearch()" <s:if test="filtered">style="display: none"</s:if> ><a href="#">Show Filter Options</a></div>
+<div id="hideSearch" <s:if test="!filtered">style="display: none"</s:if> ><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
+<s:form id="form1" method="post" cssStyle="%{filtered ? '' : 'display: none'}">
 	<table>
 	<tr>
 		<td style="vertical-align: middle;"><s:textfield name="accountName" cssClass="forms" size="8" onfocus="clearText(this)"  />
@@ -53,7 +53,9 @@
 	    <td><a href="?orderBy=ca.auditStatus DESC" >Status</a></td>
 	    <td><a href="?orderBy=ca.percentComplete" >Comp%</a></td>
 	    <td><a href="?orderBy=ca.percentVerified" >Ver%</a></td>
+	    <s:if test="%{value = (!permissions.operator && !permissions.corporate)}">
 	    <td><a href="?orderBy=auditor.name" >Auditor</a></td>
+	    </s:if>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -65,7 +67,9 @@
 		<td><s:property value="[0].get('auditStatus')"/></td>
 		<td class="right"><s:property value="[0].get('percentComplete')"/>%</td>
 		<td class="right"><s:property value="[0].get('percentVerified')"/>%</td>
+	    <s:if test="%{value = (!permissions.operator && !permissions.corporate)}">
 		<td><s:property value="[0].get('auditor_name')"/></td>
+		</s:if>
 	</tr>
 	</s:iterator>
 </table>
