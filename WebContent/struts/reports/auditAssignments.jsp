@@ -60,10 +60,18 @@ Filter Options</a></div>
 				name="accountName" cssClass="forms" size="8"
 				onfocus="clearText(this)" /> <s:select list="auditTypeList"
 				cssClass="forms" name="auditTypeID" listKey="auditTypeID"
-				listValue="auditName" /> <s:select list="operatorList"
-				cssClass="forms" name="operator" listKey="id" listValue="name" /></td>
-			<td><s:submit name="imageField" type="image"
+				listValue="auditName" />
+			<s:action name="AuditorsGet" executeResult="true">
+				<s:param name="controlName" value="%{'auditorId'}"/>
+				<s:param name="presetValue" value="auditorId"/>		
+			</s:action>
+			<s:submit name="imageField" type="image"
 				src="images/button_search.gif" onclick="runSearch( 'form1')" /></td>
+		</tr>
+		<tr><td>	
+		 	<s:select list="operatorList"
+			cssClass="forms" name="operator" listKey="id" listValue="name" />
+		</td>
 		</tr>
 	</table>
 	<s:hidden name="showPage" value="1" />
