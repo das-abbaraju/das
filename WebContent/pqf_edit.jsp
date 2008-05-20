@@ -18,6 +18,10 @@
 	
 	try {
 		String catID = request.getParameter("catID");
+		if (catID == null) {
+			response.sendRedirect("Audit.action?auditID=" + action.getAuditID());
+			return;
+		}
 		String actionString = request.getParameter("action");
 		boolean isOSHA = CategoryBean.OSHA_CATEGORY_ID.equals(catID);
 		boolean isFileUpload = pdBean.isFileUpload(catID);
@@ -48,7 +52,7 @@
 			//cBean.setPercentVerified(auditType, pdBean.getPercentVerified(conID, auditType));
 			cBean.writeToDB();
 			pdBean.updatePercentageCompleted(action.getAuditID(), catID);
-			response.sendRedirect("pqf_edit.jsp?auditID=" + action.getAuditID());
+			response.sendRedirect("Audit.action?auditID=" + action.getAuditID());
 			return;
 		}//if
 		pcBean.setFromDBWithData(catID, action.getAuditID());

@@ -31,18 +31,16 @@
 <title>Audit Questions</title>
 </head>
 <body>
+<h1>Audit Management
+<span class="sub">Edit <%=action.getAuditType().getAuditName()%> Sub Categories</span>
+</h1>
+<div><a href="AuditTypeChoose.action">Select a different Audit Type</a></div>
+
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain"
 	width="100%">
 	<tr align="center" class="blueMain">
 		<td class="blueHeader">Edit <%=action.getAuditType().getAuditName()%>
 		Questions</td>
-	</tr>
-	<tr align="center" class="blueMain">
-		<td align="center"><%@ include file="includes/nav/editPQFNav.jsp"%>
-		</td>
-	</tr>
-	<tr>
-		<td>&nbsp;</td>
 	</tr>
 	<tr>
 		<td align="center">

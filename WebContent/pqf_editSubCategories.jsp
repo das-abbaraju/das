@@ -27,18 +27,12 @@ try{
 <title>Audit Sub Categories</title>
 </head>
 <body>
-  			  <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
-			    <tr align="center" class="blueMain">
-                  <td class="blueHeader">Edit <%=action.getAuditType().getAuditName()%> Sub Categories</td>
-			    </tr>
-			    <tr align="center" class="blueMain">
-                  <td>
-				   <%@ include file="includes/nav/editPQFNav.jsp"%>
-				  </td>
-			    </tr>
-			    <tr>
-                  <td>&nbsp;</td>
-			    </tr>
+<h1>Audit Management
+<span class="sub">Edit <%=action.getAuditType().getAuditName()%> Sub Categories</span>
+</h1>
+<div><a href="AuditTypeChoose.action">Select a different Audit Type</a></div>
+
+<table border="0" cellspacing="0" cellpadding="1" class="blueMain">
     			  <tr>
                     <td align="center">
 						<form name="form" method="get" action="pqf_editSubCategories.jsp">

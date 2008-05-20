@@ -77,20 +77,18 @@ try{
 <title>Audit Question</title>
 </head>
 <body>
+<h1>Audit Management
+<span class="sub"><% 	if (isAddingNew) 		out.print("Add ");
+	else				out.print("Edit ");
+%>
+                    <%=action.getAuditType().getAuditName()%> Question</span>
+</h1>
+<div><a href="AuditTypeChoose.action">Select a different Audit Type</a></div>
+
 	          <form name="form1" method="post" action="pqf_editQuestion.jsp">
 				<input type="hidden" name="auditTypeID" value="<%=action.getAuditTypeID() %>" />
 				<input type="hidden" name="editID" value="<%=editID%>">
                 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
-                  <tr align="center" class="blueMain">
-                    <td class="blueHeader">
-<% 	if (isAddingNew) 		out.print("Add ");
-	else				out.print("Edit ");
-%>
-                    <%=action.getAuditType().getAuditName()%> Question</td>
-                  </tr>
-                  <tr align="center" class="blueMain">                  
-                    <td class="blueMain"><%@ include file="includes/nav/editPQFNav.jsp"%></td>
-                  </tr>
                   <tr align="center" class="blueMain">
                     <td class="redMain"><%=pqBean.getErrorMessages()%><%=poBean.getErrorMessages()%></td>
                   </tr>

@@ -54,7 +54,7 @@
 <% if (action.canVerify()) { %>| <a href="pqf_verify.jsp?auditID=<%=action.getAuditID()%>&catID=<%=catID %>">Switch to Verify Mode</a><% } %>
 </div>
 
-<% if (action.getAudit().getAuditType().isPQF()) { %>
+<% if (action.getAudit().getAuditType().isPqf()) { %>
 <form name="form1" method="post" action="pqf_view.jsp">
 	<%=pcBean.getPqfCategorySelectDefaultSubmit("catID", "blueMain", catID, 
 		action.getAudit().getAuditType().getAuditTypeID())%>

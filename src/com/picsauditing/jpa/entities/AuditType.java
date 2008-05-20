@@ -175,7 +175,7 @@ public class AuditType {
 	}
 
 	@Transient
-	public boolean isPQF() {
+	public boolean isPqf() {
 		return (auditTypeID == PQF);
 	}
 }

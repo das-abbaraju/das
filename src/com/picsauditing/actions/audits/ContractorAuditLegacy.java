@@ -104,7 +104,7 @@ public class ContractorAuditLegacy {
 		if (permissions.isContractor()) {
 			if (!type.isCanContractorView())
 				return false;
-			if (type.isPQF())
+			if (type.isPqf())
 				return true;
 			// Contractors can't see other audits while they are being filled out
 			if (audit.getAuditStatus().equals(AuditStatus.Pending))
@@ -151,7 +151,7 @@ public class ContractorAuditLegacy {
 	 * @return
 	 */
 	public boolean canVerify() {
-		if (this.audit.getAuditType().isPQF())
+		if (this.audit.getAuditType().isPqf())
 			if (permissions.isAuditor())
 				return true;
 		return false;

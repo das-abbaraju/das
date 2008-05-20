@@ -139,7 +139,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 	
 	public boolean isCanVerify() {
-		if (conAudit.getAuditType().isPQF())
+		if (conAudit.getAuditType().isPqf())
 			if (permissions.isAuditor())
 				return true;
 		return false;

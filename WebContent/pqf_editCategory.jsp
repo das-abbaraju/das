@@ -35,20 +35,15 @@
 <title>Audit Category</title>
 </head>
 <body>
-            <form name="form1" method="post" action="pqf_editCategory.jsp?editID=<%=editID%>">
-              <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
-                <tr align="center" class="blueMain">
-                  <td class="blueHeader">
+<h1>Audit Management
 <% 	if (addingNew)
 		out.print("Add ");
 	else
 		out.print("Edit ");
-%>
-                  <%=auditType%> Category</td>
-                </tr>
-                <tr align="center" class="blueMain">                  
-                  <td class="blueMain"><%@ include file="includes/nav/editPQFNav.jsp"%></td>
-                </tr>
+%><%=auditType%> Category</h1>
+
+<form name="form1" method="post" action="pqf_editCategory.jsp?editID=<%=editID%>">
+              <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
                 <tr align="center" class="blueMain">
                   <td class="redMain"><%=pcBean.getErrorMessages()%></td>
                 </tr>

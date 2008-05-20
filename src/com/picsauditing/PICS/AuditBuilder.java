@@ -39,7 +39,7 @@ public class AuditBuilder {
 		/***** PQF ****/
 		ContractorAudit pqfAudit = null;
 		for(ContractorAudit conAudit : currentAudits) {
-			if (conAudit.getAuditType().isPQF()) {
+			if (conAudit.getAuditType().isPqf()) {
 				if (okStatuses.contains(conAudit.getAuditStatus())) {
 					// Contractor already has a PQF, don't add it
 					// TODO: handle multiple PQFs (Pending/Active) at the same time

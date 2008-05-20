@@ -28,10 +28,6 @@
 </head>
 <body>
 			  <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
-                <tr align="center" class="blueMain"><td>
-				   <%@ include file="includes/nav/editPQFNav.jsp"%>
-				  </td>
-				</tr>
     			<tr align="center" class="blueMain">
                   <td class="blueHeader"><%=auditType%> for Super Contractors Inc.</td>
     			</tr>

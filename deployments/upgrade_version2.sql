@@ -533,7 +533,6 @@ update contractor_audit
 update contractor_audit
 	set percentVerified = 100 where closedDate <> '0000-00-00' and auditTypeID=3;
 
-
 update contractor_audit
 	set expiresDate = adddate(completedDate, interval 3 year)
 	where closeddate  <> '0000-00-00'
@@ -589,6 +588,15 @@ insert into pqfData (conID,questionID,answer,comment,dateVerified,wasChanged)
 	);
 
 
+insert into pqfcatdata (catID, auditID, 
+	requiredCompleted, numRequired, numAnswered, 
+	applies, conID, percentCompleted, percentVerified, percentClosed)
+select distinct c.catID, ca.auditID, numRequired, numRequired, numRequired, 'Yes', ca.conID, percentComplete, percentVerified, percentVerified
+from contractor_audit ca
+join pqfcategories c on c.auditTypeID = ca.auditTypeID
+where c.auditTypeID = 3
+and ca.conID not in (70,249,808,1654,2617);
+
 /* ==== Change foreigh keys - From conid to auditID ==== */
 
 /* update pqfData to use auditID instead of conId */
@@ -608,6 +616,10 @@ update pqfCategories pc JOIN
 	audit_type a on (ca.auditTypeid=a.auditTypeid AND a.legacyCode=pc.auditType)
 	set pd.auditID = ca.auditID;
 
+/* remove orphaned pqfcatdata */
+delete from pqfcatdata where auditID = 0;
+
+
 /* ==== All Statuses ==== */
 
 update contractor_audit set auditStatus = 'Submitted'
@@ -617,7 +629,7 @@ update contractor_audit set auditStatus = 'Active'
 	where closedDate <> '0000-00-00';
 
 update contractor_audit set auditStatus = 'Expired'
-	where expiresDate < curDate();
+	where expiresDate <> '0000-00-00' and expiresDate < curDate();
 
 update contractor_audit set auditorID = null
 	where auditorID = 0;
@@ -694,8 +706,10 @@ drop table `auditquestions`;
 
 alter table `pqfcatdata` 
 	change `auditID` `auditID` mediumint(9) unsigned   NOT NULL after `catID`, 
-	drop column `conID`, 
-	add UNIQUE KEY `auditID`(`auditID`,`catID`), COMMENT='';
+	drop column `conID`;
+
+alter table `pqfcatdata` 
+	add UNIQUE KEY `auditID`(`auditID`,`catID`);
 
 alter table `pqfopmatrix` 
 	add column `id` int(10) unsigned   NOT NULL auto_increment first, 

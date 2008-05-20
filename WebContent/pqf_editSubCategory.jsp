@@ -38,17 +38,15 @@
 <title>Audit Sub Category</title>
 </head>
 <body>
+<h1>Audit Management
+<span class="sub"><%= (addingNew) ? "Add" : "Edit" %> <%=action.getAuditType().getAuditName()%>
+		Sub Category</span>
+</h1>
+<div><a href="AuditTypeChoose.action">Select a different Audit Type</a></div>
+
 <form name="form1" method="post" action="pqf_editSubCategory.jsp?editID=<%=editID%>">
 	<input type="hidden" name="auditTypeID" value="<%=action.getAuditTypeID() %>" />
-	<table border="0" cellspacing="0" cellpadding="1" class="blueMain">
-	<tr align="center" class="blueMain">
-		<td class="blueHeader"><%= (addingNew) ? "Add" : "Edit" %> <%=action.getAuditType().getAuditName()%>
-		Sub Category</td>
-	</tr>
-	<tr align="center" class="blueMain">
-		<td class="blueMain"><%@ include
-			file="includes/nav/editPQFNav.jsp"%></td>
-	</tr>
+<table border="0" cellspacing="0" cellpadding="1" class="blueMain">
 	<tr align="center" class="blueMain">
 		<td class="redMain"><%=psBean.getErrorMessages()%></td>
 	</tr>

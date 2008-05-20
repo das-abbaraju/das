@@ -34,6 +34,7 @@ table.report tr.na a {
 		<s:submit value="Close Audit" />
 	</s:if>
 </s:form>
+
 <table class="report">
 	<thead>
 		<tr>
@@ -48,10 +49,11 @@ table.report tr.na a {
 		</tr>
 	</thead>
 	<s:iterator value="categories" status="rowStatus">
-		<s:if test="appliesB">
+		<s:if test="appliesB || !conAudit.auditType.pqf">
 			<tr>
 				<td class="right"><s:property value="category.number" /></td>
 				<td><a href="<s:property value="catUrl" />?auditID=<s:property value="auditID" />&catID=<s:property value="category.id" />"><s:property value="category.category" /></a></td>
+				
 			<s:if test="conAudit.auditStatus.name() == 'Pending' || conAudit.auditType.pqf">
 				<td class="right"><s:property value="percentCompleted" />%</td>
 				<td><s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if></td>
@@ -67,7 +69,7 @@ table.report tr.na a {
 				<td class="right"><s:property value="category.number" /></td>
 				<td><a href="<s:property value="catUrl" />?auditID=<s:property value="auditID" />&catID=<s:property value="category.id" />"><s:property value="category.category" /></a></td>
 				<td class="center" colspan="2">N/A</td>
-				<s:if test="conAudit.auditStatus.name() == 'Submitted'">
+				<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.auditType.hasRequirements">
 					<td colspan="2"></td>
 				</s:if>
 			</tr>
