@@ -61,7 +61,7 @@
 <%		if (pBean.isAdmin() || conID.equals(pBean.userID)) { %>
                     You must input at least your corporate statistics.  To further assist your clients, please <br>
 					enter additional locations that you maintain osha logs for that may be needed by your clients<br>
-				    <a href="pqf_OSHA.jsp?action=Edit&oID=New&id=<%=conID%>&catID=<%=catID%>">Click here to add OSHA/MSHA info for another location</a>
+				    <a href="pqf_OSHA.jsp?action=Edit&oID=New&auditID=<%= action.getAudit().getId() %>&catID=<%=catID%>">Click here to add OSHA/MSHA info for another location</a>
 <%		} // if %>
 <%		if (pBean.isAdmin()) { %>
 			        <form name="formEdit" method="post" action="pqf_viewOSHA.jsp">
