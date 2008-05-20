@@ -1,0 +1,65 @@
+table.audit {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	table-layout: auto;
+	border-collapse: collapse;
+}
+
+.auditSave {
+	font-size: 16px;
+	padding: 5px;
+}
+
+table.audit tr.subCategory td {
+	border-bottom: 2px solid #A84D10;
+	color:#A84D10;
+	font-family:Helvetica,Arial,Verdana,sans-serif;
+	font-size:24px;
+	font-weight:bold;
+	letter-spacing:-1px;
+	padding-top: 15px;
+}
+
+table.audit td.right {
+	text-align: right;
+	float: none;
+}
+
+table.audit tr.group0 {
+	background-color: #EEEEEE;
+}
+
+table.audit tr.group1 {
+	background-color: white;
+}
+
+table.audit td.groupTitle {
+	color: #A84D10;
+	font-weight: bold;
+}
+
+#content div.required {
+	color: #003768;
+	font-weight: bold;
+	float: right;
+	border: 1px dashed #003768;
+}
+
+table.audit td.questionRequired {
+	color: #003768;
+	font-weight: bold;
+}
+
+table.audit td.question {
+	
+}
+
+table.audit td.answer {
+	width: 50px;
+}
+
+table.audit td {
+	font-size: 15px;
+	color: #4C4D4D;
+	height: 30px;
+}

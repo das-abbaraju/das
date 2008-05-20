@@ -18,6 +18,7 @@
 	class="com.picsauditing.actions.audits.ContractorAuditLegacy"
 	scope="page" />
 <%
+	action.setPermissions(permissions);
 	action.setAuditID(request.getParameter("auditID"));
 	String auditType = action.getAudit().getAuditType().getLegacyCode();
 	String conID = action.getAudit().getContractorAccount().getId().toString();
@@ -72,12 +73,7 @@
 
 <%@ include file="includes/conHeaderLegacy.jsp"%>
 
-<div><a
-	href="pqf_view.jsp?auditID=<%=action.getAuditID()%>&catID=<%=catID %>">View</a>
-| <a
-	href="pqf_edit.jsp?auditID=<%=action.getAuditID()%>&catID=<%=catID %>">Edit</a>
-| <a
-	href="pqf_verify.jsp?auditID=<%=action.getAuditID()%>&catID=<%=catID %>">Verify</a>
+<div>Verify:<a href="pqf_view.jsp?auditID=<%=action.getAuditID()%>&catID=<%=catID %>">Switch to View Mode</a>
 </div>
 
 <form name="formEdit" method="post"><input type="hidden"

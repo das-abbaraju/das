@@ -23,23 +23,28 @@ table.report tr.na a {
 <s:include value="conHeader.jsp" />
 
 <span class="message"><s:property value="message" /></span>
-<s:if test="conAudit.auditType.hasRequirements">
-<s:form action="pqf_verify.jsp">
-<s:hidden name="auditID" />
-<s:submit value="Generate Requirements" />
+<s:form action="SaveAudit">
+	<s:hidden name="auditID" />
+	<s:if test="conAudit.auditStatus.name() == 'Pending' && conAudit.percentComplete == 100">
+		<s:hidden name="auditStatus" value="Submitted" />
+		<s:submit value="Submit" />
+	</s:if>
+	<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.percentVerified == 100">
+		<s:hidden name="auditStatus" value="Active" />
+		<s:submit value="Close Audit" />
+	</s:if>
 </s:form>
-</s:if>
 <table class="report">
 	<thead>
 		<tr>
 			<th>Num</th>
 			<th>Category</th>
+		<s:if test="conAudit.auditStatus.name() == 'Pending' || conAudit.auditType.pqf">
 			<th colspan="2">Complete</th>
-			<s:if test="conAudit.auditStatus.name() == 'Pending'">
-			</s:if>
-			<s:if test="conAudit.auditStatus.name() == 'Submitted'">
-				<th colspan="2">Verified</th>
-			</s:if>
+		</s:if>
+		<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.auditType.hasRequirements">
+			<th colspan="2">Requirements</th>
+		</s:if>
 		</tr>
 	</thead>
 	<s:iterator value="categories" status="rowStatus">
@@ -47,12 +52,14 @@ table.report tr.na a {
 			<tr>
 				<td class="right"><s:property value="category.number" /></td>
 				<td><a href="<s:property value="catUrl" />?auditID=<s:property value="auditID" />&catID=<s:property value="category.id" />"><s:property value="category.category" /></a></td>
+			<s:if test="conAudit.auditStatus.name() == 'Pending' || conAudit.auditType.pqf">
 				<td class="right"><s:property value="percentCompleted" />%</td>
 				<td><s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if></td>
-				<s:if test="conAudit.auditStatus.name() == 'Submitted'">
-					<td class="right"><s:property value="percentVerified" />%</td>
-					<td><s:if test="percentVerified == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if></td>
-				</s:if>
+			</s:if>
+			<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.auditType.hasRequirements">
+				<td class="right"><s:property value="percentVerified" />%</td>
+				<td><s:if test="percentVerified == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if></td>
+			</s:if>
 			</tr>
 		</s:if>
 		<s:else>

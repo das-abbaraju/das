@@ -10,6 +10,7 @@
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page" />
 <jsp:useBean id="action" class="com.picsauditing.actions.audits.ContractorAuditLegacy" scope="page" />
 <%
+	action.setPermissions(permissions);
 	action.setAuditID(request.getParameter("auditID"));
 	String auditType = action.getAudit().getAuditType().getLegacyCode();
 	String conID = action.getAudit().getContractorAccount().getId().toString();
@@ -50,6 +51,7 @@
 			response.sendRedirect("pqf_edit.jsp?auditID=" + action.getAuditID());
 			return;
 		}//if
+		pcBean.setFromDBWithData(catID, action.getAuditID());
 		psBean.setPQFSubCategoriesArray(catID);
 		pdBean.setFromDB(action.getAuditID(), conID, catID);
 		pqBean.highlightRequired = pdBean.alreadySavedCat;
@@ -57,8 +59,8 @@
 <html>
 <head>
 <title>Edit PQF</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
 <script language="JavaScript" src="js/TimeOutWarning.js"></script>
 <SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
@@ -68,109 +70,97 @@
 <body>
 <%@ include file="includes/conHeaderLegacy.jsp"%>
 
-<div>
-<a href="pqf_view.jsp?auditID=<%=action.getAuditID()%>&catID=<%=catID %>">View</a>
-| <a href="pqf_edit.jsp?auditID=<%=action.getAuditID()%>&catID=<%=catID %>">Edit</a>
-| <a href="pqf_verify.jsp?auditID=<%=action.getAuditID()%>&catID=<%=catID %>">Verify</a>
+<h2>Category <%=pcBean.number%> - <%=pcBean.category%></h2>
+<div>Edit:
+<a href="pqf_view.jsp?auditID=<%=action.getAuditID()%>&catID=<%=catID %>">Switch to View Mode</a>
+<% if (action.canVerify()) { %>| <a href="pqf_verify.jsp?auditID=<%=action.getAuditID()%>&catID=<%=catID %>">Switch to Verify Mode</a><% } %>
+</div>
+
+<div class="required">
+<%=errorMsg%>
+<% if (pqBean.highlightRequired) { %>
+	* Blue questions are required
+<% } %>
 </div>
 
 <form name="formEdit" method="post" action="pqf_edit.jsp">
-<table border="0" cellspacing="0" cellpadding="1" class="blueMain">
-	<tr align="center">
-		<td class="redmain"><strong><%=errorMsg%></strong></td>
+<div>
+<input name="action" type="submit" class="auditSave" value="Save">
+Click to save your work. You may still edit your information later.
+<% if (permissions.isPicsEmployee()) { %>
+<br /><input type="checkbox" name="catDoesNotApply"
+	value="Yes" <%=Inputs.getChecked("Yes",pdBean.catDoesNotApply)%>>
+Check here if this entire category does not apply
+<% } %>
+</div>
+
+<table class="audit">
+	<%
+	numSections = 0;
+	for (java.util.ListIterator li = psBean.subCategories.listIterator(); li.hasNext();) {
+		numSections++;
+		String subCatID = (String) li.next();
+		String subCat = (String) li.next();
+		pqBean.setSubListWithData("number", subCatID, conID);
+	%>
+	<tr class="subCategory">
+		<td colspan="3">Sub Category <%=pcBean.number%>.<%=numSections%> - <%=subCat%></td>
 	</tr>
-	<tr align="center">
-		<td align="left">
-		<%
-			if (permissions.isPicsEmployee()) {
-		%>
-		<center><input type="checkbox" name="catDoesNotApply"
-			value="Yes" <%=Inputs.getChecked("Yes",pdBean.catDoesNotApply)%>>
-		Check here if this entire category does not apply</center>
-		<br>
-		<%
-			}//if
-		%> <input name="action" type="submit" class="forms"
-			value="Save"> Click to save your work. You may still edit
-		your information later.<br>
-		<%
-			if (pqBean.highlightRequired) {
-		%> <span class="redMain"><strong>*
-		Red questions are required and must be answered to be able to submit
-		your PQF</strong></span> <%
- 	}//if
- %>
-		<table width="657" border="0" cellpadding="1" cellspacing="0">
-			<tr class="blueMain">
-				<td bgcolor="#003366" colspan="3" align="center"><font
-					color="#FFFFFF"><strong>Category <%=pcBean.number%>
-				- <%=pcBean.category%></strong></font></td>
-			</tr>
-			<%
-				numSections = 0;
-						for (java.util.ListIterator li = psBean.subCategories.listIterator(); li.hasNext();) {
-							numSections++;
-							String subCatID = (String) li.next();
-							String subCat = (String) li.next();
-							pqBean.setSubListWithData("number", subCatID, conID);
+	<%
+		numQuestions = 0;
+		while (pqBean.isNextRecord()) {
+			if (pqBean.calcIsRequired(pdBean))
+				requiredCount++;
+			numQuestions++;
 			%>
-			<tr class="blueMain">
-				<td bgcolor="#003366" colspan="3" align="center"><font
-					color="#FFFFFF"><strong>Sub Category <%=pcBean.number%>.<%=numSections%>
-				- <%=subCat%></strong></font></td>
+			<% if (pqBean.getTitle().length() > 0) { %>
+			<tr class="group<%=pqBean.getGroupNum()%>">
+				<td class="groupTitle" colspan="3"><%=pqBean.getTitle() %></td>
 			</tr>
-			<%
-				numQuestions = 0;
-							while (pqBean.isNextRecord()) {
-								if (pqBean.calcIsRequired(pdBean))
-									requiredCount++;
-								numQuestions++;
-			%>
-			<%=pqBean.getTitleLine("blueMain")%>
-			<tr <%=pqBean.getGroupBGColor()%> class=blueMain>
-				<td valign="top" <%=pqBean.getClassAttribute(pdBean)%>><%=pqBean.number%>.</td>
-				<td valign="top" <%=pqBean.getClassAttribute(pdBean)%>><%=pqBean.question%>
-				<%=pqBean.getLinksWithCommas()%></td>
-				<td width=50 valign="bottom"><%=pqBean.getInputElement()%> <input
-					type=hidden name=pqfQuestionID_ <%=pqBean.questionID%>
-					value="<%=pqBean.questionID%>"> <input type=hidden
-					name=isRequired_ <%=pqBean.questionID%>
-					value="<%=pqBean.isRequired%>"> <input type=hidden
-					name=oldAnswer_ <%=pqBean.questionID%>
-					value="<%=pqBean.data.answer%>"> <input type=hidden
-					name=oldComment_ <%=pqBean.questionID%>
-					value="<%=pqBean.data.comment%>"> <input type=hidden
-					name=oldDateVerified_ <%=pqBean.questionID%>
+			<% } %>
+			<tr class="group<%=pqBean.getGroupNum()%>">
+				<td class="right"><%=pcBean.number%>.<%=numSections%>.<%=pqBean.number%>&nbsp;&nbsp;</td>
+				<td <%=pqBean.getClassAttribute(pdBean)%>><%=pqBean.question%>
+					<%=pqBean.getLinksWithCommas()%></td>
+				<td class="answer"><%=pqBean.getInputElement()%> <input
+					type="hidden" name="pqfQuestionID_<%=pqBean.questionID%>"
+					value="<%=pqBean.questionID%>"> <input type="hidden"
+					name="isRequired_<%=pqBean.questionID%>"
+					value="<%=pqBean.isRequired%>"> <input type="hidden"
+					name="oldAnswer_<%=pqBean.questionID%>"
+					value="<%=pqBean.data.answer%>"> <input type="hidden"
+					name="oldComment_<%=pqBean.questionID%>"
+					value="<%=pqBean.data.comment%>"> <input type="hidden"
+					name="oldDateVerified_ <%=pqBean.questionID%>"
 					value="<%=pqBean.data.dateVerified%>"> <input type=hidden
-					name=oldAuditorID_ <%=pqBean.questionID%>
+					name="oldAuditorID_<%=pqBean.questionID%>"
 					value="<%=pqBean.data.auditorID%>"> <input type=hidden
-					name=wasChanged_ <%=pqBean.questionID%>
+					name="wasChanged_<%=pqBean.questionID%>"
 					value="<%=pqBean.data.wasChanged%>"> <%
- 	if ("Depends".equals(pqBean.isRequired)) {
- %>
-				<input type=hidden name=dependsOnQID_ <%=pqBean.questionID%>
-					value="<%=pqBean.dependsOnQID%>"> <input type=hidden
-					name=dependsOnAnswer_ <%=pqBean.questionID%>
+				if ("Depends".equals(pqBean.isRequired)) {
+					%>
+				<input type="hidden" name="dependsOnQID_<%=pqBean.questionID%>"
+					value="<%=pqBean.dependsOnQID%>"> <input type="hidden"
+					name="dependsOnAnswer_<%=pqBean.questionID%>"
 					value="<%=pqBean.dependsOnAnswer%>"> <%
- 	}//if
- %> <input
+				} %>
+				<input
 					type="hidden" name="pqfQuestionType_<%=pqBean.questionID%>"
 					value="<%=pqBean.questionType%>"></td>
 			</tr>
 			<%
-				}//while
-							pqBean.closeList();
-						}//for
-			%>
-		</table>
-		<br>
-		<input name="action" type="submit" class="forms" value="Save">
-		Click to save your work. You may still edit your information later.</td>
-	</tr>
+		}//while questions
+		pqBean.closeList();
+	}//for subCategories
+	%>
 </table>
+<div>
+<input name="action" type="submit" class="auditSave" value="Save">
+Click to save your work. You may still edit your information later.</td>
 <input type="hidden" name="catID" value="<%=catID%>"> <input
 	name="auditID" type="hidden" value="<%=action.getAuditID()%>">
 <input type="hidden" name="requiredCount" value="<%=requiredCount%>">
+</div>
 <%
 	} finally {
 		pqBean.closeList();

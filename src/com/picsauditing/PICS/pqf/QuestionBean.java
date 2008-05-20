@@ -351,7 +351,11 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 	public String getGroupBGColor() {
 		if ((groupCount % 2) == 1)	return " bgcolor=#CCC";
 		else	return "";
-	}//getBGColor
+	}
+
+	public int getGroupNum() {
+		return groupCount % 2;
+	}
 
 	public void updateNumbering(javax.servlet.http.HttpServletRequest request) throws Exception {
 		Enumeration e = request.getParameterNames();
@@ -423,12 +427,12 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 			SQLStatement.executeUpdate(Query);
 		}finally{
 			DBClose();
-		}//finally
-	}//addCategory
+		}
+	}
 
 	public String getPQFTypeSelect(String name, String classType, String selectedType) throws Exception {
 		return Utilities.inputSelect(name, classType, selectedType, TYPE_ARRAY);
-	}//getPQFTypeSelect
+	}
 
 	public void addOption(String qID, String newOption) throws Exception {
 		String insertQuery = "INSERT INTO pqfOptions (questionID,option)" +
@@ -438,8 +442,8 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 			SQLStatement.executeUpdate(insertQuery);
 		}finally{
 			DBClose();
-		}//finally
-	}//addOption
+		}
+	}
 
 	public void deleteOption(String optionID) throws Exception {
 		String deleteQuery = "DELETE FROM pqfOptions WHERE optionID="+optionID+" LIMIT 1;"; 
@@ -448,23 +452,22 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 			SQLStatement.executeUpdate(deleteQuery);
 		}finally{
 			DBClose();
-		}//finally
-	}//deleteOption
+		}
+	}
 
 	public boolean calcIsRequired(DataBean pdBean) throws Exception {
 		if (null == pdBean)
 			return ("Yes".equals(isRequired));
 		return ("Yes".equals(isRequired) || ("Depends".equals(isRequired) && dependsOnAnswer.equals(pdBean.getAnswer(dependsOnQID))));
-	}//calcIsRequired
+	}
 
 	public String getClassAttribute(DataBean pdBean) throws Exception {
 		if (highlightRequired && calcIsRequired(pdBean))
-			return " class=required";
+			return " class='questionRequired'";
 		else
-			return " class=blueMain";
-	}//getClassAttribute
+			return " class='question'";
+	}
 
-//	public String getInputElement(boolean isVerifiedAnswer) throws Exception {
 	public String getInputElement() throws Exception {
 		String inputName = "answer_"+questionID;
 		String value = data.answer;
@@ -476,7 +479,7 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 		if ("Manual".equals(questionType)) {
 				return Inputs.getYesNoNARadio(inputName,"forms",value)+
 					"<br>Comments:<input type=text name=comment_"+questionID+" class=forms size=30 value=\""+comment+"\">";
-		}//if
+		}
 		if ("Office".equals(questionType))
 			return Inputs.getYesNoNARadio(inputName,"forms",value);
 		if ("Office Location".equals(questionType))
@@ -494,7 +497,7 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 			temp+=Inputs.getCheckBoxInput(inputName+"_S","forms",tempValue, "S")+" S";
 			temp+="</nobr>";
 			return temp;
-		}//if
+		}
 		if ("State".equals(questionType))
 			return Inputs.getLongStateSelect(inputName,"forms",value);
 		if ("Country".equals(questionType))
@@ -502,18 +505,18 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 		if ("Date".equals(questionType))
 			return Inputs.getDateInput(inputName,"forms",DateBean.toShowFormat(value),"formEdit");
 		if ("Text Area".equals(questionType))
-			return "</td></tr><tr class=forms "+getGroupBGColor()+"><td>&nbsp;</td><td colspan=2>"+
+			return "</td></tr><tr class=\"group"+getGroupNum()+"\"><td>&nbsp;</td><td colspan=2>"+
 				Inputs.getTextAreaInput(inputName,"forms",value,"70","4");
 		if ("Radio".equals(questionType)) {
 			OptionBean oBean = new OptionBean();
 			String[] optionsArray = oBean.getOptionsArray(questionID);
 			return Inputs.getRadioInput(inputName,"forms",value,optionsArray);
-		}//if
+		}
 		if ("Drop Down".equals(questionType)) {
 			OptionBean oBean = new OptionBean();
 			String[] optionsArray = oBean.getOptionsArray(questionID);
 			return Inputs.inputSelect(inputName,"forms",value,optionsArray);
-		}//if
+		}
 		if ("Money".equals(questionType))
 			return "<nobr>$<"+"input type=text name="+inputName+" class=forms size=19 value=\""+value+"\" "+
 				"onBlur=\"validateNumber('"+inputName+"','Question "+number+"');\">";	
@@ -525,26 +528,30 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 				value = "Not Uploaded";
 			else
 				value = "Uploaded";
-			return "<"+"input name="+inputName+" type=file class=forms size=19>";
-		}//if
+			return "<"+"input name=\""+inputName+"\" type=\"file\" class=\"forms\" size=\"19\">";
+		}
 		return "<input type=text name="+inputName+" class=forms size=20 value=\""+value+"\">";
-	}//getInputElement
+	}
 
 	public String getVerifiedInputElement() throws Exception {
 		String qID = questionID;
 		String temp = "<input type=text name=verifiedAnswer_"+qID+" class=forms size=60 value=\""+data.verifiedAnswer+"\">";
 		return temp;
-	}//getVerifiedInputElement
+	}
 
 	public boolean hasOptions() {
 		return ("Radio".equals(questionType) || "Check Boxes".equals(questionType) || "Drop Down".equals(questionType));
-	}//hasOptions
+	}
 
 	public String getTitleLine(String classType) {
 		if (0 == title.length())
 			return "";
-		return "<tr class="+classType+" "+getGroupBGColor()+"><td colspan=3><strong>"+title+"</strong></td></tr>";
-	}//getTitleLine
+		return "<tr class="+classType+" "+getGroupBGColor()+"><td colspan=3>"+title+"</td></tr>";
+	}
+	
+	public String getTitle() {
+		return title;
+	}
 
 	public String getTitleShort() {
 		int l = title.length();
