@@ -28,9 +28,9 @@
 			OSHABean oBean = new OSHABean();
 			oBean.setListFromDB(conID);
 			if (oBean.isInDB)
-				response.sendRedirect("pqf_viewOSHA.jsp?id=" + conID + "&catID=" + catID);
+				response.sendRedirect("pqf_viewOSHA.jsp?auditID=" + conID + "&catID=" + catID);
 			else
-				response.sendRedirect("pqf_OSHA.jsp?action=Edit&oID=New&id=" + conID + "&catID=" + catID);
+				response.sendRedirect("pqf_OSHA.jsp?action=Edit&oID=New&auditID=" + action.getAudit().getId() + "&catID=" + catID);
 			return;
 		}
 		int numQuestions = 0;
