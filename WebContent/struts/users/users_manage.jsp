@@ -148,14 +148,21 @@ function checkUsername(username, userID) {
 			</s:if>
 			<s:else>
 				<td>U</td>
-				<td><s:property value="[0].get('name')"/></td>
+				<td>
+				<s:if test="%{[0].get('isActive') == 'Yes'}">
+				<s:property value="[0].get('name')"/>
+				</s:if>
+				<s:else>
+				<s:property value="[0].get('name')"/><span style="color: rgb(168,77,16);">*</span>
+				</s:else>
+				</td>
 				<td><s:if test="[0].get('lastLogin') != null"><s:date name="[0].get('lastLogin')" format="MM/dd/yy"/></s:if>
 						<s:else>never</s:else></td>
 			</s:else>
 		</tr>
 	</s:iterator>
-	
 	</table>
+<span class="redMain">* Inactive User</span>
 </td>
 <td id="editUser" class="blueMain" style="margin: 30px; padding: 30px; vertical-align: top;">
 	<div id="ajaxstatus"></div>

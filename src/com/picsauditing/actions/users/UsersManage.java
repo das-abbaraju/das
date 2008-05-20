@@ -46,7 +46,7 @@ public class UsersManage extends PicsActionSupport {
 		SelectUser sql = new SelectUser();
 		sql.addField("u.lastLogin");
 		sql.addField("u.isGroup");
-
+		sql.addField("u.isActive");
 		search = new Report();
 		search.setSql(sql);
 
@@ -148,5 +148,4 @@ public class UsersManage extends PicsActionSupport {
 		return facilities;
 
 	}
-
 }
