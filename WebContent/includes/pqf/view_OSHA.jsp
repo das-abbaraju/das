@@ -1,10 +1,10 @@
 <jsp:useBean id="oBean" class="com.picsauditing.PICS.OSHABean" scope ="page"/>
 <%
+
 	String cID = request.getParameter("id");
 	if (cID == null || "".equals(cID))
 		cID = "0";
 
-//	int curYear = com.picsauditing.PICS.DateBean.getCurrentYear();	
 	int curYear = com.picsauditing.PICS.DateBean.getCurrentYear(this.getServletContext().getInitParameter("currentYearStart"));
 	oBean.setListFromDB(cID);
 	oBean.setShowLinks(pBean);

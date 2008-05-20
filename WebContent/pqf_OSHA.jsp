@@ -13,10 +13,16 @@
 	scope="page" />
 <jsp:useBean id="helper"
 	class="com.picsauditing.servlet.upload.UploadConHelper" />
+	<jsp:useBean id="action" class="com.picsauditing.actions.audits.ContractorAuditLegacy" scope="page" />
+
 <%
-	String auditType = com.picsauditing.PICS.pqf.Constants.PQF_TYPE;
-	String id = request.getParameter("id");
-	String conID = request.getParameter("id");
+
+	action.setAuditID(request.getParameter("auditID"));
+	String auditType = action.getAudit().getAuditType().getLegacyCode();
+	String conID = action.getAudit().getContractorAccount().getId().toString();
+	String id = conID;
+	
+
 	String catID = request.getParameter("catID");
 	String oID = request.getParameter("oID");
 	int currentYear = com.picsauditing.PICS.DateBean.getCurrentYear(this.getServletContext().getInitParameter(
@@ -42,8 +48,8 @@
 			//cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE, pdBean.getPercentComplete(
 			//		conID, com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
 			//cBean.writeToDB();
-			response.sendRedirect("pqf_edit.jsp?id=" + conID + "&auditType="
-					+ com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
+			response.sendRedirect("Audit.action?auditID=" + action.getAudit().getId());
+			//response.sendRedirect("pqf_edit.jsp?auditID=" + action.getAudit().getId() + "&catID=" + catID );
 			return;
 		}//if
 	} else if ("Verify".equals(request.getParameter("action")) && pBean.canVerifyAudit(auditType, conID)) {
@@ -54,14 +60,12 @@
 		//TODO calculate the pqf percent complete.
 		//cBean.setPercentVerified(auditType, pdBean.getPercentVerified(conID, auditType));
 		//cBean.writeToDB();
-		response.sendRedirect("pqf_verify.jsp?id=" + conID + "&auditType="
-				+ com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
+		response.sendRedirect("pqf_verify.jsp?auditID=" + action.getAudit().getId());
 		return;
 	} else if ("Delete".equals(request.getParameter("action"))) {
 		oBean.deleteLocation(oID, application.getInitParameter("FTP_DIR"));
 		oBean.updateNumRequired(conID);
-		response.sendRedirect("pqf_viewOSHA.jsp?id=" + conID + "&catID=" + catID + "&auditType="
-				+ com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
+		response.sendRedirect("pqf_viewOSHA.jsp?auditID=" + action.getAudit().getId() + "&catID=" + catID );
 		return;
 
 	} else if ("Edit".equals(request.getParameter("action"))) {
@@ -84,8 +88,7 @@
 				//cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE, pdBean
 				//		.getPercentComplete(conID, com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
 				//cBean.writeToDB();
-				response.sendRedirect("pqf_edit.jsp?id=" + conID + "&auditType="
-						+ com.picsauditing.PICS.pqf.Constants.PQF_TYPE);
+				response.sendRedirect("pqf_edit.jsp?auditID=" + action.getAudit().getId());
 				return;
 			}
 
@@ -103,6 +106,8 @@
 <html>
 <head>
 <title>OSHA</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <meta name="header_gif" content="header_prequalification.gif" />
 <script language="javascript" type="text/javascript">
 <!--
@@ -117,7 +122,7 @@ function popitup(url) {
 <body>
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
 	<tr align="left" class="blueMain">
-		<td colspan=2><%@ include file="utilities/adminOperatorContractorNav.jsp"%></td>
+		<td colspan=2><%@ include file="includes/conHeaderLegacy.jsp"%></td>
 	</tr>
 	<tr align="center" class="blueMain">
 		<td class="blueHeader" colspan=2>PQF for <%=aBean.name%></td>
@@ -138,7 +143,7 @@ function popitup(url) {
 	<tr align="center">
 		<td colspan="2">
 		<form name="form1" method="post"
-			action="pqf_OSHA.jsp?id=<%=conID%>&catID=<%=catID%>&oID=<%=oID%>">
+			action="pqf_OSHA.jsp?auditID=<%=action.getAudit().getId()%>&catID=<%=catID%>&oID=<%=oID%>">
 		<table border="1" cellpadding="5" cellspacing="0"
 			bordercolor="#FFFFFF" class="blueMain">
 			<tr>
@@ -302,7 +307,7 @@ function popitup(url) {
 			</tr>
 		</table>
 		<form name="form1" method="post"
-			action="pqf_OSHA.jsp?id=<%=conID%>&oID=<%=oID%>&action=add"
+			action="pqf_OSHA.jsp?auditID=<%=action.getAudit().getId()%>&oID=<%=oID%>&action=add"
 			enctype="multipart/form-data">
 		<a name="upload" />
 		<table border="1" cellpadding="5" cellspacing="0" bordercolor="#FFFFFF" class="redMain">

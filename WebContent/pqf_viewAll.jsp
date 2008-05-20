@@ -26,7 +26,7 @@
 		cBean.tryView(permissions);
 		//temporary to forward them to ncms imported data if it is linked up
 		if (action.getAudit().getAuditType().getAuditTypeID() == AuditType.NCMS) {
-			response.sendRedirect("pqf_viewNCMS.jsp?auditID=" + action.getAudit());
+			response.sendRedirect("pqf_viewNCMS.jsp?auditID=" + action.getAudit().getId());
 			return;
 		}
 		pdBean.setFilledOut(action.getAuditID());
