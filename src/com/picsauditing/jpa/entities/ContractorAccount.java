@@ -92,7 +92,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	@OneToMany(mappedBy = "contractorAccount")
 	public List<ContractorAudit> getAudits() {
-		return audits;
+		return this.audits;
 	}
 
 	public void setAudits(List<ContractorAudit> audits) {
@@ -340,7 +340,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.billingCycle = billingCycle;
 	}
 
-	@Column(name = "billingAmount", nullable = true)
+	@Column(name = "billingAmount", nullable = false)
 	public int getBillingAmount() {
 		return this.billingAmount;
 	}
@@ -440,7 +440,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.membershipDate = membershipDate;
 	}
 
-	@Column(name = "newBillingAmount", nullable = true)
+	@Column(name = "newBillingAmount", nullable = false)
 	public int getNewBillingAmount() {
 		return this.newBillingAmount;
 	}

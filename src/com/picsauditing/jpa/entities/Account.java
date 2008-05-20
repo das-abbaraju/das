@@ -99,7 +99,7 @@ public class Account implements java.io.Serializable {
 		this.username = username;
 	}
 
-	@Column(name = "password", nullable = false, length = 50)
+	@Column(name = "password", nullable = true, length = 50)
 	public String getPassword() {
 		return this.password;
 	}
@@ -109,7 +109,7 @@ public class Account implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "passwordChange", nullable = false, length = 10)
+	@Column(name = "passwordChange", nullable = true, length = 10)
 	public Date getPasswordChange() {
 		return this.passwordChange;
 	}
@@ -118,7 +118,7 @@ public class Account implements java.io.Serializable {
 		this.passwordChange = passwordChange;
 	}
 
-	@Column(name = "lastLogin", nullable = false, length = 19)
+	@Column(name = "lastLogin", nullable = true, length = 19)
 	public Date getLastLogin() {
 		return this.lastLogin;
 	}
@@ -127,7 +127,7 @@ public class Account implements java.io.Serializable {
 		this.lastLogin = lastLogin;
 	}
 
-	@Column(name = "contact", nullable = false, length = 50)
+	@Column(name = "contact", nullable = true, length = 50)
 	public String getContact() {
 		return this.contact;
 	}
@@ -136,7 +136,7 @@ public class Account implements java.io.Serializable {
 		this.contact = contact;
 	}
 
-	@Column(name = "address", nullable = false, length = 50)
+	@Column(name = "address", nullable = true, length = 50)
 	public String getAddress() {
 		return this.address;
 	}
@@ -145,7 +145,7 @@ public class Account implements java.io.Serializable {
 		this.address = address;
 	}
 
-	@Column(name = "city", nullable = false, length = 50)
+	@Column(name = "city", nullable = true, length = 50)
 	public String getCity() {
 		return this.city;
 	}
@@ -154,7 +154,7 @@ public class Account implements java.io.Serializable {
 		this.city = city;
 	}
 
-	@Column(name = "state", nullable = false, length = 2)
+	@Column(name = "state", nullable = true, length = 2)
 	public String getState() {
 		return this.state;
 	}
@@ -163,7 +163,7 @@ public class Account implements java.io.Serializable {
 		this.state = state;
 	}
 
-	@Column(name = "zip", nullable = false, length = 50)
+	@Column(name = "zip", nullable = true, length = 50)
 	public String getZip() {
 		return this.zip;
 	}
@@ -172,7 +172,7 @@ public class Account implements java.io.Serializable {
 		this.zip = zip;
 	}
 
-	@Column(name = "phone", nullable = false, length = 50)
+	@Column(name = "phone", nullable = true, length = 50)
 	public String getPhone() {
 		return this.phone;
 	}
@@ -181,7 +181,7 @@ public class Account implements java.io.Serializable {
 		this.phone = phone;
 	}
 
-	@Column(name = "phone2", nullable = false, length = 50)
+	@Column(name = "phone2", nullable = true, length = 50)
 	public String getPhone2() {
 		return this.phone2;
 	}
@@ -190,7 +190,7 @@ public class Account implements java.io.Serializable {
 		this.phone2 = phone2;
 	}
 
-	@Column(name = "fax", nullable = false, length = 20)
+	@Column(name = "fax", nullable = true, length = 20)
 	public String getFax() {
 		return this.fax;
 	}
@@ -199,7 +199,7 @@ public class Account implements java.io.Serializable {
 		this.fax = fax;
 	}
 
-	@Column(name = "email", nullable = false, length = 50)
+	@Column(name = "email", nullable = true, length = 50)
 	public String getEmail() {
 		return this.email;
 	}
@@ -208,7 +208,7 @@ public class Account implements java.io.Serializable {
 		this.email = email;
 	}
 
-	@Column(name = "web_URL", nullable = false, length = 50)
+	@Column(name = "web_URL", nullable = true, length = 50)
 	public String getWebUrl() {
 		return this.webUrl;
 	}
@@ -217,7 +217,7 @@ public class Account implements java.io.Serializable {
 		this.webUrl = webUrl;
 	}
 
-	@Column(name = "industry", nullable = false, length = 50)
+	@Column(name = "industry", nullable = true, length = 50)
 	@Enumerated(EnumType.STRING)
 	public Industry getIndustry() {
 		return this.industry;
@@ -255,7 +255,7 @@ public class Account implements java.io.Serializable {
 		this.dateCreated = dateCreated;
 	}
 
-	@Column(name = "seesAll_B", nullable = false, length = 1)
+	@Column(name = "seesAll_B", nullable = true, length = 1)
 	public char getSeesAllB() {
 		return this.seesAllB;
 	}
@@ -264,7 +264,7 @@ public class Account implements java.io.Serializable {
 		this.seesAllB = seesAllB;
 	}
 
-	@Column(name = "sendActivationEmail_B", nullable = false, length = 1)
+	@Column(name = "sendActivationEmail_B", nullable = true, length = 1)
 	public char getSendActivationEmailB() {
 		return this.sendActivationEmailB;
 	}
@@ -273,7 +273,7 @@ public class Account implements java.io.Serializable {
 		this.sendActivationEmailB = sendActivationEmailB;
 	}
 
-	@Column(name = "activationEmails_B", nullable = false, length = 155)
+	@Column(name = "activationEmails_B", nullable = true, length = 155)
 	public String getActivationEmailsB() {
 		return this.activationEmailsB;
 	}
@@ -283,7 +283,7 @@ public class Account implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "emailConfirmedDate")
+	@Column(name = "emailConfirmedDate", nullable = true, length = 10)
 	public Date getEmailConfirmedDate() {
 		return this.emailConfirmedDate;
 	}
