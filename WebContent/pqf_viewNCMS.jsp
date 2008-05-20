@@ -2,8 +2,17 @@
 <%@include file="includes/main.jsp" %>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
+<jsp:useBean id="action" class="com.picsauditing.actions.audits.ContractorAuditLegacy" scope="page" />
 
 <%	
+action.setAuditID(request.getParameter("auditID"));
+String auditType = action.getAudit().getAuditType().getLegacyCode();
+String conID = action.getAudit().getContractorAccount().getId().toString();
+String id = conID;
+
+
+
+
 Connection Conn = null;
 Statement SQLStatement = null;
 String Query = "";
@@ -12,7 +21,7 @@ ResultSetMetaData SQLResultMetaData = null;
 	try{
 	String[] dontShow = {"conID","ContractorsName","remove","fedTaxID","lastReview","approved"};
 
-	String conID = request.getParameter("id");
+	
 	Conn = com.picsauditing.PICS.DBBean.getDBConnection();
 	SQLStatement = Conn.createStatement();
 
@@ -22,8 +31,6 @@ ResultSetMetaData SQLResultMetaData = null;
 	SQLResult = SQLStatement.executeQuery(Query);
 	SQLResultMetaData = SQLResult.getMetaData();
 
-	String auditType = request.getParameter("auditType");
-	String id = request.getParameter("id");
 	aBean.setFromDB(conID);
 	cBean.setFromDB(conID);
 	cBean.tryView(permissions);
@@ -33,19 +40,21 @@ ResultSetMetaData SQLResultMetaData = null;
 %>
 <html>
 <head>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <title>NCMS Desktop Audit for <%=aBean.name %></title>
 </head>
 <body>
 			<table border="0" cellspacing="0" cellpadding="1" class="blueMain">
               <tr align="center" class="blueMain">
-			    <td width="676"><%@ include file="utilities/adminOperatorContractorNav.jsp"%></td>
+			    <td width="676"><%@ include file="includes/conHeaderLegacy.jsp"%></td>
 			  </tr>
     		  <tr align="center" class="blueMain">
                 <td class="blueHeader">NCMS Desktop Audit for <%=aBean.name%></td>
     		  </tr>
 	  		  <tr align="center">
-                <td class="blueMain">Date Audit Closed: <span class="redMain"><strong><%=cBean.desktopClosedDate%></strong></span>
-                <%=cBean.getValidUntilDate(auditType)%>
+                <td class="blueMain">Date Audit Closed: <span class="redMain"><strong><%= action.getAudit().getClosedDate() %></strong></span>
+                <%= action.getAudit().getExpiresDate()%>
                 </td>
     		  </tr>
 				   <tr>
