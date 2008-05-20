@@ -123,6 +123,7 @@
 	</table>
 
 	<div><a
+		href="Audit.action?auditID=<s:property value="auditID" />">Categories</a> | <a
 		href="pqf_viewAll.jsp?auditID=<s:property value="auditID" />">View
 	All</a> | <a href="pqf_printAll.jsp?auditID=<s:property value="auditID" />">Print</a>
 	<s:if test="conAudit.auditType.PQF">

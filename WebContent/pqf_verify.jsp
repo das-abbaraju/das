@@ -60,10 +60,8 @@
 <html>
 <head>
 <title>PQF Verify</title>
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/reports.css" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/forms.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 
 <SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>

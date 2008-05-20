@@ -40,81 +40,66 @@
 <%@page import="com.picsauditing.jpa.entities.AuditType"%>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
 <title><%=auditType%> for <%=aBean.name%></title>
 </head>
 <body>
 
 <%@ include file="includes/conHeaderLegacy.jsp"%>
-<table class="blueMain">
-	<tr>
-		<td align="left">
-		<%
-			//	pcBean.setPQFCategoriesArray(auditType);
-				pcBean.setListWithData("number", auditType, conID);
-				int catCount = 0;
-				while (pcBean.isNextRecord(pBean, conID)) {
-					if ("Yes".equals(pcBean.applies)
-							&& (!com.picsauditing.PICS.pqf.Constants.PQF_TYPE
-									.equals(auditType)
-									|| !(pBean.isOperator() || pBean
-											.isCorporate())
-									|| (permissions.isCorporate() && pBean.oBean.PQFCatIDsAL
-											.contains(pcBean.catID)) || (permissions
-									.isOperator() && showCategoryIDs
-									.contains(pcBean.catID)))) {
 
-						catCount++;
-						psBean.setPQFSubCategoriesArray(pcBean.catID);
-						pdBean.setFromDB(action.getAuditID(), conID,
-								pcBean.catID);
-						boolean isOSHA = pcBean.OSHA_CATEGORY_ID
-								.equals(pcBean.catID);
-						boolean isServices = pcBean.SERVICES_CATEGORY_ID
-								.equals(pcBean.catID);
+<%
+	pcBean.setListWithData("number", auditType, conID);
+	int catCount = 0;
+	while (pcBean.isNextRecord(pBean, conID)) {
+		if ("Yes".equals(pcBean.applies)
+				&& (!com.picsauditing.PICS.pqf.Constants.PQF_TYPE
+						.equals(auditType)
+						|| !(pBean.isOperator() || pBean
+								.isCorporate())
+						|| (permissions.isCorporate() && pBean.oBean.PQFCatIDsAL
+								.contains(pcBean.catID)) || (permissions
+						.isOperator() && showCategoryIDs
+						.contains(pcBean.catID)))) {
+
+			catCount++;
+			psBean.setPQFSubCategoriesArray(pcBean.catID);
+			pdBean.setFromDB(action.getAuditID(), conID,
+					pcBean.catID);
+			boolean isOSHA = pcBean.OSHA_CATEGORY_ID
+					.equals(pcBean.catID);
+			boolean isServices = pcBean.SERVICES_CATEGORY_ID
+					.equals(pcBean.catID);
 		%>
-		<table width="657" border="0" cellpadding="1" cellspacing="1">
-			<tr class="blueMain">
-				<td bgcolor="#003366" colspan=3 align="center"><font
-					color="#FFFFFF"><strong>Category <%=catCount%> - <%=pcBean.category%></strong></font></td>
-			</tr>
-			<tr class="blueMain">
+		<h2>Category <%=catCount%> - <%=pcBean.category%></h2>
+		<table class="audit">
+			<td colspan=3 align="center">Percent Complete:
 				<%
-					if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE
-										.equals(auditType)
-										|| com.picsauditing.PICS.pqf.Constants.DA_TYPE
-												.equals(auditType)
-										|| com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE
-												.equals(auditType)) {
+				if (action.getAudit().getAuditType().isHasRequirements()) {
+					%>
+					<%=pcBean.getPercentShow(pcBean.percentVerified)%>
+					<%=pcBean.getPercentCheck(pcBean.percentVerified)%></td>
+					<%
+				} else {
+					%>
+					<%=pcBean.getPercentShow(pcBean.percentCompleted)%>
+					<%=pcBean.getPercentCheck(pcBean.percentCompleted)%></td>
+					<%
+				}
 				%>
-				<td colspan=3 align="center">Percent Complete: <%=pcBean
-													.getPercentShow(pcBean.percentVerified)%><%=pcBean
-													.getPercentCheck(pcBean.percentVerified)%></td>
-				<%
-					} else {
-				%>
-				<td colspan=3 align="center">Percent Complete: <%=pcBean
-													.getPercentShow(pcBean.percentCompleted)%><%=pcBean
-													.getPercentCheck(pcBean.percentCompleted)%></td>
 			</tr>
 			<%
-				}//else
-							int numSections = 0;
-							for (java.util.ListIterator li = psBean.subCategories
-									.listIterator(); li.hasNext();) {
-								numSections++;
-								catID = pcBean.catID;
-								String subCatID = (String) li.next();
-								String subCat = (String) li.next();
-								pqBean
-										.setSubListWithData("number", subCatID,
-												conID);
+				int numSections = 0;
+				for (java.util.ListIterator li = psBean.subCategories
+						.listIterator(); li.hasNext();) {
+					numSections++;
+					catID = pcBean.catID;
+					String subCatID = (String) li.next();
+					String subCat = (String) li.next();
+					pqBean.setSubListWithData("number", subCatID, conID);
 			%>
-			<tr class="blueMain">
-				<td bgcolor="#003366" colspan="3" align="center"><font
-					color="#FFFFFF"><strong>Sub Category <%=catCount%>.<%=numSections%>
-				- <%=subCat%></strong></font></td>
+			<tr class="subCategory">
+				<td colspan="3">Sub Category <%=pcBean.number%>.<%=numSections%> - <%=subCat%></td>
 			</tr>
 			<%
 				if (isOSHA) {

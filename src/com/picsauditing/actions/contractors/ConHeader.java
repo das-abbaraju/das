@@ -14,7 +14,7 @@ public class ConHeader extends AuditActionSupport {
 
 	public String execute() throws Exception {
 		if (!forceLogin())
-			return LOGIN;
+			return SUCCESS;
 
 		if (auditID > 0)
 			this.findConAudit();
