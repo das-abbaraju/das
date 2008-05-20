@@ -9,7 +9,14 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
-<h1>Contractor Search <span class="sub">Operator Version</span></h1>
+<h1>Contractor Search <span class="sub">
+<s:if test="permissions.operator">
+Operator Version
+</s:if>
+<s:else>
+Corporate Version
+</s:else>
+</span></h1>
 <table border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td colspan="2" align="center" class="blueMain"><span
