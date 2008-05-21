@@ -45,7 +45,7 @@
 </form>
 </div>
 <% } %>
-<div id="logo"> <img src="images/logo_r3.jpg" alt="image" width="105" height="112" /></div>
+<div id="logo"><a href="index.jsp"><img src="images/logo_r3.jpg" alt="image" width="105" height="112" /></a></div>
 </div></div></div>
 
 <!-- !begin navigation -->
