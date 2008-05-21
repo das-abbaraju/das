@@ -135,8 +135,9 @@ public class ContractorAuditLegacy {
 			return false;
 		
 		if (permissions.isOperator()) {
-			if (audit.getRequestingOpAccount().getId() == permissions.getAccountId()) return true;
-			else return false;
+			if (audit.getRequestingOpAccount() != null 
+				&& audit.getRequestingOpAccount().getId() == permissions.getAccountId()) return true;
+			return false;
 		}
 
 		if (permissions.hasPermission(OpPerms.AllContractors))

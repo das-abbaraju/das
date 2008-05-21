@@ -279,8 +279,12 @@ public class OperatorBean extends DataBean {
 	public Set<Integer> getCanSeeAuditIDSet() {
 		if (canSeeAudits == null || canSeeAudits.size() == 0) return null;
 		Set<Integer> canSeeAuditIds = new HashSet<Integer>();
-		for (AuditOperator audit : canSeeAudits)
+		for (AuditOperator audit : canSeeAudits) {
 			canSeeAuditIds.add(audit.getAuditType().getAuditTypeID());
+			if (audit.getAuditType().getAuditTypeID() == AuditType.DESKTOP)
+				// Operators who can see desktop audits can also view NCMS too
+				canSeeAuditIds.add(AuditType.NCMS);
+		}
 		return canSeeAuditIds;
 	}
 

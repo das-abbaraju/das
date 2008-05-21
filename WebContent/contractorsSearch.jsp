@@ -138,9 +138,9 @@ try{
                   </table>
 <%	}//if %>
 				<div id="search">
-				<div id="showSearch"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
-				<div id="hideSearch" style="display: none"><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
-                  <form id='form1' name="form1" method="post" style="display: none">
+				<div id="showSearch" style="display: none"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
+				<div id="hideSearch" ><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
+                  <form id='form1' name="form1" method="post">
                   <table border="0" cellpadding="2" cellspacing="0">
                     <tr>
                       <td>
@@ -181,7 +181,7 @@ try{
             <table>
               <tr> 
                 <td height="30"></td>
-                <td align="center"><%=sBean.getLinksWithDynamicForm()%></td>
+                <td><%=sBean.getLinksWithDynamicForm()%></td>
               </tr>
             </table>
             <table class="report">
@@ -231,7 +231,7 @@ try{
               </tr></span>
 <%		}//while %>
             </table><br>
-		    <center><%=sBean.getLinksWithDynamicForm()%></center>
+		    <div><%=sBean.getLinksWithDynamicForm()%></div>
 <%	}//if %>
 <%}finally{
 	sBean.closeSearch();

@@ -165,8 +165,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return false;
 		
 		if (permissions.isOperator()) {
-			if (conAudit.getRequestingOpAccount().getId() == permissions.getAccountId()) return true;
-			else return false;
+			if (conAudit.getRequestingOpAccount() != null)
+				if (conAudit.getRequestingOpAccount().getId() == permissions.getAccountId()) return true;
+			return false;
 		}
 
 		if (permissions.seesAllContractors())
