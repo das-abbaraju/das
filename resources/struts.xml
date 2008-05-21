@@ -8,9 +8,11 @@
 	<package name="com.picsauditing" extends="struts-default">
 		<global-results>
 			<result name="Exception">/exception_handler.jsp</result>
+			<result name="NoRightsException">/no_rights_exception.jsp</result>
 		</global-results>
 		<global-exception-mappings>
-		<exception-mapping exception="java.lang.Exception" result="Exception"/>
+			<exception-mapping exception="java.lang.Exception" result="Exception"/>
+			<exception-mapping exception="com.picsauditing.access.NoRightsException" result="NoRightsException"/>
 		</global-exception-mappings>
 
 		<action name="Home"
