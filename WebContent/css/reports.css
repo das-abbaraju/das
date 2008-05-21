@@ -102,3 +102,8 @@ table.report tr.na {
 	color: #999;
 	font-style: italic;
 }
+
+table.report tr.inactive {
+	color: #999;
+	font-style: italic;
+}
