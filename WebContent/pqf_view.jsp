@@ -63,7 +63,7 @@
 <% } %>
 
 <% if (pcBean.showLicenses()) { %>
-	<a href="con_stateLicenses.jsp?id=<%=conID%>">Check Licenses</a>
+	<a href="con_stateLicenses.jsp?id=<%=conID%>&auditID=<%=action.getAuditID()%>">Check Licenses</a>
 <% } %>
 
 <table class="audit">

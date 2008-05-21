@@ -15,17 +15,24 @@
 	scope="page" />
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean"
 	scope="page" />
+<jsp:useBean id="action" class="com.picsauditing.actions.audits.ContractorAuditLegacy" scope="page" />
+
 <%
+	action.setPermissions(permissions);
+	action.setAuditID(request.getParameter("auditID"));
+	String auditType = action.getAudit().getAuditType().getLegacyCode();
+	String conID = action.getAudit().getContractorAccount().getId().toString();
+	String id = conID;
+
+
 	try {
-		String conID = request.getParameter("id");
-		String id = request.getParameter("id");
 		String catID = "27";
 		String licenseNum = "";
 		String state = "";
 		aBean.setFromDB(conID);
 		cBean.setFromDB(conID);
 		cBean.tryView(permissions);
-		pdBean.setFromDB(conID, catID);
+		pdBean.setFromDB(action.getAudit().getId(), conID, catID);
 		psBean.setPQFSubCategoriesArray(catID);
 %>
 <%
@@ -33,13 +40,15 @@
 %>
 <html>
 <head>
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
 <title>Contractor State Licenses</title>
 <meta name="header_gif" content="header_prequalification.gif" />
 </head>
 <body>
 <table border="0" cellspacing="0" cellpadding="1" class="blueMain">
 	<tr align="center" class="blueMain">
-		<td><%@ include file="utilities/adminOperatorContractorNav.jsp"%></td>
+		<td><%@ include file="includes/conHeaderLegacy.jsp"%></td>
 	</tr>
 </table>
 <table width="657" border="0" cellpadding=0 cellspacing=0>
