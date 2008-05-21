@@ -4,12 +4,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.OperatorBean;
 import com.picsauditing.access.MenuItem;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -39,16 +42,66 @@ public class ContractorActionSupport extends PicsActionSupport {
 		if (contractor.getId() == 0)
 			throw new Exception("Contractor " + this.id + " not found");
 		
-		checkPermissionToView();
+		checkPermissionToView(permissions);
 	}
 	
-	protected void checkPermissionToView() throws NoRightsException {
+	protected void checkPermissionToView(Permissions permissions) throws NoRightsException {
 		// TODO Check permissions to view this contractor
 		// ContractorBean.canView
 		// Throw out limited operator users
 		// throw exception
+		if (canViewPermission(permissions, "summary")) return;
+		throw new NoRightsException("Contractor");
 	}
 
+	public boolean canViewPermission(Permissions permissions, String what) {
+		if (permissions.hasPermission(OpPerms.AllContractors)) return true;
+		
+		// OR
+		if (permissions.isContractor()) {
+			return permissions.getAccountIdString().equals(Integer.toString(this.id));
+		}
+		
+		if(permissions.hasPermission(OpPerms.StatusOnly)) {
+			return false;
+		}
+		if (permissions.isOperator() || permissions.isCorporate()) {
+			// I don't really like this way. It's a bit confusing
+			// Basically, if all we're doing is searching for contractors
+			// and looking at their summary page, then it's OK
+			// If we want to look at their detail, like PQF data
+			// Then we have to add them first (generalContractors).
+//			if ("summary".equals(what)) {
+//				// Until we figure out Contractor viewing permissions better, this will have to do
+//				return true;
+//			}
+			if (permissions.isCorporate()) {
+				OperatorBean operator = new OperatorBean();
+				try {
+					operator.isCorporate = true;
+					operator.setFromDB(permissions.getAccountIdString());
+					// if any of this corporate operators can see this contractor, 
+					// then the corporate users can see them too
+					for (String id : operator.facilitiesAL) {
+						for(ContractorOperator corporate : getOperators())
+							if (corporate.getOperatorAccount().getIdString().equals(id))
+							return true;
+					}
+				} catch (Exception e) {}
+				return false;
+			}
+			// To see anything other than the summary, you need to be on their list
+			for(ContractorOperator operator : getOperators())
+				if(operator.getOperatorAccount().getIdString().equals(permissions.getAccountIdString()))
+			return true;
+		}
+		
+		for(ContractorAudit audit : getActiveAudits())
+			if (audit.getAuditor().getId() == permissions.getUserId()) return true;
+		
+		return false;
+	}
+	
 	public int getId() {
 		return id;
 	}

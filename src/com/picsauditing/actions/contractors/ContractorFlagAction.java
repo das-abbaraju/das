@@ -1,11 +1,13 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import com.picsauditing.PICS.FlagCalculatorSingle;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -29,7 +31,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	
 	protected Date forceEnd;
 	protected FlagColor forceFlag;
-
 	public ContractorFlagAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorOperatorDAO contractorOperatorDao, AuditDataDAO auditDataDAO,
 			ContractorOperatorFlagDAO contractorOperatorFlagDAO) {
@@ -78,13 +79,13 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return SUCCESS;
 	}
 	
-	protected void checkPermissionToView() throws NoRightsException {
+	protected void checkPermissionToView(Permissions permissions) throws NoRightsException {
 		if (permissions.hasPermission(OpPerms.StatusOnly)) {
-			// TODO Check permissions to view this contractor
-			// if he doesn't, throw exception
+			co = contractorOperatorDao.find(id, Integer.parseInt(permissions.getAccountIdString()));
+			if(co.getOperatorAccount().getId().equals(new Integer(permissions.getAccountIdString())))
 			return;
 		}
-		super.checkPermissionToView();
+		super.checkPermissionToView(permissions);
 	}
 
 	public int getOpID() {
