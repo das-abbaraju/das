@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FilenameUtils;
 
+import com.picsauditing.PICS.pqf.CategoryBean;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
@@ -99,6 +100,13 @@ public class ContractorBean extends DataBean {
 	ArrayList<String> blockedDates = new ArrayList<String>();
 	
 	public void setId(String s) {id = s;}//setId
+	private int getIdInteger() {
+		int id = 0;
+		try {
+			id = Integer.parseInt(this.id);
+		} catch (Exception e) {}
+		return id;
+	}
 	public void setMain_trade(String s) {main_trade = s;}//setMain_trade
 	public void setTrades(String[] s) {
 		if (s==null) {
@@ -448,10 +456,7 @@ public class ContractorBean extends DataBean {
 //			SQLStatement.executeUpdate(Query);
 //			DBClose();
 //			writeToDB();
-//			AuditBuilder builder = new AuditBuilder();
-//			builder.buildAudits(Integer.parseInt(this.id));
 			com.picsauditing.PICS.OperatorBean.resetSubCountTable();
-//			new com.picsauditing.PICS.pqf.CategoryBean().generateDynamicCategories(id, com.picsauditing.PICS.pqf.Constants.PQF_TYPE, riskLevel);
 		}finally{
 			DBClose();
 		}
@@ -855,4 +860,11 @@ public class ContractorBean extends DataBean {
 		return audits.get(auditTypeID);
 	}
 
+	public void buildAudits() throws Exception {
+		// Throwing an exception here may be more appropriate
+		if (getIdInteger() == 0) {
+			AuditBuilder auditBuilder = (AuditBuilder)SpringUtils.getBean("AuditBuilder");
+			auditBuilder.buildAudits(getIdInteger());
+		}
+	}
 }

@@ -312,4 +312,19 @@ public class DateBean {
 		return 12;
 	}
 
-}// DateBean
+	public static int getDateDifference(Date firstDate, Date secondDate) {
+		long msApart = secondDate.getTime() - firstDate.getTime();
+		return (int)(msApart / (24 * 60 * 60 * 1000));
+	}
+	
+	/**
+	 * Calculate the number of days until the date
+	 * Positive numbers are in the future. Negative numbers are in the past.
+	 * @param firstDate
+	 * @return
+	 */
+	public static int getDateDifference(Date firstDate) {
+		Calendar cal = Calendar.getInstance();
+		return DateBean.getDateDifference(cal.getTime(), firstDate);
+	}
+}

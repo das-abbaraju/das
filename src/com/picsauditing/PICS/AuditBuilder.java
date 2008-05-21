@@ -1,41 +1,62 @@
 package com.picsauditing.PICS;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.pqf.CategoryBean;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 
 public class AuditBuilder {
-	@Autowired
 	AuditTypeDAO auditTypeDAO;
-	@Autowired
 	ContractorAccountDAO contractorDAO;
-	@Autowired
 	ContractorAuditDAO cAuditDAO;
+	AuditDataDAO auditDataDAO;
+	
+	public AuditBuilder(AuditTypeDAO auditTypeDAO, ContractorAccountDAO contractorDAO, 
+			ContractorAuditDAO cAuditDAO, AuditDataDAO auditDataDAO) {
+		this.auditTypeDAO = auditTypeDAO;
+		this.contractorDAO = contractorDAO;
+		this.cAuditDAO = cAuditDAO;
+		this.auditDataDAO = auditDataDAO;
+	}
 
 	/**
 	 * Create new/remove unneeded audits for a given contractor
 	 * @param conID
 	 */
-	public void buildAudits(int conID) {
+	public void buildAudits(int conID) throws Exception {
 		ContractorAccount contractor = contractorDAO.find(conID);
-
+		buildAudits(contractor);
+	}
+	
+	public void buildAudits(ContractorAccount contractor) throws Exception {
 		List<ContractorAudit> currentAudits = contractor.getAudits();
+		
 		
 		List<AuditStatus> okStatuses = new ArrayList<AuditStatus>();
 		okStatuses.add(AuditStatus.Active);
 		okStatuses.add(AuditStatus.Pending);
 		okStatuses.add(AuditStatus.Submitted);
 		okStatuses.add(AuditStatus.Exempt);
-		
+
+		List<Integer> requiresSafetyManual = new ArrayList<Integer>();
+		requiresSafetyManual.add(AuditType.DESKTOP);
+		requiresSafetyManual.add(AuditType.OFFICE);
+		requiresSafetyManual.add(AuditType.DA);
+
 		/***** PQF ****/
 		ContractorAudit pqfAudit = null;
 		for(ContractorAudit conAudit : currentAudits) {
@@ -53,29 +74,31 @@ public class AuditBuilder {
 		}
 		
 		/*** Add other Audits ***/
+		// Get a distinct list of AuditTypes that attached operators require
 		List<AuditType> list = auditTypeDAO.findWhere("t IN (SELECT auditType " +
-				"FROM AuditOperator WHERE operatorAccount IN (" +
+				"FROM AuditOperator WHERE minRiskLevel BETWEEN 1 AND "+contractor.getRiskLevel().ordinal()+" " +
+						"AND operatorAccount IN (" +
 					"SELECT operatorAccount FROM ContractorOperator " +
-					"WHERE contractorAccount.id = "+conID+
+					"WHERE contractorAccount.id = "+contractor.getId()+
 				"))");
 		for(AuditType auditType : list) {
-			boolean canCreate = true;
-			if (pqfAudit.getAuditStatus().equals(AuditStatus.Pending)) {
-				// The current PQF is stilling pending
-				if (AuditType.DESKTOP == auditType.getAuditTypeID())
-					canCreate = false;
-				if (AuditType.OFFICE == auditType.getAuditTypeID())
-					canCreate = false;
-				if (AuditType.DA == auditType.getAuditTypeID())
-					canCreate = false;
-			}
 			
-			if (canCreate) {
-				System.out.println("AuditType: "+ auditType.getAuditTypeID() + auditType.getAuditName());
-				boolean found = false;
-				for(ContractorAudit conAudit : contractor.getAudits()) {
-					if (okStatuses.contains(conAudit.getAuditStatus())) {
-						// The contractor audit is not expired
+			// For each audit this contractor SHOULD have
+			// Figure out if the contractor currently has an  
+			// active audit that isn't scheduled to expire soon
+			boolean found = false;
+			for(ContractorAudit conAudit : contractor.getAudits()) {
+				if (okStatuses.contains(conAudit.getAuditStatus())) {
+					// The contractor audit is not expired
+					int daysToExpiration = 0;
+					if (conAudit.getExpiresDate() == null)
+						// The expiration is null so put the days to expiration really big
+						daysToExpiration = 1000;
+					else
+						daysToExpiration = DateBean.getDateDifference(conAudit.getExpiresDate());
+					
+					if (daysToExpiration > 60) {
+						// The audit is still valid for atleast another 60 days
 						if (conAudit.getAuditType().equals(auditType)) {
 							// We found a matching audit type
 							found = true;
@@ -87,12 +110,28 @@ public class AuditBuilder {
 						}
 					}
 				}
-				if (!found) {
-					System.out.println(" is missing");
-					currentAudits.add(cAuditDAO.addPending(auditType, contractor));
+			}
+			if (!found) {
+				// The audit wasn't found, figure out if we should create it now or wait until later
+				boolean insertNow = true;
+				if (pqfAudit.getAuditStatus().equals(AuditStatus.Pending)) {
+					// The current PQF is stilling pending, does this audit require a PDF?
+					if (requiresSafetyManual.contains(auditType.getAuditTypeID()))
+						insertNow = false;
 				}
-			} else
-				System.out.println("Skipping: "+ auditType.getAuditTypeID() + auditType.getAuditName());
+				if (pqfAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
+					// The current PQF has been submitted, but we need to know if the Safety Manual is there first
+					AuditData safetyManual = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), AuditQuestion.MANUAL_PQF);
+					if (!safetyManual.getIsCorrectBoolean())
+						insertNow = false;
+				}
+				
+				if (insertNow) {
+					System.out.println("Adding: "+ auditType.getAuditTypeID() + auditType.getAuditName());
+					currentAudits.add(cAuditDAO.addPending(auditType, contractor));
+				} else
+					System.out.println("Skipping: "+ auditType.getAuditTypeID() + auditType.getAuditName());
+			}
 		}
 		
 		/**** Remove unneeded audits ****/
@@ -114,5 +153,14 @@ public class AuditBuilder {
 			}
 		}
 		
+		/** Generate Categories **/
+		for(ContractorAudit conAudit : currentAudits) {
+			if (conAudit.getAuditType().isPqf()
+				|| conAudit.getAuditType().getAuditTypeID() == AuditType.DESKTOP
+				|| true) {
+				CategoryBean categoryBean = new CategoryBean();
+				categoryBean.generateDynamicCategories(conAudit);
+			}
+		}
 	}
 }

@@ -50,18 +50,12 @@ try{
 			emailer.sendMail();
 			emailer.addNote(currentUser.userDO.name+" from "+currentUser.userDO.accountName+" added "+aBean.name+", email sent to: "+ emailer.getSentTo());
 	
-			com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
-			com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();
 			ContractorBean cBean = new ContractorBean();
 			cBean.setFromDB(actionID);
-			pcBean.generateDynamicCategories(actionID, com.picsauditing.PICS.pqf.Constants.PQF_TYPE, cBean.riskLevel);
-			//TODO contractor can edit their pqf.
-			//cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
-			//cBean.canEditPrequal="Yes";
 			cBean.addNote(actionID, permissions.getUsername(), "Added this Contractor to "+aBean.name+"'s db", DateBean.getTodaysDateTime());
 			cBean.writeToDB();
+			cBean.buildAudits();
 			//EmailBean.sendUpdateDynamicPQFEmail(actionID);
-			//new FlagCalculator().setConFlags(actionID,permissions.getAccountIdString());
 		}
 	}
 	
@@ -73,14 +67,8 @@ try{
 			AccountBean aBean = new AccountBean();
 			aBean.setFromDB(pBean.userID);
 			cBean.addNote(actionID, "", permissions.getUsername()+" from "+aBean.name+" removed contractor from its db", DateBean.getTodaysDateTime());
-			
-			com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
-			com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();
-			pcBean.generateDynamicCategories(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE, cBean.riskLevel);
-			//cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,pdBean.getPercentComplete(actionID,com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
-			//cBean.canEditPrequal="Yes";
-			
 			cBean.writeToDB();
+			cBean.buildAudits();
 		}
 	}//if
 	sBean.orderBy = "name";

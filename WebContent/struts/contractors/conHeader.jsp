@@ -49,7 +49,8 @@
 	<li><a <s:if test="requestURI.contains('contractor_audits')">class="current"</s:if> href="ConAuditList.action?id=<s:property value="id" />">Audits</a></li>
 	<s:iterator value="activeAudits">
 		<li><a <s:if test="id == auditID">class="current"</s:if>
-			href="Audit.action?auditID=<s:property value="id"/>"><s:property
+			href="Audit.action?auditID=<s:property value="id"/>" title="<s:date
+			name="effectiveDate" format="MMM yyyy" />"><s:property
 			value="auditType.auditName" /></a></li>
 	</s:iterator>
 </ul>

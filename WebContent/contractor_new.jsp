@@ -22,6 +22,7 @@
 			aBean.writeNewToDB();
 			cBean.id = aBean.id;
 			cBean.writeNewToDB(FACILITIES);
+			cBean.buildAudits();
 
 			response.sendRedirect("contractor_new_confirm.jsp?i="+aBean.id);
 			return;

@@ -15,15 +15,6 @@ try{
 		permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
 		pcBean.saveMatrix(request.getParameterNames(),auditType);
 	}
-	else if ("Regenerate Categories".equals(request.getParameter("action") ) )
-	{
-		if ( !permissions.seesAllContractors() ) throw new com.picsauditing.access.NoRightsException("isAdmin");
-		SearchBean sBean = new SearchBean();
-		sBean.doSearch(request, sBean.ACTIVE_AND_NOT, 20000, pBean, "-1");
-		while (sBean.isNextRecord())
-			pcBean.generateDynamicCategories(sBean.aBean.id,com.picsauditing.PICS.pqf.Constants.PQF_TYPE,sBean.cBean.riskLevel);
-		sBean.closeSearch();
-	}
 		
 	pcBean.setCategoryMatrix(auditType);
 	if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType))
@@ -57,7 +48,7 @@ try{
 <%@ include file="/includes/nav/pqf_nav.jsp"%>
 <br>
 <form action="pqf_desktopMatrix.jsp?auditType=<%=auditType%>" method="post">
-<input name="action" type="submit" value="Save"><input name="action" type="submit" value="Regenerate Categories">
+<input name="action" type="submit" value="Save">
 <br><br>
 <table border="1" cellpadding="0" cellspacing="0" bordercolor="#777777">
 <tr>

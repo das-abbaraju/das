@@ -49,12 +49,12 @@
 					aBean.writeToDB();
 					cBean.setUploadedFiles(request);
 					cBean.writeToDB();
+					cBean.buildAudits();
 					response.sendRedirect("ContractorView.action?id=" + editID);
 					return;
-				
-			}//if
+			}
 		}
-	}//if
+	}
 %>
 <html>
 <head>

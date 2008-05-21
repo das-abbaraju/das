@@ -19,23 +19,16 @@
 	if (isSubmitted) {
 		cBean.setGeneralContractorsFromCheckList(request);
 		if (cBean.writeGeneralContractorsToDB(pBean, FACILITIES)) {
-			com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
-			com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();
-			pcBean.generateDynamicCategories(id, com.picsauditing.PICS.pqf.Constants.PQF_TYPE, cBean.riskLevel);
-			//TODO Open pqf when the new facilities are added.  
-			
-			//cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE, pdBean.getPercentComplete(
-			//		id, com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
-			//cBean.canEditPrequal = "Yes";
-		//	cBean.writeToDB();
-		//	EmailBean.sendUpdateDynamicPQFEmail(id);
-		}//if
+			cBean.buildAudits();
+			//	EmailBean.sendUpdateDynamicPQFEmail(id);
+		}
 		if (permissions.isContractor()) {
+			// THIS IS GOING TO ERROR!! Need to figure out what to do when contractors add a facility
 			response.sendRedirect("pqf_edit.jsp?auditType=" + com.picsauditing.PICS.pqf.Constants.PQF_TYPE
 					+ "&mustFinishPrequal=&id=" + aBean.id);
 			return;
-		}//if
-	}//if
+		}
+	}
 	if (permissions.seesAllContractors() && removeContractor) {
 		com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
 		com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();
@@ -45,17 +38,13 @@
 		tempOpBean.setFromDB(removeOpID.toString());
 		cBean.addNote(id, "(" + pBean.userName + " from PICS)", "Removed " + aBean.name + " from "
 				+ tempOpBean.name + "'s db", DateBean.getTodaysDateTime());
-		pcBean.generateDynamicCategories(id, com.picsauditing.PICS.pqf.Constants.PQF_TYPE, cBean.riskLevel);
-		//TODO Open pqf when the new facilities are added.  
-		//cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE, pdBean.getPercentComplete(id,
-		//		com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
 		cBean.writeToDB();
-	}//if
+		cBean.buildAudits();
+	}
 	cBean.setFromDB(id);
 	OperatorAccountDAO operatorDao = (OperatorAccountDAO)SpringUtils.getBean("OperatorAccountDAO");
 	List<OperatorAccount> operators = operatorDao.findAll(permissions);
 	
-	//java.util.ArrayList<String> operators = oBean.getOperatorsAL();
 	int count = 0;
 
 	FlagDO flagDO = new FlagDO();
@@ -66,8 +55,6 @@
 <title>Contractor Facilities</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
-
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
 <% request.setAttribute("subHeading", "Contractor Facilities");

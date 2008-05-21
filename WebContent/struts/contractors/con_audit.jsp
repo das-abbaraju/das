@@ -4,7 +4,7 @@
 <html>
 <head>
 <title><s:property value="conAudit.auditType.auditName" /> for
-<s:property value="conAudit.contractor.name" /></title>
+<s:property value="conAudit.contractorAccount.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <style>
@@ -23,7 +23,7 @@ table.report tr.na a {
 <s:include value="conHeader.jsp" />
 
 <span class="message"><s:property value="message" /></span>
-<s:form action="SaveAudit">
+<s:form>
 	<s:hidden name="auditID" />
 	<s:if test="conAudit.auditStatus.name() == 'Pending' && conAudit.percentComplete == 100">
 		<s:hidden name="auditStatus" value="Submitted" />

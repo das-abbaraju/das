@@ -400,8 +400,6 @@ DELETE from pqfCatData where catID NOT IN
 DELETE from pqfCatData where conID not in
 (select id from contractor_info);
 
-/* Populate audit_operator from operator */
-
 /* Create audit_operator table */
 drop table IF EXISTS `audit_operator`;
 create table `audit_operator`(
@@ -418,7 +416,7 @@ create table `audit_operator`(
 )Engine=InnoDB DEFAULT CHARSET='latin1';
 
 insert into audit_operator (auditTypeID, opID,minRiskLevel,requiredForFlag)
-	(select 1 AS a, id, 1, 'Green' AS b from operators where canSeePQF='Yes');
+	(select 1 AS a, id, 1, 'Red' AS b from operators where canSeePQF='Yes');
 insert into audit_operator (auditTypeID, opID,minRiskLevel,requiredForFlag)
 	(select 2 AS a, id, 2, 'Amber' AS b from operators where canSeeDesktop='Yes');
 insert into audit_operator (auditTypeID, opID,minRiskLevel,requiredForFlag)
@@ -435,6 +433,11 @@ update pqfcategories p ,audit_type a
 	set p.auditTypeid=a.auditTypeid
 	where p.auditType=a.legacyCode;
 
+/* copy the medium risk matrix to high risk */
+delete from pqfOpMatrix where riskLevel = 3;
+
+insert into pqfOpMatrix (catID, opID, riskLevel)
+select catID, opID, 3 from pqfOpMatrix where riskLevel = 2;
 
 /* ==== PQF ====*/
 
