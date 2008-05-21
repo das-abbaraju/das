@@ -3,6 +3,7 @@ package com.picsauditing.actions.audits;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -36,21 +37,23 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		this.findConAudit();
-		
-		boolean canAccess = permissions.canSeeAudit(conAudit.getAuditType().getAuditTypeID());
-		if (permissions.isOnlyAuditor()) {
-			for(ContractorAudit audit : auditDao.findByContractor(contractor.getId())) {
-				// Loop through con audits to see if assigned
-				if (audit.getAuditor().getId() == permissions.getUserId())
-					canAccess = true;
-			}
-		}
-		if (!canAccess)
-			return "NoView";
 
 		if (this.conAudit.getAuditType().getAuditTypeID() == AuditType.NCMS)
 			return "NCMS";
 		return SUCCESS;
+	}
+	
+	protected void canSeeAudit() throws NoRightsException {
+		if (permissions.isPicsEmployee())
+			return;
+		if (permissions.isOperator() || permissions.isCorporate()) {
+			if (! permissions.getCanSeeAudit().contains(conAudit.getAuditType().getAuditTypeID()))
+				throw new NoRightsException(conAudit.getAuditType().getAuditName());
+		}
+		if (permissions.isContractor()) {
+			if (! conAudit.getAuditType().isCanContractorView())
+				throw new NoRightsException(conAudit.getAuditType().getAuditName());
+		}
 	}
 
 	protected void findConAudit() throws Exception {
@@ -64,10 +67,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		
 		this.id = conAudit.getContractorAccount().getId();
 		findContractor();
-		
-		// Where are we handling all other perms? ie for operators
-		if (permissions.isContractor() && !conAudit.getAuditType().isCanContractorView())
-			throw new Exception("Contractors cannot view a "+conAudit.getAuditType().getAuditName());
+		canSeeAudit();
 	}
 
 	public int getAuditID() {

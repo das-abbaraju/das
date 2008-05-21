@@ -235,7 +235,13 @@ public class Permissions {
 			return canSeeAudits.contains(new Integer(auditType));
 		return false;
 	}
-	
+
+	public Set<Integer> getCanSeeAudit() {
+		if (canSeeAudits == null)
+			canSeeAudits = new HashSet<Integer>();
+		return canSeeAudits;
+	}
+
 	public void setCanSeeAudit(Set<Integer> auditIds) {
 		canSeeAudits = auditIds;
 	}

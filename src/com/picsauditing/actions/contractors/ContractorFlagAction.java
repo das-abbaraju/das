@@ -79,13 +79,13 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return SUCCESS;
 	}
 	
-	protected void checkPermissionToView(Permissions permissions) throws NoRightsException {
+	protected void checkPermissionToView() throws NoRightsException {
 		if (permissions.hasPermission(OpPerms.StatusOnly)) {
 			co = contractorOperatorDao.find(id, Integer.parseInt(permissions.getAccountIdString()));
 			if(co.getOperatorAccount().getId().equals(new Integer(permissions.getAccountIdString())))
 			return;
 		}
-		super.checkPermissionToView(permissions);
+		super.checkPermissionToView();
 	}
 
 	public int getOpID() {

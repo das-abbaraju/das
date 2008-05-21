@@ -13,6 +13,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -42,19 +43,19 @@ public class ContractorActionSupport extends PicsActionSupport {
 		if (contractor.getId() == 0)
 			throw new Exception("Contractor " + this.id + " not found");
 		
-		checkPermissionToView(permissions);
+		checkPermissionToView();
 	}
 	
-	protected void checkPermissionToView(Permissions permissions) throws NoRightsException {
+	protected void checkPermissionToView() throws NoRightsException {
 		// TODO Check permissions to view this contractor
 		// ContractorBean.canView
 		// Throw out limited operator users
 		// throw exception
-		if (canViewPermission(permissions, "summary")) return;
+		if (checkPermissionToView("summary")) return;
 		throw new NoRightsException("Contractor");
 	}
 
-	public boolean canViewPermission(Permissions permissions, String what) {
+	public boolean checkPermissionToView(String what) {
 		if (permissions.hasPermission(OpPerms.AllContractors)) return true;
 		
 		// OR
@@ -96,8 +97,12 @@ public class ContractorActionSupport extends PicsActionSupport {
 			return true;
 		}
 		
-		for(ContractorAudit audit : getActiveAudits())
-			if (audit.getAuditor().getId() == permissions.getUserId()) return true;
+		for(ContractorAudit audit : getActiveAudits()) {
+			if (audit.getAuditor().getId() == permissions.getUserId()
+					&& (audit.getAuditStatus().equals(AuditStatus.Pending)
+						|| audit.getAuditStatus().equals(AuditStatus.Submitted))
+				) return true;
+		}
 		
 		return false;
 	}
