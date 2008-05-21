@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Map;
 
 import com.picsauditing.PICS.FlagCalculatorSingle;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -39,6 +40,9 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 
 	public String execute() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
+		
 		findContractor();
 		if (opID == 0)
 			opID = permissions.getAccountId();
@@ -72,6 +76,15 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		contractorOperatorDao.save(co);
 
 		return SUCCESS;
+	}
+	
+	protected void checkPermissionToView() throws NoRightsException {
+		if (permissions.hasPermission(OpPerms.StatusOnly)) {
+			// TODO Check permissions to view this contractor
+			// if he doesn't, throw exception
+			return;
+		}
+		super.checkPermissionToView();
 	}
 
 	public int getOpID() {

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.MenuItem;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -17,7 +18,6 @@ import com.picsauditing.jpa.entities.YesNo;
 public class ContractorActionSupport extends PicsActionSupport {
 	protected int id = 0;
 	protected ContractorAccount contractor;
-	@Autowired(required=true)
 	protected ContractorAccountDAO accountDao;
 	protected ContractorAuditDAO auditDao;
 	private List<ContractorOperator> operators;
@@ -39,7 +39,14 @@ public class ContractorActionSupport extends PicsActionSupport {
 		if (contractor.getId() == 0)
 			throw new Exception("Contractor " + this.id + " not found");
 		
+		checkPermissionToView();
+	}
+	
+	protected void checkPermissionToView() throws NoRightsException {
 		// TODO Check permissions to view this contractor
+		// ContractorBean.canView
+		// Throw out limited operator users
+		// throw exception
 	}
 
 	public int getId() {
