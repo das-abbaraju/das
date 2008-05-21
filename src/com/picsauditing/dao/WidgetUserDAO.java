@@ -41,12 +41,14 @@ public class WidgetUserDAO extends PicsDAO {
 
 		permissions.getAccountType();
 		// This will go away when we support per user configuration of dashboard
-		if (permissions.isAdmin())
+		if (permissions.isPicsEmployee())
 			query.setParameter(1, 941); // tallred
 		if (permissions.isOnlyAuditor())
 			query.setParameter(1, 910); // ddooly
 		if (permissions.isOperator() || permissions.isCorporate())
 			query.setParameter(1, 616); // kevin.dyer
+		if (permissions.isContractor())
+			query.setParameter(1, 1); // contractor
 
 		return query.getResultList();
 	}

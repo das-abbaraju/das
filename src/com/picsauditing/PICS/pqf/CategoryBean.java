@@ -595,12 +595,12 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 			DBReady();
 			HashSet<Integer> catIDSet = new HashSet<Integer>();
 			if (conAudit.getAuditType().getAuditTypeID() == AuditType.DESKTOP){
-				String selectQuery = "SELECT DISTINCT catID FROM desktopMatrix m" +
+				String selectQuery = "SELECT DISTINCT catID FROM desktopMatrix m " +
 						"JOIN pqfData d ON (m.qID=d.questionID AND m.auditType='Desktop') "+
 						"JOIN pqfQuestions q ON (q.questionID=m.qID) " +
 						"WHERE d.auditID="+auditID+" AND " +
-							"(questionType='Service' AND d.answer LIKE 'C%' OR "+
-							"questionType IN ('Industry','Main Work') AND answer='X') ";
+							"((questionType='Service' AND d.answer LIKE 'C%') OR "+
+							"(questionType IN ('Industry','Main Work') AND answer='X')) ";
 				ResultSet SQLResult = SQLStatement.executeQuery(selectQuery );
 				while (SQLResult.next())
 					catIDSet.add(SQLResult.getInt(1));

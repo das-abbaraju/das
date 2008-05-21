@@ -6,6 +6,7 @@ import java.util.HashSet;
 import javax.servlet.http.Cookie;
 
 import com.picsauditing.PICS.AccountBean;
+import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.DataBean;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.PermissionsBean;
@@ -206,27 +207,27 @@ public class LoginController extends DataBean {
 		pBean.setUserType(permissions.getAccountType());
 		pBean.setCanSeeSet(canSeeSet());
 	}
-		
+	
 	/**
 	 * After we're logged in, now what should we do?
 	 */
 	private void postLogin(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws Exception {
 		if (!isUser) {
-			com.picsauditing.PICS.ContractorBean cBean = new com.picsauditing.PICS.ContractorBean();
+			ContractorBean cBean = new ContractorBean();
 			cBean.setFromDB(permissions.getAccountIdString());
 			
 			if ("".equals(cBean.accountDate)) {
 				cBean.accountDate = DateBean.getTodaysDate();
 				cBean.writeToDB();
-				response.sendRedirect("con_selectFacilities.jsp?id="+permissions.getAccountIdString());
+				//response.sendRedirect("con_selectFacilities.jsp?id="+permissions.getAccountIdString());
 				return;
 			}
-			String loginStartDate = "1/1" + "/" + String.valueOf(DateBean.getCurrentYear());
+			//String loginStartDate = "1/1" + "/" + String.valueOf(DateBean.getCurrentYear());
 			//String loginStartDate = this.getServletContext().getInitParameter("loginStartDate");
-			if(DateBean.isFirstBeforeSecond(prevLastLogin,loginStartDate)) {
-				response.sendRedirect("con_selectFacilities.jsp?id="+permissions.getAccountIdString());
-				return;
-			}
+			//if(DateBean.isFirstBeforeSecond(prevLastLogin,loginStartDate)) {
+			//	response.sendRedirect("con_selectFacilities.jsp?id="+permissions.getAccountIdString());
+			//	return;
+			//}
 		}
 
 		// Find out if the user previously timed out on a page, we'll forward back there below
@@ -245,13 +246,6 @@ public class LoginController extends DataBean {
 			}
 		}
 		
-		// eventually I think we should forward everyone to the same 
-		// dashboard page that changes depending on who is looking at it
-		if (permissions.isContractor()) {
-			// I'm not really sure why we need the id here at all
-			response.sendRedirect("ContractorView.action?id=" + permissions.getAccountId());
-			return;
-		}
 		if (permissions.hasPermission(OpPerms.StatusOnly)) {
 			response.sendRedirect("ContractorOperatorLimited.action");
 			return;

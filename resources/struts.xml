@@ -9,6 +9,7 @@
 		<global-results>
 			<result name="Exception">/exception_handler.jsp</result>
 			<result name="NoRightsException">/no_rights_exception.jsp</result>
+			<result name="LoginAjax">struts/login_ajax.jsp</result>
 		</global-results>
 		<global-exception-mappings>
 			<exception-mapping exception="java.lang.Exception" result="Exception"/>
@@ -209,6 +210,14 @@
 		<action name="ReportIncidenceRate"
 			class="com.picsauditing.actions.report.ReportIncidenceRate">
 			<result>/struts/reports/report_incidenceRates.jsp</result>
+		</action>
+		<action name="ContractorTasksAjax"
+			class="com.picsauditing.actions.contractors.ContractorWidget">
+			<result>/struts/widgets/con_tasks.jsp</result>
+		</action>
+		<action name="ContractorStatsAjax"
+			class="com.picsauditing.actions.contractors.ContractorWidget">
+			<result>/struts/widgets/con_stats.jsp</result>
 		</action>
 	</package>
 </struts>

@@ -22,6 +22,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 
 public class PicsActionSupport extends ActionSupport {
+	protected static String LOGIN_AJAX = "LoginAjax";
 	protected Permissions permissions = null;
 	protected String message;
 	
