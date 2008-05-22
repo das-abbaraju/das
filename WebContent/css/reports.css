@@ -103,7 +103,7 @@ table.report tr.na {
 	font-style: italic;
 }
 
-table.report tr.inactive {
+table.report td.inactive {
 	color: #999;
 	font-style: italic;
 }

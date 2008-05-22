@@ -57,7 +57,6 @@ sql.addField("a.industry");
 sql.addField("a.city");
 sql.addField("a.state");
 sql.addField("a.contact");
-
 sql.addWhere("a.type='" + accountType + "'");
 sql.setStartsWith(request.getParameter("startsWith"));
 
@@ -110,9 +109,17 @@ if (canEdit) {
 	com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlternater(search.getSql().getStartRow());
 	for (BasicDynaBean row : searchData) {
 		%>
+		<% if(row.get("active").equals("Y")) { %>
 		<tr id="auditor_tr<%=row.get("id")%>" <%= color.nextBgColor()%>>
-			<td class="right"><%=color.getCounter()%></td>
+		<% } else { %>
+		<tr id="auditor_tr<%=row.get("id")%>" <%= color.nextBgColor()%> class="na">	
+		<% } %>
+		<td class="right"><%=color.getCounter()%></td>
+		<% if(row.get("active").equals("Y")) { %>	
 			<td><a href="accounts_edit_operator.jsp?id=<%=row.get("id")%>"><%=row.get("name")%></a></td>
+		<% } else { %>
+			<td class="inactive"><a href="accounts_edit_operator.jsp?id=<%=row.get("id")%>"><%=row.get("name")%>*</a></td>
+		<% } %>	
 			<td><%=row.get("industry")%></td>
 			<td><%=row.get("city")%></td>
 			<td><%=row.get("state")%></td>
