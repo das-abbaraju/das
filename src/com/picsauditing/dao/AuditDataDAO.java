@@ -67,7 +67,10 @@ public class AuditDataDAO extends PicsDAO {
 		queryString.append("inner join fetch q.subCategory sc ");
 		queryString.append("inner join fetch sc.category cat ");
 		queryString.append("where d.audit.id = ? ");
-		queryString.append("and EXISTS ( select a from AuditQuestionOperatorAccount a where a.auditQuestion.questionID = q.questionID ) ");
+		queryString.append("and ( EXISTS ( select a from AuditQuestionOperatorAccount a where a.auditQuestion.questionID = q.questionID ) or q.questionID = ");
+		queryString.append(AuditQuestion.MANUAL_PQF);
+		queryString.append(" )" );
+		
 		
 		Query query = em.createQuery(queryString.toString()) ;
 		
