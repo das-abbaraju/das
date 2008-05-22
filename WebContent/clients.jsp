@@ -21,7 +21,7 @@
 							src="images/subHeader_clientList.gif" alt="Partial Client List"
 							width="105" height="16" hspace="12" vspace="0" align="top"
 							class="blueClientListHeader"><br />
-							Allegran<br />
+						<nobr>	Allegran<br />
 						Big West of California<br />
 						Big West Oil, LLC<br />
 						BP Cherry Point Refinery<br />
@@ -45,7 +45,7 @@
 						Huntsman Conroe<br />
 						Huntsman Charlotte<br />
 						Huntsman Dayton<br />
-						</td>
+						</nobr></td>
 						<td valign="top" class="blueClientList"><script
 							type="text/javascript">
 AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0','width','145','height','130','title','Clients','src','flash/client_logoflash','quality','high','pluginspage','http://www.macromedia.com/go/getflashplayer','movie','flash/client_logoflash' ); //end AC code
@@ -62,7 +62,7 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
 						</object></noscript>
 						<script type="text/javascript" src="js/ieupdate.js"></script><br>
 						<br>
-						Huntsman Derry<br>
+						<nobr>Huntsman Derry<br>
 						Huntsman East Lansing<br>
 						Huntsman Freeport<br>
 						Huntsman Geismar<br>
@@ -78,11 +78,10 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
 						Martinez Catalyst Plant<br>
 						Motiva Convent Refinery<br>
 						Motiva Norco Refinery
-						</td>
+						</nobr></td>
 						<td valign="top" class="blueClientList">
-						Motiva Port Arthur Refinery<br>
-						Motiva Retail
-						Motiva SD&amp;CM<br>
+						<nobr>Motiva Port Arthur Refinery<br>
+						Motiva Retail Motiva SD&amp;CM<br>
 						Motorola USA<br>
 						Roquette America<br>
 						Shell Chemical Geismar<br>
@@ -105,7 +104,7 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
 						Tesoro Pipelines & Terminals<br>
 						Tesoro Retail<br>
 						Tesoro Salt Lake City Refinery<br>
-						Watson Cogen</td>
+						Watson Cogen</nobr></td>
 					</tr>
 				</table>
 				</td>
@@ -128,3 +127,4 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
 </table>
 </body>
 </html>
+						
