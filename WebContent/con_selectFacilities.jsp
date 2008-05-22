@@ -19,6 +19,7 @@
 	if (isSubmitted) {
 		cBean.setGeneralContractorsFromCheckList(request);
 		if (cBean.writeGeneralContractorsToDB(pBean, FACILITIES)) {
+			cBean.writeToDB();
 			cBean.buildAudits();
 			//	EmailBean.sendUpdateDynamicPQFEmail(id);
 		}

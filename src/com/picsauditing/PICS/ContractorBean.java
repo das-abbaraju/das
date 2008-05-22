@@ -644,7 +644,7 @@ public class ContractorBean extends DataBean {
 				while (li.hasNext()) {
 					String genID = (String)li.next();
 					replaceQuery += "("+id+","+genID+",NOW()),";
-					addNote(id,pBean.getPermissions().getUsername(), "Added this Contractor to "+FACILITIES.getNameFromID(genID)+"'s db", DateBean.getTodaysDateTime());
+					addNote(id,"(" + pBean.getPermissions().getUsername()+ " from PICS)", "Added this Contractor to "+FACILITIES.getNameFromID(genID)+"'s db", DateBean.getTodaysDateTime());
 				}//while
 				replaceQuery = replaceQuery.substring(0,replaceQuery.length()-1) + ";";
 				SQLStatement.executeUpdate(replaceQuery);
