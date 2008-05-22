@@ -60,6 +60,7 @@
 	<li><a href="AuditOperator.action?oID=<%=aBean.id%>">Audits</a></li>
 	<% } %>
 	<li><a href="UsersManage.action?accountId=<%=aBean.id%>">Users</a></li>
+	<li><a href="op_editFlagCriteria.jsp?opID=<%=aBean.id%>">Flag Criteria</a></li>
 	<li><a href="report_accounts.jsp?type=<%=aBean.type%>">Return to List</a></li>
 </ul>
 </div>
