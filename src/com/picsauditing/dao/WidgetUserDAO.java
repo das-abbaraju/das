@@ -36,7 +36,7 @@ public class WidgetUserDAO extends PicsDAO {
 	}
 
 	public List<WidgetUser> findByUser(Permissions permissions) {
-		Query query = em.createQuery("FROM WidgetUser WHERE user.id = ? ORDER BY sortOrder");
+		Query query = em.createQuery("SELECT wu FROM WidgetUser wu WHERE wu.user.id = ? ORDER BY wu.sortOrder");
 		query.setParameter(1, permissions.getUserId());
 
 		permissions.getAccountType();

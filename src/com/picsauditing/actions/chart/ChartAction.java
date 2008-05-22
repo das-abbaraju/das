@@ -2,19 +2,11 @@ package com.picsauditing.actions.chart;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.util.chart.Chart;
+import com.picsauditing.util.chart.ChartSingleSeries;
 import com.picsauditing.util.chart.Set;
 
 public class ChartAction extends PicsActionSupport {
-	protected Chart chart = new Chart();
 	protected String FCTime;
-
-	public Chart getChart() {
-		return chart;
-	}
-
-	public void setChart(Chart chart) {
-		this.chart = chart;
-	}
 
 	public String getFCTime() {
 		return FCTime;
@@ -25,14 +17,38 @@ public class ChartAction extends PicsActionSupport {
 	}
 
 	public String execute() {
-		if (chart.getSets().size() == 0 && chart.getDataSets().size() == 0) {
-			Set set = new Set();
-			set.setLabel("No Data");
-			set.setValue(0);
-			chart.addSet(set);
+		loadPermissions();
+		if (!permissions.isLoggedIn()) {
+			error("Not Logged In");
+			return SUCCESS;
 		}
-		message = chart.toString();
+		Chart chart;
+		try {
+			chart = buildChart();
+		} catch (Exception e) {
+			error("Error Getting Data");
+			return SUCCESS;
+		}
 		
-		return SUCCESS;
+		if (chart.hasData()) {
+			message = chart.toString();
+			return SUCCESS;
+		} else {
+			error("No Data");
+			return SUCCESS;
+		}
+	}
+	
+	public Chart buildChart() throws Exception {
+		return new ChartSingleSeries();
+	}
+	
+	public void error(String error) {
+		ChartSingleSeries chart = new ChartSingleSeries();
+		Set set = new Set();
+		set.setLabel(error);
+		set.setValue(1);
+		chart.getSets().add(set);
+		message = chart.toString();
 	}
 }

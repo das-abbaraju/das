@@ -1,9 +1,10 @@
 package com.picsauditing.util.chart;
 
 public class Set extends AbstractElement {
+	protected String index;
 	protected String label;
 	protected float value = 0;
-	
+
 	protected String borderColor;
 	protected String borderAlpha;
 	protected String isSliced;
@@ -12,7 +13,17 @@ public class Set extends AbstractElement {
 	protected String toolText;
 	protected boolean dashed = false;
 	protected String alpha;
-	
+
+	public Set() {
+	}
+
+	public Set(DataRow row) {
+		label = row.getLabel();
+		value = row.getValue();
+		link = row.getLink();
+		index = row.getIndex();
+	}
+
 	public String toString() {
 		StringBuilder xml = new StringBuilder();
 		// Create the <set> start
@@ -27,8 +38,7 @@ public class Set extends AbstractElement {
 		return xml.toString();
 	}
 
-
-	/////////////// GETTERS & SETTERS //////////////////
+	// ///////////// GETTERS & SETTERS //////////////////
 
 	public String getLabel() {
 		return label;
@@ -108,6 +118,14 @@ public class Set extends AbstractElement {
 
 	public void setAlpha(String alpha) {
 		this.alpha = alpha;
+	}
+
+	public String getIndex() {
+		return index;
+	}
+
+	public void setIndex(String index) {
+		this.index = index;
 	}
 
 }

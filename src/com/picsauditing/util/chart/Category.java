@@ -1,6 +1,7 @@
 package com.picsauditing.util.chart;
 
 public class Category extends AbstractElement {
+	protected String index;
 	protected String label;
 	protected boolean showLabel;
 	protected String toolText;
@@ -14,4 +15,40 @@ public class Category extends AbstractElement {
 		xml.append(" />");
 		return xml.toString();
 	}
+
+	public String getIndex() {
+		if (index == null)
+			index = label;
+		return index;
+	}
+
+	public void setIndex(String index) {
+		this.index = index;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public boolean isShowLabel() {
+		return showLabel;
+	}
+
+	public void setShowLabel(boolean showLabel) {
+		this.showLabel = showLabel;
+	}
+
+	public String getToolText() {
+		return toolText;
+	}
+
+	public void setToolText(String toolText) {
+		this.toolText = toolText;
+	}
+	
+	
 }

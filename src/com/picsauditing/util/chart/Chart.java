@@ -1,106 +1,58 @@
 package com.picsauditing.util.chart;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
+abstract public class Chart extends AbstractElement {
+	protected StringBuilder xml = new StringBuilder();
 
-public class Chart extends AbstractElement {
-	// Multi series variables
-	private boolean multiSeries = false;
-	protected float minCategory = 0;
-	protected float maxCategory = 100;
-	protected float categoryDifference = 10;
-	
 	// Chart Titles and Axis Names
-	private String caption;
-	private String subCaption;
-	private String xAxisName;
-	private String yAxisName;
+	protected String caption;
+	protected String subCaption;
+	protected String xAxisName;
+	protected String yAxisName;
 
 	// Functional Attributes
-	private boolean showValues = false;
-	private boolean showPercentageValues = false;
-	private boolean animation = true;
-	private int palette = 1;
-	private boolean connectNullData = true;
-	private boolean showLabels = true;
-	private boolean rotateLabels = false;
-	private String clickURL;
-	private boolean defaultAnimation = true;
-	
-	//
-	private String numberPrefix;
+	protected boolean showValues = false;
+	protected boolean showPercentageValues = false;
+	protected boolean animation = true;
+	protected int palette = 1;
+	protected boolean connectNullData = true;
+	protected boolean showLabels = true;
+	protected boolean rotateLabels = false;
+	protected String clickURL;
+	protected boolean defaultAnimation = true;
 
-	protected List<Category> categories = new ArrayList<Category>();
-	protected List<DataSet> dataSets = new ArrayList<DataSet>();
-	protected List<Set> sets = new ArrayList<Set>();
+	protected String numberPrefix;
+	
+	protected boolean empty = true;
 
 	public String toString() {
-		StringBuilder xml = new StringBuilder();
-		// Create the <chart> start
 		xml.append("<chart");
+
 		append(xml, "caption", caption);
 		append(xml, "subCaption", subCaption);
 		append(xml, "xAxisName", xAxisName);
 		append(xml, "yAxisName", yAxisName);
 		append(xml, "rotateLabels", rotateLabels);
 		append(xml, "showLabels", showLabels);
-		
+
 		append(xml, "showPercentageValues", showPercentageValues);
 		append(xml, "showValues", showValues);
 		append(xml, "animation", animation);
 		append(xml, "palette", palette);
-		
+
 		append(xml, "numberPrefix", numberPrefix);
-		
+
 		xml.append(">");
 
-		if (multiSeries) {
-			{
-				DecimalFormat df = new DecimalFormat("#.0");
-				xml.append("<categories>");
-				// Create the <category></category>
-				float categoryValue = minCategory;
-				while(categoryValue <= maxCategory) {
-					xml.append("<category");
-					
-					append(xml, "label", df.format(categoryValue));
-					//append(xml, "showLabel", showValues);
-					//String toolText = categoryValue.toString() + " to " + new Float(categoryValue+categoryDifference).toString();
-					//append(xml, "toolText", toolText);
-					xml.append(" />");
-					categoryValue += categoryDifference;
-				}
-				xml.append("</categories>");
-			}
-			for (DataSet dataSet : dataSets) {
-				// Create the <dataset></dataset>
-				dataSet.setMaxCategory(maxCategory);
-				dataSet.setMinCategory(minCategory);
-				dataSet.setCategoryDifference(categoryDifference);
-				xml.append(dataSet.toString());
-			}
-		} else {
-			for (Set set : sets)
-				xml.append(set.toString());
-		}
-		// Close the </chart>
+		addData();
+
 		xml.append("</chart>");
 		return xml.toString();
 	}
 
-	public void addCategory(Category category) {
-		categories.add(category);
-	}
+	abstract protected void addData();
 
-	public void addDataSet(DataSet set) {
-		dataSets.add(set);
-	}
+	abstract public boolean hasData();
 
-	public void addSet(Set set) {
-		sets.add(set);
-	}
-	
 	// ///////////// GETTERS & SETTERS //////////////////
 	public String getCaption() {
 		return caption;
@@ -116,22 +68,6 @@ public class Chart extends AbstractElement {
 
 	public void setShowPercentageValues(boolean showPercentageValues) {
 		this.showPercentageValues = showPercentageValues;
-	}
-
-	public List<DataSet> getDataSets() {
-		return dataSets;
-	}
-
-	public void setDataSets(List<DataSet> dataSets) {
-		this.dataSets = dataSets;
-	}
-
-	public List<Set> getSets() {
-		return sets;
-	}
-
-	public void setSets(List<Set> sets) {
-		this.sets = sets;
 	}
 
 	public String getSubCaption() {
@@ -230,44 +166,8 @@ public class Chart extends AbstractElement {
 		this.showValues = showValues;
 	}
 
-	public List<Category> getCategories() {
-		return categories;
-	}
-
-	public void setCategories(List<Category> categories) {
-		this.categories = categories;
-	}
-
-	public boolean isMultiSeries() {
-		return multiSeries;
-	}
-
-	public void setMultiSeries(boolean multiSeries) {
-		this.multiSeries = multiSeries;
-	}
-
-	public float getMinCategory() {
-		return minCategory;
-	}
-
-	public void setMinCategory(float minCategory) {
-		this.minCategory = minCategory;
-	}
-
-	public float getMaxCategory() {
-		return maxCategory;
-	}
-
-	public void setMaxCategory(float maxCategory) {
-		this.maxCategory = maxCategory;
-	}
-
-	public float getCategoryDifference() {
-		return categoryDifference;
-	}
-
-	public void setCategoryDifference(float categoryDifference) {
-		this.categoryDifference = categoryDifference;
+	public boolean isEmpty() {
+		return empty;
 	}
 
 }

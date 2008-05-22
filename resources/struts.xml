@@ -165,8 +165,13 @@
 			<result>struts/chart_xml.jsp</result>
 		</action>
 
+		<action name="ChartXMLAuditsClosed"
+			class="com.picsauditing.actions.chart.ChartAuditsClosed">
+			<result>struts/chart_xml.jsp</result>
+		</action>
+
 		<action name="GraphEmrRates"
-			class="com.picsauditing.actions.report.GraphEmrRates">
+			class="com.picsauditing.actions.chart.GraphEmrRates">
 			<result>struts/reports/graph_emr.jsp</result>
 		</action>
 		

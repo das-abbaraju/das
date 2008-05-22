@@ -2,36 +2,25 @@ package com.picsauditing.actions.chart;
 
 import java.util.List;
 
-import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.beanutils.LazyDynaBean;
 
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilder;
-import com.picsauditing.util.chart.DataSet;
-import com.picsauditing.util.chart.Set;
+import com.picsauditing.util.chart.ChartMultiSeries;
+import com.picsauditing.util.chart.DataRow;
+import com.picsauditing.util.chart.MultiSeriesConverterHistogram;
 
 /**
  * Get a count of each flag color for this operator
  * 
  * @author Trevor
  */
-public class ChartEmrRates extends ChartAction {
+public class ChartEmrRates extends ChartMSAction {
 
-	public String execute() {
-		try {
-			loadPermissions();
-			if (!permissions.isLoggedIn())
-				throw new Exception();
-		} catch (Exception e) {
-			Set set = new Set();
-			set.setLabel("Authentication ERROR");
-			set.setValue(1);
-			chart.getSets().add(set);
-			return SUCCESS;
-		}
-
+	@Override
+	public ChartMultiSeries buildChart() throws Exception {
 		SelectSQL sql = new SelectSQL("accounts a");
 		sql.addJoin("JOIN pqfdata d ON a.id = d.conID");
 		sql.addField("d.questionID");
@@ -45,57 +34,23 @@ public class ChartEmrRates extends ChartAction {
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
 		sql.addWhere("1 " +permQuery.toString());
 
-		try {
-			Database db = new Database();
-			List<BasicDynaBean> data = db.select(sql.toString(), false);
-			chart.setMultiSeries(true);
-			chart.setMaxCategory(1.2F);
-			chart.setMinCategory(0.4F);
-			chart.setCategoryDifference(0.1F);
+		MultiSeriesConverterHistogram converter = new MultiSeriesConverterHistogram();
+		
+		converter.setMaxCategory(1.2F);
+		converter.setMinCategory(0.4F);
+		converter.setCategoryDifference(0.1F);
+		converter.setChart(chart);
 
-			int id = 0;
-			DataSet dataSet = new DataSet();
-			for (BasicDynaBean row : data) {
-				int questionID = (Integer)row.get("questionID");
-				if (questionID != id) {
-					dataSet = new DataSet();
-					chart.getDataSets().add(dataSet);
-					String seriesName = "Unknown";
-					if (questionID == AuditQuestion.EMR07)
-						seriesName = "2007 EMR";
-					if (questionID == AuditQuestion.EMR06)
-						seriesName = "2006 EMR";
-					if (questionID == AuditQuestion.EMR05)
-						seriesName = "2005 EMR";
-					if (questionID == AuditQuestion.EMR04)
-						seriesName = "2004 EMR";
-					dataSet.setSeriesName(seriesName);
-					id = questionID;
-				}
-
-				Float category = Float.parseFloat(row.get("label").toString());
-				Float value = Float.parseFloat(row.get("value").toString());
-				
-				if (category < chart.getMinCategory())
-					dataSet.addToMin(value);
-				else if (category > chart.getMaxCategory())
-					dataSet.getSets().get(category);
-				else {
-					Set set = new Set();
-					set.setValue(value);
-					int index = Math.round(category / chart.getCategoryDifference());
-					dataSet.addSet(index, set);
-				}
-			}
-			
-		} catch (Exception e) {
-			chart.setMultiSeries(false);
-			Set set = new Set();
-			set.setLabel("ERROR");
-			set.setValue(1);
-			chart.getSets().add(set);
+		ChartDAO db = new ChartDAO();
+		List<DataRow> data = db.select(sql.toString());
+		
+		for (DataRow row : data) {
+			int questionID = Integer.parseInt(row.getSeries());
+			row.setSeries(AuditQuestion.getEmrYear(questionID) + " EMR");
 		}
-
-		return super.execute();
+		
+		converter.addData(data);
+		
+		return chart;
 	}
 }

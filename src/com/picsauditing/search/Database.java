@@ -4,9 +4,11 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.beanutils.LazyDynaBean;
 import org.apache.commons.beanutils.RowSetDynaClass;
 
 import com.picsauditing.PICS.DBBean;
@@ -36,6 +38,28 @@ public class Database {
 		}
 	}
 
+	public List<LazyDynaBean> selectMutable(String sql, boolean countRows) throws SQLException {
+		Connection Conn = DBBean.getDBConnection();
+		Statement stmt = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+		RowSetDynaClass rsdc;
+		try {
+			ResultSet rs = stmt.executeQuery(sql);
+		    rsdc = new RowSetDynaClass(rs, false);
+		    rs.close();
+		    
+			if (countRows) {
+				ResultSet tempRS = stmt.executeQuery("SELECT FOUND_ROWS()");
+				tempRS.next();
+				allRows = tempRS.getInt(1);
+				tempRS.close();
+			}
+		    return rsdc.getRows();
+		} finally {
+			stmt.close();
+		    Conn.close();
+		}
+	}
+	
 	public int getAllRows() {
 		return allRows;
 	}

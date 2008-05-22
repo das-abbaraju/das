@@ -32,6 +32,7 @@ public class AuditOperatorList extends PicsActionSupport {
 	private AuditOperatorDAO dataDAO;
 	private List<AuditOperator> data;
 
+	// TODO We need to refactor this eventually, see LowMedHigh.getMap()
 	protected static HashMap<Integer, String> riskLevels = new HashMap<Integer, String>();
 	
 	static 
