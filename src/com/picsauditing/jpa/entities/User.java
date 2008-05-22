@@ -2,12 +2,17 @@ package com.picsauditing.jpa.entities;
 
 import java.util.Date;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "users")
@@ -53,12 +58,17 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+	
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
+	@Enumerated(EnumType.STRING)
 	public YesNo getIsGroup() {
 		return isGroup;
 	}
 	public void setIsGroup(YesNo isGroup) {
 		this.isGroup = isGroup;
 	}
+	
 	public String getEmail() {
 		return email;
 	}
@@ -71,6 +81,9 @@ public class User {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
+	@Enumerated(EnumType.STRING)
 	public YesNo getIsActive() {
 		return isActive;
 	}
