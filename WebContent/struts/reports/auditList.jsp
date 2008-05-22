@@ -22,7 +22,7 @@
 			<s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch( 'form1')" />
 			</td></tr>
 			<tr><td><s:if test="%{value = (!permissions.operator && !permissions.corporate)}">
-			<s:select list="operatorList" cssClass="forms" name="operator" listKey="id" listValue="name" />
+			<s:select list="operatorList" cssClass="forms" name="operator" listKey="id" listValue="name" multiple="true" size="3" />
 			<s:action name="AuditorsGet" executeResult="true">
 				<s:param name="controlName" value="%{'auditorId'}"/>
 				<s:param name="presetValue" value="auditorId"/>		

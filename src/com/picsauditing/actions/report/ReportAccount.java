@@ -20,6 +20,7 @@ import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterInteger;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 
 public class ReportAccount extends ReportActionSupport {
 
@@ -37,7 +38,7 @@ public class ReportAccount extends ReportActionSupport {
 	protected String industry;
 	protected String performedBy;
 	protected int trade;
-	protected int operator;
+	protected int[] operator;
 	protected String city = DEFAULT_CITY;
 	protected String state;
 	protected String zip = DEFAULT_ZIP;
@@ -199,16 +200,17 @@ public class ReportAccount extends ReportActionSupport {
 		this.trade = trade;
 	}
 
-	public int getOperator() {
+	public int[] getOperator() {
 		return operator;
 	}
 
-	public void setOperator(int operator) {
-		report
-				.addFilter(new SelectFilterInteger(
+	public void setOperator(int[] operator) {
+		String operatorList = Strings.implode(operator, ",");
+		
+		report.addFilter(new SelectFilter(
 						"generalContractorID",
-						"a.id IN (SELECT subID FROM generalcontractors WHERE genID = ? )",
-						operator));
+						"a.id IN (SELECT subID FROM generalcontractors WHERE genID IN (?) )",
+						operatorList));
 		this.operator = operator;
 	}
 

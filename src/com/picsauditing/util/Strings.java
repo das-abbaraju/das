@@ -11,4 +11,14 @@ public class Strings {
 		}
 		return newValue.toString().trim();
 	}
+	
+	public static String implode(int[] array, String delimiter) {
+		StringBuffer buffer = new StringBuffer();
+		for (int o : array) {
+			if (buffer.length() > 0)
+				buffer.append(delimiter);
+			buffer.append(o);
+		}
+		return buffer.toString();
+	}
 }
