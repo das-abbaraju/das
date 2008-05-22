@@ -55,9 +55,7 @@ onclick="hideSearch()">Hide Filter Options</a></div>
                           <%=SearchBean.getSearchGeneralSelect("generalContractorID", "blueMain", sBean.selected_generalContractorID)%>
                        	  <input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0">
                           </td></tr>
-                          <tr><td>
-                          <%=Inputs.inputSelect("invoicedStatus", "blueMain", sBean.selected_invoicedStatus,SearchBean.INVOICED_SEARCH_ARRAY)%>
-                       </td>
+                          <tr>
                       </tr>
                     </table>
             <input type="hidden" name="actionID" value="0">
