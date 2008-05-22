@@ -1,19 +1,22 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AuditOperatorDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AuditOperator;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.AuditTypeCache;
 
 public class AuditOperatorList extends PicsActionSupport {
@@ -29,13 +32,18 @@ public class AuditOperatorList extends PicsActionSupport {
 	private AuditOperatorDAO dataDAO;
 	private List<AuditOperator> data;
 
+	protected static HashMap<Integer, String> riskLevels = new HashMap<Integer, String>();
+	
+	static 
+	{
+		riskLevels.put(0, "None");
+		riskLevels.put(1, "Low");
+		riskLevels.put(2, "Med");
+		riskLevels.put(3, "High");
+	}
+	
 	public static final HashMap<Integer, String> getRiskLevels() {
-		HashMap<Integer, String> map = new HashMap<Integer, String>();
-		map.put(0, "None");
-		map.put(1, "Low");
-		map.put(2, "Med");
-		map.put(3, "High");
-		return map;
+		return riskLevels;
 	}
 
 
@@ -52,9 +60,14 @@ public class AuditOperatorList extends PicsActionSupport {
 		operators = operatorDAO.findWhere("type = 'Operator'");
 		
 		auditTypes = new AuditTypeCache( auditDAO ).getAuditTypes();
-		for(AuditType audit : auditTypes)
+
+		Iterator<AuditType> iter = auditTypes.iterator();
+		
+		while(iter.hasNext()) {
+			AuditType audit = iter.next();
 			if (audit.getAuditTypeID() == AuditType.NCMS)
-				auditTypes.remove(audit);
+				iter.remove();
+		}
 		
 		data = new ArrayList<AuditOperator>();
 		HashMap<Integer, AuditOperator> rawDataIndexed = new HashMap<Integer, AuditOperator>();
