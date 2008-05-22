@@ -23,9 +23,7 @@
 			//	EmailBean.sendUpdateDynamicPQFEmail(id);
 		}
 		if (permissions.isContractor()) {
-			// THIS IS GOING TO ERROR!! Need to figure out what to do when contractors add a facility
-			response.sendRedirect("pqf_edit.jsp?auditType=" + com.picsauditing.PICS.pqf.Constants.PQF_TYPE
-					+ "&mustFinishPrequal=&id=" + aBean.id);
+			response.sendRedirect("Home.action");
 			return;
 		}
 	}

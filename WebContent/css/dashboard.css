@@ -82,3 +82,8 @@ a:hover.panel_edit {
 	background-position: center;
 	height:100px;
 }
+
+.panel_content label {
+	font-weight: bold;
+	color: #003768;
+}
