@@ -12,15 +12,19 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.NcmsCategory;
+import com.picsauditing.mail.EmailAuditBean;
+import com.picsauditing.mail.EmailTemplates;
 
 public class ContractorAuditAction extends AuditActionSupport {
 	protected AuditStatus auditStatus;
 	protected List<AuditCatData> categories;
 	protected AuditCategoryDataDAO catDataDao;
+	protected EmailAuditBean mailer;
 
-	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao) {
+	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, EmailAuditBean emailAuditBean) {
 		super(accountDao, auditDao, auditDataDao);
 		this.catDataDao = catDataDao;
+		mailer = emailAuditBean;
 	}
 	
 	public String execute() throws Exception {
@@ -35,6 +39,14 @@ public class ContractorAuditAction extends AuditActionSupport {
 			}
 			if (conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
 				// TODO Do anything needed for Submitted audits
+				// Send email to contractors telling them the Audit was submitted
+				mailer.setPermissions(permissions);
+				if (conAudit.getAuditType().getAuditTypeID() == AuditType.DESKTOP) {
+					mailer.sendMessage(EmailTemplates.desktopsubmit, conAudit);
+				}
+				if (conAudit.getAuditType().getAuditTypeID() == AuditType.DA) {
+					mailer.sendMessage(EmailTemplates.dasubmit, conAudit);
+				}
 			}
 			if (conAudit.getAuditStatus().equals(AuditStatus.Active)) {
 				// TODO Recalculate the flag color for this contractor

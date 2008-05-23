@@ -7,6 +7,7 @@ public class Email {
 	private String bccAddress;
 	private String subject;
 	private String body;
+	private boolean htmlBody = false;
 	
 	/////////////// GETTERS/SETTERS //////////////////////
 	public String getFromAddress() {
@@ -44,5 +45,11 @@ public class Email {
 	}
 	public void setBody(String body) {
 		this.body = body;
+	}
+	public boolean isHtmlBody() {
+		return htmlBody;
+	}
+	public void setHtmlBody(boolean htmlBody) {
+		this.htmlBody = htmlBody;
 	}
 }

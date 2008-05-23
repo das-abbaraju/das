@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.picsauditing.mail.EmailTemplates;
 import com.picsauditing.mail.EmailUserBean;
 import com.picsauditing.mail.EmailContractorBean;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.access.Permissions;
 
 public class AccountBean extends DataBean {
@@ -499,14 +500,14 @@ public class AccountBean extends DataBean {
 					return false;
 				}
 				// Send an email to the user
-				String userID = SQLResult.getString("id");
-				EmailUserBean mailer = new EmailUserBean();
-				mailer.sendMessage(EmailTemplates.password, userID, new Permissions());
+				int userID = SQLResult.getInt("id");
+				EmailUserBean mailer = (EmailUserBean)SpringUtils.getBean("EmailUserBean");
+				mailer.sendMessage(EmailTemplates.password, userID);
 			} else {
 				// Send an email to the contractor
-				String accountID = SQLResult.getString("id");
-				EmailContractorBean mailer = new EmailContractorBean();
-				mailer.sendMessage(EmailTemplates.password, accountID, new Permissions());
+				int accountID = SQLResult.getInt("id");
+				EmailContractorBean mailer = (EmailContractorBean)SpringUtils.getBean("EmailContractorBean");
+				mailer.sendMessage(EmailTemplates.password, accountID);
 			}
 			SQLResult.close();
 			DBClose();

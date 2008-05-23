@@ -29,6 +29,7 @@ import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EmailTemplates;
 import com.picsauditing.servlet.upload.UploadConHelper;
 import com.picsauditing.servlet.upload.UploadProcessorFactory;
+import com.picsauditing.util.SpringUtils;
 
 public class CertificateBean extends DataBean {
 	public static final String DEFAULT_NAME = "- Name - ";
@@ -386,17 +387,11 @@ public class CertificateBean extends DataBean {
 					ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
 					if (SQLResult.next()) {
 						setFromResultSet(SQLResult);
-						EmailContractorBean mailer = new EmailContractorBean();
-						HashMap<String, String> tokens = new HashMap<String, String>();
-						tokens.put("opName", operator);
-						tokens.put("expiration_date", getExpDateShow());
-						tokens.put("certificate_type", type);
-						mailer.sendMessage(EmailTemplates.certificate_expire, contractor_id, permissions, tokens);
-						String newNote = "Sent reminder email warning that " + type
-								+ " insurance certificate will expire on " + expDate;
-						Note note = new Note(permissions.getAccountIdString(), contractor_id, permissions
-								.getUserIdString(), permissions.getName(), newNote);
-						note.writeToDB();
+						EmailContractorBean mailer = (EmailContractorBean)SpringUtils.getBean("EmailContractorBean");
+						mailer.addToken("opName", operator);
+						mailer.addToken("expiration_date", getExpDateShow());
+						mailer.addToken("certificate_type", type);
+						mailer.sendMessage(EmailTemplates.certificate_expire, Integer.parseInt(contractor_id));
 
 						String updateQuery = "UPDATE certificates SET sent=(sent+1),lastSentDate=NOW() WHERE cert_id='"
 								+ this.eqDB(certificate_id) + "'";

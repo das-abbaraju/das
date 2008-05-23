@@ -22,6 +22,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.jpa.entities.OshaLogYear;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.mail.EmailAuditBean;
 import com.picsauditing.mail.EmailContractorBean;
 import com.picsauditing.mail.EmailTemplates;
 
@@ -32,9 +33,13 @@ public class VerifyView extends AuditActionSupport {
 	private Map<Integer, AuditData> emr = new HashMap<Integer, AuditData>();
 	protected Map<Integer, AuditData> customVerification = null;
 	private int followUp = 0;
+	
+	private EmailAuditBean mailer;
 
-	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO, AuditDataDAO auditDataDao) {
+	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO, AuditDataDAO auditDataDao, EmailAuditBean mailer) {
 		super(accountDao, contractorAuditDAO, auditDataDao);
+		this.mailer = mailer;
+		this.mailer.setPermissions(permissions);
 	}
 
 	public String execute() throws Exception {
@@ -212,8 +217,6 @@ public class VerifyView extends AuditActionSupport {
 		this.findConAudit();
 		loadData();
 
-		EmailContractorBean emailer = new EmailContractorBean();
-		
 		StringBuffer sb = new StringBuffer("");
 		
 		appendOsha(sb, osha.getYear1(), getYear1());
@@ -249,11 +252,10 @@ public class VerifyView extends AuditActionSupport {
 		
 		String items = sb.toString();
 		
-		emailer.addTokens("missing_items", items);
-		emailer.sendMessage(EmailTemplates.verifyPqf, this.conAudit
-				.getContractorAccount().getIdString(), permissions);
+		mailer.addToken("missing_items", items);
+		mailer.sendMessage(EmailTemplates.verifyPqf, this.conAudit);
 
-		String note = "PQF Verification email sent to " + emailer.getSentTo();
+		String note = "PQF Verification email sent to " + mailer.getSentTo();
 		this.conAudit.getContractorAccount().addNote(permissions, note);
 		this.auditDao.save(conAudit);
 

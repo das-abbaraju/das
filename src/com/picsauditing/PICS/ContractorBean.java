@@ -662,6 +662,21 @@ public class ContractorBean extends DataBean {
 		isNotesChanged = true;
 	}
 
+	static public void addNote(Integer conID, Permissions permissions, String newNote) throws Exception {
+		String currentUserDisplayName = "System";
+		if (permissions != null) {
+			if (permissions.getName() != null && permissions.getName().length() > 0)
+				currentUserDisplayName = permissions.getName();
+			else
+				currentUserDisplayName = permissions.getUsername();
+		}
+		
+		ContractorBean cBean = new ContractorBean();
+		cBean.setFromDB(conID.toString());
+		cBean.addNote(conID.toString(), currentUserDisplayName, newNote, DateBean.getTodaysDateTime());
+		cBean.writeToDB();
+	}
+
 	public void addAdminNote(String conID, String pre, String newNote, String notesDate) throws Exception {
 		adminNotes = notesDate+" "+pre+": "+newNote+"\n"+adminNotes;
 		isAdminNotesChanged = true;

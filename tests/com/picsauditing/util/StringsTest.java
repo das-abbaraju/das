@@ -3,8 +3,6 @@ package com.picsauditing.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.picsauditing.jpa.entities.FlagColor;
-
 import junit.framework.TestCase;
 
 public class StringsTest extends TestCase {
