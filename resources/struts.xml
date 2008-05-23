@@ -31,6 +31,11 @@
 			<result>struts/users/users_manage.jsp</result>
 		</action>
 
+		<action name="UserProfileAjax"
+			class="com.picsauditing.actions.users.ProfileEdit">
+			<result>struts/widgets/user_profile.jsp</result>
+		</action>
+
 		<action name="ReportAuditList"
 			class="com.picsauditing.actions.report.ReportContractorAudits">
 			<result>struts/reports/auditList.jsp</result>
@@ -41,11 +46,17 @@
 			<result>struts/reports/audit_auditor.jsp</result>
 		</action>
 		
+
 		<action name="MyAuditHistory"
 			class="com.picsauditing.actions.report.ReportMyAuditHistory">
 			<result>struts/reports/myAuditHistory.jsp</result>
 		</action>
 	
+		<action name="MyAssignedAuditsAjax"
+			class="com.picsauditing.actions.report.ReportContractorAuditAuditor">
+			<result>struts/reports/myAssignedAudits.jsp</result>
+		</action>
+
 		<action name="AuditAssignments"
 			class="com.picsauditing.actions.report.ReportContractorAuditAssignment">
 			<result>struts/reports/auditAssignments.jsp</result>

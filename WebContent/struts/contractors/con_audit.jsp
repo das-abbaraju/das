@@ -25,9 +25,9 @@ table.report tr.na a {
 <span class="message"><s:property value="message" /></span>
 <s:form>
 	<s:hidden name="auditID" />
-	<s:if test="conAudit.auditStatus.name() == 'Pending' && conAudit.percentComplete == 100">
 		<s:hidden name="auditStatus" value="Submitted" />
 		<s:submit value="Submit" />
+	<s:if test="conAudit.auditStatus.name() == 'Pending' && conAudit.percentComplete == 100">
 	</s:if>
 	<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.percentVerified == 100">
 		<s:hidden name="auditStatus" value="Active" />

@@ -191,7 +191,9 @@ input.valid {
 		The Queen Mary<br />
 		1126 Queens Highway<br />
 		Long Beach, CA 90802<br />
-		(800) 437-2934<br /></p>
+		(800) 437-2934<br />
+		If you need a place to stay, please visit the <a href="http://www.queenmary.com/" class="blueSmall">Queen Mary website</a>
+		for reservation details.</p>
 		<p><span class="style2">We look forward to seeing you
 		in Long Beach, California.</span></p>
 		</div>
