@@ -1,14 +1,13 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>My Audits</title>
+<title>My Audit History</title>
 <script src="js/prototype.js" type="text/javascript"></script>
-<script src="js/scriptaculous/scriptaculous.js?load=effects"
-	type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
-<h1>My Audits</h1>
+<h1>My Audit History</h1>
 
 <div id="search">
 <div id="showSearch" onclick="showSearch()" <s:if test="filtered">style="display: none"</s:if> ><a href="#">Show Filter Options</a></div>
@@ -18,12 +17,12 @@
 	<tr>
 		<td style="vertical-align: middle;"><s:textfield name="accountName" cssClass="forms" size="8" onfocus="clearText(this)"  />
 			<s:select list="auditTypeList" cssClass="forms" name="auditTypeID" listKey="auditTypeID" listValue="auditName" />
-			<s:select list="auditStatusList" cssClass="forms" name="auditStatus" />
 			<s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch( 'form1')" />
 			</td></tr>
-		<tr><td><s:select list="operatorList" cssClass="forms" name="operator" listKey="id" listValue="name" />
+			<tr><td>
+			<s:select list="operatorList" cssClass="forms" name="operator" listKey="id" listValue="name" multiple="true" size="3" />
 		</td>
-		</tr>
+	</tr>
 	</table>
 	<s:hidden name="showPage" value="1"/>
 	<s:hidden name="startsWith" />
@@ -41,22 +40,18 @@
 	<thead>
 	<tr>
 		<td></td>
-	    <td><a href="?orderBy=a.name">Contractor</a></td>
-	    <td><a href="?orderBy=atype.auditName">Type</a></td>
-		<td><a href="?orderBy=ca.assignedDate DESC">Assigned</a></td>
-	    <td><a href="?orderBy=ca.completedDate DESC">Submitted</a></td>
-	    <td><a href="?orderBy=ca.auditStatus DESC">Status</a></td>
+	    <th><a href="?orderBy=a.name" >Contractor</a></th>
+	    <td><a href="?orderBy=atype.auditName" >Type</a></td>
+	    <td><a href="?orderBy=ca.closedDate DESC" >Created</a></td>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
-		<tr>
-			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td><a href="ContractorView.action?id=<s:property value="[0].get('id')"/>"><s:property value="[0].get('name')"/></a></td>
-			<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="[0].get('auditName')"/></a></td>
-			<td><s:date name="[0].get('assignedDate')" format="M/d/yy" /></td>
-			<td><s:date name="[0].get('completedDate')" format="M/d/yy" /></td>
-			<td><s:property value="[0].get('auditStatus')"/></td>
-		</tr>
+	<tr>
+		<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
+		<td><s:property value="[0].get('name')"/></td>
+		<td><s:property value="[0].get('auditName')"/></td>
+		<td class="center"><s:date name="[0].get('closedDate')" format="M/d/yy" /></td>
+	</tr>
 	</s:iterator>
 </table>
 <div>

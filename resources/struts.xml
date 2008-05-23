@@ -41,6 +41,11 @@
 			<result>struts/reports/audit_auditor.jsp</result>
 		</action>
 		
+		<action name="MyAuditHistory"
+			class="com.picsauditing.actions.report.ReportMyAuditHistory">
+			<result>struts/reports/myAuditHistory.jsp</result>
+		</action>
+	
 		<action name="AuditAssignments"
 			class="com.picsauditing.actions.report.ReportContractorAuditAssignment">
 			<result>struts/reports/auditAssignments.jsp</result>

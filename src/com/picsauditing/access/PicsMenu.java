@@ -42,8 +42,10 @@ public class PicsMenu {
 			subMenu.addChild("By Operator", "report_operatorContractor.jsp?searchCorporate=Y");
 
 		subMenu = menu.addChild("Auditing");
-		if (permissions.isAuditor())
+		if (permissions.isAuditor()) {
 			subMenu.addChild("My Audits", "AuditListAuditor.action");
+			subMenu.addChild("My Audit History", "MyAuditHistory.action");
+		}
 		
 		subMenu.addChild("Audit List", "ReportAuditList.action");
 		if (permissions.hasPermission(OpPerms.AssignAudits))

@@ -18,9 +18,9 @@ Version</span></h1>
 	</tr>
 </table>
 <div id="search">
-<div id="showSearch"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
-<div id="hideSearch" style="display: none"><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
-<s:form id="form1" method="post" cssStyle="display: none">
+<div id="showSearch" onclick="showSearch()" <s:if test="filtered">style="display: none"</s:if> ><a href="#">Show Filter Options</a></div>
+<div id="hideSearch" <s:if test="!filtered">style="display: none"</s:if> ><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
+<s:form id="form1" method="post" cssStyle="%{filtered ? '' : 'display: none'}">
 	<table border="0" align="center" cellpadding="2" cellspacing="0">
 		<tr>
 			<td align="left"><s:textfield name="accountName"

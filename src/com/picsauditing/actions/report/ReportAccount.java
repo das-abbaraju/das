@@ -32,6 +32,7 @@ public class ReportAccount extends ReportActionSupport {
 	public static final String DEFAULT_VISIBLE = "- Visible -";
 
 	protected boolean forwardSingleResults = false;
+	protected boolean skipPermissions = false;
 	
 	protected String startsWith;
 	protected String accountName = DEFAULT_NAME;
@@ -63,7 +64,8 @@ public class ReportAccount extends ReportActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		sql.setPermissions(permissions);
+		if (!skipPermissions)
+			sql.setPermissions(permissions);
 
 		if (this.orderBy == null)
 			this.orderBy = "a.name";
@@ -206,7 +208,8 @@ public class ReportAccount extends ReportActionSupport {
 
 	public void setOperator(int[] operator) {
 		String operatorList = Strings.implode(operator, ",");
-		
+		if (operatorList.equals("0"))
+			return;
 		report.addFilter(new SelectFilter(
 						"generalContractorID",
 						"a.id IN (SELECT subID FROM generalcontractors WHERE genID IN (?) )",
