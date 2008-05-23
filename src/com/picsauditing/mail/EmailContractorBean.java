@@ -29,6 +29,7 @@ public class EmailContractorBean extends EmailBean {
 		this.contractor = contractor;
 		
 		tokens.put("contractor", contractor);
+		tokens.put("user", contractor); // Sometimes we treat contractors as users
 		email.setToAddress(contractor.getEmail());
 		email.setCcAddress(contractor.getSecondEmail());
 		

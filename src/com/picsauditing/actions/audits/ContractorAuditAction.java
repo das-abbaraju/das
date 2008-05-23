@@ -1,6 +1,8 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -36,8 +38,11 @@ public class ContractorAuditAction extends AuditActionSupport {
 			if (!conAudit.getAuditType().isHasRequirements() && auditStatus.equals(AuditStatus.Submitted)) {
 				// This audit should skip directly to Active when Submitted
 				auditStatus = AuditStatus.Active;
+				conAudit.setCompletedDate(new Date());
 			}
 			if (conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
+				conAudit.setCompletedDate(new Date());
+				
 				// TODO Do anything needed for Submitted audits
 				// Send email to contractors telling them the Audit was submitted
 				mailer.setPermissions(permissions);
@@ -50,7 +55,24 @@ public class ContractorAuditAction extends AuditActionSupport {
 			}
 			if (conAudit.getAuditStatus().equals(AuditStatus.Active)) {
 				// TODO Recalculate the flag color for this contractor
+				conAudit.setClosedDate(new Date());
 			}
+			
+			if (conAudit.getExpiresDate() == null && conAudit.getCompletedDate() != null) {
+				Date dateToExpire = conAudit.getAuditType().getDateToExpire();
+				Calendar cal = Calendar.getInstance();
+				if (dateToExpire == null) {
+					cal.setTime(conAudit.getCompletedDate());
+					cal.add(Calendar.MONTH, conAudit.getAuditType().getMonthsToExpire());
+				} else {
+					cal.setTime(dateToExpire);
+					cal.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
+					cal.before(new Date());
+					cal.add(Calendar.YEAR, 1);
+				}
+				conAudit.setExpiresDate(cal.getTime());
+			}
+			
 			// Save the audit status
 			conAudit.setAuditStatus(auditStatus);
 			auditDao.save(conAudit);
