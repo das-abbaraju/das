@@ -61,7 +61,7 @@
 	<thead>
 		<tr>
 			<td>Flag</td>
-			<td>Missing/Incomplete Audits</td>
+			<td>Required Audits</td>
 		</tr>
 	</thead>
 	<s:iterator value="co.operatorAccount.audits">

@@ -95,13 +95,14 @@ public class FlagCalculatorSingle {
 						
 						// Make sure all three years pass the criteria
 						flagColor = setFlagColor(flagColor, verifyOsha(osha.getYear1(), criteria));
-
 						flagColor = setFlagColor(flagColor, verifyOsha(osha.getYear2(), criteria));
 						flagColor = setFlagColor(flagColor, verifyOsha(osha.getYear3(), criteria));
 					}
 				}
 				if (!found)
 					// We didn't find the required Corporate Osha record, so flag this contractor 
+					// We may actually not want to do this if for some reason a contractor
+					// is allowed to pass their 
 					flagColor = setFlagColor(flagColor, criteria.getFlagColor());
 				
 				if (answerOnly && flagColor.equals(FlagColor.Red))

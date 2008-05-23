@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -13,7 +12,6 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NcmsCategoryDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -38,8 +36,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return LOGIN;
 		this.findConAudit();
 
-		if (this.conAudit.getAuditType().getAuditTypeID() == AuditType.NCMS)
-			return "NCMS";
 		return SUCCESS;
 	}
 	

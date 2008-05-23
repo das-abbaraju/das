@@ -15,6 +15,7 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
 
@@ -70,6 +71,17 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			permissions.tryPermission(OpPerms.EditForcedFlags);
 			co.setForceEnd(forceEnd);
 			co.setForceFlag(forceFlag);
+		}
+		
+		if (co.getFlag() == null) {
+			// Add a new flag for the contractor
+			ContractorOperatorFlag newFlag = new ContractorOperatorFlag();
+			newFlag.setFlagColor(FlagColor.Red); // Always start with Red
+			newFlag.setContractorAccount(co.getContractorAccount());
+			newFlag.setOperatorAccount(co.getOperatorAccount());
+			newFlag.setLastUpdate(new Date());
+			newFlag = coFlagDao.save(newFlag);
+			co.setFlag(newFlag);
 		}
 		
 		FlagColor newColor = calculator.calculate();

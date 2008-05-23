@@ -25,13 +25,13 @@ table.report tr.na a {
 <span class="message"><s:property value="message" /></span>
 <s:form>
 	<s:hidden name="auditID" />
-		<s:hidden name="auditStatus" value="Submitted" />
-		<s:submit value="Submit" />
 	<s:if test="conAudit.auditStatus.name() == 'Pending' && conAudit.percentComplete == 100">
+		<s:hidden name="auditStatus" value="Submitted" />
+		<s:submit value="%{'Submit '.concat(conAudit.auditType.auditName)}" />
 	</s:if>
 	<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.percentVerified == 100">
 		<s:hidden name="auditStatus" value="Active" />
-		<s:submit value="Close Audit" />
+		<s:submit value="%{'Close '.concat(conAudit.auditType.auditName)}" />
 	</s:if>
 </s:form>
 
