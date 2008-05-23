@@ -1,6 +1,5 @@
 package com.picsauditing.actions.audits;
 
-import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -13,8 +12,8 @@ import com.picsauditing.dao.ContractorAuditDAO;
 public class AuditDataView extends AuditActionSupport {
 	int categoryID;
 	
-	public AuditDataView(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao) {
-		super(accountDao, auditDao, catDataDao, auditDataDao);
+	public AuditDataView(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditDataDAO auditDataDao) {
+		super(accountDao, auditDao, auditDataDao);
 	}
 	
 	public String execute() throws Exception {

@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -30,14 +29,12 @@ public class VerifyView extends AuditActionSupport {
 	private int oshaID = 0;
 	@Autowired
 	private OshaLog osha;
-	private AuditDataDAO pqfDao;
 	private Map<Integer, AuditData> emr = new HashMap<Integer, AuditData>();
 	protected Map<Integer, AuditData> customVerification = null;
 	private int followUp = 0;
 
-	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO, AuditDataDAO pqfDao, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao) {
-		super(accountDao, contractorAuditDAO, catDataDao, auditDataDao);
-		this.pqfDao = pqfDao;
+	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO, AuditDataDAO auditDataDao) {
+		super(accountDao, contractorAuditDAO, auditDataDao);
 	}
 
 	public String execute() throws Exception {
@@ -64,7 +61,7 @@ public class VerifyView extends AuditActionSupport {
 			emrQuestions.add(AuditQuestion.EMR07);
 			emrQuestions.add(AuditQuestion.EMR06);
 			emrQuestions.add(AuditQuestion.EMR05);
-			Map<Integer, AuditData> emrDB = pqfDao.findAnswers(this.auditID, emrQuestions);
+			Map<Integer, AuditData> emrDB = auditDataDao.findAnswers(this.auditID, emrQuestions);
 			saveAuditData(emrDB, AuditQuestion.EMR07);
 			saveAuditData(emrDB, AuditQuestion.EMR06);
 			saveAuditData(emrDB, AuditQuestion.EMR05);
@@ -76,7 +73,7 @@ public class VerifyView extends AuditActionSupport {
 			{
 				AuditData aq = (AuditData) customVerification.get(i);
 				
-				AuditData toMerge = pqfDao.findAnswerToQuestion( this.auditID, i );
+				AuditData toMerge = auditDataDao.findAnswerToQuestion( this.auditID, i );
 				
 				toMerge.setVerifiedAnswer(aq.getVerifiedAnswer());
 				
@@ -87,7 +84,7 @@ public class VerifyView extends AuditActionSupport {
 					toMerge.setIsCorrectBoolean(aq.getIsCorrectBoolean() );
 				}
 				
-				pqfDao.save( toMerge );			
+				auditDataDao.save( toMerge );			
 			}
 		}
 		
@@ -154,7 +151,7 @@ public class VerifyView extends AuditActionSupport {
 		emrDB.get(year).setVerifiedAnswer(emr.get(year).getVerifiedAnswer());
 		emrDB.get(year).setComment(emr.get(year).getComment());
 		emrDB.get(year).setIsCorrect(emr.get(year).getIsCorrect());
-		pqfDao.save(emrDB.get(year));
+		auditDataDao.save(emrDB.get(year));
 	}
 
 	private void loadData() {
@@ -175,10 +172,10 @@ public class VerifyView extends AuditActionSupport {
 		emrQuestions.add(AuditQuestion.EMR07);
 		emrQuestions.add(AuditQuestion.EMR06);
 		emrQuestions.add(AuditQuestion.EMR05);
-		emr = pqfDao.findAnswers(this.auditID, emrQuestions);
+		emr = auditDataDao.findAnswers(this.auditID, emrQuestions);
 		
 		
-		List<AuditData> temp = pqfDao.findCustomPQFVerifications(this.auditID);
+		List<AuditData> temp = auditDataDao.findCustomPQFVerifications(this.auditID);
 		
 		customVerification = new TreeMap<Integer, AuditData>();
 		

@@ -2,6 +2,7 @@ package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
@@ -21,13 +22,10 @@ import com.picsauditing.jpa.entities.NcmsCategory;
 public class AuditActionSupport extends ContractorActionSupport {
 	protected int auditID = 0;
 	protected ContractorAudit conAudit;
-	protected List<AuditCatData> categories;
-	protected AuditCategoryDataDAO catDataDao;
 	protected AuditDataDAO auditDataDao;
 
-	public AuditActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao) {
+	public AuditActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditDataDAO auditDataDao) {
 		super(accountDao, auditDao);
-		this.catDataDao = catDataDao;
 		this.auditDataDao = auditDataDao;
 	}
 	
@@ -78,29 +76,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return conAudit;
 	}
 
-	
-	public List<AuditCatData> getCategories() {
-		if (conAudit.getAuditStatus().equals(AuditStatus.Exempt))
-			return null;
-
-		if (categories == null) {
-			categories = catDataDao.findByAudit(conAudit, permissions);
-		}
-		return categories;
-	}
-
-	public List<NcmsCategory> getNcmsCategories() {
-		try {
-			NcmsCategoryDAO dao = new NcmsCategoryDAO();
-			return dao.findCategories(this.id);
-		} catch (Exception e) {
-			List<NcmsCategory> error = new ArrayList<NcmsCategory>();
-			NcmsCategory cat = new NcmsCategory();
-			cat.setName("Error retrieving list");
-			error.add(cat);
-			return error;
-		}
-	}
 
 	public boolean isHasSafetyManual() {
 		String hasManual = getAnswer(AuditQuestion.MANUAL_PQF);
@@ -112,26 +87,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 	private String getAnswer(int questionID) {
 		List<Integer> ids = new ArrayList<Integer>();
 		ids.add(questionID);
-		AuditData data = auditDataDao.findAnswersByContractor(conAudit.getContractorAccount().getId(), ids).get(AuditQuestion.MANUAL_PQF);
+		Map<Integer, AuditData> answers = auditDataDao.findAnswersByContractor(conAudit.getContractorAccount().getId(), ids);
+		if (answers == null || answers.size() == 0)
+			return "";
+		AuditData data = answers.get(AuditQuestion.MANUAL_PQF);
 		return data.getAnswer();
-	}
-	
-	public String getCatUrl() {
-		if (!isCanEdit())
-			return "pqf_view.jsp";
-		
-		if (conAudit.getAuditStatus().equals(AuditStatus.Pending))
-			return "pqf_edit.jsp";
-		
-		if (conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
-			if (isCanVerify())
-				return "pqf_edit.jsp";
-			else
-				return "pqf_view.jsp";
-		}
-		
-		// Active/Exempt/Expired
-		return "pqf_view.jsp";
 	}
 	
 	public boolean isCanVerify() {
@@ -149,6 +109,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		
 		// Auditors can edit their assigned audits
 		if (type.isHasAuditor() && !type.isCanContractorEdit() 
+				&& conAudit.getAuditor() != null
 				&& permissions.getUserId() == conAudit.getAuditor().getId())
 			return true;
 		

@@ -123,7 +123,9 @@ public class ContractorAuditLegacy {
 		AuditType type = audit.getAuditType();
 		
 		// Auditors can edit their assigned audits
-		if (type.isHasAuditor() && permissions.getUserId() == audit.getAuditor().getId())
+		if (type.isHasAuditor() 
+				&& audit.getAuditor() != null 
+				&& permissions.getUserId() == audit.getAuditor().getId())
 			return true;
 		
 		if (permissions.isContractor()) {
