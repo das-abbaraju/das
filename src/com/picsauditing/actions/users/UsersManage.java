@@ -23,6 +23,8 @@ public class UsersManage extends PicsActionSupport {
 	protected Report search = null;
 	protected List<BasicDynaBean> searchData = null;
 
+	protected boolean filtered = false;
+	
 	protected String isGroup = null;
 	protected String isActive = null;
 
@@ -52,9 +54,12 @@ public class UsersManage extends PicsActionSupport {
 
 		if (isActive == null) {
 			isActive = "Yes";
-		}
+		} else
+			filtered = true;
+
 
 		if ("Yes".equals(isGroup) || "No".equals(isGroup)) {
+			filtered = true;
 			sql.addWhere("isGroup = '" + isGroup + "' ");
 		}
 		if ("Yes".equals(isActive) || "No".equals(isActive)) {
@@ -148,4 +153,9 @@ public class UsersManage extends PicsActionSupport {
 		return facilities;
 
 	}
+
+	public boolean isFiltered() {
+		return filtered;
+	}
+
 }

@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.search.Report;
@@ -12,7 +11,6 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ColorAlternater;
 
 public class ReportActionSupport extends PicsActionSupport {
-	@Autowired
 	protected Report report = new Report();
 	protected List<BasicDynaBean> data;
 
