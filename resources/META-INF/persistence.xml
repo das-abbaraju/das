@@ -32,6 +32,19 @@
 			<property name="hibernate.hbm2ddl.auto" value="" />
 			<property name="hibernate.max_fetch_depth" value="1" />
 			<property name="hibernate.show_sql" value="false" />
+
+
+
+			<property name="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.SingletonEhCacheProvider" />
+			<property name="hibernate.generate_statistics" value="true"/>
+	
+		    
+		    <property name="hibernate.cache.use_minimal_puts" value="false"/>
+		    <property name="hibernate.cache.use_query_cache" value="true"/>
+		    <property name="hibernate.cache.use_second_level_cache" value="true"/>
+		    <property name="hibernate.cache.use_structured_entries" value="true"/>
+		
+
 		</properties>
 	</persistence-unit>
 </persistence>
