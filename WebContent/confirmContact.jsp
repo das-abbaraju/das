@@ -16,7 +16,7 @@
 	if (sendTo.equals("audits"))
 		toAddresses.add("jcota@picsauditing.com");
 	if (sendTo.equals("general"))
-		toAddresses.add("tester@picsauditing.com");
+		toAddresses.add("jfazeli@picsauditing.com");
 	if (sendTo.equals("tech"))
 		toAddresses.add("jfazeli@picsauditing.com");
 	if (sendTo.equals("tech"))
