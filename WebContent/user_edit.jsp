@@ -7,6 +7,7 @@
 <%@page import="com.picsauditing.mail.EmailContractorBean"%>
 <%@page import="com.picsauditing.mail.EmailTemplates"%>
 <%@page import="com.picsauditing.mail.EmailUserBean"%>
+<%@page import="com.picsauditing.util.SpringUtils"%>
 <jsp:useBean id="uBean" class="com.picsauditing.access.User" scope ="page"/>
 <jsp:useBean id="currentUser" class="com.picsauditing.access.User" scope ="page"/>
 <jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope="application"/>
@@ -84,8 +85,8 @@ if (action.equals("removeUserFromGroup")) {
 }
 if (action.equals("sendWelcomeEmail")) {
 	// Send an email to the contractor
-	EmailUserBean mailer = new EmailUserBean();
-	mailer.sendMessage(EmailTemplates.newuser, userID, new Permissions());
+	EmailUserBean mailer = (EmailUserBean)SpringUtils.getBean("EmailUserBean");
+	mailer.sendMessage(EmailTemplates.newuser, new Integer(userID));
 }
 
 ///////////////////////////////////////////////////
