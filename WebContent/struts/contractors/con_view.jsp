@@ -46,7 +46,7 @@
 				<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="operatorAccount.name" /></a>
 			</li>
 			</s:iterator>
-			...<a href="con_selectFacilities.jsp?id=<s:property value="id" />">see facilities</a>
+			<li>...<a href="con_selectFacilities.jsp?id=<s:property value="id" />">see Facilities</a></li>
 		</ul>
 	</div>
 </div>

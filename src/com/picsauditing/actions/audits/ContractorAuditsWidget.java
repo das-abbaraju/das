@@ -8,6 +8,8 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 
 public class ContractorAuditsWidget extends PicsActionSupport {
 	ContractorAuditDAO dao;
+	private List<ContractorAudit> upcoming;
+	private List<ContractorAudit> closed;
 	
 	public ContractorAuditsWidget(ContractorAuditDAO dao) {
 		this.dao = dao;
@@ -20,10 +22,14 @@ public class ContractorAuditsWidget extends PicsActionSupport {
 	}
 
 	public List<ContractorAudit> getRecentlyClosed() {
-		return dao.findRecentlyClosed(10, permissions);
+		if (closed == null)
+			closed = dao.findRecentlyClosed(10, permissions);
+		return closed;
 	}
 
 	public List<ContractorAudit> getUpcoming() {
-		return dao.findUpcoming(10, permissions);
+		if (upcoming == null)
+			upcoming = dao.findUpcoming(10, permissions);
+		return upcoming;
 	}
 }

@@ -52,8 +52,8 @@ public class PermissionQueryBuilder {
 		
 		if (permissions.isCorporate()) {
 			if (queryLanguage == HQL)
-				subquery = "SELECT t.contractorAccount FROM ContractorOperator t " +
-						"WHERE t.operatorAccount.facilities.corporate.id = " + permissions.getAccountId();
+				subquery = "SELECT co.contractorAccount FROM ContractorOperator co WHERE co.operatorAccount IN " +
+						"(SELECT f.operator FROM Facility f WHERE f.corporate.id = " +permissions.getAccountId()+")";
 			else
 				subquery = "SELECT gc.subID FROM generalcontractors gc " +
 						"JOIN facilities f ON f.opID = gc.genID AND f.corporateID = "+permissions.getAccountId();
