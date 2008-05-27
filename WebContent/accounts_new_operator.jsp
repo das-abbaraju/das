@@ -29,7 +29,7 @@
 </head>
 <body>
       <h1>Create New Operator</h1>
-      <form name="form1" method="post" action="accounts_new_operator.jsp">
+      <form name="form1" method="post" action="accounts_new_operator.jsp?type=<%=accountType%>">
               <table width="657" cellpadding="10" cellspacing="0">
                 <tr> 
                   <td width="125" align="center" bgcolor="#DDDDDD" class="blueMain"> 

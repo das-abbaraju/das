@@ -73,10 +73,12 @@ List<BasicDynaBean> searchData = search.getPage();
 </head>
 <body>
 <h1>Manage <%=accountType%> Accounts</h1>
+<form id="form1" name="form1" style="display: none">
 <input type="hidden" name="actionID" value="0">
 			<input type="hidden" name="action" value="">
 			<input type="hidden" name="showPage" value="1"/>
 			<input type="hidden" name="orderBy"  value="<%=sBean.orderBy == null ? "dateCreated DESC" : sBean.orderBy %>"/>
+</form>
 <div>
 <%= search.getPageLinksWithDynamicForm() %>
 <%
