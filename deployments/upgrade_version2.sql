@@ -373,13 +373,6 @@ update pqfdata set  isCorrect = null
 
 update pqfdata set wasChanged = null where wasChanged = '';
 
-update operators set flagEmr = 'No' where flagEmr = '';
-update operators set flagLwcr = 'No' where flagLwcr = '';
-update operators set flagTrir = 'No' where flagTrir = '';
-update operators set flagFatalities = 'No' where flagFatalities = '';
-update operators set flagQ318 = 'No' where flagQ318 = '';
-update operators set flagQ1385 = 'No' where flagQ1385 = '';
-
 update accounts set industry = null where industry = '';
 
 insert into pqfquestions (questionID, subCategoryID, number, question)
