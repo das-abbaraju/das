@@ -17,7 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "audit_type")
-//@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class AuditType {
 	public static final int PQF = 1;
 	public static final int DESKTOP = 2;
