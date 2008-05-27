@@ -16,7 +16,7 @@
 	if (sendTo.equals("audits"))
 		toAddresses.add("jcota@picsauditing.com");
 	if (sendTo.equals("general"))
-		toAddresses.add("jfazeli@picsauditing.com");
+		toAddresses.add("tester@picsauditing.com");
 	if (sendTo.equals("tech"))
 		toAddresses.add("jfazeli@picsauditing.com");
 	if (sendTo.equals("tech"))
@@ -38,7 +38,7 @@
 	EmailSender mailer = new EmailSender();
 	
 	for (String toAddress : toAddresses)
-		mailer.sendMail("Email from PICS website", body, "", toAddress);
+		mailer.sendMail("Email from PICS website", body, request.getParameter("email"), toAddress);
 %>
 <html>
 <head>
