@@ -45,6 +45,7 @@
 				<s:select list="flagList" name="forceFlag" />
 				until <input id="forceEnd" name="forceEnd" size="8" type="text"
 						onClick="cal1.select(this,'forceEnd','M/d/yy'); return false;" />
+				<s:hidden name="action" value="Override" />
 			</s:form>
 			<a href="#" onclick="$('override_link').show(); $('override').hide(); return false;">Nevermind</a>
 			</div>

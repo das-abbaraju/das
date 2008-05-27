@@ -4,7 +4,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.PICS.ContractorBean;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagCalculatorSingle;
+import com.picsauditing.PICS.redFlagReport.Note;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
@@ -60,6 +63,11 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		auditData = auditDataDAO.findAnswersByContractor(contractor.getId(), co.getOperatorAccount().getQuestionIDs());
 		calculator.setAuditAnswers(auditData);
 
+		if("Override".equals(action)) {
+			String text = "Changed the flag color to "+forceFlag;
+			Note note = new Note(co.getOperatorAccount().getIdString(),co.getContractorAccount().getIdString(), permissions.getUserIdString(),permissions.getUsername(),text);
+			note.writeToDB();
+		}
 		if ("deleteOverride".equals(action)) {
 			permissions.tryPermission(OpPerms.EditForcedFlags);
 			co.setForceBegin(null);
