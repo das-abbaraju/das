@@ -180,11 +180,7 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 		<td><%=sBean.cBean.lastPayment%></td>
 		<td><nobr><input type="text" id="pay_amount_<%= sBean.aBean.id %>" class=forms value="<%=sBean.cBean.newBillingAmount%>" size=3 name=amount>/<%=sBean.cBean.billingCycle%>yr</nobr></td>
 		<td valign="middle"><input name="action" type="submit" onClick="javascript: return newPayment( '<%= sBean.aBean.id %>','pay_amount_<%= sBean.cBean.id %>');" class="buttons" value="Paid"></td>
-		<input name="invoicedStatus" type="hidden" value="<%=sBean.selected_invoicedStatus%>">
-		<input name="action_id" type="hidden" value="<%=sBean.aBean.id%>">
-		<input name="orderBy" type="hidden" value="<%=sBean.orderBy%>">
-		
-	</tr>
+  </tr>
 	<%
 		}//while
 	%>
@@ -194,6 +190,9 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 		| To Collect: $<%=totalToCollect%></td>
 </tr>	
 </table>
+<input name="invoicedStatus" type="hidden" value="<%=sBean.selected_invoicedStatus%>">
+<input name="action_id" type="hidden" value="<%=sBean.aBean.id%>">
+<input name="orderBy" type="hidden" value="<%=sBean.orderBy%>">
 </form>
 <br>
 <div><center>
