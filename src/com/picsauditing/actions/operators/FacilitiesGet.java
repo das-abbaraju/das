@@ -39,7 +39,7 @@ public class FacilitiesGet extends ActionSupport {
 		String where = null;
 		if (filter != null && filter.length() > 3) {
 			where = "a IN (SELECT account FROM User WHERE username LIKE '%"
-					+ Utilities.escapeQuotes(filter) + "%' OR username LIKE '%"
+					+ Utilities.escapeQuotes(filter) + "%' OR name LIKE '%"
 					+ Utilities.escapeQuotes(filter) + "%' OR email LIKE '%"
 					+ Utilities.escapeQuotes(filter) + "%')";
 		}
