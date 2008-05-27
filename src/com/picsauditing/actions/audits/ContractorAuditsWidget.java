@@ -10,6 +10,7 @@ public class ContractorAuditsWidget extends PicsActionSupport {
 	ContractorAuditDAO dao;
 	private List<ContractorAudit> upcoming;
 	private List<ContractorAudit> closed;
+	private List<ContractorAudit> assigned;
 	
 	public ContractorAuditsWidget(ContractorAuditDAO dao) {
 		this.dao = dao;
@@ -29,7 +30,13 @@ public class ContractorAuditsWidget extends PicsActionSupport {
 
 	public List<ContractorAudit> getUpcoming() {
 		if (upcoming == null)
-			upcoming = dao.findUpcoming(10, permissions);
+			upcoming = dao.findNew(10, permissions);
 		return upcoming;
+	}
+
+	public List<ContractorAudit> getNewlyAssigned() {
+		if (assigned == null)
+			assigned = dao.findNewlyAssigned(10, permissions);
+		return assigned;
 	}
 }

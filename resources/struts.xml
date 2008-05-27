@@ -53,8 +53,8 @@
 		</action>
 	
 		<action name="MyAssignedAuditsAjax"
-			class="com.picsauditing.actions.report.ReportContractorAuditAuditor">
-			<result>struts/reports/myAssignedAudits.jsp</result>
+			class="com.picsauditing.actions.audits.ContractorAuditsWidget">
+			<result>struts/widgets/myAssignedAudits.jsp</result>
 		</action>
 
 		<action name="AuditAssignments"

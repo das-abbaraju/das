@@ -1,5 +1,7 @@
 package com.picsauditing.util;
 
+import java.util.Collection;
+
 public class Strings {
 	public static String insertSpaces(String value) {
 		if (value == null) return null;
@@ -15,6 +17,16 @@ public class Strings {
 	public static String implode(int[] array, String delimiter) {
 		StringBuffer buffer = new StringBuffer();
 		for (int o : array) {
+			if (buffer.length() > 0)
+				buffer.append(delimiter);
+			buffer.append(o);
+		}
+		return buffer.toString();
+	}
+
+	public static String implode(Collection<Integer> collection, String delimiter) {
+		StringBuffer buffer = new StringBuffer();
+		for (Object o : collection) {
 			if (buffer.length() > 0)
 				buffer.append(delimiter);
 			buffer.append(o);

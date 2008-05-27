@@ -1,6 +1,5 @@
 package com.picsauditing.dao;
 
-import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -8,7 +7,6 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -61,16 +59,39 @@ public class ContractorAuditDAO extends PicsDAO {
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
+	
+	public List<ContractorAudit> findNewlyAssigned(int limit, Permissions permissions) {
+		return findWhere(limit, "auditStatus IN ('Pending', 'Submitted') AND auditor.id = " + permissions.getUserId(), "assignedDate DESC");
+	}
 
 	public List<ContractorAudit> findUpcoming(int limit, Permissions permissions) {
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
-		return findWhere(limit, "auditStatus = 'Pending' AND scheduledDate IS NOT NULL " + permQuery.toString(), "scheduledDate");
+		return findWhere(limit, "auditStatus = 'Pending' AND scheduledDate IS NOT NULL " + permQuery.toString() + getAuditWhere(permissions), "scheduledDate");
+	}
+
+	public List<ContractorAudit> findNew(int limit, Permissions permissions) {
+		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
+		return findWhere(limit, "auditStatus IN ('Pending', 'Submitted') " + permQuery.toString() + getAuditWhere(permissions), "createdDate DESC");
 	}
 
 	public List<ContractorAudit> findRecentlyClosed(int limit, Permissions permissions) {
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
 		permQuery.setOnlyPendingAudits(false);
-		return findWhere(limit, "auditStatus = 'Active' AND closedDate < NOW() " + permQuery.toString(), "closedDate DESC");
+		return findWhere(limit, "auditStatus = 'Active' AND closedDate < NOW() " + permQuery.toString() + getAuditWhere(permissions), "closedDate DESC");
+	}
+	
+	private String getAuditWhere(Permissions permissions) {
+		if (permissions.isPicsEmployee())
+			return "";
+		if (permissions.isContractor())		
+			return "";
+		if (permissions.getCanSeeAudit() == null)
+			return "AND 1=0";
+		
+		String where = "AND auditType.auditTypeID IN (0";
+		for(Integer id : permissions.getCanSeeAudit())
+			where += "," + id;
+		return where += ")";
 	}
 
 	@SuppressWarnings("unchecked")
