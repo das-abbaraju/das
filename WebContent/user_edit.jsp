@@ -285,8 +285,12 @@ if (!uBean.isSuGroup()) {
 			allGroups.remove(group);
 			%>
 			<tr class="blueMain">
+			<% if(permissions.hasPermission(OpPerms.EditUsers,OpType.Delete) || permissions.hasPermission(OpPerms.EditUsers,OpType.Edit)) { %>
 				<td><a href="#" onclick="showUser(<%=group.userDO.id%>); return false;"><%=group.userDO.name%></a></td>
-				<td><a href="#" onclick="saveGroup('removeGroup', <%=group.userDO.id%>); return false;">remove</a></td>
+				<td>&nbsp;<a href="#" onclick="saveGroup('removeGroup', <%=group.userDO.id%>); return false;">remove</a></td>
+			<% } else { %>
+			<td><%=group.userDO.name%></td>
+			<% } %>
 			</tr>
 			<%
 		}
@@ -294,8 +298,10 @@ if (!uBean.isSuGroup()) {
 		for (User group: allGroups) {
 			%>
 			<tr class="blueMain">
+				<% if(permissions.hasPermission(OpPerms.EditUsers,OpType.Edit)) { %>
 				<td><a href="#" style="font-style: italic; color: red;" onclick="showUser(<%=group.userDO.id%>); return false;"><%=group.userDO.name%></a></td>
-				<td><a href="#" style="font-style: italic; color: red;" onclick="saveGroup('addGroup',<%=group.userDO.id%>); return false;">add</a></td>
+				<td>&nbsp;<a href="#" style="font-style: italic; color: red;" onclick="saveGroup('addGroup',<%=group.userDO.id%>); return false;">add</a></td>
+			<% } %>
 			</tr>
 			<%
 		}
