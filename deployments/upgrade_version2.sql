@@ -2,9 +2,6 @@
 /* PRE                                          */
 /* ============================================ */
 
-update operators set doSendActivationEmail = 'No'
-where doSendActivationEmail not in ('No', 'Yes');
-
 /* ==== Copy reference tables and data ====*/
 
 /** table data to bring over:
@@ -17,21 +14,7 @@ where doSendActivationEmail not in ('No', 'Yes');
 -widget_user
 **/
 
-/*Table structure for table `app_properties` */
-
-DROP TABLE IF EXISTS `app_properties`;
-
-CREATE TABLE `app_properties` (
-  `property` varchar(100) NOT NULL,
-  `value` text NOT NULL,
-  PRIMARY KEY  (`property`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `app_properties` */
-
-/* SEE BOTTOM of SQL */
-
-/*Table structure for table `audit_type` */
+/* SEE BOTTOM of SQL for app_properties */
 
 /* Create audit_type table */
 DROP TABLE IF EXISTS `audit_type`;
@@ -126,9 +109,6 @@ CREATE TABLE `widget_user` (
 /*Data for the table `widget_user` */
 
 insert  into `widget_user`(`id`,`widgetID`,`userID`,`expanded`,`column`,`sortOrder`,`customConfig`) values (9,5,616,1,2,15,NULL),(2,2,941,1,1,10,NULL),(3,3,910,1,1,10,NULL),(10,4,910,1,2,10,NULL),(5,1,616,1,1,10,NULL),(6,2,616,1,1,20,NULL),(7,3,616,1,2,10,NULL),(8,4,616,1,2,20,NULL);
-
-alter table `flagoshacriteria`
-	add UNIQUE KEY `opID`(`opID`,`flagStatus`);
 
 
 /* ==== Create new tables with empty data ====*/
@@ -253,7 +233,7 @@ alter table `flagoshacriteria`
 	change `trirHurdle` `trirHurdle` decimal(4,2)   NOT NULL after `flagTrir`, 
 	change `flagFatalities` `flagFatalities` enum('No','Yes')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No' after `trirTime`, 
 	change `fatalitiesHurdle` `fatalitiesHurdle` decimal(4,2)   NOT NULL after `flagFatalities`, 
-	drop key `PRIMARY`, add PRIMARY KEY(`criteriaID`), COMMENT='';
+	drop key `PRIMARY`, add PRIMARY KEY(`criteriaID`), add UNIQUE KEY `opID`(`opID`,`flagStatus`), COMMENT='';
 
 /* Alter flags table - add primary key, add force flag columns */
 alter table `flags` 
@@ -362,12 +342,6 @@ alter table `pqfcatdata`
 
 /* ==== Fix null data ====*/
 
-update pqfdata set  auditID = null
-	where  auditID = 0;
-
-update pqfcatdata set  auditID = null
-	where  auditID = 0;
-
 update pqfdata set  isCorrect = null
 	where  isCorrect = '';
 
@@ -381,9 +355,9 @@ insert into pqfquestions (questionID, subCategoryID, number, question)
 update pqfquestions set questionID=0
 	where question like 'Average%';
 
+update operators set doSendActivationEmail = 'No'
+	where doSendActivationEmail not in ('No', 'Yes') or doSendActivationEmail is null;
 
-                                                                     
-                                                                     
 /************************/
 /* remove orphaned pqfCatData */
 
@@ -700,6 +674,10 @@ drop table `auditdata`;
 
 drop table `auditquestions`; 
 
+/* TODO: CHECK WHY WE HAVE orphaned cat data records!!! */
+delete from pqfcatdata
+	where auditID = 0;
+
 alter table `pqfcatdata` 
 	change `auditID` `auditID` mediumint(9) unsigned   NOT NULL after `catID`, 
 	drop column `conID`;
@@ -713,7 +691,7 @@ alter table `pqfopmatrix`
 	drop key `catID`, add UNIQUE KEY `catID`(`catID`,`opID`,`riskLevel`), 
 	drop key `PRIMARY`, add PRIMARY KEY(`id`), COMMENT='';
 
-
+delete from app_properties;
 insert  into `app_properties`(`property`,`value`) 
 values ('DEFAULT_SIGNATURE','PICS \r\nP.O. Box 51387\r\nIrvine CA 92619-1387\r\ntel: (949)387-1940\r\nfax: (949)269-9177\r\nhttp://www.picsauditing.com\r\nemail: info@picsauditing.com (Please add this email address to your address book to prevent it from being labeled as spam)\r\n'),
 ('email_welcome_body','Welcome ${contact_name},\r\n\r\nPlease click on this link to confirm your receipt of this email:\r\nhttp://www.picsauditing.com/login.jsp?uname=${username}\r\n\r\nBecause we send important account info to this email, your account will not be activated until you have confirmed receipt of this email.  If the link does not work, please cut and paste the url into your web browser.  After that, you will be able to log into your account at www.picsauditing.com.\r\n\r\nYour username is ${username} and your password is ${password}\r\n\r\nUpon logging in you will want to review your company information and verify that it is accurate as well as pick the facilities your company performs work for. If you have any difficulties, please contact us and we will assist you. Keep in mind that your clients will be viewing this information, so make it as detailed and professional as possible. Everything on the website is password protected; therefore your information is only viewable by your clients and you.\r\n\r\nThe first page you will be taken to will list several sections of information that you will need to complete (PQF). You can save them as many times as needed before submitting them to us. You will be contacted after submitting your prequalification form (PQF) in reference to your audit. As requested by the owner/operators you will have approximately 2 weeks to complete the PQF (prequalification forms) in order to stay on the approved vendor/contractor list.\r\n\r\nRemember to click on save so you do not lose any of your information. (30 minute timeout)\r\n\r\nPlease contact your insurance company and upload your company\'s verification of your last 3 years EMR (experience modification rate) to us (as a single pdf). This will need to be on the insurance company\'s letterhead or may be a loss run report. This may take some time so you should start this immediately. If you are having problems with this you can fax it to 949-269-9146 or it can be emailed to info@picsauditing.com.\r\n\r\nThank you again for your business and feel free to contact us with any questions.\r\n\r\nRegards,\r\n\r\nDEFAULT_SIGNATURE'),

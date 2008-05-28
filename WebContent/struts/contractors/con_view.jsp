@@ -51,7 +51,10 @@
 	</div>
 </div>
 <br clear="all" />
-<div id="maincontainer"><s:property value="contractor.descriptionHTML" escape="false" /></div>
+<div id="maincontainer">
+<img src="logos/<s:property value="contractor.logoFile" />" align="right" />
+<s:property value="contractor.descriptionHTML" escape="false" />
+</div>
 
 </body>
 </html>

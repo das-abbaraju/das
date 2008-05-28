@@ -61,7 +61,7 @@
 
 	<context-param>
 		<param-name>FTP_DIR</param-name>
-		<param-value>/wwwroot/www.picsauditing.com/ftp-bin</param-value>
+		<param-value>/var/www/ftp-bin</param-value>
 	</context-param>
 	<!-- 
 		<listener>
