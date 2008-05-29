@@ -18,8 +18,12 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "pqfdata")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="temp")
 public class AuditData implements java.io.Serializable {
 
 	private int dataID;
