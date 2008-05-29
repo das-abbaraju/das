@@ -16,8 +16,12 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "audit_operator")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="daily")
 public class AuditOperator {
 
 	protected int auditOperatorID = 0;
