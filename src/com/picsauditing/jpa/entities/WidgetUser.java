@@ -9,8 +9,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "widget_user")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="temp")
 public class WidgetUser {
 	protected int id;
 	protected User user = null;
