@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.util.chart.ChartType;
 import com.picsauditing.util.chart.FusionChart;
@@ -18,6 +21,7 @@ import com.picsauditing.util.chart.FusionChart;
 
 @Entity
 @Table(name = "widget")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="daily")
 public class Widget {
 	protected int widgetID;
 	protected String caption;
