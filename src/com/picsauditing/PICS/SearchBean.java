@@ -66,7 +66,8 @@ import com.picsauditing.util.LinkBuilder;
 	public String selected_taxID = "";
 	public String selected_performedBy = "";
 	public String selected_worksIn = "";
-
+	public String selected_officeIn = "";
+	
 	public String expiresInDays = "";
 	public String searchType = DEFAULT_TYPE;
 //	public String prequalExpiresInDays = "";
@@ -122,6 +123,7 @@ import com.picsauditing.util.LinkBuilder;
 	public static final String DEFAULT_LICENSED_IN = "- Licensed In -";
 	public static final String DEFAULT_LICENSED_IN_ID = com.picsauditing.PICS.pqf.QuestionTypeList.DEFAULT_SELECT_QUESTION_ID;
 	public static final String DEFAULT_WORKS_IN = "- Works In -";
+	public static final String DEFAULT_OFFICE_IN = "- Office Location -";
 	public static final String DEFAULT_FLAG_STATUS = "- Flag Status -";
 	public static final String DEFAULT_TAX_ID = "- Tax ID -";
 	public static final String ONLY_CERTS = "Only Certs";
@@ -233,6 +235,7 @@ import com.picsauditing.util.LinkBuilder;
 			selected_visible = r.getParameter("visible");
 			selected_stateLicensedIn = r.getParameter("stateLicensedIn");
 			selected_worksIn = r.getParameter("worksIn");
+			selected_officeIn = r.getParameter("officeIn");
 			
 			selected_flagStatus = r.getParameter("flagStatus");
 			selected_taxID = r.getParameter("taxID");
@@ -294,6 +297,14 @@ import com.picsauditing.util.LinkBuilder;
 			whereQuery += "AND (worksInQ.questionID='"+selected_worksIn+"' AND worksInQ.answer<>'No') ";
 			joinQuery += "INNER JOIN pqfData worksInQ ON (worksInQ.conID=accounts.id) ";
 		}
+		if (!isSet(selected_officeIn, DEFAULT_LICENSED_IN_ID))
+			selected_officeIn =  DEFAULT_LICENSED_IN_ID;
+		else {
+			whereQuery += "AND (officeInQ.questionID='"+selected_officeIn+"' AND officeInQ.answer LIKE '%Office') ";
+			joinQuery += "INNER JOIN pqfData officeInQ ON (officeInQ.conID=accounts.id) ";
+		}
+			
+		
 		if (!isSet(selected_flagStatus, DEFAULT_FLAG_STATUS))
 			selected_flagStatus = DEFAULT_FLAG_STATUS;
 		else

@@ -129,7 +129,7 @@ or enter part of the name (at least 3 characters long)</div>
 		<tr>
 			<td>
 				<%=Inputs.inputSelect("performedBy","forms",sBean.selected_performedBy,TradesBean.PERFORMED_BY_ARRAY)%>
-				<%=Inputs.inputSelect2First("state", "forms", sBean.selected_state, Inputs.STATE_ARRAY, "",SearchBean.DEFAULT_STATE)%>
+				<%=statesLicensedInList.getQuestionListQIDSelect("Office Location","officeIn", "forms", sBean.selected_officeIn,SearchBean.DEFAULT_OFFICE_IN)%>                       
 				<input name="taxID" type="text" class="forms" value="<%=sBean.selected_taxID.equals("") ? SearchBean.DEFAULT_TAX_ID : sBean.selected_taxID%>" size="9" onFocus="clearText(this)">
 				<span class=redMain>*must be 9 digits</span>
 			</td>
