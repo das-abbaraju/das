@@ -17,10 +17,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 // TODO handle duringGracePeriod
 
 @Entity
 @Table(name = "osha")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="temp")
 public class OshaLog implements java.io.Serializable {
 	private int id;
 	private ContractorAccount contractorAccount;
