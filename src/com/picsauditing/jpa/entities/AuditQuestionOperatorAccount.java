@@ -10,8 +10,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "pqfquestion_operator")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="daily")
 public class AuditQuestionOperatorAccount implements java.io.Serializable {
 	protected int id;
 	protected OperatorAccount operatorAccount;
