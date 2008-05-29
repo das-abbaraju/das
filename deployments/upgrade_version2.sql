@@ -121,7 +121,7 @@ create table `contractor_audit`(
 	`conID` int(10) unsigned NOT NULL   , 
 	`createdDate` datetime NOT NULL   , 
 	`auditStatus` varchar(10) COLLATE latin1_swedish_ci NOT NULL  DEFAULT 'Pending'  , 
-	`expiresDate` datetime NOT NULL   , 
+	`expiresDate` datetime NULL , 
 	`auditorID` int(10) unsigned NULL   , 
 	`assignedDate` datetime NULL   , 
 	`scheduledDate` datetime NULL   , 

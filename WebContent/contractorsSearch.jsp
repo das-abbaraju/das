@@ -4,7 +4,9 @@
 <!-- %@page import="com.picsauditing.PICS.EmailBean"% -->
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
-
+<%@page import="com.picsauditing.util.SpringUtils"%>
+<%@page import="com.picsauditing.dao.OperatorAccountDAO"%>
+<%@page import="com.picsauditing.jpa.entities.OperatorAccount"%>
 <%
 if (permissions.isContractor()) throw new com.picsauditing.access.NoRightsException("Not Contractor");
 try{
@@ -27,12 +29,15 @@ try{
 	boolean isSearchNameOK = !("".equals(searchName)) && !sBean.DEFAULT_NAME.equals(searchName) && !(searchName.length()<sBean.MIN_NAME_SEARCH_LENGTH);
 	boolean isSearchTradeIDOK = !("".equals(searchTradeID)) && !tBean.DEFAULT_SELECT_TRADE_ID.equals(searchTradeID);
 	boolean doSearch = "0".equals(changed) || isSearchNameOK || isSearchTradeIDOK;
+	
+	AuditBuilder auditBuilder = (AuditBuilder)SpringUtils.getBean("AuditBuilder");
 	if ("Add".equals(action) && pBean.oBean.canAddContractors()){
 		if (pBean.oBean.isCorporate) {
 			response.sendRedirect("con_selectFacilities.jsp?id="+actionID);
 			return;
 		}
 		if (pBean.oBean.addSubContractor(permissions.getAccountId(), actionID)) {
+			int conID = new Integer(actionID);
 			pBean.canSeeSet.add(actionID);
 			doSearch = true;
 			
@@ -40,35 +45,31 @@ try{
 			aBean.setFromDB(permissions.getAccountIdString());
 			
 			// Send the contractors an email that the operator added them
-			EmailContractorBean emailer = new EmailContractorBean();
-			emailer.setData(actionID, permissions);
-			emailer.setMerge(EmailTemplates.contractoradded);
+			EmailContractorBean emailer = (EmailContractorBean)SpringUtils.getBean("EmailContractorBean");
+			emailer.sendMessage(EmailTemplates.contractoradded, conID);
+			OperatorAccountDAO operatorDAO = (OperatorAccountDAO)SpringUtils.getBean("OperatorAccountDAO");
+			OperatorAccount operator = operatorDAO.find(permissions.getAccountId());
+			emailer.addToken("operator", operator);
+			emailer.sendMail();
+			
 			User currentUser = new User();
 			currentUser.setFromDB(permissions.getUserIdString());
-			emailer.addTokens("opName", currentUser.userDO.accountName);
-			emailer.addTokens("opUser", currentUser.userDO.name);
-			emailer.sendMail();
-			emailer.addNote(currentUser.userDO.name+" from "+currentUser.userDO.accountName+" added "+aBean.name+", email sent to: "+ emailer.getSentTo());
-	
+			
+			ContractorBean.addNote(conID, permissions, "Added this Contractor to "+operator.getName()+"'s db");
 			ContractorBean cBean = new ContractorBean();
-			cBean.setFromDB(actionID);
-			cBean.addNote(actionID, permissions.getUsername(), "Added this Contractor to "+aBean.name+"'s db", DateBean.getTodaysDateTime());
-			cBean.writeToDB();
-			cBean.buildAudits();
-			//EmailBean.sendUpdateDynamicPQFEmail(actionID);
+			auditBuilder.buildAudits(conID);
 		}
 	}
 	
 	if ("Remove".equals(action) && pBean.oBean.canAddContractors()){
+		int conID = new Integer(actionID);
 		if (pBean.oBean.removeSubContractor(permissions.getAccountId(), actionID)) {
 			pBean.canSeeSet.remove(actionID);
 			ContractorBean cBean = new ContractorBean();
-			cBean.setFromDB(actionID);
 			AccountBean aBean = new AccountBean();
-			aBean.setFromDB(pBean.userID);
-			cBean.addNote(actionID, "", permissions.getUsername()+" from "+aBean.name+" removed contractor from its db", DateBean.getTodaysDateTime());
-			cBean.writeToDB();
-			cBean.buildAudits();
+			aBean.setFromDB(permissions.getAccountIdString());
+			ContractorBean.addNote(conID, permissions, "Removed from "+aBean.name);
+			auditBuilder.buildAudits(conID);
 		}
 	}//if
 	sBean.orderBy = "name";
