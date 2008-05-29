@@ -33,7 +33,7 @@ public class ReportAccount extends ReportActionSupport {
 
 	protected boolean forwardSingleResults = false;
 	protected boolean skipPermissions = false;
-	
+
 	protected String startsWith;
 	protected String accountName = DEFAULT_NAME;
 	protected String industry;
@@ -49,6 +49,7 @@ public class ReportAccount extends ReportActionSupport {
 	protected int worksIn;
 	protected String taxID = DEFAULT_TAX_ID;
 	protected String flagStatus;
+	protected int officeIn;
 
 	@Autowired
 	protected SelectAccount sql = new SelectAccount();
@@ -102,6 +103,11 @@ public class ReportAccount extends ReportActionSupport {
 		return questionList.getQuestionMap("Office Location", "- Works In -");
 	}
 
+	public Map<Integer, String> getOfficeInList() throws Exception {
+		QuestionTypeList questionList = new QuestionTypeList();
+		return questionList.getQuestionMap("Office Location", "- Office Location -");
+	}
+
 	public String[] getTradePerformedByList() throws Exception {
 		return TradesBean.PERFORMED_BY_ARRAY;
 	}
@@ -150,7 +156,7 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setAccountName(String accountName) {
-		if(accountName == null || accountName.length() == 0)
+		if (accountName == null || accountName.length() == 0)
 			accountName = DEFAULT_NAME;
 		report.addFilter(new SelectFilter("accountName", "a.name LIKE '%?%'",
 				accountName, DEFAULT_NAME, DEFAULT_NAME));
@@ -210,7 +216,8 @@ public class ReportAccount extends ReportActionSupport {
 		String operatorList = Strings.implode(operator, ",");
 		if (operatorList.equals("0"))
 			return;
-		report.addFilter(new SelectFilter(
+		report
+				.addFilter(new SelectFilter(
 						"generalContractorID",
 						"a.id IN (SELECT subID FROM generalcontractors WHERE genID IN (?) )",
 						operatorList));
@@ -222,7 +229,7 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setCity(String city) {
-		if(city == null || city.length() == 0)
+		if (city == null || city.length() == 0)
 			city = DEFAULT_CITY;
 		report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", city,
 				DEFAULT_CITY, DEFAULT_CITY));
@@ -243,7 +250,7 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setZip(String zip) {
-		if(zip == null || zip.length() == 0)
+		if (zip == null || zip.length() == 0)
 			zip = DEFAULT_ZIP;
 		report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", zip,
 				DEFAULT_ZIP, DEFAULT_ZIP));
@@ -301,7 +308,7 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setTaxID(String taxID) {
-		if(taxID == null || taxID.length() == 0)
+		if (taxID == null || taxID.length() == 0)
 			taxID = DEFAULT_TAX_ID;
 		report.addFilter(new SelectFilter("taxID", "c.taxID = '?'", taxID,
 				DEFAULT_TAX_ID, DEFAULT_TAX_ID));
@@ -340,5 +347,18 @@ public class ReportAccount extends ReportActionSupport {
 		// This method shouldn't be use be Admins, auditors, and contractors so
 		// just return 0
 		return 0;
+	}
+
+	public int getOfficeIn() {
+		return officeIn;
+	}
+
+	public void setOfficeIn(int officeIn) {
+		report
+				.addFilter(new SelectFilterInteger(
+						"officeIn",
+						"a.id IN (SELECT conID FROM pqfdata WHERE questionID=? AND answer LIKE '%Office')",
+						officeIn));
+		this.officeIn = officeIn;
 	}
 }

@@ -54,8 +54,8 @@ Corporate Version
 			<s:if test="permissions.operator">
 				<s:select list="worksInList" cssClass="forms"
 				name="worksIn" />
-			</s:if>
-			<s:select list="stateList" cssClass="forms" name="state" />
+			<s:select list="officeInList" cssClass="forms" name="officeIn" />
+	   </s:if>
 	   </td></tr>
 	</table>
 	<s:hidden name="showPage" value="1" />

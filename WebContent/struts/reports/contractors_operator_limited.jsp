@@ -32,6 +32,7 @@ Version</span></h1>
 		<tr>
 			<td>
 				<s:select list="flagStatusList" cssClass="forms" name="flagStatus" />
+				<s:select list="officeInList" cssClass="forms" name="officeIn" />
 			</td>
 		</tr>
 	</table>

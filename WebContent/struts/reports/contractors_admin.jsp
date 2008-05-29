@@ -38,6 +38,7 @@
 		<tr>
 			<td><s:select list="tradePerformedByList" cssClass="forms" name="performedBy" />
 			<s:select list="worksInList" cssClass="forms" name="worksIn" />
+			<s:select list="officeInList" cssClass="forms" name="officeIn" />
 	</table>
 	<s:hidden name="showPage" value="1" />
 	<s:hidden name="startsWith" />
