@@ -86,6 +86,7 @@ if (action.equals("removeUserFromGroup")) {
 if (action.equals("sendWelcomeEmail")) {
 	// Send an email to the contractor
 	EmailUserBean mailer = (EmailUserBean)SpringUtils.getBean("EmailUserBean");
+	mailer.setPermissions(permissions);
 	mailer.sendMessage(EmailTemplates.newuser, new Integer(userID));
 }
 
