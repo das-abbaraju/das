@@ -11,11 +11,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "users")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="temp")
 public class User {
 	public static String DEFAULT_AUDITOR = "- Auditor -";
 	public static int GROUP_ADMIN = 10;
