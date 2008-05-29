@@ -12,8 +12,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "pqfcatdata")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="temp")
 public class AuditCatData implements java.io.Serializable {
 	private int id;
 	private AuditCategory category;
