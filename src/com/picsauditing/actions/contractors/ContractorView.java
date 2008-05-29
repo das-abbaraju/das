@@ -32,6 +32,7 @@ public class ContractorView extends ContractorActionSupport {
 	}
 	
 	public int getLogoWidth() throws IOException {
+		System.out.println("getLogoWidth for "+contractor.getId());
 		if (contractor.getLogoFile() == null)
 			return 0;
 		if (contractor.getLogoFile().equals("No"))
@@ -39,7 +40,9 @@ public class ContractorView extends ContractorActionSupport {
 		
 		try {
 			String filename = ServletActionContext.getServletContext().getInitParameter("FTP_DIR")+"logos/"+contractor.getLogoFile();
+			System.out.println("filename = "+filename);
 			int width = Images.getWidth(filename);
+			System.out.println("width = "+width);
 			if (width > 300)
 				return 300;
 			return width;
