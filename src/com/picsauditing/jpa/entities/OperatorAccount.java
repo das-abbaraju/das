@@ -15,12 +15,15 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "operators")
 @PrimaryKeyJoinColumn(name = "id")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="daily")
 public class OperatorAccount extends Account implements java.io.Serializable {
 	public static final String DEFAULT_NAME = "- Operator -";
 
