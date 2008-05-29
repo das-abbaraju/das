@@ -19,6 +19,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.Permissions;
@@ -26,6 +29,7 @@ import com.picsauditing.access.Permissions;
 @Entity
 @Table(name = "contractor_info")
 @PrimaryKeyJoinColumn(name = "id")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="temp")
 public class ContractorAccount extends Account implements java.io.Serializable {
 
 	private String taxId;
