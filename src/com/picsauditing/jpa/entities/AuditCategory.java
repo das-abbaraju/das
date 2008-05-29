@@ -11,8 +11,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "pqfcategories")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="global")
 public class AuditCategory implements java.io.Serializable {
 	public static final int WORK_HISTORY = 6;
 	
