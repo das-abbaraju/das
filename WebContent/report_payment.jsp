@@ -64,8 +64,6 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 			<input type="hidden" name="startsWith" value="<%=sBean.selected_startsWith == null ? "" : sBean.selected_startsWith %>"/>
 			<input type="hidden" name="orderBy"  value="<%=sBean.orderBy == null ? "dateCreated DESC" : sBean.orderBy %>"/>
               
-              
-              
 <div class="alphapaging">
 <%=sBean.getStartsWithLinksWithDynamicForm()%>
 </div>
@@ -91,7 +89,7 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 		sBean.cBean.setFacilitiesFromDB();
 %>			  <tr <%=sBean.getBGColor()%>>
 		  	  <form name="form2" id="form2" method="post" action="report_payment.jsp?changed=0&showPage=<%=sBean.showPage%>">
-                <td align="right"><%=sBean.count-1%></td>
+                <td class="right"><%=sBean.count-1%></td>
 			    <td><a href="accounts_edit_contractor.jsp?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class="<%=sBean.getTextColor()%>">
 			    <%=sBean.getActiveStar()%><%=sBean.aBean.name%></a></td>
 			    <td><%=sBean.cBean.payingFacilities%></td>
@@ -103,20 +101,22 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 			    <td><input name="action" type="submit" class="buttons" value="Inv"></td>
 			    <td>$<%=sBean.cBean.lastPaymentAmount%></td>
 			    <td><%=sBean.cBean.lastPayment%></td>
-			    <td valign="middle"><input type="text" class=forms value="<%=sBean.cBean.newBillingAmount%>" size=3 name=amount></td>
+			    <td class="middle"><input type="text" class=forms value="<%=sBean.cBean.newBillingAmount%>" size=3 name=amount></td>
 			    <td><input name="action" type="submit" class="buttons" value="Paid"></td>
-      
+				<input name="action_id" type="hidden" value="<%=sBean.aBean.id%>">
+                <input name="orderBy" type="hidden" value="<%=sBean.orderBy%>">
 	          </form>
 		  	  </tr>
 <%	}//while %>
-             <tr bgcolor="#003366" class="whiteTitle">
-                <td colspan="11">Total</td>
-                <td align="left" colspan=3>$<%=totalNewPayments%></td>
-              </tr>
-		    </table>
-			<input name="action_id" type="hidden" value="<%=sBean.aBean.id%>">
-                <input name="orderBy" type="hidden" value="<%=sBean.orderBy%>">
-		    <br><center><%=sBean.getLinksWithDynamicForm()%></center>
+      <tr bgcolor="#003366" class="whiteTitle">
+         <td colspan="11">Total</td>
+         <td align="left" colspan=3>$<%=totalNewPayments%></td>
+        </tr>
+</table>
+<div>
+<%=sBean.getLinksWithDynamicForm()%>
+</div>
+
 <%	sBean.closeSearch(); %>
 </body>
 </html>

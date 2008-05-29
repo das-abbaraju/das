@@ -31,7 +31,10 @@
 Filter Options</a></div>
 <div id="hideSearch" style="display: none"><a href="#"
 	onclick="hideSearch()">Hide Filter Options</a></div>
-<form id="form1" method="post" style="display: none">
+<form id="form1" name="form1" action="report_contactInfo.jsp" method="post" style="display: none">
+	<input type="hidden" name="showPage" value="1"/>
+	<input type="hidden" name="startsWith" value="<%=sBean.selected_startsWith == null ? "" : sBean.selected_startsWith %>"/>
+	<input type="hidden" name="orderBy"  value="<%=sBean.orderBy == null ? "dateCreated DESC" : sBean.orderBy %>"/>
 <%
 	if (permissions.isAdmin())
 			out.println(SearchBean.getSearchGeneralSelect("generalContractorID", "blueMain",
@@ -53,18 +56,14 @@ Filter Options</a></div>
 		</td>
 	</tr>
 </table>
-	<div class="alphapaging">
-<%
-	if (permissions.isOperator()) {
-%> <%=sBean.getStartsWithLinks()%> <%
- 	}
- %>
-	</div>
+<div class="alphapaging">
+<%=sBean.getStartsWithLinksWithDynamicForm()%>
+</div>
 </form>
 </div>
 
 <div>
-<%=sBean.getLinks()%>
+<%=sBean.getLinksWithDynamicForm()%>
 </div>
 
 <table class="report">
@@ -93,8 +92,10 @@ Filter Options</a></div>
 		}
 	%>
 </table>
-<br>
-<center><%=sBean.getLinks()%></center>
+<div>
+<%=sBean.getLinksWithDynamicForm()%>
+</div>
+
 <%
 	sBean.closeSearch();
 	} finally {

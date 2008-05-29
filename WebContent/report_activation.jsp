@@ -286,9 +286,9 @@ try{
 			   </form></tr>
 <%	} %>
 </table>
-<div><center>
+<div>
 <%=sBean.getLinksWithDynamicForm()%>
-</center></div>
+</div>
 <%	}finally{
 		sBean.closeSearch();
 	}

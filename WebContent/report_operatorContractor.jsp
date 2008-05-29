@@ -121,9 +121,9 @@ try{
 <%	duplication += total-1;
 	} // while %>
 </table>
-<center>
+<div>
 <%=sBean.getLinksWithDynamicForm()%>
-</center>
+</div>
 
 <%	}finally{
 		sBean.closeSearch();

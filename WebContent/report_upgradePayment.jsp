@@ -195,9 +195,9 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 <input name="orderBy" type="hidden" value="<%=sBean.orderBy%>">
 </form>
 <br>
-<div><center>
+<div>
 <%=sBean.getLinksWithDynamicForm()%>
-</center></div>
+</div>
 <%
 	sBean.closeSearch();
 %>

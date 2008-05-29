@@ -121,17 +121,17 @@ onclick="hideSearch()">Hide Filter Options</a></div>
                 </tr>
 <%  }//end while %>
               </table>
-              <br>
-              <center><%=sBean.getLinksWithDynamicForm()%></center>
-              <br>
+<div>
+<%=sBean.getLinksWithDynamicForm()%>
+</div>
 <%	if(canEdit){ %>
-              <center><input name="Submit" type="submit" class="buttons" value="Submit" ></center>
+	<center><input name="Submit" type="submit" class="buttons" value="Submit" ></center>
 <%	}//if %>
-              </form>
-              <br><br>
-              <center><span class="blueMain"> You must have <a href="http://www.adobe.com/products/acrobat/readstep2.html" target="_blank">Adobe
-                Reader 6.0</a> or later to view the documents above.</span> 
-              </center>         
+</form>
+<br><br>
+<center><span class="blueMain"> You must have <a href="http://www.adobe.com/products/acrobat/readstep2.html" target="_blank">Adobe
+  Reader 6.0</a> or later to view the documents above.</span> 
+</center>         
 </body>
 </html>
 <%	}finally{
