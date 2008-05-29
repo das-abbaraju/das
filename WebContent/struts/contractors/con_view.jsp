@@ -52,7 +52,8 @@
 </div>
 <br clear="all" />
 <div id="maincontainer">
-<img src="logos/<s:property value="contractor.logoFile" />" align="right" />
+<s:if test="logoWidth > 0"><img src="logos/<s:property value="contractor.logoFile" />" 
+align="right" width="<s:property value="logoWidth" />" /></s:if>
 <s:property value="contractor.descriptionHTML" escape="false" />
 </div>
 

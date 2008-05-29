@@ -1,8 +1,13 @@
 package com.picsauditing.actions.contractors;
 
+import java.io.IOException;
+
+import org.apache.struts2.ServletActionContext;
+
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.util.Images;
 
 public class ContractorView extends ContractorActionSupport {
 	private AuditBuilder auditBuilder;
@@ -24,6 +29,23 @@ public class ContractorView extends ContractorActionSupport {
 		this.subHeading = "Contractor Details";
 		
 		return SUCCESS;
+	}
+	
+	public int getLogoWidth() throws IOException {
+		if (contractor.getLogoFile() == null)
+			return 0;
+		if (contractor.getLogoFile().equals("No"))
+			return 0;
+		
+		try {
+			String filename = ServletActionContext.getServletContext().getInitParameter("FTP_DIR")+"logos/"+contractor.getLogoFile();
+			int width = Images.getWidth(filename);
+			if (width > 300)
+				return 300;
+			return width;
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 
 }
