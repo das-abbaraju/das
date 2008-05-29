@@ -17,8 +17,12 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "pqfquestions")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="global")
 public class AuditQuestion implements java.io.Serializable {
 	static public final int EMR03 = 127;
 	static public final int EMR04 = 126;
