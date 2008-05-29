@@ -1,7 +1,6 @@
 <%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.access.OpPerms" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp" %>
 <%@page import="com.picsauditing.mail.*"%>
-<!-- %@page import="com.picsauditing.PICS.EmailBean"% -->
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
 <%@page import="com.picsauditing.util.SpringUtils"%>
@@ -9,7 +8,7 @@
 <%@page import="com.picsauditing.jpa.entities.OperatorAccount"%>
 <%
 if (permissions.isContractor()) throw new com.picsauditing.access.NoRightsException("Not Contractor");
-try{
+try {
 	com.picsauditing.PICS.pqf.QuestionTypeList statesLicensedInList = new com.picsauditing.PICS.pqf.QuestionTypeList();
 	tBean.setFromDB();
 	String action = request.getParameter("action");
@@ -32,10 +31,6 @@ try{
 	
 	AuditBuilder auditBuilder = (AuditBuilder)SpringUtils.getBean("AuditBuilder");
 	if ("Add".equals(action) && pBean.oBean.canAddContractors()){
-		if (pBean.oBean.isCorporate) {
-			response.sendRedirect("con_selectFacilities.jsp?id="+actionID);
-			return;
-		}
 		if (pBean.oBean.addSubContractor(permissions.getAccountId(), actionID)) {
 			int conID = new Integer(actionID);
 			pBean.canSeeSet.add(actionID);
@@ -46,17 +41,16 @@ try{
 			
 			// Send the contractors an email that the operator added them
 			EmailContractorBean emailer = (EmailContractorBean)SpringUtils.getBean("EmailContractorBean");
-			emailer.sendMessage(EmailTemplates.contractoradded, conID);
+			emailer.setPermissions(permissions);
 			OperatorAccountDAO operatorDAO = (OperatorAccountDAO)SpringUtils.getBean("OperatorAccountDAO");
 			OperatorAccount operator = operatorDAO.find(permissions.getAccountId());
 			emailer.addToken("operator", operator);
-			emailer.sendMail();
+			emailer.sendMessage(EmailTemplates.contractoradded, conID);
 			
 			User currentUser = new User();
 			currentUser.setFromDB(permissions.getUserIdString());
 			
-			ContractorBean.addNote(conID, permissions, "Added this Contractor to "+operator.getName()+"'s db");
-			ContractorBean cBean = new ContractorBean();
+			ContractorBean.addNote(conID, permissions, "Added contractor to "+operator.getName());
 			auditBuilder.buildAudits(conID);
 		}
 	}
@@ -65,7 +59,6 @@ try{
 		int conID = new Integer(actionID);
 		if (pBean.oBean.removeSubContractor(permissions.getAccountId(), actionID)) {
 			pBean.canSeeSet.remove(actionID);
-			ContractorBean cBean = new ContractorBean();
 			AccountBean aBean = new AccountBean();
 			aBean.setFromDB(permissions.getAccountIdString());
 			ContractorBean.addNote(conID, permissions, "Removed from "+aBean.name);
@@ -113,119 +106,114 @@ try{
 </head>
 <body>
 <h1>Search For New Contractors</h1>
-            <table width="657" border="0" cellpadding="0" cellspacing="0">
-              <tr>
-                <td height="70" colspan="2" align="center" class="blueMain">
+
 <%	if (!doSearch){%>
-                  <table border="0" cellpadding="0" cellspacing="0">
-                    <tr align="left">
-                      <td>
-                        <span class="redMain"><strong>* For a valid search, you must either select a trade<br>
-                        or enter part of the name (at least 3 characters long)</strong></span>
-                      </td>
-                    </tr>
-                  </table>
+<div class="redMain">* For a valid search, you must either select a trade<br>
+or enter part of the name (at least 3 characters long)</div>
+<%	} %>
+<div id="search">
+<div id="showSearch" style="display: none"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
+<div id="hideSearch" ><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
+<form id='form1' name="form1" method="post">
+	<table border="0" cellpadding="2" cellspacing="0">
+		<tr>
+			<td>
+				<input name="name" type="text" class="forms" value="<%=sBean.selected_name.equals("") ? SearchBean.DEFAULT_NAME : sBean.selected_name%>" size="20" onFocus="clearText(this)">
+				<% if (permissions.isOperator()) {%>
+					<%=Inputs.inputSelect("flagStatus","forms", sBean.selected_flagStatus,SearchBean.FLAG_STATUS_ARRAY)%>
+				<% } %>
+				<%=tBean.getTradesSelect("trade", "forms", sBean.selected_trade)%>
+				<input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0" onClick="runSearch('form1');">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<%=Inputs.inputSelect("performedBy","forms",sBean.selected_performedBy,TradesBean.PERFORMED_BY_ARRAY)%>
+				<%=Inputs.inputSelect2First("state", "forms", sBean.selected_state, Inputs.STATE_ARRAY, "",SearchBean.DEFAULT_STATE)%>
+				<input name="taxID" type="text" class="forms" value="<%=sBean.selected_taxID.equals("") ? SearchBean.DEFAULT_TAX_ID : sBean.selected_taxID%>" size="9" onFocus="clearText(this)">
+				<span class=redMain>*must be 9 digits</span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<label><%=Inputs.getCheckBoxInput("searchCorporate", "forms",sBean.searchCorporate,"Y")%>
+				Check to limit search to contractors already working within my parent corporation</label>
+			</td>
+		</tr>
+	</table>
+	<input type="hidden" name="entireDB" value="Y">
+	<input type="hidden" name="actionID" value="0">
+	<input type="hidden" name="action" value="">
+	<input type="hidden" name="showPage" value="1"/>
+	<input type="hidden" name="startsWith" value=""/>
+	<input type="hidden" name="orderBy"  value="name"/>
+</form>
+</div> 
+
+<%	if (doSearch) {%>
+<div><%=sBean.getLinksWithDynamicForm()%></div>
+<table class="report">
+<thead>
+  <tr> 
+    <td></td>
+    <td>Contractor</td>
+    <td>Address</td>
+    <td align="center" bgcolor="#6699CC">Contact</td>
+    <td align="center" bgcolor="#336699">Phone</td>
+    <td align="center" bgcolor="#336699">Performed By</td>
+    <td align="center" bgcolor="#336699">Flag</td>
+    <td align="center" bgcolor="#336699"></td>
+  </tr>
+</thead>
+<%	while (sBean.isNextRecord()) {
+		boolean canSee = pBean.canSeeSet.contains(sBean.aBean.id);
+		String thisClass = canSee ? "" : "na";
+	%>
+	<tr <%=sBean.getBGColor()%> class=<%=thisClass%>>
+		<td class="right"><%=sBean.count-1%></td>
+		<td>
+			<% if (canSee) { %>
+				<a href="ContractorView.action?id=<%=sBean.aBean.id%>"><%=sBean.aBean.name%></a>
+			<% } else { %>
+				<%=sBean.aBean.name%>
+			<% } %>
+		</td>
+		<td><%=sBean.aBean.city%>, <%=sBean.aBean.state%></td>
+		<td class="center"><%=sBean.aBean.contact%></td>
+		<td class="center"><%=sBean.aBean.phone%><br><%=sBean.aBean.phone2%></td>
+		<td class="center"><%=sBean.tradePerformedBy%></td>
+		<td class="center">
+			<%=permissions.isCorporate() 
+			? "<a href='con_selectFacilities.jsp?id="+sBean.aBean.id+"'>Show</a>" 
+			: sBean.getFlagLink()%>
+		</td>
+		<td class="center">
+	<%	if (permissions.isCorporate()) { %>
+			<a href="con_selectFacilities.jsp?id=<%=sBean.aBean.id %>">Facilities</a>
+	<%	} else {
+			if (permissions.hasPermission(OpPerms.AddContractors)
+					&& !pBean.canSeeSet.contains(sBean.aBean.id)) {
+				// This person can add contractors from their list and this contractor isn't there yet
+				%>
+				<input name="action" type="submit" class="buttons" value="Add" onClick="return addContractor(<%=sBean.aBean.id%>);">
+				<%
+			}
+			if (permissions.hasPermission(OpPerms.RemoveContractors)
+					&& pBean.canSeeSet.contains(sBean.aBean.id)) {
+				// This person can remove this contractor and the contractor is currently on the list
+				%>
+	            <input name="action" type="submit" class="buttons" value="Remove" onClick="return removeContractor(<%=sBean.aBean.id%>);">
+	<%		} %>
+	<%	} %>
+		</td>
+	</tr>
+<%	}//while %>
+</table>
+<div><%=sBean.getLinksWithDynamicForm()%></div>
 <%	}//if %>
-				<div id="search">
-				<div id="showSearch" style="display: none"><a href="#" onclick="showSearch()">Show Filter Options</a></div>
-				<div id="hideSearch" ><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
-                  <form id='form1' name="form1" method="post">
-                  <table border="0" cellpadding="2" cellspacing="0">
-                    <tr>
-                      <td>
-                        <input name="name" type="text" class="forms" value="<%=sBean.selected_name.equals("") ? SearchBean.DEFAULT_NAME : sBean.selected_name%>" size="20" onFocus="clearText(this)">
-                       <% if (permissions.isOperator()) {%>
-                        <%=Inputs.inputSelect("flagStatus","forms", sBean.selected_flagStatus,SearchBean.FLAG_STATUS_ARRAY)%>
-						<% } %> 
-                        <input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0" onClick="runSearch('form1');">
-                        </td>
-                       </tr>
-                       <tr><td> 
-                        <%=tBean.getTradesSelect("trade", "forms", sBean.selected_trade)%>
-                        <%=Inputs.inputSelect("performedBy","forms",sBean.selected_performedBy,TradesBean.PERFORMED_BY_ARRAY)%>
-                       	<%=Inputs.inputSelect2First("state", "forms", sBean.selected_state, Inputs.STATE_ARRAY, "",SearchBean.DEFAULT_STATE)%>
-                        <input name="taxID" type="text" class="forms" value="<%=sBean.selected_taxID.equals("") ? SearchBean.DEFAULT_TAX_ID : sBean.selected_taxID%>" size="9" onFocus="clearText(this)">
-                        <span class=redMain>*must be 9 digits</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="blueMain" colspan="2" align="left"><%=Inputs.getCheckBoxInput("searchCorporate", "forms",sBean.searchCorporate,"Y")%>
-                        Check to limit search to contractors already working within my parent corporation
-                      </td>
-                    </tr>
-                  </table>
-                  <input type="hidden" name="entireDB" value="Y">
-                  <input type="hidden" name="actionID" value="0">
-                  <input type="hidden" name="action" value="">
-     
-     
-     			  <input type="hidden" name="showPage" value="1"/>
-		          <input type="hidden" name="startsWith" value=""/>
-		          <input type="hidden" name="orderBy"  value="name"/>
-                  </form>
-                 </div> 
-                </td>
-              </tr>
-            </table>
-<%	if (doSearch){%>
-            <table>
-              <tr> 
-                <td height="30"></td>
-                <td><%=sBean.getLinksWithDynamicForm()%></td>
-              </tr>
-            </table>
-            <table class="report">
-            <thead>
-              <tr> 
-                <td></td>
-                <td>Contractor</td>
-                <td>Address</td>
-                <td align="center" bgcolor="#6699CC">Contact</td>
-                <td align="center" bgcolor="#336699">Phone</td>
-                <td align="center" bgcolor="#336699">Performed By</td>
-                <td align="center" bgcolor="#336699">Flag</td>
-                <td align="center" bgcolor="#336699"></td>
-              </tr>
-              </thead>
-<%		while (sBean.isNextRecord()){
-			String thisClass = "cantSee";
-			if ((pBean.canSeeSet.contains(sBean.aBean.id)))
-				thisClass = ""; // TODO add in the FlagColor here
-%>            <span id="con_<%=sBean.aBean.id%>"><tr <%=sBean.getBGColor()%> class=<%=thisClass%>>
-               <td class="right"><%=sBean.count-1%></td>
-                <td>
-                  <a href="ContractorView.action?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class=<%=thisClass%>><%=sBean.aBean.name%></a>
-                </td>
-                <td><%=sBean.aBean.city%>, <%=sBean.aBean.state%></td>
-                <td align="center"><%=sBean.aBean.contact%></td>
-                <td align="center"><%=sBean.aBean.phone%><br><%=sBean.aBean.phone2%></td>
-                <td align="center"><%=sBean.tradePerformedBy%></td>
-                <td align="center">
-                	<%=permissions.isCorporate() 
-                	? "<a href='con_selectFacilities.jsp?id="+sBean.aBean.id+"'>Show</a>" 
-                	: sBean.getFlagLink()%>
-                </td>
-                <td align="center">
-<%			if (pBean.oBean.canAddContractors()) {
-				if (!pBean.canSeeSet.contains(sBean.aBean.id) || pBean.isCorporate()){
-					if (permissions.hasPermission(OpPerms.AddContractors)){%>
-                  <input name="action" type="submit" class="buttons" value="Add" onClick="return addContractor(<%=sBean.aBean.id%>);">
-<%				}//if
-				}else{
-					if (permissions.hasPermission(OpPerms.RemoveContractors)){%>
-                  <input name="action" type="submit" class="buttons" value="Remove" onClick="return removeContractor(<%=sBean.aBean.id%>);">
-<%					}//if
-				}//else
-			}//if%>
-                </td>
-              </tr></span>
-<%		}//while %>
-            </table><br>
-		    <div><%=sBean.getLinksWithDynamicForm()%></div>
-<%	}//if %>
-<%}finally{
+<%	} finally {
 	sBean.closeSearch();
-}//finally
+}
 %>
 </body>
 </html>

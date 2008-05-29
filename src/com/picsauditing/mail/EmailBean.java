@@ -93,6 +93,7 @@ public class EmailBean {
 
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
+		addToken("permissions", permissions);
 	}
 
 	public Email getEmail() {
