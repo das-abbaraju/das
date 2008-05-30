@@ -33,7 +33,7 @@
 			OSHABean oBean = new OSHABean();
 			oBean.setListFromDB(conID);
 			if (oBean.isInDB)
-				response.sendRedirect("pqf_viewOSHA.jsp?auditID=" + conID + "&catID=" + catID + "&id=" + conID 	);
+				response.sendRedirect("pqf_viewOSHA.jsp?auditID=" + action.getAuditID() + "&catID=" + catID + "&id=" + conID 	);
 			else
 				response.sendRedirect("pqf_OSHA.jsp?action=Edit&oID=New&auditID=" + action.getAudit().getId() + "&catID=" + catID);
 			return;
