@@ -36,20 +36,20 @@ public class ReportAccount extends ReportActionSupport {
 
 	protected String startsWith;
 	protected String accountName = DEFAULT_NAME;
-	protected String industry;
+	protected String[] industry;
 	protected String performedBy;
-	protected int trade;
+	protected int[] trade;
 	protected int[] operator;
 	protected String city = DEFAULT_CITY;
 	protected String state;
 	protected String zip = DEFAULT_ZIP;
 	protected String certsOnly;
 	protected String visible;
-	protected int stateLicensedIn;
-	protected int worksIn;
+	protected int[] stateLicensedIn;
+	protected int[] worksIn;
 	protected String taxID = DEFAULT_TAX_ID;
 	protected String flagStatus;
-	protected int officeIn;
+	protected int[] officeIn;
 
 	@Autowired
 	protected SelectAccount sql = new SelectAccount();
@@ -163,14 +163,17 @@ public class ReportAccount extends ReportActionSupport {
 		this.accountName = accountName;
 	}
 
-	public String getIndustry() {
+	public String[] getIndustry() {
 		return industry;
 	}
 
-	public void setIndustry(String industry) {
+	public void setIndustry(String[] industry) {
+		String industryList = Strings.implode(industry, ",");
+		if (industryList.equals("0"))
+			return;
 		report
-				.addFilter(new SelectFilter("industry", "a.industry = '?'",
-						industry, Industry.DEFAULT_INDUSTRY,
+				.addFilter(new SelectFilter("industry", "a.industry IN (?)",
+						industryList, Industry.DEFAULT_INDUSTRY,
 						Industry.DEFAULT_INDUSTRY));
 		this.industry = industry;
 	}
@@ -183,11 +186,11 @@ public class ReportAccount extends ReportActionSupport {
 		this.performedBy = performedBy;
 	}
 
-	public int getTrade() {
+	public int[] getTrade() {
 		return trade;
 	}
 
-	public void setTrade(int trade) {
+	public void setTrade(int[] trade) {
 		String performedBy = ServletActionContext.getRequest().getParameter(
 				"performedBy");
 		String answerFilter = "";
@@ -201,10 +204,12 @@ public class ReportAccount extends ReportActionSupport {
 			else if ("Self Performed".equals(performedBy))
 				answerFilter = "C%";
 		}
+		String tradeList = Strings.implode(trade, ",");
+		if (tradeList.equals("0"))
+			return;
 		report.addFilter(new SelectFilterInteger("trade",
-				"a.id IN (SELECT conID FROM pqfdata WHERE questionID=? AND answer LIKE '"
-						+ answerFilter + "')", trade));
-
+				"a.id IN (SELECT conID FROM pqfdata WHERE questionID IN (?) AND answer LIKE '"
+						+ answerFilter + "')", Integer.valueOf(tradeList)));
 		this.trade = trade;
 	}
 
@@ -277,29 +282,35 @@ public class ReportAccount extends ReportActionSupport {
 		this.visible = visible;
 	}
 
-	public int getStateLicensedIn() {
+	public int[] getStateLicensedIn() {
 		return stateLicensedIn;
 	}
 
-	public void setStateLicensedIn(int stateLicensedIn) {
+	public void setStateLicensedIn(int[] stateLicensedIn) {
+		String stateLicensedInList = Strings.implode(stateLicensedIn, ",");
+		if (stateLicensedInList.equals("0"))
+			return;
 		report
 				.addFilter(new SelectFilterInteger(
 						"stateLicensedIn",
-						"a.id IN (SELECT conID FROM pqfdata WHERE questionID=? AND answer <> '')",
-						stateLicensedIn));
+						"a.id IN (SELECT conID FROM pqfdata WHERE questionID IN (?) AND answer <> '')",
+						Integer.valueOf(stateLicensedInList)));
 		this.stateLicensedIn = stateLicensedIn;
 	}
 
-	public int getWorksIn() {
+	public int[] getWorksIn() {
 		return worksIn;
 	}
 
-	public void setWorksIn(int worksIn) {
+	public void setWorksIn(int[] worksIn) {
+		String worksInList = Strings.implode(worksIn, ",");
+		if (worksInList.equals("0"))
+			return;
 		report
 				.addFilter(new SelectFilterInteger(
 						"worksIn",
-						"a.id IN (SELECT conID FROM pqfdata WHERE questionID=? AND answer LIKE 'Yes%')",
-						worksIn));
+						"a.id IN (SELECT conID FROM pqfdata WHERE questionID IN (?) AND answer LIKE 'Yes%')",
+						Integer.valueOf(worksInList)));
 		this.worksIn = worksIn;
 	}
 
@@ -349,16 +360,19 @@ public class ReportAccount extends ReportActionSupport {
 		return 0;
 	}
 
-	public int getOfficeIn() {
+	public int[] getOfficeIn() {
 		return officeIn;
 	}
 
-	public void setOfficeIn(int officeIn) {
+	public void setOfficeIn(int[] officeIn) {
+		String officeInList = Strings.implode(officeIn, ",");
+		if (officeInList.equals("0"))
+			return;
 		report
 				.addFilter(new SelectFilterInteger(
 						"officeIn",
-						"a.id IN (SELECT conID FROM pqfdata WHERE questionID=? AND answer LIKE '%Office')",
-						officeIn));
+						"a.id IN (SELECT conID FROM pqfdata WHERE questionID IN (?) AND answer LIKE '%Office')",
+						Integer.valueOf(officeInList)));
 		this.officeIn = officeIn;
 	}
 }

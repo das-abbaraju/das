@@ -9,10 +9,11 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterInteger;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 
 public class ReportContractorAudits extends ReportAccount {
-	protected int auditTypeID;
-	protected String auditStatus;
+	protected int[] auditTypeID;
+	protected String[] auditStatus;
 	protected int auditorId = 0;
 	
 	
@@ -56,13 +57,16 @@ public class ReportContractorAudits extends ReportAccount {
 		return list;
 	}
 	
-	public int getAuditTypeID() {
+	public int[] getAuditTypeID() {
 		return auditTypeID;
 	}
 
-	public void setAuditTypeID(int auditTypeID) {
+	public void setAuditTypeID(int[] auditTypeID) {
+		String auditTypeList = Strings.implode(auditTypeID, ",");
+		if (auditTypeList.equals("0"))
+			return;
 		report.addFilter(new SelectFilterInteger("auditTypeID",
-				"ca.auditTypeID = ?", auditTypeID));
+				"ca.auditTypeID IN (?)", Integer.valueOf(auditTypeList)));
 		this.auditTypeID = auditTypeID;
 	}
 
@@ -70,13 +74,16 @@ public class ReportContractorAudits extends ReportAccount {
 		return AuditStatus.getValuesWithDefault();
 	}
 	
-	public String getAuditStatus() {
+	public String[] getAuditStatus() {
 		return auditStatus;
 	}
 
-	public void setAuditStatus(String auditStatus) {
+	public void setAuditStatus(String[] auditStatus) {
+		String auditStatusList = Strings.implode(auditStatus, ",");
+		if (auditStatusList.equals("0"))
+			return;
 		report.addFilter(new SelectFilter("auditStatus",
-				"ca.auditStatus = '?'", auditStatus, AuditStatus.DEFAULT, AuditStatus.DEFAULT));
+				"ca.auditStatus IN (?)", auditStatusList, AuditStatus.DEFAULT, AuditStatus.DEFAULT));
 		this.auditStatus = auditStatus;
 	}
 

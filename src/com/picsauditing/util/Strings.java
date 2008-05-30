@@ -24,6 +24,16 @@ public class Strings {
 		return buffer.toString();
 	}
 
+	public static String implode(String[] array, String delimiter) {
+		StringBuffer buffer = new StringBuffer();
+		for (String o : array) {
+			if (buffer.length() > 0)
+				buffer.append(delimiter);
+			buffer.append(o);
+		}
+		return buffer.toString();
+	}
+	
 	public static String implode(Collection<Integer> collection, String delimiter) {
 		StringBuffer buffer = new StringBuffer();
 		for (Object o : collection) {
