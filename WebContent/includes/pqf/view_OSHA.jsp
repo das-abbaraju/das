@@ -32,7 +32,7 @@
           </td>
           <td colspan="8" align="center">
 <%		if (!"".equals(oBean.OID) && (pBean.isAdmin() || cID.equals(pBean.userID) || (pBean.isAuditor() && pBean.canVerifyAudit(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,cID)))){%>
-			<a href="pqf_OSHA.jsp?action=Edit&id=<%=conID%>&catID=<%=catID%>&oID=<%=oBean.OID%>">Click here to edit this location</a>
+			<a href="pqf_OSHA.jsp?action=Edit&id=<%=conID%>&catID=<%=catID%>&oID=<%=oBean.OID%>&auditID=<%= request.getParameter("auditID") %>">Click here to edit this location</a>
 <%		}//if %>
 		  </td>
         </tr>
@@ -140,11 +140,7 @@
           <td colspan="2" align="center"><%=oBean.getFile3YearAgoLink()%></td>
           <td colspan="2">&nbsp;</td>
         </tr>
-        <tr>
-        	<td><%		if (!"".equals(oBean.OID) && (pBean.isAdmin() || cID.equals(pBean.userID) || (pBean.isAuditor() && pBean.canVerifyAudit(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,cID)))) { %>
-            <a href="pqf_OSHA.jsp?action=Edit&id=<%=conID%>&catID=<%=catID%>&oID=<%=oBean.OID%>&auditID=<%= request.getParameter("auditID") %>">Click here to edit this location</a>
-<%		}//if %></td></tr>
-   
+ 
       </table>
     </td>
   </tr>
