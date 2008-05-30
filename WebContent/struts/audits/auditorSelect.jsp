@@ -2,10 +2,11 @@
 <s:select 
        name="%{controlName}"
        cssClass="forms"
-	   headerKey="0"
-	   headerValue="%{@com.picsauditing.jpa.entities.User@DEFAULT_AUDITOR}"
        list="auditors"
        listKey="id"
        listValue="name"
        value="presetValue"
+       multiple="true"
+       size="5"
+       cssStyle="display: none"
        />

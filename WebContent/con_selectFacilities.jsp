@@ -169,23 +169,11 @@
 		<td class="center">
 		<%
 			if (permissions.isPicsEmployee() || permissions.isCorporate()) {
-		%><a href="ContractorFlag.action?id=<%=cBean.id%>&opID=<%=opID%>"><img
-			src="images/icon_<%=flagColor%>Flag.gif" width=12 height=15 border=0></a>
-		<%
+				%><img src="images/icon_<%=flagColor%>Flag.gif" width=12 height=15 border=0><%
 			}
 		%>
 		</td>
-		<td>
-		<% if( permissions.isPicsEmployee() || permissions.isCorporate() ) { %>
-		
-			<a href="ContractorFlag.action?id=<%=cBean.id%>&opID=<%=opID%>"><%=name%></a>
-		<% } else { 
-			out.write(name);
-		}
-		%>
-		
-		
-		</td>
+		<td><%=name%></td>
 		<td class="center">
 		<%
 			if (!permissions.isOnlyAuditor()) {
