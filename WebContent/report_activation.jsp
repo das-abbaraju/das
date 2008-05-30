@@ -11,18 +11,18 @@ try{
 	sBean.orderBy = request.getParameter("orderBy");
 	if (null==sBean.orderBy)
 		sBean.orderBy = "dateCreated DESC";
-	if ("Send".equals(action)) {
-		EmailContractorBean emailer = new EmailContractorBean();
+	//if ("Send".equals(action)) {
+	//	EmailContractorBean emailer = new EmailContractorBean();
 		/*
 		if (email_welcome_attachfile)
 			String fileName = "attachments/welcome.doc";
 		*/
-		emailer.sendMessage(EmailTemplates.welcome, actionID, permissions);
-		message += "A welcome email was sent to "+emailer.getSentTo();
-		emailer.getContractorBean().welcomeEmailDate = DateBean.getTodaysDate();
-		emailer.getContractorBean().writeToDB();
-		return;
-	}
+	//	emailer.sendMessage(EmailTemplates.welcome, actionID, permissions);
+	//	message += "A welcome email was sent to "+emailer.getSentTo();
+	//	emailer.getContractorBean().welcomeEmailDate = DateBean.getTodaysDate();
+	//	emailer.getContractorBean().writeToDB();
+	//	return;
+	//}
 	if ("Called".equals(action)) {
 		ContractorBean cBean = new ContractorBean();
 		cBean.setFromDB(actionID);
