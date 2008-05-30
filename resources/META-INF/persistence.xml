@@ -38,7 +38,7 @@
 			<property name="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.SingletonEhCacheProvider" />
 			<property name="hibernate.generate_statistics" value="true"/>
 	
-		    
+		    <property name="hibernate.cache.provider_configuration" value="ehcache.xml"/>
 		    <property name="hibernate.cache.use_minimal_puts" value="false"/>
 		    <property name="hibernate.cache.use_query_cache" value="true"/>
 		    <property name="hibernate.cache.use_second_level_cache" value="true"/>
