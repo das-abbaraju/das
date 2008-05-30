@@ -240,5 +240,9 @@
 			class="com.picsauditing.actions.contractors.ContractorWidget">
 			<result>/struts/widgets/con_stats.jsp</result>
 		</action>
+		<action name="Cron"
+			class="com.picsauditing.actions.Cron">
+			<result>/struts/blank.jsp</result>
+		</action>
 	</package>
 </struts>
