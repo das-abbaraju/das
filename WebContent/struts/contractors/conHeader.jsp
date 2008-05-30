@@ -65,12 +65,14 @@
 					<th>Status:</th>
 					<td><s:property value="conAudit.auditStatus" /></td>
 				</tr>
+				<s:if test="%{value = (!permissions.operator && !permissions.corporate)}">
 				<s:if test="conAudit.auditType.hasAuditor">
 					<tr>
 						<th>Auditor:</th>
 						<td><s:property value="conAudit.auditor.name"
 							default="Not Assigned" /></td>
 					</tr>
+				</s:if>
 				</s:if>
 				<tr>
 					<th>Created:</th>
