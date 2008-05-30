@@ -2,6 +2,8 @@ package com.picsauditing.util;
 
 import java.util.Collection;
 
+import com.picsauditing.PICS.Utilities;
+
 public class Strings {
 	public static String insertSpaces(String value) {
 		if (value == null) return null;
@@ -23,13 +25,15 @@ public class Strings {
 		}
 		return buffer.toString();
 	}
-
-	public static String implode(String[] array, String delimiter) {
+	
+	public static String implodeForDB(Enum[] array, String delimiter) {
 		StringBuffer buffer = new StringBuffer();
-		for (String o : array) {
+		for (Enum o : array) {
 			if (buffer.length() > 0)
 				buffer.append(delimiter);
+			buffer.append("'");
 			buffer.append(o);
+			buffer.append("'");
 		}
 		return buffer.toString();
 	}

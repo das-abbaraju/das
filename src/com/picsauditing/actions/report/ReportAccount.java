@@ -36,7 +36,7 @@ public class ReportAccount extends ReportActionSupport {
 
 	protected String startsWith;
 	protected String accountName = DEFAULT_NAME;
-	protected String[] industry;
+	protected Industry[] industry;
 	protected String performedBy;
 	protected int[] trade;
 	protected int[] operator;
@@ -84,8 +84,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	// Getters for search lists
-	public ArrayList<String> getIndustryList() {
-		return Industry.getValuesWithDefault();
+	public Industry[] getIndustryList() {
+		return Industry.values();
 	}
 
 	public Map<Integer, String> getStateLicensesList() throws Exception {
@@ -163,19 +163,15 @@ public class ReportAccount extends ReportActionSupport {
 		this.accountName = accountName;
 	}
 
-	public String[] getIndustry() {
+	public Industry[] getIndustry() {
 		return industry;
 	}
 
-	public void setIndustry(String[] industry) {
-		String industryList = Strings.implode(industry, ",");
-		if (industryList.equals("0"))
-			return;
-		report
-				.addFilter(new SelectFilter("industry", "a.industry IN (?)",
-						industryList, Industry.DEFAULT_INDUSTRY,
-						Industry.DEFAULT_INDUSTRY));
+	public void setIndustry(Industry[] industry) {
 		this.industry = industry;
+		String industryList = Strings.implodeForDB(industry, ",");
+		sql.addWhere("a.industry IN ("+industryList+")");
+		filtered = true;
 	}
 
 	public String getPerformedBy() {

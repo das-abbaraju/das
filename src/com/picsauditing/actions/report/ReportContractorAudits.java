@@ -3,6 +3,8 @@ package com.picsauditing.actions.report;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.dao.support.DaoSupport;
+
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -13,7 +15,7 @@ import com.picsauditing.util.Strings;
 
 public class ReportContractorAudits extends ReportAccount {
 	protected int[] auditTypeID;
-	protected String[] auditStatus;
+	protected AuditStatus[] auditStatus;
 	protected int auditorId = 0;
 	
 	
@@ -50,11 +52,11 @@ public class ReportContractorAudits extends ReportAccount {
 	}
 
 	public List<AuditType> getAuditTypeList() {
-		List<AuditType> list = new ArrayList<AuditType>();
-		list.add(new AuditType(AuditType.DEFAULT_AUDITTYPE));
+		//List<AuditType> list = new ArrayList<AuditType>();
 		AuditTypeDAO dao = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
-		list.addAll(dao.findAll());
-		return list;
+		return dao.findAll();
+//		list.addAll(dao.findAll());
+//		return list;
 	}
 	
 	public int[] getAuditTypeID() {
@@ -62,29 +64,25 @@ public class ReportContractorAudits extends ReportAccount {
 	}
 
 	public void setAuditTypeID(int[] auditTypeID) {
-		String auditTypeList = Strings.implode(auditTypeID, ",");
-		if (auditTypeList.equals("0"))
-			return;
-		report.addFilter(new SelectFilterInteger("auditTypeID",
-				"ca.auditTypeID IN (?)", Integer.valueOf(auditTypeList)));
 		this.auditTypeID = auditTypeID;
+		String auditTypeList = Strings.implode(auditTypeID, ",");
+		sql.addWhere("ca.auditTypeID IN ("+auditTypeList+")");
+		filtered = true;
 	}
 
-	public ArrayList<String> getAuditStatusList() {
-		return AuditStatus.getValuesWithDefault();
+	public AuditStatus[] getAuditStatusList() {
+		return AuditStatus.values();
 	}
 	
-	public String[] getAuditStatus() {
+	public AuditStatus[] getAuditStatus() {
 		return auditStatus;
 	}
 
-	public void setAuditStatus(String[] auditStatus) {
-		String auditStatusList = Strings.implode(auditStatus, ",");
-		if (auditStatusList.equals("0"))
-			return;
-		report.addFilter(new SelectFilter("auditStatus",
-				"ca.auditStatus IN (?)", auditStatusList, AuditStatus.DEFAULT, AuditStatus.DEFAULT));
+	public void setAuditStatus(AuditStatus[] auditStatus) {
 		this.auditStatus = auditStatus;
+		String auditStatusList = Strings.implodeForDB(auditStatus, ",");
+		sql.addWhere("ca.auditStatus IN ("+auditStatusList+")");
+		filtered = true;
 	}
 
 	public int getAuditorId() {
