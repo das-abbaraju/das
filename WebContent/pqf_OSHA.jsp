@@ -35,10 +35,6 @@
 	oBean.setFromDB(oID);
 	oBean.setShowLinks(pBean);
 	// Removed !cBean.canEditPrequal() && for compiling. 
-	if (!permissions.isAdmin() && !pBean.canVerifyAudit(auditType, conID)) {
-		response.sendRedirect("login.jsp");
-		return;
-	}//if
 	if ("Update".equals(request.getParameter("action"))) {
 		oBean.setFromRequest(request);
 		if (oBean.isOK()) {

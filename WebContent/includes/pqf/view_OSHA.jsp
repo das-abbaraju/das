@@ -26,9 +26,6 @@
         <tr>
           <td>
             Location: <strong><%=oBean.getLocationDescription()%></strong><%=oBean.getDateVerifiedView()%>
-<%		if (!"".equals(oBean.OID) && (pBean.isAdmin() || pBean.isAuditor())) { %>
-            <br/><a href="pqf_OSHA.jsp?id=<%=conID%>&catID=<%=catID%>&oID=<%=oBean.OID%>&action=Verify&auditType=<%=com.picsauditing.PICS.pqf.Constants.PQF_TYPE%>">Click here to certify this data as verified</a>
-<%		}//if %>
           </td>
           <td colspan="8" align="center">
 <%		if (!"".equals(oBean.OID) && (pBean.isAdmin() || cID.equals(pBean.userID) || (pBean.isAuditor() && pBean.canVerifyAudit(com.picsauditing.PICS.pqf.Constants.PQF_TYPE,cID)))){%>

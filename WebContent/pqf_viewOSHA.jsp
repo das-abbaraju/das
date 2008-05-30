@@ -50,13 +50,7 @@
 	  		  <tr>
                 <td></td>
     		  </tr>
-<!--	  			<tr align="center">
-			      <form name="form1" method="post" action="pqf_edit.jsp">
-        	        <td colspan=2><%=pcBean.getPqfCategorySelectDefaultSubmit("catID","blueMain",catID,auditTypeId)%></td>
-			      <input type="hidden" name="id" value="<%=conID%>">
-				  </form>
-      			</tr>
--->    			<tr>
+
                   <td align="center" class="redMain">
 <%		if (pBean.isAdmin() || conID.equals(pBean.userID)) { %>
                     You must input at least your corporate statistics.  To further assist your clients, please <br>

@@ -49,11 +49,12 @@
 <%@ include file="includes/conHeaderLegacy.jsp"%>
 
 <h2>Category <%=pcBean.number%> - <%=pcBean.category%></h2>
+<% if(!isOSHA) { %>
 <div>View:
 <% if (action.canEdit()) { %><a href="pqf_edit.jsp?auditID=<%=action.getAuditID()%>&catID=<%=catID %>">Switch to Edit Mode</a><% } %>
 <% if (action.canVerify()) { %>| <a href="pqf_verify.jsp?auditID=<%=action.getAuditID()%>&catID=<%=catID %>">Switch to Verify Mode</a><% } %>
 </div>
-
+<% } %>
 <% if (action.getAudit().getAuditType().isPqf()) { %>
 <form name="form1" method="post" action="pqf_view.jsp">
 	<%=pcBean.getPqfCategorySelectDefaultSubmit("catID", "blueMain", catID, 
