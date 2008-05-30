@@ -23,6 +23,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
+
 import com.picsauditing.util.Luhn;
 
 @Entity
@@ -218,6 +221,7 @@ public class Account implements java.io.Serializable {
 	}
 
 	@Column(name = "industry", nullable = true, length = 50)
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.Industry") })
 	@Enumerated(EnumType.STRING)
 	public Industry getIndustry() {
 		return this.industry;
