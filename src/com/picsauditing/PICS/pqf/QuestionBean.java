@@ -584,14 +584,14 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 		String temp = "<br>Verified Answer: <strong><span class=greenMain>"+value+"</span></strong>";
 		temp += "<img src=images/okCheck.gif width=19 height=15><span class=greenMain>Verified on "+data.dateVerified+"</span>";
 		return temp;
-	}//getVerifiedAnswerView
+	}
 
 	public String getCommentView() throws Exception {
 		String comment = data.comment;
 		if ("".equals(comment))
 			return "";
 		return "<br>Comment: <span class=greenMain>"+comment+"</span>";
-	}//getCommentView
+	}
 
 	public String getAnswerView(String value) throws Exception {
 		if ("Date".equals(questionType) && !"".equals(value))
@@ -602,7 +602,7 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 			value = "<a href=# onClick=window.open('servlet/showpdf?id="+data.conID+"&file=pqf"+value+questionID+
 				"','','scrollbars=yes,resizable=yes,width=700,height=450')>Uploaded</a>";
 		return value;
-	}//getAnswerView
+	}
 
 	public String getOriginalAnswerView() throws Exception {
 		String value = getAnswerView(data.answer);
@@ -614,7 +614,7 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 			return value+"<img src=images/notOkCheck.gif width=19 height=15><span class=redMain>Inaccurate Data</span>";
 		else
 			return value;
-	}//getOriginalAnswerView
+	}
 
 	public void setQMapFromDB() throws Exception {
 		if (null != QMap)

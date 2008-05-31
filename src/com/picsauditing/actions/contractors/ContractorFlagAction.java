@@ -52,6 +52,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		if (opID == 0)
 			opID = permissions.getAccountId();
 
+		// If the contractor isn't assigned to this facility (in generalcontractors table)
+		// then the following will throw an exception
+		// We must either re-engineer the way we query co's and their flags 
+		// or merge the gc and flag tables into one (I prefer the latter) Trevor 5/29/08
 		co = contractorOperatorDao.find(id, opID);
 		co.getOperatorAccount().getFlagOshaCriteria();
 		co.getOperatorAccount().getAudits();

@@ -38,17 +38,13 @@ public class ContractorView extends ContractorActionSupport {
 		if (contractor.getLogoFile().equals("No"))
 			return 0;
 		
-		try {
-			String filename = ServletActionContext.getServletContext().getInitParameter("FTP_DIR")+"logos/"+contractor.getLogoFile();
-			System.out.println("filename = "+filename);
-			int width = Images.getWidth(filename);
-			System.out.println("width = "+width);
-			if (width > 300)
-				return 300;
-			return width;
-		} catch (Exception e) {
-			return 0;
-		}
+		String filename = ServletActionContext.getServletContext().getInitParameter("FTP_DIR")+"logos/"+contractor.getLogoFile();
+		System.out.println("filename = "+filename);
+		int width = Images.getWidth(filename);
+		System.out.println("width = "+width);
+		if (width > 300)
+			return 300;
+		return width;
 	}
 
 }

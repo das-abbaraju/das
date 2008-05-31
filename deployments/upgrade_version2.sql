@@ -38,7 +38,7 @@ CREATE TABLE `audit_type` (
 
 /*Data for the table `audit_type` */
 
-insert  into `audit_type`(`auditTypeID`,`auditName`,`description`,`hasMultiple`,`isScheduled`,`hasAuditor`,`hasRequirements`,`canContractorView`,`canContractorEdit`,`monthsToExpire`,`dateToExpire`,`legacyCode`) values (1,'PQF','prequalification that every contractor must fill out',0,0,0,1,1,1,NULL,'2009-03-01 00:00:00','PQF'),(2,'Desktop Audit','desktop audit',0,0,1,1,1,0,36,NULL,'Desktop'),(3,'Office Audit','office audit',0,1,1,1,1,0,36,NULL,'Office'),(4,'Desktop Audit (NCMS)','old imported ncms desktop audits',0,0,0,0,1,0,36,NULL,NULL),(5,'Field Audit','generic field audit',1,1,1,1,1,0,36,NULL,'Field'),(6,'D&A Audit','drug and alcohol audit',0,0,1,1,1,0,36,NULL,'DA'),(7,'Evaluation','operator performed contractor evaluations',1,0,0,0,0,0,36,NULL,NULL);
+insert  into `audit_type`(`auditTypeID`,`auditName`,`description`,`hasMultiple`,`isScheduled`,`hasAuditor`,`hasRequirements`,`canContractorView`,`canContractorEdit`,`monthsToExpire`,`dateToExpire`,`legacyCode`) values (1,'PQF','prequalification that every contractor must fill out',0,0,1,1,1,1,NULL,'2009-03-01 00:00:00','PQF'),(2,'Desktop Audit','desktop audit',0,0,1,1,1,0,36,NULL,'Desktop'),(3,'Office Audit','office audit',0,1,1,1,1,0,36,NULL,'Office'),(4,'Desktop Audit (NCMS)','old imported ncms desktop audits',0,0,0,0,1,0,36,NULL,NULL),(5,'Field Audit','generic field audit',1,1,1,1,1,0,36,NULL,'Field'),(6,'D&A Audit','drug and alcohol audit',0,0,1,1,1,0,36,NULL,'DA'),(7,'Evaluation','operator performed contractor evaluations',1,0,0,0,0,0,36,NULL,NULL);
 
 /*Table structure for table `pqfquestion_operator` */
 

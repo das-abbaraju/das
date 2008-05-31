@@ -50,6 +50,19 @@ public class ReportAccount extends ReportActionSupport {
 	protected String taxID = DEFAULT_TAX_ID;
 	protected String flagStatus;
 	protected int[] officeIn;
+	
+	protected boolean filterOperator = true;
+	protected boolean filterIndustry = true;
+	protected boolean filterPerformedBy = true;
+	protected boolean filterTrade = true;
+	protected boolean filterAddress = true;
+	protected boolean filterCerts = true;
+	protected boolean filterVisible = true;
+	protected boolean filterLicensedIn = true;
+	protected boolean filterWorksIn = true;
+	protected boolean filterOfficeIn = true;
+	protected boolean filterTaxID = true;
+	protected boolean filterFlagStatus = true;
 
 	@Autowired
 	protected SelectAccount sql = new SelectAccount();
@@ -67,7 +80,9 @@ public class ReportAccount extends ReportActionSupport {
 			return LOGIN;
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
-
+		
+		toggleFilters();
+		
 		if (this.orderBy == null)
 			this.orderBy = "a.name";
 		sql.setType(SelectAccount.Type.Contractor);
@@ -82,6 +97,16 @@ public class ReportAccount extends ReportActionSupport {
 		}
 		return SUCCESS;
 	}
+	
+	protected void toggleFilters() {
+		if (permissions.isOperator()) {
+			filterOperator = false;
+		}
+
+		if (!permissions.isOperator()) {
+			filterFlagStatus = false;
+		}
+	}
 
 	// Getters for search lists
 	public Industry[] getIndustryList() {
@@ -90,22 +115,22 @@ public class ReportAccount extends ReportActionSupport {
 
 	public Map<Integer, String> getStateLicensesList() throws Exception {
 		QuestionTypeList questionList = new QuestionTypeList();
-		return questionList.getQuestionMap("License", "- Licensed In -");
+		return questionList.getQuestionMap("License", null);
 	}
 
 	public Map<Integer, String> getTradeList() throws Exception {
 		QuestionTypeList questionList = new QuestionTypeList();
-		return questionList.getQuestionMap("Service", "- Trade -");
+		return questionList.getQuestionMap("Service", null);
 	}
 
 	public Map<Integer, String> getWorksInList() throws Exception {
 		QuestionTypeList questionList = new QuestionTypeList();
-		return questionList.getQuestionMap("Office Location", "- Works In -");
+		return questionList.getQuestionMap("Office Location", null);
 	}
 
 	public Map<Integer, String> getOfficeInList() throws Exception {
 		QuestionTypeList questionList = new QuestionTypeList();
-		return questionList.getQuestionMap("Office Location", "- Office Location -");
+		return questionList.getQuestionMap("Office Location", null);
 	}
 
 	public String[] getTradePerformedByList() throws Exception {
@@ -203,10 +228,12 @@ public class ReportAccount extends ReportActionSupport {
 		String tradeList = Strings.implode(trade, ",");
 		if (tradeList.equals("0"))
 			return;
-		report.addFilter(new SelectFilterInteger("trade",
-				"a.id IN (SELECT conID FROM pqfdata WHERE questionID IN (?) AND answer LIKE '"
-						+ answerFilter + "')", Integer.valueOf(tradeList)));
+		
 		this.trade = trade;
+		sql.addJoin("JOIN pqfdata trade ON trade.conID = a.id " +
+				"AND trade.questionID IN (" + tradeList + ") " +
+				"AND trade.answer LIKE '" + answerFilter + "'");
+		filtered = true;
 	}
 
 	public int[] getOperator() {
@@ -284,14 +311,11 @@ public class ReportAccount extends ReportActionSupport {
 
 	public void setStateLicensedIn(int[] stateLicensedIn) {
 		String stateLicensedInList = Strings.implode(stateLicensedIn, ",");
-		if (stateLicensedInList.equals("0"))
-			return;
-		report
-				.addFilter(new SelectFilterInteger(
-						"stateLicensedIn",
-						"a.id IN (SELECT conID FROM pqfdata WHERE questionID IN (?) AND answer <> '')",
-						Integer.valueOf(stateLicensedInList)));
 		this.stateLicensedIn = stateLicensedIn;
+		sql.addJoin("JOIN pqfdata licensedIn ON licensedIn.conID = a.id " +
+				"AND licensedIn.questionID IN (" + stateLicensedInList + ") " +
+				"AND licensedIn.answer <> ''");
+		filtered = true;
 	}
 
 	public int[] getWorksIn() {
@@ -300,14 +324,24 @@ public class ReportAccount extends ReportActionSupport {
 
 	public void setWorksIn(int[] worksIn) {
 		String worksInList = Strings.implode(worksIn, ",");
-		if (worksInList.equals("0"))
-			return;
-		report
-				.addFilter(new SelectFilterInteger(
-						"worksIn",
-						"a.id IN (SELECT conID FROM pqfdata WHERE questionID IN (?) AND answer LIKE 'Yes%')",
-						Integer.valueOf(worksInList)));
 		this.worksIn = worksIn;
+		sql.addJoin("JOIN pqfdata worksIn ON worksIn.conID = a.id " +
+				"AND worksIn.questionID IN (" + worksInList + ") " +
+				"AND worksIn.answer LIKE 'Yes%'");
+		filtered = true;
+	}
+
+	public int[] getOfficeIn() {
+		return officeIn;
+	}
+
+	public void setOfficeIn(int[] officeIn) {
+		String officeInList = Strings.implode(officeIn, ",");
+		this.officeIn = officeIn;
+		sql.addJoin("JOIN pqfdata officeIn ON officeIn.conID = a.id " +
+				"AND officeIn.questionID IN (" + officeInList + ") " +
+				"AND officeIn.answer LIKE 'Yes with Office'");
+		filtered = true;
 	}
 
 	public String getTaxID() {
@@ -335,7 +369,6 @@ public class ReportAccount extends ReportActionSupport {
 		report.addFilter(new SelectFilter("flagStatus", "flags.flag = '?'",
 				flagStatus, FlagColor.DEFAULT_FLAG_STATUS,
 				FlagColor.DEFAULT_FLAG_STATUS));
-
 	}
 
 	/**
@@ -351,24 +384,58 @@ public class ReportAccount extends ReportActionSupport {
 					.getBean("OperatorAccountDAO");
 			return dao.getContractorCount(permissions.getAccountId());
 		}
-		// This method shouldn't be use be Admins, auditors, and contractors so
+		// This method shouldn't be used by Admins, auditors, and contractors so
 		// just return 0
 		return 0;
 	}
 
-	public int[] getOfficeIn() {
-		return officeIn;
+	public boolean isFilterOperator() {
+		return filterOperator;
 	}
 
-	public void setOfficeIn(int[] officeIn) {
-		String officeInList = Strings.implode(officeIn, ",");
-		if (officeInList.equals("0"))
-			return;
-		report
-				.addFilter(new SelectFilterInteger(
-						"officeIn",
-						"a.id IN (SELECT conID FROM pqfdata WHERE questionID IN (?) AND answer LIKE '%Office')",
-						Integer.valueOf(officeInList)));
-		this.officeIn = officeIn;
+	public boolean isFilterIndustry() {
+		return filterIndustry;
 	}
+
+	public boolean isFilterPerformedBy() {
+		return filterPerformedBy;
+	}
+
+	public boolean isFilterTrade() {
+		return filterTrade;
+	}
+
+	public boolean isFilterAddress() {
+		return filterAddress;
+	}
+
+	public boolean isFilterCerts() {
+		return filterCerts;
+	}
+
+	public boolean isFilterVisible() {
+		return filterVisible;
+	}
+
+	public boolean isFilterLicensedIn() {
+		return filterLicensedIn;
+	}
+
+	public boolean isFilterWorksIn() {
+		return filterWorksIn;
+	}
+
+	public boolean isFilterOfficeIn() {
+		return filterOfficeIn;
+	}
+
+	public boolean isFilterTaxID() {
+		return filterTaxID;
+	}
+
+	public boolean isFilterFlagStatus() {
+		return filterFlagStatus;
+	}
+	
+	
 }

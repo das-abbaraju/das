@@ -18,7 +18,10 @@ public class ReportContractorAudits extends ReportAccount {
 	protected AuditStatus[] auditStatus;
 	protected int auditorId = 0;
 	
-	
+	protected boolean filterAuditType = true;
+	protected boolean filterAuditStatus = true;
+	protected boolean filterAuditor = true;
+
 	
 	public String execute() throws Exception {
 		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
@@ -50,13 +53,17 @@ public class ReportContractorAudits extends ReportAccount {
 			orderBy = "ca.createdDate DESC";
 		return super.execute();
 	}
+	
+	protected void toggleFilters() {
+		super.toggleFilters();
+		
+		if (permissions.isOperator() || permissions.isCorporate())
+			filterAuditor = false;
+	}
 
 	public List<AuditType> getAuditTypeList() {
-		//List<AuditType> list = new ArrayList<AuditType>();
 		AuditTypeDAO dao = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
 		return dao.findAll();
-//		list.addAll(dao.findAll());
-//		return list;
 	}
 	
 	public int[] getAuditTypeID() {
@@ -97,6 +104,18 @@ public class ReportContractorAudits extends ReportAccount {
 		}
 		
 		this.auditorId = auditorId;
+	}
+
+	public boolean isFilterAuditType() {
+		return filterAuditType;
+	}
+
+	public boolean isFilterAuditStatus() {
+		return filterAuditStatus;
+	}
+
+	public boolean isFilterAuditor() {
+		return filterAuditor;
 	}
 	
 	

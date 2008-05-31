@@ -2,6 +2,7 @@ package com.picsauditing.PICS.pqf;
 
 import java.sql.ResultSet;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -15,7 +16,6 @@ import org.apache.commons.io.FilenameUtils;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.actions.audits.ContractorAuditLegacy;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.servlet.upload.UploadConHelper;
 import com.picsauditing.servlet.upload.UploadProcessorFactory;
@@ -28,7 +28,6 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 	public String auditID = "";
 	public String questionID = "";
 	public String dateVerified = "";
-//	public String num = "";
 	public String answer = "";
 	public String comment = "";
 	
@@ -42,12 +41,13 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 
 	public String catDoesNotApply = "No";
 	public boolean alreadySavedCat = false;
-	public TreeMap<String,String> QAMap = null;
-	public TreeMap<String,String> QCMap = null;
-	public TreeMap<String,String> catAnsweredMap = null;
-	public TreeMap<String,String> catReqAnsweredMap = null;
-	public TreeMap<String,String> catNumRequiredMap = null;
-	public TreeMap<String,String> verifiedMap = null;
+	
+	private Map<String,String> QAMap = new HashMap<String, String>();
+	private Map<String,String> QCMap = new HashMap<String, String>();
+	private Map<String,String> verifiedMap = new HashMap<String, String>();
+	public Map<String,String> catAnsweredMap = null;
+	public Map<String,String> catReqAnsweredMap = null;
+	public Map<String,String> catNumRequiredMap = null;
 	boolean isComplete = false;
 	boolean isClosed = false;
 
@@ -70,6 +70,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 	}//setFromResultSet
 
 	public void setFromDB(int auditID, String conID, String catID) throws Exception {
+		this.conID = conID;
 		try{
 			String Query = "SELECT * FROM pqfCatData WHERE auditID="+auditID+" AND catID="+catID;
 			DBReady();
@@ -83,47 +84,50 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 					catDoesNotApply  = "Yes";
 			}
 			SQLResult.close();
-			
-			Query = "SELECT * FROM pqfData WHERE conID="+conID+" ORDER BY num";
-			SQLResult = SQLStatement.executeQuery(Query);
-			QAMap = new TreeMap<String,String>();
-			QCMap = new TreeMap<String,String>();
-			verifiedMap = new TreeMap<String,String>();
-			while (SQLResult.next()) {
-				setFromResultSet(SQLResult);
-				QAMap.put(questionID,answer);
-				QCMap.put(questionID,comment);
-				verifiedMap.put(questionID,dateVerified);
-			}
-			SQLResult.close();
 		}finally{
 			DBClose();
 		}
 	}
 
+	private void setAnswerFromDB(String qID) throws Exception {
+		System.out.println("setAnswerFromDB("+qID+")");
+		try {
+			String Query = "SELECT answer, comment, dateVerified " +
+				"FROM pqfData WHERE questionID = '"+qID+"' " +
+				"AND auditID IN (SELECT auditID FROM contractor_audit ca WHERE conID="+conID+")";
+			DBReady();
+			ResultSet SQLResult = SQLStatement.executeQuery(Query);
+			if (SQLResult.next()) {
+				answer = this.getString(SQLResult, "answer");
+				comment = this.getString(SQLResult, "comment");
+				dateVerified = com.picsauditing.PICS.DateBean.toShowFormat(this.getString(SQLResult, "dateVerified"));
+				QAMap.put(qID,answer);
+				QCMap.put(qID,comment);
+				verifiedMap.put(qID,dateVerified);
+			}
+			SQLResult.close();
+		} finally {
+			DBClose();
+		}
+	}
+
 	public String getAnswer(String qID) throws Exception {
-		if (null==QAMap)
-			throw new Exception("QAMap is null");
-		if (QAMap.containsKey(qID))
-			return (String)QAMap.get(qID);
-		return "";
-	}//getAnswer
+		return getOtherQuestionData(QAMap, qID);
+	}
 
 	public String getComment(String qID) throws Exception {
-		if (null==QCMap)
-			throw new Exception("QCMap is null");
-		if (QCMap.containsKey(qID))
-			return (String)QCMap.get(qID);
-		return "";
-	}//getComment
+		return getOtherQuestionData(QCMap, qID);
+	}
 
 	public String getDateVerified(String qID) throws Exception {
-		if (null==verifiedMap)
-			throw new Exception("verifiedMap is null");
-		if (verifiedMap.containsKey(qID))
-			return (String)verifiedMap.get(qID);
-		return "";
-	}//getDateVerified
+		return getOtherQuestionData(verifiedMap, qID);
+	}
+	
+	private String getOtherQuestionData(Map<String, String> map, String qID) throws Exception {
+		if (!map.containsKey(qID))
+			setAnswerFromDB(qID);
+		return map.get(qID);
+	}
 
 	public void setList(String conID, String catID) throws Exception {
 		if ((null == conID) || ("".equals(conID)))
@@ -274,7 +278,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 			int requiredCount = 0;
 			int yesNACount = 0;
 			//first set tempQAMap with all the answers
-			TreeMap<String,String> tempQAMap = new TreeMap<String,String>();
+			Map<String,String> tempQAMap = new TreeMap<String,String>();
 			Enumeration e = request.getParameterNames();
 			while (e.hasMoreElements()) {
 				String temp = (String)e.nextElement();
@@ -412,7 +416,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 			int answeredCount = 0;
 			int requiredCount = 0;
 			int yesNACount = 0;
-			TreeMap<String,String> tempQAMap = new TreeMap<String,String>();
+			Map<String,String> tempQAMap = new TreeMap<String,String>();
 			boolean bUploadsOnly = true;
 			//first set tempQAMap with all the answers
 			Iterator iter = params.keySet().iterator();
@@ -730,16 +734,6 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 		return;
 	}
 	
-	public String getUploadLink() throws Exception {
-		String answer = getAnswer(com.picsauditing.PICS.pqf.Constants.MANUAL_PQF_QID);
-		if ("".equals(answer))
-			return "Not Uploaded";
-		else
-			return "<a href=# onClick=window.open('servlet/showpdf?id="+conID+"&file=pqf"+answer+com.picsauditing.PICS.pqf.Constants.MANUAL_PQF_QID+
-				"','','scrollbars=yes,resizable=yes,width=700,height=450')>Uploaded</a>";
-	}
-
-
 	public void saveVerificationNoUpload(javax.servlet.http.HttpServletRequest request, String conID, String userID) throws Exception {
 		try{
 			DBReady();
@@ -890,7 +884,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 
 	public boolean isYes(String qID) throws Exception {
 		return ("Yes".equals(getAnswer(qID)));
-	}//isYes
+	}
 
 	public boolean isNotAnswered(String qID) throws Exception {
 		return ("".equals(getAnswer(qID)));
@@ -902,7 +896,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 		if (isNotAnswered(qID))
 			return "<img src=images/notOkCheck.gif width=19 height=15 alt='Not Answered'>";
 		return "<img src=images/okCheck.gif width=19 height=15 alt='OK'>";
-	}//getFlag
+	}
 
 	public String getFlagDandB(String value) throws Exception {
 		if ("".equals(value))
@@ -910,7 +904,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 		if (!Utilities.arrayContains(D_AND_B_OK, value))
 			return "<img src=images/notOkCheck.gif width=19 height=15>";
 		return "<img src=images/okCheck.gif width=19 height=15 alt='OK'>";
-	}//getFlagDandB
+	}
 
 	public String getFlagOver(String value, float limit) throws Exception {
 		if ("".equals(value))
@@ -985,7 +979,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 			
 			// Get a map of all answers in this audit
 			DBReady();
-			TreeMap<Integer,String> tempQAMap = new TreeMap<Integer,String>();
+			Map<Integer,String> tempQAMap = new TreeMap<Integer,String>();
 
 			selectQuery = "SELECT questionID, answer FROM pqfdata d WHERE auditID="+auditID;
 			rs = SQLStatement.executeQuery(selectQuery);

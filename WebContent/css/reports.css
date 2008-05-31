@@ -107,3 +107,9 @@ table.report td.inactive {
 	color: #999;
 	font-style: italic;
 }
+
+div.filterOption {
+	margin: 0px;
+	padding: 0px;
+	float: left;
+}
