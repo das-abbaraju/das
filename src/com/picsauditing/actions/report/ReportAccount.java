@@ -142,14 +142,9 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {
-		List<OperatorAccount> opList = new ArrayList<OperatorAccount>();
-		opList.add(new OperatorAccount(OperatorAccount.DEFAULT_NAME));
-
 		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils
 				.getBean("OperatorAccountDAO");
-		opList.addAll(dao.findWhere("active='Y'"));
-		return opList;
-
+		return dao.findWhere("active='Y'");
 	}
 
 	public Map<String, String> getStateList() {
