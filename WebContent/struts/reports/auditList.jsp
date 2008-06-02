@@ -19,14 +19,14 @@
 	<thead>
 	<tr>
 		<td></td>
-	    <th><a href="?orderBy=a.name" >Contractor</a></th>
-	    <td><a href="?orderBy=atype.auditName" >Type</a></td>
-	    <td><a href="?orderBy=ca.createdDate DESC" >Created</a></td>
-	    <td><a href="?orderBy=ca.auditStatus DESC" >Status</a></td>
-	    <td><a href="?orderBy=ca.percentComplete" >Comp%</a></td>
-	    <td><a href="?orderBy=ca.percentVerified" >Ver%</a></td>
+	    <th><a href="javascript: changeOrderBy('form1','a.name');" >Contractor</a></th>
+	    <td><a href="javascript: changeOrderBy('form1','atype.auditName');" >Type</a></td>
+	    <td><a href="javascript: changeOrderBy('form1','ca.createdDate DESC');" >Created</a></td>
+	    <td><a href="javascript: changeOrderBy('form1','ca.auditStatus DESC');" >Status</a></td>
+	    <td><a href="javascript: changeOrderBy('form1','ca.percentComplete');" >Comp%</a></td>
+	    <td><a href="javascript: changeOrderBy('form1','ca.percentVerified');" >Ver%</a></td>
 	    <s:if test="%{value = (!permissions.operator && !permissions.corporate)}">
-	    <td><a href="?orderBy=auditor.name" >Auditor</a></td>
+	    <td><a href="javascript: changeOrderBy('form1','auditor.name');" >Auditor</a></td>
 	    </s:if>
 	</tr>
 	</thead>
