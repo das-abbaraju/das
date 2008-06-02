@@ -67,7 +67,7 @@
 				src="images/button_search.gif" onclick="runSearch( 'form1')" /></td>
 		</tr>
 		<tr><td>	
-		 	<s:select list="operatorList"
+		 	<s:select list="operatorList" headerKey="0" headerValue="- Operator -"
 			cssClass="forms" name="operator" listKey="id" listValue="name" />
 		</td>
 		</tr>
@@ -86,13 +86,13 @@
 		<thead>
 			<tr>
 				<td></td>
-				<td><a href="?orderBy=a.name">Contractor</a></td>
-				<td align="center"><a href="?orderBy=auditType">Type</a></td>
-				<td align="center"><a href="?orderBy=createdDate DESC">Created</a></td>
-				<td align="center"><a href="?orderBy=auditorID DESC,name">Auditor</a></td>
-				<td align="center"><a href="?orderBy=assignedDate DESC">Assigned</a></td>
-				<td align="center"><a href="?orderBy=scheduledDate,a.name">Scheduled</a></td>
-				<td align="center"><a href="?orderBy=auditLocation,a.name">Location</a></td>
+				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','atype.auditName');">Type</a></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','createdDate DESC');">Created</a></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','auditorID DESC,name');">Auditor</a></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','assignedDate DESC');">Assigned</a></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','scheduledDate,a.name');">Scheduled</a></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','auditLocation,a.name');">Location</a></td>
 				<td></td>
 			</tr>
 		</thead>

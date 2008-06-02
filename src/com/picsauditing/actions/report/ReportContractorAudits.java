@@ -71,6 +71,10 @@ public class ReportContractorAudits extends ReportAccount {
 	}
 
 	public void setAuditTypeID(int[] auditTypeID) {
+		String auditList = Strings.implode(auditTypeID, ",");
+		if (auditList.equals("0"))
+			return;
+
 		this.auditTypeID = auditTypeID;
 		String auditTypeList = Strings.implode(auditTypeID, ",");
 		sql.addWhere("ca.auditTypeID IN ("+auditTypeList+")");

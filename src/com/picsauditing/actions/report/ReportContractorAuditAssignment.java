@@ -28,7 +28,11 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 
 		sql.addWhere("auditStatus='Pending'");
 		sql.addWhere("atype.isScheduled=1 OR atype.hasAuditor=1");
-		orderBy = "ca.createdDate";
+		
+		if( orderBy == null )
+		{
+			orderBy = "ca.createdDate";
+		}
 
 		return super.execute();
 	}
