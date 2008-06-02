@@ -16,6 +16,21 @@
 			width="1" height="1"></td>
 		<td valign="top" bgcolor="#FFFFFF">
 		<table border="0" align="center" cellpadding="0" cellspacing="0">
+				<tr>
+				<td class="blueHome2"><strong>04/01/08</strong>
+				<strong class="articleTitle">PICS presents at Texas Safety</strong><br>
+				PICS CFO, Jared Smith, was invited by the National Safety Council to present <i>The Dos and Don'ts of Contractor Prequalification</i> at the 2008 Texas Safety Conference &amp; Expo.  NSC is one of the leading safety organizations in the world; there are 18,600 member companies of NSC, representing 8.5 million employees.</td>
+			</tr>
+			<tr>
+				<td bgcolor="#F8F8F8" class="blueHome2"><strong>03/01/08</strong> <strong
+					class="articleTitle">Allergan, Inc. joins PICS</strong><br>
+				Allergan represents a global, $3 billion multi-specialty health care company with leading portfolios in eye care, neurosciences, medical dermatology, medical aesthetics, obesity intervention and urologics. Allergan has over 7,500 employees and a presence in more than 100 countries.</td>
+			</tr>
+			<tr>
+				<td class="blueHome2"><strong>02/01/08</strong>
+				<strong class="articleTitle">Sikorsky Aircraft Corporation joins PICS</strong><br>
+				Sikorsky Aircraft Corporation, a UTC Company, has partnered with PICS to prequalify contractors at all domestic facilities. Sikorsky has a global workforce topping 14,000 and is a world leader in the design, manufacture and service of military and commercial helicopters. Their helicopters have saved an estimated 2 million lives since performing the world's first helicopter rescue in 1944.</td>
+			</tr>
 			<tr>
 				<td bgcolor="#F8F8F8" class="blueHome2"><strong>01/01/08</strong>
 				<strong class="articleTitle">Roquette America joins PICS</strong><br>
