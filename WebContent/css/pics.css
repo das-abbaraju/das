@@ -331,6 +331,15 @@ a.ext {
 		center;
 }
 
+a.refresh {
+	padding: 5px;
+	padding-left: 30px;
+	margin-left: 2px;
+	background: transparent url(../images/refresh_icon.jpg) no-repeat left
+		center;
+}
+
+
 /******************** Styles for vCard  ************************/ /*
 .vcard p{
  line-height: 15px;

@@ -71,12 +71,14 @@ public class OperatorBean extends DataBean {
 		try{
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			while (SQLResult.next()){
+			while (SQLResult.next()) {
 				AuditOperator tempRow = new AuditOperator();
 				tempRow.setAuditType(new AuditType());
 				tempRow.getAuditType().setAuditTypeID(SQLResult.getInt("auditTypeID"));
 				tempRow.setMinRiskLevel(SQLResult.getInt("minRiskLevel"));
-				canSeeAudits.add(tempRow);
+				tempRow.setCanSee(SQLResult.getBoolean("canSee"));
+				if (tempRow.isCanSee())
+					canSeeAudits.add(tempRow);
 			}
 			SQLResult.close();
 		}finally{
@@ -262,7 +264,7 @@ public class OperatorBean extends DataBean {
 			return false;
 		for (AuditOperator audit : canSeeAudits) {
 			if (audit.getAuditType().getAuditTypeID() == auditID)
-				return audit.getMinRiskLevel() > 0;
+				return audit.isCanSee();
 		}
 		return false;
 	}
@@ -276,8 +278,9 @@ public class OperatorBean extends DataBean {
 		return false;
 	}
 	
-	public Set<Integer> getCanSeeAuditIDSet() {
-		if (canSeeAudits == null || canSeeAudits.size() == 0) return null;
+	public Set<Integer> getCanSeeAuditIDSet() throws Exception {
+		getCanSeeAudits();
+		
 		Set<Integer> canSeeAuditIds = new HashSet<Integer>();
 		for (AuditOperator audit : canSeeAudits) {
 			canSeeAuditIds.add(audit.getAuditType().getAuditTypeID());

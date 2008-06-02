@@ -382,16 +382,16 @@ create table `audit_operator`(
 	KEY `auditTypeID`(`auditTypeID`) 
 )Engine=InnoDB DEFAULT CHARSET='latin1';
 
-insert into audit_operator (auditTypeID, opID,minRiskLevel,requiredForFlag)
-	(select 1 AS a, id, 1, 'Red' AS b from operators where canSeePQF='Yes');
-insert into audit_operator (auditTypeID, opID,minRiskLevel,requiredForFlag)
-	(select 2 AS a, id, 2, 'Amber' AS b from operators where canSeeDesktop='Yes');
-insert into audit_operator (auditTypeID, opID,minRiskLevel,requiredForFlag)
-	(select 3 AS a, id, 2, 'Amber' AS b from operators where canSeeOffice='Yes');
-insert into audit_operator (auditTypeID, opID,minRiskLevel,requiredForFlag)
-	(select 5 AS a, id, 2, 'Green' AS b from operators where canSeeField='Yes');
-insert into audit_operator (auditTypeID, opID,minRiskLevel,requiredForFlag)
-	(select 6 AS a, id, 2, 'Amber' AS b from operators where canSeeDA='Yes');
+insert into audit_operator (auditTypeID, opID, canSee, minRiskLevel, requiredForFlag)
+	(select 1 AS a, id, 1, 1, 'Red' AS b from operators where canSeePQF='Yes');
+insert into audit_operator (auditTypeID, opID, canSee, minRiskLevel,requiredForFlag)
+	(select 2 AS a, id, 1, 2, 'Amber' AS b from operators where canSeeDesktop='Yes');
+insert into audit_operator (auditTypeID, opID, canSee, minRiskLevel,requiredForFlag)
+	(select 3 AS a, id, 1, 2, 'Amber' AS b from operators where canSeeOffice='Yes');
+insert into audit_operator (auditTypeID, opID, canSee, minRiskLevel,requiredForFlag)
+	(select 5 AS a, id, 1, 0, null AS b from operators where canSeeField='Yes');
+insert into audit_operator (auditTypeID, opID, canSee, minRiskLevel,requiredForFlag)
+	(select 6 AS a, id, 1, 0, null AS b from operators where canSeeDA='Yes');
 
 
 /* Populate pqfcategories.auditTypeID */

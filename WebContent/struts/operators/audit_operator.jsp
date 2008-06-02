@@ -9,7 +9,13 @@
 <script type="text/javascript">
 function save(id, aID, oID, pKey) {
 	pars = '&operatorID='+oID+'&ao.auditType.auditTypeID='+aID+'&ao.auditOperatorID='+pKey;
-
+	
+	var checkBox = $('form1')['canSee'+id];
+	if (checkBox.getValue())
+		pars = pars + '&ao.canSee=true';
+	else
+		pars = pars + '&ao.canSee=false';
+	
 	var radioGrp = $('form1')['riskLevel'+id];
 	for(i=0; i < radioGrp.length; i++){
 	    if (radioGrp[i].checked == true) {
@@ -45,7 +51,7 @@ function save(id, aID, oID, pKey) {
 			listValue="auditName" value="aID"></s:select>
 	</s:else>
 </s:form>
-<br />
+<div><a href="" class="refresh">Refresh Page</a></div>
 <s:form id="form1">
 	<table cellspacing="1" cellpadding="3" border="0">
 		<tr class="whiteTitle" bgcolor="#003366" align="center">
@@ -69,10 +75,13 @@ function save(id, aID, oID, pKey) {
 				</s:else>
 				</td>
 				<td id="td<s:property value="htmlID" />">
-					<s:radio name="riskLevel%{htmlID}" list="riskLevelList" value="minRiskLevel" 
+					<s:checkbox name="canSee%{htmlID}" value="canSee"
+					onclick="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
+					|
+					<s:radio name="riskLevel%{htmlID}" list="riskLevelList" value="minRiskLevel" disabled="!canSee" 
 					onchange="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
 					|
-					<s:radio name="requiredForFlag%{htmlID}" list="FlagColorList" value="requiredForFlag"
+					<s:radio name="requiredForFlag%{htmlID}" list="FlagColorList" value="requiredForFlag" disabled="!canSee"
 					onchange="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
 				</td>
 			</tr>
