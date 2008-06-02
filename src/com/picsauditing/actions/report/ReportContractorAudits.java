@@ -1,14 +1,10 @@
 package com.picsauditing.actions.report;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.dao.support.DaoSupport;
 
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterInteger;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
