@@ -147,7 +147,7 @@
 					numSections++;
 					String subCatID = (String) li.next();
 					String subCat = (String) li.next();
-					pqBean.setSubListWithData("number", subCatID, conID);
+					pqBean.setSubListWithData("number", subCatID, action.getAuditID());
 			%>
 			<tr class="blueMain">
 				<td bgcolor="#003366" colspan="3" align="center"><font

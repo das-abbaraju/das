@@ -58,6 +58,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 	String extArr = "pdf,doc,jpg,txt,xls";
 
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
+		auditID = SQLResult.getString("auditID");
 		conID = SQLResult.getString("conID");
 		questionID = SQLResult.getString("questionID");
 		answer = this.getString(SQLResult, "answer");
@@ -67,7 +68,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 		auditorID = this.getString(SQLResult, "auditorID");
 		isCorrect = this.getString(SQLResult, "isCorrect");
 		wasChanged = this.getString(SQLResult, "wasChanged");
-	}//setFromResultSet
+	}
 
 	public void setFromDB(int auditID, String conID, String catID) throws Exception {
 		this.conID = conID;

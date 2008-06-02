@@ -24,7 +24,6 @@
 	String conID = action.getAudit().getContractorAccount().getId().toString();
 	String id = conID;
 
-
 	try {
 		String catID = "27";
 		String licenseNum = "";
@@ -43,56 +42,49 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
 <title>Contractor State Licenses</title>
-<meta name="header_gif" content="header_prequalification.gif" />
 </head>
 <body>
-<table border="0" cellspacing="0" cellpadding="1" class="blueMain">
-	<tr align="center" class="blueMain">
-		<td><%@ include file="includes/conHeaderLegacy.jsp"%></td>
-	</tr>
-</table>
-<table width="657" border="0" cellpadding=0 cellspacing=0>
-	<tr class="blueMain">
-		<td bgcolor="#003366" colspan=2 align="center" class="whiteTitle">STATES
-		LICENSED IN (CONTRACTORS LICENSE)</td>
-	</tr>
-	<%
-		for (java.util.ListIterator li = psBean.subCategories.listIterator(); li.hasNext();) {
-				String subCatID = (String) li.next();
-				String subCat = (String) li.next();
-				pqBean.setSubListWithData("number", subCatID, conID);
-				int stateCount = 0;
-				while (pqBean.isNextRecord()) {
-					if (!"".equals(pqBean.getOriginalAnswerView())) {
-						out.println(pqBean.getTitleLine("blueMain"));
-						if (!"Expiration Date".equals(pqBean.question))
-							stateCount++;
-	%>
-	<tr <%=pconBean.getBGColor(stateCount)%> class=blueMain>
-		<td valign="top" width=1%><nobr><%=pqBean.question%> <%=pqBean.getOriginalAnswerView()%>
-		<%=pqBean.getVerifiedAnswerView()%> <%=pqBean.getCommentView()%></td>
-		<%
-			licenseNum = pqBean.data.answer;
-							state = pqBean.question;
-							if (!"Expiration Date".equals(pqBean.question)) {
-		%>
-		<td valign="top"><%=pconBean.displayStateLink(state, licenseNum)%></td>
-		<%
-			} else {
-		%>
-		<td></td>
-		<%
-			}//else
-		%>
-	</tr>
-	<%
-		} //if answer
-				}//while
-			}//for
-		} finally {
-			pqBean.closeList();
-		}
-	%>
+<%@ include file="includes/conHeaderLegacy.jsp"%>
+<h1>STATES LICENSED IN (CONTRACTORS LICENSE)</h1>
+<table class="audit">
+<%
+	for (java.util.ListIterator li = psBean.subCategories.listIterator(); li.hasNext();) {
+		String subCatID = (String) li.next();
+		String subCategory = (String) li.next();
+		pqBean.setSubListWithData("number", subCatID, action.getAuditID());
+		int stateCount = 0;
+		while (pqBean.isNextRecord()) {
+			if (!"".equals(pqBean.getOriginalAnswerView())) {
+				out.println(pqBean.getTitleLine("blueMain"));
+				if (!"Expiration Date".equals(pqBean.question))
+					stateCount++;
+				%>
+				<tr <%=pconBean.getBGColor(stateCount)%>>
+				<td valign="top" width=1%><nobr><%=pqBean.question%>
+					<%=pqBean.getOriginalAnswerView()%>
+					<%=pqBean.getVerifiedAnswerView()%>
+					<%=pqBean.getCommentView()%>
+				</td>
+				<td>
+				<%
+				if (!"Expiration Date".equals(pqBean.question)) {
+					licenseNum = pqBean.data.answer;
+					state = pqBean.question;
+					%>
+					<td valign="top"><%=com.picsauditing.PICS.pqf.Constants.displayStateLink(state, licenseNum)%></td>
+					<%
+				}
+				%>
+				</td>
+				</tr>
+				<%
+			} //if answer
+		}//while
+	}//for
+} finally {
+	pqBean.closeList();
+}
+%>
 </table>
 
 </body>

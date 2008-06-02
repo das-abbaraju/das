@@ -291,11 +291,11 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 		}//catch
 	}//setSubList
 
-	public void setSubListWithData(String orderBy, String subCatID, String conID) throws Exception {
+	public void setSubListWithData(String orderBy, String subCatID, int auditID) throws Exception {
 		if ("".equals(orderBy) || null == orderBy)
 			orderBy = "number";
 		String selectQuery = "SELECT * FROM pqfQuestions LEFT JOIN pqfData ON pqfQuestions.questionID = pqfData.questionID"+
-			" AND conID="+conID+" WHERE subCategoryID="+subCatID+" ORDER BY "+orderBy+";";
+			" AND auditID="+auditID+" WHERE subCategoryID="+subCatID+" ORDER BY "+orderBy+";";
 		try{
 			DBReady();
 			listRS = SQLStatement.executeQuery(selectQuery);
@@ -308,8 +308,8 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 		}catch (Exception ex){
 			DBClose();
 			throw ex;
-		}//catch
-	}//setSubListWithData
+		}
+	}
 
 	public boolean isNextRecord() throws Exception {
 		try{
@@ -320,7 +320,7 @@ public class QuestionBean extends com.picsauditing.PICS.DataBean {
 			if (isJoinedWithData) {
 				questionID = listRS.getString("pqfQuestions.questionID");
 				data.setFromResultSet(listRS);
-				if (listRS.wasNull() || null==data.conID || "null".equals(data.conID))
+				if (listRS.wasNull() || null==data.auditID || "null".equals(data.auditID))
 					data = new DataBean();
 			}//if
 			if (!"Yes".equals(isGroupedWithPrevious))

@@ -64,10 +64,10 @@ function updateQuery(name) {
 
 <s:if test="filterTrade">
 	<div class="filterOption">
-		<a href="#" onclick="toggleBox('form1_trade'); return false;">Trade</a> =
+		<a href="#" onclick="toggleBox('form1_trade'); return false;">Trade</a>
+		<s:select list="tradePerformedByList" cssClass="forms" name="performedBy" /> =
 		<span id="form1_trade_query">ALL</span><br />
 		<s:select list="tradeList" cssClass="forms" name="trade" multiple="true" size="5" cssStyle="display: none"/>
-		<s:select list="tradePerformedByList" cssClass="forms" name="performedBy" />
 		<script type="text/javascript">updateQuery('form1_trade');</script>
 	</div>
 </s:if>

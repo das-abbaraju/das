@@ -105,7 +105,7 @@ Check here if this entire category does not apply
 		numSections++;
 		String subCatID = (String) li.next();
 		String subCat = (String) li.next();
-		pqBean.setSubListWithData("number", subCatID, conID);
+		pqBean.setSubListWithData("number", subCatID, action.getAuditID());
 	%>
 	<tr class="subCategory">
 		<td colspan="3">Sub Category <%=pcBean.number%>.<%=numSections%> - <%=subCat%></td>

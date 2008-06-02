@@ -28,6 +28,7 @@ public class AuditOperator {
 	protected AuditType auditType;
 
 	protected OperatorAccount operatorAccount;
+	protected boolean canSee;
 	protected int minRiskLevel = 0;
 	protected FlagColor requiredForFlag;
 	protected int orderedCount = -1;
@@ -54,6 +55,14 @@ public class AuditOperator {
 
 	public void setAuditType(AuditType auditType) {
 		this.auditType = auditType;
+	}
+
+	public boolean isCanSee() {
+		return canSee;
+	}
+
+	public void setCanSee(boolean canSee) {
+		this.canSee = canSee;
 	}
 
 	public int getMinRiskLevel() {

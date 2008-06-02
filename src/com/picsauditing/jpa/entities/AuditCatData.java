@@ -68,6 +68,8 @@ public class AuditCatData implements java.io.Serializable {
 
 	@Transient
 	public boolean isAppliesB() {
+		if (audit.getAuditType().getAuditTypeID() > 2)
+			return true;
 		return applies.equals(YesNo.Yes);
 	}
 	

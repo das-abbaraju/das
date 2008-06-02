@@ -110,7 +110,7 @@
 						numSections++;
 						String subCatID = (String) li.next();
 						String subCat = (String) li.next();
-						pqBean.setSubListWithData("number", subCatID, conID);
+						pqBean.setSubListWithData("number", subCatID, action.getAuditID());
 						if (isOSHA) {
 			%>
 			<%@ include file="includes/pqf/view_OSHA.jsp"%>
