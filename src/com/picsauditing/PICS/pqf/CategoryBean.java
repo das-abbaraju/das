@@ -237,9 +237,9 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		number = r.getParameter("number");
 	}
 
-	public void replaceCatData(String t_catID, String t_conID, String t_applies, String t_reqComp, String t_numReq, String t_percComp) throws Exception {
-		String query = "REPLACE INTO pqfCatData (catID,conID,applies,requiredCompleted,numRequired,percentCompleted) VALUES ("+
-				t_catID+","+t_conID+",'"+t_applies+"',"+t_reqComp+","+t_numReq+","+t_percComp+");";
+	public void replaceCatData(String t_catID, String t_auditID, String t_applies, String t_reqComp, String t_numReq, String t_percComp) throws Exception {
+		String query = "REPLACE INTO pqfCatData (catID,auditID,applies,requiredCompleted,numRequired,percentCompleted) VALUES ("+
+				t_catID+","+t_auditID+",'"+t_applies+"',"+t_reqComp+","+t_numReq+","+t_percComp+");";
 		try {
 			DBReady();
 			SQLStatement.executeUpdate(query);

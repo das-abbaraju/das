@@ -21,8 +21,8 @@
 	String actionString = request.getParameter("action");
 	if ("Save".equals(actionString) && "Yes".equals(request.getParameter("catDoesNotApply"))) {
 		OSHABean tempOBean = new OSHABean();
-		tempOBean.setOSHAoesNotApply(conID);
-		response.sendRedirect("pqf_edit.jsp?auditType="+auditType+"&id="+conID);
+		tempOBean.setOSHAoesNotApply(request.getParameter("auditID"));
+		response.sendRedirect("pqf_edit.jsp?auditType="+auditType+"&id="+conID+"&auditID="+request.getParameter("auditID"));
 		return;
 	} // if
 	cBean.setFromDB(conID);
@@ -58,7 +58,7 @@
 				    <a href="pqf_OSHA.jsp?action=Edit&oID=New&auditID=<%= action.getAudit().getId() %>&catID=<%=catID%>">Click here to add OSHA/MSHA info for another location</a>
 <%		} // if %>
 <%		if (pBean.isAdmin()) { %>
-			        <form name="formEdit" method="post" action="pqf_viewOSHA.jsp">
+			        <form name="formEdit" method="post" action="pqf_viewOSHA.jsp?auditID=<%= action.getAudit().getId()%>&catID=<%=catID%>">
                       <input type="checkbox" name="catDoesNotApply" value="Yes"> 
 					   Check here if this entire category does not apply <input name="action" type="submit" class="forms" value="Save">
                       <input type="hidden" name="id" value="<%=conID%>">

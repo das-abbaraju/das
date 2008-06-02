@@ -407,7 +407,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 			boolean doUpdate = false;
 			boolean catDoesNotApply = "Yes".equals(params.get("catDoesNotApply"));
 			if (catDoesNotApply) {
-				String Query = "REPLACE INTO pqfCatData (catID,conID,applies,percentCompleted,percentVerified) VALUES ("+catID+","+conID+",'No',100,100);";
+				String Query = "REPLACE INTO pqfCatData (catID,auditID,applies,percentCompleted,percentVerified) VALUES ("+catID+","+auditID+",'No',100,100);";
 				SQLStatement.executeUpdate(Query);
 				DBClose();
 				return;
@@ -626,7 +626,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void uploadPQFFile(javax.servlet.jsp.PageContext pageContext, String conID, String catID) throws Exception {
+	public void uploadPQFFile(javax.servlet.jsp.PageContext pageContext, String conID, String catID, String auditID) throws Exception {
 		boolean doUpdate = false;
 		int reqCount = 0;
 		int reqAnsweredCount = 0;
@@ -643,7 +643,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 		boolean catDoesNotApply = "Yes".equals(params.get("catDoesNotApply"));
 		
 		if (catDoesNotApply) {
-			String Query = "REPLACE INTO pqfCatData (catID,conID,applies,percentCompleted,percentVerified) VALUES ("+catID+","+conID+",'No',100,100);";
+			String Query = "REPLACE INTO pqfCatData (catID,auditID,applies,percentCompleted,percentVerified) VALUES ("+catID+","+auditID+",'No',100,100);";
 			try{
 				DBReady();
 				SQLStatement.executeUpdate(Query);
@@ -707,8 +707,8 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 				SQLStatement.executeUpdate(insertQuery);
 			//		pcBean.replaceCatData(catID,conID,"Yes",""+reqCount,""+reqAnsweredCount,percentCompleted);
 			String percent = getShowPercent(reqAnsweredCount,reqCount);
-			String replaceQuery = "REPLACE INTO pqfCatData (catID,conID,applies,numRequired,requiredCompleted,numAnswered,percentCompleted) VALUES ("+
-				catID+","+conID+",'Yes',"+reqCount+","+reqAnsweredCount+","+answeredCount+","+percent+");";
+			String replaceQuery = "REPLACE INTO pqfCatData (catID,auditID,applies,numRequired,requiredCompleted,numAnswered,percentCompleted) VALUES ("+
+				catID+","+auditID+",'Yes',"+reqCount+","+reqAnsweredCount+","+answeredCount+","+percent+");";
 			
 			SQLStatement.executeUpdate(replaceQuery);
 			
@@ -777,8 +777,9 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 			}//while
 
 			String catID = request.getParameter("catID");
+			String auditID = request.getParameter("auditID");
 			String temp = getShowPercent(verifiedCount,questionCount);
-			String updateQuery = "UPDATE pqfCatData SET percentVerified="+temp+" WHERE conID="+conID+" AND catID="+catID+";";
+			String updateQuery = "UPDATE pqfCatData SET percentVerified="+temp+" WHERE auditID="+auditID+" AND catID="+catID+";";
 			SQLStatement.executeUpdate(updateQuery);
 		}finally{
 			DBClose();
@@ -842,7 +843,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 		if ((null == conID) || ("".equals(conID)))
 			throw new Exception("Can't set isComplete from DB because conID is not set");
 		String selectQuery = "SELECT * FROM pqfCategories LEFT JOIN pqfCatData ON (pqfCategories.catID=pqfCatData.catID "+
-			"AND conID="+conID+") WHERE auditType='"+auditType+"' ORDER BY number;";
+			"AND auditID="+conID+") WHERE auditType='"+auditType+"' ORDER BY number;";
 		try{
 			DBReady();
 			listRS = SQLStatement.executeQuery(selectQuery);
@@ -864,7 +865,7 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 		if ((null == conID) || ("".equals(conID)))
 			throw new Exception("Can't set isClosed from DB because conID is not set");
 		String selectQuery = "SELECT * FROM pqfCategories LEFT JOIN pqfCatData ON (pqfCategories.catID = pqfCatData.catID "+
-			"AND conID="+conID+") WHERE auditType='"+auditType+"' ORDER BY number;";
+			"AND auditID="+conID+") WHERE auditType='"+auditType+"' ORDER BY number;";
 		try{
 			DBReady();
 			listRS = SQLStatement.executeQuery(selectQuery);

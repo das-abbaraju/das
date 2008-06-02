@@ -16,7 +16,6 @@
 	<jsp:useBean id="action" class="com.picsauditing.actions.audits.ContractorAuditLegacy" scope="page" />
 
 <%
-
 	action.setAuditID(request.getParameter("auditID"));
 	String auditType = action.getAudit().getAuditType().getLegacyCode();
 	String conID = action.getAudit().getContractorAccount().getId().toString();
@@ -39,7 +38,7 @@
 		oBean.setFromRequest(request);
 		if (oBean.isOK()) {
 			oBean.writeToDB(conID);
-			oBean.updateNumRequired(conID);
+			oBean.updateNumRequired(request.getParameter("auditID"));
 			//TODO calculate the pqf percent complete.
 			//cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE, pdBean.getPercentComplete(
 			//		conID, com.picsauditing.PICS.pqf.Constants.PQF_TYPE));
@@ -60,7 +59,7 @@
 		return;
 	} else if ("Delete".equals(request.getParameter("action"))) {
 		oBean.deleteLocation(oID, application.getInitParameter("FTP_DIR"));
-		oBean.updateNumRequired(conID);
+		oBean.updateNumRequired(request.getParameter("auditID"));
 		response.sendRedirect("pqf_viewOSHA.jsp?auditID=" + action.getAudit().getId() + "&catID=" + catID );
 		return;
 
@@ -79,7 +78,7 @@
 				oBean.getErrors().addElement(errorMsg);
 			else {
 				oBean.updateFilesDB(request);
-				oBean.updateNumRequired(conID);
+				oBean.updateNumRequired(request.getParameter("auditID"));
 				//TODO calculate the pqf percent complete.
 				//cBean.setPercentComplete(com.picsauditing.PICS.pqf.Constants.PQF_TYPE, pdBean
 				//		.getPercentComplete(conID, com.picsauditing.PICS.pqf.Constants.PQF_TYPE));

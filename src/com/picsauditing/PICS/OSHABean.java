@@ -349,7 +349,7 @@ public class OSHABean extends DataBean {
 		return i;		
 	}
 	
-	public void updateNumRequired(String cID) throws Exception {
+	public void updateNumRequired(String aID) throws Exception {
 		if (!"Corporate".equals(location))
 			return;
 		com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
@@ -360,7 +360,7 @@ public class OSHABean extends DataBean {
 		requiredCompleted+=calcNumCompleted(na3,stats[MAN_HOURS][YEAR3],file3YearAgo);
 		
 		String percentCompleted = intFormatter.format(requiredCompleted * factor);
-		pcBean.replaceCatData("29",cID,"Yes",""+requiredCompleted,""+numRequired,percentCompleted);	
+		pcBean.replaceCatData("29",aID,"Yes",""+requiredCompleted,""+numRequired,percentCompleted);	
 	}//udpateNumRequired
 	
 	public void setFromRequest(javax.servlet.http.HttpServletRequest r) throws Exception {
@@ -510,9 +510,9 @@ public class OSHABean extends DataBean {
 		if (f.exists())		f.delete();
 	}//deleteLocation
 
-	public void setOSHAoesNotApply(String conID) throws Exception {
-		String Query = "REPLACE INTO pqfCatData (catID,conID,applies) VALUES ("+
-				com.picsauditing.PICS.pqf.CategoryBean.OSHA_CATEGORY_ID+","+conID+",'No');";
+	public void setOSHAoesNotApply(String auditID) throws Exception {
+		String Query = "REPLACE INTO pqfCatData (catID,auditID,applies) VALUES ("+
+				com.picsauditing.PICS.pqf.CategoryBean.OSHA_CATEGORY_ID+","+auditID+",'No');";
 		try{
 			DBReady();
 			SQLStatement.executeUpdate(Query);

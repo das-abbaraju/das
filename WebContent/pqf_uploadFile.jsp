@@ -45,7 +45,7 @@
 		cBean.tryView(permissions);
 
 		if ("Save".equals(actionString)) {
-			pdBean.uploadPQFFile(pageContext, conID, catID);
+			pdBean.uploadPQFFile(pageContext, conID, catID, auditID);
 			if (pdBean.isOK()) {
 		pdBean.savePQF(request, action.getAudit(),
 				permissions);
