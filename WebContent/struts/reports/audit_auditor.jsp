@@ -19,11 +19,13 @@
 	<thead>
 	<tr>
 		<td></td>
-	    <td><a href="?orderBy=a.name">Contractor</a></td>
-	    <td><a href="?orderBy=atype.auditName">Type</a></td>
-		<td><a href="?orderBy=ca.assignedDate DESC">Assigned</a></td>
-	    <td><a href="?orderBy=ca.completedDate DESC">Submitted</a></td>
-	    <td><a href="?orderBy=ca.auditStatus DESC">Status</a></td>
+	    <td>
+	    	<a href="javascript: changeOrderBy('form1','a.name');">Contractor</a>
+	    </td>
+	    <td><a href="javascript: changeOrderBy('form1','atype.auditName');">Type</a></td>
+		<td><a href="javascript: changeOrderBy('form1','ca.assignedDate DESC');">Assigned</a></td>
+	    <td><a href="javascript: changeOrderBy('form1','ca.completedDate DESC');">Submitted</a></td>
+	    <td><a href="javascript: changeOrderBy('form1','ca.auditStatus DESC');">Status</a></td>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
