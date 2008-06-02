@@ -66,19 +66,19 @@ sets the highest standards possible in regard to contractor qualifications as th
                   <td bgcolor="#CCCCCC"><img src="images/spacer.gif" width="1" height="1"></td>
                   <td valign="top" bgcolor="#FFFFFF"><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
                                         					<tr>
-                                          <td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">04/01/08</span>PICS presents at Texas Safety</span><br>
+                                          <td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">05/08/08</span>PICS Presents at NPRA Safety Conference</span><br>
                                             <br> 
-                                          PICS CFO, Jared Smith, was invited by the National Safety Council to present <i>The Dos and Don'ts of Contractor Prequalification</i> at the 2008 Texas Safety Conference &amp; Expo.  NSC is one of the leading safety organizations in the world; there are 18,600 member companies of NSC, representing 8.5 million employees.</td></tr>
+                                          PICS CEO, John Moreland, was invited by the NPRA to present at the National Safety Conference about Process Safety Management and The Advantages Of Contractor Pre-qualification. Topics discussed by OSHA at the conference covered the NEP audit results, issues found and how to resolve them.</td></tr>
 										
 										<tr>
-                                          <td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">3/01/08</span>Allergan, Inc. joins PICS</span><br>
+                                          <td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">05/01/08</span>Frontier Oil Corporation joins PICS</span><br>
                                             <br> 
-                                          Allergan represents a global, $3 billion multi-specialty health care company with leading portfolios in eye care, neurosciences, medical dermatology, medical aesthetics, obesity intervention and urologics. Allergan has over 7,500 employees and a presence in more than 100 countries.</td></tr>
+                                          Frontier Oil Corporation is an independent oil refining and marketing company. Fronteir has a 52,000 barrel per day refinery in Cheyenne, Wyoming and a 110,000 barrel per day refinery in El Dorado, Kansas and the companys primary products of gasoline and diesel are marketed in the Rocky Mountain and Plains States.</td></tr>
 										
 										<tr>
-                                          <td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">02/01/08</span>Sikorsky Aircraft Corporation joins PICS</span><br>
+                                          <td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">04/01/08</span>Shell Global Solutions joins PICS</span><br>
                                             <br> 
-Sikorsky Aircraft Corporation, a UTC Company, has partnered with PICS to prequalify contractors at all domestic facilities. Sikorsky has a global workforce topping 14,000 and is a world leader in the design, manufacture and service of military and commercial helicopters. Their helicopters have saved an estimated 2 million lives since performing the world's first helicopter rescue in 1944.</td>
+Shell Global Solutions provides business and operational consultancy, technical services and research and development expertise to the energy and processing industries worldwide. Shell Global Solutions employs over 5,000 staff worldwide.</td>
                                         </tr>
                                         <tr>
                       <td align="center" class="blueHome">&nbsp;<a href="featured_newsarchive.jsp" target="_self"><img src="images/NEWSARCHIVE_button3.gif" width="111" height="27" hspace="5" border="0"></a></td>
