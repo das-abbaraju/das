@@ -42,7 +42,7 @@
 					<br>&nbsp;&nbsp;&nbsp;
 					<span class="answer"><s:property value="answer"/></span>
 					<s:if test="isCorrect.equals('Yes')">
-						<span class="verified">Verified on <s:date value="dateVerified" /></span>
+						<span class="verified">Verified on <s:date name="dateVerified" /></span>
 					</s:if>
 					<s:if test="isCorrect.equals('Yes')">
 						<span class="unverified">Inaccurate Data</span>
