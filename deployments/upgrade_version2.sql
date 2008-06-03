@@ -367,6 +367,9 @@ DELETE from pqfCatData where catID NOT IN
 DELETE from pqfCatData where conID not in
 (select id from contractor_info);
 
+delete from flags
+where opID in (select id from accounts where type = 'Contractor');
+
 /* Create audit_operator table */
 drop table IF EXISTS `audit_operator`;
 create table `audit_operator`(
@@ -392,6 +395,7 @@ insert into audit_operator (auditTypeID, opID, canSee, minRiskLevel,requiredForF
 	(select 5 AS a, id, 1, 0, null AS b from operators where canSeeField='Yes');
 insert into audit_operator (auditTypeID, opID, canSee, minRiskLevel,requiredForFlag)
 	(select 6 AS a, id, 1, 0, null AS b from operators where canSeeDA='Yes');
+
 
 
 /* Populate pqfcategories.auditTypeID */
