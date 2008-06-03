@@ -174,4 +174,14 @@ public class AuditData implements java.io.Serializable {
 		this.flagColor = flagColor;
 	}
 	
+	@Transient
+	public boolean isHasRequirements() {
+		return YesNo.Yes.equals(wasChanged);
+	}
+	
+	@Transient
+	public boolean isRequirementOpen() {
+		return (question.getOkAnswer().indexOf(answer) == -1);
+	}
+	
 }
