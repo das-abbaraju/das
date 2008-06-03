@@ -129,6 +129,10 @@
 			</result>
 		</action>
 
+		<action name="AuditCat"
+			class="com.picsauditing.actions.audits.AuditCategoryAction">
+			<result>struts/audits/audit_cat.jsp</result>
+		</action>
 
 		<action name="AuditTypeChoose"
 			class="com.picsauditing.actions.auditType.AuditTypeChoose">

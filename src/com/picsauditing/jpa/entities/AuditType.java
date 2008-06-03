@@ -24,6 +24,7 @@ public class AuditType {
 	public static final int OFFICE = 3;
 	public static final int NCMS = 4;
 	public static final int DA = 6;
+	public static final int WELCOME = 9;
 	
 	public static String DEFAULT_AUDITTYPE = "- Audit -";
 

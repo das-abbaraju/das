@@ -2,6 +2,8 @@ package com.picsauditing.jpa.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -26,7 +29,9 @@ public class AuditCategory implements java.io.Serializable {
 	private int number;
 	private int numRequired;
 	private int numQuestions;
-
+	
+	List<AuditSubCategory> subCategories;
+	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "catID", nullable = false)
@@ -57,7 +62,7 @@ public class AuditCategory implements java.io.Serializable {
 		this.category = category;
 	}
 
-	@Column(name = "number", nullable = false)
+	@Column(nullable = false)
 	public int getNumber() {
 		return this.number;
 	}
@@ -66,7 +71,7 @@ public class AuditCategory implements java.io.Serializable {
 		this.number = number;
 	}
 
-	@Column(name = "numRequired", nullable = false)
+	@Column(nullable = false)
 	public int getNumRequired() {
 		return this.numRequired;
 	}
@@ -75,7 +80,7 @@ public class AuditCategory implements java.io.Serializable {
 		this.numRequired = numRequired;
 	}
 
-	@Column(name = "numQuestions", nullable = false)
+	@Column(nullable = false)
 	public int getNumQuestions() {
 		return this.numQuestions;
 	}
@@ -83,4 +88,14 @@ public class AuditCategory implements java.io.Serializable {
 	public void setNumQuestions(int numQuestions) {
 		this.numQuestions = numQuestions;
 	}
+	
+	@OneToMany(mappedBy = "category")
+	public List<AuditSubCategory> getSubCategories() {
+		return subCategories;
+	}
+
+	public void setSubCategories(List<AuditSubCategory> subCategories) {
+		this.subCategories = subCategories;
+	}
+
 }

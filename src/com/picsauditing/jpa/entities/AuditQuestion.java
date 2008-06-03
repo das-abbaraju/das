@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -78,6 +79,8 @@ public class AuditQuestion implements java.io.Serializable {
 
 	protected List<AuditQuestionOperatorAccount> operator;
 
+	protected AuditData answer;
+	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	public int getQuestionID() {
@@ -98,7 +101,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.subCategory = subCategory;
 	}
 
-	@Column(name = "number", nullable = false)
+	@Column(nullable = false)
 	public short getNumber() {
 		return this.number;
 	}
@@ -107,7 +110,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.number = number;
 	}
 
-	@Column(name = "question", nullable = false, length = 16277215)
+	@Column(nullable = false)
 	public String getQuestion() {
 		return this.question;
 	}
@@ -116,7 +119,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.question = question;
 	}
 
-	@Column(name = "hasRequirement", nullable = false, length = 3)
+	@Column(nullable = false, length = 3)
 	public String getHasRequirement() {
 		return this.hasRequirement;
 	}
@@ -125,7 +128,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.hasRequirement = hasRequirement;
 	}
 
-	@Column(name = "okAnswer", nullable = false, length = 10)
+	@Column(nullable = false, length = 10)
 	public String getOkAnswer() {
 		return this.okAnswer;
 	}
@@ -134,7 +137,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.okAnswer = okAnswer;
 	}
 
-	@Column(name = "requirement", nullable = false, length = 16277215)
+	@Column(nullable = false)
 	public String getRequirement() {
 		return this.requirement;
 	}
@@ -143,7 +146,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.requirement = requirement;
 	}
 
-	@Column(name = "isRequired", nullable = false, length = 7)
+	@Column(nullable = false)
 	public String getIsRequired() {
 		return this.isRequired;
 	}
@@ -152,7 +155,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.isRequired = isRequired;
 	}
 
-	@Column(name = "dependsOnQID", nullable = false)
+	@Column(name = "dependsOnQID")
 	public Integer getDependsOnQid() {
 		return this.dependsOnQid;
 	}
@@ -161,7 +164,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.dependsOnQid = dependsOnQid;
 	}
 
-	@Column(name = "dependsOnAnswer", nullable = false, length = 100)
+	@Column(name = "dependsOnAnswer")
 	public String getDependsOnAnswer() {
 		return this.dependsOnAnswer;
 	}
@@ -170,7 +173,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.dependsOnAnswer = dependsOnAnswer;
 	}
 
-	@Column(name = "questionType", nullable = false, length = 14)
+	@Column(nullable = false)
 	public String getQuestionType() {
 		return this.questionType;
 	}
@@ -368,6 +371,15 @@ public class AuditQuestion implements java.io.Serializable {
 
 	public void setOperator(List<AuditQuestionOperatorAccount> operator) {
 		this.operator = operator;
+	}
+
+	@Transient
+	public AuditData getAnswer() {
+		return answer;
+	}
+
+	public void setAnswer(AuditData answer) {
+		this.answer = answer;
 	}
 
 }

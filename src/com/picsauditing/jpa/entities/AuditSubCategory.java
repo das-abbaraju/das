@@ -2,6 +2,8 @@ package com.picsauditing.jpa.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -23,6 +26,8 @@ public class AuditSubCategory implements java.io.Serializable {
 	private String subCategory;
 	private AuditCategory category;
 	private int number;
+	
+	private List<AuditQuestion> questions;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -53,12 +58,22 @@ public class AuditSubCategory implements java.io.Serializable {
 		this.category = category;
 	}
 
+	@Column(nullable = false)
 	public int getNumber() {
 		return number;
 	}
 
 	public void setNumber(int number) {
 		this.number = number;
+	}
+
+	@OneToMany(mappedBy = "subCategory")
+	public List<AuditQuestion> getQuestions() {
+		return questions;
+	}
+
+	public void setQuestions(List<AuditQuestion> questions) {
+		this.questions = questions;
 	}
 
 }

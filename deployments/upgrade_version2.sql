@@ -359,7 +359,10 @@ update operators set doSendActivationEmail = 'No'
 	where doSendActivationEmail not in ('No', 'Yes') or doSendActivationEmail is null;
 
 /************************/
-/* remove orphaned pqfCatData */
+/* cleanup orphaned/incorrect data */
+
+delete from contractor_info where id in 
+(select id from accounts where type <> 'Contractor');
 
 DELETE from pqfCatData where catID NOT IN
 (select catID from pqfCategories);
@@ -369,6 +372,7 @@ DELETE from pqfCatData where conID not in
 
 delete from flags
 where opID in (select id from accounts where type = 'Contractor');
+
 
 /* Create audit_operator table */
 drop table IF EXISTS `audit_operator`;
@@ -396,6 +400,9 @@ insert into audit_operator (auditTypeID, opID, canSee, minRiskLevel,requiredForF
 insert into audit_operator (auditTypeID, opID, canSee, minRiskLevel,requiredForFlag)
 	(select 6 AS a, id, 1, 0, null AS b from operators where canSeeDA='Yes');
 
+insert into useraccess 
+	(select id, 'AuditVerification', 1, 1, 0, 0, NOW(), 941 
+	 from users where id in (935,959,1029));
 
 
 /* Populate pqfcategories.auditTypeID */

@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import javax.persistence.Query;
 
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -31,6 +32,15 @@ public class AuditDataDAO extends PicsDAO {
 	public AuditData find(int id) {
 		AuditData a = em.find(AuditData.class, id);
 		return a;
+	}
+
+	public Map<Integer, AuditData> findByCategory(int auditID, AuditCategory category) {
+		Query query = em.createQuery("FROM AuditData d " +
+				"WHERE d.audit.id = :auditID AND d.question.subCategory.category = :category");
+		query.setParameter("auditID", auditID);
+		query.setParameter("category", category);
+		
+		return mapData(query.getResultList());
 	}
 
 	public Map<Integer, AuditData> findAnswersByContractor(int conID, List<Integer> questionIds) {
@@ -79,6 +89,13 @@ public class AuditDataDAO extends PicsDAO {
 		return query.getResultList();
 	}
 	
+	public Map<Integer, AuditData> findAnswers(int auditID) {
+		Query query = em.createQuery("SELECT d FROM AuditData d WHERE audit.id = ?");
+		query.setParameter(1, auditID);
+		
+		return mapData(query.getResultList());
+	}
+
 	public Map<Integer, AuditData> findAnswers(int auditID, List<Integer> questionIds) {
 		if (questionIds.size() == 0)
 			return new HashMap<Integer, AuditData>();

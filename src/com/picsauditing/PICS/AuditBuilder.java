@@ -57,6 +57,18 @@ public class AuditBuilder {
 		requiresSafetyManual.add(AuditType.OFFICE);
 		requiresSafetyManual.add(AuditType.DA);
 
+		/***** Welcome Call ****/
+		boolean needsWelcome = true;
+		for(ContractorAudit conAudit : currentAudits) {
+			if (conAudit.getAuditType().getAuditTypeID() == AuditType.WELCOME) {
+				needsWelcome = false;
+			}
+		}
+		if (needsWelcome) {
+			ContractorAudit welcomeCall = cAuditDAO.addPending(AuditType.WELCOME, contractor);
+			currentAudits.add(welcomeCall);
+		}
+		
 		/***** PQF ****/
 		ContractorAudit pqfAudit = null;
 		for(ContractorAudit conAudit : currentAudits) {
@@ -147,8 +159,9 @@ public class AuditBuilder {
 				}
 				
 				if (!needed) {
-					cAuditDAO.remove(conAudit);
-					currentAudits.remove(conAudit);
+					// TODO remove unneeded audits safely
+					//cAuditDAO.remove(conAudit);
+					//currentAudits.remove(conAudit);
 				}
 			}
 		}
