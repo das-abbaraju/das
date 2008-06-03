@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -68,6 +69,7 @@ public class AuditSubCategory implements java.io.Serializable {
 	}
 
 	@OneToMany(mappedBy = "subCategory")
+	@OrderBy("number")
 	public List<AuditQuestion> getQuestions() {
 		return questions;
 	}
