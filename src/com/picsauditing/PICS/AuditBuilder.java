@@ -134,7 +134,7 @@ public class AuditBuilder {
 				if (pqfAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
 					// The current PQF has been submitted, but we need to know if the Safety Manual is there first
 					AuditData safetyManual = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), AuditQuestion.MANUAL_PQF);
-					if (!safetyManual.getIsCorrectBoolean())
+					if (!safetyManual.isVerified())
 						insertNow = false;
 				}
 				

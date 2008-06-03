@@ -63,3 +63,24 @@ table.audit td {
 	color: #4C4D4D;
 	height: 30px;
 }
+
+
+span.answer {
+	color: #003768;
+	font-weight: bold;
+	margin-left: 20px;
+}
+
+span.verified {
+	color: #272;
+	padding-left: 20px;
+	background: transparent url(../images/okCheck.gif) no-repeat
+		left center;
+}
+
+span.unverified {
+	color: #900;
+	padding-left: 20px;
+	background: transparent url(../images/notOkCheck.gif) no-repeat
+		left center;
+}

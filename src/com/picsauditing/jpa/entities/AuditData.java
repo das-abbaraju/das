@@ -132,14 +132,19 @@ public class AuditData implements java.io.Serializable {
 	}
 
 	@Transient
-	public boolean getIsCorrectBoolean() {
+	public boolean isVerified() {
 		return YesNo.Yes.equals(isCorrect);
 	}
 
-	public void setIsCorrectBoolean(boolean isCorrect) {
+	public void setVerified(boolean isCorrect) {
 		this.isCorrect = isCorrect ? YesNo.Yes : YesNo.No;
 	}
 	
+	@Transient
+	public boolean isUnverified() {
+		return YesNo.No.equals(isCorrect);
+	}
+
 	@Enumerated(EnumType.STRING)
 	public YesNo getWasChanged() {
 		return wasChanged;

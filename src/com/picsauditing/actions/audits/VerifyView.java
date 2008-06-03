@@ -83,10 +83,10 @@ public class VerifyView extends AuditActionSupport {
 				toMerge.setVerifiedAnswer(aq.getVerifiedAnswer());
 				
 				
-				if( toMerge.getIsCorrectBoolean() != aq.getIsCorrectBoolean() )
+				if( toMerge.isVerified() != aq.isVerified() )
 				{
-					toMerge.setDateVerified( aq.getIsCorrectBoolean() ? new Date() : null );
-					toMerge.setIsCorrectBoolean(aq.getIsCorrectBoolean() );
+					toMerge.setDateVerified( aq.isVerified() ? new Date() : null );
+					toMerge.setVerified(aq.isVerified() );
 				}
 				
 				auditDataDao.save( toMerge );			
@@ -133,7 +133,7 @@ public class VerifyView extends AuditActionSupport {
 			
 			for( AuditData ad : customVerification.values() )
 			{
-				if( ad.getIsCorrectBoolean() ) verified++;
+				if( ad.isVerified() ) verified++;
 			}
 		}
 		
@@ -224,7 +224,7 @@ public class VerifyView extends AuditActionSupport {
 		appendOsha(sb, osha.getYear3(), getYear3());
 		
 		AuditData temp = getEmr1();
-		if( ! temp.getIsCorrectBoolean() )
+		if( ! temp.isVerified() )
 		{
 			sb.append(getYear1());
 			sb.append( " EMR - ");
@@ -233,7 +233,7 @@ public class VerifyView extends AuditActionSupport {
 		}
 		
 		temp = getEmr2();
-		if( ! temp.getIsCorrectBoolean() )
+		if( ! temp.isVerified() )
 		{
 			sb.append(getYear2());
 			sb.append( " EMR - ");
@@ -242,7 +242,7 @@ public class VerifyView extends AuditActionSupport {
 		}
 		
 		temp = getEmr3();
-		if( ! temp.getIsCorrectBoolean() )
+		if( ! temp.isVerified() )
 		{
 			sb.append(getYear3());
 			sb.append( " EMR - ");
