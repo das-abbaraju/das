@@ -296,6 +296,11 @@ function sendEmail() {
 					</td>
 			</tr>
 			</s:iterator>
+			<tr class="blueMain">
+				<td><a href="#"
+				onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqfpdf1331','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">PQF Safety Manual</a>
+				</td>
+			</tr>
 		</s:if>
 
 		<tr class="blueMain">
