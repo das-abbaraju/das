@@ -11,6 +11,7 @@
 	scope="page" />
 <jsp:useBean id="helper"
 	class="com.picsauditing.servlet.upload.UploadConHelper" />
+<%@page import="com.picsauditing.util.SpringUtils"%>
 <%
 	permissions.tryPermission(OpPerms.ContractorAccounts);
 	String id = request.getParameter("id");
@@ -50,6 +51,8 @@
 					cBean.setUploadedFiles(request);
 					cBean.writeToDB();
 					cBean.buildAudits();
+					FlagCalculator2 flagCalc2 = (FlagCalculator2)SpringUtils.getBean("FlagCalculator2");
+					flagCalc2.runByContractor(Integer.parseInt(editID));	
 					response.sendRedirect("ContractorView.action?id=" + editID);
 					return;
 			}
@@ -67,13 +70,12 @@
 <body>
 <% request.setAttribute("subHeading", "Contractor Edit"); %>
 <%@ include file="includes/conHeaderLegacy.jsp"%>
-
 <form name="form1" method="post"
 	action="accounts_edit_contractor.jsp?id=<%=editID%>&isSubmitted=Yes"
 	enctype="multipart/form-data"><input name="createdBy"
-	type="hidden" value="<%=aBean.createdBy%>"> <input name="type"
-	type="hidden" value="Contractor"> <input name="submit"
-	type="submit" class="forms" value="Save Contractor">
+	type="hidden" value="<%=aBean.createdBy%>"><input name="type"
+	type="hidden" value="Contractor">
+	<input name="submit" type="submit" class="forms" value="Save Contractor">
 <div class="redMain">
 <%
 	if (isSubmitted)
@@ -89,7 +91,6 @@ Would you still like to schedule <b><%=aBean.name%></b> on this date? <span
 	}
 %>
 </div>
-
 <div style="float: left;">
 <table width="0" border="0" cellspacing="0" cellpadding="1">
 	<tr>

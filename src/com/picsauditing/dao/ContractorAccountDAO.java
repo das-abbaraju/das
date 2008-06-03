@@ -34,12 +34,17 @@ public class ContractorAccountDAO extends PicsDAO {
 		return em.find(ContractorAccount.class, id);
 	}
 
+	public List<Integer> findAll() {
+		Query query = em.createQuery("select a.id from ContractorAccount a");
+		return query.getResultList();
+	}
+	
 	public List<ContractorAccount> findWhere(String where) {
 		if (where == null)
 			where = "";
 		if (where.length() > 0)
 			where = "WHERE " + where;
-		Query query = em.createQuery("select a from Account a " + where
+		Query query = em.createQuery("select a from ContractorAccount a " + where
 				+ " order by a.name");
 		return query.getResultList();
 	}

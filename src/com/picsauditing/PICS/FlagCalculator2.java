@@ -3,6 +3,7 @@ package com.picsauditing.PICS;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -70,12 +71,7 @@ public class FlagCalculator2 {
 		if (operators.size() == 0)
 			operators = operatorDAO.findWhere("type='Operator'");
 		if (contractorIDs.size() == 0) {
-			List<ContractorAccount> contractors = contractorDAO.findWhere("");
-			for(ContractorAccount contractor : contractors)
-				contractorIDs.add(contractor.getId());
-			// Clear the memory
-			contractors.clear();
-			contractors = null;
+			contractorIDs = contractorDAO.findAll();
 		}
 		debug("...getting question for operators");
 		
@@ -107,7 +103,9 @@ public class FlagCalculator2 {
 				FlagColor color = calcSingle.calculate();
 				debug(" - FlagColor returned: " + color);
 				// Set the flag color on the object
-				ContractorOperatorFlag coFlag = contractor.getFlags().get(operator);
+				Map<OperatorAccount, ContractorOperatorFlag> flags = contractor.getFlags();
+				ContractorOperatorFlag coFlag = flags.get(operator);
+				
 				if (coFlag == null) {
 					// Add a new flag
 					coFlag = new ContractorOperatorFlag();

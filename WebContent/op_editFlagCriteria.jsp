@@ -1,6 +1,7 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp"%>
 <%@page import="com.picsauditing.PICS.redFlagReport.*"%>
+<%@page import="com.picsauditing.util.SpringUtils"%>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page" />
 <%
 	String opID = null;
@@ -25,13 +26,15 @@
 	String action = request.getParameter("action");
 	if (action != null && action.startsWith("Save")) {
 		flagCriteria.setFromRequest(request);
-		if (flagCriteria.isOK()){
+		if (flagCriteria.isOK()) {
 			flagCriteria.writeToDB();
 		}
+		if(action.contains("Recalculate Flags")) {
+			FlagCalculator2 flagCalc2 = (FlagCalculator2)SpringUtils.getBean("FlagCalculator2");
+			flagCalc2.runByOperator(Integer.parseInt(opID));
+		}
 	}
-	
 	boolean canEditFlagCriteria = permissions.hasPermission(OpPerms.EditFlagCriteria);
-	
 	HurdleQuestions hurdleQuestions = null;
 	
 %>
@@ -56,12 +59,14 @@
 
 <div style="text-align: center">
 <span class="redMain"><%=flagCriteria.getErrorMessages()%></span>
-<form name="form1" method="post" action="op_editFlagCriteria.jsp">
+<form name="form1" method="post" action="op_editFlagCriteria.jsp?opID=<%=opID%>">
 <input name="flagStatus" type="hidden" value="<%=flagStatus%>">
+<input name="opID" type="hidden" value="<%=opID%>">
 <%
 if (canEditFlagCriteria) {
 	%>
 	<input name="action" type="submit" value="Save Criteria" class="center">
+	<input name="action" type="submit" value="Save & Recalculate Flags" class="center">
 	<%
 }
 %>
