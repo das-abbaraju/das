@@ -180,6 +180,8 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.flagOshaCriteria = flagOshaCriteria;
 	}
 
+	// TODO: get these to cache too
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 	@OneToMany(mappedBy = "operatorAccount")
 	public List<AuditOperator> getAudits() {
 		return audits;

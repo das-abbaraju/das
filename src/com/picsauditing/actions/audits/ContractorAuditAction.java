@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -22,11 +23,13 @@ public class ContractorAuditAction extends AuditActionSupport {
 	protected List<AuditCatData> categories;
 	protected AuditCategoryDataDAO catDataDao;
 	protected EmailAuditBean mailer;
+	protected FlagCalculator2 flagCalculator;
 
-	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, EmailAuditBean emailAuditBean) {
+	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, EmailAuditBean emailAuditBean, FlagCalculator2 flagCalculator2) {
 		super(accountDao, auditDao, auditDataDao);
 		this.catDataDao = catDataDao;
-		mailer = emailAuditBean;
+		this.mailer = emailAuditBean;
+		this.flagCalculator = flagCalculator2;
 	}
 	
 	public String execute() throws Exception {
@@ -43,7 +46,6 @@ public class ContractorAuditAction extends AuditActionSupport {
 			if (conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
 				conAudit.setCompletedDate(new Date());
 				
-				// TODO Do anything needed for Submitted audits
 				// Send email to contractors telling them the Audit was submitted
 				mailer.setPermissions(permissions);
 				if (conAudit.getAuditType().getAuditTypeID() == AuditType.DESKTOP) {
@@ -54,7 +56,6 @@ public class ContractorAuditAction extends AuditActionSupport {
 				}
 			}
 			if (conAudit.getAuditStatus().equals(AuditStatus.Active)) {
-				// TODO Recalculate the flag color for this contractor
 				conAudit.setClosedDate(new Date());
 			}
 			
@@ -76,6 +77,8 @@ public class ContractorAuditAction extends AuditActionSupport {
 			// Save the audit status
 			conAudit.setAuditStatus(auditStatus);
 			auditDao.save(conAudit);
+			
+			flagCalculator.runByContractor(conAudit.getContractorAccount().getId());
 		}
 		
 		if (this.conAudit.getAuditType().getAuditTypeID() == AuditType.NCMS)

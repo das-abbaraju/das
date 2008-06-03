@@ -21,7 +21,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "audit_operator")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="daily")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AuditOperator {
 
 	protected int auditOperatorID = 0;
