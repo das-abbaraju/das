@@ -149,6 +149,11 @@
 			<result>struts/blank.jsp</result>
 		</action>
 
+		<action name="AuditDataSaveAjax"
+			class="com.picsauditing.actions.audits.AuditDataSave">
+			<result>struts/blank.jsp</result>
+		</action>
+
 		<action name="ContractorSearch"
 			class="com.picsauditing.actions.report.ReportAccountQuick">
 			<result>struts/reports/contractors_search.jsp</result>
