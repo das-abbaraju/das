@@ -78,25 +78,29 @@ public class FlagCalculatorSingle {
 				for(OshaLog osha : contractor.getOshas()) {
 					if (osha.isCorporate()) {
 						found = true;
+						FlagColor oshaAvgFlag = FlagColor.Green;
 						if (criteria.getLwcr().isTimeAverage()) {
 							if (criteria.getLwcr().isFlagged(osha.getAverageLwcr()))
-								flagColor = setFlagColor(flagColor, criteria.getFlagColor());
+								oshaAvgFlag = setFlagColor(oshaAvgFlag, criteria.getFlagColor());
 						}
 						if (criteria.getTrir().isTimeAverage()) {
 							if (criteria.getTrir().isFlagged(osha.getAverageTrir()))
-								flagColor = setFlagColor(flagColor, criteria.getFlagColor());
+								oshaAvgFlag = setFlagColor(oshaAvgFlag, criteria.getFlagColor());
 						}
 						if (criteria.getFatalities().isTimeAverage()) {
 							if (criteria.getFatalities().isFlagged(osha.getAverageFatalities()))
-								flagColor = setFlagColor(flagColor, criteria.getFlagColor());
+								oshaAvgFlag = setFlagColor(oshaAvgFlag, criteria.getFlagColor());
 						}
-						// TODO set the Average Flag color
-						osha.setFlagColor(flagColor);
+						// Set the flag color for the average years and then add it to the "rolling total"
+						osha.setFlagColor(oshaAvgFlag);
+						flagColor = setFlagColor(flagColor, oshaAvgFlag);
 						
 						// Make sure all three years pass the criteria
 						flagColor = setFlagColor(flagColor, verifyOsha(osha.getYear1(), criteria));
 						flagColor = setFlagColor(flagColor, verifyOsha(osha.getYear2(), criteria));
 						flagColor = setFlagColor(flagColor, verifyOsha(osha.getYear3(), criteria));
+						
+						
 					}
 				}
 				if (!found)
@@ -189,16 +193,19 @@ public class FlagCalculatorSingle {
 	}
 
 	private FlagColor verifyOsha(OshaLogYear osha, FlagOshaCriteria criteria) {
-		osha.setFlagColor(FlagColor.Green);
+		FlagColor oshaYearFlag = osha.getFlagColor();
+		if (oshaYearFlag == null)
+			oshaYearFlag = FlagColor.Green;
 
 		if (osha.isApplicable()) {
 			if (criteria.getLwcr().isFlagged(osha.getLostWorkCasesRate())
 				|| criteria.getTrir().isFlagged(osha.getRecordableTotalRate())
-				|| criteria.getFatalities().isFlagged(osha.getFatalitiesRate())) {
-				osha.setFlagColor(criteria.getFlagColor());
+				|| criteria.getFatalities().isFlagged(osha.getFatalities())) {
+				oshaYearFlag = setFlagColor(oshaYearFlag, criteria.getFlagColor());
 			}
 		}
-		return osha.getFlagColor();
+		osha.setFlagColor(oshaYearFlag);
+		return oshaYearFlag;
 	}
 
 	/**
