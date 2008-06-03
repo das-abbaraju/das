@@ -65,6 +65,8 @@ public class BillContractor extends DataBean {
 	/*
 	 * Return if the contractor requires an audit like 
 	 * Office or Desktop from this operator
+	 * TODO: Make this more flexible so Office/Desktop/DA aren't hard coded. 
+	 * We need to dynamically support IM or other audits in the future
 	 */
 	private boolean requiresAuditForFacility(OperatorBean operator) throws Exception {
 		

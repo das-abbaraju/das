@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import com.picsauditing.PICS.DateBean;
@@ -29,17 +30,27 @@ public class ContractorWidget extends ContractorActionSupport {
 	}
 	
 	private List<String> openTasks = null;
+	
 	public List<String> getOpenTasks() {
 		if (openTasks == null) {
 			openTasks = new ArrayList<String>();
 			
-			/** get the balance due **/
-			if (contractor.getLastPaymentAmount() > 0) {
-				openTasks.add("You have an outstanding balance due of $"+contractor.getLastPaymentAmount()+", please call 949-387-1940 x708 to make a payment");
+			if ("Yes".equals(contractor.getMustPay())
+					&& "Yes".equals(contractor.getIsExempt())) {
+				// get the balance due
+				// TODO - do some more testing with this
+				if (contractor.getPaymentExpires() == null 
+						|| DateBean.getDateDifference(contractor.getPaymentExpires()) < 35) {
+					openTasks.add("You have an invoice of <b>$"+contractor.getNewBillingAmount()+"</b> due "+contractor.getLastInvoiceDate()+", please call 949-387-1940 x708 to make a payment");
+				} else if (DateBean.getDateDifference(contractor.getPaymentExpires()) > 90
+						|| DateBean.getDateDifference(contractor.getLastInvoiceDate(), contractor.getLastPayment()) > 0) {
+					openTasks.add("You have an invoice of <b>$"+(contractor.getNewBillingAmount()-contractor.getLastPaymentAmount())+"</b>, please call 949-387-1940 x708 to make a payment");
+				}
+				
 			}
 			
 			for(ContractorAudit conAudit : getActiveAudits()) {
-				if (conAudit.getAuditType().isPqf() && conAudit.getPercentComplete() < 100) {
+				if (conAudit.getAuditType().isPqf() && conAudit.getAuditStatus().equals(AuditStatus.Pending)) {
 					openTasks.add("Please <a href=\"Audit.action?auditID="+conAudit.getId()+"\">complete your Pre-Qualification Form</a>");
 				}
 				if (conAudit.getAuditType().isHasRequirements()
@@ -50,7 +61,7 @@ public class ContractorWidget extends ContractorActionSupport {
 				if (conAudit.getAuditStatus().equals(AuditStatus.Pending)
 						&& conAudit.getAuditType().isCanContractorView()
 						&& !conAudit.getAuditType().isCanContractorEdit()) {
-					String text = "Prepare for an upcoming "+conAudit.getAuditType().getAuditName();
+					String text = "Prepare for an <a href=\"Audit.action?auditID="+conAudit.getId()+"\">upcoming "+conAudit.getAuditType().getAuditName()+"</a>";
 					if (conAudit.getScheduledDate() != null) {
 						try {
 							text += " on " + DateBean.toShowFormat(conAudit.getScheduledDate());
@@ -62,10 +73,13 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 			}
 			
-			if (true) {
+			if (isHasInsurance()) {
 				openTasks.add("Please <a href=\"contractor_upload_certificates.jsp?id="+id+"\">upload your insurance certificates</a>");
 			}
-			if (true) {
+			
+			if (Calendar.getInstance().get(Calendar.MONTH) == 0
+				|| DateBean.getDateDifference(contractor.getAccountDate()) < 30) {
+				// During January and the first month of registration, we encourage Contractors to update their facility list
 				openTasks.add("Please <a href=\"con_selectFacilities.jsp?id="+id+"\">update your facility list</a>");
 			}
 		}

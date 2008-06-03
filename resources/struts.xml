@@ -236,10 +236,16 @@
 			class="com.picsauditing.actions.contractors.ContractorWidget">
 			<result>/struts/widgets/con_tasks.jsp</result>
 		</action>
+		
 		<action name="ContractorStatsAjax"
 			class="com.picsauditing.actions.contractors.ContractorWidget">
 			<result>/struts/widgets/con_stats.jsp</result>
 		</action>
+		<action name="ContractorFacilitiesAjax"
+			class="com.picsauditing.actions.contractors.ContractorWidget">
+			<result>/struts/widgets/con_facilities.jsp</result>
+		</action>
+		
 		<action name="Cron"
 			class="com.picsauditing.actions.Cron">
 			<result>/struts/blank.jsp</result>

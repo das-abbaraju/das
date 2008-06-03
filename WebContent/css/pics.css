@@ -340,6 +340,14 @@ a.refresh {
 }
 
 
+a.edit {
+	float: right;
+	padding-right: 17px;
+	margin-right: 2px;
+	background: transparent url(../images/edit_pencil.png) no-repeat right
+		center;
+}
+
 /******************** Styles for vCard  ************************/ /*
 .vcard p{
  line-height: 15px;

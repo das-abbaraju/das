@@ -3,8 +3,15 @@
 <body>
 
 <label>
-You have <s:property value="openTasks.size"/> 
-outstanding account task<s:if test="openTasks.size != 1">s</s:if>
+	<s:if test="openTasks.size == 0">
+		You have no more outstanding tasks.
+	</s:if>
+	<s:if test="openTasks.size == 1">
+		You have 1 more outstanding task.
+	</s:if>
+	<s:if test="openTasks.size > 1">
+		You have <s:property value="openTasks.size" /> more outstanding tasks.
+	</s:if>
 </label>
 
 <ol>
