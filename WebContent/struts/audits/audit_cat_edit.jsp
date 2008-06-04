@@ -1,5 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<tr class="group1">
+<tr id="status_<s:property value="questionID"/>" class="group1">
 	<td class="right"><s:property value="category.number"/>.<s:property value="subCategory.number"/>.<s:property value="number"/>&nbsp;&nbsp;</td>
 	<td class="question"><s:property value="question"/>
 		<s:if test="linkUrl1 > ''"><a href="http://<s:property value="linkUrl1"/>" target="_BLANK" title="opens in new window"><s:property value="linkText1"/></a></s:if>
@@ -70,7 +70,6 @@
 			<input name="inputName" type="file" size="25" />
 		</s:if>
 	</td>
-	<td id="status_<s:property value="questionID"/>">&nbsp;</td>
 	
 </tr>
 <s:if test="questionType == 'Text Area'">

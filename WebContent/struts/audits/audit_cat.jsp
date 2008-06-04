@@ -17,10 +17,10 @@
 	src="js/scriptaculous/scriptaculous.js?load=effects"></script>
 
 <script type="text/javascript">
-<s:if test="mode != 'Edit' && canEdit">
+<s:if test="mode == 'Edit'">
 		function saveAnswer( questionid, elm )
 		{
-			var pars = 'auditData.audit.id=<s:property value="conAudit.id"/>&auditData.questionID=' + questionid + '&auditData.answer=';
+			var pars = 'auditData.audit.id=<s:property value="conAudit.id"/>&auditData.question.questionID=' + questionid + '&auditData.answer=';
 			if( elm.type == 'text' || elm.type == 'radio' || elm.type == 'textarea')
 			{
 				var thevalue = elm.value;
@@ -29,7 +29,7 @@
 					pars = pars + thevalue;
 					
 					var divName = 'status_'+questionid;
-					var myAjax = new Ajax.Updater(divName,'AuditDataSaveAjax.action', 
+					var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
 					{
 						method: 'post', 
 						parameters: pars,
