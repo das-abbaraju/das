@@ -44,8 +44,9 @@
 				<s:submit value="Override" />
 				<s:select list="flagList" name="forceFlag" />
 				until <input id="forceEnd" name="forceEnd" size="8" type="text"
-						onClick="cal1.select(this,'forceEnd','M/d/yy'); return false;" />
+						onClick="cal1.select(this,'forceEnd','M/d/yy'); return false;" /><br/>
 				<s:hidden name="action" value="Override" />
+			<s:checkbox name="overrideAll"/><label>Check to Override the Flag Color for all the Contractors in your database</label>
 			</s:form>
 			<a href="#" onclick="$('override_link').show(); $('override').hide(); return false;">Nevermind</a>
 			</div>
@@ -91,12 +92,15 @@
 				<td>Year</td>
 				<s:if test="oshaFatalitiesUsed">
 					<td>Fatalities</td>
+					<td>Required Fatalities</td>
 				</s:if>
 				<s:if test="oshaLwcrUsed">
 					<td>LWCR</td>
+					<td>Required LWCR</td>
 				</s:if>
 				<s:if test="oshaTrirUsed">
 					<td>TRIR</td>
+					<td>Required TRIR</td>
 				</s:if>
 			</tr>
 		</thead>
@@ -108,13 +112,31 @@
 					<td>2007</td>
 					<s:if test="oshaFatalitiesUsed">
 						<td class="right"><s:property value="year1.fatalities" /></td>
+						<td class="right"><s:iterator value="co.operatorAccount.flagOshaCriteria">
+							<s:if test="%{year1.flagColor == flagColor}">
+								<s:property value="fatalities.hurdle"/>
+							</s:if>
+						</s:iterator>
+						</td>
 					</s:if>
 					<s:if test="oshaLwcrUsed">
 						<td class="right"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(year1.lostWorkCasesRate)}" /></td>
+						<td class="right"><s:iterator value="co.operatorAccount.flagOshaCriteria">
+							<s:if test="%{year1.flagColor == flagColor}">
+								<s:property value="%{new java.text.DecimalFormat('#,##0.0').format(lwcr.hurdle)}"/>
+							</s:if>
+						</s:iterator>
+						</td>
 					</s:if>
 					<s:if test="oshaTrirUsed">
 						<td class="right"><s:property
 							value="%{new java.text.DecimalFormat('#,##0.0').format(year1.recordableTotalRate)}" /></td>
+						<td class="right"><s:iterator value="co.operatorAccount.flagOshaCriteria">
+							<s:if test="%{year1.flagColor == flagColor}">
+								<s:property value="%{new java.text.DecimalFormat('#,##0.0').format(trir.hurdle)}"/>
+							</s:if>
+						</s:iterator>
+						</td>
 					</s:if>
 				</tr>
 				<tr class="<s:property value="year2.flagColor" />">
@@ -123,13 +145,31 @@
 					<td>2006</td>
 					<s:if test="oshaFatalitiesUsed">
 						<td class="right"><s:property value="year2.fatalities" /></td>
+						<td class="right"><s:iterator value="co.operatorAccount.flagOshaCriteria">
+							<s:if test="%{year2.flagColor == flagColor}">
+								<s:property value="fatalities.hurdle"/>
+							</s:if>
+						</s:iterator>
+						</td>
 					</s:if>
 					<s:if test="oshaLwcrUsed">
 						<td class="right"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(year2.lostWorkCasesRate)}" /></td>
+						<td class="right"><s:iterator value="co.operatorAccount.flagOshaCriteria">
+							<s:if test="%{year2.flagColor == flagColor}">
+								<s:property value="%{new java.text.DecimalFormat('#,##0.0').format(lwcr.hurdle)}"/>
+							</s:if>
+						</s:iterator>
+						</td>
 					</s:if>
 					<s:if test="oshaTrirUsed">
 						<td class="right"><s:property
 							value="%{new java.text.DecimalFormat('#,##0.0').format(year2.recordableTotalRate)}" /></td>
+						<td class="right"><s:iterator value="co.operatorAccount.flagOshaCriteria">
+							<s:if test="%{year2.flagColor == flagColor}">
+								<s:property value="%{new java.text.DecimalFormat('#,##0.0').format(trir.hurdle)}"/>
+							</s:if>
+						</s:iterator>
+						</td>
 					</s:if>
 				</tr>
 				<tr class="<s:property value="year3.flagColor" />">
@@ -138,13 +178,31 @@
 					<td>2005</td>
 					<s:if test="oshaFatalitiesUsed">
 						<td class="right"><s:property value="year3.fatalities" /></td>
+						<td class="right"><s:iterator value="co.operatorAccount.flagOshaCriteria">
+							<s:if test="%{year3.flagColor == flagColor}">
+								<s:property value="fatalities.hurdle"/>
+							</s:if>
+						</s:iterator>
+						</td>
 					</s:if>
 					<s:if test="oshaLwcrUsed">
 						<td class="right"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(year3.lostWorkCasesRate)}" /></td>
+						<td class="right"><s:iterator value="co.operatorAccount.flagOshaCriteria">
+							<s:if test="%{year3.flagColor == flagColor}">
+								<s:property value="%{new java.text.DecimalFormat('#,##0.0').format(lwcr.hurdle)}"/>
+							</s:if>
+						</s:iterator>
+						</td>
 					</s:if>
 					<s:if test="oshaTrirUsed">
 						<td class="right"><s:property
 							value="%{new java.text.DecimalFormat('#,##0.0').format(year3.recordableTotalRate)}" /></td>
+						<td class="right"><s:iterator value="co.operatorAccount.flagOshaCriteria">
+							<s:if test="%{year3.flagColor == flagColor}">
+								<s:property value="%{new java.text.DecimalFormat('#,##0.0').format(trir.hurdle)}"/>
+							</s:if>
+						</s:iterator>
+						</td>
 					</s:if>
 				</tr>
 				<s:if test="oshaAveragesUsed">
@@ -154,12 +212,15 @@
 						<td>Avg</td>
 						<s:if test="oshaFatalitiesUsed">
 							<td></td>
+							<td></td>
 						</s:if>
 						<s:if test="oshaLwcrUsed">
 							<td class="right"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(averageLwcr)}" /></td>
+							<td></td>
 						</s:if>
 						<s:if test="oshaTrirUsed">
 							<td class="right"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(averageTrir)}" /></td>
+							<td></td>
 						</s:if>
 					</tr>
 				</s:if>
@@ -194,3 +255,4 @@
 </pics:permission>
 </body>
 </html>
+								
