@@ -347,12 +347,24 @@ a.refresh {
 		center;
 }
 
-
 a.edit {
-	float: right;
-	padding-right: 17px;
-	margin-right: 2px;
-	background: transparent url(../images/edit_pencil.png) no-repeat right
+	padding-left: 17px;
+	margin-left: 2px;
+	background: transparent url(../images/edit_pencil.png) no-repeat left
+		center;
+}
+
+a.verify {
+	padding-left: 17px;
+	margin-left: 2px;
+	background: transparent url(../images/okCheck.gif) no-repeat left 
+		center;
+}
+
+a.view {
+	padding-left: 17px;
+	margin-left: 2px;
+	background: transparent url(../images/edit_pencil.png) no-repeat left
 		center;
 }
 

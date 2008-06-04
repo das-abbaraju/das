@@ -53,55 +53,27 @@
 <body>
 <s:include value="../contractors/conHeader.jsp" />
 
-<table class="footerNav">
-<tr>
-<td colspan="2"></td>
-<td class="current">
-	<a href="Audit.action?auditID=<s:property value="auditID"/>">Up to Category List</a>
-/	<a href="AuditCat.action?auditID=<s:property value="auditID"/>&mode=View">View All</a></td>
-<td colspan="2"></td>
-</tr>
+<s:include value="audit_cat_nav.jsp" />
+<div id="auditToolbar" class="right">
 <s:if test="catDataID > 0">
-<tr>
-<td class="arrows">&lt;&lt;</td>
-<td class="previous">
-<s:if test="previousCategory != null">
-	<a href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="previousCategory.id"/>&mode=<s:property value="mode"/>"><s:property value="previousCategory.category.category"/></a>
+	<s:if test="mode != 'View'">
+		<a class="view" href="?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>">Switch to View Mode</a>
+	</s:if>
+	<s:if test="mode != 'Edit' && canEdit">
+		<a class="edit" href="?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>&mode=Edit">Switch to Edit Mode</a>
+	</s:if>
+	<s:if test="mode != 'Verify' && canVerify">
+		<a class="verify" href="?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>&mode=Verify">Switch to Verify Mode</a>
+	</s:if>
 </s:if>
-<s:else><a href="Audit.action?auditID=<s:property value="auditID"/>">START</a></s:else>
-</td>
-<td class="current">
-	<a href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="currentCategory.id"/>&mode=<s:property value="mode"/>"><s:property value="currentCategory.category.category"/></a>
-</td>
-<td class="next">
-<s:if test="nextCategory != null">
-	<a href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="nextCategory.id"/>&mode=<s:property value="mode"/>"><s:property value="nextCategory.category.category"/></a>
-</s:if>
-<s:else><a href="Audit.action?auditID=<s:property value="auditID"/>">FINISH</a></s:else>
-</td>
-<td class="arrows">&gt;&gt;</td>
-</tr>
-</s:if>
-</table>
-
-<div class="right"><a href="javascript:window.print()" class="print">Print</a></div>
-
+	<s:if test="mode == 'View'">
+		<a href="javascript:window.print()" class="print">Print</a>
+	</s:if>
+</div>
+<br clear="all" />
 <s:iterator value="categories">
 	<s:if test="catDataID == id || catDataID == 0">
 		<h2>Category <s:property value="category.number"/> - <s:property value="category.category"/></h2>
-		<s:if test="catDataID > 0">
-			<div>
-			<s:if test="mode != 'View'">
-				<a href="?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>">Switch to View Mode</a>
-			</s:if>
-			<s:if test="mode != 'Edit' && canEdit">
-				<a href="?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>&mode=Edit">Switch to Edit Mode</a>
-			</s:if>
-			<s:if test="mode != 'Verify' && canVerify">
-				<a href="?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>&mode=Verify">Switch to Verify Mode</a>
-			</s:if>
-			</div>
-		</s:if>
 		<table class="audit">
 		<s:iterator value="category.subCategories">
 			<tr class="subCategory">
@@ -137,27 +109,7 @@
 	</s:if>
 </s:iterator>
 
-<table class="footerNav">
-<tr>
-<td class="arrows">&lt;&lt;</td>
-<td class="previous">
-<s:if test="previousCategory != null">
-	<a href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="previousCategory.id"/>&mode=<s:property value="mode"/>"><s:property value="previousCategory.category.category"/></a>
-</s:if>
-<s:else><a href="Audit.action?auditID=<s:property value="auditID"/>">START</a></s:else>
-</td>
-<td class="current">
-	<a href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="currentCategory.id"/>&mode=<s:property value="mode"/>"><s:property value="currentCategory.category.category"/></a>
-</td>
-<td class="next">
-<s:if test="nextCategory != null">
-	<a href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="nextCategory.id"/>&mode=<s:property value="mode"/>"><s:property value="nextCategory.category.category"/></a>
-</s:if>
-<s:else><a href="Audit.action?auditID=<s:property value="auditID"/>">FINISH</a></s:else>
-</td>
-<td class="arrows">&gt;&gt;</td>
-</tr>
-</table>
+<s:include value="audit_cat_nav.jsp" />
 
 </body>
 </html>

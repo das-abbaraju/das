@@ -1,0 +1,56 @@
+body {
+	font-family: sans-serif;
+	font-size: small;
+}
+
+#header {
+	display: none;
+}
+
+#MainMenu {
+	display: none;
+}
+
+#navlist {
+	display: none;
+}
+
+table.footerNav {
+	display: none;
+}
+
+div.dropmenudiv {
+	display: none;
+}
+
+#auditToolbar {
+	display: none;
+}
+
+div.footer {
+	display: none;
+}
+
+table.audit {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+table.audit td {
+	padding: 2px;
+	margin: 0px;
+	vertical-align: top;
+	border: 1px solid #999;
+}
+
+table td.right {
+	text-align: right;
+}
+
+td.question {
+	color: #999;
+}
+span.answer {
+	color: black;
+	font-weight: bold;
+}
