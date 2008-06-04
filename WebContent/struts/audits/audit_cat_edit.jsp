@@ -50,6 +50,21 @@
 		<s:if test="questionType == 'Decimal Number'">
 			<s:textfield name="answer.answer" size="19" onblur="validateNumber('answer.answer','Question 1')" />
 		</s:if>
+		<s:if test="questionType == 'Service'">
+			<s:checkbox fieldValue="C" value="answer.answer.indexOf('C') != -1" name="question_%{questionID}_C" onchange="" />
+			<s:checkbox fieldValue="S" value="answer.answer.indexOf('S') != -1" name="question_%{questionID}_S" onchange="" />
+		</s:if>
+		<s:if test="questionType == 'Radio'">
+			<s:radio template="SHELLEY" list="options" listValue="optionName" value="answer.answer" name="question_%{questionID}" onchange=""></s:radio>
+		</s:if>
+		<s:if test="questionType == 'Drop Down'">
+			<s:select template="SHELLEY" list="options" value="answer.answer" name="question_%{questionID}" onchange=""></s:select>
+		</s:if>
+		<s:if test="questionType == 'File'">
+			<s:if test="answer.answer.length() > 1">Uploaded</s:if>
+			<s:else>Not Uploaded</s:else>
+			<input name="inputName" type="file" size="25" />
+		</s:if>
 	</td>
 </tr>
 <s:if test="questionType == 'Text Area'">

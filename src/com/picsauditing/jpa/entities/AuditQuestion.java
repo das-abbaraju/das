@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -53,7 +54,7 @@ public class AuditQuestion implements java.io.Serializable {
 	private String okAnswer;
 	private String requirement;
 	private String isRequired;
-	private Integer dependsOnQid;
+	private AuditQuestion dependsOnQuestion;
 	private String dependsOnAnswer;
 	private String questionType;
 	private String isVisible;
@@ -76,6 +77,7 @@ public class AuditQuestion implements java.io.Serializable {
 	private String isRedFlagQuestion;
 
 	protected List<AuditQuestionOperatorAccount> operator;
+	protected List<AuditQuestionOption> options;
 
 	protected AuditData answer;
 	
@@ -153,13 +155,14 @@ public class AuditQuestion implements java.io.Serializable {
 		this.isRequired = isRequired;
 	}
 
-	@Column(name = "dependsOnQID")
-	public Integer getDependsOnQid() {
-		return this.dependsOnQid;
+	@ManyToOne
+	@JoinColumn(name = "dependsOnQID")
+	public AuditQuestion getDependsOnQuestion() {
+		return dependsOnQuestion;
 	}
 
-	public void setDependsOnQid(Integer dependsOnQid) {
-		this.dependsOnQid = dependsOnQid;
+	public void setDependsOnQuestion(AuditQuestion dependsOnQuestion) {
+		this.dependsOnQuestion = dependsOnQuestion;
 	}
 
 	@Column(name = "dependsOnAnswer")
@@ -360,6 +363,16 @@ public class AuditQuestion implements java.io.Serializable {
 
 	public void setAnswer(AuditData answer) {
 		this.answer = answer;
+	}
+
+	@OneToMany(mappedBy = "auditQuestion")
+	@OrderBy("number")
+	public List<AuditQuestionOption> getOptions() {
+		return options;
+	}
+
+	public void setOptions(List<AuditQuestionOption> options) {
+		this.options = options;
 	}
 
 }
