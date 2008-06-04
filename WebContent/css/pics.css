@@ -331,6 +331,14 @@ a.ext {
 		center;
 }
 
+a.print {
+	padding: 3px;
+	padding-left: 17px;
+	margin-left: 2px;
+	background: transparent url(../images/print_icon.gif) no-repeat left
+		center;
+}
+
 a.refresh {
 	padding: 5px;
 	padding-left: 30px;

@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<tr id="status_<s:property value="questionID"/>" class="group1">
+<tr id="status_<s:property value="questionID"/>" class="group<s:if test="#shaded">Shaded</s:if>">
 	<td class="right"><s:property value="category.number"/>.<s:property value="subCategory.number"/>.<s:property value="number"/>&nbsp;&nbsp;</td>
-	<td class="question"><s:property value="question"/>
+	<td class="question<s:if test="required">Required</s:if>"><s:property value="question"/>
 		<s:if test="linkUrl1 > ''"><a href="http://<s:property value="linkUrl1"/>" target="_BLANK" title="opens in new window"><s:property value="linkText1"/></a></s:if>
 		<s:if test="linkUrl2 > ''"><a href="http://<s:property value="linkUrl2"/>" target="_BLANK" title="opens in new window"><s:property value="linkText2"/></a></s:if>
 		<s:if test="linkUrl3 > ''"><a href="http://<s:property value="linkUrl3"/>" target="_BLANK" title="opens in new window"><s:property value="linkText3"/></a></s:if>
@@ -9,11 +9,7 @@
 		<s:if test="linkUrl5 > ''"><a href="http://<s:property value="linkUrl5"/>" target="_BLANK" title="opens in new window"><s:property value="linkText5"/></a></s:if>
 		<s:if test="linkUrl6 > ''"><a href="http://<s:property value="linkUrl6"/>" target="_BLANK" title="opens in new window"><s:property value="linkText6"/></a></s:if>
 	</td>
-	
-	
-	
 	<td class="answer">
-	
 		<s:if test="questionType == 'Text'">
 			<s:textfield name="answer.answer" size="30" onblur="javascript:saveAnswer(%{questionID}, this);"/>
 		</s:if>
@@ -73,7 +69,7 @@
 	
 </tr>
 <s:if test="questionType == 'Text Area'">
-	<tr class="group1"><td>&nbsp;</td><td colspan="2" class="right">
+	<tr class="group<s:if test="#shaded">Shaded</s:if>"><td>&nbsp;</td><td colspan="2" class="right">
 	<s:textarea cols="70" rows="4" value="%{answer.answer}" onblur="javascript:saveAnswer(%{questionID}, this);">
 	</s:textarea>
 	</td>

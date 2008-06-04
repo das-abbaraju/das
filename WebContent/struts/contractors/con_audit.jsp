@@ -65,7 +65,9 @@ table.report tr.na a {
 			</s:if>
 			</tr>
 		</s:if>
-		<s:else>
+	</s:iterator>
+	<s:iterator value="categories" status="rowStatus">
+		<s:if test="!appliesB">
 			<tr class="na">
 				<td class="right"><s:property value="category.number" /></td>
 				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a></td>
@@ -74,7 +76,7 @@ table.report tr.na a {
 					<td colspan="2"></td>
 				</s:if>
 			</tr>
-		</s:else>
+		</s:if>
 	</s:iterator>
 </table>
 

@@ -55,6 +55,14 @@
 
 <table class="footerNav">
 <tr>
+<td colspan="2"></td>
+<td class="current">
+	<a href="Audit.action?auditID=<s:property value="auditID"/>">Up to Category List</a>
+/	<a href="AuditCat.action?auditID=<s:property value="auditID"/>&mode=View">View All</a></td>
+<td colspan="2"></td>
+</tr>
+<s:if test="catDataID > 0">
+<tr>
 <td class="arrows">&lt;&lt;</td>
 <td class="previous">
 <s:if test="previousCategory != null">
@@ -73,7 +81,10 @@
 </td>
 <td class="arrows">&gt;&gt;</td>
 </tr>
+</s:if>
 </table>
+
+<div class="right"><a href="javascript:window.print()" class="print">Print</a></div>
 
 <s:iterator value="categories">
 	<s:if test="catDataID == id || catDataID == 0">
@@ -98,8 +109,12 @@
 				<s:property value="subCategory"/></td>
 			</tr>
 			<s:iterator value="questions">
+				<s:if test="isGroupedWithPrevious.toString() == 'No'">
+					<s:set name="shaded" value="!#shaded" scope="action"/>
+				</s:if>
+				
 				<s:if test="title.length() > 0">
-					<tr class="group1">
+					<tr class="group<s:if test="#shaded">Shaded</s:if>">
 						<td class="groupTitle" colspan="3"><s:property value="title"/></td>
 					</tr>
 				</s:if>

@@ -125,10 +125,7 @@
 		</tr>
 	</table>
 
-	<div><a
-		href="Audit.action?auditID=<s:property value="auditID" />">Categories</a> | <a
-		href="pqf_viewAll.jsp?auditID=<s:property value="auditID" />">View
-	All</a> | <a href="pqf_printAll.jsp?auditID=<s:property value="auditID" />">Print</a>
+	<div>
 	<s:if test="conAudit.auditType.PQF">
 		<pics:permission perm="AuditVerification">
 	| <a href="VerifyView.action?auditID=<s:property value="auditID" />">Verify

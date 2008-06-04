@@ -25,11 +25,11 @@ table.audit td.right {
 	float: none;
 }
 
-table.audit tr.group0 {
+table.audit tr.groupShaded {
 	background-color: #EEEEEE;
 }
 
-table.audit tr.group1 {
+table.audit tr.group {
 	background-color: white;
 }
 

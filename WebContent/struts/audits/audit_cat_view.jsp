@@ -1,5 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<tr class="group1">
+<tr class="group<s:if test="#shaded">Shaded</s:if>">
 	<td class="right"><s:property value="category.number"/>.<s:property value="subCategory.number"/>.<s:property value="number"/>&nbsp;&nbsp;</td>
 	<td class="question"><s:property value="question"/>
 	<br>
@@ -24,7 +24,7 @@
 	<td></td>
 </tr>
 <s:if test="answer.hasRequirements && conAudit.auditType.hasRequirements">
-	<tr class="group1" valign="top">
+	<tr class="group<s:if test="#shaded">Shaded</s:if>">
 		<td class="center">Req</td>
 		<td>Status:
 		<s:if test="answer.requirementOpen">

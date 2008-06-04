@@ -353,6 +353,25 @@ public class AuditQuestion implements java.io.Serializable {
 	public void setAnswer(AuditData answer) {
 		this.answer = answer;
 	}
+	
+	@Transient
+	public boolean isRequired() {
+		if (isRequired.equals("Yes"))
+			return true;
+		if (isRequired.equals("Depends")) {
+			if (dependsOnQuestion == null)
+				return false;
+			if (dependsOnAnswer == null)
+				return false;
+			AuditData contractorAnswer = dependsOnQuestion.getAnswer();
+			if (contractorAnswer == null)
+				// The contractor hasn't answered this question yet
+				return false;
+			if (dependsOnAnswer.equals(contractorAnswer.getAnswer()))
+				return true;
+		}
+		return false;
+	}
 
 	@OneToMany(mappedBy = "auditQuestion")
 	@OrderBy("number")
