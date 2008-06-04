@@ -31,7 +31,8 @@
 			<s:hidden name="opID" />
 			<s:hidden name="action" value="deleteOverride" />
 			<pics:permission perm="EditForcedFlags">
-			<s:submit value="Cancel Override" />
+			<s:submit value="Cancel Override" /><br/>
+			<s:checkbox name="deleteAll"/><label>Check to Cancel the Override Flag Color for all the Contractors in your database</label>
 			</pics:permission>
 		</s:form>
 		</s:if>

@@ -16,6 +16,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
@@ -32,11 +33,16 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected Map<Integer, AuditData> auditData;
 	protected ContractorOperatorFlagDAO coFlagDao;
 	protected String action = "";
-	
+
 	protected Date forceEnd;
 	protected FlagColor forceFlag;
-	public ContractorFlagAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			ContractorOperatorDAO contractorOperatorDao, AuditDataDAO auditDataDAO,
+	protected boolean overrideAll = false;
+	protected boolean deleteAll = false;
+
+	public ContractorFlagAction(ContractorAccountDAO accountDao,
+			ContractorAuditDAO auditDao,
+			ContractorOperatorDAO contractorOperatorDao,
+			AuditDataDAO auditDataDAO,
 			ContractorOperatorFlagDAO contractorOperatorFlagDAO) {
 		super(accountDao, auditDao);
 		this.contractorOperatorDao = contractorOperatorDao;
@@ -47,15 +53,17 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		findContractor();
 		if (opID == 0)
 			opID = permissions.getAccountId();
 
-		// If the contractor isn't assigned to this facility (in generalcontractors table)
+		// If the contractor isn't assigned to this facility (in
+		// generalcontractors table)
 		// then the following will throw an exception
-		// We must either re-engineer the way we query co's and their flags 
-		// or merge the gc and flag tables into one (I prefer the latter) Trevor 5/29/08
+		// We must either re-engineer the way we query co's and their flags
+		// or merge the gc and flag tables into one (I prefer the latter) Trevor
+		// 5/29/08
 		co = contractorOperatorDao.find(id, opID);
 		co.getOperatorAccount().getFlagOshaCriteria();
 		co.getOperatorAccount().getAudits();
@@ -64,27 +72,54 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		calculator.setOperator(co.getOperatorAccount());
 		calculator.setContractor(contractor);
 		calculator.setConAudits(contractor.getAudits());
-		auditData = auditDataDAO.findAnswersByContractor(contractor.getId(), co.getOperatorAccount().getQuestionIDs());
+		auditData = auditDataDAO.findAnswersByContractor(contractor.getId(), co
+				.getOperatorAccount().getQuestionIDs());
 		calculator.setAuditAnswers(auditData);
 
-		if("Override".equals(action)) {
-			String text = "Changed the flag color to "+forceFlag;
-			Note note = new Note(co.getOperatorAccount().getIdString(),co.getContractorAccount().getIdString(), permissions.getUserIdString(),permissions.getUsername(),text);
+		if ("Override".equals(action)) {
+			String text = "Changed the flag color to " + forceFlag;
+			Note note = new Note(co.getOperatorAccount().getIdString(), co
+					.getContractorAccount().getIdString(), permissions
+					.getUserIdString(), permissions.getUsername(), text);
 			note.writeToDB();
 		}
 		if ("deleteOverride".equals(action)) {
 			permissions.tryPermission(OpPerms.EditForcedFlags);
-			co.setForceBegin(null);
-			co.setForceEnd(null);
-			co.setForceFlag(null);
+			if (deleteAll == true) {
+				for (ContractorOperator operator : getOperators()) {
+					operator.setForceBegin(null);
+					operator.setForceEnd(null);
+					operator.setForceFlag(null);
+					FlagColor newColor = calculator.calculate();
+					operator.getFlag().setFlagColor(newColor);
+					contractorOperatorDao.save(operator);
+				}
+				return SUCCESS;
+			} else {
+				co.setForceBegin(null);
+				co.setForceEnd(null);
+				co.setForceFlag(null);
+			}
+
 		}
-		
+
 		if (forceFlag != null && forceEnd != null) {
 			permissions.tryPermission(OpPerms.EditForcedFlags);
-			co.setForceEnd(forceEnd);
-			co.setForceFlag(forceFlag);
+			if (overrideAll == true) {
+				for (ContractorOperator operator : getOperators()) {
+					operator.setForceEnd(forceEnd);
+					operator.setForceFlag(forceFlag);
+					FlagColor newColor = calculator.calculate();
+					operator.getFlag().setFlagColor(newColor);
+					contractorOperatorDao.save(operator);
+				}
+				return SUCCESS;
+			} else {
+				co.setForceEnd(forceEnd);
+				co.setForceFlag(forceFlag);
+			}
 		}
-		
+
 		if (co.getFlag() == null) {
 			// Add a new flag for the contractor
 			ContractorOperatorFlag newFlag = new ContractorOperatorFlag();
@@ -95,19 +130,21 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			newFlag = coFlagDao.save(newFlag);
 			co.setFlag(newFlag);
 		}
-		
+
 		FlagColor newColor = calculator.calculate();
 		co.getFlag().setFlagColor(newColor);
 		contractorOperatorDao.save(co);
 
 		return SUCCESS;
 	}
-	
+
 	protected void checkPermissionToView() throws NoRightsException {
 		if (permissions.hasPermission(OpPerms.StatusOnly)) {
-			co = contractorOperatorDao.find(id, Integer.parseInt(permissions.getAccountIdString()));
-			if(co.getOperatorAccount().getId().equals(new Integer(permissions.getAccountIdString())))
-			return;
+			co = contractorOperatorDao.find(id, Integer.parseInt(permissions
+					.getAccountIdString()));
+			if (co.getOperatorAccount().getId().equals(
+					new Integer(permissions.getAccountIdString())))
+				return;
 		}
 		super.checkPermissionToView();
 	}
@@ -138,7 +175,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 	// Other helper getters for osha criteria
 	public boolean isOshaTrirUsed() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount().getFlagOshaCriteria()) {
+		for (FlagOshaCriteria criteria : co.getOperatorAccount()
+				.getFlagOshaCriteria()) {
 			if (criteria.getTrir().isRequired())
 				return true;
 		}
@@ -146,7 +184,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 
 	public boolean isOshaLwcrUsed() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount().getFlagOshaCriteria()) {
+		for (FlagOshaCriteria criteria : co.getOperatorAccount()
+				.getFlagOshaCriteria()) {
 			if (criteria.getLwcr().isRequired())
 				return true;
 		}
@@ -154,7 +193,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 
 	public boolean isOshaFatalitiesUsed() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount().getFlagOshaCriteria()) {
+		for (FlagOshaCriteria criteria : co.getOperatorAccount()
+				.getFlagOshaCriteria()) {
 			if (criteria.getFatalities().isRequired())
 				return true;
 		}
@@ -162,7 +202,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 
 	public boolean isOshaAveragesUsed() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount().getFlagOshaCriteria()) {
+		for (FlagOshaCriteria criteria : co.getOperatorAccount()
+				.getFlagOshaCriteria()) {
 			if (criteria.getFatalities().isTimeAverage())
 				return true;
 			if (criteria.getLwcr().isTimeAverage())
@@ -172,7 +213,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		}
 		return false;
 	}
-	
+
 	public FlagColor[] getFlagList() {
 		return FlagColor.values();
 	}
@@ -199,5 +240,21 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 	public void setForceFlag(FlagColor forceFlag) {
 		this.forceFlag = forceFlag;
+	}
+
+	public boolean isOverrideAll() {
+		return overrideAll;
+	}
+
+	public void setOverrideAll(boolean overrideAll) {
+		this.overrideAll = overrideAll;
+	}
+
+	public boolean isDeleteAll() {
+		return deleteAll;
+	}
+
+	public void setDeleteAll(boolean deleteAll) {
+		this.deleteAll = deleteAll;
 	}
 }
