@@ -7,6 +7,48 @@
 <s:property value="conAudit.contractorAccount.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
+
+<SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" SRC="js/validateForms.js"></SCRIPT>
+<script type="text/javascript" src="js/prototype.js"></script>
+<script type="text/javascript"
+	src="js/scriptaculous/scriptaculous.js?load=effects"></script>
+
+<script type="text/javascript">
+<s:if test="mode != 'Edit' && canEdit">
+		function saveAnswer( questionid, elm )
+		{
+			var pars = 'auditData.audit.id=<s:property value="conAudit.id"/>&auditData.questionID=' + questionid + '&auditData.answer=';
+			if( elm.type == 'text' || elm.type == 'radio' || elm.type == 'textarea')
+			{
+				var thevalue = elm.value;
+				if( thevalue != '' )
+				{
+					pars = pars + thevalue;
+					
+					var divName = 'status_'+questionid;
+					var myAjax = new Ajax.Updater(divName,'AuditDataSaveAjax.action', 
+					{
+						method: 'post', 
+						parameters: pars,
+						onSuccess: function(transport) {
+							new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+						}
+					});
+				}
+			}
+			else
+			{
+				//alert( elm.type );	
+				alert( elm.value );
+			}
+			return true;
+		}
+	</s:if>
+</script>
+
 </head>
 <body>
 <s:include value="../contractors/conHeader.jsp" />
