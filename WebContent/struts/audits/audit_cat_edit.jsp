@@ -58,7 +58,7 @@
 			<s:radio template="SHELLEY" list="options" listValue="optionName" value="answer.answer" name="question_%{questionID}" onchange=""></s:radio>
 		</s:if>
 		<s:if test="questionType == 'Drop Down'">
-			<s:select template="SHELLEY" list="options" value="answer.answer" name="question_%{questionID}" onchange=""></s:select>
+			<s:select list="options" value="answer.answer" name="question_%{questionID}" onchange=""></s:select>
 		</s:if>
 		<s:if test="questionType == 'File'">
 			<s:if test="answer.answer.length() > 1">Uploaded</s:if>
