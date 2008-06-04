@@ -60,8 +60,6 @@ public class AuditQuestion implements java.io.Serializable {
 	private Date lastModified;
 	private String title;
 	private String isGroupedWithPrevious;
-	private String link;
-	private String linkText;
 	private String linkUrl1;
 	private String linkText1;
 	private String linkUrl2;
@@ -217,24 +215,6 @@ public class AuditQuestion implements java.io.Serializable {
 
 	public void setIsGroupedWithPrevious(String isGroupedWithPrevious) {
 		this.isGroupedWithPrevious = isGroupedWithPrevious;
-	}
-
-	@Column(name = "link")
-	public String getLink() {
-		return this.link;
-	}
-
-	public void setLink(String link) {
-		this.link = link;
-	}
-
-	@Column(name = "linkText")
-	public String getLinkText() {
-		return this.linkText;
-	}
-
-	public void setLinkText(String linkText) {
-		this.linkText = linkText;
 	}
 
 	@Column(name = "linkURL1")

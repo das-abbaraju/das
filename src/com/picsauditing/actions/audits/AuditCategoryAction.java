@@ -1,8 +1,11 @@
 package com.picsauditing.actions.audits;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
+import com.picsauditing.PICS.Inputs;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -11,6 +14,7 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
+import com.picsauditing.jpa.entities.State;
 
 /**
  * This class isn't being used yet, but it's designed to view audit cat/section/data
@@ -19,6 +23,8 @@ import com.picsauditing.jpa.entities.AuditSubCategory;
  */
 public class AuditCategoryAction extends AuditActionSupport {
 	protected int catDataID = 0;
+	protected String mode = "View";
+	protected boolean viewBlanks = true;
 	protected List<AuditCatData> categories;
 
 	protected AuditCategoryDataDAO catDataDAO;
@@ -52,6 +58,9 @@ public class AuditCategoryAction extends AuditActionSupport {
 			}
 		}
 		
+		if (catDataID == 0)
+			viewBlanks = false;
+		
 		return SUCCESS;
 	}
 	
@@ -77,5 +86,29 @@ public class AuditCategoryAction extends AuditActionSupport {
 
 	public List<AuditCatData> getCategories() {
 		return categories;
+	}
+
+	public String getMode() {
+		return mode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+
+	public boolean isViewBlanks() {
+		return viewBlanks;
+	}
+
+	public void setViewBlanks(boolean viewBlanks) {
+		this.viewBlanks = viewBlanks;
+	}
+	
+	public TreeMap<String, String> getStateList() {
+		return State.getStates(true);
+	}
+	
+	public String[] getCountryList() {
+		return Inputs.COUNTRY_ARRAY;
 	}
 }

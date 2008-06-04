@@ -15,12 +15,15 @@
 	<s:if test="catDataID == id || catDataID == 0">
 		<h2>Category <s:property value="category.number"/> - <s:property value="category.category"/></h2>
 		<s:if test="catDataID > 0">
-			<div>View:
-			<s:if test="canEdit">
-				<a href="?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>">Switch to Edit Mode</a>
+			<div>
+			<s:if test="mode != 'View'">
+				<a href="?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>">Switch to View Mode</a>
 			</s:if>
-			<s:if test="canVerify">
-				<a href="?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>">Switch to Verify Mode</a>
+			<s:if test="mode != 'Edit' && canEdit">
+				<a href="?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>&mode=Edit">Switch to Edit Mode</a>
+			</s:if>
+			<s:if test="mode != 'Verify' && canVerify">
+				<a href="?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>&mode=Verify">Switch to Verify Mode</a>
 			</s:if>
 			</div>
 		</s:if>
@@ -36,45 +39,18 @@
 						<td class="groupTitle" colspan="3"><s:property value="title"/></td>
 					</tr>
 				</s:if>
-				<tr class="group1">
-					<td class="right"><s:property value="category.number"/>.<s:property value="subCategory.number"/>.<s:property value="number"/>&nbsp;&nbsp;</td>
-					<td class="question"><s:property value="question"/>
-					<br>
-					<s:if test="questionType == 'Date'">
-						<s:property value="com.picsauditing.PICS.DateBean.toShowFormat(answer.answer)"/>
+				<s:if test="mode == 'View'">
+					<s:if test="viewBlanks || answer.answer.length() > 0">
+						<s:include value="audit_cat_view.jsp"></s:include>
 					</s:if>
-					<s:elseif test="questionType == 'File'">
-						<s:if test="answer.answer.length() > 0">
-							<a href="#" onClick="window.open('servlet/showpdf?id=<s:property value="contractor.id"/>&file=pqf','','scrollbars=yes,resizable=yes,width=700,height=450')">Uploaded</a>
-						</s:if>
-						<s:else>File Not Uploaded</s:else>
-					</s:elseif>
-					<s:else>
-					<span class="answer"><s:property value="answer.answer"/></span>
-					</s:else>
-					<s:if test="answer.verified">
-						<span class="verified">Verified on <s:date name="answer.dateVerified" format="MMM d, yyyy" /></span>
+				</s:if>
+				<s:if test="mode == 'Edit'">
+					<s:include value="audit_cat_edit.jsp"></s:include>
+				</s:if>
+				<s:if test="mode == 'Verify'">
+					<s:if test="answer.answer.length() > 0">
+						<s:include value="audit_cat_verify.jsp"></s:include>
 					</s:if>
-					<s:if test="answer.unverified">
-						<span class="unverified">Inaccurate Data</span>
-					</s:if>
-					<td></td>
-				</tr>
-				<s:if test="answer.hasRequirements && conAudit.auditType.hasRequirements">
-					<tr class="group1" valign="top">
-						<td class="center">Req</td>
-						<td>Status:
-						<s:if test="answer.requirementOpen">
-							<span class="unverified">Open</span>
-						</s:if>
-						<s:else>
-							<span class="verified">Closed on <s:date name="answer.dateVerified" format="MMM d, yyyy" /></span>
-						</s:else>
-						<br>
-						<s:property value="requirement"/>
-						</td>
-						<td></td>
-					</tr>
 				</s:if>
 			</s:iterator>
 		</s:iterator>
