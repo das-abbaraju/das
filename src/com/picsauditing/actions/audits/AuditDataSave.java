@@ -57,7 +57,7 @@ public class AuditDataSave extends PicsActionSupport implements Preparable
 					{
 						if( auditData.getIsCorrect() != oldCopy.getIsCorrect() )
 						{
-							if( auditData.getIsCorrectBoolean() )
+							if( auditData.isVerified() )
 							{
 								oldCopy.setDateVerified(new Date());
 							}
@@ -66,7 +66,7 @@ public class AuditDataSave extends PicsActionSupport implements Preparable
 								oldCopy.setDateVerified(null);
 							}
 							
-							oldCopy.setIsCorrectBoolean(auditData.getIsCorrectBoolean());
+							oldCopy.setVerified(auditData.isVerified());
 						}
 					}
 				}
