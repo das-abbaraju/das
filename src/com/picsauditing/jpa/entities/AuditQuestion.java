@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -50,17 +52,19 @@ public class AuditQuestion implements java.io.Serializable {
 	private AuditSubCategory subCategory;
 	private short number;
 	private String question;
-	private String hasRequirement;
+	private Date dateCreated;
+	private Date lastModified;
+	private YesNo hasRequirement;
 	private String okAnswer;
 	private String requirement;
+	private YesNo isRedFlagQuestion;
 	private String isRequired;
 	private AuditQuestion dependsOnQuestion;
 	private String dependsOnAnswer;
 	private String questionType;
-	private String isVisible;
-	private Date lastModified;
 	private String title;
-	private String isGroupedWithPrevious;
+	private YesNo isVisible;
+	private YesNo isGroupedWithPrevious;
 	private String linkUrl1;
 	private String linkText1;
 	private String linkUrl2;
@@ -73,12 +77,9 @@ public class AuditQuestion implements java.io.Serializable {
 	private String linkText5;
 	private String linkUrl6;
 	private String linkText6;
-	private Date dateCreated;
-	private String isRedFlagQuestion;
 
 	protected List<AuditQuestionOperatorAccount> operator;
 	protected List<AuditQuestionOption> options;
-
 	protected AuditData answer;
 	
 	@Id
@@ -119,16 +120,15 @@ public class AuditQuestion implements java.io.Serializable {
 		this.question = question;
 	}
 
-	@Column(nullable = false, length = 3)
-	public String getHasRequirement() {
+	@Enumerated(EnumType.STRING)
+	public YesNo getHasRequirement() {
 		return this.hasRequirement;
 	}
 
-	public void setHasRequirement(String hasRequirement) {
+	public void setHasRequirement(YesNo hasRequirement) {
 		this.hasRequirement = hasRequirement;
 	}
 
-	@Column(nullable = false, length = 10)
 	public String getOkAnswer() {
 		return this.okAnswer;
 	}
@@ -137,7 +137,6 @@ public class AuditQuestion implements java.io.Serializable {
 		this.okAnswer = okAnswer;
 	}
 
-	@Column(nullable = false)
 	public String getRequirement() {
 		return this.requirement;
 	}
@@ -146,7 +145,10 @@ public class AuditQuestion implements java.io.Serializable {
 		this.requirement = requirement;
 	}
 
-	@Column(nullable = false)
+	/**
+	 * Yes, No, Depends
+	 * @return
+	 */
 	public String getIsRequired() {
 		return this.isRequired;
 	}
@@ -183,12 +185,12 @@ public class AuditQuestion implements java.io.Serializable {
 		this.questionType = questionType;
 	}
 
-	@Column(name = "isVisible", nullable = false, length = 3)
-	public String getIsVisible() {
+	@Enumerated(EnumType.STRING)
+	public YesNo getIsVisible() {
 		return this.isVisible;
 	}
 
-	public void setIsVisible(String isVisible) {
+	public void setIsVisible(YesNo isVisible) {
 		this.isVisible = isVisible;
 	}
 
@@ -211,16 +213,15 @@ public class AuditQuestion implements java.io.Serializable {
 		this.title = title;
 	}
 
-	@Column(name = "isGroupedWithPrevious", nullable = false, length = 3)
-	public String getIsGroupedWithPrevious() {
+	@Enumerated(EnumType.STRING)
+	public YesNo getIsGroupedWithPrevious() {
 		return this.isGroupedWithPrevious;
 	}
 
-	public void setIsGroupedWithPrevious(String isGroupedWithPrevious) {
+	public void setIsGroupedWithPrevious(YesNo isGroupedWithPrevious) {
 		this.isGroupedWithPrevious = isGroupedWithPrevious;
 	}
 
-	@Column(name = "linkURL1")
 	public String getLinkUrl1() {
 		return this.linkUrl1;
 	}
@@ -229,7 +230,6 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkUrl1 = linkUrl1;
 	}
 
-	@Column(name = "linkText1")
 	public String getLinkText1() {
 		return this.linkText1;
 	}
@@ -238,7 +238,6 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkText1 = linkText1;
 	}
 
-	@Column(name = "linkURL2")
 	public String getLinkUrl2() {
 		return this.linkUrl2;
 	}
@@ -247,7 +246,6 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkUrl2 = linkUrl2;
 	}
 
-	@Column(name = "linkText2")
 	public String getLinkText2() {
 		return this.linkText2;
 	}
@@ -256,7 +254,6 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkText2 = linkText2;
 	}
 
-	@Column(name = "linkURL3")
 	public String getLinkUrl3() {
 		return this.linkUrl3;
 	}
@@ -265,7 +262,6 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkUrl3 = linkUrl3;
 	}
 
-	@Column(name = "linkText3")
 	public String getLinkText3() {
 		return this.linkText3;
 	}
@@ -274,7 +270,6 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkText3 = linkText3;
 	}
 
-	@Column(name = "linkURL4")
 	public String getLinkUrl4() {
 		return this.linkUrl4;
 	}
@@ -283,7 +278,6 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkUrl4 = linkUrl4;
 	}
 
-	@Column(name = "linkText4")
 	public String getLinkText4() {
 		return this.linkText4;
 	}
@@ -292,7 +286,6 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkText4 = linkText4;
 	}
 
-	@Column(name = "linkURL5")
 	public String getLinkUrl5() {
 		return this.linkUrl5;
 	}
@@ -301,7 +294,6 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkUrl5 = linkUrl5;
 	}
 
-	@Column(name = "linkText5")
 	public String getLinkText5() {
 		return this.linkText5;
 	}
@@ -310,7 +302,6 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkText5 = linkText5;
 	}
 
-	@Column(name = "linkURL6")
 	public String getLinkUrl6() {
 		return this.linkUrl6;
 	}
@@ -319,7 +310,6 @@ public class AuditQuestion implements java.io.Serializable {
 		this.linkUrl6 = linkUrl6;
 	}
 
-	@Column(name = "linkText6")
 	public String getLinkText6() {
 		return this.linkText6;
 	}
@@ -329,7 +319,6 @@ public class AuditQuestion implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "dateCreated", nullable = false, length = 10)
 	public Date getDateCreated() {
 		return this.dateCreated;
 	}
@@ -338,12 +327,12 @@ public class AuditQuestion implements java.io.Serializable {
 		this.dateCreated = dateCreated;
 	}
 
-	@Column(name = "isRedFlagQuestion", nullable = false, length = 3)
-	public String getIsRedFlagQuestion() {
+	@Enumerated(EnumType.STRING)
+	public YesNo getIsRedFlagQuestion() {
 		return this.isRedFlagQuestion;
 	}
 
-	public void setIsRedFlagQuestion(String isRedFlagQuestion) {
+	public void setIsRedFlagQuestion(YesNo isRedFlagQuestion) {
 		this.isRedFlagQuestion = isRedFlagQuestion;
 	}
 

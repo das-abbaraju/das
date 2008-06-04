@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
+import com.picsauditing.jpa.entities.YesNo;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
@@ -30,20 +31,16 @@ public class AuditQuestionDAOTest {
 		auditquestion.getSubCategory().setId(22);
 		auditquestion.setNumber(Short.parseShort("100"));
 		auditquestion.setQuestion("write junit test class");
-		auditquestion.setHasRequirement("yes");
+		auditquestion.setHasRequirement(YesNo.No);
 		auditquestion.setOkAnswer("NA");
 		auditquestion.setRequirement("junit test");
 		auditquestion.setIsRequired("Depends");
-		auditquestion.setDependsOnQid(2);
 		auditquestion.setDependsOnAnswer("fail or pass");
 		auditquestion.setQuestionType("text");
-		auditquestion.setIsVisible("no");
-		auditquestion.setLastModified(new Date(2008 - 04 - 07));
+		auditquestion.setIsVisible(YesNo.Yes);
+		auditquestion.setLastModified(new Date());
 		auditquestion.setTitle("junit test");
-		auditquestion.setIsGroupedWithPrevious("yes");
-		auditquestion.setLink("test1");
-		auditquestion.setLinkText("test1");
-		auditquestion.setLinkText("junit");
+		auditquestion.setIsGroupedWithPrevious(YesNo.Yes);
 		auditquestion.setLinkUrl1("test1");
 		auditquestion.setLinkText1("test1");
 		auditquestion.setLinkUrl2("test1");
@@ -55,7 +52,7 @@ public class AuditQuestionDAOTest {
 		auditquestion.setLinkUrl6("test1");
 		auditquestion.setLinkText6("test1");
 		auditquestion.setDateCreated(new Date(2008 - 04 - 07));
-		auditquestion.setIsRedFlagQuestion("yes");
+		auditquestion.setIsRedFlagQuestion(YesNo.No);
 		auditquestion = auditquestionDAO.save(auditquestion);
 		assertEquals("write junit test class", auditquestion.getQuestion());
 		assertTrue(auditquestion.getQuestionID() > 0);

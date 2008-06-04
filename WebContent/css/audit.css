@@ -84,3 +84,43 @@ span.unverified {
 	background: transparent url(../images/notOkCheck.gif) no-repeat
 		left center;
 }
+
+table.footerNav {
+	border: 1px #A84D10 dashed;
+	width: 100%;
+	margin: 5px;
+	background-color: #F6F6F6;
+}
+
+table.footerNav:HOVER {
+	border: 1px #A84D10 solid;
+	background-color: #F0F0F0;
+}
+
+table.footerNav td {
+	vertical-align: middle;
+	padding: 3px;
+	font-size: 12px;
+	line-height: 130%;
+}
+
+table.footerNav td.arrows {
+	font-size: 16px;
+	text-align: center;
+}
+
+table.footerNav td.previous {
+	width: 30%;
+	text-align: left;
+}
+
+table.footerNav td.current {
+	width: 30%;
+	text-align: center;
+	font-weight: bold;
+}
+
+table.footerNav td.next {
+	width: 30%;
+	text-align: right;
+}

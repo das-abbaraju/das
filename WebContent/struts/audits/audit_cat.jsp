@@ -11,6 +11,28 @@
 <body>
 <s:include value="../contractors/conHeader.jsp" />
 
+<table class="footerNav">
+<tr>
+<td class="arrows">&lt;&lt;</td>
+<td class="previous">
+<s:if test="previousCategory != null">
+	<a href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="previousCategory.id"/>&mode=<s:property value="mode"/>"><s:property value="previousCategory.category.category"/></a>
+</s:if>
+<s:else><a href="Audit.action?auditID=<s:property value="auditID"/>">START</a></s:else>
+</td>
+<td class="current">
+	<a href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="currentCategory.id"/>&mode=<s:property value="mode"/>"><s:property value="currentCategory.category.category"/></a>
+</td>
+<td class="next">
+<s:if test="nextCategory != null">
+	<a href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="nextCategory.id"/>&mode=<s:property value="mode"/>"><s:property value="nextCategory.category.category"/></a>
+</s:if>
+<s:else><a href="Audit.action?auditID=<s:property value="auditID"/>">FINISH</a></s:else>
+</td>
+<td class="arrows">&gt;&gt;</td>
+</tr>
+</table>
+
 <s:iterator value="categories">
 	<s:if test="catDataID == id || catDataID == 0">
 		<h2>Category <s:property value="category.number"/> - <s:property value="category.category"/></h2>
@@ -57,6 +79,28 @@
 		</table>
 	</s:if>
 </s:iterator>
+
+<table class="footerNav">
+<tr>
+<td class="arrows">&lt;&lt;</td>
+<td class="previous">
+<s:if test="previousCategory != null">
+	<a href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="previousCategory.id"/>&mode=<s:property value="mode"/>"><s:property value="previousCategory.category.category"/></a>
+</s:if>
+<s:else><a href="Audit.action?auditID=<s:property value="auditID"/>">START</a></s:else>
+</td>
+<td class="current">
+	<a href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="currentCategory.id"/>&mode=<s:property value="mode"/>"><s:property value="currentCategory.category.category"/></a>
+</td>
+<td class="next">
+<s:if test="nextCategory != null">
+	<a href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="nextCategory.id"/>&mode=<s:property value="mode"/>"><s:property value="nextCategory.category.category"/></a>
+</s:if>
+<s:else><a href="Audit.action?auditID=<s:property value="auditID"/>">FINISH</a></s:else>
+</td>
+<td class="arrows">&gt;&gt;</td>
+</tr>
+</table>
 
 </body>
 </html>

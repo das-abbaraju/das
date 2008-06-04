@@ -53,7 +53,7 @@ table.report tr.na a {
 			<tr>
 				<td class="right"><s:property value="category.number" /></td>
 				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a>
-					<a href="<s:property value="catUrl" />?auditID=<s:property value="auditID" />&catID=<s:property value="category.id" />&id=<s:property value="conAudit.contractorAccount.id" />">old</a>
+					<a href="<s:property value="catUrl" />?auditID=<s:property value="auditID" />&catID=<s:property value="category.id" />&id=<s:property value="conAudit.contractorAccount.id" />">.</a>
 				</td>
 			<s:if test="conAudit.auditStatus.name() == 'Pending' || conAudit.auditType.pqf">
 				<td class="right"><s:property value="percentCompleted" />%</td>
@@ -68,7 +68,7 @@ table.report tr.na a {
 		<s:else>
 			<tr class="na">
 				<td class="right"><s:property value="category.number" /></td>
-				<td><a href="<s:property value="catUrl" />?auditID=<s:property value="auditID" />&catID=<s:property value="category.id" />"><s:property value="category.category" /></a></td>
+				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a></td>
 				<td class="center" colspan="2">N/A</td>
 				<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.auditType.hasRequirements">
 					<td colspan="2"></td>
