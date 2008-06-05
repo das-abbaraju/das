@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -68,8 +70,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private Date membershipDate;
 	private int newBillingAmount;
 	private int payingFacilities;
-	private Date welcomeCallDate;
-	private int welcomeAuditorId;
+	private User auditor;
 	private LowMedHigh riskLevel;
 
 	private int annualUpdateEmails;
@@ -462,23 +463,14 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.payingFacilities = payingFacilities;
 	}
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "welcomeCallDate", nullable = true, length = 10)
-	public Date getWelcomeCallDate() {
-		return this.welcomeCallDate;
+	@ManyToOne
+	@JoinColumn(name = "welcomeAuditor_id")
+	public User getAuditor() {
+		return auditor;
 	}
 
-	public void setWelcomeCallDate(Date welcomeCallDate) {
-		this.welcomeCallDate = welcomeCallDate;
-	}
-
-	@Column(name = "welcomeAuditor_id", nullable = true)
-	public int getWelcomeAuditorId() {
-		return this.welcomeAuditorId;
-	}
-
-	public void setWelcomeAuditorId(int welcomeAuditorId) {
-		this.welcomeAuditorId = welcomeAuditorId;
+	public void setAuditor(User auditor) {
+		this.auditor = auditor;
 	}
 
 	@Enumerated(EnumType.ORDINAL)
