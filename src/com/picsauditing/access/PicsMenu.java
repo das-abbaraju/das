@@ -61,6 +61,7 @@ public class PicsMenu {
 		subMenu = menu.addChild("Customer Service");
 		if (permissions.isAdmin())
 			subMenu.addChild("Activation", "report_activation.jsp?changed=1");
+			subMenu.addChild("Assign Contractors","ContractorAssigned.action");
 		if (permissions.hasPermission(OpPerms.EmailAnnualUpdate))
 			subMenu.addChild("Annual Updates", "report_annualUpdate.jsp?changed=1");
 

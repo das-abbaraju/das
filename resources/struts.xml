@@ -259,5 +259,15 @@
 			class="com.picsauditing.actions.Cron">
 			<result>/struts/blank.jsp</result>
 		</action>
+	
+		<action name="ContractorAssigned"
+			class="com.picsauditing.actions.report.ReportContractorAssignment">
+			<result>struts/reports/assignedContractor.jsp</result>
+		</action>
+	
+		<action name="ContractorSaveAjax"
+			class="com.picsauditing.actions.audits.ContractorSave">
+			<result>struts/blank.jsp</result>
+		</action>
 	</package>
 </struts>
