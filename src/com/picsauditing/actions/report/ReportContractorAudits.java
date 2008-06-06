@@ -19,7 +19,6 @@ public class ReportContractorAudits extends ReportAccount {
 
 	protected boolean filterAuditType = true;
 	protected boolean filterAuditStatus = true;
-	protected boolean filterAuditor = true;
 
 	public String execute() throws Exception {
 		loadPermissions();
@@ -119,7 +118,4 @@ public class ReportContractorAudits extends ReportAccount {
 		return filterAuditStatus;
 	}
 
-	public boolean isFilterAuditor() {
-		return filterAuditor;
-	}
 }

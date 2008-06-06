@@ -50,7 +50,7 @@ public class ReportAccount extends ReportActionSupport {
 	protected String taxID = DEFAULT_TAX_ID;
 	protected String flagStatus;
 	protected int[] officeIn;
-	
+
 	protected boolean filterOperator = true;
 	protected boolean filterIndustry = true;
 	protected boolean filterPerformedBy = true;
@@ -63,6 +63,8 @@ public class ReportAccount extends ReportActionSupport {
 	protected boolean filterOfficeIn = true;
 	protected boolean filterTaxID = true;
 	protected boolean filterFlagStatus = true;
+	protected boolean filterAuditor = true;
+	protected int conAuditorId = 0;
 
 	@Autowired
 	protected SelectAccount sql = new SelectAccount();
@@ -80,9 +82,9 @@ public class ReportAccount extends ReportActionSupport {
 			return LOGIN;
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
-		
+
 		toggleFilters();
-		
+
 		if (this.orderBy == null)
 			this.orderBy = "a.name";
 		sql.setType(SelectAccount.Type.Contractor);
@@ -97,7 +99,7 @@ public class ReportAccount extends ReportActionSupport {
 		}
 		return SUCCESS;
 	}
-	
+
 	protected void toggleFilters() {
 		if (permissions.isOperator()) {
 			filterOperator = false;
@@ -190,7 +192,7 @@ public class ReportAccount extends ReportActionSupport {
 	public void setIndustry(Industry[] industry) {
 		this.industry = industry;
 		String industryList = Strings.implodeForDB(industry, ",");
-		sql.addWhere("a.industry IN ("+industryList+")");
+		sql.addWhere("a.industry IN (" + industryList + ")");
 		filtered = true;
 	}
 
@@ -223,11 +225,11 @@ public class ReportAccount extends ReportActionSupport {
 		String tradeList = Strings.implode(trade, ",");
 		if (tradeList.equals("0"))
 			return;
-		
+
 		this.trade = trade;
-		sql.addJoin("JOIN pqfdata trade ON trade.conID = a.id " +
-				"AND trade.questionID IN (" + tradeList + ") " +
-				"AND trade.answer LIKE '" + answerFilter + "'");
+		sql.addJoin("JOIN pqfdata trade ON trade.conID = a.id "
+				+ "AND trade.questionID IN (" + tradeList + ") "
+				+ "AND trade.answer LIKE '" + answerFilter + "'");
 		filtered = true;
 	}
 
@@ -307,9 +309,9 @@ public class ReportAccount extends ReportActionSupport {
 	public void setStateLicensedIn(int[] stateLicensedIn) {
 		String stateLicensedInList = Strings.implode(stateLicensedIn, ",");
 		this.stateLicensedIn = stateLicensedIn;
-		sql.addJoin("JOIN pqfdata licensedIn ON licensedIn.conID = a.id " +
-				"AND licensedIn.questionID IN (" + stateLicensedInList + ") " +
-				"AND licensedIn.answer <> ''");
+		sql.addJoin("JOIN pqfdata licensedIn ON licensedIn.conID = a.id "
+				+ "AND licensedIn.questionID IN (" + stateLicensedInList + ") "
+				+ "AND licensedIn.answer <> ''");
 		filtered = true;
 	}
 
@@ -320,9 +322,9 @@ public class ReportAccount extends ReportActionSupport {
 	public void setWorksIn(int[] worksIn) {
 		String worksInList = Strings.implode(worksIn, ",");
 		this.worksIn = worksIn;
-		sql.addJoin("JOIN pqfdata worksIn ON worksIn.conID = a.id " +
-				"AND worksIn.questionID IN (" + worksInList + ") " +
-				"AND worksIn.answer LIKE 'Yes%'");
+		sql.addJoin("JOIN pqfdata worksIn ON worksIn.conID = a.id "
+				+ "AND worksIn.questionID IN (" + worksInList + ") "
+				+ "AND worksIn.answer LIKE 'Yes%'");
 		filtered = true;
 	}
 
@@ -333,9 +335,9 @@ public class ReportAccount extends ReportActionSupport {
 	public void setOfficeIn(int[] officeIn) {
 		String officeInList = Strings.implode(officeIn, ",");
 		this.officeIn = officeIn;
-		sql.addJoin("JOIN pqfdata officeIn ON officeIn.conID = a.id " +
-				"AND officeIn.questionID IN (" + officeInList + ") " +
-				"AND officeIn.answer LIKE 'Yes with Office'");
+		sql.addJoin("JOIN pqfdata officeIn ON officeIn.conID = a.id "
+				+ "AND officeIn.questionID IN (" + officeInList + ") "
+				+ "AND officeIn.answer LIKE 'Yes with Office'");
 		filtered = true;
 	}
 
@@ -431,6 +433,20 @@ public class ReportAccount extends ReportActionSupport {
 	public boolean isFilterFlagStatus() {
 		return filterFlagStatus;
 	}
-	
-	
+
+	public boolean isFilterAuditor() {
+		return filterAuditor;
+	}
+
+	public int getConAuditorId() {
+		return conAuditorId;
+	}
+
+	public void setConAuditorId(int conAuditorId) {
+		if (conAuditorId != 0) {
+			report.addFilter(new SelectFilterInteger("conAuditorId",
+					"c.welcomeAuditor_id = '?'", conAuditorId));
+		}
+		this.conAuditorId = conAuditorId;
+	}
 }
