@@ -10,132 +10,93 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 
-public class AuditDataSave extends PicsActionSupport implements Preparable 
-{
+public class AuditDataSave extends PicsActionSupport {
 	AuditData auditData = null;
 	AuditDataDAO dao = null;
-	protected AuditData oldCopy;
-	
-	public AuditDataSave( AuditDataDAO dao )
-	{
+
+	public AuditDataSave(AuditDataDAO dao) {
 		this.dao = dao;
 	}
-	
+
 	public String execute() throws Exception {
 
-		try
-		{
+		try {
 			if (!forceLogin())
 				return LOGIN;
-			
-			
-			if( oldCopy != null )  //check if this is a currently existing record or not
+
+			AuditData newCopy = dao.findAnswerToQuestion(auditData.getAudit()
+					.getId(), auditData.getQuestion().getQuestionID());
+			if (newCopy == null) // insert mode
 			{
-				if( auditData.getAnswer() != null )  //if answer is being set, then we are not currently verifying
+				dao.save(auditData);
+			} else // update mode
+			{
+				if (auditData.getAnswer() != null) // if answer is being set,
+													// then we are not currently
+													// verifying
 				{
-					if( oldCopy.getAnswer() == null || ! oldCopy.getAnswer().equals(auditData.getAnswer()))
-					{
-						oldCopy.setDateVerified(null);
-						oldCopy.setIsCorrect(null);
-						oldCopy.setVerifiedAnswer(null);
-						oldCopy.setWasChanged(YesNo.Yes);
-						oldCopy.setAnswer(auditData.getAnswer());
+					if (auditData.getAnswer() == null
+							|| !newCopy.getAnswer().equals(
+									auditData.getAnswer())) {
+						newCopy.setDateVerified(null);
+						newCopy.setIsCorrect(null);
+						newCopy.setVerifiedAnswer(null);
+						newCopy.setAnswer(auditData.getAnswer());
+
+						if (newCopy.getAudit().getAuditStatus().equals(
+								AuditStatus.Submitted)) // double check this
+						{
+							newCopy.setWasChanged(YesNo.Yes);
+						}
 					}
-				}
-				else  //we were handed the verification parms instead of the edit parms
+				} else // we were handed the verification parms instead of the
+						// edit parms
 				{
-					if( auditData.getVerifiedAnswer() != null )
-					{
-						oldCopy.setVerifiedAnswer(auditData.getVerifiedAnswer());
+					if (auditData.getVerifiedAnswer() != null) {
+						newCopy
+								.setVerifiedAnswer(auditData
+										.getVerifiedAnswer());
 					}
 
-					
-					if( ActionContext.getContext().getParameters().get("auditData.isCorrectBoolean") != null
-							|| ActionContext.getContext().getParameters().get("auditData.isCorrect") != null )
-					{
-						if( auditData.getIsCorrect() != oldCopy.getIsCorrect() )
-						{
-							if( auditData.isVerified() )
-							{
-								oldCopy.setDateVerified(new Date());
+					if (ActionContext.getContext().getParameters().get(
+							"auditData.isCorrect") != null) {
+						if (auditData.getIsCorrect() != newCopy.getIsCorrect()) {
+							if (auditData.isVerified()) {
+								newCopy.setDateVerified(new Date());
+							} else {
+								newCopy.setDateVerified(null);
 							}
-							else
-							{
-								oldCopy.setDateVerified(null);
-							}
-							
-							oldCopy.setVerified(auditData.isVerified());
+
+							newCopy.setVerified(auditData.isVerified());
 						}
 					}
 				}
-			}
-			else
-			{
-				oldCopy = new AuditData();
-				
-				oldCopy.setAuditor(new User());
-				oldCopy.getAuditor().setId(permissions.getUserId());
-				
-				oldCopy.setAudit(new ContractorAudit());
-				oldCopy.getAudit().setId(auditData.getAudit().getId());
-				
-				oldCopy.setQuestion(new AuditQuestion() );
-				oldCopy.getQuestion().setQuestionID(auditData.getQuestion().getQuestionID());
-				
-				oldCopy.setAnswer(auditData.getAnswer());
-				
-				oldCopy.setDateVerified(null);
-				oldCopy.setIsCorrect(null);
-				oldCopy.setVerifiedAnswer(null);
-				oldCopy.setWasChanged(YesNo.No);
+
+				if (auditData.getComment() != null) {
+					newCopy.setComment(auditData.getComment());
+				}
+
+				dao.save(newCopy);
 			}
 
+			//hook to calculation
+			// read/update the ContractorAudit and AuditCatData
 			
-			if( auditData.getComment() != null )
-			{
-				oldCopy.setComment(auditData.getComment() );
-			}
 			
-			dao.save(oldCopy);
 			setMessage("Saved");
-		}
-		catch( Exception e )
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 			setMessage("An Error has Occurred");
 		}
-		
+
 		return SUCCESS;
 	}
-	
-	
-	@Override
-	public void prepare() throws Exception {
-		String[] auditIds = (String[]) ActionContext.getContext().getParameters().get("auditData.audit.id");
-		
-		if( auditIds != null && auditIds.length > 0 )
-		{
-			int auditId = new Integer(auditIds[0]).intValue();
-			
-			String[] questionIds = (String[]) ActionContext.getContext().getParameters().get("auditData.question.questionID");
-			
-			if( questionIds != null && questionIds.length > 0 )
-			{
-				int questionId = new Integer(questionIds[0]).intValue();
 
-				try
-				{
-					oldCopy = dao.findAnswerToQuestion(auditId, questionId);
-				}
-				catch( NoResultException weWillHandleThisInTheMergeLogic ){}
-			}
-		}
-	}
-	
 	public AuditData getAuditData() {
 		return auditData;
 	}
