@@ -136,4 +136,15 @@ public class AuditCategoryDataDAO extends PicsDAO {
 			save(data);
 		}
 	}
+
+	public List<AuditCatData> findAllAuditCatData(int auditID, int catID) {
+		String selectQuery = "SELECT * FROM pqfCatData "+
+		"WHERE catID="+catID+" AND auditID="+auditID;
+		Query query = em.createQuery(selectQuery);
+		return query.getResultList();
+	}
+
+
+
+
 }

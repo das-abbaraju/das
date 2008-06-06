@@ -1,15 +1,10 @@
 package com.picsauditing.actions.audits;
 
-import java.sql.ResultSet;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-
-import javax.persistence.NoResultException;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.pqf.SubCategoryBean;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -19,14 +14,13 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditSubCategory;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 
 public class AuditDataSave extends PicsActionSupport {
 	AuditData auditData = null;
 	AuditDataDAO dao = null;
-
+	private AuditCategoryDataDAO catDataDAO = null;
+	
 	public AuditDataSave(AuditDataDAO dao) {
 		this.dao = dao;
 	}
@@ -110,19 +104,12 @@ public class AuditDataSave extends PicsActionSupport {
 		AuditCategory category = auditData.getQuestion().getSubCategory().getCategory();
 		int catID = category.getId();
 		
-		AuditCategoryDataDAO catDataDAO = new AuditCategoryDataDAO();
-		AuditCatData catData = dao.find(auditID, catID);
-		/**
-		 * MOVED THIS INTO AuditCategoryDataDAO.find()
-		String selectQuery = "SELECT * FROM pqfCatData "+
-			"WHERE catID="+catID+" AND auditID="+auditID;
-		ResultSet rs = SQLStatement.executeQuery(selectQuery);
-		if (!rs.next() || !"Yes".equals(rs.getString("applies"))){
-			rs.close();
-			return;
-		}
-		rs.close();
-		*/
+		List<AuditCatData> catData = catDataDAO.findAllAuditCatData(auditID, catID);
+		for(AuditCatData data : catData) {
+			if("Yes".equals(data.isAppliesB())) {
+				return;
+			}
+		
 		int requiredAnsweredCount = 0;
 		int answeredCount = 0;
 		int requiredCount = 0;
@@ -134,42 +121,38 @@ public class AuditDataSave extends PicsActionSupport {
 		// Get a list of questions/answers for this category
 		for(AuditSubCategory subCategory : category.getSubCategories()) {
 			for(AuditQuestion question : subCategory.getQuestions()) {
-				String answer = this.getString(rs, "answer");
-				
-				String tempIsRequired = rs.getString("isRequired");
+				String tempIsRequired = question.getIsRequired();
 				boolean isRequired = "Yes".equals(tempIsRequired);
-				if ("Depends".equals(tempIsRequired)){
+				
+				if ("Depends".equals(question.getDependsOnAnswer())){
 					// SEE question.getDependsOnQuestion()
-					int dependsOnQID = rs.getInt("dependsOnQID");
-					String dependsOnAnswer = rs.getString("dependsOnAnswer");
-					if (dependsOnAnswer.equals(tempQAMap.get(dependsOnQID)))
+					int dependsOnQID = question.getDependsOnQuestion().getQuestionID();
+					String dependsOnAnswer = question.getDependsOnAnswer();
+					if (dependsOnAnswer.equals(answers.get(dependsOnQID)))
 						isRequired = true;
 				}//if
-				if ("Yes".equals(answer) || "NA".equals(answer))
+				String answerToQuestion = question.getAnswer().getAnswer();
+				if ("Yes".equals(answerToQuestion) || "NA".equals(answerToQuestion))
 					yesNACount++;
 				if (isRequired){
 					requiredCount++;
-					if (!"".equals(answer) && !com.picsauditing.PICS.DateBean.NULL_DATE_DB.equals(answer))
+					if (!"".equals(answerToQuestion) && !com.picsauditing.PICS.DateBean.NULL_DATE_DB.equals(answerToQuestion))
 						requiredAnsweredCount++;
 				}//if
-				if (!"".equals(answer))
+				if (!"".equals(answerToQuestion))
 					answeredCount++;
+				
+				
 			}
 		}
+		int percentCompleted = requiredAnsweredCount/requiredCount;
+		data.setPercentCompleted(percentCompleted*100);
+		//String tempPercentCompleted = getShowPercent();
+		//String tempPercentVerified = getShowPercent(yesNACount,requiredCount);
 		
-		catData.setPercentCompleted(100*requiredAnsweredCount,requiredCount);
-		String tempPercentCompleted = getShowPercent();
-		String tempPercentVerified = getShowPercent(yesNACount,requiredCount);
-		
-//		String updateQuery = "REPLACE INTO pqfcatdata " +
-//				"(catID, auditID, applies, requiredCompleted, numAnswered, " +
-//					"numRequired, percentCompleted, percentVerified) " +
-//				"VALUES " +
-//				"("+catID+", "+auditID+", 'Yes', "+requiredAnsweredCount+", "+answeredCount+", " +
-//					""+requiredCount+", "+tempPercentCompleted+", "+tempPercentVerified+")";
-		catDataDAO.save(catData);
-	}
-
+		catDataDAO.save(data);
+		}
+	}	
 
 	public AuditData getAuditData() {
 		return auditData;
