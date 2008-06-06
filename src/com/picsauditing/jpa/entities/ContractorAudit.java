@@ -29,7 +29,7 @@ import com.picsauditing.access.Permissions;
 
 @Entity
 @Table(name = "contractor_audit")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="temp")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class ContractorAudit {
 	private int id = 0;
 	private AuditType auditType;
@@ -214,17 +214,6 @@ public class ContractorAudit {
 		this.canDelete = canDelete;
 	}
 
-	// ///////////////////////////////
-	@Transient
-	public int getPercent() {
-		if (AuditStatus.Pending.equals(auditStatus))
-			return this.percentComplete;
-		if (AuditStatus.Submitted.equals(auditStatus))
-			return this.percentVerified;
-
-		return 100;
-	}
-
 	@OneToMany(mappedBy = "audit")
 	public List<AuditCatData> getCategories() {
 		return categories;
@@ -241,6 +230,18 @@ public class ContractorAudit {
 
 	public void setData(List<AuditData> data) {
 		this.data = data;
+	}
+
+	// TRANSIENT ///////////////////////////////
+
+	@Transient
+	public int getPercent() {
+		if (AuditStatus.Pending.equals(auditStatus))
+			return this.percentComplete;
+		if (AuditStatus.Submitted.equals(auditStatus))
+			return this.percentVerified;
+
+		return 100;
 	}
 
 	@Transient
@@ -280,13 +281,13 @@ public class ContractorAudit {
 
 	@Transient
 	public Date getEffectiveDate() {
-	   if (auditStatus.equals(AuditStatus.Pending)) {
-		   if (auditor != null && assignedDate != null)
-			   return assignedDate;
-		   return createdDate;
-	   }
-	   if (auditStatus.equals(AuditStatus.Submitted))
-		   return completedDate;
-	   return closedDate;
-   }
+		if (auditStatus.equals(AuditStatus.Pending)) {
+			if (auditor != null && assignedDate != null)
+				return assignedDate;
+			return createdDate;
+		}
+		if (auditStatus.equals(AuditStatus.Submitted))
+			return completedDate;
+		return closedDate;
+	}
 }

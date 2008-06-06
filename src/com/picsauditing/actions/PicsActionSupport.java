@@ -1,6 +1,7 @@
 package com.picsauditing.actions;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,5 +142,15 @@ public class PicsActionSupport extends ActionSupport {
 		return auditorList;
 	}
 	
+	static public String format(float number) {
+		return new DecimalFormat("#,##0.00").format(number);
+	}
 
+	static public String format(float number, String mask) {
+		return new DecimalFormat(mask).format(number);
+	}
+	
+	static protected String getFtpDir() {
+		return ServletActionContext.getServletContext().getInitParameter("FTP_DIR");
+	}
 }

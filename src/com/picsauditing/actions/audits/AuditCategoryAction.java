@@ -1,6 +1,5 @@
 package com.picsauditing.actions.audits;
 
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -12,22 +11,25 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.YesNo;
 
 /**
- * This class isn't being used yet, but it's designed to view audit
- * cat/section/data
+ * Viewing audit Data including one or more categories and their subcategories
+ * and data This handles View, Edit, and Verify all at the same time
  * 
  * @author Trevor
  * 
  */
 public class AuditCategoryAction extends AuditActionSupport {
 	protected int catDataID = 0;
-	protected String mode = "View";
+	protected String mode = null;
+	static private String VIEW = "View";
+	static private String EDIT = "Edit";
+	static private String VERIFY = "Verify";
 	protected boolean viewBlanks = true;
-	protected List<AuditCatData> categories;
 
 	protected AuditCatData previousCategory = null;
 	protected AuditCatData nextCategory = null;
@@ -35,10 +37,9 @@ public class AuditCategoryAction extends AuditActionSupport {
 
 	protected AuditCategoryDataDAO catDataDAO;
 
-	public AuditCategoryAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditDataDAO auditDataDao,
-			AuditCategoryDataDAO auditCategoryDataDAO) {
-		super(accountDao, auditDao, auditDataDao);
-		this.catDataDAO = auditCategoryDataDAO;
+	public AuditCategoryAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao) {
+		super(accountDao, auditDao, catDataDao, auditDataDao);
 	}
 
 	public String execute() throws Exception {
@@ -46,7 +47,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 			return LOGIN;
 		this.findConAudit();
 
-		categories = catDataDAO.findByAudit(conAudit, permissions);
+		getCategories();
 
 		Map<Integer, AuditData> answers = null;
 		if (catDataID > 0) {
@@ -64,8 +65,12 @@ public class AuditCategoryAction extends AuditActionSupport {
 					}
 				}
 			}
-		}
-		if (answers == null) {
+			if (conAudit.getAuditStatus().equals(AuditStatus.Pending))
+				mode = EDIT;
+			if (conAudit.getAuditStatus().equals(AuditStatus.Submitted))
+				mode = VERIFY;
+		} else {
+			// When we want to show all categories
 			answers = auditDataDao.findAnswers(auditID);
 			for (AuditCatData catData : categories) {
 				fillAnswers(catData, answers);
@@ -74,6 +79,13 @@ public class AuditCategoryAction extends AuditActionSupport {
 
 		if (catDataID == 0)
 			viewBlanks = false;
+
+		if (mode == null)
+			mode = VIEW;
+		if (mode.equals(EDIT) && !isCanEdit())
+			mode = VIEW;
+		if (mode.equals(VERIFY) && !isCanVerify())
+			mode = VIEW;
 
 		return SUCCESS;
 	}
@@ -96,10 +108,6 @@ public class AuditCategoryAction extends AuditActionSupport {
 
 	public void setCatDataID(int catDataID) {
 		this.catDataID = catDataID;
-	}
-
-	public List<AuditCatData> getCategories() {
-		return categories;
 	}
 
 	public String getMode() {

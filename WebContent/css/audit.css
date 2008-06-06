@@ -124,3 +124,61 @@ table.footerNav td.next {
 	width: 30%;
 	text-align: right;
 }
+
+/*** OSHA **/
+table.osha {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	table-layout: auto;
+	border-collapse: collapse;
+	border: 3px solid #A84D10;
+}
+
+table.osha tr.location td {
+	color:#A84D10;
+	font-family:Helvetica,Arial,Verdana,sans-serif;
+	font-size:24px;
+	font-weight:bold;
+	letter-spacing:-1px;
+	padding: 10px;
+	text-align: left;
+}
+
+table.osha th {
+	border: 1px solid #444;
+	font-size: 16px;
+	color: #003768;
+	//background-color: #F5F5F5;
+	text-align: center;
+	padding: 3px;
+}
+
+table.osha th.label {
+	text-align: left;
+}
+
+table.osha td {
+	border: 1px solid #444;
+	font-family: Helvetica,Arial,Verdana,sans-serif;
+	font-size: 14px;
+	color: #4C4D4D;
+	text-align: right;
+	padding: 3px;
+}
+
+input.osha {
+	width: 60px;
+	text-align: right;
+	font-family: courier;
+	font-size: 12px;
+	padding: 0px;
+	margin: 0x;
+}
+
+table.osha tbody tr:hover {
+	background-color: #FFFFCC;
+}
+
+table.osha tfoot th {
+	background-color: #EEE;
+}

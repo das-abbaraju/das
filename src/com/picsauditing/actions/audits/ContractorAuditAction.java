@@ -15,19 +15,29 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.NcmsCategory;
+import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailAuditBean;
 import com.picsauditing.mail.EmailTemplates;
 
+/**
+ * Used by Audit.action to show a list of categories for a given audit. 
+ * Also allows users to change the status of an audit.
+ * @author Trevor
+ *
+ */
 public class ContractorAuditAction extends AuditActionSupport {
 	protected AuditStatus auditStatus;
-	protected List<AuditCatData> categories;
-	protected AuditCategoryDataDAO catDataDao;
 	protected EmailAuditBean mailer;
 	protected FlagCalculator2 flagCalculator;
 
-	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, EmailAuditBean emailAuditBean, FlagCalculator2 flagCalculator2) {
-		super(accountDao, auditDao, auditDataDao);
-		this.catDataDao = catDataDao;
+	private boolean isCanApply = false;
+	private int applyCategoryID = 0;
+	private int removeCategoryID = 0;
+	
+	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, 
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, EmailAuditBean emailAuditBean, 
+			FlagCalculator2 flagCalculator2) {
+		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.mailer = emailAuditBean;
 		this.flagCalculator = flagCalculator2;
 	}
@@ -36,6 +46,44 @@ public class ContractorAuditAction extends AuditActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		this.findConAudit();
+		
+		catDataDao.fillAuditCategories(conAudit);
+		
+		if (conAudit.getAuditType().isDynamicCategories() && permissions.isPicsEmployee()) {
+			isCanApply = true;
+			
+			if (applyCategoryID > 0) {
+				for (AuditCatData data : conAudit.getCategories()) {
+					if (data.getId() == applyCategoryID) {
+						data.setApplies(YesNo.Yes);
+					}
+				}
+			}
+			if (removeCategoryID > 0) {
+				for (AuditCatData data : conAudit.getCategories()) {
+					if (data.getId() == removeCategoryID) {
+						data.setApplies(YesNo.No);
+					}
+				}
+			}
+		}
+		
+		// Calculate and set the percent complete
+		int required = 0;
+		int answered = 0;
+		for (AuditCatData data : conAudit.getCategories()) {
+			if (!conAudit.getAuditType().isDynamicCategories() || data.isAppliesB()) {
+				// The category applies or the audit type doesn't have dynamic categories
+				required += data.getNumRequired();
+				answered += data.getRequiredCompleted();
+			}
+		}
+		int percentComplete = 0;
+		if (required > 0) {
+			percentComplete = (int)Math.floor(100 * answered / required);
+			if (percentComplete > 100) percentComplete = 100;
+		}
+		conAudit.setPercentComplete(percentComplete);
 		
 		if (auditStatus != null && !conAudit.getAuditStatus().equals(auditStatus)) {
 			if (!conAudit.getAuditType().isHasRequirements() && auditStatus.equals(AuditStatus.Submitted)) {
@@ -116,16 +164,6 @@ public class ContractorAuditAction extends AuditActionSupport {
 		return false;
 	}
 
-	public List<AuditCatData> getCategories() {
-		if (conAudit.getAuditStatus().equals(AuditStatus.Exempt))
-			return null;
-
-		if (categories == null) {
-			categories = catDataDao.findByAudit(conAudit, permissions);
-		}
-		return categories;
-	}
-
 	public List<NcmsCategory> getNcmsCategories() {
 		try {
 			NcmsCategoryDAO dao = new NcmsCategoryDAO();
@@ -139,30 +177,24 @@ public class ContractorAuditAction extends AuditActionSupport {
 		}
 	}
 
-	public String getCatUrl() {
-		if (!isCanEdit())
-			return "pqf_view.jsp";
-		
-		if (conAudit.getAuditStatus().equals(AuditStatus.Pending))
-			return "pqf_edit.jsp";
-		
-		if (conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
-			if (isCanVerify())
-				return "pqf_edit.jsp";
-			else
-				return "pqf_view.jsp";
-		}
-		
-		// Active/Exempt/Expired
-		return "pqf_view.jsp";
-	}
-
 	public AuditStatus getAuditStatus() {
 		return auditStatus;
 	}
 
 	public void setAuditStatus(AuditStatus auditStatus) {
 		this.auditStatus = auditStatus;
+	}
+
+	public void setApplyCategoryID(int applyCategoryID) {
+		this.applyCategoryID = applyCategoryID;
+	}
+
+	public void setRemoveCategoryID(int removeCategoryID) {
+		this.removeCategoryID = removeCategoryID;
+	}
+
+	public boolean isCanApply() {
+		return isCanApply;
 	}
 
 }

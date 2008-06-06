@@ -179,4 +179,13 @@ public class AuditType {
 	public boolean isPqf() {
 		return (auditTypeID == PQF);
 	}
+
+	@Transient
+	public boolean isDynamicCategories() {
+		if (isPqf())
+			return true;
+		if (auditTypeID == DESKTOP)
+			return true;
+		return false;
+	}
 }

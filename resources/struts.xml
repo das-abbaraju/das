@@ -255,6 +255,16 @@
 			<result>/struts/widgets/con_facilities.jsp</result>
 		</action>
 		
+		<action name="OshaSave"
+			class="com.picsauditing.actions.audits.OshaSave">
+			<result>/struts/blank.jsp</result>
+			<result type="redirect-action">
+				<param name="actionName">AuditCat</param>
+				<param name="auditID"></param>
+				<param name="catDataID"></param>
+				<param name="mode">Edit</param>
+			</result>
+		</action>
 		<action name="Cron"
 			class="com.picsauditing.actions.Cron">
 			<result>/struts/blank.jsp</result>

@@ -22,10 +22,14 @@ import com.picsauditing.jpa.entities.NcmsCategory;
 public class AuditActionSupport extends ContractorActionSupport {
 	protected int auditID = 0;
 	protected ContractorAudit conAudit;
+	protected AuditCategoryDataDAO catDataDao;
 	protected AuditDataDAO auditDataDao;
+	protected List<AuditCatData> categories;
 
-	public AuditActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditDataDAO auditDataDao) {
+	public AuditActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, 
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao) {
 		super(accountDao, auditDao);
+		this.catDataDao = catDataDao;
 		this.auditDataDao = auditDataDao;
 	}
 	
@@ -76,6 +80,15 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return conAudit;
 	}
 
+	public List<AuditCatData> getCategories() {
+		if (conAudit.getAuditStatus().equals(AuditStatus.Exempt))
+			return null;
+
+		if (categories == null) {
+			categories = catDataDao.findByAudit(conAudit, permissions);
+		}
+		return categories;
+	}
 
 	public boolean isHasSafetyManual() {
 		String hasManual = getAnswer(AuditQuestion.MANUAL_PQF);
@@ -133,4 +146,5 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return false;
 		
 	}
+
 }

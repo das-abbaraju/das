@@ -47,6 +47,13 @@
 			return true;
 		}
 	</s:if>
+	
+	function openOsha(logID, year) {
+		url = 'servlet/showpdf?id=<s:property value="contractor.id"/>&OID='+logID+'&file=osha'+year;
+		title = 'Osha300Logs';
+		pars = 'scrollbars=yes,resizable=yes,width=700,height=450';
+		window.open(url,title,pars);
+	}
 </script>
 
 </head>
@@ -74,38 +81,50 @@
 <s:iterator value="categories">
 	<s:if test="catDataID == id || catDataID == 0">
 		<h2>Category <s:property value="category.number"/> - <s:property value="category.category"/></h2>
-		<table class="audit">
-		<s:iterator value="category.subCategories">
-			<tr class="subCategory">
-				<td colspan="3">Sub Category <s:property value="category.number"/>.<s:property value="number"/> - 
-				<s:property value="subCategory"/></td>
-			</tr>
-			<s:iterator value="questions">
-				<s:if test="isGroupedWithPrevious.toString() == 'No'">
-					<s:set name="shaded" value="!#shaded" scope="action"/>
-				</s:if>
-				
-				<s:if test="title.length() > 0">
-					<tr class="group<s:if test="#shaded">Shaded</s:if>">
-						<td class="groupTitle" colspan="3"><s:property value="title"/></td>
-					</tr>
-				</s:if>
+		<s:if test="category.id == 29">
+			<s:iterator value="contractor.oshas">
 				<s:if test="mode == 'View'">
-					<s:if test="viewBlanks || answer.answer.length() > 0">
-						<s:include value="audit_cat_view.jsp"></s:include>
-					</s:if>
+					<s:include value="audit_cat_osha.jsp"></s:include>
 				</s:if>
 				<s:if test="mode == 'Edit'">
-					<s:include value="audit_cat_edit.jsp"></s:include>
-				</s:if>
-				<s:if test="mode == 'Verify'">
-					<s:if test="answer.answer.length() > 0">
-						<s:include value="audit_cat_verify.jsp"></s:include>
-					</s:if>
+					<s:include value="audit_cat_osha_edit.jsp"></s:include>
 				</s:if>
 			</s:iterator>
-		</s:iterator>
-		</table>
+		</s:if>
+		<s:else>
+			<table class="audit">
+			<s:iterator value="category.subCategories">
+				<tr class="subCategory">
+					<td colspan="3">Sub Category <s:property value="category.number"/>.<s:property value="number"/> - 
+					<s:property value="subCategory"/></td>
+				</tr>
+				<s:iterator value="questions">
+					<s:if test="isGroupedWithPrevious.toString() == 'No'">
+						<s:set name="shaded" value="!#shaded" scope="action"/>
+					</s:if>
+					
+					<s:if test="title.length() > 0">
+						<tr class="group<s:if test="#shaded">Shaded</s:if>">
+							<td class="groupTitle" colspan="3"><s:property value="title"/></td>
+						</tr>
+					</s:if>
+					<s:if test="mode == 'View'">
+						<s:if test="viewBlanks || answer.answer.length() > 0">
+							<s:include value="audit_cat_view.jsp"></s:include>
+						</s:if>
+					</s:if>
+					<s:if test="mode == 'Edit'">
+						<s:include value="audit_cat_edit.jsp"></s:include>
+					</s:if>
+					<s:if test="mode == 'Verify'">
+						<s:if test="answer.answer.length() > 0">
+							<s:include value="audit_cat_verify.jsp"></s:include>
+						</s:if>
+					</s:if>
+				</s:iterator>
+			</s:iterator>
+			</table>
+		</s:else>
 	</s:if>
 </s:iterator>
 

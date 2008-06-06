@@ -361,7 +361,7 @@ public class OSHABean extends DataBean {
 		
 		String percentCompleted = intFormatter.format(requiredCompleted * factor);
 		pcBean.replaceCatData("29",aID,"Yes",""+requiredCompleted,""+numRequired,percentCompleted);	
-	}//udpateNumRequired
+	}
 	
 	public void setFromRequest(javax.servlet.http.HttpServletRequest r) throws Exception {
 		OID = r.getParameter("OID");

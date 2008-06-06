@@ -15,7 +15,10 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "pqfopmatrix")
-public class PqfOperator implements java.io.Serializable {
+/**
+ * A list of Audit Categories that an operator want on their Audits
+ */
+public class AuditCatOperator implements java.io.Serializable {
 
 	protected int id;
 	protected AuditCategory category;

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -36,8 +37,9 @@ public class VerifyView extends AuditActionSupport {
 	
 	private EmailAuditBean mailer;
 
-	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO, AuditDataDAO auditDataDao, EmailAuditBean mailer) {
-		super(accountDao, contractorAuditDAO, auditDataDao);
+	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO, 
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, EmailAuditBean mailer) {
+		super(accountDao, contractorAuditDAO, catDataDao, auditDataDao);
 		this.mailer = mailer;
 		this.mailer.setPermissions(permissions);
 	}

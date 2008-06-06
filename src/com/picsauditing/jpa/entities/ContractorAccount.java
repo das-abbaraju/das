@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -87,6 +88,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.PERSIST,
 			CascadeType.MERGE, CascadeType.REMOVE })
+	@OrderBy("location")
 	public List<OshaLog> getOshas() {
 		return oshas;
 	}
@@ -105,7 +107,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contractorAccount")
-	// @OrderBy("operatorName")
 	public List<ContractorOperator> getOperators() {
 		return this.operators;
 	}

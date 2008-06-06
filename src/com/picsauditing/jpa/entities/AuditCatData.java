@@ -4,6 +4,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -22,7 +24,7 @@ public class AuditCatData implements java.io.Serializable {
 	private int id;
 	private AuditCategory category;
 	private ContractorAudit audit;
-	private YesNo applies = YesNo.No;
+	private YesNo applies = YesNo.Yes;
 	private int percentCompleted = 0;
 	private int percentVerified = 0;
 	private int percentClosed = 0;
@@ -61,6 +63,7 @@ public class AuditCatData implements java.io.Serializable {
 		this.audit = audit;
 	}
 
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	public YesNo getApplies() {
 		return applies;

@@ -101,6 +101,11 @@ public class OshaLogYear {
 		this.injuryIllnessCases = injuryIllnessCases;
 	}
 
+	@Transient
+	public float getInjuryIllnessCasesRate() {
+		return calculateRate(injuryIllnessCases);
+	}
+
 	public int getRestrictedWorkCases() {
 		return restrictedWorkCases;
 	}
@@ -109,6 +114,11 @@ public class OshaLogYear {
 		this.restrictedWorkCases = restrictedWorkCases;
 	}
 
+	@Transient
+	public float getRestrictedWorkCasesRate() {
+		return calculateRate(restrictedWorkCases);
+	}
+	
 	public int getRecordableTotal() {
 		return recordableTotal;
 	}
@@ -126,6 +136,10 @@ public class OshaLogYear {
 			parameters= {@Parameter(name="enumClass", value = "com.picsauditing.jpa.entities.YesNo")})
 	public YesNo getFile() {
 		return file;
+	}
+	@Transient
+	public boolean isUploaded() {
+		return YesNo.Yes.equals(file);
 	}
 
 	@Enumerated(EnumType.STRING)

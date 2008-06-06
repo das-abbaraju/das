@@ -618,6 +618,9 @@ update contractor_audit set auditorID = null
 update pqfdata set auditorID = null
 	where auditorID = 0;
 
+update contractor_info set welcomeAuditor_id = null
+	where welcomeAuditor_id = 0;
+
 
 /* ============================================ */
 /* POST                                         */

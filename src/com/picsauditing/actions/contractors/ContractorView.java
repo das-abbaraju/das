@@ -38,7 +38,7 @@ public class ContractorView extends ContractorActionSupport {
 		if (contractor.getLogoFile().equals("No"))
 			return 0;
 		
-		String filename = ServletActionContext.getServletContext().getInitParameter("FTP_DIR")+"logos/"+contractor.getLogoFile();
+		String filename = getFtpDir()+"/logos/"+contractor.getLogoFile();
 		System.out.println("filename = "+filename);
 		int width = Images.getWidth(filename);
 		System.out.println("width = "+width);

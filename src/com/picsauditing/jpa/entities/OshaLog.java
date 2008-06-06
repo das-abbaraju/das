@@ -2,6 +2,9 @@ package com.picsauditing.jpa.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -36,6 +39,7 @@ public class OshaLog implements java.io.Serializable {
 	private OshaLogYear year1;
 	private OshaLogYear year2;
 	private OshaLogYear year3;
+	private OshaLogYear avg;
 
 	private FlagColor flagColor;
 
@@ -222,4 +226,48 @@ public class OshaLog implements java.io.Serializable {
 	public void setFlagColor(FlagColor flagColor) {
 		this.flagColor = flagColor;
 	}
+	
+	@Transient
+	public OshaLogYear getAvg() {
+		if (avg == null) {
+			avg = new OshaLogYear();
+			
+			List<OshaLogYear> yearList = new ArrayList<OshaLogYear>();
+			if (year1.isApplicable()) yearList.add(year1);
+			if (year2.isApplicable()) yearList.add(year2);
+			if (year3.isApplicable()) yearList.add(year3);
+			
+			int years = 0;
+			int manHours = 0;
+			int fatalities = 0;
+			int injuryIllnessCases = 0;
+			int lostWorkCases = 0;
+			int lostWorkDays = 0;
+			int recordableTotal = 0;
+			int restrictedWorkCases = 0;
+			
+			for(OshaLogYear year : yearList) {
+				years++;
+				manHours += year.getManHours();
+				fatalities += year.getFatalities();
+				injuryIllnessCases += year.getInjuryIllnessCases();
+				lostWorkCases += year.getLostWorkCases();
+				lostWorkDays += year.getLostWorkDays();
+				recordableTotal += year.getRecordableTotal();
+				restrictedWorkCases += year.getRestrictedWorkCases();
+			}
+			if (years > 0) {
+				avg.setManHours(Math.round(manHours/years));
+				avg.setFatalities(Math.round(fatalities/years));
+				avg.setInjuryIllnessCases(Math.round(injuryIllnessCases/years));
+				avg.setLostWorkCases(Math.round(lostWorkCases/years));
+				avg.setLostWorkDays(Math.round(lostWorkDays/years));
+				avg.setRecordableTotal(Math.round(recordableTotal/years));
+				avg.setRestrictedWorkCases(Math.round(restrictedWorkCases/years));
+			}
+		}
+		
+		return avg;
+	}
+
 }

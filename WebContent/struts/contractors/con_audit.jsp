@@ -46,12 +46,15 @@ table.report tr.na a {
 		<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.auditType.hasRequirements">
 			<th colspan="2">Requirements</th>
 		</s:if>
+		<s:if test="canApply">
+			<th>Apply</th>
+		</s:if>
 		</tr>
 	</thead>
 	<s:iterator value="categories" status="rowStatus">
 		<s:if test="appliesB">
 			<tr>
-				<td class="right"><s:property value="category.number" /></td>
+				<td class="right"><a name="<s:property value="id" />"><s:property value="category.number" /></td>
 				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a>
 					<a href="<s:property value="catUrl" />?auditID=<s:property value="auditID" />&catID=<s:property value="category.id" />&id=<s:property value="conAudit.contractorAccount.id" />">.</a>
 				</td>
@@ -63,17 +66,23 @@ table.report tr.na a {
 				<td class="right"><s:property value="percentVerified" />%</td>
 				<td><s:if test="percentVerified == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if></td>
 			</s:if>
+			<s:if test="canApply">
+				<td><s:form action="#%{id}"><s:hidden name="auditID" value="%{auditID}" /><s:hidden name="removeCategoryID" value="%{id}" /><s:submit value="Remove"></s:submit></s:form></td>
+			</s:if>
 			</tr>
 		</s:if>
 	</s:iterator>
 	<s:iterator value="categories" status="rowStatus">
 		<s:if test="!appliesB">
 			<tr class="na">
-				<td class="right"><s:property value="category.number" /></td>
+				<td class="right"><a name="<s:property value="id" />"><s:property value="category.number" /></td>
 				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a></td>
 				<td class="center" colspan="2">N/A</td>
 				<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.auditType.hasRequirements">
 					<td colspan="2"></td>
+				</s:if>
+				<s:if test="canApply">
+					<td><s:form action="#%{id}"><s:hidden name="auditID" value="%{auditID}" /><s:hidden name="applyCategoryID" value="%{id}"></s:hidden><s:submit value="Add"></s:submit></s:form></td>
 				</s:if>
 			</tr>
 		</s:if>
