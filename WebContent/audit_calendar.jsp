@@ -1,5 +1,4 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
-<%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ include file="includes/main.jsp"%>
 <jsp:useBean id="dBean" class="com.picsauditing.PICS.DateBean" scope="page" />

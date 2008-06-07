@@ -260,8 +260,8 @@
 			<result>/struts/blank.jsp</result>
 			<result type="redirect-action">
 				<param name="actionName">AuditCat</param>
-				<param name="auditID"></param>
-				<param name="catDataID"></param>
+				<param name="auditID">1</param>
+				<param name="catDataID">3604</param>
 				<param name="mode">Edit</param>
 			</result>
 		</action>

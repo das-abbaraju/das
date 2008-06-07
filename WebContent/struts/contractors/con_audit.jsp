@@ -67,7 +67,7 @@ table.report tr.na a {
 				<td><s:if test="percentVerified == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if></td>
 			</s:if>
 			<s:if test="canApply">
-				<td><s:form action="#%{id}"><s:hidden name="auditID" value="%{auditID}" /><s:hidden name="removeCategoryID" value="%{id}" /><s:submit value="Remove"></s:submit></s:form></td>
+				<td><s:form action="#%{id}" method="POST"><s:hidden name="auditID" value="%{auditID}" /><s:hidden name="removeCategoryID" value="%{id}" /><s:submit value="Remove"></s:submit></s:form></td>
 			</s:if>
 			</tr>
 		</s:if>
@@ -82,7 +82,7 @@ table.report tr.na a {
 					<td colspan="2"></td>
 				</s:if>
 				<s:if test="canApply">
-					<td><s:form action="#%{id}"><s:hidden name="auditID" value="%{auditID}" /><s:hidden name="applyCategoryID" value="%{id}"></s:hidden><s:submit value="Add"></s:submit></s:form></td>
+					<td><s:form action="#%{id}" method="POST"><s:hidden name="auditID" value="%{auditID}" /><s:hidden name="applyCategoryID" value="%{id}"></s:hidden><s:submit value="Add"></s:submit></s:form></td>
 				</s:if>
 			</tr>
 		</s:if>

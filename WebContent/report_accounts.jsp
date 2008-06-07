@@ -1,4 +1,3 @@
-<%@ taglib prefix="s" uri="/struts-tags"%>
 <%@page language="java" import="com.picsauditing.PICS.*" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
 <%@page import="org.apache.commons.beanutils.*"%>
