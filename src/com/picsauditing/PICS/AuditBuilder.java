@@ -58,15 +58,18 @@ public class AuditBuilder {
 		requiresSafetyManual.add(AuditType.DA);
 
 		/***** Welcome Call ****/
-		boolean needsWelcome = true;
-		for(ContractorAudit conAudit : currentAudits) {
-			if (conAudit.getAuditType().getAuditTypeID() == AuditType.WELCOME) {
-				needsWelcome = false;
+		if (DateBean.getDateDifference(contractor.getDateCreated()) > -90) {
+			// Create the welcome call for all accounts created in the past 90 days
+			boolean needsWelcome = true;
+			for(ContractorAudit conAudit : currentAudits) {
+				if (conAudit.getAuditType().getAuditTypeID() == AuditType.WELCOME) {
+					needsWelcome = false;
+				}
 			}
-		}
-		if (needsWelcome) {
-			ContractorAudit welcomeCall = cAuditDAO.addPending(AuditType.WELCOME, contractor);
-			currentAudits.add(welcomeCall);
+			if (needsWelcome) {
+				ContractorAudit welcomeCall = cAuditDAO.addPending(AuditType.WELCOME, contractor);
+				currentAudits.add(welcomeCall);
+			}
 		}
 		
 		/***** PQF ****/

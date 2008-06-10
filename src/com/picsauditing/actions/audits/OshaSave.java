@@ -2,6 +2,8 @@ package com.picsauditing.actions.audits;
 
 import java.io.File;
 
+import javax.activation.MimetypesFileTypeMap;
+
 import org.apache.commons.io.FilenameUtils;
 
 import com.picsauditing.actions.PicsActionSupport;
@@ -55,7 +57,7 @@ public class OshaSave extends PicsActionSupport {
 		if (file == null)
 			return false;
 		
-		String ext = FilenameUtils.getExtension(file.getName());
+		String ext = new javax.activation.MimetypesFileTypeMap().getContentType(file);
 		if (ext == null || ext == "")
 			return false;
 		

@@ -34,11 +34,19 @@ CREATE TABLE `audit_type` (
   `legacyCode` varchar(7) default NULL,
   PRIMARY KEY  (`auditTypeID`),
   UNIQUE KEY `auditName` (`auditName`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 /*Data for the table `audit_type` */
 
-insert  into `audit_type`(`auditTypeID`,`auditName`,`description`,`hasMultiple`,`isScheduled`,`hasAuditor`,`hasRequirements`,`canContractorView`,`canContractorEdit`,`monthsToExpire`,`dateToExpire`,`legacyCode`) values (1,'PQF','prequalification that every contractor must fill out',0,0,1,1,1,1,NULL,'2009-03-01 00:00:00','PQF'),(2,'Desktop Audit','desktop audit',0,0,1,1,1,0,36,NULL,'Desktop'),(3,'Office Audit','office audit',0,1,1,1,1,0,36,NULL,'Office'),(4,'Desktop Audit (NCMS)','old imported ncms desktop audits',0,0,0,0,1,0,36,NULL,NULL),(5,'Field Audit','generic field audit',1,1,1,1,1,0,36,NULL,'Field'),(6,'D&A Audit','drug and alcohol audit',0,0,1,1,1,0,36,NULL,'DA'),(7,'Evaluation','operator performed contractor evaluations',1,0,0,0,0,0,36,NULL,NULL);
+insert  into `audit_type`(`auditTypeID`,`auditName`,`description`,`hasMultiple`,`isScheduled`,`hasAuditor`,`hasRequirements`,`canContractorView`,`canContractorEdit`,`monthsToExpire`,`dateToExpire`,`legacyCode`) 
+values 
+(1,'PQF','prequalification that every contractor must fill out',0,0,1,1,1,1,NULL,'2009-03-01 00:00:00','PQF'),
+(2,'Desktop Audit','desktop audit',0,0,1,1,1,0,36,NULL,'Desktop'),
+(3,'Office Audit','office audit',0,1,1,1,1,0,36,NULL,'Office'),
+(4,'Desktop Audit (NCMS)','old imported ncms desktop audits',0,0,0,0,1,0,36,NULL,NULL),
+(5,'Field Audit','generic field audit',1,1,1,1,1,0,36,NULL,'Field'),
+(6,'D&A Audit','drug and alcohol audit',0,0,1,1,1,0,36,NULL,'DA'),
+(7,'Evaluation','operator performed contractor evaluations',1,0,0,0,0,0,36,NULL,NULL);
 
 /*Table structure for table `pqfquestion_operator` */
 
@@ -135,7 +143,7 @@ create table `contractor_audit`(
 	PRIMARY KEY (`auditID`) , 
 	UNIQUE KEY `auditTypeID_conID_createdDate`(`conID`,`auditTypeID`,`createdDate`) , 
 	KEY `auditTypeStatus`(`auditTypeID`,`auditStatus`) 
-)Engine=InnoDB DEFAULT CHARSET='latin1';
+)ENGINE=MyISAM DEFAULT CHARSET='latin1';
 
 
 /* ==== Alter tables ====*/
@@ -298,6 +306,7 @@ alter table `pqfdata`
 	change `auditorID` `auditorID` smallint(5) unsigned   NULL after `verifiedAnswer`, 
 	change `isCorrect` `isCorrect` enum('No','Yes')  COLLATE latin1_swedish_ci NULL after `auditorID`, 
 	drop key `PRIMARY`, add PRIMARY KEY(`dataID`), 
+	add KEY `conID`(`conID`),
 	add UNIQUE KEY `questionContractor`(`auditID`,`questionID`), COMMENT='';
 
 /* Alter pqfquestions table - make nullabe*/
@@ -379,7 +388,8 @@ drop table IF EXISTS `audit_operator`;
 create table `audit_operator`(
 	`auditOperatorID` int(10) unsigned NOT NULL  auto_increment  , 
 	`auditTypeID` int(10) unsigned NOT NULL   , 
-	`opID` int(10) unsigned NOT NULL   , 
+	`opID` int(10) unsigned NOT NULL   ,
+	`canSee` tinyint(3) unsigned NOT NULL DEFAULT '1', 
 	`minRiskLevel` tinyint(3) unsigned NOT NULL   , 
 	`orderedCount` int(10) unsigned NOT NULL DEFAULT '0'   , 
 	`orderDate` datetime NULL   , 
@@ -387,7 +397,7 @@ create table `audit_operator`(
 	PRIMARY KEY (`auditOperatorID`) , 
 	UNIQUE KEY `auditTypeID_opID`(`opID`,`auditTypeID`) , 
 	KEY `auditTypeID`(`auditTypeID`) 
-)Engine=InnoDB DEFAULT CHARSET='latin1';
+)ENGINE=MyISAM DEFAULT CHARSET='latin1';
 
 insert into audit_operator (auditTypeID, opID, canSee, minRiskLevel, requiredForFlag)
 	(select 1 AS a, id, 1, 1, 'Red' AS b from operators where canSeePQF='Yes');
@@ -416,6 +426,22 @@ delete from pqfOpMatrix where riskLevel = 3;
 
 insert into pqfOpMatrix (catID, opID, riskLevel)
 select catID, opID, 3 from pqfOpMatrix where riskLevel = 2;
+
+/* ===== WELCOME CALL ====*/
+
+
+insert into contractor_audit (auditTypeID, conID, createdDate, expiresDate, auditStatus, auditorID, assignedDate, completedDate, closedDate, canDelete, percentCompleted)
+select 9, c.id, welcomeCallDate, ADDDATE(welcomeCallDate,INTERVAL 3 MONTH), 'Active', welcomeAuditor_id, welcomeCallDate, welcomeCallDate, welcomeCallDate, 0, 100
+from contractor_info c
+join accounts a on c.id = a.id
+where welcomeCallDate > '2001-01-01';
+
+insert into contractor_audit (auditTypeID, conID, createdDate, auditStatus, auditorID, canDelete)
+select 9, c.id, a.dateCreated, 'Pending', welcomeAuditor_id, 0
+from contractor_info c
+join accounts a on c.id = a.id
+where a.dateCreated > '2008-03-01'
+and c.welcomeCallDate = '0000-00-00';
 
 /* ==== PQF ====*/
 
@@ -473,7 +499,7 @@ insert into contractor_audit (auditTypeID,conID,createdDate,
 
 update contractor_audit
 	set expiresDate = adddate(completedDate, interval 3 year)
-	where completeddate  <> '0000-00-00';
+	where completeddate  <> '0000-00-00' AND auditTypeID > 1;
 
 /* ==== OFFICE ==== */
 
@@ -621,6 +647,12 @@ update pqfdata set auditorID = null
 update contractor_info set welcomeAuditor_id = null
 	where welcomeAuditor_id = 0;
 
+update generalcontractors, forcedflaglist
+	set generalcontractors.forceFlag = forcedflaglist.flagStatus,
+		generalcontractors.forceBegin = forcedflaglist.dateAdded,
+		generalcontractors.forceEnd = forcedflaglist.dateExpires
+	where generalcontractors.genID = forcedflaglist.opID
+		and generalcontractors.subID = forcedflaglist.conID;
 
 /* ============================================ */
 /* POST                                         */
@@ -688,6 +720,8 @@ drop table `auditdata`;
 
 drop table `auditquestions`; 
 
+drop table `forcedflaglist`;
+
 /* TODO: CHECK WHY WE HAVE orphaned cat data records!!! */
 delete from pqfcatdata
 	where auditID = 0;
@@ -701,9 +735,18 @@ alter table `pqfcatdata`
 
 alter table `pqfopmatrix` 
 	add column `id` int(10) unsigned   NOT NULL auto_increment first, 
-	change `catID` `catID` mediumint(8) unsigned   NOT NULL DEFAULT '0' after `id`, 
-	drop key `catID`, add UNIQUE KEY `catID`(`catID`,`opID`,`riskLevel`), 
-	drop key `PRIMARY`, add PRIMARY KEY(`id`), COMMENT='';
+	change `catID` `catID` mediumint(8) unsigned   NOT NULL after `id`, 
+	drop key `catID`,
+	drop key `PRIMARY`, add PRIMARY KEY(`id`);
+
+alter table `pqfopmatrix` 
+	add UNIQUE KEY `catID`(`catID`,`opID`,`riskLevel`);
+
+analyze table desktopMatrix;
+analyze table contractor_audit;
+analyze table pqfQuestions;
+analyze table pqfData;
+
 
 delete from app_properties;
 insert  into `app_properties`(`property`,`value`) 

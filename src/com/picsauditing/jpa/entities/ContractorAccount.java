@@ -45,7 +45,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private String status;
 	private int certs;
 	private Date accountDate;
-	private Date welcomeEmailDate;
 	private String paid;
 	private Date lastPayment;
 	private int lastPaymentAmount;
@@ -210,16 +209,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	public void setAccountDate(Date accountDate) {
 		this.accountDate = accountDate;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "welcomeEmailDate", nullable = true, length = 10)
-	public Date getWelcomeEmailDate() {
-		return this.welcomeEmailDate;
-	}
-
-	public void setWelcomeEmailDate(Date welcomeEmailDate) {
-		this.welcomeEmailDate = welcomeEmailDate;
 	}
 
 	@Column(name = "paid", nullable = false, length = 3)

@@ -14,6 +14,7 @@ import com.picsauditing.dao.NcmsCategoryDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.NcmsCategory;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailAuditBean;
@@ -86,6 +87,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 		conAudit.setPercentComplete(percentComplete);
 		
 		if (auditStatus != null && !conAudit.getAuditStatus().equals(auditStatus)) {
+			// We're changing the status
 			if (!conAudit.getAuditType().isHasRequirements() && auditStatus.equals(AuditStatus.Submitted)) {
 				// This audit should skip directly to Active when Submitted
 				auditStatus = AuditStatus.Active;
@@ -96,6 +98,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 				
 				// Send email to contractors telling them the Audit was submitted
 				mailer.setPermissions(permissions);
+				// TODO: combine the emails for Desktop and DA audits
 				if (conAudit.getAuditType().getAuditTypeID() == AuditType.DESKTOP) {
 					mailer.sendMessage(EmailTemplates.desktopsubmit, conAudit);
 				}
@@ -105,6 +108,16 @@ public class ContractorAuditAction extends AuditActionSupport {
 			}
 			if (conAudit.getAuditStatus().equals(AuditStatus.Active)) {
 				conAudit.setClosedDate(new Date());
+				if (conAudit.getAuditType().isHasMultiple()) {
+					// This audit can only have one active audit, expire the previous one
+					for(ContractorAudit oldAudit : conAudit.getContractorAccount().getAudits()) {
+						if (oldAudit.getAuditType().equals(conAudit.getAuditType())
+								&& !oldAudit.equals(conAudit)) {
+							oldAudit.setAuditStatus(AuditStatus.Expired);
+							auditDao.save(oldAudit);
+						}
+					}
+				}
 			}
 			
 			if (conAudit.getExpiresDate() == null && conAudit.getCompletedDate() != null) {

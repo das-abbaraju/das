@@ -46,6 +46,7 @@ public class AuditType {
 	protected boolean canContractorEdit;
 	protected Integer monthsToExpire = -1;
 	protected Date dateToExpire;
+	protected int displayOrder = 100;
 	protected String legacyCode;
 
 	@Id
@@ -139,7 +140,15 @@ public class AuditType {
 	public void setDateToExpire(Date dateToExpire) {
 		this.dateToExpire = dateToExpire;
 	}
-	
+
+	public int getDisplayOrder() {
+		return displayOrder;
+	}
+
+	public void setDisplayOrder(int displayOrder) {
+		this.displayOrder = displayOrder;
+	}
+
 	public String getLegacyCode() {
 		return legacyCode;
 	}

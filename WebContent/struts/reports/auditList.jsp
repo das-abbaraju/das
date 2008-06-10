@@ -24,7 +24,6 @@
 	    <td><a href="javascript: changeOrderBy('form1','ca.createdDate DESC');" >Created</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.auditStatus DESC');" >Status</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.percentComplete');" >Comp%</a></td>
-	    <td><a href="javascript: changeOrderBy('form1','ca.percentVerified');" >Ver%</a></td>
 	    <s:if test="%{value = (!permissions.operator && !permissions.corporate)}">
 	    <td><a href="javascript: changeOrderBy('form1','auditor.name');" >Auditor</a></td>
 	    </s:if>
@@ -38,7 +37,6 @@
 		<td class="center"><s:date name="[0].get('createdDate')" format="M/d/yy" /></td>
 		<td><s:property value="[0].get('auditStatus')"/></td>
 		<td class="right"><s:property value="[0].get('percentComplete')"/>%</td>
-		<td class="right"><s:property value="[0].get('percentVerified')"/>%</td>
 	    <s:if test="%{value = (!permissions.operator && !permissions.corporate)}">
 		<td><s:property value="[0].get('auditor_name')"/></td>
 		</s:if>

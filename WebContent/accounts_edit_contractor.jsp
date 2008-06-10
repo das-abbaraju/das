@@ -256,7 +256,7 @@ Would you still like to schedule <b><%=aBean.name%></b> on this date? <span
 	</tr>
 	<tr>
 		<td class="blueMain" align="right">Welcome Email:</td>
-		<td class="redMain" align="left"><%=cBean.welcomeEmailDate%> <a
+		<td class="redMain" align="left"><a
 			target="_blank" href="send_welcome_email.jsp?i=<%=editID%>"
 			onClick="return confirm('Are you sure you want to send a welcome email to <%=aBean.email%>?');">
 		Send Welcome Email</a></td>

@@ -1,19 +1,18 @@
 <%@page language="java" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<jsp:useBean id="eBean" class="com.picsauditing.mail.EmailContractorBean" scope ="page"/>
-<%@page import="com.picsauditing.mail.*"%>
+<%@page import="com.picsauditing.mail.EmailContractorBean"%>
+<%@page import="com.picsauditing.mail.EmailTemplates"%>
+<%@page import="com.picsauditing.util.SpringUtils"%>
 <%
 String id = request.getParameter("i");
 if ((null == id) || ("".equals(id)))
 	throw new Exception("No contractor_id specified.");
 
-//eBean.sendWelcome(id, permissions);
+EmailContractorBean mailer = (EmailContractorBean)SpringUtils.getBean("EmailContractorBean");
+mailer.setPermissions(permissions);
+mailer.sendMessage(EmailTemplates.welcome, new Integer(id));
 
-EmailContractorBean emailer = new EmailContractorBean();
-emailer.sendMessage(EmailTemplates.welcome, id, permissions);
-String message = "A welcome email was sent to "+emailer.getSentTo();
-emailer.getContractorBean().welcomeEmailDate = DateBean.getTodaysDate();
-emailer.getContractorBean().writeToDB();
+String message = "A welcome email was sent to "+mailer.getSentTo();
 
 %>
 <html>

@@ -15,17 +15,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FilenameUtils;
 
-import com.picsauditing.PICS.pqf.CategoryBean;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.User;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.mail.EmailContractorBean;
-import com.picsauditing.mail.EmailTemplates;
 import com.picsauditing.util.SpringUtils;
 
 public class ContractorBean extends DataBean {
@@ -50,7 +45,6 @@ public class ContractorBean extends DataBean {
 	public boolean isNotesChanged = false;
 	public boolean isAdminNotesChanged = false;
 	public String mustPay = "Yes";
-	public String welcomeAuditor_id= "0";
 
 	public String requestedByID = "";
 	public String billingCycle = "";
@@ -63,8 +57,6 @@ public class ContractorBean extends DataBean {
 
 	public String accountDate = ""; // The first time a user logs into this Contractor account
 	public String membershipDate = "";
-	public String welcomeCallDate = "";
-	public String welcomeEmailDate = "";
 	public String lastPayment = "";
 	public String lastPaymentAmount = "";
 	public String paymentExpires = "";
@@ -187,7 +179,6 @@ public class ContractorBean extends DataBean {
 		}
 	}
 	public void setAccountDate(String s) {accountDate = s;}//setAccountDate
-	public void setWelcomeEmailDate(String s) {welcomeEmailDate = s;}//setWelcomeEmailDate
 	public void setLastPayment(String s) {lastPayment = s;}//setLastPayment
 	public void setNotes(String s) {notes = s;}//setNotes
 	public void setMustPay(String s) {mustPay = s;}//setMustPay
@@ -324,7 +315,6 @@ public class ContractorBean extends DataBean {
 		trades = SQLResult.getString("trades");
 		subTrades = SQLResult.getString("subTrades");
 		logo_file = SQLResult.getString("logo_file");
-		welcomeAuditor_id = SQLResult.getString("welcomeAuditor_id");
 		brochure_file = SQLResult.getString("brochure_file");
 		//fix ms word apostrophes changed to ?
 		description = SQLResult.getString("description");
@@ -344,8 +334,6 @@ public class ContractorBean extends DataBean {
 
 		accountDate = DateBean.toShowFormat(SQLResult.getString("accountDate"));
 		membershipDate = DateBean.toShowFormat(SQLResult.getString("membershipDate"));
-		welcomeCallDate = DateBean.toShowFormat(SQLResult.getString("welcomeCallDate"));
-		welcomeEmailDate = DateBean.toShowFormat(SQLResult.getString("welcomeEmailDate"));
 		lastPayment = DateBean.toShowFormat(SQLResult.getString("lastPayment"));
 		lastPaymentAmount = SQLResult.getString("lastPaymentAmount");
 		
@@ -379,7 +367,6 @@ public class ContractorBean extends DataBean {
 			"',brochure_file='"+brochure_file+
 			"',certs='"+certs+
 			"',mustPay='"+mustPay+
-			"',welcomeAuditor_id='"+welcomeAuditor_id+
 			"',requestedByID='"+requestedByID+
 			"',billingAmount='"+billingAmount+
 			"',billingCycle='"+billingCycle+
@@ -388,8 +375,6 @@ public class ContractorBean extends DataBean {
 
 			"',accountDate='"+DateBean.toDBFormat(accountDate)+
 			"',membershipDate='"+DateBean.toDBFormat(membershipDate)+
-			"',welcomeCallDate='"+DateBean.toDBFormat(welcomeCallDate)+
-			"',welcomeEmailDate='"+DateBean.toDBFormat(welcomeEmailDate)+
 			"',lastPayment='"+DateBean.toDBFormat(lastPayment) +
 			"',lastPaymentAmount='"+lastPaymentAmount+
 			"',paymentExpires='"+DateBean.toDBFormat(paymentExpires)+

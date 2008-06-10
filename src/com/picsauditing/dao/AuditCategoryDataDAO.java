@@ -141,20 +141,15 @@ public class AuditCategoryDataDAO extends PicsDAO {
 		}
 
 		if (auditType.getAuditTypeID() == AuditType.DESKTOP) {
-			Query query = em.createQuery("SELECT DISTINCT c.category.id FROM AuditCatOperator c " +
-					"WHERE c.riskLevel = :risk AND c.operatorAccount IN (SELECT co.operatorAccount FROM ContractorOperator co " +
-					"WHERE co.contractorAccount = :contractor)");
-			query.setParameter("contractor", contractorAudit.getContractorAccount());
-			query.setParameter("risk", contractorAudit.getContractorAccount().getRiskLevel().ordinal());
-			catIDSet = query.getResultList();
-			/*
 			String selectQuery = "SELECT DISTINCT catID FROM desktopMatrix m " +
-					"JOIN pqfData d ON (m.qID=d.questionID AND m.auditType='Desktop') "+
-					"JOIN pqfQuestions q ON (q.questionID=m.qID) " +
-					"WHERE " +
-						"((questionType='Service' AND d.answer LIKE 'C%') OR "+
-						"(questionType IN ('Industry','Main Work') AND answer='X')) ";
-			*/
+				"JOIN pqfData d ON (m.qID=d.questionID AND m.auditType='Desktop') "+
+				"JOIN contractor_audit ca on d.auditID = ca.auditID AND ca.conID = "+contractorAudit.getContractorAccount().getId()+" "+
+				"JOIN pqfQuestions q ON (q.questionID=m.qID) " +
+				"WHERE " +
+					"(questionType='Service' AND d.answer LIKE 'C%') OR "+
+					"(questionType IN ('Industry','Main Work') AND answer='X')";
+			Query query = em.createNativeQuery(selectQuery);
+			catIDSet = query.getResultList();
 		}
 		
 		Query query = em.createQuery("FROM AuditCategory c WHERE c.auditType = ?");

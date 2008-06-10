@@ -55,7 +55,7 @@ public class ContractorAuditDAO extends PicsDAO {
 	public List<ContractorAudit> findNonExpiredByContractor(int conID) {
 		Query query = em.createQuery("SELECT t FROM ContractorAudit t "
 				+ "WHERE t.contractorAccount.id = ? " + 
-				"AND auditStatus <> 'Expired'");
+				"AND auditStatus <> 'Expired' ORDER BY t.auditType.displayOrder");
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}

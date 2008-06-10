@@ -2,7 +2,8 @@
 <%@include file="includes/main.jsp" %>
 <%@page import="com.picsauditing.mail.*"%>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
-<%	
+<%@page import="com.picsauditing.mail.EmailContractorBean"%>
+<%
 if (!permissions.isAdmin()) throw new com.picsauditing.access.NoRightsException("Admin");
 try{
 	String action = request.getParameter("action");
@@ -11,48 +12,19 @@ try{
 	sBean.orderBy = request.getParameter("orderBy");
 	if (null==sBean.orderBy)
 		sBean.orderBy = "dateCreated DESC";
-	//if ("Send".equals(action)) {
-	//	EmailContractorBean emailer = new EmailContractorBean();
-		/*
-		if (email_welcome_attachfile)
-			String fileName = "attachments/welcome.doc";
-		*/
-	//	emailer.sendMessage(EmailTemplates.welcome, actionID, permissions);
-	//	message += "A welcome email was sent to "+emailer.getSentTo();
-	//	emailer.getContractorBean().welcomeEmailDate = DateBean.getTodaysDate();
-	//	emailer.getContractorBean().writeToDB();
-	//	return;
-	//}
-	if ("Called".equals(action)) {
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(actionID);
-		cBean.welcomeCallDate = DateBean.getTodaysDate();
-		cBean.addNote(actionID, "("+permissions.getUsername()+")", "Welcome call today:", DateBean.getTodaysDateTime());
-		cBean.writeToDB();
-		message += "Welcome call recorded";
-		return;
-	}//if
-	if ("Assign".equals(action)) {
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(actionID);
-		cBean.welcomeAuditor_id = request.getParameter("assignedWelcomeAuditorID");
-		cBean.addNote(actionID, "("+permissions.getUsername()+")", AUDITORS.getNameFromID(cBean.welcomeAuditor_id)+" assigned to make welcome call", DateBean.getTodaysDateTime());
-		cBean.writeToDB();
-		message += AUDITORS.getNameFromID(cBean.welcomeAuditor_id)+" has been assigned a welcome call";
-		return;
-	}//if
+	
 	if ("Yes".equals(action)) {
 		sBean.aBean.setFromDB(actionID);
 		sBean.aBean.active = "Y";
 		message += "<b>"+sBean.aBean.name+"</b> has been made visible";
 		sBean.aBean.writeToDB();
-	}//if
+	}
 	if ("Paid".equals(action)){
 		String amount = request.getParameter("amount");
 		ContractorBean cBean = new ContractorBean();
 		cBean.updateLastPayment(actionID, permissions.getUsername(), amount);
 		return;
-	}//if Paid
+	}
 	if ("Inv".equals(action)){
 		String invoiceAmount = request.getParameter("invoiceAmount");
 		ContractorBean cBean = new ContractorBean();
@@ -63,10 +35,10 @@ try{
 		if ("".equals(cBean.membershipDate)){
 			cBean.membershipDate = DateBean.getTodaysDate();
 			cBean.addNote(actionID, "("+permissions.getUsername()+")", "Membership Date set today to "+cBean.membershipDate,DateBean.getTodaysDateTime());
-		}//if
+		}
 		cBean.writeToDB();
 		return;
-	}//if Inv
+	}
 	String BUTTON_VALUE = "Remove";
 	if (BUTTON_VALUE.equals(action)){
 		sBean.aBean.setFromDB(actionID);
@@ -76,16 +48,12 @@ try{
 		message += "<b>"+sBean.aBean.name+"</b> has been removed";
 		sBean.cBean.writeToDB();
 		return;
-	}//if
-	
-	// Don't run this here anymore
-	//new Billing().updateAllPayingFacilities(application);
+	}
 	
 	sBean.setIsActivationReport();
 	
 	sBean.doSearch(request, SearchBean.ACTIVE_AND_NOT, 50, pBean, pBean.userID);
 %>
-<%@page import="com.picsauditing.mail.EmailContractorBean"%>
 <html>
 <head>
 <title>Activation</title>
@@ -125,52 +93,6 @@ try{
 					$(divName).innerHTML = elm.value + ' on <%= DateBean.getTodaysDate() %>';			
 					new Effect.Highlight($(divName), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});		
 		}});
-		return false;
-  	}
-  	function selectAuditor( conId, valueField )
-  	{
-  		
-		var pars = 'actionID='+conId+'&action=Assign&assignedWelcomeAuditorID='+valueField.value;
-
-		var divName = 'auditor_assign_'+conId;
-		var myAjax = new Ajax.Request('report_activation.jsp',
-			{
-				method: 'post', 
-				parameters: pars, 
-				onComplete: function() {			
-					new Effect.Highlight($(divName), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});		
-		}});
-		return false;
-  	}
-  	function logWelcomeCall( conId )
-  	{
-		var pars = 'actionID='+conId+'&action=Called';
-		var divName = 'welcome_call_'+conId;
-		var myAjax = new Ajax.Request('report_activation.jsp', 
-				{
-					method: 'post', 
-					parameters: pars,
-					onSuccess: function(transport) {
-						$(divName).innerHTML = '<%= DateBean.getTodaysDate() %>'; 
-						new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-					}
-				});
-
-		return false;
-  	}
-  	function logWelcomeEmail( conId )
-  	{
-		var pars = 'actionID='+conId+'&action=Send';
-		var divName = 'welcome_email_'+conId;
-		var myAjax = new Ajax.Request('report_activation.jsp', 
-				{
-					method: 'post', 
-					parameters: pars
-				});
-
-		$(divName).innerHTML = '<%= DateBean.getTodaysDate() %>'; 
-		new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-
 		return false;
   	}
   	function makeVisible( conId )
@@ -275,11 +197,6 @@ try{
 			    <td id="pay_history_<%= sBean.aBean.id %>" align="center" colspan="2">$<%=sBean.cBean.lastPaymentAmount%> on <%=sBean.cBean.lastPayment%></td>
 			    <td valign="middle"><input id="pay_amount_<%= sBean.aBean.id %>" type="text" class=forms value="<%=sBean.cBean.newBillingAmount%>" size=3 name=amount></td>
 			    <td><input name="action" type="submit" onClick="javascript: return newPayment( '<%= sBean.aBean.id %>','pay_amount_<%= sBean.cBean.id %>');" class="buttons" value="Paid"></td>
-				<td id="auditor_assign_<%=sBean.aBean.id %>" colspan="2" align="center"><%=AUDITORS.getAuditorsSelect("assignedWelcomeAuditorID","forms",sBean.cBean.welcomeAuditor_id,   "selectAuditor('" + sBean.aBean.id + "',this);" ) %></td>
-				<td id="welcome_call_<%= sBean.aBean.id %>" align="center"><%=sBean.cBean.welcomeCallDate%></td>
-				<td align="center"><input name="action" type="submit" onclick="javascript: return logWelcomeCall( '<%= sBean.aBean.id %>' );" class="buttons" value="Called"></td>
-				<td id="welcome_email_<%= sBean.aBean.id %>" align="center"><%=sBean.cBean.welcomeEmailDate%></td>
-				<td align="center"><input name="action" type="submit" onclick="javascript: return logWelcomeEmail( '<%= sBean.aBean.id %>' );" class="buttons" value="Send"></td>
 				<td align="center"><input name="action" type="submit" onclick="javascript: return makeVisible( '<%= sBean.aBean.id %>' );" class="buttons" value="Yes"> </td>
 				<td id="visible_<%= sBean.aBean.id %>" align="center"><%=sBean.aBean.active%></td>             
 				<td id="remove_<%= sBean.aBean.id %>" ><input name="action" type="submit" onclick="javascript: return removeCon( '<%= sBean.aBean.id %>' );" class="buttons" value="<%=BUTTON_VALUE%>"></td>
