@@ -1,4 +1,9 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<s:if test="permissions.contractor">
+	<span class="redMain">You must input at least your corporate statistics. To further assist your clients, please
+	enter additional locations that you maintain OSHA/MSHA logs for that may be needed by your clients.
+	</span>
+</s:if>
 <table class="osha">
 <tr class="location"><td colspan="9"><s:property value="type"/> Location - <s:property value="location"/> <s:property value="description"/></td></tr>
 <tr>

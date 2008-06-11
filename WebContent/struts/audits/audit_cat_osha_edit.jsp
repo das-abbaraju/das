@@ -1,4 +1,12 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<s:if test="permissions.admin || permissions.contractor">
+	<span class="redMain">You must input at least your corporate statistics. To further assist your clients, please
+	enter additional locations that you maintain OSHA/MSHA logs for that may be needed by your clients.<br/>
+	</span>
+</s:if>
+<s:if test="permissions.contractor">
+<span style="font-size: 12px;color:#003768;">Provide the following numbers (excluding subcontractors) using your OSHA/MSHA 300 Forms from the past 3 years:</span>
+</s:if>
 <s:form action="OshaSave" method="POST" enctype="multipart/form-data">
 	<s:hidden name="conID" value="%{conAudit.contractorAccount.id}"></s:hidden>
 	<s:hidden name="auditID"></s:hidden>
@@ -77,15 +85,15 @@
 	<td><s:textfield name="year3.recordableTotal" cssClass="osha"></s:textfield></td>
 </tr>
 <tr>
-	<th class="label">Upload 2007 Log File</th>
+	<th class="label">Upload 2007 <s:property value="type"/> Log File(.pdf, .doc, .txt, .xls or .jpg)</th>
 	<td colspan="3"><s:file name="uploadFile1" size="10"></s:file></td>
 </tr>
 <tr>
-	<th class="label">Upload 2006 Log File</th>
+	<th class="label">Upload 2006 <s:property value="type"/> Log File(.pdf, .doc, .txt, .xls or .jpg)</th>
 	<td colspan="3"><s:file name="uploadFile2" size="10"></s:file></td>
 </tr>
 <tr>
-	<th class="label">Upload 2005 Log File</th>
+	<th class="label">Upload 2005 <s:property value="type"/> Log File(.pdf, .doc, .txt, .xls or .jpg)</th>
 	<td colspan="3"><s:file name="uploadFile3" size="10"></s:file></td>
 </tr>
 </tbody>
@@ -96,3 +104,22 @@
 </tfoot>
 </table>
 </s:form>
+<s:if test="permissions.contractor">
+	<table>
+		<tr>
+			<td></td>
+			<td class="redMain">Please upload scanned .pdf <s:property value="type"/> Log Files. If you are unable to do so, you may mail or fax them to us and we can scan them for you.
+			</td>
+		</tr>
+		<tr>
+			<td class="redMain">Notes: </td>
+			<td><span style="font-size: 11px;color:#003768;">(1)   Data should be for the entire company. Facilities may request additional regional statistics later.</span></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><span style="font-size: 11px;color:#003768;">(2)   If your company is not required to maintain <s:property value="type"/> 300 forms, please provide information from your
+			Worker's Compensation insurance carrier itemizing all claims for the last three years.</span> 
+			</td>
+		</tr>
+	</table>
+</s:if>
