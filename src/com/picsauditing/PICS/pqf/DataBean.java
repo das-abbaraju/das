@@ -603,28 +603,6 @@ public class DataBean extends com.picsauditing.PICS.DataBean {
 			DBClose();
 		}//finally
 	}
-	
-
-	public String getPercentVerified(String conID, String auditType) throws Exception {
-		try{
-			ConAuditBean conAudit = new ConAuditBean(conID, auditType);
-			
-			String selectQuery = "SELECT COUNT(*) FROM pqfCategories pc " +
-				"JOIN pqfCatData pd ON pc.catID = pd.catID AND auditID = "+conAudit.getAuditID()+" AND percentVerified='100'";
-			DBReady();
-			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			SQLResult.next();
-			int numCompleted = SQLResult.getInt(1);
-			String selectQuery2 = "SELECT COUNT(*) FROM pqfCategories WHERE auditTypeID = "+conAudit.getAuditTypeID();
-			SQLResult = SQLStatement.executeQuery(selectQuery2);
-			SQLResult.next();
-			int numCats = SQLResult.getInt(1);
-			SQLResult.close();
-			return getShowPercent(numCompleted,numCats);
-		}finally{
-			DBClose();
-		}
-	}
 
 	@SuppressWarnings("unchecked")
 	public void uploadPQFFile(javax.servlet.jsp.PageContext pageContext, String conID, String catID, String auditID) throws Exception {
