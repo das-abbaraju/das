@@ -21,7 +21,9 @@
 </thead>
 <tbody>
 <tr>
-	<th class="label">Were you exempt from submitting OSHA Logs?</th>
+	<th class="label">Were you exempt from submitting OSHA Logs? &nbsp;&nbsp;&nbsp;&nbsp;
+		<a href="#" onClick="window.open('reasons.html','name','scrollbars=1,resizable=1,width=800,height=600'); return false;">Valid exemptions</a>
+	</th>
 	<td><s:radio list="#{'Yes':'Yes','No':'No'}" name="year1.na" ></s:radio> </td>
 	<td><s:radio list="#{'Yes':'Yes','No':'No'}" value="year2.na" name="exempt2_%{id}" onchange=""></s:radio> </td>
 	<td><s:radio list="#{'Yes':'Yes','No':'No'}" value="year3.na" name="exempt3_%{id}" onchange=""></s:radio> </td>
