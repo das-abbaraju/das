@@ -22,7 +22,6 @@ import com.picsauditing.util.LinkBuilder;
 	public AccountBean aBean = new AccountBean();
 	public ContractorBean cBean = new ContractorBean();
 	public OperatorBean oBean = new OperatorBean();
-	public OSHABean osBean = new OSHABean();	
 
 	public String emr1 = "";
 	public String emr2 = "";
@@ -78,7 +77,6 @@ import com.picsauditing.util.LinkBuilder;
 	public boolean isDesktopReport = false;
 	public boolean isActivationReport = false;
 	public boolean isNoInsuranceOnly = false;
-	public boolean isOSHASearch = false;
 	public boolean isNCMSReport = false;
 	public boolean isHurdleRatesReport = false;
 	public boolean isEMRRatesReport = false;
@@ -464,8 +462,6 @@ import com.picsauditing.util.LinkBuilder;
 		}//if
 		if (isFatalitiesReport)
 			whereQuery += "AND (fatalities1>0 OR fatalities2>0 OR fatalities3>0) ";
-		if (isOSHASearch)
-			oshaJoinQuery = "INNER JOIN OSHA ON OSHA.conID=accounts.id ";
 		if (isNCMSReport) {
 			whereQuery += "AND remove='No' ";
 			ncmsJoinQuery = "INNER JOIN NCMS_Desktop ON ((contractor_info.taxID=NCMS_Desktop.fedTaxID AND taxID!='') OR "+
@@ -565,21 +561,15 @@ import com.picsauditing.util.LinkBuilder;
 
 	public void setIsFatalitiesReport() {
 		isFatalitiesReport = true;
-		isOSHASearch = true;
-	}//setIsFatalitiesReport
+	}
 
 	public void setIsHurdleRatesReport() {
 		isHurdleRatesReport = true;	
-		isOSHASearch = true;
 	}//setIsHurdleRatesReport
 
 	public void setIsEMRRatesReport() {
 		isEMRRatesReport = true;	
 	}//setIsEMRRatesReport
-
-	public void setIsOSHASearch() {
-		isOSHASearch = true;
-	}//setIsOSHASearch
 
 	public void setIsDesktopReport() {
 		isDesktopReport = true;
@@ -666,8 +656,6 @@ import com.picsauditing.util.LinkBuilder;
 		aBean.setFromResultSet(SQLResult);
 		if ("Contractor".equals(searchType))
 			cBean.setFromResultSet(SQLResult);
-		if (isOSHASearch)
-			osBean.setFromResultSet(SQLResult);
 		if (isDesktopReport){
 			manualRevisionDate = DateBean.toShowFormat(SQLResult.getString("manRevisionQ.answer"));
 			if (null == manualRevisionDate)
@@ -740,7 +728,6 @@ import com.picsauditing.util.LinkBuilder;
 		isUpgradePaymentReport = false; 
 		isActivationReport = false;
 		isNoInsuranceOnly = false;
-		isOSHASearch = false;
 		isNCMSReport = false;
 		isHurdleRatesReport = false;
 		isEMRRatesReport = false;

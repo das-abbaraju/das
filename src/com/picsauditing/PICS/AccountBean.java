@@ -423,8 +423,8 @@ public class AccountBean extends DataBean {
 		if (f.exists())		f.delete();
 		f = new java.io.File(path+"logos/logo_"+deleteID+".bmp");
 		if (f.exists())		f.delete();
-		OSHABean oBean = new OSHABean();
-		oBean.setListFromDB(deleteID);
+		/*
+		 * TODO properly delete new osha records
 		while (oBean.hasNext()) {
 			f = new java.io.File(path+"files/oshas/osha1_"+oBean.OID+".pdf");
 			if (f.exists())		f.delete();
@@ -433,6 +433,7 @@ public class AccountBean extends DataBean {
 			f = new java.io.File(path+"files/oshas/osha3_"+oBean.OID+".pdf");
 			if (f.exists())		f.delete();
 		}//while
+		 */
 	}//deleteAccount
 
 	public boolean mustChangePassword() throws Exception {
