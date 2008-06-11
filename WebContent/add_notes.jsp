@@ -1,81 +1,65 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%@ include file="includes/main.jsp"%>
-<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean"
-	scope="page" />
-<jsp:useBean id="note" class="com.picsauditing.PICS.redFlagReport.Note"
-	scope="page" />
+<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page" />
+<jsp:useBean id="note" class="com.picsauditing.PICS.redFlagReport.Note" scope="page" />
 <%@page import="org.apache.commons.beanutils.BasicDynaBean"%>
 <%@page import="java.util.List"%>
 <%
-	//ADDED FROM con_redFlags
-
 	String id = request.getParameter("id");
 	String action = request.getParameter("action");
-	String todaysDate = com.picsauditing.PICS.DateBean.getTodaysDateTime();
 	cBean.setFromDB(id);
 	cBean.tryView(permissions);
-	String pre = "(" + pBean.userName + ")";
-	boolean canEditNotes = pBean.isAdmin() || (pBean.isAuditor() && pBean.auditorCanSeeSet.contains(id));
+	String pre = "(" + permissions.getName() + ")";
 	boolean canOperatorEditNotes = permissions.hasPermission(com.picsauditing.access.OpPerms.EditNotes);
-	if ("Add Note".equals(action) && canEditNotes) {
-		String notesDate = request.getParameter("notesDate");
-		String newNote = request.getParameter("newNote");
-		cBean.addNote(id, pre, newNote, notesDate);
-		cBean.writeToDB();
-		response.sendRedirect("ContractorView.action?id=" + id);
+	boolean canEditNotes = permissions.isPicsEmployee();
+	if (action != null && action.length() > 0) {
+		permissions.tryPermission(OpPerms.EditNotes);
+		String name = "";
+		if ("Add Note".equals(action)) {
+			String notesDate = request.getParameter("notesDate");
+			String newNote = request.getParameter("newNote");
+			if (newNote != null && newNote.length() > 1) {
+				if (permissions.isOperator() || permissions.isCorporate()) {
+					note = new com.picsauditing.PICS.redFlagReport.Note(permissions.getAccountIdString(), id,
+							permissions.getUserIdString(), permissions.getName(), newNote);
+					note.writeToDB();
+					name = "operator";
+				} else {
+					permissions.tryPermission(OpPerms.AllContractors);
+					String noteType = request.getParameter("noteType");
+					if (noteType.equals("external"))
+						cBean.addNote(id, pre, newNote, notesDate);
+					if (noteType.equals("internal"))
+						cBean.addAdminNote(id, pre, newNote, notesDate);
+					name = noteType;
+					cBean.writeToDB();
+				}
+			}
+		}
+		if ("Update Notes".equals(action)) {
+			permissions.tryPermission(OpPerms.AllContractors);
+			String changedNotesExternal = request.getParameter("changedNotesExternal");
+			if (changedNotesExternal != null) {
+				cBean.notes = changedNotesExternal;
+				cBean.isNotesChanged = true;
+				name = "external";
+			}
+			String changedNotesInternal = request.getParameter("changedNotesInternal");
+			if (changedNotesInternal != null) {
+				cBean.adminNotes = changedNotesInternal;
+				cBean.isAdminNotesChanged = true;
+			}
+			cBean.writeToDB();
+		}
+		if ("DeleteNote".equals(action) && canOperatorEditNotes) {
+			String deleteID = request.getParameter("dID");
+			new com.picsauditing.PICS.redFlagReport.Note().deleteNote(deleteID, permissions);
+			name = "operator";
+		}
+		
+		response.sendRedirect("add_notes.jsp?id=" + id + "#" + name);
 		return;
-	}//if
-	else if ("Change Notes".equals(action) && pBean.isAdmin()) {
-		String changedNotes = request.getParameter("changedNotes");
-		cBean.notes = changedNotes;
-		cBean.isNotesChanged = true;
-		cBean.writeToDB();
-		response.sendRedirect("ContractorView.action?id=" + id);
-		return;
-	}//if
-	if ("Add Internal Note".equals(action) && canEditNotes) {
-		String notesDate = request.getParameter("adminNotesDate");
-		String newAdminNote = request.getParameter("newAdminNote");
-		cBean.addAdminNote(id, pre, newAdminNote, notesDate);
-		cBean.writeToDB();
-		response.sendRedirect("add_notes.jsp?id=" + id);
-		return;
-	}//if
-	else if ("Change Internal Notes".equals(action) && pBean.isAdmin()) {
-		String changedAdminNotes = request.getParameter("changedAdminNotes");
-		cBean.adminNotes = changedAdminNotes;
-		cBean.isAdminNotesChanged = true;
-		cBean.writeToDB();
-		response.sendRedirect("add_notes.jsp?id=" + id);
-		return;
-	}//if
-	if ("Add Both Notes".equals(action) && canEditNotes) {
-		String notesDate = request.getParameter("notesDate");
-		String newNote = request.getParameter("newNote");
-		String newAdminNote = request.getParameter("newAdminNote");
-		cBean.addNote(id, pre, newNote, notesDate);
-		cBean.addAdminNote(id, pre, newAdminNote, notesDate);
-		cBean.writeToDB();
-		response.sendRedirect("add_notes.jsp?id=" + id);
-		return;
-	}//if
-	// ADDED FROM con_redFlags
-	if ("Add Operator Notes".equals(action) && canOperatorEditNotes) {
-		String newNote = request.getParameter("newOperatorNote");
-		if (null != newNote && !"".equals(newNote)) {
-			note = new com.picsauditing.PICS.redFlagReport.Note(permissions.getAccountIdString(), id,
-					permissions.getUserIdString(), permissions.getName(), newNote);
-			note.writeToDB();
-			response.sendRedirect("add_notes.jsp?id=" + id);
-			return;
-		}//if
-	}//if
-	if ("DeleteNote".equals(action) && canOperatorEditNotes) {
-		String deleteID = request.getParameter("dID");
-		new com.picsauditing.PICS.redFlagReport.Note().deleteNote(deleteID, permissions);
-		response.sendRedirect("add_notes.jsp?id=" + id);
-		return;
-	}//if
+	}
 %>
 <html>
 <head>
@@ -113,6 +97,7 @@ div.external {
 		int count = 0;
 %>
 <div style="text-align: center;"><a href="#new">Add new Note</a></div>
+<a name="operator"></a>
 <h2>Operator Notes</h2>
 <table class="report">
 <tr>
@@ -151,6 +136,7 @@ div.external {
 	if (permissions.seesAllContractors()) {
 %>
 		<div class="internal">
+			<a name="internal"></a>
 			<h2>Internal Notes</h2>
 			<div id="internalView" class="notes" ondblclick="$('internalView').hide(); $('internalEdit').show();" title="Double click to edit">
 				<%=com.picsauditing.PICS.Utilities.escapeNewLines(cBean.adminNotes)%>
@@ -159,7 +145,7 @@ div.external {
 				<form method="post">
 					<input type="hidden" name="id" value="<%=id%>">
 					<textarea name="changedNotesInternal" rows="20" style="width: 100%"><%=cBean.adminNotes%></textarea><br />
-					<input name="action" type="submit" value="Save Notes">
+					<input name="action" type="submit" value="Update Notes">
 				</form>
 			</div>
 		</div>
@@ -167,6 +153,7 @@ div.external {
 	}
 %>
 <div class="external">
+	<a name="external"></a>
 	<h2>PICS Notes</h2>
 	<div id="externalView" class="notes" ondblclick="$('externalView').hide(); $('externalEdit').show();" title="Double click to edit">
 		<%=com.picsauditing.PICS.Utilities.escapeNewLines(cBean.notes)%>
@@ -175,7 +162,7 @@ div.external {
 		<form method="post">
 			<input type="hidden" name="id" value="<%=id%>">
 			<textarea name="changedNotesExternal" style="width: 50%" rows="20"><%=cBean.notes%></textarea><br />
-			<input name="action" type="submit" value="Save Notes">
+			<input name="action" type="submit" value="Update Notes">
 		</form>
 	</div>
 </div>
@@ -189,7 +176,7 @@ if (canEditNotes || canOperatorEditNotes) {
 <form action="add_notes.jsp" method="post" name="newNoteForm"
 	id="newNoteForm">
 	<input type="hidden" name="id" value="<%=id%>">
-	Date: <input name="notesDate" value="<%=todaysDate%>">
+	Date: <input name="notesDate" value="<%=com.picsauditing.PICS.DateBean.getTodaysDateTime()%>">
 	
 	<% if (permissions.isPicsEmployee()) { %>
 	<label><input type="radio" name="noteType" value="external" checked="checked" />External</label>
