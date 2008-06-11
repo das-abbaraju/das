@@ -10,14 +10,14 @@ import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.NcmsCategoryDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.NcmsCategory;
+import com.picsauditing.jpa.entities.OshaLog;
+import com.picsauditing.jpa.entities.OshaType;
 
 public class AuditActionSupport extends ContractorActionSupport {
 	protected int auditID = 0;
@@ -25,14 +25,16 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected AuditCategoryDataDAO catDataDao;
 	protected AuditDataDAO auditDataDao;
 	protected List<AuditCatData> categories;
+	protected String descriptionOsMs;
 
-	public AuditActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, 
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao) {
+	public AuditActionSupport(ContractorAccountDAO accountDao,
+			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
+			AuditDataDAO auditDataDao) {
 		super(accountDao, auditDao);
 		this.catDataDao = catDataDao;
 		this.auditDataDao = auditDataDao;
 	}
-	
+
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
@@ -40,17 +42,20 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 		return SUCCESS;
 	}
-	
+
 	protected void canSeeAudit() throws NoRightsException {
 		if (permissions.isPicsEmployee())
 			return;
 		if (permissions.isOperator() || permissions.isCorporate()) {
-			if (! permissions.getCanSeeAudit().contains(conAudit.getAuditType().getAuditTypeID()))
-				throw new NoRightsException(conAudit.getAuditType().getAuditName());
+			if (!permissions.getCanSeeAudit().contains(
+					conAudit.getAuditType().getAuditTypeID()))
+				throw new NoRightsException(conAudit.getAuditType()
+						.getAuditName());
 		}
 		if (permissions.isContractor()) {
-			if (! conAudit.getAuditType().isCanContractorView())
-				throw new NoRightsException(conAudit.getAuditType().getAuditName());
+			if (!conAudit.getAuditType().isCanContractorView())
+				throw new NoRightsException(conAudit.getAuditType()
+						.getAuditName());
 		}
 	}
 
@@ -58,11 +63,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 		conAudit = auditDao.find(auditID);
 		if (conAudit == null)
 			throw new Exception("Audit for this " + this.auditID + " not found");
-		
-		if (conAudit.getExpiresDate() != null){
-			
+
+		if (conAudit.getExpiresDate() != null) {
+
 		}
-		
+
 		this.id = conAudit.getContractorAccount().getId();
 		findContractor();
 		canSeeAudit();
@@ -96,55 +101,74 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return false;
 		return true;
 	}
-	
+
 	private String getAnswer(int questionID) {
 		List<Integer> ids = new ArrayList<Integer>();
 		ids.add(questionID);
-		Map<Integer, AuditData> answers = auditDataDao.findAnswersByContractor(conAudit.getContractorAccount().getId(), ids);
+		Map<Integer, AuditData> answers = auditDataDao.findAnswersByContractor(
+				conAudit.getContractorAccount().getId(), ids);
 		if (answers == null || answers.size() == 0)
 			return "";
 		AuditData data = answers.get(AuditQuestion.MANUAL_PQF);
 		return data.getAnswer();
 	}
-	
+
 	public boolean isCanVerify() {
 		if (conAudit.getAuditType().isPqf())
 			if (permissions.isAuditor())
 				return true;
 		return false;
 	}
-	
+
 	public boolean isCanEdit() {
 		if (conAudit.getAuditStatus().equals(AuditStatus.Expired))
 			return false;
-		
+
 		AuditType type = conAudit.getAuditType();
-		
+
 		// Auditors can edit their assigned audits
-		if (type.isHasAuditor() && !type.isCanContractorEdit() 
+		if (type.isHasAuditor() && !type.isCanContractorEdit()
 				&& conAudit.getAuditor() != null
 				&& permissions.getUserId() == conAudit.getAuditor().getId())
 			return true;
-		
+
 		if (permissions.isContractor()) {
-			if (type.isCanContractorEdit()) return true;
-			else return false;
+			if (type.isCanContractorEdit())
+				return true;
+			else
+				return false;
 		}
-		
+
 		if (permissions.isCorporate())
 			return false;
-		
+
 		if (permissions.isOperator()) {
 			if (conAudit.getRequestingOpAccount() != null)
-				if (conAudit.getRequestingOpAccount().getId() == permissions.getAccountId()) return true;
+				if (conAudit.getRequestingOpAccount().getId() == permissions
+						.getAccountId())
+					return true;
 			return false;
 		}
 
 		if (permissions.seesAllContractors())
 			return true;
-		
+
 		return false;
-		
+
+	}
+
+	public String getDescriptionOsMs() {
+		String descriptionText = "OSHA Recordable";
+		for (OshaLog osha : conAudit.getContractorAccount().getOshas())
+			if (osha.getType().equals(OshaType.MSHA))
+				descriptionText = "MSHA Reportable";
+			else
+				descriptionText = "OSHA Recordable";
+		return descriptionText;
+	}
+
+	public void setDescriptionOsMs(String descriptionOsMs) {
+		this.descriptionOsMs = descriptionOsMs;
 	}
 
 }

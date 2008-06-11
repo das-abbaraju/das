@@ -9,7 +9,7 @@
 	<th class="center" colspan="2">3 Yr Avg</th>
 </tr>
 <tr>
-	<th class="label">Were you exempt from submitting OSHA Logs?</th>
+	<th class="label">Were you exempt from submitting <s:property value="type"/> Logs?</th>
 	<th class="center" colspan="2"><s:property value="year1.na"/></th>
 	<th class="center" colspan="2"><s:property value="year2.na"/></th>
 	<th class="center" colspan="2"><s:property value="year3.na"/></th>
@@ -45,7 +45,7 @@
 	<td><s:property value="%{format(avg.fatalitiesRate)}"/></td>
 </tr>
 <tr>
-	<th class="label">Number of Lost Workday Cases - Has lost days AND is OSHA Recordable</th>
+	<th class="label">Number of Lost Workday Cases - Has lost days AND is <s:property value="descriptionOsMs"/></th>
 	<td><s:property value="year1.lostWorkCases"/></td>
 	<td><s:property value="%{format(year1.lostWorkCasesRate)}"/></td>
 	<td><s:property value="year2.lostWorkCases"/></td>
@@ -56,7 +56,7 @@
 	<td><s:property value="%{format(avg.lostWorkCasesRate)}"/></td>
 </tr>
 <tr>
-	<th class="label">Number of Lost Workdays - All lost workdays (regardless of restricted days) AND is OSHA Recordable</th>
+	<th class="label">Number of Lost Workdays - All lost workdays (regardless of restricted days) AND is <s:property value="descriptionOsMs"/></th>
 	<td><s:property value="year1.lostWorkDays"/></td>
 	<td><s:property value="%{format(year1.lostWorkDaysRate)}"/></td>
 	<td><s:property value="year2.lostWorkDays"/></td>
@@ -67,7 +67,7 @@
 	<td><s:property value="%{format(avg.lostWorkDaysRate)}"/></td>
 </tr>
 <tr>
-	<th class="label">Injury & Illnesses Medical Cases - No lost OR restricted days AND is OSHA Recordable (non-fatal)</th>
+	<th class="label">Injury & Illnesses Medical Cases - No lost OR restricted days AND is <s:property value="descriptionOsMs"/> (non-fatal)</th>
 	<td><s:property value="year1.injuryIllnessCases"/></td>
 	<td><s:property value="%{format(year1.injuryIllnessCasesRate)}"/></td>
 	<td><s:property value="year2.injuryIllnessCases"/></td>
@@ -78,7 +78,7 @@
 	<td><s:property value="%{format(avg.injuryIllnessCasesRate)}"/></td>
 </tr>
 <tr>
-	<th class="label">Restricted Cases - Has restricted days AND no lost days AND is OSHA Recordable</th>
+	<th class="label">Restricted Cases - Has restricted days AND no lost days AND is <s:property value="descriptionOsMs"/></th>
 	<td><s:property value="year1.restrictedWorkCases"/></td>
 	<td><s:property value="%{format(year1.restrictedWorkCasesRate)}"/></td>
 	<td><s:property value="year2.restrictedWorkCases"/></td>
@@ -89,7 +89,7 @@
 	<td><s:property value="%{format(avg.restrictedWorkCasesRate)}"/></td>
 </tr>
 <tr>
-	<th class="label">Total OSHA Recordable Injuries and Illnesses</th>
+	<th class="label">Total <s:property value="descriptionOsMs"/> Injuries and Illnesses</th>
 	<td><s:property value="year1.recordableTotal"/></td>
 	<td><s:property value="%{format(year1.recordableTotalRate)}"/></td>
 	<td><s:property value="year2.recordableTotal"/></td>
