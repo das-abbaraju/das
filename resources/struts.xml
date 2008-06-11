@@ -5,22 +5,28 @@
 	<constant name="struts.objectFactory" value="spring" />
 	<constant name="struts.devMode" value="true" />
 	<constant name="struts.url.includeParams" value="none" />
+	<constant name="struts.multipart.maxSize" value="1610612736" />
+
 	<package name="com.picsauditing" extends="struts-default">
 		<global-results>
 			<result name="Exception">/exception_handler.jsp</result>
-			<result name="NoRightsException">/no_rights_exception.jsp</result>
+			<result name="NoRightsException">
+				/no_rights_exception.jsp
+			</result>
 			<result name="LoginAjax">struts/login_ajax.jsp</result>
 		</global-results>
 		<global-exception-mappings>
-			<exception-mapping exception="java.lang.Exception" result="Exception"/>
-			<exception-mapping exception="com.picsauditing.access.NoRightsException" result="NoRightsException"/>
+			<exception-mapping exception="java.lang.Exception"
+				result="Exception" />
+			<exception-mapping
+				exception="com.picsauditing.access.NoRightsException"
+				result="NoRightsException" />
 		</global-exception-mappings>
 
-		<action name="Home"
-			class="com.picsauditing.actions.Home">
+		<action name="Home" class="com.picsauditing.actions.Home">
 			<result>struts/home.jsp</result>
 		</action>
-		
+
 		<action name="RulesList"
 			class="com.picsauditing.actions.RulesAction">
 			<result>rules.jsp</result>
@@ -40,18 +46,18 @@
 			class="com.picsauditing.actions.report.ReportContractorAudits">
 			<result>struts/reports/auditList.jsp</result>
 		</action>
-		
+
 		<action name="AuditListAuditor"
 			class="com.picsauditing.actions.report.ReportContractorAuditAuditor">
 			<result>struts/reports/audit_auditor.jsp</result>
 		</action>
-		
+
 
 		<action name="MyAuditHistory"
 			class="com.picsauditing.actions.report.ReportMyAuditHistory">
 			<result>struts/reports/myAuditHistory.jsp</result>
 		</action>
-	
+
 		<action name="MyAssignedAuditsAjax"
 			class="com.picsauditing.actions.audits.ContractorAuditsWidget">
 			<result>struts/widgets/myAssignedAudits.jsp</result>
@@ -80,10 +86,12 @@
 			class="com.picsauditing.actions.audits.AuditOperatorSave">
 			<result>struts/operators/audit_operator_save.jsp</result>
 		</action>
-		
+
 		<action name="VerifyView"
 			class="com.picsauditing.actions.audits.VerifyView">
-			<result>struts/contractors/pqf_verification_detail.jsp</result>
+			<result>
+				struts/contractors/pqf_verification_detail.jsp
+			</result>
 		</action>
 		<action name="VerifySaveFollowUpAjax" method="saveFollowUp"
 			class="com.picsauditing.actions.audits.VerifyView">
@@ -102,7 +110,7 @@
 			class="com.picsauditing.actions.contractors.ContractorView">
 			<result>struts/contractors/con_view.jsp</result>
 		</action>
-		
+
 		<action name="ContractorFlag"
 			class="com.picsauditing.actions.contractors.ContractorFlagAction">
 			<result>struts/contractors/contractor_flag.jsp</result>
@@ -112,12 +120,12 @@
 			class="com.picsauditing.actions.contractors.ConHeader">
 			<result>struts/contractors/conHeader.jsp</result>
 		</action>
-		
+
 		<action name="ConAuditList"
 			class="com.picsauditing.actions.contractors.ConAuditList">
 			<result>struts/contractors/contractor_audits.jsp</result>
 		</action>
-		
+
 		<action name="Audit"
 			class="com.picsauditing.actions.audits.ContractorAuditAction">
 			<result>struts/contractors/con_audit.jsp</result>
@@ -153,6 +161,11 @@
 			class="com.picsauditing.actions.audits.AuditDataSave">
 			<result>struts/blank.jsp</result>
 		</action>
+		<action name="AuditDataFileUploadAjax"
+			class="com.picsauditing.actions.audits.AuditDataFileUpload">
+			<result>struts/blank.jsp</result>
+		</action>
+		
 
 		<action name="ContractorSearch"
 			class="com.picsauditing.actions.report.ReportAccountQuick">
@@ -163,12 +176,12 @@
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<result>struts/reports/contractors_admin.jsp</result>
 		</action>
-		
+
 		<action name="ContractorListOperator"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<result>struts/reports/contractors_operator.jsp</result>
 		</action>
-	
+
 		<action name="ProfileEdit"
 			class="com.picsauditing.actions.users.ProfileEdit">
 			<result>struts/users/profile_edit.jsp</result>
@@ -176,10 +189,12 @@
 
 		<action name="ContractorOperatorLimited"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
-			<result>struts/reports/contractors_operator_limited.jsp</result>
+			<result>
+				struts/reports/contractors_operator_limited.jsp
+			</result>
 		</action>
-		
-		
+
+
 		<action name="ChartXMLFlagCount"
 			class="com.picsauditing.actions.chart.ChartFlagCount">
 			<result>struts/chart_xml.jsp</result>
@@ -199,40 +214,42 @@
 			class="com.picsauditing.actions.chart.GraphEmrRates">
 			<result>struts/reports/graph_emr.jsp</result>
 		</action>
-		
+
 		<action name="ReportEmrRates"
 			class="com.picsauditing.actions.report.ReportEmrRates">
 			<result>struts/reports/report_emr.jsp</result>
 		</action>
-		
+
 		<action name="ContractorRegistrationAjax"
 			class="com.picsauditing.actions.contractors.ContractorsWidget">
 			<result>struts/widgets/new_contractors.jsp</result>
 		</action>
-		
+
 		<action name="UpcomingAuditsAjax"
 			class="com.picsauditing.actions.audits.ContractorAuditsWidget">
 			<result>struts/widgets/audits_upcoming.jsp</result>
 		</action>
-		
+
 		<action name="ClosedAuditsAjax"
 			class="com.picsauditing.actions.audits.ContractorAuditsWidget">
 			<result>struts/widgets/audits_closed.jsp</result>
 		</action>
-		
+
 		<action name="AuditorsGet"
 			class="com.picsauditing.actions.audits.AuditorsGet">
 			<result>/struts/audits/auditorSelect.jsp</result>
 		</action>
+
+<!--  
 		<action name="FileUploadExample"
 			class="com.picsauditing.actions.FileUploadExample">
 			<result>/struts/fileUpload.jsp</result>
 		</action>
-
 		<action name="FileUploadExample_*" method="{1}"
 			class="com.picsauditing.actions.FileUploadExample">
 			<result name="input">/struts/fileUpload.jsp</result>
 		</action>
+-->		
 		<action name="ReportFatalities"
 			class="com.picsauditing.actions.report.ReportFatalities">
 			<result>/struts/reports/report_fatalities.jsp</result>
@@ -245,7 +262,7 @@
 			class="com.picsauditing.actions.contractors.ContractorWidget">
 			<result>/struts/widgets/con_tasks.jsp</result>
 		</action>
-		
+
 		<action name="ContractorStatsAjax"
 			class="com.picsauditing.actions.contractors.ContractorWidget">
 			<result>/struts/widgets/con_stats.jsp</result>
@@ -254,7 +271,7 @@
 			class="com.picsauditing.actions.contractors.ContractorWidget">
 			<result>/struts/widgets/con_facilities.jsp</result>
 		</action>
-		
+
 		<action name="OshaSave"
 			class="com.picsauditing.actions.audits.OshaSave">
 			<result>/struts/blank.jsp</result>
