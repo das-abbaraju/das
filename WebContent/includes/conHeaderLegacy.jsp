@@ -2,7 +2,7 @@
 <span id="conHeader">
 <h1>Loading Contractor Information</h1>
 <img src="images/ajax_process.gif">
-<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br /><br /><br /><br /><br />
 </span>
 <script type="text/javascript">
 	var pars = "";

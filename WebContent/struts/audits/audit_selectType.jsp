@@ -7,7 +7,6 @@
 </head>
 <body>
 <h1>Audit Management</h1>
-<%@ include file="/includes/nav/pqf_nav.jsp"%>
 <table border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td align="center" class="redMain">Please select an Audit Type:

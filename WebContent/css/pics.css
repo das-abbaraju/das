@@ -37,16 +37,6 @@ a img {
 	position: absolute;
 }
 
-/* #bgsquare {
-		background: url(../images/3dsquare_left.jpg) no-repeat left top;
-		margin:-7px;
-		margin-left: -15px;
-		padding:0;
-		width:5px;
-		height: 31px;
-		z-index: 20; 
-		
-} */
 #name {
 	margin-right: 5px;
 	font-size: 10px;

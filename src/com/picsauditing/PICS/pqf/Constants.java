@@ -3,9 +3,6 @@ package com.picsauditing.PICS.pqf;
 import java.util.*;
 
 public class Constants {
-/*	History
-	created BJ 12-6-05 used on con_stateLicenses.jsp
-*/
 	public static final String PQF_TYPE = "PQF";
 	public static final String DESKTOP_TYPE = "Desktop";
 	public static final String OFFICE_TYPE = "Office";

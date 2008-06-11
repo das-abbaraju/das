@@ -29,8 +29,6 @@
 		}
 	}
 	if (permissions.seesAllContractors() && removeContractor) {
-		com.picsauditing.PICS.pqf.CategoryBean pcBean = new com.picsauditing.PICS.pqf.CategoryBean();
-		com.picsauditing.PICS.pqf.DataBean pdBean = new com.picsauditing.PICS.pqf.DataBean();
 		Integer removeOpID = Integer.parseInt(request.getParameter("opID"));
 		oBean.removeSubContractor(removeOpID, id);
 		AccountBean tempOpBean = new AccountBean();

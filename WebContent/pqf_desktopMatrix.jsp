@@ -45,7 +45,12 @@ try{
 </head>
 <body>
 <h1><%=auditType%> Matrix</h1>
-<%@ include file="/includes/nav/pqf_nav.jsp"%>
+<div id="internalnavcontainer">
+<ul id="navlist">
+	<li><a href="pqf_Matrix.jsp?auditType=PQF">Edit PQF Matrix</a></li>
+	<li><a href="pqf_desktopMatrix.jsp?auditType=Desktop" class="current">Edit Desktop Matrix</a></li>
+</ul>
+</div>
 <br>
 <form action="pqf_desktopMatrix.jsp?auditType=<%=auditType%>" method="post">
 <input name="action" type="submit" value="Save">
