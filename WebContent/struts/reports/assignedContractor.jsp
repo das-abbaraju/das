@@ -47,6 +47,10 @@
 			<s:submit name="imageField" type="image"
 				src="images/button_search.gif" onclick="runSearch( 'form1')" /></td>
 		</tr>
+		<tr>
+			<td><s:checkbox name="assignedCon"/><label>Check to Search on Assigned Contractors</label>
+			</td> 
+		</tr>
 		
 	</table>
 	<s:hidden name="showPage" value="1" />

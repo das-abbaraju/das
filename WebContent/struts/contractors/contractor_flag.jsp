@@ -59,7 +59,13 @@
 	</tr>
 </table>
 </div>
-
+<s:if test="permissions.contractor">
+<div class="helpBox">
+		The minimum requirements set by <s:property value="co.operatorAccount.name"/> is listed in this page. 
+		If any requirement exceeds the acceptable threshold or answer, that requirement will be flagged. The overall flag color is set to Red if any requirement is flagged Red. 
+		It is set to Amber if any requirement is flagged Amber. If no requirement is Red or Amber, then the overall flag color will be Green.
+</div>	
+</s:if>
 <table class="report">
 	<thead>
 		<tr>
