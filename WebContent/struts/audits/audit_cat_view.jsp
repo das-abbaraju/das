@@ -17,10 +17,10 @@
 		<s:property value="answer.answer"/>
 		</s:else>
 		<s:if test="answer.verified">
-			<span class="verified">Verified on <s:date name="answer.dateVerified" format="MMM d, yyyy" /></span>
+			<br/><span class="verified">Verified on <s:date name="answer.dateVerified" format="MMM d, yyyy" /></span>
 		</s:if>
 		<s:if test="answer.unverified">
-			<span class="unverified">Inaccurate Data</span>
+			<br/><span class="unverified">Inaccurate Data</span>
 		</s:if>
 	</span></td>
 </tr>

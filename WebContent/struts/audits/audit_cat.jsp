@@ -48,27 +48,32 @@
 	}
 	
 	function startCallback( theId ) {
-		var elm = document.getElementById('upload_status_' + theId);
+		var elm = $('upload_status_' + theId);
 		elm.innerHTML="<img src='ajax_process.gif' /> Uploading File...";
 		return true;
 	}
 	
 	function completeCallback(theId ) {
-		var elm = document.getElementById('upload_status_' + theId);
+		var elm = $('upload_status_' + theId);
 		elm.innerHTML="Upload Complete";
 		
-		$('file_upload_'+theId).hide();
+		elm.hide();
 		var showUpload = $('show_upload_'+theId);
 	    
 	    showUpload.show();
-		showUpload.innerHTML = "<nobr><a href=\"#\" onClick=\"window.open('servlet/showpdf?id=<s:property value="contractor.id"/>&file=pqf','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;\">View File</a></nobr>
-	<input type=\"button\" value=\"Add File\" onclick=\"$('file_upload_<s:property value="questionID"/>').show(); $('show_upload_<s:property value="questionID"/>').hide();\" />";
 	}
 </s:if>
 	
 	function openOsha(logID, year) {
 		url = 'servlet/showpdf?id=<s:property value="contractor.id"/>&OID='+logID+'&file=osha'+year;
 		title = 'Osha300Logs';
+		pars = 'scrollbars=yes,resizable=yes,width=700,height=450';
+		window.open(url,title,pars);
+	}
+
+	function openQuestion(questionID, extension) {
+		url = 'servlet/showpdf?id=<s:property value="contractor.id"/>&file=pqf'+extension+questionID;
+		title = 'PICS File Upload';
 		pars = 'scrollbars=yes,resizable=yes,width=700,height=450';
 		window.open(url,title,pars);
 	}

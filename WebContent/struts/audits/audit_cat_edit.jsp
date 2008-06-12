@@ -64,7 +64,7 @@
 			<div id="show_upload_<s:property value="questionID"/>">
 				<nobr>
 					<s:if test="answer.answer.length() > 0">
-						<a href="#" onClick="window.open('servlet/showpdf?id=<s:property value="contractor.id"/>&file=pqf','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">View File</a>
+						<a href="#" onClick="openQuestion('<s:property value="questionID"/>', '<s:property value="answer.answer"/>'); return false;">View File</a>
 					</s:if>
 					<s:else>File Not Uploaded</s:else>
 				</nobr>
