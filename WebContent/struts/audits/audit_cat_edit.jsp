@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <tr id="status_<s:property value="questionID"/>" class="group<s:if test="#shaded">Shaded</s:if>">
 	<td class="right"><s:property value="category.number"/>.<s:property value="subCategory.number"/>.<s:property value="number"/>&nbsp;&nbsp;</td>
-	<td class="question<s:if test="required">Required</s:if>"><s:property value="question"/>
+	<td class="question<s:if test="required">Required</s:if>"><s:property value="question" escape="false"/>
 		<s:if test="linkUrl1 > ''"><a href="http://<s:property value="linkUrl1"/>" target="_BLANK" title="opens in new window"><s:property value="linkText1"/></a></s:if>
 		<s:if test="linkUrl2 > ''"><a href="http://<s:property value="linkUrl2"/>" target="_BLANK" title="opens in new window"><s:property value="linkText2"/></a></s:if>
 		<s:if test="linkUrl3 > ''"><a href="http://<s:property value="linkUrl3"/>" target="_BLANK" title="opens in new window"><s:property value="linkText3"/></a></s:if>
@@ -61,16 +61,25 @@
 			<s:select list="options" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:select>
 		</s:if>
 		<s:if test="questionType == 'File'">
-
-			<form id="file_upload_<s:property value="questionID"/>" target="upload_iframe_<s:property value="questionID"/>" action="AuditDataFileUploadAjax.action" method="post" enctype="multipart/form-data">
+			<div id="show_upload_<s:property value="questionID"/>">
+				<nobr>
+					<s:if test="answer.answer.length() > 0">
+						<a href="#" onClick="window.open('servlet/showpdf?id=<s:property value="contractor.id"/>&file=pqf','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">View File</a>
+					</s:if>
+					<s:else>File Not Uploaded</s:else>
+				</nobr>
+				<input type="button" value="Add File" onclick="$('file_upload_<s:property value="questionID"/>').show(); $('show_upload_<s:property value="questionID"/>').hide();" />
+			</div>
+			<form id="file_upload_<s:property value="questionID"/>" target="upload_iframe_<s:property value="questionID"/>" action="AuditDataFileUploadAjax.action" method="post" enctype="multipart/form-data" style="display: none;">
 				<span id="upload_status_<s:property value="questionID"/>">
-				<s:if test="answer.answer.length() > 1">Uploaded</s:if><s:else>Not Uploaded</s:else></span>
 				<s:hidden name="auditData.audit.id" value="%{conAudit.id}"/>
 				<s:hidden name="auditData.question.questionID" value="%{questionID}"/>
-			
-				<input value="Upload file (Max 150 MB)" style="font-size: 8pt;" type="file" name="file" accept=".pdf,.doc,.txt,.xls,.jpg" onchange="AIM.submit('<s:property value="questionID"/>', {'onStart' : startCallback, 'onComplete' : completeCallback});"/>
+				
+				<input type="file" name="file" value="Upload file (Max 150 MB)" accept=".pdf,.doc,.txt,.xls,.jpg" />
+				<input type="submit" value="Upload File"  onchange="AIM.submit('<s:property value="questionID"/>', {'onStart' : startCallback, 'onComplete' : completeCallback});" />
 				<iframe style="display:none" src="about:blank" id="upload_iframe_<s:property value="questionID"/>" 
 						name="upload_iframe_<s:property value="questionID"/>" onload="AIM.loaded('<s:property value="questionID"/>')"></iframe>
+				</span>
 			</form>
 
 		</s:if>

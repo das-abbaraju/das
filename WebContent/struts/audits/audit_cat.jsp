@@ -15,63 +15,56 @@
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript"
 	src="js/scriptaculous/scriptaculous.js?load=effects"></script>
-<script type="text/javascript" src="js/swfupload.js"></script>
-<script type="text/javascript" src="js/swfupload.queue.js"></script>
-<script type="text/javascript" src="js/fileprogress.js"></script>
-<script type="text/javascript" src="js/handlers.js"></script>
 <script type="text/javascript" src="js/aim.js"></script>
-
 
 <script type="text/javascript">
 <s:if test="mode == 'Edit'">
-		function saveAnswer( questionid, elm )
+	function saveAnswer( questionid, elm ) {
+		var pars = 'auditData.audit.id=<s:property value="conAudit.id"/>&auditData.question.questionID=' + questionid + '&auditData.answer=';
+		if( elm.type == 'text' || elm.type == 'radio' || elm.type == 'textarea')
 		{
-			var pars = 'auditData.audit.id=<s:property value="conAudit.id"/>&auditData.question.questionID=' + questionid + '&auditData.answer=';
-			if( elm.type == 'text' || elm.type == 'radio' || elm.type == 'textarea')
+			var thevalue = elm.value;
+			if( thevalue != '' )
 			{
-				var thevalue = elm.value;
-				if( thevalue != '' )
+				pars = pars + thevalue;
+				
+				var divName = 'status_'+questionid;
+				var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
 				{
-					pars = pars + thevalue;
-					
-					var divName = 'status_'+questionid;
-					var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
-					{
-						method: 'post', 
-						parameters: pars,
-						onSuccess: function(transport) {
-							new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-						}
-					});
-				}
+					method: 'post', 
+					parameters: pars,
+					onSuccess: function(transport) {
+						new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+					}
+				});
 			}
-			else
-			{
-				//alert( elm.type );	
-				alert( elm.value );
-			}
-			return true;
 		}
+		else
+		{
+			//alert( elm.type );	
+			alert( elm.value );
+		}
+		return true;
+	}
+	
+	function startCallback( theId ) {
+		var elm = document.getElementById('upload_status_' + theId);
+		elm.innerHTML="<img src='ajax_process.gif' /> Uploading File...";
+		return true;
+	}
+	
+	function completeCallback(theId ) {
+		var elm = document.getElementById('upload_status_' + theId);
+		elm.innerHTML="Upload Complete";
 		
-		function startCallback( theId ) {
-         	var elm = document.getElementById('upload_status_' + theId);
-         	elm.innerHTML="Uploading Document...";
-            return true;
-        }
-
-        function completeCallback(theId ) {
-        	//var i = document.getElementById(id);
-        	//i.body.innerHTML
-         	var elm = document.getElementById('upload_status_' + theId);
-         	elm.innerHTML="Upload Complete";
-        
-            // make something useful after (onComplete)
-            //var stat = 'status_upload_' + id;
-            //alert('upload complete');
-            //document.getElementById('nr').innerHTML = parseInt(document.getElementById('nr').innerHTML) + 1;
-            //document.getElementById('r').innerHTML = response;
-        }
-	</s:if>
+		$('file_upload_'+theId).hide();
+		var showUpload = $('show_upload_'+theId);
+	    
+	    showUpload.show();
+		showUpload.innerHTML = "<nobr><a href=\"#\" onClick=\"window.open('servlet/showpdf?id=<s:property value="contractor.id"/>&file=pqf','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;\">View File</a></nobr>
+	<input type=\"button\" value=\"Add File\" onclick=\"$('file_upload_<s:property value="questionID"/>').show(); $('show_upload_<s:property value="questionID"/>').hide();\" />";
+	}
+</s:if>
 	
 	function openOsha(logID, year) {
 		url = 'servlet/showpdf?id=<s:property value="contractor.id"/>&OID='+logID+'&file=osha'+year;
