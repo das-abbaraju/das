@@ -34,6 +34,10 @@ public class AuditType {
 		this.auditName = name;
 	}
 	
+	public AuditType(int id) {
+		this.auditTypeID = id;
+	}
+	
 	protected int auditTypeID;
 
 	protected String auditName;
