@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.NoResultException;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -31,8 +33,16 @@ public class AuditDataSave extends PicsActionSupport {
 			if (!forceLogin())
 				return LOGIN;
 
-			AuditData newCopy = dao.findAnswerToQuestion(auditData.getAudit()
-					.getId(), auditData.getQuestion().getQuestionID());
+			AuditData newCopy = null;
+			
+			try
+			{
+				newCopy = dao.findAnswerToQuestion(auditData.getAudit()
+						.getId(), auditData.getQuestion().getQuestionID());
+			}
+			catch( NoResultException notReallyAProblem ) {}
+				
+				
 			if (newCopy == null) // insert mode
 			{
 				dao.save(auditData);
