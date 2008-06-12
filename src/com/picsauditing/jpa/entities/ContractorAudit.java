@@ -72,8 +72,7 @@ public class ContractorAudit {
 		this.auditType = auditType;
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	// @ManyToOne
+	@ManyToOne
 	@JoinColumn(name = "conID")
 	public ContractorAccount getContractorAccount() {
 		return contractorAccount;

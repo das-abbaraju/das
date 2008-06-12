@@ -96,7 +96,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.oshas = oshas;
 	}
 
-	@OneToMany(mappedBy = "contractorAccount")
+	@OneToMany(mappedBy = "contractorAccount",cascade = { CascadeType.PERSIST, CascadeType.MERGE } )
 	public List<ContractorAudit> getAudits() {
 		return this.audits;
 	}
