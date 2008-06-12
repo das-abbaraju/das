@@ -32,21 +32,20 @@
 			ContractorAuditDAO  conAuditdao = (ContractorAuditDAO)SpringUtils.getBean("ContractorAuditDAO");
 			ContractorAudit conAudit = new ContractorAudit();
 			conAudit.setPercentComplete(100);
-			DateFormat df = new SimpleDateFormat("yyyy/mm/dd");
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 			try {
 				conAudit.setCompletedDate(df.parse(closedDate));
 			} catch(Exception e) {
 				System.out.println(e);
 			}
 			conAudit.setClosedDate(conAudit.getCompletedDate());
-			conAudit.setAuditType(new AuditType());
-			conAudit.getAuditType().setAuditTypeID(4);
+			conAudit.setAuditType(new AuditType(4));
 			conAudit.setContractorAccount(new ContractorAccount());
 			conAudit.getContractorAccount().setId(Integer.parseInt(conID));
 			conAudit.setCanDelete(true);
 			conAudit.setPercentVerified(0);
 			conAudit.setCreatedDate(new Date());
-			conAudit.setAuditStatus(AuditStatus.Submitted);
+			conAudit.setAuditStatus(AuditStatus.Active);
 			conAuditdao.save(conAudit);
 			cBean.setFromDB(conID);
 			cBean.addNote(conID, "(" + permissions.getUsername() + ")",
