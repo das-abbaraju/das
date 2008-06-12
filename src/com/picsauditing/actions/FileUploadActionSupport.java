@@ -1,27 +1,23 @@
 package com.picsauditing.actions;
 
 import java.io.File;
+import java.io.FilenameFilter;
 
-import com.opensymphony.xwork2.ActionSupport;
+import org.apache.struts2.ServletActionContext;
 
-public class FileUploadActionSupport extends PicsActionSupport 
+public abstract class FileUploadActionSupport extends PicsActionSupport 
 {
-	protected File Filedata = null;
-	protected String FiledataContentType = null;
-	protected String FiledataFileName = null;
-	protected String Filename = null;
-	protected String Upload = null;
+	protected File file = null;
+	protected String fileContentType = null;
+	protected String fileFileName = null;
 	
 	
 	public String execute() throws Exception
 	{
-		if( Filedata != null )
+		if( file != null )
 		{
 			System.out.println("---");
-			System.out.println(FiledataFileName);
-			System.out.println(Filename);
-			System.out.println(Upload);
-			
+			System.out.println(fileFileName);
 			
 			System.out.println("---");
 		}
@@ -33,45 +29,116 @@ public class FileUploadActionSupport extends PicsActionSupport
 		return SUCCESS;
 	}
 
-	public File getFiledata() {
-		return Filedata;
-	}
 
-	public void setFiledata(File filedata) {
-		Filedata = filedata;
-	}
-
-	public String getFiledataContentType() {
-		return FiledataContentType;
-	}
-
-	public void setFiledataContentType(String filedataContentType) {
-		FiledataContentType = filedataContentType;
-	}
-
-	public String getFiledataFileName() {
-		return FiledataFileName;
-	}
-
-	public void setFiledataFileName(String filedataFileName) {
-		FiledataFileName = filedataFileName;
-	}
-
-	public String getFilename() {
-		return Filename;
-	}
-
-	public void setFilename(String filename) {
-		Filename = filename;
-	}
-
-	public String getUpload() {
-		return Upload;
-	}
-
-	public void setUpload(String upload) {
-		Upload = upload;
+	public File getFile() {
+		return file;
 	}
 
 
+	public void setFile(File file) {
+		this.file = file;
+	}
+
+
+	public String getFileContentType() {
+		return fileContentType;
+	}
+
+
+	public void setFileContentType(String fileContentType) {
+		this.fileContentType = fileContentType;
+	}
+
+
+	public String getFileFileName() {
+		return fileFileName;
+	}
+
+
+	public void setFileFileName(String fileFileName) {
+		this.fileFileName = fileFileName;
+	}
+
+	public String getFtpRoot()
+	{
+		return ServletActionContext.getServletContext().getInitParameter("FTP_DIR");
+	}
+
+	public boolean copyFile( File f , String newPath, boolean deleteFilesThatHaveASimilarNameButDifferentExtension )
+	{
+		//make sure the folder exists
+
+		File parentFolder = ensurePathExists(newPath); 
+		if( parentFolder != null )
+		{
+			//if the file exists, delete it
+			final File theNewFile = new File( newPath );
+			
+			
+			if( !deleteFilesThatHaveASimilarNameButDifferentExtension )
+			{
+				if( theNewFile.exists() && ! theNewFile.delete())
+				{
+					System.out.println("unable to delete file");
+				}
+			}
+			else
+			{
+				File[] deleteList = parentFolder.listFiles( new FilenameFilter() {
+					
+					@Override
+					public boolean accept(File dir, String name) {
+						
+						return ! (new File( dir, name ).isDirectory()) 
+								&& name.substring( 0, name.lastIndexOf(".") ).equals(theNewFile.getName().substring( 0, theNewFile.getName().lastIndexOf(".") ) );
+					}
+					
+				});
+				
+				for( File toDelete : deleteList )
+				{
+					toDelete.delete();
+				}
+			}
+			
+			//do the copy
+			return f.renameTo( theNewFile );			
+		}
+		return false;	
+	}
+
+	
+	
+
+	public File ensurePathExists(String newPath) {
+		String[] folders = newPath.split("/");
+		String path = "";
+		File thisDir = null;
+		
+		for( int i = 0; i < folders.length - 1; i++ )  //length - 1 because the last slot contains the actual filename
+		{
+			String currentLevel = folders[i];
+			
+			if( currentLevel.length() > 0)
+			{
+				path = path + currentLevel;
+				
+				thisDir = new File( path );
+				
+				if( ! thisDir.exists() )
+				{
+					if( !thisDir.mkdir() )
+					{
+						return null;
+					}
+				}
+				path = path + "/";
+			}
+		}
+		return thisDir;
+	}
+	
+
+	
+	
 }

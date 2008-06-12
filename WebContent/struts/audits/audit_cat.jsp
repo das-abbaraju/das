@@ -15,6 +15,12 @@
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript"
 	src="js/scriptaculous/scriptaculous.js?load=effects"></script>
+<script type="text/javascript" src="js/swfupload.js"></script>
+<script type="text/javascript" src="js/swfupload.queue.js"></script>
+<script type="text/javascript" src="js/fileprogress.js"></script>
+<script type="text/javascript" src="js/handlers.js"></script>
+<script type="text/javascript" src="js/aim.js"></script>
+
 
 <script type="text/javascript">
 <s:if test="mode == 'Edit'">
@@ -46,6 +52,25 @@
 			}
 			return true;
 		}
+		
+		function startCallback( theId ) {
+         	var elm = document.getElementById('upload_status_' + theId);
+         	elm.innerHTML="Uploading Document...";
+            return true;
+        }
+
+        function completeCallback(theId ) {
+        	//var i = document.getElementById(id);
+        	//i.body.innerHTML
+         	var elm = document.getElementById('upload_status_' + theId);
+         	elm.innerHTML="Upload Complete";
+        
+            // make something useful after (onComplete)
+            //var stat = 'status_upload_' + id;
+            //alert('upload complete');
+            //document.getElementById('nr').innerHTML = parseInt(document.getElementById('nr').innerHTML) + 1;
+            //document.getElementById('r').innerHTML = response;
+        }
 	</s:if>
 	
 	function openOsha(logID, year) {

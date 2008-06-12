@@ -55,15 +55,24 @@
 			<s:checkbox fieldValue="S" value="answer.answer.indexOf('S') != -1" name="question_%{questionID}_S" onchange="javascript:saveAnswer(%{questionID}, this);" />
 		</s:if>
 		<s:if test="questionType == 'Radio'">
-			<s:radio template="SHELLEY" list="options" listValue="optionName" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:radio>
+			<s:radio theme="pics" list="options" listValue="optionName" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:radio>
 		</s:if>
 		<s:if test="questionType == 'Drop Down'">
 			<s:select list="options" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:select>
 		</s:if>
 		<s:if test="questionType == 'File'">
-			<s:if test="answer.answer.length() > 1">Uploaded</s:if>
-			<s:else>Not Uploaded</s:else>
-			<input name="inputName" type="file" size="25" />
+
+			<form id="file_upload_<s:property value="questionID"/>" target="upload_iframe_<s:property value="questionID"/>" action="AuditDataFileUploadAjax.action" method="post" enctype="multipart/form-data">
+				<span id="upload_status_<s:property value="questionID"/>">
+				<s:if test="answer.answer.length() > 1">Uploaded</s:if><s:else>Not Uploaded</s:else></span>
+				<s:hidden name="auditData.audit.id" value="%{conAudit.id}"/>
+				<s:hidden name="auditData.question.questionID" value="%{questionID}"/>
+			
+				<input value="Upload file (Max 150 MB)" style="font-size: 8pt;" type="file" name="file" accept=".pdf,.doc,.txt,.xls,.jpg" onchange="AIM.submit('<s:property value="questionID"/>', {'onStart' : startCallback, 'onComplete' : completeCallback});"/>
+				<iframe style="display:none" src="about:blank" id="upload_iframe_<s:property value="questionID"/>" 
+						name="upload_iframe_<s:property value="questionID"/>" onload="AIM.loaded('<s:property value="questionID"/>')"></iframe>
+			</form>
+
 		</s:if>
 	</td>
 	
