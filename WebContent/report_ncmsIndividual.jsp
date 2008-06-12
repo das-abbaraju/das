@@ -2,8 +2,8 @@
 <%@include file="includes/main.jsp" %>
 <%@include file="utilities/adminGeneral_secure.jsp" %>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
-
 <%
+
 Connection Conn = null;
 Statement SQLStatement = null;
 String Query = "";
