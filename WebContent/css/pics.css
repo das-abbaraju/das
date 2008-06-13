@@ -24,9 +24,7 @@ a img {
 #masthead {
 	margin: 0 auto;
 	min-width: 890px;
-	max-width: 1150px;
-	width: expression(document . body . clientWidth <   892 ?   "890px" :  
-		document . body . clientWidth >   1152 ?   "1150px" :   "auto");
+	width: expression(document . body . clientWidth <   892 ?   "880px" :   "auto");
 }
 
 #logo {
@@ -94,9 +92,8 @@ a img {
 	margin: 0 auto;
 	/* width: 960px; */
 	min-width: 890px;
-	max-width: 1150px;
-	width: expression(document . body . clientWidth <   892 ?   "890px" :  
-		document . body . clientWidth >   1152 ?   "1150px" :   "auto");
+	
+	width: expression(document . body . clientWidth <   892 ?   "880px" :   "auto");
 	background-color: white;
 	border: solid 1px #c3c3c3;
 }
@@ -110,9 +107,8 @@ a img {
 	padding: 45px;
 	min-height: 400px;
 	min-width: 890px;
-	max-width: 1150px;
-	width: expression(document . body . clientWidth <   892 ?   "890px" :  
-		document . body . clientWidth >   1152 ?   "1150px" :   "auto");
+	
+	width: expression(document . body . clientWidth <   892 ?   "880px" :   "auto");
 }
 
 #content div {
@@ -139,7 +135,7 @@ div.container {
 
 div #maincontainer {
 	min-width: 790px;
-	max-width: 1150px;
+	
 	width: expression(document . body . clientWidth <   892 ?   "790px" :  
 		document . body . clientWidth >   1152 ?   "1150px" :   "auto");
 	padding: 40px;
@@ -177,9 +173,8 @@ div.footer {
 #footercontent {
 	margin: 0 auto;
 	min-width: 890px;
-	max-width: 1150px;
-	width: expression(document . body . clientWidth <   892 ?   "890px" :  
-		document . body . clientWidth >   1152 ?   "1150px" :   "auto");
+	
+	width: expression(document . body . clientWidth <   892 ?   "880px" :   "auto");
 }
 
 a.footer:link {
@@ -218,7 +213,7 @@ h1 {
 	margin-left: 0px;
 	border-bottom: solid 2px rgb(168, 77, 16);
 	min-width: 760px;
-	max-width: 1150px;
+	
 	width: expression(document . body . clientWidth <   892 ?   "760px" :  
 		document . body . clientWidth >   1152 ?   "1150px" :   "auto");
 }
