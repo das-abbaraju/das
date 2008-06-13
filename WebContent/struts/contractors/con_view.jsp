@@ -12,6 +12,8 @@
 		<div class="left info">
 			<div class="vcard">
 				<div class="adr">
+					<s:if test="logoWidth > 0"><img src="logos/<s:property value="contractor.logoFile" />" 
+						width="<s:property value="logoWidth" />" /></s:if>
 					<p class="fn org"><s:property value="contractor.name" /></p>
 					<p><span class="street-address"><s:property value="contractor.address" /></span>,
 					<span class="locality"><s:property value="contractor.city" /></span>, 
@@ -51,11 +53,7 @@
 	</div>
 </div>
 <br clear="all" />
-<div id="maincontainer">
-<s:if test="logoWidth > 0"><img src="logos/<s:property value="contractor.logoFile" />" 
-align="right" width="<s:property value="logoWidth" />" /></s:if>
-<s:property value="contractor.descriptionHTML" escape="false" />
-</div>
+<div id="maincontainer"><s:property value="contractor.descriptionHTML" escape="false" /></div>
 
 </body>
 </html>
