@@ -13,9 +13,5 @@ public class AuditCategoryDataTestDAO {
 	@Autowired
 	private AuditCategoryDataDAO dao;
 	
-	@Test
-	public void testFind() {
-		dao.findByAuditTest();
-	}
 
 }
