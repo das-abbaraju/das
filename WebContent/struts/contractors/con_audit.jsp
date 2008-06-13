@@ -78,7 +78,7 @@ table.report tr.na a {
 	</s:iterator>
 	<s:iterator value="categories" status="rowStatus">
 		<s:if test="!appliesB">
-			<tr class="na">
+			<tr style="color: #999;font-style: italic;">
 				<td class="right"><a name="<s:property value="id" />"><s:property value="category.number" /></td>
 				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a></td>
 				<td class="center" colspan="2">N/A</td>
