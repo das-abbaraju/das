@@ -23,7 +23,7 @@ report.setPageByResult(request.getParameter("showPage"));
 report.setLimit(50);
 
 //report.addFilter(new SelectFilterInteger("conID", "gc.subID=?", request.getParameter("conID")));
-report.addFilter(new SelectFilter("workStatus", "gc.workStatus = '?'", request.getParameter("workStatus"), "P", ""));
+report.addFilter(new SelectFilter("workStatus", "gc.workStatus = '?'", request.getParameter("workStatus"), "", ""));
 report.addFilter(new SelectFilter("name", "a.name LIKE '?%'", request.getParameter("name")));
 
 List<BasicDynaBean> searchData = report.getPage();
@@ -64,9 +64,9 @@ form.smallform {
 		<option value="Y"<%="Y".equals(report.getFilterValue("workStatus"))?" SELECTED":"" %>>Yes</option>
 		<option value="N"<%="N".equals(report.getFilterValue("workStatus"))?" SELECTED":"" %>>No</option>
 	</select>
-	<input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)" onMouseOut="MM_swapImgRestore()">
+	<input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onClick="runSearch( 'form1')" >
 	<input type="hidden" name="showPage" value="1"/>
-	<input type="hidden" name="startsWith" value=""/>
+	<input type="hidden" name="startsWith"/>
 	<input type="hidden" name="orderBy"  value="<%=request.getParameter("orderBy") == null ? "gc.dateAdded DESC" : request.getParameter("orderBy") %>"/>
 </form>
 </div>
@@ -113,6 +113,6 @@ form.smallform {
 		} // end foreach loop
 	%>
 </table>
-
+<div><%=report.getPageLinksWithDynamicForm()%></div>
 </body>
 </html>
