@@ -430,7 +430,7 @@ select catID, opID, 3 from pqfOpMatrix where riskLevel = 2;
 /* ===== WELCOME CALL ====*/
 
 
-insert into contractor_audit (auditTypeID, conID, createdDate, expiresDate, auditStatus, auditorID, assignedDate, completedDate, closedDate, canDelete, percentCompleted)
+insert into contractor_audit (auditTypeID, conID, createdDate, expiresDate, auditStatus, auditorID, assignedDate, completedDate, closedDate, canDelete, percentComplete)
 select 9, c.id, welcomeCallDate, ADDDATE(welcomeCallDate,INTERVAL 3 MONTH), 'Active', welcomeAuditor_id, welcomeCallDate, welcomeCallDate, welcomeCallDate, 0, 100
 from contractor_info c
 join accounts a on c.id = a.id
