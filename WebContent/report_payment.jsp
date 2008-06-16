@@ -102,9 +102,9 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 			    <td>$<%=sBean.cBean.lastPaymentAmount%></td>
 			    <td><%=sBean.cBean.lastPayment%></td>
 			    <td class="middle"><input type="text" class=forms value="<%=sBean.cBean.newBillingAmount%>" size=3 name=amount></td>
-			    <td><input name="action" type="submit" class="buttons" value="Paid"></td>
+			    <td><input name="action" type="submit" class="buttons" value="Paid">
 				<input name="action_id" type="hidden" value="<%=sBean.aBean.id%>">
-                <input name="orderBy" type="hidden" value="<%=sBean.orderBy%>">
+                <input name="orderBy" type="hidden" value="<%=sBean.orderBy%>"></td>
 	          </form>
 		  	  </tr>
 <%	}//while %>
