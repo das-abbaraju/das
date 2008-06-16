@@ -747,6 +747,11 @@ analyze table contractor_audit;
 analyze table pqfQuestions;
 analyze table pqfData;
 
+/* Adding a new Column displayOrder to audit_type */
+alter table `audit_type` 
+	add column `displayOrder` tinyint default NULL;
+
+update audit_type set displayOrder = 100;
 
 delete from app_properties;
 insert  into `app_properties`(`property`,`value`) 
@@ -766,3 +771,4 @@ values ('DEFAULT_SIGNATURE','PICS \r\nP.O. Box 51387\r\nIrvine CA 92619-1387\r\n
 ('email_certificate_expire_subject','${opName} insurance certificate about to expire'),
 ('email_verifyPqf_body','${contact_name}\r\n\r\nUpon review of your PQF I have noticed that there are a few items that need your attention. Please either email or fax the following items to me:\r\n\r\n${missing_items}\r\n\r\nPlease find the OSHA Forms in the below links.\r\n\r\nOSHA Forms in Excel Format\r\nhttp://www.picsauditing.com/forms/form284.xls\r\nOSHA Recordkeeping Assistance\r\nhttp://www.picsauditing.com/forms/form41.pdf\r\n\r\n\r\n\r\n${permissions.display_name}\r\nPICS\r\nP.O. Box 51387\r\nIrvine CA 92619-1387\r\ntel: (949)387-1940\r\nfax: (949)269-9149\r\n\r\nhttp://www.picsauditing.com\r\n'),
 ('email_verifyPqf_subject','PQF Verification for ${display_name}');
+
