@@ -166,9 +166,4 @@ public class AuditActionSupport extends ContractorActionSupport {
 				descriptionText = "OSHA Recordable";
 		return descriptionText;
 	}
-
-	public void setDescriptionOsMs(String descriptionOsMs) {
-		this.descriptionOsMs = descriptionOsMs;
-	}
-
 }

@@ -14,10 +14,12 @@
 	<s:hidden name="oshaID" value="%{id}"></s:hidden>
 <table class="osha">
 <thead>
-<tr class="location">
-	<td colspan="4">
-		<span class="right"><s:submit name="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this location? This action cannot be undone.');"></s:submit></span>
-		<s:property value="type"/> Location - <s:property value="location"/> <s:property value="description"/>
+<tr>
+	<td>
+		<s:select name="%{type}" headerValue="-Type-" headerKey="1" list="#{'OSHA':'OSHA','MSHA':'MSHA'}" value="%{type}" cssClass="forms"/>
+	    Location - <s:select name="%{location}" list="#{'Corporate':'Corporate','Division':'Division','Region':'Region','Site':'Site'}" value="%{location}" cssClass="forms"/>
+	    &nbsp;<s:textfield name="description" cssClass="osha" size="10" />&nbsp;&nbsp;
+		<s:submit name="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this location? This action cannot be undone.');"></s:submit>
 	</td>
 </tr>
 <tr>
