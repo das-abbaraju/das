@@ -94,8 +94,9 @@ public class CalendarBean extends DataBean {
 								else
 									dayStr += "<br><strong>" + DateBean.format(entry.getEntryDate(), "h:mm a") + "</strong>";
 								dayStr += " - ";
-							}
-							dayStr += "<a href=\"ConAuditList.action?id="+entry.getAuditID()+"\">"+entry.getConName().substring(0, thismaxchars)+"</a>";
+							} else
+								dayStr += "<br><strong>" + DateBean.format(entry.getEntryDate(), "h:mm a") + "</strong>";
+							dayStr += " <a href=\"Audit.action?auditID="+entry.getAuditID()+"\">"+entry.getConName().substring(0, thismaxchars)+"</a>";
 							if (null != entry.getAuditorName())
 								dayStr += " (" + entry.getAuditorName() + ")";
 						}
