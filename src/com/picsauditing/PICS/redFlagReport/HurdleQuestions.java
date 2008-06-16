@@ -21,7 +21,7 @@ public class HurdleQuestions extends DataBean {
 	public String questionType = "";
 	public ArrayList<String> qIDsAL = null;
 	static final String[] COMPARISON_NUMBER_ARRAY = {">","<","="};
-	static final String[] COMPARISON_CHECKED_ARRAY = {"=","<>"};
+	static final String[] COMPARISON_CHECKED_ARRAY = {"=","!="};
 	static final String[] VALUE_CHECKED_ARRAY = {"X","Checked","-","Not Checked"};
 
 	public int count = 0;
