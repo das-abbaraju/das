@@ -87,16 +87,15 @@ public class CalendarBean extends DataBean {
 								thismaxchars = entry.getConName().length();
 							else
 								thismaxchars = maxchars;
-							dayStr += "<span class='buttons'>";
+//							dayStr += "<span class='buttons'>";
 							if (permissions.isPicsEmployee()) {
 								if ("Web".equals(entry.getAuditLocation()))
-									dayStr += "<br><i>" + DateBean.format(entry.getEntryDate(), "h:mm a") + "</i>";
+									dayStr += "<br><font color=003366>" + DateBean.format(entry.getEntryDate(), "h:mm a") + "</font>";
 								else
-									dayStr += "<br><strong>" + DateBean.format(entry.getEntryDate(), "h:mm a") + "</strong>";
-								dayStr += " - ";
+									dayStr += "<br><font color=993300>" + DateBean.format(entry.getEntryDate(), "h:mm a") + "</font>";
 							} else
 								dayStr += "<br><strong>" + DateBean.format(entry.getEntryDate(), "h:mm a") + "</strong>";
-							dayStr += " <a href=\"Audit.action?auditID="+entry.getAuditID()+"\">"+entry.getConName().substring(0, thismaxchars)+"</a>";
+							dayStr += " - <a href=\"Audit.action?auditID="+entry.getAuditID()+"\">"+entry.getConName().substring(0, thismaxchars)+"</a>";
 							if (null != entry.getAuditorName())
 								dayStr += " (" + entry.getAuditorName() + ")";
 						}
