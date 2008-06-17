@@ -649,7 +649,7 @@ td.forgotpassword {
 	text-align: center;
 }
 
-td.forgotpassword a:hover,a:visited {
+td.forgotpassword a,a:hover,a:visited {
 	font-size: 10px; 
 	font-family: sans-serif;
 	line-height: 14px;
