@@ -14,10 +14,10 @@
 			<s:textfield name="answer.answer" size="30" onblur="javascript:saveAnswer(%{questionID}, this);"/>
 		</s:if>
 		<s:if test="questionType == 'Date'">
-			<nobr><s:textfield name="answer.answer" size="8" 
-			onclick="cal1.select(document.forms('audit_form').answer,'answer.answer','M/d/yy','answer'); return false;" />
-			<img src="images/icon_calendar.gif" width="18" height="15" />
-			</nobr>
+			<nobr><s:textfield id="answer_%{questionID}" name="answer.answer" size="8" 
+			onclick="cal1.select($('answer_%{questionID}'),'answer_%{questionID}','yyyy-MM-dd','%{answer.answer}'); return false;"
+			onblur="javascript:saveAnswer(%{questionID}, this);"/>
+			<input type="image" src="images/icon_calendar.gif" width="18" height="15" onclick="cal1.select($('answer_<s:property value="questionID"/>'),'answer_<s:property value="questionID"/>','yyyy-MM-dd','<s:property value="answer.answer"/>'); return false;"/>
 		</s:if>
 		<s:if test="questionType == 'Check Box' || questionType == 'Industry' || questionType == 'Main Work'">
 			<s:checkbox fieldValue="X" value="answer.answer.length() == 1" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);" />

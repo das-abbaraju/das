@@ -5,7 +5,7 @@
 	
 	<span class="answer">
 		<s:if test="questionType == 'Date'">
-			<s:property value="com.picsauditing.PICS.DateBean.toShowFormat(answer.answer)"/>
+			<s:property value="answer.answer"/>
 		</s:if>
 		<s:elseif test="questionType == 'File'">
 			<s:if test="answer.answer.length() > 0">
