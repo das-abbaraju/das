@@ -48,7 +48,7 @@
 		<tfoot>
 			<tr>
 				<th></th>
-				<td class="center"><s:submit value="Save Profile" name="save" onclick="$('message').hide(); return true;"/></th>
+				<td class="center"><s:submit value="Save Profile" name="save" onclick="$('message').hide(); return true;"/></td>
 			</tr>
 		</tfoot>
 	</table>
