@@ -1,3 +1,6 @@
+<%@page import="com.picsauditing.jpa.entities.ContractorOperator"%>
+<%@page import="com.picsauditing.dao.ContractorOperatorDAO"%>
+<%@page import="com.picsauditing.util.SpringUtils"%>
 <%@page language="java" %>
 <%@include file="includes/main.jsp" %>
 <%
@@ -10,11 +13,12 @@ try {
 		%>Edit ContractorApproval Permission required<%
 		return;
 	}
-	GeneralContractor gcBean = new GeneralContractor();
-	gcBean.setConID(Integer.parseInt(request.getParameter("conID")));
-	gcBean.setOpID(permissions.getAccountId());
-	gcBean.setWorkStatus(request.getParameter("workStatus"));
-	gcBean.save();
+	
+	ContractorOperatorDAO dao = (ContractorOperatorDAO)SpringUtils.getBean("ContractorOperatorDAO");
+	ContractorOperator co = dao.find(Integer.parseInt(request.getParameter("conID")), permissions.getAccountId());
+	co.setWorkStatus(request.getParameter("workStatus"));
+	dao.save(co);
+	
 	%>Saved<%
 } catch (Exception e) {
 	%>Failed to save<%
