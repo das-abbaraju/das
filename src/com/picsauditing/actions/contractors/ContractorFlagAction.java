@@ -138,15 +138,16 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
-	protected void checkPermissionToView() throws NoRightsException {
+	protected boolean checkPermissionToView() throws NoRightsException {
+		// TODO discuss with Keerthi, why/what this does
 		if (permissions.hasPermission(OpPerms.StatusOnly)) {
 			co = contractorOperatorDao.find(id, Integer.parseInt(permissions
 					.getAccountIdString()));
 			if (co.getOperatorAccount().getId().equals(
 					new Integer(permissions.getAccountIdString())))
-				return;
+				return true;
 		}
-		super.checkPermissionToView();
+		return super.checkPermissionToView();
 	}
 
 	public int getOpID() {

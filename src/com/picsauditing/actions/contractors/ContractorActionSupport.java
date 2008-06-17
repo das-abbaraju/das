@@ -26,6 +26,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 	protected ContractorAccountDAO accountDao;
 	protected ContractorAuditDAO auditDao;
 	private List<ContractorOperator> operators;
+	protected boolean limitedView = false;
 
 	protected String subHeading;
 
@@ -47,17 +48,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 		checkPermissionToView();
 	}
 
-	protected void checkPermissionToView() throws NoRightsException {
-		// TODO Check permissions to view this contractor
-		// ContractorBean.canView
-		// Throw out limited operator users
-		// throw exception
-		if (checkPermissionToView("summary"))
-			return;
-		throw new NoRightsException("Contractor");
-	}
-
-	public boolean checkPermissionToView(String what) {
+	protected boolean checkPermissionToView() throws NoRightsException {
 		if (permissions.hasPermission(OpPerms.AllContractors))
 			return true;
 
@@ -71,17 +62,12 @@ public class ContractorActionSupport extends PicsActionSupport {
 			return false;
 		}
 		if (permissions.isOperator() || permissions.isCorporate()) {
-			// I don't really like this way. It's a bit confusing
-			// Basically, if all we're doing is searching for contractors
-			// and looking at their summary page, then it's OK
+			if (limitedView)
+				// Basically, if all we're doing is searching for contractors
+				// and looking at their summary page, then it's OK
+				return true;
 			// If we want to look at their detail, like PQF data
 			// Then we have to add them first (generalContractors).
-			// if ("summary".equals(what)) {
-			// // Until we figure out Contractor viewing permissions better,
-			// this will have
-			// to do
-			// return true;
-			// }
 			if (permissions.isCorporate()) {
 				OperatorBean operator = new OperatorBean();
 				try {

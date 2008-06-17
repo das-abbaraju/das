@@ -22,6 +22,7 @@ public class ContractorView extends ContractorActionSupport {
 	{
 		if (!forceLogin())
 			return LOGIN;
+		limitedView = true;
 		findContractor();
 		
 		auditBuilder.buildAudits(this.contractor);
