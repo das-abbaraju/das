@@ -55,16 +55,58 @@ a img {
 		margin-top: 10px;
 		padding-top: 8px;
 */
-#smallnav {
+
+
+/********************  SIDEBOX STYLES - OLD SMALLNAV  ************************/
+
+.sidebox {
+	margin: 10px auto;
+	height: 30px;
+	background: url(../images/3dsquare-right.jpg) no-repeat bottom right;
+
+}
+
+.sidebox p {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	color: #eeeeee;
+	padding-top: 8px;
+	padding-left: 10px;
+	padding-right: 5px;
+}
+
+.sidebox a:link, .sidebox a:visited {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	color: #eeeeee;
+	padding: 5px;
+}
+
+.sidebox a:hover, .sidebox a:active {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	color: #1B3665;
+	padding: 10px 5px;
+	background-color: #eeeeee;
+	text-decoration: none;
+}
+.boxbody {
+	background: url(../images/3dsquare-left.jpg) no-repeat bottom left;
+	height: 30px;
+}
+
+/********************  SMALL NAV STYLES  ************************/
+
+/*#smallnav {
 	width: 260px;
 	margin-top: 10px;
 	padding-top: 8px;
 	padding-left: 15px;
 	height: 30px;
-	float: right;
 	background: url(../images/3dsquare2.jpg) no-repeat;
+	float: right;
 }
-
+/*
 #smallnav p {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10px;
@@ -85,7 +127,8 @@ a img {
 	padding: 10px 5px;
 	background-color: #eeeeee;
 	text-decoration: none;
-}
+}*/
+
 
 /********************  Main body Styles  ************************/
 #bodyholder {
