@@ -13,6 +13,7 @@ public class ConHeader extends AuditActionSupport {
 	}
 
 	public String execute() throws Exception {
+		limitedView = true;
 		if (!forceLogin())
 			return SUCCESS;
 
