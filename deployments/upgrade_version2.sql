@@ -756,7 +756,11 @@ analyze table pqfQuestions;
 analyze table pqfData;
 
 /* fix orphaned office audit question id reference in IIPP category */
-update pqfQuestions set dependsonqid = null where questionid=1284
+update pqfQuestions set dependsonqid = null where questionid=1284;
+
+/* delete the form that was a link to a blank office audit */
+delete from forms
+where formID=11;
 
 delete from app_properties;
 insert  into `app_properties`(`property`,`value`) 
