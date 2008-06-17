@@ -3,17 +3,12 @@ package com.picsauditing.actions.contractors;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.PICS.OperatorBean;
-import com.picsauditing.access.MenuItem;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -27,7 +22,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 	protected ContractorAuditDAO auditDao;
 	private List<ContractorOperator> operators;
 	protected boolean limitedView = false;
-
+	
 	protected String subHeading;
 
 	public ContractorActionSupport(ContractorAccountDAO accountDao,
@@ -45,10 +40,11 @@ public class ContractorActionSupport extends PicsActionSupport {
 		if (contractor == null)
 			throw new Exception("Contractor " + this.id + " not found");
 
-		checkPermissionToView();
+		if(!checkPermissionToView())
+			throw new NoRightsException("No Rights to View this Contractor");
 	}
 
-	protected boolean checkPermissionToView() throws NoRightsException {
+	protected boolean checkPermissionToView(){
 		if (permissions.hasPermission(OpPerms.AllContractors))
 			return true;
 
@@ -162,6 +158,52 @@ public class ContractorActionSupport extends PicsActionSupport {
 					.equals(YesNo.Yes))
 				return true;
 
+		return false;
+	}
+
+	public boolean isShowHeader() {
+		if(permissions.hasPermission(OpPerms.StatusOnly)) 
+			return false;
+		if(permissions.isOperator()) {
+			return isCheckPermissionForOperator();
+		}
+		if (permissions.isCorporate()) {
+			return isCheckPermissionForCorporate();
+		}
+		if(permissions.isAuditor()) {
+			for (ContractorAudit audit : getActiveAudits()) {
+				if (audit.getAuditor().getId() == permissions.getUserId()
+						&& (audit.getAuditStatus().equals(AuditStatus.Pending) || audit
+								.getAuditStatus().equals(AuditStatus.Submitted)))
+					return true;
+				else
+					return false;	
+			}
+		}
+		return true;
+	}
+	
+	public boolean isCheckPermissionForOperator() {
+		for (ContractorOperator operator : getOperators())
+			if (operator.getOperatorAccount().getId() == permissions.getAccountId())
+				return true;
+				
+		return false;
+	}
+	
+	public boolean isCheckPermissionForCorporate() {
+		OperatorBean operator = new OperatorBean();
+		try {
+			operator.isCorporate = true;
+			operator.setFromDB(permissions.getAccountIdString());
+			for (String id : operator.facilitiesAL) {
+				for (ContractorOperator corporate : getOperators())
+					if (corporate.getOperatorAccount().getIdString()
+							.equals(id))
+						return true;
+			}
+		} catch (Exception e) {
+		}
 		return false;
 	}
 }

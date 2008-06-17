@@ -8,7 +8,7 @@
 </s:if> <s:else>
 	<s:property value="subHeading" />
 </s:else></span></h1>
-<pics:permission perm="StatusOnly" negativeCheck="true">
+<s:if test="showHeader">
 <div id="internalnavcontainer">
 <ul id="navlist">
 	<li><a href="ContractorView.action?id=<s:property value="id" />"
@@ -133,4 +133,4 @@
 		</pics:permission>
 	</s:if></div>
 </s:if>
-</pics:permission>
+</s:if>

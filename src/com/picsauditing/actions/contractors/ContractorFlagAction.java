@@ -1,22 +1,16 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
-import com.picsauditing.PICS.ContractorBean;
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagCalculatorSingle;
 import com.picsauditing.PICS.redFlagReport.Note;
-import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
@@ -53,7 +47,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-
+		limitedView = true;
 		findContractor();
 		if (opID == 0)
 			opID = permissions.getAccountId();
@@ -138,16 +132,16 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
-	protected boolean checkPermissionToView() throws NoRightsException {
-		// TODO discuss with Keerthi, why/what this does
+	protected boolean checkPermissionToView() {
 		if (permissions.hasPermission(OpPerms.StatusOnly)) {
-			co = contractorOperatorDao.find(id, Integer.parseInt(permissions
-					.getAccountIdString()));
-			if (co.getOperatorAccount().getId().equals(
-					new Integer(permissions.getAccountIdString())))
+			// This user is Status Only and they should have
+			// access to their contractor flag color.
+			co = contractorOperatorDao.find(id, permissions.getAccountId());
+			if (co.getOperatorAccount().getId() == permissions.getAccountId())
 				return true;
 		}
 		return super.checkPermissionToView();
+	
 	}
 
 	public int getOpID() {
