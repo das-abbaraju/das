@@ -106,7 +106,7 @@ public class AuditDataFileUpload extends FileUploadActionSupport {
 						// read/update the ContractorAudit and AuditCatData
 						
 						
-						setMessage("Saved");
+						setMessage("<html><head><title>temp</title></head><body id=\"response\">" + extension + "</body>");
 					}
 					else
 					{
