@@ -23,6 +23,12 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css" title="bluemenu"/>
 <script type="text/javascript" src="js/chrome.js"></script>
 <script type="text/javascript" src="js/Search.js"></script>
+
+<!--CSS FIXES FOR INTERNET EXPLORER ----------------------------------------->
+<!--[if IE]>
+<link rel="stylesheet" href="css/ie.css" type="text/css" />
+<![endif]-->
+
 <decorator:head />
 </head>
 <body>
