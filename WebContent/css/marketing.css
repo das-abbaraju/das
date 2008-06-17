@@ -643,3 +643,14 @@ input.valid {
 	color: #003366;
 	background: #fff;   /* White background for valid fields */
 }
+
+/************ Forgot Password *********/
+td.forgotpassword {
+	text-align: center;
+}
+
+td.forgotpassword a:hover,a:visited {
+	font-size: 10px; 
+	font-family: sans-serif;
+	line-height: 14px;
+}

@@ -1,12 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
+<jsp:useBean id="permissions"
+	class="com.picsauditing.access.Permissions" scope="session" />
 <%@ taglib uri="sitemesh-decorator" prefix="decorator"%>
 <decorator:usePage id="thisPage" />
 <html>
 <head>
-<title>PICS - <decorator:title
-	default="PICS" /></title>
+<title>PICS - <decorator:title default="PICS" /></title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <link href="css/marketing.css" rel="stylesheet" type="text/css" />
 <decorator:head />
@@ -35,10 +35,15 @@
 						<td width="146" height="218" align="center" valign="top"><a
 							href="index.jsp"><img src="images/logo.gif" alt="Home"
 							width="146" height="145" border="0"></a><br>
-						<%	if (permissions.isLoggedIn()) { %>
-						<a class="blueMain" href="Home.action">Back to PICS Online</a><br />
-						<a class="blueMain" href="logout.jsp">Logout</a>
-						<%	} else if (!thisPage.getRequest().getRequestURI().contains("login")) { %>
+						<%
+							if (permissions.isLoggedIn())
+							{
+						%> <a class="blueMain"
+							href="Home.action">Back to PICS Online</a><br />
+						<a class="blueMain" href="logout.jsp">Logout</a> <%
+ 	} else if (!thisPage.getRequest().getRequestURI().contains("login"))
+ 	{
+ %>
 						<table border="0" cellspacing="0" cellpadding="1">
 							<tr>
 								<td height="5"></td>
@@ -60,16 +65,18 @@
 									class="loginForms" size="9"></td>
 							</tr>
 							<tr>
-								<td>&nbsp;</td>
+								<td class="forgotpassword" valign="middle">
+									<a href="forgot_password.jsp"">Forgot<br>Password</a></td>
 								<td><input name="Submit" type="image"
 									src="images/button_login.jpg" width="65" height="28" border="0">
 								</td>
+
 							</tr>
 							<tr>
 								<td colspan="2" class="blueMain"></td>
 							</tr>
 						</table>
-						<%	
+						<%
 							}
 						%>
 						</td>
@@ -99,8 +106,9 @@
 								</td>
 							</tr>
 							<tr>
-								<%	
-									if (thisPage.getRequest().getRequestURI().contains("index.jsp")) {
+								<%
+									if (thisPage.getRequest().getRequestURI().contains("index.jsp"))
+									{
 								%>
 								<td height="146"><object
 									classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
@@ -113,7 +121,8 @@
 										type="application/x-shockwave-flash" width="511" height="146"></embed>
 								</object><script type="text/javascript" src="js/ieupdate.js"></script></td>
 								<%
-									} else {
+									} else
+									{
 								%>
 								<td height="146"><img
 									src="images/photo_<decorator:getProperty property="meta.iconName" default="login" />.jpg"
