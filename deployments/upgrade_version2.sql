@@ -382,6 +382,13 @@ DELETE from pqfCatData where conID not in
 delete from flags
 where opID in (select id from accounts where type = 'Contractor');
 
+update contractor_info set welcomeAuditor_id = 917 where welcomeAuditor_id = 2823;
+update contractor_info set welcomeAuditor_id = 940 where welcomeAuditor_id = 3224;
+update contractor_info set welcomeAuditor_id = 937 where welcomeAuditor_id = 3225;
+update contractor_info set welcomeAuditor_id = 938 where welcomeAuditor_id = 3226;
+update contractor_info set welcomeAuditor_id = 941 where welcomeAuditor_id = 3487;
+update contractor_info set welcomeAuditor_id = 943 where welcomeAuditor_id = 3486;
+
 
 /* Create audit_operator table */
 drop table IF EXISTS `audit_operator`;

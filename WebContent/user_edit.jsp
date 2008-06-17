@@ -15,8 +15,8 @@
 permissions.tryPermission(OpPerms.EditUsers, OpType.View);
 
 String accountID = permissions.getAccountIdString();
-if (permissions.hasPermission(OpPerms.AllOperators) && request.getParameter("accountID") != null) {
-	accountID = Utilities.intToDB(request.getParameter("accountID"));
+if (permissions.hasPermission(OpPerms.AllOperators) && request.getParameter("accountId") != null) {
+	accountID = Utilities.intToDB(request.getParameter("accountId"));
 }
 
 String userID;
@@ -50,7 +50,7 @@ if (action.equals("saveUser")) {
 		uBean.writeToDB();
 		if (isNew) {
 			%>Successfully Created New <%=isGroup?"Group":"User"%><br /><br />
-			<a href="UsersManage.action?accountID=<%=uBean.userDO.accountID%>&isGroup=<%=uBean.userDO.isGroup%>&isActive=Yes">Click to Refresh List</a><%
+			<a href="UsersManage.action?accountId=<%=uBean.userDO.accountID%>&isGroup=<%=uBean.userDO.isGroup%>&isActive=Yes">Click to Refresh List</a><%
 			return;
 		}
 	} else {
