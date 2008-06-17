@@ -49,19 +49,36 @@
 	}
 	
 	function startCallback( theId ) {
-		var elm = $('upload_status_' + theId);
+		var elm = $('status_upload_' + theId);
 		elm.innerHTML="<img src='ajax_process.gif' /> Uploading File...";
+		elm = $('file_upload_' + theId);
+		elm.hide();
 		return true;
 	}
 	
 	function completeCallback(theId ) {
-		var elm = $('upload_status_' + theId);
+		var elm = $('status_upload_' + theId);
 		elm.innerHTML="Upload Complete";
-		
-		elm.hide();
-		var showUpload = $('show_upload_'+theId);
+		elm = $('show_upload_'+theId);
+	    elm.show();
+		elm = $('file_upload_'+theId);
+	    elm.hide();
 	    
-	    showUpload.show();
+
+	    elm = $('upload_iframe_' + theId);
+	    var doc = elm.contentDocument;
+        if (doc == undefined || doc == null)
+            doc = elm.contentWindow.document;
+	    
+	    var ext = doc.getElementById('response').innerHTML;
+	    
+	    elm = $('link_' + theId);
+	    elm.onclick = function() {
+	    	openQuestion(theId , ext); 
+	    	return false;
+	    };
+
+	    return true;
 	}
 </s:if>
 	
@@ -73,7 +90,7 @@
 	}
 
 	function openQuestion(questionID, extension) {
-		url = 'servlet/showpdf?id=<s:property value="contractor.id"/>&file=pqf'+extension+questionID;
+		url = 'servlet/showpdf?id=<s:property value="conAudit.id"/>&file=pqf'+extension+questionID;
 		title = 'PICS File Upload';
 		pars = 'scrollbars=yes,resizable=yes,width=700,height=450';
 		window.open(url,title,pars);
