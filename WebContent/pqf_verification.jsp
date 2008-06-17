@@ -28,7 +28,7 @@ if ("on".equals(request.getParameter("osha1"))) sql.addWhere("os.verifiedDate1 I
 if ("on".equals(request.getParameter("osha2"))) sql.addWhere("os.verifiedDate2 IS NULL");
 if ("on".equals(request.getParameter("osha3"))) sql.addWhere("os.verifiedDate3 IS NULL");
 
-sql.addWhere("ca.auditStatus='"+AuditStatus.Submitted+"'");
+sql.addWhere("ca.auditStatus IN ('"+AuditStatus.Submitted+"','"+AuditStatus.Pending+"')");
 
 /*
 sql.addQuestion(1617);
@@ -117,6 +117,7 @@ List<BasicDynaBean> searchData = report.getPage();
 	<tr>
 		<td></td>
 		<td><a href="#" onclick="changeOrderBy('form1','a.name'); return false;" >Contractor</a></td>
+		<td ><a href="javascript: changeOrderBy('form1','auditStatus');" >Status</a></td>
 		<td ><a href="javascript: changeOrderBy('form1','ca<%=AuditType.PQF%>.completedDate');" >Submitted</a></td>
 		<td ><a href="javascript: changeOrderBy('form1','scheduledDate');" >Followup</a></td>
 		<td >% Verified</td>
@@ -133,6 +134,7 @@ List<BasicDynaBean> searchData = report.getPage();
 	<tr id="auditor_tr<%=row.get("auditID")%>" <%=color.nextBgColor()%>>
 		<td class="right"><%=color.getCounter()%></td>
 		<td><a href="VerifyView.action?auditID=<%=row.get("auditID")%>"><%=row.get("name")%></a></td>
+		<td><%=row.get("auditStatus")%></td>
 		<td><%=DateBean.toShowFormat(row.get("completedDate"))%></td>
 		<td><%=DateBean.toShowFormat(row.get("scheduledDate"))%></td>
 		<td align="right"><%=row.get("percentVerified")%>%</td>
