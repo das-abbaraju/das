@@ -1,0 +1,19 @@
+div#maincontainer {
+	min-width: 790px;
+	padding-top: 40px;
+	padding-right: 40px;
+	padding-bottom: 40px;
+	padding-left: 40px;
+	background-color: #797b7a;
+	font-family: Helvetica , Arial, sans-serif;
+	font-size: 14px;
+	line-height: 28px;
+	color: #f7f7f7;
+}
+
+div#maincontainer p{
+	font-family: Helvetica , Arial, sans-serif;
+	font-size: 14px;
+	line-height: 28px;
+	color: #f7f7f7;
+}
