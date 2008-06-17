@@ -34,6 +34,7 @@
 					method: 'post', 
 					parameters: pars,
 					onSuccess: function(transport) {
+						$('required_td'+questionid).innerHTML = '';
 						new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 					}
 				});
@@ -119,7 +120,9 @@
 			<s:iterator value="category.subCategories">
 				<tr class="subCategory">
 					<td colspan="3">Sub Category <s:property value="category.number"/>.<s:property value="number"/> - 
-					<s:property value="subCategory"/></td>
+					<s:property value="subCategory"/>
+					<span style="width: 150px;position:absolute;right:10px;font-size: 14px;">* &nbsp;-&nbsp; Required</span>
+					</td>
 				</tr>
 				<s:iterator value="questions">
 					<s:if test="isGroupedWithPrevious.toString() == 'No'">

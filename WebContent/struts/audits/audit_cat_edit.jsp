@@ -84,7 +84,11 @@
 
 		</s:if>
 	</td>
-	
+	<td align="center" id="required_td<s:property value="questionID"/>">
+		<s:if test="required && answer.answer.length() < 1 ">
+			<span class="redMain">*</span>
+		</s:if>
+	</td>
 </tr>
 <s:if test="questionType == 'Text Area'">
 	<tr class="group<s:if test="#shaded">Shaded</s:if>"><td>&nbsp;</td><td colspan="2" class="right">
