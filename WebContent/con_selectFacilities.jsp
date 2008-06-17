@@ -152,16 +152,17 @@
 
 		// Show Facilities NOT selected
 		for (OperatorAccount operator : operators) {
-			if( ! operator.isOperator() ) continue;
-			String opID = operator.getId().toString();
-			String name = operator.getName();
-			if (!cBean.generalContractors.contains(opID)) {
-				if (permissions.isCorporate() && pBean.oBean.facilitiesAL.contains(opID)
-						|| !permissions.isCorporate()) {
-					String flagColor = "red";
-					FlagDO opFlag = flagMap.get(opID);
-					if (opFlag != null)
-						flagColor = opFlag.getFlag().toLowerCase();
+			if(!permissions.isOperator()) {
+				if( ! operator.isOperator() ) continue;
+				String opID = operator.getId().toString();
+				String name = operator.getName();
+					if (!cBean.generalContractors.contains(opID)) {
+						if (permissions.isCorporate() && pBean.oBean.facilitiesAL.contains(opID)
+							|| !permissions.isCorporate()) {
+								String flagColor = "red";
+								FlagDO opFlag = flagMap.get(opID);
+							if (opFlag != null)
+								flagColor = opFlag.getFlag().toLowerCase();
 	%>
 	<tr <%=Utilities.getBGColor(count++)%>>
 		<td class="center">
@@ -182,12 +183,13 @@
 		</td>
 	</tr>
 	<%
-		}
+					}
+				}
 			}
 		}
 	%>
 	<%
-		if (!permissions.isOnlyAuditor()) {
+		if (!permissions.isOnlyAuditor() && !permissions.isOperator()) {
 	%>
 	<tr>
 		<td class="right" colspan="3"><input name="submit"
