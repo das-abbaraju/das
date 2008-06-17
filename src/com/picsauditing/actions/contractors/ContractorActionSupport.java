@@ -170,7 +170,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 		if (permissions.isCorporate()) {
 			return isCheckPermissionForCorporate();
 		}
-		if(permissions.isAuditor()) {
+		if(permissions.isOnlyAuditor()) {
 			for (ContractorAudit audit : getActiveAudits()) {
 				if (audit.getAuditor().getId() == permissions.getUserId()
 						&& (audit.getAuditStatus().equals(AuditStatus.Pending) || audit
