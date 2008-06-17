@@ -8,6 +8,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import com.picsauditing.PICS.AccountBean;
+import com.picsauditing.jpa.entities.AuditType;
 
 /**
  * This is the main class that is stored for each user containing information 
@@ -225,6 +226,7 @@ public class Permissions {
 		return permissions;
 	}
 
+	@Deprecated
 	public boolean canSeeAudit(int auditType) {
 		if (isContractor())
 			return true;
@@ -233,6 +235,19 @@ public class Permissions {
 		//
 		if (canSeeAudits != null)
 			return canSeeAudits.contains(new Integer(auditType));
+		return false;
+	}
+	
+	public boolean canSeeAudit(AuditType auditType) {
+		if (isContractor() && auditType.isCanContractorView())
+			return false;
+		if (isContractor())
+			return true;
+		if (hasPermission(OpPerms.AllContractors))
+			return true;
+		//
+		if (canSeeAudits != null)
+			return canSeeAudits.contains(auditType);
 		return false;
 	}
 

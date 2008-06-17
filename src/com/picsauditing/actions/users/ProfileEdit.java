@@ -17,6 +17,8 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 	}
 
 	public String execute() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
 		if (save != null) {
 			if (password1 != null && password1.length() > 3
 					&& password1.equals(password2))
