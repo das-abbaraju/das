@@ -383,6 +383,7 @@ div.contact {
 
 .info {
 	width: 380px;
+	border: 1px solid black;
 }
 
 /******************** Internal Page Navigation  ************************/
@@ -464,3 +465,5 @@ ol {
 	list-style-position: inside;
 	padding: 5px;
 }
+
+ 

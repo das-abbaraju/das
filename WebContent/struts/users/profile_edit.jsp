@@ -2,11 +2,13 @@
 <html>
 <head>
 <title>Edit Profile</title>
+<script src="js/prototype.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" media="screen"
-	href="css/forms.css" />
+	href="css/forms.css"/>
 </head>
 <body>
 <h1>Edit Profile</h1>
+<div class="info" id="message" <s:if test="message == null">style="display: none"</s:if>><s:property value="message"/></div>
 
 <s:form>
 	<s:hidden name="u.id" />
@@ -46,7 +48,7 @@
 		<tfoot>
 			<tr>
 				<th></th>
-				<td class="center"><s:submit value="Save Profile" /></th>
+				<td class="center"><s:submit value="Save Profile" name="save" onclick="$('message').hide(); return true;"/></th>
 			</tr>
 		</tfoot>
 	</table>
