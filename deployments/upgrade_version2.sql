@@ -760,6 +760,9 @@ alter table `audit_type`
 
 update audit_type set displayOrder = 100;
 
+/* fix orphaned office audit question id reference in IIPP category */
+update pqfQuestions set dependsonqid = null where questionid=1284
+
 delete from app_properties;
 insert  into `app_properties`(`property`,`value`) 
 values ('DEFAULT_SIGNATURE','PICS \r\nP.O. Box 51387\r\nIrvine CA 92619-1387\r\ntel: (949)387-1940\r\nfax: (949)269-9177\r\nhttp://www.picsauditing.com\r\nemail: info@picsauditing.com (Please add this email address to your address book to prevent it from being labeled as spam)\r\n'),
