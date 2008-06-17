@@ -36,6 +36,12 @@ CREATE TABLE `audit_type` (
   UNIQUE KEY `auditName` (`auditName`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+/* Adding a new Column displayOrder to audit_type */
+alter table `audit_type` 
+	add column `displayOrder` tinyint(4) default NULL;
+
+update audit_type set displayOrder = 100;
+
 /*Data for the table `audit_type` */
 
 insert  into `audit_type`(`auditTypeID`,`auditName`,`description`,`hasMultiple`,`isScheduled`,`hasAuditor`,`hasRequirements`,`canContractorView`,`canContractorEdit`,`monthsToExpire`,`dateToExpire`,`legacyCode`) 
@@ -753,12 +759,6 @@ analyze table desktopMatrix;
 analyze table contractor_audit;
 analyze table pqfQuestions;
 analyze table pqfData;
-
-/* Adding a new Column displayOrder to audit_type */
-alter table `audit_type` 
-	add column `displayOrder` tinyint default NULL;
-
-update audit_type set displayOrder = 100;
 
 /* fix orphaned office audit question id reference in IIPP category */
 update pqfQuestions set dependsonqid = null where questionid=1284
