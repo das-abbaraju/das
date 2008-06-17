@@ -383,6 +383,10 @@ div.contact {
 
 .info {
 	width: 380px;
+}
+
+div.message_info {
+	width: 380px;
 	border: 1px solid black;
 }
 

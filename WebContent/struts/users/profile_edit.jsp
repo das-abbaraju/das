@@ -8,7 +8,7 @@
 </head>
 <body>
 <h1>Edit Profile</h1>
-<div class="info" id="message" <s:if test="message == null">style="display: none"</s:if>><s:property value="message"/></div>
+<div class="message_info" id="message" <s:if test="message == null">style="display: none"</s:if>><s:property value="message"/></div>
 
 <s:form>
 	<s:hidden name="u.id" />
