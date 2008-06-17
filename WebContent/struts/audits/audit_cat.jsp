@@ -24,8 +24,8 @@
 		if( elm.type == 'text' || elm.type == 'radio' || elm.type == 'textarea')
 		{
 			var thevalue = elm.value;
-			if( thevalue != '' )
-			{
+			//if( thevalue != '' ) {
+			// Save blanks too
 				pars = pars + thevalue;
 				
 				var divName = 'status_'+questionid;
@@ -38,12 +38,11 @@
 						new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 					}
 				});
-			}
+			//}
 		}
 		else
 		{
-			//alert( elm.type );	
-			alert( elm.value );
+			alert( elm.type + ' ' +elm.value );
 		}
 		return true;
 	}

@@ -12,6 +12,9 @@
 
 <s:include value="filters.jsp" />
 
+<s:if test="message.length() > 0">
+	<div class="message_info"><s:property value="message"/></div>
+</s:if>
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>

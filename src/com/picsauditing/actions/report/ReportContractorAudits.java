@@ -47,6 +47,11 @@ public class ReportContractorAudits extends ReportAccount {
 		sql.addJoin("LEFT JOIN users auditor ON auditor.id = ca.auditorID");
 		sql.addField("auditor.name auditor_name");
 		if (permissions.isCorporate() || permissions.isOperator()) {
+			if (permissions.getCanSeeAudit().size() == 0) {
+				//this.addActionError();
+				message = "Your account does not have access to any audits. Please contact PICS.";
+				return SUCCESS;
+			}
 			sql.addWhere("atype.auditTypeID IN ("
 					+ Strings.implode(permissions.getCanSeeAudit(), ",") + ")");
 		}
