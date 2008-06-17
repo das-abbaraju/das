@@ -30,15 +30,23 @@
 <div id="headermain">
 <div id="masthead">
 <!-- !begin header -->
-<div id="smallnav"><p><% if (permissions.isLoggedIn()) { %>
+
+
+<div class="right">
+<div class="sidebox">
+	<div class="boxbody">
+		<p><% if (permissions.isLoggedIn()) { %>
 <span id="name">Welcome, <%=permissions.getName() %></span>
-| <a href="<%= permissions.hasPermission(OpPerms.StatusOnly) ? "ContractorOperatorLimited" : "Home" %>.action">Home</a>
-| <a href="logout.jsp">Logout</a>
+| <a href="<%= permissions.hasPermission(OpPerms.StatusOnly) ? "ContractorOperatorLimited" : "Home" %>.action">Home</a>| <a href="logout.jsp">Logout</a>
 <% } else { %>
 <span id="name">Welcome</span> | <a href="login.jsp">Login</a>
 <% } %></p>
+	</div>
+</div>
 </div>
 <% if (!permissions.isContractor() && !permissions.hasPermission(OpPerms.StatusOnly)) { %>
+
+
 <div id="headersearch">
 <form action="ContractorSearch.action" method="post">
 <input name="accountName" type="text" class="blueMain" size="20" value="- Contractor Search -" onfocus="clearText(this)" onblur="unclearText(this)"/>
