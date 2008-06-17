@@ -103,8 +103,23 @@ public class ReportAccount extends ReportActionSupport {
 	protected void toggleFilters() {
 		if (permissions.isOperator()) {
 			filterOperator = false;
+			filterAddress = false;
+			filterIndustry = false;
+			filterCerts = false;
+			filterVisible = false;
+			filterAuditor = false;
 		}
-
+		if (permissions.isCorporate()) {
+			filterFlagStatus = false;
+			filterAddress = false;
+			filterIndustry = false;
+			filterCerts = false;
+			filterVisible = false;
+			filterAuditor = false;
+			filterLicensedIn = false;
+			filterWorksIn = false;
+			filterOfficeIn = false;
+		}
 		if (!permissions.isOperator()) {
 			filterFlagStatus = false;
 		}

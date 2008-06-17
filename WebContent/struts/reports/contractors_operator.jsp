@@ -24,48 +24,7 @@ Corporate Version
 			value="contractorCount" /></strong> contractors in your database.</span></td>
 	</tr>
 </table>
-<div id="search">
-<div id="showSearch" onclick="showSearch()" <s:if test="filtered">style="display: none"</s:if> ><a href="#">Show Filter Options</a></div>
-<div id="hideSearch" <s:if test="!filtered">style="display: none"</s:if> ><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
-<s:form id="form1" method="post" cssStyle="%{filtered ? '' : 'display: none'}">
-	<table border="0" align="center" cellpadding="2" cellspacing="0">
-		<tr>
-			<td align="left"><s:textfield name="accountName"
-				cssClass="forms" size="8" onfocus="clearText(this)" /> <s:select
-				list="tradeList" cssClass="forms" name="trade" /> <s:select
-				list="tradePerformedByList" cssClass="forms" name="performedBy" />
-			<s:submit name="imageField" type="image"
-				src="images/button_search.gif" onclick="runSearch( 'form1')" /></td>
-		</tr>
-		<tr>
-			<td><s:if test="permissions.operator">
-				<s:select list="flagStatusList" cssClass="forms" name="flagStatus" />
-			</s:if> <s:if test="permissions.corporate">
-				<s:select list="operatorList" cssClass="forms" name="operator"
-					listKey="id" listValue="name" />
-			</s:if> <s:if test="permissions.operator">
-				<s:select list="stateLicensesList" cssClass="forms"
-					name="stateLicensedIn" />
-			</s:if><s:textfield name="taxID" cssClass="forms" size="9"
-				onfocus="clearText(this)" /> <span class="redMain">*must be
-			9 digits</span></td>
-		</tr>
-		<tr><td>
-			<s:if test="permissions.operator">
-				<s:select list="worksInList" cssClass="forms"
-				name="worksIn" />
-			<s:select list="officeInList" cssClass="forms" name="officeIn" />
-	   </s:if>
-	   </td></tr>
-	</table>
-	<s:hidden name="showPage" value="1" />
-	<s:hidden name="startsWith" />
-	<s:hidden name="orderBy" />
-	<div class="alphapaging">
-	<s:property value="report.startsWithLinksWithDynamicForm" escape="false" />
-	</div>
-</s:form>
-</div>
+<s:include value="filters.jsp" />
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>

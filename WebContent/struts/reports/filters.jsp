@@ -72,6 +72,12 @@ function updateQuery(name) {
 	</div>
 </s:if>
 
+<s:if test="filterFlagStatus">
+	<div class="filterOption">
+		<s:select list="flagStatusList" cssClass="forms" name="flagStatus" />
+	</div>
+</s:if>
+
 <s:if test="filterAuditType">
 	<div class="filterOption">
 		<a href="#" onclick="toggleBox('form1_auditTypeID'); return false;">Audit Type</a> =
