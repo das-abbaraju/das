@@ -257,7 +257,7 @@ if (!uBean.isSuGroup()) {
 			<td>&nbsp;</td>
 		</tr>
 		<tr class="active">
-			<td id="permDescription" colspan="6">
+			<td id="permDescription" colspan="6" style="width: 450px;">
 			</td>
 		</tr>
 		<%

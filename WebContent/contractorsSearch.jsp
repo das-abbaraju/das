@@ -184,13 +184,11 @@ or enter part of the name (at least 3 characters long)</div>
 		<td class="center"><%=sBean.tradePerformedBy%></td>
 		<td class="center">
 			<%=permissions.isCorporate() 
-			? "<a href='con_selectFacilities.jsp?id="+sBean.aBean.id+"'>Show</a>" 
+			? "<a href='con_selectFacilities.jsp?id="+sBean.aBean.id+"'>Facilities</a>"
 			: sBean.getFlagLink()%>
 		</td>
 		<td class="center">
-	<%	if (permissions.isCorporate()) { %>
-			<a href="con_selectFacilities.jsp?id=<%=sBean.aBean.id %>">Facilities</a>
-	<%	} else {
+	<%	if (!permissions.isCorporate()) {
 			if (permissions.hasPermission(OpPerms.AddContractors)
 					&& !pBean.canSeeSet.contains(sBean.aBean.id)) {
 				// This person can add contractors from their list and this contractor isn't there yet

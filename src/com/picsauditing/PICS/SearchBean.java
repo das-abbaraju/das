@@ -248,9 +248,16 @@ import com.picsauditing.util.LinkBuilder;
 		}
 
 		if ("Y".equals(selected_entireDB)){
-			if (!"Y".equals(searchCorporate))
-				joinQuery += "LEFT JOIN flags ON flags.conID=accounts.id ";
-			whereQuery += "AND (flags.opID IS NULL OR flags.opID="+accessID+") ";
+			joinQuery += "LEFT JOIN flags ON flags.conID=accounts.id AND flags.opID="+accessID+" ";
+			if ("Y".equals(searchCorporate)) {
+				if (permissions.isOperator())
+					whereQuery += "AND accounts.id IN (SELECT subID FROM generalcontractors gc " +
+							"JOIN facilities f ON gc.genID = f.opID " +
+							"JOIN facilities myf ON f.corporateID = myf.corporateID AND myf.opID = " + accessID + ") ";
+				if (permissions.isCorporate())
+					whereQuery += "AND accounts.id IN (SELECT subID FROM generalcontractors gc " +
+					"JOIN facilities f ON gc.genID = f.opID AND f.corporateID = " + accessID + ") ";
+			}
 			accessType = "Admin";
 		}//if
 		//Set all the Queries
@@ -508,10 +515,8 @@ import com.picsauditing.util.LinkBuilder;
 				" LEFT JOIN flags ON flags.conID=accounts.id AND flags.opID="+accessID+" ";
 		}
 		if ("Corporate".equals(accessType)) {
-			joinQuery += "INNER JOIN generalContractors gc ON gc.subID=accounts.id "+
-					"LEFT JOIN flags ON flags.conID=accounts.id ";
-			whereQuery+="AND gc.genID IN "+permissions.oBean.getFacilitiesSet()+" "+
-					"AND (flags.opID IS NULL OR flags.opID="+accessID+") ";
+			joinQuery += "INNER JOIN generalContractors gc ON gc.subID=accounts.id ";
+			whereQuery+="AND gc.genID IN "+permissions.oBean.getFacilitiesSet()+" ";
 			groupByQuery = "GROUP BY accounts.id ";
 		}
 
