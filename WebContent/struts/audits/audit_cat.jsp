@@ -80,6 +80,7 @@
 		elm.innerHTML="Upload Complete";
 		elm = $('show_upload_'+theId);
 	    elm.show();
+
 		elm = $('file_upload_'+theId);
 	    elm.hide();
 	    
@@ -90,12 +91,12 @@
             doc = elm.contentWindow.document;
 	    
 	    var ext = doc.getElementById('response').innerHTML;
-	    
-	    elm = $('link_' + theId);
-	    elm.onclick = function() {
-	    	openQuestion(theId , ext); 
-	    	return false;
-	    };
+
+		elm = $('meta_upload_' + theId);
+		elm.innerHTML = "<nobr><a id=\"link_" + theId + "\" href=\"#\" onClick=\"openQuestion('" + theId + "', '" + ext + "'); return false;\">View File</a></nobr>";
+
+	    elm = $('show_button_' + theId);
+	    elm.value = 'Edit File';
 
 	    return true;
 	}
