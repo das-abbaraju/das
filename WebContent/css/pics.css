@@ -135,7 +135,6 @@ a img {
 	margin: 0 auto;
 	/* width: 960px; */
 	min-width: 890px;
-	
 	width: expression(document . body . clientWidth <   892 ?   "880px" :   "auto");
 	background-color: white;
 	border: solid 1px #c3c3c3;
@@ -252,7 +251,6 @@ h1 {
 	margin-left: 0px;
 	border-bottom: solid 2px rgb(168, 77, 16);
 	min-width: 760px;
-	
 	width: expression(document . body . clientWidth <   892 ?   "760px" :   "auto");
 }
 
@@ -553,4 +551,11 @@ margin-top: 10px;
 background: url(../images/icon-error.gif) #ffdfdf no-repeat 18px 20px;
 width:85%
 }
+
+
+td.money, th.money { text-align:right; } /* add to table elements representing money to have it right aligned */
+
+
+
+
  
