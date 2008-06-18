@@ -63,13 +63,15 @@
 		<s:if test="questionType == 'File'">
 			<span id="status_upload_<s:property value="questionID"/>">&nbsp;</span>
 			<div id="show_upload_<s:property value="questionID"/>">
+				<span id="meta_upload_<s:property value="questionID"/>">
 				<nobr>
 					<s:if test="answer.answer.length() > 0">
 						<a id="link_<s:property value="questionID"/>" href="#" onClick="openQuestion('<s:property value="questionID"/>', '<s:property value="answer.answer"/>'); return false;">View File</a>
 					</s:if>
 					<s:else>File Not Uploaded</s:else>
 				</nobr>
-				<input type="button" value="<s:if test="answer.answer.length() > 0">Edit</s:if><s:else>Add</s:else> File" onclick="$('file_upload_<s:property value="questionID"/>').show(); $('show_upload_<s:property value="questionID"/>').hide();" />
+				</span>
+				<input id="show_button_<s:property value="questionID"/>" type="button" value="<s:if test="answer.answer.length() > 0">Edit</s:if><s:else>Add</s:else> File" onclick="$('file_upload_<s:property value="questionID"/>').show(); $('show_upload_<s:property value="questionID"/>').hide();" />
 			</div>
 			<form id="file_upload_<s:property value="questionID"/>" target="upload_iframe_<s:property value="questionID"/>" action="AuditDataFileUploadAjax.action" method="post" enctype="multipart/form-data" style="display: none;">
 				<s:hidden name="auditData.audit.id" value="%{conAudit.id}"/>
