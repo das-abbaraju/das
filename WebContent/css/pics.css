@@ -519,11 +519,10 @@ border-bottom: 2px solid #b7d2f2;
 padding-top: 1em;
 padding-right: 1em;
 padding-bottom: 1em;
-padding-left: 5em;
+padding-left: 4em;
 margin-top: 10px;
-background: url(../images/icon-info.gif) no-repeat #dbe7f8 18px 20px;
-width:85%
-
+background: url(../images/icon-info.gif) no-repeat #dbe7f8 10px 10px;
+width: 60%;
 }
 
 div#alert {
@@ -535,7 +534,7 @@ padding-bottom: 1em;
 padding-left: 5em;
 margin-top: 10px;
 background: url(../images/icon-warning.gif) no-repeat #ffdfdf 18px 20px;
-width:85%
+width:60%
 
 }
 
@@ -549,7 +548,7 @@ padding-bottom: 1em;
 padding-left: 5em;
 margin-top: 10px;
 background: url(../images/icon-error.gif) #ffdfdf no-repeat 18px 20px;
-width:85%
+width:60%
 }
 
 

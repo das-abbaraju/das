@@ -8,8 +8,8 @@
 </head>
 <body>
 <h1>Edit Profile</h1>
-<div class="message_info" id="message" <s:if test="message == null">style="display: none"</s:if>><s:property value="message"/></div>
-
+<div id="info" <s:if test="message == null">style="display: none"</s:if>><s:property value="message"/></div>
+<br clear="all" >
 <s:form>
 	<s:hidden name="u.id" />
 	<table class="forms">
@@ -48,7 +48,7 @@
 		<tfoot>
 			<tr>
 				<th></th>
-				<td class="center"><s:submit value="Save Profile" name="save" onclick="$('message').hide(); return true;"/></td>
+				<td class="center"><s:submit value="Save Profile" name="save" onclick="$('info').hide(); return true;"/></td>
 			</tr>
 		</tfoot>
 	</table>
