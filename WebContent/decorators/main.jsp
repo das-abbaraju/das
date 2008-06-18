@@ -78,6 +78,7 @@
 		</div>		
 	</div>
 </div>
+</div>
 <!-- !end navigation -->
 
 <div id="main">

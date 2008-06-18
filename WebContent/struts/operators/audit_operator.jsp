@@ -11,7 +11,7 @@ function save(id, aID, oID, pKey) {
 	pars = '&operatorID='+oID+'&ao.auditType.auditTypeID='+aID+'&ao.auditOperatorID='+pKey;
 	
 	var checkBox = $('form1')['canSee'+id];
-	if (checkBox.getValue())
+	if (checkBox.checked)
 		pars = pars + '&ao.canSee=true';
 	else
 		pars = pars + '&ao.canSee=false';
@@ -51,7 +51,7 @@ function save(id, aID, oID, pKey) {
 			listValue="auditName" value="aID"></s:select>
 	</s:else>
 </s:form>
-<div><a href="" class="refresh">Refresh Page</a></div>
+<div><a href="AuditOperator.action" class="refresh">Refresh Page</a></div>
 <s:form id="form1">
 	<table cellspacing="1" cellpadding="3" border="0">
 		<tr class="whiteTitle" bgcolor="#003366" align="center">
