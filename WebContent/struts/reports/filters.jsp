@@ -40,7 +40,7 @@ function updateQuery(name) {
 	<s:hidden name="startsWith" />
 	<s:hidden name="orderBy" />
 	
-	<s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch( 'form1')" cssStyle="float: right;" />
+	<s:submit type="button" label="Search" onclick="runSearch( 'form1')" cssStyle="float: right;" />
 	<br clear="all" />
 
 	<div class="filterOption"><s:textfield name="accountName" cssClass="forms" size="10" onfocus="clearText(this)"  /></div>
