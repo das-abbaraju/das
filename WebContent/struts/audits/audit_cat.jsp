@@ -40,6 +40,26 @@
 				});
 			//}
 		}
+		else if( elm.type == 'checkbox')
+		{
+			var thevalue = '';
+			if (elm.checked)
+				thevalue = 'X';
+			else
+				thevalue = ' ';
+			pars = pars + thevalue;
+			
+			var divName = 'status_'+questionid;
+			var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
+			{
+				method: 'post', 
+				parameters: pars,
+				onSuccess: function(transport) {
+					$('required_td'+questionid).innerHTML = '';
+					new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+				}
+			});
+		}
 		else
 		{
 			alert( elm.type + ' ' +elm.value );

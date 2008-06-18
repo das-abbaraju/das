@@ -20,7 +20,7 @@
 			<input type="image" src="images/icon_calendar.gif" width="18" height="15" onclick="cal1.select($('answer_<s:property value="questionID"/>'),'answer_<s:property value="questionID"/>','yyyy-MM-dd','<s:property value="answer.answer"/>'); return false;"/>
 		</s:if>
 		<s:if test="questionType == 'Check Box' || questionType == 'Industry' || questionType == 'Main Work'">
-			<s:checkbox fieldValue="X" value="answer.answer.length() == 1" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);" />
+			<s:checkbox fieldValue="X" value="answer.answer.length() == 1" name="answer.answer" onchange="javascript:saveAnswer(%{questionID}, this);" />
 		</s:if>
 		<s:if test="questionType == 'Yes/No'">
 			<s:radio list="#{'Yes':'Yes','No':'No'}" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:radio>
