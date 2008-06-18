@@ -181,7 +181,7 @@ public class ExcelWriterBean {
 			id="1";
 		String fileName = fileNamePre + id + fileNamePost;
 		String filePath = fileDir + fileName;
-		return "<a href=\"/" + filePath + "\" target=\"_blank\" class=\"blueMain\">Download Excel File</a>";
+		return "<a href=\"" + filePath + "\" target=\"_blank\" class=\"blueMain\">Download Excel File</a>";
 	}//getLink
 
 	public void writeCPReport(javax.servlet.ServletConfig config, ResultSet RS, String ID) throws Exception {
