@@ -23,7 +23,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
  *
  */
 public class FlagCalculator2 {
-	private boolean debug = false;
+	private boolean debug = true;
 	
 	private OperatorAccountDAO operatorDAO;
 	private ContractorAccountDAO contractorDAO;
@@ -66,6 +66,7 @@ public class FlagCalculator2 {
 	}
 	
 	private void execute() {
+		
 		debug("FlagCalculator.execute()");
 		// Load ALL operators and contractors by default
 		if (operators.size() == 0)
@@ -87,13 +88,17 @@ public class FlagCalculator2 {
 		debug("FlagCalculator: Operator data ready...starting calculations");
 		FlagCalculatorSingle calcSingle = new FlagCalculatorSingle();
 		calcSingle.setDebug(debug);
+
 		
 		for(Integer conID : contractorIDs) {
-			ContractorAccount contractor = contractorDAO.find(conID);
-			
+				long startTime = System.currentTimeMillis();
+				ContractorAccount contractor = contractorDAO.find(conID);
+				
 			calcSingle.setContractor(contractor);
 			calcSingle.setConAudits(conAuditDAO.findNonExpiredByContractor(contractor.getId()));
 			calcSingle.setAuditAnswers(auditDataDAO.findAnswersByContractor(contractor.getId(), questionIDs));
+			
+			
 			
 			for(OperatorAccount operator : operators) {
 				calcSingle.setOperator(operator);
@@ -103,8 +108,7 @@ public class FlagCalculator2 {
 				FlagColor color = calcSingle.calculate();
 				debug(" - FlagColor returned: " + color);
 				// Set the flag color on the object
-				Map<OperatorAccount, ContractorOperatorFlag> flags = contractor.getFlags();
-				ContractorOperatorFlag coFlag = flags.get(operator);
+				ContractorOperatorFlag coFlag = contractor.getFlags().get(operator);
 				
 				if (coFlag == null) {
 					// Add a new flag
@@ -123,6 +127,7 @@ public class FlagCalculator2 {
 			}
 			// Save the changes to the contractor
 			contractorDAO.save(contractor);
+			System.out.println(  "" + conID + " " + (System.currentTimeMillis() - startTime) );
 		}
 	}
 	
