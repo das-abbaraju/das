@@ -634,6 +634,9 @@ update pqfCategories pc JOIN
 /* remove orphaned pqfcatdata */
 delete from pqfcatdata where auditID = 0;
 
+/* remove the office audit form */
+delete from operatorForms where formID = 71;
+
 
 /* ==== All Statuses ==== */
 
