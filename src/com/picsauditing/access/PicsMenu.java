@@ -32,8 +32,7 @@ public class PicsMenu {
 		if (permissions.isOperator() || permissions.isCorporate())
 			subMenu.addChild("Contractor List", "ContractorListOperator.action");
 
-		if (permissions.hasPermission(OpPerms.ContractorApproval))
-			subMenu.addChild("Contact Info", "report_contactInfo.jsp?changed=1");
+		subMenu.addChild("Contact Info", "report_contactInfo.jsp?changed=1");
 
 		if (permissions.hasPermission(OpPerms.SearchContractors))
 			subMenu.addChild("Search For New", "contractorsSearch.jsp");
@@ -59,9 +58,10 @@ public class PicsMenu {
 			subMenu.addChild("PQF Verification", "pqf_verification.jsp");
 
 		subMenu = menu.addChild("Customer Service");
-		if (permissions.isAdmin())
+		if (permissions.isAdmin()) {
 			subMenu.addChild("Activation", "report_activation.jsp?changed=1");
 			subMenu.addChild("Assign Contractors","ContractorAssigned.action");
+		}
 		if (permissions.hasPermission(OpPerms.EmailAnnualUpdate))
 			subMenu.addChild("Annual Updates", "report_annualUpdate.jsp?changed=1");
 
