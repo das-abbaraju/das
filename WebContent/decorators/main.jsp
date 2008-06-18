@@ -38,7 +38,6 @@
 <!-- !begin header -->
 
 
-<div class="right">
 <div class="sidebox">
 	<div class="boxbody">
 		<p><% if (permissions.isLoggedIn()) { %>
@@ -48,7 +47,6 @@
 <span id="name">Welcome</span> | <a href="login.jsp">Login</a>
 <% } %></p>
 	</div>
-</div>
 </div>
 <% if (!permissions.isContractor() && !permissions.hasPermission(OpPerms.StatusOnly)) { %>
 
