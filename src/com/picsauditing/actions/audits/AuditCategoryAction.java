@@ -8,13 +8,18 @@ import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.OshaLogDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditSubCategory;
+import com.picsauditing.jpa.entities.OshaLog;
+import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.SpringUtils;
 
 /**
  * Viewing audit Data including one or more categories and their subcategories
@@ -37,8 +42,9 @@ public class AuditCategoryAction extends AuditActionSupport {
 
 	protected AuditCategoryDataDAO catDataDAO;
 
-	public AuditCategoryAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao) {
+	public AuditCategoryAction(ContractorAccountDAO accountDao,
+			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
+			AuditDataDAO auditDataDao) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 	}
 
@@ -53,7 +59,8 @@ public class AuditCategoryAction extends AuditActionSupport {
 		if (catDataID > 0) {
 			for (AuditCatData catData : categories) {
 				if (catData.getId() == catDataID) {
-					answers = auditDataDao.findByCategory(auditID, catData.getCategory());
+					answers = auditDataDao.findByCategory(auditID, catData
+							.getCategory());
 					fillAnswers(catData, answers);
 					currentCategory = catData;
 				} else {
@@ -87,13 +94,27 @@ public class AuditCategoryAction extends AuditActionSupport {
 		if (mode.equals(VERIFY) && !isCanVerify())
 			mode = VIEW;
 
+		if (mode.equals(EDIT)
+				&& currentCategory.getCategory().getId() == AuditCategory.OSHA) {
+			
+			if (!isOshaCorporate()) {
+				OshaLog oshaCorporate = new OshaLog();
+				oshaCorporate.setContractorAccount(contractor);
+				oshaCorporate.setType(OshaType.OSHA);
+				OshaLogDAO dao = (OshaLogDAO) SpringUtils.getBean("OshaLogDAO");
+				dao.save(oshaCorporate);
+				contractor.getOshas().add(oshaCorporate);
+			}
+		}
 		return SUCCESS;
 	}
 
-	private void fillAnswers(AuditCatData catData, Map<Integer, AuditData> answers) {
+	private void fillAnswers(AuditCatData catData,
+			Map<Integer, AuditData> answers) {
 		if (answers.size() == 0)
 			return;
-		for (AuditSubCategory subCategory : catData.getCategory().getSubCategories()) {
+		for (AuditSubCategory subCategory : catData.getCategory()
+				.getSubCategories()) {
 			for (AuditQuestion question : subCategory.getQuestions()) {
 				if (answers.containsKey(question.getQuestionID())) {
 					question.setAnswer(answers.get(question.getQuestionID()));
@@ -146,4 +167,11 @@ public class AuditCategoryAction extends AuditActionSupport {
 		return currentCategory;
 	}
 
+	private boolean isOshaCorporate() {
+		for (OshaLog osha : this.contractor.getOshas()) {
+			if (osha.isCorporate())
+				return true;
+		}
+		return false;
+	}
 }

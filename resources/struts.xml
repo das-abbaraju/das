@@ -274,11 +274,10 @@
 
 		<action name="OshaSave"
 			class="com.picsauditing.actions.audits.OshaSave">
-			<result>/struts/blank.jsp</result>
 			<result type="redirect-action">
 				<param name="actionName">AuditCat</param>
-				<param name="auditID">1</param>
-				<param name="catDataID">3604</param>
+				<param name="auditID">${auditID}</param>
+				<param name="catDataID">${catDataID}</param>
 				<param name="mode">Edit</param>
 			</result>
 		</action>
