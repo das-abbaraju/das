@@ -35,11 +35,11 @@ public class Category extends AbstractElement {
 	}
 
 	public boolean isShowLabel() {
-		return showLabel;
+		return showLabels;
 	}
 
 	public void setShowLabel(boolean showLabel) {
-		this.showLabel = showLabel;
+		this.showLabels = showLabel;
 	}
 
 	public String getToolText() {
