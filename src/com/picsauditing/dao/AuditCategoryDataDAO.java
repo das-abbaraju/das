@@ -54,7 +54,7 @@ public class AuditCategoryDataDAO extends PicsDAO {
 				}
 				if (permissions.isCorporate()) {
 					where += "AND d.category IN (SELECT o.category FROM AuditCatOperator o " +
-							"WHERE o.category.auditType.id = :auditType AND o.riskLevel = :risk AND o.operatorAccount IN (" +
+							"WHERE o.riskLevel = :risk AND o.operatorAccount IN (" +
 							"SELECT operator FROM Facility f WHERE corporate.id = :id)) ";
 				}
 			}

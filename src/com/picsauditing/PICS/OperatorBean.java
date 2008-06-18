@@ -4,9 +4,11 @@ import java.sql.*;
 import java.util.*;
 import java.text.DecimalFormat;
 
+import com.picsauditing.dao.AuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.SpringUtils;
 
 public class OperatorBean extends DataBean {
 	public static final String[] CONTRACTORS_PAY_ARRAY = {"Yes","No","Multiple"};
@@ -65,29 +67,25 @@ public class OperatorBean extends DataBean {
 		}		
 	}
 
-	private void setAuditOperatorsSetFromDB() throws Exception{
-		String selectQuery = "SELECT * FROM audit_operator WHERE opID="+id;
+	private void setAuditOperatorsSetFromDB() throws Exception {
+		int intID = Integer.parseInt(id);
+		AuditOperatorDAO auditOperatorDAO = (AuditOperatorDAO)SpringUtils.getBean("AuditOperatorDAO");
+		
+		List<AuditOperator> auditList = new ArrayList<AuditOperator>();
+		if (isCorporate)
+			auditList = auditOperatorDAO.findByCorporate(intID);
+		else
+			auditList = auditOperatorDAO.findByOperator(intID);
+		
 		canSeeAudits = new HashSet<AuditOperator>();
-		try{
-			DBReady();
-			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			while (SQLResult.next()) {
-				AuditOperator tempRow = new AuditOperator();
-				tempRow.setAuditType(new AuditType());
-				tempRow.getAuditType().setAuditTypeID(SQLResult.getInt("auditTypeID"));
-				tempRow.setMinRiskLevel(SQLResult.getInt("minRiskLevel"));
-				tempRow.setCanSee(SQLResult.getBoolean("canSee"));
-				if (tempRow.isCanSee())
-					canSeeAudits.add(tempRow);
-			}
-			SQLResult.close();
-		}finally{
-			DBClose();
+		for(AuditOperator tempRow : auditList) {
+			if (tempRow.isCanSee())
+				canSeeAudits.add(tempRow);
 		}
 	}
 
 	public Set<AuditOperator> getCanSeeAudits() throws Exception {
-		if (null == canSeeAudits)
+		if (canSeeAudits == null || canSeeAudits.size() == 0)
 			setAuditOperatorsSetFromDB();
 		return canSeeAudits;
 	}
@@ -278,6 +276,11 @@ public class OperatorBean extends DataBean {
 		return false;
 	}
 	
+	/**
+	 * convert the Set<AuditOperator> into a Set<Integer>
+	 * @return
+	 * @throws Exception
+	 */
 	public Set<Integer> getCanSeeAuditIDSet() throws Exception {
 		getCanSeeAudits();
 		

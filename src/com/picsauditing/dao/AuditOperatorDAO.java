@@ -33,6 +33,13 @@ public class AuditOperatorDAO extends PicsDAO {
     }
 	
 	@SuppressWarnings("unchecked")
+    public List<AuditOperator> findByCorporate(int corporateID) {
+        Query query = em.createQuery("FROM AuditOperator t WHERE t.operatorAccount IN (SELECT operator FROM Facility WHERE corporate.id = ?)");
+        query.setParameter(1, corporateID);
+        return query.getResultList();
+    }
+	
+	@SuppressWarnings("unchecked")
     public List<AuditOperator> findByAudit(int auditId) {
         Query query = em.createQuery("select t FROM AuditOperator t WHERE t.auditType.auditTypeID = ?");
         query.setParameter(1, auditId);
