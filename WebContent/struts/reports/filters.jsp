@@ -2,7 +2,7 @@
 
 <script type="text/javascript">
 function toggleBox(name) {
-	var box = $(name);
+	var box = $(name+'_select');
 	var result = $(name+'_query');
 	result.hide();
 	box.toggle();
@@ -11,6 +11,13 @@ function toggleBox(name) {
 
 	updateQuery(name);
 	result.show();
+}
+
+function clearSelected(name) {
+	var box = $(name);
+	for(i=0; i < box.length; i++)
+		box.options[i].selected = false
+	updateQuery(name);
 }
 
 function updateQuery(name) {
@@ -31,6 +38,16 @@ function updateQuery(name) {
 	result.update(queryText);
 }
 </script>
+
+<style type="text/css">
+   a.clearLink {
+     border-width: 1px;
+     font-size: 10px;
+     line-height: 10px;
+     padding: 0px;
+     margin: 0px;
+   }
+</style>
 
 <div id="search">
 <div id="showSearch" onclick="showSearch()" <s:if test="filtered">style="display: none"</s:if> ><a href="#">Show Filter Options</a></div>
@@ -57,8 +74,12 @@ function updateQuery(name) {
 	<div class="filterOption">
 		<a href="#" onclick="toggleBox('form1_industry'); return false;">Industry</a> =
 		<span id="form1_industry_query">ALL</span><br />
-		<s:select name="industry" list="industryList" cssClass="forms" multiple="true" size="5" cssStyle="display: none" />
-		<script type="text/javascript">updateQuery('form1_industry');</script>
+		<span id="form1_industry_select" style="display: none" class="clearLink">
+		  <s:select name="industry" list="industryList" cssClass="forms" multiple="true" size="5"/>
+		  <script type="text/javascript">updateQuery('form1_industry');</script>
+		  <br/>
+		  <a class="clearLink" href="#" onclick="clearSelected('form1_industry'); return false;">Clear</a>
+		</span>
 	</div>
 </s:if>
 
@@ -67,8 +88,12 @@ function updateQuery(name) {
 		<a href="#" onclick="toggleBox('form1_trade'); return false;">Trade</a>
 		<s:select list="tradePerformedByList" cssClass="forms" name="performedBy" /> =
 		<span id="form1_trade_query">ALL</span><br />
-		<s:select list="tradeList" cssClass="forms" name="trade" multiple="true" size="5" cssStyle="display: none"/>
-		<script type="text/javascript">updateQuery('form1_trade');</script>
+		<span id="form1_trade_select" style="display: none" class="clearLink">
+		  <s:select list="tradeList" cssClass="forms" name="trade" multiple="true" size="5" />
+		  <script type="text/javascript">updateQuery('form1_trade');</script>
+		  <br/>
+		  <a class="clearLink" href="#" onclick="clearSelected('form1_trade'); return false;">Clear</a>
+		</span>
 	</div>
 </s:if>
 
@@ -82,8 +107,12 @@ function updateQuery(name) {
 	<div class="filterOption">
 		<a href="#" onclick="toggleBox('form1_auditTypeID'); return false;">Audit Type</a> =
 		<span id="form1_auditTypeID_query">ALL</span><br />
-		<s:select list="auditTypeList" cssClass="forms" name="auditTypeID" listKey="auditTypeID" listValue="auditName" multiple="true" size="5" cssStyle="display: none"/>
-		<script type="text/javascript">updateQuery('form1_auditTypeID');</script>
+		<span id="form1_auditTypeID_select" style="display: none" class="clearLink">
+		  <s:select list="auditTypeList" cssClass="forms" name="auditTypeID" listKey="auditTypeID" listValue="auditName" multiple="true" size="5" />
+		  <script type="text/javascript">updateQuery('form1_auditTypeID');</script>
+		  <br/>
+		  <a class="clearLink" href="#" onclick="clearSelected('form1_auditTypeID'); return false;">Clear</a>
+		</span>
 	</div>
 </s:if>
 
@@ -91,8 +120,12 @@ function updateQuery(name) {
 	<div class="filterOption">
 		<a href="#" onclick="toggleBox('form1_auditStatus'); return false;">Audit Status</a> =
 		<span id="form1_auditStatus_query">ALL</span><br />
-		<s:select list="auditStatusList" cssClass="forms" name="auditStatus" multiple="true" size="5" cssStyle="display: none"/>
-		<script type="text/javascript">updateQuery('form1_auditStatus');</script>
+		<span id="form1_auditStatus_select" style="display: none" class="clearLink">
+		  <s:select list="auditStatusList" cssClass="forms" name="auditStatus" multiple="true" size="5" />
+		  <script type="text/javascript">updateQuery('form1_auditStatus');</script>
+		  <br/>
+		  <a class="clearLink" href="#" onclick="clearSelected('form1_auditStatus'); return false;">Clear</a>
+		</span>
 	</div>
 </s:if>
 
@@ -100,20 +133,29 @@ function updateQuery(name) {
 	<div class="filterOption">
 		<a href="#" onclick="toggleBox('auditorId'); return false;">Auditors</a> =
 		<span id="auditorId_query">ALL</span><br />
-		<s:action name="AuditorsGet" executeResult="true">
+		<span id="auditorId_select" style="display: none" class="clearLink">
+		  <s:action name="AuditorsGet" executeResult="true">
 			<s:param name="controlName" value="%{'auditorId'}"/>
 			<s:param name="presetValue" value="auditorId"/>
-		</s:action>
-		<script type="text/javascript">updateQuery('auditorId');</script>
+		  </s:action>
+		  <script type="text/javascript">updateQuery('auditorId');</script>
+		  <br/>
+		  <a class="clearLink" href="#" onclick="clearSelected('auditorId'); return false;">Clear</a>
+		</span>
 	</div>
 </s:if>
+
 
 <s:if test="filterOperator">
 	<div class="filterOption">
 		<a href="#" onclick="toggleBox('form1_operator'); return false;">Operators</a> =
 		<span id="form1_operator_query">ALL</span><br />
-		<s:select list="operatorList" cssClass="forms" name="operator" listKey="id" listValue="name" multiple="true" size="5" cssStyle="display: none"/>
-		<script type="text/javascript">updateQuery('form1_operator');</script>
+		<span id="form1_operator_select" style="display: none" class="clearLink">
+		  <s:select list="operatorList" cssClass="forms" name="operator" listKey="id" listValue="name" multiple="true" size="5"/>
+		  <script type="text/javascript">updateQuery('form1_operator');</script>
+		  <br/>
+		  <a class="clearLink" href="#" onclick="clearSelected('form1_operator'); return false;">Clear</a>
+		</span>
 	</div>
 </s:if>
 
@@ -137,8 +179,12 @@ function updateQuery(name) {
 	<div class="filterOption">
 		<a href="#" onclick="toggleBox('form1_stateLicensedIn'); return false;">Licensed In</a> =
 		<span id="form1_stateLicensedIn_query">ALL</span><br />
-		<s:select list="stateLicensesList" cssClass="forms" name="stateLicensedIn" multiple="true" size="5" cssStyle="display: none"/>
-		<script type="text/javascript">updateQuery('form1_stateLicensedIn');</script>
+		<span id="form1_stateLicensedIn_select" style="display: none" class="clearLink">
+		  <s:select list="stateLicensesList" cssClass="forms" name="stateLicensedIn" multiple="true" size="5" />
+		  <script type="text/javascript">updateQuery('form1_stateLicensedIn');</script>
+		  <br/>
+		  <a class="clearLink" href="#" onclick="clearSelected('form1_stateLicensedIn'); return false;">Clear</a>
+		</span>
 	</div>
 </s:if>
 
@@ -146,8 +192,12 @@ function updateQuery(name) {
 	<div class="filterOption">
 		<a href="#" onclick="toggleBox('form1_worksIn'); return false;">Works In</a> =
 		<span id="form1_worksIn_query">ALL</span><br />
-		<s:select list="worksInList" cssClass="forms" name="worksIn" multiple="true" size="5" cssStyle="display: none"/>
-		<script type="text/javascript">updateQuery('form1_worksIn');</script>
+		<span id="form1_worksIn_select" style="display: none" class="clearLink">
+		  <s:select list="worksInList" cssClass="forms" name="worksIn" multiple="true" size="5" />
+		  <script type="text/javascript">updateQuery('form1_worksIn');</script>
+		  <br/>
+		  <a class="clearLink" href="#" onclick="clearSelected('form1_worksIn'); return false;">Clear</a>
+		</span>
 	</div>
 </s:if>
 
@@ -155,8 +205,12 @@ function updateQuery(name) {
 	<div class="filterOption">
 		<a href="#" onclick="toggleBox('form1_officeIn'); return false;">Office In</a> =
 		<span id="form1_officeIn_query">ALL</span><br />
-		<s:select list="officeInList" cssClass="forms" name="officeIn" multiple="true" size="5" cssStyle="display: none"/>
-		<script type="text/javascript">updateQuery('form1_officeIn');</script>
+		<span id="form1_officeIn_select" style="display: none" class="clearLink">
+		  <s:select list="officeInList" cssClass="forms" name="officeIn" multiple="true" size="5" />
+		  <script type="text/javascript">updateQuery('form1_officeIn');</script>
+		  <br/>
+		  <a class="clearLink" href="#" onclick="clearSelected('form1_officeIn'); return false;">Clear</a>
+		</span>
 	</div>
 </s:if>
 

@@ -8,5 +8,4 @@
        value="presetValue"
        multiple="true"
        size="5"
-       cssStyle="display: none"
        />
