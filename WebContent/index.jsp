@@ -9,6 +9,7 @@ if (url.startsWith("http://pics")) {
 %>
 <html>
 <head>
+<title>Contractor Screening &amp; Contractor Management</title>
 <meta name="color" content="#003366" />
 <meta name="flashName" content="HOME" />
 
