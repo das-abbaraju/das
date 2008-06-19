@@ -123,6 +123,7 @@ public class OshaSave extends PicsActionSupport {
 		oldYear.setManHours(newYear.getManHours());
 		oldYear.setRecordableTotal(newYear.getRecordableTotal());
 		oldYear.setRestrictedWorkCases(newYear.getRestrictedWorkCases());
+		oldYear.setNa(newYear.getNa());
 	}
 
 	public OshaLogYear getYear1() {

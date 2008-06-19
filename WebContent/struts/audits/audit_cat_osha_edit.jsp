@@ -30,9 +30,9 @@
 	<th class="label">Were you exempt from submitting <s:property value="type"/> Logs? &nbsp;&nbsp;&nbsp;&nbsp;
 		<a href="#" onClick="window.open('reasons.html','name','scrollbars=1,resizable=1,width=800,height=600'); return false;">Valid exemptions</a>
 	</th>
-	<td><s:radio list="#{'Yes':'Yes','No':'No'}" name="year1.na" ></s:radio> </td>
-	<td><s:radio list="#{'Yes':'Yes','No':'No'}" value="year2.na" name="exempt2_%{id}" onchange=""></s:radio> </td>
-	<td><s:radio list="#{'Yes':'Yes','No':'No'}" value="year3.na" name="exempt3_%{id}" onchange=""></s:radio> </td>
+	<td><nobr><s:radio list="#{'Yes':'Yes','No':'No'}" name="year1.na" value="%{year1.na.name()}"></s:radio></nobr></td>
+	<td><nobr><s:radio list="#{'Yes':'Yes','No':'No'}" name="year2.na" value="%{year2.na.name()}"></s:radio></nobr></td>
+	<td><nobr><s:radio list="#{'Yes':'Yes','No':'No'}" name="year3.na" value="%{year3.na.name()}"></s:radio></nobr></td>
 </tr>
 <s:if test="!corporate">
 <tr>
