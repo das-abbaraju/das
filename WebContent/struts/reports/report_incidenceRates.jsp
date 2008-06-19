@@ -11,14 +11,15 @@
 <s:form id="form1" name="form1" method="post">
 	<table border="0" cellpadding="2" cellspacing="0">
 		<tr class="blueMain">
-			<s:if test="%{value = permissions.corporate}">
-				<td><s:select list="operatorList" cssClass="forms"
-					name="operator" listKey="id" listValue="name" />&nbsp;</td>
-			</s:if>
+<%//		TODO: Add functionality back in to be a Multi-Select Box %>
+<%//			<s:if test="%{value = permissions.corporate}">%>
+<%//				<td><s:select list="operatorListWithCorporate" cssClass="forms"%>
+<%//					name="operator" listKey="id" listValue="name" />&nbsp;</td>%>
+<%//			</s:if>%>
 			<td align="right">Incidence Rate Cutoff:</td>
 			<td><s:textfield name="incidenceRate" size="5" />&nbsp;</td>
 			<td><s:submit name="imageField" type="image"
-				src="images/button_search.gif" onclick="runSearch( 'form1')" /></td>
+				src="images/button_search.gif" onclick="runSearch('form1')" /></td>
 		</tr>
 		<s:hidden name="showPage" value="1" />
 		<s:hidden name="startsWith" />
@@ -33,7 +34,7 @@
 		<thead>
 			<tr>
 				<td></td>
-				<th><a href="?orderBy=a.name">Contractor</a></th>
+				<th><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></th>
 				<td>Location</td>
 				<td>Type</td>
 				<td><s:property value="year-1" /><s:checkbox

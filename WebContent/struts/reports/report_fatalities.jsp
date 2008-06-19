@@ -9,12 +9,13 @@
 <h1>Fatalities Report</h1>
 	  <s:form id="form1" name="form1" method="post">
 		<s:if test="%{value = permissions.corporate}">
-          <table border="0" cellpadding="2" cellspacing="0">
-            <tr align="center" >
-              <td><s:select list="operatorList" cssClass="forms" name="operator" listKey="id" listValue="name" /></td>
-              <td><s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch( 'form1')" /></td>
-            </tr>
-          </table>
+<%//		TODO: Add functionality back in to be a Multi-Select Box%>
+<%//          <table border="0" cellpadding="2" cellspacing="0">%>
+<%//            <tr align="center" >%>
+<%//              <td><s:select list="operatorList" cssClass="forms" name="operator" listKey="id" listValue="name" /></td>%>
+<%//              <td><s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch('form1')" /></td>%>
+<%//            </tr>%>
+<%//          </table>%>
 			</s:if>
 <s:hidden name="showPage" value="1"/>
 <s:hidden name="startsWith" />

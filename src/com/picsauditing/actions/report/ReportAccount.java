@@ -161,7 +161,13 @@ public class ReportAccount extends ReportActionSupport {
 	public List<OperatorAccount> getOperatorList() throws Exception {
 		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils
 				.getBean("OperatorAccountDAO");
-		return dao.findWhere("active='Y'");
+		return dao.findWhere(false, "active='Y'", permissions);
+	}
+	
+	public List<OperatorAccount> getOperatorListWithCorporate() throws Exception {
+		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils
+				.getBean("OperatorAccountDAO");
+		return dao.findWhere(true, "active='Y'", permissions);
 	}
 
 	public Map<String, String> getStateList() {
