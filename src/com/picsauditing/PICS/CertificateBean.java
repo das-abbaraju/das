@@ -344,7 +344,14 @@ public class CertificateBean extends DataBean {
 		String action = request.getParameter("action");
 		String con_id = request.getParameter("id");
 
-		if ("add".equals(action) && permissions.hasPermission(OpPerms.InsuranceCerts, OpType.Edit)) {
+		boolean canEdit = permissions.hasPermission(
+				OpPerms.InsuranceCerts, OpType.Edit)
+				|| permissions.isContractor();
+		boolean canDelete = permissions.hasPermission(
+				OpPerms.InsuranceCerts, OpType.Delete)
+				|| permissions.isContractor();
+
+		if ("add".equals(action) && canEdit) {
 			request.setAttribute("uploader", String.valueOf(UploadProcessorFactory.CERTIFICATE));
 			request.setAttribute("contractor_id", con_id);
 			request.setAttribute("exts", "pdf,doc,txt,jpg");
@@ -367,7 +374,7 @@ public class CertificateBean extends DataBean {
 			}
 			return ret;
 		}
-		if ("delete".equals(action) && permissions.hasPermission(OpPerms.InsuranceCerts, OpType.Delete)) {
+		if ("delete".equals(action) && canDelete) {
 			String delete_id = request.getParameter("delete_id");
 			String dir = pageContext.getServletContext().getInitParameter("FTP_DIR") + getDirPath();
 			deleteCertificate(delete_id, con_id, dir);

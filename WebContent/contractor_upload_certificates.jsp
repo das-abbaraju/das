@@ -11,8 +11,7 @@
 	try {
 		SearchFilter filter = new SearchFilter();
 		if (!permissions.isContractor())
-			permissions.tryPermission(OpPerms.InsuranceCerts,
-					OpType.View);
+			permissions.tryPermission(OpPerms.InsuranceCerts);
 
 		boolean canEdit = permissions.hasPermission(
 				OpPerms.InsuranceCerts, OpType.Edit)
