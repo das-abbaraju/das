@@ -4,18 +4,18 @@
 #MainMenu {
 	height:31px;
 	background: #FFFFFF url("../images/bmid_022.gif");
+	background-repeat: repeat-x;
 	margin: 0 0px 40px 0;
 	min-width: 1175px;
-	max-width: 1400px;
-	
 	border:0;
 }
 #tab {
 	margin: 0 auto;
 	min-width: 890px;
 	max-width: 1150px;
-	width:expression(document.body.clientWidth < 892? "890px" : document.body.clientWidth > 1152? "1150px" : "auto");
+	width:expression(document.body.clientWidth < 892? "890px" : "auto");
 }
+
 
 #navbar {
 	margin-left: 130px;
