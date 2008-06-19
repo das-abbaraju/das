@@ -1,12 +1,4 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<s:if test="permissions.admin || permissions.contractor">
-	<span class="redMain">You must input at least your corporate statistics. To further assist your clients, please
-	enter additional locations that you maintain OSHA/MSHA logs for that may be needed by your clients.<br/>
-	</span>
-</s:if>
-<s:if test="permissions.contractor">
-<span style="font-size: 12px;color:#003768;">Provide the following numbers (excluding subcontractors) using your OSHA/MSHA 300 Forms from the past 3 years:</span>
-</s:if>
 <s:form action="OshaSave" method="POST" enctype="multipart/form-data">
 	<s:hidden name="conID" value="%{conAudit.contractorAccount.id}"></s:hidden>
 	<s:hidden name="auditID"></s:hidden>
@@ -14,20 +6,17 @@
 	<s:hidden name="oshaID" value="%{id}"></s:hidden>
 <table class="osha">
 <thead>
-<s:if test="!corporate">
 <tr class="location">
-	<td colspan="4">
-		<span class="right"><s:submit name="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this location? This action cannot be undone.');"></s:submit></span>
-		<s:property value="type"/> Location - <s:property value="location"/> <s:property value="description"/>
-<tr>
 	<td>
 		<s:select name="%{type}" headerValue="-Type-" headerKey="1" list="#{'OSHA':'OSHA','MSHA':'MSHA'}" value="%{type}" cssClass="forms"/>
-	    Location - <s:select name="%{location}" list="#{'Corporate':'Corporate','Division':'Division','Region':'Region','Site':'Site'}" value="%{location}" cssClass="forms"/>
-	    &nbsp;<s:textfield name="description" cssClass="osha" size="10" />&nbsp;&nbsp;
-		<s:submit name="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this location? This action cannot be undone.');"></s:submit>
+	    Location - 
+	    <s:select name="%{location}" list="#{'Corporate':'Corporate','Division':'Division','Region':'Region','Site':'Site'}" value="%{location}" cssClass="forms"/>
+	    &nbsp;&nbsp;&nbsp;
+		<s:if test="!corporate">		
+			<s:submit name="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this location? This action cannot be undone.');"></s:submit>
+		</s:if>
 	</td>
 </tr>
-</s:if>
 <tr>
 	<th>Year</th>
 	<th class="center">2007</th>
@@ -107,7 +96,8 @@
 </tbody>
 <tfoot>
 <tr>
-	<th colspan="4"><s:submit name="submit" value="Save This Location" cssStyle="padding: 6px;"></s:submit></th>
+	<th colspan="4"><s:submit name="submit" value="Save This Location" cssStyle="padding: 6px;"></s:submit>
+	</th>
 </tr>
 </tfoot>
 </table>

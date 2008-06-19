@@ -2,14 +2,12 @@ package com.picsauditing.actions.audits;
 
 import java.io.File;
 
-import javax.activation.MimetypesFileTypeMap;
-
-import org.apache.commons.io.FilenameUtils;
-
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.OshaLogDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.jpa.entities.OshaLogYear;
+import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.YesNo;
 
 public class OshaSave extends PicsActionSupport {
@@ -33,15 +31,34 @@ public class OshaSave extends PicsActionSupport {
 	}
 
 	public String execute() throws Exception {
+		if(!forceLogin())
+			return LOGIN;
 		if (oshaID > 0) {
 			osha = oshaDAO.find(oshaID);
 		} else {
 			osha = new OshaLog();
 		}
+		
+		if(submit.equals("Delete")) {
+			oshaDAO.remove(oshaID);
+			return SUCCESS;
+		}
+		
+		if(submit.equals("Add New Location")) {
+			osha = new OshaLog();
+			osha.setContractorAccount(new ContractorAccount());
+			osha.getContractorAccount().setId(conID);
+			osha.setType(OshaType.OSHA);
+			osha.setYear1(new OshaLogYear());
+			osha.setYear2(new OshaLogYear());
+			osha.setYear3(new OshaLogYear());
+			oshaDAO.save(osha);
+			return SUCCESS;
+		}
+		
 		merge(osha.getYear1(), year1);
 		merge(osha.getYear2(), year2);
 		merge(osha.getYear3(), year3);
-
 		
 
 		saveFile(uploadFile1, osha.getYear1(), 1);
@@ -88,6 +105,10 @@ public class OshaSave extends PicsActionSupport {
 	}
 
 	private void merge(OshaLogYear oldYear, OshaLogYear newYear) {
+		if (oldYear == null) {
+			oldYear = newYear;
+			return;
+		}
 		oldYear.setFatalities(newYear.getFatalities());
 		oldYear.setInjuryIllnessCases(newYear.getInjuryIllnessCases());
 		oldYear.setLostWorkCases(newYear.getLostWorkCases());
@@ -192,5 +213,4 @@ public class OshaSave extends PicsActionSupport {
 	public void setConID(int conID) {
 		this.conID = conID;
 	}
-
 }

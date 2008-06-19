@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.OshaLog;
+import com.picsauditing.jpa.entities.OshaLogYear;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.YesNo;
@@ -96,11 +97,13 @@ public class AuditCategoryAction extends AuditActionSupport {
 
 		if (mode.equals(EDIT)
 				&& currentCategory.getCategory().getId() == AuditCategory.OSHA) {
-			
 			if (!isOshaCorporate()) {
 				OshaLog oshaCorporate = new OshaLog();
 				oshaCorporate.setContractorAccount(contractor);
 				oshaCorporate.setType(OshaType.OSHA);
+				oshaCorporate.setYear1(new OshaLogYear());
+				oshaCorporate.setYear2(new OshaLogYear());
+				oshaCorporate.setYear3(new OshaLogYear());
 				OshaLogDAO dao = (OshaLogDAO) SpringUtils.getBean("OshaLogDAO");
 				dao.save(oshaCorporate);
 				contractor.getOshas().add(oshaCorporate);
