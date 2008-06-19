@@ -33,12 +33,21 @@ public class OshaSave extends PicsActionSupport {
 	public String execute() throws Exception {
 		if(!forceLogin())
 			return LOGIN;
+		// we could investigate using the prepare statement 
+		// and finding the osha data before the setters get run
+		// However, I think I had problems setting/creating the 
+		// embedded year[1-3] private properties. Trevor
+		String description = this.osha.getDescription(); 
+		String location = this.osha.getLocation();	
+		String oshaType = this.osha.getType().toString();	
 		if (oshaID > 0) {
 			osha = oshaDAO.find(oshaID);
 		} else {
 			osha = new OshaLog();
 		}
-		
+		osha.setDescription(description);
+		osha.setLocation(location);
+		osha.setType(OshaType.valueOf(oshaType));
 		if(submit.equals("Delete")) {
 			oshaDAO.remove(oshaID);
 			return SUCCESS;
@@ -55,12 +64,10 @@ public class OshaSave extends PicsActionSupport {
 			oshaDAO.save(osha);
 			return SUCCESS;
 		}
-		
 		merge(osha.getYear1(), year1);
 		merge(osha.getYear2(), year2);
 		merge(osha.getYear3(), year3);
 		
-
 		saveFile(uploadFile1, osha.getYear1(), 1);
 		saveFile(uploadFile2, osha.getYear2(), 2);
 		saveFile(uploadFile3, osha.getYear3(), 3);

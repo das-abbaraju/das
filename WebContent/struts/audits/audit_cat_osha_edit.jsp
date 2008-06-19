@@ -7,15 +7,16 @@
 <table class="osha">
 <thead>
 <tr class="location">
-	<td>
-		<s:select name="%{type}" headerValue="-Type-" headerKey="1" list="#{'OSHA':'OSHA','MSHA':'MSHA'}" value="%{type}" cssClass="forms"/>
+	<th>
+		<s:select name="osha.type" list="#{'OSHA':'OSHA','MSHA':'MSHA'}" value="%{type}" cssClass="forms"/>
 	    Location - 
-	    <s:select name="%{location}" list="#{'Corporate':'Corporate','Division':'Division','Region':'Region','Site':'Site'}" value="%{location}" cssClass="forms"/>
-	    &nbsp;&nbsp;&nbsp;
-		<s:if test="!corporate">		
-			<s:submit name="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this location? This action cannot be undone.');"></s:submit>
-		</s:if>
-	</td>
+	    <s:select name="osha.location" list="#{'Corporate':'Corporate','Division':'Division','Region':'Region','Site':'Site'}" value="%{location}" cssClass="forms"/>
+	</th>
+	<s:if test="!corporate">		
+		<td colspan="3">
+			<s:submit name="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this location? This action cannot be undone.');" cssStyle="padding: 3px;"></s:submit>
+		</td>
+	</s:if>
 </tr>
 <tr>
 	<th>Year</th>
@@ -36,7 +37,7 @@
 <s:if test="!corporate">
 <tr>
 	<th class="label">Site Description</th>
-	<td colspan="3"><s:textfield name="description" cssStyle="width: 100%"></s:textfield></td>
+	<td colspan="3"><s:textfield name="osha.description" cssStyle="width: 100%" value="%{description}"></s:textfield></td>
 </tr>
 </s:if>
 <tr>
