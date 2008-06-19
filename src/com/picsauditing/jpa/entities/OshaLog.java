@@ -22,6 +22,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 
 // TODO handle duringGracePeriod
 
@@ -65,6 +67,7 @@ public class OshaLog implements java.io.Serializable {
 	}
 
 	@Column(name = "SHAType", nullable = false)
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.OshaType") })
 	@Enumerated(EnumType.STRING)
 	public OshaType getType() {
 		return type;
