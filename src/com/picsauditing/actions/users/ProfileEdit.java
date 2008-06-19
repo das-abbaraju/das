@@ -19,6 +19,11 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+		if (!dao.checkUserName(u.getId(), u.getName())) {
+			message = "Duplicate ID.  Will not update";
+			this.addActionError("Duplicate ID.  Will not update");
+			return SUCCESS;
+		}
 		if (save != null) {
 			if (password1 != null && password1.length() > 3
 					&& password1.equals(password2))

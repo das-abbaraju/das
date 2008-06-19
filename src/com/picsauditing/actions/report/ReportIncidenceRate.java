@@ -10,12 +10,16 @@ public class ReportIncidenceRate extends ReportAccount {
 	protected boolean searchYear3 = false;
 	public String execute() throws Exception {
 		sql.addJoin("INNER JOIN OSHA os ON os.conID = a.id");
-		if(searchYear1 == true)
-		sql.addWhere("(os.recordableTotal1*200000/os.manHours1 > "+incidenceRate+")");
-		if(searchYear2 == true)
-		sql.addWhere("(os.recordableTotal2*200000/os.manHours2 > "+incidenceRate+")");	
-		if(searchYear3 == true)
-		sql.addWhere("(os.recordableTotal3*200000/os.manHours3 > "+incidenceRate+")");	
+		if (searchYear1 == true)
+			sql.addWhere("(os.recordableTotal1*200000/os.manHours1 > "
+					+ incidenceRate + ")");
+		if (searchYear2 == true)
+			sql.addWhere("(os.recordableTotal2*200000/os.manHours2 > "
+					+ incidenceRate + ")");
+		if (searchYear3 == true)
+			sql.addWhere("(os.recordableTotal3*200000/os.manHours3 > "
+					+ incidenceRate + ")");
+		
 		sql.addField("os.location");
 		sql.addField("os.description");
 		sql.addField("os.SHAType");
@@ -30,7 +34,7 @@ public class ReportIncidenceRate extends ReportAccount {
 		sql.addWhere("ca.auditTypeID = 1");
 		return super.execute();
 	}
-	
+
 	public int getYear() {
 		return DateBean.getCurrentYear();
     }

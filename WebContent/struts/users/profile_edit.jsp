@@ -5,11 +5,21 @@
 <script src="js/prototype.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/forms.css"/>
+
+<script type="text/javascript">
+function checkUsername(username) {
+	$('username_status').innerHTML = 'checking availability of username...';
+	pars = 'userID=<s:property value="u.id"/>&username='+username;
+	var myAjax = new Ajax.Updater('username_status', 'user_ajax.jsp', {method: 'get', parameters: pars});
+}
+</script>
 </head>
 <body>
 <h1>Edit Profile</h1>
 <div id="info" <s:if test="message == null">style="display: none"</s:if>><s:property value="message"/></div>
+<s:actionerror/>
 <br clear="all" >
+
 <s:form>
 	<s:hidden name="u.id" />
 	<table class="forms">
@@ -27,7 +37,8 @@
 		</tr>
 		<tr>
 			<th>Username:</th>
-			<td><s:textfield name="u.username" /></td>
+			<td><s:textfield name="u.username" onblur="checkUsername(this.value);"/>
+			<div id="username_status"></div></td>
 		</tr>
 		<tr>
 			<th>Password:</th>
@@ -53,5 +64,7 @@
 		</tfoot>
 	</table>
 </s:form>
+
+
 </body>
 </html>

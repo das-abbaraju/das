@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -8,10 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.util.PermissionQueryBuilder;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -37,28 +35,47 @@ public class OperatorAccountDAO extends PicsDAO {
 	}
 
 	public List<OperatorAccount> findAll(Permissions permissions) {
-		String where = "";
-		if (permissions.isCorporate())
+		return findWhere(true, "", permissions);
+	}
+	
+	public List<OperatorAccount> findWhere(boolean includeCorporate, String where, Permissions permissions) {
+		List<OperatorAccount> corporateList = new ArrayList<OperatorAccount>();
+		
+		if (permissions.isCorporate()) {
+			Query query = em.createQuery("select a from OperatorAccount a where a.id = :id");
+			query.setParameter("id", permissions.getAccountId());
+			corporateList = query.getResultList();
+
 			// Show corporate users operators in their facility
 			where = "a IN (SELECT operator FROM Facility " +
 			"WHERE corporate = "+permissions.getAccountId()+")";
-		if (permissions.isOperator())
+		}
+		if (permissions.isOperator()) {
+			Query query = em.createQuery("select a.corporate from Facility a where a.operator.id = :id");
+			query.setParameter("id", permissions.getAccountId());
+			corporateList = query.getResultList();
+		
 			// Show operator users operators that share the same corporate facility
 			where = "(a.id = "+permissions.getAccountId()+
 			" OR a IN (SELECT operator FROM Facility " +
 			"WHERE corporate IN (SELECT corporate FROM Facility " +
 			"WHERE operator.id = "+permissions.getAccountId()+")))";
-		return findWhere(where);
-	}
-	
-	public List<OperatorAccount> findWhere(String where) {
+		}
 		if (where == null)
 			where = "";
 		if (where.length() > 0)
 			where = "WHERE " + where;
+		
 		Query query = em.createQuery("select a from OperatorAccount a " + where
 				+ " order by a.type, a.name");
-		return query.getResultList();
+		List<OperatorAccount> operatorList = query.getResultList();
+		
+		if (corporateList.size() > 0) {
+			corporateList.addAll(operatorList);
+			return corporateList;
+		}
+		
+		return operatorList;
 	}
 	
 	public int getContractorCount(int id) {
