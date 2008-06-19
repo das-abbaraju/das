@@ -346,6 +346,7 @@ alter table `pqfcatdata`
 	change `numRequired` `numRequired` smallint(6) unsigned   NOT NULL DEFAULT '0' after `requiredCompleted`, 
 	change `numAnswered` `numAnswered` smallint(6) unsigned   NOT NULL DEFAULT '0' after `numRequired`, 
 	change `applies` `applies` enum('Yes','No')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'Yes' after `numAnswered`, 
+	add column `override` tinyint DEFAULT 0,
 	drop key `conID`, 
 	drop key `PRIMARY`, add PRIMARY KEY(`catDataID`), COMMENT='';
 
