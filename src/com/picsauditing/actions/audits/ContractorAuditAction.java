@@ -57,6 +57,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 				for (AuditCatData data : conAudit.getCategories()) {
 					if (data.getId() == applyCategoryID) {
 						data.setApplies(YesNo.Yes);
+						data.setOverride(true);
 					}
 				}
 			}
@@ -64,6 +65,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 				for (AuditCatData data : conAudit.getCategories()) {
 					if (data.getId() == removeCategoryID) {
 						data.setApplies(YesNo.No);
+						data.setOverride(true);
 					}
 				}
 			}

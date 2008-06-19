@@ -40,6 +40,7 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 	public String applies = "";
 	public String percentCompleted = "";
 	public String percentVerified = "";
+	private boolean override = false;
 	
 	public ArrayList<String> categories = null;
 	public Set<String> categoryMatrixSet = null;
@@ -182,6 +183,7 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		applies = SQLResult.getString("applies");
 		percentCompleted = SQLResult.getString("percentCompleted");
 		percentVerified = SQLResult.getString("percentVerified");
+		override = SQLResult.getInt("override") > 0;
 	}
 
 	private void setDataEmpty() {
@@ -622,23 +624,29 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 			
 			boolean doInsert = false;
 			while (isNextRecord()) {
-				if (catIDSet.contains(new Integer(catID))) {
-					// This category _should_ be applicable on this audit
-					if (catDataID > 0 && doesCatApply()) {
-						// Great, it is...don't do anything
+				//if (! (override && catDataID > 0) ) {
+				if (!override || catDataID == 0) {
+					// Either we're not overriding the applicable column and we need to automatically 
+					// recalculate the value or we didn't have a pqfcatdata record and need to 
+					// calculate it for the first time
+					if (catIDSet.contains(new Integer(catID))) {
+						// This category _should_ be applicable on this audit
+						if (catDataID > 0 && doesCatApply()) {
+							// Great, it is...don't do anything
+						} else {
+							// It's not on there yet or we need to make it applicable
+							replaceQuery += "("+catID+","+auditID+",'Yes',0,0,"+numRequired+",0),";
+							doInsert = true;
+						}
 					} else {
-						// It's not on there yet or we need to make it applicable
-						replaceQuery += "("+catID+","+auditID+",'Yes',0,0,"+numRequired+",0),";
-						doInsert = true;
-					}
-				} else {
-					// This category _should_ be N/A'd
-					if (catDataID > 0 && !doesCatApply()) {
-						// Great, it is...don't do anything
-					} else {
-						// It's not there yet or we need to change it to N/A
-						replaceQuery += "("+catID+","+auditID+",'No',0,0,0,100),";
-						doInsert = true;
+						// This category _should_ be N/A'd
+						if (catDataID > 0 && !doesCatApply()) {
+							// Great, it is...don't do anything
+						} else {
+							// It's not there yet or we need to change it to N/A
+							replaceQuery += "("+catID+","+auditID+",'No',0,0,0,100),";
+							doInsert = true;
+						}
 					}
 				}
 			}

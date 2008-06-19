@@ -31,7 +31,8 @@ public class AuditCatData implements java.io.Serializable {
 	private int requiredCompleted = 0;
 	private int numRequired = 0;
 	private int numAnswered = 0;
-
+	private boolean override = false;
+	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "catDataID", nullable = false, insertable=false, updatable = false)
@@ -128,4 +129,13 @@ public class AuditCatData implements java.io.Serializable {
 		this.numAnswered = numAnswered;
 	}
 
+	@Enumerated(EnumType.ORDINAL)
+	@Column(nullable = false)
+	public boolean isOverride() {
+		return override;
+	}
+
+	public void setOverride(boolean override) {
+		this.override = override;
+	}
 }
