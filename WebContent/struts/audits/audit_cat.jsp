@@ -140,7 +140,7 @@
 </div>
 <br clear="all" />
 <s:iterator value="categories">
-	<s:if test="catDataID == id || catDataID == 0">
+	<s:if test="catDataID == id || (catDataID == 0 && appliesB)">
 		<h2>Category <s:property value="category.number"/> - <s:property value="category.category"/></h2>
 		<s:if test="category.id == 29">
 				<s:if test="mode == 'View'">
