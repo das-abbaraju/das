@@ -50,4 +50,9 @@ abstract public class PicsDAO {
 			query.setParameter(name, value);
 		} catch (IllegalArgumentException e) {}
 	}
+	
+	public void clear()
+	{
+		em.clear();
+	}
 }
