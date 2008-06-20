@@ -47,6 +47,8 @@ public class ContractorAudit {
 	private int percentComplete;
 	private int percentVerified;
 	private boolean canDelete;
+	private Date contractorConfirm;
+	private Date auditorConfirm;
 
 	private List<AuditCatData> categories;
 	private List<AuditData> data;
@@ -97,7 +99,8 @@ public class ContractorAudit {
 	}
 
 	public void setAuditStatus(AuditStatus auditStatus) {
-		if (auditStatus != null && this.auditStatus != null && !auditStatus.equals(this.auditStatus)) {
+		if (auditStatus != null && this.auditStatus != null
+				&& !auditStatus.equals(this.auditStatus)) {
 			// If we're changing the status to Submitted or Active, then we need
 			// to set the dates
 			if (auditStatus.equals(AuditStatus.Submitted)) {
@@ -107,7 +110,8 @@ public class ContractorAudit {
 			}
 			if (auditStatus.equals(AuditStatus.Active)) {
 				// If we're going "forward" then (re)set the closedDate
-				if (closedDate == null || this.auditStatus.equals(AuditStatus.Submitted)
+				if (closedDate == null
+						|| this.auditStatus.equals(AuditStatus.Submitted)
 						|| this.auditStatus.equals(AuditStatus.Pending))
 					closedDate = new Date();
 
@@ -246,7 +250,8 @@ public class ContractorAudit {
 	@Transient
 	// I think we should move this to AuditActionSupport instead (Trevor 5/7/08)
 	public boolean isCanView(Permissions permissions) {
-		if (permissions.isContractor() && (getAuditType().isCanContractorView() == false))
+		if (permissions.isContractor()
+				&& (getAuditType().isCanContractorView() == false))
 			return false;
 		else
 			return true;
@@ -255,10 +260,12 @@ public class ContractorAudit {
 	@Transient
 	// I think we should move this to AuditActionSupport instead (Trevor 5/7/08)
 	public boolean isCanEdit(Permissions permissions) {
-		if (permissions.isOnlyAuditor() && (permissions.getUserId() == getAuditor().getId())
+		if (permissions.isOnlyAuditor()
+				&& (permissions.getUserId() == getAuditor().getId())
 				&& (getAuditType().isCanContractorEdit() == false))
 			return true;
-		if (permissions.isContractor() && (getAuditType().isCanContractorEdit() == true))
+		if (permissions.isContractor()
+				&& (getAuditType().isCanContractorEdit() == true))
 			return true;
 		if (permissions.seesAllContractors())
 			return true;
@@ -269,7 +276,8 @@ public class ContractorAudit {
 	@Transient
 	// I think we should move this to AuditActionSupport instead (Trevor 5/7/08)
 	public boolean isCanVerify(Permissions permissions) {
-		if (permissions.isOnlyAuditor() && (permissions.getUserId() == getAuditor().getId())
+		if (permissions.isOnlyAuditor()
+				&& (permissions.getUserId() == getAuditor().getId())
 				&& (getAuditType().isCanContractorEdit() == false))
 			return true;
 		if (permissions.seesAllContractors())
@@ -288,5 +296,23 @@ public class ContractorAudit {
 		if (auditStatus.equals(AuditStatus.Submitted))
 			return completedDate;
 		return closedDate;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getContractorConfirm() {
+		return contractorConfirm;
+	}
+
+	public void setContractorConfirm(Date contractorConfirm) {
+		this.contractorConfirm = contractorConfirm;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getAuditorConfirm() {
+		return auditorConfirm;
+	}
+
+	public void setAuditorConfirm(Date auditorConfirm) {
+		this.auditorConfirm = auditorConfirm;
 	}
 }
