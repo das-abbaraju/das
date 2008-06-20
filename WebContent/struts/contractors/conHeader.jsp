@@ -65,7 +65,7 @@
 					<th>Status:</th>
 					<td><s:property value="conAudit.auditStatus" /></td>
 				</tr>
-				<s:if test="%{value = (!permissions.operat	or && !permissions.corporate)}">
+				<s:if test="%{value = (!permissions.operator && !permissions.corporate)}">
 				<s:if test="conAudit.auditType.hasAuditor">
 				<s:if test="%{value = permissions.picsemployee}">
 					<tr>
@@ -88,6 +88,12 @@
 						</tr>
 					</s:if>
 				</s:if>
+				<s:if test="conAudit.auditStatus.name() == 'Pending'">
+						<tr>
+							<th>Percent Complete:</th>
+							<td><s:property value="conAudit.percentComplete" />%</td>
+						</tr>
+				</s:if>			
 			</table>
 			</td>
 			<td style="vertical-align: top">

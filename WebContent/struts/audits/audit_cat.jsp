@@ -20,7 +20,7 @@
 <script type="text/javascript">
 <s:if test="mode == 'Edit'">
 	function saveAnswer( questionid, elm ) {
-		var pars = 'auditData.audit.id=<s:property value="conAudit.id"/>&auditData.question.questionID=' + questionid + '&auditData.answer=';
+		var pars = 'auditData.audit.id=<s:property value="conAudit.id"/>&catDataID=<s:property value="catDataID"/>&auditData.question.questionID=' + questionid + '&auditData.answer=';
 		if( elm.type == 'text' || elm.type == 'radio' || elm.type == 'textarea')
 		{
 			var thevalue = elm.value;
