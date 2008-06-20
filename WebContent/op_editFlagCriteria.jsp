@@ -28,12 +28,18 @@
 		flagCriteria.setFromRequest(request);
 		if (flagCriteria.isOK()) {
 			flagCriteria.writeToDB();
-		}
-		if(action.contains("Recalculate Flags")) {
+			String actionFlag = request.getParameter("actionFlag");
 			FlagCalculator2 flagCalc2 = (FlagCalculator2)SpringUtils.getBean("FlagCalculator2");
-			flagCalc2.runByOperator(Integer.parseInt(opID));
+			if(actionFlag.equals("Limited")) {
+				flagCalc2.runByOperatorLimited(Integer.parseInt(opID));
+			}
+			if(actionFlag.equals("All")) {
+				flagCalc2.runByOperator(Integer.parseInt(opID));
+			}
 		}
+		
 	}
+	
 	boolean canEditFlagCriteria = permissions.hasPermission(OpPerms.EditFlagCriteria);
 	HurdleQuestions hurdleQuestions = null;
 	
@@ -65,8 +71,11 @@
 <%
 if (canEditFlagCriteria) {
 	%>
-	<input name="action" type="submit" value="Save Criteria" class="center">
-	<input name="action" type="submit" value="Save & Recalculate Flags" class="center">
+	<input name="action" type="submit" value="Save Criteria" class="center"><br>
+	<input name="actionFlag" type="radio" value="None" class="center">None
+	<input name="actionFlag" type="radio" value="Limited" class="center" checked>My Contractors
+	<input name="actionFlag" type="radio" value="All" class="center">All Contractors
+	
 	<%
 }
 %>

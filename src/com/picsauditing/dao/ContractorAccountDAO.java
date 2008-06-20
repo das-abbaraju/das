@@ -69,7 +69,8 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 	
 	public List<Integer> findIdsByOperator(OperatorAccount opAccount) {
-		Query query = em.createQuery("SELECT a.id from ContractorAccount a WHERE a.operators.operatorAccount = ?");
+		String where = "SELECT a.id from ContractorAccount a WHERE a IN (SELECT co.contractorAccount FROM ContractorOperator co WHERE co.operatorAccount = ?)";
+		Query query = em.createQuery(where);
 		query.setParameter(1, opAccount);
 		
 		return query.getResultList();
