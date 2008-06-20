@@ -225,7 +225,8 @@ alter table `facilities`
 alter table `flagcriteria` 
 	add column `criteriaID` int(10) unsigned   NOT NULL auto_increment first, 
 	change `opID` `opID` mediumint(8) unsigned   NOT NULL after `criteriaID`, 
-	change `isChecked` `isChecked` enum('No','Yes')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No' after `flagStatus`, 
+	change `isChecked` `isChecked` enum('No','Yes')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No' after `flagStatus`,
+	add column `validationRequired` tinyint(3) unsigned   NOT NULL DEFAULT '0' after `value`,
 	add UNIQUE KEY `opFlagQuestion`(`opID`,`flagStatus`,`questionID`), 
 	drop key `opID`, 
 	drop key `PRIMARY`, add PRIMARY KEY(`criteriaID`), 
@@ -390,6 +391,13 @@ update contractor_info set welcomeAuditor_id = 937 where welcomeAuditor_id = 322
 update contractor_info set welcomeAuditor_id = 938 where welcomeAuditor_id = 3226;
 update contractor_info set welcomeAuditor_id = 941 where welcomeAuditor_id = 3487;
 update contractor_info set welcomeAuditor_id = 943 where welcomeAuditor_id = 3486;
+
+update contractor_audit set auditorID = 917 where auditorID = 2823;
+update contractor_audit set auditorID = 940 where auditorID = 3224;
+update contractor_audit set auditorID = 937 where auditorID = 3225;
+update contractor_audit set auditorID = 938 where auditorID = 3226;
+update contractor_audit set auditorID = 941 where auditorID = 3487;
+update contractor_audit set auditorID = 943 where auditorID = 3486;
 
 
 /* Create audit_operator table */

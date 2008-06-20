@@ -29,6 +29,7 @@ public class FlagQuestionCriteria {
 	protected String questionType;
 	protected String comparison;
 	protected String value;
+	protected boolean validationRequired;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -102,6 +103,14 @@ public class FlagQuestionCriteria {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public boolean isValidationRequired() {
+		return validationRequired;
+	}
+
+	public void setValidationRequired(boolean validationRequired) {
+		this.validationRequired = validationRequired;
 	}
 
 	@Transient
