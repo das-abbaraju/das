@@ -65,7 +65,7 @@
 					<th>Status:</th>
 					<td><s:property value="conAudit.auditStatus" /></td>
 				</tr>
-				<s:if test="%{value = (!permissions.operator && !permissions.corporate)}">
+				<s:if test="%{value = (!permissions.operat	or && !permissions.corporate)}">
 				<s:if test="conAudit.auditType.hasAuditor">
 				<s:if test="%{value = permissions.picsemployee}">
 					<tr>
@@ -126,13 +126,13 @@
 			</td>
 		</tr>
 	</table>
-
 	<div>
 	<s:if test="conAudit.auditType.PQF">
 		<pics:permission perm="AuditVerification">
-	| <a href="VerifyView.action?auditID=<s:property value="auditID" />">Verify
-			PQF</a>
+	| <a href="VerifyView.action?auditID=<s:property value="auditID" />">Verify	PQF</a>
 		</pics:permission>
-	</s:if></div>
+	</s:if>
+	</div>
+
 </s:if>
 </s:if>

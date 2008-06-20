@@ -30,6 +30,7 @@ table.report tr.na a {
 	</s:if>
 	<s:if test="conAudit.auditStatus.toString() == 'Pending'">
 		<s:submit value="%{'Submit '.concat(conAudit.auditType.auditName)}" disabled="!canSubmit" />
+		<span class="redMain">&nbsp;&nbsp;&nbsp;All sections must be filled out before submitting.</span>
 	</s:if>
 	<s:if test="canClose">
 		<s:hidden name="auditStatus" value="Active" />
