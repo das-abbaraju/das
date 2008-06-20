@@ -141,6 +141,8 @@ create table `contractor_audit`(
 	`percentComplete` tinyint(3) unsigned NOT NULL  DEFAULT '0'  , 
 	`percentVerified` tinyint(3) unsigned NOT NULL  DEFAULT '0'  , 
 	`canDelete` tinyint(3) unsigned   NOT NULL DEFAULT '1' ,
+	`contractorConfirm` datetime NULL ,
+	`auditorConfirm` datetime NULL ,
 	PRIMARY KEY (`auditID`) , 
 	UNIQUE KEY `auditTypeID_conID_createdDate`(`conID`,`auditTypeID`,`createdDate`) , 
 	KEY `auditTypeStatus`(`auditTypeID`,`auditStatus`) 
