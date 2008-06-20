@@ -58,7 +58,7 @@ public class AuditOperatorList extends PicsActionSupport {
 		loadPermissions();
 		permissions.tryPermission(OpPerms.ManageOperators);
 
-		operators = operatorDAO.findWhere("type = 'Operator'");
+		operators = operatorDAO.findWhere(false, "", permissions);
 		
 		auditTypes = new AuditTypeCache( auditDAO ).getAuditTypes();
 

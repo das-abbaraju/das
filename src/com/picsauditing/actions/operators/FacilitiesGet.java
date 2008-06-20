@@ -45,7 +45,7 @@ public class FacilitiesGet extends ActionSupport {
 		}
 		facilities = new ArrayList<OperatorAccount>();
 		facilities.add(new OperatorAccount(OperatorAccount.DEFAULT_NAME));
-		facilities.addAll(operatorDao.findWhere(where));
+		facilities.addAll(operatorDao.findWhere(true, where));
 		return facilities;
 
 	}

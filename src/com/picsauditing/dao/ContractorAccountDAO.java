@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.OperatorAccount;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -44,8 +45,8 @@ public class ContractorAccountDAO extends PicsDAO {
 			where = "";
 		if (where.length() > 0)
 			where = "WHERE " + where;
-		Query query = em.createQuery("select a from ContractorAccount a " + where
-				+ " order by a.name");
+		Query query = em.createQuery("SELECT a from ContractorAccount a " + where
+				+ " ORDER BY a.name");
 		return query.getResultList();
 	}
 	
@@ -66,6 +67,13 @@ public class ContractorAccountDAO extends PicsDAO {
 		query.setParameter(1, contractor);
 		return query.getResultList();
 	}
+	
+	public List<Integer> findIdsByOperator(OperatorAccount opAccount) {
+		Query query = em.createQuery("SELECT a.id from ContractorAccount a WHERE a.operators.operatorAccount = ?");
+		query.setParameter(1, opAccount);
+		
+		return query.getResultList();
+	}	
 
 	public List<ContractorAccount> findNewContractors(Permissions permissions, int limit) {
 		if (permissions == null)

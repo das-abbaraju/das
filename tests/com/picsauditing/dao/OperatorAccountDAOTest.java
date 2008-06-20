@@ -85,7 +85,7 @@ public class OperatorAccountDAOTest {
 
 	@Test
 	public void testFindWhere() {
-		List<OperatorAccount> account = operatoraccountDAO.findWhere("active = 'Y'");
+		List<OperatorAccount> account = operatoraccountDAO.findWhere(true, "active = 'Y'");
 		assertTrue(account.size() > 0);
 	}
 

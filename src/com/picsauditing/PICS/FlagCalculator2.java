@@ -47,6 +47,14 @@ public class FlagCalculator2 {
 		execute();
 	}
 	
+	public void runByOperatorLimited(int opID) {
+		OperatorAccount operator = operatorDAO.find(opID);
+		operators.add(operator);
+		
+		contractorIDs = contractorDAO.findIdsByOperator(operator);
+		execute();
+	}
+	
 	public void runByOperator(int opID) {
 		OperatorAccount operator = operatorDAO.find(opID);
 		operators.add(operator);
@@ -66,11 +74,10 @@ public class FlagCalculator2 {
 	}
 	
 	private void execute() {
-		
 		debug("FlagCalculator.execute()");
 		// Load ALL operators and contractors by default
 		if (operators.size() == 0)
-			operators = operatorDAO.findWhere("type='Operator'");
+			operators = operatorDAO.findWhere(false, "type='Operator'");
 		if (contractorIDs.size() == 0) {
 			contractorIDs = contractorDAO.findAll();
 		}
