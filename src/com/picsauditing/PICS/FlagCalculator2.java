@@ -3,7 +3,10 @@ package com.picsauditing.PICS;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceContext;
 
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -23,7 +26,10 @@ import com.picsauditing.jpa.entities.OperatorAccount;
  *
  */
 public class FlagCalculator2 {
-	private boolean debug = true;
+	
+	//protected EntityManager em = null;
+	
+	private boolean debug = false;
 	
 	private OperatorAccountDAO operatorDAO;
 	private ContractorAccountDAO contractorDAO;
@@ -92,50 +98,152 @@ public class FlagCalculator2 {
 			questionIDs.addAll(operator.getQuestionIDs());
 		}
 		
-		debug("FlagCalculator: Operator data ready...starting calculations");
+
+		int count = 1;
+		int testValue = 5;
+		float lastAvg = 1000000;
+		long startTime = System.currentTimeMillis();
+		for(Integer conID : contractorIDs) {
+
+			
+			
+			runCalc(questionIDs, conID);
+			
+			
+			if( (count++ % testValue) == 0 )
+			{
+				questionIDs = null;
+				
+				contractorDAO.clear();
+				
+				System.gc();
+
+				questionIDs = new ArrayList<Integer>();
+				
+				for(OperatorAccount operator : operators) {
+					// Read the operator data from database
+					operator.getFlagOshaCriteria();
+					operator.getAudits();
+					questionIDs.addAll(operator.getQuestionIDs());
+				}
+
+				long endTime = System.currentTimeMillis();
+				
+				float thisAvg = (endTime - startTime) / testValue; 
+				
+				System.out.println("one iteration finished:  batch size: " + testValue + " average time : " + thisAvg);
+				
+				if( thisAvg > lastAvg )
+				{
+					testValue -= 3;
+					
+					if( testValue < 5 )
+					{
+						testValue = 5;
+					}
+				}
+				else
+				{
+					testValue += 5;
+
+					if( testValue > 70 )
+					{
+						testValue = 20;
+					}
+				
+				}
+				lastAvg = thisAvg;
+				count = 1;
+				startTime = System.currentTimeMillis();
+				
+			}
+			
+			
+		}
+	}
+
+	protected void runCalc(List<Integer> questionIDs, Integer conID) {
+
+		long startTime = System.currentTimeMillis();
+
+
+		
+		ContractorAccount contractor = contractorDAO.find(conID);
+
+
+		//debug("FlagCalculator: Operator data ready...starting calculations");
 		FlagCalculatorSingle calcSingle = new FlagCalculatorSingle();
 		calcSingle.setDebug(debug);
 
+		calcSingle.setContractor(contractor);
+		calcSingle.setConAudits(conAuditDAO.findNonExpiredByContractor(contractor.getId()));
+		calcSingle.setAuditAnswers(auditDataDAO.findAnswersByContractor(contractor.getId(), questionIDs));
 		
-		for(Integer conID : contractorIDs) {
-				long startTime = System.currentTimeMillis();
-				ContractorAccount contractor = contractorDAO.find(conID);
-				
-			calcSingle.setContractor(contractor);
-			calcSingle.setConAudits(conAuditDAO.findNonExpiredByContractor(contractor.getId()));
-			calcSingle.setAuditAnswers(auditDataDAO.findAnswersByContractor(contractor.getId(), questionIDs));
+		
+		
+		for(OperatorAccount operator : operators) {
+		//OperatorAccount operator = operators.get(0);
 			
+			calcSingle.setOperator(operator);
 			
+			// Calculate the color of the flag right here
 			
-			for(OperatorAccount operator : operators) {
-				calcSingle.setOperator(operator);
-				
-				// Calculate the color of the flag right here
-				
-				FlagColor color = calcSingle.calculate();
-				debug(" - FlagColor returned: " + color);
-				// Set the flag color on the object
-				ContractorOperatorFlag coFlag = contractor.getFlags().get(operator);
-				
-				if (coFlag == null) {
-					// Add a new flag
-					coFlag = new ContractorOperatorFlag();
-					coFlag.setFlagColor(color);
-					coFlag.setContractorAccount(contractor);
-					coFlag.setOperatorAccount(operator);
-					coFlagDAO.save(coFlag);
-					contractor.getFlags().put(operator, coFlag);
-				} else {
-					if (!color.equals(coFlag.getFlagColor())) {
-						coFlag.setFlagColor(color);
-						coFlag.setLastUpdate(new Date());
+			FlagColor color = calcSingle.calculate();
+			//debug(" - FlagColor returned: " + color);
+			// Set the flag color on the object
+			//em.refresh(contractor);
+			ContractorOperatorFlag coFlag = null;
+			try
+			{
+				coFlag = contractor.getFlags().get(operator);
+			}
+			catch( Exception e )
+			{
+				System.out.println(e);
+			}
+			
+
+			if( coFlag == null)
+			{
+				for( ContractorOperatorFlag cof : contractor.getFlags().values() )
+				{
+					try
+					{
+						if( operator.getIdString().equals( cof.getOperatorAccount().getIdString() ) )
+						{
+							coFlag = cof;
+						}
+					}
+					catch( Exception e )
+					{
+						if( ! ( e instanceof EntityNotFoundException ) ){
+							System.out.println( e );	
+						}
+						
 					}
 				}
+			}			
+			
+			if (coFlag == null) {
+				// Add a new flag
+				coFlag = new ContractorOperatorFlag();
+				coFlag.setFlagColor(color);
+				coFlag.setContractorAccount(contractor);
+				coFlag.setOperatorAccount(operator);
+				
+				
+				coFlagDAO.save(coFlag);
+				contractor.getFlags().put(operator, coFlag);
+			} else {
+				if (!color.equals(coFlag.getFlagColor())) {
+					coFlag.setFlagColor(color);
+					coFlag.setLastUpdate(new Date());
+				}
 			}
-			// Save the changes to the contractor
-			contractorDAO.save(contractor);
-			System.out.println(  "" + conID + " " + (System.currentTimeMillis() - startTime) );
+			
 		}
+		contractorDAO.save(contractor);
+		//System.out.println(  "" + conID + " " + (System.currentTimeMillis() - startTime) );
 	}
 	
 	protected void debug(String message) {
@@ -152,5 +260,14 @@ public class FlagCalculator2 {
 	public void setDebug(boolean debug) {
 		this.debug = debug;
 	}
-
+/*
+	@PersistenceContext
+	public void setEntityManager( EntityManager em )
+	{
+		this.em = em;
+	}
+*/
+	
+	
 }
+
