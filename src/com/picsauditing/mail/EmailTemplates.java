@@ -9,7 +9,9 @@ public enum EmailTemplates {
 	contractoradded("Facility added Contractor"),
 	password("Forgot Password"),
 	newuser("Welcome New User"),
-	verifyPqf("Verify PQF");
+	verifyPqf("Verify PQF"),
+	contractorconfirm("Confirm Audit"),
+	auditorconfirm("Confirm Audit");
 
 	EmailTemplates(String description){
 		this.description = description;
