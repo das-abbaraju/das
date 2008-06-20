@@ -25,7 +25,3 @@
 	} catch (Exception e) {
 		%>Unknown Error Occurred: <%=e.getMessage()%>
 <%}%>
-
-<script type="text/javascript">
-alert("Hello World");
-</script>
