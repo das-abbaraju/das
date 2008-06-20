@@ -73,7 +73,6 @@ public class ContractorAuditAction extends AuditActionSupport {
 				}
 			}
 		}
-		////TODO move to AuditPercentCalculator
 		// Calculate and set the percent complete
 		auditPercentCalculator.percentCalculateComplete(conAudit);
 		
