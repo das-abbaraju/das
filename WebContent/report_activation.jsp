@@ -172,8 +172,6 @@ try{
 		<td colspan=2 ><a href="javascript: changeOrderBy('form1','newBillingAmount DESC');" class="whiteTitle"><nobr>New Invoice</nobr></a></td>
 		<td colspan=2 ><a href="javascript: changeOrderBy('form1','lastPayment DESC');" class="whiteTitle">Last Payment</a></td>
 		<td colspan=2 ><a href="javascript: changeOrderBy('form1','billingCycle');" class="whiteTitle">New Payment</a></td>
-		<td colspan=4  bgcolor="#6699CC">Welcome Call</td>
-		<td colspan=2  bgcolor="#6699CC">Welcome Email</td>
 		<td  bgcolor="#336699">Visible?</td>
 		<td width="25"  bgcolor="#336699">Y/N</td>
 		<td>&nbsp;</td>
