@@ -14,7 +14,7 @@ public class AuditorsGet extends ActionSupport
 	protected UserDAO dao = null;
 	protected List<User> auditors = null;
 	protected String controlName = "auditor.id";
-	protected int presetValue = 0;
+	protected int[] presetValue;
 	
 	public AuditorsGet( UserDAO dao )
 	{
@@ -43,11 +43,11 @@ public class AuditorsGet extends ActionSupport
 		this.auditors = auditors;
 	}
 
-	public int getPresetValue() {
+	public int[] getPresetValue() {
 		return presetValue;
 	}
 
-	public void setPresetValue(int presetValue) {
+	public void setPresetValue(int[] presetValue) {
 		this.presetValue = presetValue;
 	}
 	

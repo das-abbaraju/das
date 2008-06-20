@@ -15,7 +15,7 @@ import com.picsauditing.util.Strings;
 public class ReportContractorAudits extends ReportAccount {
 	protected int[] auditTypeID;
 	protected AuditStatus[] auditStatus;
-	protected int auditorId = 0;
+	protected int[] auditorId;
 
 	protected boolean filterAuditType = true;
 	protected boolean filterAuditStatus = true;
@@ -102,17 +102,17 @@ public class ReportContractorAudits extends ReportAccount {
 		filtered = true;
 	}
 
-	public int getAuditorId() {
+	public int[] getAuditorId() {
 		return auditorId;
 	}
 
-	public void setAuditorId(int auditorId) {
-		if (auditorId != 0) {
-			report.addFilter(new SelectFilterInteger("auditorId",
-					"ca.auditorID = '?'", auditorId));
-		}
-
+	public void setAuditorId(int[] auditorId) {
+		String auditorIdList = Strings.implode(auditorId, ",");
+		
+		sql.addWhere("ca.auditorID IN (" + auditorIdList + ")");
+		
 		this.auditorId = auditorId;
+		filtered = true;
 	}
 
 	public boolean isFilterAuditType() {
