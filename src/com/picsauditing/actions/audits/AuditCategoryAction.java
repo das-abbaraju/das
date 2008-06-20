@@ -3,6 +3,7 @@ package com.picsauditing.actions.audits;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.Inputs;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -30,6 +31,7 @@ import com.picsauditing.util.SpringUtils;
  * 
  */
 public class AuditCategoryAction extends AuditActionSupport {
+	
 	protected int catDataID = 0;
 	protected String mode = null;
 	static private String VIEW = "View";
@@ -41,12 +43,13 @@ public class AuditCategoryAction extends AuditActionSupport {
 	protected AuditCatData nextCategory = null;
 	protected AuditCatData currentCategory = null;
 
-	protected AuditCategoryDataDAO catDataDAO;
-
+	private AuditPercentCalculator auditPercentCalculator;
+	
 	public AuditCategoryAction(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao) {
+			AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
+		this.auditPercentCalculator = auditPercentCalculator;
 	}
 
 	public String execute() throws Exception {
@@ -109,6 +112,8 @@ public class AuditCategoryAction extends AuditActionSupport {
 				contractor.getOshas().add(oshaCorporate);
 			}
 		}
+		auditPercentCalculator.updatePercentageCompleted(currentCategory);
+		auditPercentCalculator.percentCalculateComplete(conAudit);
 		return SUCCESS;
 	}
 

@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -30,6 +31,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 	protected AuditStatus auditStatus;
 	protected EmailAuditBean mailer;
 	protected FlagCalculator2 flagCalculator;
+	protected AuditPercentCalculator auditPercentCalculator;
 
 	private boolean isCanApply = false;
 	private int applyCategoryID = 0;
@@ -37,10 +39,11 @@ public class ContractorAuditAction extends AuditActionSupport {
 	
 	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, 
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, EmailAuditBean emailAuditBean, 
-			FlagCalculator2 flagCalculator2) {
+			FlagCalculator2 flagCalculator2, AuditPercentCalculator auditPercentCalculator) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.mailer = emailAuditBean;
 		this.flagCalculator = flagCalculator2;
+		this.auditPercentCalculator = auditPercentCalculator;
 	}
 	
 	public String execute() throws Exception {
@@ -70,23 +73,9 @@ public class ContractorAuditAction extends AuditActionSupport {
 				}
 			}
 		}
-		
+		////TODO move to AuditPercentCalculator
 		// Calculate and set the percent complete
-		int required = 0;
-		int answered = 0;
-		for (AuditCatData data : conAudit.getCategories()) {
-			if (!conAudit.getAuditType().isDynamicCategories() || data.isAppliesB()) {
-				// The category applies or the audit type doesn't have dynamic categories
-				required += data.getNumRequired();
-				answered += data.getRequiredCompleted();
-			}
-		}
-		int percentComplete = 0;
-		if (required > 0) {
-			percentComplete = (int)Math.floor(100 * answered / required);
-			if (percentComplete > 100) percentComplete = 100;
-		}
-		conAudit.setPercentComplete(percentComplete);
+		auditPercentCalculator.percentCalculateComplete(conAudit);
 		
 		if (auditStatus != null && !conAudit.getAuditStatus().equals(auditStatus)) {
 			// We're changing the status
