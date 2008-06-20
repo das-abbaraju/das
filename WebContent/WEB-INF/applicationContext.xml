@@ -32,6 +32,7 @@
 	<bean id="EmailContractorBean" class="com.picsauditing.mail.EmailContractorBean" scope="prototype"/>
 	<bean id="EmailUserBean" class="com.picsauditing.mail.EmailUserBean" scope="prototype"/>
 	<bean id="FlagCalculator2" class="com.picsauditing.PICS.FlagCalculator2" scope="prototype"/>
+	<bean id="AuditPercentCalculator" class="com.picsauditing.PICS.AuditPercentCalculator" scope="prototype"/>
 
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
