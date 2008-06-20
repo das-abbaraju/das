@@ -45,4 +45,8 @@ public class StringsTest extends TestCase {
 		color = "Red";
 		return color;
 	}
+
+	public void testHash() {
+	 	System.out.println(Strings.hashUrlSafe("testinsfgsf")); 
+	}
 }
