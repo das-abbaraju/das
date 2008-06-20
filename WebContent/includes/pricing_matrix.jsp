@@ -13,33 +13,33 @@ com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlt
 	</tr>
 	<tr class=blueMain <%=color.nextBgColor()%>>
 		<td class="center">1</td>
-		<td class="center">$<%=BillContractor.calculatePriceByFacilityCount(1)%></td>
-		<td class="center">$99</td>
+		<td class="money">$<%=BillContractor.calculatePriceByFacilityCount(1)%></td>
+		<td class="money">$99</td>
 	</tr>
 	<tr class=blueMain <%=color.nextBgColor()%>>
 		<td class="center">2-4</td>
-		<td class="center">$<%=BillContractor.calculatePriceByFacilityCount(4)%></td>
-		<td class="center">$99</td>
+		<td class="money">$<%=BillContractor.calculatePriceByFacilityCount(4)%></td>
+		<td class="money">$99</td>
 	</tr>
 	<tr class=blueMain <%=color.nextBgColor()%>>
 		<td class="center">5-8</td>
-		<td class="center">$<%=BillContractor.calculatePriceByFacilityCount(8)%></td>
-		<td class="center">$99</td>
+		<td class="money">$<%=BillContractor.calculatePriceByFacilityCount(8)%></td>
+		<td class="money">$99</td>
 	</tr>
 	<tr class=blueMain <%=color.nextBgColor()%>>
 		<td class="center">9-12</td>
-		<td class="center">$<%=BillContractor.calculatePriceByFacilityCount(12)%></td>
-		<td class="center">$99</td>
+		<td class="money">$<%=BillContractor.calculatePriceByFacilityCount(12)%></td>
+		<td class="money">$99</td>
 	</tr>
 	<tr class=blueMain <%=color.nextBgColor()%>>
 		<td class="center">13-19</td>
-		<td class="center">$<%=BillContractor.calculatePriceByFacilityCount(19)%></td>
-		<td class="center">$99</td>
+		<td class="money">$<%=BillContractor.calculatePriceByFacilityCount(19)%></td>
+		<td class="money">$99</td>
 	</tr>
 	<tr class=blueMain <%=color.nextBgColor()%>>
 		<td class="center">20+</td>
-		<td class="center">$<%=BillContractor.calculatePriceByFacilityCount(20)%></td>
-		<td class="center">$99</td>
+		<td class="money">$<%=BillContractor.calculatePriceByFacilityCount(20)%></td>
+		<td class="money">$99</td>
 	</tr>
 </table>
 <p class="redMain">* There is an account activation fee of $99 for new account registration, and $199 for reactivation</p>

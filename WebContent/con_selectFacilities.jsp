@@ -59,15 +59,15 @@
 %>
 <%@ include file="includes/conHeaderLegacy.jsp"%>
 
-
-<div style="float: left; text-align: center; width: 250px;">
 <%
 	if (permissions.isContractor() || permissions.isAdmin()) {
-%> <%@ include file="includes/pricing_matrix.jsp"%><br>
+%>
+<div style="float: right; text-align: center; width: 250px;">
+	<%@ include file="includes/pricing_matrix.jsp"%><br>
+</div>
 <%
 	}
 %>
-</div>
 <form name="form1" method="post"
 	action="con_selectFacilities.jsp?id=<%=id%>">
 <div>

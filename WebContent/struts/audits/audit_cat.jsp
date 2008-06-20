@@ -173,9 +173,8 @@
 			<table class="audit">
 			<s:iterator value="category.subCategories">
 				<tr class="subCategory">
-					<td colspan="3">Sub Category <s:property value="category.number"/>.<s:property value="number"/> - 
+					<td colspan="4">Sub Category <s:property value="category.number"/>.<s:property value="number"/> - 
 					<s:property value="subCategory"/>
-					<span style="width: 150px;position:absolute;right:10px;font-size: 14px;">* &nbsp;-&nbsp; Required</span>
 					</td>
 				</tr>
 				<s:iterator value="questions">
@@ -204,6 +203,7 @@
 				</s:iterator>
 			</s:iterator>
 			</table>
+			<span class="requiredStar">* Question is required</span>
 		</s:else>
 	</s:if>
 </s:iterator>
