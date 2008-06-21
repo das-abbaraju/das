@@ -73,7 +73,7 @@ public class PicsMenu {
 
 		subMenu = menu.addChild("InsureGuard");
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))
-			subMenu.addChild("Insurance Certificates", "report_certificates.jsp?changed=1");
+			subMenu.addChild("Insurance Approval", "report_certificates.jsp?changed=1");
 		if (permissions.hasPermission(OpPerms.InsuranceVerification))
 			subMenu.addChild("Verification", "verify_insurance.jsp");
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))

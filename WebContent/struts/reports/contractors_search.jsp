@@ -13,7 +13,7 @@
 	<s:hidden name="orderBy" />
 </s:form>
 
-<s:property value="report.pageLinks" escape="false" />
+<div><s:property value="report.pageLinks" escape="false" /></div>
 <table class="report">
 	<thead>
 	<tr>
@@ -28,6 +28,6 @@
 		</tr>
 	</s:iterator>
 </table>
-<s:property value="report.pageLinks" escape="false" />
+<div><s:property value="report.pageLinks" escape="false" /></div>
 </body>
 </html>
