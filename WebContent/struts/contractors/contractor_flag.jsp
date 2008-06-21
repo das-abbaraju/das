@@ -257,13 +257,32 @@
 	</table>
 </s:if>
 
-<s:if test="co.operatorAccount.canSeeInsurance">
-
-</s:if>
 
 <pics:permission perm="EditFlagCriteria">
 <div><a href="op_editFlagCriteria.jsp?opID=<s:property value="opID" />">Edit Flag Criteria</a></div>
 </pics:permission>
+
+
+<s:if test="co.operatorAccount.canSeeInsurance">
+	<table class="report">
+		<thead>
+			<tr>
+				<td>Flag</td>
+				<td>Insurance</td>
+				<td>Status</td>
+			</tr>
+		</thead>
+		<s:iterator value="contractor.certificates">
+			<tr class="<s:property value="flagColor" />">
+				<td class="center"><s:property
+					value="flagColor.smallIcon" escape="false" /></td>
+				<td><s:property value="type" /></td>
+				<td><s:property value="status" /></td>
+			</tr>
+		</s:iterator>
+	</table>
+</s:if>
+
 </body>
 </html>
 								
