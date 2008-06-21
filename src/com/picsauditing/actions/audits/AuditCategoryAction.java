@@ -76,9 +76,9 @@ public class AuditCategoryAction extends AuditActionSupport {
 					}
 				}
 			}
-			if (conAudit.getAuditStatus().equals(AuditStatus.Pending))
+			if (mode == null && conAudit.getAuditStatus().equals(AuditStatus.Pending))
 				mode = EDIT;
-			if (conAudit.getAuditStatus().equals(AuditStatus.Submitted))
+			if (mode == null && conAudit.getAuditStatus().equals(AuditStatus.Submitted))
 				mode = VERIFY;
 		} else {
 			// When we want to show all categories
