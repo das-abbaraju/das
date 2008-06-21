@@ -46,9 +46,9 @@
 		  	  </tr>
 </s:iterator>
 </table><br>
-<center>
-<s:property value="report.pageLinksWithDynamicForm" escape="false"/>
-</center>
+<div>
+<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+</div>
 </body>
 </html>
   			
