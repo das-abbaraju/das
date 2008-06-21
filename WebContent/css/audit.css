@@ -191,3 +191,7 @@ table.osha tfoot th {
 	margin: 3px;
 	font-weight: bold;
 }
+
+#content div.verifyBox {
+	margin-left: 20px;
+}

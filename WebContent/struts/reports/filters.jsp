@@ -52,13 +52,15 @@ function updateQuery(name) {
 <div id="search">
 <div id="showSearch" onclick="showSearch()" <s:if test="filtered">style="display: none"</s:if> ><a href="#">Show Filter Options</a></div>
 <div id="hideSearch" <s:if test="!filtered">style="display: none"</s:if> ><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
-<s:form id="form1" method="post" cssStyle="background-color: #F4F4F4; %{filtered ? '' : 'display: none;'}">
+<s:form id="form1" method="post" cssStyle="background-color: #F4F4F4; %{filtered ? '' : 'display: none;'}" onsubmit="runSearch( 'form1')">
 	<s:hidden name="showPage" value="1"/>
 	<s:hidden name="startsWith" />
 	<s:hidden name="orderBy" />
 	
-	<s:submit type="button" label="Search" onclick="runSearch( 'form1')" cssStyle="float: right;" />
-	<br clear="all" />
+	<div style="text-align: center; width: 100%">
+	<div class="buttons"><a href="#" class="positive" onclick="form1.submit(); return false;">Search</a></div>
+	</p>
+	<br clear="all"/>
 
 	<div class="filterOption"><s:textfield name="accountName" cssClass="forms" size="10" onfocus="clearText(this)"  /></div>
 

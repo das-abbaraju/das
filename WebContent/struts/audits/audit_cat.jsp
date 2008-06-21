@@ -155,7 +155,9 @@
 		<a href="javascript:window.print()" class="print">Print</a>
 	</s:if>
 </div>
-<br clear="all" />
+
+<br clear="all"/>
+
 <s:iterator value="categories">
 	<s:if test="catDataID == id || (catDataID == 0 && appliesB)">
 		<h2>Category <s:property value="category.number"/> - <s:property value="category.category"/></h2>
@@ -224,6 +226,17 @@
 		</s:else>
 	</s:if>
 </s:iterator>
+
+<br clear="all"/>
+<div class="buttons" style="float: right;">
+	<s:if test="nextCategory == null">
+		<a href="Audit.action?auditID=<s:property value="auditID"/>" class="positive"><img src="images/tick.png" alt=""/>Next</a>
+	</s:if>
+	<s:else>
+		<a href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="nextCategory.id"/>&mode=<s:property value="mode"/>" class="positive"><img src="images/tick.png" alt=""/>Next</a>
+	</s:else>
+</div>
+<br clear="all"/>
 
 <s:include value="audit_cat_nav.jsp" />
 
