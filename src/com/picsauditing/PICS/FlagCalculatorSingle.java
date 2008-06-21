@@ -19,6 +19,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.jpa.entities.OshaLogYear;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.jpa.entities.Certificate;
 
 /**
  * Determine the Flag color for a single contractor at a given facility.
@@ -32,6 +33,7 @@ public class FlagCalculatorSingle {
 
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
+	private Certificate certificate;
 	private List<ContractorAudit> conAudits;
 	private Map<Integer, AuditData> auditAnswers;
 	
@@ -166,8 +168,25 @@ public class FlagCalculatorSingle {
 			}
 		}
 		
+		// Calculate the insurance certificate flags colors
+		if (operator.getCanSeeInsurance().equals(YesNo.Yes)) {
+			FlagColor certFlagColor = null;
+
+			for (Certificate certificate : contractor.getCertificates()) {
+				certFlagColor = setFlagColor(certFlagColor, certificate
+						.getFlagColor());
+				
+
+				if (answerOnly && certFlagColor.equals(FlagColor.Red))
+					// Things can't get worse, just exit
+					return certFlagColor;
+			}
+
+			flagColor = setFlagColor(flagColor, certFlagColor);
+		}
+
 		// First see if there are any forced flags for this operator
-		for(ContractorOperator co : contractor.getOperators()) {
+		for (ContractorOperator co : contractor.getOperators()) {
 			if (co.getOperatorAccount().equals(operator))
 				// Found the operator, is it forced?
 				if (co.isForcedFlag())

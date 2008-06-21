@@ -79,7 +79,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	protected List<OshaLog> oshas;
 	protected List<ContractorAudit> audits;
 	protected List<ContractorOperator> operators;
-	protected List<Certficate> certficates;
+	protected List<Certificate> certificates;
 	protected Map<OperatorAccount, ContractorOperatorFlag> flags;
 
 	public ContractorAccount() {
@@ -506,8 +506,13 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 	
 	@OneToMany(mappedBy="contractorAccount")
-	public List<Certficate> getCertificates() {
-		return certficates;
+	public List<Certificate> getCertificates() {
+		return certificates;
 	}
+
+	public void setCertificates(List<Certificate> certificates) {
+		this.certificates = certificates;
+	}
+
 	
 }

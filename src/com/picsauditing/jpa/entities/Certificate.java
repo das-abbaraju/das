@@ -12,11 +12,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 @Entity
 @Table(name = "certificates")
-public class Certficate {
+public class Certificate {
 	protected int id;
 	protected ContractorAccount contractorAccount;
 	protected OperatorAccount operatorAccount;
@@ -71,7 +73,8 @@ public class Certficate {
 		this.type = type;
 	}
 
-	@JoinColumn(name = "expDate")
+	@Temporal(TemporalType.DATE)
+	@Column(name="expDate")
 	public Date getExpiration() {
 		return expiration;
 	}
@@ -80,7 +83,7 @@ public class Certficate {
 		this.expiration = expiration;
 	}
 
-	@JoinColumn(name = "sent")
+	@Column(name = "sent")
 	public int getSentEmails() {
 		return sentEmails;
 	}
@@ -89,6 +92,7 @@ public class Certficate {
 		this.sentEmails = sentEmails;
 	}
 
+	@Temporal(TemporalType.DATE)
 	public Date getLastSentDate() {
 		return lastSentDate;
 	}
@@ -145,6 +149,7 @@ public class Certficate {
 		this.reason = reason;
 	}
 
+	@Column(name = "ext")
 	public String getFileExtension() {
 		return fileExtension;
 	}
