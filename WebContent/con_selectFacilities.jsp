@@ -40,7 +40,7 @@
 	}
 	cBean.setFromDB(id);
 	OperatorAccountDAO operatorDao = (OperatorAccountDAO)SpringUtils.getBean("OperatorAccountDAO");
-	List<OperatorAccount> operators = operatorDao.findAll(permissions);
+	List<OperatorAccount> operators = operatorDao.findWhere(false, "", permissions);
 	
 	int count = 0;
 
