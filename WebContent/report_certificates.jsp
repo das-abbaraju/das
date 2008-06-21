@@ -34,18 +34,15 @@
 		sBean.pageResults(cerBean.getListRS(), 50, request);
 %>
 <head>
-<title>Insurance Certificates</title>
-<script language="JavaScript" SRC="js/ImageSwap.js"
-	type="text/javascript"></script>
+<title>Insurance Approval</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
-<table border="0" cellpadding="0" cellspacing="0">
-	<tr>
-		<td align="center" valign="top" class="buttons"><span
-			class="blueHeader">Insurance Certificates Report</span> <br>
-		<form name="form1" method="post" action="report_certificates.jsp">
-		<table border="0" align="center" cellpadding="2" cellspacing="0">
-			<tr>
+<h1>Insurance Approval
+<span class="sub">InsureGuard</span></h1>
+<form name="form1" method="post" action="report_certificates.jsp">
+	<table border="0" align="center" cellpadding="2" cellspacing="0">
+		<tr>
 				<td><input name="s_accountName" type="text" class="forms"
 					value="<%=filter.getInputValue("s_accountName")%>" size="8"
 					onFocus="clearText(this)"></td>
@@ -64,14 +61,20 @@
 					src="images/button_search.gif" width="70" height="23" border="0"
 					onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)"
 					onMouseOut="MM_swapImgRestore()"></td>
-			</tr>
-		</table>
-		</form>
-		<form name="emailForm" method="post" action="report_certificates.jsp"><br>
-		<%=sBean.getLinks(filter.getURLQuery())%>
-		<table ID="certTable" width="100%" border="0" cellpadding="1"
-			cellspacing="1">
-			<tr class="whiteTitle">
+		</tr>
+	</table>
+</form>
+<form name="emailForm" method="post" action="report_certificates.jsp"><br>
+<div><%=sBean.getLinks(filter.getURLQuery())%></div>
+<%
+	if (canEdit) {
+%> <input name="action" type="submit" class="buttons"
+	value="Submit"> <input name="s_certStatus" type="hidden"
+	value="<%=filter.getInputValue("s_certStatus")%>"> <%
+ 	}//if
+ %>
+<table id="certTable" class="report">
+	<thead><tr> 
 				<td bgcolor="#003366">Num</td>
 				<%
 					if (canEdit) {
@@ -116,11 +119,12 @@
 				<td bgcolor="#003366">Add'l Named Ins.</td>
 				<td bgcolor="#003366">Waiver</td>
 				<td align="center" bgcolor="#993300">File</td>
-			</tr>
-			<%
-				while (sBean.isNextRecord(certDO)) {
-			%>
-			<tr id="<%=certDO.getCert_id()%>" <%=sBean.getBGColor()%>
+	</tr></thead>
+
+	<%
+		while (sBean.isNextRecord(certDO)) {
+	%>
+	<tr id="<%=certDO.getCert_id()%>" <%=sBean.getBGColor()%>
 				class="<%=sBean.getTextColor()%>">
 				<td align="right"><%=sBean.count - 1%></td>
 				<%
@@ -186,25 +190,21 @@
 					href="/certificates/cert_<%=certDO.getContractor_id()%>_<%=certDO.getCert_id()%>.<%=certDO.getExt()%>"
 					target="_blank"> <img src="images/icon_insurance.gif"
 					width="20" height="20" border="0" alt=""></a></td>
-			</tr>
-			<%
-				}//while
-			%>
-		</table>
-		<br>
-		<center><%=sBean.getLinks(filter.getURLQuery())%></center>
-		<br>
-		<%
-			if (canEdit) {
-		%> <input name="action" type="submit" class="buttons"
-			value="Submit"> <input name="s_certStatus" type="hidden"
-			value="<%=filter.getInputValue("s_certStatus")%>"> <%
+	</tr>
+	<%
+		}//while
+	%>
+</table>
+<div><%=sBean.getLinks(filter.getURLQuery())%></div>
+<br>
+<%
+	if (canEdit) {
+%> <input name="action" type="submit" class="buttons"
+	value="Submit"> <input name="s_certStatus" type="hidden"
+	value="<%=filter.getInputValue("s_certStatus")%>"> <%
  	}//if
  %>
-		</form>
-		</td>
-	</tr>
-</table>
+</form>
 </body>
 </html>
 <%
