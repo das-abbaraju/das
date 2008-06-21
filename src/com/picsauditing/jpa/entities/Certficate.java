@@ -1,9 +1,18 @@
 package com.picsauditing.jpa.entities;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "certificates")
@@ -18,11 +27,14 @@ public class Certficate {
 	protected int liabilityLimit;
 	protected String namedInsured;
 	protected YesNo subrogationWaived;
-	protected String Status;
+	protected String status;
 	protected YesNo verified;
 	protected String reason;
 	protected String fileExtension;
 
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "cert_id", nullable = false, insertable = false, updatable = false)
 	public int getId() {
 		return id;
 	}
@@ -31,6 +43,8 @@ public class Certficate {
 		this.id = id;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "contractor_id", nullable = false, updatable = false)
 	public ContractorAccount getContractorAccount() {
 		return contractorAccount;
 	}
@@ -39,6 +53,8 @@ public class Certficate {
 		this.contractorAccount = contractorAccount;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "operator_id", nullable = false, updatable = false)
 	public OperatorAccount getOperatorAccount() {
 		return operatorAccount;
 	}
@@ -55,6 +71,7 @@ public class Certficate {
 		this.type = type;
 	}
 
+	@JoinColumn(name = "expDate")
 	public Date getExpiration() {
 		return expiration;
 	}
@@ -63,6 +80,7 @@ public class Certficate {
 		this.expiration = expiration;
 	}
 
+	@JoinColumn(name = "sent")
 	public int getSentEmails() {
 		return sentEmails;
 	}
@@ -104,11 +122,11 @@ public class Certficate {
 	}
 
 	public String getStatus() {
-		return Status;
+		return status;
 	}
 
 	public void setStatus(String status) {
-		Status = status;
+		this.status = status;
 	}
 
 	public YesNo getVerified() {
@@ -135,4 +153,19 @@ public class Certficate {
 		this.fileExtension = fileExtension;
 	}
 
+	@Transient
+	public FlagColor getFlagColor() {
+		if (status == null)
+			return null;
+		if (status.equals("Approved")) {
+			return FlagColor.Green;
+		}
+		if (status.equals("Expired")) {
+			return FlagColor.Amber;
+		}
+		if (status.equals("Rejected")) {
+			return FlagColor.Red;
+		}
+		return null;
+	}
 }
