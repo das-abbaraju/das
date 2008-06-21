@@ -375,6 +375,10 @@ update operators set doSendActivationEmail = 'No'
 /************************/
 /* cleanup orphaned/incorrect data */
 
+delete from generalcontractors where subID BETWEEN 1087 and 1091;
+delete from flags where opID not in (select id from accounts where type = 'Operator');
+delete from flags where conID not in (select id from accounts where type = 'Contractor');
+
 delete from contractor_info where id in 
 (select id from accounts where type <> 'Contractor');
 
