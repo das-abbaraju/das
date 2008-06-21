@@ -3,7 +3,6 @@ package com.picsauditing.jpa.entities;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -24,7 +23,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 
 @Entity

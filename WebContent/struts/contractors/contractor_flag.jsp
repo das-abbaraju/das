@@ -257,6 +257,10 @@
 	</table>
 </s:if>
 
+<s:if test="co.operatorAccount.canSeeInsurance">
+
+</s:if>
+
 <pics:permission perm="EditFlagCriteria">
 <div><a href="op_editFlagCriteria.jsp?opID=<s:property value="opID" />">Edit Flag Criteria</a></div>
 </pics:permission>

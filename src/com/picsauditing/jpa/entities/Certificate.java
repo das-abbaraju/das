@@ -74,7 +74,7 @@ public class Certificate {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name="expDate")
+	@Column(name = "expDate")
 	public Date getExpiration() {
 		return expiration;
 	}
