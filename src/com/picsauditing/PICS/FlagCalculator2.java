@@ -114,7 +114,12 @@ public class FlagCalculator2 {
 			{
 				questionIDs = null;
 				
-				contractorDAO.clear();
+				operatorDAO.close();
+				contractorDAO.close();
+				conAuditDAO.close();
+				auditDataDAO.close();
+				coFlagDAO.close();
+				contractorDAO.close();
 				
 				System.gc();
 
@@ -243,6 +248,17 @@ public class FlagCalculator2 {
 			
 		}
 		contractorDAO.save(contractor);
+
+		
+		
+		// destroy with a vengence!!!!
+//		for(OperatorAccount operator : contractor.getFlags().keySet()) {
+//			ContractorOperatorFlag flag =  contractor.getFlags().get(operator);
+//			flag = null;
+//		}
+//		contractor.getFlags().clear();
+//		contractor = null;
+		
 		//System.out.println(  "" + conID + " " + (System.currentTimeMillis() - startTime) );
 	}
 	
