@@ -2,8 +2,11 @@ package com.picsauditing.dao;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.picsauditing.jpa.entities.ContractorOperator;
 
+@Transactional
 public class ContractorOperatorDAO extends PicsDAO {
 	public ContractorOperator save(ContractorOperator o) {
 		if (o.getId() == 0) {

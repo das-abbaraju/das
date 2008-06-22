@@ -4,8 +4,11 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.picsauditing.jpa.entities.AuditQuestion;
 
+@Transactional
 public class AuditQuestionDAO extends PicsDAO {
 
 	public AuditQuestion save(AuditQuestion o) {

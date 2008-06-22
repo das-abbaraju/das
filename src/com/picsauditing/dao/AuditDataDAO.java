@@ -7,11 +7,14 @@ import java.util.Vector;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
 
+@Transactional
 public class AuditDataDAO extends PicsDAO {
 	public AuditData save(AuditData o) {
 		if (o.getDataID() == 0) {

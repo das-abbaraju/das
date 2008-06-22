@@ -55,4 +55,12 @@ abstract public class PicsDAO {
 	{
 		em.clear();
 	}
+	
+	
+	public void close()
+	{
+		clear();
+		//em.close();
+	}
+	
 }

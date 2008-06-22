@@ -1,13 +1,19 @@
 package com.picsauditing.dao;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.sql.*;
+
+import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.DBBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.NcmsCategory;
 
+@Transactional
 public class NcmsCategoryDAO {
 
 	public List<NcmsCategory> findCategories(int conID) throws Exception {

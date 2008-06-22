@@ -1,7 +1,10 @@
 package com.picsauditing.dao;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 
+@Transactional
 public class ContractorOperatorFlagDAO extends PicsDAO {
 	public ContractorOperatorFlag save(ContractorOperatorFlag o) {
 		if (o.getId() == 0) {
