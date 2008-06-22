@@ -183,5 +183,28 @@ public class AuditData implements java.io.Serializable {
 	public boolean isRequirementOpen() {
 		return (question.getOkAnswer().indexOf(answer) == -1);
 	}
+
+	@Override
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + dataID;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final AuditData other = (AuditData) obj;
+		if (dataID != other.dataID)
+			return false;
+		return true;
+	}
+
 	
 }

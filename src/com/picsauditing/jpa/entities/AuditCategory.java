@@ -101,4 +101,29 @@ public class AuditCategory implements java.io.Serializable {
 		this.subCategories = subCategories;
 	}
 
+	
+	@Override
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final AuditCategory other = (AuditCategory) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+
+	
+	
 }

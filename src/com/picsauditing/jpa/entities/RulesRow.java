@@ -146,4 +146,35 @@ public class RulesRow {
 	public void setValue5(String value5) {
 		this.value5 = value5;
 	}
+
+
+
+	
+	@Override
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + rowID;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final RulesRow other = (RulesRow) obj;
+		if (rowID != other.rowID)
+			return false;
+		return true;
+	}
+
+
+
+
+
+
 }
