@@ -748,13 +748,12 @@ drop table `auditquestions`;
 
 drop table `forcedflaglist`;
 
-/* TODO: CHECK WHY WE HAVE orphaned cat data records!!! */
-delete from pqfcatdata
-	where auditID = 0;
-
 alter table `pqfcatdata` 
 	change `auditID` `auditID` mediumint(9) unsigned   NOT NULL after `catID`, 
 	drop column `conID`;
+
+delete from pqfcatdata
+	where auditID = 0;
 
 alter table `pqfcatdata` 
 	add UNIQUE KEY `auditID`(`auditID`,`catID`);
