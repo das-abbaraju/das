@@ -24,14 +24,15 @@ a img {
 #masthead {
 	margin: 0 auto;
 	min-width: 890px;
-	width: expression(document . body . clientWidth <   892 ?   "880px" :   "auto");
+	width: expression(document .   body .   clientWidth <     892 ?     "880px" :
+		    "auto");
 }
 
 #logo {
 	border: 0px;
 	width: 180px;
 	height: 100px;
-	top:0;
+	top: 0;
 	margin: 0;
 	z-index: 5000;
 	position: absolute;
@@ -58,16 +59,12 @@ a img {
 		margin-top: 10px;
 		padding-top: 8px;
 */
-
-
-/********************  SIDEBOX STYLES - OLD SMALLNAV  ************************/
-
+	/********************  SIDEBOX STYLES - OLD SMALLNAV  ************************/
 .sidebox {
 	float: right;
 	margin: 10px auto;
 	height: 30px;
 	background: url(../images/3dsquare-right.jpg) no-repeat bottom right;
-
 }
 
 .sidebox p {
@@ -79,14 +76,14 @@ a img {
 	padding-right: 5px;
 }
 
-.sidebox a:link, .sidebox a:visited {
+.sidebox a:link,.sidebox a:visited {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	color: #eeeeee;
 	padding: 5px;
 }
 
-.sidebox a:hover, .sidebox a:active {
+.sidebox a:hover,.sidebox a:active {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	color: #1B3665;
@@ -94,14 +91,14 @@ a img {
 	background-color: #eeeeee;
 	text-decoration: none;
 }
+
 .boxbody {
 	background: url(../images/3dsquare-left.jpg) no-repeat bottom left;
 	height: 30px;
 }
 
 /********************  SMALL NAV STYLES  ************************/
-
-/*#smallnav {
+	/*#smallnav {
 	width: 260px;
 	margin-top: 10px;
 	padding-top: 8px;
@@ -131,15 +128,13 @@ a img {
 	padding: 10px 5px;
 	background-color: #eeeeee;
 	text-decoration: none;
-}*/
-
-
-/********************  Main body Styles  ************************/
+}*/ /********************  Main body Styles  ************************/
 #bodyholder {
 	margin: 0 auto;
 	/* width: 960px; */
 	min-width: 890px;
-	width: expression(document . body . clientWidth <   892 ?   "880px" :   "auto");
+	width: expression(document .   body .   clientWidth <     892 ?     "880px" :
+		    "auto");
 	background-color: white;
 	border: solid 1px #c3c3c3;
 }
@@ -149,11 +144,13 @@ a img {
 }
 
 #content {
+	position: relative;
 	margin: 0;
 	padding: 45px;
 	min-height: 400px;
 	min-width: 890px;
-	width: expression(document . body . clientWidth <   892 ?   "880px" :   "auto");
+	width: expression(document .   body .   clientWidth <     892 ?     "880px" :
+		    "auto");
 }
 
 #content div {
@@ -180,7 +177,8 @@ div.container {
 
 div#maincontainer {
 	min-width: 790px;
-	width: expression(document . body . clientWidth <   892 ?   "790px" :   "auto");
+	width: expression(document .   body .   clientWidth <     892 ?     "790px" :
+		    "auto");
 	padding: 40px;
 	background-color: #797B7A;
 	font-family: Helvetica, Arial, sans-serif;
@@ -216,7 +214,8 @@ div.footer {
 #footercontent {
 	margin: 0 auto;
 	min-width: 890px;
-	width: expression(document . body . clientWidth <   892 ?   "880px" :   "auto");
+	width: expression(document .   body .   clientWidth <     892 ?     "880px" :
+		    "auto");
 }
 
 a.footer:link {
@@ -255,7 +254,8 @@ h1 {
 	margin-left: 0px;
 	border-bottom: solid 2px rgb(168, 77, 16);
 	min-width: 760px;
-	width: expression(document . body . clientWidth <   892 ?   "760px" :   "auto");
+	width: expression(document .   body .   clientWidth <     892 ?     "760px" :
+		    "auto");
 }
 
 h2 {
@@ -382,8 +382,8 @@ a.edit {
 a.verify {
 	padding-left: 17px;
 	margin-left: 2px;
-	background: transparent url(../images/okCheck.gif) no-repeat left 
-		center;
+	background: transparent url(../images/okCheck.gif) no-repeat left center
+		;
 }
 
 a.view {
@@ -430,13 +430,11 @@ div.message_info {
 	border: 1px solid black;
 }
 
-
-
 /******************** Internal Page Navigation  ************************/
 #internalnavcontainer {
 	display: block;
 	height: 45px;
-	margin: 0 auto; 
+	margin: 0 auto;
 }
 
 ul#navlist {
@@ -485,12 +483,12 @@ ul#navlist {
 
 /************* Search *************/
 #search {
-	display:block;
-	background-color:#EEEEEE;
-	border-top:1px solid #A84D10;
-	border-bottom:1px solid #A84D10;
-	width:75%;
-	position:relative;
+	display: block;
+	background-color: #EEEEEE;
+	border-top: 1px solid #A84D10;
+	border-bottom: 1px solid #A84D10;
+	width: 75%;
+	position: relative;
 }
 
 /*** FLAG Colors ***/
@@ -512,212 +510,184 @@ ol {
 	padding: 5px;
 }
 
- 
- 
- 
- 
- /********************** Special Styles ******************************/
- 
- 
+/********************** Special Styles ******************************/
 div#info {
-border-top: 2px solid #b7d2f2;
-border-bottom: 2px solid #b7d2f2;
-padding-top: 1em;
-padding-right: 1em;
-padding-bottom: 1em;
-padding-left: 5em;
-margin-top: 10px;
-background: url(../images/icon-info.gif) no-repeat #dbe7f8 10px 10px;
-width:86%
+	border-top: 2px solid #b7d2f2;
+	border-bottom: 2px solid #b7d2f2;
+	padding-top: 1em;
+	padding-right: 1em;
+	padding-bottom: 1em;
+	padding-left: 5em;
+	margin-top: 10px;
+	background: url(../images/icon-info.gif) no-repeat #dbe7f8 10px 10px;
+	width: 86%
 }
 
 div#alert {
-border-top: 2px solid #feabab;
-border-bottom: 2px solid #feabab;
-padding-top: 1em;
-padding-right: 1em;
-padding-bottom: 1em;
-padding-left: 5em;
-margin-top: 10px;
-background: url(../images/icon-warning.gif) no-repeat #ffdfdf 18px 20px;
-width:86%
-
+	border-top: 2px solid #feabab;
+	border-bottom: 2px solid #feabab;
+	padding-top: 1em;
+	padding-right: 1em;
+	padding-bottom: 1em;
+	padding-left: 5em;
+	margin-top: 10px;
+	background: url(../images/icon-warning.gif) no-repeat #ffdfdf 18px 20px;
+	width: 86%
 }
-
 
 div#error {
-border-top: 2px solid #feabab;
-border-bottom: 2px solid #feabab;
-padding-top: 1em;
-padding-right: 1em;
-padding-bottom: 1em;
-padding-left: 5em;
-margin-top: 10px;
-background: url(../images/icon-error.gif) #ffdfdf no-repeat 18px 20px;
-width:86%
+	border-top: 2px solid #feabab;
+	border-bottom: 2px solid #feabab;
+	padding-top: 1em;
+	padding-right: 1em;
+	padding-bottom: 1em;
+	padding-left: 5em;
+	margin-top: 10px;
+	background: url(../images/icon-error.gif) #ffdfdf no-repeat 18px 20px;
+	width: 86%
 }
 
-
-td.money, th.money { text-align:right; } /* add to table elements representing money to have it right aligned */
-
-
- /********************** BUTTONS ******************************/
-
-.buttons a, .buttons button{
-    display:block;
-    float:left;
-    margin:0 7px 0 0;
-    background-color:#f5f5f5;
-    border:2px solid #4686BF;
-    border-top:1px solid #4686BF;
-    border-left:1px solid #4686BF;
-    font-family:"Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
-    font-size:100%;
-    line-height:130%;
-    text-decoration:none;
-    font-weight:bold;
-    color:#565656;
-    cursor:pointer;
-    padding:5px 10px 6px 7px; /* Links */
+td.money,th.money {
+	text-align: right;
 }
-.buttons button{
-    width:auto;
-    overflow:visible;
-    padding:4px 10px 3px 7px; /* IE6 */
-}
-.buttons button[type]{
-    padding:5px 10px 5px 7px; /* Firefox */
-    line-height:17px; /* Safari */
-}
-*:first-child+html button[type]{
-    padding:4px 10px 3px 7px; /* IE7 */
-}
-.buttons button img, .buttons a img{
-    margin:0 3px -3px 0 !important;
-    padding:0;
-    border:none;
-    width:16px;
-    height:16px;
+	
+	/* add to table elements representing money to have it right aligned */
+	/********************** BUTTONS ******************************/
+.buttons a,.buttons button {
+	display: block;
+	float: left;
+	margin: 0 7px 0 0;
+	background-color: #f5f5f5;
+	border: 2px solid #4686BF;
+	border-top: 1px solid #4686BF;
+	border-left: 1px solid #4686BF;
+	font-family: "Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
+	font-size: 100%;
+	line-height: 130%;
+	text-decoration: none;
+	font-weight: bold;
+	color: #565656;
+	cursor: pointer;
+	padding: 5px 10px 6px 7px; /* Links */
 }
 
- 
- 
- /* UTILITIES */
-
-button:hover, .buttons a:hover{
-    background-color:#dff4ff;
-    border:2px solid #6990DB;
-    border-bottom:1px solid #6990DB;
-    border-right:1px solid #6990DB;
-    color:#336699;
+.buttons button {
+	width: auto;
+	overflow: visible;
+	padding: 4px 10px 3px 7px; /* IE6 */
 }
-.buttons a:active{
-    background-color:#6299c5;
-	border:2px solid #6990DB;
-    border-bottom:1px solid #6990DB;
-    border-right:1px solid #6990DB; 
-    color:#fff;
+
+.buttons button[type] {
+	padding: 5px 10px 5px 7px; /* Firefox */
+	line-height: 17px; /* Safari */
+}
+
+* :first-child+html button[type] {
+	padding: 4px 10px 3px 7px; /* IE7 */
+}
+
+.buttons button img,.buttons a img {
+	margin: 0 3px -3px 0 !important;
+	padding: 0;
+	border: none;
+	width: 16px;
+	height: 16px;
+}
+
+/* UTILITIES */
+button:hover,.buttons a:hover {
+	background-color: #dff4ff;
+	border: 2px solid #6990DB;
+	border-bottom: 1px solid #6990DB;
+	border-right: 1px solid #6990DB;
+	color: #336699;
+}
+
+.buttons a:active {
+	background-color: #6299c5;
+	border: 2px solid #6990DB;
+	border-bottom: 1px solid #6990DB;
+	border-right: 1px solid #6990DB;
+	color: #fff;
 }
 
 /* POSITIVE */
+button.positive,.buttons a.positive {
+	color: #529214;
+}
 
-button.positive, .buttons a.positive{
-    color:#529214;
+.buttons a.positive:hover,button.positive:hover {
+	background-color: #E6EFC2;
+	border: 2px solid #C6D880;
+	border-bottom: 1px solid #C6D880;
+	border-right: 1px solid #C6D880;
+	color: #529214;
 }
-.buttons a.positive:hover, button.positive:hover{
-    background-color:#E6EFC2;
-    border:2px solid #C6D880;
-    border-bottom:1px solid #C6D880;
-    border-right:1px solid #C6D880;
-    color:#529214;
-}
-.buttons a.positive:active{
-    background-color:#529214;
-    border:2px solid #529214;
-    border-bottom:1px solid #C6D880;
-    border-right:1px solid #C6D880;
-    color:#fff;
+
+.buttons a.positive:active {
+	background-color: #529214;
+	border: 2px solid #529214;
+	border-bottom: 1px solid #C6D880;
+	border-right: 1px solid #C6D880;
+	color: #fff;
 }
 
 /* NEGATIVE */
-
-.buttons a.negative, button.negative{
-    color:#d12f19;
-}
-.buttons a.negative:hover, button.negative:hover{
-    background:#fbe3e4;
-    border:2px solid #fbc2c4;
-    border-bottom:1px solid #fbc2c4;
-    border-right:1px solid #fbc2c4;
-    color:#d12f19;
-}
-.buttons a.negative:active{
-    background-color:#d12f19;
-    border:2px solid #d12f19;
-  	border-bottom:1px solid #d12f19;
-    border-right:1px solid #d12f19;
-    color:#fff;
+.buttons a.negative,button.negative {
+	color: #d12f19;
 }
 
- 
- 
- 
- 
- 
- 
- 
- 
-  /********************** LIVE HELP BOX ******************************/
+.buttons a.negative:hover,button.negative:hover {
+	background: #fbe3e4;
+	border: 2px solid #fbc2c4;
+	border-bottom: 1px solid #fbc2c4;
+	border-right: 1px solid #fbc2c4;
+	color: #d12f19;
+}
 
- 
-#livehelpbox {
- background-color: #ECECEC;
- width: 235px;
- height: 180px;
- float: right;
- margin-right: 5px;
- }
- 
- #livehelpbox div {
- 	  border: solid 2px white;
- 	  width: 215px;
- 	  height: 160px;
- 	  margin: 3px auto;
- }
- 
- 
- #livehelpbox textarea {
- 	border: solid 1px #6990DB;
- 	margin-right: 10px;
- 	width: 205px;
- 	height: 95px; 	
- 	margin-top: 10px;
- 	margin-left: 5px;
- }
- 
- #livehelpbox p {
- font-family:  "Trebuchet MS", Arial, Helvetica, sans-serif;
- font-weight: bold;
- color:#6990DB;
- padding-left: 26px;
+.buttons a.negative:active {
+	background-color: #d12f19;
+	border: 2px solid #d12f19;
+	border-bottom: 1px solid #d12f19;
+	border-right: 1px solid #d12f19;
+	color: #fff;
+}
+
+/********************** LIVE HELP BOX ******************************/
+#content #helpbox {
+	position: absolute;
+	background-color: #ECECEC;
+	top: 0px;
+	right: 0px;
+	font-size: 12px;
+	padding: 5px;
+	line-height: 18px;
+}
+
+#content #helpbox a {
+	padding-left: 17px;
+	margin-left: 2px;
+	background: transparent url(../images/help.gif) no-repeat left
+		center;
+}
+
+#content #helpbox a,a:ACTIVE,a:HOVER,a:VISITED {
+	text-decoration: none;
+	color: #003768;
+}
+
+#content #helpbody {
  background-image: url(../images/first-aid-kit_16.png);
  background-repeat: no-repeat;
  background-position-y: 4px;
- float: right;
- margin-right: 15px;
- }
- 
- #livehelpbox input[type="image"] {
- 	float: right;
- 	margin-right 15px;
- 	margin-top: 8px;
-  }
- 
- 
- 
- 
- 
- 
- 
- 
- 
+		position: absolute;
+	background-color: #ECECEC;
+	top: 29px;
+	right: 2px;
+	font-size: 12px;
+	padding: 5px;
+	line-height: 18px;
+	border: 1px solid #003768;
+	z-index: 1;
+	text-align: center;
+}

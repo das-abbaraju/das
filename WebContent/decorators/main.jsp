@@ -29,6 +29,29 @@
 <link rel="stylesheet" href="css/ie.css" type="text/css" />
 <![endif]-->
 
+<script type="text/javascript">
+function showHelpBody() {
+	
+}
+function toggleLayer( whichLayer ) {
+	var elem, vis;
+	if( document.getElementById )
+		// this is the way the standards work
+		elem = document.getElementById( whichLayer );
+	else if( document.all )
+		// this is the way old msie versions work
+		elem = document.all[whichLayer];
+	else if( document.layers )
+		// this is the way nn4 works
+		elem = document.layers[whichLayer];
+	vis = elem.style;
+	// if the style.display value is blank we try to figure it out here
+	if(vis.display=='' && elem.offsetWidth != undefined && elem.offsetHeight != undefined)
+		vis.display = (elem.offsetWidth != 0 && elem.offsetHeight != 0)?'block':'none';
+	vis.display = (vis.display==''||vis.display=='block')?'none':'block';
+}
+
+</script>
 <decorator:head />
 </head>
 <body>
@@ -84,6 +107,20 @@
 <div id="main">
 <div id="bodyholder">
 <div id="content">
+<div id="helpbox"><a href="#" onclick="toggleLayer('helpbody'); return false;">Help</a></div>
+<div id="helpbody" style="display: none;">
+<a href="help/" target='onlinedocs'>Online Documentation</a><br /><br /> - OR -
+<br /><br />
+<!-- BEGIN LivePerson Button Code -->
+<a id="_lpChatBtn"
+	href='http://server.iad.liveperson.net/hc/90511184/?cmd=file&file=visitorWantsToChat&site=90511184&byhref=1&imageUrl=http://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
+	target='chat90511184'
+	onClick="lpButtonCTTUrl = 'http://server.iad.liveperson.net/hc/90511184/?cmd=file&file=visitorWantsToChat&site=90511184&imageUrl=http://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" ><img 
+		src='http://server.iad.liveperson.net/hc/90511184/?cmd=repstate&site=90511184&channel=web&&ver=1&imageUrl=http://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
+		name='hcIcon' border=0></a><br />
+<!-- END LivePerson Button code -->
+</div>
+
 <!-- !begin content -->
 <decorator:body />
 <!-- !end content -->
@@ -117,6 +154,13 @@ Copyright &copy; 2008
 </div>
 <% } %>
 <!-- !end subnavigation -->
+<!-- BEGIN Invitation Positioning  -->
+<script language="javascript" type="text/javascript">
+var lpPosY = 100;
+var lpPosX = 100;
+</script>
+<!-- END Invitation Positioning  -->
 
+<!-- BEGIN HumanTag Monitor. DO NOT MOVE! MUST BE PLACED JUST BEFORE THE /BODY TAG --><script language='javascript' src='http://server.iad.liveperson.net/hc/90511184/x.js?cmd=file&file=chatScript3&site=90511184&&imageUrl=http://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a'> </script><!-- END HumanTag Monitor. DO NOT MOVE! MUST BE PLACED JUST BEFORE THE /BODY TAG -->
 </body>
 </html>
