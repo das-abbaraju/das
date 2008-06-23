@@ -68,7 +68,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 					fillAnswers(catData, answers);
 					currentCategory = catData;
 				} else {
-					if (!catData.getApplies().equals(YesNo.No)) {
+					if (catData.isAppliesB()) {
 						if (currentCategory == null)
 							previousCategory = catData;
 						else if (nextCategory == null)

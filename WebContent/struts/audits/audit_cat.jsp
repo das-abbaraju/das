@@ -142,13 +142,10 @@
 <div id="auditToolbar" class="right">
 <s:if test="catDataID > 0">
 	<s:if test="mode != 'View'">
-		<a class="view" href="?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>">Switch to View Mode</a>
+		<a class="view" href="?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>&mode=View">Switch to View Mode</a>
 	</s:if>
 	<s:if test="mode != 'Edit' && canEdit">
 		<a class="edit" href="?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>&mode=Edit">Switch to Edit Mode</a>
-	</s:if>
-	<s:if test="mode != 'Verify' && canVerify && currentCategory.category.id != 29">
-		<a class="verify" href="?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>&mode=Verify">Switch to Verify Mode</a>
 	</s:if>
 </s:if>
 	<s:if test="mode == 'View'">
