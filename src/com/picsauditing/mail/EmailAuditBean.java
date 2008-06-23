@@ -13,6 +13,9 @@ public class EmailAuditBean extends EmailContractorBean {
 	}
 	
 	public void sendMessage(EmailTemplates emailType, ContractorAudit conAudit) throws Exception {
+		
+		tokens.put("server.base", appPropertyDAO.find("email_server_base"));
+		
 		tokens.put("conAudit", conAudit);
 		super.sendMessage(emailType, conAudit.getContractorAccount());
 	}

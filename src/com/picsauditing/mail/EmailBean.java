@@ -18,7 +18,7 @@ public class EmailBean {
 	protected Permissions permissions;
 	protected boolean testMode = false;
 	protected UserDAO userDAO;
-	private AppPropertyDAO appPropertyDAO;
+	protected AppPropertyDAO appPropertyDAO;
 
 	public EmailBean(UserDAO userDAO, AppPropertyDAO appPropertyDAO) {
 		this.userDAO = userDAO;
