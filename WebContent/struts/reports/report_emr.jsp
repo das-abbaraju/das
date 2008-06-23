@@ -18,7 +18,9 @@ Max: <s:textfield name="maxRate" size="5" />
 	<s:hidden name="orderBy" />
 </s:form>
 </div>
-
+<div>
+	<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+</div>
 <table class="report">
 	<thead>
 	<tr>
@@ -38,7 +40,7 @@ Max: <s:textfield name="maxRate" size="5" />
 	</s:iterator>
 </table>
 <div>
-<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+	<s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
 
 
