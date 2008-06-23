@@ -108,7 +108,9 @@
 					<tr>
 						<th>Safety Manual:</th>
 						<td><s:if test="hasSafetyManual">
-							<a href="servlet/showpdf?id=">Uploaded</a>
+							<a href="#"
+							onclick="window.open('servlet/showpdf?id=<s:property value="id"/>&file=<s:property value="safetyManualFileLink"/>','','scrollbars=yes,resizable=yes,width=700,height=450')">
+							Uploaded</a>
 						</s:if><s:else>Not Uploaded</s:else></td>
 					</tr>
 				</s:if>

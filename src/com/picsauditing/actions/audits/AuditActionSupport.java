@@ -103,16 +103,39 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	private String getAnswer(int questionID) {
+		AuditData data = getAuditData(questionID);
+		
+		if( data == null )
+		{
+			return "";
+		}
+		else
+		{
+			return data.getAnswer();	
+		}
+	}
+
+	public AuditData getAuditData(int questionID )
+	{
 		List<Integer> ids = new ArrayList<Integer>();
 		ids.add(questionID);
 		Map<Integer, AuditData> answers = auditDataDao.findAnswersByContractor(
 				conAudit.getContractorAccount().getId(), ids);
 		if (answers == null || answers.size() == 0)
-			return "";
-		AuditData data = answers.get(AuditQuestion.MANUAL_PQF);
-		return data.getAnswer();
+			return null;
+		return answers.get(AuditQuestion.MANUAL_PQF);
 	}
-
+	
+	
+	public String getSafetyManualFileLink()
+	{
+		AuditData data = getAuditData(AuditQuestion.MANUAL_PQF);
+		
+		return "pqf" + data.getAnswer() + new Integer(AuditQuestion.MANUAL_PQF).toString();
+	}
+	
+	
+	
 	public boolean isCanVerify() {
 		if (conAudit.getAuditType().isPqf())
 			if (permissions.isAuditor())
