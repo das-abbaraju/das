@@ -771,9 +771,11 @@ analyze table desktopMatrix;
 analyze table contractor_audit;
 analyze table pqfQuestions;
 analyze table pqfData;
+analyze table pqfcatdata;
 
 /* fix orphaned office audit question id reference in IIPP category */
 update pqfQuestions set dependsonqid = null where questionid=1284;
+
 
 /* delete the form that was a link to a blank office audit */
 delete from forms

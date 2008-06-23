@@ -230,9 +230,10 @@ public class Permissions {
 	public boolean canSeeAudit(int auditType) {
 		if (isContractor())
 			return true;
-		if (hasPermission(OpPerms.AllContractors))
+		if (isPicsEmployee())
 			return true;
-		//
+		
+		// For Operators and corporate
 		if (canSeeAudits != null)
 			return canSeeAudits.contains(new Integer(auditType));
 		return false;
@@ -243,9 +244,10 @@ public class Permissions {
 			return false;
 		if (isContractor())
 			return true;
-		if (hasPermission(OpPerms.AllContractors))
+		if (isPicsEmployee())
 			return true;
-		//
+		
+		// For Operators and corporate
 		if (canSeeAudits != null)
 			return canSeeAudits.contains(auditType);
 		return false;

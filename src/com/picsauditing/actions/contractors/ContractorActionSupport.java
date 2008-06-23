@@ -18,15 +18,15 @@ import com.picsauditing.jpa.entities.YesNo;
 public class ContractorActionSupport extends PicsActionSupport {
 	protected int id = 0;
 	protected ContractorAccount contractor;
+	private List<ContractorAudit> contractorNonExpiredAudits = null;
 	protected ContractorAccountDAO accountDao;
 	protected ContractorAuditDAO auditDao;
 	private List<ContractorOperator> operators;
 	protected boolean limitedView = false;
-	
+
 	protected String subHeading;
 
-	public ContractorActionSupport(ContractorAccountDAO accountDao,
-			ContractorAuditDAO auditDao) {
+	public ContractorActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
 		this.accountDao = accountDao;
 		this.auditDao = auditDao;
 	}
@@ -40,18 +40,17 @@ public class ContractorActionSupport extends PicsActionSupport {
 		if (contractor == null)
 			throw new Exception("Contractor " + this.id + " not found");
 
-		if(!checkPermissionToView())
+		if (!checkPermissionToView())
 			throw new NoRightsException("No Rights to View this Contractor");
 	}
 
-	protected boolean checkPermissionToView(){
+	protected boolean checkPermissionToView() {
 		if (permissions.hasPermission(OpPerms.AllContractors))
 			return true;
 
 		// OR
 		if (permissions.isContractor()) {
-			return permissions.getAccountIdString().equals(
-					Integer.toString(this.id));
+			return permissions.getAccountIdString().equals(Integer.toString(this.id));
 		}
 
 		if (permissions.hasPermission(OpPerms.StatusOnly)) {
@@ -74,8 +73,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 					// then the corporate users can see them too
 					for (String id : operator.facilitiesAL) {
 						for (ContractorOperator corporate : getOperators())
-							if (corporate.getOperatorAccount().getIdString()
-									.equals(id))
+							if (corporate.getOperatorAccount().getIdString().equals(id))
 								return true;
 					}
 				} catch (Exception e) {
@@ -85,16 +83,15 @@ public class ContractorActionSupport extends PicsActionSupport {
 			// To see anything other than the summary, you need to be on their
 			// list
 			for (ContractorOperator operator : getOperators())
-				if (operator.getOperatorAccount().getIdString().equals(
-						permissions.getAccountIdString()))
+				if (operator.getOperatorAccount().getIdString().equals(permissions.getAccountIdString()))
 					return true;
 		}
 
 		for (ContractorAudit audit : getActiveAudits()) {
-			if (audit.getAuditor().getId() == permissions.getUserId()
-					&& (audit.getAuditStatus().equals(AuditStatus.Pending) || audit
-							.getAuditStatus().equals(AuditStatus.Submitted)))
-				return true;
+			if (audit.getAuditor() != null && audit.getAuditor().getId() == permissions.getUserId())
+				if (audit.getAuditStatus().equals(AuditStatus.Pending)
+						|| audit.getAuditStatus().equals(AuditStatus.Submitted))
+					return true;
 		}
 
 		return false;
@@ -117,15 +114,15 @@ public class ContractorActionSupport extends PicsActionSupport {
 	}
 
 	public List<ContractorAudit> getActiveAudits() {
-		List<ContractorAudit> temp = new ArrayList<ContractorAudit>();
-		List<ContractorAudit> list = auditDao
-				.findNonExpiredByContractor(contractor.getId());
-		for (ContractorAudit contractorAudit : list) {
-			if (permissions.canSeeAudit(contractorAudit.getAuditType()
-					.getAuditTypeID()))
-				temp.add(contractorAudit);
+		if (contractorNonExpiredAudits == null) {
+			contractorNonExpiredAudits = new ArrayList<ContractorAudit>();
+			List<ContractorAudit> list = auditDao.findNonExpiredByContractor(contractor.getId());
+			for (ContractorAudit contractorAudit : list) {
+				if (permissions.canSeeAudit(contractorAudit.getAuditType().getAuditTypeID()))
+					contractorNonExpiredAudits.add(contractorAudit);
+			}
 		}
-		return temp;
+		return contractorNonExpiredAudits;
 	}
 
 	public List<ContractorOperator> getOperators() {
@@ -149,48 +146,45 @@ public class ContractorActionSupport extends PicsActionSupport {
 	 * 
 	 */
 	public boolean isHasInsurance() {
-		if (!permissions.isContractor()
-				&& !permissions.hasPermission(OpPerms.InsuranceCerts))
+		if (!permissions.isContractor() && !permissions.hasPermission(OpPerms.InsuranceCerts))
 			return false;
 
 		for (ContractorOperator insurContractors : getOperators())
-			if (insurContractors.getOperatorAccount().getCanSeeInsurance()
-					.equals(YesNo.Yes))
+			if (insurContractors.getOperatorAccount().getCanSeeInsurance().equals(YesNo.Yes))
 				return true;
 
 		return false;
 	}
 
 	public boolean isShowHeader() {
-		if(permissions.hasPermission(OpPerms.StatusOnly)) 
+		if (permissions.hasPermission(OpPerms.StatusOnly))
 			return false;
-		if(permissions.isOperator()) {
+		if (permissions.isOperator()) {
 			return isCheckPermissionForOperator();
 		}
 		if (permissions.isCorporate()) {
 			return isCheckPermissionForCorporate();
 		}
-		if(permissions.isOnlyAuditor()) {
+		if (permissions.isOnlyAuditor()) {
 			for (ContractorAudit audit : getActiveAudits()) {
-				if (audit.getAuditor().getId() == permissions.getUserId()
-						&& (audit.getAuditStatus().equals(AuditStatus.Pending) || audit
-								.getAuditStatus().equals(AuditStatus.Submitted)))
+				if (audit.getAuditor() != null && audit.getAuditor().getId() == permissions.getUserId())
+					if ((audit.getAuditStatus().equals(AuditStatus.Pending) 
+							|| audit.getAuditStatus().equals(AuditStatus.Submitted)))
 					return true;
-				else
-					return false;	
 			}
+			return false;
 		}
 		return true;
 	}
-	
+
 	public boolean isCheckPermissionForOperator() {
 		for (ContractorOperator operator : getOperators())
 			if (operator.getOperatorAccount().getId() == permissions.getAccountId())
 				return true;
-				
+
 		return false;
 	}
-	
+
 	public boolean isCheckPermissionForCorporate() {
 		OperatorBean operator = new OperatorBean();
 		try {
@@ -198,8 +192,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 			operator.setFromDB(permissions.getAccountIdString());
 			for (String id : operator.facilitiesAL) {
 				for (ContractorOperator corporate : getOperators())
-					if (corporate.getOperatorAccount().getIdString()
-							.equals(id))
+					if (corporate.getOperatorAccount().getIdString().equals(id))
 						return true;
 			}
 		} catch (Exception e) {
