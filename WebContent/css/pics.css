@@ -702,7 +702,7 @@ button.positive, .buttons a.positive{
  padding-left: 26px;
  background-image: url(../images/first-aid-kit_16.png);
  background-repeat: no-repeat;
- background-position-y: 2px;
+ background-position-y: 4px;
  float: right;
  margin-right: 15px;
  }
@@ -711,8 +711,7 @@ button.positive, .buttons a.positive{
  	float: right;
  	margin-right 15px;
  	margin-top: 8px;
- 
- }
+  }
  
  
  
