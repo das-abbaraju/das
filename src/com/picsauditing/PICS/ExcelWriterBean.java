@@ -85,15 +85,15 @@ public class ExcelWriterBean {
 		sheet.addCell(new Label(colCount++, 1, "Contractor", times12BoldFormat));
 		sheet.addCell(new Label(colCount++, 1, "Main Trade", times12BoldFormat));
 		sheet.addCell(new Label(colCount++, 1, "PICS Status", times12BoldFormat));
-		if (pBean.oBean.canSeePQF()){
+		if (pBean.isAdmin() || pBean.oBean.canSeePQF()){
 			sheet.addCell(new Label(colCount++, 1, "PQF Status", times12BoldFormat));
 			sheet.addCell(new Label(colCount++, 1, "Last PQF Update", times12BoldFormat));
 		}//if
-		if (pBean.oBean.canSeeDesktop()){
+		if (pBean.isAdmin() || pBean.oBean.canSeeDesktop()){
 			sheet.addCell(new Label(colCount++, 1, "Desktop Status", times12BoldFormat));
 			sheet.addCell(new Label(colCount++, 1, "Desktop RQs Closed", times12BoldFormat));
 		}//if
-		if (pBean.oBean.canSeeOffice()){
+		if (pBean.isAdmin() || pBean.oBean.canSeeOffice()){
 			sheet.addCell(new Label(colCount++, 1, "Office Audit Status", times12BoldFormat));
 			sheet.addCell(new Label(colCount++, 1, "Office Audit Performed", times12BoldFormat));
 			sheet.addCell(new Label(colCount++, 1, "Office Audit RQs Closed", times12BoldFormat));		
@@ -147,15 +147,15 @@ public class ExcelWriterBean {
 		sheet.setColumnView(colCount++,nameLength);
 		sheet.setColumnView(colCount++,mainTradeLength);
 		sheet.setColumnView(colCount++,12);
-		if (pBean.oBean.canSeePQF()){
+		if (pBean.isAdmin() || pBean.oBean.canSeePQF()){
 			sheet.setColumnView(colCount++,12);
 			sheet.setColumnView(colCount++,17);
 		}//if
-		if (pBean.oBean.canSeeDesktop()){
+		if (pBean.isAdmin() || pBean.oBean.canSeeDesktop()){
 			sheet.setColumnView(colCount++,16);
 			sheet.setColumnView(colCount++,21);
 		}//if
-		if (pBean.oBean.canSeeOffice()){
+		if (pBean.isAdmin() || pBean.oBean.canSeeOffice()){
 			sheet.setColumnView(colCount++,18);
 			sheet.setColumnView(colCount++,18);
 			sheet.setColumnView(colCount++,18);
