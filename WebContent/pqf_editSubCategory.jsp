@@ -6,7 +6,7 @@
 <%
 	permissions.tryPermission(OpPerms.ManageAudits);
 	action.setAuditTypeID(request.getParameter("auditTypeID"));
-	
+	String auditTypeID = request.getParameter("auditTypeID");
 	String actionString = request.getParameter("action");
 	String editID = request.getParameter("editID");
 	String categoryID = request.getParameter("categoryID");
@@ -27,7 +27,7 @@
 				psBean.writeToDB();
 				psBean.renumberPQFSubCategories(psBean.categoryID, action.getAuditTypeID());
 			}
-			response.sendRedirect("pqf_editSubCategories.jsp?editCatID="+psBean.categoryID);
+			response.sendRedirect("pqf_editSubCategories.jsp?auditTypeID="+auditTypeID+"&editCatID="+psBean.categoryID);
 			return;
 		}//if
 	}//if
