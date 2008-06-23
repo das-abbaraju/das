@@ -24,6 +24,7 @@
 				href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="currentCategory.id"/>&mode=<s:property value="mode"/>"><s:property
 				value="currentCategory.category.category" /></a></td>
 			<td class="next"><s:if test="nextCategory != null">
+			<b>NEXT CATEGORY</b><br />
 				<a
 					href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="nextCategory.id"/>&mode=<s:property value="mode"/>"><s:property
 					value="nextCategory.category.category" /></a>
