@@ -58,8 +58,8 @@ function updateQuery(name) {
 	<s:hidden name="orderBy" />
 	
 	<div style="text-align: center; width: 100%">
-	<div class="buttons"><a href="#" class="positive" onclick="form1.submit(); return false;">Search</a></div>
-	</p>
+		<div class="buttons"><a href="#" class="positive" onclick="form1.submit(); return false;">Search</a></div>
+	</div>
 	<br clear="all"/>
 
 	<div class="filterOption"><s:textfield name="accountName" cssClass="forms" size="10" onfocus="clearText(this)"  /></div>
@@ -222,3 +222,4 @@ function updateQuery(name) {
 	</div>
 </s:form>
 </div>
+
