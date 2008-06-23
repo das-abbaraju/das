@@ -74,6 +74,7 @@
 				<input id="show_button_<s:property value="questionID"/>" type="button" value="<s:if test="answer.answer.length() > 0">Edit</s:if><s:else>Add</s:else> File" onclick="$('file_upload_<s:property value="questionID"/>').show(); $('show_upload_<s:property value="questionID"/>').hide();" />
 			</div>
 			<form id="file_upload_<s:property value="questionID"/>" target="upload_iframe_<s:property value="questionID"/>" action="AuditDataFileUploadAjax.action" method="post" enctype="multipart/form-data" style="display: none;">
+				<s:hidden name="contractorID" value="%{contractor.id}"/>
 				<s:hidden name="auditData.audit.id" value="%{conAudit.id}"/>
 				<s:hidden name="auditData.question.questionID" value="%{questionID}"/>
 				<input type="file" name="file" value="Upload file (Max 150 MB)" accept=".pdf,.doc,.txt,.xls,.jpg" />

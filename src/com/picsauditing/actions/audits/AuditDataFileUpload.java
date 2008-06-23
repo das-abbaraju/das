@@ -7,16 +7,19 @@ import javax.persistence.NoResultException;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.FileUploadActionSupport;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.YesNo;
 
 public class AuditDataFileUpload extends FileUploadActionSupport {
 	
 	AuditData auditData = null;
+	int contractorID = 0;
 	AuditDataDAO dao = null;
 
-	public AuditDataFileUpload(AuditDataDAO dao) {
+	public AuditDataFileUpload(AuditDataDAO dao ) {
 		this.dao = dao;
 	}
 
@@ -32,8 +35,7 @@ public class AuditDataFileUpload extends FileUploadActionSupport {
 					String extension = fileFileName.substring( fileFileName.lastIndexOf(".") + 1 );
 					
 					
-					String newFileName= getFtpDir() + "/files/pqf/qID_" + auditData.getQuestion().getQuestionID() + "/" + auditData.getQuestion().getQuestionID() + "_" + auditData.getAudit().getId() + "." + extension; 
-					
+					String newFileName= getFtpDir() + "/files/pqf/qID_" + auditData.getQuestion().getQuestionID() + "/" + auditData.getQuestion().getQuestionID() + "_" + contractorID + "." + extension; 
 					
 					
 					if( copyFile(file, newFileName, true))
@@ -131,4 +133,14 @@ public class AuditDataFileUpload extends FileUploadActionSupport {
 	public void setAuditData(AuditData auditData) {
 		this.auditData = auditData;
 	}
+
+	public int getContractorID() {
+		return contractorID;
+	}
+
+	public void setContractorID(int contractorID) {
+		this.contractorID = contractorID;
+	}
+	
+	
 }

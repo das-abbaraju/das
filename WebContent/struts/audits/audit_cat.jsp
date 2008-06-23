@@ -127,7 +127,7 @@
 	}
 
 	function openQuestion(questionID, extension) {
-		url = 'servlet/showpdf?id=<s:property value="conAudit.id"/>&file=pqf'+extension+questionID;
+		url = 'servlet/showpdf?id=<s:property value="contractor.id"/>&file=pqf'+extension+questionID;
 		title = 'PICS File Upload';
 		pars = 'scrollbars=yes,resizable=yes,width=700,height=450';
 		window.open(url,title,pars);
