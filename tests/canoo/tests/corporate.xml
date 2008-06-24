@@ -34,11 +34,6 @@
 				<clickLink description="View PQF"
 					label="PQF" />
 				&body_verify;
-				
-				<clickLink description="View Entire PQF"
-					label="View All" />
-				<!-- can't search for error because it gets other words like terrorist -->
-				<!-- &body_verify; -->
 
 				<clickLink description="Audits"
 					label="Audits" />
@@ -54,23 +49,8 @@
 					text="Edit an Existing Form" />
 				
 				<!--   New Contractor Search -->
-				<clickLink description="Search For New Contractors"
-					label="Search For New" />
-				<setSelectField 
-					description="Choose Trade=Cranes &amp; Rigging"
-					name="trade"
-					value="489" />
-				<setSelectField 
-					description="Choose Self Performed"
-					name="performedBy"
-					value="Self Performed" />
-				<setSelectField 
-					description="Choose Green Flag"
-					name="flagStatus"
-					value="Green" />
-				<clickButton
-					name="imageField"
-					description="Click the Search button" />
+				<clickLink description="List all Contractors"
+					label="Contractor List" />
 
 				&body_verify;
 				<verifyText description="Show more than 100 green crane operators"

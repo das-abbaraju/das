@@ -9,19 +9,22 @@
 			<steps>
 				&login;
 				&body_verify;
+				
 				<storeProperty name="report_link" value="Edit Corporate" />
 				&click_report;
+				
 				<storeProperty name="report_link" value="Edit Operators" />
 				&click_report;
+				
 				<storeProperty name="report_link" value="Assign Audit/Operator" />
 				&click_report;
+				
 				<storeProperty name="report_link" value="Users" />
 				&click_report;
-				<storeProperty name="report_link" value="Email Templates" />
-				&click_report;
-				
-				<storeProperty name="report_link" value="Annual Updates" />
-				&click_report;
+
+<!--Commented out because functionality is not available-->				
+<!--				<storeProperty name="report_link" value="Email Templates" />-->
+<!--				&click_report;-->
 			</steps>
 		</webtest>
 	</target>

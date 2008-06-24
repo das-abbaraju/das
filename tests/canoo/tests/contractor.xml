@@ -10,25 +10,31 @@
 				&login;
 				&body_verify;
 				
-				<clickLink description="Edit My Account"
-					label="Edit" />
-				&body_verify;
-				<clickLink description="Facilities"
-					label="Facilities" />
-				&body_verify;
-				<clickLink description="Complete PQF"
-					label="PQF" />
-				&body_verify;
-				<clickLink description="Audits"
-					label="Audits" />
-				&body_verify;
-				
-				<clickLink description="Office Audit Requirements"
-					label="Office Audit" />
-				&body_verify;
-				<clickLink description="Forms and Docs"
-					label="Forms &amp; Docs" />
-				&body_verify;
+<!--Commented out since the Edit Account Info link is not on this page -->
+<!--				<clickLink description="Edit Account Info"-->
+<!--					label="Edit Account Info" />-->
+<!--				&body_verify;-->
+
+<!--Commented out since the Facilities link is not on this page -->
+<!--				<clickLink description="Facilities"-->
+<!--					label="Facilities" />-->
+<!--				&body_verify;-->
+
+<!--Commented out since the Audits link is not on this page-->
+<!--				<clickLink description="Audits"-->
+<!--					label="Audits" />-->
+<!--				&body_verify;-->
+
+<!--Commented out since the Audit Requirements link is not on this page-->
+<!--				<clickLink description="Office Audit Requirements"-->
+<!--					label="Office Audit" />-->
+<!--				&body_verify;-->
+
+<!--Commented out since the Forms and Docs link is not on this page-->
+<!--				<clickLink description="Forms and Docs"-->
+<!--					label="Forms &amp; Docs" />-->
+<!--				&body_verify;-->
+
 			</steps>
 		</webtest>
 	</target>

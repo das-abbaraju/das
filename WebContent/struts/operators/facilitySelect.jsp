@@ -17,7 +17,7 @@
        list="facilities"
        listKey="id"
        listValue="name"
-       />
+       />      
 </s:else>       
 
 
