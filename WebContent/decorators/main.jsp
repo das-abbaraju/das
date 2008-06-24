@@ -107,17 +107,19 @@ function toggleLayer( whichLayer ) {
 <div id="main">
 <div id="bodyholder">
 <div id="content">
-<div id="helpbox"><a href="#" onclick="toggleLayer('helpbody'); return false;">Help</a></div>
-<div id="helpbody" style="display: none;">
-<a href="help/" target='onlinedocs'>Online Documentation</a><br /><br /> - OR -
-<br /><br />
-<!-- BEGIN LivePerson Button Code -->
-<a id="_lpChatBtn"
+<div id="helpbox">
+	<a href="help/" target="helpdoc48">Documentation</a> |
+	<a id="_lpChatBtn"
+	onmouseover="$('helpbody').show();"
+	onmouseout="$('helpbody').hide();"
 	href='http://server.iad.liveperson.net/hc/90511184/?cmd=file&file=visitorWantsToChat&site=90511184&byhref=1&imageUrl=http://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
 	target='chat90511184'
-	onClick="lpButtonCTTUrl = 'http://server.iad.liveperson.net/hc/90511184/?cmd=file&file=visitorWantsToChat&site=90511184&imageUrl=http://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" ><img 
-		src='http://server.iad.liveperson.net/hc/90511184/?cmd=repstate&site=90511184&channel=web&&ver=1&imageUrl=http://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
-		name='hcIcon' border=0></a><br />
+	onClick="lpButtonCTTUrl = 'http://server.iad.liveperson.net/hc/90511184/?cmd=file&file=visitorWantsToChat&site=90511184&imageUrl=http://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >Chat</a>
+</div>
+<div id="helpbody" style="display: none;">
+<!-- BEGIN LivePerson Button Code -->
+	<img src='http://server.iad.liveperson.net/hc/90511184/?cmd=repstate&site=90511184&channel=web&&ver=1&imageUrl=http://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
+	name='hcIcon' border=0 />
 <!-- END LivePerson Button code -->
 </div>
 

@@ -677,17 +677,12 @@ button.positive,.buttons a.positive {
 }
 
 #content #helpbody {
- background-image: url(../images/first-aid-kit_16.png);
- background-repeat: no-repeat;
- background-position-y: 4px;
-		position: absolute;
-	background-color: #ECECEC;
+	position: absolute;
 	top: 29px;
 	right: 2px;
 	font-size: 12px;
-	padding: 5px;
+	padding: 1px;
 	line-height: 18px;
-	border: 1px solid #003768;
 	z-index: 1;
 	text-align: center;
 }
