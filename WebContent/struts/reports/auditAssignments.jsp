@@ -71,6 +71,9 @@
 			cssClass="forms" name="operator" listKey="id" listValue="name" />
 		</td>
 		</tr>
+		<tr><td>
+			<s:checkbox name="unScheduledAudits"/><label>Check to Search on UnScheduled Audits</label>
+		</td></tr>
 	</table>
 	<s:hidden name="showPage" value="1" />
 	<s:hidden name="startsWith" />

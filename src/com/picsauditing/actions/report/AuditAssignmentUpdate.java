@@ -4,9 +4,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
-import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.interceptor.ParameterAware;
+import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts2.interceptor.ParameterAware;
+import org.apache.struts2.interceptor.ServletRequestAware;
+
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -15,8 +18,12 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.mail.EmailAuditBean;
+import com.picsauditing.mail.EmailTemplates;
+import com.picsauditing.mail.EmailUserBean;
 
-public class AuditAssignmentUpdate extends PicsActionSupport implements Preparable, ParameterAware {
+public class AuditAssignmentUpdate extends PicsActionSupport implements
+		Preparable, ParameterAware, ServletRequestAware {
 
 	protected ContractorAudit contractorAudit = null;
 	protected User auditor = null;
@@ -24,18 +31,27 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 
 	protected ContractorAuditDAO dao = null;
 	protected UserDAO userDao = null;
+	protected EmailUserBean auditorMailer;
+	protected EmailAuditBean contractorMailer;
 
 	protected Map parameters = null;
+	protected Date origScheduledDate = null;
+	protected String origLocation = null;
 
-	public AuditAssignmentUpdate(ContractorAuditDAO dao, UserDAO userDao) {
+	protected HttpServletRequest request;
+
+	public AuditAssignmentUpdate(ContractorAuditDAO dao, UserDAO userDao,
+			EmailUserBean auditorMailer, EmailAuditBean contractorMailer) {
 		this.dao = dao;
 		this.userDao = userDao;
+		this.auditorMailer = auditorMailer;
+		this.contractorMailer = contractorMailer;
 	}
 
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		// TODO check to see if auditor already has audit scheduled for this
 		// date
 
@@ -68,8 +84,22 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 
 		auditor = userDao.find(auditor.getId());
 
+		if (contractorAudit.getAuditType().isScheduled()) {
+			if (origAuditor != null && !origAuditor.equals(auditor))
+				contractorAudit.setAuditorConfirm(null);
+
+			if ((origScheduledDate != null && !origScheduledDate
+					.equals(contractorAudit.getScheduledDate()))
+					|| (origLocation != null && !origLocation
+							.equals(contractorAudit.getAuditLocation()))) {
+				contractorAudit.setAuditorConfirm(null);
+				contractorAudit.setContractorConfirm(null);
+			}
+		}
 		if (auditor != null) {
-			if (origAuditor == null || (origAuditor != null && (origAuditor.getId() != auditor.getId()))) {
+			if (origAuditor == null
+					|| (origAuditor != null && (origAuditor.getId() != auditor
+							.getId()))) {
 				contractorAudit.setAssignedDate(new Date());
 			}
 		} else {
@@ -79,12 +109,26 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 		contractorAudit.setAuditor(auditor);
 
 		if (permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit))
-				dao.save(contractorAudit);
+			dao.save(contractorAudit);
 
 		if (contractorAudit.getAssignedDate() != null) {
-			setMessage(new SimpleDateFormat("MM/dd/yy hh:mm a").format(contractorAudit.getAssignedDate()));
+			setMessage(new SimpleDateFormat("MM/dd/yy hh:mm a")
+					.format(contractorAudit.getAssignedDate()));
 		}
+		String name = request.getRequestURL().toString();
+		String serverName = name.replace(ActionContext.getContext().getName()
+				+ ".action", "");
 
+		if (contractorAudit.getAuditType().isScheduled()) {
+			if (contractorAudit.getContractorConfirm() == null)
+				contractorMailer.setServerName(serverName);
+			contractorMailer.sendMessage(EmailTemplates.contractorconfirm,
+					contractorAudit);
+			if (contractorAudit.getAuditorConfirm() == null)
+				auditorMailer.setServerName(serverName);
+			auditorMailer.sendMessage(EmailTemplates.auditorconfirm,
+					contractorAudit);
+		}
 		return SUCCESS;
 	}
 
@@ -97,6 +141,8 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 			int auditId = Integer.parseInt(ids[0]);
 			contractorAudit = dao.find(auditId);
 			origAuditor = contractorAudit.getAuditor();
+			origScheduledDate = contractorAudit.getScheduledDate();
+			origLocation = contractorAudit.getAuditLocation();
 		}
 	}
 
@@ -122,6 +168,11 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 
 	public void setAuditor(User auditor) {
 		this.auditor = auditor;
+	}
+
+	@Override
+	public void setServletRequest(HttpServletRequest request) {
+		this.request = request;
 	}
 
 }
