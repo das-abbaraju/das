@@ -295,5 +295,11 @@
 			class="com.picsauditing.actions.audits.ContractorSave">
 			<result>struts/blank.jsp</result>
 		</action>
+
+		<action name="ScheduleAuditUpdate"
+			class="com.picsauditing.actions.report.AuditScheduleUpdate">
+			<result>struts/confirmaudit.jsp</result>
+		</action>
+
 	</package>
 </struts>
