@@ -187,10 +187,11 @@ public class FlagCalculatorSingle {
 
 		// First see if there are any forced flags for this operator
 		for (ContractorOperator co : contractor.getOperators()) {
-			if (co.getOperatorAccount().equals(operator))
+			if (co.getOperatorAccount().equals(operator)) {
 				// Found the operator, is it forced?
 				if (co.isForcedFlag())
 					flagColor = co.getForceFlag();
+		    }
 		}
 
 		return flagColor;

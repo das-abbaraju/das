@@ -335,10 +335,10 @@ public class Account implements java.io.Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(getClass().equals(obj.getClass().getSuperclass())))
 			return false;
 		final Account other = (Account) obj;
-		if (id != other.id)
+		if (id != other.getId().intValue())
 			return false;
 		return true;
 	}
