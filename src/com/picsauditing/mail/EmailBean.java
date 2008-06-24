@@ -19,6 +19,7 @@ public class EmailBean {
 	protected boolean testMode = false;
 	protected UserDAO userDAO;
 	protected AppPropertyDAO appPropertyDAO;
+	protected String serverName;
 
 	public EmailBean(UserDAO userDAO, AppPropertyDAO appPropertyDAO) {
 		this.userDAO = userDAO;
@@ -109,5 +110,13 @@ public class EmailBean {
 		return email.getToAddress();
 		// return John Doe <john@doe.org>
 		// return this.aBean.name + " &lt;" + + "&gt;";
+	}
+
+	public String getServerName() {
+		return serverName;
+	}
+
+	public void setServerName(String serverName) {
+		this.serverName = serverName;
 	}
 }
