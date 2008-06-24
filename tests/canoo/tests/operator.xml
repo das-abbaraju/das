@@ -12,63 +12,37 @@
 				&login;
 				<!--   CONTRACTOR LIST -->
 				&body_verify;
-				<verifyText description="Show 100 contractors"
-					text="Showing 1-100" />
-				<verifyText description="Check for atleast one Green flag"
-					text="icon_greenFlag.gif" />
-				<verifyText description="Check for atleast one Amber flag"
-					text="icon_amberFlag.gif" />
-				<verifyText description="Check for atleast one Red flag"
-					text="icon_redFlag.gif" />
 				
-				<!--   CONTRACTOR DETAILS -->
-				<clickLink description="Show contractor details"
-					href="ContractorView.action?id=${conID}" />
+				<clickLink description="Show contractor List"
+					href="ContractorListOperator.action" />
 				&body_verify;
+
 				<verifyText description="Verify name of company"
 					text="Aaron Oil Company" />
-				
-				<clickLink description="Click Notes link"
-					href="add_notes.jsp?id=" />
 				&body_verify;
-				<verifyText description="Verify Notes exist"
-					text="Notes" />
-				
-				<clickLink description="Red Flag Report"
-					label="Red Flag Report" />
+
+				<clickLink description="Verfify Notes exist"
+					href="ContractorView.action?id=2459" />
 				&body_verify;
-				
-				<clickLink description="View PQF"
-					label="View PQF" />
+								
+				<clickLink description="Flag Report"
+					href="ContractorFlag.action?id=2459" />
 				&body_verify;
 				
 				<clickLink description="View Entire PQF"
-					label="View Entire PQF" />
-				<!-- can't search for error because it gets other words like terrorist -->
-				<!-- &body_verify; -->
+					href="Audit.action?auditID=3283" />
+
+				<clickLink description="View Audits"
+					href="ConAuditList.action?id=2459" />
+				&body_verify;
 
 				<clickLink description="View Desktop Audit"
-					label="View Desktop Audit" />
+					href="Audit.action?auditID=7441" />
 				&body_verify;
 
-				<clickLink description="Print PQF"
-					label="Print PQF" />
-				<!-- can't search for error because it gets other words like terrorist -->
-				<!-- &body_verify; -->
-
-				<!--   Forms & Docs -->
-				<invoke
-					description="back to Contractor List"
-					url="contractor_list.jsp" />
-				<clickLink description="Forms &amp; Docs"
-					href="manage_forms.jsp" />
-				&body_verify;
-				<verifyText description="Edit an Existing Form"
-					text="Edit an Existing Form" />
-				
 				<!--   New Contractor Search -->
 				<clickLink description="Search For New Contractors"
-					label="Search For New Contractors" />
+					label="Search For New" />
 				<setSelectField 
 					description="Choose Trade=Cranes &amp; Rigging"
 					name="trade"
@@ -84,40 +58,32 @@
 				<clickButton
 					name="imageField"
 					description="Click the Search button" />
-
 				&body_verify;
+				
 				<verifyText description="Show more than 100 green crane operators"
 					text="Showing 1-100" />
+				&body_verify;					
 
-				<!--   View User Accounts -->
-				<clickLink description="Edit User Accounts"
-					label="Edit User Accounts" />
+				<clickLink description="Manage User Accounts"
+					href="UsersManage.action" />
 				&body_verify;
+				
 				<verifyText description="[Add User] link exists"
-					text="Add New User" />
+					text="Add User" />
 				
-				<storeProperty name="report_link" value="Contractor Contact Info" />
-				&click_report;
-
-				<storeProperty name="report_link" value="Corporate Contractors Report" />
+				<storeProperty name="report_link" value="Contact Info" />
 				&click_report;
 				
-				<storeProperty name="report_link" value="EMR Rates Report" />
+				<storeProperty name="report_link" value="EMR Rates" />
 				&click_report;
 
-				<storeProperty name="report_link" value="Expired Audits Report" />
+				<storeProperty name="report_link" value="Fatalities" />
 				&click_report;
 
-				<storeProperty name="report_link" value="Fatalities Report" />
+				<storeProperty name="report_link" value="Incidence Rates" />
 				&click_report;
 
-				<storeProperty name="report_link" value="Incidence Rates Report" />
-				&click_report;
-
-				<storeProperty name="report_link" value="Incomplete Audits Report" />
-				&click_report;
-
-				<storeProperty name="report_link" value="Red Flag Criteria" />
+				<storeProperty name="report_link" value="Flag Criteria" />
 				&click_report;
 			</steps>
 		</webtest>
