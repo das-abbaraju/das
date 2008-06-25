@@ -128,7 +128,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		FlagColor newColor = calculator.calculate();
 		co.getFlag().setFlagColor(newColor);
 		contractorOperatorDao.save(co);
-
+		
 		return SUCCESS;
 	}
 
