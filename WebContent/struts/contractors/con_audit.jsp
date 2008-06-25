@@ -60,9 +60,7 @@ table.report tr.na a {
 		<s:if test="appliesB">
 			<tr>
 				<td class="right"><a name="<s:property value="id" />"><s:property value="category.number" /></td>
-				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a>
-					<a href="<s:property value="catUrl" />?auditID=<s:property value="auditID" />&catID=<s:property value="category.id" />&id=<s:property value="conAudit.contractorAccount.id" />">.</a>
-				</td>
+				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a></td>
 			<s:if test="conAudit.auditStatus.name() == 'Pending' || conAudit.auditType.pqf">
 				<td class="right"><s:property value="percentCompleted" />%</td>
 				<td><s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if></td>
