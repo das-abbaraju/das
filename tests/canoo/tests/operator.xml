@@ -44,10 +44,6 @@
 				<clickLink description="View Desktop Audit"
 					href="Audit.action?auditID=7441" />
 				&body_verify;
-				
-
-								
-
 				<!--   New Contractor Search -->
 				<clickLink description="Search For New Contractors"
 					label="Search For New" />
@@ -68,8 +64,8 @@
 					description="Click the Search button" />
 				&body_verify;
 				
-				<verifyText description="Show more than 100 green crane operators"
-					text="Showing 1-100" />
+				<verifyText description="Show List of Contractors"
+					text="Showing 1-[0-9]* of .strong.[1-9][0-9]*..strong. results" regex="true" />
 				&body_verify;					
 
 				<clickLink description="Manage User Accounts"
