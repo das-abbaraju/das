@@ -25,7 +25,7 @@
 	<div class="verifyBox">Is Original Answer Correct?
 	<s:radio list="#{'Yes':'Yes','No':'No'}" name="isCorrect_%{questionID}" value="isCorrect"></s:radio><br />
 	Verified Answer: <s:textfield name="verifiedAnswer_%{questionID}" value="%{verifiedAnswer}" size="50"></s:textfield><br />
-	Comment: <s:textfield name="comment_%{questionID}" value="%[comment}" size="50"></s:textfield>
+	Comment: <s:textfield name="comment_%{questionID}" value="%{comment}" size="50"></s:textfield>
 	</div>
 	</td>
 </tr>
