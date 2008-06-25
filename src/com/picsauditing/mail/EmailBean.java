@@ -119,4 +119,14 @@ public class EmailBean {
 	public void setServerName(String serverName) {
 		this.serverName = serverName;
 	}
+
+	public Map<String, Object> getTokens() {
+		return tokens;
+	}
+
+	public void setTokens(Map<String, Object> tokens) {
+		this.tokens = tokens;
+	}
+	
+	
 }

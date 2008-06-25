@@ -3,20 +3,16 @@ package com.picsauditing.mail;
 public enum EmailTemplates {
 	welcome("Account Activation", "EmailContractorBean"),
 	annual_update("Annual Update", "EmailContractorBean"),
-	certificate_expire("Certificate Expired"),
-	dasubmit("D&A Audit Submitted"),
-	desktopsubmit("Desktop Audit Submitted"),
-	contractoradded("Facility added Contractor"),
-	password("Forgot Password"),
-	newuser("Welcome New User"),
-	verifyPqf("Verify PQF"),
-	contractorconfirm("Confirm Audit"),
-	auditorconfirm("Confirm Audit");
+	certificate_expire("Certificate Expired", "EmailContractorBean"),
+	dasubmit("D&A Audit Submitted", "EmailContractorBean"),
+	desktopsubmit("Desktop Audit Submitted", "EmailContractorBean"),
+	contractoradded("Facility added Contractor", "EmailUserBean"),
+	password("Forgot Password", "EmailUserBean"),
+	newuser("Welcome New User", "EmailUserBean"),
+	verifyPqf("Verify PQF", "EmailContractorBean"),
+	contractorconfirm("Confirm Audit", "EmailContractorBean"),
+	auditorconfirm("Confirm Audit", "EmailUserBean");
 
-	EmailTemplates(String description){
-		this.description = description;
-	}
-	
 	EmailTemplates(String description, String className){
 		this.description = description;
 		this.className = className;

@@ -1,10 +1,12 @@
 <%@page language="java" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
 <%@page import="java.util.HashMap"%>
+<%@page import="java.util.Map"%>
 <%@page import="com.picsauditing.mail.Email"%>
 <%@page import="com.picsauditing.mail.EmailTemplates"%>
 <%@page import="com.picsauditing.mail.EmailContractorBean"%>
 <%@page import="com.picsauditing.mail.EmailUserBean"%>
+<%@page import="com.picsauditing.util.SpringUtils"%>
 <jsp:useBean id="props" class="com.picsauditing.PICS.AppPropertiesBean" scope ="page"/>
 <%
 permissions.tryPermission(OpPerms.EmailTemplates);
@@ -12,31 +14,54 @@ permissions.tryPermission(OpPerms.EmailTemplates);
 EmailTemplates template = null;
 try {
 	template = EmailTemplates.valueOf(request.getParameter("template"));
-} catch (Exception e) {}
+} catch (Exception e) {
+	
+	template = EmailTemplates.welcome;  //a default
+}
 
 if ("save".equals(request.getParameter("action"))) {
 	props.save("email_"+template+"_body", request.getParameter("body"));
 	props.save("email_"+template+"_subject", request.getParameter("subject"));
 }
 
-HashMap<String, String> tokens = new HashMap<String, String>();
+Map<String, Object> tokens = new HashMap<String, Object>();
 Email emailSample = new Email();
 String accountID = request.getParameter("accountID");
+if( accountID == null || accountID.length() == 0 )
+{
+	accountID = "3";
+}
+
 String userID = request.getParameter("userID");
+if( userID == null || userID.length() == 0 )
+{
+	userID = "3";
+}
+
+
+
 String emailBody = "";
 String subjectTemplate = "";
 String bodyTemplate = "";
 
 if (template != null) {
-	if (accountID!=null && accountID.length() > 0) {
-		EmailContractorBean mailer = new EmailContractorBean();
-		emailSample = mailer.testMessage(template, accountID, permissions);
-		tokens = mailer.getMerge().getTokens();
-	} else if (userID!=null && userID.length() > 0) {
-		EmailUserBean mailer = new EmailUserBean();
-		emailSample = mailer.testMessage(template, userID, permissions);
-		tokens = mailer.getMerge().getTokens();
+	
+	EmailContractorBean mailer = (EmailContractorBean) SpringUtils.getBean(template.getClassName());
+	mailer.setTestMode(true);
+	
+	
+	if( template.getClassName().equals("EmailContractorBean")
+		&& accountID!=null && accountID.length() > 0) {
+		mailer.sendMessage(template, Integer.parseInt(accountID));		
+	} else if (template.getClassName().equals("EmailUserBean") 
+		&& userID!=null && userID.length() > 0) {
+		mailer.sendMessage(template, Integer.parseInt(userID));		
 	}
+
+	tokens = mailer.getTokens();
+	emailSample = mailer.getEmail(); //mailer.testMessage(template, accountID, permissions);
+
+	
 	emailBody = emailSample.getBody();
 	//emailBody.replaceAll("r", "<br />");
 	subjectTemplate = props.get("email_"+template+"_subject");
@@ -44,9 +69,31 @@ if (template != null) {
 }
 
 %>
+
 <html>
 <head>
 <title>Manage Email Templates</title>
+
+<script type="text/javascript">
+	function switchUI( selectBox ) {
+		var theText = selectBox.options[selectBox.selectedIndex].className;
+		
+		if( theText.indexOf('EmailContractorBean') != -1)
+		{
+			document.getElementById('userInput').style.display = 'none';	
+			document.getElementById('accountInput').style.display = 'block';	
+		}
+		else if( theText.indexOf('EmailUserBean') != -1)
+		{
+			document.getElementById('userInput').style.display = 'block';
+			document.getElementById('accountInput').style.display = 'none';	
+		}
+	}
+</script>
+
+
+
+
 </head>
 <body>
 <table border="0">
@@ -54,16 +101,16 @@ if (template != null) {
 <td>
 <br /><br />
 <form action="email_templates.jsp" method="get">
-<select name="template">
+<select name="template" onchange="javascript: switchUI(this)">
 	<option value=""> - Choose - </option>
 	<%
 	for(EmailTemplates i : EmailTemplates.values()) {
-		%><option value="<%=i%>" <%=i.equals(template)?"SELECTED":"" %>  ><%=i.getDescription()%></option><%
+		%><option class="<%=i.getClassName()%>" value="<%=i%>" <%=i.equals(template)?"SELECTED":"" %>  ><%=i.getDescription()%></option><%
 	}
 	%>
 </select><br />
-User:<input type="text" name="userID" size="6" value="<%=userID %>" /><br />
-Account:<input type="text" name="accountID" size="6" value="<%=accountID %>" /><br />
+<div id="userInput" <%= template != null && template.getClassName().equals("EmailUserBean") ? " " : " style=\"display : none;\" " %>>User:<input type="text" name="userID" size="6" value="<%=userID %>" /><br /></div>
+<div id="accountInput" <%= template != null && template.getClassName().equals("EmailContractorBean") ? " " : " style=\"display : none;\" " %>>Account:<input type="text" name="accountID" size="6" value="<%=accountID %>" /><br /></div>
 <input type="submit" value="Preview Email" />
 </form>
 email_<%=template%>_subject<br>
