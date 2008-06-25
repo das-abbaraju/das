@@ -16,6 +16,11 @@
 				<clickLink description="Show contractor List"
 					href="ContractorListOperator.action" />
 				&body_verify;
+				
+				<!--  Confirm Filter options available -->
+				<verifyText description="Verify filter options available" 
+					text="updateQuery(name)" />
+				&body_verify;			
 
 				<verifyText description="Verify name of company"
 					text="Aaron Oil Company" />
@@ -39,6 +44,9 @@
 				<clickLink description="View Desktop Audit"
 					href="Audit.action?auditID=7441" />
 				&body_verify;
+				
+
+								
 
 				<!--   New Contractor Search -->
 				<clickLink description="Search For New Contractors"
