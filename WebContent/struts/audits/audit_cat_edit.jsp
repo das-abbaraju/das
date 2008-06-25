@@ -32,7 +32,7 @@
 			<s:radio list="#{'Yes':'Yes','No':'No','NA':'NA'}" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:radio>
 		</s:if>
 		<s:if test="questionType == 'Manual'">
-			<s:radio list="#{'Yes':'Yes','No':'No'}" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:radio>
+			<s:radio list="#{'Yes':'Yes','No':'No','NA':'NA'}" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:radio>
 			<br>Comments: <s:textfield name="answer.comment" size="30" />
 		</s:if>
 		<s:if test="questionType == 'Office Location'">
