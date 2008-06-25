@@ -25,7 +25,9 @@ public class OshaSave extends PicsActionSupport {
 	private File uploadFile2;
 	private File uploadFile3;
 	private String submit;
-
+	private String description;
+	private String location;
+	private String oshaType;
 	public OshaSave(OshaLogDAO oshaDAO) {
 		this.oshaDAO = oshaDAO;
 	}
@@ -37,17 +39,21 @@ public class OshaSave extends PicsActionSupport {
 		// and finding the osha data before the setters get run
 		// However, I think I had problems setting/creating the 
 		// embedded year[1-3] private properties. Trevor
-		String description = this.osha.getDescription(); 
-		String location = this.osha.getLocation();	
-		String oshaType = this.osha.getType().toString();	
+		if(this.osha != null) {
+			description = this.osha.getDescription(); 
+			location = this.osha.getLocation();	
+			oshaType = this.osha.getType().toString();	
+		} 	
 		if (oshaID > 0) {
 			osha = oshaDAO.find(oshaID);
 		} else {
 			osha = new OshaLog();
 		}
-		osha.setDescription(description);
-		osha.setLocation(location);
-		osha.setType(OshaType.valueOf(oshaType));
+		if (osha != null) {
+			osha.setDescription(description);
+			osha.setLocation(location);
+			osha.setType(OshaType.valueOf(oshaType));
+		}
 		if(submit.equals("Delete")) {
 			oshaDAO.remove(oshaID);
 			return SUCCESS;
