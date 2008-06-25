@@ -220,7 +220,7 @@
 							escape="false" /></td>
 						<td>Avg</td>
 						<s:if test="oshaFatalitiesUsed">
-							<td class="right"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(averageFatalities)}" /></td>
+							<td></td>
 							<td></td>
 						</s:if>
 						<s:if test="oshaLwcrUsed">
