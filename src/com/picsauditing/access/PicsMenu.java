@@ -32,7 +32,8 @@ public class PicsMenu {
 		if (permissions.isOperator() || permissions.isCorporate())
 			subMenu.addChild("Contractor List", "ContractorListOperator.action");
 
-		subMenu.addChild("Contact Info", "report_contactInfo.jsp?changed=1");
+		if (!permissions.isOnlyAuditor())
+			subMenu.addChild("Contact Info", "report_contactInfo.jsp?changed=1");
 
 		if (permissions.hasPermission(OpPerms.SearchContractors))
 			subMenu.addChild("Search For New", "contractorsSearch.jsp");
