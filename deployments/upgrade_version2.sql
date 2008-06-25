@@ -405,6 +405,8 @@ update contractor_audit set auditorID = 938 where auditorID = 3226;
 update contractor_audit set auditorID = 941 where auditorID = 3487;
 update contractor_audit set auditorID = 943 where auditorID = 3486;
 
+update contractor_audit set auditorID = null 
+	where auditorID not in (select id from users);
 
 /* Create audit_operator table */
 drop table IF EXISTS `audit_operator`;
