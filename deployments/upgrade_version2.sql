@@ -313,6 +313,8 @@ alter table `pqfdata`
 	add KEY `conID`(`conID`),
 	add UNIQUE KEY `questionContractor`(`auditID`,`questionID`), COMMENT='';
 
+
+
 /* Alter pqfquestions table - make nullabe*/
 alter table `pqfquestions` 
 	change `okAnswer` `okAnswer` set('Yes','No','NA')  COLLATE latin1_swedish_ci NULL after `hasRequirement`, 
@@ -634,6 +636,15 @@ from contractor_audit ca
 join pqfcategories c on c.auditTypeID = ca.auditTypeID
 where c.auditTypeID = 3
 and ca.conID not in (70,249,808,1654,2617);
+
+/* Added a update to all the answers that were changed and the verified date is not null */
+update pqfdata set answer = 'Yes'
+	where wasChanged = 'Yes' and dateVerified is not null 
+	and answer = 'No' and questionid in
+		(select questionId from pqfquestions where subcategoryid in 
+			(select subcatid from pqfsubcategories where categoryid in
+				(select catId from pqfcategories where audittypeid=3)));
+
 
 /* ==== Change foreigh keys - From conid to auditID ==== */
 
