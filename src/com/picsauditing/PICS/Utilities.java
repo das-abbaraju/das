@@ -24,7 +24,7 @@ public class Utilities {
 	static final boolean ARRAY_WITHOUT_VALUES = false;
 	static final boolean MULTIPLE = true;
 	static final boolean SINGLE = false;
-	static final String[] COUNTRY_ARRAY = { "USA", "Afganistan", "Albania",
+	static final String[] COUNTRY_ARRAY = { "- Country -", "USA", "Afganistan", "Albania",
 			"Algeria", "American Samoa", "Andorra", "Angola", "Anguila",
 			"Antarctica", "Antigua and Barbuda", "Argentina", "Armenia",
 			"Aruba", "Australia", "Austria", "Azerjaijan", "Bahamas",
