@@ -6,6 +6,7 @@
 <%@page import="com.picsauditing.mail.EmailTemplates"%>
 <%@page import="com.picsauditing.mail.EmailContractorBean"%>
 <%@page import="com.picsauditing.mail.EmailUserBean"%>
+<%@page import="com.picsauditing.mail.EmailBean"%>
 <%@page import="com.picsauditing.util.SpringUtils"%>
 <jsp:useBean id="props" class="com.picsauditing.PICS.AppPropertiesBean" scope ="page"/>
 <%
@@ -46,16 +47,23 @@ String bodyTemplate = "";
 
 if (template != null) {
 	
-	EmailContractorBean mailer = (EmailContractorBean) SpringUtils.getBean(template.getClassName());
-	mailer.setTestMode(true);
+	EmailBean mailer = null; 
+	
 	
 	
 	if( template.getClassName().equals("EmailContractorBean")
 		&& accountID!=null && accountID.length() > 0) {
-		mailer.sendMessage(template, Integer.parseInt(accountID));		
+		EmailContractorBean o = (EmailContractorBean) SpringUtils.getBean(template.getClassName());
+		o.setTestMode(true);
+		o.sendMessage(template, Integer.parseInt(accountID));
+		mailer = o;
 	} else if (template.getClassName().equals("EmailUserBean") 
 		&& userID!=null && userID.length() > 0) {
-		mailer.sendMessage(template, Integer.parseInt(userID));		
+		EmailUserBean o = (EmailUserBean) SpringUtils.getBean(template.getClassName());
+		o.setTestMode(true);
+		o.sendMessage(template, Integer.parseInt(userID));		
+		mailer = o;
+
 	}
 
 	tokens = mailer.getTokens();
