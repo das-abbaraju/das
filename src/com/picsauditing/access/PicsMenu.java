@@ -17,7 +17,7 @@ public class PicsMenu {
 
 		if (permissions.isContractor()) {
 			// Don't show a menu for Contractors, they will use their sub menu for now
-			subMenu = menu.addChild("Home", "index.jsp");
+			subMenu = menu.addChild("Home", "Home.action");
 			return menu;
 		}
 
