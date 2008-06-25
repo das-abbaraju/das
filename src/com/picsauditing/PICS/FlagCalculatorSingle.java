@@ -55,6 +55,7 @@ public class FlagCalculatorSingle {
 		FlagColor flagColor = FlagColor.Green;
 		
 		for(AuditOperator audit : operator.getAudits()) {
+			audit.setContractorFlag(FlagColor.Green);
 			if (contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel() ) {
 				// The contractor requires this audit, make sure they have an active one
 				audit.setContractorFlag(audit.getRequiredForFlag());

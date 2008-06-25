@@ -274,13 +274,15 @@
 				<td>Status</td>
 			</tr>
 		</thead>
-		<s:iterator value="contractor.certificates">
+		<s:iterator value="contractor.certificates">		
+		<s:if test="opID == operatorAccount.id">
 			<tr class="<s:property value="flagColor" />">
 				<td class="center"><s:property
 					value="flagColor.smallIcon" escape="false" /></td>
 				<td><s:property value="type" /></td>
 				<td><s:property value="status" /></td>
 			</tr>
+		</s:if>
 		</s:iterator>
 	</table>
 </s:if>
