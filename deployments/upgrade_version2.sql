@@ -335,6 +335,12 @@ alter table `pqfquestions`
 	change `linkURL6` `linkURL6` varchar(255)  COLLATE latin1_swedish_ci NULL after `linkText5`, 
 	change `linkText6` `linkText6` varchar(255)  COLLATE latin1_swedish_ci NULL after `linkURL6`, COMMENT='';
 
+/*Update questionType field to Manual for office audit in pqfquestions*/
+update pqfquestions set questionType = 'Manual'
+	where subcategoryid in 
+		(select subcatid from pqfsubcategories where categoryid in
+			(select catId from pqfcategories where audittypeid=3)); 
+
 /* Alter users table */
 alter table `users` 
 	change `dateCreated` `dateCreated` datetime   NOT NULL after `isActive`, 
