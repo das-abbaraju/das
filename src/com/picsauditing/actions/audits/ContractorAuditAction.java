@@ -76,14 +76,14 @@ public class ContractorAuditAction extends AuditActionSupport {
 		// Calculate and set the percent complete
 		auditPercentCalculator.percentCalculateComplete(conAudit);
 		
-		if (auditStatus != null && !conAudit.getAuditStatus().equals(auditStatus)) {
+		if (auditStatus != null && ! auditStatus.equals(conAudit.getAuditStatus())) {
 			// We're changing the status
 			if (!conAudit.getAuditType().isHasRequirements() && auditStatus.equals(AuditStatus.Submitted)) {
 				// This audit should skip directly to Active when Submitted
 				auditStatus = AuditStatus.Active;
 				conAudit.setCompletedDate(new Date());
 			}
-			if (conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
+			if (auditStatus.equals(AuditStatus.Submitted)) {
 				conAudit.setCompletedDate(new Date());
 				
 				// Send email to contractors telling them the Audit was submitted
@@ -96,7 +96,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 					mailer.sendMessage(EmailTemplates.dasubmit, conAudit);
 				}
 			}
-			if (conAudit.getAuditStatus().equals(AuditStatus.Active)) {
+			if (auditStatus.equals(AuditStatus.Active)) {
 				conAudit.setClosedDate(new Date());
 				if (conAudit.getAuditType().isHasMultiple()) {
 					// This audit can only have one active audit, expire the previous one
