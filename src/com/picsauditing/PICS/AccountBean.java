@@ -399,8 +399,6 @@ public class AccountBean extends DataBean {
 			SQLStatement.executeUpdate(deleteQuery);
 			deleteQuery = "DELETE FROM generalContractors WHERE subID="+deleteID+" OR genID="+deleteID+";";
 			SQLStatement.executeUpdate(deleteQuery);
-			deleteQuery = "DELETE FROM auditData WHERE con_id="+deleteID+";";
-			SQLStatement.executeUpdate(deleteQuery);
 //			Query = "DELETE FROM OSHA WHERE conID="+deleteID+";";
 //			SQLStatement.executeUpdate(Query);
 		}finally{

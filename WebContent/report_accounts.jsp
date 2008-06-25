@@ -11,7 +11,7 @@
 String action = request.getParameter("action");
 if ("Delete".equals(action)) {
 	AccountBean aBean = new AccountBean();
-	aBean.setFromDB(request.getParameter("accountID"));
+	aBean.setFromDB(request.getParameter("action_id"));
 	
 	if (aBean.isOperator())
 		permissions.tryPermission(OpPerms.ManageOperators, OpType.Delete);
@@ -129,7 +129,7 @@ if (canEdit) {
 			<td><% if (canDelete && row.get("subCount") == null) { %>
 				<form method="post" action="report_accounts.jsp" style="margin: 0px; padding: 0px;">
 					<input name="action_id" type="hidden" value="<%=row.get("id")%>">
-					<input id="delete<%=row.get("id")%>" name="action" type="submit" class="buttons" value="Delete" onClick="return confirm('Are you sure you want to delete this account?');">
+					<input id="<%=row.get("id")%>" name="action" type="submit" class="buttons" value="Delete" onClick="return confirm('Are you sure you want to delete this account?');">
 				</form>
               <% } %>
 			</td>
