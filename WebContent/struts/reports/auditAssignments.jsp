@@ -72,7 +72,7 @@
 		</td>
 		</tr>
 		<tr><td>
-			<s:checkbox name="unScheduledAudits"/><label>Check to Search on UnScheduled Audits</label>
+			<s:checkbox name="unScheduledAudits"/><label>Check to Search on UnConfirmed Audits</label>
 		</td></tr>
 	</table>
 	<s:hidden name="showPage" value="1" />
@@ -84,6 +84,7 @@
 
 <div><s:property value="report.pageLinksWithDynamicForm"
 	escape="false" /></div>
+<span class="redMain">* - UnConfirmed Audits</span>	
 <s:form id="assignScheduleAuditsForm" method="post" cssClass="forms">
 	<table class="report">
 		<thead>
@@ -103,15 +104,22 @@
 			<tr id="audit_<s:property value="[0].get('auditID')"/>">
 				<td class="right"><s:property
 					value="#stat.index + report.firstRowNumber" /></td>
-				<td><a href="ContractorView.action?id=<s:property value="[0].get('id')"/>"><s:property value="[0].get('name')"/></a></td>
+				<td><a href="ContractorView.action?id=<s:property value="[0].get('id')"/>"><s:property value="[0].get('name')"/></a>
+					<s:if test="[0].get('isScheduled') && [0].get('contractorConfirm') == NULL">
+						<span class="redMain">*</span>
+					</s:if>	
+				</td>
 				<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="[0].get('auditName')"/></a></td>
 				<td class="reportDate"><s:date name="[0].get('createdDate')"
 					format="M/d/yy" /></td>
-				<td><s:if test="[0].get('hasAuditor')">
+				<td><nobr><s:if test="[0].get('hasAuditor')">
 					<s:select cssClass="blueMain" list="auditorList" listKey="id"
 						listValue="name" value="%{[0].get('auditorID')}"
 						id="%{'auditor_'.concat([0].get('auditID'))}" />
-				</s:if></td>
+					<s:if test="[0].get('isScheduled') && [0].get('auditorConfirm') == NULL">
+						<span class="redMain">*</span>
+					</s:if>	
+				</s:if></nobr></td>
 				<td class="center" id="assignDate_<s:property value="[0].get('auditID')"/>"><s:if test="[0].get('hasAuditor')">
 					<nobr><s:property
 						value="%{getBetterDate( [0].get('assignedDate'), 'MM/dd/yy hh:mm:ss a.000')}" />

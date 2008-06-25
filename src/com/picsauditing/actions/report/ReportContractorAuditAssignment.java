@@ -26,6 +26,8 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		if (!forceLogin())
 			return LOGIN;
 		permissions.tryPermission(OpPerms.AssignAudits);
+		sql.addField("ca.contractorConfirm");
+		sql.addField("ca.auditorConfirm");
 		sql.addWhere("auditStatus='Pending'");
 		if (unScheduledAudits == true) {
 			sql
