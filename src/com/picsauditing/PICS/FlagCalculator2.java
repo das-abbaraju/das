@@ -1,22 +1,29 @@
 package com.picsauditing.PICS;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
+import javax.persistence.NoResultException;
 
+import org.springframework.transaction.annotation.Transactional;
+
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.mail.Email;
+import com.picsauditing.mail.EmailSender;
 
 /**
  * Business Engine used to calculate the flag 
@@ -36,17 +43,19 @@ public class FlagCalculator2 {
 	private ContractorAuditDAO conAuditDAO;
 	private AuditDataDAO auditDataDAO;
 	private ContractorOperatorFlagDAO coFlagDAO;
+	protected AppPropertyDAO appPropDao = null;
 	
 	private List<OperatorAccount> operators = new ArrayList<OperatorAccount>(); // List of operators to be processed
 	private List<Integer> contractorIDs = new ArrayList<Integer>(); // List of contractors to be processed
 	
 	public FlagCalculator2(OperatorAccountDAO operatorDAO, ContractorAccountDAO contractorDAO, 
-		ContractorAuditDAO conAuditDAO, AuditDataDAO auditDataDAO, ContractorOperatorFlagDAO coFlagDAO) {
+		ContractorAuditDAO conAuditDAO, AuditDataDAO auditDataDAO, ContractorOperatorFlagDAO coFlagDAO, AppPropertyDAO appProps) {
 		this.operatorDAO = operatorDAO;
 		this.contractorDAO = contractorDAO;
 		this.conAuditDAO = conAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.coFlagDAO = coFlagDAO;
+		this.appPropDao = appProps;
 	}
 	
 	public void runAll() {
@@ -79,6 +88,7 @@ public class FlagCalculator2 {
 		execute();
 	}
 	
+	
 	private void execute() {
 		debug("FlagCalculator.execute()");
 		// Load ALL operators and contractors by default
@@ -89,6 +99,7 @@ public class FlagCalculator2 {
 		}
 		debug("...getting question for operators");
 		
+
 		List<Integer> questionIDs = new ArrayList<Integer>();
 		// Create a list of questions that the operators want to ask
 		for(OperatorAccount operator : operators) {
@@ -103,11 +114,74 @@ public class FlagCalculator2 {
 		int testValue = 5;
 		float lastAvg = 1000000;
 		long startTime = System.currentTimeMillis();
+		
+		int errorCount = 0;
+
 		for(Integer conID : contractorIDs) {
 
 			
-			
-			runCalc(questionIDs, conID);
+			try {
+				System.out.println("FlagCalculator2: calculating flags for : " + conID);
+				runCalc(questionIDs, conID);
+			}
+			catch( Throwable t ) {
+				
+				Email email = new Email();
+				email.setSubject("Cron job had an error calculating flag for contractor :" + conID.toString() );
+				
+				StringBuffer body = new StringBuffer();
+				
+				body.append("There was an error calculating flags for contractor ");
+				body.append(conID.toString());
+				body.append( "\n\n" );
+				
+				body.append(t.getMessage());
+				body.append( "\n" );
+				
+				StringWriter sw = new StringWriter();
+				t.printStackTrace(new PrintWriter(sw));
+				body.append( sw.toString() );
+				
+				email.setBody( body.toString() );
+				
+				String toAddress = null;
+				try
+				{
+					AppProperty prop = appPropDao.find("admin_email_address");
+					toAddress = prop.getValue();
+				}
+				catch( NoResultException notFound ){}
+				
+				if( toAddress == null || toAddress.length() == 0 )
+				{
+					toAddress = "admin@picsauditing.com";
+				}
+				
+				email.setToAddress(toAddress);
+
+				EmailSender sender = new EmailSender();
+				
+				try
+				{
+					sender.sendMail(email);
+				}
+				catch( Exception notMuchWeCanDoButLogIt )
+				{
+					System.out.println("**********************************");
+					System.out.println("Error calculating flags AND unable to send email");
+					System.out.println("**********************************");
+					
+					System.out.println(notMuchWeCanDoButLogIt);
+					notMuchWeCanDoButLogIt.printStackTrace();
+				}
+
+				
+				
+				if( ++errorCount == 10 )
+				{
+					break;
+				}
+			}
 			
 			
 			if( (count++ % testValue) == 0 )
@@ -167,12 +241,11 @@ public class FlagCalculator2 {
 		}
 	}
 
+	@Transactional
 	protected void runCalc(List<Integer> questionIDs, Integer conID) {
 
 		long startTime = System.currentTimeMillis();
 
-
-		
 		ContractorAccount contractor = contractorDAO.find(conID);
 
 
@@ -198,6 +271,8 @@ public class FlagCalculator2 {
 			// Set the flag color on the object
 			//em.refresh(contractor);
 			ContractorOperatorFlag coFlag = null;
+			
+			
 			try
 			{
 				coFlag = contractor.getFlags().get(operator);
