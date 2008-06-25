@@ -152,7 +152,7 @@ public class FlagCalculatorSingle {
 				} else {
 					// Check all other audit data answers
 					AuditData data = auditAnswers.get(criteria.getAuditQuestion().getQuestionID());
-					if (data != null) {
+					if (data != null && data.getVerifiedAnswerOrAnswer() != null && data.getVerifiedAnswerOrAnswer().length() > 0) {
 						// The contractor has answered this question so it needs to be correct
 						data.setFlagColor(FlagColor.Green);
 						if (criteria.isFlagged(data.getVerifiedAnswerOrAnswer())) {
