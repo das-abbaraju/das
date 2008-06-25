@@ -776,6 +776,10 @@ analyze table pqfcatdata;
 /* fix orphaned office audit question id reference in IIPP category */
 update pqfQuestions set dependsonqid = null where questionid=1284;
 
+/* Remove the blank and 0 answer and verifiedAnswer fields from the database */
+delete from pqfdata where answer = '0000-00-00';
+delete from pqfdata where answer = '' and verifiedAnswer = '';
+
 
 /* delete the form that was a link to a blank office audit */
 delete from forms
