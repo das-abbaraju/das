@@ -143,21 +143,7 @@ public class FlagCalculator2 {
 				body.append( sw.toString() );
 				
 				email.setBody( body.toString() );
-				
-				String toAddress = null;
-				try
-				{
-					AppProperty prop = appPropDao.find("admin_email_address");
-					toAddress = prop.getValue();
-				}
-				catch( NoResultException notFound ){}
-				
-				if( toAddress == null || toAddress.length() == 0 )
-				{
-					toAddress = "admin@picsauditing.com";
-				}
-				
-				email.setToAddress(toAddress);
+				email.setToAddress("errors@picsauditing.com");
 
 				EmailSender sender = new EmailSender();
 				
