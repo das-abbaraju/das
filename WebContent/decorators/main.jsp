@@ -30,11 +30,16 @@
 <![endif]-->
 
 <script type="text/javascript">
-function showHelpBody() {
-	
+function showChat() {
+	var elem = getElement('chatIcon');
+	elem.style.display = 'block';
 }
-function toggleLayer( whichLayer ) {
-	var elem, vis;
+function hideChat() {
+	var elem = getElement('chatIcon');
+	elem.style.display = 'none';
+}
+function getElement(whichLayer) {
+	var elem;
 	if( document.getElementById )
 		// this is the way the standards work
 		elem = document.getElementById( whichLayer );
@@ -44,13 +49,8 @@ function toggleLayer( whichLayer ) {
 	else if( document.layers )
 		// this is the way nn4 works
 		elem = document.layers[whichLayer];
-	vis = elem.style;
-	// if the style.display value is blank we try to figure it out here
-	if(vis.display=='' && elem.offsetWidth != undefined && elem.offsetHeight != undefined)
-		vis.display = (elem.offsetWidth != 0 && elem.offsetHeight != 0)?'block':'none';
-	vis.display = (vis.display==''||vis.display=='block')?'none':'block';
+	return elem;
 }
-
 </script>
 <decorator:head />
 </head>
@@ -110,17 +110,15 @@ function toggleLayer( whichLayer ) {
 <div id="helpbox">
 	<a href="help/" target="helpdoc48">Documentation</a> |
 	<a id="_lpChatBtn"
-	onmouseover="$('helpbody').show();"
-	onmouseout="$('helpbody').hide();"
+	onmouseover="showChat();"
+	onmouseout="hideChat();"
 	href='http://server.iad.liveperson.net/hc/90511184/?cmd=file&file=visitorWantsToChat&site=90511184&byhref=1&imageUrl=http://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
 	target='chat90511184'
 	onClick="lpButtonCTTUrl = 'http://server.iad.liveperson.net/hc/90511184/?cmd=file&file=visitorWantsToChat&site=90511184&imageUrl=http://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >Chat</a>
 </div>
-<div id="helpbody" style="display: none;">
-<!-- BEGIN LivePerson Button Code -->
+<div id="chatIcon" style="display: none;">
 	<img src='http://server.iad.liveperson.net/hc/90511184/?cmd=repstate&site=90511184&channel=web&&ver=1&imageUrl=http://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
 	name='hcIcon' border=0 />
-<!-- END LivePerson Button code -->
 </div>
 
 <!-- !begin content -->
