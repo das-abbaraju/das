@@ -12,6 +12,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.YesNo;
 
 public class AuditDataSave extends PicsActionSupport {
@@ -63,6 +64,17 @@ public class AuditDataSave extends PicsActionSupport {
 								AuditStatus.Submitted)) // double check this
 						{
 							newCopy.setWasChanged(YesNo.Yes);
+
+							if( auditData.getAnswer().equals("No"))
+							{
+								newCopy.setDateVerified(null);
+								newCopy.setAuditor(null);
+							}
+							else
+							{
+								newCopy.setDateVerified(new Date());
+								newCopy.setAuditor(getUser());
+							}
 						}
 					}
 				} else // we were handed the verification parms instead of the
