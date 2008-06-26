@@ -2,10 +2,7 @@ package com.picsauditing.actions;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.Date;
 
 import javax.persistence.NoResultException;
 import javax.servlet.ServletContext;
@@ -28,13 +25,9 @@ public class Cron extends PicsActionSupport {
 	protected FlagCalculator2 flagCalculator = null;
 	protected OperatorAccountDAO operatorDAO = null;
 	protected AppPropertyDAO appPropDao = null;
+	protected long startTime = 0L;
+	StringBuffer report = null;
 	
-	
-	protected final int OPTIMIZE = 1;
-	protected final int UPDATE_EXPIRED_CERTS = 2;
-	protected final int UPDATE_PAYING_FACILITIES = 3;
-	protected final int FLAG_CALCULATION = 4;
-
 	protected boolean flagsOnly = false;
 	
 	
@@ -49,84 +42,90 @@ public class Cron extends PicsActionSupport {
 	
 	public String execute() throws Exception {
 
-		StringBuffer report = new StringBuffer();
+		report = new StringBuffer();
 
-		boolean hadException = false;
+		report.append("Starting Cron Job at: ");
+		report.append(new Date().toString());
+		report.append("\n\n");
 		
 		if( !flagsOnly )
 		{
-			report.append("Running AccountBean optimizer...");
 			
 			try
 			{
+				startTask( "\nRunning AccountBean optimizer...");
 				new AccountBean().optimizeDB();
-				report.append("SUCCESS.");
+				endTask();
 			}
-			catch( Throwable t )
-			{
-				StringWriter sw = new StringWriter();
-				t.printStackTrace(new PrintWriter(sw));
-				report.append( sw.toString() );
-				report.append("\n\n\n");
-			}
+			catch( Throwable t ) { handleException(t); }
 
 			
-			report.append("\nRunning AccountBean optimizer...");
-			
 			try
 			{
+				startTask( "\nExpiring Certificates...");
 				new CertificateBean().makeExpiredCertificatesExpiredStatus();
-				report.append("SUCCESS.");
+				endTask();
 			}
-			catch( Throwable t )
-			{
-				StringWriter sw = new StringWriter();
-				t.printStackTrace(new PrintWriter(sw));
-				report.append( sw.toString() );
-				report.append("\n\n\n");
-			}
+			catch( Throwable t ) { handleException(t); }			
 			
 			
-			report.append("\nUpdating Paying Facilities...");
 			try
 			{
+				startTask("\nUpdating Paying Facilities...");
 				Facilities facilities =new Facilities(); 
 				facilities.setFacilitiesFromDB();
 				ServletContext application = ServletActionContext.getServletContext();
 				new Billing().updateAllPayingFacilities(application);
-				report.append("SUCCESS.");
+				endTask();
 			}
-			catch( Throwable t )
-			{
-				StringWriter sw = new StringWriter();
-				t.printStackTrace(new PrintWriter(sw));
-				report.append( sw.toString() );
-				report.append("\n\n\n");
-			}
-		}
+			catch( Throwable t ) { handleException(t); }
+		}		
 		
-		report.append("\nCalculating Flags...");
+		
 		try
 		{
+			startTask("\nCalculating Flags...");
 			flagCalculator.runAll();
-			report.append("SUCCESS.");
+			endTask();
 		}
-		catch( Throwable t )
-		{
-			StringWriter sw = new StringWriter();
-			t.printStackTrace(new PrintWriter(sw));
-			report.append( sw.toString() );
-			report.append("\n\n\n");
-		}
+		catch( Throwable t ) { handleException(t); }
+	
+	
+
+		report.append("\n\n\nCompleted Cron Job at: ");
+		report.append(new Date().toString());
 		
+		sendEmail();
+
 		setMessage("Complete");
-		
-		sendEmail(report);
 		
 		return SUCCESS;
 	}
+
+
+
+	private void handleException(Throwable t) {
+		StringWriter sw = new StringWriter();
+		t.printStackTrace(new PrintWriter(sw));
+		report.append( sw.toString() );
+		report.append("\n\n\n");
+	}
 	
-	protected void sendEmail(StringBuffer report)
+	
+	
+	protected void endTask()
+	{
+		report.append("SUCCESS..(");
+		report.append(new Long( System.currentTimeMillis() - startTime ).toString());
+		report.append(" millis )");
+	}
+	protected void startTask( String taskName)
+	{
+		startTime = System.currentTimeMillis();
+		report.append(taskName);
+	}
+	
+	protected void sendEmail()
 	{
 		Email email = new Email();
 		email.setSubject("Cron job report: " );
