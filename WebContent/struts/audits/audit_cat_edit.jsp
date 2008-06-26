@@ -11,7 +11,7 @@
 	</td>
 	<td class="answer">
 		<s:if test="questionType == 'Text'">
-			<s:textfield name="answer.answer" size="30" onblur="javascript:saveAnswer(%{questionID}, this);"/>
+			<s:textfield name="answer.answer" size="30" onchange="javascript:saveAnswer(%{questionID}, this);"/>
 		</s:if>
 		<s:if test="questionType == 'Date'">
 			<nobr><s:textfield id="answer_%{questionID}" name="answer.answer" size="8" 
@@ -20,23 +20,23 @@
 			<input type="image" src="images/icon_calendar.gif" width="18" height="15" onclick="cal1.select($('answer_<s:property value="questionID"/>'),'answer_<s:property value="questionID"/>','yyyy-MM-dd','<s:property value="answer.answer"/>'); return false;"/>
 		</s:if>
 		<s:if test="questionType == 'Check Box' || questionType == 'Industry' || questionType == 'Main Work'">
-			<s:checkbox fieldValue="X" value="answer.answer.length() == 1" name="answer.answer" onchange="javascript:saveAnswer(%{questionID}, this);" />
+			<s:checkbox fieldValue="X" value="answer.answer.length() == 1" name="answer.answer" onclick="javascript:saveAnswer(%{questionID}, this);" />
 		</s:if>
 		<s:if test="questionType == 'Yes/No'">
-			<s:radio list="#{'Yes':'Yes','No':'No'}" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:radio>
+			<s:radio list="#{'Yes':'Yes','No':'No'}" value="answer.answer" name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
 		</s:if>
 		<s:if test="questionType == 'Yes/No/NA'">
-			<s:radio list="#{'Yes':'Yes','No':'No','NA':'NA'}" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:radio>
+			<s:radio list="#{'Yes':'Yes','No':'No','NA':'NA'}" value="answer.answer" name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
 		</s:if>
 		<s:if test="questionType == 'Office'">
-			<s:radio list="#{'Yes':'Yes','No':'No','NA':'NA'}" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:radio>
+			<s:radio list="#{'Yes':'Yes','No':'No','NA':'NA'}" value="answer.answer" name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
 		</s:if>
 		<s:if test="questionType == 'Manual'">
-			<s:radio list="#{'Yes':'Yes','No':'No','NA':'NA'}" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:radio>
+			<s:radio list="#{'Yes':'Yes','No':'No','NA':'NA'}" value="answer.answer" name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
 			<br>Comments: <s:textfield name="answer.comment" size="30" />
 		</s:if>
 		<s:if test="questionType == 'Office Location'">
-			<s:radio list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:radio>
+			<s:radio list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" value="answer.answer" name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
 		</s:if>
 		<s:if test="questionType == 'State'">
 			<s:select list="stateList" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:select>
@@ -51,11 +51,11 @@
 			<s:textfield name="%{'answer_answer_'.concat(questionID)}" value="%{answer.answer}" size="19" onblur="validateNumber('answer_answer_%{questionID}','%{question}');  document.MM_returnValue && saveAnswer(%{questionID}, this)" />
 		</s:if>
 		<s:if test="questionType == 'Service'">
-			<s:checkbox fieldValue="C" value="answer.answer.indexOf('C') != -1" name="question_%{questionID}_C" onchange="javascript:saveAnswer(%{questionID}, this);" />
-			<s:checkbox fieldValue="S" value="answer.answer.indexOf('S') != -1" name="question_%{questionID}_S" onchange="javascript:saveAnswer(%{questionID}, this);" />
+			<s:checkbox fieldValue="C" value="answer.answer.indexOf('C') != -1" name="question_%{questionID}_C" onclick="javascript:saveAnswer(%{questionID}, this);" />
+			<s:checkbox fieldValue="S" value="answer.answer.indexOf('S') != -1" name="question_%{questionID}_S" onclick="javascript:saveAnswer(%{questionID}, this);" />
 		</s:if>
 		<s:if test="questionType == 'Radio'">
-			<s:radio theme="pics" list="options" listValue="optionName" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:radio>
+			<s:radio theme="pics" list="options" listValue="optionName" value="answer.answer" name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
 		</s:if>
 		<s:if test="questionType == 'Drop Down'">
 			<s:select list="options" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:select>
@@ -93,7 +93,7 @@
 </tr>
 <s:if test="questionType == 'Text Area'">
 	<tr class="group<s:if test="#shaded">Shaded</s:if>"><td>&nbsp;</td><td colspan="3" class="right">
-	<s:textarea cols="70" rows="4" value="%{answer.answer}" onblur="javascript:saveAnswer(%{questionID}, this);">
+	<s:textarea cols="70" rows="4" value="%{answer.answer}" onchange="javascript:saveAnswer(%{questionID}, this);">
 	</s:textarea>
 	</td>
 	</tr>
