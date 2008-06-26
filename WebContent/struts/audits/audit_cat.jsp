@@ -21,12 +21,19 @@
 <s:if test="mode == 'Edit'">
 	function saveAnswer( questionid, elm ) {
 		var pars = 'auditData.audit.id=<s:property value="conAudit.id"/>&catDataID=<s:property value="catDataID"/>&auditData.question.questionID=' + questionid + '&auditData.answer=';
+		
 		if( elm.type == 'text' || elm.type == 'radio' || elm.type == 'textarea')
 		{
 			var thevalue = elm.value;
 			//if( thevalue != '' ) {
 			// Save blanks too
 				pars = pars + thevalue;
+
+				var comment = document.getElementById('comments_' + questionid);
+				if( comment != undefined )
+				{
+					pars = pars + '&auditData.comment=' + comment.value;
+				}
 				
 				var divName = 'status_'+questionid;
 				var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
@@ -48,7 +55,8 @@
 			else
 				thevalue = ' ';
 			pars = pars + thevalue;
-			
+
+
 			var divName = 'status_'+questionid;
 			var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
 			{

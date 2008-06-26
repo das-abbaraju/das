@@ -33,7 +33,7 @@
 		</s:if>
 		<s:if test="questionType == 'Manual'">
 			<s:radio list="#{'Yes':'Yes','No':'No','NA':'NA'}" value="answer.answer" name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
-			<br>Comments: <s:textfield name="answer.comment" size="30" />
+			<br>Comments: <s:textfield id="comments_%{questionID}" name="answer.comment" size="30" onblur="javascript:saveAnswer(%{questionID}, document.getElementById('question_%{questionID}Yes') );"/>
 		</s:if>
 		<s:if test="questionType == 'Office Location'">
 			<s:radio list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" value="answer.answer" name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
