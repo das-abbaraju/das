@@ -15,6 +15,9 @@
 		</s:elseif>
 		<s:else>
 		<s:property value="answer.answer"/>
+			<s:if test="questionType == 'Manual'">
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment: <s:property value="answer.comment"/>
+			</s:if>
 		</s:else>
 		<s:if test="answer.verified">
 			<br/><span class="verified">Verified on <s:date name="answer.dateVerified" format="MMM d, yyyy" /></span>
