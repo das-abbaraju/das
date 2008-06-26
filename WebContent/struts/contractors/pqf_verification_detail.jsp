@@ -208,10 +208,8 @@ function sendEmail() {
 		</s:if>
 		<s:else>
 			<tr>
-				<td>Select the Primary OSHA Log to verify</td>
-			</tr>
-			<tr>
-				<td>TODO: List all of the OSHA Logs here to select from</td>
+				<td><div class="error">Your OSHA is missing.Your PQF has no Corporate record or has more than one Corporate record for OSHA.
+				<br/>Please go to your PQF and resolve this Issue.</div></td>
 			</tr>
 		</s:else>
 
