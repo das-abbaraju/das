@@ -5,7 +5,7 @@
 	
 	<span class="answer">
 		<s:if test="questionType == 'Date'">
-			<s:property value="answer.answer"/>
+			<s:property value="answer.answer" />
 		</s:if>
 		<s:elseif test="questionType == 'File'">
 			<s:if test="answer.answer.length() > 0">
@@ -13,15 +13,22 @@
 			</s:if>
 			<s:else>File Not Uploaded</s:else>
 		</s:elseif>
+		<s:elseif test="questionType == 'License'">
+			<s:property value="answer.answer" />
+			<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(question, answer.answer)" escape="false" />
+		</s:elseif>
+		
 		<s:else>
-		<s:property value="answer.answer"/>
+			<s:property value="answer.answer" />
 			<s:if test="questionType == 'Manual'">
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment: <s:property value="answer.comment"/>
 			</s:if>
 		</s:else>
+		
 		<s:if test="answer.verified">
 			<br/><span class="verified">Verified on <s:date name="answer.dateVerified" format="MMM d, yyyy" /></span>
 		</s:if>
+		
 		<s:if test="answer.unverified">
 			<br/><span class="unverified">Inaccurate Data</span>
 		</s:if>
@@ -37,6 +44,7 @@
 		<s:else>
 			<span class="verified">Closed on <s:date name="answer.dateVerified" format="MMM d, yyyy" /></span>
 		</s:else>
+		
 		<br>
 		<s:property value="requirement"/>
 		</td>

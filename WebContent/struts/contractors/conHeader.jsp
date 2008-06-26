@@ -43,13 +43,12 @@
 	</s:else>
 	<s:if test="permissions.contractor">
 		<li><a href="con_viewForms.jsp?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('con_viewForms')">class="current"</s:if>>Forms
-		& Docs</a></li>
+			<s:if test="requestURI.contains('con_viewForms')">class="current"</s:if>>Forms & Docs</a></li>
 	</s:if>
 	<li><a <s:if test="requestURI.contains('contractor_audits')">class="current"</s:if> href="ConAuditList.action?id=<s:property value="id" />">Audits</a></li>
 	<s:iterator value="activeAudits">
 		<li><a <s:if test="id == auditID">class="current"</s:if>
-			href="Audit.action?auditID=<s:property value="id"/>" title="<s:date
+				href="Audit.action?auditID=<s:property value="id"/>" title="<s:date
 			name="effectiveDate" format="MMM yyyy" />"><s:property
 			value="auditType.auditName" /></a></li>
 	</s:iterator>
@@ -139,9 +138,9 @@
 		</tr>
 	</table>
 	<div>
-	<s:if test="conAudit.auditType.PQF">
+	<s:if test="conAudit.auditType.Pqf">
 		<pics:permission perm="AuditVerification">
-	| <a href="VerifyView.action?auditID=<s:property value="auditID" />">Verify	PQF</a>
+			<a href="VerifyView.action?auditID=<s:property value="auditID" />">Verify PQF</a>
 		</pics:permission>
 	</s:if>
 	</div>
