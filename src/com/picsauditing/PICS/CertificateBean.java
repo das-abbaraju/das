@@ -386,6 +386,7 @@ public class CertificateBean extends DataBean {
 	public void processEmailForm(Map<String, String> params, Permissions permissions) throws Exception {
 		for (String param : params.keySet()) {
 			if (param.startsWith("sendEmail_")) {
+				// TODO: replace this and the tokens with the Certificate jpa entity 
 				String certificate_id = param.substring(10);
 				String selectQuery = "SELECT certificates.*, accounts.id FROM certificates, accounts "
 						+ "WHERE cert_id = '" + certificate_id + "' AND certificates.contractor_id = accounts.id ";

@@ -10,8 +10,8 @@ public enum EmailTemplates {
 	password("Forgot Password", "EmailUserBean"),
 	newuser("Welcome New User", "EmailUserBean"),
 	verifyPqf("Verify PQF", "EmailContractorBean"),
-	contractorconfirm("Confirm Audit", "EmailContractorBean"),
-	auditorconfirm("Confirm Audit", "EmailUserBean");
+	contractorconfirm("Confirm Audit Contractor", "EmailContractorBean"),
+	auditorconfirm("Confirm Audit Auditor", "EmailUserBean");
 
 	EmailTemplates(String description, String className){
 		this.description = description;

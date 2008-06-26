@@ -20,9 +20,15 @@ try {
 	template = EmailTemplates.welcome;  //a default
 }
 
+AppPropertyDAO apDAO = (AppPropertyDAO)SpringUtils.getBean("AppPropertyDAO");
 if ("save".equals(request.getParameter("action"))) {
-	props.save("email_"+template+"_body", request.getParameter("body"));
-	props.save("email_"+template+"_subject", request.getParameter("subject"));
+	AppProperty appProperty = new AppProperty();
+	appProperty.setProperty("email_"+template+"_body");
+	appProperty.setValue(request.getParameter("body"));
+	apDAO.save(appProperty);
+	appProperty.setProperty("email_"+template+"_subject");
+	appProperty.setValue(request.getParameter("subject"));
+	apDAO.save(appProperty);
 }
 
 Map<String, Object> tokens = new HashMap<String, Object>();
@@ -30,13 +36,13 @@ Email emailSample = new Email();
 String accountID = request.getParameter("accountID");
 if( accountID == null || accountID.length() == 0 )
 {
-	accountID = "3";
+	accountID = "3"; // Ancon Marine
 }
 
 String userID = request.getParameter("userID");
 if( userID == null || userID.length() == 0 )
 {
-	userID = "3";
+	userID = "941";  // tallred
 }
 
 
@@ -46,38 +52,51 @@ String subjectTemplate = "";
 String bodyTemplate = "";
 
 if (template != null) {
+	EmailBean mailer = null;
 	
-	EmailBean mailer = null; 
+	ContractorAuditDAO conAuditDAO = (ContractorAuditDAO)SpringUtils.getBean("ContractorAuditDAO");
+	ContractorAudit conAudit = conAuditDAO.find(1607);
 	
-	
+	OperatorAccountDAO oppAcctDAO = (OperatorAccountDAO)SpringUtils.getBean("OperatorAccountDAO");
+	OperatorAccount opAcct = oppAcctDAO.find(1813);
 	
 	if( template.getClassName().equals("EmailContractorBean")
 		&& accountID!=null && accountID.length() > 0) {
 		EmailContractorBean o = (EmailContractorBean) SpringUtils.getBean(template.getClassName());
 		o.setTestMode(true);
+		o.addToken("conAudit", conAudit);
+		o.addToken("opAcct", opAcct);
+		o.setPermissions(permissions);
 		o.sendMessage(template, Integer.parseInt(accountID));
 		mailer = o;
 	} else if (template.getClassName().equals("EmailUserBean") 
 		&& userID!=null && userID.length() > 0) {
 		EmailUserBean o = (EmailUserBean) SpringUtils.getBean(template.getClassName());
 		o.setTestMode(true);
+		o.addToken("conAudit", conAudit);
+		o.addToken("opAcct", opAcct);
+		o.setPermissions(permissions);
 		o.sendMessage(template, Integer.parseInt(userID));		
 		mailer = o;
-
 	}
-
+	
 	tokens = mailer.getTokens();
 	emailSample = mailer.getEmail(); //mailer.testMessage(template, accountID, permissions);
-
 	
 	emailBody = emailSample.getBody();
-	//emailBody.replaceAll("r", "<br />");
-	subjectTemplate = props.get("email_"+template+"_subject");
-	bodyTemplate = props.get("email_"+template+"_body");
+	
+	subjectTemplate = apDAO.find("email_"+template+"_subject").getValue();
+	bodyTemplate = apDAO.find("email_"+template+"_body").getValue();
 }
 
 %>
 
+<%@page import="com.picsauditing.dao.ContractorAuditDAO"%>
+<%@page import="com.picsauditing.jpa.entities.ContractorAudit"%>
+<%@page import="com.picsauditing.dao.AppPropertyDAO"%>
+<%@page import="com.picsauditing.jpa.entities.AppProperty"%>
+<%@page import="com.picsauditing.dao.OperatorAccountDAO"%>
+<%@page import="com.picsauditing.jpa.entities.OperatorAccount"%>
 <html>
 <head>
 <title>Manage Email Templates</title>
