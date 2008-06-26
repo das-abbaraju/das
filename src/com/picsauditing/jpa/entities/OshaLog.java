@@ -29,7 +29,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "osha")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="temp")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class OshaLog implements java.io.Serializable {
 	private int id;
 	private ContractorAccount contractorAccount;
@@ -106,12 +106,16 @@ public class OshaLog implements java.io.Serializable {
 		return auditorId;
 	}
 
-	public void setAuditorId(int auditorId) {
+	public void setAuditorId(Integer auditorId) {
+		if (auditorId == null) {
+			auditorId = 0;
+		}
 		this.auditorId = auditorId;
 	}
 
 	@Embedded
-	@AttributeOverrides( { @AttributeOverride(name = "na", column = @Column(name = "na1")),
+	@AttributeOverrides( {
+			@AttributeOverride(name = "na", column = @Column(name = "na1")),
 			@AttributeOverride(name = "manHours", column = @Column(name = "manHours1")),
 			@AttributeOverride(name = "fatalities", column = @Column(name = "fatalities1")),
 			@AttributeOverride(name = "lostWorkCases", column = @Column(name = "lostWorkCases1")),
@@ -131,7 +135,8 @@ public class OshaLog implements java.io.Serializable {
 	}
 
 	@Embedded
-	@AttributeOverrides( { @AttributeOverride(name = "na", column = @Column(name = "na2")),
+	@AttributeOverrides( {
+			@AttributeOverride(name = "na", column = @Column(name = "na2")),
 			@AttributeOverride(name = "manHours", column = @Column(name = "manHours2")),
 			@AttributeOverride(name = "fatalities", column = @Column(name = "fatalities2")),
 			@AttributeOverride(name = "lostWorkCases", column = @Column(name = "lostWorkCases2")),
@@ -151,7 +156,8 @@ public class OshaLog implements java.io.Serializable {
 	}
 
 	@Embedded
-	@AttributeOverrides( { @AttributeOverride(name = "na", column = @Column(name = "na3")),
+	@AttributeOverrides( {
+			@AttributeOverride(name = "na", column = @Column(name = "na3")),
 			@AttributeOverride(name = "manHours", column = @Column(name = "manHours3")),
 			@AttributeOverride(name = "fatalities", column = @Column(name = "fatalities3")),
 			@AttributeOverride(name = "lostWorkCases", column = @Column(name = "lostWorkCases3")),
@@ -174,41 +180,41 @@ public class OshaLog implements java.io.Serializable {
 	public float getAverageLwcr() {
 		if (countApplicableYears() == 0)
 			return 0;
-		
+
 		float rate = 0;
 		rate = rate + getYear1().getLostWorkCasesRate();
 		rate = rate + getYear2().getLostWorkCasesRate();
 		rate = rate + getYear3().getLostWorkCasesRate();
-		
-		return rate/countApplicableYears();
+
+		return rate / countApplicableYears();
 	}
 
 	@Transient
 	public float getAverageTrir() {
 		if (countApplicableYears() == 0)
 			return 0;
-		
+
 		float rate = 0;
 		rate = rate + getYear1().getRecordableTotalRate();
 		rate = rate + getYear2().getRecordableTotalRate();
 		rate = rate + getYear3().getRecordableTotalRate();
-		
-		return rate/countApplicableYears();
+
+		return rate / countApplicableYears();
 	}
 
 	@Transient
 	public float getAverageFatalities() {
 		if (countApplicableYears() == 0)
 			return 0;
-		
+
 		float rate = 0;
 		rate = rate + getYear1().getFatalitiesRate();
 		rate = rate + getYear2().getFatalitiesRate();
 		rate = rate + getYear3().getFatalitiesRate();
-		
-		return rate/countApplicableYears();
+
+		return rate / countApplicableYears();
 	}
-	
+
 	@Transient
 	private int countApplicableYears() {
 		int years = 0;
@@ -229,17 +235,20 @@ public class OshaLog implements java.io.Serializable {
 	public void setFlagColor(FlagColor flagColor) {
 		this.flagColor = flagColor;
 	}
-	
+
 	@Transient
 	public OshaLogYear getAvg() {
 		if (avg == null) {
 			avg = new OshaLogYear();
-			
+
 			List<OshaLogYear> yearList = new ArrayList<OshaLogYear>();
-			if (year1.isApplicable()) yearList.add(year1);
-			if (year2.isApplicable()) yearList.add(year2);
-			if (year3.isApplicable()) yearList.add(year3);
-			
+			if (year1.isApplicable())
+				yearList.add(year1);
+			if (year2.isApplicable())
+				yearList.add(year2);
+			if (year3.isApplicable())
+				yearList.add(year3);
+
 			int years = 0;
 			int manHours = 0;
 			int fatalities = 0;
@@ -248,8 +257,8 @@ public class OshaLog implements java.io.Serializable {
 			int lostWorkDays = 0;
 			int recordableTotal = 0;
 			int restrictedWorkCases = 0;
-			
-			for(OshaLogYear year : yearList) {
+
+			for (OshaLogYear year : yearList) {
 				years++;
 				manHours += year.getManHours();
 				fatalities += year.getFatalities();
@@ -260,20 +269,20 @@ public class OshaLog implements java.io.Serializable {
 				restrictedWorkCases += year.getRestrictedWorkCases();
 			}
 			if (years > 0) {
-				avg.setManHours(Math.round(manHours/years));
-				avg.setFatalities(Math.round(fatalities/years));
-				avg.setInjuryIllnessCases(Math.round(injuryIllnessCases/years));
-				avg.setLostWorkCases(Math.round(lostWorkCases/years));
-				avg.setLostWorkDays(Math.round(lostWorkDays/years));
-				avg.setRecordableTotal(Math.round(recordableTotal/years));
-				avg.setRestrictedWorkCases(Math.round(restrictedWorkCases/years));
+				avg.setManHours(Math.round(manHours / years));
+				avg.setFatalities(Math.round(fatalities / years));
+				avg.setInjuryIllnessCases(Math
+						.round(injuryIllnessCases / years));
+				avg.setLostWorkCases(Math.round(lostWorkCases / years));
+				avg.setLostWorkDays(Math.round(lostWorkDays / years));
+				avg.setRecordableTotal(Math.round(recordableTotal / years));
+				avg.setRestrictedWorkCases(Math.round(restrictedWorkCases
+						/ years));
 			}
 		}
-		
+
 		return avg;
 	}
-
-
 
 	@Override
 	public int hashCode() {
@@ -296,10 +305,5 @@ public class OshaLog implements java.io.Serializable {
 			return false;
 		return true;
 	}
-
-
-
-
-
 
 }
