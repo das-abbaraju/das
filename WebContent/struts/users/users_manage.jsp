@@ -73,9 +73,17 @@ function saveGroup(action, groupID, childID) {
 	getPage(pars);
 }
 function checkUsername(username, userID) {
+	$('UserSave').writeAttribute('disabled','true');
 	$('username_status').innerHTML = 'checking availability of username...';
 	pars = 'userID='+userID+'&username='+username;
-	var myAjax = new Ajax.Updater('username_status', 'user_ajax.jsp', {method: 'get', parameters: pars});
+	var myAjax = new Ajax.Updater('username_status', 'user_ajax.jsp', {method: 'get', parameters: pars,
+		onComplete: function(transport) {
+		if($('username_status').innerHTML.indexOf('is NOT available. Please choose a different username.') == -1)
+		{
+			$('UserSave').writeAttribute('disabled', null);						
+		}
+	}
+	});
 }
 
 </script>

@@ -8,10 +8,7 @@
 
 <script type="text/javascript">
 function checkUsername(username) {
-
 	$('ProfileEdit_save').writeAttribute('disabled','true');
-
-
 	$('username_status').innerHTML = 'checking availability of username...';
 	pars = 'userID=<s:property value="u.id"/>&username='+username;
 	var myAjax = new Ajax.Updater('username_status', 'user_ajax.jsp', {method: 'get', parameters: pars,
@@ -22,9 +19,6 @@ function checkUsername(username) {
 					}
 				}
 			});
-	
-	
-	
 }
 </script>
 </head>

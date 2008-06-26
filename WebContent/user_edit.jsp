@@ -125,7 +125,7 @@ if (uBean.isSet()) {
 	<% if (permissions.hasPermission(OpPerms.EditUsers, OpType.Edit)) { %>
 	<tr>
 	  <td>&nbsp;</td>
-	  <td><input type="button" class="forms" value="Save"
+	  <td><input id="UserSave" type="button" class="forms" value="Save"
 	  	onclick="saveUser();" 
 	  	style="font-size: 14px; font-weight: bold;"></td>
 	</tr>
