@@ -122,7 +122,7 @@
 					<tr>
 						<th>Scheduled:</th>
 						<td><s:date name="conAudit.scheduledDate"
-							format="MMM d, yyyy" /><s:property
+							format="MMM d, yyyy" /> <s:property
 							value="conAudit.auditLocation" /></td>
 					</tr>
 				</s:if>

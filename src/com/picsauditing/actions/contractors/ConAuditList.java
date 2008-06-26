@@ -29,8 +29,7 @@ public class ConAuditList extends ContractorActionSupport {
 		List<ContractorAudit> temp = new ArrayList<ContractorAudit>();
 		List<ContractorAudit> list = auditDao.findByContractor(id);
 		for (ContractorAudit contractorAudit : list) {
-			if (permissions.canSeeAudit(contractorAudit.getAuditType()
-					.getAuditTypeID()))
+			if (permissions.canSeeAudit(contractorAudit.getAuditType()))
 				temp.add(contractorAudit);
 		}
 		return temp;

@@ -240,10 +240,8 @@ public class Permissions {
 	}
 	
 	public boolean canSeeAudit(AuditType auditType) {
-		if (isContractor() && auditType.isCanContractorView())
-			return false;
 		if (isContractor())
-			return true;
+			return auditType.isCanContractorView();
 		if (isPicsEmployee())
 			return true;
 		

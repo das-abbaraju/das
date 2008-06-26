@@ -22,11 +22,9 @@ public class ReportAccountQuick extends ReportAccount {
 			int id = Integer.parseInt(accountName);
 			report.addFilter(new SelectFilterInteger("id", "a.id = ?",
 					id));
-
 		} catch (NumberFormatException nfe) {
-
 			report.addFilter(new SelectFilter("accountName",
-					"a.name LIKE '%?%'", accountName, "", ""));
+					"a.name LIKE '%?%'", accountName.trim(), "", ""));
 		}
 	}
 }

@@ -118,7 +118,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 			contractorNonExpiredAudits = new ArrayList<ContractorAudit>();
 			List<ContractorAudit> list = auditDao.findNonExpiredByContractor(contractor.getId());
 			for (ContractorAudit contractorAudit : list) {
-				if (permissions.canSeeAudit(contractorAudit.getAuditType().getAuditTypeID()))
+				if (permissions.canSeeAudit(contractorAudit.getAuditType()))
 					contractorNonExpiredAudits.add(contractorAudit);
 			}
 		}
