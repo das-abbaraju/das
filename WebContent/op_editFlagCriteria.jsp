@@ -71,11 +71,14 @@
 <%
 if (canEditFlagCriteria) {
 	%>
+	<div id="search">
+
 	<input name="action" type="submit" value="Save Criteria" class="center"><br>
-	<input name="actionFlag" type="radio" value="None" class="center">None
-	<input name="actionFlag" type="radio" value="Limited" class="center" checked>My Contractors
-	<input name="actionFlag" type="radio" value="All" class="center">All Contractors
-	
+	Recalculate flags for the following contractors: 
+	<input name="actionFlag" type="radio" value="None" class="center" title="Don't recalculate any contractors now, I can wait until PICS recalculates the flags tonight. (< 1 sec)"  >None
+	<input name="actionFlag" type="radio" value="Limited" class="center" checked title="Recalculate flag color for only my contractors. (< 2 minutes)">My Contractors
+	<input name="actionFlag" type="radio" value="All" class="center" title="Recalculate flag color for all contractors in the PICS database, I need up-to-date flag colors for new contractors that I might add to my account today. (about 10 minutes)">All Contractors
+	</div>
 	<%
 }
 %>
