@@ -273,11 +273,10 @@ function sendEmail() {
 			<td><s:select list="emrProblems" name="emr2.comment" cssClass="blueMain" /></td>
 			<td class="highlight"><s:select list="emrProblems" name="emr3.comment" cssClass="blueMain" /></td>
 		</tr>
+		
 
 
 
-
-		<s:if test="customVerification && customVerification.size() > 0 ">
 			<tr bgcolor="#003366" class="whiteTitle" align="center">
 				<td colspan="2" align="left">Custom Verifications</td>
 				<td>Answer</td>
@@ -294,19 +293,21 @@ function sendEmail() {
 					<td><input type="radio" id="<s:property value="'customVerification['.concat(question.questionID.toString().concat('].isCorrectBoolean'))"/>" onchange="copyCustomAnswer(<s:property value="question.questionID"/>);" name="<s:property value="'customVerification['.concat(question.questionID.toString().concat('].isCorrectBoolean'))"/>" value="true" <s:if test="isCorrectBoolean">checked</s:if>/>Yes
 						<input type="radio" id="<s:property value="'customVerification['.concat(question.questionID.toString().concat('].isCorrectBoolean'))"/>" name="<s:property value="'customVerification['.concat(question.questionID.toString().concat('].isCorrectBoolean'))"/>" value="false" <s:if test="isCorrectBoolean == null || ! isCorrectBoolean">checked</s:if>/>No
 					</td>
+				
 			</tr>
 			</s:iterator>
 			<tr class="blueMain">
 				<td><a href="#"
-				onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqfpdf1331','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">PQF Safety Manual</a>
+				onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqf<s:property value="safetyManualAnswer.answer"/>1331','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">PQF Safety Manual</a>
 				</td>
+				<td></td>
+				<td></td>
+				<td></td>
 			</tr>
-		</s:if>
-
-		<tr class="blueMain">
-			<td colspan="5" align="center"><input class="blueMain"
-				type="submit" value="Save" /></td>
-		</tr>
+			<tr class="blueMain">
+				<td colspan="5" align="center"><input class="blueMain"
+					type="submit" value="Save" /></td>
+			</tr>
 	</table>
 </s:form>
 

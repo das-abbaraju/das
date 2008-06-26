@@ -37,72 +37,83 @@ public class AuditDataDAO extends PicsDAO {
 		return a;
 	}
 
-	public Map<Integer, AuditData> findByCategory(int auditID, AuditCategory category) {
-		Query query = em.createQuery("FROM AuditData d " +
-				"WHERE d.audit.id = :auditID AND d.question.subCategory.category = :category");
+	public Map<Integer, AuditData> findByCategory(int auditID,
+			AuditCategory category) {
+		Query query = em
+				.createQuery("FROM AuditData d "
+						+ "WHERE d.audit.id = :auditID AND d.question.subCategory.category = :category");
 		query.setParameter("auditID", auditID);
 		query.setParameter("category", category);
-		
+
 		return mapData(query.getResultList());
 	}
 
-	public Map<Integer, AuditData> findAnswersByContractor(int conID, List<Integer> questionIds) {
+	public Map<Integer, AuditData> findByCategory(int auditID, int categoryID) {
+		AuditCategory auditCategory = new AuditCategory();
+		auditCategory.setId(categoryID);
+		return findByCategory(auditID, auditCategory);
+	}
+
+	public Map<Integer, AuditData> findAnswersByContractor(int conID,
+			List<Integer> questionIds) {
 		if (questionIds.size() == 0)
 			return new HashMap<Integer, AuditData>();
-		
-		Query query = em.createQuery("FROM AuditData d " +
-				"WHERE audit IN (FROM ContractorAudit WHERE contractorAccount.id = ? AND auditStatus = 'Active') " +
-				"AND question.questionID IN ("+glue(questionIds)+")");
+
+		Query query = em
+				.createQuery("FROM AuditData d "
+						+ "WHERE audit IN (FROM ContractorAudit WHERE contractorAccount.id = ? AND auditStatus = 'Active') "
+						+ "AND question.questionID IN (" + glue(questionIds)
+						+ ")");
 		query.setParameter(1, conID);
-		
+
 		return mapData(query.getResultList());
 	}
 
-	
 	public AuditData findAnswerToQuestion(int auditId, int questionId) {
-			
-		Query query = em.createQuery("FROM AuditData d " +
-				"WHERE audit.id = ? AND question.questionID =? ");
+
+		Query query = em.createQuery("FROM AuditData d "
+				+ "WHERE audit.id = ? AND question.questionID =? ");
 		query.setParameter(1, auditId);
 		query.setParameter(2, questionId);
-		
 		return (AuditData) query.getSingleResult();
 	}
 
-	
-	//we may want to join over to the ContractorAudit in order to only pull the most recent answers
+	// we may want to join over to the ContractorAudit in order to only pull the
+	// most recent answers
 	public List<AuditData> findCustomPQFVerifications(int auditId) {
-		
+
 		StringBuffer queryString = new StringBuffer();
-		
+
 		queryString.append("select d FROM AuditData d ");
 		queryString.append("inner join fetch d.question q ");
 		queryString.append("inner join fetch q.subCategory sc ");
 		queryString.append("inner join fetch sc.category cat ");
 		queryString.append("where d.audit.id = ? ");
-		queryString.append("and ( EXISTS ( select a from AuditQuestionOperatorAccount a where a.auditQuestion.questionID = q.questionID ) or q.questionID = ");
+		queryString
+				.append("and ( EXISTS ( select a from AuditQuestionOperatorAccount a where a.auditQuestion.questionID = q.questionID ) or q.questionID = ");
 		queryString.append(AuditQuestion.MANUAL_PQF);
-		queryString.append(" )" );
-		
-		
-		Query query = em.createQuery(queryString.toString()) ;
-		
+		queryString.append(" )");
+
+		Query query = em.createQuery(queryString.toString());
+
 		query.setParameter(1, auditId);
-		
+
 		return query.getResultList();
 	}
-	
+
 	public Map<Integer, AuditData> findAnswers(int auditID) {
-		Query query = em.createQuery("SELECT d FROM AuditData d WHERE audit.id = ?");
+		Query query = em
+				.createQuery("SELECT d FROM AuditData d WHERE audit.id = ?");
 		query.setParameter(1, auditID);
-		
+
 		return mapData(query.getResultList());
 	}
 
-	public Map<Integer, AuditData> findAnswers(int auditID, List<Integer> questionIds) {
+	public Map<Integer, AuditData> findAnswers(int auditID,
+			List<Integer> questionIds) {
 		if (questionIds.size() == 0)
 			return new HashMap<Integer, AuditData>();
-		
+
 		if (questionIds.contains(AuditQuestion.EMR_AVG)) {
 			// We need to get the average EMR for the past 3 years
 			questionIds.remove(AuditQuestion.EMR_AVG);
@@ -110,35 +121,38 @@ public class AuditDataDAO extends PicsDAO {
 			questionIds.add(AuditQuestion.EMR06);
 			questionIds.add(AuditQuestion.EMR05);
 		}
-		
-		Query query = em.createQuery("SELECT d FROM AuditData d " +
-				"WHERE audit.id = ? AND question.questionID IN ("+glue(questionIds)+")");
+
+		Query query = em.createQuery("SELECT d FROM AuditData d "
+				+ "WHERE audit.id = ? AND question.questionID IN ("
+				+ glue(questionIds) + ")");
 		query.setParameter(1, auditID);
-		
+
 		return mapData(query.getResultList());
 	}
 
 	/**
-	 * Convert a List into a Map
-	 * Note: this could be a good candidate to go into a Utility class
+	 * Convert a List into a Map Note: this could be a good candidate to go into
+	 * a Utility class
+	 * 
 	 * @return
 	 */
 	private Map<Integer, AuditData> mapData(List<AuditData> result) {
 		HashMap<Integer, AuditData> indexedResult = new HashMap<Integer, AuditData>();
-		for(AuditData row : result)
+		for (AuditData row : result)
 			indexedResult.put(row.getQuestion().getQuestionID(), row);
 		return indexedResult;
 	}
-	
+
 	/**
-	 * Convert a List into a comma-delimited String
-	 * Note: this could be a good candidate to go into a Utility class
+	 * Convert a List into a comma-delimited String Note: this could be a good
+	 * candidate to go into a Utility class
+	 * 
 	 * @return
 	 */
 	private String glue(List<Integer> listIDs) {
 		StringBuilder ids = new StringBuilder();
 		ids.append("-1"); // so we don't have to worry about this ',110,243'
-		for(Integer id : listIDs)
+		for (Integer id : listIDs)
 			ids.append(",").append(id);
 		return ids.toString();
 	}

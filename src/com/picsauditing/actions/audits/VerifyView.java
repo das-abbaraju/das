@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import javax.persistence.NoResultException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,6 +20,7 @@ import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -24,7 +28,6 @@ import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.jpa.entities.OshaLogYear;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailAuditBean;
-import com.picsauditing.mail.EmailContractorBean;
 import com.picsauditing.mail.EmailTemplates;
 
 public class VerifyView extends AuditActionSupport {
@@ -34,20 +37,22 @@ public class VerifyView extends AuditActionSupport {
 	private Map<Integer, AuditData> emr = new HashMap<Integer, AuditData>();
 	protected Map<Integer, AuditData> customVerification = null;
 	private int followUp = 0;
-	
+	private Map<Integer, AuditData> pqfDesktopVerification = null;
+
 	private EmailAuditBean mailer;
 
-	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO, 
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, EmailAuditBean mailer) {
+	public VerifyView(ContractorAccountDAO accountDao,
+			ContractorAuditDAO contractorAuditDAO,
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao,
+			EmailAuditBean mailer) {
 		super(accountDao, contractorAuditDAO, catDataDao, auditDataDao);
 		this.mailer = mailer;
 		this.mailer.setPermissions(permissions);
 	}
 
 	public String execute() throws Exception {
-		
+
 		this.loadPermissions();
-		
 		this.findConAudit();
 		permissions.tryPermission(OpPerms.AuditVerification);
 
@@ -68,39 +73,40 @@ public class VerifyView extends AuditActionSupport {
 			emrQuestions.add(AuditQuestion.EMR07);
 			emrQuestions.add(AuditQuestion.EMR06);
 			emrQuestions.add(AuditQuestion.EMR05);
-			Map<Integer, AuditData> emrDB = auditDataDao.findAnswers(this.auditID, emrQuestions);
+
+			Map<Integer, AuditData> emrDB = auditDataDao.findAnswers(
+					this.auditID, emrQuestions);
 			saveAuditData(emrDB, AuditQuestion.EMR07);
 			saveAuditData(emrDB, AuditQuestion.EMR06);
 			saveAuditData(emrDB, AuditQuestion.EMR05);
 		}
 
-		if( customVerification != null )
-		{
-			for( Integer i : customVerification.keySet() )
-			{
+		if (customVerification != null) {
+			for (Integer i : customVerification.keySet()) {
 				AuditData aq = (AuditData) customVerification.get(i);
-				
-				AuditData toMerge = auditDataDao.findAnswerToQuestion( this.auditID, i );
-				
+
+				AuditData toMerge = auditDataDao.findAnswerToQuestion(
+						this.auditID, i);
+
 				toMerge.setVerifiedAnswer(aq.getVerifiedAnswer());
-				
-				
-				if( toMerge.isVerified() != aq.isVerified() )
-				{
-					toMerge.setDateVerified( aq.isVerified() ? new Date() : null );
-					toMerge.setVerified(aq.isVerified() );
+
+				if (toMerge.isVerified() != aq.isVerified()) {
+					toMerge
+							.setDateVerified(aq.isVerified() ? new Date()
+									: null);
+					toMerge.setVerified(aq.isVerified());
 				}
-				
-				auditDataDao.save( toMerge );			
+
+				auditDataDao.save(toMerge);
 			}
 		}
-		
+
 		loadData();
-		
+
 		setVerifiedPercent();
 		return SUCCESS;
 	}
-	
+
 	private void saveOSHA(OshaLogYear oldOsha, OshaLogYear newOsha) {
 		oldOsha.setManHours(newOsha.getManHours());
 		oldOsha.setFatalities(newOsha.getFatalities());
@@ -116,45 +122,66 @@ public class VerifyView extends AuditActionSupport {
 
 	private void setVerifiedPercent() {
 		int verified = 0;
-		
+
 		if (osha != null) {
-			if (osha.getYear1() != null && osha.getYear1().getVerified()) verified++;
-			if (osha.getYear2() != null && osha.getYear2().getVerified()) verified++;
-			if (osha.getYear3() != null && osha.getYear3().getVerified()) verified++;
+			if (osha.getYear1() != null && osha.getYear1().getVerified())
+				verified++;
+			if (osha.getYear2() != null && osha.getYear2().getVerified())
+				verified++;
+			if (osha.getYear3() != null && osha.getYear3().getVerified())
+				verified++;
 		}
-		
-		if (getEmr1() != null && YesNo.Yes.equals(getEmr1().getIsCorrect())) verified++;
-		if (getEmr2() != null && YesNo.Yes.equals(getEmr2().getIsCorrect())) verified++;
-		if (getEmr3() != null && YesNo.Yes.equals(getEmr3().getIsCorrect())) verified++;
-		
+
+		if (getEmr1() != null && YesNo.Yes.equals(getEmr1().getIsCorrect()))
+			verified++;
+		if (getEmr2() != null && YesNo.Yes.equals(getEmr2().getIsCorrect()))
+			verified++;
+		if (getEmr3() != null && YesNo.Yes.equals(getEmr3().getIsCorrect()))
+			verified++;
+
 		int verifyTotal = 6;
 
-		if( customVerification != null )
-		{
-			verifyTotal += customVerification.size();
-			
-			for( AuditData ad : customVerification.values() )
-			{
-				if( ad.isVerified() ) verified++;
+		if (customVerification != null) {
+			for (AuditData ad : customVerification.values()) {
+				// Training and Safety Policy questions are only necessary to
+				// validate
+				// before a desktop audit. They are NOT required to be validated
+				// before
+				// Activating a PQF
+				int catID = ad.getQuestion().getSubCategory().getCategory()
+						.getId();
+				if (catID != AuditCategory.SAFETY_POLICIES
+						&& catID != AuditCategory.TRAINING) {
+					verifyTotal++;
+					if (ad.isVerified())
+						verified++;
+				}
 			}
 		}
-		
-		
-		conAudit.setPercentVerified(Math.round((float)(100 * verified) / verifyTotal));
-		
-		if (conAudit.getPercentVerified() == 100) {
+
+		conAudit.setPercentVerified(Math.round((float) (100 * verified)
+				/ verifyTotal));
+
+		if (conAudit.getPercentVerified() == 100
+				&& conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
 			conAudit.setAuditStatus(AuditStatus.Active);
 		}
-		// Don't un-Activate it anymore, per conversation with Trevor, Jared, John 5/16/08
-		// This can cause more problems with PQFs that are already active during the year
-		// After we convert and get all our data reverified, we may be able to turn this back on
+		// Don't un-Activate it anymore, per conversation with Trevor, Jared,
+		// John 5/16/08
+		// This can cause more problems with PQFs that are already active during
+		// the year
+		// After we convert and get all our data reverified, we may be able to
+		// turn this back on
 		// else
-		//	conAudit.setAuditStatus(AuditStatus.Submitted);
-		
+		// conAudit.setAuditStatus(AuditStatus.Submitted);
+
 		auditDao.save(conAudit);
 	}
 
 	private void saveAuditData(Map<Integer, AuditData> emrDB, int year) {
+		if (emrDB.get(year) == null) {
+			return;
+		}
 		emrDB.get(year).setVerifiedAnswer(emr.get(year).getVerifiedAnswer());
 		emrDB.get(year).setComment(emr.get(year).getComment());
 		emrDB.get(year).setIsCorrect(emr.get(year).getIsCorrect());
@@ -180,18 +207,22 @@ public class VerifyView extends AuditActionSupport {
 		emrQuestions.add(AuditQuestion.EMR06);
 		emrQuestions.add(AuditQuestion.EMR05);
 		emr = auditDataDao.findAnswers(this.auditID, emrQuestions);
-		
-		
-		List<AuditData> temp = auditDataDao.findCustomPQFVerifications(this.auditID);
-		
-		customVerification = new TreeMap<Integer, AuditData>();
-		
-		for( AuditData ad : temp )
-		{
+
+		List<AuditData> temp = auditDataDao
+				.findCustomPQFVerifications(this.auditID);
+		Map<Integer, AuditData> safetyPolicies = auditDataDao.findByCategory(
+				this.auditID, AuditCategory.SAFETY_POLICIES);
+		Map<Integer, AuditData> training = auditDataDao.findByCategory(
+				this.auditID, AuditCategory.TRAINING);
+
+		customVerification = new LinkedHashMap<Integer, AuditData>();
+		customVerification.putAll(safetyPolicies);
+		customVerification.putAll(training);
+		for (AuditData ad : temp) {
 			customVerification.put(ad.getQuestion().getQuestionID(), ad);
 		}
 	}
-	
+
 	public String saveFollowUp() throws Exception {
 		this.findConAudit();
 
@@ -207,53 +238,50 @@ public class VerifyView extends AuditActionSupport {
 	}
 
 	private void appendOsha(StringBuffer sb, OshaLogYear osha, int year) {
-		if( ! osha.getVerified() )
-		{
+		if (!osha.getVerified()) {
 			sb.append(year);
-			sb.append( " OSHA - ");
+			sb.append(" OSHA - ");
 			sb.append(osha.getComment());
 			sb.append("\n");
 		}
 	}
+
 	public String sendEmail() throws Exception {
 		this.findConAudit();
 		loadData();
 
 		StringBuffer sb = new StringBuffer("");
-		
+
 		appendOsha(sb, osha.getYear1(), getYear1());
 		appendOsha(sb, osha.getYear2(), getYear2());
 		appendOsha(sb, osha.getYear3(), getYear3());
-		
+
 		AuditData temp = getEmr1();
-		if( ! temp.isVerified() )
-		{
+		if (!temp.isVerified()) {
 			sb.append(getYear1());
-			sb.append( " EMR - ");
+			sb.append(" EMR - ");
 			sb.append(temp.getComment());
 			sb.append("\n");
 		}
-		
+
 		temp = getEmr2();
-		if( ! temp.isVerified() )
-		{
+		if (!temp.isVerified()) {
 			sb.append(getYear2());
-			sb.append( " EMR - ");
+			sb.append(" EMR - ");
 			sb.append(temp.getComment());
 			sb.append("\n");
 		}
-		
+
 		temp = getEmr3();
-		if( ! temp.isVerified() )
-		{
+		if (!temp.isVerified()) {
 			sb.append(getYear3());
-			sb.append( " EMR - ");
+			sb.append(" EMR - ");
 			sb.append(temp.getComment());
 			sb.append("\n");
 		}
-		
+
 		String items = sb.toString();
-		
+
 		mailer.addToken("missing_items", items);
 		mailer.sendMessage(EmailTemplates.verifyPqf, this.conAudit);
 
@@ -385,6 +413,16 @@ public class VerifyView extends AuditActionSupport {
 		this.customVerification = customVerification;
 	}
 
-	
-	
+	public AuditData getSafetyManualAnswer() {
+		return customVerification.get(AuditQuestion.MANUAL_PQF);
+	}
+
+	public Map<Integer, AuditData> getPqfDesktopVerification() {
+		return pqfDesktopVerification;
+	}
+
+	public void setPqfDesktopVerification(
+			Map<Integer, AuditData> pqfDesktopVerification) {
+		this.pqfDesktopVerification = pqfDesktopVerification;
+	}
 }
