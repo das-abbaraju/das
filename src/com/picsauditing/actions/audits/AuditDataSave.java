@@ -9,23 +9,27 @@ import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.YesNo;
 
 public class AuditDataSave extends PicsActionSupport {
 	private AuditData auditData = null;
 	private AuditDataDAO dao = null;
+	private AuditQuestionDAO questionDao = null;
+	
 	private int catDataID = 0;
 	private AuditCategoryDataDAO catDataDAO;
 	private AuditPercentCalculator auditPercentCalculator;
 
-	public AuditDataSave(AuditDataDAO dao, AuditCategoryDataDAO catDataDAO, AuditPercentCalculator auditPercentCalculator) {
+	public AuditDataSave(AuditDataDAO dao, AuditCategoryDataDAO catDataDAO, AuditPercentCalculator auditPercentCalculator, AuditQuestionDAO questionDao) {
 		this.dao = dao;
 		this.catDataDAO = catDataDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
+		this.questionDao = questionDao;
 	}
 
 	public String execute() throws Exception {
@@ -65,7 +69,10 @@ public class AuditDataSave extends PicsActionSupport {
 						{
 							newCopy.setWasChanged(YesNo.Yes);
 
-							if( auditData.getAnswer().equals("No"))
+							
+							AuditQuestion question = questionDao.find(auditData.getQuestion().getQuestionID());
+							
+							if( question.getOkAnswer().indexOf(auditData.getAnswer() ) == -1 )
 							{
 								newCopy.setDateVerified(null);
 								newCopy.setAuditor(null);
