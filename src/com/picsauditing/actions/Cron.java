@@ -107,6 +107,7 @@ public class Cron extends PicsActionSupport {
 	private void handleException(Throwable t) {
 		StringWriter sw = new StringWriter();
 		t.printStackTrace(new PrintWriter(sw));
+		report.append( t.getMessage() );
 		report.append( sw.toString() );
 		report.append("\n\n\n");
 	}
