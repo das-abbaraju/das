@@ -50,12 +50,31 @@
 		else if( elm.type == 'checkbox')
 		{
 			var thevalue = '';
-			if (elm.checked)
-				thevalue = 'X';
-			else
-				thevalue = ' ';
-			pars = pars + thevalue;
 
+			if( 
+				( elm.name == ('question_' + questionid + '_C') || elm.name == ('question_' + questionid + '_S') )
+				&& ( document.getElementById('question_' + questionid + '_C') != undefined 
+				&& document.getElementById('question_' + questionid + '_S') != undefined)  
+				) {
+
+					if( document.getElementById('question_' + questionid + '_C').checked )
+					{
+						thevalue = thevalue + 'C';
+					}
+									
+					if( document.getElementById('question_' + questionid + '_S').checked )
+					{
+						thevalue = thevalue + 'S';
+					}
+			}
+			else {
+				if (elm.checked)
+					thevalue = 'X';
+				else
+					thevalue = ' ';
+			}	
+
+			pars = pars + thevalue;
 
 			var divName = 'status_'+questionid;
 			var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
@@ -198,7 +217,7 @@
 			<s:iterator value="category.subCategories">
 				<tr class="subCategory">
 					<td colspan="4">Sub Category <s:property value="category.number"/>.<s:property value="number"/> - 
-					<s:property value="subCategory"/>
+					<s:property value="subCategory" escape="false"/>
 					</td>
 				</tr>
 				<s:iterator value="questions">
@@ -208,7 +227,7 @@
 					
 					<s:if test="title.length() > 0">
 						<tr class="group<s:if test="#shaded">Shaded</s:if>">
-							<td class="groupTitle" colspan="4"><s:property value="title"/></td>
+							<td class="groupTitle" colspan="4"><s:property value="title" escape="false"/></td>
 						</tr>
 					</s:if>
 					<s:if test="mode == 'View'">
