@@ -68,7 +68,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 					fillAnswers(catData, answers);
 					currentCategory = catData;
 					
-					if( mode == null && catData.getRequiredCompleted() != catData.getNumRequired() )
+					if( mode == null && catData.getRequiredCompleted() < catData.getNumRequired() )
 					{
 						mode = EDIT;
 					}
