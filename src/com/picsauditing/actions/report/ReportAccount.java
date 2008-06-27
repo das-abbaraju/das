@@ -120,7 +120,7 @@ public class ReportAccount extends ReportActionSupport {
 			filterWorksIn = false;
 			filterOfficeIn = false;
 		}
-		if (!permissions.isOperator()) {
+		if (!permissions.isOperator() && !permissions.hasPermission(OpPerms.StatusOnly)) {
 			filterFlagStatus = false;
 		}
 	}

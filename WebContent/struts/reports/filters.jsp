@@ -203,7 +203,7 @@ function updateQuery(name) {
 	</div>
 </s:if>
 
-<s:if test="filterWorksIn">
+<s:if test="filterOfficeIn">
 	<div class="filterOption">
 		<a href="#" onclick="toggleBox('form1_officeIn'); return false;">Office In</a> =
 		<span id="form1_officeIn_query">ALL</span><br />
