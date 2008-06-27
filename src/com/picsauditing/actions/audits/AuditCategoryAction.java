@@ -128,22 +128,25 @@ public class AuditCategoryAction extends AuditActionSupport {
 				if (answers.containsKey(question.getQuestionID())) {
 					question.setAnswer(answers.get(question.getQuestionID()));
 				}
-				AuditQuestion dependsOnQuestion = question
-						.getDependsOnQuestion();
-				if (dependsOnQuestion != null
-						&& dependsOnQuestion.getQuestionID() > 0) {
+				if (mode != null && mode.equals(EDIT)) {
+					AuditQuestion dependsOnQuestion = question
+							.getDependsOnQuestion();
+					if (dependsOnQuestion != null
+							&& dependsOnQuestion.getQuestionID() > 0) {
 
-					if (!dependsOnQuestion.getSubCategory().getCategory()
-							.equals(catData.getCategory())
-							&& !answers.containsKey(dependsOnQuestion
-									.getQuestionID())) {
-						// Get answer and add to answer map no matter what
-						answers.put(dependsOnQuestion.getQuestionID(),
-								auditDataDao.findAnswerToQuestion(this.auditID,
-										dependsOnQuestion.getQuestionID()));
+						if (!dependsOnQuestion.getSubCategory().getCategory()
+								.equals(catData.getCategory())
+								&& !answers.containsKey(dependsOnQuestion
+										.getQuestionID())) {
+							// Get answer and add to answer map no matter what
+							answers.put(dependsOnQuestion.getQuestionID(),
+									auditDataDao.findAnswerToQuestion(
+											this.auditID, dependsOnQuestion
+													.getQuestionID()));
+						}
+						dependsOnQuestion.setAnswer(answers
+								.get(dependsOnQuestion.getQuestionID()));
 					}
-					dependsOnQuestion.setAnswer(answers.get(dependsOnQuestion
-							.getQuestionID()));
 				}
 			}
 		}
