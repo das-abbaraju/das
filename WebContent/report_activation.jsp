@@ -110,7 +110,7 @@ try{
 				});
 		return false;
   	}
-  	function removeCon( conId )
+  	function removeCon( conId, lastPayment, lastLogin )
   	{
 		var pars = 'actionID='+conId+'&action=Remove';
 		var divName = 'remove_'+conId;
@@ -120,7 +120,8 @@ try{
 					method: 'post', 
 					parameters: pars,
 					onSuccess: function(transport) {
-						$(divName2).hide();						
+						if( lastPayment != '0' && lastLogin != '1/1/01' && lastLogin != '1/1/00' )
+							$(divName2).hide();
 					}
 				});
 		return false;
@@ -191,13 +192,13 @@ try{
 			    <td class="center"><%=sBean.cBean.payingFacilities%></td>
 			    <td id="inv_history_<%= sBean.aBean.id %>" align="center" colspan="2"><%=sBean.cBean.billingAmount%> on <%=sBean.cBean.lastInvoiceDate%></td>
 			    <td><input type="text" id="inv_amount_<%= sBean.cBean.id %>" class=forms value="<%=sBean.cBean.newBillingAmount%>" size=3 name=invoiceAmount></td>
-			    <td><input type="submit" onclick="javascript: return sendInvoice( '<%= sBean.aBean.id %>','inv_amount_<%= sBean.cBean.id %>');" class="buttons" value="Inv"/></td>
+			    <td><input type="submit" onclick="javascript: return sendInvoice( '<%= sBean.aBean.id %>','inv_amount_<%= sBean.cBean.id %>');" class="buttons" value="Inv"/></td> 
 			    <td id="pay_history_<%= sBean.aBean.id %>" align="center" colspan="2">$<%=sBean.cBean.lastPaymentAmount%> on <%=sBean.cBean.lastPayment%></td>
 			    <td valign="middle"><input id="pay_amount_<%= sBean.aBean.id %>" type="text" class=forms value="<%=sBean.cBean.newBillingAmount%>" size=3 name=amount></td>
 			    <td><input name="action" type="submit" onClick="javascript: return newPayment( '<%= sBean.aBean.id %>','pay_amount_<%= sBean.cBean.id %>');" class="buttons" value="Paid"></td>
 				<td align="center"><input name="action" type="submit" onclick="javascript: return makeVisible( '<%= sBean.aBean.id %>' );" class="buttons" value="Yes"> </td>
 				<td id="visible_<%= sBean.aBean.id %>" align="center"><%=sBean.aBean.active%></td>             
-				<td id="remove_<%= sBean.aBean.id %>" ><input name="action" type="submit" onclick="javascript: return removeCon( '<%= sBean.aBean.id %>' );" class="buttons" value="<%=BUTTON_VALUE%>"></td>
+				<td id="remove_<%= sBean.aBean.id %>" ><input name="action" type="submit" onclick="javascript: return removeCon( '<%= sBean.aBean.id %>', '<%=sBean.cBean.lastPaymentAmount%>','<%=sBean.aBean.lastLogin%>' );" class="buttons" value="<%=BUTTON_VALUE%>"></td>
 			   </form></tr>
 <%	} %>
 </table>
