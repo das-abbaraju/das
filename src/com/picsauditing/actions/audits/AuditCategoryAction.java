@@ -67,6 +67,12 @@ public class AuditCategoryAction extends AuditActionSupport {
 							.getCategory());
 					fillAnswers(catData, answers);
 					currentCategory = catData;
+					
+					if( mode == null && catData.getRequiredCompleted() != catData.getNumRequired() )
+					{
+						mode = EDIT;
+					}
+					
 				} else {
 					if (catData.isAppliesB()) {
 						if (currentCategory == null)
@@ -82,11 +88,17 @@ public class AuditCategoryAction extends AuditActionSupport {
 			if (mode == null
 					&& conAudit.getAuditStatus().equals(AuditStatus.Submitted))
 				mode = EDIT;
+
 		} else {
 			// When we want to show all categories
 			answers = auditDataDao.findAnswers(auditID);
 			for (AuditCatData catData : categories) {
 				fillAnswers(catData, answers);
+
+				if( mode == null && catData.getRequiredCompleted() != catData.getNumRequired() )
+				{
+					mode = EDIT;
+				}
 			}
 		}
 
@@ -94,9 +106,10 @@ public class AuditCategoryAction extends AuditActionSupport {
 			viewBlanks = false;
 
 		if (mode == null)
-			mode = VIEW;
+			mode = VIEW;	
 		if (mode.equals(EDIT) && !isCanEdit())
 			mode = VIEW;
+
 
 		if (mode.equals(EDIT)
 				&& currentCategory.getCategory().getId() == AuditCategory.OSHA) {
