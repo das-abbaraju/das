@@ -337,16 +337,6 @@ alter table `pqfquestions`
 	change `linkURL6` `linkURL6` varchar(255)  COLLATE latin1_swedish_ci NULL after `linkText5`, 
 	change `linkText6` `linkText6` varchar(255)  COLLATE latin1_swedish_ci NULL after `linkURL6`, COMMENT='';
 
-/*Update questionType field to Manual for office audit in pqfquestions*/
-update pqfquestions set questionType = 'Manual'
-	where subcategoryid in 
-		(select subcatid from pqfsubcategories where categoryid in
-			(select catId from pqfcategories where audittypeid=3)); 
-
-/* Update the dependsOnAnswer to Yes* for California */
-update pqfquestions set dependsOnQID = 1622, dependsOnAnswer = 'Yes*', isRequired='Depends' 
-where questionid = 401;
-
 /* Alter users table */
 alter table `users` 
 	change `dateCreated` `dateCreated` datetime   NOT NULL after `isActive`, 
@@ -384,6 +374,16 @@ update pqfquestions set questionID=0
 update operators set doSendActivationEmail = 'No'
 	where doSendActivationEmail not in ('No', 'Yes') or doSendActivationEmail is null;
 
+/*Update questionType field to Manual for office audit in pqfquestions*/
+update pqfquestions set questionType = 'Manual'
+	where subcategoryid in 
+		(select subcatid from pqfsubcategories where categoryid in
+			(select catId from pqfcategories where audittypeid=3)); 
+
+/* Update the dependsOnAnswer to Yes* for California */
+update pqfquestions set dependsOnQID = 1622, dependsOnAnswer = 'Yes*', isRequired='Depends' 
+where questionid = 401;
+
 /************************/
 /* cleanup orphaned/incorrect data */
 
@@ -409,16 +409,6 @@ update contractor_info set welcomeAuditor_id = 937 where welcomeAuditor_id = 322
 update contractor_info set welcomeAuditor_id = 938 where welcomeAuditor_id = 3226;
 update contractor_info set welcomeAuditor_id = 941 where welcomeAuditor_id = 3487;
 update contractor_info set welcomeAuditor_id = 943 where welcomeAuditor_id = 3486;
-
-update contractor_audit set auditorID = 917 where auditorID = 2823;
-update contractor_audit set auditorID = 940 where auditorID = 3224;
-update contractor_audit set auditorID = 937 where auditorID = 3225;
-update contractor_audit set auditorID = 938 where auditorID = 3226;
-update contractor_audit set auditorID = 941 where auditorID = 3487;
-update contractor_audit set auditorID = 943 where auditorID = 3486;
-
-update contractor_audit set auditorID = null 
-	where auditorID not in (select id from users);
 
 /* Create audit_operator table */
 drop table IF EXISTS `audit_operator`;
@@ -492,8 +482,13 @@ insert into contractor_audit (auditTypeID,conID,createdDate ,
 
 /* Set pqf expiration date */
 update contractor_audit
-	set expiresDate = concat(year(completedDate)+1,'-03-01')
-	where audittypeID = 1 and completedDate <> '0000-00-00';
+	set expiresDate = '2009-03-01'
+	where audittypeID = 1;
+
+/* Set pqf expiration date */
+update contractor_audit
+	set createdDate = '2008-01-01'
+	where audittypeID = 1 AND createdDate < '2008-01-01';
 
 
 /* ==== Desktop ==== */
@@ -689,6 +684,16 @@ update contractor_audit set auditStatus = 'Expired'
 
 update contractor_audit set auditorID = null
 	where auditorID = 0;
+
+update contractor_audit set auditorID = 917 where auditorID = 2823;
+update contractor_audit set auditorID = 940 where auditorID = 3224;
+update contractor_audit set auditorID = 937 where auditorID = 3225;
+update contractor_audit set auditorID = 938 where auditorID = 3226;
+update contractor_audit set auditorID = 941 where auditorID = 3487;
+update contractor_audit set auditorID = 943 where auditorID = 3486;
+
+update contractor_audit set auditorID = null 
+	where auditorID not in (select id from users);
 
 update pqfdata set auditorID = null
 	where auditorID = 0;
