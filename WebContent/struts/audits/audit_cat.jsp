@@ -238,11 +238,6 @@
 					<s:if test="mode == 'Edit'">
 						<s:include value="audit_cat_edit.jsp"></s:include>
 					</s:if>
-					<s:if test="mode == 'Verify'">
-						<s:if test="answer.answer.length() > 0">
-							<s:include value="audit_cat_verify.jsp"></s:include>
-						</s:if>
-					</s:if>
 				</s:iterator>
 			</s:iterator>
 			</table>

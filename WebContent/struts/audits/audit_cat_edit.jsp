@@ -13,6 +13,9 @@
 		<s:if test="questionType == 'Text'">
 			<s:textfield name="answer.answer" size="30" onchange="javascript:saveAnswer(%{questionID}, this);"/>
 		</s:if>
+		<s:if test="questionType == 'License'">
+			<s:textfield name="answer.answer" size="30" onchange="javascript:saveAnswer(%{questionID}, this);"/>
+		</s:if>
 		<s:if test="questionType == 'Date'">
 			<nobr><s:textfield id="answer_%{questionID}" name="answer.answer" size="8" 
 			onclick="cal1.select($('answer_%{questionID}'),'answer_%{questionID}','yyyy-MM-dd','%{answer.answer}'); return false;"

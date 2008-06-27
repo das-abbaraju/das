@@ -23,9 +23,10 @@
 </style>
 <script type="text/javascript">
 
-function copyAnswer(selectedYear) {
+function copyEmrAnswer(selectedYear) {
 	// If the answer is correct and hasn't been filled in yet, then default it
-	if ($F('verify_emr'+selectedYear+'_isCorrectBoolean') == null) return;
+	var verified = $F('verify_emr'+selectedYear+'_verified')
+	if (verified == null) return;
 	
 	var answer = $('verify')['verify_emr'+selectedYear+'_verifiedAnswer'];
 	if (answer.present()) return;
@@ -36,7 +37,10 @@ function copyAnswer(selectedYear) {
 }
 function copyCustomAnswer(questionId) {
 	// If the answer is correct and hasn't been filled in yet, then default it
-	if ($F('customVerification[' + questionId + '].isCorrectBoolean') == null) return;
+	var fieldName = 'verify_customVerification_'+questionId+'__verified';
+	
+	var verified = $F($(fieldName));
+	if (verified == null) return;
 	
 	var verifyName = 'verify_customVerification_' + questionId + '__verifiedAnswer'; 
 	var answer = $( verifyName );
@@ -66,7 +70,6 @@ function sendEmail() {
 <body>
 <s:include value="conHeader.jsp" />
 
-<p class="blueMain"><a href="pqf_verification.jsp">PQF Verification Report</a></p>
 <s:form id="verify">
 	<s:hidden name="auditID" />
 	<s:hidden name="osha.id" />
@@ -253,16 +256,13 @@ function sendEmail() {
 		<tr class="blueMain" align="center">
 			<td align="right" colspan="2">Is Correct:</td>
 			<td class="highlight" style="font-size: 14px; font-weight: bolder;">
-				<input id="verify_emr1_isCorrectBoolean" type="radio" name="emr1.isCorrectBoolean" value="true" <s:if test="emr1.isCorrectBoolean">checked</s:if> onchange="copyAnswer(1);"/>Yes
-				<input type="radio" name="emr1.isCorrectBoolean" value="false" <s:if test="emr1.isCorrectBoolean == null || ! emr1.isCorrectBoolean">checked</s:if>/>No
+				<s:checkbox name="emr1.verified" onclick="copyEmrAnswer(1);"></s:checkbox>
 			</td>
 			<td style="font-size: 14px; font-weight: bolder;">
-				<input id="verify_emr2_isCorrectBoolean" type="radio" name="emr2.isCorrectBoolean" value="true" <s:if test="emr2.isCorrectBoolean">checked</s:if> onchange="copyAnswer(2);"/>Yes
-				<input type="radio" name="emr2.isCorrectBoolean" value="false" <s:if test="emr2.isCorrectBoolean == null || ! emr2.isCorrectBoolean">checked</s:if>/>No
+				<s:checkbox name="emr2.verified" onclick="copyEmrAnswer(2);"></s:checkbox>
 			</td>
 			<td class="highlight" style="font-size: 14px; font-weight: bolder;">
-				<input id="verify_emr3_isCorrectBoolean" type="radio" name="emr3.isCorrectBoolean" value="true" <s:if test="emr3.isCorrectBoolean">checked</s:if> onchange="copyAnswer(3);"/>Yes
-				<input type="radio" name="emr3.isCorrectBoolean" value="false" <s:if test="emr3.isCorrectBoolean == null || ! emr3.isCorrectBoolean">checked</s:if>/>No
+				<s:checkbox name="emr3.verified" onclick="copyEmrAnswer(3);"></s:checkbox>
 			</td>
 		</tr>
 		<tr class="blueMain">
@@ -273,6 +273,10 @@ function sendEmail() {
 		</tr>
 		
 
+			<tr class="blueMain">
+				<td colspan="5" align="center"><input class="blueMain"
+					type="submit" value="Save" /></td>
+			</tr>
 
 
 			<tr bgcolor="#003366" class="whiteTitle" align="center">
@@ -283,17 +287,6 @@ function sendEmail() {
 				
 			</tr>
 			
-			<s:iterator value="customVerification.values">
-			<tr class="blueMain">
-					<td align="left" colspan="2"><s:property value="question.subCategory.subCategory"/>/<s:property value="question.question"/></td>
-					<td><s:textfield name="%{'customVerification['.concat(question.questionID.toString().concat('].answer'))}" disabled="true" value="%{answer}"/></td>
-					<td><s:textfield name="%{'customVerification['.concat(question.questionID.toString().concat('].verifiedAnswer'))}" value="%{verifiedAnswer}"/></td>
-					<td><input type="radio" id="<s:property value="'customVerification['.concat(question.questionID.toString().concat('].isCorrectBoolean'))"/>" onchange="copyCustomAnswer(<s:property value="question.questionID"/>);" name="<s:property value="'customVerification['.concat(question.questionID.toString().concat('].isCorrectBoolean'))"/>" value="true" <s:if test="isCorrectBoolean">checked</s:if>/>Yes
-						<input type="radio" id="<s:property value="'customVerification['.concat(question.questionID.toString().concat('].isCorrectBoolean'))"/>" name="<s:property value="'customVerification['.concat(question.questionID.toString().concat('].isCorrectBoolean'))"/>" value="false" <s:if test="isCorrectBoolean == null || ! isCorrectBoolean">checked</s:if>/>No
-					</td>
-				
-			</tr>
-			</s:iterator>
 			<tr class="blueMain">
 				<td><a href="#"
 				onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqf<s:property value="safetyManualAnswer.answer"/>1331','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">PQF Safety Manual</a>
@@ -302,6 +295,19 @@ function sendEmail() {
 				<td></td>
 				<td></td>
 			</tr>
+			<s:iterator value="customVerification.values">
+			<tr class="blueMain">
+					<td align="left" colspan="2"><s:property value="question.subCategory.subCategory"/>/<s:property value="question.question"/></td>
+					<td><s:textfield name="%{'customVerification['.concat(question.questionID.toString().concat('].answer'))}" disabled="true" value="%{answer}"/></td>
+					<td><s:textfield name="%{'customVerification['.concat(question.questionID.toString().concat('].verifiedAnswer'))}" value="%{verifiedAnswer}"/></td>
+					<td><s:checkbox 
+						name="%{'customVerification['.concat(question.questionID.toString().concat('].verified'))}"
+						onclick="copyCustomAnswer(%{question.questionID});"
+						value="%{verified}"></s:checkbox>
+					</td>
+			</tr>
+			</s:iterator>
+			
 			<tr class="blueMain">
 				<td colspan="5" align="center"><input class="blueMain"
 					type="submit" value="Save" /></td>
