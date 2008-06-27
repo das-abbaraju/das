@@ -64,7 +64,7 @@ CREATE TABLE `pqfquestion_operator` (
 
 /*Data for the table `pqfquestion_operator` */
 
-insert  into `pqfquestion_operator`(`id`,`opID`,`questionID`) values (1,1206,401),(2,1206,755);
+insert  into `pqfquestion_operator`(`id`,`opID`,`questionID`) values (1,16,401),(2,16,755);
 
 /*Table structure for table `tempauditquestionmigratemap` */
 
