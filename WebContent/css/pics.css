@@ -301,11 +301,13 @@ h6 {
 a:link,a:visited {
 	font-family: Helvetica, Arial, Verdana, sans-serif;
 	color: #003768;
+	text-decoration: underline;
 }
 
 a:hover,a:active {
 	font-family: Helvetica, Arial, Verdana, sans-serif;
 	color: rgb(168, 77, 16);
+	text-decoration: underline;
 }
 
 b,strong {
@@ -654,7 +656,7 @@ button.positive,.buttons a.positive {
 }
 
 /********************** LIVE HELP BOX ******************************/
-#content #helpbox {
+#helpbox {
 	position: absolute;
 	background-color: #ECECEC;
 	top: 0px;
@@ -664,19 +666,17 @@ button.positive,.buttons a.positive {
 	line-height: 18px;
 }
 
-#content #helpbox a {
+#helpbox a {
 	padding-left: 17px;
 	margin-left: 2px;
 	background: transparent url(../images/help.gif) no-repeat left
 		center;
 }
 
-#content #helpbox a,a:ACTIVE,a:HOVER,a:VISITED {
-	text-decoration: none;
-	color: #003768;
+#helpbox a,a:ACTIVE,a:HOVER,a:VISITED {
 }
 
-#content #chatIcon {
+#chatIcon {
 	position: absolute;
 	top: 29px;
 	right: 2px;
