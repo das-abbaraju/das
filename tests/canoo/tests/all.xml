@@ -15,7 +15,6 @@
 		<ant antfile="admin_reports.xml"/>
 		<ant antfile="contractor_registration.xml"/>
 		<ant antfile="operator.xml"/>
-		
 	<!-- 
 		Comment out tests you don't want to run right now
 	-->

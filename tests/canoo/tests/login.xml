@@ -4,81 +4,123 @@
 <project name="PICS" default="test">
 	<property name="login.username" value="tallred"/>
 	<target name="test">
-		<webtest name="Login">
-			&config;
+		<webtest name="Login: no username or password">
+		&config;
 			<steps>
-				<invoke
-					description="get Homepage"
+				<invoke	
+					description="Get Contractors Page for Login" 
 					url="login.jsp" />
 				<clickButton 
-					htmlId="Submit"
-					description="Click the submit button" />
-				<verifyText description="Attempt login without a username"
-					text="Enter a username" />
-				<setInputField description="Set the username"
-					name="username"
-					value="usernamethatdoesnotexist" />
-				<setInputField description="Set a bad password"
-					name="password"
-					value="BADPASS" />
-				<clickButton 
-					htmlId="Submit"
-					description="Click the submit button" />
-				<verifyText description="No account exists with that username"
-					text="No account exists with that username" />
-				
-				<!-- FORGOT PASSWORD -->
-				<clickLink description="Goto Forgot Password" label="click here"/>
-				<setInputField description="set email"
-					name="email"
-					value="${mail.username}" />
-				<clickButton name="submit"
-					description="Click the submit button" />
-
-				<emailSetConfig server="${mail.server}" delay="1" type="${mail.type}"
-					password="${mail.password}" username="${mail.username}"/>
-				<emailStoreMessageId description="	"
-					subject="PICS Login Info"
-					property="mid" messageIndex="0"/>
-				<emailMessageContentFilter save="plain" messageId="#{mid}" />
-				<emailDeleteMessage messageId="#{mid}" />
-				<verifyText description="Make sure email text is there" regex="true"
-					text="(?is:Attn.*?Your username is: \w*.*?password is: \w*)"/>
-
-				<!-- BAD LOGIN -->
-				<invoke description="Show Forgot password page again"
-					url="forgot_password.jsp"/>
-				<clickLink description="Return to Login Page" label="Return to Login Page"/>
-				<setInputField description="set user name"
+					htmlId="Submit" 
+					description="Click the LOGIN button" />			
+				<verifyText 
+					description="Attempt login without a username" 
+					text="Enter a username" />			
+			</steps>
+		</webtest>
+		<webtest name="Login: good username; good password">
+		&config;
+			<steps>
+				<invoke
+					description="Get Contractors Page for Login"
+					url="login.jsp" />				
+				<setInputField 
+					description="set user name"
 					name="username"
 					value="${login.username}" />
-				<setInputField description="set bad password"
-					name="password"
-					value="BADPASS" />
-				<clickButton 
-					htmlId="Submit"
-					description="Click the submit button" />
-				&body_verify;
-				<verifyText description="Invalid password attempt"
-					text="The password is not correct" />
-				
-				<!-- GOOD LOGIN -->
-				<setInputField description="set user name"
-					name="username"
-					value="${login.username}" />
-				<setInputField description="set password"
+				<setInputField 
+					description="set password"
 					name="password"
 					value="${login.password}" />
 				<clickButton 
 					htmlId="Submit"
 					description="Click the submit button" />
-				&body_verify;
-
-				<verifyText description="Verify logged in - Welcome"
+					&body_verify;
+				<verifyText 
+					description="Verify logged in - Welcome"
 					text="Welcome" />
-				<verifyText description="Verify logged in - Logout"
-					text="Logout" />
+				<verifyText 
+					description="Verify logged in - Logout"
+					text="Logout" />			 	
 			</steps>
+		</webtest>		
+		<webtest name="Login: good username; bad password">
+		&config;
+			<steps> 
+				<invoke
+					description="Get Contractors Page for Login"
+					url="login.jsp" />
+				<setInputField description="Set username"
+					name="username"
+					value="${login.username}" />
+				<setInputField description="Set bad password"
+					name="password"
+					value="BADPASS" />
+				<clickButton 
+					htmlId="Submit"
+					description="Click the LOGIN button" />
+					&body_verify;
+				<verifyText 
+					description="Invalid Password Attempt"
+					text="The password is not correct" />
+			</steps>
+		</webtest>
+		<webtest name="Login: non-existant username">
+		&config;
+			<steps>
+				<invoke
+					description="Get Contractors Page for Login"
+					url="login.jsp" />
+				<setInputField description="Set username"
+					name="username"
+					value="usernamethatdoesnotexist" />
+				<setInputField description="Set a password"
+					name="password"
+					value="BADPASS" />
+				<clickButton 
+					htmlId="Submit"
+					description="Click the LOGIN button" />
+				<verifyText description="No account exists with that username"
+					text="No account exists with that username" />			 	
+			 </steps>
+		</webtest>
+		<webtest name="Login: forgot password; retrieve username, password">
+		&config;
+			<steps>
+			 	<invoke
+					description="Get Contractors Page for Login"
+					url="login.jsp" />
+				<clickLink 
+					description="Retrieve Forgot Password page" 
+					label="click here"/>
+				<setInputField 
+					description="set email"
+					name="email"
+					value="${mail.username}" />
+				<clickButton 
+					name="submit"
+					description="Click the 'Send Password button" />
+				<emailSetConfig 
+					server="${mail.server}" 
+					delay="1" 
+					type="${mail.type}"
+					password="${mail.password}" 
+					username="${mail.username}"/>
+				<emailStoreMessageId 
+					description="	"
+					subject="PICS Login Info"
+					property="mid" 
+					messageIndex="0"/>
+				<emailMessageContentFilter 
+					save="plain" 
+					messageId="#{mid}" />
+				<emailDeleteMessage 
+					messageId="#{mid}" />
+				<verifyText 
+					description="Make sure email text is there" 
+					regex="true"
+					text="(?is:Attn.*?Your username is: \w*.*?password is: \w*)"/>			 	
+			 </steps>
 		</webtest>
 	</target>
 </project>

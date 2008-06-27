@@ -7,24 +7,33 @@
 			&config;
 			<steps>
 				<invoke
-					description="get Homepage"
+					description="Get Homepage"
 					url="index.jsp" />
 				<verifyTitle 
-					description="we should see the index page title"
+					description="We should see the index page title"
 					text="PICS - Contractor Screening &amp; Contractor Management" />
 				&body_verify;
+				
 				<invoke
-					description="get client page"
-					url="clients.jsp" />
+					description="Get Register page"
+					url="contractor_new_instructions.jsp" />
 				&body_verify;
+				
 				<invoke
-					description="get services page"
+					description="get Services page"
 					url="services.jsp" />
 				&body_verify;
+				
 				<invoke
-					description="get contact page"
+					description="Get Clients page"
+					url="clients.jsp" />
+				&body_verify;
+				
+				<invoke
+					description="Get Contact page"
 					url="contact.jsp" />
 				&body_verify;
+				
 			</steps>
 		</webtest>
 	</target>
