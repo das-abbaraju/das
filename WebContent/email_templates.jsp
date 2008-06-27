@@ -66,6 +66,7 @@ if (template != null) {
 		o.setTestMode(true);
 		o.addToken("conAudit", conAudit);
 		o.addToken("opAcct", opAcct);
+		o.addToken("opName", opAcct.getName());
 		o.setPermissions(permissions);
 		o.sendMessage(template, Integer.parseInt(accountID));
 		mailer = o;

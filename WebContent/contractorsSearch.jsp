@@ -44,7 +44,7 @@ try {
 			emailer.setPermissions(permissions);
 			OperatorAccountDAO operatorDAO = (OperatorAccountDAO)SpringUtils.getBean("OperatorAccountDAO");
 			OperatorAccount operator = operatorDAO.find(permissions.getAccountId());
-			emailer.addToken("operator", operator);
+			emailer.addToken("opAcct", operator);
 			emailer.sendMessage(EmailTemplates.contractoradded, conID);
 			
 			User currentUser = new User();
