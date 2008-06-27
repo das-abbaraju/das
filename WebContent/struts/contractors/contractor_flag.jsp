@@ -23,17 +23,19 @@
 		<td style="vertical-align: middle;"><b>Overall Flag Status at <s:property value="co.operatorAccount.name"/></b></td>
 	</tr>
 	<tr>
-		<td style="font-style: italic">	
-		<s:if test="permissions.corporate || opID == permissions.getAccountId()">
-			<s:if test="co.forcedFlag && permissions.corporate">
+		<td style="font-style: italic">
+		<s:if test="opID == permissions.getAccountId() || permissions.corporate">
+			<s:if test="co.forcedFlag">
 			<s:form cssStyle="border: 2px solid #A84D10; background-color: #FFC; font-style: italic; padding: 2px;">
 				Manual Force Flag <s:property value="co.forceFlag.smallIcon" escape="false" /> until <s:date name="co.forceEnd" format="MMM d, yyyy" />
 				<s:hidden name="id" />
-				<s:hidden name="opID" />
+				<s:hidden name="opID" 	/>
 				<s:hidden name="action" value="deleteOverride" />
 				<pics:permission perm="EditForcedFlags">
 				<s:submit value="Cancel Override" /><br/>
-				<s:checkbox name="deleteAll"/><label>Check to Cancel the Force the Flag Color at all your Facilities in your database</label>
+				<s:if test="permissions.corporate">
+					<s:checkbox name="deleteAll"/><label>Check to Cancel the Force the Flag Color at all your Facilities in your database</label>
+				</s:if>
 				</pics:permission>
 			</s:form>
 			</s:if>
@@ -43,17 +45,18 @@
 				<s:form id="form_override">
 					<s:hidden name="id" />
 					<s:hidden name="opID" />
-					<s:submit value="Override" />
+					<s:submit value="Force Flag" />
 					<s:select list="flagList" name="forceFlag" />
 					until <input id="forceEnd" name="forceEnd" size="8" type="text"
 						onClick="cal1.select(this,'forceEnd','M/d/yy'); return false;" /><br/>
 					<s:hidden name="action" value="Override" />
-				<s:checkbox name="overrideAll"/><label>Check to Force the Flag Color for all your Facilities in your database</label>
+				<s:if test="permissions.corporate">
+					<s:checkbox name="overrideAll"/><label>Check to Force the Flag Color for all your Facilities in your database</label>
+				</s:if>
 				</s:form>
 				<a href="#" onclick="$('override_link').show(); $('override').hide(); return false;">Nevermind</a>
 				</div>
-				<a id="override_link" href="#" onclick="$('override').show(); this.hide(); return false;">Manually
-				Force Flag Color</a>
+				<a id="override_link" href="#" onclick="$('override').show(); this.hide(); return false;">Manually Force Flag Color</a>
 				</pics:permission>
 			</s:else>
 		</s:if>
