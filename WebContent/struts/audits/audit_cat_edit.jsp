@@ -15,6 +15,7 @@
 		</s:if>
 		<s:if test="questionType == 'License'">
 			<s:textfield name="answer.answer" size="30" onchange="javascript:saveAnswer(%{questionID}, this);"/>
+			<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(question, answer.answer)" escape="false" />			
 		</s:if>
 		<s:if test="questionType == 'Date'">
 			<nobr><s:textfield id="answer_%{questionID}" name="answer.answer" size="8" 
