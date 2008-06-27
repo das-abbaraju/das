@@ -41,6 +41,10 @@ public class User {
 		this.name = name;
 	}
 	
+	public User(int id) {
+		this.id = id;
+	}
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public int getId() {

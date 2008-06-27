@@ -31,12 +31,11 @@ import com.picsauditing.util.SpringUtils;
  * 
  */
 public class AuditCategoryAction extends AuditActionSupport {
-	
+
 	protected int catDataID = 0;
 	protected String mode = null;
 	static private String VIEW = "View";
 	static private String EDIT = "Edit";
-	static private String VERIFY = "Verify";
 	protected boolean viewBlanks = true;
 
 	protected AuditCatData previousCategory = null;
@@ -44,10 +43,11 @@ public class AuditCategoryAction extends AuditActionSupport {
 	protected AuditCatData currentCategory = null;
 
 	private AuditPercentCalculator auditPercentCalculator;
-	
+
 	public AuditCategoryAction(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator) {
+			AuditDataDAO auditDataDao,
+			AuditPercentCalculator auditPercentCalculator) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.auditPercentCalculator = auditPercentCalculator;
 	}
@@ -76,10 +76,12 @@ public class AuditCategoryAction extends AuditActionSupport {
 					}
 				}
 			}
-			if (mode == null && conAudit.getAuditStatus().equals(AuditStatus.Pending))
+			if (mode == null
+					&& conAudit.getAuditStatus().equals(AuditStatus.Pending))
 				mode = EDIT;
-			if (mode == null && conAudit.getAuditStatus().equals(AuditStatus.Submitted))
-				mode = VERIFY;
+			if (mode == null
+					&& conAudit.getAuditStatus().equals(AuditStatus.Submitted))
+				mode = EDIT;
 		} else {
 			// When we want to show all categories
 			answers = auditDataDao.findAnswers(auditID);
@@ -95,8 +97,6 @@ public class AuditCategoryAction extends AuditActionSupport {
 			mode = VIEW;
 		if (mode.equals(EDIT) && !isCanEdit())
 			mode = VIEW;
-		if (mode.equals(VERIFY) && !isCanVerify())
-			mode = VIEW;
 
 		if (mode.equals(EDIT)
 				&& currentCategory.getCategory().getId() == AuditCategory.OSHA) {
@@ -105,8 +105,11 @@ public class AuditCategoryAction extends AuditActionSupport {
 				oshaCorporate.setContractorAccount(contractor);
 				oshaCorporate.setType(OshaType.OSHA);
 				oshaCorporate.setYear1(new OshaLogYear());
+				oshaCorporate.getYear1().setApplicable(true);
 				oshaCorporate.setYear2(new OshaLogYear());
+				oshaCorporate.getYear2().setApplicable(true);
 				oshaCorporate.setYear3(new OshaLogYear());
+				oshaCorporate.getYear3().setApplicable(true);
 				OshaLogDAO dao = (OshaLogDAO) SpringUtils.getBean("OshaLogDAO");
 				dao.save(oshaCorporate);
 				contractor.getOshas().add(oshaCorporate);
@@ -119,13 +122,28 @@ public class AuditCategoryAction extends AuditActionSupport {
 
 	private void fillAnswers(AuditCatData catData,
 			Map<Integer, AuditData> answers) {
-		if (answers.size() == 0)
-			return;
 		for (AuditSubCategory subCategory : catData.getCategory()
 				.getSubCategories()) {
 			for (AuditQuestion question : subCategory.getQuestions()) {
 				if (answers.containsKey(question.getQuestionID())) {
 					question.setAnswer(answers.get(question.getQuestionID()));
+				}
+				AuditQuestion dependsOnQuestion = question
+						.getDependsOnQuestion();
+				if (dependsOnQuestion != null
+						&& dependsOnQuestion.getQuestionID() > 0) {
+
+					if (!dependsOnQuestion.getSubCategory().getCategory()
+							.equals(catData.getCategory())
+							&& !answers.containsKey(dependsOnQuestion
+									.getQuestionID())) {
+						// Get answer and add to answer map no matter what
+						answers.put(dependsOnQuestion.getQuestionID(),
+								auditDataDao.findAnswerToQuestion(this.auditID,
+										dependsOnQuestion.getQuestionID()));
+					}
+					dependsOnQuestion.setAnswer(answers.get(dependsOnQuestion
+							.getQuestionID()));
 				}
 			}
 		}

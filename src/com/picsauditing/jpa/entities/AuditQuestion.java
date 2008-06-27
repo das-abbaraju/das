@@ -26,25 +26,30 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "pqfquestions")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="global")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
 public class AuditQuestion implements java.io.Serializable {
 	static public final int EMR03 = 127;
 	static public final int EMR04 = 126;
 	static public final int EMR05 = 889;
 	static public final int EMR06 = 1519;
 	static public final int EMR07 = 1617;
-	
+
 	static public int getEmrYear(int questionID) {
 		switch (questionID) {
-			case EMR07: return 2007;
-			case EMR06: return 2006;
-			case EMR05: return 2005;
-			case EMR04: return 2004;
-			case EMR03: return 2003;
+		case EMR07:
+			return 2007;
+		case EMR06:
+			return 2006;
+		case EMR05:
+			return 2005;
+		case EMR04:
+			return 2004;
+		case EMR03:
+			return 2003;
 		}
 		return 0;
 	}
-	
+
 	static public final int EMR_AVG = 0;
 	static public final int MANUAL_PQF = 1331;
 
@@ -81,7 +86,7 @@ public class AuditQuestion implements java.io.Serializable {
 	protected List<AuditQuestionOperatorAccount> operator;
 	protected List<AuditQuestionOption> options;
 	protected AuditData answer;
-	
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	public int getQuestionID() {
@@ -147,6 +152,7 @@ public class AuditQuestion implements java.io.Serializable {
 
 	/**
 	 * Yes, No, Depends
+	 * 
 	 * @return
 	 */
 	public String getIsRequired() {
@@ -353,9 +359,10 @@ public class AuditQuestion implements java.io.Serializable {
 	public void setAnswer(AuditData answer) {
 		this.answer = answer;
 	}
-	
+
 	@Transient
 	public boolean isRequired() {
+
 		if (isRequired.equals("Yes"))
 			return true;
 		if (isRequired.equals("Depends")) {
@@ -367,6 +374,10 @@ public class AuditQuestion implements java.io.Serializable {
 			if (contractorAnswer == null)
 				// The contractor hasn't answered this question yet
 				return false;
+			// Such as "Yes" and "Yes with Office" answers.
+			if (dependsOnAnswer.equals("Yes*"))
+				return contractorAnswer.getAnswer().startsWith("Yes");
+
 			if (dependsOnAnswer.equals(contractorAnswer.getAnswer()))
 				return true;
 		}
@@ -383,7 +394,6 @@ public class AuditQuestion implements java.io.Serializable {
 		this.options = options;
 	}
 
-	
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;
@@ -406,6 +416,4 @@ public class AuditQuestion implements java.io.Serializable {
 		return true;
 	}
 
-	
-	
 }

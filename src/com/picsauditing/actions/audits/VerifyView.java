@@ -26,6 +26,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.jpa.entities.OshaLogYear;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailAuditBean;
 import com.picsauditing.mail.EmailTemplates;
@@ -91,9 +92,13 @@ public class VerifyView extends AuditActionSupport {
 				toMerge.setVerifiedAnswer(aq.getVerifiedAnswer());
 
 				if (toMerge.isVerified() != aq.isVerified()) {
-					toMerge
-							.setDateVerified(aq.isVerified() ? new Date()
-									: null);
+					if (aq.isVerified()) {
+						toMerge.setDateVerified(new Date());
+						toMerge.setAuditor(new User(permissions.getUserId()));
+					} else {
+						toMerge.setDateVerified(null);
+						toMerge.setAuditor(null);
+					}
 					toMerge.setVerified(aq.isVerified());
 				}
 
@@ -210,16 +215,18 @@ public class VerifyView extends AuditActionSupport {
 
 		List<AuditData> temp = auditDataDao
 				.findCustomPQFVerifications(this.auditID);
-		Map<Integer, AuditData> safetyPolicies = auditDataDao.findByCategory(
-				this.auditID, AuditCategory.SAFETY_POLICIES);
-		Map<Integer, AuditData> training = auditDataDao.findByCategory(
-				this.auditID, AuditCategory.TRAINING);
 
 		customVerification = new LinkedHashMap<Integer, AuditData>();
-		customVerification.putAll(safetyPolicies);
-		customVerification.putAll(training);
 		for (AuditData ad : temp) {
 			customVerification.put(ad.getQuestion().getQuestionID(), ad);
+		}
+		if (conAudit.getAuditStatus().equals(AuditStatus.Active)) {
+			Map<Integer, AuditData> safetyPolicies = auditDataDao
+					.findByCategory(this.auditID, AuditCategory.SAFETY_POLICIES);
+			Map<Integer, AuditData> training = auditDataDao.findByCategory(
+					this.auditID, AuditCategory.TRAINING);
+			customVerification.putAll(safetyPolicies);
+			customVerification.putAll(training);
 		}
 	}
 
