@@ -94,11 +94,6 @@ public class AuditCategoryAction extends AuditActionSupport {
 			answers = auditDataDao.findAnswers(auditID);
 			for (AuditCatData catData : categories) {
 				fillAnswers(catData, answers);
-
-				if( mode == null && catData.getRequiredCompleted() != catData.getNumRequired() )
-				{
-					mode = EDIT;
-				}
 			}
 		}
 
