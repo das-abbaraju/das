@@ -114,13 +114,13 @@ try{
   	{
 		var pars = 'actionID='+conId+'&action=Remove';
 		var divName = 'remove_'+conId;
+		var divName2 = 'contractor_'+conId;
 		var myAjax = new Ajax.Request('report_activation.jsp', 
 				{
 					method: 'post', 
 					parameters: pars,
 					onSuccess: function(transport) {
-						$(divName).innerHTML = ''; 
-						new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+						$(divName2).hide();						
 					}
 				});
 		return false;
@@ -178,7 +178,7 @@ try{
 	</tr>
 	</thead>
 <%	while (sBean.isNextRecord()){%>
-			  <tr <%=sBean.getBGColor()%>> 
+			  <tr <%=sBean.getBGColor()%> id="contractor_<%= sBean.aBean.id %>"> 
 			  <form name="form2" method="post" action="report_activation.jsp?changed=0&showPage=<%=sBean.showPage%>">
 				<td class="right" colspan="2"><%=sBean.count-1%></td>
 		        <td><%=sBean.getActiveStar()%>
