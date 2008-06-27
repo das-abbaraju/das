@@ -10,6 +10,7 @@
 permissions.tryPermission(OpPerms.ManageAudits);
 action.setAuditTypeID(request.getParameter("auditTypeID"));
 try{
+	String auditTypeID = request.getParameter("auditTypeID");
 	String actionString = request.getParameter("action");
 	String editID = request.getParameter("editID");
 	String catID = request.getParameter("catID");
@@ -50,7 +51,7 @@ try{
 				pqBean.renumberPQF(pqBean.subCategoryID,action.getAuditTypeID());
 				pcBean.updateNumRequiredCounts(action.getAuditTypeID());
 			}//else
-			response.sendRedirect("pqf_editQuestions.jsp?editSubCatID="+pqBean.subCategoryID+"&editCatID="+catID);
+			response.sendRedirect("pqf_editQuestions.jsp?auditTypeID="+auditTypeID+"&editSubCatID="+pqBean.subCategoryID+"&editCatID="+catID);
 			return;
 		}//if
 	}//if
