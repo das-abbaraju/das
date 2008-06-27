@@ -343,6 +343,10 @@ update pqfquestions set questionType = 'Manual'
 		(select subcatid from pqfsubcategories where categoryid in
 			(select catId from pqfcategories where audittypeid=3)); 
 
+/* Update the dependsOnAnswer to Yes* for California */
+update pqfquestions set dependsOnQID = 1622, dependsOnAnswer = 'Yes*', isRequired='Depends' 
+where questionid = 401;
+
 /* Alter users table */
 alter table `users` 
 	change `dateCreated` `dateCreated` datetime   NOT NULL after `isActive`, 
