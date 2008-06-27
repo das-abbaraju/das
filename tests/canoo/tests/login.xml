@@ -15,10 +15,10 @@
 					description="Click the submit button" />
 				<verifyText description="Attempt login without a username"
 					text="Enter a username" />
-				<setInputField description="set user name"
+				<setInputField description="Set the username"
 					name="username"
 					value="usernamethatdoesnotexist" />
-				<setInputField description="set bad password"
+				<setInputField description="Set a bad password"
 					name="password"
 					value="BADPASS" />
 				<clickButton 
@@ -37,8 +37,8 @@
 
 				<emailSetConfig server="${mail.server}" delay="1" type="${mail.type}"
 					password="${mail.password}" username="${mail.username}"/>
-				<emailStoreMessageId description="Get Login email"
-					subject="PICS login info"
+				<emailStoreMessageId description="	"
+					subject="PICS Login Info"
 					property="mid" messageIndex="0"/>
 				<emailMessageContentFilter save="plain" messageId="#{mid}" />
 				<emailDeleteMessage messageId="#{mid}" />

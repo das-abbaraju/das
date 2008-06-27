@@ -34,16 +34,18 @@
 					href="ContractorFlag.action?id=2459" />
 				&body_verify;
 				
-				<clickLink description="View Entire PQF"
-					href="Audit.action?auditID=3283" />
-
 				<clickLink description="View Audits"
 					href="ConAuditList.action?id=2459" />
 				&body_verify;
+				
+				<clickLink description="View PQF"
+					href="Audit.action?auditID=2683" />
+				&body_verify;				
 
 				<clickLink description="View Desktop Audit"
 					href="Audit.action?auditID=7441" />
 				&body_verify;
+				
 				<!--   New Contractor Search -->
 				<clickLink description="Search For New Contractors"
 					label="Search For New" />
