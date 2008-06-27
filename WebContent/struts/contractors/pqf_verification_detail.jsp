@@ -306,6 +306,10 @@ function sendEmail() {
 						value="%{verified}"></s:checkbox>
 					</td>
 			</tr>
+			<tr class="blueMain">
+				<td align="right" colspan="2">Comments:</td>
+				<td style="padding-bottom: 10px;" colspan="2"><s:textfield name="%{'customVerification['.concat(question.questionID.toString().concat('].comment'))}" value="%{comment}" size="49"/></td>
+			</tr>
 			</s:iterator>
 			
 			<tr class="blueMain">

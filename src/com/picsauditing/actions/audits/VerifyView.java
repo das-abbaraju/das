@@ -90,6 +90,7 @@ public class VerifyView extends AuditActionSupport {
 						this.auditID, i);
 
 				toMerge.setVerifiedAnswer(aq.getVerifiedAnswer());
+				toMerge.setComment(aq.getComment());
 
 				if (toMerge.isVerified() != aq.isVerified()) {
 					if (aq.isVerified()) {
