@@ -33,6 +33,7 @@
 		cerBean.setList(permissions, filter);
 		sBean.pageResults(cerBean.getListRS(), 50, request);
 %>
+<html>
 <head>
 <title>Insurance Approval</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
