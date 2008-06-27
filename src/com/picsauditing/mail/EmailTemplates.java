@@ -6,6 +6,7 @@ public enum EmailTemplates {
 	certificate_expire("Certificate Expired", "EmailContractorBean"),
 	dasubmit("D&A Audit Submitted", "EmailContractorBean"),
 	desktopsubmit("Desktop Audit Submitted", "EmailContractorBean"),
+	audits_thankyou("All Audits Submitted", "EmailContractorBean"),
 	contractoradded("Facility added Contractor", "EmailUserBean"),
 	password("Forgot Password", "EmailUserBean"),
 	newuser("Welcome New User", "EmailUserBean"),

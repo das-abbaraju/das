@@ -152,23 +152,27 @@ div.external {
 <%
 	}
 %>
-<%	
-	if (canEditNotes) {
-%>
 <div class="external">
 	<a name="external"></a>
 	<h2>PICS Notes</h2>
+<%
+	if (canEditNotes) {
+%>
 		<div id="externalView" class="notes" ondblclick="$('externalView').hide(); $('externalEdit').show();" title="Double click to edit">
 			<%=com.picsauditing.PICS.Utilities.escapeNewLines(cBean.notes)%>
 		</div>
-<%	} %>		
-	<div id="externalEdit" style="display: none;">
-		<form method="post">
-			<input type="hidden" name="id" value="<%=id%>">
-			<textarea name="changedNotesExternal" style="width: 50%" rows="20"><%=cBean.notes%></textarea><br />
-			<input name="action" type="submit" value="Update Notes">
-		</form>
-	</div>
+		<div id="externalEdit" style="display: none;">
+			<form method="post">
+				<input type="hidden" name="id" value="<%=id%>">
+				<textarea name="changedNotesExternal" style="width: 50%" rows="20"><%=cBean.notes%></textarea><br />
+				<input name="action" type="submit" value="Update Notes">
+			</form>
+		</div>
+<%	} else { %>
+		<div id="externalView" class="notes">
+			<%=com.picsauditing.PICS.Utilities.escapeNewLines(cBean.notes)%>
+		</div>
+<%	} %>
 </div>
 <br clear="all">
 

@@ -85,15 +85,17 @@ public class ContractorAuditAction extends AuditActionSupport {
 			}
 			if (auditStatus.equals(AuditStatus.Submitted)) {
 				conAudit.setCompletedDate(new Date());
-				
-				// Send email to contractors telling them the Audit was submitted
-				mailer.setPermissions(permissions);
-				// TODO: combine the emails for Desktop and DA audits
-				if (conAudit.getAuditType().getAuditTypeID() == AuditType.DESKTOP) {
-					mailer.sendMessage(EmailTemplates.desktopsubmit, conAudit);
+				boolean allActive = true;
+				for (ContractorAudit cAudit : getActiveAudits()) {
+					if (cAudit != conAudit && cAudit.getAuditStatus().equals(AuditStatus.Pending))
+						// We have to check (cAudit != conAudit) because we haven't set the status yet...it happens later 
+						allActive = false;
 				}
-				if (conAudit.getAuditType().getAuditTypeID() == AuditType.DA) {
-					mailer.sendMessage(EmailTemplates.dasubmit, conAudit);
+				if (allActive) {
+					// Send email to contractor telling them thank you for playing
+					mailer.setPermissions(permissions);
+					mailer.addToken("audits", getActiveAudits());
+					mailer.sendMessage(EmailTemplates.audits_thankyou, conAudit);
 				}
 			}
 			if (auditStatus.equals(AuditStatus.Active)) {

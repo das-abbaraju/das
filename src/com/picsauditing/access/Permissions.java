@@ -247,7 +247,7 @@ public class Permissions {
 		
 		// For Operators and corporate
 		if (canSeeAudits != null)
-			return canSeeAudits.contains(auditType);
+			return canSeeAudits.contains(auditType.getAuditTypeID());
 		return false;
 	}
 
