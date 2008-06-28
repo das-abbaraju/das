@@ -128,10 +128,7 @@ if (canEditFlagCriteria) {
 	<thead>
 	<tr>
 		<td align="center" colspan=2><%=flagStatus%> Flag PQF Questions</td>
-		<td align="center" valign="middle">Flag Test <a
-			href="help.htm#RFRFlagTest" title="Help" target="_blank">&nbsp; <img
-			src="images/help.gif" alt="Help" width=12 height=12 border=0> </a>
-		</td>
+		<td align="center" valign="middle">Flag Test</td>
 		<td width="62" align="center">Include?</td>
 	</tr>
 	</thead>
