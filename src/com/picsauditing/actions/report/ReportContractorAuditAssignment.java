@@ -1,7 +1,6 @@
 package com.picsauditing.actions.report;
 
 import java.sql.Date;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +8,7 @@ import java.util.List;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditTypeDAO;
-import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 
 //TODO make some logic in a cron job or something that creates the DA audits
@@ -20,7 +17,8 @@ import com.picsauditing.util.SpringUtils;
 //sql.addWhere("q894.answer = 'Yes' OR c.daRequired IS NULL OR c.daRequired = 'Yes'");
 
 public class ReportContractorAuditAssignment extends ReportContractorAudits {
-	protected boolean unScheduledAudits = false;
+	private boolean unScheduledAudits = false;
+	protected boolean filterUnConfirmedAudits = true;
 
 	public String execute() throws Exception {
 		if (!forceLogin())
@@ -30,8 +28,7 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		sql.addField("ca.auditorConfirm");
 		sql.addWhere("auditStatus='Pending'");
 		if (unScheduledAudits == true) {
-			sql
-					.addWhere("(ca.contractorConfirm IS NULL OR ca.auditorConfirm IS NULL) AND atype.isScheduled = 1");
+			sql.addWhere("(ca.contractorConfirm IS NULL OR ca.auditorConfirm IS NULL) AND atype.isScheduled = 1");
 		} else {
 			sql.addWhere("atype.isScheduled=1 OR atype.hasAuditor=1");
 		}
@@ -88,5 +85,13 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 
 	public void setUnScheduledAudits(boolean unScheduledAudits) {
 		this.unScheduledAudits = unScheduledAudits;
+	}
+
+	public boolean isFilterUnConfirmedAudits() {
+		return filterUnConfirmedAudits;
+	}
+
+	public void setFilterUnConfirmedAudits(boolean filterUnConfirmedAudits) {
+		this.filterUnConfirmedAudits = filterUnConfirmedAudits;
 	}
 }

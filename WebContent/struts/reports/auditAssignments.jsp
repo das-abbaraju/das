@@ -57,39 +57,7 @@
 <body>
 <h1>Schedule &amp; Assign Audits</h1>
 
-<div id="search">
-<div id="showSearch" onclick="showSearch()" <s:if test="filtered">style="display: none"</s:if> ><a href="#">Show Filter Options</a></div>
-<div id="hideSearch" <s:if test="!filtered">style="display: none"</s:if> ><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
-<s:form id="form1" method="post" cssStyle="%{filtered ? '' : 'display: none'}">
-	<table>
-		<tr>
-			<td style="vertical-align: middle;"><s:textfield
-				name="accountName" cssClass="forms" size="8"
-				onfocus="clearText(this)" /> <s:select list="auditTypeList"
-				cssClass="forms" name="auditTypeID" listKey="auditTypeID"
-				listValue="auditName" />
-			<s:action name="AuditorsGet" executeResult="true">
-				<s:param name="controlName" value="%{'auditorId'}"/>
-				<s:param name="presetValue" value="auditorId"/>		
-			</s:action>
-			<s:submit name="imageField" type="image"
-				src="images/button_search.gif" onclick="runSearch( 'form1')" /></td>
-		</tr>
-		<tr><td>	
-		 	<s:select list="operatorList" headerKey="0" headerValue="- Operator -"
-			cssClass="forms" name="operator" listKey="id" listValue="name" />
-		</td>
-		</tr>
-		<tr><td>
-			<s:checkbox name="unScheduledAudits"/><label>Check to Search on UnConfirmed Audits</label>
-		</td></tr>
-	</table>
-	<s:hidden name="showPage" value="1" />
-	<s:hidden name="startsWith" />
-	<s:hidden name="orderBy" />
-	<div class="alphapaging"><s:property
-		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
-</s:form></div>
+<s:include value="filters.jsp" />
 
 <div><s:property value="report.pageLinksWithDynamicForm"
 	escape="false" /></div>
