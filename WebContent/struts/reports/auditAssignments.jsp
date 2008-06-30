@@ -43,6 +43,19 @@
 		var divName = 'audit_'+auditId;
 		new Effect.Highlight(divName, {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 	}
+	
+	function saveAuditor(auditId, auditorId) {
+		var pars = "contractorAudit.id=" + auditId + '&auditor.id=' + auditorId;
+		
+	
+		var toHighlight = 'audit_'+auditId;
+		var myAjax = new Ajax.Request('AuditorAssignmentUpdateAjax.action', {method: 'post', parameters: pars,
+		
+			onSuccess: function( transport ) {
+				new Effect.Highlight(toHighlight, {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+			}
+		});
+	}
 </script>
 </head>
 <body>
@@ -113,7 +126,7 @@
 				<td class="reportDate"><s:date name="[0].get('createdDate')"
 					format="M/d/yy" /></td>
 				<td><nobr><s:if test="[0].get('hasAuditor')">
-					<s:select cssClass="blueMain" list="auditorList" listKey="id"
+					<s:select onchange="javascript: saveAuditor(%{[0].get('auditID')}, this.value)" cssClass="blueMain" list="auditorList" listKey="id"
 						listValue="name" value="%{[0].get('auditorID')}"
 						id="%{'auditor_'.concat([0].get('auditID'))}" />
 					<s:if test="[0].get('isScheduled') && [0].get('auditorConfirm') == NULL">
