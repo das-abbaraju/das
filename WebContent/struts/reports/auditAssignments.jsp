@@ -49,12 +49,8 @@
 		
 	
 		var toHighlight = 'audit_'+auditId;
-		var myAjax = new Ajax.Request('AuditorAssignmentUpdateAjax.action', {method: 'post', parameters: pars,
-		
-			onSuccess: function( transport ) {
-				new Effect.Highlight(toHighlight, {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-			}
-		});
+		var myAjax = new Ajax.Request('AuditAssignmentUpdateAjax.action', {method: 'post', parameters: pars});
+		new Effect.Highlight(toHighlight, {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 	}
 </script>
 </head>
