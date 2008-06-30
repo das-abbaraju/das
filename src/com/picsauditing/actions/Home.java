@@ -5,22 +5,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.picsauditing.actions.contractors.ContractorActionSupport;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.WidgetUserDAO;
 import com.picsauditing.jpa.entities.Widget;
 import com.picsauditing.jpa.entities.WidgetUser;
 
-public class Home extends PicsActionSupport {
+public class Home extends ContractorActionSupport {
 	private Map<Integer, List<Widget>> columns = new TreeMap<Integer, List<Widget>>();
 
 	private WidgetUserDAO dao;
 
-	public Home(WidgetUserDAO dao) {
+	public Home(WidgetUserDAO dao, ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
+		super(accountDao, auditDao);
 		this.dao = dao;
 	}
 
 	public String execute() {
 		if (!forceLogin())
 			return LOGIN;
+		
+		if (permissions.isContractor()) {
+			try {
+				findContractor();
+			} catch (Exception e) {}
+		}
 
 		List<WidgetUser> widgetsToShowForUser = dao.findByUser(permissions);
 
