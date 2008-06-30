@@ -31,6 +31,35 @@ function validateNumber() {
   document.MM_returnValue = (errors == '');
 }//validateNumber
 
+function validateDecimal() {
+  var i,val,qName,errors='',args=validateDecimal.arguments;
+  qName=args[1];
+  val=MM_findObj(args[0]);
+  if (val)
+  	val = val.value;
+  if (val && (""!=val.value)) {
+    var strValidChars = "0123456789.-,";
+    var strChar;
+    var blnResult = true;
+    //  test strString consists of valid characters listed above
+    for (i = 0; i < val.length && blnResult == true; i++) {
+      strChar = val.charAt(i);
+      if (strValidChars.indexOf(strChar) == -1)
+        blnResult = false;
+    }//for
+    
+    if( val.substring( val.length - 3, val.length - 2 ) != '.' ) {
+    	blnResult = false;
+    }
+    
+	if (!blnResult) {
+      errors+='- '+qName+' must contain a decimal number.\n';
+      alert('The following error(s) occurred:\n'+errors);
+    }//if
+  }//if
+  document.MM_returnValue = (errors == '');
+}//validateNumber
+
 /*function MM_validateForm() { //v4.0
   var i,p,q,nm,test,num,min,max,errors='',args=MM_validateForm.arguments;
   for (i=0; i<(args.length-2); i+=3) {
