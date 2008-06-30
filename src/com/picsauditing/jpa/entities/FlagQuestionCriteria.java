@@ -124,20 +124,12 @@ public class FlagQuestionCriteria {
 				return !value.equals(answer);
 		if ("Date".equals(questionType)) {
 			DateBean db = new DateBean();
-			String today;
-			String answerDate;
+			
 			try {
-				today = db.getTodaysDate();
-				answerDate = db.toShowFormat(answer);
-				
-				boolean result = db.isFirstBeforeSecond(answerDate, today);
-				
-				
 				if (">".equals(comparison))
-					return (result);
+					return (db.isFirstBeforeSecond(db.toShowFormat(answer), db.getTodaysDate()));
 				if ("<".equals(comparison))
-					return (result);
-				return (today.compareTo(answerDate) == 0);
+					return (db.isFirstBeforeSecond(db.toShowFormat(answer), db.getTodaysDate()));
 			} catch (Exception e) {
 				return true;
 				}
