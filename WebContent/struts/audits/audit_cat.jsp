@@ -24,7 +24,7 @@
 		
 		if( elm.type == 'text' || elm.type == 'radio' || elm.type == 'textarea')
 		{
-			var thevalue = elm.value;
+			var thevalue = escape(elm.value);
 			//if( thevalue != '' ) {
 			// Save blanks too
 				pars = pars + thevalue;
