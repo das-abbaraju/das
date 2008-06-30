@@ -26,7 +26,7 @@ public class PicsActionSupport extends ActionSupport {
 	protected static String LOGIN_AJAX = "LoginAjax";
 	protected Permissions permissions = null;
 	protected String message;
-	
+
 	private User user; // Current logged in user
 	private Account account; // Current logged in user's account
 	private List<User> auditorList;
@@ -35,35 +35,33 @@ public class PicsActionSupport extends ActionSupport {
 		if (permissions != null)
 			// Already set
 			return;
-		
+
 		permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
 		if (permissions == null) {
 			permissions = new Permissions();
-			
-			// To configure this setting in Eclipse, add "-DautoLogin=USER_ID_TO_AUTO_LOGIN" 
+
+			// To configure this setting in Eclipse, add
+			// "-DautoLogin=USER_ID_TO_AUTO_LOGIN"
 			// to the end of the "start" VMArgument
 			// Run...Open Run Dialog...Arguments.VMArguments
-			// Then restart Tomcat (also remember to pick the right Server when editing above)
+			// Then restart Tomcat (also remember to pick the right Server when
+			// editing above)
 			String autoLogin = System.getProperty("autoLogin");
-			
-			if( autoLogin != null && autoLogin.length() != 0 )
-			{
-				try
-				{
+
+			if (autoLogin != null && autoLogin.length() != 0) {
+				try {
 					com.picsauditing.access.User user = new com.picsauditing.access.User();
 					user.setFromDB(autoLogin);
 					permissions.login(user);
 					ActionContext.getContext().getSession().put("permissions", permissions);
-				}
-				catch( Exception e )
-				{
-					System.out.println("Problem autologging in.  Id supplied was: " + autoLogin );
+				} catch (Exception e) {
+					System.out.println("Problem autologging in.  Id supplied was: " + autoLogin);
 				}
 			}
 		}
-		
+
 	}
-	
+
 	protected boolean forceLogin() {
 		loadPermissions();
 		try {
@@ -76,7 +74,7 @@ public class PicsActionSupport extends ActionSupport {
 		}
 		return true;
 	}
-	
+
 	protected void tryPermissions(OpPerms opPerms) throws Exception {
 		permissions.tryPermission(opPerms, OpType.View);
 	}
@@ -87,34 +85,37 @@ public class PicsActionSupport extends ActionSupport {
 	}
 
 	public String getMessage() {
+		if (message == null) {
+			return "";
+		}
 		return message;
 	}
 
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	
+
 	public User getUser() {
 		if (user == null) {
-			UserDAO dao = (UserDAO)SpringUtils.getBean("UserDAO");
+			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
 			user = dao.find(permissions.getUserId());
 		}
 		return user;
 	}
-	
+
 	public Account getAccount() {
 		loadPermissions();
 		if (account == null) {
-			AccountDAO dao = (AccountDAO)SpringUtils.getBean("AccountDAO");
+			AccountDAO dao = (AccountDAO) SpringUtils.getBean("AccountDAO");
 			account = dao.find(permissions.getAccountId(), permissions.getAccountType());
 		}
 		return account;
 	}
-	
+
 	public OperatorAccount getOperatorAccount() {
 		Account operator = getAccount();
 		if (operator.getType().equals("Operator"))
-			return (OperatorAccount)operator;
+			return (OperatorAccount) operator;
 		return null;
 	}
 
@@ -127,11 +128,11 @@ public class PicsActionSupport extends ActionSupport {
 			return new Permissions();
 		}
 	}
-	
+
 	public String getRequestURI() {
 		return ServletActionContext.getRequest().getRequestURI();
 	}
-	
+
 	public List<User> getAuditorList() {
 		if (auditorList == null) {
 			auditorList = new ArrayList<User>();
@@ -141,7 +142,7 @@ public class PicsActionSupport extends ActionSupport {
 		}
 		return auditorList;
 	}
-	
+
 	static public String format(float number) {
 		return new DecimalFormat("#,##0.00").format(number);
 	}
@@ -149,7 +150,7 @@ public class PicsActionSupport extends ActionSupport {
 	static public String format(float number, String mask) {
 		return new DecimalFormat(mask).format(number);
 	}
-	
+
 	static protected String getFtpDir() {
 		return ServletActionContext.getServletContext().getInitParameter("FTP_DIR");
 	}
