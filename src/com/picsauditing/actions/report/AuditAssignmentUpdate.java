@@ -22,8 +22,7 @@ import com.picsauditing.mail.EmailAuditBean;
 import com.picsauditing.mail.EmailTemplates;
 import com.picsauditing.mail.EmailUserBean;
 
-public class AuditAssignmentUpdate extends PicsActionSupport implements
-		Preparable, ParameterAware, ServletRequestAware {
+public class AuditAssignmentUpdate extends PicsActionSupport implements Preparable, ParameterAware, ServletRequestAware {
 
 	protected ContractorAudit contractorAudit = null;
 	protected User auditor = null;
@@ -40,8 +39,8 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements
 
 	protected HttpServletRequest request;
 
-	public AuditAssignmentUpdate(ContractorAuditDAO dao, UserDAO userDao,
-			EmailUserBean auditorMailer, EmailAuditBean contractorMailer) {
+	public AuditAssignmentUpdate(ContractorAuditDAO dao, UserDAO userDao, EmailUserBean auditorMailer,
+			EmailAuditBean contractorMailer) {
 		this.dao = dao;
 		this.userDao = userDao;
 		this.auditorMailer = auditorMailer;
@@ -88,18 +87,14 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements
 			if (origAuditor != null && !origAuditor.equals(auditor))
 				contractorAudit.setAuditorConfirm(null);
 
-			if ((origScheduledDate != null && !origScheduledDate
-					.equals(contractorAudit.getScheduledDate()))
-					|| (origLocation != null && !origLocation
-							.equals(contractorAudit.getAuditLocation()))) {
+			if ((origScheduledDate != null && !origScheduledDate.equals(contractorAudit.getScheduledDate()))
+					|| (origLocation != null && !origLocation.equals(contractorAudit.getAuditLocation()))) {
 				contractorAudit.setAuditorConfirm(null);
 				contractorAudit.setContractorConfirm(null);
 			}
 		}
 		if (auditor != null) {
-			if (origAuditor == null
-					|| (origAuditor != null && (origAuditor.getId() != auditor
-							.getId()))) {
+			if (origAuditor == null || (origAuditor != null && (origAuditor.getId() != auditor.getId()))) {
 				contractorAudit.setAssignedDate(new Date());
 			}
 		} else {
@@ -112,22 +107,20 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements
 			dao.save(contractorAudit);
 
 		if (contractorAudit.getAssignedDate() != null) {
-			setMessage(new SimpleDateFormat("MM/dd/yy hh:mm a")
-					.format(contractorAudit.getAssignedDate()));
+			setMessage(new SimpleDateFormat("MM/dd/yy hh:mm a").format(contractorAudit.getAssignedDate()));
 		}
 		String name = request.getRequestURL().toString();
-		String serverName = name.replace(ActionContext.getContext().getName()
-				+ ".action", "");
+		String serverName = name.replace(ActionContext.getContext().getName() + ".action", "");
 
 		if (contractorAudit.getAuditType().isScheduled()) {
-			if (contractorAudit.getContractorConfirm() == null)
+			if (contractorAudit.getContractorConfirm() == null) {
 				contractorMailer.setServerName(serverName);
-			contractorMailer.sendMessage(EmailTemplates.contractorconfirm,
-					contractorAudit);
-			if (contractorAudit.getAuditorConfirm() == null)
+				contractorMailer.sendMessage(EmailTemplates.contractorconfirm, contractorAudit);
+			}
+			if (contractorAudit.getAuditorConfirm() == null) {
 				auditorMailer.setServerName(serverName);
-			auditorMailer.sendMessage(EmailTemplates.auditorconfirm,
-					contractorAudit);
+				auditorMailer.sendMessage(EmailTemplates.auditorconfirm, contractorAudit);
+			}
 		}
 		return SUCCESS;
 	}

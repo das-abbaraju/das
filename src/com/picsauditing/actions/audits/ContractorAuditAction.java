@@ -103,10 +103,13 @@ public class ContractorAuditAction extends AuditActionSupport {
 				if (conAudit.getAuditType().isHasMultiple()) {
 					// This audit can only have one active audit, expire the previous one
 					for(ContractorAudit oldAudit : conAudit.getContractorAccount().getAudits()) {
-						if (oldAudit.getAuditType().equals(conAudit.getAuditType())
-								&& !oldAudit.equals(conAudit)) {
-							oldAudit.setAuditStatus(AuditStatus.Expired);
-							auditDao.save(oldAudit);
+						if (!oldAudit.equals(conAudit)) {
+							if (oldAudit.getAuditType().equals(conAudit.getAuditType())
+									|| (oldAudit.getAuditType().equals(AuditType.NCMS) && conAudit.getAuditType().equals(AuditType.DESKTOP))
+								) {
+								oldAudit.setAuditStatus(AuditStatus.Expired);
+								auditDao.save(oldAudit);
+							}
 						}
 					}
 				}
