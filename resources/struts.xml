@@ -301,5 +301,10 @@
 			<result>struts/confirmaudit.jsp</result>
 		</action>
 
+		<action name="PqfVerification"
+			class="com.picsauditing.actions.report.ReportPQFVerification">
+			<result>struts/reports/pqf_verification.jsp</result>
+		</action>
+
 	</package>
 </struts>

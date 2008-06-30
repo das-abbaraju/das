@@ -56,7 +56,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.NCMS))
 			subMenu.addChild("NCMS Audits", "ReportNCMS.action");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
-			subMenu.addChild("PQF Verification", "pqf_verification.jsp");
+			subMenu.addChild("PQF Verification", "PqfVerification.action");
 
 		subMenu = menu.addChild("Customer Service");
 		if (permissions.isAdmin()) {

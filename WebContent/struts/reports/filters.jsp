@@ -216,6 +216,31 @@ function updateQuery(name) {
 	</div>
 </s:if>
 
+<s:if test="filterOshaEmr">
+	<br clear="all"/><div class="filterOption"><p class="blueMain">Show Contractors that need:</p>
+	<table border="0" cellpadding="2" cellspacing="0" class="blueMain">
+		<tr>
+			<td></td>
+			<td>2007</td>
+			<td>2006</td>
+			<td>2005</td>
+		</tr>
+		<tr>
+			<td>OSHA</td>
+			<td><s:checkbox name="osha1"/></td>
+			<td><s:checkbox name="osha2"/></td>
+			<td><s:checkbox name="osha3"/></td>
+		</tr>
+		<tr>
+			<td>EMR</td>
+			<td><s:checkbox name="emr07"/></td>
+			<td><s:checkbox name="emr06"/></td>
+			<td><s:checkbox name="emr05"/></td>
+		</tr>
+	</table>
+	</div>
+</s:if>
+
 	<br clear="all"/>
 	<div class="alphapaging">
 		<s:property value="report.startsWithLinksWithDynamicForm" escape="false" />
