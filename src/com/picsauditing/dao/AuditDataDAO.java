@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -75,7 +76,11 @@ public class AuditDataDAO extends PicsDAO {
 				+ "WHERE audit.id = ? AND question.questionID =? ");
 		query.setParameter(1, auditId);
 		query.setParameter(2, questionId);
-		return (AuditData) query.getSingleResult();
+		try {
+			return (AuditData) query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 
 	// we may want to join over to the ContractorAudit in order to only pull the
