@@ -1,15 +1,11 @@
 package com.picsauditing.search;
 
 import com.picsauditing.PICS.Utilities;
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.PermissionQueryBuilder;
 
 public class SelectAccount extends SelectSQL {
-	private Type type;
+	private Type type = null;
 
 	public static enum Type {
 		Operator, Contractor
@@ -59,14 +55,12 @@ public class SelectAccount extends SelectSQL {
 	 * @param require
 	 *            if true, do an INNER JOIN, else LEFT JOIN
 	 */
-	public void addPQFQuestion(int questionID, boolean require,
-			String columnName) {
+	public void addPQFQuestion(int questionID, boolean require, String columnName) {
 		String join = "";
 		if (!require)
 			join = "LEFT ";
-		join = join + "JOIN pqfdata q" + questionID + " on q" + questionID
-				+ ".conID = a.id AND q" + questionID + ".questionID = "
-				+ questionID;
+		join = join + "JOIN pqfdata q" + questionID + " on q" + questionID + ".conID = a.id AND q" + questionID
+				+ ".questionID = " + questionID;
 		this.addJoin(join);
 		this.addField("q" + questionID + ".answer AS " + columnName);
 	}
@@ -90,14 +84,12 @@ public class SelectAccount extends SelectSQL {
 	}
 
 	public void addAudit(int auditTypeID) {
-		String join = "LEFT JOIN contractor_audit ca" + auditTypeID + " on ca"
-				+ auditTypeID + ".conID = a.id AND ca" + auditTypeID
-				+ ".auditStatus IN ('Active','Exempt') AND ca" + auditTypeID + ".auditTypeID = "+auditTypeID;
+		String join = "LEFT JOIN contractor_audit ca" + auditTypeID + " on ca" + auditTypeID + ".conID = a.id AND ca"
+				+ auditTypeID + ".auditStatus IN ('Active','Exempt') AND ca" + auditTypeID + ".auditTypeID = "
+				+ auditTypeID;
 		this.addJoin(join);
-		this.addField("ca" + auditTypeID + ".auditID AS ca" + auditTypeID
-				+ "_auditID");
-		this.addField("ca" + auditTypeID + ".auditStatus AS ca" + auditTypeID
-				+ "_auditStatus");
+		this.addField("ca" + auditTypeID + ".auditID AS ca" + auditTypeID + "_auditID");
+		this.addField("ca" + auditTypeID + ".auditStatus AS ca" + auditTypeID + "_auditStatus");
 	}
 
 	public String getStartsWith() {
@@ -112,29 +104,29 @@ public class SelectAccount extends SelectSQL {
 	public void setStartsWith(String startsWith) {
 		if (startsWith != null && startsWith.length() > 0) {
 			this.startsWith = startsWith;
-			this.addWhere("a.name LIKE '" + Utilities.escapeQuotes(startsWith)
-					+ "%'");
+			this.addWhere("a.name LIKE '" + Utilities.escapeQuotes(startsWith) + "%'");
 		}
 	}
-	
+
 	/**
-	 * Limit contractor search to the accounts I can see based on my perms
-	 * If I'm an operator join to flags.flag and gc.workStatus too
+	 * Limit contractor search to the accounts I can see based on my perms If
+	 * I'm an operator join to flags.flag and gc.workStatus too
+	 * 
 	 * @param permissions
 	 */
 	public void setPermissions(Permissions permissions) {
 		if (permissions.isOperator()) {
 			// Anytime we query contractor accounts as an operator,
 			// get the flag color/status at the same time
-			this.addJoin("LEFT JOIN flags ON flags.conID = a.id AND flags.opID = "+permissions.getAccountId());
+			this.addJoin("LEFT JOIN flags ON flags.conID = a.id AND flags.opID = " + permissions.getAccountId());
 			this.addField("flags.flag");
 			this.addField("lower(flags.flag) AS lflag");
-			this.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = "+permissions.getAccountId());
+			this.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = " + permissions.getAccountId());
 			this.addField("gc.workStatus");
 		}
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
-		
-		this.addWhere("1 " +permQuery.toString());
+
+		this.addWhere("1 " + permQuery.toString());
 	}
 
 }

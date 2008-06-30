@@ -1,14 +1,12 @@
 package com.picsauditing.actions.report;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.dao.AuditTypeDAO;
-import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.search.SelectFilterInteger;
+import com.picsauditing.search.SelectContractorAudit;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -20,12 +18,13 @@ public class ReportContractorAudits extends ReportAccount {
 	protected boolean filterAuditType = true;
 	protected boolean filterAuditStatus = true;
 
+	public ReportContractorAudits() {
+		sql = new SelectContractorAudit();
+	}
+	
 	public String execute() throws Exception {
 		loadPermissions();
-		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
-		sql.addField("ca.auditID");
 		sql.addField("ca.createdDate");
-		sql.addField("ca.auditStatus");
 		sql.addField("ca.expiresDate");
 		sql.addField("ca.scheduledDate");
 		sql.addField("ca.completedDate");
@@ -36,10 +35,6 @@ public class ReportContractorAudits extends ReportAccount {
 		sql.addField("ca.percentVerified");
 		sql.addField("ca.auditorID");
 
-		sql
-				.addJoin("LEFT JOIN audit_type atype ON atype.auditTypeID = ca.auditTypeID");
-		sql.addField("atype.auditTypeID");
-		sql.addField("atype.auditName");
 		sql.addField("atype.isScheduled");
 		sql.addField("atype.hasAuditor");
 		sql.addField("atype.hasRequirements");
@@ -48,12 +43,11 @@ public class ReportContractorAudits extends ReportAccount {
 		sql.addField("auditor.name auditor_name");
 		if (permissions.isCorporate() || permissions.isOperator()) {
 			if (permissions.getCanSeeAudit().size() == 0) {
-				//this.addActionError();
+				// this.addActionError();
 				message = "Your account does not have access to any audits. Please contact PICS.";
 				return SUCCESS;
 			}
-			sql.addWhere("atype.auditTypeID IN ("
-					+ Strings.implode(permissions.getCanSeeAudit(), ",") + ")");
+			sql.addWhere("atype.auditTypeID IN (" + Strings.implode(permissions.getCanSeeAudit(), ",") + ")");
 		}
 		if (orderBy == null)
 			orderBy = "ca.createdDate DESC";
@@ -67,9 +61,18 @@ public class ReportContractorAudits extends ReportAccount {
 			filterAuditor = false;
 	}
 
+	/**
+	 * 
+	 * @return List of AuditTypes the current user can see
+	 */
 	public List<AuditType> getAuditTypeList() {
 		AuditTypeDAO dao = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
-		return dao.findAll();
+		List<AuditType> list = new ArrayList<AuditType>();
+		for(AuditType aType : dao.findAll()) {
+			if (permissions.canSeeAudit(aType))
+				list.add(aType);
+		}
+		return list;
 	}
 
 	public int[] getAuditTypeID() {
@@ -108,9 +111,9 @@ public class ReportContractorAudits extends ReportAccount {
 
 	public void setAuditorId(int[] auditorId) {
 		String auditorIdList = Strings.implode(auditorId, ",");
-		
+
 		sql.addWhere("ca.auditorID IN (" + auditorIdList + ")");
-		
+
 		this.auditorId = auditorId;
 		filtered = true;
 	}

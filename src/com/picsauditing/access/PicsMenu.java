@@ -110,14 +110,16 @@ public class PicsMenu {
 			subMenu.addChild("Assign Audit/Operator", "AuditOperator.action");
 
 		subMenu = menu.addChild("Reports");
-		if (!permissions.isContractor()) {
+		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.EMRReport)) {
 			subMenu.addChild("EMR Rates (Graph)", "GraphEmrRates.action");
 			subMenu.addChild("EMR Rates", "ReportEmrRates.action");
 		}
-		if (!permissions.isContractor())
+		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.FatalitiesReport))
 			subMenu.addChild("Fatalities", "ReportFatalities.action");
-		if (!permissions.isContractor())
+		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.FatalitiesReport))
 			subMenu.addChild("Incidence Rates", "ReportIncidenceRate.action");
+		if (permissions.hasPermission(OpPerms.ContractorLicenseReport))
+			subMenu.addChild("Contractor Licenses", "ReportContractorLicenses.action");
 
 		return menu;
 	}

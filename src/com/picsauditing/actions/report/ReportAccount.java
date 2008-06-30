@@ -66,7 +66,6 @@ public class ReportAccount extends ReportActionSupport {
 	protected boolean filterAuditor = true;
 	protected int conAuditorId = 0;
 
-	@Autowired
 	protected SelectAccount sql = new SelectAccount();
 
 	public SelectAccount getSql() {

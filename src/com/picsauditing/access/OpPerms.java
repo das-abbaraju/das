@@ -19,6 +19,11 @@ public enum OpPerms {
 	EditForcedFlags("Force Flag Color", "Allows users to force a contractor's flag color for a given period of time. Only Read access is used currently", true, false),
 	EditNotes("Contractor Notes", "Allows users to add notes to a contractor's account. Currently, Read accoess is sufficient to Add and Delete notes too.", true, true),
 	
+	// Reports
+	ContractorLicenseReport("Contractor License Report", "List all contractor licenses", false, false),
+	FatalitiesReport("Fatalities Report", "List contractors with fatalities by year", false, false),
+	EMRReport("EMR Report", "List contractor EMRs by year", false, false),
+	
 	// Can view/edit/delete all contractors in the database ... replaces isAdmin
 	// These are usually used in tandem with another permission
 	AllContractors("All Contractors", "Can view all contractors in the database", false, false),
