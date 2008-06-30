@@ -71,12 +71,11 @@ public class AuditDataDAO extends PicsDAO {
 	}
 
 	public AuditData findAnswerToQuestion(int auditId, int questionId) {
-
-		Query query = em.createQuery("FROM AuditData d "
-				+ "WHERE audit.id = ? AND question.questionID =? ");
-		query.setParameter(1, auditId);
-		query.setParameter(2, questionId);
 		try {
+			Query query = em.createQuery("FROM AuditData d "
+					+ "WHERE audit.id = ? AND question.questionID =? ");
+			query.setParameter(1, auditId);
+			query.setParameter(2, questionId);
 			return (AuditData) query.getSingleResult();
 		} catch (NoResultException e) {
 			return null;
