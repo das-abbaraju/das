@@ -72,10 +72,6 @@
 			class="com.picsauditing.actions.report.AuditAssignmentUpdate">
 			<result>struts/blank.jsp</result>
 		</action>
-		<action name="AuditorAssignmentUpdateAjax"
-			class="com.picsauditing.actions.report.AuditAssignmentUpdateAuditorOnly">
-			<result>struts/blank.jsp</result>
-		</action>
 
 		<action name="FacilitiesGetAjax"
 			class="com.picsauditing.actions.operators.FacilitiesGet">
