@@ -295,9 +295,15 @@ function sendEmail() {
 				<td></td>
 				<td></td>
 			</tr>
+						
 			<s:iterator value="customVerification.values">
 			<tr class="blueMain">
-					<td align="left" colspan="2"><s:property value="question.subCategory.subCategory"/>/<s:property value="question.question"/></td>
+					<td align="left" colspan="2">
+						<s:property value="question.subCategory.subCategory"/>/<s:property value="question.question"/>
+							<s:if test="question.questionType == 'License'">
+								<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(question.question, answer)" escape="false" />			
+							</s:if>
+					</td>
 					<td><s:textfield name="%{'customVerification['.concat(question.questionID.toString().concat('].answer'))}" disabled="true" value="%{answer}"/></td>
 					<td><s:textfield name="%{'customVerification['.concat(question.questionID.toString().concat('].verifiedAnswer'))}" value="%{verifiedAnswer}"/></td>
 					<td><s:checkbox 

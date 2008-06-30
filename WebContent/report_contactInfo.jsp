@@ -23,7 +23,7 @@
 	href="css/reports.css" />
 </head>
 <body>
-<h1>Contractor Contact Information Report</h1>
+<h1>Contractor Contact Information</h1>
 <div><%=sBean.getExcelLink(permissions.getAccountIdString())%></div>
 
 <div id="search">
