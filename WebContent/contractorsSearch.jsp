@@ -123,13 +123,18 @@ or enter part of the name (at least 3 characters long)</div>
 					<%=Inputs.inputSelect("flagStatus","forms", sBean.selected_flagStatus,SearchBean.FLAG_STATUS_ARRAY)%>
 				<% } %>
 				<%=tBean.getTradesSelect("trade", "forms", sBean.selected_trade)%>
-				<input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0" onClick="runSearch('form1');">
 			</td>
 		</tr>
 		<tr>
 			<td>
 				<%=Inputs.inputSelect("performedBy","forms",sBean.selected_performedBy,TradesBean.PERFORMED_BY_ARRAY)%>
+				<%=statesLicensedInList.getQuestionListQIDSelect("Office Location","worksIn", "forms", sBean.selected_worksIn,SearchBean.DEFAULT_WORKS_IN)%>
 				<%=statesLicensedInList.getQuestionListQIDSelect("Office Location","officeIn", "forms", sBean.selected_officeIn,SearchBean.DEFAULT_OFFICE_IN)%>                       
+				<input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0" onClick="runSearch('form1');">
+			</td>
+		</tr>
+		<tr>
+			<td>
 				<input name="taxID" type="text" class="forms" value="<%=sBean.selected_taxID.equals("") ? SearchBean.DEFAULT_TAX_ID : sBean.selected_taxID%>" size="9" onFocus="clearText(this)">
 				<span class=redMain>*must be 9 digits</span>
 			</td>
