@@ -150,6 +150,9 @@ if (canEditFlagCriteria) {
 		while (hurdleQuestions.isNext()) {
 	%>
 	<tr>
+	<%
+	if (!hurdleQuestions.questionID.equals("401") && !hurdleQuestions.questionID.equals("755")) {
+	%>		
 		<td align="right"><%=hurdleQuestions.catNum%>.<%=hurdleQuestions.subCatNum%>.<%=hurdleQuestions.questionNum%></td>
 		<td align="left"><%=hurdleQuestions.question%></td>
 		<td align="right"><nobr><%=hurdleQuestions.getComparisonInput(flagCriteria
@@ -161,6 +164,9 @@ if (canEditFlagCriteria) {
 			<input type="hidden" name="hurdleTypeQ_<%=hurdleQuestions.questionID%> value="<%=hurdleQuestions.questionType%>" />
 			<%=Inputs.getCheckBoxInput("flagQ_" + hurdleQuestions.questionID, "forms", flagCriteria.getIsCheckedFromMap(hurdleQuestions.questionID), "Yes")%>
 		</td>
+	<%
+	}
+	%>		
 	</tr>
 	<%
 		}

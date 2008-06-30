@@ -156,6 +156,12 @@ public class FlagCalculatorSingle {
 					if (data != null && data.getVerifiedAnswerOrAnswer() != null && data.getVerifiedAnswerOrAnswer().length() > 0) {
 						// The contractor has answered this question so it needs to be correct
 						data.setFlagColor(FlagColor.Green);
+
+						if (criteria.isValidationRequired() && !data.isVerified()) {
+								data.setFlagColor(criteria.getFlagColor());
+								flagColor = setFlagColor(flagColor, criteria.getFlagColor());
+						}
+						
 						if (criteria.isFlagged(data.getVerifiedAnswerOrAnswer())) {
 							data.setFlagColor(criteria.getFlagColor());
 							flagColor = setFlagColor(flagColor, criteria.getFlagColor());

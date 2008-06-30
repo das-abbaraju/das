@@ -16,6 +16,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.picsauditing.PICS.DateBean;
+
 @Entity
 @Table(name = "flagcriteria")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="daily")
@@ -120,6 +122,26 @@ public class FlagQuestionCriteria {
 				return value.equals(answer);
 			else
 				return !value.equals(answer);
+		if ("Date".equals(questionType)) {
+			DateBean db = new DateBean();
+			String today;
+			String answerDate;
+			try {
+				today = db.getTodaysDate();
+				answerDate = db.toShowFormat(answer);
+				
+				boolean result = db.isFirstBeforeSecond(answerDate, today);
+				
+				
+				if (">".equals(comparison))
+					return (result);
+				if ("<".equals(comparison))
+					return (result);
+				return (today.compareTo(answerDate) == 0);
+			} catch (Exception e) {
+				return true;
+				}
+		}
 		if ("".equals(answer))
 			return true;
 		if ("Yes/No/NA".equals(questionType) || "Yes/No".equals(questionType) || "Manual".equals(questionType))
