@@ -17,8 +17,8 @@ public class ReportActionSupport extends PicsActionSupport {
 	protected String orderBy;
 	protected int showPage;
 	protected ColorAlternater color = new ColorAlternater();
-	
-	protected boolean filtered = false;
+
+	protected Boolean filtered = null;
 
 	public int getShowPage() {
 		return showPage;
@@ -49,14 +49,14 @@ public class ReportActionSupport extends PicsActionSupport {
 	}
 
 	public void run(SelectSQL sql) throws SQLException {
-		for(String filterName: report.getFilters().keySet()) {
+		for (String filterName : report.getFilters().keySet()) {
 			if (report.getFilters().get(filterName).isSet())
 				filtered = true;
 		}
-		
+
 		report.setOrderBy(this.orderBy, null);
 		report.setSql(sql);
-		
+
 		if (showPage > 0)
 			report.setCurrentPage(showPage);
 
@@ -70,8 +70,11 @@ public class ReportActionSupport extends PicsActionSupport {
 	public void setColor(ColorAlternater color) {
 		this.color = color;
 	}
-	
+
 	public boolean isFiltered() {
+		if (filtered == null)
+			return false;
+
 		return filtered;
 	}
 

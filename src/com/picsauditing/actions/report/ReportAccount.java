@@ -96,6 +96,10 @@ public class ReportAccount extends ReportActionSupport {
 			ServletActionContext.getResponse().sendRedirect(
 					"ContractorView.action?id=" + this.data.get(0).get("id"));
 		}
+		
+		if(filtered == null) 
+			filtered = false;
+		
 		return SUCCESS;
 	}
 
