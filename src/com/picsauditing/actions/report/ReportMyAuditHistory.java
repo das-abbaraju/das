@@ -11,10 +11,11 @@ public class ReportMyAuditHistory extends ReportContractorAudits {
 
 		if (orderBy != null)
 			orderBy = "ca.closedDate DESC";
+		
+		if(filtered == null) 
+			filtered = false;
+				
 		return super.execute();
 	}
 
-	protected void toggleFilters() {
-		super.toggleFilters();
-	}
 }

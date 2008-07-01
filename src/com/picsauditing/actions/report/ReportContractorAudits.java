@@ -51,12 +51,15 @@ public class ReportContractorAudits extends ReportAccount {
 		}
 		if (orderBy == null)
 			orderBy = "ca.createdDate DESC";
+		
+		if(filtered == null) 
+			filtered = true;
+		
 		return super.execute();
 	}
 
 	protected void toggleFilters() {
 		super.toggleFilters();
-
 		if (permissions.isOperator() || permissions.isCorporate())
 			filterAuditor = false;
 	}

@@ -36,7 +36,10 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		if (orderBy == null) {
 			orderBy = "ca.createdDate";
 		}
-
+		
+		if(filtered == null) 
+			filtered = false;
+				
 		return super.execute();
 	}
 

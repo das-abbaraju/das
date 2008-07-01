@@ -16,6 +16,10 @@ public class ReportAccountAudits extends ReportAccount {
 		sql.addField("c.certs");
 
 		toggleFilters();
+		
+		if(filtered == null) 
+			filtered = true;
+		
 		return super.execute();
 	}
 

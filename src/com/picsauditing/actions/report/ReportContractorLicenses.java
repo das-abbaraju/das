@@ -14,6 +14,10 @@ public class ReportContractorLicenses extends ReportContractorAudits {
 		sql.addField("q755.verifiedAnswer AS verifiedAnswer755");
 		sql.addField("q755.isCorrect AS isCorrect755");
 		setOrderBy("a.name");
+		
+		if(filtered == null) 
+			filtered = false;
+		
 		return super.execute();
 	}
 }

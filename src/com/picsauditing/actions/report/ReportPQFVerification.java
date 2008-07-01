@@ -47,6 +47,10 @@ public class ReportPQFVerification extends ReportContractorAudits {
 		if (emr05) {
 			sql.addWhere("q889.dateVerified IS NULL OR q889.dateVerified='0000-00-00'");
 		}
+		
+		if(filtered == null) 
+			filtered = false;
+				
 		return super.execute();
 	}
 
