@@ -138,7 +138,7 @@ import com.picsauditing.util.LinkBuilder;
 	public static final boolean DONT_SHOW_ALL = false;
 	public boolean showAll = false;
 	public static final String[] INDUSTRY_SEARCH_ARRAY = {DEFAULT_INDUSTRY,"Petrochemical","Mining","Power","General",
-											"Construction","Manufacturing"};		
+											"Construction","Manufacturing","Pharmaceutical","Telecommunications"};		
 	static final String[] ZIP_SEARCH_ARRAY = {DEFAULT_ZIP,"9","8","7","6","5","4","3","2","1","0"};		
 	public static final String[] FLAG_STATUS_ARRAY = {DEFAULT_FLAG_STATUS,"Green","Amber","Red"};
 	public static final String NEW_AUDITS = "new";

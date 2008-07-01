@@ -24,7 +24,7 @@ public class AccountBean extends DataBean {
 	private static final int PASSWORD_DURATION = 365; // days between required password update
 	public static final int MIN_PASSWORD_LENGTH = 5; // minimum required length of a passord
 	static final String[] INDUSTRY_ARRAY = {"Petrochemical","Mining","Power","General",
-											"Construction","Manufacturing"};
+							"Construction","Manufacturing","Pharmaceutical","Telecommunications"};
 	OperatorBean o = null;
 	String accountDate = "";
 	public String userID = "0"; //used in check login, to set id for users not in main accounts table, but in users table
