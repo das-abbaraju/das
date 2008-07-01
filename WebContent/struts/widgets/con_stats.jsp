@@ -16,5 +16,6 @@
 <p><label>Primary Email:</label> <s:property value="contractor.email" /></p>
 <s:if test="contractor.auditor.name != null">
 	<p><label>Assigned Representative:</label> <s:property value="contractor.auditor.name" /></p>
+	<p><label>Representative's Email:</label> <s:property value="contractor.auditor.email" /></p>
 </s:if>
 
