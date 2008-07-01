@@ -86,7 +86,7 @@ public class FlagCriteria extends DataBean {
 			}
 		try{
 			DBReady();
-			String deleteQuery = "DELETE FROM flagCriteria WHERE opID="+opID+" AND flagStatus='"+flagStatus+"';";
+			String deleteQuery = "DELETE FROM flagCriteria WHERE opID="+opID+" AND flagStatus='"+flagStatus+"' AND (questionID<>401 AND questionID<>755);";
 			SQLStatement.executeUpdate(deleteQuery);
 			if (doInsert)
 				SQLStatement.executeUpdate(insertQuery.substring(0,insertQuery.length()-1));

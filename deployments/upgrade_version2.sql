@@ -617,11 +617,11 @@ delete from pqfdata where conID in (70,249)
 	);
 
 
-insert into flagcriteria (criteriaID, opID, questionID, flagStatus, isChecked, questionType, comparison, value, validationRequired)
-values (1573, 16, 401, 'Red', 'Yes', "Exists", "=", "", 1);
+insert into flagcriteria (opID, questionID, flagStatus, isChecked, questionType, comparison, value, validationRequired)
+values (16, 401, 'Red', 'Yes', "Exists", "=", "", 1);
 
-insert into flagcriteria (criteriaID, opID, questionID, flagStatus, isChecked, questionType, comparison, value, validationRequired)
-values (1574, 16, 755, 'Red', 'Yes', "Date", "<", "Today", 1);
+insert into flagcriteria (opID, questionID, flagStatus, isChecked, questionType, comparison, value, validationRequired)
+values (16, 755, 'Red', 'Yes', "Date", "<", "Today", 1);
 
 insert into pqfData (conID,questionID,answer,comment,dateVerified,wasChanged)
 	(select con_id AS conID,

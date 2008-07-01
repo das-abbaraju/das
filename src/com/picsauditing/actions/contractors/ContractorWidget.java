@@ -53,9 +53,11 @@ public class ContractorWidget extends ContractorActionSupport {
 				if (conAudit.getAuditType().isPqf() && conAudit.getAuditStatus().equals(AuditStatus.Pending)) {
 					openTasks.add("Please <a href=\"Audit.action?auditID="+conAudit.getId()+"\">complete your Pre-Qualification Form</a>");
 				}
+				
 				if (conAudit.getAuditType().isHasRequirements()
 						&& conAudit.getAuditStatus().equals(AuditStatus.Submitted)
-						&& conAudit.getPercentVerified() < 100) {
+						&& conAudit.getPercentVerified() < 100
+						&& conAudit.getId() == 1) {
 					openTasks.add("You have <a href=\"Audit.action?auditID="+conAudit.getId()+"\">open requirements from your recent "+conAudit.getAuditType().getAuditName()+"</a>");
 				}
 				if (conAudit.getAuditStatus().equals(AuditStatus.Pending)
