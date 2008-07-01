@@ -309,6 +309,11 @@
 			class="com.picsauditing.actions.report.ReportPQFVerification">
 			<result>struts/reports/pqf_verification.jsp</result>
 		</action>
+		
+		<action name="OpenAuditsMailer"
+			class="com.picsauditing.actions.audits.OpenAuditsMailer">
+			<result>/struts/blank.jsp</result>
+		</action>
 
 	</package>
 </struts>

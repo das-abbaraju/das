@@ -12,6 +12,7 @@ public enum EmailTemplates {
 	newuser("Welcome New User", "EmailUserBean"),
 	verifyPqf("Verify PQF", "EmailContractorBean"),
 	contractorconfirm("Confirm Audit Contractor", "EmailContractorBean"),
+	openRequirements("Open Requirements Reminder", "EmailAuditBean"),
 	auditorconfirm("Confirm Audit Auditor", "EmailUserBean");
 
 	EmailTemplates(String description, String className){

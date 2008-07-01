@@ -4,6 +4,12 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.util.PermissionQueryBuilder;
 
+/**
+ * SELECT a.id, a.name, a.active
+ * FROM accounts a
+ * @author Trevor
+ *
+ */
 public class SelectAccount extends SelectSQL {
 	private Type type = null;
 

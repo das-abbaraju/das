@@ -1,5 +1,15 @@
 package com.picsauditing.search;
 
+/**
+ * SELECT a.id, a.name, a.active, ca.auditID, ca.auditTypeID, atype.auditName, ca.auditStatus
+ * FROM accounts a
+ * JOIN contractor_info c ON a.id = c.id
+ * JOIN contractor_audit ca ON ca.conID = a.id
+ * JOIN audit_type atype ON atype.auditTypeID = ca.auditTypeID
+ * WHERE a.type='Contractor'
+ * @author Trevor
+ *
+ */
 public class SelectContractorAudit extends SelectAccount {
 
 	public SelectContractorAudit() {
