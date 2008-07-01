@@ -514,9 +514,34 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.certificates = certificates;
 	}
 
+	@Transient
+	public int getUpgradeAmountOwed() {
+		if ("No".equals(mustPay))
+			return 0;
+		if ("Yes".equals(isExempt))
+			return 0;
+		if (lastPayment.after(lastInvoiceDate)) // already paid the invoice
+			return 0;
+		if (billingAmount < lastPaymentAmount) // they already overpaid (probably garbage data)
+			return 0;
+		if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) > 75)
+			return 0; // This is an invoice for annual payment
+		
+		return billingAmount;
+	}
 	
-	
-	
-	
-	
+	@Transient
+	public int getAnnualAmountOwed() {
+		if ("No".equals(mustPay))
+			return 0;
+		if ("Yes".equals(isExempt))
+			return 0;
+		if (lastPayment.after(lastInvoiceDate)) // already paid the invoice
+			return 0;
+		if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) < 75)
+			return 0; // This is an invoice for upgrade payment
+		
+		return billingAmount;
+	}
+
 }

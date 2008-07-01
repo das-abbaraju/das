@@ -312,6 +312,14 @@ public class DateBean {
 		return 12;
 	}
 
+	/**
+	 * SecondDate - FirstDate <br/>
+	 * Example: 1/1/08 and 2/1/08 = 31 <br/>
+	 * 1/1/08 and 12/31/07 = -1
+	 * @param firstDate
+	 * @param secondDate
+	 * @return days between the two dates
+	 */
 	public static int getDateDifference(Date firstDate, Date secondDate) {
 		long msApart = secondDate.getTime() - firstDate.getTime();
 		return (int)(msApart / (24 * 60 * 60 * 1000));
