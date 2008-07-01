@@ -99,13 +99,11 @@
 			String name = operator.getName();
 			if (cBean.generalContractors.contains(opID)) {
 				oBean.setFromDB(opID);
-				String flagColor = "red";
+				String flagColor = "";
 				FlagDO opFlag = flagMap.get(opID);
 				if (opFlag != null)
 					flagColor = opFlag.getFlag().toLowerCase();
 
-				
-				
 				if (permissions.isCorporate() && !pBean.oBean.facilitiesAL.contains(opID)) {
 	%>
 	<input type="hidden" name="genID_<%=opID%>" value="Yes" />
@@ -159,8 +157,8 @@
 					if (!cBean.generalContractors.contains(opID)) {
 						if (permissions.isCorporate() && pBean.oBean.facilitiesAL.contains(opID)
 							|| !permissions.isCorporate()) {
-								String flagColor = "red";
-								FlagDO opFlag = flagMap.get(opID);
+							String flagColor = "";
+							FlagDO opFlag = flagMap.get(opID);
 							if (opFlag != null)
 								flagColor = opFlag.getFlag().toLowerCase();
 	%>

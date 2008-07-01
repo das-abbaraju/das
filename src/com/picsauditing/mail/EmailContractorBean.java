@@ -1,7 +1,6 @@
 package com.picsauditing.mail;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.UserDAO;
