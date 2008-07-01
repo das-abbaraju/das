@@ -51,6 +51,11 @@
 					cBean.setUploadedFiles(request);
 					cBean.writeToDB();
 					cBean.buildAudits();
+					
+					BillContractor billing = new BillContractor();
+					billing.setContractor(id);
+					billing.calculatePrice();
+					billing.writeToDB();
 					FlagCalculator2 flagCalc2 = (FlagCalculator2)SpringUtils.getBean("FlagCalculator2");
 					flagCalc2.runByContractor(Integer.parseInt(editID));	
 					response.sendRedirect("ContractorView.action?id=" + editID);

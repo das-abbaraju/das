@@ -32,7 +32,7 @@ import com.picsauditing.access.Permissions;
 @Entity
 @Table(name = "contractor_info")
 @PrimaryKeyJoinColumn(name = "id")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="temp")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class ContractorAccount extends Account implements java.io.Serializable {
 
 	private String taxId;
@@ -86,8 +86,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.type = "Contractor";
 	}
 
-	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.PERSIST,
-			CascadeType.MERGE, CascadeType.REMOVE })
+	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
 	@OrderBy("location")
 	public List<OshaLog> getOshas() {
 		return oshas;
@@ -97,7 +96,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.oshas = oshas;
 	}
 
-	@OneToMany(mappedBy = "contractorAccount",cascade = { CascadeType.PERSIST, CascadeType.MERGE } )
+	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	public List<ContractorAudit> getAudits() {
 		return this.audits;
 	}
@@ -276,8 +275,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 * @param note
 	 */
 	public void addNote(Permissions permissions, String note) {
-		this.notes = DateBean.getTodaysDateTime() + " " + permissions.getName()
-				+ ": " + note + "\n" + this.notes;
+		this.notes = DateBean.getTodaysDateTime() + " " + permissions.getName() + ": " + note + "\n" + this.notes;
 	}
 
 	@Column(name = "adminNotes", nullable = true, length = 16277215)
@@ -495,8 +493,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	/**
 	 * Map of Contractor Flags with OperatorID as the key
 	 */
-	@MapKey(name="operatorAccount")
-	@OneToMany(mappedBy="contractorAccount")
+	@MapKey(name = "operatorAccount")
+	@OneToMany(mappedBy = "contractorAccount")
 	public Map<OperatorAccount, ContractorOperatorFlag> getFlags() {
 		return flags;
 	}
@@ -504,8 +502,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setFlags(Map<OperatorAccount, ContractorOperatorFlag> flags) {
 		this.flags = flags;
 	}
-	
-	@OneToMany(mappedBy="contractorAccount")
+
+	@OneToMany(mappedBy = "contractorAccount")
 	public List<Certificate> getCertificates() {
 		return certificates;
 	}
@@ -522,14 +520,15 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			return 0;
 		if (lastPayment.after(lastInvoiceDate)) // already paid the invoice
 			return 0;
-		if (billingAmount < lastPaymentAmount) // they already overpaid (probably garbage data)
+		if (billingAmount < lastPaymentAmount) // they already overpaid
+												// (probably garbage data)
 			return 0;
 		if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) > 75)
 			return 0; // This is an invoice for annual payment
-		
+
 		return billingAmount;
 	}
-	
+
 	@Transient
 	public int getAnnualAmountOwed() {
 		if ("No".equals(mustPay))
@@ -540,7 +539,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			return 0;
 		if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) < 75)
 			return 0; // This is an invoice for upgrade payment
-		
+
 		return billingAmount;
 	}
 

@@ -21,6 +21,10 @@
 		if (cBean.writeGeneralContractorsToDB(pBean, FACILITIES)) {
 			cBean.writeToDB();
 			cBean.buildAudits();
+			BillContractor billing = new BillContractor();
+			billing.setContractor(id);
+			billing.calculatePrice();
+			billing.writeToDB();
 			//	EmailBean.sendUpdateDynamicPQFEmail(id);
 		}
 		if (permissions.isContractor()) {
@@ -37,6 +41,11 @@
 				+ tempOpBean.name + "'s db", DateBean.getTodaysDateTime());
 		cBean.writeToDB();
 		cBean.buildAudits();
+		BillContractor billing = new BillContractor();
+		billing.setContractor(id);
+		billing.calculatePrice();
+		billing.writeToDB();
+	
 	}
 	cBean.setFromDB(id);
 	OperatorAccountDAO operatorDao = (OperatorAccountDAO)SpringUtils.getBean("OperatorAccountDAO");
@@ -47,6 +56,7 @@
 	FlagDO flagDO = new FlagDO();
 	HashMap<String, FlagDO> flagMap = flagDO.getFlagByContractor(id);
 %>
+<%@page import="com.picsauditing.jpa.entities.ContractorAccount"%>
 <html>
 <head>
 <title>Contractor Facilities</title>
