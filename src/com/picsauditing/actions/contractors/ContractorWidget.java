@@ -53,7 +53,7 @@ public class ContractorWidget extends ContractorActionSupport {
 
 				if (conAudit.getAuditType().isHasRequirements()
 						&& conAudit.getAuditStatus().equals(AuditStatus.Submitted)
-						&& conAudit.getPercentVerified() < 100 && conAudit.getId() == 1) {
+						&& conAudit.getPercentVerified() < 100 && !conAudit.getAuditType().isPqf()) {
 					openTasks.add("You have <a href=\"Audit.action?auditID=" + conAudit.getId()
 							+ "\">open requirements from your recent " + conAudit.getAuditType().getAuditName()
 							+ "</a>");
