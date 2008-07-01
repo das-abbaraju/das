@@ -25,15 +25,14 @@ function showPanel(panel) {
 </head>
 <body>
 
-<s:if test="!permissions.contractor">
+<s:if test="permissions.contractor">
+	<s:include value="contractors/conHeader.jsp" />
+</s:if>
+<s:else>
 	<h1>Welcome to PICS Online
 		<span class="sub"><s:property value="account.name" /></span>
 	</h1>
-</s:if>	
-<s:else test="permissions.contractor">
-	<s:include value="contractors/conHeader.jsp" />
 </s:else>
-
 <s:iterator value="columns">
 <div class="column" id="column<s:property value="key"/>" style="width: <s:property value="columnWidth"/>%">
 
