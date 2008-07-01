@@ -24,7 +24,7 @@ function checkUsername(username) {
 </head>
 <body>
 <h1>Edit Profile</h1>
-<div id="info" <s:if test="message == null">style="display: none"</s:if>><s:property value="message"/></div>
+<div id="info" <s:if test="message.length() == 0">style="display: none"</s:if>><s:property value="message"/></div>
 <s:actionerror/>
 <br clear="all" >
 
