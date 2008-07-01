@@ -283,7 +283,7 @@ Would you still like to schedule <b><%=aBean.name%></b> on this date? <span
 		<td class="blueMain" align="right"><nobr>Membership Date:</nobr></td>
 		<td><input name="membershipDate" id="membershipDate" type="text"
 			class="forms" size="10"
-			onClick="cal1.select(document.forms[0].membershipDate,'membershipDate','M/d/yy','<%=cBean.membershipDate%>'); return false;"
+			onClick="cal1.select(document.form1.membershipDate,'membershipDate','M/d/yy','<%=cBean.membershipDate%>'); return false;"
 			value="<%=cBean.membershipDate%>"></td>
 	</tr>
 	<tr>
@@ -293,7 +293,7 @@ Would you still like to schedule <b><%=aBean.name%></b> on this date? <span
 			value="<%=cBean.billingAmount%>"> on <input
 			name="lastInvoiceDate" id="lastInvoiceDate" type="text" class="forms"
 			size="10"
-			onClick="cal1.select(document.forms[0].lastInvoiceDate,'lastInvoiceDate','M/d/yy','<%=cBean.lastInvoiceDate%>'); return false;"
+			onClick="cal1.select(document.form1.lastInvoiceDate,'lastInvoiceDate','M/d/yy','<%=cBean.lastInvoiceDate%>'); return false;"
 			value="<%=cBean.lastInvoiceDate%>"></td>
 	</tr>
 	<tr>
@@ -303,14 +303,14 @@ Would you still like to schedule <b><%=aBean.name%></b> on this date? <span
 			value="<%=cBean.lastPaymentAmount%>"> on <input
 			name="lastPayment" id="lastPayment" type="text" class="forms"
 			size="10"
-			onClick="cal1.select(document.forms[0].lastPayment,'lastPayment','M/d/yy','<%=cBean.lastPayment%>'); return false;"
+			onClick="cal1.select(document.form1.lastPayment,'lastPayment','M/d/yy','<%=cBean.lastPayment%>'); return false;"
 			value="<%=cBean.lastPayment%>"></td>
 	</tr>
 	<tr>
 		<td class="blueMain" align="right">Payment Expires:</td>
 		<td><input name="paymentExpires" id="paymentExpires" type="text"
 			class="forms" size="10"
-			onClick="cal1.select(document.forms[0].paymentExpires,'paymentExpires','M/d/yy','<%=cBean.paymentExpires%>'); return false;"
+			onClick="cal1.select(document.form1.paymentExpires,'paymentExpires','M/d/yy','<%=cBean.paymentExpires%>'); return false;"
 			value="<%=cBean.paymentExpires%>"></td>
 	</tr>
 	<tr>
