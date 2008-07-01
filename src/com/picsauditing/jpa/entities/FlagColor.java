@@ -31,7 +31,7 @@ public enum FlagColor {
 	}
 	
 	public String getSmallIcon() {
-		return "<img src=\"images/icon_"+this.toString().toLowerCase()+
-			"Flag.gif\" width=\"10\" height=\"12\" border=\"0\" title=\""+this.toString()+"\" />";
+			return "<img src=\"images/icon_"+this.toString().toLowerCase()+
+				"Flag.gif\" width=\"10\" height=\"12\" border=\"0\" title=\""+this.toString()+"\" />";
 	}
 }
