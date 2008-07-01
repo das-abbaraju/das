@@ -7,11 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts2.interceptor.ServletRequestAware;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
 
-public class AuditScheduleUpdate extends ActionSupport implements
-		ServletRequestAware {
+public class AuditScheduleUpdate extends ActionSupport implements ServletRequestAware {
 	protected ContractorAudit contractorAudit = null;
 	protected ContractorAuditDAO dao = null;
 
@@ -25,8 +25,13 @@ public class AuditScheduleUpdate extends ActionSupport implements
 		String auditID = request.getParameter("auditID").toString();
 		String type = request.getParameter("type").toString();
 		contractorAudit = dao.find(Integer.parseInt(auditID));
-		if (type.equals("c"))
+		if (type.equals("c")) {
 			contractorAudit.setContractorConfirm(new Date());
+			String notes = DateBean.getTodaysDateTime() + ": " + contractorAudit.getContractorAccount().getName()
+					+ " has confirmed the " + contractorAudit.getAuditType().getAuditName() + " on "
+					+ contractorAudit.getContractorConfirm();
+			contractorAudit.getContractorAccount().setNotes(notes);
+		}
 		if (type.equals("a"))
 			contractorAudit.setAuditorConfirm(new Date());
 		dao.save(contractorAudit);
