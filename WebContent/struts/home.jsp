@@ -28,6 +28,10 @@ function showPanel(panel) {
 <span class="sub"><s:property value="account.name" /></span>
 </h1>
 
+<s:if test="permissions.contractor">
+	<s:include value="contractors/conHeader.jsp" />
+</s:if>	
+
 <s:iterator value="columns">
 <div class="column" id="column<s:property value="key"/>" style="width: <s:property value="columnWidth"/>%">
 

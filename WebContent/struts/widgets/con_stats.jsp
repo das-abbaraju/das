@@ -14,3 +14,7 @@
 <p><label>Account Since:</label> <s:date name="contractor.accountDate" format="MMM d, yyyy" /></p>
 <p><label>Primary Contact:</label> <s:property value="contractor.contact" /></p>
 <p><label>Primary Email:</label> <s:property value="contractor.email" /></p>
+<s:if test="contractor.auditor.name != null">
+	<p><label>Assigned Representative:</label> <s:property value="contractor.auditor.name" /></p>
+</s:if>
+
