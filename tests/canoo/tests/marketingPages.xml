@@ -51,6 +51,11 @@
 				&body_verify;
 				
 				<invoke
+					description="Get News Archive page"
+					url="featured_newsarchive.jsp" />
+				&body_verify;
+
+				<invoke
 					description="Get Career Opportunities page"
 					url="career_opportunity.jsp" />
 				&body_verify;

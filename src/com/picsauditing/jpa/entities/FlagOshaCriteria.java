@@ -19,7 +19,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "flagoshacriteria")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="daily")
+//@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="daily")
 public class FlagOshaCriteria {
 	protected int id;
 	protected OperatorAccount operatorAccount;

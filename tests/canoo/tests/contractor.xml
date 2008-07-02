@@ -2,38 +2,46 @@
 <!DOCTYPE project SYSTEM "../dtd/Project.dtd">
 
 <project name="PICS" default="test">
-	<property name="login.username" value="Couch" />
+	<description>448 - Air Quality Engineering, Inc.</description>
+	<property name="login.username" value="shnguyen" />
 	<target name="test">
-		<webtest name="Contractor">
+		<webtest name="Contractor" description="448 - Air Quality Engineering, Inc.">
 			&config;
 			<steps>
 				&login;
 				&body_verify;
 				
-<!--Commented out since the Edit Account Info link is not on this page -->
-<!--				<clickLink description="Edit Account Info"-->
-<!--					label="Edit Account Info" />-->
-<!--				&body_verify;-->
+				<clickLink description="Edit Account Info"
+					label="Edit" />
+				&body_verify;
 
-<!--Commented out since the Facilities link is not on this page -->
-<!--				<clickLink description="Facilities"-->
-<!--					label="Facilities" />-->
-<!--				&body_verify;-->
+				<clickLink description="Facilities"
+					label="Facilities" />
+				&body_verify;
 
-<!--Commented out since the Audits link is not on this page-->
-<!--				<clickLink description="Audits"-->
-<!--					label="Audits" />-->
-<!--				&body_verify;-->
+				<clickLink description="Forms and Docs"
+					label="Forms &amp; Docs" />
+				&body_verify;
 
-<!--Commented out since the Audit Requirements link is not on this page-->
-<!--				<clickLink description="Office Audit Requirements"-->
-<!--					label="Office Audit" />-->
-<!--				&body_verify;-->
+				<clickLink description="Audits"
+					label="Audits" />
+				&body_verify;
 
-<!--Commented out since the Forms and Docs link is not on this page-->
-<!--				<clickLink description="Forms and Docs"-->
-<!--					label="Forms &amp; Docs" />-->
-<!--				&body_verify;-->
+				<clickLink description="View PQF"
+					label="PQF" />
+				&body_verify;
+
+				<clickLink description="View Category 1 COMPANY INFORMATION"
+					label="COMPANY INFORMATION" />
+				&body_verify;
+
+				<clickLink description="View Desktop Audit"
+					label="Desktop Audit" />
+				&body_verify;
+
+				<clickLink description="View Office Audit"
+					label="Office Audit" />
+				&body_verify;
 
 			</steps>
 		</webtest>
