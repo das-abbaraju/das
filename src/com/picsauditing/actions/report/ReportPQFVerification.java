@@ -53,6 +53,11 @@ public class ReportPQFVerification extends ReportContractorAudits {
 				
 		return super.execute();
 	}
+	
+	protected void toggleFilters() {
+		super.toggleFilters();
+		this.filterAuditType = false;
+	}
 
 	public boolean isFilterOshaEmr() {
 		return filterOshaEmr;
