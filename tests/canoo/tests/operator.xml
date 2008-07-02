@@ -4,51 +4,69 @@
 <project name="PICS" default="test">
 	<property name="login.username" value="kevin.dyer@shell.com"/>
 	<property name="conID" value="2459"/>
+	<property name="opID" value="1191"/>
 	
 	<target name="test">
-		<webtest name="Operator Shell Kevin Dyer">
+		<webtest name="Operator Tests with Contractor">
 			&config;
 			<steps>
 				&login;
-				<!--   CONTRACTOR LIST -->
-				&body_verify;
-				
-				<clickLink description="Show contractor List"
+<!--Contractor List Page -->
+				<clickLink 
+					description="Show List of Contractors"
 					href="ContractorListOperator.action" />
 				&body_verify;
-				
-				<!--  Confirm Filter options available -->
-				<verifyText description="Verify filter options available" 
+				<verifyText 
+					description="Verify if Filter Options are Available" 
 					text="updateQuery(name)" />
-				&body_verify;			
-
-				<verifyText description="Verify name of company"
+					&body_verify;
+				<verifyText 
+					description="Verify Company Name in List"
 					text="Aaron Oil Company" />
-				&body_verify;
-
-				<clickLink description="Verfify Notes exist"
+					&body_verify;
+				<clickLink 
+					description="Verify Notes Exist for Contractor"
 					href="ContractorView.action?id=${conID}" />
-				&body_verify;
-								
-				<clickLink description="Flag Report"
-					href="ContractorFlag.action?id=${conID}" />
-				&body_verify;
-				
-				<clickLink description="View Audits"
-					href="ConAuditList.action?id=${conID}" />
-				&body_verify;
-				
-				<clickLink description="View PQF"
+					&body_verify;
+				<clickLink 
+					description="Verify if PQF Label exists"
 					label="PQF" />
-				&body_verify;				
-
-				<clickLink description="View Desktop Audit"
+					&body_verify;				
+				<clickLink 
+					description="Verify if Desktop Audit exists"
 					label="Desktop Audit (NCMS)" />
-				&body_verify;
-				
-				<!--   New Contractor Search -->
-				<clickLink description="Search For New Contractors"
+					&body_verify;						
+				<clickLink 
+					description="Verify if Flag Report exists"
+					href="ContractorFlag.action?id=${conID}" />
+					&body_verify;
+				<clickLink
+					description="Verify if Edit Flag Criteria exists"
+					label="Edit Flag Criteria" />
+					
+				<clickLink
+					description="Go back to Home Page"
+					href="Home.action" />
+<!--Contact Info Page -->
+				<clickLink
+					description="Verify if Contact Info exists"
+					href="report_contactInfo.jsp?changed=1" />
+				<verifyText 
+					description="Verify results of Contacts"
+					text="Showing 1-[0-9]* of .strong.[1-9][0-9]*..strong. results" regex="true" />
+					&body_verify;
+<!--What to do here??-->
+<!--				<verifyText-->
+<!--					description="Verify if Download Excel File link exists"-->
+<!--					label="Download Excel File" />-->
+<!--Search for New Page -->
+				<clickLink 
+					description="Search For New Contractors"
 					label="Search For New" />
+				<setSelectField 
+					description="Choose Green Flag"
+					name="flagStatus"
+					value="Green" />
 				<setSelectField 
 					description="Choose Trade=Cranes &amp; Rigging"
 					name="trade"
@@ -57,40 +75,69 @@
 					description="Choose Self Performed"
 					name="performedBy"
 					value="Self Performed" />
+				<clickButton
+					name="imageField"
+					description="Click the Search button" />
+					&body_verify;
+				<verifyText 
+					description="Show List of Contractors"
+					text="Showing 1-[0-9]* of .strong.[1-9][0-9]*..strong. results" regex="true" />
+					&body_verify;															
+<!--By Operator Page -->
+				<clickLink 
+					description="Verify By Operator exists"
+					label="By Operator" />
+				<verifyText 
+					description="Show List of Contractors by Facility"
+					text="Showing 1-[0-9]* of .strong.[1-9][0-9]*..strong. results" regex="true" />
+					&body_verify;
+<!--Audit List Page -->
+				<clickLink 
+					description="View Audits"
+					label="Audit List" />
+					&body_verify;
 				<setSelectField 
 					description="Choose Green Flag"
 					name="flagStatus"
 					value="Green" />
-				<clickButton
-					name="imageField"
-					description="Click the Search button" />
-				&body_verify;
-				
-				<verifyText description="Show List of Contractors"
+				<setSelectField 
+					description="Choose Self Performed"
+					name="performedBy"
+					value="Self Performed" />
+				<clickLink
+					description="Click the Search button"				
+					label="Search" />
+				<verifyText 
+					description="Show List of Contractors"
 					text="Showing 1-[0-9]* of .strong.[1-9][0-9]*..strong. results" regex="true" />
-				&body_verify;					
-
-				<clickLink description="Manage User Accounts"
+					&body_verify;	
+				<clickLink 
+					description="Manage User Accounts"
 					href="UsersManage.action" />
-				&body_verify;
-				
-				<verifyText description="[Add User] link exists"
+					&body_verify;
+				<verifyText 
+					description="[Add User] link exists"
 					text="Add User" />
-				
-				<storeProperty name="report_link" value="Contact Info" />
-				&click_report;
-				
-				<storeProperty name="report_link" value="EMR Rates" />
-				&click_report;
-
-				<storeProperty name="report_link" value="Fatalities" />
-				&click_report;
-
-				<storeProperty name="report_link" value="Incidence Rates" />
-				&click_report;
-
-				<storeProperty name="report_link" value="Flag Criteria" />
-				&click_report;
+				<storeProperty 
+					name="report_link" 
+					value="Contact Info" />
+					&click_report;
+				<storeProperty 
+					name="report_link" 
+					value="EMR Rates" />
+					&click_report;
+				<storeProperty 
+					name="report_link" 
+					value="Fatalities" />
+					&click_report;
+				<storeProperty 
+					name="report_link" 
+					value="Incidence Rates" />
+					&click_report;
+				<storeProperty 
+					name="report_link" 
+					value="Flag Criteria" />
+					&click_report;
 			</steps>
 		</webtest>
 	</target>
