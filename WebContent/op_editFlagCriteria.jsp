@@ -146,7 +146,7 @@ if (canEditFlagCriteria) {
 		</td>
 	</tr>
 	<%
-		hurdleQuestions.setList();
+		hurdleQuestions.setList(opID);
 		while (hurdleQuestions.isNext()) {
 	%>
 	<tr>

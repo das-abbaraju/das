@@ -46,24 +46,15 @@ public class HurdleQuestions extends DataBean {
 		return "<input type=hidden name=hurdleValueQ_"+questionID+" value=0>";
 	}//getValueInput
 	
-	public ArrayList<String> getQIDsAL() throws Exception {
-		if (null != qIDsAL)
-			return qIDsAL;
-		qIDsAL = new ArrayList<String>();
-		setList();
-		while (isNext())
-			qIDsAL.add(questionID);
-		closeList();
-		return qIDsAL;
-	}//getQIDsAL
-
-	public void setList() throws Exception {
-		String selectQuery = "SELECT pc.auditTypeID, pc.number, ps.number, pq.number, questionID, question, questionType "+
-				"FROM pqfCategories pc " +
-				"INNER JOIN pqfSubCategories ps ON (catID=categoryID) "+
-				"INNER JOIN pqfQuestions pq ON (subCatID=subCategoryID) WHERE isRedFlagQuestion='Yes' "+
-				"ORDER BY pc.number, ps.number, pq.number";
-		try{
+	public void setList(String opID) throws Exception {
+		String selectQuery = "SELECT pc.auditTypeID, pc.number, ps.number, pq.number, questionID, question, questionType " +
+								"FROM pqfCategories pc " +
+								"JOIN pqfSubCategories ps ON (catID=categoryID) " +
+								"JOIN pqfQuestions pq ON (subCatID=subCategoryID) " +
+								"WHERE isRedFlagQuestion='Yes' " +
+								"AND pc.catID IN (SELECT catID FROM pqfopmatrix WHERE opID = " + opID + ") " +
+								"ORDER BY pc.number, ps.number, pq.number";
+		try {
 			DBReady();
 			listRS = SQLStatement.executeQuery(selectQuery);
 			count = 0;
