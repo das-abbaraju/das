@@ -45,8 +45,6 @@
 <title>Edit Operators</title>
 <script language="JavaScript" SRC="js/DHTMLUtils.js"
 	type="text/javascript"></script>
-<script language="JavaScript" SRC="js/verifyInsurance.js"
-	type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
@@ -205,9 +203,8 @@
 			</tr>
 			<tr>
 				<td class="blueMain" align="right">Sees Ins. Certs:</td>
-				<td class="blueMain" align="left" valign="bottom"><%=Inputs.getYesNoRadioWithEvent("canSeeInsurance", "forms", oBean.canSeeInsurance, "onclick",
-								"setDisplay", "")%>
-				<span id="auditorID" class="display_off"><%=AUDITORS.getAuditorsSelect("insuranceAuditor_id", "forms", oBean.insuranceAuditor_id)%></span>
+				<td class="blueMain" align="left" valign="bottom"><%=Inputs.getYesNoRadio("canSeeInsurance", "forms", oBean.canSeeInsurance)%>
+				<span id="auditorID"><%=AUDITORS.getAuditorsSelect("insuranceAuditor_id", "forms", oBean.insuranceAuditor_id)%></span>
 				</td>
 			</tr>
 			<%
