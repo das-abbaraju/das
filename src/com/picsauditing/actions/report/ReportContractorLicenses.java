@@ -20,4 +20,9 @@ public class ReportContractorLicenses extends ReportContractorAudits {
 		
 		return super.execute();
 	}
+
+	protected void toggleFilters() {
+		super.toggleFilters();
+		this.filterAuditType = false;
+	}
 }
