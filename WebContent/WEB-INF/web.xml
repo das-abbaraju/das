@@ -6,12 +6,8 @@
 	<!-- Set the local upload directory to /wwwroot/www.picsauditing.com/ftp-bin -->
 	<!-- Modify for your local system -->
 	<context-param>
-		<param-name>svn_revision</param-name>
-		<param-value>123</param-value>
-	</context-param>
-	<context-param>
 		<param-name>environmentType</param-name>
-		<param-value>development</param-value>
+		<param-value>prod</param-value>
 	</context-param>
 
 	<!-- Osha, Grace dates-->
