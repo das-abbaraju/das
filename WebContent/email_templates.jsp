@@ -143,13 +143,15 @@ if (template != null) {
 </form>
 email_<%=template%>_subject<br>
 email_<%=template%>_body<br><br>
+<div style="font-size: 12px;">
 <%
 String tStart = "${";
 String tEnd = "}";
 for(String key : tokens.keySet()) {
-	%><%=tStart+key+tEnd%> = <%=tokens.get(key)%><br /><%
+	%><%=tStart+key+tEnd%> = <%=tokens.get(key).getClass()%><br /><%
 }
 %>
+</div>
 </td>
 <td width="600">
 <h2><%=(template==null)?"Pick an Email Template":template.getDescription() %></h2>
