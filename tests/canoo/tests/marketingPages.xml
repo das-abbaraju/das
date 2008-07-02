@@ -1,4 +1,5 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
+
 <!DOCTYPE project SYSTEM "../dtd/Project.dtd">
 
 <project name="PICS" default="test">
@@ -6,12 +7,27 @@
 		<webtest name="Marketing Site">
 			&config;
 			<steps>
+				
 				<invoke
 					description="Get Homepage"
 					url="index.jsp" />
 				<verifyTitle 
 					description="We should see the index page title"
 					text="PICS - Contractor Screening &amp; Contractor Management" />
+				&body_verify;
+				
+				<invoke
+					description="Get Featured Operator page"
+					url="featured_template.jsp" />
+				<verifyText  description="Make sure ConocoPhillips text is there"
+				      text="ConocoPhillips" />
+				&body_verify;
+				
+				<invoke
+					description="Get Featured Contractor page"
+					url="featured_contractor.jsp" />
+				<verifyText  description="Make sure Bigge text is there"
+				      text="Bigge" />
 				&body_verify;
 				
 				<invoke
@@ -33,8 +49,28 @@
 					description="Get Contact page"
 					url="contact.jsp" />
 				&body_verify;
+				
+				<invoke
+					description="Get Career Opportunities page"
+					url="career_opportunity.jsp" />
+				&body_verify;
+
+				<invoke
+					description="Get Milestone Partnership page"
+					url="milestonepartnership.jsp" />
+				&body_verify;
+				
+				<invoke
+					description="Get OSHA Article page"
+					url="article_OSHA300.jsp" />
+				&body_verify;
+
+				<invoke
+					description="Get User Group Meeting page"
+					url="Usergroup_2008.jsp" />
+				&body_verify;
+
 				<!-- TODO test the contact page -->
-				<!-- TODO add other marketing pages ... see decorators.xml for list -->
 			</steps>
 		</webtest>
 	</target>

@@ -14,7 +14,6 @@
 		<pattern>/ChartXML*</pattern>
 		<pattern>/con_pricing.jsp</pattern>
 		<pattern>/ConHeader.action</pattern>
-		
 	</decorator>
 	<decorator name="marketing" page="marketing.jsp">
 		<pattern>/index.jsp</pattern>

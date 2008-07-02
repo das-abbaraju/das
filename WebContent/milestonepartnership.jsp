@@ -1,11 +1,10 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
-<%@page import="com.picsauditing.PICS.EmailBean;"%>
+<%@page import="com.picsauditing.mail.EmailSender;"%>
 <%
 	boolean isSubmitted = (null != request.getParameter("action") && request.getParameter("action").equals(
 			"rsvp"));
 	if (isSubmitted) {
 		String to = "bescoubas@milestonepromise.com,jjacobs@milestonepromise.com,srahnama@milestonepromise.com,jsmith@picsauditing.com,jmoreland@picsauditing.com";
-		String cc = "";
 		String from = request.getParameter("email");
 		String subject = "PICS Milestone referral";
 
@@ -18,7 +17,8 @@
 		message.append("  Phone:      ").append(request.getParameter("phone")).append("\n");
 		message.append("  Email:      ").append(request.getParameter("email")).append("\n");
 
-		EmailBean.sendEmails(from, to, cc, subject, message.toString());
+		EmailSender mailer = new EmailSender();
+		mailer.sendMail(subject, message.toString(), from, to);
 
 		to = request.getParameter("email");
 		from = "info@picsauditing.com";
@@ -30,7 +30,7 @@
 		message.append("Additionally, if you would like to contact Milestone directly, please give them a call at (949)852-0909.");
 		message.append("\n\nThanks,\nPICS");
 
-		EmailBean.sendEmails(from, to, cc, subject, message.toString());
+		mailer.sendMail(subject, message.toString(), from, to);
 	}
 %>
 <html>

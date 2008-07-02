@@ -30,13 +30,13 @@
 	body += "\nEmail: " + request.getParameter("email");
 	body += "\nPhone: " + request.getParameter("phone");
 	body += "\nMessage:\nContact about " + sendTo + ". Sent to:\n";
-	
+
 	for (String toAddress : toAddresses)
 		body += toAddress + "\n";
 	body += "\n" + request.getParameter("message");
-	
+
 	EmailSender mailer = new EmailSender();
-	
+
 	for (String toAddress : toAddresses)
 		mailer.sendMail("Email from PICS website", body, request.getParameter("email"), toAddress);
 %>
