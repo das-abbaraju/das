@@ -16,7 +16,7 @@ public class DateBeanTest extends TestCase {
 
 	@Test
 	public void testDateFormat() throws Exception {
-		String formatted = DateBean.format(new Date(), "MMM yyyy");
-		assertEquals("3/15/07", formatted);
+		String formatted = DateBean.format(new Date(), "M/dd/yy");
+		assertTrue(DateBean.isFirstBeforeSecond("7/01/08", formatted));
 	}
 }

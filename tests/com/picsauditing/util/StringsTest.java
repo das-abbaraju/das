@@ -37,7 +37,7 @@ public class StringsTest extends TestCase {
 
 	public void testString() {
 		String color = "Green";
-		changeColor(color);
+		color = changeColor(color);
 		assertEquals("Red", color);
 	}
 	

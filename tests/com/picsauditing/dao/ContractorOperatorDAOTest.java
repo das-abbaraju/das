@@ -37,12 +37,12 @@ public class ContractorOperatorDAOTest {
 	@Test
 	public void testSaveAndRemove() {
 		ContractorOperator contractorOperator = contractorOperatorDao.find(588, 16);
-		contractorOperator.setForceEnd(new java.util.Date());
+		String color = contractorOperator.getForceFlag().toString();
 		contractorOperator.setForceFlag(FlagColor.Amber);
 		contractorOperatorDao.save(contractorOperator);
-		
 		contractorOperator = contractorOperatorDao.find(588, 16);
-		
 		assertEquals(FlagColor.Amber, contractorOperator.getForceFlag());
+		contractorOperator.setForceFlag(FlagColor.valueOf(color));
+		contractorOperatorDao.save(contractorOperator);
 	}
 }

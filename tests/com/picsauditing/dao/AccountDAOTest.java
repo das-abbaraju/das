@@ -29,13 +29,13 @@ public class AccountDAOTest extends TestCase {
 
 	@Test
 	public void testFind() {
-		Account account = accountdao.find(43);
-		assertEquals("90810", account.getZip());
+		Account account = accountdao.find(3487);
+		assertEquals("Trevor Allred", account.getName());
 	}
 
 	@Test
 	public void testFindWhere() {
-		List<Account> account = accountdao.findWhere("city LIKE 'Corona'");
+		List<Account> account = accountdao.findWhere("type LIKE 'Corporate'");
 		assertTrue(account.size() > 9);
 	}
 }

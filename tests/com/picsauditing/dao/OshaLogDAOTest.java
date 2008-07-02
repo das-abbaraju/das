@@ -28,8 +28,6 @@ public class OshaLogDAOTest {
 		oshalog.getContractorAccount().setId(3666);
 		oshalog.setType(OshaType.OSHA);
 		oshalog.setLocation("irvine");
-		oshalog.getYear1().setManHours(12);
-		oshalog.getYear1().setFatalities(123);
 		oshalog = oshalogDAO.save(oshalog);
 		assertEquals("irvine", oshalog.getLocation());
 		assertTrue(oshalog.getId() > 0);
@@ -37,5 +35,4 @@ public class OshaLogDAOTest {
 		OshaLog oshalog1 = oshalogDAO.find(oshalog.getId());
 		assertNull(oshalog1);
 	}
-
 }

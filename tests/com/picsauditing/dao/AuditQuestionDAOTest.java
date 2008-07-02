@@ -62,7 +62,7 @@ public class AuditQuestionDAOTest {
 		assertNull(auditquestion1);
 	}
 
-	@Test
+	//@Test
 	public void testFind() {
 		AuditQuestion auditquestion = auditquestionDAO.find(39);
 		assertEquals("City:", auditquestion.getQuestion());

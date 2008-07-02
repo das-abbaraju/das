@@ -13,26 +13,26 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.picsauditing.jpa.entities.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/tests.xml")
+@ContextConfiguration(locations = "/tests.xml")
 public class UserDaoTest extends TestCase {
-	
+
 	@Autowired
 	protected UserDAO dao;
 
 	@Test
 	public final void testFind() {
 		try {
-			User row = dao.find(1);
-			assertEquals("PQF", row.getName());
+			User row = dao.find(941);
+			assertEquals(1100, row.getAccount().getId().intValue());
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public final void testFindAll() {
 		try {
-			List<User> rows = dao.findWhere("username LIKE 'tallred'");
+			List<User> rows = dao.findWhere("username LIKE 'james%'");
 			assertTrue(rows.size() > 5);
 		} catch (Exception e) {
 			fail(e.getMessage());

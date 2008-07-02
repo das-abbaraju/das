@@ -44,7 +44,7 @@ public class ContractorAccountDAOTest {
 		contractoraccount.setName("PICS");
 		contractoraccount.setUsername("testpics120");
 		contractoraccount.setPassword("testpics");
-		contractoraccount.setPasswordChange(new Date(2008,01,12));
+		contractoraccount.setPasswordChange(new Date(2008, 01, 12));
 		contractoraccount.setLastLogin(Calendar.getInstance().getTime());
 		contractoraccount.setContact("pics admin");
 		contractoraccount.setAddress("17701 cowan");
@@ -59,36 +59,39 @@ public class ContractorAccountDAOTest {
 		contractoraccount.setIndustry(Industry.Construction);
 		contractoraccount.setActive('y');
 		contractoraccount.setCreatedBy("pics");
-		contractoraccount.setDateCreated(new Date(2008,04,04));
+		contractoraccount.setDateCreated(new Date(2008, 04, 04));
 		contractoraccount.setSeesAllB('n');
 		contractoraccount.setActivationEmailsB("pics@picsauditing.com");
 		contractoraccount.setSendActivationEmailB('n');
-		contractoraccount.setEmailConfirmedDate(new Date(2008,12,42));
+		contractoraccount.setEmailConfirmedDate(new Date(2008, 12, 42));
 		contractoraccount.setTaxId("test17701");
 		contractoraccount.setMainTrade("Consulting");
 		contractoraccount.setTrades("Contractors Prescreening");
 		contractoraccount.setSubTrades("junit testing");
-		contractoraccount.setAccountDate(new Date(2008,04,19));
+		contractoraccount.setAccountDate(new Date(2008, 04, 19));
 		contractoraccount.setPaid("yes");
-		contractoraccount.setLastPayment(new Date(2008,04,26));
+		contractoraccount.setLastPayment(new Date(2008, 04, 26));
 		contractoraccount.setBillingCycle(3);
 		contractoraccount.setIsExempt("no");
-		contractoraccount.setMembershipDate(new Date(2004,12,12));
+		contractoraccount.setMembershipDate(new Date(2004, 12, 12));
 		contractoraccount.setPayingFacilities(10);
 		contractoraccount.setRiskLevel(LowMedHigh.Med);
-		contractoraccount = (ContractorAccount) accountDAO
-				.save(contractoraccount);
+		contractoraccount = (ContractorAccount) accountDAO.save(contractoraccount);
 		assertEquals("test17701", contractoraccount.getTaxId());
 		assertTrue(contractoraccount.getId() > 0);
+
+		List<ContractorAccount> testFindWhere = contractoraccountDAO
+				.findWhere("main_Trade LIKE 'Consulting' AND taxId = 'test17701'");
+		assertEquals("junit testing", testFindWhere.get(0).getSubTrades());
+
 		contractoraccountDAO.remove(contractoraccount.getId());
-		ContractorAccount contractoraccount1 = contractoraccountDAO
-				.find(contractoraccount.getId());
+		ContractorAccount contractoraccount1 = contractoraccountDAO.find(contractoraccount.getId());
 		assertNull(contractoraccount1);
 	}
 
 	@Test
 	public void testFind() {
-		ContractorAccount contractoraccount = contractoraccountDAO.find(3);
+		ContractorAccount contractoraccount = contractoraccountDAO.find(14);
 		for (OshaLog osha : contractoraccount.getOshas()) {
 			assertEquals(0, osha.getYear1().getFatalities());
 		}
@@ -105,22 +108,21 @@ public class ContractorAccountDAOTest {
 		for (ContractorOperator operator : contractoraccountDAO.findOperators(contractoraccount, new Permissions())) {
 			System.out.println(operator.getOperatorAccount().getName());
 		}
-		assertEquals("123456789", contractoraccount.getTaxId());
+		assertEquals("ECI (Ecology Control Inc.)", contractoraccount.getName());
+	}
+
+	// @Test
+	public void testFindWhere() {
+		List<ContractorAccount> contractoraccount = contractoraccountDAO.findWhere("mainTrade LIKE 'Engineering'");
+		assertEquals("Inactive", contractoraccount.get(0).getStatus());
 	}
 
 	@Test
-	public void testFindWhere() {
-		List<ContractorAccount> contractoraccount = contractoraccountDAO
-				.findWhere("mainTrade LIKE 'Engineering'");
-		assertEquals("Inactive", contractoraccount.get(0).getStatus());
-	}
-	
-	@Test
 	public void addContractorOperatorFlag() {
-		ContractorAccount contractoraccount = contractoraccountDAO.find(3);
+		ContractorAccount contractoraccount = contractoraccountDAO.find(14);
 		OperatorAccount operator = new OperatorAccount();
 		operator.setId(1251);
-		
+
 		ContractorOperatorFlag coFlag = new ContractorOperatorFlag();
 		coFlag.setFlagColor(FlagColor.Red);
 		coFlag.setContractorAccount(contractoraccount);
@@ -129,5 +131,6 @@ public class ContractorAccountDAOTest {
 
 		flagDAO.save(coFlag);
 		contractoraccountDAO.save(contractoraccount);
+		flagDAO.remove(coFlag.getId());
 	}
 }
