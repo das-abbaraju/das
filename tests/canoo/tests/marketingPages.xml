@@ -33,7 +33,8 @@
 					description="Get Contact page"
 					url="contact.jsp" />
 				&body_verify;
-				
+				<!-- TODO test the contact page -->
+				<!-- TODO add other marketing pages ... see decorators.xml for list -->
 			</steps>
 		</webtest>
 	</target>

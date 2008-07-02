@@ -27,23 +27,23 @@
 				&body_verify;
 
 				<clickLink description="Verfify Notes exist"
-					href="ContractorView.action?id=2459" />
+					href="ContractorView.action?id=${conID}" />
 				&body_verify;
 								
 				<clickLink description="Flag Report"
-					href="ContractorFlag.action?id=2459" />
+					href="ContractorFlag.action?id=${conID}" />
 				&body_verify;
 				
 				<clickLink description="View Audits"
-					href="ConAuditList.action?id=2459" />
+					href="ConAuditList.action?id=${conID}" />
 				&body_verify;
 				
 				<clickLink description="View PQF"
-					href="Audit.action?auditID=3283" />
+					label="PQF" />
 				&body_verify;				
 
 				<clickLink description="View Desktop Audit"
-					href="Audit.action?auditID=7441" />
+					label="Desktop Audit (NCMS)" />
 				&body_verify;
 				
 				<!--   New Contractor Search -->
