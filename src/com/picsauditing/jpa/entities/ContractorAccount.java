@@ -518,10 +518,9 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			return 0;
 		if ("Yes".equals(isExempt))
 			return 0;
-		if (lastPayment.after(lastInvoiceDate)) // already paid the invoice
+		if (lastPayment.after(lastInvoiceDate) || lastPayment.equals(lastInvoiceDate)) // already paid the invoice
 			return 0;
-		if (billingAmount < lastPaymentAmount) // they already overpaid
-												// (probably garbage data)
+		if (billingAmount < lastPaymentAmount) // they already overpaid (probably garbage data)
 			return 0;
 		if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) > 75)
 			return 0; // This is an invoice for annual payment
@@ -535,7 +534,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			return 0;
 		if ("Yes".equals(isExempt))
 			return 0;
-		if (lastPayment.after(lastInvoiceDate)) // already paid the invoice
+		if (lastPayment.after(lastInvoiceDate) || lastPayment.equals(lastInvoiceDate)) // already paid the invoice
 			return 0;
 		if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) < 75)
 			return 0; // This is an invoice for upgrade payment
