@@ -100,17 +100,17 @@ Would you still like to schedule <b><%=aBean.name%></b> on this date? <span
 <table width="0" border="0" cellspacing="0" cellpadding="1">
 	<tr>
 		<td class="blueMain" align="right">Name</td>
-		<td><input name="name" type="text" class="forms" size="20"
+		<td><input name="name" type="text" class="forms" size="40"
 			value="<%=aBean.name%>"></td>
 	</tr>
 	<tr>
 		<td class="blueMain" align="right">Address</td>
-		<td><input name="address" type="text" class="forms" size="30"
+		<td><input name="address" type="text" class="forms" size="50"
 			value="<%=aBean.address%>"></td>
 	</tr>
 	<tr>
 		<td class="blueMain" align="right">City</td>
-		<td><input name="city" type="text" class="forms" size="15"
+		<td><input name="city" type="text" class="forms" size="20"
 			value="<%=aBean.city%>"></td>
 	</tr>
 	<tr>
@@ -150,7 +150,7 @@ Would you still like to schedule <b><%=aBean.name%></b> on this date? <span
 	<tr>
 		<td class="blueMain" align="right">Second Contact</td>
 		<td><input name="secondContact" type="text" class="forms"
-			size="15" value="<%=cBean.secondContact%>"></td>
+			size="20" value="<%=cBean.secondContact%>"></td>
 	</tr>
 	<tr>
 		<td class="blueMain" align="right">Second Phone</td>
@@ -159,13 +159,13 @@ Would you still like to schedule <b><%=aBean.name%></b> on this date? <span
 	</tr>
 	<tr>
 		<td class="blueMain" align="right">Second Email</td>
-		<td><input name="secondEmail" type="text" class="forms" size="15"
+		<td><input name="secondEmail" type="text" class="forms" size="20"
 			value="<%=cBean.secondEmail%>"></td>
 	</tr>
 	<tr>
 		<td class="blueMain" align="right">Billing Contact</td>
 		<td><input name="billingContact" type="text" class="forms"
-			size="15" value="<%=cBean.billingContact%>"></td>
+			size="20" value="<%=cBean.billingContact%>"></td>
 	</tr>
 	<tr>
 		<td class="blueMain" align="right">Billing Phone</td>
