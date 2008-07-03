@@ -10,10 +10,6 @@
 		<param-name>FTP_DIR</param-name>
 		<param-value>/var/www/ftp-bin</param-value>
 	</context-param>
-	<context-param>
-		<param-name>environmentType</param-name>
-		<param-value>development</param-value>
-	</context-param>
 
 	<!-- BELOW THIS LINE SHOULD BE NOT SITE SPECIFIC -->
 

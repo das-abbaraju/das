@@ -27,7 +27,7 @@
 
 
 <%
-	boolean debugging = application.getInitParameter("environmentType").equals("development");
+	boolean debugging = "1".equals(System.getProperty("pics.debug"));
 	
 	String message = "";
 	String cause = "Undetermined";
