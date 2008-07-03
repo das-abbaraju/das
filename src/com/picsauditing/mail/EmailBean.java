@@ -5,8 +5,10 @@ import java.util.Map;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.VelocityAdaptor;
 
@@ -29,7 +31,7 @@ public class EmailBean {
 	public void addToken(String key, Object value) {
 		tokens.put(key, value);
 	}
-	
+
 	public void sendMail() throws Exception {
 		buildEmail();
 
@@ -49,11 +51,15 @@ public class EmailBean {
 		email.setBody(body);
 
 		if (permissions != null && (email.getFromAddress().length() == 0)) {
-			int id = permissions.getUserId();
-			User user = userDAO.find(id);
-			email.setFromAddress(user.getEmail());
+			// If contractor causes the email it will be sent from
+			// info@picsauditing.com
+			if (!permissions.isContractor()) {
+				int id = permissions.getUserId();
+				User user = userDAO.find(id);
+				email.setFromAddress(user.getEmail());
+			}
 		}
-		
+
 		if (testMode) {
 			System.out.println(email.getSubject());
 			System.out.println(email.getBody());
@@ -127,6 +133,5 @@ public class EmailBean {
 	public void setTokens(Map<String, Object> tokens) {
 		this.tokens = tokens;
 	}
-	
-	
+
 }
