@@ -268,7 +268,7 @@
 </pics:permission>
 
 
-<s:if test="co.operatorAccount.canSeeInsurance">
+<s:if test="co.operatorAccount.canSeeInsurance.toString() == 'Yes'">
 	<table class="report">
 		<thead>
 			<tr>

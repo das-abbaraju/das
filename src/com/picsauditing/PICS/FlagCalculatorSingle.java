@@ -9,6 +9,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -60,10 +61,13 @@ public class FlagCalculatorSingle {
 				// The contractor requires this audit, make sure they have an active one
 				audit.setContractorFlag(audit.getRequiredForFlag());
 				for(ContractorAudit conAudit : conAudits) {
-					if (conAudit.getAuditType().equals(audit.getAuditType())
-							&& conAudit.getAuditStatus().equals(AuditStatus.Active)) {
-						// We found a matching active audit for this contractor
-						audit.setContractorFlag(FlagColor.Green);
+					if (conAudit.getAuditStatus().equals(AuditStatus.Active)) {
+						if (conAudit.getAuditType().equals(audit.getAuditType())
+							|| (conAudit.getAuditType().equals(AuditType.NCMS) 
+									&& audit.getAuditType().equals(AuditType.DESKTOP))) {
+							// We found a matching active audit for this contractor
+							audit.setContractorFlag(FlagColor.Green);
+						}
 					}
 				}
 				// If an active audit doesn't exist, then set
