@@ -14,6 +14,7 @@
 				/no_rights_exception.jsp
 			</result>
 			<result name="LoginAjax">struts/login_ajax.jsp</result>
+			<result name="login">/struts/login_ajax.jsp</result>
 		</global-results>
 		<global-exception-mappings>
 			<exception-mapping exception="java.lang.Exception"
