@@ -16,6 +16,11 @@
 			width="1" height="1"></td>
 		<td valign="top" bgcolor="#FFFFFF">
 		<table border="0" align="center" cellpadding="0" cellspacing="0">
+			<tr>
+				<td bgcolor="#F8F8F8" class="blueHome2"><strong>04/01/08</strong> <strong
+					class="articleTitle">Shell Global Solutions joins PICS</strong><br>
+				Shell Global Solutions provides business and operational consultancy, technical services and research and development expertise to the energy and processing industries worldwide. Shell Global Solutions employs over 5,000 staff worldwide.</td>
+			</tr>
 				<tr>
 				<td class="blueHome2"><strong>04/01/08</strong>
 				<strong class="articleTitle">PICS presents at Texas Safety</strong><br>
