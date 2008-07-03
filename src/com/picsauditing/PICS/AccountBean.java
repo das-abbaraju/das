@@ -482,6 +482,20 @@ public class AccountBean extends DataBean {
 			DBClose();
 		}//finally
 	}//changePassword
+	
+	public boolean verifyUsername(String username) throws Exception {
+		try {
+			DBReady();
+			String selectQuery = "SELECT * FROM accounts, users WHERE accounts.username='"+username+"' || users.username='"+username+"' LIMIT 2";
+			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
+			if (SQLResult.next())
+				return true;
+			return false;
+		}
+		finally {
+			DBClose();
+		}
+	}		
 
 	public boolean sendPasswordEmail(String email) throws Exception {
 		if (!Utilities.isValidEmail(email)) {
@@ -566,6 +580,8 @@ public class AccountBean extends DataBean {
 		errorMessages = new Vector<String>();
 		if (null == type)
 			errorMessages.addElement("Please indicate the account type");
+		if (verifyUsername(username))
+			errorMessages.addElement("Username already exists. Please type another.");
 		if (name.length() == 0)
 			errorMessages.addElement("Please fill in the Company Name field");
 		if (name.length() < 3)

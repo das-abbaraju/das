@@ -229,7 +229,7 @@ Would you still like to schedule <b><%=aBean.name%></b> on this date? <span
  	}
  %>
 		</td>
-	</tr>
+	</tr>	
 	<tr>
 		<td class="blueMain" align="right">Password</td>
 		<td><input name="password" type="text" class="forms" size="15"
