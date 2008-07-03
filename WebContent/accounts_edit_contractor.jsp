@@ -100,12 +100,12 @@ Would you still like to schedule <b><%=aBean.name%></b> on this date? <span
 <table width="0" border="0" cellspacing="0" cellpadding="1">
 	<tr>
 		<td class="blueMain" align="right">Name</td>
-		<td><input name="name" type="text" class="forms" size="40"
+		<td><input name="name" type="text" class="forms" size="50"
 			value="<%=aBean.name%>"></td>
 	</tr>
 	<tr>
 		<td class="blueMain" align="right">Address</td>
-		<td><input name="address" type="text" class="forms" size="50"
+		<td><input name="address" type="text" class="forms" size="45"
 			value="<%=aBean.address%>"></td>
 	</tr>
 	<tr>
