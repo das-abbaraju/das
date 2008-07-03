@@ -20,6 +20,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.User;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.util.SpringUtils;
 
@@ -810,8 +811,12 @@ public class ContractorBean extends DataBean {
 		}
 		
 		// The auditors can see this Contractor
-		for(ContractorAudit audit : getAudits())
-			if (audit.getAuditor().getId() == permissions.getUserId()) return true;
+		for(ContractorAudit audit : getAudits()) {
+			if (audit.getAuditor() != null && audit.getAuditor().getId() == permissions.getUserId())
+				if (audit.getAuditStatus().equals(AuditStatus.Pending)
+						|| audit.getAuditStatus().equals(AuditStatus.Submitted))
+					return true;
+		}
 
 		return false;
 	}
