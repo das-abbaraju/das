@@ -17,6 +17,7 @@ public class ReportContractorAudits extends ReportAccount {
 
 	protected boolean filterAuditType = true;
 	protected boolean filterAuditStatus = true;
+	protected boolean filterAuditor = false;
 
 	public ReportContractorAudits() {
 		sql = new SelectContractorAudit();
@@ -55,13 +56,10 @@ public class ReportContractorAudits extends ReportAccount {
 		if(filtered == null) 
 			filtered = true;
 		
+		if (permissions.isPicsEmployee())
+			filterAuditor = true;
+		
 		return super.execute();
-	}
-
-	protected void toggleFilters() {
-		super.toggleFilters();
-		if (permissions.isOperator() || permissions.isCorporate())
-			filterAuditor = false;
 	}
 
 	/**
@@ -127,6 +125,10 @@ public class ReportContractorAudits extends ReportAccount {
 
 	public boolean isFilterAuditStatus() {
 		return filterAuditStatus;
+	}
+
+	public boolean isFilterAuditor() {
+		return filterAuditor;
 	}
 
 }

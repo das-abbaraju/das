@@ -27,18 +27,4 @@ public class ReportAccountAudits extends ReportAccount {
 		return permissions.canSeeAudit(AuditType.PQF);
 	}
 
-	protected void toggleFilters() {
-		if (permissions.hasPermission(OpPerms.StatusOnly)) {
-			filterOperator = false;
-			filterAddress = false;
-			filterIndustry = false;
-			filterCerts = false;
-			filterVisible = false;
-			filterAuditor = false;
-			filterTaxID = false;
-			filterLicensedIn = false;
-			filterWorksIn = false;
-		}
-	}
-
 }

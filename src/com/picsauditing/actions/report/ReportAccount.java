@@ -50,21 +50,21 @@ public class ReportAccount extends ReportActionSupport {
 	protected String taxID = DEFAULT_TAX_ID;
 	protected String flagStatus;
 	protected int[] officeIn;
+	protected int[] conAuditorId;
 
 	protected boolean filterOperator = true;
 	protected boolean filterIndustry = true;
 	protected boolean filterPerformedBy = true;
 	protected boolean filterTrade = true;
 	protected boolean filterAddress = true;
-	protected boolean filterCerts = true;
-	protected boolean filterVisible = true;
+	protected boolean filterCerts = false;
+	protected boolean filterVisible = false;
 	protected boolean filterLicensedIn = true;
 	protected boolean filterWorksIn = true;
 	protected boolean filterOfficeIn = true;
 	protected boolean filterTaxID = true;
-	protected boolean filterFlagStatus = true;
-	protected boolean filterAuditor = true;
-	protected int conAuditorId = 0;
+	protected boolean filterFlagStatus = false;
+	protected boolean filterConAuditor = false;
 
 	protected SelectAccount sql = new SelectAccount();
 
@@ -81,6 +81,27 @@ public class ReportAccount extends ReportActionSupport {
 			return LOGIN;
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
+
+		if (permissions.isOperator()) {
+			filterOperator = false;
+			filterFlagStatus = true;
+			filterCerts = true;
+		}
+		if (permissions.isCorporate()) {
+		}
+		if (permissions.isPicsEmployee()) {
+			filterConAuditor = true;
+			filterVisible = true;
+		}
+		if (permissions.hasPermission(OpPerms.StatusOnly)) {
+			filterOperator = false;
+			filterAddress = false;
+			filterIndustry = false;
+			filterCerts = false;
+			filterTaxID = false;
+			filterLicensedIn = false;
+			filterWorksIn = false;
+		}
 
 		toggleFilters();
 
@@ -104,28 +125,6 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	protected void toggleFilters() {
-		if (permissions.isOperator()) {
-			filterOperator = false;
-			filterAddress = false;
-			filterIndustry = false;
-			filterCerts = false;
-			filterVisible = false;
-			filterAuditor = false;
-		}
-		if (permissions.isCorporate()) {
-			filterFlagStatus = false;
-			filterAddress = false;
-			filterIndustry = false;
-			filterCerts = false;
-			filterVisible = false;
-			filterAuditor = false;
-			filterLicensedIn = false;
-			filterWorksIn = false;
-			filterOfficeIn = false;
-		}
-		if (!permissions.isOperator() && !permissions.hasPermission(OpPerms.StatusOnly)) {
-			filterFlagStatus = false;
-		}
 	}
 
 	// Getters for search lists
@@ -392,6 +391,18 @@ public class ReportAccount extends ReportActionSupport {
 				FlagColor.DEFAULT_FLAG_STATUS));
 	}
 
+
+	public int[] getConAuditorId() {
+		return conAuditorId;
+	}
+
+	public void setConAuditorId(int[] conAuditorId) {
+		String list = Strings.implode(conAuditorId, ",");
+		this.conAuditorId = conAuditorId;
+		sql.addWhere("c.welcomeAuditor_id IN (" + list + ")");
+		filtered = true;
+	}
+
 	/**
 	 * Return the number of active contractors visible to an Operator or a
 	 * Corporate account This method shouldn't be use be Admins, auditors, and
@@ -458,19 +469,7 @@ public class ReportAccount extends ReportActionSupport {
 		return filterFlagStatus;
 	}
 
-	public boolean isFilterAuditor() {
-		return filterAuditor;
-	}
-
-	public int getConAuditorId() {
-		return conAuditorId;
-	}
-
-	public void setConAuditorId(int conAuditorId) {
-		if (conAuditorId != 0) {
-			report.addFilter(new SelectFilterInteger("conAuditorId",
-					"c.welcomeAuditor_id = '?'", conAuditorId));
-		}
-		this.conAuditorId = conAuditorId;
+	public boolean isFilterConAuditor() {
+		return filterConAuditor;
 	}
 }
