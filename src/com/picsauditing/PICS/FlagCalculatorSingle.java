@@ -61,10 +61,11 @@ public class FlagCalculatorSingle {
 				// The contractor requires this audit, make sure they have an active one
 				audit.setContractorFlag(audit.getRequiredForFlag());
 				for(ContractorAudit conAudit : conAudits) {
-					if (conAudit.getAuditStatus().equals(AuditStatus.Active)) {
+					if (conAudit.getAuditStatus().equals(AuditStatus.Active)
+						|| conAudit.getAuditStatus().equals(AuditStatus.Exempt)) {
 						if (conAudit.getAuditType().equals(audit.getAuditType())
-							|| (conAudit.getAuditType().equals(AuditType.NCMS) 
-									&& audit.getAuditType().equals(AuditType.DESKTOP))) {
+							|| (conAudit.getAuditType().getAuditTypeID() == AuditType.NCMS
+									&& audit.getAuditType().getAuditTypeID() == AuditType.DESKTOP)) {
 							// We found a matching active audit for this contractor
 							audit.setContractorFlag(FlagColor.Green);
 						}
