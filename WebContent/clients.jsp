@@ -72,7 +72,6 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
 						Huntsman Ringwood (Chicago)<br>
 						Huntsman Woodlands<br>
 						IDS Real Estate<br>
-						Jiffy Lube International<br>
 						March Point Cogeneration Company<br>
 						Martinez Catalyst Plant<br>
 						Motiva Convent Refinery<br>
