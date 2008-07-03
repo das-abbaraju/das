@@ -3,12 +3,19 @@
 	xmlns="http://java.sun.com/xml/ns/j2ee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
-	<!-- Set the local upload directory to /wwwroot/www.picsauditing.com/ftp-bin -->
+
 	<!-- Modify for your local system -->
+	<!-- Set the local upload directory to /wwwroot/www.picsauditing.com/ftp-bin -->
+	<context-param>
+		<param-name>FTP_DIR</param-name>
+		<param-value>/var/www/ftp-bin</param-value>
+	</context-param>
 	<context-param>
 		<param-name>environmentType</param-name>
-		<param-value>prod</param-value>
+		<param-value>development</param-value>
 	</context-param>
+
+	<!-- BELOW THIS LINE SHOULD BE NOT SITE SPECIFIC -->
 
 	<!-- Osha, Grace dates-->
 	<context-param>
@@ -55,10 +62,6 @@
 	</context-param>
 	<!-- END Pricing -->
 
-	<context-param>
-		<param-name>FTP_DIR</param-name>
-		<param-value>/var/www/ftp-bin</param-value>
-	</context-param>
 	<!-- 
 		<listener>
 		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
