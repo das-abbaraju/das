@@ -66,6 +66,11 @@ sets the highest standards possible in regard to contractor qualifications as th
                 <tr>
                   <td bgcolor="#CCCCCC"><img src="images/spacer.gif" width="1" height="1"></td>
                   <td valign="top" bgcolor="#FFFFFF"><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+				  										<tr>
+                                          <td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">06/01/08</span>ConocoPhillips Ferndale joins PICS</span><br>
+                                            <br> 
+ConocoPhillips Ferndale joins many other ConocoPhillips refineries and business units who use PICS to standardize their contractor prequalification process. The Ferndale plant is located in Washington and can process 100,000 barrels per day. </td>
+                                        </tr>
                                         					<tr>
                                           <td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">05/08/08</span>PICS Presents at NPRA Safety Conference</span><br>
                                             <br> 
@@ -75,12 +80,7 @@ sets the highest standards possible in regard to contractor qualifications as th
                                           <td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">05/01/08</span>Frontier Oil Corporation joins PICS</span><br>
                                             <br> 
                                           Frontier Oil Corporation is an independent oil refining and marketing company. Fronteir has a 52,000 barrel per day refinery in Cheyenne, Wyoming and a 110,000 barrel per day refinery in El Dorado, Kansas and the companys primary products of gasoline and diesel are marketed in the Rocky Mountain and Plains States.</td></tr>
-										
-										<tr>
-                                          <td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">04/01/08</span>Shell Global Solutions joins PICS</span><br>
-                                            <br> 
-Shell Global Solutions provides business and operational consultancy, technical services and research and development expertise to the energy and processing industries worldwide. Shell Global Solutions employs over 5,000 staff worldwide.</td>
-                                        </tr>
+									
                                         <tr>
                       <td align="center" class="blueHome">&nbsp;<a href="featured_newsarchive.jsp" target="_self"><img src="images/NEWSARCHIVE_button3.gif" width="111" height="27" hspace="5" border="0"></a></td>
                     </tr>
