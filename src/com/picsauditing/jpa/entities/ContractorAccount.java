@@ -202,7 +202,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "accountDate", nullable = false, length = 10)
+	@Column(name = "accountDate", nullable = true, length = 10)
 	public Date getAccountDate() {
 		return this.accountDate;
 	}
@@ -425,7 +425,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "membershipDate", nullable = false, length = 10)
+	@Column(name = "membershipDate", nullable = true, length = 10)
 	public Date getMembershipDate() {
 		return this.membershipDate;
 	}

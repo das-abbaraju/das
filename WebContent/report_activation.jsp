@@ -3,6 +3,7 @@
 <%@page import="com.picsauditing.mail.*"%>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <%@page import="com.picsauditing.mail.EmailContractorBean"%>
+<%@page import="com.picsauditing.util.SpringUtils"%>
 <%
 if (!permissions.isAdmin()) throw new com.picsauditing.access.NoRightsException("Admin");
 try{
@@ -12,7 +13,6 @@ try{
 	sBean.orderBy = request.getParameter("orderBy");
 	if (null==sBean.orderBy)
 		sBean.orderBy = "dateCreated DESC";
-	
 	if ("Yes".equals(action)) {
 		sBean.aBean.setFromDB(actionID);
 		sBean.aBean.active = "Y";
@@ -24,6 +24,11 @@ try{
 		ContractorBean cBean = new ContractorBean();
 		cBean.updateLastPayment(actionID, permissions.getUsername(), amount);
 		return;
+	}
+	if ("Send".equals(action)) {
+		EmailContractorBean mailer = (EmailContractorBean)SpringUtils.getBean("EmailContractorBean");
+		mailer.setPermissions(permissions);
+		mailer.sendMessage(EmailTemplates.welcome, new Integer(actionID).intValue());
 	}
 	if ("Inv".equals(action)){
 		String invoiceAmount = request.getParameter("invoiceAmount");
@@ -175,6 +180,7 @@ try{
 		<td colspan=2 ><a href="javascript: changeOrderBy('form1','billingCycle');" class="whiteTitle">New Payment</a></td>
 		<td  bgcolor="#336699">Visible?</td>
 		<td width="25"  bgcolor="#336699">Y/N</td>
+		<td>Welcome Email</td>
 		<td>&nbsp;</td>
 	</tr>
 	</thead>
@@ -198,8 +204,10 @@ try{
 			    <td><input name="action" type="submit" onClick="javascript: return newPayment( '<%= sBean.aBean.id %>','pay_amount_<%= sBean.cBean.id %>');" class="buttons" value="Paid"></td>
 				<td align="center"><input name="action" type="submit" onclick="javascript: return makeVisible( '<%= sBean.aBean.id %>' );" class="buttons" value="Yes"> </td>
 				<td id="visible_<%= sBean.aBean.id %>" align="center"><%=sBean.aBean.active%></td>             
+				<td align="center"><input name="action" type="submit" class="buttons" value="Send">
+				<input name="actionID" type="hidden" value="<%=sBean.aBean.id%>"></td>
 				<td id="remove_<%= sBean.aBean.id %>" ><input name="action" type="submit" onclick="javascript: return removeCon( '<%= sBean.aBean.id %>', '<%=sBean.cBean.lastPaymentAmount%>','<%=sBean.aBean.lastLogin%>' );" class="buttons" value="<%=BUTTON_VALUE%>"></td>
-			   </form></tr>
+			  </form></tr>
 <%	} %>
 </table>
 <div>
