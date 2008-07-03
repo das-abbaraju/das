@@ -21,7 +21,7 @@
 							src="images/subHeader_clientList.gif" alt="Partial Client List"
 							width="105" height="16" hspace="12" vspace="0" align="top"
 							class="blueClientListHeader"><br />
-						<nobr>	Allegran<br />
+						<nobr>Allergan<br />
 						Big West of California<br />
 						Big West Oil, LLC<br />
 						BP Cherry Point Refinery<br />
@@ -38,7 +38,6 @@
 						Criterion Catalysts &amp; Technologies<br />
 						CRI<br />
 						Empire Southwest (CAT)<br />
-						Fluor Enterprises<br />
 						Flying J<br />
 						Huntsman International<br />
 						Huntsman Auburn Hills<br />

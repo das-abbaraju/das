@@ -108,7 +108,7 @@ function getElement(whichLayer) {
 <div id="bodyholder">
 <div id="content">
 <div id="helpbox">
-	<a href="help/" target="helpdoc48">Documentation</a> |
+	<a href="help/" target="helpdoc48">Help Center</a> |
 	<a id="_lpChatBtn"
 	onmouseover="showChat();"
 	onmouseout="hideChat();"
