@@ -78,7 +78,7 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
 						Motiva Norco Refinery
 						</nobr></td>
 						<td valign="top" class="blueClientList">
-						<nobr>Motiva Port Arthur Refinery<br>
+						Motiva Port Arthur Refinery<br>
 						Motiva Retail Motiva SD&amp;CM<br>
 						Motorola USA<br>
 						Roquette America<br>
@@ -93,7 +93,7 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
 						Shell Puget Sound Refinery<br>
 						Shell Retail<br>
 						Sikorsky Aircraft Corporation<br>
-						Suncor Energy Commerce City Refinery<br>
+						Suncor Energy Commerce City<br>
 						Tesoro Anacortes Refinery<br>
 						Tesoro Kapolei Refinery<br>
 						Tesoro Kenai Alaska Refinery<br>
@@ -102,7 +102,7 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
 						Tesoro Pipelines & Terminals<br>
 						Tesoro Retail<br>
 						Tesoro Salt Lake City Refinery<br>
-						Watson Cogen</nobr></td>
+						Watson Cogen</td>
 					</tr>
 				</table>
 				</td>
