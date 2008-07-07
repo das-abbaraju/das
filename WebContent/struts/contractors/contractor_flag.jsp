@@ -60,6 +60,13 @@
 				</pics:permission>
 			</s:else>
 		</s:if>
+		<s:else>
+			<s:if test="co.forcedFlag">
+			<s:form cssStyle="border: 2px solid #A84D10; background-color: #FFC; font-style: italic; padding: 2px;">
+				Manual Force Flag <s:property value="co.forceFlag.smallIcon" escape="false" /> until <s:date name="co.forceEnd" format="MMM d, yyyy" />
+			</s:form>
+			</s:if>
+		</s:else>
 		</td>
 	</tr>
 </table>
