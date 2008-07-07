@@ -33,5 +33,6 @@
 		<pattern>/Usergroup_2008.jsp</pattern>
 		<pattern>/safety_2007.jsp</pattern>
 		<pattern>/ScheduleAuditUpdate.action</pattern>
+		<pattern>/managingsafety.jsp</pattern>
 	</decorator>
 </decorators>
