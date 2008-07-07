@@ -127,7 +127,7 @@ public class FlagCalculator2 {
 			catch( Throwable t ) {
 				
 				Email email = new Email();
-				email.setSubject("Cron job had an error calculating flag for contractor :" + conID.toString() );
+				email.setSubject("There was an error calculating flags for contractor :" + conID.toString() );
 				
 				StringBuffer body = new StringBuffer();
 				
