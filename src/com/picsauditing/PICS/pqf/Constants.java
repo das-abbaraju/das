@@ -29,7 +29,7 @@ public class Constants {
 "Alaska","Yes","http://www.dced.state.ak.us/occ/OccSearch/main.cfm?CFID=1607376&CFTOKEN=46ef7aacf0153993-C1C5CF3D-C169-2801-9511A03E87A050E8","LicNum",";",
 "Arkansas","No","http://www.state.ar.us/clb/search.html?","LicNum","action","search",";",
 "Arizona","Yes","http://www.rc.state.az.us/clsc/AZROCLicenseQuery?pagerequest=license","licensenumber","pagename","license",";",
-"California","Yes","http://www2.cslb.ca.gov/General-Information/interactive-tools/check-a-license/License+Request.asp","LicNum","EditForm","Yes",";",
+"California","Yes","http://www2.cslb.ca.gov/General-Information/interactive-tools/check-a-license/License+Detail.asp","LicNum","EditForm","Yes",";",
 "Florida,Yes","https://www.myfloridalicense.com/licensing/wl12.jsp;jsessionid=EMDMODPOLLJAkKj9f-zKC?fhash=93eff21eg0","search_key_licensenum",";",
 "Georgia","No","https://secure.sos.state.ga.us/myverification/?","t_web_lookup__license_no","sch_button","Search","__VIEWSTATE","dDwyMTQxMjc4NDIxO3Q8O2w8aTwxPjs+O2w8dDw7bDxpPDA+Oz47bDx0PDtsPGk8MT47PjtsPHQ8O2w8aTwxPjs+O2w8dDw7bDxpPDE+Oz47bDx0PDtsPGk8Mj47aTwzPjtpPDk+O2k8MTI+Oz47bDx0PDtsPGk8MT47PjtsPHQ8O2w8aTwwPjs+O2w8dDx0PDs7bDxpPDA+Oz4+Ozs+Oz4+Oz4+O3Q8O2w8aTwxPjs+O2w8dDw7bDxpPDA+Oz47bDx0PHQ8OztsPGk8MD47Pj47Oz47Pj47Pj47dDw7bDxpPDE+Oz47bDx0PDtsPGk8MD47PjtsPHQ8dDw7O2w8aTwwPjs+Pjs7Pjs+Pjs+Pjt0PDtsPGk8MT47PjtsPHQ8O2w8aTwwPjs+O2w8dDx0PDs7bDxpPDA+Oz4+Ozs+Oz4+Oz4+Oz4+Oz4+Oz4+Oz4+Oz4+Oz4+Oz6UuXSbsuidoQ0BFQiKa4LHqFr3aw==",";",
 "Hawaii","Yes","http://pahoehoe.ehawaii.gov/pvl/app","licno","lictp","CT","_a","Submit Query","_f","lic",";",
@@ -65,21 +65,23 @@ public class Constants {
 				String link = (String)li.next();
 				String licparam = (String)li.next();
 				if ("Yes".equals(post)) {
-					temp.append("<form method=post target=_blank id=form1 action=\"").append(link).append("\" name=frmInput>");
-					temp.append("<input type=hidden name=\"").append(licparam).append("\" value=\"").append(licNum).append("\">");
+					temp.append("<form method=\"get\" target=\"_blank\" id=\"form1\" action=\"").append(link).append("\" name=frmInput>");
+					temp.append("<input type=\"hidden\" name=\"").append(licparam).append("\" value=\"").append(licNum).append("\">");
 					String nextParam = (String)li.next();
 					while  (!nextParam.equals(";")) {
-						temp.append("<input type=hidden name=\"").append(nextParam).append("\" value=\"").append((String)li.next()).append("\">");
+						temp.append("<input type=\"hidden\" name=\"").append(nextParam).append("\" value=\"").append((String)li.next()).append("\">");
 						nextParam = (String)li.next();
 					} //while
-					temp.append("<input type=image name=CheckLicense src=images/checklicense.gif alt='Check License'>");
+					temp.append("<input type=\"image\" name=\"CheckLicense\" src=\"images/checklicense.gif\" alt='Check License'>");
 				temp.append("</form>");
 				} else {
-				temp.append("<a target=_blank href=\"").append(link).append(licNum).append("\"><img src=images/checklicense.gif alt='Check License' border=0></a>");
+				temp.append("<a target=\"_blank\" href=\"").append(link).append(licNum).append("\"><img src=\"images/checklicense.gif\" alt='Check License' border=\"0\"></a>");
 				} //else post
 			} // if
 			//String option = (String)li.next();
 		} // while
+		
+		String junk = temp.toString();
 		return temp.toString();
 	} // displayStateLink
 

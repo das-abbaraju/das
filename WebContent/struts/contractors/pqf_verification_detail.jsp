@@ -301,7 +301,9 @@ function sendEmail() {
 					<td align="left" colspan="2">
 						<s:property value="question.subCategory.subCategory"/>/<s:property value="question.question"/>
 							<s:if test="question.questionType == 'License'">
-								<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(question.question, answer)" escape="false" />			
+								<s:set name="checkLicenseQuestion" value="question.question"/>
+								<s:set name="checkLicenseAnswer" value="answer"/>
+								<input type="image" name="CheckLicense" src="images/checklicense.gif" alt='Check License' onclick="javascript: document.getElementById('form1').submit(); return false;"/>
 							</s:if>
 					</td>
 					<td><s:textfield name="%{'customVerification['.concat(question.questionID.toString().concat('].answer'))}" disabled="true" value="%{answer}"/></td>
@@ -324,6 +326,14 @@ function sendEmail() {
 			</tr>
 	</table>
 </s:form>
+
+
+<s:if test="#attr.checkLicenseQuestion != null && #attr.checkLicenseAnswer != null">
+<div style="display: none;">
+	<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(#attr.checkLicenseQuestion, #attr.checkLicenseAnswer)" escape="false" />
+</div>
+</s:if>
+
 
 <br /><br /><br />
 <s:form>
