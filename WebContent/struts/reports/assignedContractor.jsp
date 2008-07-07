@@ -32,33 +32,8 @@
 </head>
 <body>
 <h1>Assign Contractor</h1>
-<div id="search">
-<div id="showSearch" onclick="showSearch()" <s:if test="filtered">style="display: none"</s:if> ><a href="#">Show Filter Options</a></div>
-<div id="hideSearch" <s:if test="!filtered">style="display: none"</s:if> ><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
-<s:form id="form1" method="post" cssStyle="%{filtered ? '' : 'display: none'}">
-	<table>
-		<tr>
-			<td style="vertical-align: middle;"><s:textfield
-				name="accountName" cssClass="forms" size="8"
-				onfocus="clearText(this)" /> 
-			<s:select cssClass="blueMain" list="auditorList" listKey="id"
-			listValue="name" value="conAuditorId" name="conAuditorId"
-			/>
-			<s:submit name="imageField" type="image"
-				src="images/button_search.gif" onclick="runSearch( 'form1')" /></td>
-		</tr>
-		<tr>
-			<td><s:checkbox name="assignedCon"/><label>Check to Search on Assigned Contractors</label>
-			</td> 
-		</tr>
-		
-	</table>
-	<s:hidden name="showPage" value="1" />
-	<s:hidden name="startsWith" />
-	<s:hidden name="orderBy" />
-	<div class="alphapaging"><s:property
-		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
-</s:form></div>
+
+<s:include value="filters.jsp" />
 
 <div><s:property value="report.pageLinksWithDynamicForm"
 	escape="false" /></div>
@@ -68,8 +43,8 @@
 			<tr>
 				<td></td>
 				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
-				<td align="center"><a href="javascript: changeOrderBy('form1','createdDate DESC');">Account Date</a></td>
-				<td align="center"><a href="javascript: changeOrderBy('form1','auditorID DESC,name');">Auditor</a></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','c.accountDate DESC');">Account Date</a></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','c.welcomeAuditor_id DESC,a.name');">Auditor</a></td>
 				<td width="20"></td>
 			</tr>
 		</thead>

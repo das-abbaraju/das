@@ -245,6 +245,11 @@ function updateQuery(name) {
 	<br clear="all"/><s:checkbox name="unScheduledAudits"/><label>Check to Search on UnConfirmed Audits</label>
 </s:if>
 
+<s:if test="filterAssignedCon">
+	<br clear="all"/><s:checkbox name="assignedCon"/><label>Check to Search on UnAssigned Contractors</label>
+</s:if>
+
+
 	<br clear="all"/>
 	<div class="alphapaging">
 		<s:property value="report.startsWithLinksWithDynamicForm" escape="false" />
