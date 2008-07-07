@@ -5,10 +5,11 @@
 	-Dpics.debug=1
 
 // Add this to your Servers / Tomcat / server.xml
-	<Resource name="jdbc/pics" auth="Container"
+      <Context docBase="picsWeb2" path="/picsWeb2" reloadable="true" source="org.eclipse.jst.j2ee.server:picsWeb2">
+		<Resource name="jdbc/pics" auth="Container"
 		type="javax.sql.DataSource" maxActive="60" maxIdle="30"
 		maxWait="10000" removeAbandoned="true" removeAbandonedTimeout="20"
 		driverClassName="com.mysql.jdbc.Driver" logAbandoned="true"
 		username="pics" password="pics"
-		url="jdbc:mysql://alpha.picsauditing.com:3306/pics2?zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false" />
- 
+		url="jdbc:mysql://alpha.picsauditing.com:3306/pics_alpha?zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false" />
+      </Context> 
