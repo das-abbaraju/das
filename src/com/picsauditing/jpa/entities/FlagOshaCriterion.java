@@ -52,5 +52,11 @@ public class FlagOshaCriterion {
 			return false;
 		return value > hurdle;
 	}
-
+	
+	@Transient
+	@Override
+	public String toString() {
+		return "flag:"+flag+" time:"+time+" hurdle:"+hurdle;
+	}
+	
 }
