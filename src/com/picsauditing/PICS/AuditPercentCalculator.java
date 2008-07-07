@@ -105,10 +105,12 @@ public class AuditPercentCalculator {
 		catData.setRequiredCompleted(requiredAnsweredCount);
 
 		if (requiredCount > 0) {
-			int percentCompleted = (int) Math
-					.floor((100 * requiredAnsweredCount) / requiredCount);
-			int percentVerified = (int) Math.floor((100 * verifiedCount)
-					/ requiredCount);
+			int percentCompleted = (int) Math.floor((100 * requiredAnsweredCount) / requiredCount);
+			if (percentCompleted >= 100)
+				percentCompleted = 100;
+			int percentVerified = (int) Math.floor((100 * verifiedCount) / requiredCount);
+			if (percentVerified >= 100)
+				percentVerified = 100;
 			catData.setPercentCompleted(percentCompleted);
 			catData.setPercentVerified(percentVerified);
 		} else {
@@ -123,8 +125,7 @@ public class AuditPercentCalculator {
 		int answered = 0;
 		int verified = 0;
 		for (AuditCatData data : conAudit.getCategories()) {
-			if (!conAudit.getAuditType().isDynamicCategories()
-					|| data.isAppliesB()) {
+			if (!conAudit.getAuditType().isDynamicCategories() || data.isAppliesB()) {
 				// The category applies or the audit type doesn't have dynamic
 				// categories
 				required += data.getNumRequired();
@@ -137,16 +138,15 @@ public class AuditPercentCalculator {
 		int percentVerified = 0;
 		if (required > 0) {
 			percentComplete = (int) Math.floor(100 * answered / required);
-			if (percentComplete > 100)
+			if (percentComplete >= 100)
 				percentComplete = 100;
 
 			percentVerified = (int) Math.floor(100 * verified / required);
-			if (percentVerified > 100)
+			if (percentVerified >= 100)
 				percentVerified = 100;
 		}
 		conAudit.setPercentComplete(percentComplete);
-		if (conAudit.getAuditType().isHasRequirements()
-				&& !conAudit.getAuditType().isPqf())
+		if (conAudit.getAuditType().isHasRequirements()	&& !conAudit.getAuditType().isPqf())
 			conAudit.setPercentVerified(percentVerified);
 	}
 }
