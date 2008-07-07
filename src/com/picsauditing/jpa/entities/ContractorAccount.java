@@ -539,7 +539,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) < 75)
 			return 0; // This is an invoice for upgrade payment
 
-		return billingAmount;
+		return newBillingAmount - lastPaymentAmount;
 	}
 
 }

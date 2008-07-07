@@ -37,11 +37,11 @@ public class ContractorWidget extends ContractorActionSupport {
 			// get the balance due
 			// TODO - do some more testing with this
 			if (contractor.getUpgradeAmountOwed() > 0) {
-				openTasks.add("You have an invoice of <b>$" + contractor.getBillingAmount() + "</b> due "
+				openTasks.add("You have an invoice of <b>$" + contractor.getUpgradeAmountOwed() + "</b> due "
 						+ contractor.getLastInvoiceDate() + ", please call 949-387-1940 x708 to make a payment");
 			}
 			if (contractor.getAnnualAmountOwed() > 0) {
-				openTasks.add("You have an invoice of <b>$" + (contractor.getNewBillingAmount())
+				openTasks.add("You have an invoice of <b>$" + (contractor.getAnnualAmountOwed())
 						+ "</b>, please call 949-387-1940 x708 to make a payment");
 			}
 
