@@ -29,6 +29,7 @@ public class ChartFlagCount extends ChartSSAction {
 
 		sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID");
 		sql.addJoin("JOIN flags f ON a.id = f.conID AND f.opID = gc.genID");
+		sql.addWhere("a.active = 'Y'");
 		if (permissions.isCorporate())
 			sql.addJoin("JOIN facilities fac ON fac.opID = f.opID AND fac.corporateID = " + permissions.getAccountId());
 		else if (permissions.isOperator())
