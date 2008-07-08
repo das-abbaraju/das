@@ -566,14 +566,16 @@ public class AccountBean extends DataBean {
 	public boolean verifyUsername(String username, String id) throws SQLException {
 		try {
 			DBReady();
-			String sQuery = "SELECT * FROM (SELECT id , username FROM accounts UNION SELECT id , username FROM users)"
+			String sQuery = "SELECT * FROM (SELECT name , username FROM accounts UNION SELECT id , username FROM users)"
 					+ " t WHERE username = '" + username + "'";
 			ResultSet SQLResult = SQLStatement.executeQuery(sQuery);
 			if (SQLResult.next()) {
-				if (id.equals(SQLResult.getString("id"))) {
+				if (id.equals(""))
+					return true;
+				if (id.equals(SQLResult.getString("id")))
 					return false;
-				}
-			}
+			} else
+				return false;
 		} finally {
 			DBClose();
 		}
