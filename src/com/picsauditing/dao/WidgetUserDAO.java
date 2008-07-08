@@ -45,8 +45,10 @@ public class WidgetUserDAO extends PicsDAO {
 			query.setParameter(1, 941); // tallred
 		if (permissions.isOnlyAuditor())
 			query.setParameter(1, 910); // ddooly
-		if (permissions.isOperator() || permissions.isCorporate())
+		if (permissions.isOperator())
 			query.setParameter(1, 616); // kevin.dyer
+		if (permissions.isCorporate())
+			query.setParameter(1, 646); // shellcorporate
 		if (permissions.isContractor())
 			query.setParameter(1, 1); // contractor
 
