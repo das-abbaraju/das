@@ -20,12 +20,13 @@ public class AuditDataSave extends PicsActionSupport {
 	private AuditData auditData = null;
 	private AuditDataDAO dao = null;
 	private AuditQuestionDAO questionDao = null;
-	
+
 	private int catDataID = 0;
 	private AuditCategoryDataDAO catDataDAO;
 	private AuditPercentCalculator auditPercentCalculator;
 
-	public AuditDataSave(AuditDataDAO dao, AuditCategoryDataDAO catDataDAO, AuditPercentCalculator auditPercentCalculator, AuditQuestionDAO questionDao) {
+	public AuditDataSave(AuditDataDAO dao, AuditCategoryDataDAO catDataDAO,
+			AuditPercentCalculator auditPercentCalculator, AuditQuestionDAO questionDao) {
 		this.dao = dao;
 		this.catDataDAO = catDataDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
@@ -41,9 +42,8 @@ public class AuditDataSave extends PicsActionSupport {
 			AuditData newCopy = null;
 
 			try {
-				newCopy = dao.findAnswerToQuestion(
-						auditData.getAudit().getId(), auditData.getQuestion()
-								.getQuestionID());
+				newCopy = dao.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion()
+						.getQuestionID());
 			} catch (NoResultException notReallyAProblem) {
 			}
 
@@ -56,29 +56,21 @@ public class AuditDataSave extends PicsActionSupport {
 				// then we are not currently
 				// verifying
 				{
-					if (auditData.getAnswer() == null
-							|| !newCopy.getAnswer().equals(
-									auditData.getAnswer())) {
+					if (auditData.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer())) {
 						newCopy.setDateVerified(null);
 						newCopy.setIsCorrect(null);
 						newCopy.setVerifiedAnswer(null);
 						newCopy.setAnswer(auditData.getAnswer());
 
-						if (newCopy.getAudit().getAuditStatus().equals(
-								AuditStatus.Submitted)) // double check this
-						{
+						if (newCopy.getAudit().getAuditStatus().equals(AuditStatus.Submitted)) {
 							newCopy.setWasChanged(YesNo.Yes);
 
-							
 							AuditQuestion question = questionDao.find(auditData.getQuestion().getQuestionID());
-							
-							if( question.getOkAnswer().indexOf(auditData.getAnswer() ) == -1 )
-							{
+
+							if (question.getOkAnswer().indexOf(auditData.getAnswer()) == -1) {
 								newCopy.setDateVerified(null);
 								newCopy.setAuditor(null);
-							}
-							else
-							{
+							} else {
 								newCopy.setDateVerified(new Date());
 								newCopy.setAuditor(getUser());
 							}
@@ -88,13 +80,10 @@ public class AuditDataSave extends PicsActionSupport {
 				// edit parms
 				{
 					if (auditData.getVerifiedAnswer() != null) {
-						newCopy
-								.setVerifiedAnswer(auditData
-										.getVerifiedAnswer());
+						newCopy.setVerifiedAnswer(auditData.getVerifiedAnswer());
 					}
 
-					if (ActionContext.getContext().getParameters().get(
-							"auditData.isCorrect") != null) {
+					if (ActionContext.getContext().getParameters().get("auditData.isCorrect") != null) {
 						if (auditData.getIsCorrect() != newCopy.getIsCorrect()) {
 							if (auditData.isVerified()) {
 								newCopy.setDateVerified(new Date());
@@ -120,7 +109,7 @@ public class AuditDataSave extends PicsActionSupport {
 				AuditCatData catData = catDataDAO.find(catDataID);
 				auditPercentCalculator.updatePercentageCompleted(catData);
 			}
-			
+
 			setMessage("Saved");
 		} catch (Exception e) {
 			e.printStackTrace();
