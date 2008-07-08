@@ -46,7 +46,9 @@
 		</s:else>
 		
 		<br>
-		<s:property value="requirement"/>
+		<s:if test="requirement.length() > 0">
+			<div id="alert"><s:property value="requirement"/></div>
+		</s:if>
 		</td>
 		<td></td>
 	</tr>

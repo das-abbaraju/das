@@ -23,7 +23,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "pqfdata")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="temp")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class AuditData implements java.io.Serializable {
 
 	private int dataID;
@@ -37,7 +37,7 @@ public class AuditData implements java.io.Serializable {
 	private String verifiedAnswer;
 	private YesNo isCorrect;
 	private YesNo wasChanged;
-	
+
 	private FlagColor flagColor;
 
 	@Id
@@ -51,7 +51,7 @@ public class AuditData implements java.io.Serializable {
 		this.dataID = dataID;
 	}
 
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "auditID", nullable = false, updatable = false)
 	public ContractorAudit getAudit() {
 		return audit;
@@ -139,7 +139,7 @@ public class AuditData implements java.io.Serializable {
 	public void setVerified(boolean isCorrect) {
 		this.isCorrect = isCorrect ? YesNo.Yes : YesNo.No;
 	}
-	
+
 	@Transient
 	public boolean isUnverified() {
 		return YesNo.No.equals(isCorrect);
@@ -153,15 +153,15 @@ public class AuditData implements java.io.Serializable {
 	public void setWasChanged(YesNo wasChanged) {
 		this.wasChanged = wasChanged;
 	}
-	
+
 	@Transient
 	public String getVerifiedAnswerOrAnswer() {
 		if (verifiedAnswer != null && verifiedAnswer.length() > 0)
 			return verifiedAnswer;
-		
+
 		if (answer != null)
 			return answer;
-		
+
 		return "";
 	}
 
@@ -173,12 +173,12 @@ public class AuditData implements java.io.Serializable {
 	public void setFlagColor(FlagColor flagColor) {
 		this.flagColor = flagColor;
 	}
-	
+
 	@Transient
 	public boolean isHasRequirements() {
-		return YesNo.Yes.equals(wasChanged);
+		return (YesNo.Yes.equals(wasChanged) || isRequirementOpen());
 	}
-	
+
 	@Transient
 	public boolean isRequirementOpen() {
 		return (question.getOkAnswer().indexOf(answer) == -1);
@@ -206,5 +206,4 @@ public class AuditData implements java.io.Serializable {
 		return true;
 	}
 
-	
 }
