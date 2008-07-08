@@ -2,6 +2,7 @@ package com.picsauditing.actions.chart;
 
 import java.util.List;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilder;
@@ -30,11 +31,18 @@ public class ChartFlagCount extends ChartSSAction {
 		sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID");
 		sql.addJoin("JOIN flags f ON a.id = f.conID AND f.opID = gc.genID");
 		sql.addWhere("a.active = 'Y'");
+		
 		if (permissions.isCorporate())
+			// TODO Handle unapproved contractors for operators who manually approve
 			sql.addJoin("JOIN facilities fac ON fac.opID = f.opID AND fac.corporateID = " + permissions.getAccountId());
-		else if (permissions.isOperator())
+		
+		else if (permissions.isOperator()) {
 			sql.addWhere("gc.genID = " + permissions.getAccountId());
-		else {
+			if (permissions.isApprovesRelationships()
+					&& !permissions.hasPermission(OpPerms.ViewUnApproved)) {
+				sql.addWhere("workStatus = 'Y'");
+			}
+		} else {
 			PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
 			sql.addWhere("1 " + permQuery.toString());
 		}
