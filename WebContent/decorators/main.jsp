@@ -31,6 +31,7 @@
 
 <!-- compliance patch for microsoft browsers -->
 <!--[if lt IE 7]>
+<link rel="stylesheet" href="css/ie6.css" type="text/css" media="screen" />
 <script src="ie7/ie7-standard-p.js" type="text/javascript">
 </script>
 <![endif]-->
