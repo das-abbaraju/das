@@ -57,5 +57,14 @@ h1 {
 	width:expression((document.body.clientWidth < 892)? "890px" : "auto");
 }
 
+.sidebox {
+	float: right;
+	margin: 10px auto;
+	height: 30px;
+	max-width: 450px;
+	background: url(../images/3dsquare-right.jpg) no-repeat bottom right;
+	display: inline;
+}
+
 
 
