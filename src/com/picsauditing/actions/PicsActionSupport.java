@@ -91,10 +91,13 @@ public class PicsActionSupport extends ActionSupport {
 
 	public User getUser() {
 		if (user == null) {
-			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
-			user = dao.find(permissions.getUserId());
+			user = getUser( permissions.getUserId() );
 		}
 		return user;
+	}
+	public User getUser( int userId ) {
+			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
+			return dao.find(userId);
 	}
 
 	public Account getAccount() {
