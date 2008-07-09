@@ -47,15 +47,15 @@ public class AuditDataSave extends PicsActionSupport {
 			} catch (NoResultException notReallyAProblem) {
 			}
 
-			if (newCopy == null) // insert mode
-			{
+			if (newCopy == null) {
+				// insert mode
 				dao.save(auditData);
-			} else // update mode
-			{
-				if (auditData.getAnswer() != null) // if answer is being set,
-				// then we are not currently
-				// verifying
-				{
+			} else {
+				// update mode
+				if (auditData.getAnswer() != null) {
+					// if answer is being set,
+					// then we are not currently
+					// verifying
 					if (auditData.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer())) {
 						newCopy.setDateVerified(null);
 						newCopy.setIsCorrect(null);
@@ -76,9 +76,10 @@ public class AuditDataSave extends PicsActionSupport {
 							}
 						}
 					}
-				} else // we were handed the verification parms instead of the
-				// edit parms
-				{
+				} else {
+					// we were handed the verification parms instead of the
+					// edit parms
+				
 					if (auditData.getVerifiedAnswer() != null) {
 						newCopy.setVerifiedAnswer(auditData.getVerifiedAnswer());
 					}
