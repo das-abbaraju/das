@@ -653,7 +653,9 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 		try {
 			DBReady();
 			HashSet<Integer> catIDSet = new HashSet<Integer>();
+			boolean includeAllCategories = true;
 			if (conAudit.getAuditType().getAuditTypeID() == AuditType.DESKTOP) {
+				includeAllCategories = false;
 				Date currentAuditDate = null;
 				int pqfAuditID = 0;
 				for (ContractorAudit audits : conAudit.getContractorAccount()
@@ -688,6 +690,7 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 			}
 
 			if (conAudit.getAuditType().isPqf()) {
+				includeAllCategories = false;
 				String selectQuery = "SELECT DISTINCT catID FROM pqfOpMatrix m "
 						+ "JOIN generalContractors gc ON m.opID = gc.genID "
 						+ "JOIN contractor_audit ca ON ca.conID = gc.subID "
@@ -712,7 +715,7 @@ public class CategoryBean extends com.picsauditing.PICS.DataBean {
 					// recalculate the value or we didn't have a pqfcatdata
 					// record and need to
 					// calculate it for the first time
-					if (catIDSet.contains(new Integer(catID))) {
+					if (includeAllCategories || catIDSet.contains(new Integer(catID))) {
 						// This category _should_ be applicable on this audit
 						if (catDataID > 0 && doesCatApply()) {
 							// Great, it is...don't do anything
