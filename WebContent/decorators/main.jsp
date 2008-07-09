@@ -29,6 +29,12 @@
 <link rel="stylesheet" href="css/ie.css" type="text/css" />
 <![endif]-->
 
+<!-- compliance patch for microsoft browsers -->
+<!--[if lt IE 7]>
+<script src="ie7/ie7-standard-p.js" type="text/javascript">
+</script>
+<![endif]-->
+
 <script type="text/javascript">
 function showChat() {
 	var elem = getElement('chatIcon');
