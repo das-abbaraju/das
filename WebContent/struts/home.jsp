@@ -40,10 +40,6 @@ function showPanel(panel) {
 <div class="panel_placeholder" id="panel<s:property value="widgetID"/>_holder">
 <div class="panel" id="panel<s:property value="widgetID"/>">
 <div class="panel_header">
-	<div class="panel_edit">
-		<a id="panel<s:property value="widgetID"/>_hide" href="#" class="panel_edit" style="display: block" onclick="hidePanel('panel<s:property value="widgetID"/>'); return false;">Hide</a>
-		<a id="panel<s:property value="widgetID"/>_show" href="#" class="panel_edit" style="display: none" onclick="showPanel('panel<s:property value="widgetID"/>'); return false;">Show</a>
-	</div>
 	<s:property value="caption" escape="false" />
 </div>
 <div id="panel<s:property value="widgetID"/>_content" class="panel_content" style="display: block;"><s:property value="content" escape="false" /></div>
