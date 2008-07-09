@@ -137,6 +137,16 @@
 				struts/contractors/con_auditNoView.jsp
 			</result>
 		</action>
+		
+		<action name="AuditEdit"
+			class="com.picsauditing.actions.audits.AuditEdit">
+			<result>struts/audits/audit_maintain.jsp</result>
+		</action>
+		<action name="AuditSave"
+			class="com.picsauditing.actions.audits.AuditSave">
+			<result>struts/audits/audit_maintain.jsp</result>
+		</action>
+		
 
 		<action name="AuditCat"
 			class="com.picsauditing.actions.audits.AuditCategoryAction">
