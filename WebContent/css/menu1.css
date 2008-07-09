@@ -13,7 +13,6 @@
 	margin: 0 auto;
 	min-width: 890px;
 	max-width: 1150px;
-	width:expression(document.body.clientWidth < 892? "890px" : "auto");
 }
 
 

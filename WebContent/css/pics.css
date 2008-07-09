@@ -24,8 +24,6 @@ a img {
 #masthead {
 	margin: 0 auto;
 	min-width: 890px;
-	width: expression(document .   body .   clientWidth <     892 ?     "880px" :
-		    "auto");
 }
 
 #logo {
@@ -128,13 +126,13 @@ a img {
 	padding: 10px 5px;
 	background-color: #eeeeee;
 	text-decoration: none;
-}*/ /********************  Main body Styles  ************************/
+}*/
+
+ /********************  Main body Styles  ************************/
 #bodyholder {
 	margin: 0 auto;
 	/* width: 960px; */
 	min-width: 890px;
-	width: expression(document .   body .   clientWidth <     892 ?     "880px" :
-		    "auto");
 	background-color: white;
 	border: solid 1px #c3c3c3;
 }
@@ -149,8 +147,6 @@ a img {
 	padding: 45px;
 	min-height: 400px;
 	min-width: 890px;
-	width: expression(document .   body .   clientWidth <     892 ?     "880px" :
-		    "auto");
 }
 
 #content div {
@@ -177,8 +173,6 @@ div.container {
 
 div#maincontainer {
 	min-width: 790px;
-	width: expression(document .   body .   clientWidth <     892 ?     "790px" :
-		    "auto");
 	padding: 40px;
 	background-color: #797B7A;
 	font-family: Helvetica, Arial, sans-serif;
@@ -214,8 +208,6 @@ div.footer {
 #footercontent {
 	margin: 0 auto;
 	min-width: 890px;
-	width: expression(document .   body .   clientWidth <     892 ?     "880px" :
-		    "auto");
 }
 
 a.footer:link {
@@ -254,8 +246,6 @@ h1 {
 	margin-left: 0px;
 	border-bottom: solid 2px rgb(168, 77, 16);
 	min-width: 760px;
-	width: expression(document .   body .   clientWidth <     892 ?     "760px" :
-		    "auto");
 }
 
 h2 {
