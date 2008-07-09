@@ -42,10 +42,8 @@ public class VerifyView extends AuditActionSupport {
 
 	private EmailAuditBean mailer;
 
-	public VerifyView(ContractorAccountDAO accountDao,
-			ContractorAuditDAO contractorAuditDAO,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao,
-			EmailAuditBean mailer) {
+	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO,
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, EmailAuditBean mailer) {
 		super(accountDao, contractorAuditDAO, catDataDao, auditDataDao);
 		this.mailer = mailer;
 		this.mailer.setPermissions(permissions);
@@ -75,8 +73,7 @@ public class VerifyView extends AuditActionSupport {
 			emrQuestions.add(AuditQuestion.EMR06);
 			emrQuestions.add(AuditQuestion.EMR05);
 
-			Map<Integer, AuditData> emrDB = auditDataDao.findAnswers(
-					this.auditID, emrQuestions);
+			Map<Integer, AuditData> emrDB = auditDataDao.findAnswers(this.auditID, emrQuestions);
 			saveAuditData(emrDB, AuditQuestion.EMR07);
 			saveAuditData(emrDB, AuditQuestion.EMR06);
 			saveAuditData(emrDB, AuditQuestion.EMR05);
@@ -86,8 +83,7 @@ public class VerifyView extends AuditActionSupport {
 			for (Integer i : customVerification.keySet()) {
 				AuditData aq = (AuditData) customVerification.get(i);
 
-				AuditData toMerge = auditDataDao.findAnswerToQuestion(
-						this.auditID, i);
+				AuditData toMerge = auditDataDao.findAnswerToQuestion(this.auditID, i);
 
 				toMerge.setVerifiedAnswer(aq.getVerifiedAnswer());
 				toMerge.setComment(aq.getComment());
@@ -154,10 +150,8 @@ public class VerifyView extends AuditActionSupport {
 				// before a desktop audit. They are NOT required to be validated
 				// before
 				// Activating a PQF
-				int catID = ad.getQuestion().getSubCategory().getCategory()
-						.getId();
-				if (catID != AuditCategory.SAFETY_POLICIES
-						&& catID != AuditCategory.TRAINING) {
+				int catID = ad.getQuestion().getSubCategory().getCategory().getId();
+				if (catID != AuditCategory.SAFETY_POLICIES && catID != AuditCategory.TRAINING) {
 					verifyTotal++;
 					if (ad.isVerified())
 						verified++;
@@ -165,11 +159,9 @@ public class VerifyView extends AuditActionSupport {
 			}
 		}
 
-		conAudit.setPercentVerified(Math.round((float) (100 * verified)
-				/ verifyTotal));
+		conAudit.setPercentVerified(Math.round((float) (100 * verified) / verifyTotal));
 
-		if (conAudit.getPercentVerified() == 100
-				&& conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
+		if (conAudit.getPercentVerified() == 100 && conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
 			conAudit.setAuditStatus(AuditStatus.Active);
 		}
 		// Don't un-Activate it anymore, per conversation with Trevor, Jared,
@@ -212,20 +204,22 @@ public class VerifyView extends AuditActionSupport {
 		emrQuestions.add(AuditQuestion.EMR07);
 		emrQuestions.add(AuditQuestion.EMR06);
 		emrQuestions.add(AuditQuestion.EMR05);
+		emrQuestions.add(872);
+		emrQuestions.add(1522);
+		emrQuestions.add(1618);
+
 		emr = auditDataDao.findAnswers(this.auditID, emrQuestions);
 
-		List<AuditData> temp = auditDataDao
-				.findCustomPQFVerifications(this.auditID);
+		List<AuditData> temp = auditDataDao.findCustomPQFVerifications(this.auditID);
 
 		customVerification = new LinkedHashMap<Integer, AuditData>();
 		for (AuditData ad : temp) {
 			customVerification.put(ad.getQuestion().getQuestionID(), ad);
 		}
 		if (conAudit.getAuditStatus().equals(AuditStatus.Active)) {
-			Map<Integer, AuditData> safetyPolicies = auditDataDao
-					.findByCategory(this.auditID, AuditCategory.SAFETY_POLICIES);
-			Map<Integer, AuditData> training = auditDataDao.findByCategory(
-					this.auditID, AuditCategory.TRAINING);
+			Map<Integer, AuditData> safetyPolicies = auditDataDao.findByCategory(this.auditID,
+					AuditCategory.SAFETY_POLICIES);
+			Map<Integer, AuditData> training = auditDataDao.findByCategory(this.auditID, AuditCategory.TRAINING);
 			customVerification.putAll(safetyPolicies);
 			customVerification.putAll(training);
 		}
@@ -240,8 +234,7 @@ public class VerifyView extends AuditActionSupport {
 			conAudit.setScheduledDate(followUpCal.getTime());
 			auditDao.save(conAudit);
 		}
-		message = new SimpleDateFormat("MM/dd").format(conAudit
-				.getScheduledDate());
+		message = new SimpleDateFormat("MM/dd").format(conAudit.getScheduledDate());
 		return SUCCESS;
 	}
 
@@ -429,8 +422,31 @@ public class VerifyView extends AuditActionSupport {
 		return pqfDesktopVerification;
 	}
 
-	public void setPqfDesktopVerification(
-			Map<Integer, AuditData> pqfDesktopVerification) {
+	public void setPqfDesktopVerification(Map<Integer, AuditData> pqfDesktopVerification) {
 		this.pqfDesktopVerification = pqfDesktopVerification;
+	}
+
+	public AuditData getEmr3Upload() {
+		return emr.get(872);
+	}
+
+	public void setEmr3Upload(AuditData emr) {
+		this.emr.put(872, emr);
+	}
+
+	public AuditData getEmr2Upload() {
+		return emr.get(1522);
+	}
+
+	public void setEmr2Upload(AuditData emr) {
+		this.emr.put(1522, emr);
+	}
+
+	public AuditData getEmr1Upload() {
+		return emr.get(1618);
+	}
+
+	public void setEmr1Upload(AuditData emr) {
+		this.emr.put(1618, emr);
 	}
 }

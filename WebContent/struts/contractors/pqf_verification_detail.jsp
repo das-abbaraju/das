@@ -227,13 +227,13 @@ function sendEmail() {
 				href="pqf_uploadFile.jsp?catID=10&auditID=<s:property value="auditID" />"
 				class="blueMain">Upload New Files</a></td>
 			<td class="highlight"><a href="#"
-				onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqf<s:property value="emr1.answer" /><s:property value="emr1.question.questionID" />','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">Show
+				onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqf<s:property value="emr1Upload.answer" />1618','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">Show
 			File</a></td>
 			<td class="highlight"><a href="#"
-				onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqf<s:property value="emr2.answer" /><s:property value="emr2.question.questionID" />','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">Show
+				onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqf<s:property value="emr2Upload.answer" />1522','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">Show
 			File</a></td>
 			<td class="highlight"><a href="#"
-				onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqf<s:property value="emr3.answer" /><s:property value="emr3.question.questionID" />','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">Show
+				onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqf<s:property value="emr3Upload.answer" />872','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">Show
 			File</a></td>
 		</tr>
 		<tr class="blueMain" align="right">
