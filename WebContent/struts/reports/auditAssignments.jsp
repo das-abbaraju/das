@@ -12,45 +12,52 @@
 <SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
 <script type="text/javascript">
 	function saveAudit(auditId) {
-		var pars = "contractorAudit.id=" + auditId;
-		
 		var auditor = $F($('auditor_' + auditId));
-		pars = pars + "&auditor.id=" + auditor;
-
 		var scheduleDate = $('scheduled_date_' + auditId + '_date');
-		if (scheduleDate != null) {
-			var thisdate = $F($('scheduled_date_' + auditId + '_date'));
-			if( thisdate != '' )
-			{
-				var thisTime = $('scheduled_date_' + auditId + '_time').options[$('scheduled_date_' + auditId + '_time').selectedIndex].text;
-				thisdate = thisdate + ' ' + thisTime;
-				pars = pars + "&contractorAudit.scheduledDate=" + thisdate;	
+
+		if (auditor != 0 && scheduleDate.value != '' && ($('auditlocation_' + auditId + '_Onsite').checked == true || $('auditlocation_' + auditId + '_Web').checked == true))
+		{
+			var pars = "contractorAudit.id=" + auditId;
+			
+			pars = pars + "&auditor.id=" + auditor;
+
+			if (scheduleDate != null) {
+				var thisdate = $F($('scheduled_date_' + auditId + '_date'));
+				if( thisdate != '' )
+				{
+					var thisTime = $('scheduled_date_' + auditId + '_time').options[$('scheduled_date_' + auditId + '_time').selectedIndex].text;
+					thisdate = thisdate + ' ' + thisTime;
+					pars = pars + "&contractorAudit.scheduledDate=" + thisdate;	
+				}
+			
+				if( $('auditlocation_' + auditId + '_Onsite').checked == true )
+				{
+					pars = pars + "&contractorAudit.auditLocation=Onsite";
+				}
+				else if( $('auditlocation_' + auditId + '_Web').checked == true )
+				{
+					pars = pars + "&contractorAudit.auditLocation=Web";
+				}
 			}
-		
-			if( $('auditlocation_' + auditId + '_Onsite').checked == true )
-			{
-				pars = pars + "&contractorAudit.auditLocation=Onsite";
-			}
-			else if( $('auditlocation_' + auditId + '_Web').checked == true )
-			{
-				pars = pars + "&contractorAudit.auditLocation=Web";
-			}
+
+			var assignDateDiv = 'assignDate_'+auditId;
+			var myAjax = new Ajax.Updater(assignDateDiv,'AuditAssignmentUpdateAjax.action', {method: 'post', parameters: pars});
+
+			var divName = 'audit_'+auditId;
+			new Effect.Highlight(divName, {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 		}
-
-		var assignDateDiv = 'assignDate_'+auditId;
-		var myAjax = new Ajax.Updater(assignDateDiv,'AuditAssignmentUpdateAjax.action', {method: 'post', parameters: pars});
-
-		var divName = 'audit_'+auditId;
-		new Effect.Highlight(divName, {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 	}
 	
 	function saveAuditor(auditId, auditorId) {
-		var pars = "contractorAudit.id=" + auditId + '&auditor.id=' + auditorId;
+		var scheduleDate = $('scheduled_date_' + auditId + '_date');
 		
-	
-		var toHighlight = 'audit_'+auditId;
-		var myAjax = new Ajax.Request('AuditAssignmentUpdateAjax.action', {method: 'post', parameters: pars});
-		new Effect.Highlight(toHighlight, {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+		if (scheduleDate.value != '') {
+			var pars = "contractorAudit.id=" + auditId + '&auditor.id=' + auditorId;
+			var toHighlight = 'audit_'+auditId;
+			var myAjax = new Ajax.Request('AuditAssignmentUpdateAjax.action', {method: 'post', parameters: pars});
+		
+			new Effect.Highlight(toHighlight, {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+		}
 	}
 </script>
 </head>
@@ -89,22 +96,27 @@
 				<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="[0].get('auditName')"/></a></td>
 				<td class="reportDate"><s:date name="[0].get('createdDate')"
 					format="M/d/yy" /></td>
-				<td><nobr><s:if test="[0].get('hasAuditor')">
+				<td><nobr>
+				<s:if test="[0].get('hasAuditor')">
 					<s:select onchange="javascript: saveAuditor(%{[0].get('auditID')}, this.value)" cssClass="blueMain" list="auditorList" listKey="id"
 						listValue="name" value="%{[0].get('auditorID')}"
 						id="%{'auditor_'.concat([0].get('auditID'))}" />
 					<s:if test="[0].get('isScheduled') && [0].get('auditorConfirm') == NULL">
 						<span class="redMain">*</span>
 					</s:if>	
-				</s:if></nobr></td>
-				<td class="center" id="assignDate_<s:property value="[0].get('auditID')"/>"><s:if test="[0].get('hasAuditor')">
+				</s:if></nobr>
+				</td>
+				<td class="center" id="assignDate_<s:property value="[0].get('auditID')"/>">
+				<s:if test="[0].get('hasAuditor')">
 					<nobr><s:property
 						value="%{getBetterDate( [0].get('assignedDate'), 'MM/dd/yy hh:mm:ss a.000')}" />
 					<s:property
 						value="%{getBetterTime( [0].get('assignedDate'), 'MM/dd/yy hh:mm:ss a.000')}" />
 					</nobr>
-				</s:if></td>
-				<td><s:if test="[0].get('isScheduled')">
+				</s:if>
+				</td>
+				<td>
+				<s:if test="[0].get('isScheduled')">
 					<nobr><input class="blueMain" size="6" type="text"
 						name="scheduled_date_<s:property value="[0].get('auditID')"/>_date"
 						id="scheduled_date_<s:property value="[0].get('auditID')"/>_date"
@@ -116,12 +128,15 @@
 						id="scheduled_date_%{[0].get('auditID')}_time"
 						value="%{@com.picsauditing.PICS.DateBean@getIndexForTime(getBetterTime( [0].get('scheduledDate'), 'MM/dd/yy hh:mm:ss a.000')) }" />
 					</nobr>
-				</s:if></td>
-				<td><s:if test="[0].get('isScheduled')">
+				</s:if>
+				</td>
+				<td>
+				<s:if test="[0].get('isScheduled')">
 					<s:radio name="auditlocation_%{[0].get('auditID')}" list="#{'Onsite':'On site', 'Web':'Web'}"
 						id="auditlocation_%{[0].get('auditID')}_"
 						value="%{[0].get('auditLocation')}" />
-				</s:if></td>
+				</s:if>
+				</td>
 				<td><input type="button" class="forms" value="Save" onclick="saveAudit('<s:property value="%{[0].get('auditID')}"/>'); return false;"/>
 				</td>
 			</tr>
