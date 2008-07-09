@@ -24,6 +24,9 @@ public class OshaSave extends PicsActionSupport {
 	private File uploadFile1;
 	private File uploadFile2;
 	private File uploadFile3;
+	private String uploadFile1FileName;
+	private String uploadFile2FileName;
+	private String uploadFile3FileName;
 	private String submit;
 	private String description;
 	private String location;
@@ -74,20 +77,21 @@ public class OshaSave extends PicsActionSupport {
 		merge(osha.getYear2(), year2);
 		merge(osha.getYear3(), year3);
 		
-		saveFile(uploadFile1, osha.getYear1(), 1);
-		saveFile(uploadFile2, osha.getYear2(), 2);
-		saveFile(uploadFile3, osha.getYear3(), 3);
+		saveFile(uploadFile1, uploadFile1FileName, osha.getYear1(), 1);
+		saveFile(uploadFile2, uploadFile2FileName, osha.getYear2(), 2);
+		saveFile(uploadFile3, uploadFile3FileName, osha.getYear3(), 3);
 
 		oshaDAO.save(osha);
 
 		return SUCCESS;
 	}
 
-	private boolean saveFile(File file, OshaLogYear logYear, int year) {
+	private boolean saveFile(File file, String inputFileName, OshaLogYear logYear, int year) {
 		if (file == null)
 			return false;
 		
-		String ext = new javax.activation.MimetypesFileTypeMap().getContentType(file);
+		//String ext = new javax.activation.MimetypesFileTypeMap().getContentType(fileName);
+		String ext = inputFileName.substring(inputFileName.lastIndexOf(".") + 1);
 		if (ext == null || ext == "")
 			return false;
 		
@@ -227,4 +231,31 @@ public class OshaSave extends PicsActionSupport {
 	public void setConID(int conID) {
 		this.conID = conID;
 	}
+
+	public String getUploadFile1FileName() {
+		return uploadFile1FileName;
+	}
+
+	public void setUploadFile1FileName(String uploadFile1FileName) {
+		this.uploadFile1FileName = uploadFile1FileName;
+	}
+
+	public String getUploadFile2FileName() {
+		return uploadFile2FileName;
+	}
+
+	public void setUploadFile2FileName(String uploadFile2FileName) {
+		this.uploadFile2FileName = uploadFile2FileName;
+	}
+
+	public String getUploadFile3FileName() {
+		return uploadFile3FileName;
+	}
+
+	public void setUploadFile3FileName(String uploadFile3FileName) {
+		this.uploadFile3FileName = uploadFile3FileName;
+	}
+
+	
+	
 }
