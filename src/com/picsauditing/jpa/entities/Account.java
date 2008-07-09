@@ -335,12 +335,22 @@ public class Account implements java.io.Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(getClass().equals(obj.getClass().getSuperclass())))
+		
+		// We use to compare class names, but with Hibernate, the names get really weird
+		// Now we just ignore the names and just cast it to an Account object
+		// System.out.println("this.getClass() "+getClass().getName());
+		// System.out.println("obj.getClass()  "+obj.getClass().getName());
+		// System.out.println("obj.getClass().getSuperclass()  "+obj.getClass().getSuperclass().getName());
+		try {
+			// Try to cast this to an account
+			final Account other = (Account) obj;
+			if (id == other.getId().intValue())
+				return true;
 			return false;
-		final Account other = (Account) obj;
-		if (id != other.getId().intValue())
+		} catch (Exception e) {
+			// something went wrong so these must not be equal
 			return false;
-		return true;
+		}
 	}
 	
 }
