@@ -6,15 +6,15 @@ body {
 }
 
 a img {
-	border: 0;
+	border: 0px none;
 }
 
 /********************  Header Styles  ************************/
 #header {
 	width: 100%;
 	height: 50px;
-	background: #002240 url(../images/bg3.jpg);
-	border-bottom: solid 2px #9E9FA3;
+	background: #002240 url('../images/bg3.jpg');
+	border-bottom: 2px solid #9E9FA3;
 }
 
 #headermain {
@@ -23,14 +23,13 @@ a img {
 
 #masthead {
 	margin: 0 auto;
-	min-width: 890px;
 }
 
 #logo {
 	border: 0px;
 	width: 180px;
 	height: 100px;
-	top: 0;
+	top: 1000;
 	margin: 0;
 	z-index: 5000;
 	position: absolute;
@@ -57,15 +56,15 @@ a img {
 		margin-top: 10px;
 		padding-top: 8px;
 */
-	/********************  SIDEBOX STYLES - OLD SMALLNAV  ************************/
-.sidebox {
+/********************  SIDEBOX STYLES - OLD SMALLNAV  ************************/
+#sidebox {
 	float: right;
 	margin: 10px auto;
 	height: 30px;
-	background: url(../images/3dsquare-right.jpg) no-repeat bottom right;
+	background: url('../images/3dsquare-right.jpg') no-repeat bottom right;
 }
 
-.sidebox p {
+#sidebox p {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	color: #eeeeee;
@@ -74,14 +73,14 @@ a img {
 	padding-right: 5px;
 }
 
-.sidebox a:link,.sidebox a:visited {
+#sidebox a:link, .sidebox a:visited {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	color: #eeeeee;
 	padding: 5px;
 }
 
-.sidebox a:hover,.sidebox a:active {
+#sidebox a:hover, .sidebox a:active {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	color: #1B3665;
@@ -90,10 +89,13 @@ a img {
 	text-decoration: none;
 }
 
-.boxbody {
-	background: url(../images/3dsquare-left.jpg) no-repeat bottom left;
-	height: 30px;
+/*
+#boxbody {
+	background: url('../images/3dsquare-left.jpg') no-repeat bottom left;
+	height: 30px
 }
+*/
+
 
 /********************  SMALL NAV STYLES  ************************/
 	/*#smallnav {
@@ -128,11 +130,9 @@ a img {
 	text-decoration: none;
 }*/
 
- /********************  Main body Styles  ************************/
+/********************  Main body Styles  ************************/
 #bodyholder {
 	margin: 0 auto;
-	/* width: 960px; */
-	min-width: 890px;
 	background-color: white;
 	border: solid 1px #c3c3c3;
 }
@@ -145,8 +145,6 @@ a img {
 	position: relative;
 	margin: 0;
 	padding: 45px;
-	min-height: 400px;
-	min-width: 890px;
 }
 
 #content div {
@@ -158,7 +156,7 @@ a img {
 	color: #4C4D4D;
 }
 
-div.container {
+#content div.container {
 	margin: 0px;
 	margin-bottom: 5px;
 	padding: 15px;
@@ -167,12 +165,10 @@ div.container {
 }
 
 #companyinfo {
-	width: 890px;
 	position: relative;
 }
 
 div#maincontainer {
-	min-width: 790px;
 	padding: 40px;
 	background-color: #797B7A;
 	font-family: Helvetica, Arial, sans-serif;
@@ -207,7 +203,6 @@ div.footer {
 
 #footercontent {
 	margin: 0 auto;
-	min-width: 890px;
 }
 
 a.footer:link {
@@ -245,7 +240,6 @@ h1 {
 	margin-bottom: 15px;
 	margin-left: 0px;
 	border-bottom: solid 2px rgb(168, 77, 16);
-	min-width: 760px;
 }
 
 h2 {
@@ -288,19 +282,19 @@ h6 {
 	letter-spacing: -1px;
 }
 
-a:link,a:visited {
+a:link, a:visited {
 	font-family: Helvetica, Arial, Verdana, sans-serif;
 	color: #003768;
 	text-decoration: underline;
 }
 
-a:hover,a:active {
+a:hover, a:active {
 	font-family: Helvetica, Arial, Verdana, sans-serif;
 	color: rgb(168, 77, 16);
 	text-decoration: underline;
 }
 
-b,strong {
+b, strong {
 	font-weight: bold;
 }
 
@@ -318,71 +312,56 @@ ul {
 }
 
 a[href $=".doc"] {
-	padding: 0 0 0 14px;
-	background: transparent url(../images/icon_link_word.png) no-repeat left
-		center;
+	background: url('../images/icon_link_word.png') no-repeat left center;; padding-left:14px; padding-right:0; padding-top:0; padding-bottom:0
 }
 
 a[href $=".pdf"] {
-	padding: 0 0 0 14px;
-	background: transparent url(../images/icon_link_pdf.png) no-repeat left
-		center;
+	background: url('../images/icon_link_pdf.png') no-repeat left center;; padding-left:14px; padding-right:0; padding-top:0; padding-bottom:0
 }
 
 a[href $=".xls"] {
-	padding: 0 0 0 14px;
-	background: transparent url(../images/icon_link_excel.png) no-repeat
-		left center;
+	background: url('../images/icon_link_excel.png') no-repeat left center;; padding-left:14px; padding-right:0; padding-top:0; padding-bottom:0
 }
 
 a.email {
-	padding: 0 15px 0 0;
-	background: transparent url(../images/icon_link_email.png) no-repeat
-		right center;
+	background: url('../images/icon_link_email.png') no-repeat right center;; padding-left:0; padding-right:15px; padding-top:0; padding-bottom:0
 }
 
 a.ext {
 	padding-right: 13px;
 	margin-right: 2px;
-	background: transparent url(../images/icon_link_ext.png) no-repeat right
-		center;
+	background: url('../images/icon_link_ext.png') no-repeat right center;
 }
 
 a.print {
-	padding: 3px;
 	padding-left: 17px;
 	margin-left: 2px;
-	background: transparent url(../images/print_icon.gif) no-repeat left
-		center;
+	background: url('../images/print_icon.gif') no-repeat left center;; padding-right:3px; padding-top:3px; padding-bottom:3px
 }
 
 a.refresh {
-	padding: 5px;
 	padding-left: 30px;
 	margin-left: 2px;
-	background: transparent url(../images/refresh_icon.jpg) no-repeat left
-		center;
+	background: url('../images/refresh_icon.jpg') no-repeat left center;; padding-right:5px; padding-top:5px; padding-bottom:5px
 }
 
 a.edit {
 	padding-left: 17px;
 	margin-left: 2px;
-	background: transparent url(../images/edit_pencil.png) no-repeat left
-		center;
+	background: url('../images/edit_pencil.png') no-repeat left center;
 }
 
 a.verify {
 	padding-left: 17px;
 	margin-left: 2px;
-	background: transparent url(../images/okCheck.gif) no-repeat left center
+	background: url('../images/okCheck.gif') no-repeat left center
 		;
 }
 
 a.view {
 	padding-left: 17px;
 	margin-left: 2px;
-	background: transparent url(../images/edit_pencil.png) no-repeat left
-		center;
+	background: url('../images/edit_pencil.png') no-repeat left center;
 }
 
 /******************** Styles for vCard  ************************/ /*
@@ -391,16 +370,13 @@ a.view {
   margin-bottom: -5px;
 } */
 p.email a {
-	padding: 0 15px 0 0;
-	background: transparent url(../images/icon_link_email.png) no-repeat
-		right center;
+	background: url('../images/icon_link_email.png') no-repeat right center;; padding-left:0; padding-right:15px; padding-top:0; padding-bottom:0
 }
 
 p.url a {
 	padding-right: 13px;
 	margin-right: 2px;
-	background: transparent url(../images/icon_link_ext.png) no-repeat right
-		center;
+	background: url('../images/icon_link_ext.png') no-repeat right center;
 }
 
 div.contact {
@@ -455,13 +431,13 @@ ul#navlist {
 	margin-left: 5px;
 }
 
-#navlist a:link,#navlist a:visited {
+#navlist a:link, #navlist a:visited {
 	color: #fff;
 	background-color: #003768;
 	text-decoration: none;
 }
 
-#navlist a:hover,#navlist a:active {
+#navlist a:hover, #navlist a:active {
 	color: #fff;
 	background-color: rgb(168, 77, 16);
 	text-decoration: none;
@@ -511,7 +487,7 @@ div#info {
 	padding-bottom: 1em;
 	padding-left: 5em;
 	margin-top: 10px;
-	background: url(../images/icon-info.gif) no-repeat #dbe7f8 10px 10px;
+	background: #dbe7f8 url('../images/icon-info.gif') no-repeat 10px 10px;
 	width: 86%
 }
 
@@ -523,7 +499,7 @@ div#alert {
 	padding-bottom: 1em;
 	padding-left: 5em;
 	margin-top: 10px;
-	background: url(../images/icon-warning.gif) no-repeat #ffdfdf 10px 10px;
+	background: #ffdfdf url('../images/icon-warning.gif') no-repeat 10px 10px;
 	width: 86%
 }
 
@@ -535,17 +511,17 @@ div#error {
 	padding-bottom: 1em;
 	padding-left: 5em;
 	margin-top: 10px;
-	background: url(../images/icon-error.gif) #ffdfdf no-repeat 10px 10px;
+	background: #ffdfdf url('../images/icon-error.gif') no-repeat 10px 10px;
 	width: 86%
 }
 
-td.money,th.money {
+td.money, th.money {
 	text-align: right;
 }
 	
 	/* add to table elements representing money to have it right aligned */
 	/********************** BUTTONS ******************************/
-.buttons a,.buttons button {
+.buttons a, .buttons button {
 	display: block;
 	float: left;
 	margin: 0 7px 0 0;
@@ -578,7 +554,7 @@ td.money,th.money {
 	padding: 4px 10px 3px 7px; /* IE7 */
 }
 
-.buttons button img,.buttons a img {
+.buttons button img, .buttons a img {
 	margin: 0 3px -3px 0 !important;
 	padding: 0;
 	border: none;
@@ -587,7 +563,7 @@ td.money,th.money {
 }
 
 /* UTILITIES */
-button:hover,.buttons a:hover {
+button:hover, .buttons a:hover {
 	background-color: #dff4ff;
 	border: 2px solid #6990DB;
 	border-bottom: 1px solid #6990DB;
@@ -604,11 +580,11 @@ button:hover,.buttons a:hover {
 }
 
 /* POSITIVE */
-button.positive,.buttons a.positive {
+button.positive, .buttons a.positive {
 	color: #529214;
 }
 
-.buttons a.positive:hover,button.positive:hover {
+.buttons a.positive:hover, button.positive:hover {
 	background-color: #E6EFC2;
 	border: 2px solid #C6D880;
 	border-bottom: 1px solid #C6D880;
@@ -625,11 +601,11 @@ button.positive,.buttons a.positive {
 }
 
 /* NEGATIVE */
-.buttons a.negative,button.negative {
+.buttons a.negative, button.negative {
 	color: #d12f19;
 }
 
-.buttons a.negative:hover,button.negative:hover {
+.buttons a.negative:hover, button.negative:hover {
 	background: #fbe3e4;
 	border: 2px solid #fbc2c4;
 	border-bottom: 1px solid #fbc2c4;
@@ -659,11 +635,10 @@ button.positive,.buttons a.positive {
 #helpbox a {
 	padding-left: 17px;
 	margin-left: 2px;
-	background: transparent url(../images/help.gif) no-repeat left
-		center;
+	background: url('../images/help.gif') no-repeat left center;
 }
 
-#helpbox a,a:ACTIVE,a:HOVER,a:VISITED {
+#helpbox a, a:active, a:hover, a:visited {
 }
 
 #chatIcon {

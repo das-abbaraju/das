@@ -43,7 +43,6 @@ function showPanel(panel) {
 	<s:property value="caption" escape="false" />
 </div>
 <div id="panel<s:property value="widgetID"/>_content" class="panel_content" style="display: block;"><s:property value="content" escape="false" /></div>
-<div class="panel_footer" onclick=""></div>
 </div>
 </div>
 </s:iterator>
