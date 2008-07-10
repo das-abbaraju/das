@@ -114,7 +114,7 @@
 								<s:iterator value="safetyManualLink.values()">
 								<a href="#"
 								onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqf<s:property value="answer"/>1331','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">
-								Uploaded(<s:date name="audit.createdDate" format="MMM yyyy"/>)</a><br/><br/>
+								Uploaded (<s:date name="audit.createdDate" format="MMM yyyy"/>)</a><br/><br/>
 								</s:iterator>
 							</s:if>
 							<s:else>Not Uploaded</s:else>
