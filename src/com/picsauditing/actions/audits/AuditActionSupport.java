@@ -26,10 +26,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected AuditDataDAO auditDataDao;
 	protected List<AuditCatData> categories;
 	protected String descriptionOsMs;
+	private Map<Integer, AuditData> hasManual;
 
-	public AuditActionSupport(ContractorAccountDAO accountDao,
-			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao) {
+	public AuditActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao) {
 		super(accountDao, auditDao);
 		this.catDataDao = catDataDao;
 		this.auditDataDao = auditDataDao;
@@ -47,15 +47,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (permissions.isPicsEmployee())
 			return;
 		if (permissions.isOperator() || permissions.isCorporate()) {
-			if (!permissions.getCanSeeAudit().contains(
-					conAudit.getAuditType().getAuditTypeID()))
-				throw new NoRightsException(conAudit.getAuditType()
-						.getAuditName());
+			if (!permissions.getCanSeeAudit().contains(conAudit.getAuditType().getAuditTypeID()))
+				throw new NoRightsException(conAudit.getAuditType().getAuditName());
 		}
 		if (permissions.isContractor()) {
 			if (!conAudit.getAuditType().isCanContractorView())
-				throw new NoRightsException(conAudit.getAuditType()
-						.getAuditName());
+				throw new NoRightsException(conAudit.getAuditType().getAuditName());
 		}
 	}
 
@@ -96,46 +93,48 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isHasSafetyManual() {
-		String hasManual = getAnswer(AuditQuestion.MANUAL_PQF);
-		if (hasManual == null || hasManual.length() == 0)
+		hasManual = getDataForSafetyManual();
+		if (hasManual == null || hasManual.size() == 0)
 			return false;
 		return true;
 	}
 
 	private String getAnswer(int questionID) {
 		AuditData data = getAuditData(questionID);
-		
-		if( data == null )
-		{
+
+		if (data == null) {
 			return "";
-		}
-		else
-		{
-			return data.getAnswer();	
+		} else {
+			return data.getAnswer();
 		}
 	}
 
-	public AuditData getAuditData(int questionID )
-	{
+	public AuditData getAuditData(int questionID) {
 		List<Integer> ids = new ArrayList<Integer>();
 		ids.add(questionID);
-		Map<Integer, AuditData> answers = auditDataDao.findAnswersByContractor(
-				conAudit.getContractorAccount().getId(), ids);
+		Map<Integer, AuditData> answers = auditDataDao.findAnswersByContractor(conAudit.getContractorAccount().getId(),
+				ids);
 		if (answers == null || answers.size() == 0)
 			return null;
 		return answers.get(AuditQuestion.MANUAL_PQF);
 	}
-	
-	
-	public String getSafetyManualFileLink()
-	{
-		AuditData data = getAuditData(AuditQuestion.MANUAL_PQF);
-		
-		return "pqf" + data.getAnswer() + new Integer(AuditQuestion.MANUAL_PQF).toString();
+
+	public Map<Integer, AuditData> getDataForSafetyManual() {
+		Map<Integer, AuditData> answers = auditDataDao.findAnswersForSafetyManual(conAudit.getContractorAccount()
+				.getId(), AuditQuestion.MANUAL_PQF);
+		if (answers == null || answers.size() == 0)
+			return null;
+		return answers;
 	}
-	
-	
-	
+
+	public Map<Integer, AuditData> getSafetyManualLink() {
+		if (hasManual != null)
+			return hasManual;
+		else
+			hasManual = getDataForSafetyManual();
+		return hasManual;
+	}
+
 	public boolean isCanVerify() {
 		if (conAudit.getAuditType().isPqf())
 			if (permissions.isAuditor())
@@ -150,8 +149,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		AuditType type = conAudit.getAuditType();
 
 		// Auditors can edit their assigned audits
-		if (type.isHasAuditor() && !type.isCanContractorEdit()
-				&& conAudit.getAuditor() != null
+		if (type.isHasAuditor() && !type.isCanContractorEdit() && conAudit.getAuditor() != null
 				&& permissions.getUserId() == conAudit.getAuditor().getId())
 			return true;
 
@@ -167,8 +165,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 		if (permissions.isOperator()) {
 			if (conAudit.getRequestingOpAccount() != null)
-				if (conAudit.getRequestingOpAccount().getId() == permissions
-						.getAccountId())
+				if (conAudit.getRequestingOpAccount().getId() == permissions.getAccountId())
 					return true;
 			return false;
 		}

@@ -111,10 +111,14 @@
 					<tr>
 						<th>Safety Manual:</th>
 						<td><s:if test="hasSafetyManual">
-							<a href="#"
-							onclick="window.open('servlet/showpdf?id=<s:property value="id"/>&file=<s:property value="safetyManualFileLink"/>','','scrollbars=yes,resizable=yes,width=700,height=450')">
-							Uploaded</a>
-						</s:if><s:else>Not Uploaded</s:else></td>
+								<s:iterator value="safetyManualLink.values()">
+								<a href="#"
+								onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqf<s:property value="answer"/>1331','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">
+								Uploaded(<s:date name="audit.createdDate" format="MMM yyyy"/>)</a><br/><br/>
+								</s:iterator>
+							</s:if>
+							<s:else>Not Uploaded</s:else>
+						</td>
 					</tr>
 				</s:if>
 				<s:if test="conAudit.auditType.scheduled">

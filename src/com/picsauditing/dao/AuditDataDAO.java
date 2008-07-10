@@ -8,6 +8,8 @@ import java.util.Vector;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -38,11 +40,9 @@ public class AuditDataDAO extends PicsDAO {
 		return a;
 	}
 
-	public Map<Integer, AuditData> findByCategory(int auditID,
-			AuditCategory category) {
-		Query query = em
-				.createQuery("FROM AuditData d "
-						+ "WHERE d.audit.id = :auditID AND d.question.subCategory.category = :category");
+	public Map<Integer, AuditData> findByCategory(int auditID, AuditCategory category) {
+		Query query = em.createQuery("FROM AuditData d "
+				+ "WHERE d.audit.id = :auditID AND d.question.subCategory.category = :category");
 		query.setParameter("auditID", auditID);
 		query.setParameter("category", category);
 
@@ -55,25 +55,22 @@ public class AuditDataDAO extends PicsDAO {
 		return findByCategory(auditID, auditCategory);
 	}
 
-	public Map<Integer, AuditData> findAnswersByContractor(int conID,
-			List<Integer> questionIds) {
+	public Map<Integer, AuditData> findAnswersByContractor(int conID, List<Integer> questionIds) {
 		if (questionIds.size() == 0)
 			return new HashMap<Integer, AuditData>();
 
-		Query query = em
-				.createQuery("FROM AuditData d "
-						+ "WHERE audit IN (FROM ContractorAudit WHERE contractorAccount.id = ? AND auditStatus = 'Active') "
-						+ "AND question.questionID IN (" + glue(questionIds)
-						+ ")");
+		Query query = em.createQuery("FROM AuditData d "
+				+ "WHERE audit IN (FROM ContractorAudit WHERE contractorAccount.id = ? AND auditStatus = 'Active') "
+				+ "AND question.questionID IN (" + glue(questionIds) + ")");
 		query.setParameter(1, conID);
 
 		return mapData(query.getResultList());
+
 	}
 
 	public AuditData findAnswerToQuestion(int auditId, int questionId) {
 		try {
-			Query query = em.createQuery("FROM AuditData d "
-					+ "WHERE audit.id = ? AND question.questionID =? ");
+			Query query = em.createQuery("FROM AuditData d " + "WHERE audit.id = ? AND question.questionID =? ");
 			query.setParameter(1, auditId);
 			query.setParameter(2, questionId);
 			return (AuditData) query.getSingleResult();
@@ -106,15 +103,13 @@ public class AuditDataDAO extends PicsDAO {
 	}
 
 	public Map<Integer, AuditData> findAnswers(int auditID) {
-		Query query = em
-				.createQuery("SELECT d FROM AuditData d WHERE audit.id = ?");
+		Query query = em.createQuery("SELECT d FROM AuditData d WHERE audit.id = ?");
 		query.setParameter(1, auditID);
 
 		return mapData(query.getResultList());
 	}
 
-	public Map<Integer, AuditData> findAnswers(int auditID,
-			List<Integer> questionIds) {
+	public Map<Integer, AuditData> findAnswers(int auditID, List<Integer> questionIds) {
 		if (questionIds.size() == 0)
 			return new HashMap<Integer, AuditData>();
 
@@ -126,8 +121,7 @@ public class AuditDataDAO extends PicsDAO {
 			questionIds.add(AuditQuestion.EMR05);
 		}
 
-		Query query = em.createQuery("SELECT d FROM AuditData d "
-				+ "WHERE audit.id = ? AND question.questionID IN ("
+		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id = ? AND question.questionID IN ("
 				+ glue(questionIds) + ")");
 		query.setParameter(1, auditID);
 
@@ -159,5 +153,19 @@ public class AuditDataDAO extends PicsDAO {
 		for (Integer id : listIDs)
 			ids.append(",").append(id);
 		return ids.toString();
+	}
+
+	public Map<Integer, AuditData> findAnswersForSafetyManual(int conID, int questionId) {
+		Map<Integer, AuditData> data = new HashMap<Integer, AuditData>();
+		Query query = em
+				.createQuery("FROM AuditData d "
+						+ "WHERE audit IN (FROM ContractorAudit WHERE contractorAccount.id = ? AND auditStatus IN ('Active','Submitted','Pending')) "
+						+ "AND question.questionID =  " + questionId + "" + ")");
+		query.setParameter(1, conID);
+		for (Object ad : query.getResultList()) {
+			AuditData auditData = (AuditData) ad;
+			data.put(auditData.getDataID(), auditData);
+		}
+		return data;
 	}
 }
