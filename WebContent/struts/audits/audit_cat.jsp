@@ -175,7 +175,7 @@
 		<a class="edit" href="?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>&mode=Edit">Switch to Edit Mode</a>
 	</s:if>
 </s:if>
-	<s:if test="mode == 'View'">
+	<s:if test="mode == 'View' || mode == 'ViewQ'">
 		<a href="javascript:window.print()" class="print">Print</a>
 	</s:if>
 </div>
@@ -237,6 +237,9 @@
 					</s:if>
 					<s:if test="mode == 'Edit'">
 						<s:include value="audit_cat_edit.jsp"></s:include>
+					</s:if>
+					<s:if test="mode == 'ViewQ'">
+						<s:include value="audit_cat_questions.jsp"></s:include>
 					</s:if>
 				</s:iterator>
 			</s:iterator>
