@@ -68,8 +68,8 @@ function getElement(whichLayer) {
 <!-- !begin header -->
 
 
-<div class="sidebox">
-	<div class="boxbody">
+<div id="sidebox">
+	<div id="boxbody">
 		<p><% if (permissions.isLoggedIn()) { %>
 <span id="name">Welcome, <%=permissions.getName() %></span>
 | <a href="<%= permissions.hasPermission(OpPerms.StatusOnly) ? "ContractorOperatorLimited" : "Home" %>.action">Home</a>| <a href="logout.jsp">Logout</a>
