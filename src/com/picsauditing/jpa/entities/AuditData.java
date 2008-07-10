@@ -176,6 +176,10 @@ public class AuditData implements java.io.Serializable {
 
 	@Transient
 	public boolean isHasRequirements() {
+		// This may no be the best solution. We may want to make pqf not have
+		// open requirements.
+		if (audit.getAuditType().isPqf())
+			return false;
 		return (YesNo.Yes.equals(wasChanged) || isRequirementOpen());
 	}
 
