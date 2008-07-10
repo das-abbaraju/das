@@ -25,7 +25,6 @@
 					note.writeToDB();
 					name = "operator";
 				} else {
-					permissions.tryPermission(OpPerms.AllContractors);
 					String noteType = request.getParameter("noteType");
 					if (noteType.equals("external"))
 						cBean.addNote(id, pre, newNote, notesDate);
