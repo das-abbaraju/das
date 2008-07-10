@@ -10,10 +10,10 @@
 	cBean.setFromDB(id);
 	cBean.tryView(permissions);
 	String pre = "(" + permissions.getName() + ")";
-	boolean canOperatorEditNotes = permissions.hasPermission(com.picsauditing.access.OpPerms.EditNotes);
+	boolean canOperatorEditNotes = permissions.hasPermission(com.picsauditing.access.OpPerms.EditNotes, OpType.Edit);
 	boolean canEditNotes = permissions.isPicsEmployee();
 	if (action != null && action.length() > 0) {
-		permissions.tryPermission(OpPerms.EditNotes);
+		permissions.tryPermission(OpPerms.EditNotes, OpType.Edit);
 		String name = "";
 		if ("Add Note".equals(action)) {
 			String notesDate = request.getParameter("notesDate");
@@ -36,7 +36,7 @@
 			}
 		}
 		if ("Update Notes".equals(action)) {
-			permissions.tryPermission(OpPerms.AllContractors);
+			permissions.tryPermission(OpPerms.EditNotes, OpType.Delete);
 			String changedNotesExternal = request.getParameter("changedNotesExternal");
 			if (changedNotesExternal != null) {
 				cBean.notes = changedNotesExternal;
@@ -51,6 +51,8 @@
 			cBean.writeToDB();
 		}
 		if ("DeleteNote".equals(action) && canOperatorEditNotes) {
+			// TODO, give all operators the view/edit/delete perm for notes
+			permissions.tryPermission(OpPerms.EditNotes, OpType.Delete);
 			String deleteID = request.getParameter("dID");
 			new com.picsauditing.PICS.redFlagReport.Note().deleteNote(deleteID, permissions);
 			name = "operator";
