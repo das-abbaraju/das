@@ -17,3 +17,12 @@ div#maincontainer p{
 	line-height: 28px;
 	color: #f7f7f7;
 }
+
+ul#navlist {
+	margin-top: -20px;
+}
+
+#navlist a, #navlist a:hover {
+	padding: 10px;
+	line-height: 36px;
+}
