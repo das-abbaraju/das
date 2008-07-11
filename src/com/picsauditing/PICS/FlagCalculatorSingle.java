@@ -15,6 +15,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
+import com.picsauditing.jpa.entities.FlagOshaCriterion;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaLog;
@@ -108,18 +109,22 @@ public class FlagCalculatorSingle {
 
 		debug(" flagColor=" + flagColor);
 
+		for (OshaLog osha : contractor.getOshas()) {
+			// The flag colors should always start Green, but sometimes they are still set from the previous operator's loop
+			osha.setFlagColor(FlagColor.Green);
+			osha.getYear1().setFlagColor(FlagColor.Green);
+			osha.getYear2().setFlagColor(FlagColor.Green);
+			osha.getYear3().setFlagColor(FlagColor.Green);
+		}
+
 		for (FlagOshaCriteria criteria : operator.getFlagOshaCriteria()) {
 			if (criteria.isRequired()) {
 				debug(" -- osha ");
 				boolean found = false;
 				for (OshaLog osha : contractor.getOshas()) {
-					// The flag colors should always start Green, but sometimes they are still set from the previous operator's loop
-					osha.getYear1().setFlagColor(FlagColor.Green);
-					osha.getYear2().setFlagColor(FlagColor.Green);
-					osha.getYear3().setFlagColor(FlagColor.Green);
-					
 					if (osha.isCorporate()) {
 						found = true;
+						// Calculate the flag color for Average calculations (if any)
 						FlagColor oshaAvgFlag = FlagColor.Green;
 						if (criteria.getLwcr().isTimeAverage()) {
 							if (criteria.getLwcr().isFlagged(osha.getAverageLwcr()))
@@ -133,9 +138,12 @@ public class FlagCalculatorSingle {
 							if (criteria.getFatalities().isFlagged(osha.getAverageFatalities()))
 								oshaAvgFlag = setFlagColor(oshaAvgFlag, criteria.getFlagColor());
 						}
-						// Set the flag color for the average years and then add
-						// it to the "rolling total"
+						
+						// Set the flag color for the average years
+						// and then add it to the "rolling total"
+						oshaAvgFlag = setFlagColor(osha.getFlagColor(), oshaAvgFlag);
 						osha.setFlagColor(oshaAvgFlag);
+						
 						flagColor = setFlagColor(flagColor, oshaAvgFlag);
 
 						// Make sure all three years pass the criteria
@@ -268,21 +276,31 @@ public class FlagCalculatorSingle {
 
 		debug(" ---- criteria.getFlagColor() " + criteria.getFlagColor() + osha.isApplicable());
 		if (osha.isApplicable()) {
-			debug(" ---- LWCR " + criteria.getLwcr().isFlagged(osha.getLostWorkCasesRate()) + 
-					" criteria:" + criteria.getLwcr().toString() + " value:" + osha.getLostWorkCasesRate());
-			debug(" ---- TRIR " + criteria.getTrir().isFlagged(osha.getRecordableTotalRate()) + 
-					" criteria:" + criteria.getTrir().toString() + " value:" + osha.getRecordableTotalRate());
-			debug(" ---- Fatal " + criteria.getFatalities().isFlagged(osha.getFatalities()) + 
-					" criteria:" + criteria.getFatalities().toString() + " value:" + osha.getFatalities());
-			if (criteria.getLwcr().isFlagged(osha.getLostWorkCasesRate())
-					|| criteria.getTrir().isFlagged(osha.getRecordableTotalRate())
-					|| criteria.getFatalities().isFlagged(osha.getFatalities())) {
+			boolean flagged = false;
+			debug(" ---- LWCR ");
+			flagged = isCriteriaFlagged(criteria.getLwcr(), osha.getLostWorkCasesRate(), flagged);
+			debug(" ---- TRIR ");
+			flagged = isCriteriaFlagged(criteria.getTrir(), osha.getRecordableTotalRate(), flagged);
+			debug(" ---- Fatal ");
+			flagged = isCriteriaFlagged(criteria.getFatalities(), osha.getFatalities(), flagged);
+			
+			if (flagged)
 				oshaYearFlag = setFlagColor(oshaYearFlag, criteria.getFlagColor());
-			}
 		}
 		osha.setFlagColor(oshaYearFlag);
 		debug(" -- oshaYearFlag = " + oshaYearFlag);
 		return oshaYearFlag;
+	}
+	
+	private boolean isCriteriaFlagged(FlagOshaCriterion criterion, float rate, boolean flagged) {
+		if (!criterion.isTimeAverage()) {
+			boolean tempFlagged = criterion.isFlagged(rate);
+			if (tempFlagged)
+				flagged = true;
+			debug(" ----- " + tempFlagged + 
+					" criteria:" + criterion.toString() + " value:" + rate);
+		}
+		return flagged;
 	}
 
 	/**

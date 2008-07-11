@@ -48,7 +48,7 @@ public class FlagOshaCriterion {
 	}
 	
 	public boolean isFlagged(float value) {
-		if (!isRequired() || isTimeAverage())
+		if (!isRequired())
 			return false;
 		return value > hurdle;
 	}
