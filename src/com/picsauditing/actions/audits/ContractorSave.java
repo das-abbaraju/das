@@ -1,9 +1,12 @@
 package com.picsauditing.actions.audits;
 
+import java.util.Date;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
@@ -33,11 +36,12 @@ public class ContractorSave extends PicsActionSupport implements Preparable {
 		}
 
 		for (ContractorAudit conAudit : ca.getAudits()) {
-			if (conAudit.getAuditType().getAuditTypeID() == 1
-					|| conAudit.getAuditType().getAuditTypeID() == 9) {
+			if (conAudit.getAuditType().isPqf()
+					|| conAudit.getAuditType().getAuditTypeID() == AuditType.WELCOME) {
 				if (conAudit.getAuditor() == null) {
 					conAudit.setAuditor(new User());
 					conAudit.getAuditor().setId(auditorId);
+					conAudit.setAssignedDate(new Date());
 				}
 			}
 		}
