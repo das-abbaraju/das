@@ -18,6 +18,8 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.mail.EmailAuditBean;
+import com.picsauditing.mail.EmailTemplates;
 
 public class AuditActionSupport extends ContractorActionSupport {
 	protected int auditID = 0;
@@ -186,4 +188,33 @@ public class AuditActionSupport extends ContractorActionSupport {
 				descriptionText = "OSHA Recordable";
 		return descriptionText;
 	}
+
+	protected void emailContractorOnAudit(EmailAuditBean mailer) {
+		if (conAudit.getAuditType().isCanContractorView()) {
+			boolean allActive = true;
+			for (ContractorAudit cAudit : getActiveAudits()) {
+				// We have to check (cAudit != conAudit) because we haven't set
+				// the status yet...it happens later
+				if (!cAudit.equals(conAudit)
+						&& (cAudit.getAuditStatus().equals(AuditStatus.Pending) || cAudit.getAuditStatus().equals(
+								AuditStatus.Submitted)) && cAudit.getAuditType().isCanContractorView()) {
+					// this contractor still has open audits to complete...don't
+					// send the email
+					allActive = false;
+				}
+			}
+			if (allActive) {
+				// Send email to contractor telling them thank you for playing
+				try {
+					mailer.setPermissions(permissions);
+					mailer.addToken("audits", getActiveAudits());
+					mailer.sendMessage(EmailTemplates.audits_thankyou, conAudit);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+
 }

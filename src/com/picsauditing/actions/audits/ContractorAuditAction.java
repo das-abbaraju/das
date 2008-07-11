@@ -22,10 +22,11 @@ import com.picsauditing.mail.EmailAuditBean;
 import com.picsauditing.mail.EmailTemplates;
 
 /**
- * Used by Audit.action to show a list of categories for a given audit. 
- * Also allows users to change the status of an audit.
+ * Used by Audit.action to show a list of categories for a given audit. Also
+ * allows users to change the status of an audit.
+ * 
  * @author Trevor
- *
+ * 
  */
 public class ContractorAuditAction extends AuditActionSupport {
 	protected AuditStatus auditStatus;
@@ -36,26 +37,26 @@ public class ContractorAuditAction extends AuditActionSupport {
 	private boolean isCanApply = false;
 	private int applyCategoryID = 0;
 	private int removeCategoryID = 0;
-	
-	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, 
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, EmailAuditBean emailAuditBean, 
+
+	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, EmailAuditBean emailAuditBean,
 			FlagCalculator2 flagCalculator2, AuditPercentCalculator auditPercentCalculator) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.mailer = emailAuditBean;
 		this.flagCalculator = flagCalculator2;
 		this.auditPercentCalculator = auditPercentCalculator;
 	}
-	
+
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
 		this.findConAudit();
-		
+
 		catDataDao.fillAuditCategories(conAudit);
-		
+
 		if (conAudit.getAuditType().isDynamicCategories() && permissions.isPicsEmployee()) {
 			isCanApply = true;
-			
+
 			if (applyCategoryID > 0) {
 				for (AuditCatData data : conAudit.getCategories()) {
 					if (data.getId() == applyCategoryID) {
@@ -75,46 +76,33 @@ public class ContractorAuditAction extends AuditActionSupport {
 		}
 		// Calculate and set the percent complete
 		auditPercentCalculator.percentCalculateComplete(conAudit);
-		
-		if (auditStatus != null && ! auditStatus.equals(conAudit.getAuditStatus())) {
+
+		if (auditStatus != null && !auditStatus.equals(conAudit.getAuditStatus())) {
 			// We're changing the status
 			if (!conAudit.getAuditType().isHasRequirements() && auditStatus.equals(AuditStatus.Submitted)) {
 				// This audit should skip directly to Active when Submitted
 				auditStatus = AuditStatus.Active;
-				conAudit.setCompletedDate(new Date());
-			}
-			if (auditStatus.equals(AuditStatus.Submitted)) {
-				conAudit.setCompletedDate(new Date());
-				boolean allActive = true;
-				for (ContractorAudit cAudit : getActiveAudits()) {
-					if (cAudit != conAudit && cAudit.getAuditStatus().equals(AuditStatus.Pending))
-						// We have to check (cAudit != conAudit) because we haven't set the status yet...it happens later 
-						allActive = false;
-				}
-				if (allActive) {
-					// Send email to contractor telling them thank you for playing
-					mailer.setPermissions(permissions);
-					mailer.addToken("audits", getActiveAudits());
-					mailer.sendMessage(EmailTemplates.audits_thankyou, conAudit);
-				}
 			}
 			if (auditStatus.equals(AuditStatus.Active)) {
 				conAudit.setClosedDate(new Date());
 				if (conAudit.getAuditType().isHasMultiple()) {
-					// This audit can only have one active audit, expire the previous one
-					for(ContractorAudit oldAudit : conAudit.getContractorAccount().getAudits()) {
+					// This audit can only have one active audit, expire the
+					// previous one
+					for (ContractorAudit oldAudit : conAudit.getContractorAccount().getAudits()) {
 						if (!oldAudit.equals(conAudit)) {
 							if (oldAudit.getAuditType().equals(conAudit.getAuditType())
-									|| (oldAudit.getAuditType().equals(AuditType.NCMS) && conAudit.getAuditType().equals(AuditType.DESKTOP))
-								) {
+									|| (oldAudit.getAuditType().equals(AuditType.NCMS) && conAudit.getAuditType()
+											.equals(AuditType.DESKTOP))) {
 								oldAudit.setAuditStatus(AuditStatus.Expired);
 								auditDao.save(oldAudit);
 							}
 						}
 					}
 				}
+
+				emailContractorOnAudit(mailer);
 			}
-			
+
 			if (conAudit.getExpiresDate() == null && conAudit.getCompletedDate() != null) {
 				Date dateToExpire = conAudit.getAuditType().getDateToExpire();
 				Calendar cal = Calendar.getInstance();
@@ -129,22 +117,23 @@ public class ContractorAuditAction extends AuditActionSupport {
 				}
 				conAudit.setExpiresDate(cal.getTime());
 			}
-			
+
 			// Save the audit status
 			conAudit.setAuditStatus(auditStatus);
 			auditDao.save(conAudit);
-			
+
 			flagCalculator.runByContractor(conAudit.getContractorAccount().getId());
 		}
-		
+
 		if (this.conAudit.getAuditType().getAuditTypeID() == AuditType.NCMS)
 			return "NCMS";
 
 		return SUCCESS;
 	}
-	
+
 	/**
 	 * Can the current user submit this audit in its current state?
+	 * 
 	 * @return
 	 */
 	public boolean isCanSubmit() {
@@ -156,10 +145,10 @@ public class ContractorAuditAction extends AuditActionSupport {
 			return true;
 		return false;
 	}
-	
-	
+
 	/**
 	 * Can the current user submit this audit in its current state?
+	 * 
 	 * @return
 	 */
 	public boolean isCanClose() {

@@ -163,6 +163,7 @@ public class VerifyView extends AuditActionSupport {
 
 		if (conAudit.getPercentVerified() == 100 && conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
 			conAudit.setAuditStatus(AuditStatus.Active);
+			emailContractorOnAudit(mailer);
 		}
 		// Don't un-Activate it anymore, per conversation with Trevor, Jared,
 		// John 5/16/08
