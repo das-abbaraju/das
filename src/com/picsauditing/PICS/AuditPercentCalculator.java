@@ -11,6 +11,8 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.OshaLog;
+import com.picsauditing.jpa.entities.OshaLogYear;
 
 public class AuditPercentCalculator {
 	private AuditDataDAO auditDataDao;
@@ -148,5 +150,30 @@ public class AuditPercentCalculator {
 		conAudit.setPercentComplete(percentComplete);
 		if (conAudit.getAuditType().isHasRequirements()	&& !conAudit.getAuditType().isPqf())
 			conAudit.setPercentVerified(percentVerified);
+	}
+	
+	public void percentOshaComplete(OshaLog osha, AuditCatData catData) {
+		int count = 0;
+		count += getOshaYearValidCount(osha.getYear1());
+		count += getOshaYearValidCount(osha.getYear2());
+		count += getOshaYearValidCount(osha.getYear3());
+		
+		int percentComplete = Math.round(count * 100 / 6);
+		int factor = 5; // Let's make the osha section "weigh" a bit more in the overall audit % complete
+		catData.setRequiredCompleted(count * factor);
+		catData.setNumRequired(6 * factor);
+		catData.setPercentCompleted(percentComplete);
+		catDataDao.save(catData);
+	}
+	
+	private int getOshaYearValidCount(OshaLogYear year) {
+		if (!year.isApplicable())
+			return 2;
+		int count = 0;
+		if (year.getManHours() > 0)
+			count++;
+		if (year.isUploaded())
+			count++;
+		return count;
 	}
 }

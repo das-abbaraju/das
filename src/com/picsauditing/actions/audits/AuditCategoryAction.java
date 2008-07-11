@@ -106,9 +106,18 @@ public class AuditCategoryAction extends AuditActionSupport {
 			mode = VIEW;
 
 
-		if (mode.equals(EDIT)
-				&& currentCategory.getCategory().getId() == AuditCategory.OSHA) {
-			if (!isOshaCorporate()) {
+		if (currentCategory.getCategory().getId() == AuditCategory.OSHA) {
+			boolean hasOshaCorporate = false;
+			int percentComplete = 0;
+			for (OshaLog osha : this.contractor.getOshas()) {
+				if (osha.isCorporate()) {
+					hasOshaCorporate = true;
+					// Calculate percent complete too
+					auditPercentCalculator.percentOshaComplete(osha, currentCategory);
+				}
+			}
+
+			if (mode.equals(EDIT) && !hasOshaCorporate) {
 				OshaLog oshaCorporate = new OshaLog();
 				oshaCorporate.setContractorAccount(contractor);
 				oshaCorporate.setType(OshaType.OSHA);
@@ -121,9 +130,15 @@ public class AuditCategoryAction extends AuditActionSupport {
 				OshaLogDAO dao = (OshaLogDAO) SpringUtils.getBean("OshaLogDAO");
 				dao.save(oshaCorporate);
 				contractor.getOshas().add(oshaCorporate);
+				
+				currentCategory.setRequiredCompleted(0);
+				currentCategory.setNumRequired(6);
+				currentCategory.setPercentCompleted(0);
+				catDataDao.save(currentCategory);
 			}
+		} else {
+			auditPercentCalculator.updatePercentageCompleted(currentCategory);
 		}
-		auditPercentCalculator.updatePercentageCompleted(currentCategory);
 		auditPercentCalculator.percentCalculateComplete(conAudit);
 		return SUCCESS;
 	}
@@ -204,11 +219,4 @@ public class AuditCategoryAction extends AuditActionSupport {
 		return currentCategory;
 	}
 
-	private boolean isOshaCorporate() {
-		for (OshaLog osha : this.contractor.getOshas()) {
-			if (osha.isCorporate())
-				return true;
-		}
-		return false;
-	}
 }
