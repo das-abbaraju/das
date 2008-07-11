@@ -40,6 +40,7 @@
 <!--			href="http://suda.co.uk/projects/X2V/get-vcard.php?uri=http://www.albumcreative.com/picscss/index.html"><img -->
 <!--			src="images/vcard.jpg" alt="image" width="130" height="38" /></a></div>-->
 		PICS Contractor ID: <strong><s:property value="contractor.luhnId" /></strong><br />
+		Account Since: <strong><s:date name="contractor.accountDate" format="MMM yyyy" /></strong><br />
 		Risk Level: <strong><s:property value="contractor.riskLevel" /></strong><br />
 		Facilities:
 		<ul style="list-style-type: none;">
