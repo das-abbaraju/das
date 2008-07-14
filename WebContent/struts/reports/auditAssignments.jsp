@@ -14,50 +14,39 @@
 	function saveAudit(auditId) {
 		var auditor = $F($('auditor_' + auditId));
 		var scheduleDate = $('scheduled_date_' + auditId + '_date');
-
-		if (auditor != 0 && scheduleDate.value != '' && ($('auditlocation_' + auditId + '_Onsite').checked == true || $('auditlocation_' + auditId + '_Web').checked == true))
-		{
-			var pars = "contractorAudit.id=" + auditId;
+		var pars = "contractorAudit.id=" + auditId;
 			
-			pars = pars + "&auditor.id=" + auditor;
+		pars = pars + "&auditor.id=" + auditor;
 
-			if (scheduleDate != null) {
-				var thisdate = $F($('scheduled_date_' + auditId + '_date'));
-				if( thisdate != '' )
-				{
-					var thisTime = $('scheduled_date_' + auditId + '_time').options[$('scheduled_date_' + auditId + '_time').selectedIndex].text;
-					thisdate = thisdate + ' ' + thisTime;
-					pars = pars + "&contractorAudit.scheduledDate=" + thisdate;	
-				}
-			
-				if( $('auditlocation_' + auditId + '_Onsite').checked == true )
-				{
-					pars = pars + "&contractorAudit.auditLocation=Onsite";
-				}
-				else if( $('auditlocation_' + auditId + '_Web').checked == true )
-				{
-					pars = pars + "&contractorAudit.auditLocation=Web";
-				}
+		if (scheduleDate != null) {
+			var thisdate = $F($('scheduled_date_' + auditId + '_date'));
+			if (thisdate != '')	{
+				var thisTime = $('scheduled_date_' + auditId + '_time').options[$('scheduled_date_' + auditId + '_time').selectedIndex].text;
+				thisdate = thisdate + ' ' + thisTime;
+				pars = pars + "&contractorAudit.scheduledDate=" + thisdate;	
 			}
-
-			var assignDateDiv = 'assignDate_'+auditId;
-			var myAjax = new Ajax.Updater(assignDateDiv,'AuditAssignmentUpdateAjax.action', {method: 'post', parameters: pars});
-
-			var divName = 'audit_'+auditId;
-			new Effect.Highlight(divName, {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+			
+			if ($('auditlocation_' + auditId + '_Onsite').checked == true) {
+					pars = pars + "&contractorAudit.auditLocation=Onsite";
+			}
+			else if($('auditlocation_' + auditId + '_Web').checked == true) {
+					pars = pars + "&contractorAudit.auditLocation=Web";
+			}
 		}
+
+		var assignDateDiv = 'assignDate_'+auditId;
+		var myAjax = new Ajax.Updater(assignDateDiv,'AuditAssignmentUpdateAjax.action', {method: 'post', parameters: pars});
+
+		var divName = 'audit_'+auditId;
+		new Effect.Highlight(divName, {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 	}
 	
 	function saveAuditor(auditId, auditorId) {
-		var scheduleDate = $('scheduled_date_' + auditId + '_date');
-		
-		if (scheduleDate.value != '') {
 			var pars = "contractorAudit.id=" + auditId + '&auditor.id=' + auditorId;
 			var toHighlight = 'audit_'+auditId;
 			var myAjax = new Ajax.Request('AuditAssignmentUpdateAjax.action', {method: 'post', parameters: pars});
 		
 			new Effect.Highlight(toHighlight, {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-		}
 	}
 </script>
 </head>

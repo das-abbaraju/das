@@ -112,7 +112,9 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 		String name = request.getRequestURL().toString();
 		String serverName = name.replace(ActionContext.getContext().getName() + ".action", "");
 
-		if (contractorAudit.getAuditType().isScheduled()) {
+		if (contractorAudit.getAuditType().isScheduled()
+				&& contractorAudit.getAuditor() != null
+				&& contractorAudit.getScheduledDate() != null) {
 			if (contractorAudit.getContractorConfirm() == null) {
 				contractorMailer.setServerName(serverName);
 				contractorMailer.sendMessage(EmailTemplates.contractorconfirm, contractorAudit);
