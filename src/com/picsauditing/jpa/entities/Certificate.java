@@ -6,6 +6,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -117,6 +119,7 @@ public class Certificate {
 		this.namedInsured = namedInsured;
 	}
 
+	@Enumerated(EnumType.STRING)
 	public YesNo getSubrogationWaived() {
 		return subrogationWaived;
 	}
@@ -133,6 +136,7 @@ public class Certificate {
 		this.status = status;
 	}
 
+	@Enumerated(EnumType.STRING)
 	public YesNo getVerified() {
 		return verified;
 	}
