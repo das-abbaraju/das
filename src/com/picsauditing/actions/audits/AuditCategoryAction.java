@@ -44,10 +44,8 @@ public class AuditCategoryAction extends AuditActionSupport {
 
 	private AuditPercentCalculator auditPercentCalculator;
 
-	public AuditCategoryAction(ContractorAccountDAO accountDao,
-			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao,
-			AuditPercentCalculator auditPercentCalculator) {
+	public AuditCategoryAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.auditPercentCalculator = auditPercentCalculator;
 	}
@@ -63,16 +61,14 @@ public class AuditCategoryAction extends AuditActionSupport {
 		if (catDataID > 0) {
 			for (AuditCatData catData : categories) {
 				if (catData.getId() == catDataID) {
-					answers = auditDataDao.findByCategory(auditID, catData
-							.getCategory());
+					answers = auditDataDao.findByCategory(auditID, catData.getCategory());
 					fillAnswers(catData, answers);
 					currentCategory = catData;
-					
-					if( mode == null && catData.getRequiredCompleted() < catData.getNumRequired() )
-					{
+
+					if (mode == null && catData.getRequiredCompleted() < catData.getNumRequired()) {
 						mode = EDIT;
 					}
-					
+
 				} else {
 					if (catData.isAppliesB()) {
 						if (currentCategory == null)
@@ -82,11 +78,9 @@ public class AuditCategoryAction extends AuditActionSupport {
 					}
 				}
 			}
-			if (mode == null
-					&& conAudit.getAuditStatus().equals(AuditStatus.Pending))
+			if (mode == null && conAudit.getAuditStatus().equals(AuditStatus.Pending))
 				mode = EDIT;
-			if (mode == null
-					&& conAudit.getAuditStatus().equals(AuditStatus.Submitted))
+			if (mode == null && conAudit.getAuditStatus().equals(AuditStatus.Submitted))
 				mode = EDIT;
 
 		} else {
@@ -101,74 +95,66 @@ public class AuditCategoryAction extends AuditActionSupport {
 			viewBlanks = false;
 
 		if (mode == null)
-			mode = VIEW;	
+			mode = VIEW;
 		if (mode.equals(EDIT) && !isCanEdit())
 			mode = VIEW;
 
-
-		if (currentCategory.getCategory().getId() == AuditCategory.OSHA) {
-			boolean hasOshaCorporate = false;
-			int percentComplete = 0;
-			for (OshaLog osha : this.contractor.getOshas()) {
-				if (osha.isCorporate()) {
-					hasOshaCorporate = true;
-					// Calculate percent complete too
-					auditPercentCalculator.percentOshaComplete(osha, currentCategory);
+		if (currentCategory != null) {
+			if (currentCategory.getCategory().getId() == AuditCategory.OSHA) {
+				boolean hasOshaCorporate = false;
+				int percentComplete = 0;
+				for (OshaLog osha : this.contractor.getOshas()) {
+					if (osha.isCorporate()) {
+						hasOshaCorporate = true;
+						// Calculate percent complete too
+						auditPercentCalculator.percentOshaComplete(osha, currentCategory);
+					}
 				}
-			}
 
-			if (mode.equals(EDIT) && !hasOshaCorporate) {
-				OshaLog oshaCorporate = new OshaLog();
-				oshaCorporate.setContractorAccount(contractor);
-				oshaCorporate.setType(OshaType.OSHA);
-				oshaCorporate.setYear1(new OshaLogYear());
-				oshaCorporate.getYear1().setApplicable(true);
-				oshaCorporate.setYear2(new OshaLogYear());
-				oshaCorporate.getYear2().setApplicable(true);
-				oshaCorporate.setYear3(new OshaLogYear());
-				oshaCorporate.getYear3().setApplicable(true);
-				OshaLogDAO dao = (OshaLogDAO) SpringUtils.getBean("OshaLogDAO");
-				dao.save(oshaCorporate);
-				contractor.getOshas().add(oshaCorporate);
-				
-				currentCategory.setRequiredCompleted(0);
-				currentCategory.setNumRequired(6);
-				currentCategory.setPercentCompleted(0);
-				catDataDao.save(currentCategory);
+				if (mode.equals(EDIT) && !hasOshaCorporate) {
+					OshaLog oshaCorporate = new OshaLog();
+					oshaCorporate.setContractorAccount(contractor);
+					oshaCorporate.setType(OshaType.OSHA);
+					oshaCorporate.setYear1(new OshaLogYear());
+					oshaCorporate.getYear1().setApplicable(true);
+					oshaCorporate.setYear2(new OshaLogYear());
+					oshaCorporate.getYear2().setApplicable(true);
+					oshaCorporate.setYear3(new OshaLogYear());
+					oshaCorporate.getYear3().setApplicable(true);
+					OshaLogDAO dao = (OshaLogDAO) SpringUtils.getBean("OshaLogDAO");
+					dao.save(oshaCorporate);
+					contractor.getOshas().add(oshaCorporate);
+
+					currentCategory.setRequiredCompleted(0);
+					currentCategory.setNumRequired(6);
+					currentCategory.setPercentCompleted(0);
+					catDataDao.save(currentCategory);
+				}
+			} else {
+				auditPercentCalculator.updatePercentageCompleted(currentCategory);
 			}
-		} else {
-			auditPercentCalculator.updatePercentageCompleted(currentCategory);
 		}
 		auditPercentCalculator.percentCalculateComplete(conAudit);
 		return SUCCESS;
 	}
 
-	private void fillAnswers(AuditCatData catData,
-			Map<Integer, AuditData> answers) {
-		for (AuditSubCategory subCategory : catData.getCategory()
-				.getSubCategories()) {
+	private void fillAnswers(AuditCatData catData, Map<Integer, AuditData> answers) {
+		for (AuditSubCategory subCategory : catData.getCategory().getSubCategories()) {
 			for (AuditQuestion question : subCategory.getQuestions()) {
 				if (answers.containsKey(question.getQuestionID())) {
 					question.setAnswer(answers.get(question.getQuestionID()));
 				}
 				if (mode != null && mode.equals(EDIT)) {
-					AuditQuestion dependsOnQuestion = question
-							.getDependsOnQuestion();
-					if (dependsOnQuestion != null
-							&& dependsOnQuestion.getQuestionID() > 0) {
+					AuditQuestion dependsOnQuestion = question.getDependsOnQuestion();
+					if (dependsOnQuestion != null && dependsOnQuestion.getQuestionID() > 0) {
 
-						if (!dependsOnQuestion.getSubCategory().getCategory()
-								.equals(catData.getCategory())
-								&& !answers.containsKey(dependsOnQuestion
-										.getQuestionID())) {
+						if (!dependsOnQuestion.getSubCategory().getCategory().equals(catData.getCategory())
+								&& !answers.containsKey(dependsOnQuestion.getQuestionID())) {
 							// Get answer and add to answer map no matter what
-							answers.put(dependsOnQuestion.getQuestionID(),
-									auditDataDao.findAnswerToQuestion(
-											this.auditID, dependsOnQuestion
-													.getQuestionID()));
+							answers.put(dependsOnQuestion.getQuestionID(), auditDataDao.findAnswerToQuestion(
+									this.auditID, dependsOnQuestion.getQuestionID()));
 						}
-						dependsOnQuestion.setAnswer(answers
-								.get(dependsOnQuestion.getQuestionID()));
+						dependsOnQuestion.setAnswer(answers.get(dependsOnQuestion.getQuestionID()));
 					}
 				}
 			}
