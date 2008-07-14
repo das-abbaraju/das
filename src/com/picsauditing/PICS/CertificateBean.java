@@ -7,10 +7,10 @@ import java.sql.Statement;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +22,9 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.User;
+import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.domain.CertificateDO;
+import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.mail.Email;
 import com.picsauditing.mail.EmailContractorBean;
 import com.picsauditing.mail.EmailSender;
@@ -37,7 +39,7 @@ public class CertificateBean extends DataBean {
 	public static String[] STATUS_ARRAY = { "Pending", "Requires Action", "Approved", "Approved", "Rejected",
 			"Rejected", "Expired", "Expired" };
 	public static String[] TYPE_ARRAY = { "Worker's Comp", "General Liability", "Automobile", "Professional Liability",
-			"Pollution Liability", "E&O", "Excess/Umbrella", "Contractor Liability","Employer's Liability"};
+			"Pollution Liability", "E&O", "Excess/Umbrella", "Contractor Liability", "Employer's Liability" };
 
 	public String cert_id = "";
 	public String contractor_id = "";
@@ -344,11 +346,8 @@ public class CertificateBean extends DataBean {
 		String action = request.getParameter("action");
 		String con_id = request.getParameter("id");
 
-		boolean canEdit = permissions.hasPermission(
-				OpPerms.InsuranceCerts, OpType.Edit)
-				|| permissions.isContractor();
-		boolean canDelete = permissions.hasPermission(
-				OpPerms.InsuranceCerts, OpType.Delete)
+		boolean canEdit = permissions.hasPermission(OpPerms.InsuranceCerts, OpType.Edit) || permissions.isContractor();
+		boolean canDelete = permissions.hasPermission(OpPerms.InsuranceCerts, OpType.Delete)
 				|| permissions.isContractor();
 
 		if ("add".equals(action) && canEdit) {
@@ -384,34 +383,20 @@ public class CertificateBean extends DataBean {
 	}// processForm
 
 	public void processEmailForm(Map<String, String> params, Permissions permissions) throws Exception {
+		CertificateDAO certificateDAO = (CertificateDAO) SpringUtils.getBean("CertificateDAO");
+		EmailContractorBean mailer = (EmailContractorBean) SpringUtils.getBean("EmailContractorBean");
+		
 		for (String param : params.keySet()) {
 			if (param.startsWith("sendEmail_")) {
-				// TODO: replace this and the tokens with the Certificate jpa entity 
 				String certificate_id = param.substring(10);
-				String selectQuery = "SELECT certificates.*, accounts.id FROM certificates, accounts "
-						+ "WHERE cert_id = '" + certificate_id + "' AND certificates.contractor_id = accounts.id ";
-				try {
-					DBReady();
-					ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-					if (SQLResult.next()) {
-						setFromResultSet(SQLResult);
-						EmailContractorBean mailer = (EmailContractorBean)SpringUtils.getBean("EmailContractorBean");
-						mailer.addToken("opName", operator);
-						mailer.addToken("expiration_date", getExpDateShow());
-						mailer.addToken("certificate_type", type);
-						mailer.sendMessage(EmailTemplates.certificate_expire, Integer.parseInt(contractor_id));
-
-						String updateQuery = "UPDATE certificates SET sent=(sent+1),lastSentDate=NOW() WHERE cert_id='"
-								+ this.eqDB(certificate_id) + "'";
-						SQLStatement.executeUpdate(updateQuery);
-						SQLResult.close();
-					} else {
-						SQLResult.close();
-						throw new Exception("No certificate with ID: " + certificate_id);
-					}
-				} finally {
-					DBClose();
-				}
+				Certificate certificate = certificateDAO.find(Integer.parseInt(certificate_id));
+				mailer.addToken("opAcct", certificate.getOperatorAccount());
+				mailer.addToken("expiration_date", certificate.getExpiration());
+				mailer.addToken("certificate_type", certificate.getType());
+				mailer.sendMessage(EmailTemplates.certificate_expire, certificate.getContractorAccount());
+				certificate.setSentEmails(certificate.getSentEmails() + 1);
+				certificate.setLastSentDate(new Date());
+				certificateDAO.save(certificate);
 			}
 		}
 	}// processEmailForm
@@ -551,7 +536,7 @@ public class CertificateBean extends DataBean {
 	public void sendEmail(List<CertificateDO> list, Permissions permissions) throws Exception {
 		EmailSender mailer = new EmailSender();
 		for (CertificateDO cdo : list) {
-			
+
 			AccountBean aBean = new AccountBean();
 			String conID = cdo.getContractor_id();
 			aBean.setFromDB(conID);
@@ -561,7 +546,7 @@ public class CertificateBean extends DataBean {
 			aBean.setFromDB(cdo.getOperator_id());
 			String operator = aBean.name;
 
-			///
+			// /
 			Email email = new Email();
 			email.setToAddress(aBean.email);
 			email.setSubject(operator + " insurance certificate " + cdo.getStatus());

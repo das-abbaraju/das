@@ -61,6 +61,9 @@ if (template != null) {
 	OperatorAccountDAO oppAcctDAO = (OperatorAccountDAO)SpringUtils.getBean("OperatorAccountDAO");
 	OperatorAccount opAcct = oppAcctDAO.find(1813);
 	
+	CertificateDAO certificateDAO = (CertificateDAO)SpringUtils.getBean("CertificateDAO");
+	Certificate certificate = certificateDAO.find(2767);
+	
 	if( template.getClassName().equals("EmailContractorBean")
 		&& accountID!=null && accountID.length() > 0) {
 		EmailContractorBean o = (EmailContractorBean) SpringUtils.getBean(template.getClassName());
@@ -68,6 +71,8 @@ if (template != null) {
 		o.addToken("conAudit", conAudit);
 		o.addToken("opAcct", opAcct);
 		o.addToken("opName", opAcct.getName());
+		o.addToken("certificate_type",certificate.getType());
+		o.addToken("expiration_date",certificate.getExpiration());
 		o.setPermissions(permissions);
 		o.sendMessage(template, Integer.parseInt(accountID));
 		mailer = o;
@@ -107,6 +112,8 @@ if (template != null) {
 <%@page import="com.picsauditing.jpa.entities.AppProperty"%>
 <%@page import="com.picsauditing.dao.OperatorAccountDAO"%>
 <%@page import="com.picsauditing.jpa.entities.OperatorAccount"%>
+<%@page import="com.picsauditing.dao.CertificateDAO"%>
+<%@page import="com.picsauditing.jpa.entities.Certificate"%>
 <html>
 <head>
 <title>Manage Email Templates</title>
