@@ -6,12 +6,12 @@ public enum EmailTemplates {
 	certificate_expire("Certificate Expired", "EmailContractorBean"),
 	dasubmit("D&A Audit Submitted", "EmailContractorBean"),
 	desktopsubmit("Desktop Audit Submitted", "EmailContractorBean"),
-	audits_thankyou("All Audits Submitted", "EmailContractorBean"),
+	audits_thankyou("All Audits Submitted", "EmailAuditBean"),
 	contractoradded("Facility added Contractor", "EmailUserBean"),
 	password("Forgot Password", "EmailUserBean"),
 	newuser("Welcome New User", "EmailUserBean"),
 	verifyPqf("Verify PQF", "EmailContractorBean"),
-	contractorconfirm("Confirm Audit Contractor", "EmailContractorBean"),
+	contractorconfirm("Confirm Audit Contractor", "EmailAuditBean"),
 	openRequirements("Open Requirements Reminder", "EmailAuditBean"),
 	auditorconfirm("Confirm Audit Auditor", "EmailUserBean");
 

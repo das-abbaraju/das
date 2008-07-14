@@ -7,6 +7,7 @@
 <%@page import="com.picsauditing.mail.EmailContractorBean"%>
 <%@page import="com.picsauditing.mail.EmailUserBean"%>
 <%@page import="com.picsauditing.mail.EmailBean"%>
+<%@page import="com.picsauditing.mail.EmailAuditBean"%>
 <%@page import="com.picsauditing.util.SpringUtils"%>
 <jsp:useBean id="props" class="com.picsauditing.PICS.AppPropertiesBean" scope ="page"/>
 <%
@@ -55,7 +56,7 @@ if (template != null) {
 	EmailBean mailer = null;
 	
 	ContractorAuditDAO conAuditDAO = (ContractorAuditDAO)SpringUtils.getBean("ContractorAuditDAO");
-	ContractorAudit conAudit = conAuditDAO.find(1607);
+	ContractorAudit conAudit = conAuditDAO.find(8301);
 	
 	OperatorAccountDAO oppAcctDAO = (OperatorAccountDAO)SpringUtils.getBean("OperatorAccountDAO");
 	OperatorAccount opAcct = oppAcctDAO.find(1813);
@@ -79,13 +80,21 @@ if (template != null) {
 		o.setPermissions(permissions);
 		o.sendMessage(template, Integer.parseInt(userID));		
 		mailer = o;
+	} else if (template.getClassName().equals("EmailAuditBean")
+			&& accountID!=null && accountID.length() > 0) {
+		EmailAuditBean o = (EmailAuditBean) SpringUtils.getBean(template.getClassName());
+		o.setTestMode(true);
+		o.addToken("conAudit", conAudit);
+		o.addToken("opAcct", opAcct);
+		o.addToken("opName", opAcct.getName());
+		o.setPermissions(permissions);
+		o.sendMessage(template, Integer.parseInt(accountID));
+		mailer = o;
 	}
 	
 	tokens = mailer.getTokens();
 	emailSample = mailer.getEmail(); //mailer.testMessage(template, accountID, permissions);
-	
 	emailBody = emailSample.getBody();
-	
 	subjectTemplate = apDAO.find("email_"+template+"_subject").getValue();
 	bodyTemplate = apDAO.find("email_"+template+"_body").getValue();
 }
