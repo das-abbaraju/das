@@ -43,7 +43,7 @@
 			<tr>
 				<td></td>
 				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
-				<td align="center"><a href="javascript: changeOrderBy('form1','c.dateCreated DESC');">Registration</a></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','a.dateCreated DESC');">Registration</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','c.accountDate DESC');">Paid</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','a.state');">State</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','c.welcomeAuditor_id DESC,a.name');">Auditor</a></td>
@@ -55,8 +55,10 @@
 				<td class="right"><s:property
 					value="#stat.index + report.firstRowNumber" /></td>
 				<td><a href="ContractorView.action?id=<s:property value="[0].get('id')"/>"><s:property value="[0].get('name')"/></a></td>
-				<td class="reportDate"><s:date name="[0].get('accountDate')"
+				<td class="reportDate"><s:date name="[0].get('dateCreated')"
 					format="M/d/yy" /></td>
+				<td class="reportDate"><s:date name="[0].get('accountDate')"
+					format="M/d/yy" /></td>	
 				<td class="reportDate"><s:property value="[0].get('state')" /></td>
 				<td>
 					<s:select cssClass="blueMain" list="auditorList" listKey="id"
