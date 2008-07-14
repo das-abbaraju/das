@@ -236,6 +236,9 @@ public class OshaLog implements java.io.Serializable {
 		this.flagColor = flagColor;
 	}
 
+	/*
+	 * We removed this whole section because it incorrectly rounds the rate
+	 * 
 	@Transient
 	public OshaLogYear getAvg() {
 		if (avg == null) {
@@ -283,6 +286,7 @@ public class OshaLog implements java.io.Serializable {
 
 		return avg;
 	}
+	 */
 
 	@Override
 	public int hashCode() {
