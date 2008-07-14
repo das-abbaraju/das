@@ -241,6 +241,9 @@ public class FlagCalculatorSingle {
 					// Things can't get worse, just exit
 					return certFlagColor;
 			}
+			
+			if (certFlagColor == null)
+				certFlagColor = FlagColor.Red;
 
 			flagColor = setFlagColor(flagColor, certFlagColor);
 			debug(" flagColor=" + flagColor);
