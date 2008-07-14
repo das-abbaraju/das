@@ -41,9 +41,7 @@
 				<td><%=new AccountBean().getGeneralSelect3("s_opID","forms",filter.getInputValue("s_opID"),SearchBean.LIST_DEFAULT,"")%></td>
 				<%	}//if%>
 				<td><input name="imageField" type="image"
-					src="images/button_search.gif" width="70" height="23" border="0"
-					onMouseOver="MM_swapImage('imageField','','images/button_search_o.gif',1)"
-					onMouseOut="MM_swapImgRestore()"></td>
+					src="images/button_search.gif" width="70" height="23" border="0"></td>
 			</tr>
 		</table>
 		</form>
