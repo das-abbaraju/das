@@ -152,6 +152,26 @@
 			class="com.picsauditing.actions.auditType.AuditTypeChoose">
 			<result>struts/audits/audit_selectType.jsp</result>
 		</action>
+		
+		<action name="ManageAuditType"
+			class="com.picsauditing.actions.auditType.ManageAuditType">
+			<result>struts/audits/manage_audit_type.jsp</result>
+		</action>
+
+		<action name="ManageCategory"
+			class="com.picsauditing.actions.auditType.ManageCategory">
+			<result>struts/audits/manage_category.jsp</result>
+		</action>
+
+		<action name="ManageSubCategory"
+			class="com.picsauditing.actions.auditType.ManageSubCategory">
+			<result>struts/audits/manage_subcategory.jsp</result>
+		</action>
+
+		<action name="ManageQuestion"
+			class="com.picsauditing.actions.auditType.ManageQuestion">
+			<result>struts/audits/manage_question.jsp</result>
+		</action>
 
 		<action name="ReportNCMS"
 			class="com.picsauditing.actions.report.ReportAccountNCMS">

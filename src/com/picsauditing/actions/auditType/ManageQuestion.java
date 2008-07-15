@@ -8,8 +8,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 
 public class ManageQuestion extends ManageSubCategory {
 
-	protected AuditQuestionDAO auditQuestionDao = null;
-	protected AuditQuestion question = null;
+	protected AuditQuestionDAO auditQuestionDao;
 
 	public ManageQuestion(AuditTypeDAO auditTypeDao,
 			AuditCategoryDAO auditCategoryDao,

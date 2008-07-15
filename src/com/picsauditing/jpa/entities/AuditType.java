@@ -1,12 +1,16 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -52,6 +56,8 @@ public class AuditType {
 	protected Date dateToExpire;
 	protected int displayOrder = 100;
 	protected String legacyCode;
+	
+	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -160,6 +166,18 @@ public class AuditType {
 	public void setLegacyCode(String legacyCode) {
 		this.legacyCode = legacyCode;
 	}
+	
+	@OneToMany(mappedBy = "auditType")
+	@OrderBy("number")
+	public List<AuditCategory> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<AuditCategory> categories) {
+		this.categories = categories;
+	}
+
+
 
 	/**
 	 * Return the name of the icon we use on reports for each audit type
@@ -224,8 +242,6 @@ public class AuditType {
 			return false;
 		return true;
 	}
-
-
 
 
 }

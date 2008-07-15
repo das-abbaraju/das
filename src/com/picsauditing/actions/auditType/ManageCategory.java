@@ -6,9 +6,7 @@ import com.picsauditing.jpa.entities.AuditCategory;
 
 public class ManageCategory extends ManageAuditType {
 
-	
-	protected AuditCategoryDAO auditCategoryDao = null;
-	protected AuditCategory category = null;
+	protected AuditCategoryDAO auditCategoryDao;
 
 	public ManageCategory(AuditTypeDAO auditTypeDao,
 			AuditCategoryDAO auditCategoryDao) {
