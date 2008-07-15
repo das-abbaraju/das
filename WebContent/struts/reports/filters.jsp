@@ -249,7 +249,7 @@ Filter Options</a></div>
 	<s:if test="filterAssignedCon">
 		<br clear="all" />
 		<s:checkbox name="assignedCon" />
-		<label>Check to Search on UnAssigned Contractors</label>
+		<label>Check to Search on Assigned Contractors</label>
 	</s:if>
 
 	<s:if test="filterConLicense">
