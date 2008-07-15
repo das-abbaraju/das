@@ -50,7 +50,7 @@ Questions</a></div>
 		<s:if test="conAudit.auditStatus.name() == 'Pending' || conAudit.auditType.pqf">
 			<th colspan="2">Complete</th>
 		</s:if>
-		<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.auditType.hasRequirements">
+		<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.auditType.hasRequirements && !conAudit.auditType.pqf">
 			<th colspan="2">Requirements</th>
 		</s:if>
 		<s:if test="canApply">
@@ -67,7 +67,7 @@ Questions</a></div>
 				<td class="right"><s:property value="percentCompleted" />%</td>
 				<td><s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if></td>
 			</s:if>
-			<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.auditType.hasRequirements">
+			<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.auditType.hasRequirements && !conAudit.auditType.pqf">
 				<td class="right"><s:property value="percentVerified" />%</td>
 				<td><s:if test="percentVerified == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if></td>
 			</s:if>
@@ -83,7 +83,7 @@ Questions</a></div>
 				<td class="right"><a name="<s:property value="id" />"><s:property value="category.number" /></td>
 				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a></td>
 				<td class="center" colspan="2">N/A</td>
-				<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.auditType.hasRequirements">
+				<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.auditType.hasRequirements && !conAudit.auditType.pqf">
 					<td colspan="2"></td>
 				</s:if>
 				<s:if test="canApply">
