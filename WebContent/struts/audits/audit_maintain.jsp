@@ -13,55 +13,22 @@
 <SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" SRC="js/validateForms.js"></SCRIPT>
 <script type="text/javascript" src="js/prototype.js"></script>
-
-
 </head>
 <body>
+<s:include value="../contractors/conHeader.jsp" />
 
-<div>
-	<h1>
-	<s:if test="conAudit">
-		Edit Audit: <s:property value="conAudit.contractorAccount.name"/> / <s:property value="conAudit.auditType.auditName"/>
-	</s:if>
-	<s:else>
-		Create Audit
-	</s:else>
-	</h1>
-</div>
+<s:if test="message.length() > 0">
+	<div id="info"><s:property value="message"/></div>
+</s:if>
 
-<s:property value="message == 'Success' ? 'Audit Saved Successfully' : message"/>
-
-<s:form action="AuditSave">
-
-<s:if test="conAudit">
-	<s:hidden name="audit.id" value="%{conAudit.id}"/>
-</s:if>			
-
+<s:form action="ConAuditMaintain">
+	<s:hidden name="auditID" />
 
 <fieldset>
 	<div class="formRow">
-		<span class="labels" style="width: 400px;">Contractor: </span>
-		<span class="fields">
-			<s:if test="conAudit">
-				<s:property value="conAudit.contractorAccount.name"/>
-			</s:if>
-			<s:else>
-				<s:select name="contractorID" value="conAudit.contractorAccount.id" list="allContractors" listKey="id" listValue="name" headerKey="0" headerValue="-- Select a Contractor --"/>
-			</s:else>			
-		</span>
-	</div>
-	<div class="formRow">
-		<span class="labels">Audit Type: </span>
-		<s:if test="conAudit">
-			<span class="fields"><s:property value="conAudit.auditType.auditName"/></span>
-		</s:if>			
-		<s:else>
-			<s:select name="conAudit.auditType.auditTypeID" list="allAuditTypes" listKey="auditTypeID" listValue="auditName" headerKey="0" headerValue="-- Select an audit type --"/>
-		</s:else>			
-
 		<span class="labels">Audit Status: </span>
 		<span class="fields">
-			<span class="fields"><s:select name="conAudit.auditStatus" list="@com.picsauditing.jpa.entities.AuditStatus@getValuesWithDefault()"/></span>
+			<span class="fields"><s:select name="conAudit.auditStatus" list="@com.picsauditing.jpa.entities.AuditStatus@values()"/></span>
 		</span>
 	</div>
 	<div class="formRow">
@@ -73,23 +40,19 @@
 		<span class="labels">Audit Location: </span>
 		<span class="fields"><s:textfield name="conAudit.auditLocation"/></span>
 		<span class="labels">Can Delete: </span>
-		<span class="fields"><s:textfield name="conAudit.canDelete"/>(true or false)</span>
+		<span class="fields"><s:checkbox name="conAudit.canDelete"/></span>
 	</div>
 
 	<div class="formRow">
-		<span class="labels">Percent Complete: </span>
-		<span class="fields"><s:textfield name="conAudit.percentComplete"/>%</span>
-		<span class="labels">Percent Verified: </span>
-		<span class="fields"><s:textfield name="conAudit.percentVerified"/>%</span>
+		<span class="labels">Complete: </span>
+		<span class="fields"><s:textfield name="conAudit.percentComplete" size="4"/>%</span>
+		<span class="labels">Verified: </span>
+		<span class="fields"><s:textfield name="conAudit.percentVerified" size="4"/>%</span>
 	</div>
-
-
-	
 </fieldset>
 
-
 <fieldset>
-	<h2>Dates</h2>
+	<hr />
 	<div class="formRow">
 		<span class="labels">Created Date: </span>
 		<span class="fields"><s:textfield name="conAudit.createdDate"/></span>
@@ -111,7 +74,7 @@
 </fieldset>
 
 <div class="buttons">
-	<s:submit value="Save" />
+	<s:submit name="button" value="Save" />
 </div>
 
 </s:form>

@@ -141,6 +141,7 @@
 			</td>
 		</tr>
 	</table>
+	<a href="ConAuditMaintain.action?auditID=<s:property value="auditID" />">System Edit</a>
 	<div>
 	<s:if test="conAudit.auditType.Pqf">
 		<pics:permission perm="AuditVerification">

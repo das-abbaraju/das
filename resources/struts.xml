@@ -138,15 +138,10 @@
 			</result>
 		</action>
 		
-		<action name="AuditEdit"
-			class="com.picsauditing.actions.audits.AuditEdit">
+		<action name="ConAuditMaintain"
+			class="com.picsauditing.actions.audits.ConAuditMaintain">
 			<result>struts/audits/audit_maintain.jsp</result>
 		</action>
-		<action name="AuditSave"
-			class="com.picsauditing.actions.audits.AuditSave">
-			<result>struts/audits/audit_maintain.jsp</result>
-		</action>
-		
 
 		<action name="AuditCat"
 			class="com.picsauditing.actions.audits.AuditCategoryAction">
@@ -161,11 +156,6 @@
 		<action name="ReportNCMS"
 			class="com.picsauditing.actions.report.ReportAccountNCMS">
 			<result>struts/reports/report_ncms.jsp</result>
-		</action>
-
-		<action name="AuditSaveAjax"
-			class="com.picsauditing.actions.audits.AuditSave">
-			<result>struts/blank.jsp</result>
 		</action>
 
 		<action name="AuditDataSaveAjax"
@@ -251,16 +241,6 @@
 			<result>/struts/audits/auditorSelect.jsp</result>
 		</action>
 
-<!--  
-		<action name="FileUploadExample"
-			class="com.picsauditing.actions.FileUploadExample">
-			<result>/struts/fileUpload.jsp</result>
-		</action>
-		<action name="FileUploadExample_*" method="{1}"
-			class="com.picsauditing.actions.FileUploadExample">
-			<result name="input">/struts/fileUpload.jsp</result>
-		</action>
--->		
 		<action name="ReportFatalities"
 			class="com.picsauditing.actions.report.ReportFatalities">
 			<result>/struts/reports/report_fatalities.jsp</result>
