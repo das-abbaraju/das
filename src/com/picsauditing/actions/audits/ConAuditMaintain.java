@@ -35,6 +35,8 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 		permissions.tryPermission(OpPerms.AuditEdit);
 
 		if (button != null) {
+			if (conAudit.getAuditor().getId() == 0)
+				conAudit.setAuditor(null);
 			auditDao.save(conAudit);
 			findConAudit();
 			message = "Successfully saved data";

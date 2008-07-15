@@ -139,16 +139,22 @@
 				</tr>
 			</table>
 			</td>
+			<td style="vertical-align: top">
+			<div>
+			<ul>
+				<pics:permission perm="AuditEdit">
+					<li><a href="ConAuditMaintain.action?auditID=<s:property value="auditID" />">System Edit</a></li>
+				</pics:permission>
+				<s:if test="conAudit.auditType.Pqf">
+					<pics:permission perm="AuditVerification">
+						<li><a href="VerifyView.action?auditID=<s:property value="auditID" />">Verify PQF</a></li>
+					</pics:permission>
+				</s:if>
+			</ul>
+			</div>
+			</td>
 		</tr>
 	</table>
-	<a href="ConAuditMaintain.action?auditID=<s:property value="auditID" />">System Edit</a>
-	<div>
-	<s:if test="conAudit.auditType.Pqf">
-		<pics:permission perm="AuditVerification">
-			<a href="VerifyView.action?auditID=<s:property value="auditID" />">Verify PQF</a>
-		</pics:permission>
-	</s:if>
-	</div>
-
+	
 </s:if>
 </s:if>

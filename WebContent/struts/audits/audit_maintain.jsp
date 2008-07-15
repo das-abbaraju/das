@@ -74,7 +74,8 @@
 </fieldset>
 
 <div class="buttons">
-	<s:submit name="button" value="Save" />
+	<s:hidden name="button" value="save"></s:hidden>
+	<a class="positive" onclick="$('ConAuditMaintain').submit(); return false;" href="#">Save</a>
 </div>
 
 </s:form>
