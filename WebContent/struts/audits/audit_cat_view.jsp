@@ -53,7 +53,12 @@
 		
 		<br>
 		<s:if test="requirement.length() > 0">
-			<div id="alert"><s:property value="requirement"/></div>
+			<s:if test="answer.requirementOpen">
+				<div id="alert"><s:property value="requirement"/></div>
+			</s:if>
+			<s:else>
+				<span class="answer"><s:property value="requirement"/></span>
+			</s:else>
 		</s:if>
 		</td>
 		<td></td>
