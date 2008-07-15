@@ -148,6 +148,18 @@ Filter Options</a></div>
 			onclick="clearSelected('auditorId'); return false;">Clear</a> </span></div>
 	</s:if>
 
+	<s:if test="filterConAuditor">
+		<div class="filterOption"><a href="#"
+			onclick="toggleBox('conAuditorId'); return false;">CSR</a> = <span
+			id="conAuditorId_query">ALL</span><br />
+		<span id="conAuditorId_select" style="display: none" class="clearLink">
+		<s:action name="AuditorsGet" executeResult="true">
+			<s:param name="controlName" value="%{'conAuditorId'}" />
+			<s:param name="presetValue" value="conAuditorId" />
+		</s:action> <script type="text/javascript">updateQuery('conAuditorId');</script> <br />
+		<a class="clearLink" href="#"
+			onclick="clearSelected('conAuditorId'); return false;">Clear</a> </span></div>
+	</s:if>
 
 	<s:if test="filterOperator">
 		<div class="filterOption"><a href="#"
