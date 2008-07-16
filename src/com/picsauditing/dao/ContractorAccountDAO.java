@@ -8,11 +8,9 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -102,6 +100,12 @@ public class ContractorAccountDAO extends PicsDAO {
 	public int getContractorCounts() {
 		Query query = em.createQuery("SELECT count(c) FROM ContractorAccount c " + "WHERE c.active = 'Y'");
 		return Integer.parseInt(query.getSingleResult().toString());
+	}
+
+	public List<ContractorAccount> findRecentLoggedContractors() {
+		Query query = em.createQuery("SELECT c FROM ContractorAccount c ORDER BY c.lastLogin DESC");
+		query.setMaxResults(10);
+		return query.getResultList();
 	}
 
 }

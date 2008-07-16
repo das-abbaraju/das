@@ -1,11 +1,13 @@
 package com.picsauditing.dao;
 
-import javax.persistence.Query;
-import org.springframework.transaction.annotation.Transactional;
-import com.picsauditing.jpa.entities.User;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.Query;
+
+import org.springframework.transaction.annotation.Transactional;
+
+import com.picsauditing.jpa.entities.User;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -81,4 +83,10 @@ public class UserDAO extends PicsDAO {
 		return Integer.parseInt(query.getSingleResult().toString());
 	}
 
+	public List<User> findRecentLoggedOperators() {
+		Query query = em.createQuery("SELECT u FROM User u WHERE u.account "
+				+ "IN (SELECT o FROM OperatorAccount o)  ORDER BY u.lastLogin DESC");
+		query.setMaxResults(10);
+		return query.getResultList();
+	}
 }
