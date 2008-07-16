@@ -326,5 +326,10 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
+		<action name="CorporateStatisticsAjax"
+			class="com.picsauditing.actions.CorporateWidget">
+			<result>/struts/widgets/corporate_statistics.jsp</result>
+		</action>
+		
 	</package>
 </struts>
