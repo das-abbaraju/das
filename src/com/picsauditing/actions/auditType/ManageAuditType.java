@@ -1,9 +1,12 @@
 package com.picsauditing.actions.auditType;
 
+import java.net.URLEncoder;
 import java.util.List;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -27,13 +30,23 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		this.auditTypeDao = auditTypeDAO;
 	}
 
-	public String execute() {
+	public String execute() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
+		
+		permissions.tryPermission(OpPerms.ManageAudits);
+		
 		if( button != null ) {
-			
-			if( button.equalsIgnoreCase("Save")) {
+			if( button.equalsIgnoreCase("save")) {
+				permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
+				message = "Successfully saved"; // default message
 				save();
 			}
-			
+			if( button.equalsIgnoreCase("delete")) {
+				permissions.tryPermission(OpPerms.ManageAudits, OpType.Delete);
+				message = "Successfully removed"; // default message
+				delete();
+			}
 		}
 		
 		return SUCCESS;
@@ -64,12 +77,25 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		}
 	}
 	
-	public String save() {
-
-		if( auditType != null ) {
+	public void save() {
+		try {
 			auditTypeDao.save(auditType);
+		} catch (Exception e) {
+			message = "Error - " + e.getMessage();
 		}
-		return SUCCESS;
+	}
+
+	public void delete() {
+		try {
+			if (auditType.getCategories().size() > 0) {
+				message = "Can't delete - Categories still exist";
+				return;
+			}
+			
+			auditTypeDao.remove(auditType.getAuditTypeID());
+		} catch (Exception e) {
+			message = "Error - " + e.getMessage();
+		}
 	}
 
 	// GETTERS && SETTERS

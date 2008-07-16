@@ -18,6 +18,7 @@
 		<th>Created</td>
 		<th>For</td>
 		<th>Auditor</td>
+		<th>Scheduled</th>
 		<th>Submitted</th>
 		<th>Closed</th>
 		<th>Expires</th>
@@ -31,11 +32,12 @@
 			<td><s:date name="createdDate" format="M/d/yy" /></td>
 			<td><s:property value="requestingOpAccount.name" /></td>
 			<td><s:property value="auditor.name" /></td>
-			<td align="right"><s:if test="percentComplete < 100">
+			<td><s:date name="scheduledDate" format="M/d/yy HH:mm" /></td>
+			<td align="right"><s:if test="auditStatus == 'Pending'">
 				<s:property value="percentComplete" />%</s:if> <s:else>
 				<s:date name="completedDate" format="M/d/yy" />
 			</s:else></td>
-			<td align="right"><s:if test="percentVerified < 100">
+			<td align="right"><s:if test="auditStatus == 'Submitted'">
 				<s:property value="percentVerified" />%</s:if> <s:else>
 				<s:date name="closedDate" format="M/d/yy" />
 			</s:else></td>

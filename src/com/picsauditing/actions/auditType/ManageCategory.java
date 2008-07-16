@@ -26,19 +26,10 @@ public class ManageCategory extends ManageAuditType {
 		load(category.getAuditType());
 	}
 	
-	
-	public String delete() {
-		return SUCCESS;
-	}
-	
-	
-	
-	
-	public String save() {
+	public void save() {
 		if( category != null ) {
 			auditCategoryDao.save(category);
 		}
-		return SUCCESS;
 	}
 
 }

@@ -31,11 +31,10 @@ public class ManageQuestion extends ManageSubCategory {
 	}
 	
 	
-	public String save() {
+	public void save() {
 		if( question != null ) {
 			auditQuestionDao.save(question);
 		}
-		return SUCCESS;
 	}
 
 	public String[] getQuestionTypes() {

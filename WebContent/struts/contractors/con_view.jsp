@@ -29,7 +29,7 @@
 					<s:if test="contractor.phone2" ><p class="tel">Other Phone: <span class="value"><s:property value="contractor.phone2" /></span></p></s:if>
 					<s:if test="contractor.fax" ><p class="tel">Fax: <span class="value"><s:property value="contractor.fax" /></span></p></s:if>
  					<p class="email">Email: <strong><a href="mailto:<s:property value="contractor.email" />" class="value"><s:property value="contractor.email" /></a></strong></p>
-					<s:if test="contractor.url" ><p class="url">Web site: <strong><a href="http://<s:property value="contractor.webUrl" />" class="value" target="_blank"><s:property value="contractor.webUrl" /></a></strong></p></s:if>
+					<s:if test="contractor.webUrl.length() > 0" ><p class="url">Web site: <strong><a href="http://<s:property value="contractor.webUrl" />" class="value" target="_blank"><s:property value="contractor.webUrl" /></a></strong></p></s:if>
 					<s:if test="contractor.brochure_file == 'Yes' " ><p class="web"><strong><a href="servlet/showpdf?id=<s:property value="id" />&file=brochure" class="ext" target="_blank">Company Brochure</a></strong></p></s:if>
 				</div>
 			</div>
@@ -41,6 +41,7 @@
 <!--			src="images/vcard.jpg" alt="image" width="130" height="38" /></a></div>-->
 		PICS Contractor ID: <strong><s:property value="contractor.luhnId" /></strong><br />
 		Account Since: <strong><s:date name="contractor.accountDate" format="MMM yyyy" /></strong><br />
+		PICS CSR: <strong><s:property value="contractor.auditor.name" /></strong><br />
 		Risk Level: <strong><s:property value="contractor.riskLevel" /></strong><br />
 		Facilities:
 		<ul style="list-style-type: none;">

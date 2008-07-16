@@ -28,11 +28,10 @@ public class ManageSubCategory extends ManageCategory {
 		load(subCategory.getCategory());
 	}
 	
-	public String save() {
+	public void save() {
 		if( subCategory != null ) {
 			auditSubCategoryDao.save(subCategory);
 		}
-		return SUCCESS;
 	}
 
 	
