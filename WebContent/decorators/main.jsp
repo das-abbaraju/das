@@ -3,6 +3,7 @@
 <%@page import="com.picsauditing.access.MenuComponent"%>
 <%@page import="com.picsauditing.access.PicsMenu"%>
 <%@page import="com.picsauditing.access.OpPerms"%>
+<%@page import="java.net.URLEncoder"%>
 <%
 	MenuComponent menu = PicsMenu.getMenu(permissions);
 %>
@@ -37,6 +38,12 @@
 <![endif]-->
 
 <script type="text/javascript">
+
+var test=<%=permissions.getName() %>;
+
+
+alert(testID);
+
 function showChat() {
 	var elem = getElement('chatIcon');
 	elem.style.display = 'block';
@@ -163,12 +170,25 @@ Copyright &copy; 2008
 <!-- !end subnavigation -->
 <!-- BEGIN Invitation Positioning  -->
 <script language="javascript" type="text/javascript">
-var lpPosY = 100;
-var lpPosX = 100;
+	var lpPosY = 100;
+	var lpPosX = 100;
 </script>
 <!-- END Invitation Positioning  -->
 
-<!-- BEGIN HumanTag Monitor. DO NOT MOVE! MUST BE PLACED JUST BEFORE THE /BODY TAG --><script language='javascript' src='http://server.iad.liveperson.net/hc/90511184/x.js?cmd=file&file=chatScript3&site=90511184&&imageUrl=http://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a'> </script><!-- END HumanTag Monitor. DO NOT MOVE! MUST BE PLACED JUST BEFORE THE /BODY TAG -->
+<!-- BEGIN Monitor Tracking Variables  -->
+<script language="JavaScript1.2">
+	if (typeof(tagVars) == "undefined") tagVars = "";
+	tagVars += "&VISITORVAR!UserID=<%=permissions.getUserId()%>&VISITORVAR!UserName=<%=URLEncoder.encode(permissions.getUsername())%>&VISITORVAR!DisplayName=<%=URLEncoder.encode(permissions.getName())%>";
+</script>
+</script>
+<!-- End Monitor Tracking Variables  -->
+
+<!-- BEGIN HumanTag Monitor. DO NOT MOVE! MUST BE PLACED JUST BEFORE THE /BODY TAG -->
+<script 
+	language='javascript' 
+	src='http://server.iad.liveperson.net/hc/90511184/x.js?cmd=file&file=chatScript3&site=90511184&&imageUrl=http://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a'> 
+</script>
+<!-- END HumanTag Monitor. DO NOT MOVE! MUST BE PLACED JUST BEFORE THE /BODY TAG -->
 <%@ include file="../includes/statcounter.jsp"%>
 </body>
 </html>
