@@ -35,18 +35,16 @@ public class UserDAO extends PicsDAO {
 			where = "";
 		if (where.length() > 0)
 			where = "WHERE " + where;
-		Query query = em.createQuery("SELECT u FROM User u " + where
-				+ " ORDER BY u.name");
+		Query query = em.createQuery("SELECT u FROM User u " + where + " ORDER BY u.name");
 		return query.getResultList();
 	}
 
 	public List<User> findAuditors() {
 		List<User> userList = new ArrayList<User>();
 
-		Query query = em.createQuery("FROM User u "
-				+ "WHERE u.isActive = 'Yes' " + "AND u.isGroup = 'No' "
-				+ "AND u IN (SELECT user FROM UserGroup WHERE group.id = "
-				+ User.GROUP_AUDITOR + ") " + "ORDER BY u.name");
+		Query query = em.createQuery("FROM User u " + "WHERE u.isActive = 'Yes' " + "AND u.isGroup = 'No' "
+				+ "AND u IN (SELECT user FROM UserGroup WHERE group.id = " + User.GROUP_AUDITOR + ") "
+				+ "ORDER BY u.name");
 		userList.addAll(query.getResultList());
 
 		return userList;
@@ -54,20 +52,28 @@ public class UserDAO extends PicsDAO {
 
 	public boolean checkUserName(int uID, String uName) {
 		try {
-				com.picsauditing.access.User user = new com.picsauditing.access.User();
+			com.picsauditing.access.User user = new com.picsauditing.access.User();
 
-				int id = user.findID(uName);
-				if (id == 0 || id == uID) {
-					com.picsauditing.PICS.AccountBean aBean = new com.picsauditing.PICS.AccountBean();
-					id = aBean.findID(uName);
+			int id = user.findID(uName);
+			if (id == 0 || id == uID) {
+				com.picsauditing.PICS.AccountBean aBean = new com.picsauditing.PICS.AccountBean();
+				id = aBean.findID(uName);
 
-					if (id == 0 || id == uID)
-						return true;
-				}
-		} catch (Exception e) {	
-			
+				if (id == 0 || id == uID)
+					return true;
+			}
+		} catch (Exception e) {
+
 		}
-		
+
 		return false;
 	}
+
+	public User findName(String userName) {
+		if (userName == null)
+			userName = "";
+		Query query = em.createQuery("SELECT u FROM User u WHERE username = " + "'" + userName + "'");
+		return (User) query.getSingleResult();
+	}
+
 }

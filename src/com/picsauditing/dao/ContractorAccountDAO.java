@@ -8,9 +8,11 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -39,53 +41,62 @@ public class ContractorAccountDAO extends PicsDAO {
 		Query query = em.createQuery("select a.id from ContractorAccount a");
 		return query.getResultList();
 	}
-	
+
 	public List<ContractorAccount> findWhere(String where) {
 		if (where == null)
 			where = "";
 		if (where.length() > 0)
 			where = "WHERE " + where;
-		Query query = em.createQuery("SELECT a from ContractorAccount a " + where
-				+ " ORDER BY a.name");
+		Query query = em.createQuery("SELECT a from ContractorAccount a " + where + " ORDER BY a.name");
 		return query.getResultList();
 	}
-	
+
 	public List<ContractorOperator> findOperators(ContractorAccount contractor, Permissions permissions) {
 		String where = "";
 		if (permissions.isCorporate())
 			// Show corporate users operators in their facility
-			where = "AND operatorAccount IN (SELECT operator FROM Facility " +
-			"WHERE corporate = "+permissions.getAccountId()+")";
+			where = "AND operatorAccount IN (SELECT operator FROM Facility " + "WHERE corporate = "
+					+ permissions.getAccountId() + ")";
 		if (permissions.isOperator())
-			// Show operator users operators that share the same corporate facility
-			where = "AND (operatorAccount.id = "+permissions.getAccountId()+
-			" OR operatorAccount IN (SELECT operator FROM Facility " +
-			"WHERE corporate IN (SELECT corporate FROM Facility " +
-			"WHERE operator.id = "+permissions.getAccountId()+")))";
-		
-		Query query = em.createQuery("FROM ContractorOperator WHERE contractorAccount = ? "+where+" ORDER BY operatorAccount.name");
+			// Show operator users operators that share the same corporate
+			// facility
+			where = "AND (operatorAccount.id = " + permissions.getAccountId()
+					+ " OR operatorAccount IN (SELECT operator FROM Facility "
+					+ "WHERE corporate IN (SELECT corporate FROM Facility " + "WHERE operator.id = "
+					+ permissions.getAccountId() + ")))";
+
+		Query query = em.createQuery("FROM ContractorOperator WHERE contractorAccount = ? " + where
+				+ " ORDER BY operatorAccount.name");
 		query.setParameter(1, contractor);
 		return query.getResultList();
 	}
-	
+
 	public List<Integer> findIdsByOperator(OperatorAccount opAccount) {
 		String where = "SELECT a.id from ContractorAccount a WHERE a IN (SELECT co.contractorAccount FROM ContractorOperator co WHERE co.operatorAccount = ?)";
 		Query query = em.createQuery(where);
 		query.setParameter(1, opAccount);
-		
+
 		return query.getResultList();
-	}	
+	}
 
 	public List<ContractorAccount> findNewContractors(Permissions permissions, int limit) {
 		if (permissions == null)
 			return new ArrayList<ContractorAccount>();
 		String where = "active='Y'";
 		if (permissions.isOperator())
-			where += " AND a IN (SELECT contractorAccount FROM ContractorOperator " +
-					"WHERE operatorAccount.id = "+permissions.getAccountId()+")";
-		
-		Query query = em.createQuery("FROM ContractorAccount a WHERE "+where+" ORDER BY dateCreated DESC");
+			where += " AND a IN (SELECT contractorAccount FROM ContractorOperator " + "WHERE operatorAccount.id = "
+					+ permissions.getAccountId() + ")";
+
+		Query query = em.createQuery("FROM ContractorAccount a WHERE " + where + " ORDER BY dateCreated DESC");
 		query.setMaxResults(limit);
 		return query.getResultList();
 	}
+
+	public ContractorAccount findName(String userName) {
+		if (userName == null)
+			userName = "";
+		Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE username = " + "'" + userName + "'");
+		return (ContractorAccount) query.getSingleResult();
+	}
+
 }

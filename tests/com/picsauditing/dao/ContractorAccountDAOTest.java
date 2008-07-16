@@ -17,6 +17,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
@@ -117,7 +118,7 @@ public class ContractorAccountDAOTest {
 		assertEquals("Inactive", contractoraccount.get(0).getStatus());
 	}
 
-	//@Test
+	// @Test
 	public void addContractorOperatorFlag() {
 		ContractorAccount contractoraccount = contractoraccountDAO.find(14);
 		OperatorAccount operator = (OperatorAccount) accountDAO.find(1251);
@@ -129,5 +130,11 @@ public class ContractorAccountDAOTest {
 		coFlag.setLastUpdate(new Date(0));
 		flagDAO.save(coFlag);
 		flagDAO.remove(coFlag.getId());
+	}
+
+	@Test
+	public final void testFindName() {
+		Account account = contractoraccountDAO.findName("Couch");
+		System.out.println(account.getName());
 	}
 }
