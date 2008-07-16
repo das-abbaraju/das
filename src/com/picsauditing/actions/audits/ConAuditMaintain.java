@@ -19,7 +19,7 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 
 	protected OperatorAccountDAO opDao = null;
 	protected AuditTypeDAO auditTypeDao = null;
-	protected String button = null; // We should consider moving this up to the parent class (maybe PicsActionSupport)
+	
 
 	public ConAuditMaintain(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, OperatorAccountDAO opDao, AuditTypeDAO auditTypeDao) {
@@ -57,11 +57,4 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 		}
 	}
 
-	public String getButton() {
-		return button;
-	}
-
-	public void setButton(String button) {
-		this.button = button;
-	}
 }
