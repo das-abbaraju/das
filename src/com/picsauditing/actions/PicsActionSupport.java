@@ -1,6 +1,5 @@
 package com.picsauditing.actions;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,15 +8,12 @@ import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.inject.Context;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
@@ -26,7 +22,8 @@ public class PicsActionSupport extends ActionSupport {
 	protected static String LOGIN_AJAX = "LoginAjax";
 	protected Permissions permissions = null;
 	protected String message;
-
+	protected String button = null; 
+	
 	private User user; // Current logged in user
 	private Account account; // Current logged in user's account
 	private List<User> auditorList;
@@ -151,4 +148,13 @@ public class PicsActionSupport extends ActionSupport {
 	static protected String getFtpDir() {
 		return ServletActionContext.getServletContext().getInitParameter("FTP_DIR");
 	}
+
+	public String getButton() {
+		return button;
+	}
+
+	public void setButton(String button) {
+		this.button = button;
+	}
+
 }
