@@ -28,6 +28,14 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	}
 
 	public String execute() {
+		if( button != null ) {
+			
+			if( button.equalsIgnoreCase("Save")) {
+				save();
+			}
+			
+		}
+		
 		return SUCCESS;
 	}
 
