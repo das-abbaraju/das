@@ -183,7 +183,7 @@ if (!uBean.isSet()) return;
 // Don't show below data until, we've saved our user
 
 if (!isGroup && permissions.hasPermission(OpPerms.SwitchUser)) {
-	%><p><a href="login.jsp?switchUser=<%= uBean.userDO.id %>">Switch to this User</a></p><%
+	%><p><a href="login.jsp?switchUser=<%= uBean.userDO.username %>">Switch to this User</a></p><%
 }
 
 currentUser.setFromDB(permissions.getUserIdString());

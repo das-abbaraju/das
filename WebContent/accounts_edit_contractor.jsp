@@ -224,7 +224,7 @@ Would you still like to schedule <b><%=aBean.name%></b> on this date? <span
 		<td><input name="username" type="text" class="forms" size="15"
 			value="<%=aBean.username%>"> <%
  	if (permissions.hasPermission(OpPerms.SwitchUser)) {
- %><a class="blueMain" href="login.jsp?switchUser=<%=aBean.id %>">Switch
+ %><a class="blueMain" href="login.jsp?switchUser=<%=aBean.username%>">Switch
 		User</a> <%
  	}
  %>

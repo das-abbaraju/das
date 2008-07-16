@@ -10,13 +10,13 @@ import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.DataBean;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.PermissionsBean;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAudit;
 
 /**
- * Populate the permissions object in session with appropriate login credentials and access/permission data
+ * Populate the permissions object in session with appropriate login credentials
+ * and access/permission data
+ * 
  * @author Glenn & Trevor
- *
+ * 
  */
 public class LoginController extends DataBean {
 	private boolean isUser = true;
@@ -24,11 +24,12 @@ public class LoginController extends DataBean {
 	private AccountBean aBean;
 	private int loginByAdmin = 0;
 	private String prevLastLogin = "1/1/01";
-	
+
 	private Permissions permissions;
 	private PermissionsBean pBean;
-	
-	public boolean login(String username, String password, javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws Exception {
+
+	public boolean login(String username, String password, javax.servlet.http.HttpServletRequest request,
+			javax.servlet.http.HttpServletResponse response) throws Exception {
 		setupPerms(request);
 
 		getErrors().clear();
@@ -38,26 +39,28 @@ public class LoginController extends DataBean {
 			getErrors().add(error);
 			return false;
 		}
-		
-		///////////////////
+
+		// /////////////////
 		this.doLogin(request.getSession(), true);
 		logAttempt(permissions, "", request);
 		postLogin(request, response);
 
 		return true;
 	}
-	
-	public boolean loginByAdmin(String userID, javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws Exception {
-		permissions = (Permissions)request.getSession().getAttribute("permissions");
+
+	public boolean loginByAdmin(String userName, javax.servlet.http.HttpServletRequest request,
+			javax.servlet.http.HttpServletResponse response) throws Exception {
+		permissions = (Permissions) request.getSession().getAttribute("permissions");
 		permissions.tryPermission(OpPerms.SwitchUser);
 		this.loginByAdmin = this.permissions.getUserId();
-		
-		if (!getAccountByID(userID)) return false;
-		
+
+		if (!getAccountByUsername(userName))
+			return false;
+
 		setupPerms(request);
 		permissions.setAdminID(loginByAdmin);
 
-		///////////////////
+		// /////////////////
 		this.doLogin(request.getSession(), false);
 		logAttempt(permissions, "", request);
 		postLogin(request, response);
@@ -67,15 +70,16 @@ public class LoginController extends DataBean {
 
 	private void setupPerms(javax.servlet.http.HttpServletRequest request) {
 		// Set the permissions from the session or create a new one if necessary
-		permissions = (Permissions)request.getSession().getAttribute("permissions");
+		permissions = (Permissions) request.getSession().getAttribute("permissions");
 		if (permissions == null) {
 			permissions = new Permissions();
 			request.getSession().setAttribute("permissions", permissions);
 		} else
 			permissions.clear();
-		
-		// Also set the pBean for backwards compatibility...remove when we phase out the pBean completely
-		pBean = (PermissionsBean)request.getSession().getAttribute("pBean");
+
+		// Also set the pBean for backwards compatibility...remove when we phase
+		// out the pBean completely
+		pBean = (PermissionsBean) request.getSession().getAttribute("pBean");
 		if (pBean == null) {
 			pBean = new PermissionsBean();
 			request.getSession().setAttribute("pBean", pBean);
@@ -86,8 +90,8 @@ public class LoginController extends DataBean {
 	}
 
 	/**
-	 * Figure out if the current username/password is a valid user or account that can actually login.
-	 * But don't actually login yet
+	 * Figure out if the current username/password is a valid user or account
+	 * that can actually login. But don't actually login yet
 	 * 
 	 * @param username
 	 * @param password
@@ -95,31 +99,32 @@ public class LoginController extends DataBean {
 	 * @throws Exception
 	 */
 	private String canLogin(String username, String password) throws Exception {
-		if(username == null || username.equals(""))
+		if (username == null || username.equals(""))
 			return "Enter a username";
 
-		// We have 108 contractors with username length = 3, so we can't stop them from logging in
+		// We have 108 contractors with username length = 3, so we can't stop
+		// them from logging in
 		// But going forward we'll require 4 or more
-		if(username.length() < 3)
+		if (username.length() < 3)
 			return "Enter a username with atleast 5 characters";
-		
+
 		if (!getAccountByUsername(username))
 			return "No account exists with that username";
-		
+
 		if (isUser) {
-			if(!user.userDO.password.equals(password))
+			if (!user.userDO.password.equals(password))
 				return "The password is not correct";
-			
-			if(!user.userDO.isActive.startsWith("Y"))
+
+			if (!user.userDO.isActive.startsWith("Y"))
 				return "This user does not have permission to login.<br>Please contact PICS to activate your account.";
 		} else {
-			if(!aBean.password.equals(password))
+			if (!aBean.password.equals(password))
 				return "The password is not correct";
-			
-			if(!aBean.active.startsWith("Y"))
+
+			if (!aBean.active.startsWith("Y"))
 				return "This user does not have permission to login.<br>Please contact PICS to activate your account.";
 		}
-		
+
 		// We are now ready to actually do the login (doLogin)
 		return "";
 	}
@@ -132,7 +137,8 @@ public class LoginController extends DataBean {
 			user.setFromDB(id.toString());
 			aBean.setFromDB(user.userDO.accountID);
 		} else {
-			// Wait this could be a contractor trying to login, check the accounts table
+			// Wait this could be a contractor trying to login, check the
+			// accounts table
 			id = aBean.findID(username);
 			if (id == 0)
 				return false;
@@ -140,9 +146,11 @@ public class LoginController extends DataBean {
 			user = null;
 			isUser = false;
 		}
-		// The user or account we want to login as is now set as private variables
+		// The user or account we want to login as is now set as private
+		// variables
 		return true;
 	}
+
 	private boolean getAccountByID(String id) throws Exception {
 		aBean = new AccountBean();
 		user = new User();
@@ -150,19 +158,22 @@ public class LoginController extends DataBean {
 		if (user.isSet()) {
 			aBean.setFromDB(user.userDO.accountID);
 		} else {
-			// Wait this could be a contractor trying to login, check the accounts table
+			// Wait this could be a contractor trying to login, check the
+			// accounts table
 			aBean.setFromDB(id);
 			if (!aBean.isSet())
 				return false;
 			user = null;
 			isUser = false;
 		}
-		// The user or account we want to login as is now set as private variables
+		// The user or account we want to login as is now set as private
+		// variables
 		return true;
 	}
-	
+
 	/**
-	 * Perform the actual login process...store any info in the session that will be required in later pages
+	 * Perform the actual login process...store any info in the session that
+	 * will be required in later pages
 	 */
 	private void doLogin(javax.servlet.http.HttpSession session, boolean updateLastLogin) throws Exception {
 		if (isUser) {
@@ -172,11 +183,11 @@ public class LoginController extends DataBean {
 				this.user.updateLastLogin();
 				this.aBean.updateLastLogin();
 			}
-			
+
 			// Most (if not all) of this below should eventually be phased out
 			pBean.oBean = new com.picsauditing.PICS.OperatorBean();
 			pBean.setUserName(permissions.getName());
-			
+
 			if (permissions.isAuditor()) {
 				pBean.setAuditorPermissions();
 			} else if (permissions.isOperator() || permissions.isCorporate()) {
@@ -194,12 +205,12 @@ public class LoginController extends DataBean {
 			this.prevLastLogin = this.aBean.lastLogin;
 			if (updateLastLogin)
 				this.aBean.updateLastLogin();
-			
+
 			// Most (if not all) of this below should eventually be phased out
 			pBean.userID = permissions.getAccountIdString();
 			pBean.setAllFacilitiesFromDB(permissions.getAccountIdString());
 		}
-		
+
 		// Most (if not all) of this below should eventually be phased out
 		pBean.loggedIn = true;
 		pBean.setUserID(permissions.getAccountIdString());
@@ -207,37 +218,41 @@ public class LoginController extends DataBean {
 		pBean.setUserType(permissions.getAccountType());
 		pBean.setCanSeeSet(canSeeSet());
 	}
-	
+
 	/**
 	 * After we're logged in, now what should we do?
 	 */
-	private void postLogin(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws Exception {
+	private void postLogin(javax.servlet.http.HttpServletRequest request,
+			javax.servlet.http.HttpServletResponse response) throws Exception {
 		if (!isUser) {
 			ContractorBean cBean = new ContractorBean();
 			cBean.setFromDB(permissions.getAccountIdString());
-			
+
 			if ("".equals(cBean.accountDate)) {
 				cBean.accountDate = DateBean.getTodaysDate();
 				cBean.writeToDB();
-				//response.sendRedirect("con_selectFacilities.jsp?id="+permissions.getAccountIdString());
+				// response.sendRedirect("con_selectFacilities.jsp?id="+permissions.getAccountIdString());
 				return;
 			}
-			//String loginStartDate = "1/1" + "/" + String.valueOf(DateBean.getCurrentYear());
-			//String loginStartDate = this.getServletContext().getInitParameter("loginStartDate");
-			//if(DateBean.isFirstBeforeSecond(prevLastLogin,loginStartDate)) {
-			//	response.sendRedirect("con_selectFacilities.jsp?id="+permissions.getAccountIdString());
-			//	return;
-			//}
+			// String loginStartDate = "1/1" + "/" +
+			// String.valueOf(DateBean.getCurrentYear());
+			// String loginStartDate =
+			// this.getServletContext().getInitParameter("loginStartDate");
+			// if(DateBean.isFirstBeforeSecond(prevLastLogin,loginStartDate)) {
+			// response.sendRedirect("con_selectFacilities.jsp?id="+permissions.getAccountIdString());
+			// return;
+			// }
 		}
 
-		// Find out if the user previously timed out on a page, we'll forward back there below
+		// Find out if the user previously timed out on a page, we'll forward
+		// back there below
 		Cookie[] cookiesA = request.getCookies();
 		String fromURL = "";
-		for (int i=0;i<cookiesA.length;i++) {
+		for (int i = 0; i < cookiesA.length; i++) {
 			if ("from".equals(cookiesA[i].getName())) {
 				fromURL = cookiesA[i].getValue();
 				// Clear the cookie, now that we've used it once
-				Cookie fromCookie = new Cookie("from","");
+				Cookie fromCookie = new Cookie("from", "");
 				response.addCookie(fromCookie);
 				if (fromURL.length() > 0) {
 					response.sendRedirect(fromURL);
@@ -245,7 +260,7 @@ public class LoginController extends DataBean {
 				}
 			}
 		}
-		
+
 		if (permissions.hasPermission(OpPerms.StatusOnly)) {
 			response.sendRedirect("ContractorOperatorLimited.action");
 			return;
@@ -254,51 +269,50 @@ public class LoginController extends DataBean {
 		response.sendRedirect("Home.action");
 		return;
 	}
-	
-	public void logout(Permissions permissions, javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws Exception {
+
+	public void logout(Permissions permissions, javax.servlet.http.HttpServletRequest request,
+			javax.servlet.http.HttpServletResponse response) throws Exception {
 		Integer adminID = permissions.getAdminID();
 		permissions.clear();
 		request.getSession().invalidate();
 		if (adminID > 0) {
 			setupPerms(request);
-			if (!getAccountByID(adminID.toString()));
-			
+			if (!getAccountByID(adminID.toString()))
+				;
+
 			this.doLogin(request.getSession(), false);
 			postLogin(request, response);
 			return;
 		}
-		
+
 		String temp = request.getParameter("msg");
 		String query = "";
-		if (null != temp && temp.length()>0)
-			query = "?msg="+temp;
-		response.sendRedirect("login.jsp"+query);
+		if (null != temp && temp.length() > 0)
+			query = "?msg=" + temp;
+		response.sendRedirect("login.jsp" + query);
 	}
-	
-	private void logAttempt(Permissions permissions, String password, javax.servlet.http.HttpServletRequest request) throws Exception {
+
+	private void logAttempt(Permissions permissions, String password, javax.servlet.http.HttpServletRequest request)
+			throws Exception {
 		String remoteAddress = "";
-		if(request != null)
+		if (request != null)
 			remoteAddress = request.getRemoteAddr();
-		
+
 		String strSuccess = "N";
 		if (permissions.isLoggedIn()) {
 			password = "*";
 			strSuccess = "Y";
 		}
-		
-		String insertQuery = "INSERT INTO loginlog SET " +
-				"username = '"+eqDB(permissions.getUsername())+"', " + 
-				"password = '"+eqDB(password)+"', " + 
-				"successful = '"+strSuccess+"', " +
-				"date = NOW(), " +
-				"remoteAddress = '"+remoteAddress+"', " +
-				"id = '"+permissions.getUserIdString()+"', " +
-				"adminID = '"+permissions.getAdminID()+ "'";
-		//System.out.println(insertQuery);	
+
+		String insertQuery = "INSERT INTO loginlog SET " + "username = '" + eqDB(permissions.getUsername()) + "', "
+				+ "password = '" + eqDB(password) + "', " + "successful = '" + strSuccess + "', " + "date = NOW(), "
+				+ "remoteAddress = '" + remoteAddress + "', " + "id = '" + permissions.getUserIdString() + "', "
+				+ "adminID = '" + permissions.getAdminID() + "'";
+		// System.out.println(insertQuery);
 		try {
 			DBReady();
 			SQLStatement.executeUpdate(insertQuery);
-		}finally{
+		} finally {
 			DBClose();
 		}
 	}
@@ -317,17 +331,17 @@ public class LoginController extends DataBean {
 				return canSeeSet;
 			}
 			if (permissions.isCorporate()) {
-			    id = "SELECT opID FROM facilities WHERE corporateID="+id;
+				id = "SELECT opID FROM facilities WHERE corporateID=" + id;
 			}
-			String selectQuery = "SELECT subID FROM accounts a JOIN generalcontractors gc ON a.id=subID "+
-				"WHERE a.active='Y' AND genID IN ("+id+")";
+			String selectQuery = "SELECT subID FROM accounts a JOIN generalcontractors gc ON a.id=subID "
+					+ "WHERE a.active='Y' AND genID IN (" + id + ")";
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
 			while (SQLResult.next())
 				canSeeSet.add(SQLResult.getString("subID"));
 			SQLResult.close();
-			
+
 			return canSeeSet;
-		}finally{
+		} finally {
 			DBClose();
 		}
 	}
