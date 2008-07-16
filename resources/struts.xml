@@ -331,5 +331,15 @@
 			<result>/struts/widgets/corporate_statistics.jsp</result>
 		</action>
 		
+		<action name="ContractorsLoggedAjax"
+			class="com.picsauditing.actions.contractors.UsersLoggedWidget">
+			<result>/struts/widgets/contractors_logged.jsp</result>
+		</action>
+		
+		<action name="OperatorsLoggedAjax"
+			class="com.picsauditing.actions.contractors.UsersLoggedWidget">
+			<result>/struts/widgets/operators_logged.jsp</result>
+		</action>
+		
 	</package>
 </struts>
