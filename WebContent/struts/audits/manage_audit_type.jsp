@@ -70,9 +70,7 @@
 <td><s:textfield name="auditType.displayOrder" /></td>
 </tr>
 </table>
-<div class="buttons"><a href="#" class="positive"
-	onclick="$('save').submit(); return false;">Search</a></div>
-	
+<button class="buttons positive" style="border: 0; color: #FFFFFF;" name="button" value="save">Save</button>	
 </s:form>
 </td>
 <td style="vertical-align: top">

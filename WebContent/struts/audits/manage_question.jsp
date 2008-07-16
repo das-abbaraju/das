@@ -39,20 +39,12 @@
 <td><s:date name="question.lastModified" /></td>
 </tr>
 <tr>
-<th>Has Requirement:</th>
-<td><s:checkbox name="question.hasRequirement" /></td>
-</tr>
-<tr>
 <th>OK Answer:</th>
 <td><s:textfield name="question.okAnswer" /></td>
 </tr>
 <tr>
 <th>Requirement:</th>
 <td><s:textarea name="question.requirement" rows="2" cols="50" /></td>
-</tr>
-<tr>
-<th>Flaggable:</th>
-<td><s:checkbox name="question.isRedFlagQuestion" /></td>
 </tr>
 <tr>
 <th>Required:</th>
@@ -75,24 +67,55 @@
 <td><s:textfield name="question.title" /></td>
 </tr>
 <tr>
-<th>Visible:</th>
-<td><s:checkbox name="question.isVisible" /></td>
-</tr>
-<tr>
-<th>Grouped with Previous:</th>
-<td><s:checkbox name="question.isGroupedWithPrevious" /></td>
-</tr>
-<tr>
-<th>Url:</th>
+<th>Url 1:</th>
 <td><s:textfield name="question.linkUrl1" /></td>
 </tr>
 <tr>
-<th>Label:</th>
+<th>Label 1:</th>
 <td><s:textfield name="question.linkText1" /></td>
 </tr>
+<tr>
+<th>Url 2:</th>
+<td><s:textfield name="question.linkUrl2" /></td>
+</tr>
+<tr>
+<th>Label 2:</th>
+<td><s:textfield name="question.linkText2" /></td>
+</tr>
+<tr>
+<th>Url 3:</th>
+<td><s:textfield name="question.linkUrl3" /></td>
+</tr>
+<tr>
+<th>Label 3:</th>
+<td><s:textfield name="question.linkText3" /></td>
+</tr>
+<tr>
+<th>Url 4:</th>
+<td><s:textfield name="question.linkUrl4" /></td>
+</tr>
+<tr>
+<th>Label 4:</th>
+<td><s:textfield name="question.linkText4" /></td>
+</tr>
+<tr>
+<th>Url 5:</th>
+<td><s:textfield name="question.linkUrl5" /></td>
+</tr>
+<tr>
+<th>Label 5:</th>
+<td><s:textfield name="question.linkText5" /></td>
+</tr>
+<tr>
+<th>Url 6:</th>
+<td><s:textfield name="question.linkUrl6" /></td>
+</tr>
+<tr>
+<th>Label 6:</th>
+<td><s:textfield name="question.linkText6" /></td>
+</tr>
 </table>
-<div class="buttons"><a href="#" class="positive"
-	onclick="$('save').submit(); return false;">Search</a></div>
+<button class="buttons positive" style="border: 0; color: #FFFFFF;" name="button" value="save">Save</button>
 </s:form>
 </td>
 <td style="vertical-align: top">

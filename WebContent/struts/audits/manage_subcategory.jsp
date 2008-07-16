@@ -17,6 +17,7 @@
 <s:form id="save">
 <s:hidden name="id" />
 <s:hidden name="subCategory.category.id" />
+
 <table class="forms">
 <tr>
 <th>ID:</th>
@@ -31,8 +32,8 @@
 <td><s:textfield name="subCategory.subCategory" size="50" /></td>
 </tr>
 </table>
-<div class="buttons"><a href="#" class="positive"
-	onclick="$('save').submit(); return false;">Search</a></div>
+<button class="buttons positive" style="border: 0; color: #FFFFFF;" name="button" value="save">Save</button>
+
 </s:form>
 </td>
 <td style="vertical-align: top">
