@@ -26,10 +26,6 @@ public class ManageCategory extends ManageAuditType {
 		load(category.getAuditType());
 	}
 	
-	public String execute() {
-		return SUCCESS;
-	}
-	
 	
 	public String delete() {
 		return SUCCESS;
