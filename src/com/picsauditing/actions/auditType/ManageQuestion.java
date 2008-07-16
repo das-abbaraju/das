@@ -38,5 +38,8 @@ public class ManageQuestion extends ManageSubCategory {
 		return SUCCESS;
 	}
 
+	public String[] getQuestionTypes() {
+		return AuditQuestion.TYPE_ARRAY;
+	}
 	
 }
