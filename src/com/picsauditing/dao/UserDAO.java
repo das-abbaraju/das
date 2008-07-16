@@ -76,4 +76,9 @@ public class UserDAO extends PicsDAO {
 		return (User) query.getSingleResult();
 	}
 
+	public int getUsersCounts() {
+		Query query = em.createQuery("SELECT count(u) FROM User u " + "WHERE u.isActive = 'Yes'");
+		return Integer.parseInt(query.getSingleResult().toString());
+	}
+
 }
