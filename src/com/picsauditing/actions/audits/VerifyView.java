@@ -185,13 +185,7 @@ public class VerifyView extends AuditActionSupport {
 			emrNewDB.setQuestion(auQuestion);
 			emrNewDB.setNum(emr.get(year).getNum());
 			emrNewDB.setAnswer("");
-			emrNewDB.setIsCorrect(emr.get(year).getIsCorrect());
-			if (YesNo.Yes.equals(emr.get(year).getIsCorrect()))
-				emrNewDB.setDateVerified(new Date());
-			else
-				emrNewDB.setDateVerified(null);
-			auditDataDao.save(emrNewDB);
-			return;
+			emrDB.put(year, emrNewDB);
 		}
 		emrDB.get(year).setVerifiedAnswer(emr.get(year).getVerifiedAnswer());
 		emrDB.get(year).setComment(emr.get(year).getComment());
