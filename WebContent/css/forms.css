@@ -57,3 +57,106 @@ table.forms th {
 	color: #FFF;
 }
 
+
+
+/******************** Primary Table class="dataentry"  ************************/
+
+table.dataentry {
+	border-collapse: collapse;
+	border: none;
+	color: #8C8C8C;
+	background-color: #F1F5FB;
+	clear: both;
+	margin-right: 10px;
+}
+
+/*
+border: thin solid #D8D8D8;
+border-right: 2px solid #D8D8D8;
+border-bottom: 2px solid #D8D8D8;
+*/
+
+
+
+table.dataentry td, table.dataentry th {
+	padding: 10px;
+	font-size: 13px;
+}
+tfoot {
+	border: none;
+	padding: 10px;
+	font-size: 13px;
+}
+
+tfoot th {
+	border: none;
+}
+
+table.dataentry thead th, table.dataentry thead td {
+	border-right: 1px solid #A3A3A3;
+	text-align: center;
+	font-weight: bold;
+	background: #CECECE;
+	background-image: url(../images/background-header-table-gradient.jpg);
+	background-repeat: repeat-x;
+	color: #333333;
+}
+table.dataentry thead a {
+	color: #8C8C8C;
+	text-decoration: none;
+	}
+table.dataentry thead a:hover {
+	text-decoration: underline;
+	color: #003366;
+}
+table.dataentry tbody td a {
+	text-decoration: none;
+}
+table.dataentry tbody td a:hover {
+	text-decoration: underline;
+}
+
+table.dataentry tr, table.dataentry tr th {
+	background-color: white;
+}
+
+table.dataentry tr.odd, table.dataentry tr.odd th  {
+	background-color: #F1F5FA;
+
+}
+table.dataentry td.center {
+	text-align: center;
+	float: none;
+}
+table.dataentry td.right {
+	text-align: right;
+	float: none;
+}
+
+table.dataentry th {
+	text-align: right;
+	font-weight: bold;
+	background: #003768;
+	color: #003366;
+}
+
+
+table.dataentry #Message1 {
+	color: #cc0000;
+	margin-left: 10px;
+	margin-right: 5px;
+	margin-top: -15px;
+	font-size: 10px;
+	float: right;
+	}
+
+
+
+
+
+
+
+
+
+
+
