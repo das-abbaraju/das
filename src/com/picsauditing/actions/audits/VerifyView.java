@@ -133,7 +133,6 @@ public class VerifyView extends AuditActionSupport {
 			if (osha.getYear3() != null && osha.getYear3().getVerified())
 				verified++;
 		}
-
 		if (getEmr1() != null && YesNo.Yes.equals(getEmr1().getIsCorrect()))
 			verified++;
 		if (getEmr2() != null && YesNo.Yes.equals(getEmr2().getIsCorrect()))
@@ -179,6 +178,15 @@ public class VerifyView extends AuditActionSupport {
 
 	private void saveAuditData(Map<Integer, AuditData> emrDB, int year) {
 		if (emrDB.get(year) == null) {
+			AuditData emrNewDB = new AuditData();
+			emrNewDB.setAudit(conAudit);
+			AuditQuestion auQuestion = new AuditQuestion();
+			auQuestion.setQuestionID(year);
+			emrNewDB.setQuestion(auQuestion);
+			emrNewDB.setNum(emr.get(year).getNum());
+			emrNewDB.setAnswer("");
+			emrNewDB.setIsCorrect(emr.get(year).getIsCorrect());
+			auditDataDao.save(emrNewDB);
 			return;
 		}
 		emrDB.get(year).setVerifiedAnswer(emr.get(year).getVerifiedAnswer());
@@ -259,26 +267,35 @@ public class VerifyView extends AuditActionSupport {
 		appendOsha(sb, osha.getYear3(), getYear3());
 
 		AuditData temp = getEmr1();
-		if (!temp.isVerified()) {
+		if (temp == null || !temp.isVerified()) {
 			sb.append(getYear1());
 			sb.append(" EMR - ");
-			sb.append(temp.getComment());
+			if (temp == null)
+				sb.append("Missing EMR");
+			else
+				sb.append(temp.getComment());
 			sb.append("\n");
 		}
 
 		temp = getEmr2();
-		if (!temp.isVerified()) {
+		if (temp == null || !temp.isVerified()) {
 			sb.append(getYear2());
 			sb.append(" EMR - ");
-			sb.append(temp.getComment());
+			if (temp == null)
+				sb.append("Missing EMR");
+			else
+				sb.append(temp.getComment());
 			sb.append("\n");
 		}
 
 		temp = getEmr3();
-		if (!temp.isVerified()) {
+		if (temp == null || !temp.isVerified()) {
 			sb.append(getYear3());
 			sb.append(" EMR - ");
-			sb.append(temp.getComment());
+			if (temp == null)
+				sb.append("Missing EMR");
+			else
+				sb.append(temp.getComment());
 			sb.append("\n");
 		}
 
