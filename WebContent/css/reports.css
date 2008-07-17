@@ -123,12 +123,13 @@ ul.alpha {
 	display:block;
 	white-space:nowrap;
 	vertical-align: middle;
+	margin-left: 0px;
 }
 ul.paging {
 	display:block;
 	white-space:nowrap;
 	vertical-align: middle;
-	margin-left: 30px;
+	margin-left: 5px;
 }
 ul.alpha li, ul.paging li {
 	display:inline;
@@ -182,6 +183,11 @@ div.filterOption {
 	padding: 0px;
 	float: left;
 }
+
+div.filterOption a, div.filterOption span {
+	font-size: 11px;
+}
+
 
 .helpBox {
 	font-size: 12px;
