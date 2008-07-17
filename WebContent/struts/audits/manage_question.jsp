@@ -39,12 +39,20 @@
 <td><s:date name="question.lastModified" /></td>
 </tr>
 <tr>
+<th>Has Requirement:</th>
+<td><s:checkbox name="question.hasRequirement" value="question.hasRequirement.name() == 'Yes' ? true : false"/></td>
+</tr>
+<tr>
 <th>OK Answer:</th>
 <td><s:textfield name="question.okAnswer" /></td>
 </tr>
 <tr>
 <th>Requirement:</th>
 <td><s:textarea name="question.requirement" rows="2" cols="50" /></td>
+</tr>
+<tr>
+<th>Flaggable:</th>
+<td><s:checkbox name="question.isRedFlagQuestion" value="question.isRedFlagQuestion.name() == 'Yes' ? true : false"/></td>
 </tr>
 <tr>
 <th>Required:</th>
@@ -66,6 +74,16 @@
 <th>Title:</th>
 <td><s:textfield name="question.title" /></td>
 </tr>
+
+<tr>
+<th>Visible:</th>
+<td><s:checkbox name="question.isVisible"  value="question.isVisible.name() == 'Yes' ? true : false"/></td>
+</tr>
+<tr>
+<th>Grouped with Previous:</th>
+<td><s:checkbox name="question.isGroupedWithPrevious"  value="question.isGroupedWithPrevious.name() == 'Yes' ? true : false"/></td>
+</tr>
+
 <tr>
 <th>Url 1:</th>
 <td><s:textfield name="question.linkUrl1" /></td>
