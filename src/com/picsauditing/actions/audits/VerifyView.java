@@ -285,6 +285,7 @@ public class VerifyView extends AuditActionSupport {
 		String items = sb.toString();
 
 		mailer.addToken("missing_items", items);
+		mailer.setPermissions(permissions);
 		mailer.sendMessage(EmailTemplates.verifyPqf, this.conAudit);
 
 		String note = "PQF Verification email sent to " + mailer.getSentTo();
