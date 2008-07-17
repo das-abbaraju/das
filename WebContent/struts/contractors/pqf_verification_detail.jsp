@@ -265,6 +265,13 @@ function sendEmail() {
 				<s:checkbox name="emr3.verified" onclick="copyEmrAnswer(3);"></s:checkbox>
 			</td>
 		</tr>
+		<tr class="blueMain" align="center">
+				<td align="right">Verified Date:</td>
+				<td>&nbsp;</td>
+				<td class="highlight"><s:date name="emr1.dateVerified" format="MM/dd/yyyy"/></td>
+				<td><s:date name="emr2.dateVerified" format="MM/dd/yyyy"/></td>
+				<td class="highlight"><s:date name="emr3.dateVerified" format="MM/dd/yyyy"/></td>
+		</tr>
 		<tr class="blueMain">
 			<td align="right" colspan="2">Issue:</td>
 			<td class="highlight"><s:select list="emrProblems" name="emr1.comment" cssClass="blueMain" /></td>
