@@ -82,6 +82,7 @@ public class ContractorAudit {
 		this.contractorAccount = contractorAccount;
 	}
 
+	@Temporal( TemporalType.TIMESTAMP )
 	public Date getCreatedDate() {
 		return createdDate;
 	}
@@ -122,7 +123,7 @@ public class ContractorAudit {
 		this.auditStatus = auditStatus;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal( TemporalType.TIMESTAMP )
 	public Date getExpiresDate() {
 		return expiresDate;
 	}
@@ -141,6 +142,7 @@ public class ContractorAudit {
 		this.auditor = auditor;
 	}
 
+	@Temporal( TemporalType.TIMESTAMP )
 	public Date getAssignedDate() {
 		return assignedDate;
 	}
@@ -149,6 +151,7 @@ public class ContractorAudit {
 		this.assignedDate = assignedDate;
 	}
 
+	@Temporal( TemporalType.TIMESTAMP )
 	public Date getScheduledDate() {
 		return scheduledDate;
 	}
@@ -157,6 +160,7 @@ public class ContractorAudit {
 		this.scheduledDate = scheduledDate;
 	}
 
+	@Temporal( TemporalType.TIMESTAMP )
 	public Date getCompletedDate() {
 		return completedDate;
 	}
@@ -165,6 +169,7 @@ public class ContractorAudit {
 		this.completedDate = completedDate;
 	}
 
+	@Temporal( TemporalType.TIMESTAMP )
 	public Date getClosedDate() {
 		return closedDate;
 	}
@@ -320,7 +325,7 @@ public class ContractorAudit {
 	}
 
 
-	@Temporal(TemporalType.DATE)
+	@Temporal( TemporalType.TIMESTAMP )
 	public Date getContractorConfirm() {
 		return contractorConfirm;
 	}
@@ -329,7 +334,7 @@ public class ContractorAudit {
 		this.contractorConfirm = contractorConfirm;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal( TemporalType.TIMESTAMP )
 	public Date getAuditorConfirm() {
 		return auditorConfirm;
 	}

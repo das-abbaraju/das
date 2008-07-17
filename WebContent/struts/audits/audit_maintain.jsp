@@ -53,23 +53,35 @@
 
 <fieldset>
 	<hr />
+
+	<div class="formRow">
+		<span class="labels"><strong>Dates are in this format: 01/31/08 12:03 AM</strong></span>
+	</div>
+
+
 	<div class="formRow">
 		<span class="labels">Created Date: </span>
-		<span class="fields"><s:textfield name="conAudit.createdDate"/></span>
+		<span class="fields"><s:textfield name="conAudit.createdDate" value="%{conAudit.createdDate && getText('dates', {conAudit.createdDate})}"/></span>
 		<span class="labels">Expires Date: </span>
-		<span class="fields"><s:textfield name="conAudit.expiresDate"/></span>
+		<span class="fields"><s:textfield name="conAudit.expiresDate" value="%{conAudit.expiresDate && getText('dates', {conAudit.expiresDate})}"/></span>
 	</div>
 	<div class="formRow">
 		<span class="labels">Assigned Date: </span>
-		<span class="fields"><s:textfield name="conAudit.assignedDate"/></span>
+		<span class="fields"><s:textfield name="conAudit.assignedDate" value="%{conAudit.assignedDate && getText('dates', {conAudit.assignedDate})}"/></span>
 		<span class="labels">Scheduled Date: </span>
-		<span class="fields"><s:textfield name="conAudit.scheduledDate"/></span>
+		<span class="fields"><s:textfield name="conAudit.scheduledDate" value="%{conAudit.scheduledDate && getText('dates', {conAudit.scheduledDate})}"/></span>
 	</div>
 	<div class="formRow">
 		<span class="labels">Completed Date: </span>
-		<span class="fields"><s:textfield name="conAudit.completedDate"/></span>
+		<span class="fields"><s:textfield name="conAudit.completedDate" value="%{conAudit.completedDate && getText('dates', {conAudit.completedDate})}"/></span>
 		<span class="labels">Closed Date: </span>
-		<span class="fields"><s:textfield name="conAudit.closedDate"/></span>
+		<span class="fields"><s:textfield name="conAudit.closedDate" value="%{conAudit.closedDate && getText('dates', {conAudit.closedDate})}"/></span>
+	</div>
+	<div class="formRow">
+		<span class="labels">Contractor Confirm: </span>
+		<span class="fields"><s:textfield name="conAudit.contractorConfirm" value="%{conAudit.contractorConfirm && getText('dates', {conAudit.contractorConfirm})}"/></span>
+		<span class="labels">Auditor Confirm: </span>
+		<span class="fields"><s:textfield name="conAudit.auditorConfirm" value="%{conAudit.auditorConfirm && getText('dates', {conAudit.auditorConfirm})}"/></span>
 	</div>
 </fieldset>
 
