@@ -11,6 +11,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.util.PermissionQueryBuilder;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -80,12 +81,11 @@ public class ContractorAccountDAO extends PicsDAO {
 	public List<ContractorAccount> findNewContractors(Permissions permissions, int limit) {
 		if (permissions == null)
 			return new ArrayList<ContractorAccount>();
-		String where = "active='Y'";
-		if (permissions.isOperator())
-			where += " AND a IN (SELECT contractorAccount FROM ContractorOperator " + "WHERE operatorAccount.id = "
-					+ permissions.getAccountId() + ")";
-
-		Query query = em.createQuery("FROM ContractorAccount a WHERE " + where + " ORDER BY dateCreated DESC");
+		
+		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
+		
+		String hql = "FROM ContractorAccount contractorAccount WHERE 1=1 " + qb.toString() + " ORDER BY dateCreated DESC";
+		Query query = em.createQuery(hql);
 		query.setMaxResults(limit);
 		return query.getResultList();
 	}
