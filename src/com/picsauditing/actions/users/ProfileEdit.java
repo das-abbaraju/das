@@ -10,7 +10,6 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 	protected UserDAO dao;
 	protected String password1;
 	protected String password2;
-	private String save = null;
 
 	public ProfileEdit(UserDAO dao) {
 		this.dao = dao;
@@ -20,17 +19,22 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 		if (!forceLogin())
 			return LOGIN;
 		if (!dao.checkUserName(u.getId(), u.getName())) {
-			message = "Duplicate ID.  Will not update";
-			this.addActionError("Duplicate ID.  Will not update");
+			addActionError("Duplicate ID.  Will not update");
 			return SUCCESS;
 		}
-		if (save != null) {
-			if (password1 != null && password1.length() > 3
-					&& password1.equals(password2))
+		if (button != null) {
+			if (password1 != null && password1.length() > 0) {
+				if (password1.length() < 5)
+					addActionError("Password must be at least 5 characters long");
+				if (!password1.equals(password2))
+					addActionError("Passwords don't match");
+				if (getActionErrors().size() > 0)
+					return SUCCESS;
 				u.setPassword(password1);
+			}
 			u = dao.save(u);
 
-			message = "Your profile has been saved.";
+			addActionMessage("Your profile was saved successfully");
 		}
 
 		return SUCCESS;
@@ -57,14 +61,6 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 
 	public void setPassword2(String password2) {
 		this.password2 = password2;
-	}
-
-	public String getSave() {
-		return save;
-	}
-
-	public void setSave(String save) {
-		this.save = save;
 	}
 
 }

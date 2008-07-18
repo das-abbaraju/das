@@ -21,12 +21,11 @@ function checkUsername(username) {
 			});
 }
 </script>
+
 </head>
 <body>
 <h1>Edit Profile</h1>
-<div id="info" <s:if test="message.length() == 0">style="display: none"</s:if>><s:property value="message"/></div>
-<s:actionerror/>
-<br clear="all" >
+<s:include value="../actionMessages.jsp" />
 
 <s:form>
 	<s:hidden name="u.id" />
@@ -67,7 +66,7 @@ function checkUsername(username) {
 		<tfoot>
 			<tr>
 				<th></th>
-				<td class="center"><s:submit value="Save Profile" name="save" onclick="$('info').hide(); return true;"/></td>
+				<td class="center"><s:submit value="Save Profile" name="button" onclick="$('info').hide(); return true;"/></td>
 			</tr>
 		</tfoot>
 	</table>
