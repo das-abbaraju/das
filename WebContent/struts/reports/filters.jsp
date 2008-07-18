@@ -71,13 +71,22 @@ Filter Options</a></div>
 	<div class="filterOption"><s:textfield name="accountName"
 		cssClass="forms" size="10" onfocus="clearText(this)" /></div>
 
+	<s:if test="filterVisible">
+		<div class="filterOption"><s:select list="visibleOptions"
+			cssClass="forms" name="visible" /></div>
+	</s:if>
+
 	<s:if test="filterAddress">
 		<div class="filterOption">Address: <s:textfield name="city"
 			cssClass="forms" size="15" onfocus="clearText(this)" /> <s:select
 			list="stateList" cssClass="forms" name="state" /> <s:textfield
 			name="zip" cssClass="forms" size="5" onfocus="clearText(this)" /></div>
 	</s:if>
-
+	<s:if test="filterTaxID">
+		<div class="filterOption"><s:textfield name="taxID"
+			cssClass="forms" size="9" onfocus="clearText(this)" title="must be 9 digits" /></div>
+	</s:if>
+	<br /><br />
 	<s:if test="filterIndustry">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_industry'); return false;">Industry</a> = <span
@@ -177,15 +186,6 @@ Filter Options</a></div>
 	<s:if test="filterCerts">
 		<div class="filterOption"><s:select list="certsOptions"
 			cssClass="forms" name="certsOnly" /></div>
-	</s:if>
-	<s:if test="filterVisible">
-		<div class="filterOption"><s:select list="visibleOptions"
-			cssClass="forms" name="visible" /></div>
-	</s:if>
-	<s:if test="filterTaxID">
-		<div class="filterOption"><s:textfield name="taxID"
-			cssClass="forms" size="9" onfocus="clearText(this)" /><br />
-		<span class="redMain">*must be 9 digits</span></div>
 	</s:if>
 	<s:if test="filterLicensedIn">
 		<div class="filterOption"><a href="#"
