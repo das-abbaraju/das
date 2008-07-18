@@ -10,6 +10,7 @@ import javax.servlet.ServletContext;
 import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.AccountBean;
+import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.Billing;
 import com.picsauditing.PICS.CertificateBean;
 import com.picsauditing.PICS.Facilities;
@@ -25,17 +26,19 @@ public class Cron extends PicsActionSupport {
 	protected FlagCalculator2 flagCalculator = null;
 	protected OperatorAccountDAO operatorDAO = null;
 	protected AppPropertyDAO appPropDao = null;
+	protected AuditBuilder auditBuilder = null;
 	protected long startTime = 0L;
 	StringBuffer report = null;
 	
 	protected boolean flagsOnly = false;
 	
 	
-	public Cron( FlagCalculator2 fc2, OperatorAccountDAO ops, AppPropertyDAO appProps )
+	public Cron( FlagCalculator2 fc2, OperatorAccountDAO ops, AppPropertyDAO appProps, AuditBuilder ab )
 	{
 		this.flagCalculator = fc2;
 		this.operatorDAO = ops;
 		this.appPropDao = appProps;
+		this.auditBuilder = ab;
 	}
 	
 	
@@ -48,8 +51,13 @@ public class Cron extends PicsActionSupport {
 		report.append(new Date().toString());
 		report.append("\n\n");
 		
+		
 		if( !flagsOnly )
 		{
+			
+			startTask( "\nRunning auditBuilder.addAuditRenewals...");
+			auditBuilder.addAuditRenewals();
+			endTask();
 			
 			try
 			{

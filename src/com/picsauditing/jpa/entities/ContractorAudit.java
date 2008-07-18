@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -20,6 +21,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
@@ -44,7 +46,6 @@ public class ContractorAudit {
 	private String auditLocation;
 	private int percentComplete;
 	private int percentVerified;
-	private boolean canDelete;
 	private Date contractorConfirm;
 	private Date auditorConfirm;
 
@@ -212,15 +213,9 @@ public class ContractorAudit {
 		this.percentVerified = percentVerified;
 	}
 
-	public boolean isCanDelete() {
-		return canDelete;
-	}
-
-	public void setCanDelete(boolean canDelete) {
-		this.canDelete = canDelete;
-	}
-
-	@OneToMany(mappedBy = "audit")
+	// Child tables
+	
+	@OneToMany(mappedBy = "audit", cascade = {CascadeType.REMOVE})
 	public List<AuditCatData> getCategories() {
 		return categories;
 	}
@@ -229,7 +224,7 @@ public class ContractorAudit {
 		this.categories = categories;
 	}
 
-	@OneToMany(mappedBy = "audit")
+	@OneToMany(mappedBy = "audit", cascade = {CascadeType.REMOVE})
 	public List<AuditData> getData() {
 		return data;
 	}

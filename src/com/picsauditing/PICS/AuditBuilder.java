@@ -144,12 +144,17 @@ public class AuditBuilder {
 					System.out.println("Skipping: "+ auditType.getAuditTypeID() + auditType.getAuditName());
 			}
 		}
-		
+
 		/**** Remove unneeded audits ****/
 		for(ContractorAudit conAudit : currentAudits) {
 			if (conAudit.getAuditStatus().equals(AuditStatus.Pending) && conAudit.getPercentComplete() == 0) {
 				// This audit hasn't been started yet, double check to make sure it's still needed
 				boolean needed = false;
+				
+				if (conAudit.getAuditType().isPqf())
+					needed = true;
+				if (conAudit.getAuditType().getAuditTypeID() == AuditType.WELCOME)
+					needed = true;
 				
 				for(AuditType auditType : list) {
 					if (conAudit.getAuditType().equals(auditType)) {
@@ -158,9 +163,11 @@ public class AuditBuilder {
 				}
 				
 				if (!needed) {
-					// TODO remove unneeded audits safely
-					//cAuditDAO.remove(conAudit);
-					//currentAudits.remove(conAudit);
+					if (conAudit.getData().size() == 0) {
+						cAuditDAO.clear();
+						cAuditDAO.remove(conAudit.getId());
+						currentAudits.remove(conAudit);
+					}
 				}
 			}
 		}
@@ -172,6 +179,20 @@ public class AuditBuilder {
 				|| true) {
 				CategoryBean categoryBean = new CategoryBean();
 				categoryBean.generateDynamicCategories(conAudit);
+			}
+		}
+	}
+	
+	/**
+	 * Business engine designed to find audits that are about to expire and rebuild them
+	 */
+	public void addAuditRenewals() {
+		List<ContractorAccount> contractors = cAuditDAO.findContractorsWithExpiringAudits();
+		for(ContractorAccount contractor : contractors) {
+			try {
+				buildAudits(contractor);
+			} catch (Exception e) {
+				System.out.println("ERROR!! AuditBuiler.addAuditRenewals() " + e.getMessage());
 			}
 		}
 	}

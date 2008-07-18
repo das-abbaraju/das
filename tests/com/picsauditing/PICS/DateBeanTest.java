@@ -1,6 +1,7 @@
 package com.picsauditing.PICS;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import junit.framework.TestCase;
@@ -19,4 +20,6 @@ public class DateBeanTest extends TestCase {
 		String formatted = DateBean.format(new Date(), "M/dd/yy");
 		assertTrue(DateBean.isFirstBeforeSecond("7/01/08", formatted));
 	}
+	
+
 }

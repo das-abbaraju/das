@@ -14,6 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -28,6 +32,10 @@ public class ContractorAuditDAOTest {
 
 	@Autowired
 	ContractorAuditDAO contractorauditDAO;
+	@Autowired
+	AuditDataDAO dataDAO;
+	@Autowired
+	AuditCategoryDataDAO catDataDAO;
 
 	@Test
 	public void testSaveAndRemove() {
@@ -50,10 +58,26 @@ public class ContractorAuditDAOTest {
 		contractoraudit.setAuditLocation("irvine");
 		contractoraudit.setPercentComplete(50);
 		contractoraudit.setPercentVerified(50);
-		contractorauditDAO.save(contractoraudit);
-		assertEquals(true, contractoraudit.getId() > 0);
-				
-		contractorauditDAO.remove(contractoraudit.getId());
+		contractoraudit = contractorauditDAO.save(contractoraudit);
+		int newID = contractoraudit.getId();
+		assertEquals(true, newID > 0);
+		
+		// Add children as well
+		AuditData answer = new AuditData();
+		answer.setAudit(contractoraudit);
+		answer.setQuestion(new AuditQuestion());
+		answer.getQuestion().setQuestionID(39); // City
+		answer.setAnswer("Irvine");
+		dataDAO.save(answer);
+		
+		AuditCatData category = new AuditCatData();
+		category.setAudit(contractoraudit);
+		category.setCategory(new AuditCategory());
+		category.getCategory().setId(2); // General Information
+		catDataDAO.save(category);
+
+		contractorauditDAO.remove(newID);
+		
 		ContractorAudit contractoraudit1 = contractorauditDAO.find(contractoraudit.getId());
 		assertNull(contractoraudit1);
 	}
@@ -81,6 +105,11 @@ public class ContractorAuditDAOTest {
 		ContractorAudit contractoraudit = contractorauditDAO.find(4657);
 		contractoraudit.setClosedDate(new Date());
 		contractorauditDAO.save(contractoraudit);
+	}
+
+	//@Test
+	public void testDelete() {
+		//contractorauditDAO.remove(12370);
 	}
 
 	@Test

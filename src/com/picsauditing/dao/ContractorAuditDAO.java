@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -120,5 +121,24 @@ public class ContractorAuditDAO extends PicsDAO {
 		cAudit.setContractorAccount(contractor);
 		cAudit.setAuditType(auditType);
 		return this.save(cAudit);
+	}
+
+	public List<ContractorAccount> findContractorsWithExpiringAudits() {
+		int startDay = 59; // between 50 and 70 days in the future
+		int range = 10;
+		
+		String hql = "SELECT DISTINCT ca.contractorAccount FROM ContractorAudit ca " +
+				"WHERE ca.auditType.auditTypeID > 1 AND ca.auditType.hasMultiple = 0 " +
+				"AND ca.expiresDate BETWEEN :startDate AND :endDate " +
+				"ORDER BY ca.expiresDate";
+		Query query = em.createQuery(hql);
+		query.setMaxResults(100);
+		Calendar today = Calendar.getInstance();
+		today.add(Calendar.DAY_OF_YEAR, startDay);
+		query.setParameter("startDate", today.getTime());
+		today.add(Calendar.DAY_OF_YEAR, range);
+		query.setParameter("endDate", today.getTime());
+		
+		return query.getResultList();
 	}
 }
