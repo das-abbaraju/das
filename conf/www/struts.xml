@@ -136,6 +136,11 @@
 				struts/contractors/con_auditNoView.jsp
 			</result>
 		</action>
+		
+		<action name="ConAuditMaintain"
+			class="com.picsauditing.actions.audits.ConAuditMaintain">
+			<result>struts/audits/audit_maintain.jsp</result>
+		</action>
 
 		<action name="AuditCat"
 			class="com.picsauditing.actions.audits.AuditCategoryAction">
@@ -145,6 +150,26 @@
 		<action name="AuditTypeChoose"
 			class="com.picsauditing.actions.auditType.AuditTypeChoose">
 			<result>struts/audits/audit_selectType.jsp</result>
+		</action>
+		
+		<action name="ManageAuditType"
+			class="com.picsauditing.actions.auditType.ManageAuditType">
+			<result>struts/audits/manage_audit_type.jsp</result>
+		</action>
+
+		<action name="ManageCategory"
+			class="com.picsauditing.actions.auditType.ManageCategory">
+			<result>struts/audits/manage_category.jsp</result>
+		</action>
+
+		<action name="ManageSubCategory"
+			class="com.picsauditing.actions.auditType.ManageSubCategory">
+			<result>struts/audits/manage_subcategory.jsp</result>
+		</action>
+
+		<action name="ManageQuestion"
+			class="com.picsauditing.actions.auditType.ManageQuestion">
+			<result>struts/audits/manage_question.jsp</result>
 		</action>
 
 		<action name="ReportNCMS"
@@ -235,16 +260,6 @@
 			<result>/struts/audits/auditorSelect.jsp</result>
 		</action>
 
-<!--  
-		<action name="FileUploadExample"
-			class="com.picsauditing.actions.FileUploadExample">
-			<result>/struts/fileUpload.jsp</result>
-		</action>
-		<action name="FileUploadExample_*" method="{1}"
-			class="com.picsauditing.actions.FileUploadExample">
-			<result name="input">/struts/fileUpload.jsp</result>
-		</action>
--->		
 		<action name="ReportFatalities"
 			class="com.picsauditing.actions.report.ReportFatalities">
 			<result>/struts/reports/report_fatalities.jsp</result>
@@ -310,5 +325,20 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
+		<action name="CorporateStatisticsAjax"
+			class="com.picsauditing.actions.CorporateWidget">
+			<result>/struts/widgets/corporate_statistics.jsp</result>
+		</action>
+		
+		<action name="ContractorsLoggedAjax"
+			class="com.picsauditing.actions.contractors.UsersLoggedWidget">
+			<result>/struts/widgets/contractors_logged.jsp</result>
+		</action>
+		
+		<action name="OperatorsLoggedAjax"
+			class="com.picsauditing.actions.contractors.UsersLoggedWidget">
+			<result>/struts/widgets/operators_logged.jsp</result>
+		</action>
+		
 	</package>
 </struts>
