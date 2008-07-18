@@ -6,8 +6,10 @@ import com.picsauditing.dao.UserDAO;
 
 public class CorporateWidget extends PicsActionSupport {
 	protected int operatorCount;
-	protected int contractorCount;
+	protected int corporateCount;
+	protected int activeContractorCount;
 	protected int userCount;
+	protected int totalContractorCount;
 	ContractorAccountDAO cAccountDAO;
 	OperatorAccountDAO opAccountDAO;
 	UserDAO userDAO;
@@ -20,8 +22,10 @@ public class CorporateWidget extends PicsActionSupport {
 
 	public String execute() throws Exception {
 		loadPermissions();
-		contractorCount = cAccountDAO.getContractorCounts();
-		operatorCount = opAccountDAO.getOperatorCounts();
+		totalContractorCount = cAccountDAO.getActiveContractorCounts("");
+		activeContractorCount = cAccountDAO.getActiveContractorCounts("c.active = 'Y'");
+		operatorCount = opAccountDAO.getOperatorCounts("o.type = 'Operator'");
+		corporateCount = opAccountDAO.getOperatorCounts("o.type = 'Corporate'");
 		userCount = userDAO.getUsersCounts();
 		return SUCCESS;
 	}
@@ -30,11 +34,19 @@ public class CorporateWidget extends PicsActionSupport {
 		return operatorCount;
 	}
 
-	public int getContractorCount() {
-		return contractorCount;
+	public int getActiveContractorCount() {
+		return activeContractorCount;
 	}
 
 	public int getUserCount() {
 		return userCount;
+	}
+
+	public int getTotalContractorCount() {
+		return totalContractorCount;
+	}
+
+	public int getCorporateCount() {
+		return corporateCount;
 	}
 }

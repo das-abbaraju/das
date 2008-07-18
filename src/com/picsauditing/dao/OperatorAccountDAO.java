@@ -112,8 +112,8 @@ public class OperatorAccountDAO extends PicsDAO {
 		return Integer.parseInt(query.getSingleResult().toString());
 	}
 
-	public int getOperatorCounts() {
-		Query query = em.createQuery("SELECT count(o) FROM OperatorAccount o " + "WHERE o.active = 'Y'");
+	public int getOperatorCounts(String where) {
+		Query query = em.createQuery("SELECT count(o) FROM OperatorAccount o WHERE o.active = 'Y' AND " + where);
 		return Integer.parseInt(query.getSingleResult().toString());
 	}
 }

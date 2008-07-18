@@ -97,8 +97,12 @@ public class ContractorAccountDAO extends PicsDAO {
 		return (ContractorAccount) query.getSingleResult();
 	}
 
-	public int getContractorCounts() {
-		Query query = em.createQuery("SELECT count(c) FROM ContractorAccount c " + "WHERE c.active = 'Y'");
+	public int getActiveContractorCounts(String where) {
+		if (where.equals(""))
+			where = "";
+		else
+			where = "WHERE " + where;
+		Query query = em.createQuery("SELECT count(c) FROM ContractorAccount c " + where);
 		return Integer.parseInt(query.getSingleResult().toString());
 	}
 
