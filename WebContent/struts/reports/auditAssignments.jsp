@@ -15,7 +15,7 @@
 		var auditor = $F($('auditor_' + auditId));
 		var scheduleDate = $('scheduled_date_' + auditId + '_date');
 		var pars = "contractorAudit.id=" + auditId;
-			
+		
 		pars = pars + "&auditor.id=" + auditor;
 
 		if (scheduleDate != null) {

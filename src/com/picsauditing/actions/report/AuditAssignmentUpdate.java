@@ -11,6 +11,7 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
@@ -102,6 +103,9 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 		if (contractorAudit.getAssignedDate() != null) {
 			setMessage(new SimpleDateFormat("MM/dd/yy hh:mm a").format(contractorAudit.getAssignedDate()));
 		}
+		
+		ContractorBean.addNote(contractorAudit.getContractorAccount().getId(), permissions, "Audit Schedule updated");
+		
 		String name = request.getRequestURL().toString();
 		String serverName = name.replace(ActionContext.getContext().getName() + ".action", "");
 
