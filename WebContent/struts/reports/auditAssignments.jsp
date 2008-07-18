@@ -35,24 +35,37 @@
 		}
 
 		var assignDateDiv = 'assignDate_'+auditId;
-		var myAjax = new Ajax.Updater(assignDateDiv,'AuditAssignmentUpdateAjax.action', {method: 'post', parameters: pars});
-
 		var divName = 'audit_'+auditId;
-		new Effect.Highlight(divName, {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+		
+		var myAjax = new Ajax.Updater(assignDateDiv, 'AuditAssignmentUpdateAjax.action', 
+		{
+			method: 'post', 
+			parameters: pars,
+			onSuccess: function(transport) {
+				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+			}
+		});
 	}
 	
 	function saveAuditor(auditId, auditorId) {
-			var pars = "contractorAudit.id=" + auditId + '&auditor.id=' + auditorId;
-			var toHighlight = 'audit_'+auditId;
-			var myAjax = new Ajax.Request('AuditAssignmentUpdateAjax.action', {method: 'post', parameters: pars});
-		
-			new Effect.Highlight(toHighlight, {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+		var pars = "contractorAudit.id=" + auditId + '&auditor.id=' + auditorId;
+		var toHighlight = 'audit_'+auditId;
+		var assignDateDiv = 'assignDate_'+auditId;
+			
+		var myAjax = new Ajax.Updater(assignDateDiv, 'AuditAssignmentUpdateAjax.action', 
+		{
+			method: 'post', 
+			parameters: pars,
+			onSuccess: function(transport) { 
+				new Effect.Highlight(toHighlight, {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+			}
+		});
 	}
 </script>
 </head>
 <body>
 <h1>Schedule &amp; Assign Audits</h1>
-
+<div class="blueMain"><a href="audit_calendar.jsp">Audit Calendar</a></div>
 <s:include value="filters.jsp" />
 
 <div><s:property value="report.pageLinksWithDynamicForm"
@@ -96,13 +109,11 @@
 				</s:if></nobr>
 				</td>
 				<td class="center" id="assignDate_<s:property value="[0].get('auditID')"/>">
-				<s:if test="[0].get('hasAuditor')">
 					<nobr><s:property
 						value="%{getBetterDate( [0].get('assignedDate'), 'MM/dd/yy hh:mm:ss a.000')}" />
 					<s:property
 						value="%{getBetterTime( [0].get('assignedDate'), 'MM/dd/yy hh:mm:ss a.000')}" />
 					</nobr>
-				</s:if>
 				</td>
 				<td>
 				<s:if test="[0].get('isScheduled')">
@@ -126,7 +137,8 @@
 						value="%{[0].get('auditLocation')}" />
 				</s:if>
 				</td>
-				<td><input type="button" class="forms" value="Save" onclick="saveAudit('<s:property value="%{[0].get('auditID')}"/>'); return false;"/>
+				<td>
+					<input type="button" class="forms" value="Save" onclick="saveAudit('<s:property value="%{[0].get('auditID')}"/>'); return false;"/>
 				</td>
 			</tr>
 		</s:iterator>

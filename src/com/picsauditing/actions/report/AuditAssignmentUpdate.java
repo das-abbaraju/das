@@ -93,14 +93,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				contractorAudit.setContractorConfirm(null);
 			}
 		}
-		if (auditor != null) {
-			if (origAuditor == null || (origAuditor != null && (origAuditor.getId() != auditor.getId()))) {
-				contractorAudit.setAssignedDate(new Date());
-			}
-		} else {
-			contractorAudit.setAssignedDate(null);
-		}
-
+		contractorAudit.setAssignedDate(new Date());
 		contractorAudit.setAuditor(auditor);
 
 		if (permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit))
