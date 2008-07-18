@@ -222,12 +222,6 @@ public class User extends DataBean implements Comparable<User> {
 			sql = "DELETE FROM useraccess WHERE userID="+userDO.id;
 			SQLStatement.executeUpdate(sql);
 			
-			sql = "INSERT INTO deletedUsers "+
-				"(id,name,email,accountID,dateCreated,dateDeleted) " +
-				"SELECT id,name,email,accountID,dateCreated,NOW() " +
-				"FROM users WHERE id="+userDO.id;
-			SQLStatement.executeUpdate(sql);
-			
 			sql = "DELETE FROM users WHERE id="+userDO.id;
 			SQLStatement.executeUpdate(sql);
 			
