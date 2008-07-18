@@ -197,14 +197,17 @@ public class VerifyView extends AuditActionSupport {
 	private void loadData() {
 		// Retreive the osha record we selected
 		// or pick the only child if only one exists
-		if (oshaID > 0) {
-			for (OshaLog row : conAudit.getContractorAccount().getOshas())
-				if (row.getId() == oshaID)
-					osha = row;
-
-		} else if (conAudit.getContractorAccount().getOshas().size() == 1) {
-			osha = conAudit.getContractorAccount().getOshas().get(0);
-			oshaID = osha.getId();
+		int counter = 0;
+		for (OshaLog oshaLog : conAudit.getContractorAccount().getOshas()) {
+			if (oshaLog.isCorporate()) {
+				counter++;
+				osha = oshaLog;
+				oshaID = osha.getId();
+			}
+		}
+		if (counter != 1) {
+			osha = null;
+			oshaID = 0;
 		}
 
 		// Now get the EMR data
