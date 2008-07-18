@@ -104,8 +104,6 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 			setMessage(new SimpleDateFormat("MM/dd/yy hh:mm a").format(contractorAudit.getAssignedDate()));
 		}
 		
-		ContractorBean.addNote(contractorAudit.getContractorAccount().getId(), permissions, "Audit Schedule updated");
-		
 		String name = request.getRequestURL().toString();
 		String serverName = name.replace(ActionContext.getContext().getName() + ".action", "");
 
@@ -121,6 +119,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				auditorMailer.sendMessage(EmailTemplates.auditorconfirm, contractorAudit);
 			}
 		}
+		ContractorBean.addNote(contractorAudit.getContractorAccount().getId(), permissions, "Audit Schedule updated");
 		return SUCCESS;
 	}
 
