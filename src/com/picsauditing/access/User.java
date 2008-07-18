@@ -86,6 +86,8 @@ public class User extends DataBean implements Comparable<User> {
 	}
 	
 	public boolean usernameExists(String username, int currentID) throws SQLException {
+		if(userDO.isGroup.equals("Yes"))
+			username = "Group"+userDO.name;
 		int id = this.findID(username);
 		if (id == 0) {
 			AccountBean aBean = new AccountBean();
@@ -242,7 +244,9 @@ public class User extends DataBean implements Comparable<User> {
 			errorMessages.addElement("Please enter a name");
 		else if (userDO.name.length() < 3)
 			errorMessages.addElement("Please enter a name with more than 2 characters");
-		
+		if (!usernameExists(userDO.username))
+			errorMessages.addElement("Username already exists. Please type another.");
+
 		if (userDO.isGroup.equals("Yes")) return (errorMessages.size() == 0);
 		
 		if (userDO.username.length() < 5)
