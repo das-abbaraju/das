@@ -18,26 +18,26 @@
 	boolean removeContractor = ("Remove".equals(request.getParameter("action")));
 	if (isSubmitted) {
 		cBean.setGeneralContractorsFromCheckList(request);
-		if (cBean.writeGeneralContractorsToDB(pBean, FACILITIES)) {
+		if (cBean.writeGeneralContractorsToDB(permissions, FACILITIES)) {
 			cBean.writeToDB();
 			cBean.buildAudits();
 			BillContractor billing = new BillContractor();
 			billing.setContractor(id);
 			billing.calculatePrice();
 			billing.writeToDB();
-			//	EmailBean.sendUpdateDynamicPQFEmail(id);
 		}
 		if (permissions.isContractor()) {
 			response.sendRedirect("Home.action");
 			return;
 		}
 	}
+	
 	if (permissions.seesAllContractors() && removeContractor) {
 		Integer removeOpID = Integer.parseInt(request.getParameter("opID"));
 		oBean.removeSubContractor(removeOpID, id);
 		AccountBean tempOpBean = new AccountBean();
 		tempOpBean.setFromDB(removeOpID.toString());
-		cBean.addNote(id, "(" + pBean.userName + " from PICS)", "Removed " + aBean.name + " from "
+		cBean.addNote(id, "(" + permissions.getName() + " from PICS)", "Removed " + aBean.name + " from "
 				+ tempOpBean.name + "'s db", DateBean.getTodaysDateTime());
 		cBean.writeToDB();
 		cBean.buildAudits();
@@ -45,7 +45,6 @@
 		billing.setContractor(id);
 		billing.calculatePrice();
 		billing.writeToDB();
-	
 	}
 	cBean.setFromDB(id);
 	OperatorAccountDAO operatorDao = (OperatorAccountDAO)SpringUtils.getBean("OperatorAccountDAO");

@@ -56,7 +56,7 @@
  	
   <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
     <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-    <property name="url" value="jdbc:mysql://alpha.picsauditing.com:3306/pics2?zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false" />
+    <property name="url" value="jdbc:mysql://alpha.picsauditing.com:3306/pics_alpha?zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false" />
     <property name="username" value="pics" />
     <property name="password" value="pics" />
   </bean>

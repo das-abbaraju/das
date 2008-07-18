@@ -38,12 +38,6 @@
 <![endif]-->
 
 <script type="text/javascript">
-
-var test=<%=permissions.getName() %>;
-
-
-alert(testID);
-
 function showChat() {
 	var elem = getElement('chatIcon');
 	elem.style.display = 'block';
