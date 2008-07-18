@@ -8,9 +8,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-
-import javax.persistence.NoResultException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -304,6 +301,7 @@ public class VerifyView extends AuditActionSupport {
 		String items = sb.toString();
 
 		mailer.addToken("missing_items", items);
+		mailer.addToken("safetyManual", getSafetyManualAnswer());
 		mailer.setPermissions(permissions);
 		mailer.sendMessage(EmailTemplates.verifyPqf, this.conAudit);
 
