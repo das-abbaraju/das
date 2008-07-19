@@ -28,7 +28,6 @@ public class FlagQuestionCriteria {
 	protected FlagColor flagColor;
 	protected YesNo checked;
 
-	protected String questionType;
 	protected String comparison;
 	protected String value;
 	protected boolean validationRequired;
@@ -83,14 +82,6 @@ public class FlagQuestionCriteria {
 		this.checked = checked;
 	}
 
-	public String getQuestionType() {
-		return questionType;
-	}
-
-	public void setQuestionType(String questionType) {
-		this.questionType = questionType;
-	}
-
 	public String getComparison() {
 		return comparison;
 	}
@@ -117,6 +108,7 @@ public class FlagQuestionCriteria {
 
 	@Transient
 	public boolean isFlagged(String answer) {
+		String questionType = auditQuestion.getQuestionType();
 		if ("Check Box".equals(questionType))
 			if ("=".equals(comparison))
 				return value.equals(answer);
@@ -132,7 +124,7 @@ public class FlagQuestionCriteria {
 					return (db.isFirstBeforeSecond(db.toShowFormat(answer), db.getTodaysDate()));
 			} catch (Exception e) {
 				return true;
-				}
+			}
 		}
 		if ("".equals(answer))
 			return true;

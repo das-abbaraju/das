@@ -168,11 +168,17 @@ public class FlagCalculatorSingle {
 		}
 		debug(" flagColor=" + flagColor);
 
+		for (Integer dataID : auditAnswers.keySet()) {
+			// The flag colors should always start Green, but sometimes they are still set from the previous operator's loop
+			auditAnswers.get(dataID).setFlagColor(FlagColor.Green);
+		}
+		
 		// For each operator criteria, get the contractor's
 		// answer and see if it triggers the flag color
 		for (FlagQuestionCriteria criteria : operator.getFlagQuestionCriteria()) {
 			if (criteria.getChecked().equals(YesNo.Yes)) {
 				// This question is required by the operator
+				
 				if (criteria.getAuditQuestion().getQuestionID() == AuditQuestion.EMR_AVG) {
 					// Check the average of all three EMR years
 					float emrRateTotal = 0;
@@ -198,8 +204,23 @@ public class FlagCalculatorSingle {
 						// The contractor has answered this question so it needs
 						// to be correct
 						Float avgRate = emrRateTotal / years;
-						if (criteria.isFlagged(avgRate.toString()))
+						
+						AuditData data = auditAnswers.get(AuditQuestion.EMR_AVG);
+						if (data == null) {
+							// Add a temporary auditdata record so we can display them on the flag page
+							data = new AuditData();
+							data.setQuestion(criteria.getAuditQuestion());
+							int roundedRate1000 = Math.round(avgRate*1000);
+							float roundedRate = ((float)roundedRate1000)/1000;
+							data.setAnswer(Float.toString(roundedRate));
+							data.setFlagColor(FlagColor.Green);
+							auditAnswers.put(AuditQuestion.EMR_AVG, data);
+						}
+						
+						if (criteria.isFlagged(avgRate.toString())) {
+							data.setFlagColor(setFlagColor(data.getFlagColor(), criteria.getFlagColor()));
 							flagColor = setFlagColor(flagColor, criteria.getFlagColor());
+						}
 					}
 				} else {
 					// Check all other audit data answers
@@ -208,25 +229,27 @@ public class FlagCalculatorSingle {
 							&& data.getVerifiedAnswerOrAnswer().length() > 0) {
 						// The contractor has answered this question so it needs
 						// to be correct
-						data.setFlagColor(FlagColor.Green);
+						boolean isFlagged = false;
 
 						if (criteria.isValidationRequired() && !data.isVerified()) {
-							data.setFlagColor(criteria.getFlagColor());
-							flagColor = setFlagColor(flagColor, criteria.getFlagColor());
+							isFlagged = true;
 						}
 
 						if (criteria.isFlagged(data.getVerifiedAnswerOrAnswer())) {
-							data.setFlagColor(criteria.getFlagColor());
+							isFlagged = true;
+						}
+						
+						if (isFlagged) {
+							data.setFlagColor(setFlagColor(data.getFlagColor(), criteria.getFlagColor()));
 							flagColor = setFlagColor(flagColor, criteria.getFlagColor());
 						}
 					}
-
-					if (answerOnly && flagColor.equals(FlagColor.Red))
-						// Things can't get worse, just exit
-						return flagColor;
 				}
-			}
-		}
+				if (answerOnly && flagColor.equals(FlagColor.Red))
+					// Things can't get worse, just exit
+					return flagColor;
+			} // if criteria.isChecked...
+		} // for
 		debug(" flagColor=" + flagColor);
 
 		// Calculate the insurance certificate flags colors
