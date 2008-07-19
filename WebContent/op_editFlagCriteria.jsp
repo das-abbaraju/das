@@ -48,7 +48,7 @@
 <head>
 <title>Manage Flag Criteria</title>
 <link rel="stylesheet" type="text/css" media="screen"
-	href="css/forms.css" />
+	href="css/reports.css" />
 </head>
 <body>
 <h1>Manage <%=flagStatus%> Flag Criteria
@@ -83,13 +83,13 @@ if (canEditFlagCriteria) {
 }
 %>
 
-<table class="forms">
+<table class="report">
 	<thead>
 	<tr>
 		<td class="center"><%=flagStatus%> Flag OSHA Questions</td>
 		<td class="center">Cutoff</td>
 		<td class="center">Statistic</td>
-		<td width="62" align="center">Include?</td>
+		<td class="center">Include?</td>
 	</tr>
 	</thead>
 	<tr>
@@ -124,22 +124,22 @@ if (canEditFlagCriteria) {
 	hurdleQuestions = new HurdleQuestions();
 	hurdleQuestions.setEmrAveQuestion();
 %>
-<table class="forms">
+<table class="report">
 	<thead>
 	<tr>
-		<td align="center" colspan=2><%=flagStatus%> Flag PQF Questions</td>
-		<td align="center" valign="middle">Flag Test</td>
-		<td width="62" align="center">Include?</td>
+		<td class="center" colspan=2><%=flagStatus%> Flag PQF Questions</td>
+		<td class="center">Criteria</td>
+		<td class="center">Include?</td>
 	</tr>
 	</thead>
 	<tr>
-		<td align="right"></td>
-		<td align="left"><%=hurdleQuestions.question%></td>
-		<td align="right"><nobr> <%=hurdleQuestions.getComparisonInput(flagCriteria
+		<td></td>
+		<td><%=hurdleQuestions.question%></td>
+		<td><nobr> <%=hurdleQuestions.getComparisonInput(flagCriteria
 									.getComparisonFromMap(hurdleQuestions.questionID))%>
 		<%=hurdleQuestions.getValueInput(flagCriteria.getValueFromMap(hurdleQuestions.questionID))%>
 		</nobr></td>
-		<td align="center">
+		<td class="center">
 			<input type="hidden" name="hurdleQuestion_<%=hurdleQuestions.questionID%>" />
 			<input type="hidden" name="hurdleTypeQ_<%=hurdleQuestions.questionID%>" value="<%=hurdleQuestions.questionType%>" />
 			<%=Inputs.getCheckBoxInput("flagQ_" + hurdleQuestions.questionID, "forms", flagCriteria.getIsCheckedFromMap(hurdleQuestions.questionID), "Yes")%>
@@ -153,13 +153,13 @@ if (canEditFlagCriteria) {
 	<%
 	if (!hurdleQuestions.questionID.equals("401") && !hurdleQuestions.questionID.equals("755")) {
 	%>		
-		<td align="right"><%=hurdleQuestions.catNum%>.<%=hurdleQuestions.subCatNum%>.<%=hurdleQuestions.questionNum%></td>
-		<td align="left"><%=hurdleQuestions.question%></td>
-		<td align="right"><nobr><%=hurdleQuestions.getComparisonInput(flagCriteria
+		<td class="right"><%=hurdleQuestions.catNum%>.<%=hurdleQuestions.subCatNum%>.<%=hurdleQuestions.questionNum%></td>
+		<td><%=hurdleQuestions.question%></td>
+		<td><nobr><%=hurdleQuestions.getComparisonInput(flagCriteria
 								.getComparisonFromMap(hurdleQuestions.questionID))%>
 		<%=hurdleQuestions.getValueInput(flagCriteria.getValueFromMap(hurdleQuestions.questionID))%>
 		</nobr></td>
-		<td align="center">
+		<td class="center">
 			<input type="hidden" name="hurdleQuestion_<%=hurdleQuestions.questionID%>" />
 			<input type="hidden" name="hurdleTypeQ_<%=hurdleQuestions.questionID%> value="<%=hurdleQuestions.questionType%>" />
 			<%=Inputs.getCheckBoxInput("flagQ_" + hurdleQuestions.questionID, "forms", flagCriteria.getIsCheckedFromMap(hurdleQuestions.questionID), "Yes")%>

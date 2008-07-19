@@ -75,13 +75,13 @@ public class FlagCriteria extends DataBean {
 			throw new Exception("can't write operator info to DB because id is not set");
 		flagOshaCriteriaDO.writeToDB();
 
-		StringBuffer insertQuery = new StringBuffer("INSERT INTO flagCriteria (opID, questionID, flagStatus, isChecked, questionType, comparison, value) VALUES ");
+		StringBuffer insertQuery = new StringBuffer("INSERT INTO flagCriteria (opID, questionID, flagStatus, isChecked, comparison, value) VALUES ");
 		boolean doInsert = false;
 		if (null != flagCriteriaMap && flagCriteriaMap.size()>0)
 			doInsert = true;
 			for(FlagCriteriaDO flagCriteriaDO: flagCriteriaMap.values()) {
 				insertQuery.append("("+opID+",").append(flagCriteriaDO.questionID).append(",'").append(flagCriteriaDO.flagStatus).
-						append("','").append(flagCriteriaDO.isChecked).append("','").append(flagCriteriaDO.questionType).
+						append("','").append(flagCriteriaDO.isChecked).
 						append("','").append(flagCriteriaDO.comparison).append("','").append(flagCriteriaDO.value).append("'),");
 			}
 		try{
