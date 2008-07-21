@@ -59,10 +59,11 @@
 			<nobr><s:checkbox fieldValue="S" value="answer.answer.indexOf('S') != -1" name="question_%{questionID}_S" onclick="javascript:saveAnswer(%{questionID}, this);" /> S</nobr>
 		</s:if>
 		<s:if test="questionType == 'Radio'">
-			<s:radio theme="pics" list="options" listValue="optionName" value="answer.answer" name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
+			<s:radio theme="pics" list="options" listKey="optionName" listValue="optionName" value="answer.answer" name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
 		</s:if>
 		<s:if test="questionType == 'Drop Down'">
-			<s:select list="options" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:select>
+			<% // TODO We never actually use Drop Down on any questions. We should evaluate if we want to ever support them. %>
+			<s:select list="options" listKey="optionName" listValue="optionName" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:select>
 		</s:if>
 		<s:if test="questionType == 'File'">
 			<span id="status_upload_<s:property value="questionID"/>">&nbsp;</span>
