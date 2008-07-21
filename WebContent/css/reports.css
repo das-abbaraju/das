@@ -192,15 +192,3 @@ div.filterOption:hover {
 div.filterOption a, div.filterOption span {
 	font-size: 11px;
 }
-
-
-.helpBox {
-	font-size: 12px;
-	width: 400px;
-	position:absolute;
-	right:60px;
-	border:1px solid #A84D10;
-	background-image: url("../images/help.gif");
-	background-repeat: no-repeat;
-	background-color: #CCC;
-}

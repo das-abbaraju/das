@@ -655,3 +655,17 @@ button.positive, .buttons a.positive {
 	z-index: 1;
 	text-align: center;
 }
+
+#content div.helpOnRight {
+	border-top: 2px solid #b7d2f2;
+	border-bottom: 2px solid #b7d2f2;
+	padding-top: 1em;
+	padding-right: 1em;
+	padding-bottom: 1em;
+	padding-left: 5em;
+	margin-top: 10px;
+	float: right;
+	font-size: 12px;
+	background: #dbe7f8 url('../images/icon-info.gif') no-repeat 10px 10px;
+	width: 25%;
+}

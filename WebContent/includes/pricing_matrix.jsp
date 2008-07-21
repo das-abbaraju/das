@@ -13,32 +13,32 @@ com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlt
 	</tr>
 	<tr class=blueMain <%=color.nextBgColor()%>>
 		<td class="center">1</td>
-		<td class="money">$<%=BillContractor.calculatePriceByFacilityCount(1)%></td>
+		<td class="money">$<%=BillContractor.price1Op%></td>
 		<td class="money">$99</td>
 	</tr>
 	<tr class=blueMain <%=color.nextBgColor()%>>
 		<td class="center">2-4</td>
-		<td class="money">$<%=BillContractor.calculatePriceByFacilityCount(4)%></td>
+		<td class="money">$<%=BillContractor.price2Ops%></td>
 		<td class="money">$99</td>
 	</tr>
 	<tr class=blueMain <%=color.nextBgColor()%>>
 		<td class="center">5-8</td>
-		<td class="money">$<%=BillContractor.calculatePriceByFacilityCount(8)%></td>
+		<td class="money">$<%=BillContractor.price5Ops%></td>
 		<td class="money">$99</td>
 	</tr>
 	<tr class=blueMain <%=color.nextBgColor()%>>
 		<td class="center">9-12</td>
-		<td class="money">$<%=BillContractor.calculatePriceByFacilityCount(12)%></td>
+		<td class="money">$<%=BillContractor.price9Ops%></td>
 		<td class="money">$99</td>
 	</tr>
 	<tr class=blueMain <%=color.nextBgColor()%>>
 		<td class="center">13-19</td>
-		<td class="money">$<%=BillContractor.calculatePriceByFacilityCount(19)%></td>
+		<td class="money">$<%=BillContractor.price13Ops%></td>
 		<td class="money">$99</td>
 	</tr>
 	<tr class=blueMain <%=color.nextBgColor()%>>
 		<td class="center">20+</td>
-		<td class="money">$<%=BillContractor.calculatePriceByFacilityCount(20)%></td>
+		<td class="money">$<%=BillContractor.priceFull%></td>
 		<td class="money">$99</td>
 	</tr>
 </table>

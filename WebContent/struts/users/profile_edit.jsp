@@ -34,7 +34,7 @@ function checkUsername(username) {
 			<th>Assigned to account:</th>
 			<td><s:property value="u.account.name" /></td>
 		</tr>
-		<tr>
+		<tr class="odd">
 			<th>Display name:</th>
 			<td><s:textfield name="u.name" /></td>
 		</tr>
@@ -42,7 +42,7 @@ function checkUsername(username) {
 			<th>Email address:</th>
 			<td><s:textfield name="u.email" size="30" /></td>
 		</tr>
-		<tr>
+		<tr class="odd">
 			<th>Username:</th>
 			<td><s:textfield name="u.username" onblur="checkUsername(this.value);"/>
 			<div id="username_status"></div></td>
@@ -51,7 +51,7 @@ function checkUsername(username) {
 			<th>Password:</th>
 			<td><s:password name="password1" value="" /></td>
 		</tr>
-		<tr>
+		<tr class="odd">
 			<th>Confirm Password:</th>
 			<td><s:password name="password2" value="" /></td>
 		</tr>
@@ -59,14 +59,18 @@ function checkUsername(username) {
 			<th>Created:</th>
 			<td><s:date name="u.dateCreated" /></td>
 		</tr>
-		<tr>
+		<tr class="odd">
 			<th>Last login:</th>
 			<td><s:date name="u.lastLogin" /></td>
 		</tr>
 		<tfoot>
 			<tr>
 				<th></th>
-				<td class="center"><s:submit value="Save Profile" name="button" onclick="$('info').hide(); return true;"/></td>
+				<td class="center">
+				<div class="buttons">
+					<s:submit value="Save Profile" name="button" type="button" cssClass="positive" onclick="$('info').hide(); return true;"/>
+				</div>
+				</td>
 			</tr>
 		</tfoot>
 	</table>

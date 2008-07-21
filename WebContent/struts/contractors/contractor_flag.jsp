@@ -72,13 +72,13 @@
 </table>
 </div>
 <s:if test="permissions.contractor">
-<div class="helpBox">
-		The minimum requirements set by <s:property value="co.operatorAccount.name"/> is listed in this page. 
-		If any requirement exceeds the acceptable threshold or answer, that requirement will be flagged. The overall flag color is set to Red if any requirement is flagged Red. 
+<div class="helpOnRight">
+		The minimum requirements set by <s:property value="co.operatorAccount.name"/> are listed in this page. 
+		If any requirements exceed the acceptable threshold or answer, those requirements will be flagged. The overall flag color is set to Red if any requirement is flagged Red. 
 		It is set to Amber if any requirement is flagged Amber. If no requirement is Red or Amber, then the overall flag color will be Green.
-</div>	
+</div>
 </s:if>
-<table class="report">
+<table class="report" style="clear: none">
 	<thead>
 		<tr>
 			<td>Flag</td>
@@ -95,7 +95,6 @@
 		</s:if>
 	</s:iterator>
 </table>
-
 <pics:permission perm="ManageOperators">
 	<div><a
 		href="AuditOperator.action?oID=<s:property value="opID" />">Flag
@@ -104,7 +103,7 @@
 
 <s:if test="oshaFatalitiesUsed || oshaLwcrUsed || oshaTrirUsed">
 <s:if test="contractor.oshas.size > 0">
-	<table class="report">
+	<table class="report" style="clear: none">
 		<thead>
 			<tr>
 				<td>Flag</td>
@@ -229,7 +228,7 @@
 </s:if>
 
 <s:if test="auditData.size > 0">
-	<table class="report">
+	<table class="report" style="clear: none">
 		<thead>
 			<tr>
 				<td>Flag</td>
@@ -247,7 +246,6 @@
 		</s:iterator>
 	</table>
 </s:if>
-
 
 <pics:permission perm="EditFlagCriteria">
 <div><a href="op_editFlagCriteria.jsp?opID=<s:property value="opID" />">Edit Flag Criteria</a></div>
