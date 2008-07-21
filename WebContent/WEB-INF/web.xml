@@ -8,7 +8,7 @@
 	<!-- Set the local upload directory to /wwwroot/www.picsauditing.com/ftp-bin -->
 	<context-param>
 		<param-name>FTP_DIR</param-name>
-		<param-value>/var/www/ftp-bin</param-value>
+		<param-value>C:/Users/Mark/Desktop/java/</param-value>
 	</context-param>
 
 	<!-- BELOW THIS LINE SHOULD BE NOT SITE SPECIFIC -->
