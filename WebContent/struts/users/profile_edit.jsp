@@ -8,17 +8,9 @@
 
 <script type="text/javascript">
 function checkUsername(username) {
-	$('ProfileEdit_save').writeAttribute('disabled','true');
 	$('username_status').innerHTML = 'checking availability of username...';
 	pars = 'userID=<s:property value="u.id"/>&username='+username;
-	var myAjax = new Ajax.Updater('username_status', 'user_ajax.jsp', {method: 'get', parameters: pars,
-				onComplete: function(transport) {
-					if($('username_status').innerHTML.indexOf('is NOT available. Please choose a different username.') == -1)
-					{
-						$('ProfileEdit_save').writeAttribute('disabled', null);						
-					}
-				}
-			});
+	var myAjax = new Ajax.Updater('username_status', 'user_ajax.jsp', {method: 'get', parameters: pars});
 }
 </script>
 
@@ -68,7 +60,7 @@ function checkUsername(username) {
 				<th></th>
 				<td class="center">
 				<div class="buttons">
-					<s:submit value="Save Profile" name="button" type="button" cssClass="positive" onclick="$('info').hide(); return true;"/>
+					<s:submit id="saveButton" value="Save Profile" name="button" type="button" cssClass="positive" onclick="$('info').hide(); return true;"/>
 				</div>
 				</td>
 			</tr>

@@ -2,24 +2,28 @@ package com.picsauditing.actions.users;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.User;
 
 public class ProfileEdit extends PicsActionSupport implements Preparable {
 	protected User u;
 	protected UserDAO dao;
+	protected ContractorAccountDAO accountDao;
 	protected String password1;
 	protected String password2;
 
-	public ProfileEdit(UserDAO dao) {
+	public ProfileEdit(UserDAO dao, ContractorAccountDAO accountDao) {
 		this.dao = dao;
+		this.accountDao = accountDao;
 	}
 
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		if (!dao.checkUserName(u.getId(), u.getName())) {
-			addActionError("Duplicate ID.  Will not update");
+		if (!dao.checkUserName(u.getId(), u.getUsername())) {
+			addActionError("Another user is already using the username: " + u.getUsername());
+			dao.clear();
 			return SUCCESS;
 		}
 		if (button != null) {
