@@ -41,7 +41,7 @@ public class OperatorAccountDAO extends PicsDAO {
 			where = "";
 
 		if (permissions.isCorporate()) {
-			Query query = em.createQuery("SeLECT a FROM OperatorAccount a where a.id = :id");
+			Query query = em.createQuery("SELECT a FROM OperatorAccount a where a.id = :id");
 			query.setParameter("id", permissions.getAccountId());
 			corporateList = query.getResultList();
 
