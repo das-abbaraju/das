@@ -113,12 +113,6 @@ public class ContractorAccountDAOTest {
 	}
 
 	// @Test
-	public void testFindWhere() {
-		List<ContractorAccount> contractoraccount = contractoraccountDAO.findWhere("mainTrade LIKE 'Engineering'");
-		assertEquals("Inactive", contractoraccount.get(0).getStatus());
-	}
-
-	// @Test
 	public void addContractorOperatorFlag() {
 		ContractorAccount contractoraccount = contractoraccountDAO.find(14);
 		OperatorAccount operator = (OperatorAccount) accountDAO.find(1251);
