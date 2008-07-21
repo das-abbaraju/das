@@ -51,7 +51,8 @@ function save(id, aID, oID, pKey) {
 			listValue="auditName" value="aID"></s:select>
 	</s:else>
 </s:form>
-<div><a href="AuditOperator.action" class="refresh">Refresh Page</a></div>
+<div><a href="AuditOperator.action?<s:if test="aID > 0">aID=<s:property value="aID" /></s:if><s:if test="oID > 0">oID=<s:property value="oID" /></s:if>" class="refresh">Refresh Page</a></div>
+
 <s:form id="form1">
 	<table cellspacing="1" cellpadding="3" border="0">
 		<tr class="whiteTitle" bgcolor="#003366" align="center">
