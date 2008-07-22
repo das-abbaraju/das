@@ -55,11 +55,15 @@ public class StringsTest extends TestCase {
 	public void testSQL() {
 		SelectUserUnion sql = new SelectUserUnion();
 		//System.out.println(sql.toString());
-		sql.addField("id");
-		sql.addField("username");
-		sql.addField("name");
-		sql.addWhere("active = 'Y'");
-		sql.addOrderBy("name");
+		sql.addField("u.id");
+		sql.addField("u.username");
+		sql.addField("u.name");
+		sql.addField("u.accountID");
+		sql.addField("a.name");
+		sql.addJoin("JOIN accounts a ON a.id = u.accountID");
+		
+		sql.addWhere("u.isActive = 'Y'");
+		sql.addOrderBy("u.name");
 		sql.setLimit(100);
 		//System.out.println(sql.toString());
 		sql.toString();

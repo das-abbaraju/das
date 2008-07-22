@@ -34,15 +34,20 @@ public class SelectUserUnion extends SelectSQL {
 			sql.append("*");
 		sql.append("\nFROM (\n");
 		
-		String innerUnionSQL = "SELECT 'U' as tableType, id, username, password, email, name, left(isActive,1) as active, dateCreated, lastLogin, accountID, null " +
+		String innerUnionSQL = "SELECT 'U' as tableType, id, username, password, email, name, isActive, dateCreated, lastLogin, accountID, null as phone " +
 				"FROM users where isGroup ='No' " +
 				"UNION " +
-				"SELECT 'A' as tableType, id, username, password, email, contact, active, dateCreated, lastLogin, id, phone " +
+				"SELECT 'A' as tableType, id, username, password, email, contact, case active when 'Y' THEN 'Yes' ELSE 'No' end, dateCreated, lastLogin, id, phone " +
 				"FROM accounts where type = 'Contractor'";
 		sql.append(innerUnionSQL);
 		
-		sql.append("\n) t");
+		sql.append("\n) u");
 		
+		for(String joinSQL: this.joinClause) {
+			sql.append("\n");
+			sql.append(joinSQL);
+		}
+
 		if (whereClause.size() > 0) {
 			sql.append("\nWHERE 1");
 			for(String whereSQL: this.whereClause) {
