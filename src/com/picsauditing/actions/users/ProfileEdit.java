@@ -23,7 +23,6 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 			return LOGIN;
 		if (!dao.checkUserName(u.getId(), u.getUsername())) {
 			addActionError("Another user is already using the username: " + u.getUsername());
-			dao.clear();
 			return SUCCESS;
 		}
 		if (button != null) {
@@ -49,6 +48,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 		if (permissions == null)
 			return;
 		u = dao.find(permissions.getUserId());
+		dao.clear();
 	}
 
 	public User getU() {
