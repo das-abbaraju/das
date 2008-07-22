@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -36,6 +37,8 @@ public class Home extends ContractorActionSupport {
 
 		for (WidgetUser widgetUser : widgetsToShowForUser) {
 			Widget widget = widgetUser.getWidget();
+			if(widget.getWidgetID() == 15 && !permissions.hasPermission(OpPerms.DelinquentAccounts))
+				continue;
 			// Set custom parameters from the user
 			widget.setExpanded(widgetUser.isExpanded());
 			widget.setCustomConfig(widgetUser.getCustomConfig());

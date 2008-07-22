@@ -81,10 +81,11 @@ public class ContractorAccountDAO extends PicsDAO {
 	public List<ContractorAccount> findNewContractors(Permissions permissions, int limit) {
 		if (permissions == null)
 			return new ArrayList<ContractorAccount>();
-		
+
 		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
-		
-		String hql = "FROM ContractorAccount contractorAccount WHERE 1=1 " + qb.toString() + " ORDER BY dateCreated DESC";
+
+		String hql = "FROM ContractorAccount contractorAccount WHERE 1=1 " + qb.toString()
+				+ " ORDER BY dateCreated DESC";
 		Query query = em.createQuery(hql);
 		query.setMaxResults(limit);
 		return query.getResultList();
@@ -112,4 +113,17 @@ public class ContractorAccountDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public List<ContractorAccount> findDelinquentContractors(Permissions permissions, int limit) {
+		if (permissions == null)
+			return new ArrayList<ContractorAccount>();
+
+		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
+		qb.setActiveContractorsOnly(false);
+		String hql = "FROM ContractorAccount contractorAccount WHERE DATEDIFF(NOW(),lastInvoiceDate) > 30 AND (lastPayment IS NULL OR lastPayment < lastInvoiceDate) AND active = 'Y'"
+				+ qb.toString() + " ORDER BY lastInvoiceDate ASC";
+		Query query = em.createQuery(hql);
+		query.setMaxResults(limit);
+		return query.getResultList();
+
+	}
 }
