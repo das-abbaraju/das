@@ -26,6 +26,7 @@ membership by contacting PICS.
 	<tr>
 		<td colspan="2">Contractor Name</td>
 		<td>Invoice Date</td>
+		<td>Days Left</td>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -36,6 +37,7 @@ membership by contacting PICS.
 				<s:property value="[0].get('name')" /></a>
 			</td>
 			<td class="center"><s:date name="[0].get('lastInvoiceDate')" format="M/d/yy" /></td>
+			<td class="center"><s:property value="[0].get('DaysLeft')" /></td>
 		</tr>
 	</s:iterator>
 </table>
