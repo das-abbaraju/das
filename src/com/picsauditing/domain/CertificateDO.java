@@ -11,7 +11,6 @@ public class CertificateDO implements IPicsDO{
 	public String contractor_id = "";
 	public String operator_id = "";
 	public String contractor_name = "";
-	public String contractor_status = "";
 	public String type = "";
 	int numTypes = 0;
 	public String operator = "";
@@ -47,12 +46,6 @@ public class CertificateDO implements IPicsDO{
 	}
 	public void setContractor_name(String contractor_name) {
 		this.contractor_name = contractor_name;
-	}
-	public String getContractor_status() {
-		return contractor_status;
-	}
-	public void setContractor_status(String contractor_status) {
-		this.contractor_status = contractor_status;
 	}
 	public String getExpDate() {
 		return expDate;
@@ -187,7 +180,7 @@ public class CertificateDO implements IPicsDO{
 		verified = SQLResult.getString("verified");
 		reason = SQLResult.getString("reason");
 		ext = SQLResult.getString("ext");
-	}//setFromResultSet
+	}
 
 	public void setFromRequest(HttpServletRequest request){
 		cert_id = request.getParameter("cert_id");
@@ -208,5 +201,5 @@ public class CertificateDO implements IPicsDO{
 		verified = request.getParameter("verified");
 		reason = request.getParameter("reason");
 		ext = request.getParameter("ext");
-	}//setFromResultSet
+	}
 }

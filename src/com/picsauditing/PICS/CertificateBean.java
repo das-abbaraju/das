@@ -45,7 +45,6 @@ public class CertificateBean extends DataBean {
 	public String contractor_id = "";
 	public String operator_id = "";
 	public String contractor_name = "";
-	public String contractor_status = "";
 	public String type = "";
 	public String operator = "";
 	public String expDay = "";
@@ -275,9 +274,9 @@ public class CertificateBean extends DataBean {
 	}// setFromResultSet
 
 	public void setList(Permissions permissions, SearchFilter searchFilter) throws Exception {
-		String selectQuery = "SELECT certificates.*,accounts.id,accounts.name,contractor_info.status "
-				+ "FROM certificates, accounts, contractor_info "
-				+ "WHERE certificates.contractor_id=accounts.id AND contractor_info.id=accounts.id ";
+		String selectQuery = "SELECT certificates.*, accounts.id, accounts.name "
+				+ "FROM certificates, accounts "
+				+ "WHERE certificates.contractor_id=accounts.id ";
 
 		if (permissions.isOperator())
 			searchFilter.set("s_opID", permissions.getAccountIdString());
@@ -325,7 +324,6 @@ public class CertificateBean extends DataBean {
 		count++;
 		setFromResultSet(listRS);
 		contractor_name = listRS.getString("accounts.name");
-		contractor_status = listRS.getString("contractor_info.status");
 		return true;
 	}// isNextRecord
 
