@@ -71,6 +71,8 @@ public class PicsMenu {
 			subMenu.addChild("Contractor Payments", "report_payment.jsp?changed=1");
 		if (permissions.hasPermission(OpPerms.BillingUpgrades))
 			subMenu.addChild("Upgrade Payments", "report_upgradePayment.jsp?changed=1");
+		if(permissions.hasPermission(OpPerms.DelinquentAccounts))	
+			subMenu.addChild("Delinquent Accounts","DelinquentContractorAccounts.action");
 
 		subMenu = menu.addChild("InsureGuard");
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))
