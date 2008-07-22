@@ -38,7 +38,7 @@
 <body>
 <% request.setAttribute("subHeading", "Contractor Insurance"); %>
 <%@ include file="includes/conHeaderLegacy.jsp"%>
-<table width="657" border="0" cellpadding="15" cellspacing="1">
+<table border="0" cellpadding="15" cellspacing="1">
 	<tr>
 		<td align="center" valign="top" class="redMain"><%=cerBean.getErrorMessages()%>
 		<%
@@ -101,7 +101,7 @@
 		<%
 			}//if
 		%>
-		<table width="657" border="0" cellpadding="1" cellspacing="1"
+		<table border="0" cellpadding="1" cellspacing="1" width="100%"
 			bgcolor="#EEEEEE">
 			<tr class="whiteTitle">
 				<%

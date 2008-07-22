@@ -35,6 +35,7 @@ public class Certificate {
 	protected YesNo verified;
 	protected String reason;
 	protected String fileExtension;
+	protected FlagColor flagColor;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -164,17 +165,21 @@ public class Certificate {
 
 	@Transient
 	public FlagColor getFlagColor() {
+		if (flagColor != null)
+			return flagColor;
+		
 		if (status == null)
 			return null;
-		if (status.equals("Approved")) {
+		if (status.equals("Approved"))
 			return FlagColor.Green;
-		}
-		if (status.equals("Expired")) {
+		if (status.equals("Expired"))
 			return FlagColor.Amber;
-		}
-		if (status.equals("Rejected")) {
+		if (status.equals("Rejected"))
 			return FlagColor.Red;
-		}
-		return null;
+		return null; // Pending
+	}
+	
+	public void setFlagColor(FlagColor color) {
+		this.flagColor = color;
 	}
 }

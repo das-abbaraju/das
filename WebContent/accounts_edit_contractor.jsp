@@ -56,8 +56,8 @@
 					billing.setContractor(id);
 					billing.calculatePrice();
 					billing.writeToDB();
-					FlagCalculator2 flagCalc2 = (FlagCalculator2)SpringUtils.getBean("FlagCalculator2");
-					flagCalc2.runByContractor(Integer.parseInt(editID));	
+					FlagCalculator2 flagCalc = (FlagCalculator2)SpringUtils.getBean("FlagCalculator2");
+					flagCalc.runByContractor(Integer.parseInt(editID));
 					response.sendRedirect("ContractorView.action?id=" + editID);
 					return;
 			}

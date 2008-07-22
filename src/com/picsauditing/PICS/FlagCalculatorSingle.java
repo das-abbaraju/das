@@ -257,16 +257,24 @@ public class FlagCalculatorSingle {
 			FlagColor certFlagColor = null;
 
 			for (Certificate certificate : contractor.getCertificates()) {
-				debug(" -- certificate" + certificate.getType() + " " + certificate.getOperatorAccount().getName());
-				certFlagColor = setFlagColor(certFlagColor, certificate.getFlagColor());
-
-				if (answerOnly && certFlagColor.equals(FlagColor.Red))
-					// Things can't get worse, just exit
-					return certFlagColor;
+				if (certificate.getOperatorAccount().equals(operator)) {
+					debug(" -- certificate" + certificate.getType() + " " + certificate.getOperatorAccount().getName());
+					certFlagColor = setFlagColor(certFlagColor, certificate.getFlagColor());
+					
+					if (answerOnly && certFlagColor.equals(FlagColor.Red))
+						// Things can't get worse, just exit
+						return certFlagColor;
+				}
 			}
 			
-			if (certFlagColor == null)
+			if (certFlagColor == null) {
 				certFlagColor = FlagColor.Red;
+				Certificate certificate = new Certificate();
+				certificate.setFlagColor(FlagColor.Red);
+				certificate.setType("No Approved Certificates");
+				certificate.setOperatorAccount(operator);
+				contractor.getCertificates().add(certificate);
+			}
 
 			flagColor = setFlagColor(flagColor, certFlagColor);
 			debug(" flagColor=" + flagColor);
@@ -338,13 +346,16 @@ public class FlagCalculatorSingle {
 	 * @return
 	 */
 	static private FlagColor setFlagColor(FlagColor oldColor, FlagColor newColor) {
-		if (oldColor == null)
-			// Never set it to null, the default is Green
-			oldColor = FlagColor.Green;
-
 		if (newColor == null)
 			// Don't change anything
 			return oldColor;
+		
+		if (oldColor == null) {
+			System.out.println("WARNING: oldColor == null");
+			// Now we've changed this because of insurance
+			//oldColor = FlagColor.Green;
+			return newColor;
+		}
 
 		// If 2-Red is greater (worse) than 0-Green, then change the color
 		if (newColor.ordinal() > oldColor.ordinal())
