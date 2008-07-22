@@ -82,7 +82,9 @@ Questions</a></div>
 			<tr style="color: #999;font-style: italic;">
 				<td class="right"><a name="<s:property value="id" />"><s:property value="category.number" /></td>
 				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a></td>
-				<td class="center" colspan="2">N/A</td>
+				<s:if test="conAudit.auditStatus.name() == 'Pending' || conAudit.auditType.pqf">
+					<td class="center" colspan="2">N/A</td>
+				</s:if>
 				<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.auditType.hasRequirements && !conAudit.auditType.pqf">
 					<td colspan="2"></td>
 				</s:if>
