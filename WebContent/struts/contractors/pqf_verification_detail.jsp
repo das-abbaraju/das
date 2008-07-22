@@ -144,7 +144,7 @@ function sendEmail() {
 				<td>K(L)</td>
 				<td class="highlight"><s:textfield name="osha.year1.lostWorkDays"
 					cssClass="oshanum" /></td>
-				<td><s:textfield name="osha.year1.lostWorkDays" cssClass="oshanum" /></td>
+				<td><s:textfield name="osha.year2.lostWorkDays" cssClass="oshanum" /></td>
 				<td class="highlight"><s:textfield name="osha.year3.lostWorkDays"
 					cssClass="oshanum" /></td>
 			</tr>
