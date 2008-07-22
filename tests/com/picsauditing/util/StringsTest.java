@@ -3,6 +3,8 @@ package com.picsauditing.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.search.SelectUserUnion;
+
 import junit.framework.TestCase;
 
 public class StringsTest extends TestCase {
@@ -48,5 +50,18 @@ public class StringsTest extends TestCase {
 
 	public void testHash() {
 	 	System.out.println(Strings.hashUrlSafe("testinsfgsf")); 
+	}
+	
+	public void testSQL() {
+		SelectUserUnion sql = new SelectUserUnion();
+		//System.out.println(sql.toString());
+		sql.addField("id");
+		sql.addField("username");
+		sql.addField("name");
+		sql.addWhere("active = 'Y'");
+		sql.addOrderBy("name");
+		sql.setLimit(100);
+		//System.out.println(sql.toString());
+		sql.toString();
 	}
 }

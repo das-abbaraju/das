@@ -3,16 +3,16 @@ package com.picsauditing.search;
 import java.util.ArrayList;
 
 public class SelectSQL {
-	private String fromTable;
-	private ArrayList<String> whereClause = new ArrayList<String>();
-	private ArrayList<String> groupByFields = new ArrayList<String>();
-	private String havingClause = "";
-	private ArrayList<String> fields = new ArrayList<String>();
-	private ArrayList<String> joinClause = new ArrayList<String>();
-	private ArrayList<String> orderBys = new ArrayList<String>();
-	private int startRow = 0;
-	private int limit = -1;
-	private boolean SQL_CALC_FOUND_ROWS = false;
+	protected String fromTable;
+	protected ArrayList<String> whereClause = new ArrayList<String>();
+	protected ArrayList<String> groupByFields = new ArrayList<String>();
+	protected String havingClause = "";
+	protected ArrayList<String> fields = new ArrayList<String>();
+	protected ArrayList<String> joinClause = new ArrayList<String>();
+	protected ArrayList<String> orderBys = new ArrayList<String>();
+	protected int startRow = 0;
+	protected int limit = -1;
+	protected boolean SQL_CALC_FOUND_ROWS = false;
 
 	/**
 	 * fullClause allows developers to use the SQLBuilder class 
@@ -46,7 +46,7 @@ public class SelectSQL {
 			sql.append(combineArray(fields));
 		else 
 			sql.append("*");
-		sql.append(" FROM ");
+		sql.append("\nFROM ");
 		sql.append(fromTable);
 		for(String joinSQL: this.joinClause) {
 			sql.append("\n");

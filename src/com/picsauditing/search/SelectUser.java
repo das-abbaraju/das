@@ -16,13 +16,4 @@ public class SelectUser extends SelectSQL {
 		this.addWhere("u.id IN (SELECT userID FROM usergroup WHERE groupID IN (" + groupIDs + "))");
 	}
 	
-	/**
-	 * Support search by first character in the name
-	 * @param startsWith
-	 */
-	public void startsWith (String startsWith) {
-		if (startsWith != null && startsWith.length() > 0) {
-			this.addWhere("a.name LIKE '"+Utilities.escapeQuotes(startsWith)+"%'");
-		}
-	}
 }
