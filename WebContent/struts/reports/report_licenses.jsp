@@ -24,7 +24,9 @@
 			<td>Flag</td>
 		</s:if>
 		<td colspan="2">CA License</td>
+		<td>License Comments</td>
 		<td colspan="2">Expiration</td>
+		<td>Expiration Comments</td>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -54,6 +56,7 @@
 		<s:else>
 			<td colspan="2"><s:property value="[0].get('answer401')"/></td>
 		</s:else>
+		<td><s:property value="[0].get('comment401')"/></td>
 		<s:if test="[0].get('isCorrect401').equals('Yes')">
 			<td><s:property value="[0].get('verifiedAnswer755')"/></td>
 			<td><img src="images/okCheck.gif" width="19" height="15" /></td>
@@ -61,6 +64,7 @@
 		<s:else>
 			<td colspan="2"><s:property value="[0].get('answer755')"/></td>
 		</s:else>
+		<td><s:property value="[0].get('comment755')"/></td>
 		</tr>
 	</s:iterator>
 </table>

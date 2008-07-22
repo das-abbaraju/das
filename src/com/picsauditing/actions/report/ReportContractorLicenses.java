@@ -20,6 +20,8 @@ public class ReportContractorLicenses extends ReportContractorAudits {
 		sql.addField("q401.isCorrect AS isCorrect401");
 		sql.addField("q755.verifiedAnswer AS verifiedAnswer755");
 		sql.addField("q755.isCorrect AS isCorrect755");
+		sql.addField("q401.comment AS comment401");
+		sql.addField("q755.comment AS comment755");
 		setOrderBy("a.name");
 		if (conExpiredLic == true) {
 			sql.addWhere("q755.verifiedAnswer < '" + DateBean.format(new Date(), "yyyy-MM-dd") + "'");
