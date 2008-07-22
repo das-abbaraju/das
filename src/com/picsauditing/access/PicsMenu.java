@@ -16,7 +16,8 @@ public class PicsMenu {
 		}
 
 		if (permissions.isContractor()) {
-			// Don't show a menu for Contractors, they will use their sub menu for now
+			// Don't show a menu for Contractors, they will use their sub menu
+			// for now
 			subMenu = menu.addChild("Home", "Home.action");
 			return menu;
 		}
@@ -41,13 +42,15 @@ public class PicsMenu {
 			subMenu.addChild("By Operator", "report_operatorContractor.jsp?changed=1");
 		if (permissions.hasPermission(OpPerms.SearchContractors))
 			subMenu.addChild("By Operator", "report_operatorContractor.jsp?searchCorporate=Y");
+		if (permissions.seesAllContractors())
+			subMenu.addChild("Archived Contractors", "ArchivedContractorAccounts.action");
 
 		subMenu = menu.addChild("Auditing");
 		if (permissions.isAuditor()) {
 			subMenu.addChild("My Audits", "AuditListAuditor.action");
 			subMenu.addChild("My Audit History", "MyAuditHistory.action");
 		}
-		
+
 		subMenu.addChild("Audit List", "ReportAuditList.action");
 		if (permissions.hasPermission(OpPerms.AssignAudits))
 			subMenu.addChild("Sched. &amp; Assign", "AuditAssignments.action?visible=Y");
@@ -61,7 +64,7 @@ public class PicsMenu {
 		subMenu = menu.addChild("Customer Service");
 		if (permissions.isAdmin()) {
 			subMenu.addChild("Activation", "report_activation.jsp?changed=1");
-			subMenu.addChild("Assign Contractors","ContractorAssigned.action");
+			subMenu.addChild("Assign Contractors", "ContractorAssigned.action");
 		}
 		if (permissions.hasPermission(OpPerms.EmailAnnualUpdate))
 			subMenu.addChild("Annual Updates", "report_annualUpdate.jsp?changed=1");
@@ -71,8 +74,8 @@ public class PicsMenu {
 			subMenu.addChild("Contractor Payments", "report_payment.jsp?changed=1");
 		if (permissions.hasPermission(OpPerms.BillingUpgrades))
 			subMenu.addChild("Upgrade Payments", "report_upgradePayment.jsp?changed=1");
-		if(permissions.hasPermission(OpPerms.DelinquentAccounts))	
-			subMenu.addChild("Delinquent Accounts","DelinquentContractorAccounts.action");
+		if (permissions.hasPermission(OpPerms.DelinquentAccounts))
+			subMenu.addChild("Delinquent Accounts", "DelinquentContractorAccounts.action");
 
 		subMenu = menu.addChild("InsureGuard");
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))

@@ -351,5 +351,10 @@
 			<result>/struts/reports/delinquent_conaccounts.jsp</result>
 		</action>
 		
+		<action name="ArchivedContractorAccounts"
+			class="com.picsauditing.actions.report.ArchivedAccounts">
+			<result>/struts/reports/archived_conaccounts.jsp</result>
+		</action>
+		
 	</package>
 </struts>
