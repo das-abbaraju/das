@@ -9,7 +9,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
-<h1>Contractor Limited Search <span class="sub">Operator
+<h1>Contractor List <span class="sub">Limited Operator
 Version</span></h1>
 <table border="0" cellpadding="0" cellspacing="0">
 	<tr>

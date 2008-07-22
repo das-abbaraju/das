@@ -9,7 +9,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
-<h1>Contractor Search <span class="sub">
+<h1>Contractor List <span class="sub">
 <s:if test="permissions.operator">
 Operator Version
 </s:if>
