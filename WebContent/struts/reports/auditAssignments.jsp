@@ -65,12 +65,11 @@
 </head>
 <body>
 <h1>Schedule &amp; Assign Audits</h1>
-<div class="blueMain"><a href="audit_calendar.jsp">Audit Calendar</a></div>
+<div class="blueMain"><a href="audit_calendar.jsp" target="_BLANK">Audit Calendar</a></div>
 <s:include value="filters.jsp" />
 
 <div><s:property value="report.pageLinksWithDynamicForm"
 	escape="false" /></div>
-<span class="redMain">* - UnConfirmed Audits</span>	
 <s:form id="assignScheduleAuditsForm" method="post" cssClass="forms">
 	<table class="report">
 		<thead>
@@ -134,7 +133,7 @@
 				<s:if test="[0].get('isScheduled')">
 					<s:radio name="auditlocation_%{[0].get('auditID')}" list="#{'Onsite':'On site', 'Web':'Web'}"
 						id="auditlocation_%{[0].get('auditID')}_"
-						value="%{[0].get('auditLocation')}" />
+						value="%{[0].get('auditLocation')}" theme="pics" />
 				</s:if>
 				</td>
 				<td>
@@ -147,6 +146,8 @@
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
+
+<span class="redMain">* - UnConfirmed Audits</span>	
 
 </body>
 </html>
