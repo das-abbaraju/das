@@ -29,6 +29,12 @@ try{
 		EmailContractorBean mailer = (EmailContractorBean)SpringUtils.getBean("EmailContractorBean");
 		mailer.setPermissions(permissions);
 		mailer.sendMessage(EmailTemplates.welcome, new Integer(actionID).intValue());
+		ContractorAccountDAO cAccountDAO = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
+		ContractorAccount cAccount = cAccountDAO.find(Integer.parseInt(actionID));
+		String notes = DateBean.getTodaysDateTime() + "("+permissions.getUsername()+") : Welcome Email Sent on " + DateBean.getTodaysDate();
+		cAccount.setAdminNotes(notes);
+		cAccountDAO.save(cAccount);
+		return;
 	}
 	if ("Inv".equals(action)){
 		String invoiceAmount = request.getParameter("invoiceAmount");
@@ -59,6 +65,8 @@ try{
 	
 	sBean.doSearch(request, SearchBean.ACTIVE_AND_NOT, 50, pBean, pBean.userID);
 %>
+<%@page import="com.picsauditing.dao.ContractorAccountDAO"%>
+<%@page import="com.picsauditing.jpa.entities.ContractorAccount"%>
 <html>
 <head>
 <title>Activation</title>
@@ -131,6 +139,23 @@ try{
 				});
 		return false;
   	}
+  	
+  	function logWelcomeEmail( conId )
+  	{
+		var pars = 'actionID='+conId+'&action=Send';
+		var divName = 'welcome_email_'+conId;
+		var myAjax = new Ajax.Request('report_activation.jsp', 
+				{
+					method: 'post', 
+					parameters: pars
+				});
+
+		$(divName).innerHTML = '<%= DateBean.getTodaysDate() %>'; 
+		new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+
+		return false;
+  	}
+  	
 </script>
 </head>
 <body>
@@ -204,7 +229,8 @@ try{
 			    <td><input name="action" type="submit" onClick="javascript: return newPayment( '<%= sBean.aBean.id %>','pay_amount_<%= sBean.cBean.id %>');" class="buttons" value="Paid"></td>
 				<td align="center"><input name="action" type="submit" onclick="javascript: return makeVisible( '<%= sBean.aBean.id %>' );" class="buttons" value="Yes"> </td>
 				<td id="visible_<%= sBean.aBean.id %>" align="center"><%=sBean.aBean.active%></td>             
-				<td align="center"><input name="action" type="submit" class="buttons" value="Send">
+				<td align="center" id="welcome_email_<%= sBean.aBean.id %>">
+				<input name="action" type="submit" class="buttons" onclick="javascript: return logWelcomeEmail( '<%= sBean.aBean.id %>' );" value="Send">
 				<input name="actionID" type="hidden" value="<%=sBean.aBean.id%>"></td>
 				<td id="remove_<%= sBean.aBean.id %>" ><input name="action" type="submit" onclick="javascript: return removeCon( '<%= sBean.aBean.id %>', '<%=sBean.cBean.lastPaymentAmount%>','<%=sBean.aBean.lastLogin%>' );" class="buttons" value="<%=BUTTON_VALUE%>"></td>
 			  </form></tr>
