@@ -33,11 +33,11 @@
 			<td><s:property value="requestingOpAccount.name" /></td>
 			<td><s:property value="auditor.name" /></td>
 			<td><s:date name="scheduledDate" format="M/d/yy HH:mm" /></td>
-			<td align="right"><s:if test="auditStatus == 'Pending'">
+			<td align="right"><s:if test="auditStatus.toString() == 'Pending'">
 				<s:property value="percentComplete" />%</s:if> <s:else>
 				<s:date name="completedDate" format="M/d/yy" />
 			</s:else></td>
-			<td align="right"><s:if test="auditStatus == 'Submitted'">
+			<td align="right"><s:if test="auditStatus.toString() == 'Submitted'">
 				<s:property value="percentVerified" />%</s:if> <s:else>
 				<s:date name="closedDate" format="M/d/yy" />
 			</s:else></td>
