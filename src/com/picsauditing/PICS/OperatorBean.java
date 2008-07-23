@@ -608,6 +608,8 @@ public class OperatorBean extends DataBean {
 	public ArrayList<OperatorBean> getListByWhere(String where) throws Exception {
 		ArrayList<OperatorBean> list = new ArrayList<OperatorBean>();
 		SelectSQL sql = new SelectSQL("operators");
+		//sql.addJoin("JOIN accounts using(id)");
+		sql.addWhere("id IN (SELECT id FROM accounts WHERE type IN ('Operator', 'Corporate') AND active = 'Y')");
 		if (where != null && where.length() > 0) sql.addWhere(where);
 		
 		try{
