@@ -58,7 +58,7 @@ if (template != null) {
 	ContractorAuditDAO conAuditDAO = (ContractorAuditDAO)SpringUtils.getBean("ContractorAuditDAO");
 	ContractorAudit conAudit = conAuditDAO.find(8301);
 	AuditDataDAO aDataDAO = (AuditDataDAO) SpringUtils.getBean("AuditDataDAO");
-	AuditData auData = aDataDAO.findAnswerToQuestion(conAudit.getId(),1331);
+	AuditData auData = aDataDAO.findAnswerToQuestion(2566,1331);
 		
 	OperatorAccountDAO oppAcctDAO = (OperatorAccountDAO)SpringUtils.getBean("OperatorAccountDAO");
 	OperatorAccount opAcct = oppAcctDAO.find(1813);
@@ -73,9 +73,12 @@ if (template != null) {
 		o.addToken("conAudit", conAudit);
 		o.addToken("opAcct", opAcct);
 		o.addToken("opName", opAcct.getName());
-		o.addToken("certificate_type",certificate.getType());
-		o.addToken("expiration_date",certificate.getExpiration());
-		o.addToken("safetyManual",auData);
+		if(certificate != null) {
+			o.addToken("certificate_type",certificate.getType());
+			o.addToken("expiration_date",certificate.getExpiration());
+		}
+		if(auData != null)
+			o.addToken("safetyManual",auData);
 		o.setPermissions(permissions);
 		o.sendMessage(template, Integer.parseInt(accountID));
 		mailer = o;
