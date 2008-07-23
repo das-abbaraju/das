@@ -267,7 +267,7 @@ public class FlagCalculatorSingle {
 				}
 			}
 			
-			if (certFlagColor == null) {
+			if (certFlagColor == null && !answerOnly) {
 				certFlagColor = FlagColor.Red;
 				Certificate certificate = new Certificate();
 				certificate.setFlagColor(FlagColor.Red);
