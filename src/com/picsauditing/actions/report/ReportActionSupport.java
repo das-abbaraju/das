@@ -49,11 +49,7 @@ public class ReportActionSupport extends PicsActionSupport {
 	}
 
 	public void run(SelectSQL sql) throws SQLException {
-		for (String filterName : report.getFilters().keySet()) {
-			if (report.getFilters().get(filterName).isSet())
-				filtered = true;
-		}
-
+		isFiltered();
 		report.setOrderBy(this.orderBy, null);
 		report.setSql(sql);
 
@@ -72,6 +68,10 @@ public class ReportActionSupport extends PicsActionSupport {
 	}
 
 	public boolean isFiltered() {
+		for (String filterName : report.getFilters().keySet()) {
+			if (report.getFilters().get(filterName).isSet())
+				filtered = true;
+		}
 		if (filtered == null)
 			return false;
 
