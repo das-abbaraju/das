@@ -91,19 +91,17 @@ a.whiteTitle:hover {
 	font-weight: bold;
 }
 
-a:link {
+a, a:link, a:hover, a:visited, a:active {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
-	color: #003366;
 	line-height: 23px;
+}
+a:link, a:visited {
+	color: #003366;
 	text-decoration: underline;
 }
 a:hover {
-
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
 	color: #6699CC;
-	line-height: 23px;
 	text-decoration: none;
 }
 
@@ -649,7 +647,7 @@ td.forgotpassword {
 	text-align: center;
 }
 
-td.forgotpassword a,a:hover,a:visited {
+td.forgotpassword a, td.forgotpassword a:hover, td.forgotpassword a:visited {
 	font-size: 10px; 
 	font-family: sans-serif;
 	line-height: 14px;
