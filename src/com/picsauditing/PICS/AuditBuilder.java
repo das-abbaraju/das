@@ -60,6 +60,7 @@ public class AuditBuilder {
 			for(ContractorAudit conAudit : currentAudits) {
 				if (conAudit.getAuditType().getAuditTypeID() == AuditType.WELCOME) {
 					needsWelcome = false;
+					break;
 				}
 			}
 			if (needsWelcome) {
@@ -76,6 +77,7 @@ public class AuditBuilder {
 					// Contractor already has a PQF, don't add it
 					// TODO: handle multiple PQFs (Pending/Active) at the same time
 					pqfAudit = conAudit;
+					break;
 				}
 			}
 		}
@@ -130,8 +132,8 @@ public class AuditBuilder {
 					if (requiresSafetyManual.contains(auditType.getAuditTypeID()))
 						insertNow = false;
 				}
-				if (pqfAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
-					// The current PQF has been submitted, but we need to know if the Safety Manual is there first
+				if (auditType.getAuditTypeID() == AuditType.DESKTOP && pqfAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
+					// The current PQF has been submitted, but we need to know if the Safety Manual is there first before creating the desktop
 					AuditData safetyManual = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), AuditQuestion.MANUAL_PQF);
 					if (safetyManual == null || !safetyManual.isVerified())
 						insertNow = false;
