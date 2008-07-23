@@ -340,5 +340,20 @@
 			<result>/struts/widgets/operators_logged.jsp</result>
 		</action>
 		
+		<action name="DelinquentAccountsAjax"
+			class="com.picsauditing.actions.contractors.DelinquentAccountsWidget">
+			<result>/struts/widgets/delinquent_account.jsp</result>
+		</action>
+		
+		<action name="DelinquentContractorAccounts"
+			class="com.picsauditing.actions.report.DelinquentAccounts">
+			<result>/struts/reports/delinquent_conaccounts.jsp</result>
+		</action>
+		
+		<action name="ArchivedContractorAccounts"
+			class="com.picsauditing.actions.report.ArchivedAccounts">
+			<result>/struts/reports/archived_conaccounts.jsp</result>
+		</action>
+		
 	</package>
 </struts>
