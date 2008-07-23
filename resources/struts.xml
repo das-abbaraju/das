@@ -356,5 +356,10 @@
 			<result>/struts/reports/archived_conaccounts.jsp</result>
 		</action>
 		
+		<action name="ReportUsersAccount"
+			class="com.picsauditing.actions.report.ReportUser">
+			<result>struts/reports/report_users.jsp</result>
+		</action>
+		
 	</package>
 </struts>
