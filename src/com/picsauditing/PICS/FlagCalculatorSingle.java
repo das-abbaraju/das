@@ -255,13 +255,13 @@ public class FlagCalculatorSingle {
 		// Calculate the insurance certificate flags colors
 		if (operator.getCanSeeInsurance().equals(YesNo.Yes)) {
 			FlagColor certFlagColor = null;
-
+			
 			for (Certificate certificate : contractor.getCertificates()) {
 				if (certificate.getOperatorAccount().equals(operator)) {
 					debug(" -- certificate" + certificate.getType() + " " + certificate.getOperatorAccount().getName());
 					certFlagColor = setFlagColor(certFlagColor, certificate.getFlagColor());
 					
-					if (answerOnly && certFlagColor.equals(FlagColor.Red))
+					if (answerOnly && certFlagColor != null && certFlagColor.equals(FlagColor.Red))
 						// Things can't get worse, just exit
 						return certFlagColor;
 				}
