@@ -1,28 +1,30 @@
 package com.picsauditing.search;
 
-import com.picsauditing.PICS.Utilities;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.util.PermissionQueryBuilder;
 
 public class SelectUserUnion extends SelectSQL {
+	private String userWhere = "";
+	private String contractorWhere = "";
+
 	public SelectUserUnion() {
 		super();
 	}
-	
+
 	/**
 	 * Return the sql clause in this format:
 	 * 
-	 * SELECT {fields<String>}
-	 * FROM users
-	 * [WHERE {whereClause}]
-	 * [GROUP BY {groupByFields<String>]
-	 * [HAVING {havingClause}]
-	 * [ORDER BY {orderBys<String>}
+	 * SELECT {fields<String>} FROM users [WHERE {whereClause}] [GROUP BY
+	 * {groupByFields<String>] [HAVING {havingClause}] [ORDER BY {orderBys<String>}
 	 * [LIMIT {limit}|LIMIT {startRow}, {limit}]
 	 */
 	public String toString() {
-		if (fullClause.length() > 0) return fullClause;
-		
+		if (fullClause.length() > 0)
+			return fullClause;
+
 		StringBuilder sql = new StringBuilder();
-		
+
 		sql.append("SELECT ");
 
 		if (this.SQL_CALC_FOUND_ROWS) {
@@ -30,27 +32,28 @@ public class SelectUserUnion extends SelectSQL {
 		}
 		if (fields.size() > 0)
 			sql.append(combineArray(fields));
-		else 
+		else
 			sql.append("*");
 		sql.append("\nFROM (\n");
-		
-		String innerUnionSQL = "SELECT 'U' as tableType, id, username, password, email, name, isActive, dateCreated, lastLogin, accountID, null as phone " +
-				"FROM users where isGroup ='No' " +
-				"UNION " +
-				"SELECT 'A' as tableType, id, username, password, email, contact, case active when 'Y' THEN 'Yes' ELSE 'No' end, dateCreated, lastLogin, id, phone " +
-				"FROM accounts where type = 'Contractor'";
+
+		String innerUnionSQL = "SELECT 'User' as tableType, id, username, password, email, name, isActive, dateCreated, lastLogin, accountID, null as phone "
+				+ "FROM users where isGroup ='No' "
+				+ userWhere
+				+ " UNION "
+				+ "SELECT 'Acct' as tableType, id, username, password, email, contact, case active when 'Y' THEN 'Yes' ELSE 'No' end, dateCreated, lastLogin, id, phone "
+				+ "FROM accounts where type = 'Contractor' " + contractorWhere + "";
 		sql.append(innerUnionSQL);
-		
+
 		sql.append("\n) u");
-		
-		for(String joinSQL: this.joinClause) {
+
+		for (String joinSQL : this.joinClause) {
 			sql.append("\n");
 			sql.append(joinSQL);
 		}
 
 		if (whereClause.size() > 0) {
 			sql.append("\nWHERE 1");
-			for(String whereSQL: this.whereClause) {
+			for (String whereSQL : this.whereClause) {
 				sql.append("\n AND (");
 				sql.append(whereSQL);
 				sql.append(") ");
@@ -68,17 +71,33 @@ public class SelectUserUnion extends SelectSQL {
 			sql.append("\nORDER BY ");
 			sql.append(this.combineArray(this.orderBys));
 		}
-		
+
 		if (this.limit >= 0) {
 			sql.append("\nLIMIT ");
-			if (this.startRow > 0){
+			if (this.startRow > 0) {
 				sql.append(this.startRow);
 				sql.append(", ");
 			}
 			sql.append(this.limit);
 		}
 		System.out.println(sql.toString());
-		
+
 		return sql.toString();
 	}
+
+	/**
+	 * Limit contractor search to the accounts I can see based on my perms If
+	 * I'm an operator join to flags.flag and gc.workStatus too
+	 * 
+	 * @param permissions
+	 */
+	public void setPermissions(Permissions permissions) {
+		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
+		if (!permissions.hasPermission(OpPerms.AllOperators))
+			userWhere = "AND accountID = " + permissions.getAccountIdString();
+		permQuery.setActiveContractorsOnly(false);
+		permQuery.setAccountAlias("accounts");
+		contractorWhere = permQuery.toString();
+	}
+
 }
