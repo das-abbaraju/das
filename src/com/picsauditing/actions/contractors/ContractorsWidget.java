@@ -8,13 +8,15 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 
 public class ContractorsWidget extends PicsActionSupport {
 	ContractorAccountDAO accountDao;
-	
+
 	public ContractorsWidget(ContractorAccountDAO accountDao) {
 		this.accountDao = accountDao;
 	}
 
 	public String execute() throws Exception {
 		loadPermissions();
+		if (!permissions.isLoggedIn())
+			return LOGIN_AJAX;
 
 		return SUCCESS;
 	}

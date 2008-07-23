@@ -21,6 +21,8 @@ public class UsersLoggedWidget extends PicsActionSupport {
 
 	public String execute() throws Exception {
 		loadPermissions();
+		if (!permissions.isLoggedIn())
+			return LOGIN_AJAX;
 
 		return SUCCESS;
 	}

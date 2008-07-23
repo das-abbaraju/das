@@ -19,8 +19,10 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 	}
 
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
+		loadPermissions();
+		if (!permissions.isLoggedIn())
+			return LOGIN_AJAX;
+
 		if (!dao.checkUserName(u.getId(), u.getUsername())) {
 			addActionError("Another user is already using the username: " + u.getUsername());
 			return SUCCESS;

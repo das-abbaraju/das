@@ -11,13 +11,15 @@ public class ContractorAuditsWidget extends PicsActionSupport {
 	private List<ContractorAudit> upcoming;
 	private List<ContractorAudit> closed;
 	private List<ContractorAudit> assigned;
-	
+
 	public ContractorAuditsWidget(ContractorAuditDAO dao) {
 		this.dao = dao;
 	}
 
 	public String execute() throws Exception {
 		loadPermissions();
+		if (!permissions.isLoggedIn())
+			return LOGIN_AJAX;
 
 		return SUCCESS;
 	}
