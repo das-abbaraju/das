@@ -20,10 +20,11 @@
 
 		if (scheduleDate != null) {
 			var thisdate = $F($('scheduled_date_' + auditId + '_date'));
+			pars = pars + "&contractorAudit.scheduledDate=";	
 			if (thisdate != '')	{
 				var thisTime = $('scheduled_date_' + auditId + '_time').options[$('scheduled_date_' + auditId + '_time').selectedIndex].text;
 				thisdate = thisdate + ' ' + thisTime;
-				pars = pars + "&contractorAudit.scheduledDate=" + thisdate;	
+				pars = pars + thisdate;
 			}
 			
 			if ($('auditlocation_' + auditId + '_Onsite').checked == true) {
@@ -36,6 +37,7 @@
 
 		var assignDateDiv = 'assignDate_'+auditId;
 		var divName = 'audit_'+auditId;
+		alert(pars);
 		
 		var myAjax = new Ajax.Updater(assignDateDiv, 'AuditAssignmentUpdateAjax.action', 
 		{
