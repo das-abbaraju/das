@@ -90,12 +90,10 @@ public class PicsMenu {
 			subMenu.addChild("Approve Contractors", "con_approvals.jsp");
 		if (permissions.hasPermission(OpPerms.EditUsers))
 			subMenu.addChild("Users", "UsersManage.action");
-
 		if (permissions.hasPermission(OpPerms.FormsAndDocs))
 			subMenu.addChild("Forms &amp Docs", "manage_forms.jsp");
 		if (permissions.hasPermission(OpPerms.ManageAudits)) {
-			subMenu.addChild("Audit Definitions (beta)", "ManageAuditType.action");
-			subMenu.addChild("Audit Definitions", "AuditTypeChoose.action");
+			subMenu.addChild("Audit Definitions", "ManageAuditType.action");
 			subMenu.addChild("Desktop Matrix", "pqf_desktopMatrix.jsp?auditType=Desktop");
 			subMenu.addChild("PQF Matrix", "pqf_Matrix.jsp?auditType=PQF");
 		}
