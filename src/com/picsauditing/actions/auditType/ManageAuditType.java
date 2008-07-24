@@ -36,18 +36,20 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		
 		permissions.tryPermission(OpPerms.ManageAudits);
 		
-		if( button != null ) {
-			if( button.equalsIgnoreCase("save")) {
+		if (button != null) {
+			if (button.equalsIgnoreCase("save")) {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
 				message = "Successfully saved"; // default message
 				save();
 			}
-			if( button.equalsIgnoreCase("delete")) {
+			if (button.equalsIgnoreCase("delete")) {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Delete);
 				message = "Successfully removed"; // default message
 				delete();
 			}
 		}
+		if (auditType == null && !"Add New".equals(button))
+			return "top";
 		
 		return SUCCESS;
 	}
@@ -57,6 +59,10 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		if (id != 0) {
 			load(auditTypeDao.find(id));
 		}
+	}
+	
+	protected void loadParent(int id) {
+		// do nothing
 	}
 	
 	protected void load( AuditType newType ) {
@@ -70,22 +76,31 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		String[] ids = (String[]) ActionContext.getContext().getParameters()
 				.get("id");
 
-		if (ids != null && ids.length != 0) {
-			
+		String[] parentIds = (String[]) ActionContext.getContext().getParameters()
+		.get("parentID");
+
+		if (ids != null && ids.length > 0) {
 			int thisId = Integer.parseInt( ids[0] ); 
 			load( thisId );
+		}
+		
+		if (parentIds != null && parentIds.length > 0) {
+			int thisId = Integer.parseInt( parentIds[0] ); 
+			loadParent( thisId );
 		}
 	}
 	
 	public void save() {
 		try {
-			auditTypeDao.save(auditType);
+			auditType = auditTypeDao.save(auditType);
+			load(auditType);
+
 		} catch (Exception e) {
 			message = "Error - " + e.getMessage();
 		}
 	}
 
-	public void delete() {
+	private void delete() {
 		try {
 			if (auditType.getCategories().size() > 0) {
 				message = "Can't delete - Categories still exist";
@@ -93,6 +108,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 			}
 			
 			auditTypeDao.remove(auditType.getAuditTypeID());
+			auditType = null;
 		} catch (Exception e) {
 			message = "Error - " + e.getMessage();
 		}

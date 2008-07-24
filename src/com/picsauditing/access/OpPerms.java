@@ -36,7 +36,7 @@ public enum OpPerms {
 	EditUsers("Manage User Accounts", "Allows administrators to view/add/update/delete users for their account"),
 	
 	// Audits
-	ManageAudits("Manage Audits and Matrices", "Allow PICS employees view and edit the Audit questions and matrix", true, false),
+	ManageAudits("Manage Audits and Matrices", "Allow PICS employees view and edit the Audit questions and matrix", true, true),
 	AssignAudits("Audit Assignment", "Allows users to assign office, desktop, and other audits to PICS auditors", true, false),
 	NCMS("NCMS Administration", "Can view and assign NCMS audits", true, false),
 	AuditVerification("Audit Verification", "Verify answers to OSHA, EMR, and other Audit data ", true, false),

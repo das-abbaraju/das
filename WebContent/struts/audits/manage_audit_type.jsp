@@ -70,7 +70,8 @@
 <td><s:textfield name="auditType.displayOrder" /></td>
 </tr>
 </table>
-<button class="buttons positive" style="border: 0; color: #FFFFFF;" name="button" value="save">Save</button>	
+<button class="positive" name="button" value="save">Save</button>
+<button class="positive" name="button" value="delete">Delete</button>
 </s:form>
 </td>
 <td style="vertical-align: top">
@@ -83,7 +84,7 @@
 	</s:iterator>
 	<tr>
 	<td>*</td>
-	<td><a href="ManageCategory.action?category.auditType.auditTypeID=<s:property value="auditType.auditTypeID"/>">Add New</a></td>
+	<td><a href="ManageCategory.action?parentID=<s:property value="auditType.auditTypeID"/>&category.auditType.auditTypeID=<s:property value="auditType.auditTypeID"/>">Add New Category</a></td>
 	</tr>
 	</table>
 </td>

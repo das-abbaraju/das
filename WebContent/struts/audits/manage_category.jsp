@@ -31,7 +31,8 @@
 <td><s:textfield name="category.category" size="30" /></td>
 </tr>
 </table>
-<button class="buttons positive" style="border: 0; color: #FFFFFF;" name="button" value="save">Save</button>
+<button class="positive" name="button" value="save">Save</button>
+<button class="positive" name="button" value="delete">Delete</button>
 </s:form>
 </td>
 <td style="vertical-align: top">
@@ -44,7 +45,7 @@
 	</s:iterator>
 	<tr>
 	<td>*</td>
-	<td><a href="ManageSubCategory.action?category.auditType.auditTypeID=<s:property value="auditType.auditTypeID"/>">Add New</a></td>
+	<td><a href="ManageSubCategory.action?parentID=<s:property value="category.id"/>&subCategory.category.id=<s:property value="category.id"/>">Add New Sub Category</a></td>
 	</tr>
 	</table>
 </td>

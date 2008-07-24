@@ -32,7 +32,8 @@
 <td><s:textfield name="subCategory.subCategory" size="50" /></td>
 </tr>
 </table>
-<button class="buttons positive" style="border: 0; color: #FFFFFF;" name="button" value="save">Save</button>
+<button class="positive" name="button" value="save">Save</button>
+<button class="positive" name="button" value="delete">Delete</button>
 
 </s:form>
 </td>
@@ -57,7 +58,7 @@
 	</s:iterator>
 	<tr>
 	<td>*</td>
-	<td><a href="ManageQuestion.action?question.subCategory.id=<s:property value="subCategory.id"/>">Add New</a></td>
+	<td><a href="ManageQuestion.action?parentID=<s:property value="subCategory.id"/>&question.subCategory.id=<s:property value="subCategory.id"/>">Add New Question</a></td>
 	<td></td>
 	<td></td>
 	</tr>

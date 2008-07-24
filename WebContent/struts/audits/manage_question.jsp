@@ -133,7 +133,8 @@
 <td><s:textfield name="question.linkText6" /></td>
 </tr>
 </table>
-<button class="buttons positive" style="border: 0; color: #FFFFFF;" name="button" value="save">Save</button>
+<button class="positive" name="button" value="save">Save</button>
+<button class="positive" name="button" value="delete">Delete</button>
 </s:form>
 </td>
 <td style="vertical-align: top">

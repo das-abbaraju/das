@@ -7,18 +7,14 @@
 </head>
 <body>
 <h1>Audit Management</h1>
-<table border="0" cellpadding="0" cellspacing="0">
-	<tr>
-		<td align="center" class="redMain">Please select an Audit Type:
-		<table border="0">
-		<s:iterator value="auditTypes">
-			<tr>
-				<td><a class="blueMain" href="pqf_editSubCategories.jsp?auditTypeID=<s:property value="auditTypeID"/>"><s:property value="auditName"/></a></td>
-			</tr>
-		</s:iterator>
-		</table>
-		</td>
-	</tr>
-</table>
+<div>
+<ul>
+	<s:iterator value="auditTypes">
+	<li><a href="ManageAuditType.action?id=<s:property value="auditTypeID"/>"><s:property value="auditName"/></a>
+	&nbsp;&nbsp;<a class="blueSmall" href="pqf_editSubCategories.jsp?auditTypeID=<s:property value="auditTypeID"/>">old</a></li>
+	</s:iterator>
+	<li><a href="?button=Add New">Add New</a></li>
+</ul>
+</div>
 </body>
 </html>

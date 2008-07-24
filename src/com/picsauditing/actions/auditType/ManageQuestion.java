@@ -25,6 +25,11 @@ public class ManageQuestion extends ManageSubCategory {
 		}
 	}
 
+	@Override
+	protected void loadParent(int id) {
+		super.load(id);
+	}
+	
 	protected void load(AuditQuestion o) {
 		this.question = o;
 		load(question.getSubCategory());
@@ -32,10 +37,25 @@ public class ManageQuestion extends ManageSubCategory {
 	
 	
 	public void save() {
-		if( question != null ) {
-			auditQuestionDao.save(question);
+		if (question != null) {
+			question = auditQuestionDao.save(question);
+			load(question);
 		}
 	}
+	
+	private void delete() {
+		try {
+//			if (subCategory.getQuestions().size() > 0) {
+//				message = "Can't delete - Questions still exist";
+//				return;
+//			}
+			
+			auditQuestionDao.remove(question.getQuestionID());
+			question = null;
+		} catch (Exception e) {
+			message = "Error - " + e.getMessage();
+		}
+	}	
 
 	public String[] getQuestionTypes() {
 		return AuditQuestion.TYPE_ARRAY;

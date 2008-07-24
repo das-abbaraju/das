@@ -23,16 +23,36 @@ public class ManageSubCategory extends ManageCategory {
 		}
 	}
 
+	@Override
+	protected void loadParent(int id) {
+		super.load(id);
+	}
+	
 	protected void load(AuditSubCategory o) {
 		this.subCategory = o;
 		load(subCategory.getCategory());
 	}
 	
 	public void save() {
-		if( subCategory != null ) {
-			auditSubCategoryDao.save(subCategory);
+		if (subCategory != null) {
+			subCategory = auditSubCategoryDao.save(subCategory);
+			load(subCategory);
 		}
 	}
+	
+	private void delete() {
+		try {
+			if (subCategory.getQuestions().size() > 0) {
+				message = "Can't delete - Questions still exist";
+				return;
+			}
+			
+			auditSubCategoryDao.remove(subCategory.getId());
+			subCategory = null;
+		} catch (Exception e) {
+			message = "Error - " + e.getMessage();
+		}
+	}	
 
 	
 }
