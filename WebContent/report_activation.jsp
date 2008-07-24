@@ -13,19 +13,15 @@ try{
 	sBean.orderBy = request.getParameter("orderBy");
 	if (null==sBean.orderBy)
 		sBean.orderBy = "dateCreated DESC";
-	if ("Yes".equals(action)) {
+	
+	if ("Activate".equals(action)) {
 		sBean.aBean.setFromDB(actionID);
+		sBean.cBean.setFromDB(actionID);
 		sBean.aBean.active = "Y";
+		sBean.cBean.accountDate = DateBean.getTodaysDate();
 		message += "<b>"+sBean.aBean.name+"</b> has been made visible";
 		sBean.aBean.writeToDB();
-	}
-	if ("Paid".equals(action)){
-		String amount = request.getParameter("amount");
-		ContractorBean cBean = new ContractorBean();
-		cBean.updateLastPayment(actionID, permissions.getUsername(), amount);
-		return;
-	}
-	if ("Send".equals(action)) {
+		sBean.cBean.writeToDB();
 		EmailContractorBean mailer = (EmailContractorBean)SpringUtils.getBean("EmailContractorBean");
 		mailer.setPermissions(permissions);
 		mailer.sendMessage(EmailTemplates.welcome, new Integer(actionID).intValue());
@@ -34,8 +30,15 @@ try{
 		String notes = DateBean.getTodaysDateTime() + "("+permissions.getUsername()+") : Welcome Email Sent on " + DateBean.getTodaysDate();
 		cAccount.setAdminNotes(notes);
 		cAccountDAO.save(cAccount);
+	}
+
+	if ("Paid".equals(action)){
+		String amount = request.getParameter("amount");
+		ContractorBean cBean = new ContractorBean();
+		cBean.updateLastPayment(actionID, permissions.getUsername(), amount);
 		return;
 	}
+	
 	if ("Inv".equals(action)){
 		String invoiceAmount = request.getParameter("invoiceAmount");
 		ContractorBean cBean = new ContractorBean();
@@ -50,6 +53,7 @@ try{
 		cBean.writeToDB();
 		return;
 	}
+	
 	String BUTTON_VALUE = "Remove";
 	if (BUTTON_VALUE.equals(action)){
 		sBean.aBean.setFromDB(actionID);
@@ -110,7 +114,7 @@ try{
   	}
   	function makeVisible( conId )
   	{
-		var pars = 'actionID='+conId+'&action=Yes';
+		var pars = 'actionID='+conId+'&action=Activate';
 		var divName = 'visible_'+conId;
 		var myAjax = new Ajax.Request('report_activation.jsp', 
 				{
@@ -139,23 +143,6 @@ try{
 				});
 		return false;
   	}
-  	
-  	function logWelcomeEmail( conId )
-  	{
-		var pars = 'actionID='+conId+'&action=Send';
-		var divName = 'welcome_email_'+conId;
-		var myAjax = new Ajax.Request('report_activation.jsp', 
-				{
-					method: 'post', 
-					parameters: pars
-				});
-
-		$(divName).innerHTML = '<%= DateBean.getTodaysDate() %>'; 
-		new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-
-		return false;
-  	}
-  	
 </script>
 </head>
 <body>
@@ -203,9 +190,8 @@ try{
 		<td colspan=2 ><a href="javascript: changeOrderBy('form1','newBillingAmount DESC');" class="whiteTitle"><nobr>New Invoice</nobr></a></td>
 		<td colspan=2 ><a href="javascript: changeOrderBy('form1','lastPayment DESC');" class="whiteTitle">Last Payment</a></td>
 		<td colspan=2 ><a href="javascript: changeOrderBy('form1','billingCycle');" class="whiteTitle">New Payment</a></td>
-		<td  bgcolor="#336699">Visible?</td>
+		<td  bgcolor="#336699">Activate</td>
 		<td width="25"  bgcolor="#336699">Y/N</td>
-		<td>Welcome Email</td>
 		<td>&nbsp;</td>
 	</tr>
 	</thead>
@@ -227,10 +213,8 @@ try{
 			    <td id="pay_history_<%= sBean.aBean.id %>" align="center" colspan="2">$<%=sBean.cBean.lastPaymentAmount%> on <%=sBean.cBean.lastPayment%></td>
 			    <td valign="middle"><input id="pay_amount_<%= sBean.aBean.id %>" type="text" class=forms value="<%=sBean.cBean.newBillingAmount%>" size=3 name=amount></td>
 			    <td><input name="action" type="submit" onClick="javascript: return newPayment( '<%= sBean.aBean.id %>','pay_amount_<%= sBean.cBean.id %>');" class="buttons" value="Paid"></td>
-				<td align="center"><input name="action" type="submit" onclick="javascript: return makeVisible( '<%= sBean.aBean.id %>' );" class="buttons" value="Yes"> </td>
-				<td id="visible_<%= sBean.aBean.id %>" align="center"><%=sBean.aBean.active%></td>             
-				<td align="center" id="welcome_email_<%= sBean.aBean.id %>">
-				<input name="action" type="submit" class="buttons" onclick="javascript: return logWelcomeEmail( '<%= sBean.aBean.id %>' );" value="Send">
+				<td align="center"><input name="action" type="submit" onclick="javascript: return makeVisible( '<%= sBean.aBean.id %>' );" class="buttons" value="Activate"> </td>
+				<td id="visible_<%= sBean.aBean.id %>" align="center"><%=sBean.aBean.active%>             
 				<input name="actionID" type="hidden" value="<%=sBean.aBean.id%>"></td>
 				<td id="remove_<%= sBean.aBean.id %>" ><input name="action" type="submit" onclick="javascript: return removeCon( '<%= sBean.aBean.id %>', '<%=sBean.cBean.lastPaymentAmount%>','<%=sBean.aBean.lastLogin%>' );" class="buttons" value="<%=BUTTON_VALUE%>"></td>
 			  </form></tr>

@@ -386,7 +386,7 @@ import com.picsauditing.util.LinkBuilder;
 			//whereQuery += "AND (accountDate='0000-00-00' OR welcomeCallDate='0000-00-00') ";
         	// TJA 11/21/2007 MySQL gets mixed up sometimes with OR clauses.
         	// Also added indexes to accountDate and welcomeCallDate columns
-    		whereQuery += "AND accounts.id IN (SELECT id FROM contractor_info WHERE accountDate='0000-00-00' UNION SELECT id FROM contractor_info WHERE welcomeCallDate='0000-00-00') ";
+    		whereQuery += "AND accounts.id IN (SELECT id FROM contractor_info WHERE accountDate='0000-00-00' OR accountDate IS NULL) ";
         }
 		if (isNoInsuranceOnly)
 			whereQuery += "AND isOnlyCerts='No' ";
