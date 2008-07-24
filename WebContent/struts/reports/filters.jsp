@@ -105,7 +105,7 @@ Filter Options</a></div>
 			list="tradePerformedByList" cssClass="forms" name="performedBy" /> =
 		<span id="form1_trade_query">ALL</span><br />
 		<span id="form1_trade_select" style="display: none" class="clearLink">
-		<s:select list="tradeList" cssClass="forms" name="trade"
+		<s:select list="tradeList" listKey="questionID" listValue="question" cssClass="forms" name="trade"
 			multiple="true" size="5" /> <script type="text/javascript">updateQuery('form1_trade');</script>
 		<br />
 		<a class="clearLink" href="#"
@@ -193,7 +193,7 @@ Filter Options</a></div>
 		In</a> = <span id="form1_stateLicensedIn_query">ALL</span><br />
 		<span id="form1_stateLicensedIn_select" style="display: none"
 			class="clearLink"> <s:select list="stateLicensesList"
-			cssClass="forms" name="stateLicensedIn" multiple="true" size="5" />
+			cssClass="forms" name="stateLicensedIn" listKey="questionID" listValue="question" multiple="true" size="5" />
 		<script type="text/javascript">updateQuery('form1_stateLicensedIn');</script>
 		<br />
 		<a class="clearLink" href="#"
@@ -207,7 +207,7 @@ Filter Options</a></div>
 			id="form1_worksIn_query">ALL</span><br />
 		<span id="form1_worksIn_select" style="display: none"
 			class="clearLink"> <s:select list="worksInList"
-			cssClass="forms" name="worksIn" multiple="true" size="5" /> <script
+			cssClass="forms" name="worksIn" listKey="questionID" listValue="question" multiple="true" size="5" /> <script
 			type="text/javascript">updateQuery('form1_worksIn');</script> <br />
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_worksIn'); return false;">Clear</a> </span></div>
@@ -219,7 +219,7 @@ Filter Options</a></div>
 		<span id="form1_officeIn_query">ALL</span><br />
 		<span id="form1_officeIn_select" style="display: none"
 			class="clearLink"> <s:select list="officeInList"
-			cssClass="forms" name="officeIn" multiple="true" size="5" /> <script
+			cssClass="forms" name="officeIn" listKey="questionID" listValue="question" multiple="true" size="5" /> <script
 			type="text/javascript">updateQuery('form1_officeIn');</script> <br />
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_officeIn'); return false;">Clear</a> </span></div>

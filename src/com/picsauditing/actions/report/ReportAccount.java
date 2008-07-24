@@ -5,20 +5,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.struts2.ServletActionContext;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.SearchBean;
 import com.picsauditing.PICS.TradesBean;
-import com.picsauditing.PICS.pqf.QuestionTypeList;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectFilter;
-import com.picsauditing.search.SelectFilterInteger;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -66,6 +65,8 @@ public class ReportAccount extends ReportActionSupport {
 	protected boolean filterFlagStatus = false;
 	protected boolean filterConAuditor = false;
 
+	AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
+
 	protected SelectAccount sql = new SelectAccount();
 
 	public SelectAccount getSql() {
@@ -110,17 +111,14 @@ public class ReportAccount extends ReportActionSupport {
 		sql.setType(SelectAccount.Type.Contractor);
 		this.run(sql);
 
-		if (forwardSingleResults
-				&& !permissions.hasPermission(OpPerms.StatusOnly)
-				&& this.data.size() == 1) {
+		if (forwardSingleResults && !permissions.hasPermission(OpPerms.StatusOnly) && this.data.size() == 1) {
 			// Forward the user to the Contractor Details page
-			ServletActionContext.getResponse().sendRedirect(
-					"ContractorView.action?id=" + this.data.get(0).get("id"));
+			ServletActionContext.getResponse().sendRedirect("ContractorView.action?id=" + this.data.get(0).get("id"));
 		}
-		
-		if(filtered == null) 
+
+		if (filtered == null)
 			filtered = false;
-		
+
 		return SUCCESS;
 	}
 
@@ -132,24 +130,20 @@ public class ReportAccount extends ReportActionSupport {
 		return Industry.values();
 	}
 
-	public Map<Integer, String> getStateLicensesList() throws Exception {
-		QuestionTypeList questionList = new QuestionTypeList();
-		return questionList.getQuestionMap("License", null);
+	public List<AuditQuestion> getStateLicensesList() throws Exception {
+		return aQuestionDAO.findQuestionByType("License");
 	}
 
-	public Map<Integer, String> getTradeList() throws Exception {
-		QuestionTypeList questionList = new QuestionTypeList();
-		return questionList.getQuestionMap("Service", null);
+	public List<AuditQuestion> getTradeList() throws Exception {
+		return aQuestionDAO.findQuestionByType("Service");
 	}
 
-	public Map<Integer, String> getWorksInList() throws Exception {
-		QuestionTypeList questionList = new QuestionTypeList();
-		return questionList.getQuestionMap("Office Location", null);
+	public List<AuditQuestion> getWorksInList() throws Exception {
+		return aQuestionDAO.findQuestionByType("Office Location");
 	}
 
-	public Map<Integer, String> getOfficeInList() throws Exception {
-		QuestionTypeList questionList = new QuestionTypeList();
-		return questionList.getQuestionMap("Office Location", null);
+	public List<AuditQuestion> getOfficeInList() throws Exception {
+		return aQuestionDAO.findQuestionByType("Office Location");
 	}
 
 	public String[] getTradePerformedByList() throws Exception {
@@ -161,14 +155,12 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {
-		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils
-				.getBean("OperatorAccountDAO");
+		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
 		return dao.findWhere(false, "active='Y'", permissions);
 	}
-	
+
 	public List<OperatorAccount> getOperatorListWithCorporate() throws Exception {
-		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils
-				.getBean("OperatorAccountDAO");
+		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
 		return dao.findWhere(true, "active='Y'", permissions);
 	}
 
@@ -177,8 +169,7 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public String[] getCertsOptions() {
-		return new String[] { DEFAULT_CERTS, "Yes", "Only Certs", "No",
-				"Exclude Certs" };
+		return new String[] { DEFAULT_CERTS, "Yes", "Only Certs", "No", "Exclude Certs" };
 	}
 
 	public String[] getVisibleOptions() {
@@ -191,8 +182,7 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setStartsWith(String startsWith) {
-		report.addFilter(new SelectFilter("name", "a.name LIKE '?%'",
-				startsWith));
+		report.addFilter(new SelectFilter("name", "a.name LIKE '?%'", startsWith));
 		this.startsWith = startsWith;
 	}
 
@@ -203,8 +193,7 @@ public class ReportAccount extends ReportActionSupport {
 	public void setAccountName(String accountName) {
 		if (accountName == null || accountName.length() == 0)
 			accountName = DEFAULT_NAME;
-		report.addFilter(new SelectFilter("accountName", "a.name LIKE '%?%'",
-				accountName, DEFAULT_NAME, DEFAULT_NAME));
+		report.addFilter(new SelectFilter("accountName", "a.name LIKE '%?%'", accountName, DEFAULT_NAME, DEFAULT_NAME));
 		this.accountName = accountName;
 	}
 
@@ -232,11 +221,9 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setTrade(int[] trade) {
-		String performedBy = ServletActionContext.getRequest().getParameter(
-				"performedBy");
+		String performedBy = ServletActionContext.getRequest().getParameter("performedBy");
 		String answerFilter = "";
-		if (TradesBean.DEFAULT_PERFORMED_BY.equals(performedBy)
-				|| performedBy == null) {
+		if (TradesBean.DEFAULT_PERFORMED_BY.equals(performedBy) || performedBy == null) {
 			performedBy = TradesBean.DEFAULT_PERFORMED_BY;
 			answerFilter = "_%";
 		} else {
@@ -250,8 +237,7 @@ public class ReportAccount extends ReportActionSupport {
 			return;
 
 		this.trade = trade;
-		sql.addJoin("JOIN pqfdata trade ON trade.conID = a.id "
-				+ "AND trade.questionID IN (" + tradeList + ") "
+		sql.addJoin("JOIN pqfdata trade ON trade.conID = a.id " + "AND trade.questionID IN (" + tradeList + ") "
 				+ "AND trade.answer LIKE '" + answerFilter + "'");
 		filtered = true;
 	}
@@ -264,11 +250,8 @@ public class ReportAccount extends ReportActionSupport {
 		String operatorList = Strings.implode(operator, ",");
 		if (operatorList.equals("0"))
 			return;
-		report
-				.addFilter(new SelectFilter(
-						"generalContractorID",
-						"a.id IN (SELECT subID FROM generalcontractors WHERE genID IN (?) )",
-						operatorList));
+		report.addFilter(new SelectFilter("generalContractorID",
+				"a.id IN (SELECT subID FROM generalcontractors WHERE genID IN (?) )", operatorList));
 		this.operator = operator;
 	}
 
@@ -279,8 +262,7 @@ public class ReportAccount extends ReportActionSupport {
 	public void setCity(String city) {
 		if (city == null || city.length() == 0)
 			city = DEFAULT_CITY;
-		report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", city,
-				DEFAULT_CITY, DEFAULT_CITY));
+		report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", city, DEFAULT_CITY, DEFAULT_CITY));
 		this.city = city;
 	}
 
@@ -300,8 +282,7 @@ public class ReportAccount extends ReportActionSupport {
 	public void setZip(String zip) {
 		if (zip == null || zip.length() == 0)
 			zip = DEFAULT_ZIP;
-		report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", zip,
-				DEFAULT_ZIP, DEFAULT_ZIP));
+		report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", zip, DEFAULT_ZIP, DEFAULT_ZIP));
 		this.zip = zip;
 	}
 
@@ -310,8 +291,7 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setCertsOnly(String certsOnly) {
-		report.addFilter(new SelectFilter("certsOnly", "c.isOnlyCerts = '?'",
-				certsOnly, DEFAULT_CERTS, DEFAULT_CERTS));
+		report.addFilter(new SelectFilter("certsOnly", "c.isOnlyCerts = '?'", certsOnly, DEFAULT_CERTS, DEFAULT_CERTS));
 		this.certsOnly = certsOnly;
 	}
 
@@ -320,8 +300,8 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public void setVisible(String visible) {
-		report.addFilter(new SelectFilter("visible", "a.active = '?'", visible,
-				SearchBean.DEFAULT_VISIBLE, SearchBean.DEFAULT_VISIBLE));
+		report.addFilter(new SelectFilter("visible", "a.active = '?'", visible, SearchBean.DEFAULT_VISIBLE,
+				SearchBean.DEFAULT_VISIBLE));
 		this.visible = visible;
 	}
 
@@ -332,9 +312,8 @@ public class ReportAccount extends ReportActionSupport {
 	public void setStateLicensedIn(int[] stateLicensedIn) {
 		String stateLicensedInList = Strings.implode(stateLicensedIn, ",");
 		this.stateLicensedIn = stateLicensedIn;
-		sql.addJoin("JOIN pqfdata licensedIn ON licensedIn.conID = a.id "
-				+ "AND licensedIn.questionID IN (" + stateLicensedInList + ") "
-				+ "AND licensedIn.answer <> ''");
+		sql.addJoin("JOIN pqfdata licensedIn ON licensedIn.conID = a.id " + "AND licensedIn.questionID IN ("
+				+ stateLicensedInList + ") " + "AND licensedIn.answer <> ''");
 		filtered = true;
 	}
 
@@ -345,9 +324,8 @@ public class ReportAccount extends ReportActionSupport {
 	public void setWorksIn(int[] worksIn) {
 		String worksInList = Strings.implode(worksIn, ",");
 		this.worksIn = worksIn;
-		sql.addJoin("JOIN pqfdata worksIn ON worksIn.conID = a.id "
-				+ "AND worksIn.questionID IN (" + worksInList + ") "
-				+ "AND worksIn.answer LIKE 'Yes%'");
+		sql.addJoin("JOIN pqfdata worksIn ON worksIn.conID = a.id " + "AND worksIn.questionID IN (" + worksInList
+				+ ") " + "AND worksIn.answer LIKE 'Yes%'");
 		filtered = true;
 	}
 
@@ -358,9 +336,8 @@ public class ReportAccount extends ReportActionSupport {
 	public void setOfficeIn(int[] officeIn) {
 		String officeInList = Strings.implode(officeIn, ",");
 		this.officeIn = officeIn;
-		sql.addJoin("JOIN pqfdata officeIn ON officeIn.conID = a.id "
-				+ "AND officeIn.questionID IN (" + officeInList + ") "
-				+ "AND officeIn.answer LIKE 'Yes with Office'");
+		sql.addJoin("JOIN pqfdata officeIn ON officeIn.conID = a.id " + "AND officeIn.questionID IN (" + officeInList
+				+ ") " + "AND officeIn.answer LIKE 'Yes with Office'");
 		filtered = true;
 	}
 
@@ -371,8 +348,7 @@ public class ReportAccount extends ReportActionSupport {
 	public void setTaxID(String taxID) {
 		if (taxID == null || taxID.length() == 0)
 			taxID = DEFAULT_TAX_ID;
-		report.addFilter(new SelectFilter("taxID", "c.taxID = '?'", taxID,
-				DEFAULT_TAX_ID, DEFAULT_TAX_ID));
+		report.addFilter(new SelectFilter("taxID", "c.taxID = '?'", taxID, DEFAULT_TAX_ID, DEFAULT_TAX_ID));
 		this.taxID = taxID;
 	}
 
@@ -386,11 +362,9 @@ public class ReportAccount extends ReportActionSupport {
 
 	public void setFlagStatus(String flagStatus) {
 		this.flagStatus = flagStatus;
-		report.addFilter(new SelectFilter("flagStatus", "flags.flag = '?'",
-				flagStatus, FlagColor.DEFAULT_FLAG_STATUS,
+		report.addFilter(new SelectFilter("flagStatus", "flags.flag = '?'", flagStatus, FlagColor.DEFAULT_FLAG_STATUS,
 				FlagColor.DEFAULT_FLAG_STATUS));
 	}
-
 
 	public int[] getConAuditorId() {
 		return conAuditorId;
@@ -412,8 +386,7 @@ public class ReportAccount extends ReportActionSupport {
 	 */
 	public int getContractorCount() {
 		if (permissions.isOperator() || permissions.isCorporate()) {
-			OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils
-					.getBean("OperatorAccountDAO");
+			OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
 			return dao.getContractorCount(permissions.getAccountId());
 		}
 		// This method shouldn't be used by Admins, auditors, and contractors so
