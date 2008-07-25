@@ -21,6 +21,7 @@
 		<td><a href="javascript: changeOrderBy('form1','ca.auditStatus DESC');">Status</a></td>
 		<td ><a href="javascript: changeOrderBy('form1','ca.completedDate DESC');">Submitted</a></td>
 		<td ><a href="javascript: changeOrderBy('form1','ca.scheduledDate DESC');">Followup</a></td>
+		<td>%Completed</td>
 		<td>%Verified</td>
 		<td>Notes</td>
 	</tr>
@@ -32,6 +33,7 @@
 			<td><s:property value="[0].get('auditStatus')"/></td>
 			<td><s:date name="[0].get('completedDate')" format="M/d/yy" /></td>
 			<td><s:date name="[0].get('scheduledDate')" format="M/d/yy" /></td>
+			<td align="right"><s:property value="[0].get('percentComplete')"/>%</td>
 			<td align="right"><s:property value="[0].get('percentVerified')"/>%</td>
 			<td>
 				<s:if test="[0].get('notes') == null">
