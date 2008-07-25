@@ -40,7 +40,7 @@ public class ManageCategory extends ManageAuditType {
 		}
 	}
 	
-	private void delete() {
+	protected void delete() {
 		try {
 			if (category.getSubCategories().size() > 0) {
 				message = "Can't delete - Sub Categories still exist";

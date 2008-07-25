@@ -82,6 +82,7 @@
 			class="com.picsauditing.actions.audits.AuditOperatorList">
 			<result>struts/operators/audit_operator.jsp</result>
 		</action>
+		
 		<action name="AuditOperatorSaveAjax"
 			class="com.picsauditing.actions.audits.AuditOperatorSave">
 			<result>struts/operators/audit_operator_save.jsp</result>
@@ -93,14 +94,17 @@
 				struts/contractors/pqf_verification_detail.jsp
 			</result>
 		</action>
+		
 		<action name="VerifySaveFollowUpAjax" method="saveFollowUp"
 			class="com.picsauditing.actions.audits.VerifyView">
 			<result>struts/blank.jsp</result>
 		</action>
+		
 		<action name="VerifySwitchFilesAjax" method="switchFiles"
 			class="com.picsauditing.actions.contractors.SwitchFiles">
 			<result>struts/blank.jsp</result>
 		</action>
+		
 		<action name="VerifySendEmailAjax" method="sendEmail"
 			class="com.picsauditing.actions.audits.VerifyView">
 			<result>struts/blank.jsp</result>
@@ -154,21 +158,25 @@
 		
 		<action name="ManageAuditType"
 			class="com.picsauditing.actions.auditType.ManageAuditType">
+			<result name="top">struts/audits/audit_selectType.jsp</result>
 			<result>struts/audits/manage_audit_type.jsp</result>
 		</action>
 
 		<action name="ManageCategory"
 			class="com.picsauditing.actions.auditType.ManageCategory">
+			<result name="top">struts/audits/audit_selectType.jsp</result>
 			<result>struts/audits/manage_category.jsp</result>
 		</action>
 
 		<action name="ManageSubCategory"
 			class="com.picsauditing.actions.auditType.ManageSubCategory">
+			<result name="top">struts/audits/audit_selectType.jsp</result>
 			<result>struts/audits/manage_subcategory.jsp</result>
 		</action>
 
 		<action name="ManageQuestion"
 			class="com.picsauditing.actions.auditType.ManageQuestion">
+			<result name="top">struts/audits/audit_selectType.jsp</result>
 			<result>struts/audits/manage_question.jsp</result>
 		</action>
 
@@ -181,11 +189,11 @@
 			class="com.picsauditing.actions.audits.AuditDataSave">
 			<result>struts/blank.jsp</result>
 		</action>
+		
 		<action name="AuditDataFileUploadAjax"
 			class="com.picsauditing.actions.audits.AuditDataFileUpload">
 			<result>struts/blank.jsp</result>
 		</action>
-		
 
 		<action name="ContractorSearch"
 			class="com.picsauditing.actions.report.ReportAccountQuick">
@@ -213,7 +221,6 @@
 				struts/reports/contractors_operator_limited.jsp
 			</result>
 		</action>
-
 
 		<action name="ChartXMLFlagCount"
 			class="com.picsauditing.actions.chart.ChartFlagCount">
@@ -264,14 +271,17 @@
 			class="com.picsauditing.actions.report.ReportFatalities">
 			<result>/struts/reports/report_fatalities.jsp</result>
 		</action>
+		
 		<action name="ReportContractorLicenses"
 			class="com.picsauditing.actions.report.ReportContractorLicenses">
 			<result>/struts/reports/report_licenses.jsp</result>
 		</action>
+		
 		<action name="ReportIncidenceRate"
 			class="com.picsauditing.actions.report.ReportIncidenceRate">
 			<result>/struts/reports/report_incidenceRates.jsp</result>
 		</action>
+		
 		<action name="ContractorTasksAjax"
 			class="com.picsauditing.actions.contractors.ContractorWidget">
 			<result>/struts/widgets/con_tasks.jsp</result>
@@ -281,6 +291,7 @@
 			class="com.picsauditing.actions.contractors.ContractorWidget">
 			<result>/struts/widgets/con_stats.jsp</result>
 		</action>
+		
 		<action name="ContractorFacilitiesAjax"
 			class="com.picsauditing.actions.contractors.ContractorWidget">
 			<result>/struts/widgets/con_facilities.jsp</result>
@@ -295,6 +306,7 @@
 				<param name="mode">Edit</param>
 			</result>
 		</action>
+		
 		<action name="Cron"
 			class="com.picsauditing.actions.Cron">
 			<result>/struts/blank.jsp</result>

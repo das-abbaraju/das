@@ -40,7 +40,7 @@ public class ManageSubCategory extends ManageCategory {
 		}
 	}
 	
-	private void delete() {
+	protected void delete() {
 		try {
 			if (subCategory.getQuestions().size() > 0) {
 				message = "Can't delete - Questions still exist";

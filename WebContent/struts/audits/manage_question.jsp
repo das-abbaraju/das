@@ -58,10 +58,7 @@
 <th>Required:</th>
 <td><s:select list="#{'No':'No','Yes':'Yes','Depends':'Depends'}" name="question.isRequired" /></td>
 </tr>
-<tr>
-<th>Depends on Question ID:</th>
-<td><s:textfield name="question.dependsOnQuestion.questionID" /></td>
-</tr>
+
 <tr>
 <th>Depends on Answer:</th>
 <td><s:textfield name="question.dependsOnAnswer" /></td>

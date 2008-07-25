@@ -100,7 +100,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		}
 	}
 
-	private void delete() {
+	protected void delete() {
 		try {
 			if (auditType.getCategories().size() > 0) {
 				message = "Can't delete - Categories still exist";
