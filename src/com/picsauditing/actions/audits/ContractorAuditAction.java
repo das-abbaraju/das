@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.PICS.AuditPercentCalculator;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -19,7 +20,6 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.NcmsCategory;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailAuditBean;
-import com.picsauditing.mail.EmailTemplates;
 
 /**
  * Used by Audit.action to show a list of categories for a given audit. Also
@@ -120,6 +120,13 @@ public class ContractorAuditAction extends AuditActionSupport {
 
 			// Save the audit status
 			conAudit.setAuditStatus(auditStatus);
+			if (conAudit.getAuditType().getAuditTypeID() == AuditType.PQF && auditStatus.equals(AuditStatus.Submitted)) {
+				String notes = DateBean.getTodaysDateTime() + "(" + permissions.getName() + ") : "
+						+ conAudit.getContractorAccount().getName() + " Submitted their PQF on "
+						+ DateBean.getTodaysDate();
+				contractor.setNotes(notes);
+				conAudit.setContractorAccount(contractor);
+			}
 			auditDao.save(conAudit);
 
 			flagCalculator.runByContractor(conAudit.getContractorAccount().getId());
