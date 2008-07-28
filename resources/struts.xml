@@ -198,20 +198,14 @@
 			</result>			
 		</action>
 
-		<action name="ManageQuestion"
-			class="com.picsauditing.actions.auditType.ManageQuestion">
-			<result>struts/audits/manage_question.jsp</result>
-			<result name="top">
-				struts/audits/audit_selectType.jsp
-			</result>
-			<result name="saved" type="redirect-action">
-				<param name="actionName">ManageSubCategory</param>
-				<param name="id">${id}</param>
-			</result>
-			<result name="deleted" type="redirect-action">
-				<param name="actionName">ManageSubCategory</param>
-				<param name="id">${id}</param>
-			</result>
+		<action name="OrderAuditChildrenAjax"
+			class="com.picsauditing.actions.auditType.OrderAuditChildren">
+			<result>struts/blank.jsp</result>
+		</action>
+		
+		<action name="ReportNCMS"
+			class="com.picsauditing.actions.report.ReportAccountNCMS">
+			<result>struts/reports/report_ncms.jsp</result>
 		</action>
 
 		<action name="ReportNCMS"
