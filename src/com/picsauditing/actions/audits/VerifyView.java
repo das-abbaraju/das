@@ -17,6 +17,7 @@ import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -36,6 +37,8 @@ public class VerifyView extends AuditActionSupport {
 	protected Map<Integer, AuditData> customVerification = null;
 	private int followUp = 0;
 	private Map<Integer, AuditData> pqfDesktopVerification = null;
+	private int oshaCatDataId;
+	private int emrCatDataId;
 
 	private EmailAuditBean mailer;
 
@@ -62,6 +65,13 @@ public class VerifyView extends AuditActionSupport {
 				}
 			}
 			auditDao.save(conAudit);
+		}
+
+		for (AuditCatData auditCatData : getCategories()) {
+			if (auditCatData.getCategory().getId() == 29)
+				oshaCatDataId = auditCatData.getId();
+			if (auditCatData.getCategory().getId() == 10)
+				emrCatDataId = auditCatData.getId();
 		}
 
 		if (emr.size() > 0) {
@@ -470,5 +480,13 @@ public class VerifyView extends AuditActionSupport {
 
 	public void setEmr1Upload(AuditData emr) {
 		this.emr.put(1618, emr);
+	}
+
+	public int getOshaCatDataId() {
+		return oshaCatDataId;
+	}
+
+	public int getEmrCatDataId() {
+		return emrCatDataId;
 	}
 }

@@ -93,7 +93,7 @@ function sendEmail() {
 			</tr>
 			<tr class="blueMain" align="center" valign="top">
 				<td align="right"><a
-					href="pqf_OSHA.jsp?action=Edit&catID=29&oID=<s:property value="oshaID" />&id=<s:property value="id" />#upload"
+					href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="oshaCatDataId" />&mode=Edit"
 					class="blueMain">Upload New Files</a></td>
 				<td>&nbsp;</td>
 				<td class="highlight"><s:if test="osha.year1.file && osha.year1.file.name().equals('Yes')">
@@ -224,7 +224,7 @@ function sendEmail() {
 		</tr>
 		<tr class="blueMain" align="center" valign="top">
 			<td colspan="2"><a
-				href="pqf_uploadFile.jsp?catID=10&auditID=<s:property value="auditID" />"
+				href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="emrCatDataId" />&mode=Edit"
 				class="blueMain">Upload New Files</a></td>
 			<td class="highlight"><a href="#"
 				onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqf<s:property value="emr1Upload.answer" />1618','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">Show
