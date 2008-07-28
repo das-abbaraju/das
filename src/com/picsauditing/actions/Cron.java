@@ -186,8 +186,6 @@ public class Cron extends PicsActionSupport {
 			cMailer.addToken("opAcct", certificate.getOperatorAccount());
 			cMailer.addToken("expiration_date", certificate.getExpiration());
 			cMailer.addToken("certificate_type", certificate.getType());
-			Email email = cMailer.getEmail();
-			email.setBccAddress("eorozco@picsauditing.com");
 			cMailer.sendMessage(EmailTemplates.certificate_expire, certificate.getContractorAccount());
 
 			certificate.setSentEmails(certificate.getSentEmails() + 1);
