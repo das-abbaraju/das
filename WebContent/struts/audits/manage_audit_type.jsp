@@ -22,7 +22,7 @@
 <td><s:property value="auditType.auditTypeID"></s:property></td>
 </tr>
 <tr>
-<th>Name:</th>
+<th>Audit Type Name:</th>
 <td><s:textfield name="auditType.auditName"></s:textfield></td>
 </tr>
 <tr>
@@ -71,23 +71,27 @@
 </tr>
 </table>
 <button class="positive" name="button" value="save">Save</button>
-<button class="positive" name="button" value="delete">Delete</button>
+<s:if test="auditType.categories.size == 0">
+	<button class="positive" name="button" value="delete">Delete</button>
+</s:if>
 </s:form>
 </td>
+<s:if test="id != 0">
 <td style="vertical-align: top">
 	<table class="report">
 	<s:iterator value="auditType.categories">
 	<tr>
-	<td><s:property value="number"/></td>
-	<td><a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="category"/></a></td>
+		<td><s:property value="number"/></td>
+		<td><a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="category"/></a></td>
 	</tr>
 	</s:iterator>
 	<tr>
-	<td>*</td>
-	<td><a href="ManageCategory.action?button=AddNew&parentID=<s:property value="auditType.auditTypeID"/>&category.auditType.auditTypeID=<s:property value="auditType.auditTypeID"/>">Add New Category</a></td>
+		<td>*</td>
+		<td><a href="ManageCategory.action?parentID=<s:property value="auditType.auditTypeID"/>&category.auditType.auditTypeID=<s:property value="auditType.auditTypeID"/>">Add New Category</a></td>
 	</tr>
 	</table>
 </td>
+</s:if>
 </tr>
 </table>
 
