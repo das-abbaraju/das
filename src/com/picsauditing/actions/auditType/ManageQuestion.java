@@ -39,6 +39,7 @@ public class ManageQuestion extends ManageSubCategory {
 	public void save() {
 		if (question != null) {
 			question.setLastModified(new java.util.Date());
+			question.setDateCreated(new java.util.Date());
 			question = auditQuestionDao.save(question);
 			load(question);
 		}

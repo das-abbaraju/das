@@ -28,8 +28,8 @@ public class ManageSubCategory extends ManageCategory {
 		super.load(id);
 	}
 	
-	protected void load(AuditSubCategory o) {
-		this.subCategory = o;
+	protected void load(AuditSubCategory newSubCategory) {
+		this.subCategory = newSubCategory;
 		load(subCategory.getCategory());
 	}
 	

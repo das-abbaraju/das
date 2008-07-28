@@ -48,6 +48,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				delete();
 			}
 		}
+		
 		if (auditType == null && !"Add New".equals(button))
 			return "top";
 		
