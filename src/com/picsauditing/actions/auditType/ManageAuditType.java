@@ -51,8 +51,8 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 			}
 		}
 		
-		if (auditType != null || "AddNew".equals(button))
-			return SUCCESS;
+		if (auditType != null || "Add New".equals(button))
+			return SUCCESS;		
 		
 		return "top";
 	}
@@ -97,7 +97,6 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		try {
 			auditType = auditTypeDao.save(auditType);
 			id = auditType.getAuditTypeID();
-			//load(auditType);
 		} catch (Exception e) {
 			message = "Error - " + e.getMessage();
 		}
@@ -111,7 +110,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 			}
 			
 			auditTypeDao.remove(auditType.getAuditTypeID());
-			auditType = null;
+			id = auditType.getAuditTypeID();
 		} catch (Exception e) {
 			message = "Error - " + e.getMessage();
 		}

@@ -36,7 +36,7 @@ public class ManageSubCategory extends ManageCategory {
 	public void save() {
 		if (subCategory != null) {
 			subCategory = auditSubCategoryDao.save(subCategory);
-			load(subCategory.getId());
+			id = subCategory.getCategory().getId();
 		}
 	}
 	
@@ -47,8 +47,8 @@ public class ManageSubCategory extends ManageCategory {
 				return;
 			}
 			
+			id = subCategory.getCategory().getId();
 			auditSubCategoryDao.remove(subCategory.getId());
-			subCategory = null;
 		} catch (Exception e) {
 			message = "Error - " + e.getMessage();
 		}

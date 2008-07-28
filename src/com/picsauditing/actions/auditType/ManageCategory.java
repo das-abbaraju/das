@@ -36,7 +36,7 @@ public class ManageCategory extends ManageAuditType {
 	public void save() {
 		if (category != null) {
 			category = auditCategoryDao.save(category);
-			load(category);
+			id = category.getAuditType().getAuditTypeID();
 		}
 	}
 	
@@ -47,8 +47,8 @@ public class ManageCategory extends ManageAuditType {
 				return;
 			}
 			
+			id = category.getAuditType().getAuditTypeID();
 			auditCategoryDao.remove(category.getId());
-			category = null;
 		} catch (Exception e) {
 			message = "Error - " + e.getMessage();
 		}

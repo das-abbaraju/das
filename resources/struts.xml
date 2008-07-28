@@ -156,6 +156,14 @@
 			<result name="top">
 				struts/audits/audit_selectType.jsp
 			</result>
+			<result name="saved" type="redirect-action">
+				<param name="actionName">ManageAuditType</param>
+				<param name="id">${id}</param>
+			</result>
+			<result name="deleted" type="redirect-action">
+				<param name="actionName">ManageAuditType</param>
+				<param name="id">${id}</param>
+			</result>				
 		</action>
 
 		<action name="ManageCategory"
@@ -164,6 +172,14 @@
 			<result name="top">
 				struts/audits/audit_selectType.jsp
 			</result>
+			<result name="saved" type="redirect-action">
+				<param name="actionName">ManageAuditType</param>
+				<param name="id">${id}</param>
+			</result>
+			<result name="deleted" type="redirect-action">
+				<param name="actionName">ManageAuditType</param>
+				<param name="id">${id}</param>
+			</result>			
 		</action>
 
 		<action name="ManageSubCategory"
@@ -172,6 +188,14 @@
 			<result name="top">
 				struts/audits/audit_selectType.jsp
 			</result>
+			<result name="saved" type="redirect-action">
+				<param name="actionName">ManageCategory</param>
+				<param name="id">${id}</param>
+			</result>
+			<result name="deleted" type="redirect-action">
+				<param name="actionName">ManageCategory</param>
+				<param name="id">${id}</param>
+			</result>			
 		</action>
 
 		<action name="ManageQuestion"
@@ -329,12 +353,6 @@
 			class="com.picsauditing.actions.audits.ContractorSave">
 			<result>struts/blank.jsp</result>
 		</action>
-
-		<action name="ContractorThumbnailAjax"
-			class="com.picsauditing.actions.contractors.ContractorThumbnail">
-			<result>struts/contractors/contractor_thumbnail.jsp</result>
-		</action>
-
 
 		<action name="ScheduleAuditUpdate"
 			class="com.picsauditing.actions.report.AuditScheduleUpdate">

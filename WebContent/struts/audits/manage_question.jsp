@@ -23,12 +23,12 @@
 <td><s:property value="question.questionID"></s:property></td>
 </tr>
 <tr>
-<th>Order:</th>
-<td><s:textfield name="question.number" size="4"/></td>
-</tr>
-<tr>
 <th>Question:</th>
 <td><s:textarea name="question.question" rows="2" cols="50" /></td>
+</tr>
+<tr>
+<th>Order:</th>
+<td><s:textfield name="question.number" size="4"/></td>
 </tr>
 <tr>
 <th>Added:</th>
