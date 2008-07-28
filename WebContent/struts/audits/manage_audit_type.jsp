@@ -84,7 +84,7 @@
 	</s:iterator>
 	<tr>
 	<td>*</td>
-	<td><a href="ManageCategory.action?parentID=<s:property value="auditType.auditTypeID"/>&category.auditType.auditTypeID=<s:property value="auditType.auditTypeID"/>">Add New Category</a></td>
+	<td><a href="ManageCategory.action?button=AddNew&parentID=<s:property value="auditType.auditTypeID"/>&category.auditType.auditTypeID=<s:property value="auditType.auditTypeID"/>">Add New Category</a></td>
 	</tr>
 	</table>
 </td>

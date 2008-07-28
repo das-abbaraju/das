@@ -35,25 +35,25 @@ public class ManageQuestion extends ManageSubCategory {
 		load(question.getSubCategory());
 	}
 	
-	
 	public void save() {
 		if (question != null) {
 			question.setLastModified(new java.util.Date());
 			question.setDateCreated(new java.util.Date());
 			question = auditQuestionDao.save(question);
-			load(question);
+			id = question.getSubCategory().getId();
 		}
 	}
 	
 	protected void delete() {
 		try {
+			// TODO check to see if AuditData exists for this question first
 //			if (subCategory.getQuestions().size() > 0) {
 //				message = "Can't delete - Questions still exist";
 //				return;
 //			}
 			
+			id = question.getSubCategory().getId();
 			auditQuestionDao.remove(question.getQuestionID());
-			question = null;
 		} catch (Exception e) {
 			message = "Error - " + e.getMessage();
 		}

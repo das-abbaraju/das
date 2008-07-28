@@ -41,18 +41,20 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
 				message = "Successfully saved"; // default message
 				save();
+				return "saved";
 			}
 			if (button.equalsIgnoreCase("delete")) {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Delete);
 				message = "Successfully removed"; // default message
 				delete();
+				return "deleted";
 			}
 		}
 		
-		if (auditType == null && !"Add New".equals(button))
-			return "top";
+		if (auditType != null || "AddNew".equals(button))
+			return SUCCESS;
 		
-		return SUCCESS;
+		return "top";
 	}
 
 
@@ -94,8 +96,8 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	public void save() {
 		try {
 			auditType = auditTypeDao.save(auditType);
-			load(auditType);
-
+			id = auditType.getAuditTypeID();
+			//load(auditType);
 		} catch (Exception e) {
 			message = "Error - " + e.getMessage();
 		}
@@ -167,5 +169,8 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	public void setQuestion(AuditQuestion question) {
 		this.question = question;
 	}
-
+	
+	public void setParentID(int parentID) {
+		// Do nothing here...we use this in the prepare statement
+	}
 }

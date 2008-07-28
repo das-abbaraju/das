@@ -45,7 +45,7 @@
 	</s:iterator>
 	<tr>
 	<td>*</td>
-	<td><a href="ManageSubCategory.action?parentID=<s:property value="category.id"/>&subCategory.category.id=<s:property value="category.id"/>">Add New Sub Category</a></td>
+	<td><a href="ManageSubCategory.action?button=AddNew&parentID=<s:property value="category.id"/>&subCategory.category.id=<s:property value="category.id"/>">Add New Sub Category</a></td>
 	</tr>
 	</table>
 </td>

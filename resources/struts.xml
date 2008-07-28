@@ -93,17 +93,17 @@
 				struts/contractors/pqf_verification_detail.jsp
 			</result>
 		</action>
-		
+
 		<action name="VerifySaveFollowUpAjax" method="saveFollowUp"
 			class="com.picsauditing.actions.audits.VerifyView">
 			<result>struts/blank.jsp</result>
 		</action>
-		
+
 		<action name="VerifySwitchFilesAjax" method="switchFiles"
 			class="com.picsauditing.actions.contractors.SwitchFiles">
 			<result>struts/blank.jsp</result>
 		</action>
-		
+
 		<action name="VerifySendEmailAjax" method="sendEmail"
 			class="com.picsauditing.actions.audits.VerifyView">
 			<result>struts/blank.jsp</result>
@@ -139,7 +139,7 @@
 				struts/contractors/con_auditNoView.jsp
 			</result>
 		</action>
-		
+
 		<action name="ConAuditMaintain"
 			class="com.picsauditing.actions.audits.ConAuditMaintain">
 			<result>struts/audits/audit_maintain.jsp</result>
@@ -149,29 +149,45 @@
 			class="com.picsauditing.actions.audits.AuditCategoryAction">
 			<result>struts/audits/audit_cat.jsp</result>
 		</action>
-		
+
 		<action name="ManageAuditType"
 			class="com.picsauditing.actions.auditType.ManageAuditType">
 			<result>struts/audits/manage_audit_type.jsp</result>
-			<result name = "top">struts/audits/audit_selectType.jsp</result>
+			<result name="top">
+				struts/audits/audit_selectType.jsp
+			</result>
 		</action>
 
 		<action name="ManageCategory"
 			class="com.picsauditing.actions.auditType.ManageCategory">
 			<result>struts/audits/manage_category.jsp</result>
-			<result name = "top">struts/audits/audit_selectType.jsp</result>
+			<result name="top">
+				struts/audits/audit_selectType.jsp
+			</result>
 		</action>
 
 		<action name="ManageSubCategory"
 			class="com.picsauditing.actions.auditType.ManageSubCategory">
 			<result>struts/audits/manage_subcategory.jsp</result>
-			<result name = "top">struts/audits/audit_selectType.jsp</result>
+			<result name="top">
+				struts/audits/audit_selectType.jsp
+			</result>
 		</action>
 
 		<action name="ManageQuestion"
 			class="com.picsauditing.actions.auditType.ManageQuestion">
 			<result>struts/audits/manage_question.jsp</result>
-			<result name = "top">struts/audits/audit_selectType.jsp</result>
+			<result name="top">
+				struts/audits/audit_selectType.jsp
+			</result>
+			<result name="saved" type="redirect-action">
+				<param name="actionName">ManageSubCategory</param>
+				<param name="id">${id}</param>
+			</result>
+			<result name="deleted" type="redirect-action">
+				<param name="actionName">ManageSubCategory</param>
+				<param name="id">${id}</param>
+			</result>
 		</action>
 
 		<action name="ReportNCMS"
@@ -264,17 +280,17 @@
 			class="com.picsauditing.actions.report.ReportFatalities">
 			<result>/struts/reports/report_fatalities.jsp</result>
 		</action>
-		
+
 		<action name="ReportContractorLicenses"
 			class="com.picsauditing.actions.report.ReportContractorLicenses">
 			<result>/struts/reports/report_licenses.jsp</result>
 		</action>
-		
+
 		<action name="ReportIncidenceRate"
 			class="com.picsauditing.actions.report.ReportIncidenceRate">
 			<result>/struts/reports/report_incidenceRates.jsp</result>
 		</action>
-		
+
 		<action name="ContractorTasksAjax"
 			class="com.picsauditing.actions.contractors.ContractorWidget">
 			<result>/struts/widgets/con_tasks.jsp</result>
@@ -284,7 +300,7 @@
 			class="com.picsauditing.actions.contractors.ContractorWidget">
 			<result>/struts/widgets/con_stats.jsp</result>
 		</action>
-		
+
 		<action name="ContractorFacilitiesAjax"
 			class="com.picsauditing.actions.contractors.ContractorWidget">
 			<result>/struts/widgets/con_facilities.jsp</result>
@@ -299,21 +315,26 @@
 				<param name="mode">Edit</param>
 			</result>
 		</action>
-		
-		<action name="Cron"
-			class="com.picsauditing.actions.Cron">
+
+		<action name="Cron" class="com.picsauditing.actions.Cron">
 			<result>/struts/blank.jsp</result>
 		</action>
-	
+
 		<action name="ContractorAssigned"
 			class="com.picsauditing.actions.report.ReportContractorAssignment">
 			<result>struts/reports/assignedContractor.jsp</result>
 		</action>
-	
+
 		<action name="ContractorSaveAjax"
 			class="com.picsauditing.actions.audits.ContractorSave">
 			<result>struts/blank.jsp</result>
 		</action>
+
+		<action name="ContractorThumbnailAjax"
+			class="com.picsauditing.actions.contractors.ContractorThumbnail">
+			<result>struts/contractors/contractor_thumbnail.jsp</result>
+		</action>
+
 
 		<action name="ScheduleAuditUpdate"
 			class="com.picsauditing.actions.report.AuditScheduleUpdate">
@@ -324,7 +345,7 @@
 			class="com.picsauditing.actions.report.ReportPQFVerification">
 			<result>struts/reports/pqf_verification.jsp</result>
 		</action>
-		
+
 		<action name="OpenAuditsMailer"
 			class="com.picsauditing.actions.audits.OpenAuditsMailer">
 			<result>/struts/blank.jsp</result>
@@ -334,36 +355,36 @@
 			class="com.picsauditing.actions.CorporateWidget">
 			<result>/struts/widgets/corporate_statistics.jsp</result>
 		</action>
-		
+
 		<action name="ContractorsLoggedAjax"
 			class="com.picsauditing.actions.contractors.UsersLoggedWidget">
 			<result>/struts/widgets/contractors_logged.jsp</result>
 		</action>
-		
+
 		<action name="OperatorsLoggedAjax"
 			class="com.picsauditing.actions.contractors.UsersLoggedWidget">
 			<result>/struts/widgets/operators_logged.jsp</result>
 		</action>
-		
+
 		<action name="DelinquentAccountsAjax"
 			class="com.picsauditing.actions.contractors.DelinquentAccountsWidget">
 			<result>/struts/widgets/delinquent_account.jsp</result>
 		</action>
-		
+
 		<action name="DelinquentContractorAccounts"
 			class="com.picsauditing.actions.report.DelinquentAccounts">
 			<result>/struts/reports/delinquent_conaccounts.jsp</result>
 		</action>
-		
+
 		<action name="ArchivedContractorAccounts"
 			class="com.picsauditing.actions.report.ArchivedAccounts">
 			<result>/struts/reports/archived_conaccounts.jsp</result>
 		</action>
-		
+
 		<action name="ReportUsersAccount"
 			class="com.picsauditing.actions.report.ReportUser">
 			<result>struts/reports/report_users.jsp</result>
 		</action>
-		
+
 	</package>
 </struts>

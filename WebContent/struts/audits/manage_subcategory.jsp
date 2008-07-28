@@ -58,7 +58,7 @@
 	</s:iterator>
 	<tr>
 	<td>*</td>
-	<td><a href="ManageQuestion.action?parentID=<s:property value="subCategory.id"/>&question.subCategory.id=<s:property value="subCategory.id"/>">Add New Question</a></td>
+	<td><a href="ManageQuestion.action?button=AddNew&parentID=<s:property value="subCategory.id"/>&question.subCategory.id=<s:property value="subCategory.id"/>">Add New Question</a></td>
 	<td></td>
 	<td></td>
 	</tr>

@@ -36,7 +36,7 @@ public class ManageSubCategory extends ManageCategory {
 	public void save() {
 		if (subCategory != null) {
 			subCategory = auditSubCategoryDao.save(subCategory);
-			load(subCategory);
+			load(subCategory.getId());
 		}
 	}
 	
