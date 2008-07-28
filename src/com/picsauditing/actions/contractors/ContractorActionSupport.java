@@ -127,7 +127,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 
 	public List<ContractorOperator> getOperators() {
 		if (operators == null)
-			operators = accountDao.findOperators(contractor, permissions);
+			operators = accountDao.findOperators(contractor, permissions, "");
 		return operators;
 	}
 
@@ -168,9 +168,9 @@ public class ContractorActionSupport extends PicsActionSupport {
 		if (permissions.isOnlyAuditor()) {
 			for (ContractorAudit audit : getActiveAudits()) {
 				if (audit.getAuditor() != null && audit.getAuditor().getId() == permissions.getUserId())
-					if ((audit.getAuditStatus().equals(AuditStatus.Pending) 
-							|| audit.getAuditStatus().equals(AuditStatus.Submitted)))
-					return true;
+					if ((audit.getAuditStatus().equals(AuditStatus.Pending) || audit.getAuditStatus().equals(
+							AuditStatus.Submitted)))
+						return true;
 			}
 			return false;
 		}

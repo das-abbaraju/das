@@ -50,8 +50,9 @@ public class ContractorAccountDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<ContractorOperator> findOperators(ContractorAccount contractor, Permissions permissions) {
-		String where = "";
+	public List<ContractorOperator> findOperators(ContractorAccount contractor, Permissions permissions, String where) {
+		if (where == null)
+			where = "";
 		if (permissions.isCorporate())
 			// Show corporate users operators in their facility
 			where = "AND operatorAccount IN (SELECT operator FROM Facility " + "WHERE corporate = "

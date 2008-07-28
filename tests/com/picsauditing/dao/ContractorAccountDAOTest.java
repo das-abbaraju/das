@@ -106,7 +106,7 @@ public class ContractorAccountDAOTest {
 			System.out.println(operator.getOperatorAccount().getName() + operator.getFlag().getFlagColor());
 		}
 		System.out.println("contractoraccountDAO.findOperators");
-		for (ContractorOperator operator : contractoraccountDAO.findOperators(contractoraccount, new Permissions())) {
+		for (ContractorOperator operator : contractoraccountDAO.findOperators(contractoraccount, new Permissions(),"")) {
 			System.out.println(operator.getOperatorAccount().getName());
 		}
 		assertEquals("ECI (Ecology Control Inc.)", contractoraccount.getName());
