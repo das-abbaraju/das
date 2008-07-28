@@ -35,7 +35,7 @@ public class CertificateDAO extends PicsDAO {
 	public List<Certificate> findExpiredCertificate() {
 		Query query = em.createQuery("SELECT cr FROM Certificate cr WHERE"
 				+ " (cr.lastSentDate < DATE_SUB(now(), INTERVAL 21 DAY) OR cr.lastSentDate IS NULL) AND"
-				+ "cr.expiration BETWEEN DATE_ADD(NOW(), INTERVAL -35 DAY) AND DATE_ADD(NOW(), INTERVAL 14 DAY)");
+				+ "(cr.expiration BETWEEN DATE_ADD(NOW(), INTERVAL -35 DAY) AND DATE_ADD(NOW(), INTERVAL 14 DAY))");
 		return query.getResultList();
 
 	}
