@@ -12,13 +12,28 @@ function selectCrumb(selector, url) {
 <s:form>
 	<a class="blueMain" href="ManageAuditType.action">Top</a>
 	<s:if test="auditType != null">
-		&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain" href="ManageAuditType.action?id=<s:property value="auditType.auditTypeID"/>"><s:property value="auditType.auditName"/></a>
+		<s:if test="category == null">
+			&nbsp;&gt;&nbsp;&nbsp;<a class="blueSmall" href="ManageAuditType.action?id=<s:property value="auditType.auditTypeID"/>"><s:property value="auditType.auditName"/></a>
+		</s:if>
+		<s:else>
+			&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain" href="ManageAuditType.action?id=<s:property value="auditType.auditTypeID"/>"><s:property value="auditType.auditName"/></a>
+		</s:else>
 		<s:if test="category != null">
-			&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain" href="ManageCategory.action?id=<s:property value="category.id"/>"><s:property value="category.category"/></a>
+			<s:if test="subCategory == null">
+				&nbsp;&gt;&nbsp;&nbsp;<a class="blueSmall" href="ManageCategory.action?id=<s:property value="category.id"/>"><s:property value="category.category"/></a>
+			</s:if>
+			<s:else>
+				&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain" href="ManageCategory.action?id=<s:property value="category.id"/>"><s:property value="category.category"/></a>
+			</s:else>
 			<s:if test="subCategory != null">
-				&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain" href="ManageSubCategory.action?id=<s:property value="subCategory.id"/>"><s:property value="subCategory.subCategory"/></a>
+				<s:if test="question == null">
+					&nbsp;&gt;&nbsp;&nbsp;<a class="blueSmall" href="ManageSubCategory.action?id=<s:property value="subCategory.id"/>"><s:property value="subCategory.subCategory"/></a>
+				</s:if>
+				<s:else>
+					&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain" href="ManageSubCategory.action?id=<s:property value="subCategory.id"/>"><s:property value="subCategory.subCategory"/></a>
+				</s:else>
 				<s:if test="question != null">
-					&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain" href="ManageQuestion.action?id=<s:property value="question.questionID"/>"><s:property value="question.question"/></a>				
+					&nbsp;&gt;&nbsp;&nbsp;<a class="blueSmall" href="ManageQuestion.action?id=<s:property value="question.question"/>"><s:property value="question.question"/></a>				
 				</s:if>
 			</s:if>
 		</s:if>
