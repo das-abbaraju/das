@@ -28,10 +28,11 @@ public class LinkBuilder
 	 * @return Html String containing the links
 	 */
 	public static String getPageNOfXLinks(int numResults, int showNum, int beginResults, int endResults, int showPage ){
+		if (numResults == 0 && showPage == 1)
+			return "No results found";
+		
 		int SHOW_PAGES = 4;
 		int lastPage = (numResults-1)/showNum+1;
-		String orderByQuery = "";
-		
 		
 		StringBuffer sb = new StringBuffer("<ul class=\"paging\">");
 		sb.append("Showing "+beginResults+"-"+endResults+" of <strong>"+numResults+"</strong> results ");
