@@ -198,6 +198,22 @@
 			</result>			
 		</action>
 
+		<action name="ManageQuestion"
+			class="com.picsauditing.actions.auditType.ManageQuestion">
+			<result>struts/audits/manage_question.jsp</result>
+			<result name="top">
+				struts/audits/audit_selectType.jsp
+			</result>
+			<result name="saved" type="redirect-action">
+				<param name="actionName">ManageSubCategory</param>
+				<param name="id">${id}</param>
+			</result>
+			<result name="deleted" type="redirect-action">
+				<param name="actionName">ManageSubCategory</param>
+				<param name="id">${id}</param>
+			</result>
+		</action>
+		
 		<action name="OrderAuditChildrenAjax"
 			class="com.picsauditing.actions.auditType.OrderAuditChildren">
 			<result>struts/blank.jsp</result>
@@ -225,6 +241,11 @@
 		<action name="ContractorSearch"
 			class="com.picsauditing.actions.report.ReportAccountQuick">
 			<result>struts/reports/contractors_search.jsp</result>
+		</action>
+		
+		<action name="ContractorSelectAjax"
+			class="com.picsauditing.actions.report.ReportAccountSelect">
+			<result>struts/reports/contractors_select.jsp</result>
 		</action>
 
 		<action name="ContractorListAdmin"
