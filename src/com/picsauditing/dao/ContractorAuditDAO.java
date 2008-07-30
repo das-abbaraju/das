@@ -43,19 +43,22 @@ public class ContractorAuditDAO extends PicsDAO {
 			oCAudit.setContractorAccount(nContractor);
 
 			oCAudit.getData().clear();
-			for (AuditData auditData : auList) {
-				auditData.setDataID(0);
-				auditData.setAudit(oCAudit);
+			if (auList.size() != 0) {
+				for (AuditData auditData : auList) {
+					auditData.setDataID(0);
+					auditData.setAudit(oCAudit);
+				}
+				oCAudit.getData().addAll(auList);
 			}
-			oCAudit.getData().addAll(auList);
 
 			oCAudit.getCategories().clear();
-			for (AuditCatData auditCatData : acList) {
-				auditCatData.setId(0);
-				auditCatData.setAudit(oCAudit);
+			if (auList.size() != 0) {
+				for (AuditCatData auditCatData : acList) {
+					auditCatData.setId(0);
+					auditCatData.setAudit(oCAudit);
+				}
+				oCAudit.getCategories().addAll(acList);
 			}
-			oCAudit.getCategories().addAll(acList);
-
 			save(oCAudit);
 		}
 	}

@@ -419,5 +419,14 @@
 			<result>struts/reports/report_users.jsp</result>
 		</action>
 
+		<action name="ConAuditCopy"
+			class="com.picsauditing.actions.audits.ContractorAuditCopy">
+			<result>/struts/audits/audit_copy.jsp</result>
+			<result name="Audit" type="redirect-action">
+			<param name="actionName">Audit</param>
+				<param name="auditID">${conAudit.id}</param>
+			</result>
+		</action>
+
 	</package>
 </struts>

@@ -13,16 +13,19 @@
 <table class="report">
 	<thead>
 	<tr>
-		<th>Type</td>
-		<th>Status</td>
-		<th>Created</td>
-		<th>For</td>
-		<th>Auditor</td>
+		<th>Type</th>
+		<th>Status</th>
+		<th>Created</th>
+		<th>For</th>
+		<th>Auditor</th>
 		<th>Scheduled</th>
 		<th>Submitted</th>
 		<th>Closed</th>
 		<th>Expires</th>
-		<th>View</td>
+		<th>View</th>
+		<pics:permission perm="AuditCopy">
+			<th>Copy</th>
+		</pics:permission>	
 	</tr>
 	</thead>
 	<s:iterator value="audits" status="auditStatus">
@@ -43,6 +46,9 @@
 			</s:else></td>
 			<td><s:date name="expiresDate" format="M/d/yy" /></td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />">View</a></td>
+			<pics:permission perm="AuditCopy">
+				<td><a href="ConAuditCopy.action?auditID=<s:property value="id" />">Copy</a></td>
+			</pics:permission>
 		</tr>
 	</s:iterator>
 </table>
