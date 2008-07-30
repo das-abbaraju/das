@@ -7,12 +7,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.validator.AssertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -23,11 +23,12 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.SpringUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
+@Transactional
 public class ContractorAuditDAOTest {
 
 	@Autowired
@@ -61,7 +62,7 @@ public class ContractorAuditDAOTest {
 		contractoraudit = contractorauditDAO.save(contractoraudit);
 		int newID = contractoraudit.getId();
 		assertEquals(true, newID > 0);
-		
+
 		// Add children as well
 		AuditData answer = new AuditData();
 		answer.setAudit(contractoraudit);
@@ -69,7 +70,7 @@ public class ContractorAuditDAOTest {
 		answer.getQuestion().setQuestionID(39); // City
 		answer.setAnswer("Irvine");
 		dataDAO.save(answer);
-		
+
 		AuditCatData category = new AuditCatData();
 		category.setAudit(contractoraudit);
 		category.setCategory(new AuditCategory());
@@ -77,49 +78,55 @@ public class ContractorAuditDAOTest {
 		catDataDAO.save(category);
 
 		contractorauditDAO.remove(newID);
-		
+
 		ContractorAudit contractoraudit1 = contractorauditDAO.find(contractoraudit.getId());
 		assertNull(contractoraudit1);
 	}
 
-	//@Test
+	// @Test
 	public void testFindByContractor() {
 		List<ContractorAudit> contractoraudit = contractorauditDAO.findByContractor(707);
 		assertEquals(3260, contractoraudit.get(0).getId());
 	}
 
-	//@Test
+	// @Test
 	public void testFindContractorActiveAudit() {
 		ContractorAudit contractoraudit = contractorauditDAO.findActiveByContractor(14, 1);
 		assertEquals(3259, contractoraudit.getId());
 	}
 
-	//@Test
+	// @Test
 	public void testFind() {
 		ContractorAudit contractoraudit = contractorauditDAO.find(3259);
 		assertEquals("95", contractoraudit.getPercentComplete());
 	}
 
-	//@Test
+	// @Test
 	public void testUpdate() {
 		ContractorAudit contractoraudit = contractorauditDAO.find(4657);
 		contractoraudit.setClosedDate(new Date());
 		contractorauditDAO.save(contractoraudit);
 	}
 
-	//@Test
+	// @Test
 	public void testDelete() {
-		//contractorauditDAO.remove(12370);
+		// contractorauditDAO.remove(12370);
 	}
 
 	@Test
 	public void testFindWhere() {
 		String where = "auditStatus = 'Pending' AND scheduledDate IS NOT NULL AND contractorAccount.active = 'Y' AND contractorAccount IN (SELECT ca.contractorAccount FROM ContractorAudit ca WHERE ca.auditor.id = 910)";
 		List<ContractorAudit> audits = contractorauditDAO.findWhere(10, where, "scheduledDate");
-		for(ContractorAudit audit : audits) {
+		for (ContractorAudit audit : audits) {
 			System.out.println("audit " + audit.getId() + audit.getAuditType().getAuditName());
 		}
-		
+	}
+
+	// @Test
+	public void testCopy() {
+		ContractorAccountDAO ncon = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
+		ContractorAudit oAudit = contractorauditDAO.find(3521);
+		contractorauditDAO.copy(oAudit, ncon.find(1533));
 	}
 
 }

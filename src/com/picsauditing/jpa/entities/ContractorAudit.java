@@ -215,7 +215,7 @@ public class ContractorAudit {
 
 	// Child tables
 	
-	@OneToMany(mappedBy = "audit", cascade = {CascadeType.REMOVE})
+	@OneToMany(mappedBy = "audit", cascade = {CascadeType.ALL})
 	public List<AuditCatData> getCategories() {
 		return categories;
 	}
@@ -224,7 +224,7 @@ public class ContractorAudit {
 		this.categories = categories;
 	}
 
-	@OneToMany(mappedBy = "audit", cascade = {CascadeType.REMOVE})
+	@OneToMany(mappedBy = "audit", cascade = {CascadeType.ALL})
 	public List<AuditData> getData() {
 		return data;
 	}
