@@ -7,6 +7,23 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects,dragdrop,controls" type="text/javascript"></script>
+<style type="text/css">
+#list {
+	margin:0;
+	margin-top:10px;
+	padding:0;
+	list-style-type: none;
+	width:350px;
+}
+#list li {
+	margin:0;
+	margin-bottom:4px;
+	padding:5px;
+	border:1px solid #888;
+	cursor:move;
+}
+</style>
 </head>
 <body>
 <s:include value="manage_audit_type_breadcrumbs.jsp" />
@@ -40,34 +57,27 @@
 </s:form>
 </td>
 <s:if test="id != 0">
+
 <td style="vertical-align: top">
-	<table class="report">
-	<thead>
-	<tr>
-		<th>#</th>
-		<th>Question</th>
-		<th>Req</th>
-		<th>Type</th>
-	</tr>
-	</thead>
-	<tbody>
+<div>
+	<ul id="list">
 	<s:iterator value="subCategory.questions">
-	<tr>
-		<td><s:property value="number"/></td>
-		<td><a href="ManageQuestion.action?id=<s:property value="questionID"/>"><s:property value="question.length()>50 ? question.substring(0,47) + '...' : question"/></a></td>
-		<td><s:property value="isRequired"/></td>
-		<td><s:property value="questionType"/></td>
-	</tr>
+	    <li id="item_<s:property value="questionID"/>"><a href="ManageQuestion.action?id=<s:property value="questionID"/>"><s:property value="question.length()>50 ? question.substring(0,47) + '...' : question"/></a></li>
 	</s:iterator>
-	<tr>
-		<td>*</td>
-		<td><a href="ManageQuestion.action?button=AddNew&parentID=<s:property value="subCategory.id"/>&question.subCategory.id=<s:property value="subCategory.id"/>">Add New Question</a></td>
-		<td></td>
-		<td></td>
-	</tr>
-	</tbody>
-	</table>
+	</ul>
+
+	<a href="ManageQuestion.action?button=AddNew&parentID=<s:property value="subCategory.id"/>&question.subCategory.id=<s:property value="subCategory.id"/>">Add New Question</a>
+	<script type="text/javascript">
+	//<![CDATA[
+	Sortable.create("list", 
+		{onUpdate:function(){new Ajax.Updater('list-info', 'OrderAuditChildrenAjax.action?id=<s:property value="subCategory.id"></s:property>&type=AuditSubCategory', {asynchronous:true, evalScripts:true, onComplete:function(request){new Effect.Highlight("list",{});}, parameters:Sortable.serialize("list")})}})
+	//]]>
+	</script>
+	<div id="list-info"></div>
+</div>
+
 </td>
+
 </s:if>
 </tr>
 </table>
