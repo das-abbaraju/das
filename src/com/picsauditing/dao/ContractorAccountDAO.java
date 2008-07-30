@@ -127,4 +127,14 @@ public class ContractorAccountDAO extends PicsDAO {
 		return query.getResultList();
 
 	}
+	
+	public ContractorAccount findConID(String name) {
+		if (name == null)
+			name = "";
+		if (name.length() > 0)
+			name = "WHERE a.name = '" + name +"'";
+		Query query = em.createQuery("SELECT a from ContractorAccount a " + name);
+		return (ContractorAccount) query.getSingleResult();
+	}
+	
 }

@@ -21,6 +21,7 @@ import com.picsauditing.util.SpringUtils;
 public class PicsActionSupport extends ActionSupport {
 	protected static String LOGIN_AJAX = "LoginAjax";
 	protected Permissions permissions = null;
+	@Deprecated
 	protected String message;
 	protected String button = null; 
 	
