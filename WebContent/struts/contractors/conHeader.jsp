@@ -158,3 +158,4 @@
 	
 </s:if>
 </s:if>
+<s:include value="../actionMessages.jsp" />
