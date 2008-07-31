@@ -14,6 +14,7 @@ import com.picsauditing.PICS.AccountBean;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.Billing;
 import com.picsauditing.PICS.CertificateBean;
+import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Facilities;
 import com.picsauditing.PICS.FlagCalculator2;
@@ -190,10 +191,13 @@ public class Cron extends PicsActionSupport {
 
 			certificate.setSentEmails(certificate.getSentEmails() + 1);
 			certificate.setLastSentDate(new Date());
-			String notes = DateBean.getTodaysDateTime() + " : Sent out the " + certificate.getType()
-					+ " Certificate Expiration Email to" + certificate.getContractorAccount().getName();
-			ContractorAccount contractor = certificate.getContractorAccount();
-			contractor.setNotes(notes);
+			ContractorBean cBean = new ContractorBean();
+			cBean.setFromDB(certificate.getContractorAccount().getIdString());
+			String notes = "Sent out the " + certificate.getType() + " Certificate Expiration Email to"
+					+ certificate.getContractorAccount().getName();
+			cBean.addNote(certificate.getContractorAccount().getIdString(), "System", notes, DateBean
+					.getTodaysDateTime());
+			cBean.writeToDB();
 			certificateDAO.save(certificate);
 		}
 	}

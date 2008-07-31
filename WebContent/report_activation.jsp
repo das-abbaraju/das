@@ -25,11 +25,10 @@ try{
 		EmailContractorBean mailer = (EmailContractorBean)SpringUtils.getBean("EmailContractorBean");
 		mailer.setPermissions(permissions);
 		mailer.sendMessage(EmailTemplates.welcome, new Integer(actionID).intValue());
-		ContractorAccountDAO cAccountDAO = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
-		ContractorAccount cAccount = cAccountDAO.find(Integer.parseInt(actionID));
-		String notes = DateBean.getTodaysDateTime() + "("+permissions.getUsername()+") : Welcome Email Sent on " + DateBean.getTodaysDate();
-		cAccount.setAdminNotes(notes);
-		cAccountDAO.save(cAccount);
+		ContractorBean cBean = new ContractorBean();
+		cBean.setFromDB(actionID);
+		cBean.addAdminNote(actionID, "("+permissions.getUsername()+")", "Welcome Email Sent ", DateBean.getTodaysDate());
+		cBean.writeToDB();
 	}
 
 	if ("Paid".equals(action)){

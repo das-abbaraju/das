@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.PICS.AuditPercentCalculator;
+import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -121,11 +122,12 @@ public class ContractorAuditAction extends AuditActionSupport {
 			// Save the audit status
 			conAudit.setAuditStatus(auditStatus);
 			if (conAudit.getAuditType().getAuditTypeID() == AuditType.PQF && auditStatus.equals(AuditStatus.Submitted)) {
-				String notes = DateBean.getTodaysDateTime() + "(" + permissions.getName() + ") : "
-						+ conAudit.getContractorAccount().getName() + " Submitted their PQF on "
-						+ DateBean.getTodaysDate();
-				contractor.setNotes(notes);
-				conAudit.setContractorAccount(contractor);
+				ContractorBean cBean = new ContractorBean();
+				cBean.setFromDB(conAudit.getContractorAccount().getIdString());
+				String notes = conAudit.getContractorAccount().getName() + " Submitted their PQF ";
+				cBean.addNote(conAudit.getContractorAccount().getIdString(), permissions.getName(), notes, DateBean
+						.getTodaysDate());
+				cBean.writeToDB();
 			}
 			auditDao.save(conAudit);
 

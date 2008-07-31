@@ -1,5 +1,6 @@
 package com.picsauditing.mail;
 
+import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -30,7 +31,7 @@ public class EmailContractorBean extends EmailBean {
 
 		tokens.put("contractor", contractor);
 		tokens.put("user", contractor); // Sometimes we treat contractors as
-										// users
+		// users
 		email.setToAddress(contractor.getEmail());
 		email.setCcAddress(contractor.getSecondEmail());
 
@@ -55,11 +56,11 @@ public class EmailContractorBean extends EmailBean {
 			else
 				currentUser = permissions.getUsername();
 		}
-
-		String notes = DateBean.getTodaysDateTime() + " " + currentUser + ": " + message + "\n" + contractor.getNotes();
-		contractor.setNotes(notes);
-
-		contractor = contractorDAO.save(contractor);
+		ContractorBean cBean = new ContractorBean();
+		cBean.setFromDB(contractor.getIdString());
+		String notes = DateBean.getTodaysDateTime() + " " + currentUser + ": " + message;
+		cBean.addNote(contractor.getIdString(), currentUser, notes, DateBean.getTodaysDate());
+		cBean.writeToDB();
 	}
 
 	@Override
