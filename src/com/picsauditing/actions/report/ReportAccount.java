@@ -86,7 +86,7 @@ public class ReportAccount extends ReportActionSupport {
 		if (permissions.isOperator()) {
 			filterOperator = false;
 			filterFlagStatus = true;
-			filterCerts = true;
+			filterCerts = false;
 		}
 		if (permissions.isCorporate()) {
 		}

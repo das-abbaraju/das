@@ -36,9 +36,11 @@ Corporate Version
 		<s:if test="pqfVisible">
 			<td>PQF</td>
 		</s:if>
+		<!-- 
 		<pics:permission perm="InsuranceCerts">
 			<td>Ins. Certs</td>
 		</pics:permission>
+		 -->
 		<s:if test="permissions.operator">
 			<td><a
 				href="?orderBy=flag DESC">Flag</a></td>
@@ -70,6 +72,7 @@ Corporate Version
 					</s:else>
 				</s:if></td>
 			</s:if>
+			<!-- 
 			<pics:permission perm="InsuranceCerts">
 			<td align="center">
 					&nbsp;&nbsp;<s:if test="[0].get('certs') > 0">
@@ -80,6 +83,7 @@ Corporate Version
 				</s:if>
 			</td>
 			</pics:permission>
+			 -->
 			<s:if test="permissions.operator">
 				<td class="center">
 					<a href="ContractorFlag.action?id=<s:property value="[0].get('id')"/>" 
