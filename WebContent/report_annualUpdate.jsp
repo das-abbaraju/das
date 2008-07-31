@@ -16,12 +16,13 @@ if ("Send Emails".equals(action)) {
 		String temp = (String)e.nextElement();
 		if (temp.startsWith("sendEmail_")) {
 			String conID = temp.substring(10);
-			EmailContractorBean emailer = new EmailContractorBean();
-			emailer.sendMessage(EmailTemplates.annual_update, conID, permissions);
-			
-			emailer.getContractorBean().lastAnnualUpdateEmailDate=DateBean.getTodaysDate();
-			emailer.getContractorBean().annualUpdateEmails++;
-			emailer.getContractorBean().writeToDB();
+			ContractorAccountDAO conAccountDAO = (ContractorAccountDAO)SpringUtils.getBean("ContractorAccountDAO");
+			ContractorAccount contractor = conAccountDAO.find(Integer.parseInt(conID));
+			EmailContractorBean emailer = (EmailContractorBean)SpringUtils. getBean("EmailContractorBean");
+			emailer.sendMessage(EmailTemplates.annual_update, contractor);
+			contractor.setAnnualUpdateEmails(contractor.getAnnualUpdateEmails() + 1);
+			contractor.setLastAnnualUpdateEmailDate(new Date());
+			conAccountDAO.save(contractor);
 		}
 	}
 }
@@ -56,6 +57,9 @@ List<BasicDynaBean> searchData = report.getPage();
 
 %>
 <%@page import="com.picsauditing.jpa.entities.AuditType"%>
+<%@page import="com.picsauditing.util.SpringUtils"%>
+<%@page import="com.picsauditing.dao.ContractorAccountDAO"%>
+<%@page import="com.picsauditing.jpa.entities.ContractorAccount"%>
 <html>
 <head>
 <title>Annual Update Emails</title>
@@ -138,7 +142,8 @@ List<BasicDynaBean> searchData = report.getPage();
 <% } %>
 </form>
 
-<center><%=report.getPageLinksWithDynamicForm()%></center>
+<div>
+<%=report.getPageLinksWithDynamicForm()%></div>
 
 </body>
 </html>
