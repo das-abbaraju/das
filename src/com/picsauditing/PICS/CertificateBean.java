@@ -182,9 +182,9 @@ public class CertificateBean extends DataBean {
 				DBClose();
 				throw new Exception("No id returned after inserting new certificate");
 			}
-			String updateQuery = "UPDATE contractor_info SET certs=(certs+1) WHERE id=" + contractor_id;
+			//String updateQuery = "UPDATE contractor_info SET certs=(certs+1) WHERE id=" + contractor_id;
 
-			SQLStatement.executeUpdate(updateQuery);
+			//SQLStatement.executeUpdate(updateQuery);
 			ret = true;
 		} finally {
 			DBClose();
@@ -401,12 +401,12 @@ public class CertificateBean extends DataBean {
 			DBReady();
 			String updateQuery = "UPDATE certificates SET status='Expired' WHERE expDate<CURDATE();";
 			SQLStatement.executeUpdate(updateQuery);
-			updateQuery = "UPDATE contractor_info SET hasExpiredCerts='Yes' WHERE id IN "
-					+ "(SELECT contractor_id FROM certificates WHERE status='Expired')";
-			SQLStatement.executeUpdate(updateQuery);
-			updateQuery = "UPDATE contractor_info SET hasExpiredCerts='No' WHERE id NOT IN "
-					+ "(SELECT contractor_id FROM certificates WHERE status='Expired')";
-			SQLStatement.executeUpdate(updateQuery);
+//			updateQuery = "UPDATE contractor_info SET hasExpiredCerts='Yes' WHERE id IN "
+//					+ "(SELECT contractor_id FROM certificates WHERE status='Expired')";
+//			SQLStatement.executeUpdate(updateQuery);
+//			updateQuery = "UPDATE contractor_info SET hasExpiredCerts='No' WHERE id NOT IN "
+//					+ "(SELECT contractor_id FROM certificates WHERE status='Expired')";
+//			SQLStatement.executeUpdate(updateQuery);
 		} finally {
 			DBClose();
 		}
