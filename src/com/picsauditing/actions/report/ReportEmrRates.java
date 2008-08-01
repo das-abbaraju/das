@@ -8,10 +8,12 @@ public class ReportEmrRates extends ReportAccount {
 	protected float maxRate = 100;
 
 	public String execute() throws Exception {
-		sql.addJoin("JOIN pqfdata d ON d.conID = a.id");
+		sql.addJoin("JOIN contractor_audit pqf ON pqf.conID = a.id");
+		sql.addJoin("JOIN pqfdata d ON d.auditID = pqf.auditID");
 		sql.addField("d.answer");
 		sql.addField("d.verifiedAnswer");
-
+		sql.addWhere("pqf.auditStatus = 'Active' AND pqf.auditTypeID = 1");
+		
 		int questionID = 0;
 		switch (year) {
 		// This should probably go somewere else, so we can reuse it.

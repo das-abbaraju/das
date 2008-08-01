@@ -39,11 +39,13 @@ public class GraphEmrRates extends ChartMSAction {
 		chart.setYAxisName("Contractors");
 
 		SelectSQL sql = new SelectSQL("accounts a");
-		sql.addJoin("JOIN pqfdata d ON a.id = d.conID");
+		sql.addJoin("JOIN contractor_audit pqf ON pqf.conID = a.id");
+		sql.addJoin("JOIN pqfdata d ON d.auditID = pqf.auditID");
 		sql.addField("d.questionID as series");
 		sql.addField("floor(d.verifiedAnswer*10)/10 as label");
 		sql.addField("count(*) as value");
 		sql.addWhere("d.verifiedAnswer > 0");
+		sql.addWhere("pqf.auditStatus = 'Active' AND pqf.auditTypeID = 1");
 		{
 			String questionList = "0";
 			if (show04) questionList += ","+AuditQuestion.EMR04;
