@@ -66,7 +66,7 @@
 					&login;
 					<clickLink
 						description="Open Activation Report"
-						label="Activation" />
+						label="Activate" />
 					<setInputField name="name" value="Canoo's Test Contractor" />
 					<clickButton description="Search for Contractor" name="imageField" />
 <!--	Commented out: Not here-->					
