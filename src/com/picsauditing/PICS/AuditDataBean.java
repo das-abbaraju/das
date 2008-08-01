@@ -3,10 +3,7 @@ package com.picsauditing.PICS;
 import java.sql.*;
 import java.util.*;
 
-//1-17-05 BJ  Added multiple requirements, class/program
 public class AuditDataBean extends DataBean {
-//conID, qID, num, Question, Category, Answer, OK, textAnswer/Comment
-	
 	public String conID = "";
 	public String num = "";
 	public String id = "";
@@ -423,17 +420,8 @@ public class AuditDataBean extends DataBean {
 			DBClose();
 		}//finally		
 		return updateQuery;
-	}//updateRequirements
+	}
 
-/*	public void clearTreeMaps(){
-//		if (!questionAnswerMap.isEmpty()) 
-	//		questionAnswerMap.clear();
-		//questionTextAnswerMap.clear();
-		//requirementMap.clear();
-		//reqCompleteMap.clear();
-		//dateReqCompleteMap.clear();
-	}//clearTreeMaps
-*/
 	public void deleteAudit(String deleteID, String delName, String auditType, String compDate, String closedDate) throws Exception {
 		String auditID = "0";
 		String insertQuery = "INSERT INTO archivedAudits (auditType,conID,auditCompletedDate,auditClosedDate,conName) "+
@@ -479,7 +467,7 @@ public class AuditDataBean extends DataBean {
 
 	public String getOfficeRequirementsRadio(String name, String classType, String selected){
 		return Inputs.getRadioInput(name, classType, selected, OFFICE_REQS_ARRAY);
-	}//getOfficeRequirementsRadio
+	}
 
 	public String eqDB(String temp){
 		return Utilities.escapeQuotes(temp);

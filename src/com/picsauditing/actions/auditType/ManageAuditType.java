@@ -1,6 +1,5 @@
 package com.picsauditing.actions.auditType;
 
-import java.net.URLEncoder;
 import java.util.List;
 
 import com.opensymphony.xwork2.ActionContext;

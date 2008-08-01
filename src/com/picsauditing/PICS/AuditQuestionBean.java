@@ -37,7 +37,7 @@ public class AuditQuestionBean extends DataBean {
 		if (!"".equals(reqprogram))
 			temp+=reqprogram;
 		return temp;
-	}//getAllRequirements
+	}
 
 	public void addLink(String linkURL, String linkText) {
 		if (null != linkURL && linkURL.length() != 0 && null != linkText&& linkText.length() != 0 ) {
@@ -62,10 +62,9 @@ public class AuditQuestionBean extends DataBean {
 		return links.size()/2;
 	}//getNumOfLinks
 	
-	//added 1-11-05 BJ gets single or multiple requirements depending on multireq column
 	public String getRequirement(){
 		String reqString = "";
-		if  ("Yes".equals(multireq)) { //multiple requirements
+		if  ("Yes".equals(multireq)) {
 			if (!"".equals(reqclass))
 				reqString = "Class: " + reqclass + "<br>";
 			if (!"".equals(reqprogram)) 

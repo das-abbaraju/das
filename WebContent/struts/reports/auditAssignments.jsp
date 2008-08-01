@@ -80,6 +80,7 @@
 				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','atype.auditName');">Type</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','createdDate DESC');">Created</a></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','current_expiresDate DESC');">Expires</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','auditorID DESC,name');">Auditor</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','assignedDate DESC');">Assigned</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','scheduledDate,a.name');">Scheduled</a></td>
@@ -98,6 +99,8 @@
 				</td>
 				<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="[0].get('auditName')"/></a></td>
 				<td class="reportDate"><s:date name="[0].get('createdDate')"
+					format="M/d/yy" /></td>
+				<td class="reportDate"><s:date name="[0].get('current_expiresDate')"
 					format="M/d/yy" /></td>
 				<td><nobr>
 				<s:if test="[0].get('hasAuditor')">

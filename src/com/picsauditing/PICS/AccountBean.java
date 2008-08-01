@@ -711,7 +711,7 @@ public class AccountBean extends DataBean {
 	// 1/15/05 jj - defrags tables
 	public void optimizeDB() throws Exception {
 		String optimizeQuery = "OPTIMIZE TABLE OSHA,accounts,auditCategories,auditData,auditQuestions,certificates,contractor_info,"
-				+ "form_categories,forms,generalContractors,loginLog,users;";
+				+ "forms,generalContractors,loginLog,users;";
 		try {
 			DBReady();
 			SQLStatement.executeUpdate(optimizeQuery);

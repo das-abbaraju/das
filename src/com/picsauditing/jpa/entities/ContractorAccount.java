@@ -42,7 +42,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private String logoFile;
 	private String brochureFile;
 	private String description;
-	private int certs;
 	private Date accountDate;
 	private String paid;
 	private Date lastPayment;
@@ -180,15 +179,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	@Transient
 	public String getDescriptionHTML() {
 		return Utilities.escapeNewLines(this.description);
-	}
-
-	@Column(name = "certs", nullable = true)
-	public int getCerts() {
-		return this.certs;
-	}
-
-	public void setCerts(int certs) {
-		this.certs = certs;
 	}
 
 	@Temporal(TemporalType.DATE)

@@ -35,7 +35,6 @@ public class FlagCalculatorSingle {
 
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
-	private Certificate certificate;
 	private List<ContractorAudit> conAudits;
 	private Map<Integer, AuditData> auditAnswers;
 
