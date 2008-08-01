@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -33,11 +34,16 @@ public class CertificateDAO extends PicsDAO {
 	}
 
 	public List<Certificate> findExpiredCertificate() {
+		Calendar calendar1 = Calendar.getInstance();
 		Query query = em.createQuery("SELECT cr FROM Certificate cr WHERE"
-				+ " (cr.lastSentDate < DATE_SUB(now(), INTERVAL 21 DAY) OR cr.lastSentDate IS NULL) AND"
-				+ "(cr.expiration BETWEEN DATE_ADD(NOW(), INTERVAL -35 DAY) AND DATE_ADD(NOW(), INTERVAL 14 DAY))");
+				+ " (cr.lastSentDate < :Before21Days OR cr.lastSentDate IS NULL) AND"
+				+ "(cr.expiration BETWEEN :Before35Days AND :After14Days)");
+		calendar1.add(calendar1.WEEK_OF_YEAR, -3);
+		query.setParameter("Before21Days", calendar1.getTime());
+		calendar1.add(calendar1.WEEK_OF_YEAR, -2);
+		query.setParameter("Before35Days", calendar1.getTime());
+		calendar1.add(calendar1.WEEK_OF_YEAR, 7);
+		query.setParameter("After14Days", calendar1.getTime());
 		return query.getResultList();
-
 	}
-
 }

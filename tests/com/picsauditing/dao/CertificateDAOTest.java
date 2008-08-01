@@ -24,7 +24,8 @@ public class CertificateDAOTest {
 	@Test
 	public void testFindExpiredCertificate() {
 		List<Certificate> cerList = certificateDAO.findExpiredCertificate();
-		System.out.println(cerList.get(0));
+		System.out.println(cerList.size());
+		System.out.println(cerList.get(0).getId());
 	}
 
 }
