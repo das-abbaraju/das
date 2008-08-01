@@ -224,10 +224,10 @@ public class LoginController extends DataBean {
 	 */
 	private void postLogin(javax.servlet.http.HttpServletRequest request,
 			javax.servlet.http.HttpServletResponse response) throws Exception {
-//		if (!isUser) {
-//			ContractorBean cBean = new ContractorBean();
-//			cBean.setFromDB(permissions.getAccountIdString());
-
+		if (!isUser) {
+			ContractorBean cBean = new ContractorBean();
+			cBean.setFromDB(permissions.getAccountIdString());
+			
 //			if ("".equals(cBean.accountDate)) {
 //				cBean.accountDate = DateBean.getTodaysDate();
 //				cBean.writeToDB();
@@ -242,7 +242,7 @@ public class LoginController extends DataBean {
 			// response.sendRedirect("con_selectFacilities.jsp?id="+permissions.getAccountIdString());
 			// return;
 			// }
-//		}
+		}
 
 		// Find out if the user previously timed out on a page, we'll forward
 		// back there below
