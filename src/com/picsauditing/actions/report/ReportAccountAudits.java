@@ -13,7 +13,6 @@ public class ReportAccountAudits extends ReportAccount {
 		sql.addAudit(AuditType.PQF);
 		sql.addField("c.main_trade");
 		sql.addField("a.industry");
-		sql.addField("c.certs");
 
 		toggleFilters();
 		

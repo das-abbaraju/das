@@ -47,11 +47,11 @@
 						src="images/icon_PQF.gif" width="20" height="20" border="0"></a>
 				</s:else>
 			</s:if></td>
-			<td class="center"><s:if test="[0].get('certs') > 0">
+			<td class="center">
 				<a
 					href="contractor_upload_certificates.jsp?id=<s:property value="[0].get('id')"/>"><img
 					src="images/icon_insurance.gif" width="20" height="20" border="0"></a>
-			</s:if></td>
+			</td>
 		</tr>
 	</s:iterator>
 
