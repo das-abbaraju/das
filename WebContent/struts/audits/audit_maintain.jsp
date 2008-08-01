@@ -39,8 +39,6 @@
 	<div class="formRow">
 		<span class="labels">Audit Location: </span>
 		<span class="fields"><s:textfield name="conAudit.auditLocation"/></span>
-		<span class="labels">Can Delete: </span>
-		<span class="fields"><s:checkbox name="conAudit.canDelete"/></span>
 	</div>
 
 	<div class="formRow">
