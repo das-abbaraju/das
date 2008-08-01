@@ -55,7 +55,6 @@ public class AuditType {
 	protected Integer monthsToExpire = -1;
 	protected Date dateToExpire;
 	protected int displayOrder = 100;
-	protected String legacyCode;
 	
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
 
@@ -159,14 +158,6 @@ public class AuditType {
 		this.displayOrder = displayOrder;
 	}
 
-	public String getLegacyCode() {
-		return legacyCode;
-	}
-
-	public void setLegacyCode(String legacyCode) {
-		this.legacyCode = legacyCode;
-	}
-	
 	@OneToMany(mappedBy = "auditType")
 	@OrderBy("number")
 	public List<AuditCategory> getCategories() {

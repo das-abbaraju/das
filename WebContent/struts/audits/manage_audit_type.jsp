@@ -79,10 +79,6 @@
 <td><s:textfield name="auditType.dateToExpire" /></td>
 </tr>
 <tr>
-<th>Legacy Code:</th>
-<td><s:textfield name="auditType.legacyCode" /></td>
-</tr>
-<tr>
 <th>Order:</th>
 <td><s:textfield name="auditType.displayOrder" /></td>
 </tr>
