@@ -6,6 +6,8 @@ alter table contractor_audit drop column canDelete;
 alter table contractor_info drop column certs;
 alter table contractor_info drop column welcomeEmailDate;
 alter table contractor_info drop column welcomeCallDate;
+alter table contractor_info drop column hasExpiredCerts;
+
 alter table pqfdata drop column conID;
 
 insert into users (id, username, isGroup, email, name, isActive, dateCreated, accountID)

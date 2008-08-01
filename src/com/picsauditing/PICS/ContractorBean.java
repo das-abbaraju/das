@@ -40,7 +40,6 @@ public class ContractorBean extends DataBean {
 	public String brochure_file = "No";
 	public String description = "";
 	public boolean isDescriptionChanged = false;
-	public String certs = "0";
 	public String notes = "";
 	public String adminNotes = "";
 	public boolean isNotesChanged = false;
@@ -51,7 +50,6 @@ public class ContractorBean extends DataBean {
 	public String billingCycle = "";
 	public String billingAmount = "";
 	public String isExempt = "No";
-	public String hasExpiredCerts = "No";
 	public int facilitiesCount = 0;
 	public String isOnlyCerts = "No";
 	public String setTrades = ""; 
@@ -321,7 +319,6 @@ public class ContractorBean extends DataBean {
 		description = SQLResult.getString("description");
 		description = description.replace('?','\'');
 		//}
-		certs = SQLResult.getString("certs");
 
 		notes = SQLResult.getString("notes");
 		adminNotes = SQLResult.getString("adminNotes");
@@ -330,7 +327,6 @@ public class ContractorBean extends DataBean {
 		billingAmount = SQLResult.getString("billingAmount");
 		billingCycle = SQLResult.getString("billingCycle");
 		isExempt = SQLResult.getString("isExempt");
-		hasExpiredCerts = SQLResult.getString("hasExpiredCerts");
 		isOnlyCerts = SQLResult.getString("isOnlyCerts");
 
 		accountDate = DateBean.toShowFormat(SQLResult.getString("accountDate"));
@@ -366,12 +362,10 @@ public class ContractorBean extends DataBean {
 			"',subTrades='"+subTrades+ 
 			"',logo_file='"+logo_file+
 			"',brochure_file='"+brochure_file+
-			"',certs='"+certs+
 			"',mustPay='"+mustPay+
 			"',requestedByID='"+requestedByID+
 			"',billingAmount='"+billingAmount+
 			"',billingCycle='"+billingCycle+
-			"',hasExpiredCerts='"+hasExpiredCerts+
 			"',isOnlyCerts='"+isOnlyCerts+
 
 			"',accountDate='"+DateBean.toDBFormat(accountDate)+

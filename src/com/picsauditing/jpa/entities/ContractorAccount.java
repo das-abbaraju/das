@@ -57,7 +57,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private int billingCycle;
 	private int billingAmount;
 	private String isExempt;
-	private String hasExpiredCerts;
 	private String isOnlyCerts;
 	private String secondContact;
 	private String secondPhone;
@@ -330,15 +329,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	public void setIsExempt(String isExempt) {
 		this.isExempt = isExempt;
-	}
-
-	@Column(name = "hasExpiredCerts", nullable = true, length = 3)
-	public String getHasExpiredCerts() {
-		return this.hasExpiredCerts;
-	}
-
-	public void setHasExpiredCerts(String hasExpiredCerts) {
-		this.hasExpiredCerts = hasExpiredCerts;
 	}
 
 	@Column(name = "isOnlyCerts", nullable = true, length = 3)
