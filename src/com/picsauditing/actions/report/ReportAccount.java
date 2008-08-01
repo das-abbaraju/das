@@ -237,7 +237,8 @@ public class ReportAccount extends ReportActionSupport {
 			return;
 
 		this.trade = trade;
-		sql.addJoin("JOIN pqfdata trade ON trade.conID = a.id " + "AND trade.questionID IN (" + tradeList + ") "
+		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
+		sql.addJoin("JOIN pqfdata trade ON trade.auditID = ca.auditID " + "AND trade.questionID IN (" + tradeList + ") "
 				+ "AND trade.answer LIKE '" + answerFilter + "'");
 		filtered = true;
 	}
@@ -312,7 +313,8 @@ public class ReportAccount extends ReportActionSupport {
 	public void setStateLicensedIn(int[] stateLicensedIn) {
 		String stateLicensedInList = Strings.implode(stateLicensedIn, ",");
 		this.stateLicensedIn = stateLicensedIn;
-		sql.addJoin("JOIN pqfdata licensedIn ON licensedIn.conID = a.id " + "AND licensedIn.questionID IN ("
+		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
+		sql.addJoin("JOIN pqfdata licensedIn ON licensedIn.auditID = ca.auditID " + "AND licensedIn.questionID IN ("
 				+ stateLicensedInList + ") " + "AND licensedIn.answer <> ''");
 		filtered = true;
 	}
@@ -324,7 +326,8 @@ public class ReportAccount extends ReportActionSupport {
 	public void setWorksIn(int[] worksIn) {
 		String worksInList = Strings.implode(worksIn, ",");
 		this.worksIn = worksIn;
-		sql.addJoin("JOIN pqfdata worksIn ON worksIn.conID = a.id " + "AND worksIn.questionID IN (" + worksInList
+		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
+		sql.addJoin("JOIN pqfdata worksIn ON worksIn.auditID = ca.auditID " + "AND worksIn.questionID IN (" + worksInList
 				+ ") " + "AND worksIn.answer LIKE 'Yes%'");
 		filtered = true;
 	}
@@ -336,7 +339,8 @@ public class ReportAccount extends ReportActionSupport {
 	public void setOfficeIn(int[] officeIn) {
 		String officeInList = Strings.implode(officeIn, ",");
 		this.officeIn = officeIn;
-		sql.addJoin("JOIN pqfdata officeIn ON officeIn.conID = a.id " + "AND officeIn.questionID IN (" + officeInList
+		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
+		sql.addJoin("JOIN pqfdata officeIn ON officeIn.auditID = ca.auditID " + "AND officeIn.questionID IN (" + officeInList
 				+ ") " + "AND officeIn.answer LIKE 'Yes with Office'");
 		filtered = true;
 	}
