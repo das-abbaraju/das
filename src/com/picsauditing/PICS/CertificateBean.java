@@ -161,8 +161,6 @@ public class CertificateBean extends DataBean {
 					+ "','"
 					+ operator_id
 					+ "','"
-					+ Utilities.escapeQuotes(operator)
-					+ "','"
 					+ Utilities.escapeQuotes(type)
 					+ "','"
 					+ expDate
@@ -201,10 +199,10 @@ public class CertificateBean extends DataBean {
 		try {
 			DBReady();
 			int numDeleted = SQLStatement.executeUpdate(deleteQuery);
-			if (1 == numDeleted) {
-				String updateQuery = "UPDATE contractor_info SET certs=(certs-1) WHERE id=" + con_id;
-				SQLStatement.executeUpdate(updateQuery);
-			}
+//			if (1 == numDeleted) {
+//				String updateQuery = "UPDATE contractor_info SET certs=(certs-1) WHERE id=" + con_id;
+//				SQLStatement.executeUpdate(updateQuery);
+//			}
 		} finally {
 			DBClose();
 		}
@@ -233,8 +231,8 @@ public class CertificateBean extends DataBean {
 			SQLResult.close();
 			String deleteQuery = "DELETE FROM certificates WHERE contractor_id=" + con_id;
 			SQLStatement.executeUpdate(deleteQuery);
-			String updateQuery = "UPDATE contractor_info SET certs=0 WHERE id=" + con_id;
-			SQLStatement.executeUpdate(updateQuery);
+//			String updateQuery = "UPDATE contractor_info SET certs=0 WHERE id=" + con_id;
+//			SQLStatement.executeUpdate(updateQuery);
 		} finally {
 			DBClose();
 		}
@@ -258,7 +256,6 @@ public class CertificateBean extends DataBean {
 		contractor_id = SQLResult.getString("contractor_id");
 		operator_id = SQLResult.getString("operator_id");
 		type = SQLResult.getString("type");
-		operator = SQLResult.getString("operator");
 		expDate = SQLResult.getString("expDate");
 		sent = SQLResult.getString("sent");
 		lastSentDate = DateBean.toShowFormat(SQLResult.getString("lastSentDate"));
@@ -301,7 +298,7 @@ public class CertificateBean extends DataBean {
 		if (searchFilter.has("orderBy"))
 			selectQuery += "ORDER BY " + searchFilter.get("orderBy");
 		else
-			selectQuery += "ORDER BY operator,type ASC";
+			selectQuery += "ORDER BY type ASC";
 
 		try {
 			DBReady();

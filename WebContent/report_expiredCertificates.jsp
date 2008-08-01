@@ -78,11 +78,11 @@
 				<td align="center"><%=certDO.getSent()%></td>
 				<td><%=certDO.getLastSentDate()%></td>
 				<%		if(!permissions.isOperator()){%>
-				<td><%=certDO.getOperator()%></td>
+				<td><%=certDO.getOperatorName(certDO.getOperator_id())%></td>
 				<%		}//if %>
 				<td><a
 					href="contractor_upload_certificates.jsp?id=<%=certDO.getContractor_id()%>"
-					class="<%=sBean.getTextColor()%>"><%=certDO.getContractor_name()%></a></td>
+					class="<%=sBean.getTextColor()%>"><%=certDO.getContractorName(certDO.getContractor_id())%></a></td>
 				<td><%=certDO.getType()%></td>
 				<td align="center"><%=DateBean.toShowFormat(certDO.getExpDate())%></td>
 				<td align="center"><a

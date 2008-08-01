@@ -102,9 +102,9 @@ onclick="hideSearch()">Hide Filter Options</a></div>
                   <td><input type="button" class="forms" name="editCertificate_<%=certDO.getCert_id() %>" value="Edit" onclick="editCert(<%=certDO.getCert_id()%>)"/>
                     <input type="hidden" name="oktoedit_<%=certDO.getCert_id()%>" id="oktoedit_<%=certDO.getCert_id()%>"></td>
 <%		}//if %>
-                  <td><a href="contractor_upload_certificates.jsp?id=<%=certDO.getContractor_id()%>" class="<%=sBean.getTextColor()%>"><%=certDO.getContractor_name()%></a></td>
+                  <td><a href="contractor_upload_certificates.jsp?id=<%=certDO.getContractor_id()%>" class="<%=sBean.getTextColor()%>"><%=certDO.getContractorName(certDO.getContractor_id())%></a></td>
                   <td><%=certDO.getType()%></td>
-                  <td><%=certDO.getOperator()%></td>
+                  <td><%=certDO.getOperatorName(certDO.getOperator_id())%></td>
                   <td><span id="noedit1_<%=certDO.getCert_id()%>"><%=com.picsauditing.PICS.DateBean.toShowFormat(certDO.getExpDate())%></span>
                     <span id="editme1_<%=certDO.getCert_id()%>" style="display: none"><%=Utilities.inputSelect2("expMonth_" + certDO.getCert_id(),"forms",certDO.getExpMonth(),Inputs.MONTHS_ARRAY)%>
                     /<%=Utilities.inputSelect("expDay_" + certDO.getCert_id(),"forms",certDO.getExpDay(),Inputs.DAYS_ARRAY)%>/<%=Utilities.inputSelect("expYear_" + certDO.getCert_id(),"forms",certDO.getExpYear(),Inputs.YEARS_ARRAY)%></span></td>								

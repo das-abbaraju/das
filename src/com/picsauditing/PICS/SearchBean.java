@@ -165,9 +165,9 @@ import com.picsauditing.util.LinkBuilder;
 	}//getBGColor
 
 	public String getCertsAdminLink() {
-		if ("0".equals(cBean.certs))
-			return "";
-		else
+//		if ("0".equals(cBean.certs))
+//			return "";
+//		else
 			return "<a href=\"contractor_upload_certificates.jsp?id="+aBean.id+"\">"+
 				"<img src=\"images/icon_insurance.gif\" width=\"20\" height=\"20\" border=\"0\"></a>";
 	}//getCertsAdminLink

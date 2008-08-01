@@ -173,12 +173,12 @@
 				%>
 				<td><a
 					href="contractor_upload_certificates.jsp?id=<%=certDO.getContractor_id()%>"
-					class="<%=sBean.getTextColor()%>"><%=certDO.getContractor_name()%></a></td>
+					class="<%=sBean.getTextColor()%>"><%=certDO.getContractorName(certDO.getContractor_id())%></a></td>
 				<td><%=certDO.getType()%></td>
 				<%
 					if (permissions.isAdmin() || permissions.isCorporate()) {
 				%>
-				<td><%=certDO.getOperator()%></td>
+				<td><%=certDO.getOperatorName(certDO.getOperator_id())%></td>
 				<%
 					}//if
 				%>
