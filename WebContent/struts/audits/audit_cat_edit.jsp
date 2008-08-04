@@ -11,7 +11,7 @@
 	</td>
 	<td class="answer">
 		<s:if test="questionType == 'Text'">
-			<s:textfield name="answer.answer" size="30" onchange="javascript:saveAnswer(%{questionID}, this);"/>
+			<s:textfield id="answer_%{questionID}" name="answer.answer" size="30" onchange="javascript:saveAnswer(%{questionID}, this);"/>
 		</s:if>
 		<s:if test="questionType == 'License'">
 			<s:textfield name="answer.answer" size="30" onchange="javascript:saveAnswer(%{questionID}, this);"/>

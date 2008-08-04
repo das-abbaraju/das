@@ -83,25 +83,33 @@
 
 				<group description="Fill out PQF">
 					<clickLink
+						description="Edit Page"
+						label="Edit" />
+					<clickButton
+						description="Edit Contractor"
+						label="submit" />
+					
+					<clickLink
 						description="PQF Page"
 						label="PQF" />
 					<clickLink
 						description="Edit Company Info"
 						label="COMPANY INFORMATION" />
-					<setInputField name="answer_635" value="Canoo's Test Contractor" />
-					<setInputField name="answer_603" value="949-123-4567" />
-					<setInputField name="answer_37" value="A really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, long company name goes here" />
-					<setInputField name="answer_38" value="" />
+						<setInputField htmlId="answer_635" value="Canoo's Test Contractor" />
+						<setInputField htmlId="answer_603" value="949-123-4567" />
+						<setInputField htmlId="answer_37" value="A really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, long company name goes here" />
+						<setInputField htmlId="answer_38" value="" />
 					<clickLink description="Go To Category List" label="Up to Category List" />
 					<clickLink
 						description="Edit Osha"
 						label="OSHA/MSHA INJURY AND ILLNESS DATA" />
-					<setInputField name="manHours1" value="400000" />
-					<setInputField name="manHours2" value="300000" />
-					<setRadioButton name="na3" value="Yes" />
+						<setInputField name="year1.manHours" value="400000" />
+						<setInputField name="year2.manHours" value="300000" />
+						<setRadioButton name="year3.na" value="Yes" />
 					<clickButton description="Save Osha" label="Save This Location" />
 				</group>
 
+				
 				<group description="Delete account">
 					<storeProperty description="Delete Account" 
 						name="login.username" 
@@ -110,8 +118,8 @@
 					&login;
 					<clickLink description="Search For Contractors"
 						label="Search" />
-					<setInputField name="name" value="Canoo's Test Contractor" />
-					<clickButton description="Search for Contractor" name="imageField" />
+					<setInputField name="accountName" value="Canoo's Test Contractor" />
+					<clickButton description="Search for Contractor" label="Search" />
 					<clickLink description="Edit Contract" label="Edit" />
 					<clickLink description="Delete Contractor" label="Delete Contractor" />
 				</group>

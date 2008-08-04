@@ -12,6 +12,8 @@
 		permissions.tryPermission(OpPerms.ContractorAccounts, OpType.Edit);
 	}
 
+	AuditBuilder auditBuilder = (AuditBuilder)SpringUtils.getBean("AuditBuilder");
+	auditBuilder.buildAudits(Integer.parseInt(id));
 	boolean isSubmitted = "Yes".equals(request.getParameter("isSubmitted"));
 	aBean.setFromDB(id);
 	cBean.setFromDB(id);
@@ -24,7 +26,6 @@
 
 		aBean.setFromUploadRequestClientEdit(request);
 		cBean.setFromUploadRequestClientEdit(request);
-
 		if (aBean.isOK() && cBean.isOK()) {
 			aBean.writeToDB();
 			cBean.setUploadedFiles(request);
@@ -38,6 +39,7 @@
 	}
 %>
 
+<%@page import="com.picsauditing.util.SpringUtils"%>
 <html>
 <head>
 <title>Edit Account</title>
