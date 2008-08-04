@@ -66,16 +66,10 @@
 					&login;
 					<clickLink
 						description="Open Activation Report"
-						label="Activate" />
+						label="Activation" />
 					<setInputField name="name" value="Canoo's Test Contractor" />
 					<clickButton description="Search for Contractor" name="imageField" />
-<!--	Commented out: Not here-->					
-<!--					<clickButton description="Send Welcome Email" label="Send" />-->
-					
-					<setInputField name="name" value="Canoo's Test Contractor" />
-					<clickButton description="Search for Contractor" name="imageField" />
-<!--	Commented out: Not here-->						
-<!--					<clickButton description="Make Visible" label="Yes" />-->
+					<clickButton description="Make Visible" label="Activate" />
 				</group>
 				
 				<group description="Login correctly">
@@ -87,28 +81,26 @@
 					&body_verify;
 				</group>
 
-<!--				<group description="Fill out PQF">-->
-<!--	Commented out: Login not working				-->
-<!--					<clickLink-->
-<!--						description="Open Activation Report"-->
-<!--						label="Complete PQF" />-->
-<!--					<clickLink-->
-<!--						description="Edit Company Info"-->
-<!--						label="COMPANY INFORMATION" />-->
-<!--					<setInputField name="answer_635" value="Canoo's Test Contractor" />-->
-<!--					<setInputField name="answer_603" value="949-123-4567" />-->
-<!--					<setInputField name="answer_37" value="A really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, long company name goes here" />-->
-<!--					<setInputField name="answer_38" value="" />-->
-<!--					<clickButton description="Save PQF" label="Save" />-->
-<!--					-->
-<!--					<clickLink-->
-<!--						description="Edit Osha"-->
-<!--						label="OSHA/MSHA INJURY AND ILLNESS DATA" />-->
-<!--					<setInputField name="manHours1" value="400000" />-->
-<!--					<setInputField name="manHours2" value="300000" />-->
-<!--					<setRadioButton name="na3" value="Yes" />-->
-<!--					<clickButton description="Save PQF" label="Update" />-->
-<!--				</group>-->
+				<group description="Fill out PQF">
+					<clickLink
+						description="PQF Page"
+						label="PQF" />
+					<clickLink
+						description="Edit Company Info"
+						label="COMPANY INFORMATION" />
+					<setInputField name="answer_635" value="Canoo's Test Contractor" />
+					<setInputField name="answer_603" value="949-123-4567" />
+					<setInputField name="answer_37" value="A really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, long company name goes here" />
+					<setInputField name="answer_38" value="" />
+					<clickLink description="Go To Category List" label="Up to Category List" />
+					<clickLink
+						description="Edit Osha"
+						label="OSHA/MSHA INJURY AND ILLNESS DATA" />
+					<setInputField name="manHours1" value="400000" />
+					<setInputField name="manHours2" value="300000" />
+					<setRadioButton name="na3" value="Yes" />
+					<clickButton description="Save Osha" label="Save This Location" />
+				</group>
 
 				<group description="Delete account">
 					<storeProperty description="Delete Account" 
@@ -116,12 +108,12 @@
 						propertyType="ant"
 						value="${admin.username}"/>
 					&login;
-<!--					<invoke-->
-<!--						description="Register Link"-->
-<!--						url="accounts_manage.jsp" />-->
-<!--					<setInputField name="name" value="Canoo's Test Contractor" />-->
-<!--					<clickButton description="Search for Contractor" name="imageField" />-->
-<!--					<clickButton description="Delete Contract" label="D" />-->
+					<clickLink description="Search For Contractors"
+						label="Search" />
+					<setInputField name="name" value="Canoo's Test Contractor" />
+					<clickButton description="Search for Contractor" name="imageField" />
+					<clickLink description="Edit Contract" label="Edit" />
+					<clickLink description="Delete Contractor" label="Delete Contractor" />
 				</group>
 			</steps>
 		</webtest>
