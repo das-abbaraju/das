@@ -19,7 +19,7 @@
 
 	String conID = id;
 	String auditID = "0";
-	
+	boolean isRemoved = "Yes".equals(request.getParameter("Remove"));
 	boolean isSubmitted = "Yes".equals(request.getParameter("isSubmitted"));
 	String msg = "";
 	aBean.setFromDB(editID);
@@ -63,6 +63,13 @@
 			}
 		}
 	}
+	
+	if(isRemoved) {
+		aBean.deleteAccount(id, config.getServletContext().getRealPath("/"));
+		response.sendRedirect("ContractorListAdmin.action");
+		return; 
+	}
+	
 %>
 <html>
 <head>
@@ -353,5 +360,6 @@ Would you still like to schedule <b><%=aBean.name%></b> on this date? <span
 <br clear="all" />
 <input name="submit" type="submit" class="forms" value="Save Contractor" />
 </form>
+<div style="position: relative;bottom: 30px;left: 35%"><a href="accounts_edit_contractor.jsp?id=<%=editID%>&Remove=Yes">Delete Contractor</a></div>
 </body>
 </html>

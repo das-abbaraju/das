@@ -468,18 +468,24 @@ public class AccountBean extends DataBean {
 		// config.getServletContext().getRealPath("/"));
 		try {
 			DBReady();
-			String deleteQuery = "DELETE FROM accounts WHERE id=" + deleteID + " LIMIT 1;";
+			String deleteQuery = "DELETE FROM pqfcatdata WHERE auditID IN (SELECT auditID FROM contractor_audit WHERE conID = "+ deleteID +");";
 			SQLStatement.executeUpdate(deleteQuery);
-			deleteQuery = "DELETE FROM contractor_info WHERE id=" + deleteID + " LIMIT 1;";
+			deleteQuery = "DELETE FROM pqfdata WHERE auditID IN (SELECT auditID FROM contractor_audit WHERE conID = "+ deleteID +");";
 			SQLStatement.executeUpdate(deleteQuery);
-			deleteQuery = "DELETE FROM generalContractors WHERE subID=" + deleteID + " OR genID=" + deleteID + ";";
+			deleteQuery = "DELETE FROM osha WHERE conID = "+ deleteID + ";";
 			SQLStatement.executeUpdate(deleteQuery);
-			deleteQuery = "DELETE FROM operators WHERE id=" + deleteID + ";";
+			deleteQuery = "DELETE FROM contractor_audit WHERE conID = "+ deleteID + ";";
 			SQLStatement.executeUpdate(deleteQuery);
 			deleteQuery = "DELETE FROM flags WHERE opID=" + deleteID + " OR conID=" + deleteID + ";";
 			SQLStatement.executeUpdate(deleteQuery);
-			// Query = "DELETE FROM OSHA WHERE conID="+deleteID+";";
-			// SQLStatement.executeUpdate(Query);
+			deleteQuery = "DELETE FROM operators WHERE id=" + deleteID + ";";
+			SQLStatement.executeUpdate(deleteQuery);
+			deleteQuery = "DELETE FROM generalContractors WHERE subID=" + deleteID + " OR genID=" + deleteID + ";";
+			SQLStatement.executeUpdate(deleteQuery);
+			deleteQuery = "DELETE FROM contractor_info WHERE id=" + deleteID + " LIMIT 1;";
+			SQLStatement.executeUpdate(deleteQuery);
+			deleteQuery = "DELETE FROM accounts WHERE id=" + deleteID + " LIMIT 1;";
+			SQLStatement.executeUpdate(deleteQuery);
 		} finally {
 			DBClose();
 		}// finally
