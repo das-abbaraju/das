@@ -3,27 +3,7 @@ package com.picsauditing.PICS.pqf;
 import java.util.*;
 
 public class Constants {
-	public static final String PQF_TYPE = "PQF";
-	public static final String DESKTOP_TYPE = "Desktop";
-	public static final String OFFICE_TYPE = "Office";
-	public static final String FIELD_TYPE = "Field";
-	public static final String DA_TYPE = "DA";
-
-	public static final String MANUAL_PQF_QID = "1331";
-	public static final String MANUAL_REVISION_QID = "1599";
-	public static final String[] UPLOAD_CAT_IDS = {"33","93","75"};
-
-	public static String EMR_YEAR1 = "1617";
-	public static String EMR_YEAR2 = "1519";
-	public static String EMR_YEAR3 = "889";
-	public static String EMR_YEAR4 = "126";	
 	
-	
-//	public static final String HURDLE = "1385";
-//	public static final String HURDLE = "318";
-
-	public static final String[] AUDIT_TYPE_ARRAY = {PQF_TYPE,DESKTOP_TYPE,OFFICE_TYPE,DA_TYPE,FIELD_TYPE};
-	public static final String DEFAULT_AUDIT = "--Audit Type--";
 	public static final String[] STATE_ARRAY = {
 "Alabama","Yes","http://www.genconbd.state.al.us/DATABASE-LIVE/RosterResult.asp","txtlicenseno","action","Search",";",
 "Alaska","Yes","http://www.dced.state.ak.us/occ/OccSearch/main.cfm?CFID=1607376&CFTOKEN=46ef7aacf0153993-C1C5CF3D-C169-2801-9511A03E87A050E8","LicNum",";",
@@ -59,7 +39,7 @@ public class Constants {
 		tempAL.addAll(Arrays.asList(STATE_ARRAY));
 		StringBuffer temp = new StringBuffer();
 		ListIterator li = tempAL.listIterator();
-		while (li.hasNext()) {		
+		while (li.hasNext()) {
 			if (((String)li.next()).equals(selectedState)) {
 				String post = (String)li.next();
 				String link = (String)li.next();
@@ -83,10 +63,6 @@ public class Constants {
 		
 		String junk = temp.toString();
 		return temp.toString();
-	} // displayStateLink
+	}
 
-	public String getBGColor(int count) {
-		if ((count % 2) == 1)	return " bgcolor=#FFFFFF";
-		else	return "";
-	} // getBGColor
-} // Constants
+}

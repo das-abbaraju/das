@@ -1,12 +1,9 @@
 package com.picsauditing.PICS;
 
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
-public class SearchFilter{
+public class SearchFilter {
 	String name = "";
 	public static final String[] DEFAULTS = {
 		"s_name","- Name - ",

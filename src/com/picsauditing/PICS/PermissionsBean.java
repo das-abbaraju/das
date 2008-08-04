@@ -128,16 +128,6 @@ public class PermissionsBean extends DataBean {
 		}
 	}
 	
-	public boolean canVerifyAudit(String auditType, String conID) {
-		if (isAdmin() ||
-			isAuditor() && (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(auditType) && auditorPQFSet.contains(conID)) ||
-			isAuditor() && (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(auditType) && auditorDesktopSet.contains(conID)) ||
-			isAuditor() && (com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(auditType) && auditorDaSet.contains(conID)) ||
-			isAuditor() && (com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(auditType) && auditorOfficeSet.contains(conID)))
-			return true;
-		return false;
-	}
-
 	public Permissions getPermissions() {
 		if (this.permissions == null) permissions = new Permissions();
 		return permissions;

@@ -17,6 +17,7 @@
 	<bean id="AuditCategoryDAO" class="com.picsauditing.dao.AuditCategoryDAO" scope="prototype"/>
 	<bean id="AuditSubCategoryDAO" class="com.picsauditing.dao.AuditSubCategoryDAO" scope="prototype"/>
 	<bean id="AuditCategoryDataDAO" class="com.picsauditing.dao.AuditCategoryDataDAO" scope="prototype"/>
+	<bean id="AuditCatOperatorDAO" class="com.picsauditing.dao.AuditCatOperatorDAO" scope="prototype"/>
 	<bean id="AuditOperatorDAO" class="com.picsauditing.dao.AuditOperatorDAO" scope="prototype"/>
 	<bean id="AuditQuestionDAO" class="com.picsauditing.dao.AuditQuestionDAO" scope="prototype"/>
 	<bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO" scope="prototype"/>

@@ -1,11 +1,6 @@
 package com.picsauditing.actions.audits;
 
-import java.util.TreeMap;
-import java.util.Vector;
-
-import com.picsauditing.PICS.pqf.Constants;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;

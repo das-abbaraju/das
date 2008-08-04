@@ -95,7 +95,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.ManageAudits)) {
 			subMenu.addChild("Audit Definitions", "ManageAuditType.action");
 			subMenu.addChild("Desktop Matrix", "pqf_desktopMatrix.jsp?auditType=Desktop");
-			subMenu.addChild("PQF Matrix", "pqf_Matrix.jsp?auditType=PQF");
+			subMenu.addChild("PQF Matrix", "ManagePQFMatrix.action");
 		}
 		if (permissions.hasPermission(OpPerms.EmailTemplates))
 			subMenu.addChild("Email Templates", "email_templates.jsp");

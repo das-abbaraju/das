@@ -1,24 +1,20 @@
 package com.picsauditing.PICS;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.HashSet;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.domain.IPicsDO;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.util.LinkBuilder;
 
-
-
 /**
  * @author Jeff Jensen
  *
- */public class SearchBean {
-/*	History
-	2/20/06 jj - eliminated other searches (operator, auditor, osha)
-	1/28/05 jj - added doOSHASearch for fatalities and incidence report
-	1/19/04 bj - changed scheduleAuditsReport variable to whichScheduleAuditsReport so schedule audit report can return either new or recsheduling audits
-*/
+ */
+public class SearchBean {
 	public AccountBean aBean = new AccountBean();
 	public ContractorBean cBean = new ContractorBean();
 	public OperatorBean oBean = new OperatorBean();
@@ -46,7 +42,6 @@ import com.picsauditing.util.LinkBuilder;
 	public String selected_state = "";
 	public String selected_status = "";
 	public String selected_auditStatus = "";
-	public String selected_auditType = "";
 	public String selected_generalContractorID = ""; // only used when admin wants to see sub contractors of certain general contractor
 	public String selected_certsOnly = "";
 	public String selected_entireDB = "";
@@ -69,19 +64,10 @@ import com.picsauditing.util.LinkBuilder;
 	
 	public String expiresInDays = "";
 	public String searchType = DEFAULT_TYPE;
-//	public String prequalExpiresInDays = "";
-//	public boolean isAnnualUpdateReport = false;
-//	public boolean isAuditorsReport = false;
 	public boolean isPaymentReport = false;
 	public boolean isUpgradePaymentReport = false;
-	public boolean isDesktopReport = false;
 	public boolean isActivationReport = false;
 	public boolean isNoInsuranceOnly = false;
-	public boolean isNCMSReport = false;
-	public boolean isHurdleRatesReport = false;
-	public boolean isEMRRatesReport = false;
-	public int auditCalendarMonth = 0;
-	public int auditCalendarYear = 0;
 	
 	public String orderBy = "name";	// the result set is sorted on this colunm, can be changed
 	public void setOrderByColumn(String s) {orderBy = s;}
@@ -203,7 +189,9 @@ import com.picsauditing.util.LinkBuilder;
 			selected_state = r.getParameter("state");
 			selected_status = r.getParameter("status");
 			selected_auditStatus = r.getParameter("auditStatus");
-			selected_auditType = r.getParameter("auditType");
+			if (r.getParameter("auditType") != null)
+				throw new Exception("auditType is set but this code was removed");
+			// temporary check to make sure we didn't clean the code too much
 			selected_generalContractorID = r.getParameter("generalContractorID");
 			selected_certsOnly = r.getParameter("certsOnly");
 			selected_entireDB = r.getParameter("entireDB");
@@ -432,13 +420,6 @@ import com.picsauditing.util.LinkBuilder;
 		if (!"".equals(expiresInDays))
 			whereQuery += "AND (auditCompletedDate <> '0000-00-00' AND DATE_ADD(auditCompletedDate,INTERVAL 3 YEAR) < DATE_ADD(CURDATE(),INTERVAL "+
 					expiresInDays+" DAY)) ";
-		if (isDesktopReport) {
-			whereQuery += "AND isExempt='No' AND (desktopSubmittedDate='0000-000-00' OR desktopSubmittedDate < DATE_ADD(CURDATE(),INTERVAL -34 MONTH)) AND "+
-					"!(auditCompletedDate<>'0000-00-00' AND "+
-					"auditCompletedDate<'"+DateBean.OLD_OFFICE_CUTOFF+"' AND auditCompletedDate>DATE_ADD(CURDATE(),INTERVAL -3 YEAR)) ";
-			pqfJoinQuery = "INNER JOIN pqfData manQ ON (manQ.conID=accounts.id AND manQ.questionID="+com.picsauditing.PICS.pqf.Constants.MANUAL_PQF_QID+") "+
-					"LEFT JOIN pqfData manRevisionQ ON (manRevisionQ.conID=accounts.id AND manRevisionQ.questionID="+com.picsauditing.PICS.pqf.Constants.MANUAL_REVISION_QID+") ";
-		}//if
 		if (isPaymentReport && !showAll)
 			whereQuery += "AND mustPay='Yes' AND (paymentExpires='0000-00-00' OR DATE_ADD(CURDATE(),INTERVAL 35 DAY)>paymentExpires) ";
 		if (isPaymentReport && showAll)
@@ -447,16 +428,6 @@ import com.picsauditing.util.LinkBuilder;
 			whereQuery += "AND (lastPaymentAmount<newBillingAmount OR (billingCycle>1 AND newbillingAmount>=799)) "+
 					"AND mustPay='Yes' AND isExempt='No' AND (paymentExpires>DATE_ADD(CURDATE(),INTERVAL 90 DAY) "+
 					"OR lastInvoiceDate>lastPayment) ";
-		if (auditCalendarMonth>0 && auditCalendarYear>0)
-			whereQuery += "AND EXTRACT(YEAR_MONTH FROM auditDate)='"+auditCalendarYear+"_"+auditCalendarMonth+"')";
-		//for schedule/reschedule audit report
-		if (RESCHEDULE_AUDITS.equals(whichScheduleAuditsReport))
-		 	whereQuery += "AND DATE_ADD(auditDate,INTERVAL 3 YEAR) < DATE_ADD(CURDATE(),INTERVAL 90 DAY) OR (auditDate > CURDATE() AND lastAuditDate <> '') ";
-		if (NEW_AUDITS.equals(whichScheduleAuditsReport)){
-			whereQuery += "AND isExempt='No' AND pqfSubmittedDate>'"+DateBean.PQF_EXPIRED_CUTOFF+"' AND (auditCompletedDate='0000-00-00' OR auditCompletedDate<DATE_ADD(CURDATE(),INTERVAL -34 MONTH)) ";
-			groupByQuery = "GROUP BY accounts.id ";
-			joinQuery+="INNER JOIN generalContractors gcTable ON (gcTable.subID=accounts.id) INNER JOIN operators ON (genID=operators.id) JOIN audit_operator ON(genID=audit_operator.opID AND auditTypeID="+AuditType.OFFICE+" AND minRiskLevel>1) ";
-		}//if
 		
 		//OSHA Queries
 		if (!"".equals(searchIncidenceRate)) {
@@ -471,45 +442,9 @@ import com.picsauditing.util.LinkBuilder;
 		}//if
 		if (isFatalitiesReport)
 			whereQuery += "AND (fatalities1>0 OR fatalities2>0 OR fatalities3>0) ";
-		if (isNCMSReport) {
-			whereQuery += "AND remove='No' ";
-			ncmsJoinQuery = "INNER JOIN NCMS_Desktop ON ((contractor_info.taxID=NCMS_Desktop.fedTaxID AND taxID!='') OR "+
-				"accounts.name=NCMS_Desktop.ContractorsName) ";
-		}
-		if (isHurdleRatesReport){
-			pqfJoinQuery = "LEFT JOIN pqfData q1 ON (q1.conID=accounts.id AND q1.questionID="+
-				com.picsauditing.PICS.pqf.Constants.EMR_YEAR1+") "+
-				"LEFT JOIN pqfData q2 ON (q2.conID=accounts.id AND q2.questionID="+
-				com.picsauditing.PICS.pqf.Constants.EMR_YEAR2+") "+
-				"LEFT JOIN pqfData q3 ON (q3.conID=accounts.id AND q3.questionID="+
-				com.picsauditing.PICS.pqf.Constants.EMR_YEAR3+") "+
-				"LEFT JOIN pqfData q1385 ON (q1385.conID=accounts.id AND q1385.questionID=1385) "+
-				"LEFT JOIN pqfData q318 ON (q318.conID=accounts.id AND q318.questionID=318) ";
-			if(!"".equals(searchEMRRate))
-				whereQuery+=" AND (q1.verifiedAnswer>"+searchEMRRate+" OR q2.verifiedAnswer>"+searchEMRRate+" OR q3.verifiedAnswer>"+searchEMRRate+") ";
-		}//if
-		if (isEMRRatesReport){
-			pqfJoinQuery = "LEFT JOIN pqfData q1 ON (q1.conID=accounts.id AND q1.questionID="+
-				com.picsauditing.PICS.pqf.Constants.EMR_YEAR1+") LEFT JOIN pqfData q2 ON "+
-				"(q2.conID=accounts.id AND q2.questionID="+com.picsauditing.PICS.pqf.Constants.EMR_YEAR2+
-				") LEFT JOIN pqfData q3 ON (q3.conID=accounts.id AND q3.questionID="+
-				com.picsauditing.PICS.pqf.Constants.EMR_YEAR3+") ";
-		}//if
 		if ("Contractor".equals(searchType))
 			joinQuery+="INNER JOIN contractor_info ON (accounts.id=contractor_info.id) ";
 		
-		if (permissions.isAuditor() && !permissions.isAdmin()) {
-			// This person is an auditor but not an admin
-			if (com.picsauditing.PICS.pqf.Constants.OFFICE_TYPE.equals(selected_auditType))
-				whereQuery += "AND contractor_info.auditor_id="+accessID+" ";
-			else if (com.picsauditing.PICS.pqf.Constants.DESKTOP_TYPE.equals(selected_auditType))
-				whereQuery += "AND contractor_info.desktopAuditor_id="+accessID+" ";
-			else if (com.picsauditing.PICS.pqf.Constants.DA_TYPE.equals(selected_auditType))
-				whereQuery += "AND contractor_info.daAuditor_id="+accessID+" ";
-			else if (com.picsauditing.PICS.pqf.Constants.PQF_TYPE.equals(selected_auditType))
-				whereQuery += "AND contractor_info.pqfAuditor_id="+accessID+" ";
-			else whereQuery += "AND 0 ";
-		}
 		if ("Operator".equals(accessType)) {
 			boolean hideUnApproved = permissions.oBean.isApprovesRelationships() && !permissions.getPermissions().hasPermission(OpPerms.ViewUnApproved);
 			
@@ -569,18 +504,6 @@ import com.picsauditing.util.LinkBuilder;
 	public void setIsFatalitiesReport() {
 		isFatalitiesReport = true;
 	}
-
-	public void setIsHurdleRatesReport() {
-		isHurdleRatesReport = true;	
-	}//setIsHurdleRatesReport
-
-	public void setIsEMRRatesReport() {
-		isEMRRatesReport = true;	
-	}//setIsEMRRatesReport
-
-	public void setIsDesktopReport() {
-		isDesktopReport = true;
-	}//setIsDesktopSearch
 
 	@Deprecated
 	public String getTextColor() throws Exception {
@@ -663,31 +586,6 @@ import com.picsauditing.util.LinkBuilder;
 		aBean.setFromResultSet(SQLResult);
 		if ("Contractor".equals(searchType))
 			cBean.setFromResultSet(SQLResult);
-		if (isDesktopReport){
-			manualRevisionDate = DateBean.toShowFormat(SQLResult.getString("manRevisionQ.answer"));
-			if (null == manualRevisionDate)
-				manualRevisionDate = "";
-		}//if
-		if (isHurdleRatesReport || isEMRRatesReport){
-			emr1 = Utilities.convertPercentToDecimal(SQLResult.getString("q1.verifiedAnswer"));
-			if ("0.0".equals(emr1))
-				emr1 = Utilities.convertPercentToDecimal(SQLResult.getString("q1.answer"));
-			emr2 = Utilities.convertPercentToDecimal(SQLResult.getString("q2.verifiedAnswer"));
-			if ("0.0".equals(emr2))
-				emr2 = Utilities.convertPercentToDecimal(SQLResult.getString("q2.answer"));
-			emr3 = Utilities.convertPercentToDecimal(SQLResult.getString("q3.verifiedAnswer"));
-			if ("0.0".equals(emr3))
-				emr3 = Utilities.convertPercentToDecimal(SQLResult.getString("q3.answer"));
-			float temp1 = Float.parseFloat(emr1);
-			float temp2 = Float.parseFloat(emr2);
-			float temp3 = Float.parseFloat(emr3);
-			java.text.DecimalFormat decFormatter = new java.text.DecimalFormat("###,##0.00");
-			emrAve = decFormatter.format((temp1+temp2+temp3)/3);
-			if(isHurdleRatesReport){
-				q318 = SQLResult.getString("q318.answer");
-				q1385 = SQLResult.getString("q1385.answer");
-			}//if
-		}//if
 		if (!DEFAULT_TRADE.equals(selected_trade)){
 			String temp = SQLResult.getString("tradeQ.answer");
 			tradePerformedBy = "";
@@ -726,23 +624,14 @@ import com.picsauditing.util.LinkBuilder;
 		}//if
 		// reset some of the set search parameters because the search Bean is a session object and persists from page to page		
 		expiresInDays = "";
-//		prequalExpiresInDays = "";
-//		incompleteAfter = "";
 		isFatalitiesReport = false;
-//		isAuditorsReport = false;
-//		isAnnualUpdateReport = false;
 		isPaymentReport = false;
 		isUpgradePaymentReport = false; 
 		isActivationReport = false;
 		isNoInsuranceOnly = false;
-		isNCMSReport = false;
-		isHurdleRatesReport = false;
-		isEMRRatesReport = false;
-		isDesktopReport = false;
 		searchType=DEFAULT_TYPE;
-		//scheduleAuditsReport = false;
 		whichScheduleAuditsReport = "";
-	}//closeSearch
+	}
 	
 	public static String getSearchIndustrySelect(String name, String classType, String selectedIndustry) throws Exception {
 		return Inputs.inputSelect(name, classType, selectedIndustry, INDUSTRY_SEARCH_ARRAY);
@@ -928,5 +817,4 @@ import com.picsauditing.util.LinkBuilder;
 		return "<img src=images/icon_"+flag.toLowerCase()+"Flag.gif width=12 height=15 border=0>";
 	}//getFlagLink
 	
-	
-}//SearchBean
+}
