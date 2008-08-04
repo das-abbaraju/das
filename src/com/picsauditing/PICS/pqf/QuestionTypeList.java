@@ -3,6 +3,10 @@ package com.picsauditing.PICS.pqf;
 import java.sql.*;
 import java.util.*;
 
+@Deprecated
+/**
+ * Use AuditQuestionDAO.findQuestionByType() instead
+ */
 public class QuestionTypeList extends com.picsauditing.PICS.DataBean {
 	public static final String DEFAULT_SELECT_QUESTION_ID = "0";
 	public String questionType = "";

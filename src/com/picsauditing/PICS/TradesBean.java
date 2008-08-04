@@ -3,6 +3,10 @@ package com.picsauditing.PICS;
 import java.sql.*;
 import java.util.*;
 
+@Deprecated
+/**
+ * Use AuditQuestionDAO.findQuestionByType() instead
+ */
 public class TradesBean extends DataBean {
 	public static final String DEFAULT_SELECT_TRADE = "- Trade -";
 	public static final String DEFAULT_SELECT_TRADE_ID = "0";

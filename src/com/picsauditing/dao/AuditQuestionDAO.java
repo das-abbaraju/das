@@ -31,12 +31,15 @@ public class AuditQuestionDAO extends PicsDAO {
 		return em.find(AuditQuestion.class, id);
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findBySubCategory(int subCategoryID) {
 		Query query = em.createQuery("select t FROM AuditQuestion t WHERE t.subCategory.id = ?");
 		query.setParameter(1, subCategoryID);
 		return query.getResultList();
 	}
 
+	
+	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findQuestionByType(String questionType) {
 		Query query = em.createQuery("SELECT t FROM AuditQuestion t WHERE t.questionType = ? ORDER BY "
 				+ "t.subCategory.category.number,t.subCategory.number,t.number");

@@ -538,13 +538,13 @@ public class ContractorBean extends DataBean {
 		if (num_of_trades == 0) {
 			num_of_trades++;
 			trades = "1;" + main_trade + ";";
-		}//if
+		}
 		if (main_trade.equals(TradesBean.DEFAULT_SELECT_TRADE))
 			errorMessages.addElement("Please select a main trade");
 		if (requestedByID.length() == 0)
 			errorMessages.addElement("Please select a choice for the Audit Requested By field");
 		return (errorMessages.size() == 0);
-	}//isOK
+	}
 
 	public boolean isOKClientCreate() throws Exception {
 		errorMessages = new Vector<String>();
