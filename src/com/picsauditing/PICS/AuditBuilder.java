@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.picsauditing.dao.AuditCatOperatorDAO;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditTypeDAO;
@@ -194,11 +193,16 @@ public class AuditBuilder {
 
 		/** Generate Categories * */
 		for (ContractorAudit conAudit : currentAudits) {
-			generateDynamicCategories(conAudit);
+			fillAuditCategories(conAudit);
 		}
 	}
 
-	private void generateDynamicCategories(ContractorAudit conAudit) {
+	/**
+	 * Determine which categories should be on a given audit 
+	 * and add ones that aren't there and remove ones that shouldn't be there
+	 * @param conAudit
+	 */
+	public void fillAuditCategories(ContractorAudit conAudit) {
 		// set of audit categories to be included in the audit
 		Set<AuditCategory> categories = new HashSet<AuditCategory>();
 		

@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.DateBean;
@@ -34,6 +35,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 	protected EmailAuditBean mailer;
 	protected FlagCalculator2 flagCalculator;
 	protected AuditPercentCalculator auditPercentCalculator;
+	protected AuditBuilder auditBuilder;
 
 	private boolean isCanApply = false;
 	private int applyCategoryID = 0;
@@ -41,11 +43,12 @@ public class ContractorAuditAction extends AuditActionSupport {
 
 	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, EmailAuditBean emailAuditBean,
-			FlagCalculator2 flagCalculator2, AuditPercentCalculator auditPercentCalculator) {
+			FlagCalculator2 flagCalculator2, AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.mailer = emailAuditBean;
 		this.flagCalculator = flagCalculator2;
 		this.auditPercentCalculator = auditPercentCalculator;
+		this.auditBuilder = auditBuilder;
 	}
 
 	public String execute() throws Exception {
@@ -53,7 +56,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 			return LOGIN;
 		this.findConAudit();
 
-		catDataDao.fillAuditCategories(conAudit);
+		auditBuilder.fillAuditCategories(conAudit);
 
 		if (conAudit.getAuditType().isDynamicCategories() && permissions.isPicsEmployee()) {
 			isCanApply = true;

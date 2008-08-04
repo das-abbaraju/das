@@ -95,59 +95,6 @@ public class AuditCategoryDataDAO extends PicsDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void fillAuditCategories(ContractorAudit contractorAudit) {
-		
-		AuditType auditType = contractorAudit.getAuditType();
-		
-		List<Integer> catIDSet = null;
-		if (auditType.isPqf()) {
-			Query query = em.createQuery("SELECT DISTINCT c.category.id FROM AuditCatOperator c " +
-					"WHERE c.riskLevel = :risk AND c.operatorAccount IN (SELECT co.operatorAccount FROM ContractorOperator co " +
-					"WHERE co.contractorAccount = :contractor)");
-			query.setParameter("contractor", contractorAudit.getContractorAccount());
-			query.setParameter("risk", contractorAudit.getContractorAccount().getRiskLevel());
-			catIDSet = query.getResultList();
-		}
-
-		if (auditType.getAuditTypeID() == AuditType.DESKTOP) {
-			String selectQuery = "SELECT DISTINCT catID FROM desktopMatrix m " +
-				"JOIN pqfData d ON (m.qID=d.questionID AND m.auditType='Desktop') "+
-				"JOIN contractor_audit ca on d.auditID = ca.auditID AND ca.conID = "+contractorAudit.getContractorAccount().getId()+" "+
-				"JOIN pqfQuestions q ON (q.questionID=m.qID) " +
-				"WHERE " +
-					"(questionType='Service' AND d.answer LIKE 'C%') OR "+
-					"(questionType IN ('Industry','Main Work') AND answer='X')";
-			Query query = em.createNativeQuery(selectQuery);
-			catIDSet = query.getResultList();
-		}
-		
-		Query query = em.createQuery("FROM AuditCategory c WHERE c.auditType = ?");
-		query.setParameter(1, contractorAudit.getAuditType());
-		List<AuditCategory> categories = query.getResultList();
-		
-		// Add any missing categories
-		for(AuditCategory category : categories) {
-			boolean contains = false;
-			for(AuditCatData catData : contractorAudit.getCategories()) {
-				if (catData.getCategory().equals(category)) {
-					contains = true;
-					break;
-				}
-			}
-			if (!contains) {
-				AuditCatData data = new AuditCatData();
-				data.setAudit(contractorAudit);
-				data.setCategory(category);
-				data.setApplies(YesNo.Yes);
-				if (catIDSet != null && !catIDSet.contains(category.getId()))
-					data.setApplies(YesNo.No);
-				save(data);
-				contractorAudit.getCategories().add(data);
-			}
-		}
-		
-	}
-
 	public List<AuditCatData> findAllAuditCatData(int auditID, int catID) {
 		String selectQuery = "SELECT * FROM pqfCatData "+
 		"WHERE catID="+catID+" AND auditID="+auditID;

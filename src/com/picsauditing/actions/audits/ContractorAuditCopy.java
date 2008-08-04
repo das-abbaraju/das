@@ -1,5 +1,6 @@
 package com.picsauditing.actions.audits;
 
+import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.access.OpPerms;
@@ -25,8 +26,8 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 
 	public ContractorAuditCopy(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, EmailAuditBean emailAuditBean,
-			FlagCalculator2 flagCalculator2, AuditPercentCalculator auditPercentCalculator) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, emailAuditBean, flagCalculator2, auditPercentCalculator);
+			FlagCalculator2 flagCalculator2, AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder) {
+		super(accountDao, auditDao, catDataDao, auditDataDao, emailAuditBean, flagCalculator2, auditPercentCalculator, auditBuilder);
 	}
 
 	public String execute() throws Exception {
