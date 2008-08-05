@@ -14,7 +14,7 @@
 <table>
 <tr><td style="vertical-align: top">
 
-<s:form id="save">
+<s:form id="save" action="AuditQuestion">
 <s:hidden name="id" />
 <s:hidden name="question.subCategory.id" />
 <table class="forms">
@@ -30,6 +30,21 @@
 <th>Order:</th>
 <td><s:textfield name="question.number" size="4"/></td>
 </tr>
+
+
+
+<tr>
+<th>Effective Date:</th>
+<td><s:textfield name="question.effectiveDate" value="getText(0,date, 'MM/dd/yy hh:mm a', {question.effectiveDate})"/></td>
+</tr>
+
+
+
+<tr>
+<th>Expiration Date:</th>
+<td><s:date name="question.expirationDate" /></td>
+</tr>
+
 <tr>
 <th>Added:</th>
 <td><s:date name="question.dateCreated" /></td>
