@@ -40,7 +40,7 @@ function selectCrumb(selector, url) {
 					&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain" href="ManageSubCategory.action?id=<s:property value="subCategory.id"/>"><s:property value="subCategory.subCategory"/></a>
 				</s:else>
 				<s:if test="question != null">
-					&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain current" href="ManageQuestion.action?id=<s:property value="question.question"/>"><s:property value="question.question"/></a>				
+					&nbsp;&gt;&nbsp;&nbsp;<a class="blueSmall" href="ManageQuestion.action?id=<s:property value="question.questionID"/>"><s:property value="question.question"/></a>				
 				</s:if>
 			</s:if>
 		</s:if>
