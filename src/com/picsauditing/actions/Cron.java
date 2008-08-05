@@ -23,11 +23,11 @@ import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.Certificate;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.mail.Email;
 import com.picsauditing.mail.EmailContractorBean;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EmailTemplates;
+import com.picsauditing.util.SpringUtils;
 
 public class Cron extends PicsActionSupport {
 
@@ -36,20 +36,19 @@ public class Cron extends PicsActionSupport {
 	protected AppPropertyDAO appPropDao = null;
 	protected AuditBuilder auditBuilder = null;
 	protected CertificateDAO certificateDAO = null;
-	protected EmailContractorBean cMailer = null;
+
 	protected long startTime = 0L;
 	StringBuffer report = null;
 
 	protected boolean flagsOnly = false;
 
 	public Cron(FlagCalculator2 fc2, OperatorAccountDAO ops, AppPropertyDAO appProps, AuditBuilder ab,
-			CertificateDAO certificateDAO, EmailContractorBean cMailer) {
+			CertificateDAO certificateDAO) {
 		this.flagCalculator = fc2;
 		this.operatorDAO = ops;
 		this.appPropDao = appProps;
 		this.auditBuilder = ab;
 		this.certificateDAO = certificateDAO;
-		this.cMailer = cMailer;
 	}
 
 	public String execute() throws Exception {
@@ -183,6 +182,7 @@ public class Cron extends PicsActionSupport {
 
 	public void sendEmailExpiredCertificates() throws Exception {
 		List<Certificate> cList = certificateDAO.findExpiredCertificate();
+		EmailContractorBean cMailer = (EmailContractorBean) SpringUtils.getBean("EmailContractorBean");
 		for (Certificate certificate : cList) {
 			cMailer.addToken("opAcct", certificate.getOperatorAccount());
 			cMailer.addToken("expiration_date", certificate.getExpiration());
