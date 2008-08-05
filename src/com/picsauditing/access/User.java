@@ -238,8 +238,6 @@ public class User extends DataBean implements Comparable<User> {
 			errorMessages.addElement("Please enter a name");
 		else if (userDO.name.length() < 3)
 			errorMessages.addElement("Please enter a name with more than 2 characters");
-		if (!usernameExists(userDO.username))
-			errorMessages.addElement("Username already exists. Please type another.");
 
 		if (userDO.isGroup.equals("Yes")) return (errorMessages.size() == 0);
 		
