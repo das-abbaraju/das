@@ -89,14 +89,14 @@ public class OperatorAccountDAOTest {
 		assertTrue(account.size() > 0);
 	}
 
-	@Test
-	public void testContractorCount() {
-		long start = System.currentTimeMillis();
-		int count = operatoraccountDAO.getContractorCount(2475);
-		assertTrue(count > 300 && count < 500);
-		count = operatoraccountDAO.getContractorCount(2475);
-		long end = System.currentTimeMillis();
-		System.out.println("SQL took" + (end - start) + " msecs" );
-	}
+	//@Test
+//	public void testContractorCount() {
+//		long start = System.currentTimeMillis();
+//		int count = operatoraccountDAO.getContractorCount(2475);
+//		assertTrue(count > 300 && count < 500);
+//		count = operatoraccountDAO.getContractorCount(2475);
+//		long end = System.currentTimeMillis();
+//		System.out.println("SQL took" + (end - start) + " msecs" );
+//	}
 
 }

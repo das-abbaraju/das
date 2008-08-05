@@ -194,6 +194,7 @@ public class LoginController extends DataBean {
 				pBean.oBean.isCorporate = permissions.isCorporate();
 				pBean.oBean.setFromDB(permissions.getAccountIdString());
 				permissions.setCanSeeAudit(pBean.oBean.getCanSeeAuditIDSet());
+				permissions.setApprovesRelationships(pBean.oBean.isApprovesRelationships());
 			}
 			// TODO we should allow each account to set their own timeouts
 			// ie..session.setMaxInactiveInterval(user.getAccountTimeout());

@@ -391,7 +391,7 @@ public class ReportAccount extends ReportActionSupport {
 	public int getContractorCount() {
 		if (permissions.isOperator() || permissions.isCorporate()) {
 			OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
-			return dao.getContractorCount(permissions.getAccountId());
+			return dao.getContractorCount(permissions.getAccountId(), permissions);
 		}
 		// This method shouldn't be used by Admins, auditors, and contractors so
 		// just return 0

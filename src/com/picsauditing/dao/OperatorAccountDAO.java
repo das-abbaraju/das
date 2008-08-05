@@ -7,6 +7,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -95,15 +96,18 @@ public class OperatorAccountDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public int getContractorCount(int id) {
+	public int getContractorCount(int id, Permissions permissions) {
 		Account operator = find(id);
-
 		String where;
 
 		if (operator.getType().equals("Corporate")) {
 			where = "operatorAccount IN (SELECT operator FROM Facility WHERE corporate = ?)";
 		} else {
 			where = "operatorAccount = ?";
+		}
+
+		if (permissions.isApprovesRelationships() && !permissions.hasPermission(OpPerms.ViewUnApproved)) {
+			where += " AND workStatus = 'Y'";
 		}
 
 		Query query = em.createQuery("SELECT count(c) FROM ContractorAccount c " + "WHERE c.active = 'Y' "
