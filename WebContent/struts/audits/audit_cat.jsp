@@ -221,6 +221,7 @@
 					</td>
 				</tr>
 				<s:iterator value="questions">
+				<s:if test="effectiveDate.before(conAudit.createdDate) && expirationDate.after(conAudit.createdDate)">
 					<s:if test="isGroupedWithPrevious.toString() == 'No'">
 						<s:set name="shaded" value="!#shaded" scope="action"/>
 					</s:if>
@@ -241,6 +242,7 @@
 					<s:if test="mode == 'ViewQ'">
 						<s:include value="audit_cat_questions.jsp"></s:include>
 					</s:if>
+				</s:if>
 				</s:iterator>
 			</s:iterator>
 			</table>

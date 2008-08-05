@@ -64,6 +64,8 @@ public class AuditQuestion implements java.io.Serializable {
 	private String question;
 	private Date dateCreated;
 	private Date lastModified;
+	private Date effectiveDate;
+	private Date expirationDate;
 	private YesNo hasRequirement;
 	private String okAnswer;
 	private String requirement;
@@ -336,6 +338,24 @@ public class AuditQuestion implements java.io.Serializable {
 
 	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getEffectiveDate() {
+		return effectiveDate;
+	}
+
+	public void setEffectiveDate(Date effectiveDate) {
+		this.effectiveDate = effectiveDate;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getExpirationDate() {
+		return expirationDate;
+	}
+
+	public void setExpirationDate(Date expirationDate) {
+		this.expirationDate = expirationDate;
 	}
 
 	@Enumerated(EnumType.STRING)
