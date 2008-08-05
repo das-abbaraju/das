@@ -26,7 +26,13 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		permissions.tryPermission(OpPerms.AssignAudits);
 		sql.addField("ca.contractorConfirm");
 		sql.addField("ca.auditorConfirm");
-		sql.addWhere("auditStatus='Pending'");
+		sql.addField("ca2.expiresDate AS current_expiresDate");
+		sql.addWhere("ca.auditStatus='Pending'");
+		sql.addJoin("LEFT JOIN contractor_audit ca2 ON " +
+				"ca2.conID = a.id " +
+				"AND ca2.auditTypeID = ca.auditTypeID " +
+				"AND ca2.auditStatus = 'Active' " +
+				"AND atype.hasMultiple = 0");
 		if (unScheduledAudits == true) {
 			sql.addWhere("(ca.contractorConfirm IS NULL OR ca.auditorConfirm IS NULL) AND atype.isScheduled = 1");
 		} else {
@@ -37,9 +43,11 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 			orderBy = "ca.createdDate";
 		}
 		
-		if(filtered == null) 
+		filterAuditStatus = false;
+		
+		if(filtered == null)
 			filtered = false;
-				
+		
 		return super.execute();
 	}
 
