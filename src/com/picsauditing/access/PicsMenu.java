@@ -36,8 +36,11 @@ public class PicsMenu {
 		if (!permissions.isOnlyAuditor())
 			subMenu.addChild("Contact Info", "report_contactInfo.jsp?changed=1");
 
-		if (permissions.hasPermission(OpPerms.SearchContractors))
-			subMenu.addChild("Search For New", "contractorsSearch.jsp");
+		if (permissions.hasPermission(OpPerms.SearchContractors)) {
+			subMenu.addChild("Search For New (old)", "contractorsSearch.jsp");
+			subMenu.addChild("Search For New", "NewContractorSearch.action");
+			
+		}
 		if (permissions.isAdmin())
 			subMenu.addChild("By Operator", "report_operatorContractor.jsp?changed=1");
 		if (permissions.hasPermission(OpPerms.SearchContractors))
@@ -94,7 +97,7 @@ public class PicsMenu {
 			subMenu.addChild("Forms &amp Docs", "manage_forms.jsp");
 		if (permissions.hasPermission(OpPerms.ManageAudits)) {
 			subMenu.addChild("Audit Definitions", "ManageAuditType.action");
-			subMenu.addChild("Desktop Matrix", "pqf_desktopMatrix.jsp?auditType=Desktop");
+			subMenu.addChild("Desktop Matrix", "ManageDesktopMatrix.action");
 			subMenu.addChild("PQF Matrix", "ManagePQFMatrix.action");
 		}
 		if (permissions.hasPermission(OpPerms.EmailTemplates))

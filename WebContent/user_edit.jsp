@@ -4,7 +4,6 @@
 <%@page import="com.picsauditing.PICS.Utilities"%>
 <%@page import="org.apache.commons.beanutils.BasicDynaBean"%>
 <%@ include file="includes/main_ajax.jsp" %>
-<%@page import="com.picsauditing.mail.EmailContractorBean"%>
 <%@page import="com.picsauditing.mail.EmailTemplates"%>
 <%@page import="com.picsauditing.mail.EmailUserBean"%>
 <%@page import="com.picsauditing.util.SpringUtils"%>

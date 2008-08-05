@@ -224,11 +224,6 @@
 			<result>struts/reports/report_ncms.jsp</result>
 		</action>
 
-		<action name="ReportNCMS"
-			class="com.picsauditing.actions.report.ReportAccountNCMS">
-			<result>struts/reports/report_ncms.jsp</result>
-		</action>
-
 		<action name="AuditDataSaveAjax"
 			class="com.picsauditing.actions.audits.AuditDataSave">
 			<result>struts/blank.jsp</result>
@@ -256,6 +251,11 @@
 		<action name="ContractorListOperator"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<result>struts/reports/contractors_operator.jsp</result>
+		</action>
+
+		<action name="NewContractorSearch"
+			class="com.picsauditing.actions.report.ReportNewContractorSearch">
+			<result>struts/reports/newContractor_operator.jsp</result>
 		</action>
 
 		<action name="ProfileEdit"
