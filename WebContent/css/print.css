@@ -54,3 +54,71 @@ span.answer {
 	color: black;
 	font-weight: bold;
 }
+
+/**
+* For reports table
+**/
+table.report {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+table.report td {
+	padding: 2px;
+	margin: 0px;
+	vertical-align: top;
+	border: 1px solid #999;
+}
+
+table td.right {
+	text-align: right;
+}
+
+.buttons {
+	display: none;
+}	
+
+/**
+* For Search Filters
+**/
+ul.paging {
+	display: none;
+}	
+
+#search {
+	display: none;
+}
+
+/**
+* For Help and Chat Icon
+**/
+#helpbox {
+	display: none;
+}	
+
+#chatIcon {
+	display: none;
+}
+
+/**
+* For the Home Page
+**/
+div.panel {
+	border: 1px solid #BBB;
+	margin:0px;
+	padding:5px;
+}
+
+div.panel_header {
+	height: 22px;
+	font-size:10pt;
+	color: black;
+	font-weight: bold;
+	border-bottom:1px solid #B3B3B3;
+}
+
+div.panel_placeholder {
+	padding:20px;
+	width: 500px;
+}
+

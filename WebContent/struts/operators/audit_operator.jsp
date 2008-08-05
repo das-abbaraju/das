@@ -3,6 +3,8 @@
 <html>
 <head>
 <title>Edit Operator/Audit Permissions</title>
+<link rel="stylesheet" type="text/css" media="screen"
+	href="css/reports.css" />
 <script src="js/prototype.js" type="text/javascript"></script>
 <script src="js/scriptaculous/scriptaculous.js?load=effects"
 	type="text/javascript"></script>
@@ -54,7 +56,7 @@ function save(id, aID, oID, pKey) {
 <div><a href="AuditOperator.action?<s:if test="aID > 0">aID=<s:property value="aID" /></s:if><s:if test="oID > 0">oID=<s:property value="oID" /></s:if>" class="refresh">Refresh Page</a></div>
 
 <s:form id="form1">
-	<table cellspacing="1" cellpadding="3" border="0">
+	<table class="report" cellspacing="1" cellpadding="3" border="0">
 		<tr class="whiteTitle" bgcolor="#003366" align="center">
 			<td>Operator/Audit</td>
 			<td style="text-align: center;">Minimum Risk Level &amp; Flag Color</td>
