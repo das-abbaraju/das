@@ -18,6 +18,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectFilter;
+import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -146,8 +147,9 @@ public class ReportAccount extends ReportActionSupport {
 		return aQuestionDAO.findQuestionByType("Office Location");
 	}
 
-	public String[] getTradePerformedByList() throws Exception {
-		return TradesBean.PERFORMED_BY_ARRAY;
+	public String[] getTradePerformedByList() {
+		String[] list = {"- Performed By -", "Self Performed", "Sub Contracted"};
+		return list;
 	}
 
 	public ArrayList<String> getFlagStatusList() throws Exception {
@@ -237,9 +239,7 @@ public class ReportAccount extends ReportActionSupport {
 			return;
 
 		this.trade = trade;
-		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
-		sql.addJoin("JOIN pqfdata trade ON trade.auditID = ca.auditID " + "AND trade.questionID IN (" + tradeList + ") "
-				+ "AND trade.answer LIKE '" + answerFilter + "'");
+		createPqfDataClause(sql, "AND d.questionID IN ("+ tradeList + ") AND d.answer LIKE '" + answerFilter + "'");
 		filtered = true;
 	}
 
@@ -313,10 +313,14 @@ public class ReportAccount extends ReportActionSupport {
 	public void setStateLicensedIn(int[] stateLicensedIn) {
 		String stateLicensedInList = Strings.implode(stateLicensedIn, ",");
 		this.stateLicensedIn = stateLicensedIn;
-		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
-		sql.addJoin("JOIN pqfdata licensedIn ON licensedIn.auditID = ca.auditID " + "AND licensedIn.questionID IN ("
-				+ stateLicensedInList + ") " + "AND licensedIn.answer <> ''");
+		createPqfDataClause(sql, "AND d.questionID IN ("+ stateLicensedInList + ") AND d.answer > ''");
 		filtered = true;
+	}
+	
+	private void createPqfDataClause(SelectSQL sql, String where) {
+		String query = "a.id IN (SELECT ca.conID FROM contractor_audit ca JOIN pqfdata d USING (auditID) " +
+			"WHERE ca.auditStatus IN ('Active','Submitted') AND ca.auditTypeID = 1 "+where+")";
+		sql.addWhere(query);
 	}
 
 	public int[] getWorksIn() {
@@ -326,9 +330,7 @@ public class ReportAccount extends ReportActionSupport {
 	public void setWorksIn(int[] worksIn) {
 		String worksInList = Strings.implode(worksIn, ",");
 		this.worksIn = worksIn;
-		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
-		sql.addJoin("JOIN pqfdata worksIn ON worksIn.auditID = ca.auditID " + "AND worksIn.questionID IN (" + worksInList
-				+ ") " + "AND worksIn.answer LIKE 'Yes%'");
+		createPqfDataClause(sql, "AND d.questionID IN ("+ worksInList + ") AND d.answer LIKE 'Yes%'");
 		filtered = true;
 	}
 
@@ -339,9 +341,7 @@ public class ReportAccount extends ReportActionSupport {
 	public void setOfficeIn(int[] officeIn) {
 		String officeInList = Strings.implode(officeIn, ",");
 		this.officeIn = officeIn;
-		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
-		sql.addJoin("JOIN pqfdata officeIn ON officeIn.auditID = ca.auditID " + "AND officeIn.questionID IN (" + officeInList
-				+ ") " + "AND officeIn.answer LIKE 'Yes with Office'");
+		createPqfDataClause(sql, "AND d.questionID IN ("+ officeInList + ") AND d.answer LIKE 'Yes with Office'");
 		filtered = true;
 	}
 

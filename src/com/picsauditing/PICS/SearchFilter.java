@@ -3,6 +3,10 @@ package com.picsauditing.PICS;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
+/**
+ * primarily used with certificates
+ */
 public class SearchFilter {
 	String name = "";
 	public static final String[] DEFAULTS = {
@@ -17,23 +21,7 @@ public class SearchFilter {
 		"s_state","- State -",
 		"s_opID",SearchBean.DEFAULT_GENERAL_VALUE
 	};
-
-	/*	public static final String DEFAULT_AUDIT_STATUS = "- Audit Status -";
-	public static final String DEFAULT_AUDITOR = "- Auditor -";
-	public static final String DEFAULT_AUDITOR_ID = "0";
-	public static final String DEFAULT_STATUS = "- Status -";
-	public static final String DEFAULT_GENERAL = "- Operator -";
-	public static final String DEFAULT_AUDIT_LOCATION = "- Audit Location -";
-	public static final String DEFAULT_VISIBLE = "- Visible -";
-	public static final String DEFAULT_GENERAL_VALUE = "-2";
-	public static final String DEFAULT_CERTS = "- Ins. Certs -";
-	public static final String DEFAULT_INVOICED_STATUS = "- Invoiced Status -";
-	public static final String DEFAULT_LICENSED_IN = "- Licensed In -";
-	public static final String DEFAULT_LICENSED_IN_ID = com.picsauditing.PICS.pqf.QuestionTypeList.DEFAULT_SELECT_QUESTION_ID;
-	public static final String DEFAULT_FLAG_STATUS = "- Flag Status -";
-	public static final String DEFAULT_TAX_ID = "- Tax ID -";
-*/
-		Map<String, String> params = null;
+	Map<String, String> params = null;
 	
 	public HashMap<String,String> getDefaultMap(){
 		HashMap<String,String> defaultMap = new HashMap<String,String>();

@@ -105,7 +105,7 @@ public class SearchBean {
 	public static final String DEFAULT_CERTS = "- Ins. Certs -";
 	public static final String DEFAULT_INVOICED_STATUS = "- Invoiced Status -";
 	public static final String DEFAULT_LICENSED_IN = "- Licensed In -";
-	public static final String DEFAULT_LICENSED_IN_ID = com.picsauditing.PICS.pqf.QuestionTypeList.DEFAULT_SELECT_QUESTION_ID;
+	public static final String DEFAULT_LICENSED_IN_ID = "0";
 	public static final String DEFAULT_WORKS_IN = "- Works In -";
 	public static final String DEFAULT_OFFICE_IN = "- Office Location -";
 	public static final String DEFAULT_FLAG_STATUS = "- Flag Status -";
