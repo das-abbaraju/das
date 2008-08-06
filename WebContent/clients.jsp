@@ -32,18 +32,21 @@
 						BP Whiting Refinery<br />
 						ConocoPhillips Billings Refinery<br />
 						ConocoPhillips Carson Refinery<br />
+						ConocoPhillips Ferndale<br />
 						ConocoPhillips Wilmington Refinery<br />
 						ConocoPhillips Rodeo Refinery<br />
 						ConocoPhillips Santa Maria Refinery<br />
+						Cox Communications Arizona<br>
 						Criterion Catalysts &amp; Technologies<br />
 						CRI<br />
 						Empire Southwest (CAT)<br />
 						Flying J<br />
+						Frontier Oil El Dorado<br>
+						Frontier Refining Inc. Cheyenne<br>
 						Huntsman International<br />
 						Huntsman Auburn Hills<br />
 						Huntsman Conroe<br />
 						Huntsman Charlotte<br />
-						Huntsman Dayton<br />
 						</nobr></td>
 						<td valign="top" class="blueClientList"><script
 							type="text/javascript">
@@ -61,6 +64,7 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
 						</object></noscript>
 						<script type="text/javascript" src="js/ieupdate.js"></script><br>
 						<br>
+						Huntsman Dayton<br />
 						<nobr>Huntsman Derry<br>
 						Huntsman East Lansing<br>
 						Huntsman Freeport<br>
@@ -72,6 +76,7 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
 						Huntsman Ringwood (Chicago)<br>
 						Huntsman Woodlands<br>
 						IDS Real Estate<br>
+						LISI Aerospace<br>
 						March Point Cogeneration Company<br>
 						Martinez Catalyst Plant<br>
 						Motiva Convent Refinery<br>
@@ -80,13 +85,16 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
 						<td valign="top" class="blueClientList">
 						Motiva Port Arthur Refinery<br>
 						Motiva Retail Motiva SD&amp;CM<br>
+						Motorola Field Services<br>
 						Motorola USA<br>
+						Paramount Petroleum<br>
 						Roquette America<br>
 						Shell Chemical Geismar<br>
 						Shell Chemical Mobile<br>
 						Shell Chemical Norco<br>
 						Shell Deer Park<br>
 						Shell Environmental Services<br>
+						Shell Global Solutions<br>
 						Shell Lubricants<br>
 						Shell Martinez Refinery<br>
 						Shell Oil Products US RMT<br>

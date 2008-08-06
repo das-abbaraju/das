@@ -65,25 +65,24 @@ sets the highest standards possible in regard to contractor qualifications as th
                   </tr>
                 <tr>
                   <td bgcolor="#CCCCCC"><img src="images/spacer.gif" width="1" height="1"></td>
-                  <td valign="top" bgcolor="#FFFFFF"><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
-				  										<tr>
-                                          <td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">06/01/08</span>ConocoPhillips Ferndale joins PICS</span><br>
-                                            <br> 
-ConocoPhillips Ferndale joins many other ConocoPhillips refineries and business units who use PICS to standardize their contractor prequalification process. The Ferndale plant is located in Washington and can process 100,000 barrels per day. </td>
-                                        </tr>
-                                        					<tr>
-                                          <td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">05/08/08</span>PICS Presents at NPRA Safety Conference</span><br>
-                                            <br> 
-                                          PICS CEO, John Moreland, was invited by the NPRA to present at the National Safety Conference about Process Safety Management and The Advantages Of Contractor Pre-qualification. Topics discussed by OSHA at the conference covered the NEP audit results, issues found and how to resolve them.</td></tr>
-										
-										<tr>
-                                          <td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">05/01/08</span>Frontier Oil Corporation joins PICS</span><br>
-                                            <br> 
-                                          Frontier Oil Corporation is an independent oil refining and marketing company. Fronteir has a 52,000 barrel per day refinery in Cheyenne, Wyoming and a 110,000 barrel per day refinery in El Dorado, Kansas and the companys primary products of gasoline and diesel are marketed in the Rocky Mountain and Plains States.</td></tr>
-									
-                                        <tr>
-                      <td align="center" class="blueHome">&nbsp;<a href="featured_newsarchive.jsp" target="_self"><img src="images/NEWSARCHIVE_button3.gif" width="111" height="27" hspace="5" border="0"></a></td>
-                    </tr>
+                  <td valign="top" bgcolor="#FFFFFF">
+                  	<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+				  		<tr>
+                        	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">07/01/08</span>Paramount Petroleum Corporation joins PICS</span><br>
+                            <br> 
+								Paramount Petroleum Corporation is the leading manufacturer and marketer of asphalt in the Western states. The heart of the company is a 54,000 - barrel-per-day refinery located in Paramount, CA. The refinery has been in operation since the 1930s, and today is the largest and most efficient asphalt refinery in California.</td>
+                        </tr>
+                        <tr>
+                        	<td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">07/01/08</span>Cox Communications joins PICS</span><br>
+                            <br> 
+                            	Cox Communications, the third-largest cable provider in the nation, is noted for its high capacity, reliable broadband delivery network and superior customer care. Cox currently has more than 6 million total residential and commercial customer relationships and over 22,000 employees.</td></tr>
+						<tr>
+                        	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">07/01/08</span>Dow Chemicals joins PICS</span><br>
+                            <br> 
+                            	With annual sales of $54 billion and 46,000 employees worldwide, Dow is a diversified chemical company that combines the power of science and technology with the "Human Element" to constantly improve what is essential to human progress. The Company delivers a broad range of products and services to customers in around 160 countries.</td></tr>
+						<tr>
+                      		<td align="center" class="blueHome">&nbsp;<a href="featured_newsarchive.jsp" target="_self"><img src="images/NEWSARCHIVE_button3.gif" width="111" height="27" hspace="5" border="0"></a></td>
+                    	</tr>
                     </table></td>
                   <td bgcolor="#CCCCCC"><img src="images/spacer.gif" width="1" height="1"></td>
                 </tr>
