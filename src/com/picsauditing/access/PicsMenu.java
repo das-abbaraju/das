@@ -119,6 +119,8 @@ public class PicsMenu {
 		subMenu = menu.addChild("Reports");
 		if (permissions.hasPermission(OpPerms.EditUsers))
 			subMenu.addChild("User Search","ReportUsersAccount.action");
+		if(permissions.seesAllContractors())
+			subMenu.addChild("User Multi-Login","MultiLoginUser.action");
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.EMRReport)) {
 			subMenu.addChild("EMR Rates (Graph)", "GraphEmrRates.action");
 			subMenu.addChild("EMR Rates", "ReportEmrRates.action");
