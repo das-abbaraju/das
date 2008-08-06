@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -151,6 +152,10 @@ public class ContractorAuditDAO extends PicsDAO {
 
 	public ContractorAudit addPending(AuditType auditType, ContractorAccount contractor) {
 		ContractorAudit cAudit = new ContractorAudit();
+		if (!"Yes".equals(contractor.getOqEmployees()))
+			cAudit.setAuditStatus(AuditStatus.Exempt);
+		if (cAudit.getAuditStatus().equals(AuditStatus.Exempt))
+			cAudit.setAuditStatus(AuditStatus.Pending);
 		cAudit.setContractorAccount(contractor);
 		cAudit.setAuditType(auditType);
 		return this.save(cAudit);

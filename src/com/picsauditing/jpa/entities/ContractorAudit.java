@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +22,6 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
@@ -49,8 +49,8 @@ public class ContractorAudit {
 	private Date contractorConfirm;
 	private Date auditorConfirm;
 
-	private List<AuditCatData> categories;
-	private List<AuditData> data;
+	private List<AuditCatData> categories = new ArrayList<AuditCatData>();
+	private List<AuditData> data = new ArrayList<AuditData>();
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
