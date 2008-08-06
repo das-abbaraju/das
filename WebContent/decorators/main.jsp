@@ -25,16 +25,15 @@
 <script type="text/javascript" src="js/chrome.js"></script>
 <script type="text/javascript" src="js/Search.js"></script>
 
-<!--CSS FIXES FOR INTERNET EXPLORER ----------------------------------------->
+<!--CSS FIXES FOR INTERNET EXPLORER --->
 <!--[if IE]>
-<link rel="stylesheet" href="css/ie.css" type="text/css" />
+	<link rel="stylesheet" href="css/ie.css" type="text/css" />
 <![endif]-->
 
 <!-- compliance patch for microsoft browsers -->
 <!--[if lt IE 7]>
-<link rel="stylesheet" href="css/ie6.css" type="text/css" />
-<script src="ie7/ie7-standard-p.js" type="text/javascript">
-</script>
+	<link rel="stylesheet" href="css/ie6.css" type="text/css" />
+	<script src="ie7/ie7-standard-p.js" type="text/javascript"></script>
 <![endif]-->
 
 <script type="text/javascript">

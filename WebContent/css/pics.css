@@ -71,20 +71,21 @@ a img {
 	padding-top: 8px;
 	padding-left: 10px;
 	padding-right: 5px;
+	padding-bottom: 7px;
 }
 
-#sidebox a:link, #sidebox a:visited {
+#sidebox a, #sidebox a:link, #sidebox a:visited {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	color: #eeeeee;
 	padding: 5px;
 }
 
-#sidebox a:hover, .sidebox a:active {
+#sidebox a:hover, #sidebox a:active {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	color: #1B3665;
-	padding: 10px 5px;
+	padding: 5px;
 	background-color: #eeeeee;
 	text-decoration: none;
 }
@@ -227,16 +228,18 @@ a.footer:hover {
 }
 
 /******************** Headers, Text and Links  ************************/
-h1 {
-	font-size: 32px;
-	color: rgb(168, 77, 16);
+h1,h2,h3,h4,h5,h6 {
 	font-family: Helvetica, Arial, Verdana, sans-serif;
 	font-weight: bold;
 	letter-spacing: -1px;
+}
+h1 {
+	font-size: 32px;
+	color: rgb(168, 77, 16);
 	padding: 0 0 10px 0;
 	line-height: 1em;
 	margin-top: 0;
-	margin-right: 50px;
+	margin-right: 0px;
 	margin-bottom: 15px;
 	margin-left: 0px;
 	border-bottom: solid 2px rgb(168, 77, 16);
@@ -245,41 +248,26 @@ h1 {
 h2 {
 	font-size: 28px;
 	color: rgb(168, 77, 16);
-	font-family: Helvetica, Arial, Verdana, sans-serif;
-	font-weight: bold;
-	letter-spacing: -1px;
 }
 
 h3 {
 	font-size: 22px;
 	color: rgb(168, 77, 16);
-	font-family: Helvetica, Arial, Verdana, sans-serif;
-	font-weight: bold;
-	letter-spacing: -1px;
 }
 
 h4 {
 	font-size: 18px;
 	color: #4686bf;
-	font-family: Helvetica, Arial, Verdana, sans-serif;
-	font-weight: bold;
-	letter-spacing: -1px;
 }
 
 h5 {
 	font-size: 14px;
 	color: #808285;
-	font-family: Helvetica, Arial, Verdana, sans-serif;
-	font-weight: bold;
-	letter-spacing: -1px;
 }
 
 h6 {
 	font-size: 12px;
 	color: #003768;
-	font-family: Helvetica, Arial, Verdana, sans-serif;
-	font-weight: bold;
-	letter-spacing: -1px;
 }
 
 a:link, a:visited {
@@ -402,17 +390,18 @@ div.message_info {
 #internalnavcontainer {
 	display: block;
 	height: 45px;
-	margin: 0 auto;
+	width: 100%;
+	position: relative;
 }
 
 ul#navlist {
 	float: right;
 	position: relative;
 	white-space: nowrap;
-	margin-top: -16px;
-	margin-right: 45px;
 	display: block;
-	margin-bottom: 15px;
+	padding-top: 0px;
+	margin-top: -16px;
+	margin-right: 5px;
 }
 
 #navlist li {

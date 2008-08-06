@@ -23,6 +23,11 @@ table.report thead th, table.report thead td {
 table.report thead a {
 	color: #FFF;
 	text-decoration: none;
+	background: url('../images/arrow.gif') no-repeat right center;
+	padding-left:0;
+	padding-right:12px;
+	padding-top:0;
+	padding-bottom:0;
 }
 table.report thead a:hover {
 	text-decoration: underline;

@@ -101,9 +101,11 @@ Filter Options</a></div>
 
 	<s:if test="filterTrade">
 		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_trade'); return false;">Trade</a> <s:select
-			list="tradePerformedByList" cssClass="forms" name="performedBy" /> =
-		<span id="form1_trade_query">ALL</span><br />
+			onclick="toggleBox('form1_trade'); return false;">Trade</a> =
+		<span id="form1_trade_query">ALL</span>
+		<s:select
+			list="tradePerformedByList" cssClass="forms" name="performedBy" />
+			<br />
 		<span id="form1_trade_select" style="display: none" class="clearLink">
 		<s:select list="tradeList" listKey="questionID" listValue="question" cssClass="forms" name="trade"
 			multiple="true" size="5" /> <script type="text/javascript">updateQuery('form1_trade');</script>
@@ -254,26 +256,42 @@ Filter Options</a></div>
 
 	<s:if test="filterUnConfirmedAudits">
 		<br clear="all" />
-		<s:checkbox name="unScheduledAudits" />
-		<label>Check to Search on UnConfirmed Audits</label>
+		<div class="filterOption">
+		<label><s:checkbox name="unScheduledAudits" />
+		Check to Search on UnConfirmed Audits</label>
+		</div>
 	</s:if>
 
 	<s:if test="filterAssignedCon">
 		<br clear="all" />
-		<s:checkbox name="assignedCon" />
-		<label>Check to Search on Assigned Contractors</label>
+		<div class="filterOption">
+		<label><s:checkbox name="assignedCon" />
+		Check to Search on Assigned Contractors</label>
+		</div>
 	</s:if>
 
 	<s:if test="filterConLicense">
 		<br clear="all" />
+		<div class="filterOption">
 		<s:select name="validLicense" list="#{'Valid':'Valid','UnValid':'UnValid','All':'All'}" value="%{validLicense}" cssClass="forms"/>
+		</div>
 	</s:if>
 
 	<s:if test="filterExpiredLicense">
 		<br clear="all" />
-		<s:checkbox name="conExpiredLic" />
-		<label>Check to Search on Expired Licenses for Contractors</label>
+		<div class="filterOption">
+		<label><s:checkbox name="conExpiredLic" />
+		Check to Search on Expired Licenses for Contractors</label>
+		</div>
 	</s:if>
+	
+	<s:if test="filterInParentCorporation">
+		<br clear="all" />
+		<div class="filterOption">
+		<label><s:checkbox name="inParentCorporation" />Check to limit to contractors already working within my parent corporation</label>
+		</div>
+	</s:if>
+	
 
 	<br clear="all" />
 	<div class="alphapaging"><s:property
