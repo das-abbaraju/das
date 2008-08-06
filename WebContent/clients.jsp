@@ -39,6 +39,7 @@
 						Cox Communications Arizona<br>
 						Criterion Catalysts &amp; Technologies<br />
 						CRI<br />
+						Dow Chemicals<br />
 						Empire Southwest (CAT)<br />
 						Flying J<br />
 						Frontier Oil El Dorado<br>
@@ -46,7 +47,6 @@
 						Huntsman International<br />
 						Huntsman Auburn Hills<br />
 						Huntsman Conroe<br />
-						Huntsman Charlotte<br />
 						</nobr></td>
 						<td valign="top" class="blueClientList"><script
 							type="text/javascript">
@@ -64,6 +64,7 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
 						</object></noscript>
 						<script type="text/javascript" src="js/ieupdate.js"></script><br>
 						<br>
+						Huntsman Charlotte<br />
 						Huntsman Dayton<br />
 						<nobr>Huntsman Derry<br>
 						Huntsman East Lansing<br>
