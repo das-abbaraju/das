@@ -658,3 +658,12 @@ button.positive, .buttons a.positive {
 	background: #dbe7f8 url('../images/icon-info.gif') no-repeat 10px 10px;
 	width: 25%;
 }
+
+#unsupportedBrowser {
+	position: absolute;
+	top: 0px;
+	left: 200px;
+	width: 200px;
+	background-color: white;
+	
+}
