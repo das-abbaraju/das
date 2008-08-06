@@ -660,10 +660,10 @@ button.positive, .buttons a.positive {
 }
 
 #unsupportedBrowser {
+	font-size: 11px;
 	position: absolute;
 	top: 0px;
-	left: 200px;
-	width: 200px;
+	left: 150px;
+	width: 315px;
 	background-color: white;
-	
 }

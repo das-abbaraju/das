@@ -64,9 +64,15 @@ function getElement(whichLayer) {
 <body>
 <div id="header">
 <div id="headermain">
+
+<!--[if lte IE 6]>
+	<div id="unsupportedBrowser">
+		You are using an UnSupported Browser. Please upgrade to IE 7.
+	</div>
+<![endif]-->
+
 <div id="masthead">
 <!-- !begin header -->
-
 
 <div id="sidebox">
 	<div id="boxbody">
