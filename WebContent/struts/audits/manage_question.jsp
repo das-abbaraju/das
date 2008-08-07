@@ -35,7 +35,7 @@
 
 <tr>
 <th>Effective Date:</th>
-<td><s:textfield name="question.effectiveDate" value="getText(0,date, 'MM/dd/yy hh:mm a', {question.effectiveDate})"/></td>
+<td><s:textfield name="question.effectiveDate" value="%{getText('short_dates', {question.effectiveDate})}"/></td>
 </tr>
 
 
