@@ -31,7 +31,7 @@
 					<s:property value="[0].get('companyName')" /></a>
 				</s:if>
 				<s:else>
-					<a href="UsersManage.action">
+					<a href="UsersManage.action?accountId=<s:property value="[0].get('accountID')"/>">
 					<s:property value="[0].get('companyName')" /></a>	
 				</s:else>
 			</td>

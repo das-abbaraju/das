@@ -537,11 +537,11 @@ public class CertificateBean extends DataBean {
 			aBean.setFromDB(conID);
 			String contactName = aBean.contact;
 			String contractor = aBean.name;
+			
+			AccountBean oAccountBean = new AccountBean();
+			oAccountBean.setFromDB(cdo.getOperator_id());
+			String operator = oAccountBean.name;
 
-			aBean.setFromDB(cdo.getOperator_id());
-			String operator = aBean.name;
-
-			// /
 			Email email = new Email();
 			email.setToAddress(aBean.email);
 			email.setSubject(operator + " insurance certificate " + cdo.getStatus());
