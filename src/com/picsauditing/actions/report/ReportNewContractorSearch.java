@@ -1,6 +1,9 @@
 package com.picsauditing.actions.report;
 
+import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
 
 
 /**
@@ -9,17 +12,45 @@ import com.picsauditing.access.OpPerms;
  *
  */
 public class ReportNewContractorSearch extends ReportAccount {
+	protected int id;
 	protected boolean inParentCorporation = false;
+	protected boolean filterInParentCorporation = true;
 	
-	public ReportNewContractorSearch() {
+	private ContractorAccountDAO contractorAccountDAO;
+	private FacilityChanger facilityChanger;
+	
+	public ReportNewContractorSearch(ContractorAccountDAO contractorAccountDAO, FacilityChanger facilityChanger) {
 		this.skipPermissions = true;
 		this.filtered = true;
+		this.facilityChanger = facilityChanger;
+		this.contractorAccountDAO = contractorAccountDAO;
 	}
 	
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+
 		permissions.tryPermission(OpPerms.SearchContractors);
+
+		if (button != null && id > 0) {
+			try {
+				ContractorAccount contractor = contractorAccountDAO.find(id);
+				facilityChanger.setPermissions(permissions);
+				facilityChanger.setContractor(id);
+				facilityChanger.setOperator(permissions.getAccountId());
+				if (button.equals("remove")) {
+					facilityChanger.remove();
+					addActionMessage("Successfully removed "+contractor.getName());
+				}
+				if (button.equals("add")) {
+					facilityChanger.add();
+					addActionMessage("Successfully added <a href='ContractorView.action?id="+id+"'>"+contractor.getName()+"</a>");
+				}
+			} catch (Exception e) {
+				addActionError(e.getMessage());
+			}
+			return SUCCESS;
+		}
 		
 		if (permissions.isOperator()) {
 			// Anytime we query contractor accounts as an operator,
@@ -32,6 +63,17 @@ public class ReportNewContractorSearch extends ReportAccount {
 			sql.addField("gc.workStatus");
 		}
 
+		if (inParentCorporation) {
+			String whereQuery = "";
+			if (permissions.isOperator())
+				whereQuery += "a.id IN (SELECT subID FROM generalcontractors gc " +
+						"JOIN facilities f ON gc.genID = f.opID " +
+						"JOIN facilities myf ON f.corporateID = myf.corporateID AND myf.opID = " + permissions.getAccountId() + ") ";
+			if (permissions.isCorporate())
+				whereQuery += "a.id IN (SELECT subID FROM generalcontractors gc " +
+				"JOIN facilities f ON gc.genID = f.opID AND f.corporateID = " + permissions.getAccountId() + ") ";
+			sql.addWhere(whereQuery);
+		}
 
 		if ((accountName == null || DEFAULT_NAME.equals(accountName) || accountName.length() < 3) &&
 			(trade == null || trade.length == 0)) {
@@ -56,8 +98,20 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 	public void setInParentCorporation(boolean inParentCorporation) {
 		filtered = true;
-		
+		// Add the where clause in the execute method, after we get permissions
 		this.inParentCorporation = inParentCorporation;
+	}
+
+	public boolean isFilterInParentCorporation() {
+		return filterInParentCorporation;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }

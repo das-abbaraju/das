@@ -634,8 +634,8 @@ public class ContractorBean extends DataBean {
 			return !toAdd.isEmpty();
 		}finally{
 			DBClose();
-		}//finally
-	}//writeGeneralContractorsToDB
+		}
+	}
 
 	public void addNote(String conID, String pre, String newNote, String notesDate) throws Exception {
 		notes = notesDate+" "+pre+": "+newNote+"\n"+notes;

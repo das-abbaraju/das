@@ -47,7 +47,7 @@ public class AuditBuilder {
 		buildAudits(contractor);
 	}
 
-	public void buildAudits(ContractorAccount contractor) throws Exception {
+	public void buildAudits(ContractorAccount contractor) {
 		List<ContractorAudit> currentAudits = contractor.getAudits();
 
 		List<AuditStatus> okStatuses = new ArrayList<AuditStatus>();
@@ -58,7 +58,7 @@ public class AuditBuilder {
 
 		List<Integer> requiresSafetyManual = new ArrayList<Integer>();
 		requiresSafetyManual.add(AuditType.DESKTOP);
-		requiresSafetyManual.add(AuditType.OFFICE);
+		requiresSafetyManual.add(AuditType.OFFICE); // I think Jesse said to go ahead and create the office audit right away
 		requiresSafetyManual.add(AuditType.DA);
 
 		/** *** Welcome Call *** */

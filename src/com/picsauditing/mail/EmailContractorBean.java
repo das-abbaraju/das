@@ -39,28 +39,15 @@ public class EmailContractorBean extends EmailBean {
 			email.setBccAddress("eorozco@picsauditing.com");
 
 		this.sendMail();
-		if (!testMode)
-			this.addNote(this.templateType.getDescription() + " email sent to: " + this.getSentTo());
+		if (!testMode) {
+			String message = this.templateType.getDescription() + " email sent to: " + this.getSentTo();
+			ContractorBean.addNote(contractor.getId(), permissions, message);
+		}
 	}
 
 	public void sendMessage(EmailTemplates templateType, int conID) throws Exception {
 		ContractorAccount contractor = contractorDAO.find(conID);
 		sendMessage(templateType, contractor);
-	}
-
-	private void addNote(String message) throws Exception {
-		String currentUser = "System";
-		if (permissions != null) {
-			if (permissions.getName() != null && permissions.getName().length() > 0)
-				currentUser = permissions.getName();
-			else
-				currentUser = permissions.getUsername();
-		}
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(contractor.getIdString());
-		String notes = DateBean.getTodaysDateTime() + " " + currentUser + ": " + message;
-		cBean.addNote(contractor.getIdString(), currentUser, notes, DateBean.getTodaysDate());
-		cBean.writeToDB();
 	}
 
 	@Override

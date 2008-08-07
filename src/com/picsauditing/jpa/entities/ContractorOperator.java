@@ -36,7 +36,7 @@ public class ContractorOperator implements java.io.Serializable {
 	private OperatorAccount operatorAccount;
 	private ContractorAccount contractorAccount;
 	private Date dateAdded;
-	private String workStatus;
+	private String workStatus = "P";
 	private FlagColor forceFlag;
 	private Date forceBegin;
 	private Date forceEnd;

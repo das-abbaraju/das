@@ -37,9 +37,7 @@ public class PicsMenu {
 			subMenu.addChild("Contact Info", "report_contactInfo.jsp?changed=1");
 
 		if (permissions.hasPermission(OpPerms.SearchContractors)) {
-			subMenu.addChild("Search For New (old)", "contractorsSearch.jsp");
 			subMenu.addChild("Search For New", "NewContractorSearch.action");
-			
 		}
 		if (permissions.isAdmin())
 			subMenu.addChild("By Operator", "report_operatorContractor.jsp?changed=1");
