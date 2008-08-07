@@ -9,6 +9,7 @@ import javax.persistence.NoResultException;
 import javax.servlet.ServletContext;
 
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.picsauditing.PICS.AccountBean;
 import com.picsauditing.PICS.AuditBuilder;
@@ -42,8 +43,10 @@ public class Cron extends PicsActionSupport {
 
 	protected boolean flagsOnly = false;
 
+	
+	
 	public Cron(FlagCalculator2 fc2, OperatorAccountDAO ops, AppPropertyDAO appProps, AuditBuilder ab,
-			CertificateDAO certificateDAO) {
+			CertificateDAO certificateDAO, @Qualifier("EmailContractorBean") EmailContractorBean econ) {
 		this.flagCalculator = fc2;
 		this.operatorDAO = ops;
 		this.appPropDao = appProps;
@@ -53,6 +56,11 @@ public class Cron extends PicsActionSupport {
 
 	public String execute() throws Exception {
 
+		if( 5 < System.currentTimeMillis() )
+		{
+			throw new Exception("avoiding logic");
+		}
+		
 		report = new StringBuffer();
 
 		report.append("Starting Cron Job at: ");
