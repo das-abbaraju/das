@@ -1,12 +1,13 @@
 package com.picsauditing.actions.auditType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditCatOperatorDAO;
-import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditCatOperator;
@@ -26,6 +27,11 @@ public class ManagePQFMatrix extends PicsActionSupport {
 	private List<AuditCategory> categories;
 	private List<AuditCatOperator> data;
 	
+				//opId		catId		Flag		on/off
+	private Map<Integer, HashMap<Integer, HashMap<String, Boolean>>> flagData = new HashMap<Integer, HashMap<Integer, HashMap<String, Boolean>>>();
+	
+	protected Map<String, Boolean> incoming = null;
+	
 	protected OperatorAccountDAO operatorAccountDAO;
 	protected AuditTypeDAO auditDAO;
 	protected AuditCatOperatorDAO auditCatOperatorDAO;
@@ -42,7 +48,8 @@ public class ManagePQFMatrix extends PicsActionSupport {
 		
 		permissions.tryPermission(OpPerms.ManageAudits);
 		
-		if (riskLevels == null || operators == null || riskLevels.length == 0 || operators.length == 0)
+		if ((riskLevels == null || operators == null || riskLevels.length == 0 || operators.length == 0)
+				&& (button == null || ! button.equals("save")) )
 			return SUCCESS;
 		
 		operatorAccounts = operatorAccountDAO.findWhere(false, "id IN ("+Strings.implode(operators, ",")+")");
@@ -52,10 +59,47 @@ public class ManagePQFMatrix extends PicsActionSupport {
 				columns.add(opRisk);
 			}
 		}
-		
 		categories = auditDAO.find(AuditType.PQF).getCategories();
 		
-		data = auditCatOperatorDAO.find(operators, riskLevels);
+		if( incoming != null ) {
+
+			for( String key : incoming.keySet() ) {
+			
+				String[] newData = key.split("_");
+				int opId = Integer.parseInt(newData[0]);
+				int catId = Integer.parseInt(newData[1]);
+				LowMedHigh theLevel = LowMedHigh.valueOf(newData[2]);
+				boolean newValue = incoming.get(key);
+				
+				
+				//persist logic here
+				
+			
+			}
+			
+		}
+
+
+		
+		//load the flags
+		for( AuditCatOperator aco : auditCatOperatorDAO.find(operators, riskLevels) ) {
+			
+			HashMap<Integer, HashMap<String, Boolean>> byCategory = flagData.get(aco.getOperatorAccount().getId());
+			
+			if( byCategory == null ) {
+				byCategory = new HashMap<Integer, HashMap<String, Boolean>>();
+				flagData.put(aco.getOperatorAccount().getId(), byCategory);
+			}
+
+			HashMap<String, Boolean> byFlag = byCategory.get(aco.getRiskLevel().name());
+			
+			if( byFlag == null ) {
+				byFlag = new HashMap<String, Boolean>();
+				byCategory.put(aco.getCategory().getId(), byFlag);
+			}
+			
+			byFlag.put(aco.getRiskLevel().name(), true);
+		}
 		
 		return SUCCESS;
 	}
@@ -126,4 +170,23 @@ public class ManagePQFMatrix extends PicsActionSupport {
 	public List<OperatorAccount> getOperatorAccounts() {
 		return operatorAccounts;
 	}
+
+	public Map<Integer, HashMap<Integer, HashMap<String, Boolean>>> getFlagData() {
+		return flagData;
+	}
+
+	public void setFlagData(
+			Map<Integer, HashMap<Integer, HashMap<String, Boolean>>> flagData) {
+		this.flagData = flagData;
+	}
+
+	public Map<String, Boolean> getIncoming() {
+		return incoming;
+	}
+
+	public void setIncoming(Map<String, Boolean> incoming) {
+		this.incoming = incoming;
+	}
+
+	
 }
