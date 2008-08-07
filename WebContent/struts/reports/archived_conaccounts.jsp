@@ -24,20 +24,35 @@ with any of these contractors, please encourage them to renew their membership b
 	<thead>
 	<tr>
 		<td colspan="2">Contractor Name</td>
-		<td>Invoice Date</td>
 		<td>Contact</td>
 		<td>Phone Number</td>
+		<td>Email Address</td>
+		<pics:permission perm="RemoveContractors">
+		<s:if test="permissions.operator">
+		<td>Remove</td>
+		</s:if>
+		</pics:permission>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td><s:property value="[0].get('name')" /></td>
-			<td class="center"><s:date name="[0].get('lastInvoiceDate')" format="M/d/yy" /></td>
-			<td><s:property value="[0].get('contact')" /></td>
-			<td><s:property value="[0].get('phone')" /><br/>
-			<s:property value="[0].get('phone2')" />
+			<td><s:property value="get('name')" /></td>
+			<td><s:property value="get('contact')" /></td>
+			<td><s:property value="get('phone')" /><br/>
+			<s:property value="get('phone2')" />
 			</td>
+			<td><s:property value="get('email')"/></td>
+			<pics:permission perm="RemoveContractors">
+				<s:if test="permissions.operator">
+				<td>
+				<s:form action="ArchivedContractorAccounts" method="POST">
+					<s:submit value="Remove" name="button"/>
+					<s:hidden value="%{get('id')}" name="conID"/>
+				</s:form>
+				</td>
+				</s:if>
+			</pics:permission>
 		</tr>
 	</s:iterator>
 </table>
