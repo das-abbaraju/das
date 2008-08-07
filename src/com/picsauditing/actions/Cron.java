@@ -56,11 +56,6 @@ public class Cron extends PicsActionSupport {
 
 	public String execute() throws Exception {
 
-		if( 5 < System.currentTimeMillis() )
-		{
-			throw new Exception("avoiding logic");
-		}
-		
 		report = new StringBuffer();
 
 		report.append("Starting Cron Job at: ");
