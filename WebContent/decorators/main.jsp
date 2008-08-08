@@ -121,7 +121,14 @@ function getElement(whichLayer) {
 <div id="bodyholder">
 <div id="content">
 <div id="helpbox">
-	<a href="help/" target="helpdoc48">Help Center</a> |
+	<% if(permissions.isContractor()) { %>
+	<a href="help/c/" target="helpdoc48">Help Center</a> |
+	<% } else if(permissions.isOperator() || permissions.isCorporate() || permissions.hasPermission(OpPerms.StatusOnly)) { %>
+	<a href="help/o/" target="helpdoc48">Help Center</a> |
+	<% } else { %>
+	<a href="help/a/" target="helpdoc48">Help Center</a> |
+	<%  } %>
+	
 	<a id="_lpChatBtn"
 	onmouseover="showChat();"
 	onmouseout="hideChat();"
