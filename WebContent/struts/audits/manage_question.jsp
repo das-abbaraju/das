@@ -35,14 +35,14 @@
 
 <tr>
 <th>Effective Date:</th>
-<td><s:textfield name="question.effectiveDate" value="%{getText('short_dates', {question.effectiveDate})}"/></td>
+<td><s:textfield name="question.effectiveDate" value="%{ question.effectiveDate && getText('short_dates', {question.effectiveDate})}"/></td>
 </tr>
 
 
 
 <tr>
 <th>Expiration Date:</th>
-<td><s:date name="question.expirationDate" /></td>
+<td><s:textfield name="question.expirationDate" value="%{getText('short_dates', {question.expirationDate})}"/></td>
 </tr>
 
 <tr>
