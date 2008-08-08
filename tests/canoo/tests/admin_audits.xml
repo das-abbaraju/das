@@ -3,6 +3,7 @@
 
 <project name="PICS" default="test">
 	<property name="login.username" value="tallred" />
+	
 	<target name="test">
 		<webtest name="Admin Audits">
 			&config;
@@ -10,9 +11,40 @@
 				&login;
 				&body_verify;
 				
-				<storeProperty name="report_link" value="Audit List" />
-				&click_report;
 				<storeProperty name="report_link" value="Audit Definitions" />
+				&click_report;
+
+				<group description="Add new AuditType">
+					<clickLink description="Click Add New link" label="Add New" />
+					<setInputField name="auditType.auditName" value="Canoo Audit" />
+					<setInputField name="auditType.description" value="Canoo audit type description" />
+					<setCheckbox name="auditType.hasMultiple" checked="true" />
+					<setCheckbox name="auditType.scheduled" checked="true" />
+					<setCheckbox name="auditType.hasAuditor" checked="true" />
+					<setCheckbox name="auditType.hasRequirements" checked="true" />
+					<setCheckbox name="auditType.canContractorView" checked="true" />
+					<setCheckbox name="auditType.canContractorEdit" checked="true" />
+					<setInputField name="auditType.monthsToExpire" value="3" />
+					<setInputField name="auditType.dateToExpire" value="7/1/99" />
+					<clickButton description="Click Save/Submit" label="Save" />
+				</group>
+				<group description="Add Category">
+					<clickLink description="Show Audit" label="Canoo Audit" />
+					<clickLink description="Click Add" label="Add New Category" />
+					<setInputField name="category.category" value="Canoo Category" />
+					<clickButton description="Click Save/Submit" label="Save" />
+				</group>
+				<group description="Delete Category">
+					<clickLink description="Show Category" label="Canoo Category" />
+					<clickButton description="Click Delete" label="Delete" />
+				</group>
+				<group description="Delete AuditType">
+					<clickLink description="Show Audit" label="Canoo Audit" />
+					<clickButton description="Click Delete" label="Delete" />
+				</group>
+
+
+				<storeProperty name="report_link" value="Audit List" />
 				&click_report;
 				<storeProperty name="report_link" value="NCMS Audits" />
 				&click_report;
@@ -22,6 +54,8 @@
 				&click_report;
 				<storeProperty name="report_link" value="PQF Verification" />
 				&click_report;
+
+				
 			</steps>
 		</webtest>
 	</target>
