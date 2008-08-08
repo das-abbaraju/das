@@ -223,11 +223,6 @@
 			<result>struts/reports/report_ncms.jsp</result>
 		</action>
 
-		<action name="ReportNCMS"
-			class="com.picsauditing.actions.report.ReportAccountNCMS">
-			<result>struts/reports/report_ncms.jsp</result>
-		</action>
-
 		<action name="AuditDataSaveAjax"
 			class="com.picsauditing.actions.audits.AuditDataSave">
 			<result>struts/blank.jsp</result>
@@ -255,6 +250,11 @@
 		<action name="ContractorListOperator"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<result>struts/reports/contractors_operator.jsp</result>
+		</action>
+
+		<action name="NewContractorSearch"
+			class="com.picsauditing.actions.report.ReportNewContractorSearch">
+			<result>struts/reports/newContractor_operator.jsp</result>
 		</action>
 
 		<action name="ProfileEdit"
@@ -416,6 +416,30 @@
 		<action name="ReportUsersAccount"
 			class="com.picsauditing.actions.report.ReportUser">
 			<result>struts/reports/report_users.jsp</result>
+		</action>
+
+		<action name="ConAuditCopy"
+			class="com.picsauditing.actions.audits.ContractorAuditCopy">
+			<result>/struts/audits/audit_copy.jsp</result>
+			<result name="Audit" type="redirect-action">
+			<param name="actionName">Audit</param>
+				<param name="auditID">${conAudit.id}</param>
+			</result>
+		</action>
+		
+		<action name="ManagePQFMatrix"
+			class="com.picsauditing.actions.auditType.ManagePQFMatrix">
+			<result>struts/audits/pqf_matrix.jsp</result>
+		</action>
+		
+		<action name="ManageDesktopMatrix"
+			class="com.picsauditing.actions.auditType.ManageDesktopMatrix">
+			<result>struts/audits/desktop_matrix.jsp</result>
+		</action>
+		
+		<action name="MultiLoginUser"
+			class="com.picsauditing.actions.users.ManageMultiUser">
+			<result>struts/users/multilogin_user.jsp</result>
 		</action>
 
 	</package>
