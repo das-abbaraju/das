@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<property name="login.username" value="tallred" />
+	
+	<target name="test">
+		<webtest name="Admin Audits">
+			&config;
+			<steps>
+				&login;
+				&body_verify;
+				
+				<storeProperty name="report_link" value="Audit Definitions" />
+				&click_report;
+
+				<group description="Add new AuditType">
+					<clickLink description="Click Add New link" label="Add New" />
+					<setInputField name="auditType.auditName" value="Canoo Audit" />
+					<setInputField name="auditType.description" value="Canoo audit type description" />
+					<setCheckbox name="auditType.hasMultiple" checked="true" />
+					<setCheckbox name="auditType.scheduled" checked="true" />
+					<setCheckbox name="auditType.hasAuditor" checked="true" />
+					<setCheckbox name="auditType.hasRequirements" checked="true" />
+					<setCheckbox name="auditType.canContractorView" checked="true" />
+					<setCheckbox name="auditType.canContractorEdit" checked="true" />
+					<setInputField name="auditType.monthsToExpire" value="3" />
+					<setInputField name="auditType.dateToExpire" value="7/1/99" />
+					<clickButton description="Click Save/Submit" label="Save" />
+				</group>
+				<group description="Add Category">
+					<clickLink description="Show Audit" label="Canoo Audit" />
+					<clickLink description="Click Add" label="Add New Category" />
+					<setInputField name="category.category" value="Canoo Category" />
+					<clickButton description="Click Save/Submit" label="Save" />
+				</group>
+				<group description="Delete Category">
+					<clickLink description="Show Category" label="Canoo Category" />
+					<clickButton description="Click Delete" label="Delete" />
+				</group>
+				<group description="Delete AuditType">
+					<clickLink description="Show Audit" label="Canoo Audit" />
+					<clickButton description="Click Delete" label="Delete" />
+				</group>
+				
+				<group description="PQF Matrix">
+					<storeProperty name="report_link" value="PQF Matrix" />
+					&click_report;
+					
+					<setSelectField description="Choose BP Carson"
+			            name="operators" value="16" multiselect="true" />
+					<setSelectField description="Choose BP Cherry Point"
+			            name="operators" value="1813" multiselect="true" />
+					<clickButton description="Search" label="Search"/>
+					<clickLink description="Show Criteria" label="Change Columns"/>
+					<verifySelectField description="check BP Carson"
+			            name="operators" value="16" />
+					<verifySelectField description="check BP Cherry Point"
+			            name="operators" value="1813" />
+					<verifySelectField description="check Med Risk"
+			            name="riskLevels" value="2" />
+					<setCheckbox description="Check 36. MOTOROLA USA SPECIFIC - Med Risk for BP Carson Refinery"
+					        name="incoming['16_108_Med']" />
+					<clickButton description="Save" label="Save"/>
+					<verifyCheckbox description="Verify saved checkbox"
+					            name="incoming['16_108_Med']" checked="true" />
+
+					<setCheckbox description="Uncheck 36. MOTOROLA USA SPECIFIC - Med Risk for BP Carson Refinery"
+					        name="incoming['16_108_Med']" checked="false" />
+					<clickButton description="Save" label="Save"/>
+					<verifyCheckbox description="Verify saved checkbox"
+					            name="incoming['16_108_Med']" checked="false" />
+				</group>
+
+				<storeProperty name="report_link" value="Desktop Matrix" />
+				&click_report;
+				
+				
+			</steps>
+		</webtest>
+	</target>
+</project>
