@@ -26,12 +26,8 @@
 	<div class="filterOption">Risk Levels:<br />
 		<s:select name="riskLevels" list="#{1:'Low',2:'Medium',3:'High'}" multiple="true" size="3"></s:select> </div>
 	<br clear="all" />
-</s:form>
 </div>
 
-<s:form id="formdata">
-	<div class="buttons"><a href="#" class="positive"
-		onclick="$('formdata').submit(); return false;">Save</a></div>
 <table class="report">
 <thead>
 <tr>
@@ -53,14 +49,16 @@
 	<tr>
 		<th><s:property value="number" />. <s:property value="category" /></th>
 		<s:iterator value="columns">
-			<td class="center"><s:checkbox name="data[]" value="isChecked([1].id, [0].riskLevel, [0].operatorAccount.id)"></s:checkbox></td>
+			<td class="center">
+			<s:checkbox name="incoming['%{operatorAccount.id}_%{[1].id}_%{riskLevel.name()}']" value="flagData[operatorAccount.id][[1].id][riskLevel.name()]" /></td>
 		</s:iterator>
 	</tr>
 </s:iterator>
 </tbody>
 </table>
+<s:hidden name="button" value="save"/>
 <div class="buttons"><a href="#" class="positive"
-	onclick="$('formdata').submit(); return false;">Save</a></div>
+	onclick="$('form1').submit(); return false;">Save</a></div>
 </s:form>
 
 </body>
