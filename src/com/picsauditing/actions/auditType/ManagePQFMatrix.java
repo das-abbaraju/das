@@ -12,7 +12,9 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditCatOperator;
 import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.DesktopMatrix;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
@@ -25,10 +27,9 @@ public class ManagePQFMatrix extends PicsActionSupport {
 	private List<OperatorAccount> operatorAccounts;
 	private List<OperatorRisk> columns = new ArrayList<OperatorRisk>();
 	private List<AuditCategory> categories;
-	private List<AuditCatOperator> data;
 	
-	// opId		catId		Flag		on/off
-	private Map<Integer, HashMap<Integer, HashMap<String, Boolean>>> flagData = new HashMap<Integer, HashMap<Integer, HashMap<String, Boolean>>>();
+	//			 opId		catId		Flag		on/off
+	private Map<Integer, Map<Integer, Map<String, Boolean>>> flagData;
 	protected Map<String, Boolean> incoming = null;
 	
 	protected OperatorAccountDAO operatorAccountDAO;
@@ -60,46 +61,79 @@ public class ManagePQFMatrix extends PicsActionSupport {
 		}
 		categories = auditDAO.find(AuditType.PQF).getCategories();
 		
-		if( incoming != null ) {
+		//load the data map
+		flagData = new HashMap<Integer, Map<Integer,Map<String,Boolean>>>();
+		List<AuditCatOperator> listData = auditCatOperatorDAO.find(operators, riskLevels);
+		for( AuditCatOperator aco : listData) {
+			setMapValue(aco.getOperatorAccount().getId(), aco.getCategory().getId(), aco.getRiskLevel(), true);
+		}
+
+		if("Save".equals(button) && incoming != null ) {
 
 			for( String key : incoming.keySet() ) {
 			
 				String[] newData = key.split("_");
-				int opId = Integer.parseInt(newData[0]);
-				int catId = Integer.parseInt(newData[1]);
-				LowMedHigh theLevel = LowMedHigh.valueOf(newData[2]);
+				int operatorID = Integer.parseInt(newData[0]);
+				int categoryID = Integer.parseInt(newData[1]);
+				LowMedHigh risk = LowMedHigh.valueOf(newData[2]);
 				boolean newValue = incoming.get(key);
 				
+				// datamap => operatorID, categoryID, risk
 				//persist logic here
+				boolean exists = false;
+				try {
+					exists = flagData.get(operatorID).get(categoryID).get(risk.toString());
+				} catch (Exception e) {}
 				
-			
+				if (newValue && !exists) {
+					// Add a new record
+					AuditCatOperator row = new AuditCatOperator();
+					row.setRiskLevel(risk);
+					for(AuditCategory category : categories) {
+						if (category.getId() == categoryID) {
+							row.setCategory(category);
+						}
+					}
+					for(OperatorAccount operator : operatorAccounts) {
+						if (operator.getId() == operatorID) {
+							row.setOperatorAccount(operator);
+						}
+					}
+					if (row.getCategory() != null && row.getOperatorAccount() != null) {
+						addActionMessage("Added "+row.getCategory().getCategory()+" for "+row.getOperatorAccount().getName()+" - "+risk);
+						auditCatOperatorDAO.save(row);
+						
+						setMapValue(operatorID, categoryID, risk, true);
+					}
+				} else if (!newValue && exists) {
+					// Delete the existing record
+					for (AuditCatOperator row : listData) {
+						if (row.getCategory().getId() == categoryID
+								&& row.getOperatorAccount().getId() == operatorID
+								&& row.getRiskLevel().equals(risk)) {
+							auditCatOperatorDAO.remove(row);
+							setMapValue(operatorID, categoryID, risk, false);
+							addActionMessage("Removed "+row.getCategory().getCategory()+" for "+row.getOperatorAccount().getName()+" - "+risk);
+						}
+					}
+				}
 			}
 			
-		}
-
-
-		
-		//load the flags
-		for( AuditCatOperator aco : auditCatOperatorDAO.find(operators, riskLevels) ) {
-			
-			HashMap<Integer, HashMap<String, Boolean>> byCategory = flagData.get(aco.getOperatorAccount().getId());
-			
-			if( byCategory == null ) {
-				byCategory = new HashMap<Integer, HashMap<String, Boolean>>();
-				flagData.put(aco.getOperatorAccount().getId(), byCategory);
-			}
-
-			HashMap<String, Boolean> byFlag = byCategory.get(aco.getRiskLevel().name());
-			
-			if( byFlag == null ) {
-				byFlag = new HashMap<String, Boolean>();
-				byCategory.put(aco.getCategory().getId(), byFlag);
-			}
-			
-			byFlag.put(aco.getRiskLevel().name(), true);
 		}
 		
 		return SUCCESS;
+	}
+	
+	private void setMapValue(int operatorID, int categoryID, LowMedHigh risk, boolean value) {
+		// First initialize the operator level
+		if (flagData.get(operatorID) == null)
+			flagData.put(operatorID, new HashMap<Integer, Map<String, Boolean>>());
+		// Second initialize the category level
+		if (flagData.get(operatorID).get(categoryID) == null)
+			flagData.get(operatorID).put(categoryID, new HashMap<String, Boolean>());
+		
+		// finally, set the risk->value
+		flagData.get(operatorID).get(categoryID).put(risk.toString(), value);
 	}
 
 	public class OperatorRisk {
@@ -123,20 +157,6 @@ public class ManagePQFMatrix extends PicsActionSupport {
 		return categories;
 	}
 
-	public List<AuditCatOperator> getData() {
-		return data;
-	}
-	
-	public boolean isChecked(int categoryID, LowMedHigh riskLevel, int operatorID) {
-		for(AuditCatOperator dataCell : data) {
-			if (dataCell.getCategory().getId() == categoryID
-					&& dataCell.getOperatorAccount().getId() == operatorID
-					&& dataCell.getRiskLevel().equals(riskLevel))
-				return true;
-		}
-		return false;
-	}
-	
 	public List<OperatorAccount> getOperatorList() throws Exception {
 		return operatorAccountDAO.findWhere(false, "active='Y'");
 	}
@@ -169,12 +189,12 @@ public class ManagePQFMatrix extends PicsActionSupport {
 		return operatorAccounts;
 	}
 
-	public Map<Integer, HashMap<Integer, HashMap<String, Boolean>>> getFlagData() {
+	public Map<Integer, Map<Integer, Map<String, Boolean>>> getFlagData() {
 		return flagData;
 	}
 
 	public void setFlagData(
-			Map<Integer, HashMap<Integer, HashMap<String, Boolean>>> flagData) {
+			Map<Integer, Map<Integer, Map<String, Boolean>>> flagData) {
 		this.flagData = flagData;
 	}
 

@@ -28,14 +28,17 @@ function clearSelected(name) {
 </ul>
 </div>
 
+<s:include value="../actionMessages.jsp"></s:include>
+
 <s:form id="form1" method="post">
 <div id="search">
 <s:if test="columns.size() > 0">
 	<div id="changecolumns"><a href="#" onclick="$('filters').show(); $('changecolumns').hide(); return false;">Change Columns</a></div>
 </s:if>
 <div id="filters" <s:if test="columns.size() > 0">style="display: none;"</s:if>>
-	<div class="buttons"><a href="#" class="positive"
-		onclick="$('form1').submit(); return false;">Search</a></div>
+	<div class="buttons">
+		<button class="positive" name="button" type="submit" value="Search">Search</button>
+	</div>
 
 	<div class="filterOption">Operators:<br />
 		<s:select id="operatorList" name="operators" list="operatorList" listKey="id" listValue="name" multiple="true" size="10"></s:select>
@@ -48,8 +51,9 @@ function clearSelected(name) {
 </div>
 </div>
 <s:if test="columns.size() > 0">
-	<div class="buttons"><a href="#" class="positive"
-		onclick="$('form1').submit(); return false;">Save</a></div>
+	<div class="buttons">
+		<button class="positive" name="button" type="submit" value="Save">Save</button>
+	</div>
 	<table class="report">
 	<thead>
 	<tr>
@@ -92,9 +96,6 @@ function clearSelected(name) {
 	</tr>
 	</thead>
 	</table>
-	<s:hidden name="button" value="save"/>
-	<div class="buttons"><a href="#" class="positive"
-		onclick="$('form1').submit(); return false;">Save</a></div>
 </s:if>
 </s:form>
 
