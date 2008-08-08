@@ -96,6 +96,9 @@ function clearSelected(name) {
 	</tr>
 	</thead>
 	</table>
+	<div class="buttons">
+		<button class="positive" name="button" type="submit" value="Save">Save</button>
+	</div>
 </s:if>
 </s:form>
 

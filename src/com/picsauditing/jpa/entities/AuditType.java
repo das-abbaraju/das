@@ -52,7 +52,7 @@ public class AuditType {
 	protected boolean hasRequirements;
 	protected boolean canContractorView;
 	protected boolean canContractorEdit;
-	protected Integer monthsToExpire = -1;
+	protected Integer monthsToExpire;
 	protected Date dateToExpire;
 	protected int displayOrder = 100;
 	

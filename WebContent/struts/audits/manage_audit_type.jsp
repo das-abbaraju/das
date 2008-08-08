@@ -36,7 +36,8 @@
 <table class="forms">
 <tr>
 <th>ID:</th>
-<td><s:property value="auditType.auditTypeID"></s:property></td>
+<td><s:if test="auditType.auditTypeID > 0"><s:property value="auditType.auditTypeID" /></s:if>
+<s:else>NEW</s:else></td>
 </tr>
 <tr>
 <th>Audit Type Name:</th>
@@ -52,7 +53,7 @@
 </tr>
 <tr>
 <th>Is Scheduled:</th>
-<td><s:checkbox name="auditType.isScheduled" /></td>
+<td><s:checkbox name="auditType.scheduled" /></td>
 </tr>
 <tr>
 <th>Has Auditor:</th>
@@ -76,17 +77,19 @@
 </tr>
 <tr>
 <th>Date to Expire:</th>
-<td><s:textfield name="auditType.dateToExpire" /></td>
+<td><s:textfield name="auditType.dateToExpire" /> m/d/yy</td>
 </tr>
 <tr>
 <th>Order:</th>
 <td><s:textfield name="auditType.displayOrder" /></td>
 </tr>
 </table>
-<button class="positive" name="button" value="save">Save</button>
+<div class="buttons">
+	<button class="positive" name="button" type="submit" value="save">Save</button>
 <s:if test="auditType.categories.size == 0">
-	<button class="positive" name="button" value="delete">Delete</button>
+	<button name="button" type="submit" value="delete">Delete</button>
 </s:if>
+</div>
 </s:form>
 </td>
 <s:if test="id != 0">

@@ -17,6 +17,9 @@
 <s:form id="save">
 <s:hidden name="id" />
 <s:hidden name="question.subCategory.id" />
+<div class="buttons">
+	<button class="positive" name="button" type="submit" value="save">Save</button>
+</div>
 <table class="forms">
 <tr>
 <th>ID:</th>
@@ -145,8 +148,10 @@
 <td><s:textfield name="question.linkText6" /></td>
 </tr>
 </table>
-<button class="positive" name="button" value="save">Save</button>
-<button class="positive" name="button" value="delete">Delete</button>
+<div class="buttons">
+	<button class="positive" name="button" type="submit" value="save">Save</button>
+	<button name="button" type="submit" value="delete">Delete</button>
+</div>
 </s:form>
 </td>
 <td style="vertical-align: top">

@@ -50,8 +50,13 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 			}
 		}
 		
-		if (auditType != null || "Add New".equals(button))
+		if ("Add New".equals(button)) {
+			auditType = new AuditType();
 			return SUCCESS;		
+		}
+		if (auditType != null) {
+			return SUCCESS;		
+		}
 		
 		return "top";
 	}

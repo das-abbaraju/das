@@ -38,7 +38,8 @@
 <table class="forms">
 <tr>
 <th>ID:</th>
-<td><s:property value="subCategory.id"></s:property></td>
+<td><s:if test="subCategory.id > 0"><s:property value="subCategory.id" /></s:if>
+<s:else>NEW</s:else></td>
 </tr>
 <tr>
 <th>Sub Category Name:</th>
@@ -49,10 +50,12 @@
 <td><s:textfield name="subCategory.number" size="4"/></td>
 </tr>
 </table>
-<button class="positive" name="button" value="save">Save</button>
+<div class="buttons">
+	<button class="positive" name="button" type="submit" value="save">Save</button>
 <s:if test="subCategory.questions.size == 0">
-	<button class="positive" name="button" value="delete">Delete</button>
+	<button class="positive" name="button" type="submit" value="delete">Delete</button>
 </s:if>
+</div>
 
 </s:form>
 </td>
