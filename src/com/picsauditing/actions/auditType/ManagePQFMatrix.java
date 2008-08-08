@@ -36,9 +36,9 @@ public class ManagePQFMatrix extends PicsActionSupport {
 	protected AuditTypeDAO auditDAO;
 	protected AuditCatOperatorDAO auditCatOperatorDAO;
 	
-	public ManagePQFMatrix(OperatorAccountDAO operatorAccountDAO, AuditTypeDAO auditCategoryDAO, AuditCatOperatorDAO auditCatOperatorDAO) {
+	public ManagePQFMatrix(OperatorAccountDAO operatorAccountDAO, AuditTypeDAO auditDAO, AuditCatOperatorDAO auditCatOperatorDAO) {
 		this.operatorAccountDAO = operatorAccountDAO;
-		this.auditDAO = auditCategoryDAO;
+		this.auditDAO = auditDAO;
 		this.auditCatOperatorDAO = auditCatOperatorDAO;
 	}
 

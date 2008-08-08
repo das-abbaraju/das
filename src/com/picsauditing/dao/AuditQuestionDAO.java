@@ -7,6 +7,7 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.util.Strings;
 
 @Transactional
 public class AuditQuestionDAO extends PicsDAO {
@@ -33,11 +34,19 @@ public class AuditQuestionDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findBySubCategory(int subCategoryID) {
-		Query query = em.createQuery("select t FROM AuditQuestion t WHERE t.subCategory.id = ?");
+		Query query = em.createQuery("select t FROM AuditQuestion t WHERE t.subCategory.id = ?" +
+				"ORDER BY t.number");
 		query.setParameter(1, subCategoryID);
 		return query.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<AuditQuestion> findBySubCategories(int[] subCategoryIDs) {
+		String ids = Strings.implode(subCategoryIDs, ",");
+		Query query = em.createQuery("select t FROM AuditQuestion t WHERE t.subCategory.id IN ("+ids+") " +
+				"ORDER BY t.subCategory.category.number, t.subCategory.number, t.number");
+		return query.getResultList();
+	}
 	
 	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findQuestionByType(String questionType) {

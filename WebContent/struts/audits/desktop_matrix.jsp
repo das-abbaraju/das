@@ -16,35 +16,37 @@
 </ul>
 </div>
 
+<s:if test="questions.size() == 0">
 <div id="search">
 <s:form id="form1" method="post" cssStyle="background-color: #F4F4F4;">
 	<div class="buttons"><a href="#" class="positive"
 		onclick="$('form1').submit(); return false;">Search</a></div>
 
-	<div class="filterOption">Operators:<br />
-		<s:select name="operators" list="operatorList" listKey="id" listValue="name" multiple="true" size="10"></s:select></div>
-	<div class="filterOption">Risk Levels:<br />
-		<s:select name="riskLevels" list="#{1:'Low',2:'Medium',3:'High'}" multiple="true" size="3"></s:select> </div>
+	<div class="filterOption">Type of Work:<br />
+		<s:select name="questionIDs" multiple="true" size="10" listKey="questionID" listValue="question" list="typeOfWork"></s:select>
+	</div>
+	<div class="filterOption">Industries:<br />
+		<s:select name="questionIDs" multiple="true" size="10" listKey="questionID" listValue="question" list="industries"></s:select>
+	</div>
+	<div class="filterOption">Services Performed:<br />
+		<s:select name="questionIDs" multiple="true" size="10" listKey="questionID" listValue="question" list="servicesPerformed"></s:select>
+	</div>
 	<br clear="all" />
 </s:form>
 </div>
+</s:if>
 
+<s:if test="questions.size() > 0">
 <s:form id="formdata">
+	<div><a href="ManageDesktopMatrix.action">Change Columns</a></div>
 	<div class="buttons"><a href="#" class="positive"
 		onclick="$('formdata').submit(); return false;">Save</a></div>
 <table class="report">
 <thead>
 <tr>
-	<th></th>
-<s:iterator value="operatorAccounts">
-	<th colspan="<s:property value="riskLevels.length" />"><s:property value="name" /></th>
-</s:iterator>
-	<th rowspan="2" width="30px">&nbsp;</th>
-</tr>
-<tr>
-	<th></th>
-<s:iterator value="columns">
-	<th><s:property value="riskLevel" /></th>
+	<th>Desktop Category</th>
+<s:iterator value="questions">
+	<th><s:property value="question" /></th>
 </s:iterator>
 </tr>
 </thead>
@@ -52,8 +54,8 @@
 <s:iterator value="categories">
 	<tr>
 		<th><s:property value="number" />. <s:property value="category" /></th>
-		<s:iterator value="columns">
-			<td class="center"><s:checkbox name="data[]" value="isChecked([1].id, [0].riskLevel, [0].operatorAccount.id)"></s:checkbox></td>
+		<s:iterator value="questions">
+			<td class="center"><s:checkbox name="%{'data['+[1].id+']['+questionID+']'}" value="data.get([1].id).get(questionID)"></s:checkbox></td>
 		</s:iterator>
 	</tr>
 </s:iterator>
@@ -62,6 +64,7 @@
 <div class="buttons"><a href="#" class="positive"
 	onclick="$('formdata').submit(); return false;">Save</a></div>
 </s:form>
+</s:if>
 
 </body>
 </html>
