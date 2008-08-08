@@ -39,8 +39,6 @@ table.report tr.na a {
 		<s:submit value="%{'Close '.concat(conAudit.auditType.auditName)}" disabled="!canClose" />
 	</s:if>
 </s:form>
-<div style="font-size: 14px;"><a href="AuditCat.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
-Questions</a></div>
 
 <table class="report">
 	<thead>

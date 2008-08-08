@@ -47,10 +47,13 @@
 	</s:if>
 	<li><a <s:if test="requestURI.contains('contractor_audits')">class="current"</s:if> href="ConAuditList.action?id=<s:property value="id" />">Audits</a></li>
 	<s:iterator value="activeAudits">
-		<li><a <s:if test="id == auditID">class="current"</s:if>
-				href="Audit.action?auditID=<s:property value="id"/>" title="<s:date
+		<s:if test="auditStatus.toString() != 'Exempt'">
+				<li><a <s:if test="id == auditID">class="current"</s:if>
+					href="Audit.action?auditID=<s:property value="id"/>"
+					title="<s:date
 			name="effectiveDate" format="MMM yyyy" />"><s:property
-			value="auditType.auditName" /></a></li>
+					value="auditType.auditName" /></a></li>
+		</s:if>	
 	</s:iterator>
 </ul>
 </div>
@@ -149,6 +152,10 @@
 					<pics:permission perm="AuditVerification">
 						<li><a href="VerifyView.action?auditID=<s:property value="auditID" />">Verify PQF</a></li>
 					</pics:permission>
+				</s:if>
+				<s:if test="conAudit.auditStatus.toString() == 'Pending'">
+					<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
+					Questions</a></li>
 				</s:if>
 			</ul>
 			</div>
