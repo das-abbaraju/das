@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.DesktopMatrix;
+import com.picsauditing.jpa.entities.LowMedHigh;
 
 public class ManageDesktopMatrix extends PicsActionSupport {
 	private int[] questionIDs = null;
@@ -31,6 +32,7 @@ public class ManageDesktopMatrix extends PicsActionSupport {
 	 * category.question.DesktopMatrix
 	 */
 	private Map<Integer, Map<Integer, Boolean>> data;
+	private Map<String, Boolean> incoming = null;
 	
 	public ManageDesktopMatrix(AuditTypeDAO auditDAO, AuditCatOperatorDAO auditCatOperatorDAO,
 			AuditQuestionDAO auditQuestionDAO, DesktopMatrixDAO desktopMatrixDAO) {
@@ -65,6 +67,60 @@ public class ManageDesktopMatrix extends PicsActionSupport {
 		for(DesktopMatrix row : matrixData) {
 			data.get(row.getCategory().getId()).put(row.getQuestion().getQuestionID(), true);
 		}
+		
+		if( incoming != null ) {
+			// Save the data
+			
+			for( String key : incoming.keySet() ) {
+				String[] newData = key.split("_");
+				int categoryID = Integer.parseInt(newData[0]);
+				int questionID = Integer.parseInt(newData[1]);
+				boolean newValue = incoming.get(key);
+				
+				//persist logic here
+				boolean exists = false;
+				try {
+					exists = data.get(categoryID).get(questionID);
+				} catch (Exception e) {}
+				
+				if (newValue && !exists) {
+					// Add a new record
+					DesktopMatrix matrix = new DesktopMatrix();
+					for(AuditCategory category : categories) {
+						if (category.getId() == categoryID) {
+							matrix.setCategory(category);
+						}
+					}
+					for(AuditQuestion question : questions) {
+						if (question.getQuestionID() == questionID) {
+							matrix.setQuestion(question);
+						}
+					}
+					if (matrix.getCategory() != null && matrix.getQuestion() != null) {
+						System.out.println("Adding "+matrix.getCategory().getCategory()+" for "+matrix.getQuestion().getQuestion());
+
+						desktopMatrixDAO.save(matrix);
+						
+						// Update the data map
+						if (data.get(categoryID) == null)
+							data.put(categoryID, new HashMap<Integer, Boolean>());
+						data.get(categoryID).put(questionID, true);
+					}
+				} else if (!newValue && exists) {
+					// Delete the existing record
+					for (DesktopMatrix matrix : matrixData) {
+						if (matrix.getCategory().getId() == categoryID
+								&& matrix.getQuestion().getQuestionID() == questionID) {
+							System.out.println("Removing "+matrix.getCategory().getCategory()+" for "+matrix.getQuestion().getQuestion());
+							desktopMatrixDAO.remove(matrix);
+							data.get(categoryID).put(questionID, false);
+							//matrixData.remove(matrix);
+						}
+					}
+				}
+			}
+		}
+
 
 		return SUCCESS;
 	}
@@ -105,5 +161,13 @@ public class ManageDesktopMatrix extends PicsActionSupport {
 
 	public void setData(Map<Integer, Map<Integer, Boolean>> data) {
 		this.data = data;
+	}
+
+	public Map<String, Boolean> getIncoming() {
+		return incoming;
+	}
+
+	public void setIncoming(Map<String, Boolean> incoming) {
+		this.incoming = incoming;
 	}
 }

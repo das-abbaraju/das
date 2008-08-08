@@ -27,9 +27,8 @@ public class ManagePQFMatrix extends PicsActionSupport {
 	private List<AuditCategory> categories;
 	private List<AuditCatOperator> data;
 	
-				//opId		catId		Flag		on/off
+	// opId		catId		Flag		on/off
 	private Map<Integer, HashMap<Integer, HashMap<String, Boolean>>> flagData = new HashMap<Integer, HashMap<Integer, HashMap<String, Boolean>>>();
-	
 	protected Map<String, Boolean> incoming = null;
 	
 	protected OperatorAccountDAO operatorAccountDAO;
@@ -70,7 +69,6 @@ public class ManagePQFMatrix extends PicsActionSupport {
 				int catId = Integer.parseInt(newData[1]);
 				LowMedHigh theLevel = LowMedHigh.valueOf(newData[2]);
 				boolean newValue = incoming.get(key);
-				
 				
 				//persist logic here
 				

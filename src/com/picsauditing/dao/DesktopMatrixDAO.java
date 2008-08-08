@@ -21,13 +21,18 @@ public class DesktopMatrixDAO extends PicsDAO {
 		}
 		return o;
 	}
+	
 	public void remove(int id) {
 		DesktopMatrix row = find(id);
+		remove(row);
+    }
+
+	public void remove(DesktopMatrix row) {
         if (row != null) {
             em.remove(row);
         }
     }
-	
+
 	public DesktopMatrix find(int id) {
         return em.find(DesktopMatrix.class, id);
     }

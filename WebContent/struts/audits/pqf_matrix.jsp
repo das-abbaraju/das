@@ -3,12 +3,24 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <html>
 <head>
-<title>Operator/PQF Category Matrix</title>
+<title>PQF Matrix</title>
 <script type="text/javascript" src="js/prototype.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<style>
+td.selected {
+	background-color: #FEC;
+}
+</style>
+<script type="text/javascript">
+function clearSelected(name) {
+	var box = $(name);
+	for(i=0; i < box.length; i++)
+		box.options[i].selected = false
+}
+</script>
 </head>
 <body>
-<h1>Operator/PQF Category Matrix</h1>
+<h1>PQF Matrix</h1>
 <div id="internalnavcontainer">
 <ul id="navlist">
 	<li><a href="ManagePQFMatrix.action" class="current">PQF Matrix</a></li>
@@ -16,49 +28,74 @@
 </ul>
 </div>
 
+<s:form id="form1" method="post">
 <div id="search">
-<s:form id="form1" method="post" cssStyle="background-color: #F4F4F4;">
+<s:if test="columns.size() > 0">
+	<div id="changecolumns"><a href="#" onclick="$('filters').show(); $('changecolumns').hide(); return false;">Change Columns</a></div>
+</s:if>
+<div id="filters" <s:if test="columns.size() > 0">style="display: none;"</s:if>>
 	<div class="buttons"><a href="#" class="positive"
 		onclick="$('form1').submit(); return false;">Search</a></div>
 
 	<div class="filterOption">Operators:<br />
-		<s:select name="operators" list="operatorList" listKey="id" listValue="name" multiple="true" size="10"></s:select></div>
+		<s:select id="operatorList" name="operators" list="operatorList" listKey="id" listValue="name" multiple="true" size="10"></s:select>
+		<br /><a class="clearLink" href="#" onclick="clearSelected('operatorList'); return false;">Clear</a>
+	</div>
 	<div class="filterOption">Risk Levels:<br />
-		<s:select name="riskLevels" list="#{1:'Low',2:'Medium',3:'High'}" multiple="true" size="3"></s:select> </div>
+		<s:select name="riskLevels" list="#{1:'Low',2:'Medium',3:'High'}" multiple="true" size="3"></s:select>
+	</div>
 	<br clear="all" />
 </div>
-
-<table class="report">
-<thead>
-<tr>
-	<th></th>
-<s:iterator value="operatorAccounts">
-	<th colspan="<s:property value="riskLevels.length" />"><s:property value="name" /></th>
-</s:iterator>
-	<th rowspan="2" width="30px">&nbsp;</th>
-</tr>
-<tr>
-	<th></th>
-<s:iterator value="columns">
-	<th><s:property value="riskLevel" /></th>
-</s:iterator>
-</tr>
-</thead>
-<tbody>
-<s:iterator value="categories">
+</div>
+<s:if test="columns.size() > 0">
+	<div class="buttons"><a href="#" class="positive"
+		onclick="$('form1').submit(); return false;">Save</a></div>
+	<table class="report">
+	<thead>
 	<tr>
-		<th><s:property value="number" />. <s:property value="category" /></th>
-		<s:iterator value="columns">
-			<td class="center">
-			<s:checkbox name="incoming['%{operatorAccount.id}_%{[1].id}_%{riskLevel.name()}']" value="flagData[operatorAccount.id][[1].id][riskLevel.name()]" /></td>
-		</s:iterator>
+		<th>PQF Category</th>
+	<s:iterator value="operatorAccounts">
+		<th colspan="<s:property value="riskLevels.length" />"><s:property value="name" /></th>
+	</s:iterator>
 	</tr>
-</s:iterator>
-</tbody>
-</table>
-<s:hidden name="button" value="save"/>
-<div class="buttons"><a href="#" class="positive"
-	onclick="$('form1').submit(); return false;">Save</a></div>
+	<tr>
+		<th></th>
+	<s:iterator value="columns">
+		<th><s:property value="riskLevel" /></th>
+	</s:iterator>
+	</tr>
+	</thead>
+	<tbody>
+	<s:iterator value="categories">
+		<tr>
+			<th><s:property value="number" />. <s:property value="category" /></th>
+			<s:iterator value="columns">
+				<td title="<s:property value="%{[1].name} %{riskLevel.name()}"/>" class="center<s:if test="flagData[operatorAccount.id][[1].id][riskLevel.name()]"> selected</s:if>">
+					<s:checkbox name="incoming['%{operatorAccount.id}_%{[1].id}_%{riskLevel.name()}']" value="flagData[operatorAccount.id][[1].id][riskLevel.name()]" />
+				</td>
+			</s:iterator>
+		</tr>
+	</s:iterator>
+	</tbody>
+	<thead>
+	<tr>
+		<th></th>
+	<s:iterator value="columns">
+		<th><s:property value="riskLevel" /></th>
+	</s:iterator>
+	</tr>
+	<tr>
+		<th>PQF Category</th>
+	<s:iterator value="operatorAccounts">
+		<th colspan="<s:property value="riskLevels.length" />"><s:property value="name" /></th>
+	</s:iterator>
+	</tr>
+	</thead>
+	</table>
+	<s:hidden name="button" value="save"/>
+	<div class="buttons"><a href="#" class="positive"
+		onclick="$('form1').submit(); return false;">Save</a></div>
+</s:if>
 </s:form>
 
 </body>
