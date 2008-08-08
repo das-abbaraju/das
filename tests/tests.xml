@@ -15,6 +15,7 @@
 	<bean id="AuditBuilder" class="com.picsauditing.PICS.AuditBuilder" scope="prototype"/>
 	<bean id="AuditDataDAO" class="com.picsauditing.dao.AuditDataDAO" scope="prototype"/>
 	<bean id="AuditCategoryDataDAO" class="com.picsauditing.dao.AuditCategoryDataDAO" scope="prototype"/>
+	<bean id="AuditCategoryDAO" class="com.picsauditing.dao.AuditCategoryDAO" scope="prototype"/>
 	<bean id="AuditOperatorDAO" class="com.picsauditing.dao.AuditOperatorDAO" scope="prototype"/>
 	<bean id="AuditQuestionDAO" class="com.picsauditing.dao.AuditQuestionDAO" scope="prototype"/>
 	<bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO" scope="prototype"/>
@@ -37,7 +38,6 @@
 	<bean id="Report" class="com.picsauditing.search.Report" scope="prototype"/>
 	<bean class="com.picsauditing.PICS.Facilities"/>
 	<bean id="CertificateDAO" class="com.picsauditing.dao.CertificateDAO" scope="prototype"/>
-   
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
 	<!--  JPA implementation -->

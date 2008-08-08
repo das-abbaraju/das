@@ -51,6 +51,8 @@ public class AuditQuestionDAOTest {
 		auditquestion.setLinkText5("test1");
 		auditquestion.setLinkUrl6("test1");
 		auditquestion.setLinkText6("test1");
+		auditquestion.setEffectiveDate(new Date());
+		auditquestion.setExpirationDate(new Date());
 		auditquestion.setDateCreated(new Date(2008 - 04 - 07));
 		auditquestion.setIsRedFlagQuestion(YesNo.No);
 		auditquestion = auditquestionDAO.save(auditquestion);

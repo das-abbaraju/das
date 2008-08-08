@@ -23,6 +23,7 @@
   <class>com.picsauditing.jpa.entities.ContractorAudit</class> 
   <class>com.picsauditing.jpa.entities.ContractorOperator</class>
   <class>com.picsauditing.jpa.entities.ContractorOperatorFlag</class>
+  <class>com.picsauditing.jpa.entities.DesktopMatrix</class>
   <class>com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings</class> 
   <class>com.picsauditing.jpa.entities.Facility</class>
   <class>com.picsauditing.jpa.entities.FlagColor</class>
@@ -43,7 +44,8 @@
   <class>com.picsauditing.jpa.entities.UserGroup</class>
   <class>com.picsauditing.jpa.entities.Widget</class>
   <class>com.picsauditing.jpa.entities.WidgetUser</class>
-  <class>com.picsauditing.jpa.entities.YesNo</class> 
+  <class>com.picsauditing.jpa.entities.YesNo</class>
+   
  <properties>
 			<property name="hibernate.hbm2ddl.auto" value="" />
 			<property name="hibernate.max_fetch_depth" value="1" />
