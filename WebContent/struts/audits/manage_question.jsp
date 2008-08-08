@@ -14,7 +14,7 @@
 <table>
 <tr><td style="vertical-align: top">
 
-<s:form id="save" action="AuditQuestion">
+<s:form id="save">
 <s:hidden name="id" />
 <s:hidden name="question.subCategory.id" />
 <table class="forms">
