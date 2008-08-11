@@ -1,12 +1,11 @@
 package com.picsauditing.PICS;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.jboss.util.NullArgumentException;
 
-import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditType;
 
@@ -22,14 +21,11 @@ public class PermissionsBean extends DataBean {
 	public boolean seesAll = false;
 	public HashSet<String> canSeeSet = null;
 	public HashSet<String> auditorCanSeeSet = null;
-	public HashSet<String> auditorOfficeSet = null;
-	public HashSet<String> auditorDesktopSet = null;
-	public HashSet<String> auditorDaSet = null;
-	public HashSet<String> auditorPQFSet = null;
 	public OperatorBean oBean = null;
 	public ArrayList<String> allFacilitiesAL = null;
 	private Permissions permissions = null;
 
+	// TODO: remove this method after we get rid of the FormBean
 	public void setAllFacilitiesFromDB(String conID) throws Exception {
 		if (conID == null || conID.equals(""))
 			throw new NullArgumentException("oonID must be set when calling setAllFacilitiesFromDB");
@@ -62,15 +58,6 @@ public class PermissionsBean extends DataBean {
 	public void setSeesAll(String s) {seesAll = "Y".equals(s);}//setSeesAll
 	public void setCanSeeSet(HashSet<String> s) {canSeeSet = s;}//setSeesAll
 	public void setAuditorCanSeeSet(HashSet<String> s) {auditorCanSeeSet = s;} 
-	public void setAuditorPQFSet(HashSet<String> s) {auditorPQFSet = s;} 
-	public void setAuditorOfficeSet(HashSet<String> s) {auditorOfficeSet = s;} 
-	public void setAuditorDesktopSet(HashSet<String> s) {auditorDesktopSet = s;}
-	public void setAuditorDaSet(HashSet<String> s) {auditorDaSet = s;}
-
-	public String getCanSeeSetCount() {
-		if (canSeeSet == null) return "0";
-		return Integer.toString(canSeeSet.size());
-	}
 
 	public boolean isAdmin() {
 		if (this.permissions == null) return false;
@@ -91,43 +78,6 @@ public class PermissionsBean extends DataBean {
 		return permissions.isCorporate();
 	}
 
-	public void setAuditorPermissions() throws Exception {
-		auditorOfficeSet = new HashSet<String>();
-		auditorDesktopSet = new HashSet<String>();
-		auditorDaSet = new HashSet<String>();
-		auditorPQFSet = new HashSet<String>();
-		
-		auditorCanSeeSet = new HashSet<String>();
-		try{
-			String sql = "SELECT auditTypeID, conID FROM contractor_audit " +
-				"WHERE auditorID = "+getPermissions().getUserId();
-			
-			DBReady();
-			ResultSet SQLResult = SQLStatement.executeQuery(sql);
-			while (SQLResult.next()) {
-				String conID = SQLResult.getString("conID");
-				int auditTypeID = SQLResult.getInt("auditTypeID");
-				auditorCanSeeSet.add(conID);
-				if (AuditType.PQF == auditTypeID || AuditType.DESKTOP == auditTypeID || AuditType.OFFICE == auditTypeID) {
-					auditorPQFSet.add(conID);
-				}
-				if (AuditType.DESKTOP == auditTypeID) {
-					auditorDesktopSet.add(conID);
-				}
-				if (AuditType.OFFICE == auditTypeID) {
-					auditorOfficeSet.add(conID);
-				}
-				if (AuditType.DA == auditTypeID) {
-					auditorDaSet.add(conID);
-				}
-			}
-			SQLResult.close();
-			
-		} finally {
-			DBClose();
-		}
-	}
-	
 	public Permissions getPermissions() {
 		if (this.permissions == null) permissions = new Permissions();
 		return permissions;

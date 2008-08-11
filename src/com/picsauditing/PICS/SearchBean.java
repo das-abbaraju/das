@@ -143,20 +143,7 @@ public class SearchBean {
 	public String getBGColor() {
 		if ((count % 2) == 1)	return " bgcolor=\"#FFFFFF\"";
 		else	return "";
-	}//getBGColor
-
-	public String getCellBGColor() {
-		if (!canSeeContractor())	return "bgcolor=\"#DDDDDD\"";
-		else return "";
-	}//getBGColor
-
-	public String getCertsAdminLink() {
-//		if ("0".equals(cBean.certs))
-//			return "";
-//		else
-			return "<a href=\"contractor_upload_certificates.jsp?id="+aBean.id+"\">"+
-				"<img src=\"images/icon_insurance.gif\" width=\"20\" height=\"20\" border=\"0\"></a>";
-	}//getCertsAdminLink
+	}
 
 	public void doSearch(javax.servlet.http.HttpServletRequest r, boolean onlyActive, int resultsOnPage, 
 						PermissionsBean permissions, String accessID) throws Exception {

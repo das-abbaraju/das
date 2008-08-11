@@ -188,9 +188,7 @@ public class LoginController extends DataBean {
 			pBean.oBean = new com.picsauditing.PICS.OperatorBean();
 			pBean.setUserName(permissions.getName());
 
-			if (permissions.isAuditor()) {
-				pBean.setAuditorPermissions();
-			} else if (permissions.isOperator() || permissions.isCorporate()) {
+			if (permissions.isOperator() || permissions.isCorporate()) {
 				pBean.oBean.isCorporate = permissions.isCorporate();
 				pBean.oBean.setFromDB(permissions.getAccountIdString());
 				permissions.setCanSeeAudit(pBean.oBean.getCanSeeAuditIDSet());
