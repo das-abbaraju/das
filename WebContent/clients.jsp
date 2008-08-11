@@ -36,7 +36,6 @@
 						ConocoPhillips Wilmington Refinery<br />
 						ConocoPhillips Rodeo Refinery<br />
 						ConocoPhillips Santa Maria Refinery<br />
-						Cox Communications Arizona<br>
 						Criterion Catalysts &amp; Technologies<br />
 						CRI<br />
 						Empire Southwest (CAT)<br />

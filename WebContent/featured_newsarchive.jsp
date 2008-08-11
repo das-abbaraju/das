@@ -17,16 +17,6 @@
 		<td valign="top" bgcolor="#FFFFFF">
 		<table border="0" align="center" cellpadding="0" cellspacing="0">
 			<tr>
-				<td bgcolor="#F8F8F8" class="blueHome2"><strong>07/01/08</strong> <strong
-					class="articleTitle">LISI AEROSPACE joins PICS</strong><br>
-				LISI AEROSPACE a leading supplier of aeronautical fasteners and assembly components. LISI AEROSPACE ranks third in the world with almost 15% of the market share and has joined PICS to manage their contractor pre-qualification process.</td>
-			</tr>
-			<tr>
-				<td class="blueHome2"><strong>06/01/08</strong> <strong
-					class="articleTitle">ConocoPhillips Ferndale joins PICS</strong><br>
-				ConocoPhillips Ferndale joins many other ConocoPhillips refineries and business units who use PICS to standardize their contractor prequalification process. The Ferndale plant is located in Washington and can process 100,000 barrels per day.</td>
-			</tr>
-			<tr>
 				<td bgcolor="#F8F8F8" class="blueHome2"><strong>05/08/08</strong> <strong
 					class="articleTitle">PICS Presents at NPRA Safety Conference</strong><br>
 				PICS CEO, John Moreland, was invited by the NPRA to present at the National Safety Conference about Process Safety Management and The Advantages Of Contractor Pre-qualification. Topics discussed by OSHA at the conference covered the NEP audit results, issues found and how to resolve them.</td>
