@@ -40,7 +40,7 @@ table.audit td {
 	padding: 2px;
 	margin: 0px;
 	vertical-align: top;
-	border: 1px solid #999;
+	border: 1px solid #BBB;
 }
 
 table td.right {
@@ -67,7 +67,7 @@ table.report td {
 	padding: 2px;
 	margin: 0px;
 	vertical-align: top;
-	border: 1px solid #999;
+	border: 1px solid #BBB;
 }
 
 table td.right {
