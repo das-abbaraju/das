@@ -108,9 +108,6 @@ public class AuditPercentCalculator {
 						verifiedCount++;
 					}
 				}
-				if (isRequired)
-					System.out.println("questID: " + questID + " requiredCount: " + requiredCount + " requiredAnsweredCount: " + requiredAnsweredCount + " isRequired: " + isRequired);
-				
 			}
 		}
 		
