@@ -226,15 +226,24 @@ function sendEmail() {
 			<td colspan="2"><a
 				href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="emrCatDataId" />&mode=Edit"
 				class="blueMain">Upload New Files</a></td>
-			<td class="highlight"><a href="#"
+			<td class="highlight"><s:if test="emr1Upload.answer.length() > 0">
+				<a href="#"
 				onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqf<s:property value="emr1Upload.answer" />1618','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">Show
-			File</a></td>
-			<td class="highlight"><a href="#"
+				File</a>
+				</s:if><s:else>No File</s:else>
+			</td>
+			<td class="highlight"><s:if test="emr2Upload.answer.length() > 0">
+				<a href="#"
 				onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqf<s:property value="emr2Upload.answer" />1522','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">Show
-			File</a></td>
-			<td class="highlight"><a href="#"
+				File</a>
+				</s:if><s:else>No File</s:else>
+			</td>
+			<td class="highlight"><s:if test="emr3Upload.answer.length() > 0">
+				<a href="#"
 				onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqf<s:property value="emr3Upload.answer" />872','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">Show
-			File</a></td>
+				File</a>
+				</s:if><s:else>No File</s:else>
+			</td>
 		</tr>
 		<tr class="blueMain" align="right">
 			<td colspan="2">Original Answer:</td>
