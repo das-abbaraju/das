@@ -55,6 +55,9 @@ public class AuditPercentCalculator {
 		// Get a map of all answers in this audit
 		Map<Integer, AuditData> answers = auditDataDao.findAnswers(catData
 				.getAudit().getId(), questionIDs);
+		
+		
+		int questID = 0;
 
 		// Get a list of questions/answers for this category
 		for (AuditSubCategory subCategory : catData.getCategory()
@@ -80,8 +83,13 @@ public class AuditPercentCalculator {
 				// isRequired = true;
 				// }
 				// }
-				if (isRequired)
+				
+				if (isRequired 
+						&& question.getEffectiveDate().before(catData.getAudit().getCreatedDate()) 
+						&& question.getExpirationDate().after(catData.getAudit().getCreatedDate())) {
+					questID = question.getQuestionID();
 					requiredCount++;
+				}
 
 				AuditData answer = answers.get(question.getQuestionID());
 				if (answer != null) {
@@ -100,8 +108,12 @@ public class AuditPercentCalculator {
 						verifiedCount++;
 					}
 				}
+				if (isRequired)
+					System.out.println("questID: " + questID + " requiredCount: " + requiredCount + " requiredAnsweredCount: " + requiredAnsweredCount + " isRequired: " + isRequired);
+				
 			}
 		}
+		
 		catData.setNumAnswered(answeredCount);
 		catData.setNumRequired(requiredCount);
 		catData.setRequiredCompleted(requiredAnsweredCount);
