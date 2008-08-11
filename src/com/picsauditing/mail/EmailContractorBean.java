@@ -1,7 +1,6 @@
 package com.picsauditing.mail;
 
 import com.picsauditing.PICS.ContractorBean;
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.UserDAO;
@@ -37,6 +36,8 @@ public class EmailContractorBean extends EmailBean {
 
 		if (templateType.equals(EmailTemplates.certificate_expire))
 			email.setBccAddress("eorozco@picsauditing.com");
+		if (templateType.equals(EmailTemplates.openRequirements))
+			email.setFromAddress("audits@picsauditing.com");
 
 		this.sendMail();
 		if (!testMode) {
