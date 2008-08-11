@@ -2,8 +2,6 @@ package com.picsauditing.mail;
 
 import java.util.HashMap;
 
-import com.picsauditing.PICS.AppPropertiesBean;
-
 
 public class EmailMerge {
 	private String subjectTemplate;
@@ -12,9 +10,6 @@ public class EmailMerge {
 	private HashMap<String, String> tokens = new HashMap<String, String>();
 	
 	public EmailMerge() {
-	}
-	public EmailMerge(String appProperty) throws Exception {
-		this.setFromAppProperty(appProperty);
 	}
 
 	/////////////// GETTERS/SETTERS //////////////////////
@@ -66,18 +61,4 @@ public class EmailMerge {
 		return text;
 	}
 	
-	public void setFromAppProperty(String name) throws Exception {
-		final String signatureTag = "DEFAULT_SIGNATURE";
-		if (name == null) return;
-		if (name.length() < 1) return;
-		
-		AppPropertiesBean prop = new AppPropertiesBean();
-		
-		this.subjectTemplate = prop.get("email_"+name+"_subject");
-		this.bodyTemplate = prop.get("email_"+name+"_body");
-		if (this.bodyTemplate.contains(signatureTag)) {
-			// The body needs an email signature
-			this.bodyTemplate = this.bodyTemplate.replace(signatureTag, prop.get(signatureTag));
-		}
-	}
 }

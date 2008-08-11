@@ -9,7 +9,6 @@
 <%@page import="com.picsauditing.mail.EmailBean"%>
 <%@page import="com.picsauditing.mail.EmailAuditBean"%>
 <%@page import="com.picsauditing.util.SpringUtils"%>
-<jsp:useBean id="props" class="com.picsauditing.PICS.AppPropertiesBean" scope ="page"/>
 <%
 permissions.tryPermission(OpPerms.EmailTemplates);
 
