@@ -8,18 +8,11 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
 
-<SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
-<SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
-<SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" SRC="js/validateForms.js"></SCRIPT>
 <script type="text/javascript" src="js/prototype.js"></script>
 </head>
 <body>
 <s:include value="../contractors/conHeader.jsp" />
-
-<s:if test="message.length() > 0">
-	<div id="info"><s:property value="message"/></div>
-</s:if>
 
 <s:form action="ConAuditMaintain">
 	<s:hidden name="auditID" />
@@ -84,8 +77,7 @@
 </fieldset>
 
 <div class="buttons">
-	<s:hidden name="button" value="save"></s:hidden>
-	<a class="positive" onclick="$('ConAuditMaintain').submit(); return false;" href="#">Save</a>
+	<button class="positive" name="button" value="Save" type="submit">Save</button>
 </div>
 
 </s:form>
