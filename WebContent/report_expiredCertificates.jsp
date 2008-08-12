@@ -1,6 +1,5 @@
 <%@page language="java" errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp" %>
-<%@include file="utilities/adminGeneral_secure.jsp"%>
 <jsp:useBean id="cerBean" class="com.picsauditing.PICS.CertificateBean" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="certDO" class="com.picsauditing.domain.CertificateDO"scope="page" />

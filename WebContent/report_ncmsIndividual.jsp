@@ -1,9 +1,7 @@
 <%@page language="java" import="com.picsauditing.PICS.*,java.sql.*"
 	errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp"%>
-<%@include file="utilities/adminGeneral_secure.jsp"%>
-<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean"
-	scope="page" />
+<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page" />
 <%@page import="com.picsauditing.jpa.entities.ContractorAudit"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="com.picsauditing.jpa.entities.AuditType"%>
@@ -19,6 +17,7 @@
 	String Query = "";
 	ResultSet SQLResult = null;
 	ResultSetMetaData SQLResultMetaData = null;
+	if (permissions.isContractor()) throw new com.picsauditing.access.NoRightsException("Not Contractor");
 	try {
 
 		String name = request.getParameter("name");
