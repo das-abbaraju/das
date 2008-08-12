@@ -26,7 +26,7 @@ public class ContractorSave extends PicsActionSupport implements Preparable {
 			return LOGIN;
 
 		if (ca.getId() == 0) {
-			message = "Missing Contractor ID";
+			addActionError("Missing Contractor ID");
 			return INPUT;
 		}
 

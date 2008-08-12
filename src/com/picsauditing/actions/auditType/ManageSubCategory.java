@@ -43,14 +43,14 @@ public class ManageSubCategory extends ManageCategory {
 	protected void delete() {
 		try {
 			if (subCategory.getQuestions().size() > 0) {
-				message = "Can't delete - Questions still exist";
+				addActionError("Can't delete - Questions still exist");
 				return;
 			}
 			
 			id = subCategory.getCategory().getId();
 			auditSubCategoryDao.remove(subCategory.getId());
 		} catch (Exception e) {
-			message = "Error - " + e.getMessage();
+			addActionError(e.getMessage());
 		}
 	}	
 

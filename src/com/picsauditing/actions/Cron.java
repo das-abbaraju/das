@@ -117,7 +117,7 @@ public class Cron extends PicsActionSupport {
 
 		sendEmail();
 
-		setMessage("Complete");
+		output = "Complete";
 
 		return SUCCESS;
 	}

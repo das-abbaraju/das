@@ -108,7 +108,7 @@ public class AuditDataFileUpload extends FileUploadActionSupport {
 						// read/update the ContractorAudit and AuditCatData
 						
 						
-						setMessage("<html><head><title>temp</title></head><body id=\"response\">" + extension + "</body>");
+						output = "<html><head><title>temp</title></head><body id=\"response\">" + extension + "</body>";
 					}
 					else
 					{
@@ -120,7 +120,7 @@ public class AuditDataFileUpload extends FileUploadActionSupport {
 
 			} catch (Exception e) {
 				e.printStackTrace();
-				setMessage("An Error has Occurred");
+				output = "An Error has Occurred";
 			}
 		
 		return SUCCESS;

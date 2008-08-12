@@ -22,8 +22,8 @@ public class PicsActionSupport extends ActionSupport {
 	protected static String LOGIN_AJAX = "LoginAjax";
 	protected Permissions permissions = null;
 	
-	@Deprecated
-	protected String message;
+	// replaces the obsolete message in cases where we need to print out a single string to the page
+	protected String output = null;
 	protected String button = null; 
 	
 	private User user; // Current logged in user
@@ -75,17 +75,6 @@ public class PicsActionSupport extends ActionSupport {
 	protected void tryPermissions(OpPerms opPerms, OpType opType) throws Exception {
 		loadPermissions();
 		permissions.tryPermission(opPerms, opType);
-	}
-
-	public String getMessage() {
-		if (message == null) {
-			return "";
-		}
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
 	}
 
 	public User getUser() {
@@ -157,6 +146,13 @@ public class PicsActionSupport extends ActionSupport {
 
 	public void setButton(String button) {
 		this.button = button;
+	}
+
+	public String getOutput() {
+		if (output == null) {
+			return "";
+		}
+		return output;
 	}
 
 }

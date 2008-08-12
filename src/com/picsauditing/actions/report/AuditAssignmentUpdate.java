@@ -101,7 +101,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 			dao.save(contractorAudit);
 
 		if (contractorAudit.getAssignedDate() != null) {
-			setMessage(new SimpleDateFormat("MM/dd/yy hh:mm a").format(contractorAudit.getAssignedDate()));
+			output = new SimpleDateFormat("MM/dd/yy hh:mm a").format(contractorAudit.getAssignedDate());
 		}
 		
 		String name = request.getRequestURL().toString();

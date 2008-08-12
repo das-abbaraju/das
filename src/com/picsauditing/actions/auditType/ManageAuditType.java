@@ -38,13 +38,13 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		if (button != null) {
 			if (button.equalsIgnoreCase("save")) {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
-				message = "Successfully saved"; // default message
+				addActionMessage("Successfully saved"); // default message
 				save();
 				return "saved";
 			}
 			if (button.equalsIgnoreCase("delete")) {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Delete);
-				message = "Successfully removed"; // default message
+				addActionMessage("Successfully removed"); // default message
 				delete();
 				return "deleted";
 			}
@@ -102,21 +102,21 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 			auditType = auditTypeDao.save(auditType);
 			id = auditType.getAuditTypeID();
 		} catch (Exception e) {
-			message = "Error - " + e.getMessage();
+			addActionError(e.getMessage());
 		}
 	}
 
 	protected void delete() {
 		try {
 			if (auditType.getCategories().size() > 0) {
-				message = "Can't delete - Categories still exist";
+				addActionError("Can't delete - Categories still exist");
 				return;
 			}
 			
 			auditTypeDao.remove(auditType.getAuditTypeID());
 			id = auditType.getAuditTypeID();
 		} catch (Exception e) {
-			message = "Error - " + e.getMessage();
+			addActionError(e.getMessage());
 		}
 	}
 

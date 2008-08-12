@@ -255,7 +255,7 @@ public class VerifyView extends AuditActionSupport {
 			conAudit.setScheduledDate(followUpCal.getTime());
 			auditDao.save(conAudit);
 		}
-		message = new SimpleDateFormat("MM/dd").format(conAudit.getScheduledDate());
+		output = new SimpleDateFormat("MM/dd").format(conAudit.getScheduledDate());
 		return SUCCESS;
 	}
 
@@ -323,7 +323,7 @@ public class VerifyView extends AuditActionSupport {
 		this.auditDao.save(conAudit);
 
 		// message = conAudit.getContractorAccount().getNotes();
-		message = "The email was sent at and the contractor notes were stamped";
+		output = "The email was sent at and the contractor notes were stamped";
 		return SUCCESS;
 	}
 

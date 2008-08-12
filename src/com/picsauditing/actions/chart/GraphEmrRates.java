@@ -27,7 +27,7 @@ public class GraphEmrRates extends ChartMSAction {
 	public String execute() {
 		super.execute();
 		flashChart = FusionChart.createChart("charts/" + chartType.toString() + 
-				".swf", "", message, chartType.toString(), 
+				".swf", "", output, chartType.toString(), 
 				600, 500, false, false);
 		return SUCCESS;
 	}

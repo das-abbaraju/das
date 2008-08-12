@@ -43,14 +43,14 @@ public class ManageCategory extends ManageAuditType {
 	protected void delete() {
 		try {
 			if (category.getSubCategories().size() > 0) {
-				message = "Can't delete - Sub Categories still exist";
+				addActionError("Can't delete - Sub Categories still exist");
 				return;
 			}
 			
 			id = category.getAuditType().getAuditTypeID();
 			auditCategoryDao.remove(category.getId());
 		} catch (Exception e) {
-			message = "Error - " + e.getMessage();
+			addActionError(e.getMessage());
 		}
 	}
 

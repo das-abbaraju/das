@@ -3,8 +3,10 @@ package com.picsauditing.actions.report;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditTypeDAO;
@@ -104,5 +106,11 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 
 	public void setFilterUnConfirmedAudits(boolean filterUnConfirmedAudits) {
 		this.filterUnConfirmedAudits = filterUnConfirmedAudits;
+	}
+	
+	public String getYesterday() {
+		Calendar date = Calendar.getInstance();
+		date.add(Calendar.DAY_OF_YEAR, -1);
+		return DateBean.format(date.getTime(), "M/d/yyyy");
 	}
 }

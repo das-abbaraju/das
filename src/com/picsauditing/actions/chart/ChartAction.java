@@ -31,7 +31,7 @@ public class ChartAction extends PicsActionSupport {
 		}
 		
 		if (chart.hasData()) {
-			message = chart.toString();
+			output = chart.toString();
 			return SUCCESS;
 		} else {
 			error("No Data");
@@ -49,6 +49,6 @@ public class ChartAction extends PicsActionSupport {
 		set.setLabel(error);
 		set.setValue(1);
 		chart.getSets().add(set);
-		message = chart.toString();
+		output = chart.toString();
 	}
 }

@@ -111,10 +111,10 @@ public class AuditDataSave extends PicsActionSupport {
 				auditPercentCalculator.updatePercentageCompleted(catData);
 			}
 
-			setMessage("Saved");
+			output = "Saved";
 		} catch (Exception e) {
 			e.printStackTrace();
-			setMessage("An Error has Occurred");
+			output = "An Error has Occurred";
 		}
 
 		return SUCCESS;

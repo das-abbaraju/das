@@ -39,7 +39,7 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 				conAudit.setAuditor(null);
 			auditDao.save(conAudit);
 			findConAudit();
-			message = "Successfully saved data";
+			addActionMessage("Successfully saved data");
 		}
 		return SUCCESS;
 	}

@@ -47,17 +47,15 @@ public class ManageQuestion extends ManageSubCategory {
 	protected void delete() {
 		try {
 			// TODO check to see if AuditData exists for this question first
-//			if (subCategory.getQuestions().size() > 0) {
-//				message = "Can't delete - Questions still exist";
-//				return;
-//			}
+			addActionError("Deleting Questions is not supported just yet.");
+			return;
 			
-			id = question.getSubCategory().getId();
-			auditQuestionDao.remove(question.getQuestionID());
+			//id = question.getSubCategory().getId();
+			//auditQuestionDao.remove(question.getQuestionID());
 		} catch (Exception e) {
-			message = "Error - " + e.getMessage();
+			addActionError(e.getMessage());
 		}
-	}	
+	}
 
 	public String[] getQuestionTypes() {
 		return AuditQuestion.TYPE_ARRAY;
