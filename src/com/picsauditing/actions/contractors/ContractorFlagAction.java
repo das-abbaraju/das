@@ -1,8 +1,10 @@
 package com.picsauditing.actions.contractors;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagCalculatorSingle;
 import com.picsauditing.PICS.redFlagReport.Note;
 import com.picsauditing.access.OpPerms;
@@ -254,4 +256,11 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	public void setDeleteAll(boolean deleteAll) {
 		this.deleteAll = deleteAll;
 	}
+	
+	public String getYesterday() {
+		Calendar date = Calendar.getInstance();
+		date.add(Calendar.DAY_OF_YEAR, -1);
+		return DateBean.format(date.getTime(), "M/d/yyyy");
+	}
+
 }
