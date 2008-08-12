@@ -10,7 +10,6 @@
 </head>
 <body>
 <h1>Search for New Contractors</h1>
-<s:include value="../actionMessages.jsp" />
 <s:include value="filters.jsp" />
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />

@@ -1,5 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
+<s:include value="../actionMessages.jsp" />
+
 <script type="text/javascript">
 function toggleBox(name) {
 	var box = $(name+'_select');

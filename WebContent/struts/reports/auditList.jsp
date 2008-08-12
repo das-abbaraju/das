@@ -11,7 +11,6 @@
 <h1>Audit List</h1>
 
 <s:include value="filters.jsp" />
-<s:include value="actionMessages.jsp" />
 
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
