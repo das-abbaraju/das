@@ -173,7 +173,7 @@ ul.alpha li a.current, ul.paging li a.current {
 
 /** other */
 
-table.report tr.na {
+table.report tr.notapp {
 	color: #999;
 	font-style: italic;
 }

@@ -34,7 +34,7 @@
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
-		<tr <s:if test="!(get('genID') > 0)">class="na"</s:if>>
+		<tr <s:if test="!(get('genID') > 0)">class="notapp"</s:if>>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><s:if test="get('genID') > 0"><a
 				href="ContractorView.action?id=<s:property value="[0].get('id')"/>"

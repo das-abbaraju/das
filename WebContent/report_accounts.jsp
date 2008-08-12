@@ -113,7 +113,7 @@ if (canEdit) {
 		<% if(row.get("active").equals("Y")) { %>
 		<tr id="auditor_tr<%=row.get("id")%>" <%= color.nextBgColor()%>>
 		<% } else { %>
-		<tr id="auditor_tr<%=row.get("id")%>" <%= color.nextBgColor()%> class="na">	
+		<tr id="auditor_tr<%=row.get("id")%>" <%= color.nextBgColor()%> class="notapp">
 		<% } %>
 		<td class="right"><%=color.getCounter()%></td>
 		<% if(row.get("active").equals("Y")) { %>	

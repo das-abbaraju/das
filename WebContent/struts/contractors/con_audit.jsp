@@ -77,7 +77,7 @@ table.report tr.na a {
 	</s:iterator>
 	<s:iterator value="categories" status="rowStatus">
 		<s:if test="!appliesB && permissions.picsEmployee">
-			<tr class="na">
+			<tr class="notapp">
 				<td class="right"><a name="<s:property value="id" />"><s:property value="category.number" /></td>
 				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a></td>
 				<s:if test="conAudit.auditStatus.name() == 'Pending' || conAudit.auditType.pqf">

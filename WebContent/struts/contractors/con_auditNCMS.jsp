@@ -20,7 +20,7 @@
 		</tr>
 	</thead>
 	<s:iterator value="ncmsCategories" status="rowStatus">
-		<tr<s:if test="status == 'N/A'"> class="na"</s:if>>
+		<tr<s:if test="status == 'N/A'"> class="notapp"</s:if>>
 			<td class="right"><s:property value="#rowStatus.index + 1" /></td>
 			<td><s:property value="name" /></td>
 			<td class="right"><s:property value="status" /></td>
