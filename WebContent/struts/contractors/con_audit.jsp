@@ -22,7 +22,6 @@ table.report tr.na a {
 <body>
 <s:include value="conHeader.jsp" />
 
-<span class="message"><s:property value="message" /></span>
 <s:form>
 	<s:hidden name="auditID" />
 	<s:if test="canSubmit">
