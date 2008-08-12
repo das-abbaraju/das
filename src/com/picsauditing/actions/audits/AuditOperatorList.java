@@ -24,7 +24,7 @@ public class AuditOperatorList extends PicsActionSupport {
 
 	protected int oID;
 	protected int aID = 1;
-	
+
 	protected List<OperatorAccount> operators;
 	protected List<AuditType> auditTypes;
 	protected OperatorAccountDAO operatorDAO;
@@ -34,19 +34,17 @@ public class AuditOperatorList extends PicsActionSupport {
 
 	// TODO We need to refactor this eventually, see LowMedHigh.getMap()
 	protected static HashMap<Integer, String> riskLevels = new HashMap<Integer, String>();
-	
-	static 
-	{
+
+	static {
 		riskLevels.put(0, "None");
 		riskLevels.put(1, "Low");
 		riskLevels.put(2, "Med");
 		riskLevels.put(3, "High");
 	}
-	
+
 	public static final HashMap<Integer, String> getRiskLevels() {
 		return riskLevels;
 	}
-
 
 	public AuditOperatorList(OperatorAccountDAO operatorDAO, AuditTypeDAO auditDAO, AuditOperatorDAO dataDAO) {
 		this.operatorDAO = operatorDAO;
@@ -59,26 +57,34 @@ public class AuditOperatorList extends PicsActionSupport {
 		permissions.tryPermission(OpPerms.ManageOperators);
 
 		operators = operatorDAO.findWhere(false, "", permissions);
-		
-		auditTypes = new AuditTypeCache( auditDAO ).getAuditTypes();
 
+		auditTypes = new AuditTypeCache(auditDAO).getAuditTypes();
+
+		AuditType selectedAudit = null;
+
+		// You have to use while iterator instead of a for loop
+		// because we're removing an entry from the list
 		Iterator<AuditType> iter = auditTypes.iterator();
-		
-		while(iter.hasNext()) {
+		while (iter.hasNext()) {
 			AuditType audit = iter.next();
 			if (audit.getAuditTypeID() == AuditType.NCMS)
 				iter.remove();
+			if (audit.getAuditTypeID() == aID)
+				selectedAudit = audit;
 		}
-		
+
 		data = new ArrayList<AuditOperator>();
 		HashMap<Integer, AuditOperator> rawDataIndexed = new HashMap<Integer, AuditOperator>();
 		if (aID > 0) {
-			AuditType selectedObject = new AuditType();
-			// Query the db for operators using this audit and index them by opID
+			if (selectedAudit == null) {
+				this.addActionError("No auditType found with ID " + aID);
+				return SUCCESS;
+			}
+
+			// Query the db for operators using this audit and index them by
+			// opID
 			List<AuditOperator> rawData = dataDAO.findByAudit(aID);
 			for (AuditOperator row : rawData) {
-				selectedObject = row.getAuditType();
-				//rawDataIndexed.put(row.getOpID(), row);
 				rawDataIndexed.put(row.getOperatorAccount().getId(), row);
 			}
 			rawData = null; // we don't need this anymore
@@ -88,22 +94,31 @@ public class AuditOperatorList extends PicsActionSupport {
 				if (newRow == null) {
 					newRow = new AuditOperator();
 					newRow.setOperatorAccount(operator);
-					newRow.setAuditType(selectedObject);
+					newRow.setAuditType(selectedAudit);
 				}
 				data.add(newRow);
 			}
 		}
 		if (oID > 0) {
-			// Query the db for audits used by this operator and index them by typeID
-			OperatorAccount selectedObject = new OperatorAccount();
+			// Query the db for audits used by this operator and index them by
+			// typeID
+			OperatorAccount selectedObject = null;
+			for (OperatorAccount operator : operators) {
+				if (operator.getId() == oID)
+					selectedObject = operator;
+			}
+			if (selectedObject == null) {
+				this.addActionError("No operator found with ID " + oID);
+				return SUCCESS;
+			}
+
 			List<AuditOperator> rawData = dataDAO.findByOperator(oID);
 			for (AuditOperator row : rawData) {
-				selectedObject = row.getOperatorAccount();
 				rawDataIndexed.put(row.getAuditType().getAuditTypeID(), row);
 			}
 			rawData = null; // we don't need this anymore
-			
-			//AuditOperator temp = rawData.get(0);
+
+			// AuditOperator temp = rawData.get(0);
 			for (AuditType aType : auditTypes) {
 				AuditOperator newRow = rawDataIndexed.get(aType.getAuditTypeID());
 				if (newRow == null) {
@@ -146,7 +161,7 @@ public class AuditOperatorList extends PicsActionSupport {
 
 	public String getOName() {
 		if (this.oID > 0)
-			for(Account row : this.operators)
+			for (Account row : this.operators)
 				if (this.oID == row.getId())
 					return row.getName();
 		return "";
@@ -154,7 +169,7 @@ public class AuditOperatorList extends PicsActionSupport {
 
 	public String getAName() {
 		if (this.aID > 0)
-			for(AuditType row : this.auditTypes)
+			for (AuditType row : this.auditTypes)
 				if (this.aID == row.getAuditTypeID())
 					return row.getAuditName();
 		return "";
@@ -163,13 +178,13 @@ public class AuditOperatorList extends PicsActionSupport {
 	public List<AuditType> getAuditTypes() {
 		return auditTypes;
 	}
-	
+
 	public Map<Integer, LowMedHigh> getRiskLevelList() {
 		return LowMedHigh.getMap();
 	}
-	
+
 	public FlagColor[] getFlagColorList() {
 		return FlagColor.values();
 	}
-	
+
 }

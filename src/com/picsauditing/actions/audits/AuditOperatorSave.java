@@ -1,9 +1,5 @@
 package com.picsauditing.actions.audits;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Calendar;
 import java.util.Map;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -11,7 +7,6 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
