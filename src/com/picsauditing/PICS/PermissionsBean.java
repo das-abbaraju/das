@@ -64,10 +64,6 @@ public class PermissionsBean extends DataBean {
 		return this.permissions.isAdmin();
 	}
 	
-	public boolean isAuditor() {
-		if (this.permissions == null) return false;
-		return this.permissions.isAuditor();
-	}
 	public boolean isContractor() {
 		return permissions.isContractor();
 	}
