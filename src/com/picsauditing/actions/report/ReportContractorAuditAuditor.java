@@ -13,10 +13,10 @@ public class ReportContractorAuditAuditor extends ReportContractorAudits {
 	public String execute() throws Exception {
 		loadPermissions();
 		
-		filterAuditor = false;
-
 		sql.addWhere("ca.auditorID=" + permissions.getUserId());
 		sql.addWhere("ca.auditStatus IN ('" + AuditStatus.Pending + "','" + AuditStatus.Submitted + "')");
+		sql.addWhere("a.active = 'Y'");
+		
 		if (orderBy == null)
 			orderBy = "ca.assignedDate DESC";
 
@@ -24,6 +24,12 @@ public class ReportContractorAuditAuditor extends ReportContractorAudits {
 			filtered = false;
 		
 		return super.execute();
+	}
+	
+	protected void toggleFilters() {
+		super.toggleFilters();
+		filterAuditor = false;
+		filterVisible = false;
 	}
 
 	public AuditStatus[] getAuditStatusList() {

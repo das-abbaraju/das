@@ -17,7 +17,7 @@ public class ReportContractorAudits extends ReportAccount {
 
 	protected boolean filterAuditType = true;
 	protected boolean filterAuditStatus = true;
-	protected boolean filterAuditor = false;
+	protected boolean filterAuditor = true;
 
 	public ReportContractorAudits() {
 		sql = new SelectContractorAudit();
@@ -44,20 +44,19 @@ public class ReportContractorAudits extends ReportAccount {
 		sql.addField("auditor.name auditor_name");
 		if (permissions.isCorporate() || permissions.isOperator()) {
 			if (permissions.getCanSeeAudit().size() == 0) {
-				// this.addActionError();
-				message = "Your account does not have access to any audits. Please contact PICS.";
+				this.addActionError("Your account does not have access to any audits. Please contact PICS.");
 				return SUCCESS;
 			}
 			sql.addWhere("atype.auditTypeID IN (" + Strings.implode(permissions.getCanSeeAudit(), ",") + ")");
 		}
 		if (orderBy == null)
 			orderBy = "ca.createdDate DESC";
+
+		if (!permissions.isPicsEmployee())
+			filterAuditor = true;
 		
 		if(filtered == null) 
 			filtered = true;
-		
-		if (permissions.isPicsEmployee())
-			filterAuditor = true;
 		
 		return super.execute();
 	}
