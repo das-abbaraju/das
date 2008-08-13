@@ -18,7 +18,6 @@
 	String editID = request.getParameter("id");
 
 	String conID = id;
-	String auditID = "0";
 	boolean isRemoved = "Yes".equals(request.getParameter("Remove"));
 	boolean isSubmitted = "Yes".equals(request.getParameter("isSubmitted"));
 	String msg = "";
@@ -73,11 +72,17 @@
 %>
 <html>
 <head>
+<title>Edit Contractor</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
 <SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
-<SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
-<SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+	var cal1 = new CalendarPopup('caldiv1');
+	cal1.offsetY = -110;
+	cal1.setCssPrefix("PICS");
+	cal1.showNavigationDropdowns();
+</SCRIPT>
 </head>
 <body>
 <% request.setAttribute("subHeading", "Contractor Edit"); %>
@@ -92,15 +97,6 @@
 <%
 	if (isSubmitted)
 		out.println(aBean.getErrorMessages() + cBean.getErrorMessages());
-	if (!"".equals(msg)) {
-%> <%=msg%><br>
-Would you still like to schedule <b><%=aBean.name%></b> on this date? <span
-	align="right"><input type="hidden" name="doubleAuditOK"
-	value="true"> <input type="submit" name="submit1"
-	value="Schedule Anyway"> <input type="button" value="Cancel"
-	onClick="javascript:window.location.replace('accounts_edit_contractor.jsp?id=<%=editID%>');"></span>
-<%
-	}
 %>
 </div>
 <div style="float: left;">
@@ -290,8 +286,11 @@ Would you still like to schedule <b><%=aBean.name%></b> on this date? <span
 		<td class="blueMain" align="right"><nobr>Membership Date:</nobr></td>
 		<td><input name="membershipDate" id="membershipDate" type="text"
 			class="forms" size="10"
-			onClick="cal1.select(document.form1.membershipDate,'membershipDate','M/d/yy','<%=cBean.membershipDate%>'); return false;"
-			value="<%=cBean.membershipDate%>"></td>
+			value="<%=cBean.membershipDate%>">
+			<a id="anchor_membershipDate" name="anchor_membershipDate" href="#"
+				onclick="cal1.select($('membershipDate'),'anchor_membershipDate','M/d/yy'); return false;"
+				><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+		</td>
 	</tr>
 	<tr>
 		<td class="blueMain" align="right">Last Invoice:</td>
@@ -300,8 +299,11 @@ Would you still like to schedule <b><%=aBean.name%></b> on this date? <span
 			value="<%=cBean.billingAmount%>"> on <input
 			name="lastInvoiceDate" id="lastInvoiceDate" type="text" class="forms"
 			size="10"
-			onClick="cal1.select(document.form1.lastInvoiceDate,'lastInvoiceDate','M/d/yy','<%=cBean.lastInvoiceDate%>'); return false;"
-			value="<%=cBean.lastInvoiceDate%>"></td>
+			value="<%=cBean.lastInvoiceDate%>">
+			<a id="anchor_lastInvoiceDate" name="anchor_lastInvoiceDate" href="#"
+				onclick="cal1.select($('lastInvoiceDate'),'anchor_lastInvoiceDate','M/d/yy'); return false;"
+				><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+		</td>
 	</tr>
 	<tr>
 		<td class="blueMain" align="right">Last Payment:</td>
@@ -310,15 +312,21 @@ Would you still like to schedule <b><%=aBean.name%></b> on this date? <span
 			value="<%=cBean.lastPaymentAmount%>"> on <input
 			name="lastPayment" id="lastPayment" type="text" class="forms"
 			size="10"
-			onClick="cal1.select(document.form1.lastPayment,'lastPayment','M/d/yy','<%=cBean.lastPayment%>'); return false;"
-			value="<%=cBean.lastPayment%>"></td>
+			value="<%=cBean.lastPayment%>">
+			<a id="anchor_lastPaymentAmount" name="anchor_lastPaymentAmount" href="#"
+				onclick="cal1.select($('lastPaymentAmount'),'anchor_lastPaymentAmount','M/d/yy'); return false;"
+				><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+		</td>
 	</tr>
 	<tr>
 		<td class="blueMain" align="right">Payment Expires:</td>
 		<td><input name="paymentExpires" id="paymentExpires" type="text"
 			class="forms" size="10"
-			onClick="cal1.select(document.form1.paymentExpires,'paymentExpires','M/d/yy','<%=cBean.paymentExpires%>'); return false;"
-			value="<%=cBean.paymentExpires%>"></td>
+			value="<%=cBean.paymentExpires%>">
+			<a id="anchor_paymentExpires" name="anchor_paymentExpires" href="#"
+				onclick="cal1.select($('paymentExpires'),'anchor_paymentExpires','M/d/yy'); return false;"
+				><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+		</td>
 	</tr>
 	<tr>
 		<td class="blueMain" align="right">Billing Cycle:</td>
@@ -361,5 +369,7 @@ Would you still like to schedule <b><%=aBean.name%></b> on this date? <span
 <input name="submit" type="submit" class="forms" value="Save Contractor" />
 </form>
 <div style="position: relative;bottom: 30px;left: 35%"><a href="accounts_edit_contractor.jsp?id=<%=editID%>&Remove=Yes">Delete Contractor</a></div>
+<div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
+
 </body>
 </html>

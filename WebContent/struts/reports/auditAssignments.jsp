@@ -2,14 +2,20 @@
 <html>
 <head>
 <title>Schedule &amp; Assign Audits</title>
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript"
 	src="js/scriptaculous/scriptaculous.js?load=effects"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
 <SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
-<SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
-<SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+	var cal1 = new CalendarPopup('caldiv1');
+	cal1.offsetY = -110;
+	cal1.offsetX = 0;
+	cal1.addDisabledDates(null, "<s:property value="yesterday"/>");
+	cal1.setDisabledWeekDays(0,6);
+	cal1.setCssPrefix("PICS");
+</SCRIPT>
 <script type="text/javascript">
 	function saveAudit(auditId) {
 		var auditor = $F($('auditor_' + auditId));
@@ -67,8 +73,9 @@
 </head>
 <body>
 <h1>Schedule &amp; Assign Audits</h1>
-<div class="blueMain"><a href="audit_calendar.jsp" target="_BLANK">Audit Calendar</a></div>
+
 <s:include value="filters.jsp" />
+<div class="blueMain"><a href="audit_calendar.jsp" target="_BLANK">Audit Calendar</a></div>
 
 <div><s:property value="report.pageLinksWithDynamicForm"
 	escape="false" /></div>
@@ -124,8 +131,11 @@
 					<nobr><input class="blueMain" size="6" type="text"
 						name="scheduled_date_<s:property value="[0].get('auditID')"/>_date"
 						id="scheduled_date_<s:property value="[0].get('auditID')"/>_date"
-						onClick="cal1.select(this,'scheduled_date_<s:property value="[0].get('auditID')"/>_date','M/d/yy'); return false;"
 						value="<s:property value="getBetterDate( [0].get('scheduledDate'), 'MM/dd/yy hh:mm:ss a.000')"/>" />
+						<a href="#"
+							onclick="cal1.select($('scheduled_date_<s:property value="[0].get('auditID')"/>_date'),'anchor<s:property value="[0].get('auditID')"/>','MM/dd/yy'); return false;"
+							name="anchor<s:property value="[0].get('auditID')"/>" 
+							id="anchor<s:property value="[0].get('auditID')"/>"><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 					<s:select list="@com.picsauditing.PICS.DateBean@getBusinessTimes()"
 						listKey="key" listValue="value" cssClass="blueMain"
 						name="scheduled_date_%{[0].get('auditID')}_time"
@@ -152,7 +162,9 @@
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
 
-<span class="redMain">* - UnConfirmed Audits</span>	
+<span class="redMain">* - UnConfirmed Audits</span>
+
+<div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
 
 </body>
 </html>

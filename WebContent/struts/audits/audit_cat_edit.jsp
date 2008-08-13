@@ -9,7 +9,7 @@
 		<s:if test="linkUrl5 > ''"><a href="http://<s:property value="linkUrl5"/>" target="_BLANK" title="opens in new window"><s:property value="linkText5"/></a></s:if>
 		<s:if test="linkUrl6 > ''"><a href="http://<s:property value="linkUrl6"/>" target="_BLANK" title="opens in new window"><s:property value="linkText6"/></a></s:if>
 	</td>
-	<td class="answer">
+	<td class="answer" style="font-style: italic; font-size: 8px">
 		<s:if test="questionType == 'Text'">
 			<s:textfield id="answer_%{questionID}" name="answer.answer" size="30" onchange="javascript:saveAnswer(%{questionID}, this);"/>
 		</s:if>
@@ -19,9 +19,7 @@
 		</s:if>
 		<s:if test="questionType == 'Date'">
 			<nobr><s:textfield id="answer_%{questionID}" name="answer.answer" size="8" 
-			onclick="cal1.select($('answer_%{questionID}'),'answer_%{questionID}','yyyy-MM-dd','%{answer.answer}'); return false;"
-			onblur="javascript:saveAnswer(%{questionID}, this);"/>
-			<input type="image" src="images/icon_calendar.gif" width="18" height="15" onclick="cal1.select($('answer_<s:property value="questionID"/>'),'answer_<s:property value="questionID"/>','yyyy-MM-dd','<s:property value="answer.answer"/>'); return false;"/>
+			onchange="javascript:saveAnswer(%{questionID}, this);"/> <span style="font-style: italic; font-size: 12px;">example: 12/31/1999</span>
 		</s:if>
 		<s:if test="questionType == 'Check Box' || questionType == 'Industry' || questionType == 'Main Work'">
 			<s:checkbox fieldValue="X" value="answer.answer.length() == 1" name="answer.answer" onclick="javascript:saveAnswer(%{questionID}, this);" />

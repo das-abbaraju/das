@@ -17,6 +17,12 @@ public class DateBeanTest extends TestCase {
 
 	@Test
 	public void testDateFormat() throws Exception {
+//		Calendar date = Calendar.getInstance();
+//		date.add(Calendar.DAY_OF_YEAR, -1);
+//		String outString = DateBean.format(date.getTime(), "M/d/yyyy");
+//		System.out.println(outString);
+
+		
 		String formatted = DateBean.format(new Date(), "M/dd/yy");
 		assertTrue(DateBean.isFirstBeforeSecond("7/01/08", formatted));
 	}

@@ -1,0 +1,111 @@
+.PICScpBorder {
+	border: 2px solid #6699CC;
+	line-height: 25px;
+	background-color: #FAFAEA;
+}
+
+.PICScpYearNavigation,.PICScpMonthNavigation {
+	background-color: #6699CC;
+	text-align: center;
+	vertical-align: center;
+	text-decoration: none;
+	color: white;
+	font-weight: bold;
+}
+
+a.PICScpYearNavigation,a.PICScpMonthNavigation {
+	text-decoration: none;
+	color: white;
+	font-weight: bold;
+	padding: 2px;
+}
+a.PICScpYearNavigation:hover,a.PICScpMonthNavigation:hover {
+	background-color: white;
+	text-decoration: none;
+	color: #6699CC;
+	font-weight: bold;
+	padding: 2px;
+}
+
+
+.PICScpDayColumnHeader,.PICScpYearNavigation,.PICScpMonthNavigation,.PICScpCurrentMonthDate,.PICScpCurrentMonthDateDisabled,.PICScpOtherMonthDate,.PICScpOtherMonthDateDisabled,.PICScpCurrentDate,.PICScpCurrentDateDisabled,.PICScpTodayText,.PICScpTodayTextDisabled,.PICScpText
+	{
+	font-family: arial;
+	font-size: 9pt;
+}
+
+TD.PICScpDayColumnHeader {
+	text-align: center;
+	border-bottom: solid thin #6699CC;
+	font-weight: bold;
+	width: 25px;
+}
+
+.PICScpCurrentMonthDate,.PICScpOtherMonthDate,.PICScpCurrentDate {
+	text-align: center;
+	text-decoration: none;
+}
+
+.PICScpCurrentMonthDateDisabled,.PICScpOtherMonthDateDisabled,.PICScpCurrentDateDisabled
+	{
+	color: #D0D0D0;
+	text-align: center;
+}
+
+.PICScpCurrentMonthDate {
+	color: #6699CC;
+	font-weight: bold;
+}
+
+.PICScpCurrentDate {
+	color: #FFFFFF;
+	font-weight: bold;
+}
+
+.PICScpOtherMonthDate {
+	color: #808080;
+}
+
+TD.PICScpCurrentDate {
+	background-color: #002240;
+}
+
+TD.PICScpCurrentDateDisabled {
+	border: solid thin #FFAAAA;
+}
+
+TD.PICScpTodayText,TD.PICScpTodayTextDisabled {
+	border-top: solid thin #6699CC;
+}
+
+SPAN.PICScpTodayTextDisabled {
+	color: #D0D0D0;
+}
+
+a.PICScpTodayText,SPAN.PICScpTodayTextDisabled {
+	height: 20px;
+}
+
+a.PICScpCurrentMonthDate, a.PICScpOtherMonthDate {
+	text-decoration: none;
+	padding: 2px;
+	border: thin solid #FAFAEA;
+}
+
+a.PICScpOtherMonthDate {
+	color: #A84D10;
+}
+
+a.PICScpCurrentMonthDate:hover, a.PICScpOtherMonthDate:hover {
+	background-color: white;
+	border: thin dotted #6699CC;
+}
+
+a.PICScpCurrentDate:hover {
+	color: #A84D10;
+	text-decoration: underline;
+}
+
+a.PICScpCurrentDate {
+	color: #FFFFFF;
+}

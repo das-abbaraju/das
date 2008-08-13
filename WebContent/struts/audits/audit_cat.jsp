@@ -8,9 +8,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
 
-<SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
-<SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
-<SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" SRC="js/validateForms.js"></SCRIPT>
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript"

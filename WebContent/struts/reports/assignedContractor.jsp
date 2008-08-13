@@ -5,11 +5,7 @@
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/reports.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
-<script type="text/javascript"
-	src="js/scriptaculous/scriptaculous.js?load=effects"></script>
-<SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
-<SCRIPT LANGUAGE="JavaScript">document.write(getCalendarStyles());</SCRIPT>
-<SCRIPT LANGUAGE="JavaScript" ID="js1">var cal1 = new CalendarPopup();</SCRIPT>
+<script type="text/javascript" src="js/scriptaculous/scriptaculous.js?load=effects"></script>
 <script type="text/javascript">
 	function saveContractor(conID) {
 		var pars = "ca.id=" + conID;
