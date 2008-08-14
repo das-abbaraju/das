@@ -76,7 +76,7 @@
 					name="performedBy"
 					value="Self Performed" />
 				<clickButton
-					name="imageField"
+					name="button"
 					description="Click the Search button" />
 					&body_verify;
 				<verifyText 
