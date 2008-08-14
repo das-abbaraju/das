@@ -124,18 +124,6 @@ public class ContractorBean extends DataBean {
 		}//for
 	}//setSubTrades
 
-	public void setGeneralContractorsFromCheckList(javax.servlet.http.HttpServletRequest request) {
-		newGeneralContractors = new ArrayList<String>();
-		Enumeration e = request.getParameterNames();
-		while (e.hasMoreElements()) {
-			String temp = (String)e.nextElement();
-			if (temp.startsWith("genID_") && "Yes".equals(request.getParameter(temp))) {
-				String opID = temp.substring(6);
-				newGeneralContractors.add(opID);
-			}//if
-		}//while
-	}
-	
 	public void setGeneralContractorsFromStringArray(String[] s) {
 		newGeneralContractors = new ArrayList<String>();
 		if (s != null) {
@@ -600,42 +588,6 @@ public class ContractorBean extends DataBean {
 		}//finally
 	}//taxIDExists
 	
-	public boolean writeGeneralContractorsToDB(Permissions permissions, Facilities FACILITIES) throws Exception {
-		try {
-			DBReady();
-			ListIterator<String> li = generalContractors.listIterator();
-			while (li.hasNext()) {
-				String oldGen = (String)li.next();
-				if (!newGeneralContractors.contains(oldGen)) {
-					String deleteQuery = "DELETE FROM generalContractors WHERE subID="+id+" AND genID="+oldGen+" LIMIT 1;";
-					SQLStatement.executeUpdate(deleteQuery);
-				}//if
-			}//while
-			ArrayList<String> toAdd = new ArrayList<String>();
-			li = newGeneralContractors.listIterator();
-			while (li.hasNext()) {
-				String newGen = (String)li.next();
-				if (!generalContractors.contains(newGen))
-					toAdd.add(newGen);
-			}//while
-			if (!toAdd.isEmpty()) {
-				String replaceQuery = "REPLACE INTO generalContractors (subID,genID,dateAdded) VALUES ";
-				li = toAdd.listIterator();
-				while (li.hasNext()) {
-					String genID = (String)li.next();
-					replaceQuery += "("+id+","+genID+",NOW()),";
-					addNote(id,"(" + permissions.getName()+ " from PICS)", "Added this Contractor to "+FACILITIES.getNameFromID(genID)+"'s db", DateBean.getTodaysDateTime());
-				}//while
-				replaceQuery = replaceQuery.substring(0,replaceQuery.length()-1) + ";";
-				SQLStatement.executeUpdate(replaceQuery);
-			}//if
-			DBClose();
-			com.picsauditing.PICS.OperatorBean.resetSubCountTable();
-			return !toAdd.isEmpty();
-		}finally{
-			DBClose();
-		}
-	}
 
 	public void addNote(String conID, String pre, String newNote, String notesDate) throws Exception {
 		notes = notesDate+" "+pre+": "+newNote+"\n"+notes;

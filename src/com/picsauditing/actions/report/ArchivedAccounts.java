@@ -1,6 +1,7 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.PICS.FacilityChanger;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.SpringUtils;
 
@@ -27,6 +28,7 @@ public class ArchivedAccounts extends ReportAccount {
 		qb.setWorkingFacilities(false);
 		sql.addWhere("1 " + qb.toString());
 		skipPermissions = true;
+		permissions.tryPermission(OpPerms.RemoveContractors);
 		if ("Remove".equals(button)) {
 			FacilityChanger facilityChanger = (FacilityChanger) SpringUtils.getBean("FacilityChanger");
 			facilityChanger.setOperator(permissions.getAccountId());

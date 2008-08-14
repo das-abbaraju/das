@@ -54,12 +54,28 @@
 					</pics:permission>
 				</s:if>
 			</s:if>
-			<td class="center"><s:if test="get('genID') > 0">
-					<a href="?button=remove&id=<s:property value="[0].get('id')"/>">Remove</a>
+			<td class="center">
+				<s:if test="get('genID') > 0">
+					<pics:permission perm="RemoveContractors">
+						<s:if test="permissions.corporate">
+							<a href="con_selectFacilities.jsp?id=<s:property value="[0].get('id')"/>">Remove</a>
+						</s:if>
+						<s:else>
+							<a href="?button=remove&id=<s:property value="[0].get('id')"/>">Remove</a>
+						</s:else>
+					</pics:permission>
 				</s:if>
 				<s:else>
-					<a href="?button=add&id=<s:property value="[0].get('id')"/>">Add</a>
-				</s:else></td>
+					<pics:permission perm="AddContractors">
+						<s:if test="permissions.corporate">
+							<a href="con_selectFacilities.jsp?id=<s:property value="[0].get('id')"/>">Add</a>
+						</s:if>
+						<s:else>
+							<a href="?button=add&id=<s:property value="[0].get('id')"/>">Add</a>
+						</s:else>
+					</pics:permission>
+				</s:else>
+			</td>
 		</tr>
 	</s:iterator>
 </table>

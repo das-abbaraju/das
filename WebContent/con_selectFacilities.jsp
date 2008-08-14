@@ -17,30 +17,36 @@
 	boolean isSubmitted = (null != request.getParameter("submit.x"));
 	boolean removeContractor = ("Remove".equals(request.getParameter("action")));
 	if (isSubmitted) {
-		cBean.setGeneralContractorsFromCheckList(request);
-		if (cBean.writeGeneralContractorsToDB(permissions, FACILITIES)) {
-			cBean.writeToDB();
-			cBean.buildAudits();
-			BillContractor billing = new BillContractor();
-			billing.setContractor(id);
-			billing.calculatePrice();
-			billing.writeToDB();
+		FacilityChanger facilityChanger = (FacilityChanger) SpringUtils.getBean("FacilityChanger");
+		facilityChanger.setContractor(Integer.parseInt(id));
+		facilityChanger.setPermissions(permissions);
+		Enumeration e = request.getParameterNames();
+		while (e.hasMoreElements()) {
+			String temp = (String)e.nextElement();
+			if (temp.startsWith("genID_") && "Yes".equals(request.getParameter(temp))) {
+				int opID = Integer.parseInt(temp.substring(6));
+				facilityChanger.setOperator(opID);
+				facilityChanger.add();
+			}
 		}
+		BillContractor billing = new BillContractor();
+		billing.setContractor(id);
+		billing.calculatePrice();
+		billing.writeToDB();
+		
 		if (permissions.isContractor()) {
 			response.sendRedirect("Home.action");
 			return;
 		}
 	}
 	
-	if (permissions.seesAllContractors() && removeContractor) {
-		Integer removeOpID = Integer.parseInt(request.getParameter("opID"));
-		oBean.removeSubContractor(removeOpID, id);
-		AccountBean tempOpBean = new AccountBean();
-		tempOpBean.setFromDB(removeOpID.toString());
-		cBean.addNote(id, "(" + permissions.getName() + " from PICS)", "Removed " + aBean.name + " from "
-				+ tempOpBean.name + "'s db", DateBean.getTodaysDateTime());
-		cBean.writeToDB();
-		cBean.buildAudits();
+	if (removeContractor) {
+		FacilityChanger facilityChanger = (FacilityChanger) SpringUtils.getBean("FacilityChanger");
+		facilityChanger.setContractor(Integer.parseInt(id));
+		int removeOpID = Integer.parseInt(request.getParameter("opID"));
+		facilityChanger.setPermissions(permissions);
+		facilityChanger.setOperator(removeOpID);
+		facilityChanger.remove();
 		BillContractor billing = new BillContractor();
 		billing.setContractor(id);
 		billing.calculatePrice();
@@ -144,7 +150,7 @@
 		<td class="center"><input type="hidden" name="genID_<%=opID%>"
 			value="Yes" /><img src="images/okCheck.gif" width="19" height="15" />
 		<%
-			if (permissions.isAdmin()) {
+			if (permissions.hasPermission(OpPerms.RemoveContractors)) {
 		%>
 		<a href="con_selectFacilities.jsp?id=<%=id%>&action=Remove&opID=<%=opID%>">Remove</a>
 		<%
@@ -182,7 +188,7 @@
 		<td><%=name%></td>
 		<td class="center">
 		<%
-			if (!permissions.isOnlyAuditor()) {
+			if (!permissions.isOnlyAuditor() || permissions.hasPermission(OpPerms.AddContractors) || permissions.isContractor()) {
 		%> <%=Inputs.getCheckBoxInput("genID_" + opID, "forms", "", "Yes")%>
 		<%
 			}

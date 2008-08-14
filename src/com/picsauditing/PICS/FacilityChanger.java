@@ -17,6 +17,7 @@ import com.picsauditing.mail.EmailTemplates;
 
 /**
  * Adds and removed contractors from operator accounts
+ * 
  * @author Trevor
  */
 public class FacilityChanger {
@@ -25,61 +26,63 @@ public class FacilityChanger {
 	private OperatorAccountDAO operatorAccountDAO;
 	private AuditBuilder auditBuilder;
 	private EmailContractorBean emailer;
-	
+
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
 	private Permissions permissions;
 
 	public FacilityChanger(ContractorAccountDAO contractorAccountDAO, OperatorAccountDAO operatorAccountDAO,
-			ContractorOperatorDAO contractorOperatorDAO, AuditBuilder auditBuilder, 
-			@Qualifier("EmailContractorBean") EmailContractorBean emailer) {
+			ContractorOperatorDAO contractorOperatorDAO, AuditBuilder auditBuilder, @Qualifier("EmailContractorBean")
+			EmailContractorBean emailer) {
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.auditBuilder = auditBuilder;
 		this.emailer = emailer;
 		this.contractorAccountDAO = contractorAccountDAO;
-		this.operatorAccountDAO  = operatorAccountDAO;
+		this.operatorAccountDAO = operatorAccountDAO;
 	}
-	
+
 	public void add() throws Exception {
 		if (contractor == null || contractor.getId() == 0)
 			throw new Exception("Please set contractor before calling add()");
 		if (operator == null || operator.getId() == 0)
 			throw new Exception("Please set operator before calling add()");
-		
+
+		for (ContractorOperator conOperator : contractor.getOperators()) {
+			if (conOperator.getOperatorAccount().equals(operator))
+				return;
+		}
 		// TODO: Start using SearchContractors.Edit instead
-		//permissions.tryPermission(OpPerms.SearchContractors, OpType.Edit);
-		permissions.tryPermission(OpPerms.AddContractors);
-		
+		// permissions.tryPermission(OpPerms.SearchContractors, OpType.Edit);
+
 		ContractorOperator co = new ContractorOperator();
 		co.setContractorAccount(contractor);
 		co.setOperatorAccount(operator);
 		co.setDateAdded(new Date());
 		contractorOperatorDAO.save(co);
 		contractor.getOperators().add(co);
-		
-		ContractorBean.addNote(contractor.getId(), permissions, "Added contractor to "+operator.getName());
-		
+
+		ContractorBean.addNote(contractor.getId(), permissions, "Added contractor to " + operator.getName());
+
 		// Send the contractor an email that the operator added them
 		emailer.setPermissions(permissions);
 		emailer.addToken("opAcct", operator);
 		emailer.sendMessage(EmailTemplates.contractoradded, contractor);
 		auditBuilder.buildAudits(contractor);
 	}
-	
+
 	public boolean remove() throws Exception {
 		if (contractor == null || contractor.getId() == 0)
 			throw new Exception("Please set contractor before calling remove()");
 		if (operator == null || operator.getId() == 0)
 			throw new Exception("Please set operator before calling remove()");
-		
+
 		// TODO: Start using SearchContractors.Delete instead
-		//permissions.tryPermission(OpPerms.SearchContractors, OpType.Delete);
-		permissions.tryPermission(OpPerms.RemoveContractors);
-		for(ContractorOperator co : contractor.getOperators()) {
-			if (co.getOperatorAccount().getId() == permissions.getAccountId()) {
+		// permissions.tryPermission(OpPerms.SearchContractors, OpType.Delete);
+		for (ContractorOperator co : contractor.getOperators()) {
+			if (permissions.hasPermission(OpPerms.RemoveContractors)) {
 				contractorOperatorDAO.remove(co);
 				contractor.getOperators().remove(co);
-				ContractorBean.addNote(contractor.getId(), permissions, "Removed from "+contractor.getName());
+				ContractorBean.addNote(contractor.getId(), permissions, "Removed from " + contractor.getName());
 				auditBuilder.buildAudits(contractor);
 				return true;
 			}
@@ -98,7 +101,7 @@ public class FacilityChanger {
 	public void setContractor(int id) {
 		this.contractor = contractorAccountDAO.find(id);
 	}
-	
+
 	public OperatorAccount getOperator() {
 		return operator;
 	}
@@ -110,7 +113,7 @@ public class FacilityChanger {
 	public void setOperator(int id) {
 		this.operator = operatorAccountDAO.find(id);
 	}
-	
+
 	public Permissions getPermissions() {
 		return permissions;
 	}
@@ -118,5 +121,5 @@ public class FacilityChanger {
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
 	}
-	
+
 }
