@@ -76,6 +76,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
+<script type="text/javascript" src="js/prototype.js"></script>
 <SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript">
 	var cal1 = new CalendarPopup('caldiv1');
