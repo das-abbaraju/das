@@ -246,16 +246,18 @@ public class LoginController extends DataBean {
 		// Find out if the user previously timed out on a page, we'll forward
 		// back there below
 		Cookie[] cookiesA = request.getCookies();
-		String fromURL = "";
-		for (int i = 0; i < cookiesA.length; i++) {
-			if ("from".equals(cookiesA[i].getName())) {
-				fromURL = cookiesA[i].getValue();
-				// Clear the cookie, now that we've used it once
-				Cookie fromCookie = new Cookie("from", "");
-				response.addCookie(fromCookie);
-				if (fromURL.length() > 0) {
-					response.sendRedirect(fromURL);
-					return;
+		if (cookiesA != null) {
+			String fromURL = "";
+			for (int i = 0; i < cookiesA.length; i++) {
+				if ("from".equals(cookiesA[i].getName())) {
+					fromURL = cookiesA[i].getValue();
+					// Clear the cookie, now that we've used it once
+					Cookie fromCookie = new Cookie("from", "");
+					response.addCookie(fromCookie);
+					if (fromURL.length() > 0) {
+						response.sendRedirect(fromURL);
+						return;
+					}
 				}
 			}
 		}

@@ -156,7 +156,7 @@ public class CertificateBean extends DataBean {
 				return false;
 			}
 			SQLResult.close();
-			String insertQuery = "INSERT INTO certificates (contractor_id,operator_id,operator,type,expDate,liabilityLimit,namedInsured,subrogationWaived, ext) VALUES ('"
+			String insertQuery = "INSERT INTO certificates (contractor_id,operator_id,type,expDate,liabilityLimit,namedInsured,subrogationWaived, ext) VALUES ('"
 					+ contractor_id
 					+ "','"
 					+ operator_id
