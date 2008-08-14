@@ -9,7 +9,7 @@
 		<s:if test="linkUrl5 > ''"><a href="http://<s:property value="linkUrl5"/>" target="_BLANK" title="opens in new window"><s:property value="linkText5"/></a></s:if>
 		<s:if test="linkUrl6 > ''"><a href="http://<s:property value="linkUrl6"/>" target="_BLANK" title="opens in new window"><s:property value="linkText6"/></a></s:if>
 	</td>
-	<td class="answer" style="font-style: italic; font-size: 8px">
+	<td class="answer">
 		<s:if test="questionType == 'Text'">
 			<s:textfield id="answer_%{questionID}" name="answer.answer" size="30" onchange="javascript:saveAnswer(%{questionID}, this);"/>
 		</s:if>
