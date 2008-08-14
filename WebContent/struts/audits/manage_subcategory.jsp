@@ -65,7 +65,7 @@
 <div>
 	<ul id="list">
 	<s:iterator value="subCategory.questions">
-	    <li id="item_<s:property value="questionID"/>"><a href="ManageQuestion.action?id=<s:property value="questionID"/>"><s:property value="question.length()>50 ? question.substring(0,47) + '...' : question"/></a></li>
+	    <li id="item_<s:property value="questionID"/>" title="Drag and drop to change order"><s:property value="number"/>. <a href="ManageQuestion.action?id=<s:property value="questionID"/>"><s:property value="question.length()>50 ? question.substring(0,47) + '...' : question"/></a></li>
 	</s:iterator>
 	</ul>
 

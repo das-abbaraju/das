@@ -97,7 +97,7 @@
 <div>
 	<ul id="list">
 	<s:iterator value="auditType.categories">
-	    <li id="item_<s:property value="id"/>"><a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="category"/></a></li>
+	    <li id="item_<s:property value="id"/>" title="Drag and drop to change order"><s:property value="number"/>. <a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="category"/></a></li>
 	</s:iterator>
 	</ul>
 	
@@ -110,6 +110,8 @@
 	</script>
 	<div id="list-info"></div>
 </div>
+<div id="info">Drag and drop categories to change their order</div>
+<br clear="all" />
 </td>
 </s:if>
 </tr>

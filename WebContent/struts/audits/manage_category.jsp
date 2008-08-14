@@ -64,7 +64,7 @@
 <div>
 	<ul id="list">
 	<s:iterator value="category.subCategories">
-	    <li id="item_<s:property value="id"/>"><a href="ManageSubCategory.action?id=<s:property value="id"/>"><s:property value="subCategory"/></a></li>
+	    <li id="item_<s:property value="id"/>" title="Drag and drop to change order"><s:property value="number"/>. <a href="ManageSubCategory.action?id=<s:property value="id"/>"><s:property value="subCategory"/></a></li>
 	</s:iterator>
 	</ul>
 	<a href="ManageSubCategory.action?button=AddNew&parentID=<s:property value="category.id"/>&subCategory.category.id=<s:property value="category.id"/>">Add New Sub Category</a>
