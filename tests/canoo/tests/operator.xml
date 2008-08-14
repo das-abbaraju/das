@@ -104,9 +104,9 @@
 					description="Choose Self Performed"
 					name="performedBy"
 					value="Self Performed" />
-				<clickLink
-					description="Click the Search button"				
-					label="Search" />
+				<clickButton
+					name="button"
+					description="Click the Search button" />
 				<verifyText 
 					description="Show List of Contractors"
 					text="Showing 1-[0-9]* of .strong.[1-9][0-9]*..strong. results" regex="true" />
@@ -122,6 +122,7 @@
 					name="report_link" 
 					value="Contact Info" />
 					&click_report;
+				
 				<storeProperty 
 					name="report_link" 
 					value="EMR Rates" />
