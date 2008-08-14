@@ -31,6 +31,13 @@ public class AuditCategoryDAO extends PicsDAO {
         return em.find(AuditCategory.class, id);
     }
 
+	public List<AuditCategory> findByAuditTypeID(int id) {
+		String sql = "SELECT c FROM AuditCategory c WHERE c.auditType.auditTypeID = :auditTypeID";
+		Query query = em.createQuery(sql);
+		query.setParameter("auditTypeID", id);
+		return query.getResultList();
+    }
+
 	public List<AuditCategory> findPqfCategories(ContractorAccount contractor) {
 		String sql = "SELECT DISTINCT c.category FROM AuditCatOperator c " +
 			"WHERE riskLevel = :riskLevel AND c.operatorAccount IN " +
