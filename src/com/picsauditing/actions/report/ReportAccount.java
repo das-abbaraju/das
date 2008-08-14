@@ -84,6 +84,25 @@ public class ReportAccount extends ReportActionSupport {
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
 
+		toggleFilters();
+
+		if (this.orderBy == null)
+			this.orderBy = "a.name";
+		sql.setType(SelectAccount.Type.Contractor);
+		this.run(sql);
+
+		if (forwardSingleResults && !permissions.hasPermission(OpPerms.StatusOnly) && this.data.size() == 1) {
+			// Forward the user to the Contractor Details page
+			ServletActionContext.getResponse().sendRedirect("ContractorView.action?id=" + this.data.get(0).get("id"));
+		}
+
+		if (filtered == null)
+			filtered = false;
+
+		return SUCCESS;
+	}
+
+	protected void toggleFilters() {
 		if (permissions.isOperator()) {
 			filterOperator = false;
 			filterFlagStatus = true;
@@ -104,26 +123,6 @@ public class ReportAccount extends ReportActionSupport {
 			filterLicensedIn = false;
 			filterWorksIn = false;
 		}
-
-		toggleFilters();
-
-		if (this.orderBy == null)
-			this.orderBy = "a.name";
-		sql.setType(SelectAccount.Type.Contractor);
-		this.run(sql);
-
-		if (forwardSingleResults && !permissions.hasPermission(OpPerms.StatusOnly) && this.data.size() == 1) {
-			// Forward the user to the Contractor Details page
-			ServletActionContext.getResponse().sendRedirect("ContractorView.action?id=" + this.data.get(0).get("id"));
-		}
-
-		if (filtered == null)
-			filtered = false;
-
-		return SUCCESS;
-	}
-
-	protected void toggleFilters() {
 	}
 
 	// Getters for search lists

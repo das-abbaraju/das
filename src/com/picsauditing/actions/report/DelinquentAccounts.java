@@ -18,6 +18,7 @@ public class DelinquentAccounts extends ReportAccount {
 
 	@Override
 	protected void toggleFilters() {
+		super.toggleFilters();
 		filterVisible = false;
 	}
 

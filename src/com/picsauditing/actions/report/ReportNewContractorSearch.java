@@ -31,7 +31,10 @@ public class ReportNewContractorSearch extends ReportAccount {
 			return LOGIN;
 
 		permissions.tryPermission(OpPerms.SearchContractors);
-
+		
+		// Sometimes we exit early, so we need to make sure we set our applicable filters right way
+		toggleFilters();
+		
 		if (button != null && id > 0) {
 			try {
 				ContractorAccount contractor = contractorAccountDAO.find(id);

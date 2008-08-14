@@ -41,6 +41,7 @@ public class ArchivedAccounts extends ReportAccount {
 
 	@Override
 	protected void toggleFilters() {
+		super.toggleFilters();
 		filterVisible = false;
 	}
 
