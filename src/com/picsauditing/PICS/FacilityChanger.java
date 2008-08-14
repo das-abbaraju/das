@@ -82,7 +82,7 @@ public class FacilityChanger {
 			if (permissions.hasPermission(OpPerms.RemoveContractors)) {
 				contractorOperatorDAO.remove(co);
 				contractor.getOperators().remove(co);
-				ContractorBean.addNote(contractor.getId(), permissions, "Removed from " + contractor.getName());
+				ContractorBean.addNote(contractor.getId(), permissions, "Removed " + contractor.getName() + " from "+ operator.getName()+"'s db");
 				auditBuilder.buildAudits(contractor);
 				return true;
 			}
