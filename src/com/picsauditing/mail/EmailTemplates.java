@@ -14,7 +14,7 @@ public enum EmailTemplates {
 	contractorconfirm("Confirm Audit Contractor", "EmailAuditBean"),
 	openRequirements("Open Requirements Reminder", "EmailAuditBean"),
 	auditorconfirm("Confirm Audit Auditor", "EmailUserBean"),
-	pendingPqf("Completing the PQF", "EmailAuditBean");
+	pendingPqf("Pending PQF", "EmailAuditBean");
 
 	EmailTemplates(String description, String className){
 		this.description = description;

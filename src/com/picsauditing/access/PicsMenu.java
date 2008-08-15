@@ -69,7 +69,10 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.EmailAnnualUpdate))
 			subMenu.addChild("Annual Updates", "report_annualUpdate.jsp?changed=1");
+		if (permissions.hasPermission(OpPerms.AuditVerification))
+			subMenu.addChild("Pending PQF", "ReportCompletePQF.action");
 
+		
 		subMenu = menu.addChild("Accounting");
 		if (permissions.isAdmin() && permissions.hasPermission(OpPerms.BillingUpgrades))
 			subMenu.addChild("Contractor Payments", "report_payment.jsp?changed=1");
