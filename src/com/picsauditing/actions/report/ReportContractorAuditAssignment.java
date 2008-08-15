@@ -65,33 +65,6 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		return list;
 	}
 
-	public String getBetterDate(String value, String format) {
-		String response = null;
-		try {
-			SimpleDateFormat sdf = new SimpleDateFormat(format);
-			Date d = new Date(sdf.parse(value).getTime());
-
-			response = new SimpleDateFormat("MM/dd/yy").format(d);
-		} catch (Exception e) {
-		}
-
-		return response;
-	}
-
-	public String getBetterTime(String value, String format) {
-		String response = null;
-		try {
-			SimpleDateFormat sdf = new SimpleDateFormat(format);
-			Date d = new Date(sdf.parse(value).getTime());
-
-			response = new SimpleDateFormat("hh:mm a").format(d);
-
-		} catch (Exception e) {
-		}
-
-		return response;
-	}
-
 	public boolean isUnScheduledAudits() {
 		return unScheduledAudits;
 	}

@@ -1,7 +1,15 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
 <s:include value="../actionMessages.jsp" />
-
+<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
+<script type="text/javascript" src="js/prototype.js"></script>
+<SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+	var cal2 = new CalendarPopup('caldiv2');
+	cal2.offsetY = -110;
+	cal2.setCssPrefix("PICS");
+	cal2.showNavigationDropdowns();
+</SCRIPT>
 <script type="text/javascript">
 function toggleBox(name) {
 	var box = $(name+'_select');
@@ -295,9 +303,80 @@ Filter Options</a></div>
 		</div>
 	</s:if>
 	
+	<s:if test="filterPercentComplete">
+		<br clear="all"/>
+		<div class="filterOption">Percent Complete: <s:textfield name="percentComplete1"
+		cssClass="forms" size="12" onfocus="clearText(this)" /> To: 
+		<s:textfield name="percentComplete2"
+		cssClass="forms" size="12" onfocus="clearText(this)" />
+		</div>
+	</s:if>
+
+	
+	<s:if test="filterCreatedDate">
+		<div class="filterOption">Created Date: 
+			<s:textfield cssClass="forms" size="6" 
+			id="createdDate1" name="createdDate1" />
+			<a id="anchor_createdDate1" name="anchor_createdDate1"
+			onclick="cal2.select($('createdDate1'),'anchor_createdDate1','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+			To:<s:textfield cssClass="forms" size="6" 
+			id="createdDate2" name="createdDate2" />
+			<a id="anchor_createdDate2" name="anchor_createdDate2"
+			onclick="cal2.select($('createdDate2'),'anchor_createdDate2','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+		</div>
+	</s:if>
+
+	<br clear="all" />
+	<s:if test="filterCompletedDate">
+		<div class="filterOption">Completed Date: 
+			<s:textfield cssClass="forms" size="6" 
+			id="completedDate1" name="completedDate1" />
+			<a id="anchor_completedDate1" name="anchor_completedDate1"
+			onclick="cal2.select($('completedDate1'),'anchor_completedDate1','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+			To:<s:textfield cssClass="forms" size="6" 
+			id="completedDate2" name="completedDate2" />
+			<a id="anchor_completedDate2" name="anchor_completedDate2"
+			onclick="cal2.select($('completedDate2'),'anchor_completedDate2','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+		</div>
+	</s:if>
+	
+	<s:if test="filterClosedDate">
+		<div class="filterOption">Closed Date: 
+			<s:textfield cssClass="forms" size="6" 
+			id="closedDate1" name="closedDate1" />
+			<a id="anchor_closedDate1" name="anchor_closedDate1"
+			onclick="cal2.select($('closedDate1'),'anchor_closedDate1','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+			To:<s:textfield cssClass="forms" size="6" 
+			id="closedDate2" name="closedDate2" />
+			<a id="anchor_closedDate2" name="anchor_closedDate2"
+			onclick="cal2.select($('closedDate2'),'anchor_closedDate2','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+		</div>
+	</s:if>
+
+	<br clear="all" />
+	<s:if test="filterExpiredDate">
+		<div class="filterOption">Expired Date: 
+			<s:textfield cssClass="forms" size="6" 
+			id="expiredDate1" name="expiredDate1" />
+			<a id="anchor_expiredDate1" name="anchor_expiredDate1"
+			onclick="cal2.select($('expiredDate1'),'anchor_expiredDate1','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+			To:<s:textfield cssClass="forms" size="6" 
+			id="expiredDate2" name="expiredDate2" />
+			<a id="anchor_expiredDate2" name="anchor_expiredDate2"
+			onclick="cal2.select($('expiredDate2'),'anchor_expiredDate2','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+		</div>
+	</s:if>
 
 	<br clear="all" />
 	<div class="alphapaging"><s:property
 		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
 </s:form></div>
-
+<div id="caldiv2" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
