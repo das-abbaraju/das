@@ -78,15 +78,20 @@ public class FacilityChanger {
 
 		// TODO: Start using SearchContractors.Delete instead
 		// permissions.tryPermission(OpPerms.SearchContractors, OpType.Delete);
+		if (!permissions.hasPermission(OpPerms.RemoveContractors))
+			return false;
 		for (ContractorOperator co : contractor.getOperators()) {
-			if (permissions.hasPermission(OpPerms.RemoveContractors)) {
+			if (co.getOperatorAccount().equals(operator)
+					&& co.getContractorAccount().equals(contractor)) {
 				contractorOperatorDAO.remove(co);
 				contractor.getOperators().remove(co);
-				ContractorBean.addNote(contractor.getId(), permissions, "Removed " + contractor.getName() + " from "+ operator.getName()+"'s db");
-				auditBuilder.buildAudits(contractor);
+				ContractorBean.addNote(co.getContractorAccount().getId(), permissions, "Removed " + co.getContractorAccount().getName()
+						+ " from " + co.getOperatorAccount().getName() + "'s db");
+				auditBuilder.buildAudits(co.getContractorAccount());
 				return true;
 			}
 		}
+
 		return false;
 	}
 
