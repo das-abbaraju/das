@@ -1,0 +1,6 @@
+insert into app_properties values
+('email_pendingPqf_subject','Pending PQF');
+
+insert into app_properties values
+('email_pendingPqf_body','Dear ${contractor.name},\\As we review contractors in the process of submitting their PQF, we noticed that you are over 90% complete. However, there has been no recent activity in your account. \If you are having issues completing the PQF please contact ${permissions.name} as \soon as possible for assistance. Two common reasons for an incomplete PQF are, missing\uploads and/or an overlooked question in a particular category. Keep in mind that \questions with missing information will be marked with an asterisk (*) on the right \hand side of the corresponding question. If you need assistance uploading documents do not hesitate to contact us.\
+ \Again thank you for your time in completing the PICS process for your facilities.\\${permissions.name},\PICS\P.O. Box 51387\Irvine CA 92619-1387\tel: (949)387-1940\fax: (949)417-9360\\http://www.picsauditing.com"');
