@@ -16,9 +16,23 @@
 
 <script type="text/javascript">
 <s:if test="mode == 'Edit'">
+	function saveComment(questionid, elm) {
+		var pars = 'auditData.audit.id=<s:property value="conAudit.id"/>&catDataID=<s:property value="catDataID"/>&auditData.question.questionID=' + questionid + '&auditData.comment=' + escape($F(elm));
+		var divName = 'status_'+questionid;
+		var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
+		{
+			method: 'post', 
+			parameters: pars,
+			onSuccess: function(transport) {
+				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+			}
+		});
+	
+	}
+	
+	
 	function saveAnswer( questionid, elm ) {
 		var pars = 'auditData.audit.id=<s:property value="conAudit.id"/>&catDataID=<s:property value="catDataID"/>&auditData.question.questionID=' + questionid + '&auditData.answer=';
-		
 		if( elm.type == 'text' || elm.type == 'radio' || elm.type == 'textarea')
 		{
 			var thevalue = escape(elm.value);
@@ -26,12 +40,6 @@
 			// Save blanks too
 				pars = pars + thevalue;
 
-				var comment = document.getElementById('comments_' + questionid);
-				if( comment != undefined )
-				{
-					pars = pars + '&auditData.comment=' + comment.value;
-				}
-				
 				var divName = 'status_'+questionid;
 				var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
 				{

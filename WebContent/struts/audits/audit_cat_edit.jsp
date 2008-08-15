@@ -35,7 +35,7 @@
 		</s:if>
 		<s:if test="questionType == 'Manual'">
 			<s:radio theme="pics" list="#{'Yes':'Yes','No':'No','NA':'NA'}" value="answer.answer" name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
-			<br>Comments: <s:textfield id="comments_%{questionID}" name="answer.comment" size="30" onblur="javascript:saveAnswer(%{questionID}, document.getElementById('question_%{questionID}Yes') );"/>
+			<br>Comments: <s:textfield id="comments_%{questionID}" name="answer.comment" size="30" onblur="javascript:saveComment(%{questionID}, this);"/>
 		</s:if>
 		<s:if test="questionType == 'Office Location'">
 			<s:radio theme="pics" list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" value="answer.answer" name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
