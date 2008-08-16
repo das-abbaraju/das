@@ -79,8 +79,10 @@ Filter Options</a></div>
 	</div>
 	<br clear="all" />
 
-	<div class="filterOption"><s:textfield name="accountName"
-		cssClass="forms" size="10" onfocus="clearText(this)" /></div>
+	<s:if test="filterAccountName">
+		<div class="filterOption"><s:textfield name="accountName"
+			cssClass="forms" size="10" onfocus="clearText(this)" /></div>
+	</s:if>
 
 	<s:if test="filterVisible">
 		<div class="filterOption"><s:select list="visibleOptions"

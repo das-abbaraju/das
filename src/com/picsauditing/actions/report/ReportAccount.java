@@ -51,7 +51,8 @@ public class ReportAccount extends ReportActionSupport {
 	protected String flagStatus;
 	protected int[] officeIn;
 	protected int[] conAuditorId;
-
+	
+	protected boolean filterAccountName = true;
 	protected boolean filterOperator = true;
 	protected boolean filterIndustry = true;
 	protected boolean filterPerformedBy = true;
@@ -397,6 +398,10 @@ public class ReportAccount extends ReportActionSupport {
 		return 0;
 	}
 
+	public boolean isFilterAccountName() {
+		return filterAccountName;
+	}
+	
 	public boolean isFilterOperator() {
 		return filterOperator;
 	}

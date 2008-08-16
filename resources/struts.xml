@@ -47,7 +47,7 @@
 			class="com.picsauditing.actions.report.ReportContractorAudits">
 			<result>struts/reports/auditList.jsp</result>
 		</action>
-
+		
 		<action name="AuditListAuditor"
 			class="com.picsauditing.actions.report.ReportContractorAuditAuditor">
 			<result>struts/reports/audit_auditor.jsp</result>
@@ -442,6 +442,11 @@
 			class="com.picsauditing.actions.users.ManageMultiUser">
 			<result>struts/users/multilogin_user.jsp</result>
 		</action>
+		
+		<action name="ReportAuditAnalysis"
+			class="com.picsauditing.actions.report.ReportAuditAnalysis">
+			<result>struts/reports/audit_analysis.jsp</result>
+		</action>		
 
 		<action name="ReportCompletePQF"
 			class="com.picsauditing.actions.report.ReportCompletePQF">

@@ -132,6 +132,8 @@ public class PicsMenu {
 			subMenu.addChild("Incidence Rates", "ReportIncidenceRate.action");
 		if (permissions.hasPermission(OpPerms.ContractorLicenseReport))
 			subMenu.addChild("Contractor Licenses", "ReportContractorLicenses.action");
+		if (permissions.hasPermission(OpPerms.ManageAudits))
+			subMenu.addChild("Audit Analysis", "ReportAuditAnalysis.action");
 		
 		return menu;
 	}
