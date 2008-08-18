@@ -314,8 +314,8 @@
 			name="lastPayment" id="lastPayment" type="text" class="forms"
 			size="10"
 			value="<%=cBean.lastPayment%>">
-			<a id="anchor_lastPaymentAmount" name="anchor_lastPaymentAmount" href="#"
-				onclick="cal1.select($('lastPaymentAmount'),'anchor_lastPaymentAmount','M/d/yy'); return false;"
+			<a id="anchor_lastPayment" name="anchor_lastPayment" href="#"
+				onclick="cal1.select($('lastPayment'),'anchor_lastPayment','M/d/yy'); return false;"
 				><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 		</td>
 	</tr>
