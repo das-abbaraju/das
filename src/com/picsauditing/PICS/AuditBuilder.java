@@ -3,6 +3,7 @@ package com.picsauditing.PICS;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -172,7 +173,16 @@ public class AuditBuilder {
 		}
 
 		/** ** Remove unneeded audits *** */
-		for (ContractorAudit conAudit : currentAudits) {
+		// We can't clear until we're done reading all data from DB (lazy loading)
+		// But we can't delete until we do the clear
+		// so create a list, then delete
+		Set<Integer> auditsToRemove = new HashSet<Integer>();
+		
+		// You have to use while iterator instead of a for loop
+		// because we're removing an entry from the list
+		Iterator<ContractorAudit> iter = currentAudits.iterator();
+		while (iter.hasNext()) {
+			ContractorAudit conAudit = iter.next();
 			if (conAudit.getAuditStatus().equals(AuditStatus.Pending) && conAudit.getPercentComplete() == 0) {
 				// This audit hasn't been started yet, double check to make sure
 				// it's still needed
@@ -191,12 +201,17 @@ public class AuditBuilder {
 
 				if (!needed) {
 					if (conAudit.getData().size() == 0) {
-						cAuditDAO.clear();
-						cAuditDAO.remove(conAudit.getId());
-						currentAudits.remove(conAudit);
+						auditsToRemove.add(conAudit.getId());
+						iter.remove();
 					}
 				}
 			}
+		}
+		
+		for (Integer auditID : auditsToRemove) {
+			cAuditDAO.clear();
+			cAuditDAO.remove(auditID);
+			fillAuditCategories = false;
 		}
 
 		if (fillAuditCategories) {

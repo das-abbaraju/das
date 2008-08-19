@@ -28,11 +28,15 @@ public class ContractorAuditDAO extends PicsDAO {
 		return o;
 	}
 
-	public void remove(int id) {
-		ContractorAudit row = find(id);
+	public void remove(ContractorAudit row) {
 		if (row != null) {
 			em.remove(row);
 		}
+	}
+	
+	public void remove(int id) {
+		ContractorAudit row = find(id);
+		remove(row);
 	}
 
 	public void copy(ContractorAudit oCAudit, ContractorAccount nContractor) {
