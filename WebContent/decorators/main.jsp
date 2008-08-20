@@ -24,6 +24,10 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css" title="bluemenu"/>
 <script type="text/javascript" src="js/chrome.js"></script>
 <script type="text/javascript" src="js/Search.js"></script>
+<script language="JavaScript" src="js/D2H_ctxt.js"></script>
+<script language="javascript">
+	helpURL = "help/c/default.htm";
+</script>
 
 <!--CSS FIXES FOR INTERNET EXPLORER --->
 <!--[if IE]>
@@ -121,13 +125,11 @@ function getElement(whichLayer) {
 <div id="bodyholder">
 <div id="content">
 <div id="helpbox">
-	<% if(permissions.isContractor()) { %>
-	<a href="help/c/" target="helpdoc48">Help Center</a> |
-	<% } else if(permissions.isOperator() || permissions.isCorporate() || permissions.hasPermission(OpPerms.StatusOnly)) { %>
-	<a href="help/o/" target="helpdoc48">Help Center</a> |
-	<% } else { %>
-	<a href="help/a/" target="helpdoc48">Help Center</a> |
-	<%  } %>
+	<a href='javascript:D2H_ShowHelp(<decorator:getProperty property="meta.contextID" default="1" />, 
+	<% if(permissions.isContractor()) { %>"help/c/default.htm"
+	<% } else if(permissions.isOperator() || permissions.isCorporate() || permissions.hasPermission(OpPerms.StatusOnly)) { %>"help/o/default.htm"
+	<% } else { %>"help/a/default.htm"
+	<% } %>, "_BLANK", 1)'>Help Center</a> |
 	
 	<a id="_lpChatBtn"
 	onmouseover="showChat();"
