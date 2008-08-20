@@ -18,6 +18,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectFilter;
+import com.picsauditing.search.SelectFilterInteger;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -30,6 +31,7 @@ public class ReportAccount extends ReportActionSupport {
 	public static final String DEFAULT_TAX_ID = "- Tax ID -";
 	public static final String DEFAULT_CERTS = "- Ins. Certs -";
 	public static final String DEFAULT_VISIBLE = "- Visible -";
+	public static final String DEFAULT_RISK = "- Risk Level -";
 
 	protected boolean forwardSingleResults = false;
 	protected boolean skipPermissions = false;
@@ -51,7 +53,8 @@ public class ReportAccount extends ReportActionSupport {
 	protected String flagStatus;
 	protected int[] officeIn;
 	protected int[] conAuditorId;
-	
+	protected int riskLevel;
+
 	protected boolean filterAccountName = true;
 	protected boolean filterOperator = true;
 	protected boolean filterIndustry = true;
@@ -66,6 +69,7 @@ public class ReportAccount extends ReportActionSupport {
 	protected boolean filterTaxID = true;
 	protected boolean filterFlagStatus = false;
 	protected boolean filterConAuditor = false;
+	protected boolean filterRiskLevel = false;
 
 	AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
 
@@ -114,6 +118,7 @@ public class ReportAccount extends ReportActionSupport {
 		if (permissions.isPicsEmployee()) {
 			filterConAuditor = true;
 			filterVisible = true;
+			filterRiskLevel = true;
 		}
 		if (permissions.hasPermission(OpPerms.StatusOnly)) {
 			filterOperator = false;
@@ -452,5 +457,18 @@ public class ReportAccount extends ReportActionSupport {
 
 	public boolean isFilterConAuditor() {
 		return filterConAuditor;
+	}
+
+	public int getRiskLevel() {
+		return riskLevel;
+	}
+
+	public void setRiskLevel(int riskLevel) {
+		report.addFilter(new SelectFilterInteger("riskLevel", "c.riskLevel = '?'", riskLevel));
+		this.riskLevel = riskLevel;
+	}
+
+	public boolean isFilterRiskLevel() {
+		return filterRiskLevel;
 	}
 }

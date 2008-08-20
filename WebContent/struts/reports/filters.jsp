@@ -202,6 +202,12 @@ Filter Options</a></div>
 		<div class="filterOption"><s:select list="certsOptions"
 			cssClass="forms" name="certsOnly" /></div>
 	</s:if>
+	
+	<s:if test="filterRiskLevel">
+		<div class="filterOption"><s:select list="#{'1':'Low', '2':'Med', '3':'High'}"  
+			headerKey="0" headerValue="- Risk Level -" cssClass="forms" name="riskLevel"/></div>
+	</s:if>
+	
 	<s:if test="filterLicensedIn">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_stateLicensedIn'); return false;">Licensed
