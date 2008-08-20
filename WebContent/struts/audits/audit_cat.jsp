@@ -139,7 +139,7 @@
         if (doc == undefined || doc == null)
             doc = elm.contentWindow.document;
 	    
-	    var ext = doc.getElementById('response').innerHTML;
+	    var ext = doc.getElementById('response').innerHTML.trim();
 
 		elm = $('meta_upload_' + theId);
 		elm.innerHTML = "<nobr><a id=\"link_" + theId + "\" href=\"#\" onClick=\"openQuestion('" + theId + "', '" + ext + "'); return false;\">View File</a></nobr>";
