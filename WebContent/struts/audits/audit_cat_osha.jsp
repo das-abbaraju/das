@@ -7,7 +7,7 @@
 <table class="osha">
 <tr class="location"><td colspan="9"><s:property value="type"/> Location - <s:property value="location"/> <s:property value="description"/></td></tr>
 <tr>
-	<th>Year</td>
+	<th>Year</th>
 	<th class="center" colspan="2">2007</th>
 	<th class="center" colspan="2">2006</th>
 	<th class="center" colspan="2">2005</th>
@@ -93,4 +93,15 @@
 	<th colspan="2"><s:if test="year2.uploaded"><a href="#" onclick="openOsha(<s:property value="id"/>, 2); return false;">Download</a></s:if></th>
 	<th colspan="2"><s:if test="year3.uploaded"><a href="#" onclick="openOsha(<s:property value="id"/>, 3); return false;">Download</a></s:if></th>
 </tr>
+<s:if test="corporate">
+	<tr>
+		<th class="label">Verification Issues</th>
+		<td colspan="2"><nobr><s:if test="year1.verified">None</s:if>
+		<s:else><s:property value="year1.comment"/></s:else></nobr></td>
+		<td colspan="2"><nobr><s:if test="year2.verified">None</s:if>
+		<s:else><s:property value="year2.comment"/></s:else></nobr></td>
+		<td colspan="2"><nobr><s:if test="year3.verified">None</s:if>
+		<s:else><s:property value="year3.comment"/></s:else></nobr></td>	
+	</tr>
+</s:if>
 </table>
