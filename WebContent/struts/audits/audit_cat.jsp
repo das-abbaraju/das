@@ -118,7 +118,7 @@
 	
 	function startCallback( theId ) {
 		var elm = $('status_upload_' + theId);
-		elm.innerHTML="<img src='ajax_process.gif' /> Uploading File...";
+		elm.innerHTML="<nobr><img src='images/ajax_process.gif' /> ...uploading file</nobr>";
 		elm = $('file_upload_' + theId);
 		elm.hide();
 		return true;

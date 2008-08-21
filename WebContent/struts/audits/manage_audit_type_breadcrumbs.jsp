@@ -15,7 +15,9 @@ function selectCrumb(selector, url) {
 -->
 </style>
 
-<h1>Manage Audit Types</h1>
+<h1>Manage Audit Types
+	<s:if test="auditType != null"><span class="sub"><s:property value="auditType.auditName"/></span></s:if>
+</h1>
 <div id="breadcrumbs">
 	<a class="blueMain" href="ManageAuditType.action">Top</a></li>
 	<s:if test="auditType != null">
@@ -46,3 +48,7 @@ function selectCrumb(selector, url) {
 		</s:if>
 	</s:if>
 </div>
+
+<s:if test="auditType != null">
+<div><a href="AuditOperator.action?aID=<s:property value="auditType.auditTypeID"/>">Edit Operator Access</a></div>
+</s:if>

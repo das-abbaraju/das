@@ -41,6 +41,7 @@ function save(id, aID, oID, pKey) {
 <body>
 <h1>Edit Operator/Audit Permissions <span class="sub"><s:property
 	value="aName" /><s:property value="oName" /></span></h1>
+<div>
 <s:form>
 	<s:if test="oID > 0">
 		<s:select list="operators" listKey="id" cssClass="blueMain"
@@ -51,9 +52,11 @@ function save(id, aID, oID, pKey) {
 		<s:select list="auditTypes" listKey="auditTypeID" cssClass="blueMain"
 			onchange="location = '?aID='+this.options[this.selectedIndex].value;"
 			listValue="auditName" value="aID"></s:select>
+		<br /><a href="ManageAuditType.action?id=<s:property value="aID"/>">Manage Audit Definition</a>
 	</s:else>
 </s:form>
-<div><a href="AuditOperator.action?<s:if test="aID > 0">aID=<s:property value="aID" /></s:if><s:if test="oID > 0">oID=<s:property value="oID" /></s:if>" class="refresh">Refresh Page</a></div>
+	<a href="AuditOperator.action?<s:if test="aID > 0">aID=<s:property value="aID" /></s:if><s:if test="oID > 0">oID=<s:property value="oID" /></s:if>" class="refresh">Refresh Page</a>
+</div>
 
 <s:form id="form1">
 	<table class="report" cellspacing="1" cellpadding="3" border="0">

@@ -50,10 +50,11 @@ public class VerifyView extends AuditActionSupport {
 	}
 
 	public String execute() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
 
-		this.loadPermissions();
-		this.findConAudit();
 		permissions.tryPermission(OpPerms.AuditVerification);
+		this.findConAudit();
 
 		if (osha != null) {
 			permissions.tryPermission(OpPerms.AuditVerification, OpType.Edit);
