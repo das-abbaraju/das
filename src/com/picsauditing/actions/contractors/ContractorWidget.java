@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
  * @author Trevor
  */
 public class ContractorWidget extends ContractorActionSupport {
+	protected boolean reminderTask = false;
 
 	public ContractorWidget(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
 		super(accountDao, auditDao);
@@ -80,14 +81,16 @@ public class ContractorWidget extends ContractorActionSupport {
 						+ "\">upload your insurance certificates</a>");
 			}
 
-			if (Calendar.getInstance().get(Calendar.MONTH) == 0
-					|| DateBean.getDateDifference(contractor.getAccountDate()) < 30) {
-				// During January and the first month of registration, we
-				// encourage Contractors to update their facility list
-				openTasks
-						.add("Please <a href=\"con_selectFacilities.jsp?id=" + id + "\">update your facility list</a>");
-			}
 		}
 		return openTasks;
 	}
+
+	public boolean isReminderTask() {
+		if (Calendar.getInstance().get(Calendar.MONTH) == 0
+				|| DateBean.getDateDifference(contractor.getAccountDate()) > -30) {
+			reminderTask = true;
+		}
+		return reminderTask;
+	}
+
 }
