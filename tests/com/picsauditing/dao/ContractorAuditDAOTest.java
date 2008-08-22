@@ -128,5 +128,11 @@ public class ContractorAuditDAOTest {
 		ContractorAudit oAudit = contractorauditDAO.find(3521);
 		contractorauditDAO.copy(oAudit, ncon.find(1533));
 	}
-
+	
+	@Test
+	public void testFindExpiredAudits() {
+		String where = "expiresDate < NOW() AND auditStatus <> 'Expired'";
+		List<ContractorAudit> conList = contractorauditDAO.findWhere(50,where, "expiresDate");
+		System.out.println(conList.size());
+	}
 }

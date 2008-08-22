@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -64,7 +65,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 			throw new Exception("Audit for this " + this.auditID + " not found");
 
 		if (conAudit.getExpiresDate() != null) {
-
+			if (DateBean.getDateDifference(conAudit.getExpiresDate()) < 1) {
+				conAudit.setAuditStatus(AuditStatus.Expired);
+				auditDao.save(conAudit);
+			}
 		}
 
 		this.id = conAudit.getContractorAccount().getId();

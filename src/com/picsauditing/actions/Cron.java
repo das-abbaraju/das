@@ -21,9 +21,12 @@ import com.picsauditing.PICS.Facilities;
 import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.CertificateDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.Certificate;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.mail.Email;
 import com.picsauditing.mail.EmailContractorBean;
 import com.picsauditing.mail.EmailSender;
@@ -37,21 +40,22 @@ public class Cron extends PicsActionSupport {
 	protected AppPropertyDAO appPropDao = null;
 	protected AuditBuilder auditBuilder = null;
 	protected CertificateDAO certificateDAO = null;
+	ContractorAuditDAO contractorAuditDAO = null;
 
 	protected long startTime = 0L;
 	StringBuffer report = null;
 
 	protected boolean flagsOnly = false;
 
-	
-	
 	public Cron(FlagCalculator2 fc2, OperatorAccountDAO ops, AppPropertyDAO appProps, AuditBuilder ab,
-			CertificateDAO certificateDAO, @Qualifier("EmailContractorBean") EmailContractorBean econ) {
+			CertificateDAO certificateDAO, ContractorAuditDAO contractorAuditDAO, 
+			@Qualifier("EmailContractorBean") EmailContractorBean econ) {
 		this.flagCalculator = fc2;
 		this.operatorDAO = ops;
 		this.appPropDao = appProps;
 		this.auditBuilder = ab;
 		this.certificateDAO = certificateDAO;
+		this.contractorAuditDAO = contractorAuditDAO;
 	}
 
 	public String execute() throws Exception {
@@ -107,6 +111,19 @@ public class Cron extends PicsActionSupport {
 		try {
 			startTask("\nSending emails to contractors for expired Certificates...");
 			sendEmailExpiredCertificates();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+
+		try {
+			startTask("\nExpiring Audits...");
+			String where = "expiresDate < NOW() AND auditStatus <> 'Expired'";
+			List<ContractorAudit> conList = contractorAuditDAO.findWhere(70, where, "expiresDate");
+			for (ContractorAudit cAudit : conList) {
+				cAudit.setAuditStatus(AuditStatus.Expired);
+				contractorAuditDAO.save(cAudit);
+			}
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
