@@ -452,6 +452,11 @@
 			class="com.picsauditing.actions.report.ReportCompletePQF">
 			<result>struts/reports/complete_pqf.jsp</result>
 		</action>
+		
+		<action name="UsersByOpPerm"
+			class="com.picsauditing.actions.users.UsersByOpPerm">
+			<result>struts/users/users_by_opperm.jsp</result>
+		</action>
 
 	</package>
 </struts>

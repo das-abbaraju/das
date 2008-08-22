@@ -37,7 +37,7 @@ public class UserDAO extends PicsDAO {
 			where = "";
 		if (where.length() > 0)
 			where = "WHERE " + where;
-		Query query = em.createQuery("SELECT u FROM User u " + where + " ORDER BY u.name");
+		Query query = em.createQuery("SELECT u FROM User u " + where + " ORDER BY u.account.name, u.name");
 		return query.getResultList();
 	}
 

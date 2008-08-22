@@ -130,7 +130,7 @@ function checkUsername(username, userID) {
 </div>
 </td></tr>
 <tr>
-	<td colspan="2" align="center" class="blueMain">
+	<td colspan="3" align="center" class="blueMain">
 		<a href="#" onclick="addUser(true); return false;">Add Group</a>
 		&nbsp;&nbsp;<a href="#" onclick="addUser(false); return false;">Add User</a>
 	</td>

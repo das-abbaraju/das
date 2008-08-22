@@ -219,7 +219,7 @@ if (!uBean.isSuGroup()) {
 			String accessType = perm.getAccessType().toString();
 			%>
 		<tr class="active">
-			<td><div style="cursor: help" title="<%=perm.getAccessType().getHelpText()%>"><%=perm.getAccessType().getDescription()%></div><input type="hidden" name="accessType" value="<%=accessType %>" /></td>
+			<td><div style="cursor: help" title="<%=perm.getAccessType().getHelpText()%>"><a href="UsersByOpPerm.action?opPerm=<%=accessType%>" target="_BLANK"><%=perm.getAccessType().getDescription()%></a></div><input type="hidden" name="accessType" value="<%=accessType %>" /></td>
 			<td><%=(perm.getAccessType().usesView()) ? Utilities.getCheckBoxInput(accessType+"_viewFlag", "blueSmall", perm.isViewFlag()) : "N/A"%></td>
 			<td><%=(perm.getAccessType().usesEdit()) ? Utilities.getCheckBoxInput(accessType+"_editFlag", "blueSmall", perm.isEditFlag()) : "N/A"%></td>
 			<td><%=(perm.getAccessType().usesDelete()) ? Utilities.getCheckBoxInput(accessType+"_deleteFlag", "blueSmall", perm.isDeleteFlag()) : "N/A"%></td>
