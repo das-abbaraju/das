@@ -232,6 +232,11 @@
 			class="com.picsauditing.actions.audits.AuditDataFileUpload">
 			<result>struts/blank.jsp</result>
 		</action>
+		<action name="AuditDataUpload"
+			class="com.picsauditing.actions.audits.AuditDataUpload">
+			<result>struts/audits/audit_data_upload.jsp</result>
+		</action>
+		
 
 		<action name="ContractorSearch"
 			class="com.picsauditing.actions.report.ReportAccountQuick">
