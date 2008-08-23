@@ -37,6 +37,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 	static private String VIEW = "View";
 	static private String EDIT = "Edit";
 	protected boolean viewBlanks = true;
+	protected boolean onlyReq = false;
 
 	protected AuditCatData previousCategory = null;
 	protected AuditCatData nextCategory = null;
@@ -203,6 +204,14 @@ public class AuditCategoryAction extends AuditActionSupport {
 
 	public AuditCatData getCurrentCategory() {
 		return currentCategory;
+	}
+
+	public boolean isOnlyReq() {
+		return onlyReq;
+	}
+
+	public void setOnlyReq(boolean onlyReq) {
+		this.onlyReq = onlyReq;
 	}
 
 }

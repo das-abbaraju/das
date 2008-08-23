@@ -157,6 +157,14 @@
 					<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
 					Questions</a></li>
 				</s:if>
+				<s:if test="conAudit.auditStatus.toString() != 'Pending'">
+					<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true">View Requirements
+					</a></li>
+				</s:if>
+				<s:if test="conAudit.auditStatus.toString() != 'Pending'">
+					<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true&mode=Edit">Edit Requirements
+					</a></li>
+				</s:if>
 			</ul>
 			</div>
 			</td>
