@@ -220,11 +220,13 @@
 		<s:else>
 			<table class="audit">
 			<s:iterator value="category.subCategories">
+				<s:if test="category.subCategories.length > 1">
 				<tr class="subCategory">
 					<td colspan="4">Sub Category <s:property value="category.number"/>.<s:property value="number"/> - 
 					<s:property value="subCategory" escape="false"/>
 					</td>
 				</tr>
+				</s:if>
 				<s:iterator value="questions">
 				<s:if test="effectiveDate.before(conAudit.createdDate) && expirationDate.after(conAudit.createdDate)">
 					<s:if test="isGroupedWithPrevious.toString() == 'No'">
@@ -237,12 +239,21 @@
 						</tr>
 					</s:if>
 					<s:if test="mode == 'View'">
-						<s:if test="viewBlanks || answer.answer.length() > 0">
-							<s:include value="audit_cat_view.jsp"></s:include>
+						<s:if test="onlyReq">
+							<s:if test="answer.hasRequirements">
+								<s:include value="audit_cat_view.jsp"></s:include>
+							</s:if>
 						</s:if>
+						<s:else>
+							<s:if test="viewBlanks || answer.answer.length() > 0">
+								<s:include value="audit_cat_view.jsp"></s:include>
+							</s:if>
+						</s:else>
 					</s:if>
 					<s:if test="mode == 'Edit'">
-						<s:include value="audit_cat_edit.jsp"></s:include>
+						<s:if test="!onlyReq || answer.hasRequirements">
+							<s:include value="audit_cat_edit.jsp"></s:include>
+						</s:if>
 					</s:if>
 					<s:if test="mode == 'ViewQ'">
 						<s:include value="audit_cat_questions.jsp"></s:include>

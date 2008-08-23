@@ -101,3 +101,26 @@
 	</td>
 	</tr>
 </s:if>
+<s:if test="answer.hasRequirements && conAudit.auditType.hasRequirements">
+	<tr class="group<s:if test="#shaded">Shaded</s:if>">
+		<td class="center">Req</td>
+		<td colspan="3">Status:
+		<s:if test="answer.requirementOpen">
+			<span class="unverified">Open</span>
+		</s:if>
+		<s:else>
+			<span class="verified">Closed on <s:date name="answer.dateVerified" format="MMM d, yyyy" /></span>
+		</s:else>
+		
+		<br>
+		<s:if test="requirement.length() > 0">
+			<s:if test="answer.requirementOpen">
+				<div id="alert"><s:property value="requirement"/></div>
+			</s:if>
+			<s:else>
+				<span class="answer"><s:property value="requirement"/></span>
+			</s:else>
+		</s:if>
+		</td>
+	</tr>
+</s:if>
