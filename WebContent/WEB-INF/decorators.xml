@@ -6,9 +6,9 @@
 	<decorator name="ignoreMe">
 		<pattern>/*Ajax.action</pattern>
 		<pattern>/*ajax*</pattern>
+		<pattern>/AuditDataUpload.action</pattern>
 		<pattern>/user_edit.jsp</pattern>
 		<pattern>/exception_handler.jsp</pattern>
-		<pattern>/pqf_printAll.jsp</pattern>
 		<pattern>/reasons.html</pattern>
 		<pattern>/send_welcome_email.jsp</pattern>
 		<pattern>/ChartXML*</pattern>
