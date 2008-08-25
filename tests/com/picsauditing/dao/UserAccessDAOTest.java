@@ -35,7 +35,7 @@ public class UserAccessDAOTest {
 		access.setViewFlag(true);
 		access.setEditFlag(false);
 		access.setDeleteFlag(null);
-		access.setOpPerm(OpPerms.SwitchUser);
+		access.setOpPerm(OpPerms.AllContractors);
 		access.setLastUpdate(new Date());
 		access.setGrantedBy(access.getUser());
 		access = userAccessDAO.save(access);

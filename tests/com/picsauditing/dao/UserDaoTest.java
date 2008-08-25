@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -22,7 +23,11 @@ public class UserDaoTest extends TestCase {
 	@Test
 	public final void testFind() {
 		try {
-			User row = dao.find(941);
+			User row = dao.find(681);
+			OperatorAccount operator = (OperatorAccount)row.getAccount();
+			System.out.println(row.getAccount().getName());
+			System.out.println(operator.getActivationEmails());
+			
 			assertEquals(1100, row.getAccount().getId().intValue());
 		} catch (Exception e) {
 			fail(e.getMessage());
