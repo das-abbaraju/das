@@ -8,8 +8,9 @@ import javax.servlet.http.Cookie;
 import com.picsauditing.PICS.AccountBean;
 import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.DataBean;
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.PermissionsBean;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.YesNo;
 
 /**
  * Populate the permissions object in session with appropriate login credentials
@@ -112,10 +113,10 @@ public class LoginController extends DataBean {
 			return "No account exists with that username";
 
 		if (isUser) {
-			if (!user.userDO.password.equals(password))
+			if (!user.getPassword().equals(password))
 				return "The password is not correct";
 
-			if (!user.userDO.isActive.startsWith("Y"))
+			if (user.getIsActive() != YesNo.Yes)
 				return "This user does not have permission to login.<br>Please contact PICS to activate your account.";
 		} else {
 			if (!aBean.password.equals(password))

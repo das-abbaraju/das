@@ -2,6 +2,7 @@ package com.picsauditing.access;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
@@ -9,6 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.picsauditing.PICS.AccountBean;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserAccess;
+import com.picsauditing.jpa.entities.UserGroup;
+import com.picsauditing.jpa.entities.YesNo;
 
 /**
  * This is the main class that is stored for each user containing information if
@@ -22,11 +28,12 @@ public class Permissions {
 	private int userID;
 	private boolean loggedIn = false;
 	private Set<Integer> groups = new HashSet<Integer>();
-	private Set<Permission> permissions = new HashSet<Permission>();
+	private Set<UserAccess> permissions = new HashSet<UserAccess>();
 	private Set<Integer> canSeeAudits = new HashSet<Integer>();
 	private String username;
 	private String name;
 	private int accountID;
+	private String accountName;
 	private String accountType;
 	private int adminID;
 	private boolean approvesRelationships = false;
@@ -34,19 +41,26 @@ public class Permissions {
 	public void login(User user) throws Exception {
 		try {
 			clear();
-			userID = Integer.parseInt(user.userDO.id);
+			userID = user.getId();
 			if (userID == 0)
 				throw new Exception("Missing User");
+			
 			loggedIn = true;
-			username = user.userDO.username;
-			name = user.userDO.name;
-			accountID = Integer.parseInt(user.userDO.accountID);
-			accountType = user.userDO.accountType;
-			approvesRelationships = "Yes".equals(user.userDO.approvesRelationships);
+			username = user.getUsername();
+			name = user.getName();
+			accountID = user.getAccount().getId();
+			accountType = user.getAccount().getType();
+			accountName = user.getAccount().getName();
+			if (user.getAccount().getType().equals("Operator")) {
+				OperatorAccount operatorAccount = (OperatorAccount)user.getAccount(); 
+				approvesRelationships = YesNo.Yes.equals(operatorAccount.getApprovesRelationships());
+			}
 			permissions = user.getPermissions();
-			Set<User> temp = user.getGroups();
-			for (User u : temp)
-				groups.add(Integer.parseInt(u.userDO.id));
+			
+			List<UserGroup> temp = user.getGroups();
+			for (UserGroup u : temp)
+				groups.add(u.getGroup().getId());
+			
 		} catch (Exception ex) {
 			// All or nothing, if something went wrong, then clear it all
 			clear();
@@ -82,6 +96,8 @@ public class Permissions {
 		username = "";
 		name = "";
 		accountID = 0;
+		accountName = "";
+		accountType = "";
 		permissions.clear();
 		groups.clear();
 	}
@@ -147,16 +163,16 @@ public class Permissions {
 		if (oType.equals(OpType.Delete) && !opPerm.usesDelete())
 			return false;
 
-		for (Permission perm : permissions) {
-			if (opPerm == perm.getAccessType()) {
+		for (UserAccess perm : permissions) {
+			if (opPerm == perm.getOpPerm()) {
 				if (oType == OpType.Edit)
-					return perm.isEditFlag();
+					return perm.getEditFlag() == true;
 				else if (oType == OpType.Delete)
-					return perm.isDeleteFlag();
+					return perm.getDeleteFlag() == true;
 				else if (oType == OpType.Grant)
-					return perm.isGrantFlag();
+					return perm.getGrantFlag() == true;
 				// Default to OpType.View
-				return perm.isViewFlag();
+				return perm.getViewFlag() == true;
 			}
 		}
 		return false;
@@ -254,7 +270,7 @@ public class Permissions {
 		return this.hasGroup(11);
 	}
 
-	public Set<Permission> getPermissions() {
+	public Set<UserAccess> getPermissions() {
 		return permissions;
 	}
 

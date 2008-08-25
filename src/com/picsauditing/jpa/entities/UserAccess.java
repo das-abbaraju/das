@@ -19,11 +19,12 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permission;
 
 @Entity
 @Table(name = "useraccess")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
-public class UserAccess {
+public class UserAccess implements Comparable<UserAccess> {
 	private int id;
 	private User user;
 	private OpPerms opPerm;
@@ -126,5 +127,10 @@ public class UserAccess {
 
 	public void setLastUpdate(Date lastUpdate) {
 		this.lastUpdate = lastUpdate;
+	}
+
+	@Override
+	public int compareTo(UserAccess o) {
+		return this.opPerm.getDescription().compareToIgnoreCase(o.getOpPerm().getDescription());
 	}
 }

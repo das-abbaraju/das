@@ -8,6 +8,7 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.SpringUtils;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -52,29 +53,31 @@ public class UserDAO extends PicsDAO {
 		return userList;
 	}
 
-	public boolean checkUserName(int uID, String uName) {
+	public boolean checkUserName(String uName, int uID) {
 		try {
-			com.picsauditing.access.User user = new com.picsauditing.access.User();
-
-			int id = user.findID(uName);
+			User user = findName(uName);
+			int id = user.getId();
 			if (id == 0 || id == uID) {
-				com.picsauditing.PICS.AccountBean aBean = new com.picsauditing.PICS.AccountBean();
-				id = aBean.findID(uName);
-
+				AccountDAO accountDAO = (AccountDAO)SpringUtils.getBean("AccountDAO");
+				id = accountDAO.findByID(uName);
 				if (id == 0 || id == uID)
 					return true;
 			}
 		} catch (Exception e) {
-
 		}
 
 		return false;
 	}
 
+	public boolean usernameExists(String username) {
+		return checkUserName(username, -1);
+	}
+	
 	public User findName(String userName) {
 		if (userName == null)
 			userName = "";
-		Query query = em.createQuery("SELECT u FROM User u WHERE username = " + "'" + userName + "'");
+		Query query = em.createQuery("SELECT u FROM User u WHERE username = ?");
+		query.setParameter(1, userName);
 		return (User) query.getSingleResult();
 	}
 
@@ -87,6 +90,12 @@ public class UserDAO extends PicsDAO {
 		Query query = em.createQuery("SELECT u FROM User u WHERE u.account "
 				+ "IN (SELECT o FROM OperatorAccount o)  ORDER BY u.lastLogin DESC");
 		query.setMaxResults(10);
+		return query.getResultList();
+	}
+	
+	public List<User> findByAccountID(int id) {
+		Query query = em.createQuery("SELECT u FROM User u WHERE account.id = ?");
+		query.setParameter(1, id);
 		return query.getResultList();
 	}
 }

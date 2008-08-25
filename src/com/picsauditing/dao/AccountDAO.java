@@ -2,6 +2,8 @@ package com.picsauditing.dao;
 
 import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -49,6 +51,12 @@ public class AccountDAO extends PicsDAO {
 			where = "WHERE " + where;
 		Query query = em.createQuery("select a from Account a " + where + " order by a.name");
 		return query.getResultList();
+	}
+	
+	public int findByID(String username) {
+		Query query = em.createQuery("SELECT id FROM Account WHERE username='?'");
+		query.setParameter(1, Utilities.escapeQuotes(username));
+		return Integer.parseInt(query.getSingleResult().toString());
 	}
 
 }
