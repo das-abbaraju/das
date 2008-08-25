@@ -19,7 +19,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.Permission;
 
 @Entity
 @Table(name = "useraccess")
@@ -42,28 +41,25 @@ public class UserAccess implements Comparable<UserAccess> {
 		return id;
 	}
 
-
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	@ManyToOne
-	@JoinColumn(name="userID", nullable=false)
+	@JoinColumn(name = "userID", nullable = false)
 	public User getUser() {
 		return user;
 	}
-
 
 	public void setUser(User user) {
 		this.user = user;
 	}
 
 	@Enumerated(EnumType.STRING)
-	@Column(name="accessType", nullable=false)
+	@Column(name = "accessType", nullable = false)
 	public OpPerms getOpPerm() {
 		return opPerm;
 	}
-
 
 	public void setOpPerm(OpPerms opPerm) {
 		this.opPerm = opPerm;
@@ -73,48 +69,39 @@ public class UserAccess implements Comparable<UserAccess> {
 		return viewFlag;
 	}
 
-
 	public void setViewFlag(Boolean viewFlag) {
 		this.viewFlag = viewFlag;
 	}
-
 
 	public Boolean getEditFlag() {
 		return editFlag;
 	}
 
-
 	public void setEditFlag(Boolean editFlag) {
 		this.editFlag = editFlag;
 	}
-
 
 	public Boolean getDeleteFlag() {
 		return deleteFlag;
 	}
 
-
 	public void setDeleteFlag(Boolean deleteFlag) {
 		this.deleteFlag = deleteFlag;
 	}
-
 
 	public Boolean getGrantFlag() {
 		return grantFlag;
 	}
 
-
 	public void setGrantFlag(Boolean grantFlag) {
 		this.grantFlag = grantFlag;
 	}
 
-
 	@ManyToOne
-	@JoinColumn(name="grantedByID", nullable=false)
+	@JoinColumn(name = "grantedByID", nullable = false)
 	public User getGrantedBy() {
 		return grantedBy;
 	}
-
 
 	public void setGrantedBy(User grantedBy) {
 		this.grantedBy = grantedBy;
