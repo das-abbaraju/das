@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -25,10 +27,10 @@ public class UserAccess {
 	private int id;
 	private User user;
 	private OpPerms opPerm;
-	private boolean viewFlag;
-	private boolean editFlag;
-	private boolean deleteFlag;
-	private boolean grantFlag;
+	private Boolean viewFlag;
+	private Boolean editFlag;
+	private Boolean deleteFlag;
+	private Boolean grantFlag;
 	private Date lastUpdate;
 	private User grantedBy;
 
@@ -56,7 +58,7 @@ public class UserAccess {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@Column(name="accessType")
+	@Column(name="accessType", nullable=false)
 	public OpPerms getOpPerm() {
 		return opPerm;
 	}
@@ -66,43 +68,42 @@ public class UserAccess {
 		this.opPerm = opPerm;
 	}
 
-
-	public boolean isViewFlag() {
+	public Boolean getViewFlag() {
 		return viewFlag;
 	}
 
 
-	public void setViewFlag(boolean viewFlag) {
+	public void setViewFlag(Boolean viewFlag) {
 		this.viewFlag = viewFlag;
 	}
 
 
-	public boolean isEditFlag() {
+	public Boolean getEditFlag() {
 		return editFlag;
 	}
 
 
-	public void setEditFlag(boolean editFlag) {
+	public void setEditFlag(Boolean editFlag) {
 		this.editFlag = editFlag;
 	}
 
 
-	public boolean isDeleteFlag() {
+	public Boolean getDeleteFlag() {
 		return deleteFlag;
 	}
 
 
-	public void setDeleteFlag(boolean deleteFlag) {
+	public void setDeleteFlag(Boolean deleteFlag) {
 		this.deleteFlag = deleteFlag;
 	}
 
 
-	public boolean isGrantFlag() {
+	public Boolean getGrantFlag() {
 		return grantFlag;
 	}
 
 
-	public void setGrantFlag(boolean grantFlag) {
+	public void setGrantFlag(Boolean grantFlag) {
 		this.grantFlag = grantFlag;
 	}
 
@@ -118,6 +119,7 @@ public class UserAccess {
 		this.grantedBy = grantedBy;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getLastUpdate() {
 		return lastUpdate;
 	}
@@ -125,5 +127,4 @@ public class UserAccess {
 	public void setLastUpdate(Date lastUpdate) {
 		this.lastUpdate = lastUpdate;
 	}
-
 }
