@@ -27,12 +27,12 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	protected String filter = null;
 	protected List<OperatorAccount> facilities = null;
 	protected Report search = null;
-	protected List<BasicDynaBean> searchData = null;
+	protected List<User> userList = null;
 
 	protected boolean filtered = false;
 	
-	protected String isGroup = null;
-	protected String isActive = null;
+	protected String isGroup = "";
+	protected String isActive = "Yes";
 
 	protected boolean hasAllOperators = false;
 
@@ -49,47 +49,19 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			return LOGIN;
 		permissions.tryPermission(OpPerms.EditUsers);
 
+		// Make sure we can edit users in this account
 		if (accountId == 0)
 			accountId = permissions.getAccountId();
-		
 		if (permissions.getAccountId() != accountId)
 			permissions.tryPermission(OpPerms.AllOperators);
+		
+		userList = userDAO.findByAccountID(accountId, isActive, isGroup);
 
-		SelectUser sql = new SelectUser();
-		sql.addField("u.lastLogin");
-		sql.addField("u.isGroup");
-		sql.addField("u.isActive");
-		search = new Report();
-		search.setSql(sql);
-
-		if (isActive == null) {
-			isActive = "Yes";
-		} else
-			filtered = true;
-
-
-		if ("Yes".equals(isGroup) || "No".equals(isGroup)) {
-			filtered = true;
-			sql.addWhere("isGroup = '" + isGroup + "' ");
+		if (user != null && accountId != user.getAccount().getId()) {
+			this.addActionError(user.getName() + " was not listed in this account");
+			user = null;
 		}
-		if ("Yes".equals(isActive) || "No".equals(isActive)) {
-			sql.addWhere("isActive = '" + isActive + "' ");
-		}
-
-		sql.addWhere("accountID = " + accountId);
-		// Only search for Auditors and Admins
-		sql.addOrderBy("u.isGroup, u.name");
-		search.setPageByResult(ServletActionContext.getRequest().getParameter(
-				"showPage"));
-
-		search.setLimit(25);
-
-		searchData = search.getPage();
-
-		if (permissions.hasPermission(OpPerms.AllOperators)) {
-			hasAllOperators = true;
-		}
-
+		
 		return SUCCESS;
 	}
 
@@ -101,19 +73,14 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		this.accountId = accountId;
 	}
 
-	public String getFilter() {
-		return filter;
-	}
-
-	public void setFilter(String filter) {
-		this.filter = filter;
-	}
-
 	public String getIsGroup() {
 		return isGroup;
 	}
 
 	public void setIsGroup(String isGroup) {
+		if (isGroup != null && isGroup.length() > 0)
+			filtered = true;
+		
 		this.isGroup = isGroup;
 	}
 
@@ -122,46 +89,10 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	}
 
 	public void setIsActive(String isActive) {
+		if (!isActive.equals("Yes"))
+			filtered = true;
+
 		this.isActive = isActive;
-	}
-
-	public Report getSearch() {
-		return search;
-	}
-
-	public void setSearch(Report search) {
-		this.search = search;
-	}
-
-	public List<BasicDynaBean> getSearchData() {
-		return searchData;
-	}
-
-	public void setSearchData(List<BasicDynaBean> searchData) {
-		this.searchData = searchData;
-	}
-
-	public boolean isHasAllOperators() {
-		return hasAllOperators;
-	}
-
-	public void setHasAllOperators(boolean hasAllOperators) {
-		this.hasAllOperators = hasAllOperators;
-	}
-
-	public List<OperatorAccount> getFacilities() {
-		String where = null;
-		if (filter != null && filter.length() > 3) {
-			where = "a IN (SELECT account FROM User WHERE username LIKE '%"
-					+ Utilities.escapeQuotes(filter) + "%' OR name LIKE '%"
-					+ Utilities.escapeQuotes(filter) + "%' OR email LIKE '%"
-					+ Utilities.escapeQuotes(filter) + "%')";
-		}
-		facilities = new ArrayList<OperatorAccount>();
-		facilities.add(new OperatorAccount(OperatorAccount.DEFAULT_NAME));
-		facilities.addAll(operatorDao.findWhere(true, where));
-		return facilities;
-
 	}
 
 	public boolean isFiltered() {
@@ -174,6 +105,10 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+	
+	public List<User> getUserList() {
+		return userList;
 	}
 
 	@Override

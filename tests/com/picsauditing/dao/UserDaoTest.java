@@ -70,7 +70,7 @@ public class UserDaoTest extends TestCase {
 
 	@Test
 	public void testFindByAccountID() {
-		List<User> user = dao.findByAccountID(1100);
+		List<User> user = dao.findByAccountID(1100, "Yes", "No");
 		assertEquals("albumcreative", user.get(0).getUsername());
 	}
 }

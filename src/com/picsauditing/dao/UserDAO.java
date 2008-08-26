@@ -98,8 +98,17 @@ public class UserDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<User> findByAccountID(int id) {
-		Query query = em.createQuery("SELECT u FROM User u WHERE account.id = ?");
+	public List<User> findByAccountID(int id, String isActive, String isGroup) {
+		String where = "";
+		if ("Yes".equals(isGroup) || "No".equals(isGroup))
+			where += " AND isGroup = '" + isGroup + "' ";
+		
+		if ("Yes".equals(isActive) || "No".equals(isActive))
+			where += " AND isActive = '" + isActive + "' ";
+		
+		Query query = em.createQuery("SELECT u FROM User u WHERE account.id = ? " + where +
+				" ORDER BY isGroup DESC, name");
+
 		query.setParameter(1, id);
 		return query.getResultList();
 	}

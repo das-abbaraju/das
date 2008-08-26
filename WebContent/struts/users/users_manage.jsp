@@ -9,12 +9,12 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script type="text/javascript">
-var currentUser = 0;
+var currentUser = <s:property value="user.id"/>;
 var accountID = <s:property value="accountId"/>;
 
 var permTypes = new Array();
-<s:iterator value="%{permissions.getPermissions()}">
-	<s:if test="grantFlag == true">permTypes['<s:property value="accessType.toString()"/>'] = new Array("<s:property value="accessType.helpText"/>",<s:property value="accessType.usesView()"/>,<s:property value="accessType.usesEdit()"/>,<s:property value="accessType.usesDelete()"/>);</s:if>
+<s:iterator value="permissions.permissions">
+	<s:if test="grantFlag == true">permTypes['<s:property value="opPerm"/>'] = new Array("<s:property value="opPerm.helpText"/>",<s:property value="opPerm.usesView()"/>,<s:property value="opPerm.usesEdit()"/>,<s:property value="opPerm.usesDelete()"/>);</s:if>
 </s:iterator>
 
 function showPermDesc(item) {
@@ -25,10 +25,6 @@ function showPermDesc(item) {
 	$('new_deleteFlag').disabled = !permTypes[x][3];
 }
 
-function filterOperators() {
-	pars = '&action=filterOperators&filter='+$('filter').getValue()+'&shouldIncludePICS=true';
-	var myAjax = new Ajax.Updater('operators', 'FacilitiesGetAjax.action', {method: 'get', parameters: pars});
-}
 function getPage(pars) {
 	pars = 'userID='+currentUser+'&accountID='+accountID+pars;
 	$('ajaxstatus').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
@@ -101,7 +97,6 @@ function checkUsername(username, userID) {
 		<s:form id="form1" method="post" cssStyle="%{filtered ? '' : 'display: none'}">
 		
 		<pics:permission perm="AllOperators">
-			Filter by User: <input type="text" name="filter" id="filter" class="blueSmall" onchange="filterOperators();" /><br />
 			Operator:<span id="operators"><s:include value="../operators/facilitySelect.jsp" />
 			</span><br />
 		</pics:permission>
@@ -126,9 +121,6 @@ function checkUsername(username, userID) {
 	</td>
 </tr>
 <tr><td>
-<div>
-<s:property value="search.pageLinksWithDynamicForm" escape="false"/>
-</div>
 </td></tr>
 <tr>
 	<td colspan="3" align="center" class="blueMain">
@@ -145,14 +137,13 @@ function checkUsername(username, userID) {
 			<td>Last Login</td>
 		</tr>
 		</thead>
-	<s:iterator value="searchData" status="stat">
-		<tr style="cursor: pointer; <s:if test="'No'.equals(isActive)">font-style: italic; color: #999999</s:if>"
-			onclick="showUser('<s:property value="[0].get('id')"/>')">
+	<s:iterator value="userList" status="stat">
+		<tr style="cursor: pointer; <s:if test="'No'.equals(isActive)">font-style: italic; color: #999999</s:if>">
 			<td align="right"><s:property value="#stat.index + search.sql.startRow + 1" />.</td>
 			
-			<s:if test="'Yes'.equals([0].get('isGroup'))">
+			<s:if test="group">
 				<td>G</td>
-				<td style="font-weight: bold "><s:property value="[0].get('name')"/></td>
+				<td style="font-weight: bold "><s:property value="name"/></td>
 				<td>N/A</td>
 			</s:if>
 			<s:else>
