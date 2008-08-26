@@ -103,19 +103,14 @@ public class AuditDataFileUpload extends FileUploadActionSupport {
 			
 							dao.save(newCopy);
 						}
-			
-						//hook to calculation
-						// read/update the ContractorAudit and AuditCatData
 						
-						
-						output = "<html><head><title>temp</title></head><body id=\"response\">" + extension + "</body>";
+						output = "<html><body id=\"response\">" + extension + "</body></html>";
 					}
 					else
 					{
 						//there was an error copying the file
 						System.out.println("there was an error copying the file");
 					}
-						
 				}
 
 			} catch (Exception e) {

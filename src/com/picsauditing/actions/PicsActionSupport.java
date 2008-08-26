@@ -157,4 +157,12 @@ public class PicsActionSupport extends ActionSupport {
 		return output;
 	}
 
+	protected int getParameter(String name) {
+		String[] ids = (String[]) ActionContext.getContext().getParameters().get(name);
+
+		if (ids != null && ids.length > 0) {
+			return new Integer(ids[0]).intValue();
+		}
+		return 0;
+	}
 }

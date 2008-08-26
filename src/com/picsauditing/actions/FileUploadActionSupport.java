@@ -3,8 +3,6 @@ package com.picsauditing.actions;
 import java.io.File;
 import java.io.FilenameFilter;
 
-import org.apache.struts2.ServletActionContext;
-
 public abstract class FileUploadActionSupport extends PicsActionSupport 
 {
 	protected File file = null;
@@ -59,11 +57,13 @@ public abstract class FileUploadActionSupport extends PicsActionSupport
 		this.fileFileName = fileFileName;
 	}
 
-	public String getFtpRoot()
-	{
-		return ServletActionContext.getServletContext().getInitParameter("FTP_DIR");
-	}
-
+	/**
+	 * 
+	 * @param f
+	 * @param newPath
+	 * @param deleteFilesThatHaveASimilarNameButDifferentExtension this is for deleting
+	 * @return
+	 */
 	public boolean copyFile( File f , String newPath, boolean deleteFilesThatHaveASimilarNameButDifferentExtension )
 	{
 		//make sure the folder exists
