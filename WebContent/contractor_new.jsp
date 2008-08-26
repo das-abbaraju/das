@@ -1,5 +1,5 @@
 <%@ page language="java" errorPage="exception_handler.jsp" import="com.picsauditing.PICS.*, java.util.*"%>
-<jsp:useBean id="uBean" class="com.picsauditing.access.User" scope ="page"/>
+<jsp:useBean id="uBean" class="com.picsauditing.jpa.entities.User" scope ="page"/>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope ="page"/>
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean" scope ="page"/>
@@ -17,7 +17,7 @@
 		cBean.setFromUploadRequestClientNew(request);
 		cBean.isOKClientCreate();
 		
-		if ( (aBean.getErrorMessages().length()+cBean.getErrorMessages().length()+uBean.getErrorMessages().length()) == 0) {
+		if ( (aBean.getErrorMessages().length()+cBean.getErrorMessages().length()) == 0) {
 			// TODO gracefully rollback saving errors
 			aBean.writeNewToDB();
 			cBean.id = aBean.id;
@@ -194,7 +194,8 @@
             </tr>
             <tr>
               <td class="blueMain" align="right">One-time Activation Fee</td>
-              <td class="blueMain" style="font-weight: bold; font-style: italic;">$99</td>
+              <td class="blueMain" style="font-weight: bold; font-style: italic;">$99<span class="redMain">
+              	* The registration fee is waived if your membership level is $0</span></td>
             </tr>
             <tr>
               <td>&nbsp;</td>
