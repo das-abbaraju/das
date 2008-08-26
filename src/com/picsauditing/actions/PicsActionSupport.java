@@ -21,11 +21,12 @@ import com.picsauditing.util.SpringUtils;
 public class PicsActionSupport extends ActionSupport {
 	protected static String LOGIN_AJAX = "LoginAjax";
 	protected Permissions permissions = null;
-	
-	// replaces the obsolete message in cases where we need to print out a single string to the page
+
+	// replaces the obsolete message in cases where we need to print out a
+	// single string to the page
 	protected String output = null;
-	protected String button = null; 
-	
+	protected String button = null;
+
 	private User user; // Current logged in user
 	private Account account; // Current logged in user's account
 	private List<User> auditorList;
@@ -43,8 +44,8 @@ public class PicsActionSupport extends ActionSupport {
 
 			if (autoLogin != null && autoLogin.length() != 0) {
 				try {
-					com.picsauditing.access.User user = new com.picsauditing.access.User();
-					user.setFromDB(autoLogin);
+					UserDAO userDAO = (UserDAO) SpringUtils.getBean("UserDAO");
+					User user = userDAO.find(Integer.parseInt(autoLogin));
 					permissions.login(user);
 					ActionContext.getContext().getSession().put("permissions", permissions);
 				} catch (Exception e) {
@@ -79,13 +80,14 @@ public class PicsActionSupport extends ActionSupport {
 
 	public User getUser() {
 		if (user == null) {
-			user = getUser( permissions.getUserId() );
+			user = getUser(permissions.getUserId());
 		}
 		return user;
 	}
-	public User getUser( int userId ) {
-			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
-			return dao.find(userId);
+
+	public User getUser(int userId) {
+		UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
+		return dao.find(userId);
 	}
 
 	public Account getAccount() {

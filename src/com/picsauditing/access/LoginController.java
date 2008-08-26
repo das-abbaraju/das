@@ -1,6 +1,7 @@
 package com.picsauditing.access;
 
 import java.sql.ResultSet;
+import java.util.Date;
 import java.util.HashSet;
 
 import javax.servlet.http.Cookie;
@@ -9,8 +10,10 @@ import com.picsauditing.PICS.AccountBean;
 import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.DataBean;
 import com.picsauditing.PICS.PermissionsBean;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.SpringUtils;
 
 /**
  * Populate the permissions object in session with appropriate login credentials
@@ -28,6 +31,7 @@ public class LoginController extends DataBean {
 
 	private Permissions permissions;
 	private PermissionsBean pBean;
+	protected UserDAO userDAO = (UserDAO)SpringUtils.getBean("UserDAO");
 
 	public boolean login(String username, String password, javax.servlet.http.HttpServletRequest request,
 			javax.servlet.http.HttpServletResponse response) throws Exception {
@@ -131,12 +135,12 @@ public class LoginController extends DataBean {
 	}
 
 	private boolean getAccountByUsername(String username) throws Exception {
-		user = new User();
+		Integer id = 0;
 		aBean = new AccountBean();
-		Integer id = user.findID(username);
-		if (id > 0) {
-			user.setFromDB(id.toString());
-			aBean.setFromDB(user.userDO.accountID);
+		User user = userDAO.findName(username);
+		if(user != null) {
+			id = user.getId();
+			aBean.setFromDB(user.getAccount().getIdString());
 		} else {
 			// Wait this could be a contractor trying to login, check the
 			// accounts table
@@ -154,10 +158,9 @@ public class LoginController extends DataBean {
 
 	private boolean getAccountByID(String id) throws Exception {
 		aBean = new AccountBean();
-		user = new User();
-		user.setFromDB(id);
-		if (user.isSet()) {
-			aBean.setFromDB(user.userDO.accountID);
+		user = userDAO.find(Integer.parseInt(id));
+		if (user != null) {
+			aBean.setFromDB(user.getAccount().getIdString());
 		} else {
 			// Wait this could be a contractor trying to login, check the
 			// accounts table
@@ -179,9 +182,10 @@ public class LoginController extends DataBean {
 	private void doLogin(javax.servlet.http.HttpSession session, boolean updateLastLogin) throws Exception {
 		if (isUser) {
 			permissions.login(this.user);
-			this.prevLastLogin = this.user.userDO.lastLogin;
+			this.prevLastLogin = this.user.getLastLogin().toString();
 			if (updateLastLogin) {
-				this.user.updateLastLogin();
+				this.user.setLastLogin(new Date());
+				userDAO.save(user);
 				this.aBean.updateLastLogin();
 			}
 

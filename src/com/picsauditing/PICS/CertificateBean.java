@@ -21,10 +21,11 @@ import com.picsauditing.PICS.redFlagReport.Note;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.access.User;
 import com.picsauditing.dao.CertificateDAO;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.domain.CertificateDO;
 import com.picsauditing.jpa.entities.Certificate;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.Email;
 import com.picsauditing.mail.EmailContractorBean;
 import com.picsauditing.mail.EmailSender;
@@ -169,9 +170,7 @@ public class CertificateBean extends DataBean {
 					+ ",'"
 					+ Utilities.escapeQuotes(namedInsured)
 					+ "','"
-					+ Utilities.escapeQuotes(subrogationWaived)
-					+ "','"
-					+ ext + "')";
+					+ Utilities.escapeQuotes(subrogationWaived) + "','" + ext + "')";
 			SQLStatement.executeUpdate(insertQuery, Statement.RETURN_GENERATED_KEYS);
 			SQLResult = SQLStatement.getGeneratedKeys();
 			if (SQLResult.next()) {
@@ -182,9 +181,10 @@ public class CertificateBean extends DataBean {
 				DBClose();
 				throw new Exception("No id returned after inserting new certificate");
 			}
-			//String updateQuery = "UPDATE contractor_info SET certs=(certs+1) WHERE id=" + contractor_id;
+			// String updateQuery = "UPDATE contractor_info SET certs=(certs+1)
+			// WHERE id=" + contractor_id;
 
-			//SQLStatement.executeUpdate(updateQuery);
+			// SQLStatement.executeUpdate(updateQuery);
 			ret = true;
 		} finally {
 			DBClose();
@@ -199,10 +199,11 @@ public class CertificateBean extends DataBean {
 		try {
 			DBReady();
 			int numDeleted = SQLStatement.executeUpdate(deleteQuery);
-//			if (1 == numDeleted) {
-//				String updateQuery = "UPDATE contractor_info SET certs=(certs-1) WHERE id=" + con_id;
-//				SQLStatement.executeUpdate(updateQuery);
-//			}
+			// if (1 == numDeleted) {
+			// String updateQuery = "UPDATE contractor_info SET certs=(certs-1)
+			// WHERE id=" + con_id;
+			// SQLStatement.executeUpdate(updateQuery);
+			// }
 		} finally {
 			DBClose();
 		}
@@ -231,8 +232,9 @@ public class CertificateBean extends DataBean {
 			SQLResult.close();
 			String deleteQuery = "DELETE FROM certificates WHERE contractor_id=" + con_id;
 			SQLStatement.executeUpdate(deleteQuery);
-//			String updateQuery = "UPDATE contractor_info SET certs=0 WHERE id=" + con_id;
-//			SQLStatement.executeUpdate(updateQuery);
+			// String updateQuery = "UPDATE contractor_info SET certs=0 WHERE
+			// id=" + con_id;
+			// SQLStatement.executeUpdate(updateQuery);
 		} finally {
 			DBClose();
 		}
@@ -271,8 +273,7 @@ public class CertificateBean extends DataBean {
 	}// setFromResultSet
 
 	public void setList(Permissions permissions, SearchFilter searchFilter) throws Exception {
-		String selectQuery = "SELECT certificates.*, accounts.id, accounts.name "
-				+ "FROM certificates, accounts "
+		String selectQuery = "SELECT certificates.*, accounts.id, accounts.name " + "FROM certificates, accounts "
 				+ "WHERE certificates.contractor_id=accounts.id ";
 
 		if (permissions.isOperator())
@@ -380,7 +381,7 @@ public class CertificateBean extends DataBean {
 	public void processEmailForm(Map<String, String> params, Permissions permissions) throws Exception {
 		CertificateDAO certificateDAO = (CertificateDAO) SpringUtils.getBean("CertificateDAO");
 		EmailContractorBean mailer = (EmailContractorBean) SpringUtils.getBean("EmailContractorBean");
-		
+
 		for (String param : params.keySet()) {
 			if (param.startsWith("sendEmail_")) {
 				String certificate_id = param.substring(10);
@@ -401,12 +402,16 @@ public class CertificateBean extends DataBean {
 			DBReady();
 			String updateQuery = "UPDATE certificates SET status='Expired' WHERE expDate<CURDATE();";
 			SQLStatement.executeUpdate(updateQuery);
-//			updateQuery = "UPDATE contractor_info SET hasExpiredCerts='Yes' WHERE id IN "
-//					+ "(SELECT contractor_id FROM certificates WHERE status='Expired')";
-//			SQLStatement.executeUpdate(updateQuery);
-//			updateQuery = "UPDATE contractor_info SET hasExpiredCerts='No' WHERE id NOT IN "
-//					+ "(SELECT contractor_id FROM certificates WHERE status='Expired')";
-//			SQLStatement.executeUpdate(updateQuery);
+			// updateQuery = "UPDATE contractor_info SET hasExpiredCerts='Yes'
+			// WHERE id IN "
+			// + "(SELECT contractor_id FROM certificates WHERE
+			// status='Expired')";
+			// SQLStatement.executeUpdate(updateQuery);
+			// updateQuery = "UPDATE contractor_info SET hasExpiredCerts='No'
+			// WHERE id NOT IN "
+			// + "(SELECT contractor_id FROM certificates WHERE
+			// status='Expired')";
+			// SQLStatement.executeUpdate(updateQuery);
 		} finally {
 			DBClose();
 		}
@@ -537,7 +542,7 @@ public class CertificateBean extends DataBean {
 			aBean.setFromDB(conID);
 			String contactName = aBean.contact;
 			String contractor = aBean.name;
-			
+
 			AccountBean oAccountBean = new AccountBean();
 			oAccountBean.setFromDB(cdo.getOperator_id());
 			String operator = oAccountBean.name;
@@ -551,12 +556,12 @@ public class CertificateBean extends DataBean {
 				message += " for the following reasons:\n\n" + cdo.getReason() + "\n\n";
 
 			if (cdo.getStatus().equals("Rejected")) {
-				User user = new User();
-				user.setFromDB(permissions.getUserIdString());
+				UserDAO userDAO = (UserDAO) SpringUtils.getBean("UserDAO");
+				User user = userDAO.find(permissions.getUserId());
 				message += "Please correct these issues and re-upload your insurance certificate to your "
 						+ "PICS account.\n" + "If you have any specific questions about " + operator
 						+ "'s insurance requirements, " + "please contact " + permissions.getName() + " at "
-						+ user.userDO.email + ".";
+						+ user.getEmail() + ".";
 			} else {
 				message += "Please make sure that you keep up-to-date in PICS by uploading your "
 						+ "insurance certificate when you renew your policy.";
