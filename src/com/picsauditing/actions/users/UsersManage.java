@@ -3,20 +3,14 @@ package com.picsauditing.actions.users;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.struts2.ServletActionContext;
-
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Report;
-import com.picsauditing.search.SelectUser;
 
 public class UsersManage extends PicsActionSupport implements Preparable {
 	private static final long serialVersionUID = -167727120482502678L;
@@ -115,5 +109,10 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	public void prepare() throws Exception {
 		int id = getParameter("user.id");
 		user = userDAO.find(id);
+	}
+
+	public List<OperatorAccount> getFacilities() {
+		facilities = new ArrayList<OperatorAccount>();
+		return facilities;
 	}
 }

@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@page language="java" errorPage="exception_handler.jsp"%>
+<%@page language="java" errorPage="../../exception_handler.jsp"%>
 <html>
 <head>
 <title>Manage Users</title>
@@ -9,7 +9,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script type="text/javascript">
-var currentUser = <s:property value="user.id"/>;
 var accountID = <s:property value="accountId"/>;
 
 var permTypes = new Array();
@@ -26,18 +25,16 @@ function showPermDesc(item) {
 }
 
 function getPage(pars) {
-	pars = 'userID='+currentUser+'&accountID='+accountID+pars;
+	pars = 'accountID='+accountID+pars;
 	$('ajaxstatus').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
 	var myAjax = new Ajax.Updater('editUser', 'user_edit.jsp', {method: 'post', parameters: pars});
 }
 
 function showUser(userID) {
-	currentUser = userID;
 	getPage('');
 }
 
 function addUser(isGroup) {
-	currentUser = 0;
 	pars = '&isGroup='+isGroup;
 	getPage(pars);
 }
@@ -46,6 +43,7 @@ function saveUser() {
 	var pars = '&' + $('user').serialize();
 	getPage(pars);
 }
+
 function deleteUser() {
 	var pars = '&action=deleteUser';
 	getPage(pars);
@@ -55,10 +53,12 @@ function savePermissions() {
 	var pars = '&' + $('permissions').serialize();
 	getPage(pars);
 }
+
 function deletePermission(accessType) {
 	var pars = '&action=deletePermission&accessType=' + accessType;
 	getPage(pars);
 }
+
 function sendWelcomeEmail() {
 	var pars = '&action=sendWelcomeEmail';
 	getPage(pars);
@@ -69,6 +69,7 @@ function saveGroup(action, groupID, childID) {
 	if (action == "removeUserFromGroup") pars = pars + '&childID=' + childID;
 	getPage(pars);
 }
+
 function checkUsername(username, userID) {
 	$('UserSave').writeAttribute('disabled','true');
 	$('username_status').innerHTML = 'checking availability of username...';
@@ -112,7 +113,7 @@ function checkUsername(username, userID) {
 				       list="#{'Yes':'Active', 'No':'Inactive'}"
 				       value="isActive"
 				/>
-			<s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch( 'form1')" />
+			<s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch('form1')" />
 			<s:hidden name="showPage" value="1"/>
 			<s:hidden name="startsWith" value=""/>
 			<s:hidden name="orderBy"  value="name"/>
@@ -138,26 +139,31 @@ function checkUsername(username, userID) {
 		</tr>
 		</thead>
 	<s:iterator value="userList" status="stat">
-		<tr style="cursor: pointer; <s:if test="'No'.equals(isActive)">font-style: italic; color: #999999</s:if>">
-			<td align="right"><s:property value="#stat.index + search.sql.startRow + 1" />.</td>
-			
+		<tr>
+			<td class="right"><s:property value="#stat.index + 1" />.</td>
 			<s:if test="group">
 				<td>G</td>
-				<td style="font-weight: bold "><s:property value="name"/></td>
+				<td style="font-weight: bold"><a href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property value="name"/></a></td>
 				<td>N/A</td>
 			</s:if>
 			<s:else>
 				<td>U</td>
-				<s:if test="%{[0].get('isActive') == 'Yes'}">
-				<td><s:property value="[0].get('name')"/>
-				</td>
+				<s:if test="isActive.toString().equals('Yes')">
+					<td>
+						<a href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property value="name"/>*</a>
+					</td>
 				</s:if>
 				<s:else>
-				<td class="inactive"><s:property value="[0].get('name')"/>*
-				</td>
+					<td class="inactive">
+						<a href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property value="name"/></a>
+					</td>
 				</s:else>
-				<td><s:if test="[0].get('lastLogin') != null"><s:date name="[0].get('lastLogin')" format="MM/dd/yy"/></s:if>
-						<s:else>never</s:else></td>
+				<td>
+					<s:if test="lastLogin != null">
+						<s:date name="lastLogin" format="MM/dd/yy"/>
+					</s:if>
+					<s:else>never</s:else>
+				</td>
 			</s:else>
 		</tr>
 	</s:iterator>
