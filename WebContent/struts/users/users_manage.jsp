@@ -174,8 +174,11 @@ function checkUsername(username, userID) {
 <s:include value="../actionMessages.jsp" />
 
 <div id="ajaxstatus" style="height: 20px;"></div>
-<s:form>
+<s:form action="UserSave">
 	<s:hidden name="user.id" />
+	<s:hidden name="accountId" />
+	<s:hidden name="isGroup" />
+	<s:hidden name="isActive" />
 	<s:hidden name="user.accountID" />
 	<s:hidden name="user.isGroup" />
 <pics:permission perm="EditUsers" type="Edit">
@@ -232,13 +235,15 @@ function checkUsername(username, userID) {
 
 </table>
 
+</s:form>
+
 <s:if test="user.id > 0">
 	<pics:permission perm="SwitchUser">
 		<div><a href="login.jsp?switchUser=<s:property value="user.username"/>">Switch to this User</a></div>
 	</pics:permission>
 	<s:if test="!user.superUser">
 	</s:if>
-
+	
 	<table class="report">
 	<thead>
 		<tr>
@@ -252,7 +257,7 @@ function checkUsername(username, userID) {
 	</thead>
 	<tbody>
 		<s:iterator value="user.ownedPermissions">
-		<pics:permission perm="%{opPerm}"></pics:permission>
+		
 			<tr>
 				<td><s:property value="opPerm.description"/></td>
 				<td></td>
@@ -274,7 +279,7 @@ function checkUsername(username, userID) {
 			</tr>
 		</tfoot>
 	</table>
-
+	
 	<table class="report">
 	<thead>
 		<tr>
@@ -298,14 +303,8 @@ function checkUsername(username, userID) {
 	</s:iterator>
 	</tbody>
 	</table>
-
-
 </s:if>
 
-
-
-
-</s:form>
 
 </td>
 </tr>
