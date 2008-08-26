@@ -467,6 +467,16 @@
 			class="com.picsauditing.actions.users.UserSave">
 			<result>struts/users/users_manage.jsp</result>
 		</action>
+		
+		<action name="UserAccessSave"
+			class="com.picsauditing.actions.users.UserAccessSave">
+			<result>struts/users/users_manage.jsp</result>
+		</action>
 
+		<action name="UserGroupSave"
+			class="com.picsauditing.actions.users.UserGroupSave">
+			<result>struts/users/users_manage.jsp</result>
+		</action>
+		
 	</package>
 </struts>
