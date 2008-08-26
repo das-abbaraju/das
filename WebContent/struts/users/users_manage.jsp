@@ -6,6 +6,7 @@
 <title>Manage Users</title>
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript" src="js/scriptaculous/scriptaculous.js?load=effects"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script type="text/javascript">
 var currentUser = 0;
@@ -172,8 +173,143 @@ function checkUsername(username, userID) {
 	</table>
 </td>
 <td id="editUser" class="blueMain" style="margin: 30px; padding: 30px; vertical-align: top;">
-	<div id="ajaxstatus"></div>
-	Select a user or group from the left to view
+
+<s:include value="../actionMessages.jsp" />
+
+<div id="ajaxstatus" style="height: 20px;"></div>
+<s:form>
+	<s:hidden name="user.id" />
+	<s:hidden name="user.accountID" />
+	<s:hidden name="user.isGroup" />
+<pics:permission perm="EditUsers" type="Edit">
+	<div class="buttons">
+		<button class="positive" type="submit" name="button" value="Save">Save</button>
+	</div>
+</pics:permission>
+<table class="forms">
+<s:if test="user.id > 0">
+	<tr>
+		<th><s:if test="user.group">Group</s:if><s:else>User</s:else> #</th>
+		<td><s:property value="user.id"/></td>
+	</tr>
+	<tr>
+		<th>Date created</th>
+		<td><s:date name="user.dateCreated" format="MM/d/yyyy" />
+			<s:if test="!user.group"><a href="#" onclick="sendWelcomeEmail(); return false;">Send Welcome Email</a></s:if>
+		</td>
+	</tr>
+</s:if>
+	<tr>
+		<th>Display name</th>
+		<td><s:textfield name="user.name" size="30"/></td>
+	</tr>
+<s:if test="!user.group">
+	<tr>
+		<th>Email</th>
+		<td><s:textfield name="user.email" size="40"/></td>
+	</tr>
+	<tr> 
+		<td colspan="2">&nbsp;</td>
+	</tr>
+	<tr>
+		<th>Username</th>
+		<td><s:textfield name="user.username" size="30" onblur="checkUsername(this.value, user.id);"/>
+			<span id="username_status"></span>
+		</td>
+	</tr>
+	<tr>
+		<th>Password</th>
+		<td><s:textfield name="user.password" /></td>
+	</tr>
+	<s:if test="user.id > 0">
+		<tr>
+			<th>Last login</th>
+			<td><s:date name="user.lastLogin" /></td>
+		</tr>
+	</s:if>
+</s:if>
+	<tr>
+		<th>Active</th>
+		<td><s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio> </td>
+	</tr>
+
+</table>
+
+<s:if test="user.id > 0">
+	<pics:permission perm="SwitchUser">
+		<div><a href="login.jsp?switchUser=<s:property value="user.username"/>">Switch to this User</a></div>
+	</pics:permission>
+	<s:if test="!user.superUser">
+	</s:if>
+
+	<table class="report">
+	<thead>
+		<tr>
+			<th>Permission</th>
+			<th>Read</th>
+			<th>Edit</th>
+			<th>Delete</th>
+			<th>Grant</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		<s:iterator value="user.ownedPermissions">
+		<pics:permission perm="%{opPerm}"></pics:permission>
+			<tr>
+				<td><s:property value="opPerm.description"/></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</s:iterator>
+	</tbody>
+	<tfoot>
+			<tr>
+				<td>f</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</tfoot>
+	</table>
+
+	<table class="report">
+	<thead>
+		<tr>
+			<th colspan="2">Member of Group(s):</th>
+		</tr>
+	</thead>
+	<tbody>
+	<s:iterator value="user.groups">
+		<tr>
+			<td><a href="#" onclick="showUser(<s:property value="group.id"/>); return false;"><s:property value="group.name"/></a></td>
+			<td>&nbsp; <a href="#" onclick="saveGroup('removeGroup', <s:property value="group.id"/>); return false;">remove</a></td>
+		</tr>
+	</s:iterator>
+	<s:iterator value="allGroups">
+		<tr>
+			<td><a href="#" style="font-style: italic; color: red;" 
+				onclick="showUser(<s:property value="id"/>); return false;"><s:property value="name"/></a></td>
+			<td>&nbsp; <a href="#" style="font-style: italic; color: red;" 
+				onclick="saveGroup('addGroup', <s:property value="id"/>); return false;">add</a></td>
+		</tr>
+	</s:iterator>
+	</tbody>
+	</table>
+
+
+</s:if>
+
+
+
+
+</s:form>
+
 </td>
 </tr>
 </table>

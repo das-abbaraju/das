@@ -1,6 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -97,6 +96,11 @@ public class User implements Comparable<User> {
 	@Enumerated(EnumType.STRING)
 	public YesNo getIsGroup() {
 		return isGroup;
+	}
+	
+	@Transient
+	public boolean isGroup() {
+		return YesNo.Yes == isGroup;
 	}
 
 	public void setIsGroup(YesNo isGroup) {

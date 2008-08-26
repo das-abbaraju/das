@@ -6,20 +6,26 @@ import java.util.List;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
 
+import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectUser;
 
-public class UsersManage extends PicsActionSupport {
+public class UsersManage extends PicsActionSupport implements Preparable {
+	private static final long serialVersionUID = -167727120482502678L;
+	
 	protected int accountId = 0;
+	protected User user;
+
 	protected String filter = null;
 	protected List<OperatorAccount> facilities = null;
-	private OperatorAccountDAO operatorDao;
 	protected Report search = null;
 	protected List<BasicDynaBean> searchData = null;
 
@@ -30,8 +36,12 @@ public class UsersManage extends PicsActionSupport {
 
 	protected boolean hasAllOperators = false;
 
-	public UsersManage(OperatorAccountDAO operatorDao) {
+	protected OperatorAccountDAO operatorDao;
+	protected UserDAO userDAO;
+
+	public UsersManage(OperatorAccountDAO operatorDao, UserDAO userDAO) {
 		this.operatorDao = operatorDao;
+		this.userDAO = userDAO;
 	}
 
 	public String execute() throws Exception {
@@ -158,4 +168,17 @@ public class UsersManage extends PicsActionSupport {
 		return filtered;
 	}
 
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	@Override
+	public void prepare() throws Exception {
+		int id = getParameter("user.id");
+		user = userDAO.find(id);
+	}
 }

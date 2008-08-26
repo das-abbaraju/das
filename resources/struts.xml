@@ -33,16 +33,6 @@
 			<result>rules.jsp</result>
 		</action>
 
-		<action name="UsersManage"
-			class="com.picsauditing.actions.users.UsersManage">
-			<result>struts/users/users_manage.jsp</result>
-		</action>
-
-		<action name="UserProfileAjax"
-			class="com.picsauditing.actions.users.ProfileEdit">
-			<result>struts/widgets/user_profile.jsp</result>
-		</action>
-
 		<action name="ReportAuditList"
 			class="com.picsauditing.actions.report.ReportContractorAudits">
 			<result>struts/reports/auditList.jsp</result>
@@ -263,11 +253,6 @@
 			<result>struts/reports/newContractor_operator.jsp</result>
 		</action>
 
-		<action name="ProfileEdit"
-			class="com.picsauditing.actions.users.ProfileEdit">
-			<result>struts/users/profile_edit.jsp</result>
-		</action>
-
 		<action name="ContractorOperatorLimited"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<result>
@@ -463,9 +448,20 @@
 			<result>struts/users/users_by_opperm.jsp</result>
 		</action>
 
-		<action name="UserEditAjax.action"
-			class="com.picsauditing.actions.users.UserEdit">
-			<result>struts/users/user_edit.jsp</result>
+		<action name="UserProfileAjax"
+			class="com.picsauditing.actions.users.ProfileEdit">
+			<result>struts/widgets/user_profile.jsp</result>
 		</action>
+
+		<action name="ProfileEdit"
+			class="com.picsauditing.actions.users.ProfileEdit">
+			<result>struts/users/profile_edit.jsp</result>
+		</action>
+
+		<action name="UsersManage"
+			class="com.picsauditing.actions.users.UsersManage">
+			<result>struts/users/users_manage.jsp</result>
+		</action>
+
 	</package>
 </struts>

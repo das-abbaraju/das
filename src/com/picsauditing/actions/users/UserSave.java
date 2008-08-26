@@ -2,33 +2,32 @@ package com.picsauditing.actions.users;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.User;
 
-public class UserEdit extends PicsActionSupport {
-	protected User user;
-	private UserDAO userDAO;
-	
+public class UserSave extends UsersManage {
 	private static final int MIN_PASSWORD_LENGTH = 5; // minimum required length of a password
-
-	public UserEdit(UserDAO userDAO) {
-		this.userDAO = userDAO;
+	
+	public UserSave(OperatorAccountDAO operatorDao, UserDAO userDAO) {
+		super(operatorDao, userDAO);
 	}
 	
-	public String execute() throws Exception {
-		loadPermissions();
-		permissions.tryPermission(OpPerms.EditUsers);
+	public String execute() {
+		try {
+			super.execute();
+		} catch (Exception e) {}
+		
 		if ("Save".equals(button)) {
+			this.addActionMessage("Users must relogin for changes to take effect");
 			if (!permissions.hasPermission(OpPerms.AllOperators)) {
 				user.setAccount(new Account());
 				user.getAccount().setId(permissions.getAccountId());
 			}
 		}
+		
 		return SUCCESS;
 	}
-	
 	private void deleteUser() throws Exception {
 		permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
 		addActionMessage("Successfully removed user: " + user.getUsername());
@@ -55,12 +54,5 @@ public class UserEdit extends PicsActionSupport {
 
 		return (this.getActionErrors().size() > 0);
 	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
+	
 }
