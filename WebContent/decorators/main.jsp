@@ -4,6 +4,7 @@
 <%@page import="com.picsauditing.access.PicsMenu"%>
 <%@page import="com.picsauditing.access.OpPerms"%>
 <%@page import="java.net.URLEncoder"%>
+<%@page import="java.util.Date"%>
 <%
 	MenuComponent menu = PicsMenu.getMenu(permissions);
 %>
@@ -198,5 +199,17 @@ Copyright &copy; 2008
 </script>
 <!-- END HumanTag Monitor. DO NOT MOVE! MUST BE PLACED JUST BEFORE THE /BODY TAG -->
 <%@ include file="../includes/statcounter.jsp"%>
+
+<% 
+	Date startDate = (Date) request.getAttribute("pics_request_start_time"); 
+	if( startDate != null )
+	{
+		long totalTime = System.currentTimeMillis() - startDate.getTime();
+%>
+		<p class="pageStats">Page generated in: <%= ((float) totalTime )/ ((float) 1000) %> seconds.</p>
+<%		
+	} 
+%>
+
 </body>
 </html>
