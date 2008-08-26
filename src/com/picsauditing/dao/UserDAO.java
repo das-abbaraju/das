@@ -93,7 +93,7 @@ public class UserDAO extends PicsDAO {
 
 	public List<User> findRecentLoggedOperators() {
 		Query query = em.createQuery("SELECT u FROM User u WHERE u.account "
-				+ "IN (SELECT o FROM OperatorAccount o)  ORDER BY u.lastLogin DESC");
+				+ "IN (SELECT o FROM OperatorAccount o) ORDER BY u.lastLogin DESC");
 		query.setMaxResults(10);
 		return query.getResultList();
 	}
@@ -107,7 +107,7 @@ public class UserDAO extends PicsDAO {
 			where += " AND isActive = '" + isActive + "' ";
 		
 		Query query = em.createQuery("SELECT u FROM User u WHERE account.id = ? " + where +
-				" ORDER BY isGroup DESC, name");
+				" ORDER BY isGroup, name");
 
 		query.setParameter(1, id);
 		return query.getResultList();
