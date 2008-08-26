@@ -116,11 +116,12 @@ public class LoginController extends DataBean {
 		if (!getAccountByUsername(username))
 			return "No account exists with that username";
 
+		user = userDAO.findName(username);
 		if (isUser) {
-			if (!user.getPassword().equals(password))
+			if (user != null && !user.getPassword().equals(password))
 				return "The password is not correct";
-
-			if (user.getIsActive() != YesNo.Yes)
+				
+			if (user != null && user.getIsActive() != YesNo.Yes)
 				return "This user does not have permission to login.<br>Please contact PICS to activate your account.";
 		} else {
 			if (!aBean.password.equals(password))
@@ -137,7 +138,7 @@ public class LoginController extends DataBean {
 	private boolean getAccountByUsername(String username) throws Exception {
 		Integer id = 0;
 		aBean = new AccountBean();
-		User user = userDAO.findName(username);
+		user = userDAO.findName(username);
 		if(user != null) {
 			id = user.getId();
 			aBean.setFromDB(user.getAccount().getIdString());
