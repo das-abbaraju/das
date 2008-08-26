@@ -17,7 +17,7 @@ public class MetricsFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 
 		request.setAttribute("pics_request_start_time", new Date());
-		System.out.println("in our metrics filter");
+		
 		chain.doFilter(request, response);
 	}
 	
