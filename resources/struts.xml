@@ -463,5 +463,9 @@
 			<result>struts/users/users_by_opperm.jsp</result>
 		</action>
 
+		<action name="UserEditAjax.action"
+			class="com.picsauditing.actions.users.UserEdit">
+			<result>struts/users/user_edit.jsp</result>
+		</action>
 	</package>
 </struts>

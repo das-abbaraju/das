@@ -35,6 +35,8 @@ public class User implements Comparable<User> {
 	public static int GROUP_ADMIN = 10;
 	public static int GROUP_AUDITOR = 11;
 	private static final int GROUP_SU = 9; // Group that automatically has ALL grant privileges
+	
+	@Transient
 	public boolean isSuperUser() {
 		return (id == GROUP_SU);
 	}

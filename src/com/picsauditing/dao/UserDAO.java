@@ -24,6 +24,10 @@ public class UserDAO extends PicsDAO {
 
 	public void remove(int id) {
 		User row = find(id);
+		remove(row);
+	}
+
+	public void remove(User row) {
 		if (row != null) {
 			em.remove(row);
 		}
