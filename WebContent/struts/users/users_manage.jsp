@@ -252,7 +252,6 @@ function checkUsername(username, userID) {
 			<th>Edit</th>
 			<th>Delete</th>
 			<th>Grant</th>
-			<th></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -264,14 +263,12 @@ function checkUsername(username, userID) {
 				<td></td>
 				<td></td>
 				<td></td>
-				<td></td>
 			</tr>
 		</s:iterator>
 	</tbody>
 	<tfoot>
 			<tr>
 				<td>f</td>
-				<td></td>
 				<td></td>
 				<td></td>
 				<td></td>
