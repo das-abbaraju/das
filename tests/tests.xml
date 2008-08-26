@@ -14,8 +14,10 @@
 	<bean id="AppPropertyDAO" class="com.picsauditing.dao.AppPropertyDAO" scope="prototype"/>
 	<bean id="AuditBuilder" class="com.picsauditing.PICS.AuditBuilder" scope="prototype"/>
 	<bean id="AuditDataDAO" class="com.picsauditing.dao.AuditDataDAO" scope="prototype"/>
-	<bean id="AuditCategoryDataDAO" class="com.picsauditing.dao.AuditCategoryDataDAO" scope="prototype"/>
 	<bean id="AuditCategoryDAO" class="com.picsauditing.dao.AuditCategoryDAO" scope="prototype"/>
+	<bean id="AuditSubCategoryDAO" class="com.picsauditing.dao.AuditSubCategoryDAO" scope="prototype"/>
+	<bean id="AuditCategoryDataDAO" class="com.picsauditing.dao.AuditCategoryDataDAO" scope="prototype"/>
+	<bean id="AuditCatOperatorDAO" class="com.picsauditing.dao.AuditCatOperatorDAO" scope="prototype"/>
 	<bean id="AuditOperatorDAO" class="com.picsauditing.dao.AuditOperatorDAO" scope="prototype"/>
 	<bean id="AuditQuestionDAO" class="com.picsauditing.dao.AuditQuestionDAO" scope="prototype"/>
 	<bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO" scope="prototype"/>
@@ -23,21 +25,22 @@
 	<bean id="ContractorAccountDAO" class="com.picsauditing.dao.ContractorAccountDAO" scope="prototype"/>
 	<bean id="ContractorOperatorDAO" class="com.picsauditing.dao.ContractorOperatorDAO" scope="prototype"/>
 	<bean id="ContractorOperatorFlagDAO" class="com.picsauditing.dao.ContractorOperatorFlagDAO" scope="prototype"/>
+	<bean id="DesktopMatrixDAO" class="com.picsauditing.dao.DesktopMatrixDAO" scope="prototype"/>
 	<bean id="OperatorAccountDAO" class="com.picsauditing.dao.OperatorAccountDAO" scope="prototype"/>
 	<bean id="OshaLogDAO" class="com.picsauditing.dao.OshaLogDAO" scope="prototype"/>
 	<bean id="RulesRowDAO" class="com.picsauditing.dao.RulesRowDAO" scope="prototype"/>
 	<bean id="UserDAO" class="com.picsauditing.dao.UserDAO" scope="prototype"/>
+	<bean id="UserAccessDAO" class="com.picsauditing.dao.UserAccessDAO" scope="prototype"/>
 	<bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO" scope="prototype"/>
 
 	<bean id="EmailAuditBean" class="com.picsauditing.mail.EmailAuditBean" scope="prototype"/>
 	<bean id="EmailContractorBean" class="com.picsauditing.mail.EmailContractorBean" scope="prototype"/>
 	<bean id="EmailUserBean" class="com.picsauditing.mail.EmailUserBean" scope="prototype"/>
 	<bean id="FlagCalculator2" class="com.picsauditing.PICS.FlagCalculator2" scope="prototype"/>
-
-	<bean id="SelectAccount" class="com.picsauditing.search.SelectAccount" scope="prototype"/>
-	<bean id="Report" class="com.picsauditing.search.Report" scope="prototype"/>
-	<bean class="com.picsauditing.PICS.Facilities"/>
+	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
+	<bean id="AuditPercentCalculator" class="com.picsauditing.PICS.AuditPercentCalculator" scope="prototype"/>
 	<bean id="CertificateDAO" class="com.picsauditing.dao.CertificateDAO" scope="prototype"/>
+
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
 	<!--  JPA implementation -->
