@@ -27,7 +27,7 @@ public class OpenAuditsMailer extends PicsActionSupport {
 	}
 
 	private int process(int nextID) {
-		String where = "auditType.hasRequirements = 1 AND auditType.auditTypeID > 1 AND auditStatus = 'Submitted' AND auditID > "
+		String where = "contractorAccount.active = 'Y' AND auditType.hasRequirements = 1 AND auditType.auditTypeID > 1 AND auditStatus = 'Submitted' AND auditID > "
 				+ nextID;
 		List<ContractorAudit> list = contractorAuditDAO.findWhere(100, where, "auditID");
 
