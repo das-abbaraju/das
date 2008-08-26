@@ -256,7 +256,6 @@ function checkUsername(username, userID) {
 	</thead>
 	<tbody>
 		<s:iterator value="user.ownedPermissions">
-		
 			<tr>
 				<td><s:property value="opPerm.description"/></td>
 				<td></td>
@@ -268,11 +267,12 @@ function checkUsername(username, userID) {
 	</tbody>
 	<tfoot>
 			<tr>
-				<td>f</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
+				<td colspan="6">
+					<div class="buttons">
+						<button name="button" value="Add Permission">Add Permission</button>
+						<s:select list="grantablePermissions" listValue="description" name="opPerm" />
+					</div>
+				</td>
 			</tr>
 		</tfoot>
 	</table>

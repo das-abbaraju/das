@@ -10,6 +10,8 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserAccess;
+import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.search.Report;
 
 public class UsersManage extends PicsActionSupport implements Preparable {
@@ -103,6 +105,53 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	
 	public List<User> getUserList() {
 		return userList;
+	}
+	
+	public List<OpPerms> getGrantablePermissions() {
+		List<OpPerms> list = new ArrayList<OpPerms>();
+		for(UserAccess perm : permissions.getPermissions()) {
+			// I can grant these permissions
+			if (perm.getGrantFlag() == true)
+				list.add(perm.getOpPerm());
+		}
+		for(UserAccess perm : user.getOwnedPermissions()) {
+			// but these permissions, have already been granted
+			list.remove(perm.getOpPerm());
+		}
+		return list;
+	}
+	
+	public List<User> getAddableGroups() {
+		List<User> list = new ArrayList<User>();
+		
+		List<User> activeGroups = userDAO.findByAccountID(accountId, "Yes", "Yes");
+		for(User group : activeGroups) {
+			// Add the groups I have access to
+			if (permissions.hasPermission(OpPerms.AllOperators)
+					|| permissions.getGroups().contains(group.getId()))
+				list.add(group);
+		}
+		for(UserGroup userGroup : user.getGroups()) {
+			// but these groups, have already been added
+			list.remove(userGroup.getGroup());
+		}
+		return list;
+	}
+	
+	public List<User> getAddableMembers() {
+		List<User> list = new ArrayList<User>();
+		if (permissions.hasPermission(OpPerms.AllOperators)
+				|| permissions.getGroups().contains(user.getId())) {
+			// I'm an admin or I'm a member of this group
+			
+			list = userDAO.findByAccountID(accountId, "Yes", "No");
+			
+			for(UserGroup userGroup : user.getMembers()) {
+				// but users, already in the group
+				list.remove(userGroup.getUser());
+			}
+		}
+		return list;
 	}
 
 	@Override
