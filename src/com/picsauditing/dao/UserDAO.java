@@ -61,22 +61,23 @@ public class UserDAO extends PicsDAO {
 		try {
 			User user = findName(uName);
 			int id = user.getId();
-			if (id == 0 || id == uID) {
-				AccountDAO accountDAO = (AccountDAO)SpringUtils.getBean("AccountDAO");
+			if (id == uID || id != 0)
+				return true;
+			else {
+				AccountDAO accountDAO = (AccountDAO) SpringUtils.getBean("AccountDAO");
 				id = accountDAO.findByID(uName);
-				if (id == 0 || id == uID)
+				if (id != 0 || id == uID)
 					return true;
 			}
 		} catch (Exception e) {
 		}
-
 		return false;
 	}
 
 	public boolean usernameExists(String username) {
 		return checkUserName(username, -1);
 	}
-	
+
 	public User findName(String userName) {
 		if (userName == null)
 			userName = "";
@@ -96,7 +97,7 @@ public class UserDAO extends PicsDAO {
 		query.setMaxResults(10);
 		return query.getResultList();
 	}
-	
+
 	public List<User> findByAccountID(int id) {
 		Query query = em.createQuery("SELECT u FROM User u WHERE account.id = ?");
 		query.setParameter(1, id);

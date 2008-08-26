@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -18,18 +17,20 @@ import org.apache.commons.io.FilenameUtils;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.access.User;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 
 public class ContractorBean extends DataBean {
-	//This is so contractors can be removed from the activation report without actually entering a valid login date.
-	//It's a hack, but what John wants doesn't make sense, and hopefully this is temporary BJ 2-15-05
+	// This is so contractors can be removed from the activation report without
+	// actually entering a valid login date.
+	// It's a hack, but what John wants doesn't make sense, and hopefully this
+	// is temporary BJ 2-15-05
 	public static final String REMOVE_FROM_REPORT = "1/1/50";
-	public static final String[] RISK_LEVEL_ARRAY = {"Low","Med","High"};
-	public static final String[] RISK_LEVEL_VALUES_ARRAY = {"1","2","3"};
+	public static final String[] RISK_LEVEL_ARRAY = { "Low", "Med", "High" };
+	public static final String[] RISK_LEVEL_VALUES_ARRAY = { "1", "2", "3" };
 
 	public String id = "";
 	public String taxID = "";
@@ -52,9 +53,10 @@ public class ContractorBean extends DataBean {
 	public String isExempt = "No";
 	public int facilitiesCount = 0;
 	public String isOnlyCerts = "No";
-	public String setTrades = ""; 
+	public String setTrades = "";
 
-	public String accountDate = ""; // The first time a user logs into this Contractor account
+	public String accountDate = ""; // The first time a user logs into this
+									// Contractor account
 	public String membershipDate = "";
 	public String lastPayment = "";
 	public String lastPaymentAmount = "";
@@ -63,10 +65,11 @@ public class ContractorBean extends DataBean {
 	public String lastAnnualUpdateEmailDate = "";
 	public String riskLevel = "2";
 	public int annualUpdateEmails = 0;
-	// questionID=894 
-	// 22.1.1  	Does your company have employees who are covered under DOT OQ requirements?
+	// questionID=894
+	// 22.1.1 Does your company have employees who are covered under DOT OQ
+	// requirements?
 	public String oqEmployees = "";
-	
+
 	private HashMap<Integer, ContractorAudit> audits;
 
 	int num_of_trades = 0;
@@ -82,135 +85,194 @@ public class ContractorBean extends DataBean {
 	public String billingEmail = "";
 	public String payingFacilities = "";
 	public String newBillingAmount = "";
-	
+
 	private User primaryUser = new User();
 
 	private ArrayList<OperatorBean> facilities;
 	public ArrayList<String> generalContractors = new ArrayList<String>();
 	ArrayList<String> newGeneralContractors = null;
 	ArrayList<String> blockedDates = new ArrayList<String>();
-	
-	public void setId(String s) {id = s;}//setId
+
+	public void setId(String s) {
+		id = s;
+	}// setId
+
 	private int getIdInteger() {
 		int id = 0;
 		try {
 			id = Integer.parseInt(this.id);
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 		return id;
 	}
-	public void setMain_trade(String s) {main_trade = s;}//setMain_trade
+
+	public void setMain_trade(String s) {
+		main_trade = s;
+	}// setMain_trade
+
 	public void setTrades(String[] s) {
-		if (s==null) {
+		if (s == null) {
 			num_of_trades = 0;
 			trades = "0;";
 			return;
-		}//if
+		}// if
 		num_of_trades = s.length;
 		trades = String.valueOf(num_of_trades) + ";";
 		for (int i = 1; i <= num_of_trades; i++) {
-			trades += (s[i-1] + ";");
-		}//for
-	}//setTrades
+			trades += (s[i - 1] + ";");
+		}// for
+	}// setTrades
+
 	public void setSubTrades(String[] s) {
-		if (s==null) {
+		if (s == null) {
 			num_of_subTrades = 0;
 			subTrades = "0;";
 			return;
-		}//if
+		}// if
 		num_of_subTrades = s.length;
 		subTrades = String.valueOf(num_of_subTrades) + ";";
 		for (int i = 1; i <= num_of_subTrades; i++) {
-			subTrades += (s[i-1] + ";");
-		}//for
-	}//setSubTrades
+			subTrades += (s[i - 1] + ";");
+		}// for
+	}// setSubTrades
 
 	public void setGeneralContractorsFromStringArray(String[] s) {
 		newGeneralContractors = new ArrayList<String>();
 		if (s != null) {
 			int num = s.length;
 			for (int i = 1; i <= num; i++) {
-				newGeneralContractors.add(s[i-1]);
-			}//for
-		}//if
+				newGeneralContractors.add(s[i - 1]);
+			}// for
+		}// if
 		generalContractors = newGeneralContractors;
 	}
-	
+
 	public ArrayList<OperatorBean> getFacilities() throws Exception {
 		if (this.facilities == null) {
 			OperatorBean oBean = new OperatorBean();
-			facilities = oBean.getListByWhere("id IN (SELECT genID FROM generalContractors WHERE subID = '"+Utilities.intToDB(this.id)+"')");
+			facilities = oBean.getListByWhere("id IN (SELECT genID FROM generalContractors WHERE subID = '"
+					+ Utilities.intToDB(this.id) + "')");
 		}
 		return facilities;
 	}
+
 	public void setFacilities(ArrayList<String> newFacilities) throws Exception {
 		String sqlList = "0";
-		for(String opID : newFacilities)
+		for (String opID : newFacilities)
 			sqlList += "," + Utilities.intToDB(opID);
 		facilities = new ArrayList<OperatorBean>();
 		OperatorBean oBean = new OperatorBean();
-		facilities = oBean.getListByWhere("id IN ("+sqlList+")");
+		facilities = oBean.getListByWhere("id IN (" + sqlList + ")");
 	}
-	
+
 	public String getLuhnId() {
 		return com.picsauditing.util.Luhn.addCheckDigit(id);
 	}
 
-	public void setTradeString(String s) {trades = s;}//setTradeString
-	public void setSubTradeString(String s) {subTrades = s;}//setSubTradeString
-	public void setLogo_file(String s) {logo_file = s;}//setLogo_file
-	public void setBrochure_file(String s) {brochure_file = s;}//setBrochure_file
+	public void setTradeString(String s) {
+		trades = s;
+	}// setTradeString
+
+	public void setSubTradeString(String s) {
+		subTrades = s;
+	}// setSubTradeString
+
+	public void setLogo_file(String s) {
+		logo_file = s;
+	}// setLogo_file
+
+	public void setBrochure_file(String s) {
+		brochure_file = s;
+	}// setBrochure_file
+
 	public void setDescription(String s) {
-		if (s.length() != description.length() || !s.equals(description)){
+		if (s.length() != description.length() || !s.equals(description)) {
 			description = s;
 			isDescriptionChanged = true;
 		}
 	}
-	public void setAccountDate(String s) {accountDate = s;}//setAccountDate
-	public void setLastPayment(String s) {lastPayment = s;}//setLastPayment
-	public void setNotes(String s) {notes = s;}//setNotes
-	public void setMustPay(String s) {mustPay = s;}//setMustPay
-	public void setPaymentExpires(String s) {paymentExpires = s;}//setPaymentExpires
-	public String getId() {return id;}//getId
-	public String getMain_trade() {return main_trade;}//getMain_trade
+
+	public void setAccountDate(String s) {
+		accountDate = s;
+	}// setAccountDate
+
+	public void setLastPayment(String s) {
+		lastPayment = s;
+	}// setLastPayment
+
+	public void setNotes(String s) {
+		notes = s;
+	}// setNotes
+
+	public void setMustPay(String s) {
+		mustPay = s;
+	}// setMustPay
+
+	public void setPaymentExpires(String s) {
+		paymentExpires = s;
+	}// setPaymentExpires
+
+	public String getId() {
+		return id;
+	}// getId
+
+	public String getMain_trade() {
+		return main_trade;
+	}// getMain_trade
+
 	public String[] getTrades() {
 		String[] temp = new String[num_of_trades];
 		int i1 = 0;
 		int i2 = trades.indexOf(";") + 1;
 		for (int i = 1; i <= num_of_trades; i++) {
 			i1 = trades.indexOf(";", i2);
-			temp[i-1] = trades.substring(i2, i1);
-			i2 = i1+1;
-		}//for
+			temp[i - 1] = trades.substring(i2, i1);
+			i2 = i1 + 1;
+		}// for
 		return temp;
-	}//getTrades
+	}// getTrades
+
 	public String[] getSubTrades() {
 		String[] temp = new String[num_of_subTrades];
 		int i1 = 0;
 		int i2 = trades.indexOf(";") + 1;
 		for (int i = 1; i <= num_of_subTrades; i++) {
 			i1 = subTrades.indexOf(";", i2);
-			temp[i-1] = subTrades.substring(i2, i1);
-			i2 = i1+1;
-		}//for
+			temp[i - 1] = subTrades.substring(i2, i1);
+			i2 = i1 + 1;
+		}// for
 		return temp;
-	}//getSubTrades
+	}// getSubTrades
+
 	public String[] getGeneralContractorsArray() {
-		return (String[])generalContractors.toArray(new String[0]);
-	}//getGeneralContractorsArray
+		return (String[]) generalContractors.toArray(new String[0]);
+	}// getGeneralContractorsArray
+
 	public String getDisplayLogo_file() {
-		if ("No".equals(logo_file))	return "logo_default.gif";
-		else	return logo_file;
-	}//getDisplayLogo_file
-	public String getDescriptionHTML() {return Utilities.escapeNewLines(description);}//getDescriptionHTML
+		if ("No".equals(logo_file))
+			return "logo_default.gif";
+		else
+			return logo_file;
+	}// getDisplayLogo_file
+
+	public String getDescriptionHTML() {
+		return Utilities.escapeNewLines(description);
+	}// getDescriptionHTML
+
 	public String getAccountDate() {
 		if (REMOVE_FROM_REPORT.equals(accountDate))
 			return "";
 		else
-			return accountDate;}//getAccountDate
-	public String getNotesHTML() {return Utilities.escapeHTML(notes);}//getNotesHTM
+			return accountDate;
+	}// getAccountDate
+
+	public String getNotesHTML() {
+		return Utilities.escapeHTML(notes);
+	}// getNotesHTM
+
 	public String getRiskLevelShow() {
 		try {
-			return RISK_LEVEL_ARRAY[Integer.parseInt(riskLevel)-1];
+			return RISK_LEVEL_ARRAY[Integer.parseInt(riskLevel) - 1];
 		} catch (Exception e) {
 			return "Unknown";
 		}
@@ -218,41 +280,58 @@ public class ContractorBean extends DataBean {
 
 	public boolean isCertRequired() throws Exception {
 		setFacilitiesFromDB();
-		if (0==facilitiesCount)
+		if (0 == facilitiesCount)
 			return false;
 		ListIterator<String> li = generalContractors.listIterator();
 		OperatorBean tempOBean = new OperatorBean();
 		while (li.hasNext()) {
-			String opID = (String)li.next();
+			String opID = (String) li.next();
 			tempOBean.setFromDB(opID);
 			if (tempOBean.canSeeInsurance())
-				return true; 
-		}//while
+				return true;
+		}// while
 		return false;
 	}
 
 	public String getTradesList() {
-		return trades.substring(trades.indexOf(";")+1,trades.length()-1).replaceAll(";",", ");
+		return trades.substring(trades.indexOf(";") + 1, trades.length() - 1).replaceAll(";", ", ");
 	}
-	
+
 	public String getSubTradesList() {
-		if (subTrades.substring(0,1).equals("0"))
+		if (subTrades.substring(0, 1).equals("0"))
 			return "";
-		return subTrades.substring(subTrades.indexOf(";")+1,subTrades.length()-1).replaceAll(";",", ");
+		return subTrades.substring(subTrades.indexOf(";") + 1, subTrades.length() - 1).replaceAll(";", ", ");
 	}
-	
-	public int getNumOfTrades() {return num_of_trades;}//getNumOfTrades
-	public int getNumOfSubTrades() {return num_of_subTrades;}//getNumOfSubTrades
-	public boolean isTrade(String s) {return (trades.indexOf(s) != -1);}//isTrade
-	public boolean isSubTrade(String s) {return (subTrades.indexOf(s) != -1);}//isSubTrade
+
+	public int getNumOfTrades() {
+		return num_of_trades;
+	}// getNumOfTrades
+
+	public int getNumOfSubTrades() {
+		return num_of_subTrades;
+	}// getNumOfSubTrades
+
+	public boolean isTrade(String s) {
+		return (trades.indexOf(s) != -1);
+	}// isTrade
+
+	public boolean isSubTrade(String s) {
+		return (subTrades.indexOf(s) != -1);
+	}// isSubTrade
+
 	public String getIsLogoFile() {
-		if ("No".equals(logo_file))	return "";
-		else	return "<font color=red>*</font>";
-	}//getIsLogoFile
+		if ("No".equals(logo_file))
+			return "";
+		else
+			return "<font color=red>*</font>";
+	}// getIsLogoFile
+
 	public String getIsBrochureFile() {
-		if ("No".equals(brochure_file))	return "";
-		else	return "<font color=red>*</font>";
-	}//getIsBrochureFile
+		if ("No".equals(brochure_file))
+			return "";
+		else
+			return "<font color=red>*</font>";
+	}// getIsBrochureFile
 
 	public void setFromDB(String conID) throws Exception {
 		id = conID;
@@ -260,17 +339,17 @@ public class ContractorBean extends DataBean {
 	}
 
 	public void setFromDB() throws Exception {
-		try{
+		try {
 			if ((null == id) || ("".equals(id)))
 				throw new Exception("can't set contractor info from DB because id is not set");
 			DBReady();
-			String Query = "SELECT * FROM contractor_info WHERE id="+id;
+			String Query = "SELECT * FROM contractor_info WHERE id=" + id;
 			ResultSet SQLResult = SQLStatement.executeQuery(Query);
 			if (SQLResult.next())
 				setFromResultSet(SQLResult);
 			SQLResult.close();
 			setFacilitiesFromDB();
-		}finally{
+		} finally {
 			DBClose();
 		}
 	}
@@ -279,9 +358,9 @@ public class ContractorBean extends DataBean {
 		// set the sub/generalContractors from the generalContractors table
 		if ((null == id) || ("".equals(id)))
 			throw new Exception("can't set contractor info from DB because id is not set");
-		try{
+		try {
 			DBReady();
-			String selectQuery = "SELECT genID FROM generalContractors WHERE subID='"+id+"';";
+			String selectQuery = "SELECT genID FROM generalContractors WHERE subID='" + id + "';";
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
 			facilitiesCount = 0;
 			generalContractors.clear();
@@ -290,7 +369,7 @@ public class ContractorBean extends DataBean {
 				facilitiesCount++;
 			}
 			SQLResult.close();
-		}finally{
+		} finally {
 			DBClose();
 		}
 	}
@@ -303,10 +382,10 @@ public class ContractorBean extends DataBean {
 		subTrades = SQLResult.getString("subTrades");
 		logo_file = SQLResult.getString("logo_file");
 		brochure_file = SQLResult.getString("brochure_file");
-		//fix ms word apostrophes changed to ?
+		// fix ms word apostrophes changed to ?
 		description = SQLResult.getString("description");
-		description = description.replace('?','\'');
-		//}
+		description = description.replace('?', '\'');
+		// }
 
 		notes = SQLResult.getString("notes");
 		adminNotes = SQLResult.getString("adminNotes");
@@ -321,16 +400,16 @@ public class ContractorBean extends DataBean {
 		membershipDate = DateBean.toShowFormat(SQLResult.getString("membershipDate"));
 		lastPayment = DateBean.toShowFormat(SQLResult.getString("lastPayment"));
 		lastPaymentAmount = SQLResult.getString("lastPaymentAmount");
-		
+
 		paymentExpires = DateBean.toShowFormat(SQLResult.getString("paymentExpires"));
 		lastInvoiceDate = DateBean.toShowFormat(SQLResult.getString("lastInvoiceDate"));
 		lastAnnualUpdateEmailDate = DateBean.toShowFormat(SQLResult.getString("lastAnnualUpdateEmailDate"));
-		
-//second contact
+
+		// second contact
 		secondContact = SQLResult.getString("secondContact");
 		secondPhone = SQLResult.getString("secondPhone");
 		secondEmail = SQLResult.getString("secondEmail");
-//billing contact		
+		// billing contact
 		billingContact = SQLResult.getString("billingContact");
 		billingPhone = SQLResult.getString("billingPhone");
 		billingEmail = SQLResult.getString("billingEmail");
@@ -343,46 +422,32 @@ public class ContractorBean extends DataBean {
 	}
 
 	public void writeToDB() throws Exception {
-		String updateQuery = "UPDATE contractor_info SET "+
-			"taxID='"+eqDB(taxID)+
-			"',main_trade='"+main_trade+
-			"',trades='"+ trades+
-			"',subTrades='"+subTrades+ 
-			"',logo_file='"+logo_file+
-			"',brochure_file='"+brochure_file+
-			"',mustPay='"+mustPay+
-			"',requestedByID='"+requestedByID+
-			"',billingAmount='"+billingAmount+
-			"',billingCycle='"+billingCycle+
-			"',isOnlyCerts='"+isOnlyCerts+
+		String updateQuery = "UPDATE contractor_info SET " + "taxID='" + eqDB(taxID) + "',main_trade='" + main_trade
+				+ "',trades='" + trades + "',subTrades='" + subTrades + "',logo_file='" + logo_file
+				+ "',brochure_file='" + brochure_file + "',mustPay='" + mustPay + "',requestedByID='" + requestedByID
+				+ "',billingAmount='" + billingAmount + "',billingCycle='" + billingCycle + "',isOnlyCerts='"
+				+ isOnlyCerts +
 
-			"',accountDate='"+DateBean.toDBFormat(accountDate)+
-			"',membershipDate='"+DateBean.toDBFormat(membershipDate)+
-			"',lastPayment='"+DateBean.toDBFormat(lastPayment) +
-			"',lastPaymentAmount='"+lastPaymentAmount+
-			"',paymentExpires='"+DateBean.toDBFormat(paymentExpires)+
-			"',lastInvoiceDate='"+DateBean.toDBFormat(lastInvoiceDate)+
-			"',lastAnnualUpdateEmailDate='"+DateBean.toDBFormat(lastAnnualUpdateEmailDate)+
-			"',secondContact='"+eqDB(secondContact)+
-			"',secondPhone='"+eqDB(secondPhone)+
-			"',secondEmail='"+eqDB(secondEmail)+
-			"',billingContact='"+eqDB(billingContact)+
-			"',billingPhone='"+eqDB(billingPhone)+
-			"',riskLevel="+riskLevel+
-			",annualUpdateEmails="+annualUpdateEmails+
-			",oqEmployees='"+eqDB(oqEmployees)+
-			"',billingEmail='"+eqDB(billingEmail);
+				"',accountDate='" + DateBean.toDBFormat(accountDate) + "',membershipDate='"
+				+ DateBean.toDBFormat(membershipDate) + "',lastPayment='" + DateBean.toDBFormat(lastPayment)
+				+ "',lastPaymentAmount='" + lastPaymentAmount + "',paymentExpires='"
+				+ DateBean.toDBFormat(paymentExpires) + "',lastInvoiceDate='" + DateBean.toDBFormat(lastInvoiceDate)
+				+ "',lastAnnualUpdateEmailDate='" + DateBean.toDBFormat(lastAnnualUpdateEmailDate)
+				+ "',secondContact='" + eqDB(secondContact) + "',secondPhone='" + eqDB(secondPhone) + "',secondEmail='"
+				+ eqDB(secondEmail) + "',billingContact='" + eqDB(billingContact) + "',billingPhone='"
+				+ eqDB(billingPhone) + "',riskLevel=" + riskLevel + ",annualUpdateEmails=" + annualUpdateEmails
+				+ ",oqEmployees='" + eqDB(oqEmployees) + "',billingEmail='" + eqDB(billingEmail);
 		if (isDescriptionChanged)
-			updateQuery+="',description='"+eqDB(description);
+			updateQuery += "',description='" + eqDB(description);
 		if (isNotesChanged)
-			updateQuery+="',notes='"+eqDB(notes);
+			updateQuery += "',notes='" + eqDB(notes);
 		if (isAdminNotesChanged)
-			updateQuery+="',adminNotes='"+eqDB(adminNotes);
-		updateQuery+="' WHERE id="+id+";";
+			updateQuery += "',adminNotes='" + eqDB(adminNotes);
+		updateQuery += "' WHERE id=" + id + ";";
 		try {
 			DBReady();
 			SQLStatement.executeUpdate(updateQuery);
-		}finally{
+		} finally {
 			DBClose();
 		}
 	}
@@ -390,51 +455,53 @@ public class ContractorBean extends DataBean {
 	public void writeNewToDB(Facilities FACILITIES) throws Exception {
 		try {
 			DBReady();
-			String Query = "INSERT INTO contractor_info (id) VALUES ('"+id+"');";
+			String Query = "INSERT INTO contractor_info (id) VALUES ('" + id + "');";
 			SQLStatement.executeUpdate(Query);
 			DBClose();
 			writeToDB();
-			
+
 			DBReady();
 			String insertQuery = "INSERT INTO generalContractors (subID,genID,dateAdded) VALUES ";
 			boolean doInsert = false;
-			for (String genID: newGeneralContractors) {
+			for (String genID : newGeneralContractors) {
 				doInsert = true;
-				insertQuery += "("+id+","+genID+",NOW()),";
-				addNote(id, "","Added this Contractor to "+FACILITIES.getNameFromID(genID)+"'s db at account registration", DateBean.getTodaysDateTime());
+				insertQuery += "(" + id + "," + genID + ",NOW()),";
+				addNote(id, "", "Added this Contractor to " + FACILITIES.getNameFromID(genID)
+						+ "'s db at account registration", DateBean.getTodaysDateTime());
 			}
-			insertQuery = insertQuery.substring(0,insertQuery.length()-1) + ";";
+			insertQuery = insertQuery.substring(0, insertQuery.length() - 1) + ";";
 			if (doInsert)
 				SQLStatement.executeUpdate(insertQuery);
 			DBClose();
 			writeToDB();
-			
+
 			DBReady();
-			
+
 			BillContractor billing = new BillContractor();
 			billing.setContractor(this);
 			billing.calculatePrice();
 			billing.writeToDB();
 			com.picsauditing.PICS.OperatorBean.resetSubCountTable();
-		}finally{
+		} finally {
 			DBClose();
 		}
-}
-	
+	}
+
 	public void writeBillingToDB() throws Exception {
 		try {
 			DBReady();
-			String updateQuery = "UPDATE contractor_info SET payingFacilities="+Utilities.intToDB(this.payingFacilities)+
-					", newBillingAmount="+Utilities.intToDB(this.newBillingAmount)+", isExempt='"+eqDB(isExempt)+"' " +
-					"WHERE id="+Utilities.intToDB(this.id);
+			String updateQuery = "UPDATE contractor_info SET payingFacilities="
+					+ Utilities.intToDB(this.payingFacilities) + ", newBillingAmount="
+					+ Utilities.intToDB(this.newBillingAmount) + ", isExempt='" + eqDB(isExempt) + "' " + "WHERE id="
+					+ Utilities.intToDB(this.id);
 			SQLStatement.executeUpdate(updateQuery);
-		}finally{
+		} finally {
 			DBClose();
 		}
 	}
 
 	public void setFromUploadRequest(HttpServletRequest r) throws Exception {
-		Map<String,String> m = (Map<String,String>)r.getAttribute("uploadfields");
+		Map<String, String> m = (Map<String, String>) r.getAttribute("uploadfields");
 		taxID = m.get("taxID");
 		main_trade = m.get("main_trade");
 		setDescription(m.get("description"));
@@ -442,21 +509,21 @@ public class ContractorBean extends DataBean {
 		paymentExpires = m.get("paymentExpires");
 		lastPayment = m.get("lastPayment");
 		lastPaymentAmount = m.get("lastPaymentAmount");
-		
+
 		membershipDate = m.get("membershipDate");
 		lastInvoiceDate = m.get("lastInvoiceDate");
 		requestedByID = m.get("requestedByID");
 		billingAmount = m.get("billingAmount");
 		billingCycle = m.get("billingCycle");
 		// We only set this via the BillingContractor class now
-		//isExempt = m.get("isExempt");
+		// isExempt = m.get("isExempt");
 		isOnlyCerts = m.get("isOnlyCerts");
 		setTrades = m.get("trades");
-//		second contact
+		// second contact
 		secondContact = m.get("secondContact");
 		secondEmail = m.get("secondEmail");
 		secondPhone = m.get("secondPhone");
-//billing contact
+		// billing contact
 		billingContact = m.get("billingContact");
 		billingEmail = m.get("billingEmail");
 		billingPhone = m.get("billingPhone");
@@ -464,34 +531,34 @@ public class ContractorBean extends DataBean {
 		riskLevel = m.get("riskLevel");
 		oqEmployees = m.get("oqEmployees");
 
-		//setTrades(m.getValues("trades"));
-// jj 10/28/06	setGeneralContractors(m.getValues("generalContractors"));
-		
-		if (num_of_trades == 0){
+		// setTrades(m.getValues("trades"));
+		// jj 10/28/06 setGeneralContractors(m.getValues("generalContractors"));
+
+		if (num_of_trades == 0) {
 			num_of_trades++;
 			trades = "1;" + main_trade + ";";
-		}//if
+		}// if
 
-// Set the files from the db
-		if (!"".equals(id)){
-			String selectQuery = "SELECT logo_file,brochure_file FROM contractor_info WHERE id="+id+";";
+		// Set the files from the db
+		if (!"".equals(id)) {
+			String selectQuery = "SELECT logo_file,brochure_file FROM contractor_info WHERE id=" + id + ";";
 			try {
 				DBReady();
 				ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-				if (SQLResult.next()){
+				if (SQLResult.next()) {
 					logo_file = SQLResult.getString("logo_file");
 					brochure_file = SQLResult.getString("brochure_file");
-				}else{
+				} else {
 					logo_file = "No";
 					brochure_file = "No";
-				}//else
+				}// else
 				SQLResult.close();
-			}finally{
+			} finally {
 				DBClose();
-			}//finally
-		}//if
-	}//setFromUploadRequest
-	
+			}// finally
+		}// if
+	}// setFromUploadRequest
+
 	public void setFromUploadRequestClientNew(javax.servlet.http.HttpServletRequest r) throws Exception {
 		taxID = r.getParameter("taxID");
 		description = r.getParameter("description");
@@ -510,7 +577,7 @@ public class ContractorBean extends DataBean {
 	}
 
 	public void setFromUploadRequestClientEdit(javax.servlet.http.HttpServletRequest r) throws Exception {
-		Map<String,String> m = (Map<String,String>)r.getAttribute("uploadfields");
+		Map<String, String> m = (Map<String, String>) r.getAttribute("uploadfields");
 		main_trade = m.get("main_trade");
 		secondContact = m.get("secondContact");
 		secondEmail = m.get("secondEmail");
@@ -522,7 +589,7 @@ public class ContractorBean extends DataBean {
 	}
 
 	public boolean isOK() {
-		errorMessages = new Vector<String>();		
+		errorMessages = new Vector<String>();
 		if (num_of_trades == 0) {
 			num_of_trades++;
 			trades = "1;" + main_trade + ";";
@@ -539,38 +606,43 @@ public class ContractorBean extends DataBean {
 		if (!java.util.regex.Pattern.matches("\\d{9}", taxID))
 			errorMessages.addElement("Pleae enter your 9 digit tax ID with only digits 0-9, no dashes.");
 		else if (taxIDExists(taxID))
-			errorMessages.addElement("The tax ID <b>"+taxID+"</b> already exists.  Please contact a company representative.");
+			errorMessages.addElement("The tax ID <b>" + taxID
+					+ "</b> already exists.  Please contact a company representative.");
 		if (num_of_trades == 0) {
 			num_of_trades++;
-			trades = "1;"+main_trade+";";
-		}//if
+			trades = "1;" + main_trade + ";";
+		}// if
 		if (main_trade.equals(TradesBean.DEFAULT_SELECT_TRADE))
 			errorMessages.addElement("Please select a main trade");
 		if (requestedByID == null || requestedByID.length() == 0)
 			errorMessages.addElement("Please select a choice for the Audit Requested By field");
 		return (errorMessages.size() == 0);
-	}//isOKClientCreate
+	}// isOKClientCreate
 
 	public User getPrimaryUser() {
 		return this.primaryUser;
 	}
-	public String getUsername() throws Exception {
-		if (primaryUser.userDO.id.length() == 0) primaryUser.setFromAccountID(this.id);
-		return primaryUser.userDO.username;
-	}
-	
-	public String getPassword() throws Exception {
-		if (primaryUser.userDO.id.length() == 0) primaryUser.setFromAccountID(this.id);
-		return primaryUser.userDO.password;
-	}
-	
-	public String getLastLogin() throws Exception {
-		if (primaryUser.userDO.id.length() == 0) primaryUser.setFromAccountID(this.id);
-		return primaryUser.userDO.lastLogin;
-	}
-	
+
+//	public String getUsername() throws Exception {
+//		if (primaryUser.userDO.id.length() == 0)
+//			primaryUser.setFromAccountID(this.id);
+//		return primaryUser.userDO.username;
+//	}
+//
+//	public String getPassword() throws Exception {
+//		if (primaryUser.userDO.id.length() == 0)
+//			primaryUser.setFromAccountID(this.id);
+//		return primaryUser.userDO.password;
+//	}
+//
+//	public String getLastLogin() throws Exception {
+//		if (primaryUser.userDO.id.length() == 0)
+//			primaryUser.setFromAccountID(this.id);
+//		return primaryUser.userDO.lastLogin;
+//	}
+
 	public boolean taxIDExists(String tID) throws Exception {
-		String selectQuery = "SELECT id FROM contractor_info WHERE taxID='"+tID+"';";
+		String selectQuery = "SELECT id FROM contractor_info WHERE taxID='" + tID + "';";
 		try {
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
@@ -582,15 +654,14 @@ public class ContractorBean extends DataBean {
 				SQLResult.close();
 				DBClose();
 				return false;
-			}//else
-		}finally{
+			}// else
+		} finally {
 			DBClose();
-		}//finally
-	}//taxIDExists
-	
+		}// finally
+	}// taxIDExists
 
 	public void addNote(String conID, String pre, String newNote, String notesDate) throws Exception {
-		notes = notesDate+" "+pre+": "+newNote+"\n"+notes;
+		notes = notesDate + " " + pre + ": " + newNote + "\n" + notes;
 		isNotesChanged = true;
 	}
 
@@ -602,7 +673,7 @@ public class ContractorBean extends DataBean {
 			else
 				currentUserDisplayName = permissions.getUsername();
 		}
-		
+
 		ContractorBean cBean = new ContractorBean();
 		cBean.setFromDB(conID.toString());
 		cBean.addNote(conID.toString(), currentUserDisplayName, newNote, DateBean.getTodaysDateTime());
@@ -610,40 +681,42 @@ public class ContractorBean extends DataBean {
 	}
 
 	public void addAdminNote(String conID, String pre, String newNote, String notesDate) throws Exception {
-		adminNotes = notesDate+" "+pre+": "+newNote+"\n"+adminNotes;
+		adminNotes = notesDate + " " + pre + ": " + newNote + "\n" + adminNotes;
 		isAdminNotesChanged = true;
 	}
 
-	//Jeff  2/2/05
-	//Records a payment by a contrator, invoked on Schedule Audits report
-	//3/19/05 jj - added paymentExpires calculations
+	// Jeff 2/2/05
+	// Records a payment by a contrator, invoked on Schedule Audits report
+	// 3/19/05 jj - added paymentExpires calculations
 	public void updateLastPayment(String id, String adminName, String amount) throws Exception {
 		setFromDB(id);
 		Calendar newPaymentExpiresCal = Calendar.getInstance();
 		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
-		if (!"".equals(paymentExpires)){
+		if (!"".equals(paymentExpires)) {
 			newPaymentExpiresCal.setTime(showFormat.parse(paymentExpires));
 			newPaymentExpiresCal.add(Calendar.YEAR, 1);
-		}else if (!"".equals(membershipDate)){
+		} else if (!"".equals(membershipDate)) {
 			newPaymentExpiresCal.setTime(showFormat.parse(membershipDate));
 			while (newPaymentExpiresCal.before(Calendar.getInstance()))
 				newPaymentExpiresCal.add(Calendar.YEAR, 1);
-		}else{
+		} else {
 			membershipDate = showFormat.format(newPaymentExpiresCal.getTime());
-			newPaymentExpiresCal.add(Calendar.YEAR, 1);		
-			addAdminNote(id, "("+adminName+")", "Membership date set today", membershipDate);
-		}//else
+			newPaymentExpiresCal.add(Calendar.YEAR, 1);
+			addAdminNote(id, "(" + adminName + ")", "Membership date set today", membershipDate);
+		}// else
 		paymentExpires = showFormat.format(newPaymentExpiresCal.getTime());
 		lastPayment = DateBean.getTodaysDate();
 		lastPaymentAmount = amount;
-		addAdminNote(id, "("+adminName+")", "Payment received for $"+amount+" for "+payingFacilities+" facilities", lastPayment);
+		addAdminNote(id, "(" + adminName + ")", "Payment received for $" + amount + " for " + payingFacilities
+				+ " facilities", lastPayment);
 		writeToDB();
-	}//updateLastPayment
+	}// updateLastPayment
 
 	public void upgradePayment(String id, String adminName, String newAmount) throws Exception {
 		setFromDB(id);
 		lastPayment = DateBean.getTodaysDate();
-		addAdminNote(id, "("+adminName+")", "Payment upgraded from $"+lastPaymentAmount+" to $"+newAmount+" for "+payingFacilities+" facilities", lastPayment);
+		addAdminNote(id, "(" + adminName + ")", "Payment upgraded from $" + lastPaymentAmount + " to $" + newAmount
+				+ " for " + payingFacilities + " facilities", lastPayment);
 		lastPaymentAmount = newAmount;
 		writeToDB();
 	}
@@ -652,13 +725,13 @@ public class ContractorBean extends DataBean {
 	public boolean isExempt() {
 		return isAudited();
 	}
-	
+
 	@Deprecated
 	public boolean isAudited() {
 		// We should check the contractor's audits instead
 		return "Yes".equals(this.isExempt);
 	}
-	
+
 	@Deprecated
 	public void isAudited(boolean value) {
 		if (value)
@@ -681,53 +754,57 @@ public class ContractorBean extends DataBean {
 				String insertQuery = "REPLACE INTO pqfData (conID,questionID,answer) VALUES ";
 				boolean insert = false;
 				while (li.hasNext()) {
-					String qID = (String)li.next();
-					String trade = (String)li.next();
-					String answer="";
+					String qID = (String) li.next();
+					String trade = (String) li.next();
+					String answer = "";
 					if (-1 != trades.indexOf(trade))
-						answer+="C";
+						answer += "C";
 					if (-1 != subTrades.indexOf(trade))
-						answer+="S";
+						answer += "S";
 					if (!"".equals(answer)) {
-						insertQuery+="("+id+","+qID+",'"+answer+"'),";
+						insertQuery += "(" + id + "," + qID + ",'" + answer + "'),";
 						insert = true;
-					}//if
-				}//while
-				insertQuery = insertQuery.substring(0,insertQuery.length()-1);
-				insertQuery +=";";
+					}// if
+				}// while
+				insertQuery = insertQuery.substring(0, insertQuery.length() - 1);
+				insertQuery += ";";
 				if (insert)
 					SQLStatement.executeUpdate(insertQuery);
-			}//while
+			}// while
 			SQLResult.close();
-		}finally{
+		} finally {
 			DBClose();
-		}//finally
-	}//convertTrades
+		}// finally
+	}// convertTrades
 
-	public void setUploadedFiles(HttpServletRequest request){
-		String fn = (String)request.getAttribute("logo_file");
-		if(fn != null)
+	public void setUploadedFiles(HttpServletRequest request) {
+		String fn = (String) request.getAttribute("logo_file");
+		if (fn != null)
 			logo_file = FilenameUtils.getName(fn);
-		fn = (String)request.getAttribute("brochure_file");
-		if(fn != null)
+		fn = (String) request.getAttribute("brochure_file");
+		if (fn != null)
 			brochure_file = FilenameUtils.getName(fn);
 	}
-	
+
 	public void tryView(Permissions permissions) throws NoRightsException {
-		if (canView(permissions, "summary")) return;
+		if (canView(permissions, "summary"))
+			return;
 		throw new NoRightsException("Contractor");
 	}
+
 	public boolean canView(Permissions permissions) {
 		return canView(permissions, "summary");
 	}
+
 	public boolean canView(Permissions permissions, String what) {
-		if (permissions.hasPermission(OpPerms.AllContractors)) return true;
-		
+		if (permissions.hasPermission(OpPerms.AllContractors))
+			return true;
+
 		// OR
 		if (permissions.isContractor()) {
 			return permissions.getAccountIdString().equals(this.id);
 		}
-		
+
 		if (permissions.isOperator() || permissions.isCorporate()) {
 			// I don't really like this way. It's a bit confusing
 			// Basically, if all we're doing is searching for contractors
@@ -735,7 +812,8 @@ public class ContractorBean extends DataBean {
 			// If we want to look at their detail, like PQF data
 			// Then we have to add them first (generalContractors).
 			if ("summary".equals(what)) {
-				// Until we figure out Contractor viewing permissions better, this will have to do
+				// Until we figure out Contractor viewing permissions better,
+				// this will have to do
 				return true;
 			}
 			if (permissions.isCorporate()) {
@@ -743,21 +821,24 @@ public class ContractorBean extends DataBean {
 				try {
 					operator.isCorporate = true;
 					operator.setFromDB(permissions.getAccountIdString());
-					// if any of this corporate operators can see this contractor, 
+					// if any of this corporate operators can see this
+					// contractor,
 					// then the corporate users can see them too
 					for (String id : operator.facilitiesAL) {
 						if (generalContractors.contains(id))
 							return true;
 					}
-				} catch (Exception e) {}
+				} catch (Exception e) {
+				}
 				return false;
 			}
-			// To see anything other than the summary, you need to be on their list
+			// To see anything other than the summary, you need to be on their
+			// list
 			return generalContractors.contains(permissions.getAccountIdString());
 		}
-		
+
 		// The auditors can see this Contractor
-		for(ContractorAudit audit : getAudits()) {
+		for (ContractorAudit audit : getAudits()) {
 			if (audit.getAuditor() != null && audit.getAuditor().getId() == permissions.getUserId())
 				if (audit.getAuditStatus().equals(AuditStatus.Pending)
 						|| audit.getAuditStatus().equals(AuditStatus.Submitted))
@@ -766,7 +847,7 @@ public class ContractorBean extends DataBean {
 
 		return false;
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -774,11 +855,12 @@ public class ContractorBean extends DataBean {
 	 */
 	public HashMap<Integer, ContractorAudit> getValidAudits() {
 		if (audits == null) {
-			ContractorAuditDAO dao = (ContractorAuditDAO)SpringUtils.getBean("ContractorAuditDAO");
-			// Get list of PQF, Office, Desktop, DA that are in the Verified or Exempt status
+			ContractorAuditDAO dao = (ContractorAuditDAO) SpringUtils.getBean("ContractorAuditDAO");
+			// Get list of PQF, Office, Desktop, DA that are in the Verified or
+			// Exempt status
 			List<ContractorAudit> auditList = dao.findNonExpiredByContractor(Integer.parseInt(id));
 			audits = new HashMap<Integer, ContractorAudit>();
-			for(ContractorAudit cAudit : auditList) {
+			for (ContractorAudit cAudit : auditList) {
 				if (!cAudit.getAuditType().isHasMultiple())
 					audits.put(cAudit.getAuditType().getAuditTypeID(), cAudit);
 			}
@@ -792,7 +874,7 @@ public class ContractorBean extends DataBean {
 	 * @throws Exception
 	 */
 	public List<ContractorAudit> getAudits() {
-		ContractorAuditDAO dao = (ContractorAuditDAO)SpringUtils.getBean("ContractorAuditDAO");
+		ContractorAuditDAO dao = (ContractorAuditDAO) SpringUtils.getBean("ContractorAuditDAO");
 		return dao.findByContractor(Integer.parseInt(id));
 	}
 
@@ -805,7 +887,7 @@ public class ContractorBean extends DataBean {
 	public void buildAudits() throws Exception {
 		// Throwing an exception here may be more appropriate
 		if (getIdInteger() == 0) {
-			AuditBuilder auditBuilder = (AuditBuilder)SpringUtils.getBean("AuditBuilder");
+			AuditBuilder auditBuilder = (AuditBuilder) SpringUtils.getBean("AuditBuilder");
 			auditBuilder.buildAudits(getIdInteger());
 		}
 	}

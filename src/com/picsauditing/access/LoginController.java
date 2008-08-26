@@ -31,7 +31,7 @@ public class LoginController extends DataBean {
 
 	private Permissions permissions;
 	private PermissionsBean pBean;
-	protected UserDAO userDAO = (UserDAO)SpringUtils.getBean("UserDAO");
+	protected UserDAO userDAO = (UserDAO) SpringUtils.getBean("UserDAO");
 
 	public boolean login(String username, String password, javax.servlet.http.HttpServletRequest request,
 			javax.servlet.http.HttpServletResponse response) throws Exception {
@@ -116,13 +116,15 @@ public class LoginController extends DataBean {
 		if (!getAccountByUsername(username))
 			return "No account exists with that username";
 
-		user = userDAO.findName(username);
 		if (isUser) {
-			if (user != null && !user.getPassword().equals(password))
-				return "The password is not correct";
-				
-			if (user != null && user.getIsActive() != YesNo.Yes)
-				return "This user does not have permission to login.<br>Please contact PICS to activate your account.";
+			user = userDAO.findName(username);
+			if (user != null) {
+				if (!user.getPassword().equals(password))
+					return "The password is not correct";
+
+				if (user.getIsActive() != YesNo.Yes)
+					return "This user does not have permission to login.<br>Please contact PICS to activate your account.";
+			}
 		} else {
 			if (!aBean.password.equals(password))
 				return "The password is not correct";
@@ -138,19 +140,20 @@ public class LoginController extends DataBean {
 	private boolean getAccountByUsername(String username) throws Exception {
 		Integer id = 0;
 		aBean = new AccountBean();
-		user = userDAO.findName(username);
-		if(user != null) {
-			id = user.getId();
-			aBean.setFromDB(user.getAccount().getIdString());
-		} else {
-			// Wait this could be a contractor trying to login, check the
-			// accounts table
-			id = aBean.findID(username);
-			if (id == 0)
-				return false;
+		id = aBean.findID(username);
+		if(id != 0) {
 			aBean.setFromDB(id.toString());
 			user = null;
 			isUser = false;
+		}
+		else {
+			user = userDAO.findName(username);
+			if (user != null) {
+				id = user.getId();
+				aBean.setFromDB(user.getAccount().getIdString());
+			}
+			else
+				return false;
 		}
 		// The user or account we want to login as is now set as private
 		// variables
@@ -232,13 +235,14 @@ public class LoginController extends DataBean {
 		if (!isUser) {
 			ContractorBean cBean = new ContractorBean();
 			cBean.setFromDB(permissions.getAccountIdString());
-			
-//			if ("".equals(cBean.accountDate)) {
-//				cBean.accountDate = DateBean.getTodaysDate();
-//				cBean.writeToDB();
-//				// response.sendRedirect("con_selectFacilities.jsp?id="+permissions.getAccountIdString());
-//				return;
-//			}
+
+			// if ("".equals(cBean.accountDate)) {
+			// cBean.accountDate = DateBean.getTodaysDate();
+			// cBean.writeToDB();
+			// //
+			// response.sendRedirect("con_selectFacilities.jsp?id="+permissions.getAccountIdString());
+			// return;
+			// }
 			// String loginStartDate = "1/1" + "/" +
 			// String.valueOf(DateBean.getCurrentYear());
 			// String loginStartDate =
