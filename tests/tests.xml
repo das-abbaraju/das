@@ -32,6 +32,7 @@
 	<bean id="UserDAO" class="com.picsauditing.dao.UserDAO" scope="prototype"/>
 	<bean id="UserAccessDAO" class="com.picsauditing.dao.UserAccessDAO" scope="prototype"/>
 	<bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO" scope="prototype"/>
+	<bean id="UserLoginLogDAO" class="com.picsauditing.dao.UserLoginLogDAO" scope="prototype"/>
 
 	<bean id="EmailAuditBean" class="com.picsauditing.mail.EmailAuditBean" scope="prototype"/>
 	<bean id="EmailContractorBean" class="com.picsauditing.mail.EmailContractorBean" scope="prototype"/>

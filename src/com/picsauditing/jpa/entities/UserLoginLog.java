@@ -7,8 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -29,7 +31,7 @@ public class UserLoginLog {
 	}
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "logID", nullable = false)
 	public int getId() {
 		return id;
@@ -66,7 +68,8 @@ public class UserLoginLog {
 		this.loginDate = date;
 	}
 	
-	@ManyToOne( targetEntity=User.class)
+	@ManyToOne
+	@JoinColumn(name = "adminID")
 	public User getAdmin() {
 		return admin;
 	}

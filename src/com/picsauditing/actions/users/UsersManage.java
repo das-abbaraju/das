@@ -146,7 +146,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				|| permissions.getGroups().contains(user.getId())) {
 			// I'm an admin or I'm a member of this group
 			
-			list = userDAO.findByAccountID(accountId, "Yes", "No");
+			list = userDAO.findByAccountID(accountId, "Yes", "");
 			
 			for(UserGroup userGroup : user.getMembers()) {
 				// but users, already in the group

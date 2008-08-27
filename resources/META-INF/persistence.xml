@@ -42,6 +42,8 @@
   <class>com.picsauditing.jpa.entities.State</class>
   <class>com.picsauditing.jpa.entities.User</class> 
   <class>com.picsauditing.jpa.entities.UserGroup</class>
+  <class>com.picsauditing.jpa.entities.UserLoginLog</class>
+  <class>com.picsauditing.jpa.entities.UserAccess</class>
   <class>com.picsauditing.jpa.entities.Widget</class>
   <class>com.picsauditing.jpa.entities.WidgetUser</class>
   <class>com.picsauditing.jpa.entities.YesNo</class>

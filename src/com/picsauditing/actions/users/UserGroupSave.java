@@ -34,6 +34,11 @@ public class UserGroupSave extends UsersManage {
 			if (!hasUserGroup) {
 				UserGroup uGroup = new UserGroup();
 				User newGroup = userDAO.find(groupId);
+				if (containsGroup(user, newGroup)) {
+					this.addActionError("You can't add a circular relationship");
+					return SUCCESS;
+				}
+					
 				uGroup.setGroup(newGroup);
 				uGroup.setUser(user);
 				uGroup.setCreationDate(new Date());
@@ -46,14 +51,21 @@ public class UserGroupSave extends UsersManage {
 			userGroupDAO.remove(userGroupId);
 		}
 		if ("AddMember".equals(button)) {
+			// Make sure memberId isn't already in user's member list
 			boolean hasUserGroup = false;
 			for (UserGroup userGroup : user.getMembers()) {
 				if (userGroup.getGroup().getId() == memberId)
 					hasUserGroup = true;
 			}
 			if (!hasUserGroup) {
+				// Make sure user isn't in member's member list
 				UserGroup uGroup = new UserGroup();
 				User newUser = userDAO.find(memberId);
+				if (containsMember(newUser, user)) {
+					this.addActionError("You can't add a circular relationship");
+					return "member";
+				}
+				
 				uGroup.setUser(newUser);
 				uGroup.setGroup(user);
 				uGroup.setCreationDate(new Date());
@@ -69,6 +81,28 @@ public class UserGroupSave extends UsersManage {
 		}
 
 		return SUCCESS;
+	}
+	
+	private boolean containsMember(User group, User member) {
+		for(UserGroup userMember : group.getMembers()) {
+			if(userMember.getUser().getId() == member.getId()) {
+				return true;
+			}
+			if (containsMember(userMember.getUser(), member))
+				return true;
+		}
+		return false;
+	}
+	
+	private boolean containsGroup(User user, User group) {
+		for(UserGroup userGroup : user.getGroups()) {
+			if(userGroup.getGroup().getId() == group.getId()) {
+				return true;
+			}
+			if (containsMember(userGroup.getGroup(), group))
+				return true;
+		}
+		return false;
 	}
 
 	public int getMemberId() {
