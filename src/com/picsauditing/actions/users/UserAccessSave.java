@@ -21,10 +21,15 @@ public class UserAccessSave extends UsersManage {
 		this.userAccessDAO = userAccessDAO;
 	}
 
-	public String execute() {
-		try {
-			super.execute();
-		} catch (Exception e) {
+	public String execute() throws Exception {
+		if (!forceLogin()) {
+			addActionError("Timeout: you need to login again");
+			return LOGIN;
+		}
+		super.execute();
+		if (user == null) {
+			addActionError("user is not set");
+			return SUCCESS;
 		}
 
 		if ("AddPerm".equals(button)) {

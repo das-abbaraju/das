@@ -19,10 +19,15 @@ public class UserGroupSave extends UsersManage {
 		this.userGroupDAO = userGroupDAO;
 	}
 
-	public String execute() {
-		try {
-			super.execute();
-		} catch (Exception e) {
+	public String execute() throws Exception {
+		if (!forceLogin()) {
+			addActionError("Timeout: you need to login again");
+			return LOGIN;
+		}
+		super.execute();
+		if (user == null) {
+			addActionError("user is not set");
+			return SUCCESS;
 		}
 
 		if ("AddGroup".equals(button)) {

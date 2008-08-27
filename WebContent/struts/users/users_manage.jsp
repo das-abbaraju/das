@@ -26,13 +26,13 @@ function showPermDesc(item) {
 function addPermission() {
 	$('addPermissionButton').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
 	var opPerm = $('newPermissionSelect').value;
-	pars = 'button=AddPerm&accountId='+accountID+'&user.id='+currentUserID+'&opPerm='+opPerm;
+	pars = 'button=AddPerm&user.id='+currentUserID+'&opPerm='+opPerm+'&accountId='+accountID;
 	var myAjax = new Ajax.Updater('permissionReport', 'UserAccessSaveAjax.action', {method: 'post', parameters: pars});
 }
 
 function removePermission(accessId) {
 	$('permissionReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
-	pars = 'button=RemovePerm&accessId='+accessId+'&user.id='+currentUserID;
+	pars = 'button=RemovePerm&accessId='+accessId+'&user.id='+currentUserID+'&accountId='+accountID;
 	var myAjax = new Ajax.Updater('permissionReport', 'UserAccessSaveAjax.action', {method: 'post', parameters: pars});
 }
 
@@ -48,25 +48,25 @@ function updatePermission(accessId, typeName, theValue) {
 
 function addGroup(groupID) {
 	$('groupReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
-	pars = 'button=AddGroup&groupId='+groupID+'&user.id='+currentUserID;
+	pars = 'button=AddGroup&groupId='+groupID+'&user.id='+currentUserID+'&accountId='+accountID;
 	var myAjax = new Ajax.Updater('groupReport', 'UserGroupSaveAjax.action', {method: 'post', parameters: pars});
 }
 
 function removeGroup(userGroupID) {
 	$('groupReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
-	pars = 'button=RemoveGroup&userGroupId='+userGroupID+'&user.id='+currentUserID;
+	pars = 'button=RemoveGroup&userGroupId='+userGroupID+'&user.id='+currentUserID+'&accountId='+accountID;
 	var myAjax = new Ajax.Updater('groupReport', 'UserGroupSaveAjax.action', {method: 'post', parameters: pars});
 }
 
 function addMember(memberId) {
 	$('memberReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
-	pars = 'button=AddMember&memberId='+memberId+'&user.id='+currentUserID;
+	pars = 'button=AddMember&memberId='+memberId+'&user.id='+currentUserID+'&accountId='+accountID;
 	var myAjax = new Ajax.Updater('memberReport', 'UserGroupSaveAjax.action', {method: 'post', parameters: pars});
 }
 
 function removeMember(userGroupID) {
 	$('memberReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
-	pars = 'button=RemoveMember&userGroupId='+userGroupID+'&user.id='+currentUserID;
+	pars = 'button=RemoveMember&userGroupId='+userGroupID+'&user.id='+currentUserID+'&accountId='+accountID;
 	var myAjax = new Ajax.Updater('memberReport', 'UserGroupSaveAjax.action', {method: 'post', parameters: pars});
 }
 
@@ -181,7 +181,7 @@ function checkUsername(username, userID) {
 	</s:iterator>
 	</table>
 </td>
-<td id="editUser" class="blueMain" style="padding-left: 20px; vertical-align: top; width: 100%;">
+<td id="editUser" class="blueMain" style="padding-left: 20px; vertical-align: top;">
 
 <s:include value="../actionMessages.jsp" />
 
@@ -192,7 +192,7 @@ function checkUsername(username, userID) {
 	<s:hidden name="isActive" />
 	<s:hidden name="user.accountID" />
 	<s:hidden name="user.isGroup" />
-<s:if test="user.id > 0">	
+<s:if test="user.id > 0">
 <pics:permission perm="EditUsers" type="Edit">
 	<div class="buttons">
 		<button class="positive" type="submit" name="button" value="Save">Save</button>

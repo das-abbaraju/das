@@ -1,6 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
+<s:include value="../actionMessages.jsp" />
 <table class="report" style="width: 100%" width="100%">
 	<thead>
 		<tr>
