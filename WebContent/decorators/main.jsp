@@ -151,18 +151,6 @@ function getElement(whichLayer) {
 </div>
 </div>
 
-<!-- !begin footer -->
-<div class="footer">
-<div id="footermain">
-<div id="footercontent">
-Copyright &copy; 2008
-<a href="http://www.picsauditing.com/" class="footer">PICS</a> |
-<% // <a href="about.jsp" class="footer">About PICS</a> | %>
-<a href="contact.jsp" class="footer">Contact Us</a>
-</div>
-</div>
-</div>
-
 <!-- !begin subnavigation -->
 <% for(MenuComponent submenu : menu.getChildren()) { %>
 <div id="menu<%= submenu.getId()%>" class="dropmenudiv">
@@ -200,16 +188,24 @@ Copyright &copy; 2008
 <!-- END HumanTag Monitor. DO NOT MOVE! MUST BE PLACED JUST BEFORE THE /BODY TAG -->
 <%@ include file="../includes/statcounter.jsp"%>
 
+<!-- !begin footer -->
+<div class="footer">
 <% 
 	Date startDate = (Date) request.getAttribute("pics_request_start_time"); 
-	if( startDate != null )
-	{
+	if( startDate != null ) {
 		long totalTime = System.currentTimeMillis() - startDate.getTime();
-%>
-		<p class="pageStats">Page generated in: <%= ((float) totalTime )/ ((float) 1000) %> seconds.</p>
-<%		
+		%><div class="pageStats">Page generated in: <%= ((float) totalTime )/ ((float) 1000) %> seconds.</div><%
 	} 
 %>
+<div id="footermain">
+<div id="footercontent">
+Copyright &copy; 2008
+<a href="http://www.picsauditing.com/" class="footer">PICS</a> |
+<% // <a href="about.jsp" class="footer">About PICS</a> | %>
+<a href="contact.jsp" class="footer">Contact Us</a>
+</div>
+</div>
+</div>
 
 </body>
 </html>

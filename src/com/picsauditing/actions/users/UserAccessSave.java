@@ -1,19 +1,20 @@
 package com.picsauditing.actions.users;
 
-import java.util.List;
+import java.util.Date;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 
 public class UserAccessSave extends UsersManage {
 	protected OpPerms opPerm;
-	protected int accessId;
 	protected UserAccessDAO userAccessDAO;
-	protected UserAccess userAccess = null;
-	
+	protected int accessId;
 	
 	public UserAccessSave(OperatorAccountDAO operatorDao, UserDAO userDAO, UserAccessDAO userAccessDAO) {
 		super(operatorDao, userDAO);
@@ -27,19 +28,37 @@ public class UserAccessSave extends UsersManage {
 		}
 
 		if ("AddPerm".equals(button)) {
+			// Make sure they don't already have it
+			boolean hasPerm = false;
 			for (UserAccess userAccess : user.getOwnedPermissions()) {
-				if(userAccess.getOpPerm() != userAccess.getOpPerm()){
-					UserAccess usAccess = new UserAccess();
-					usAccess.setUser(user);
-					usAccess.setOpPerm(opPerm);
-					userAccessDAO.save(userAccess);
+				if(userAccess.getOpPerm().equals(opPerm)) {
+					hasPerm = true;
 				}
-				else
-					userAccessDAO.save(userAccess);
+			}
+			if (!hasPerm) {
+				// The don't already have the perm, add it now
+				UserAccess userAccess = new UserAccess();
+				userAccess.setUser(user);
+				userAccess.setOpPerm(opPerm);
+				userAccess.setGrantedBy(new User(permissions.getUserId()));
+				userAccess.setLastUpdate(new Date());
+				if (opPerm.usesView())
+					userAccess.setViewFlag(true);
+				if (opPerm.usesEdit())
+					userAccess.setEditFlag(true);
+				if (opPerm.usesDelete())
+					userAccess.setDeleteFlag(true);
+				userAccessDAO.save(userAccess);
+				user.getOwnedPermissions().add(userAccess);
+				// Resort the list
+				Set<UserAccess> temp = new TreeSet<UserAccess>();
+				temp.addAll(user.getOwnedPermissions());
+				user.getOwnedPermissions().clear();
+				user.getOwnedPermissions().addAll(temp);
 			}
 		}
 		if ("RemovePerm".equals(button)) {
-			userAccessDAO.remove(userAccess.getId());
+			userAccessDAO.remove(accessId);
 		}
 		return SUCCESS;
 	}

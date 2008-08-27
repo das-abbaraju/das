@@ -10,6 +10,8 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script type="text/javascript">
 var accountID = <s:property value="accountId"/>;
+var currentUserID = 0;
+<s:if test="user.id > 0">currentUserID = <s:property value="user.id"/>;</s:if>
 
 var permTypes = new Array();
 <s:iterator value="permissions.permissions">
@@ -47,6 +49,13 @@ function saveUser() {
 function deleteUser() {
 	var pars = '&action=deleteUser';
 	getPage(pars);
+}
+
+function addPermission(opPerm) {
+	opPerm = $('newPermissionSelect').value;
+	pars = 'button=AddPerm&accountId='+accountID+'&user.id='+currentUserID+'&opPerm='+opPerm;
+	$('permissionReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
+	var myAjax = new Ajax.Updater('permissionReport', 'UserAccessSaveAjax.action', {method: 'post', parameters: pars});
 }
 
 function savePermissions() {
@@ -244,62 +253,17 @@ function checkUsername(username, userID) {
 	<s:if test="!user.superUser">
 	</s:if>
 	
-	<table class="report">
-	<thead>
-		<tr>
-			<th>Permission</th>
-			<th>Read</th>
-			<th>Edit</th>
-			<th>Delete</th>
-			<th>Grant</th>
-		</tr>
-	</thead>
-	<tbody>
-		<s:iterator value="user.ownedPermissions">
-			<tr>
-				<td><s:property value="opPerm.description"/></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-		</s:iterator>
-	</tbody>
-	<tfoot>
-			<tr>
-				<td colspan="6">
-					<div class="buttons">
-						<button name="button" value="Add Permission">Add Permission</button>
-						<s:select list="grantablePermissions" listValue="description" name="opPerm" />
-					</div>
-				</td>
-			</tr>
-		</tfoot>
-	</table>
+	<div id="permissionReport">
+		<s:include value="user_save_permissions.jsp" />
+	</div>
 	
-	<table class="report">
-	<thead>
-		<tr>
-			<th colspan="2">Member of Group(s):</th>
-		</tr>
-	</thead>
-	<tbody>
-	<s:iterator value="user.groups">
-		<tr>
-			<td><a href="#" onclick="showUser(<s:property value="group.id"/>); return false;"><s:property value="group.name"/></a></td>
-			<td>&nbsp; <a href="#" onclick="saveGroup('removeGroup', <s:property value="group.id"/>); return false;">remove</a></td>
-		</tr>
-	</s:iterator>
-	<s:iterator value="allGroups">
-		<tr>
-			<td><a href="#" style="font-style: italic; color: red;" 
-				onclick="showUser(<s:property value="id"/>); return false;"><s:property value="name"/></a></td>
-			<td>&nbsp; <a href="#" style="font-style: italic; color: red;" 
-				onclick="saveGroup('addGroup', <s:property value="id"/>); return false;">add</a></td>
-		</tr>
-	</s:iterator>
-	</tbody>
-	</table>
+	<div id="memberReport">
+		<s:include value="user_save_members.jsp" />
+	</div>
+
+	<div id="groupReport">
+		<s:include value="user_save_groups.jsp" />
+	</div>
 </s:if>
 
 

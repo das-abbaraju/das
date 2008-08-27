@@ -24,6 +24,7 @@ public class UserSave extends UsersManage {
 				user.setAccount(new Account());
 				user.getAccount().setId(permissions.getAccountId());
 			}
+			user = userDAO.save(user);
 		}
 		
 		return SUCCESS;

@@ -668,3 +668,7 @@ button.positive, .buttons a.positive {
 	width: 315px;
 	background-color: white;
 }
+
+div.pageStats {
+	float: right;
+}

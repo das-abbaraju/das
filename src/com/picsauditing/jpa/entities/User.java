@@ -199,6 +199,7 @@ public class User implements Comparable<User> {
 		this.members = members;
 	}
 
+	// TODO: change this to a Set from a List
 	@OneToMany(mappedBy = "user", cascade = { CascadeType.ALL })
 	public List<UserAccess> getOwnedPermissions() {
 		return ownedPermissions;
