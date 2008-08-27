@@ -33,13 +33,14 @@ public class User implements Comparable<User> {
 	public static String DEFAULT_AUDITOR = "- Auditor -";
 	public static int GROUP_ADMIN = 10;
 	public static int GROUP_AUDITOR = 11;
-	private static final int GROUP_SU = 9; // Group that automatically has ALL grant privileges
-	
+	private static final int GROUP_SU = 9; // Group that automatically has ALL
+											// grant privileges
+
 	@Transient
 	public boolean isSuperUser() {
 		return (id == GROUP_SU);
 	}
-	
+
 	private int id = 0;
 	private String username;
 	private String password;
@@ -54,6 +55,7 @@ public class User implements Comparable<User> {
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
 	private List<UserAccess> ownedPermissions = new ArrayList<UserAccess>();
+	private List<UserLoginLog> loginlog = new ArrayList<UserLoginLog>();
 
 	public User() {
 	}
@@ -97,7 +99,7 @@ public class User implements Comparable<User> {
 	public YesNo getIsGroup() {
 		return isGroup;
 	}
-	
+
 	@Transient
 	public boolean isGroup() {
 		return YesNo.Yes == isGroup;
@@ -213,12 +215,13 @@ public class User implements Comparable<User> {
 	public Set<UserAccess> getPermissions() {
 		// Our permissions are empty, so go get some
 		Set<UserAccess> permissions = new TreeSet<UserAccess>();
-		
+
 		if (isSuperUser()) {
-			// This is the Super User Group, which should have grant ability on ALL permissions
+			// This is the Super User Group, which should have grant ability on
+			// ALL permissions
 			// Also grant view/edit/delete on EditUsers
 			// SuperUser group does not inherit from parent groups
-			for(OpPerms accessType : OpPerms.values()) {
+			for (OpPerms accessType : OpPerms.values()) {
 				UserAccess perm = new UserAccess();
 				perm.setOpPerm(accessType);
 				if (accessType.equals(OpPerms.EditUsers)) {
@@ -235,70 +238,90 @@ public class User implements Comparable<User> {
 			}
 			return permissions;
 		}
-		
-		
-		 // get all the groups this user (or group) is a part of
-		for(UserGroup userGroup : getGroups()){
+
+		// get all the groups this user (or group) is a part of
+		for (UserGroup userGroup : getGroups()) {
 			Set<UserAccess> tempPerms = userGroup.getGroup().getPermissions();
-			for(UserAccess perm : tempPerms){
+			for (UserAccess perm : tempPerms) {
 				this.add(permissions, perm, false);
 			}
 		}
-		
-		
+
 		// READ the permissions assigned directly to this THIS user/group
-		for(UserAccess perm : ownedPermissions) {
+		for (UserAccess perm : ownedPermissions) {
 			this.add(permissions, perm, true);
 		}
-		
+
 		return permissions;
 	}
-	
+
 	private void add(Set<UserAccess> permissions, UserAccess perm, boolean overrideBoth) {
 		if (perm == null || perm.getOpPerm() == null)
 			return;
-		
-		for(UserAccess origPerm : permissions) {
+
+		for (UserAccess origPerm : permissions) {
 			if (origPerm.getOpPerm().equals(perm.getOpPerm())) {
 				if (overrideBoth) {
-					// Override the previous settings, regardless if Granting or Revoking
-					if (perm.getViewFlag() != null) origPerm.setViewFlag(perm.getViewFlag());
-					if (perm.getEditFlag() != null) origPerm.setEditFlag(perm.getEditFlag());
-					if (perm.getDeleteFlag() != null) origPerm.setDeleteFlag(perm.getDeleteFlag());
-					if (perm.getGrantFlag() != null) origPerm.setGrantFlag(perm.getGrantFlag());
+					// Override the previous settings, regardless if Granting or
+					// Revoking
+					if (perm.getViewFlag() != null)
+						origPerm.setViewFlag(perm.getViewFlag());
+					if (perm.getEditFlag() != null)
+						origPerm.setEditFlag(perm.getEditFlag());
+					if (perm.getDeleteFlag() != null)
+						origPerm.setDeleteFlag(perm.getDeleteFlag());
+					if (perm.getGrantFlag() != null)
+						origPerm.setGrantFlag(perm.getGrantFlag());
 				} else {
 					// Optimistic Granting
-					// if the user has two groups with the same perm type, 
-					// and one grants but the other revokes, then the users WILL be granted the right
-					if (perm.getViewFlag()) origPerm.setViewFlag(true);
-					if (perm.getEditFlag()) origPerm.setEditFlag(true);
-					if (perm.getDeleteFlag()) origPerm.setDeleteFlag(true);
-					if (perm.getGrantFlag()) origPerm.setGrantFlag(true);
+					// if the user has two groups with the same perm type,
+					// and one grants but the other revokes, then the users WILL
+					// be granted the right
+					if (perm.getViewFlag())
+						origPerm.setViewFlag(true);
+					if (perm.getEditFlag())
+						origPerm.setEditFlag(true);
+					if (perm.getDeleteFlag())
+						origPerm.setDeleteFlag(true);
+					if (perm.getGrantFlag())
+						origPerm.setGrantFlag(true);
 				}
 				return;
 			}
 		}
-		
+
 		// add the parent group's permissions to the user's permissions
 		permissions.add(perm);
 		return;
 	}
-	
+
 	@Override
 	public int compareTo(User o) {
 		if (!this.isActive.equals(o.isActive)) {
 			// Sort Active before Inactive
-			if (this.isActive.equals("Yes")) return -1;
-			else return 1;
+			if (this.isActive.equals("Yes"))
+				return -1;
+			else
+				return 1;
 		}
 		if (!this.isGroup.equals(o.isGroup)) {
 			// Sort Groups before Users
-			if (this.isGroup.equals("Yes")) return -1;
-			else return 1;
+			if (this.isGroup.equals("Yes"))
+				return -1;
+			else
+				return 1;
 		}
 		// Then sort by name
 		return this.name.compareToIgnoreCase(o.name);
 	}
-	
+
+	@OneToMany(mappedBy = "adminId", cascade = { CascadeType.ALL })
+	public List<UserLoginLog> getLoginlog() {
+		return loginlog;
+	}
+
+	public void setLoginlog(List<UserLoginLog> loginlog) {
+		this.loginlog = loginlog;
+	}
 
 }

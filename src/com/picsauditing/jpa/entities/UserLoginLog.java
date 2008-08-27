@@ -2,19 +2,15 @@ package com.picsauditing.jpa.entities;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "loginlog")
@@ -23,8 +19,9 @@ public class UserLoginLog {
 	private int id = 0;
 	private String username = "";
 	private String password = "";
-	private YesNo successful;
+	private char successful;
 	private Date date;
+	private String remoteAddress;
 	private User adminId;
 
 	public UserLoginLog() {
@@ -40,6 +37,7 @@ public class UserLoginLog {
 		this.id = id;
 	}
 
+	@Column(name = "username", nullable = true, length = 50)
 	public String getUsername() {
 		return username;
 	}
@@ -48,6 +46,7 @@ public class UserLoginLog {
 		this.username = username;
 	}
 
+	@Column(name = "password", length = 50)
 	public String getPassword() {
 		return password;
 	}
@@ -56,21 +55,7 @@ public class UserLoginLog {
 		this.password = password;
 	}
 
-	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
-	@Enumerated(EnumType.STRING)
-	public YesNo getSuccessful() {
-		return successful;
-	}
-	
-	@Transient
-	public boolean isSuccessful() {
-		return YesNo.Yes == successful;
-	}
-
-	public void setIsSuccessful(YesNo successful) {
-		this.successful = successful;
-	}
-
+	@Column(name = "date", nullable = true)
 	public Date getDate() {
 		return date;
 	}
@@ -101,7 +86,8 @@ public class UserLoginLog {
 		return true;
 	}
 
-	public User getAdminId() {  // Is this the way to grab this?
+	@Column(name = "adminID", length = 9)
+	public User getAdminId() {
 		return adminId;
 	}
 
@@ -109,4 +95,21 @@ public class UserLoginLog {
 		this.adminId = adminId;
 	}
 
+	@Column(name = "remoteAddress", length = 100)
+	public String getRemoteAddress() {
+		return remoteAddress;
+	}
+
+	public void setRemoteAddress(String remoteAddress) {
+		this.remoteAddress = remoteAddress;
+	}
+
+	public void setSuccessful(char successful) {
+		this.successful = successful;
+	}
+
+	@Column(name = "successful", nullable = true)
+	public char getSuccessful() {
+		return successful;
+	}
 }
