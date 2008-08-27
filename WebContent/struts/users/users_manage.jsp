@@ -240,11 +240,10 @@ function checkUsername(username, userID) {
 			<td><s:date name="user.lastLogin" /></td>
 		</tr>
 	</s:if>
-
-	<tr>
-		<th>Active</th>
-		<td><s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio> </td>
-	</tr>
+		<tr>
+			<th>Active</th>
+			<td><s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio></td>
+		</tr>
 </s:if>
 </table>
 
