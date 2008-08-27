@@ -191,11 +191,13 @@ function checkUsername(username, userID) {
 	<s:hidden name="isActive" />
 	<s:hidden name="user.accountID" />
 	<s:hidden name="user.isGroup" />
+<s:if test="user.id > 0">	
 <pics:permission perm="EditUsers" type="Edit">
 	<div class="buttons">
 		<button class="positive" type="submit" name="button" value="Save">Save</button>
 	</div>
 </pics:permission>
+</s:if>
 <table class="forms">
 <s:if test="user.id > 0">
 	<tr>
@@ -208,11 +210,12 @@ function checkUsername(username, userID) {
 			<s:if test="!user.group"><a href="#" onclick="sendWelcomeEmail(); return false;">Send Welcome Email</a></s:if>
 		</td>
 	</tr>
-</s:if>
+
 	<tr>
 		<th>Display name</th>
 		<td><s:textfield name="user.name" size="30"/></td>
 	</tr>
+	</s:if>
 <s:if test="!user.group">
 	<tr>
 		<th>Email</th>
@@ -237,12 +240,12 @@ function checkUsername(username, userID) {
 			<td><s:date name="user.lastLogin" /></td>
 		</tr>
 	</s:if>
-</s:if>
+
 	<tr>
 		<th>Active</th>
 		<td><s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio> </td>
 	</tr>
-
+</s:if>
 </table>
 
 </s:form>
