@@ -1,6 +1,6 @@
 package com.picsauditing.actions.users;
 
-import java.util.List;
+import java.util.Date;
 
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
@@ -13,7 +13,6 @@ public class UserGroupSave extends UsersManage {
 	protected int groupId;
 	protected int userGroupId;
 	protected UserGroupDAO userGroupDAO;
-	protected UserGroup userGroup = null;
 
 	public UserGroupSave(OperatorAccountDAO operatorDao, UserDAO userDAO, UserGroupDAO userGroupDAO) {
 		super(operatorDao, userDAO);
@@ -27,24 +26,38 @@ public class UserGroupSave extends UsersManage {
 		}
 
 		if ("AddGroup".equals(button)) {
-			for (UserGroup userGroup : user.getMembers()) {
-				if (userGroup.getGroup() != userGroup.getGroup()) {
-					userGroupDAO.save(userGroup);
-				}
-			}
-		}
-		if ("RemoveGroup".equals(button)) {
-			userGroupDAO.remove(userGroup.getUserGroupID());
-		}
-		if ("AddUser".equals(button)) {
 			for (UserGroup userGroup : user.getGroups()) {
-				if (userGroup.getUser() != userGroup.getUser()) {
-					userGroupDAO.save(userGroup);
+				if (userGroup.getGroup().getId() != groupId) {
+					UserGroup uGroup = new UserGroup();
+					uGroup.setGroup(new User());
+					uGroup.getGroup().setId(groupId);
+					uGroup.setUser(user);
+					uGroup.setCreationDate(new Date());
+					uGroup.setCreatedBy(permissions.getUserId());
+					userGroupDAO.save(uGroup);
 				}
 			}
 		}
 		if ("RemoveGroup".equals(button)) {
-			userGroupDAO.remove(userGroup.getUserGroupID());
+			userGroupDAO.remove(userGroupId);
+		}
+		if ("AddMember".equals(button)) {
+			for (UserGroup userGroup : user.getGroups()) {
+				if (userGroup.getUser().getId() != memberId) {
+					UserGroup uGroup = new UserGroup();
+					uGroup.setGroup(new User());
+					uGroup.getGroup().setId(memberId);
+					uGroup.setUser(user);
+					uGroup.setCreationDate(new Date());
+					uGroup.setCreatedBy(permissions.getUserId());
+					userGroupDAO.save(uGroup);
+				}
+			}
+			return "member";
+		}
+		if ("RemoveMember".equals(button)) {
+			userGroupDAO.remove(userGroupId);
+			return "member";
 		}
 
 		return SUCCESS;
@@ -72,14 +85,6 @@ public class UserGroupSave extends UsersManage {
 
 	public void setUserGroupId(int userGroupId) {
 		this.userGroupId = userGroupId;
-	}
-
-	public UserGroup getUserGroup() {
-		return userGroup;
-	}
-
-	public void setUserGroup(UserGroup userGroup) {
-		this.userGroup = userGroup;
 	}
 
 }

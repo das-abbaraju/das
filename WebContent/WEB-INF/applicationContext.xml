@@ -31,6 +31,7 @@
 	<bean id="RulesRowDAO" class="com.picsauditing.dao.RulesRowDAO"/>
 	<bean id="UserDAO" class="com.picsauditing.dao.UserDAO"/>
 	<bean id="UserAccessDAO" class="com.picsauditing.dao.UserAccessDAO"/>
+	<bean id="UserGroupDAO" class="com.picsauditing.dao.UserGroupDAO"/>
 	<bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO"/>
 
 	<bean id="EmailAuditBean" class="com.picsauditing.mail.EmailAuditBean" scope="prototype"/>

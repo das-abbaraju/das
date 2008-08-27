@@ -74,10 +74,24 @@ function sendWelcomeEmail() {
 	getPage(pars);
 }
 
-function saveGroup(action, groupID, childID) {
-	pars = '&action='+action+'&groupID='+groupID;
-	if (action == "removeUserFromGroup") pars = pars + '&childID=' + childID;
-	getPage(pars);
+function saveGroup(groupID) {
+	pars = 'button=AddGroup&groupId='+groupID+'&user.id='+currentUserID;
+	var myAjax = new Ajax.Updater('groupReport', 'UserGroupSaveAjax.action', {method: 'post', parameters: pars});
+}
+
+function removeGroup(userGroupID) {
+	pars = 'button=RemoveGroup&userGroupId='+userGroupID;
+	var myAjax = new Ajax.Updater('groupReport', 'UserGroupSaveAjax.action', {method: 'post', parameters: pars});
+}
+
+function addUser(memberId) {
+	pars = 'button=AddMember&memberId='+memberId+'&user.id='+currentUserID;
+	var myAjax = new Ajax.Updater('memberReport', 'UserGroupSaveAjax.action', {method: 'post', parameters: pars});
+}
+
+function removeUser(userGroupID) {
+	pars = 'button=RemoveMember&userGroupId='+userGroupID;
+	var myAjax = new Ajax.Updater('memberReport', 'UserGroupSaveAjax.action', {method: 'post', parameters: pars});
 }
 
 function checkUsername(username, userID) {
@@ -261,13 +275,14 @@ function checkUsername(username, userID) {
 		<s:include value="user_save_permissions.jsp" />
 	</div>
 	
+	<div id="groupReport">
+		<s:include value="user_save_groups.jsp" />
+	</div>
+
 	<div id="memberReport">
 		<s:include value="user_save_members.jsp" />
 	</div>
 
-	<div id="groupReport">
-		<s:include value="user_save_groups.jsp" />
-	</div>
 </s:if>
 
 
