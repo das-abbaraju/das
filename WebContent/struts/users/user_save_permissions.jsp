@@ -19,7 +19,12 @@
 			<td></td>
 			<td></td>
 			<td></td>
-			<td>remove</td>
+			<td></td>
+			<td>
+				<div class="buttons">
+					<button name="button" onclick="removePermission(<s:property value="id"/>);">Remove</button>
+				</div>
+			</td>
 		</tr>
 	</s:iterator>
 </tbody>

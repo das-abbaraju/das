@@ -57,6 +57,7 @@ public class UserAccessSave extends UsersManage {
 				user.getOwnedPermissions().addAll(temp);
 			}
 		}
+		
 		if ("RemovePerm".equals(button)) {
 			userAccessDAO.remove(accessId);
 		}

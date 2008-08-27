@@ -58,13 +58,14 @@ function addPermission(opPerm) {
 	var myAjax = new Ajax.Updater('permissionReport', 'UserAccessSaveAjax.action', {method: 'post', parameters: pars});
 }
 
-function savePermissions() {
-	var pars = '&' + $('permissions').serialize();
-	getPage(pars);
+function removePermission(accessId) {
+	pars = 'button=RemovePerm&accessId='+accessId;
+	$('permissionReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
+	var myAjax = new Ajax.Updater('permissionReport', 'UserAccessSaveAjax.action', {method: 'post', parameters: pars});
 }
 
-function deletePermission(accessType) {
-	var pars = '&action=deletePermission&accessType=' + accessType;
+function savePermissions() {
+	var pars = '&' + $('permissions').serialize();
 	getPage(pars);
 }
 
