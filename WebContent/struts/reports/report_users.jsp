@@ -35,7 +35,14 @@
 					<s:property value="[0].get('companyName')" /></a>	
 				</s:else>
 			</td>
-			<td><s:property value="[0].get('name')" /></td>
+			<td><s:if test="[0].get('tableType') == 'Acct'">
+				<s:property value="[0].get('name')" />
+				</s:if>
+				<s:else>
+					<a href="UsersManage.action?accountId=<s:property value="[0].get('accountID')"/>&user.id=<s:property value="[0].get('id')"/>">
+					<s:property value="[0].get('name')" /></a>
+				</s:else>
+			</td>
 			<td><s:date name="[0].get('dateCreated')" format="MM/dd/yyyy"/></td>
 			<td><s:date name="[0].get('lastLogin')" format="MM/dd/yyyy hh:mm" /></td>
 		</tr>

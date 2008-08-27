@@ -1,11 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
 <div id="search">
-<div id="showSearch" onclick="showSearch()"
-	<s:if test="filtered">style="display: none"</s:if>><a href="#">Show
-Filter Options</a></div>
-<div id="hideSearch" <s:if test="!filtered">style="display: none"</s:if>><a
-	href="#" onclick="hideSearch()">Hide Filter Options</a></div>
 <s:form id="form1" method="post"
 	cssStyle="background-color: #F4F4F4;"
 	onsubmit="runSearch( 'form1')">
@@ -19,14 +14,13 @@ Filter Options</a></div>
 	</div>
 	<br clear="all" />
 	
-
-	<s:if test="filterUser">
-		<div class="filterOption"><s:textfield name="UserName"
+	<s:if test="filterContact">
+		<div class="filterOption"><s:textfield name="ContactName"
 			cssClass="forms" size="15" onfocus="clearText(this)" title="must be 9 digits" /></div>
 	</s:if>
 
-	<s:if test="filterContact">
-		<div class="filterOption"><s:textfield name="ContactName"
+	<s:if test="filterUser">
+		<div class="filterOption"><s:textfield name="UserName"
 			cssClass="forms" size="15" onfocus="clearText(this)" title="must be 9 digits" /></div>
 	</s:if>
 	

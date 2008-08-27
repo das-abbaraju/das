@@ -46,6 +46,7 @@ public class ReportUser extends ReportActionSupport {
 		sql.addField("u.dateCreated");
 		sql.addField("u.lastLogin");
 		sql.addField("u.username");
+		sql.addField("u.id");
 		sql.addJoin("JOIN accounts a ON a.id = u.accountID");
 		sql.addField("a.name AS companyName");
 		sql.addWhere("u.isActive = 'Yes'");
