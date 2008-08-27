@@ -8,13 +8,15 @@
 	</tr>
 </thead>
 <tbody>
-<s:iterator value="user.groups">
+<s:sort comparator="groupNameComparator" source="user.groups">
+<s:iterator>
 	<tr>
 		<td><s:property value="group.account.name"/></td>
 		<td><a href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="group.id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property value="group.name"/></a></td>
 		<td><a href="#" onclick="removeGroup(<s:property value="userGroupID"/>); return false;">remove</a></td>
 	</tr>
 </s:iterator>
+</s:sort>
 <s:iterator value="addableGroups">
 	<tr>
 		<td><s:property value="account.name"/></td>
