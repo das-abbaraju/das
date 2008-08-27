@@ -45,9 +45,9 @@ public class UserGroupSave extends UsersManage {
 			for (UserGroup userGroup : user.getGroups()) {
 				if (userGroup.getUser().getId() != memberId) {
 					UserGroup uGroup = new UserGroup();
-					uGroup.setGroup(new User());
-					uGroup.getGroup().setId(memberId);
-					uGroup.setUser(user);
+					uGroup.setGroup(user);
+					uGroup.setUser(new User());
+					uGroup.getUser().setId(memberId);
 					uGroup.setCreationDate(new Date());
 					uGroup.setCreatedBy(permissions.getUserId());
 					userGroupDAO.save(uGroup);
