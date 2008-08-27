@@ -30,7 +30,7 @@ public class UserAccessDAOTest {
 		assertEquals(true, list.size() > 0);
 	}
 
-	@Test
+	//@Test
 	public void save() {
 		UserAccess access = new UserAccess();
 		access.setUser(new User(941));
