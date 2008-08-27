@@ -55,8 +55,6 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		if (permissions.getAccountId() != accountId)
 			permissions.tryPermission(OpPerms.AllOperators);
 
-		userList = userDAO.findByAccountID(accountId, isActive, isGroup);
-
 		if (user != null && accountId != user.getAccount().getId()) {
 			this.addActionError(user.getName() + " was not listed in this account");
 			user = null;
@@ -108,6 +106,8 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	}
 
 	public List<User> getUserList() {
+		if (userList == null)
+			userList = userDAO.findByAccountID(accountId, isActive, isGroup);
 		return userList;
 	}
 
