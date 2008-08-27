@@ -128,13 +128,15 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		for(User group : activeGroups) {
 			// Add the groups I have access to
 			if (permissions.hasPermission(OpPerms.AllOperators)
-					|| permissions.getGroups().contains(group.getId()))
+					|| permissions.getGroups().contains(group.getId())
+				)
 				list.add(group);
 		}
 		for(UserGroup userGroup : user.getGroups()) {
 			// but these groups, have already been added
 			list.remove(userGroup.getGroup());
 		}
+		list.remove(user);
 		return list;
 	}
 	
@@ -151,6 +153,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				list.remove(userGroup.getUser());
 			}
 		}
+		list.remove(user);
 		return list;
 	}
 

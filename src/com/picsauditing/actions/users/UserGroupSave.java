@@ -26,32 +26,40 @@ public class UserGroupSave extends UsersManage {
 		}
 
 		if ("AddGroup".equals(button)) {
+			boolean hasUserGroup = false;
 			for (UserGroup userGroup : user.getGroups()) {
-				if (userGroup.getGroup().getId() != groupId) {
-					UserGroup uGroup = new UserGroup();
-					uGroup.setGroup(new User());
-					uGroup.getGroup().setId(groupId);
-					uGroup.setUser(user);
-					uGroup.setCreationDate(new Date());
-					uGroup.setCreatedBy(permissions.getUserId());
-					userGroupDAO.save(uGroup);
-				}
+				if (userGroup.getGroup().getId() == groupId)
+					hasUserGroup = true;
+			}
+			if (!hasUserGroup) {
+				UserGroup uGroup = new UserGroup();
+				User newGroup = userDAO.find(groupId);
+				uGroup.setGroup(newGroup);
+				uGroup.setUser(user);
+				uGroup.setCreationDate(new Date());
+				uGroup.setCreatedBy(permissions.getUserId());
+				userGroupDAO.save(uGroup);
+				user.getGroups().add(uGroup);
 			}
 		}
 		if ("RemoveGroup".equals(button)) {
 			userGroupDAO.remove(userGroupId);
 		}
 		if ("AddMember".equals(button)) {
-			for (UserGroup userGroup : user.getGroups()) {
-				if (userGroup.getUser().getId() != memberId) {
-					UserGroup uGroup = new UserGroup();
-					uGroup.setGroup(user);
-					uGroup.setUser(new User());
-					uGroup.getUser().setId(memberId);
-					uGroup.setCreationDate(new Date());
-					uGroup.setCreatedBy(permissions.getUserId());
-					userGroupDAO.save(uGroup);
-				}
+			boolean hasUserGroup = false;
+			for (UserGroup userGroup : user.getMembers()) {
+				if (userGroup.getGroup().getId() == memberId)
+					hasUserGroup = true;
+			}
+			if (!hasUserGroup) {
+				UserGroup uGroup = new UserGroup();
+				User newUser = userDAO.find(memberId);
+				uGroup.setUser(newUser);
+				uGroup.setGroup(user);
+				uGroup.setCreationDate(new Date());
+				uGroup.setCreatedBy(permissions.getUserId());
+				userGroupDAO.save(uGroup);
+				user.getMembers().add(uGroup);
 			}
 			return "member";
 		}

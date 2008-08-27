@@ -26,71 +26,45 @@ function showPermDesc(item) {
 	$('new_deleteFlag').disabled = !permTypes[x][3];
 }
 
-function getPage(pars) {
-	pars = 'accountID='+accountID+pars;
-	$('ajaxstatus').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
-	var myAjax = new Ajax.Updater('editUser', 'user_edit.jsp', {method: 'post', parameters: pars});
-}
-
-function showUser(userID) {
-	getPage('');
-}
-
-function addUser(isGroup) {
-	pars = '&isGroup='+isGroup;
-	getPage(pars);
-}
-
-function saveUser() {
-	var pars = '&' + $('user').serialize();
-	getPage(pars);
-}
-
-function deleteUser() {
-	var pars = '&action=deleteUser';
-	getPage(pars);
-}
-
 function addPermission(opPerm) {
+	$('permissionReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
 	opPerm = $('newPermissionSelect').value;
 	pars = 'button=AddPerm&accountId='+accountID+'&user.id='+currentUserID+'&opPerm='+opPerm;
-	$('permissionReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
 	var myAjax = new Ajax.Updater('permissionReport', 'UserAccessSaveAjax.action', {method: 'post', parameters: pars});
 }
 
 function removePermission(accessId) {
-	pars = 'button=RemovePerm&accessId='+accessId;
 	$('permissionReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
+	pars = 'button=RemovePerm&accessId='+accessId+'&user.id='+currentUserID;
 	var myAjax = new Ajax.Updater('permissionReport', 'UserAccessSaveAjax.action', {method: 'post', parameters: pars});
 }
 
-function savePermissions() {
+function savePermission() {
 	var pars = '&' + $('permissions').serialize();
 	getPage(pars);
 }
 
-function sendWelcomeEmail() {
-	var pars = '&action=sendWelcomeEmail';
-	getPage(pars);
-}
-
-function saveGroup(groupID) {
+function addGroup(groupID) {
+	$('groupReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
 	pars = 'button=AddGroup&groupId='+groupID+'&user.id='+currentUserID;
 	var myAjax = new Ajax.Updater('groupReport', 'UserGroupSaveAjax.action', {method: 'post', parameters: pars});
 }
 
 function removeGroup(userGroupID) {
-	pars = 'button=RemoveGroup&userGroupId='+userGroupID;
+	$('groupReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
+	pars = 'button=RemoveGroup&userGroupId='+userGroupID+'&user.id='+currentUserID;
 	var myAjax = new Ajax.Updater('groupReport', 'UserGroupSaveAjax.action', {method: 'post', parameters: pars});
 }
 
-function addUser(memberId) {
+function addMember(memberId) {
+	$('memberReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
 	pars = 'button=AddMember&memberId='+memberId+'&user.id='+currentUserID;
 	var myAjax = new Ajax.Updater('memberReport', 'UserGroupSaveAjax.action', {method: 'post', parameters: pars});
 }
 
-function removeUser(userGroupID) {
-	pars = 'button=RemoveMember&userGroupId='+userGroupID;
+function removeMember(userGroupID) {
+	$('memberReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
+	pars = 'button=RemoveMember&userGroupId='+userGroupID+'&user.id='+currentUserID;
 	var myAjax = new Ajax.Updater('memberReport', 'UserGroupSaveAjax.action', {method: 'post', parameters: pars});
 }
 
@@ -149,8 +123,11 @@ function checkUsername(username, userID) {
 </td></tr>
 <tr>
 	<td colspan="3" align="center" class="blueMain">
-		<a href="#" onclick="addUser(true); return false;">Add Group</a>
-		&nbsp;&nbsp;<a href="#" onclick="addUser(false); return false;">Add User</a>
+	<s:hidden name="user.id" />
+	<s:hidden name="" />
+		<a href="?button=newUser&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>&user.isGroup=Yes">Add Group</a>
+		&nbsp;&nbsp;
+		<a href="?button=newUser&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>&user.isGroup=No">Add User</a>
 	</td>
 </tr>
 <tr valign="top"><td>
@@ -265,24 +242,27 @@ function checkUsername(username, userID) {
 </s:form>
 
 <s:if test="user.id > 0">
-	<pics:permission perm="SwitchUser">
-		<div><a href="login.jsp?switchUser=<s:property value="user.username"/>">Switch to this User</a></div>
-	</pics:permission>
-	<s:if test="!user.superUser">
+	<s:if test="!user.group">
+		<pics:permission perm="SwitchUser">
+			<div><a href="login.jsp?switchUser=<s:property value="user.username"/>">Switch to this User</a></div>
+		</pics:permission>
 	</s:if>
 	
-	<div id="permissionReport">
-		<s:include value="user_save_permissions.jsp" />
-	</div>
+	<s:if test="!user.superUser">
+		<div id="permissionReport">
+			<s:include value="user_save_permissions.jsp" />
+		</div>
+		
+		<div id="groupReport">
+			<s:include value="user_save_groups.jsp" />
+		</div>
+	</s:if>
 	
-	<div id="groupReport">
-		<s:include value="user_save_groups.jsp" />
-	</div>
-
-	<div id="memberReport">
-		<s:include value="user_save_members.jsp" />
-	</div>
-
+	<s:if test="user.group">
+		<div id="memberReport">
+			<s:include value="user_save_members.jsp" />
+		</div>
+	</s:if>
 </s:if>
 
 </td>
