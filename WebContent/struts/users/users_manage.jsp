@@ -185,15 +185,21 @@ function checkUsername(username, userID) {
 
 <s:include value="../actionMessages.jsp" />
 
+<s:form action="UserSave">
+	<s:hidden name="user.id" />
+	<s:hidden name="accountId" />
+	<s:hidden name="isGroup" />
+	<s:hidden name="isActive" />
+	<s:hidden name="user.isGroup" />
 <s:if test="user != null">
-<div class="buttons">
-<pics:permission perm="EditUsers" type="Edit">
-	<button class="positive" type="submit" name="button" value="Save">Save</button>
-</pics:permission>
-<pics:permission perm="EditUsers" type="Delete">
-	<button class="positive" type="submit" name="button" value="Remove">Delete</button>
-</pics:permission>
-</div>
+	<div class="buttons">
+	<pics:permission perm="EditUsers" type="Edit">
+		<button class="positive" type="submit" name="button" value="Save">Save</button>
+	</pics:permission>
+	<pics:permission perm="EditUsers" type="Delete">
+		<button class="positive" type="submit" name="button" value="Remove">Delete</button>
+	</pics:permission>
+	</div>
 </s:if>
 <table class="forms">
 <s:if test="user != null">
