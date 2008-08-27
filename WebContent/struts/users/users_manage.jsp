@@ -21,9 +21,6 @@ var permTypes = new Array();
 function showPermDesc(item) {
 	var x = $F(item);
 	$('permDescription').innerHTML = permTypes[x][0];
-	$('new_viewFlag').disabled = !permTypes[x][1];
-	$('new_editFlag').disabled = !permTypes[x][2];
-	$('new_deleteFlag').disabled = !permTypes[x][3];
 }
 
 function addPermission() {
@@ -39,8 +36,9 @@ function removePermission(accessId) {
 	var myAjax = new Ajax.Updater('permissionReport', 'UserAccessSaveAjax.action', {method: 'post', parameters: pars});
 }
 
-function updatePermission(accessId, typeName, theCheckbox) {
-	pars = 'accessId='+accessId+'&type='+typeName+'&permValue='+theCheckbox.checked;
+function updatePermission(accessId, typeName, theValue) {
+
+	pars = 'accessId='+accessId+'&type='+typeName+'&permValue='+theValue.value;
 	var myAjax = new Ajax.Updater('', 'UserAccessUpdateAjax.action', {method: 'post', parameters: pars,
 			onSuccess: function(transport) {
 				new Effect.Highlight($('permission_'+accessId),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});

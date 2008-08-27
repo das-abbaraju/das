@@ -21,10 +21,11 @@
 				<td><s:property value="opPerm.description" /></td>
 
 				<pics:permission perm="EditUsers" type="Grant">
-					<td><s:checkbox name="viewFlag" onclick="javascript: return updatePermission('%{id}','View',this);"/></td>
-					<td><s:checkbox name="editFlag" onclick="javascript: return updatePermission('%{id}','Edit',this);"/></td>
-					<td><s:checkbox name="deleteFlag" onclick="javascript: return updatePermission('%{id}','Delete',this);"/></td>
-					<td><s:checkbox name="grantFlag" onclick="javascript: return updatePermission('%{id}','Grant',this);"/></td>
+					<s:set name="tempList" value="#{'':'', 'true':'Grant', 'false':'Revoke'}"/>
+					<td><s:if test="opPerm.usesView()"><s:select list="#attr.tempList" name="viewFlag" onchange="javascript: return updatePermission('%{id}','View',this);"/></s:if></td>
+					<td><s:if test="opPerm.usesEdit()"><s:select list="#attr.tempList" name="editFlag" onchange="javascript: return updatePermission('%{id}','Edit',this);"/></s:if></td>
+					<td><s:if test="opPerm.usesDelete()"><s:select list="#attr.tempList" name="deleteFlag" onchange="javascript: return updatePermission('%{id}','Delete',this);"/></s:if></td>
+					<td><s:select list="#attr.tempList" name="grantFlag" onchange="javascript: return updatePermission('%{id}','Grant',this);"/></td>
 					<td>
 						<div class="buttons">
 						<button name="button"
@@ -33,10 +34,10 @@
 					</td>
 				</pics:permission>
 				<pics:permission perm="EditUsers" type="Grant" negativeCheck="true">
-					<td><s:property value="viewFlag ? 'Y' : 'N'"/></td>
-					<td><s:property value="editFlag ? 'Y' : 'N'"/></td>
-					<td><s:property value="deleteFlag ? 'Y' : 'N'"/></td>
-					<td><s:property value="grantFlag ? 'Y' : 'N'"/></td>
+					<td><s:property value="viewFlag ? 'Grant' : 'Revoke'"/></td>
+					<td><s:property value="editFlag ? 'Grant' : 'Revoke'"/></td>
+					<td><s:property value="deleteFlag ? 'Grant' : 'Revoke'"/></td>
+					<td><s:property value="grantFlag ? 'Grant' : 'Revoke'"/></td>
 				</pics:permission>
 			</tr>
 		</s:iterator>
