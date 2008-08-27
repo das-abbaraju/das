@@ -177,7 +177,6 @@ function getElement(whichLayer) {
 	if (typeof(tagVars) == "undefined") tagVars = "";
 	tagVars += "&VISITORVAR!UserID=<%=permissions.getUserId()%>&VISITORVAR!UserName=<%=URLEncoder.encode(permissions.getUsername())%>&VISITORVAR!DisplayName=<%=URLEncoder.encode(permissions.getName())%>";
 </script>
-</script>
 <!-- End Monitor Tracking Variables  -->
 
 <!-- BEGIN HumanTag Monitor. DO NOT MOVE! MUST BE PLACED JUST BEFORE THE /BODY TAG -->
