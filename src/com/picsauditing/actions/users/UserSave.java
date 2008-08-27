@@ -47,6 +47,7 @@ public class UserSave extends UsersManage {
 
 				if (user.getDateCreated() == null)
 					user.setDateCreated(new Date());
+				
 				user = userDAO.save(user);
 			}
 		}
@@ -69,7 +70,7 @@ public class UserSave extends UsersManage {
 			addActionError("Please enter a name with more than 2 characters");
 
 		if (user.isGroup())
-			return (getActionErrors().size() > 0);
+			return (getActionErrors().size() >= 0);
 		
 		if (user.getUsername().length() < 5)
 			addActionError("Please choose a username at least 5 characters long");
@@ -82,8 +83,10 @@ public class UserSave extends UsersManage {
 
 		if (user.getEmail().length() == 0 || !Utilities.isValidEmail(user.getEmail()))
 			addActionError("Please enter a valid email address.");
+		
+		boolean ae = (getActionErrors().size() > 0);
 
-		return (getActionErrors().size() > 0);
+		return (getActionErrors().size() >= 0);
 	}
 	
 }
