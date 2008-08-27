@@ -100,7 +100,16 @@ function checkUsername(username, userID) {
 		<s:form id="form1" method="post" cssStyle="%{filtered ? '' : 'display: none'}">
 		
 		<pics:permission perm="AllOperators">
-			Operator:<span id="operators"><s:include value="../operators/facilitySelect.jsp" />
+			Operator:<span id="operators">
+			<s:select 
+		       name="accountId"
+		       cssClass="blueSmall"
+			   headerKey="1100"
+			   headerValue="PICS Employees"
+		       list="facilities"
+		       listKey="id"
+		       listValue="name"
+		       />
 			</span><br />
 		</pics:permission>
 			Type:
