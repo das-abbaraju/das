@@ -170,7 +170,8 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	}
 
 	public List<OperatorAccount> getFacilities() {
-		facilities = new ArrayList<OperatorAccount>();
+		facilities = operatorDao.findWhere(true, "");
+		
 		return facilities;
 	}
 
