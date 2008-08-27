@@ -55,11 +55,12 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		if (permissions.getAccountId() != accountId)
 			permissions.tryPermission(OpPerms.AllOperators);
 
-		if (user != null && accountId != user.getAccount().getId()) {
+		// Final security check
+		if (user != null && user.getAccount() != null && user.getAccount().getId() != accountId) {
 			this.addActionError(user.getName() + " was not listed in this account");
 			user = null;
 		}
-
+		
 		return SUCCESS;
 	}
 
