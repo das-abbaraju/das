@@ -1,5 +1,7 @@
 package com.picsauditing.actions.users;
 
+import java.util.Date;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -17,7 +19,7 @@ public class UserSave extends UsersManage {
 		this.mailer = mailer;
 	}
 	
-	public String execute() {
+	public String execute() throws Exception {
 		try {
 			super.execute();
 		} catch (Exception e) {
@@ -35,40 +37,54 @@ public class UserSave extends UsersManage {
 		}
 		
 		if ("Save".equals(button)) {
-			addActionMessage("Users must relogin for changes to take effect");
-			if (!permissions.hasPermission(OpPerms.AllOperators)) {
+			if (user.getAccount() == null) {
+				addActionMessage("Users must relogin for changes to take effect");
 				user.setAccount(new Account());
-				user.getAccount().setId(permissions.getAccountId());
+				if (!permissions.hasPermission(OpPerms.AllOperators)) {
+					if (permissions.hasPermission(OpPerms.AllOperators))
+						user.getAccount().setId(accountId);
+				} else
+					user.getAccount().setId(permissions.getAccountId());
+
+				if (user.getDateCreated() == null)
+					user.setDateCreated(new Date());
+				user = userDAO.save(user);
 			}
-			user = userDAO.save(user);
+		}
+		
+		if ("Remove".equals(button)) {
+			permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
+			userDAO.remove(user);
+
+			addActionMessage("Successfully removed user: " + user.getUsername());
 		}
 		
 		return SUCCESS;
 	}
 	
-	private void deleteUser() throws Exception {
-		permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
-		addActionMessage("Successfully removed user: " + user.getUsername());
-		userDAO.remove(user);
-	}
+//	private void deleteUser() throws Exception {
+//		permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
+//		addActionMessage("Successfully removed user: " + user.getUsername());
+//		userDAO.remove(user);
+//	}
 
 	private boolean isOK() throws Exception {
 //		if (userDO.name.length()==0)
-//			errorMessages.addElement("Please enter a name");
+//			addActionMessage.addElement("Please enter a name");
 //		else if (userDO.name.length() < 3)
-//			errorMessages.addElement("Please enter a name with more than 2 characters");
+//			addActionMessage.addElement("Please enter a name with more than 2 characters");
 //
 //		if (userDO.isGroup.equals("Yes")) return (errorMessages.size() == 0);
 //		
 //		if (userDO.username.length() < 5)
-//			errorMessages.addElement("Please choose a username at least 5 characters long");
+//			addActionMessage.addElement("Please choose a username at least 5 characters long");
 //		if (userDO.password.length() < MIN_PASSWORD_LENGTH)
-//			errorMessages.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH + " characters in length.");
+//			addActionMessage.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH + " characters in length.");
 //		if (userDO.password.equalsIgnoreCase(userDO.username))
-//			errorMessages.addElement("Please choose a password different from your username.");
+//			addActionMessage.addElement("Please choose a password different from your username.");
 //		
 //		if (userDO.email.length() == 0 || !Utilities.isValidEmail(userDO.email))
-//			errorMessages.addElement("Please enter a valid email address.");
+//			addActionMessage.addElement("Please enter a valid email address.");
 
 		return (this.getActionErrors().size() > 0);
 	}
