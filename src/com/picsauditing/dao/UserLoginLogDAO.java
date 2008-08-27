@@ -31,13 +31,11 @@ public class UserLoginLogDAO extends PicsDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<UserLoginLog> findWhere(String where) {
-		if (where == null)
-			where = "";
-		if (where.length() > 0)
-			where = "WHERE " + where;
-
-		Query query = em.createQuery("FROM UserLoginLog t " + where + " ORDER BY t.date");
+	public List<UserLoginLog> findRecentLogins(String username, int maxResults) {
+		Query query = em.createQuery("FROM UserLoginLog t WHERE t.username = :username ORDER BY t.loginDate DESC");
+		query.setMaxResults(maxResults);
+		query.setParameter("username", username);
 		return query.getResultList();
 	}
+
 }

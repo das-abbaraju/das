@@ -21,15 +21,16 @@ public class UserLoginLog {
 	private String username = "";
 	private String password = "";
 	private char successful;
-	private Date date;
+	private Date loginDate;
 	private String remoteAddress;
-	private User adminId;
+	private User admin;
 
 	public UserLoginLog() {
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "logID", nullable = false)
 	public int getId() {
 		return id;
 	}
@@ -38,7 +39,7 @@ public class UserLoginLog {
 		this.id = id;
 	}
 
-	@Column(name = "username", nullable = true, length = 50)
+	@Column(name = "username", nullable = false, length = 50)
 	public String getUsername() {
 		return username;
 	}
@@ -57,12 +58,39 @@ public class UserLoginLog {
 	}
 
 	@Column(name = "date", nullable = true)
-	public Date getDate() {
-		return date;
+	public Date getLoginDate() {
+		return loginDate;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setLoginDate(Date date) {
+		this.loginDate = date;
+	}
+	
+	@ManyToOne( targetEntity=User.class)
+	public User getAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(User admin) {
+		this.admin = admin;
+	}
+
+	@Column(name = "remoteAddress", length = 100)
+	public String getRemoteAddress() {
+		return remoteAddress;
+	}
+
+	public void setRemoteAddress(String remoteAddress) {
+		this.remoteAddress = remoteAddress;
+	}
+
+	public void setSuccessful(char successful) {
+		this.successful = successful;
+	}
+
+	@Column(name = "successful", nullable = true)
+	public char getSuccessful() {
+		return successful;
 	}
 
 	@Override
@@ -85,33 +113,5 @@ public class UserLoginLog {
 		if (id != other.id)
 			return false;
 		return true;
-	}
-
-	
-	@ManyToOne( targetEntity=User.class)
-	public User getAdminId() {
-		return adminId;
-	}
-
-	public void setAdminId(User adminId) {
-		this.adminId = adminId;
-	}
-
-	@Column(name = "remoteAddress", length = 100)
-	public String getRemoteAddress() {
-		return remoteAddress;
-	}
-
-	public void setRemoteAddress(String remoteAddress) {
-		this.remoteAddress = remoteAddress;
-	}
-
-	public void setSuccessful(char successful) {
-		this.successful = successful;
-	}
-
-	@Column(name = "successful", nullable = true)
-	public char getSuccessful() {
-		return successful;
 	}
 }

@@ -315,13 +315,4 @@ public class User implements Comparable<User> {
 		return this.name.compareToIgnoreCase(o.name);
 	}
 
-	@OneToMany(mappedBy = "adminId", cascade = { CascadeType.ALL })
-	public List<UserLoginLog> getLoginlog() {
-		return loginlog;
-	}
-
-	public void setLoginlog(List<UserLoginLog> loginlog) {
-		this.loginlog = loginlog;
-	}
-
 }
