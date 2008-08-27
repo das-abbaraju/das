@@ -26,9 +26,9 @@ function showPermDesc(item) {
 	$('new_deleteFlag').disabled = !permTypes[x][3];
 }
 
-function addPermission(opPerm) {
-	$('permissionReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
-	opPerm = $('newPermissionSelect').value;
+function addPermission() {
+	$('addPermissionButton').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
+	var opPerm = $('newPermissionSelect').value;
 	pars = 'button=AddPerm&accountId='+accountID+'&user.id='+currentUserID+'&opPerm='+opPerm;
 	var myAjax = new Ajax.Updater('permissionReport', 'UserAccessSaveAjax.action', {method: 'post', parameters: pars});
 }
