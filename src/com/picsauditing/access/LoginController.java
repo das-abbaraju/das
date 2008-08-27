@@ -11,7 +11,9 @@ import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.DataBean;
 import com.picsauditing.PICS.PermissionsBean;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.SpringUtils;
 
@@ -32,6 +34,7 @@ public class LoginController extends DataBean {
 	private Permissions permissions;
 	private PermissionsBean pBean;
 	protected UserDAO userDAO = (UserDAO) SpringUtils.getBean("UserDAO");
+	protected UserLoginLogDAO loginLogDAO = (UserLoginLogDAO) SpringUtils.getBean("UserLoginLogDAO");;
 
 	public boolean login(String username, String password, javax.servlet.http.HttpServletRequest request,
 			javax.servlet.http.HttpServletResponse response) throws Exception {
@@ -305,27 +308,29 @@ public class LoginController extends DataBean {
 
 	private void logAttempt(Permissions permissions, String password, javax.servlet.http.HttpServletRequest request)
 			throws Exception {
+		
 		String remoteAddress = "";
 		if (request != null)
 			remoteAddress = request.getRemoteAddr();
 
-		String strSuccess = "N";
+		char strSuccess = 'N';
 		if (permissions.isLoggedIn()) {
 			password = "*";
-			strSuccess = "Y";
+			strSuccess = 'Y';
 		}
-
-		String insertQuery = "INSERT INTO loginlog SET " + "username = '" + eqDB(permissions.getUsername()) + "', "
-				+ "password = '" + eqDB(password) + "', " + "successful = '" + strSuccess + "', " + "date = NOW(), "
-				+ "remoteAddress = '" + remoteAddress + "', " + "id = '" + permissions.getUserIdString() + "', "
-				+ "adminID = '" + permissions.getAdminID() + "'";
-		// System.out.println(insertQuery);
-		try {
-			DBReady();
-			SQLStatement.executeUpdate(insertQuery);
-		} finally {
-			DBClose();
-		}
+		
+		UserLoginLog loginLog = new UserLoginLog();
+		loginLog.setLoginDate(new Date());
+		loginLog.setUsername(permissions.getUsername());
+		loginLog.setPassword(password);
+		loginLog.setRemoteAddress(remoteAddress);
+		loginLog.setSuccessful(strSuccess);
+		if (permissions.getUserId() > 0)
+			loginLog.setUserID(permissions.getUserId());
+		if (permissions.getAdminID() > 0)
+			loginLog.setAdmin(new User(permissions.getAdminID()));
+		
+		loginLogDAO.save(loginLog);
 	}
 
 	/**

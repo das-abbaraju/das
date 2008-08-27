@@ -22,6 +22,7 @@ public class UserLoginLog {
 	private int id = 0;
 	private String username = "";
 	private String password = "";
+	private int userID;
 	private char successful;
 	private Date loginDate;
 	private String remoteAddress;
@@ -57,6 +58,15 @@ public class UserLoginLog {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	@Column(name = "id")
+	public int getUserID() {
+		return userID;
+	}
+
+	public void setUserID(int userID) {
+		this.userID = userID;
 	}
 
 	@Column(name = "date", nullable = true)

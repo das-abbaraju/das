@@ -207,11 +207,8 @@ function checkUsername(username, userID) {
 	</tr>
 	<tr>
 		<th>Date created</th>
-		<td><s:date name="user.dateCreated" format="MM/d/yyyy" />
-			<s:if test="!user.group"><a href="#" onclick="sendWelcomeEmail(); return false;">Send Welcome Email</a></s:if>
-		</td>
+		<td><s:date name="user.dateCreated" format="MM/d/yyyy" /></td>
 	</tr>
-
 	<tr>
 		<th>Display name</th>
 		<td><s:textfield name="user.name" size="30"/></td>
@@ -253,9 +250,12 @@ function checkUsername(username, userID) {
 
 <s:if test="user.id > 0">
 	<s:if test="!user.group">
-		<pics:permission perm="SwitchUser">
-			<div><a href="login.jsp?switchUser=<s:property value="user.username"/>">Switch to this User</a></div>
-		</pics:permission>
+		<div>
+			<pics:permission perm="SwitchUser">
+				<a href="login.jsp?switchUser=<s:property value="user.username"/>">Switch to this User</a>
+			</pics:permission>
+			<a href="UserSave.action?button=sendWelcomeEmail&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&user.id=<s:property value="user.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>">Send Welcome Email</a>
+		</div>
 	</s:if>
 	
 	<s:if test="!user.superUser">
@@ -289,7 +289,10 @@ function checkUsername(username, userID) {
 			<tr>
 				<td><s:date name="loginDate"/></td>
 				<td><s:property value="remoteAddress"/></td>
-				<td><s:property value="notes"/></td>
+				<td><s:property value="successful"/>
+					<s:if test="admin.id > 0">Login by <s:property value="admin.name"/> from <s:property value="admin.account.name"/></s:if>
+					<s:if test="successful == 'N'">Incorrect password attempt</s:if>
+				</td>
 			</tr>
 		</s:iterator>
 		</tbody>
