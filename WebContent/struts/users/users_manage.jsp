@@ -39,9 +39,13 @@ function removePermission(accessId) {
 	var myAjax = new Ajax.Updater('permissionReport', 'UserAccessSaveAjax.action', {method: 'post', parameters: pars});
 }
 
-function savePermission() {
-	var pars = '&' + $('permissions').serialize();
-	getPage(pars);
+function updatePermission(accessId, typeName, theCheckbox) {
+	pars = 'accessId='+accessId+'&type='+typeName+'&permValue='+theCheckbox.checked;
+	var myAjax = new Ajax.Updater('', 'UserAccessUpdateAjax.action', {method: 'post', parameters: pars,
+			onSuccess: function(transport) {
+				new Effect.Highlight($('permission_'+accessId),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+			}
+	});
 }
 
 function addGroup(groupID) {
