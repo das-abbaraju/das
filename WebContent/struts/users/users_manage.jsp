@@ -285,7 +285,6 @@ function checkUsername(username, userID) {
 
 </s:if>
 
-
 </td>
 </tr>
 </table>
