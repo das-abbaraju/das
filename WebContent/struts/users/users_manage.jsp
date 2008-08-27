@@ -136,9 +136,9 @@ function checkUsername(username, userID) {
 	<td colspan="3" align="center" class="blueMain">
 	<s:hidden name="user.id" />
 	<s:hidden name="" />
-		<a href="?button=newUser&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>&user.isGroup=Yes">Add Group</a>
+		<a href="?button=newUser&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=Yes">Add Group</a>
 		&nbsp;&nbsp;
-		<a href="?button=newUser&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>&user.isGroup=No">Add User</a>
+		<a href="?button=newUser&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=No">Add User</a>
 	</td>
 </tr>
 <tr valign="top"><td>
@@ -185,22 +185,18 @@ function checkUsername(username, userID) {
 
 <s:include value="../actionMessages.jsp" />
 
-<s:form action="UserSave">
-	<s:hidden name="user.id" />
-	<s:hidden name="accountId" />
-	<s:hidden name="isGroup" />
-	<s:hidden name="isActive" />
-	<s:hidden name="user.accountID" />
-	<s:hidden name="user.isGroup" />
-<s:if test="user.id > 0">
+<s:if test="user != null">
+<div class="buttons">
 <pics:permission perm="EditUsers" type="Edit">
-	<div class="buttons">
-		<button class="positive" type="submit" name="button" value="Save">Save</button>
-	</div>
+	<button class="positive" type="submit" name="button" value="Save">Save</button>
 </pics:permission>
+<pics:permission perm="EditUsers" type="Delete">
+	<button class="positive" type="submit" name="button" value="Remove">Delete</button>
+</pics:permission>
+</div>
 </s:if>
 <table class="forms">
-<s:if test="user.id > 0">
+<s:if test="user != null">
 	<tr>
 		<th><s:if test="user.group">Group</s:if><s:else>User</s:else> #</th>
 		<td><s:property value="user.id"/></td>
