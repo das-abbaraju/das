@@ -334,6 +334,12 @@ a.refresh {
 	background: url('../images/refresh_icon.jpg') no-repeat left center;; padding-right:5px; padding-top:5px; padding-bottom:5px
 }
 
+a.remove {
+	padding-left: 17px;
+	margin-left: 2px;
+	background: url('../images/cross.png') no-repeat left center;
+}
+
 a.edit {
 	padding-left: 17px;
 	margin-left: 2px;

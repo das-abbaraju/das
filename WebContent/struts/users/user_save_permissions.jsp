@@ -49,8 +49,12 @@
 				<button name="button" onclick="addPermission();">Add Permission</button>
 			</div>
 			<s:select id="newPermissionSelect" list="grantablePermissions"
-				listValue="description" name="opPerm" />
+				listValue="description" name="opPerm" 
+				onchange="showPermDesc(this);" />
 			</td>
+		</tr>
+		<tr class="active">
+			<td id="permDescription" style="width: 450px;" colspan="6"></td>
 		</tr>
 	</tfoot>
 	</pics:permission>
