@@ -178,7 +178,6 @@ function checkUsername(username, userID) {
 
 <s:include value="../actionMessages.jsp" />
 
-<div id="ajaxstatus" style="height: 20px;"></div>
 <s:form action="UserSave">
 	<s:hidden name="user.id" />
 	<s:hidden name="accountId" />
@@ -267,6 +266,29 @@ function checkUsername(username, userID) {
 			<s:include value="user_save_members.jsp" />
 		</div>
 	</s:if>
+	
+	
+	<s:if test="!user.group">
+		<table class="report">
+		<thead>
+			<tr>
+				<th>Login Date/Time</th>
+				<th>IP Address</th>
+				<th>Notes</th>
+			</tr>
+		</thead>
+		<tbody>
+		<s:iterator value="recentLogins">
+			<tr>
+				<td><s:date name="loginDate"/></td>
+				<td><s:property value="remoteAddress"/></td>
+				<td><s:property value="notes"/></td>
+			</tr>
+		</s:iterator>
+		</tbody>
+		</table>
+	</s:if>
+	
 </s:if>
 
 </td>

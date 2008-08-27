@@ -35,7 +35,8 @@ public class UserLoginLogDAO extends PicsDAO {
 		Query query = em.createQuery("FROM UserLoginLog t WHERE t.username = :username ORDER BY t.loginDate DESC");
 		query.setMaxResults(maxResults);
 		query.setParameter("username", username);
-		return query.getResultList();
+		List<UserLoginLog> list = query.getResultList();
+		return list;
 	}
 
 }

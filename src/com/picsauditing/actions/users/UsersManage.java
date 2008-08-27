@@ -9,11 +9,14 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.UserGroup;
+import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.search.Report;
+import com.picsauditing.util.SpringUtils;
 
 public class UsersManage extends PicsActionSupport implements Preparable {
 	private static final long serialVersionUID = -167727120482502678L;
@@ -153,6 +156,11 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		}
 		list.remove(user);
 		return list;
+	}
+	
+	public List<UserLoginLog> getRecentLogins() {
+		UserLoginLogDAO loginLogDao = (UserLoginLogDAO)SpringUtils.getBean("UserLoginLogDAO");
+		return loginLogDao.findRecentLogins(user.getUsername(), 10);
 	}
 
 	@Override
