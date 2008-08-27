@@ -2,6 +2,7 @@ package com.picsauditing.actions.users;
 
 import java.util.Date;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -20,11 +21,7 @@ public class UserSave extends UsersManage {
 	}
 	
 	public String execute() throws Exception {
-		try {
-			super.execute();
-		} catch (Exception e) {
-			return SUCCESS;
-		}
+		super.execute();
 		
 		if ("sendWelcomeEmail".equals(button) && user != null) {
 			try {
@@ -37,6 +34,8 @@ public class UserSave extends UsersManage {
 		}
 		
 		if ("Save".equals(button)) {
+			if (!isOK())
+				return SUCCESS;
 			if (user.getAccount() == null) {
 				addActionMessage("Users must relogin for changes to take effect");
 				user.setAccount(new Account());
@@ -57,36 +56,34 @@ public class UserSave extends UsersManage {
 			userDAO.remove(user);
 
 			addActionMessage("Successfully removed user: " + user.getUsername());
+			user = null;
 		}
 		
 		return SUCCESS;
 	}
 	
-//	private void deleteUser() throws Exception {
-//		permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
-//		addActionMessage("Successfully removed user: " + user.getUsername());
-//		userDAO.remove(user);
-//	}
-
 	private boolean isOK() throws Exception {
-//		if (userDO.name.length()==0)
-//			addActionMessage.addElement("Please enter a name");
-//		else if (userDO.name.length() < 3)
-//			addActionMessage.addElement("Please enter a name with more than 2 characters");
-//
-//		if (userDO.isGroup.equals("Yes")) return (errorMessages.size() == 0);
-//		
-//		if (userDO.username.length() < 5)
-//			addActionMessage.addElement("Please choose a username at least 5 characters long");
-//		if (userDO.password.length() < MIN_PASSWORD_LENGTH)
-//			addActionMessage.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH + " characters in length.");
-//		if (userDO.password.equalsIgnoreCase(userDO.username))
-//			addActionMessage.addElement("Please choose a password different from your username.");
-//		
-//		if (userDO.email.length() == 0 || !Utilities.isValidEmail(userDO.email))
-//			addActionMessage.addElement("Please enter a valid email address.");
+		if (user.getName().length() == 0)
+			addActionError("Please enter a name");
+		else if (user.getName().length() < 3)
+			addActionError("Please enter a name with more than 2 characters");
 
-		return (this.getActionErrors().size() > 0);
+		if (user.isGroup())
+			return (getActionErrors().size() > 0);
+		
+		if (user.getUsername().length() < 5)
+			addActionError("Please choose a username at least 5 characters long");
+			
+		if (user.getPassword().length() < MIN_PASSWORD_LENGTH)
+			addActionError("Please choose a password at least " + MIN_PASSWORD_LENGTH + " characters in length.");
+		
+		if (user.getPassword().equalsIgnoreCase(user.getUsername()))
+			addActionError("Please choose a password different from your username.");
+
+		if (user.getEmail().length() == 0 || !Utilities.isValidEmail(user.getEmail()))
+			addActionError("Please enter a valid email address.");
+
+		return (getActionErrors().size() > 0);
 	}
 	
 }
