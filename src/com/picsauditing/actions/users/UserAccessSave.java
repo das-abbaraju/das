@@ -48,6 +48,8 @@ public class UserAccessSave extends UsersManage {
 					userAccess.setEditFlag(true);
 				if (opPerm.usesDelete())
 					userAccess.setDeleteFlag(true);
+				userAccess.setGrantFlag(true);
+				
 				userAccessDAO.save(userAccess);
 				user.getOwnedPermissions().add(userAccess);
 				// Resort the list
