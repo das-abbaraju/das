@@ -234,7 +234,7 @@ function checkUsername(username, userID) {
 		<th>Password</th>
 		<td><s:textfield name="user.password" /></td>
 	</tr>
-	<s:if test="user.id > 0">
+	<s:if test="user != null">
 		<tr>
 			<th>Last login</th>
 			<td><s:date name="user.lastLogin" /></td>
@@ -250,7 +250,7 @@ function checkUsername(username, userID) {
 
 </s:form>
 
-<s:if test="user.id > 0">
+<s:if test="user != null">
 	<s:if test="!user.group">
 		<div>
 			<pics:permission perm="SwitchUser">
@@ -300,9 +300,7 @@ function checkUsername(username, userID) {
 		</tbody>
 		</table>
 	</s:if>
-	
 </s:if>
-
 </td>
 </tr>
 </table>
