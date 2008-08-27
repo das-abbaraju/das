@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -86,7 +87,8 @@ public class UserLoginLog {
 		return true;
 	}
 
-	@Column(name = "adminID", length = 9)
+	
+	@ManyToOne( targetEntity=User.class)
 	public User getAdminId() {
 		return adminId;
 	}
