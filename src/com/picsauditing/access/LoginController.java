@@ -43,14 +43,14 @@ public class LoginController extends DataBean {
 		getErrors().clear();
 		String error = canLogin(username, password);
 		if (error.length() > 0) {
-			logAttempt(permissions, password, request);
+			logAttempt(permissions, username, password, request);
 			getErrors().add(error);
 			return false;
 		}
 
 		// /////////////////
 		this.doLogin(request.getSession(), true);
-		logAttempt(permissions, "", request);
+		logAttempt(permissions, username, password, request);
 		postLogin(request, response);
 
 		return true;
@@ -70,7 +70,7 @@ public class LoginController extends DataBean {
 
 		// /////////////////
 		this.doLogin(request.getSession(), false);
-		logAttempt(permissions, "", request);
+		logAttempt(permissions, userName, "switch_user", request);
 		postLogin(request, response);
 
 		return true;
@@ -306,25 +306,25 @@ public class LoginController extends DataBean {
 		response.sendRedirect("login.jsp" + query);
 	}
 
-	private void logAttempt(Permissions permissions, String password, javax.servlet.http.HttpServletRequest request)
+	private void logAttempt(Permissions permissions, String username, String password, javax.servlet.http.HttpServletRequest request)
 			throws Exception {
 		
 		String remoteAddress = "";
 		if (request != null)
 			remoteAddress = request.getRemoteAddr();
 
-		char strSuccess = 'N';
+		char successful = 'N';
 		if (permissions.isLoggedIn()) {
 			password = "*";
-			strSuccess = 'Y';
+			successful = 'Y';
 		}
 		
 		UserLoginLog loginLog = new UserLoginLog();
 		loginLog.setLoginDate(new Date());
-		loginLog.setUsername(permissions.getUsername());
+		loginLog.setUsername(username);
 		loginLog.setPassword(password);
 		loginLog.setRemoteAddress(remoteAddress);
-		loginLog.setSuccessful(strSuccess);
+		loginLog.setSuccessful(successful);
 		if (permissions.getUserId() > 0)
 			loginLog.setUserID(permissions.getUserId());
 		if (permissions.getAdminID() > 0)
