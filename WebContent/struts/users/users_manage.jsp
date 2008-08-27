@@ -96,7 +96,11 @@ function checkUsername(username, userID) {
 		<div id="showSearch" onclick="showSearch()" <s:if test="filtered">style="display: none"</s:if> ><a href="#">Show Filter Options</a></div>
 		<div id="hideSearch" <s:if test="!filtered">style="display: none"</s:if> ><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
 		<s:form id="form1" method="post" cssStyle="%{filtered ? '' : 'display: none'}">
-		
+		<div style="text-align: center; width: 100%;">
+			<div class="buttons">
+				<button class="positive" type="submit" name="button" value="Search">Search</button>
+			</div>
+		</div><br/>		
 		<pics:permission perm="AllOperators">
 			Operator:<span id="operators">
 			<s:select 
@@ -122,10 +126,6 @@ function checkUsername(username, userID) {
 				       list="#{'Yes':'Active', 'No':'Inactive'}"
 				       value="isActive"
 				/>
-			<s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch('form1')" />
-			<s:hidden name="showPage" value="1"/>
-			<s:hidden name="startsWith" value=""/>
-			<s:hidden name="orderBy"  value="name"/>
 		</s:form>
 		</div>
 	</td>

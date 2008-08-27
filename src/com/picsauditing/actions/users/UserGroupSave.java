@@ -104,7 +104,7 @@ public class UserGroupSave extends UsersManage {
 			if(userGroup.getGroup().getId() == group.getId()) {
 				return true;
 			}
-			if (containsMember(userGroup.getGroup(), group))
+			if (containsGroup(userGroup.getGroup(), group))
 				return true;
 		}
 		return false;
