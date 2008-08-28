@@ -611,13 +611,13 @@ public class ContractorBean extends DataBean {
 		if (num_of_trades == 0) {
 			num_of_trades++;
 			trades = "1;" + main_trade + ";";
-		}// if
-		if (main_trade.equals(TradesBean.DEFAULT_SELECT_TRADE))
+		}
+		if (main_trade == null || main_trade.equals(TradesBean.DEFAULT_SELECT_TRADE))
 			errorMessages.addElement("Please select a main trade");
 		if (requestedByID == null || requestedByID.length() == 0)
 			errorMessages.addElement("Please select a choice for the Audit Requested By field");
 		return (errorMessages.size() == 0);
-	}// isOKClientCreate
+	}
 
 	public User getPrimaryUser() {
 		return this.primaryUser;
@@ -654,11 +654,11 @@ public class ContractorBean extends DataBean {
 				SQLResult.close();
 				DBClose();
 				return false;
-			}// else
+			}
 		} finally {
 			DBClose();
-		}// finally
-	}// taxIDExists
+		}
+	}
 
 	public void addNote(String conID, String pre, String newNote, String notesDate) throws Exception {
 		notes = notesDate + " " + pre + ": " + newNote + "\n" + notes;
