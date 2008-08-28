@@ -343,6 +343,7 @@
 				<param name="catDataID">${catDataID}</param>
 				<param name="mode">Edit</param>
 			</result>
+			<result name="input">/struts/blank.jsp</result>
 		</action>
 
 		<action name="Cron" class="com.picsauditing.actions.Cron">
