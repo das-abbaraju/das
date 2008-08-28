@@ -19,32 +19,19 @@ import com.picsauditing.util.SpringUtils;
 import com.picsauditing.access.Permissions;
 
 public class AccountBean extends DataBean {
-	public static final String CREATED_BY_PICS = "PICS"; // Must match
-	// createdBy ENUM in
-	// DB table
-	public static final String CREATED_BY_INTERNET = "Internet"; // Must
-	// match
-	// createdBy
-	// ENUM in
-	// DB table
-	private static final int PASSWORD_DURATION = 365; // days between required
-	// password update
-	public static final int MIN_PASSWORD_LENGTH = 5; // minimum required
-	// length of a passord
+	public static final String CREATED_BY_PICS = "PICS"; // Must match createdBy ENUM in DB table
+	public static final String CREATED_BY_INTERNET = "Internet"; // Must match createdBy ENUM in DB table
+	private static final int PASSWORD_DURATION = 365; // days between required password update
+	public static final int MIN_PASSWORD_LENGTH = 5; // minimum required length of a passord
 	static final String[] INDUSTRY_ARRAY = { "Petrochemical", "Mining", "Power", "General", "Construction",
 			"Manufacturing", "Pharmaceutical", "Telecommunications" };
 	OperatorBean o = null;
 	String accountDate = "";
-	public String userID = "0"; // used in check login, to set id for users not
-	// in main accounts table, but in users table
-	public HashSet<String> canSeeSet = new HashSet<String>(); // all sub
-	// contractors
-	// of a general
-	// contractor/operator
+	public String userID = "0"; // used in check login, to set id for users not in main accounts table, but in users table
+	public HashSet<String> canSeeSet = new HashSet<String>(); // all subcontractors of a general contractor/operator
 
 	public String id = "";
-	public String type = "Contractor"; // is of type ENUM of
-	// ('Contractor','Operator','General')
+	public String type = "Contractor"; // is of type ENUM of ('Contractor','Operator','General')
 	public String name = "";
 	public String username = "";
 	public String password = "";
@@ -64,94 +51,93 @@ public class AccountBean extends DataBean {
 	public String active = "N";
 	public String createdBy = "";
 	public String dateCreated = "";
-	public String oldPassword = ""; // used for determining if the password has
-	// changed
+	public String oldPassword = ""; // used for determining if the password has changed
 	public String emailConfirmedDate = "";
 	boolean updatedPassword = false;
 
 	public void setId(String s) {
 		id = s;
-	}// setId
+	}
 
 	public void setActive(String s) {
 		active = s;
-	}// setActive
+	}
 
 	public String getId() {
 		return id;
-	}// getId
+	}
 
 	public String getFullAddress() {
 		return address + '\n' + city + ", " + state + " " + zip;
-	}// getFullAddress
+	}
 
 	public void setOBean() {
 		if (null == o)
 			o = new OperatorBean();
-	}// setOBean
+	}
 
 	public boolean isActive() {
 		if ((active != null) && ("N".equals(active)))
 			return false;
 		return true;
-	}// isActive
+	}
 
 	public String getActiveChecked() {
 		if ((active != null) && ("Y".equals(active)))
 			return "checked";
 		return "";
-	}// getActiveChecked
+	}
 
 	public String getNotActiveChecked() {
 		if ((active != null) && ("N".equals(active)))
 			return "checked";
 		return "";
-	}// getNotActiveChecked
+	}
 
 	public String typeGeneralChecked() {
 		if ("General".equals(type))
 			return "checked";
 		else
 			return "";
-	}// typeGeneralChecked
+	}
 
 	public String typeContractorChecked() {
 		if ("Contractor".equals(type))
 			return "checked";
 		else
 			return "";
-	}// typeContractorChecked
+	}
 
 	public String getPhone2Header() {
 		if ("".equals(phone2))
 			return "";
 		else
 			return " | Phone 2:";
-	}// getPhone2Header
+	}
 
 	public String getFaxLine() {
 		if ("".equals(fax))
 			return "";
 		else
 			return "<span class=redMain>Fax:</span> " + fax + "<br>";
-	}// getFaxLine
+	}
 
 	public String getWeb_URLHeader() {
 		if ("".equals(web_URL))
 			return "";
 		else
 			return "Web:";
-	}// getWeb_URLHeader
+	}
 
 	public void setFromDB(String aID) throws Exception {
 		id = aID;
 		setFromDB();
-	}// setFromDB
+	}
 
 	public void setAuditorFromDB(String aID) throws Exception {
 		id = aID;
 		setFromDB();
-	}// setFromDB
+	}
 
 	public void setFromDB() throws Exception {
 		String selectQuery = "SELECT * FROM accounts WHERE id=" + Utilities.intToDB(id) + ";";
@@ -165,8 +151,8 @@ public class AccountBean extends DataBean {
 			SQLResult.close();
 		} finally {
 			DBClose();
-		}// finally
-	}// setFromDB
+		}
+	}
 
 	public void setAuditorFromDB() throws Exception {
 		String selectQuery = "SELECT * FROM accounts WHERE id=" + Utilities.intToDB(id) + ";";
@@ -180,8 +166,8 @@ public class AccountBean extends DataBean {
 			SQLResult.close();
 		} finally {
 			DBClose();
-		}// finally
-	}// setFromDB
+		}
+	}
 
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
 		this.isSet = false;
@@ -213,8 +199,8 @@ public class AccountBean extends DataBean {
 		} catch (Exception ex) {
 			DBClose();
 			throw ex;
-		}// catch
-	}// setFromResultSet
+		}
+	}
 
 	public void writeToDB() throws Exception {
 		String updateQuery = "UPDATE accounts SET type='" + type + "',name='" + eqDB(name) + "',username='"
@@ -230,8 +216,8 @@ public class AccountBean extends DataBean {
 				changePassword(password);
 		} finally {
 			DBClose();
-		}// finally
-	}// writeToDB
+		}
+	}
 
 	public void writeAuditorToDB() throws Exception {
 		String updateQuery = "UPDATE accounts SET name='" + eqDB(name) + "',username='" + eqDB(username)
@@ -244,8 +230,8 @@ public class AccountBean extends DataBean {
 				changePassword(password);
 		} finally {
 			DBClose();
-		}// finally
-	}// writeAuditorToDB
+		}
+	}
 
 	public boolean writeNewToDB() throws Exception {
 		String insertQuery = "INSERT INTO accounts (id,type,name,username,password,passwordChange,lastLogin,"
@@ -296,13 +282,13 @@ public class AccountBean extends DataBean {
 				SQLResult.close();
 				DBClose();
 				throw new Exception("No id returned after inserting new account");
-			}// else
+			}
 			SQLResult.close();
 			return true;
 		} finally {
 			DBClose();
-		}// finally
-	}// writeNewToDB
+		}
+	}
 
 	public void setFromRequest(javax.servlet.http.HttpServletRequest r) throws Exception {
 		name = r.getParameter("name");
@@ -322,7 +308,7 @@ public class AccountBean extends DataBean {
 		active = r.getParameter("active");
 		createdBy = r.getParameter("createdBy");
 		type = r.getParameter("type");
-	}// setFromRequest
+	}
 
 	public void setFromUploadRequest(HttpServletRequest r) throws Exception {
 		Map<String, String> m = (Map<String, String>) r.getAttribute("uploadfields");
@@ -343,7 +329,7 @@ public class AccountBean extends DataBean {
 		active = m.get("active");
 		createdBy = m.get("createdBy");
 		type = m.get("type");
-	}// setFromUploadRequest
+	}
 
 	public void setFromUploadRequestClientNew(javax.servlet.http.HttpServletRequest r) throws Exception {
 		name = r.getParameter("name");
@@ -363,7 +349,7 @@ public class AccountBean extends DataBean {
 		active = "N";
 		createdBy = CREATED_BY_INTERNET;
 		type = "Contractor";
-	}// setFromUploadRequestClientNew
+	}
 
 	public void setFromUploadRequestClientEdit(HttpServletRequest r) throws Exception {
 		Map<String, String> m = (Map<String, String>) r.getAttribute("uploadfields");
@@ -390,7 +376,7 @@ public class AccountBean extends DataBean {
 		active = r.getParameter("active");
 		type = "Auditor";
 		createdBy = CREATED_BY_PICS;
-	}// setFromRequestNewAuditor
+	}
 
 	public String searchID(String search_name) throws Exception {
 		String selectQuery = "SELECT id from accounts WHERE name='" + eqDB(search_name) + "';";
@@ -402,9 +388,9 @@ public class AccountBean extends DataBean {
 			SQLResult.close();
 		} finally {
 			DBClose();
-		}// finally
+		}
 		return id;
-	}// searchID
+	}
 
 	public int findID(String username) throws SQLException {
 		int id = 0;
@@ -425,13 +411,13 @@ public class AccountBean extends DataBean {
 		setOBean();
 		return o.getOperatorsArray(includePICS, OperatorBean.DONT_INCLUDE_ID, OperatorBean.DONT_INCLUDE_GENERALS,
 				OperatorBean.ONLY_ACTIVE);
-	}// getActiveOperatorsArray
+	}
 
 	public String[] getActiveGeneralsArray(boolean includePICS) throws Exception {
 		setOBean();
 		return o.getOperatorsArray(includePICS, OperatorBean.DONT_INCLUDE_ID, OperatorBean.INCLUDE_GENERALS,
 				OperatorBean.ONLY_ACTIVE);
-	}// getActiveGeneralsArray
+	}
 
 	public String[] getAuditorContractors(String auditor_id, String orderBy) throws Exception {
 		ArrayList<String> audContractors = new ArrayList<String>();
@@ -446,12 +432,12 @@ public class AccountBean extends DataBean {
 				audContractors.add(DateBean.toShowFormat(SQLResult.getString("assignedDate")));
 				audContractors.add(SQLResult.getString("auditStatus"));
 				audContractors.add(DateBean.toShowFormat(SQLResult.getString("auditDate")));
-			}// while
+			}
 		} finally {
 			DBClose();
-		}// finally
+		}
 		return (String[]) audContractors.toArray(new String[0]);
-	}// getAuditorContractors
+	}
 
 	public String getOperatorSelect(String name, String classType, String selectedOperator) throws Exception {
 		return Utilities.inputSelect(name, classType, selectedOperator,
@@ -461,7 +447,7 @@ public class AccountBean extends DataBean {
 	public String getGeneralSelect(String name, String classType, String selectedOperator) throws Exception {
 		return Utilities.inputSelect(name, classType, selectedOperator,
 				getActiveGeneralsArray(OperatorBean.DONT_INCLUDE_PICS));
-	}// getGeneralSelect
+	}
 
 	public void deleteAccount(String deleteID, String path) throws Exception {
 		// called aBean.deleteAccount(action_id,
@@ -521,7 +507,7 @@ public class AccountBean extends DataBean {
 		 * java.io.File(path+"files/oshas/osha3_"+oBean.OID+".pdf"); if
 		 * (f.exists()) f.delete(); }//while
 		 */
-	}// deleteAccount
+	}
 
 	public boolean mustChangePassword() throws Exception {
 		Calendar todayCal = Calendar.getInstance();
@@ -538,24 +524,24 @@ public class AccountBean extends DataBean {
 		if (daysPassed > PASSWORD_DURATION)
 			return true;
 		return false;
-	}// mustChangePassword
+	}
 
 	public boolean newPasswordOK(String newPassword) {
 		if (newPassword.equalsIgnoreCase(password)) {
 			errorMessages.addElement("You entered the same password.  Please choose a new one.");
 			return false;
-		}// if
+		}
 		if (newPassword.equalsIgnoreCase(username)) {
 			errorMessages.addElement("Please choose a password different from your username.");
 			return false;
-		}// if
+		}
 		if (newPassword.length() < MIN_PASSWORD_LENGTH) {
 			errorMessages.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH
 					+ " characters in length.");
 			return false;
-		}// if
+		}
 		return true;
-	}// newPasswordOK
+	}
 
 	public void changePassword(String newPassword) throws Exception {
 		password = newPassword;
@@ -566,8 +552,8 @@ public class AccountBean extends DataBean {
 			SQLStatement.executeUpdate(updateQuery);
 		} finally {
 			DBClose();
-		}// finally
-	}// changePassword
+		}
+	}
 
 	/**
 	 * 
@@ -655,7 +641,7 @@ public class AccountBean extends DataBean {
 					SearchBean.DEFAULT_GENERAL_VALUE, SearchBean.DEFAULT_GENERAL);
 		else
 			return Utilities.inputSelect2(name, classType, selectedOption, generals);
-	}// getGeneralContractorsSelect2
+	}
 
 	public String getGeneralSelect3(String name, String classType, String selectedOption, boolean listDefault,
 			String contractor_id) throws Exception {
@@ -674,43 +660,43 @@ public class AccountBean extends DataBean {
 			ret = Utilities.inputSelect2(name, classType, selectedOption, filteredGenerals);
 		o.canSeeInsurance = "No";
 		return ret;
-	}// getGeneralContractorsSelect3
+	}
 
 	public boolean isOK() throws Exception {
 		errorMessages = new Vector<String>();
-		if (null == type)
-			errorMessages.addElement("Please indicate the account type");
+		if (type == null)
+			errorMessages.addElement("Please indicate the account type.");
 		if (verifyUsername(username, id))
 			errorMessages.addElement("Username already exists. Please type another.");
-		if (name.length() == 0)
-			errorMessages.addElement("Please fill in the Company Name field");
-		if (name.length() < 3)
-			errorMessages.addElement("Your company name must be at least 3 characters long");
+		if (name == null || name.length() == 0)
+			errorMessages.addElement("Please fill in the Company Name field.");
+		if (name == null || name.length() < 3)
+			errorMessages.addElement("Your company name must be at least 3 characters long.");
 		if ("Contractor".equals(type)) {
-			if (username.length() == 0)
-				errorMessages.addElement("Please fill in the Username field");
-			if (password.length() < MIN_PASSWORD_LENGTH)
+			if (username == null || username.length() == 0)
+				errorMessages.addElement("Please fill in the Username field.");
+			if (password == null || password.length() < MIN_PASSWORD_LENGTH)
 				errorMessages.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH
 						+ " characters in length.");
-			if (password.equalsIgnoreCase(username))
+			if (password == null  || password.equalsIgnoreCase(username))
 				errorMessages.addElement("Please choose a password different from your username.");
 		}
-		// Don't chekc these fields if auditor BJ 10-28-04
-		if (!type.equals("Auditor")) {
-			if (contact.length() == 0)
-				errorMessages.addElement("Please fill in the Contact field");
-			if (address.length() == 0)
-				errorMessages.addElement("Please fill in the Address field");
-			if (city.length() == 0)
-				errorMessages.addElement("Please fill in the City field");
-			if (zip.length() == 0)
-				errorMessages.addElement("Please fill in the Zip field");
-			if (phone.length() == 0)
-				errorMessages.addElement("Please fill in the Phone field");
+		// Don't check these fields if auditor BJ 10-28-04
+		if (type == null || !type.equals("Auditor")) {
+			if (contact == null || contact.length() == 0)
+				errorMessages.addElement("Please fill in the Contact field.");
+			if (address == null || address.length() == 0)
+				errorMessages.addElement("Please fill in the Address field.");
+			if (city == null || city.length() == 0)
+				errorMessages.addElement("Please fill in the City field.");
+			if (zip == null || zip.length() == 0)
+				errorMessages.addElement("Please fill in the Zip field.");
+			if (phone == null || phone.length() == 0)
+				errorMessages.addElement("Please fill in the Phone field.");
 		}
-		if ((email.length() == 0) || (!Utilities.isValidEmail(email)))
+		if ((email == null || email.length() == 0) || (!Utilities.isValidEmail(email)))
 			errorMessages
-					.addElement("Please enter a valid email address. This is our main way of communicating with you so it must be valid");
+					.addElement("Please enter a valid email address. This is our main way of communicating with you so it must be valid.");
 		return (errorMessages.size() == 0);
 	}
 
@@ -723,8 +709,8 @@ public class AccountBean extends DataBean {
 			SQLStatement.executeUpdate(optimizeQuery);
 		} finally {
 			DBClose();
-		}// finally
-	}// optimizeDB
+		}
+	}
 
 	// 4/1/05 bj, called from login, linked from welcome email contractor.
 	// Confirms correct email address
@@ -743,7 +729,7 @@ public class AccountBean extends DataBean {
 		if (company.length() < 3) {
 			errorMessages.addElement("Your company name must be at least 3 characters long");
 			return true;
-		}// if
+		}
 		String selectQuery = "SELECT id FROM accounts WHERE UCASE(name) LIKE UCASE('" + eqDB(company) + "%');";
 		try {
 			DBReady();
@@ -758,15 +744,15 @@ public class AccountBean extends DataBean {
 				SQLResult.close();
 				DBClose();
 				return false;
-			}// else
+			}
 		} finally {
 			DBClose();
-		}// finally
-	}// contractorNameExists
+		}
+	}
 
 	public String eqDB(String temp) {
 		return Utilities.escapeQuotes(temp);
-	}// eqDB
+	}
 
 	private String[] filteredGenerals(String[] generals, String id) throws Exception {
 		if (id.equals(""))
@@ -783,14 +769,14 @@ public class AccountBean extends DataBean {
 					if (genID.equals(generals[i])) {
 						retList.add(generals[i]);
 						retList.add(generals[i + 1]);
-					}// if
-				}// for
-			}// while
+					}
+				}
+			}
 			return (String[]) retList.toArray(new String[0]);
 		} finally {
 			DBClose();
-		}// finally
-	}// filteredGenerals
+		}
+	}
 
 	public String getName(String id) throws Exception {
 		setFromDB(id);
