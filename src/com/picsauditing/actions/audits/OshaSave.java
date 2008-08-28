@@ -94,6 +94,7 @@ public class OshaSave extends PicsActionSupport {
 		String ext = inputFileName.substring(inputFileName.lastIndexOf(".") + 1);
 		if (ext == null || ext == "")
 			return false;
+		ext = ext.toLowerCase();
 		
 		String[] validExtensions = {"pdf","doc","txt","xls","jpg"};
 		boolean valid = false;
