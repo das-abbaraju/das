@@ -70,10 +70,10 @@ function removeMember(userGroupID) {
 	var myAjax = new Ajax.Updater('memberReport', 'UserGroupSaveAjax.action', {method: 'post', parameters: pars});
 }
 
-function checkUsername(username, userID) {
+function checkUsername(username) {
 	$('UserSave').writeAttribute('disabled','true');
 	$('username_status').innerHTML = 'checking availability of username...';
-	pars = 'userID='+userID+'&username='+username;
+	pars = 'userID='+currentUserID+'&username='+username;
 	var myAjax = new Ajax.Updater('username_status', 'user_ajax.jsp', {method: 'get', parameters: pars,
 		onComplete: function(transport) {
 		if($('username_status').innerHTML.indexOf('is NOT available. Please choose a different username.') == -1)
@@ -136,9 +136,9 @@ function checkUsername(username, userID) {
 	<td colspan="3" align="center" class="blueMain">
 	<s:hidden name="user.id" />
 	<s:hidden name="" />
-		<a href="?button=newUser&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=Yes">Add Group</a>
+		<a href="?button=newUser&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=Yes&user.isActive=Yes">Add Group</a>
 		&nbsp;&nbsp;
-		<a href="?button=newUser&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=No">Add User</a>
+		<a href="?button=newUser&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=No&user.isActive=Yes">Add User</a>
 	</td>
 </tr>
 <tr valign="top"><td>
@@ -184,122 +184,125 @@ function checkUsername(username, userID) {
 <td id="editUser" class="blueMain" style="padding-left: 20px; vertical-align: top;">
 
 <s:include value="../actionMessages.jsp" />
-
-<s:form action="UserSave">
-	<s:hidden name="user.id" />
-	<s:hidden name="accountId" />
-	<s:hidden name="isGroup" />
-	<s:hidden name="isActive" />
-	<s:hidden name="user.isGroup" />
 <s:if test="user != null">
-	<div class="buttons">
-	<pics:permission perm="EditUsers" type="Edit">
-		<button class="positive" type="submit" name="button" value="Save">Save</button>
-	</pics:permission>
-	<pics:permission perm="EditUsers" type="Delete">
-		<button type="submit" name="button" value="Remove">Delete</button>
-	</pics:permission>
-	</div>
-</s:if>
-<table class="forms">
-<s:if test="user != null">
-	<tr>
-		<th><s:if test="user.group">Group</s:if><s:else>User</s:else> #</th>
-		<td><s:property value="user.id"/></td>
-	</tr>
-	<tr>
-		<th>Date created</th>
-		<td><s:date name="user.dateCreated" format="MM/d/yyyy" /></td>
-	</tr>
-	<tr>
-		<th>Display name</th>
-		<td><s:textfield name="user.name" size="30"/></td>
-	</tr>
-	</s:if>
-<s:if test="!user.group">
-	<tr>
-		<th>Email</th>
-		<td><s:textfield name="user.email" size="40"/></td>
-	</tr>
-	<tr> 
-		<td colspan="2">&nbsp;</td>
-	</tr>
-	<tr>
-		<th>Username</th>
-		<td><s:textfield name="user.username" size="30" onblur="checkUsername(this.value, user.id);"/>
-			<span id="username_status"></span>
-		</td>
-	</tr>
-	<tr>
-		<th>Password</th>
-		<td><s:textfield name="user.password" /></td>
-	</tr>
-	<s:if test="user != null">
-		<tr>
-			<th>Last login</th>
-			<td><s:date name="user.lastLogin" /></td>
-		</tr>
-	</s:if>
-		<tr>
-			<th>Active</th>
-			<td><s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio></td>
-		</tr>
-</s:if>
-</table>
-
-</s:form>
-
-<s:if test="user != null">
-	<s:if test="!user.group">
-		<div>
-			<pics:permission perm="SwitchUser">
-				<a href="login.jsp?switchUser=<s:property value="user.username"/>">Switch to this User</a> | 
-			</pics:permission>
-			<a href="UserSave.action?button=sendWelcomeEmail&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&user.id=<s:property value="user.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>">Send Welcome Email</a>
-		</div>
-	</s:if>
 	
-	<s:if test="!user.superUser">
-		<div id="permissionReport"  style="width: 100%">
-			<s:include value="user_save_permissions.jsp" />
+	<s:form action="UserSave" id="UserSave">
+		<s:hidden name="user.id" />
+		<s:hidden name="accountId" />
+		<s:hidden name="isGroup" />
+		<s:hidden name="isActive" />
+		<s:hidden name="user.isGroup" />
+		<s:if test="user.group">
+			<s:hidden name="user.isActive" />
+		</s:if>
+		<div class="buttons">
+		<pics:permission perm="EditUsers" type="Edit">
+			<button id="SaveButton" class="positive" type="submit" name="button" value="Save">Save</button>
+		</pics:permission>
+		<pics:permission perm="EditUsers" type="Delete">
+			<s:if test="user.id > 0">
+				<button type="submit" name="button" value="Remove">Delete</button>
+			</s:if>
+		</pics:permission>
 		</div>
-		
-		<div id="groupReport">
-			<s:include value="user_save_groups.jsp" />
-		</div>
-	</s:if>
-	
-	<s:if test="user.group">
-		<div id="memberReport">
-			<s:include value="user_save_members.jsp" />
-		</div>
-	</s:if>
-	
-	
-	<s:if test="!user.group">
-		<table class="report">
-		<thead>
+		<table class="forms">
 			<tr>
-				<th>Login Date/Time</th>
-				<th>IP Address</th>
-				<th>Notes</th>
+				<th><s:if test="user.group">Group</s:if><s:else>User</s:else> #</th>
+				<td><s:property value="user.id"/></td>
 			</tr>
-		</thead>
-		<tbody>
-		<s:iterator value="recentLogins">
 			<tr>
-				<td><s:date name="loginDate"/></td>
-				<td><s:property value="remoteAddress"/></td>
-				<td>
-					<s:if test="admin.id > 0">Login by <s:property value="admin.name"/> from <s:property value="admin.account.name"/></s:if>
-					<s:if test="successful == 'N'">Incorrect password attempt</s:if>
-				</td>
+				<th>Date created</th>
+				<td><s:date name="user.dateCreated" format="MM/d/yyyy" /></td>
 			</tr>
-		</s:iterator>
-		</tbody>
+			<tr>
+				<th>Display name</th>
+				<td><s:textfield name="user.name" size="30"/></td>
+			</tr>
+			<s:if test="!user.group">
+				<tr>
+					<th>Email</th>
+					<td><s:textfield name="user.email" size="40"/></td>
+				</tr>
+				<tr> 
+					<td colspan="2">&nbsp;</td>
+				</tr>
+				<tr>
+					<th>Username</th>
+					<td><s:textfield name="user.username" size="30" onblur="checkUsername(this.value);"/>
+						<span id="username_status"></span>
+					</td>
+				</tr>
+				<tr>
+					<th>Password</th>
+					<td><s:textfield name="user.password" /></td>
+				</tr>
+				<s:if test="user != null">
+					<tr>
+						<th>Last login</th>
+						<td><s:date name="user.lastLogin" /></td>
+					</tr>
+				</s:if>
+				<tr>
+					<th>Active</th>
+					<td><s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio></td>
+				</tr>
+			</s:if>
 		</table>
+	</s:form>
+	
+	<s:if test="user.id > 0">
+		<s:if test="!user.group">
+			<div>
+				<pics:permission perm="SwitchUser">
+					<a href="login.jsp?switchUser=<s:property value="user.username"/>">Switch to this User</a> | 
+				</pics:permission>
+				<a href="UserSave.action?button=sendWelcomeEmail&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&user.id=<s:property value="user.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>">Send Welcome Email</a>
+			</div>
+		</s:if>
+		
+		<s:if test="!user.superUser">
+			<div id="permissionReport"  style="width: 100%">
+				<s:include value="user_save_permissions.jsp" />
+			</div>
+			
+			<div id="groupReport">
+				<s:include value="user_save_groups.jsp" />
+			</div>
+		</s:if>
+		
+		<s:if test="user.group">
+			<div id="memberReport">
+				<s:include value="user_save_members.jsp" />
+			</div>
+		</s:if>
+		
+		
+		<s:if test="!user.group">
+			<table class="report">
+			<thead>
+				<tr>
+					<th>Login Date/Time</th>
+					<th>IP Address</th>
+					<th>Notes</th>
+				</tr>
+			</thead>
+			<tbody>
+			<s:iterator value="recentLogins">
+				<tr>
+					<td><s:date name="loginDate"/></td>
+					<td><s:property value="remoteAddress"/></td>
+					<td>
+						<s:if test="admin.id > 0">Login by <s:property value="admin.name"/> from <s:property value="admin.account.name"/></s:if>
+						<s:if test="successful == 'N'">Incorrect password attempt</s:if>
+					</td>
+				</tr>
+			</s:iterator>
+			</tbody>
+			</table>
+		</s:if>
 	</s:if>
 </s:if>
+
 </td>
 </tr>
 </table>

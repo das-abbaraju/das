@@ -10,18 +10,16 @@
 				userID = Integer.parseInt(request
 						.getParameter("userID"));
 			} catch (NumberFormatException e) {}
-
+		
 			UserDAO ud = (UserDAO) SpringUtils.getBean("UserDAO");
-			if (ud.checkUserName(userID, username)) {
+			if (ud.duplicateUsername(username, userID)) {
+				%><%=username%> is NOT available. Please choose a different username.<%
+			} else {
 				%><%=username%> is available<%
 			}
-
-			else {
-				%><%=username%> is NOT available. Please choose a different username.<%
-			}
 		}
-		
 
 	} catch (Exception e) {
-		%>Unknown Error Occurred: <%=e.getMessage()%>
-<%}%>
+		%>Unknown Error Occurred: <%=e.getMessage()%><%
+	}
+%>

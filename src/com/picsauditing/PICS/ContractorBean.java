@@ -186,7 +186,7 @@ public class ContractorBean extends DataBean {
 	}// setBrochure_file
 
 	public void setDescription(String s) {
-		if (s.length() != description.length() || !s.equals(description)) {
+		if (s == null || !s.equals(description)) {
 			description = s;
 			isDescriptionChanged = true;
 		}

@@ -57,25 +57,35 @@ public class UserDAO extends PicsDAO {
 		return userList;
 	}
 
-	public boolean checkUserName(String uName, int uID) {
+	/**
+	 * 
+	 * @param uName
+	 * @param uID
+	 * @return true if the username is already in use by another user
+	 */
+	public boolean duplicateUsername(String uName, int uID) {
 		try {
 			User user = findName(uName);
 			int id = user.getId();
-			if (id == uID || id != 0)
-				return true;
-			else {
+			if (id > 0) {
+				// found a user with this username
+				if (id != uID)
+					// This is in use by another user
+					return true;
+			} else {
 				AccountDAO accountDAO = (AccountDAO) SpringUtils.getBean("AccountDAO");
 				id = accountDAO.findByID(uName);
-				if (id != 0 || id == uID)
-					return true;
+				if (id > 0) {
+					// found an account with this username
+					if (id != uID)
+						// This is in use by another contractor
+						return true;
+				}
 			}
 		} catch (Exception e) {
+			System.out.println("Exception in checkUserName: "+ e.getMessage());
 		}
 		return false;
-	}
-
-	public boolean usernameExists(String username) {
-		return checkUserName(username, -1);
 	}
 
 	public User findName(String userName) {

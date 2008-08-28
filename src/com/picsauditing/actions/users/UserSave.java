@@ -21,6 +21,8 @@ public class UserSave extends UsersManage {
 	}
 	
 	public String execute() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
 		super.execute();
 		
 		if ("sendWelcomeEmail".equals(button) && user != null) {
@@ -36,6 +38,9 @@ public class UserSave extends UsersManage {
 		if ("Save".equals(button)) {
 			if (!isOK())
 				return SUCCESS;
+			if (user.getDateCreated() == null)
+				user.setDateCreated(new Date());
+			
 			if (user.getAccount() == null) {
 				addActionMessage("Users must relogin for changes to take effect");
 				user.setAccount(new Account());
@@ -44,19 +49,25 @@ public class UserSave extends UsersManage {
 						user.getAccount().setId(accountId);
 				} else
 					user.getAccount().setId(permissions.getAccountId());
-
-				if (user.getDateCreated() == null)
-					user.setDateCreated(new Date());
-				
-				user = userDAO.save(user);
 			}
+			
+			if (user.isGroup()) {
+				String username = "GROUP";
+				if (user.getAccount() != null)
+					username += user.getAccount().getId();
+				username += user.getName();
+				
+				user.setUsername(username);
+			}
+			user = userDAO.save(user);
 		}
 		
 		if ("Remove".equals(button)) {
 			permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
 			userDAO.remove(user);
-
-			addActionMessage("Successfully removed user: " + user.getUsername());
+			
+			addActionMessage("Successfully removed " + 
+					(user.isGroup() ? "group: " + user.getName() : "user: " + user.getUsername()));
 			user = null;
 		}
 		
@@ -78,7 +89,12 @@ public class UserSave extends UsersManage {
 		
 		if (user.getUsername() == null || user.getUsername().length() < 5)
 			addActionError("Please choose a username at least 5 characters long");
-			
+		
+		if (user.getUsername() != null && user.getUsername().length() >= 5) {
+			if (userDAO.duplicateUsername(user.getUsername(), user.getId()))
+				addActionError("Username already in use");
+		}
+		
 		if (user.getPassword() == null || user.getPassword().length() < MIN_PASSWORD_LENGTH)
 			addActionError("Please choose a password at least " + MIN_PASSWORD_LENGTH + " characters in length.");
 		
