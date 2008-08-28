@@ -36,7 +36,7 @@ public class OshaSave extends PicsActionSupport {
 	}
 
 	public String execute() throws Exception {
-		if(!forceLogin())
+		if(!forceLogin("Home.action"))
 			return LOGIN;
 		// we could investigate using the prepare statement 
 		// and finding the osha data before the setters get run
@@ -46,7 +46,7 @@ public class OshaSave extends PicsActionSupport {
 			description = this.osha.getDescription(); 
 			location = this.osha.getLocation();	
 			oshaType = this.osha.getType().toString();	
-		} 	
+		}
 		if (oshaID > 0) {
 			osha = oshaDAO.find(oshaID);
 		} else {
@@ -55,6 +55,7 @@ public class OshaSave extends PicsActionSupport {
 		if (osha != null) {
 			osha.setDescription(description);
 			osha.setLocation(location);
+			
 			osha.setType(OshaType.valueOf(oshaType));
 		}
 		if(submit.equals("Delete")) {

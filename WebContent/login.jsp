@@ -43,7 +43,7 @@
 <head>
 <title>Login</title>
 </head>
-<body onLoad="document.login.username.focus();">
+<body onload="document.login.username.focus();">
 <form action="login.jsp" method="post" name="login" id="login">
 <table border="0" cellpadding="2" cellspacing="0">
 	<tr>

@@ -69,6 +69,19 @@ public class PicsActionSupport extends ActionSupport {
 		return true;
 	}
 
+	protected boolean forceLogin(String alternateReturnURL) {
+		loadPermissions();
+		try {
+			if (!permissions.loginRequired(ServletActionContext.getResponse(), alternateReturnURL)) {
+				return false;
+			}
+		} catch (Exception e) {
+			System.out.println("PicsActionSupport: Error occurred trying to login:" + e.getMessage());
+			return false;
+		}
+		return true;
+	}
+
 	protected void tryPermissions(OpPerms opPerms) throws Exception {
 		permissions.tryPermission(opPerms, OpType.View);
 	}
