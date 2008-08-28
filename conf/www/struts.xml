@@ -32,21 +32,11 @@
 			<result>rules.jsp</result>
 		</action>
 
-		<action name="UsersManage"
-			class="com.picsauditing.actions.users.UsersManage">
-			<result>struts/users/users_manage.jsp</result>
-		</action>
-
-		<action name="UserProfileAjax"
-			class="com.picsauditing.actions.users.ProfileEdit">
-			<result>struts/widgets/user_profile.jsp</result>
-		</action>
-
 		<action name="ReportAuditList"
 			class="com.picsauditing.actions.report.ReportContractorAudits">
 			<result>struts/reports/auditList.jsp</result>
 		</action>
-
+		
 		<action name="AuditListAuditor"
 			class="com.picsauditing.actions.report.ReportContractorAuditAuditor">
 			<result>struts/reports/audit_auditor.jsp</result>
@@ -231,6 +221,11 @@
 			class="com.picsauditing.actions.audits.AuditDataFileUpload">
 			<result>struts/blank.jsp</result>
 		</action>
+		<action name="AuditDataUpload"
+			class="com.picsauditing.actions.audits.AuditDataUpload">
+			<result>struts/audits/audit_data_upload.jsp</result>
+		</action>
+		
 
 		<action name="ContractorSearch"
 			class="com.picsauditing.actions.report.ReportAccountQuick">
@@ -255,11 +250,6 @@
 		<action name="NewContractorSearch"
 			class="com.picsauditing.actions.report.ReportNewContractorSearch">
 			<result>struts/reports/newContractor_operator.jsp</result>
-		</action>
-
-		<action name="ProfileEdit"
-			class="com.picsauditing.actions.users.ProfileEdit">
-			<result>struts/users/profile_edit.jsp</result>
 		</action>
 
 		<action name="ContractorOperatorLimited"
@@ -441,11 +431,56 @@
 			class="com.picsauditing.actions.users.ManageMultiUser">
 			<result>struts/users/multilogin_user.jsp</result>
 		</action>
+		
+		<action name="ReportAuditAnalysis"
+			class="com.picsauditing.actions.report.ReportAuditAnalysis">
+			<result>struts/reports/audit_analysis.jsp</result>
+		</action>		
 
 		<action name="ReportCompletePQF"
 			class="com.picsauditing.actions.report.ReportCompletePQF">
 			<result>struts/reports/complete_pqf.jsp</result>
 		</action>
+		
+		<action name="UsersByOpPerm"
+			class="com.picsauditing.actions.users.UsersByOpPerm">
+			<result>struts/users/users_by_opperm.jsp</result>
+		</action>
 
+		<action name="UserProfileAjax"
+			class="com.picsauditing.actions.users.ProfileEdit">
+			<result>struts/widgets/user_profile.jsp</result>
+		</action>
+
+		<action name="ProfileEdit"
+			class="com.picsauditing.actions.users.ProfileEdit">
+			<result>struts/users/profile_edit.jsp</result>
+		</action>
+
+		<action name="UsersManage"
+			class="com.picsauditing.actions.users.UsersManage">
+			<result>struts/users/users_manage.jsp</result>
+		</action>
+		
+		<action name="UserSave"
+			class="com.picsauditing.actions.users.UserSave">
+			<result>struts/users/users_manage.jsp</result>
+		</action>
+		
+		<action name="UserAccessSaveAjax"
+			class="com.picsauditing.actions.users.UserAccessSave">
+			<result>struts/users/user_save_permissions.jsp</result>
+		</action>
+		<action name="UserAccessUpdateAjax"
+			class="com.picsauditing.actions.users.UserAccessUpdate">
+			<result>struts/blank.jsp</result>
+		</action>
+
+		<action name="UserGroupSaveAjax"
+			class="com.picsauditing.actions.users.UserGroupSave">
+			<result>struts/users/user_save_groups.jsp</result>
+			<result name="member">struts/users/user_save_members.jsp</result>
+		</action>
+		
 	</package>
 </struts>
