@@ -64,7 +64,11 @@ public class UserSave extends UsersManage {
 	}
 	
 	private boolean isOK() throws Exception {
-		if (user.getName().length() == 0)
+		if (user == null) {
+			addActionError("No user found");
+			return false;
+		}
+		if (user.getName() == null || user.getName().length() == 0)
 			addActionError("Please enter a name");
 		else if (user.getName().length() < 3)
 			addActionError("Please enter a name with more than 2 characters");
@@ -72,21 +76,18 @@ public class UserSave extends UsersManage {
 		if (user.isGroup())
 			return (getActionErrors().size() >= 0);
 		
-		if (user.getUsername().length() < 5)
+		if (user.getUsername() == null || user.getUsername().length() < 5)
 			addActionError("Please choose a username at least 5 characters long");
 			
-		if (user.getPassword().length() < MIN_PASSWORD_LENGTH)
+		if (user.getPassword() == null || user.getPassword().length() < MIN_PASSWORD_LENGTH)
 			addActionError("Please choose a password at least " + MIN_PASSWORD_LENGTH + " characters in length.");
 		
-		if (user.getPassword().equalsIgnoreCase(user.getUsername()))
+		if (user.getPassword() != null && user.getPassword().equalsIgnoreCase(user.getUsername()))
 			addActionError("Please choose a password different from your username.");
 
-		if (user.getEmail().length() == 0 || !Utilities.isValidEmail(user.getEmail()))
+		if (user.getEmail() == null || user.getEmail().length() == 0 || !Utilities.isValidEmail(user.getEmail()))
 			addActionError("Please enter a valid email address.");
 		
-		boolean ae = (getActionErrors().size() > 0);
-
 		return (getActionErrors().size() >= 0);
 	}
-	
 }

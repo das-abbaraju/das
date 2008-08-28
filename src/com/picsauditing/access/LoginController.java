@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.util.Date;
 import java.util.HashSet;
 
+import javax.persistence.NoResultException;
 import javax.servlet.http.Cookie;
 
 import com.picsauditing.PICS.AccountBean;
@@ -29,7 +30,7 @@ public class LoginController extends DataBean {
 	private User user;
 	private AccountBean aBean;
 	private int loginByAdmin = 0;
-	private String prevLastLogin = "1/1/01";
+	//private String prevLastLogin = "1/1/01";
 
 	private Permissions permissions;
 	private PermissionsBean pBean;
@@ -150,7 +151,11 @@ public class LoginController extends DataBean {
 			isUser = false;
 		}
 		else {
-			user = userDAO.findName(username);
+			try {
+				user = userDAO.findName(username);
+			} catch (NoResultException e) {
+				return false;
+			}
 			if (user != null) {
 				id = user.getId();
 				aBean.setFromDB(user.getAccount().getIdString());
@@ -189,7 +194,7 @@ public class LoginController extends DataBean {
 	private void doLogin(javax.servlet.http.HttpSession session, boolean updateLastLogin) throws Exception {
 		if (isUser) {
 			permissions.login(this.user);
-			this.prevLastLogin = this.user.getLastLogin().toString();
+			//this.prevLastLogin = this.user.getLastLogin().toString();
 			if (updateLastLogin) {
 				this.user.setLastLogin(new Date());
 				userDAO.save(user);
@@ -213,7 +218,7 @@ public class LoginController extends DataBean {
 		} else {
 			// Contractors
 			permissions.login(this.aBean);
-			this.prevLastLogin = this.aBean.lastLogin;
+			//this.prevLastLogin = this.aBean.lastLogin;
 			if (updateLastLogin)
 				this.aBean.updateLastLogin();
 

@@ -41,7 +41,7 @@ function updatePermission(accessId, typeName, theValue) {
 	pars = 'accessId='+accessId+'&type='+typeName+'&permValue='+theValue.value;
 	var myAjax = new Ajax.Updater('', 'UserAccessUpdateAjax.action', {method: 'post', parameters: pars,
 			onSuccess: function(transport) {
-				new Effect.Highlight($('permission_'+accessId),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+				new Effect.Highlight($('permission_'+accessId),{duration: 0.75, startcolor:'#FFFF11'});
 			}
 	});
 }
@@ -197,7 +197,7 @@ function checkUsername(username, userID) {
 		<button class="positive" type="submit" name="button" value="Save">Save</button>
 	</pics:permission>
 	<pics:permission perm="EditUsers" type="Delete">
-		<button class="positive" type="submit" name="button" value="Remove">Delete</button>
+		<button type="submit" name="button" value="Remove">Delete</button>
 	</pics:permission>
 	</div>
 </s:if>
