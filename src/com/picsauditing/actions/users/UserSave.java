@@ -36,19 +36,19 @@ public class UserSave extends UsersManage {
 		}
 		
 		if ("Save".equals(button)) {
-			if (!isOK())
+			if (!isOK()){
+				userDAO.clear();
 				return SUCCESS;
+			}
 			if (user.getDateCreated() == null)
 				user.setDateCreated(new Date());
 			
 			if (user.getAccount() == null) {
-				addActionMessage("Users must relogin for changes to take effect");
 				user.setAccount(new Account());
 				if (!permissions.hasPermission(OpPerms.AllOperators)) {
-					if (permissions.hasPermission(OpPerms.AllOperators))
-						user.getAccount().setId(accountId);
-				} else
 					user.getAccount().setId(permissions.getAccountId());
+				} else
+					user.getAccount().setId(accountId);
 			}
 			
 			if (user.isGroup()) {
@@ -80,30 +80,32 @@ public class UserSave extends UsersManage {
 			return false;
 		}
 		if (user.getName() == null || user.getName().length() == 0)
-			addActionError("Please enter a name");
+			addActionError("Please enter a Display Name.");
 		else if (user.getName().length() < 3)
-			addActionError("Please enter a name with more than 2 characters");
+			addActionError("Please enter a Display Name with more than 2 characters.");
 
 		if (user.isGroup())
-			return (getActionErrors().size() >= 0);
+			return (getActionErrors().size() == 0);
 		
 		if (user.getUsername() == null || user.getUsername().length() < 5)
-			addActionError("Please choose a username at least 5 characters long");
+			addActionError("Please choose a Username at least 5 characters long.");
 		
 		if (user.getUsername() != null && user.getUsername().length() >= 5) {
 			if (userDAO.duplicateUsername(user.getUsername(), user.getId()))
-				addActionError("Username already in use");
+				addActionError("That Username is already in use.  Please select another.");
 		}
 		
 		if (user.getPassword() == null || user.getPassword().length() < MIN_PASSWORD_LENGTH)
-			addActionError("Please choose a password at least " + MIN_PASSWORD_LENGTH + " characters in length.");
+			addActionError("Please choose a Password at least " + MIN_PASSWORD_LENGTH + " characters in length.");
 		
 		if (user.getPassword() != null && user.getPassword().equalsIgnoreCase(user.getUsername()))
-			addActionError("Please choose a password different from your username.");
+			addActionError("Please choose a Password different from your username.");
 
 		if (user.getEmail() == null || user.getEmail().length() == 0 || !Utilities.isValidEmail(user.getEmail()))
-			addActionError("Please enter a valid email address.");
+			addActionError("Please enter a valid Email address.");
 		
-		return (getActionErrors().size() >= 0);
+		boolean ae = (getActionErrors().size() == 0);
+		
+		return (getActionErrors().size() == 0);
 	}
 }
