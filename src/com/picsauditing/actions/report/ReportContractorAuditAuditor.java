@@ -11,7 +11,7 @@ import com.picsauditing.util.SpringUtils;
 public class ReportContractorAuditAuditor extends ReportContractorAudits {
 
 	public String execute() throws Exception {
-		loadPermissions();
+		if (!forceLogin()) return LOGIN;
 		
 		sql.addWhere("ca.auditorID=" + permissions.getUserId());
 		sql.addWhere("ca.auditStatus IN ('" + AuditStatus.Pending + "','" + AuditStatus.Submitted + "')");

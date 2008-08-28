@@ -13,7 +13,8 @@ public class ReportPQFVerification extends ReportContractorAudits {
 	private boolean emr05 = false;
 
 	public String execute() throws Exception {
-		loadPermissions();
+		if (!forceLogin()) return LOGIN;
+
 		permissions.tryPermission(OpPerms.AuditVerification);
 		sql.addField("c.notes");
 		sql.addWhere("ca.auditStatus IN ('" + AuditStatus.Submitted + "','" + AuditStatus.Pending + "')");

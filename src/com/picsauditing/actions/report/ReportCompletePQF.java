@@ -32,7 +32,6 @@ public class ReportCompletePQF extends ReportContractorAudits {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		loadPermissions();
 		sql.addWhere("ca.auditStatus = 'Pending'");
 		sql.addWhere("ca.auditTypeID = 1");
 		sql.addWhere("a.active = 'Y'");

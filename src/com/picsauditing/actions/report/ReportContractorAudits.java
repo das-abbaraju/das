@@ -40,7 +40,8 @@ public class ReportContractorAudits extends ReportAccount {
 	}
 
 	public String execute() throws Exception {
-		loadPermissions();
+		if (!forceLogin()) return LOGIN;
+		
 		sql.addField("ca.createdDate");
 		sql.addField("ca.expiresDate");
 		sql.addField("ca.scheduledDate");

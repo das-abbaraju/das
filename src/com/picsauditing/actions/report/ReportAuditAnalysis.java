@@ -22,7 +22,8 @@ public class ReportAuditAnalysis extends PicsActionSupport {
 	private String where = "";
 	
 	public String execute() throws Exception {
-		loadPermissions();
+		if (!forceLogin())
+			return LOGIN;
 		
 		String sql = "select label, sortBy, sum(createdCount) createdCount, sum(completeCount) completeCount, " +
 			"sum(closedCount) closedCount " +

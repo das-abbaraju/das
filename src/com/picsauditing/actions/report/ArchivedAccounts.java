@@ -11,7 +11,6 @@ public class ArchivedAccounts extends ReportAccount {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		loadPermissions();
 		sql.addField("a.contact");
 		sql.addField("a.phone");
 		sql.addField("a.phone2");

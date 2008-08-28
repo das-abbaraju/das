@@ -6,7 +6,8 @@ import com.picsauditing.search.SelectAccount;
 public class ReportAccountNCMS extends ReportAccount {
 
 	public String execute() throws Exception {
-		this.loadPermissions();
+		if (!forceLogin())
+			return LOGIN;
 		permissions.tryPermission(OpPerms.NCMS);
 
 		sql.setType(SelectAccount.Type.Contractor);

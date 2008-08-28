@@ -18,6 +18,8 @@ public class DelinquentAccountsWidget extends PicsActionSupport {
 
 	public String execute() throws Exception {
 		loadPermissions();
+		if (!permissions.isLoggedIn())
+			return LOGIN_AJAX;
 		return SUCCESS;
 	}
 

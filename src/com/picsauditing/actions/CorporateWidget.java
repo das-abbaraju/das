@@ -22,6 +22,9 @@ public class CorporateWidget extends PicsActionSupport {
 
 	public String execute() throws Exception {
 		loadPermissions();
+		if (!permissions.isLoggedIn())
+			return LOGIN_AJAX;
+		
 		totalContractorCount = cAccountDAO.getActiveContractorCounts("");
 		activeContractorCount = cAccountDAO.getActiveContractorCounts("c.active = 'Y'");
 		operatorCount = opAccountDAO.getOperatorCounts("o.type = 'Operator'");
