@@ -418,17 +418,23 @@ public class CertificateBean extends DataBean {
 	}
 
 	private long formattedLiability(Map<String, String> m) {
+		long response = 0L;
 		Locale loc = Locale.US;
 		String liability = m.get("liabilityLimit");
-		if (liability.startsWith("$"))
-			liability = liability.substring(1);
-		try {
-			Number number = NumberFormat.getInstance(loc).parse(liability);
-			return number.longValue();
-		} catch (ParseException e) {
-			errorMessages.addElement("Liability limit must be a number optionally preceeded by a '$'.");
-			return 0;
+		
+		if( liability != null )
+		{
+		
+			if (liability.startsWith("$"))
+				liability = liability.substring(1);
+			try {
+				Number number = NumberFormat.getInstance(loc).parse(liability);
+				response = number.longValue();
+			} catch (ParseException e) {
+				errorMessages.addElement("Liability limit must be a number optionally preceeded by a '$'.");
+			}
 		}
+		return response;
 	}// formattedLiability
 
 	private long formattedLiability(String liability) throws Exception {
