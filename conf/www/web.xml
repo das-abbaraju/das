@@ -110,7 +110,7 @@
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>struts-cleanup</filter-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>*.action</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>sitemesh</filter-name>
@@ -118,7 +118,7 @@
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>struts2</filter-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>*.action</url-pattern>
 	</filter-mapping>
 
 	<jsp-config>
