@@ -26,7 +26,7 @@
 		
 		<s:else>
 			<s:property value="answer.answer" />
-			<s:if test="questionType == 'Manual' && answer.answer.length > 0">
+			<s:if test="questionType == 'Manual' && answer.answer.length() > 0">
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment: <s:property value="answer.comment"/>
 			</s:if>
 		</s:else>
