@@ -87,7 +87,7 @@ td.day {
 <%
 	if (permissions.isPicsEmployee()) {
 	%>
-	<p align="center" class="blueMain"><font color=993300>Onsite</font> | <font color=003366>Web Audit</font></p>
+	<p align="center" class="blueMain"><font color="#993300">Onsite</font> | <font color="#003366">Web Audit</font></p>
 	<%
 	}
 	if (permissions.isAdmin()) {
