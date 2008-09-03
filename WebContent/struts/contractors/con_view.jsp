@@ -17,7 +17,7 @@
 					<p class="fn org"><s:property value="contractor.name" /></p>
 					<p><span class="street-address"><s:property value="contractor.address" /></span>,
 					<span class="locality"><s:property value="contractor.city" /></span>, 
-					<span class="region"><s:property value="contractor.state" /></span>, 
+					<span class="region"><s:property value="contractor.state" /></span> 
 					<span class="postal-code"><s:property value="contractor.zip" /></span></p>
 					<p>[<a
 						href="http://www.mapquest.com/maps/map.adp?city=<s:property value="contractor.city" />&state=<s:property value="contractor.state" />&address=<s:property value="contractor.address" />&zip=<s:property value="contractor.zip" />&zoom=5"
