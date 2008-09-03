@@ -27,8 +27,8 @@ public class ArchivedAccounts extends ReportAccount {
 		qb.setWorkingFacilities(false);
 		sql.addWhere("1 " + qb.toString());
 		skipPermissions = true;
-		permissions.tryPermission(OpPerms.RemoveContractors);
 		if ("Remove".equals(button)) {
+			permissions.tryPermission(OpPerms.RemoveContractors);
 			FacilityChanger facilityChanger = (FacilityChanger) SpringUtils.getBean("FacilityChanger");
 			facilityChanger.setOperator(permissions.getAccountId());
 			facilityChanger.setContractor(conID);
