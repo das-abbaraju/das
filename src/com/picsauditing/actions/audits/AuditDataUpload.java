@@ -73,6 +73,12 @@ public class AuditDataUpload extends AuditActionSupport {
 					return SUCCESS;
 				}
 				String extension = fileFileName.substring( fileFileName.lastIndexOf(".") + 1 );
+				
+				if(!FileUtils.checkFileExtension(extension)) {
+					addActionError("Bad File Extension");
+					return SUCCESS;
+				}
+				
 				FileUtils.copyFile(file, getFtpDir(), folderName, fileName, extension, true);
 				
 				// TODO save auditdata

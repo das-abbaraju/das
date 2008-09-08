@@ -90,4 +90,25 @@ public class FileUtils {
 		}
 		return thisDir;
 	}
+	
+	static public boolean checkFileExtension(String extension) {
+		if (extension == null || extension.equals(""))
+			return false;
+
+		extension = extension.toLowerCase();
+
+		String[] validExtensions = {"pdf","doc","txt","xls","jpg","gif","png"};
+		boolean valid = false;
+		for(String exte : validExtensions) {
+			if (exte.equals(extension))
+				valid = true;
+		}
+		if (!valid)
+			return false;
+		
+		return true;
+	}
+	
+	
+	
 }
