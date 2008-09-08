@@ -22,7 +22,7 @@ public class PicsMenu {
 			return menu;
 		}
 
-		if (permissions.hasPermission(OpPerms.StatusOnly)) {
+		if (permissions.hasPermission(OpPerms.LimitedContractorList)) {
 			menu.addChild("Contractor List", "ContractorOperatorLimited.action");
 			return menu;
 		}
@@ -45,6 +45,8 @@ public class PicsMenu {
 			subMenu.addChild("By Operator", "report_operatorContractor.jsp?searchCorporate=Y");
 		
 		subMenu.addChild("Delinquent Accounts", "ArchivedContractorAccounts.action");
+//		if(permissions.seesAllContractors())
+//			subMenu.addChild("Search By Question","QuestionAnswerSearch.action");
 
 		subMenu = menu.addChild("Auditing");
 		if (permissions.isAuditor()) {
@@ -111,9 +113,9 @@ public class PicsMenu {
 
 		subMenu = menu.addChild("Operators");
 		if (permissions.hasPermission(OpPerms.ManageCorporate))
-			subMenu.addChild("Edit Corporate", "report_accounts.jsp?type=Corporate");
+			subMenu.addChild("Edit Corporate", "ReportAccountList.action?accountType=Corporate");
 		if (permissions.hasPermission(OpPerms.ManageOperators))
-			subMenu.addChild("Edit Operators", "report_accounts.jsp?type=Operator");
+			subMenu.addChild("Edit Operators", "ReportAccountList.action?accountType=Operator");
 		if (permissions.hasPermission(OpPerms.ManageOperators))
 			subMenu.addChild("Assign Audit/Operator", "AuditOperator.action");
 

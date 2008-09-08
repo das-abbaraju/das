@@ -282,12 +282,11 @@ public class LoginController extends DataBean {
 				}
 			}
 		}
-
-		if (permissions.hasPermission(OpPerms.StatusOnly)) {
+		if(permissions.hasPermission(OpPerms.LimitedContractorList)) {
 			response.sendRedirect("ContractorOperatorLimited.action");
 			return;
 		}
-
+		
 		response.sendRedirect("Home.action");
 		return;
 	}

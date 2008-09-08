@@ -45,22 +45,24 @@ public class ContractorActionSupport extends PicsActionSupport {
 	}
 
 	protected boolean checkPermissionToView() {
-		if (permissions.hasPermission(OpPerms.AllContractors))
-			return true;
-
 		// OR
 		if (permissions.isContractor()) {
 			return permissions.getAccountIdString().equals(Integer.toString(this.id));
 		}
 
-		if (permissions.hasPermission(OpPerms.StatusOnly)) {
+		if (limitedView)
+			// Basically, if all we're doing is searching for contractors
+			// and looking at their summary page, then it's OK
+			return true;
+
+		else if(!permissions.hasPermission(OpPerms.ContractorDetails)) {
 			return false;
 		}
+		
+		if (permissions.hasPermission(OpPerms.AllContractors))
+			return true;
+
 		if (permissions.isOperator() || permissions.isCorporate()) {
-			if (limitedView)
-				// Basically, if all we're doing is searching for contractors
-				// and looking at their summary page, then it's OK
-				return true;
 			// If we want to look at their detail, like PQF data
 			// Then we have to add them first (generalContractors).
 			if (permissions.isCorporate()) {
@@ -157,7 +159,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 	}
 
 	public boolean isShowHeader() {
-		if (permissions.hasPermission(OpPerms.StatusOnly))
+		if (!permissions.hasPermission(OpPerms.ContractorDetails))
 			return false;
 		if (permissions.isOperator()) {
 			return isCheckPermissionForOperator();

@@ -83,13 +83,13 @@ function getElement(whichLayer) {
 	<div id="boxbody">
 		<p><% if (permissions.isLoggedIn()) { %>
 <span id="name">Welcome, <%=permissions.getName() %></span>
-| <a href="<%= permissions.hasPermission(OpPerms.StatusOnly) ? "ContractorOperatorLimited" : "Home" %>.action">Home</a>| <a href="logout.jsp">Logout</a>
+| <a href="<%= permissions.hasPermission(OpPerms.LimitedContractorList) ? "ContractorOperatorLimited" : "Home" %>.action">Home</a>| <a href="logout.jsp">Logout</a>
 <% } else { %>
 <span id="name">Welcome</span> | <a href="login.jsp">Login</a>
 <% } %></p>
 	</div>
 </div>
-<% if (!permissions.isContractor() && !permissions.hasPermission(OpPerms.StatusOnly)) { %>
+<% if (!permissions.isContractor()) { %>
 
 
 <div id="headersearch">
@@ -128,7 +128,7 @@ function getElement(whichLayer) {
 <div id="helpbox">
 	<a href='javascript:D2H_ShowHelp(<decorator:getProperty property="meta.contextID" default="1" />, 
 	<% if(permissions.isContractor()) { %>"help/c/default.htm"
-	<% } else if(permissions.isOperator() || permissions.isCorporate() || permissions.hasPermission(OpPerms.StatusOnly)) { %>"help/o/default.htm"
+	<% } else if(permissions.isOperator() || permissions.isCorporate()) { %>"help/o/default.htm"
 	<% } else { %>"help/a/default.htm"
 	<% } %>, "_BLANK", 1)'>Help Center</a> |
 	

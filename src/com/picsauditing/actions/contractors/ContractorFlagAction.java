@@ -136,18 +136,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
-	protected boolean checkPermissionToView() {
-		if (permissions.hasPermission(OpPerms.StatusOnly)) {
-			// This user is Status Only and they should have
-			// access to their contractor flag color.
-			co = contractorOperatorDao.find(id, permissions.getAccountId());
-			if (co.getOperatorAccount().getId() == permissions.getAccountId())
-				return true;
-		}
-		return super.checkPermissionToView();
-	
-	}
-
 	public int getOpID() {
 		return opID;
 	}

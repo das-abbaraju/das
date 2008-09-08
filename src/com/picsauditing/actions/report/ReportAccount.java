@@ -96,7 +96,7 @@ public class ReportAccount extends ReportActionSupport {
 		sql.setType(SelectAccount.Type.Contractor);
 		this.run(sql);
 
-		if (forwardSingleResults && !permissions.hasPermission(OpPerms.StatusOnly) && this.data.size() == 1) {
+		if (forwardSingleResults && permissions.hasPermission(OpPerms.SearchContractors) && this.data.size() == 1) {
 			// Forward the user to the Contractor Details page
 			ServletActionContext.getResponse().sendRedirect("ContractorView.action?id=" + this.data.get(0).get("id"));
 		}
@@ -111,7 +111,6 @@ public class ReportAccount extends ReportActionSupport {
 		if (permissions.isOperator()) {
 			filterOperator = false;
 			filterFlagStatus = true;
-			filterCerts = false;
 		}
 		if (permissions.isCorporate()) {
 		}
@@ -120,14 +119,15 @@ public class ReportAccount extends ReportActionSupport {
 			filterVisible = true;
 			filterRiskLevel = true;
 		}
-		if (permissions.hasPermission(OpPerms.StatusOnly)) {
-			filterOperator = false;
+		if (!permissions.hasPermission(OpPerms.ContractorDetails)) {
 			filterAddress = false;
 			filterIndustry = false;
-			filterCerts = false;
 			filterTaxID = false;
 			filterLicensedIn = false;
 			filterWorksIn = false;
+		}
+		if(!permissions.hasPermission(OpPerms.InsuranceCerts)) {
+			filterCerts = false;
 		}
 	}
 

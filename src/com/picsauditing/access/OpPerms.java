@@ -7,6 +7,7 @@ public enum OpPerms {
 	Dashboard("Dashboard", "Allows users to view and customize (future) their home page/dashboard.", true, false),
 	ContractorDetails("Contractor Details", "Allows users to view the details page along with sub nav bar, also enables search criteria other than name on reports. Allows access to the contractor contact info report and the audit list report.", false, false),
 	
+	LimitedContractorList("Limited Contractor Search", "Restricts users to only view a list of contractors and their flag color", false, false, false),
 	FormsAndDocs("Manage Forms and Docs", "Allow users to Edit and Delete Forms and Documents. Edit is required to Add or Update forms. Delete is required to delete forms."),
 	
 	// Adding/removing Contractors
@@ -18,8 +19,6 @@ public enum OpPerms {
 	ContractorApproval("Approve Contractors", "Allows a user to change a Contractor's work status", true, false),
 	ViewUnApproved("View UnApproved Contractors", "Allows users to view contractors who are NOT yet approved for work for a facility. Note: the facility must track that information for this option to apply", false, false),
 
-	StatusOnly("Can Only View Statuses", "Restricts users to only view a list of contractors and their flag color", true, false, false), // deprecated
-	
 	// Red Flag
 	EditFlagCriteria("Red Flag Criteria", "Allows users to edit the criteria for flagging contractors as Red or Amber. Read access grants the ability to Edit the criteria", false, false),
 	EditForcedFlags("Force Flag Color", "Allows users to force a contractor's flag color for a given period of time. Only Read access is used currently", true, false),

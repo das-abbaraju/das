@@ -62,7 +62,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected void findConAudit() throws Exception {
 		conAudit = auditDao.find(auditID);
 		if (conAudit == null)
-			throw new Exception("Audit for this " + this.auditID + " not found");
+			throw new Exception("Audit " + this.auditID + " not found");
 
 		if (conAudit.getExpiresDate() != null) {
 			if (DateBean.getDateDifference(conAudit.getExpiresDate()) < 1) {
