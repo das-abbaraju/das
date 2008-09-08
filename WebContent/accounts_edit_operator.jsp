@@ -24,16 +24,6 @@
 		aBean.username = Integer.toString(new Random().nextInt());
 		aBean.password = Integer.toString(new Random().nextInt());
 		oBean.setFromRequest(request);
-		if(!aBean.isActive()) {
-			UserDAO	userDAO = (UserDAO)SpringUtils.getBean("UserDAO");
-			List<User> user = userDAO.findByAccountID(Integer.parseInt(editID),"","");
-			for(User u : user){
-				if(u.getIsActive().equals(YesNo.Yes)) {
-					u.setIsActive(YesNo.No);
-					userDAO.save(u);
-				}
-			}
-		}
 		if (aBean.isOK() && oBean.isOK()) {
 			aBean.writeToDB();
 			oBean.writeToDB();

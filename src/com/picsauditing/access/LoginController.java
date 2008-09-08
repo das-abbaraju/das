@@ -125,7 +125,10 @@ public class LoginController extends DataBean {
 			if (user != null) {
 				if (!user.getPassword().equals(password))
 					return "The password is not correct";
-
+				
+				if(user.getAccount().getActive() != 'Y') 
+					return "This user does not have permission to login.<br>Please contact PICS to activate your account.";
+				
 				if (user.getIsActive() != YesNo.Yes)
 					return "This user does not have permission to login.<br>Please contact PICS to activate your account.";
 			}
