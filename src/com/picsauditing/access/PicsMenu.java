@@ -33,7 +33,7 @@ public class PicsMenu {
 		if (permissions.isOperator() || permissions.isCorporate())
 			subMenu.addChild("Contractor List", "ContractorListOperator.action");
 
-		if (!permissions.isOnlyAuditor())
+		if (permissions.hasPermission(OpPerms.ContractorDetails))
 			subMenu.addChild("Contact Info", "report_contactInfo.jsp?changed=1");
 
 		if (permissions.hasPermission(OpPerms.SearchContractors)) {
@@ -54,7 +54,8 @@ public class PicsMenu {
 			subMenu.addChild("My Audit History", "MyAuditHistory.action");
 		}
 
-		subMenu.addChild("Audit List", "ReportAuditList.action");
+		if (permissions.hasPermission(OpPerms.ContractorDetails))
+			subMenu.addChild("Audit List", "ReportAuditList.action");
 		if (permissions.hasPermission(OpPerms.AssignAudits))
 			subMenu.addChild("Sched. &amp; Assign", "AuditAssignments.action?visible=Y");
 		if (permissions.hasPermission(OpPerms.OfficeAuditCalendar))
@@ -76,7 +77,7 @@ public class PicsMenu {
 
 		
 		subMenu = menu.addChild("Accounting");
-		if (permissions.isAdmin() && permissions.hasPermission(OpPerms.BillingUpgrades))
+		if (permissions.hasPermission(OpPerms.BillingUpgrades))
 			subMenu.addChild("Contractor Payments", "report_payment.jsp?changed=1");
 		if (permissions.hasPermission(OpPerms.BillingUpgrades))
 			subMenu.addChild("Upgrade Payments", "report_upgradePayment.jsp?changed=1");
@@ -109,7 +110,8 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.EditFlagCriteria) && permissions.isOperator())
 			subMenu.addChild("Flag Criteria", "op_editFlagCriteria.jsp");
 
-		subMenu.addChild("Edit Profile", "ProfileEdit.action");
+		if (permissions.hasPermission(OpPerms.EditProfile))
+			subMenu.addChild("Edit Profile", "ProfileEdit.action");
 
 		subMenu = menu.addChild("Operators");
 		if (permissions.hasPermission(OpPerms.ManageCorporate))
@@ -124,13 +126,13 @@ public class PicsMenu {
 			subMenu.addChild("User Search","ReportUsersAccount.action");
 		if(permissions.seesAllContractors())
 			subMenu.addChild("User Multi-Login","MultiLoginUser.action");
-		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.EMRReport)) {
+		if (permissions.hasPermission(OpPerms.EMRReport)) {
 			subMenu.addChild("EMR Rates (Graph)", "GraphEmrRates.action");
 			subMenu.addChild("EMR Rates", "ReportEmrRates.action");
 		}
-		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.FatalitiesReport))
+		if (permissions.hasPermission(OpPerms.FatalitiesReport))
 			subMenu.addChild("Fatalities", "ReportFatalities.action");
-		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.FatalitiesReport))
+		if (permissions.hasPermission(OpPerms.FatalitiesReport))
 			subMenu.addChild("Incidence Rates", "ReportIncidenceRate.action");
 		if (permissions.hasPermission(OpPerms.ContractorLicenseReport))
 			subMenu.addChild("Contractor Licenses", "ReportContractorLicenses.action");

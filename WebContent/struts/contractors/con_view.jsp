@@ -36,6 +36,7 @@
 		</div>
 	</div>
 	<div class="left info">
+<!-- TODO: add the VCard again -->
 <!--		<div class="right" id="vcardimage"><a -->
 <!--			href="http://suda.co.uk/projects/X2V/get-vcard.php?uri=http://www.albumcreative.com/picscss/index.html"><img -->
 <!--			src="images/vcard.jpg" alt="image" width="130" height="38" /></a></div>-->

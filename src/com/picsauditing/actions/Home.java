@@ -23,7 +23,7 @@ public class Home extends ContractorActionSupport {
 		this.dao = dao;
 	}
 
-	public String execute() {
+	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
 		
@@ -32,6 +32,9 @@ public class Home extends ContractorActionSupport {
 				findContractor();
 			} catch (Exception e) {}
 		}
+		
+		else
+			permissions.tryPermission(OpPerms.Dashboard);
 
 		List<WidgetUser> widgetsToShowForUser = dao.findByUser(permissions);
 
