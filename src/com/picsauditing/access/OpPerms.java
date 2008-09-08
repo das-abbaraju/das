@@ -1,6 +1,12 @@
 package com.picsauditing.access;
 
 public enum OpPerms {
+	// Default User Permissions
+	EditProfile("", "", true, false),
+	BasicReporting("", "", true, false),
+	Dashboard("", "", true, false),
+	ContractorDetails("", "", true, false),
+	
 	FormsAndDocs("Manage Forms and Docs", "Allow users to Edit and Delete Forms and Documents. Edit is required to Add or Update forms. Delete is required to delete forms."),
 	
 	// Adding/removing Contractors
