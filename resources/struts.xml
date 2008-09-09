@@ -254,13 +254,6 @@
 			<result>struts/reports/newContractor_operator.jsp</result>
 		</action>
 
-		<action name="ContractorOperatorLimited"
-			class="com.picsauditing.actions.report.ReportAccountAudits">
-			<result>
-				struts/reports/contractors_operator_limited.jsp
-			</result>
-		</action>
-
 		<action name="ChartXMLFlagCount"
 			class="com.picsauditing.actions.chart.ChartFlagCount">
 			<result>struts/chart_xml.jsp</result>
@@ -484,5 +477,6 @@
 			<result>struts/users/user_save_groups.jsp</result>
 			<result name="member">struts/users/user_save_members.jsp</result>
 		</action>
+		
 	</package>
 </struts>
