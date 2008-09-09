@@ -11,6 +11,7 @@ public class ArchivedAccounts extends ReportAccount {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+		permissions.tryPermission(OpPerms.DelinquentAccounts);
 		sql.addField("a.contact");
 		sql.addField("a.phone");
 		sql.addField("a.phone2");
