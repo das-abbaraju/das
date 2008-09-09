@@ -5,6 +5,7 @@ import java.util.List;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.mail.EmailAuditBean;
 import com.picsauditing.mail.EmailTemplates;
 
@@ -33,13 +34,15 @@ public class OpenAuditsMailer extends PicsActionSupport {
 
 		nextID = 0;
 		for (ContractorAudit conAudit : list) {
-			nextID = conAudit.getId();
-			try {
-				System.out.println("Sending openRequirements email to: (" + conAudit.getId() + ") "
-						+ conAudit.getContractorAccount().getName() + " " + conAudit.getAuditType().getAuditName());
-				mailer.sendMessage(EmailTemplates.openRequirements, conAudit);
-			} catch (Exception e) {
-				System.out.println("Error sending openRequirements email: " + e.getMessage());
+			if (!conAudit.getContractorAccount().getRiskLevel().equals(LowMedHigh.Low)) {
+				nextID = conAudit.getId();
+				try {
+					System.out.println("Sending openRequirements email to: (" + conAudit.getId() + ") "
+							+ conAudit.getContractorAccount().getName() + " " + conAudit.getAuditType().getAuditName());
+					mailer.sendMessage(EmailTemplates.openRequirements, conAudit);
+				} catch (Exception e) {
+					System.out.println("Error sending openRequirements email: " + e.getMessage());
+				}
 			}
 		}
 		return nextID;
