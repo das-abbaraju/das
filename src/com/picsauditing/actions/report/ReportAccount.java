@@ -125,6 +125,8 @@ public class ReportAccount extends ReportActionSupport {
 			filterTaxID = false;
 			filterLicensedIn = false;
 			filterWorksIn = false;
+			filterTrade = false;
+			filterOfficeIn = false;
 		}
 		if(!permissions.hasPermission(OpPerms.InsuranceCerts)) {
 			filterCerts = false;

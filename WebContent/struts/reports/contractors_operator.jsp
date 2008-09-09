@@ -32,10 +32,12 @@ Corporate Version
 	<thead>
 	<tr>
 		<td colspan="2">Contractor Name</td>
-		<td></td>
-		<s:if test="pqfVisible">
-			<td>PQF</td>
-		</s:if>
+		<pics:permission perm="ContractorDetails">
+			<td></td>
+			<s:if test="pqfVisible">
+				<td>PQF</td>
+			</s:if>
+		</pics:permission>
 		<!-- 
 		<pics:permission perm="InsuranceCerts">
 			<td>Ins. Certs</td>
@@ -57,9 +59,14 @@ Corporate Version
 	<s:iterator value="data" status="stat">
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td><a
+			<td><pics:permission perm="ContractorDetails"><a
 				href="ContractorView.action?id=<s:property value="[0].get('id')"/>"
-				><s:property value="[0].get('name')" /></a></td>
+				><s:property value="[0].get('name')" /></a></pics:permission>
+				<pics:permission perm="ContractorDetails" negativeCheck="true">
+					<s:property value="[0].get('name')" />
+				</pics:permission>
+			</td>
+			<pics:permission perm="ContractorDetails">
 			<td><a
 				href="ConAuditList.action?id=<s:property value="[0].get('id')"/>">Audits</a></td>
 			<s:if test="pqfVisible">
@@ -72,6 +79,7 @@ Corporate Version
 					</s:else>
 				</s:if></td>
 			</s:if>
+			</pics:permission>
 			<!-- 
 			<pics:permission perm="InsuranceCerts">
 			<td align="center">
