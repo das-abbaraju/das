@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -42,6 +43,7 @@ public class ReportContractorAudits extends ReportAccount {
 	public String execute() throws Exception {
 		if (!forceLogin()) return LOGIN;
 		
+		permissions.tryPermission(OpPerms.ContractorDetails);
 		sql.addField("ca.createdDate");
 		sql.addField("ca.expiresDate");
 		sql.addField("ca.scheduledDate");

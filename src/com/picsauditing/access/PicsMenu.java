@@ -115,7 +115,7 @@ public class PicsMenu {
 			subMenu.addChild("Insurance Approval", "report_certificates.jsp?changed=1");
 		if (permissions.hasPermission(OpPerms.InsuranceVerification))
 			subMenu.addChild("Verification", "verify_insurance.jsp");
-		if (permissions.hasPermission(OpPerms.InsuranceApproval))
+		if (permissions.hasPermission(OpPerms.InsuranceVerification))
 			subMenu.addChild("Expired Certificates", "report_expiredCertificates.jsp?changed=1");
 
 		subMenu = menu.addChild("Management");

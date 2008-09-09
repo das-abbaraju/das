@@ -16,7 +16,7 @@ public class ChartAction extends PicsActionSupport {
 		FCTime = time;
 	}
 
-	public String execute() {
+	public String execute() throws Exception {
 		loadPermissions();
 		if (!permissions.isLoggedIn()) {
 			error("Not Logged In");

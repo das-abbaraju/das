@@ -3,7 +3,7 @@
 <jsp:useBean id="fBean" class="com.picsauditing.PICS.FormBean" scope ="page"/>
 <%
 if (!permissions.loginRequired(response, request)) return;
-
+permissions.tryPermission(OpPerms.FormsAndDocs);
 String opID = request.getParameter("id");
 // TODO replace isAdmin with appropriate can manageForms permission
 if (permissions.isAdmin() || permissions.isOperator() || permissions.isCorporate()) {

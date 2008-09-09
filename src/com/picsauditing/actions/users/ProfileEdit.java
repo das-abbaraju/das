@@ -1,6 +1,7 @@
 package com.picsauditing.actions.users;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.UserDAO;
@@ -20,6 +21,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 
 	public String execute() throws Exception {
 		loadPermissions();
+		permissions.tryPermission(OpPerms.EditProfile);
 		if (!permissions.isLoggedIn())
 			return LOGIN_AJAX;
 

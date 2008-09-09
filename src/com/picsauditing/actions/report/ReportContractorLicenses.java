@@ -3,6 +3,7 @@ package com.picsauditing.actions.report;
 import java.util.Date;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.OpPerms;
 
 public class ReportContractorLicenses extends ReportContractorAudits {
 	// private String[] state;
@@ -12,6 +13,10 @@ public class ReportContractorLicenses extends ReportContractorAudits {
 	protected String validLicense = "Valid";
 
 	public String execute() throws Exception {
+		if(!forceLogin())
+			return LOGIN;
+		
+		permissions.tryPermission(OpPerms.ContractorLicenseReport);
 		sql.addWhere("ca.auditTypeID = 1"); // PQF
 		sql.addWhere("a.active = 'Y'");
 		sql.addPQFQuestion(401);

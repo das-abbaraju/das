@@ -1,5 +1,6 @@
 package com.picsauditing.actions.report;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectUserUnion;
 
@@ -37,6 +38,7 @@ public class ReportUser extends ReportActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+		permissions.tryPermission(OpPerms.EditUsers);
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
 

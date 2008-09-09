@@ -6,6 +6,7 @@
 <jsp:useBean id="tBean" class="com.picsauditing.PICS.TradesBean"
 	scope="page" />
 <%
+	permissions.tryPermission(OpPerms.ContractorDetails);
 	if (permissions.isContractor()) throw new com.picsauditing.access.NoRightsException("Not Contractor");
 	try {
 		tBean.setFromDB();

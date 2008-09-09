@@ -1,6 +1,7 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.OpPerms;
 
 public class ReportIncidenceRate extends ReportAccount {
 	protected int year;
@@ -9,6 +10,10 @@ public class ReportIncidenceRate extends ReportAccount {
 	protected boolean searchYear2 = false;
 	protected boolean searchYear3 = false;
 	public String execute() throws Exception {
+		if(!forceLogin())
+			return LOGIN;
+		
+		permissions.tryPermission(OpPerms.FatalitiesReport);
 		sql.addJoin("INNER JOIN OSHA os ON os.conID = a.id");
 		if (searchYear1 == true)
 			sql.addWhere("(os.recordableTotal1*200000/os.manHours1 > "

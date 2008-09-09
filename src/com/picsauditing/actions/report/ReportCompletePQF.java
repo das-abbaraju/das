@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.mail.EmailAuditBean;
@@ -32,6 +33,7 @@ public class ReportCompletePQF extends ReportContractorAudits {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+		permissions.tryPermission(OpPerms.AuditVerification);
 		sql.addWhere("ca.auditStatus = 'Pending'");
 		sql.addWhere("ca.auditTypeID = 1");
 		sql.addWhere("a.active = 'Y'");

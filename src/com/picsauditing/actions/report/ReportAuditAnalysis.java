@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditType;
@@ -24,6 +25,8 @@ public class ReportAuditAnalysis extends PicsActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+		
+		permissions.tryPermission(OpPerms.ManageAudits);
 		
 		String sql = "select label, sortBy, sum(createdCount) createdCount, sum(completeCount) completeCount, " +
 			"sum(closedCount) closedCount " +

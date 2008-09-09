@@ -5,6 +5,8 @@
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page" />
 <%
 	String opID = null;
+	permissions.tryPermission(OpPerms.EditFlagCriteria);
+	
 	if (permissions.isOperator()) opID = permissions.getAccountIdString();
 	else opID = request.getParameter("opID").toString();
 	

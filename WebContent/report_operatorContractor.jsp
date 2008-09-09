@@ -3,6 +3,7 @@
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope ="page"/>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
 <%
+permissions.tryPermission(OpPerms.SearchContractors);
 if (permissions.isContractor()) throw new com.picsauditing.access.NoRightsException("Not Contractor");
 try{
 	OperatorBean oBean = new OperatorBean();

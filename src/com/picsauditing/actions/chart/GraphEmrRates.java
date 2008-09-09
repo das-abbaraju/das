@@ -2,10 +2,8 @@ package com.picsauditing.actions.chart;
 
 import java.util.List;
 
-import org.apache.commons.beanutils.LazyDynaBean;
-
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.chart.ChartMultiSeries;
@@ -13,7 +11,6 @@ import com.picsauditing.util.chart.ChartType;
 import com.picsauditing.util.chart.DataRow;
 import com.picsauditing.util.chart.FusionChart;
 import com.picsauditing.util.chart.MultiSeriesConverterHistogram;
-import com.picsauditing.util.chart.Set;
 
 public class GraphEmrRates extends ChartMSAction {
 	private ChartType chartType = ChartType.MSLine;
@@ -24,7 +21,10 @@ public class GraphEmrRates extends ChartMSAction {
 	private boolean show05 = true;
 	private boolean show04 = true;
 	
-	public String execute() {
+	public String execute() throws Exception {
+		if(!forceLogin())
+			return LOGIN;
+		permissions.tryPermission(OpPerms.EMRReport);
 		super.execute();
 		flashChart = FusionChart.createChart("charts/" + chartType.toString() + 
 				".swf", "", output, chartType.toString(), 
