@@ -7,7 +7,7 @@ public enum OpPerms {
 	Dashboard("Dashboard", "Allows users to view and customize (future) their home page/dashboard.", true, false),
 	ContractorDetails("Contractor Details", "Allows users to view the details page along with sub nav bar, also enables search criteria other than name on reports. Allows access to the contractor contact info report and the audit list report.", false, false),
 	
-	LimitedContractorList("Limited Contractor Search", "Restricts users to only view a list of contractors and their flag color", false, false, false),
+	LimitedContractorList("Limited Contractor Search", "Restricts users to only view a list of contractors and their flag color", false, false),
 	FormsAndDocs("Manage Forms and Docs", "Allow users to Edit and Delete Forms and Documents. Edit is required to Add or Update forms. Delete is required to delete forms."),
 	
 	// Adding/removing Contractors
