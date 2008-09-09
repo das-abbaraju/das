@@ -26,7 +26,10 @@ public class Home extends ContractorActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
+		if (permissions.getPermissions() == null || permissions.getPermissions().size() == 0)
+			throw new Exception("No Permissions Added to " + permissions.getUsername());
+
 		if (permissions.isContractor()) {
 			try {
 				findContractor();
