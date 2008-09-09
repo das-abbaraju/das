@@ -83,7 +83,7 @@ function getElement(whichLayer) {
 	<div id="boxbody">
 		<p><% if (permissions.isLoggedIn()) { %>
 <span id="name">Welcome, <%=permissions.getName() %></span>
-| <a href="<%= permissions.hasPermission(OpPerms.LimitedContractorList) ? "ContractorOperatorLimited" : "Home" %>.action">Home</a>| <a href="logout.jsp">Logout</a>
+| <a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>">Home</a>| <a href="logout.jsp">Logout</a>
 <% } else { %>
 <span id="name">Welcome</span> | <a href="login.jsp">Login</a>
 <% } %></p>
