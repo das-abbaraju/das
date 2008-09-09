@@ -27,23 +27,19 @@ public class Home extends ContractorActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 
-		if (permissions.getPermissions() == null || permissions.getPermissions().size() == 0)
-			throw new Exception("No Permissions Added to " + permissions.getUsername());
-
 		if (permissions.isContractor()) {
 			try {
 				findContractor();
-			} catch (Exception e) {}
-		}
-		
-		else
+			} catch (Exception e) {
+			}
+		} else
 			permissions.tryPermission(OpPerms.Dashboard);
 
 		List<WidgetUser> widgetsToShowForUser = dao.findByUser(permissions);
 
 		for (WidgetUser widgetUser : widgetsToShowForUser) {
 			Widget widget = widgetUser.getWidget();
-			if(widget.getWidgetID() == 15 && !permissions.hasPermission(OpPerms.DelinquentAccounts))
+			if (widget.getWidgetID() == 15 && !permissions.hasPermission(OpPerms.DelinquentAccounts))
 				continue;
 			// Set custom parameters from the user
 			widget.setExpanded(widgetUser.isExpanded());

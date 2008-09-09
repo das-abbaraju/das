@@ -263,6 +263,10 @@ public class LoginController extends DataBean {
 			// return;
 			// }
 		}
+		
+		MenuComponent menu = PicsMenu.getMenu(permissions);
+		
+		
 
 		// Find out if the user previously timed out on a page, we'll forward
 		// back there below
@@ -282,12 +286,17 @@ public class LoginController extends DataBean {
 				}
 			}
 		}
-		if(permissions.hasPermission(OpPerms.LimitedContractorList)) {
-			response.sendRedirect("ContractorOperatorLimited.action");
+		
+		if (permissions.hasPermission(OpPerms.Dashboard)) {
+			response.sendRedirect("Home.action");
 			return;
 		}
 		
-		response.sendRedirect("Home.action");
+		String url = PicsMenu.getHomePage(menu);
+		if (url == null)
+			throw new Exception("No Permissions or Default Webpages found");
+		
+		response.sendRedirect(url);
 		return;
 	}
 

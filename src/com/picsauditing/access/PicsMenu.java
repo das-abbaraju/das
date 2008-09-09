@@ -1,6 +1,33 @@
 package com.picsauditing.access;
 
+import java.util.Iterator;
+
 public class PicsMenu {
+	
+	/**
+	 * 
+	 * @param menu
+	 * @return the url in the first menu item on a menu
+	 */
+	static public String getHomePage(MenuComponent menu) {
+		String url = null;
+		
+		if (menu == null || menu.getChildren() == null || menu.getChildren().size() == 0)
+			return url;
+		for(MenuComponent subMenu : menu.getChildren()) {
+			url = subMenu.getUrl();
+			if (url != null && url.length() > 0)
+				return url;
+			
+			for(MenuComponent subSubMenu : subMenu.getChildren()) {
+				url = subSubMenu.getUrl();
+				if (url != null && url.length() > 0)
+					return url;
+			}
+		}
+		return url;
+	}
+	
 	static public MenuComponent getMenu(Permissions permissions) {
 		MenuComponent menu = new MenuComponent();
 
@@ -22,16 +49,12 @@ public class PicsMenu {
 			return menu;
 		}
 
-		if (permissions.hasPermission(OpPerms.LimitedContractorList)) {
-			menu.addChild("Contractor List", "ContractorOperatorLimited.action");
-			return menu;
-		}
-
 		subMenu = menu.addChild("Contractors");
 		if (permissions.isPicsEmployee())
 			subMenu.addChild("Search", "ContractorListAdmin.action");
 		if (permissions.isOperator() || permissions.isCorporate())
 			subMenu.addChild("Contractor List", "ContractorListOperator.action");
+		
 
 		if (permissions.hasPermission(OpPerms.ContractorDetails))
 			subMenu.addChild("Contact Info", "report_contactInfo.jsp?changed=1");
@@ -138,6 +161,17 @@ public class PicsMenu {
 			subMenu.addChild("Contractor Licenses", "ReportContractorLicenses.action");
 		if (permissions.hasPermission(OpPerms.ManageAudits))
 			subMenu.addChild("Audit Analysis", "ReportAuditAnalysis.action");
+		
+		// Convert the first submenu into a menu if only one exists
+		Iterator<MenuComponent> iterator = menu.getChildren().iterator();
+		while (iterator.hasNext()) {
+			MenuComponent nextMenu = iterator.next();
+			if (nextMenu.getChildren().size() == 0)
+				iterator.remove();
+		}
+		if (menu.getChildren().size() == 1)
+			return menu.getChildren().get(0);
+		// End of conversion
 		
 		return menu;
 	}
