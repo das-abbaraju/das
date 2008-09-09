@@ -287,12 +287,7 @@ public class LoginController extends DataBean {
 			}
 		}
 		
-		if (permissions.hasPermission(OpPerms.Dashboard)) {
-			response.sendRedirect("Home.action");
-			return;
-		}
-		
-		String url = PicsMenu.getHomePage(menu);
+		String url = PicsMenu.getHomePage(menu, permissions);
 		if (url == null)
 			throw new Exception("No Permissions or Default Webpages found");
 		

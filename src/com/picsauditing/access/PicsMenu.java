@@ -9,11 +9,14 @@ public class PicsMenu {
 	 * @param menu
 	 * @return the url in the first menu item on a menu
 	 */
-	static public String getHomePage(MenuComponent menu) {
-		String url = null;
+	static public String getHomePage(MenuComponent menu, Permissions permissions) {
+		if (permissions.hasPermission(OpPerms.Dashboard))
+			return "Home.action";
 		
+		String url = null;
 		if (menu == null || menu.getChildren() == null || menu.getChildren().size() == 0)
 			return url;
+		
 		for(MenuComponent subMenu : menu.getChildren()) {
 			url = subMenu.getUrl();
 			if (url != null && url.length() > 0)
