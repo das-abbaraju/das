@@ -17,18 +17,18 @@
 		if (aBean.isOK() && oBean.isOK() && aBean.writeNewToDB()) {
 			oBean.writeNewToDB(aBean.id);
 			FACILITIES.resetFacilities();
-			response.sendRedirect("report_accounts.jsp?type=" + aBean.type);
+			response.sendRedirect("ReportAccountList.action?accountType=" + aBean.type);
 			return;
 		}//if
 	}//if
 %>
 <html>
 <head>
-<title>Create Operator</title>
+<title>Create <%= accountType%></title>
 <meta name="header_gif" content="header_manageAccounts.gif" />
 </head>
 <body>
-      <h1>Create New Operator</h1>
+      <h1>Create New <%= accountType%></h1>
       <form name="form1" method="post" action="accounts_new_operator.jsp?type=<%=accountType%>">
               <table width="657" cellpadding="10" cellspacing="0">
                 <tr> 
