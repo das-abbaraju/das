@@ -477,10 +477,15 @@
 			<result>struts/users/user_save_groups.jsp</result>
 			<result name="member">struts/users/user_save_members.jsp</result>
 		</action>
-		
+
 		<action name="ReportContractorsWithForcedFlags"
 			class="com.picsauditing.actions.report.ReportContractorsWithForcedFlags">
 			<result>/struts/reports/report_forceflags.jsp</result>
+		</action>
+		
+		<action name="ReportAccountList"
+			class="com.picsauditing.actions.report.ReportOperatorCorporate">
+			<result>struts/reports/operator_corporate.jsp</result>
 		</action>
 		
 	</package>
