@@ -32,11 +32,18 @@
 		</s:else>
 		
 		<s:if test="answer.verified">
-			<br/><span class="verified">Verified on <s:date name="answer.dateVerified" format="MMM d, yyyy" /></span>
+			<s:if test="answer.verifiedAnswer.length() > 0 && answer.answer != answer.verifiedAnswer" >
+				<span class="unverified">Inaccurate Data</span><br/>
+				<span style="color: #272;"><s:property value="answer.verifiedAnswer" /></span> 
+			</s:if>
+			<s:else><br/></s:else>
+			<span class="verified">
+			Verified on <s:date name="answer.dateVerified" format="MMM d, yyyy" />
+			</span>
 		</s:if>
 		
 		<s:if test="answer.unverified">
-			<br/><span class="unverified">Inaccurate Data</span>
+			<span class="unverified">Inaccurate Data</span>
 		</s:if>
 	</span></td>
 </tr>
