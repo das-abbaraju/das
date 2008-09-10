@@ -480,7 +480,7 @@
 
 		<action name="ReportContractorsWithForcedFlags"
 			class="com.picsauditing.actions.report.ReportContractorsWithForcedFlags">
-			<result>/struts/reports/report_forceflags.jsp</result>
+			<result>/struts/reports/report_forcedflags.jsp</result>
 		</action>
 		
 		<action name="ReportAccountList"
