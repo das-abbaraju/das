@@ -1,5 +1,7 @@
 package com.picsauditing.dao;
 
+import java.util.List;
+
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -7,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.ContractorOperator;
 
 @Transactional
+@SuppressWarnings("unchecked")
+
 public class ContractorOperatorDAO extends PicsDAO {
 	public ContractorOperator save(ContractorOperator o) {
 		if (o.getId() == 0) {
@@ -37,5 +41,11 @@ public class ContractorOperatorDAO extends PicsDAO {
 		query.setParameter(1, conID);
 		query.setParameter(2, opID);
 		return (ContractorOperator)query.getSingleResult();
+	}
+	
+	public List<ContractorOperator> findForcedFlagsByOpID(int opID) {
+		Query query = em.createQuery("FROM ContractorOperator WHERE operatorAccount.id = ? AND forceFlag IS NOT null");
+		query.setParameter(1, opID);
+		return query.getResultList();
 	}
 }
