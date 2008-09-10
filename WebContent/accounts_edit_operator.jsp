@@ -29,7 +29,7 @@
 			oBean.writeToDB();
 			oBean.writeFacilitiesToDB();
 			FACILITIES.resetFacilities();
-			response.sendRedirect("report_accounts.jsp?type=" + aBean.type);
+			response.sendRedirect("ReportAccountList.action?accountType=" + aBean.type);
 			return;
 		}//if
 	}//if
@@ -42,7 +42,7 @@
 <%@page import="com.picsauditing.jpa.entities.YesNo"%>
 <html>
 <head>
-<title>Edit Operator <%=aBean.name%></title>
+<title>Edit <%=aBean.type%> <%=aBean.name%></title>
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/forms.css" />
 </head>
@@ -62,7 +62,7 @@
 	<li><a href="UsersManage.action?accountId=<%=aBean.id%>">Users</a></li>
 	<li><a href="op_editFlagCriteria.jsp?opID=<%=aBean.id%>">Flag
 	Criteria</a></li>
-	<li><a href="report_accounts.jsp?type=<%=aBean.type%>">Return
+	<li><a href="ReportAccountList.action?accountType=<%=aBean.type%>">Return
 	to List</a></li>
 </ul>
 </div>
