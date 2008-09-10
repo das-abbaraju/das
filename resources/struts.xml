@@ -478,5 +478,10 @@
 			<result name="member">struts/users/user_save_members.jsp</result>
 		</action>
 		
+		<action name="ReportContractorsWithForcedFlags"
+			class="com.picsauditing.actions.report.ReportContractorsWithForcedFlags">
+			<result>/struts/reports/report_forceflags.jsp</result>
+		</action>
+		
 	</package>
 </struts>
