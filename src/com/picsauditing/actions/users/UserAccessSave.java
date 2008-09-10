@@ -15,7 +15,7 @@ public class UserAccessSave extends UsersManage {
 	protected OpPerms opPerm;
 	protected UserAccessDAO userAccessDAO;
 	protected int accessId;
-	
+
 	public UserAccessSave(OperatorAccountDAO operatorDao, UserDAO userDAO, UserAccessDAO userAccessDAO) {
 		super(operatorDao, userDAO);
 		this.userAccessDAO = userAccessDAO;
@@ -27,16 +27,21 @@ public class UserAccessSave extends UsersManage {
 			return LOGIN;
 		}
 		super.execute();
+
 		if (user == null) {
 			addActionError("user is not set");
 			return SUCCESS;
 		}
 
 		if ("AddPerm".equals(button)) {
+			if (opPerm == null) {
+				addActionError("permission is not selected");
+				return SUCCESS;
+			}
 			// Make sure they don't already have it
 			boolean hasPerm = false;
 			for (UserAccess userAccess : user.getOwnedPermissions()) {
-				if(userAccess.getOpPerm().equals(opPerm)) {
+				if (userAccess.getOpPerm().equals(opPerm)) {
 					hasPerm = true;
 				}
 			}
@@ -54,7 +59,7 @@ public class UserAccessSave extends UsersManage {
 				if (opPerm.usesDelete())
 					userAccess.setDeleteFlag(true);
 				userAccess.setGrantFlag(true);
-				
+
 				userAccessDAO.save(userAccess);
 				user.getOwnedPermissions().add(userAccess);
 				// Resort the list
@@ -64,7 +69,7 @@ public class UserAccessSave extends UsersManage {
 				user.getOwnedPermissions().addAll(temp);
 			}
 		}
-		
+
 		if ("RemovePerm".equals(button)) {
 			userAccessDAO.remove(accessId);
 		}
