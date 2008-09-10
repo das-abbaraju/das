@@ -164,6 +164,8 @@ public class PicsMenu {
 			subMenu.addChild("Contractor Licenses", "ReportContractorLicenses.action");
 		if (permissions.hasPermission(OpPerms.ManageAudits))
 			subMenu.addChild("Audit Analysis", "ReportAuditAnalysis.action");
+		if (permissions.hasPermission(OpPerms.ForcedFlagsReport))
+			subMenu.addChild("Forced Flags", "ReportContractorsWithForcedFlags.action");
 		
 		// Convert the first submenu into a menu if only one exists
 		Iterator<MenuComponent> iterator = menu.getChildren().iterator();
