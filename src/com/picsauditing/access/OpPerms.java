@@ -27,7 +27,7 @@ public enum OpPerms {
 	ContractorLicenseReport("Contractor License Report", "List all contractor licenses", false, false),
 	FatalitiesReport("Fatalities Report", "List contractors with fatalities by year", false, false),
 	EMRReport("EMR Report", "List contractor EMRs by year", false, false),
-	ForcedFlagsReport("Force Flags Report", "List contractors with Forced Flags.", false, false),
+	ForcedFlagsReport("Forced Flags Report", "List contractors with Forced Flags.", false, false),
 	
 	// Can view/edit/delete all contractors in the database ... replaces isAdmin
 	// These are usually used in tandem with another permission
