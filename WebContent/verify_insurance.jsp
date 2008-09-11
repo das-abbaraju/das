@@ -42,6 +42,7 @@ try{
        $('editme3_'+cid).show();
 	   $('noedit4_'+cid).hide();
        $('editme4_'+cid).show();
+       $('oktoedit_'+cid).value="ok";
 	}
 </script> 
 </head>
