@@ -127,8 +127,10 @@ public class SelectAccount extends SelectSQL {
 			this.addJoin("LEFT JOIN flags ON flags.conID = a.id AND flags.opID = " + permissions.getAccountId());
 			this.addField("flags.flag");
 			this.addField("lower(flags.flag) AS lflag");
-			this.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = " + permissions.getAccountId());
+			if (!this.hasJoin("generalcontractors gc"))
+				this.addJoin("JOIN generalcontractors gc ON gc.subID = a.id");
 			this.addField("gc.workStatus");
+			this.addWhere("gc.genID = " + permissions.getAccountId());
 		}
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
 

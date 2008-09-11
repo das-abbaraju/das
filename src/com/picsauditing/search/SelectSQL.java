@@ -110,6 +110,14 @@ public class SelectSQL {
 		return sql.toString();
 	}
 	
+	public boolean hasJoin(String tableName) {
+		for (String join : joinClause) {
+			if (join.contains(tableName))
+				return true;
+		}
+		return false;
+	}
+	
 	public void setFromTable(String fromTable) {
 		this.fromTable = fromTable;
 	}
