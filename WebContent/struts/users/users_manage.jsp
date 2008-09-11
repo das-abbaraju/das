@@ -139,6 +139,8 @@ function checkUsername(username) {
 		<a href="?button=newUser&accountId=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=Yes&user.isActive=Yes">Add Group</a>
 		&nbsp;&nbsp;
 		<a href="?button=newUser&accountId=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=No&user.isActive=Yes">Add User</a>
+		&nbsp;&nbsp;
+		<a href="ReportUserPermissionMatrix.action?accountId=<s:property value="accountId"/>">User Permissions Matrix</a>
 	</td>
 </tr>
 <tr valign="top"><td>
