@@ -11,6 +11,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.util.SpringUtils;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -26,6 +27,10 @@ public class OperatorAccountDAO extends PicsDAO {
 
 	public void remove(int id) {
 		OperatorAccount row = find(id);
+		remove(row);
+	}
+
+	public void remove(OperatorAccount row) {
 		if (row != null) {
 			em.remove(row);
 		}
@@ -119,5 +124,42 @@ public class OperatorAccountDAO extends PicsDAO {
 	public int getOperatorCounts(String where) {
 		Query query = em.createQuery("SELECT count(o) FROM OperatorAccount o WHERE o.active = 'Y' AND " + where);
 		return Integer.parseInt(query.getSingleResult().toString());
+	}
+
+	public boolean removeAllByOpID(OperatorAccount operatorAccount, String ftpDir) {
+		int opID = operatorAccount.getId();
+
+		Query query = em.createQuery("SELECT count(*) FROM ContractorAudit ca WHERE ca.requestingOpAccount = ?");
+		query.setParameter(1, operatorAccount);
+		if ((Integer) query.getSingleResult() > 0)
+			return false;
+
+		query = em.createQuery("SELECT count(*) FROM ContractorOperator co WHERE co.operatorAccount = ?");
+		query.setParameter(1, operatorAccount);
+		if ((Integer) query.getSingleResult() > 0)
+			return false;
+
+		query = em.createQuery("SELECT count(*) FROM Facility f WHERE f.corporate.id = " + opID);
+		if ((Integer) query.getSingleResult() > 0)
+			return false;
+
+		query = em.createQuery("DELETE FROM FlagQuestionCriteria fq WHERE fq.operatorAccount.id = " + opID);
+		query.executeUpdate();
+		query = em.createQuery("DELETE FROM FlagOshaCriteria fo WHERE fo.operatorAccount.id = " + opID);
+		query.executeUpdate();
+		query = em.createQuery("DELETE FROM ContractorOperatorFlag cf WHERE cf.operatorAccount.id = " + opID);
+		query.executeUpdate();
+		query = em.createQuery("DELETE FROM AuditCatOperator ao WHERE ao.operatorAccount.id = " + opID);
+		query.executeUpdate();
+		query = em.createQuery("DELETE FROM AuditQuestionOperatorAccount aq WHERE aq.operatorAccount.id = " + opID);
+		query.executeUpdate();
+		query = em.createQuery("DELETE FROM Facility f WHERE f.operator.id = " + opID);
+
+		OperatorFormDAO operatorFormDAO = (OperatorFormDAO) SpringUtils.getBean("OperatorFormDAO");
+		if (!operatorFormDAO.deleteOperatorForms(opID, ftpDir))
+			return false;
+
+		remove(operatorAccount);
+		return true;
 	}
 }

@@ -60,17 +60,10 @@ public class ReportOperatorCorporate extends ReportAccount {
 			else
 				throw new NoPermissionException("Delete Account");
 
-			// ContractorOperatorDAO contractorOperatorDAO =
-			// (ContractorOperatorDAO) SpringUtils
-			// .getBean("ContractorOperatorDAO");
-			// List<ContractorOperator> cList =
-			// contractorOperatorDAO.findByOpID(accountID);
-			// for (ContractorOperator contractorOperator : cList) {
-			// contractorOperatorDAO.remove(contractorOperator);
-			// }
-			// operatorAccountDAO.remove(accountID);
+			boolean removed = operatorAccountDAO.removeAllByOpID(operatorAccount, getFtpDir());
+			if (!removed)
+				addActionError("Cannot Remove this account" + operatorAccount.getName());
 		}
-
 		return SUCCESS;
 	}
 
