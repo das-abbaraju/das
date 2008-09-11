@@ -52,10 +52,14 @@ public class UserSave extends UsersManage {
 			}
 			
 			if (user.isGroup()) {
+				// Create a unique username for this group
 				String username = "GROUP";
-				if (user.getAccount() != null)
+				if (user.getAccount().getId() > 0)
 					username += user.getAccount().getId();
-				username += user.getName();
+				else {
+					username += Math.round(Math.random()*10000);
+					username += user.getName();
+				}
 				
 				user.setUsername(username);
 			}
@@ -104,8 +108,6 @@ public class UserSave extends UsersManage {
 		if (user.getEmail() == null || user.getEmail().length() == 0 || !Utilities.isValidEmail(user.getEmail()))
 			addActionError("Please enter a valid Email address.");
 		
-		boolean ae = (getActionErrors().size() == 0);
-		
-		return (getActionErrors().size() == 0);
+		return getActionErrors().size() == 0;
 	}
 }

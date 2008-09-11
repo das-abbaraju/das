@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
@@ -130,12 +131,18 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	public List<User> getAddableGroups() {
 		List<User> list = new ArrayList<User>();
 
-		List<User> activeGroups = userDAO.findByAccountID(accountId, "Yes", "Yes");
-		for (User group : activeGroups) {
-			// Add the groups I have access to
-			if (permissions.hasPermission(OpPerms.AllOperators) || permissions.getGroups().contains(group.getId()))
-				list.add(group);
-		}
+		if (!permissions.hasPermission(OpPerms.EditUsers, OpType.Edit))
+			return list;
+		
+		// for now, just add all groups in your account to the 
+		list = userDAO.findByAccountID(accountId, "Yes", "Yes");
+		// This used to only add groups you were a member of, 
+		//  but this doesn't work for admins trying to add groups they aren't members of
+		//for (User group : activeGroups) {
+		//	if (permissions.hasPermission(OpPerms.AllOperators) || permissions.getGroups().contains(group.getId()))
+		//		list.add(group);
+		//}
+		
 		if (user.isGroup() && permissions.hasPermission(OpPerms.AllOperators) && permissions.getAccountId() != accountId) {
 			// This is an admin looking at another account (not PICS)
 			// Add the non-PICS groups too
