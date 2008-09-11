@@ -108,6 +108,13 @@ public class UserDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	/**
+	 * 
+	 * @param id
+	 * @param isActive Yes, No, or ""
+	 * @param isGroup Yes, No, or ""
+	 * @return
+	 */
 	public List<User> findByAccountID(int id, String isActive, String isGroup) {
 		String where = "";
 		if ("Yes".equals(isGroup) || "No".equals(isGroup))

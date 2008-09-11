@@ -6,14 +6,9 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		if (!forceLogin())
 			return LOGIN;
 		
-		skipPermissions = true;
+		//skipPermissions = true;
 		
-		if (permissions.seesAllContractors())
-			sql.addJoin("JOIN generalcontractors gc on gc.subid = a.id");
-
-		else if (permissions.isOperator() || permissions.isCorporate())
-			sql.addJoin("JOIN generalcontractors gc on gc.subid = " + permissions.getAccountId());
-
+		sql.addJoin("JOIN generalcontractors gc on gc.subid = a.id");
 		sql.addJoin("JOIN accounts o on gc.genid = o.id");
 		
 		sql.addField("o.name AS opName");
@@ -21,7 +16,7 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		sql.addField("lower(gc.forceFlag) AS lflag");
 		sql.addField("gc.forceend");
 		sql.addWhere("gc.forceFlag IS NOT null");
-		sql.addOrderBy("o.name");
+		this.orderBy = "o.name, a.name";
 		
 		return super.execute();
 	}
