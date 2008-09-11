@@ -483,10 +483,14 @@
 			<result>/struts/reports/report_forcedflags.jsp</result>
 		</action>
 		
+		<action name="ReportUserPermissionMatrix"
+			class="com.picsauditing.actions.report.ReportUserPermissionMatrix">
+			<result>struts/reports/user_permission_matrix.jsp</result>
+		</action>
+		
 		<action name="ReportAccountList"
 			class="com.picsauditing.actions.report.ReportOperatorCorporate">
 			<result>struts/reports/operator_corporate.jsp</result>
 		</action>
-		
 	</package>
 </struts>
