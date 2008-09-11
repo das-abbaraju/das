@@ -34,7 +34,8 @@
 	<bean id="UserGroupDAO" class="com.picsauditing.dao.UserGroupDAO"/>
 	<bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO"/>
 	<bean id="UserLoginLogDAO" class="com.picsauditing.dao.UserLoginLogDAO"/>
-
+	<bean id="OperatorFormDAO" class="com.picsauditing.dao.OperatorFormDAO"/>
+	
 	<bean id="EmailAuditBean" class="com.picsauditing.mail.EmailAuditBean" scope="prototype"/>
 	<bean id="EmailContractorBean" class="com.picsauditing.mail.EmailContractorBean" scope="prototype"/>
 	<bean id="EmailUserBean" class="com.picsauditing.mail.EmailUserBean" scope="prototype"/>
@@ -42,7 +43,7 @@
 	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
 	<bean id="AuditPercentCalculator" class="com.picsauditing.PICS.AuditPercentCalculator" scope="prototype"/>
 	<bean id="CertificateDAO" class="com.picsauditing.dao.CertificateDAO"/>
-
+	
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
 	<!--  JPA implementation -->

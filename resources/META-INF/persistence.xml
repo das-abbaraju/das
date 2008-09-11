@@ -35,6 +35,7 @@
   <class>com.picsauditing.jpa.entities.NcmsCategory</class>
   <class>com.picsauditing.jpa.entities.Notes</class>
   <class>com.picsauditing.jpa.entities.OperatorAccount</class>
+  <class>com.picsauditing.jpa.entities.OperatorForm</class>
   <class>com.picsauditing.jpa.entities.OshaLog</class>
   <class>com.picsauditing.jpa.entities.OshaLogYear</class> 
   <class>com.picsauditing.jpa.entities.OshaType</class>

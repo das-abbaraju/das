@@ -41,7 +41,7 @@
 	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
 	<bean id="AuditPercentCalculator" class="com.picsauditing.PICS.AuditPercentCalculator" scope="prototype"/>
 	<bean id="CertificateDAO" class="com.picsauditing.dao.CertificateDAO" scope="prototype"/>
-
+	<bean id="OperatorFormDAO" class="com.picsauditing.dao.OperatorFormDAO" scope="prototype"/>
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
 	<!--  JPA implementation -->
