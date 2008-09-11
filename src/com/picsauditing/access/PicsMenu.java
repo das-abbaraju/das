@@ -148,24 +148,26 @@ public class PicsMenu {
 			subMenu.addChild("Assign Audit/Operator", "AuditOperator.action");
 
 		subMenu = menu.addChild("Reports");
-		if (permissions.hasPermission(OpPerms.EditUsers))
-			subMenu.addChild("User Search","ReportUsersAccount.action");
-		if(permissions.seesAllContractors())
-			subMenu.addChild("User Multi-Login","MultiLoginUser.action");
+		if (permissions.hasPermission(OpPerms.ManageAudits))
+			subMenu.addChild("Audit Analysis", "ReportAuditAnalysis.action");
+		if (permissions.hasPermission(OpPerms.ContractorLicenseReport))
+			subMenu.addChild("Contractor Licenses", "ReportContractorLicenses.action");
 		if (permissions.hasPermission(OpPerms.EMRReport)) {
 			subMenu.addChild("EMR Rates (Graph)", "GraphEmrRates.action");
 			subMenu.addChild("EMR Rates", "ReportEmrRates.action");
 		}
 		if (permissions.hasPermission(OpPerms.FatalitiesReport))
 			subMenu.addChild("Fatalities", "ReportFatalities.action");
-		if (permissions.hasPermission(OpPerms.FatalitiesReport))
-			subMenu.addChild("Incidence Rates", "ReportIncidenceRate.action");
-		if (permissions.hasPermission(OpPerms.ContractorLicenseReport))
-			subMenu.addChild("Contractor Licenses", "ReportContractorLicenses.action");
-		if (permissions.hasPermission(OpPerms.ManageAudits))
-			subMenu.addChild("Audit Analysis", "ReportAuditAnalysis.action");
 		if (permissions.hasPermission(OpPerms.ForcedFlagsReport))
 			subMenu.addChild("Forced Flags", "ReportContractorsWithForcedFlags.action");
+		if (permissions.hasPermission(OpPerms.FatalitiesReport))
+			subMenu.addChild("Incidence Rates", "ReportIncidenceRate.action");
+		if(permissions.seesAllContractors())
+			subMenu.addChild("User Multi-Login","MultiLoginUser.action");
+		if (permissions.hasPermission(OpPerms.EditUsers))
+			subMenu.addChild("User Permissions Matrix", "ReportUserPermissionMatrix.action");
+		if (permissions.hasPermission(OpPerms.EditUsers))
+			subMenu.addChild("User Search","ReportUsersAccount.action");
 		
 		// Convert the first submenu into a menu if only one exists
 		Iterator<MenuComponent> iterator = menu.getChildren().iterator();
