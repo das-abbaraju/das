@@ -49,4 +49,10 @@ public class UserAccessDAOTest {
 		assertEquals(null, access.getDeleteFlag());
 		userAccessDAO.remove(id);
 	}
+	
+	@Test
+	public void printOpPerms() {
+		for(OpPerms perm : OpPerms.values())
+			System.out.println(perm);
+	}
 }

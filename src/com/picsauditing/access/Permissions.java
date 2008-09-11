@@ -9,6 +9,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import com.picsauditing.PICS.AccountBean;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
@@ -254,7 +255,7 @@ public class Permissions {
 	}
 
 	public boolean isPicsEmployee() {
-		return (1100 == this.accountID);
+		return (Account.PicsID == this.accountID);
 	}
 
 	/**

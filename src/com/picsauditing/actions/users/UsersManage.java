@@ -10,6 +10,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
@@ -135,6 +136,17 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			if (permissions.hasPermission(OpPerms.AllOperators) || permissions.getGroups().contains(group.getId()))
 				list.add(group);
 		}
+		if (user.isGroup() && permissions.hasPermission(OpPerms.AllOperators) && permissions.getAccountId() != accountId) {
+			// This is an admin looking at another account (not PICS)
+			// Add the non-PICS groups too
+			List<User> nonPicsGroups = userDAO.findByAccountID(Account.PicsID, "Yes", "Yes");
+			for (User group : nonPicsGroups) {
+				// Add the groups owned by PICS but that are for Operator/Corporate/Contractors/etc
+				if (!group.getName().startsWith("PICS") && !list.contains(group))
+					list.add(group);
+			}
+		}
+		
 		for (UserGroup userGroup : user.getGroups()) {
 			// but these groups, have already been added
 			list.remove(userGroup.getGroup());

@@ -32,6 +32,7 @@ import com.picsauditing.util.Luhn;
 @Table(name = "accounts")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Account implements java.io.Serializable {
+	static public int PicsID = 1100;
 
 	protected int id;
 	protected String name;

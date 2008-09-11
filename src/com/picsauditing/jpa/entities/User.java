@@ -277,13 +277,13 @@ public class User implements Comparable<User> {
 					// if the user has two groups with the same perm type,
 					// and one grants but the other revokes, then the users WILL
 					// be granted the right
-					if (perm.getViewFlag())
+					if (perm.getViewFlag() != null && perm.getViewFlag())
 						origPerm.setViewFlag(true);
-					if (perm.getEditFlag())
+					if (perm.getEditFlag() != null && perm.getEditFlag())
 						origPerm.setEditFlag(true);
-					if (perm.getDeleteFlag())
+					if (perm.getDeleteFlag() != null && perm.getDeleteFlag())
 						origPerm.setDeleteFlag(true);
-					if (perm.getGrantFlag())
+					if (perm.getGrantFlag() != null && perm.getGrantFlag())
 						origPerm.setGrantFlag(true);
 				}
 				return;
