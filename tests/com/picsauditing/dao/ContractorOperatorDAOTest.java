@@ -48,10 +48,4 @@ public class ContractorOperatorDAOTest {
 			
 		}
 	}
-	
-	@Test
-	public void testFindForcedFlagsByOpID() {
-		List<ContractorOperator> list = contractorOperatorDao.findForcedFlagsByOpID(1813);
-		System.out.println(list.size());
-	}
 }
