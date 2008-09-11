@@ -108,7 +108,19 @@ public class FileUtils {
 		
 		return true;
 	}
-	
-	
-	
+
+	/**
+	 * Delete a file if it exists. Does not work on directories
+	 * @param path
+	 * @return return false if it isn't able to delete the file
+	 */
+	static public boolean deleteFile(String path) {
+		File fileToDelete = new File(path);
+		if (fileToDelete.exists()) {
+			if (!fileToDelete.isFile())
+				return false;
+			return fileToDelete.delete();
+		}
+		return true;
+	}
 }
