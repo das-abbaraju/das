@@ -125,18 +125,6 @@
                         <td><%=aBean.getGeneralSelectMultiple("facilities","blueMain",oBean.getFacilitiesArray())%>
                       </tr>
 <%	} %>
-                      <tr> 
-                        <td class="blueMain" align="right">Sees All:</td>
-                        <td class="blueMain" align="left">
-						  <%=Inputs.getYesNoRadio("seesAllContractors","forms",oBean.seesAllContractors)%>
-						</td>
-                      </tr>
-                      <tr> 
-                        <td class="blueMain" align="right">Can Add:</td>
-                        <td class="blueMain" align="left">
-						  <%=Inputs.getYesNoRadio("canAddContractors","forms",oBean.canAddContractors)%>
-						</td>
-                      </tr>
 					  <tr>
                         <td class="blueMain" align="right">Contractors pay:</td>
                         <td class="blueMain" align="left" valign="bottom">

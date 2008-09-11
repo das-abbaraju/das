@@ -62,8 +62,6 @@ public class OperatorAccountDAOTest {
 		operatoraccount.setEmailConfirmedDate(new Date(2008, 12, 42));
 		operatoraccount.setActivationEmails("pics@picsauditing.com");
 		operatoraccount.setDoSendActivationEmail("Yes");
-		operatoraccount.setSeesAllContractors("Yes");
-		operatoraccount.setCanAddContractors(YesNo.Yes);
 		operatoraccount.setDoContractorsPay("Multiple");
 		operatoraccount.setCanSeeInsurance(YesNo.Yes);
 		operatoraccount.setIsCorporate(YesNo.Yes);

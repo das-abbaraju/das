@@ -3,28 +3,23 @@ package com.picsauditing.PICS;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.jpa.entities.Industry;
+import com.picsauditing.mail.EmailContractorBean;
 import com.picsauditing.mail.EmailTemplates;
 import com.picsauditing.mail.EmailUserBean;
-import com.picsauditing.mail.EmailContractorBean;
 import com.picsauditing.util.SpringUtils;
-import com.picsauditing.access.Permissions;
+import com.picsauditing.util.Strings;
 
 public class AccountBean extends DataBean {
-	public static final String CREATED_BY_PICS = "PICS"; // Must match createdBy ENUM in DB table
-	public static final String CREATED_BY_INTERNET = "Internet"; // Must match createdBy ENUM in DB table
-	private static final int PASSWORD_DURATION = 365; // days between required password update
 	public static final int MIN_PASSWORD_LENGTH = 5; // minimum required length of a passord
-	static final String[] INDUSTRY_ARRAY = { "Petrochemical", "Mining", "Power", "General", "Construction",
-			"Manufacturing", "Pharmaceutical", "Telecommunications" };
 	OperatorBean o = null;
 	String accountDate = "";
 	public String userID = "0"; // used in check login, to set id for users not in main accounts table, but in users table
@@ -219,20 +214,6 @@ public class AccountBean extends DataBean {
 		}
 	}
 
-	public void writeAuditorToDB() throws Exception {
-		String updateQuery = "UPDATE accounts SET name='" + eqDB(name) + "',username='" + eqDB(username)
-				+ "',password='" + eqDB(password) + "',email='" + eqDB(email) + "',active='" + active + "' WHERE id='"
-				+ id + "';";
-		try {
-			DBReady();
-			SQLStatement.executeUpdate(updateQuery);
-			if (!"".equals(oldPassword) && !oldPassword.equals(password))
-				changePassword(password);
-		} finally {
-			DBClose();
-		}
-	}
-
 	public boolean writeNewToDB() throws Exception {
 		String insertQuery = "INSERT INTO accounts (id,type,name,username,password,passwordChange,lastLogin,"
 				+ "contact,address,city,state,zip,phone,phone2,fax,email,web_URL,industry,active,createdBy,"
@@ -347,7 +328,7 @@ public class AccountBean extends DataBean {
 		web_URL = r.getParameter("web_URL");
 		industry = r.getParameter("industry");
 		active = "N";
-		createdBy = CREATED_BY_INTERNET;
+		createdBy = "Internet";
 		type = "Contractor";
 	}
 
@@ -366,16 +347,6 @@ public class AccountBean extends DataBean {
 		email = m.get("email");
 		web_URL = m.get("web_URL");
 		industry = m.get("industry");
-	}
-
-	public void setFromRequestNewAuditor(javax.servlet.http.HttpServletRequest r) throws Exception {
-		name = r.getParameter("name");
-		username = r.getParameter("username");
-		password = r.getParameter("password");
-		email = r.getParameter("email");
-		active = r.getParameter("active");
-		type = "Auditor";
-		createdBy = CREATED_BY_PICS;
 	}
 
 	public String searchID(String search_name) throws Exception {
@@ -407,41 +378,10 @@ public class AccountBean extends DataBean {
 		return id;
 	}
 
-	public String[] getActiveOperatorsArray(boolean includePICS) throws Exception {
-		setOBean();
-		return o.getOperatorsArray(includePICS, OperatorBean.DONT_INCLUDE_ID, OperatorBean.DONT_INCLUDE_GENERALS,
-				OperatorBean.ONLY_ACTIVE);
-	}
-
 	public String[] getActiveGeneralsArray(boolean includePICS) throws Exception {
 		setOBean();
 		return o.getOperatorsArray(includePICS, OperatorBean.DONT_INCLUDE_ID, OperatorBean.INCLUDE_GENERALS,
 				OperatorBean.ONLY_ACTIVE);
-	}
-
-	public String[] getAuditorContractors(String auditor_id, String orderBy) throws Exception {
-		ArrayList<String> audContractors = new ArrayList<String>();
-		String selectQuery = "SELECT * FROM accounts inner join contractor_info on accounts.id = contractor_info.id "
-				+ " WHERE contractor_info.auditor_id=" + auditor_id + " ORDER BY " + orderBy + ";";
-		try {
-			DBReady();
-			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			while (SQLResult.next()) {
-				audContractors.add(SQLResult.getString("id"));
-				audContractors.add(SQLResult.getString("name"));
-				audContractors.add(DateBean.toShowFormat(SQLResult.getString("assignedDate")));
-				audContractors.add(SQLResult.getString("auditStatus"));
-				audContractors.add(DateBean.toShowFormat(SQLResult.getString("auditDate")));
-			}
-		} finally {
-			DBClose();
-		}
-		return (String[]) audContractors.toArray(new String[0]);
-	}
-
-	public String getOperatorSelect(String name, String classType, String selectedOperator) throws Exception {
-		return Utilities.inputSelect(name, classType, selectedOperator,
-				getActiveOperatorsArray(OperatorBean.DONT_INCLUDE_PICS));
 	}
 
 	public String getGeneralSelect(String name, String classType, String selectedOperator) throws Exception {
@@ -507,40 +447,6 @@ public class AccountBean extends DataBean {
 		 * java.io.File(path+"files/oshas/osha3_"+oBean.OID+".pdf"); if
 		 * (f.exists()) f.delete(); }//while
 		 */
-	}
-
-	public boolean mustChangePassword() throws Exception {
-		Calendar todayCal = Calendar.getInstance();
-		SimpleDateFormat toDBFormat = new SimpleDateFormat("yyyy-MM-dd");
-		java.util.Date passwordChangeDate = toDBFormat.parse(passwordChange);
-		Calendar passwordChangeCal = Calendar.getInstance();
-		passwordChangeCal.setTime(passwordChangeDate);
-		int passwordChangeDays = passwordChangeCal.get(Calendar.DAY_OF_YEAR);
-		int dayDays = todayCal.get(Calendar.DAY_OF_YEAR);
-		int yearDifference = (todayCal.get(Calendar.YEAR) - passwordChangeCal.get(Calendar.YEAR));
-		int daysDifference = 365 * yearDifference;
-		int daysPassed = dayDays - passwordChangeDays + daysDifference;
-
-		if (daysPassed > PASSWORD_DURATION)
-			return true;
-		return false;
-	}
-
-	public boolean newPasswordOK(String newPassword) {
-		if (newPassword.equalsIgnoreCase(password)) {
-			errorMessages.addElement("You entered the same password.  Please choose a new one.");
-			return false;
-		}
-		if (newPassword.equalsIgnoreCase(username)) {
-			errorMessages.addElement("Please choose a password different from your username.");
-			return false;
-		}
-		if (newPassword.length() < MIN_PASSWORD_LENGTH) {
-			errorMessages.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH
-					+ " characters in length.");
-			return false;
-		}
-		return true;
 	}
 
 	public void changePassword(String newPassword) throws Exception {
@@ -619,7 +525,8 @@ public class AccountBean extends DataBean {
 	}
 
 	public static String getIndustrySelect(String name, String classType, String selectedIndustry) throws Exception {
-		return Utilities.inputSelect(name, classType, selectedIndustry, INDUSTRY_ARRAY);
+		String[] industryArray = Strings.convertListToArray(Industry.getValuesWithDefault());
+		return Utilities.inputSelect(name, classType, selectedIndustry, industryArray);
 	}
 
 	public String getGeneralSelectMultiple(String name, String classType, String[] selectedContractors)

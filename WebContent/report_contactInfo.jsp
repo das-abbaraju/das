@@ -53,7 +53,7 @@ Filter Options</a></div>
 			src="images/button_search.gif" width="70" height="23" border="0">
 	</tr>
 	<tr>
-		<td colspan=3><%=SearchBean.getSearchIndustrySelect("industry", "forms", sBean.selected_industry)%>
+		<td colspan=3><%=AccountBean.getIndustrySelect("industry", "forms", sBean.selected_industry)%>
 		</td>
 	</tr>
 </table>

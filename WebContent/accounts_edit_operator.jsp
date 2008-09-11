@@ -186,16 +186,6 @@
 		} else {
 	%>
 	<tr>
-		<th>Sees All:</th>
-		<td class="blueMain" align="left"><%=Inputs.getYesNoRadio("seesAllContractors", "forms", oBean.seesAllContractors)%>
-		</td>
-	</tr>
-	<tr class="odd">
-		<th>Can Add:</th>
-		<td class="blueMain" align="left"><%=Inputs.getYesNoRadio("canAddContractors", "forms", oBean.canAddContractors)%>
-		</td>
-	</tr>
-	<tr>
 		<th>Contractors pay:</th>
 		<td class="blueMain" align="left" valign="bottom"><%=Inputs.getRadioInput("doContractorsPay", "forms", oBean.doContractorsPay,
 								OperatorBean.CONTRACTORS_PAY_ARRAY)%></td>

@@ -3,10 +3,22 @@ package com.picsauditing.util;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
+import java.util.List;
 
 import com.picsauditing.PICS.Utilities;
+import com.picsauditing.jpa.entities.Industry;
 
 public class Strings {
+	public static String[] convertListToArray(List<String> list) {
+		String[] array = new String[list.size()];
+		int i = 0;
+		for(String item : list) {
+			array[i] = item;
+			i++;
+		}
+		return array;
+	}
+	
 	public static String insertSpaces(String value) {
 		if (value == null)
 			return null;

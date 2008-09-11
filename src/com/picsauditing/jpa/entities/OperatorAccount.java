@@ -29,8 +29,6 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 
 	private String activationEmails;
 	private String doSendActivationEmail;
-	private String seesAllContractors;
-	private YesNo canAddContractors;
 	private String doContractorsPay;
 	private YesNo canSeeInsurance;
 	private YesNo isCorporate;
@@ -70,26 +68,6 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 
 	public void setDoSendActivationEmail(String doSendActivationEmail) {
 		this.doSendActivationEmail = doSendActivationEmail;
-	}
-
-	@Column(name = "seesAllContractors", nullable = false, length = 10)
-	public String getSeesAllContractors() {
-		return this.seesAllContractors;
-	}
-
-	public void setSeesAllContractors(String seesAllContractors) {
-		this.seesAllContractors = seesAllContractors;
-	}
-
-	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
-	@Column(name = "canAddContractors", nullable = false)
-	@Enumerated(EnumType.STRING)
-	public YesNo getCanAddContractors() {
-		return this.canAddContractors;
-	}
-
-	public void setCanAddContractors(YesNo canAddContractors) {
-		this.canAddContractors = canAddContractors;
 	}
 
 	@Column(name = "doContractorsPay", nullable = false, length = 8)

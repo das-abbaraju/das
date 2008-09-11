@@ -15,8 +15,6 @@ public class OperatorBean extends DataBean {
 	public String id = "";
 	public String doSendActivationEmail = "No";
 	public String activationEmails = "";
-	public String seesAllContractors = "No";
-	public String canAddContractors = "No";
 	public String doContractorsPay = "Yes";
 	private Set<AuditOperator> canSeeAudits;
 	public String canSeeInsurance = "No";
@@ -313,13 +311,6 @@ public class OperatorBean extends DataBean {
 	public boolean canSeeInsurance() {
 		return "Yes".equals(canSeeInsurance);
 	}
-	public boolean seesAllContractors() {
-		return "Yes".equals(seesAllContractors);
-	}
-	public boolean canAddContractors() {
-		return "Yes".equals(canAddContractors);
-	}
-	
 	
 	public String[] getOperatorsArray(boolean includePICS, boolean includeID, boolean includeGenerals, boolean onlyActive) throws Exception {
 		setActiveGeneralsArrayFromDB();
@@ -507,8 +498,6 @@ public class OperatorBean extends DataBean {
 		id = SQLResult.getString("id");
 		doSendActivationEmail = SQLResult.getString("doSendActivationEmail");
 		activationEmails = SQLResult.getString("activationEmails");
-		seesAllContractors = SQLResult.getString("seesAllContractors");
-		canAddContractors = SQLResult.getString("canAddContractors");
 		doContractorsPay = SQLResult.getString("doContractorsPay");
 		canSeeInsurance = SQLResult.getString("canSeeInsurance");
 
@@ -525,8 +514,6 @@ public class OperatorBean extends DataBean {
 		String updateQuery = "UPDATE operators SET "+
 			"doSendActivationEmail='"+doSendActivationEmail+
 			"',activationEmails='"+activationEmails+
-			"',seesAllContractors='"+seesAllContractors+
-			"',canAddContractors='"+canAddContractors+
 			"',doContractorsPay='"+doContractorsPay+ 
 			"',canSeeInsurance='"+canSeeInsurance+
 			"',insuranceAuditor_id='"+insuranceAuditor_id+
@@ -556,8 +543,6 @@ public class OperatorBean extends DataBean {
 	public void setFromRequest(javax.servlet.http.HttpServletRequest request) throws Exception {
 		doSendActivationEmail = request.getParameter("doSendActivationEmail");
 		activationEmails = request.getParameter("activationEmails");
-		seesAllContractors = request.getParameter("seesAllContractors");
-		canAddContractors = request.getParameter("canAddContractors");
 		doContractorsPay = request.getParameter("doContractorsPay");
 		canSeeInsurance = request.getParameter("canSeeInsurance");
 		setFacilities(request.getParameterValues("facilities"));

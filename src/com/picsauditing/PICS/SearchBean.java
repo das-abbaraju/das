@@ -8,6 +8,7 @@ import java.util.HashSet;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.domain.IPicsDO;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.util.LinkBuilder;
 
 /**
@@ -63,7 +64,6 @@ public class SearchBean {
 	public String selected_officeIn = "";
 	
 	public String expiresInDays = "";
-	public String searchType = DEFAULT_TYPE;
 	public boolean isPaymentReport = false;
 	public boolean isUpgradePaymentReport = false;
 	public boolean isActivationReport = false;
@@ -71,7 +71,6 @@ public class SearchBean {
 	
 	public String orderBy = "name";	// the result set is sorted on this colunm, can be changed
 	public void setOrderByColumn(String s) {orderBy = s;}
-	String whichScheduleAuditsReport = "";
 		
 	Connection Conn = null;
 	Statement SQLStatement = null;
@@ -85,12 +84,9 @@ public class SearchBean {
 	public int showPage = 0;
 	int showNum = 0;
 
-	public static final int MIN_NAME_SEARCH_LENGTH = 3;
-	public static final String DEFAULT_TYPE = "Contractor";
 	public static final String DEFAULT_NAME = "- Name - ";
-	public static final String DEFAULT_INDUSTRY = "- Industry -";
-	public static final String DEFAULT_TRADE = TradesBean.DEFAULT_SELECT_TRADE_ID;
-	public static final String DEFAULT_PERFORMED_BY = TradesBean.DEFAULT_PERFORMED_BY;
+	public static final String DEFAULT_TRADE = "0";
+	public static final String DEFAULT_PERFORMED_BY = "0";
 	public static final String DEFAULT_ZIP = "- Zip -";
 	public static final String DEFAULT_CITY = "- City -";
 	public static final String DEFAULT_STATE = "- State -";
@@ -123,12 +119,6 @@ public class SearchBean {
 	public static final boolean SHOW_ALL = true;
 	public static final boolean DONT_SHOW_ALL = false;
 	public boolean showAll = false;
-	public static final String[] INDUSTRY_SEARCH_ARRAY = {DEFAULT_INDUSTRY,"Petrochemical","Mining","Power","General",
-											"Construction","Manufacturing","Pharmaceutical","Telecommunications"};		
-	static final String[] ZIP_SEARCH_ARRAY = {DEFAULT_ZIP,"9","8","7","6","5","4","3","2","1","0"};		
-	public static final String[] FLAG_STATUS_ARRAY = {DEFAULT_FLAG_STATUS,"Green","Amber","Red"};
-	public static final String NEW_AUDITS = "new";
-	public static final String RESCHEDULE_AUDITS = "reschedule";
 
 	public static TradesBean tBean = null;
 	public String getSearchTrade() throws Exception {
@@ -136,7 +126,7 @@ public class SearchBean {
 			tBean = new TradesBean();
 		if (DEFAULT_TRADE.equals(selected_trade))	return Utilities.escapeHTML(cBean.main_trade);
 		else	return Utilities.escapeHTML(tBean.getTradeFromID(selected_trade));
-	}//getSearchTrade
+	}
 
 	public int getNumResults() {return numResults;}//getNumResults
 	
@@ -161,7 +151,7 @@ public class SearchBean {
 		// We aren't caching the SearchBean in the session anymore, so we always need to rerun the search
 		// Added this back in
 		if ((null == changed) || ("1".equals(changed))) {
-// if it's a new search, reset all the search parameters
+			// if it's a new search, reset all the search parameters
 			showPage = 1;
 			try {
 				showPage = Integer.parseInt(r.getParameter("showPage"));
@@ -197,7 +187,6 @@ public class SearchBean {
 				searchEMRRate = "";
 
 			searchIncidenceRate = r.getParameter("searchIncidenceRate");
-//			screenDirection = r.getParameter("screenDirection");
 			if (null==searchIncidenceRate)
 				searchIncidenceRate = "";
 			selected_incompleteAfter = r.getParameter("incompleteAfter");
@@ -234,19 +223,18 @@ public class SearchBean {
 					"JOIN facilities f ON gc.genID = f.opID AND f.corporateID = " + accessID + ") ";
 			}
 			accessType = "Admin";
-		}//if
+		}
+		
 		//Set all the Queries
 		if (onlyActive)
 			whereQuery += "AND active='Y' ";
-		if (null==searchType)
-			searchType = DEFAULT_TYPE;
-		whereQuery += "AND type='"+searchType+"' ";
+		whereQuery += "AND type='Contractor' ";
 		if (!isSet(selected_name, DEFAULT_NAME))
 			selected_name = DEFAULT_NAME;
 		else
 			whereQuery += "AND name LIKE '%"+Utilities.escapeQuotes(selected_name)+"%' ";
-		if (!isSet(selected_industry, DEFAULT_INDUSTRY))
-			selected_industry = DEFAULT_INDUSTRY;
+		if (!isSet(selected_industry, Industry.DEFAULT_INDUSTRY))
+			selected_industry = Industry.DEFAULT_INDUSTRY;
 		else
 			whereQuery += "AND industry='"+selected_industry+"' ";
 		if (!isSet(selected_trade, DEFAULT_TRADE))
@@ -335,7 +323,7 @@ public class SearchBean {
 				whereQuery += "AND auditValidUntilDate>=CURDATE() ";
 			whereQuery+="))) ";
 //********************
-		}//else
+		}
 		if (!isSet(selected_auditStatus, DEFAULT_AUDIT_STATUS))
 			selected_auditStatus = DEFAULT_AUDIT_STATUS;
 		else
@@ -429,8 +417,8 @@ public class SearchBean {
 		}//if
 		if (isFatalitiesReport)
 			whereQuery += "AND (fatalities1>0 OR fatalities2>0 OR fatalities3>0) ";
-		if ("Contractor".equals(searchType))
-			joinQuery+="INNER JOIN contractor_info ON (accounts.id=contractor_info.id) ";
+		
+		joinQuery+="INNER JOIN contractor_info ON (accounts.id=contractor_info.id) ";
 		
 		if ("Operator".equals(accessType)) {
 			boolean hideUnApproved = permissions.oBean.isApprovesRelationships() && !permissions.getPermissions().hasPermission(OpPerms.ViewUnApproved);
@@ -472,7 +460,7 @@ public class SearchBean {
 		if (endResults > numResults)
 			endResults = numResults;
 		thisPage = r.getContextPath() + r.getServletPath();
-	}//doSearch
+	}
 	
 	public boolean isSet(Object value, Object defaultValue) {
 		if (value == null) return false;
@@ -555,7 +543,7 @@ public class SearchBean {
 			temp += "<a href="+thisPage+"?startsWith="+c+"&changed=1 class=blueMain>"+c+"</a> ";
 		temp += "</span>";
 		return temp;
-	}//getStartsWithLinks
+	}
 
 	/**
 	 * Once we push this to all pages and hammer out any problems, we'll get rid of it and 
@@ -571,8 +559,8 @@ public class SearchBean {
 			return false;
 		count++;
 		aBean.setFromResultSet(SQLResult);
-		if ("Contractor".equals(searchType))
-			cBean.setFromResultSet(SQLResult);
+		cBean.setFromResultSet(SQLResult);
+		
 		if (!DEFAULT_TRADE.equals(selected_trade)){
 			String temp = SQLResult.getString("tradeQ.answer");
 			tradePerformedBy = "";
@@ -582,9 +570,9 @@ public class SearchBean {
 				tradePerformedBy = "Sub Contracted";
 			else if (temp.equals("C S"))
 				tradePerformedBy = "Self Performed, Sub Contracted";
-		}//if
+		}
 		return true;
-	}//isNextRecord
+	}
 	
 	public boolean isNextRecord(IPicsDO domObj) throws Exception {
 		if (!(count <= endResults && SQLResult.next()))
@@ -600,11 +588,11 @@ public class SearchBean {
 		if (null != SQLResult) {
 			SQLResult.close();
 			SQLResult = null;
-		}//if
+		}
 		if (null != SQLStatement) {
 			SQLStatement.close();
 			SQLStatement = null;
-		}//if
+		}
 		if (null != Conn) {
 			Conn.close();
 			Conn = null;
@@ -616,25 +604,15 @@ public class SearchBean {
 		isUpgradePaymentReport = false; 
 		isActivationReport = false;
 		isNoInsuranceOnly = false;
-		searchType=DEFAULT_TYPE;
-		whichScheduleAuditsReport = "";
 	}
 	
-	public static String getSearchIndustrySelect(String name, String classType, String selectedIndustry) throws Exception {
-		return Inputs.inputSelect(name, classType, selectedIndustry, INDUSTRY_SEARCH_ARRAY);
-	}//getSearchIndustrySelect
-
-	public static String getSearchZipSelect(String name, String classType, String selectedZip) throws Exception {
-		return Inputs.inputSelect(name, classType, selectedZip, ZIP_SEARCH_ARRAY);
-	}//getSearchZipSelect
-
 	public static String getStateSelect(String name, String classType, String selectedState) throws Exception {
 		return Inputs.inputSelect2First(name, classType, selectedState, Inputs.STATE_ARRAY, "",DEFAULT_STATE);
-	}//getStateSelect
+	}
 
 	public static String getSearchGeneralSelect(String name, String classType, String selectedGeneral) throws Exception {
 		return new AccountBean().getGeneralSelect2(name, classType, selectedGeneral, LIST_DEFAULT);
-	}//getSearchOperatorSelect
+	}
 
 	public void setCanSeeSet(HashSet temp) {
 		canSeeSet = temp;
@@ -642,45 +620,28 @@ public class SearchBean {
 
 	public void setAuditorCanSeeSet(HashSet temp) {
 		auditorCanSeeSet = temp;
-	}//setAuditorCanSeeSet
+	}
 	
 	public boolean canSeeContractor() {
 		return (null == canSeeSet || canSeeSet.contains(aBean.id));
-	}//cantSeeContractor
+	}
 
 	public void setExpiresInDays(String s) {
 		expiresInDays = s;
-	}//setExpiresInDays
+	}
 
-//	public void setIncompleteAfter(String s) {
-//		incompleteAfter = s;
-//	}//setIncompleteAfter
-
-//	public void setPrequalExpiresInDays(String s) {
-//		prequalExpiresInDays = s;
-//	}//setPrequalExpiresInDays
-
-//	jj 7-7-06
-//	public void setIsAnnualUpdateReport() {
-//		isAnnualUpdateReport = true;
-//	}//isAnnualUpdateReport
-	
 	public void setIsPaymentReport(boolean tempShowAll) {
 		isPaymentReport = true;
 		showAll = tempShowAll;
-	}//isPaymentReport
+	}
 
 	public void setIsActivationReport() {
 		isActivationReport = true;
-	}//isActivationReport
+	}
 
 	public void setNoInsuranceOnly() {
 		isNoInsuranceOnly = true;
-	}//setNoInsuranceOnly
-
-	public void setWhichScheduleAuditsReport(String whichAudits) {
-		whichScheduleAuditsReport = whichAudits;
-	}//setWhichScheduleAuditsReport
+	}
 
 	public void writeToExcelFile(javax.servlet.ServletConfig config, PermissionsBean pBean) throws Exception {
 		Connection excelConn = null;
@@ -696,7 +657,7 @@ public class SearchBean {
 			if ("28".equals(pBean.userID)){
 				ExcelWriterBean ewBean = new ExcelWriterBean();
 				ewBean.writeCPReport(config, excelSQLResult, pBean.userID);
-			}//if
+			}
 			else {
 				ExcelWriterBean ewBean = new ExcelWriterBean();
 				ExcelWriterBean.init(config);
@@ -707,29 +668,29 @@ public class SearchBean {
 					aBean.setFromResultSet(excelSQLResult);
 					cBean.setFromResultSet(excelSQLResult);
 					ewBean.writeLine(aBean,cBean,pBean);
-				}//while
+				}
 				ewBean.setColumnLengths(pBean);
 				ewBean.closeTempExcelFile();
-			}//else
+			}
 		}finally{
 			if (null != excelConn){
 				excelConn.close();
 				excelConn = null;
-			}//if
+			}
 			if (null != excelSQLStatement){
 				excelSQLStatement.close();
 				excelSQLStatement = null;
-			}//if
+			}
 			if (null != excelSQLResult){
 				excelSQLResult.close();
 				excelSQLResult = null;		
-			}//if
-		}//finally
-	}//writeToExcelFile
+			}
+		}
+	}
 
 	public String getExcelLink(String id) throws Exception {
 		return ExcelWriterBean.getLink(id);
-	}//getExcelLink
+	}
 
 	public String getConWorkStatus() throws Exception {
 		return SQLResult.getString("workStatus");
@@ -740,14 +701,14 @@ public class SearchBean {
 			return "";
 		else
 			return SQLResult.getString("verifiedAnswer");
-	}//getPQFAnswer
+	}
 
 	public String getPQFQuestionID() throws Exception {
 		if ("".equals(searchEMRRate))
 			return "";
 		else
 			return SQLResult.getString("questionID");
-	}//getPQFAnswer
+	}
 
 	private String getLink(String icon, String url) {
 		StringBuilder link = new StringBuilder();
@@ -797,11 +758,4 @@ public class SearchBean {
 		thisPage = r.getContextPath() + r.getServletPath();
 	}
 
-	public String getFlagLink() throws Exception {
-		String flag = SQLResult.getString("flag");
-		if (null == flag)
-			return "";
-		return "<img src=images/icon_"+flag.toLowerCase()+"Flag.gif width=12 height=15 border=0>";
-	}//getFlagLink
-	
 }
