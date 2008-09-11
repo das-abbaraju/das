@@ -159,14 +159,14 @@ public class ContractorActionSupport extends PicsActionSupport {
 	}
 
 	public boolean isShowHeader() {
+		if (permissions.isContractor())
+			return true;
 		if (!permissions.hasPermission(OpPerms.ContractorDetails))
 			return false;
-		if (permissions.isOperator()) {
+		if (permissions.isOperator())
 			return isCheckPermissionForOperator();
-		}
-		if (permissions.isCorporate()) {
+		if (permissions.isCorporate())
 			return isCheckPermissionForCorporate();
-		}
 		if (permissions.isOnlyAuditor()) {
 			for (ContractorAudit audit : getActiveAudits()) {
 				if (audit.getAuditor() != null && audit.getAuditor().getId() == permissions.getUserId())
