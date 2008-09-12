@@ -56,7 +56,7 @@ public enum OpPerms {
 	InsuranceApproval("Insurance Approval","Allows users to view the Insurance Approval report (Read), and approve/reject (Edit) the insurance certificates",true,false),
 
 	BillingUpgrades("Billing Upgrades", "Upgrade contractor subscriptions and send them invoices", true, false),
-	DelinquentAccounts("DelinquentAccounts", "Allows users to view Delinquent Contractors Accounts", false, false),
+	DelinquentAccounts("Delinquent Accounts", "Allows users to view Delinquent Contractor Accounts", false, false),
 	
 	EmailAnnualUpdate("Email Annual Updates", "Send contractors reminder emails to update their PICS info. Edit permission is required to send the emails.", true, false),
 	EmailTemplates("Email Templates", "Allows PICS employees to edit the templates used to automatically send emails", true, false),

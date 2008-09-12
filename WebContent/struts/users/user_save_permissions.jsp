@@ -39,9 +39,7 @@
 				<td colspan="5"><s:property value="opPerm.helpText"/></td>
 			</tr>
 		</s:iterator>
-	</tbody>
 	<pics:permission perm="EditUsers" type="Grant">
-	<tfoot>
 		<tr>
 			<td colspan="6">
 			<div class="buttons" id="addPermissionButton">
@@ -55,6 +53,6 @@
 		<tr class="active">
 			<td id="permDescription" style="width: 450px;" colspan="6"></td>
 		</tr>
-	</tfoot>
 	</pics:permission>
+	</tbody>
 </table>

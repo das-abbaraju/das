@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -203,6 +204,7 @@ public class User implements Comparable<User> {
 
 	// TODO: change this to a Set from a List
 	@OneToMany(mappedBy = "user", cascade = { CascadeType.ALL })
+	@OrderBy("opPerm")
 	public List<UserAccess> getOwnedPermissions() {
 		return ownedPermissions;
 	}

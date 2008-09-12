@@ -66,6 +66,8 @@ public class UserAccess implements Comparable<UserAccess> {
 	}
 
 	public Boolean getViewFlag() {
+		if (!opPerm.usesView())
+			return null;
 		return viewFlag;
 	}
 
@@ -74,6 +76,8 @@ public class UserAccess implements Comparable<UserAccess> {
 	}
 
 	public Boolean getEditFlag() {
+		if (!opPerm.usesEdit())
+			return null;
 		return editFlag;
 	}
 
@@ -82,6 +86,8 @@ public class UserAccess implements Comparable<UserAccess> {
 	}
 
 	public Boolean getDeleteFlag() {
+		if (!opPerm.usesDelete())
+			return null;
 		return deleteFlag;
 	}
 

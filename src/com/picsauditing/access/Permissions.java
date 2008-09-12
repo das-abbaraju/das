@@ -157,26 +157,25 @@ public class Permissions {
 	 * @return
 	 */
 	public boolean hasPermission(OpPerms opPerm, OpType oType) {
-		if (oType.equals(OpType.View) && !opPerm.usesView())
-			return false;
-		if (oType.equals(OpType.Edit) && !opPerm.usesEdit())
-			return false;
-		if (oType.equals(OpType.Delete) && !opPerm.usesDelete())
-			return false;
-
 		for (UserAccess perm : permissions) {
 			if (opPerm == perm.getOpPerm()) {
 				if (oType == OpType.Edit)
-					return perm.getEditFlag() == true;
+					return isTrue(perm.getEditFlag());
 				else if (oType == OpType.Delete)
-					return perm.getDeleteFlag() == true;
+					return isTrue(perm.getDeleteFlag());
 				else if (oType == OpType.Grant)
-					return perm.getGrantFlag() == true;
+					return isTrue(perm.getGrantFlag());
 				// Default to OpType.View
-				return perm.getViewFlag() == true;
+				return isTrue(perm.getViewFlag());
 			}
 		}
 		return false;
+	}
+	
+	private boolean isTrue(Boolean value) {
+		if (value == null)
+			return false;
+		return value;
 	}
 
 	public boolean hasPermission(OpPerms opPerm) {
