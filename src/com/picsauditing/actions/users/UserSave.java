@@ -54,12 +54,8 @@ public class UserSave extends UsersManage {
 			if (user.isGroup()) {
 				// Create a unique username for this group
 				String username = "GROUP";
-				if (user.getAccount().getId() > 0)
-					username += user.getAccount().getId();
-				else {
-					username += Math.round(Math.random()*10000);
-					username += user.getName();
-				}
+				username += user.getAccount().getId();
+				username += user.getName();
 				
 				user.setUsername(username);
 			}

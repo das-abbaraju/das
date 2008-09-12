@@ -197,17 +197,21 @@ function checkUsername(username) {
 		<s:if test="user.group">
 			<s:hidden name="user.isActive" />
 		</s:if>
-		<div class="buttons">
-		<pics:permission perm="EditUsers" type="Edit">
-			<button id="SaveButton" class="positive" type="submit" name="button" value="Save">Save</button>
-		</pics:permission>
-		<pics:permission perm="EditUsers" type="Delete">
-			<s:if test="user.id > 0">
-				<button type="submit" name="button" value="Remove">Delete</button>
-			</s:if>
-		</pics:permission>
-		</div>
 		<table class="forms">
+			<thead>
+			<tr><td colspan="2">
+				<div class="buttons">
+					<pics:permission perm="EditUsers" type="Edit">
+						<button id="SaveButton" class="positive" type="submit" name="button" value="Save">Save</button>
+					</pics:permission>
+					<pics:permission perm="EditUsers" type="Delete">
+						<s:if test="user.id > 0">
+							<button type="submit" name="button" value="Remove" style="float: right" onclick="return confirm('Are you sure you want to delete this user/group?');">Delete</button>
+						</s:if>
+					</pics:permission>
+				</div>
+			</td></tr>
+			</thead>
 			<tr>
 				<th><s:if test="user.group">Group</s:if><s:else>User</s:else> #</th>
 				<td><s:property value="user.id"/></td>

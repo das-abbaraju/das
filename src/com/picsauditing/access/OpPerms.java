@@ -48,7 +48,7 @@ public enum OpPerms {
 	OfficeAuditCalendar("Office Audit Calendar", "Allows users to view the Office Audit Calendar", false, false),
 	ViewFullPQF("View PQF Work History", "Can view the PQF category Work History, which contains financial and other sensitive information", false, false),
 	AuditEdit("Contractor Audit (System)", "Can view and edit all fields related to an audit"),
-	AuditCopy("AuditCopy","Can Copy Audit from one Contractor to another Contractor",false,false),
+	AuditCopy("Audit Copy","Can Copy Audit from one Contractor to another Contractor",false,false),
 	
 	// Insurance
 	InsuranceCerts("Insurance Certificates", "Allows users to view (Read), upload (Edit), and delete insurance certificates"),
