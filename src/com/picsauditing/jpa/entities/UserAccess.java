@@ -98,7 +98,7 @@ public class UserAccess implements Comparable<UserAccess> {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "grantedByID", nullable = false)
+	@JoinColumn(name = "grantedByID", nullable = true)
 	public User getGrantedBy() {
 		return grantedBy;
 	}
