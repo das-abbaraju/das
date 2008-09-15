@@ -11,7 +11,6 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
 
 public class ConAuditList extends ContractorActionSupport {
-	R
 	private boolean manuallyAdded;	
 
 	public ConAuditList(ContractorAccountDAO accountDao,
