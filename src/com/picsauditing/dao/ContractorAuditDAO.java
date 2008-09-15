@@ -15,6 +15,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
 
 @Transactional
@@ -28,15 +29,29 @@ public class ContractorAuditDAO extends PicsDAO {
 		return o;
 	}
 
+	public void remove(ContractorAudit row, String ftpDir) {
+//		if (row.getData().size() != 0) {
+//			for (AuditData auditData : row.getData()) {
+//				if (auditData.getQuestion().getQuestionType().equals("File")) {
+//					String FileName = ftpDir + "/files/pqf/qID_" + auditData.getQuestion().getQuestionID() + "/"
+//							+ auditData.getQuestion().getQuestionID() + "_" + row.getContractorAccount().getId() + "."
+//							+ auditData.getAnswer();
+//					FileUtils.deleteFile(FileName);
+//				}
+//			}
+//		}
+		remove(row);
+	}
+
+	public void remove(int id) {
+		ContractorAudit row = find(id);
+		remove(row);
+	}
+
 	public void remove(ContractorAudit row) {
 		if (row != null) {
 			em.remove(row);
 		}
-	}
-	
-	public void remove(int id) {
-		ContractorAudit row = find(id);
-		remove(row);
 	}
 
 	public void copy(ContractorAudit oCAudit, ContractorAccount nContractor) {
