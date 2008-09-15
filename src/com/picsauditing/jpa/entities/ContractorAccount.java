@@ -83,7 +83,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.type = "Contractor";
 	}
 
-	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
+	@OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.ALL})
 	@OrderBy("location")
 	public List<OshaLog> getOshas() {
 		return oshas;
@@ -102,7 +102,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.audits = audits;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contractorAccount")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contractorAccount", cascade= {CascadeType.ALL})
 	public List<ContractorOperator> getOperators() {
 		return this.operators;
 	}
@@ -464,7 +464,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 * Map of Contractor Flags with OperatorID as the key
 	 */
 	@MapKey(name = "operatorAccount")
-	@OneToMany(mappedBy = "contractorAccount")
+	@OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.ALL})
 	public Map<OperatorAccount, ContractorOperatorFlag> getFlags() {
 		return flags;
 	}
@@ -473,7 +473,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.flags = flags;
 	}
 
-	@OneToMany(mappedBy = "contractorAccount")
+	@OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.ALL})
 	public List<Certificate> getCertificates() {
 		return certificates;
 	}

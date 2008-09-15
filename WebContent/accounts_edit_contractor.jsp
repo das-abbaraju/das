@@ -16,7 +16,6 @@
 	permissions.tryPermission(OpPerms.ContractorAccounts);
 	String id = request.getParameter("id");
 	String editID = request.getParameter("id");
-
 	String conID = id;
 	boolean isRemoved = "Yes".equals(request.getParameter("Remove"));
 	boolean isSubmitted = "Yes".equals(request.getParameter("isSubmitted"));
@@ -64,12 +63,35 @@
 	}
 	
 	if(isRemoved) {
-		aBean.deleteAccount(id, config.getServletContext().getRealPath("/"));
-		response.sendRedirect("ContractorListAdmin.action");
-		return; 
+		ContractorAuditDAO contractorAuditDAO = (ContractorAuditDAO) SpringUtils.getBean("ContractorAuditDAO");
+		List<ContractorAudit> conList = contractorAuditDAO.findByContractor(Integer.parseInt(id));
+		if(conList.size() > 0) {
+			aBean.getErrors().addElement("Cannot Remove Contractor with Audits");
+		}
+		if(aBean.getErrors().size() == 0) {
+			ContractorAccountDAO contractorAccountDAO = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
+			ContractorAccount contractorAccount = contractorAccountDAO.find(Integer.parseInt(id));
+			contractorAccountDAO.remove(contractorAccount);
+			String path = config.getServletContext().getInitParameter("FTP_DIR");
+			FileUtils.deleteFile(path+ "/files/logos/" + contractorAccount.getLogoFile());
+			if(contractorAccount.getBrochureFile().equals("Yes")) {
+				FileUtils.deleteFile(path+ "/files/brochures/brochure_"+id+".pdf");
+				FileUtils.deleteFile(path+ "/files/brochures/brochure_"+id+".doc");
+				FileUtils.deleteFile(path+ "/files/brochures/brochure_"+id+".txt");
+				FileUtils.deleteFile(path+ "/files/brochures/brochure_"+id+".jpg");
+			}
+			response.sendRedirect("ContractorListAdmin.action");
+			return; 
+		}
 	}
 	
 %>
+<%@page import="com.picsauditing.dao.ContractorAuditDAO"%>
+<%@page import="java.util.List"%>
+<%@page import="com.picsauditing.jpa.entities.ContractorAudit"%>
+<%@page import="com.picsauditing.jpa.entities.ContractorAccount"%>
+<%@page import="com.picsauditing.dao.ContractorAccountDAO"%>
+<%@page import="com.picsauditing.util.FileUtils"%>
 <html>
 <head>
 <title>Edit Contractor</title>
@@ -97,7 +119,7 @@
 	<input name="submit" type="submit" class="forms" value="Save Contractor">
 <div class="redMain">
 <%
-	if (isSubmitted)
+	if (isSubmitted || isRemoved)
 		out.println(aBean.getErrorMessages() + cBean.getErrorMessages());
 %>
 </div>
@@ -197,6 +219,7 @@
 		<td>&nbsp;</td>
 		<td>&nbsp;</td>
 	</tr>
+	<tr>
 	<td class="blueMain" align="right">Logo (jpg or gif)<%=cBean.getIsLogoFile()%></td>
 	<td><input name="logo_file" type="FILE" class="forms" size="15"></td>
 	</tr>
