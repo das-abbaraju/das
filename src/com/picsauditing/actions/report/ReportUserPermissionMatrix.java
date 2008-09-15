@@ -31,8 +31,15 @@ public class ReportUserPermissionMatrix extends ReportActionSupport {
 		perms = new TreeSet<OpPerms>();
 		users = userDAO.findByAccountID(accountID, "Yes", "");
 		for(User user : users) {
-			for(UserAccess access : user.getPermissions())
+			//System.out.println("User: "+user.getName());
+			for(UserAccess access : user.getPermissions()) {
+//				System.out.println("  perm "+ access.getOpPerm() + 
+//						" V:" + access.getViewFlag() + 
+//						" E:" + access.getEditFlag() + 
+//						" D:" + access.getDeleteFlag() + 
+//						" G:" + access.getGrantFlag());
 				perms.add(access.getOpPerm());
+			}
 		}
 		
 		

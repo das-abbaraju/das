@@ -57,6 +57,8 @@ public class User implements Comparable<User> {
 	private List<UserGroup> members = new ArrayList<UserGroup>();
 	private List<UserAccess> ownedPermissions = new ArrayList<UserAccess>();
 	private List<UserLoginLog> loginlog = new ArrayList<UserLoginLog>();
+	
+	private boolean debug = false;
 
 	public User() {
 	}
@@ -243,6 +245,7 @@ public class User implements Comparable<User> {
 
 		// get all the groups this user (or group) is a part of
 		for (UserGroup userGroup : getGroups()) {
+			debug(this.getName() + " - Getting inherited perms for "+ userGroup.getGroup().getName());
 			Set<UserAccess> tempPerms = userGroup.getGroup().getPermissions();
 			for (UserAccess perm : tempPerms) {
 				this.add(permissions, perm, false);
@@ -261,9 +264,15 @@ public class User implements Comparable<User> {
 		if (perm == null || perm.getOpPerm() == null)
 			return;
 
+		debug(this.getName() + " - - Adding perm "+ perm.getOpPerm().getDescription() + 
+				" V:"+ perm.getViewFlag() + 
+				" E:"+ perm.getEditFlag() + 
+				" D:"+ perm.getDeleteFlag() + 
+				" G:"+ perm.getGrantFlag());
 		for (UserAccess origPerm : permissions) {
 			if (origPerm.getOpPerm().equals(perm.getOpPerm())) {
 				if (overrideBoth) {
+					debug(" overriding previous values (these are ownedPermissions)");
 					// Override the previous settings, regardless if Granting or
 					// Revoking
 					if (perm.getViewFlag() != null)
@@ -275,6 +284,7 @@ public class User implements Comparable<User> {
 					if (perm.getGrantFlag() != null)
 						origPerm.setGrantFlag(perm.getGrantFlag());
 				} else {
+					debug(" optimistic granting (merging with sibling perms)");
 					// Optimistic Granting
 					// if the user has two groups with the same perm type,
 					// and one grants but the other revokes, then the users WILL
@@ -317,4 +327,8 @@ public class User implements Comparable<User> {
 		return this.name.compareToIgnoreCase(o.name);
 	}
 
+	private void debug(String message) {
+		if (this.debug)
+			System.out.println(message);
+	}
 }

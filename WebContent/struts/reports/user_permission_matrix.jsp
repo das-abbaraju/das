@@ -26,20 +26,25 @@
 				<td>
 				<s:iterator value="permissions">
 					<s:if test="[1].equals(opPerm)">
-					<s:if test="viewFlag">V</s:if>
-					<s:if test="editFlag">E</s:if>
-					<s:if test="deleteFlag">D</s:if>
-					<s:if test="grantFlag">G</s:if>
+						<s:if test="viewFlag==true">V</s:if>
+						<s:if test="editFlag==true">E</s:if>
+						<s:if test="deleteFlag==true">D</s:if>
+						<s:if test="grantFlag==true">G</s:if>
 					</s:if>
 				</s:iterator>
 				</td>
 			</s:iterator>
 		</tr>
 	</s:iterator>
-
 </table>
+
 <div>
-<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+<ul>
+<li>V = View</li>
+<li>E = Edit</li>
+<li>D = Delete</li>
+<li>G = Grant</li>
 </div>
+
 </body>
 </html>
