@@ -157,7 +157,7 @@
 					<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
 					Questions</a></li>
 				</s:if>
-				<s:if test="conAudit.auditStatus.toString() != 'Pending'">
+				<s:if test="conAudit.auditStatus.toString() != ('Pending','Exempt')">
 					<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true">View Requirements
 					</a></li>
 					<s:if test="permissions.auditor">
