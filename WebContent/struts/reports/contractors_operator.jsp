@@ -59,12 +59,9 @@ Corporate Version
 	<s:iterator value="data" status="stat">
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td><pics:permission perm="ContractorDetails"><a
+			<td><a
 				href="ContractorView.action?id=<s:property value="[0].get('id')"/>"
-				><s:property value="[0].get('name')" /></a></pics:permission>
-				<pics:permission perm="ContractorDetails" negativeCheck="true">
-					<s:property value="[0].get('name')" />
-				</pics:permission>
+				><s:property value="[0].get('name')" /></a>
 			</td>
 			<pics:permission perm="ContractorDetails">
 			<td><a

@@ -119,15 +119,6 @@ public class ReportAccount extends ReportActionSupport {
 			filterVisible = true;
 			filterRiskLevel = true;
 		}
-		if (!permissions.hasPermission(OpPerms.ContractorDetails)) {
-			filterAddress = false;
-			filterIndustry = false;
-			filterTaxID = false;
-			filterLicensedIn = false;
-			filterWorksIn = false;
-			filterTrade = false;
-			filterOfficeIn = false;
-		}
 		if(!permissions.hasPermission(OpPerms.InsuranceCerts)) {
 			filterCerts = false;
 		}

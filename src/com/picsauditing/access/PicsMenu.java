@@ -121,8 +121,10 @@ public class PicsMenu {
 		subMenu = menu.addChild("Management");
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
 			subMenu.addChild("Approve Contractors", "con_approvals.jsp");
-		if (permissions.hasPermission(OpPerms.EditUsers))
+		if (permissions.hasPermission(OpPerms.EditUsers)) {
 			subMenu.addChild("Users", "UsersManage.action");
+			subMenu.addChild("User Permissions Matrix", "ReportUserPermissionMatrix.action");
+		}
 		if (permissions.hasPermission(OpPerms.FormsAndDocs))
 			subMenu.addChild("Forms &amp Docs", "manage_forms.jsp");
 		if (permissions.hasPermission(OpPerms.ManageAudits)) {
@@ -164,8 +166,6 @@ public class PicsMenu {
 			subMenu.addChild("Incidence Rates", "ReportIncidenceRate.action");
 		if(permissions.seesAllContractors())
 			subMenu.addChild("User Multi-Login","MultiLoginUser.action");
-		if (permissions.hasPermission(OpPerms.EditUsers))
-			subMenu.addChild("User Permissions Matrix", "ReportUserPermissionMatrix.action");
 		if (permissions.hasPermission(OpPerms.EditUsers))
 			subMenu.addChild("User Search","ReportUsersAccount.action");
 		
