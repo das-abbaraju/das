@@ -17,6 +17,12 @@ function save(id, aID, oID, pKey) {
 		pars = pars + '&ao.canSee=true';
 	else
 		pars = pars + '&ao.canSee=false';
+		
+	var checkBox = $('form1')['canEdit'+id];
+	if (checkBox.checked)
+		pars = pars + '&ao.canEdit=true';
+	else
+		pars = pars + '&ao.canEdit=false';		
 	
 	var radioGrp = $('form1')['riskLevel'+id];
 	for(i=0; i < radioGrp.length; i++){
@@ -62,7 +68,7 @@ function save(id, aID, oID, pKey) {
 	<table class="report" cellspacing="1" cellpadding="3" border="0">
 		<tr class="whiteTitle" bgcolor="#003366" align="center">
 			<td>Operator/Audit</td>
-			<td style="text-align: center;">Minimum Risk Level &amp; Flag Color</td>
+			<td>&nbsp;V &nbsp;| &nbsp;E &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Minimum Risk Level &amp; Flag Color</td>
 		</tr>
 
 		<s:iterator value="data" status="stat">
@@ -82,6 +88,9 @@ function save(id, aID, oID, pKey) {
 				</td>
 				<td id="td<s:property value="htmlID" />">
 					<s:checkbox name="canSee%{htmlID}" value="canSee"
+					onclick="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
+					|
+					<s:checkbox name="canEdit%{htmlID}" value="canEdit"
 					onclick="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
 					|
 					<s:radio name="riskLevel%{htmlID}" list="riskLevelList" value="minRiskLevel" disabled="!canSee" 

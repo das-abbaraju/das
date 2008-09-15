@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.struts2.config.Result;
@@ -10,6 +11,8 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
 
 public class ConAuditList extends ContractorActionSupport {
+	R
+	private boolean manuallyAdded;	
 
 	public ConAuditList(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao) {
@@ -33,6 +36,14 @@ public class ConAuditList extends ContractorActionSupport {
 				temp.add(contractorAudit);
 		}
 		return temp;
+	}
+
+	public boolean isManuallyAdded() {
+		return manuallyAdded;
+	}
+
+	public void setManuallyAdded(boolean manuallyAdded) {
+		this.manuallyAdded = manuallyAdded;
 	}
 
 }

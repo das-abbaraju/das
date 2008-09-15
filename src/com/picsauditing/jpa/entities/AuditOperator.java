@@ -30,6 +30,7 @@ public class AuditOperator {
 
 	protected OperatorAccount operatorAccount;
 	protected boolean canSee;
+	protected boolean canEdit;
 	protected int minRiskLevel = 0;
 	protected FlagColor requiredForFlag;
 	protected int orderedCount = -1;
@@ -37,6 +38,7 @@ public class AuditOperator {
 
 	private int htmlID = 0;
 	private FlagColor contractorFlag;
+	
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,6 +66,14 @@ public class AuditOperator {
 
 	public void setCanSee(boolean canSee) {
 		this.canSee = canSee;
+	}
+
+	public boolean isCanEdit() {
+		return canEdit;
+	}
+
+	public void setCanEdit(boolean canEdit) {
+		this.canEdit = canEdit;
 	}
 
 	public int getMinRiskLevel() {
