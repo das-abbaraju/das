@@ -78,6 +78,9 @@
 
 <div class="buttons">
 	<button class="positive" name="button" value="Save" type="submit">Save</button>
+	<pics:permission perm="AuditEdit" type="Delete">
+		<button name="button" value="Delete" type="submit">Delete</button>
+	</pics:permission>
 </div>
 
 </s:form>
