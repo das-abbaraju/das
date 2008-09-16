@@ -28,9 +28,13 @@
 				<td>% Completed</td>
 			</s:if>
 		</s:iterator>
-		<td>EMR '05</td>
-		<td>EMR '06</td>
-		<td>EMR '07</td>
+		<s:iterator value="operatorAccount.flagQuestionCriteria">
+			<s:if test="checked.toString().equals('Yes') && auditQuestion.questionID != 0">
+				<td><s:property value="auditQuestion.columnHeader"/></td>
+			</s:if>
+		</s:iterator>
+		<s:iterator value="operatorAccount.flagOshaCriteria">
+		</s:iterator>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -39,7 +43,7 @@
 				<s:property value="#stat.index + report.firstRowNumber" />
 			</td>
 			<td>
-				<s:property value="[0].get('name')"/></a>
+				<s:property value="[0].get('name')"/>
 			</td>
 			<td class="center">
 				<a href="ContractorFlag.action?id=<s:property value="get('id')"/>" title="Click to view Flag Color details">
@@ -55,10 +59,10 @@
 				</s:if>
 			</s:iterator>
 			<s:iterator value="operatorAccount.flagQuestionCriteria">
-				<s:if test="auditQuestion.questionID == 889 || auditQuestion.questionID == 1519 || auditQuestion.questionID == 1617">
-					<td><s:property value="%{get('emr_' + auditQuestion.questionID)}"/></td>
+				<s:if test="checked.toString().equals('Yes') && auditQuestion.questionID != 0">
+					<td><s:property value="%{get('answer' + auditQuestion.questionID)}"/></td>
 				</s:if>
-			</s:iterator>			
+			</s:iterator>
 		</tr>
 	</s:iterator>
 </table>

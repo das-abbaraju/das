@@ -63,10 +63,10 @@ public class ReportFlagCriteria extends ReportAccount {
 		}
 
 		for (FlagQuestionCriteria flagQuestionCriteria : operatorAccount.getFlagQuestionCriteria()) {
-			if (flagQuestionCriteria.getChecked() == YesNo.Yes) {
+			if (flagQuestionCriteria.getChecked() == YesNo.Yes
+					&& flagQuestionCriteria.getAuditQuestion().getQuestionID() != 0) {
 				int questionID = flagQuestionCriteria.getAuditQuestion().getQuestionID();
 				sql.addPQFQuestion(questionID);
-				sql.addField("q" + questionID + ".verifiedAnswer AS emr_" + questionID);
 			}
 		}
 		// TODO handle the osha for 2008.
