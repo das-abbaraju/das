@@ -26,8 +26,11 @@
 			<s:if test="canSee && minRiskLevel > 0">
 				<td><s:property value="auditType.auditName"/> Status</td>
 				<td>% Completed</td>
-		</s:if>
+			</s:if>
 		</s:iterator>
+		<td>EMR '05</td>
+		<td>EMR '06</td>
+		<td>EMR '07</td>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -51,6 +54,11 @@
 					<td class="right"><s:property value="%{get(auditType.auditName + ' Completed')}"/></td>
 				</s:if>
 			</s:iterator>
+			<s:iterator value="operatorAccount.flagQuestionCriteria">
+				<s:if test="auditQuestion.questionID == 889 || auditQuestion.questionID == 1519 || auditQuestion.questionID == 1617">
+					<td><s:property value="%{get('emr_' + auditQuestion.questionID)}"/></td>
+				</s:if>
+			</s:iterator>			
 		</tr>
 	</s:iterator>
 </table>
