@@ -40,7 +40,7 @@ public class ContractorAuditDAO extends PicsDAO {
 //				}
 //			}
 //		}
-		remove(row);
+		remove(row.getId());
 	}
 
 	public void remove(int id) {

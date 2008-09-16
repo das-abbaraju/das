@@ -45,8 +45,8 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 				addActionMessage("Successfully saved data");
 			}
 			if(button.equals("Delete")) {
-				auditDao.clear();
 				auditDao.remove(conAudit, getFtpDir());
+				return "AuditList";
 			}
 		}
 
