@@ -10,6 +10,10 @@ import com.picsauditing.jpa.entities.YesNo;
 
 public class ReportFlagCriteria extends ReportAccount {
 	private int operatorID;
+	private boolean hasFatalities = false;
+	private boolean hasTrir = false;
+	private boolean hasLwcr = false;
+	private OperatorAccount operatorAccount;
 
 	protected OperatorAccountDAO operatorAccountDAO;
 
@@ -27,30 +31,34 @@ public class ReportFlagCriteria extends ReportAccount {
 		sql.addField("a.email");
 		sql.addField("c.main_trade");
 		sql.addField("c.trades");
+		sql.addField("c.riskLevel");
 
 		if (permissions.hasPermission(OpPerms.AllOperators)) {
 			if (operator == null)
-				operatorID = 1813;
+				return SUCCESS;
 			else
 				operatorID = operator[0];
 		} else
 			operatorID = permissions.getAccountId();
 
-		OperatorAccount operatorAccount = operatorAccountDAO.find(operatorID);
+		operatorAccount = operatorAccountDAO.find(operatorID);
 		for (AuditOperator auditOperator : operatorAccount.getAudits()) {
-			String name = auditOperator.getAuditType().getAuditName().toLowerCase();
-			int blank = name.indexOf(" ");
-			if (blank > 0)
-				name = name.substring(0, blank);
-			String year = "1";
-			if (name.equals("pqf")) {
-				year = "year(pqf.createdDate) = 2008";
+			if (auditOperator.isCanSee() && auditOperator.getMinRiskLevel() > 0) {
+				String name = auditOperator.getAuditType().getAuditName().toLowerCase();
+				int blank = name.indexOf(" ");
+				if (blank > 0)
+					name = name.substring(0, blank);
+				String year = "1";
+				if (name.equals("pqf")) {
+					year = "year(pqf.createdDate) = 2008";
+				}
+				sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
+						+ ".auditTypeID = " + auditOperator.getAuditType().getAuditTypeID() + " AND " + name
+						+ ".auditStatus IN ('Pending','Submitted','Active') AND " + year);
+				sql.addField(name + ".auditStatus AS '" + auditOperator.getAuditType().getAuditName() + " Status'");
+				sql.addField(name + ".percentComplete AS '" + auditOperator.getAuditType().getAuditName()
+						+ " Completed'");
 			}
-			sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
-					+ ".auditTypeID = " + auditOperator.getAuditType().getAuditTypeID() + " AND " + name
-					+ ".auditStatus IN ('Pending','Submitted','Active') AND " + year);
-			sql.addField(name + ".auditStatus AS " + name + "Status");
-			sql.addField(name + ".percentComplete AS " + name + "Completed");
 		}
 
 		for (FlagQuestionCriteria flagQuestionCriteria : operatorAccount.getFlagQuestionCriteria()) {
@@ -60,9 +68,6 @@ public class ReportFlagCriteria extends ReportAccount {
 				sql.addField("q" + questionID + ".verifiedAnswer AS emr_" + questionID);
 			}
 		}
-		boolean hasFatalities = false;
-		boolean hasTrir = false;
-		boolean hasLwcr = false;
 		// TODO handle the osha for 2008.
 		for (FlagOshaCriteria flagOshaCriteria : operatorAccount.getFlagOshaCriteria()) {
 			if (!hasFatalities && flagOshaCriteria.getFatalities().isRequired()) {
@@ -85,9 +90,51 @@ public class ReportFlagCriteria extends ReportAccount {
 			}
 		}
 
+		if(!permissions.isOperator()) {
+			sql.addJoin("LEFT JOIN flags ON flags.conID = a.id AND flags.opID = " + operatorID);
+			sql.addField("flags.flag");
+			sql.addField("lower(flags.flag) AS lflag");
+			if (!sql.hasJoin("generalcontractors gc"))
+				sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id");
+			sql.addField("gc.workStatus");
+			sql.addWhere("gc.genID = " + operatorID);
+		}
+
 		sql.addJoin("LEFT JOIN osha ON osha.conID = a.id AND location = 'Corporate'");
 		sql.addWhere("a.active = 'Y'");
 		sql.addWhere("flags.flag IN ('Red','Amber')");
 		return super.execute();
+	}
+
+	public boolean isHasFatalities() {
+		return hasFatalities;
+	}
+
+	public void setHasFatalities(boolean hasFatalities) {
+		this.hasFatalities = hasFatalities;
+	}
+
+	public boolean isHasTrir() {
+		return hasTrir;
+	}
+
+	public void setHasTrir(boolean hasTrir) {
+		this.hasTrir = hasTrir;
+	}
+
+	public boolean isHasLwcr() {
+		return hasLwcr;
+	}
+
+	public void setHasLwcr(boolean hasLwcr) {
+		this.hasLwcr = hasLwcr;
+	}
+
+	public OperatorAccount getOperatorAccount() {
+		return operatorAccount;
+	}
+
+	public void setOperatorAccount(OperatorAccount operatorAccount) {
+		this.operatorAccount = operatorAccount;
 	}
 }

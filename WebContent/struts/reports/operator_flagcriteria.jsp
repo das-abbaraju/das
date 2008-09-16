@@ -23,9 +23,9 @@
 		<td>Flag</td>
 		<td>Risk Level</td>
 		<s:iterator value="operatorAccount.audits">
-		<s:if test="canSee && minRiskLevel > 0">
-			<td><s:property value="auditType.auditName"/> Status</td>
-			<td>% Completed</td>
+			<s:if test="canSee && minRiskLevel > 0">
+				<td><s:property value="auditType.auditName"/> Status</td>
+				<td>% Completed</td>
 		</s:if>
 		</s:iterator>
 	</tr>
@@ -46,10 +46,10 @@
 				<s:property value="[0].get('riskLevel')" />
 			</td>
 			<s:iterator value="operatorAccount.audits">		
-			<s:if test="canSee && minRiskLevel > 0">
-				<td><s:property value="%{get(auditType.auditName + ' Status')}"/></td>
-				<td class="right"><s:property value="%{get(auditType.auditName + ' Completed')}"/></td>
-			</s:if>
+				<s:if test="canSee && minRiskLevel > 0">
+					<td><s:property value="%{get(auditType.auditName + ' Status')}"/></td>
+					<td class="right"><s:property value="%{get(auditType.auditName + ' Completed')}"/></td>
+				</s:if>
 			</s:iterator>
 		</tr>
 	</s:iterator>
