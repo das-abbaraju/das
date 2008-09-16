@@ -220,6 +220,7 @@
 		<action name="AuditDataFileUploadAjax"
 			class="com.picsauditing.actions.audits.AuditDataFileUpload">
 			<result>struts/blank.jsp</result>
+			<result name="input">/struts/blank.jsp</result>
 		</action>
 		<action name="AuditDataUpload"
 			class="com.picsauditing.actions.audits.AuditDataUpload">
@@ -250,13 +251,6 @@
 		<action name="NewContractorSearch"
 			class="com.picsauditing.actions.report.ReportNewContractorSearch">
 			<result>struts/reports/newContractor_operator.jsp</result>
-		</action>
-
-		<action name="ContractorOperatorLimited"
-			class="com.picsauditing.actions.report.ReportAccountAudits">
-			<result>
-				struts/reports/contractors_operator_limited.jsp
-			</result>
 		</action>
 
 		<action name="ChartXMLFlagCount"
@@ -482,6 +476,20 @@
 			<result>struts/users/user_save_groups.jsp</result>
 			<result name="member">struts/users/user_save_members.jsp</result>
 		</action>
+
+		<action name="ReportContractorsWithForcedFlags"
+			class="com.picsauditing.actions.report.ReportContractorsWithForcedFlags">
+			<result>/struts/reports/report_forcedflags.jsp</result>
+		</action>
 		
+		<action name="ReportUserPermissionMatrix"
+			class="com.picsauditing.actions.report.ReportUserPermissionMatrix">
+			<result>struts/reports/user_permission_matrix.jsp</result>
+		</action>
+		
+		<action name="ReportAccountList"
+			class="com.picsauditing.actions.report.ReportOperatorCorporate">
+			<result>struts/reports/operator_corporate.jsp</result>
+		</action>
 	</package>
 </struts>
