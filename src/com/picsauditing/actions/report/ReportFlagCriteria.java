@@ -31,14 +31,20 @@ public class ReportFlagCriteria extends ReportAccount {
 		sql.addField("pqf.percentComplete AS pqfCompleted");
 		sql.addField("desktop.auditStatus AS desktopStatus");
 
-		if (permissions.hasPermission(OpPerms.AllOperators))
-			operatorID = operator[0];
-		else
+		if (permissions.hasPermission(OpPerms.AllOperators)) {
+			if (operator == null)
+				operatorID = 1813;
+			else
+				operatorID = operator[0];
+		} else
 			operatorID = permissions.getAccountId();
 
 		OperatorAccount operatorAccount = operatorAccountDAO.find(operatorID);
 		for (AuditOperator auditOperator : operatorAccount.getAudits()) {
 			String name = auditOperator.getAuditType().getAuditName().toLowerCase();
+			int blank = name.indexOf(" ");
+			if (blank > 0)
+				name = name.substring(0, blank);
 			String year = "1";
 			if (name.equals("pqf")) {
 				year = "year(pqf.createdDate) = 2008";
