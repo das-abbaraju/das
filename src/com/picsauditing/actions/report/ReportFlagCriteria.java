@@ -1,6 +1,5 @@
 package com.picsauditing.actions.report;
 
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
@@ -19,6 +18,7 @@ public class ReportFlagCriteria extends ReportAccount {
 
 	public ReportFlagCriteria(OperatorAccountDAO operatorAccountDAO) {
 		this.operatorAccountDAO = operatorAccountDAO;
+		filterOperatorSingle = true;
 	}
 
 	public String execute() throws Exception {
@@ -33,10 +33,11 @@ public class ReportFlagCriteria extends ReportAccount {
 		sql.addField("c.trades");
 		sql.addField("c.riskLevel");
 
-		if (permissions.hasPermission(OpPerms.AllOperators)) {
-			if (operator == null)
+		if (!permissions.isOperator()) {
+			if (operator == null) {
+				addActionMessage("Please select a Operator");
 				return SUCCESS;
-			else
+			} else
 				operatorID = operator[0];
 		} else
 			operatorID = permissions.getAccountId();
@@ -90,7 +91,7 @@ public class ReportFlagCriteria extends ReportAccount {
 			}
 		}
 
-		if(!permissions.isOperator()) {
+		if (!permissions.isOperator()) {
 			sql.addJoin("LEFT JOIN flags ON flags.conID = a.id AND flags.opID = " + operatorID);
 			sql.addField("flags.flag");
 			sql.addField("lower(flags.flag) AS lflag");

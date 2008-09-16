@@ -186,7 +186,12 @@ Filter Options</a></div>
 	</s:if>
 
 	<s:if test="filterOperator">
-		<div class="filterOption"><a href="#"
+		<div class="filterOption">
+		<s:if test="filterOperatorSingle">
+			<s:select list="operatorList" cssClass="forms" name="operator" listKey="id" listValue="name"/>
+		</s:if>
+		<s:else>
+		<a href="#"
 			onclick="toggleBox('form1_operator'); return false;">Operators</a> =
 		<span id="form1_operator_query">ALL</span><br />
 		<span id="form1_operator_select" style="display: none"
@@ -195,7 +200,9 @@ Filter Options</a></div>
 			multiple="true" size="5" /> <script type="text/javascript">updateQuery('form1_operator');</script>
 		<br />
 		<a class="clearLink" href="#"
-			onclick="clearSelected('form1_operator'); return false;">Clear</a> </span></div>
+			onclick="clearSelected('form1_operator'); return false;">Clear</a> </span>
+		</s:else>	
+		</div>
 	</s:if>
 
 	<s:if test="filterCerts">

@@ -57,6 +57,7 @@ public class ReportAccount extends ReportActionSupport {
 
 	protected boolean filterAccountName = true;
 	protected boolean filterOperator = true;
+	protected boolean filterOperatorSingle = false;
 	protected boolean filterIndustry = true;
 	protected boolean filterPerformedBy = true;
 	protected boolean filterTrade = true;
@@ -463,5 +464,9 @@ public class ReportAccount extends ReportActionSupport {
 
 	public boolean isFilterRiskLevel() {
 		return filterRiskLevel;
+	}
+
+	public boolean isFilterOperatorSingle() {
+		return filterOperatorSingle;
 	}
 }
