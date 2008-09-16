@@ -149,6 +149,8 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.ManageOperators))
 			subMenu.addChild("Assign Audit/Operator", "AuditOperator.action");
 
+		subMenu.addChild("Operator Flag Criteria", "ReportOperatorCriteria.action");
+		
 		subMenu = menu.addChild("Reports");
 		if (permissions.hasPermission(OpPerms.ManageAudits))
 			subMenu.addChild("Audit Analysis", "ReportAuditAnalysis.action");

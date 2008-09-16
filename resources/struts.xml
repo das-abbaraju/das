@@ -496,7 +496,11 @@
 			class="com.picsauditing.actions.report.ReportOperatorCorporate">
 			<result>struts/reports/operator_corporate.jsp</result>
 		</action>
-		
+
+		<action name="ReportOperatorCriteria"
+			class="com.picsauditing.actions.report.ReportFlagCriteria">
+			<result>struts/reports/operator_flagcriteria.jsp</result>
+		</action>
 
 	</package>
 </struts>

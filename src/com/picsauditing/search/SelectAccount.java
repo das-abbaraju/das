@@ -65,7 +65,7 @@ public class SelectAccount extends SelectSQL {
 		String join = "";
 		if (!require)
 			join = "LEFT ";
-		join = join + "JOIN pqfdata q" + questionID + " on q" + questionID + ".conID = a.id AND q" + questionID
+		join = join + "JOIN pqfdata q" + questionID + " on q" + questionID + ".auditID = pqf.auditID AND q" + questionID
 				+ ".questionID = " + questionID;
 		this.addJoin(join);
 		this.addField("q" + questionID + ".answer AS " + columnName);
