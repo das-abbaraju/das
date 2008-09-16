@@ -27,9 +27,6 @@ public class ReportFlagCriteria extends ReportAccount {
 		sql.addField("a.email");
 		sql.addField("c.main_trade");
 		sql.addField("c.trades");
-		sql.addField("pqf.auditStatus AS pqfStatus");
-		sql.addField("pqf.percentComplete AS pqfCompleted");
-		sql.addField("desktop.auditStatus AS desktopStatus");
 
 		if (permissions.hasPermission(OpPerms.AllOperators)) {
 			if (operator == null)
@@ -50,8 +47,10 @@ public class ReportFlagCriteria extends ReportAccount {
 				year = "year(pqf.createdDate) = 2008";
 			}
 			sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
-					+ ".auditTypeID = " + auditOperator.getAuditType().getAuditTypeID()
-					+ " AND pqf.AuditStatus IN ('Pending','Submitted','Active') AND " + year);
+					+ ".auditTypeID = " + auditOperator.getAuditType().getAuditTypeID() + " AND " + name
+					+ ".auditStatus IN ('Pending','Submitted','Active') AND " + year);
+			sql.addField(name + ".auditStatus AS " + name + "Status");
+			sql.addField(name + ".percentComplete AS " + name + "Completed");
 		}
 
 		for (FlagQuestionCriteria flagQuestionCriteria : operatorAccount.getFlagQuestionCriteria()) {
