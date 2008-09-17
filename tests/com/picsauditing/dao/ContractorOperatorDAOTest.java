@@ -45,6 +45,7 @@ public class ContractorOperatorDAOTest {
 			assertEquals(FlagColor.Amber, contractorOperator.getForceFlag());
 			contractorOperator.setForceFlag(FlagColor.valueOf(color));
 			contractorOperatorDao.save(contractorOperator);
+			contractorOperatorDao.remove(contractorOperator);
 			
 		}
 	}
