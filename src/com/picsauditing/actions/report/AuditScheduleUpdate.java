@@ -9,10 +9,11 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
 
-public class AuditScheduleUpdate extends ActionSupport implements ServletRequestAware {
+public class AuditScheduleUpdate extends PicsActionSupport implements ServletRequestAware {
 	protected ContractorAudit contractorAudit = null;
 	protected ContractorAuditDAO dao = null;
 
@@ -22,22 +23,35 @@ public class AuditScheduleUpdate extends ActionSupport implements ServletRequest
 		this.dao = dao;
 	}
 
-	public String execute() throws Exception {
-		String auditID = request.getParameter("auditID").toString();
-		String type = request.getParameter("type").toString();
-		contractorAudit = dao.find(Integer.parseInt(auditID));
+	public String execute() {
+		String auditIDString = request.getParameter("auditID");
+		if (auditIDString == null || auditIDString.length() == 0) {
+			addActionError("Missing auditID, invalid URL");
+			return SUCCESS;
+		}
+		
+		int auditID = Integer.parseInt(auditIDString);
+		String type = request.getParameter("type");
+		if (type == null || type.length() != 1) {
+			addActionError("Missing type, invalid URL");
+			return SUCCESS;
+		}
+		
+		contractorAudit = dao.find(auditID);
+		if (contractorAudit == null) {
+			addActionError("Missing audit, invalid URL");
+			return SUCCESS;
+		}
+
 		if (type.equals("c")) {
 			contractorAudit.setContractorConfirm(new Date());
-			ContractorBean cBean = new ContractorBean();
-			cBean.setFromDB(contractorAudit.getContractorAccount().getIdString());
-			String notes = " Confirmed the " + contractorAudit.getAuditType().getAuditName() + " on "
-					+ contractorAudit.getContractorConfirm();
-			cBean.addNote(contractorAudit.getContractorAccount().getIdString(), contractorAudit.getContractorAccount()
-					.getName(), notes, DateBean.getTodaysDateTime());
-			cBean.writeToDB();
+			String note = " Confirmed the " + contractorAudit.getAuditType().getAuditName();
+			
+			contractorAudit.getContractorAccount().addNote(null, note);
 		}
 		if (type.equals("a"))
 			contractorAudit.setAuditorConfirm(new Date());
+		
 		dao.save(contractorAudit);
 		return SUCCESS;
 	}
