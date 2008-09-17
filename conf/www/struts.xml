@@ -3,6 +3,7 @@
     "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
 	<constant name="struts.objectFactory" value="spring" />
+	<constant name="struts.devMode" value="true" />
 	<constant name="struts.url.includeParams" value="none" />
 	<constant name="struts.multipart.maxSize" value="1610612736" />
 
@@ -116,6 +117,10 @@
 		<action name="ConAuditList"
 			class="com.picsauditing.actions.contractors.ConAuditList">
 			<result>struts/contractors/contractor_audits.jsp</result>
+			<result name="saved" type="redirect-action">
+				<param name="actionName">ConAuditList</param>
+				<param name="id">${id}</param>
+			</result>				
 		</action>
 
 		<action name="Audit"
@@ -132,6 +137,10 @@
 		<action name="ConAuditMaintain"
 			class="com.picsauditing.actions.audits.ConAuditMaintain">
 			<result>struts/audits/audit_maintain.jsp</result>
+			<result name="AuditList" type="redirect-action">
+			<param name="actionName">ConAuditList</param>
+				<param name="id">${contractor.id}</param>
+			</result>
 		</action>
 
 		<action name="AuditCat"
@@ -168,7 +177,7 @@
 			<result name="deleted" type="redirect-action">
 				<param name="actionName">ManageAuditType</param>
 				<param name="id">${id}</param>
-			</result>			
+			</result>
 		</action>
 
 		<action name="ManageSubCategory"
@@ -491,5 +500,11 @@
 			class="com.picsauditing.actions.report.ReportOperatorCorporate">
 			<result>struts/reports/operator_corporate.jsp</result>
 		</action>
+
+		<action name="ReportOperatorCriteria"
+			class="com.picsauditing.actions.report.ReportFlagCriteria">
+			<result>struts/reports/operator_flagcriteria.jsp</result>
+		</action>
+
 	</package>
 </struts>
