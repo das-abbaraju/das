@@ -49,6 +49,4 @@ function selectCrumb(selector, url) {
 	</s:if>
 </div>
 
-<s:if test="auditType != null">
-<div><a href="AuditOperator.action?aID=<s:property value="auditType.auditTypeID"/>">Edit Operator Access</a></div>
-</s:if>
+<s:include value="../actionMessages.jsp" />

@@ -33,6 +33,7 @@
 
 <s:form id="save">
 <s:hidden name="id" />
+<s:hidden name="parentID" value="%{subCategory.category.id}" />
 <s:hidden name="subCategory.category.id" />
 
 <table class="forms">
@@ -45,15 +46,11 @@
 <th>Sub Category Name:</th>
 <td><s:textfield name="subCategory.subCategory" size="50" /></td>
 </tr>
-<tr>
-<th>Order:</th>
-<td><s:textfield name="subCategory.number" size="4"/></td>
-</tr>
 </table>
 <div class="buttons">
 	<button class="positive" name="button" type="submit" value="save">Save</button>
 <s:if test="subCategory.questions.size == 0">
-	<button class="positive" name="button" type="submit" value="delete">Delete</button>
+	<button name="button" type="submit" value="delete">Delete</button>
 </s:if>
 </div>
 

@@ -1,10 +1,8 @@
 package com.picsauditing.actions.auditType;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditType;
 
 public class ManageCategory extends ManageAuditType {
 
@@ -33,25 +31,41 @@ public class ManageCategory extends ManageAuditType {
 		load(category.getAuditType());
 	}
 	
-	public void save() {
+	public boolean save() {
 		if (category != null) {
+			if (category.getCategory() == null || category.getCategory().length() == 0) {
+				this.addActionError("Category name is required");
+				return false;
+			}
+			if (category.getNumber() == 0) {
+				int maxID = 0;
+				for(AuditCategory sibling : auditType.getCategories()) {
+					if (sibling.getNumber() > maxID)
+						maxID = sibling.getNumber();
+				}
+				category.setNumber(maxID + 1);
+			}
 			category = auditCategoryDao.save(category);
 			id = category.getAuditType().getAuditTypeID();
+			return true;
 		}
+		return false;
 	}
 	
-	protected void delete() {
+	protected boolean delete() {
 		try {
 			if (category.getSubCategories().size() > 0) {
 				addActionError("Can't delete - Sub Categories still exist");
-				return;
+				return false;
 			}
 			
 			id = category.getAuditType().getAuditTypeID();
 			auditCategoryDao.remove(category.getId());
+			return true;
 		} catch (Exception e) {
 			addActionError(e.getMessage());
 		}
+		return false;
 	}
 
 }

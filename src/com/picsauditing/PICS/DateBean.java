@@ -204,6 +204,17 @@ public class DateBean {
 		Calendar cal = Calendar.getInstance();
 		return cal.get(Calendar.HOUR_OF_DAY);
 	}
+	
+
+	/**
+	 * Get the end of time date 1/1/4000 This is used for expiration dates
+	 * @return
+	 */
+	public static Date getEndOfTime() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(4000, 1, 1);
+		return cal.getTime();
+	}
 
 	public static String getMonthName(int monthInt) {
 		if (monthInt < 12)

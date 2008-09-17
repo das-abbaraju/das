@@ -16,6 +16,7 @@
 
 <s:form id="save">
 <s:hidden name="id" />
+<s:hidden name="parentID" value="%{question.subCategory.id}" />
 <s:hidden name="question.subCategory.id" />
 <div class="buttons">
 	<button class="positive" name="button" type="submit" value="save">Save</button>
@@ -23,29 +24,22 @@
 <table class="forms">
 <tr>
 <th>ID:</th>
-<td><s:property value="question.questionID"></s:property></td>
+<td><s:if test="question.questionID > 0"><s:property value="question.questionID" /></s:if>
+<s:else>NEW</s:else></td>
 </tr>
 <tr>
 <th>Question:</th>
 <td><s:textarea name="question.question" rows="2" cols="50" /></td>
 </tr>
-<tr>
-<th>Order:</th>
-<td><s:textfield name="question.number" size="4"/></td>
-</tr>
-
-
 
 <tr>
 <th>Effective Date:</th>
 <td><s:textfield name="question.effectiveDate" value="%{ question.effectiveDate && getText('short_dates', {question.effectiveDate})}"/></td>
 </tr>
 
-
-
 <tr>
 <th>Expiration Date:</th>
-<td><s:textfield name="question.expirationDate" value="%{getText('short_dates', {question.expirationDate})}"/></td>
+<td><s:textfield name="question.expirationDate" value="%{ question.expirationDate && getText('short_dates', {question.expirationDate})}"/></td>
 </tr>
 
 <tr>
@@ -55,6 +49,12 @@
 <tr>
 <th>Updated:</th>
 <td><s:date name="question.lastModified" /></td>
+</tr>
+
+
+<tr>
+<th>Column Header:</th>
+<td><s:textfield name="question.columnHeader" size="20" maxlength="30"/></td>
 </tr>
 <tr>
 <th>Has Requirement:</th>
@@ -150,7 +150,9 @@
 </table>
 <div class="buttons">
 	<button class="positive" name="button" type="submit" value="save">Save</button>
-	<button name="button" type="submit" value="delete">Delete</button>
+	<s:if test="question.questionID > 0">
+		<button name="button" type="submit" value="delete">Delete</button>
+	</s:if>
 </div>
 </s:form>
 </td>

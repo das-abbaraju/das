@@ -38,21 +38,23 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		if (button != null) {
 			if (button.equalsIgnoreCase("save")) {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
-				addActionMessage("Successfully saved"); // default message
-				save();
-				return "saved";
+				if (save()) {
+					addActionMessage("Successfully saved"); // default message
+					return "saved";
+				}
 			}
 			if (button.equalsIgnoreCase("delete")) {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Delete);
-				addActionMessage("Successfully removed"); // default message
-				delete();
-				return "deleted";
+				if (delete()) {
+					addActionMessage("Successfully removed"); // default message
+					return "deleted";
+				}
 			}
 		}
 		
 		if ("Add New".equals(button)) {
 			auditType = new AuditType();
-			return SUCCESS;		
+			return SUCCESS;
 		}
 		if (auditType != null) {
 			return SUCCESS;		
@@ -87,8 +89,11 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		.get("parentID");
 
 		if (ids != null && ids.length > 0) {
-			int thisId = Integer.parseInt( ids[0] ); 
-			load( thisId );
+			int thisId = Integer.parseInt( ids[0] );
+			if (thisId > 0) {
+				load( thisId );
+				return; // don't try to load the parent too
+			}
 		}
 		
 		if (parentIds != null && parentIds.length > 0) {
@@ -97,27 +102,37 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		}
 	}
 	
-	public void save() {
+	public boolean save() {
 		try {
+			if (auditType == null)
+				return false;
+			if (auditType.getAuditName() == null || auditType.getAuditName().length() == 0) {
+				addActionError("Audit name is required");
+				return false;
+			}
 			auditType = auditTypeDao.save(auditType);
 			id = auditType.getAuditTypeID();
+			return true;
 		} catch (Exception e) {
 			addActionError(e.getMessage());
 		}
+		return false;
 	}
 
-	protected void delete() {
+	protected boolean delete() {
 		try {
 			if (auditType.getCategories().size() > 0) {
 				addActionError("Can't delete - Categories still exist");
-				return;
+				return false;
 			}
 			
 			auditTypeDao.remove(auditType.getAuditTypeID());
 			id = auditType.getAuditTypeID();
+			return true;
 		} catch (Exception e) {
 			addActionError(e.getMessage());
 		}
+		return false;
 	}
 
 	// GETTERS && SETTERS

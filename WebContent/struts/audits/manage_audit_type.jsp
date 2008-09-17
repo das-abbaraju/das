@@ -28,6 +28,10 @@
 <body>
 <s:include value="manage_audit_type_breadcrumbs.jsp" />
 
+
+<s:if test="auditType.auditTypeID > 0">
+	<div><a href="AuditOperator.action?aID=<s:property value="auditType.auditTypeID"/>">Edit Operator Access</a></div>
+</s:if>
 <table>
 <tr><td style="vertical-align: top">
 
@@ -86,18 +90,18 @@
 </table>
 <div class="buttons">
 	<button class="positive" name="button" type="submit" value="save">Save</button>
-<s:if test="auditType.categories.size == 0">
-	<button name="button" type="submit" value="delete">Delete</button>
-</s:if>
+	<s:if test="auditType.auditTypeID > 0 && auditType.categories.size == 0">
+		<button name="button" type="submit" value="delete">Delete</button>
+	</s:if>
 </div>
 </s:form>
 </td>
-<s:if test="id != 0">
+<s:if test="id > 0">
 <td style="vertical-align: top">
 <div>
 	<ul id="list">
 	<s:iterator value="auditType.categories">
-	    <li id="item_<s:property value="id"/>" title="Drag and drop to change order"><s:property value="number"/>. <a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="category"/></a></li>
+	    <li id="item_<s:property value="id"/>" title="Drag and drop to change order"><s:property value="number"/>. <a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="category"/> </a></li>
 	</s:iterator>
 	</ul>
 	
@@ -110,8 +114,10 @@
 	</script>
 	<div id="list-info"></div>
 </div>
-<div id="info">Drag and drop categories to change their order</div>
-<br clear="all" />
+<s:if test="auditType.categories.size > 1">
+	<div id="info">Drag and drop categories to change their order</div>
+	<br clear="all" />
+</s:if>
 </td>
 </s:if>
 </tr>

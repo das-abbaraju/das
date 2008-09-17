@@ -33,6 +33,7 @@
 
 <s:form id="save">
 <s:hidden name="id" />
+<s:hidden name="parentID" value="%{category.auditType.auditTypeID}" />
 <s:hidden name="category.auditType.auditTypeID" />
 <table class="forms">
 <tr>
@@ -43,10 +44,6 @@
 <tr>
 <th>Category Name:</th>
 <td><s:textfield name="category.category" size="30" /></td>
-</tr>
-<tr>
-<th>Order:</th>
-<td><s:textfield name="category.number" size="4"/></td>
 </tr>
 </table>
 <div class="buttons">

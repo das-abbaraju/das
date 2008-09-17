@@ -33,25 +33,41 @@ public class ManageSubCategory extends ManageCategory {
 		load(subCategory.getCategory());
 	}
 	
-	public void save() {
+	public boolean save() {
 		if (subCategory != null) {
+			if (subCategory.getSubCategory() == null || subCategory.getSubCategory().length() == 0) {
+				this.addActionError("Subcategory name is required");
+				return false;
+			}
+			if (subCategory.getNumber() == 0) {
+				int maxID = 0;
+				for(AuditSubCategory sibling : category.getSubCategories()) {
+					if (sibling.getNumber() > maxID)
+						maxID = sibling.getNumber();
+				}
+				subCategory.setNumber(maxID + 1);
+			}
 			subCategory = auditSubCategoryDao.save(subCategory);
 			id = subCategory.getCategory().getId();
+			return true;
 		}
+		return false;
 	}
 	
-	protected void delete() {
+	protected boolean delete() {
 		try {
 			if (subCategory.getQuestions().size() > 0) {
 				addActionError("Can't delete - Questions still exist");
-				return;
+				return false;
 			}
 			
 			id = subCategory.getCategory().getId();
 			auditSubCategoryDao.remove(subCategory.getId());
+			return true;
 		} catch (Exception e) {
 			addActionError(e.getMessage());
 		}
+		return false;
 	}	
 
 	
