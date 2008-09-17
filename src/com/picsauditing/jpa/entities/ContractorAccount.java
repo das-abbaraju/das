@@ -83,7 +83,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.type = "Contractor";
 	}
 
-	@OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.ALL})
+	@OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.REMOVE})
 	@OrderBy("location")
 	public List<OshaLog> getOshas() {
 		return oshas;
@@ -102,7 +102,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.audits = audits;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contractorAccount", cascade= {CascadeType.ALL})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contractorAccount", cascade= {CascadeType.REMOVE})
 	public List<ContractorOperator> getOperators() {
 		return this.operators;
 	}
@@ -254,7 +254,10 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 * @param note
 	 */
 	public void addNote(Permissions permissions, String note) {
-		this.notes = DateBean.getTodaysDateTime() + " " + permissions.getName() + ": " + note + "\n" + this.notes;
+		String userName = "SYSTEM";
+		if (permissions != null)
+			userName = permissions.getName();
+		this.notes = DateBean.getTodaysDateTime() + " " + userName + ": " + note + "\n" + this.notes;
 	}
 
 	@Column(name = "adminNotes", nullable = true, length = 16277215)
@@ -464,7 +467,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 * Map of Contractor Flags with OperatorID as the key
 	 */
 	@MapKey(name = "operatorAccount")
-	@OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.ALL})
+	@OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.REMOVE})
 	public Map<OperatorAccount, ContractorOperatorFlag> getFlags() {
 		return flags;
 	}
@@ -473,7 +476,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.flags = flags;
 	}
 
-	@OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.ALL})
+	@OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.REMOVE})
 	public List<Certificate> getCertificates() {
 		return certificates;
 	}

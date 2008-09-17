@@ -272,6 +272,7 @@ public class FlagCalculatorSingle {
 				certificate.setFlagColor(FlagColor.Red);
 				certificate.setType("No Approved Certificates");
 				certificate.setOperatorAccount(operator);
+				certificate.setContractorAccount(contractor);
 				contractor.getCertificates().add(certificate);
 			}
 
