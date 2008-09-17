@@ -120,7 +120,7 @@
 						label="Search" />
 					<setInputField name="accountName" value="Canoo's Test Contractor" />
 					<clickButton description="Search for Contractor" label="Search" />
-					<clickLink description="Edit Contract" label="Edit" />
+					<clickLink description="View/Edit Contractor" label="Edit" />
 					<clickLink description="Delete Contractor" label="Delete Contractor" />
 				</group>
 			</steps>
