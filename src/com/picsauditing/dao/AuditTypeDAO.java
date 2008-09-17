@@ -48,7 +48,7 @@ public class AuditTypeDAO extends PicsDAO {
     }
 	
 	@SuppressWarnings("unchecked")
-    public List<AuditType> findAll(Permissions permissions) {
+    public List<AuditType> findAll(Permissions permissions, boolean canEdit) {
 		String where = "";
 		
 		if (permissions.isOperator() || permissions.isCorporate()) {
@@ -57,10 +57,15 @@ public class AuditTypeDAO extends PicsDAO {
 			} else {
 				where = "operatorAccount IN (SELECT operator FROM Facility WHERE corporate.id = ?)";
 			}
+			if (canEdit)
+				where += " AND canEdit = 1";
+			else
+				where += " AND canSee = 1";
+			
 			where = "WHERE t IN (SELECT auditType FROM AuditOperator WHERE "+where+")";
 		}
 		
-        Query query = em.createQuery("FROM AuditType t "+where+" ORDER BY auditName");
+        Query query = em.createQuery("FROM AuditType t "+where+" ORDER BY t.auditName");
         query.setParameter(1, permissions.getAccountId());
         return query.getResultList();
     }
