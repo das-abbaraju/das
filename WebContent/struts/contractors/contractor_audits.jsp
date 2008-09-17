@@ -52,5 +52,9 @@
 		</tr>
 	</s:iterator>
 </table>
+<div id="addAuditManually">LOTS OF STUFF</div>
+<div id="addAudit">
+	<a href="#" onclick="$('addAuditManually').show(); $('addAudit').hide(); return false;">Add Audit Manually</a>
+</div>
 </body>
 </html>
