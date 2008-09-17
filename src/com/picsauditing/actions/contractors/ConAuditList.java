@@ -16,6 +16,7 @@ public class ConAuditList extends ContractorActionSupport {
 	private AuditTypeDAO auditTypeDAO;
 	private int selectedAudit;
 	private int selectedOperator;
+	private List<AuditType> auditTypeName;
 
 	public ConAuditList(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO) {
 		super(accountDao, auditDao);

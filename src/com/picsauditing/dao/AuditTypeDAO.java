@@ -66,7 +66,7 @@ public class AuditTypeDAO extends PicsDAO {
 		}
 		
         Query query = em.createQuery("FROM AuditType t "+where+" ORDER BY t.auditName");
-        if(permissions.isOperator())
+        if(permissions.isOperator() || permissions.isCorporate())
         	query.setParameter(1, permissions.getAccountId());
         return query.getResultList();
     }
