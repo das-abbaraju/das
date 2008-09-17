@@ -89,6 +89,7 @@ public class AuditQuestion implements java.io.Serializable {
 	private String linkText5;
 	private String linkUrl6;
 	private String linkText6;
+	private String columnHeader;
 
 	protected List<AuditQuestionOperatorAccount> operator;
 	protected List<AuditQuestionOption> options;
@@ -439,6 +440,15 @@ public class AuditQuestion implements java.io.Serializable {
 		if (questionID != other.questionID)
 			return false;
 		return true;
+	}
+
+	@Column(name = "columnHeader", nullable = true, length = 30)
+	public String getColumnHeader() {
+		return columnHeader;
+	}
+
+	public void setColumnHeader(String columnHeader) {
+		this.columnHeader = columnHeader;
 	}
 
 }
