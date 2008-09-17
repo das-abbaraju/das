@@ -26,7 +26,7 @@ public class UserAccessDAOTest {
 
 	@Test
 	public void findByUser() {
-		List<UserAccess> list = userAccessDAO.findByUser(941);
+		List<UserAccess> list = userAccessDAO.findByUser(981);
 		assertEquals(true, list.size() > 0);
 	}
 
