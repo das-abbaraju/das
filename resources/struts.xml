@@ -502,10 +502,5 @@
 			<result>struts/reports/operator_flagcriteria.jsp</result>
 		</action>
 
-		<action name="ManualAuditAdd"
-			class="com.picsauditing.actions.audits.ManualAuditAdd">
-			<result>struts/audits/manual_audit.jsp</result>
-		</action>
-
 	</package>
 </struts>
