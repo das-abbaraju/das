@@ -1,7 +1,11 @@
 package com.picsauditing.actions.report;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -62,11 +66,28 @@ public class ReportFlagCriteria extends ReportAccount {
 			}
 		}
 
+		boolean avgQuestionChecked = false;
 		for (FlagQuestionCriteria flagQuestionCriteria : operatorAccount.getFlagQuestionCriteria()) {
-			if (flagQuestionCriteria.getChecked() == YesNo.Yes
-					&& flagQuestionCriteria.getAuditQuestion().getQuestionID() != 0) {
+			if (flagQuestionCriteria.getAuditQuestion().getQuestionID() == AuditQuestion.EMR_AVG
+					&& flagQuestionCriteria.getChecked() == YesNo.Yes)
+				avgQuestionChecked = true;
+		}
+
+		Set<Integer> emrs = new HashSet<Integer>();
+		emrs.add(AuditQuestion.EMR07);
+		emrs.add(AuditQuestion.EMR06);
+		emrs.add(AuditQuestion.EMR05);
+		Set<Integer> questionIds = new HashSet<Integer>();
+		for (FlagQuestionCriteria flagQuestionCriteria : operatorAccount.getFlagQuestionCriteria()) {
+			if ((flagQuestionCriteria.getChecked() == YesNo.Yes && flagQuestionCriteria.getAuditQuestion()
+					.getQuestionID() != AuditQuestion.EMR_AVG)
+					|| (avgQuestionChecked && emrs.contains(flagQuestionCriteria.getAuditQuestion().getQuestionID()))) {
 				int questionID = flagQuestionCriteria.getAuditQuestion().getQuestionID();
-				sql.addPQFQuestion(questionID);
+				if (!questionIds.contains(questionID)) {
+					questionIds.add(questionID);
+					sql.addPQFQuestion(questionID);
+					sql.addField("q" + questionID + ".verifiedAnswer AS verified" + questionID);
+				}
 			}
 		}
 		// TODO handle the osha for 2008.
