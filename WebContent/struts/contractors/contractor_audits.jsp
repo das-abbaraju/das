@@ -5,6 +5,13 @@
 <head>
 <title>Audit/Evaluations for <s:property value="contractor.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<script type="text/javascript" src="js/prototype.js"></script>
+<script type="text/javascript">
+	function showAddAudit() {
+	$('addAudit').hide();	
+	$('addAuditManually').show();
+	}
+</script>
 </head>
 <body>
 <s:push value="#subHeading='Contractor Forms, Audits & Evaluations'"/>
@@ -52,9 +59,12 @@
 		</tr>
 	</s:iterator>
 </table>
-<div id="addAuditManually">LOTS OF STUFF</div>
 <div id="addAudit">
-	<a href="#" onclick="$('addAuditManually').show(); $('addAudit').hide(); return false;">Add Audit Manually</a>
+	<a href="#" onclick="showAddAudit(); return false;">Add Audit Manually</a>
 </div>
+<div id="addAuditManually" style="display: none;">
+	
+</div>
+
 </body>
 </html>
