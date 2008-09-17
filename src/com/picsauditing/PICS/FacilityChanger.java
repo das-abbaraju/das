@@ -1,6 +1,7 @@
 package com.picsauditing.PICS;
 
 import java.util.Date;
+import java.util.Iterator;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -78,16 +79,18 @@ public class FacilityChanger {
 
 		// TODO: Start using SearchContractors.Delete instead
 		// permissions.tryPermission(OpPerms.SearchContractors, OpType.Delete);
-		if (!permissions.hasPermission(OpPerms.RemoveContractors))
-			return false;
-		for (ContractorOperator co : contractor.getOperators()) {
-			if (co.getOperatorAccount().equals(operator)
-					&& co.getContractorAccount().equals(contractor)) {
+		//if (!permissions.hasPermission(OpPerms.RemoveContractors))
+		//	return false;
+		Iterator<ContractorOperator> iterator = contractor.getOperators().iterator();
+		while(iterator.hasNext()) {
+			ContractorOperator co = iterator.next();
+			if (co.getOperatorAccount().equals(operator)) {
 				contractorOperatorDAO.remove(co);
 				contractor.getOperators().remove(co);
-				ContractorBean.addNote(co.getContractorAccount().getId(), permissions, "Removed " + co.getContractorAccount().getName()
+				contractor.addNote(permissions, "Removed " + co.getContractorAccount().getName()
 						+ " from " + co.getOperatorAccount().getName() + "'s db");
-				auditBuilder.buildAudits(co.getContractorAccount());
+				auditBuilder.buildAudits(contractor);
+				contractorAccountDAO.save(contractor);
 				return true;
 			}
 		}

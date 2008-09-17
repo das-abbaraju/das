@@ -26,13 +26,13 @@ public class Certificate {
 	protected OperatorAccount operatorAccount;
 	protected String type;
 	protected Date expiration;
-	protected int sentEmails;
+	protected int sentEmails = 0;
 	protected Date lastSentDate;
 	protected int liabilityLimit;
 	protected String namedInsured;
 	protected YesNo subrogationWaived;
-	protected String status;
-	protected YesNo verified;
+	protected String status = "Pending";
+	protected YesNo verified = YesNo.No;
 	protected String reason;
 	protected String fileExtension;
 	protected FlagColor flagColor;
@@ -77,7 +77,7 @@ public class Certificate {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "expDate")
+	@Column(name = "expDate", nullable = false)
 	public Date getExpiration() {
 		return expiration;
 	}
@@ -154,7 +154,7 @@ public class Certificate {
 		this.reason = reason;
 	}
 
-	@Column(name = "ext")
+	@Column(name = "ext", nullable = false)
 	public String getFileExtension() {
 		return fileExtension;
 	}

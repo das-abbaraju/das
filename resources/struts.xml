@@ -173,7 +173,7 @@
 			<result name="deleted" type="redirect-action">
 				<param name="actionName">ManageAuditType</param>
 				<param name="id">${id}</param>
-			</result>			
+			</result>
 		</action>
 
 		<action name="ManageSubCategory"
