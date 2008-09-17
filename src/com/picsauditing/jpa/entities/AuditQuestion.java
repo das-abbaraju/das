@@ -60,11 +60,11 @@ public class AuditQuestion implements java.io.Serializable {
 	
 	private int questionID;
 	private AuditSubCategory subCategory;
-	private short number;
+	private int number;
 	private String question;
-	private Date dateCreated;
-	private Date lastModified;
-	private Date effectiveDate;
+	private Date dateCreated = new Date();
+	private Date lastModified = new Date();
+	private Date effectiveDate = new Date();
 	private Date expirationDate;
 	private YesNo hasRequirement;
 	private String okAnswer;
@@ -77,6 +77,7 @@ public class AuditQuestion implements java.io.Serializable {
 	private String title;
 	private YesNo isVisible;
 	private YesNo isGroupedWithPrevious;
+	private String columnHeader;
 	private String linkUrl1;
 	private String linkText1;
 	private String linkUrl2;
@@ -89,7 +90,6 @@ public class AuditQuestion implements java.io.Serializable {
 	private String linkText5;
 	private String linkUrl6;
 	private String linkText6;
-	private String columnHeader;
 
 	protected List<AuditQuestionOperatorAccount> operator;
 	protected List<AuditQuestionOption> options;
@@ -116,11 +116,11 @@ public class AuditQuestion implements java.io.Serializable {
 	}
 
 	@Column(nullable = false)
-	public short getNumber() {
+	public int getNumber() {
 		return this.number;
 	}
 
-	public void setNumber(short number) {
+	public void setNumber(int number) {
 		this.number = number;
 	}
 
@@ -442,7 +442,7 @@ public class AuditQuestion implements java.io.Serializable {
 		return true;
 	}
 
-	@Column(name = "columnHeader", nullable = true, length = 30)
+	@Column(length = 30)
 	public String getColumnHeader() {
 		return columnHeader;
 	}
