@@ -48,6 +48,7 @@ public class ContractorAudit {
 	private int percentVerified;
 	private Date contractorConfirm;
 	private Date auditorConfirm;
+	private boolean manuallyAdded;
 
 	private List<AuditCatData> categories = new ArrayList<AuditCatData>();
 	private List<AuditData> data = new ArrayList<AuditData>();
@@ -336,5 +337,14 @@ public class ContractorAudit {
 
 	public void setAuditorConfirm(Date auditorConfirm) {
 		this.auditorConfirm = auditorConfirm;
+	}
+
+	
+	public boolean isManuallyAdded() {
+		return manuallyAdded;
+	}
+
+	public void setManuallyAdded(boolean manuallyAdded) {
+		this.manuallyAdded = manuallyAdded;
 	}
 }

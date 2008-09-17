@@ -183,7 +183,7 @@ public class AuditBuilder {
 		Iterator<ContractorAudit> iter = currentAudits.iterator();
 		while (iter.hasNext()) {
 			ContractorAudit conAudit = iter.next();
-			if (conAudit.getAuditStatus().equals(AuditStatus.Pending) && conAudit.getPercentComplete() == 0) {
+			if (conAudit.getAuditStatus().equals(AuditStatus.Pending) && conAudit.getPercentComplete() == 0 && !conAudit.isManuallyAdded()) {
 				// This audit hasn't been started yet, double check to make sure
 				// it's still needed
 				boolean needed = false;

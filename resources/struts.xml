@@ -117,6 +117,10 @@
 		<action name="ConAuditList"
 			class="com.picsauditing.actions.contractors.ConAuditList">
 			<result>struts/contractors/contractor_audits.jsp</result>
+			<result name="saved" type="redirect-action">
+				<param name="actionName">ConAuditList</param>
+				<param name="id">${id}</param>
+			</result>				
 		</action>
 
 		<action name="Audit"

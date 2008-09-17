@@ -59,12 +59,22 @@
 		</tr>
 	</s:iterator>
 </table>
+<br/><br/>
 <div id="addAudit">
 	<a href="#" onclick="showAddAudit(); return false;">Add Audit Manually</a>
 </div>
 <div id="addAuditManually" style="display: none;">
-	
+<s:form method="post" id="form1" >
+	<s:hidden name="id" value="%{id}"/>
+	<label>Select a Audit to be Created</label>
+	<s:select list="auditTypeName" listKey="auditTypeID" listValue="auditName" name="selectedAudit"/>
+	<pics:permission perm="AllOperators">
+	<s:select list="operators" listKey="operatorAccount.id" listValue="operatorAccount.name" name="selectedOperator" headerKey="" headerValue="- No Operator -"/>
+	</pics:permission>
+	<div class="buttons">
+		<s:submit name="button" value="Create"/>
+	</div>
+</s:form>	
 </div>
-
 </body>
 </html>
