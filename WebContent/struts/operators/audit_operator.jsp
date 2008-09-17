@@ -87,10 +87,10 @@ function save(id, aID, oID, pKey) {
 				</s:else>
 				</td>
 				<td id="td<s:property value="htmlID" />">
-					<s:checkbox name="canSee%{htmlID}" value="canSee"
+					<s:checkbox name="canSee%{htmlID}" value="canSee" title="View"
 					onclick="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
 					|
-					<s:checkbox name="canEdit%{htmlID}" value="canEdit"
+					<s:checkbox name="canEdit%{htmlID}" value="canEdit" title="Edit"
 					onclick="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
 					|
 					<s:radio name="riskLevel%{htmlID}" list="riskLevelList" value="minRiskLevel" disabled="!canSee" 

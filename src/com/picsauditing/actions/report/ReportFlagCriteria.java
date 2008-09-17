@@ -35,7 +35,7 @@ public class ReportFlagCriteria extends ReportAccount {
 
 		if (!permissions.isOperator()) {
 			if (operator == null) {
-				addActionMessage("Please select a Operator");
+				addActionMessage("Please select an Operator");
 				return SUCCESS;
 			} else
 				operatorID = operator[0];
