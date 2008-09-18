@@ -9,6 +9,7 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AuditData;
 
 /**
  * Class used to edit a ContractorAudit record with virtually no restrictions
@@ -35,20 +36,18 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 
 		permissions.tryPermission(OpPerms.AuditEdit);
 
-		if (button != null) {
-			if (button.equals("Save")) {
-
+			if ("Save".equals(button)) {
+				auditDao.clear();
 				if (conAudit.getAuditor().getId() == 0)
 					conAudit.setAuditor(null);
 				auditDao.save(conAudit);
 				findConAudit();
 				addActionMessage("Successfully saved data");
 			}
-			if(button.equals("Delete")) {
+			if("Delete".equals(button)) {
 				auditDao.remove(conAudit, getFtpDir());
 				return "AuditList";
 			}
-		}
 
 		return SUCCESS;
 	}
@@ -62,7 +61,6 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 		if (ids != null && ids.length > 0) {
 			auditID = new Integer(ids[0]).intValue();
 			findConAudit();
-			auditDao.clear();
 		}
 	}
 

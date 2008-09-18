@@ -74,11 +74,12 @@
 			contractorAccountDAO.remove(contractorAccount);
 			String path = config.getServletContext().getInitParameter("FTP_DIR");
 			FileUtils.deleteFile(path+ "/files/logos/" + contractorAccount.getLogoFile());
-			if(contractorAccount.getBrochureFile().equals("Yes")) {
-				FileUtils.deleteFile(path+ "/files/brochures/brochure_"+id+".pdf");
-				FileUtils.deleteFile(path+ "/files/brochures/brochure_"+id+".doc");
-				FileUtils.deleteFile(path+ "/files/brochures/brochure_"+id+".txt");
-				FileUtils.deleteFile(path+ "/files/brochures/brochure_"+id+".jpg");
+
+			File parentFolder = new File(path + "/files/brochures");
+			String filename = "brochure_" + id;
+			File[] deleteList = FileUtils.getSimilarFiles(parentFolder, filename);
+			for (File toDelete : deleteList) {
+				FileUtils.deleteFile(toDelete);
 			}
 			response.sendRedirect("ContractorListAdmin.action");
 			return; 
@@ -92,6 +93,7 @@
 <%@page import="com.picsauditing.jpa.entities.ContractorAccount"%>
 <%@page import="com.picsauditing.dao.ContractorAccountDAO"%>
 <%@page import="com.picsauditing.util.FileUtils"%>
+<%@page import="java.io.File"%>
 <html>
 <head>
 <title>Edit Contractor</title>

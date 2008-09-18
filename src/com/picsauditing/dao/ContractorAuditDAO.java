@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
@@ -15,11 +16,14 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
+import com.picsauditing.util.SpringUtils;
 
 @Transactional
 public class ContractorAuditDAO extends PicsDAO {
+
 	public ContractorAudit save(ContractorAudit o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -30,17 +34,28 @@ public class ContractorAuditDAO extends PicsDAO {
 	}
 
 	public void remove(ContractorAudit row, String ftpDir) {
-//		if (row.getData().size() != 0) {
-//			for (AuditData auditData : row.getData()) {
-//				if (auditData.getQuestion().getQuestionType().equals("File")) {
-//					String FileName = ftpDir + "/files/pqf/qID_" + auditData.getQuestion().getQuestionID() + "/"
-//							+ auditData.getQuestion().getQuestionID() + "_" + row.getContractorAccount().getId() + "."
-//							+ auditData.getAnswer();
-//					FileUtils.deleteFile(FileName);
-//				}
-//			}
-//		}
-		remove(row.getId());
+		for (AuditData auditData : row.getData()) {
+			if (auditData.getQuestion().getQuestionType().equals("File")) {
+				String FileName = ftpDir + "/files/pqf/qID_" + auditData.getQuestion().getQuestionID() + "/"
+						+ auditData.getQuestion().getQuestionID() + "_" + row.getContractorAccount().getId() + "."
+						+ auditData.getAnswer();
+				FileUtils.deleteFile(FileName);
+			}
+		}
+		OshaLogDAO oshaLogDAO = (OshaLogDAO) SpringUtils.getBean("OshaLogDAO");
+		List<OshaLog> osList = oshaLogDAO.findByContractor(row.getContractorAccount());
+		for (OshaLog oshaLog : osList) {
+			for (int j = 1; j < 4; j++) {
+				File parentFolder = new File(ftpDir + "/files/oshas");
+				String filename = "osha" + j + "_" + oshaLog.getId();
+				File[] deleteList = FileUtils.getSimilarFiles(parentFolder, filename);
+				for (File toDelete : deleteList) {
+					FileUtils.deleteFile(toDelete);
+				}
+			}
+			oshaLogDAO.remove(oshaLog.getId());
+		}
+		remove(row);
 	}
 
 	public void remove(int id) {
