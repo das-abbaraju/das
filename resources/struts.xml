@@ -510,6 +510,11 @@
 			class="com.picsauditing.actions.report.ReportFlagCriteria">
 			<result>struts/reports/operator_flagcriteria.jsp</result>
 		</action>
+		
+		<action name="ContractorEdit"
+			class="com.picsauditing.actions.contractors.ContractorEdit">
+			<result>struts/contractors/con_edit.jsp</result>
+		</action>		
 
 	</package>
 </struts>

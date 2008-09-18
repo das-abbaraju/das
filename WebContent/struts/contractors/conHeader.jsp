@@ -18,12 +18,11 @@
 			<s:if test="requestURI.contains('note')">class="current"</s:if>>Notes</a></li>
 	</s:if>
 	<s:if test="permissions.admin">
-		<li><a
-			href="accounts_edit_contractor.jsp?id=<s:property value="id" />"
+		<li><a href="ContractorEdit.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('edit')">class="current"</s:if>>Edit</a></li>
 	</s:if>
 	<s:if test="permissions.contractor">
-		<li><a href="contractor_edit.jsp?id=<s:property value="id" />"
+		<li><a href="ContractorEdit.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('edit')">class="current"</s:if>>Edit</a></li>
 	</s:if>
 	<s:if test="hasInsurance">
