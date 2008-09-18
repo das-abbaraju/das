@@ -159,11 +159,11 @@ public class PicsActionSupport extends ActionSupport {
 	 */
 	static protected String getFtpDir() {
 		String ftpDir = System.getProperty("pics.ftpDir");
-		if (ftpDir == null || ftpDir.length() > 0)
+		if (ftpDir != null && ftpDir.length() > 0)
 			return ftpDir;
 		
 		ftpDir = ServletActionContext.getServletContext().getInitParameter("FTP_DIR");
-		if (ftpDir == null || ftpDir.length() > 0)
+		if (ftpDir != null && ftpDir.length() > 0)
 			return ftpDir;
 		
 		return "C:/temp";
