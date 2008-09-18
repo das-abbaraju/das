@@ -31,6 +31,7 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public void remove(ContractorAccount row) {
+		// TODO : add all logic to delete contractor here
 		if (row != null) {
 			em.remove(row);
 		}

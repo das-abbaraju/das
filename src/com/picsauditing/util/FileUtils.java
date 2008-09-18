@@ -95,12 +95,16 @@ public class FileUtils {
 	}
 
 	static public boolean checkFileExtension(String extension) {
+		String[] validExtensions = { "pdf", "doc", "txt", "xls", "jpg", "gif", "png" };
+		return checkFileExtension(extension, validExtensions);
+	}
+
+	static public boolean checkFileExtension(String extension, String[] validExtensions) {
 		if (extension == null || extension.equals(""))
 			return false;
 
 		extension = extension.toLowerCase();
 
-		String[] validExtensions = { "pdf", "doc", "txt", "xls", "jpg", "gif", "png" };
 		boolean valid = false;
 		for (String exte : validExtensions) {
 			if (exte.equals(extension))
@@ -111,6 +115,7 @@ public class FileUtils {
 
 		return true;
 	}
+
 
 	/**
 	 * Delete a file if it exists. Does not work on directories
