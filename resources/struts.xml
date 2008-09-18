@@ -251,6 +251,11 @@
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<result>struts/reports/contractors_admin.jsp</result>
 		</action>
+		<action name="ContractorListAdminCSV"
+			class="com.picsauditing.actions.report.ReportAccountAudits">
+			<param name="download">true</param>
+			<result>struts/reports/contractors_admin_csv.jsp</result>
+		</action>
 
 		<action name="ContractorListOperator"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
