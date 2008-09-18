@@ -4,14 +4,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
-	<!-- Modify for your local system -->
-	<!-- Set the local upload directory to /wwwroot/www.picsauditing.com/ftp-bin -->
 	<context-param>
+		<!-- To override, add -Dpics.ftpDir=folder_location to your startup command -->
 		<param-name>FTP_DIR</param-name>
-		<param-value>C:/temp</param-value>
+		<param-value>M:/Development/ftp_dir</param-value>
 	</context-param>
-
-	<!-- BELOW THIS LINE SHOULD BE NOT SITE SPECIFIC -->
 
 	<!-- Osha, Grace dates-->
 	<context-param>
@@ -27,42 +24,7 @@
 		<param-value>2/28</param-value>
 	</context-param>
 	<!-- END Osha, Grace dates -->
-	<!-- Pricing -->
-	<context-param>
-		<param-name>pqfOnlyPrice</param-name>
-		<param-value>99</param-value>
-	</context-param>
-	<context-param>
-		<param-name>onePrice</param-name>
-		<param-value>399</param-value>
-	</context-param>
-	<context-param>
-		<param-name>fourPrice</param-name>
-		<param-value>699</param-value>
-	</context-param>
-	<context-param>
-		<param-name>eightPrice</param-name>
-		<param-value>999</param-value>
-	</context-param>
-	<context-param>
-		<param-name>twelvePrice</param-name>
-		<param-value>1299</param-value>
-	</context-param>
-	<context-param>
-		<param-name>nineteenPrice</param-name>
-		<param-value>1699</param-value>
-	</context-param>
-	<context-param>
-		<param-name>twentyPrice</param-name>
-		<param-value>1999</param-value>
-	</context-param>
-	<!-- END Pricing -->
 
-	<!-- 
-		<listener>
-		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
-		</listener>
-	-->
 	<listener>
 		<listener-class>
 			org.springframework.web.context.ContextLoaderListener
@@ -144,7 +106,7 @@
 
 
 	<session-config>
-		<session-timeout>30</session-timeout>
+		<session-timeout>60</session-timeout>
 	</session-config>
 	<servlet>
 		<servlet-name>showpdf</servlet-name>
@@ -188,26 +150,6 @@
 		<servlet-name>StreamUploader</servlet-name>
 		<url-pattern>/StreamUploader</url-pattern>
 	</servlet-mapping>
-	<!-- <error-page>
-		<error-code>404</error-code>
-		<location>/exception_handler.jsp</location>
-		</error-page>
-		<error-page>
-		<error-code>403</error-code>
-		<location>/exception_handler.jsp</location>
-		</error-page>
-		<error-page>
-		<exception-type>javax.servlet.ServletException</exception-type>
-		<location>/exception_handler.jsp</location>
-		</error-page>
-		<error-page>
-		<exception-type>java.io.IOException</exception-type>
-		<location>/exception_handler.jsp</location>
-		</error-page>
-		<error-page>
-		<exception-type>java.lang.Throwable</exception-type>
-		<location>/exception_handler.jsp</location>
-		</error-page>-->
 	<resource-ref>
 		<description>DB Connection</description>
 		<res-ref-name>jdbc/pics</res-ref-name>
@@ -218,6 +160,5 @@
 		<welcome-file>index.jsp</welcome-file>
 		<welcome-file>index.html</welcome-file>
 		<welcome-file>index.htm</welcome-file>
-		<welcome-file>default.htm</welcome-file>
 	</welcome-file-list>
 </web-app>
