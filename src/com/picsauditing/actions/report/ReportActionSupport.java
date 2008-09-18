@@ -52,8 +52,10 @@ public class ReportActionSupport extends PicsActionSupport {
 
 	public void run(SelectSQL sql) throws SQLException {
 		if (download) {
+			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
+			filename += ".csv";
 			ServletActionContext.getResponse().setContentType("text/csv");
-			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment;filename=tempfile.csv");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment;filename="+filename);
 			this.report.setLimit(100000);
 			showPage = 1;
 		}

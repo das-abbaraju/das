@@ -47,6 +47,12 @@ function updateQuery(name) {
 	}
 	result.update(queryText);
 }
+
+function download(url) {
+	newurl = url + "CSV.action?" + $('form1').serialize();
+	popupWin = window.open(newurl, url, '');
+}
+
 </script>
 
 <style type="text/css">
