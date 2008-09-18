@@ -211,4 +211,9 @@ public class Report {
 				+ "\">" + page + "</a></li>";
 	}
 
+	public int getAllRows() {
+		return allRows;
+	}
+
+	
 }

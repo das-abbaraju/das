@@ -308,7 +308,7 @@ a[href $=".pdf"] {
 	background: url('../images/icon_link_pdf.png') no-repeat left center;; padding-left:14px; padding-right:0; padding-top:0; padding-bottom:0
 }
 
-a[href $=".xls"] {
+a[href $=".xls"], a.excel {
 	background: url('../images/icon_link_excel.png') no-repeat left center;; padding-left:14px; padding-right:0; padding-top:0; padding-bottom:0
 }
 

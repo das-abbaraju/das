@@ -11,6 +11,7 @@
 
 <s:include value="filters.jsp" />
 
+<div class="right"><a class="excel" href="ContractorListAdminCSV.action" title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a></div>
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>

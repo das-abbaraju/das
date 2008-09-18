@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.search.Report;
@@ -17,7 +18,8 @@ public class ReportActionSupport extends PicsActionSupport {
 	protected String orderBy;
 	protected int showPage;
 	protected ColorAlternater color = new ColorAlternater();
-
+	
+	protected boolean download = false;
 	protected Boolean filtered = null;
 
 	public int getShowPage() {
@@ -49,6 +51,13 @@ public class ReportActionSupport extends PicsActionSupport {
 	}
 
 	public void run(SelectSQL sql) throws SQLException {
+		if (download) {
+			ServletActionContext.getResponse().setContentType("text/csv");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment;filename=tempfile.csv");
+			this.report.setLimit(100000);
+			showPage = 1;
+		}
+		
 		isFiltered();
 		report.setOrderBy(this.orderBy, null);
 		report.setSql(sql);
@@ -80,5 +89,13 @@ public class ReportActionSupport extends PicsActionSupport {
 
 	public void setFiltered(boolean filtered) {
 		this.filtered = filtered;
+	}
+
+	public boolean isDownload() {
+		return download;
+	}
+
+	public void setDownload(boolean download) {
+		this.download = download;
 	}
 }
