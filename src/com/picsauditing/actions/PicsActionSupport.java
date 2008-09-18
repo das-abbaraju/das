@@ -151,8 +151,22 @@ public class PicsActionSupport extends ActionSupport {
 		return new DecimalFormat(mask).format(number);
 	}
 
+	/**
+	 * Get the directory to store file uploads
+	 * Use the System property or the Init parameter or C:/temp/
+	 * To set the System property add -Dpics.ftpDir=folder_location to your startup command
+	 * @return
+	 */
 	static protected String getFtpDir() {
-		return ServletActionContext.getServletContext().getInitParameter("FTP_DIR");
+		String ftpDir = System.getProperty("pics.ftpDir");
+		if (ftpDir == null || ftpDir.length() > 0)
+			return ftpDir;
+		
+		ftpDir = ServletActionContext.getServletContext().getInitParameter("FTP_DIR");
+		if (ftpDir == null || ftpDir.length() > 0)
+			return ftpDir;
+		
+		return "C:/temp";
 	}
 
 	public String getButton() {
