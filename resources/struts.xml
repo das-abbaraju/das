@@ -226,11 +226,6 @@
 			class="com.picsauditing.actions.audits.AuditDataSave">
 			<result>struts/blank.jsp</result>
 		</action>
-		<action name="AuditDataFileUploadAjax"
-			class="com.picsauditing.actions.audits.AuditDataFileUpload">
-			<result>struts/blank.jsp</result>
-			<result name="input">/struts/blank.jsp</result>
-		</action>
 		<action name="AuditDataUpload"
 			class="com.picsauditing.actions.audits.AuditDataUpload">
 			<result>struts/audits/audit_data_upload.jsp</result>
