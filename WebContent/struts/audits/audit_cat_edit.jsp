@@ -1,6 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <tr id="status_<s:property value="questionID"/>" class="group<s:if test="#shaded">Shaded</s:if>">
-	<td class="right"><s:property value="category.number"/>.<s:property value="subCategory.number"/>.<s:property value="number"/>&nbsp;&nbsp;</td>
+	<td class="right"><s:property value="category.number"/>.<s:property value="subCategory.number"/>.<s:property value="number"/>&nbsp;&nbsp;
+	<a name="q<s:property value="questionID"/>" /></td>
 	<td class="question<s:if test="required">Required</s:if>"><s:property value="question" escape="false"/>
 		<s:if test="linkUrl1 > ''"><a href="http://<s:property value="linkUrl1"/>" target="_BLANK" title="opens in new window"><s:property value="linkText1"/></a></s:if>
 		<s:if test="linkUrl2 > ''"><a href="http://<s:property value="linkUrl2"/>" target="_BLANK" title="opens in new window"><s:property value="linkText2"/></a></s:if>
@@ -9,7 +10,7 @@
 		<s:if test="linkUrl5 > ''"><a href="http://<s:property value="linkUrl5"/>" target="_BLANK" title="opens in new window"><s:property value="linkText5"/></a></s:if>
 		<s:if test="linkUrl6 > ''"><a href="http://<s:property value="linkUrl6"/>" target="_BLANK" title="opens in new window"><s:property value="linkText6"/></a></s:if>
 	</td>
-	<td class="answer">
+	<td class="answer" id="td_answer_<s:property value="questionID"/>">
 		<s:if test="questionType == 'Text'">
 			<s:textfield id="answer_%{questionID}" name="answer.answer" size="30" onchange="javascript:saveAnswer(%{questionID}, this);"/>
 		</s:if>
@@ -64,28 +65,16 @@
 			<s:select list="options" listKey="optionName" listValue="optionName" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:select>
 		</s:if>
 		<s:if test="questionType == 'File'">
-			<span id="status_upload_<s:property value="questionID"/>">&nbsp;</span>
-			<div id="show_upload_<s:property value="questionID"/>">
-				<span id="meta_upload_<s:property value="questionID"/>">
-				<nobr>
-					<s:if test="answer.answer.length() > 0">
-						<a id="link_<s:property value="questionID"/>" href="#" onClick="openQuestion('<s:property value="questionID"/>', '<s:property value="answer.answer"/>'); return false;">View File</a>
-					</s:if>
-					<s:else>File Not Uploaded</s:else>
-				</nobr>
-				</span>
-				<input id="show_button_<s:property value="questionID"/>" type="button" value="<s:if test="answer.answer.length() > 0">Edit</s:if><s:else>Add</s:else> File" onclick="$('file_upload_<s:property value="questionID"/>').show(); $('show_upload_<s:property value="questionID"/>').hide();" />
-			</div>
-			<form id="file_upload_<s:property value="questionID"/>" target="upload_iframe_<s:property value="questionID"/>" action="AuditDataFileUploadAjax.action" method="post" enctype="multipart/form-data" style="display: none;">
-				<s:hidden name="contractorID" value="%{contractor.id}"/>
-				<s:hidden name="auditData.audit.id" value="%{conAudit.id}"/>
-				<s:hidden name="auditData.question.questionID" value="%{questionID}"/>
-				<input type="file" name="file" value="Upload file (Max 150 MB)" accept=".pdf,.doc,.txt,.xls,.jpg" />
-				<input type="submit" value="Upload File"  onclick="AIM.submit('<s:property value="questionID"/>', {'onStart' : startCallback, 'onComplete' : completeCallback});" />
-				<iframe style="display:none" src="about:blank" id="upload_iframe_<s:property value="questionID"/>" 
-						name="upload_iframe_<s:property value="questionID"/>" id="upload_iframe_<s:property value="questionID"/>" onload="AIM.loaded('<s:property value="questionID"/>')" ></iframe>
-			</form>
-
+			<nobr>
+				<s:if test="answer.answer.length() > 0">
+					<a href="#" onClick="openQuestion('<s:property value="questionID"/>', '<s:property value="answer.answer"/>'); return false;">View File</a>
+				</s:if>
+				<s:else>File Not Uploaded</s:else>
+				<input id="show_button_<s:property value="questionID"/>" type="button" 
+					value="<s:if test="answer.answer.length() > 0">Edit</s:if><s:else>Add</s:else> File" 
+					onclick="showFileUpload(<s:property value="questionID"/>);"
+					title="Opens in new window (please disable your popup blocker)" />
+			</nobr>
 		</s:if>
 	</td>
 	<td align="center" id="required_td<s:property value="questionID"/>">

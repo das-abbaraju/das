@@ -49,10 +49,12 @@ public class AuditDataUpload extends AuditActionSupport {
 			data.setQuestion(question);
 			data.setAudit(conAudit);
 		}
+		question.setAnswer(data);
+		
+		String fileName = question.getQuestionID() + "_" + contractor.getId();
+		String folderName = AuditQuestion.filesFolder + "/qID_" + question.getQuestionID();
 		
 		if (button != null) {
-			String fileName = question.getQuestionID() + "_" + contractor.getId();
-			String folderName = "files/pqf/qID_" + question.getQuestionID();
 			
 			if (data.getDataID() > 0 && button.startsWith("Delete")) {
 				// Delete all files with same name but different extensions
@@ -81,16 +83,16 @@ public class AuditDataUpload extends AuditActionSupport {
 				
 				FileUtils.copyFile(file, getFtpDir(), folderName, fileName, extension, true);
 				
-				// TODO save auditdata
-				addActionMessage("Successfully uploaded file");
+				addActionMessage("Successfully uploaded <b>"+fileFileName+"</b> file");
 				data.setAnswer(extension);
 				auditDataDao.save(data);
 			}
 		}
+		file = new File(getFtpDir() + "/" + folderName + "/" + fileName + "." + question.getAnswer().getAnswer());
 		
 		return SUCCESS;
 	}
-
+	
 	public AuditQuestion getQuestion() {
 		return question;
 	}
@@ -121,6 +123,10 @@ public class AuditDataUpload extends AuditActionSupport {
 
 	public void setFileFileName(String fileFileName) {
 		this.fileFileName = fileFileName;
+	}
+	
+	public String getFileSize() {
+		return FileUtils.size(file);
 	}
 
 }

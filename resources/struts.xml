@@ -235,6 +235,10 @@
 			class="com.picsauditing.actions.audits.AuditDataUpload">
 			<result>struts/audits/audit_data_upload.jsp</result>
 		</action>
+		<action name="ReloadQuestionAjax"
+			class="com.picsauditing.actions.audits.ReloadQuestion">
+			<result>struts/audits/audit_cat_reload.jsp</result>
+		</action>
 		
 
 		<action name="ContractorSearch"

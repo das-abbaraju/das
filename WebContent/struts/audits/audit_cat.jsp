@@ -116,39 +116,28 @@
 		return true;
 	}
 	
-	function startCallback( theId ) {
-		var elm = $('status_upload_' + theId);
-		elm.innerHTML="<nobr><img src='images/ajax_process.gif' /> ...uploading file</nobr>";
-		elm = $('file_upload_' + theId);
-		elm.hide();
-		return true;
+	function showFileUpload( questionid ) {
+		url = 'AuditDataUpload.action?auditID=<s:property value="auditID"/>&question.questionID=' + questionid;
+		title = 'Upload';
+		pars = 'scrollbars=yes,resizable=yes,width=650,height=450,toolbar=0,directories=0,menubar=0';
+		fileUpload = window.open(url,title,pars);
+		fileUpload.focus();
 	}
 	
-	function completeCallback(theId ) {
-		var elm = $('status_upload_' + theId);
-		elm.innerHTML="Upload Complete";
-		elm = $('show_upload_'+theId);
-	    elm.show();
-
-		elm = $('file_upload_'+theId);
-	    elm.hide();
-	    
-
-	    elm = $('upload_iframe_' + theId);
-	    var doc = elm.contentDocument;
-        if (doc == undefined || doc == null)
-            doc = elm.contentWindow.document;
-	    
-	    var ext = doc.getElementById('response').innerHTML.trim();
-
-		elm = $('meta_upload_' + theId);
-		elm.innerHTML = "<nobr><a id=\"link_" + theId + "\" href=\"#\" onClick=\"openQuestion('" + theId + "', '" + ext + "'); return false;\">View File</a></nobr>";
-
-	    elm = $('show_button_' + theId);
-	    elm.value = 'Edit File';
-
-	    return true;
+	function reloadQuestion( questionid ) {
+		var pars = 'auditID=<s:property value="conAudit.id"/>&questionID=' + questionid;
+		var divName = 'td_answer_'+questionid;
+		$(divName).innerHTML="<img src='images/ajax_process.gif' />";
+		var myAjax = new Ajax.Updater(divName,'ReloadQuestionAjax.action',
+		{
+			method: 'post', 
+			parameters: pars,
+			onSuccess: function(transport) {
+				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+			}
+		});
 	}
+	
 </s:if>
 	
 	function openOsha(logID, year) {

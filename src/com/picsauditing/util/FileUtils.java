@@ -121,6 +121,18 @@ public class FileUtils {
 		return true;
 	}
 
+	static public String size(File file) {
+		long length = file.length();
+		if (length == 0)
+			return "empty or missing";
+		if (length > 1000000000)
+			return Math.round(length / 1000000000) + " GB";
+		if (length > 1000000)
+			return Math.round(length / 1000000) + " MB";
+		if (length > 1000)
+			return Math.round(length / 1000) + " KB";
+		return length + " Bytes";
+	}
 
 	/**
 	 * Delete a file if it exists. Does not work on directories

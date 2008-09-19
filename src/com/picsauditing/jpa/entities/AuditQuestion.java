@@ -57,6 +57,7 @@ public class AuditQuestion implements java.io.Serializable {
 		"File","Industry","License","Main Work","Manual","Money","Office","Office Location","Radio","Service","State","Text",
 		"Text Area","Yes/No","Yes/No/NA"};	// must match ENUM in db
 
+	static public final String filesFolder = "files/pqf";
 	
 	private int questionID;
 	private AuditSubCategory subCategory;

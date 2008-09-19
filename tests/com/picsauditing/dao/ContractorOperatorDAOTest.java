@@ -1,12 +1,9 @@
 package com.picsauditing.dao;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
-import java.sql.Date;
-import java.util.Calendar;
-import java.util.List;
+import java.util.Date;
+import java.util.Iterator;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,15 +13,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.access.Permissions;
+import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.Industry;
-import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OshaLog;
+import com.picsauditing.util.SpringUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
@@ -33,9 +27,11 @@ import com.picsauditing.jpa.entities.OshaLog;
 public class ContractorOperatorDAOTest {
 	@Autowired
 	ContractorOperatorDAO contractorOperatorDao;
+	@Autowired
+	ContractorAccountDAO contractorDao;
 
 	@Test
-	public void testSaveAndRemove() {
+	public void testSave() {
 		ContractorOperator contractorOperator = contractorOperatorDao.find(588, 16);
 		if (contractorOperator.getForceFlag() != null) {
 			String color = contractorOperator.getForceFlag().toString();
@@ -49,4 +45,20 @@ public class ContractorOperatorDAOTest {
 			
 		}
 	}
+
+	@Test
+	public void testAddAndRemove() {
+		ContractorOperator co = new ContractorOperator();
+		co.setOperatorAccount(new OperatorAccount());
+		co.getOperatorAccount().setId(1813); // Cherry Point
+		co.setContractorAccount(new ContractorAccount());
+		co.getContractorAccount().setId(3); // Ancon Marine
+		co.setDateAdded(new Date());
+		co = contractorOperatorDao.save(co);
+		
+		contractorOperatorDao.remove(co);
+		co = null;
+	}
+	
+
 }
