@@ -33,9 +33,18 @@ public class AuditQuestionDAO extends PicsDAO {
 	}
 
 	@SuppressWarnings("unchecked")
+	public List<AuditQuestion> findWhere(String where) {
+		if (where == null)
+			where = "";
+		Query query = em.createQuery("SELECT t FROM AuditQuestion t WHERE " + where + "ORDER BY "
+				+ "t.subCategory.category.number,t.subCategory.number,t.number");
+		return query.getResultList();
+
+	}
+
+	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findBySubCategory(int subCategoryID) {
-		Query query = em.createQuery("select t FROM AuditQuestion t WHERE t.subCategory.id = ?" +
-				"ORDER BY t.number");
+		Query query = em.createQuery("select t FROM AuditQuestion t WHERE t.subCategory.id = ?" + "ORDER BY t.number");
 		query.setParameter(1, subCategoryID);
 		return query.getResultList();
 	}
@@ -43,11 +52,11 @@ public class AuditQuestionDAO extends PicsDAO {
 	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findBySubCategories(int[] subCategoryIDs) {
 		String ids = Strings.implode(subCategoryIDs, ",");
-		Query query = em.createQuery("select t FROM AuditQuestion t WHERE t.subCategory.id IN ("+ids+") " +
-				"ORDER BY t.subCategory.category.number, t.subCategory.number, t.number");
+		Query query = em.createQuery("select t FROM AuditQuestion t WHERE t.subCategory.id IN (" + ids + ") "
+				+ "ORDER BY t.subCategory.category.number, t.subCategory.number, t.number");
 		return query.getResultList();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findQuestionByType(String questionType) {
 		Query query = em.createQuery("SELECT t FROM AuditQuestion t WHERE t.questionType = ? ORDER BY "

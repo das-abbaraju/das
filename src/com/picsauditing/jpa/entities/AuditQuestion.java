@@ -53,9 +53,12 @@ public class AuditQuestion implements java.io.Serializable {
 	static public final int EMR_AVG = 0;
 	static public final int MANUAL_PQF = 1331;
 
-	static public final String[] TYPE_ARRAY = {"Check Box","Country","Date","Decimal Number","Drop Down",
-		"File","Industry","License","Main Work","Manual","Money","Office","Office Location","Radio","Service","State","Text",
-		"Text Area","Yes/No","Yes/No/NA"};	// must match ENUM in db
+	static public final String[] TYPE_ARRAY = { "Check Box", "Country", "Date", "Decimal Number", "Drop Down", "File",
+			"Industry", "License", "Main Work", "Manual", "Money", "Office", "Office Location", "Radio", "Service",
+			"State", "Text", "Text Area", "Yes/No", "Yes/No/NA" }; // must
+															// match
+																	// ENUM in
+																	// db
 
 	static public final String filesFolder = "files/pqf";
 	
@@ -95,6 +98,7 @@ public class AuditQuestion implements java.io.Serializable {
 	protected List<AuditQuestionOperatorAccount> operator;
 	protected List<AuditQuestionOption> options;
 	protected AuditData answer;
+	private String criteria;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -452,4 +456,35 @@ public class AuditQuestion implements java.io.Serializable {
 		this.columnHeader = columnHeader;
 	}
 
+	@Transient
+	public String getColumnHeaderOrQuestion() {
+		if (columnHeader != null && columnHeader.length() > 0)
+			return columnHeader;
+		if (question == null)
+			return "";
+		return question;
+	}
+
+	@Transient
+	public String getShortQuestion() {
+		String columnText = getColumnHeaderOrQuestion();
+
+		if (columnText.length() > 100)
+			columnText = columnText.substring(0, 100);
+
+		columnText = getSubCategory().getCategory().getNumber() + "." + getSubCategory().getNumber() + "."
+				+ getNumber() + " " + columnText;
+		columnText = getSubCategory().getCategory().getAuditType().getAuditName() + ": " + columnText;
+
+		return columnText;
+	}
+
+	@Transient
+	public String getCriteria() {
+		return criteria;
+	}
+
+	public void setCriteria(String criteria) {
+		this.criteria = criteria;
+	}
 }
