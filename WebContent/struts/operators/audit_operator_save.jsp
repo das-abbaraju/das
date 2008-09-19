@@ -1,14 +1,14 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<s:checkbox name="canSee%{ao.htmlID}" value="ao.canSee" title="View"
-			onclick="save('%{ao.htmlID}', '%{ao.auditType.auditTypeID}', '%{ao.operatorAccount.id}', '%{ao.auditOperatorID}')" />
-|
-<s:checkbox name="canEdit%{ao.htmlID}" value="ao.canEdit" title="Edit"
-					onclick="save('%{ao.htmlID}', '%{ao.auditType.auditTypeID}', '%{ao.operatorAccount.id}', '%{ao.auditOperatorID}')" />
-|
-<s:radio name="riskLevel%{ao.htmlID}" list="riskLevelList"
-			value="ao.minRiskLevel" disabled="!ao.canSee"
-			onchange="save('%{ao.htmlID}', '%{ao.auditType.auditTypeID}', '%{ao.operatorAccount.id}', '%{ao.auditOperatorID}')" />
-|
-<s:radio name="requiredForFlag%{ao.htmlID}"
-			list="FlagColorList" value="ao.requiredForFlag" disabled="!ao.canSee"
-			onchange="save('%{ao.htmlID}', '%{ao.auditType.auditTypeID}', '%{ao.operatorAccount.id}', '%{ao.auditOperatorID}')" />
+<s:iterator value="ao">
+	<s:checkbox name="canSee%{htmlID}" value="canSee" title="View"
+	onclick="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
+	|
+	<s:checkbox name="canEdit%{htmlID}" value="canEdit" title="Edit"
+	onclick="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
+	|
+	<s:radio name="riskLevel%{htmlID}" list="riskLevelList" value="minRiskLevel" disabled="!canSee" 
+	onchange="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
+	|
+	<s:radio name="requiredForFlag%{htmlID}" list="FlagColorList" value="requiredForFlag" disabled="!canSee"
+	onchange="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
+</s:iterator>
