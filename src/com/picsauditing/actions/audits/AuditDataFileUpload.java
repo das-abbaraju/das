@@ -11,6 +11,11 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.YesNo;
 
+
+/**
+ * @Deprecated - use the AuditDataUpload now
+ */
+@Deprecated
 public class AuditDataFileUpload extends FileUploadActionSupport {
 
 	AuditData auditData = null;
