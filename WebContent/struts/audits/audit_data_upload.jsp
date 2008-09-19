@@ -17,10 +17,16 @@
 		pars = 'scrollbars=yes,resizable=yes,width=700,height=450';
 		window.open(url,title,pars);
 	}
+	function closePage() {
+		try {
+			opener.reloadQuestion(<s:property value="question.questionID"/>);
+			opener.focus();
+		} catch(err) {}
+	}
 </script>
 
 </head>
-<body>
+<body onunload="closePage()">
 <br />
 <div id="main">
 <div id="bodyholder">
@@ -40,7 +46,7 @@
 	<br />
 	<s:file name="file" size="50"></s:file>
 	<div class="buttons">
-		<a href="javascript: opener.reloadQuestion(<s:property value="question.questionID"/>); self.close(); opener.focus();">Close and Return to Form</a>
+		<a href="javascript: self.close();">Close and Return to Form</a>
 		<s:if test="file.exists()">
 			<button name="button" value="Delete" type="submit" onclick="return confirm('Are you sure you want to delete this file?');">Delete File</button>
 		</s:if>
