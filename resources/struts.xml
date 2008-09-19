@@ -518,7 +518,17 @@
 		<action name="ContractorEdit"
 			class="com.picsauditing.actions.contractors.ContractorEdit">
 			<result>struts/contractors/con_edit.jsp</result>
-		</action>		
-
+		</action>
+		
+		<action name="QuestionAnswerSearch"
+			class="com.picsauditing.actions.report.ReportAnswerSearch">
+			<result>struts/reports/qanswersearch.jsp</result>
+		</action>
+		
+		<action name="QuestionSelectAjax"
+			class="com.picsauditing.actions.audits.QuestionSelect">
+			<result>struts/audits/questions_select.jsp</result>
+		</action>
+				
 	</package>
 </struts>
