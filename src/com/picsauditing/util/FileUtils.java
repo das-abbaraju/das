@@ -1,8 +1,11 @@
 package com.picsauditing.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
 
 public class FileUtils {
 	/**
@@ -65,6 +68,8 @@ public class FileUtils {
 						&& name.substring(0, name.lastIndexOf(".")).equals(fileName);
 			}
 		});
+		if (fileList == null)
+			return fileList = new File[0];
 		return fileList;
 	}
 
@@ -137,5 +142,17 @@ public class FileUtils {
 			return fileToDelete.delete();
 		}
 		return true;
+	}
+
+	static public void copyFile(File oldFile, File newFile) throws IOException {
+		FileInputStream fis = new FileInputStream(oldFile);
+		FileOutputStream fos = new FileOutputStream(newFile);
+		byte[] buf = new byte[1024];
+		int i = 0;
+		while ((i = fis.read(buf)) != -1) {
+			fos.write(buf, 0, i);
+		}
+		fis.close();
+		fos.close();
 	}
 }

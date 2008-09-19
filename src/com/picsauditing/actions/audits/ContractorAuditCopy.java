@@ -1,5 +1,9 @@
 package com.picsauditing.actions.audits;
 
+import java.io.File;
+import java.util.List;
+import java.util.Vector;
+
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.FlagCalculator2;
@@ -8,10 +12,12 @@ import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.mail.EmailAuditBean;
+import com.picsauditing.util.FileUtils;
 
 /**
  * Used by Audit.action to show a list of categories for a given audit. Also
@@ -27,7 +33,8 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 	public ContractorAuditCopy(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, EmailAuditBean emailAuditBean,
 			FlagCalculator2 flagCalculator2, AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, emailAuditBean, flagCalculator2, auditPercentCalculator, auditBuilder);
+		super(accountDao, auditDao, catDataDao, auditDataDao, emailAuditBean, flagCalculator2, auditPercentCalculator,
+				auditBuilder);
 	}
 
 	public String execute() throws Exception {
@@ -35,11 +42,12 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 			return LOGIN;
 		permissions.tryPermission(OpPerms.AuditCopy);
 		this.findConAudit();
-
+		int oldconID = conAudit.getContractorAccount().getId();
 		if (button != null) {
 			ContractorAccount nConAccount = accountDao.findConID(contractorSelect);
-
-			for (ContractorAudit existingAudit : nConAccount.getAudits()) {
+			List<ContractorAudit> auditList = new Vector<ContractorAudit>(nConAccount.getAudits());
+			auditDao.clear();
+			for (ContractorAudit existingAudit : auditList) {
 				if (existingAudit.getAuditType().equals(conAudit.getAuditType())
 						&& !existingAudit.getAuditStatus().equals(AuditStatus.Expired)) {
 					// We already have an existing audit that we should delete
@@ -52,13 +60,26 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 						return SUCCESS;
 					}
 					// TODO delete the old audit for con2
-					// be sure to remove pqfcatdata and pqfdata
-					auditDao.clear();
-					auditDao.remove(existingAudit.getId());
+					// be sure o remove pqfcatdata and pqfdata
+					auditDao.remove(existingAudit.getId(), getFtpDir());
 				}
 			}
 			// copy audit now
+			findConAudit();
 			auditDao.copy(conAudit, nConAccount);
+
+			for (AuditData auditData : conAudit.getData()) {
+				if (auditData.getQuestion().getQuestionType().equals("File")) {
+					String FileName = getFtpDir() + "/files/pqf/qID_" + auditData.getQuestion().getQuestionID() + "/"
+							+ auditData.getQuestion().getQuestionID() + "_";
+					File oldFile = new File(FileName + oldconID + "." + auditData.getAnswer());
+					File newFile = new File(FileName + conAudit.getContractorAccount().getId() + "."
+							+ auditData.getAnswer());
+					if (oldFile.exists())
+						FileUtils.copyFile(oldFile, newFile);
+				}
+			}
+
 			return "Audit";
 		}
 
