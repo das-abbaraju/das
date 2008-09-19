@@ -148,8 +148,6 @@ public class PicsMenu {
 			subMenu.addChild("Edit Operators", "ReportAccountList.action?accountType=Operator");
 		if (permissions.hasPermission(OpPerms.ManageOperators))
 			subMenu.addChild("Assign Audit/Operator", "AuditOperator.action");
-
-		subMenu.addChild("Operator Flag Criteria", "ReportOperatorCriteria.action");
 		
 		subMenu = menu.addChild("Reports");
 		if (permissions.hasPermission(OpPerms.ManageAudits))
@@ -162,6 +160,7 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.FatalitiesReport))
 			subMenu.addChild("Fatalities", "ReportFatalities.action");
+		subMenu.addChild("Flag Criteria", "ReportOperatorCriteria.action");
 		if (permissions.hasPermission(OpPerms.ForcedFlagsReport))
 			subMenu.addChild("Forced Flags", "ReportContractorsWithForcedFlags.action");
 		if (permissions.hasPermission(OpPerms.FatalitiesReport))
