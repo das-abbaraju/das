@@ -149,7 +149,6 @@ table.osha th {
 	border: 1px solid #444;
 	font-size: 16px;
 	color: #003768;
-	//background-color: #F5F5F5;
 	text-align: center;
 	padding: 3px;
 }
@@ -173,7 +172,7 @@ input.osha {
 	font-family: courier;
 	font-size: 12px;
 	padding: 0px;
-	margin: 0x;
+	margin: 0px;
 }
 
 table.osha tbody tr:hover {
