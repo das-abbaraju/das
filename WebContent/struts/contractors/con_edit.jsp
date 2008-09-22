@@ -124,7 +124,7 @@
 				</tr>
 				<tr>
 					<th>Web URL:</th>
-					<td><s:textfield name="contractor.web_URL" size="50" /></td>
+					<td><s:textfield name="contractor.webUrl" size="50" /></td>
 				</tr>
 				<tr>
 					<td colspan="2">&nbsp;</td>
