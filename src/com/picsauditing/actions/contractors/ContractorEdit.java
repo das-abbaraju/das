@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -41,11 +42,11 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		
 		if (button != null) {
 			String ftpDir = getFtpDir();
-			if (button.equals("Save")) {
+			if (button.equals("save")) {
 				if (logo != null) {
 					// Copy Logo to ftp-dir
-					String extension = logoFileName.substring( logoFileName.lastIndexOf(".") + 1 );
-					String[] validExtensions = { "jpg", "gif", "png" };
+					String extension = logoFileName.substring(logoFileName.lastIndexOf(".") + 1);
+					String[] validExtensions = {"jpg", "gif", "png"};
 
 					if (!FileUtils.checkFileExtension(extension, validExtensions)) {
 						addActionError("Logos must be a jpg, gif or png image");
@@ -61,9 +62,12 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				}
 				
 				accountDao.save(contractor);
+				addActionMessage("Successfully modified " + contractor.getName());
 			}
-			if (button.equals("Delete")) {
+			if (button.equals("delete")) {
+				permissions.tryPermission(OpPerms.RemoveContractors);
 				accountDao.remove(contractor);
+				addActionMessage("Successfully removed " + contractor.getName());				
 			}
 		}
 

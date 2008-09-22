@@ -6,6 +6,14 @@
 <title><s:property value="contractor.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/forms.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
+<script type="text/javascript" src="js/prototype.js"></script>
+<script language="JavaScript" SRC="js/CalendarPopup.js"></script>
+<script language="JavaScript">
+	var cal1 = new CalendarPopup('caldiv1');
+	cal1.offsetY = -110;
+	cal1.setCssPrefix("PICS");
+</script>
 </head>
 <body>
 
@@ -84,8 +92,7 @@
 				</tr>
 				<tr>
 					<th>Email Confirmed Date:</th>
-					<td><s:date name="contractor.emailConfirmedDate"
-						format="MMM d, yyyy" /></td>
+					<td><s:date name="contractor.emailConfirmedDate" format="MMM d, yyyy" /></td>
 				</tr>
 				<tr>
 					<th>Contact:</th>
@@ -133,7 +140,7 @@
 				</tr>
 				<tr>
 					<th>Main Trade:</th>
-					<td><s:select list="tradeList" name="contractor.main_trade" headerKey="" headerValue="- Choose a trade -" listKey="question" listValue="question"></s:select> </td>
+					<td><s:select list="tradeList" name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" listKey="question" listValue="question"></s:select></td>
 				</tr>
 				<tr>
 					<th>Risk Level:</th>
@@ -142,7 +149,7 @@
 				</tr>
 				<tr>
 					<th>Requested By:</th>
-					<td><s:select list="operatorList" name="contractor.requestedByID" headerKey="0" headerValue="- Choose an operator -" listKey="id" listValue="name"></s:select></td>
+					<td><s:select list="operatorList" name="contractor.requestedById" headerKey="0" headerValue="- Choose an operator -" listKey="id" listValue="name"></s:select></td>
 				</tr>
 				<tr>
 					<th>Paying Facilities:</th>
@@ -153,37 +160,35 @@
 				</tr>
 				<tr>
 					<th>Membership Date:</th>
-					<td><s:date name="contractor.membershipDate"
-						format="MMM d, yyyy" /></td>
-				</tr>
-				<tr>
-					<th>Payment Expires:</th>
-					<td><s:date name="contractor.paymentExpires"
-						format="MMM d, yyyy" /></td>
+					<td><s:date name="contractor.membershipDate" format="MMM d, yyyy" /></td>
+
 				</tr>
 				<tr>
 					<th>Last Invoice:</th>
-					<td>$<s:textfield name="contractor.billingAmount" size="6" /></td>
+					<td>$<s:property value="contractor.billingAmount" /> on <s:date name="contractor.lastInvoiceDate" format="MMM d, yyyy" /></td>
 				</tr>
 				<tr>
 					<th>Last Payment:</th>
-					<td>$<s:textfield name="contractor.lastPaymentAmount"
-						size="6" /></td>
+					<td>$<s:property value="contractor.lastPaymentAmount" /> on <s:date name="contractor.lastPayment" format="MMM d, yyyy" /></td>
 				</tr>
 				<tr>
+					<th>Payment Expires:</th>
+					<td><s:date name="contractor.paymentExpires" format="MMM d, yyyy" /></td>
+				</tr>				
+				<tr>
 					<th>Billing Cycle:</th>
-					<td><s:textfield name="contractor.billingCycle" size="1" /> year(s)</td>
+					<td><s:property value="contractor.billingCycle" /> year(s)</td>
 				</tr>
 				<tr>
 					<th>New Billing Amount:</th>
-					<td>$<s:textfield name="contractor.newBillingAmount" size="6" /></td>
+					<td>$<s:property value="contractor.newBillingAmount" /></td>
 				</tr>
 				<tr>
 					<td colspan="2">&nbsp;</td>
 				</tr>
 				<tr>
 					<th>Company Logo:</th>
-					<td><s:file name="logo" size="25" /></td>
+					<td><s:file name="logo" size="35" /></td>
 				</tr>
 				<tr>
 					<td></td>
@@ -191,7 +196,7 @@
 				</tr>
 				<tr>
 					<th>Company Brochure:</th>
-					<td><s:file name="brochure" size="25" /></td>
+					<td><s:file name="brochure" size="35" /></td>
 				</tr>
 				<tr>
 					<td></td>
@@ -200,47 +205,106 @@
 				<tr>
 					<th>Description:</th>
 					<td><s:textarea name="contractor.description" cols="40"
-						rows="10" /></td>
+						rows="15" /></td>
 				</tr>
 			</table>
 			</td>
 			<s:if test="permissions.admin">
-			<td style="vertical-align: top">
-			<h2>PICS Admin Fields</h2>
-			<table class="forms">
+				<td style="vertical-align: top">
+				<h2>PICS Admin Fields</h2>
+				<table class="forms">
+					<tr>
+						<th>Visible?</th>
+						<td><s:radio list="#{'Y':'Yes','N':'No'}" name="contractor.active" /></td>
+					</tr>
+					<tr>
+						<td colspan="2">&nbsp;</td>
+					</tr>
+					<tr>
+						<th>Created by:</th>
+						<td><s:textfield name="contractor.createdBy" size="45" /></td>
+					</tr>
+					<tr>
+						<td colspan="2">&nbsp;</td>
+					</tr>
+					<tr>
+						<th>Welcome Email:</th>
+						<td><a target="_blank"
+							href="send_welcome_email.jsp?id=<s:property value="id"/>"
+							onClick="return confirm('Are you sure you want to send a welcome email to <s:property value="contractor.name"/>?');">Send
+						Welcome Email</a></td>
+					</tr>
+					<tr>
+						<th>Only Certificates?</th>
+						<td><s:radio list="#{'Yes':'Yes','No':'No'}"
+							name="contractor.isOnlyCerts" value="contractor.isOnlyCerts"></s:radio></td>
+					</tr>
+					<tr>
+						<th>Must Pay?</th>
+						<td><s:radio list="#{'Yes':'Yes','No':'No'}" name="contractor.mustPay"
+							value="contractor.mustPay"></s:radio></td>
+					</tr>
+					<tr>
+						<td colspan="2">&nbsp;</td>
+					</tr>
 				<tr>
-					<th>Visible?</th>
-					<td><s:radio list="#{'Y':'Yes','N':'No'}" name="contractor.active" /></td>
+					<th>Membership Date:</th>
+					<td>
+						<input name="contractor.membershipDate" id="membershipDate" 
+							type="text" class="forms" size="10" 
+							value="<s:date name="contractor.membershipDate" format="MM/dd/yyyy" />" />
+						<a href="#" 
+							id="anchormembershipDate" name="anchormembershipDate" 
+							onclick="cal1.select($('membershipDate'), 'anchormembershipDate','MM/dd/yyyy'); return false;">
+							<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+					</td>
 				</tr>
 				<tr>
-					<td colspan="2">&nbsp;</td>
+					<th>Last Invoice:</th>
+					<td>$<s:textfield name="contractor.billingAmount" size="6" /> on 
+							<input name="contractor.lastInvoiceDate" id="lastInvoiceDate" 
+								type="text" class="forms" size="10" 
+								value="<s:date name="contractor.lastInvoiceDate" format="MM/dd/yyyy" />" />
+							<a href="#" 
+								id="anchorlastInvoiceDate" name="anchorlastInvoiceDate" 
+								onclick="cal1.select($('lastInvoiceDate'), 'anchorlastInvoiceDate','MM/dd/yyyy'); return false;">
+								<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+					</td>								
 				</tr>
 				<tr>
-					<th>Created by:</th>
-					<td><s:textfield name="contractor.createdBy" size="45" /></td>
+					<th>Last Payment:</th>
+					<td>$<s:textfield name="contractor.lastPaymentAmount" size="6" /> on 
+							<input name="contractor.lastPayment" id="lastPayment" 
+								type="text" class="forms" size="10" 
+								value="<s:date name="contractor.lastPayment" format="MM/dd/yyyy" />" />
+							<a href="#" 
+								id="anchorlastPayment" name="anchorlastPayment" 
+								onclick="cal1.select($('lastPayment'), 'anchorlastPayment','MM/dd/yyyy'); return false;">
+								<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+					</td>
 				</tr>
 				<tr>
-					<td colspan="2">&nbsp;</td>
+					<th>Payment Expires:</th>
+					<td>						
+						<input name="contractor.paymentExpires" id="paymentExpires" 
+							type="text" class="forms" size="10" 
+							value="<s:date name="contractor.paymentExpires" format="MM/dd/yyyy" />" />
+						<a href="#" 
+							id="anchorpaymentExpires" name="anchorpaymentExpires" 
+							onclick="cal1.select($('paymentExpires'), 'anchorpaymentExpires','MM/dd/yyyy'); return false;">
+							<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+					</td>							
+				</tr>				
+				<tr>
+					<th>Billing Cycle:</th>
+					<td><s:textfield name="contractor.billingCycle" size="1" /> year(s)</td>
 				</tr>
 				<tr>
-					<th>Welcome Email:</th>
-					<td><a target="_blank"
-						href="send_welcome_email.jsp?id=<s:property value="id"/>"
-						onClick="return confirm('Are you sure you want to send a welcome email to <s:property value="contractor.name"/>?');">Send
-					Welcome Email</a></td>
-				</tr>
-				<tr>
-					<th>Only Certificates?</th>
-					<td><s:radio list="#{'Yes':'Yes','No':'No'}"
-						name="isOnlyCerts" value="contractor.isOnlyCerts"></s:radio></td>
-				</tr>
-				<tr>
-					<th>Must Pay?</th>
-					<td><s:radio list="#{'Yes':'Yes','No':'No'}" name="mustPay"
-						value="contractor.mustPay"></s:radio></td>
-				</tr>
-			</table>
-			</td>
+					<th>New Billing Amount:</th>
+					<td>$<s:textfield name="contractor.newBillingAmount" size="6" /></td>
+				</tr>					
+				</table>
+				</td>
 			</s:if>
 		</tr>
 	</table>
@@ -249,5 +313,7 @@
 	<button name="button" type="submit" value="delete">Delete</button>
 	</div>
 </s:form>
+<div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
+
 </body>
 </html>
