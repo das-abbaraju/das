@@ -310,7 +310,7 @@
 	</table>
 	<div class="buttons">
 	<button class="positive" name="button" type="submit" value="save">Save</button>
-	<button name="button" type="submit" value="delete">Delete</button>
+	<button name="button" type="submit" value="delete" onClick="return confirm('Are you sure you want to delete this account?');">Delete</button>
 	</div>
 </s:form>
 <div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
