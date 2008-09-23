@@ -30,8 +30,8 @@ public class EmailTemplateDAOTest {
 		emailTemplate.setSubject("Test Email");
 		emailTemplate.setTemplateName("Test");
 		emailTemplateDAO.save(emailTemplate);
-		assertEquals(true, emailTemplate.getTemplateID() > 0);
-		emailTemplateDAO.remove(emailTemplate.getTemplateID());
-		assertNull(emailTemplateDAO.find(emailTemplate.getTemplateID()));
+		assertEquals(true, emailTemplate.getId() > 0);
+		emailTemplateDAO.remove(emailTemplate.getId());
+		assertNull(emailTemplateDAO.find(emailTemplate.getId()));
 	}
 }

@@ -8,7 +8,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 public class EmailQueueDAO extends PicsDAO {
 
 	public EmailQueue save(EmailQueue o) {
-		if (o.getEmailID() == 0) {
+		if (o.getId() == 0) {
 			em.persist(o);
 		} else {
 			o = em.merge(o);

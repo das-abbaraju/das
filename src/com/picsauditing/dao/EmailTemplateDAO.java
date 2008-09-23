@@ -8,7 +8,7 @@ import com.picsauditing.jpa.entities.EmailTemplate;
 public class EmailTemplateDAO extends PicsDAO {
 
 	public EmailTemplate save(EmailTemplate o) {
-		if (o.getTemplateID() == 0) {
+		if (o.getId() == 0) {
 			em.persist(o);
 		} else {
 			o = em.merge(o);

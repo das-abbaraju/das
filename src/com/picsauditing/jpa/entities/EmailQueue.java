@@ -22,7 +22,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "email_queue")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
 public class EmailQueue implements java.io.Serializable {
-	private int emailID;
+	private int id;
 	private String status;
 	private String fromAddress = "";
 	private String toAddresses = "";
@@ -39,12 +39,13 @@ public class EmailQueue implements java.io.Serializable {
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	public int getEmailID() {
-		return emailID;
+	@Column(name = "emailID")
+	public int getId() {
+		return id;
 	}
 
-	public void setEmailID(int emailID) {
-		this.emailID = emailID;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	@Column(name = "status", nullable = false)
@@ -171,7 +172,7 @@ public class EmailQueue implements java.io.Serializable {
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
-		result = PRIME * result + emailID;
+		result = PRIME * result + id;
 		return result;
 	}
 
@@ -184,7 +185,7 @@ public class EmailQueue implements java.io.Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		final EmailQueue other = (EmailQueue) obj;
-		if (emailID != other.emailID)
+		if (id != other.id)
 			return false;
 		return true;
 	}

@@ -31,8 +31,8 @@ public class EmailQueueDAOTest {
 		emailQueue.setCreationDate(new Date());
 
 		emailQueueDAO.save(emailQueue);
-		assertEquals(true, emailQueue.getEmailID() > 0);
-		emailQueueDAO.remove(emailQueue.getEmailID());
-		assertNull(emailQueueDAO.find(emailQueue.getEmailID()));
+		assertEquals(true, emailQueue.getId() > 0);
+		emailQueueDAO.remove(emailQueue.getId());
+		assertNull(emailQueueDAO.find(emailQueue.getId()));
 	}
 }

@@ -22,7 +22,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "email_template")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
 public class EmailTemplate implements java.io.Serializable {
-	private int templateID;
+	private int id;
 	private OperatorAccount operatorAccount;
 	private String subject;
 	private String body;
@@ -34,12 +34,13 @@ public class EmailTemplate implements java.io.Serializable {
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	public int getTemplateID() {
-		return templateID;
+	@Column(name = "templateID")
+	public int getId() {
+		return id;
 	}
 
-	public void setTemplateID(int templateID) {
-		this.templateID = templateID;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -121,7 +122,7 @@ public class EmailTemplate implements java.io.Serializable {
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
-		result = PRIME * result + templateID;
+		result = PRIME * result + id;
 		return result;
 	}
 
@@ -134,7 +135,7 @@ public class EmailTemplate implements java.io.Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		final EmailTemplate other = (EmailTemplate) obj;
-		if (templateID != other.templateID)
+		if (id != other.id)
 			return false;
 		return true;
 	}
