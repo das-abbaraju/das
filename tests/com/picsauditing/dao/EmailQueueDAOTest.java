@@ -10,13 +10,11 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.EmailQueue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
-@Transactional
 public class EmailQueueDAOTest {
 
 	@Autowired
@@ -31,11 +29,10 @@ public class EmailQueueDAOTest {
 		emailQueue.setSubject("Test Email");
 		emailQueue.setPriority(10);
 		emailQueue.setCreationDate(new Date());
-		
+
 		emailQueueDAO.save(emailQueue);
 		assertEquals(true, emailQueue.getEmailID() > 0);
-		EmailQueue emailQueue2 = emailQueueDAO.find(emailQueue.getEmailID());
-		emailQueueDAO.remove(emailQueue2);
-		assertNull(emailQueueDAO.find(emailQueue2.getEmailID()));
+		emailQueueDAO.remove(emailQueue.getEmailID());
+		assertNull(emailQueueDAO.find(emailQueue.getEmailID()));
 	}
 }
