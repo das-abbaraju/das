@@ -134,7 +134,7 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.EmailTemplates)) {
 			subMenu.addChild("Email Templates", "email_templates.jsp");
-			subMenu.addChild("Mass Email", "email_selector.jsp");
+			subMenu.addChild("Mass Email", "EmailSelector.action");
 		}
 
 		if (permissions.hasPermission(OpPerms.EditFlagCriteria) && permissions.isOperator())
