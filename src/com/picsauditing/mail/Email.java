@@ -1,5 +1,9 @@
 package com.picsauditing.mail;
 
+@Deprecated
+/**
+ * use jpa.entities.EmailQueue from now on
+ */
 public class Email {
 	private String fromAddress = "";
 	private String toAddress = "";
