@@ -42,6 +42,9 @@
 	<bean id="AuditPercentCalculator" class="com.picsauditing.PICS.AuditPercentCalculator" scope="prototype"/>
 	<bean id="CertificateDAO" class="com.picsauditing.dao.CertificateDAO" scope="prototype"/>
 	<bean id="OperatorFormDAO" class="com.picsauditing.dao.OperatorFormDAO" scope="prototype"/>
+    <bean id="EmailQueueDAO" class="com.picsauditing.dao.EmailQueueDAO" scope="prototype"/>
+    <bean id="EmailTemplateDAO" class="com.picsauditing.dao.EmailTemplateDAO" scope="prototype"/>
+    
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
 	<!--  JPA implementation -->

@@ -24,11 +24,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class EmailQueue implements java.io.Serializable {
 	private int emailID;
 	private String status;
-	private String fromAddress;
-	private String toAddresses;
+	private String fromAddress = "";
+	private String toAddresses = "";
 	private String ccAddresses;
 	private String bccAddresses;
-	private String subject;
+	private String subject = "";
 	private String body;
 	private int priority = 50;
 	private Date creationDate;
@@ -65,7 +65,7 @@ public class EmailQueue implements java.io.Serializable {
 		this.fromAddress = fromAddress;
 	}
 
-	@Column(name = "toAddress", nullable = false, length = 1000)
+	@Column(name = "toAddresses", nullable = false, length = 1000)
 	public String getToAddresses() {
 		return toAddresses;
 	}
@@ -129,7 +129,7 @@ public class EmailQueue implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "createdBy")
 	public User getCreatedBy() {
 		return createdBy;
 	}
@@ -158,7 +158,7 @@ public class EmailQueue implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id", nullable = false)
+	@JoinColumn(name = "conID")
 	public ContractorAccount getContractorAccount() {
 		return contractorAccount;
 	}

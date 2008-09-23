@@ -23,6 +23,13 @@ public class EmailQueueDAO extends PicsDAO {
 		}
 	}
 
+	public void remove(EmailQueue row) {
+		if (row != null) {
+			em.remove(row);
+		}
+	}
+
+	
 	public EmailQueue find(int id) {
 		return em.find(EmailQueue.class, id);
 	}

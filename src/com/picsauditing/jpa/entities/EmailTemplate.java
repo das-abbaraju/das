@@ -43,7 +43,7 @@ public class EmailTemplate implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id", nullable = false)
+	@JoinColumn(name = "opID", nullable = false)
 	public OperatorAccount getOperatorAccount() {
 		return operatorAccount;
 	}
@@ -71,7 +71,7 @@ public class EmailTemplate implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "createdBy")
 	public User getCreatedBy() {
 		return createdBy;
 	}
@@ -90,7 +90,7 @@ public class EmailTemplate implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "updatedBy")
 	public User getUpdatedBy() {
 		return updatedBy;
 	}
