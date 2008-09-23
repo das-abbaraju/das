@@ -524,6 +524,11 @@
 			class="com.picsauditing.actions.audits.QuestionSelect">
 			<result>struts/audits/questions_select.jsp</result>
 		</action>
+		
+		<action name="EmailSelector"
+			class="com.picsauditing.actions.report.EmailSelector">
+			<result>/struts/reports/email_selector.jsp</result>
+		</action>		
 				
 	</package>
 </struts>
