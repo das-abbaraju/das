@@ -60,7 +60,7 @@ public enum OpPerms {
 	
 	EmailAnnualUpdate("Email Annual Updates", "Send contractors reminder emails to update their PICS info. Edit permission is required to send the emails.", true, false),
 	EmailTemplates("Email Templates", "Allows PICS employees to edit the templates used to automatically send emails", true, false),
-	
+	EmailQueue("Email Queue","Allow PICS Employees to view the report for Email Queue",true,true),
 	SwitchUser("Switch to User", "Can auto login as another user", false, false);
 
 	private String description;
