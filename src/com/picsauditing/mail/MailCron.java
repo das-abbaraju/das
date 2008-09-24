@@ -27,6 +27,10 @@ public class MailCron extends PicsActionSupport {
 		// No authentication required since this runs as a cron job
 		
 		List<EmailQueue> emails = emailQueueDAO.getPendingEmails(5);
+		if (emails.size() == 0) {
+			addActionMessage("The email queue is empty");
+			return SUCCESS;
+		}
 		for (EmailQueue email : emails) {
 			try {
 				EmailSender.send(email);
@@ -34,8 +38,11 @@ public class MailCron extends PicsActionSupport {
 				emailQueueDAO.save(email);
 			} catch (Exception e) {
 				System.out.println("ERROR with MailCron: " + e.getMessage());
+				addActionError("Failed to send email: " + e.getMessage());
 			}
 		}
+		if (this.getActionErrors().size() == 0)
+			this.addActionMessage("Successfully sent " + emails.size() + " email(s)");
 		return SUCCESS;
 	}
 }

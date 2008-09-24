@@ -527,7 +527,7 @@
 		
 		<action name="MailCron"
 			class="com.picsauditing.mail.MailCron">
-			<result>/struts/mail/mailCron.jsp</result>
+			<result>struts/blank.jsp</result>
 		</action>
 		
 		<action name="MassMailer"
