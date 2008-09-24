@@ -59,6 +59,10 @@ public class ReportActionSupport extends PicsActionSupport {
 			this.report.setLimit(100000);
 			showPage = 1;
 		}
+		if (button.equals("SendEmail")) {
+			this.report.setLimit(100000);
+			showPage = 1;
+		}
 		
 		isFiltered();
 		report.setOrderBy(this.orderBy, null);
