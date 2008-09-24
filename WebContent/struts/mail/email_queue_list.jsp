@@ -3,33 +3,38 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <html>
 <head>
-<title>Mass Mailer</title>
-<script type="text/javascript" src="js/prototype.js"></script>
+<title>Email Queue List</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <style>
-td.selected {
-	background-color: #FEC;
-}
 </style>
 </head>
 <body>
-<h1>Mass Mailer</h1>
-
-<s:include value="../actionMessages.jsp"></s:include>
-<s:property value="emailTemplates"/>
-<s:form id="form1" method="post">
-<div>
-
-
-
-
-
-
-	<div class="buttons">
-		<button class="positive" name="button" type="submit" value="send">Send Email</button>
-	</div>		
-</div>
-</s:form>
-
+<h1>Email Queue List</h1>
+<table class="report">
+	<thead>
+	<tr>
+		<td></td>
+		<td>Priority</td>
+		<td>Status</td>
+		<td>Date</td>
+		<td>From</td>
+		<td>To</td>
+		<td>Subject</td>
+		<td>Date Sent</td>
+	</tr>
+	</thead>
+	<s:iterator value="emails" status="stat">
+		<tr>
+			<td class="right"><s:property value="#stat.index + 1" /></td>
+			<td><s:property value="priority" /></td>
+			<td><s:property value="status" /></td>
+			<td><s:property value="creationDate" /></td>
+			<td><s:property value="fromAddress" /></td>
+			<td><s:property value="toAddresses" /></td>
+			<td><s:property value="subject" /></td>
+			<td><s:property value="sentDate" /></td>
+		</tr>
+	</s:iterator>
+</table>
 </body>
 </html>

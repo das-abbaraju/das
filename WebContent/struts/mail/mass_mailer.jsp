@@ -16,9 +16,10 @@ td.selected {
 <h1>Mass Mailer</h1>
 
 <s:include value="../actionMessages.jsp"></s:include>
-
+<s:property value="emailTemplates"/>
 <s:form id="form1" method="post">
 <div>
+
 
 
 

@@ -132,9 +132,11 @@ public class PicsMenu {
 			subMenu.addChild("Desktop Matrix", "ManageDesktopMatrix.action");
 			subMenu.addChild("PQF Matrix", "ManagePQFMatrix.action");
 		}
-		if (permissions.hasPermission(OpPerms.EmailTemplates)) {
+		if (permissions.hasPermission(OpPerms.EmailTemplates))
 			subMenu.addChild("Email Templates", "email_templates.jsp");
-		}
+		
+		if (permissions.hasPermission(OpPerms.EmailQueue))
+			subMenu.addChild("Email Queue", "EmailQueueList.action");		
 
 		if (permissions.hasPermission(OpPerms.EditFlagCriteria) && permissions.isOperator())
 			subMenu.addChild("Flag Criteria", "op_editFlagCriteria.jsp");
