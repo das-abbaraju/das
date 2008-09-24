@@ -38,6 +38,7 @@ public class EmailQueueDAO extends PicsDAO {
 		return em.find(EmailQueue.class, id);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<EmailQueue> getPendingEmails(int limit) {
         Query query = em.createQuery("FROM EmailQueue t WHERE t.status = '' ORDER BY t.priority DESC, t.creationDate");
         query.setMaxResults(limit);
