@@ -1,5 +1,6 @@
 package com.picsauditing.mail;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -34,21 +35,21 @@ public class MassMailer extends PicsActionSupport {
 	public String execute() {
 		if (!forceLogin()) return LOGIN;
 		
-		// error if empty both cons and audits
-		
-		SelectAccount sql = new SelectAccount();
-		// OR
-		sql = new SelectContractorAudit();
+		SelectAccount sql = null;
+		if (conIDs != null)
+			sql = new SelectAccount();
+		else
+			sql = new SelectContractorAudit();
 		
 		Database db = new Database();
 		try {
 			data = db.select(sql.toString(), true);
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 		
 		if (button != null) {
-			if (button.equals("Send")) {
+			if (button.equals("send")) {
 				if (conIDs != null) {
 					for (Integer conID : conIDs) {
 						EmailQueue email = new EmailQueue();
@@ -71,6 +72,7 @@ public class MassMailer extends PicsActionSupport {
 	}
 	
 	public List<EmailTemplate> getEmailTemplates() {
-		// return this person's templates
+		List<EmailTemplate> list = new ArrayList<EmailTemplate>();
+		return list;
 	}
 }
