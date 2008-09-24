@@ -534,5 +534,10 @@
 			class="com.picsauditing.mail.MassMailer">
 			<result>struts/mail/mass_mailer.jsp</result>
 		</action>
+		
+		<action name="EmailQueueList"
+			class="com.picsauditing.mail.EmailQueueList">
+			<result>struts/mail/email_queue_list.jsp</result>
+		</action>		
 	</package>
 </struts>
