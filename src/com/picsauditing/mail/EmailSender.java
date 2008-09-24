@@ -1,6 +1,8 @@
 package com.picsauditing.mail;
 
+import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.util.SpringUtils;
 
 public class EmailSender extends GMailSender {
 	private static int currentDefaultSender = 1;
@@ -48,8 +50,8 @@ public class EmailSender extends GMailSender {
 	}
 	
 	public static void send(EmailQueue email) throws Exception {
-		EmailSender sender = new EmailSender();
-		sender.sendMail(email, 0);
+		EmailQueueDAO emailQueueDAO = (EmailQueueDAO)SpringUtils.getBean("EmailQueueDAO");
+		emailQueueDAO.save(email);
 	}
 	
 	public static void send(String fromAddress, String toAddress, String ccAddress, 
@@ -64,6 +66,7 @@ public class EmailSender extends GMailSender {
 	}
 
 	public static void send(String toAddress, String subject, String body) throws Exception  {
+		
 		send(null, toAddress, null, subject, body);
 	}
 }
