@@ -18,7 +18,7 @@ public class ReportActionSupport extends PicsActionSupport {
 	protected String orderBy;
 	protected int showPage;
 	protected ColorAlternater color = new ColorAlternater();
-	
+
 	protected boolean download = false;
 	protected Boolean filtered = null;
 
@@ -55,15 +55,16 @@ public class ReportActionSupport extends PicsActionSupport {
 			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
 			filename += ".csv";
 			ServletActionContext.getResponse().setContentType("text/csv");
-			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment;filename="+filename);
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment;filename=" + filename);
 			this.report.setLimit(100000);
 			showPage = 1;
 		}
-		if (button.equals("SendEmail")) {
+
+		if ("EmailSend".equals(button)) {
 			this.report.setLimit(100000);
 			showPage = 1;
 		}
-		
+
 		isFiltered();
 		report.setOrderBy(this.orderBy, null);
 		report.setSql(sql);
@@ -104,4 +105,5 @@ public class ReportActionSupport extends PicsActionSupport {
 	public void setDownload(boolean download) {
 		this.download = download;
 	}
+
 }
