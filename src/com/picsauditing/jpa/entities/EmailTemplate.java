@@ -23,7 +23,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
 public class EmailTemplate implements java.io.Serializable {
 	private int id;
-	private OperatorAccount operatorAccount;
+	private int accountID;
 	private String subject;
 	private String body;
 	private User createdBy;
@@ -44,13 +44,13 @@ public class EmailTemplate implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "opID", nullable = false)
-	public OperatorAccount getOperatorAccount() {
-		return operatorAccount;
+	@JoinColumn(name = "accountID", nullable = false)
+	public int getAccountID() {
+		return accountID;
 	}
 
-	public void setOperatorAccount(OperatorAccount operatorAccount) {
-		this.operatorAccount = operatorAccount;
+	public void setAccountID(int accountID) {
+		this.accountID = accountID;
 	}
 
 	@Column(name = "subject", length = 150)

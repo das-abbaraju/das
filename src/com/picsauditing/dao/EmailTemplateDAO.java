@@ -26,4 +26,8 @@ public class EmailTemplateDAO extends PicsDAO {
 	public EmailTemplate find(int id) {
 		return em.find(EmailTemplate.class, id);
 	}
+	
+	public EmailTemplate findByAccountID(int accountID) {
+		return em.find(EmailTemplate.class, accountID);
+	}
 }
