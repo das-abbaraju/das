@@ -36,16 +36,28 @@
 		<action name="ReportAuditList"
 			class="com.picsauditing.actions.report.ReportContractorAudits">
 			<result>struts/reports/auditList.jsp</result>
+			<result name="EmailSender" type="chain">
+				<param name="actionName">MassMailer</param>
+				<param name="auditIDs">${auditIDs}</param>
+			</result>				
 		</action>
 		
 		<action name="AuditListAuditor"
 			class="com.picsauditing.actions.report.ReportContractorAuditAuditor">
 			<result>struts/reports/audit_auditor.jsp</result>
+			<result name="EmailSender" type="chain">
+				<param name="actionName">MassMailer</param>
+				<param name="auditIDs">${auditIDs}</param>
+			</result>				
 		</action>
 
 		<action name="MyAuditHistory"
 			class="com.picsauditing.actions.report.ReportMyAuditHistory">
 			<result>struts/reports/myAuditHistory.jsp</result>
+			<result name="EmailSender" type="chain">
+				<param name="actionName">MassMailer</param>
+				<param name="auditIDs">${auditIDs}</param>
+			</result>				
 		</action>
 
 		<action name="MyAssignedAuditsAjax"
@@ -56,6 +68,10 @@
 		<action name="AuditAssignments"
 			class="com.picsauditing.actions.report.ReportContractorAuditAssignment">
 			<result>struts/reports/auditAssignments.jsp</result>
+			<result name="EmailSender" type="chain">
+				<param name="actionName">MassMailer</param>
+				<param name="auditIDs">${auditIDs}</param>
+			</result>				
 		</action>
 
 		<action name="AuditAssignmentUpdateAjax"
@@ -249,7 +265,12 @@
 		<action name="ContractorListAdmin"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<result>struts/reports/contractors_admin.jsp</result>
+			<result name="EmailSender" type="chain">
+				<param name="actionName">MassMailer</param>
+				<param name="conIDs">${conIDs}</param>
+			</result>				
 		</action>
+		
 		<action name="ContractorListAdminCSV"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<param name="download">true</param>
@@ -259,11 +280,19 @@
 		<action name="ContractorListOperator"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<result>struts/reports/contractors_operator.jsp</result>
+			<result name="EmailSender" type="chain">
+				<param name="actionName">MassMailer</param>
+				<param name="conIDs">${conIDs}</param>
+			</result>				
 		</action>
 
 		<action name="NewContractorSearch"
 			class="com.picsauditing.actions.report.ReportNewContractorSearch">
 			<result>struts/reports/newContractor_operator.jsp</result>
+			<result name="EmailSender" type="chain">
+				<param name="actionName">MassMailer</param>
+				<param name="conIDs">${conIDs}</param>
+			</result>				
 		</action>
 
 		<action name="ChartXMLFlagCount"
@@ -319,6 +348,10 @@
 		<action name="ReportContractorLicenses"
 			class="com.picsauditing.actions.report.ReportContractorLicenses">
 			<result>/struts/reports/report_licenses.jsp</result>
+			<result name="EmailSender" type="chain">
+				<param name="actionName">MassMailer</param>
+				<param name="auditIDs">${auditIDs}</param>
+			</result>				
 		</action>
 
 		<action name="ReportIncidenceRate"
@@ -359,6 +392,10 @@
 		<action name="ContractorAssigned"
 			class="com.picsauditing.actions.report.ReportContractorAssignment">
 			<result>struts/reports/assignedContractor.jsp</result>
+			<result name="EmailSender" type="chain">
+				<param name="actionName">MassMailer</param>
+				<param name="conIDs">${conIDs}</param>
+			</result>				
 		</action>
 
 		<action name="ContractorSaveAjax"
@@ -374,6 +411,10 @@
 		<action name="PqfVerification"
 			class="com.picsauditing.actions.report.ReportPQFVerification">
 			<result>struts/reports/pqf_verification.jsp</result>
+			<result name="EmailSender" type="chain">
+				<param name="actionName">MassMailer</param>
+				<param name="auditIDs">${auditIDs}</param>
+			</result>				
 		</action>
 
 		<action name="OpenAuditsMailer"
@@ -404,11 +445,19 @@
 		<action name="DelinquentContractorAccounts"
 			class="com.picsauditing.actions.report.DelinquentAccounts">
 			<result>/struts/reports/delinquent_conaccounts.jsp</result>
+			<result name="EmailSender" type="chain">
+				<param name="actionName">MassMailer</param>
+				<param name="conIDs">${conIDs}</param>
+			</result>				
 		</action>
 
 		<action name="ArchivedContractorAccounts"
 			class="com.picsauditing.actions.report.ArchivedAccounts">
 			<result>/struts/reports/archived_conaccounts.jsp</result>
+			<result name="EmailSender" type="chain">
+				<param name="actionName">MassMailer</param>
+				<param name="conIDs">${conIDs}</param>
+			</result>				
 		</action>
 
 		<action name="ReportUsersAccount"
@@ -448,6 +497,10 @@
 		<action name="ReportCompletePQF"
 			class="com.picsauditing.actions.report.ReportCompletePQF">
 			<result>struts/reports/complete_pqf.jsp</result>
+			<result name="EmailSender" type="chain">
+				<param name="actionName">MassMailer</param>
+				<param name="conIDs">${conIDs}</param>
+			</result>				
 		</action>
 		
 		<action name="UsersByOpPerm"
@@ -508,6 +561,10 @@
 		<action name="ReportOperatorCriteria"
 			class="com.picsauditing.actions.report.ReportFlagCriteria">
 			<result>struts/reports/operator_flagcriteria.jsp</result>
+			<result name="EmailSender" type="chain">
+				<param name="actionName">MassMailer</param>
+				<param name="conIDs">${conIDs}</param>
+			</result>				
 		</action>
 		
 		<action name="ContractorEdit"

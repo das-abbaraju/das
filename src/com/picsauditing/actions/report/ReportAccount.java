@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.beanutils.DynaBean;
 import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.SearchBean;
@@ -73,6 +74,7 @@ public class ReportAccount extends ReportActionSupport {
 	protected boolean filterRiskLevel = false;
 
 	AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
+	protected List<Integer> conIDs = new ArrayList<Integer>();
 
 	protected SelectAccount sql = new SelectAccount();
 
@@ -105,6 +107,13 @@ public class ReportAccount extends ReportActionSupport {
 		if (filtered == null)
 			filtered = false;
 
+		if ("EmailSend".equals(button)) {
+			for (DynaBean dynaBean : data) {
+				conIDs.add((Integer) dynaBean.get("id"));
+			}
+
+			return "EmailSender";
+		}
 		return SUCCESS;
 	}
 
@@ -120,7 +129,7 @@ public class ReportAccount extends ReportActionSupport {
 			filterVisible = true;
 			filterRiskLevel = true;
 		}
-		if(!permissions.hasPermission(OpPerms.InsuranceCerts)) {
+		if (!permissions.hasPermission(OpPerms.InsuranceCerts)) {
 			filterCerts = false;
 		}
 	}
@@ -147,7 +156,7 @@ public class ReportAccount extends ReportActionSupport {
 	}
 
 	public String[] getTradePerformedByList() {
-		String[] list = {"- Performed By -", "Self Performed", "Sub Contracted"};
+		String[] list = { "- Performed By -", "Self Performed", "Sub Contracted" };
 		return list;
 	}
 
@@ -238,7 +247,7 @@ public class ReportAccount extends ReportActionSupport {
 			return;
 
 		this.trade = trade;
-		createPqfDataClause(sql, "AND d.questionID IN ("+ tradeList + ") AND d.answer LIKE '" + answerFilter + "'");
+		createPqfDataClause(sql, "AND d.questionID IN (" + tradeList + ") AND d.answer LIKE '" + answerFilter + "'");
 		filtered = true;
 	}
 
@@ -312,13 +321,13 @@ public class ReportAccount extends ReportActionSupport {
 	public void setStateLicensedIn(int[] stateLicensedIn) {
 		String stateLicensedInList = Strings.implode(stateLicensedIn, ",");
 		this.stateLicensedIn = stateLicensedIn;
-		createPqfDataClause(sql, "AND d.questionID IN ("+ stateLicensedInList + ") AND d.answer > ''");
+		createPqfDataClause(sql, "AND d.questionID IN (" + stateLicensedInList + ") AND d.answer > ''");
 		filtered = true;
 	}
-	
+
 	private void createPqfDataClause(SelectSQL sql, String where) {
-		String query = "a.id IN (SELECT ca.conID FROM contractor_audit ca JOIN pqfdata d USING (auditID) " +
-			"WHERE ca.auditStatus IN ('Active','Submitted') AND ca.auditTypeID = 1 "+where+")";
+		String query = "a.id IN (SELECT ca.conID FROM contractor_audit ca JOIN pqfdata d USING (auditID) "
+				+ "WHERE ca.auditStatus IN ('Active','Submitted') AND ca.auditTypeID = 1 " + where + ")";
 		sql.addWhere(query);
 	}
 
@@ -329,7 +338,7 @@ public class ReportAccount extends ReportActionSupport {
 	public void setWorksIn(int[] worksIn) {
 		String worksInList = Strings.implode(worksIn, ",");
 		this.worksIn = worksIn;
-		createPqfDataClause(sql, "AND d.questionID IN ("+ worksInList + ") AND d.answer LIKE 'Yes%'");
+		createPqfDataClause(sql, "AND d.questionID IN (" + worksInList + ") AND d.answer LIKE 'Yes%'");
 		filtered = true;
 	}
 
@@ -340,7 +349,7 @@ public class ReportAccount extends ReportActionSupport {
 	public void setOfficeIn(int[] officeIn) {
 		String officeInList = Strings.implode(officeIn, ",");
 		this.officeIn = officeIn;
-		createPqfDataClause(sql, "AND d.questionID IN ("+ officeInList + ") AND d.answer LIKE 'Yes with Office'");
+		createPqfDataClause(sql, "AND d.questionID IN (" + officeInList + ") AND d.answer LIKE 'Yes with Office'");
 		filtered = true;
 	}
 
@@ -400,7 +409,7 @@ public class ReportAccount extends ReportActionSupport {
 	public boolean isFilterAccountName() {
 		return filterAccountName;
 	}
-	
+
 	public boolean isFilterOperator() {
 		return filterOperator;
 	}
@@ -468,5 +477,9 @@ public class ReportAccount extends ReportActionSupport {
 
 	public boolean isFilterOperatorSingle() {
 		return filterOperatorSingle;
+	}
+
+	public List<Integer> getConIDs() {
+		return conIDs;
 	}
 }

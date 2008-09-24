@@ -1,9 +1,6 @@
 package com.picsauditing.actions.report;
 
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.search.Report;
-import com.picsauditing.search.SelectAccount;
 
 public class ReportAccountAudits extends ReportAccount {
 
@@ -15,10 +12,10 @@ public class ReportAccountAudits extends ReportAccount {
 		sql.addField("a.industry");
 
 		toggleFilters();
-		
-		if(filtered == null) 
+
+		if (filtered == null)
 			filtered = true;
-		
+
 		return super.execute();
 	}
 
