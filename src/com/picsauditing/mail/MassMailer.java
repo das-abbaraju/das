@@ -22,6 +22,7 @@ import com.picsauditing.search.SelectContractorAudit;
 public class MassMailer extends PicsActionSupport {
 	List<Integer> conIDs = null;
 	List<Integer> auditIDs = null;
+	List<String> tokens = null;
 	
 	List<BasicDynaBean> data;
 	EmailQueueDAO emailQueueDAO;
@@ -66,7 +67,6 @@ public class MassMailer extends PicsActionSupport {
 				}
 			}
 		}
-
 
 		return SUCCESS;
 	}

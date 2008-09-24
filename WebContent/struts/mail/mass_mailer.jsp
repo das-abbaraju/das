@@ -20,7 +20,7 @@ td.selected {
 <s:form id="form1" method="post">
 <div id="search">
 	<div class="filterOption">Token Toolbox:<br />
-		<s:select id="tokens" name="tokens" multiple="true" size="10" listKey="questionID" listValue="question" list="typeOfWork"></s:select>
+		<s:select id="tokens" name="tokens" multiple="true" size="10" listKey="tokenID" listValue="token" list="tokens"></s:select>
 	</div>
 	<div class="filterOption">Email Draft:<br />
 		<s:textarea label="draft" name="draft" cols="20" rows="75"></s:textarea>
