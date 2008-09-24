@@ -1,5 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:include value="../actionMessages.jsp" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
@@ -395,7 +395,12 @@ Filter Options</a></div>
 			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 		</div>
 	</s:if>
-
+	
+	<br clear="all" />
+	<pics:permission perm="EmailTemplates">
+		<div class="buttons"><button name="button" value="EmailSend" type="submit">Send Mail</button></div>
+	</pics:permission>
+	
 	<br clear="all" />
 	<div class="alphapaging"><s:property
 		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>

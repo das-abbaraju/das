@@ -2,13 +2,13 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Delinquent Contractor Accounts</title>
+<title>Archived Contractor Accounts</title>
 <script src="js/prototype.js" type="text/javascript"></script>
 <script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
-<h1>Delinquent Contractor Accounts</h1>
+<h1>Archived Contractor Accounts</h1>
 
 <s:include value="filters.jsp" />
 
