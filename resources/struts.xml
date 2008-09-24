@@ -525,10 +525,14 @@
 			<result>struts/audits/questions_select.jsp</result>
 		</action>
 		
+		<action name="MailCron"
+			class="com.picsauditing.mail.MailCron">
+			<result>/struts/mail/mailCron.jsp</result>
+		</action>
+		
 		<action name="MassMailer"
 			class="com.picsauditing.mail.MassMailer">
 			<result>struts/mail/mass_mailer.jsp</result>
 		</action>
-		
 	</package>
 </struts>

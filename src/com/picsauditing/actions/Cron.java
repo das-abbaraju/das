@@ -27,7 +27,6 @@ import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.mail.Email;
 import com.picsauditing.mail.EmailContractorBean;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EmailTemplates;
@@ -159,28 +158,19 @@ public class Cron extends PicsActionSupport {
 	}
 
 	protected void sendEmail() {
-		Email email = new Email();
-		email.setSubject("Cron job report: ");
-
-		email.setBody(report.toString());
-
 		String toAddress = null;
 		try {
 			AppProperty prop = appPropDao.find("admin_email_address");
 			toAddress = prop.getValue();
 		} catch (NoResultException notFound) {
 		}
-
+		
 		if (toAddress == null || toAddress.length() == 0) {
 			toAddress = "admin@picsauditing.com";
 		}
 
-		email.setToAddress(toAddress);
-
-		EmailSender sender = new EmailSender();
-
 		try {
-			sender.sendMail(email);
+			EmailSender.send(toAddress, "Cron job report", report.toString());
 		} catch (Exception notMuchWeCanDoButLogIt) {
 			System.out.println("**********************************");
 			System.out.println("Error Sending email from cron job");

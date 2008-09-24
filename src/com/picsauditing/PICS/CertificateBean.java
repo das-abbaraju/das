@@ -26,7 +26,6 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.domain.CertificateDO;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.mail.Email;
 import com.picsauditing.mail.EmailContractorBean;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EmailTemplates;
@@ -540,7 +539,6 @@ public class CertificateBean extends DataBean {
 	}
 
 	public void sendEmail(List<CertificateDO> list, Permissions permissions) throws Exception {
-		EmailSender mailer = new EmailSender();
 		for (CertificateDO cdo : list) {
 
 			AccountBean aBean = new AccountBean();
@@ -553,9 +551,6 @@ public class CertificateBean extends DataBean {
 			oAccountBean.setFromDB(cdo.getOperator_id());
 			String operator = oAccountBean.name;
 
-			Email email = new Email();
-			email.setToAddress(aBean.email);
-			email.setSubject(operator + " insurance certificate " + cdo.getStatus());
 			String message = "Hello " + contactName + ",\n\n" + contractor + "'s " + cdo.getType()
 					+ " Insurance Certificate has been " + cdo.getStatus() + " by " + operator;
 			if (!"".equals(cdo.getReason()))
@@ -573,9 +568,9 @@ public class CertificateBean extends DataBean {
 						+ "insurance certificate when you renew your policy.";
 			}
 			message += "\n\nHave a great day,\n" + "PICS Customer Service";
-			email.setBody(message);
-			mailer.sendMail(email);
-
+			
+			EmailSender.send(aBean.email, operator + " insurance certificate " + cdo.getStatus(), message);
+			
 			String newNote = cdo.getType() + " insurance certificate " + cdo.getStatus() + " by " + operator
 					+ " for reason: " + cdo.getReason();
 			Note note = new Note(cdo.getOperator_id(), cdo.getContractor_id(), permissions.getUserIdString(),

@@ -23,7 +23,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
 public class EmailQueue implements java.io.Serializable {
 	private int id;
-	private String status;
+	private EmailStatus status = EmailStatus.Pending;
 	private String fromAddress = "";
 	private String toAddresses = "";
 	private String ccAddresses;
@@ -49,11 +49,11 @@ public class EmailQueue implements java.io.Serializable {
 	}
 
 	@Column(name = "status", nullable = false)
-	public String getStatus() {
+	public EmailStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(EmailStatus status) {
 		this.status = status;
 	}
 

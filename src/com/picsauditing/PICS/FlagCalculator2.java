@@ -20,7 +20,6 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.mail.Email;
 import com.picsauditing.mail.EmailSender;
 
 /**
@@ -124,8 +123,6 @@ public class FlagCalculator2 {
 			} catch (Throwable t) {
 				System.out.println("Error: " + t.getMessage());
 
-				Email email = new Email();
-				email.setSubject("There was an error calculating flags for contractor :" + conID.toString());
 				StringBuffer body = new StringBuffer();
 
 				body.append("There was an error calculating flags for contractor ");
@@ -139,13 +136,10 @@ public class FlagCalculator2 {
 				t.printStackTrace(new PrintWriter(sw));
 				body.append(sw.toString());
 
-				email.setBody(body.toString());
-				email.setToAddress("errors@picsauditing.com");
-
-				EmailSender sender = new EmailSender();
-
 				try {
-					sender.sendMail(email);
+					EmailSender.send("errors@picsauditing.com", 
+							"There was an error calculating flags for contractor :" + conID.toString(), 
+							body.toString());
 				} catch (Exception notMuchWeCanDoButLogIt) {
 					System.out.println("**********************************");
 					System.out.println("Error calculating flags AND unable to send email");

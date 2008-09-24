@@ -15,7 +15,7 @@ public class EmailUserBean extends EmailBean {
 		this.templateType = templateType;
 		
 		tokens.put("user", user);
-		email.setToAddress(user.getEmail());
+		email.setToAddresses(user.getEmail());
 		this.sendMail();
 	}
 	
@@ -28,7 +28,7 @@ public class EmailUserBean extends EmailBean {
 		this.templateType = templateType;
 		tokens.put("confirmLink", getServerName()+"ScheduleAuditUpdate.action?type=a&auditID="+conAudit.getId()+"&key="+Strings.hashUrlSafe("a"+conAudit.getAuditor().getId()+"id"+conAudit.getId()));
 		tokens.put("conAudit", conAudit);
-		email.setToAddress(conAudit.getAuditor().getEmail());
+		email.setToAddresses(conAudit.getAuditor().getEmail());
 		this.sendMail();
 	}
 

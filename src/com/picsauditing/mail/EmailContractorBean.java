@@ -31,11 +31,11 @@ public class EmailContractorBean extends EmailBean {
 		tokens.put("contractor", contractor);
 		tokens.put("user", contractor); // Sometimes we treat contractors as
 		// users
-		email.setToAddress(contractor.getEmail());
-		email.setCcAddress(contractor.getSecondEmail());
+		email.setToAddresses(contractor.getEmail());
+		email.setCcAddresses(contractor.getSecondEmail());
 
 		if (templateType.equals(EmailTemplates.certificate_expire))
-			email.setBccAddress("eorozco@picsauditing.com");
+			email.setBccAddresses("eorozco@picsauditing.com");
 		if (templateType.equals(EmailTemplates.openRequirements))
 			email.setFromAddress("audits@picsauditing.com");
 
@@ -54,6 +54,6 @@ public class EmailContractorBean extends EmailBean {
 	@Override
 	public String getSentTo() {
 		// return John Doe <john@doe.org>
-		return contractor.getContact() + " &lt;" + email.getToAddress() + "&gt;";
+		return contractor.getContact() + " &lt;" + email.getToAddresses() + "&gt;";
 	}
 }

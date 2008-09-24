@@ -6,19 +6,6 @@ public class EmailSenderTest extends TestCase {
 	public EmailSenderTest(String name) {
 		super(name);
 	}
-	
-	/*
-	public void testEmail() {
-		String username = "tester@picsauditing.com";
-		String password = "bigboy11";
-		GMailSender mailer = new GMailSender(username, password);
-		try {
-			mailer.sendMail("Test Email", "This is the email body", "PICS Info <tester@picsauditing.com>", "tester@picsauditing.com");
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-    }
-    */
 
 	public void testInfoEmail() {
 		String username = "info@picsauditing.com";
@@ -36,15 +23,9 @@ public class EmailSenderTest extends TestCase {
 
 
 	public void testSender() {
-		Email email = new Email();
-		email.setSubject("JUnit Test");
-		email.setBody("Test body");
-		email.setFromAddress("Trevor Allred <tallred@picsauditing.com>");
-		email.setToAddress("tester@picsauditing.com");
-		
-		EmailSender sender = new EmailSender();
 		try {
-			sender.sendMail(email);
+			EmailSender.send("Trevor Allred <tallred@picsauditing.com>", 
+					"tester@picsauditing.com", null, "JUnit Test", "Test body");
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}

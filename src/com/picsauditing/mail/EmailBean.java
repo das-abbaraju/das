@@ -5,18 +5,16 @@ import java.util.Map;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.VelocityAdaptor;
 
 public class EmailBean {
 	protected Map<String, Object> tokens = new HashMap<String, Object>();
 	protected EmailTemplates templateType;
-	protected EmailMerge merge = new EmailMerge();
-	protected Email email = new Email();
+	protected EmailQueue email = new EmailQueue();
 	protected Permissions permissions;
 	protected boolean testMode = false;
 	protected UserDAO userDAO;
@@ -103,7 +101,7 @@ public class EmailBean {
 		addToken("permissions", permissions);
 	}
 
-	public Email getEmail() {
+	public EmailQueue getEmail() {
 		return email;
 	}
 
@@ -113,9 +111,7 @@ public class EmailBean {
 	 * @return
 	 */
 	public String getSentTo() {
-		return email.getToAddress();
-		// return John Doe <john@doe.org>
-		// return this.aBean.name + " &lt;" + + "&gt;";
+		return email.getToAddresses();
 	}
 
 	public String getServerName() {

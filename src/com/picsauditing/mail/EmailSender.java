@@ -1,5 +1,7 @@
 package com.picsauditing.mail;
 
+import com.picsauditing.jpa.entities.EmailQueue;
+
 public class EmailSender extends GMailSender {
 	private static int currentDefaultSender = 1;
 	private static final int NUMBER_OF_GMAIL_ACOUNTS = 6;
@@ -19,7 +21,7 @@ public class EmailSender extends GMailSender {
 	 * @param email
 	 * @throws Exception
 	 */
-	private void sendMail(Email email, int attempts) throws Exception {
+	private void sendMail(EmailQueue email, int attempts) throws Exception {
 		attempts++;
 		if (attempts > NUMBER_OF_GMAIL_ACOUNTS)
 			throw new Exception("Failed to send email, used all possible senders. See log file for more info.");
@@ -27,14 +29,15 @@ public class EmailSender extends GMailSender {
 			String fromAddress = "";
 			if (email.getFromAddress() != null && email.getFromAddress().length() > 7) fromAddress = email.getFromAddress();
 			else fromAddress = getDefaultSender();
-			this.sendMail(email.getSubject(), email.getBody(), fromAddress, email.getToAddress());
+			this.sendMail(email.getSubject(), email.getBody(), fromAddress, email.getToAddresses());
 		} catch (Exception e) {
 			System.out.println("Send Mail Exception with account "+currentDefaultSender+": "+ e.toString() +" "+ e.getMessage());
 			changeDefaultSender();
 			this.sendMail(email, attempts);
 		}
 	}
-	public void sendMail(Email email) throws Exception {
+	
+	public void sendMail(EmailQueue email) throws Exception {
 		int attempts = 0;
 		this.sendMail(email, attempts);
 	}
@@ -52,12 +55,12 @@ public class EmailSender extends GMailSender {
 	public static void send(String fromAddress, String toAddress, String ccAddress, 
 			String subject, String body) throws Exception  {
 		EmailSender sender = new EmailSender();
-		Email email = new Email();
+		EmailQueue email = new EmailQueue();
 		email.setSubject(subject);
 		email.setBody(body);
-		email.setToAddress(toAddress);
 		email.setFromAddress(fromAddress);
-		email.setCcAddress(ccAddress);
+		email.setToAddresses(toAddress);
+		email.setCcAddresses(ccAddress);
 		sender.sendMail(email);
 	}
 

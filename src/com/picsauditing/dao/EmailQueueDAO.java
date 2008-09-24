@@ -1,5 +1,9 @@
 package com.picsauditing.dao;
 
+import java.util.List;
+
+import javax.persistence.Query;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -32,5 +36,11 @@ public class EmailQueueDAO extends PicsDAO {
 	
 	public EmailQueue find(int id) {
 		return em.find(EmailQueue.class, id);
+	}
+	
+	public List<EmailQueue> getPendingEmails(int limit) {
+        Query query = em.createQuery("FROM EmailQueue t WHERE t.status = '' ORDER BY t.priority DESC, t.creationDate");
+        query.setMaxResults(limit);
+		return query.getResultList();
 	}
 }
