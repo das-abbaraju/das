@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
 
 @Transactional
@@ -31,10 +33,20 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public void remove(ContractorAccount row) {
-		// TODO : add all logic to delete contractor here
 		if (row != null) {
 			em.remove(row);
 		}
+	}
+
+	public void remove(ContractorAccount row, String ftpDir) {
+		FileUtils.deleteFile(ftpDir + "/files/logos/" + row.getLogoFile());
+		File parentFolder = new File(ftpDir + "/files/brochures");
+		String filename = "brochure_" + row.getId();
+		File[] deleteList = FileUtils.getSimilarFiles(parentFolder, filename);
+		for (File toDelete : deleteList) {
+			FileUtils.deleteFile(toDelete);
+		}
+		remove(row);
 	}
 
 	public ContractorAccount find(int id) {
@@ -132,14 +144,14 @@ public class ContractorAccountDAO extends PicsDAO {
 		return query.getResultList();
 
 	}
-	
+
 	public ContractorAccount findConID(String name) {
 		if (name == null)
 			name = "";
 		if (name.length() > 0)
-			name = "WHERE a.name = '" + name +"'";
+			name = "WHERE a.name = '" + name + "'";
 		Query query = em.createQuery("SELECT a from ContractorAccount a " + name);
 		return (ContractorAccount) query.getSingleResult();
 	}
-	
+
 }

@@ -26,11 +26,12 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	private String brochureContentType = null;
 	private String brochureFileName = null;
 
-	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditQuestionDAO auditQuestionDAO) {
+	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			AuditQuestionDAO auditQuestionDAO) {
 		super(accountDao, auditDao);
 		this.aQuestionDAO = auditQuestionDAO;
 	}
-	
+
 	public void prepare() throws Exception {
 		int conID = getParameter("id");
 		contractor = accountDao.find(conID);
@@ -39,35 +40,35 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		if (button != null) {
 			String ftpDir = getFtpDir();
 			if (button.equals("save")) {
 				if (logo != null) {
 					// Copy Logo to ftp-dir
 					String extension = logoFileName.substring(logoFileName.lastIndexOf(".") + 1);
-					String[] validExtensions = {"jpg", "gif", "png"};
+					String[] validExtensions = { "jpg", "gif", "png" };
 
 					if (!FileUtils.checkFileExtension(extension, validExtensions)) {
 						addActionError("Logos must be a jpg, gif or png image");
 						return SUCCESS;
 					}
-					String fileName = "logo_"+contractor.getId();
-					FileUtils.copyFile(logo, ftpDir, "", fileName, extension, true);
-					contractor.setLogoFile(fileName+"."+extension);
+					String fileName = "logo_" + contractor.getId();
+					FileUtils.copyFile(logo, ftpDir, "/files/logos/", fileName, extension, true);
+					contractor.setLogoFile(fileName + "." + extension);
 				}
 				if (brochure != null) {
 					// Copy Logo to ftp-dir
-					
+
 				}
-				
+
 				accountDao.save(contractor);
 				addActionMessage("Successfully modified " + contractor.getName());
 			}
 			if (button.equals("delete")) {
 				permissions.tryPermission(OpPerms.RemoveContractors);
-				accountDao.remove(contractor);
-				addActionMessage("Successfully removed " + contractor.getName());				
+				accountDao.remove(contractor, getFtpDir());
+				return SUCCESS;
 			}
 		}
 
@@ -79,7 +80,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public Industry[] getIndustryList() {
 		return Industry.values();
 	}
-	
+
 	public Map<String, String> getStateList() {
 		return State.getStates(true);
 	}
@@ -93,7 +94,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		return aQuestionDAO.findQuestionByType("Service");
 	}
 
-	
 	public void setLogo(File logo) {
 		this.logo = logo;
 	}
@@ -117,6 +117,4 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public void setBrochureFileName(String brochureFileName) {
 		this.brochureFileName = brochureFileName;
 	}
-	
-	
 }
