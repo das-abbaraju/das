@@ -37,11 +37,6 @@ public class EmailSender extends GMailSender {
 		}
 	}
 	
-	public void sendMail(EmailQueue email) throws Exception {
-		int attempts = 0;
-		this.sendMail(email, attempts);
-	}
-	
 	private static String getDefaultSender() {
 		if (EmailSender.currentDefaultSender >= 2)
 			return "info"+currentDefaultSender+"@picsauditing.com";
@@ -52,16 +47,20 @@ public class EmailSender extends GMailSender {
 		currentDefaultSender = (currentDefaultSender % NUMBER_OF_GMAIL_ACOUNTS)+1;
 	}
 	
+	public static void send(EmailQueue email) throws Exception {
+		EmailSender sender = new EmailSender();
+		sender.sendMail(email, 0);
+	}
+	
 	public static void send(String fromAddress, String toAddress, String ccAddress, 
 			String subject, String body) throws Exception  {
-		EmailSender sender = new EmailSender();
 		EmailQueue email = new EmailQueue();
 		email.setSubject(subject);
 		email.setBody(body);
 		email.setFromAddress(fromAddress);
 		email.setToAddresses(toAddress);
 		email.setCcAddresses(ccAddress);
-		sender.sendMail(email);
+		EmailSender.send(email);
 	}
 
 	public static void send(String toAddress, String subject, String body) throws Exception  {

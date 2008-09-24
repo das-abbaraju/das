@@ -3,6 +3,7 @@ package com.picsauditing.mail;
 import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 
@@ -10,8 +11,8 @@ public class EmailContractorBean extends EmailBean {
 	protected ContractorAccount contractor;
 	protected ContractorAccountDAO contractorDAO;
 
-	public EmailContractorBean(ContractorAccountDAO contractorDAO, UserDAO userDAO, AppPropertyDAO appPropertyDAO) {
-		super(userDAO, appPropertyDAO);
+	public EmailContractorBean(ContractorAccountDAO contractorDAO, UserDAO userDAO, AppPropertyDAO appPropertyDAO, EmailQueueDAO emailQueueDAO) {
+		super(userDAO, appPropertyDAO, emailQueueDAO);
 		this.contractorDAO = contractorDAO;
 	}
 

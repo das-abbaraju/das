@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -15,15 +16,17 @@ public class EmailBean {
 	protected Map<String, Object> tokens = new HashMap<String, Object>();
 	protected EmailTemplates templateType;
 	protected EmailQueue email = new EmailQueue();
+	protected EmailQueueDAO emailQueueDAO;
 	protected Permissions permissions;
 	protected boolean testMode = false;
 	protected UserDAO userDAO;
 	protected AppPropertyDAO appPropertyDAO;
 	protected String serverName;
 
-	public EmailBean(UserDAO userDAO, AppPropertyDAO appPropertyDAO) {
+	public EmailBean(UserDAO userDAO, AppPropertyDAO appPropertyDAO, EmailQueueDAO emailQueueDAO) {
 		this.userDAO = userDAO;
 		this.appPropertyDAO = appPropertyDAO;
+		this.emailQueueDAO = emailQueueDAO;
 	}
 
 	public void addToken(String key, Object value) {
@@ -34,8 +37,7 @@ public class EmailBean {
 		buildEmail();
 
 		if (!testMode) {
-			EmailSender sender = new EmailSender();
-			sender.sendMail(email);
+			emailQueueDAO.save(email);
 		}
 	}
 

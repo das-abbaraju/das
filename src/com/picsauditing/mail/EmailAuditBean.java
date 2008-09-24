@@ -2,6 +2,7 @@ package com.picsauditing.mail;
 
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.util.Strings;
@@ -9,8 +10,8 @@ import com.picsauditing.util.Strings;
 public class EmailAuditBean extends EmailContractorBean {
 	protected ContractorAudit conAudit;
 
-	public EmailAuditBean(ContractorAccountDAO contractorDAO, UserDAO userDAO, AppPropertyDAO appPropertyDAO) {
-		super(contractorDAO, userDAO, appPropertyDAO);
+	public EmailAuditBean(ContractorAccountDAO contractorDAO, UserDAO userDAO, AppPropertyDAO appPropertyDAO, EmailQueueDAO emailQueueDAO) {
+		super(contractorDAO, userDAO, appPropertyDAO, emailQueueDAO);
 	}
 
 	public void sendMessage(EmailTemplates emailType, ContractorAudit conAudit) throws Exception {

@@ -12,7 +12,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.picsauditing.jpa.entities.EmailTemplate;
-import com.picsauditing.jpa.entities.OperatorAccount;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
@@ -24,8 +23,7 @@ public class EmailTemplateDAOTest {
 	@Test
 	public void testSaveAndRemove() {
 		EmailTemplate emailTemplate = new EmailTemplate();
-		emailTemplate.setOperatorAccount(new OperatorAccount());
-		emailTemplate.getOperatorAccount().setId(228);
+		emailTemplate.setAccountID(228);
 		emailTemplate.setCreationDate(new Date());
 		emailTemplate.setSubject("Test Email");
 		emailTemplate.setTemplateName("Test");
