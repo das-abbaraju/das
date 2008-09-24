@@ -18,19 +18,12 @@ td.selected {
 <s:include value="../actionMessages.jsp"></s:include>
 
 <s:form id="form1" method="post">
-<div id="search">
-	<div class="filterOption">Token Toolbox:<br />
-		<s:select id="tokens" name="tokens" multiple="true" size="10" listKey="tokenID" listValue="token" list="tokens"></s:select>
-	</div>
-	<div class="filterOption">Email Draft:<br />
-		<s:textarea label="draft" name="draft" cols="20" rows="75"></s:textarea>
-	</div>
-	<div class="filterOption">Recipients:<br />
-		<s:select id="recipients" name="recipients" multiple="true" size="10" listKey="conId" listValue="name" list="recipients"></s:select>
-	</div>
-	<div class="filterOption">Email Preview:<br />
-		<s:textarea label="preview" name="preview" cols="20" rows="75"></s:textarea>
-	</div>
+<div>
+
+
+
+
+
 	<div class="buttons">
 		<button class="positive" name="button" type="submit" value="send">Send Email</button>
 	</div>		
