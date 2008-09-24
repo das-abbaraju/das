@@ -36,7 +36,7 @@ public class EmailTemplateDAO extends PicsDAO {
 	
 	@SuppressWarnings("unchecked")
 	public List<EmailTemplate> findByAccountID(int accountID) {
-		Query query = em.createQuery("SELECT id FROM EmailTemplate WHERE accountID='?'");
+		Query query = em.createQuery("FROM EmailTemplate WHERE accountID=?");
 		query.setParameter(1, accountID);
 		List<EmailTemplate> list = query.getResultList();
 		return list;

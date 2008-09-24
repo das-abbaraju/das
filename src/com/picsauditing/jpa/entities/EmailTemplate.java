@@ -43,8 +43,7 @@ public class EmailTemplate implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "accountID", nullable = false)
+	@Column(nullable = false)
 	public int getAccountID() {
 		return accountID;
 	}
@@ -53,7 +52,7 @@ public class EmailTemplate implements java.io.Serializable {
 		this.accountID = accountID;
 	}
 
-	@Column(name = "subject", length = 150)
+	@Column(length = 150)
 	public String getSubject() {
 		return subject;
 	}
@@ -62,7 +61,6 @@ public class EmailTemplate implements java.io.Serializable {
 		this.subject = subject;
 	}
 
-	@Column(name = "body")
 	public String getBody() {
 		return body;
 	}
@@ -113,7 +111,7 @@ public class EmailTemplate implements java.io.Serializable {
 		return templateName;
 	}
 
-	@Column(name = "templateName", length = 50, nullable = false)
+	@Column(length = 50, nullable = false)
 	public void setTemplateName(String templateName) {
 		this.templateName = templateName;
 	}

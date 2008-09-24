@@ -1,6 +1,5 @@
 package com.picsauditing.mail;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -8,7 +7,6 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.search.Database;
