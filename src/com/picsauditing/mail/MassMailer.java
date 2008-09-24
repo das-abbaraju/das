@@ -8,6 +8,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.search.Database;
@@ -23,6 +24,7 @@ public class MassMailer extends PicsActionSupport {
 	List<Integer> conIDs = null;
 	List<Integer> auditIDs = null;
 	List<String> tokens = null;
+	List<EmailTemplate> emailTemplates = null;
 	
 	List<BasicDynaBean> data;
 	EmailQueueDAO emailQueueDAO;
@@ -72,7 +74,6 @@ public class MassMailer extends PicsActionSupport {
 	}
 	
 	public List<EmailTemplate> getEmailTemplates() {
-		List<EmailTemplate> list = new ArrayList<EmailTemplate>();
-		return list;
+		return emailTemplates = emailTemplateDAO.findByAccountID(permissions.getAccountId());
 	}
 }

@@ -1,8 +1,15 @@
 package com.picsauditing.dao;
 
+import java.util.List;
+
+import javax.persistence.Query;
+
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.PICS.Utilities;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailTemplate;
+import com.picsauditing.jpa.entities.UserLoginLog;
 
 @Transactional
 public class EmailTemplateDAO extends PicsDAO {
@@ -27,7 +34,11 @@ public class EmailTemplateDAO extends PicsDAO {
 		return em.find(EmailTemplate.class, id);
 	}
 	
-	public EmailTemplate findByAccountID(int accountID) {
-		return em.find(EmailTemplate.class, accountID);
+	@SuppressWarnings("unchecked")
+	public List<EmailTemplate> findByAccountID(int accountID) {
+		Query query = em.createQuery("SELECT id FROM EmailTemplate WHERE accountID='?'");
+		query.setParameter(1, accountID);
+		List<EmailTemplate> list = query.getResultList();
+		return list;
 	}
 }
