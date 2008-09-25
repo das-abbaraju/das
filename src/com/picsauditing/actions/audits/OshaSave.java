@@ -9,6 +9,7 @@ import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.jpa.entities.OshaLogYear;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.FileUtils;
 
 public class OshaSave extends PicsActionSupport {
 
@@ -31,21 +32,22 @@ public class OshaSave extends PicsActionSupport {
 	private String description;
 	private String location;
 	private String oshaType;
+
 	public OshaSave(OshaLogDAO oshaDAO) {
 		this.oshaDAO = oshaDAO;
 	}
 
 	public String execute() throws Exception {
-		if(!forceLogin("Home.action"))
+		if (!forceLogin("Home.action"))
 			return LOGIN;
-		// we could investigate using the prepare statement 
+		// we could investigate using the prepare statement
 		// and finding the osha data before the setters get run
-		// However, I think I had problems setting/creating the 
+		// However, I think I had problems setting/creating the
 		// embedded year[1-3] private properties. Trevor
-		if(this.osha != null) {
-			description = this.osha.getDescription(); 
-			location = this.osha.getLocation();	
-			oshaType = this.osha.getType().toString();	
+		if (this.osha != null) {
+			description = this.osha.getDescription();
+			location = this.osha.getLocation();
+			oshaType = this.osha.getType().toString();
 		}
 		if (oshaID > 0) {
 			osha = oshaDAO.find(oshaID);
@@ -55,15 +57,15 @@ public class OshaSave extends PicsActionSupport {
 		if (osha != null) {
 			osha.setDescription(description);
 			osha.setLocation(location);
-			
+
 			osha.setType(OshaType.valueOf(oshaType));
 		}
-		if(submit.equals("Delete")) {
+		if (submit.equals("Delete")) {
 			oshaDAO.remove(oshaID);
 			return SUCCESS;
 		}
-		
-		if(submit.equals("Add New Location")) {
+
+		if (submit.equals("Add New Location")) {
 			osha = new OshaLog();
 			osha.setContractorAccount(new ContractorAccount());
 			osha.getContractorAccount().setId(conID);
@@ -77,7 +79,7 @@ public class OshaSave extends PicsActionSupport {
 		merge(osha.getYear1(), year1);
 		merge(osha.getYear2(), year2);
 		merge(osha.getYear3(), year3);
-		
+
 		saveFile(uploadFile1, uploadFile1FileName, osha.getYear1(), 1);
 		saveFile(uploadFile2, uploadFile2FileName, osha.getYear2(), 2);
 		saveFile(uploadFile3, uploadFile3FileName, osha.getYear3(), 3);
@@ -90,35 +92,22 @@ public class OshaSave extends PicsActionSupport {
 	private boolean saveFile(File file, String inputFileName, OshaLogYear logYear, int year) {
 		if (file == null)
 			return false;
-		
-		//String ext = new javax.activation.MimetypesFileTypeMap().getContentType(fileName);
-		String ext = inputFileName.substring(inputFileName.lastIndexOf(".") + 1);
-		if (ext == null || ext == "")
-			return false;
-		ext = ext.toLowerCase();
-		
-		String[] validExtensions = {"pdf","doc","txt","xls","jpg"};
-		boolean valid = false;
-		for(String exte : validExtensions) {
-			if (exte.equals(ext))
-				valid = true;
-		}
-		if (!valid)
-			return false;
 
-		String oshaDir = getFtpDir() + "/files/oshas/";
-		// TODO create the oshaDir if it doesn't exist
-		
+		String ext = inputFileName.substring(inputFileName.lastIndexOf(".") + 1);
+
+		if (!FileUtils.checkFileExtension(ext)) {
+			return false;
+		}
+
 		String fileName = "osha" + year + "_" + oshaID;
-		String newFileName = oshaDir + fileName + "." + ext;
-		File f = new File(newFileName);
-		f.delete();
-		
-		if (file.renameTo(f)) {
+		try {
+			FileUtils.copyFile(file, getFtpDir(), "/files/oshas/", fileName, ext, true);
 			logYear.setFile(YesNo.Yes);
 			logYear.setVerified(false);
 			logYear.setVerifiedDate(null);
 			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return false;
 	}
@@ -254,10 +243,13 @@ public class OshaSave extends PicsActionSupport {
 		return uploadFile3FileName;
 	}
 
-	public void setUploadFile3FileName(String uploadFile3FileName) {
-		this.uploadFile3FileName = uploadFile3FileName;
+	public void setUploadFile1ContentType(String uploadFile1ContentType) {
 	}
 
-	
-	
+	public void setUploadFile2ContentType(String uploadFile2ContentType) {
+	}
+
+	public void setUploadFile3ContentType(String uploadFile3ContentType) {
+	}
+
 }
