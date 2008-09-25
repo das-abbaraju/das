@@ -102,5 +102,14 @@ public class AuditDataDAOTest {
 		Map<Integer, AuditData> data = auditdataDAO.findAnswersByContractor(2657, questionIds);
 		assertEquals(2, data.size());
 	}
+	
+	@Test
+	public void findCustomAnswers() {
+		List<AuditData> list = auditdataDAO.findCustomPQFVerifications(1687);
+		//for(AuditData data : list) {
+		//	System.out.println(data.getQuestion().getQuestion() + ": " + data.getAnswer());
+		//}
+		assertEquals(3, list.size());
+	}
 
 }

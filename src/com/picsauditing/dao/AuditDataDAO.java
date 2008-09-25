@@ -3,19 +3,15 @@ package com.picsauditing.dao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.ContractorAccount;
 
 @Transactional
 public class AuditDataDAO extends PicsDAO {
@@ -86,26 +82,48 @@ public class AuditDataDAO extends PicsDAO {
 		}
 	}
 
-	// we may want to join over to the ContractorAudit in order to only pull the
-	// most recent answers
-	public List<AuditData> findCustomPQFVerifications(int auditId) {
-
-		StringBuffer queryString = new StringBuffer();
-
-		queryString.append("select d FROM AuditData d ");
-		queryString.append("inner join fetch d.question q ");
-		queryString.append("inner join fetch q.subCategory sc ");
-		queryString.append("inner join fetch sc.category cat ");
-		queryString.append("where d.audit.id = ? ");
-		queryString
-				.append("and ( EXISTS ( select a from AuditQuestionOperatorAccount a where a.auditQuestion.questionID = q.questionID ) or q.questionID = ");
-		queryString.append(AuditQuestion.MANUAL_PQF);
-		queryString.append(" )");
-
-		Query query = em.createQuery(queryString.toString());
-
-		query.setParameter(1, auditId);
-
+	private void tryQuery(String sql, int auditID) {
+		Query query = em.createQuery(sql);
+		query.setParameter("auditID", auditID);
+		System.out.println(sql);
+		List list = query.getResultList();
+		return;
+	}
+	
+	/**
+	 * Get a list of questions that must be verified for this audit.
+	 * 
+	 * This queries questions that have been answered where one or more 
+	 * of the operators attached to this contractor require validation for the given question
+	 * @param auditId
+	 * @return
+	 */
+	public List<AuditData> findCustomPQFVerifications(int auditID) {
+		// Get the contractor for this audit
+		String sqlContractor = "SELECT t.contractorAccount FROM ContractorAudit t WHERE t.id = :auditID";
+		//tryQuery(sqlContractor, auditID);
+		
+		// Get the list of operators attached to this contractor
+		String sqlOperators = "SELECT t.operatorAccount FROM ContractorOperator t " +
+			"WHERE t.contractorAccount IN (" + sqlContractor + ")";
+		//tryQuery(sqlOperators, auditID);
+		
+		// Get the list of questions that these operators require
+		String sqlQuestions = "SELECT t.auditQuestion FROM AuditQuestionOperatorAccount t " +
+			"WHERE t.operatorAccount IN (" + sqlOperators + ")";
+		//tryQuery(sqlQuestions, auditID);
+		
+		// For each question (including the safetyManual), get the ones answered in this audit
+		String sql = "SELECT d FROM AuditData d " +
+				"WHERE d.audit.id = :auditID " +
+				" AND (d.question.questionID = :safetyManual " +
+				"	OR d.question IN (" + sqlQuestions + ")" +
+				" )";
+		//System.out.println(sql);
+		Query query = em.createQuery(sql);
+		query.setParameter("auditID", auditID);
+		query.setParameter("safetyManual", AuditQuestion.MANUAL_PQF);
+		
 		return query.getResultList();
 	}
 
