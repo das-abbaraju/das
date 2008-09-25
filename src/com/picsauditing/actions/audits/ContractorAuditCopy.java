@@ -6,6 +6,8 @@ import java.util.Vector;
 
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
+import com.picsauditing.PICS.ContractorBean;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -79,7 +81,12 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 						FileUtils.copyFile(oldFile, newFile);
 				}
 			}
-
+			ContractorBean cBean = new ContractorBean();
+			cBean.setFromDB(conAudit.getContractorAccount().getIdString());
+			String notes = conAudit.getAuditType().getAuditName() + " Copied from Contractor " + oldconID;
+			cBean.addNote(conAudit.getContractorAccount().getIdString(), permissions.getName(), notes, DateBean
+					.getTodaysDate());
+			cBean.writeToDB();
 			return "Audit";
 		}
 
