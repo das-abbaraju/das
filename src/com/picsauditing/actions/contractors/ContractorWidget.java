@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
  */
 public class ContractorWidget extends ContractorActionSupport {
 	protected boolean reminderTask = false;
+	protected boolean openReq = false;
 
 	public ContractorWidget(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
 		super(accountDao, auditDao);
@@ -55,9 +56,14 @@ public class ContractorWidget extends ContractorActionSupport {
 				if (conAudit.getAuditType().isHasRequirements()
 						&& conAudit.getAuditStatus().equals(AuditStatus.Submitted)
 						&& conAudit.getPercentVerified() < 100 && !conAudit.getAuditType().isPqf()) {
-					openTasks.add("You have <a href=\"Audit.action?auditID=" + conAudit.getId()
+					String text = "You have <a href=\"Audit.action?auditID=" + conAudit.getId()
 							+ "\">open requirements from your recent " + conAudit.getAuditType().getAuditName()
-							+ "</a>");
+							+ "</a>";
+					if (!openReq) {
+						text += "<br/>NOTE: Open requirements cannot be closed online. You must submit these items to audits@picsauditing.com or fax to 949-269-9110 for further review. Please attach a cover sheet to all submitted information.";
+						openReq = true;
+					}
+					openTasks.add(text);
 				}
 				if (conAudit.getAuditStatus().equals(AuditStatus.Pending)
 						&& conAudit.getAuditType().isCanContractorView()
