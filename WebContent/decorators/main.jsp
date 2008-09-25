@@ -175,7 +175,9 @@ function getElement(whichLayer) {
 <!-- BEGIN Monitor Tracking Variables  -->
 <script language="JavaScript1.2">
 	if (typeof(tagVars) == "undefined") tagVars = "";
-	tagVars += "&VISITORVAR!UserID=<%=permissions.getUserId()%>&VISITORVAR!UserName=<%=URLEncoder.encode(permissions.getUsername())%>&VISITORVAR!DisplayName=<%=URLEncoder.encode(permissions.getName())%>";
+<%	if (permissions.isLoggedIn()) { %>
+		tagVars += "&VISITORVAR!UserID=<%=permissions.getUserId()%>&VISITORVAR!UserName=<%=URLEncoder.encode(permissions.getUsername())%>&VISITORVAR!DisplayName=<%=URLEncoder.encode(permissions.getName())%>";
+<%	} %>
 </script>
 <!-- End Monitor Tracking Variables  -->
 
