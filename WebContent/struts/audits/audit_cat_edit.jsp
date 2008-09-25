@@ -51,7 +51,7 @@
 			<s:textfield name="%{'answer_answer_'.concat(questionID)}" value="%{answer.answer}" size="19" onblur="validateNumber('answer_answer_%{questionID}','Question %{number}');  document.MM_returnValue && saveAnswer(%{questionID}, this)" />
 		</s:if>
 		<s:if test="questionType == 'Decimal Number'">
-			<s:textfield name="%{'answer_answer_'.concat(questionID)}" value="%{answer.answer}" size="19" onblur="validateDecimal('answer_answer_%{questionID}','Question %{number}');  document.MM_returnValue && saveAnswer(%{questionID}, this)" />
+			<s:textfield name="%{'answer_answer_'.concat(questionID)}" value="%{answer.answer}" size="19" onblur="$('%{'answer_answer_'.concat(questionID)}').value = parseFloat($('%{'answer_answer_'.concat(questionID)}').value).toFixed(3); validateDecimal('answer_answer_%{questionID}','Question %{number}'); document.MM_returnValue && saveAnswer(%{questionID}, this)" />
 		</s:if>
 		<s:if test="questionType == 'Service'">
 			<nobr><s:checkbox fieldValue="C" value="answer.answer.indexOf('C') != -1" name="question_%{questionID}_C" onclick="javascript:saveAnswer(%{questionID}, this);" /> C</nobr>

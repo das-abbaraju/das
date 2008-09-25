@@ -48,9 +48,9 @@ function validateDecimal() {
         blnResult = false;
     }//for
     
-    if( val.substring( val.length - 3, val.length - 2 ) != '.' ) {
-    	blnResult = false;
-    }
+//    if( val.substring( val.length - 3, val.length - 2 ) != '.' ) {
+//	   	blnResult = false;
+//    }
     
 	if (!blnResult) {
       errors+='- '+qName+' must contain a decimal number.\n';
