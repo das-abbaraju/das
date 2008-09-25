@@ -18,30 +18,37 @@ td.selected {
 <s:include value="../actionMessages.jsp"></s:include>
 <s:form id="form1" method="post">
 
-<div id="search">
-<div id="filters">
-	<div class="filterOption">Tokens:<br />
-		<s:select id="tokens" name="tokens" size="10" listKey="id" listValue="subject" list="emailTemplates"></s:select>
-	</div>
-	<div class="filterOption">Contractors:<br />
-		<s:select id="contractors" name="contractors" size="10" list="emailTemplates"></s:select>
-	</div>
-	<div class="filterOption">Email Templates:<br />
-		<s:select id="emailTemplates" name="emailTemplates" listKey="id" listValue="subject" list="emailTemplates"></s:select>
-	</div>
-	<div class="filterOption">Email Draft:<br />
-		<s:textarea name="emailPreview" cols="75" rows="20"></s:textarea>
-	</div>
-	<div class="filterOption">Email Preview:<br />
-		<s:textarea name="emailPreview" cols="75" rows="20"></s:textarea>
-	</div>	
+<table>
+	<tr>
+		<td>
+		</td>
+		<td>
+			Email Templates:<s:select id="emailTemplates" name="emailTemplates" listKey="id" listValue="subject" list="emailTemplates"></s:select>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Tokens:<s:select id="tokens" name="tokens" size="10" listKey="id" listValue="subject" list="emailTemplates"></s:select>
+		</td>
+		<td>
+			Email Draft:<s:textarea name="emailPreview" cols="75" rows="20"></s:textarea>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Contractors:<s:select id="contractors" name="contractors" size="10" list="emailTemplates"></s:select>
+		</td>
+		<td>
+			Email Preview:<s:textarea name="emailPreview" cols="75" rows="20"></s:textarea>
+		</td>
+	</tr>
 	
-	<br clear="all" />
+</table>
+
+	
 	<div class="buttons">
 		<button class="positive" name="button" type="submit" value="Search">Send Email</button>
 	</div>	
-</div>
-</div>
 
 </s:form>
 
