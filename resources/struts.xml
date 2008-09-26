@@ -280,7 +280,7 @@
 		<action name="ContractorListAdminCSV"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<param name="download">true</param>
-			<result>struts/reports/contractors_admin_csv.jsp</result>
+			<result>struts/reports/contractors_list_csv.jsp</result>
 		</action>
 
 		<action name="ContractorListOperator"
@@ -295,7 +295,7 @@
 		<action name="ContractorListOperatorCSV"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<param name="download">true</param>
-			<result>struts/reports/contractors_operator_csv.jsp</result>
+			<result>struts/reports/contractors_list_csv.jsp</result>
 		</action>		
 
 		<action name="NewContractorSearch"
