@@ -22,18 +22,13 @@ public class Token implements java.io.Serializable {
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", nullable = false)
+	@Column(name = "tokenID", nullable = false)
 	public Integer getId() {
 		return this.id;
 	}
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	@Transient
-	public String getIdString() {
-		return ((Integer) this.id).toString();
 	}
 
 	@Column(name = "tokenName", nullable = false, length = 50)
