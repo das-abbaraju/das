@@ -15,6 +15,7 @@
 			</result>
 			<result name="LoginAjax">struts/login_ajax.jsp</result>
 			<result name="login">/struts/login_ajax.jsp</result>
+			<result name="blank">/struts/blank.jsp</result>
 		</global-results>
 		<global-exception-mappings>
 			<exception-mapping exception="java.lang.Exception"
@@ -289,7 +290,7 @@
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
 				<param name="conIDs">${conIDs}</param>
-			</result>				
+			</result>
 		</action>
 		
 		<action name="ContractorListOperatorCSV"
@@ -602,6 +603,17 @@
 		<action name="MassMailer"
 			class="com.picsauditing.mail.MassMailer">
 			<result>struts/mail/mass_mailer.jsp</result>
+			<result name="mail_editor">struts/mail/mail_editor.jsp</result>
+		</action>
+		
+		<action name="MailEditorAjax"
+			class="com.picsauditing.mail.MassMailer">
+			<result>struts/mail/mail_editor.jsp</result>
+		</action>
+		
+		<action name="MailPreviewAjax"
+			class="com.picsauditing.mail.MassMailer">
+			<result>struts/mail/mail_preview.jsp</result>
 		</action>
 		
 		<action name="EmailQueueList"

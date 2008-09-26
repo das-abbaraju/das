@@ -1,5 +1,7 @@
 package com.picsauditing.dao;
 
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.junit.Test;
@@ -21,5 +23,11 @@ public class TokenDAOTest extends TestCase {
 	public void testFind() {
 		Token token = tokendao.find(1);
 		assertEquals("CompanyName", token.getTokenName());
+	}
+	
+	public void testFindByType() {
+		List<Token> auditTokens = tokendao.findByType("Audits");
+		List<Token> conTokens = tokendao.findByType("Audits");
+		assertTrue(auditTokens.size() > conTokens.size());
 	}
 }
