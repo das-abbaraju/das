@@ -44,6 +44,7 @@
 	<bean id="OperatorFormDAO" class="com.picsauditing.dao.OperatorFormDAO" scope="prototype"/>
     <bean id="EmailQueueDAO" class="com.picsauditing.dao.EmailQueueDAO" scope="prototype"/>
     <bean id="EmailTemplateDAO" class="com.picsauditing.dao.EmailTemplateDAO" scope="prototype"/>
+    <bean id="TokenDAO" class="com.picsauditing.dao.TokenDAO" scope="prototype"/>
     
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
