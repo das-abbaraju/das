@@ -5,52 +5,62 @@
 <head>
 <title>Mass Mailer</title>
 <script type="text/javascript" src="js/prototype.js"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
-<style>
-td.selected {
-	background-color: #FEC;
+<script type="text/javascript" src="js/scriptaculous/scriptaculous.js?load=effects"></script>
+<script language="JavaScript">
+
+function addToken(tokens) {
+	$('emailDraft').value += " <" + tokens.value + ">";
+	tokens.value = 0;
+	$('emailDraft').focus();
+}
+
+function previewEmail(item) {
+	alert(item.value);
+	
+}
+
+</script>
+<style type="text/css">
+#emailDraft {
+	color: black;
+	width: 95%;
+	padding: 5px;
 }
 </style>
 </head>
 <body>
 <h1>Mass Mailer</h1>
 
+<div>
 <s:include value="../actionMessages.jsp"></s:include>
 <s:form id="form1" method="post">
 
-<table>
+<table border="1" style="width: 100%;">
 	<tr>
-		<td>
+		<td rowspan="2">
+			Contractors:<br />
+			<s:select id="contractors" cssClass="forms" name="contractors" size="40" multiple="true" list="data" listKey="get('id')" listValue="get('name')"
+				ondblclick="previewEmail(this);" />
 		</td>
 		<td>
-			Email Templates:<s:select id="emailTemplates" name="emailTemplates" listKey="id" listValue="subject" list="emailTemplates"></s:select>
+			<table>
+				<tr><td><s:select cssClass="forms" id="emailTemplates" name="emailTemplates" headerKey="0" headerValue="- Pick an existing Email Template -" listKey="id" listValue="subject" list="emailTemplates" /></td>
+					<td><s:select cssClass="forms" id="tokens" name="tokens" headerKey="0" headerValue="- Add Field to Email -" listKey="tokenName" listValue="tokenName" list="tokens" onchange="addToken(this);" /></td>
+				</tr>
+			</table>
+			<s:textarea cssClass="forms" id="emailDraft" name="emailDraft" rows="20"></s:textarea>
 		</td>
 	</tr>
 	<tr>
-		<td>
-			Tokens:<s:select id="tokens" name="tokens" size="10" listKey="id" listValue="subject" list="emailTemplates"></s:select>
-		</td>
-		<td>
-			Email Draft:<s:textarea name="emailPreview" cols="75" rows="20"></s:textarea>
-		</td>
+		<td id="previewEmail" valign="top"><div id="info">Double-Click Contractor on Left to Preview Email</div></td>
 	</tr>
-	<tr>
-		<td>
-			Contractors:<s:select id="contractors" name="contractors" size="10" list="emailTemplates"></s:select>
-		</td>
-		<td>
-			Email Preview:<s:textarea name="emailPreview" cols="75" rows="20"></s:textarea>
-		</td>
-	</tr>
-	
 </table>
-
 	
-	<div class="buttons">
-		<button class="positive" name="button" type="submit" value="Search">Send Email</button>
-	</div>	
+<div class="buttons">
+	<button class="positive" name="button" type="submit">Send Emails</button>
+</div>	
 
 </s:form>
-
+</div>
 </body>
 </html>

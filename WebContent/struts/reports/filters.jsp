@@ -80,6 +80,9 @@ Filter Options</a></div>
 
 	<div style="text-align: center; width: 100%">
 	<div class="buttons">
+		<pics:permission perm="EmailTemplates">
+			<button name="button" value="Draft Email" type="submit" style="float: right;">Draft Email</button>
+		</pics:permission>
 		<button class="positive" type="submit" name="button" value="Search">Search</button>
 	</div>
 	</div>
@@ -395,11 +398,6 @@ Filter Options</a></div>
 			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 		</div>
 	</s:if>
-	
-	<br clear="all" />
-	<pics:permission perm="EmailTemplates">
-		<div class="buttons"><button name="button" value="EmailSend" type="submit">Send Mail</button></div>
-	</pics:permission>
 	
 	<br clear="all" />
 	<div class="alphapaging"><s:property

@@ -107,7 +107,7 @@ public class ReportAccount extends ReportActionSupport {
 		if (filtered == null)
 			filtered = false;
 
-		if ("EmailSend".equals(button)) {
+		if ("Draft Email".equals(button)) {
 			for (DynaBean dynaBean : data) {
 				conIDs.add((Integer) dynaBean.get("id"));
 			}

@@ -60,7 +60,7 @@ public class ReportActionSupport extends PicsActionSupport {
 			showPage = 1;
 		}
 
-		if ("EmailSend".equals(button)) {
+		if ("Draft Email".equals(button)) {
 			this.report.setLimit(100000);
 			showPage = 1;
 		}

@@ -81,7 +81,7 @@ public class ReportContractorAudits extends ReportAccount {
 		if (filtered == null)
 			filtered = true;
 
-		if ("EmailSend".equals(button)) {
+		if ("Draft Email".equals(button)) {
 			for (DynaBean dynaBean : data) {
 				auditIDs.add((Integer) dynaBean.get("auditID"));
 			}
