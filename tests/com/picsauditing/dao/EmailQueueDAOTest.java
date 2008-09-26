@@ -33,6 +33,7 @@ public class EmailQueueDAOTest {
 
 		emailQueueDAO.save(emailQueue);
 		assertEquals(true, emailQueue.getId() > 0);
+		assertEquals(true, emailQueue.getStatus().toString().equals("Pending"));
 		emailQueueDAO.remove(emailQueue.getId());
 		assertNull(emailQueueDAO.find(emailQueue.getId()));
 	}
