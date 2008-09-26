@@ -1,0 +1,25 @@
+package com.picsauditing.dao;
+
+import junit.framework.TestCase;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.picsauditing.jpa.entities.Token;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "/tests.xml")
+public class TokenDAOTest extends TestCase {
+
+	@Autowired
+	private TokenDAO tokendao;
+
+	@Test
+	public void testFind() {
+		Token token = tokendao.find(3487);
+		assertEquals("Trevor Allred", token.getToken());
+	}
+}
