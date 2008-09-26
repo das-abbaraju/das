@@ -19,7 +19,7 @@ public class TokenDAOTest extends TestCase {
 
 	@Test
 	public void testFind() {
-		Token token = tokendao.find(3487);
-		assertEquals("Trevor Allred", token.getToken());
+		Token token = tokendao.find(1);
+		assertEquals("CompanyName", token.getTokenName());
 	}
 }
