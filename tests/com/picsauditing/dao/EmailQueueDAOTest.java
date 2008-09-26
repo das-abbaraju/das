@@ -1,9 +1,8 @@
 package com.picsauditing.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.util.Date;
+
+import junit.framework.TestCase;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +15,7 @@ import com.picsauditing.jpa.entities.EmailStatus;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
-public class EmailQueueDAOTest {
+public class EmailQueueDAOTest extends TestCase {
 
 	@Autowired
 	private EmailQueueDAO emailQueueDAO;
@@ -24,16 +23,15 @@ public class EmailQueueDAOTest {
 	@Test
 	public void testSaveAndRemove() {
 		EmailQueue emailQueue = new EmailQueue();
-		emailQueue.setStatus(EmailStatus.Pending);
-		emailQueue.setFromAddress("tester@picsauditing.com");
-		emailQueue.setToAddresses("tester@picsauditing.com");
+		emailQueue.setFromAddress("junit@picsauditing.com");
+		emailQueue.setToAddresses("junit@picsauditing.com");
 		emailQueue.setSubject("Test Email");
 		emailQueue.setPriority(10);
 		emailQueue.setCreationDate(new Date());
 
 		emailQueueDAO.save(emailQueue);
-		assertEquals(true, emailQueue.getId() > 0);
-		assertEquals(true, emailQueue.getStatus().toString().equals("Pending"));
+		assertTrue(emailQueue.getId() > 0);
+		assertTrue(emailQueue.getStatus().equals(EmailStatus.Pending));
 		emailQueueDAO.remove(emailQueue.getId());
 		assertNull(emailQueueDAO.find(emailQueue.getId()));
 	}

@@ -50,7 +50,7 @@ public class EmailQueue implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
 	public EmailStatus getStatus() {
 		return status;
