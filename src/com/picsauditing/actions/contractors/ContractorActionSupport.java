@@ -23,6 +23,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 	protected ContractorAuditDAO auditDao;
 	private List<ContractorOperator> operators;
 	protected boolean limitedView = false;
+	protected List<ContractorOperator> activeOperators;
 
 	protected String subHeading;
 
@@ -201,4 +202,12 @@ public class ContractorActionSupport extends PicsActionSupport {
 		}
 		return false;
 	}
+	
+	public List<ContractorOperator> getActiveOperators() {
+		if (activeOperators == null)
+			activeOperators = accountDao.findOperators(contractor, permissions, " AND operatorAccount.active = 'Y' ");
+		return activeOperators;
+	}
+
+
 }
