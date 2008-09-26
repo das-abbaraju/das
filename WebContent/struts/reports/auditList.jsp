@@ -11,6 +11,9 @@
 <h1>Audit List</h1>
 
 <s:include value="filters.jsp" />
+<s:if test="report.allRows > 1">
+	<div class="right"><a class="excel" href="javascript: download('ReportAuditList');" title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a></div>
+</s:if>
 
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />

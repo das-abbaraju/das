@@ -25,6 +25,9 @@ Corporate Version
 	</tr>
 </table>
 <s:include value="filters.jsp" />
+<s:if test="report.allRows > 1">
+	<div class="right"><a class="excel" href="javascript: download('ContractorListOperator');" title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a></div>
+</s:if>
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
