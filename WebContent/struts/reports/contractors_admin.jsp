@@ -37,7 +37,7 @@
 				href="ContractorView.action?id=<s:property value="[0].get('id')"/>"
 				><s:property value="[0].get('name')" /></a></td>
 			<td><a
-				href="accounts_edit_contractor.jsp?id=<s:property value="[0].get('id')"/>"
+				href="ContractorEdit.action?id=<s:property value="[0].get('id')"/>"
 				>Edit</a></td>
 			<td><s:property value="[0].get('industry')" /></td>
 			<td><s:property value="[0].get('main_trade')" /></td>
