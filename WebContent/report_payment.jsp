@@ -90,7 +90,7 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 %>			  <tr <%=sBean.getBGColor()%>>
 		  	  <form name="form2" id="form2" method="post" action="report_payment.jsp?changed=0&showPage=<%=sBean.showPage%>">
                 <td class="right"><%=sBean.count-1%></td>
-			    <td><a href="accounts_edit_contractor.jsp?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class="<%=sBean.getTextColor()%>">
+			    <td><a href="ContractorEdit.action?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class="<%=sBean.getTextColor()%>">
 			    <%=sBean.getActiveStar()%><%=sBean.aBean.name%></a></td>
 			    <td><%=sBean.cBean.payingFacilities%></td>
 				<td><%=sBean.cBean.membershipDate%></td>

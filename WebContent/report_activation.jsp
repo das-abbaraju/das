@@ -199,7 +199,7 @@ try{
 			  <form name="form2" method="post" action="report_activation.jsp?changed=0&showPage=<%=sBean.showPage%>">
 				<td class="right" colspan="2"><%=sBean.count-1%></td>
 		        <td><%=sBean.getActiveStar()%>
-				  <a target="_blank" href="accounts_edit_contractor.jsp?id=<%=sBean.aBean.id%>" class="<%=sBean.getTextColor()%>">
+				  <a target="_blank" href="ContractorEdit.action?id=<%=sBean.aBean.id%>" class="<%=sBean.getTextColor()%>">
 				  <%=sBean.aBean.name%></a>
 				</td>
 				<td class="center"><%=sBean.aBean.dateCreated%></td>
