@@ -37,7 +37,6 @@ public class ReportContractorAudits extends ReportAccount {
 	protected Date closedDate2;
 	protected Date expiredDate1;
 	protected Date expiredDate2;
-	protected List<Integer> auditIDs = new ArrayList<Integer>();
 
 	public ReportContractorAudits() {
 		sql = new SelectContractorAudit();
@@ -80,13 +79,6 @@ public class ReportContractorAudits extends ReportAccount {
 
 		if (filtered == null)
 			filtered = true;
-
-		if ("Draft Email".equals(button)) {
-			for (DynaBean dynaBean : data) {
-				auditIDs.add((Integer) dynaBean.get("auditID"));
-			}
-			return "EmailSender";
-		}
 
 		return super.execute();
 	}
@@ -281,10 +273,6 @@ public class ReportContractorAudits extends ReportAccount {
 
 	public boolean isFilterExpiredDate() {
 		return filterExpiredDate;
-	}
-
-	public List<Integer> getAuditIDs() {
-		return auditIDs;
 	}
 
 }
