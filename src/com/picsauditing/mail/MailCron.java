@@ -1,5 +1,6 @@
 package com.picsauditing.mail;
 
+import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.actions.PicsActionSupport;
@@ -31,11 +32,10 @@ public class MailCron extends PicsActionSupport {
 			addActionMessage("The email queue is empty");
 			return SUCCESS;
 		}
+		EmailSender sender = new EmailSender();
 		for (EmailQueue email : emails) {
 			try {
-				EmailSender.send(email);
-				email.setStatus(EmailStatus.Sent);
-				emailQueueDAO.save(email);
+				sender.sendMail(email);
 			} catch (Exception e) {
 				System.out.println("ERROR with MailCron: " + e.getMessage());
 				addActionError("Failed to send email: " + e.getMessage());

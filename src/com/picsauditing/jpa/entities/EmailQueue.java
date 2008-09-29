@@ -114,6 +114,10 @@ public class EmailQueue implements java.io.Serializable {
 		this.body = body;
 	}
 
+	/**
+	 * Higher priority numbers are sent first by the MailCron
+	 * @return
+	 */
 	@Column(name = "priority", nullable = false, length = 4)
 	public int getPriority() {
 		return priority;

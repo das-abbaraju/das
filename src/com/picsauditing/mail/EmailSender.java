@@ -1,13 +1,17 @@
 package com.picsauditing.mail;
 
+import java.util.Date;
+
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.EmailStatus;
 import com.picsauditing.util.SpringUtils;
 
 public class EmailSender extends GMailSender {
 	private static int currentDefaultSender = 1;
 	private static final int NUMBER_OF_GMAIL_ACOUNTS = 6;
 	private static String defaultPassword = "e3r4t5";
+	private EmailQueueDAO emailQueueDAO = null;
 	
 	public EmailSender() {
 		super(getDefaultSender(), defaultPassword);
@@ -32,11 +36,25 @@ public class EmailSender extends GMailSender {
 			if (email.getFromAddress() != null && email.getFromAddress().length() > 7) fromAddress = email.getFromAddress();
 			else fromAddress = getDefaultSender();
 			this.sendMail(email.getSubject(), email.getBody(), fromAddress, email.getToAddresses());
+			email.setStatus(EmailStatus.Sent);
+			email.setSentDate(new Date());
+			if (emailQueueDAO == null)
+				emailQueueDAO = (EmailQueueDAO)SpringUtils.getBean("EmailQueueDAO");
+			emailQueueDAO.save(email);
 		} catch (Exception e) {
 			System.out.println("Send Mail Exception with account "+currentDefaultSender+": "+ e.toString() +" "+ e.getMessage());
 			changeDefaultSender();
 			this.sendMail(email, attempts);
 		}
+	}
+	
+	/**
+	 * Send this through GMail
+	 * @param email
+	 * @throws Exception
+	 */
+	public void sendMail(EmailQueue email) throws Exception {
+		sendMail(email, 0);
 	}
 	
 	private static String getDefaultSender() {
@@ -49,11 +67,19 @@ public class EmailSender extends GMailSender {
 		currentDefaultSender = (currentDefaultSender % NUMBER_OF_GMAIL_ACOUNTS)+1;
 	}
 	
+	/**
+	 * Save this email to the queue for sending later
+	 * @param email
+	 * @throws Exception
+	 */
 	public static void send(EmailQueue email) throws Exception {
 		EmailQueueDAO emailQueueDAO = (EmailQueueDAO)SpringUtils.getBean("EmailQueueDAO");
 		emailQueueDAO.save(email);
 	}
 	
+	/**
+	 * Save this email to the queue for sending later
+	 */
 	public static void send(String fromAddress, String toAddress, String ccAddress, 
 			String subject, String body) throws Exception  {
 		EmailQueue email = new EmailQueue();

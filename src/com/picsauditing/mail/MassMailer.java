@@ -1,6 +1,7 @@
 package com.picsauditing.mail;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +49,8 @@ public class MassMailer extends PicsActionSupport {
 	//private EmailAuditBean emailAuditBean;
 	private ContractorAccountDAO contractorAccountDAO;
 	private TokenDAO tokenDAO;
+	
+	private VelocityAdaptor velocityAdaptor;
 
 	public MassMailer(EmailQueueDAO emailQueueDAO, EmailTemplateDAO emailTemplateDAO, 
 			ContractorAccountDAO contractorAccountDAO, TokenDAO tokenDAO) {
@@ -131,6 +134,7 @@ public class MassMailer extends PicsActionSupport {
 			if (button.equals("send")) {
 				String filteredSubject = filterTemplate(templateSubject);
 				String filteredBody = filterTemplate(templateBody);
+				velocityAdaptor = new VelocityAdaptor();
 				
 				for (Integer conID : ids) {
 					EmailQueue email = createEmail(conID, filteredSubject, filteredBody);
@@ -142,6 +146,8 @@ public class MassMailer extends PicsActionSupport {
 	}
 	
 	private EmailQueue createEmail(int conID, String subject, String body) {
+		long startTime = Calendar.getInstance().getTimeInMillis();
+		
 		// All of this should probably go back into EmailContractorBean and EmailAuditBean
 		EmailQueue email = new EmailQueue();
 		email.setCreatedBy(new User(permissions.getUserId()));
@@ -162,18 +168,20 @@ public class MassMailer extends PicsActionSupport {
 		}
 		
 		try {
-			subject = VelocityAdaptor.mergeTemplate(subject, tokens);
+			subject = velocityAdaptor.merge(subject, tokens);
 		} catch (Exception e) {
 			subject = e.getMessage();
 		}
 		try {
-			body = VelocityAdaptor.mergeTemplate(body, tokens);
+			body = velocityAdaptor.merge(body, tokens);
 		} catch (Exception e) {
 			body = e.getMessage();
 		}
 		email.setSubject(subject);
 		email.setBody(body);
 		
+		long endTime = Calendar.getInstance().getTimeInMillis();
+		System.out.println("ms" +  (endTime - startTime));
 		return email;
 	}
 	

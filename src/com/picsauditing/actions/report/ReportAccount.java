@@ -74,7 +74,7 @@ public class ReportAccount extends ReportActionSupport {
 	protected boolean filterRiskLevel = false;
 
 	AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
-	protected List<Integer> conIDs = new ArrayList<Integer>();
+	protected List<Integer> ids = new ArrayList<Integer>();
 
 	protected SelectAccount sql = new SelectAccount();
 
@@ -109,7 +109,7 @@ public class ReportAccount extends ReportActionSupport {
 
 		if ("Draft Email".equals(button)) {
 			for (DynaBean dynaBean : data) {
-				conIDs.add((Integer) dynaBean.get("id"));
+				ids.add((Integer) dynaBean.get("id"));
 			}
 
 			return "EmailSender";
@@ -479,7 +479,7 @@ public class ReportAccount extends ReportActionSupport {
 		return filterOperatorSingle;
 	}
 
-	public List<Integer> getConIDs() {
-		return conIDs;
+	public List<Integer> getIds() {
+		return ids;
 	}
 }

@@ -274,8 +274,8 @@
 			<result>struts/reports/contractors_admin.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-				<param name="conIDs">${conIDs}</param>
-			</result>				
+				<param name="ids">${conIDs}</param>
+			</result>
 		</action>
 		
 		<action name="ContractorListAdminCSV"
@@ -289,7 +289,6 @@
 			<result>struts/reports/contractors_operator.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-				<param name="conIDs">${conIDs}</param>
 			</result>
 		</action>
 		
