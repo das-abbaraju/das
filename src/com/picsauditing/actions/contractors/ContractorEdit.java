@@ -3,38 +3,50 @@ package com.picsauditing.actions.contractors;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.AuditBuilder;
+import com.picsauditing.PICS.BillContractor;
+import com.picsauditing.PICS.ContractorValidator;
+import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.Industry;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.SpringUtils;
 
 public class ContractorEdit extends ContractorActionSupport implements Preparable {
-	private AuditQuestionDAO aQuestionDAO;
 	private File logo = null;
-	private String logoContentType = null;
 	private String logoFileName = null;
 	private File brochure = null;
-	private String brochureContentType = null;
 	private String brochureFileName = null;
+	protected AuditBuilder auditBuilder;
+	protected FlagCalculator2 flagCalculator2;
+	protected AuditQuestionDAO auditQuestionDAO;
+	protected ContractorValidator contractorValidator;
 
-	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditQuestionDAO auditQuestionDAO) {
+	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditBuilder auditBuilder,
+			FlagCalculator2 flagCalculator2, AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator) {
 		super(accountDao, auditDao);
-		this.aQuestionDAO = auditQuestionDAO;
+		this.auditBuilder = auditBuilder;
+		this.flagCalculator2 = flagCalculator2;
+		this.auditQuestionDAO = auditQuestionDAO;
+		this.contractorValidator = contractorValidator;
 	}
 
 	public void prepare() throws Exception {
 		int conID = getParameter("id");
 		contractor = accountDao.find(conID);
+		accountDao.clear();
 	}
 
 	public String execute() throws Exception {
@@ -44,8 +56,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		if (button != null) {
 			String ftpDir = getFtpDir();
 			if (button.equals("save")) {
+				permissions.tryPermission(OpPerms.ContractorAccounts, OpType.Edit);
 				if (logo != null) {
-					// Copy Logo to ftp-dir
 					String extension = logoFileName.substring(logoFileName.lastIndexOf(".") + 1);
 					String[] validExtensions = { "jpg", "gif", "png" };
 
@@ -54,19 +66,44 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						return SUCCESS;
 					}
 					String fileName = "logo_" + contractor.getId();
-					FileUtils.copyFile(logo, ftpDir, "/files/logos/", fileName, extension, true);
+					FileUtils.copyFile(logo, ftpDir, "/logos/", fileName, extension, true);
 					contractor.setLogoFile(fileName + "." + extension);
 				}
-				if (brochure != null) {
-					// Copy Logo to ftp-dir
 
+				if (brochure != null) {
+					String extension = brochureFileName.substring(brochureFileName.lastIndexOf(".") + 1);
+					String[] validExtensions = { "jpg", "gif", "png", "doc", "pdf" };
+
+					if (!FileUtils.checkFileExtension(extension, validExtensions)) {
+						addActionError("Brochure must be a image, doc or pdf file");
+						return SUCCESS;
+					}
+					String fileName = "brochure_" + contractor.getId();
+					FileUtils.copyFile(brochure, ftpDir, "/files/brochures/", fileName, extension, true);
+					contractor.setBrochureFile(extension);
+				}
+				Vector<String> errors = contractorValidator.validateContractor(contractor);
+				if (errors.size() > 0) {
+					addActionError(errors.toString());
+					return SUCCESS;
 				}
 
-				accountDao.save(contractor);
+				contractor = accountDao.save(contractor);
+				auditBuilder.buildAudits(contractor);
+				BillContractor billContractor = new BillContractor();
+				billContractor.setContractor(contractor.getIdString());
+				billContractor.calculatePrice();
+				billContractor.writeToDB();
+				flagCalculator2.runByContractor(contractor.getId());
 				addActionMessage("Successfully modified " + contractor.getName());
 			}
 			if (button.equals("delete")) {
 				permissions.tryPermission(OpPerms.RemoveContractors);
+
+				if (contractor.getAudits().size() > 0) {
+					addActionError("Cannot Remove Contractor with Audits");
+					return SUCCESS;
+				}
 				accountDao.remove(contractor, getFtpDir());
 				return SUCCESS;
 			}
@@ -91,7 +128,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public List<AuditQuestion> getTradeList() throws Exception {
-		return aQuestionDAO.findQuestionByType("Service");
+		return auditQuestionDAO.findQuestionByType("Service");
 	}
 
 	public void setLogo(File logo) {
@@ -103,7 +140,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public void setLogoContentType(String logoContentType) {
-		this.logoContentType = logoContentType;
 	}
 
 	public void setLogoFileName(String logoFileName) {
@@ -111,10 +147,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public void setBrochureContentType(String brochureContentType) {
-		this.brochureContentType = brochureContentType;
 	}
 
 	public void setBrochureFileName(String brochureFileName) {
 		this.brochureFileName = brochureFileName;
+	}
+
+	public LowMedHigh[] getRiskLevelList() {
+		return LowMedHigh.values();
 	}
 }

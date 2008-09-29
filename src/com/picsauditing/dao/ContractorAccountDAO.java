@@ -39,13 +39,9 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public void remove(ContractorAccount row, String ftpDir) {
-		FileUtils.deleteFile(ftpDir + "/files/logos/" + row.getLogoFile());
-		File parentFolder = new File(ftpDir + "/files/brochures");
-		String filename = "brochure_" + row.getId();
-		File[] deleteList = FileUtils.getSimilarFiles(parentFolder, filename);
-		for (File toDelete : deleteList) {
-			FileUtils.deleteFile(toDelete);
-		}
+		FileUtils.deleteFile(ftpDir + "/logos/" + row.getLogoFile());
+		String filename = "brochure_" + row.getId()+"."+row.getBrochureFile();
+		FileUtils.deleteFile(ftpDir + "/files/brochures/" + filename);
 		remove(row);
 	}
 

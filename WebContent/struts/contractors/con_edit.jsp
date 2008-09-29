@@ -20,7 +20,7 @@
 <s:include value="conHeader.jsp"></s:include>
 
 
-<s:form id="save">
+<s:form id="save" method="POST" enctype="multipart/form-data">
 	<s:hidden name="id" />
 	<div class="buttons">
 	<button class="positive" name="button" type="submit" value="save">Save</button>
@@ -36,7 +36,11 @@
 				</tr>
 				<tr>
 					<th>Username:</th>
-					<td><s:textfield name="contractor.username" size="45" /></td>
+					<td><s:textfield name="contractor.username" size="35" />
+						<pics:permission perm="SwitchUser">
+							<a href="login.jsp?switchUser=<s:property value="contractor.username"/>">Switch User</a>							
+						</pics:permission>
+					</td>
 				</tr>
 				<tr>
 					<th>Password:</th>
@@ -136,20 +140,19 @@
 				</tr>
 				<tr>
 					<th>Industry:</th>
-					<td><s:select list="industryList" name="contractor.industry"></s:select> </td>
+					<td><s:select list="industryList" name="contractor.industry"/></td>
 				</tr>
 				<tr>
 					<th>Main Trade:</th>
-					<td><s:select list="tradeList" name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" listKey="question" listValue="question"></s:select></td>
+					<td><s:select list="tradeList" name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" listKey="question" listValue="question"/></td>
 				</tr>
 				<tr>
 					<th>Risk Level:</th>
-					<td><s:radio list="#{'Low':'Low','Med':'Med','High':'High'}"
-						name="riskLevel" value="contractor.riskLevel"></s:radio></td>
+					<td><s:radio list="riskLevelList" name="contractor.riskLevel"/></td>
 				</tr>
 				<tr>
 					<th>Requested By:</th>
-					<td><s:select list="operatorList" name="contractor.requestedById" headerKey="0" headerValue="- Choose an operator -" listKey="id" listValue="name"></s:select></td>
+					<td><s:select list="operatorList" name="contractor.requestedById" headerKey="0" headerValue="- Choose an operator -" listKey="id" listValue="name"/></td>
 				</tr>
 				<tr>
 					<th>Paying Facilities:</th>
@@ -192,7 +195,7 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td>(Allowed formats: jpg, gif)</td>
+					<td>(Allowed formats: jpg, gif, png)</td>
 				</tr>
 				<tr>
 					<th>Company Brochure:</th>
@@ -200,7 +203,7 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td>(Allowed formats: pdf, doc, txt, jpg)</td>
+					<td>(Allowed formats: pdf, doc, jpg, gif, png)</td>
 				</tr>
 				<tr>
 					<th>Description:</th>
@@ -237,12 +240,12 @@
 					<tr>
 						<th>Only Certificates?</th>
 						<td><s:radio list="#{'Yes':'Yes','No':'No'}"
-							name="contractor.isOnlyCerts" value="contractor.isOnlyCerts"></s:radio></td>
+							name="contractor.isOnlyCerts" value="contractor.isOnlyCerts"/></td>
 					</tr>
 					<tr>
 						<th>Must Pay?</th>
 						<td><s:radio list="#{'Yes':'Yes','No':'No'}" name="contractor.mustPay"
-							value="contractor.mustPay"></s:radio></td>
+							value="contractor.mustPay"/></td>
 					</tr>
 					<tr>
 						<td colspan="2">&nbsp;</td>
@@ -309,8 +312,12 @@
 		</tr>
 	</table>
 	<div class="buttons">
-	<button class="positive" name="button" type="submit" value="save">Save</button>
-	<button name="button" type="submit" value="delete" onClick="return confirm('Are you sure you want to delete this account?');">Delete</button>
+	<pics:permission perm="ContractorAccounts" type="Edit">
+		<button class="positive" name="button" type="submit" value="save">Save</button>
+	</pics:permission>
+	<pics:permission perm="RemoveContractors">
+		<button name="button" type="submit" value="delete" onClick="return confirm('Are you sure you want to delete this account?');">Delete</button>
+	</pics:permission>
 	</div>
 </s:form>
 <div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
