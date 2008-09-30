@@ -182,21 +182,20 @@
               <td>&nbsp;</td>
             </tr>
             <tr>
-              <td class="blueMain" align="right">Annual Membership Fee</td>
+              <td class="blueMain" align="right">Membership Fee</td>
               <td class="redMain">
 	              <table border="0">
-	              <tr><td id="annualFee" class="blueMain" style="font-weight: bold; font-style: italic; width: 50px"></td>
-	                  <td class="redMain">This is based on the number of facilities you select above.<br />
-						  <a href="javascript:popUp('con_pricing.jsp')">Click to view pricing (opens in new window)</a>
-					  </td>
+	              <tr><td id="annualFee" class="blueMain" style="font-weight: bold; font-style: italic; width: 50px">
+	              </td>
+	              <td class="redMain">Annually<br />One-time Activation Fee</td>
 				  </tr></table>
 			  </td>
             </tr>
             <tr>
-              <td class="blueMain" align="right">One-time Activation Fee</td>
-              <td class="blueMain" style="font-weight: bold; font-style: italic;">$99<span class="redMain">
-              	* The registration fee is waived if your membership level is $0</span></td>
-            </tr>
+            	<td></td>	
+               <td class="redMain">This is based on the number of facilities you select above.<br />
+				  <a href="javascript:popUp('con_pricing.jsp')">Click to view pricing (opens in new window)</a>
+			  </td>
             <tr>
               <td>&nbsp;</td>
               <td>&nbsp;</td>

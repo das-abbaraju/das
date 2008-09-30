@@ -18,8 +18,11 @@
 				selectedFacilities.add(facility);
 			}
 			billing.setSelectedFacilities(selectedFacilities);
-			
-			%>$<%=billing.calculatePrice()%><%
+			%>$<%=billing.calculatePrice()%><br/>
+			<% if(billing.calculatePrice() > 0) { %>
+			$<%= 99%>
+			<% } else { %>$<%= 0%><% } %>
+			<%
 			return;
 		}
 	}
