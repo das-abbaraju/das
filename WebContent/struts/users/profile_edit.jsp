@@ -19,55 +19,41 @@ function checkUsername(username) {
 <h1>Edit Profile</h1>
 <s:include value="../actionMessages.jsp" />
 
-<s:form>
+<s:form cssStyle="width: 500px">
 	<s:hidden name="u.id" />
-	<table class="forms">
-		<tr>
-			<th>Assigned to account:</th>
-			<td><s:property value="u.account.name" /></td>
-		</tr>
-		<tr class="odd">
-			<th>Display name:</th>
-			<td><s:textfield name="u.name" /></td>
-		</tr>
-		<tr>
-			<th>Email address:</th>
-			<td><s:textfield name="u.email" size="30" /></td>
-		</tr>
-		<tr class="odd">
-			<th>Username:</th>
-			<td><s:textfield name="u.username" onblur="checkUsername(this.value);"/>
-			<div id="username_status"></div></td>
-		</tr>
-		<tr>
-			<th>Password:</th>
-			<td><s:password name="password1" value="" /></td>
-		</tr>
-		<tr class="odd">
-			<th>Confirm Password:</th>
-			<td><s:password name="password2" value="" /></td>
-		</tr>
-		<tr>
-			<th>Created:</th>
-			<td><s:date name="u.dateCreated" /></td>
-		</tr>
-		<tr class="odd">
-			<th>Last login:</th>
-			<td><s:date name="u.lastLogin" /></td>
-		</tr>
-		<tfoot>
-			<tr>
-				<th></th>
-				<td class="center">
-				<div class="buttons">
-					<s:submit id="saveButton" value="Save Profile" name="button" type="button" cssClass="positive" onclick="$('info').hide(); return true;"/>
-				</div>
-				</td>
-			</tr>
-		</tfoot>
-	</table>
+	<fieldset>
+	<legend><span>Profile</span></legend>
+	<ol>
+		<li><label>Assigned to account:</label>
+			<s:property value="u.account.name" /></li>
+		<li><label for="u.name">Display name:</label>
+			<s:textfield name="u.name" /></li>
+		<li><label for="u.email">Email address:</label>
+			<s:textfield name="u.email" size="30"/></li>
+		<li><label>Created:</label>
+			<s:date name="u.dateCreated" /></li>
+		<li><label>Last login:</label>
+			<s:date name="u.lastLogin" /></li>
+	</ol>
+	</fieldset>
+	<fieldset>
+	<legend><span>Username &amp; Password</span></legend>
+	<ol>
+		<li><label for="u.username">Username:</label>
+			<s:textfield name="u.username" onblur="checkUsername(this.value);"/>
+			<div id="username_status"></div></li>
+		<li><label for="password1">Password:</label>
+			<s:password name="password1" value="" /></li>
+		<li><label for="password2">Confirm Password:</label>
+			<s:password name="password2" value="" /></li>
+	</ol>
+	</fieldset>
+	<fieldset class="submit">
+		<div class="buttons">
+			<button id="saveButton" class="positive" value="Save Profile" name="button" onclick="$('info').hide(); return true;">Save Profile</button>
+		</div>
+	</fieldset>
 </s:form>
-
 
 </body>
 </html>
