@@ -82,6 +82,7 @@ form.smallform {
 		<td class="center"><a href="javascript: changeOrderBy('form1','gc.dateAdded DESC');" class="whiteTitle">Date Added</a></td>
 		<td class="center"><a href="javascript: changeOrderBy('form1','workStatus');" class="whiteTitle">Approved</a></td>
 		<td>&nbsp;</td>
+		<td>Notes</td>
 	</tr>
 	</thead>
 	<%
@@ -108,6 +109,7 @@ form.smallform {
 		</td>
 		<td id="result_td<%=rowID%>" style="font-style: italic;">
 		</td>
+		<td><a href="add_notes.jsp?id=<%=rowID%>">Add Notes</a></td>
 	</tr>
 	<%
 		} // end foreach loop
