@@ -618,6 +618,12 @@
 		<action name="EmailQueueList"
 			class="com.picsauditing.mail.EmailQueueList">
 			<result>struts/mail/email_queue_list.jsp</result>
-		</action>		
+		</action>
+		
+		<action name="EmailTemplateSave"
+			class="com.picsauditing.mail.EmailTemplateSave">
+			<result>struts/blank.jsp</result>
+		</action>
+		
 	</package>
 </struts>

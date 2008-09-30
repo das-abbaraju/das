@@ -97,13 +97,6 @@ public class MassMailer extends PicsActionSupport {
 		if (type == null || type.length() == 0)
 			type = "Contractors";
 		
-		if (ids == null) {
-			// TODO REMOVE AFTER TESTING!!
-			ids = new ArrayList<Integer>();
-			ids.add(3);
-			ids.add(3769);
-			ids.add(4494);
-		}
 		if (ids == null || ids.size() == 0) {
 			addActionError("Please select atleast one record to which to send an email.");
 			return "blank";
@@ -146,7 +139,7 @@ public class MassMailer extends PicsActionSupport {
 	}
 	
 	private EmailQueue createEmail(int conID, String subject, String body) {
-		long startTime = Calendar.getInstance().getTimeInMillis();
+		//long startTime = Calendar.getInstance().getTimeInMillis();
 		
 		// All of this should probably go back into EmailContractorBean and EmailAuditBean
 		EmailQueue email = new EmailQueue();
@@ -180,8 +173,8 @@ public class MassMailer extends PicsActionSupport {
 		email.setSubject(subject);
 		email.setBody(body);
 		
-		long endTime = Calendar.getInstance().getTimeInMillis();
-		System.out.println("ms" +  (endTime - startTime));
+		//long endTime = Calendar.getInstance().getTimeInMillis();
+		//System.out.println("ms" +  (endTime - startTime));
 		return email;
 	}
 	
@@ -192,16 +185,16 @@ public class MassMailer extends PicsActionSupport {
 			template = template.replace("${", "_");
 			template = template.replace("}", "_");
 		}
-		System.out.println("starting with: " + template);
+		//System.out.println("starting with: " + template);
 		for(Token token : getTokens()) {
 			// This token is valid for this type of email template
 			// Convert anything like this <Name> into something like this ${person.name}
 			String find = "<" + token.getTokenName() + ">";
 			String replace = "${" + token.getVelocityName() + "}";
-			System.out.println("replace " + find + " with " + replace);
+			//System.out.println("replace " + find + " with " + replace);
 			template = template.replace(find, replace);
 		}
-		System.out.println("filtered: " + template);
+		//System.out.println("filtered: " + template);
 		return template;
 	}
 
