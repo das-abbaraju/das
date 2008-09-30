@@ -621,6 +621,18 @@ button.positive, .buttons a.positive {
 	color: #fff;
 }
 
+.buttons button.disabled {
+	background-color: #999;
+	color: #CCC;
+	border: 1px solid #666;
+}
+.buttons button.disabled:hover {
+	background-color: #999;
+	color: #CCC;
+	border: 1px solid #666;
+	cursor: default;
+}
+
 /********************** LIVE HELP BOX ******************************/
 #helpbox {
 	position: absolute;
