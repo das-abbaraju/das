@@ -20,6 +20,8 @@ import com.picsauditing.util.SpringUtils;
 
 public class PicsActionSupport extends ActionSupport {
 	protected static String LOGIN_AJAX = "LoginAjax";
+	protected static String BLANK = "blank";
+	
 	protected Permissions permissions = null;
 
 	// replaces the obsolete message in cases where we need to print out a
