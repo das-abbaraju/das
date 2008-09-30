@@ -163,7 +163,7 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.FatalitiesReport))
 			subMenu.addChild("Fatalities", "ReportFatalities.action");
-		subMenu.addChild("Flag Criteria", "ReportOperatorCriteria.action");
+		subMenu.addChild("Operator Flag Criteria", "ReportOperatorCriteria.action");
 		if (permissions.hasPermission(OpPerms.ForcedFlagsReport))
 			subMenu.addChild("Forced Flags", "ReportContractorsWithForcedFlags.action");
 		if (permissions.hasPermission(OpPerms.FatalitiesReport))
