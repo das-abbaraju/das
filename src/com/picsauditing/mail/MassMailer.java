@@ -98,7 +98,7 @@ public class MassMailer extends PicsActionSupport {
 			type = "Contractors";
 		
 		if (ids == null || ids.size() == 0) {
-			addActionError("Please select atleast one record to which to send an email.");
+			addActionError("Please select at least one record to which to send an email.");
 			return "blank";
 		}
 		
@@ -127,7 +127,6 @@ public class MassMailer extends PicsActionSupport {
 			if (button.equals("send")) {
 				String filteredSubject = filterTemplate(templateSubject);
 				String filteredBody = filterTemplate(templateBody);
-				velocityAdaptor = new VelocityAdaptor();
 				
 				for (Integer conID : ids) {
 					EmailQueue email = createEmail(conID, filteredSubject, filteredBody);
@@ -161,14 +160,14 @@ public class MassMailer extends PicsActionSupport {
 		}
 		
 		try {
-			subject = velocityAdaptor.merge(subject, tokens);
+			subject = getVelocity().merge(subject, tokens);
 		} catch (Exception e) {
-			subject = e.getMessage();
+			addActionError(e.getMessage());
 		}
 		try {
-			body = velocityAdaptor.merge(body, tokens);
+			body = getVelocity().merge(body, tokens);
 		} catch (Exception e) {
-			body = e.getMessage();
+			addActionError(e.getMessage());
 		}
 		email.setSubject(subject);
 		email.setBody(body);
@@ -209,6 +208,12 @@ public class MassMailer extends PicsActionSupport {
 				tokens = tokenDAO.findByType("User");
 		}
 		return tokens;
+	}
+	
+	private VelocityAdaptor getVelocity() {
+		if (velocityAdaptor == null)
+			velocityAdaptor = new VelocityAdaptor();
+		return velocityAdaptor;
 	}
 
 	public List<EmailTemplate> getEmailTemplates() {

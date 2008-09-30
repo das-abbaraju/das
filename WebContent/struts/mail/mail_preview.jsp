@@ -1,5 +1,4 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-
 <label>Subject:</label> <s:property value="templateSubject"/> <br />
 <br />
 

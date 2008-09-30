@@ -49,6 +49,7 @@ function editEmail() {
 
 function previewEmail(item) {
 	var id = item.value;
+
 	if (id > 0) {
 		$('buttonSave').hide();
 		$('buttonNew').hide();

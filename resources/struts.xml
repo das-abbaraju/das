@@ -39,7 +39,6 @@
 			<result>struts/reports/auditList.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-				<param name="auditIDs">${auditIDs}</param>
 			</result>				
 		</action>
 		
@@ -54,7 +53,6 @@
 			<result>struts/reports/audit_auditor.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-				<param name="auditIDs">${auditIDs}</param>
 			</result>				
 		</action>
 
@@ -63,7 +61,6 @@
 			<result>struts/reports/myAuditHistory.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-				<param name="auditIDs">${auditIDs}</param>
 			</result>				
 		</action>
 
@@ -77,7 +74,6 @@
 			<result>struts/reports/auditAssignments.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-				<param name="auditIDs">${auditIDs}</param>
 			</result>				
 		</action>
 
@@ -274,7 +270,6 @@
 			<result>struts/reports/contractors_admin.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-				<param name="ids">${conIDs}</param>
 			</result>
 		</action>
 		
@@ -303,7 +298,6 @@
 			<result>struts/reports/newContractor_operator.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-				<param name="conIDs">${conIDs}</param>
 			</result>				
 		</action>
 
@@ -362,7 +356,6 @@
 			<result>/struts/reports/report_licenses.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-				<param name="auditIDs">${auditIDs}</param>
 			</result>				
 		</action>
 
@@ -406,7 +399,6 @@
 			<result>struts/reports/assignedContractor.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-				<param name="conIDs">${conIDs}</param>
 			</result>				
 		</action>
 
@@ -425,7 +417,6 @@
 			<result>struts/reports/pqf_verification.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-				<param name="auditIDs">${auditIDs}</param>
 			</result>				
 		</action>
 
@@ -459,7 +450,6 @@
 			<result>/struts/reports/delinquent_conaccounts.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-				<param name="conIDs">${conIDs}</param>
 			</result>				
 		</action>
 
@@ -468,7 +458,6 @@
 			<result>/struts/reports/archived_conaccounts.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-				<param name="conIDs">${conIDs}</param>
 			</result>				
 		</action>
 
@@ -511,7 +500,6 @@
 			<result>struts/reports/complete_pqf.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-				<param name="conIDs">${conIDs}</param>
 			</result>				
 		</action>
 		
@@ -575,7 +563,6 @@
 			<result>struts/reports/operator_flagcriteria.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-				<param name="conIDs">${conIDs}</param>
 			</result>				
 		</action>
 		
