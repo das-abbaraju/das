@@ -5,6 +5,7 @@
 	</decorator>
 	<decorator name="ignoreMe">
 		<pattern>/*Ajax.action</pattern>
+		<pattern>/*ajax*</pattern>
 		<pattern>/*CSV.action</pattern>
 		<pattern>/*download*</pattern>
 		<pattern>/AuditDataUpload.action</pattern>
