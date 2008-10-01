@@ -23,6 +23,18 @@ function toggleBox(name) {
 	result.show();
 }
 
+function showTextBox(name) {
+	var textBox = $(name);
+	var result = $(name+'_query'); 
+	result.hide();
+	textBox.toggle();
+	if(textBox.visible())
+		return;
+
+	textQuery(name);
+	result.show();	
+}
+
 function clearSelected(name) {
 	var box = $(name);
 	for(i=0; i < box.length; i++)
@@ -46,6 +58,33 @@ function updateQuery(name) {
 		queryText = 'ALL';
 	}
 	result.update(queryText);
+}
+
+function textQuery(name) {
+	var startField = $(name+'1');
+	var endField = $(name+'2');
+	var result = $(name+'_query');
+	var queryText = '';
+	if(startField.value != '' && endField.value != '')
+		queryText = 'between '+startField.value+' and '+ endField.value;
+	if(startField.value != '' && endField.value == '')
+		queryText = 'after '+ startField.value;
+	if(startField.value == '' && endField.value != '')
+		queryText = 'before '+ endField.value;
+	
+	if (queryText == '') {
+		queryText = '= ALL';
+	}
+	result.update(queryText);
+}
+
+function clearTextField(name) {
+	var box = $(name);
+	var startField = $(name+'1');
+	var endField = $(name+'2');
+	startField.value = "";
+	endField.value = ""; 
+	textQuery(name);
 }
 
 function download(url) {
@@ -224,6 +263,7 @@ Filter Options</a></div>
 			headerKey="0" headerValue="- Risk Level -" cssClass="forms" name="riskLevel"/></div>
 	</s:if>
 	
+	<br clear="all"/>
 	<s:if test="filterLicensedIn">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_stateLicensedIn'); return false;">Licensed
@@ -262,6 +302,108 @@ Filter Options</a></div>
 			onclick="clearSelected('form1_officeIn'); return false;">Clear</a> </span></div>
 	</s:if>
 
+	<s:if test="filterConLicense">
+		<br clear="all" />
+		<div class="filterOption">
+		<s:select name="validLicense" list="#{'Valid':'Valid','UnValid':'UnValid','All':'All'}" value="%{validLicense}" cssClass="forms"/>
+		</div>
+	</s:if>
+
+	<s:if test="filterPercentComplete">
+		<br clear="all"/>
+		<div class="filterOption"><a href="#" onclick="showTextBox('form1_percentComplete'); return false;">Percent Complete</a> 
+			<span id="form1_percentComplete_query">= ALL</span><br /> 
+			<span id="form1_percentComplete" style="display: none" class="clearLink"><s:textfield name="percentComplete1"
+			id="form1_percentComplete1" cssClass="forms" size="12" onfocus="clearText(this)" /> To: 
+			<s:textfield name="percentComplete2" id="form1_percentComplete2"
+			cssClass="forms" size="12" onfocus="clearText(this)" />
+			<script
+			type="text/javascript">textQuery('form1_percentComplete'); </script> <br />
+			<a class="clearLink" href="#"
+			onclick="clearTextField('form1_percentComplete'); return false;">Clear</a></span>
+		</div>
+	</s:if>
+
+	<s:if test="filterCreatedDate">
+		<div class="filterOption"><a href="#" onclick="showTextBox('form1_createdDate'); return false;">Created Date</a>  
+			<span id="form1_createdDate_query">= ALL</span><br /> 
+			<span id="form1_createdDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="6" 
+			id="form1_createdDate1" name="createdDate1" />
+			<a id="anchor_createdDate1" name="anchor_createdDate1"
+			onclick="cal2.select($('form1_createdDate1'),'anchor_createdDate1','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+			To:<s:textfield cssClass="forms" size="6" 
+			id="form1_createdDate2" name="createdDate2" />
+			<a id="anchor_createdDate2" name="anchor_createdDate2"
+			onclick="cal2.select($('form1_createdDate2'),'anchor_createdDate2','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+			<script
+			type="text/javascript">textQuery('form1_createdDate');</script> <br />
+			<a class="clearLink" href="#"
+			onclick="clearTextField('form1_createdDate'); return false;">Clear</a></span>
+		</div>
+	</s:if>
+
+	<s:if test="filterCompletedDate">
+		<div class="filterOption"><a href="#" onclick="showTextBox('form1_completedDate'); return false;">Completed Date</a> 
+			<span id="form1_completedDate_query">= ALL</span><br /> 
+			<span id="form1_completedDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="6" 
+			id="form1_completedDate1" name="completedDate1" />
+			<a id="anchor_completedDate1" name="anchor_completedDate1"
+			onclick="cal2.select($('form1_completedDate1'),'anchor_completedDate1','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+			To:<s:textfield cssClass="forms" size="6" 
+			id="form1_completedDate2" name="completedDate2" />
+			<a id="anchor_completedDate2" name="anchor_completedDate2"
+			onclick="cal2.select($('form1_completedDate2'),'anchor_completedDate2','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+			<script
+			type="text/javascript">textQuery('form1_completedDate');</script> <br />
+			<a class="clearLink" href="#"
+			onclick="clearTextField('form1_completedDate'); return false;">Clear</a></span>
+		</div>
+	</s:if>
+	
+	<s:if test="filterClosedDate">
+		<div class="filterOption"><a href="#" onclick="showTextBox('form1_closedDate'); return false;">Closed Date</a> 
+			<span id="form1_closedDate_query">= ALL</span><br /> 
+			<span id="form1_closedDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="6" 
+			id="form1_closedDate1" name="closedDate1" />
+			<a id="anchor_closedDate1" name="anchor_closedDate1"
+			onclick="cal2.select($('form1_closedDate1'),'anchor_closedDate1','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+			To:<s:textfield cssClass="forms" size="6" 
+			id="form1_closedDate2" name="closedDate2" />
+			<a id="anchor_closedDate2" name="anchor_closedDate2"
+			onclick="cal2.select($('form1_closedDate2'),'anchor_closedDate2','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+			<script
+			type="text/javascript">textQuery('form1_closedDate');</script> <br />
+			<a class="clearLink" href="#"
+			onclick="clearTextField('form1_closedDate'); return false;">Clear</a></span>
+		</div>
+	</s:if>
+
+	<s:if test="filterExpiredDate">
+		<div class="filterOption"><a href="#" onclick="showTextBox('form1_expiredDate'); return false;">Expired Date</a> 
+			<span id="form1_expiredDate_query">= ALL</span><br /> 
+			<span id="form1_expiredDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="6" 
+			id="form1_expiredDate1" name="expiredDate1" />
+			<a id="anchor_expiredDate1" name="anchor_expiredDate1"
+			onclick="cal2.select($('form1_expiredDate1'),'anchor_expiredDate1','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+			To:<s:textfield cssClass="forms" size="6" 
+			id="form1_expiredDate2" name="expiredDate2" />
+			<a id="anchor_expiredDate2" name="anchor_expiredDate2"
+			onclick="cal2.select($('form1_expiredDate2'),'anchor_expiredDate2','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+			<script
+			type="text/javascript">textQuery('form1_expiredDate');</script> <br />
+			<a class="clearLink" href="#"
+			onclick="clearTextField('form1_expiredDate'); return false;">Clear</a></span>
+		</div>
+	</s:if>
+	
 	<s:if test="filterOshaEmr">
 		<br clear="all" />
 		<div class="filterOption">
@@ -304,14 +446,7 @@ Filter Options</a></div>
 		Check to Search on Assigned Contractors</label>
 		</div>
 	</s:if>
-
-	<s:if test="filterConLicense">
-		<br clear="all" />
-		<div class="filterOption">
-		<s:select name="validLicense" list="#{'Valid':'Valid','UnValid':'UnValid','All':'All'}" value="%{validLicense}" cssClass="forms"/>
-		</div>
-	</s:if>
-
+	
 	<s:if test="filterExpiredLicense">
 		<br clear="all" />
 		<div class="filterOption">
@@ -327,77 +462,6 @@ Filter Options</a></div>
 		</div>
 	</s:if>
 	
-	<s:if test="filterPercentComplete">
-		<br clear="all"/>
-		<div class="filterOption">Percent Complete: <s:textfield name="percentComplete1"
-		cssClass="forms" size="12" onfocus="clearText(this)" /> To: 
-		<s:textfield name="percentComplete2"
-		cssClass="forms" size="12" onfocus="clearText(this)" />
-		</div>
-	</s:if>
-
-	
-	<s:if test="filterCreatedDate">
-		<div class="filterOption">Created Date: 
-			<s:textfield cssClass="forms" size="6" 
-			id="createdDate1" name="createdDate1" />
-			<a id="anchor_createdDate1" name="anchor_createdDate1"
-			onclick="cal2.select($('createdDate1'),'anchor_createdDate1','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-			To:<s:textfield cssClass="forms" size="6" 
-			id="createdDate2" name="createdDate2" />
-			<a id="anchor_createdDate2" name="anchor_createdDate2"
-			onclick="cal2.select($('createdDate2'),'anchor_createdDate2','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-		</div>
-	</s:if>
-
-	<br clear="all" />
-	<s:if test="filterCompletedDate">
-		<div class="filterOption">Completed Date: 
-			<s:textfield cssClass="forms" size="6" 
-			id="completedDate1" name="completedDate1" />
-			<a id="anchor_completedDate1" name="anchor_completedDate1"
-			onclick="cal2.select($('completedDate1'),'anchor_completedDate1','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-			To:<s:textfield cssClass="forms" size="6" 
-			id="completedDate2" name="completedDate2" />
-			<a id="anchor_completedDate2" name="anchor_completedDate2"
-			onclick="cal2.select($('completedDate2'),'anchor_completedDate2','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-		</div>
-	</s:if>
-	
-	<s:if test="filterClosedDate">
-		<div class="filterOption">Closed Date: 
-			<s:textfield cssClass="forms" size="6" 
-			id="closedDate1" name="closedDate1" />
-			<a id="anchor_closedDate1" name="anchor_closedDate1"
-			onclick="cal2.select($('closedDate1'),'anchor_closedDate1','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-			To:<s:textfield cssClass="forms" size="6" 
-			id="closedDate2" name="closedDate2" />
-			<a id="anchor_closedDate2" name="anchor_closedDate2"
-			onclick="cal2.select($('closedDate2'),'anchor_closedDate2','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-		</div>
-	</s:if>
-
-	<br clear="all" />
-	<s:if test="filterExpiredDate">
-		<div class="filterOption">Expired Date: 
-			<s:textfield cssClass="forms" size="6" 
-			id="expiredDate1" name="expiredDate1" />
-			<a id="anchor_expiredDate1" name="anchor_expiredDate1"
-			onclick="cal2.select($('expiredDate1'),'anchor_expiredDate1','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-			To:<s:textfield cssClass="forms" size="6" 
-			id="expiredDate2" name="expiredDate2" />
-			<a id="anchor_expiredDate2" name="anchor_expiredDate2"
-			onclick="cal2.select($('expiredDate2'),'anchor_expiredDate2','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-		</div>
-	</s:if>
 	
 	<br clear="all" />
 	<div class="alphapaging"><s:property
