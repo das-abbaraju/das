@@ -1,5 +1,6 @@
 package com.picsauditing.mail;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,6 +50,7 @@ public class EmailBean {
 
 		String body = getBody();
 		email.setBody(body);
+		email.setCreationDate(new Date());
 
 		if (permissions != null && (email.getFromAddress().length() == 0)) {
 			// If contractor causes the email it will be sent from
