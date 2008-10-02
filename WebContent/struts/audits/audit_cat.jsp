@@ -27,11 +27,11 @@
 				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 			}
 		});
-	
 	}
 	
 	
 	function saveAnswer( questionid, elm ) {
+		<s:if test="catDataID == 0">return;</s:if>
 		var pars = 'auditData.audit.id=<s:property value="conAudit.id"/>&catDataID=<s:property value="catDataID"/>&auditData.question.questionID=' + questionid + '&auditData.answer=';
 		if( elm.type == 'text' || elm.type == 'radio' || elm.type == 'textarea')
 		{
@@ -157,11 +157,12 @@
 
 </head>
 <body>
-<s:include value="../contractors/conHeader.jsp" />
-
-<s:include value="audit_cat_nav.jsp" />
-<div id="auditToolbar" class="right">
 <s:if test="catDataID > 0">
+<s:include value="../contractors/conHeader.jsp" />
+<s:include value="audit_cat_nav.jsp" />
+</s:if>
+<div id="auditToolbar" class="right">
+<s:if test="catDataID > 0">	
 	<s:if test="mode != 'View'">
 		<a class="view" href="?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>&mode=View">Switch to View Mode</a>
 	</s:if>
@@ -169,7 +170,7 @@
 		<a class="edit" href="?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>&mode=Edit">Switch to Edit Mode</a>
 	</s:if>
 </s:if>
-	<s:if test="mode == 'View' || mode == 'ViewQ'">
+	<s:if test="mode == 'View' || mode == 'ViewQ' || catDataID == 0">
 		<a href="javascript:window.print()" class="print">Print</a>
 	</s:if>
 </div>
@@ -194,9 +195,13 @@
 					<s:if test="permissions.contractor">
 						<span style="font-size: 12px;color:#003768;">Provide the following numbers (excluding subcontractors) using your OSHA/MSHA 300 Forms from the past 3 years:</span><br/>
 					</s:if>
+					<s:if test="catDataID == 0">
+						<s:include value="audit_cat_osha_edit.jsp"/>
+					</s:if>
 					<s:iterator value="contractor.oshas">
 						<s:include value="audit_cat_osha_edit.jsp"></s:include>
 					</s:iterator>
+					<s:if test="catDataID != 0">
 					<s:form action="OshaSave" method="POST" enctype="multipart/form-data">
 						<s:hidden name="conID" value="%{conAudit.contractorAccount.id}"></s:hidden>
 						<s:hidden name="auditID"></s:hidden>
@@ -204,6 +209,7 @@
 						<s:hidden name="oshaID" value="%{id}"></s:hidden>
 						<s:submit name="submit" value="Add New Location" cssStyle="padding: 6px;position: relative;left: 380px;"></s:submit>
 					</s:form>
+					</s:if>
 				</s:if>
 		</s:if>
 		<s:else>
@@ -217,7 +223,7 @@
 				</tr>
 				</s:if>
 				<s:iterator value="questions">
-				<s:if test="effectiveDate.before(conAudit.createdDate) && expirationDate.after(conAudit.createdDate)">
+				<s:if test="catDataID == 0 || (effectiveDate.before(conAudit.createdDate) && expirationDate.after(conAudit.createdDate))">
 					<s:if test="isGroupedWithPrevious.toString() == 'No'">
 						<s:set name="shaded" value="!#shaded" scope="action"/>
 					</s:if>
@@ -255,7 +261,7 @@
 		</s:else>
 	</s:if>
 </s:iterator>
-
+<s:if test="catDataID > 0">
 <br clear="all"/>
 <div class="buttons" style="float: right;">
 	<s:if test="nextCategory == null">
@@ -266,8 +272,7 @@
 	</s:else>
 </div>
 <br clear="all"/>
-
 <s:include value="audit_cat_nav.jsp" />
-
+</s:if>
 </body>
 </html>

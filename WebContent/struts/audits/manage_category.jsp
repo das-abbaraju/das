@@ -52,7 +52,6 @@
 			<s:if test="category.subCategories.size == 0">
 				<button name="button" type="submit" value="delete">Delete</button>
 			</s:if></div>
-
 		</s:form>
 		</td>
 		<s:if test="id != 0">
@@ -67,6 +66,7 @@
 						value="subCategory" /></a></li>
 				</s:iterator>
 			</ul>
+			<a href="AuditCat.action?catID=<s:property value="category.id" />">Preview Category</a>&nbsp;&nbsp;
 			<a
 				href="ManageSubCategory.action?button=AddNew&parentID=<s:property value="category.id"/>&subCategory.category.id=<s:property value="category.id"/>">Add
 			New Sub Category</a> <script type="text/javascript">

@@ -12,7 +12,7 @@
 	    Location - 
 	    <s:select name="osha.location" list="#{'Corporate':'Corporate','Division':'Division','Region':'Region','Site':'Site'}" value="%{location}" cssClass="forms"/>
 	</th>
-	<s:if test="!corporate || permissions.admin">		
+	<s:if test="(!corporate || permissions.admin) && catDataID > 0">		
 		<td colspan="3">
 			<s:submit name="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this location? This action cannot be undone.');" cssStyle="padding: 3px;"></s:submit>
 		</td>
@@ -108,10 +108,12 @@
 </tr>
 </tbody>
 <tfoot>
-<tr>
-	<th colspan="4"><s:submit name="submit" value="Save This Location" cssStyle="padding: 6px;"></s:submit>
-	</th>
-</tr>
+<s:if test="catDataID > 0">
+	<tr>
+		<th colspan="4"><s:submit name="submit" value="Save This Location" cssStyle="padding: 6px;"></s:submit>
+		</th>
+	</tr>
+</s:if>
 </tfoot>
 </table>
 </s:form>

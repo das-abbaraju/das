@@ -19,7 +19,7 @@ function selectCrumb(selector, url) {
 	<s:if test="auditType != null"><span class="sub"><s:property value="auditType.auditName"/></span></s:if>
 </h1>
 <div id="breadcrumbs">
-	<a class="blueMain" href="ManageAuditType.action">Top</a></li>
+	<a class="blueMain" href="ManageAuditType.action">Top</a>
 	<s:if test="auditType != null">
 		<s:if test="category == null">
 			&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain current" href="ManageAuditType.action?id=<s:property value="auditType.auditTypeID"/>"><s:property value="auditType.auditName"/></a>
