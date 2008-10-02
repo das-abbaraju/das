@@ -1,10 +1,13 @@
 package com.picsauditing.actions.audits;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.Inputs;
+import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -38,22 +41,40 @@ public class AuditCategoryAction extends AuditActionSupport {
 	static private String EDIT = "Edit";
 	protected boolean viewBlanks = true;
 	protected boolean onlyReq = false;
+	protected int catID;
 
 	protected AuditCatData previousCategory = null;
 	protected AuditCatData nextCategory = null;
 	protected AuditCatData currentCategory = null;
 
 	private AuditPercentCalculator auditPercentCalculator;
+	private AuditCategoryDAO auditCategoryDAO;
 
 	public AuditCategoryAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator) {
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator, AuditCategoryDAO auditCategoryDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.auditPercentCalculator = auditPercentCalculator;
+		this.auditCategoryDAO = auditCategoryDAO;
 	}
 
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+		if(catID > 0) {
+			AuditCategory auditCategory = auditCategoryDAO.find(catID);
+			for(AuditSubCategory auditSubCategory : auditCategory.getSubCategories()){
+				for(AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
+				}
+			}
+			categories = new ArrayList<AuditCatData>();
+			AuditCatData catData = new AuditCatData();
+			catData.setCategory(auditCategory);
+			catData.setApplies(YesNo.Yes);
+			categories.add(catData);
+			mode = EDIT;
+			return SUCCESS;
+		}
+		
 		this.findConAudit();
 
 		getCategories();
@@ -161,7 +182,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 			}
 		}
 	}
-
+	
 	public int getCatDataID() {
 		return catDataID;
 	}
@@ -214,4 +235,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 		this.onlyReq = onlyReq;
 	}
 
+	public void setCatID(int catID) {
+		this.catID = catID;
+	}
 }

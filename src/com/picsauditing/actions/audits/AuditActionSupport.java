@@ -89,12 +89,16 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public List<AuditCatData> getCategories() {
-		if (conAudit.getAuditStatus().equals(AuditStatus.Exempt))
-			return null;
+		if (categories != null)
+			return categories;
 
-		if (categories == null) {
-			categories = catDataDao.findByAudit(conAudit, permissions);
+		if (conAudit.getAuditStatus().equals(AuditStatus.Exempt)) {
+			categories = new ArrayList<AuditCatData>();
+			return categories;
 		}
+
+		categories = catDataDao.findByAudit(conAudit, permissions);
+
 		return categories;
 	}
 

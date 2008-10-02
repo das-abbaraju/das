@@ -35,6 +35,10 @@ public class AuditDataSave extends PicsActionSupport {
 
 	public String execute() throws Exception {
 
+		if (catDataID == 0) {
+			addActionError("Missing catDataID");
+			return SUCCESS;
+		}
 		try {
 			if (!forceLogin())
 				return LOGIN;
