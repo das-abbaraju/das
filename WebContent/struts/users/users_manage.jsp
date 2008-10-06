@@ -197,77 +197,72 @@ function checkUsername(username) {
 		<s:if test="user.group">
 			<s:hidden name="user.isActive" />
 		</s:if>
-		<table class="forms">
-			<thead>
-			<tr><td colspan="2">
-				<div class="buttons">
-					<pics:permission perm="EditUsers" type="Edit">
-						<button id="SaveButton" class="positive" type="submit" name="button" value="Save">Save</button>
-					</pics:permission>
-					<pics:permission perm="EditUsers" type="Delete">
-						<s:if test="user.id > 0">
-							<button type="submit" name="button" value="Remove" style="float: right" onclick="return confirm('Are you sure you want to delete this user/group?');">Delete</button>
-						</s:if>
-					</pics:permission>
-				</div>
-			</td></tr>
-			</thead>
-			<tr>
-				<th><s:if test="user.group">Group</s:if><s:else>User</s:else> #</th>
-				<td><s:property value="user.id"/></td>
-			</tr>
-			<tr>
-				<th>Date created</th>
-				<td><s:date name="user.dateCreated" format="MM/d/yyyy" /></td>
-			</tr>
-			<tr>
-				<th>Display name</th>
-				<td><s:textfield name="user.name" size="30"/></td>
-			</tr>
-			<s:if test="!user.group">
-				<tr>
-					<th>Email</th>
-					<td><s:textfield name="user.email" size="40"/></td>
-				</tr>
-				<tr> 
-					<td colspan="2">&nbsp;</td>
-				</tr>
-				<tr>
-					<th>Username</th>
-					<td><s:textfield name="user.username" size="30" onblur="checkUsername(this.value);"/>
-						<span id="username_status"></span>
-					</td>
-				</tr>
-				<tr>
-					<th>Password</th>
-					<td><s:textfield name="user.password" /></td>
-				</tr>
-				<s:if test="user != null">
-					<tr>
-						<th>Last login</th>
-						<td><s:date name="user.lastLogin" /></td>
-					</tr>
-				</s:if>
-				<tr>
-					<th>Active</th>
-					<td><s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio></td>
-				</tr>
+
+			<div class="buttons">
+				<pics:permission perm="EditUsers" type="Edit">
+					<button id="SaveButton" class="positive" type="submit" name="button" value="Save">Save</button>
+				</pics:permission>
+				<pics:permission perm="EditUsers" type="Delete">
+					<s:if test="user.id > 0">
+						<button type="submit" name="button" value="Remove" onclick="return confirm('Are you sure you want to delete this user/group?');">Delete</button>
+					</s:if>
+				</pics:permission>
+			</div>
+			<fieldset>
+			<legend><span>User Details</span></legend>		
+			<ol>
+				<li><label>
+					<s:if test="user.group">Group</s:if>
+					<s:else>User</s:else> #:</label>
+					<s:property value="user.id"/>
+				</li>
+				<li><label>Date Created:</label>
+					<s:date name="user.dateCreated" format="MM/d/yyyy" />
+				</li>
+				<li><label>Display Name:</label>
+					<s:textfield name="user.name" size="30"/>
+				</li>
+			</ol>
+			<ol>
+			<s:if test="!user.group">	
+				<li><label>Email:</label>
+					<s:textfield name="user.email" size="40"/>
+				</li>
+				<li>
+				</li>
+				<li><label>Username:</label>
+					<s:textfield name="user.username" size="30" onblur="checkUsername(this.value);"/>
+					<span id="username_status"></span>
+				</li>
+				<li><label>Password:</label>
+					<s:textfield name="user.password" />
+				</li>
+					<s:if test="user != null">
+					<li><label>Last Login:</label>
+						<s:date name="user.lastLogin" />
+					</li>
+					</s:if>
 			</s:if>
-		</table>
-	</s:form>
-	
-	<s:if test="user.id > 0">
-		<s:if test="!user.group">
+				<li><label>Active</label>
+					<s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio>
+				</li>
+			</ol>
+			</fieldset>
+			<s:if test="user.id > 0 && !user.group">
+			<fieldset>
 			<div>
 				<pics:permission perm="SwitchUser">
 					<a href="login.jsp?switchUser=<s:property value="user.username"/>">Switch to this User</a> | 
 				</pics:permission>
 				<a href="UserSave.action?button=sendWelcomeEmail&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&user.id=<s:property value="user.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>">Send Welcome Email</a>
 			</div>
-		</s:if>
-		
+			</fieldset>
+			</s:if>
+	</s:form>
+<br clear="all">	
+	<s:if test="user.id > 0">
 		<s:if test="!user.superUser">
-			<div id="permissionReport"  style="width: 100%">
+			<div id="permissionReport" style="width: 100%">
 				<s:include value="user_save_permissions.jsp" />
 			</div>
 			

@@ -12,157 +12,125 @@
 <s:include value="manage_audit_type_breadcrumbs.jsp" />
 
 <table>
-<tr><td style="vertical-align: top">
-
-<s:form id="save">
-<s:hidden name="id" />
-<s:hidden name="parentID" value="%{question.subCategory.id}" />
-<s:hidden name="question.subCategory.id" />
-<div class="buttons">
-	<button class="positive" name="button" type="submit" value="save">Save</button>
-</div>
-<table class="forms">
-<tr>
-<th>ID:</th>
-<td><s:if test="question.questionID > 0"><s:property value="question.questionID" /></s:if>
-<s:else>NEW</s:else></td>
-</tr>
-<tr>
-<th>Question:</th>
-<td><s:textarea name="question.question" rows="2" cols="50" /></td>
-</tr>
-
-<tr>
-<th>Effective Date:</th>
-<td><s:textfield name="question.effectiveDate" value="%{ question.effectiveDate && getText('short_dates', {question.effectiveDate})}"/></td>
-</tr>
-
-<tr>
-<th>Expiration Date:</th>
-<td><s:textfield name="question.expirationDate" value="%{ question.expirationDate && getText('short_dates', {question.expirationDate})}"/></td>
-</tr>
-
-<tr>
-<th>Added:</th>
-<td><s:date name="question.dateCreated" /></td>
-</tr>
-<tr>
-<th>Updated:</th>
-<td><s:date name="question.lastModified" /></td>
-</tr>
-
-
-<tr>
-<th>Column Header:</th>
-<td><s:textfield name="question.columnHeader" size="20" maxlength="30"/></td>
-</tr>
-<tr>
-<th>Has Requirement:</th>
-<td><s:checkbox name="question.hasRequirement" value="question.hasRequirement.name() == 'Yes' ? true : false"/></td>
-</tr>
-<tr>
-<th>OK Answer:</th>
-<td><s:textfield name="question.okAnswer" /></td>
-</tr>
-<tr>
-<th>Requirement:</th>
-<td><s:textarea name="question.requirement" rows="2" cols="50" /></td>
-</tr>
-<tr>
-<th>Flaggable:</th>
-<td><s:checkbox name="question.isRedFlagQuestion" value="question.isRedFlagQuestion.name() == 'Yes' ? true : false"/></td>
-</tr>
-<tr>
-<th>Required:</th>
-<td><s:select list="#{'No':'No','Yes':'Yes','Depends':'Depends'}" name="question.isRequired" /></td>
-</tr>
-
-<tr>
-<th>Depends on Answer:</th>
-<td><s:textfield name="question.dependsOnAnswer" /></td>
-</tr>
-<tr>
-<th>Question Type:</th>
-<td><s:select list="questionTypes" name="question.questionType" /></td>
-</tr>
-<tr>
-<th>Title:</th>
-<td><s:textfield name="question.title" /></td>
-</tr>
-
-<tr>
-<th>Visible:</th>
-<td><s:checkbox name="question.isVisible"  value="question.isVisible.name() == 'Yes' ? true : false"/></td>
-</tr>
-<tr>
-<th>Grouped with Previous:</th>
-<td><s:checkbox name="question.isGroupedWithPrevious"  value="question.isGroupedWithPrevious.name() == 'Yes' ? true : false"/></td>
-</tr>
-
-<tr>
-<th>Url 1:</th>
-<td><s:textfield name="question.linkUrl1" /></td>
-</tr>
-<tr>
-<th>Label 1:</th>
-<td><s:textfield name="question.linkText1" /></td>
-</tr>
-<tr>
-<th>Url 2:</th>
-<td><s:textfield name="question.linkUrl2" /></td>
-</tr>
-<tr>
-<th>Label 2:</th>
-<td><s:textfield name="question.linkText2" /></td>
-</tr>
-<tr>
-<th>Url 3:</th>
-<td><s:textfield name="question.linkUrl3" /></td>
-</tr>
-<tr>
-<th>Label 3:</th>
-<td><s:textfield name="question.linkText3" /></td>
-</tr>
-<tr>
-<th>Url 4:</th>
-<td><s:textfield name="question.linkUrl4" /></td>
-</tr>
-<tr>
-<th>Label 4:</th>
-<td><s:textfield name="question.linkText4" /></td>
-</tr>
-<tr>
-<th>Url 5:</th>
-<td><s:textfield name="question.linkUrl5" /></td>
-</tr>
-<tr>
-<th>Label 5:</th>
-<td><s:textfield name="question.linkText5" /></td>
-</tr>
-<tr>
-<th>Url 6:</th>
-<td><s:textfield name="question.linkUrl6" /></td>
-</tr>
-<tr>
-<th>Label 6:</th>
-<td><s:textfield name="question.linkText6" /></td>
+	<tr>
+		<td style="vertical-align: top">
+		<s:form id="save">
+		<s:hidden name="id" />
+		<s:hidden name="parentID" value="%{question.subCategory.id}" />
+		<s:hidden name="question.subCategory.id" />
+		<div class="buttons">
+			<button class="positive" name="button" type="submit" value="save">Save</button>
+		</div>
+		<div>
+			<fieldset>
+			<legend><span>Details</span></legend>
+			<ol>
+				<li><label>ID:</label>
+					<s:if test="category.id > 0">
+						<s:property value="category.id" />
+					</s:if>
+					<s:else>
+						NEW
+					</s:else>
+				</li>
+				<li><label>Question:</label>
+					<s:textarea name="question.question" rows="2" cols="50" />
+				</li>		
+				<li><label>Effective Date:</label>
+					<s:textfield name="question.effectiveDate" value="%{ question.effectiveDate && getText('short_dates', {question.effectiveDate})}"/>
+				</li>
+				<li><label>Expiration Date:</label>
+					<s:textfield name="question.expirationDate" value="%{ question.expirationDate && getText('short_dates', {question.expirationDate})}"/>
+				</li>
+				<li><label>Added:</label>
+					<s:date name="question.dateCreated" />
+				</li>
+				<li><label>Updated:</label>
+					<s:date name="question.lastModified" />
+				</li>	
+				<li><label>Column Header:</label>
+					<s:textfield name="question.columnHeader" size="20" maxlength="30"/>
+				</li>	
+				<li><label>Has Requirement:</label>
+					<s:checkbox name="question.hasRequirement" value="question.hasRequirement.name() == 'Yes' ? true : false"/>
+				</li>
+				<li><label>OK Answer:</label>
+					<s:textfield name="question.okAnswer" />
+				</li>
+				<li><label>Requirement:</label>
+					<s:textarea name="question.requirement" rows="2" cols="50" />
+				</li>
+				<li><label>Flaggable:</label>
+					<s:checkbox name="question.isRedFlagQuestion" value="question.isRedFlagQuestion.name() == 'Yes' ? true : false"/>
+				</li>
+				<li><label>Required:</label>
+					<s:select list="#{'No':'No','Yes':'Yes','Depends':'Depends'}" name="question.isRequired" />
+				</li>
+				<li><label>Depends on Answer:</label>
+					<s:textfield name="question.dependsOnAnswer" />
+				</li>	
+				<li><label>Question Type:</label>
+					<s:select list="questionTypes" name="question.questionType" />
+				</li>
+				<li><label>Title:</label>
+					<s:textfield name="question.title" size="65"/>
+				</li>																																									
+				<li><label>Visible:</label>
+					<s:checkbox name="question.isVisible"  value="question.isVisible.name() == 'Yes' ? true : false"/>
+				</li>
+				<li><label>Grouped with Previous:</label>
+					<s:checkbox name="question.isGroupedWithPrevious"  value="question.isGroupedWithPrevious.name() == 'Yes' ? true : false"/>
+				</li>
+				<li><label>Url 1:</label>
+					<s:textfield name="question.linkUrl1" size="65"/>
+				</li>
+				<li><label>Label 1:</label>
+					<s:textfield name="question.linkText1" size="25"/>
+				</li>
+				<li><label>Url 2:</label>
+					<s:textfield name="question.linkUrl2" size="65"/>
+				</li>	
+				<li><label>Label 2:</label>
+					<s:textfield name="question.linkText2" size="25"/>
+				</li>		
+				<li><label>Url 3:</label>
+					<s:textfield name="question.linkUrl3" size="65"/>
+				</li>	
+				<li><label>Label 3:</label>
+					<s:textfield name="question.linkText3" size="25"/>
+				</li>
+				<li><label>Url 4:</label>
+					<s:textfield name="question.linkUrl4" size="65"/>
+				</li>	
+				<li><label>Label 4:</label>
+					<s:textfield name="question.linkText4" size="25"/>
+				</li>
+				<li><label>Url 5:</label>
+					<s:textfield name="question.linkUrl5" size="65"/>
+				</li>	
+				<li><label>Label 5:</label>
+					<s:textfield name="question.linkText5" size="25"/>
+				</li>
+				<li><label>Url 6:</label>
+					<s:textfield name="question.linkUrl6" size="65"/>
+				</li>	
+				<li><label>Label 6:</label>
+					<s:textfield name="question.linkText6" size="25"/>
+				</li>									
+			</ol>
+			</fieldset>
+			<br clear="all">
+		</div>		
+		<br clear="all">
+		<div class="buttons">
+			<button class="positive" name="button" type="submit" value="save">Save</button>
+			<s:if test="question.questionID > 0">
+				<button name="button" type="submit" value="delete">Delete</button>
+			</s:if>
+		</div>
+	</s:form>
+	</td>
 </tr>
 </table>
-<div class="buttons">
-	<button class="positive" name="button" type="submit" value="save">Save</button>
-	<s:if test="question.questionID > 0">
-		<button name="button" type="submit" value="delete">Delete</button>
-	</s:if>
-</div>
-</s:form>
-</td>
-<td style="vertical-align: top">
-	<table class="report">
-	</table>
-</td>
-</tr>
-</table>
-
 </body>
-
 </html>

@@ -33,94 +33,89 @@
 	<div><a href="AuditOperator.action?aID=<s:property value="auditType.auditTypeID"/>">Edit Operator Access</a></div>
 </s:if>
 <table>
-<tr><td style="vertical-align: top">
-
-<s:form id="save">
-<s:hidden name="id"></s:hidden>
-<table class="forms">
-<tr>
-<th>ID:</th>
-<td><s:if test="auditType.auditTypeID > 0"><s:property value="auditType.auditTypeID" /></s:if>
-<s:else>NEW</s:else></td>
-</tr>
-<tr>
-<th>Audit Type Name:</th>
-<td><s:textfield name="auditType.auditName"></s:textfield></td>
-</tr>
-<tr>
-<th>Description:</th>
-<td><s:textarea name="auditType.description" rows="2" cols="30" /></td>
-</tr>
-<tr>
-<th>Has Multiple:</th>
-<td><s:checkbox name="auditType.hasMultiple" /></td>
-</tr>
-<tr>
-<th>Is Scheduled:</th>
-<td><s:checkbox name="auditType.scheduled" /></td>
-</tr>
-<tr>
-<th>Has Auditor:</th>
-<td><s:checkbox name="auditType.hasAuditor" /></td>
-</tr>
-<tr>
-<th>Has Requirements:</th>
-<td><s:checkbox name="auditType.hasRequirements" /></td>
-</tr>
-<tr>
-<th>Contractor Can View:</th>
-<td><s:checkbox name="auditType.canContractorView" /></td>
-</tr>
-<tr>
-<th>Contractor Can Edit:</th>
-<td><s:checkbox name="auditType.canContractorEdit" /></td>
-</tr>
-<tr>
-<th>Months to Expire:</th>
-<td><s:textfield name="auditType.monthsToExpire" /></td>
-</tr>
-<tr>
-<th>Date to Expire:</th>
-<td><s:textfield name="auditType.dateToExpire" /> m/d/yy</td>
-</tr>
-<tr>
-<th>Order:</th>
-<td><s:textfield name="auditType.displayOrder" /></td>
-</tr>
-</table>
-<div class="buttons">
-	<button class="positive" name="button" type="submit" value="save">Save</button>
-	<s:if test="auditType.auditTypeID > 0 && auditType.categories.size == 0">
-		<button name="button" type="submit" value="delete">Delete</button>
-	</s:if>
-</div>
-</s:form>
-</td>
-<s:if test="id > 0">
-<td style="vertical-align: top">
-<div>
-	<ul id="list">
-	<s:iterator value="auditType.categories">
-	    <li id="item_<s:property value="id"/>" title="Drag and drop to change order"><s:property value="number"/>. <a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="category"/> </a></li>
-	</s:iterator>
-	</ul>
-	
-	<a href="ManageCategory.action?button=AddNew&parentID=<s:property value="auditType.auditTypeID"/>&category.auditType.auditTypeID=<s:property value="auditType.auditTypeID"/>">Add New Category</a>
-	<script type="text/javascript">
-	//<![CDATA[
-	Sortable.create("list", 
-		{onUpdate:function(){new Ajax.Updater('list-info', 'OrderAuditChildrenAjax.action?id=<s:property value="auditType.auditTypeID"></s:property>&type=AuditType', {asynchronous:true, evalScripts:true, onComplete:function(request){new Effect.Highlight("list",{});}, parameters:Sortable.serialize("list")})}})
-	//]]>
-	</script>
-	<div id="list-info"></div>
-</div>
-<s:if test="auditType.categories.size > 1">
-	<div id="info">Drag and drop categories to change their order</div>
-	<br clear="all" />
-</s:if>
-</td>
-</s:if>
-</tr>
+	<tr>
+		<td style="vertical-align: top">
+		<s:form id="save">
+		<s:hidden name="id"></s:hidden>
+			<div>
+				<fieldset>
+				<legend><span>Details</span></legend>
+					<ol>
+						<li><label>ID:</label>
+							<s:if test="auditType.auditTypeID > 0"><s:property value="auditType.auditTypeID" /></s:if>
+							<s:else>NEW</s:else>
+						</li>
+						<li><label>Name:</label>
+							<s:textfield name="auditType.auditName"></s:textfield>
+						</li>
+						<li><label>Description:</label>
+							<s:textfield name="auditType.auditName"></s:textfield>
+						</li>
+						<li><label>Has Multiple:</label>
+							<s:checkbox name="auditType.hasMultiple" />
+						</li>
+						<li><label>Is Scheduled:</label>
+							<s:checkbox name="auditType.scheduled" />
+						</li>
+						<li><label>Has Auditor:</label>
+							<s:checkbox name="auditType.hasAuditor" />
+						</li>
+						<li><label>Has Requirements:</label>
+							<s:checkbox name="auditType.hasRequirements" />
+						</li>
+						<li><label>Contractor Can View:</label>
+							<s:checkbox name="auditType.canContractorView" />
+						</li>
+						<li><label>Contractor Can Edit:</label>
+							<s:checkbox name="auditType.canContractorEdit" />
+						</li>
+						<li><label>Months to Expire:</label>
+							<s:textfield name="auditType.dateToExpire" /> m/d/yy
+						</li>
+						<li><label>Date to Expire:</label>
+							<s:checkbox name="auditType.hasAuditor" />
+						</li>
+						<li><label>Order:</label>
+							<s:textfield name="auditType.displayOrder" />
+						</li>
+					</ol>
+				</fieldset>
+				<br clear="all">
+			</div>
+			<br clear="all">
+			<div class="buttons">
+				<button class="positive" name="button" type="submit" value="save">Save</button>
+				<s:if test="auditType.auditTypeID > 0 && auditType.categories.size == 0">
+					<button name="button" type="submit" value="delete">Delete</button>
+				</s:if>
+			</div>
+		</s:form>
+		</td>
+		<s:if test="id > 0">
+		<td style="vertical-align: top">
+			<div>
+				<ul id="list">
+				<s:iterator value="auditType.categories">
+				    <li id="item_<s:property value="id"/>" title="Drag and drop to change order"><s:property value="number"/>. <a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="category"/> </a></li>
+				</s:iterator>
+				</ul>
+				
+				<a href="ManageCategory.action?button=AddNew&parentID=<s:property value="auditType.auditTypeID"/>&category.auditType.auditTypeID=<s:property value="auditType.auditTypeID"/>">Add New Category</a>
+				<script type="text/javascript">
+				//<![CDATA[
+				Sortable.create("list", 
+					{onUpdate:function(){new Ajax.Updater('list-info', 'OrderAuditChildrenAjax.action?id=<s:property value="auditType.auditTypeID"></s:property>&type=AuditType', {asynchronous:true, evalScripts:true, onComplete:function(request){new Effect.Highlight("list",{});}, parameters:Sortable.serialize("list")})}})
+				//]]>
+				</script>
+				<div id="list-info"></div>
+			</div>
+			<s:if test="auditType.categories.size > 1">
+				<div id="info">Drag and drop categories to change their order</div>
+				<br clear="all" />
+			</s:if>
+		</td>
+		</s:if>
+	</tr>
 </table>
 </body>
 </html>
