@@ -25,26 +25,24 @@
 		</s:elseif>
 		
 		<s:else>
-			<s:property value="answer.answer" />
+			<s:if test="answer.verified && answer.verifiedAnswer.length() > 0 && answer.answer != answer.verifiedAnswer">
+				 <s:property value="answer.verifiedAnswer" />&nbsp;&nbsp;<a href="javascript:showAnswer(<s:property value="questionID"/>);" style="color : #900">Changed by PICS</a> 
+			</s:if>
+			<s:else>						
+				<s:property value="answer.answer" />
+			</s:else>
 			<s:if test="questionType == 'Manual' && answer.answer.length() > 0">
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment: <s:property value="answer.comment"/>
 			</s:if>
 		</s:else>
 		
-		<s:if test="answer.verified">
-			<s:if test="answer.verifiedAnswer.length() > 0 && answer.answer != answer.verifiedAnswer" >
-				<span class="unverified">Inaccurate Data</span><br/>
-				<span style="color: #272;"><s:property value="answer.verifiedAnswer" /></span> 
-			</s:if>
-			<s:else><br/></s:else>
-			<span class="verified">
-			Verified on <s:date name="answer.dateVerified" format="MMM d, yyyy" />
-			</span>
-		</s:if>
-		
 		<s:if test="answer.unverified">
 			<span class="unverified">Inaccurate Data</span>
 		</s:if>
+	</span>
+	<br/>
+	<span id="showText_<s:property value="questionID"/>" style="display: none" class="verified">
+		Previous Answer changed from "<s:property value="answer.answer"/>" on <s:date name="answer.dateVerified" format="MMM d, yyyy" />
 	</span></td>
 </tr>
 <s:if test="answer.hasRequirements && conAudit.auditType.hasRequirements">
