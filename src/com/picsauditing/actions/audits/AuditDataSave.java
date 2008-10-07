@@ -83,9 +83,12 @@ public class AuditDataSave extends PicsActionSupport {
 				} else {
 					// we were handed the verification parms instead of the
 					// edit parms
-				
+
 					if (auditData.getVerifiedAnswer() != null) {
 						newCopy.setVerifiedAnswer(auditData.getVerifiedAnswer());
+						newCopy.setIsCorrect(YesNo.Yes);
+						newCopy.setDateVerified(new Date());
+						newCopy.setAuditor(getUser());
 					}
 
 					if (ActionContext.getContext().getParameters().get("auditData.isCorrect") != null) {
