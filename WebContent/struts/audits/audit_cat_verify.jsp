@@ -21,9 +21,6 @@
 			<s:date name="answer.dateVerified" format="MMM d, yyyy" /> by 
 			<s:property value="answer.auditor.name"/></span>
 	</s:if>
-	<div class="buttons">
-		<button onclick="changeAnswer(<s:property value="questionID"/>, '<s:property value="questionType"/>');">Copy Answer</button>
-	</div>
 	<br clear="all"/><br/>
 	Verified Answer: 
 	<s:if test="questionType == 'Radio'">
@@ -41,6 +38,7 @@
 	<s:else>
 		<s:textfield id="verifiedBox_%{questionID}" name="verifiedAnswer_%{questionID}" value="%{answer.verifiedAnswer}" size="40" onchange="saveVerifiedAnswer(%{questionID},this);"/>
 	</s:else>
+	&nbsp;&nbsp;<button onclick="changeAnswer(<s:property value="questionID"/>, '<s:property value="questionType"/>');">Copy Answer</button>
 	<br /><br/>
 	Comment: <s:textfield id="comments_%{questionID}" name="answer.comment" size="50" onblur="javascript:saveComment(%{questionID}, this);"/>
 	</td>

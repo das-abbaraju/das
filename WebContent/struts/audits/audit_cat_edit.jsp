@@ -92,7 +92,7 @@
 	</td>
 	</tr>
 </s:if>
-<s:if test="answer.verified && answer.verifiedAnswer.length() > 0 && answer.answer != answer.verifiedAnswer">
+<s:if test="answer.unverified && answer.verifiedAnswer.length() > 0">
 	<tr class="group<s:if test="#shaded">Shaded</s:if>">
 	<td colspan="4"><span class="verified">Answer changed to <s:property value="answer.verifiedAnswer"/> on <s:date name="answer.dateVerified" format="MMM d, yyyy" />
 	</span></td></tr>
