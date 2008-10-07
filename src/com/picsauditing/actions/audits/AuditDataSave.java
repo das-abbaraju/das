@@ -4,7 +4,6 @@ import java.util.Date;
 
 import javax.persistence.NoResultException;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -86,21 +85,12 @@ public class AuditDataSave extends PicsActionSupport {
 
 					if (auditData.getVerifiedAnswer() != null) {
 						newCopy.setVerifiedAnswer(auditData.getVerifiedAnswer());
-						newCopy.setIsCorrect(YesNo.Yes);
+						if (auditData.getVerifiedAnswer().equals(newCopy.getAnswer()))
+							newCopy.setIsCorrect(YesNo.Yes);
+						else
+							newCopy.setIsCorrect(YesNo.No);
 						newCopy.setDateVerified(new Date());
 						newCopy.setAuditor(getUser());
-					}
-
-					if (ActionContext.getContext().getParameters().get("auditData.isCorrect") != null) {
-						if (auditData.getIsCorrect() != newCopy.getIsCorrect()) {
-							if (auditData.isVerified()) {
-								newCopy.setDateVerified(new Date());
-							} else {
-								newCopy.setDateVerified(null);
-							}
-
-							newCopy.setVerified(auditData.isVerified());
-						}
 					}
 				}
 
