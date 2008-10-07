@@ -65,6 +65,8 @@
 </ul>
 </div>
 
+<a class="blueMain" href="QuestionAnswerSearch.action">Search by Question</a>
+
 <div style="text-align: center">
 <span class="redMain"><%=flagCriteria.getErrorMessages()%></span>
 <form name="form1" method="post" action="op_editFlagCriteria.jsp?opID=<%=opID%>">
