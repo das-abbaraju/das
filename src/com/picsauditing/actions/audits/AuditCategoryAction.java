@@ -1,7 +1,6 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -39,6 +38,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 	protected String mode = null;
 	static private String VIEW = "View";
 	static private String EDIT = "Edit";
+	static private String VERIFY = "Verify";
 	protected boolean viewBlanks = true;
 	protected boolean onlyReq = false;
 	protected int catID;
@@ -51,7 +51,8 @@ public class AuditCategoryAction extends AuditActionSupport {
 	private AuditCategoryDAO auditCategoryDAO;
 
 	public AuditCategoryAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator, AuditCategoryDAO auditCategoryDAO) {
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
+			AuditCategoryDAO auditCategoryDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.auditCategoryDAO = auditCategoryDAO;
@@ -60,10 +61,10 @@ public class AuditCategoryAction extends AuditActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		if(catID > 0) {
+		if (catID > 0) {
 			AuditCategory auditCategory = auditCategoryDAO.find(catID);
-			for(AuditSubCategory auditSubCategory : auditCategory.getSubCategories()){
-				for(AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
+			for (AuditSubCategory auditSubCategory : auditCategory.getSubCategories()) {
+				for (AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
 				}
 			}
 			categories = new ArrayList<AuditCatData>();
@@ -74,7 +75,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 			mode = EDIT;
 			return SUCCESS;
 		}
-		
+
 		this.findConAudit();
 
 		getCategories();
@@ -103,7 +104,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 			if (mode == null && conAudit.getAuditStatus().equals(AuditStatus.Pending))
 				mode = EDIT;
 			if (mode == null && conAudit.getAuditStatus().equals(AuditStatus.Submitted))
-				mode = EDIT;
+				mode = VERIFY;
 
 		} else {
 			// When we want to show all categories
@@ -119,6 +120,8 @@ public class AuditCategoryAction extends AuditActionSupport {
 		if (mode == null)
 			mode = VIEW;
 		if (mode.equals(EDIT) && !isCanEdit())
+			mode = VIEW;
+		if (mode.equals(VERIFY) && !isCanVerify())
 			mode = VIEW;
 
 		if (currentCategory != null) {
@@ -182,7 +185,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 			}
 		}
 	}
-	
+
 	public int getCatDataID() {
 		return catDataID;
 	}
