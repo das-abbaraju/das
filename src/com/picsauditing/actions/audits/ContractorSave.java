@@ -50,10 +50,7 @@ public class ContractorSave extends PicsActionSupport implements Preparable {
 	}
 
 	public void prepare() throws Exception {
-		String[] ids = (String[]) ActionContext.getContext().getParameters()
-				.get("ca.id");
-		int id = new Integer(ids[0]).intValue();
-		ca = dao.find(id);
+		ca = dao.find(getParameter("ca.id"));
 	}
 
 	public ContractorAccount getCa() {

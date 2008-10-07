@@ -2,119 +2,13 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Mass Mailer</title>
+<title>Mass Emailer</title>
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript"
 	src="js/scriptaculous/scriptaculous.js?load=effects"></script>
+<script type="text/javascript" src="js/mass_mailer.js"></script>
 <script language="JavaScript">
-
-var dirty = false;
-function dirtyOn() {
-	$('buttonSave').removeClassName('disabled');
-	dirty = true;
-}
-
-function showTemplateList() {
-	$('draftEdit').hide();
-	Effect.Fade('menu_selector', {duration: 0.3});
-	Effect.Appear('chooseEmail');
-}
-
-function showTemplateNew() {
-	Effect.Appear('div_newEmail');
-}
-
-function sendEmails() {
-	// Select all of the contractors left in the box, then submit the form
-	var contractors = $('contractors');
-	for (var i = 0; i < contractors.length; i++)
-		contractors.options[i].selected = true;
-	
-	$('form1').submit();
-}
-
-function addToken(tokens) {
-	$('templateBody').value += " <" + tokens.value + ">";
-	tokens.value = 0;
-	$('templateBody').focus();
-}
-
-function editEmail() {
-	$('buttonEdit').hide();
-	$('buttonSave').show();
-	$('buttonNew').show();
-	Effect.Fade('previewEmail');
-	Effect.Appear('draftEmail');
-}
-
-function previewEmail(item) {
-	var id = item.value;
-
-	if (id > 0) {
-		$('buttonSave').hide();
-		$('buttonNew').hide();
-		$('buttonEdit').show();
-		
-		Effect.Fade('draftEmail');
-		Effect.Appear('previewEmail');
-		
-		var subject = $('templateSubject').value;
-		var body = $('templateBody').value;
-		
-		var pars = "button=MailPreviewAjax&ids[0]=" + id + "&templateSubject=" + subject + "&templateBody=" + body + "&type=<s:property value="type" />";
-		
-		$('previewEmail').innerHTML = '<img src="images/ajax_process.gif" />';
-		var myAjax = new Ajax.Updater('previewEmail','MailPreviewAjax.action',
-						 {method: 'post',parameters: pars});
-	} else {
-		alert("You must select record to preview");
-	}
-}
-
-function chooseTemplate(id) {
-	editEmail();
-	$('buttonSave').addClassName('disabled');
-	
-	Effect.Fade('chooseEmail', {duration: 0.3});
-	Effect.Appear('menu_selector');
-	Effect.Appear('draftEdit', {duration: 2});
-	
-	var pars = "button=MailEditorAjax&templateID=" + id + "&type=<s:property value="type" />";
-
-	$('draftEmail').innerHTML = '<img src="images/ajax_process.gif" />';
-	var myAjax = new Ajax.Updater('draftEmail','MailEditorAjax.action',
-					 {method: 'post',parameters: pars});
-}
-
-function deleteTemplate(id) {
-	var deleteMe = confirm('Are you sure you want to delete this email template?');
-	if (!deleteMe)
-		return;
-	
-	var pars = "button=delete&id=" + id;
-
-	var myAjax = new Ajax.Updater('','EmailTemplateSave.action',
-		{
-			method: 'post',
-			parameters: pars,
-			onsuccess: Effect.Fade('li_template'+id)
-		});
-}
-
-function saveTemplate() {
-	var id = $('templateID').value;
-	var subject = $('templateSubject').value;
-	var body = $('templateBody').value;
-	var name = $('templateName').value;
-}
-
-function addTemplate() {
-	var id = $('templateID').value;
-	var subject = $('templateSubject').value;
-	var body = $('templateBody').value;
-	var name = $('templateName').value;
-}
-
+type = "<s:property value="type" />";
 </script>
 <style type="text/css">
 #templateBody {
@@ -165,8 +59,9 @@ function addTemplate() {
 </head>
 <body>
 
-<h1>Mass Mailer</h1>
+<h1>Mass Emailer</h1>
 <s:include value="../actionMessages.jsp" />
+<div id="messages"></div>
 <s:form
 	id="form1" method="post">
 	<s:hidden name="type" />
@@ -175,17 +70,17 @@ function addTemplate() {
 <table style="width: 100%;">
 <tr>
 	<td style="width: 20%">
-		<h3><s:property value="type" /></h3>
+		<h3><s:property value="type" /> (<s:property value="list.size()"/> entries)</h3>
 		<s:select id="contractors" cssClass="forms"
 			name="ids" size="%{list.size() < 40 ? list.size() : 40}" multiple="true" list="list" listKey="get('id')"
-			listValue="get('name')" ondblclick="previewEmail(this);" />
+			listValue="get('name')" ondblclick="previewEmail(this);" title="Double click a row to preview email" />
+			<div>* Double click preview</div>
 	</td>
 	<td style="vertical-align: top; padding-left: 20px;">
 		<div class="buttons" id="menu_selector" style="display: none;">
 			<button id="buttonPick" type="button" onclick="showTemplateList();" title="Choose another email template">Pick Template</button>
 			<button id="buttonPreview" type="button" onclick="previewEmail($('contractors'));" title="Preview the email with the selected contractor">Preview</button>
-			<button id="buttonNew" type="button" onclick="showTemplateNew();" title="Save the email as a NEW template for future use">Save as New</button>
-			<button id="buttonSave" type="button" onclick="showTemplateSave();" title="Save this email as a template for future use">Save Template</button>
+			<button id="buttonSave" type="button" onclick="Effect.Appear('div_saveEmail');" title="Save this email as a template for future use">Save Template</button>
 			<button id="buttonEdit" style="display: none" type="button" onclick="editEmail();" title="Continue editing the email">Continue Editing</button>
 			<button class="positive" type="button" onclick="sendEmails();">Send	Emails</button>
 			<br clear="all">
@@ -214,11 +109,11 @@ function addTemplate() {
 				</td>
 			</tr>
 		</table>
-		<div id="draftEdit" style="display: none; position: relative;">
-			<div id="draftEmail" style="position: static;"></div>
-			<div id="previewEmail" style="display: none; position: static;"></div>
-			<br clear="all" />
+		<div id="draftEdit">
+			<div id="draftEmail"></div>
+			<div id="previewEmail" style="display: none;"></div>
 		</div>
+		<br clear="all" style="float: none;" />
 	</td>
 </tr>
 </table>

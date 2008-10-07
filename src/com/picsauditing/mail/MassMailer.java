@@ -37,6 +37,7 @@ public class MassMailer extends PicsActionSupport {
 	private String type = "Contractors"; // Contractors, Audits, Users
 
 	private int templateID;
+	private String templateName;
 	private String templateSubject;
 	private String templateBody;
 	private List<Token> tokens = null;
@@ -69,6 +70,7 @@ public class MassMailer extends PicsActionSupport {
 				EmailTemplate template = emailTemplateDAO.find(templateID);
 				templateSubject = template.getSubject();
 				templateBody = template.getBody();
+				templateName = template.getTemplateName();
 			} else {
 				templateSubject = "";
 				templateBody = "";
@@ -262,6 +264,14 @@ public class MassMailer extends PicsActionSupport {
 
 	public void setTemplateID(int templateID) {
 		this.templateID = templateID;
+	}
+
+	public String getTemplateName() {
+		return templateName;
+	}
+
+	public void setTemplateName(String templateName) {
+		this.templateName = templateName;
 	}
 
 }

@@ -607,7 +607,7 @@
 			<result>struts/mail/email_queue_list.jsp</result>
 		</action>
 		
-		<action name="EmailTemplateSave"
+		<action name="EmailTemplateSaveAjax"
 			class="com.picsauditing.mail.EmailTemplateSave">
 			<result>struts/blank.jsp</result>
 		</action>

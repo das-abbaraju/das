@@ -90,6 +90,7 @@ public class EmailSender extends GMailSender {
 	public static void send(String fromAddress, String toAddress, String ccAddress, String subject, String body)
 			throws Exception {
 		EmailQueue email = new EmailQueue();
+		email.setCreationDate(new Date());
 		email.setSubject(subject);
 		email.setBody(body);
 		email.setFromAddress(fromAddress);

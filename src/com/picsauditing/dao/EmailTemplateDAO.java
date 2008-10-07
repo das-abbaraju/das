@@ -6,10 +6,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.PICS.Utilities;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailTemplate;
-import com.picsauditing.jpa.entities.UserLoginLog;
 
 @Transactional
 public class EmailTemplateDAO extends PicsDAO {
@@ -25,6 +22,10 @@ public class EmailTemplateDAO extends PicsDAO {
 
 	public void remove(int id) {
 		EmailTemplate row = find(id);
+		remove(row);
+	}
+
+	public void remove(EmailTemplate row) {
 		if (row != null) {
 			em.remove(row);
 		}
@@ -36,7 +37,7 @@ public class EmailTemplateDAO extends PicsDAO {
 	
 	@SuppressWarnings("unchecked")
 	public List<EmailTemplate> findByAccountID(int accountID) {
-		Query query = em.createQuery("FROM EmailTemplate WHERE accountID=?");
+		Query query = em.createQuery("FROM EmailTemplate WHERE accountID=? ORDER BY templateName");
 		query.setParameter(1, accountID);
 		List<EmailTemplate> list = query.getResultList();
 		return list;

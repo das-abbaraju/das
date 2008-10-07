@@ -5,10 +5,15 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.List;
 
-import com.picsauditing.PICS.Utilities;
-import com.picsauditing.jpa.entities.Industry;
-
 public class Strings {
+	
+	public static boolean isEmpty(String value) {
+		if (value == null)
+			return true;
+		value = value.trim();
+		return value.length() == 0;
+	}
+	
 	public static String[] convertListToArray(List<String> list) {
 		String[] array = new String[list.size()];
 		int i = 0;

@@ -17,12 +17,12 @@ fieldset.alt {
 	background-color: #F0F0F0;
 }
 
-legend {
+fieldset legend {
 	color: #A84D10;
 	font-weight: bold;
 	padding: 0;
 }
-legend span {
+fieldset legend span {
 	position: absolute;
 	margin-top: 0.5em;
 	left: 0.74em;
@@ -53,7 +53,7 @@ fieldset.submit {
 	background-image: none;
 }
 
-label {
+fieldset label {
 	float: left;
 	width: 10em;
 	margin-right: 1em;
@@ -63,14 +63,14 @@ label {
 	color: #003768;
 }
 
-input {
+fieldset input {
 	color: #808285;
 	border: 1px solid #808285;
 	padding: 2px;
 	border-style: inset;
 }
 
-input:FOCUS {
+fieldset input:FOCUS {
 	color: #003768;
 	border-color: #003768;
 	background-color: #FFE;

@@ -16,7 +16,7 @@ import com.picsauditing.util.VelocityAdaptor;
 public class EmailBean {
 	protected Map<String, Object> tokens = new HashMap<String, Object>();
 	protected EmailTemplates templateType;
-	protected EmailQueue email = new EmailQueue();
+	protected EmailQueue email;
 	protected EmailQueueDAO emailQueueDAO;
 	protected Permissions permissions;
 	protected boolean testMode = false;
@@ -28,6 +28,8 @@ public class EmailBean {
 		this.userDAO = userDAO;
 		this.appPropertyDAO = appPropertyDAO;
 		this.emailQueueDAO = emailQueueDAO;
+		email = new EmailQueue();
+		email.setCreationDate(new Date());
 	}
 
 	public void addToken(String key, Object value) {
@@ -38,7 +40,11 @@ public class EmailBean {
 		buildEmail();
 
 		if (!testMode) {
-			emailQueueDAO.save(email);
+			if (permissions != null && permissions.getUserId() > 0) {
+				email.setCreatedBy(new User());
+				email.getCreatedBy().setId(permissions.getUserId());
+			}
+			EmailSender.send(email);
 		}
 	}
 
