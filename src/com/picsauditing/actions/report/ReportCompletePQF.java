@@ -4,11 +4,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.mail.EmailAuditBean;
-import com.picsauditing.mail.EmailTemplates;
+import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.SelectContractorAudit;
 import com.picsauditing.search.SelectFilter;
 
@@ -16,7 +18,7 @@ public class ReportCompletePQF extends ReportContractorAudits {
 	private Date followUpDate = null;
 	private String[] sendMail = null;
 	protected ContractorAuditDAO contractorAuditDAO;
-	protected EmailAuditBean emailAuditBean;
+	protected EmailBuilder emailBuilder;
 
 	public static final String DEFAULT_PERCENT = "-%Complete-";
 	protected String percentComplete1;
@@ -24,10 +26,10 @@ public class ReportCompletePQF extends ReportContractorAudits {
 	protected boolean filterPercentComplete = true;
 	protected Map<Integer, Date> scheduledDate;
 
-	public ReportCompletePQF(ContractorAuditDAO contractorAuditDAO, EmailAuditBean emailAuditBean) {
+	public ReportCompletePQF(ContractorAuditDAO contractorAuditDAO, EmailBuilder emailBuilder) {
 		sql = new SelectContractorAudit();
 		this.contractorAuditDAO = contractorAuditDAO;
-		this.emailAuditBean = emailAuditBean;
+		this.emailBuilder = emailBuilder;
 	}
 
 	public String execute() throws Exception {
@@ -53,8 +55,12 @@ public class ReportCompletePQF extends ReportContractorAudits {
 						conAudit.setScheduledDate(newDate);
 					}
 					try {
-						emailAuditBean.setPermissions(permissions);
-						emailAuditBean.sendMessage(EmailTemplates.pendingPqf, conAudit);
+						emailBuilder.setTemplate(12);
+						emailBuilder.setPermissions(permissions);
+						emailBuilder.setConAudit(conAudit);
+						EmailQueue email = emailBuilder.build();
+						EmailSender.send(email);
+						ContractorBean.addNote(conAudit.getContractorAccount().getId(), permissions, "Pending PQF email sent to " + email.getToAddresses());
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

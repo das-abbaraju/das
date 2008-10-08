@@ -6,6 +6,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -24,13 +26,15 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class EmailTemplate implements java.io.Serializable {
 	private int id;
 	private int accountID;
+	private String templateName = "";
 	private String subject;
 	private String body;
 	private User createdBy;
 	private Date creationDate;
 	private User updatedBy;
 	private Date updateDate;
-	private String templateName = "";
+	private ListType listType;
+	private boolean allowsVelocity = false;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -114,6 +118,23 @@ public class EmailTemplate implements java.io.Serializable {
 	@Column(length = 50, nullable = false)
 	public void setTemplateName(String templateName) {
 		this.templateName = templateName;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public ListType getListType() {
+		return listType;
+	}
+
+	public void setListType(ListType listType) {
+		this.listType = listType;
+	}
+
+	public boolean isAllowsVelocity() {
+		return allowsVelocity;
+	}
+
+	public void setAllowsVelocity(boolean allowsVelocity) {
+		this.allowsVelocity = allowsVelocity;
 	}
 
 	@Override

@@ -44,8 +44,17 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public void prepare() throws Exception {
-		int conID = getParameter("id");
-		contractor = accountDao.find(conID);
+		getPermissions();
+		int conID = 0;
+		if (permissions.isContractor())
+			conID = permissions.getAccountId();
+		else {
+			permissions.tryPermission(OpPerms.AllContractors);
+			conID = getParameter("id");
+		}
+		if (conID > 0) {
+			contractor = accountDao.find(conID);
+		}
 		accountDao.clear();
 	}
 

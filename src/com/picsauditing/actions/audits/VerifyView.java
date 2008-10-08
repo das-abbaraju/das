@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -26,7 +27,8 @@ import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.jpa.entities.OshaLogYear;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.mail.EmailAuditBean;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EmailTemplates;
 
 public class VerifyView extends AuditActionSupport {
@@ -40,13 +42,9 @@ public class VerifyView extends AuditActionSupport {
 	private int oshaCatDataId;
 	private int emrCatDataId;
 
-	private EmailAuditBean mailer;
-
 	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, EmailAuditBean mailer) {
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao) {
 		super(accountDao, contractorAuditDAO, catDataDao, auditDataDao);
-		this.mailer = mailer;
-		this.mailer.setPermissions(permissions);
 	}
 
 	public String execute() throws Exception {
@@ -170,7 +168,7 @@ public class VerifyView extends AuditActionSupport {
 
 		if (conAudit.getPercentVerified() == 100 && conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
 			conAudit.setAuditStatus(AuditStatus.Active);
-			emailContractorOnAudit(mailer);
+			emailContractorOnAudit();
 		}
 		// Don't un-Activate it anymore, per conversation with Trevor, Jared,
 		// John 5/16/08
@@ -275,6 +273,11 @@ public class VerifyView extends AuditActionSupport {
 		this.findConAudit();
 		loadData();
 
+		EmailBuilder emailBuilder = new EmailBuilder();
+		emailBuilder.setTemplate(11); // PQF Verification
+		emailBuilder.setPermissions(permissions);
+		emailBuilder.setConAudit(conAudit);
+		
 		StringBuffer sb = new StringBuffer("");
 
 		appendOsha(sb, osha.getYear1(), getYear1());
@@ -316,14 +319,12 @@ public class VerifyView extends AuditActionSupport {
 
 		String items = sb.toString();
 
-		mailer.addToken("missing_items", items);
-		mailer.addToken("safetyManual", getSafetyManualAnswer());
-		mailer.setPermissions(permissions);
-		mailer.sendMessage(EmailTemplates.verifyPqf, this.conAudit);
+		emailBuilder.addToken("missing_items", items);
+		emailBuilder.addToken("safetyManual", getSafetyManualAnswer());
+		EmailSender.send(emailBuilder.build());
 
-		String note = "PQF Verification email sent to " + mailer.getSentTo();
-		this.conAudit.getContractorAccount().addNote(permissions, note);
-		this.auditDao.save(conAudit);
+		String note = "PQF Verification email sent to " + emailBuilder.getSentTo();
+		ContractorBean.addNote(conAudit.getContractorAccount().getId(), permissions, note);
 
 		// message = conAudit.getContractorAccount().getNotes();
 		output = "The email was sent at and the contractor notes were stamped";

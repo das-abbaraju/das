@@ -36,6 +36,7 @@ public class Permissions {
 	private int accountID;
 	private String accountName;
 	private String accountType;
+	private String email;
 	private int adminID;
 	private boolean approvesRelationships = false;
 
@@ -52,6 +53,7 @@ public class Permissions {
 			accountID = user.getAccount().getId();
 			accountType = user.getAccount().getType();
 			accountName = user.getAccount().getName();
+			email = user.getEmail();
 			if (user.getAccount().getType().equals("Operator")) {
 				OperatorAccount operatorAccount = (OperatorAccount)user.getAccount(); 
 				approvesRelationships = YesNo.Yes.equals(operatorAccount.getApprovesRelationships());
@@ -84,6 +86,8 @@ public class Permissions {
 			name = aBean.name;
 			accountID = userID;
 			accountType = aBean.type;
+			accountName = name;
+			email = aBean.email;
 		} catch (Exception ex) {
 			// All or nothing, if something went wrong, then clear it all
 			clear();
@@ -96,6 +100,7 @@ public class Permissions {
 		loggedIn = false;
 		username = "";
 		name = "";
+		email = "";
 		accountID = 0;
 		accountName = "";
 		accountType = "";
@@ -133,6 +138,15 @@ public class Permissions {
 
 	public String getAccountType() {
 		return accountType;
+	}
+
+
+	public String getAccountName() {
+		return accountName;
+	}
+
+	public String getEmail() {
+		return email;
 	}
 
 	public int getAdminID() {

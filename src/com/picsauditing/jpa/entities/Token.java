@@ -3,6 +3,8 @@ package com.picsauditing.jpa.entities;
 import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -18,7 +20,7 @@ public class Token implements java.io.Serializable {
 	protected int id;
 	protected String tokenName;
 	protected String velocityName;	
-	protected String type;
+	protected ListType listType;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -49,15 +51,15 @@ public class Token implements java.io.Serializable {
 		this.velocityName = velocityName;
 	}	
 
-	@Column(name = "type", unique = true, nullable = false, length = 50)
-	public String getType() {
-		return this.type;
+	@Enumerated(EnumType.STRING)
+	public ListType getListType() {
+		return listType;
 	}
-
-	public void setType(String type) {
-		this.type = type;
+	
+	public void setListType(ListType listType) {
+		this.listType = listType;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;

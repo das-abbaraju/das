@@ -3,8 +3,10 @@ package com.picsauditing.mail;
 import java.util.Date;
 
 import com.picsauditing.dao.EmailQueueDAO;
+import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailStatus;
+import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.util.SpringUtils;
 
 public class EmailSender extends GMailSender {
@@ -104,4 +106,5 @@ public class EmailSender extends GMailSender {
 
 		send(null, toAddress, null, subject, body);
 	}
+
 }

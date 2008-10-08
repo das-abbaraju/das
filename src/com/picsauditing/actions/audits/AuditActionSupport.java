@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
@@ -19,8 +20,8 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.jpa.entities.OshaType;
-import com.picsauditing.mail.EmailAuditBean;
-import com.picsauditing.mail.EmailTemplates;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 
 public class AuditActionSupport extends ContractorActionSupport {
 	protected int auditID = 0;
@@ -197,7 +198,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return descriptionText;
 	}
 
-	protected void emailContractorOnAudit(EmailAuditBean mailer) {
+	protected void emailContractorOnAudit() {
 		if (conAudit.getAuditType().isCanContractorView()) {
 			boolean allActive = true;
 			for (ContractorAudit cAudit : getActiveAudits()) {
@@ -214,9 +215,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 			if (allActive) {
 				// Send email to contractor telling them thank you for playing
 				try {
-					mailer.setPermissions(permissions);
-					mailer.addToken("audits", getActiveAudits());
-					mailer.sendMessage(EmailTemplates.audits_thankyou, conAudit);
+					EmailBuilder emailBuilder = new EmailBuilder();
+					emailBuilder.setTemplate(13); // Audits Thank You
+					emailBuilder.setPermissions(permissions);
+					emailBuilder.setConAudit(conAudit);
+					emailBuilder.addToken("audits", getActiveAudits());
+					EmailSender.send(emailBuilder.build());
+					ContractorBean.addNote(conAudit.getContractorAccount().getId(), permissions, 
+							"Sent Audits Thank You email to " + emailBuilder.getSentTo());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

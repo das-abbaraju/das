@@ -18,10 +18,11 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.mail.EmailAuditBean;
-import com.picsauditing.mail.EmailTemplates;
-import com.picsauditing.mail.EmailUserBean;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.Strings;
 
 public class AuditAssignmentUpdate extends PicsActionSupport implements Preparable, ParameterAware, ServletRequestAware {
 
@@ -31,8 +32,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 
 	protected ContractorAuditDAO dao = null;
 	protected UserDAO userDao = null;
-	protected EmailUserBean auditorMailer;
-	protected EmailAuditBean contractorMailer;
+	protected EmailBuilder emailBuilder;
 
 	protected Map parameters = null;
 	protected Date origScheduledDate = null;
@@ -40,12 +40,10 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 
 	protected HttpServletRequest request;
 
-	public AuditAssignmentUpdate(ContractorAuditDAO dao, UserDAO userDao, EmailUserBean auditorMailer,
-			EmailAuditBean contractorMailer) {
+	public AuditAssignmentUpdate(ContractorAuditDAO dao, UserDAO userDao, EmailBuilder emailBuilder) {
 		this.dao = dao;
 		this.userDao = userDao;
-		this.auditorMailer = auditorMailer;
-		this.contractorMailer = contractorMailer;
+		this.emailBuilder = emailBuilder;
 	}
 
 	public String execute() throws Exception {
@@ -111,12 +109,34 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				&& contractorAudit.getAuditor() != null
 				&& contractorAudit.getScheduledDate() != null) {
 			if (contractorAudit.getContractorConfirm() == null) {
-				contractorMailer.setServerName(serverName);
-				contractorMailer.sendMessage(EmailTemplates.contractorconfirm, contractorAudit);
+				emailBuilder.setTemplate(15);
+				emailBuilder.clear();
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setConAudit(contractorAudit);
+				
+				String seed = "c" + contractorAudit.getContractorAccount().getId() + "id" + contractorAudit.getId();
+				String confirmLink = serverName+"ScheduleAuditUpdate.action?type=c&auditID=" + contractorAudit.getId() + 
+					"&key="	+ Strings.hashUrlSafe(seed);
+				emailBuilder.addToken("confirmLink", confirmLink);
+				
+				EmailQueue email = emailBuilder.build();
+				EmailSender.send(email);
 			}
 			if (contractorAudit.getAuditorConfirm() == null) {
-				auditorMailer.setServerName(serverName);
-				auditorMailer.sendMessage(EmailTemplates.auditorconfirm, contractorAudit);
+				emailBuilder.setTemplate(14);
+				emailBuilder.clear();
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setConAudit(contractorAudit);
+				
+				String seed = "a" + contractorAudit.getAuditor().getId() + "id" + contractorAudit.getId();
+				String confirmLink = serverName+"ScheduleAuditUpdate.action?type=a&auditID=" + contractorAudit.getId() + 
+					"&key="	+ Strings.hashUrlSafe(seed);
+				emailBuilder.addToken("confirmLink", confirmLink);
+				
+				EmailQueue email = emailBuilder.build();
+				email.setToAddresses(contractorAudit.getAuditor().getEmail());
+				email.setCcAddresses(null);
+				EmailSender.send(email);
 			}
 		}
 		ContractorBean.addNote(contractorAudit.getContractorAccount().getId(), permissions, "Audit Schedule updated");

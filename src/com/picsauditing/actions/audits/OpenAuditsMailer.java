@@ -2,21 +2,29 @@ package com.picsauditing.actions.audits;
 
 import java.util.List;
 
+import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.EmailQueueDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.EmailTemplate;
+import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.mail.EmailAuditBean;
+import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailTemplates;
+import com.picsauditing.util.SpringUtils;
 
 public class OpenAuditsMailer extends PicsActionSupport {
 
 	private ContractorAuditDAO contractorAuditDAO;
-	private EmailAuditBean mailer;
+	private EmailQueueDAO emailQueueDAO;
 
-	public OpenAuditsMailer(ContractorAuditDAO contractorAuditDAO, EmailAuditBean mailer) {
-		this.mailer = mailer;
+	public OpenAuditsMailer(ContractorAuditDAO contractorAuditDAO, EmailQueueDAO emailQueueDAO) {
 		this.contractorAuditDAO = contractorAuditDAO;
+		this.emailQueueDAO = emailQueueDAO;
 	}
 
 	public String execute() {
@@ -32,6 +40,9 @@ public class OpenAuditsMailer extends PicsActionSupport {
 				+ nextID;
 		List<ContractorAudit> list = contractorAuditDAO.findWhere(100, where, "auditID");
 
+		EmailBuilder emailBuilder = new EmailBuilder();
+		emailBuilder.setTemplate(6);
+		
 		nextID = 0;
 		for (ContractorAudit conAudit : list) {
 			if (!conAudit.getContractorAccount().getRiskLevel().equals(LowMedHigh.Low)) {
@@ -39,7 +50,15 @@ public class OpenAuditsMailer extends PicsActionSupport {
 				try {
 					System.out.println("Sending openRequirements email to: (" + conAudit.getId() + ") "
 							+ conAudit.getContractorAccount().getName() + " " + conAudit.getAuditType().getAuditName());
-					mailer.sendMessage(EmailTemplates.openRequirements, conAudit);
+					emailBuilder.clear();
+					emailBuilder.setPermissions(permissions);
+					emailBuilder.setConAudit(conAudit);
+					EmailQueue email = emailBuilder.build();
+					email.setPriority(10);
+					email.setFromAddress("audits@picsauditing.com");
+					emailQueueDAO.save(email);
+					ContractorBean.addNote(conAudit.getContractorAccount().getId(), permissions, 
+							"Sent Open Requirements Reminder email to " + emailBuilder.getSentTo());
 				} catch (Exception e) {
 					System.out.println("Error sending openRequirements email: " + e.getMessage());
 				}

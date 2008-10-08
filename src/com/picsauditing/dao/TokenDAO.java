@@ -7,6 +7,7 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.Utilities;
+import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.jpa.entities.Token;
 import com.picsauditing.util.Strings;
 
@@ -34,15 +35,18 @@ public class TokenDAO extends PicsDAO {
 		return t;
 	}
 	
-	public List<Token> findByType(String type) {
-		String where = "";
-		if ("Audits".equals(type))
-			where = "WHERE type IN ('Audits','Contractors')";
-		else if (type != null && type.length() > 0) {
-			where = "WHERE type = '" + Utilities.escapeQuotes(type) + "'";
+	public List<Token> findByType(ListType type) {
+		String where = "WHERE type IN ('ALL'";
+		if (type != null) {
+			where += ",'" + type.toString() + "'";
+			if (type.equals(ListType.Audit)
+					|| type.equals(ListType.ContractorOperator)
+					|| type.equals(ListType.Certificate))
+				where += ",'Contractor'";
+			where += ")";
 		}
 		
-		Query query = em.createQuery("FROM Token " + where + " ORDER BY type, tokenName");
+		Query query = em.createQuery("FROM Token " + where + " ORDER BY listType, tokenName");
 		return query.getResultList();
 	}
 

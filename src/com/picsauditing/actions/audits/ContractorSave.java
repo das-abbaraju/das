@@ -33,18 +33,18 @@ public class ContractorSave extends PicsActionSupport implements Preparable {
 		if (auditorId > 0) {
 			ca.setAuditor(new User());
 			ca.getAuditor().setId(auditorId);
-		}
-
-		for (ContractorAudit conAudit : ca.getAudits()) {
-			if (conAudit.getAuditType().isPqf()
-					|| conAudit.getAuditType().getAuditTypeID() == AuditType.WELCOME) {
-				if (conAudit.getAuditor() == null) {
-					conAudit.setAuditor(new User());
-					conAudit.getAuditor().setId(auditorId);
+			
+			for (ContractorAudit conAudit : ca.getAudits()) {
+				System.out.println(" found " + conAudit.getAuditType().getAuditName());
+				if (conAudit.getAuditType().isPqf()
+						|| conAudit.getAuditType().getAuditTypeID() == AuditType.WELCOME) {
+					conAudit.setAuditor(new User(auditorId));
 					conAudit.setAssignedDate(new Date());
+					System.out.println(" updated auditorID to " + auditorId);
 				}
 			}
 		}
+
 		ca = dao.save(ca);
 		return SUCCESS;
 	}

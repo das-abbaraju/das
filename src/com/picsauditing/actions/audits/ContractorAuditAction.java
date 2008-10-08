@@ -21,7 +21,6 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.NcmsCategory;
 import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.mail.EmailAuditBean;
 
 /**
  * Used by Audit.action to show a list of categories for a given audit. Also
@@ -32,7 +31,6 @@ import com.picsauditing.mail.EmailAuditBean;
  */
 public class ContractorAuditAction extends AuditActionSupport {
 	protected AuditStatus auditStatus;
-	protected EmailAuditBean mailer;
 	protected FlagCalculator2 flagCalculator;
 	protected AuditPercentCalculator auditPercentCalculator;
 	protected AuditBuilder auditBuilder;
@@ -42,10 +40,9 @@ public class ContractorAuditAction extends AuditActionSupport {
 	private int removeCategoryID = 0;
 
 	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, EmailAuditBean emailAuditBean,
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, 
 			FlagCalculator2 flagCalculator2, AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
-		this.mailer = emailAuditBean;
 		this.flagCalculator = flagCalculator2;
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.auditBuilder = auditBuilder;
@@ -55,8 +52,12 @@ public class ContractorAuditAction extends AuditActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		this.findConAudit();
+		
+		// TODO pass this in or set it to true before releasing
+		boolean fullLoad = false;
 
-		auditBuilder.fillAuditCategories(conAudit);
+		if (fullLoad)
+			auditBuilder.fillAuditCategories(conAudit);
 
 		if (conAudit.getAuditType().isDynamicCategories() && permissions.isPicsEmployee()) {
 			isCanApply = true;
@@ -78,8 +79,9 @@ public class ContractorAuditAction extends AuditActionSupport {
 				}
 			}
 		}
-		// Calculate and set the percent complete
-		auditPercentCalculator.percentCalculateComplete(conAudit);
+		if (fullLoad)
+			// Calculate and set the percent complete
+			auditPercentCalculator.percentCalculateComplete(conAudit);
 
 		if (auditStatus != null && !auditStatus.equals(conAudit.getAuditStatus())) {
 			// We're changing the status
@@ -104,7 +106,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 					}
 				}
 
-				emailContractorOnAudit(mailer);
+				emailContractorOnAudit();
 			}
 
 			if (conAudit.getExpiresDate() == null && conAudit.getCompletedDate() != null) {

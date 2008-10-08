@@ -1,29 +1,29 @@
 package com.picsauditing.mail;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.TokenDAO;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
+import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.jpa.entities.Token;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectContractorAudit;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.VelocityAdaptor;
 
 /**
  * Mass emailing tool that can send emails to a list of contractors based on
@@ -34,7 +34,7 @@ import com.picsauditing.util.VelocityAdaptor;
  */
 public class MassMailer extends PicsActionSupport {
 	private List<Integer> ids = null;
-	private String type = "Contractors"; // Contractors, Audits, Users
+	private ListType type = ListType.Contractor;
 
 	private int templateID;
 	private String templateName;
@@ -46,19 +46,15 @@ public class MassMailer extends PicsActionSupport {
 	private EmailQueueDAO emailQueueDAO;
 	private EmailTemplateDAO emailTemplateDAO;
 	
-	//private EmailContractorBean emailContractorBean;
-	//private EmailAuditBean emailAuditBean;
-	private ContractorAccountDAO contractorAccountDAO;
 	private TokenDAO tokenDAO;
+	private EmailBuilder emailBuilder;
 	
-	private VelocityAdaptor velocityAdaptor;
-
 	public MassMailer(EmailQueueDAO emailQueueDAO, EmailTemplateDAO emailTemplateDAO, 
-			ContractorAccountDAO contractorAccountDAO, TokenDAO tokenDAO) {
+			TokenDAO tokenDAO) {
 		this.emailQueueDAO = emailQueueDAO;
 		this.emailTemplateDAO = emailTemplateDAO;
-		this.contractorAccountDAO = contractorAccountDAO;
 		this.tokenDAO = tokenDAO;
+		this.emailBuilder = new EmailBuilder();
 	}
 
 	public String execute() throws Exception {
@@ -84,20 +80,21 @@ public class MassMailer extends PicsActionSupport {
 				templateBody = "";
 				return SUCCESS;
 			}
-			int conID = ids.get(0);
+			int id = ids.get(0);
 			
-			templateSubject = filterTemplate(templateSubject);
-			templateBody = filterTemplate(templateBody);
-			EmailQueue email = createEmail(conID, templateSubject, templateBody);
+			EmailTemplate template = buildEmailTemplate();
+			emailBuilder.setTemplate(template);
+			addTokens(id);
 			
+			EmailQueue email = emailBuilder.build();
 			templateSubject = email.getSubject();
 			templateBody = email.getBody();
 			return SUCCESS;
 		}
 		
 		// Start the main logic for actions that require passing the contractors in
-		if (type == null || type.length() == 0)
-			type = "Contractors";
+		if (type == null)
+			type = ListType.Contractor;
 		
 		if (ids == null || ids.size() == 0) {
 			addActionError("Please select at least one record to which to send an email.");
@@ -106,12 +103,13 @@ public class MassMailer extends PicsActionSupport {
 		
 		String idList = Strings.implode(ids, ",");
 		SelectAccount sql = null;
-		if (type.equals("Contractors")) {
+		
+		if (ListType.Contractor.equals(type)) {
 			//emailContractorBean.setPermissions(permissions);
 			sql = new SelectAccount();
 			sql.addWhere("a.id IN (" + idList + ")");
 			sql.addOrderBy("a.name");
-		} else if (type.equals("Audits")) {
+		} else if (ListType.Audit.equals(type)) {
 			//emailAuditBean.setPermissions(permissions);
 			sql = new SelectContractorAudit();
 			sql.addWhere("ca.auditID IN (" + idList + ")");
@@ -127,11 +125,15 @@ public class MassMailer extends PicsActionSupport {
 		
 		if (button != null) {
 			if (button.equals("send")) {
-				String filteredSubject = filterTemplate(templateSubject);
-				String filteredBody = filterTemplate(templateBody);
+				EmailTemplate template = buildEmailTemplate();
+				emailBuilder.setTemplate(template);
 				
-				for (Integer conID : ids) {
-					EmailQueue email = createEmail(conID, filteredSubject, filteredBody);
+				for (Integer id : ids) {
+					addTokens(id);
+					EmailQueue email = emailBuilder.build();
+					
+					// TODO we may want to offer sending from another email other than their own
+					email.setFromAddress(permissions.getEmail());
 					emailQueueDAO.save(email);
 				}
 			}
@@ -139,52 +141,37 @@ public class MassMailer extends PicsActionSupport {
 		return SUCCESS;
 	}
 	
-	private EmailQueue createEmail(int conID, String subject, String body) {
-		//long startTime = Calendar.getInstance().getTimeInMillis();
-		
-		// All of this should probably go back into EmailContractorBean and EmailAuditBean
-		EmailQueue email = new EmailQueue();
-		email.setCreatedBy(new User(permissions.getUserId()));
-		email.setCreationDate(new Date());
-		email.setPriority(10);
-		
-		Map<String, Object> tokens = new HashMap<String, Object>();
-		tokens.put("permissions", permissions);
-		if (type.equals("Contractors")) {
-			ContractorAccount contractor = contractorAccountDAO.find(conID);
-			tokens.put("contractor", contractor);
-			tokens.put("user", contractor);
-			email.setToAddresses(contractor.getEmail());
-			email.setCcAddresses(contractor.getSecondEmail());
-			email.setContractorAccount(contractor);
-		} else if (type.equals("Audits")) {
-			//ContractorAccount contractor = this.
+	private void addTokens(int id) {
+		emailBuilder.clear();
+		emailBuilder.setPermissions(permissions);
+		if (ListType.Contractor.equals(type)) {
+			ContractorAccountDAO dao = (ContractorAccountDAO)SpringUtils.getBean("ContractorAccountDAO");
+			ContractorAccount contractor = dao.find(id);
+			emailBuilder.setContractor(contractor);
 		}
-		
-		try {
-			subject = getVelocity().merge(subject, tokens);
-		} catch (Exception e) {
-			addActionError(e.getMessage());
+		if (ListType.Audit.equals(type)) {
+			ContractorAuditDAO dao = (ContractorAuditDAO)SpringUtils.getBean("ContractorAuditDAO");
+			ContractorAudit conAudit = dao.find(id);
+			emailBuilder.setConAudit(conAudit);
 		}
-		try {
-			body = getVelocity().merge(body, tokens);
-		} catch (Exception e) {
-			addActionError(e.getMessage());
+		if (ListType.User.equals(type)) {
+			UserDAO dao = (UserDAO)SpringUtils.getBean("UserDAO");
+			User user = dao.find(id);
+			emailBuilder.setUser(user);
 		}
-		email.setSubject(subject);
-		email.setBody(body);
-		
-		//long endTime = Calendar.getInstance().getTimeInMillis();
-		//System.out.println("ms" +  (endTime - startTime));
-		return email;
 	}
 	
-	private String filterTemplate(String template) {
-		boolean templateSupportsVelocity = true; // TODO pass this in or something
-		if (!templateSupportsVelocity) {
+	/**
+	 * Convert tokens like this <TOKEN_NAME> in a given string to velocity tags like this ${token.name}
+	 * @param text
+	 * @param allowsVelocity
+	 * @return
+	 */
+	private String convertTokensToVelocity(String text, boolean allowsVelocity) {
+		if (!allowsVelocity) {
 			// Strip out the velocity tags
-			template = template.replace("${", "_");
-			template = template.replace("}", "_");
+			text = text.replace("${", "_");
+			text = text.replace("}", "_");
 		}
 		//System.out.println("starting with: " + template);
 		for(Token token : getTokens()) {
@@ -193,40 +180,46 @@ public class MassMailer extends PicsActionSupport {
 			String find = "<" + token.getTokenName() + ">";
 			String replace = "${" + token.getVelocityName() + "}";
 			//System.out.println("replace " + find + " with " + replace);
-			template = template.replace(find, replace);
+			text = text.replace(find, replace);
 		}
 		//System.out.println("filtered: " + template);
+		return text;
+	}
+	
+	/**
+	 * Creates a velocity-ready email template from the subject and body
+	 * @return
+	 */
+	private EmailTemplate buildEmailTemplate() {
+		EmailTemplate template = new EmailTemplate();
+		template.setListType(type);
+		if (templateID > 0) {
+			template = emailTemplateDAO.find(templateID);
+			emailTemplateDAO.clear();
+		}
+		template.setTemplateName(templateName);
+		template.setSubject(convertTokensToVelocity(templateSubject, template.isAllowsVelocity()));
+		template.setBody(convertTokensToVelocity(templateBody, template.isAllowsVelocity()));
 		return template;
 	}
 
 	public List<Token> getTokens() {
-		if (tokens == null) {
-			tokens = new ArrayList<Token>();
-			if ("Contractors".equals(type))
-				tokens = tokenDAO.findByType("Contractor");
-			if ("Audits".equals(type))
-				tokens = tokenDAO.findByType("Audit");
-			if ("Users".equals(type))
-				tokens = tokenDAO.findByType("User");
-		}
+		if (type == null)
+			return null;
+		if (tokens == null)
+			tokens = tokenDAO.findByType(type);
 		return tokens;
 	}
 	
-	private VelocityAdaptor getVelocity() {
-		if (velocityAdaptor == null)
-			velocityAdaptor = new VelocityAdaptor();
-		return velocityAdaptor;
-	}
-
 	public List<EmailTemplate> getEmailTemplates() {
 		return emailTemplateDAO.findByAccountID(permissions.getAccountId());
 	}
 
-	public String getType() {
+	public ListType getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(ListType type) {
 		this.type = type;
 	}
 

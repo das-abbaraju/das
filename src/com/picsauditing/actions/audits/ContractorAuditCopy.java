@@ -18,7 +18,6 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.mail.EmailAuditBean;
 import com.picsauditing.util.FileUtils;
 
 /**
@@ -33,9 +32,9 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 	private boolean hasDuplicate = false;
 
 	public ContractorAuditCopy(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, EmailAuditBean emailAuditBean,
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, 
 			FlagCalculator2 flagCalculator2, AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, emailAuditBean, flagCalculator2, auditPercentCalculator,
+		super(accountDao, auditDao, catDataDao, auditDataDao, flagCalculator2, auditPercentCalculator,
 				auditBuilder);
 	}
 
