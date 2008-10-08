@@ -11,22 +11,31 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Industry;
-import com.picsauditing.mail.EmailContractorBean;
-import com.picsauditing.mail.EmailTemplates;
-import com.picsauditing.mail.EmailUserBean;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 public class AccountBean extends DataBean {
-	public static final int MIN_PASSWORD_LENGTH = 5; // minimum required length of a passord
+	public static final int MIN_PASSWORD_LENGTH = 5; // minimum required
+														// length of a passord
 	OperatorBean o = null;
 	String accountDate = "";
-	public String userID = "0"; // used in check login, to set id for users not in main accounts table, but in users table
-	public HashSet<String> canSeeSet = new HashSet<String>(); // all subcontractors of a general contractor/operator
+	public String userID = "0"; // used in check login, to set id for users not
+								// in main accounts table, but in users table
+	public HashSet<String> canSeeSet = new HashSet<String>(); // all
+																// subcontractors
+																// of a general
+																// contractor/operator
 
 	public String id = "";
-	public String type = "Contractor"; // is of type ENUM of ('Contractor','Operator','General')
+	public String type = "Contractor"; // is of type ENUM of
+										// ('Contractor','Operator','General')
 	public String name = "";
 	public String username = "";
 	public String password = "";
@@ -46,7 +55,8 @@ public class AccountBean extends DataBean {
 	public String active = "N";
 	public String createdBy = "";
 	public String dateCreated = "";
-	public String oldPassword = ""; // used for determining if the password has changed
+	public String oldPassword = ""; // used for determining if the password has
+									// changed
 	public String emailConfirmedDate = "";
 	boolean updatedPassword = false;
 
@@ -394,13 +404,15 @@ public class AccountBean extends DataBean {
 		// config.getServletContext().getRealPath("/"));
 		try {
 			DBReady();
-			String deleteQuery = "DELETE FROM pqfcatdata WHERE auditID IN (SELECT auditID FROM contractor_audit WHERE conID = "+ deleteID +");";
+			String deleteQuery = "DELETE FROM pqfcatdata WHERE auditID IN (SELECT auditID FROM contractor_audit WHERE conID = "
+					+ deleteID + ");";
 			SQLStatement.executeUpdate(deleteQuery);
-			deleteQuery = "DELETE FROM pqfdata WHERE auditID IN (SELECT auditID FROM contractor_audit WHERE conID = "+ deleteID +");";
+			deleteQuery = "DELETE FROM pqfdata WHERE auditID IN (SELECT auditID FROM contractor_audit WHERE conID = "
+					+ deleteID + ");";
 			SQLStatement.executeUpdate(deleteQuery);
-			deleteQuery = "DELETE FROM osha WHERE conID = "+ deleteID + ";";
+			deleteQuery = "DELETE FROM osha WHERE conID = " + deleteID + ";";
 			SQLStatement.executeUpdate(deleteQuery);
-			deleteQuery = "DELETE FROM contractor_audit WHERE conID = "+ deleteID + ";";
+			deleteQuery = "DELETE FROM contractor_audit WHERE conID = " + deleteID + ";";
 			SQLStatement.executeUpdate(deleteQuery);
 			deleteQuery = "DELETE FROM flags WHERE opID=" + deleteID + " OR conID=" + deleteID + ";";
 			SQLStatement.executeUpdate(deleteQuery);
@@ -465,7 +477,8 @@ public class AccountBean extends DataBean {
 	 * 
 	 * @param username
 	 * @param id
-	 * @return true if the username is a duplicate, false if the username is not a duplicate
+	 * @return true if the username is a duplicate, false if the username is not
+	 *         a duplicate
 	 * @throws SQLException
 	 */
 	public boolean verifyUsername(String username, String id) throws SQLException {
@@ -490,32 +503,35 @@ public class AccountBean extends DataBean {
 			errorMessages.addElement("Please enter a valid email address.");
 			return false;
 		}
+		EmailBuilder emailBuilder = new EmailBuilder();
+
 		try {
 			DBReady();
 			String selectQuery = "SELECT id FROM accounts WHERE email='" + email + "' and type='Contractor' LIMIT 2";
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			if (!SQLResult.next()) {
+			if (SQLResult.next()) {
+				UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
+				User user = dao.find(SQLResult.getInt("id"));
+				emailBuilder.setTemplate(24); // Password Reminder
+				emailBuilder.setUser(user);
+				EmailSender.send(emailBuilder.build());
+			} else {
 				selectQuery = "SELECT id FROM users WHERE email='" + email + "' LIMIT 2";
 				SQLResult = SQLStatement.executeQuery(selectQuery);
-				if (!SQLResult.next()) {
+				if (SQLResult.next()) {
+					ContractorAccountDAO conDao = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
+					ContractorAccount contractor = conDao.find(SQLResult.getInt("id"));
+					emailBuilder.setTemplate(3); // Password Reminder
+					emailBuilder.setContractor(contractor);
+					EmailSender.send(emailBuilder.build());
+				} else {
 					errorMessages.addElement("No account in our records has that email address.  Please verify it is "
 							+ "the one you used when creating your PICS company profile.");
 					SQLResult.close();
 					DBClose();
 					return false;
 				}
-				// Send an email to the user
-				int userID = SQLResult.getInt("id");
-				EmailUserBean mailer = (EmailUserBean) SpringUtils.getBean("EmailUserBean");
-				mailer.sendMessage(EmailTemplates.password, userID);
-			} else {
-				// Send an email to the contractor
-				int accountID = SQLResult.getInt("id");
-				EmailContractorBean mailer = (EmailContractorBean) SpringUtils.getBean("EmailContractorBean");
-				mailer.sendMessage(EmailTemplates.password, accountID);
 			}
-			SQLResult.close();
-			DBClose();
 			errorMessages.addElement("An email has been sent to this address: <b>" + email + "</b> with your "
 					+ "PICS account login information");
 			return true;
@@ -585,7 +601,7 @@ public class AccountBean extends DataBean {
 			if (password == null || password.length() < MIN_PASSWORD_LENGTH)
 				errorMessages.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH
 						+ " characters in length.");
-			if (password == null  || password.equalsIgnoreCase(username))
+			if (password == null || password.equalsIgnoreCase(username))
 				errorMessages.addElement("Please choose a password different from your username.");
 		}
 		// Don't check these fields if auditor BJ 10-28-04

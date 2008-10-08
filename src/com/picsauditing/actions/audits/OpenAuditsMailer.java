@@ -4,18 +4,12 @@ import java.util.List;
 
 import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailTemplate;
-import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailTemplates;
-import com.picsauditing.util.SpringUtils;
 
 public class OpenAuditsMailer extends PicsActionSupport {
 
@@ -41,8 +35,7 @@ public class OpenAuditsMailer extends PicsActionSupport {
 		List<ContractorAudit> list = contractorAuditDAO.findWhere(100, where, "auditID");
 
 		EmailBuilder emailBuilder = new EmailBuilder();
-		emailBuilder.setTemplate(6);
-		
+
 		nextID = 0;
 		for (ContractorAudit conAudit : list) {
 			if (!conAudit.getContractorAccount().getRiskLevel().equals(LowMedHigh.Low)) {
@@ -51,13 +44,14 @@ public class OpenAuditsMailer extends PicsActionSupport {
 					System.out.println("Sending openRequirements email to: (" + conAudit.getId() + ") "
 							+ conAudit.getContractorAccount().getName() + " " + conAudit.getAuditType().getAuditName());
 					emailBuilder.clear();
+					emailBuilder.setTemplate(6);
 					emailBuilder.setPermissions(permissions);
 					emailBuilder.setConAudit(conAudit);
 					EmailQueue email = emailBuilder.build();
 					email.setPriority(10);
 					email.setFromAddress("audits@picsauditing.com");
 					emailQueueDAO.save(email);
-					ContractorBean.addNote(conAudit.getContractorAccount().getId(), permissions, 
+					ContractorBean.addNote(conAudit.getContractorAccount().getId(), permissions,
 							"Sent Open Requirements Reminder email to " + emailBuilder.getSentTo());
 				} catch (Exception e) {
 					System.out.println("Error sending openRequirements email: " + e.getMessage());

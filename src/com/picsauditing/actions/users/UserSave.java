@@ -8,16 +8,14 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.mail.EmailTemplates;
-import com.picsauditing.mail.EmailUserBean;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 
 public class UserSave extends UsersManage {
-	EmailUserBean mailer;
 	private static final int MIN_PASSWORD_LENGTH = 5; // minimum required length of a password
 	
-	public UserSave(OperatorAccountDAO operatorDao, UserDAO userDAO, EmailUserBean mailer) {
+	public UserSave(OperatorAccountDAO operatorDao, UserDAO userDAO) {
 		super(operatorDao, userDAO);
-		this.mailer = mailer;
 	}
 	
 	public String execute() throws Exception {
@@ -27,7 +25,11 @@ public class UserSave extends UsersManage {
 		
 		if ("sendWelcomeEmail".equals(button) && user != null) {
 			try {
-				mailer.sendMessage(EmailTemplates.welcome, user);
+				EmailBuilder emailBuilder = new EmailBuilder();
+				emailBuilder.setTemplate(2); // Welcome Email
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setUser(user);
+				EmailSender.send(emailBuilder.build());
 			} catch (Exception e) {
 				addActionError(e.getMessage());
 				return SUCCESS;

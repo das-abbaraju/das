@@ -22,13 +22,14 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.CertificateDAO;
+import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.domain.CertificateDO;
 import com.picsauditing.jpa.entities.Certificate;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.mail.EmailContractorBean;
+import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.mail.EmailTemplates;
 import com.picsauditing.servlet.upload.UploadConHelper;
 import com.picsauditing.servlet.upload.UploadProcessorFactory;
 import com.picsauditing.util.SpringUtils;
@@ -379,16 +380,25 @@ public class CertificateBean extends DataBean {
 
 	public void processEmailForm(Map<String, String> params, Permissions permissions) throws Exception {
 		CertificateDAO certificateDAO = (CertificateDAO) SpringUtils.getBean("CertificateDAO");
-		EmailContractorBean mailer = (EmailContractorBean) SpringUtils.getBean("EmailContractorBean");
-
+		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
+		EmailBuilder emailBuilder = new EmailBuilder();
 		for (String param : params.keySet()) {
 			if (param.startsWith("sendEmail_")) {
 				String certificate_id = param.substring(10);
 				Certificate certificate = certificateDAO.find(Integer.parseInt(certificate_id));
-				mailer.addToken("opAcct", certificate.getOperatorAccount());
-				mailer.addToken("expiration_date", certificate.getExpiration());
-				mailer.addToken("certificate_type", certificate.getType());
-				mailer.sendMessage(EmailTemplates.certificate_expire, certificate.getContractorAccount());
+				emailBuilder.clear();
+				emailBuilder.setTemplate(10); // Certificate Expiration
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setContractor(certificate.getContractorAccount());
+				emailBuilder.addToken("opAcct", certificate.getOperatorAccount());
+				emailBuilder.addToken("expiration_date", certificate.getExpiration());
+				emailBuilder.addToken("certificate_type", certificate.getType());
+				EmailQueue email = emailBuilder.build();
+				email.setPriority(20);
+				emailQueueDAO.save(email);
+				ContractorBean.addNote(certificate.getContractorAccount().getId(), permissions,
+						"Sent Certificate Expiration email to " + emailBuilder.getSentTo());
+
 				certificate.setSentEmails(certificate.getSentEmails() + 1);
 				certificate.setLastSentDate(new Date());
 				certificateDAO.save(certificate);
@@ -420,10 +430,9 @@ public class CertificateBean extends DataBean {
 		long response = 0L;
 		Locale loc = Locale.US;
 		String liability = m.get("liabilityLimit");
-		
-		if( liability != null )
-		{
-		
+
+		if (liability != null) {
+
 			if (liability.startsWith("$"))
 				liability = liability.substring(1);
 			try {
@@ -568,9 +577,9 @@ public class CertificateBean extends DataBean {
 						+ "insurance certificate when you renew your policy.";
 			}
 			message += "\n\nHave a great day,\n" + "PICS Customer Service";
-			
+
 			EmailSender.send(aBean.email, operator + " insurance certificate " + cdo.getStatus(), message);
-			
+
 			String newNote = cdo.getType() + " insurance certificate " + cdo.getStatus() + " by " + operator
 					+ " for reason: " + cdo.getReason();
 			Note note = new Note(cdo.getOperator_id(), cdo.getContractor_id(), permissions.getUserIdString(),

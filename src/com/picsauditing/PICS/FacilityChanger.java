@@ -3,9 +3,6 @@ package com.picsauditing.PICS;
 import java.util.Date;
 import java.util.Iterator;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
@@ -13,7 +10,8 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.mail.EmailContractorBean;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EmailTemplates;
 
 /**
@@ -26,18 +24,15 @@ public class FacilityChanger {
 	private ContractorAccountDAO contractorAccountDAO;
 	private OperatorAccountDAO operatorAccountDAO;
 	private AuditBuilder auditBuilder;
-	private EmailContractorBean emailer;
 
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
 	private Permissions permissions;
 
 	public FacilityChanger(ContractorAccountDAO contractorAccountDAO, OperatorAccountDAO operatorAccountDAO,
-			ContractorOperatorDAO contractorOperatorDAO, AuditBuilder auditBuilder, @Qualifier("EmailContractorBean")
-			EmailContractorBean emailer) {
+			ContractorOperatorDAO contractorOperatorDAO, AuditBuilder auditBuilder) {
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.auditBuilder = auditBuilder;
-		this.emailer = emailer;
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
 	}
@@ -65,9 +60,13 @@ public class FacilityChanger {
 		ContractorBean.addNote(contractor.getId(), permissions, "Added contractor to " + operator.getName());
 
 		// Send the contractor an email that the operator added them
-		emailer.setPermissions(permissions);
-		emailer.addToken("opAcct", operator);
-		emailer.sendMessage(EmailTemplates.contractoradded, contractor);
+		EmailBuilder emailBuilder = new EmailBuilder();
+		emailBuilder.setTemplate(9); // Contractor Added
+		emailBuilder.setPermissions(permissions);
+		emailBuilder.setContractor(contractor);
+		emailBuilder.addToken("opAcct", operator);
+		EmailSender.send(emailBuilder.build());
+
 		auditBuilder.buildAudits(contractor);
 	}
 

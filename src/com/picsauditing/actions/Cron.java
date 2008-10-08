@@ -9,27 +9,26 @@ import javax.persistence.NoResultException;
 import javax.servlet.ServletContext;
 
 import org.apache.struts2.ServletActionContext;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.picsauditing.PICS.AccountBean;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.Billing;
 import com.picsauditing.PICS.CertificateBean;
 import com.picsauditing.PICS.ContractorBean;
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Facilities;
 import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.mail.EmailContractorBean;
+import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.mail.EmailTemplates;
 import com.picsauditing.util.SpringUtils;
 
 public class Cron extends PicsActionSupport {
@@ -47,8 +46,7 @@ public class Cron extends PicsActionSupport {
 	protected boolean flagsOnly = false;
 
 	public Cron(FlagCalculator2 fc2, OperatorAccountDAO ops, AppPropertyDAO appProps, AuditBuilder ab,
-			CertificateDAO certificateDAO, ContractorAuditDAO contractorAuditDAO, 
-			@Qualifier("EmailContractorBean") EmailContractorBean econ) {
+			CertificateDAO certificateDAO, ContractorAuditDAO contractorAuditDAO) {
 		this.flagCalculator = fc2;
 		this.operatorDAO = ops;
 		this.appPropDao = appProps;
@@ -192,22 +190,24 @@ public class Cron extends PicsActionSupport {
 
 	public void sendEmailExpiredCertificates() throws Exception {
 		List<Certificate> cList = certificateDAO.findExpiredCertificate();
-		EmailContractorBean cMailer = (EmailContractorBean) SpringUtils.getBean("EmailContractorBean");
+		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
+		EmailBuilder emailBuilder = new EmailBuilder();
 		for (Certificate certificate : cList) {
-			cMailer.addToken("opAcct", certificate.getOperatorAccount());
-			cMailer.addToken("expiration_date", certificate.getExpiration());
-			cMailer.addToken("certificate_type", certificate.getType());
-			cMailer.sendMessage(EmailTemplates.certificate_expire, certificate.getContractorAccount());
+			emailBuilder.clear();
+			emailBuilder.setTemplate(10); // Certificate Expiration
+			emailBuilder.setPermissions(permissions);
+			emailBuilder.setContractor(certificate.getContractorAccount());
+			emailBuilder.addToken("opAcct", certificate.getOperatorAccount());
+			emailBuilder.addToken("expiration_date", certificate.getExpiration());
+			emailBuilder.addToken("certificate_type", certificate.getType());
+			EmailQueue email = emailBuilder.build();
+			email.setPriority(20);
+			emailQueueDAO.save(email);
+			ContractorBean.addNote(certificate.getContractorAccount().getId(), permissions,
+					"Sent Certificate Expiration email to " + emailBuilder.getSentTo());
 
 			certificate.setSentEmails(certificate.getSentEmails() + 1);
 			certificate.setLastSentDate(new Date());
-			ContractorBean cBean = new ContractorBean();
-			cBean.setFromDB(certificate.getContractorAccount().getIdString());
-			String notes = "Sent out the " + certificate.getType() + " Certificate Expiration Email to"
-					+ certificate.getContractorAccount().getName();
-			cBean.addNote(certificate.getContractorAccount().getIdString(), "System", notes, DateBean
-					.getTodaysDateTime());
-			cBean.writeToDB();
 			certificateDAO.save(certificate);
 		}
 	}

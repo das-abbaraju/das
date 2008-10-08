@@ -33,6 +33,7 @@
   <class>com.picsauditing.jpa.entities.FlagOshaCriterion</class>
   <class>com.picsauditing.jpa.entities.FlagQuestionCriteria</class>
   <class>com.picsauditing.jpa.entities.Industry</class>
+  <class>com.picsauditing.jpa.entities.ListType</class>
   <class>com.picsauditing.jpa.entities.LowMedHigh</class>	
   <class>com.picsauditing.jpa.entities.NcmsCategory</class>
   <class>com.picsauditing.jpa.entities.Notes</class>
@@ -43,6 +44,7 @@
   <class>com.picsauditing.jpa.entities.OshaType</class>
   <class>com.picsauditing.jpa.entities.RulesRow</class>
   <class>com.picsauditing.jpa.entities.State</class>
+  <class>com.picsauditing.jpa.entities.Token</class>
   <class>com.picsauditing.jpa.entities.User</class> 
   <class>com.picsauditing.jpa.entities.UserGroup</class>
   <class>com.picsauditing.jpa.entities.UserLoginLog</class>

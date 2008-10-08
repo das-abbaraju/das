@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.jpa.entities.Token;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -26,8 +27,8 @@ public class TokenDAOTest extends TestCase {
 	}
 	
 	public void testFindByType() {
-		List<Token> auditTokens = tokendao.findByType("Audits");
-		List<Token> conTokens = tokendao.findByType("Audits");
+		List<Token> auditTokens = tokendao.findByType(ListType.Audit);
+		List<Token> conTokens = tokendao.findByType(ListType.Contractor);
 		assertTrue(auditTokens.size() > conTokens.size());
 	}
 }
