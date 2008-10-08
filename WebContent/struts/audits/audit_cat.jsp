@@ -49,6 +49,7 @@
 	}
 	
 	function saveComment(questionid, elm) {
+		<s:if test="catDataID == 0">return;</s:if>
 		var pars = 'auditData.audit.id=<s:property value="conAudit.id"/>&catDataID=<s:property value="catDataID"/>&auditData.question.questionID=' + questionid + '&auditData.comment=' + escape($F(elm));
 		var divName = 'status_'+questionid;
 		var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
