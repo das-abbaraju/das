@@ -58,118 +58,107 @@
 </div>
 
 <s:if test="auditID > 0">
-	<table>
-		<tr>
-			<td style="vertical-align: top">
-			<table class="forms">
-				<tr>
-					<th>Status:</th>
-					<td><s:property value="conAudit.auditStatus" /></td>
-				</tr>
-				<s:if test="conAudit.auditType.hasAuditor">
-					<s:if test="permissions.picsEmployee">
-						<tr>
-							<th>Auditor:</th>
-							<td><s:property value="conAudit.auditor.name"
-								default="Not Assigned" /></td>
-						</tr>
+<div id="auditHeader">
+	<div style="float: left;">
+		<fieldset>
+		<ul>
+			<li><label>Status:</label>
+				<s:property value="conAudit.auditStatus" />
+			</li>
+			<s:if test="conAudit.auditType.hasAuditor">
+				<s:if test="permissions.picsEmployee">
+					<li><label>Auditor:</label>
+						<s:property value="conAudit.auditor.name" default="Not Assigned" />
+					</li>
+				</s:if>
+			</s:if>
+			<li><label>Created:</label>
+				<s:date name="conAudit.createdDate" format="MMM d, yyyy" />
+			</li>
+			<s:if test="conAudit.auditStatus.name() == 'Submitted'">
+				<s:if test="conAudit.auditType.PQF">
+					<li><label>Verified:</label>
+						<s:property value="conAudit.percentVerified" />%
+					</li>
+				</s:if>
+				<s:else>
+					<li><label>% Closed:</label>
+						<s:property value="conAudit.percentVerified" />%
+					</li>
+				</s:else>
+			</s:if>
+			<s:if test="conAudit.auditStatus.name() == 'Pending'">
+				<li><label>% Complete:</label>
+					<s:property value="conAudit.percentComplete" />%
+				</li>
+			</s:if>
+		</ul>
+		</fieldset>
+	</div>
+	<div style="float: left;">
+		<fieldset>
+		<ul>
+			<s:if test="conAudit.requestingOpAccount">
+				<li><label>For:</label>
+					<s:property value="conAudit.requestingOpAccount.name" />
+				</li>
+			</s:if>
+			<s:if test="conAudit.auditType.showManual">
+				<li><label>Safety Manual:</label>
+					<s:if test="hasSafetyManual">
+							<s:iterator value="safetyManualLink.values()">
+							<a href="#"
+							onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqf<s:property value="answer"/>1331','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">
+							Uploaded (<s:date name="audit.createdDate" format="MMM yyyy"/>)</a><br/><br/>
+							</s:iterator>
 					</s:if>
-				</s:if>
-				<tr>
-					<th>Created:</th>
-					<td><s:date name="conAudit.createdDate" format="MMM d, yyyy" /></td>
-				</tr>
-				<s:if test="conAudit.auditStatus.name() == 'Submitted'">
-					<s:if test="conAudit.auditType.PQF">
-						<tr>
-							<th>Verified:</th>
-							<td><s:property value="conAudit.percentVerified" />%</td>
-						</tr>
-					</s:if>
-					<s:else>
-						<tr>
-							<th>% Closed:</th>
-							<td><s:property value="conAudit.percentVerified" />%</td>
-						</tr>
-					</s:else>
-				</s:if>
-				<s:if test="conAudit.auditStatus.name() == 'Pending'">
-						<tr>
-							<th>% Complete:</th>
-							<td><s:property value="conAudit.percentComplete" />%</td>
-						</tr>
-				</s:if>			
-			</table>
-			</td>
-			<td style="vertical-align: top">
-			<table class="forms">
-				<s:if test="conAudit.requestingOpAccount">
-					<tr>
-						<th>For:</th>
-						<td><s:property value="conAudit.requestingOpAccount.name" /></td>
-					</tr>
-				</s:if>
-				<s:if test="conAudit.auditType.showManual">
-					<tr>
-						<th>Safety Manual:</th>
-						<td><s:if test="hasSafetyManual">
-								<s:iterator value="safetyManualLink.values()">
-								<a href="#"
-								onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqf<s:property value="answer"/>1331','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">
-								Uploaded (<s:date name="audit.createdDate" format="MMM yyyy"/>)</a><br/><br/>
-								</s:iterator>
-							</s:if>
-							<s:else>Not Uploaded</s:else>
-						</td>
-					</tr>
-				</s:if>
-				<s:if test="conAudit.auditType.scheduled">
-					<tr>
-						<th>Scheduled:</th>
-						<td><s:date name="conAudit.scheduledDate"
-							format="MMM d, yyyy" /> <s:property
-							value="conAudit.auditLocation" /></td>
-					</tr>
-				</s:if>
-				<tr>
-					<th>Submitted:</th>
-					<td><s:date name="conAudit.completedDate" format="MMM d, yyyy" /></td>
-				</tr>
-				<tr>
-					<th>Expires:</th>
-					<td><s:date name="conAudit.expiresDate" format="MMM d, yyyy" /></td>
-				</tr>
-			</table>
-			</td>
-			<td style="vertical-align: top">
-			<div>
-			<ul>
-				<pics:permission perm="AuditEdit">
-					<li><a href="ConAuditMaintain.action?auditID=<s:property value="auditID" />">System Edit</a></li>
+					<s:else>Not Uploaded</s:else>
+				</li>
+			</s:if>
+			<s:if test="conAudit.auditType.scheduled">
+				<li><label>Scheduled:</label>
+					<s:date name="conAudit.scheduledDate"
+						format="MMM d, yyyy" /> <s:property
+						value="conAudit.auditLocation" />
+				</li>
+			</s:if>
+			<li><label>Submitted:</label>
+				<s:date name="conAudit.completedDate" format="MMM d, yyyy" />
+			</li>
+			<li><label>Expires:</label>
+				<s:date name="conAudit.expiresDate" format="MMM d, yyyy" />
+			</li>
+		</ul>
+		</fieldset>
+	</div>
+	<div style="float: left;">
+		<fieldset>
+		<ul>
+			<pics:permission perm="AuditEdit">
+				<li><a href="ConAuditMaintain.action?auditID=<s:property value="auditID" />">System Edit</a></li>
+			</pics:permission>
+			<s:if test="conAudit.auditType.Pqf">
+				<pics:permission perm="AuditVerification">
+					<li><a href="VerifyView.action?auditID=<s:property value="auditID" />">Verify PQF</a></li>
 				</pics:permission>
-				<s:if test="conAudit.auditType.Pqf">
-					<pics:permission perm="AuditVerification">
-						<li><a href="VerifyView.action?auditID=<s:property value="auditID" />">Verify PQF</a></li>
-					</pics:permission>
-				</s:if>
-				<s:if test="conAudit.auditStatus.toString() == 'Pending'">
-					<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
-					Questions</a></li>
-				</s:if>
-				<s:if test="conAudit.auditStatus.toString() != ('Pending','Exempt')">
-					<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true">View Requirements
+			</s:if>
+			<s:if test="conAudit.auditStatus.toString() == 'Pending'">
+				<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
+				Questions</a></li>
+			</s:if>
+			<s:if test="conAudit.auditStatus.toString() != ('Pending','Exempt')">
+				<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true">View Requirements
+				</a></li>
+				<s:if test="permissions.auditor">
+					<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true&mode=Edit">Edit Requirements
 					</a></li>
-					<s:if test="permissions.auditor">
-						<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true&mode=Edit">Edit Requirements
-						</a></li>
-					</s:if>
 				</s:if>
-			</ul>
-			</div>
-			</td>
-		</tr>
-	</table>
-	
+			</s:if>
+		</ul>
+		</fieldset>
+	</div>
+	<br clear="all" style="margin-bottom: 20px"/>
+</div>
 </s:if>
 </s:if>
 <s:include value="../actionMessages.jsp" />

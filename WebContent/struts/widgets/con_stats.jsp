@@ -7,7 +7,7 @@
 	width: 200px; 
 	text-align: center;
 "><a href="ContractorView.action">Show Details Page</a></div>
-<a href="contractor_edit.jsp" class="edit" style="float: right">Edit Account Info</a>
+<a href="ContractorEdit.action" class="edit" style="float: right">Edit Account Info</a>
 <p><label>Account Name:</label> <s:property value="contractor.name" /></p>
 <p><label>Address:</label> <s:property value="contractor.address" /><br />
 <s:property value="contractor.city" />, <s:property value="contractor.state" /> <s:property value="contractor.zip" /></p>

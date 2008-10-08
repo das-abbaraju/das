@@ -6,11 +6,10 @@
 <title><s:property value="conAudit.auditType.auditName" /> for
 <s:property value="conAudit.contractorAccount.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+
 <style>
 table.report tr.na {
 	color: #999;
-	//display: none;
 }
 
 table.report tr.na a {
