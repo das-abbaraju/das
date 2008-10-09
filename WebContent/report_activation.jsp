@@ -2,7 +2,6 @@
 <%@include file="includes/main.jsp" %>
 <%@page import="com.picsauditing.mail.*"%>
 <jsp:useBean id="sBean" class="com.picsauditing.PICS.SearchBean" scope ="page"/>
-<%@page import="com.picsauditing.mail.EmailContractorBean"%>
 <%@page import="com.picsauditing.util.SpringUtils"%>
 <%
 if (!permissions.isAdmin()) throw new com.picsauditing.access.NoRightsException("Admin");
@@ -22,9 +21,14 @@ try{
 		message += "<b>"+sBean.aBean.name+"</b> has been made visible";
 		sBean.aBean.writeToDB();
 		sBean.cBean.writeToDB();
-		EmailContractorBean mailer = (EmailContractorBean)SpringUtils.getBean("EmailContractorBean");
-		mailer.setPermissions(permissions);
-		mailer.sendMessage(EmailTemplates.welcome, new Integer(actionID).intValue());
+		
+		ContractorAccountDAO dao = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
+		ContractorAccount contractor = dao.find(Integer.parseInt(actionID));
+		EmailBuilder emailBuilder = new EmailBuilder();
+		emailBuilder.setTemplate(2); // Welcome Email
+		emailBuilder.setPermissions(permissions);
+		emailBuilder.setContractor(contractor);
+		EmailSender.send(emailBuilder.build());
 		ContractorBean cBean = new ContractorBean();
 		cBean.setFromDB(actionID);
 		cBean.addAdminNote(actionID, "("+permissions.getUsername()+")", "Welcome Email Sent ", DateBean.getTodaysDate());
@@ -68,8 +72,8 @@ try{
 	
 	sBean.doSearch(request, SearchBean.ACTIVE_AND_NOT, 50, pBean, pBean.userID);
 %>
-<%@page import="com.picsauditing.dao.ContractorAccountDAO"%>
 <%@page import="com.picsauditing.jpa.entities.ContractorAccount"%>
+<%@page import="com.picsauditing.dao.ContractorAccountDAO"%>
 <html>
 <head>
 <title>Activation</title>

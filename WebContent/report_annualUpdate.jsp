@@ -11,15 +11,24 @@ permissions.tryPermission(OpPerms.EmailAnnualUpdate);
 String action = request.getParameter("action");
 if ("Send Emails".equals(action)) {
 	permissions.tryPermission(OpPerms.EmailAnnualUpdate, OpType.Edit);
+	EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
+	ContractorAccountDAO conAccountDAO = (ContractorAccountDAO)SpringUtils.getBean("ContractorAccountDAO");
+	EmailBuilder emailBuilder = new EmailBuilder();
 	java.util.Enumeration e = request.getParameterNames();
 	while (e.hasMoreElements()) {
 		String temp = (String)e.nextElement();
 		if (temp.startsWith("sendEmail_")) {
 			String conID = temp.substring(10);
-			ContractorAccountDAO conAccountDAO = (ContractorAccountDAO)SpringUtils.getBean("ContractorAccountDAO");
 			ContractorAccount contractor = conAccountDAO.find(Integer.parseInt(conID));
-			EmailContractorBean emailer = (EmailContractorBean)SpringUtils. getBean("EmailContractorBean");
-			emailer.sendMessage(EmailTemplates.annual_update, contractor);
+			emailBuilder.clear();
+			emailBuilder.setTemplate(4); // Annual Update
+			emailBuilder.setPermissions(permissions);
+			emailBuilder.setContractor(contractor);
+			EmailQueue email = emailBuilder.build();
+			email.setPriority(30);
+			emailQueueDAO.save(email);
+			ContractorBean.addNote(contractor.getId(), permissions,
+					"Sent PICS annual update email to " + emailBuilder.getSentTo());
 			contractor.setAnnualUpdateEmails(contractor.getAnnualUpdateEmails() + 1);
 			contractor.setLastAnnualUpdateEmailDate(new Date());
 			conAccountDAO.save(contractor);
@@ -60,6 +69,8 @@ List<BasicDynaBean> searchData = report.getPage();
 <%@page import="com.picsauditing.util.SpringUtils"%>
 <%@page import="com.picsauditing.dao.ContractorAccountDAO"%>
 <%@page import="com.picsauditing.jpa.entities.ContractorAccount"%>
+<%@page import="com.picsauditing.dao.EmailQueueDAO"%>
+<%@page import="com.picsauditing.jpa.entities.EmailQueue"%>
 <html>
 <head>
 <title>Annual Update Emails</title>

@@ -41,7 +41,6 @@
 			conAudit.setAuditType(new AuditType(4));
 			conAudit.setContractorAccount(new ContractorAccount());
 			conAudit.getContractorAccount().setId(Integer.parseInt(conID));
-			conAudit.setCanDelete(true);
 			conAudit.setPercentVerified(0);
 			conAudit.setCreatedDate(new Date());
 			conAudit.setAuditStatus(AuditStatus.Active);
