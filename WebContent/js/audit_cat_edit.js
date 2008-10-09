@@ -18,7 +18,7 @@ function changeAnswer(questionid, questionType) {
 }
 
 function saveVerifiedAnswer(questionid, elm) {
-	var pars = 'auditData.audit.id=<s:property value="conAudit.id"/>&catDataID=<s:property value="catDataID"/>&auditData.question.questionID=' + questionid + '&auditData.verifiedAnswer=' + escape($F(elm));
+	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.questionID=' + questionid + '&auditData.verifiedAnswer=' + escape($F(elm));
 	var divName = 'status_'+questionid;
 	var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
 	{
@@ -33,7 +33,7 @@ function saveVerifiedAnswer(questionid, elm) {
 
 function saveComment(questionid, elm) {
 	if (catDataID == 0) return;
-	var pars = 'auditData.audit.id=<s:property value="conAudit.id"/>&catDataID=<s:property value="catDataID"/>&auditData.question.questionID=' + questionid + '&auditData.comment=' + escape($F(elm));
+	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.questionID=' + questionid + '&auditData.comment=' + escape($F(elm));
 	var divName = 'status_'+questionid;
 	var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
 	{
@@ -48,7 +48,7 @@ function saveComment(questionid, elm) {
 
 function saveAnswer( questionid, elm ) {
 	if (catDataID == 0) return;
-	var pars = 'auditData.audit.id=<s:property value="conAudit.id"/>&catDataID=<s:property value="catDataID"/>&auditData.question.questionID=' + questionid + '&auditData.answer=';
+	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.questionID=' + questionid + '&auditData.answer=';
 	if( elm.type == 'text' || elm.type == 'radio' || elm.type == 'textarea')
 	{
 		var thevalue = escape(elm.value);
@@ -133,7 +133,7 @@ function saveAnswer( questionid, elm ) {
 }
 
 function showFileUpload( questionid ) {
-	url = 'AuditDataUpload.action?auditID=<s:property value="auditID"/>&question.questionID=' + questionid;
+	url = 'AuditDataUpload.action?auditID='+auditID+'&question.questionID=' + questionid;
 	title = 'Upload';
 	pars = 'scrollbars=yes,resizable=yes,width=650,height=450,toolbar=0,directories=0,menubar=0';
 	fileUpload = window.open(url,title,pars);
@@ -141,7 +141,7 @@ function showFileUpload( questionid ) {
 }
 
 function reloadQuestion( questionid ) {
-	var pars = 'auditID=<s:property value="conAudit.id"/>&questionID=' + questionid;
+	var pars = 'auditID='+auditID+'&questionID=' + questionid;
 	var divName = 'td_answer_'+questionid;
 	$(divName).innerHTML="<img src='images/ajax_process.gif' />";
 	var myAjax = new Ajax.Updater(divName,'ReloadQuestionAjax.action',
