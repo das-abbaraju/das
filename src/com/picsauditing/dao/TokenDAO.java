@@ -36,7 +36,7 @@ public class TokenDAO extends PicsDAO {
 	}
 	
 	public List<Token> findByType(ListType type) {
-		String where = "WHERE type IN ('ALL'";
+		String where = "WHERE listType IN ('ALL'";
 		if (type != null) {
 			where += ",'" + type.toString() + "'";
 			if (type.equals(ListType.Audit)
