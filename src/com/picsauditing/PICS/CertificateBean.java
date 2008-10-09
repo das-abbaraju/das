@@ -394,6 +394,7 @@ public class CertificateBean extends DataBean {
 				emailBuilder.addToken("expiration_date", certificate.getExpiration());
 				emailBuilder.addToken("certificate_type", certificate.getType());
 				EmailQueue email = emailBuilder.build();
+				email.setBccAddresses("eorozco@picsauditing.com");
 				email.setPriority(20);
 				emailQueueDAO.save(email);
 				ContractorBean.addNote(certificate.getContractorAccount().getId(), permissions,

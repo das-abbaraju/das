@@ -82,6 +82,10 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public ContractorAccount() {
 		this.type = "Contractor";
 	}
+	
+	public ContractorAccount(int id) {
+		this.id = id;
+	}
 
 	@OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.REMOVE})
 	@OrderBy("location")

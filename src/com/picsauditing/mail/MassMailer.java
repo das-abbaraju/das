@@ -134,6 +134,7 @@ public class MassMailer extends PicsActionSupport {
 					
 					// TODO we may want to offer sending from another email other than their own
 					email.setFromAddress(permissions.getEmail());
+					email.setEmailTemplate(template);
 					emailQueueDAO.save(email);
 				}
 			}

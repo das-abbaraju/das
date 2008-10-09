@@ -18,56 +18,45 @@ import com.picsauditing.util.VelocityAdaptor;
 
 /**
  * Merges an email template with a map of token data and creates an email
+ * 
  * @author Trevor
- *
+ * 
  */
 public class EmailBuilder {
-	/* TODO
-		tokens.put("confirmLink", getServerName()+"ScheduleAuditUpdate.action?type=a&auditID="+conAudit.getId()+"&key="+Strings.hashUrlSafe("a"+conAudit.getAuditor().getId()+"id"+conAudit.getId()));
-		tokens.put("conAudit", conAudit);
-		email.setToAddresses(conAudit.getAuditor().getEmail());
-
-	addToken("confirmLink", "ScheduleAuditUpdate.action?type=c&auditID=" + conAudit.getId()
-			+ "&key="
-			+ Strings.hashUrlSafe("c" + conAudit.getContractorAccount().getId() + "id" + conAudit.getId()));
-			
-	ContractorBean.addNote(contractor.getId(), permissions, message);
-		
-	if (templateType.equals(EmailTemplates.certificate_expire))
-		email.setBccAddresses("eorozco@picsauditing.com");
-	*/
 	private String fromAddress = null;
 	protected EmailTemplate template;
-	
+
 	protected String toAddresses = null;
 	protected String ccAddresses = null;
 	protected String bccAddresses = null;
 	protected Map<String, Object> tokens;
-	
+	protected int conID;
+
 	private VelocityAdaptor velocityAdaptor;
 	protected EmailQueueDAO emailQueueDAO;
-	
+
 	// Generic token data
 	protected String serverName;
 	protected Permissions permissions;
 
 	private boolean debug = false;
-	
+
 	public EmailBuilder() {
 		velocityAdaptor = new VelocityAdaptor();
 		clear();
 	}
-	
+
 	public void clear() {
 		tokens = new HashMap<String, Object>();
 	}
 
 	public EmailQueue build() throws Exception {
 		EmailQueue email = new EmailQueue();
-		
+
 		email.setCreationDate(new Date());
 		email.setFromAddress(fromAddress);
 		email.setToAddresses(toAddresses);
+		email.setContractorAccount(new ContractorAccount(conID));
 		if (permissions != null) {
 			tokens.put("permissions", permissions);
 			if (permissions.getUserId() > 0) {
@@ -87,34 +76,35 @@ public class EmailBuilder {
 		}
 		return email;
 	}
-	
-	// Custom token setters here 
+
+	// Custom token setters here
 	// We may consider moving this to another class or back to the controllers
-	
+
 	public void setConAudit(ContractorAudit conAudit) {
 		setContractor(conAudit.getContractorAccount());
 		addToken("audit", conAudit);
 	}
-	
+
 	public void setContractor(ContractorAccount contractor) {
 		addToken("contractor", contractor);
 		toAddresses = contractor.getEmail();
 		ccAddresses = contractor.getSecondEmail();
+		conID = contractor.getId();
 	}
-	
+
 	public void setUser(User user) {
 		addToken("user", user);
 		toAddresses = user.getEmail();
 	}
-	
+
 	// End of custom token setters
-	
+
 	public String getSentTo() {
 		if (Strings.isEmpty(ccAddresses))
 			return toAddresses;
 		return toAddresses + ", " + ccAddresses;
 	}
-	
+
 	public void setTemplate(EmailTemplate template) {
 		this.template = template;
 	}
@@ -123,7 +113,7 @@ public class EmailBuilder {
 		EmailTemplateDAO dao = (EmailTemplateDAO) SpringUtils.getBean("EmailTemplateDAO");
 		setTemplate(dao.find(id));
 	}
-	
+
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
 		addToken("permissions", permissions);
@@ -176,5 +166,5 @@ public class EmailBuilder {
 	public void setDebug(boolean debug) {
 		this.debug = debug;
 	}
-	
+
 }
