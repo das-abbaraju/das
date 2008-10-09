@@ -105,12 +105,10 @@ public class MassMailer extends PicsActionSupport {
 		SelectAccount sql = null;
 		
 		if (ListType.Contractor.equals(type)) {
-			//emailContractorBean.setPermissions(permissions);
 			sql = new SelectAccount();
 			sql.addWhere("a.id IN (" + idList + ")");
 			sql.addOrderBy("a.name");
 		} else if (ListType.Audit.equals(type)) {
-			//emailAuditBean.setPermissions(permissions);
 			sql = new SelectContractorAudit();
 			sql.addWhere("ca.auditID IN (" + idList + ")");
 			sql.addOrderBy("a.name");

@@ -54,14 +54,17 @@ public class EmailBuilder {
 		EmailQueue email = new EmailQueue();
 
 		email.setCreationDate(new Date());
-		email.setFromAddress(fromAddress);
 		email.setToAddresses(toAddresses);
+		email.setFromAddress(fromAddress);
 		email.setContractorAccount(new ContractorAccount(conID));
 		if (permissions != null) {
 			tokens.put("permissions", permissions);
 			if (permissions.getUserId() > 0) {
 				email.setCreatedBy(new User());
 				email.getCreatedBy().setId(permissions.getUserId());
+				if (fromAddress == null) {
+					email.setFromAddress(permissions.getEmail());
+				}
 			}
 		}
 
