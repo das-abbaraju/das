@@ -81,7 +81,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 				if (brochure != null) {
 					String extension = brochureFileName.substring(brochureFileName.lastIndexOf(".") + 1);
-					String[] validExtensions = { "jpg", "gif", "png", "doc", "pdf" };
+					String[] validExtensions = { "jpg", "gif", "png", "doc", "docx", "pdf" };
 
 					if (!FileUtils.checkFileExtension(extension, validExtensions)) {
 						addActionError("Brochure must be a image, doc or pdf file");
