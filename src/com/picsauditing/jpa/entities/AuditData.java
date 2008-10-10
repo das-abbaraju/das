@@ -188,6 +188,13 @@ public class AuditData implements java.io.Serializable {
 		return (question.getOkAnswer().indexOf(answer) == -1);
 	}
 
+	@Transient
+	public boolean isCommentLength() {
+		if (comment.length() > 0)
+			return true;
+		return false;
+	}
+
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;
