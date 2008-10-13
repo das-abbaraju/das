@@ -152,10 +152,13 @@ public class ContractorActionSupport extends PicsActionSupport {
 		if (!permissions.isContractor() && !permissions.hasPermission(OpPerms.InsuranceCerts))
 			return false;
 
-		for (ContractorOperator insurContractors : getOperators())
+		for (ContractorOperator insurContractors : getOperators()) {
+			if(insurContractors.getContractorAccount().getCertificates().size() > 0)
+				return false;
 			if (insurContractors.getOperatorAccount().getCanSeeInsurance().equals(YesNo.Yes))
 				return true;
-
+		}
+		
 		return false;
 	}
 
