@@ -62,7 +62,8 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			this.addActionError(user.getName() + " was not listed in this account");
 			user = null;
 		}
-		
+		filtered = true;
+
 		return SUCCESS;
 	}
 
@@ -133,27 +134,31 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 		if (!permissions.hasPermission(OpPerms.EditUsers, OpType.Edit))
 			return list;
-		
-		// for now, just add all groups in your account to the 
+
+		// for now, just add all groups in your account to the
 		list = userDAO.findByAccountID(accountId, "Yes", "Yes");
-		// This used to only add groups you were a member of, 
-		//  but this doesn't work for admins trying to add groups they aren't members of
-		//for (User group : activeGroups) {
-		//	if (permissions.hasPermission(OpPerms.AllOperators) || permissions.getGroups().contains(group.getId()))
-		//		list.add(group);
-		//}
-		
-		if (user.isGroup() && permissions.hasPermission(OpPerms.AllOperators) && permissions.getAccountId() != accountId) {
+		// This used to only add groups you were a member of,
+		// but this doesn't work for admins trying to add groups they aren't
+		// members of
+		// for (User group : activeGroups) {
+		// if (permissions.hasPermission(OpPerms.AllOperators) ||
+		// permissions.getGroups().contains(group.getId()))
+		// list.add(group);
+		// }
+
+		if (user.isGroup() && permissions.hasPermission(OpPerms.AllOperators)
+				&& permissions.getAccountId() != accountId) {
 			// This is an admin looking at another account (not PICS)
 			// Add the non-PICS groups too
 			List<User> nonPicsGroups = userDAO.findByAccountID(Account.PicsID, "Yes", "Yes");
 			for (User group : nonPicsGroups) {
-				// Add the groups owned by PICS but that are for Operator/Corporate/Contractors/etc
+				// Add the groups owned by PICS but that are for
+				// Operator/Corporate/Contractors/etc
 				if (!group.getName().startsWith("PICS") && !list.contains(group))
 					list.add(group);
 			}
 		}
-		
+
 		for (UserGroup userGroup : user.getGroups()) {
 			// but these groups, have already been added
 			list.remove(userGroup.getGroup());
@@ -177,9 +182,9 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		list.remove(user);
 		return list;
 	}
-	
+
 	public List<UserLoginLog> getRecentLogins() {
-		UserLoginLogDAO loginLogDao = (UserLoginLogDAO)SpringUtils.getBean("UserLoginLogDAO");
+		UserLoginLogDAO loginLogDao = (UserLoginLogDAO) SpringUtils.getBean("UserLoginLogDAO");
 		return loginLogDao.findRecentLogins(user.getUsername(), 10);
 	}
 
@@ -191,7 +196,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 	public List<OperatorAccount> getFacilities() {
 		facilities = operatorDao.findWhere(true, "");
-		
+
 		return facilities;
 	}
 
