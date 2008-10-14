@@ -3,25 +3,12 @@
 <head>
 <title>Fatalities</title>
 <script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
 <h1>Fatalities Report</h1>
-	  <s:form id="form1" name="form1" method="post">
-		<s:if test="%{value = permissions.corporate}">
-<%//		TODO: Add functionality back in to be a Multi-Select Box%>
-<%//          <table border="0" cellpadding="2" cellspacing="0">%>
-<%//            <tr align="center" >%>
-<%//              <td><s:select list="operatorList" cssClass="forms" name="operator" listKey="id" listValue="name" /></td>%>
-<%//              <td><s:submit name="imageField" type="image" src="images/button_search.gif" onclick="runSearch('form1')" /></td>%>
-<%//            </tr>%>
-<%//          </table>%>
-			</s:if>
-<s:hidden name="showPage" value="1"/>
-<s:hidden name="startsWith" />
-<s:hidden name="orderBy" />
-</s:form>
-
+<s:include value="filters.jsp" />
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
@@ -29,6 +16,10 @@
             <thead><tr> 
               <td></td>
 	    	  <th><a href="?orderBy=a.name" >Contractor</a></th>
+	    	  <s:if test="permissions.operator">
+				<td><a
+					href="?orderBy=flag DESC">Flag</a></td>
+			  </s:if>
               <td><s:property value="year-1" /></td>
               <td><s:property value="year-2" /></td>
               <td><s:property value="year-3" /></td>
@@ -38,7 +29,14 @@
 			  <tr>
                 <td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 				<td>
-				<a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"	><s:property value="[0].get('name')"/></a></td>
+				<a href="ContractorView.action?id=<s:property value="get('id')"/>"	><s:property value="[0].get('name')"/></a></td>
+				<s:if test="permissions.operator">
+					<td class="center">
+						<a href="ContractorFlag.action?id=<s:property value="[0].get('id')"/>" 
+						title="<s:property value="[0].get('flag')"/> - Click to view details"><img 
+						src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif" width="12" height="15" border="0"></a>
+					</td>
+				</s:if>
 <!--Need to fix this before the year end-->				
 				<td class="center"><s:property value="[0].get('fatalities1')" /></td>
 				<td class="center"><s:property value="[0].get('fatalities2')" /></td>
