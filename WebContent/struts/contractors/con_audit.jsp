@@ -26,14 +26,14 @@ table.report tr.na a {
 	<s:if test="canSubmit">
 		<s:hidden name="auditStatus" value="Submitted" />
 	</s:if>
-	<s:if test="conAudit.auditStatus.toString() == 'Pending' && !permissions.operator">
+	<s:if test="conAudit.auditStatus.toString() == 'Pending'">
 		<s:submit value="%{'Submit '.concat(conAudit.auditType.auditName)}" disabled="!canSubmit" />
 		<span class="redMain">&nbsp;&nbsp;&nbsp;All sections must be filled out before submitting.</span>
 	</s:if>
 	<s:if test="canClose">
 		<s:hidden name="auditStatus" value="Active" />
 	</s:if>
-	<s:if test="conAudit.auditStatus.toString() == 'Submitted' && !permissions.operator">
+	<s:if test="conAudit.auditStatus.toString() == 'Submitted'">
 		<s:submit value="%{'Close '.concat(conAudit.auditType.auditName)}" disabled="!canClose" />
 	</s:if>
 </s:form>

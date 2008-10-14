@@ -14,6 +14,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -175,9 +176,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return false;
 
 		if (permissions.isOperator()) {
-			if (conAudit.getRequestingOpAccount() != null)
-				if (conAudit.getRequestingOpAccount().getId() == permissions.getAccountId())
-					return true;
+			if (conAudit.getRequestingOpAccount() != null) {
+				for (AuditOperator auditOperator : conAudit.getRequestingOpAccount().getAudits()) {
+					if (auditOperator.getAuditType().equals(conAudit.getAuditType()) && auditOperator.isCanEdit())
+						return true;
+				}
+			}
 			return false;
 		}
 
@@ -221,7 +225,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 					emailBuilder.setConAudit(conAudit);
 					emailBuilder.addToken("audits", getActiveAudits());
 					EmailSender.send(emailBuilder.build());
-					ContractorBean.addNote(conAudit.getContractorAccount().getId(), permissions, 
+					ContractorBean.addNote(conAudit.getContractorAccount().getId(), permissions,
 							"Sent Audits Thank You email to " + emailBuilder.getSentTo());
 				} catch (Exception e) {
 					e.printStackTrace();
