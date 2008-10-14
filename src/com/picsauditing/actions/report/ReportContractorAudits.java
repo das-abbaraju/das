@@ -21,6 +21,7 @@ public class ReportContractorAudits extends ReportAccount {
 	protected int[] auditTypeID;
 	protected AuditStatus[] auditStatus;
 	protected int[] auditorId;
+	protected int[] auditID;
 
 	protected boolean filterAuditType = true;
 	protected boolean filterAuditStatus = true;
@@ -273,6 +274,16 @@ public class ReportContractorAudits extends ReportAccount {
 
 	public boolean isFilterExpiredDate() {
 		return filterExpiredDate;
+	}
+
+	public int[] getAuditID() {
+		return auditID;
+	}
+
+	public void setAuditID(int[] auditID) {
+		String list = Strings.implode(auditID, ",");
+		sql.addWhere("ca.auditID IN (" + list + ")");
+		this.auditID = auditID;
 	}
 
 }
