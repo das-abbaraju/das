@@ -22,7 +22,7 @@ ul#navlist {
 	margin-top: -21px;
 }
 
-#navlist a, #navlist a:v:visited, #navlist a:hover {
+#navlist a, #navlist a:visited, #navlist a:hover {
 	padding: 9px;
 	line-height: 36px;
 }

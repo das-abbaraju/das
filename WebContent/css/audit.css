@@ -1,3 +1,81 @@
+/** Audit Header ***/
+#content #auditHeader {
+	border-top: 2px solid #C3C3C3;
+	border-bottom: 2px solid #C3C3C3;
+	background-color: #F6F6F0;
+	margin-bottom: 10px;
+}
+
+#auditHeader fieldset {
+	width: 30%;
+	float: left;
+}
+
+#auditHeader ul {
+	list-style-type: none;
+}
+
+#auditHeader li {
+	float: left;
+	clear: left;
+	width: 100%;
+}
+
+#auditHeader fieldset label {
+	float: left;
+	margin-right: .7em;
+	width: 8em;
+	text-align: right;
+	font-weight: bold;
+	color: #003768;
+}
+
+#auditHeaderNav ul {
+	display: block;
+	clear: both;
+	float: none;
+	text-align: center;
+	margin: 0px;
+	top: -14px;
+	right: -9px;
+	position: relative;
+	width: 100%;
+	white-space: nowrap;
+	line-height: normal;
+	list-style-type: none;
+}
+
+#auditHeaderNav ul li {
+	padding: 0px 4px 0px 0px;
+	float: right;
+	width: auto;
+	clear: none;
+}
+
+#auditHeaderNav a:hover, #auditHeaderNav a.current {
+	background-color: #A84D10;
+}
+
+#auditHeaderNav a {
+	line-height: 26px;
+	padding: 6px 8px;
+	text-decoration: none;
+	background-color: #003768;
+	font-size: 13px;
+	color: white;
+}
+
+/** Audit Table Report override ***/
+table.report tr.na {
+	color: #999;
+}
+
+table.report tr.na a {
+	font-style: italic;
+	color: #999;
+}
+/** Audit Table ***/
+
 table.audit {
 	margin-top: 10px;
 	margin-bottom: 10px;

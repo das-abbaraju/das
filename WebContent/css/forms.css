@@ -1,6 +1,6 @@
 /******************** New Primary class="forms"  ************************/
 
-fieldset {
+form fieldset {
 	margin: 0 0 -1em 0;
 	padding: 0 0 1em 0;
 	border-style: none;
@@ -13,16 +13,16 @@ fieldset {
 	color: #808285;
 }
 
-fieldset.alt {
+form fieldset.alt {
 	background-color: #F0F0F0;
 }
 
-fieldset legend {
+form fieldset legend {
 	color: #A84D10;
 	font-weight: bold;
 	padding: 0;
 }
-fieldset legend span {
+form fieldset legend span {
 	position: absolute;
 	margin-top: 0.5em;
 	left: 0.74em;
@@ -30,13 +30,13 @@ fieldset legend span {
 	font-size: 135%;
 }
 
-fieldset ol {
+form fieldset ol {
 	margin-top: 3.5em;
 	padding-left: 10px;
 	list-style: none;
 }
 
-fieldset li {
+form fieldset li {
 	float: left;
 	clear: left;
 	width: 100%;
@@ -44,16 +44,18 @@ fieldset li {
 	padding-top: 0;
 }
 
-fieldset.submit {
-	padding-top: 1.5em;
+form fieldset.submit {
+	padding-top: 1em;
+	padding-bottom: 1em;
 	padding-left: 10em;
+	margin-bottom:5px;
 	float: none;
 	width: auto;
 	background-color: white;
 	background-image: none;
 }
 
-fieldset label {
+form fieldset label {
 	float: left;
 	width: 10em;
 	margin-right: 1em;
@@ -63,15 +65,27 @@ fieldset label {
 	color: #003768;
 }
 
-fieldset input {
+form fieldset input[type=text], form fieldset select {
 	color: #808285;
-	border: 1px solid #808285;
-	padding: 2px;
+	padding: 1px;
 	border-style: inset;
 }
 
-fieldset input:FOCUS {
+form fieldset input[type=text]:FOCUS, form fieldset select:FOCUS {
 	color: #003768;
-	border-color: #003768;
 	background-color: #FFE;
+}
+
+/** Sortable list items **/
+#list {
+	margin:0px;
+	padding:0px;
+	list-style-type: none;
+}
+#list li {
+	margin:5px;
+	padding:10px;
+	border:1px solid #888;
+	cursor:move;
+	line-height: 1em;
 }

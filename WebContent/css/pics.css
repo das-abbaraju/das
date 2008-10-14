@@ -9,6 +9,14 @@ a img {
 	border: 0px none;
 }
 
+#content div.clear {
+	float: none;
+	clear: both;
+	height: 0px; 
+	margin: 0px; 
+	padding: 0px;
+}
+
 /********************  Header Styles  ************************/
 #header {
 	width: 100%;
@@ -483,6 +491,7 @@ div#info {
 	padding-bottom: 1em;
 	padding-left: 5em;
 	margin-top: 10px;
+	margin-bottom: 10px;
 	background: #dbe7f8 url('../images/icon-info.gif') no-repeat 10px 10px;
 	width: 86%
 }
@@ -495,6 +504,7 @@ div#alert {
 	padding-bottom: 1em;
 	padding-left: 5em;
 	margin-top: 10px;
+	margin-bottom: 10px;
 	background: #ffdfdf url('../images/icon-warning.gif') no-repeat 10px 10px;
 	width: 86%
 }
@@ -507,6 +517,7 @@ div#error {
 	padding-bottom: 1em;
 	padding-left: 5em;
 	margin-top: 10px;
+	margin-bottom: 10px;
 	background: #ffdfdf url('../images/icon-error.gif') no-repeat 10px 10px;
 	width: 86%
 }
