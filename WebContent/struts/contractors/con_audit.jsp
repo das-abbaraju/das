@@ -6,17 +6,7 @@
 <title><s:property value="conAudit.auditType.auditName" /> for
 <s:property value="conAudit.contractorAccount.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
-
-<style>
-table.report tr.na {
-	color: #999;
-}
-
-table.report tr.na a {
-	font-style: italic;
-	color: #999;
-}
-</style>
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
 </head>
 <body>
 <s:include value="conHeader.jsp" />

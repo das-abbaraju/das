@@ -8,22 +8,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
 <script src="js/scriptaculous/scriptaculous.js?load=effects,dragdrop,controls" type="text/javascript"></script>
-<style type="text/css">
-#list {
-	margin:0;
-	margin-top:10px;
-	padding:0;
-	list-style-type: none;
-	width:350px;
-}
-#list li {
-	margin:0;
-	margin-bottom:4px;
-	padding:5px;
-	border:1px solid #888;
-	cursor:move;
-}
-</style>
 </head>
 <body>
 <s:include value="manage_audit_type_breadcrumbs.jsp" />
@@ -39,7 +23,7 @@
 		<s:hidden name="id"></s:hidden>
 			<div>
 				<fieldset>
-				<legend><span>Details</span></legend>
+				<legend><span>Audit Type</span></legend>
 					<ol>
 						<li><label>ID:</label>
 							<s:if test="auditType.auditTypeID > 0"><s:property value="auditType.auditTypeID" /></s:if>

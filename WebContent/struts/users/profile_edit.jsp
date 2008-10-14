@@ -8,7 +8,7 @@
 
 <script type="text/javascript">
 function checkUsername(username) {
-	$('username_status').innerHTML = 'checking availability of username...';
+	$('username_status').innerHTML = '<img src="images/ajax_process.gif" width="16" height="16" /> checking availability of username...';
 	pars = 'userID=<s:property value="u.id"/>&username='+username;
 	var myAjax = new Ajax.Updater('username_status', 'user_ajax.jsp', {method: 'get', parameters: pars});
 }
@@ -41,7 +41,7 @@ function checkUsername(username) {
 	<ol>
 		<li><label for="u.username">Username:</label>
 			<s:textfield name="u.username" onblur="checkUsername(this.value);"/>
-			<div id="username_status"></div></li>
+			<div id="username_status">&nbsp;</div></li>
 		<li><label for="password1">Password:</label>
 			<s:password name="password1" value="" /></li>
 		<li><label for="password2">Confirm Password:</label>
