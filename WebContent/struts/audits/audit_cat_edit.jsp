@@ -39,7 +39,7 @@
 			<br>Comments: <s:textfield id="comments_%{questionID}" name="answer.comment" size="30" onblur="javascript:saveComment(%{questionID}, this);"/>
 		</s:if>
 		<s:if test="questionType == 'Office Location'">
-			<s:radio theme="pics" list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" value="answer.answer" name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
+			<s:radio theme="pics" list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" value="%{answer.answer}"  name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
 		</s:if>
 		<s:if test="questionType == 'State'">
 			<s:select list="stateList" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:select>

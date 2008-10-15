@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -165,7 +166,25 @@ public class AuditCategoryAction extends AuditActionSupport {
 
 	private void fillAnswers(AuditCatData catData, Map<Integer, AuditData> answers) {
 		for (AuditSubCategory subCategory : catData.getCategory().getSubCategories()) {
+			List<Integer> officeLocQuestions = new ArrayList<Integer>();
+			if (subCategory.getCategory().getId() == AuditCategory.SERVICES_PERFORMED) {
+				for (AuditQuestion question : subCategory.getQuestions()) {
+					officeLocQuestions.add(question.getQuestionID());
+				}
+			}
+
 			for (AuditQuestion question : subCategory.getQuestions()) {
+				Map<Integer, AuditData> officeLocationAnswer = auditDataDao.findAnswers(auditID, officeLocQuestions);
+				if (question.getQuestionType().equals("Office Location")
+						&& !officeLocationAnswer.containsKey(question.getQuestionID())) {
+					AuditData auditData = new AuditData();
+					auditData.setAudit(conAudit);
+					auditData.setQuestion(question);
+					auditData.setAnswer("No");
+					auditDataDao.save(auditData);
+					answers.put(question.getQuestionID(), auditData);
+				}
+
 				if (answers.containsKey(question.getQuestionID())) {
 					question.setAnswer(answers.get(question.getQuestionID()));
 				}
