@@ -1,6 +1,24 @@
-insert into app_properties values
-('email_pendingPqf_subject','Pending PQF');
+-- ON LIVE BEFORE
+update notes set userID from whois and opID
+update notes set deletedUserID from whoDeleted and opID
 
-insert into app_properties values
-('email_pendingPqf_body','Dear ${contractor.name},\\As we review contractors in the process of submitting their PQF, we noticed that you are over 90% complete. However, there has been no recent activity in your account. \If you are having issues completing the PQF please contact ${permissions.name} as \soon as possible for assistance. Two common reasons for an incomplete PQF are, missing\uploads and/or an overlooked question in a particular category. Keep in mind that \questions with missing information will be marked with an asterisk (*) on the right \hand side of the corresponding question. If you need assistance uploading documents do not hesitate to contact us.\
- \Again thank you for your time in completing the PICS process for your facilities.\\${permissions.name},\PICS\P.O. Box 51387\Irvine CA 92619-1387\tel: (949)387-1940\fax: (949)417-9360\\http://www.picsauditing.com"');
+
+insert into note (accountID, creationDate, createdBy, summary, noteCategory, priority, viewableBy, body)
+select id, accountDate, 959, 'Contractor Notes Pre-Oct08', 'General', 3, 1, notes
+from contractor_info
+where notes > '';
+
+insert into note (accountID, creationDate, createdBy, summary, noteCategory, priority, viewableBy, body)
+select id, accountDate, 959, 'PICS-only Notes Pre-Oct08', 'General', 3, 1100, adminNotes
+from contractor_info
+where adminNotes > '';
+
+insert into note (accountID, creationDate, createdBy, updatedBy, updateDate, summary, noteCategory, status, priority, viewableBy, body)
+select conID, timeStamp, case ISNULL(userID) when 1 then 959 else userID end, deletedDate, deletedUserID, note, 'General', case isDeleted when 1 then 0 else 2 end, 3, opID, null
+from notes
+where length(note) <= 250;
+
+insert into note (accountID, creationDate, createdBy, updatedBy, updateDate, summary, noteCategory, status, priority, viewableBy, body)
+select conID, timeStamp, case ISNULL(userID) when 1 then 959 else userID end, deletedDate, deletedUserID, substring(note, 1, 255), 'General', case isDeleted when 1 then 0 else 2 end, 3, opID, substring(note, 255)
+from notes
+where length(note) > 250;
