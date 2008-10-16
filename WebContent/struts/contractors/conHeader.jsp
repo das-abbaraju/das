@@ -45,14 +45,25 @@
 			<s:if test="requestURI.contains('con_viewForms')">class="current"</s:if>>Forms & Docs</a></li>
 	</s:if>
 	<li><a <s:if test="requestURI.contains('contractor_audits')">class="current"</s:if> href="ConAuditList.action?id=<s:property value="id" />">Audits</a></li>
-	<s:iterator value="activeAudits">
+	<s:iterator value="activeAudits" status="stat">
 		<s:if test="auditStatus.toString() != 'Exempt'">
-				<li><a <s:if test="id == auditID">class="current"</s:if>
+		<li>
+			<s:if test="#stat.index < 4">
+				<a <s:if test="id == auditID">class="current"</s:if>
 					href="Audit.action?auditID=<s:property value="id"/>"
 					title="<s:date
 			name="effectiveDate" format="MMM yyyy" />"><s:property
-					value="auditType.auditName" /></a></li>
-		</s:if>	
+					value="auditType.auditName" /></a>
+			</s:if>
+			<s:else>
+				<a <s:if test="id == auditID">class="current"</s:if>
+					href="Audit.action?auditID=<s:property value="id"/>"
+					title="<s:date
+			name="effectiveDate" format="MMM yyyy" />"><s:property
+					value="auditType.auditName.substring(0,4)" />...</a>
+			</s:else>
+		</s:if>
+		</li>
 	</s:iterator>
 </ul>
 </div>
@@ -62,7 +73,7 @@
 	<fieldset>
 	<ul>
 		<li><label>Type:</label>
-			<s:property value="conAudit.auditType.auditName" />
+			<s:property value="conAudit.auditType.auditName" /> #<s:property value="conAudit.id" />
 		</li>
 		<li><label>Created:</label>
 			<s:date name="conAudit.createdDate" format="MMM d, yyyy" />
@@ -101,7 +112,7 @@
 				<s:date name="conAudit.completedDate" format="MMM d, yyyy" />
 			</li>
 		</s:if>
-		<s:if test="conAudit.auditType.scheduled">
+		<s:if test="conAudit.auditType.scheduled && conAudit.scheduledDate != null">
 			<li><label>Scheduled:</label>
 				<s:date name="conAudit.scheduledDate"
 					format="MMM d, yyyy" /> <s:property
@@ -126,7 +137,7 @@
 						<s:iterator value="safetyManualLink.values()">
 						<a href="#"
 						onclick="window.open('servlet/showpdf?id=<s:property value="id" />&file=pqf<s:property value="answer"/>1331','','scrollbars=yes,resizable=yes,width=700,height=450'); return false;">
-						Uploaded (<s:date name="audit.createdDate" format="MMM yyyy"/>)</a><br/><br/>
+						Uploaded (<s:date name="audit.createdDate" format="MMM yyyy"/>)</a>
 						</s:iterator>
 				</s:if>
 				<s:else>Not Uploaded</s:else>
