@@ -15,9 +15,10 @@ public class ReportAccountQuick extends ReportAccount {
 	}
 
 	public void setAccountName(String accountName) {
-		this.accountName = accountName;
+		accountName = accountName.trim();
 		if (accountName == null || accountName.length() == 0)
 			accountName = "";
+		this.accountName = accountName;
 		try {
 			int id = Integer.parseInt(accountName);
 			report.addFilter(new SelectFilterInteger("id", "a.id = ?",
