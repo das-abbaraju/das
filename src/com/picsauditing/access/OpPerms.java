@@ -59,8 +59,8 @@ public enum OpPerms {
 	DelinquentAccounts("Delinquent Accounts", "Allows users to view Delinquent Contractor Accounts", false, false),
 	
 	EmailAnnualUpdate("Email Annual Updates", "Send contractors reminder emails to update their PICS info. Edit permission is required to send the emails.", true, false),
-	EmailTemplates("Email Templates", "Allows PICS employees to edit the templates used to automatically send emails", true, false),
-	EmailQueue("Email Queue","Allow PICS Employees to view the report for Email Queue",true,true),
+	EmailTemplates("Email Templates", "Allows PICS employees to edit the templates used to automatically send emails"),
+	EmailQueue("Email Queue","Allow PICS Employees to view the report for Email Queue"),
 	SwitchUser("Switch to User", "Can auto login as another user", false, false);
 
 	private String description;

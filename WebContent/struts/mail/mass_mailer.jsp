@@ -80,7 +80,9 @@ type = "<s:property value="type" />";
 		<div class="buttons" id="menu_selector" style="display: none;">
 			<button id="buttonPick" type="button" onclick="showTemplateList();" title="Choose another email template">Pick Template</button>
 			<button id="buttonPreview" type="button" onclick="previewEmail($('contractors'));" title="Preview the email with the selected contractor">Preview</button>
-			<button id="buttonSave" type="button" onclick="Effect.Appear('div_saveEmail');" title="Save this email as a template for future use">Save Template</button>
+			<pics:permission perm="EmailTemplates" type="Edit">
+				<button id="buttonSave" type="button" onclick="Effect.Appear('div_saveEmail');" title="Save this email as a template for future use">Save Template</button>
+			</pics:permission>
 			<button id="buttonEdit" style="display: none" type="button" onclick="editEmail();" title="Continue editing the email">Continue Editing</button>
 			<button class="positive" type="button" onclick="sendEmails();">Send	Emails</button>
 			<br clear="all">
@@ -102,8 +104,12 @@ type = "<s:property value="type" />";
 						<li id="li_template<s:property value="id"/>"><nobr><a
 							href="javascript: chooseTemplate(<s:property value="id"/>);"><s:property
 							value="templateName" /></a>
-							<a
-							href="javascript: deleteTemplate(<s:property value="id"/>);" title="Remove this template"><img src="images/cross.png" /></a></nobr></li>
+							<pics:permission perm="EmailTemplates" type="Delete">
+								<a
+								href="javascript: deleteTemplate(<s:property value="id"/>);" title="Remove this template"><img src="images/cross.png" /></a>
+							</pics:permission>
+							</nobr></li>
+							
 					</s:iterator>
 				</ul>
 				</td>

@@ -39,7 +39,7 @@ function editEmail() {
 }
 
 function previewEmail(item) {
-	if (templateID < 1) {
+	if (templateID < 0) {
 		alert("Select an email template to use first");
 		return;
 	}
