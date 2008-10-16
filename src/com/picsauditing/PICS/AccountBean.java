@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
@@ -523,7 +524,9 @@ public class AccountBean extends DataBean {
 					ContractorAccount contractor = conDao.find(SQLResult.getInt("id"));
 					emailBuilder.setTemplate(3); // Password Reminder
 					emailBuilder.setContractor(contractor);
-					EmailSender.send(emailBuilder.build());
+					EmailQueue emailQueue = emailBuilder.build();
+					emailQueue.setPriority(100);
+					EmailSender.send(emailQueue);
 				} else {
 					errorMessages.addElement("No account in our records has that email address.  Please verify it is "
 							+ "the one you used when creating your PICS company profile.");
