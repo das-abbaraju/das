@@ -15,7 +15,9 @@ EmailBuilder emailBuilder = new EmailBuilder();
 emailBuilder.setTemplate(2); // Welcome Email
 emailBuilder.setPermissions(permissions);
 emailBuilder.setContractor(contractor);
-EmailSender.send(emailBuilder.build());
+EmailQueue emailQueue = emailBuilder.build();
+emailQueue.setPriority(90);
+EmailSender.send(emailQueue);
 ContractorBean cBean = new ContractorBean();
 cBean.setFromDB(id);
 cBean.addAdminNote(id, "("+permissions.getUsername()+")", "Welcome Email Sent "+ emailBuilder.getSentTo(), DateBean.getTodaysDate());
@@ -24,6 +26,7 @@ cBean.writeToDB();
 String message = "A welcome email was sent to "+emailBuilder.getSentTo();
 
 %>
+<%@page import="com.picsauditing.jpa.entities.EmailQueue"%>
 <html>
 <head>
 <title>PICS - Welcome Email</title>

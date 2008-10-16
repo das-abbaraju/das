@@ -515,7 +515,9 @@ public class AccountBean extends DataBean {
 				User user = dao.find(SQLResult.getInt("id"));
 				emailBuilder.setTemplate(24); // Password Reminder
 				emailBuilder.setUser(user);
-				EmailSender.send(emailBuilder.build());
+				EmailQueue emailQueue = emailBuilder.build();
+				emailQueue.setPriority(100);
+				EmailSender.send(emailQueue);
 			} else {
 				selectQuery = "SELECT id FROM users WHERE email='" + email + "' LIMIT 2";
 				SQLResult = SQLStatement.executeQuery(selectQuery);

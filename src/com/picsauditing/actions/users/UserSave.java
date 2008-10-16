@@ -8,6 +8,7 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 
@@ -26,9 +27,12 @@ public class UserSave extends UsersManage {
 		if ("sendWelcomeEmail".equals(button) && user != null) {
 			try {
 				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(2); // Welcome Email
+				emailBuilder.setTemplate(5); // New User Welcome
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setUser(user);
+				EmailQueue emailQueue = emailBuilder.build();
+				emailQueue.setPriority(90);
+				EmailSender.send(emailQueue);
 				EmailSender.send(emailBuilder.build());
 			} catch (Exception e) {
 				addActionError(e.getMessage());

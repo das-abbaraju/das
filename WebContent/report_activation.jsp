@@ -28,7 +28,9 @@ try{
 		emailBuilder.setTemplate(2); // Welcome Email
 		emailBuilder.setPermissions(permissions);
 		emailBuilder.setContractor(contractor);
-		EmailSender.send(emailBuilder.build());
+		EmailQueue emailQueue = emailBuilder.build();
+		emailQueue.setPriority(90);
+		EmailSender.send(emailQueue);
 		ContractorBean cBean = new ContractorBean();
 		cBean.setFromDB(actionID);
 		cBean.addAdminNote(actionID, "("+permissions.getUsername()+")", "Welcome Email Sent ", DateBean.getTodaysDate());
@@ -74,6 +76,7 @@ try{
 %>
 <%@page import="com.picsauditing.jpa.entities.ContractorAccount"%>
 <%@page import="com.picsauditing.dao.ContractorAccountDAO"%>
+<%@page import="com.picsauditing.jpa.entities.EmailQueue"%>
 <html>
 <head>
 <title>Activation</title>

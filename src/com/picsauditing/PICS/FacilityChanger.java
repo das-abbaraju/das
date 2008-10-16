@@ -9,6 +9,7 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -65,8 +66,9 @@ public class FacilityChanger {
 		emailBuilder.setPermissions(permissions);
 		emailBuilder.setContractor(contractor);
 		emailBuilder.addToken("opAcct", operator);
-		EmailSender.send(emailBuilder.build());
-
+		EmailQueue emailQueue = emailBuilder.build();
+		emailQueue.setPriority(80);
+		EmailSender.send(emailQueue);
 		auditBuilder.buildAudits(contractor);
 	}
 
