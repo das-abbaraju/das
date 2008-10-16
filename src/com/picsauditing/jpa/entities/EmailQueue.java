@@ -127,7 +127,7 @@ public class EmailQueue implements java.io.Serializable {
 		this.priority = priority;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getCreationDate() {
 		return creationDate;
 	}
@@ -146,7 +146,7 @@ public class EmailQueue implements java.io.Serializable {
 		this.createdBy = createdBy;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getSentDate() {
 		return sentDate;
 	}

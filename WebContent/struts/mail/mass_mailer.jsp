@@ -58,7 +58,7 @@ type = "<s:property value="type" />";
 </style>
 </head>
 <body>
-
+<img src="images/beta.jpg" align="right" />
 <h1>Mass Emailer</h1>
 <s:include value="../actionMessages.jsp" />
 <div id="messages"></div>

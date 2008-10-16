@@ -29,7 +29,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.mail.EmailTemplates;
 
 public class VerifyView extends AuditActionSupport {
 	private int oshaID = 0;

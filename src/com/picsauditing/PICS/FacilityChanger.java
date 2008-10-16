@@ -13,7 +13,6 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.mail.EmailTemplates;
 
 /**
  * Adds and removed contractors from operator accounts
