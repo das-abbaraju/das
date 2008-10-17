@@ -257,16 +257,15 @@
 		</tr>
 	</table>
 <br clear="all">
-</s:form>
 	<div class="buttons">
-	<pics:permission perm="ContractorAccounts" type="Edit">
-		<button class="positive" name="button" type="submit" value="save">Save</button>
-	</pics:permission>
-	<pics:permission perm="RemoveContractors">
-		<button name="button" type="submit" value="delete" onClick="return confirm('Are you sure you want to delete this account?');">Delete</button>
-	</pics:permission>
+		<pics:permission perm="ContractorAccounts" type="Edit">
+			<button class="positive" name="button" type="submit" value="save">Save</button>
+		</pics:permission>
+		<pics:permission perm="RemoveContractors">
+			<button name="button" type="submit" value="delete" onClick="return confirm('Are you sure you want to delete this account?');">Delete</button>
+		</pics:permission>
 	</div>
-
+</s:form>
 <div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
 
 </body>

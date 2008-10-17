@@ -108,13 +108,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			}
 			if (button.equals("delete")) {
 				permissions.tryPermission(OpPerms.RemoveContractors);
-
+				findContractor(); 
 				if (contractor.getAudits().size() > 0) {
 					addActionError("Cannot Remove Contractor with Audits");
 					return SUCCESS;
 				}
 				accountDao.remove(contractor, getFtpDir());
-				return SUCCESS;
+				return "ConList";
 			}
 		}
 
