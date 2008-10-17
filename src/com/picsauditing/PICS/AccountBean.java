@@ -24,19 +24,19 @@ import com.picsauditing.util.Strings;
 
 public class AccountBean extends DataBean {
 	public static final int MIN_PASSWORD_LENGTH = 5; // minimum required
-														// length of a passord
+	// length of a passord
 	OperatorBean o = null;
 	String accountDate = "";
 	public String userID = "0"; // used in check login, to set id for users not
-								// in main accounts table, but in users table
+	// in main accounts table, but in users table
 	public HashSet<String> canSeeSet = new HashSet<String>(); // all
-																// subcontractors
-																// of a general
-																// contractor/operator
+	// subcontractors
+	// of a general
+	// contractor/operator
 
 	public String id = "";
 	public String type = "Contractor"; // is of type ENUM of
-										// ('Contractor','Operator','General')
+	// ('Contractor','Operator','General')
 	public String name = "";
 	public String username = "";
 	public String password = "";
@@ -57,7 +57,7 @@ public class AccountBean extends DataBean {
 	public String createdBy = "";
 	public String dateCreated = "";
 	public String oldPassword = ""; // used for determining if the password has
-									// changed
+	// changed
 	public String emailConfirmedDate = "";
 	boolean updatedPassword = false;
 
@@ -507,8 +507,8 @@ public class AccountBean extends DataBean {
 		EmailBuilder emailBuilder = new EmailBuilder();
 
 		try {
+			String selectQuery = "SELECT id FROM users WHERE email='" + email + "' LIMIT 2";
 			DBReady();
-			String selectQuery = "SELECT id FROM accounts WHERE email='" + email + "' and type='Contractor' LIMIT 2";
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
 			if (SQLResult.next()) {
 				UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
@@ -519,7 +519,7 @@ public class AccountBean extends DataBean {
 				emailQueue.setPriority(100);
 				EmailSender.send(emailQueue);
 			} else {
-				selectQuery = "SELECT id FROM users WHERE email='" + email + "' LIMIT 2";
+				selectQuery = "SELECT id FROM accounts WHERE email='" + email + "' and type='Contractor' LIMIT 2";
 				SQLResult = SQLStatement.executeQuery(selectQuery);
 				if (SQLResult.next()) {
 					ContractorAccountDAO conDao = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");

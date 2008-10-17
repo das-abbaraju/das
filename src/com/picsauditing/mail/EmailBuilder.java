@@ -55,16 +55,15 @@ public class EmailBuilder {
 
 		email.setCreationDate(new Date());
 		email.setToAddresses(toAddresses);
-		email.setFromAddress(fromAddress);
-		email.setContractorAccount(new ContractorAccount(conID));
+		email.setFromAddress(getFromAddress());
+		if (conID > 0)
+			email.setContractorAccount(new ContractorAccount(conID));
+
 		if (permissions != null) {
 			tokens.put("permissions", permissions);
 			if (permissions.getUserId() > 0) {
 				email.setCreatedBy(new User());
 				email.getCreatedBy().setId(permissions.getUserId());
-				if (fromAddress == null) {
-					email.setFromAddress(permissions.getEmail());
-				}
 			}
 		}
 
@@ -131,6 +130,10 @@ public class EmailBuilder {
 	}
 
 	public String getFromAddress() {
+		if (permissions == null)
+			fromAddress = "info@picsauditing.com";
+		else
+			fromAddress = permissions.getEmail();
 		return fromAddress;
 	}
 
@@ -169,5 +172,4 @@ public class EmailBuilder {
 	public void setDebug(boolean debug) {
 		this.debug = debug;
 	}
-
 }

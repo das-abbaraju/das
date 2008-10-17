@@ -33,7 +33,7 @@
 							<s:textfield name="auditType.auditName"></s:textfield>
 						</li>
 						<li><label>Description:</label>
-							<s:textfield name="auditType.auditName"></s:textfield>
+							<s:textfield name="auditType.description"></s:textfield>
 						</li>
 						<li><label>Has Multiple:</label>
 							<s:checkbox name="auditType.hasMultiple" />
