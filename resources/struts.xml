@@ -569,6 +569,9 @@
 		<action name="ContractorEdit"
 			class="com.picsauditing.actions.contractors.ContractorEdit">
 			<result>struts/contractors/con_edit.jsp</result>
+			<result name="ConList" type="redirect-action">
+				<param name="actionName">ContractorListAdmin</param>
+			</result>
 		</action>
 		
 		<action name="QuestionAnswerSearch"
