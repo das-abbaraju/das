@@ -1,0 +1,26 @@
+<clickLink
+	description="PQF Audit"
+	label="PQF" />
+<clickLink
+	description="System Edit Page"
+	label="System Edit" />
+<clickButton
+	description="Delete PQF"
+	label="Delete" />
+<clickLink
+	description="Welcome Call Audit"
+	label="Welcome Call" />
+<clickLink
+	description="System Edit Page"
+	label="System Edit" />
+<clickButton
+	description="Delete Welcome Call"
+	label="Delete" />
+<clickLink
+	description="click on edit page"
+	label="Edit" />
+<clickButton
+	description="Delete the Contractor"
+	label="Delete" />
+
+	

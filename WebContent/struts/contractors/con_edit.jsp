@@ -258,9 +258,14 @@
 	</table>
 <br clear="all">
 	<div class="buttons">
-		<pics:permission perm="ContractorAccounts" type="Edit">
+		<s:if test="permissions.contractor">
 			<button class="positive" name="button" type="submit" value="save">Save</button>
-		</pics:permission>
+		</s:if>
+		<s:else>
+			<pics:permission perm="ContractorAccounts" type="Edit">
+				<button class="positive" name="button" type="submit" value="save">Save</button>
+			</pics:permission>
+		</s:else>
 		<pics:permission perm="RemoveContractors">
 			<button name="button" type="submit" value="delete" onClick="return confirm('Are you sure you want to delete this account?');">Delete</button>
 		</pics:permission>

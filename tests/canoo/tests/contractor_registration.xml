@@ -8,6 +8,21 @@
 		<webtest name="Contractor Registration">
 			&config;
 			<steps>
+				<ifStep description="Clean out the contractor if the previous test failed">
+					<condition>
+						<storeProperty description="Delete Account" 
+							name="login.username" 
+							propertyType="ant"
+							value="${admin.username}"/>
+						&login;
+						<clickLink description="Search For Contractors"
+							label="Search" />
+						<setInputField name="accountName" value="Canoo's Test Contractor" />
+						<clickButton description="Search for Contractor" label="Search" />
+						<clickLink description="Edit the Contractor" label="Edit" />
+					</condition>
+					&contractor_delete;
+				</ifStep>
 				<invoke
 					description="Register Link"
 					url="contractor_new_instructions.jsp" />
@@ -87,8 +102,10 @@
 						label="Edit" />
 					<clickButton
 						description="Edit Contractor"
-						label="submit" />
-					
+						label="Save" />
+					<clickLink
+						description="Edit Page"
+						label="Edit" />
 					<clickLink
 						description="PQF Page"
 						label="PQF" />
@@ -120,8 +137,8 @@
 						label="Search" />
 					<setInputField name="accountName" value="Canoo's Test Contractor" />
 					<clickButton description="Search for Contractor" label="Search" />
-					<clickLink description="View/Edit Contractor" label="Edit" />
-					<clickLink description="Delete Contractor" label="Delete Contractor" />
+					<clickLink description="Edit the Contractor" label="Edit" />
+					&contractor_delete;
 				</group>
 			</steps>
 		</webtest>

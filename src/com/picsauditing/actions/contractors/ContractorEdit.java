@@ -64,51 +64,53 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 		if (button != null) {
 			String ftpDir = getFtpDir();
+			
 			if (button.equals("save")) {
-				permissions.tryPermission(OpPerms.ContractorAccounts, OpType.Edit);
-				if (logo != null) {
-					String extension = logoFileName.substring(logoFileName.lastIndexOf(".") + 1);
-					String[] validExtensions = { "jpg", "gif", "png" };
+				if (permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorAccounts, OpType.Edit)) {
+					if (logo != null) {
+						String extension = logoFileName.substring(logoFileName.lastIndexOf(".") + 1);
+						String[] validExtensions = { "jpg", "gif", "png" };
 
-					if (!FileUtils.checkFileExtension(extension, validExtensions)) {
-						addActionError("Logos must be a jpg, gif or png image");
+						if (!FileUtils.checkFileExtension(extension, validExtensions)) {
+							addActionError("Logos must be a jpg, gif or png image");
+							return SUCCESS;
+						}
+						String fileName = "logo_" + contractor.getId();
+						FileUtils.copyFile(logo, ftpDir, "/logos/", fileName, extension, true);
+						contractor.setLogoFile(fileName + "." + extension);
+					}
+
+					if (brochure != null) {
+						String extension = brochureFileName.substring(brochureFileName.lastIndexOf(".") + 1);
+						String[] validExtensions = { "jpg", "gif", "png", "doc", "docx", "pdf" };
+
+						if (!FileUtils.checkFileExtension(extension, validExtensions)) {
+							addActionError("Brochure must be a image, doc or pdf file");
+							return SUCCESS;
+						}
+						String fileName = "brochure_" + contractor.getId();
+						FileUtils.copyFile(brochure, ftpDir, "/files/brochures/", fileName, extension, true);
+						contractor.setBrochureFile(extension);
+					}
+					Vector<String> errors = contractorValidator.validateContractor(contractor);
+					if (errors.size() > 0) {
+						addActionError(errors.toString());
 						return SUCCESS;
 					}
-					String fileName = "logo_" + contractor.getId();
-					FileUtils.copyFile(logo, ftpDir, "/logos/", fileName, extension, true);
-					contractor.setLogoFile(fileName + "." + extension);
-				}
 
-				if (brochure != null) {
-					String extension = brochureFileName.substring(brochureFileName.lastIndexOf(".") + 1);
-					String[] validExtensions = { "jpg", "gif", "png", "doc", "docx", "pdf" };
-
-					if (!FileUtils.checkFileExtension(extension, validExtensions)) {
-						addActionError("Brochure must be a image, doc or pdf file");
-						return SUCCESS;
-					}
-					String fileName = "brochure_" + contractor.getId();
-					FileUtils.copyFile(brochure, ftpDir, "/files/brochures/", fileName, extension, true);
-					contractor.setBrochureFile(extension);
+					contractor = accountDao.save(contractor);
+					auditBuilder.buildAudits(contractor);
+					BillContractor billContractor = new BillContractor();
+					billContractor.setContractor(contractor.getIdString());
+					billContractor.calculatePrice();
+					billContractor.writeToDB();
+					flagCalculator2.runByContractor(contractor.getId());
+					addActionMessage("Successfully modified " + contractor.getName());
 				}
-				Vector<String> errors = contractorValidator.validateContractor(contractor);
-				if (errors.size() > 0) {
-					addActionError(errors.toString());
-					return SUCCESS;
-				}
-
-				contractor = accountDao.save(contractor);
-				auditBuilder.buildAudits(contractor);
-				BillContractor billContractor = new BillContractor();
-				billContractor.setContractor(contractor.getIdString());
-				billContractor.calculatePrice();
-				billContractor.writeToDB();
-				flagCalculator2.runByContractor(contractor.getId());
-				addActionMessage("Successfully modified " + contractor.getName());
 			}
 			if (button.equals("delete")) {
 				permissions.tryPermission(OpPerms.RemoveContractors);
-				findContractor(); 
+				findContractor();
 				if (contractor.getAudits().size() > 0) {
 					addActionError("Cannot Remove Contractor with Audits");
 					return SUCCESS;

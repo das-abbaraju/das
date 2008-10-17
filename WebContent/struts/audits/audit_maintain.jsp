@@ -57,7 +57,7 @@
 	<div class="buttons">
 		<button class="positive" name="button" value="Save" type="submit">Save</button>
 		<pics:permission perm="AuditEdit" type="Delete">
-			<button name="button" value="Delete" type="submit">Delete</button>
+			<button name="button" value="Delete" type="submit" onclick="return confirm('Are you sure you want to permanently remove this audit?');">Delete</button>
 		</pics:permission>
 	</div>
 </fieldset>
