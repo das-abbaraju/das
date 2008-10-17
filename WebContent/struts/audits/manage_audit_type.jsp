@@ -54,10 +54,10 @@
 							<s:checkbox name="auditType.canContractorEdit" />
 						</li>
 						<li><label>Months to Expire:</label>
-							<s:textfield name="auditType.dateToExpire" /> m/d/yy
+							<s:textfield name="auditType.monthsToExpire" /> 
 						</li>
 						<li><label>Date to Expire:</label>
-							<s:checkbox name="auditType.hasAuditor" />
+							<s:date name="auditType.dateToExpire" format="m/d/yy"/> m/d/yy
 						</li>
 						<li><label>Order:</label>
 							<s:textfield name="auditType.displayOrder" />

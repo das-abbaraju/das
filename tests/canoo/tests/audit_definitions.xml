@@ -26,6 +26,7 @@
 					<setCheckbox name="auditType.canContractorEdit" checked="true" />
 					<setInputField name="auditType.monthsToExpire" value="3" />
 					<setInputField name="auditType.dateToExpire" value="7/1/99" />
+					<setInputField name="auditType.displayOrder" value="10" />
 					<clickButton description="Click Save/Submit" label="Save" />
 				</group>
 				<group description="Add Category">
