@@ -19,7 +19,7 @@
 							label="Search" />
 						<setInputField name="accountName" value="Canoo's Test Contractor" />
 						<clickButton description="Search for Contractor" label="Search" />
-						<clickLink description="Edit the Contractor" label="Edit" />
+						<clickLink description="Edit the Contractor" htmlId="conEditLink" />
 					</condition>
 					&contractor_delete;
 				</ifStep>
@@ -137,7 +137,7 @@
 						label="Search" />
 					<setInputField name="accountName" value="Canoo's Test Contractor" />
 					<clickButton description="Search for Contractor" label="Search" />
-					<clickLink description="Edit the Contractor" label="Edit" />
+					<clickLink description="Edit the Contractor" htmlId="conEditLink" />
 					&contractor_delete;
 				</group>
 			</steps>

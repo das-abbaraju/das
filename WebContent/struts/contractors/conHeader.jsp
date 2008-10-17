@@ -11,14 +11,17 @@
 <s:if test="showHeader">
 <div id="internalnavcontainer">
 <ul id="navlist">
-	<li><a href="ContractorView.action?id=<s:property value="id" />"
+	<li><a id="conDetailLink" href="ContractorView.action?id=<s:property value="id" />"
 		<s:if test="requestURI.contains('con_view')">class="current"</s:if>>Details</a></li>
 	<s:if test="!permissions.contractor">
 		<li><a href="add_notes.jsp?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('note')">class="current"</s:if>>Notes</a></li>
 	</s:if>
+	<li><a href="ContractorNotes.action?id=<s:property value="id" />"
+		<s:if test="requestURI.contains('note')">class="current"</s:if>>Notes</a>
+	</li>
 	<s:if test="permissions.admin">
-		<li><a href="ContractorEdit.action?id=<s:property value="id" />"
+		<li><a id="conEditLink" href="ContractorEdit.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('edit')">class="current"</s:if>>Edit</a></li>
 	</s:if>
 	<s:if test="permissions.contractor">
@@ -62,8 +65,8 @@
 			name="effectiveDate" format="MMM yyyy" />"><s:property
 					value="auditType.auditName.substring(0,4)" />...</a>
 			</s:else>
-		</s:if>
 		</li>
+		</s:if>
 	</s:iterator>
 </ul>
 </div>
