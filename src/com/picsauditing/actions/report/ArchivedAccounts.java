@@ -36,7 +36,7 @@ public class ArchivedAccounts extends ReportAccount {
 			facilityChanger.setPermissions(permissions);
 			facilityChanger.remove();
 		}
-		getFilter().setVisible(false);
+		getFilter().setShowVisible(false);
 		return super.execute();
 	}
 
