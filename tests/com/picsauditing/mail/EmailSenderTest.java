@@ -21,13 +21,13 @@ public class EmailSenderTest extends TestCase {
 		}
     }
 
-
-	public void testSender() {
-		try {
-			EmailSender.send("Trevor Allred <tallred@picsauditing.com>", 
-					"tester@picsauditing.com", null, "JUnit Test", "Test body");
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-    }
+// Uses SpringUtils to load EmailQueueDAO class. 
+//	public void testSender() {
+//		try {
+//			EmailSender.send("Trevor Allred <tallred@picsauditing.com>", 
+//					"tester@picsauditing.com", null, "JUnit Test", "Test body");
+//		} catch (Exception e) {
+//			fail(e.getMessage());
+//		}
+//    }
 }
