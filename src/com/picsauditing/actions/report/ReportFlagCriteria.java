@@ -22,7 +22,7 @@ public class ReportFlagCriteria extends ReportAccount {
 
 	public ReportFlagCriteria(OperatorAccountDAO operatorAccountDAO) {
 		this.operatorAccountDAO = operatorAccountDAO;
-		getFilter().setOperatorSingle(true);
+		getFilter().setShowOperatorSingle(true);
 	}
 
 	public String execute() throws Exception {
@@ -38,11 +38,11 @@ public class ReportFlagCriteria extends ReportAccount {
 		sql.addField("c.riskLevel");
 
 		if (!permissions.isOperator()) {
-			if (operator == null) {
+			if (getFilter().getOperator() == null) {
 				addActionMessage("Please select an Operator");
 				return SUCCESS;
 			} else
-				operatorID = operator[0];
+				operatorID = getFilter().getOperator()[0];
 		} else
 			operatorID = permissions.getAccountId();
 

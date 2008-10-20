@@ -127,28 +127,28 @@ Filter Options</a></div>
 	</div>
 	<br clear="all" />
 
-	<s:if test="filter.accountName">
+	<s:if test="filter.showAccountName">
 		<div class="filterOption"><s:textfield name="accountName"
 			cssClass="forms" size="10" onfocus="clearText(this)" /></div>
 	</s:if>
 
-	<s:if test="filter.visible">
+	<s:if test="filter.showVisible">
 		<div class="filterOption"><s:select list="filter.visibleOptions"
 			cssClass="forms" name="visible" /></div>
 	</s:if>
 
-	<s:if test="filter.address">
+	<s:if test="filter.showAddress">
 		<div class="filterOption">Address: <s:textfield name="city"
 			cssClass="forms" size="15" onfocus="clearText(this)" /> <s:select
 			list="filter.stateList" cssClass="forms" name="state" /> <s:textfield
 			name="zip" cssClass="forms" size="5" onfocus="clearText(this)" /></div>
 	</s:if>
-	<s:if test="filter.taxID">
+	<s:if test="filter.showTaxID">
 		<div class="filterOption"><s:textfield name="taxID"
 			cssClass="forms" size="9" onfocus="clearText(this)" title="must be 9 digits" /></div>
 	</s:if>
 	<br /><br />
-	<s:if test="filter.industry">
+	<s:if test="filter.showIndustry">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_industry'); return false;">Industry</a> = <span
 			id="form1_industry_query">ALL</span><br />
@@ -160,7 +160,7 @@ Filter Options</a></div>
 			onclick="clearSelected('form1_industry'); return false;">Clear</a> </span></div>
 	</s:if>
 
-	<s:if test="filter.trade">
+	<s:if test="filter.showTrade">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_trade'); return false;">Trade</a> =
 		<span id="form1_trade_query">ALL</span>
@@ -175,12 +175,12 @@ Filter Options</a></div>
 			onclick="clearSelected('form1_trade'); return false;">Clear</a> </span></div>
 	</s:if>
 
-	<s:if test="filter.flagStatus">
+	<s:if test="filter.showFlagStatus">
 		<div class="filterOption"><s:select list="filter.flagStatusList"
 			cssClass="forms" name="flagStatus" /></div>
 	</s:if>
 
-	<s:if test="filter.auditType">
+	<s:if test="filter.showAuditType">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_auditTypeID'); return false;">Audit
 		Type</a> = <span id="form1_auditTypeID_query">ALL</span><br />
@@ -194,7 +194,7 @@ Filter Options</a></div>
 		</span></div>
 	</s:if>
 
-	<s:if test="filter.auditStatus">
+	<s:if test="filter.showAuditStatus">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_auditStatus'); return false;">Audit
 		Status</a> = <span id="form1_auditStatus_query">ALL</span><br />
@@ -207,7 +207,7 @@ Filter Options</a></div>
 		</span></div>
 	</s:if>
 
-	<s:if test="filter.auditor">
+	<s:if test="filter.showAuditor">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('auditorId'); return false;">Auditors</a> = <span
 			id="auditorId_query">ALL</span><br />
@@ -220,7 +220,7 @@ Filter Options</a></div>
 			onclick="clearSelected('auditorId'); return false;">Clear</a> </span></div>
 	</s:if>
 
-	<s:if test="filter.conAuditor">
+	<s:if test="filter.showConAuditor">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('conAuditorId'); return false;">CSR</a> = <span
 			id="conAuditorId_query">ALL</span><br />
@@ -233,7 +233,7 @@ Filter Options</a></div>
 			onclick="clearSelected('conAuditorId'); return false;">Clear</a> </span></div>
 	</s:if>
 
-	<s:if test="filter.operator">
+	<s:if test="filter.showOperator">
 		<div class="filterOption">
 		<s:if test="filterOperatorSingle">
 			<s:select list="filter.operatorList" cssClass="forms" name="operator" listKey="id" listValue="name"/>
@@ -253,18 +253,18 @@ Filter Options</a></div>
 		</div>
 	</s:if>
 
-	<s:if test="filter.certs">
+	<s:if test="filter.showCerts">
 		<div class="filterOption"><s:select list="filter.certsOptions"
 			cssClass="forms" name="certsOnly" /></div>
 	</s:if>
 	
-	<s:if test="filter.riskLevel">
+	<s:if test="filter.showRiskLevel">
 		<div class="filterOption"><s:select list="#{'1':'Low', '2':'Med', '3':'High'}"  
 			headerKey="0" headerValue="- Risk Level -" cssClass="forms" name="riskLevel"/></div>
 	</s:if>
 	
 	<br clear="all"/>
-	<s:if test="filter.licensedIn">
+	<s:if test="filter.showLicensedIn">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_stateLicensedIn'); return false;">Licensed
 		In</a> = <span id="form1_stateLicensedIn_query">ALL</span><br />
@@ -278,7 +278,7 @@ Filter Options</a></div>
 		</span></div>
 	</s:if>
 
-	<s:if test="filter.worksIn">
+	<s:if test="filter.showWorksIn">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_worksIn'); return false;">Works In</a> = <span
 			id="form1_worksIn_query">ALL</span><br />
@@ -290,7 +290,7 @@ Filter Options</a></div>
 			onclick="clearSelected('form1_worksIn'); return false;">Clear</a> </span></div>
 	</s:if>
 
-	<s:if test="filter.officeIn">
+	<s:if test="filter.showOfficeIn">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_officeIn'); return false;">Office In</a> =
 		<span id="form1_officeIn_query">ALL</span><br />
@@ -302,14 +302,14 @@ Filter Options</a></div>
 			onclick="clearSelected('form1_officeIn'); return false;">Clear</a> </span></div>
 	</s:if>
 
-	<s:if test="filter.conLicense">
+	<s:if test="filter.showConLicense">
 		<br clear="all" />
 		<div class="filterOption">
 		<s:select name="validLicense" list="#{'Valid':'Valid','UnValid':'UnValid','All':'All'}" value="%{validLicense}" cssClass="forms"/>
 		</div>
 	</s:if>
 
-	<s:if test="filter.percentComplete">
+	<s:if test="filter.showPercentComplete">
 		<br clear="all"/>
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_percentComplete'); return false;">Percent Complete</a> 
 			<span id="form1_percentComplete_query">= ALL</span><br /> 
@@ -324,7 +324,7 @@ Filter Options</a></div>
 		</div>
 	</s:if>
 
-	<s:if test="filter.createdDate">
+	<s:if test="filter.showCreatedDate">
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_createdDate'); return false;">Created Date</a>  
 			<span id="form1_createdDate_query">= ALL</span><br /> 
 			<span id="form1_createdDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="6" 
@@ -344,7 +344,7 @@ Filter Options</a></div>
 		</div>
 	</s:if>
 
-	<s:if test="filter.completedDate">
+	<s:if test="filter.showCompletedDate">
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_completedDate'); return false;">Completed Date</a> 
 			<span id="form1_completedDate_query">= ALL</span><br /> 
 			<span id="form1_completedDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="6" 
@@ -364,7 +364,7 @@ Filter Options</a></div>
 		</div>
 	</s:if>
 	
-	<s:if test="filter.closedDate">
+	<s:if test="filter.showClosedDate">
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_closedDate'); return false;">Closed Date</a> 
 			<span id="form1_closedDate_query">= ALL</span><br /> 
 			<span id="form1_closedDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="6" 
@@ -384,7 +384,7 @@ Filter Options</a></div>
 		</div>
 	</s:if>
 
-	<s:if test="filter.expiredDate">
+	<s:if test="filter.showExpiredDate">
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_expiredDate'); return false;">Expired Date</a> 
 			<span id="form1_expiredDate_query">= ALL</span><br /> 
 			<span id="form1_expiredDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="6" 
@@ -404,7 +404,7 @@ Filter Options</a></div>
 		</div>
 	</s:if>
 	
-	<s:if test="filter.oshaEmr">
+	<s:if test="filter.showOshaEmr">
 		<br clear="all" />
 		<div class="filterOption">
 		<p class="blueMain">Show Contractors that need:</p>
@@ -431,7 +431,7 @@ Filter Options</a></div>
 		</div>
 	</s:if>
 
-	<s:if test="filter.unConfirmedAudits">
+	<s:if test="filter.showUnConfirmedAudits">
 		<br clear="all" />
 		<div class="filterOption">
 		<label><s:checkbox name="unScheduledAudits" />
@@ -439,7 +439,7 @@ Filter Options</a></div>
 		</div>
 	</s:if>
 
-	<s:if test="filter.assignedCon">
+	<s:if test="filter.showAssignedCon">
 		<br clear="all" />
 		<div class="filterOption">
 		<label><s:checkbox name="assignedCon" />
@@ -447,7 +447,7 @@ Filter Options</a></div>
 		</div>
 	</s:if>
 	
-	<s:if test="filter.expiredLicense">
+	<s:if test="filter.showExpiredLicense">
 		<br clear="all" />
 		<div class="filterOption">
 		<label><s:checkbox name="conExpiredLic" />
@@ -455,7 +455,7 @@ Filter Options</a></div>
 		</div>
 	</s:if>
 	
-	<s:if test="filter.inParentCorporation">
+	<s:if test="filter.showInParentCorporation">
 		<br clear="all" />
 		<div class="filterOption">
 		<label><s:checkbox name="inParentCorporation" />Check to limit to contractors already working within my parent corporation</label>
