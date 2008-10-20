@@ -21,7 +21,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	// /////// Filter Visibility /////////////
 	protected boolean showOperator = true;
 	protected boolean showOperatorSingle = false;
-	protected boolean showPerformedBy = true;
 	protected boolean showTrade = true;
 	protected boolean showCerts = false;
 	protected boolean showLicensedIn = true;
@@ -62,14 +61,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowOperatorSingle(boolean showOperatorSingle) {
 		this.showOperatorSingle = showOperatorSingle;
-	}
-
-	public boolean isShowPerformedBy() {
-		return showPerformedBy;
-	}
-
-	public void setShowPerformedBy(boolean showPerformedBy) {
-		this.showPerformedBy = showPerformedBy;
 	}
 
 	public boolean isShowTrade() {
