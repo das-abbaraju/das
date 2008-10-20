@@ -128,7 +128,7 @@ Filter Options</a></div>
 	<br clear="all" />
 
 	<s:if test="filter.showAccountName">
-		<div class="filterOption"><s:textfield name="accountName"
+		<div class="filterOption"><s:textfield name="filter.accountName"
 			cssClass="forms" size="10" onfocus="clearText(this)" /></div>
 	</s:if>
 

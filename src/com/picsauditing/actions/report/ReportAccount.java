@@ -42,7 +42,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	}
 
 	public String execute() throws Exception {
-		System.out.println(ActionContext.getContext().getSession());
 		if (!forceLogin())
 			return LOGIN;
 		if (!skipPermissions)
@@ -80,8 +79,15 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getStartsWith()))
 			report.addFilter(new SelectFilter("name", "a.name LIKE '?%'", f.getStartsWith()));
 
-		if (filterOn(f.getAccountName(), ReportFilterAccount.DEFAULT_NAME))
-			report.addFilter(new SelectFilter("accountName", "a.name LIKE '%?%'", f.getAccountName()));
+		if (filterOn(f.getAccountName(), ReportFilterAccount.DEFAULT_NAME)) {
+			String accountName = f.getAccountName().trim();
+			try {
+				int id = Integer.parseInt(accountName);
+				report.addFilter(new SelectFilterInteger("id", "a.id = ?", id));
+			} catch (NumberFormatException nfe) {
+				report.addFilter(new SelectFilter("accountName", "a.name LIKE '%?%'", accountName));
+			}
+		}
 
 		if (filterOn(f.getVisible())) 
 			report.addFilter(new SelectFilter("visible", "a.active = '?'", f.getVisible()));

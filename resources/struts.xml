@@ -261,7 +261,7 @@
 		</action>
 		
 		<action name="ContractorSelectAjax"
-			class="com.picsauditing.actions.report.ReportAccountSelect">
+			class="com.picsauditing.actions.report.ReportAccount">
 			<result>struts/reports/contractors_select.jsp</result>
 		</action>
 
