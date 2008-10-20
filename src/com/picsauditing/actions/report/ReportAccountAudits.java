@@ -11,8 +11,6 @@ public class ReportAccountAudits extends ReportAccount {
 		sql.addField("c.main_trade");
 		sql.addField("a.industry");
 
-		toggleFilters();
-
 		if (filtered == null)
 			filtered = true;
 

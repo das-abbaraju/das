@@ -41,7 +41,7 @@ public class ReportContractorLicenses extends ReportContractorAudits {
 		if (filtered == null)
 			filtered = false;
 
-		this.filterAuditType = false;
+		getFilter().setAuditType(false);
 
 		return super.execute();
 	}

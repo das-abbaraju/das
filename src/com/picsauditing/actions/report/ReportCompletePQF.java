@@ -68,18 +68,15 @@ public class ReportCompletePQF extends ReportContractorAudits {
 				}
 			}
 		}
-		toggleFilters();
+		getFilter().setVisible(false);
+		getFilter().setTrade(false);
+		getFilter().setAuditType(false);
+		getFilter().setAuditStatus(false);
+		getFilter().setCompletedDate(false);
+		getFilter().setClosedDate(false);
+		getFilter().setExpiredDate(false);
+		
 		return super.execute();
-	}
-
-	protected void toggleFilters() {
-		filterVisible = false;
-		filterTrade = false;
-		filterAuditType = false;
-		filterAuditStatus = false;
-		filterCompletedDate = false;
-		filterClosedDate = false;
-		filterExpiredDate = false;
 	}
 
 	public Date getFollowUpDate() {

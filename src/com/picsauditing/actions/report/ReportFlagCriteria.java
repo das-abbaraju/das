@@ -22,7 +22,7 @@ public class ReportFlagCriteria extends ReportAccount {
 
 	public ReportFlagCriteria(OperatorAccountDAO operatorAccountDAO) {
 		this.operatorAccountDAO = operatorAccountDAO;
-		filterOperatorSingle = true;
+		getFilter().setOperatorSingle(true);
 	}
 
 	public String execute() throws Exception {

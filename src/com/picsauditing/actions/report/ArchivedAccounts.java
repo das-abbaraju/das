@@ -36,13 +36,8 @@ public class ArchivedAccounts extends ReportAccount {
 			facilityChanger.setPermissions(permissions);
 			facilityChanger.remove();
 		}
+		getFilter().setVisible(false);
 		return super.execute();
-	}
-
-	@Override
-	protected void toggleFilters() {
-		super.toggleFilters();
-		filterVisible = false;
 	}
 
 	public int getConID() {

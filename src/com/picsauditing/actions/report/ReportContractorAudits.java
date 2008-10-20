@@ -14,6 +14,8 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.search.SelectContractorAudit;
 import com.picsauditing.search.SelectFilterDate;
+import com.picsauditing.util.ReportFilterAudit;
+import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -23,13 +25,6 @@ public class ReportContractorAudits extends ReportAccount {
 	protected int[] auditorId;
 	protected int[] auditID;
 
-	protected boolean filterAuditType = true;
-	protected boolean filterAuditStatus = true;
-	protected boolean filterAuditor = true;
-	protected boolean filterCreatedDate = true;
-	protected boolean filterCompletedDate = true;
-	protected boolean filterClosedDate = true;
-	protected boolean filterExpiredDate = true;
 	protected Date createdDate1;
 	protected Date createdDate2;
 	protected Date completedDate1;
@@ -38,6 +33,7 @@ public class ReportContractorAudits extends ReportAccount {
 	protected Date closedDate2;
 	protected Date expiredDate1;
 	protected Date expiredDate2;
+	private ReportFilterAudit filter = new ReportFilterAudit();
 
 	public ReportContractorAudits() {
 		sql = new SelectContractorAudit();
@@ -76,7 +72,7 @@ public class ReportContractorAudits extends ReportAccount {
 			orderBy = "ca.createdDate DESC";
 
 		if (!permissions.isPicsEmployee())
-			filterAuditor = true;
+			getFilter().setAuditor(true);
 
 		if (filtered == null)
 			filtered = true;
@@ -141,18 +137,6 @@ public class ReportContractorAudits extends ReportAccount {
 		filtered = true;
 	}
 
-	public boolean isFilterAuditType() {
-		return filterAuditType;
-	}
-
-	public boolean isFilterAuditStatus() {
-		return filterAuditStatus;
-	}
-
-	public boolean isFilterAuditor() {
-		return filterAuditor;
-	}
-
 	public String getBetterDate(String value, String format) {
 		String response = null;
 		try {
@@ -198,10 +182,6 @@ public class ReportContractorAudits extends ReportAccount {
 		report.addFilter(new SelectFilterDate("createdDate2", "ca.createdDate < '?'", DateBean.format(createdDate2,
 				"M/d/yy")));
 		this.createdDate2 = createdDate2;
-	}
-
-	public boolean isFilterCreatedDate() {
-		return filterCreatedDate;
 	}
 
 	public Date getCompletedDate1() {
@@ -264,18 +244,6 @@ public class ReportContractorAudits extends ReportAccount {
 		this.expiredDate2 = expiredDate2;
 	}
 
-	public boolean isFilterCompletedDate() {
-		return filterCompletedDate;
-	}
-
-	public boolean isFilterClosedDate() {
-		return filterClosedDate;
-	}
-
-	public boolean isFilterExpiredDate() {
-		return filterExpiredDate;
-	}
-
 	public int[] getAuditID() {
 		return auditID;
 	}
@@ -284,6 +252,11 @@ public class ReportContractorAudits extends ReportAccount {
 		String list = Strings.implode(auditID, ",");
 		sql.addWhere("ca.auditID IN (" + list + ")");
 		this.auditID = auditID;
+	}
+	
+	@Override
+	public ReportFilterAudit getFilter() {
+		return filter;
 	}
 
 }

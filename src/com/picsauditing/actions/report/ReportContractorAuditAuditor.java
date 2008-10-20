@@ -23,15 +23,12 @@ public class ReportContractorAuditAuditor extends ReportContractorAudits {
 		if(filtered == null) 
 			filtered = false;
 		
+		getFilter().setAuditor(false);
+		getFilter().setVisible(false);
+		
 		return super.execute();
 	}
 	
-	protected void toggleFilters() {
-		super.toggleFilters();
-		filterAuditor = false;
-		filterVisible = false;
-	}
-
 	public AuditStatus[] getAuditStatusList() {
 		AuditStatus[] list = { AuditStatus.Pending, AuditStatus.Submitted };
 		return list;

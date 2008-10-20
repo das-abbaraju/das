@@ -4,7 +4,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.AuditStatus;
 
 public class ReportPQFVerification extends ReportContractorAudits {
-	protected boolean filterOshaEmr = true;
 	private boolean osha1 = false;
 	private boolean osha2 = false;
 	private boolean osha3 = false;
@@ -15,6 +14,8 @@ public class ReportPQFVerification extends ReportContractorAudits {
 	public String execute() throws Exception {
 		if (!forceLogin()) return LOGIN;
 
+		getFilter().setOshaEmr(true);
+		
 		permissions.tryPermission(OpPerms.AuditVerification);
 		sql.addField("c.notes");
 		sql.addWhere("ca.auditStatus IN ('" + AuditStatus.Submitted + "','" + AuditStatus.Pending + "')");
@@ -52,17 +53,9 @@ public class ReportPQFVerification extends ReportContractorAudits {
 		if(filtered == null) 
 			filtered = false;
 		
-		this.filterAuditType = false;
+		getFilter().setAuditType(false);
 				
 		return super.execute();
-	}
-	
-	public boolean isFilterOshaEmr() {
-		return filterOshaEmr;
-	}
-
-	public void setFilterOshaEmr(boolean filterOshaEmr) {
-		this.filterOshaEmr = filterOshaEmr;
 	}
 
 	public boolean isOsha1() {

@@ -1,0 +1,137 @@
+package com.picsauditing.util;
+
+import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.Industry;
+
+public class ReportFilterAccount extends ReportFilter {
+	public static final String DEFAULT_NAME = "- Name - ";
+	public static final String DEFAULT_ZIP = "- Zip -";
+	public static final String DEFAULT_CITY = "- City -";
+	public static final String DEFAULT_VISIBLE = "- Visible -";
+	
+	///////// Filter Visibility /////////////
+	protected boolean showAccountName = true;
+	protected boolean showIndustry = true;
+	protected boolean showAddress = true;
+	protected boolean showVisible = false;
+	
+	///////// Parameter Values  /////////////////
+	protected String startsWith;
+	protected String accountName = DEFAULT_NAME;
+	protected Industry[] industry;
+	protected String city = DEFAULT_CITY;
+	protected String state;
+	protected String zip = DEFAULT_ZIP;
+	protected String visible;
+	
+	protected Permissions permissions = null;
+	public void setPermissions(Permissions permissions) {
+		this.permissions = permissions;
+		if (permissions.isPicsEmployee()) {
+			showVisible = true;
+		}
+	}
+	
+	// Getters for search lists
+	public Industry[] getIndustryList() {
+		return Industry.values();
+	}
+
+	public String[] getVisibleOptions() {
+		return new String[] { DEFAULT_VISIBLE, "Y", "N" };
+	}
+
+	public boolean isShowAccountName() {
+		return showAccountName;
+	}
+
+	public void setShowAccountName(boolean showAccountName) {
+		this.showAccountName = showAccountName;
+	}
+
+	public boolean isShowIndustry() {
+		return showIndustry;
+	}
+
+	public void setShowIndustry(boolean showIndustry) {
+		this.showIndustry = showIndustry;
+	}
+
+	public boolean isShowAddress() {
+		return showAddress;
+	}
+
+	public void setShowAddress(boolean showAddress) {
+		this.showAddress = showAddress;
+	}
+
+	public boolean isShowVisible() {
+		return showVisible;
+	}
+
+	public void setShowVisible(boolean showVisible) {
+		this.showVisible = showVisible;
+	}
+
+	public String getStartsWith() {
+		return startsWith;
+	}
+
+	public void setStartsWith(String startsWith) {
+		this.startsWith = startsWith;
+	}
+
+	public String getAccountName() {
+		return accountName;
+	}
+
+	public void setAccountName(String accountName) {
+		this.accountName = accountName;
+	}
+
+	public Industry[] getIndustry() {
+		return industry;
+	}
+
+	public void setIndustry(Industry[] industry) {
+		this.industry = industry;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getZip() {
+		return zip;
+	}
+
+	public void setZip(String zip) {
+		this.zip = zip;
+	}
+
+	public String getVisible() {
+		return visible;
+	}
+
+	public void setVisible(String visible) {
+		this.visible = visible;
+	}
+
+	public Permissions getPermissions() {
+		return permissions;
+	}
+
+	
+}

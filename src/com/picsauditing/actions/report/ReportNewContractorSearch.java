@@ -4,6 +4,7 @@ import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.util.ReportFilterAccount;
 
 /**
  * Used by operators to search for new contractors
@@ -31,9 +32,6 @@ public class ReportNewContractorSearch extends ReportAccount {
 			return LOGIN;
 
 		permissions.tryPermission(OpPerms.SearchContractors);
-		
-		// Sometimes we exit early, so we need to make sure we set our applicable filters right way
-		toggleFilters();
 		
 		if (button != null && id > 0) {
 			try {
@@ -84,7 +82,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 			sql.addWhere(whereQuery);
 		}
 
-		if ((accountName == null || DEFAULT_NAME.equals(accountName) || accountName.length() < 3)
+		if ((accountName == null || ReportFilterAccount.DEFAULT_NAME.equals(accountName) || accountName.length() < 3)
 				&& (trade == null || trade.length == 0)) {
 			this.addActionMessage("Please enter a contractor name with atleast 3 characters or select a trade");
 			return SUCCESS;
