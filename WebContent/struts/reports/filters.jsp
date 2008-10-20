@@ -134,17 +134,17 @@ Filter Options</a></div>
 
 	<s:if test="filter.showVisible">
 		<div class="filterOption"><s:select list="filter.visibleOptions"
-			cssClass="forms" name="visible" /></div>
+			cssClass="forms" name="filter.visible" /></div>
 	</s:if>
 
 	<s:if test="filter.showAddress">
-		<div class="filterOption">Address: <s:textfield name="city"
+		<div class="filterOption">Address: <s:textfield name="filter.city"
 			cssClass="forms" size="15" onfocus="clearText(this)" /> <s:select
-			list="filter.stateList" cssClass="forms" name="state" /> <s:textfield
-			name="zip" cssClass="forms" size="5" onfocus="clearText(this)" /></div>
+			list="filter.stateList" cssClass="forms" name="filter.state" /> <s:textfield
+			name="filter.zip" cssClass="forms" size="5" onfocus="clearText(this)" /></div>
 	</s:if>
 	<s:if test="filter.showTaxID">
-		<div class="filterOption"><s:textfield name="taxID"
+		<div class="filterOption"><s:textfield name="filter.taxID"
 			cssClass="forms" size="9" onfocus="clearText(this)" title="must be 9 digits" /></div>
 	</s:if>
 	<br /><br />
@@ -153,7 +153,7 @@ Filter Options</a></div>
 			onclick="toggleBox('form1_industry'); return false;">Industry</a> = <span
 			id="form1_industry_query">ALL</span><br />
 		<span id="form1_industry_select" style="display: none"
-			class="clearLink"> <s:select name="industry"
+			class="clearLink"> <s:select name="filter.industry"
 			list="filter.industryList" cssClass="forms" multiple="true" size="5" /> <script
 			type="text/javascript">updateQuery('form1_industry');</script> <br />
 		<a class="clearLink" href="#"
@@ -165,10 +165,10 @@ Filter Options</a></div>
 			onclick="toggleBox('form1_trade'); return false;">Trade</a> =
 		<span id="form1_trade_query">ALL</span>
 		<s:select
-			list="filter.tradePerformedByList" cssClass="forms" name="performedBy" />
+			list="filter.tradePerformedByList" cssClass="forms" name="filter.performedBy" />
 			<br />
 		<span id="form1_trade_select" style="display: none" class="clearLink">
-		<s:select list="filter.tradeList" listKey="questionID" listValue="question" cssClass="forms" name="trade"
+		<s:select list="filter.tradeList" listKey="questionID" listValue="question" cssClass="forms" name="filter.trade"
 			multiple="true" size="5" /> <script type="text/javascript">updateQuery('form1_trade');</script>
 		<br />
 		<a class="clearLink" href="#"
@@ -177,7 +177,7 @@ Filter Options</a></div>
 
 	<s:if test="filter.showFlagStatus">
 		<div class="filterOption"><s:select list="filter.flagStatusList"
-			cssClass="forms" name="flagStatus" /></div>
+			cssClass="forms" name="filter.flagStatus" /></div>
 	</s:if>
 
 	<s:if test="filter.showAuditType">
@@ -186,7 +186,7 @@ Filter Options</a></div>
 		Type</a> = <span id="form1_auditTypeID_query">ALL</span><br />
 		<span id="form1_auditTypeID_select" style="display: none"
 			class="clearLink"> <s:select list="filter.auditTypeList"
-			cssClass="forms" name="auditTypeID" listKey="auditTypeID"
+			cssClass="forms" name="filter.auditTypeID" listKey="auditTypeID"
 			listValue="auditName" multiple="true" size="5" /> <script
 			type="text/javascript">updateQuery('form1_auditTypeID');</script> <br />
 		<a class="clearLink" href="#"
@@ -200,7 +200,7 @@ Filter Options</a></div>
 		Status</a> = <span id="form1_auditStatus_query">ALL</span><br />
 		<span id="form1_auditStatus_select" style="display: none"
 			class="clearLink"> <s:select list="filter.auditStatusList"
-			cssClass="forms" name="auditStatus" multiple="true" size="5" /> <script
+			cssClass="forms" name="filter.auditStatus" multiple="true" size="5" /> <script
 			type="text/javascript">updateQuery('form1_auditStatus');</script> <br />
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_auditStatus'); return false;">Clear</a>
@@ -236,7 +236,7 @@ Filter Options</a></div>
 	<s:if test="filter.showOperator">
 		<div class="filterOption">
 		<s:if test="filterOperatorSingle">
-			<s:select list="filter.operatorList" cssClass="forms" name="operator" listKey="id" listValue="name"/>
+			<s:select list="filter.operatorList" cssClass="forms" name="filter.operator" listKey="id" listValue="name"/>
 		</s:if>
 		<s:else>
 		<a href="#"
@@ -244,7 +244,7 @@ Filter Options</a></div>
 		<span id="form1_operator_query">ALL</span><br />
 		<span id="form1_operator_select" style="display: none"
 			class="clearLink"> <s:select list="filter.operatorList"
-			cssClass="forms" name="operator" listKey="id" listValue="name"
+			cssClass="forms" name="filter.operator" listKey="id" listValue="name"
 			multiple="true" size="5" /> <script type="text/javascript">updateQuery('form1_operator');</script>
 		<br />
 		<a class="clearLink" href="#"
@@ -255,12 +255,12 @@ Filter Options</a></div>
 
 	<s:if test="filter.showCerts">
 		<div class="filterOption"><s:select list="filter.certsOptions"
-			cssClass="forms" name="certsOnly" /></div>
+			cssClass="forms" name="filter.certsOnly" /></div>
 	</s:if>
 	
 	<s:if test="filter.showRiskLevel">
 		<div class="filterOption"><s:select list="#{'1':'Low', '2':'Med', '3':'High'}"  
-			headerKey="0" headerValue="- Risk Level -" cssClass="forms" name="riskLevel"/></div>
+			headerKey="0" headerValue="- Risk Level -" cssClass="forms" name="filter.riskLevel"/></div>
 	</s:if>
 	
 	<br clear="all"/>
@@ -270,7 +270,7 @@ Filter Options</a></div>
 		In</a> = <span id="form1_stateLicensedIn_query">ALL</span><br />
 		<span id="form1_stateLicensedIn_select" style="display: none"
 			class="clearLink"> <s:select list="filter.stateLicensesList"
-			cssClass="forms" name="stateLicensedIn" listKey="questionID" listValue="question" multiple="true" size="5" />
+			cssClass="forms" name="filter.stateLicensedIn" listKey="questionID" listValue="question" multiple="true" size="5" />
 		<script type="text/javascript">updateQuery('form1_stateLicensedIn');</script>
 		<br />
 		<a class="clearLink" href="#"
@@ -284,7 +284,7 @@ Filter Options</a></div>
 			id="form1_worksIn_query">ALL</span><br />
 		<span id="form1_worksIn_select" style="display: none"
 			class="clearLink"> <s:select list="filter.worksInList"
-			cssClass="forms" name="worksIn" listKey="questionID" listValue="question" multiple="true" size="5" /> <script
+			cssClass="forms" name="filter.worksIn" listKey="questionID" listValue="question" multiple="true" size="5" /> <script
 			type="text/javascript">updateQuery('form1_worksIn');</script> <br />
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_worksIn'); return false;">Clear</a> </span></div>
@@ -296,7 +296,7 @@ Filter Options</a></div>
 		<span id="form1_officeIn_query">ALL</span><br />
 		<span id="form1_officeIn_select" style="display: none"
 			class="clearLink"> <s:select list="filter.officeInList"
-			cssClass="forms" name="officeIn" listKey="questionID" listValue="question" multiple="true" size="5" /> <script
+			cssClass="forms" name="filter.officeIn" listKey="questionID" listValue="question" multiple="true" size="5" /> <script
 			type="text/javascript">updateQuery('form1_officeIn');</script> <br />
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_officeIn'); return false;">Clear</a> </span></div>
@@ -305,7 +305,7 @@ Filter Options</a></div>
 	<s:if test="filter.showConLicense">
 		<br clear="all" />
 		<div class="filterOption">
-		<s:select name="validLicense" list="#{'Valid':'Valid','UnValid':'UnValid','All':'All'}" value="%{validLicense}" cssClass="forms"/>
+		<s:select name="filter.validLicense" list="#{'Valid':'Valid','UnValid':'UnValid','All':'All'}" value="%{validLicense}" cssClass="forms"/>
 		</div>
 	</s:if>
 
@@ -313,9 +313,9 @@ Filter Options</a></div>
 		<br clear="all"/>
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_percentComplete'); return false;">Percent Complete</a> 
 			<span id="form1_percentComplete_query">= ALL</span><br /> 
-			<span id="form1_percentComplete" style="display: none" class="clearLink"><s:textfield name="percentComplete1"
+			<span id="form1_percentComplete" style="display: none" class="clearLink"><s:textfield name="filter.percentComplete1"
 			id="form1_percentComplete1" cssClass="forms" size="12" onfocus="clearText(this)" /> To: 
-			<s:textfield name="percentComplete2" id="form1_percentComplete2"
+			<s:textfield name="filter.percentComplete2" id="form1_percentComplete2"
 			cssClass="forms" size="12" onfocus="clearText(this)" />
 			<script
 			type="text/javascript">textQuery('form1_percentComplete'); </script> <br />
@@ -328,12 +328,12 @@ Filter Options</a></div>
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_createdDate'); return false;">Created Date</a>  
 			<span id="form1_createdDate_query">= ALL</span><br /> 
 			<span id="form1_createdDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="6" 
-			id="form1_createdDate1" name="createdDate1" />
+			id="form1_createdDate1" name="filter.createdDate1" />
 			<a id="anchor_createdDate1" name="anchor_createdDate1"
 			onclick="cal2.select($('form1_createdDate1'),'anchor_createdDate1','M/d/yy'); return false;">
 			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 			To:<s:textfield cssClass="forms" size="6" 
-			id="form1_createdDate2" name="createdDate2" />
+			id="form1_createdDate2" name="filter.createdDate2" />
 			<a id="anchor_createdDate2" name="anchor_createdDate2"
 			onclick="cal2.select($('form1_createdDate2'),'anchor_createdDate2','M/d/yy'); return false;">
 			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
@@ -348,12 +348,12 @@ Filter Options</a></div>
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_completedDate'); return false;">Completed Date</a> 
 			<span id="form1_completedDate_query">= ALL</span><br /> 
 			<span id="form1_completedDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="6" 
-			id="form1_completedDate1" name="completedDate1" />
+			id="form1_completedDate1" name="filter.completedDate1" />
 			<a id="anchor_completedDate1" name="anchor_completedDate1"
 			onclick="cal2.select($('form1_completedDate1'),'anchor_completedDate1','M/d/yy'); return false;">
 			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 			To:<s:textfield cssClass="forms" size="6" 
-			id="form1_completedDate2" name="completedDate2" />
+			id="form1_completedDate2" name="filter.completedDate2" />
 			<a id="anchor_completedDate2" name="anchor_completedDate2"
 			onclick="cal2.select($('form1_completedDate2'),'anchor_completedDate2','M/d/yy'); return false;">
 			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
@@ -368,12 +368,12 @@ Filter Options</a></div>
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_closedDate'); return false;">Closed Date</a> 
 			<span id="form1_closedDate_query">= ALL</span><br /> 
 			<span id="form1_closedDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="6" 
-			id="form1_closedDate1" name="closedDate1" />
+			id="form1_closedDate1" name="filter.closedDate1" />
 			<a id="anchor_closedDate1" name="anchor_closedDate1"
 			onclick="cal2.select($('form1_closedDate1'),'anchor_closedDate1','M/d/yy'); return false;">
 			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 			To:<s:textfield cssClass="forms" size="6" 
-			id="form1_closedDate2" name="closedDate2" />
+			id="form1_closedDate2" name="filter.closedDate2" />
 			<a id="anchor_closedDate2" name="anchor_closedDate2"
 			onclick="cal2.select($('form1_closedDate2'),'anchor_closedDate2','M/d/yy'); return false;">
 			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
@@ -388,12 +388,12 @@ Filter Options</a></div>
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_expiredDate'); return false;">Expired Date</a> 
 			<span id="form1_expiredDate_query">= ALL</span><br /> 
 			<span id="form1_expiredDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="6" 
-			id="form1_expiredDate1" name="expiredDate1" />
+			id="form1_expiredDate1" name="filter.expiredDate1" />
 			<a id="anchor_expiredDate1" name="anchor_expiredDate1"
 			onclick="cal2.select($('form1_expiredDate1'),'anchor_expiredDate1','M/d/yy'); return false;">
 			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 			To:<s:textfield cssClass="forms" size="6" 
-			id="form1_expiredDate2" name="expiredDate2" />
+			id="form1_expiredDate2" name="filter.expiredDate2" />
 			<a id="anchor_expiredDate2" name="anchor_expiredDate2"
 			onclick="cal2.select($('form1_expiredDate2'),'anchor_expiredDate2','M/d/yy'); return false;">
 			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
