@@ -38,7 +38,10 @@ public class PicsActionSupport extends ActionSupport {
 			// Already set
 			return;
 
-		permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
+		if (ActionContext.getContext().getSession() == null)
+			System.out.println("Failed to get Struts session");
+		else
+			permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
 		if (permissions == null) {
 			permissions = new Permissions();
 

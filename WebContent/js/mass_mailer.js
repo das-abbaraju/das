@@ -118,3 +118,8 @@ function addTemplate(id) {
 	$('buttonSave').addClassName('disabled');
 	dirty = false;
 }
+
+function removeSelected() {
+	var list = $('contractors');
+	
+}

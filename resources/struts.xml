@@ -613,6 +613,11 @@
 			class="com.picsauditing.mail.EmailTemplateSave">
 			<result>struts/blank.jsp</result>
 		</action>
+
+		<action name="EmailWizard"
+			class="com.picsauditing.mail.EmailWizard">
+			<result>struts/mail/mail_wizard.jsp</result>
+		</action>
 		
 	</package>
 </struts>
