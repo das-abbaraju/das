@@ -37,6 +37,8 @@ public class Strings {
 	}
 
 	public static String implode(int[] array, String delimiter) {
+		if (array == null)
+			return "";
 		StringBuffer buffer = new StringBuffer();
 		for (int o : array) {
 			if (buffer.length() > 0)
@@ -47,6 +49,8 @@ public class Strings {
 	}
 
 	public static String implodeForDB(Enum[] array, String delimiter) {
+		if (array == null)
+			return "";
 		StringBuffer buffer = new StringBuffer();
 		for (Enum o : array) {
 			if (buffer.length() > 0)
@@ -60,6 +64,8 @@ public class Strings {
 
 	public static String implode(Collection<Integer> collection,
 			String delimiter) {
+		if (collection == null)
+			return "";
 		StringBuffer buffer = new StringBuffer();
 		for (Object o : collection) {
 			if (buffer.length() > 0)

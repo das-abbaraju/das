@@ -76,40 +76,48 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	private void addFilterToSQL() {
 		ReportFilterContractor f = getFilter();
 		
-		if (!Strings.isEmpty(f.getStartsWith()))
-			report.addFilter(new SelectFilter("name", "a.name LIKE '?%'", getFilter().getStartsWith()));
+		/****** Filters for Accounts  ***********/
+		if (filterOn(f.getStartsWith()))
+			report.addFilter(new SelectFilter("name", "a.name LIKE '?%'", f.getStartsWith()));
 
-		if (!Strings.isEmpty(f.getAccountName()) 
-				&& !ReportFilterAccount.DEFAULT_NAME.equals(f.getAccountName()) )
+		if (filterOn(f.getAccountName(), ReportFilterAccount.DEFAULT_NAME))
 			report.addFilter(new SelectFilter("accountName", "a.name LIKE '%?%'", f.getAccountName()));
 
-		if (f.getIndustry() != null && f.getIndustry().si) 
-	public void setIndustry(Industry[] industry) {
-		String industryList = Strings.implodeForDB(industry, ",");
-		sql.addWhere("a.industry IN (" + industryList + ")");
-		filtered = true;
-	}
+		if (filterOn(f.getVisible())) 
+			report.addFilter(new SelectFilter("visible", "a.active = '?'", f.getVisible()));
 
-	public void setTrade(int[] trade) {
-		String performedBy = ServletActionContext.getRequest().getParameter("performedBy");
+		String industryList = Strings.implodeForDB(f.getIndustry(), ",");
+		if (filterOn(industryList)) {
+			sql.addWhere("a.industry IN (" + industryList + ")");
+			filtered = true;
+		}
+
+		if (filterOn(f.getCity(), ReportFilterAccount.DEFAULT_CITY))
+			report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", f.getCity()));
+
+		if (filterOn(f.getState()))
+			report.addFilter(new SelectFilter("state", "a.state = '?'", f.getState()));
+
+		if (filterOn(f.getZip(), ReportFilterAccount.DEFAULT_ZIP))
+			report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", f.getZip()));
+
+		/****** Filters for Contractors ***********/
+
+		/*
 		String answerFilter = "";
-		if (TradesBean.DEFAULT_PERFORMED_BY.equals(performedBy) || performedBy == null) {
-			performedBy = TradesBean.DEFAULT_PERFORMED_BY;
+		if (filterOn(f.getPerformedBy(), TradesBean.DEFAULT_PERFORMED_BY))
 			answerFilter = "_%";
-		} else {
-			if ("Sub Contracted".equals(performedBy))
+		else {
+			if ("Sub Contracted".equals(f.getPerformedBy()))
 				answerFilter = "%S";
-			else if ("Self Performed".equals(performedBy))
+			else if ("Self Performed".equals(f.getPerformedBy()))
 				answerFilter = "C%";
 		}
-		String tradeList = Strings.implode(trade, ",");
+		String tradeList = Strings.implode(f.get, ",");
 		if (tradeList.equals("0"))
 			return;
-
-		this.trade = trade;
 		createPqfDataClause(sql, "AND d.questionID IN (" + tradeList + ") AND d.answer LIKE '" + answerFilter + "'");
-		filtered = true;
-	}
+		
 
 	public void setOperator(int[] operator) {
 		String operatorList = Strings.implode(operator, ",");
@@ -120,35 +128,11 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		this.operator = operator;
 	}
 
-	public void setCity(String city) {
-		if (city == null || city.length() == 0)
-			city = ReportFilterAccount.DEFAULT_CITY;
-		report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", city, ReportFilterAccount.DEFAULT_CITY, ReportFilterAccount.DEFAULT_CITY));
-		this.city = city;
-	}
-
-	public void setState(String state) {
-		report.addFilter(new SelectFilter("state", "a.state = '?'", state));
-		this.state = state;
-	}
-
-	public void setZip(String zip) {
-		if (zip == null || zip.length() == 0)
-			zip = ReportFilterAccount.DEFAULT_ZIP;
-		report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", zip, ReportFilterAccount.DEFAULT_ZIP, ReportFilterAccount.DEFAULT_ZIP));
-		this.zip = zip;
-	}
-
 	public void setCertsOnly(String certsOnly) {
 		report.addFilter(new SelectFilter("certsOnly", "c.isOnlyCerts = '?'", certsOnly, ReportFilterAccount.DEFAULT_CERTS, ReportFilterAccount.DEFAULT_CERTS));
 		this.certsOnly = certsOnly;
 	}
 
-	public void setVisible(String visible) {
-		report.addFilter(new SelectFilter("visible", "a.active = '?'", visible, SearchBean.DEFAULT_VISIBLE,
-				SearchBean.DEFAULT_VISIBLE));
-		this.visible = visible;
-	}
 
 	public void setStateLicensedIn(int[] stateLicensedIn) {
 		String stateLicensedInList = Strings.implode(stateLicensedIn, ",");
@@ -197,6 +181,34 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		filtered = true;
 	}
 
+	public void setRiskLevel(int riskLevel) {
+		report.addFilter(new SelectFilterInteger("riskLevel", "c.riskLevel = '?'", riskLevel));
+		this.riskLevel = riskLevel;
+	}
+		*/
+	}
+
+
+	private boolean filterOn(Object value, Object defaultValue) {
+		if (value == null)
+			return false;
+		if (value.equals(defaultValue))
+			return false;
+		return value.toString().trim().length() > 0;
+	}
+
+	private boolean filterOn(Object value) {
+		if (value == null)
+			return false;
+		return value.toString().trim().length() > 0;
+	}
+	
+	private boolean filterOn(Object[] value) {
+		if (value == null)
+			return false;
+		return value.length > 0;
+	}
+
 	/**
 	 * Return the number of active contractors visible to an Operator or a
 	 * Corporate account This method shouldn't be use be Admins, auditors, and
@@ -212,13 +224,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		// This method shouldn't be used by Admins, auditors, and contractors so
 		// just return 0
 		return 0;
-	}
-
-	public void setRiskLevel(int riskLevel) {
-		report.addFilter(new SelectFilterInteger("riskLevel", "c.riskLevel = '?'", riskLevel));
-		this.riskLevel = riskLevel;
-	}
-
 	}
 
 	public List<Integer> getIds() {
