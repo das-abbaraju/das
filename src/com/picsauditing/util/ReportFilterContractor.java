@@ -17,151 +17,240 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public static final String DEFAULT_TAX_ID = "- Tax ID -";
 	public static final String DEFAULT_CERTS = "- Ins. Certs -";
 	public static final String DEFAULT_RISK = "- Risk Level -";
-	
-	protected boolean operator = true;
-	protected boolean operatorSingle = false;
-	protected boolean performedBy = true;
-	protected boolean trade = true;
-	protected boolean certs = false;
-	protected boolean licensedIn = true;
-	protected boolean worksIn = true;
-	protected boolean officeIn = true;
-	protected boolean taxID = true;
-	protected boolean flagStatus = false;
-	protected boolean conAuditor = false;
-	protected boolean riskLevel = false;
-	
-	
+
+	// /////// Filter Visibility /////////////
+	protected boolean showOperator = true;
+	protected boolean showOperatorSingle = false;
+	protected boolean showPerformedBy = true;
+	protected boolean showTrade = true;
+	protected boolean showCerts = false;
+	protected boolean showLicensedIn = true;
+	protected boolean showWorksIn = true;
+	protected boolean showOfficeIn = true;
+	protected boolean showTaxID = true;
+	protected boolean showFlagStatus = false;
+	protected boolean showConAuditor = false;
+	protected boolean showRiskLevel = false;
+
+	// /////// Parameter Values /////////////////
 	protected String performedBy;
 	protected int[] trade;
 	protected int[] operator;
 	protected String certsOnly;
 	protected int[] stateLicensedIn;
 	protected int[] worksIn;
-	protected String taxID = ReportFilterAccount.DEFAULT_TAX_ID;
+	protected String taxID = DEFAULT_TAX_ID;
 	protected String flagStatus;
 	protected int[] officeIn;
 	protected int[] conAuditorId;
 	protected int riskLevel;
 
 	private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
-	
-	
-	public boolean isOperator() {
-		return operator;
+
+	// // setting the filter
+	public boolean isShowOperator() {
+		return showOperator;
 	}
 
-	public void setOperator(boolean operator) {
-		this.operator = operator;
+	public void setShowOperator(boolean showOperator) {
+		this.showOperator = showOperator;
 	}
 
-	public boolean isOperatorSingle() {
-		return operatorSingle;
+	public boolean isShowOperatorSingle() {
+		return showOperatorSingle;
 	}
 
-	public void setOperatorSingle(boolean operatorSingle) {
-		this.operatorSingle = operatorSingle;
+	public void setShowOperatorSingle(boolean showOperatorSingle) {
+		this.showOperatorSingle = showOperatorSingle;
 	}
 
-	public boolean isPerformedBy() {
+	public boolean isShowPerformedBy() {
+		return showPerformedBy;
+	}
+
+	public void setShowPerformedBy(boolean showPerformedBy) {
+		this.showPerformedBy = showPerformedBy;
+	}
+
+	public boolean isShowTrade() {
+		return showTrade;
+	}
+
+	public void setShowTrade(boolean showTrade) {
+		this.showTrade = showTrade;
+	}
+
+	public boolean isShowCerts() {
+		return showCerts;
+	}
+
+	public void setShowCerts(boolean showCerts) {
+		this.showCerts = showCerts;
+	}
+
+	public boolean isShowLicensedIn() {
+		return showLicensedIn;
+	}
+
+	public void setShowLicensedIn(boolean showLicensedIn) {
+		this.showLicensedIn = showLicensedIn;
+	}
+
+	public boolean isShowWorksIn() {
+		return showWorksIn;
+	}
+
+	public void setShowWorksIn(boolean showWorksIn) {
+		this.showWorksIn = showWorksIn;
+	}
+
+	public boolean isShowOfficeIn() {
+		return showOfficeIn;
+	}
+
+	public void setShowOfficeIn(boolean showOfficeIn) {
+		this.showOfficeIn = showOfficeIn;
+	}
+
+	public boolean isShowTaxID() {
+		return showTaxID;
+	}
+
+	public void setShowTaxID(boolean showTaxID) {
+		this.showTaxID = showTaxID;
+	}
+
+	public boolean isShowFlagStatus() {
+		return showFlagStatus;
+	}
+
+	public void setShowFlagStatus(boolean showFlagStatus) {
+		this.showFlagStatus = showFlagStatus;
+	}
+
+	public boolean isShowConAuditor() {
+		return showConAuditor;
+	}
+
+	public void setShowConAuditor(boolean showConAuditor) {
+		this.showConAuditor = showConAuditor;
+	}
+
+	public boolean isShowRiskLevel() {
+		return showRiskLevel;
+	}
+
+	public void setShowRiskLevel(boolean showRiskLevel) {
+		this.showRiskLevel = showRiskLevel;
+	}
+
+	public String getPerformedBy() {
 		return performedBy;
 	}
 
-	public void setPerformedBy(boolean performedBy) {
+	public void setPerformedBy(String performedBy) {
 		this.performedBy = performedBy;
 	}
 
-	public boolean isTrade() {
+	public int[] getTrade() {
 		return trade;
 	}
 
-	public void setTrade(boolean trade) {
+	public void setTrade(int[] trade) {
 		this.trade = trade;
 	}
 
-	public boolean isCerts() {
-		return certs;
+	public int[] getOperator() {
+		return operator;
 	}
 
-	public void setCerts(boolean certs) {
-		this.certs = certs;
+	public void setOperator(int[] operator) {
+		this.operator = operator;
 	}
 
-	public boolean isLicensedIn() {
-		return licensedIn;
+	public String getCertsOnly() {
+		return certsOnly;
 	}
 
-	public void setLicensedIn(boolean licensedIn) {
-		this.licensedIn = licensedIn;
+	public void setCertsOnly(String certsOnly) {
+		this.certsOnly = certsOnly;
 	}
 
-	public boolean isWorksIn() {
+	public int[] getStateLicensedIn() {
+		return stateLicensedIn;
+	}
+
+	public void setStateLicensedIn(int[] stateLicensedIn) {
+		this.stateLicensedIn = stateLicensedIn;
+	}
+
+	public int[] getWorksIn() {
 		return worksIn;
 	}
 
-	public void setWorksIn(boolean worksIn) {
+	public void setWorksIn(int[] worksIn) {
 		this.worksIn = worksIn;
 	}
 
-	public boolean isOfficeIn() {
-		return officeIn;
-	}
-
-	public void setOfficeIn(boolean officeIn) {
-		this.officeIn = officeIn;
-	}
-
-	public boolean isTaxID() {
+	public String getTaxID() {
 		return taxID;
 	}
 
-	public void setTaxID(boolean taxID) {
+	public void setTaxID(String taxID) {
 		this.taxID = taxID;
 	}
 
-	public boolean isFlagStatus() {
+	public String getFlagStatus() {
 		return flagStatus;
 	}
 
-	public void setFlagStatus(boolean flagStatus) {
+	public void setFlagStatus(String flagStatus) {
 		this.flagStatus = flagStatus;
 	}
 
-	public boolean isConAuditor() {
-		return conAuditor;
+	public int[] getOfficeIn() {
+		return officeIn;
 	}
 
-	public void setConAuditor(boolean conAuditor) {
-		this.conAuditor = conAuditor;
+	public void setOfficeIn(int[] officeIn) {
+		this.officeIn = officeIn;
 	}
 
-	public boolean isRiskLevel() {
+	public int[] getConAuditorId() {
+		return conAuditorId;
+	}
+
+	public void setConAuditorId(int[] conAuditorId) {
+		this.conAuditorId = conAuditorId;
+	}
+
+	public int getRiskLevel() {
 		return riskLevel;
 	}
 
-	public void setRiskLevel(boolean riskLevel) {
+	public void setRiskLevel(int riskLevel) {
 		this.riskLevel = riskLevel;
 	}
 
 	public void setPermissions(Permissions permissions) {
 		super.setPermissions(permissions);
-		
+
 		if (permissions.isOperator()) {
-			setOperator(false);
-			setFlagStatus(true);
+			setShowOperator(false);
+			setShowFlagStatus(true);
 		}
 		if (permissions.isCorporate()) {
 		}
 		if (permissions.isPicsEmployee()) {
-			setConAuditor(true);
-			setRiskLevel(true);
+			setShowConAuditor(true);
+			setShowRiskLevel(true);
 		}
 		if (!permissions.hasPermission(OpPerms.InsuranceCerts)) {
-			setCerts(false);
+			setShowCerts(false);
 		}
 	}
 
-	/////
+	// ///
 	public List<AuditQuestion> getStateLicensesList() throws Exception {
 		return aQuestionDAO.findQuestionByType("License");
 	}
@@ -208,6 +297,4 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public String[] getCertsOptions() {
 		return new String[] { DEFAULT_CERTS, "Yes", "Only Certs", "No", "Exclude Certs" };
 	}
-
-
 }
