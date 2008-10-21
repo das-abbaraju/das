@@ -45,7 +45,7 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 			orderBy = "ca.createdDate";
 		}
 		
-		getFilter().setAuditStatus(false);
+		getFilter().setShowAuditStatus(false);
 		
 		if(filtered == null)
 			filtered = false;

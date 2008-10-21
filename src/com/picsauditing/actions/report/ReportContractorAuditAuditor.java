@@ -23,7 +23,7 @@ public class ReportContractorAuditAuditor extends ReportContractorAudits {
 		if(filtered == null) 
 			filtered = false;
 		
-		getFilter().setAuditor(false);
+		getFilter().setShowAuditor(false);
 		getFilter().setShowVisible(false);
 		
 		return super.execute();
