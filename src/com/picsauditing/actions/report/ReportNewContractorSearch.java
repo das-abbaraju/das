@@ -14,9 +14,6 @@ import com.picsauditing.util.ReportFilterAccount;
  */
 public class ReportNewContractorSearch extends ReportAccount {
 	protected int id;
-	protected boolean inParentCorporation = false;
-	protected boolean filterInParentCorporation = true;
-
 	private ContractorAccountDAO contractorAccountDAO;
 	private FacilityChanger facilityChanger;
 
@@ -32,7 +29,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 			return LOGIN;
 
 		permissions.tryPermission(OpPerms.SearchContractors);
-		
+
 		if (button != null && id > 0) {
 			try {
 				ContractorAccount contractor = contractorAccountDAO.find(id);
@@ -53,6 +50,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 			} catch (Exception e) {
 				addActionError(e.getMessage());
 			}
+
 			return SUCCESS;
 		}
 
@@ -68,7 +66,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 			sql.addField("gc.workStatus");
 		}
 
-		if (inParentCorporation) {
+		if (getFilter().isInParentCorporation()) {
 			String whereQuery = "";
 			if (permissions.isOperator())
 				whereQuery += "a.id IN (SELECT subID FROM generalcontractors gc "
@@ -82,13 +80,17 @@ public class ReportNewContractorSearch extends ReportAccount {
 			sql.addWhere(whereQuery);
 		}
 
-		if ((getFilter().getAccountName() == null || ReportFilterAccount.DEFAULT_NAME.equals(getFilter().getAccountName()) || getFilter().getAccountName().length() < 3)
+		if ((getFilter().getAccountName() == null
+				|| ReportFilterAccount.DEFAULT_NAME.equals(getFilter().getAccountName()) || getFilter()
+				.getAccountName().length() < 3)
 				&& (getFilter().getTrade() == null || getFilter().getTrade().length == 0)) {
 			this.addActionMessage("Please enter a contractor name with atleast 3 characters or select a trade");
 			return SUCCESS;
 		}
 		if (this.orderBy == null || orderBy.length() == 0)
 			this.orderBy = "a.name";
+
+		getFilter().setShowInParentCorporation(true);
 
 		sql.addField("a.contact");
 		sql.addField("a.city");
@@ -99,20 +101,6 @@ public class ReportNewContractorSearch extends ReportAccount {
 		return super.execute();
 	}
 
-	public boolean isInParentCorporation() {
-		return inParentCorporation;
-	}
-
-	public void setInParentCorporation(boolean inParentCorporation) {
-		filtered = true;
-		// Add the where clause in the execute method, after we get permissions
-		this.inParentCorporation = inParentCorporation;
-	}
-
-	public boolean isFilterInParentCorporation() {
-		return filterInParentCorporation;
-	}
-
 	public int getId() {
 		return id;
 	}
@@ -120,5 +108,4 @@ public class ReportNewContractorSearch extends ReportAccount {
 	public void setId(int id) {
 		this.id = id;
 	}
-
 }
