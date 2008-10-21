@@ -114,7 +114,7 @@ Filter Options</a></div>
 	cssStyle="background-color: #F4F4F4;"
 	onsubmit="runSearch( 'form1')">
 	<s:hidden name="showPage" value="1" />
-	<s:hidden name="startsWith" />
+	<s:hidden name="filter.startsWith" />
 	<s:hidden name="orderBy" />
 
 	<div style="text-align: center; width: 100%">
@@ -153,7 +153,7 @@ Filter Options</a></div>
 			onclick="toggleBox('form1_industry'); return false;">Industry</a> = <span
 			id="form1_industry_query">ALL</span><br />
 		<span id="form1_industry_select" style="display: none"
-			class="clearLink"> <s:select name="filter.industry"
+			class="clearLink"> <s:select id="form1_industry" name="filter.industry"
 			list="filter.industryList" cssClass="forms" multiple="true" size="5" /> <script
 			type="text/javascript">updateQuery('form1_industry');</script> <br />
 		<a class="clearLink" href="#"
@@ -168,7 +168,7 @@ Filter Options</a></div>
 			list="filter.tradePerformedByList" cssClass="forms" name="filter.performedBy" />
 			<br />
 		<span id="form1_trade_select" style="display: none" class="clearLink">
-		<s:select list="filter.tradeList" listKey="questionID" listValue="question" cssClass="forms" name="filter.trade"
+		<s:select id="form1_trade" list="filter.tradeList" listKey="questionID" listValue="question" cssClass="forms" name="filter.trade"
 			multiple="true" size="5" /> <script type="text/javascript">updateQuery('form1_trade');</script>
 		<br />
 		<a class="clearLink" href="#"
@@ -185,7 +185,7 @@ Filter Options</a></div>
 			onclick="toggleBox('form1_auditTypeID'); return false;">Audit
 		Type</a> = <span id="form1_auditTypeID_query">ALL</span><br />
 		<span id="form1_auditTypeID_select" style="display: none"
-			class="clearLink"> <s:select list="filter.auditTypeList"
+			class="clearLink"> <s:select id="form1_auditTypeID" list="filter.auditTypeList"
 			cssClass="forms" name="filter.auditTypeID" listKey="auditTypeID"
 			listValue="auditName" multiple="true" size="5" /> <script
 			type="text/javascript">updateQuery('form1_auditTypeID');</script> <br />
@@ -199,7 +199,7 @@ Filter Options</a></div>
 			onclick="toggleBox('form1_auditStatus'); return false;">Audit
 		Status</a> = <span id="form1_auditStatus_query">ALL</span><br />
 		<span id="form1_auditStatus_select" style="display: none"
-			class="clearLink"> <s:select list="filter.auditStatusList"
+			class="clearLink"> <s:select id="form1_auditStatus" list="filter.auditStatusList"
 			cssClass="forms" name="filter.auditStatus" multiple="true" size="5" /> <script
 			type="text/javascript">updateQuery('form1_auditStatus');</script> <br />
 		<a class="clearLink" href="#"
@@ -209,28 +209,26 @@ Filter Options</a></div>
 
 	<s:if test="filter.showAuditor">
 		<div class="filterOption"><a href="#"
-			onclick="toggleBox('auditorId'); return false;">Auditors</a> = <span
-			id="auditorId_query">ALL</span><br />
-		<span id="auditorId_select" style="display: none" class="clearLink">
-		<s:action name="AuditorsGet" executeResult="true">
-			<s:param name="controlName" value="%{'auditorId'}" />
-			<s:param name="presetValue" value="auditorId" />
-		</s:action> <script type="text/javascript">updateQuery('auditorId');</script> <br />
+			onclick="toggleBox('form1_auditorId'); return false;">Auditors</a> = <span
+			id="form1_auditorId_query">ALL</span><br />
+		<span id="form1_auditorId_select" style="display: none" class="clearLink">
+		<s:select name="filter.auditorId" cssClass="forms" list="auditorList" listKey="id" listValue="name"
+        multiple="true" size="5" id="form1_auditorId" />
+		<script type="text/javascript">updateQuery('form1_auditorId');</script> <br />
 		<a class="clearLink" href="#"
-			onclick="clearSelected('auditorId'); return false;">Clear</a> </span></div>
+			onclick="clearSelected('form1_auditorId'); return false;">Clear</a></span></div>
 	</s:if>
 
 	<s:if test="filter.showConAuditor">
 		<div class="filterOption"><a href="#"
-			onclick="toggleBox('conAuditorId'); return false;">CSR</a> = <span
-			id="conAuditorId_query">ALL</span><br />
-		<span id="conAuditorId_select" style="display: none" class="clearLink">
-		<s:action name="AuditorsGet" executeResult="true">
-			<s:param name="controlName" value="%{'conAuditorId'}" />
-			<s:param name="presetValue" value="conAuditorId" />
-		</s:action> <script type="text/javascript">updateQuery('conAuditorId');</script> <br />
+			onclick="toggleBox('form1_conAuditorId'); return false;">CSR</a> = <span
+			id="form1_conAuditorId_query">ALL</span><br />
+		<span id="form1_conAuditorId_select" style="display: none" class="clearLink">
+		<s:select name="filter.conAuditorId" cssClass="forms" list="auditorList" listKey="id" listValue="name"
+        multiple="true" size="5" id="form1_conAuditorId" />
+		<script type="text/javascript">updateQuery('form1_conAuditorId');</script> <br />
 		<a class="clearLink" href="#"
-			onclick="clearSelected('conAuditorId'); return false;">Clear</a> </span></div>
+			onclick="clearSelected('form1_conAuditorId'); return false;">Clear</a> </span></div>
 	</s:if>
 
 	<s:if test="filter.showOperator">
@@ -243,7 +241,7 @@ Filter Options</a></div>
 			onclick="toggleBox('form1_operator'); return false;">Operators</a> =
 		<span id="form1_operator_query">ALL</span><br />
 		<span id="form1_operator_select" style="display: none"
-			class="clearLink"> <s:select list="filter.operatorList"
+			class="clearLink"> <s:select id="form1_operator" list="filter.operatorList"
 			cssClass="forms" name="filter.operator" listKey="id" listValue="name"
 			multiple="true" size="5" /> <script type="text/javascript">updateQuery('form1_operator');</script>
 		<br />
@@ -269,7 +267,7 @@ Filter Options</a></div>
 			onclick="toggleBox('form1_stateLicensedIn'); return false;">Licensed
 		In</a> = <span id="form1_stateLicensedIn_query">ALL</span><br />
 		<span id="form1_stateLicensedIn_select" style="display: none"
-			class="clearLink"> <s:select list="filter.stateLicensesList"
+			class="clearLink"> <s:select id="form1_stateLicensedIn" list="filter.stateLicensesList"
 			cssClass="forms" name="filter.stateLicensedIn" listKey="questionID" listValue="question" multiple="true" size="5" />
 		<script type="text/javascript">updateQuery('form1_stateLicensedIn');</script>
 		<br />
@@ -283,7 +281,7 @@ Filter Options</a></div>
 			onclick="toggleBox('form1_worksIn'); return false;">Works In</a> = <span
 			id="form1_worksIn_query">ALL</span><br />
 		<span id="form1_worksIn_select" style="display: none"
-			class="clearLink"> <s:select list="filter.worksInList"
+			class="clearLink"> <s:select id="form1_worksIn" list="filter.worksInList"
 			cssClass="forms" name="filter.worksIn" listKey="questionID" listValue="question" multiple="true" size="5" /> <script
 			type="text/javascript">updateQuery('form1_worksIn');</script> <br />
 		<a class="clearLink" href="#"
@@ -295,7 +293,7 @@ Filter Options</a></div>
 			onclick="toggleBox('form1_officeIn'); return false;">Office In</a> =
 		<span id="form1_officeIn_query">ALL</span><br />
 		<span id="form1_officeIn_select" style="display: none"
-			class="clearLink"> <s:select list="filter.officeInList"
+			class="clearLink"> <s:select id="form1_worksIn" list="filter.officeInList"
 			cssClass="forms" name="filter.officeIn" listKey="questionID" listValue="question" multiple="true" size="5" /> <script
 			type="text/javascript">updateQuery('form1_officeIn');</script> <br />
 		<a class="clearLink" href="#"
@@ -305,7 +303,7 @@ Filter Options</a></div>
 	<s:if test="filter.showConLicense">
 		<br clear="all" />
 		<div class="filterOption">
-		<s:select name="filter.validLicense" list="#{'Valid':'Valid','UnValid':'UnValid','All':'All'}" value="%{validLicense}" cssClass="forms"/>
+		<s:select name="filter.validLicense" list="#{'Valid':'Valid','UnValid':'UnValid','All':'All'}" cssClass="forms"/>
 		</div>
 	</s:if>
 
@@ -417,15 +415,15 @@ Filter Options</a></div>
 			</tr>
 			<tr>
 				<td>OSHA</td>
-				<td><s:checkbox name="osha1" /></td>
-				<td><s:checkbox name="osha2" /></td>
-				<td><s:checkbox name="osha3" /></td>
+				<td><s:checkbox name="filter.osha1" /></td>
+				<td><s:checkbox name="filter.osha2" /></td>
+				<td><s:checkbox name="filter.osha3" /></td>
 			</tr>
 			<tr>
 				<td>EMR</td>
-				<td><s:checkbox name="emr07" /></td>
-				<td><s:checkbox name="emr06" /></td>
-				<td><s:checkbox name="emr05" /></td>
+				<td><s:checkbox name="filter.emr07" /></td>
+				<td><s:checkbox name="filter.emr06" /></td>
+				<td><s:checkbox name="filter.emr05" /></td>
 			</tr>
 		</table>
 		</div>
@@ -434,7 +432,7 @@ Filter Options</a></div>
 	<s:if test="filter.showUnConfirmedAudits">
 		<br clear="all" />
 		<div class="filterOption">
-		<label><s:checkbox name="unScheduledAudits" />
+		<label><s:checkbox name="filter.unScheduledAudits" />
 		Check to Search on UnConfirmed Audits</label>
 		</div>
 	</s:if>
@@ -442,7 +440,7 @@ Filter Options</a></div>
 	<s:if test="filter.showAssignedCon">
 		<br clear="all" />
 		<div class="filterOption">
-		<label><s:checkbox name="assignedCon" />
+		<label><s:checkbox name="filter.assignedCon" />
 		Check to Search on Assigned Contractors</label>
 		</div>
 	</s:if>
@@ -450,7 +448,7 @@ Filter Options</a></div>
 	<s:if test="filter.showExpiredLicense">
 		<br clear="all" />
 		<div class="filterOption">
-		<label><s:checkbox name="conExpiredLic" />
+		<label><s:checkbox name="filter.conExpiredLic" />
 		Check to Search on Expired Licenses for Contractors</label>
 		</div>
 	</s:if>
@@ -458,7 +456,7 @@ Filter Options</a></div>
 	<s:if test="filter.showInParentCorporation">
 		<br clear="all" />
 		<div class="filterOption">
-		<label><s:checkbox name="inParentCorporation" />Check to limit to contractors already working within my parent corporation</label>
+		<label><s:checkbox name="filter.inParentCorporation" />Check to limit to contractors already working within my parent corporation</label>
 		</div>
 	</s:if>
 	
