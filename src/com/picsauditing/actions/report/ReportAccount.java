@@ -172,7 +172,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		filtered = true;
 	}
 
-	private boolean filterOn(Object value, Object defaultValue) {
+	public boolean filterOn(Object value, Object defaultValue) {
 		if (value == null)
 			return false;
 		if (value.equals(defaultValue))
@@ -180,13 +180,13 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		return value.toString().trim().length() > 0;
 	}
 
-	private boolean filterOn(Object value) {
+	public boolean filterOn(Object value) {
 		if (value == null)
 			return false;
 		return value.toString().trim().length() > 0;
 	}
 	
-	private boolean filterOn(int[] value) {
+	public boolean filterOn(int[] value) {
 		if (value == null)
 			return false;
 		if (value.length == 1) {
