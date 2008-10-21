@@ -6,16 +6,11 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 
 public class ReportContractorLicenses extends ReportContractorAudits {
-	// private String[] state;
-	protected boolean filterConLicense = true;
-	protected boolean filterExpiredLicense = true;
-	protected boolean conExpiredLic = false;
-	protected String validLicense = "Valid";
 
 	public String execute() throws Exception {
-		if(!forceLogin())
+		if (!forceLogin())
 			return LOGIN;
-		
+
 		permissions.tryPermission(OpPerms.ContractorLicenseReport);
 		sql.addWhere("ca.auditTypeID = 1"); // PQF
 		sql.addWhere("a.active = 'Y'");
@@ -28,54 +23,23 @@ public class ReportContractorLicenses extends ReportContractorAudits {
 		sql.addField("q401.comment AS comment401");
 		sql.addField("q755.comment AS comment755");
 		setOrderBy("a.name");
-		if (conExpiredLic == true) {
+		if (getFilter().isConExpiredLic()) {
 			sql.addWhere("q755.verifiedAnswer < '" + DateBean.format(new Date(), "yyyy-MM-dd") + "'");
 		}
-		if (validLicense.equals("Valid"))
+		if (getFilter().getValidLicense().equals("Valid"))
 			sql.addWhere("q401.isCorrect = 'Yes'");
-		if (validLicense.equals("UnValid"))
+		if (getFilter().getValidLicense().equals("UnValid"))
 			sql.addWhere("q401.isCorrect <> 'Yes' OR q401.isCorrect IS NULL");
-		if (validLicense.equals("All"))
+		if (getFilter().getValidLicense().equals("All"))
 			sql.addWhere("1");
 
 		if (filtered == null)
 			filtered = false;
 
-		getFilter().setAuditType(false);
+		getFilter().setShowAuditType(false);
+		getFilter().setShowConLicense(true);
+		getFilter().setShowExpiredLicense(true);
 
 		return super.execute();
 	}
-
-	public boolean isFilterConLicense() {
-		return filterConLicense;
-	}
-
-	public void setFilterConLicense(boolean filterConLicense) {
-		this.filterConLicense = filterConLicense;
-	}
-
-	public boolean isFilterExpiredLicense() {
-		return filterExpiredLicense;
-	}
-
-	public void setFilterExpiredLicense(boolean filterExpiredLicense) {
-		this.filterExpiredLicense = filterExpiredLicense;
-	}
-
-	public boolean isConExpiredLic() {
-		return conExpiredLic;
-	}
-
-	public void setConExpiredLic(boolean conExpiredLic) {
-		this.conExpiredLic = conExpiredLic;
-	}
-
-	public String getValidLicense() {
-		return validLicense;
-	}
-
-	public void setValidLicense(String validLicense) {
-		this.validLicense = validLicense;
-	}
-
 }

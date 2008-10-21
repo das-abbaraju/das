@@ -16,7 +16,7 @@ public class ReportMyAuditHistory extends ReportContractorAudits {
 		if(filtered == null)
 			filtered = false;
 		
-		getFilter().setAuditor(false);
+		getFilter().setShowAuditor(false);
 		getFilter().setShowVisible(false);
 		
 		return super.execute();
