@@ -1,7 +1,5 @@
 package com.picsauditing.actions.report;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -19,8 +17,6 @@ import com.picsauditing.util.SpringUtils;
 //sql.addWhere("q894.answer = 'Yes' OR c.daRequired IS NULL OR c.daRequired = 'Yes'");
 
 public class ReportContractorAuditAssignment extends ReportContractorAudits {
-	private boolean unScheduledAudits = false;
-	protected boolean filterUnConfirmedAudits = true;
 
 	public String execute() throws Exception {
 		if (!forceLogin())
@@ -30,12 +26,10 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		sql.addField("ca.auditorConfirm");
 		sql.addField("ca2.expiresDate AS current_expiresDate");
 		sql.addWhere("ca.auditStatus='Pending'");
-		sql.addJoin("LEFT JOIN contractor_audit ca2 ON " +
-				"ca2.conID = a.id " +
-				"AND ca2.auditTypeID = ca.auditTypeID " +
-				"AND ca2.auditStatus = 'Active' " +
-				"AND atype.hasMultiple = 0");
-		if (unScheduledAudits == true) {
+		sql.addJoin("LEFT JOIN contractor_audit ca2 ON " + "ca2.conID = a.id "
+				+ "AND ca2.auditTypeID = ca.auditTypeID " + "AND ca2.auditStatus = 'Active' "
+				+ "AND atype.hasMultiple = 0");
+		if (getFilter().isUnScheduledAudits()) {
 			sql.addWhere("(ca.contractorConfirm IS NULL OR ca.auditorConfirm IS NULL) AND atype.isScheduled = 1");
 		} else {
 			sql.addWhere("atype.isScheduled=1 OR atype.hasAuditor=1");
@@ -44,12 +38,12 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		if (orderBy == null) {
 			orderBy = "ca.createdDate";
 		}
-		
+
 		getFilter().setShowAuditStatus(false);
-		
-		if(filtered == null)
+		getFilter().setShowUnConfirmedAudits(true);
+		if (filtered == null)
 			filtered = false;
-		
+
 		return super.execute();
 	}
 
@@ -65,22 +59,6 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		return list;
 	}
 
-	public boolean isUnScheduledAudits() {
-		return unScheduledAudits;
-	}
-
-	public void setUnScheduledAudits(boolean unScheduledAudits) {
-		this.unScheduledAudits = unScheduledAudits;
-	}
-
-	public boolean isFilterUnConfirmedAudits() {
-		return filterUnConfirmedAudits;
-	}
-
-	public void setFilterUnConfirmedAudits(boolean filterUnConfirmedAudits) {
-		this.filterUnConfirmedAudits = filterUnConfirmedAudits;
-	}
-	
 	public String getYesterday() {
 		Calendar date = Calendar.getInstance();
 		date.add(Calendar.DAY_OF_YEAR, -1);

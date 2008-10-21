@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.search.SelectContractorAudit;
+import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterDate;
 import com.picsauditing.util.ReportFilterAudit;
 import com.picsauditing.util.Strings;
@@ -126,6 +127,14 @@ public class ReportContractorAudits extends ReportAccount {
 		if (filterOn(f.getExpiredDate2())) {
 			report.addFilter(new SelectFilterDate("expiredDate2", "ca.expiresDate < '?'", DateBean.format(f
 					.getExpiredDate2(), "M/d/yy")));
+		}
+		
+		if (filterOn(f.getPercentComplete1())) {
+			report.addFilter(new SelectFilter("percentComplete1", "ca.percentComplete >= '?'", f.getPercentComplete1()));
+		}
+		
+		if (filterOn(f.getPercentComplete2())) {
+			report.addFilter(new SelectFilter("percentComplete2", "ca.percentComplete < '?'", f.getPercentComplete2()));
 		}
 	}
 

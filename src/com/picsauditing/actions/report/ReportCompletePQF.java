@@ -12,7 +12,6 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.SelectContractorAudit;
-import com.picsauditing.search.SelectFilter;
 
 public class ReportCompletePQF extends ReportContractorAudits {
 	private Date followUpDate = null;
@@ -20,10 +19,6 @@ public class ReportCompletePQF extends ReportContractorAudits {
 	protected ContractorAuditDAO contractorAuditDAO;
 	protected EmailBuilder emailBuilder;
 
-	public static final String DEFAULT_PERCENT = "-%Complete-";
-	protected String percentComplete1;
-	protected String percentComplete2;
-	protected boolean filterPercentComplete = true;
 	protected Map<Integer, Date> scheduledDate;
 
 	public ReportCompletePQF(ContractorAuditDAO contractorAuditDAO, EmailBuilder emailBuilder) {
@@ -60,7 +55,8 @@ public class ReportCompletePQF extends ReportContractorAudits {
 						emailBuilder.setConAudit(conAudit);
 						EmailQueue email = emailBuilder.build();
 						EmailSender.send(email);
-						ContractorBean.addNote(conAudit.getContractorAccount().getId(), permissions, "Pending PQF email sent to " + email.getToAddresses());
+						ContractorBean.addNote(conAudit.getContractorAccount().getId(), permissions,
+								"Pending PQF email sent to " + email.getToAddresses());
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -75,7 +71,8 @@ public class ReportCompletePQF extends ReportContractorAudits {
 		getFilter().setShowCompletedDate(false);
 		getFilter().setShowClosedDate(false);
 		getFilter().setShowExpiredDate(false);
-		
+		getFilter().setShowPercentComplete(true);
+
 		return super.execute();
 	}
 
@@ -95,10 +92,6 @@ public class ReportCompletePQF extends ReportContractorAudits {
 		this.sendMail = sendMail;
 	}
 
-	public boolean isFilterPercentComplete() {
-		return filterPercentComplete;
-	}
-
 	public Map<Integer, Date> getScheduledDate() {
 		return scheduledDate;
 	}
@@ -106,23 +99,4 @@ public class ReportCompletePQF extends ReportContractorAudits {
 	public void setScheduledDate(Map<Integer, Date> scheduledDate) {
 		this.scheduledDate = scheduledDate;
 	}
-
-	public String getPercentComplete1() {
-		return percentComplete1;
-	}
-
-	public void setPercentComplete1(String percentComplete1) {
-		report.addFilter(new SelectFilter("percentComplete1", "ca.percentComplete >= '?'", percentComplete1));
-		this.percentComplete1 = percentComplete1;
-	}
-
-	public String getPercentComplete2() {
-		return percentComplete2;
-	}
-
-	public void setPercentComplete2(String percentComplete2) {
-		report.addFilter(new SelectFilter("percentComplete2", "ca.percentComplete < '?'", percentComplete2));
-		this.percentComplete2 = percentComplete2;
-	}
-
 }
