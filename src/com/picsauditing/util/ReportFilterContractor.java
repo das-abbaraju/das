@@ -31,6 +31,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showFlagStatus = false;
 	protected boolean showConAuditor = false;
 	protected boolean showRiskLevel = false;
+	protected boolean showAssignedCon = false;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -44,7 +45,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected int[] officeIn;
 	protected int[] conAuditorId;
 	protected int riskLevel;
-
+	protected boolean assignedCon = false;
+	
 	private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
 
 	// // setting the filter
@@ -288,5 +290,21 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public String[] getCertsOptions() {
 		return new String[] { DEFAULT_CERTS, "Yes", "Only Certs", "No", "Exclude Certs" };
+	}
+
+	public boolean isShowAssignedCon() {
+		return showAssignedCon;
+	}
+
+	public void setShowAssignedCon(boolean showAssignedCon) {
+		this.showAssignedCon = showAssignedCon;
+	}
+
+	public boolean isAssignedCon() {
+		return assignedCon;
+	}
+
+	public void setAssignedCon(boolean assignedCon) {
+		this.assignedCon = assignedCon;
 	}
 }
