@@ -89,7 +89,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			}
 		}
 
-		if (filterOn(f.getVisible())) 
+		if (filterOn(f.getVisible(), ReportFilterAccount.DEFAULT_VISIBLE)) 
 			report.addFilter(new SelectFilter("visible", "a.active = '?'", f.getVisible()));
 
 		String industryList = Strings.implodeForDB(f.getIndustry(), ",");

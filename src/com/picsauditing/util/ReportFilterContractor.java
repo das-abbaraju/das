@@ -8,10 +8,12 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
+import com.picsauditing.jpa.entities.User;
 
 public class ReportFilterContractor extends ReportFilterAccount {
 	public static final String DEFAULT_TAX_ID = "- Tax ID -";
@@ -292,6 +294,11 @@ public class ReportFilterContractor extends ReportFilterAccount {
 			return null;
 		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
 		return dao.findWhere(true, "active='Y'", permissions);
+	}
+
+	public List<User> getAuditorList() throws Exception {
+		UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
+		return new AuditorCache(dao).getList();
 	}
 
 	public Map<String, String> getStateList() {
