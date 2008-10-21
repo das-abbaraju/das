@@ -108,92 +108,69 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", f.getZip()));
 
 		/****** Filters for Contractors ***********/
-
-		/*
-		String answerFilter = "";
-		if (filterOn(f.getPerformedBy(), TradesBean.DEFAULT_PERFORMED_BY))
-			answerFilter = "_%";
-		else {
-			if ("Sub Contracted".equals(f.getPerformedBy()))
-				answerFilter = "%S";
-			else if ("Self Performed".equals(f.getPerformedBy()))
-				answerFilter = "C%";
-		}
-		String tradeList = Strings.implode(f.get, ",");
-		if (tradeList.equals("0"))
-			return;
-		createPqfDataClause(sql, "AND d.questionID IN (" + tradeList + ") AND d.answer LIKE '" + answerFilter + "'");
 		
+		if (filterOn(f.getTrade())) {
+			String tradeList = Strings.implode(f.getTrade(), ",");
+			String answerFilter = "";
+			if (filterOn(f.getPerformedBy(), ReportFilterContractor.DEFAULT_PERFORMED_BY))
+				answerFilter = "_%";
+			else {
+				if ("Sub Contracted".equals(f.getPerformedBy()))
+					answerFilter = "%S";
+				else if ("Self Performed".equals(f.getPerformedBy()))
+					answerFilter = "C%";
+			}
+			createPqfDataClause(sql, "AND d.questionID IN (" + tradeList + ") AND d.answer LIKE '" + answerFilter + "'");
+		}
+		
+		if (filterOn(f.getOperator())) {
+			String list = Strings.implode(f.getOperator(), ",");
+			sql.addWhere("a.id IN (SELECT subID FROM generalcontractors WHERE genID IN (" + list + ") )");
+			filtered = true;
+		}
 
-	public void setOperator(int[] operator) {
-		String operatorList = Strings.implode(operator, ",");
-		if (operatorList.equals("0"))
-			return;
-		report.addFilter(new SelectFilter("generalContractorID",
-				"a.id IN (SELECT subID FROM generalcontractors WHERE genID IN (?) )", operatorList));
-		this.operator = operator;
-	}
+		if (filterOn(f.getCertsOnly(), ReportFilterContractor.DEFAULT_CERTS)) {
+			report.addFilter(new SelectFilter("certsOnly", "c.isOnlyCerts = '?'", f.getCertsOnly()));
+		}
 
-	public void setCertsOnly(String certsOnly) {
-		report.addFilter(new SelectFilter("certsOnly", "c.isOnlyCerts = '?'", certsOnly, ReportFilterAccount.DEFAULT_CERTS, ReportFilterAccount.DEFAULT_CERTS));
-		this.certsOnly = certsOnly;
-	}
+		if (filterOn(f.getStateLicensedIn())) {
+			String list = Strings.implode(f.getStateLicensedIn(), ",");
+			createPqfDataClause(sql, "AND d.questionID IN (" + list + ") AND d.answer > ''");
+		}
 
+		if (filterOn(f.getWorksIn())) {
+			String list = Strings.implode(f.getWorksIn(), ",");
+			createPqfDataClause(sql, "AND d.questionID IN (" + list + ") AND d.answer LIKE 'Yes%'");
+		}
 
-	public void setStateLicensedIn(int[] stateLicensedIn) {
-		String stateLicensedInList = Strings.implode(stateLicensedIn, ",");
-		this.stateLicensedIn = stateLicensedIn;
-		createPqfDataClause(sql, "AND d.questionID IN (" + stateLicensedInList + ") AND d.answer > ''");
-		filtered = true;
+		if (filterOn(f.getOfficeIn())) {
+			String list = Strings.implode(f.getOfficeIn(), ",");
+			createPqfDataClause(sql, "AND d.questionID IN (" + list + ") AND d.answer LIKE 'Yes with Office'");
+		}
+
+		if (filterOn(f.getTaxID(), ReportFilterContractor.DEFAULT_TAX_ID))
+			report.addFilter(new SelectFilter("taxID", "c.taxID = '?'", f.getTaxID()));
+		
+		if (filterOn(f.getFlagStatus(), FlagColor.DEFAULT_FLAG_STATUS))
+			report.addFilter(new SelectFilter("flagStatus", "flags.flag = '?'", f.getFlagStatus()));
+
+		if (filterOn(f.getConAuditorId())) {
+			String list = Strings.implode(f.getConAuditorId(), ",");
+			sql.addWhere("c.welcomeAuditor_id IN (" + list + ")");
+			filtered = true;
+		}
+
+		if (filterOn(f.getRiskLevel(), 0))
+			report.addFilter(new SelectFilterInteger("riskLevel", "c.riskLevel = '?'", f.getRiskLevel()));
+
 	}
 
 	private void createPqfDataClause(SelectSQL sql, String where) {
 		String query = "a.id IN (SELECT ca.conID FROM contractor_audit ca JOIN pqfdata d USING (auditID) "
 				+ "WHERE ca.auditStatus IN ('Active','Submitted') AND ca.auditTypeID = 1 " + where + ")";
 		sql.addWhere(query);
-	}
-
-	public void setWorksIn(int[] worksIn) {
-		String worksInList = Strings.implode(worksIn, ",");
-		this.worksIn = worksIn;
-		createPqfDataClause(sql, "AND d.questionID IN (" + worksInList + ") AND d.answer LIKE 'Yes%'");
 		filtered = true;
 	}
-
-	public void setOfficeIn(int[] officeIn) {
-		String officeInList = Strings.implode(officeIn, ",");
-		this.officeIn = officeIn;
-		createPqfDataClause(sql, "AND d.questionID IN (" + officeInList + ") AND d.answer LIKE 'Yes with Office'");
-		filtered = true;
-	}
-
-	public void setTaxID(String taxID) {
-		if (taxID == null || taxID.length() == 0)
-			taxID = ReportFilterAccount.DEFAULT_TAX_ID;
-		report.addFilter(new SelectFilter("taxID", "c.taxID = '?'", taxID, ReportFilterAccount.DEFAULT_TAX_ID, ReportFilterAccount.DEFAULT_TAX_ID));
-		this.taxID = taxID;
-	}
-
-	public void setFlagStatus(String flagStatus) {
-		this.flagStatus = flagStatus;
-		report.addFilter(new SelectFilter("flagStatus", "flags.flag = '?'", flagStatus, FlagColor.DEFAULT_FLAG_STATUS,
-				FlagColor.DEFAULT_FLAG_STATUS));
-	}
-
-	public void setConAuditorId(int[] conAuditorId) {
-		String list = Strings.implode(conAuditorId, ",");
-		this.conAuditorId = conAuditorId;
-		sql.addWhere("c.welcomeAuditor_id IN (" + list + ")");
-		filtered = true;
-	}
-
-	public void setRiskLevel(int riskLevel) {
-		report.addFilter(new SelectFilterInteger("riskLevel", "c.riskLevel = '?'", riskLevel));
-		this.riskLevel = riskLevel;
-	}
-		*/
-	}
-
 
 	private boolean filterOn(Object value, Object defaultValue) {
 		if (value == null)
@@ -209,9 +186,13 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		return value.toString().trim().length() > 0;
 	}
 	
-	private boolean filterOn(Object[] value) {
+	private boolean filterOn(int[] value) {
 		if (value == null)
 			return false;
+		if (value.length == 1) {
+			if (value[0] == 0)
+				return false;
+		}
 		return value.length > 0;
 	}
 

@@ -3,6 +3,9 @@
 <html>
 <head>
 <title>Email Wizard</title>
+<script src="js/prototype.js" type="text/javascript"></script>
+<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
 <img src="images/beta.jpg" align="right" title="This is a new feature. Please send us your feedback or suggestions." />
