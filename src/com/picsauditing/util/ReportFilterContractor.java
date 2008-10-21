@@ -32,6 +32,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showConAuditor = false;
 	protected boolean showRiskLevel = false;
 	protected boolean showAssignedCon = false;
+	protected boolean showInParentCorporation = false;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -46,7 +47,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected int[] conAuditorId;
 	protected int riskLevel;
 	protected boolean assignedCon = false;
-	
+	protected boolean inParentCorporation = false;
+
 	private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
 
 	// // setting the filter
@@ -136,6 +138,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowRiskLevel(boolean showRiskLevel) {
 		this.showRiskLevel = showRiskLevel;
+	}
+
+	public boolean isShowInParentCorporation() {
+		return showInParentCorporation;
+	}
+
+	public void setShowInParentCorporation(boolean showInParentCorporation) {
+		this.showInParentCorporation = showInParentCorporation;
 	}
 
 	public String getPerformedBy() {
@@ -306,5 +316,13 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setAssignedCon(boolean assignedCon) {
 		this.assignedCon = assignedCon;
+	}
+
+	public boolean isInParentCorporation() {
+		return inParentCorporation;
+	}
+
+	public void setInParentCorporation(boolean inParentCorporation) {
+		this.inParentCorporation = inParentCorporation;
 	}
 }

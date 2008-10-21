@@ -1,76 +1,212 @@
 package com.picsauditing.util;
 
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
+
 public class ReportFilterAudit extends ReportFilterContractor {
-	protected boolean auditType = true;
-	protected boolean auditStatus = true;
-	protected boolean auditor = true;
-	protected boolean createdDate = true;
-	protected boolean completedDate = true;
-	protected boolean closedDate = true;
-	protected boolean expiredDate = true;
-	protected boolean oshaEmr = false;
 
-	public boolean isAuditType() {
-		return auditType;
+	// Filter parameters
+	protected boolean showAuditType = true;
+	protected boolean showAuditStatus = true;
+	protected boolean showAuditor = true;
+	protected boolean showCreatedDate = true;
+	protected boolean showCompletedDate = true;
+	protected boolean showClosedDate = true;
+	protected boolean showExpiredDate = true;
+	protected boolean showOshaEmr = false;
+
+	// Filter values
+	protected int[] auditID;
+	protected int[] auditTypeID;
+	protected AuditStatus[] auditStatus;
+	protected int[] auditorId;
+	protected Date createdDate1;
+	protected Date createdDate2;
+	protected Date completedDate1;
+	protected Date completedDate2;
+	protected Date closedDate1;
+	protected Date closedDate2;
+	protected Date expiredDate1;
+	protected Date expiredDate2;
+
+	public boolean isShowAuditType() {
+		return showAuditType;
 	}
 
-	public void setAuditType(boolean auditType) {
-		this.auditType = auditType;
+	public void setShowAuditType(boolean showAuditType) {
+		this.showAuditType = showAuditType;
 	}
 
-	public boolean isAuditStatus() {
+	public boolean isShowAuditStatus() {
+		return showAuditStatus;
+	}
+
+	public void setShowAuditStatus(boolean showAuditStatus) {
+		this.showAuditStatus = showAuditStatus;
+	}
+
+	public boolean isShowAuditor() {
+		return showAuditor;
+	}
+
+	public void setShowAuditor(boolean showAuditor) {
+		this.showAuditor = showAuditor;
+	}
+
+	public boolean isShowCreatedDate() {
+		return showCreatedDate;
+	}
+
+	public void setShowCreatedDate(boolean showCreatedDate) {
+		this.showCreatedDate = showCreatedDate;
+	}
+
+	public boolean isShowCompletedDate() {
+		return showCompletedDate;
+	}
+
+	public void setShowCompletedDate(boolean showCompletedDate) {
+		this.showCompletedDate = showCompletedDate;
+	}
+
+	public boolean isShowClosedDate() {
+		return showClosedDate;
+	}
+
+	public void setShowClosedDate(boolean showClosedDate) {
+		this.showClosedDate = showClosedDate;
+	}
+
+	public boolean isShowExpiredDate() {
+		return showExpiredDate;
+	}
+
+	public void setShowExpiredDate(boolean showExpiredDate) {
+		this.showExpiredDate = showExpiredDate;
+	}
+
+	public boolean isShowOshaEmr() {
+		return showOshaEmr;
+	}
+
+	public void setShowOshaEmr(boolean showOshaEmr) {
+		this.showOshaEmr = showOshaEmr;
+	}
+
+	public int[] getAuditID() {
+		return auditID;
+	}
+
+	public void setAuditID(int[] auditID) {
+		this.auditID = auditID;
+	}
+
+	public int[] getAuditTypeID() {
+		return auditTypeID;
+	}
+
+	public void setAuditTypeID(int[] auditTypeID) {
+		this.auditTypeID = auditTypeID;
+	}
+
+	public AuditStatus[] getAuditStatus() {
 		return auditStatus;
 	}
 
-	public void setAuditStatus(boolean auditStatus) {
+	public void setAuditStatus(AuditStatus[] auditStatus) {
 		this.auditStatus = auditStatus;
 	}
 
-	public boolean isAuditor() {
-		return auditor;
+	public int[] getAuditorId() {
+		return auditorId;
 	}
 
-	public void setAuditor(boolean auditor) {
-		this.auditor = auditor;
+	public void setAuditorId(int[] auditorId) {
+		this.auditorId = auditorId;
 	}
 
-	public boolean isCreatedDate() {
-		return createdDate;
+	public Date getCreatedDate1() {
+		return createdDate1;
 	}
 
-	public void setCreatedDate(boolean createdDate) {
-		this.createdDate = createdDate;
+	public void setCreatedDate1(Date createdDate1) {
+		this.createdDate1 = createdDate1;
 	}
 
-	public boolean isCompletedDate() {
-		return completedDate;
+	public Date getCreatedDate2() {
+		return createdDate2;
 	}
 
-	public void setCompletedDate(boolean completedDate) {
-		this.completedDate = completedDate;
+	public void setCreatedDate2(Date createdDate2) {
+		this.createdDate2 = createdDate2;
 	}
 
-	public boolean isClosedDate() {
-		return closedDate;
+	public Date getCompletedDate1() {
+		return completedDate1;
 	}
 
-	public void setClosedDate(boolean closedDate) {
-		this.closedDate = closedDate;
+	public void setCompletedDate1(Date completedDate1) {
+		this.completedDate1 = completedDate1;
 	}
 
-	public boolean isExpiredDate() {
-		return expiredDate;
+	public Date getCompletedDate2() {
+		return completedDate2;
 	}
 
-	public void setExpiredDate(boolean expiredDate) {
-		this.expiredDate = expiredDate;
+	public void setCompletedDate2(Date completedDate2) {
+		this.completedDate2 = completedDate2;
 	}
 
-	public boolean isOshaEmr() {
-		return oshaEmr;
+	public Date getClosedDate1() {
+		return closedDate1;
 	}
 
-	public void setOshaEmr(boolean oshaEmr) {
-		this.oshaEmr = oshaEmr;
+	public void setClosedDate1(Date closedDate1) {
+		this.closedDate1 = closedDate1;
 	}
+
+	public Date getClosedDate2() {
+		return closedDate2;
+	}
+
+	public void setClosedDate2(Date closedDate2) {
+		this.closedDate2 = closedDate2;
+	}
+
+	public Date getExpiredDate1() {
+		return expiredDate1;
+	}
+
+	public void setExpiredDate1(Date expiredDate1) {
+		this.expiredDate1 = expiredDate1;
+	}
+
+	public Date getExpiredDate2() {
+		return expiredDate2;
+	}
+
+	public void setExpiredDate2(Date expiredDate2) {
+		this.expiredDate2 = expiredDate2;
+	}
+
+	// Getting all the Lists
+	public List<AuditType> getAuditTypeList() {
+		AuditTypeDAO dao = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
+		List<AuditType> list = new ArrayList<AuditType>();
+		for (AuditType aType : dao.findAll()) {
+			if (permissions.canSeeAudit(aType))
+				list.add(aType);
+		}
+		return list;
+	}
+
+	public AuditStatus[] getAuditStatusList() {
+		return AuditStatus.values();
+	}
+
 }
