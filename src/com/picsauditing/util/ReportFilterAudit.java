@@ -19,6 +19,11 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showClosedDate = true;
 	protected boolean showExpiredDate = true;
 	protected boolean showOshaEmr = false;
+	protected boolean showPercentComplete = false;
+	protected boolean showUnConfirmedAudits = false;
+	protected boolean showConLicense = false;
+	protected boolean showExpiredLicense = false;
+
 
 	// Filter values
 	protected int[] auditID;
@@ -33,6 +38,17 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected Date closedDate2;
 	protected Date expiredDate1;
 	protected Date expiredDate2;
+	protected String percentComplete1;
+	protected String percentComplete2;
+	protected boolean unScheduledAudits = false;
+	protected boolean conExpiredLic = false;
+	protected String validLicense = "Valid";
+	protected boolean osha1 = false;
+	protected boolean osha2 = false;
+	protected boolean osha3 = false;
+	protected boolean emr07 = false;
+	protected boolean emr06 = false;
+	protected boolean emr05 = false;
 
 	public boolean isShowAuditType() {
 		return showAuditType;
@@ -96,6 +112,38 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setShowOshaEmr(boolean showOshaEmr) {
 		this.showOshaEmr = showOshaEmr;
+	}
+	
+	public boolean isShowPercentComplete() {
+		return showPercentComplete;
+	}
+
+	public void setShowPercentComplete(boolean showPercentComplete) {
+		this.showPercentComplete = showPercentComplete;
+	}
+
+	public boolean isShowUnConfirmedAudits() {
+		return showUnConfirmedAudits;
+	}
+
+	public void setShowUnConfirmedAudits(boolean showUnConfirmedAudits) {
+		this.showUnConfirmedAudits = showUnConfirmedAudits;
+	}
+
+	public boolean isShowConLicense() {
+		return showConLicense;
+	}
+
+	public void setShowConLicense(boolean showConLicense) {
+		this.showConLicense = showConLicense;
+	}
+
+	public boolean isShowExpiredLicense() {
+		return showExpiredLicense;
+	}
+
+	public void setShowExpiredLicense(boolean showExpiredLicense) {
+		this.showExpiredLicense = showExpiredLicense;
 	}
 
 	public int[] getAuditID() {
@@ -192,6 +240,94 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setExpiredDate2(Date expiredDate2) {
 		this.expiredDate2 = expiredDate2;
+	}
+	
+	public String getPercentComplete1() {
+		return percentComplete1;
+	}
+
+	public void setPercentComplete1(String percentComplete1) {
+		this.percentComplete1 = percentComplete1;
+	}
+
+	public String getPercentComplete2() {
+		return percentComplete2;
+	}
+
+	public void setPercentComplete2(String percentComplete2) {
+		this.percentComplete2 = percentComplete2;
+	}
+
+	public boolean isUnScheduledAudits() {
+		return unScheduledAudits;
+	}
+
+	public void setUnScheduledAudits(boolean unScheduledAudits) {
+		this.unScheduledAudits = unScheduledAudits;
+	}
+
+	public boolean isConExpiredLic() {
+		return conExpiredLic;
+	}
+
+	public void setConExpiredLic(boolean conExpiredLic) {
+		this.conExpiredLic = conExpiredLic;
+	}
+
+	public String getValidLicense() {
+		return validLicense;
+	}
+
+	public void setValidLicense(String validLicense) {
+		this.validLicense = validLicense;
+	}
+
+	public boolean isOsha1() {
+		return osha1;
+	}
+
+	public void setOsha1(boolean osha1) {
+		this.osha1 = osha1;
+	}
+
+	public boolean isOsha2() {
+		return osha2;
+	}
+
+	public void setOsha2(boolean osha2) {
+		this.osha2 = osha2;
+	}
+
+	public boolean isOsha3() {
+		return osha3;
+	}
+
+	public void setOsha3(boolean osha3) {
+		this.osha3 = osha3;
+	}
+
+	public boolean isEmr07() {
+		return emr07;
+	}
+
+	public void setEmr07(boolean emr07) {
+		this.emr07 = emr07;
+	}
+
+	public boolean isEmr06() {
+		return emr06;
+	}
+
+	public void setEmr06(boolean emr06) {
+		this.emr06 = emr06;
+	}
+
+	public boolean isEmr05() {
+		return emr05;
+	}
+
+	public void setEmr05(boolean emr05) {
+		this.emr05 = emr05;
 	}
 
 	// Getting all the Lists

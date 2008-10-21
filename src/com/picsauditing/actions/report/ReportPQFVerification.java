@@ -4,18 +4,13 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.AuditStatus;
 
 public class ReportPQFVerification extends ReportContractorAudits {
-	private boolean osha1 = false;
-	private boolean osha2 = false;
-	private boolean osha3 = false;
-	private boolean emr07 = false;
-	private boolean emr06 = false;
-	private boolean emr05 = false;
 
 	public String execute() throws Exception {
-		if (!forceLogin()) return LOGIN;
+		if (!forceLogin())
+			return LOGIN;
 
-		getFilter().setOshaEmr(true);
-		
+		getFilter().setShowOshaEmr(true);
+
 		permissions.tryPermission(OpPerms.AuditVerification);
 		sql.addField("c.notes");
 		sql.addWhere("ca.auditStatus IN ('" + AuditStatus.Submitted + "','" + AuditStatus.Pending + "')");
@@ -31,79 +26,30 @@ public class ReportPQFVerification extends ReportContractorAudits {
 		sql.addField("q1519.dateVerified as dateVerified06");
 		sql.addField("q889.dateVerified as dateVerified05");
 
-		if (osha1) {
+		if (getFilter().isOsha1()) {
 			sql.addWhere("os.verifiedDate1 IS NULL");
 		}
-		if (osha2) {
+		if (getFilter().isOsha2()) {
 			sql.addWhere("os.verifiedDate2 IS NULL");
 		}
-		if (osha3) {
+		if (getFilter().isOsha3()) {
 			sql.addWhere("os.verifiedDate3 IS NULL");
 		}
-		if (emr07) {
+		if (getFilter().isEmr07()) {
 			sql.addWhere("q1617.dateVerified IS NULL OR q1617.dateVerified='0000-00-00'");
 		}
-		if (emr06) {
+		if (getFilter().isEmr06()) {
 			sql.addWhere("q1519.dateVerified IS NULL OR q1519.dateVerified='0000-00-00'");
 		}
-		if (emr05) {
+		if (getFilter().isEmr05()) {
 			sql.addWhere("q889.dateVerified IS NULL OR q889.dateVerified='0000-00-00'");
 		}
-		
-		if(filtered == null) 
+
+		if (filtered == null)
 			filtered = false;
-		
-		getFilter().setAuditType(false);
-				
+
+		getFilter().setShowAuditType(false);
+
 		return super.execute();
 	}
-
-	public boolean isOsha1() {
-		return osha1;
-	}
-
-	public void setOsha1(boolean osha1) {
-		this.osha1 = osha1;
-	}
-
-	public boolean isOsha2() {
-		return osha2;
-	}
-
-	public void setOsha2(boolean osha2) {
-		this.osha2 = osha2;
-	}
-
-	public boolean isOsha3() {
-		return osha3;
-	}
-
-	public void setOsha3(boolean osha3) {
-		this.osha3 = osha3;
-	}
-
-	public boolean isEmr07() {
-		return emr07;
-	}
-
-	public void setEmr07(boolean emr07) {
-		this.emr07 = emr07;
-	}
-
-	public boolean isEmr06() {
-		return emr06;
-	}
-
-	public void setEmr06(boolean emr06) {
-		this.emr06 = emr06;
-	}
-
-	public boolean isEmr05() {
-		return emr05;
-	}
-
-	public void setEmr05(boolean emr05) {
-		this.emr05 = emr05;
-	}
-
 }
