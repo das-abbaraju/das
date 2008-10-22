@@ -5,7 +5,7 @@
 	cssStyle="background-color: #F4F4F4;"
 	onsubmit="runSearch( 'form1')">
 	<s:hidden name="showPage" value="1" />
-	<s:hidden name="startsWith" />
+	<s:hidden name="filter.startsWith" />
 	<s:hidden name="orderBy" />
 
 	<div style="text-align: center; width: 100%">
@@ -14,23 +14,23 @@
 	</div>
 	<br clear="all" />
 	
-	<s:if test="filterContact">
-		<div class="filterOption"><s:textfield name="ContactName"
+	<s:if test="filter.showContact">
+		<div class="filterOption"><s:textfield name="filter.contactName"
 			cssClass="forms" size="15" onfocus="clearText(this)" title="must be 9 digits" /></div>
 	</s:if>
 
-	<s:if test="filterUser">
-		<div class="filterOption"><s:textfield name="UserName"
+	<s:if test="filter.showUser">
+		<div class="filterOption"><s:textfield name="filter.userName"
 			cssClass="forms" size="15" onfocus="clearText(this)" title="must be 9 digits" /></div>
 	</s:if>
 	
-	<s:if test="filterPhone">
-		<div class="filterOption"><s:textfield name="PhoneNumber"
+	<s:if test="filter.showPhone">
+		<div class="filterOption"><s:textfield name="filter.phoneNumber"
 			cssClass="forms" size="15" onfocus="clearText(this)" title="must be 9 digits" /></div>
 	</s:if>
 	
-	<s:if test="filterEmail">
-		<div class="filterOption"><s:textfield name="EmailAddress"
+	<s:if test="filter.showEmail">
+		<div class="filterOption"><s:textfield name="filter.emailAddress"
 			cssClass="forms" size="15" onfocus="clearText(this)" title="must be 9 digits" /></div>
 	</s:if>
 	
