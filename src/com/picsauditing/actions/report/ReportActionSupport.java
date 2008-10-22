@@ -105,5 +105,28 @@ public class ReportActionSupport extends PicsActionSupport {
 	public void setDownload(boolean download) {
 		this.download = download;
 	}
+	
+	public boolean filterOn(Object value, Object defaultValue) {
+		if (value == null)
+			return false;
+		if (value.equals(defaultValue))
+			return false;
+		return value.toString().trim().length() > 0;
+	}
 
+	public boolean filterOn(Object value) {
+		if (value == null)
+			return false;
+		return value.toString().trim().length() > 0;
+	}
+	
+	public boolean filterOn(int[] value) {
+		if (value == null)
+			return false;
+		if (value.length == 1) {
+			if (value[0] == 0)
+				return false;
+		}
+		return value.length > 0;
+	}
 }

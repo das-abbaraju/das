@@ -6,14 +6,9 @@ import java.util.List;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.struts2.ServletActionContext;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.SearchBean;
-import com.picsauditing.PICS.TradesBean;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterInteger;
@@ -28,7 +23,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	protected boolean forwardSingleResults = false;
 	protected boolean skipPermissions = false;
 
-	protected List<Integer> ids = new ArrayList<Integer>(); //?? may need to move to Filters
+	protected List<Integer> ids = new ArrayList<Integer>(); // ?? may need to
+															// move to Filters
 
 	protected SelectAccount sql = new SelectAccount();
 	private ReportFilterContractor filter = new ReportFilterContractor();
@@ -48,7 +44,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			sql.setPermissions(permissions);
 
 		addFilterToSQL();
-		
+
 		if (this.orderBy == null)
 			this.orderBy = "a.name";
 		sql.setType(SelectAccount.Type.Contractor);
@@ -71,11 +67,11 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		}
 		return SUCCESS;
 	}
-	
+
 	private void addFilterToSQL() {
 		ReportFilterContractor f = getFilter();
-		
-		/****** Filters for Accounts  ***********/
+
+		/** **** Filters for Accounts ********** */
 		if (filterOn(f.getStartsWith()))
 			report.addFilter(new SelectFilter("name", "a.name LIKE '?%'", f.getStartsWith()));
 
@@ -89,7 +85,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			}
 		}
 
-		if (filterOn(f.getVisible(), ReportFilterAccount.DEFAULT_VISIBLE)) 
+		if (filterOn(f.getVisible(), ReportFilterAccount.DEFAULT_VISIBLE))
 			report.addFilter(new SelectFilter("visible", "a.active = '?'", f.getVisible()));
 
 		String industryList = Strings.implodeForDB(f.getIndustry(), ",");
@@ -107,8 +103,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getZip(), ReportFilterAccount.DEFAULT_ZIP))
 			report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", f.getZip()));
 
-		/****** Filters for Contractors ***********/
-		
+		/** **** Filters for Contractors ********** */
+
 		if (filterOn(f.getTrade())) {
 			String tradeList = Strings.implode(f.getTrade(), ",");
 			String answerFilter = "";
@@ -122,7 +118,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			}
 			createPqfDataClause(sql, "AND d.questionID IN (" + tradeList + ") AND d.answer LIKE '" + answerFilter + "'");
 		}
-		
+
 		if (filterOn(f.getOperator())) {
 			String list = Strings.implode(f.getOperator(), ",");
 			sql.addWhere("a.id IN (SELECT subID FROM generalcontractors WHERE genID IN (" + list + ") )");
@@ -150,7 +146,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (filterOn(f.getTaxID(), ReportFilterContractor.DEFAULT_TAX_ID))
 			report.addFilter(new SelectFilter("taxID", "c.taxID = '?'", f.getTaxID()));
-		
+
 		if (filterOn(f.getFlagStatus(), FlagColor.DEFAULT_FLAG_STATUS))
 			report.addFilter(new SelectFilter("flagStatus", "flags.flag = '?'", f.getFlagStatus()));
 
@@ -170,30 +166,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 				+ "WHERE ca.auditStatus IN ('Active','Submitted') AND ca.auditTypeID = 1 " + where + ")";
 		sql.addWhere(query);
 		filtered = true;
-	}
-
-	public boolean filterOn(Object value, Object defaultValue) {
-		if (value == null)
-			return false;
-		if (value.equals(defaultValue))
-			return false;
-		return value.toString().trim().length() > 0;
-	}
-
-	public boolean filterOn(Object value) {
-		if (value == null)
-			return false;
-		return value.toString().trim().length() > 0;
-	}
-	
-	public boolean filterOn(int[] value) {
-		if (value == null)
-			return false;
-		if (value.length == 1) {
-			if (value[0] == 0)
-				return false;
-		}
-		return value.length > 0;
 	}
 
 	/**
@@ -216,7 +188,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	public List<Integer> getIds() {
 		return ids;
 	}
-	
+
 	public ReportFilterContractor getFilter() {
 		return filter;
 	}
