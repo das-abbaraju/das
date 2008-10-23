@@ -21,7 +21,7 @@ public enum OpPerms {
 	// Red Flag
 	EditFlagCriteria("Red Flag Criteria", "Allows users to edit the criteria for flagging contractors as Red or Amber. Read access grants the ability to Edit the criteria", false, false),
 	EditForcedFlags("Force Flag Color", "Allows users to force a contractor's flag color for a given period of time. Only Read access is used currently", true, false),
-	EditNotes("Contractor Notes", "Allows users to add notes to a contractor's account. Currently, Read accoess is sufficient to Add and Delete notes too.", true, true),
+	EditNotes("Contractor Notes", "Allows users to add notes to a contractor's account. Allows Users to view/add/edit/delete notes."),
 	
 	// Reports
 	ContractorLicenseReport("Contractor License Report", "List all contractor licenses", false, false),
