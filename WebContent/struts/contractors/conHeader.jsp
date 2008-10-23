@@ -17,9 +17,6 @@
 		<li><a href="add_notes.jsp?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('note')">class="current"</s:if>>Notes</a></li>
 	</s:if>
-	<li><a href="ContractorNotes.action?id=<s:property value="id" />"
-		<s:if test="requestURI.contains('note')">class="current"</s:if>>Notes</a>
-	</li>
 	<s:if test="permissions.admin">
 		<li><a id="conEditLink" href="ContractorEdit.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('edit')">class="current"</s:if>>Edit</a></li>
