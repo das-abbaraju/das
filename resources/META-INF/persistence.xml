@@ -54,7 +54,7 @@
   <class>com.picsauditing.jpa.entities.UserAccess</class>
   <class>com.picsauditing.jpa.entities.Widget</class>
   <class>com.picsauditing.jpa.entities.WidgetUser</class>
-  <class>com.picsauditing.jpa.entities.WorkStatus</class>
+  <class>com.picsauditing.jpa.entities.WaitingOn</class>
   <class>com.picsauditing.jpa.entities.YesNo</class>
    
  <properties>
