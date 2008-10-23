@@ -14,22 +14,22 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "flags")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="temp")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class ContractorOperatorFlag implements java.io.Serializable {
 	private static final long serialVersionUID = 490857279961564359L;
-	
+
 	private int id;
 	private OperatorAccount operatorAccount;
 	private ContractorAccount contractorAccount;
 	private FlagColor flagColor;
 	private Date lastUpdate = new Date();
+	private WorkStatus waitingOn = WorkStatus.None;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -80,7 +80,16 @@ public class ContractorOperatorFlag implements java.io.Serializable {
 		this.lastUpdate = lastUpdate;
 	}
 
-	
+	@Enumerated(EnumType.ORDINAL)
+	@Column(name = "waitingOn", nullable = false)
+	public WorkStatus getWaitingOn() {
+		return waitingOn;
+	}
+
+	public void setWaitingOn(WorkStatus waitingOn) {
+		this.waitingOn = waitingOn;
+	}
+
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;
@@ -102,6 +111,4 @@ public class ContractorOperatorFlag implements java.io.Serializable {
 			return false;
 		return true;
 	}
-
-	
 }
