@@ -29,7 +29,7 @@ public class ContractorOperatorFlag implements java.io.Serializable {
 	private ContractorAccount contractorAccount;
 	private FlagColor flagColor;
 	private Date lastUpdate = new Date();
-	private WorkStatus waitingOn = WorkStatus.None;
+	private WaitingOn waitingOn = WaitingOn.None;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -82,11 +82,11 @@ public class ContractorOperatorFlag implements java.io.Serializable {
 
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "waitingOn", nullable = false)
-	public WorkStatus getWaitingOn() {
+	public WaitingOn getWaitingOn() {
 		return waitingOn;
 	}
 
-	public void setWaitingOn(WorkStatus waitingOn) {
+	public void setWaitingOn(WaitingOn waitingOn) {
 		this.waitingOn = waitingOn;
 	}
 
