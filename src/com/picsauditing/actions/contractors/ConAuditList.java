@@ -17,6 +17,9 @@ public class ConAuditList extends ContractorActionSupport {
 	private int selectedAudit;
 	private int selectedOperator;
 	private List<AuditType> auditTypeName;
+	public List<ContractorAudit> upComingAudits = new ArrayList<ContractorAudit>();
+	public List<ContractorAudit> currentAudits = new ArrayList<ContractorAudit>();
+	public List<ContractorAudit> expiredAudits = new ArrayList<ContractorAudit>();
 
 	public ConAuditList(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO) {
 		super(accountDao, auditDao);
@@ -27,6 +30,17 @@ public class ConAuditList extends ContractorActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		findContractor();
+
+		for (ContractorAudit contractorAudit : getAudits()) {
+			if (contractorAudit.getAuditStatus().equals(AuditStatus.Pending)
+					|| contractorAudit.getAuditStatus().equals(AuditStatus.Submitted))
+				upComingAudits.add(contractorAudit);
+			if (contractorAudit.getAuditStatus().equals(AuditStatus.Active)
+					|| contractorAudit.getAuditStatus().equals(AuditStatus.Exempt))
+				currentAudits.add(contractorAudit);
+			if (contractorAudit.getAuditStatus().equals(AuditStatus.Expired))
+				expiredAudits.add(contractorAudit);
+		}
 
 		if (button != null && button.equals("Create")) {
 			boolean alreadyExists = false;
@@ -92,5 +106,17 @@ public class ConAuditList extends ContractorActionSupport {
 
 	public void setSelectedOperator(int selectedOperator) {
 		this.selectedOperator = selectedOperator;
+	}
+
+	public List<ContractorAudit> getUpComingAudits() {
+		return upComingAudits;
+	}
+
+	public List<ContractorAudit> getCurrentAudits() {
+		return currentAudits;
+	}
+
+	public List<ContractorAudit> getExpiredAudits() {
+		return expiredAudits;
 	}
 }
