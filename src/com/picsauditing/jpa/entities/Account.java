@@ -321,6 +321,11 @@ public class Account implements java.io.Serializable {
 		return "Corporate".equals(type);
 	}
 	
+	@Transient
+	public boolean isActiveB() {
+		return active == 'Y';
+	}
+	
 	
 	@Override
 	public int hashCode() {

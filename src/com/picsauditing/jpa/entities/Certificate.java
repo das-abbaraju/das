@@ -131,7 +131,7 @@ public class Certificate {
 
 	/**
 	 * 
-	 * @return Approved, Expired, Pending, Rejected
+	 * @return Approved, Expired, Pending (default), Rejected
 	 */
 	public String getStatus() {
 		return status;

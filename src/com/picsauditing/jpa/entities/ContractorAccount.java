@@ -203,6 +203,10 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.paid = paid;
 	}
 
+	/**
+	 * The date the contractor last paid their account in full
+	 * @return
+	 */
 	@Temporal(TemporalType.DATE)
 	@Column(name = "lastPayment", nullable = true, length = 10)
 	public Date getLastPayment() {
@@ -222,6 +226,10 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.lastPaymentAmount = lastPaymentAmount;
 	}
 
+	/**
+	 * The date we last sent an invoice to the contractor
+	 * @return
+	 */
 	@Temporal(TemporalType.DATE)
 	@Column(name = "lastInvoiceDate", nullable = true, length = 10)
 	public Date getLastInvoiceDate() {
@@ -491,6 +499,9 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	@Transient
 	public int getUpgradeAmountOwed() {
+		if (!isActiveB())
+			// Inactive contractor must renew their account, they can't just upgrade
+			return 0;
 		if ("No".equals(mustPay))
 			return 0;
 		if ("Yes".equals(isExempt))
@@ -511,11 +522,15 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			return 0;
 		if ("Yes".equals(isExempt))
 			return 0;
-		if (lastPayment.after(lastInvoiceDate) || lastPayment.equals(lastInvoiceDate)) // already paid the invoice
-			return 0;
-		if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) < 75)
-			return 0; // This is an invoice for upgrade payment
-
+		if (isActiveB() 
+				&& paymentExpires != null 
+				&& lastPayment != null 
+				&& lastInvoiceDate != null) {
+			if (!lastPayment.before(lastInvoiceDate)) // already paid the invoice
+				return 0;
+			if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) < 75)
+				return 0; // This is an invoice for upgrade payment
+		}
 		return newBillingAmount - lastPaymentAmount;
 	}
 
