@@ -274,6 +274,7 @@ public class FlagCalculatorSingle {
 				certificate.setType("No Approved Certificates");
 				certificate.setOperatorAccount(operator);
 				certificate.setContractorAccount(contractor);
+				certificate.setStatus(""); // This has no status because it's not a real cert
 				contractor.getCertificates().add(certificate);
 			}
 
@@ -292,11 +293,25 @@ public class FlagCalculatorSingle {
 	public WaitingOn calculateWaitingOn() {
 		debug("FlagCalculator.calculateWaitingOn(" + contractor.getId() + "," + operator.getId() + ")");
 		
+		ContractorOperator co = null;
+		// First see if there are any forced flags for this operator
+		for (ContractorOperator co2 : contractor.getOperators()) {
+			if (co2.getOperatorAccount().equals(operator)) {
+				co = co2;
+				break;
+			}
+		}
+		if (co == null)
+			return WaitingOn.None; // This contractor is not associated with this operator, so nothing to do now
+		
+		if (!contractor.isActiveB())
+			return WaitingOn.Contractor; // This contractor is delinquent
+
 		// Operator Relationship Approval
-		if (operator.getApprovesRelationships().equals(YesNo.Yes)) {
-			if (getContractorOperator().getWorkStatus().equals("P"))
+		if (YesNo.Yes.equals(operator.getApprovesRelationships())) {
+			if (co.getWorkStatus().equals("P"))
 				return WaitingOn.Operator; // Operator needs to approve/reject this contractor
-			if (getContractorOperator().getWorkStatus().equals("N"))
+			if (co.getWorkStatus().equals("N"))
 				return WaitingOn.None; // Operator has already rejected this contractor, and there's nothing else they can do
 		}
 		
@@ -377,17 +392,6 @@ public class FlagCalculatorSingle {
 		
 		// If everything is done, then quit with waiting on = no one
 		return WaitingOn.None;
-	}
-
-	private ContractorOperator getContractorOperator() {
-		// First see if there are any forced flags for this operator
-		for (ContractorOperator co : contractor.getOperators()) {
-			if (co.getOperatorAccount().equals(operator)) {
-				return co;
-			}
-		}
-		debug("FAILED to find matching operator for this contractor!!");
-		return null;
 	}
 
 	private float getEmrRate(AuditData auditData) {

@@ -123,11 +123,11 @@
 					<li><label>Industry:</label>
 						<s:select list="industryList" name="contractor.industry"/>
 					</li>
-					<li><label>Main Trade:</label>
+					<li><label style="font-size: 10px;">Main Trade:</label>
 						<s:select list="tradeList" name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" listKey="question" listValue="question"/>
 					</li>
 					<li><label>Risk Level:</label>		
-						<s:radio list="riskLevelList" name="contractor.riskLevel"/>
+						<s:radio list="riskLevelList" name="contractor.riskLevel" theme="pics" />
 					</li>
 					<li><label>Requested By:</label>
 						<s:select list="operatorList" name="contractor.requestedById" headerKey="0" headerValue="- Choose an operator -" listKey="id" listValue="name"/>
@@ -187,7 +187,7 @@
 				<legend><span>PICS Admin Fields</span></legend>
 				<ol>
 					<li><label>Visible?</label>
-						<s:radio list="#{'Y':'Yes','N':'No'}" name="contractor.active" />
+						<s:radio list="#{'Y':'Yes','N':'No'}" name="contractor.active" theme="pics" />
 					</li>
 					<li><label>Created by:</label>
 						<s:textfield name="contractor.createdBy" size="25" />
@@ -200,11 +200,11 @@
 					</li>
 					<li><label>Only Certificates?</label>
 						<s:radio list="#{'Yes':'Yes','No':'No'}"
-							name="contractor.isOnlyCerts" value="contractor.isOnlyCerts"/>
+							name="contractor.isOnlyCerts" value="contractor.isOnlyCerts" theme="pics" />
 					</li>
 					<li><label>Must Pay?</label>
 						<s:radio list="#{'Yes':'Yes','No':'No'}" name="contractor.mustPay"
-							value="contractor.mustPay"/>
+							value="contractor.mustPay" theme="pics" />
 					</li>
 					<li><label>Membership Date:</label>
 						<input name="contractor.membershipDate" id="membershipDate" 

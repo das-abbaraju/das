@@ -18,6 +18,7 @@ import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.WaitingOn;
@@ -138,9 +139,14 @@ public class FlagCalculator2 {
 				body.append(sw.toString());
 
 				try {
-					EmailSender.send("errors@picsauditing.com", 
-							"There was an error calculating flags for contractor :" + conID.toString(), 
-							body.toString());
+					EmailQueue email = new EmailQueue();
+					email.setToAddresses("errors@picsauditing.com");
+					email.setPriority(30);
+					email.setSubject("Flag calculation error for conID = " + conID);
+					email.setBody(body.toString());
+					email.setContractorAccount(new ContractorAccount(conID));
+					email.setCreationDate(new Date());
+					EmailSender.send(email);
 				} catch (Exception notMuchWeCanDoButLogIt) {
 					System.out.println("**********************************");
 					System.out.println("Error calculating flags AND unable to send email");
