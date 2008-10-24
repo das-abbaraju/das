@@ -506,12 +506,17 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			return 0;
 		if ("Yes".equals(isExempt))
 			return 0;
-		if (lastPayment.after(lastInvoiceDate) || lastPayment.equals(lastInvoiceDate)) // already paid the invoice
-			return 0;
+		if (paymentExpires != null 
+				&& lastPayment != null 
+				&& lastInvoiceDate != null) {
+			// TODO we really shouldn't have to check for nulls, we should fix the root cause instead
+			if (lastPayment.after(lastInvoiceDate) || lastPayment.equals(lastInvoiceDate)) // already paid the invoice
+				return 0;
+			if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) > 75)
+				return 0; // This is an invoice for annual payment
+		}
 		if (billingAmount < lastPaymentAmount) // they already overpaid (probably garbage data)
 			return 0;
-		if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) > 75)
-			return 0; // This is an invoice for annual payment
 
 		return billingAmount;
 	}

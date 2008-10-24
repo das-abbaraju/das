@@ -54,6 +54,34 @@
 				</ol>
 				</fieldset>
 				<fieldset>
+				<legend><span>Billing Details</span></legend>
+				<ol>
+				<s:if test="contractor.mustPay.equals('Yes') && contractor.newBillingAmount > 0">
+					<li><label title="Your annual period starts each year on this day">Membership Date:</label>
+						<s:date name="contractor.membershipDate" format="MMM d" />
+					</li>
+					<li><label>Last Invoice:</label>
+						$<s:property value="contractor.billingAmount" /> on <s:date name="contractor.lastInvoiceDate" format="MMM d, yyyy" />
+					</li>
+					<li><label>Last Payment:</label>
+						$<s:property value="contractor.lastPaymentAmount" /> on <s:date name="contractor.lastPayment" format="MMM d, yyyy" />
+					</li>
+					<li><label>Billing Cycle:</label>
+						<s:property value="contractor.billingCycle" /> year(s)
+					</li>
+					<li><label>Payment Expires:</label>
+						<s:date name="contractor.paymentExpires" format="MMM d, yyyy" />
+					</li>
+					<li><label>New Billing Amount:</label>
+						$<s:property value="contractor.newBillingAmount" />
+					</li>
+				</s:if>
+				<s:else>
+					<li><label>Status:</label>no payment required</li>
+				</s:else>
+				</ol>
+				</fieldset>
+				<fieldset>
 				<legend><span>Primary Address</span></legend>
 				<ol>
 					<li><label>Address:</label>
@@ -123,40 +151,17 @@
 					<li><label>Industry:</label>
 						<s:select list="industryList" name="contractor.industry"/>
 					</li>
-					<li><label style="font-size: 10px;">Main Trade:</label>
-						<s:select list="tradeList" name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" listKey="question" listValue="question"/>
+					<li><label>Main Trade:</label>
+						<s:select cssStyle="font-size: 12px;" list="tradeList" name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" listKey="question" listValue="question"/>
 					</li>
 					<li><label>Risk Level:</label>		
 						<s:radio list="riskLevelList" name="contractor.riskLevel" theme="pics" />
 					</li>
 					<li><label>Requested By:</label>
-						<s:select list="operatorList" name="contractor.requestedById" headerKey="0" headerValue="- Choose an operator -" listKey="id" listValue="name"/>
+						<s:select cssStyle="font-size: 12px;" list="operatorList" name="contractor.requestedById" headerKey="0" headerValue="- Choose an operator -" listKey="id" listValue="name"/>
 					</li>
 					<li><label>Paying Facilities:</label>
 						<s:property value="contractor.payingFacilities" />
-					</li>
-				</ol>
-				</fieldset>
-				<fieldset>
-				<legend><span>Accounting Details</span></legend>
-				<ol>
-					<li><label>Membership Date:</label>
-						<s:date name="contractor.membershipDate" format="MMM d, yyyy" />
-					</li>
-					<li><label>Last Invoice:</label>
-						$<s:property value="contractor.billingAmount" /> on <s:date name="contractor.lastInvoiceDate" format="MMM d, yyyy" />
-					</li>
-					<li><label>Last Payment:</label>
-						$<s:property value="contractor.lastPaymentAmount" /> on <s:date name="contractor.lastPayment" format="MMM d, yyyy" />
-					</li>
-					<li><label>Payment Expires:</label>
-						<s:date name="contractor.paymentExpires" format="MMM d, yyyy" />
-					</li>
-					<li><label>Billing Cycle:</label>
-						<s:property value="contractor.billingCycle" /> year(s)
-					</li>
-					<li><label>New Billing Amount:</label>
-						$<s:property value="contractor.newBillingAmount" />
 					</li>
 				</ol>
 				</fieldset>
@@ -235,6 +240,9 @@
 							onclick="cal1.select($('lastPayment'), 'anchorlastPayment','MM/dd/yyyy'); return false;">
 							<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 					</li>
+					<li><label>Billing Cycle:</label>
+						<s:textfield name="contractor.billingCycle" size="1" /> year(s)
+					</li>
 					<li><label>Payment Expires:</label>
 						<input name="contractor.paymentExpires" id="paymentExpires" 
 							type="text" class="forms" size="10" 
@@ -244,12 +252,9 @@
 							onclick="cal1.select($('paymentExpires'), 'anchorpaymentExpires','MM/dd/yyyy'); return false;">
 						<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 					</li>
-					<li><label>Billing Cycle:</label>
-						<s:textfield name="contractor.billingCycle" size="1" /> year(s)
-					</li>
 					<li><label>New Billing Amount:</label>
-						$<s:textfield name="contractor.newBillingAmount" size="6" />
-					</li>	
+						$<s:property value="contractor.newBillingAmount" />
+					</li>
 				</ol>
 				</fieldset>
 			</td>

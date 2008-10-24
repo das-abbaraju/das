@@ -95,32 +95,33 @@ public class Cron extends PicsActionSupport {
 			} catch (Throwable t) {
 				handleException(t);
 			}
+
+			try {
+				startTask("\nSending emails to contractors for expired Certificates...");
+				sendEmailExpiredCertificates();
+				endTask();
+			} catch (Throwable t) {
+				handleException(t);
+			}
+
+			try {
+				startTask("\nExpiring Audits...");
+				String where = "expiresDate < NOW() AND auditStatus <> 'Expired'";
+				List<ContractorAudit> conList = contractorAuditDAO.findWhere(70, where, "expiresDate");
+				for (ContractorAudit cAudit : conList) {
+					cAudit.setAuditStatus(AuditStatus.Expired);
+					contractorAuditDAO.save(cAudit);
+				}
+				endTask();
+			} catch (Throwable t) {
+				handleException(t);
+			}
 		}
 
 		try {
 			startTask("\nCalculating Flags...");
+			flagCalculator.setDebug(true);
 			flagCalculator.runAll();
-			endTask();
-		} catch (Throwable t) {
-			handleException(t);
-		}
-
-		try {
-			startTask("\nSending emails to contractors for expired Certificates...");
-			sendEmailExpiredCertificates();
-			endTask();
-		} catch (Throwable t) {
-			handleException(t);
-		}
-
-		try {
-			startTask("\nExpiring Audits...");
-			String where = "expiresDate < NOW() AND auditStatus <> 'Expired'";
-			List<ContractorAudit> conList = contractorAuditDAO.findWhere(70, where, "expiresDate");
-			for (ContractorAudit cAudit : conList) {
-				cAudit.setAuditStatus(AuditStatus.Expired);
-				contractorAuditDAO.save(cAudit);
-			}
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
