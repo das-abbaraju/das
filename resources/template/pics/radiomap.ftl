@@ -61,7 +61,7 @@
 <#include "/${parameters.templateDir}/simple/scripting-events.ftl" />
 <#include "/${parameters.templateDir}/simple/common-attributes.ftl" />
 /><#rt/>
-<label for="${parameters.id?html}${itemKeyStr?html}"><#rt/>
+<label for="${parameters.id?html}${itemKeyStr?html}" class="input"><#rt/>
     ${itemValue}<#t/>
 </label>
 </nobr>

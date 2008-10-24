@@ -65,9 +65,20 @@ form fieldset label {
 	color: #003768;
 }
 
+form fieldset label.input {
+	float: none;
+	width: inherit;
+	margin-right: auto;
+	text-align: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	color: inherit;
+}
+
 form fieldset input[type=text], form fieldset select {
 	color: #808285;
-	padding: 1px;
+	font-size: 14px;
+	padding: 2px;
 	border-style: inset;
 }
 
