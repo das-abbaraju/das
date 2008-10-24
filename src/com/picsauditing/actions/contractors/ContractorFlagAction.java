@@ -18,6 +18,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
+import com.picsauditing.jpa.entities.WaitingOn;
 
 public class ContractorFlagAction extends ContractorActionSupport {
 	protected ContractorOperatorDAO contractorOperatorDao;
@@ -105,8 +106,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				for (ContractorOperator operator : getOperators()) {
 					operator.setForceEnd(forceEnd);
 					operator.setForceFlag(forceFlag);
-					FlagColor newColor = calculator.calculate();
-					operator.getFlag().setFlagColor(newColor);
+					//FlagColor newColor = calculator.calculate();
+					operator.getFlag().setFlagColor(forceFlag);
 					contractorOperatorDao.save(operator);
 				}
 				return SUCCESS;
@@ -131,6 +132,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		if (newColor != null && !newColor.equals(co.getFlag().getFlagColor()))
 			co.getFlag().setLastUpdate(new Date());
 		co.getFlag().setFlagColor(newColor);
+		co.getFlag().setWaitingOn(calculator.calculateWaitingOn());
 		contractorOperatorDao.save(co);
 		
 		return SUCCESS;

@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailSender;
 
 /**
@@ -224,13 +225,16 @@ public class FlagCalculator2 {
 			calcSingle.setOperator(operator);
 
 			// Calculate the color of the flag right here
-
 			FlagColor color = calcSingle.calculate();
 			debug(" - FlagColor returned: " + color);
+			
 			// Set the flag color on the object
 			// em.refresh(contractor);
 			ContractorOperatorFlag coFlag = null;
 
+			WaitingOn waitingOn = calcSingle.calculateWaitingOn();
+
+			
 			try {
 				coFlag = contractor.getFlags().get(operator);
 			} catch (Exception e) {
@@ -256,18 +260,20 @@ public class FlagCalculator2 {
 				// Add a new flag
 				coFlag = new ContractorOperatorFlag();
 				coFlag.setFlagColor(color);
+				coFlag.setWaitingOn(waitingOn);
 				coFlag.setContractorAccount(contractor);
 				coFlag.setOperatorAccount(operator);
+				coFlag.setLastUpdate(new Date());
 
 				coFlagDAO.save(coFlag);
 				contractor.getFlags().put(operator, coFlag);
 			} else {
 				if (!color.equals(coFlag.getFlagColor())) {
 					coFlag.setFlagColor(color);
+					coFlag.setWaitingOn(waitingOn);
 					coFlag.setLastUpdate(new Date());
 				}
 			}
-
 		}
 		contractorDAO.save(contractor);
 

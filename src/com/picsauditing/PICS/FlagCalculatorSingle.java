@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.jpa.entities.OshaLogYear;
+import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
 
 /**
@@ -286,6 +287,107 @@ public class FlagCalculatorSingle {
 			return overrideColor;
 
 		return flagColor;
+	}
+	
+	public WaitingOn calculateWaitingOn() {
+		debug("FlagCalculator.calculateWaitingOn(" + contractor.getId() + "," + operator.getId() + ")");
+		
+		// Operator Relationship Approval
+		if (operator.getApprovesRelationships().equals(YesNo.Yes)) {
+			if (getContractorOperator().getWorkStatus().equals("P"))
+				return WaitingOn.Operator; // Operator needs to approve/reject this contractor
+			if (getContractorOperator().getWorkStatus().equals("N"))
+				return WaitingOn.None; // Operator has already rejected this contractor, and there's nothing else they can do
+		}
+		
+		// Billing
+		if (contractor.getAnnualAmountOwed() > 0)
+			return WaitingOn.Contractor; // The contractor has an unpaid invoice due
+		if (contractor.getUpgradeAmountOwed() > 0)
+			return WaitingOn.Contractor; // The contractor has an unpaid invoice due
+		
+		// If waiting on contractor, immediately exit, otherwise track the other parties 
+		boolean waitingOnPics = false;
+		boolean waitingOnOperator = false;
+		
+		// PQF, Desktop & Office Audits
+		for (AuditOperator audit : operator.getAudits()) {
+			if (contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel() 
+					&& audit.getRequiredForFlag() != null) {
+				
+				for (ContractorAudit conAudit : conAudits) {
+					if (conAudit.getAuditType().equals(audit.getAuditType()) &&
+						(conAudit.getAuditStatus().equals(AuditStatus.Pending)
+							|| conAudit.getAuditStatus().equals(AuditStatus.Submitted))
+						) {
+						// We found a matching pending or submitted audit for this contractor
+						// Whose fault is it??
+						debug(" ---- found");
+						if (conAudit.getAuditType().isPqf()) {
+							if (conAudit.getAuditStatus().equals(AuditStatus.Pending))
+								return WaitingOn.Contractor; // The contractor still needs to submit their PQF
+							if (conAudit.getPercentVerified() > 0)
+								return WaitingOn.Contractor; // The contractor needs to send us updated information (EMR, OSHA, etc)
+							
+							// This PQF must be submitted and not verified yet at all, so it's PICS' fault
+							waitingOnPics = true;
+						}
+						if (conAudit.getAuditType().getAuditTypeID() == AuditType.OFFICE)
+							return WaitingOn.Contractor; // The contractor either needs to schedule the audit or close out RQs
+						if (conAudit.getAuditType().getAuditTypeID() == AuditType.DESKTOP) {
+							if (conAudit.getAuditStatus().equals(AuditStatus.Submitted))
+								return WaitingOn.Contractor; // The contractor needs to close out RQs
+							// This desktop still hasn't been performed by PICS
+							waitingOnPics = true;
+						}
+						
+					}
+				}
+			}
+		}
+		
+		// Certificates
+		if (operator.getCanSeeInsurance().equals(YesNo.Yes)) {
+			
+			int count = 0;
+			for (Certificate certificate : contractor.getCertificates()) {
+				if (certificate.getOperatorAccount().equals(operator)) {
+					debug(" -- certificate" + certificate.getType() + " " + certificate.getOperatorAccount().getName());
+					count++;
+					if (certificate.getStatus().equals("Rejected"))
+						return WaitingOn.Contractor; // The contractor should upload a new cert
+					if (certificate.getStatus().equals("Expired"))
+						return WaitingOn.Contractor; // The contractor should upload a new cert
+					if (certificate.getStatus().equals("Pending"))
+						waitingOnPics = true;
+				}
+			}
+
+			if (count == 0)
+				return WaitingOn.Contractor; // The contractor hasn't uploaded any certificates for this operator
+		}
+
+		
+		// Conclusion
+		if (waitingOnPics)
+			return WaitingOn.Pics;
+		if (waitingOnOperator)
+			// only show the operator if contractor and pics are all done
+			return WaitingOn.Operator;
+		
+		// If everything is done, then quit with waiting on = no one
+		return WaitingOn.None;
+	}
+
+	private ContractorOperator getContractorOperator() {
+		// First see if there are any forced flags for this operator
+		for (ContractorOperator co : contractor.getOperators()) {
+			if (co.getOperatorAccount().equals(operator)) {
+				return co;
+			}
+		}
+		debug("FAILED to find matching operator for this contractor!!");
+		return null;
 	}
 
 	private float getEmrRate(AuditData auditData) {

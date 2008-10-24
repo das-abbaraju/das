@@ -82,6 +82,10 @@ public class ContractorOperator implements java.io.Serializable {
 		this.dateAdded = dateAdded;
 	}
 
+	/**
+	 * Assume Yes if the operator approvesRelationships=No, otherwise this should default to P and then be approved or rejected
+	 * @return P=Pending, Y=Yes, N=No
+	 */
 	public String getWorkStatus() {
 		return workStatus;
 	}

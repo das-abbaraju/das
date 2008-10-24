@@ -129,6 +129,10 @@ public class Certificate {
 		this.subrogationWaived = subrogationWaived;
 	}
 
+	/**
+	 * 
+	 * @return Approved, Expired, Pending, Rejected
+	 */
 	public String getStatus() {
 		return status;
 	}

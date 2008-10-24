@@ -93,7 +93,7 @@ function getElement(whichLayer) {
 
 <div id="headersearch">
 <form action="ContractorSearch.action" method="post">
-<input name="accountName" type="text" class="blueMain" size="20" value="- Contractor Search -" onfocus="clearText(this)" onblur="unclearText(this)"/>
+<input name="filter.accountName" type="text" class="blueMain" size="20" value="- Contractor Search -" onfocus="clearText(this)" onblur="unclearText(this)"/>
 <input type="submit" value="Search" class="blueMain" />
 </form>
 </div>
