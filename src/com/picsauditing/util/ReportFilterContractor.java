@@ -14,6 +14,7 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.WaitingOn;
 
 public class ReportFilterContractor extends ReportFilterAccount {
 	public static final String DEFAULT_TAX_ID = "- Tax ID -";
@@ -35,6 +36,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showRiskLevel = false;
 	protected boolean showAssignedCon = false;
 	protected boolean showInParentCorporation = false;
+	protected boolean showWaitingOn = false;	
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -50,6 +52,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected int riskLevel;
 	protected boolean assignedCon = false;
 	protected boolean inParentCorporation = false;
+	protected String waitingOn;
 
 	private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
 
@@ -150,6 +153,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.showInParentCorporation = showInParentCorporation;
 	}
 
+	public boolean isShowWaitingOn() {
+		return showWaitingOn;
+	}
+
+	public void setShowWaitingOn(boolean showWaitingOn) {
+		this.showWaitingOn = showWaitingOn;
+	}
+
 	public String getPerformedBy() {
 		return performedBy;
 	}
@@ -244,6 +255,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		if (permissions.isOperator()) {
 			setShowOperator(false);
 			setShowFlagStatus(true);
+			setShowWaitingOn(true);
 		}
 		if (permissions.isCorporate()) {
 		}
@@ -308,6 +320,10 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public String[] getCertsOptions() {
 		return new String[] { DEFAULT_CERTS, "Yes", "Only Certs", "No", "Exclude Certs" };
 	}
+	
+	public Map<Integer, WaitingOn> getWaitingOnList() throws Exception {
+		return WaitingOn.getMap();
+	}
 
 	public boolean isShowAssignedCon() {
 		return showAssignedCon;
@@ -331,5 +347,13 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setInParentCorporation(boolean inParentCorporation) {
 		this.inParentCorporation = inParentCorporation;
+	}
+
+	public String getWaitingOn() {
+		return waitingOn;
+	}
+
+	public void setWaitingOn(String waitingOn) {
+		this.waitingOn = waitingOn;
 	}
 }

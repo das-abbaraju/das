@@ -180,6 +180,11 @@ Filter Options</a></div>
 			cssClass="forms" name="filter.flagStatus" /></div>
 	</s:if>
 
+	<s:if test="filter.showWaitingOn">
+		<div class="filterOption"><s:select list="filter.waitingOnList" headerKey="0" headerValue="- Waiting On-"
+			cssClass="forms" name="filter.waitingOn" /></div>
+	</s:if>
+
 	<s:if test="filter.showAuditType">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_auditTypeID'); return false;">Audit

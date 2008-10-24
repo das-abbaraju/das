@@ -9,6 +9,7 @@ import org.apache.struts2.ServletActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterInteger;
@@ -149,6 +150,9 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (filterOn(f.getFlagStatus(), FlagColor.DEFAULT_FLAG_STATUS))
 			report.addFilter(new SelectFilter("flagStatus", "flags.flag = '?'", f.getFlagStatus()));
+
+		if (filterOn(f.getWaitingOn()))
+			report.addFilter(new SelectFilter("waitingOn", "flags.waitingOn = '?'", f.getWaitingOn()));
 
 		if (filterOn(f.getConAuditorId())) {
 			String list = Strings.implode(f.getConAuditorId(), ",");

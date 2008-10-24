@@ -16,4 +16,19 @@ public enum WaitingOn {
 		}
 		return map;
 	}
+
+	static public WaitingOn valueOf(int waitingOn) {
+		for (WaitingOn value : WaitingOn.values()) {
+			if (waitingOn == value.ordinal())
+				return value;
+		}
+		return null;
+	}
+
+	@Override
+	public String toString() {
+		if (this.equals(WaitingOn.None))
+			return "";
+		return super.toString();
+	}
 }

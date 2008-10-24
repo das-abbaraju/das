@@ -62,6 +62,8 @@
 	HashMap<String, FlagDO> flagMap = flagDO.getFlagByContractor(id);
 %>
 <%@page import="com.picsauditing.jpa.entities.ContractorAccount"%>
+<%@page import="com.picsauditing.dao.ContractorOperatorDAO"%>
+<%@page import="com.picsauditing.jpa.entities.ContractorOperator"%>
 <html>
 <head>
 <title>Contractor Facilities</title>
@@ -100,6 +102,7 @@
 	<tr>
 		<td>Flag</td>
 		<td>Facility</td>
+		<td>Waiting On</td>
 		<td></td>
 	</tr>
 	</thead>
@@ -112,13 +115,18 @@
 			
 			String opID = operator.getId().toString();
 			String name = operator.getName();
+			ContractorOperatorDAO conOpDAO = (ContractorOperatorDAO) SpringUtils.getBean("ContractorOperatorDAO"); 
+			ContractorOperator contractorOperator = conOpDAO.find(Integer.parseInt(conID), operator.getId());
+			String WaitingOn = "";
+			if(contractorOperator != null)
+				WaitingOn = contractorOperator.getFlag().getWaitingOn().toString();
+			
 			if (cBean.generalContractors.contains(opID)) {
 				oBean.setFromDB(opID);
 				String flagColor = "";
 				FlagDO opFlag = flagMap.get(opID);
 				if (opFlag != null)
 					flagColor = opFlag.getFlag().toLowerCase();
-
 				if (permissions.isCorporate() && !pBean.oBean.facilitiesAL.contains(opID)) {
 	%>
 	<input type="hidden" name="genID_<%=opID%>" value="Yes" />
@@ -147,6 +155,7 @@
 		} %>	
 		
 		</td>
+		<td><%= WaitingOn %></td>
 		<td class="center"><input type="hidden" name="genID_<%=opID%>"
 			value="Yes" /><img src="images/okCheck.gif" width="19" height="15" />
 		<%
@@ -186,6 +195,7 @@
 		%>
 		</td>
 		<td><%=name%></td>
+		<td></td>
 		<td class="center">
 		<%
 			if (!permissions.isOnlyAuditor() || permissions.hasPermission(OpPerms.AddContractors) || permissions.isContractor()) {
@@ -205,7 +215,7 @@
 		if (!permissions.isOnlyAuditor() && !permissions.isOperator()) {
 	%>
 	<tr>
-		<td class="right" colspan="3"><input name="submit"
+		<td class="right" colspan="4"><input name="submit"
 			type="image" src="images/button_submit.gif" value="submit"></td>
 	</tr>
 	<%
