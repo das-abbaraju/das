@@ -56,7 +56,9 @@ Corporate Version
 				<td><nobr>Approved</nobr></td>
 			</pics:permission>
 		</s:if>
-
+		<s:if test="permissions.operator">
+			<td>Waiting On</td>
+		</s:if>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -105,6 +107,9 @@ Corporate Version
 						value="[0].get('workStatus')" />
 					</td>
 				</pics:permission>
+			</s:if>
+			<s:if test="permissions.operator">
+				<td><s:property value="@com.picsauditing.jpa.entities.WaitingOn@valueOf(get('waitingOn'))"/></td>
 			</s:if>
 		</tr>
 	</s:iterator>

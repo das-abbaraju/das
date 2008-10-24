@@ -10,7 +10,8 @@ public class ReportAccountAudits extends ReportAccount {
 		sql.addAudit(AuditType.PQF);
 		sql.addField("c.main_trade");
 		sql.addField("a.industry");
-
+		if(permissions.isOperator())
+			sql.addField("flags.waitingOn");
 		if (filtered == null)
 			filtered = true;
 
