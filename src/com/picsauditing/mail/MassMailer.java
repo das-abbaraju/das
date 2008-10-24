@@ -125,16 +125,14 @@ public class MassMailer extends PicsActionSupport {
 		if (button != null) {
 			if (button.equals("send")) {
 				EmailTemplate template = buildEmailTemplate();
+				// TODO we may want to offer sending from another email
+				// other than their own
+				emailBuilder.setFromAddress(permissions.getEmail());
 				emailBuilder.setTemplate(template);
 
 				for (Integer id : ids) {
 					addTokens(id);
 					EmailQueue email = emailBuilder.build();
-
-					// TODO we may want to offer sending from another email
-					// other than their own
-					email.setFromAddress(permissions.getEmail());
-					email.setEmailTemplate(template);
 					emailQueueDAO.save(email);
 				}
 			}

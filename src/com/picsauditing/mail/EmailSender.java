@@ -3,10 +3,8 @@ package com.picsauditing.mail;
 import java.util.Date;
 
 import com.picsauditing.dao.EmailQueueDAO;
-import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailStatus;
-import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.util.SpringUtils;
 
 public class EmailSender extends GMailSender {
@@ -46,9 +44,17 @@ public class EmailSender extends GMailSender {
 			if (emailQueueDAO == null)
 				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
 			emailQueueDAO.save(email);
+		} catch (javax.mail.internet.AddressException e) {
+			email.setStatus(EmailStatus.Error);
+			if (emailQueueDAO == null)
+				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
+			emailQueueDAO.save(email);
 		} catch (Exception e) {
 			System.out.println("Send Mail Exception with account " + currentDefaultSender + ": " + e.toString() + " "
-					+ e.getMessage());
+					+ e.getMessage() + 
+					"\nFROM: " + email.getFromAddress() + 
+					"\nTO: " + email.getToAddresses() + 
+					"\nSUBJECT: " + email.getSubject());
 			changeDefaultSender();
 			this.sendMail(email, attempts);
 		}
@@ -60,7 +66,7 @@ public class EmailSender extends GMailSender {
 	 * @param email
 	 * @throws Exception
 	 */
-	public void sendMail(EmailQueue email) throws Exception {
+	public void sendNow(EmailQueue email) throws Exception {
 		sendMail(email, 0);
 	}
 

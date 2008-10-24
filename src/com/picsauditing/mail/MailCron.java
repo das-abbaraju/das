@@ -35,7 +35,7 @@ public class MailCron extends PicsActionSupport {
 		EmailSender sender = new EmailSender();
 		for (EmailQueue email : emails) {
 			try {
-				sender.sendMail(email);
+				sender.sendNow(email);
 			} catch (Exception e) {
 				System.out.println("ERROR with MailCron: " + e.getMessage());
 				addActionError("Failed to send email: " + e.getMessage());

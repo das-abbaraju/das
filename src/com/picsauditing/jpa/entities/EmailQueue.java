@@ -60,7 +60,7 @@ public class EmailQueue implements java.io.Serializable {
 		this.status = status;
 	}
 
-	@Column(name = "fromAddress", nullable = false, length = 150)
+	@Column(name = "fromAddress", length = 150)
 	public String getFromAddress() {
 		return fromAddress;
 	}

@@ -53,9 +53,10 @@ public class EmailBuilder {
 	public EmailQueue build() throws Exception {
 		EmailQueue email = new EmailQueue();
 
+		email.setEmailTemplate(template);
 		email.setCreationDate(new Date());
 		email.setToAddresses(toAddresses);
-		email.setFromAddress(getFromAddress());
+		email.setFromAddress(fromAddress);
 		if (conID > 0)
 			email.setContractorAccount(new ContractorAccount(conID));
 
@@ -130,10 +131,6 @@ public class EmailBuilder {
 	}
 
 	public String getFromAddress() {
-		if (permissions == null)
-			fromAddress = "info@picsauditing.com";
-		else
-			fromAddress = permissions.getEmail();
 		return fromAddress;
 	}
 
