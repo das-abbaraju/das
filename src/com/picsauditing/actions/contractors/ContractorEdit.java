@@ -102,8 +102,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					auditBuilder.buildAudits(contractor);
 					BillContractor billContractor = new BillContractor();
 					billContractor.setContractor(contractor.getIdString());
-					billContractor.calculatePrice();
-					billContractor.writeToDB();
+					int newBillingAmount = billContractor.calculatePrice();
+					contractor.setNewBillingAmount(newBillingAmount);
+					contractor = accountDao.save(contractor);
 					flagCalculator2.runByContractor(contractor.getId());
 					addActionMessage("Successfully modified " + contractor.getName());
 				}
