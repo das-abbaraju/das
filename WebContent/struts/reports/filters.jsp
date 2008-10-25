@@ -1,115 +1,22 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:include value="../actionMessages.jsp" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
-<script type="text/javascript" src="js/prototype.js"></script>
-<SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
-<SCRIPT LANGUAGE="JavaScript">
-	var cal2 = new CalendarPopup('caldiv2');
-	cal2.offsetY = -110;
-	cal2.setCssPrefix("PICS");
-	cal2.showNavigationDropdowns();
-</SCRIPT>
 <script type="text/javascript">
-function toggleBox(name) {
-	var box = $(name+'_select');
-	var result = $(name+'_query');
-	result.hide();
-	box.toggle();
-	if (box.visible())
-		return;
-
-	updateQuery(name);
-	result.show();
-}
-
-function showTextBox(name) {
-	var textBox = $(name);
-	var result = $(name+'_query'); 
-	result.hide();
-	textBox.toggle();
-	if(textBox.visible())
-		return;
-
-	textQuery(name);
-	result.show();	
-}
-
-function clearSelected(name) {
-	var box = $(name);
-	for(i=0; i < box.length; i++)
-		box.options[i].selected = false
-	updateQuery(name);
-}
-
-function updateQuery(name) {
-	var box = $(name);
-	var result = $(name+'_query');
-	var queryText = '';
-	var values = $F(box);
-	for(i=0; i < box.length; i++) {
-		if (box.options[i].selected) {
-			if (queryText != '') queryText = queryText + ", ";
-			queryText = queryText + box.options[i].text;
-		}
-	}
-	
-	if (queryText == '') {
-		queryText = 'ALL';
-	}
-	result.update(queryText);
-}
-
-function textQuery(name) {
-	var startField = $(name+'1');
-	var endField = $(name+'2');
-	var result = $(name+'_query');
-	var queryText = '';
-	if(startField.value != '' && endField.value != '')
-		queryText = 'between '+startField.value+' and '+ endField.value;
-	if(startField.value != '' && endField.value == '')
-		queryText = 'after '+ startField.value;
-	if(startField.value == '' && endField.value != '')
-		queryText = 'before '+ endField.value;
-	
-	if (queryText == '') {
-		queryText = '= ALL';
-	}
-	result.update(queryText);
-}
-
-function clearTextField(name) {
-	var box = $(name);
-	var startField = $(name+'1');
-	var endField = $(name+'2');
-	startField.value = "";
-	endField.value = ""; 
-	textQuery(name);
-}
-
 function download(url) {
 	newurl = url + "CSV.action?" + $('form1').serialize();
 	popupWin = window.open(newurl, url, '');
 }
-
 </script>
 
-<style type="text/css">
-a.clearLink {
-	border-width: 1px;
-	font-size: 10px;
-	line-height: 10px;
-	padding: 0px;
-	margin: 0px;
-}
-</style>
-
 <div id="search">
-<div id="showSearch" onclick="showSearch()"
-	<s:if test="filtered">style="display: none"</s:if>><a href="#">Show
-Filter Options</a></div>
-<div id="hideSearch" <s:if test="!filtered">style="display: none"</s:if>><a
-	href="#" onclick="hideSearch()">Hide Filter Options</a></div>
+<s:if test="allowCollapsed">
+	<div id="showSearch" onclick="showSearch()"
+		<s:if test="filtered">style="display: none"</s:if>
+		><a href="#">Show Filter Options</a></div>
+	<div id="hideSearch" <s:if test="!filtered">style="display: none"</s:if>><a
+		href="#" onclick="hideSearch()">Hide Filter Options</a></div>
+</s:if>
+<a href="#" onclick="runSearchAjax('form1','<s:property value="filter.destinationAction"/>'); return false;">Test Me</a>
 <s:form id="form1" method="post"
 	cssStyle="background-color: #F4F4F4;"
 	onsubmit="runSearch( 'form1')">
@@ -119,9 +26,6 @@ Filter Options</a></div>
 
 	<div style="text-align: center; width: 100%">
 	<div class="buttons">
-		<pics:permission perm="EmailTemplates">
-			<button name="button" value="Draft Email" type="submit" style="float: right;">Draft Email</button>
-		</pics:permission>
 		<button class="positive" type="submit" name="button" value="Search">Search</button>
 	</div>
 	</div>

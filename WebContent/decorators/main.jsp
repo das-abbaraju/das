@@ -18,17 +18,13 @@
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/pics_legacy.css" />
 <link rel="stylesheet" type="text/css" media="print" href="css/print.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reset.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/pics_legacy.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css" title="bluemenu"/>
-<script type="text/javascript" src="js/chrome.js"></script>
-<script type="text/javascript" src="js/Search.js"></script>
-<script language="JavaScript" src="js/D2H_ctxt.js"></script>
-<script language="javascript">
-	helpURL = "help/c/default.htm";
-</script>
+<script src="js/chrome.js" type="text/javascript" ></script>
+<script src="js/pics_main.js" type="text/javascript" ></script>
 
 <!--CSS FIXES FOR INTERNET EXPLORER --->
 <!--[if IE]>
@@ -40,29 +36,6 @@
 	<link rel="stylesheet" href="css/ie6.css" type="text/css" />
 <![endif]-->
 
-<script type="text/javascript">
-function showChat() {
-	var elem = getElement('chatIcon');
-	elem.style.display = 'block';
-}
-function hideChat() {
-	var elem = getElement('chatIcon');
-	elem.style.display = 'none';
-}
-function getElement(whichLayer) {
-	var elem;
-	if( document.getElementById )
-		// this is the way the standards work
-		elem = document.getElementById( whichLayer );
-	else if( document.all )
-		// this is the way old msie versions work
-		elem = document.all[whichLayer];
-	else if( document.layers )
-		// this is the way nn4 works
-		elem = document.layers[whichLayer];
-	return elem;
-}
-</script>
 <decorator:head />
 </head>
 <body>

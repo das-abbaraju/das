@@ -1,0 +1,92 @@
+#content div.target_sample {
+	width: 1150px;
+	position: relative;
+	border-bottom: 1px dashed #A84D10;
+	padding: 0 0 10px 0;
+}
+
+#content div.instructions {
+	background: url('../images/help.gif') no-repeat left center; padding-left:14px; padding-right:0; padding-top:0; padding-bottom:0
+}
+
+
+#content div.target_recipient {
+	width: 348px;
+	height: 272px;
+	position: relative;
+	float: left;
+	background: url(../images/email_help_bg.jpg) no-repeat;
+	margin: 0px;
+	padding: 15px 0 0 15px;
+	cursor: pointer;
+}
+
+#content div.target_recipient:hover {
+	position: relative;
+	height: 272px;
+	right: 4px;
+	bottom: 2px;
+	background: url(../images/email_help_hover.jpg) no-repeat;
+}
+
+#content div.target_recipient li {
+	font: 13px;
+	color: #4C4D4D;
+	width: 300px;
+	font-style: italic;
+	margin: 5px;
+	line-height: 18px;
+}
+
+#content div.target_recipient li {
+	padding: 5px 0 0;
+}
+
+#content div.target_recipient li span {
+	display: block;
+	font-size: 15px;
+	font-style: normal;
+	font-weight: bold;
+}
+
+#content span.footer_instruction {
+	color: #003768;
+	font-size: 15px;
+	display: block;
+	text-align: right;
+	position: relative;
+	top: 0px;
+	left: -30px;
+}
+
+#email_previousSTP {
+	position: absolute;
+	right: 0px;
+	top: -5px;
+}
+
+#content span.step_number {
+	font-size: 50px;
+	color: #A84D10;
+	font-weight: bold;
+	position: absolute;
+	top: 4px;
+	left: -35px;
+	line-height: 50px;
+}
+
+div#search {
+	position: relative;
+}
+
+div.buttons {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+}
+
+button.positive {
+	position: absolute;
+	right: 120px;
+	bottom: 5px;
+}

@@ -38,4 +38,3 @@
 	<div class="alphapaging"><s:property
 		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
 </s:form></div>
-
