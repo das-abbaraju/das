@@ -61,7 +61,7 @@
 				<s:else>
 					<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><img src="images/icon_Flag.gif" width="10" height="12" border="0" title="Blank"/></a>
 				</s:else>
-				<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="operatorAccount.name" /></a>
+				<a title="Waiting On : <s:property value="flag.waitingOn"/>" href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="operatorAccount.name" /></a>
 			</li>
 			</s:iterator>
 			<li>...<a href="con_selectFacilities.jsp?id=<s:property value="id" />">see Facilities</a></li>
