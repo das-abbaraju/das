@@ -13,6 +13,9 @@
 <s:elseif test="contractor.annualAmountOwed > 0 || contractor.upgradeAmountOwed > 0">
 	<div id="alert">This contractor has an outstanding invoice due</div>
 </s:elseif>
+<s:if test="permissions.admin && !contractor.mustPayB">
+	<div id="alert">This account has a lifetime free membership</div>
+</s:if>
 
 <div id="companyinfo">
 	<div class="contact">
