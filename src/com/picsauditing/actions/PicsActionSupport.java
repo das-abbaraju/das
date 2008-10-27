@@ -2,12 +2,15 @@ package com.picsauditing.actions;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
@@ -196,5 +199,12 @@ public class PicsActionSupport extends ActionSupport {
 			return new Integer(ids[0]).intValue();
 		}
 		return 0;
+	}
+	
+	public int getDaysLeft(Date invoiceDate) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(invoiceDate);
+		cal.add(cal.DAY_OF_YEAR, 120);
+		return DateBean.getDateDifference(cal.getTime());
 	}
 }

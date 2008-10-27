@@ -1,7 +1,6 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -362,7 +361,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	
 	@Transient
 	public boolean isMustPayB() {
-		return YesNo.Yes.equals(mustPay);
+		return "Yes".equals(mustPay);
 	}
 
 	/**
@@ -521,10 +520,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.newBillingAmount = newBillingAmount;
 	}
 
-	
-	
-	
-	
 	// Other relationships //
 	
 	@ManyToOne

@@ -18,7 +18,6 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
-import com.picsauditing.jpa.entities.WaitingOn;
 
 public class ContractorFlagAction extends ContractorActionSupport {
 	protected ContractorOperatorDAO contractorOperatorDao;
@@ -36,10 +35,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected boolean overrideAll = false;
 	protected boolean deleteAll = false;
 
-	public ContractorFlagAction(ContractorAccountDAO accountDao,
-			ContractorAuditDAO auditDao,
-			ContractorOperatorDAO contractorOperatorDao,
-			AuditDataDAO auditDataDAO,
+	public ContractorFlagAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			ContractorOperatorDAO contractorOperatorDao, AuditDataDAO auditDataDAO,
 			ContractorOperatorFlagDAO contractorOperatorFlagDAO) {
 		super(accountDao, auditDao);
 		this.contractorOperatorDao = contractorOperatorDao;
@@ -52,6 +49,11 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			return LOGIN;
 		limitedView = true;
 		findContractor();
+
+		if (contractor.getUpgradeAmountOwed() > 0 || contractor.getAnnualAmountOwed() > 0)
+			addActionError("This contractor will be deactivated from PICS system in "
+					+ getDaysLeft(contractor.getLastInvoiceDate()) + " days");
+
 		if (opID == 0)
 			opID = permissions.getAccountId();
 
@@ -69,15 +71,13 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		calculator.setOperator(co.getOperatorAccount());
 		calculator.setContractor(contractor);
 		calculator.setConAudits(contractor.getAudits());
-		auditData = auditDataDAO.findAnswersByContractor(contractor.getId(), co
-				.getOperatorAccount().getQuestionIDs());
+		auditData = auditDataDAO.findAnswersByContractor(contractor.getId(), co.getOperatorAccount().getQuestionIDs());
 		calculator.setAuditAnswers(auditData);
 
 		if ("Override".equals(action)) {
 			String text = "Changed the flag color to " + forceFlag;
-			Note note = new Note(co.getOperatorAccount().getIdString(), co
-					.getContractorAccount().getIdString(), permissions
-					.getUserIdString(), permissions.getUsername(), text);
+			Note note = new Note(co.getOperatorAccount().getIdString(), co.getContractorAccount().getIdString(),
+					permissions.getUserIdString(), permissions.getUsername(), text);
 			note.writeToDB();
 		}
 		if ("deleteOverride".equals(action)) {
@@ -106,7 +106,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				for (ContractorOperator operator : getOperators()) {
 					operator.setForceEnd(forceEnd);
 					operator.setForceFlag(forceFlag);
-					//FlagColor newColor = calculator.calculate();
+					// FlagColor newColor = calculator.calculate();
 					operator.getFlag().setFlagColor(forceFlag);
 					contractorOperatorDao.save(operator);
 				}
@@ -134,7 +134,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		co.getFlag().setFlagColor(newColor);
 		co.getFlag().setWaitingOn(calculator.calculateWaitingOn());
 		contractorOperatorDao.save(co);
-		
+
 		return SUCCESS;
 	}
 
@@ -164,8 +164,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 	// Other helper getters for osha criteria
 	public boolean isOshaTrirUsed() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount()
-				.getFlagOshaCriteria()) {
+		for (FlagOshaCriteria criteria : co.getOperatorAccount().getFlagOshaCriteria()) {
 			if (criteria.getTrir().isRequired())
 				return true;
 		}
@@ -173,8 +172,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 
 	public boolean isOshaLwcrUsed() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount()
-				.getFlagOshaCriteria()) {
+		for (FlagOshaCriteria criteria : co.getOperatorAccount().getFlagOshaCriteria()) {
 			if (criteria.getLwcr().isRequired())
 				return true;
 		}
@@ -182,8 +180,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 
 	public boolean isOshaFatalitiesUsed() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount()
-				.getFlagOshaCriteria()) {
+		for (FlagOshaCriteria criteria : co.getOperatorAccount().getFlagOshaCriteria()) {
 			if (criteria.getFatalities().isRequired())
 				return true;
 		}
@@ -191,8 +188,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 
 	public boolean isOshaAveragesUsed() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount()
-				.getFlagOshaCriteria()) {
+		for (FlagOshaCriteria criteria : co.getOperatorAccount().getFlagOshaCriteria()) {
 			if (criteria.getFatalities().isTimeAverage())
 				return true;
 			if (criteria.getLwcr().isTimeAverage())
@@ -246,7 +242,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	public void setDeleteAll(boolean deleteAll) {
 		this.deleteAll = deleteAll;
 	}
-	
+
 	public String getYesterday() {
 		Calendar date = Calendar.getInstance();
 		date.add(Calendar.DAY_OF_YEAR, -1);
