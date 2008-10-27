@@ -20,20 +20,17 @@ public class ReportFilterAjax extends PicsActionSupport {
 
 		if (listType.equals("Contractor")) {
 			ReportFilterContractor filter = new ReportFilterContractor();
-			if (permissions.isPicsEmployee())
-				filter.setDestinationAction("ContractorListAdmin");
-			if (permissions.isOperator() || permissions.isCorporate())
-				filter.setDestinationAction("ContractorListOperator");
+			filter.setDestinationAction("ContractorListAjax");
 			this.filter = filter;
 		}
 		if (listType.equals("Audit")) {
 			ReportFilterAudit filter = new ReportFilterAudit();
-			filter.setDestinationAction("ReportAuditList");
+			filter.setDestinationAction("ReportAuditListAjax");
 			this.filter = filter;
 		}
 		if (listType.equals("User")) {
 			ReportFilterUser filter = new ReportFilterUser();
-			filter.setDestinationAction("ReportUsersAccount");
+			filter.setDestinationAction("UserListAjax");
 			this.filter = filter;
 		}
 		filter.setPermissions(permissions);

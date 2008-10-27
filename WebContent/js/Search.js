@@ -26,14 +26,13 @@ function runSearch( formid ) {
 }
 
 function runSearchAjax( formid, actionName ) {
-	alert("TODO Search.js line 32" + actionName);
 	// if this is an ajax call, then get the form elements and then post them through ajax and return the results to a div 
-	
-	document.getElementById( formid )['showPage'].value = "1";
-	document.getElementById( formid )['filter.startsWith'].value = "";
+	var search = $(formid);
+	$search['showPage'].value = "1";
+	$search['filter.startsWith'].value = "";
 	
 	$('report_data').innerHTML = "<img src='images/ajax_process2.gif' width='48' height='48' /> finding search results";
-	var pars = "";
+	var pars = $(formid).serialize();
 	var myAjax = new Ajax.Updater('report_data',actionName+'.action', 
 	{
 		method: 'post', 

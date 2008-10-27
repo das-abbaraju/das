@@ -16,8 +16,11 @@ function download(url) {
 	<div id="hideSearch" <s:if test="!filtered">style="display: none"</s:if>><a
 		href="#" onclick="hideSearch()">Hide Filter Options</a></div>
 </s:if>
+<s:if test="filter.ajax">
+<s:property value="filter.destinationAction" />
+</s:if>
 <a href="#" onclick="runSearchAjax('form1','<s:property value="filter.destinationAction"/>'); return false;">Test Me</a>
-<s:form id="form1" method="post"
+<s:form id="form1" method="post" action="%{filter.destinationAction}"
 	cssStyle="background-color: #F4F4F4;"
 	onsubmit="runSearch( 'form1')">
 	<s:hidden name="showPage" value="1" />

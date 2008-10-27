@@ -25,7 +25,7 @@
 				result="NoRightsException" />
 		</global-exception-mappings>
 
-		<!-- Dashboard ------------------------------->
+		<!-- Dashboard -->
 		<action name="Home" class="com.picsauditing.actions.Home">
 			<result>struts/home.jsp</result>
 		</action>
@@ -83,7 +83,7 @@
 
 
 
-		<!-- Contractor Information ------------------------------->
+		<!-- Contractor Information -->
 		<action name="ConHeader"
 			class="com.picsauditing.actions.contractors.ConHeader">
 			<result>struts/contractors/conHeader.jsp</result>
@@ -105,9 +105,9 @@
 			<result name="saved" type="redirect-action">
 				<param name="actionName">ConAuditList</param>
 				<param name="id">${id}</param>
-			</result>				
+			</result>
 		</action>
-		
+
 		<action name="ContractorEdit"
 			class="com.picsauditing.actions.contractors.ContractorEdit">
 			<result>struts/contractors/con_edit.jsp</result>
@@ -115,7 +115,9 @@
 				<param name="actionName">ContractorListAdmin</param>
 			</result>
 		</action>
-		
+
+
+
 
 
 
@@ -124,81 +126,77 @@
 			class="com.picsauditing.actions.report.ReportAccountQuick">
 			<result>struts/reports/contractors_search.jsp</result>
 		</action>
-		
+
+		<!-- Contractor List -->
 		<action name="ContractorListAdmin"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<result>struts/reports/contractors_admin.jsp</result>
-			<result name="EmailSender" type="chain">
-				<param name="actionName">MassMailer</param>
-			</result>
 		</action>
-		
-		<action name="ContractorListAdminCSV"
-			class="com.picsauditing.actions.report.ReportAccountAudits">
-			<param name="download">true</param>
-			<result>struts/reports/contractors_list_csv.jsp</result>
-		</action>
-
 		<action name="ContractorListOperator"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<result>struts/reports/contractors_operator.jsp</result>
-			<result name="EmailSender" type="chain">
-				<param name="actionName">MassMailer</param>
-			</result>
 		</action>
-		
-		<action name="ContractorSearchAjax"
-			class="com.picsauditing.actions.report.ReportAccountAudits">
-			<result>struts/reports/contractors_admin.jsp</result>
-			<result name="operator">struts/reports/contractors_operator.jsp</result>
-		</action>
-
-		<action name="UserSearchAjax"
-			class="com.picsauditing.actions.report.ReportAccountAudits">
-			<result>struts/reports/contractors_admin.jsp</result>
-			<result name="operator">struts/reports/contractors_operator.jsp</result>
-		</action>
-
-		<action name="ContractorAuditSearchAjax"
-			class="com.picsauditing.actions.report.ReportAccountAudits">
-			<result>struts/reports/contractors_admin.jsp</result>
-			<result name="operator">struts/reports/contractors_operator.jsp</result>
-		</action>
-
-		<action name="ContractorListOperatorCSV"
+		<action name="ContractorListCSV"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<param name="download">true</param>
 			<result>struts/reports/contractors_list_csv.jsp</result>
-		</action>		
+		</action>
+		<action name="ContractorListAjax"
+			class="com.picsauditing.actions.report.ReportAccountAudits">
+			<result>struts/reports/contractors_list_data.jsp</result>
+		</action>
 
+		<!-- User List -->
+		<action name="UserList"
+			class="com.picsauditing.actions.report.ReportUser">
+			<result>struts/reports/report_users.jsp</result>
+		</action>
+		<action name="UserListCSV"
+			class="com.picsauditing.actions.report.ReportUser">
+			<param name="download">true</param>
+			<result>struts/reports/report_users_csv.jsp</result>
+		</action>
+		<action name="UserListAjax"
+			class="com.picsauditing.actions.report.ReportUser">
+			<result>struts/reports/report_users_data.jsp</result>
+		</action>
+
+		<!-- Audit List -->
 		<action name="ReportAuditList"
 			class="com.picsauditing.actions.report.ReportContractorAudits">
-			<result>struts/reports/auditList.jsp</result>
-			<result name="EmailSender" type="chain">
-				<param name="actionName">MassMailer</param>
-			</result>				
+			<result>struts/reports/audit_list.jsp</result>
 		</action>
-		
 		<action name="ReportAuditListCSV"
 			class="com.picsauditing.actions.report.ReportContractorAudits">
 			<param name="download">true</param>
 			<result>struts/reports/audit_list_csv.jsp</result>
 		</action>
-
-		<action name="ReportUsersAccount"
-			class="com.picsauditing.actions.report.ReportUser">
-			<result>struts/reports/report_users.jsp</result>
+		<action name="ReportAuditListAjax"
+			class="com.picsauditing.actions.report.ReportContractorAudits">
+			<result>struts/reports/audit_list_data.jsp</result>
 		</action>
 
 
-		
-		<!-- REPORTS Other ------------------------------->
+		<!-- Operator List -->
+		<action name="ReportAccountList"
+			class="com.picsauditing.actions.report.ReportOperatorCorporate">
+			<result>struts/reports/operator_corporate.jsp</result>
+		</action>
+		<action name="OperatorSearchAjax"
+			class="com.picsauditing.actions.report.ReportOperatorCorporate">
+			<result>struts/reports/operator_corporate_data.jsp</result>
+		</action>
+
+
+
+
+		<!-- REPORTS Other -->
 		<action name="NewContractorSearch"
 			class="com.picsauditing.actions.report.ReportNewContractorSearch">
 			<result>struts/reports/newContractor_operator.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-			</result>				
+			</result>
 		</action>
 
 		<action name="AuditListAuditor"
@@ -206,7 +204,7 @@
 			<result>struts/reports/audit_auditor.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-			</result>				
+			</result>
 		</action>
 
 		<action name="MyAuditHistory"
@@ -227,14 +225,14 @@
 			<result>struts/reports/auditAssignments.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-			</result>				
+			</result>
 		</action>
 
 		<action name="AuditAssignmentUpdateAjax"
 			class="com.picsauditing.actions.report.AuditAssignmentUpdate">
 			<result>struts/blank.jsp</result>
 		</action>
-		
+
 		<action name="ReportNCMS"
 			class="com.picsauditing.actions.report.ReportAccountNCMS">
 			<result>struts/reports/report_ncms.jsp</result>
@@ -260,7 +258,7 @@
 			<result>/struts/reports/report_licenses.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-			</result>				
+			</result>
 		</action>
 
 		<action name="ReportIncidenceRate"
@@ -273,7 +271,7 @@
 			<result>struts/reports/assignedContractor.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-			</result>				
+			</result>
 		</action>
 
 		<action name="ScheduleAuditUpdate"
@@ -286,7 +284,7 @@
 			<result>/struts/reports/delinquent_conaccounts.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-			</result>				
+			</result>
 		</action>
 
 		<action name="ArchivedContractorAccounts"
@@ -294,45 +292,40 @@
 			<result>/struts/reports/archived_conaccounts.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-			</result>				
+			</result>
 		</action>
 
 		<action name="MultiLoginUser"
 			class="com.picsauditing.actions.users.ManageMultiUser">
 			<result>struts/users/multilogin_user.jsp</result>
 		</action>
-		
+
 		<action name="ReportAuditAnalysis"
 			class="com.picsauditing.actions.report.ReportAuditAnalysis">
 			<result>struts/reports/audit_analysis.jsp</result>
-		</action>		
+		</action>
 
 		<action name="ReportCompletePQF"
 			class="com.picsauditing.actions.report.ReportCompletePQF">
 			<result>struts/reports/complete_pqf.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-			</result>				
+			</result>
 		</action>
-		
+
 		<action name="UsersByOpPerm"
 			class="com.picsauditing.actions.users.UsersByOpPerm">
 			<result>struts/users/users_by_opperm.jsp</result>
 		</action>
-		
+
 		<action name="ReportContractorsWithForcedFlags"
 			class="com.picsauditing.actions.report.ReportContractorsWithForcedFlags">
 			<result>/struts/reports/report_forcedflags.jsp</result>
 		</action>
-		
+
 		<action name="ReportUserPermissionMatrix"
 			class="com.picsauditing.actions.report.ReportUserPermissionMatrix">
 			<result>struts/reports/user_permission_matrix.jsp</result>
-		</action>
-		
-		<action name="ReportAccountList"
-			class="com.picsauditing.actions.report.ReportOperatorCorporate">
-			<result>struts/reports/operator_corporate.jsp</result>
 		</action>
 
 		<action name="ReportOperatorCriteria"
@@ -340,21 +333,21 @@
 			<result>struts/reports/operator_flagcriteria.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-			</result>				
+			</result>
 		</action>
-		
+
 		<action name="QuestionAnswerSearch"
 			class="com.picsauditing.actions.report.ReportAnswerSearch">
 			<result>struts/reports/qanswersearch.jsp</result>
 		</action>
-		
 
 
 
 
 
 
-		<!-- Audits View/Edit/Verify/Copy ------------------------------->
+
+		<!-- Audits View/Edit/Verify/Copy -->
 		<action name="Audit"
 			class="com.picsauditing.actions.audits.ContractorAuditAction">
 			<result>struts/contractors/con_audit.jsp</result>
@@ -383,7 +376,7 @@
 			class="com.picsauditing.actions.audits.ReloadQuestion">
 			<result>struts/audits/audit_cat_reload.jsp</result>
 		</action>
-		
+
 		<action name="OshaSave"
 			class="com.picsauditing.actions.audits.OshaSave">
 			<result type="redirect-action">
@@ -394,12 +387,12 @@
 			</result>
 			<result name="input">/struts/blank.jsp</result>
 		</action>
-		
+
 		<action name="ConAuditMaintain"
 			class="com.picsauditing.actions.audits.ConAuditMaintain">
 			<result>struts/audits/audit_maintain.jsp</result>
 			<result name="AuditList" type="redirect-action">
-			<param name="actionName">ConAuditList</param>
+				<param name="actionName">ConAuditList</param>
 				<param name="id">${contractor.id}</param>
 			</result>
 		</action>
@@ -415,13 +408,13 @@
 
 
 
-		<!-- PQF Verify ------------------------------>
+		<!-- PQF Verify -->
 		<action name="PqfVerification"
 			class="com.picsauditing.actions.report.ReportPQFVerification">
 			<result>struts/reports/pqf_verification.jsp</result>
 			<result name="EmailSender" type="chain">
 				<param name="actionName">MassMailer</param>
-			</result>				
+			</result>
 		</action>
 
 		<action name="VerifyView"
@@ -448,7 +441,8 @@
 
 
 
-		<!-- Audits Manage ------------------------------->
+
+		<!-- Audits Manage -->
 		<action name="ManageAuditType"
 			class="com.picsauditing.actions.auditType.ManageAuditType">
 			<result>struts/audits/manage_audit_type.jsp</result>
@@ -462,7 +456,7 @@
 			<result name="deleted" type="redirect-action">
 				<param name="actionName">ManageAuditType</param>
 				<param name="id">${id}</param>
-			</result>				
+			</result>
 		</action>
 
 		<action name="ManageCategory"
@@ -494,7 +488,7 @@
 			<result name="deleted" type="redirect-action">
 				<param name="actionName">ManageCategory</param>
 				<param name="id">${id}</param>
-			</result>			
+			</result>
 		</action>
 
 		<action name="ManageQuestion"
@@ -512,7 +506,7 @@
 				<param name="id">${id}</param>
 			</result>
 		</action>
-		
+
 		<action name="OrderAuditChildrenAjax"
 			class="com.picsauditing.actions.auditType.OrderAuditChildren">
 			<result>struts/blank.jsp</result>
@@ -522,17 +516,17 @@
 			class="com.picsauditing.actions.auditType.ManagePQFMatrix">
 			<result>struts/audits/pqf_matrix.jsp</result>
 		</action>
-		
+
 		<action name="ManageDesktopMatrix"
 			class="com.picsauditing.actions.auditType.ManageDesktopMatrix">
 			<result>struts/audits/desktop_matrix.jsp</result>
 		</action>
-		
 
 
 
 
-		<!-- Users --------------------------->
+
+		<!-- Users -->
 		<action name="UserProfileAjax"
 			class="com.picsauditing.actions.users.ProfileEdit">
 			<result>struts/widgets/user_profile.jsp</result>
@@ -547,12 +541,12 @@
 			class="com.picsauditing.actions.users.UsersManage">
 			<result>struts/users/users_manage.jsp</result>
 		</action>
-		
+
 		<action name="UserSave"
 			class="com.picsauditing.actions.users.UserSave">
 			<result>struts/users/users_manage.jsp</result>
 		</action>
-		
+
 		<action name="UserAccessSaveAjax"
 			class="com.picsauditing.actions.users.UserAccessSave">
 			<result>struts/users/user_save_permissions.jsp</result>
@@ -565,34 +559,36 @@
 		<action name="UserGroupSaveAjax"
 			class="com.picsauditing.actions.users.UserGroupSave">
 			<result>struts/users/user_save_groups.jsp</result>
-			<result name="member">struts/users/user_save_members.jsp</result>
+			<result name="member">
+				struts/users/user_save_members.jsp
+			</result>
 		</action>
 
 
 
 
 
-		<!-- Email Wizard/Templates/Mailer --------------------------->
+		<!-- Email Wizard/Templates/Mailer -->
 		<action name="MassMailer"
 			class="com.picsauditing.mail.MassMailer">
 			<result>struts/mail/mass_mailer.jsp</result>
 		</action>
-		
+
 		<action name="MailEditorAjax"
 			class="com.picsauditing.mail.MassMailer">
 			<result>struts/mail/mail_editor.jsp</result>
 		</action>
-		
+
 		<action name="MailPreviewAjax"
 			class="com.picsauditing.mail.MassMailer">
 			<result>struts/mail/mail_preview.jsp</result>
 		</action>
-		
+
 		<action name="EmailQueueList"
 			class="com.picsauditing.mail.EmailQueueList">
 			<result>struts/mail/email_queue_list.jsp</result>
 		</action>
-		
+
 		<action name="EmailTemplateSaveAjax"
 			class="com.picsauditing.mail.EmailTemplateSave">
 			<result>struts/blank.jsp</result>
@@ -602,14 +598,14 @@
 			class="com.picsauditing.mail.EmailWizard">
 			<result>struts/mail/mail_wizard.jsp</result>
 		</action>
-		
 
 
 
 
 
 
-		<!-- Charts and Graphs --------------------------->
+
+		<!-- Charts and Graphs -->
 		<action name="ChartXMLFlagCount"
 			class="com.picsauditing.actions.chart.ChartFlagCount">
 			<result>struts/chart_xml.jsp</result>
@@ -628,8 +624,8 @@
 
 
 
-		<!-- Ajax Snippets --------------------------->
-	
+		<!-- Ajax Snippets -->
+
 		<action name="FacilitiesGetAjax"
 			class="com.picsauditing.actions.operators.FacilitiesGet">
 			<result>struts/operators/facilitySelect.jsp</result>
@@ -644,7 +640,7 @@
 			class="com.picsauditing.actions.audits.QuestionSelect">
 			<result>struts/audits/questions_select.jsp</result>
 		</action>
-		
+
 		<action name="AuditorsGet"
 			class="com.picsauditing.actions.audits.AuditorsGet">
 			<result>/struts/audits/auditorSelect.jsp</result>
@@ -658,14 +654,16 @@
 		<action name="ReportFilterAjax"
 			class="com.picsauditing.actions.report.ReportFilterAjax">
 			<result>struts/reports/filters.jsp</result>
-			<result name="userfilters">struts/reports/userfilters.jsp</result>
+			<result name="userfilters">
+				struts/reports/userfilters.jsp
+			</result>
 		</action>
 
 
 
 
-		<!-- Crons and Scheduled Tasks --------------------------->
-		
+		<!-- Crons and Scheduled Tasks -->
+
 		<action name="Cron" class="com.picsauditing.actions.Cron">
 			<result>/struts/blank.jsp</result>
 		</action>
@@ -679,11 +677,11 @@
 			class="com.picsauditing.mail.MailCron">
 			<result>struts/blank.jsp</result>
 		</action>
-		
-		
-		
-		
-		<!-- Other Stuff --------------------------->
+
+
+
+
+		<!-- Other Stuff -->
 		<action name="AuditOperator"
 			class="com.picsauditing.actions.audits.AuditOperatorList">
 			<result>struts/operators/audit_operator.jsp</result>
@@ -696,6 +694,6 @@
 
 
 
-		<!-- Remember to Categorize your new Struts pages---->
+		<!-- Remember to Categorize your new Struts pages -->
 	</package>
 </struts>

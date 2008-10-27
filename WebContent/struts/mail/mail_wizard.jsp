@@ -31,6 +31,7 @@ function selectList(listType) {
 
 <h1>Email Wizard</h1>
 
+<div class="clear"></div>
 <!--Step 1-->
 <div class="target_sample" id="select_recipient">
 	<div class="instructions">Select a list type below to begin generating your emails</div>

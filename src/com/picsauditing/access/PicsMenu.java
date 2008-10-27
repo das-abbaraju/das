@@ -172,7 +172,7 @@ public class PicsMenu {
 		if(permissions.seesAllContractors())
 			subMenu.addChild("User Multi-Login","MultiLoginUser.action");
 		if (permissions.hasPermission(OpPerms.EditUsers))
-			subMenu.addChild("User Search","ReportUsersAccount.action");
+			subMenu.addChild("User Search","UserList.action");
 		
 		// Convert the first submenu into a menu if only one exists
 		Iterator<MenuComponent> iterator = menu.getChildren().iterator();
