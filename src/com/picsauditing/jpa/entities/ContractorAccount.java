@@ -50,11 +50,11 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private char accountNewComplete;
 	private String notes;
 	private String adminNotes;
-	private String mustPay;
+	private String mustPay = "Yes";
 	private Date paymentExpires;
 	private Date lastAnnualUpdateEmailDate;
 	private int requestedById;
-	private int billingCycle;
+	private int billingCycle = 1;
 	private int billingAmount;
 	private String isExempt;
 	private String isOnlyCerts;
@@ -183,72 +183,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public String getDescriptionHTML() {
 		return Utilities.escapeNewLines(this.description);
 	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "accountDate", nullable = true, length = 10)
-	public Date getAccountDate() {
-		return this.accountDate;
-	}
-
-	public void setAccountDate(Date accountDate) {
-		this.accountDate = accountDate;
-	}
-
-	@Column(name = "paid", nullable = false, length = 3)
-	public String getPaid() {
-		return this.paid;
-	}
-
-	public void setPaid(String paid) {
-		this.paid = paid;
-	}
-
-	/**
-	 * The date the contractor last paid their account in full
-	 * @return
-	 */
-	@Temporal(TemporalType.DATE)
-	@Column(name = "lastPayment", nullable = true, length = 10)
-	public Date getLastPayment() {
-		return this.lastPayment;
-	}
-
-	public void setLastPayment(Date lastPayment) {
-		this.lastPayment = lastPayment;
-	}
-
-	@Column(name = "lastPaymentAmount", nullable = true)
-	public int getLastPaymentAmount() {
-		return this.lastPaymentAmount;
-	}
-
-	public void setLastPaymentAmount(int lastPaymentAmount) {
-		this.lastPaymentAmount = lastPaymentAmount;
-	}
-
-	/**
-	 * The date we last sent an invoice to the contractor
-	 * @return
-	 */
-	@Temporal(TemporalType.DATE)
-	@Column(name = "lastInvoiceDate", nullable = true, length = 10)
-	public Date getLastInvoiceDate() {
-		return this.lastInvoiceDate;
-	}
-
-	public void setLastInvoiceDate(Date lastInvoiceDate) {
-		this.lastInvoiceDate = lastInvoiceDate;
-	}
-
-	@Column(name = "accountNewComplete", nullable = true, length = 1)
-	public char getAccountNewComplete() {
-		return this.accountNewComplete;
-	}
-
-	public void setAccountNewComplete(char accountNewComplete) {
-		this.accountNewComplete = accountNewComplete;
-	}
-
+	
 	@Column(name = "notes", nullable = true, length = 16277215)
 	public String getNotes() {
 		return this.notes;
@@ -281,25 +216,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.adminNotes = adminNotes;
 	}
 
-	@Column(name = "mustPay", nullable = true, length = 4)
-	public String getMustPay() {
-		return this.mustPay;
-	}
-
-	public void setMustPay(String mustPay) {
-		this.mustPay = mustPay;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "paymentExpires", nullable = true, length = 10)
-	public Date getPaymentExpires() {
-		return this.paymentExpires;
-	}
-
-	public void setPaymentExpires(Date paymentExpires) {
-		this.paymentExpires = paymentExpires;
-	}
-
 	@Temporal(TemporalType.DATE)
 	@Column(name = "lastAnnualUpdateEmailDate", nullable = true, length = 10)
 	public Date getLastAnnualUpdateEmailDate() {
@@ -317,42 +233,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	public void setRequestedById(int requestedById) {
 		this.requestedById = requestedById;
-	}
-
-	@Column(name = "billingCycle", nullable = false)
-	public int getBillingCycle() {
-		return this.billingCycle;
-	}
-
-	public void setBillingCycle(int billingCycle) {
-		this.billingCycle = billingCycle;
-	}
-
-	@Column(name = "billingAmount", nullable = false)
-	public int getBillingAmount() {
-		return this.billingAmount;
-	}
-
-	public void setBillingAmount(int billingAmount) {
-		this.billingAmount = billingAmount;
-	}
-
-	@Column(name = "isExempt", nullable = false, length = 3)
-	public String getIsExempt() {
-		return this.isExempt;
-	}
-
-	public void setIsExempt(String isExempt) {
-		this.isExempt = isExempt;
-	}
-
-	@Column(name = "isOnlyCerts", nullable = true, length = 3)
-	public String getIsOnlyCerts() {
-		return this.isOnlyCerts;
-	}
-
-	public void setIsOnlyCerts(String isOnlyCerts) {
-		this.isOnlyCerts = isOnlyCerts;
 	}
 
 	@Column(name = "secondContact", nullable = true, length = 50)
@@ -409,44 +289,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.billingEmail = billingEmail;
 	}
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "membershipDate", nullable = true, length = 10)
-	public Date getMembershipDate() {
-		return this.membershipDate;
-	}
-
-	public void setMembershipDate(Date membershipDate) {
-		this.membershipDate = membershipDate;
-	}
-
-	@Column(name = "newBillingAmount", nullable = false)
-	public int getNewBillingAmount() {
-		return this.newBillingAmount;
-	}
-
-	public void setNewBillingAmount(int newBillingAmount) {
-		this.newBillingAmount = newBillingAmount;
-	}
-
-	@Column(name = "payingFacilities", nullable = false)
-	public int getPayingFacilities() {
-		return this.payingFacilities;
-	}
-
-	public void setPayingFacilities(int payingFacilities) {
-		this.payingFacilities = payingFacilities;
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "welcomeAuditor_id")
-	public User getAuditor() {
-		return auditor;
-	}
-
-	public void setAuditor(User auditor) {
-		this.auditor = auditor;
-	}
-
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "riskLevel", nullable = false)
 	public LowMedHigh getRiskLevel() {
@@ -476,6 +318,226 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	/**
+	 * Obsolete???
+	 * 
+	 * @return
+	 */
+	@Deprecated
+	@Column(name = "accountNewComplete", nullable = true, length = 1)
+	public char getAccountNewComplete() {
+		return this.accountNewComplete;
+	}
+
+	@Deprecated
+	public void setAccountNewComplete(char accountNewComplete) {
+		this.accountNewComplete = accountNewComplete;
+	}
+
+	/**
+	 * Is this account only doing certificates?
+	 * TODO ask Jared, if these accounts get audits created for them?
+	 * @return
+	 */
+	@Column(name = "isOnlyCerts", nullable = true, length = 3)
+	public String getIsOnlyCerts() {
+		return this.isOnlyCerts;
+	}
+
+	public void setIsOnlyCerts(String isOnlyCerts) {
+		this.isOnlyCerts = isOnlyCerts;
+	}
+
+	//////   BILLING/ACCOUNT - related columns //////
+	/**
+	 * Determines if this contractor must pay or not. It allows for PICS to grant "free" lifetime accounts to certain contractors
+	 */
+	@Column(name = "mustPay", nullable = false, length = 3)
+	public String getMustPay() {
+		return this.mustPay;
+	}
+
+	public void setMustPay(String mustPay) {
+		this.mustPay = mustPay;
+	}
+	
+	@Transient
+	public boolean isMustPayB() {
+		return YesNo.Yes.equals(mustPay);
+	}
+
+	/**
+	 * Is this account a PQF-only account? Yes/No
+	 * @deprecated use the BillContractor.requiresAudit() method instead
+	 * @return
+	 */
+	@Deprecated
+	@Column(name = "isExempt", nullable = false, length = 3)
+	public String getIsExempt() {
+		return this.isExempt;
+	}
+
+	@Deprecated
+	public void setIsExempt(String isExempt) {
+		this.isExempt = isExempt;
+	}
+
+	@Column(name = "payingFacilities", nullable = false)
+	public int getPayingFacilities() {
+		return this.payingFacilities;
+	}
+
+	public void setPayingFacilities(int payingFacilities) {
+		this.payingFacilities = payingFacilities;
+	}
+
+	/**
+	 * The date this is first activated. This is never reset afterwards.
+	 */
+	@Temporal(TemporalType.DATE)
+	@Column(name = "accountDate", nullable = true, length = 10)
+	public Date getAccountDate() {
+		return this.accountDate;
+	}
+
+	public void setAccountDate(Date accountDate) {
+		this.accountDate = accountDate;
+	}
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "membershipDate", nullable = true, length = 10)
+	public Date getMembershipDate() {
+		return this.membershipDate;
+	}
+
+	public void setMembershipDate(Date membershipDate) {
+		this.membershipDate = membershipDate;
+	}
+
+	// INVOICING Billing info
+	/**
+	 * Is this account on a 1 or 3 year billing cycle
+	 */
+	@Column(name = "billingCycle", nullable = false)
+	public int getBillingCycle() {
+		return this.billingCycle;
+	}
+
+	public void setBillingCycle(int billingCycle) {
+		this.billingCycle = billingCycle;
+	}
+
+	/**
+	 * The last Invoiced amount
+	 * @return
+	 */
+	@Column(name = "billingAmount", nullable = false)
+	public int getBillingAmount() {
+		return this.billingAmount;
+	}
+
+	public void setBillingAmount(int billingAmount) {
+		this.billingAmount = billingAmount;
+	}
+
+	/**
+	 * The date we last sent an invoice to the contractor
+	 * @return
+	 */
+	@Temporal(TemporalType.DATE)
+	@Column(name = "lastInvoiceDate", nullable = true, length = 10)
+	public Date getLastInvoiceDate() {
+		return this.lastInvoiceDate;
+	}
+
+	public void setLastInvoiceDate(Date lastInvoiceDate) {
+		this.lastInvoiceDate = lastInvoiceDate;
+	}
+
+	// Payment Billing info
+	/**
+	 * This is not used anymore: Yes/No
+	 * @return
+	 */
+	@Column(name = "paid", nullable = false, length = 3)
+	public String getPaid() {
+		return this.paid;
+	}
+
+	public void setPaid(String paid) {
+		this.paid = paid;
+	}
+
+	/**
+	 * The date the contractor last paid their account in full
+	 * @return
+	 */
+	@Temporal(TemporalType.DATE)
+	@Column(name = "lastPayment", nullable = true, length = 10)
+	public Date getLastPayment() {
+		return this.lastPayment;
+	}
+
+	public void setLastPayment(Date lastPayment) {
+		this.lastPayment = lastPayment;
+	}
+
+	/**
+	 * The USD amount they paid on lastPayment date
+	 * @return
+	 */
+	@Column(name = "lastPaymentAmount", nullable = true)
+	public int getLastPaymentAmount() {
+		return this.lastPaymentAmount;
+	}
+
+	public void setLastPaymentAmount(int lastPaymentAmount) {
+		this.lastPaymentAmount = lastPaymentAmount;
+	}
+
+	/**
+	 * The date the lastPayment expires and the contractor is due to pay another "period's" membership fee
+	 * @return
+	 */
+	@Temporal(TemporalType.DATE)
+	@Column(name = "paymentExpires", nullable = true, length = 10)
+	public Date getPaymentExpires() {
+		return this.paymentExpires;
+	}
+
+	public void setPaymentExpires(Date paymentExpires) {
+		this.paymentExpires = paymentExpires;
+	}
+
+	/**
+	 * The annual membership fee for this contractor
+	 * @return
+	 */
+	@Column(name = "newBillingAmount", nullable = false)
+	public int getNewBillingAmount() {
+		return this.newBillingAmount;
+	}
+
+	public void setNewBillingAmount(int newBillingAmount) {
+		this.newBillingAmount = newBillingAmount;
+	}
+
+	
+	
+	
+	
+	// Other relationships //
+	
+	@ManyToOne
+	@JoinColumn(name = "welcomeAuditor_id")
+	public User getAuditor() {
+		return auditor;
+	}
+
+	public void setAuditor(User auditor) {
+		this.auditor = auditor;
+	}
+
+	/**
 	 * Map of Contractor Flags with OperatorID as the key
 	 */
 	@MapKey(name = "operatorAccount")
@@ -496,47 +558,50 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setCertificates(List<Certificate> certificates) {
 		this.certificates = certificates;
 	}
+	
+	///// Transient/Helper Methods ///////
 
 	@Transient
 	public int getUpgradeAmountOwed() {
 		if (!isActiveB())
 			// Inactive contractor must renew their account, they can't just upgrade
 			return 0;
-		if ("No".equals(mustPay))
-			return 0;
-		if ("Yes".equals(isExempt))
+		if (!isMustPayB())
 			return 0;
 		if (paymentExpires != null 
 				&& lastPayment != null 
 				&& lastInvoiceDate != null) {
 			// TODO we really shouldn't have to check for nulls, we should fix the root cause instead
-			if (lastPayment.after(lastInvoiceDate) || lastPayment.equals(lastInvoiceDate)) // already paid the invoice
+			if (lastInvoiceDate.before(lastPayment)) // already paid the invoice
 				return 0;
 			if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) > 75)
 				return 0; // This is an invoice for annual payment
 		}
+		// Removed this 10/27/08 because billingAmount actually reflect the difference, not the total amount required
 		if (billingAmount < lastPaymentAmount) // they already overpaid (probably garbage data)
 			return 0;
 
-		return billingAmount;
+		//return newBillingAmount - lastPaymentAmount;
+		// Examples:
+		// $699 - $399
+		// $1197 - $225 in cases of 3 year billing cycles
+		return billingAmount - lastPaymentAmount;
 	}
 
 	@Transient
 	public int getAnnualAmountOwed() {
-		if ("No".equals(mustPay))
-			return 0;
-		if ("Yes".equals(isExempt))
+		if (!isMustPayB())
 			return 0;
 		if (isActiveB() 
 				&& paymentExpires != null 
 				&& lastPayment != null 
 				&& lastInvoiceDate != null) {
-			if (!lastPayment.before(lastInvoiceDate)) // already paid the invoice
+			if (lastInvoiceDate.before(lastPayment)) // already paid the invoice
 				return 0;
 			if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) < 75)
 				return 0; // This is an invoice for upgrade payment
 		}
-		return newBillingAmount - lastPaymentAmount;
+		return billingAmount;
 	}
 
 }
