@@ -1,7 +1,6 @@
 package com.picsauditing.mail;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -84,7 +83,7 @@ public class MassMailer extends PicsActionSupport {
 				return SUCCESS;
 			}
 			int id = 0;
-			for(Integer tempId : ids) {
+			for (Integer tempId : ids) {
 				id = tempId;
 				break;
 			}
@@ -102,9 +101,9 @@ public class MassMailer extends PicsActionSupport {
 		// Start the main logic for actions that require passing the contractors
 		// in
 		if (ActionContext.getContext().getSession().containsKey("mailer_ids"))
-			ids = (Set<Integer>)ActionContext.getContext().getSession().get("mailer_ids");
+			ids = (Set<Integer>) ActionContext.getContext().getSession().get("mailer_ids");
 		if (ActionContext.getContext().getSession().containsKey("mailer_list_type"))
-			type = (ListType)ActionContext.getContext().getSession().get("mailer_list_type");
+			type = (ListType) ActionContext.getContext().getSession().get("mailer_list_type");
 		if (type == null)
 			type = ListType.Contractor;
 
@@ -226,8 +225,7 @@ public class MassMailer extends PicsActionSupport {
 	}
 
 	public List<EmailTemplate> getEmailTemplates() {
-		// TODO restrict based on list type
-		return emailTemplateDAO.findByAccountID(permissions.getAccountId());
+		return emailTemplateDAO.findByAccountID(permissions.getAccountId(), type);
 	}
 
 	public ListType getType() {
@@ -281,5 +279,4 @@ public class MassMailer extends PicsActionSupport {
 	public void setTemplateName(String templateName) {
 		this.templateName = templateName;
 	}
-
 }

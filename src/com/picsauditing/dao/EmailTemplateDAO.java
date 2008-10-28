@@ -7,6 +7,7 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.EmailTemplate;
+import com.picsauditing.jpa.entities.ListType;
 
 @Transactional
 public class EmailTemplateDAO extends PicsDAO {
@@ -34,12 +35,20 @@ public class EmailTemplateDAO extends PicsDAO {
 	public EmailTemplate find(int id) {
 		return em.find(EmailTemplate.class, id);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<EmailTemplate> findByAccountID(int accountID) {
 		Query query = em.createQuery("FROM EmailTemplate WHERE accountID=? ORDER BY templateName");
 		query.setParameter(1, accountID);
-		List<EmailTemplate> list = query.getResultList();
-		return list;
+		return query.getResultList();
 	}
+
+	@SuppressWarnings("unchecked")
+	public List<EmailTemplate> findByAccountID(int accountID, ListType listType) {
+		Query query = em.createQuery("FROM EmailTemplate WHERE accountID=? AND listType=? ORDER BY templateName");
+		query.setParameter(1, accountID);
+		query.setParameter(2, listType);
+		return query.getResultList();
+	}
+
 }
