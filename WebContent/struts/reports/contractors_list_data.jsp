@@ -5,6 +5,7 @@
 	<div id="alert">No rows found matching the given criteria. Please try again.</div>
 </s:if>
 <s:else>
+<div class="right"><a class="excel" href="javascript: download('ContractorList');" title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a></div>
 
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />

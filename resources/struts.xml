@@ -130,6 +130,8 @@
 		<!-- Contractor List -->
 		<action name="ContractorList"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ContractorList</param>
 			<result>struts/reports/contractors_list.jsp</result>
 		</action>
 		<action name="ContractorListCSV"
@@ -145,6 +147,8 @@
 		<!-- User List -->
 		<action name="UserList"
 			class="com.picsauditing.actions.report.ReportUser">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">UserList</param>
 			<result>struts/reports/report_users.jsp</result>
 		</action>
 		<action name="UserListCSV"
@@ -160,6 +164,8 @@
 		<!-- Audit List -->
 		<action name="ReportAuditList"
 			class="com.picsauditing.actions.report.ReportContractorAudits">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ReportAuditList</param>
 			<result>struts/reports/audit_list.jsp</result>
 		</action>
 		<action name="ReportAuditListCSV"
