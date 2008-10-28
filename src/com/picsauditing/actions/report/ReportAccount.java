@@ -10,6 +10,7 @@ import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.ListType;
@@ -28,7 +29,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	protected boolean skipPermissions = false;
 
 	protected List<Integer> ids = new ArrayList<Integer>(); // ?? may need to
-															// move to Filters
+	// move to Filters
 
 	protected SelectAccount sql = new SelectAccount();
 	private ReportFilterContractor filter = new ReportFilterContractor();
@@ -48,12 +49,13 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			sql.setPermissions(permissions);
 
 		addFilterToSQL();
-		
+
 		// Figure out if this is mailmerge call or not
 		// This is not very robust, we should refactor this eventually
 		// if (!filter.isAjax() && filter.isAllowMailMerge()) {
 		if ("Write Email".equals(button)) {
-			// This condition only occurs when sending results to the mail merge tool
+			// This condition only occurs when sending results to the mail merge
+			// tool
 			this.mailMerge = true;
 		}
 
@@ -199,9 +201,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
 			return dao.getContractorCount(permissions.getAccountId(), permissions);
 		}
-		// This method shouldn't be used by Admins, auditors, and contractors so
-		// just return 0
-		return 0;
+		ContractorAccountDAO cAccountDAO = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
+		return cAccountDAO.getActiveContractorCounts("");
 	}
 
 	public List<Integer> getIds() {
