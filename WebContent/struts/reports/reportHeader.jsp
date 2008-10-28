@@ -7,3 +7,4 @@
 <script src="js/CalendarPopup.js" type="text/javascript"></script>
 <script src="js/Search.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />

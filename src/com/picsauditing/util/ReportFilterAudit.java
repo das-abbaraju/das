@@ -19,7 +19,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showClosedDate = true;
 	protected boolean showExpiredDate = true;
 	protected boolean showOshaEmr = false;
-	protected boolean showPercentComplete = false;
+	protected boolean showPercentComplete = true;
 	protected boolean showUnConfirmedAudits = false;
 	protected boolean showConLicense = false;
 	protected boolean showExpiredLicense = false;

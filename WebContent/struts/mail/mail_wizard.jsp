@@ -4,13 +4,7 @@
 <head>
 <title>Email Wizard</title>
 
-<script src="js/prototype.js" type="text/javascript"></script>
-<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
-<script src="js/CalendarPopup.js" type="text/javascript"></script>
-<script src="js/Search.js" type="text/javascript"></script>
-
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
+<s:include value="../reports/reportHeader.jsp" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/emailwizard.css" />
 
 <script type="text/javascript">
@@ -40,7 +34,7 @@ function showLists() {
 </script>
 </head>
 <body>
-<img src="images/beta.jpg" align="right" title="This is a new feature. Please send us your feedback or suggestions." />
+<img src="images/beta.jpg" width="98" height="100" style="float: right;" title="This is a new feature. Please send us your feedback or suggestions." />
 
 <h1>Email Wizard</h1>
 
