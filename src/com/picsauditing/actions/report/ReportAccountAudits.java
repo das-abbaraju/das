@@ -14,6 +14,9 @@ public class ReportAccountAudits extends ReportAccount {
 			sql.addField("flags.waitingOn");
 		if (filtered == null)
 			filtered = true;
+		
+		getFilter().setAjax(true);
+		getFilter().setDestinationAction("ContractorList");
 
 		return super.execute();
 	}

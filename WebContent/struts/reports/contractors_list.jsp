@@ -4,6 +4,8 @@
 <title>Contractor List</title>
 <script src="js/prototype.js" type="text/javascript"></script>
 <script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
+<script src="js/CalendarPopup.js" type="text/javascript"></script>
+<script src="js/Search.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
@@ -16,7 +18,9 @@
 	<div class="right"><a class="excel" href="javascript: download('ContractorList');" title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a></div>
 </s:if>
 
+<div id="report_data">
 <s:include value="contractors_list_data.jsp"></s:include>
+</div>
 
 </body>
 </html>

@@ -10,7 +10,6 @@ function changeOrderBy( formid, orderBy ) {
 	search['showPage'].value = "1";
 	search['orderBy'].value = orderBy;
 	runSearch(search);
-	return false;
 }
 
 function changeStartsWith( formid, v ) {
@@ -18,7 +17,6 @@ function changeStartsWith( formid, v ) {
 	search['showPage'].value = "1";
 	search['filter.startsWith'].value = v;
 	runSearch(search);
-	return false;
 }
 
 function clickSearch( formid ) {
@@ -26,7 +24,8 @@ function clickSearch( formid ) {
 	search['showPage'].value = "1";
 	search['filter.startsWith'].value = "";
 	runSearch(search);
-	$('write_email_button').show();
+	if (search['filter.allowMailMerge'].value == "true")
+		$('write_email_button').show();
 	return false;
 }
 
@@ -38,7 +37,7 @@ function clickSearchSubmit( formid ) {
 
 function runSearch(search) {
 	var ajax = search['filter.ajax'].value;
-	if (!ajax) {
+	if (ajax == "false") {
 		search.submit();
 	} else {
 		// if this is an ajax call, then get the form elements and then post them through ajax and return the results to a div

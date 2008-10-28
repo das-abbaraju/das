@@ -32,7 +32,7 @@ function download(url) {
 			<button type="button" name="button" value="Find Recipients" onclick="clickSearch('form1')">Find Recipients</button>
 		</s:if>
 		<s:else>
-			<button class="positive" type="button" name="button" value="Search" onclick="clickSearch('form1')">Search</button>
+			<button type="submit" name="button" value="Search" onclick="return clickSearch('form1');" class="positive">Search</button>
 			<br clear="all" />
 		</s:else>
 	</div>
@@ -208,7 +208,7 @@ function download(url) {
 			onclick="toggleBox('form1_officeIn'); return false;">Office In</a> =
 		<span id="form1_officeIn_query">ALL</span><br />
 		<span id="form1_officeIn_select" style="display: none"
-			class="clearLink"> <s:select id="form1_worksIn" list="filter.officeInList"
+			class="clearLink"> <s:select id="form1_officeIn" list="filter.officeInList"
 			cssClass="forms" name="filter.officeIn" listKey="questionID" listValue="question" multiple="true" size="5" /> <script
 			type="text/javascript">updateQuery('form1_officeIn');</script> <br />
 		<a class="clearLink" href="#"
