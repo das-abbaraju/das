@@ -53,11 +53,7 @@ public class PicsMenu {
 		}
 
 		subMenu = menu.addChild("Contractors");
-		if (permissions.isPicsEmployee())
-			subMenu.addChild("Search", "ContractorListAdmin.action");
-		if (permissions.isOperator() || permissions.isCorporate())
-			subMenu.addChild("Contractor List", "ContractorListOperator.action");
-		
+		subMenu.addChild("Contractor List", "ContractorList.action");
 
 		if (permissions.hasPermission(OpPerms.ContractorDetails))
 			subMenu.addChild("Contact Info", "report_contactInfo.jsp?changed=1");

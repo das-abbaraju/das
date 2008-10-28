@@ -6,7 +6,18 @@ public class ReportFilter {
 	protected String destinationAction = "";
 	protected boolean ajax = false;
 	protected boolean allowCollapsed = true;
+	protected boolean allowMailMerge = false;
 	
+	public boolean isAllowMailMerge() {
+		return allowMailMerge;
+	}
+
+
+	public void setAllowMailMerge(boolean allowMailMerge) {
+		this.allowMailMerge = allowMailMerge;
+	}
+
+
 	public boolean isAllowCollapsed() {
 		return allowCollapsed;
 	}

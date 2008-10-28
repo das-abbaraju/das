@@ -20,8 +20,9 @@ public class ReportActionSupport extends PicsActionSupport {
 	protected ColorAlternater color = new ColorAlternater();
 
 	protected boolean download = false;
+	protected boolean mailMerge = false;
 	protected Boolean filtered = null;
-
+	
 	public int getShowPage() {
 		return showPage;
 	}
@@ -60,7 +61,7 @@ public class ReportActionSupport extends PicsActionSupport {
 			showPage = 1;
 		}
 
-		if ("Draft Email".equals(button)) {
+		if (mailMerge) {
 			this.report.setLimit(100000);
 			showPage = 1;
 		}

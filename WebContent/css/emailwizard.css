@@ -1,12 +1,16 @@
+#content div.back_to_step {
+	cursor: pointer;
+}
 #content div.target_sample {
-	width: 1150px;
 	position: relative;
-	border-bottom: 1px dashed #A84D10;
 	padding: 0 0 10px 0;
 }
 
 #content div.instructions {
-	background: url('../images/help.gif') no-repeat left center; padding-left:14px; padding-right:0; padding-top:0; padding-bottom:0
+	padding:15px;
+	font-style: italic;
+	color:#A84D10;
+	font-size:16px;
 }
 
 
@@ -83,10 +87,4 @@ div.buttons {
 	position: absolute;
 	right: 10px;
 	bottom: 10px;
-}
-
-button.positive {
-	position: absolute;
-	right: 120px;
-	bottom: 5px;
 }

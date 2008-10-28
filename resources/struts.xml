@@ -128,13 +128,9 @@
 		</action>
 
 		<!-- Contractor List -->
-		<action name="ContractorListAdmin"
+		<action name="ContractorList"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
-			<result>struts/reports/contractors_admin.jsp</result>
-		</action>
-		<action name="ContractorListOperator"
-			class="com.picsauditing.actions.report.ReportAccountAudits">
-			<result>struts/reports/contractors_operator.jsp</result>
+			<result>struts/reports/contractors_list.jsp</result>
 		</action>
 		<action name="ContractorListCSV"
 			class="com.picsauditing.actions.report.ReportAccountAudits">

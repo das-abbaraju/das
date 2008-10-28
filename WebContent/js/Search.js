@@ -1,43 +1,62 @@
 /** function with searching, sorting, and page changing **/
 function changePage( formid, pageNum ) {
-	document.getElementById( formid )['showPage'].value = pageNum;
-	document.getElementById( formid ).submit();
-	return false;
+	var search = $(formid);
+	search['showPage'].value = pageNum;
+	runSearch(search);
 }
 
 function changeOrderBy( formid, orderBy ) {
-	document.getElementById( formid )['showPage'].value = "1";
-	document.getElementById( formid )['orderBy'].value = orderBy;
-	document.getElementById( formid ).submit();
+	var search = $(formid);
+	search['showPage'].value = "1";
+	search['orderBy'].value = orderBy;
+	runSearch(search);
 	return false;
 }
 
 function changeStartsWith( formid, v ) {
-	document.getElementById( formid )['filter.startsWith'].value = v;
-	document.getElementById( formid )['showPage'].value = "1";
-	document.getElementById( formid ).submit();
+	var search = $(formid);
+	search['showPage'].value = "1";
+	search['filter.startsWith'].value = v;
+	runSearch(search);
 	return false;
 }
 
-function runSearch( formid ) {
-	document.getElementById( formid )['showPage'].value = "1";
-	document.getElementById( formid )['filter.startsWith'].value = "";
-	return true;
+function clickSearch( formid ) {
+	var search = $(formid);
+	search['showPage'].value = "1";
+	search['filter.startsWith'].value = "";
+	runSearch(search);
+	$('write_email_button').show();
+	return false;
 }
 
-function runSearchAjax( formid, actionName ) {
-	// if this is an ajax call, then get the form elements and then post them through ajax and return the results to a div 
+function clickSearchSubmit( formid ) {
 	var search = $(formid);
-	$search['showPage'].value = "1";
-	$search['filter.startsWith'].value = "";
-	
-	$('report_data').innerHTML = "<img src='images/ajax_process2.gif' width='48' height='48' /> finding search results";
-	var pars = $(formid).serialize();
-	var myAjax = new Ajax.Updater('report_data',actionName+'.action', 
-	{
-		method: 'post', 
-		parameters: pars
-	});
+	search['showPage'].value = "1";
+	search['filter.startsWith'].value = "";
+}
+
+function runSearch(search) {
+	var ajax = search['filter.ajax'].value;
+	if (!ajax) {
+		search.submit();
+	} else {
+		// if this is an ajax call, then get the form elements and then post them through ajax and return the results to a div
+		$('report_data').innerHTML = "<img src='images/ajax_process2.gif' width='48' height='48' /> finding search results";
+		//Effect.Opacity('report_data', { from: 1.0, to: 0.7, duration: 0.5 });
+		//alert('done');
+		
+		var destinationAction = search['filter.destinationAction'].value;
+		var pars = search.serialize();
+		var myAjax = new Ajax.Updater('report_data',destinationAction+'Ajax.action', 
+		{
+			method: 'post', 
+			parameters: pars,
+			onSuccess: function(transport) {
+				//Effect.Opacity('report_data', { from: 0.5, to: 1.0});
+			}
+		});
+	}
 }
 
 /*** FILTER STUFF ****/

@@ -1,15 +1,18 @@
 package com.picsauditing.actions.report;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.struts2.ServletActionContext;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.WaitingOn;
+import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterInteger;
@@ -45,6 +48,14 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			sql.setPermissions(permissions);
 
 		addFilterToSQL();
+		
+		// Figure out if this is mailmerge call or not
+		// This is not very robust, we should refactor this eventually
+		// if (!filter.isAjax() && filter.isAllowMailMerge()) {
+		if ("Write Email".equals(button)) {
+			// This condition only occurs when sending results to the mail merge tool
+			this.mailMerge = true;
+		}
 
 		if (this.orderBy == null)
 			this.orderBy = "a.name";
@@ -59,12 +70,16 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filtered == null)
 			filtered = false;
 
-		if ("Draft Email".equals(button)) {
+		if (mailMerge) {
+			Set<Integer> ids = new HashSet<Integer>();
 			for (DynaBean dynaBean : data) {
 				ids.add((Integer) dynaBean.get("id"));
 			}
-
-			return "EmailSender";
+			ActionContext.getContext().getSession().put("mailer_ids", ids);
+			ActionContext.getContext().getSession().put("mailer_list_type", ListType.Contractor);
+			ServletActionContext.getResponse().sendRedirect("MassMailer.action");
+			this.addActionMessage("Redirected to MassMailer");
+			return BLANK;
 		}
 		return SUCCESS;
 	}

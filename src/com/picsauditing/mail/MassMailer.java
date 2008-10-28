@@ -1,10 +1,13 @@
 package com.picsauditing.mail;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -34,7 +37,7 @@ import com.picsauditing.util.Strings;
  * 
  */
 public class MassMailer extends PicsActionSupport {
-	private List<Integer> ids = null;
+	private Set<Integer> ids = null;
 	private ListType type = ListType.Contractor;
 
 	private int templateID;
@@ -80,7 +83,11 @@ public class MassMailer extends PicsActionSupport {
 				templateBody = "";
 				return SUCCESS;
 			}
-			int id = ids.get(0);
+			int id = 0;
+			for(Integer tempId : ids) {
+				id = tempId;
+				break;
+			}
 
 			EmailTemplate template = buildEmailTemplate();
 			emailBuilder.setTemplate(template);
@@ -94,12 +101,16 @@ public class MassMailer extends PicsActionSupport {
 
 		// Start the main logic for actions that require passing the contractors
 		// in
+		if (ActionContext.getContext().getSession().containsKey("mailer_ids"))
+			ids = (Set<Integer>)ActionContext.getContext().getSession().get("mailer_ids");
+		if (ActionContext.getContext().getSession().containsKey("mailer_list_type"))
+			type = (ListType)ActionContext.getContext().getSession().get("mailer_list_type");
 		if (type == null)
 			type = ListType.Contractor;
 
 		if (ids == null || ids.size() == 0) {
 			addActionError("Please select at least one record to which to send an email.");
-			return "blank";
+			return BLANK;
 		}
 
 		String idList = Strings.implode(ids, ",");
@@ -215,6 +226,7 @@ public class MassMailer extends PicsActionSupport {
 	}
 
 	public List<EmailTemplate> getEmailTemplates() {
+		// TODO restrict based on list type
 		return emailTemplateDAO.findByAccountID(permissions.getAccountId());
 	}
 
@@ -230,11 +242,11 @@ public class MassMailer extends PicsActionSupport {
 		return list;
 	}
 
-	public List<Integer> getIds() {
+	public Set<Integer> getIds() {
 		return ids;
 	}
 
-	public void setIds(List<Integer> ids) {
+	public void setIds(Set<Integer> ids) {
 		this.ids = ids;
 	}
 

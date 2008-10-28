@@ -16,23 +16,26 @@ function download(url) {
 	<div id="hideSearch" <s:if test="!filtered">style="display: none"</s:if>><a
 		href="#" onclick="hideSearch()">Hide Filter Options</a></div>
 </s:if>
-<s:if test="filter.ajax">
-<s:property value="filter.destinationAction" />
-</s:if>
-<a href="#" onclick="runSearchAjax('form1','<s:property value="filter.destinationAction"/>'); return false;">Test Me</a>
-<s:form id="form1" method="post" action="%{filter.destinationAction}"
-	cssStyle="background-color: #F4F4F4;"
-	onsubmit="runSearch( 'form1')">
+<s:form id="form1" action="%{filter.destinationAction}"
+	cssStyle="background-color: #F4F4F4;">
+	
+	<s:hidden name="filter.ajax" />
+	<s:hidden name="filter.destinationAction" />
+	<s:hidden name="filter.allowMailMerge" />
 	<s:hidden name="showPage" value="1" />
 	<s:hidden name="filter.startsWith" />
 	<s:hidden name="orderBy" />
 
-	<div style="text-align: center; width: 100%">
 	<div class="buttons">
-		<button class="positive" type="submit" name="button" value="Search">Search</button>
+		<s:if test="filter.allowMailMerge" >
+			<button type="submit" id="write_email_button" name="button" value="Write Email" onclick="clickSearchSubmit('form1')" class="positive" style="display: none">Write Email</button>
+			<button type="button" name="button" value="Find Recipients" onclick="clickSearch('form1')">Find Recipients</button>
+		</s:if>
+		<s:else>
+			<button class="positive" type="button" name="button" value="Search" onclick="clickSearch('form1')">Search</button>
+			<br clear="all" />
+		</s:else>
 	</div>
-	</div>
-	<br clear="all" />
 
 	<s:if test="filter.showAccountName">
 		<div class="filterOption"><s:textfield name="filter.accountName"
