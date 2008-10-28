@@ -21,7 +21,7 @@ public class showpdf extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	enum eExt {pdf, doc, docx, txt, xls, jpg} 
+	enum eExt {pdf, doc, txt, xls, jpg} 
 		
 	
 	private ServletConfig config;
@@ -132,8 +132,6 @@ public class showpdf extends HttpServlet {
 		String ct = "application/pdf";
 		if("doc".equalsIgnoreCase(ext))
 			ct = getContentType(eExt.doc);
-		else if("docx".equalsIgnoreCase(ext))
-			ct = getContentType(eExt.docx);
 		else if("pdf".equalsIgnoreCase(ext))
 			ct = getContentType(eExt.pdf);
 		else if("txt".equalsIgnoreCase(ext))
@@ -156,9 +154,6 @@ public class showpdf extends HttpServlet {
 		case doc:
 			ret = "application/msword";
 			break;
-		case docx:
-			ret = "application/msword";
-			break;
 		case txt:
 			ret = "text/plain";
 			break;
@@ -175,7 +170,7 @@ public class showpdf extends HttpServlet {
 	}
 	
 	private String findFileExt(String fn){
-		String[] exts = new String[] {"pdf", "doc", "docx", "txt", "jpg", "xls"};
+		String[] exts = new String[] {"pdf", "doc", "txt", "jpg", "xls"};
 		for(int i = 0; i < exts.length; i++){
 			File f = new File(fn + exts[i]);
 			if(f.exists())

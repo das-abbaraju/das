@@ -114,7 +114,7 @@ public abstract class AbstractUploadProcessor implements Uploadable {
 	}
 	
 	protected void deleteFile(String fn){
-		String[] exts = new String[] {"pdf", "jpg", "doc", "docx", "txt", "xls", "gif", "zip"};
+		String[] exts = new String[] {"pdf", "jpg", "doc", "txt", "xls", "gif", "zip"};
 		for(int i = 0; i < exts.length; i++){
 			File f = new File(fn + exts[i]);
 			if(f.exists())
