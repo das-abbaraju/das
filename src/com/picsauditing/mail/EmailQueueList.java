@@ -1,30 +1,35 @@
 package com.picsauditing.mail;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailStatus;
 
 public class EmailQueueList extends PicsActionSupport {
 	protected List<EmailQueue> emails = null;
-	
+	protected List<EmailQueue> emailsInQueue = new ArrayList<EmailQueue>();
+	protected int id;
 	protected EmailQueueDAO emailQueueDAO;
-	private EmailStatus status;
-	
-	
+
 	public EmailQueueList(EmailQueueDAO emailQueueDAO) {
 		this.emailQueueDAO = emailQueueDAO;
 	}
-	
+
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
-		status = EmailStatus.Pending;
-		emails = emailQueueDAO.getPendingEmails(100);
-		
+
+		if ("delete".equals(button)) {
+			emailQueueDAO.remove(id);
+		}
+
+		emails = emailQueueDAO.getPendingEmails("t.createdBy.id = " + permissions.getUserId());
+		if (emails.size() > 0)
+			emailsInQueue = emailQueueDAO.getPendingEmails("(t.priority > " + emails.get(0).getPriority()
+					+ " OR (t.priority = " + emails.get(0).getPriority() + " AND " + "t.id < " + emails.get(0).getId()
+					+ "))");
 		return SUCCESS;
 	}
 
@@ -32,15 +37,15 @@ public class EmailQueueList extends PicsActionSupport {
 		return emails;
 	}
 
-	public EmailStatus getStatus() {
-		return status;
+	public List<EmailQueue> getEmailsInQueue() {
+		return emailsInQueue;
 	}
 
-	public void setStatus(EmailStatus status) {
-		this.status = status;
+	public int getId() {
+		return id;
 	}
 
-	public EmailStatus[] getEmailStatuses() {
-		return EmailStatus.values();
+	public void setId(int id) {
+		this.id = id;
 	}
 }
