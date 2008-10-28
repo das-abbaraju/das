@@ -58,7 +58,8 @@ type = "<s:property value="type" />";
 </style>
 </head>
 <body>
-<img src="images/beta.jpg" align="right" />
+<img src="images/beta.jpg" width="98" height="100" style="float: right;" title="This is a new feature. Please send us your feedback or suggestions." />
+
 <h1>Mass Emailer</h1>
 <s:include value="../actionMessages.jsp" />
 <div id="messages"></div>
@@ -98,8 +99,8 @@ type = "<s:property value="type" />";
 				</td>
 				<td valign="top">
 				<ul id="templateChooser">
-					<li><a href="javascript: chooseTemplate(0);">~ Start with
-					a Blank Email ~</a></li>
+					<li><a href="javascript: chooseTemplate(0);"><nobr>~ Start with
+					a Blank Email ~</nobr></a></li>
 					<s:iterator value="emailTemplates">
 						<li id="li_template<s:property value="id"/>"><nobr><a
 							href="javascript: chooseTemplate(<s:property value="id"/>);"><s:property

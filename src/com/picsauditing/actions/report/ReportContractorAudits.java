@@ -1,10 +1,18 @@
 package com.picsauditing.actions.report;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.apache.commons.beanutils.DynaBean;
+import org.apache.struts2.ServletActionContext;
+
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.search.SelectContractorAudit;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterDate;
@@ -163,6 +171,23 @@ public class ReportContractorAudits extends ReportAccount {
 		}
 
 		return response;
+	}
+
+	@Override
+	protected String returnResult() throws IOException {
+		if (mailMerge) {
+			Set<Integer> ids = new HashSet<Integer>();
+			for (DynaBean dynaBean : data) {
+				Long longID = (Long)dynaBean.get("auditID");
+				ids.add(longID.intValue());
+			}
+			ActionContext.getContext().getSession().put("mailer_ids", ids);
+			ActionContext.getContext().getSession().put("mailer_list_type", ListType.Audit);
+			ServletActionContext.getResponse().sendRedirect("MassMailer.action");
+			this.addActionMessage("Redirected to MassMailer");
+			return BLANK;
+		}
+		return SUCCESS;
 	}
 
 	@Override

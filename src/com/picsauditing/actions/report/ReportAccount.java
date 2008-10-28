@@ -1,5 +1,6 @@
 package com.picsauditing.actions.report;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -53,7 +54,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		// Figure out if this is mailmerge call or not
 		// This is not very robust, we should refactor this eventually
 		// if (!filter.isAjax() && filter.isAllowMailMerge()) {
-		if ("Write Email".equals(button)) {
+		if (button != null && button.contains("Write Email")) {
 			// This condition only occurs when sending results to the mail merge
 			// tool
 			this.mailMerge = true;
@@ -71,7 +72,11 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (filtered == null)
 			filtered = false;
-
+		
+		return returnResult();
+	}
+	
+	protected String returnResult() throws IOException {
 		if (mailMerge) {
 			Set<Integer> ids = new HashSet<Integer>();
 			for (DynaBean dynaBean : data) {
