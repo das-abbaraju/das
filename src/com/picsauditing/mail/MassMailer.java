@@ -145,6 +145,7 @@ public class MassMailer extends PicsActionSupport {
 					EmailQueue email = emailBuilder.build();
 					emailQueueDAO.save(email);
 				}
+				return "emailConfirm";
 			}
 		}
 		return SUCCESS;

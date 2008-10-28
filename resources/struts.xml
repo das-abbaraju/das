@@ -568,6 +568,7 @@
 		<action name="MassMailer"
 			class="com.picsauditing.mail.MassMailer">
 			<result>struts/mail/mass_mailer.jsp</result>
+			<result name="emailConfirm">/struts/mail/emailconfirm.jsp</result>
 		</action>
 
 		<action name="MailEditorAjax"
