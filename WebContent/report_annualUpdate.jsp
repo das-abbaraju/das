@@ -76,6 +76,7 @@ List<BasicDynaBean> searchData = report.getPage();
 <title>Annual Update Emails</title>
 <script src="js/prototype.js" type="text/javascript"></script>
 <script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
+<script src="js/Search.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script language="javascript" SRC="js/checkAllBoxes.js"></script>
 </head>
