@@ -48,7 +48,7 @@
 	<div class="buttons">
 		<a href="javascript: self.close();">Close and Return to Form</a>
 		<s:if test="file.exists()">
-			<button name="button" value="Delete" type="submit" onclick="return confirm('Are you sure you want to delete this file?');">Delete File</button>
+			<button class="negative" name="button" value="Delete" type="submit" onclick="return confirm('Are you sure you want to delete this file?');">Delete File</button>
 		</s:if>
 		<button class="positive right" name="button" value="Upload" type="submit">Upload File</button>
 	</div>

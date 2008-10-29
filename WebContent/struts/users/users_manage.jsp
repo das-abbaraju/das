@@ -204,7 +204,7 @@ function checkUsername(username) {
 				</pics:permission>
 				<pics:permission perm="EditUsers" type="Delete">
 					<s:if test="user.id > 0">
-						<button type="submit" name="button" value="Remove" onclick="return confirm('Are you sure you want to delete this user/group?');">Delete</button>
+						<button type="submit" name="button" class="negative" value="Remove" onclick="return confirm('Are you sure you want to delete this user/group?');">Delete</button>
 					</s:if>
 				</pics:permission>
 			</div>

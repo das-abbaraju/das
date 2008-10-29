@@ -70,7 +70,7 @@
 			<div class="buttons">
 				<button class="positive" name="button" type="submit" value="save">Save</button>
 				<s:if test="auditType.auditTypeID > 0 && auditType.categories.size == 0">
-					<button name="button" type="submit" value="delete">Delete</button>
+					<button name="button" class="negative" type="submit" value="delete">Delete</button>
 				</s:if>
 			</div>
 		</s:form>

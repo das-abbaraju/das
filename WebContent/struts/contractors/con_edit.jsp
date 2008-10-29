@@ -272,7 +272,7 @@
 			</pics:permission>
 		</s:else>
 		<pics:permission perm="RemoveContractors">
-			<button name="button" type="submit" value="delete" onClick="return confirm('Are you sure you want to delete this account?');">Delete</button>
+			<button name="button" class="negative" type="submit" value="delete" onClick="return confirm('Are you sure you want to delete this account?');">Delete</button>
 		</pics:permission>
 	</div>
 </s:form>
