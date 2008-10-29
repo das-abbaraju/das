@@ -120,6 +120,14 @@ function addTemplate(id) {
 }
 
 function removeSelected() {
-	var list = $('contractors');
+	var item = $('contractors');
+	var deleteMe = confirm('Are you sure you want to delete the selected items?');
+	if (!deleteMe)
+		return;
 	
+	for (i=item.length-1;i>=0;i--) {
+   		if (item[i].selected) {
+			 item.remove(i);
+		}
+	}
 }

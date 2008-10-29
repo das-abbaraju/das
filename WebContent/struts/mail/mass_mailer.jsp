@@ -76,6 +76,7 @@ type = "<s:property value="type" />";
 			name="ids" size="%{list.size() < 40 ? list.size() : 40}" multiple="true" list="list" listKey="get('id')"
 			listValue="get('name')" ondblclick="previewEmail(this);" title="Double click a row to preview email" />
 			<div>* Double click preview</div>
+			<button type="button" name="button" value="Remove" onclick="removeSelected()" title="select contractors to remove from list">Remove From List</button>
 	</td>
 	<td style="vertical-align: top; padding-left: 20px;">
 		<div class="buttons" id="menu_selector" style="display: none;">

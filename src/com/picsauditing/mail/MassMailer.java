@@ -100,8 +100,10 @@ public class MassMailer extends PicsActionSupport {
 
 		// Start the main logic for actions that require passing the contractors
 		// in
-		if (ActionContext.getContext().getSession().containsKey("mailer_ids"))
-			ids = (Set<Integer>) ActionContext.getContext().getSession().get("mailer_ids");
+		if (ids == null || ids.size() == 0) {
+			if (ActionContext.getContext().getSession().containsKey("mailer_ids"))
+				ids = (Set<Integer>) ActionContext.getContext().getSession().get("mailer_ids");
+		}
 		if (ActionContext.getContext().getSession().containsKey("mailer_list_type"))
 			type = (ListType) ActionContext.getContext().getSession().get("mailer_list_type");
 		if (type == null)
