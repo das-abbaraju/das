@@ -57,7 +57,7 @@ type = "<s:property value="type" />";
 
 </style>
 </head>
-<body>
+<body onload=<s:if test="id > 0">onload="chooseTemplate(id)"</s:if>>
 <img src="images/beta.jpg" width="98" height="100" style="float: right;" title="This is a new feature. Please send us your feedback or suggestions." />
 
 <h1>Mass Emailer</h1>
