@@ -2,10 +2,7 @@
 <html>
 <head>
 <title>Assign Contractor</title>
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/reports.css" />
-<script type="text/javascript" src="js/prototype.js"></script>
-<script type="text/javascript" src="js/scriptaculous/scriptaculous.js?load=effects"></script>
+<s:include value="reportHeader.jsp" />
 <script type="text/javascript">
 	function saveContractor(conID) {
 		var pars = "ca.id=" + conID;

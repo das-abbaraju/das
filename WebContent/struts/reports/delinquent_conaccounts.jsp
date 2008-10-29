@@ -3,9 +3,7 @@
 <html>
 <head>
 <title>Delinquent Contractor Accounts</title>
-<script src="js/prototype.js" type="text/javascript"></script>
-<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<s:include value="reportHeader.jsp" />
 </head>
 <body>
 <h1>Delinquent Contractor Accounts</h1>

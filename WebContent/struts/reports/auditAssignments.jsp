@@ -2,12 +2,7 @@
 <html>
 <head>
 <title>Schedule &amp; Assign Audits</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
-<script type="text/javascript" src="js/prototype.js"></script>
-<script type="text/javascript"
-	src="js/scriptaculous/scriptaculous.js?load=effects"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
-<SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
+<s:include value="reportHeader.jsp" />
 <SCRIPT LANGUAGE="JavaScript">
 	var cal1 = new CalendarPopup('caldiv1');
 	cal1.offsetY = -110;

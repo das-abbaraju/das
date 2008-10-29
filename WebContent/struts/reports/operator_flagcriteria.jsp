@@ -2,11 +2,7 @@
 <html>
 <head>
 <title>Operator Flag Criteria</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
-<script type="text/javascript" src="js/prototype.js"></script>
-<script type="text/javascript"
-	src="js/scriptaculous/scriptaculous.js?load=effects"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
+<s:include value="reportHeader.jsp" />
 </head>
 <body>
 <h1>Operator Flag Criteria</h1>
