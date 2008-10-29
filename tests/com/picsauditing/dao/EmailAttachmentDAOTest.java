@@ -1,10 +1,11 @@
 package com.picsauditing.dao;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+
+import javax.activation.MimetypesFileTypeMap;
 
 import junit.framework.TestCase;
 
@@ -31,23 +32,30 @@ public class EmailAttachmentDAOTest extends TestCase {
 		emailAttachment.getEmailQueue().setId(2787);
 		emailAttachment.setFileName("brochure_1946.pdf");
 		emailAttachment.setFileSize(10);
-		File file = new File("M:/Development/ftp_dir/files/brochures/brochure_1946.pdf"); 
+		File file = new File("tests/brochure_1946.pdf");
+		String mimeType = new MimetypesFileTypeMap().getContentType(file);
+		System.out.println(mimeType);
+		//emailAttachment.setMimeType(mimeType);
+		
 		FileInputStream fis = new FileInputStream(file);
+		System.out.println("Found file size = "+file.length());
+		
+		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 		byte[] buf = new byte[1024];
-		int i = 0;
-		while ((i = fis.read(buf)) != -1) {
-			emailAttachment.setContent(buf);
+		while (fis.read(buf) != -1) {
+			byteStream.write(buf);
+			System.out.println("Stream size = "+byteStream.size());
 		}
+		
+		emailAttachment.setContent(byteStream.toByteArray());
 		fis.close();
 		emailAttachmentDAO.save(emailAttachment);
 	}
 	
 	@Test
 	public void testOpenFile() throws IOException {
-		EmailAttachment emailAttachment = emailAttachmentDAO.find(3);
-		String filePath = "C:/Users/keerthi/Desktop/Old_Files/brochure_1946.pdf";
-		FileOutputStream fos = new FileOutputStream(filePath);
-		fos.write(emailAttachment.getContent());
-		fos.close();
+		EmailAttachment emailAttachment = emailAttachmentDAO.find(7);
+		byte[] fileData = emailAttachment.getContent();
+		System.out.println(fileData.length);
 	}
 }

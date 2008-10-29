@@ -694,8 +694,9 @@
 			<result>struts/operators/audit_operator_save.jsp</result>
 		</action>
 
-
-
+		<action name="DownloadAjax"
+			class="com.picsauditing.actions.Download">
+		</action>
 
 		<!-- Remember to Categorize your new Struts pages -->
 	</package>

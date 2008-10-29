@@ -55,8 +55,11 @@ public class ReportActionSupport extends PicsActionSupport {
 		if (download) {
 			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
 			filename += ".csv";
-			ServletActionContext.getResponse().setContentType("text/csv");
-			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment;filename=" + filename);
+			ServletActionContext.getResponse().setContentType("application/octet-stream");
+			//ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+			//ServletActionContext.getResponse().setContentType("text/csv");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+			//ServletActionContext.getResponse().getOutputStream().write(b, off, len);
 			this.report.setLimit(100000);
 			showPage = 1;
 		}
