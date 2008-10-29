@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class FileUtils {
 	/**
@@ -166,5 +167,26 @@ public class FileUtils {
 		}
 		fis.close();
 		fos.close();
+	}
+	
+	static public String readFile(String fileLocation) {
+		File file = new File(fileLocation);
+
+		StringBuilder noteText = new StringBuilder();
+		try {
+			Scanner scanner = new Scanner(file);
+			try {
+				// first use a Scanner to get each line
+				while (scanner.hasNextLine()) {
+					noteText.append(scanner.nextLine()).append("\n");
+				}
+			} finally {
+				// ensure the underlying stream is always closed
+				scanner.close();
+			}
+		} catch (FileNotFoundException e) {
+			noteText.append("ERROR: failed to find file");
+		}
+		return noteText.toString();
 	}
 }
