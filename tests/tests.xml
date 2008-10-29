@@ -43,6 +43,7 @@
     <bean id="EmailTemplateDAO" class="com.picsauditing.dao.EmailTemplateDAO" scope="prototype"/>
     <bean id="TokenDAO" class="com.picsauditing.dao.TokenDAO" scope="prototype"/>
     <bean id="NoteDAO" class="com.picsauditing.dao.NoteDAO" scope="prototype"/>
+    <bean id="EmailAttachmentDAO" class="com.picsauditing.dao.EmailAttachmentDAO" scope="prototype"/>
 
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 

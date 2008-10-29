@@ -24,6 +24,7 @@
   <class>com.picsauditing.jpa.entities.ContractorOperator</class>
   <class>com.picsauditing.jpa.entities.ContractorOperatorFlag</class>
   <class>com.picsauditing.jpa.entities.DesktopMatrix</class>
+  <class>com.picsauditing.jpa.entities.EmailAttachment</class>
   <class>com.picsauditing.jpa.entities.EmailQueue</class>
   <class>com.picsauditing.jpa.entities.EmailTemplate</class>
   <class>com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings</class> 
