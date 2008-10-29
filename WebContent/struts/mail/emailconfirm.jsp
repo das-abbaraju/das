@@ -6,6 +6,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/emailwizard.css" />
 </head>
 <body>
+<h1>Email Confirmation</h1>
 <div id="info">
 You have sent <s:property value="ids.size()"/> emails to the queue.<br/>
 </div>
