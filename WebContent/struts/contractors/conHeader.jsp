@@ -167,9 +167,9 @@
 			<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
 			Questions</a></li>
 		</s:if>
-		<s:if test="conAudit.auditStatus.toString() != ('Pending','Exempt') && conAudit.auditType.isHasRequirements">
-			<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true">View Requirements
-			</a></li>
+		<s:if test="conAudit.auditType.hasRequirements && (conAudit.auditStatus.toString().equals('Submitted') || conAudit.auditStatus.toString().equals('Active'))">
+			<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true" 
+				<s:if test="onlyReq">class="current"</s:if>>View Requirements</a></li>
 			<s:if test="permissions.auditor">
 				<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true&mode=Edit">Edit Requirements
 				</a></li>
@@ -182,3 +182,4 @@
 </s:if>
 </s:if>
 <s:include value="../actionMessages.jsp" />
+<div class="clear"></div>

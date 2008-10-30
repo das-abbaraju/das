@@ -1,6 +1,8 @@
 package com.picsauditing.actions.report;
 
+import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -59,7 +61,6 @@ public class ReportActionSupport extends PicsActionSupport {
 			//ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
 			//ServletActionContext.getResponse().setContentType("text/csv");
 			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
-			//ServletActionContext.getResponse().getOutputStream().write(b, off, len);
 			this.report.setLimit(100000);
 			showPage = 1;
 		}
@@ -77,8 +78,25 @@ public class ReportActionSupport extends PicsActionSupport {
 			report.setCurrentPage(showPage);
 
 		data = report.getPage();
+		
+//		if (download) {
+//			StringBuilder csv = new StringBuilder();
+//			csv.toString().t
+//			ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+//			byte[] csv = 
+//			for(String column : getDownloadColumns()) {
+//				
+//			}
+//			ServletActionContext.getResponse().getOutputStream().write(csv);
+//		}
 	}
 
+	public ArrayList<String> getDownloadColumns() {
+		ArrayList<String> columns = new ArrayList<String>();
+		columns.add("id");
+		return columns;
+	}
+	
 	public ColorAlternater getColor() {
 		return color;
 	}

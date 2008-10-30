@@ -1,12 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:include value="../actionMessages.jsp" />
-<script type="text/javascript">
-function download(url) {
-	newurl = url + "CSV.action?" + $('form1').serialize();
-	popupWin = window.open(newurl, url, '');
-}
-</script>
 
 <div id="search">
 <s:if test="allowCollapsed">

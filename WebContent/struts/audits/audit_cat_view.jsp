@@ -44,7 +44,7 @@
 </tr>
 <s:if test="answer.hasRequirements && conAudit.auditType.hasRequirements">
 	<tr class="group<s:if test="#shaded">Shaded</s:if>">
-		<td class="center">Req</td>
+		<td class="center">Requirement</td>
 		<td>Status:
 		<s:if test="answer.requirementOpen">
 			<span class="unverified">Open</span>

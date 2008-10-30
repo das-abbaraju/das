@@ -39,8 +39,8 @@
 </script>
 </head>
 <body>
-<s:if test="catDataID > 0">
 <s:include value="../contractors/conHeader.jsp" />
+<s:if test="catDataID > 0">
 <s:include value="audit_cat_nav.jsp" />
 </s:if>
 <div id="auditToolbar" class="right">

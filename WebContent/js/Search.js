@@ -1,4 +1,9 @@
 /** function with searching, sorting, and page changing **/
+function download(url) {
+	newurl = url + "CSV.action?" + $('form1').serialize();
+	popupWin = window.open(newurl, url, '');
+}
+
 function changePage( formid, pageNum ) {
 	var search = $(formid);
 	search['showPage'].value = pageNum;

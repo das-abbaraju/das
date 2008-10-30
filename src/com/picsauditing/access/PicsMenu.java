@@ -94,8 +94,6 @@ public class PicsMenu {
 			subMenu.addChild("Activation", "report_activation.jsp?changed=1");
 			subMenu.addChild("Assign Contractors", "ContractorAssigned.action");
 		}
-		if (permissions.hasPermission(OpPerms.EmailAnnualUpdate))
-			subMenu.addChild("Annual Updates", "report_annualUpdate.jsp?changed=1");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
 			subMenu.addChild("Pending PQF", "ReportCompletePQF.action");
 
