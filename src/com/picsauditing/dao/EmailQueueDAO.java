@@ -39,19 +39,17 @@ public class EmailQueueDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<EmailQueue> getPendingEmails(int limit) {
-		Query query = em
-				.createQuery("FROM EmailQueue t WHERE t.status = 'Pending' ORDER BY t.priority DESC, t.creationDate");
-		query.setMaxResults(limit);
-		return query.getResultList();
+		return getPendingEmails("", limit);
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<EmailQueue> getPendingEmails(String where) {
+	public List<EmailQueue> getPendingEmails(String where, int limit) {
 		if (where == null)
 			where = "1";
 		where = "AND " + where;
 		Query query = em.createQuery("FROM EmailQueue t WHERE t.status = 'Pending' " + where
 				+ " ORDER BY t.priority DESC, t.id");
+		query.setMaxResults(50);
 		return query.getResultList();
 	}
 }

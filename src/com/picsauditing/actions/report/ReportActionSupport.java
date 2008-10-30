@@ -8,6 +8,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ColorAlternater;
@@ -16,6 +17,7 @@ public class ReportActionSupport extends PicsActionSupport {
 	protected Report report = new Report();
 	protected List<BasicDynaBean> data;
 
+	protected ListType listType;
 	protected String orderBy;
 	protected int showPage;
 	protected ColorAlternater color = new ColorAlternater();
@@ -53,6 +55,7 @@ public class ReportActionSupport extends PicsActionSupport {
 	}
 
 	public void run(SelectSQL sql) throws SQLException {
+		
 		if (download) {
 			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
 			filename += ".csv";

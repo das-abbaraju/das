@@ -38,7 +38,7 @@
 
 <decorator:head />
 </head>
-<body>
+<body onload="<decorator:getProperty property="body.onload" />">
 <div id="header">
 <div id="headermain">
 

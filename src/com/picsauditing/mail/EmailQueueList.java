@@ -25,11 +25,11 @@ public class EmailQueueList extends PicsActionSupport {
 			emailQueueDAO.remove(id);
 		}
 
-		emails = emailQueueDAO.getPendingEmails("t.createdBy.id = " + permissions.getUserId());
+		emails = emailQueueDAO.getPendingEmails("t.createdBy.id = " + permissions.getUserId(), 50);
 		if (emails.size() > 0)
 			emailsInQueue = emailQueueDAO.getPendingEmails("(t.priority > " + emails.get(0).getPriority()
 					+ " OR (t.priority = " + emails.get(0).getPriority() + " AND " + "t.id < " + emails.get(0).getId()
-					+ "))");
+					+ "))", 50);
 		return SUCCESS;
 	}
 

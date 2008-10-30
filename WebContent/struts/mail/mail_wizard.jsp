@@ -21,6 +21,7 @@ function selectList(listType) {
 		onSuccess: function(transport) {
 			Effect.Shrink('target_recipients');
 			$('back_to_step1').show();
+			$('selectedListType').innerHTML = listType + " List";
 		}
 	});
 }
@@ -28,12 +29,15 @@ function showLists() {
 	Effect.Grow('target_recipients');
 	$('back_to_step1').hide();
 	$('back_to_step2').hide();
-	$('filter_recipients').innerHTML = "";
+	$('filter_recipients').innerHTML = "<div id='caldiv2'><!-- This is here so we don't get a JS error when clicking on the body --></div>";
 	$('report_data').innerHTML = "";
+	$('selectedListType').innerHTML = "";
+	
+	var myAjax = new Ajax.Updater('','ReportFilterAjax.action?clear=true');
 }
 </script>
 </head>
-<body>
+<body <s:if test="type != null">onload="selectList('<s:property value="type"/>')"</s:if> >
 <img src="images/beta.jpg" width="98" height="100" style="float: right;" title="This is a new feature. Please send us your feedback or suggestions." />
 
 <h1>Email Wizard</h1>
@@ -42,8 +46,9 @@ function showLists() {
 <!--Step 1-->
 <div class="target_sample">
 	<div class="instructions">Choose a method to find your recipients</div>
-	<div id="back_to_step1" style="display: none" onclick="showLists();" class="back_to_step">Choose a different list type</div>
 	<span class="step_number">1</span>
+	<div id="back_to_step1" style="display: none" onclick="showLists();" class="back_to_step">Start Over</div>
+	<h2 id="selectedListType" style="text-align: center"></h2>
 	<div id="target_recipients">
 		<div class="target_recipient" onclick="selectList('Contractor');">
 			<h2>Contractors</h2>
@@ -88,7 +93,9 @@ function showLists() {
 	<div class="instructions">Find recipients by specifying search criteria</div>
 	<span class="step_number">2</span>
 	<div id="back_to_step2" style="display: none" onclick="showFilters();" class="back_to_step">Change filter criteria</div>
-	<div id="filter_recipients"></div>
+	<div id="filter_recipients">
+		<div id="caldiv2"><!-- This is here so we don't get a JS error when clicking on the body --></div>
+	</div>
 </div>
 
 <!--Step 3-->

@@ -25,6 +25,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectContractorAudit;
+import com.picsauditing.util.SelectOption;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -37,7 +38,7 @@ import com.picsauditing.util.Strings;
  */
 public class MassMailer extends PicsActionSupport {
 	private Set<Integer> ids = null;
-	private ListType type = ListType.Contractor;
+	private ListType type;
 
 	private int templateID;
 	private String templateName;
@@ -46,7 +47,8 @@ public class MassMailer extends PicsActionSupport {
 	private List<Token> tokens = null;
 	private int previewID = 0;
 
-	private List<BasicDynaBean> list = new ArrayList<BasicDynaBean>();
+	private List<BasicDynaBean> data = new ArrayList<BasicDynaBean>();
+	private ArrayList<SelectOption> list = new ArrayList<SelectOption>();
 	private EmailQueueDAO emailQueueDAO;
 	private EmailTemplateDAO emailTemplateDAO;
 
@@ -94,22 +96,37 @@ public class MassMailer extends PicsActionSupport {
 			return SUCCESS;
 		}
 
-		// Start the main logic for actions that require passing the contractors
-		// in
-		if (ids == null || ids.size() == 0) {
-			if (ActionContext.getContext().getSession().containsKey("mailer_ids"))
-				ids = (Set<Integer>) ActionContext.getContext().getSession().get("mailer_ids");
-		}
-		if (ActionContext.getContext().getSession().containsKey("mailer_list_type"))
-			type = (ListType) ActionContext.getContext().getSession().get("mailer_list_type");
-		if (type == null)
-			type = ListType.Contractor;
+		// Start the main logic for actions that require passing the contractors in
+		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
+		if (ids == null || ids.size() == 0)
+			ids = wizardSession.getIds();
+		
+		type = wizardSession.getListType();
 
 		if (ids == null || ids.size() == 0) {
 			addActionError("Please select at least one record to which to send an email.");
 			return BLANK;
 		}
 
+		if (button != null) {
+			if (button.equals("send")) {
+				EmailTemplate template = buildEmailTemplate();
+				// TODO we may want to offer sending from another email
+				// other than their own
+				emailBuilder.setFromAddress(permissions.getEmail());
+				emailBuilder.setTemplate(template);
+
+				for (Integer id : ids) {
+					addTokens(id);
+					EmailQueue email = emailBuilder.build();
+					emailQueueDAO.save(email);
+				}
+				wizardSession.clear();
+				return "emailConfirm";
+			}
+		}
+		
+		// We aren't previewing, sending, or editing, so just get the list from the db using the filters
 		String idList = Strings.implode(ids, ",");
 		SelectAccount sql = null;
 
@@ -128,24 +145,16 @@ public class MassMailer extends PicsActionSupport {
 		}
 
 		Database db = new Database();
-		list = db.select(sql.toString(), true);
-
-		if (button != null) {
-			if (button.equals("send")) {
-				EmailTemplate template = buildEmailTemplate();
-				// TODO we may want to offer sending from another email
-				// other than their own
-				emailBuilder.setFromAddress(permissions.getEmail());
-				emailBuilder.setTemplate(template);
-
-				for (Integer id : ids) {
-					addTokens(id);
-					EmailQueue email = emailBuilder.build();
-					emailQueueDAO.save(email);
-				}
-				return "emailConfirm";
+		data = db.select(sql.toString(), true);
+		
+		for(BasicDynaBean row : data) {
+			if (ListType.Contractor.equals(type)) {
+				list.add(new SelectOption(row.get("id").toString(), row.get("name").toString()));
+			} else if (ListType.Audit.equals(type)) {
+				list.add(new SelectOption(row.get("auditID").toString(), row.get("name").toString() + " - " + row.get("auditName").toString()));
 			}
 		}
+
 		return SUCCESS;
 	}
 
@@ -226,7 +235,7 @@ public class MassMailer extends PicsActionSupport {
 	public List<EmailTemplate> getEmailTemplates() {
 		return emailTemplateDAO.findByAccountID(permissions.getAccountId(), type);
 	}
-
+	
 	public ListType getType() {
 		return type;
 	}
@@ -235,7 +244,7 @@ public class MassMailer extends PicsActionSupport {
 		this.type = type;
 	}
 
-	public List<BasicDynaBean> getList() {
+	public List<SelectOption> getList() {
 		return list;
 	}
 

@@ -15,6 +15,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.ListType;
+import com.picsauditing.mail.WizardSession;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterInteger;
@@ -35,12 +36,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	protected SelectAccount sql = new SelectAccount();
 	private ReportFilterContractor filter = new ReportFilterContractor();
 
-	public SelectAccount getSql() {
-		return sql;
-	}
-
-	public void setSql(SelectAccount sql) {
-		this.sql = sql;
+	public ReportAccount() {
+		listType = ListType.Contractor;
 	}
 
 	public String execute() throws Exception {
@@ -65,6 +62,9 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		sql.setType(SelectAccount.Type.Contractor);
 		this.run(sql);
 
+		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
+		wizardSession.setFilter(listType, filter);
+		
 		if (forwardSingleResults && this.data.size() == 1) {
 			// Forward the user to the Contractor Details page
 			ServletActionContext.getResponse().sendRedirect("ContractorView.action?id=" + this.data.get(0).get("id"));
@@ -82,8 +82,9 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			for (DynaBean dynaBean : data) {
 				ids.add((Integer) dynaBean.get("id"));
 			}
-			ActionContext.getContext().getSession().put("mailer_ids", ids);
-			ActionContext.getContext().getSession().put("mailer_list_type", ListType.Contractor);
+			WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
+			wizardSession.setIds(ids);
+			wizardSession.setListTypes(ListType.Contractor);
 			ServletActionContext.getResponse().sendRedirect("MassMailer.action");
 			this.addActionMessage("Redirected to MassMailer");
 			return BLANK;
@@ -93,7 +94,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	private void addFilterToSQL() {
 		ReportFilterContractor f = getFilter();
-
+		
 		/** **** Filters for Accounts ********** */
 		if (filterOn(f.getStartsWith()))
 			report.addFilter(new SelectFilter("name", "a.name LIKE '?%'", f.getStartsWith()));
@@ -222,5 +223,13 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	public void prepare() throws Exception {
 		this.getPermissions();
 		getFilter().setPermissions(permissions);
+	}
+	
+	public SelectAccount getSql() {
+		return sql;
+	}
+
+	public void setSql(SelectAccount sql) {
+		this.sql = sql;
 	}
 }

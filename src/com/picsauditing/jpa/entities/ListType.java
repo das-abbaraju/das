@@ -3,7 +3,7 @@ package com.picsauditing.jpa.entities;
 public enum ListType {
 	ALL("Any List"),
 	Contractor("Contractors"),
-	Audit("Audits"),
+	Audit("Contractors by Audit"),
 	User("Users"),
 	ContractorOperator("Contractors by Operator"),
 	Certificate("Certificates"),

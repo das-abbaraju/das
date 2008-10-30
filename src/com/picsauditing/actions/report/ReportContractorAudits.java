@@ -13,6 +13,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.ListType;
+import com.picsauditing.mail.WizardSession;
 import com.picsauditing.search.SelectContractorAudit;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterDate;
@@ -181,8 +182,10 @@ public class ReportContractorAudits extends ReportAccount {
 				Long longID = (Long)dynaBean.get("auditID");
 				ids.add(longID.intValue());
 			}
-			ActionContext.getContext().getSession().put("mailer_ids", ids);
-			ActionContext.getContext().getSession().put("mailer_list_type", ListType.Audit);
+			WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
+			wizardSession.setIds(ids);
+			wizardSession.setListTypes(ListType.Audit);
+			
 			ServletActionContext.getResponse().sendRedirect("MassMailer.action");
 			this.addActionMessage("Redirected to MassMailer");
 			return BLANK;
