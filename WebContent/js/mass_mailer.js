@@ -55,7 +55,7 @@ function previewEmail(item) {
 		var subject = $('templateSubject').value;
 		var body = $('templateBody').value;
 		
-		var pars = "button=MailPreviewAjax&ids[0]=" + id + "&templateSubject=" + subject + "&templateBody=" + body + "&type=" + type;
+		var pars = "button=MailPreviewAjax&previewID=" + id + "&templateSubject=" + subject + "&templateBody=" + body + "&type=" + type;
 		
 		$('previewEmail').innerHTML = '<img src="images/ajax_process2.gif" />';
 		var myAjax = new Ajax.Updater('previewEmail','MailPreviewAjax.action',

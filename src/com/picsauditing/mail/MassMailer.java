@@ -44,6 +44,7 @@ public class MassMailer extends PicsActionSupport {
 	private String templateSubject;
 	private String templateBody;
 	private List<Token> tokens = null;
+	private int previewID = 0;
 
 	private List<BasicDynaBean> list = new ArrayList<BasicDynaBean>();
 	private EmailQueueDAO emailQueueDAO;
@@ -77,20 +78,15 @@ public class MassMailer extends PicsActionSupport {
 		}
 
 		if ("MailPreviewAjax".equals(button)) {
-			if (ids == null || ids.size() != 1) {
+			if (previewID == 0) {
 				templateSubject = "Please one record to preview email";
 				templateBody = "";
 				return SUCCESS;
 			}
-			int id = 0;
-			for (Integer tempId : ids) {
-				id = tempId;
-				break;
-			}
 
 			EmailTemplate template = buildEmailTemplate();
 			emailBuilder.setTemplate(template);
-			addTokens(id);
+			addTokens(previewID);
 
 			EmailQueue email = emailBuilder.build();
 			templateSubject = email.getSubject();
@@ -281,5 +277,13 @@ public class MassMailer extends PicsActionSupport {
 
 	public void setTemplateName(String templateName) {
 		this.templateName = templateName;
+	}
+
+	public int getPreviewID() {
+		return previewID;
+	}
+
+	public void setPreviewID(int previewID) {
+		this.previewID = previewID;
 	}
 }
