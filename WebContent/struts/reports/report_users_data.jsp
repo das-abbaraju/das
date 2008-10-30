@@ -13,6 +13,8 @@
 	<tr>
 		<td colspan="2">Account Name</td>
 		<td>Contact Name</td>
+		<td>Phone</td>
+		<td>Email</td>
 		<td>Created</td>
 		<td>Last Login</td>
 	</tr>
@@ -20,25 +22,27 @@
 	<s:iterator value="data" status="stat">
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td><s:if test="[0].get('tableType') == 'Acct'">
-					<a href="ContractorView.action?id=<s:property value="[0].get('accountID')"/>">
-					<s:property value="[0].get('companyName')" /></a>
+			<td><s:if test="get('tableType') == 'Acct'">
+					<a href="ContractorView.action?id=<s:property value="get('accountID')"/>">
+					<s:property value="get('companyName')" /></a>
 				</s:if>
 				<s:else>
-					<a href="UsersManage.action?accountId=<s:property value="[0].get('accountID')"/>">
-					<s:property value="[0].get('companyName')" /></a>	
+					<a href="UsersManage.action?accountId=<s:property value="get('accountID')"/>">
+					<s:property value="get('companyName')" /></a>	
 				</s:else>
 			</td>
-			<td><s:if test="[0].get('tableType') == 'Acct'">
-				<s:property value="[0].get('name')" />
+			<td><s:if test="get('tableType') == 'Acct'">
+				<s:property value="get('name')" />
 				</s:if>
 				<s:else>
-					<a href="UsersManage.action?accountId=<s:property value="[0].get('accountID')"/>&user.id=<s:property value="[0].get('id')"/>">
-					<s:property value="[0].get('name')" /></a>
+					<a href="UsersManage.action?accountId=<s:property value="get('accountID')"/>&user.id=<s:property value="[0].get('id')"/>">
+					<s:property value="get('name')" /></a>
 				</s:else>
 			</td>
-			<td><s:date name="[0].get('dateCreated')" format="MM/dd/yyyy"/></td>
-			<td><s:date name="[0].get('lastLogin')" format="MM/dd/yyyy hh:mm" /></td>
+			<td><s:property value="get('phone')" /></td>
+			<td><s:property value="get('email')" /></td>
+			<td><s:date name="get('dateCreated')" format="MM/dd/yyyy"/></td>
+			<td><s:date name="get('lastLogin')" format="MM/dd/yyyy hh:mm" /></td>
 		</tr>
 	</s:iterator>
 
