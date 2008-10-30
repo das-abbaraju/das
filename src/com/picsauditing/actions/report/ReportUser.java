@@ -1,6 +1,15 @@
 package com.picsauditing.actions.report;
 
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.commons.beanutils.DynaBean;
+import org.apache.struts2.ServletActionContext;
+
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectUserUnion;
 import com.picsauditing.util.ReportFilterUser;
@@ -34,6 +43,12 @@ public class ReportUser extends ReportActionSupport {
 		getFilter().setShowUser(true);
 		addFilterToSQL();
 
+		if (button != null && button.contains("Write Email")) {
+			// This condition only occurs when sending results to the mail merge
+			// tool
+			this.mailMerge = true;
+		}
+
 		sql.addField("u.tableType");
 		sql.addField("u.accountID");
 		sql.addField("u.name");
@@ -49,6 +64,21 @@ public class ReportUser extends ReportActionSupport {
 		if (isFiltered())
 			this.run(sql);
 
+		return returnResult();
+	}
+
+	protected String returnResult() throws IOException {
+		if (mailMerge) {
+			Set<Integer> ids = new HashSet<Integer>();
+			for (DynaBean dynaBean : data) {
+				ids.add((Integer) dynaBean.get("id"));
+			}
+			ActionContext.getContext().getSession().put("mailer_ids", ids);
+			ActionContext.getContext().getSession().put("mailer_list_type", ListType.User);
+			ServletActionContext.getResponse().sendRedirect("MassMailer.action");
+			this.addActionMessage("Redirected to MassMailer");
+			return BLANK;
+		}
 		return SUCCESS;
 	}
 
