@@ -1,6 +1,5 @@
 package com.picsauditing.util;
 
-import com.picsauditing.access.Permissions;
 
 public class ReportFilterUser extends ReportFilter {
 	public static final String DEFAULT_NAME = "- Contact Name - ";

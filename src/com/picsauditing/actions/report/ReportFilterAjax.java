@@ -2,7 +2,6 @@ package com.picsauditing.actions.report;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.util.ReportFilter;
-import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterAudit;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.ReportFilterUser;
