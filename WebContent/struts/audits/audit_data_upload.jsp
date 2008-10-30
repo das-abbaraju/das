@@ -31,7 +31,7 @@
 <div id="main">
 <div id="bodyholder">
 <div id="content">
-<h1>File Upload
+<h1> Upload <s:if test="question.columnHeader.length() > 0"><s:property value="question.columnHeader"/></s:if> File 
 <span class="sub"><s:property value="question.subCategory.category.category"/> &gt; <s:property value="question.subCategory.subCategory"/></span>
 </h1>
 <s:include value="../actionMessages.jsp" />
