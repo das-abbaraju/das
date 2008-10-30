@@ -4,11 +4,9 @@
 <html>
 <head>
 <title>Question Answer Search</title>
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/reports.css" />
+<s:include value="reportHeader.jsp" />
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/forms.css" />
-<script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript">
 function getQuestionList(elm) {
 		var pars = 'questionName='+ escape($F(elm));
@@ -26,8 +24,11 @@ function getQuestionList(elm) {
 
 <div id="search">
 <s:form id="form1" method="post" cssStyle="background-color: #F4F4F4;" onsubmit="runSearch( 'form1')">
+	<s:hidden name="filter.ajax" />
+	<s:hidden name="filter.destinationAction" />
+	<s:hidden name="filter.allowMailMerge" />
 	<s:hidden name="showPage" value="1" />
-	<s:hidden name="startsWith" />
+	<s:hidden name="filter.startsWith" />
 	<s:hidden name="orderBy" />
 
 	<s:iterator value="questions" status="stat">
@@ -37,7 +38,7 @@ function getQuestionList(elm) {
 				<s:hidden name="questions[%{#stat.index}].criteria" value="%{criteria}"></s:hidden>
 				<s:hidden name="questions[%{#stat.index}].answer.answer" value="%{answer.answer}"></s:hidden>
 				<s:property value="shortQuestion"/> <s:property value="criteria"/> <s:property value="answer.answer"/>
-				<button type="submit" name="button" value="<s:property value="questionID"/>">Remove</button>
+				<button type="submit" class="negative" name="button" value="<s:property value="questionID"/>">Remove</button>
 			</div>
 		</div>
 	</s:iterator>
@@ -53,7 +54,6 @@ function getQuestionList(elm) {
 		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
 </s:form>
 </div>
-
 <div><s:property value="report.pageLinksWithDynamicForm"
 	escape="false" /></div>
 

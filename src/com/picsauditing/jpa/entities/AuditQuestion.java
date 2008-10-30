@@ -471,7 +471,6 @@ public class AuditQuestion implements java.io.Serializable {
 
 		if (columnText.length() > 100)
 			columnText = columnText.substring(0, 100);
-
 		columnText = getSubCategory().getCategory().getNumber() + "." + getSubCategory().getNumber() + "."
 				+ getNumber() + " " + columnText;
 		columnText = getSubCategory().getCategory().getAuditType().getAuditName() + ": " + columnText;

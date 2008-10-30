@@ -1,6 +1,5 @@
 package com.picsauditing.actions.report;
 
-import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,7 @@ public class ReportActionSupport extends PicsActionSupport {
 	protected boolean download = false;
 	protected boolean mailMerge = false;
 	protected Boolean filtered = null;
-	
+
 	public int getShowPage() {
 		return showPage;
 	}
@@ -58,8 +57,8 @@ public class ReportActionSupport extends PicsActionSupport {
 			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
 			filename += ".csv";
 			ServletActionContext.getResponse().setContentType("application/octet-stream");
-			//ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
-			//ServletActionContext.getResponse().setContentType("text/csv");
+			// ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+			// ServletActionContext.getResponse().setContentType("text/csv");
 			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
 			this.report.setLimit(100000);
 			showPage = 1;
@@ -78,17 +77,17 @@ public class ReportActionSupport extends PicsActionSupport {
 			report.setCurrentPage(showPage);
 
 		data = report.getPage();
-		
-//		if (download) {
-//			StringBuilder csv = new StringBuilder();
-//			csv.toString().t
-//			ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-//			byte[] csv = 
-//			for(String column : getDownloadColumns()) {
-//				
-//			}
-//			ServletActionContext.getResponse().getOutputStream().write(csv);
-//		}
+
+		// if (download) {
+		// StringBuilder csv = new StringBuilder();
+		// csv.toString().t
+		// ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+		// byte[] csv =
+		// for(String column : getDownloadColumns()) {
+		//				
+		// }
+		// ServletActionContext.getResponse().getOutputStream().write(csv);
+		// }
 	}
 
 	public ArrayList<String> getDownloadColumns() {
@@ -96,7 +95,7 @@ public class ReportActionSupport extends PicsActionSupport {
 		columns.add("id");
 		return columns;
 	}
-	
+
 	public ColorAlternater getColor() {
 		return color;
 	}
@@ -127,7 +126,7 @@ public class ReportActionSupport extends PicsActionSupport {
 	public void setDownload(boolean download) {
 		this.download = download;
 	}
-	
+
 	public boolean filterOn(Object value, Object defaultValue) {
 		if (value == null)
 			return false;
@@ -141,7 +140,7 @@ public class ReportActionSupport extends PicsActionSupport {
 			return false;
 		return value.toString().trim().length() > 0;
 	}
-	
+
 	public boolean filterOn(int[] value) {
 		if (value == null)
 			return false;
