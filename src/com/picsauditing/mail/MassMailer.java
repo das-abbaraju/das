@@ -40,7 +40,7 @@ public class MassMailer extends PicsActionSupport {
 	private Set<Integer> ids = null;
 	private ListType type;
 
-	private int templateID;
+	private int templateID = -1;
 	private String templateName;
 	private String templateSubject;
 	private String templateBody;
@@ -66,6 +66,22 @@ public class MassMailer extends PicsActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		permissions.tryPermission(OpPerms.EmailTemplates);
+		
+		// Start the main logic for actions that require passing the contractors in
+		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
+		type = wizardSession.getListType();
+		
+		if ("start".equals(button)) {
+			// Reset the templateID to this new passed in one
+			wizardSession.setTemplateID(templateID);
+		}
+		
+		if (templateID == -1) {
+			// It hasn't been set yet
+			// TODO reverse the meaning of -1 and 0 -- 0 should mean nothing selected and -1 should be a blank email selected
+			templateID = wizardSession.getTemplateID();
+		}
+
 		if ("MailEditorAjax".equals(button)) {
 			if (templateID > 0) {
 				EmailTemplate template = emailTemplateDAO.find(templateID);
@@ -76,6 +92,7 @@ public class MassMailer extends PicsActionSupport {
 				templateSubject = "";
 				templateBody = "";
 			}
+			wizardSession.setTemplateID(templateID);
 			return SUCCESS;
 		}
 
@@ -96,15 +113,15 @@ public class MassMailer extends PicsActionSupport {
 			return SUCCESS;
 		}
 
-		// Start the main logic for actions that require passing the contractors in
-		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
 		if (ids == null || ids.size() == 0)
 			ids = wizardSession.getIds();
 		
-		type = wizardSession.getListType();
-
 		if (ids == null || ids.size() == 0) {
-			addActionError("Please select at least one record to which to send an email.");
+			String url = "EmailWizard.action";
+			if (type != null)
+				url += "?type="+type;
+			
+			addActionError("Please select at least one record to which to send an email. <a href='"+url+"'>Click to Continue</a>");
 			return BLANK;
 		}
 

@@ -8,10 +8,7 @@ function dirtyOn() {
 }
 
 function showTemplateList() {
-	templateID = -1;
-	$('draftEdit').hide();
-	Effect.Fade('menu_selector', {duration: 0.3});
-	Effect.Appear('chooseEmail');
+	window.location = 'MassMailer.action?button=start';
 }
 
 function sendEmails() {
@@ -107,8 +104,8 @@ function addTemplate(id) {
 	var subject = $('templateSubject').value;
 	var body = $('templateBody').value;
 	var name = $('templateName').value;
-	var pars = "button=save&id=" + id + "&template.templateName=" + name + "&template.subject=" + subject + "&template.body=" + body;
-
+	var pars = "button=save&id=" + id + "&template.listType=" + type + "&template.templateName=" + name + "&template.subject=" + subject + "&template.body=" + body;
+	alert(pars);
 	var myAjax = new Ajax.Updater('messages','EmailTemplateSaveAjax.action',
 		{
 			method: 'post',

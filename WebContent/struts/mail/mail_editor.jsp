@@ -1,11 +1,20 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
-<div id="div_saveEmail" style="display: none;">
-	<label>Template Name:</label> <s:textfield name="templateName" id="templateName" size="30" cssClass="forms" maxlength="50" />
-<s:if test="templateID > 0">
-	<input type="button" onclick="addTemplate(<s:property value="templateID" />);" value="Save" class="forms" />
-</s:if>
-	<input type="button" onclick="addTemplate(0);" value="Save As New" class="forms" />
+<h3><s:property value="templateName"/></h3>
+<div id="div_saveEmail" style="display: none; margin-bottom: 150px">
+	<fieldset>
+	<legend><span>Save Template Form</span></legend>
+	<ol>
+		<li><label>Template name:</label>
+			<s:textfield name="templateName" id="templateName" size="30" cssClass="forms" maxlength="50" />
+			<s:if test="templateID > 0">
+				<br />
+				<input type="button" onclick="addTemplate(<s:property value="templateID" />);" value="Save" class="forms" />
+			</s:if>
+			<input type="button" onclick="addTemplate(0);" value="Save As New" class="forms" />
+		</li>
+	</ol>
+	</fieldset>
 </div>
 
 <s:hidden name="templateID" />

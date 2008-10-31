@@ -18,6 +18,7 @@ public class WizardSession {
 	public boolean clear() {
 		map.remove("mailer_ids");
 		map.remove("mailer_list_type");
+		map.remove("mailer_template_id");
 		return true;
 	}
 
@@ -59,4 +60,16 @@ public class WizardSession {
 	public void setFilter(ListType type, ReportFilter filter) {
 		map.put("filter"+type.toString(), filter);
 	}
+
+	public int getTemplateID() {
+		if (map.containsKey("mailer_template_id"))
+			return (Integer) map.get("mailer_template_id");
+		return 0;
+	}
+	
+	public void setTemplateID(int templateID) {
+		map.put("mailer_template_id", templateID);
+	}
+	
+	
 }

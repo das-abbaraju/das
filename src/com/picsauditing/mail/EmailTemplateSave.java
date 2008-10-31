@@ -83,7 +83,11 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 
 	@Override
 	public void prepare() throws Exception {
-		template = emailTemplateDAO.find(getParameter("id"));
-		emailTemplateDAO.clear();
+		id = getParameter("id");
+		if (id > 0) {
+			template = emailTemplateDAO.find(id);
+			emailTemplateDAO.clear();
+		} else
+			template = new EmailTemplate();
 	}
 }

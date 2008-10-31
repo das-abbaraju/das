@@ -63,13 +63,9 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		this.run(sql);
 
 		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
+		wizardSession.clear();
 		wizardSession.setFilter(listType, filter);
 		
-		if (forwardSingleResults && this.data.size() == 1) {
-			// Forward the user to the Contractor Details page
-			ServletActionContext.getResponse().sendRedirect("ContractorView.action?id=" + this.data.get(0).get("id"));
-		}
-
 		if (filtered == null)
 			filtered = false;
 		
@@ -89,6 +85,12 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			this.addActionMessage("Redirected to MassMailer");
 			return BLANK;
 		}
+		
+		if (forwardSingleResults && this.data.size() == 1) {
+			// Forward the user to the Contractor Details page
+			ServletActionContext.getResponse().sendRedirect("ContractorView.action?id=" + this.data.get(0).get("id"));
+		}
+
 		return SUCCESS;
 	}
 

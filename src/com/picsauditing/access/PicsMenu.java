@@ -127,8 +127,10 @@ public class PicsMenu {
 			subMenu.addChild("PQF Matrix", "ManagePQFMatrix.action");
 		}
 		
-		if (permissions.hasPermission(OpPerms.EmailTemplates))
+		if (permissions.hasPermission(OpPerms.EmailTemplates)) {
 			subMenu.addChild("Email Wizard", "EmailWizard.action");
+			subMenu.addChild("Mass Mailer", "MassMailer.action");
+		}
 		
 		if (permissions.hasPermission(OpPerms.EmailQueue))
 			subMenu.addChild("Email Queue", "EmailQueueList.action");		

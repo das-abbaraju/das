@@ -10,6 +10,7 @@ import org.apache.struts2.ServletActionContext;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.ListType;
+import com.picsauditing.mail.WizardSession;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectUserUnion;
 import com.picsauditing.util.ReportFilterUser;
@@ -70,13 +71,14 @@ public class ReportUser extends ReportActionSupport {
 	}
 
 	protected String returnResult() throws IOException {
-		if (mailMerge) {
+		if (mailMerge && data != null && data.size() > 0) {
 			Set<Integer> ids = new HashSet<Integer>();
 			for (DynaBean dynaBean : data) {
 				ids.add((Integer) dynaBean.get("id"));
 			}
-			ActionContext.getContext().getSession().put("mailer_ids", ids);
-			ActionContext.getContext().getSession().put("mailer_list_type", ListType.User);
+			WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
+			wizardSession.setIds(ids);
+			wizardSession.setListTypes(ListType.User);
 			ServletActionContext.getResponse().sendRedirect("MassMailer.action");
 			this.addActionMessage("Redirected to MassMailer");
 			return BLANK;
