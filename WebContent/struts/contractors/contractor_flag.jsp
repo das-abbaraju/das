@@ -96,26 +96,7 @@
 </div>
 </s:if>
 
-<table class="report" style="clear: none">
-	<thead>
-		<tr>
-			<td>Upcoming Audits</td>
-			<td>Status</td>
-		</tr>
-	</thead>
-	<s:iterator id="op" value="co.operatorAccount.audits">
-		<s:iterator id="con" value="co.contractorAccount.audits">
-			<s:if test="#op.auditType.auditTypeID == #con.auditType.auditTypeID && (#con.auditStatus.toString().equals('Pending') || #con.auditStatus.toString().equals('Submitted'))">
-				<tr>
-					<td><s:property value="auditType.auditName" /></td>
-					<td><s:property value="auditStatus" /></td>
-				</tr>
-			</s:if>	
-		</s:iterator>
-	</s:iterator>
-</table>
-
-<table class="report" style="clear: none">
+<table class="report" style="clear: none;">
 	<thead>
 		<tr>
 			<td>Flag</td>
@@ -133,6 +114,26 @@
 		</s:if>
 	</s:iterator>
 </table>
+
+<table class="report" style="position: absolute; left: 290px;top: 230px;">
+	<thead>
+		<tr>
+			<td>Upcoming Audits</td>
+			<td>Status</td>
+		</tr>
+	</thead>
+	<s:iterator id="op" value="co.operatorAccount.audits">
+		<s:iterator id="con" value="co.contractorAccount.audits">
+			<s:if test="#op.auditType.auditTypeID == #con.auditType.auditTypeID && (#con.auditStatus.toString().equals('Pending') || #con.auditStatus.toString().equals('Submitted'))">
+				<tr>
+					<td><a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditType.auditName" /></a></td>
+					<td><a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditStatus" /></a></td>
+				</tr>
+			</s:if>	
+		</s:iterator>
+	</s:iterator>
+</table>
+
 <pics:permission perm="ManageOperators">
 	<div><a
 		href="AuditOperator.action?oID=<s:property value="opID" />">Flag
