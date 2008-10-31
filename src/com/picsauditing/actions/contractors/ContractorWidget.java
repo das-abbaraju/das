@@ -8,6 +8,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAudit;
 
 /**
@@ -82,9 +83,17 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 			}
 
-			if (isHasInsurance()) {
+			if (isRequiresInsurance() && getInsuranceCount() == 0) {
 				openTasks.add("Please <a href=\"contractor_upload_certificates.jsp?id=" + id
 						+ "\">upload your insurance certificates</a>");
+			}
+			for (Certificate certificate : contractor.getCertificates()) {
+				if (certificate.getStatus().equals("Expired"))
+					openTasks.add("You have an <a href=\"contractor_upload_certificates.jsp?id=" + id
+							+ "\">Expired " + certificate.getType() + " Certificate</a>");
+				if (certificate.getStatus().equals("Rejected"))
+					openTasks.add("You have a <a href=\"contractor_upload_certificates.jsp?id=" + id
+							+ "\">Rejected " + certificate.getType() + " Certificate</a>");
 			}
 
 		}

@@ -10,9 +10,11 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.YesNo;
 
 public class ContractorActionSupport extends PicsActionSupport {
@@ -148,20 +150,54 @@ public class ContractorActionSupport extends PicsActionSupport {
 	 * who don't have the InsuranceCerts permission.
 	 * 
 	 */
-	public boolean isHasInsurance() {
-		if (!permissions.isContractor() && !permissions.hasPermission(OpPerms.InsuranceCerts))
+	public boolean isRequiresInsurance() {
+		if (permissions.isOperator()) {
+			for (ContractorOperator insurContractors : getOperators()) {
+				OperatorAccount op = insurContractors.getOperatorAccount();
+				if (permissions.getAccountId() == op.getId() && op.getCanSeeInsurance().equals(YesNo.Yes))
+					return true;
+			}
 			return false;
-
+		}
+		// If Contractor or admin, any operator requiring certs will see this
+		// If corporate, then the operators list is already restricted to my facilities
 		for (ContractorOperator insurContractors : getOperators()) {
-			if(insurContractors.getContractorAccount().getCertificates().size() > 0)
-				return false;
-			if (insurContractors.getOperatorAccount().getCanSeeInsurance().equals(YesNo.Yes))
+			OperatorAccount op = insurContractors.getOperatorAccount();
+			if (op.getCanSeeInsurance().equals(YesNo.Yes))
 				return true;
 		}
-		
 		return false;
 	}
 
+	/**
+	 * Only show the insurance link for contractors who are linked to an
+	 * operator that collects insurance data. Also, don't show the link to users
+	 * who don't have the InsuranceCerts permission.
+	 * 
+	 */
+	public int getInsuranceCount() {
+		int count = 0;
+		
+		for (Certificate certificate : contractor.getCertificates()) {
+			if (permissions.isOperator()) {
+				if (permissions.getAccountId() == certificate.getOperatorAccount().getId())
+					count++;
+			}
+			else if (permissions.isCorporate()) {
+				for(ContractorOperator co :  getOperators()) {
+					if (co.getOperatorAccount().equals(certificate.getOperatorAccount())) {
+						count++;
+					}
+				}
+			}
+			else {
+				// Admins and contractors can see all the certs for this contractor
+				count++;
+			}
+		}
+		return count;
+	}
+	
 	public boolean isShowHeader() {
 		if (permissions.isContractor())
 			return true;
