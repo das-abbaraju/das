@@ -1,5 +1,6 @@
 package com.picsauditing.actions.report;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ColorAlternater;
+import com.picsauditing.util.DownloadTable;
 
 public class ReportActionSupport extends PicsActionSupport {
 	protected Report report = new Report();
@@ -54,15 +56,9 @@ public class ReportActionSupport extends PicsActionSupport {
 		this.report = report;
 	}
 
-	public void run(SelectSQL sql) throws SQLException {
+	public void run(SelectSQL sql) throws SQLException, IOException {
 		
 		if (download) {
-			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
-			filename += ".csv";
-			ServletActionContext.getResponse().setContentType("application/octet-stream");
-			// ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
-			// ServletActionContext.getResponse().setContentType("text/csv");
-			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
 			this.report.setLimit(100000);
 			showPage = 1;
 		}
@@ -80,23 +76,23 @@ public class ReportActionSupport extends PicsActionSupport {
 			report.setCurrentPage(showPage);
 
 		data = report.getPage();
+		
+		if (download) {
+			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
+			filename += ".csv";
 
-		// if (download) {
-		// StringBuilder csv = new StringBuilder();
-		// csv.toString().t
-		// ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-		// byte[] csv =
-		// for(String column : getDownloadColumns()) {
-		//				
-		// }
-		// ServletActionContext.getResponse().getOutputStream().write(csv);
-		// }
-	}
-
-	public ArrayList<String> getDownloadColumns() {
-		ArrayList<String> columns = new ArrayList<String>();
-		columns.add("id");
-		return columns;
+			//DownloadTable file = new DownloadTable();
+			//file.setData(data);
+			//file.addColumn("id");
+			//file.addColumn("name");
+			//file.setFilename(filename);
+			
+			//ServletActionContext.getResponse().setContentType("application/octet-stream");
+			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+			//ServletActionContext.getResponse().setContentType("text/csv");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+			//ServletActionContext.getResponse().getOutputStream().write(file.output());
+		}
 	}
 
 	public ColorAlternater getColor() {

@@ -129,7 +129,7 @@ public class AuditQuestion implements java.io.Serializable {
 		this.number = number;
 	}
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 1000)
 	public String getQuestion() {
 		return this.question;
 	}

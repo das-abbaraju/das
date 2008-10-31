@@ -111,9 +111,11 @@ type = "<s:property value="type" />";
 								href="javascript: deleteTemplate(<s:property value="id"/>);" title="Remove this template"><img src="images/cross.png" /></a>
 							</pics:permission>
 							</nobr></li>
-							
 					</s:iterator>
 				</ul>
+				<s:if test="emailTemplates.size == 0">
+					<div id="info">Get started drafting an email by clicking above. Once you draft an email, you can save that to use later.</div>
+				</s:if>
 				</td>
 			</tr>
 		</table>

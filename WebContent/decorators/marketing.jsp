@@ -98,7 +98,7 @@
 												quality="high"
 												pluginspage="http://www.macromedia.com/go/getflashplayer"
 												type="application/x-shockwave-flash" width="364" height="72"></embed>
-										</object><script type="text/javascript" src="js/ieupdate.js"></script></td>
+										</object></td>
 										<td><img src="images/squares_home.gif" width="147"
 											height="72"></td>
 									</tr>
@@ -119,7 +119,7 @@
 									<embed src="flash/home_feature.swf" quality="high"
 										pluginspage="http://www.macromedia.com/go/getflashplayer"
 										type="application/x-shockwave-flash" width="511" height="146"></embed>
-								</object><script type="text/javascript" src="js/ieupdate.js"></script></td>
+								</object></td>
 								<%
 									} else
 									{
@@ -169,6 +169,7 @@
 		<td height="72" valign="top">&nbsp;</td>
 	</tr>
 </table>
+<script type="text/javascript" src="js/ieupdate.js"></script>
 <%@ include file="../includes/statcounter.jsp"%>
 </body>
 </html>

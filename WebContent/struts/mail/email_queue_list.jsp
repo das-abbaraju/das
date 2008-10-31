@@ -29,11 +29,11 @@ function deleteEmail(id) {
 <body>
 <h1>Email Queue List</h1>
 <s:if test="emails.size() == 0">
-	<div id="info">You have no pending emails waiting to be sent. After we send those, we will start sending your email(s).</div>
+	<div id="info">You have no pending emails waiting to be sent.</div>
 </s:if>
 <s:else>
 	<s:if test="emailsInQueue.size() > 0">
-		<div id="alert">There are <b><s:property value="emailsInQueue.size()" /></b> emails before yours in the queue.</div>
+		<div id="alert">There are <b><s:property value="emailsInQueue.size()" /></b> emails before yours in the queue. After we send those, we will start sending your email(s).</div>
 	</s:if>
 	<table class="report">
 		<thead>
