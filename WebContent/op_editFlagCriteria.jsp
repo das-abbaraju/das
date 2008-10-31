@@ -65,8 +65,6 @@
 </ul>
 </div>
 
-<a class="blueMain" href="QuestionAnswerSearch.action">Search by Question</a>
-
 <div style="text-align: center">
 <span class="redMain"><%=flagCriteria.getErrorMessages()%></span>
 <form name="form1" method="post" action="op_editFlagCriteria.jsp?opID=<%=opID%>">
@@ -134,6 +132,7 @@ if (canEditFlagCriteria) {
 		<td class="center" colspan=2><%=flagStatus%> Flag PQF Questions</td>
 		<td class="center">Criteria</td>
 		<td class="center">Include?</td>
+		<td></td>
 	</tr>
 	</thead>
 	<tr>
@@ -148,6 +147,7 @@ if (canEditFlagCriteria) {
 			<input type="hidden" name="hurdleTypeQ_<%=hurdleQuestions.questionID%>" value="<%=hurdleQuestions.questionType%>" />
 			<%=Inputs.getCheckBoxInput("flagQ_" + hurdleQuestions.questionID, "forms", flagCriteria.getIsCheckedFromMap(hurdleQuestions.questionID), "Yes")%>
 		</td>
+		<td></td>
 	</tr>
 	<%
 		hurdleQuestions.setList(opID);
@@ -168,6 +168,12 @@ if (canEditFlagCriteria) {
 			<input type="hidden" name="hurdleTypeQ_<%=hurdleQuestions.questionID%> value="<%=hurdleQuestions.questionType%>" />
 			<%=Inputs.getCheckBoxInput("flagQ_" + hurdleQuestions.questionID, "forms", flagCriteria.getIsCheckedFromMap(hurdleQuestions.questionID), "Yes")%>
 		</td>
+		<td><nobr><a href="QuestionAnswerSearch.action?
+		button=Add&filter.ajax=false&questions[99].questionID=<%= hurdleQuestions.questionID %>&
+		questions[99].answer.answer=<%= flagCriteria.getValueFromMap(hurdleQuestions.questionID) %>&
+		questions[99].criteria=<%= flagCriteria.getComparisonFromMap(hurdleQuestions.questionID) %>
+		">Search Answers</a>
+		</nobr></td>
 	<%
 	}
 	%>		
