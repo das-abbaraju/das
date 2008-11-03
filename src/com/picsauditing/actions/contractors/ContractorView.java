@@ -28,17 +28,22 @@ public class ContractorView extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
-	public int getLogoWidth() throws IOException {
-		System.out.println("getLogoWidth for " + contractor.getId());
+	public int getLogoWidth() {
+		//System.out.println("getLogoWidth for " + contractor.getId());
 		if (contractor.getLogoFile() == null)
 			return 0;
 		if (contractor.getLogoFile().equals("No"))
 			return 0;
 
 		String filename = getFtpDir() + "/logos/" + contractor.getLogoFile();
-		System.out.println("filename = " + filename);
-		int width = Images.getWidth(filename);
-		System.out.println("width = " + width);
+		//System.out.println("filename = " + filename);
+		int width = 0;
+		try {
+			width = Images.getWidth(filename);
+		} catch (IOException e) {
+			System.out.println("failed to get logo width of " + filename + ": " + e.getMessage());
+		}
+		//System.out.println("width = " + width);
 		if (width > 300)
 			return 300;
 		return width;
