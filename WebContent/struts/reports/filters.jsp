@@ -169,8 +169,13 @@
 		<div class="filterOption"><s:select list="#{'1':'Low', '2':'Med', '3':'High'}"  
 			headerKey="0" headerValue="- Risk Level -" cssClass="forms" name="filter.riskLevel"/></div>
 	</s:if>
-	
+
 	<br clear="all"/>
+	<s:if test="filter.showInsuranceStatus">
+		<div class="filterOption"><s:select list="#{'InComplete':'InComplete','Complete':'Complete'}" headerKey="" headerValue="- Insurance Status -"
+			cssClass="forms" name="filter.insuranceStatus" /></div>
+	</s:if>
+
 	<s:if test="filter.showLicensedIn">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_stateLicensedIn'); return false;">Licensed

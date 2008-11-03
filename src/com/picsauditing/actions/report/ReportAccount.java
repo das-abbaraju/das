@@ -11,6 +11,7 @@ import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -46,6 +47,11 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
 
+		if (permissions.hasPermission(OpPerms.InsuranceCerts)) {
+			getFilter().setShowInsuranceStatus(true);
+			getFilter().setShowCerts(true);
+		}
+
 		addFilterToSQL();
 
 		// Figure out if this is mailmerge call or not
@@ -65,13 +71,13 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
 		wizardSession.clear();
 		wizardSession.setFilter(listType, filter);
-		
+
 		if (filtered == null)
 			filtered = false;
-		
+
 		return returnResult();
 	}
-	
+
 	protected String returnResult() throws IOException {
 		if (mailMerge) {
 			Set<Integer> ids = new HashSet<Integer>();
@@ -85,7 +91,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			this.addActionMessage("Redirected to MassMailer");
 			return BLANK;
 		}
-		
+
 		if (forwardSingleResults && this.data.size() == 1) {
 			// Forward the user to the Contractor Details page
 			ServletActionContext.getResponse().sendRedirect("ContractorView.action?id=" + this.data.get(0).get("id"));
@@ -96,7 +102,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	private void addFilterToSQL() {
 		ReportFilterContractor f = getFilter();
-		
+
 		/** **** Filters for Accounts ********** */
 		if (filterOn(f.getStartsWith()))
 			report.addFilter(new SelectFilter("name", "a.name LIKE '?%'", f.getStartsWith()));
@@ -188,6 +194,16 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getRiskLevel(), 0))
 			report.addFilter(new SelectFilterInteger("riskLevel", "c.riskLevel = '?'", f.getRiskLevel()));
 
+		if (filterOn(f.getInsuranceStatus())) {
+			String insurance = "";
+			if (f.getInsuranceStatus().equals("InComplete"))
+				insurance = "a.id in (select contractor_id from certificates where status <> 'Approved') "
+						+ "or a.id in (select id from accounts left join certificates on id = contractor_id where cert_id is null)";
+			if (f.getInsuranceStatus().equals("Complete"))
+				insurance = "a.id not in (select contractor_id from certificates where status <> 'Approved') "
+						+ "and a.id in (select id from accounts join certificates on id = contractor_id where status = 'Approved')";
+			report.addFilter(new SelectFilter("insuranceStatus", insurance, f.getInsuranceStatus()));
+		}
 	}
 
 	private void createPqfDataClause(SelectSQL sql, String where) {
@@ -226,7 +242,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		this.getPermissions();
 		getFilter().setPermissions(permissions);
 	}
-	
+
 	public SelectAccount getSql() {
 		return sql;
 	}
