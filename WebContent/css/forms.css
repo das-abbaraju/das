@@ -1,5 +1,6 @@
 /******************** New Primary class="forms"  ************************/
 
+
 form fieldset {
 	margin: 0 0 -1em 0;
 	padding: 0 0 1em 0;
@@ -10,7 +11,7 @@ form fieldset {
 	float: left;
 	clear: both;
 	position: relative;
-	color: #808285;
+	color: #404245;
 }
 
 form fieldset.alt {
@@ -76,7 +77,7 @@ form fieldset label.input {
 }
 
 form fieldset input[type=text], form fieldset select {
-	color: #808285;
+	color: #404245;
 	font-size: 14px;
 	padding: 2px;
 	border-style: inset;
