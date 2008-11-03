@@ -70,6 +70,4 @@ public class WizardSession {
 	public void setTemplateID(int templateID) {
 		map.put("mailer_template_id", templateID);
 	}
-	
-	
 }
