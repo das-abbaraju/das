@@ -9,7 +9,6 @@
 
 <script type="text/javascript">
 function selectList(listType) {
-	$('back_to_step2').hide();
 	$('filter_recipients').show();
 	$('filter_recipients').innerHTML = "<img src='images/ajax_process2.gif' width='48' height='48' />Loading filters for "+listType+"s";
 	$('report_data').innerHTML = "";
@@ -28,7 +27,6 @@ function selectList(listType) {
 function showLists() {
 	Effect.Grow('target_recipients');
 	$('back_to_step1').hide();
-	$('back_to_step2').hide();
 	$('filter_recipients').innerHTML = "<div id='caldiv2'><!-- This is here so we don't get a JS error when clicking on the body --></div>";
 	$('report_data').innerHTML = "";
 	$('selectedListType').innerHTML = "";
@@ -47,7 +45,7 @@ function showLists() {
 <div class="target_sample">
 	<div class="instructions">Choose a method to find your recipients</div>
 	<span class="step_number">1</span>
-	<div id="back_to_step1" style="display: none" onclick="showLists();" class="back_to_step">Start Over</div>
+	<div id="back_to_step1" style="display: none" onclick="showLists();" class="back_to_step" title="Start Over">Start Over</div>
 	<h2 id="selectedListType" style="text-align: center"></h2>
 	<div id="target_recipients">
 		<div class="target_recipient" onclick="selectList('Contractor');">
@@ -92,7 +90,6 @@ function showLists() {
 <div class="target_sample">
 	<div class="instructions">Find recipients by specifying search criteria</div>
 	<span class="step_number">2</span>
-	<div id="back_to_step2" style="display: none" onclick="showFilters();" class="back_to_step">Change filter criteria</div>
 	<div id="filter_recipients">
 		<div id="caldiv2"><!-- This is here so we don't get a JS error when clicking on the body --></div>
 	</div>

@@ -57,7 +57,7 @@ function runSearch(search) {
 			method: 'post', 
 			parameters: pars,
 			onSuccess: function(transport) {
-				//Effect.Opacity('report_data', { from: 0.5, to: 1.0});
+				$('search').scrollTo();
 			}
 		});
 	}

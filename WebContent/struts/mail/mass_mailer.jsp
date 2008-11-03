@@ -60,8 +60,7 @@ type = "<s:property value="type" />";
 </style>
 </head>
 <body
-	<s:if test="templateID >= 0">onload="chooseTemplate(<s:property value="templateID"/>)"</s:if>
-	<s:if test="emailTemplates.size == 0">onload="chooseTemplate(0)"</s:if>
+	<s:if test="templateID != 0">onload="chooseTemplate(<s:property value="templateID"/>)"</s:if>
 >
 <img src="images/beta.jpg" width="98" height="100" style="float: right;" title="This is a new feature. Please send us your feedback or suggestions." />
 
@@ -107,7 +106,7 @@ type = "<s:property value="type" />";
 				</td>
 				<td valign="top">
 				<ul id="templateChooser">
-					<li><a href="javascript: chooseTemplate(0);"><nobr>~ Start with
+					<li><a href="javascript: chooseTemplate(-1);"><nobr>~ Start with
 					a Blank Email ~</nobr></a></li>
 					<s:iterator value="emailTemplates">
 						<li id="li_template<s:property value="id"/>"><nobr><a

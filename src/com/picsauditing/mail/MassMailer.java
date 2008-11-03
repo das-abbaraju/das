@@ -40,11 +40,13 @@ public class MassMailer extends PicsActionSupport {
 	private Set<Integer> ids = null;
 	private ListType type;
 
-	private int templateID = -1;
+	private int templateID = 0; // 0 means no template selected at all
+	final public static int BLANK_EMAIL = -1;
 	private String templateName;
 	private String templateSubject;
 	private String templateBody;
 	private List<Token> tokens = null;
+	private List<EmailTemplate> emailTemplates = null;
 	private int previewID = 0;
 
 	private List<BasicDynaBean> data = new ArrayList<BasicDynaBean>();
@@ -71,14 +73,18 @@ public class MassMailer extends PicsActionSupport {
 		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
 		type = wizardSession.getListType();
 		
+		if (getEmailTemplates().size() == 0) {
+			// This account has no email templates, just start with a blank one
+			templateID = BLANK_EMAIL;
+		}
+		
 		if ("start".equals(button)) {
 			// Reset the templateID to this new passed in one
 			wizardSession.setTemplateID(templateID);
 		}
 		
-		if (templateID == -1) {
+		if (templateID == 0) {
 			// It hasn't been set yet
-			// TODO reverse the meaning of -1 and 0 -- 0 should mean nothing selected and -1 should be a blank email selected
 			templateID = wizardSession.getTemplateID();
 		}
 
@@ -250,7 +256,9 @@ public class MassMailer extends PicsActionSupport {
 	}
 
 	public List<EmailTemplate> getEmailTemplates() {
-		return emailTemplateDAO.findByAccountID(permissions.getAccountId(), type);
+		if (emailTemplates == null)
+			emailTemplates = emailTemplateDAO.findByAccountID(permissions.getAccountId(), type);
+		return emailTemplates;
 	}
 	
 	public ListType getType() {

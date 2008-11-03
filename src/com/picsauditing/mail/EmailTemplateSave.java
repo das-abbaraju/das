@@ -2,6 +2,11 @@ package com.picsauditing.mail;
 
 import java.util.Date;
 
+import javax.persistence.EntityExistsException;
+
+import org.hibernate.exception.ConstraintViolationException;
+
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
@@ -27,12 +32,13 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 		if (template.getId() > 0 && !permissions.hasPermission(OpPerms.AllOperators)
 				&& template.getAccountID() != permissions.getAccountId()) {
 			addActionError("You don't have permission to change this template");
+			emailTemplateDAO.clear(); // don't save
 			return SUCCESS;
 		}
 
 		if ("delete".equals(button)) {
 			permissions.tryPermission(OpPerms.EmailTemplates, OpType.Delete);
-			emailTemplateDAO.remove(template);
+			emailTemplateDAO.remove(template.getId());
 			addActionMessage("Successfully deleted email template");
 			return BLANK;
 		}
@@ -46,7 +52,7 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 				addActionError("Please enter a body");
 
 			if (this.getActionErrors().size() > 0) {
-				emailTemplateDAO.clear();
+				emailTemplateDAO.clear(); // don't save
 				return SUCCESS;
 			}
 
@@ -58,8 +64,16 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 			}
 			template.setUpdateDate(new Date());
 			template.setUpdatedBy(getUser());
-			emailTemplateDAO.save(template);
-			addActionMessage("Successfully saved email template");
+			try {
+				template = emailTemplateDAO.save(template);
+				addActionMessage("Successfully saved email template <a href='MassMailer.action'>Click to Refresh</a>");
+				WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
+				wizardSession.setTemplateID(template.getId());
+			} catch (EntityExistsException e) {
+				addActionError("Each template must have a unique name <a href='#' onclick=\"dirtyOn(); $('div_saveEmail').show(); return false;\">Click to Try Again</a>");
+			} catch (Exception e) {
+				addActionError("Failed saved email template: " + e.getMessage());
+			}
 			return BLANK;
 		}
 		return SUCCESS;
@@ -86,7 +100,6 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 		id = getParameter("id");
 		if (id > 0) {
 			template = emailTemplateDAO.find(id);
-			emailTemplateDAO.clear();
 		} else
 			template = new EmailTemplate();
 	}

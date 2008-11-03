@@ -1,4 +1,4 @@
-var templateID = -1;
+var templateID = 0;
 var dirty = false;
 var type = "";
 
@@ -36,7 +36,7 @@ function editEmail() {
 }
 
 function previewEmail(item) {
-	if (templateID < 0) {
+	if (templateID == 0) {
 		alert("Select an email template to use first");
 		return;
 	}
@@ -94,7 +94,9 @@ function deleteTemplate(id) {
 		{
 			method: 'post',
 			parameters: pars,
-			onsuccess: Effect.Fade('li_template'+id)
+			onSuccess: function(transport) {
+				Effect.Fade('li_template'+id);
+			}
 		});
 }
 
@@ -105,15 +107,16 @@ function addTemplate(id) {
 	var body = $('templateBody').value;
 	var name = $('templateName').value;
 	var pars = "button=save&id=" + id + "&template.listType=" + type + "&template.templateName=" + name + "&template.subject=" + subject + "&template.body=" + body;
-	alert(pars);
 	var myAjax = new Ajax.Updater('messages','EmailTemplateSaveAjax.action',
 		{
 			method: 'post',
-			parameters: pars
+			parameters: pars,
+			onSuccess: function(transport) {
+				Effect.Fade('div_saveEmail');
+				$('buttonSave').addClassName('disabled');
+				dirty = false;
+			}
 		});
-	Effect.Fade('div_saveEmail');
-	$('buttonSave').addClassName('disabled');
-	dirty = false;
 }
 
 function removeSelected() {
