@@ -25,7 +25,7 @@
 		<li><a href="ContractorEdit.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('edit')">class="current"</s:if>>Edit</a></li>
 	</s:if>
-	<s:if test="hasInsurance">
+	<s:if test="requiresInsurance">
 		<li><a
 			href="contractor_upload_certificates.jsp?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('cert')">class="current"</s:if>>InsureGuard</a></li>

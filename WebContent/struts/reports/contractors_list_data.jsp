@@ -72,9 +72,11 @@
 				</s:if></td>
 			</s:if>
 			<td class="center">
-				<a
+				<s:if test="@com.picsauditing.actions.report.ReportAccountAudits@isInsuranceApproved(get('id'))">
+				<a 
 					href="contractor_upload_certificates.jsp?id=<s:property value="[0].get('id')"/>"><img
 					src="images/icon_insurance.gif" width="20" height="20" border="0"></a>
+				</s:if>
 			</td>
 			</pics:permission>
 			<s:if test="permissions.operator">
