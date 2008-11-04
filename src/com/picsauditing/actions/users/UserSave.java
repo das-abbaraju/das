@@ -15,17 +15,18 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 
 public class UserSave extends UsersManage {
-	private static final int MIN_PASSWORD_LENGTH = 5; // minimum required length of a password
-	
+	private static final int MIN_PASSWORD_LENGTH = 5; // minimum required
+														// length of a password
+
 	public UserSave(OperatorAccountDAO operatorDao, UserDAO userDAO) {
 		super(operatorDao, userDAO);
 	}
-	
+
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
 		super.execute();
-		
+
 		if ("sendWelcomeEmail".equals(button) && user != null) {
 			try {
 				EmailBuilder emailBuilder = new EmailBuilder();
@@ -42,24 +43,26 @@ public class UserSave extends UsersManage {
 			}
 			addActionMessage("Welcome Email sent to " + user.getEmail());
 		}
-		
+
 		if ("Save".equals(button)) {
-			// Temporary Fix to the password authentication for BP Cherry Point Refinery
-			if(user.getAccount().getId() == 1813) {
-				Vector<String> errors = PasswordValidator.validateContractor(user);
+			// TODO Temporary Fix for password authentication for BP Cherry
+			// Point Refinery
+			if (!isOK()) {
+				userDAO.clear();
+				return SUCCESS;
+			}
+
+			if (user.getAccount().getId() == 1813) {
+				Vector<String> errors = PasswordValidator.validateContractor(user.getPassword(), user.getUsername());
 				if (errors.size() > 0) {
 					addActionError(errors.toString());
 					return SUCCESS;
 				}
 			}
-			
-			if (!isOK()){
-				userDAO.clear();
-				return SUCCESS;
-			}
+
 			if (user.getDateCreated() == null)
 				user.setDateCreated(new Date());
-			
+
 			if (user.getAccount() == null) {
 				user.setAccount(new Account());
 				if (!permissions.hasPermission(OpPerms.AllOperators)) {
@@ -67,30 +70,30 @@ public class UserSave extends UsersManage {
 				} else
 					user.getAccount().setId(accountId);
 			}
-			
+
 			if (user.isGroup()) {
 				// Create a unique username for this group
 				String username = "GROUP";
 				username += user.getAccount().getId();
 				username += user.getName();
-				
+
 				user.setUsername(username);
 			}
 			user = userDAO.save(user);
 		}
-		
+
 		if ("Remove".equals(button)) {
 			permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
 			userDAO.remove(user);
-			
-			addActionMessage("Successfully removed " + 
-					(user.isGroup() ? "group: " + user.getName() : "user: " + user.getUsername()));
+
+			addActionMessage("Successfully removed "
+					+ (user.isGroup() ? "group: " + user.getName() : "user: " + user.getUsername()));
 			user = null;
 		}
-		
+
 		return SUCCESS;
 	}
-	
+
 	private boolean isOK() throws Exception {
 		if (user == null) {
 			addActionError("No user found");
@@ -103,24 +106,26 @@ public class UserSave extends UsersManage {
 
 		if (user.isGroup())
 			return (getActionErrors().size() == 0);
-		
+
 		if (user.getUsername() == null || user.getUsername().length() < 5)
 			addActionError("Please choose a Username at least 5 characters long.");
-		
+
 		if (user.getUsername() != null && user.getUsername().length() >= 5) {
 			if (userDAO.duplicateUsername(user.getUsername(), user.getId()))
 				addActionError("That Username is already in use.  Please select another.");
 		}
-		
-		if (user.getPassword() == null || user.getPassword().length() < MIN_PASSWORD_LENGTH)
-			addActionError("Please choose a Password at least " + MIN_PASSWORD_LENGTH + " characters in length.");
-		
-		if (user.getPassword() != null && user.getPassword().equalsIgnoreCase(user.getUsername()))
-			addActionError("Please choose a Password different from your username.");
+
+		if (user.getAccount().getId() != 1813) {
+			if (user.getPassword() == null || user.getPassword().length() < MIN_PASSWORD_LENGTH)
+				addActionError("Please choose a Password at least " + MIN_PASSWORD_LENGTH + " characters in length.");
+
+			if (user.getPassword() != null && user.getPassword().equalsIgnoreCase(user.getUsername()))
+				addActionError("Please choose a Password different from your username.");
+		}
 
 		if (user.getEmail() == null || user.getEmail().length() == 0 || !Utilities.isValidEmail(user.getEmail()))
 			addActionError("Please enter a valid Email address.");
-		
+
 		return getActionErrors().size() == 0;
 	}
 }

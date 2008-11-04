@@ -1,6 +1,9 @@
 package com.picsauditing.actions.users;
 
+import java.util.Vector;
+
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.PasswordValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -31,8 +34,17 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 		}
 		if (button != null) {
 			if (password1 != null && password1.length() > 0) {
-				if (password1.length() < 5)
-					addActionError("Password must be at least 5 characters long");
+				// TODO Temporary Fix for password authentication for BP Cherry
+				// Point Refinery
+				if (u.getAccount().getId() == 1813) {
+					Vector<String> errors = PasswordValidator.validateContractor(password1, u.getUsername());
+					if (errors.size() > 0) {
+						addActionError(errors.toString());
+					}
+				} else {
+					if (password1.length() < 5)
+						addActionError("Password must be at least 5 characters long");
+				}
 				if (!password1.equals(password2))
 					addActionError("Passwords don't match");
 				if (getActionErrors().size() > 0)

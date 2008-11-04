@@ -376,13 +376,4 @@ public class User implements Comparable<User> {
 		if (this.debug)
 			System.out.println(message);
 	}
-
-	
-	public List<String> getPasswords() {
-		return null;
-	}
-
-	public void setPasswords(List<String> passwords) {
-	}
-
 }
