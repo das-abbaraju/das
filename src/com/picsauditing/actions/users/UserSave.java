@@ -52,14 +52,6 @@ public class UserSave extends UsersManage {
 				return SUCCESS;
 			}
 
-			if (user.getAccount().getId() == 969) {
-				Vector<String> errors = PasswordValidator.validateContractor(user.getPassword(), user.getUsername());
-				if (errors.size() > 0) {
-					addActionError(errors.toString());
-					return SUCCESS;
-				}
-			}
-
 			if (user.getDateCreated() == null)
 				user.setDateCreated(new Date());
 
@@ -78,6 +70,13 @@ public class UserSave extends UsersManage {
 				username += user.getName();
 
 				user.setUsername(username);
+			} else {
+				int maxHistory = 0;
+				// TODO u.getAccount().getPasswordPreferences().getMaxHistory()
+				if (user.getAccount().getId() == 969) {
+					maxHistory = 7;
+				}
+				user.addPasswordToHistory(user.getPassword(), maxHistory);
 			}
 			user = userDAO.save(user);
 		}
@@ -107,6 +106,7 @@ public class UserSave extends UsersManage {
 		if (user.isGroup())
 			return (getActionErrors().size() == 0);
 
+		// Users only after this point
 		if (user.getUsername() == null || user.getUsername().length() < 5)
 			addActionError("Please choose a Username at least 5 characters long.");
 
@@ -115,17 +115,17 @@ public class UserSave extends UsersManage {
 				addActionError("That Username is already in use.  Please select another.");
 		}
 
-		if (user.getAccount().getId() != 969) {
-			if (user.getPassword() == null || user.getPassword().length() < MIN_PASSWORD_LENGTH)
-				addActionError("Please choose a Password at least " + MIN_PASSWORD_LENGTH + " characters in length.");
-
-			if (user.getPassword() != null && user.getPassword().equalsIgnoreCase(user.getUsername()))
-				addActionError("Please choose a Password different from your username.");
-		}
-
 		if (user.getEmail() == null || user.getEmail().length() == 0 || !Utilities.isValidEmail(user.getEmail()))
 			addActionError("Please enter a valid Email address.");
 
+		if (user.getPassword() == null)
+			addActionError("Please enter a password");
+		else {
+			Vector<String> errors = PasswordValidator.validateContractor(user, user.getPassword());
+			for (String error : errors)
+				addActionError(error);
+		}
+		
 		return getActionErrors().size() == 0;
 	}
 }

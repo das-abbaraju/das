@@ -1,6 +1,7 @@
 package com.picsauditing.access;
 
 import java.sql.ResultSet;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -43,29 +44,14 @@ public class LoginController extends DataBean {
 		setupPerms(request);
 
 		getErrors().clear();
-		User user = userDAO.findName(username);
-		if (user != null && user.getLockUntil() != null) {
-			if (user.getLockUntil().after(new Date())) {
-				getErrors().add("This account is locked because of too many failed attempts");
-				return false;
-			} else {
-				user.setLockUntil(null); // it's no longer locked
-			}
-		}
 		String error = canLogin(username, password);
-		int failedAttempts = 0;
 		if (error.length() > 0) {
-			failedAttempts++;
-			if (user != null) {
-				user.setFailedAttempts(failedAttempts);
-				userDAO.save(user);
-			}
 			logAttempt(permissions, username, password, request);
 			getErrors().add(error);
 			return false;
 		}
 
-		// /////////////////
+		///////////////////
 		this.doLogin(request.getSession(), true);
 		logAttempt(permissions, username, password, request);
 		postLogin(request, response);
@@ -135,19 +121,30 @@ public class LoginController extends DataBean {
 
 		if (!getAccountByUsername(username))
 			return "No account exists with that username";
+		
+		// After this point we should always have a user or aBean set != null
 
 		if (isUser) {
-			user = userDAO.findName(username);
-			if (user != null) {
-				if (!user.getPassword().equals(password))
-					return "The password is not correct";
+			if (user.getAccount().getActive() != 'Y')
+				return "This account is no longer active.<br>Please contact PICS to activate your company.";
 
-				if (user.getAccount().getActive() != 'Y')
-					return "This user does not have permission to login.<br>Please contact PICS to activate your account.";
-
-				if (user.getIsActive() != YesNo.Yes)
-					return "This user does not have permission to login.<br>Please contact PICS to activate your account.";
+			if (user.getIsActive() != YesNo.Yes)
+				return "This user account is no longer active.<br>Please contact your administrator to reactivate it.";
+			
+			if (user.getLockUntil() != null && user.getLockUntil().after(new Date()))
+				return "This account is locked because of too many failed attempts";
+			
+			if (!user.getPassword().equals(password)) {
+				user.setFailedAttempts(user.getFailedAttempts() + 1);
+				if (user.getFailedAttempts() > 7) {
+					// Lock this user out for 1 hour
+					Calendar calendar = Calendar.getInstance();
+					calendar.add(Calendar.HOUR, 1);
+					user.setLockUntil(calendar.getTime());
+				}
+				return "The password is not correct";
 			}
+			user.setLockUntil(null); // it's no longer locked
 		} else {
 			if (!aBean.password.equals(password))
 				return "The password is not correct";
@@ -164,7 +161,7 @@ public class LoginController extends DataBean {
 		Integer id = 0;
 		aBean = new AccountBean();
 		id = aBean.findID(username);
-		if (id != 0) {
+		if (id > 0) {
 			aBean.setFromDB(id.toString());
 			user = null;
 			isUser = false;

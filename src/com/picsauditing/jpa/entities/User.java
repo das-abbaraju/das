@@ -179,17 +179,21 @@ public class User implements Comparable<User> {
 		return list;
 	}
 
-	public void setPasswordHistoryList(List<String> passwordHistory) {
+	public void addPasswordToHistory(String newPassword, int maxHistory) {
 		this.passwordHistory = "";
 		
-		// Serialize the passwords into a string somehow
-		// Only store up to 10 ??
-		int i = 0;
-		for(String password : passwordHistory) {
-			i++;
-			this.passwordHistory += password + "\n";
-			if (i >= 10) // don't store more than 10 passwords
-				break;
+		if (maxHistory > 0) {
+			List<String> list = getPasswordHistoryList();
+			list.add(0, newPassword);
+			
+			// "Serialize" the password history
+			int i = 0;
+			for(String password : list) {
+				i++;
+				this.passwordHistory += password + "\n";
+				if (i >= maxHistory) // don't store more than maxHistory passwords
+					break;
+			}
 		}
 	}
 
