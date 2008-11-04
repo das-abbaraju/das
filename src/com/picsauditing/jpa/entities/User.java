@@ -172,9 +172,11 @@ public class User implements Comparable<User> {
 	public List<String> getPasswordHistoryList() {
 		List<String> list = new ArrayList<String>();
 		
-		String[] list1 = passwordHistory.split("\n");
-		for(String item : list1) {
-			list.add(item);
+		if (passwordHistory != null) {
+			String[] list1 = passwordHistory.split("\n");
+			for(String item : list1) {
+				list.add(item);
+			}
 		}
 		return list;
 	}

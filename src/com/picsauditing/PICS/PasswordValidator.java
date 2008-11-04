@@ -34,7 +34,7 @@ public class PasswordValidator {
 		if (newPassword.equalsIgnoreCase(user.getUsername()))
 			errorMessages.addElement("Please choose a password different from your username.");
 		
-		if (!newPassword.matches(".*[a-z][A-Z].*") || !newPassword.matches(".*[0-9].*"))
+		if (!newPassword.matches(".*[a-zA-Z].*") || !newPassword.matches(".*[0-9].*"))
 			errorMessages.addElement("Your password should contain digits and letters");
 		
 		if (user.getPasswordHistoryList().contains(newPassword))

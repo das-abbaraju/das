@@ -140,10 +140,13 @@ public class LoginController extends DataBean {
 					// Lock this user out for 1 hour
 					Calendar calendar = Calendar.getInstance();
 					calendar.add(Calendar.HOUR, 1);
+					user.setFailedAttempts(0);
 					user.setLockUntil(calendar.getTime());
+					return "The password is not correct and the account has now been locked";
 				}
 				return "The password is not correct";
 			}
+			user.setFailedAttempts(0);
 			user.setLockUntil(null); // it's no longer locked
 		} else {
 			if (!aBean.password.equals(password))
