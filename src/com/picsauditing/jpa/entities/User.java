@@ -28,6 +28,7 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.util.Strings;
 
 @Entity
 @Table(name = "users")
@@ -171,29 +172,37 @@ public class User implements Comparable<User> {
 	@Transient
 	public List<String> getPasswordHistoryList() {
 		List<String> list = new ArrayList<String>();
-		
+
 		if (passwordHistory != null) {
 			String[] list1 = passwordHistory.split("\n");
-			for(String item : list1) {
-				list.add(item);
+			for (String item : list1) {
+				if (!Strings.isEmpty(item))
+					list.add(item);
 			}
 		}
 		return list;
 	}
 
 	public void addPasswordToHistory(String newPassword, int maxHistory) {
+		List<String> list = getPasswordHistoryList();
+
 		this.passwordHistory = "";
-		
+
 		if (maxHistory > 0) {
-			List<String> list = getPasswordHistoryList();
-			list.add(0, newPassword);
-			
+			if (!list.contains(password))
+				list.add(0, password);
+
+			// double check to see if newPassword is not equal to password.
+			if (!list.contains(newPassword))
+				list.add(0, newPassword);
+
 			// "Serialize" the password history
 			int i = 0;
-			for(String password : list) {
+			for (String password : list) {
 				i++;
 				this.passwordHistory += password + "\n";
-				if (i >= maxHistory) // don't store more than maxHistory passwords
+				if (i >= maxHistory) // don't store more than maxHistory
+					// passwords
 					break;
 			}
 		}

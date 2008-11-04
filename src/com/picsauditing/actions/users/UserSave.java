@@ -16,7 +16,8 @@ import com.picsauditing.mail.EmailSender;
 
 public class UserSave extends UsersManage {
 	private static final int MIN_PASSWORD_LENGTH = 5; // minimum required
-														// length of a password
+
+	// length of a password
 
 	public UserSave(OperatorAccountDAO operatorDao, UserDAO userDAO) {
 		super(operatorDao, userDAO);
@@ -125,7 +126,7 @@ public class UserSave extends UsersManage {
 			for (String error : errors)
 				addActionError(error);
 		}
-		
+
 		return getActionErrors().size() == 0;
 	}
 }

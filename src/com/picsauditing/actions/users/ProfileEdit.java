@@ -1,6 +1,5 @@
 package com.picsauditing.actions.users;
 
-import java.util.Iterator;
 import java.util.Vector;
 
 import com.opensymphony.xwork2.Preparable;
@@ -37,20 +36,20 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 			if (password1 != null && password1.length() > 0) {
 				if (!password1.equals(password2))
 					addActionError("Passwords don't match");
-				
+
 				Vector<String> errors = PasswordValidator.validateContractor(u, password1);
 				for (String error : errors)
 					addActionError(error);
-				
+
 				if (getActionErrors().size() > 0)
 					return SUCCESS;
-				u.setPassword(password1);
 				int maxHistory = 0;
 				// u.getAccount().getPasswordPreferences().getMaxHistory()
 				if (u.getAccount().getId() == 969) {
 					maxHistory = 7;
 				}
 				u.addPasswordToHistory(password1, maxHistory);
+				u.setPassword(password1);
 			}
 			u = dao.save(u);
 
