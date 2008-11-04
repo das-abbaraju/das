@@ -59,7 +59,6 @@ public class User implements Comparable<User> {
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
 	private List<UserAccess> ownedPermissions = new ArrayList<UserAccess>();
-	private List<UserLoginLog> loginlog = new ArrayList<UserLoginLog>();
 
 	private String passwordHistory;
 	private int failedAttempts = 0;
@@ -172,17 +171,26 @@ public class User implements Comparable<User> {
 	@Transient
 	public List<String> getPasswordHistoryList() {
 		List<String> list = new ArrayList<String>();
-		// TODO Convert passwordHistory into a List
-		list.add(passwordHistory);
+		
+		String[] list1 = passwordHistory.split("\n");
+		for(String item : list1) {
+			list.add(item);
+		}
 		return list;
 	}
 
 	public void setPasswordHistoryList(List<String> passwordHistory) {
 		this.passwordHistory = "";
+		
 		// Serialize the passwords into a string somehow
 		// Only store up to 10 ??
-		for(String password : passwordHistory)
-			this.passwordHistory += "{" + password + "}"; // ?? like this??
+		int i = 0;
+		for(String password : passwordHistory) {
+			i++;
+			this.passwordHistory += password + "\n";
+			if (i >= 10) // don't store more than 10 passwords
+				break;
+		}
 	}
 
 	public int getFailedAttempts() {
