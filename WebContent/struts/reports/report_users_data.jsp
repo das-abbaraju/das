@@ -12,6 +12,7 @@
 	<thead>
 	<tr>
 		<td colspan="2">Account Name</td>
+		<td>Contact Type</td>
 		<td>Contact Name</td>
 		<td>Phone</td>
 		<td>Email</td>
@@ -31,6 +32,7 @@
 					<s:property value="get('companyName')" /></a>	
 				</s:else>
 			</td>
+			<td><s:property value="get('columnType')"/></td>
 			<td><s:if test="get('tableType') == 'Acct'">
 				<s:property value="get('name')" />
 				</s:if>

@@ -36,12 +36,23 @@ public class SelectUserUnion extends SelectSQL {
 			sql.append("*");
 		sql.append("\nFROM (\n");
 
-		String innerUnionSQL = "SELECT 'User' as tableType, id, username, password, email, name, isActive, dateCreated, lastLogin, accountID, null as phone "
+		String innerUnionSQL = "SELECT 'User' as tableType, 'User' as columnType, id, username, password, email, name, isActive, dateCreated, lastLogin, accountID, null as phone "
 				+ "FROM users where isGroup ='No' "
 				+ userWhere
 				+ " UNION "
-				+ "SELECT 'Acct' as tableType, id, username, password, email, contact, case active when 'Y' THEN 'Yes' ELSE 'No' end, dateCreated, lastLogin, id, phone "
-				+ "FROM accounts where type = 'Contractor' " + contractorWhere + "";
+				+ "SELECT 'Acct' as tableType, 'Primary' as columnType, id, username, password, email, contact, case active when 'Y' THEN 'Yes' ELSE 'No' end, dateCreated, lastLogin, id, phone "
+				+ "FROM accounts where type = 'Contractor' " 
+				+ contractorWhere 
+				+ " UNION "
+				+ "SELECT 'Acct' as tableType, 'Billing' as columnType, accounts.id, null, null, billingEmail, billingContact, case active when 'Y' THEN 'Yes' ELSE 'No' end, dateCreated, lastLogin, accounts.id, billingPhone "
+				+ "FROM accounts "
+				+ "JOIN contractor_info c on c.id = accounts.id where type = 'Contractor' " 
+				+ contractorWhere
+				+ " UNION "
+				+ "SELECT 'Acct' as tableType, 'Secondary' as columnType, accounts.id, null, null, secondEmail, secondContact, case active when 'Y' THEN 'Yes' ELSE 'No' end, dateCreated, lastLogin, accounts.id, secondPhone "
+				+ "FROM accounts "
+				+ "JOIN contractor_info c on c.id = accounts.id where type = 'Contractor' " + contractorWhere + "";
+		
 		sql.append(innerUnionSQL);
 
 		sql.append("\n) u");
@@ -54,6 +65,7 @@ public class SelectUserUnion extends SelectSQL {
 		if (whereClause.size() > 0) {
 			sql.append("\nWHERE 1");
 			for (String whereSQL : this.whereClause) {
+		
 				sql.append("\n AND (");
 				sql.append(whereSQL);
 				sql.append(") ");
