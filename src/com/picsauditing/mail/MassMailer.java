@@ -45,9 +45,12 @@ public class MassMailer extends PicsActionSupport {
 	private String templateName;
 	private String templateSubject;
 	private String templateBody;
+	private EmailQueue emailPreview;
 	private List<Token> tokens = null;
 	private List<EmailTemplate> emailTemplates = null;
 	private int previewID = 0;
+	private boolean fromMyAddress = true;
+	private String password = null;
 
 	private List<BasicDynaBean> data = new ArrayList<BasicDynaBean>();
 	private ArrayList<SelectOption> list = new ArrayList<SelectOption>();
@@ -68,21 +71,22 @@ public class MassMailer extends PicsActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		permissions.tryPermission(OpPerms.EmailTemplates);
-		
-		// Start the main logic for actions that require passing the contractors in
+
+		// Start the main logic for actions that require passing the contractors
+		// in
 		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
 		type = wizardSession.getListType();
-		
+
 		if (getEmailTemplates().size() == 0) {
 			// This account has no email templates, just start with a blank one
 			templateID = BLANK_EMAIL;
 		}
-		
+
 		if ("start".equals(button)) {
 			// Reset the templateID to this new passed in one
 			wizardSession.setTemplateID(templateID);
 		}
-		
+
 		if (templateID == 0) {
 			// It hasn't been set yet
 			templateID = wizardSession.getTemplateID();
@@ -113,21 +117,20 @@ public class MassMailer extends PicsActionSupport {
 			emailBuilder.setTemplate(template);
 			addTokens(previewID);
 
-			EmailQueue email = emailBuilder.build();
-			templateSubject = email.getSubject();
-			templateBody = email.getBody();
+			emailPreview = emailBuilder.build();
 			return SUCCESS;
 		}
 
 		if (ids == null || ids.size() == 0)
 			ids = wizardSession.getIds();
-		
+
 		if (ids == null || ids.size() == 0) {
 			String url = "EmailWizard.action";
 			if (type != null)
-				url += "?type="+type;
-			
-			addActionError("Please select at least one record to which to send an email. <a href='"+url+"'>Click to Continue</a>");
+				url += "?type=" + type;
+
+			addActionError("Please select at least one record to which to send an email. <a href='" + url
+					+ "'>Click to Continue</a>");
 			return BLANK;
 		}
 
@@ -148,8 +151,9 @@ public class MassMailer extends PicsActionSupport {
 				return "emailConfirm";
 			}
 		}
-		
-		// We aren't previewing, sending, or editing, so just get the list from the db using the filters
+
+		// We aren't previewing, sending, or editing, so just get the list from
+		// the db using the filters
 		String idList = Strings.implode(ids, ",");
 		SelectAccount sql = null;
 
@@ -169,12 +173,13 @@ public class MassMailer extends PicsActionSupport {
 
 		Database db = new Database();
 		data = db.select(sql.toString(), true);
-		
-		for(BasicDynaBean row : data) {
+
+		for (BasicDynaBean row : data) {
 			if (ListType.Contractor.equals(type)) {
 				list.add(new SelectOption(row.get("id").toString(), row.get("name").toString()));
 			} else if (ListType.Audit.equals(type)) {
-				list.add(new SelectOption(row.get("auditID").toString(), row.get("name").toString() + " - " + row.get("auditName").toString()));
+				list.add(new SelectOption(row.get("auditID").toString(), row.get("name").toString() + " - "
+						+ row.get("auditName").toString()));
 			}
 		}
 
@@ -260,7 +265,7 @@ public class MassMailer extends PicsActionSupport {
 			emailTemplates = emailTemplateDAO.findByAccountID(permissions.getAccountId(), type);
 		return emailTemplates;
 	}
-	
+
 	public ListType getType() {
 		return type;
 	}
@@ -319,5 +324,33 @@ public class MassMailer extends PicsActionSupport {
 
 	public void setPreviewID(int previewID) {
 		this.previewID = previewID;
+	}
+
+	public boolean isFromMyAddress() {
+		return fromMyAddress;
+	}
+
+	public void setFromMyAddress(boolean fromMyAddress) {
+		this.fromMyAddress = fromMyAddress;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	public EmailQueue getEmailPreview() {
+		return emailPreview;
+	}
+
+	public void setEmailPreviewBody() {
+		// do nothing
+	}
+
+	public void setTokens() {
+		// do nothing
 	}
 }

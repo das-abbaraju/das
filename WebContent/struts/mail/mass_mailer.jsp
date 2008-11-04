@@ -78,7 +78,7 @@ type = "<s:property value="type" />";
 		<h3><s:property value="type" /> (<s:property value="list.size()"/> entries)</h3>
 		<s:select id="contractors" cssClass="forms"
 			name="ids" size="%{list.size() < 40 ? list.size() : 40}" multiple="true" list="list" listKey="key"
-			listValue="value" ondblclick="previewEmail(this);" title="Double click a row to preview email" />
+			listValue="value" ondblclick="previewEmail(this);" title="Double click a row to preview email" cssStyle="width: 300px;" />
 			<div>* Double click preview</div>
 			<button type="button" name="button" value="Remove" onclick="removeSelected()" title="select contractors to remove from list">Remove From List</button>
 	</td>
@@ -126,6 +126,7 @@ type = "<s:property value="type" />";
 			<div id="draftEmail"></div>
 			<div id="previewEmail" style="display: none;"></div>
 		</div>
+		
 		<br clear="all" style="float: none;" />
 	</td>
 </tr>

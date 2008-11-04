@@ -1,4 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<label>Subject:</label> <s:property value="templateSubject"/> <br />
+<label>To:</label> <s:property value="emailPreview.toAddresses"/> <br />
+<label>Cc:</label> <s:property value="emailPreview.ccAddresses"/> <br />
+<label>Subject:</label> <s:property value="emailPreview.subject"/> <br />
 
-<s:textarea name="emailPreview" value="%{templateBody}" rows="25"></s:textarea>
+<s:textarea name="emailPreviewBody" value="%{emailPreview.body}" rows="25" cols="80"></s:textarea>

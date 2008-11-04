@@ -32,10 +32,21 @@ public class MailCron extends PicsActionSupport {
 			addActionMessage("The email queue is empty");
 			return SUCCESS;
 		}
+		
+		// Get the default sender (info@pics)
 		EmailSender sender = new EmailSender();
 		for (EmailQueue email : emails) {
 			try {
-				sender.sendNow(email);
+				if (email.getFromPassword() != null && email.getFromPassword().length() > 0) {
+					// Use a specific email address like tallred@picsauditing.com
+					// We need the password to correctly authenticate with GMail
+					EmailSender customSender = new EmailSender(email.getFromAddress(), email.getFromPassword());
+					customSender.sendNow(email);
+					email.setFromPassword(null);
+				} else {
+					 // Use the default info@picsauditing.com address
+					sender.sendNow(email);
+				}
 			} catch (Exception e) {
 				System.out.println("ERROR with MailCron: " + e.getMessage());
 				addActionError("Failed to send email: " + e.getMessage());

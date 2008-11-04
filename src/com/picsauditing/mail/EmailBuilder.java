@@ -24,6 +24,7 @@ import com.picsauditing.util.VelocityAdaptor;
  */
 public class EmailBuilder {
 	private String fromAddress = null;
+	private String password = null;
 	protected EmailTemplate template;
 
 	protected String toAddresses = null;
@@ -57,6 +58,7 @@ public class EmailBuilder {
 		email.setCreationDate(new Date());
 		email.setToAddresses(toAddresses);
 		email.setFromAddress(fromAddress);
+		email.setFromPassword(password);
 		if (conID > 0)
 			email.setContractorAccount(new ContractorAccount(conID));
 
@@ -168,5 +170,13 @@ public class EmailBuilder {
 
 	public void setDebug(boolean debug) {
 		this.debug = debug;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }

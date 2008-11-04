@@ -27,6 +27,7 @@ public class EmailQueue implements java.io.Serializable {
 	private int id;
 	private EmailStatus status = EmailStatus.Pending;
 	private String fromAddress = "";
+	private String fromPassword = null;
 	private String toAddresses = "";
 	private String ccAddresses;
 	private String bccAddresses;
@@ -51,7 +52,7 @@ public class EmailQueue implements java.io.Serializable {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "status", nullable = false)
+	@Column(nullable = false)
 	public EmailStatus getStatus() {
 		return status;
 	}
@@ -60,7 +61,7 @@ public class EmailQueue implements java.io.Serializable {
 		this.status = status;
 	}
 
-	@Column(name = "fromAddress", length = 150)
+	@Column(length = 150)
 	public String getFromAddress() {
 		return fromAddress;
 	}
@@ -68,8 +69,17 @@ public class EmailQueue implements java.io.Serializable {
 	public void setFromAddress(String fromAddress) {
 		this.fromAddress = fromAddress;
 	}
+	
+	@Column(length = 50)
+	public String getFromPassword() {
+		return fromPassword;
+	}
 
-	@Column(name = "toAddresses", nullable = false, length = 1000)
+	public void setFromPassword(String fromPassword) {
+		this.fromPassword = fromPassword;
+	}
+
+	@Column(nullable = false, length = 1000)
 	public String getToAddresses() {
 		return toAddresses;
 	}
@@ -78,7 +88,7 @@ public class EmailQueue implements java.io.Serializable {
 		this.toAddresses = toAddresses;
 	}
 
-	@Column(name = "ccAddresses", length = 1000)
+	@Column(length = 1000)
 	public String getCcAddresses() {
 		return ccAddresses;
 	}
@@ -87,7 +97,7 @@ public class EmailQueue implements java.io.Serializable {
 		this.ccAddresses = ccAddresses;
 	}
 
-	@Column(name = "bccAddresses", length = 1000)
+	@Column(length = 1000)
 	public String getBccAddresses() {
 		return bccAddresses;
 	}
@@ -96,7 +106,7 @@ public class EmailQueue implements java.io.Serializable {
 		this.bccAddresses = bccAddresses;
 	}
 
-	@Column(name = "subject", length = 150, nullable = false)
+	@Column(length = 150, nullable = false)
 	public String getSubject() {
 		return subject;
 	}
@@ -105,7 +115,6 @@ public class EmailQueue implements java.io.Serializable {
 		this.subject = subject;
 	}
 
-	@Column(name = "body")
 	public String getBody() {
 		return body;
 	}
@@ -118,7 +127,7 @@ public class EmailQueue implements java.io.Serializable {
 	 * Higher priority numbers are sent first by the MailCron
 	 * @return
 	 */
-	@Column(name = "priority", nullable = false, length = 4)
+	@Column(nullable = false, length = 4)
 	public int getPriority() {
 		return priority;
 	}

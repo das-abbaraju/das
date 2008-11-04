@@ -82,7 +82,7 @@ public class Strings {
 	public static String hash(String seed) {
 		MessageDigest digest = null;
 		try {
-			digest = MessageDigest.getInstance("MD5");
+			digest = MessageDigest.getInstance("SHA");
 		} catch (NoSuchAlgorithmException e) {
 			return e.getMessage();
 		}
@@ -114,9 +114,15 @@ public class Strings {
 		return notes;
 	}
 
+	/**
+	 * @param seed
+	 * @return
+	 */
 	public static String hashUrlSafe(String seed) {
 		String value = Strings.hash(seed);
 		value = value.replace("+", "_");
 		return value;
 	}
+	
+	
 }

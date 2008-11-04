@@ -25,3 +25,8 @@
 &nbsp;&nbsp;&nbsp;
 <br />
 <s:textarea name="templateBody" rows="20" onkeyup="dirtyOn();" />
+<s:if test="permissions.email.endsWith('picsauditing.com')">
+	<br />
+	<s:radio name="fromMyAddress" list="#{'false':'info@picsauditing.com','true':permissions.email}" value="true" ></s:radio><br />
+	<label>Password for <s:property value="permissions.email" />:</label> <s:textfield name="password" value=""></s:textfield>
+</s:if>
