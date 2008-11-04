@@ -52,6 +52,7 @@ public class User implements Comparable<User> {
 	private Date dateCreated;
 	private Date lastLogin;
 	private Account account;
+	private String passwordHistory;
 
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
@@ -330,5 +331,21 @@ public class User implements Comparable<User> {
 	private void debug(String message) {
 		if (this.debug)
 			System.out.println(message);
+	}
+
+	
+	public List<String> getPasswords() {
+		return null;
+	}
+
+	public void setPasswords(List<String> passwords) {
+	}
+
+	public String getPasswordHistory() {
+		return passwordHistory;
+	}
+
+	public void setPasswordHistory(String passwordHistory) {
+		this.passwordHistory = passwordHistory;
 	}
 }

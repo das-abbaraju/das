@@ -1,7 +1,9 @@
 package com.picsauditing.actions.users;
 
 import java.util.Date;
+import java.util.Vector;
 
+import com.picsauditing.PICS.PasswordValidator;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -42,6 +44,15 @@ public class UserSave extends UsersManage {
 		}
 		
 		if ("Save".equals(button)) {
+			// Temporary Fix to the password authentication for BP Cherry Point Refinery
+			if(user.getAccount().getId() == 1813) {
+				Vector<String> errors = PasswordValidator.validateContractor(user);
+				if (errors.size() > 0) {
+					addActionError(errors.toString());
+					return SUCCESS;
+				}
+			}
+			
 			if (!isOK()){
 				userDAO.clear();
 				return SUCCESS;
