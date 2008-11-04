@@ -36,7 +36,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 			if (password1 != null && password1.length() > 0) {
 				// TODO Temporary Fix for password authentication for BP Cherry
 				// Point Refinery
-				if (u.getAccount().getId() == 1813) {
+				if (u.getAccount().getId() == 969) {
 					Vector<String> errors = PasswordValidator.validateContractor(password1, u.getUsername());
 					if (errors.size() > 0) {
 						addActionError(errors.toString());

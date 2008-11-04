@@ -52,7 +52,7 @@ public class UserSave extends UsersManage {
 				return SUCCESS;
 			}
 
-			if (user.getAccount().getId() == 1813) {
+			if (user.getAccount().getId() == 969) {
 				Vector<String> errors = PasswordValidator.validateContractor(user.getPassword(), user.getUsername());
 				if (errors.size() > 0) {
 					addActionError(errors.toString());
@@ -115,7 +115,7 @@ public class UserSave extends UsersManage {
 				addActionError("That Username is already in use.  Please select another.");
 		}
 
-		if (user.getAccount().getId() != 1813) {
+		if (user.getAccount().getId() != 969) {
 			if (user.getPassword() == null || user.getPassword().length() < MIN_PASSWORD_LENGTH)
 				addActionError("Please choose a Password at least " + MIN_PASSWORD_LENGTH + " characters in length.");
 
