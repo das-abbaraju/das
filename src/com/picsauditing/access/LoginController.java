@@ -44,8 +44,13 @@ public class LoginController extends DataBean {
 
 		getErrors().clear();
 		User user = userDAO.findName(username);
-		if (user != null && DateBean.getDateDifference(user.getLockUntil(), new Date()) < 0) {
-			return false;
+		if (user != null && user.getLockUntil() != null) {
+			if (user.getLockUntil().after(new Date())) {
+				getErrors().add("This account is locked because of too many failed attempts");
+				return false;
+			} else {
+				user.setLockUntil(null); // it's no longer locked
+			}
 		}
 		String error = canLogin(username, password);
 		int failedAttempts = 0;
