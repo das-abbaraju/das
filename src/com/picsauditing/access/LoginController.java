@@ -10,6 +10,7 @@ import javax.servlet.http.Cookie;
 import com.picsauditing.PICS.AccountBean;
 import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.DataBean;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.PermissionsBean;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
@@ -30,7 +31,7 @@ public class LoginController extends DataBean {
 	private User user;
 	private AccountBean aBean;
 	private int loginByAdmin = 0;
-	//private String prevLastLogin = "1/1/01";
+	// private String prevLastLogin = "1/1/01";
 
 	private Permissions permissions;
 	private PermissionsBean pBean;
@@ -42,8 +43,18 @@ public class LoginController extends DataBean {
 		setupPerms(request);
 
 		getErrors().clear();
+		User user = userDAO.findName(username);
+		if (user != null && DateBean.getDateDifference(user.getLockUntil(), new Date()) < 0) {
+			return false;
+		}
 		String error = canLogin(username, password);
+		int failedAttempts = 0;
 		if (error.length() > 0) {
+			failedAttempts++;
+			if (user != null) {
+				user.setFailedAttempts(failedAttempts);
+				userDAO.save(user);
+			}
 			logAttempt(permissions, username, password, request);
 			getErrors().add(error);
 			return false;
@@ -125,10 +136,10 @@ public class LoginController extends DataBean {
 			if (user != null) {
 				if (!user.getPassword().equals(password))
 					return "The password is not correct";
-				
-				if(user.getAccount().getActive() != 'Y') 
+
+				if (user.getAccount().getActive() != 'Y')
 					return "This user does not have permission to login.<br>Please contact PICS to activate your account.";
-				
+
 				if (user.getIsActive() != YesNo.Yes)
 					return "This user does not have permission to login.<br>Please contact PICS to activate your account.";
 			}
@@ -148,12 +159,11 @@ public class LoginController extends DataBean {
 		Integer id = 0;
 		aBean = new AccountBean();
 		id = aBean.findID(username);
-		if(id != 0) {
+		if (id != 0) {
 			aBean.setFromDB(id.toString());
 			user = null;
 			isUser = false;
-		}
-		else {
+		} else {
 			try {
 				user = userDAO.findName(username);
 			} catch (NoResultException e) {
@@ -162,8 +172,7 @@ public class LoginController extends DataBean {
 			if (user != null) {
 				id = user.getId();
 				aBean.setFromDB(user.getAccount().getIdString());
-			}
-			else
+			} else
 				return false;
 		}
 		// The user or account we want to login as is now set as private
@@ -197,7 +206,7 @@ public class LoginController extends DataBean {
 	private void doLogin(javax.servlet.http.HttpSession session, boolean updateLastLogin) throws Exception {
 		if (isUser) {
 			permissions.login(this.user);
-			//this.prevLastLogin = this.user.getLastLogin().toString();
+			// this.prevLastLogin = this.user.getLastLogin().toString();
 			if (updateLastLogin) {
 				this.user.setLastLogin(new Date());
 				userDAO.save(user);
@@ -221,7 +230,7 @@ public class LoginController extends DataBean {
 		} else {
 			// Contractors
 			permissions.login(this.aBean);
-			//this.prevLastLogin = this.aBean.lastLogin;
+			// this.prevLastLogin = this.aBean.lastLogin;
 			if (updateLastLogin)
 				this.aBean.updateLastLogin();
 
@@ -263,10 +272,8 @@ public class LoginController extends DataBean {
 			// return;
 			// }
 		}
-		
+
 		MenuComponent menu = PicsMenu.getMenu(permissions);
-		
-		
 
 		// Find out if the user previously timed out on a page, we'll forward
 		// back there below
@@ -286,11 +293,11 @@ public class LoginController extends DataBean {
 				}
 			}
 		}
-		
+
 		String url = PicsMenu.getHomePage(menu, permissions);
 		if (url == null)
 			throw new Exception("No Permissions or Default Webpages found");
-		
+
 		response.sendRedirect(url);
 		return;
 	}
@@ -317,9 +324,9 @@ public class LoginController extends DataBean {
 		response.sendRedirect("login.jsp" + query);
 	}
 
-	private void logAttempt(Permissions permissions, String username, String password, javax.servlet.http.HttpServletRequest request)
-			throws Exception {
-		
+	private void logAttempt(Permissions permissions, String username, String password,
+			javax.servlet.http.HttpServletRequest request) throws Exception {
+
 		String remoteAddress = "";
 		if (request != null)
 			remoteAddress = request.getRemoteAddr();
@@ -329,7 +336,7 @@ public class LoginController extends DataBean {
 			password = "*";
 			successful = 'Y';
 		}
-		
+
 		UserLoginLog loginLog = new UserLoginLog();
 		loginLog.setLoginDate(new Date());
 		loginLog.setUsername(username);
@@ -340,7 +347,7 @@ public class LoginController extends DataBean {
 			loginLog.setUserID(permissions.getUserId());
 		if (permissions.getAdminID() > 0)
 			loginLog.setAdmin(new User(permissions.getAdminID()));
-		
+
 		loginLogDAO.save(loginLog);
 	}
 

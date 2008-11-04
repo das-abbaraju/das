@@ -10,7 +10,7 @@ public class PasswordValidator {
 
 	public static Vector<String> validateContractor(String password, String userName) {
 		Vector<String> errorMessages = new Vector<String>();
-		if (password == null || password.length() < MIN_PASSWORD_LENGTH)
+		if (password == null || password.length() <= MIN_PASSWORD_LENGTH)
 			errorMessages.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH
 					+ " characters in length.");
 		if (password == null || password.equalsIgnoreCase(userName))
