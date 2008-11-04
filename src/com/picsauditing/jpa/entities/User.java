@@ -18,6 +18,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
@@ -35,7 +37,8 @@ public class User implements Comparable<User> {
 	public static int GROUP_ADMIN = 10;
 	public static int GROUP_AUDITOR = 11;
 	private static final int GROUP_SU = 9; // Group that automatically has ALL
-											// grant privileges
+
+	// grant privileges
 
 	@Transient
 	public boolean isSuperUser() {
@@ -52,13 +55,16 @@ public class User implements Comparable<User> {
 	private Date dateCreated;
 	private Date lastLogin;
 	private Account account;
-	private String passwordHistory;
 
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
 	private List<UserAccess> ownedPermissions = new ArrayList<UserAccess>();
 	private List<UserLoginLog> loginlog = new ArrayList<UserLoginLog>();
-	
+
+	private String passwordHistory;
+	private int failedAttempts = 0;
+	private Date lockUntil = null;
+
 	private boolean debug = false;
 
 	public User() {
@@ -155,6 +161,47 @@ public class User implements Comparable<User> {
 		this.lastLogin = lastLogin;
 	}
 
+	public String getPasswordHistory() {
+		return passwordHistory;
+	}
+
+	public void setPasswordHistory(String passwordHistory) {
+		this.passwordHistory = passwordHistory;
+	}
+
+	@Transient
+	public List<String> getPasswordHistoryList() {
+		List<String> list = new ArrayList<String>();
+		// TODO Convert passwordHistory into a List
+		list.add(passwordHistory);
+		return list;
+	}
+
+	public void setPasswordHistoryList(List<String> passwordHistory) {
+		this.passwordHistory = "";
+		// Serialize the passwords into a string somehow
+		// Only store up to 10 ??
+		for(String password : passwordHistory)
+			this.passwordHistory += "{" + password + "}"; // ?? like this??
+	}
+
+	public int getFailedAttempts() {
+		return failedAttempts;
+	}
+
+	public void setFailedAttempts(int failedAttempts) {
+		this.failedAttempts = failedAttempts;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getLockUntil() {
+		return lockUntil;
+	}
+
+	public void setLockUntil(Date lockUntil) {
+		this.lockUntil = lockUntil;
+	}
+
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "accountID", nullable = false)
 	public Account getAccount() {
@@ -246,7 +293,7 @@ public class User implements Comparable<User> {
 
 		// get all the groups this user (or group) is a part of
 		for (UserGroup userGroup : getGroups()) {
-			debug(this.getName() + " - Getting inherited perms for "+ userGroup.getGroup().getName());
+			debug(this.getName() + " - Getting inherited perms for " + userGroup.getGroup().getName());
 			Set<UserAccess> tempPerms = userGroup.getGroup().getPermissions();
 			for (UserAccess perm : tempPerms) {
 				this.add(permissions, perm, false);
@@ -265,11 +312,8 @@ public class User implements Comparable<User> {
 		if (perm == null || perm.getOpPerm() == null)
 			return;
 
-		debug(this.getName() + " - - Adding perm "+ perm.getOpPerm().getDescription() + 
-				" V:"+ perm.getViewFlag() + 
-				" E:"+ perm.getEditFlag() + 
-				" D:"+ perm.getDeleteFlag() + 
-				" G:"+ perm.getGrantFlag());
+		debug(this.getName() + " - - Adding perm " + perm.getOpPerm().getDescription() + " V:" + perm.getViewFlag()
+				+ " E:" + perm.getEditFlag() + " D:" + perm.getDeleteFlag() + " G:" + perm.getGrantFlag());
 		for (UserAccess origPerm : permissions) {
 			if (origPerm.getOpPerm().equals(perm.getOpPerm())) {
 				if (overrideBoth) {
@@ -341,11 +385,4 @@ public class User implements Comparable<User> {
 	public void setPasswords(List<String> passwords) {
 	}
 
-	public String getPasswordHistory() {
-		return passwordHistory;
-	}
-
-	public void setPasswordHistory(String passwordHistory) {
-		this.passwordHistory = passwordHistory;
-	}
 }
