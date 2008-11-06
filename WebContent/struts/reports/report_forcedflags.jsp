@@ -28,17 +28,17 @@
 				<s:property value="#stat.index + report.firstRowNumber" />
 			</td>
 			<td>
-				<s:property value="[0].get('opName')"/></a>
+				<s:property value="get('opName')"/></a>
 			</td>
 			<td class="center">
-				<a href="ContractorFlag.action?id=<s:property value="[0].get('forceFlag')"/>" title="Click to view Flag Color details">
-				<img src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif" width="12" height="15" border="0"></a>
+				<a href="ContractorFlag.action?id=<s:property value="get('id')"/>" title="Click to view Flag Color details">
+				<img src="images/icon_<s:property value="get('lflag')"/>Flag.gif" width="12" height="15" border="0"></a>
 			</td>
 			<td>
-				<s:date name="[0].get('forceend')" format="MMM d, yyyy"/></td>
+				<s:date name="get('forceend')" format="MMM d, yyyy"/></td>
 			<td>
-				<a href="ContractorView.action?id=<s:property value="[0].get('id')"/>">
-				<s:property value="[0].get('name')" /></a>
+				<a href="ContractorView.action?id=<s:property value="get('id')"/>">
+				<s:property value="get('name')" /></a>
 			</td>
 		</tr>
 	</s:iterator>

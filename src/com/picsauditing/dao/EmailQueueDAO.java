@@ -7,6 +7,7 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.util.Strings;
 
 @Transactional
 public class EmailQueueDAO extends PicsDAO {
@@ -44,12 +45,11 @@ public class EmailQueueDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<EmailQueue> getPendingEmails(String where, int limit) {
-		if (where == null)
-			where = "1";
-		where = "AND " + where;
+		if (!Strings.isEmpty(where))
+			where = "AND " + where;
 		Query query = em.createQuery("FROM EmailQueue t WHERE t.status = 'Pending' " + where
 				+ " ORDER BY t.priority DESC, t.id");
-		query.setMaxResults(50);
+		query.setMaxResults(limit);
 		return query.getResultList();
 	}
 }

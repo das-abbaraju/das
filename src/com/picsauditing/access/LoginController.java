@@ -136,6 +136,7 @@ public class LoginController extends DataBean {
 			
 			if (!user.getPassword().equals(password)) {
 				user.setFailedAttempts(user.getFailedAttempts() + 1);
+				// TODO parameterize this 7 here
 				if (user.getFailedAttempts() > 7) {
 					// Lock this user out for 1 hour
 					Calendar calendar = Calendar.getInstance();
