@@ -41,10 +41,13 @@ function deleteEmail(id) {
 			<td>Order</td>
 			<td>Priority</td>
 			<td>Added</td>
+			<td>Contractor</td>
 			<td>From</td>
 			<td>To</td>
 			<td>Subject</td>
+			<pics:permission perm="EmailQueue" type="Delete">
 			<td></td>
+			</pics:permission>
 		</tr>
 		</thead>
 		<s:iterator value="emails" status="stat">
@@ -52,11 +55,15 @@ function deleteEmail(id) {
 				<td class="right"><s:property value="#stat.index + emailsInQueue.size() + 1 " /></td>
 				<td><s:property value="priority" /></td>
 				<td><s:date name="creationDate" /></td>
+				<td><a href="ContractorView.action?id=<s:property value="contractorAccount.id"/>">
+				<s:property value="contractorAccount.name" /></a></td>
 				<td><s:property value="fromAddress" /></td>
 				<td><s:property value="toAddresses" /></td>
 				<td><s:property value="subject" /></td>
-				<td><a href="javascript: deleteEmail(<s:property value="id"/>);" title="Remove from queue"><img src="images/cross.png" /></a>
-				</td>
+				<pics:permission perm="EmailQueue" type="Delete">
+					<td><a href="javascript: deleteEmail(<s:property value="id"/>);" title="Remove from queue"><img src="images/cross.png" /></a>
+					</td>
+				</pics:permission>
 			</tr>
 		</s:iterator>
 	</table>

@@ -119,7 +119,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		List<OpPerms> list = new ArrayList<OpPerms>();
 		for (UserAccess perm : permissions.getPermissions()) {
 			// I can grant these permissions
-			if (perm.getGrantFlag() == true)
+			if (perm.getGrantFlag() != null && perm.getGrantFlag() == true)
 				list.add(perm.getOpPerm());
 		}
 		for (UserAccess perm : user.getOwnedPermissions()) {
