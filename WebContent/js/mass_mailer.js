@@ -46,13 +46,12 @@ function previewEmail(item) {
 		$('buttonEdit').show();
 		
 		if ($('draftEmail').visible())
-			Effect.SlideUp('draftEmail', {duration: 0.8});
+			Effect.SlideUp('draftEmail', {duration: 0.5});
 		Effect.Appear('previewEmail');
 		
-		var subject = $('templateSubject').value;
-		var body = $('templateBody').value;
-		
-		var pars = "button=MailPreviewAjax&previewID=" + id + "&templateSubject=" + subject + "&templateBody=" + body + "&type=" + type;
+		var pars = "button=MailPreviewAjax&previewID=" + id + "&type=" + type;
+		pars += "&templateSubject=" + escape($('templateSubject').value);
+		pars += "&templateBody=" + escape($('templateBody').value);
 		
 		$('previewEmail').innerHTML = '<img src="images/ajax_process2.gif" />';
 		var myAjax = new Ajax.Updater('previewEmail','MailPreviewAjax.action',
@@ -72,7 +71,7 @@ function chooseTemplate(id) {
 	
 	$('chooseEmail').hide();
 	Effect.Appear('menu_selector');
-	Effect.Appear('draftEdit', {duration: 2});
+	Effect.Appear('draftEdit', {duration: 1});
 	
 	var pars = "button=MailEditorAjax&templateID=" + id + "&type=" + type;
 
@@ -103,10 +102,11 @@ function deleteTemplate(id) {
 function addTemplate(id) {
 	$('messages').innerHTML = "";
 	
-	var subject = $('templateSubject').value;
-	var body = $('templateBody').value;
 	var name = $('templateName').value;
-	var pars = "button=save&id=" + id + "&template.listType=" + type + "&template.templateName=" + name + "&template.subject=" + subject + "&template.body=" + body;
+	var pars = "button=save&id=" + id + "&template.listType=" + type + "&template.templateName=" + name;
+	pars += "&template.subject=" + escape($('templateSubject').value);
+	pars += "&template.body=" + escape($('templateBody').value);
+	
 	var myAjax = new Ajax.Updater('messages','EmailTemplateSaveAjax.action',
 		{
 			method: 'post',
@@ -131,3 +131,4 @@ function removeSelected() {
 		}
 	}
 }
+

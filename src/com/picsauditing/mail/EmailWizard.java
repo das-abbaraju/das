@@ -6,6 +6,7 @@ import com.picsauditing.jpa.entities.ListType;
 
 public class EmailWizard extends PicsActionSupport {
 	private ListType type = null;
+	private int listSize = 0;
 	
 	public String execute() {
 		if (!forceLogin())
@@ -14,6 +15,8 @@ public class EmailWizard extends PicsActionSupport {
 		if (type == null) {
 			WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
 			type = wizardSession.getListType();
+			if (wizardSession.getIds() != null)
+				listSize = wizardSession.getIds().size();
 		}
 		
 		return SUCCESS;
@@ -27,6 +30,8 @@ public class EmailWizard extends PicsActionSupport {
 		this.type = type;
 	}
 	
-	
+	public int getListSize() {
+		return listSize;
+	}
 	
 }

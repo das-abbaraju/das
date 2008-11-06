@@ -45,6 +45,7 @@ public class MassMailer extends PicsActionSupport {
 	private String templateName;
 	private String templateSubject;
 	private String templateBody;
+	private boolean templateAllowsVelocity;
 	private EmailQueue emailPreview;
 	private List<Token> tokens = null;
 	private List<EmailTemplate> emailTemplates = null;
@@ -98,6 +99,7 @@ public class MassMailer extends PicsActionSupport {
 				templateSubject = template.getSubject();
 				templateBody = template.getBody();
 				templateName = template.getTemplateName();
+				templateAllowsVelocity = template.isAllowsVelocity();
 			} else {
 				templateSubject = "";
 				templateBody = "";
@@ -350,5 +352,9 @@ public class MassMailer extends PicsActionSupport {
 
 	public void setTokens() {
 		// do nothing
+	}
+	
+	public boolean isTemplateAllowsVelocity() {
+		return templateAllowsVelocity;
 	}
 }

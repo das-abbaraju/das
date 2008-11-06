@@ -25,6 +25,7 @@ public class VelocityAdaptor {
 	public String merge(String template, Map<String, Object> data) throws Exception {
 		StringWriter result = new StringWriter();
 		VelocityContext velocityContext = new VelocityContext(data);
+		velocityEngine.setProperty(VelocityEngine.SET_NULL_ALLOWED, true);
 		data.put("pics_dateTool", new DateTool());
 		velocityEngine.evaluate(velocityContext, result, "pics-template-engine", template);
 		return result.toString();

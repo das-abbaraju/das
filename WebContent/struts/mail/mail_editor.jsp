@@ -30,3 +30,8 @@
 	<s:radio name="fromMyAddress" list="#{'false':'info@picsauditing.com','true':permissions.email}" value="true" ></s:radio><br />
 	<label>Password for <s:property value="permissions.email" />:</label> <s:textfield name="password" value=""></s:textfield>
 </s:if>
+
+<s:if test="templateAllowsVelocity">
+	<div id="info">This template allows velocity tags</div>
+</s:if>
+

@@ -198,12 +198,11 @@ public class Cron extends PicsActionSupport {
 			emailBuilder.setTemplate(10); // Certificate Expiration
 			emailBuilder.setPermissions(permissions);
 			emailBuilder.setContractor(certificate.getContractorAccount());
-			emailBuilder.addToken("opAcct", certificate.getOperatorAccount());
-			emailBuilder.addToken("expiration_date", certificate.getExpiration());
-			emailBuilder.addToken("certificate_type", certificate.getType());
+			emailBuilder.addToken("certificate", certificate);
 			EmailQueue email = emailBuilder.build();
-			email.setPriority(20);
+			email.setPriority(30);
 			emailQueueDAO.save(email);
+			
 			ContractorBean.addNote(certificate.getContractorAccount().getId(), permissions,
 					"Sent Certificate Expiration email to " + emailBuilder.getSentTo());
 

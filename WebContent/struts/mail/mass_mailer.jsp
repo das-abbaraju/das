@@ -64,7 +64,8 @@ type = "<s:property value="type" />";
 >
 <img src="images/beta.jpg" width="98" height="100" style="float: right;" title="This is a new feature. Please send us your feedback or suggestions." />
 
-<h1>Mass Emailer</h1>
+<h1>Email Wizard <span class="sub">Step 4: Write Email</span></h1>
+<div><a href="EmailWizard.action">&lt;&lt; Back to Steps 1-3 of the Email Wizard</a></div>
 <s:include value="../actionMessages.jsp" />
 <div id="messages"></div>
 <s:form
@@ -79,8 +80,10 @@ type = "<s:property value="type" />";
 		<s:select id="contractors" cssClass="forms"
 			name="ids" size="%{list.size() < 40 ? list.size() : 40}" multiple="true" list="list" listKey="key"
 			listValue="value" ondblclick="previewEmail(this);" title="Double click a row to preview email" cssStyle="width: 300px;" />
-			<div>* Double click preview</div>
-			<button type="button" name="button" value="Remove" onclick="removeSelected()" title="select contractors to remove from list">Remove From List</button>
+			<div>* Double click to preview</div>
+			<div><a href="MassMailer.action" class="refresh">Refresh this Page</a></div>
+			
+			<input type="button" value="Remove Selected" onclick="removeSelected()" />
 	</td>
 	<td style="vertical-align: top; padding-left: 20px;">
 		<div class="buttons" id="menu_selector" style="display: none;">

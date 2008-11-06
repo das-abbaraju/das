@@ -40,6 +40,11 @@ function showLists() {
 
 <h1>Email Wizard</h1>
 
+<s:if test="listSize > 0">
+	<div id="alert">You already have <s:property value="listSize"/> records in your mailing list. 
+		<a href="MassMailer.action">Skip to Step 4</a></div>
+</s:if>
+
 <div class="clear"></div>
 <!--Step 1-->
 <div class="target_sample">

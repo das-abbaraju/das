@@ -129,7 +129,6 @@ public class PicsMenu {
 		
 		if (permissions.hasPermission(OpPerms.EmailTemplates)) {
 			subMenu.addChild("Email Wizard", "EmailWizard.action");
-			subMenu.addChild("Mass Mailer", "MassMailer.action");
 		}
 		
 		if (permissions.hasPermission(OpPerms.EmailQueue))
