@@ -45,9 +45,6 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 					return SUCCESS;
 				int maxHistory = 0;
 				// u.getAccount().getPasswordPreferences().getMaxHistory()
-				if (u.getAccount().getId() == 969) {
-					maxHistory = 7;
-				}
 				u.addPasswordToHistory(password1, maxHistory);
 				u.setPassword(password1);
 			}

@@ -20,11 +20,6 @@ public class PasswordValidator {
 		Vector<String> errorMessages = new Vector<String>();
 
 		int minLength = MINIMUM_LENGTH;
-		// TODO Temporary Fix for password authentication for BP Cherry
-		// Point Refinery
-		if (user.getAccount().getId() == 969) {
-			minLength = 8;
-		}
 		// TODO
 		// if (user.getAccount().getPasswordPreferences().getMinLength() > 0)
 		// minLength =

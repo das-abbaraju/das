@@ -46,8 +46,6 @@ public class UserSave extends UsersManage {
 		}
 
 		if ("Save".equals(button)) {
-			// TODO Temporary Fix for password authentication for BP Cherry
-			// Point Refinery
 			if (!isOK()) {
 				userDAO.clear();
 				return SUCCESS;
@@ -74,9 +72,6 @@ public class UserSave extends UsersManage {
 			} else {
 				int maxHistory = 0;
 				// TODO u.getAccount().getPasswordPreferences().getMaxHistory()
-				if (user.getAccount().getId() == 969) {
-					maxHistory = 7;
-				}
 				user.addPasswordToHistory(user.getPassword(), maxHistory);
 			}
 			user = userDAO.save(user);
