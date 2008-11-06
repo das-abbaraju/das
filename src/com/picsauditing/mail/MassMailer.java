@@ -226,9 +226,7 @@ public class MassMailer extends PicsActionSupport {
 			// Convert anything like this <Name> into something like this
 			// ${person.name}
 			String find = "<" + token.getTokenName() + ">";
-			String replace = "${" + token.getVelocityName() + "}";
-			// System.out.println("replace " + find + " with " + replace);
-			text = text.replace(find, replace);
+			text = text.replace(find, token.getVelocityCode());
 		}
 		// System.out.println("filtered: " + template);
 		return text;

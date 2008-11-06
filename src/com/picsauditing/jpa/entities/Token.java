@@ -19,8 +19,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class Token implements java.io.Serializable {
 	protected int id;
 	protected String tokenName;
-	protected String velocityName;	
 	protected ListType listType;
+	protected String velocityCode;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -42,13 +42,13 @@ public class Token implements java.io.Serializable {
 		this.tokenName = tokenName;
 	}
 	
-	@Column(name = "velocityName", nullable = true, length = 50)
-	public String getVelocityName() {
-		return this.velocityName;
+	@Column(name = "velocityCode", nullable = true, length = 50)
+	public String getVelocityCode() {
+		return this.velocityCode;
 	}
 
-	public void setVelocityName(String velocityName) {
-		this.velocityName = velocityName;
+	public void setVelocityCode(String velocityCode) {
+		this.velocityCode = velocityCode;
 	}	
 
 	@Enumerated(EnumType.STRING)
