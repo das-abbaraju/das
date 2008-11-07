@@ -343,6 +343,11 @@
 			<result>struts/reports/qanswersearch.jsp</result>
 		</action>
 
+		<action name="QuestionAnswerSearchCSV"
+			class="com.picsauditing.actions.report.ReportAnswerSearch">
+			<param name="download">true</param>
+			<result>struts/reports/qanswersearch_csv.jsp</result>
+		</action>
 
 
 
