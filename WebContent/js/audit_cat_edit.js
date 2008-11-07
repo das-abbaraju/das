@@ -134,7 +134,7 @@ function saveAnswer( questionid, elm ) {
 
 function showFileUpload( questionid ) {
 	url = 'AuditDataUpload.action?auditID='+auditID+'&question.questionID=' + questionid;
-	title = 'Upload';
+	title = 'Upload'+ questionid;
 	pars = 'scrollbars=yes,resizable=yes,width=650,height=450,toolbar=0,directories=0,menubar=0';
 	fileUpload = window.open(url,title,pars);
 	fileUpload.focus();
