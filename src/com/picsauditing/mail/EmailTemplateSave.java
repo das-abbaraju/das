@@ -1,6 +1,7 @@
 package com.picsauditing.mail;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.EntityExistsException;
 
@@ -21,14 +22,32 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 	private EmailTemplateDAO emailTemplateDAO;
 	private int id;
 	private EmailTemplate template;
+	private List<EmailTemplate> emailTemplates = null;
 
 	public EmailTemplateSave(EmailTemplateDAO emailTemplateDAO) {
 		this.emailTemplateDAO = emailTemplateDAO;
 	}
 
+	@Override
+	public void prepare() throws Exception {
+		id = getParameter("id");
+		if (id > 0) {
+			template = emailTemplateDAO.find(id);
+		} else
+			template = new EmailTemplate();
+	}
+
 	public String execute() throws NoRightsException {
 		getPermissions();
-
+		
+		if (button == null) {
+			WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
+			wizardSession.setTemplateID(0);
+			
+			emailTemplateDAO.clear(); // don't save
+			return SUCCESS;
+		}
+		
 		if (template.getId() > 0 && !permissions.hasPermission(OpPerms.AllOperators)
 				&& template.getAccountID() != permissions.getAccountId()) {
 			addActionError("You don't have permission to change this template");
@@ -66,7 +85,7 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 			template.setUpdatedBy(getUser());
 			try {
 				template = emailTemplateDAO.save(template);
-				addActionMessage("Successfully saved email template <a href='MassMailer.action'>Click to Refresh</a>");
+				addActionMessage("Successfully saved email template");
 				WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
 				wizardSession.setTemplateID(template.getId());
 			} catch (EntityExistsException e) {
@@ -95,12 +114,9 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 		this.template = template;
 	}
 
-	@Override
-	public void prepare() throws Exception {
-		id = getParameter("id");
-		if (id > 0) {
-			template = emailTemplateDAO.find(id);
-		} else
-			template = new EmailTemplate();
+	public List<EmailTemplate> getEmailTemplates() {
+		if (emailTemplates == null)
+			emailTemplates = emailTemplateDAO.findByAccountID(permissions.getAccountId(), template.getListType());
+		return emailTemplates;
 	}
 }

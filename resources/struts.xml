@@ -594,7 +594,7 @@
 
 		<action name="EmailTemplateSaveAjax"
 			class="com.picsauditing.mail.EmailTemplateSave">
-			<result>struts/blank.jsp</result>
+			<result>struts/mail/select_templates.jsp</result>
 		</action>
 
 		<action name="EmailWizard"

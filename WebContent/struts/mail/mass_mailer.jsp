@@ -109,18 +109,7 @@ type = "<s:property value="type" />";
 				</td>
 				<td valign="top">
 				<ul id="templateChooser">
-					<li><a href="javascript: chooseTemplate(-1);"><nobr>~ Start with
-					a Blank Email ~</nobr></a></li>
-					<s:iterator value="emailTemplates">
-						<li id="li_template<s:property value="id"/>"><nobr><a
-							href="javascript: chooseTemplate(<s:property value="id"/>);"><s:property
-							value="templateName" /></a>
-							<pics:permission perm="EmailTemplates" type="Delete">
-								<a
-								href="javascript: deleteTemplate(<s:property value="id"/>);" title="Remove this template"><img src="images/cross.png" /></a>
-							</pics:permission>
-							</nobr></li>
-					</s:iterator>
+					<s:include value="select_templates.jsp"></s:include>
 				</ul>
 				</td>
 			</tr>

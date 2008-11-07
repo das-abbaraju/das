@@ -8,7 +8,11 @@ function dirtyOn() {
 }
 
 function showTemplateList() {
-	window.location = 'MassMailer.action?button=start';
+	refreshList();
+	$('previewEmail').hide();
+	$('draftEmail').hide();
+	$('menu_selector').hide();
+	$('chooseEmail').show();
 }
 
 function sendEmails() {
@@ -115,6 +119,7 @@ function addTemplate(id) {
 				Effect.Fade('div_saveEmail');
 				$('buttonSave').addClassName('disabled');
 				dirty = false;
+				refreshList();
 			}
 		});
 }
@@ -132,3 +137,9 @@ function removeSelected() {
 	}
 }
 
+function refreshList() {
+	var pars = "template.listType=" + type;
+	var myAjax = new Ajax.Updater('templateChooser','EmailTemplateSaveAjax.action',
+		{ method: 'post', parameters: pars});
+	
+}
