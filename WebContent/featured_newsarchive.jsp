@@ -17,6 +17,26 @@
 		<td valign="top" bgcolor="#FFFFFF">
 		<table border="0" align="center" cellpadding="0" cellspacing="0">
 			<tr>
+				<td bgcolor="#F8F8F8" class="blueHome2"><strong>07/23/08</strong> <strong
+					class="articleTitle">PICS Demonstration at the NSC 2008 Annual Congress & Expo a Success</strong><br>
+				The National Safety Council, founded in 1913, serves as the nation's leading resource on industry trends, professional development, and strategies for advancing safety and health programs and practices. PICS's demonstration of their online tool for contractor prequalification was a great success.</td>
+			</tr>
+			<tr>
+				<td class="blueHome2"><strong>07/01/08</strong> <strong
+					class="articleTitle">Paramount Petroleum Corporation joins PICS</strong><br>
+				Paramount Petroleum Corporation is the leading manufacturer and marketer of asphalt in the Western states. The heart of the company is a 54,000 - barrel-per-day refinery located in Paramount, CA. The refinery has been in operation since the 1930s, and today is the largest and most efficient asphalt refinery in California.</td>
+			</tr>
+			<tr>
+				<td bgcolor="#F8F8F8" class="blueHome2"><strong>07/01/08</strong> <strong
+					class="articleTitle">LISI AEROSPACE joins PICS</strong><br>
+				LISI AEROSPACE a leading supplier of aeronautical fasteners and assembly components. LISI AEROSPACE ranks third in the world with almost 15% of the market share and has joined PICS to manage their contractor pre-qualification process.</td>
+			</tr>
+			<tr>
+				<td class="blueHome2"><strong>06/01/08</strong> <strong
+					class="articleTitle">ConocoPhillips Ferndale joins PICS</strong><br>
+				ConocoPhillips Ferndale joins many other ConocoPhillips refineries and business units who use PICS to standardize their contractor prequalification process. The Ferndale plant is located in Washington and can process 100,000 barrels per day.</td>
+			</tr>
+			<tr>
 				<td bgcolor="#F8F8F8" class="blueHome2"><strong>05/08/08</strong> <strong
 					class="articleTitle">PICS Presents at NPRA Safety Conference</strong><br>
 				PICS CEO, John Moreland, was invited by the NPRA to present at the National Safety Conference about Process Safety Management and The Advantages Of Contractor Pre-qualification. Topics discussed by OSHA at the conference covered the NEP audit results, issues found and how to resolve them.</td>

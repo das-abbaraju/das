@@ -59,7 +59,7 @@ sets the highest standards possible in regard to contractor qualifications as th
                       </table>
                   </td></tr>
                 </table></td>
-              <td valign="top">              <table width="200" border="0" align="right" cellpadding="0" cellspacing="0">
+              <td valign="top"><table width="200" border="0" align="right" cellpadding="0" cellspacing="0">
                 <tr>
                   <td colspan="3"><img src="images/header_homeNews.jpg" alt="News" width="200" height="24"></td>
                   </tr>
@@ -68,18 +68,18 @@ sets the highest standards possible in regard to contractor qualifications as th
                   <td valign="top" bgcolor="#FFFFFF">
                   	<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
 				  		<tr>
-                        	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">07/01/08</span>Paramount Petroleum Corporation joins PICS</span><br>
+                        	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">09/01/08</span>PICS EHS/VPP Resident Expert</span><br>
                             <br> 
-								Paramount Petroleum Corporation is the leading manufacturer and marketer of asphalt in the Western states. The heart of the company is a 54,000 - barrel-per-day refinery located in Paramount, CA. The refinery has been in operation since the 1930s, and today is the largest and most efficient asphalt refinery in California.</td>
+								Dennis Truitt joins PICS with more than 20 years of managing health and safety in the highly-regulated petrochemical industry and holds a B.A. in Psychology from the University of California, Irvine. Prior to joining PICS, he was the Refinery Safety Manager for the Valero Wilmington Refinery.</td>
                         </tr>
                         <tr>
-                        	<td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">07/01/08</span>LISI AEROSPACE joins PICS</span><br>
+                        	<td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">09/01/08</span>Square D / Schneider Electric joins PICS</span><br>
                             <br> 
-                            	LISI AEROSPACE a leading supplier of aeronautical fasteners and assembly components. LISI AEROSPACE ranks third in the world with almost 15% of the market share and has joined PICS to manage their contractor pre-qualification process.</td></tr>
+                            	Square D  is a market-leading global brand of Schneider Electric for NEMA type electrical distribution and industrial control products, systems and services.  Schneider Electric, headquartered in Paris, France, is a global electrical industry leader with sales of approximately $23.7 billion (U.S.) in 2007.</td></tr>
 						<tr>
-                        	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">06/01/08</span>ConocoPhillips Ferndale joins PICS</span><br>
+                        	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">08/01/08</span>New Belgium Brewing joins PICS</span><br>
                             <br> 
-                            	ConocoPhillips Ferndale joins many other ConocoPhillips refineries and business units who use PICS to standardize their contractor prequalification process. The Ferndale plant is located in Washington and can process 100,000 barrels per day.</td></tr>
+                            	New Belgium is the nation's third largest mid-sized brewery. From its inception New Belgium has been committed to the preservation of the environment, brewing world class beer, promoting beer culture and having fun.  In 1998 New Belgium became the first wind-powered brewery in the United States.</td></tr>
 						<tr>
                       		<td align="center" class="blueHome">&nbsp;<a href="featured_newsarchive.jsp" target="_self"><img src="images/NEWSARCHIVE_button3.gif" width="111" height="27" hspace="5" border="0"></a></td>
                     	</tr>
