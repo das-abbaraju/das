@@ -69,7 +69,6 @@ function getQuestionList(elm) {
 	<tr>
 		<td></td>
 		<td colspan="2"><a href="javascript: changeOrderBy('form1','a.name');" >Contractor Name</a></td>
-		<td><a href="javascript: changeOrderBy('form1','atype.auditName');" >Audit</a></td>
 		<s:iterator value="questions">
 			<td><s:property value="columnHeaderOrQuestion"/></td>
 		</s:iterator>
@@ -80,7 +79,6 @@ function getQuestionList(elm) {
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td colspan="2"><a href="ContractorView.action?id=<s:property value="get('id')"/>"
 				><s:property value="get('name')" /></a></td>
-			<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:property value="get('auditName')"/></a></td>
 			<s:iterator value="questions">
 				<td><s:property value="%{get('answer' + questionID)}"/></td>
 			</s:iterator>

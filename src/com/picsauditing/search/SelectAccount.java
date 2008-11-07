@@ -71,6 +71,23 @@ public class SelectAccount extends SelectSQL {
 		this.addField("q" + questionID + ".answer AS " + columnName);
 	}
 
+	public void addAuditQuestion(int questionID, int auditTypeID, boolean require) {
+		String name = "ca"+ questionID;
+		this.addJoin("LEFT JOIN contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
+				+ ".auditTypeID = " + auditTypeID + " AND " + name
+				+ ".auditStatus IN ('Pending','Submitted','Active')");
+	
+		String join = "";
+		if (!require)
+			join = "LEFT ";
+		join = join + "JOIN pqfdata q" + questionID + " on q" + questionID + ".auditID = "+ name +".auditID AND q" + questionID
+				+ ".questionID = " + questionID;
+		this.addJoin(join);
+		this.addField("q" + questionID + ".answer AS answer" + questionID);
+	}
+	
+	
+	
 	/**
 	 * LEFT JOIN to pqfdata for this contractor and add q123.answer to the field
 	 * list
@@ -82,11 +99,6 @@ public class SelectAccount extends SelectSQL {
 	 */
 	public void addPQFQuestion(int questionID) {
 		this.addPQFQuestion(questionID, false, "answer" + questionID);
-	}
-
-	public void addPQFQuestion(String questionID) {
-		int temp = Integer.parseInt(questionID);
-		this.addPQFQuestion(temp);
 	}
 
 	public void addAudit(int auditTypeID) {

@@ -1,16 +1,13 @@
 package com.picsauditing.actions.report;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.util.Strings;
 
-public class ReportAnswerSearch extends ReportContractorAudits {
+public class ReportAnswerSearch extends ReportAccount {
 	protected List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
 	protected AuditQuestionDAO auditQuestionDAO;
 
@@ -28,10 +25,7 @@ public class ReportAnswerSearch extends ReportContractorAudits {
 			removeQuestion = Integer.parseInt(button);
 		} catch (Exception e) {
 		}
-		//sql.setPermissions(permissions);
-		
-		Set<Integer> auditTypes = new HashSet<Integer>();
-		
+
 		for (AuditQuestion question : questions) {
 			if (question != null && removeQuestion != question.getQuestionID()) {
 				AuditQuestion tempQuestion = auditQuestionDAO.find(question.getQuestionID());
@@ -40,17 +34,14 @@ public class ReportAnswerSearch extends ReportContractorAudits {
 				if (newQuestions.contains(tempQuestion))
 					newQuestions.remove(tempQuestion); // remove the old first
 				newQuestions.add(tempQuestion);
-				auditTypes.add(tempQuestion.getSubCategory().getCategory().getAuditType().getAuditTypeID());
 			}
 		}
-		if (auditTypes.size() > 0)
-			sql.addWhere("atype.auditTypeID IN ("+Strings.implode(auditTypes, ",")+")");
-			
-		
+
 		questions = new ArrayList<AuditQuestion>();
 		questions.addAll(newQuestions);
 		for (AuditQuestion question : questions) {
-			sql.addPQFQuestion(question.getQuestionID());
+			sql.addAuditQuestion(question.getQuestionID(), question.getSubCategory().getCategory().getAuditType()
+					.getAuditTypeID(), true);
 			if (question.getCriteria() != null && question.getCriteria().length() > 0) {
 				String qSearch = "q" + question.getQuestionID() + ".answer ";
 				String qCriteria = question.getCriteria() + " '" + question.getAnswer().getAnswer() + "'";
@@ -64,9 +55,9 @@ public class ReportAnswerSearch extends ReportContractorAudits {
 			}
 		}
 
-		if(questions.size() == 0)
+		if (questions.size() == 0)
 			return SUCCESS;
-		
+
 		return super.execute();
 	}
 

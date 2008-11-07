@@ -28,7 +28,7 @@
 <s:if test="permissions.email.endsWith('picsauditing.com')">
 	<br />
 	<s:radio name="fromMyAddress" list="#{'false':'info@picsauditing.com','true':permissions.email}" value="true" ></s:radio><br />
-	<label>Password for <s:property value="permissions.email" />:</label> <s:textfield name="password" value=""></s:textfield>
+	<label>Password for <s:property value="permissions.email" />:</label> <s:password name="password" value="" />
 </s:if>
 
 <s:if test="templateAllowsVelocity">
