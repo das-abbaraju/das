@@ -52,7 +52,7 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 				&& template.getAccountID() != permissions.getAccountId()) {
 			addActionError("You don't have permission to change this template");
 			emailTemplateDAO.clear(); // don't save
-			return SUCCESS;
+			return BLANK;
 		}
 
 		if ("delete".equals(button)) {
@@ -72,7 +72,7 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 
 			if (this.getActionErrors().size() > 0) {
 				emailTemplateDAO.clear(); // don't save
-				return SUCCESS;
+				return BLANK;
 			}
 
 			if (template.getId() == 0) {
