@@ -26,7 +26,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showOperator = true;
 	protected boolean showOperatorSingle = false;
 	protected boolean showTrade = true;
-	protected boolean showCerts = false;
+	protected boolean showCerts = true;
 	protected boolean showLicensedIn = true;
 	protected boolean showWorksIn = true;
 	protected boolean showOfficeIn = true;
@@ -37,7 +37,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showAssignedCon = false;
 	protected boolean showInParentCorporation = false;
 	protected boolean showWaitingOn = false;	
-	protected boolean showInsuranceStatus = false;	
+	protected boolean showInsuranceStatus = true;	
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -275,6 +275,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		}
 		if (!permissions.hasPermission(OpPerms.InsuranceCerts)) {
 			setShowCerts(false);
+			setShowInsuranceStatus(false);
 		}
 	}
 

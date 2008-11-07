@@ -7,7 +7,7 @@ import java.util.Map;
  * Contractor Waiting On 
  */
 public enum WaitingOn {
-	None, Contractor, Pics, Operator;
+	None, Contractor, PICS, Operator;
 
 	static public Map<Integer, WaitingOn> getMap() {
 		Map<Integer, WaitingOn> map = new HashMap<Integer, WaitingOn>();

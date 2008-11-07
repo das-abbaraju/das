@@ -385,7 +385,7 @@ public class FlagCalculatorSingle {
 		
 		// Conclusion
 		if (waitingOnPics)
-			return WaitingOn.Pics;
+			return WaitingOn.PICS;
 		if (waitingOnOperator)
 			// only show the operator if contractor and pics are all done
 			return WaitingOn.Operator;

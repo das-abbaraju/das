@@ -47,11 +47,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
 
-		if (permissions.hasPermission(OpPerms.InsuranceCerts)) {
-			getFilter().setShowInsuranceStatus(true);
-			getFilter().setShowCerts(true);
-		}
-
 		addFilterToSQL();
 
 		// Figure out if this is mailmerge call or not

@@ -64,9 +64,12 @@ public class ReportContractorAudits extends ReportAccount {
 
 		if (!permissions.isPicsEmployee())
 			getFilter().setShowAuditor(true);
-
+		
 		if (filtered == null)
 			filtered = true;
+		
+		getFilter().setShowCerts(false);
+		getFilter().setShowInsuranceStatus(false);
 
 		return super.execute();
 	}
