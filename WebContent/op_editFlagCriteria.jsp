@@ -169,10 +169,7 @@ if (canEditFlagCriteria) {
 			<%=Inputs.getCheckBoxInput("flagQ_" + hurdleQuestions.questionID, "forms", flagCriteria.getIsCheckedFromMap(hurdleQuestions.questionID), "Yes")%>
 		</td>
 		<td><nobr><a href="QuestionAnswerSearch.action?
-		button=Add&filter.ajax=false&questions[99].questionID=<%= hurdleQuestions.questionID %>&
-		questions[99].answer.answer=<%= flagCriteria.getValueFromMap(hurdleQuestions.questionID) %>&
-		questions[99].criteria=<%= flagCriteria.getComparisonFromMap(hurdleQuestions.questionID) %>
-		">Search Answers</a>
+		button=Add&filter.ajax=false&questions[99].questionID=<%= hurdleQuestions.questionID %>">Search Answer</a>
 		</nobr></td>
 	<%
 	}
