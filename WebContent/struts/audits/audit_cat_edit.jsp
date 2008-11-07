@@ -3,12 +3,12 @@
 	<td class="right"><s:property value="category.number"/>.<s:property value="subCategory.number"/>.<s:property value="number"/>&nbsp;&nbsp;
 	<a name="q<s:property value="questionID"/>" /></td>
 	<td class="question<s:if test="required">Required</s:if>"><s:property value="question" escape="false"/>
-		<s:if test="linkUrl1 > ''"><a href="http://<s:property value="linkUrl1"/>" target="_BLANK" title="opens in new window"><s:property value="linkText1"/></a></s:if>
-		<s:if test="linkUrl2 > ''"><a href="http://<s:property value="linkUrl2"/>" target="_BLANK" title="opens in new window"><s:property value="linkText2"/></a></s:if>
-		<s:if test="linkUrl3 > ''"><a href="http://<s:property value="linkUrl3"/>" target="_BLANK" title="opens in new window"><s:property value="linkText3"/></a></s:if>
-		<s:if test="linkUrl4 > ''"><a href="http://<s:property value="linkUrl4"/>" target="_BLANK" title="opens in new window"><s:property value="linkText4"/></a></s:if>
-		<s:if test="linkUrl5 > ''"><a href="http://<s:property value="linkUrl5"/>" target="_BLANK" title="opens in new window"><s:property value="linkText5"/></a></s:if>
-		<s:if test="linkUrl6 > ''"><a href="http://<s:property value="linkUrl6"/>" target="_BLANK" title="opens in new window"><s:property value="linkText6"/></a></s:if>
+		<s:if test="linkUrl1.length)() > 0"><a href="http://<s:property value="linkUrl1"/>" target="_BLANK" title="opens in new window"><s:property value="linkText1"/></a></s:if>
+		<s:if test="linkUrl2.length)() > 0"><a href="http://<s:property value="linkUrl2"/>" target="_BLANK" title="opens in new window"><s:property value="linkText2"/></a></s:if>
+		<s:if test="linkUrl3.length)() > 0"><a href="http://<s:property value="linkUrl3"/>" target="_BLANK" title="opens in new window"><s:property value="linkText3"/></a></s:if>
+		<s:if test="linkUrl4.length)() > 0"><a href="http://<s:property value="linkUrl4"/>" target="_BLANK" title="opens in new window"><s:property value="linkText4"/></a></s:if>
+		<s:if test="linkUrl5.length)() > 0"><a href="http://<s:property value="linkUrl5"/>" target="_BLANK" title="opens in new window"><s:property value="linkText5"/></a></s:if>
+		<s:if test="linkUrl6.length)() > 0"><a href="http://<s:property value="linkUrl6"/>" target="_BLANK" title="opens in new window"><s:property value="linkText6"/></a></s:if>
 	</td>
 	<td class="answer" id="td_answer_<s:property value="questionID"/>">
 		<s:if test="questionType == 'Text'">
@@ -99,7 +99,7 @@
 </s:if>
 <s:if test="answer.hasRequirements && conAudit.auditType.hasRequirements">
 	<tr class="group<s:if test="#shaded">Shaded</s:if>">
-		<td class="center">Req</td>
+		<td class="center">Requirement</td>
 		<td colspan="3">Status:
 		<s:if test="answer.requirementOpen">
 			<span class="unverified">Open</span>

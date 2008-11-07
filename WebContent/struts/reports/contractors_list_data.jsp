@@ -85,7 +85,7 @@
 						title="<s:property value="[0].get('flag')"/> - Click to view details"><img 
 						src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif" width="12" height="15" border="0"></a>
 				</td>
-				<td><s:property value="@com.picsauditing.jpa.entities.WaitingOn@valueOf(get('waitingOn'))"/></td>
+				<td><a href="ContractorFlag.action?id=<s:property value="[0].get('id')"/>" ><s:property value="@com.picsauditing.jpa.entities.WaitingOn@valueOf(get('waitingOn'))"/></a></td>
 				<s:if test="operatorAccount.approvesRelationships">
 					<pics:permission perm="ViewUnApproved">
 						<td align="center">&nbsp;&nbsp;&nbsp;&nbsp;<s:property
