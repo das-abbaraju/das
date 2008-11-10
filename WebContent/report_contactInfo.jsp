@@ -17,11 +17,7 @@
 <html>
 <head>
 <title>Contractor Contact Information</title>
-<script src="js/prototype.js" type="text/javascript"></script>
-<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
-<script src="js/Search.js" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/reports.css" />
+<%@include file="struts/reports/reportHeader.jsp" %>
 </head>
 <body>
 <h1>Contractor Contact Information</h1>
@@ -33,9 +29,12 @@ Filter Options</a></div>
 <div id="hideSearch" style="display: none"><a href="#"
 	onclick="hideSearch()">Hide Filter Options</a></div>
 <form id="form1" name="form1" action="report_contactInfo.jsp" method="post" style="display: none">
+	<input type="hidden" name="filter.ajax" value="false"/>
+    <input type="hidden" name="filter.destinationAction" value=""/>
 	<input type="hidden" name="showPage" value="1"/>
-	<input type="hidden" name="startsWith" value="<%=sBean.selected_startsWith == null ? "" : sBean.selected_startsWith %>"/>
+	<input type="hidden" name="filter.startsWith" value="<%=sBean.selected_startsWith == null ? "" : sBean.selected_startsWith %>"/>
 	<input type="hidden" name="orderBy"  value="<%=sBean.orderBy == null ? "dateCreated DESC" : sBean.orderBy %>"/>
+	<div id="caldiv2" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
 <%
 	if (permissions.isAdmin())
 			out.println(SearchBean.getSearchGeneralSelect("generalContractorID", "blueMain",

@@ -18,7 +18,7 @@
 				&body_verify;
 				<verifyText 
 					description="Verify if Filter Options are Available" 
-					text="updateQuery(name)" />
+					text="Industry" />
 					&body_verify;
 				<verifyText 
 					description="Verify Company Name in List"

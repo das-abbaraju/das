@@ -24,11 +24,7 @@ try{
 <html>
 <head>
 <title>Corporate Contractors Report</title>
-<script src="js/prototype.js" type="text/javascript"></script>
-<script src="js/scriptaculous/scriptaculous.js?load=effects"
-	type="text/javascript"></script>
-<script src="js/Search.js" type="text/javascript"></script>	
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<%@include file="struts/reports/reportHeader.jsp" %>
 </head>
 <body>
 <h1>Contractors by Facility</h1>
@@ -54,9 +50,12 @@ try{
 			<input type="hidden" name="searchCorporate" value="<%= request.getParameter("searchCorporate")%>"/>
 		<% } %>
 		<input type="hidden" name="showPage" value="1"/>
-		<input type="hidden" name="startsWith" value=""/>
+     	<input type="hidden" name="filter.ajax" value="false"/>
+     	<input type="hidden" name="filter.destinationAction" value=""/>
+		<input type="hidden" name="filter.startsWith" value=""/>
 		<input type="hidden" name="orderBy"  value="name"/>
 		<input type="hidden" name="changed"  value="1"/>
+		<div id="caldiv2" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
 <div class="alphapaging">
 <%=sBean.getStartsWithLinksWithDynamicForm()%>
 </div>
