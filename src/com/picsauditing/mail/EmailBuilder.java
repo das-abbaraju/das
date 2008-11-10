@@ -2,15 +2,18 @@ package com.picsauditing.mail;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
+import com.picsauditing.dao.TokenDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
+import com.picsauditing.jpa.entities.Token;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -27,6 +30,8 @@ public class EmailBuilder {
 	private String password = null;
 	protected EmailTemplate template;
 
+	private List<Token> picsTags = null;
+	
 	protected String toAddresses = null;
 	protected String ccAddresses = null;
 	protected String bccAddresses = null;
@@ -56,8 +61,10 @@ public class EmailBuilder {
 
 		email.setEmailTemplate(template);
 		email.setCreationDate(new Date());
-		email.setToAddresses(toAddresses);
 		email.setFromAddress(fromAddress);
+		email.setToAddresses(toAddresses);
+		email.setCcAddresses(ccAddresses);
+		email.setBccAddresses(bccAddresses);
 		email.setFromPassword(password);
 		if (conID > 0)
 			email.setContractorAccount(new ContractorAccount(conID));
@@ -70,9 +77,12 @@ public class EmailBuilder {
 			}
 		}
 
-		String subject = velocityAdaptor.merge(template.getSubject(), tokens);
+		String subject = convertPicsTagsToVelocity(template.getSubject(), template.isAllowsVelocity());
+		subject = velocityAdaptor.merge(subject, tokens);
 		email.setSubject(subject);
-		String body = velocityAdaptor.merge(template.getBody(), tokens);
+		
+		String body = convertPicsTagsToVelocity(template.getBody(), template.isAllowsVelocity());
+		body = velocityAdaptor.merge(body, tokens);
 		email.setBody(body);
 
 		if (debug) {
@@ -81,10 +91,9 @@ public class EmailBuilder {
 		}
 		return email;
 	}
-
+	
 	// Custom token setters here
 	// We may consider moving this to another class or back to the controllers
-
 	public void setConAudit(ContractorAudit conAudit) {
 		setContractor(conAudit.getContractorAccount());
 		addToken("audit", conAudit);
@@ -101,7 +110,6 @@ public class EmailBuilder {
 		addToken("user", user);
 		toAddresses = user.getEmail();
 	}
-
 	// End of custom token setters
 
 	public String getSentTo() {
@@ -117,6 +125,38 @@ public class EmailBuilder {
 	public void setTemplate(int id) {
 		EmailTemplateDAO dao = (EmailTemplateDAO) SpringUtils.getBean("EmailTemplateDAO");
 		setTemplate(dao.find(id));
+	}
+
+	private List<Token> getPicsTags() {
+		if (picsTags == null) {
+			TokenDAO dao = (TokenDAO)SpringUtils.getBean("TokenDAO");
+			picsTags = dao.findByType(template.getListType());
+		}
+		return picsTags;
+	}
+
+	/**
+	 * Convert tokens like this <TOKEN_NAME> in a given string to velocity tags
+	 * like this ${token.name}
+	 * 
+	 * @param text
+	 * @param allowsVelocity
+	 * @return
+	 */
+	private String convertPicsTagsToVelocity(String text, boolean allowsVelocity) {
+		if (!allowsVelocity) {
+			// Strip out the velocity tags
+			text = text.replace("${", "_");
+			text = text.replace("}", "_");
+		}
+		for (Token tag : getPicsTags()) {
+			// This token is valid for this type of email template
+			// Convert anything like this <Name> into something like this
+			// ${person.name}
+			String find = "<" + tag.getTokenName() + ">";
+			text = text.replace(find, tag.getVelocityCode());
+		}
+		return text;
 	}
 
 	public void setPermissions(Permissions permissions) {

@@ -47,8 +47,8 @@ public class MassMailer extends PicsActionSupport {
 	private String templateBody;
 	private boolean templateAllowsVelocity;
 	private EmailQueue emailPreview;
-	private List<Token> tokens = null;
 	private List<EmailTemplate> emailTemplates = null;
+	private List<Token> picsTags = null;
 	private int previewID = 0;
 	private boolean fromMyAddress = true;
 	private String password = null;
@@ -209,32 +209,6 @@ public class MassMailer extends PicsActionSupport {
 	}
 
 	/**
-	 * Convert tokens like this <TOKEN_NAME> in a given string to velocity tags
-	 * like this ${token.name}
-	 * 
-	 * @param text
-	 * @param allowsVelocity
-	 * @return
-	 */
-	private String convertTokensToVelocity(String text, boolean allowsVelocity) {
-		if (!allowsVelocity) {
-			// Strip out the velocity tags
-			text = text.replace("${", "_");
-			text = text.replace("}", "_");
-		}
-		// System.out.println("starting with: " + template);
-		for (Token token : getTokens()) {
-			// This token is valid for this type of email template
-			// Convert anything like this <Name> into something like this
-			// ${person.name}
-			String find = "<" + token.getTokenName() + ">";
-			text = text.replace(find, token.getVelocityCode());
-		}
-		// System.out.println("filtered: " + template);
-		return text;
-	}
-
-	/**
 	 * Creates a velocity-ready email template from the subject and body
 	 * 
 	 * @return
@@ -247,17 +221,17 @@ public class MassMailer extends PicsActionSupport {
 			emailTemplateDAO.clear();
 		}
 		template.setTemplateName(templateName);
-		template.setSubject(convertTokensToVelocity(templateSubject, template.isAllowsVelocity()));
-		template.setBody(convertTokensToVelocity(templateBody, template.isAllowsVelocity()));
+		template.setSubject(templateSubject);
+		template.setBody(templateBody);
 		return template;
 	}
 
-	public List<Token> getTokens() {
+	public List<Token> getPicsTags() {
 		if (type == null)
 			return null;
-		if (tokens == null)
-			tokens = tokenDAO.findByType(type);
-		return tokens;
+		if (picsTags == null)
+			picsTags = tokenDAO.findByType(type);
+		return picsTags;
 	}
 
 	public List<EmailTemplate> getEmailTemplates() {

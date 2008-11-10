@@ -118,9 +118,6 @@
 
 
 
-
-
-
 		<!-- REPORTS Primary Search Pages (Contractor/Audit/User lists) -->
 		<action name="ContractorSearch"
 			class="com.picsauditing.actions.report.ReportAccountQuick">
@@ -196,25 +193,16 @@
 		<action name="NewContractorSearch"
 			class="com.picsauditing.actions.report.ReportNewContractorSearch">
 			<result>struts/reports/newContractor_operator.jsp</result>
-			<result name="EmailSender" type="chain">
-				<param name="actionName">MassMailer</param>
-			</result>
 		</action>
 
 		<action name="AuditListAuditor"
 			class="com.picsauditing.actions.report.ReportContractorAuditAuditor">
 			<result>struts/reports/audit_auditor.jsp</result>
-			<result name="EmailSender" type="chain">
-				<param name="actionName">MassMailer</param>
-			</result>
 		</action>
 
 		<action name="MyAuditHistory"
 			class="com.picsauditing.actions.report.ReportMyAuditHistory">
 			<result>struts/reports/myAuditHistory.jsp</result>
-			<result name="EmailSender" type="chain">
-				<param name="actionName">MassMailer</param>
-			</result>
 		</action>
 
 		<action name="MyAssignedAuditsAjax"
@@ -225,9 +213,6 @@
 		<action name="AuditAssignments"
 			class="com.picsauditing.actions.report.ReportContractorAuditAssignment">
 			<result>struts/reports/auditAssignments.jsp</result>
-			<result name="EmailSender" type="chain">
-				<param name="actionName">MassMailer</param>
-			</result>
 		</action>
 
 		<action name="AuditAssignmentUpdateAjax"
@@ -258,9 +243,6 @@
 		<action name="ReportContractorLicenses"
 			class="com.picsauditing.actions.report.ReportContractorLicenses">
 			<result>/struts/reports/report_licenses.jsp</result>
-			<result name="EmailSender" type="chain">
-				<param name="actionName">MassMailer</param>
-			</result>
 		</action>
 
 		<action name="ReportIncidenceRate"

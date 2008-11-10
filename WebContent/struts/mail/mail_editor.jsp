@@ -20,7 +20,7 @@
 <s:hidden name="templateID" />
 <s:select cssClass="forms" id="tokens" name="tokens" headerKey="0"
 	headerValue="- Add Field to Email -" listKey="tokenName"
-	listValue="tokenName" list="tokens" onchange="addToken(this);" cssStyle="float: right;" />
+	listValue="tokenName" list="picsTags" onchange="addToken(this);" cssStyle="float: right;" />
 <label>Subject:</label> <s:textfield name="templateSubject" size="60" maxlength="150" cssClass="forms" onchange="dirtyOn();" />
 &nbsp;&nbsp;&nbsp;
 <br />

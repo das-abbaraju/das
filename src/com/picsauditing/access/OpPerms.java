@@ -38,6 +38,7 @@ public enum OpPerms {
 	ManageOperators("Manage Operator Accounts", "Allows PICS employees to view/edit/delete Operator accounts"),
 	ManageCorporate("Manage Corporate Accounts", "Allows PICS employees to view/edit/delete Corporate accounts"),
 	ContractorAccounts("Administer Contractor Accounts", "Allow PICS employees to create/update/delete contractor accounts"),
+	ContractorActivation("Activate Contractor Accounts", "Allow PICS employees to view/activate/remove contractor accounts during the activation phase"),
 	EditUsers("Manage User Accounts", "Allows administrators to view/add/update/delete users for their account"),
 	
 	// Audits

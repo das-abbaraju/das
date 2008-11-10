@@ -8,7 +8,7 @@
 <body>
 <s:include value="conHeader.jsp" />
 <s:if test="!contractor.activeB">
-	<div id="alert">This contractor is not longer active</div>
+	<div id="alert">This contractor is no longer active</div>
 </s:if>
 <s:elseif test="contractor.annualAmountOwed > 0 || contractor.upgradeAmountOwed > 0">
 	<div id="alert">This contractor has an outstanding invoice due</div>

@@ -50,7 +50,6 @@ public class SearchBean {
 	public String selected_desktopAuditorID = "";
 	public String selected_daAuditorID = "";
 	public String selected_officeAuditorID = "";
-	public String selected_incompleteAfter = "";
 	public String selected_invoicedStatus = "";
     public String searchCorporate = "";
 	public String Query = "";
@@ -189,9 +188,6 @@ public class SearchBean {
 			searchIncidenceRate = r.getParameter("searchIncidenceRate");
 			if (null==searchIncidenceRate)
 				searchIncidenceRate = "";
-			selected_incompleteAfter = r.getParameter("incompleteAfter");
-			if (null==selected_incompleteAfter)
-				selected_incompleteAfter = "";
 			selected_invoicedStatus = r.getParameter("invoicedStatus");
 			selected_auditLocation = r.getParameter("auditLocation");
 			selected_visible = r.getParameter("visible");
@@ -355,29 +351,7 @@ public class SearchBean {
         }
 		if (isNoInsuranceOnly)
 			whereQuery += "AND isOnlyCerts='No' ";
-		//for incomplete audit report
-		if (!"".equals(selected_incompleteAfter) && 
-				(permissions.oBean.canSeeDesktop() || permissions.oBean.canSeeDA() || permissions.oBean.canSeeOffice() || permissions.isAdmin())){
-			whereQuery +="AND (";
-			if (permissions.oBean.canSeeDesktop() || permissions.isAdmin())
-				whereQuery += "((desktopSubmittedDate<>'0000-00-00' AND desktopSubmittedDate<DATE_ADD(CURDATE(),INTERVAL -"+selected_incompleteAfter+
-						" MONTH) "+"AND desktopClosedDate='0000-00-00') OR (desktopSubmittedDate='0000-00-00' AND "+
-						"auditCompletedDate<>'0000-00-00' AND "+
-						"auditCompletedDate<'"+DateBean.OLD_OFFICE_CUTOFF+"' AND auditCompletedDate<DATE_ADD(CURDATE(),INTERVAL -"+selected_incompleteAfter+
-						" MONTH) AND auditClosedDate='0000-00-00')) ";
-			if (permissions.oBean.canSeeDesktop() && permissions.oBean.canSeeDA() || permissions.isAdmin())
-				whereQuery +=" OR ";
-			if (permissions.oBean.canSeeDA() || permissions.isAdmin())
-				whereQuery += "(daSubmittedDate<>'0000-00-00' AND daSubmittedDate<DATE_ADD(CURDATE(),INTERVAL -"+selected_incompleteAfter+
-						" MONTH) AND daClosedDate='0000-00-00')";
-			if ((permissions.oBean.canSeeDesktop() || permissions.oBean.canSeeDA())
-						&& permissions.oBean.canSeeOffice() || permissions.isAdmin())
-				whereQuery +=" OR ";
-			if (permissions.oBean.canSeeOffice() || permissions.isAdmin())
-				whereQuery += "(auditCompletedDate<>'0000-00-00' AND auditCompletedDate<DATE_ADD(CURDATE(),INTERVAL -"+selected_incompleteAfter+
-						" MONTH) AND auditClosedDate='0000-00-00')";
-			whereQuery +=")";
-		}//if
+		
 		if (!isSet(selected_invoicedStatus, DEFAULT_INVOICED_STATUS))
 			selected_invoicedStatus = DEFAULT_INVOICED_STATUS;
 		else if ("Invoiced".equals(selected_invoicedStatus))

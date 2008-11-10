@@ -38,7 +38,7 @@
 
 		var assignDateDiv = 'assignDate_'+auditId;
 		var divName = 'audit_'+auditId;
-		alert(pars);
+		//alert(pars);
 		
 		var myAjax = new Ajax.Updater(assignDateDiv, 'AuditAssignmentUpdateAjax.action', 
 		{

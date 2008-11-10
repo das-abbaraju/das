@@ -31,13 +31,13 @@ public class UserSave extends UsersManage {
 		if ("sendWelcomeEmail".equals(button) && user != null) {
 			try {
 				EmailBuilder emailBuilder = new EmailBuilder();
+				emailBuilder.setFromAddress(permissions.getEmail());
 				emailBuilder.setTemplate(5); // New User Welcome
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setUser(user);
 				EmailQueue emailQueue = emailBuilder.build();
 				emailQueue.setPriority(90);
 				EmailSender.send(emailQueue);
-				EmailSender.send(emailBuilder.build());
 			} catch (Exception e) {
 				addActionError(e.getMessage());
 				return SUCCESS;

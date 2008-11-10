@@ -278,7 +278,7 @@ public class VerifyView extends AuditActionSupport {
 		emailBuilder.setConAudit(conAudit);
 		
 		StringBuffer sb = new StringBuffer("");
-
+		
 		appendOsha(sb, osha.getYear1(), getYear1());
 		appendOsha(sb, osha.getYear2(), getYear2());
 		appendOsha(sb, osha.getYear3(), getYear3());

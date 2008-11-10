@@ -8,6 +8,7 @@
 <script src="js/prototype.js" type="text/javascript"></script>
 <script src="js/scriptaculous/scriptaculous.js?load=effects"
 	type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
 <style>
 .oshanum {
 	width: 100px;

@@ -222,10 +222,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 					EmailBuilder emailBuilder = new EmailBuilder();
 					emailBuilder.setTemplate(13); // Audits Thank You
 					emailBuilder.setPermissions(permissions);
-					emailBuilder.setConAudit(conAudit);
-					emailBuilder.addToken("audits", getActiveAudits());
+					emailBuilder.setContractor(contractor);
 					EmailSender.send(emailBuilder.build());
-					ContractorBean.addNote(conAudit.getContractorAccount().getId(), permissions,
+					ContractorBean.addNote(contractor.getId(), permissions,
 							"Sent Audits Thank You email to " + emailBuilder.getSentTo());
 				} catch (Exception e) {
 					e.printStackTrace();

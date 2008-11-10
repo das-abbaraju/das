@@ -160,7 +160,8 @@
 		</pics:permission>
 		<s:if test="conAudit.auditType.Pqf">
 			<pics:permission perm="AuditVerification">
-				<li><a href="VerifyView.action?auditID=<s:property value="auditID" />">Verify PQF</a></li>
+				<li><a href="VerifyView.action?auditID=<s:property value="auditID" />"
+				<s:if test="requestURI.contains('pqf_verif')">class="current"</s:if>>Verify PQF</a></li>
 			</pics:permission>
 		</s:if>
 		<s:if test="conAudit.auditStatus.toString() == 'Pending'">

@@ -81,17 +81,16 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.ContractorDetails))
 			subMenu.addChild("Audit List", "ReportAuditList.action");
 		if (permissions.hasPermission(OpPerms.AssignAudits))
-			subMenu.addChild("Sched. &amp; Assign", "AuditAssignments.action?visible=Y");
+			subMenu.addChild("Sched. &amp; Assign", "AuditAssignments.action?filter.visible=Y");
 		if (permissions.hasPermission(OpPerms.OfficeAuditCalendar))
 			subMenu.addChild("Audit Calendar", "audit_calendar.jsp");
 		if (permissions.hasPermission(OpPerms.NCMS))
 			subMenu.addChild("NCMS Audits", "ReportNCMS.action");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
-			subMenu.addChild("PQF Verification", "PqfVerification.action?auditStatus=Submitted&filtered=false");
+			subMenu.addChild("PQF Verification", "PqfVerification.action?filter.auditStatus=Submitted&filtered=false");
 
 		subMenu = menu.addChild("Customer Service");
 		if (permissions.isAdmin()) {
-			subMenu.addChild("Activation", "report_activation.jsp?changed=1");
 			subMenu.addChild("Assign Contractors", "ContractorAssigned.action");
 		}
 		if (permissions.hasPermission(OpPerms.AuditVerification))
@@ -99,6 +98,8 @@ public class PicsMenu {
 
 		
 		subMenu = menu.addChild("Accounting");
+		if (permissions.hasPermission(OpPerms.ContractorActivation))
+			subMenu.addChild("Activation", "report_activation.jsp?changed=1");
 		if (permissions.hasPermission(OpPerms.BillingUpgrades))
 			subMenu.addChild("Contractor Payments", "report_payment.jsp?changed=1");
 		if (permissions.hasPermission(OpPerms.BillingUpgrades))

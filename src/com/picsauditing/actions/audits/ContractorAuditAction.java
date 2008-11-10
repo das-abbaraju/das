@@ -21,6 +21,8 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.NcmsCategory;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 
 /**
  * Used by Audit.action to show a list of categories for a given audit. Also
@@ -53,8 +55,13 @@ public class ContractorAuditAction extends AuditActionSupport {
 			return LOGIN;
 		this.findConAudit();
 		
-		// TODO pass this in or set it to true before releasing
-		boolean fullLoad = false;
+		// Some stuff like rebuilding categories and percentages doesn't have to be done everytime
+		boolean fullLoad = true;
+		// Try and guess to see if we need it or not
+		if (auditStatus != null)
+			fullLoad = false;
+		if (conAudit.getAuditStatus().equals(AuditStatus.Active))
+			fullLoad = false;
 
 		if (fullLoad)
 			auditBuilder.fillAuditCategories(conAudit);
@@ -124,16 +131,37 @@ public class ContractorAuditAction extends AuditActionSupport {
 				conAudit.setExpiresDate(cal.getTime());
 			}
 
+			if (auditStatus.equals(AuditStatus.Submitted)) {
+				if (conAudit.getAuditType().isPqf()) {
+					// Add a note...
+					// TODO we should probably stop doing this...it's kind of pointless or at least we should do it for other audits too
+					ContractorBean cBean = new ContractorBean();
+					cBean.setFromDB(conAudit.getContractorAccount().getIdString());
+					String notes = conAudit.getContractorAccount().getName() + " Submitted their PQF ";
+					cBean.addNote(conAudit.getContractorAccount().getIdString(), permissions.getName(), notes, DateBean
+							.getTodaysDate());
+					cBean.writeToDB();
+				}
+				int typeID = conAudit.getAuditType().getAuditTypeID();
+				if (typeID == AuditType.DESKTOP || typeID == AuditType.DA) {
+					EmailBuilder emailBuilder = new EmailBuilder();
+					
+					// TODO combine these 2 templates
+					if (typeID == AuditType.DESKTOP)
+						emailBuilder.setTemplate(7); // Desktop Submission
+					else
+						emailBuilder.setTemplate(8); // D&A Submission
+					
+					emailBuilder.setPermissions(permissions);
+					emailBuilder.setConAudit(conAudit);
+					EmailSender.send(emailBuilder.build());
+
+				}
+				
+			}
+			
 			// Save the audit status
 			conAudit.setAuditStatus(auditStatus);
-			if (conAudit.getAuditType().getAuditTypeID() == AuditType.PQF && auditStatus.equals(AuditStatus.Submitted)) {
-				ContractorBean cBean = new ContractorBean();
-				cBean.setFromDB(conAudit.getContractorAccount().getIdString());
-				String notes = conAudit.getContractorAccount().getName() + " Submitted their PQF ";
-				cBean.addNote(conAudit.getContractorAccount().getIdString(), permissions.getName(), notes, DateBean
-						.getTodaysDate());
-				cBean.writeToDB();
-			}
 			auditDao.save(conAudit);
 
 			flagCalculator.runByContractor(conAudit.getContractorAccount().getId());
