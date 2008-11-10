@@ -36,10 +36,7 @@ try {
 <html>
 <head>
 <title>Payments</title>
-<script src="js/prototype.js" type="text/javascript"></script>
-<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
-<script src="js/Search.js" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<%@include file="struts/reports/reportHeader.jsp" %>
 </head>
 <body>
 <h1>Payment Report</h1>
@@ -62,9 +59,11 @@ onclick="hideSearch()">Hide Filter Options</a></div>
             <input type="hidden" name="actionID" value="0">
 			<input type="hidden" name="action" value="">
 			<input type="hidden" name="showPage" value="1"/>
-			<input type="hidden" name="startsWith" value="<%=sBean.selected_startsWith == null ? "" : sBean.selected_startsWith %>"/>
+			<input type="hidden" name="filter.ajax" value="false"/>
+     		<input type="hidden" name="filter.destinationAction" value=""/>
+			<input type="hidden" name="filter.startsWith" value="<%=sBean.selected_startsWith == null ? "" : sBean.selected_startsWith %>"/>
 			<input type="hidden" name="orderBy"  value="<%=sBean.orderBy == null ? "dateCreated DESC" : sBean.orderBy %>"/>
-              
+            <div id="caldiv2" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>  
 <div class="alphapaging">
 <%=sBean.getStartsWithLinksWithDynamicForm()%>
 </div>
