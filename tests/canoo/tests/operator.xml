@@ -14,7 +14,7 @@
 <!--Contractor List Page -->
 				<clickLink 
 					description="Show List of Contractors"
-					href="ContractorListOperator.action" />
+					href="ContractorList.action" />
 				&body_verify;
 				<verifyText 
 					description="Verify if Filter Options are Available" 
