@@ -26,25 +26,25 @@
 	</s:else></div>
 
 	<s:if test="filter.showContact">
-		<div class="filterOption"><s:textfield name="filter.contactName"
+		<div class="filterOption">Contact Name: <s:textfield name="filter.contactName"
 			cssClass="forms" size="15" onfocus="clearText(this)"
 			title="must be 9 digits" /></div>
 	</s:if>
 
 	<s:if test="filter.showUser">
-		<div class="filterOption"><s:textfield name="filter.userName"
+		<div class="filterOption">User Name: <s:textfield name="filter.userName"
 			cssClass="forms" size="15" onfocus="clearText(this)"
 			title="must be 9 digits" /></div>
 	</s:if>
 
 	<s:if test="filter.showPhone">
-		<div class="filterOption"><s:textfield name="filter.phoneNumber"
+		<div class="filterOption">Phone Number: <s:textfield name="filter.phoneNumber"
 			cssClass="forms" size="15" onfocus="clearText(this)"
 			title="must be 9 digits" /></div>
 	</s:if>
 
 	<s:if test="filter.showEmail">
-		<div class="filterOption"><s:textfield
+		<div class="filterOption">Email Address: <s:textfield
 			name="filter.emailAddress" cssClass="forms" size="15"
 			onfocus="clearText(this)" title="must be 9 digits" /></div>
 	</s:if>

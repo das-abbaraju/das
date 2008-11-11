@@ -2,10 +2,10 @@ package com.picsauditing.util;
 
 
 public class ReportFilterUser extends ReportFilter {
-	public static final String DEFAULT_NAME = "- Contact Name - ";
-	public static final String DEFAULT_PHONE = "- Phone Number -";
-	public static final String DEFAULT_EMAIL = "- Email Address -";
-	public static final String DEFAULT_USERNAME = "- UserName -";
+//	public static final String DEFAULT_NAME = "- Contact Name - ";
+//	public static final String DEFAULT_PHONE = "- Phone Number -";
+//	public static final String DEFAULT_EMAIL = "- Email Address -";
+//	public static final String DEFAULT_USERNAME = "- UserName -";
 
 	// /////// Filter Visibility /////////////
 	protected boolean showContact = true;
@@ -15,10 +15,10 @@ public class ReportFilterUser extends ReportFilter {
 
 	// /////// Parameter Values /////////////////
 	protected String startsWith;
-	protected String ContactName = DEFAULT_NAME;
-	protected String PhoneNumber = DEFAULT_PHONE;
-	protected String EmailAddress = DEFAULT_EMAIL;
-	protected String UserName = DEFAULT_USERNAME;
+	protected String ContactName;
+	protected String PhoneNumber;
+	protected String EmailAddress;
+	protected String UserName;
 
 	public boolean isShowContact() {
 		return showContact;

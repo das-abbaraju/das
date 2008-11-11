@@ -94,19 +94,19 @@ public class ReportUser extends ReportActionSupport {
 		if (filterOn(f.getStartsWith()))
 			report.addFilter(new SelectFilter("name", "u.name LIKE '?%'", f.getStartsWith()));
 
-		if (filterOn(f.getContactName(), ReportFilterUser.DEFAULT_NAME)) {
+		if (filterOn(f.getContactName())) {
 			report.addFilter(new SelectFilter("ContactName", "u.name LIKE '%?%'", f.getContactName()));
 		}
 
-		if (filterOn(f.getPhoneNumber(), ReportFilterUser.DEFAULT_PHONE)) {
+		if (filterOn(f.getPhoneNumber())) {
 			report.addFilter(new SelectFilter("PhoneNumber", "u.phone LIKE '%?%'", f.getPhoneNumber()));
 		}
 
-		if (filterOn(f.getEmailAddress(), ReportFilterUser.DEFAULT_EMAIL)) {
+		if (filterOn(f.getEmailAddress())) {
 			report.addFilter(new SelectFilter("EmailAddress", "u.email LIKE '%?%'", f.getEmailAddress()));
 		}
 
-		if (filterOn(f.getUserName(), ReportFilterUser.DEFAULT_USERNAME)) {
+		if (filterOn(f.getUserName())) {
 			report.addFilter(new SelectFilter("UserName", "u.username LIKE '%?%'", f.getUserName()));
 		}
 	}
