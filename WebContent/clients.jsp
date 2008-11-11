@@ -86,6 +86,7 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
 						Motiva Retail Motiva SD&amp;CM<br>
 						Motorola Field Services<br>
 						Motorola USA<br>
+						New Belgium Brewing Co.<br/>
 						Paramount Petroleum<br>
 						Roquette America<br>
 						Shell Chemical Geismar<br>
@@ -101,6 +102,7 @@ AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/
 						Shell Retail<br>
 						Sikorsky Aircraft Corporation<br>
 						Suncor Energy Commerce City<br>
+						Square D By Schneider Electric<br/>
 						Tesoro Anacortes Refinery<br>
 						Tesoro Kapolei Refinery<br>
 						Tesoro Kenai Alaska Refinery<br>
