@@ -83,7 +83,7 @@
 						description="Open Activation Report"
 						label="Activation" />
 					<setInputField name="name" value="Canoo's Test Contractor" />
-					<clickButton description="Search for Contractor" name="imageField" />
+					<clickButton description="Search for Contractor" name="button" />
 					<clickButton description="Make Visible" label="Activate" />
 				</group>
 				
@@ -135,7 +135,7 @@
 					&login;
 					<clickLink description="Search For Contractors"
 						label="Search" />
-					<setInputField name="accountName" value="Canoo's Test Contractor" />
+					<setInputField name="filter.accountName" value="Canoo's Test Contractor" />
 					<clickButton description="Search for Contractor" label="Search" />
 					<clickLink description="Edit the Contractor" htmlId="conEditLink" />
 					&contractor_delete;

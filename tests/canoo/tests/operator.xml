@@ -65,15 +65,15 @@
 					label="Search For New" />
 				<setSelectField 
 					description="Choose Green Flag"
-					name="flagStatus"
+					name="filter.flagStatus"
 					value="Green" />
 				<setSelectField 
 					description="Choose Trade=Cranes &amp; Rigging"
-					name="trade"
+					name="filter.trade"
 					value="489" />
 				<setSelectField 
 					description="Choose Self Performed"
-					name="performedBy"
+					name="filter.performedBy"
 					value="Self Performed" />
 				<clickButton
 					name="button"
@@ -98,11 +98,11 @@
 					&body_verify;
 				<setSelectField 
 					description="Choose Green Flag"
-					name="flagStatus"
+					name="filter.flagStatus"
 					value="Green" />
 				<setSelectField 
 					description="Choose Self Performed"
-					name="performedBy"
+					name="filter.performedBy"
 					value="Self Performed" />
 				<clickButton
 					name="button"

@@ -160,7 +160,9 @@ try{
                 <tr align="center">
                   <td><input name="name" type="text" class="forms" value="<%=sBean.selected_name%>" size="20" onFocus="clearText(this)">
                     <%=SearchBean.getSearchGeneralSelect("generalContractorID", "blueMain", sBean.selected_generalContractorID)%>
-                    <input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onClick="runSearch( 'form1')" >
+                    <div class="buttons">
+						<button type="submit" name="button" value="Search" onclick="clickSearchSubmit('form1');" class="positive">Search</button>
+					</div>
                   </td>
                 </tr>
               </table>
