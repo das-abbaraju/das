@@ -64,7 +64,7 @@ public class FacilityChanger {
 		emailBuilder.setTemplate(9); // Contractor Added
 		emailBuilder.setPermissions(permissions);
 		emailBuilder.setContractor(contractor);
-		emailBuilder.addToken("opAcct", operator);
+		emailBuilder.addToken("operator", operator);
 		EmailQueue emailQueue = emailBuilder.build();
 		emailQueue.setPriority(80);
 		EmailSender.send(emailQueue);

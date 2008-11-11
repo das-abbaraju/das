@@ -388,13 +388,12 @@ public class CertificateBean extends DataBean {
 				Certificate certificate = certificateDAO.find(Integer.parseInt(certificate_id));
 				emailBuilder.clear();
 				emailBuilder.setTemplate(10); // Certificate Expiration
+				emailBuilder.setFromAddress(permissions.getEmail());
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setContractor(certificate.getContractorAccount());
-				emailBuilder.addToken("opAcct", certificate.getOperatorAccount());
-				emailBuilder.addToken("expiration_date", certificate.getExpiration());
-				emailBuilder.addToken("certificate_type", certificate.getType());
+				emailBuilder.addToken("certificate", certificate);
 				EmailQueue email = emailBuilder.build();
-				email.setBccAddresses("eorozco@picsauditing.com");
+				email.setBccAddresses(permissions.getEmail());
 				email.setPriority(20);
 				emailQueueDAO.save(email);
 				ContractorBean.addNote(certificate.getContractorAccount().getId(), permissions,
@@ -405,23 +404,13 @@ public class CertificateBean extends DataBean {
 				certificateDAO.save(certificate);
 			}
 		}
-	}// processEmailForm
+	}
 
 	public void makeExpiredCertificatesExpiredStatus() throws Exception {
 		try {
 			DBReady();
 			String updateQuery = "UPDATE certificates SET status='Expired' WHERE expDate<CURDATE();";
 			SQLStatement.executeUpdate(updateQuery);
-			// updateQuery = "UPDATE contractor_info SET hasExpiredCerts='Yes'
-			// WHERE id IN "
-			// + "(SELECT contractor_id FROM certificates WHERE
-			// status='Expired')";
-			// SQLStatement.executeUpdate(updateQuery);
-			// updateQuery = "UPDATE contractor_info SET hasExpiredCerts='No'
-			// WHERE id NOT IN "
-			// + "(SELECT contractor_id FROM certificates WHERE
-			// status='Expired')";
-			// SQLStatement.executeUpdate(updateQuery);
 		} finally {
 			DBClose();
 		}

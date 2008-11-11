@@ -109,17 +109,18 @@
 	<%
 		count = 0;
 		// Show Facilities selected
+		ContractorOperatorDAO conOpDAO = (ContractorOperatorDAO) SpringUtils.getBean("ContractorOperatorDAO"); 
 		for (OperatorAccount operator : operators) {
 			
 			if( ! operator.isOperator() ) continue;
 			
 			String opID = operator.getId().toString();
 			String name = operator.getName();
-			ContractorOperatorDAO conOpDAO = (ContractorOperatorDAO) SpringUtils.getBean("ContractorOperatorDAO"); 
 			ContractorOperator contractorOperator = conOpDAO.find(Integer.parseInt(conID), operator.getId());
-			String WaitingOn = "";
-			if(contractorOperator != null)
-				WaitingOn = contractorOperator.getFlag().getWaitingOn().toString();
+			String waitingOn = "";
+			try {
+				waitingOn = contractorOperator.getFlag().getWaitingOn().toString();
+			} catch (NullPointerException e) {}
 			
 			if (cBean.generalContractors.contains(opID)) {
 				oBean.setFromDB(opID);
@@ -155,7 +156,7 @@
 		} %>	
 		
 		</td>
-		<td><%= WaitingOn %></td>
+		<td><%= waitingOn %></td>
 		<td class="center"><input type="hidden" name="genID_<%=opID%>"
 			value="Yes" /><img src="images/okCheck.gif" width="19" height="15" />
 		<%
