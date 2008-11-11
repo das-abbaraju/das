@@ -24,7 +24,9 @@
 <s:include value="conHeader.jsp" />
 
 <div style="text-align: center; width: 100%">
-<table border="1">
+<s:if test="co.flag.waitingOn != null"><div id="info" style="float: right; width: 200px">Currently waiting on <b><s:property value="co.flag.waitingOn"/></b></div></s:if>
+
+<table style="text-align: center;">
 	<tr>
 		<td rowspan="2" style="vertical-align: middle;"><s:property
 			value="co.flag.flagColor.bigIcon" escape="false" /></td>
@@ -88,6 +90,7 @@
 	</tr>
 </table>
 </div>
+
 <s:if test="permissions.contractor">
 <div class="helpOnRight">
 		The minimum requirements set by <s:property value="co.operatorAccount.name"/> are listed in this page. 
