@@ -40,7 +40,7 @@
 							</pics:permission>
 					</li>
 					<li><label>Password:</label>
-						<s:textfield name="contractor.password" size="12" />
+						<s:password name="contractor.password" size="12" value=""/>
 					</li>
 					<li><label>Date Created:</label>
 						<s:date name="contractor.dateCreated" format="MMM d, yyyy" />
