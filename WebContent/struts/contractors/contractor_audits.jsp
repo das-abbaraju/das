@@ -122,7 +122,7 @@
 </table>
 <br/><br/>
 </s:if>
-
+<s:if test="manuallyAddAudit">
 <div id="addAudit">
 	<a href="#" onclick="showAddAudit(); return false;">Add Audit Manually</a>
 </div>
@@ -139,5 +139,6 @@
 	</div>
 </s:form>	
 </div>
+</s:if>
 </body>
 </html>

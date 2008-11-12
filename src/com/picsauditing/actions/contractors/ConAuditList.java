@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -73,7 +75,7 @@ public class ConAuditList extends ContractorActionSupport {
 			auditDao.save(conAudit);
 			return "saved";
 		}
-
+		auditTypeName = auditTypeDAO.findAll(permissions, true);
 		return SUCCESS;
 	}
 
@@ -89,7 +91,7 @@ public class ConAuditList extends ContractorActionSupport {
 	}
 
 	public List<AuditType> getAuditTypeName() {
-		return auditTypeDAO.findAll(permissions, true);
+		return auditTypeName;
 	}
 
 	public int getSelectedAudit() {
@@ -118,5 +120,17 @@ public class ConAuditList extends ContractorActionSupport {
 
 	public List<ContractorAudit> getExpiredAudits() {
 		return expiredAudits;
+	}
+
+	public boolean isManuallyAddAudit() {
+		if (permissions.isContractor())
+			return false;
+		if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit))
+			return true;
+		if (permissions.isOperator() || permissions.isCorporate()) {
+			if (auditTypeName.size() > 0)
+				return true;
+		}
+		return false;
 	}
 }
