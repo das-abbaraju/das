@@ -68,18 +68,18 @@ sets the highest standards possible in regard to contractor qualifications as th
                   <td valign="top" bgcolor="#FFFFFF">
                   	<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
 				  		<tr>
-                        	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">09/01/08</span>PICS EHS/VPP Resident Expert</span><br>
+                        	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">09/23/08</span>2008 NSC Annual Congress & Expo</span><br>
                             <br> 
-								Dennis Truitt joins PICS with more than 20 years of managing health and safety in the highly-regulated petrochemical industry and holds a B.A. in Psychology from the University of California, Irvine. Prior to joining PICS, he was the Refinery Safety Manager for the Valero Wilmington Refinery.</td>
+								The National Safety Council, founded in 1913, serves as the nation's leading resource on industry trends, professional development, and strategies for advancing safety and health programs and practices. PICS CEO, John Moreland,  gave a demonstration of the free online tool for contractor pre-qualification.</td>
                         </tr>
                         <tr>
-                        	<td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">09/01/08</span>Square D / Schneider Electric joins PICS</span><br>
+                        	<td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">09/01/08</span>PICS EHS/VPP Resident Expert</span><br>
+                            <br> 
+                            	Dennis Truitt joins PICS with more than 20 years of experience managing health and safety in the highly-regulated petrochemical industry, including the VPP program. Prior to joining PICS, Dennis was the Refinery Safety Manager for the Valero Wilmington Refinery.</td></tr>
+						<tr>
+                        	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">09/01/08</span>Square D / Schneider Electric joins PICS</span><br>
                             <br> 
                             	Square D  is a market-leading global brand of Schneider Electric for NEMA type electrical distribution and industrial control products, systems and services.  Schneider Electric, headquartered in Paris, France, is a global electrical industry leader with sales of approximately $23.7 billion (U.S.) in 2007.</td></tr>
-						<tr>
-                        	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">08/01/08</span>New Belgium Brewing joins PICS</span><br>
-                            <br> 
-                            	New Belgium is the nation's third largest mid-sized brewery. From its inception New Belgium has been committed to the preservation of the environment, brewing world class beer, promoting beer culture and having fun.  In 1998 New Belgium became the first wind-powered brewery in the United States.</td></tr>
 						<tr>
                       		<td align="center" class="blueHome">&nbsp;<a href="featured_newsarchive.jsp" target="_self"><img src="images/NEWSARCHIVE_button3.gif" width="111" height="27" hspace="5" border="0"></a></td>
                     	</tr>

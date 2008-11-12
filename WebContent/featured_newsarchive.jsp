@@ -17,9 +17,9 @@
 		<td valign="top" bgcolor="#FFFFFF">
 		<table border="0" align="center" cellpadding="0" cellspacing="0">
 			<tr>
-				<td bgcolor="#F8F8F8" class="blueHome2"><strong>07/23/08</strong> <strong
-					class="articleTitle">PICS Demonstration at the NSC 2008 Annual Congress & Expo a Success</strong><br>
-				The National Safety Council, founded in 1913, serves as the nation's leading resource on industry trends, professional development, and strategies for advancing safety and health programs and practices. PICS's demonstration of their online tool for contractor prequalification was a great success.</td>
+				<td bgcolor="#F8F8F8" class="blueHome2"><strong>08/01/08</strong> <strong
+					class="articleTitle">New Belgium Brewing joins PICS</strong><br>
+				New Belgium is the nation's third largest mid-sized brewery. From its inception New Belgium has been committed to the preservation of the environment, brewing world class beer, promoting beer culture and having fun.  In 1998 New Belgium became the first wind-powered brewery in the United States.</td>
 			</tr>
 			<tr>
 				<td class="blueHome2"><strong>07/01/08</strong> <strong
