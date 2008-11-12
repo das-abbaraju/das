@@ -61,9 +61,8 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.SearchContractors)) {
 			subMenu.addChild("Search For New", "NewContractorSearch.action");
 		}
-
 		if (permissions.hasPermission(OpPerms.AllContractors))
-			subMenu.addChild("By Operator", "report_operatorContractor.jsp?changed=1");
+			subMenu.addChild("By Operator", "report_operatorContractor.jsp?visible=Y");
 		if (permissions.hasPermission(OpPerms.SearchContractors))
 			subMenu.addChild("By Operator", "report_operatorContractor.jsp?searchCorporate=Y");
 		if(permissions.hasPermission(OpPerms.DelinquentAccounts)) {

@@ -17,6 +17,8 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 
 import com.picsauditing.access.OpPerms;
 
@@ -56,6 +58,7 @@ public class UserAccess implements Comparable<UserAccess> {
 	}
 
 	@Enumerated(EnumType.STRING)
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.access.OpPerms") })
 	@Column(name = "accessType", nullable = false)
 	public OpPerms getOpPerm() {
 		return opPerm;
@@ -66,7 +69,7 @@ public class UserAccess implements Comparable<UserAccess> {
 	}
 
 	public Boolean getViewFlag() {
-		if (!opPerm.usesView())
+		if (opPerm != null && !opPerm.usesView())
 			return null;
 		return viewFlag;
 	}
@@ -76,7 +79,7 @@ public class UserAccess implements Comparable<UserAccess> {
 	}
 
 	public Boolean getEditFlag() {
-		if (!opPerm.usesEdit())
+		if (opPerm != null && !opPerm.usesEdit())
 			return null;
 		return editFlag;
 	}
@@ -86,7 +89,7 @@ public class UserAccess implements Comparable<UserAccess> {
 	}
 
 	public Boolean getDeleteFlag() {
-		if (!opPerm.usesDelete())
+		if (opPerm != null && !opPerm.usesDelete())
 			return null;
 		return deleteFlag;
 	}
@@ -124,6 +127,10 @@ public class UserAccess implements Comparable<UserAccess> {
 
 	@Override
 	public int compareTo(UserAccess o) {
+		if (opPerm == null)
+			return 1;
+		if (o.getOpPerm() == null)
+			return -1;
 		return this.opPerm.getDescription().compareToIgnoreCase(o.getOpPerm().getDescription());
 	}
 }

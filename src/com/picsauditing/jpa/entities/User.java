@@ -325,7 +325,8 @@ public class User implements Comparable<User> {
 
 		// READ the permissions assigned directly to this THIS user/group
 		for (UserAccess perm : ownedPermissions) {
-			this.add(permissions, perm, true);
+			if (perm != null)
+				this.add(permissions, perm, true);
 		}
 
 		return permissions;
