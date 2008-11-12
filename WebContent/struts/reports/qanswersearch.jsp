@@ -8,8 +8,9 @@
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/forms.css" />
 <script type="text/javascript">
-function getQuestionList(elm) {
-		var pars = 'questionName='+ escape($F(elm));
+function getQuestionList() {
+		var elm = escape($F('questionSelect'));
+		var pars = 'questionName='+ elm;
 		var myAjax = new Ajax.Updater('selected_question','QuestionSelectAjax.action', 
 		{
 			method: 'post', 
@@ -45,7 +46,8 @@ function getQuestionList(elm) {
 	<br clear="all"/>
 	<div class="filterOption">
 		Select a Question
-		<s:textfield cssClass="forms" name="questionSelect" size="35" onchange="getQuestionList(this)"/><br/> 
+		<s:textfield id="questionSelect" cssClass="forms" name="questionSelect" size="35" /> 
+		<input type="button" value="Search" onclick="getQuestionList()"/><br/>
 		<div id="selected_question">&nbsp;</div>
 	</div>
 
@@ -54,6 +56,8 @@ function getQuestionList(elm) {
 		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
 </s:form>
 </div>
+<div id="caldiv2" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
+
 <div class="right"><a 
 	class="excel" 
 	<s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all <s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
