@@ -67,7 +67,7 @@ function runSearch(search) {
 var cal2 = new CalendarPopup('caldiv2');
 cal2.offsetY = -110;
 cal2.setCssPrefix("PICS");
-cal2.showNavigationDropdowns();
+//cal2.showNavigationDropdowns();
 
 function toggleBox(name) {
 	var box = $(name+'_select');
