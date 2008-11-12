@@ -253,9 +253,6 @@
 		<action name="ContractorAssigned"
 			class="com.picsauditing.actions.report.ReportContractorAssignment">
 			<result>struts/reports/assignedContractor.jsp</result>
-			<result name="EmailSender" type="chain">
-				<param name="actionName">MassMailer</param>
-			</result>
 		</action>
 
 		<action name="ScheduleAuditUpdate"
@@ -266,17 +263,11 @@
 		<action name="DelinquentContractorAccounts"
 			class="com.picsauditing.actions.report.DelinquentAccounts">
 			<result>/struts/reports/delinquent_conaccounts.jsp</result>
-			<result name="EmailSender" type="chain">
-				<param name="actionName">MassMailer</param>
-			</result>
 		</action>
 
 		<action name="ArchivedContractorAccounts"
 			class="com.picsauditing.actions.report.ArchivedAccounts">
 			<result>/struts/reports/archived_conaccounts.jsp</result>
-			<result name="EmailSender" type="chain">
-				<param name="actionName">MassMailer</param>
-			</result>
 		</action>
 
 		<action name="MultiLoginUser"
@@ -292,9 +283,6 @@
 		<action name="ReportCompletePQF"
 			class="com.picsauditing.actions.report.ReportCompletePQF">
 			<result>struts/reports/complete_pqf.jsp</result>
-			<result name="EmailSender" type="chain">
-				<param name="actionName">MassMailer</param>
-			</result>
 		</action>
 
 		<action name="UsersByOpPerm"
@@ -315,9 +303,6 @@
 		<action name="ReportOperatorCriteria"
 			class="com.picsauditing.actions.report.ReportFlagCriteria">
 			<result>struts/reports/operator_flagcriteria.jsp</result>
-			<result name="EmailSender" type="chain">
-				<param name="actionName">MassMailer</param>
-			</result>
 		</action>
 
 		<action name="QuestionAnswerSearch"
@@ -401,9 +386,6 @@
 		<action name="PqfVerification"
 			class="com.picsauditing.actions.report.ReportPQFVerification">
 			<result>struts/reports/pqf_verification.jsp</result>
-			<result name="EmailSender" type="chain">
-				<param name="actionName">MassMailer</param>
-			</result>
 		</action>
 
 		<action name="VerifyView"
