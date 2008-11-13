@@ -262,6 +262,7 @@
 
 		<action name="DelinquentContractorAccounts"
 			class="com.picsauditing.actions.report.DelinquentAccounts">
+			<param name="filter.allowMailMerge">true</param>
 			<result>/struts/reports/delinquent_conaccounts.jsp</result>
 		</action>
 
