@@ -75,7 +75,7 @@
 				</s:form>
 				<a href="#" onclick="$('override_link').show(); $('override').hide(); return false;">Nevermind</a>
 				</div>
-				<a id="override_link" href="#" onclick="$('override').show(); this.hide(); return false;">Manually Force Flag Color</a>
+				<a id="override_link" href="#" onclick="$('override').show(); $('override_link').hide(); return false;">Manually Force Flag Color</a>
 				</pics:permission>
 			</s:else>
 		</s:if>
