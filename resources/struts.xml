@@ -666,6 +666,12 @@
 		<action name="DownloadAjax"
 			class="com.picsauditing.actions.Download">
 		</action>
+		
+		<action name="ContractorNotes"
+			class="com.picsauditing.actions.contractors.ContractorNote">
+			<result>struts/contractors/con_notes.jsp</result>
+		</action>
+		
 
 		<!-- Remember to Categorize your new Struts pages -->
 	</package>
