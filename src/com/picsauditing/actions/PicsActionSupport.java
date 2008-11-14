@@ -202,6 +202,8 @@ public class PicsActionSupport extends ActionSupport {
 	}
 	
 	public int getDaysLeft(Date invoiceDate) {
+		if(invoiceDate == null)
+			return 0;
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(invoiceDate);
 		cal.add(cal.DAY_OF_YEAR, 120);
