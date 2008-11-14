@@ -50,7 +50,7 @@ function checkUsername(username) {
 	</fieldset>
 	<fieldset class="submit">
 		<div class="buttons">
-			<button id="saveButton" class="positive" value="Save Profile" name="button" onclick="$('info').hide(); return true;">Save Profile</button>
+			<button id="saveButton" class="positive" value="Save Profile" name="button" type="submit">Save Profile</button>
 		</div>
 	</fieldset>
 </s:form>
