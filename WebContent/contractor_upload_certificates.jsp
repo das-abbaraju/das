@@ -34,6 +34,7 @@
 <head>
 <title>Edit Insurance Certificates</title>
 <meta name="header_gif" content="header_insurance.gif" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
 <% request.setAttribute("subHeading", "Contractor Insurance"); %>
@@ -101,30 +102,29 @@
 		<%
 			}//if
 		%>
-		<table border="0" cellpadding="1" cellspacing="1" width="100%"
-			bgcolor="#EEEEEE">
-			<tr class="whiteTitle">
+		<table class="report">
+			<thead><tr>
 				<%
 					if (canDelete) {
 				%>
-				<td bgcolor="#003366">Delete</td>
+				<td>Delete</td>
 				<%
 					}//if
 				%>
-				<td bgcolor="#003366">Type</td>
-				<td bgcolor="#003366">Facility</td>
-				<td bgcolor="#003366">Verified</td>
-				<td bgcolor="#003366">Status</td>
-				<td bgcolor="#003366">Expires</td>
-				<td bgcolor="#003366">Liability</td>
-				<td bgcolor="#003366">Named Ins.</td>
-				<td bgcolor="#003366">Waiver</td>
-				<td width="50" align="center" bgcolor="#993300">File</td>
-			</tr>
+				<td>Type</td>
+				<td>Facility</td>
+				<td>Verified</td>
+				<td>Status</td>
+				<td>Expires</td>
+				<td>Liability</td>
+				<td>Named Ins.</td>
+				<td>Waiver</td>
+				<td>File</td>
+			</tr></thead>
 			<%
 				while (cerBean.isNextRecord()) {
 			%>
-			<tr class="blueMain" <%=Utilities.getBGColor(cerBean.count)%>>
+			<tr>
 				<%
 					if (canDelete) {
 				%>
@@ -142,13 +142,13 @@
 				<td><%=cerBean.type%></td>
 				<td><%=FACILITIES.getNameFromID(cerBean.operator_id)%></td>
 				<td align="center"><%=cerBean.verified%></td>
-				<td><%=cerBean.status%></td>
+				<td align="center"><%=cerBean.status%></td>
 				<td><%=cerBean.getExpDateShow()%></td>
-				<td align="right"><%=java.text.NumberFormat.getInstance().format(
+				<td><%=java.text.NumberFormat.getInstance().format(
 									cerBean.getLiabilityLimit())%></td>
 				<td><%=cerBean.getNamedInsured()%></td>
 				<td align="center"><%=cerBean.getSubrogationWaived()%></td>
-				<td align="center"><a
+				<td><a
 					href="<%=cerBean.getDirPath()%>cert_<%=id%>_<%=cerBean.cert_id%>.<%=cerBean.getExt()%>"
 					target="_blank"> <img src="images/icon_insurance.gif"
 					width="20" height="20" border="0"></a></td>
