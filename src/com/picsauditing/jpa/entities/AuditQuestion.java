@@ -75,7 +75,7 @@ public class AuditQuestion implements java.io.Serializable {
 	private String requirement;
 	private YesNo isRedFlagQuestion = YesNo.No;
 	private String isRequired;
-	private AuditQuestion dependsOnQuestion;
+	private AuditQuestion dependsOnQuestion = null;
 	private String dependsOnAnswer;
 	private String questionType;
 	private String title;

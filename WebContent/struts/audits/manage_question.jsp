@@ -65,11 +65,11 @@
 			<s:select list="#{'No':'No','Yes':'Yes','Depends':'Depends'}" name="question.isRequired" />
 		</li>
 		<li><label>Depends on Question:</label>
-			<s:textfield name="question.dependsOnQuestion.questionID" />
-		</li>	
+			<s:textfield name="dependsOnQuestionID" />
+		</li>
 		<li><label>Depends on Answer:</label>
 			<s:textfield name="question.dependsOnAnswer" />
-		</li>	
+		</li>
 		<li><label>Question Type:</label>
 			<s:select list="questionTypes" name="question.questionType" />
 		</li>

@@ -11,11 +11,13 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
+import com.picsauditing.util.Strings;
 
 public class ManageQuestion extends ManageSubCategory {
 
 	protected AuditQuestionDAO auditQuestionDao;
 	protected AuditDataDAO auditDataDAO;
+	private String dependsOnQuestionID = null;
 
 	public ManageQuestion(AuditTypeDAO auditTypeDao,
 			AuditCategoryDAO auditCategoryDao,
@@ -41,7 +43,8 @@ public class ManageQuestion extends ManageSubCategory {
 	
 	protected void load(AuditQuestion o) {
 		this.question = o;
-		
+		if (question.getDependsOnQuestion() != null)
+			dependsOnQuestionID = Integer.toString(question.getDependsOnQuestion().getQuestionID());
 		load(question.getSubCategory());
 	}
 	
@@ -67,6 +70,21 @@ public class ManageQuestion extends ManageSubCategory {
 				question.setEffectiveDate(question.getDateCreated());
 			if (question.getExpirationDate() == null)
 				question.setExpirationDate(DateBean.getEndOfTime());
+			
+			if (Strings.isEmpty(dependsOnQuestionID) || dependsOnQuestionID.equals("0"))
+				question.setDependsOnQuestion(null);
+			else {
+				try {
+					int questionId = Integer.parseInt(dependsOnQuestionID);
+					if (question.getDependsOnQuestion() == null || questionId != question.getDependsOnQuestion().getQuestionID()) {
+						question.setDependsOnQuestion(new AuditQuestion());
+						question.getDependsOnQuestion().setQuestionID(questionId);
+					}
+				} catch (NumberFormatException e) {
+					addActionError("Depends on Question must be a number");
+					return false;
+				}
+			}
 			
 			subCategory.getQuestions().add(question);
 			question = auditQuestionDao.save(question);
@@ -118,6 +136,14 @@ public class ManageQuestion extends ManageSubCategory {
 
 	public String[] getQuestionTypes() {
 		return AuditQuestion.TYPE_ARRAY;
+	}
+
+	public String getDependsOnQuestionID() {
+		return dependsOnQuestionID;
+	}
+
+	public void setDependsOnQuestionID(String dependsOnQuestionID) {
+		this.dependsOnQuestionID = dependsOnQuestionID;
 	}
 	
 }

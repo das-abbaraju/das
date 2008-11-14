@@ -20,11 +20,11 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	protected AuditCategory category = null;
 	protected AuditSubCategory subCategory = null;
 	protected AuditQuestion question = null;
-	
+
 	private List<AuditType> auditTypes = null;
-	
+
 	protected AuditTypeDAO auditTypeDao = null;
-	
+
 	public ManageAuditType(AuditTypeDAO auditTypeDAO) {
 		this.auditTypeDao = auditTypeDAO;
 	}
@@ -32,9 +32,9 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		permissions.tryPermission(OpPerms.ManageAudits);
-		
+
 		if (button != null) {
 			if (button.equalsIgnoreCase("save")) {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
@@ -46,62 +46,59 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 			if (button.equalsIgnoreCase("delete")) {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Delete);
 				if (delete()) {
-					addActionMessage("Successfully removed"); // default message
+					addActionMessage("Successfully removed"); // default
+																// message
 					return "deleted";
 				}
 			}
 		}
-		
+
 		if ("Add New".equals(button)) {
 			auditType = new AuditType();
 			return SUCCESS;
 		}
 		if (auditType != null) {
-			return SUCCESS;		
+			return SUCCESS;
 		}
-		
+
 		return "top";
 	}
-
 
 	protected void load(int id) {
 		if (id != 0) {
 			load(auditTypeDao.find(id));
 		}
 	}
-	
+
 	protected void loadParent(int id) {
 		// do nothing
 	}
-	
-	protected void load( AuditType newType ) {
+
+	protected void load(AuditType newType) {
 		this.auditType = newType;
 	}
 
-	
 	@Override
 	public void prepare() throws Exception {
 
-		String[] ids = (String[]) ActionContext.getContext().getParameters()
-				.get("id");
+		String[] ids = (String[]) ActionContext.getContext().getParameters().get("id");
 
-		String[] parentIds = (String[]) ActionContext.getContext().getParameters()
-		.get("parentID");
+		String[] parentIds = (String[]) ActionContext.getContext().getParameters().get("parentID");
 
 		if (ids != null && ids.length > 0) {
-			int thisId = Integer.parseInt( ids[0] );
+			int thisId = Integer.parseInt(ids[0]);
 			if (thisId > 0) {
-				load( thisId );
+				load(thisId);
 				return; // don't try to load the parent too
 			}
 		}
-		
+
 		if (parentIds != null && parentIds.length > 0) {
-			int thisId = Integer.parseInt( parentIds[0] ); 
-			loadParent( thisId );
+			int thisId = Integer.parseInt(parentIds[0]);
+			loadParent(thisId);
 		}
 	}
-	
+
 	public boolean save() {
 		try {
 			if (auditType == null)
@@ -125,7 +122,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				addActionError("Can't delete - Categories still exist");
 				return false;
 			}
-			
+
 			auditTypeDao.remove(auditType.getAuditTypeID());
 			id = auditType.getAuditTypeID();
 			return true;
@@ -136,7 +133,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	}
 
 	// GETTERS && SETTERS
-	
+
 	public int getId() {
 		return id;
 	}
@@ -187,7 +184,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	public void setQuestion(AuditQuestion question) {
 		this.question = question;
 	}
-	
+
 	public void setParentID(int parentID) {
 		// Do nothing here...we use this in the prepare statement
 	}

@@ -209,4 +209,9 @@ public class PicsActionSupport extends ActionSupport {
 		cal.add(cal.DAY_OF_YEAR, 120);
 		return DateBean.getDateDifference(cal.getTime());
 	}
+	
+	public String getActionName() {
+		return ServletActionContext.getActionMapping().getName();
+	}
+
 }

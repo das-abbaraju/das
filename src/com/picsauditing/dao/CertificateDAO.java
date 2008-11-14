@@ -33,11 +33,20 @@ public class CertificateDAO extends PicsDAO {
 		return a;
 	}
 
+	/**
+	 * This is for getting a list of certificates that we need to send emails on.
+	 * The final result of all of this logic below is that we send emails:
+	 * 14 days before it expires
+	 * 7 days after it expires
+	 * 28 days after it expires
+	 * for a total of 3 emails
+	 * @return
+	 */
 	public List<Certificate> findExpiredCertificate() {
-		Calendar calendar1 = Calendar.getInstance();
 		Query query = em.createQuery("SELECT cr FROM Certificate cr WHERE"
 				+ " (cr.lastSentDate < :Before21Days OR cr.lastSentDate IS NULL) AND"
 				+ "(cr.expiration BETWEEN :Before35Days AND :After14Days)");
+		Calendar calendar1 = Calendar.getInstance();
 		calendar1.add(calendar1.WEEK_OF_YEAR, -3);
 		query.setParameter("Before21Days", calendar1.getTime());
 		calendar1.add(calendar1.WEEK_OF_YEAR, -2);
