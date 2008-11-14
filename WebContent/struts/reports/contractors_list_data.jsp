@@ -70,7 +70,7 @@
 				</s:if></td>
 			</s:if>
 			<td class="center">
-				<s:if test="@com.picsauditing.actions.report.ReportAccountAudits@isInsuranceApproved(get('id'))">
+				<s:if test="get('certificateCount') > 0">
 				<a 
 					href="contractor_upload_certificates.jsp?id=<s:property value="[0].get('id')"/>"><img
 					src="images/icon_insurance.gif" width="20" height="20" border="0"></a>
