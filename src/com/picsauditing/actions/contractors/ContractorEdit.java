@@ -33,6 +33,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected FlagCalculator2 flagCalculator2;
 	protected AuditQuestionDAO auditQuestionDAO;
 	protected ContractorValidator contractorValidator;
+	protected String password1 = null;
+	protected String password2 = null;
 
 	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditBuilder auditBuilder,
 			FlagCalculator2 flagCalculator2, AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator) {
@@ -64,8 +66,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 		if (button != null) {
 			String ftpDir = getFtpDir();
-			
-			if (button.equals("save")) {
+
+			if (button.equalsIgnoreCase("Save")) {
 				if (permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorAccounts, OpType.Edit)) {
 					if (logo != null) {
 						String extension = logoFileName.substring(logoFileName.lastIndexOf(".") + 1);
@@ -92,9 +94,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						FileUtils.copyFile(brochure, ftpDir, "/files/brochures/", fileName, extension, true);
 						contractor.setBrochureFile(extension);
 					}
-					Vector<String> errors = contractorValidator.validateContractor(contractor);
+					Vector<String> errors = contractorValidator.validateContractor(contractor, password1, password2);
 					if (errors.size() > 0) {
-						addActionError(errors.toString());
+						for(String error : errors)
+							addActionError(error);
 						return SUCCESS;
 					}
 
@@ -108,8 +111,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					flagCalculator2.runByContractor(contractor.getId());
 					addActionMessage("Successfully modified " + contractor.getName());
 				}
-			}
-			if (button.equals("delete")) {
+			} else if (button.equalsIgnoreCase("Delete")) {
 				permissions.tryPermission(OpPerms.RemoveContractors);
 				findContractor();
 				if (contractor.getAudits().size() > 0) {
@@ -118,6 +120,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				}
 				accountDao.remove(contractor, getFtpDir());
 				return "ConList";
+			} else {
+				// Because there are anomalies between browsers and how they
+				// pass
+				// in the button values, this is a catch all so we can get
+				// notified
+				// when the button name isn't set correctly
+				throw new Exception("no button action found called " + button);
 			}
 		}
 
@@ -167,5 +176,21 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public LowMedHigh[] getRiskLevelList() {
 		return LowMedHigh.values();
+	}
+
+	public String getPassword1() {
+		return password1;
+	}
+
+	public void setPassword1(String password1) {
+		this.password1 = password1;
+	}
+
+	public String getPassword2() {
+		return password2;
+	}
+
+	public void setPassword2(String password2) {
+		this.password2 = password2;
 	}
 }

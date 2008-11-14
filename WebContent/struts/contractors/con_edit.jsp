@@ -20,7 +20,7 @@
 <s:include value="conHeader.jsp"></s:include>
 <s:form id="save" method="POST" enctype="multipart/form-data">
 <div class="buttons">
-	<button class="positive" name="button" type="submit" value="save">Save</button>
+	<button class="positive" name="button" type="submit" value="Save">Save</button>
 </div>
 <br clear="all" />
 <s:hidden name="id" />
@@ -39,8 +39,11 @@
 								<a href="login.jsp?switchUser=<s:property value="contractor.username"/>">Switch User</a>							
 							</pics:permission>
 					</li>
-					<li><label>Password:</label>
-						<s:password name="contractor.password" size="12" value=""/>
+					<li><label>Change Password:</label>
+						<s:password name="password1" size="12" />
+					</li>
+					<li><label>Confirm Password:</label>
+						<s:password name="password2" size="12" />
 					</li>
 					<li><label>Date Created:</label>
 						<s:date name="contractor.dateCreated" format="MMM d, yyyy" />
@@ -264,15 +267,15 @@
 <br clear="all">
 	<div class="buttons">
 		<s:if test="permissions.contractor">
-			<button class="positive" name="button" type="submit" value="save">Save</button>
+			<button class="positive" name="button" type="submit" value="Save">Save</button>
 		</s:if>
 		<s:else>
 			<pics:permission perm="ContractorAccounts" type="Edit">
-				<button class="positive" name="button" type="submit" value="save">Save</button>
+				<button class="positive" name="button" type="submit" value="Save">Save</button>
 			</pics:permission>
 		</s:else>
 		<pics:permission perm="RemoveContractors">
-			<button name="button" class="negative" type="submit" value="delete" onClick="return confirm('Are you sure you want to delete this account?');">Delete</button>
+			<button name="button" class="negative" type="submit" value="Delete" onClick="return confirm('Are you sure you want to delete this account?');">Delete</button>
 		</pics:permission>
 	</div>
 </s:form>
