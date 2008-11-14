@@ -243,6 +243,10 @@ public class OshaSave extends PicsActionSupport {
 		return uploadFile3FileName;
 	}
 
+	public void setUploadFile3FileName(String uploadFile3FileName) {
+		this.uploadFile3FileName = uploadFile3FileName;
+	}
+
 	public void setUploadFile1ContentType(String uploadFile1ContentType) {
 	}
 
