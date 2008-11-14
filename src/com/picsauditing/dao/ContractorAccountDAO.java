@@ -133,7 +133,7 @@ public class ContractorAccountDAO extends PicsDAO {
 
 		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
 		qb.setActiveContractorsOnly(false);
-		String hql = "FROM ContractorAccount contractorAccount WHERE DATEDIFF(NOW(),lastInvoiceDate) > 75 AND (lastPayment IS NULL OR lastPayment < lastInvoiceDate) AND active = 'Y'"
+		String hql = "FROM ContractorAccount contractorAccount WHERE DATEDIFF(NOW(),lastInvoiceDate) > 75 AND (lastPayment IS NULL OR lastPayment < lastInvoiceDate) AND active = 'Y' AND mustPay = 'Yes'"
 				+ qb.toString() + " ORDER BY lastInvoiceDate ASC";
 		Query query = em.createQuery(hql);
 		query.setMaxResults(limit);
