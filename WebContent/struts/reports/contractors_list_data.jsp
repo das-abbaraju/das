@@ -21,8 +21,8 @@
 	<thead>
 	<tr>
 		<td colspan="2">Contractor Name</td>
-		<td></td>
 		<pics:permission perm="ContractorDetails">
+		<td></td>
 			<td>Industry</td>
 			<td>Trade</td>
 			<td></td>
@@ -55,8 +55,6 @@
 			<td><a
 				href="ContractorEdit.action?id=<s:property value="[0].get('id')"/>"
 				>Edit</a></td>
-			</pics:permission>
-			<pics:permission perm="ContractorDetails">
 			<td><s:property value="[0].get('industry')" /></td>
 			<td><s:property value="[0].get('main_trade')" /></td>
 			<td><a

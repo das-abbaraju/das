@@ -2,9 +2,7 @@
 <html>
 <head>
 <title>Incidence Rates</title>
-<script src="js/prototype.js" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/reports.css" />
+<s:include value="reportHeader.jsp" />
 </head>
 <body>
 <h1>Incidence Rates Report</h1>
@@ -22,8 +20,11 @@
 				src="images/button_search.gif" onclick="runSearch('form1')" /></td>
 		</tr>
 		<s:hidden name="showPage" value="1" />
-		<s:hidden name="startsWith" />
+		<s:hidden name="filter.startsWith" />
 		<s:hidden name="orderBy" />
+		<s:hidden name="filter.ajax" value="false"/>
+		<s:hidden name="filter.destinationAction" />
+		<s:hidden name="filter.allowMailMerge" />
 	</table>
 	<div><strong>Check next to the years to search</strong></div>
 	<br>

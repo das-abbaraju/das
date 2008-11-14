@@ -2,7 +2,7 @@
 <html>
 <head>
 <title>EMR Report</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<s:include value="reportHeader.jsp" />
 </head>
 <body>
 <h1>EMR Report</h1>
@@ -14,8 +14,11 @@ Min: <s:textfield name="minRate" size="5" />
 Max: <s:textfield name="maxRate" size="5" />
 <s:submit />
 	<s:hidden name="showPage" value="1"/>
-	<s:hidden name="startsWith" />
+	<s:hidden name="filter.startsWith" />
 	<s:hidden name="orderBy" />
+	<s:hidden name="filter.ajax" value="false"/>
+	<s:hidden name="filter.destinationAction" />
+	<s:hidden name="filter.allowMailMerge" />
 </s:form>
 </div>
 <div>
