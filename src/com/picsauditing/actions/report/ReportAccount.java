@@ -58,6 +58,29 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			this.mailMerge = true;
 		}
 
+		if (download) {
+			// Add a bunch more fields that we can show in the download page
+			sql.addField("a.contact");
+			sql.addField("a.address");
+			sql.addField("a.city");
+			sql.addField("a.state");
+			sql.addField("a.zip");
+			sql.addField("a.phone");
+			sql.addField("a.phone2");
+			sql.addField("a.fax");
+			sql.addField("a.email");
+			sql.addField("a.web_URL");
+			sql.addField("a.dateCreated");
+			sql.addField("c.taxID");
+			sql.addField("c.secondContact");
+			sql.addField("c.secondPhone");
+			sql.addField("c.secondEmail");
+			sql.addField("c.billingContact");
+			sql.addField("c.billingPhone");
+			sql.addField("c.billingEmail");
+			sql.addField("c.riskLevel");
+		}
+
 		if (this.orderBy == null)
 			this.orderBy = "a.name";
 		sql.setType(SelectAccount.Type.Contractor);

@@ -200,6 +200,10 @@
 					<li><label>Created by:</label>
 						<s:textfield name="contractor.createdBy" size="25" />
 					</li>
+					<li><label>Password:</label>
+						<s:property value="contractor.password" />
+						<br />* We will eventually hide this field and allow you to reset the password instead.
+					</li>
 					<li><label>Welcome Email:</label>
 						<a target="_blank"
 							href="send_welcome_email.jsp?id=<s:property value="id"/>"

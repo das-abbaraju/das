@@ -108,7 +108,12 @@ try{
 			String opName = (String)li.next();
 			if (permissions.isAdmin() || pBean.oBean.facilitiesAL.contains(opID)){
 				if (sBean.cBean.generalContractors.contains(opID)) {
-					marker = "<img src='images/icon_"+flagMap.get(opID).getFlag().toLowerCase()+"Flag.gif' width=12 height=15 border=0>";
+					String flag = "";
+					try {
+						flag = flagMap.get(opID).getFlag().toLowerCase();
+					} catch (Exception e) {}
+					
+					marker = "<img src='images/icon_"+flag+"Flag.gif' width=12 height=15 border=0>";
 					total++;
 		 		} else
 					marker = " ";
