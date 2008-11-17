@@ -81,12 +81,12 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public ContractorAccount() {
 		this.type = "Contractor";
 	}
-	
+
 	public ContractorAccount(int id) {
 		this.id = id;
 	}
 
-	@OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.REMOVE})
+	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.REMOVE })
 	@OrderBy("location")
 	public List<OshaLog> getOshas() {
 		return oshas;
@@ -105,7 +105,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.audits = audits;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contractorAccount", cascade= {CascadeType.REMOVE})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contractorAccount", cascade = { CascadeType.REMOVE })
 	public List<ContractorOperator> getOperators() {
 		return this.operators;
 	}
@@ -182,7 +182,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public String getDescriptionHTML() {
 		return Utilities.escapeNewLines(this.description);
 	}
-	
+
 	@Column(name = "notes", nullable = true, length = 16277215)
 	public String getNotes() {
 		return this.notes;
@@ -333,8 +333,9 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	/**
-	 * Is this account only doing certificates?
-	 * TODO ask Jared, if these accounts get audits created for them?
+	 * Is this account only doing certificates? TODO ask Jared, if these
+	 * accounts get audits created for them?
+	 * 
 	 * @return
 	 */
 	@Column(name = "isOnlyCerts", nullable = true, length = 3)
@@ -346,9 +347,10 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.isOnlyCerts = isOnlyCerts;
 	}
 
-	//////   BILLING/ACCOUNT - related columns //////
+	// //// BILLING/ACCOUNT - related columns //////
 	/**
-	 * Determines if this contractor must pay or not. It allows for PICS to grant "free" lifetime accounts to certain contractors
+	 * Determines if this contractor must pay or not. It allows for PICS to
+	 * grant "free" lifetime accounts to certain contractors
 	 */
 	@Column(name = "mustPay", nullable = false, length = 3)
 	public String getMustPay() {
@@ -358,7 +360,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setMustPay(String mustPay) {
 		this.mustPay = mustPay;
 	}
-	
+
 	@Transient
 	public boolean isMustPayB() {
 		return "Yes".equals(mustPay);
@@ -366,6 +368,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	/**
 	 * Is this account a PQF-only account? Yes/No
+	 * 
 	 * @deprecated use the BillContractor.requiresAudit() method instead
 	 * @return
 	 */
@@ -427,6 +430,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	/**
 	 * The last Invoiced amount
+	 * 
 	 * @return
 	 */
 	@Column(name = "billingAmount", nullable = false)
@@ -440,6 +444,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	/**
 	 * The date we last sent an invoice to the contractor
+	 * 
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -455,6 +460,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	// Payment Billing info
 	/**
 	 * This is not used anymore: Yes/No
+	 * 
 	 * @return
 	 */
 	@Column(name = "paid", nullable = false, length = 3)
@@ -468,6 +474,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	/**
 	 * The date the contractor last paid their account in full
+	 * 
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -482,6 +489,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	/**
 	 * The USD amount they paid on lastPayment date
+	 * 
 	 * @return
 	 */
 	@Column(name = "lastPaymentAmount", nullable = true)
@@ -494,7 +502,9 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	/**
-	 * The date the lastPayment expires and the contractor is due to pay another "period's" membership fee
+	 * The date the lastPayment expires and the contractor is due to pay another
+	 * "period's" membership fee
+	 * 
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -509,6 +519,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	/**
 	 * The annual membership fee for this contractor
+	 * 
 	 * @return
 	 */
 	@Column(name = "newBillingAmount", nullable = false)
@@ -521,7 +532,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	// Other relationships //
-	
+
 	@ManyToOne
 	@JoinColumn(name = "welcomeAuditor_id")
 	public User getAuditor() {
@@ -536,7 +547,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 * Map of Contractor Flags with OperatorID as the key
 	 */
 	@MapKey(name = "operatorAccount")
-	@OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.REMOVE})
+	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.REMOVE })
 	public Map<OperatorAccount, ContractorOperatorFlag> getFlags() {
 		return flags;
 	}
@@ -545,7 +556,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.flags = flags;
 	}
 
-	@OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.REMOVE})
+	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.REMOVE })
 	public List<Certificate> getCertificates() {
 		return certificates;
 	}
@@ -553,30 +564,34 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setCertificates(List<Certificate> certificates) {
 		this.certificates = certificates;
 	}
-	
-	///// Transient/Helper Methods ///////
+
+	// /// Transient/Helper Methods ///////
 
 	@Transient
 	public int getUpgradeAmountOwed() {
 		if (!isActiveB())
-			// Inactive contractor must renew their account, they can't just upgrade
+			// Inactive contractor must renew their account, they can't just
+			// upgrade
 			return 0;
 		if (!isMustPayB())
 			return 0;
-		if (paymentExpires != null 
-				&& lastPayment != null 
-				&& lastInvoiceDate != null) {
-			// TODO we really shouldn't have to check for nulls, we should fix the root cause instead
-			if (lastInvoiceDate.before(lastPayment) || lastInvoiceDate.equals(lastPayment)) // already paid the invoice
+		if (paymentExpires != null && lastPayment != null && lastInvoiceDate != null) {
+			// TODO we really shouldn't have to check for nulls, we should fix
+			// the root cause instead
+			if (lastInvoiceDate.before(lastPayment) || lastInvoiceDate.equals(lastPayment))
+				// already paid the invoice
 				return 0;
-			if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) > 75)
-				return 0; // This is an invoice for annual payment
+			if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) < 75)
+				// This is an invoice for annual payment
+				return 0;
 		}
-		// Removed this 10/27/08 because billingAmount actually reflect the difference, not the total amount required
-		if (billingAmount < lastPaymentAmount) // they already overpaid (probably garbage data)
+		// Removed this 10/27/08 because billingAmount actually reflect the
+		// difference, not the total amount required
+		if (billingAmount < lastPaymentAmount)
+			// they already overpaid (probably garbage data)
 			return 0;
 
-		//return newBillingAmount - lastPaymentAmount;
+		// return newBillingAmount - lastPaymentAmount;
 		// Examples:
 		// $699 - $399
 		// $1197 - $225 in cases of 3 year billing cycles
@@ -587,16 +602,23 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public int getAnnualAmountOwed() {
 		if (!isMustPayB())
 			return 0;
-		if (isActiveB() 
-				&& paymentExpires != null 
-				&& lastPayment != null 
-				&& lastInvoiceDate != null) {
-			if (lastInvoiceDate.before(lastPayment) || lastInvoiceDate.equals(lastPayment)) // already paid the invoice
+		if (isActiveB() && paymentExpires != null && lastPayment != null && lastInvoiceDate != null) {
+			if (lastInvoiceDate.before(lastPayment) || lastInvoiceDate.equals(lastPayment))
+				// already paid the invoice
 				return 0;
-			if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) < 75)
-				return 0; // This is an invoice for upgrade payment
+			if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) >= 75)
+				// This is an invoice for upgrade payment
+				return 0;
 		}
 		return billingAmount;
+	}
+
+	@Transient
+	public boolean isPaymentOverdue() {
+		if (getUpgradeAmountOwed() > 0 || getAnnualAmountOwed() > 0)
+			if (lastInvoiceDate.before(new Date()))
+				return true;
+		return false;
 	}
 
 }

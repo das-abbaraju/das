@@ -50,9 +50,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		limitedView = true;
 		findContractor();
 
-		if (contractor.getUpgradeAmountOwed() > 0 || contractor.getAnnualAmountOwed() > 0)
-			addActionError("This contractor will be deactivated from PICS system in "
-					+ getDaysLeft(contractor.getLastInvoiceDate()) + " days");
+		if (contractor.isPaymentOverdue())
+			addActionError("This contractor has an outstanding invoice due");
 
 		if (opID == 0)
 			opID = permissions.getAccountId();

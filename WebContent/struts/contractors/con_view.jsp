@@ -10,7 +10,7 @@
 <s:if test="!contractor.activeB">
 	<div id="alert">This contractor is no longer active</div>
 </s:if>
-<s:elseif test="contractor.annualAmountOwed > 0 || contractor.upgradeAmountOwed > 0">
+<s:elseif test="contractor.paymentOverdue">
 	<div id="alert">This contractor has an outstanding invoice due</div>
 </s:elseif>
 <s:if test="permissions.admin && !contractor.mustPayB">
