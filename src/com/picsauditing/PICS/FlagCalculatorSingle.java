@@ -267,15 +267,18 @@ public class FlagCalculatorSingle {
 				}
 			}
 			
-			if (certFlagColor == null && !answerOnly) {
+			if (certFlagColor == null) {
 				certFlagColor = FlagColor.Red;
-				Certificate certificate = new Certificate();
-				certificate.setFlagColor(FlagColor.Red);
-				certificate.setType("No Approved Certificates");
-				certificate.setOperatorAccount(operator);
-				certificate.setContractorAccount(contractor);
-				certificate.setStatus(""); // This has no status because it's not a real cert
-				contractor.getCertificates().add(certificate);
+				if (!answerOnly) {
+					// Display the "No Approved Certificates" on the screen
+					Certificate certificate = new Certificate();
+					certificate.setFlagColor(FlagColor.Red);
+					certificate.setType("No Approved Certificates");
+					certificate.setOperatorAccount(operator);
+					certificate.setContractorAccount(contractor);
+					certificate.setStatus(""); // This has no status because it's not a real cert
+					contractor.getCertificates().add(certificate);
+				}
 			}
 
 			flagColor = setFlagColor(flagColor, certFlagColor);

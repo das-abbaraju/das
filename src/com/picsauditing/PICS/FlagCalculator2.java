@@ -229,7 +229,7 @@ public class FlagCalculator2 {
 			// OperatorAccount operator = operators.get(0);
 
 			calcSingle.setOperator(operator);
-
+			//calcSingle.setDebug(true);
 			// Calculate the color of the flag right here
 			FlagColor color = calcSingle.calculate();
 			debug(" - FlagColor returned: " + color);
@@ -274,8 +274,11 @@ public class FlagCalculator2 {
 				coFlagDAO.save(coFlag);
 				contractor.getFlags().put(operator, coFlag);
 			} else {
-				if (!color.equals(coFlag.getFlagColor())) {
+				if (color == null || !color.equals(coFlag.getFlagColor())) {
 					coFlag.setFlagColor(color);
+					coFlag.setLastUpdate(new Date());
+				}
+				if (waitingOn == null || !waitingOn.equals(coFlag.getWaitingOn())) {
 					coFlag.setWaitingOn(waitingOn);
 					coFlag.setLastUpdate(new Date());
 				}

@@ -67,6 +67,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		co.getOperatorAccount().getFlagOshaCriteria();
 		co.getOperatorAccount().getAudits();
 
+		//calculator.setDebug(true); // for development
 		calculator.setAnswerOnly(false);
 		calculator.setOperator(co.getOperatorAccount());
 		calculator.setContractor(contractor);
