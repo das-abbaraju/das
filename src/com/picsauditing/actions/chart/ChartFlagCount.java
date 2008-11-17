@@ -55,7 +55,7 @@ public class ChartFlagCount extends ChartSSAction {
 		for (DataRow row : data) {
 			Set set = new Set(row);
 			set.setColor(FlagColor.valueOf(row.getLabel()).getHex());
-			set.setLink("ContractorListOperator.action?flagStatus=" + row.getLabel());
+			set.setLink("ContractorList.action?flagStatus=" + row.getLabel());
 			chart.addSet(set);
 		}
 		return chart;
