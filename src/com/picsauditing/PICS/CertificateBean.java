@@ -33,6 +33,7 @@ import com.picsauditing.mail.EmailSender;
 import com.picsauditing.servlet.upload.UploadConHelper;
 import com.picsauditing.servlet.upload.UploadProcessorFactory;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 
 public class CertificateBean extends DataBean {
 	public static final String DEFAULT_NAME = "- Name - ";
@@ -552,7 +553,7 @@ public class CertificateBean extends DataBean {
 
 			String message = "Hello " + contactName + ",\n\n" + contractor + "'s " + cdo.getType()
 					+ " Insurance Certificate has been " + cdo.getStatus() + " by " + operator;
-			if (!"".equals(cdo.getReason()))
+			if (!Strings.isEmpty(cdo.getReason()))
 				message += " for the following reasons:\n\n" + cdo.getReason() + "\n\n";
 
 			if (cdo.getStatus().equals("Rejected")) {
