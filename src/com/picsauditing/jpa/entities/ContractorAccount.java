@@ -567,7 +567,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 				&& lastPayment != null 
 				&& lastInvoiceDate != null) {
 			// TODO we really shouldn't have to check for nulls, we should fix the root cause instead
-			if (lastInvoiceDate.before(lastPayment)) // already paid the invoice
+			if (lastInvoiceDate.before(lastPayment) || lastInvoiceDate.equals(lastPayment)) // already paid the invoice
 				return 0;
 			if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) > 75)
 				return 0; // This is an invoice for annual payment
@@ -591,7 +591,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 				&& paymentExpires != null 
 				&& lastPayment != null 
 				&& lastInvoiceDate != null) {
-			if (lastInvoiceDate.before(lastPayment)) // already paid the invoice
+			if (lastInvoiceDate.before(lastPayment) || lastInvoiceDate.equals(lastPayment)) // already paid the invoice
 				return 0;
 			if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) < 75)
 				return 0; // This is an invoice for upgrade payment
