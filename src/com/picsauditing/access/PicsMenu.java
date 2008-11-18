@@ -86,8 +86,10 @@ public class PicsMenu {
 			subMenu.addChild("Audit Calendar", "audit_calendar.jsp");
 		if (permissions.hasPermission(OpPerms.NCMS))
 			subMenu.addChild("NCMS Audits", "ReportNCMS.action");
-		if (permissions.hasPermission(OpPerms.AuditVerification))
+		if (permissions.hasPermission(OpPerms.AuditVerification)) 
 			subMenu.addChild("PQF Verification", "PqfVerification.action?filter.auditStatus=Submitted&filtered=false");
+		if(permissions.hasPermission(OpPerms.DevelopmentEnvironment))
+			subMenu.addChild("Answer Updates", "AuditDataUpdates.action");
 
 		subMenu = menu.addChild("Customer Service");
 		if (permissions.isAdmin()) {
