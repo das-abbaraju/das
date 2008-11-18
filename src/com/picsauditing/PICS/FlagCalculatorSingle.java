@@ -86,7 +86,8 @@ public class FlagCalculatorSingle {
 				// active one
 				audit.setContractorFlag(audit.getRequiredForFlag());
 				for (ContractorAudit conAudit : conAudits) {
-					if (conAudit.getAuditStatus().equals(AuditStatus.Active)
+					if (conAudit.getAuditStatus().equals(AuditStatus.Active) 
+							|| conAudit.getAuditStatus().equals(audit.getRequiredAuditStatus()) // for Submitted Audit
 							|| conAudit.getAuditStatus().equals(AuditStatus.Exempt)) {
 						if (conAudit.getAuditType().equals(audit.getAuditType())
 								|| (conAudit.getAuditType().getAuditTypeID() == AuditType.NCMS && audit.getAuditType()
@@ -319,9 +320,7 @@ public class FlagCalculatorSingle {
 		}
 		
 		// Billing
-		if (contractor.getAnnualAmountOwed() > 0)
-			return WaitingOn.Contractor; // The contractor has an unpaid invoice due
-		if (contractor.getUpgradeAmountOwed() > 0)
+		if (contractor.isPaymentOverdue())
 			return WaitingOn.Contractor; // The contractor has an unpaid invoice due
 		
 		// If waiting on contractor, immediately exit, otherwise track the other parties 
@@ -336,7 +335,8 @@ public class FlagCalculatorSingle {
 				for (ContractorAudit conAudit : conAudits) {
 					if (conAudit.getAuditType().equals(audit.getAuditType()) &&
 						(conAudit.getAuditStatus().equals(AuditStatus.Pending)
-							|| conAudit.getAuditStatus().equals(AuditStatus.Submitted))
+							|| (conAudit.getAuditStatus().equals(AuditStatus.Submitted) 
+									&& audit.getRequiredAuditStatus().equals(AuditStatus.Active)))
 						) {
 						// We found a matching pending or submitted audit for this contractor
 						// Whose fault is it??
