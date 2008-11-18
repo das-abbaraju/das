@@ -1,6 +1,9 @@
 package com.picsauditing.access;
 
 public enum OpPerms {
+	// Development Permission
+	DevelopmentEnvironment("Development Environment", "Allow PICS employees to test."),
+	
 	// Default User Permissions
 	EditProfile("Edit Profile", "Allow users to Edit their own Profile.", true, false),
 	//BasicReporting("Basic Reporting", "Allows access to various reports including: Contractor Contact Info, Audit List, EMR, Fatalities, and Incident Rates.", false, false),

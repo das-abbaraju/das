@@ -316,7 +316,10 @@
 			<result>struts/reports/qanswersearch_csv.jsp</result>
 		</action>
 
-
+		<action name="AuditDataUpdates"
+			class="com.picsauditing.actions.report.ReportAuditDataUpdate">
+			<result>struts/reports/audit_update.jsp</result>
+		</action>
 
 
 
