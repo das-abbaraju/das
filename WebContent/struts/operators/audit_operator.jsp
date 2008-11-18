@@ -38,6 +38,13 @@ function save(id, aID, oID, pKey) {
 	    }
 	}
 	
+	var radioGrp = $('form1')['requiredAuditStatus'+id];
+	for(i=0; i < radioGrp.length; i++){
+	    if (radioGrp[i].checked == true) {
+			pars = pars + '&ao.requiredAuditStatus='+ radioGrp[i].value;
+	    }
+	}
+
 	var divName = 'td'+id;
 	new Effect.Highlight($(divName), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 	var myAjax = new Ajax.Updater(divName, 'AuditOperatorSaveAjax.action', {method: 'get', parameters: pars});
@@ -68,7 +75,7 @@ function save(id, aID, oID, pKey) {
 	<table class="report" cellspacing="1" cellpadding="3" border="0">
 		<tr class="whiteTitle" bgcolor="#003366" align="center">
 			<td>Operator/Audit</td>
-			<td>&nbsp;V &nbsp;| &nbsp;E &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Minimum Risk Level &amp; Flag Color</td>
+			<td>&nbsp;V &nbsp;| &nbsp;E &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Minimum Risk Level &amp; Flag Color &amp; Required Status</td>
 		</tr>
 
 		<s:iterator value="data" status="stat">
@@ -87,6 +94,7 @@ function save(id, aID, oID, pKey) {
 				</s:else>
 				</td>
 				<td id="td<s:property value="htmlID" />">
+					<nobr>
 					<s:checkbox name="canSee%{htmlID}" value="canSee" title="View"
 					onclick="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
 					|
@@ -98,6 +106,10 @@ function save(id, aID, oID, pKey) {
 					|
 					<s:radio name="requiredForFlag%{htmlID}" list="FlagColorList" value="requiredForFlag" disabled="!canSee"
 					onchange="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
+					|
+					<s:radio name="requiredAuditStatus%{htmlID}" list="AuditStatusList" value="requiredAuditStatus" disabled="!canSee"
+					onchange="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
+					</nobr>
 				</td>
 			</tr>
 		</s:iterator>

@@ -7,6 +7,7 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -58,6 +59,11 @@ public class AuditOperatorSave extends PicsActionSupport implements Preparable {
 
 	public FlagColor[] getFlagColorList() {
 		return FlagColor.values();
+	}
+	
+	public AuditStatus[] getAuditStatusList() {
+		AuditStatus[] list = {AuditStatus.Active, AuditStatus.Submitted};
+		return list;
 	}
 
 	public int getOperatorID() {

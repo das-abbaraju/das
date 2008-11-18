@@ -13,7 +13,7 @@ public class ReportPQFVerification extends ReportContractorAudits {
 
 		permissions.tryPermission(OpPerms.AuditVerification);
 		sql.addField("c.notes");
-		sql.addWhere("ca.auditStatus IN ('" + AuditStatus.Submitted + "','" + AuditStatus.Pending + "')");
+		//sql.addWhere("ca.auditStatus IN ('" + AuditStatus.Submitted + "','" + AuditStatus.Pending + "')");
 		sql.addWhere("ca.auditTypeID = 1");
 		sql.addJoin("LEFT JOIN osha os ON os.conID = a.id AND os.location = 'Corporate'");
 		sql.addField("os.verifiedDate1");
@@ -25,7 +25,9 @@ public class ReportPQFVerification extends ReportContractorAudits {
 		sql.addField("q1617.dateVerified as dateVerified07");
 		sql.addField("q1519.dateVerified as dateVerified06");
 		sql.addField("q889.dateVerified as dateVerified05");
-
+		sql.addWhere("a.id IN (SELECT gc.subID FROM generalcontractors gc " +
+				"JOIN audit_operator ao ON gc.genID = ao.opID WHERE ao.auditTypeID = 1 AND ao.requiredAuditStatus = 'Active')");
+		
 		if (getFilter().isOsha1()) {
 			sql.addWhere("os.verifiedDate1 IS NULL");
 		}
