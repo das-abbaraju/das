@@ -262,7 +262,14 @@
 
 		<action name="DelinquentContractorAccounts"
 			class="com.picsauditing.actions.report.DelinquentAccounts">
+			<param name="filter.ajax">true</param>
+			<param name="filter.allowMailMerge">true</param>
 			<result>/struts/reports/delinquent_conaccounts.jsp</result>
+		</action>
+
+		<action name="DelinquentContractorAccountsAjax"
+			class="com.picsauditing.actions.report.DelinquentAccounts">
+			<result>struts/reports/delinquent_conaccounts_data.jsp</result>
 		</action>
 
 		<action name="ArchivedContractorAccounts"
