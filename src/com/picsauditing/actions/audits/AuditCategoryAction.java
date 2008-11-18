@@ -105,9 +105,10 @@ public class AuditCategoryAction extends AuditActionSupport {
 			if (mode == null && conAudit.getAuditStatus().equals(AuditStatus.Pending))
 				mode = EDIT;
 			if (mode == null && conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
-				if(isCanVerify())
-					mode = VERIFY;
-				else
+				// Add the verify mode back if needed
+				//if(isCanVerify())
+				//	mode = VERIFY;
+				//else
 					mode = EDIT;
 			}
 

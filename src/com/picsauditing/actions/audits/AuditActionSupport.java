@@ -148,7 +148,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanVerify() {
-		if (conAudit.getAuditType().isPqf())
+		if (conAudit.getAuditType().isPqf() && conAudit.getAuditStatus().equals(AuditStatus.Submitted))
 			if (permissions.isAuditor())
 				return true;
 		return false;
@@ -224,8 +224,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 					emailBuilder.setPermissions(permissions);
 					emailBuilder.setContractor(contractor);
 					EmailSender.send(emailBuilder.build());
-					ContractorBean.addNote(contractor.getId(), permissions,
-							"Sent Audits Thank You email to " + emailBuilder.getSentTo());
+					ContractorBean.addNote(contractor.getId(), permissions, "Sent Audits Thank You email to "
+							+ emailBuilder.getSentTo());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
