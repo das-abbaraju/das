@@ -37,6 +37,10 @@ public class AuditData implements java.io.Serializable {
 	private String verifiedAnswer;
 	private YesNo isCorrect;
 	private YesNo wasChanged;
+	private User createdBy;
+	private Date creationDate;
+	private User updatedBy;
+	private Date updateDate;
 
 	private FlagColor flagColor;
 
@@ -152,6 +156,44 @@ public class AuditData implements java.io.Serializable {
 
 	public void setWasChanged(YesNo wasChanged) {
 		this.wasChanged = wasChanged;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "createdBy")
+	public User getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "updatedBy")
+	public User getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(User updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
 	}
 
 	@Transient

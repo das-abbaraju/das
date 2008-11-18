@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.YesNo;
 
 public class AuditDataSave extends PicsActionSupport {
+	private static final long serialVersionUID = 1103112846482868309L;
 	private AuditData auditData = null;
 	private AuditDataDAO dao = null;
 	private AuditQuestionDAO questionDao = null;
@@ -52,6 +53,8 @@ public class AuditDataSave extends PicsActionSupport {
 
 			if (newCopy == null) {
 				// insert mode
+				auditData.setCreationDate(new Date());
+				auditData.setCreatedBy(this.getUser());
 				dao.save(auditData);
 			} else {
 				// update mode
@@ -97,6 +100,12 @@ public class AuditDataSave extends PicsActionSupport {
 				if (auditData.getComment() != null) {
 					newCopy.setComment(auditData.getComment());
 				}
+				if (newCopy.getCreationDate() == null)
+					newCopy.setCreationDate(new Date());
+				if (newCopy.getCreatedBy() == null)
+					newCopy.setCreatedBy(this.getUser());
+				newCopy.setUpdateDate(new Date());
+				newCopy.setUpdatedBy(this.getUser());
 
 				dao.save(newCopy);
 			}

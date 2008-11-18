@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.io.File;
+import java.util.Date;
 
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -85,6 +86,15 @@ public class AuditDataUpload extends AuditActionSupport {
 				
 				addActionMessage("Successfully uploaded <b>"+fileFileName+"</b> file");
 				data.setAnswer(extension);
+				
+				if (data.getCreationDate() == null)
+					data.setCreationDate(new Date());
+				if (data.getCreatedBy() == null)
+					data.setCreatedBy(this.getUser());
+				
+				data.setUpdateDate(new Date());
+				data.setUpdatedBy(this.getUser());
+				
 				auditDataDao.save(data);
 			}
 		}

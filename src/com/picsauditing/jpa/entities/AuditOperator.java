@@ -2,7 +2,6 @@ package com.picsauditing.jpa.entities;
 
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -32,6 +31,7 @@ public class AuditOperator {
 	protected boolean canSee;
 	protected boolean canEdit;
 	protected int minRiskLevel = 0;
+	protected AuditStatus requiredAuditStatus = AuditStatus.Active; // Can sometimes be Submitted
 	protected FlagColor requiredForFlag;
 	protected int orderedCount = -1;
 	protected Date orderDate;
@@ -118,6 +118,15 @@ public class AuditOperator {
 
 	public void setRequiredForFlag(FlagColor requiredForFlag) {
 		this.requiredForFlag = requiredForFlag;
+	}
+	
+	@Enumerated(EnumType.STRING)
+	public AuditStatus getRequiredAuditStatus() {
+		return requiredAuditStatus;
+	}
+	
+	public void setRequiredAuditStatus(AuditStatus requiredAuditStatus) {
+		this.requiredAuditStatus = requiredAuditStatus;
 	}
 
 	/**

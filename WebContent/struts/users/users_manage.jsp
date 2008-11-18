@@ -102,7 +102,7 @@ function checkUsername(username) {
 			</div>
 		</div><br/>		
 		<pics:permission perm="AllOperators">
-			Operator:<span id="operators">
+			<label>Operator:</label> <span id="operators">
 			<s:select 
 		       name="accountId"
 		       cssClass="blueSmall"
@@ -114,13 +114,13 @@ function checkUsername(username) {
 		       />
 			</span><br />
 		</pics:permission>
-			Type:
+			<label>Type:</label>
 				<s:select name="isGroup" cssClass="blueSmall"
 				       headerKey="" headerValue="All"
 				       list="#{'Yes':'Groups', 'No':'Users'}"
 				       value="isGroup"
 				/>
-			Status:
+			<label>Status:</label>
 				<s:select name="isActive" cssClass="blueSmall"
 				       headerKey="" headerValue="All"
 				       list="#{'Yes':'Active', 'No':'Inactive'}"

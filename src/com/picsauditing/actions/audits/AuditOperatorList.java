@@ -13,6 +13,7 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditOperator;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -31,20 +32,6 @@ public class AuditOperatorList extends PicsActionSupport {
 	private AuditTypeDAO auditDAO;
 	private AuditOperatorDAO dataDAO;
 	private List<AuditOperator> data;
-
-	// TODO We need to refactor this eventually, see LowMedHigh.getMap()
-	protected static HashMap<Integer, String> riskLevels = new HashMap<Integer, String>();
-
-	static {
-		riskLevels.put(0, "None");
-		riskLevels.put(1, "Low");
-		riskLevels.put(2, "Med");
-		riskLevels.put(3, "High");
-	}
-
-	public static final HashMap<Integer, String> getRiskLevels() {
-		return riskLevels;
-	}
 
 	public AuditOperatorList(OperatorAccountDAO operatorDAO, AuditTypeDAO auditDAO, AuditOperatorDAO dataDAO) {
 		this.operatorDAO = operatorDAO;
@@ -182,6 +169,11 @@ public class AuditOperatorList extends PicsActionSupport {
 
 	public Map<Integer, LowMedHigh> getRiskLevelList() {
 		return LowMedHigh.getMap();
+	}
+
+	public AuditStatus[] getAuditStatusList() {
+		AuditStatus[] list = {AuditStatus.Active, AuditStatus.Submitted};
+		return list;
 	}
 
 	public FlagColor[] getFlagColorList() {
