@@ -616,7 +616,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	@Transient
 	public boolean isPaymentOverdue() {
 		if (getUpgradeAmountOwed() > 0 || getAnnualAmountOwed() > 0)
-			if (lastInvoiceDate.before(new Date()))
+			if (lastInvoiceDate != null && lastInvoiceDate.before(new Date()))
 				return true;
 		return false;
 	}
