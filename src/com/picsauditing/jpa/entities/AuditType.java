@@ -54,6 +54,7 @@ public class AuditType {
 	protected boolean canContractorView;
 	protected boolean canContractorEdit;
 	protected Integer monthsToExpire;
+	@Deprecated
 	protected Date dateToExpire;
 	protected int displayOrder = 100;
 	

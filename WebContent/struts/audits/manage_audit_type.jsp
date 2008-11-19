@@ -56,9 +56,6 @@
 						<li><label>Months to Expire:</label>
 							<s:textfield name="auditType.monthsToExpire" /> 
 						</li>
-						<li><label>Date to Expire:</label>
-							<s:textfield name="auditType.dateToExpire"/> m/d/yy
-						</li>
 						<li><label>Order:</label>
 							<s:textfield name="auditType.displayOrder" />
 						</li>

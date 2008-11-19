@@ -25,6 +25,8 @@
 			<s:select name="conAudit.auditor.id" list="auditorList" listKey="id" listValue="name"/></li>
 		<li><label>Audit Location:</label>
 			<s:textfield name="conAudit.auditLocation"/></li>
+		<li><label>Audit For:</label>
+			<s:textfield name="conAudit.auditFor"/></li>
 		<li><label>Complete:</label>
 			<s:textfield name="conAudit.percentComplete" size="4"/>%</li>
 		<li><label>Verified:</label>
