@@ -11,6 +11,7 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
 @Embeddable
+@Deprecated
 public class OshaLogYear {
 	private YesNo na = YesNo.No;
 	private int manHours;

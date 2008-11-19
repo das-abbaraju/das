@@ -4,7 +4,8 @@
 <h1><s:property value="contractor.name" /><span class="sub">
 <s:if test="auditID > 0">
 	<s:property value="conAudit.auditType.auditName" />
-		- <s:date name="conAudit.effectiveDate" format="MMM yyyy" />
+	<s:if test="conAudit.auditFor.length() > 0">for <s:property value="conAudit.auditFor"/></s:if>
+	<s:else>- <s:date name="conAudit.effectiveDate" format="MMM yyyy" /></s:else>
 </s:if> <s:else>
 	<s:property value="subHeading" />
 </s:else></span></h1>
@@ -73,7 +74,8 @@
 	<fieldset>
 	<ul>
 		<li><label>Type:</label>
-			<s:property value="conAudit.auditType.auditName" /> #<s:property value="conAudit.id" />
+			<s:property value="conAudit.auditType.auditName" />
+			 #<s:property value="conAudit.id" />
 		</li>
 		<li><label>Created:</label>
 			<s:date name="conAudit.createdDate" format="MMM d, yyyy" />
@@ -123,6 +125,11 @@
 	</fieldset>
 	<fieldset>
 	<ul>
+		<s:if test="conAudit.auditFor.length() > 0">
+			<li><label>For:</label>
+				<s:property value="conAudit.auditFor"/>
+			</li>
+		</s:if>
 		<s:if test="permissions.picsEmployee">
 			<s:if test="conAudit.auditType.hasAuditor">
 				<li><label>Auditor:</label>

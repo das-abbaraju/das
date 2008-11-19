@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -49,9 +50,11 @@ public class ContractorAudit {
 	private Date contractorConfirm;
 	private Date auditorConfirm;
 	private boolean manuallyAdded;
-
+	private String auditFor;
+	
 	private List<AuditCatData> categories = new ArrayList<AuditCatData>();
 	private List<AuditData> data = new ArrayList<AuditData>();
+	protected List<OshaAudit> oshas;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -84,7 +87,17 @@ public class ContractorAudit {
 		this.contractorAccount = contractorAccount;
 	}
 
-	@Temporal( TemporalType.TIMESTAMP )
+	@OneToMany(mappedBy = "conAudit", cascade = { CascadeType.REMOVE })
+	@OrderBy("location")
+	public List<OshaAudit> getOshas() {
+		return oshas;
+	}
+
+	public void setOshas(List<OshaAudit> oshas) {
+		this.oshas = oshas;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getCreatedDate() {
 		return createdDate;
 	}
@@ -100,8 +113,7 @@ public class ContractorAudit {
 	}
 
 	public void setAuditStatus(AuditStatus auditStatus) {
-		if (auditStatus != null && this.auditStatus != null
-				&& !auditStatus.equals(this.auditStatus)) {
+		if (auditStatus != null && this.auditStatus != null && !auditStatus.equals(this.auditStatus)) {
 			// If we're changing the status to Submitted or Active, then we need
 			// to set the dates
 			if (auditStatus.equals(AuditStatus.Submitted)) {
@@ -111,8 +123,7 @@ public class ContractorAudit {
 			}
 			if (auditStatus.equals(AuditStatus.Active)) {
 				// If we're going "forward" then (re)set the closedDate
-				if (closedDate == null
-						|| this.auditStatus.equals(AuditStatus.Submitted)
+				if (closedDate == null || this.auditStatus.equals(AuditStatus.Submitted)
 						|| this.auditStatus.equals(AuditStatus.Pending))
 					closedDate = new Date();
 
@@ -125,7 +136,7 @@ public class ContractorAudit {
 		this.auditStatus = auditStatus;
 	}
 
-	@Temporal( TemporalType.TIMESTAMP )
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getExpiresDate() {
 		return expiresDate;
 	}
@@ -144,7 +155,7 @@ public class ContractorAudit {
 		this.auditor = auditor;
 	}
 
-	@Temporal( TemporalType.TIMESTAMP )
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getAssignedDate() {
 		return assignedDate;
 	}
@@ -153,7 +164,7 @@ public class ContractorAudit {
 		this.assignedDate = assignedDate;
 	}
 
-	@Temporal( TemporalType.TIMESTAMP )
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getScheduledDate() {
 		return scheduledDate;
 	}
@@ -162,7 +173,7 @@ public class ContractorAudit {
 		this.scheduledDate = scheduledDate;
 	}
 
-	@Temporal( TemporalType.TIMESTAMP )
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getCompletedDate() {
 		return completedDate;
 	}
@@ -171,7 +182,7 @@ public class ContractorAudit {
 		this.completedDate = completedDate;
 	}
 
-	@Temporal( TemporalType.TIMESTAMP )
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getClosedDate() {
 		return closedDate;
 	}
@@ -215,8 +226,8 @@ public class ContractorAudit {
 	}
 
 	// Child tables
-	
-	@OneToMany(mappedBy = "audit", cascade = {CascadeType.ALL})
+
+	@OneToMany(mappedBy = "audit", cascade = { CascadeType.ALL })
 	public List<AuditCatData> getCategories() {
 		return categories;
 	}
@@ -225,7 +236,7 @@ public class ContractorAudit {
 		this.categories = categories;
 	}
 
-	@OneToMany(mappedBy = "audit", cascade = {CascadeType.ALL})
+	@OneToMany(mappedBy = "audit", cascade = { CascadeType.ALL })
 	public List<AuditData> getData() {
 		return data;
 	}
@@ -249,8 +260,7 @@ public class ContractorAudit {
 	@Transient
 	// I think we should move this to AuditActionSupport instead (Trevor 5/7/08)
 	public boolean isCanView(Permissions permissions) {
-		if (permissions.isContractor()
-				&& (getAuditType().isCanContractorView() == false))
+		if (permissions.isContractor() && (getAuditType().isCanContractorView() == false))
 			return false;
 		else
 			return true;
@@ -259,12 +269,10 @@ public class ContractorAudit {
 	@Transient
 	// I think we should move this to AuditActionSupport instead (Trevor 5/7/08)
 	public boolean isCanEdit(Permissions permissions) {
-		if (permissions.isOnlyAuditor()
-				&& (permissions.getUserId() == getAuditor().getId())
+		if (permissions.isOnlyAuditor() && (permissions.getUserId() == getAuditor().getId())
 				&& (getAuditType().isCanContractorEdit() == false))
 			return true;
-		if (permissions.isContractor()
-				&& (getAuditType().isCanContractorEdit() == true))
+		if (permissions.isContractor() && (getAuditType().isCanContractorEdit() == true))
 			return true;
 		if (permissions.seesAllContractors())
 			return true;
@@ -275,8 +283,7 @@ public class ContractorAudit {
 	@Transient
 	// I think we should move this to AuditActionSupport instead (Trevor 5/7/08)
 	public boolean isCanVerify(Permissions permissions) {
-		if (permissions.isOnlyAuditor()
-				&& (permissions.getUserId() == getAuditor().getId())
+		if (permissions.isOnlyAuditor() && (permissions.getUserId() == getAuditor().getId())
 				&& (getAuditType().isCanContractorEdit() == false))
 			return true;
 		if (permissions.seesAllContractors())
@@ -296,7 +303,6 @@ public class ContractorAudit {
 			return completedDate;
 		return closedDate;
 	}
-
 
 	@Override
 	public int hashCode() {
@@ -320,8 +326,7 @@ public class ContractorAudit {
 		return true;
 	}
 
-
-	@Temporal( TemporalType.TIMESTAMP )
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getContractorConfirm() {
 		return contractorConfirm;
 	}
@@ -330,7 +335,7 @@ public class ContractorAudit {
 		this.contractorConfirm = contractorConfirm;
 	}
 
-	@Temporal( TemporalType.TIMESTAMP )
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getAuditorConfirm() {
 		return auditorConfirm;
 	}
@@ -339,7 +344,6 @@ public class ContractorAudit {
 		this.auditorConfirm = auditorConfirm;
 	}
 
-	
 	public boolean isManuallyAdded() {
 		return manuallyAdded;
 	}
@@ -347,4 +351,18 @@ public class ContractorAudit {
 	public void setManuallyAdded(boolean manuallyAdded) {
 		this.manuallyAdded = manuallyAdded;
 	}
+
+	/**
+	 * Who, what, or when is this audit for? Examples: 
+	 * OSHA/EMR for "2005" IM for "John Doe" 
+	 * @return
+	 */
+	public String getAuditFor() {
+		return auditFor;
+	}
+
+	public void setAuditFor(String auditFor) {
+		this.auditFor = auditFor;
+	}
+
 }

@@ -30,6 +30,7 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "osha")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
+@Deprecated
 public class OshaLog implements java.io.Serializable {
 	private int id;
 	private ContractorAccount contractorAccount;
