@@ -45,7 +45,8 @@ public class OshaAudit implements java.io.Serializable {
 	private int injuryIllnessCases;
 	private int restrictedWorkCases;
 	private int recordableTotal;
-	private int factor = 200000; // default factor used to normalize man hours
+	private int factor = 200000; // default factor used to normalize man
+									// hours
 	private String comment;
 
 	private FlagColor flagColor;
@@ -197,6 +198,15 @@ public class OshaAudit implements java.io.Serializable {
 	}
 
 	@Transient
+	public int getFactor() {
+		return factor;
+	}
+
+	public void setFactor(int factor) {
+		this.factor = factor;
+	}
+
+	@Transient
 	public float getFatalitiesRate() {
 		return calculateRate(fatalities);
 	}
@@ -220,7 +230,7 @@ public class OshaAudit implements java.io.Serializable {
 	public float getRestrictedWorkCasesRate() {
 		return calculateRate(restrictedWorkCases);
 	}
-	
+
 	@Transient
 	public float getRecordableTotalRate() {
 		return calculateRate(recordableTotal);
@@ -229,10 +239,10 @@ public class OshaAudit implements java.io.Serializable {
 	@Transient
 	private float calculateRate(int value) {
 		if (isApplicable() && manHours > 0) {
-			float rate = value*200000;
-			return rate/manHours;
+			float rate = value * 200000;
+			return rate / manHours;
 		}
-		
+
 		return 0;
 	}
 

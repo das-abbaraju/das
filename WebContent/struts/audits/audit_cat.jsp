@@ -113,10 +113,10 @@
 						<span style="font-size: 12px;color:#003768;">Provide the following numbers (excluding subcontractors) using your OSHA/MSHA 300 Forms from the past 3 years:</span><br/>
 					</s:if>
 					<s:if test="catDataID == 0">
-						<s:include value="audit_cat_osha_edit.jsp"/>
+						<s:include value="audit_cat_osha_edit2.jsp"/>
 					</s:if>
-					<s:iterator value="contractor.oshas">
-						<s:include value="audit_cat_osha_edit.jsp"></s:include>
+					<s:iterator value="conAudit.oshas">
+						<s:include value="audit_cat_osha_edit2.jsp"></s:include>
 					</s:iterator>
 					<s:if test="catDataID != 0">
 					<s:form action="OshaSave" method="POST" enctype="multipart/form-data">
