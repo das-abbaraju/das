@@ -2,6 +2,7 @@ package com.picsauditing.PICS;
 
 import java.util.*;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.ServletContext;
@@ -204,10 +205,10 @@ public class DateBean {
 		Calendar cal = Calendar.getInstance();
 		return cal.get(Calendar.HOUR_OF_DAY);
 	}
-	
 
 	/**
 	 * Get the end of time date 1/1/4000 This is used for expiration dates
+	 * 
 	 * @return
 	 */
 	public static Date getEndOfTime() {
@@ -324,27 +325,56 @@ public class DateBean {
 	}
 
 	/**
-	 * SecondDate - FirstDate <br/>
-	 * Example: 1/1/08 and 2/1/08 = 31 <br/>
-	 * 1/1/08 and 12/31/07 = -1
+	 * SecondDate - FirstDate <br/> Example: 1/1/08 and 2/1/08 = 31 <br/> 1/1/08
+	 * and 12/31/07 = -1
+	 * 
 	 * @param firstDate
 	 * @param secondDate
 	 * @return days between the two dates
 	 */
 	public static int getDateDifference(Date firstDate, Date secondDate) {
 		long msApart = secondDate.getTime() - firstDate.getTime();
-		return (int)(msApart / (24 * 60 * 60 * 1000));
+		return (int) (msApart / (24 * 60 * 60 * 1000));
 	}
-	
+
 	/**
-	 * Calculate the number of days until the date
-	 * Positive numbers are in the future. Negative numbers are in the past.
+	 * Calculate the number of days until the date Positive numbers are in the
+	 * future. Negative numbers are in the past.
+	 * 
 	 * @param firstDate
 	 * @return
 	 */
 	public static int getDateDifference(Date firstDate) {
 		Calendar cal = Calendar.getInstance();
 		return DateBean.getDateDifference(cal.getTime(), firstDate);
+	}
+
+	public static Date parseDate(String dateString) {
+		//System.out.println("Attempting to parse " + dateString);
+		SimpleDateFormat df = new SimpleDateFormat();
+		df.setLenient(false);
+		
+		List<String> patterns = new ArrayList<String>();
+		patterns.add("MM-dd-yy");
+		patterns.add("MM/dd/yy");
+		patterns.add("yyyy-MM-dd");
+		patterns.add("yyyy/MM/dd");
+		patterns.add("MM-dd-yyyy");
+		patterns.add("MM/dd/yyyy");
+		Date d = null;
+		for(String pattern : patterns) {
+			try {
+				df.applyPattern(pattern);
+				d = df.parse(dateString);
+				System.out.println("parseDate (SUCCESS): from " + dateString + " into " + DateBean.format(d, "yyyy-MM-dd"));
+				break;
+			} catch (ParseException e) {
+				//System.out.println(e.getMessage() + " using pattern: " + pattern);
+			}
+		}
+		if (d == null)
+			System.out.println("parseDate (FAILED): " + dateString);
+		return d;
 	}
 	
 	public static Date addMonths(Date startDate, int months) {

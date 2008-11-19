@@ -1,8 +1,11 @@
 package com.picsauditing.PICS;
 
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import junit.framework.TestCase;
 
@@ -25,6 +28,23 @@ public class DateBeanTest extends TestCase {
 		
 		String formatted = DateBean.format(new Date(), "M/dd/yy");
 		assertTrue(DateBean.isFirstBeforeSecond("7/01/08", formatted));
+	}
+	
+	@Test
+	public void testParseDate() {
+		Date expected = DateBean.parseDate("2001-02-03");
+		
+		Date actual;
+		actual = DateBean.parseDate("02-03-2001");
+		assertEquals(expected, actual);
+		actual = DateBean.parseDate("2001/02/03");
+		assertEquals(expected, actual);
+		actual = DateBean.parseDate("2001/2/3");
+		assertEquals(expected, actual);
+		actual = DateBean.parseDate("02/03/2001");
+		assertEquals(expected, actual);
+		actual = DateBean.parseDate("02/03/01");
+		assertEquals(expected, actual);
 	}
 	
 

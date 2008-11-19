@@ -2,6 +2,8 @@ package com.picsauditing.jpa.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -118,11 +120,13 @@ public class FlagQuestionCriteria {
 			DateBean db = new DateBean();
 			
 			try {
+				Date answerDate = DateBean.parseDate(answer);
 				if (">".equals(comparison))
-					return (db.isFirstBeforeSecond(db.toShowFormat(answer), db.getTodaysDate()));
+					return (answerDate.after(new Date()));
 				if ("<".equals(comparison))
-					return (db.isFirstBeforeSecond(db.toShowFormat(answer), db.getTodaysDate()));
+					return (answerDate.before(new Date()));
 			} catch (Exception e) {
+				System.out.println("failed to parse date: " + answer);
 				return true;
 			}
 		}
