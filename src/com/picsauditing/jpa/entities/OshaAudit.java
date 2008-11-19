@@ -197,6 +197,36 @@ public class OshaAudit implements java.io.Serializable {
 	}
 
 	@Transient
+	public float getFatalitiesRate() {
+		return calculateRate(fatalities);
+	}
+
+	@Transient
+	public float getLostWorkCasesRate() {
+		return calculateRate(lostWorkCases);
+	}
+
+	@Transient
+	public float getLostWorkDaysRate() {
+		return calculateRate(lostWorkDays);
+	}
+
+	@Transient
+	public float getInjuryIllnessCasesRate() {
+		return calculateRate(injuryIllnessCases);
+	}
+
+	@Transient
+	public float getRestrictedWorkCasesRate() {
+		return calculateRate(restrictedWorkCases);
+	}
+	
+	@Transient
+	public float getRecordableTotalRate() {
+		return calculateRate(recordableTotal);
+	}
+
+	@Transient
 	private float calculateRate(int value) {
 		if (isApplicable() && manHours > 0) {
 			float rate = value*200000;
