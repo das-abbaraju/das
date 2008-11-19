@@ -25,7 +25,10 @@ function saveVerifiedAnswer(questionid, elm) {
 		method: 'post', 
 		parameters: pars,
 		onSuccess: function(transport) {
-			new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+			if (transport.status == 200)
+				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+			else
+				alert("Failed to save comment" + transport.statusText + transport.responseText);
 		}
 	});
 }
@@ -40,7 +43,10 @@ function saveComment(questionid, elm) {
 		method: 'post', 
 		parameters: pars,
 		onSuccess: function(transport) {
-			new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+			if (transport.status == 200)
+				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+			else
+				alert("Failed to save comment" + transport.statusText + transport.responseText);
 		}
 	});
 }
@@ -48,31 +54,11 @@ function saveComment(questionid, elm) {
 
 function saveAnswer( questionid, elm ) {
 	if (catDataID == 0) return;
-	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.questionID=' + questionid + '&auditData.answer=';
-	if( elm.type == 'text' || elm.type == 'radio' || elm.type == 'textarea')
-	{
-		var thevalue = escape(elm.value);
-		//if( thevalue != '' ) {
-		// Save blanks too
-			pars = pars + thevalue;
-
-			var divName = 'status_'+questionid;
-			var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
-			{
-				method: 'post', 
-				parameters: pars,
-				onSuccess: function(transport) {
-					$('required_td'+questionid).innerHTML = '';
-					new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-				}
-			});
-		//}
-	}
-	else if( elm.type == 'checkbox')
-	{
-		var thevalue = '';
-
-		if( 
+	
+	var thevalue = '';
+	
+	if( elm.type == 'checkbox') {
+		if(
 			( elm.name == ('question_' + questionid + '_C') || elm.name == ('question_' + questionid + '_S') )
 			&& ( document.getElementById('question_' + questionid + '_C') != undefined 
 			&& document.getElementById('question_' + questionid + '_S') != undefined)  
@@ -93,42 +79,34 @@ function saveAnswer( questionid, elm ) {
 				thevalue = 'X';
 			else
 				thevalue = ' ';
-		}	
-
-		pars = pars + thevalue;
-
-		var divName = 'status_'+questionid;
-		var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onSuccess: function(transport) {
-				$('required_td'+questionid).innerHTML = '';
-				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-			}
-		});
+		}
+	} else if( elm.type == 'text' || elm.type == 'radio' || elm.type == 'textarea') {
+		thevalue = escape(elm.value);
+	} else if (elm.type == 'select-one') {
+		thevalue = elm.value;
+	} else {
+		alert('Unsupported type: ' + elm.type + ' ' +elm.value );
+		return false;
 	}
-	else if (elm.type == 'select-one')
+	
+	var divName = 'status_'+questionid;
+	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.questionID=' + questionid + '&auditData.answer=' + thevalue;
+	
+	var myAjax = new Ajax.Updater('', 'AuditDataSaveAjax.action', 
 	{
-		var thevalue = elm.value;
-		
-		pars = pars + thevalue;
-		
-		var divName = 'status_'+questionid;
-		var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onSuccess: function(transport) {
-				$('required_td'+questionid).innerHTML = '';
+		method: 'post', 
+		parameters: pars,
+		onException: function(request, exception) {
+			alert(exception);
+		},
+		onSuccess: function(transport) {
+			$('required_td'+questionid).innerHTML = '';
+			if (transport.status == 200)
 				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-			}
-		});
-	}
-	else
-	{
-		alert(elm.type + ' ' +elm.value );
-	}
+			else
+				alert("Failed to save answer" + transport.statusText + transport.responseText);
+		}
+	});
 	return true;
 }
 
@@ -149,7 +127,10 @@ function reloadQuestion( questionid ) {
 		method: 'post', 
 		parameters: pars,
 		onSuccess: function(transport) {
-			new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+			if (transport.status == 200)
+				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+			else
+				alert("Failed to save comment" + transport.statusText + transport.responseText);
 		}
 	});
 }
