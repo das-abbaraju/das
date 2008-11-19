@@ -346,4 +346,15 @@ public class DateBean {
 		Calendar cal = Calendar.getInstance();
 		return DateBean.getDateDifference(cal.getTime(), firstDate);
 	}
+	
+	public static Date addMonths(Date startDate, int months) {
+		if (startDate == null || months == 0)
+			return null;
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(startDate);
+		cal.add(Calendar.MONTH, months);
+		return cal.getTime();
+	}
+
 }

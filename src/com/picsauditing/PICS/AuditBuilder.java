@@ -1,6 +1,7 @@
 package com.picsauditing.PICS;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -112,65 +113,86 @@ public class AuditBuilder {
 				+ contractor.getRiskLevel().ordinal() + " " + "AND operatorAccount IN ("
 				+ "SELECT operatorAccount FROM ContractorOperator " + "WHERE contractorAccount.id = "
 				+ contractor.getId() + "))");
+		int year = DateBean.getCurrentYear();
 		for (AuditType auditType : list) {
+			if (auditType.getAuditTypeID() == AuditType.DA
+					&& !"Yes".equals(contractor.getOqEmployees())) {
+				// Don't add the D&A audit because this contractor 
+				// doesn't have employees subject OQ requirements
+				// Note: we could also just add a place holder "Exempt" audit just as well
+				continue;
+			}
+			
+			if(auditType.getAuditTypeID() == AuditType.ANNUALADDENDUM) {
+				List<ContractorAudit> cList = contractor.getAudits();
+				addAnnualAddendum(cList, contractor, year-1, auditType, currentAudits);	
+				addAnnualAddendum(cList, contractor, year-2, auditType, currentAudits);	
+				addAnnualAddendum(cList, contractor, year-3, auditType, currentAudits);	
+			}
+			else {
+				boolean found = false;
+				// For each audit this contractor SHOULD have
+				// Figure out if the contractor currently has an
+				// active audit that isn't scheduled to expire soon
+				for (ContractorAudit conAudit : contractor.getAudits()) {
+					if (okStatuses.contains(conAudit.getAuditStatus())) {
+						// The contractor audit is not expired
+						int daysToExpiration = 0;
+						if (conAudit.getExpiresDate() == null)
+							// The expiration is null so put the days to
+							// expiration
+							// really big
+							daysToExpiration = 1000;
+						else
+							daysToExpiration = DateBean.getDateDifference(conAudit.getExpiresDate());
 
-			// For each audit this contractor SHOULD have
-			// Figure out if the contractor currently has an
-			// active audit that isn't scheduled to expire soon
-			boolean found = false;
-			for (ContractorAudit conAudit : contractor.getAudits()) {
-				if (okStatuses.contains(conAudit.getAuditStatus())) {
-					// The contractor audit is not expired
-					int daysToExpiration = 0;
-					if (conAudit.getExpiresDate() == null)
-						// The expiration is null so put the days to expiration
-						// really big
-						daysToExpiration = 1000;
-					else
-						daysToExpiration = DateBean.getDateDifference(conAudit.getExpiresDate());
-
-					if (daysToExpiration > 60) {
-						// The audit is still valid for atleast another 60 days
-						if (conAudit.getAuditType().equals(auditType)) {
-							// We found a matching audit type
-							found = true;
-						}
-						if (AuditType.NCMS == conAudit.getAuditType().getAuditTypeID()
-								&& AuditType.DESKTOP == auditType.getAuditTypeID()) {
-							// We needed a desktop and found an NCMS audit
-							found = true;
+						if (daysToExpiration > 60) {
+							// The audit is still valid for atleast another 60
+							// days
+							if (conAudit.getAuditType().equals(auditType)) {
+								// We found a matching audit type
+								found = true;
+							}
+							if (AuditType.NCMS == conAudit.getAuditType().getAuditTypeID()
+									&& AuditType.DESKTOP == auditType.getAuditTypeID()) {
+								// We needed a desktop and found an NCMS audit
+								found = true;
+							}
 						}
 					}
 				}
-			}
-			if (!found) {
-				// The audit wasn't found, figure out if we should create it now
-				// or wait until later
-				boolean insertNow = true;
-				if (pqfAudit.getAuditStatus().equals(AuditStatus.Pending)) {
-					// The current PQF is stilling pending, does this audit
-					// require a PDF?
-					if (requiresSafetyManual.contains(auditType.getAuditTypeID()))
-						insertNow = false;
-				}
-				if (auditType.getAuditTypeID() == AuditType.DESKTOP
-						&& pqfAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
-					// The current PQF has been submitted, but we need to know
-					// if the Safety Manual is there first before creating the
-					// desktop
-					AuditData safetyManual = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(),
-							AuditQuestion.MANUAL_PQF);
-					if (safetyManual == null || !safetyManual.isVerified())
-						insertNow = false;
-				}
 
-				if (insertNow) {
-					System.out.println("Adding: " + auditType.getAuditTypeID() + auditType.getAuditName());
-					currentAudits.add(cAuditDAO.addPending(auditType, contractor));
-				} else
-					System.out.println("Skipping: " + auditType.getAuditTypeID() + auditType.getAuditName());
+				if (!found) {
+					// The audit wasn't found, figure out if we should create it
+					// now
+					// or wait until later
+					boolean insertNow = true;
+					if (pqfAudit.getAuditStatus().equals(AuditStatus.Pending)) {
+						// The current PQF is stilling pending, does this audit
+						// require a PDF?
+						if (requiresSafetyManual.contains(auditType.getAuditTypeID()))
+							insertNow = false;
+					}
+					if (auditType.getAuditTypeID() == AuditType.DESKTOP
+							&& pqfAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
+						// The current PQF has been submitted, but we need to
+						// know
+						// if the Safety Manual is there first before creating
+						// the
+						// desktop
+						AuditData safetyManual = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(),
+								AuditQuestion.MANUAL_PQF);
+						if (safetyManual == null || !safetyManual.isVerified())
+							insertNow = false;
+					}
+					if (insertNow) {
+						System.out.println("Adding: " + auditType.getAuditTypeID() + auditType.getAuditName());
+						currentAudits.add(cAuditDAO.addPending(auditType, contractor));
+					} else
+						System.out.println("Skipping: " + auditType.getAuditTypeID() + auditType.getAuditName());
+				}
 			}
-		}
+		}	
 
 		/** ** Remove unneeded audits *** */
 		// We can't clear until we're done reading all data from DB (lazy loading)
@@ -193,6 +215,9 @@ public class AuditBuilder {
 				if (conAudit.getAuditType().getAuditTypeID() == AuditType.WELCOME)
 					needed = true;
 
+				// this doesn't handle one rare case: when a 
+				// contractor changes their OQ employees from Yes to No
+				// Since this would probably never happen, we won't add it
 				for (AuditType auditType : list) {
 					if (conAudit.getAuditType().equals(auditType)) {
 						needed = true;
@@ -346,5 +371,24 @@ public class AuditBuilder {
 
 	public void setFillAuditCategories(boolean fillAuditCategories) {
 		this.fillAuditCategories = fillAuditCategories;
+	}
+	
+	public void addAnnualAddendum(List<ContractorAudit> cList, ContractorAccount contractor, int year, AuditType auditType, List<ContractorAudit> currentAudits) {
+		boolean found = false;
+		for (ContractorAudit cAudit : cList) {
+			if (cAudit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM
+					&& year == Integer.parseInt(cAudit.getAuditFor())) {
+				if (cAudit.getAuditStatus().equals(AuditStatus.Expired))
+					// this should never happen actually...but just incase
+					cAudit.setAuditStatus(AuditStatus.Pending);
+				found = true;
+			}
+		}
+		if (!found) {
+			Calendar startDate = Calendar.getInstance();
+			startDate.set(year, 1, 1);
+			System.out.println("Adding: " + auditType.getAuditTypeID() + auditType.getAuditName());
+			currentAudits.add(cAuditDAO.addPending(auditType, contractor, Integer.toString(year), startDate.getTime()));
+		}
 	}
 }

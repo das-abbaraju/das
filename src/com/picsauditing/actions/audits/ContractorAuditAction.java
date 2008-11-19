@@ -117,18 +117,8 @@ public class ContractorAuditAction extends AuditActionSupport {
 			}
 
 			if (conAudit.getExpiresDate() == null && conAudit.getCompletedDate() != null) {
-				Date dateToExpire = conAudit.getAuditType().getDateToExpire();
-				Calendar cal = Calendar.getInstance();
-				if (dateToExpire == null) {
-					cal.setTime(conAudit.getCompletedDate());
-					cal.add(Calendar.MONTH, conAudit.getAuditType().getMonthsToExpire());
-				} else {
-					cal.setTime(dateToExpire);
-					cal.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
-					cal.before(new Date());
-					cal.add(Calendar.YEAR, 1);
-				}
-				conAudit.setExpiresDate(cal.getTime());
+				Date dateToExpire = DateBean.addMonths(conAudit.getCompletedDate(), conAudit.getAuditType().getMonthsToExpire());
+				conAudit.setExpiresDate(dateToExpire);
 			}
 
 			if (auditStatus.equals(AuditStatus.Submitted)) {
