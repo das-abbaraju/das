@@ -46,7 +46,7 @@ public class OshaAudit implements java.io.Serializable {
 	private boolean applicable = true;
 	private Date verifiedDate;
 
-	private boolean fileUploaded = true;
+	private boolean fileUploaded = false;
 	private int manHours;
 	private int fatalities;
 	private int lostWorkCases;

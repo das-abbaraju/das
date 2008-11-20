@@ -72,6 +72,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private int annualUpdateEmails;
 	private String oqEmployees;
 
+	@Deprecated
 	protected List<OshaLog> oshas;
 	protected List<ContractorAudit> audits;
 	protected List<ContractorOperator> operators;
@@ -620,5 +621,4 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 				return true;
 		return false;
 	}
-
 }

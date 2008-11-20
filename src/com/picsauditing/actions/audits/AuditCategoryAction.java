@@ -12,19 +12,17 @@ import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.OshaLogDAO;
+import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditSubCategory;
-import com.picsauditing.jpa.entities.OshaLog;
-import com.picsauditing.jpa.entities.OshaLogYear;
+import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.util.SpringUtils;
 
 /**
  * Viewing audit Data including one or more categories and their subcategories
@@ -50,13 +48,15 @@ public class AuditCategoryAction extends AuditActionSupport {
 
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditCategoryDAO auditCategoryDAO;
+	private OshaAuditDAO oshaAuditDAO;
 
 	public AuditCategoryAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
-			AuditCategoryDAO auditCategoryDAO) {
+			AuditCategoryDAO auditCategoryDAO, OshaAuditDAO oshaAuditDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.auditCategoryDAO = auditCategoryDAO;
+		this.oshaAuditDAO = oshaAuditDAO;
 	}
 
 	public String execute() throws Exception {
@@ -106,10 +106,10 @@ public class AuditCategoryAction extends AuditActionSupport {
 				mode = EDIT;
 			if (mode == null && conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
 				// Add the verify mode back if needed
-				//if(isCanVerify())
-				//	mode = VERIFY;
-				//else
-					mode = EDIT;
+				// if(isCanVerify())
+				// mode = VERIFY;
+				// else
+				mode = EDIT;
 			}
 
 		} else {
@@ -131,10 +131,10 @@ public class AuditCategoryAction extends AuditActionSupport {
 			mode = VIEW;
 
 		if (currentCategory != null) {
-			if (currentCategory.getCategory().getId() == AuditCategory.OSHA) {
+			if (currentCategory.getCategory().getId() == AuditCategory.OSHA_AUDIT) {
 				boolean hasOshaCorporate = false;
 				int percentComplete = 0;
-				for (OshaLog osha : this.contractor.getOshas()) {
+				for (OshaAudit osha : conAudit.getOshas()) {
 					if (osha.isCorporate()) {
 						hasOshaCorporate = true;
 						// Calculate percent complete too
@@ -143,22 +143,13 @@ public class AuditCategoryAction extends AuditActionSupport {
 				}
 
 				if (mode.equals(EDIT) && !hasOshaCorporate) {
-					OshaLog oshaCorporate = new OshaLog();
-					oshaCorporate.setContractorAccount(contractor);
-					oshaCorporate.setType(OshaType.OSHA);
-					oshaCorporate.setYear1(new OshaLogYear());
-					oshaCorporate.getYear1().setApplicable(true);
-					oshaCorporate.setYear2(new OshaLogYear());
-					oshaCorporate.getYear2().setApplicable(true);
-					oshaCorporate.setYear3(new OshaLogYear());
-					oshaCorporate.getYear3().setApplicable(true);
-					OshaLogDAO dao = (OshaLogDAO) SpringUtils.getBean("OshaLogDAO");
-					dao.save(oshaCorporate);
-					contractor.getOshas().add(oshaCorporate);
+					OshaAudit oshaAudit = new OshaAudit();
+					oshaAudit.setConAudit(conAudit);
+					oshaAudit.setType(OshaType.OSHA);
+					oshaAuditDAO.save(oshaAudit);
+					conAudit.getOshas().add(oshaAudit);
 
-					currentCategory.setRequiredCompleted(0);
-					currentCategory.setNumRequired(6);
-					currentCategory.setPercentCompleted(0);
+					currentCategory.setNumRequired(2);
 					catDataDao.save(currentCategory);
 				}
 			} else {

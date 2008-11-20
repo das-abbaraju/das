@@ -67,6 +67,7 @@ public class OshaSave extends PicsActionSupport implements Preparable {
 			osha.setConAudit(new ContractorAudit());
 			osha.getConAudit().setId(auditID);
 			osha.setType(OshaType.OSHA);
+			osha.setLocation("Division");
 			osha.setCreationDate(new Date());
 			oshaDAO.save(osha);
 			return SUCCESS;

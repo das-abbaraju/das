@@ -11,15 +11,13 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.OshaLog;
-import com.picsauditing.jpa.entities.OshaLogYear;
+import com.picsauditing.jpa.entities.OshaAudit;
 
 public class AuditPercentCalculator {
 	private AuditDataDAO auditDataDao;
 	private AuditCategoryDataDAO catDataDao;
 
-	public AuditPercentCalculator(AuditDataDAO auditDataDao,
-			AuditCategoryDataDAO catDataDao) {
+	public AuditPercentCalculator(AuditDataDAO auditDataDao, AuditCategoryDataDAO catDataDao) {
 		this.auditDataDao = auditDataDao;
 		this.catDataDao = catDataDao;
 	}
@@ -40,33 +38,26 @@ public class AuditPercentCalculator {
 		// Get a list of questions/answers for this category
 		List<Integer> questionIDs = new ArrayList<Integer>();
 
-		for (AuditSubCategory subCategory : catData.getCategory()
-				.getSubCategories()) {
+		for (AuditSubCategory subCategory : catData.getCategory().getSubCategories()) {
 			for (AuditQuestion question : subCategory.getQuestions()) {
 				questionIDs.add(question.getQuestionID());
-				if ("Depends".equals(question.getDependsOnAnswer())
-						&& question.getDependsOnQuestion() != null) {
-					int dependsOnQID = question.getDependsOnQuestion()
-							.getQuestionID();
+				if ("Depends".equals(question.getDependsOnAnswer()) && question.getDependsOnQuestion() != null) {
+					int dependsOnQID = question.getDependsOnQuestion().getQuestionID();
 					questionIDs.add(dependsOnQID);
 				}
 			}
 		}
 		// Get a map of all answers in this audit
-		Map<Integer, AuditData> answers = auditDataDao.findAnswers(catData
-				.getAudit().getId(), questionIDs);
-		
-		
+		Map<Integer, AuditData> answers = auditDataDao.findAnswers(catData.getAudit().getId(), questionIDs);
+
 		int questID = 0;
 
 		// Get a list of questions/answers for this category
-		for (AuditSubCategory subCategory : catData.getCategory()
-				.getSubCategories()) {
+		for (AuditSubCategory subCategory : catData.getCategory().getSubCategories()) {
 			for (AuditQuestion question : subCategory.getQuestions()) {
 				if (question.getDependsOnQuestion() != null)
 					question.getDependsOnQuestion().setAnswer(
-							answers.get(question.getDependsOnQuestion()
-									.getQuestionID()));
+							answers.get(question.getDependsOnQuestion().getQuestionID()));
 
 				boolean isRequired = question.isRequired();
 
@@ -83,9 +74,8 @@ public class AuditPercentCalculator {
 				// isRequired = true;
 				// }
 				// }
-				
-				if (isRequired 
-						&& question.getEffectiveDate().before(catData.getAudit().getCreatedDate()) 
+
+				if (isRequired && question.getEffectiveDate().before(catData.getAudit().getCreatedDate())
 						&& question.getExpirationDate().after(catData.getAudit().getCreatedDate())) {
 					questID = question.getQuestionID();
 					requiredCount++;
@@ -95,14 +85,12 @@ public class AuditPercentCalculator {
 				if (answer != null) {
 					String answerToQuestion = answer.getAnswer();
 					if (!"".equals(answerToQuestion)
-							&& !com.picsauditing.PICS.DateBean.NULL_DATE_DB
-									.equals(answerToQuestion)) {
+							&& !com.picsauditing.PICS.DateBean.NULL_DATE_DB.equals(answerToQuestion)) {
 						answeredCount++;
 						if (isRequired)
 							requiredAnsweredCount++;
 					}
-					if ("Yes".equals(answerToQuestion)
-							|| "NA".equals(answerToQuestion)) {
+					if ("Yes".equals(answerToQuestion) || "NA".equals(answerToQuestion)) {
 						// This is a valid Desktop or Office audit answer so,
 						// it's "Verified"
 						verifiedCount++;
@@ -110,7 +98,7 @@ public class AuditPercentCalculator {
 				}
 			}
 		}
-		
+
 		catData.setNumAnswered(answeredCount);
 		catData.setNumRequired(requiredCount);
 		catData.setRequiredCompleted(requiredAnsweredCount);
@@ -141,8 +129,7 @@ public class AuditPercentCalculator {
 				// categories
 				required += data.getNumRequired();
 				answered += data.getRequiredCompleted();
-				verified += (int) Math.round(data.getNumRequired()
-						* data.getPercentVerified() / 100);
+				verified += (int) Math.round(data.getNumRequired() * data.getPercentVerified() / 100);
 			}
 		}
 		int percentComplete = 0;
@@ -157,32 +144,27 @@ public class AuditPercentCalculator {
 				percentVerified = 100;
 		}
 		conAudit.setPercentComplete(percentComplete);
-		if (conAudit.getAuditType().isHasRequirements()	&& !conAudit.getAuditType().isPqf())
+		if (conAudit.getAuditType().isHasRequirements() && !conAudit.getAuditType().isPqf())
 			conAudit.setPercentVerified(percentVerified);
 	}
-	
-	public void percentOshaComplete(OshaLog osha, AuditCatData catData) {
+
+	public void percentOshaComplete(OshaAudit osha, AuditCatData catData) {
 		int count = 0;
-		count += getOshaYearValidCount(osha.getYear1());
-		count += getOshaYearValidCount(osha.getYear2());
-		count += getOshaYearValidCount(osha.getYear3());
-		
-		int percentComplete = Math.round(count * 100 / 6);
-		int factor = 5; // Let's make the osha section "weigh" a bit more in the overall audit % complete
-		catData.setRequiredCompleted(count * factor);
-		catData.setNumRequired(6 * factor);
+
+		if (!osha.isApplicable())
+			count = 2;
+		else {
+			if (osha.getManHours() > 0)
+				count++;
+			if (osha.isFileUploaded())
+				count++;
+		}
+
+		int percentComplete = Math.round(count * 100 / 2);
+		catData.setRequiredCompleted(count);
+		catData.setNumRequired(2);
 		catData.setPercentCompleted(percentComplete);
 		catDataDao.save(catData);
 	}
-	
-	private int getOshaYearValidCount(OshaLogYear year) {
-		if (!year.isApplicable())
-			return 2;
-		int count = 0;
-		if (year.getManHours() > 0)
-			count++;
-		if (year.isUploaded())
-			count++;
-		return count;
-	}
+
 }
