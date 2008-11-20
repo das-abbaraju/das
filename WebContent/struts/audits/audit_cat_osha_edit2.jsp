@@ -11,7 +11,12 @@
 	<th>
 		<label>Type:</label><s:select name="osha.type" list="#{'OSHA':'OSHA','MSHA':'MSHA'}" value="%{type}" cssClass="forms"/>
 	    <label>Location:</label>
-	    <s:select name="osha.location" list="#{'Corporate':'Corporate','Division':'Division','Region':'Region','Site':'Site'}" value="%{location}" cssClass="forms"/>
+	    <s:if test="location == 'Corporate'">
+	    	<s:property value="location"/>
+	    </s:if>
+	    <s:else>
+	    	<s:select name="location" list="#{'Division':'Division','Region':'Region','Site':'Site'}" value="%{location}" cssClass="forms"/>
+		</s:else>
 	</th>
 	<td class="location" style="text-align: center;"><s:property value="conAudit.auditFor"/></td>
 </tr>
