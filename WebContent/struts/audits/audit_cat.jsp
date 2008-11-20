@@ -8,8 +8,8 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
 
+<script type="text/javascript" src="js/prototype.js"></script>
 <s:if test="mode == 'Edit' || mode == 'Verify'">
-	<script type="text/javascript" src="js/prototype.js"></script>
 	<script type="text/javascript"
 		src="js/scriptaculous/scriptaculous.js?load=effects"></script>
 	<script type="text/javascript" src="js/validateForms.js"></script>
@@ -20,7 +20,7 @@
 	var catDataID = <s:property value="catDataID"/>;
 	var conID = <s:property value="contractor.id"/>;
 	function openOsha(logID, year) {
-		url = 'servlet/showpdf?id='+conID+'&OID='+logID+'&file=osha'+year;
+		url = 'DownloadOsha.action?id='+logID;
 		title = 'Osha300Logs';
 		pars = 'scrollbars=yes,resizable=yes,width=700,height=450';
 		window.open(url,title,pars);
@@ -71,31 +71,6 @@
 						<s:include value="audit_cat_osha.jsp"></s:include>
 					</s:iterator>
 				</s:if>
-				<s:if test="mode == 'Edit'">
-					<s:if test="permissions.admin || permissions.contractor">
-						<span class="redMain">You must input at least your corporate statistics. To further assist your clients, please
-						enter additional locations that you maintain OSHA/MSHA logs for that may be needed by your clients.<br/>
-						</span>
-					</s:if>
-					<s:if test="permissions.contractor">
-						<span style="font-size: 12px;color:#003768;">Provide the following numbers (excluding subcontractors) using your OSHA/MSHA 300 Forms from the past 3 years:</span><br/>
-					</s:if>
-					<s:if test="catDataID == 0">
-						<s:include value="audit_cat_osha_edit.jsp"/>
-					</s:if>
-					<s:iterator value="contractor.oshas">
-						<s:include value="audit_cat_osha_edit.jsp"></s:include>
-					</s:iterator>
-					<s:if test="catDataID != 0">
-					<s:form action="OshaSave" method="POST" enctype="multipart/form-data">
-						<s:hidden name="conID" value="%{conAudit.contractorAccount.id}"></s:hidden>
-						<s:hidden name="auditID"></s:hidden>
-						<s:hidden name="catDataID"></s:hidden>
-						<s:hidden name="oshaID" value="%{id}"></s:hidden>
-						<s:submit name="submit" value="Add New Location" cssStyle="padding: 6px;position: relative;left: 380px;"></s:submit>
-					</s:form>
-					</s:if>
-				</s:if>
 		</s:if>
 		<s:elseif test="category.id == 151">
 				<s:if test="mode == 'View'">
@@ -120,11 +95,9 @@
 					</s:iterator>
 					<s:if test="catDataID != 0">
 					<s:form action="OshaSave" method="POST" enctype="multipart/form-data">
-						<s:hidden name="conID" value="%{conAudit.contractorAccount.id}"></s:hidden>
 						<s:hidden name="auditID"></s:hidden>
 						<s:hidden name="catDataID"></s:hidden>
-						<s:hidden name="oshaID" value="%{id}"></s:hidden>
-						<s:submit name="submit" value="Add New Location" cssStyle="padding: 6px;position: relative;left: 380px;"></s:submit>
+						<s:submit name="button" value="Add New Location" cssStyle="padding: 6px;position: relative;left: 380px;"></s:submit>
 					</s:form>
 					</s:if>
 				</s:if>

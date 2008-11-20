@@ -1,173 +1,146 @@
 package com.picsauditing.actions.audits;
 
 import java.io.File;
+import java.util.Date;
 
+import org.apache.struts2.ServletActionContext;
+
+import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.OshaLogDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.OshaLog;
-import com.picsauditing.jpa.entities.OshaLogYear;
+import com.picsauditing.dao.OshaAuditDAO;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
-import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
 
-public class OshaSave extends PicsActionSupport {
-
+public class OshaSave extends PicsActionSupport implements Preparable {
+	private static final long serialVersionUID = 2529955727521548069L;
 	private int auditID;
 	private int conID;
 	private int catDataID;
-	private int oshaID;
-	private OshaLog osha;
-	private OshaLogDAO oshaDAO;
-	private OshaLogYear year1;
-	private OshaLogYear year2;
-	private OshaLogYear year3;
-	private File uploadFile1;
-	private File uploadFile2;
-	private File uploadFile3;
-	private String uploadFile1FileName;
-	private String uploadFile2FileName;
-	private String uploadFile3FileName;
-	private String submit;
-	private String description;
-	private String location;
-	private String oshaType;
+	private int id;
+	private OshaAudit osha;
+	private OshaAuditDAO oshaDAO;
+	private File uploadFile;
+	private String uploadFileFileName;
 
-	public OshaSave(OshaLogDAO oshaDAO) {
+	public OshaSave(OshaAuditDAO oshaDAO) {
 		this.oshaDAO = oshaDAO;
 	}
 
+	@Override
+	public void prepare() throws Exception {
+		id = this.getParameter("id");
+		if (id > 0) {
+			osha = oshaDAO.find(id);
+		}
+	}
+	
+	static public String getFtpDir() {
+		return "C:/temp/";
+	}
+	
 	public String execute() throws Exception {
 		if (!forceLogin("Home.action"))
 			return LOGIN;
-		// we could investigate using the prepare statement
-		// and finding the osha data before the setters get run
-		// However, I think I had problems setting/creating the
-		// embedded year[1-3] private properties. Trevor
-		if (this.osha != null) {
-			description = this.osha.getDescription();
-			location = this.osha.getLocation();
-			oshaType = this.osha.getType().toString();
+		
+		if (button == null) {
+			oshaDAO.clear();
+			return INPUT;
 		}
-		if (oshaID > 0) {
-			osha = oshaDAO.find(oshaID);
-		} else {
-			osha = new OshaLog();
-		}
-		if (osha != null) {
-			osha.setDescription(description);
-			osha.setLocation(location);
 
-			osha.setType(OshaType.valueOf(oshaType));
+		if (button.equals("download")) {
+			Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext.getServletContext());
+			try {
+				File[] files = getFiles();
+				downloader.download(files[0], null);
+				return null;
+			} catch (Exception e) {
+				addActionError("Failed to download file: " + e.getMessage());
+				return BLANK;
+			}
 		}
-		if (submit.equals("Delete")) {
-			oshaDAO.remove(oshaID);
+		if (button.equals("Delete")) {
+			oshaDAO.remove(id);
 			return SUCCESS;
 		}
 
-		if (submit.equals("Add New Location")) {
-			osha = new OshaLog();
-			osha.setContractorAccount(new ContractorAccount());
-			osha.getContractorAccount().setId(conID);
+		if (button.equals("Add New Location")) {
+			osha = new OshaAudit();
+			osha.setConAudit(new ContractorAudit());
+			osha.getConAudit().setId(auditID);
 			osha.setType(OshaType.OSHA);
-			osha.setYear1(new OshaLogYear());
-			osha.setYear2(new OshaLogYear());
-			osha.setYear3(new OshaLogYear());
+			osha.setCreationDate(new Date());
 			oshaDAO.save(osha);
 			return SUCCESS;
 		}
-		merge(osha.getYear1(), year1);
-		merge(osha.getYear2(), year2);
-		merge(osha.getYear3(), year3);
-
-		saveFile(uploadFile1, uploadFile1FileName, osha.getYear1(), 1);
-		saveFile(uploadFile2, uploadFile2FileName, osha.getYear2(), 2);
-		saveFile(uploadFile3, uploadFile3FileName, osha.getYear3(), 3);
-
+		
+		if (button.equals("Delete File")) {
+			try {
+				// remove all osha files ie (pdf, jpg)
+				for(File oldFile : getFiles())
+					FileUtils.deleteFile(oldFile);
+			} catch (Exception e) {
+				addActionError("Failed to save file: " + e.getMessage());
+				e.printStackTrace();
+				oshaDAO.clear(); // Don't save
+				return INPUT;
+			}
+			osha.setFileUploaded(false);
+		}
+		
+		// TODO verify data is saved correctly
+		
+		if (uploadFile != null) {
+			String ext = uploadFileFileName.substring(uploadFileFileName.lastIndexOf(".") + 1);
+	
+			if (!FileUtils.checkFileExtension(ext)) {
+				addActionError(ext + " is not a valid file type for OSHA logs");
+				return INPUT;
+			}
+	
+			try {
+				FileUtils.copyFile(uploadFile, getFtpDir(), OshaAudit.OSHA_DIR, getFileName(), ext, true);
+			} catch (Exception e) {
+				addActionError("Failed to save file: " + e.getMessage());
+				e.printStackTrace();
+				oshaDAO.clear(); // Don't save
+				return INPUT;
+			}
+			osha.setFileUploaded(true);
+		}
+		
+		//osha.setVerified(false);
+		osha.setVerifiedDate(null);
+		osha.setUpdateDate(new Date());
 		oshaDAO.save(osha);
 
 		return SUCCESS;
 	}
-
-	private boolean saveFile(File file, String inputFileName, OshaLogYear logYear, int year) {
-		if (file == null)
-			return false;
-
-		String ext = inputFileName.substring(inputFileName.lastIndexOf(".") + 1);
-
-		if (!FileUtils.checkFileExtension(ext)) {
-			return false;
-		}
-
-		String fileName = "osha" + year + "_" + oshaID;
-		try {
-			FileUtils.copyFile(file, getFtpDir(), "/files/oshas/", fileName, ext, true);
-			logYear.setFile(YesNo.Yes);
-			logYear.setVerified(false);
-			logYear.setVerifiedDate(null);
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
+	
+	private String getFileName() {
+		return "osha" + "_" + id;
+	}
+	
+	private File[] getFiles() {
+		File oshaDir = new File(getFtpDir() + OshaAudit.OSHA_DIR);
+		return FileUtils.getSimilarFiles(oshaDir, getFileName());
 	}
 
-	private void merge(OshaLogYear oldYear, OshaLogYear newYear) {
-		if (oldYear == null) {
-			oldYear = newYear;
-			return;
-		}
-		oldYear.setFatalities(newYear.getFatalities());
-		oldYear.setInjuryIllnessCases(newYear.getInjuryIllnessCases());
-		oldYear.setLostWorkCases(newYear.getLostWorkCases());
-		oldYear.setLostWorkDays(newYear.getLostWorkDays());
-		oldYear.setManHours(newYear.getManHours());
-		oldYear.setRecordableTotal(newYear.getRecordableTotal());
-		oldYear.setRestrictedWorkCases(newYear.getRestrictedWorkCases());
-		oldYear.setNa(newYear.getNa());
+	public int getId() {
+		return id;
 	}
-
-	public OshaLogYear getYear1() {
-		return year1;
+	
+	public void setId(int id) {
+		this.id = id;
 	}
-
-	public void setYear1(OshaLogYear year1) {
-		this.year1 = year1;
-	}
-
-	public OshaLogYear getYear2() {
-		return year2;
-	}
-
-	public void setYear2(OshaLogYear year2) {
-		this.year2 = year2;
-	}
-
-	public OshaLogYear getYear3() {
-		return year3;
-	}
-
-	public void setYear3(OshaLogYear year3) {
-		this.year3 = year3;
-	}
-
-	public void setUploadFile1(File uploadFile1) {
-		this.uploadFile1 = uploadFile1;
-	}
-
-	public void setUploadFile2(File uploadFile2) {
-		this.uploadFile2 = uploadFile2;
-	}
-
-	public void setUploadFile3(File uploadFile3) {
-		this.uploadFile3 = uploadFile3;
-	}
-
-	public OshaLog getOsha() {
+	
+	public OshaAudit getOsha() {
 		return osha;
 	}
 
-	public void setOsha(OshaLog osha) {
+	public void setOsha(OshaAudit osha) {
 		this.osha = osha;
 	}
 
@@ -187,34 +160,6 @@ public class OshaSave extends PicsActionSupport {
 		this.catDataID = catDataID;
 	}
 
-	public int getOshaID() {
-		return oshaID;
-	}
-
-	public void setOshaID(int oshaID) {
-		this.oshaID = oshaID;
-	}
-
-	public String getSubmit() {
-		return submit;
-	}
-
-	public void setSubmit(String submit) {
-		this.submit = submit;
-	}
-
-	public File getUploadFile1() {
-		return uploadFile1;
-	}
-
-	public File getUploadFile2() {
-		return uploadFile2;
-	}
-
-	public File getUploadFile3() {
-		return uploadFile3;
-	}
-
 	public int getConID() {
 		return conID;
 	}
@@ -223,37 +168,23 @@ public class OshaSave extends PicsActionSupport {
 		this.conID = conID;
 	}
 
-	public String getUploadFile1FileName() {
-		return uploadFile1FileName;
+	public File getUploadFile() {
+		return uploadFile;
 	}
 
-	public void setUploadFile1FileName(String uploadFile1FileName) {
-		this.uploadFile1FileName = uploadFile1FileName;
+	public void setUploadFile(File uploadFile) {
+		this.uploadFile = uploadFile;
 	}
 
-	public String getUploadFile2FileName() {
-		return uploadFile2FileName;
+	public String getUploadFileFileName() {
+		return uploadFileFileName;
 	}
 
-	public void setUploadFile2FileName(String uploadFile2FileName) {
-		this.uploadFile2FileName = uploadFile2FileName;
+	public void setUploadFileFileName(String fileName) {
+		this.uploadFileFileName = fileName;
 	}
 
-	public String getUploadFile3FileName() {
-		return uploadFile3FileName;
-	}
-
-	public void setUploadFile3FileName(String uploadFile3FileName) {
-		this.uploadFile3FileName = uploadFile3FileName;
-	}
-
-	public void setUploadFile1ContentType(String uploadFile1ContentType) {
-	}
-
-	public void setUploadFile2ContentType(String uploadFile2ContentType) {
-	}
-
-	public void setUploadFile3ContentType(String uploadFile3ContentType) {
+	public void setUploadFileContentType(String temp) {
 	}
 
 }

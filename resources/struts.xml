@@ -116,6 +116,11 @@
 			</result>
 		</action>
 
+		<action name="ContractorNotes"
+			class="com.picsauditing.actions.contractors.ContractorNote">
+			<result>struts/contractors/con_notes.jsp</result>
+		</action>
+		
 
 
 		<!-- REPORTS Primary Search Pages (Contractor/Audit/User lists) -->
@@ -372,6 +377,11 @@
 			<result name="input">/struts/blank.jsp</result>
 		</action>
 
+		<action name="DownloadOsha"
+			class="com.picsauditing.actions.audits.OshaSave">
+			<param name="button">download</param>
+		</action>
+
 		<action name="ConAuditMaintain"
 			class="com.picsauditing.actions.audits.ConAuditMaintain">
 			<result>struts/audits/audit_maintain.jsp</result>
@@ -389,7 +399,6 @@
 				<param name="auditID">${conAudit.id}</param>
 			</result>
 		</action>
-
 
 
 		<!-- PQF Verify -->
@@ -673,15 +682,10 @@
 			<result>struts/operators/audit_operator_save.jsp</result>
 		</action>
 
-		<action name="DownloadAjax"
-			class="com.picsauditing.actions.Download">
+		<action name="Trevor"
+			class="com.picsauditing.actions.Trevor">
+			<result>struts/blank.jsp</result>
 		</action>
-		
-		<action name="ContractorNotes"
-			class="com.picsauditing.actions.contractors.ContractorNote">
-			<result>struts/contractors/con_notes.jsp</result>
-		</action>
-		
 
 		<!-- Remember to Categorize your new Struts pages -->
 	</package>

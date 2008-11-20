@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.PermissionToViewContractor;
 
 public class ContractorActionSupport extends PicsActionSupport {
 	protected int id = 0;
@@ -26,6 +27,8 @@ public class ContractorActionSupport extends PicsActionSupport {
 	private List<ContractorOperator> operators;
 	protected boolean limitedView = false;
 	protected List<ContractorOperator> activeOperators;
+	
+	private PermissionToViewContractor permissionToViewContractor = null;
 
 	protected String subHeading;
 
@@ -48,58 +51,16 @@ public class ContractorActionSupport extends PicsActionSupport {
 	}
 
 	protected boolean checkPermissionToView() {
-		// OR
-		if (permissions.isContractor()) {
-			return permissions.getAccountIdString().equals(Integer.toString(this.id));
-		}
-
-		if (limitedView)
-			// Basically, if all we're doing is searching for contractors
-			// and looking at their summary page, then it's OK
-			return true;
-
-		else if(!permissions.hasPermission(OpPerms.ContractorDetails)) {
+		loadPermissions();
+		if (id == 0 || permissions == null)
 			return false;
-		}
 		
-		if (permissions.hasPermission(OpPerms.AllContractors))
-			return true;
-
-		if (permissions.isOperator() || permissions.isCorporate()) {
-			// If we want to look at their detail, like PQF data
-			// Then we have to add them first (generalContractors).
-			if (permissions.isCorporate()) {
-				OperatorBean operator = new OperatorBean();
-				try {
-					operator.isCorporate = true;
-					operator.setFromDB(permissions.getAccountIdString());
-					// if any of this corporate operators can see this
-					// contractor,
-					// then the corporate users can see them too
-					for (String id : operator.facilitiesAL) {
-						for (ContractorOperator corporate : getOperators())
-							if (corporate.getOperatorAccount().getIdString().equals(id))
-								return true;
-					}
-				} catch (Exception e) {
-				}
-				return false;
-			}
-			// To see anything other than the summary, you need to be on their
-			// list
-			for (ContractorOperator operator : getOperators())
-				if (operator.getOperatorAccount().getIdString().equals(permissions.getAccountIdString()))
-					return true;
+		if (permissionToViewContractor == null) {
+			permissionToViewContractor = new PermissionToViewContractor(id, permissions);
+			permissionToViewContractor.setActiveAudits(getActiveAudits());
+			permissionToViewContractor.setOperators(getOperators());
 		}
-
-		for (ContractorAudit audit : getActiveAudits()) {
-			if (audit.getAuditor() != null && audit.getAuditor().getId() == permissions.getUserId())
-				if (audit.getAuditStatus().equals(AuditStatus.Pending)
-						|| audit.getAuditStatus().equals(AuditStatus.Submitted))
-					return true;
-		}
-
-		return false;
+		return permissionToViewContractor.check(limitedView);
 	}
 
 	public int getId() {

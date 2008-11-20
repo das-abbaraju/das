@@ -28,7 +28,16 @@ import org.hibernate.annotations.Type;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class OshaAudit implements java.io.Serializable {
 	private static final long serialVersionUID = -4451146415122493617L;
+	
+	/**
+	 * The location of the osha files within the FTP dir
+	 */
+	public static final String OSHA_DIR = "/files/oshas/";
 	private int id;
+
+	private Date creationDate;
+	private Date updateDate;
+
 	private ContractorAudit conAudit;
 	private OshaType type = OshaType.OSHA;
 	private String location = "Corporate";
@@ -46,7 +55,7 @@ public class OshaAudit implements java.io.Serializable {
 	private int restrictedWorkCases;
 	private int recordableTotal;
 	private int factor = 200000; // default factor used to normalize man
-									// hours
+	// hours
 	private String comment;
 
 	private FlagColor flagColor;
@@ -60,6 +69,24 @@ public class OshaAudit implements java.io.Serializable {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

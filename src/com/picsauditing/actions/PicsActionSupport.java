@@ -19,6 +19,7 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.PermissionToViewContractor;
 import com.picsauditing.util.SpringUtils;
 
 public class PicsActionSupport extends ActionSupport {
@@ -61,7 +62,6 @@ public class PicsActionSupport extends ActionSupport {
 				}
 			}
 		}
-
 	}
 
 	protected boolean forceLogin() {
