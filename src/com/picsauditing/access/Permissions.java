@@ -31,6 +31,7 @@ public class Permissions {
 	private Set<Integer> groups = new HashSet<Integer>();
 	private Set<UserAccess> permissions = new HashSet<UserAccess>();
 	private Set<Integer> canSeeAudits = new HashSet<Integer>();
+	private Set<Integer> corporateParent = new HashSet<Integer>();
 	private String username;
 	private String name;
 	private int accountID;
@@ -329,5 +330,15 @@ public class Permissions {
 
 	public void setApprovesRelationships(boolean approvesRelationships) {
 		this.approvesRelationships = approvesRelationships;
+	}
+
+	public Set<Integer> getCorporateParent() {
+		if(corporateParent == null)
+			corporateParent = new HashSet<Integer>();
+		return corporateParent;
+	}
+
+	public void setCorporateParent(Set<Integer> corporateParent) {
+		this.corporateParent = corporateParent;
 	}
 }

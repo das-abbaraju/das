@@ -15,6 +15,8 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.PermissionsBean;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
+import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
@@ -228,6 +230,12 @@ public class LoginController extends DataBean {
 				pBean.oBean.setFromDB(permissions.getAccountIdString());
 				permissions.setCanSeeAudit(pBean.oBean.getCanSeeAuditIDSet());
 				permissions.setApprovesRelationships(pBean.oBean.isApprovesRelationships());
+				if(permissions.isOperator()) {
+					OperatorAccount operator = (OperatorAccount) user.getAccount();
+					for(Facility facility : operator.getCorporateFacilities()) {
+						permissions.getCorporateParent().add(facility.getCorporate().getId());
+					}
+				}
 			}
 			// TODO we should allow each account to set their own timeouts
 			// ie..session.setMaxInactiveInterval(user.getAccountTimeout());
