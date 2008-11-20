@@ -37,10 +37,6 @@ public class OshaSave extends PicsActionSupport implements Preparable {
 		}
 	}
 	
-	static public String getFtpDir() {
-		return "C:/temp/";
-	}
-	
 	public String execute() throws Exception {
 		if (!forceLogin("Home.action"))
 			return LOGIN;
