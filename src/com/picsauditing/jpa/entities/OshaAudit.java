@@ -281,6 +281,11 @@ public class OshaAudit implements java.io.Serializable {
 	public void setFlagColor(FlagColor flagColor) {
 		this.flagColor = flagColor;
 	}
+	
+	@Transient
+	public boolean isVerified() {
+		return verifiedDate != null;
+	}
 
 	@Override
 	public int hashCode() {

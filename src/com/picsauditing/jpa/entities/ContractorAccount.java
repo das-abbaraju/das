@@ -72,8 +72,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private int annualUpdateEmails;
 	private String oqEmployees;
 
-	@Deprecated
-	protected List<OshaLog> oshas;
 	protected List<ContractorAudit> audits;
 	protected List<ContractorOperator> operators;
 	protected List<Certificate> certificates;
@@ -85,16 +83,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	public ContractorAccount(int id) {
 		this.id = id;
-	}
-
-	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.REMOVE })
-	@OrderBy("location")
-	public List<OshaLog> getOshas() {
-		return oshas;
-	}
-
-	public void setOshas(List<OshaLog> oshas) {
-		this.oshas = oshas;
 	}
 
 	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.PERSIST, CascadeType.MERGE })

@@ -19,7 +19,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.OshaLog;
+import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -194,7 +194,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	public String getDescriptionOsMs() {
 		String descriptionText = "OSHA Recordable";
-		for (OshaLog osha : conAudit.getContractorAccount().getOshas())
+		for (OshaAudit osha : conAudit.getOshas())
 			if (osha.getType().equals(OshaType.MSHA))
 				descriptionText = "MSHA Reportable";
 			else

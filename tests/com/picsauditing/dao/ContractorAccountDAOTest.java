@@ -25,7 +25,6 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OshaLog;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
@@ -39,7 +38,7 @@ public class ContractorAccountDAOTest {
 	@Autowired
 	AccountDAO accountDAO;
 
-	//@Test
+	// @Test
 	public void testSaveAndRemove() {
 		ContractorAccount contractoraccount = new ContractorAccount();
 		contractoraccount.setName("PICS");
@@ -93,10 +92,6 @@ public class ContractorAccountDAOTest {
 	@Test
 	public void testFind() {
 		ContractorAccount contractoraccount = contractoraccountDAO.find(14);
-		for (OshaLog osha : contractoraccount.getOshas()) {
-			assertEquals(0, osha.getYear1().getFatalities());
-		}
-
 		System.out.println("contractoraccount.getFlags()");
 		for (OperatorAccount operator : contractoraccount.getFlags().keySet()) {
 			System.out.println(contractoraccount.getFlags().get(operator).getFlagColor());
@@ -106,7 +101,7 @@ public class ContractorAccountDAOTest {
 			System.out.println(operator.getOperatorAccount().getName() + operator.getFlag().getFlagColor());
 		}
 		System.out.println("contractoraccountDAO.findOperators");
-		for (ContractorOperator operator : contractoraccountDAO.findOperators(contractoraccount, new Permissions(),"")) {
+		for (ContractorOperator operator : contractoraccountDAO.findOperators(contractoraccount, new Permissions(), "")) {
 			System.out.println(operator.getOperatorAccount().getName());
 		}
 		assertEquals("ECI (Ecology Control Inc.)", contractoraccount.getName());

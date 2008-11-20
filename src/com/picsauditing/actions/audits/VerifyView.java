@@ -23,8 +23,7 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.OshaLog;
-import com.picsauditing.jpa.entities.OshaLogYear;
+import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
@@ -33,7 +32,7 @@ import com.picsauditing.mail.EmailSender;
 public class VerifyView extends AuditActionSupport {
 	private int oshaID = 0;
 	@Autowired
-	private OshaLog osha;
+	private OshaAudit osha;
 	private Map<Integer, AuditData> emr = new HashMap<Integer, AuditData>();
 	protected Map<Integer, AuditData> customVerification = null;
 	private int followUp = 0;
@@ -55,11 +54,9 @@ public class VerifyView extends AuditActionSupport {
 
 		if (osha != null) {
 			permissions.tryPermission(OpPerms.AuditVerification, OpType.Edit);
-			for (OshaLog osha2 : conAudit.getContractorAccount().getOshas()) {
+			for (OshaAudit osha2 : conAudit.getOshas()) {
 				if (osha2.getId() == osha.getId()) {
-					saveOSHA(osha2.getYear1(), osha.getYear1());
-					saveOSHA(osha2.getYear2(), osha.getYear2());
-					saveOSHA(osha2.getYear3(), osha.getYear3());
+					saveOSHA(osha2, osha);
 				}
 			}
 			auditDao.save(conAudit);
@@ -114,7 +111,7 @@ public class VerifyView extends AuditActionSupport {
 		return SUCCESS;
 	}
 
-	private void saveOSHA(OshaLogYear oldOsha, OshaLogYear newOsha) {
+	private void saveOSHA(OshaAudit oldOsha, OshaAudit newOsha) {
 		oldOsha.setManHours(newOsha.getManHours());
 		oldOsha.setFatalities(newOsha.getFatalities());
 		oldOsha.setLostWorkCases(newOsha.getLostWorkCases());
@@ -122,22 +119,19 @@ public class VerifyView extends AuditActionSupport {
 		oldOsha.setInjuryIllnessCases(newOsha.getInjuryIllnessCases());
 		oldOsha.setRestrictedWorkCases(newOsha.getRestrictedWorkCases());
 		oldOsha.setRecordableTotal(newOsha.getRecordableTotal());
-		oldOsha.setNa(newOsha.getNa());
+		oldOsha.setApplicable(newOsha.isApplicable());
 		oldOsha.setComment(newOsha.getComment());
-		oldOsha.setVerified(newOsha.getVerified());
+		oldOsha.setVerifiedDate(newOsha.getVerifiedDate());
 	}
 
 	private void setVerifiedPercent() {
 		int verified = 0;
 
-		if (osha != null) {
-			if (osha.getYear1() != null && osha.getYear1().getVerified())
-				verified++;
-			if (osha.getYear2() != null && osha.getYear2().getVerified())
-				verified++;
-			if (osha.getYear3() != null && osha.getYear3().getVerified())
+		for (OshaAudit oshaAudit : conAudit.getOshas()) {
+			if (oshaAudit != null && (oshaAudit.isVerified() || !oshaAudit.isApplicable()))
 				verified++;
 		}
+
 		if (getEmr1() != null && YesNo.Yes.equals(getEmr1().getIsCorrect()))
 			verified++;
 		if (getEmr2() != null && YesNo.Yes.equals(getEmr2().getIsCorrect()))
@@ -208,7 +202,7 @@ public class VerifyView extends AuditActionSupport {
 		// Retreive the osha record we selected
 		// or pick the only child if only one exists
 		int counter = 0;
-		for (OshaLog oshaLog : conAudit.getContractorAccount().getOshas()) {
+		for (OshaAudit oshaLog : conAudit.getOshas()) {
 			if (oshaLog.isCorporate()) {
 				counter++;
 				osha = oshaLog;
@@ -259,9 +253,9 @@ public class VerifyView extends AuditActionSupport {
 		return SUCCESS;
 	}
 
-	private void appendOsha(StringBuffer sb, OshaLogYear osha, int year) {
-		if (!osha.getVerified()) {
-			sb.append(year);
+	private void appendOsha(StringBuffer sb, OshaAudit osha) {
+		if (!osha.isVerified()) {
+			sb.append(osha.getConAudit().getAuditFor());
 			sb.append(" OSHA - ");
 			sb.append(osha.getComment());
 			sb.append("\n");
@@ -276,12 +270,12 @@ public class VerifyView extends AuditActionSupport {
 		emailBuilder.setTemplate(11); // PQF Verification
 		emailBuilder.setPermissions(permissions);
 		emailBuilder.setConAudit(conAudit);
-		
+
 		StringBuffer sb = new StringBuffer("");
-		
-		appendOsha(sb, osha.getYear1(), getYear1());
-		appendOsha(sb, osha.getYear2(), getYear2());
-		appendOsha(sb, osha.getYear3(), getYear3());
+
+		for (OshaAudit osha : conAudit.getOshas()) {
+			appendOsha(sb, osha);
+		}
 
 		AuditData temp = getEmr1();
 		if (temp == null || !temp.isVerified()) {
@@ -330,12 +324,12 @@ public class VerifyView extends AuditActionSupport {
 		return SUCCESS;
 	}
 
-	public OshaLog getOsha() {
+	public OshaAudit getOsha() {
 		return osha;
 	}
 
-	public void setOsha(OshaLog oshalog) {
-		this.osha = oshalog;
+	public void setOsha(OshaAudit osha) {
+		this.osha = osha;
 	}
 
 	public int getOshaID() {
