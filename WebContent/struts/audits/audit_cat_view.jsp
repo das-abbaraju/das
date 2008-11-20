@@ -10,25 +10,23 @@
 		<s:if test="linkUrl6 > ''"><a href="http://<s:property value="linkUrl6"/>" target="_BLANK" title="opens in new window"><s:property value="linkText6"/></a></s:if>
 	
 	<span class="answer">
-		<s:if test="questionType == 'Date'">
-			<s:property value="answer.answer" />
-		</s:if>
-		<s:elseif test="questionType == 'File'">
+		<s:if test="questionType == 'File'">
 			<s:if test="answer.answer.length() > 0">
 				<a href="#" onClick="window.open('servlet/showpdf?id=<s:property value="contractor.id"/>&file=pqf<s:property value="answer.answer"/><s:property value="questionID"/>','','scrollbars=yes,resizable=yes,width=700,height=450')">Uploaded</a>
 			</s:if>
 			<s:else>File Not Uploaded</s:else>
-		</s:elseif>
+		</s:if>
+		
 		<s:elseif test="questionType == 'License'">
-			<s:property value="answer.answer" />
+			<s:property value="answer.verifiedAnswerOrAnswer" />
 			<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(question, answer.answer)" escape="false" />
 		</s:elseif>
 		
 		<s:else>
-			<s:if test="answer.unverified && answer.verifiedAnswer.length() > 0">
+			<s:if test="answer.verified && answer.verifiedAnswer.length() > 0">
 				 <s:property value="answer.verifiedAnswer" />&nbsp;&nbsp;<a href="javascript:showAnswer(<s:property value="questionID"/>);" style="color : rgb(168, 77, 16);font-weight : normal;">Changed by PICS</a> 
 			</s:if>
-			<s:else>						
+			<s:else>
 				<s:property value="answer.answer" />
 			</s:else>
 			<s:if test="questionType == 'Manual' && answer.answer.length() > 0">
