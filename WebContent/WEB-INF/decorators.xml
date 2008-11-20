@@ -8,6 +8,7 @@
 		<pattern>/*ajax*</pattern>
 		<pattern>/*CSV.action</pattern>
 		<pattern>/*download*</pattern>
+		<pattern>/Download*</pattern>
 		<pattern>/AuditDataUpload.action</pattern>
 		<pattern>/user_edit.jsp</pattern>
 		<pattern>/exception_handler.jsp</pattern>
