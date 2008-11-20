@@ -1,15 +1,22 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import com.picsauditing.PICS.OperatorBean;
+import com.picsauditing.access.MenuComponent;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -89,6 +96,45 @@ public class ContractorActionSupport extends PicsActionSupport {
 			}
 		}
 		return contractorNonExpiredAudits;
+	}
+
+	public List<MenuComponent> getAuditMenu() {
+		// Figure out which auditTypes are duplicate and which are not
+		Map<AuditType, List<ContractorAudit>> audits = new TreeMap<AuditType, List<ContractorAudit>>();
+		
+		// Take a list of A,B,B,C and convert it into (A)(B,B)(C)
+		for(ContractorAudit audit : getActiveAudits()) {
+			if (!audit.equals(AuditStatus.Exempt)) {
+				AuditType t = audit.getAuditType();
+				if (!audits.containsKey(t))
+					audits.put(t, new ArrayList<ContractorAudit>());
+				audits.get(t).add(audit);
+			}
+		}
+		
+		// Create the menu
+		List<MenuComponent> menu = new ArrayList<MenuComponent>();
+		String url = "Audit.action?auditID=";
+		for(AuditType t : audits.keySet()) {
+			List<ContractorAudit> auditList = audits.get(t);
+			ContractorAudit conAudit = auditList.get(0);
+			if (auditList.size() == 1) {
+				// Just one audit of this type
+				menu.add(new MenuComponent(conAudit.getAuditType().getAuditName(), url + conAudit.getId()));
+			} else {
+				// We have more than one audit of this type, so create a subMenu with multiple children
+				MenuComponent subMenu = new MenuComponent(conAudit.getAuditType().getAuditName(), ""+ conAudit.getAuditType().getAuditTypeID());
+				menu.add(subMenu);
+				
+				for(ContractorAudit audit : auditList) {
+					// Create the linkText
+					// TODO add operator name and maybe the creation date and status too
+					String linkText = audit.getAuditFor();
+					subMenu.addChild(linkText, url + audit.getId());
+				}
+			}
+		}
+		return menu;
 	}
 
 	public List<ContractorOperator> getOperators() {

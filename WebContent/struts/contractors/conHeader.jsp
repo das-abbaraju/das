@@ -45,28 +45,30 @@
 		<li><a href="con_viewForms.jsp?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('con_viewForms')">class="current"</s:if>>Forms & Docs</a></li>
 	</s:if>
-	<li><a <s:if test="requestURI.contains('contractor_audits')">class="current"</s:if> href="ConAuditList.action?id=<s:property value="id" />">Audits</a></li>
-	<s:iterator value="activeAudits" status="stat">
-		<s:if test="auditStatus.toString() != 'Exempt'">
+	<li><a <s:if test="requestURI.contains('contractor_audits')">class="current"</s:if> 
+		href="ConAuditList.action?id=<s:property value="id" />">Audits</a></li>
+	<s:iterator value="auditMenu">
 		<li>
-			<s:if test="#stat.index < 4">
-				<a <s:if test="id == auditID">class="current"</s:if>
-					href="Audit.action?auditID=<s:property value="id"/>"
-					title="<s:date
-			name="effectiveDate" format="MMM yyyy" />"><s:property
-					value="auditType.auditName" /></a>
-			</s:if>
-			<s:else>
-				<a <s:if test="id == auditID">class="current"</s:if>
-					href="Audit.action?auditID=<s:property value="id"/>"
-					title="<s:date
-			name="effectiveDate" format="MMM yyyy" />"><s:property
-					value="auditType.auditName.substring(0,4)" />...</a>
-			</s:else>
-		</li>
+		<s:if test="children.size() > 1">
+			<a class="dropdown" href="#" onmouseover="cssdropdown.dropit(this, event, 'auditSubMenu<s:property value="url" />')"><s:property value="name" /></a>
 		</s:if>
+		<s:else>
+			<a href="<s:property value="url" />"><s:property value="name" /></a>
+		</s:else>
+		</li>
 	</s:iterator>
 </ul>
+<s:iterator value="auditMenu">
+<s:if test="children.size() > 1">
+	<div id="auditSubMenu<s:property value="url" />" class="auditSubMenu">
+	<ul>
+	<s:iterator value="children">
+		<li><a href="<s:property value="url" />"><span><s:property value="name" /></span></a></li>
+	</s:iterator>
+	</ul>
+	</div>
+</s:if>
+</s:iterator>
 </div>
 
 <s:if test="auditID > 0">

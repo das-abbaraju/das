@@ -150,7 +150,7 @@ a img {
 }
 
 #content {
-	position: relative;
+	//position: relative;
 	margin: 0;
 	padding: 45px;
 	height : 100%;
@@ -407,11 +407,11 @@ div.message_info {
 }
 
 /******************** Internal Page Navigation  ************************/
-#internalnavcontainer {
-	display: block;
-	height: 45px;
+#content #internalnavcontainer {
+	//display: block;
+	height: 30px;
 	width: 100%;
-	position: relative;
+	//position: relative;
 }
 
 ul#navlist {
@@ -456,6 +456,10 @@ ul#navlist {
 	color: #fff;
 	background-color: rgb(168, 77, 16);
 	text-decoration: none;
+}
+#navlist a.dropdown {
+	background: #003768 url('../images/down.gif') no-repeat right center;
+	padding-right: 18px;
 }
 
 /************* Search *************/
@@ -653,8 +657,8 @@ button.positive, .buttons a.positive {
 #helpbox {
 	position: absolute;
 	background-color: #ECECEC;
-	top: 0px;
-	right: 0px;
+	top: 124px;
+	right: 21px;
 	font-size: 12px;
 	padding: 5px;
 	line-height: 18px;
@@ -671,8 +675,8 @@ button.positive, .buttons a.positive {
 
 #chatIcon {
 	position: absolute;
-	top: 29px;
-	right: 2px;
+	top: 153px;
+	right: 23px;
 	font-size: 12px;
 	padding: 1px;
 	line-height: 18px;

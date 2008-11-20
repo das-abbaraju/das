@@ -21,8 +21,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "audit_type")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="global")
-public class AuditType {
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
+public class AuditType implements Comparable<AuditType> {
 	public static final int PQF = 1;
 	public static final int DESKTOP = 2;
 	public static final int OFFICE = 3;
@@ -30,19 +30,20 @@ public class AuditType {
 	public static final int DA = 6;
 	public static final int WELCOME = 9;
 	public static final int ANNUALADDENDUM = 11;
-	
+
 	public static String DEFAULT_AUDITTYPE = "- Audit -";
 
-	public AuditType() {}
-	
+	public AuditType() {
+	}
+
 	public AuditType(String name) {
 		this.auditName = name;
 	}
-	
+
 	public AuditType(int id) {
 		this.auditTypeID = id;
 	}
-	
+
 	protected int auditTypeID;
 
 	protected String auditName;
@@ -57,7 +58,7 @@ public class AuditType {
 	@Deprecated
 	protected Date dateToExpire;
 	protected int displayOrder = 100;
-	
+
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
 
 	@Id
@@ -94,7 +95,7 @@ public class AuditType {
 		this.hasMultiple = hasMultiple;
 	}
 
-	@Column( name="isScheduled")
+	@Column(name = "isScheduled")
 	public boolean isScheduled() {
 		return isScheduled;
 	}
@@ -170,10 +171,9 @@ public class AuditType {
 		this.categories = categories;
 	}
 
-
-
 	/**
 	 * Return the name of the icon we use on reports for each audit type
+	 * 
 	 * @param auditTypeID
 	 * @return
 	 */
@@ -187,9 +187,9 @@ public class AuditType {
 			auditType = "Office";
 		if (auditTypeID == AuditType.DA)
 			auditType = "DA";
-		return "icon_"+auditType+".gif";
+		return "icon_" + auditType + ".gif";
 	}
-	
+
 	@Transient
 	public boolean isShowManual() {
 		if (this.auditTypeID == OFFICE)
@@ -213,7 +213,6 @@ public class AuditType {
 		return false;
 	}
 
-
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;
@@ -236,5 +235,9 @@ public class AuditType {
 		return true;
 	}
 
+	@Override
+	public int compareTo(AuditType o) {
+		return (this.displayOrder - o.displayOrder);
+	}
 
 }
