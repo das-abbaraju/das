@@ -34,6 +34,7 @@ display:inline;
 	float:left;
 	margin:0;
 	padding:0;
+	cursor: default;
 }
 #tab a {
 	background:#000000 url("../images/bright_022.gif") no-repeat right top;

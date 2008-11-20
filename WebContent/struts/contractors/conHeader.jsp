@@ -4,7 +4,7 @@
 <h1><s:property value="contractor.name" /><span class="sub">
 <s:if test="auditID > 0">
 	<s:property value="conAudit.auditType.auditName" />
-	<s:if test="conAudit.auditFor.length() > 0">for <s:property value="conAudit.auditFor"/></s:if>
+	<s:if test="conAudit.auditFor != null">for <s:property value="conAudit.auditFor"/></s:if>
 	<s:else>- <s:date name="conAudit.effectiveDate" format="MMM yyyy" /></s:else>
 </s:if> <s:else>
 	<s:property value="subHeading" />
@@ -125,7 +125,7 @@
 	</fieldset>
 	<fieldset>
 	<ul>
-		<s:if test="conAudit.auditFor.length() > 0">
+		<s:if test="conAudit.auditFor != null">
 			<li><label>For:</label>
 				<s:property value="conAudit.auditFor"/>
 			</li>
