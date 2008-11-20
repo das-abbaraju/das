@@ -386,7 +386,7 @@ public class AuditBuilder {
 		}
 		if (!found) {
 			Calendar startDate = Calendar.getInstance();
-			startDate.set(year, 1, 1);
+			startDate.set(year, 11, 31);
 			System.out.println("Adding: " + auditType.getAuditTypeID() + auditType.getAuditName());
 			currentAudits.add(cAuditDAO.addPending(auditType, contractor, Integer.toString(year), startDate.getTime()));
 		}

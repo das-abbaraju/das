@@ -23,8 +23,9 @@
 	<tr>
 		<th>Type</th>
 		<th>Status</th>
-		<th>Created</th>
 		<th>For</th>
+		<th>Created</th>
+		<th>Operator</th>
 		<th>Auditor</th>
 		<th>Scheduled</th>
 		<th>Submitted</th>
@@ -39,6 +40,7 @@
 		<tr>
 			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
 			<td><s:property value="auditStatus" /></td>
+			<td><s:property value="auditFor"/></td>
 			<td><s:date name="createdDate" format="M/d/yy" /></td>
 			<td><s:property value="requestingOpAccount.name" /></td>
 			<td><s:property value="auditor.name" /></td>
@@ -67,8 +69,9 @@
 	<tr>
 		<th>Type</th>
 		<th>Status</th>
-		<th>Closed</th>
 		<th>For</th>
+		<th>Closed</th>
+		<th>Operator</th>
 		<th>Auditor</th>
 		<th>Expires</th>
 		<th>View</th>
@@ -81,6 +84,7 @@
 		<tr>
 			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
 			<td><s:property value="auditStatus" /></td>
+			<td><s:property value="auditFor"/></td>
 			<td><s:date name="closedDate" format="M/d/yy" /></td>
 			<td><s:property value="requestingOpAccount.name" /></td>
 			<td><s:property value="auditor.name" /></td>
@@ -101,6 +105,7 @@
 	<tr>
 		<th>Type</th>
 		<th>For</th>
+		<th>Operator</th>
 		<th>Expired</th>
 		<th>View</th>
 		<pics:permission perm="AuditCopy">
@@ -111,6 +116,7 @@
 	<s:iterator value="expiredAudits" status="auditStatus">
 		<tr>
 			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
+			<td><s:property value="auditFor"/></td>
 			<td><s:property value="requestingOpAccount.name" /></td>
 			<td><s:date name="expiresDate" format="M/d/yy" /></td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />">View</a></td>
