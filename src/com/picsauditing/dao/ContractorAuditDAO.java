@@ -13,11 +13,9 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.OshaLog;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
 
@@ -175,20 +173,19 @@ public class ContractorAuditDAO extends PicsDAO {
 		return addPending(auditType, contractor, null, null);
 	}
 
-	public ContractorAudit addPending(AuditType auditType, ContractorAccount contractor, 
-			String auditFor, Date startDate) {
+	public ContractorAudit addPending(AuditType auditType, ContractorAccount contractor, String auditFor, Date startDate) {
 		ContractorAudit cAudit = new ContractorAudit();
 		cAudit.setContractorAccount(contractor);
 		cAudit.setAuditType(auditType);
 		cAudit.setAuditFor(auditFor);
-		
+
 		if (startDate != null) {
 			Date dateToExpire = DateBean.addMonths(startDate, auditType.getMonthsToExpire());
 			cAudit.setExpiresDate(dateToExpire);
 		}
 		return this.save(cAudit);
 	}
-	
+
 	public List<ContractorAccount> findContractorsWithExpiringAudits() {
 		int startDay = 59; // between 50 and 70 days in the future
 		int range = 10;
@@ -206,5 +203,5 @@ public class ContractorAuditDAO extends PicsDAO {
 
 		return query.getResultList();
 	}
-	
+
 }

@@ -27,7 +27,7 @@
 	<bean id="ContractorOperatorFlagDAO" class="com.picsauditing.dao.ContractorOperatorFlagDAO" scope="prototype"/>
 	<bean id="DesktopMatrixDAO" class="com.picsauditing.dao.DesktopMatrixDAO" scope="prototype"/>
 	<bean id="OperatorAccountDAO" class="com.picsauditing.dao.OperatorAccountDAO" scope="prototype"/>
-	<bean id="OshaLogDAO" class="com.picsauditing.dao.OshaLogDAO" scope="prototype"/>
+	<bean id="OshaAuditDAO" class="com.picsauditing.dao.OshaAuditDAO" scope="prototype"/>
 	<bean id="RulesRowDAO" class="com.picsauditing.dao.RulesRowDAO" scope="prototype"/>
 	<bean id="UserDAO" class="com.picsauditing.dao.UserDAO" scope="prototype"/>
 	<bean id="UserAccessDAO" class="com.picsauditing.dao.UserAccessDAO" scope="prototype"/>

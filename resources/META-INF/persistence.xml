@@ -43,8 +43,7 @@
   <class>com.picsauditing.jpa.entities.NoteStatus</class>
   <class>com.picsauditing.jpa.entities.OperatorAccount</class>
   <class>com.picsauditing.jpa.entities.OperatorForm</class>
-  <class>com.picsauditing.jpa.entities.OshaLog</class>
-  <class>com.picsauditing.jpa.entities.OshaLogYear</class> 
+  <class>com.picsauditing.jpa.entities.OshaAudit</class>
   <class>com.picsauditing.jpa.entities.OshaType</class>
   <class>com.picsauditing.jpa.entities.RulesRow</class>
   <class>com.picsauditing.jpa.entities.State</class>
