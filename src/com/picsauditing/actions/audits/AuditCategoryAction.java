@@ -62,7 +62,8 @@ public class AuditCategoryAction extends AuditActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		if (catID > 0) {
+		if (auditID == 0 && catID > 0) {
+			// Just Preview the Audit
 			AuditCategory auditCategory = auditCategoryDAO.find(catID);
 			for (AuditSubCategory auditSubCategory : auditCategory.getSubCategories()) {
 				for (AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
@@ -82,9 +83,14 @@ public class AuditCategoryAction extends AuditActionSupport {
 		getCategories();
 
 		Map<Integer, AuditData> answers = null;
-		if (catDataID > 0) {
+		if (catDataID > 0 || catID > 0) {
 			for (AuditCatData catData : categories) {
-				if (catData.getId() == catDataID) {
+				// We can open audits using either the catID or the catDataID
+				if (catData.getId() == catDataID || catData.getCategory().getId() == catID) {
+					// Set the other one that isn't set
+					catDataID = catData.getId();
+					catID = catData.getCategory().getId();
+					
 					answers = auditDataDao.findByCategory(auditID, catData.getCategory());
 					fillAnswers(catData, answers);
 					currentCategory = catData;
