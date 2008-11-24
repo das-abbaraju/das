@@ -12,6 +12,7 @@
 	<s:if test="catDataID > 0">
 		<tr>
 			<td class="arrows" rowspan="2">&lt;&lt;</td>
+
 			<td class="previous"><s:if test="previousCategory != null">
 			<b>PREVIOUS CATEGORY</b><br />
 				<a
@@ -20,7 +21,7 @@
 			</s:if> <s:else>
 				<a href="Audit.action?auditID=<s:property value="auditID"/>">START</a>
 			</s:else></td>
-			<td class="previous"><s:if test="previousAudit">
+			<td style="width: 8%;" class="previous"><s:if test="previousAudit">
 			<b>PREVIOUS YEAR</b><br />
 				<a
 					href="AuditCat.action?auditID=<s:property value="previousAudit.id"/>&catID=<s:property value="currentCategory.category.id"/>&mode=<s:property value="mode"/>"><s:property
@@ -30,7 +31,7 @@
 				href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="currentCategory.id"/>&mode=<s:property value="mode"/>"><s:property
 				value="currentCategory.category.category" /></a></td>
 
-			<td class="next"><s:if test="nextAudit != null">
+			<td style="width: 8%;" class="next"><s:if test="nextAudit != null">
 			<b>NEXT YEAR</b><br />
 				<a
 					href="AuditCat.action?auditID=<s:property value="nextAudit.id"/>&catID=<s:property value="currentCategory.category.id"/>&mode=<s:property value="mode"/>"><s:property
