@@ -1,8 +1,12 @@
 package com.picsauditing.jpa.entities;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,7 +18,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -72,10 +75,14 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private int annualUpdateEmails;
 	private String oqEmployees;
 
-	protected List<ContractorAudit> audits;
-	protected List<ContractorOperator> operators;
-	protected List<Certificate> certificates;
-	protected Map<OperatorAccount, ContractorOperatorFlag> flags;
+	protected List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
+	protected List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
+	protected List<Certificate> certificates = new ArrayList<Certificate>();
+	protected Map<OperatorAccount, ContractorOperatorFlag> flags = new HashMap<OperatorAccount, ContractorOperatorFlag>();
+
+	// Transient helper methods
+	protected Map<String, OshaAudit> oshas = null;
+	protected Map<String, AuditData> emrs = null;
 
 	public ContractorAccount() {
 		this.type = "Contractor";
@@ -608,5 +615,135 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			if (lastInvoiceDate != null && lastInvoiceDate.before(new Date()))
 				return true;
 		return false;
+	}
+	
+	@Transient
+	/**
+	 * Get a map of the last 3 years of applicable osha data (verified or not)
+	 */
+	public Map<String, OshaAudit> getOshas() {
+		if (oshas != null)
+			return oshas;
+		
+		oshas = new TreeMap<String, OshaAudit>();
+		
+		for (ContractorAudit audit : getAudits()) {
+			if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM
+				&& audit.getAuditStatus().isActiveSubmitted()) {
+				// Store the corporate OSHA rates into a map for later use
+				for(OshaAudit osha : audit.getOshas())
+					if (osha.isCorporate() && osha.isApplicable())
+						oshas.put(audit.getAuditFor(), osha);
+			}
+		}
+		
+		int count = oshas.size();
+		if (count > 3) {
+			System.out.println("Unhandled error getting OSHA logs for contractor " + id);
+			// TODO handle this situation somehow
+			// like remove submitted records, or don't consider years before 3 years ago
+		}
+		if (count > 0) {
+			// Add in the average for the past 3 years
+			OshaAudit avg = new OshaAudit();
+			avg.setLostWorkCasesRate(0);
+			avg.setRecordableTotalRate(0);
+			
+			float manHours = 0;
+			float fatalities = 0;
+			float injuries = 0;
+			float lwc = 0;
+			float lwcr = 0;
+			float lwd = 0;
+			float tri = 0;
+			float trir = 0;
+			float rwc = 0;
+			
+			for(String key : oshas.keySet()) {
+				OshaAudit osha = oshas.get(key);
+				avg.setFactor(osha.getFactor());
+				avg.setApplicable(true);
+				avg.setConAudit(osha.getConAudit());
+				
+				manHours += osha.getManHours();
+				fatalities += osha.getFatalities();
+				injuries += osha.getInjuryIllnessCases();
+				lwc += osha.getLostWorkCases();
+				lwcr += osha.getLostWorkCasesRate();
+				lwd += osha.getLostWorkDays();
+				tri += osha.getRecordableTotal();
+				trir += osha.getRecordableTotalRate();
+				rwc += osha.getRestrictedWorkCases();
+			}
+			avg.setManHours(Math.round(manHours / count));
+			avg.setFatalities(Math.round(fatalities / count));
+			avg.setInjuryIllnessCases(Math.round(injuries / count));
+			avg.setLostWorkCases(Math.round(lwc / count));
+			avg.setLostWorkCasesRate(lwcr / count);
+			avg.setLostWorkDays(Math.round(lwd / count));
+			avg.setRecordableTotal(Math.round(tri / count));
+			avg.setRecordableTotalRate(trir / count);
+			avg.setRestrictedWorkCases(Math.round(rwc / count));
+			
+			oshas.put(OshaAudit.AVG, avg);
+		}
+		return oshas;
+	}
+	
+	@Transient
+	/**
+	 * Get a map of the last 3 years of applicable emr data (verified or not)
+	 */
+	public Map<String, AuditData> getEmrs() throws Exception {
+		if (emrs != null)
+			return emrs;
+		
+		emrs = new HashMap<String, AuditData>();
+		
+		for (ContractorAudit audit : getAudits()) {
+			if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM
+				&& audit.getAuditStatus().isActiveSubmitted()) {
+				// Store the EMR rates into a map for later use
+				for(AuditData answer : audit.getData())
+					if (answer.getQuestion().getQuestionID() == AuditQuestion.EMR)
+						emrs.put(audit.getAuditFor(), answer);
+			}
+		}
+		int count = emrs.size();
+		if (count > 3) {
+			System.out.println("Unhandled error getting EMR data for contractor " + id);
+			// TODO handle this situation somehow
+			// like remove submitted records, or don't consider years before 3 years ago
+		}
+		if (count > 0) {
+			AuditData avg = new AuditData();
+			avg.setVerified(true);
+			float rateTotal = 0;
+			// Reset this to zero because we're not sure how many answers we'll actually be able to parse
+			count = 0;
+			for(String key : emrs.keySet()) {
+				AuditData emr = emrs.get(key);
+				avg.setAudit(emr.getAudit());
+				AuditQuestion avgQuestion = new AuditQuestion();
+				avgQuestion.setQuestionID(AuditQuestion.EMR_AVG);
+				// We may just want to query the EMR question from the DB
+				avgQuestion.setQuestion("Average EMR");
+				avg.setQuestion(avgQuestion);
+				if (emr.isUnverified())
+					avg.setVerified(false);
+				try {
+					float rate = Float.parseFloat(emr.getVerifiedAnswerOrAnswer());
+					rateTotal += rate;
+					count++;
+				} catch (Exception e) {
+					System.out.println("Failed to parse EMR rate:" + emr.getVerifiedAnswerOrAnswer() + " for contractor " + id);
+				}
+			}
+			float avgRateFloat = rateTotal / count;
+			//avgRateFloat = Math.round(100 * avgRateFloat) / 100;
+			avg.setAnswer(Float.toString(avgRateFloat));
+			emrs.put(OshaAudit.AVG, avg);
+		}
+		return emrs;
 	}
 }

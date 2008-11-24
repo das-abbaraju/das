@@ -33,6 +33,10 @@ public class OshaAudit implements java.io.Serializable {
 	 * The location of the osha files within the FTP dir
 	 */
 	public static final String OSHA_DIR = "/files/oshas/";
+	/**
+	 * Key used when creating a map of osha data including the past 3 year average
+	 */
+	public static final String AVG = "Average";
 	private int id;
 
 	private Date creationDate;
@@ -59,6 +63,9 @@ public class OshaAudit implements java.io.Serializable {
 	private String comment;
 
 	private FlagColor flagColor;
+	private Float trir = null;
+	private Float lwcr = null;
+	
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -239,8 +246,19 @@ public class OshaAudit implements java.io.Serializable {
 	}
 
 	@Transient
+	/**
+	 * Get the LWCR, you can call setLostWorkCasesRate()
+	 * if you don't want this to automatically calculate, 
+	 * for example, in an average rate calculation.
+	 */
 	public float getLostWorkCasesRate() {
-		return calculateRate(lostWorkCases);
+		if (lwcr == null)
+			lwcr = calculateRate(lostWorkCases);
+		return lwcr;
+	}
+	
+	public void setLostWorkCasesRate(float rate) {
+		this.lwcr = rate;
 	}
 
 	@Transient
@@ -259,8 +277,19 @@ public class OshaAudit implements java.io.Serializable {
 	}
 
 	@Transient
+	/**
+	 * Get the TRIR, you can call setRecordableTotalRate() 
+	 * if you don't want this to automatically calculate, 
+	 * for example, in an average rate calculation.
+	 */
 	public float getRecordableTotalRate() {
-		return calculateRate(recordableTotal);
+		if (trir == null)
+			trir = calculateRate(recordableTotal);
+		return trir;
+	}
+
+	public void setRecordableTotalRate(float rate) {
+		this.trir = rate;
 	}
 
 	@Transient

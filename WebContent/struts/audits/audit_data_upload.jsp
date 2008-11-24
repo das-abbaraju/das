@@ -31,7 +31,8 @@
 <div id="main">
 <div id="bodyholder">
 <div id="content">
-<h1> Upload <s:if test="question.columnHeader != null && question.columnHeader.length() > 0"><s:property value="question.columnHeader"/></s:if> File 
+
+<h1> Upload <s:property value="conAudit.auditFor"/> <s:property value="question.columnHeader"/> File 
 <span class="sub"><s:property value="question.subCategory.category.category"/> &gt; <s:property value="question.subCategory.subCategory"/></span>
 </h1>
 <s:include value="../actionMessages.jsp" />

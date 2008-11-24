@@ -1,6 +1,7 @@
 package com.picsauditing.PICS;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,8 +19,7 @@ import com.picsauditing.jpa.entities.FlagOshaCriteria;
 import com.picsauditing.jpa.entities.FlagOshaCriterion;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OshaLog;
-import com.picsauditing.jpa.entities.OshaLogYear;
+import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
 
@@ -75,7 +75,7 @@ public class FlagCalculatorSingle {
 			return overrideColor;
 		
 		debug(" flagColor=" + flagColor);
-
+		
 		for (AuditOperator audit : operator.getAudits()) {
 			// Always start with Green
 			audit.setContractorFlag(FlagColor.Green);
@@ -85,6 +85,8 @@ public class FlagCalculatorSingle {
 				// The contractor requires this audit, make sure they have an
 				// active one
 				audit.setContractorFlag(audit.getRequiredForFlag());
+				
+				int annualAuditCount = 0;
 				for (ContractorAudit conAudit : conAudits) {
 					if (conAudit.getAuditStatus().equals(AuditStatus.Active) 
 							|| conAudit.getAuditStatus().equals(audit.getRequiredAuditStatus()) // for Submitted Audit
@@ -95,9 +97,20 @@ public class FlagCalculatorSingle {
 							// We found a matching active audit for this
 							// contractor
 							debug(" ---- found");
-							audit.setContractorFlag(FlagColor.Green);
+							
+							if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM) {
+								// OSHA/EMR Audits may have additional requirements depending on operator settings
+								// Store the corporate records into a map for later use
+								annualAuditCount++;
+							} else {
+								audit.setContractorFlag(FlagColor.Green);
+							}
 						}
 					}
+				}
+				if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM && annualAuditCount >= 3) {
+					// Make sure we have three annual addendums
+					audit.setContractorFlag(FlagColor.Green);
 				}
 				// If an active audit doesn't exist, then set
 				// the contractor's flag to the required color
@@ -110,57 +123,37 @@ public class FlagCalculatorSingle {
 
 		debug(" flagColor=" + flagColor);
 
-		for (OshaLog osha : contractor.getOshas()) {
-			// The flag colors should always start Green, but sometimes they are still set from the previous operator's loop
-			osha.setFlagColor(FlagColor.Green);
-			osha.getYear1().setFlagColor(FlagColor.Green);
-			osha.getYear2().setFlagColor(FlagColor.Green);
-			osha.getYear3().setFlagColor(FlagColor.Green);
+		// Initialize the flag color to the default Green
+		for (String key : contractor.getOshas().keySet()) {
+			contractor.getOshas().get(key).setFlagColor(FlagColor.Green);
 		}
 
 		for (FlagOshaCriteria criteria : operator.getFlagOshaCriteria()) {
 			if (criteria.isRequired()) {
-				debug(" -- osha ");
-				boolean found = false;
-				for (OshaLog osha : contractor.getOshas()) {
-					if (osha.isCorporate()) {
-						found = true;
-						// Calculate the flag color for Average calculations (if any)
-						FlagColor oshaAvgFlag = FlagColor.Green;
-						if (criteria.getLwcr().isTimeAverage()) {
-							if (criteria.getLwcr().isFlagged(osha.getAverageLwcr()))
-								oshaAvgFlag = setFlagColor(oshaAvgFlag, criteria.getFlagColor());
-						}
-						if (criteria.getTrir().isTimeAverage()) {
-							if (criteria.getTrir().isFlagged(osha.getAverageTrir()))
-								oshaAvgFlag = setFlagColor(oshaAvgFlag, criteria.getFlagColor());
-						}
-						if (criteria.getFatalities().isTimeAverage()) {
-							if (criteria.getFatalities().isFlagged(osha.getAverageFatalities()))
-								oshaAvgFlag = setFlagColor(oshaAvgFlag, criteria.getFlagColor());
-						}
-						
-						// Set the flag color for the average years
-						// and then add it to the "rolling total"
-						oshaAvgFlag = setFlagColor(osha.getFlagColor(), oshaAvgFlag);
-						osha.setFlagColor(oshaAvgFlag);
-						
-						flagColor = setFlagColor(flagColor, oshaAvgFlag);
-
-						// Make sure all three years pass the criteria
-						flagColor = setFlagColor(flagColor, verifyOsha(osha.getYear1(), criteria));
-						flagColor = setFlagColor(flagColor, verifyOsha(osha.getYear2(), criteria));
-						flagColor = setFlagColor(flagColor, verifyOsha(osha.getYear3(), criteria));
-
+				debug(" -- osha " + criteria.getFlagColor()); // Red or Amber
+				
+				for (String key : contractor.getOshas().keySet()) {
+					OshaAudit osha = contractor.getOshas().get(key);
+					if ((key.equals(OshaAudit.AVG) && criteria.getLwcr().isTimeAverage())
+							|| (!key.equals(OshaAudit.AVG) && !criteria.getLwcr().isTimeAverage())
+							) {
+						if (criteria.getLwcr().isFlagged(osha.getLostWorkCasesRate()))
+							osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
 					}
+					if ((key.equals(OshaAudit.AVG) && criteria.getTrir().isTimeAverage())
+							|| (!key.equals(OshaAudit.AVG) && !criteria.getTrir().isTimeAverage())
+							) {
+						if (criteria.getTrir().isFlagged(osha.getRecordableTotalRate()))
+							osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+					}
+					if ((key.equals(OshaAudit.AVG) && criteria.getFatalities().isTimeAverage())
+							|| (!key.equals(OshaAudit.AVG) && !criteria.getFatalities().isTimeAverage())
+							) {
+						if (criteria.getFatalities().isFlagged(osha.getFatalities()))
+							osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+					}
+					flagColor = setFlagColor(flagColor, osha.getFlagColor());
 				}
-				if (!found)
-					// We didn't find the required Corporate Osha record, so
-					// flag this contractor
-					// We may actually not want to do this if for some reason a
-					// contractor
-					// is allowed to pass their
-					flagColor = setFlagColor(flagColor, criteria.getFlagColor());
 
 				if (answerOnly && flagColor.equals(FlagColor.Red))
 					// Things can't get worse, just exit
@@ -168,7 +161,7 @@ public class FlagCalculatorSingle {
 			}
 		}
 		debug(" flagColor=" + flagColor);
-
+		
 		for (Integer dataID : auditAnswers.keySet()) {
 			// The flag colors should always start Green, but sometimes they are still set from the previous operator's loop
 			auditAnswers.get(dataID).setFlagColor(FlagColor.Green);
@@ -410,40 +403,6 @@ public class FlagCalculatorSingle {
 		} catch (Exception e) {
 			return NA;
 		}
-	}
-
-	private FlagColor verifyOsha(OshaLogYear osha, FlagOshaCriteria criteria) {
-		FlagColor oshaYearFlag = osha.getFlagColor();
-		if (oshaYearFlag == null)
-			oshaYearFlag = FlagColor.Green;
-
-		debug(" ---- criteria.getFlagColor() " + criteria.getFlagColor() + osha.isApplicable());
-		if (osha.isApplicable()) {
-			boolean flagged = false;
-			debug(" ---- LWCR ");
-			flagged = isCriteriaFlagged(criteria.getLwcr(), osha.getLostWorkCasesRate(), flagged);
-			debug(" ---- TRIR ");
-			flagged = isCriteriaFlagged(criteria.getTrir(), osha.getRecordableTotalRate(), flagged);
-			debug(" ---- Fatal ");
-			flagged = isCriteriaFlagged(criteria.getFatalities(), osha.getFatalities(), flagged);
-			
-			if (flagged)
-				oshaYearFlag = setFlagColor(oshaYearFlag, criteria.getFlagColor());
-		}
-		osha.setFlagColor(oshaYearFlag);
-		debug(" -- oshaYearFlag = " + oshaYearFlag);
-		return oshaYearFlag;
-	}
-	
-	private boolean isCriteriaFlagged(FlagOshaCriterion criterion, float rate, boolean flagged) {
-		if (!criterion.isTimeAverage()) {
-			boolean tempFlagged = criterion.isFlagged(rate);
-			if (tempFlagged)
-				flagged = true;
-			debug(" ----- " + tempFlagged + 
-					" criteria:" + criterion.toString() + " value:" + rate);
-		}
-		return flagged;
 	}
 
 	/**

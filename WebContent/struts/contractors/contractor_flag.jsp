@@ -152,121 +152,94 @@
 				<td>Year</td>
 				<s:if test="oshaFatalitiesUsed">
 					<td>Fatalities</td>
-					<td>Fatalities<br />Criteria</td>
+					<td>Criteria</td>
 				</s:if>
 				<s:if test="oshaLwcrUsed">
 					<td>LWCR</td>
-					<td>LWCR<br />Criteria</td>
+					<td>Criteria</td>
 				</s:if>
 				<s:if test="oshaTrirUsed">
 					<td>TRIR</td>
-					<td>TRIR<br />Criteria</td>
+					<td>Criteria</td>
 				</s:if>
+				<td></td>
 			</tr>
 		</thead>
 		<s:iterator value="contractor.oshas">
-			<s:if test="corporate">
-				<tr class="<s:property value="year1.flagColor" />">
-					<td class="center"><s:property
-						value="year1.flagColor.smallIcon" escape="false" /></td>
-					<td>2007</td>
-					<s:if test="oshaFatalitiesUsed">
-						<td class="right"><s:property value="year1.fatalities" /></td>
-						<td rowspan="3" style="vertical-align: middle;">
-							<s:iterator value="co.operatorAccount.flagOshaCriteria">
-							<s:if test="fatalities.required">
+			<tr class="<s:property value="value.flagColor" />">
+				<td class="center"><s:property
+					value="value.flagColor.smallIcon" escape="false" /></td>
+				<td><s:property value="key" /></td>
+				<s:if test="oshaFatalitiesUsed">
+					<td class="right"><s:property value="value.fatalities" /></td>
+					<td style="vertical-align: middle;">
+						<s:iterator value="co.operatorAccount.flagOshaCriteria">
+							<s:if test="fatalities.required && !key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG)">
 								&gt; <s:property value="fatalities.hurdle"/> = <s:property value="flagColor"/><br />
 							</s:if>
-							</s:iterator>
-						</td>
-					</s:if>
-					<s:if test="oshaLwcrUsed">
-						<td class="right"><s:property value="%{new java.text.DecimalFormat('#,##0.000').format(year1.lostWorkCasesRate)}" /></td>
-						<td rowspan="3" style="vertical-align: middle;">
-							<s:iterator value="co.operatorAccount.flagOshaCriteria">
-							<s:if test="lwcr.required && !lwcr.timeAverage">
+						</s:iterator>
+					</td>
+				</s:if>
+				<s:if test="oshaLwcrUsed">
+					<td class="right"><s:property value="%{new java.text.DecimalFormat('#,##0.000').format(value.lostWorkCasesRate)}" /></td>
+					<td style="vertical-align: middle;">
+						<s:iterator value="co.operatorAccount.flagOshaCriteria">
+						<s:if test="lwcr.required">
+							<s:if test="(key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && lwcr.timeAverage) || (!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !lwcr.timeAverage)">
 								&gt; <s:property value="lwcr.hurdle"/> = <s:property value="flagColor"/><br />
 							</s:if>
-							</s:iterator>
-						</td>
-					</s:if>
-					<s:if test="oshaTrirUsed">
-						<td class="right"><s:property
-							value="%{new java.text.DecimalFormat('#,##0.000').format(year1.recordableTotalRate)}" /></td>
-						<td rowspan="3" style="vertical-align: middle;">
-							<s:iterator value="co.operatorAccount.flagOshaCriteria">
-							<s:if test="trir.required && !trir.timeAverage">
-								&gt; <s:property value="trir.hurdle"/> = <s:property value="flagColor"/><br />
-							</s:if>
-							</s:iterator>
-						</td>
-					</s:if>
-				</tr>
-				<tr class="<s:property value="year2.flagColor" />">
-					<td class="center"><s:property
-						value="year2.flagColor.smallIcon" escape="false" /></td>
-					<td>2006</td>
-					<s:if test="oshaFatalitiesUsed">
-						<td class="right"><s:property value="year2.fatalities" /></td>
-					</s:if>
-					<s:if test="oshaLwcrUsed">
-						<td class="right"><s:property value="%{new java.text.DecimalFormat('#,##0.000').format(year2.lostWorkCasesRate)}" /></td>
-					</s:if>
-					<s:if test="oshaTrirUsed">
-						<td class="right"><s:property
-							value="%{new java.text.DecimalFormat('#,##0.000').format(year2.recordableTotalRate)}" /></td>
-					</s:if>
-				</tr>
-				<tr class="<s:property value="year3.flagColor" />">
-					<td class="center"><s:property
-						value="year3.flagColor.smallIcon" escape="false" /></td>
-					<td>2005</td>
-					<s:if test="oshaFatalitiesUsed">
-						<td class="right"><s:property value="year3.fatalities" /></td>
-					</s:if>
-					<s:if test="oshaLwcrUsed">
-						<td class="right"><s:property value="%{new java.text.DecimalFormat('#,##0.000').format(year3.lostWorkCasesRate)}" /></td>
-					</s:if>
-					<s:if test="oshaTrirUsed">
-						<td class="right"><s:property
-							value="%{new java.text.DecimalFormat('#,##0.000').format(year3.recordableTotalRate)}" /></td>
-					</s:if>
-				</tr>
-				<s:if test="oshaAveragesUsed">
-					<tr class="<s:property value="flagColor" />">
-						<td class="center"><s:property value="flagColor.smallIcon"
-							escape="false" /></td>
-						<td>Avg</td>
-						<s:if test="oshaFatalitiesUsed">
-							<td class="right">N/A</td>
-							<td></td>
 						</s:if>
-						<s:if test="oshaLwcrUsed">
-							<td class="right"><s:property value="%{new java.text.DecimalFormat('#,##0.000').format(averageLwcr)}" /></td>
-							<td>
-								<s:iterator value="co.operatorAccount.flagOshaCriteria">
-								<s:if test="lwcr.required && lwcr.timeAverage">
-									&gt; <s:property value="lwcr.hurdle"/> = <s:property value="flagColor"/><br />
-								</s:if>
-								</s:iterator>
-							</td>
-						</s:if>
-						<s:if test="oshaTrirUsed">
-							<td class="right"><s:property value="%{new java.text.DecimalFormat('#,##0.000').format(averageTrir)}" /></td>
-							<td>
-								<s:iterator value="co.operatorAccount.flagOshaCriteria">
-								<s:if test="trir.required && trir.timeAverage">
-									&gt; <s:property value="trir.hurdle"/> = <s:property value="flagColor"/><br />
-								</s:if>
-								</s:iterator>
-							</td>
-						</s:if>
-					</tr>
+						</s:iterator>
+					</td>
 				</s:if>
-			</s:if>
+				<s:if test="oshaTrirUsed">
+					<td class="right"><s:property
+						value="%{new java.text.DecimalFormat('#,##0.000').format(value.recordableTotalRate)}" /></td>
+					<td style="vertical-align: middle;">
+						<s:iterator value="co.operatorAccount.flagOshaCriteria">
+						<s:if test="trir.required">
+							<s:if test="(key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && trir.timeAverage) || (!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !trir.timeAverage)">
+	 							&gt; <s:property value="trir.hurdle"/> = <s:property value="flagColor"/><br />
+	 						</s:if>
+						</s:if>
+						</s:iterator>
+					</td>
+				</s:if>
+				<td>
+					<s:if test="!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG)">
+						<a href="AuditCat.action?auditID=<s:property value="value.conAudit.id"/>&catID=151">Show</a>
+					</s:if>
+				</td>
+			</tr>
 		</s:iterator>
 	</table>
 </s:if>
+</s:if>
+
+<s:if test="contractor.emrs.size > 0">
+	<table class="report" style="clear: none">
+		<thead>
+			<tr>
+				<td>Flag</td>
+				<td>EMR</td>
+				<td>Rate</td>
+			</tr>
+		</thead>
+		<tbody>
+		<s:iterator value="contractor.emrs">
+			<tr class="<s:property value="value.flagColor" />">
+				<td class="center"><s:property
+					value="value.flagColor.smallIcon" escape="false" /></td>
+				<td><s:property value="key" /></td>
+				<td class="right">
+				<s:property value="value.verifiedAnswerOrAnswer" />
+				<s:property value="%{new java.lang.Float.parseFloat(value.verifiedAnswerOrAnswer).toString()}" />
+				<s:property value="%{new java.text.DecimalFormat('#,##0.000').format(java.lang.Float.parseFloat(value.verifiedAnswerOrAnswer))}" />
+				</td>
+			</tr>
+		</s:iterator>
+		</tbody>
+	</table>
 </s:if>
 
 <s:if test="auditData.size > 0">
