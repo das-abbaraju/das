@@ -48,10 +48,10 @@
 			<s:select list="countryList" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:select>
 		</s:if>
 		<s:if test="questionType == 'Money'">
-			<s:textfield name="%{'answer_answer_'.concat(questionID)}" value="%{answer.answer}" size="19" onblur="validateNumber('answer_answer_%{questionID}','Question %{number}');  document.MM_returnValue && saveAnswer(%{questionID}, this)" />
+			<s:textfield name="%{'answer_answer_'.concat(questionID)}" value="%{answer.answer}" size="19" onchange="validateNumber('answer_answer_%{questionID}','Question %{number}');  document.MM_returnValue && saveAnswer(%{questionID}, this)" />
 		</s:if>
 		<s:if test="questionType == 'Decimal Number'">
-			<s:textfield name="%{'answer_answer_'.concat(questionID)}" value="%{answer.answer}" size="19" onblur="$('%{'answer_answer_'.concat(questionID)}').value = parseFloat($('%{'answer_answer_'.concat(questionID)}').value).toFixed(3); validateDecimal('answer_answer_%{questionID}','Question %{number}'); document.MM_returnValue && saveAnswer(%{questionID}, this)" />
+			<s:textfield name="%{'answer_answer_'.concat(questionID)}" value="%{answer.answer}" size="19" onchange="$('%{'answer_answer_'.concat(questionID)}').value = parseFloat($('%{'answer_answer_'.concat(questionID)}').value).toFixed(3); validateDecimal('answer_answer_%{questionID}','Question %{number}'); document.MM_returnValue && saveAnswer(%{questionID}, this)" />
 		</s:if>
 		<s:if test="questionType == 'Service'">
 			<nobr><s:checkbox fieldValue="C" value="answer.answer.indexOf('C') != -1" name="question_%{questionID}_C" onclick="javascript:saveAnswer(%{questionID}, this);" /> C</nobr>
@@ -97,6 +97,7 @@
 	<td colspan="4"><span class="verified">Answer changed to <s:property value="answer.verifiedAnswer"/> on <s:date name="answer.dateVerified" format="MMM d, yyyy" />
 	</span></td></tr>
 </s:if>
+
 <s:if test="answer.hasRequirements && conAudit.auditType.hasRequirements">
 	<tr class="group<s:if test="#shaded">Shaded</s:if>">
 		<td class="center">Requirement</td>

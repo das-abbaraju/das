@@ -17,4 +17,39 @@ public enum AuditStatus {
 			values.add(value.name());
 		return values;
 	}
+	
+	/**
+	 * Is the status Active or Exempt
+	 * @return
+	 */
+	public boolean isActiveExempt() {
+		if (this.equals(Active))
+			return true;
+		if (this.equals(Exempt))
+			return true;
+		return false;
+	}
+
+	/**
+	 * Is the status Active or Exempt or Submitted
+	 * @return
+	 */
+	public boolean isActiveExemptSubmitted() {
+		if (this.equals(Submitted))
+			return true;
+		return isActiveExempt();
+	}
+
+
+	/**
+	 * Is the status Active or Exempt or Submitted
+	 * @return
+	 */
+	public boolean isActiveSubmitted() {
+		if (this.equals(Submitted))
+			return true;
+		if (this.equals(Active))
+			return true;
+		return false;
+	}
 }

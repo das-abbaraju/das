@@ -16,13 +16,14 @@
 <body>
 <s:push value="#subHeading='Contractor Forms, Audits & Evaluations'"/>
 <s:include value="conHeader.jsp" />
+
 <s:if test="upComingAudits.size() > 0">
 <h3>UpComing Audits</h3>
 <table class="report">
 	<thead>
 	<tr>
-		<th>Type</th>
 		<th>Status</th>
+		<th>Type</th>
 		<th>For</th>
 		<th>Created</th>
 		<th>Operator</th>
@@ -38,8 +39,8 @@
 	</thead>
 	<s:iterator value="upComingAudits" status="auditStatus">
 		<tr>
-			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
 			<td><s:property value="auditStatus" /></td>
+			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
 			<td><s:property value="auditFor"/></td>
 			<td><s:date name="createdDate" format="M/d/yy" /></td>
 			<td><s:property value="requestingOpAccount.name" /></td>
@@ -67,8 +68,8 @@
 <table class="report">
 	<thead>
 	<tr>
-		<th>Type</th>
 		<th>Status</th>
+		<th>Type</th>
 		<th>For</th>
 		<th>Closed</th>
 		<th>Operator</th>
@@ -82,8 +83,8 @@
 	</thead>
 	<s:iterator value="currentAudits" status="auditStatus">
 		<tr>
-			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
 			<td><s:property value="auditStatus" /></td>
+			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
 			<td><s:property value="auditFor"/></td>
 			<td><s:date name="closedDate" format="M/d/yy" /></td>
 			<td><s:property value="requestingOpAccount.name" /></td>

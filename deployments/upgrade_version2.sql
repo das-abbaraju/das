@@ -1,4 +1,13 @@
 -- ON LIVE BEFORE
+delete from audit_operator where auditTypeID = 11;
+
+insert into audit_operator (auditTypeID, opID, minRiskLevel, requiredForFlag, requiredAuditStatus)
+select 11, ao.opID, min(riskLevel), requiredForFlag, requiredAuditStatus
+from audit_operator ao
+join pqfopmatrix pm using (opID)
+where ao.auditTypeID = 1 and pm.catID in (10,29)
+group by ao.opID;
+
 delete from contractor_audit
 where auditTypeID = 11;
 
@@ -147,3 +156,87 @@ insert into note (accountID, creationDate, createdBy, updatedBy, updateDate, sum
 select conID, timeStamp, case ISNULL(userID) when 1 then 959 else userID end, deletedDate, deletedUserID, substring(note, 1, 255), 'General', case isDeleted when 1 then 0 else 2 end, 3, opID, substring(note, 255)
 from notes
 where length(note) > 250;
+
+
+delete from pqfdata where auditID in (select auditID from contractor_audit where auditTypeID = 11);
+
+insert into pqfdata (auditID, questionID, answer, comment, dateVerified, verifiedAnswer, auditorID, isCorrect)
+select emr.auditID, 2034, d.answer, d.comment, d.dateVerified, d.verifiedAnswer, d.auditorID, d.isCorrect
+from pqfdata d
+join contractor_audit pqf on pqf.auditID = d.auditID
+join contractor_audit emr on pqf.conID = emr.conID and emr.auditTypeID = 11
+where emr.auditFor = '2007' and d.questionID = 1617;
+
+insert into pqfdata (auditID, questionID, answer, comment, dateVerified, verifiedAnswer, auditorID, isCorrect)
+select emr.auditID, 2034, d.answer, d.comment, d.dateVerified, d.verifiedAnswer, d.auditorID, d.isCorrect
+from pqfdata d
+join contractor_audit pqf on pqf.auditID = d.auditID
+join contractor_audit emr on pqf.conID = emr.conID and emr.auditTypeID = 11
+where emr.auditFor = '2006' and d.questionID = 1519;
+
+insert into pqfdata (auditID, questionID, answer, comment, dateVerified, verifiedAnswer, auditorID, isCorrect)
+select emr.auditID, 2034, d.answer, d.comment, d.dateVerified, d.verifiedAnswer, d.auditorID, d.isCorrect
+from pqfdata d
+join contractor_audit pqf on pqf.auditID = d.auditID
+join contractor_audit emr on pqf.conID = emr.conID and emr.auditTypeID = 11
+where emr.auditFor = '2005' and d.questionID = 889;
+
+insert into pqfdata (auditID, questionID, answer, comment, dateVerified, verifiedAnswer, auditorID, isCorrect)
+select emr.auditID, 2034, d.answer, d.comment, d.dateVerified, d.verifiedAnswer, d.auditorID, d.isCorrect
+from pqfdata d
+join contractor_audit pqf on pqf.auditID = d.auditID
+join contractor_audit emr on pqf.conID = emr.conID and emr.auditTypeID = 11
+where emr.auditFor = '2004' and d.questionID = 126;
+
+insert into pqfdata (auditID, questionID, answer, comment, dateVerified, verifiedAnswer, auditorID, isCorrect)
+select emr.auditID, 2034, d.answer, d.comment, d.dateVerified, d.verifiedAnswer, d.auditorID, d.isCorrect
+from pqfdata d
+join contractor_audit pqf on pqf.auditID = d.auditID
+join contractor_audit emr on pqf.conID = emr.conID and emr.auditTypeID = 11
+where emr.auditFor = '2003' and d.questionID = 127;
+
+insert into pqfdata (auditID, questionID, answer, comment, dateVerified, verifiedAnswer, auditorID, isCorrect)
+select emr.auditID, 2037, d.answer, d.comment, d.dateVerified, d.verifiedAnswer, d.auditorID, d.isCorrect
+from pqfdata d
+join contractor_audit pqf on pqf.auditID = d.auditID
+join contractor_audit emr on pqf.conID = emr.conID and emr.auditTypeID = 11
+where emr.auditFor = '2007' and d.questionID = 1618;
+
+insert into pqfdata (auditID, questionID, answer, comment, dateVerified, verifiedAnswer, auditorID, isCorrect)
+select emr.auditID, 2037, d.answer, d.comment, d.dateVerified, d.verifiedAnswer, d.auditorID, d.isCorrect
+from pqfdata d
+join contractor_audit pqf on pqf.auditID = d.auditID
+join contractor_audit emr on pqf.conID = emr.conID and emr.auditTypeID = 11
+where emr.auditFor = '2006' and d.questionID = 1522;
+
+insert into pqfdata (auditID, questionID, answer, comment, dateVerified, verifiedAnswer, auditorID, isCorrect)
+select emr.auditID, 2037, d.answer, d.comment, d.dateVerified, d.verifiedAnswer, d.auditorID, d.isCorrect
+from pqfdata d
+join contractor_audit pqf on pqf.auditID = d.auditID
+join contractor_audit emr on pqf.conID = emr.conID and emr.auditTypeID = 11
+where emr.auditFor = '2005' and d.questionID = 872;
+
+insert into pqfdata (auditID, questionID, answer, comment, dateVerified, verifiedAnswer, auditorID, isCorrect)
+select emr.auditID, 2033, d.answer, d.comment, d.dateVerified, d.verifiedAnswer, d.auditorID, d.isCorrect
+from pqfdata d
+join contractor_audit pqf on pqf.auditID = d.auditID
+join contractor_audit emr on pqf.conID = emr.conID and emr.auditTypeID = 11
+where emr.auditFor = '2007' and d.questionID = 891;
+
+insert into pqfdata (auditID, questionID, answer, comment, dateVerified, verifiedAnswer, auditorID, isCorrect)
+select emr.auditID, 2033, d.answer, d.comment, d.dateVerified, d.verifiedAnswer, d.auditorID, d.isCorrect
+from pqfdata d
+join contractor_audit pqf on pqf.auditID = d.auditID
+join contractor_audit emr on pqf.conID = emr.conID and emr.auditTypeID = 11
+where emr.auditFor = '2006' and d.questionID = 891;
+
+insert into pqfdata (auditID, questionID, answer, comment, dateVerified, verifiedAnswer, auditorID, isCorrect)
+select emr.auditID, 2033, d.answer, d.comment, d.dateVerified, d.verifiedAnswer, d.auditorID, d.isCorrect
+from pqfdata d
+join contractor_audit pqf on pqf.auditID = d.auditID
+join contractor_audit emr on pqf.conID = emr.conID and emr.auditTypeID = 11
+where emr.auditFor = '2005' and d.questionID = 891;
+
+delete from pqfdata where questionID in (127,126,889,1519,872,1522,1617,1618,891);
+
+delete from pqfquestions where questionID in (127,126,889,1519,872,1522,1617,1618,891);
