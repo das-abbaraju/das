@@ -190,7 +190,7 @@ table.footerNav td.arrows {
 }
 
 table.footerNav td.previous {
-	width: 30%;
+	width: 18%;
 	text-align: left;
 }
 
@@ -201,7 +201,7 @@ table.footerNav td.current {
 }
 
 table.footerNav td.next {
-	width: 30%;
+	width: 18%;
 	text-align: right;
 }
 

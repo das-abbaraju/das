@@ -204,4 +204,25 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public ContractorAudit findAuditFor( AuditType auditType, ContractorAccount contractor, String auditFor) {
+		List<ContractorAudit> results = findWhere(1, 
+					new StringBuilder( "auditType.id = " )
+						.append( auditType.getAuditTypeID() ) 
+						.append( " and contractorAccount.id = " )
+						.append( contractor.getId() )
+						.append( " and auditFor = '" )
+						.append( auditFor )
+						.append( "'" )
+						.toString(),
+				"");
+		
+		if( results != null && results.size() > 0 )	{
+			return results.get(0);
+		}
+		else {
+			return null;
+		}
+	}
+
+	
 }

@@ -18,7 +18,8 @@
 <script type="text/javascript">
 	var auditID = <s:property value="auditID"/>;
 	var catDataID = <s:property value="catDataID"/>;
-	var conID = <s:property value="contractor.id"/>;
+	var conID = <s:property value="conAudit.contractorAccount.id"/>;
+
 	function openOsha(logID, year) {
 		url = 'DownloadOsha.action?id='+logID;
 		title = 'Osha300Logs';

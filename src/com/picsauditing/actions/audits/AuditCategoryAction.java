@@ -19,6 +19,8 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditSubCategory;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.State;
@@ -46,12 +48,17 @@ public class AuditCategoryAction extends AuditActionSupport {
 	protected AuditCatData nextCategory = null;
 	protected AuditCatData currentCategory = null;
 
+	protected ContractorAudit previousAudit = null;
+	protected ContractorAudit nextAudit = null;
+
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditCategoryDAO auditCategoryDAO;
 	private OshaAuditDAO oshaAuditDAO;
 
-	public AuditCategoryAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
+	public AuditCategoryAction(ContractorAccountDAO accountDao,
+			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
+			AuditDataDAO auditDataDao,
+			AuditPercentCalculator auditPercentCalculator,
 			AuditCategoryDAO auditCategoryDAO, OshaAuditDAO oshaAuditDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.auditPercentCalculator = auditPercentCalculator;
@@ -65,8 +72,10 @@ public class AuditCategoryAction extends AuditActionSupport {
 		if (auditID == 0 && catID > 0) {
 			// Just Preview the Audit
 			AuditCategory auditCategory = auditCategoryDAO.find(catID);
-			for (AuditSubCategory auditSubCategory : auditCategory.getSubCategories()) {
-				for (AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
+			for (AuditSubCategory auditSubCategory : auditCategory
+					.getSubCategories()) {
+				for (AuditQuestion auditQuestion : auditSubCategory
+						.getQuestions()) {
 				}
 			}
 			categories = new ArrayList<AuditCatData>();
@@ -86,16 +95,20 @@ public class AuditCategoryAction extends AuditActionSupport {
 		if (catDataID > 0 || catID > 0) {
 			for (AuditCatData catData : categories) {
 				// We can open audits using either the catID or the catDataID
-				if (catData.getId() == catDataID || catData.getCategory().getId() == catID) {
+				if (catData.getId() == catDataID
+						|| catData.getCategory().getId() == catID) {
 					// Set the other one that isn't set
 					catDataID = catData.getId();
 					catID = catData.getCategory().getId();
-					
-					answers = auditDataDao.findByCategory(auditID, catData.getCategory());
+
+					answers = auditDataDao.findByCategory(auditID, catData
+							.getCategory());
 					fillAnswers(catData, answers);
 					currentCategory = catData;
 
-					if (mode == null && catData.getRequiredCompleted() < catData.getNumRequired()) {
+					if (mode == null
+							&& catData.getRequiredCompleted() < catData
+									.getNumRequired()) {
 						mode = EDIT;
 					}
 
@@ -108,9 +121,11 @@ public class AuditCategoryAction extends AuditActionSupport {
 					}
 				}
 			}
-			if (mode == null && conAudit.getAuditStatus().equals(AuditStatus.Pending))
+			if (mode == null
+					&& conAudit.getAuditStatus().equals(AuditStatus.Pending))
 				mode = EDIT;
-			if (mode == null && conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
+			if (mode == null
+					&& conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
 				// Add the verify mode back if needed
 				// if(isCanVerify())
 				// mode = VERIFY;
@@ -144,7 +159,8 @@ public class AuditCategoryAction extends AuditActionSupport {
 					if (osha.isCorporate()) {
 						hasOshaCorporate = true;
 						// Calculate percent complete too
-						auditPercentCalculator.percentOshaComplete(osha, currentCategory);
+						auditPercentCalculator.percentOshaComplete(osha,
+								currentCategory);
 					}
 				}
 
@@ -159,15 +175,38 @@ public class AuditCategoryAction extends AuditActionSupport {
 					catDataDao.save(currentCategory);
 				}
 			} else {
-				auditPercentCalculator.updatePercentageCompleted(currentCategory);
+				auditPercentCalculator
+						.updatePercentageCompleted(currentCategory);
 			}
 		}
 		auditPercentCalculator.percentCalculateComplete(conAudit);
+
+		if (conAudit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM) {
+
+			String auditFor = conAudit.getAuditFor();
+
+			if (auditFor != null && auditFor.length() > 0) {
+				int auditYear = 0;
+
+				try {
+					auditYear = Integer.parseInt(auditFor);
+				} catch (Exception ignoreIt) {}
+				
+				if( auditYear != 0 )
+				{
+					previousAudit = auditDao.findAuditFor(conAudit.getAuditType(), conAudit.getContractorAccount(), new Integer( auditYear - 1 ).toString() );
+					nextAudit = auditDao.findAuditFor(conAudit.getAuditType(), conAudit.getContractorAccount(), new Integer( auditYear + 1 ).toString() );
+				}
+			}
+		}
+
 		return SUCCESS;
 	}
 
-	private void fillAnswers(AuditCatData catData, Map<Integer, AuditData> answers) {
-		for (AuditSubCategory subCategory : catData.getCategory().getSubCategories()) {
+	private void fillAnswers(AuditCatData catData,
+			Map<Integer, AuditData> answers) {
+		for (AuditSubCategory subCategory : catData.getCategory()
+				.getSubCategories()) {
 			List<Integer> officeLocQuestions = new ArrayList<Integer>();
 			if (subCategory.getCategory().getId() == AuditCategory.SERVICES_PERFORMED) {
 				for (AuditQuestion question : subCategory.getQuestions()) {
@@ -176,9 +215,11 @@ public class AuditCategoryAction extends AuditActionSupport {
 			}
 
 			for (AuditQuestion question : subCategory.getQuestions()) {
-				Map<Integer, AuditData> officeLocationAnswer = auditDataDao.findAnswers(auditID, officeLocQuestions);
+				Map<Integer, AuditData> officeLocationAnswer = auditDataDao
+						.findAnswers(auditID, officeLocQuestions);
 				if (question.getQuestionType().equals("Office Location")
-						&& !officeLocationAnswer.containsKey(question.getQuestionID())) {
+						&& !officeLocationAnswer.containsKey(question
+								.getQuestionID())) {
 					AuditData auditData = new AuditData();
 					auditData.setAudit(conAudit);
 					auditData.setQuestion(question);
@@ -191,16 +232,23 @@ public class AuditCategoryAction extends AuditActionSupport {
 					question.setAnswer(answers.get(question.getQuestionID()));
 				}
 				if (mode != null && mode.equals(EDIT)) {
-					AuditQuestion dependsOnQuestion = question.getDependsOnQuestion();
-					if (dependsOnQuestion != null && dependsOnQuestion.getQuestionID() > 0) {
+					AuditQuestion dependsOnQuestion = question
+							.getDependsOnQuestion();
+					if (dependsOnQuestion != null
+							&& dependsOnQuestion.getQuestionID() > 0) {
 
-						if (!dependsOnQuestion.getSubCategory().getCategory().equals(catData.getCategory())
-								&& !answers.containsKey(dependsOnQuestion.getQuestionID())) {
+						if (!dependsOnQuestion.getSubCategory().getCategory()
+								.equals(catData.getCategory())
+								&& !answers.containsKey(dependsOnQuestion
+										.getQuestionID())) {
 							// Get answer and add to answer map no matter what
-							answers.put(dependsOnQuestion.getQuestionID(), auditDataDao.findAnswerToQuestion(
-									this.auditID, dependsOnQuestion.getQuestionID()));
+							answers.put(dependsOnQuestion.getQuestionID(),
+									auditDataDao.findAnswerToQuestion(
+											this.auditID, dependsOnQuestion
+													.getQuestionID()));
 						}
-						dependsOnQuestion.setAnswer(answers.get(dependsOnQuestion.getQuestionID()));
+						dependsOnQuestion.setAnswer(answers
+								.get(dependsOnQuestion.getQuestionID()));
 					}
 				}
 			}
@@ -262,4 +310,22 @@ public class AuditCategoryAction extends AuditActionSupport {
 	public void setCatID(int catID) {
 		this.catID = catID;
 	}
+
+	public ContractorAudit getPreviousAudit() {
+		return previousAudit;
+	}
+
+	public void setPreviousAudit(ContractorAudit previousAudit) {
+		this.previousAudit = previousAudit;
+	}
+
+	public ContractorAudit getNextAudit() {
+		return nextAudit;
+	}
+
+	public void setNextAudit(ContractorAudit nextAudit) {
+		this.nextAudit = nextAudit;
+	}
+
+
 }
