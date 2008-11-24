@@ -31,9 +31,6 @@ public class ReportEmrRates extends ReportAccount {
 		case 2005:
 			questionID = AuditQuestion.EMR05;
 			break;
-		case 2004:
-			questionID = AuditQuestion.EMR04;
-			break;
 		}
 
 		if (questionID == 0)

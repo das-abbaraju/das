@@ -28,11 +28,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "pqfquestions")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
 public class AuditQuestion implements java.io.Serializable {
-	static public final int EMR03 = 127;
-	static public final int EMR04 = 126;
 	static public final int EMR05 = 889;
 	static public final int EMR06 = 1519;
 	static public final int EMR07 = 1617;
+	
+	static public final int EMR = 2034;
 
 	static public int getEmrYear(int questionID) {
 		switch (questionID) {
@@ -42,10 +42,6 @@ public class AuditQuestion implements java.io.Serializable {
 			return 2006;
 		case EMR05:
 			return 2005;
-		case EMR04:
-			return 2004;
-		case EMR03:
-			return 2003;
 		}
 		return 0;
 	}

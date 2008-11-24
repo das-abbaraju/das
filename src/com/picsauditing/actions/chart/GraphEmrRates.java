@@ -19,7 +19,6 @@ public class GraphEmrRates extends ChartMSAction {
 	private boolean show07 = true;
 	private boolean show06 = true;
 	private boolean show05 = true;
-	private boolean show04 = true;
 	
 	public String execute() throws Exception {
 		if(!forceLogin())
@@ -48,7 +47,6 @@ public class GraphEmrRates extends ChartMSAction {
 		sql.addWhere("pqf.auditStatus = 'Active' AND pqf.auditTypeID = 1");
 		{
 			String questionList = "0";
-			if (show04) questionList += ","+AuditQuestion.EMR04;
 			if (show05) questionList += ","+AuditQuestion.EMR05;
 			if (show06) questionList += ","+AuditQuestion.EMR06;
 			if (show07) questionList += ","+AuditQuestion.EMR07;
@@ -133,13 +131,4 @@ public class GraphEmrRates extends ChartMSAction {
 		this.show05 = show05;
 	}
 
-	public boolean isShow04() {
-		return show04;
-	}
-
-	public void setShow04(boolean show04) {
-		this.show04 = show04;
-	}
-	
-	
 }
