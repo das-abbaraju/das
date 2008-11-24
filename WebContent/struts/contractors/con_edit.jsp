@@ -20,7 +20,8 @@
 <s:include value="conHeader.jsp"></s:include>
 <s:form id="save" method="POST" enctype="multipart/form-data">
 <div class="buttons">
-	<button class="positive" name="button" type="submit" value="Save">Save</button>
+	<!-- <button class="positive" name="button" type="submit" value="Save">Save</button>  -->
+	<input type="submit" class="positive" name="button" value="Save"/>
 </div>
 <br clear="all" />
 <s:hidden name="id" />
@@ -271,15 +272,18 @@
 <br clear="all">
 	<div class="buttons">
 		<s:if test="permissions.contractor">
-			<button class="positive" name="button" type="submit" value="Save">Save</button>
+<!-- 			<button class="positive" name="button" type="submit" value="Save">Save</button>  -->
+			<input type="submit" class="positive" name="button" value="Save"/>
 		</s:if>
 		<s:else>
 			<pics:permission perm="ContractorAccounts" type="Edit">
-				<button class="positive" name="button" type="submit" value="Save">Save</button>
+				<!-- <button class="positive" name="button" type="submit" value="Save">Save</button> -->
+				<input type="submit" class="positive" name="button" value="Save"/>
 			</pics:permission>
 		</s:else>
 		<pics:permission perm="RemoveContractors">
-			<button name="button" class="negative" type="submit" value="Delete" onClick="return confirm('Are you sure you want to delete this account?');">Delete</button>
+			<!-- <button name="button" class="negative" type="submit" value="Delete" onClick="return confirm('Are you sure you want to delete this account?');">Delete</button> -->
+			<input type="submit" class="negative" name="button" value="Delete" onClick="return confirm('Are you sure you want to delete this account?');"/>
 		</pics:permission>
 	</div>
 </s:form>
