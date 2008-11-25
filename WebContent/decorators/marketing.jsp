@@ -88,7 +88,7 @@
 									<tr>
 										<td width="364"><object
 											classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
-											codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0"
+											codebase="https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0"
 											width="364" height="72">
 											<param name="movie"
 												value="flash/NAV_<decorator:getProperty property="meta.flashName" default="HOME" />.swf">
@@ -96,7 +96,7 @@
 											<embed
 												src="flash/NAV_<decorator:getProperty property="meta.flashName" default="LOGIN" />.swf"
 												quality="high"
-												pluginspage="http://www.macromedia.com/go/getflashplayer"
+												pluginspage="https://www.macromedia.com/go/getflashplayer"
 												type="application/x-shockwave-flash" width="364" height="72"></embed>
 										</object></td>
 										<td><img src="images/squares_home.gif" width="147"
@@ -112,12 +112,12 @@
 								%>
 								<td height="146"><object
 									classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
-									codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0"
+									codebase="https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0"
 									width="511" height="146">
 									<param name="movie" value="flash/home_feature.swf">
 									<param name="quality" value="high">
 									<embed src="flash/home_feature.swf" quality="high"
-										pluginspage="http://www.macromedia.com/go/getflashplayer"
+										pluginspage="https://www.macromedia.com/go/getflashplayer"
 										type="application/x-shockwave-flash" width="511" height="146"></embed>
 								</object></td>
 								<%
