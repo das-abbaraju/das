@@ -3,6 +3,7 @@
 <%@page import="com.picsauditing.access.MenuComponent"%>
 <%@page import="com.picsauditing.access.PicsMenu"%>
 <%@page import="com.picsauditing.access.OpPerms"%>
+<%@page import="com.picsauditing.util.URLUtils"%>
 <%@page import="java.net.URLEncoder"%>
 <%@page import="java.util.Date"%>
 <%
@@ -107,12 +108,12 @@
 	<a id="_lpChatBtn"
 	onmouseover="showChat();"
 	onmouseout="hideChat();"
-	href='http://server.iad.liveperson.net/hc/90511184/?cmd=file&file=visitorWantsToChat&site=90511184&byhref=1&imageUrl=http://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
+	href='<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hc/90511184/?cmd=file&file=visitorWantsToChat&site=90511184&byhref=1&imageUrl=<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
 	target='chat90511184'
-	onClick="lpButtonCTTUrl = 'http://server.iad.liveperson.net/hc/90511184/?cmd=file&file=visitorWantsToChat&site=90511184&imageUrl=http://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >Chat</a>
+	onClick="lpButtonCTTUrl = '<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hc/90511184/?cmd=file&file=visitorWantsToChat&site=90511184&imageUrl=<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >Chat</a>
 </div>
 <div id="chatIcon" style="display: none;">
-	<img src='http://server.iad.liveperson.net/hc/90511184/?cmd=repstate&site=90511184&channel=web&&ver=1&imageUrl=http://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
+	<img src='<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hc/90511184/?cmd=repstate&site=90511184&channel=web&&ver=1&imageUrl=<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
 	name='hcIcon' border=0 />
 </div>
 
@@ -156,7 +157,7 @@
 <!-- BEGIN HumanTag Monitor. DO NOT MOVE! MUST BE PLACED JUST BEFORE THE /BODY TAG -->
 <script 
 	language='javascript' 
-	src='http://server.iad.liveperson.net/hc/90511184/x.js?cmd=file&file=chatScript3&site=90511184&&imageUrl=http://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a'> 
+	src='<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hc/90511184/x.js?cmd=file&file=chatScript3&site=90511184&&imageUrl=<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a'> 
 </script>
 <!-- END HumanTag Monitor. DO NOT MOVE! MUST BE PLACED JUST BEFORE THE /BODY TAG -->
 <%@ include file="../includes/statcounter.jsp"%>
@@ -173,12 +174,11 @@
 <div id="footermain">
 <div id="footercontent">
 Copyright &copy; 2008
-<a href="http://www.picsauditing.com/" class="footer">PICS</a> |
+<a href="<%= URLUtils.getProtocol( request ) %>://www.picsauditing.com/" class="footer">PICS</a> |
 <% // <a href="about.jsp" class="footer">About PICS</a> | %>
 <a href="contact.jsp" class="footer">Contact Us</a>
 </div>
 </div>
 </div>
-
 </body>
 </html>
