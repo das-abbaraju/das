@@ -1,4 +1,5 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@page import="com.picsauditing.util.URLUtils"%>
 <%
 String url = request.getRequestURL().toString();
 if (url.startsWith("http://pics")) {
@@ -32,11 +33,11 @@ if (url.startsWith("http://pics")) {
                   <td><table border="0" cellspacing="0" cellpadding="0">
                       <tr>
                         <td><script type="text/javascript">
-AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0','width','145','height','130','src','flash/client_logoflash','quality','high','pluginspage','http://www.macromedia.com/go/getflashplayer','movie','flash/client_logoflash' ); //end AC code
-</script><noscript><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0" width="145" height="130">
+AC_FL_RunContent( 'codebase','<%= URLUtils.getProtocol( request ) %>://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0','width','145','height','130','src','flash/client_logoflash','quality','high','pluginspage','<%= URLUtils.getProtocol( request ) %>://www.macromedia.com/go/getflashplayer','movie','flash/client_logoflash' ); //end AC code
+</script><noscript><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="<%= URLUtils.getProtocol( request ) %>://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0" width="145" height="130">
                           <param name="movie" value="flash/client_logoflash.swf">
                           <param name="quality" value="high">
-                          <embed src="flash/client_logoflash.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="145" height="130"></embed>
+                          <embed src="flash/client_logoflash.swf" quality="high" pluginspage="<%= URLUtils.getProtocol( request ) %>://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="145" height="130"></embed>
                         </object></noscript></td>
                         <td class="blueHome">PICS was established to assist companies with a thorough audit program for all contractors working at their facilities. PICS 
 

@@ -1,3 +1,4 @@
+<%@page import="com.picsauditing.util.URLUtils"%>
 <html>
 <head>
 <title>Clients</title>
@@ -49,16 +50,16 @@
 						</nobr></td>
 						<td valign="top" class="blueClientList"><script
 							type="text/javascript">
-AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0','width','145','height','130','title','Clients','src','flash/client_logoflash','quality','high','pluginspage','http://www.macromedia.com/go/getflashplayer','movie','flash/client_logoflash' ); //end AC code
+AC_FL_RunContent( 'codebase','<%= URLUtils.getProtocol( request ) %>://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0','width','145','height','130','title','Clients','src','flash/client_logoflash','quality','high','pluginspage','<%= URLUtils.getProtocol( request ) %>://www.macromedia.com/go/getflashplayer','movie','flash/client_logoflash' ); //end AC code
 </script>
 						<noscript><object
 							classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
-							codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0"
+							codebase="<%= URLUtils.getProtocol( request ) %>://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0"
 							width="145" height="130" title="Clients">
 							<param name="movie" value="flash/client_logoflash.swf">
 							<param name="quality" value="high">
 							<embed src="flash/client_logoflash.swf" quality="high"
-								pluginspage="http://www.macromedia.com/go/getflashplayer"
+								pluginspage="<%= URLUtils.getProtocol( request ) %>://www.macromedia.com/go/getflashplayer"
 								type="application/x-shockwave-flash" width="145" height="130"></embed>
 						</object></noscript>
 						<script type="text/javascript" src="js/ieupdate.js"></script><br>
