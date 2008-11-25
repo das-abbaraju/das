@@ -205,6 +205,11 @@ public class AuditType implements Comparable<AuditType> {
 	}
 
 	@Transient
+	public boolean isAnnualAddendum() {
+		return (auditTypeID == ANNUALADDENDUM);
+	}
+
+	@Transient
 	public boolean isDynamicCategories() {
 		if (isPqf())
 			return true;

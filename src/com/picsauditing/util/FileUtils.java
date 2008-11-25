@@ -101,7 +101,7 @@ public class FileUtils {
 	}
 
 	static public boolean checkFileExtension(String extension) {
-		String[] validExtensions = { "pdf", "doc", "txt", "xls", "jpg", "gif", "png" };
+		String[] validExtensions = { "pdf", "doc", "txt", "xls", "jpg", "gif", "png", "docx", "xlsx" };
 		return checkFileExtension(extension, validExtensions);
 	}
 

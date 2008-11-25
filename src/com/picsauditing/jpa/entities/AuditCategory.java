@@ -23,8 +23,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="global")
 public class AuditCategory implements java.io.Serializable {
 	public static final int WORK_HISTORY = 6;
-	@Deprecated
-	public static final int OSHA = 29;
 	public static final int OSHA_AUDIT = 151;
 	public static final int TRAINING = 25;
 	public static final int SAFETY_POLICIES = 7;
