@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@page import="com.picsauditing.util.URLUtils"%>
+
 <jsp:useBean id="permissions"
 	class="com.picsauditing.access.Permissions" scope="session" />
 <%@ taglib uri="sitemesh-decorator" prefix="decorator"%>
