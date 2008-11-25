@@ -1,10 +1,13 @@
 package com.picsauditing.actions;
 
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -19,8 +22,8 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.PermissionToViewContractor;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.URLUtils;
 
 public class PicsActionSupport extends ActionSupport {
 	protected static String LOGIN_AJAX = "LoginAjax";
@@ -217,4 +220,8 @@ public class PicsActionSupport extends ActionSupport {
 		return ServletActionContext.getActionMapping().getName();
 	}
 
+	public String getProtocol() {
+		return URLUtils.getProtocol( ServletActionContext.getRequest() );
+	}
+	
 }
