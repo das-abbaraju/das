@@ -46,6 +46,10 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 		int oldconID = conAudit.getContractorAccount().getId();
 		if (button != null) {
 			ContractorAccount nConAccount = accountDao.findConID(contractorSelect);
+			if(nConAccount == null) {
+				addActionError("No Contractor Found");
+				return SUCCESS; 
+			}
 			List<ContractorAudit> auditList = new Vector<ContractorAudit>(nConAccount.getAudits());
 			auditDao.clear();
 			for (ContractorAudit existingAudit : auditList) {

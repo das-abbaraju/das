@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -108,8 +109,12 @@ public class ContractorAccountDAO extends PicsDAO {
 	public ContractorAccount findName(String userName) {
 		if (userName == null)
 			userName = "";
-		Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE username = " + "'" + userName + "'");
-		return (ContractorAccount) query.getSingleResult();
+		try {
+			Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE username = " + "'" + userName + "'");
+			return (ContractorAccount) query.getSingleResult();
+		} catch (NoResultException e) {	
+			return null;
+		}	
 	}
 
 	public int getActiveContractorCounts(String where) {
@@ -146,8 +151,12 @@ public class ContractorAccountDAO extends PicsDAO {
 			name = "";
 		if (name.length() > 0)
 			name = "WHERE a.name = '" + name + "'";
-		Query query = em.createQuery("SELECT a from ContractorAccount a " + name);
-		return (ContractorAccount) query.getSingleResult();
+		try {
+			Query query = em.createQuery("SELECT a from ContractorAccount a " + name);
+			return (ContractorAccount) query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 
 }
