@@ -57,22 +57,21 @@ public class OshaSave extends PicsActionSupport implements Preparable {
 				return BLANK;
 			}
 		}
+		
 		if (button.equals("Delete")) {
+			try {
+				// remove all osha files ie (pdf, jpg)
+				for(File oldFile : getFiles())
+					FileUtils.deleteFile(oldFile);
+			} catch (Exception e) {
+				addActionError("Failed to save file: " + e.getMessage());
+				e.printStackTrace();
+				return INPUT;
+			}
 			oshaDAO.remove(id);
 			return SUCCESS;
 		}
 
-		if (button.equals("Add New Location")) {
-			osha = new OshaAudit();
-			osha.setConAudit(new ContractorAudit());
-			osha.getConAudit().setId(auditID);
-			osha.setType(OshaType.OSHA);
-			osha.setLocation("Division");
-			osha.setCreationDate(new Date());
-			oshaDAO.save(osha);
-			return SUCCESS;
-		}
-		
 		if (button.equals("Delete File")) {
 			try {
 				// remove all osha files ie (pdf, jpg)
@@ -87,6 +86,17 @@ public class OshaSave extends PicsActionSupport implements Preparable {
 			osha.setFileUploaded(false);
 		}
 		
+		if (button.equals("Add New Location")) {
+			osha = new OshaAudit();
+			osha.setConAudit(new ContractorAudit());
+			osha.getConAudit().setId(auditID);
+			osha.setType(OshaType.OSHA);
+			osha.setLocation("Division");
+			osha.setCreationDate(new Date());
+			oshaDAO.save(osha);
+			return SUCCESS;
+		}
+		
 		// TODO verify data is saved correctly
 		
 		if (uploadFile != null) {
@@ -98,7 +108,7 @@ public class OshaSave extends PicsActionSupport implements Preparable {
 			}
 	
 			try {
-				FileUtils.copyFile(uploadFile, getFtpDir(), OshaAudit.OSHA_DIR, getFileName(), ext, true);
+				FileUtils.copyFile(uploadFile, getFtpDir(), "files/" + FileUtils.thousandize(id), getFileName(), ext, true);
 			} catch (Exception e) {
 				addActionError("Failed to save file: " + e.getMessage());
 				e.printStackTrace();
@@ -121,7 +131,7 @@ public class OshaSave extends PicsActionSupport implements Preparable {
 	}
 	
 	private File[] getFiles() {
-		File oshaDir = new File(getFtpDir() + OshaAudit.OSHA_DIR);
+		File oshaDir = new File(getFtpDir() + "/files/" + FileUtils.thousandize(id));
 		return FileUtils.getSimilarFiles(oshaDir, getFileName());
 	}
 
