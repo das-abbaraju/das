@@ -6,6 +6,7 @@ import java.util.Date;
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -127,7 +128,7 @@ public class OshaSave extends PicsActionSupport implements Preparable {
 	}
 	
 	private String getFileName() {
-		return "osha" + "_" + id;
+		return PICSFileType.osha.toString() + "_" + id;
 	}
 	
 	private File[] getFiles() {
