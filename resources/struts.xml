@@ -414,9 +414,7 @@
 
 		<action name="VerifyView"
 			class="com.picsauditing.actions.audits.VerifyView">
-			<result>
-				struts/contractors/verification_detail.jsp
-			</result>
+			<result>struts/contractors/verification_detail_wrapper.jsp</result>
 		</action>
 
 		<action name="VerifySaveFollowUpAjax" method="saveFollowUp"
