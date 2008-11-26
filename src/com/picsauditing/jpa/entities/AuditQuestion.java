@@ -51,13 +51,8 @@ public class AuditQuestion implements java.io.Serializable {
 
 	static public final String[] TYPE_ARRAY = { "Check Box", "Country", "Date", "Decimal Number", "Drop Down", "File",
 			"Industry", "License", "Main Work", "Manual", "Money", "Office", "Office Location", "Radio", "Service",
-			"State", "Text", "Text Area", "Yes/No", "Yes/No/NA" }; // must
-															// match
-																	// ENUM in
-																	// db
+			"State", "Text", "Text Area", "Yes/No", "Yes/No/NA" };
 
-	static public final String filesFolder = "files/pqf";
-	
 	private int questionID;
 	private AuditSubCategory subCategory;
 	private int number;
