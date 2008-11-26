@@ -3,6 +3,9 @@ package com.picsauditing.actions.audits;
 import java.io.File;
 import java.util.Date;
 
+import org.apache.struts2.ServletActionContext;
+
+import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
@@ -10,6 +13,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
 
 public class AuditDataUpload extends AuditActionSupport {
@@ -51,22 +55,35 @@ public class AuditDataUpload extends AuditActionSupport {
 			data.setAudit(conAudit);
 		}
 		question.setAnswer(data);
+		int dataID = data.getDataID();
 		
-		String fileName = question.getQuestionID() + "_" + contractor.getId();
-		String folderName = AuditQuestion.filesFolder + "/qID_" + question.getQuestionID();
+		//String fileName = getFileName();
+		//String folderName = AuditQuestion.filesFolder + "/qID_" + question.getQuestionID();
 		
 		if (button != null) {
-			
-			if (data.getDataID() > 0 && button.startsWith("Delete")) {
-				// Delete all files with same name but different extensions
-				File parentFolder = new File(getFtpDir() + "/" + folderName);
-				File[] deleteList = FileUtils.getSimilarFiles(parentFolder, fileName);
-				for (File toDelete : deleteList) {
-					if (!toDelete.delete()) {
-						addActionError("Could not delete file " + toDelete.getName());
-						return SUCCESS;
-					}
+			if (button.equals("download")) {
+				Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext.getServletContext());
+				try {
+					File[] files = getFiles(dataID);
+					downloader.download(files[0], null);
+					return null;
+				} catch (Exception e) {
+					addActionError("Failed to download file: " + e.getMessage());
+					return BLANK;
 				}
+			}
+			
+			if (dataID > 0 && button.startsWith("Delete")) {
+				try {
+					// remove all files ie (pdf, jpg)
+					for(File oldFile : getFiles(dataID))
+						FileUtils.deleteFile(oldFile);
+				} catch (Exception e) {
+					addActionError("Failed to save file: " + e.getMessage());
+					e.printStackTrace();
+					return INPUT;
+				}
+				
 				auditDataDao.remove(data.getDataID());
 				addActionMessage("Successfully removed file");
 			}
@@ -82,7 +99,7 @@ public class AuditDataUpload extends AuditActionSupport {
 					return SUCCESS;
 				}
 				
-				FileUtils.copyFile(file, getFtpDir(), folderName, fileName, extension, true);
+				FileUtils.copyFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID), getFileName(dataID), extension, true);
 				
 				addActionMessage("Successfully uploaded <b>"+fileFileName+"</b> file");
 				data.setAnswer(extension);
@@ -98,9 +115,25 @@ public class AuditDataUpload extends AuditActionSupport {
 				auditDataDao.save(data);
 			}
 		}
-		file = new File(getFtpDir() + "/" + folderName + "/" + fileName + "." + question.getAnswer().getAnswer());
+		
+		File[] files = getFiles(dataID);
+		if (files != null) {
+			if (files.length > 0)
+				file = files[0];
+			if (files.length > 1)
+				addActionError("Somehow, two files were uploaded.");
+		}
 		
 		return SUCCESS;
+	}
+	
+	private String getFileName(int dataID) {
+		return PICSFileType.data + "_" + dataID;
+	}
+	
+	private File[] getFiles(int dataID) {
+		File dir = new File(getFtpDir() + "/files/" + FileUtils.thousandize(dataID));
+		return FileUtils.getSimilarFiles(dir, getFileName(dataID));
 	}
 	
 	public AuditQuestion getQuestion() {

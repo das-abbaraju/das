@@ -27,13 +27,6 @@
 		window.open(url,title,pars);
 	}
 
-	function openQuestion(questionID, extension) {
-		url = 'servlet/showpdf?id='+conID+'&file=pqf'+extension+questionID;
-		title = 'PICSFileUpload';
-		pars = 'scrollbars=yes,resizable=yes,width=700,height=450';
-		window.open(url,title,pars);
-	}
-	
 	function showAnswer(questionid) {
 		$('showText_'+questionid).show();
 	}

@@ -361,6 +361,11 @@
 			class="com.picsauditing.actions.audits.AuditDataUpload">
 			<result>struts/audits/audit_data_upload.jsp</result>
 		</action>
+		<action name="DownloadAuditData"
+			class="com.picsauditing.actions.audits.AuditDataUpload">
+			<param name="button">download</param>
+			<result>/struts/blank.jsp</result>
+		</action>
 		<action name="ReloadQuestionAjax"
 			class="com.picsauditing.actions.audits.ReloadQuestion">
 			<result>struts/audits/audit_cat_reload.jsp</result>
@@ -680,6 +685,11 @@
 		<action name="AuditOperatorSaveAjax"
 			class="com.picsauditing.actions.audits.AuditOperatorSave">
 			<result>struts/operators/audit_operator_save.jsp</result>
+		</action>
+		
+		<action name="OperatorFlagCriteria"
+			class="com.picsauditing.actions.operators.OperatorFlagCriteria">
+			<result>struts/operators/op_flag_criteria.jsp</result>
 		</action>
 
 		<action name="Trevor"

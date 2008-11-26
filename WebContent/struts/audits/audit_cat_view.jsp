@@ -12,7 +12,7 @@
 	<span class="answer">
 		<s:if test="questionType == 'File'">
 			<s:if test="answer.answer.length() > 0">
-				<a href="#" onClick="window.open('servlet/showpdf?id=<s:property value="contractor.id"/>&file=pqf<s:property value="answer.answer"/><s:property value="questionID"/>','','scrollbars=yes,resizable=yes,width=700,height=450')">Uploaded</a>
+				<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&question.questionID=<s:property value="questionID"/>" target="_BLANK">Uploaded</a>
 			</s:if>
 			<s:else>File Not Uploaded</s:else>
 		</s:if>

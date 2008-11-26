@@ -11,12 +11,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css" />
 
 <script type="text/javascript">
-	function openQuestion(questionID, extension) {
-		url = 'servlet/showpdf?id=<s:property value="contractor.id"/>&file=pqf'+extension+questionID;
-		title = 'PICSFileUpload';
-		pars = 'scrollbars=yes,resizable=yes,width=700,height=450';
-		window.open(url,title,pars);
-	}
 	function closePage() {
 		try {
 			opener.reloadQuestion(<s:property value="question.questionID"/>);
@@ -56,7 +50,7 @@
 </s:form>
 <br clear="all"/>
 <s:if test="file.exists()">
-	<div><a href="#" onclick="openQuestion('<s:property value="question.questionID"/>', '<s:property value="question.answer.answer"/>'); return false;">Open Existing <s:property value="fileSize" /> File</a></div>
+	<div><a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&question.questionID=<s:property value="question.questionID"/>" target="_BLANK">Open Existing <s:property value="fileSize" /> File</a></div>
 </s:if>
 
 </div>

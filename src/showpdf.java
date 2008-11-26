@@ -56,7 +56,6 @@ public class showpdf extends HttpServlet {
 		}
 
 		String req_uid = request.getParameter("id");
-		String OID= request.getParameter("OID"); 
 		String file_type = request.getParameter("file");
 
 		ServletOutputStream o = response.getOutputStream(); 
@@ -74,19 +73,8 @@ public class showpdf extends HttpServlet {
 		ServletContext context = getServletContext(); 
 		String sFileName = "";
 		String ext = "";
-		if ("osha".equals(file_type.substring(0,4))){
-			sFileName = context.getInitParameter("FTP_DIR") + "/files/oshas/"+file_type+"_"+OID+".";
-		    ext = findFileExt(sFileName);		    
-		}else if ("pqf".equals(file_type.substring(0,3))) {
-			String qID = file_type.substring(6);
-			ext = file_type.substring(3,6);
-			sFileName = context.getInitParameter("FTP_DIR") + "/files/pqf/qID_"+qID+"/"+qID+"_"+req_uid+".";
-			
-		}//else if
-		else {
-			sFileName = context.getInitParameter("FTP_DIR") + "/files/"+file_type+"s/"+file_type+"_"+req_uid+".";
-			ext = findFileExt(sFileName);
-		}
+		sFileName = context.getInitParameter("FTP_DIR") + "/files/"+file_type+"s/"+file_type+"_"+req_uid+".";
+		ext = findFileExt(sFileName);
 		
 		if(ext == ""){
 			o.print("The file you requested does not exist. Please contact PICS");

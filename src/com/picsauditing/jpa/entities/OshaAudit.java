@@ -30,10 +30,6 @@ public class OshaAudit implements java.io.Serializable {
 	private static final long serialVersionUID = -4451146415122493617L;
 	
 	/**
-	 * The location of the osha files within the FTP dir
-	 */
-	public static final String OSHA_DIR = "/files/oshas/";
-	/**
 	 * Key used when creating a map of osha data including the past 3 year average
 	 */
 	public static final String AVG = "Average";

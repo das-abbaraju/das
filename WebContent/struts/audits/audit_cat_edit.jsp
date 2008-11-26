@@ -67,7 +67,7 @@
 		<s:if test="questionType == 'File'">
 			<nobr>
 				<s:if test="answer.answer.length() > 0">
-					<a href="#" onClick="openQuestion('<s:property value="questionID"/>', '<s:property value="answer.answer"/>'); return false;">View File</a>
+					<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&question.questionID=<s:property value="questionID"/>" target="_BLANK">View File</a>
 				</s:if>
 				<s:else>File Not Uploaded</s:else>
 				<s:if test="catDataID > 0">
