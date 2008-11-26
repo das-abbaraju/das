@@ -52,4 +52,16 @@ public enum AuditStatus {
 			return true;
 		return false;
 	}
+
+	/**
+	 * Is the status Active or Exempt or Submitted
+	 * @return
+	 */
+	public boolean isPendingSubmitted() {
+		if (this.equals(Submitted))
+			return true;
+		if (this.equals(Pending))
+			return true;
+		return false;
+	}
 }
