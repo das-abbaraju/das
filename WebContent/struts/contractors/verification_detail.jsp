@@ -4,24 +4,19 @@
 
 	<table class="report">
 		<s:if test="pqfQuestions.size() > 0 ">
-			<tr bgcolor="#003366" class="whiteTitle" align="center">
-				PQF
-			</tr>
-			<tr>
-				<td>Question</td>
-				<td></td>
-			</tr>
+			<thead>
+				<tr><td colspan="3">PQF</td>
+				<td>Answer</td>
+				</tr>
+			</thead>
 			<s:iterator value="pqfQuestions.values">
-				<tr class="blueMain">
-					<td><s:property value="question.subCategory.subCategory" />/<s:property
-						value="question.question" /> <s:if
-						test="question.questionType == 'License'">
-						<s:set name="checkLicenseQuestion" value="question.question" />
-						<s:set name="checkLicenseAnswer" value="answer" />
-						<input type="image" name="CheckLicense"
-							src="images/checklicense.gif" alt='Check License'
-							onclick="javascript: document.getElementById('form1').submit(); return false;" />
-					</s:if></td>
+				<tr>
+					<td colspan="3" ><s:property value="question.subCategory.subCategory" />/<s:property
+						value="question.question" />
+					</td>
+					<td>	
+						<s:property value="answer" />
+					</td>
 				</tr>
 			</s:iterator>
 		</s:if>
@@ -39,13 +34,11 @@
 			<tr>
 				<td>Applicable:</td>
 				<s:iterator value="oshas">
-					<td><s:checkbox name="applicable" value="applicable" /></td>
+					<td><s:property value="applicable" /></td>
 				</s:iterator>
 			</tr>
 			<tr>
-				<td><a
-					href="AuditCat.action?auditID=<s:property value="#oshaemr.id" />&catDataID=151&mode=Edit"
-					class="blueMain">Upload New Files</a></td>
+				<td>Upload New Files</td>
 				<s:iterator value="oshas">	
 				<td><s:if
 					test="file && file.name().equals('Yes')">
@@ -58,74 +51,62 @@
 			<tr>
 				<td>Man Hours Worked:</td>
 				<s:iterator value="oshas">
-				<td><s:textfield name="manHours"
-					cssClass="oshanum" /></td>
+				<td><s:property value="manHours"/></td>
 				</s:iterator>	
 			</tr>
 			<tr>
 				<td>Number of Fatalities:</td>
 				<s:iterator value="oshas">
-				<td><s:textfield name="fatalities"
-					cssClass="oshanum" /></td>
+				<td><s:property value="fatalities"/></td>
 				</s:iterator>	
 			</tr>
 			<tr>
 				<td>Number of Lost Work Cases:</td>
 				<s:iterator value="oshas">
-				<td><s:textfield name="lostWorkCases"
-					cssClass="oshanum" /></td>
+				<td><s:property value="lostWorkCases" /></td>
 				</s:iterator>	
 			</tr>
 			<tr>
 				<td>Number of Lost Workdays:</td>
 				<s:iterator value="oshas">
-				<td><s:textfield name="lostWorkDays"
-					cssClass="oshanum" /></td>
+				<td><s:property value="lostWorkDays" /></td>
 				</s:iterator>	
 			</tr>
 			<tr>
 				<td>Injury &amp; Illnesses Medical Cases:</td>
 				<s:iterator value="oshas">
-				<td><s:textfield
-					name="injuryIllnessCases" cssClass="oshanum" /></td>
+				<td><s:property value="injuryIllnessCases"/></td>
 				</s:iterator>
 			</tr>
 			<tr>
 				<td>Restricted Work Cases:</td>
 				<s:iterator value="oshas">
-				<td><s:textfield
-					name="restrictedWorkCases" cssClass="oshanum" /></td>
+				<td><s:property value="restrictedWorkCases" /></td>
 				</s:iterator>
 			</tr>
 			<tr>
 				<td>Total Injuries and Illnesses:</td>
 				<s:iterator value="oshas">
-				<td class="highlight"><s:textfield name="recordableTotal"
-					cssClass="oshanum" /></td>
+				<td><s:property value="recordableTotal" /></td>
 				</s:iterator>
 			</tr>
 			<tr>
-				<td align="right">Is Correct:</td>
+				<td>Is Correct:</td>
 				<s:iterator value="oshas">
-				<td class="highlight" style="font-size: 14px; font-weight: bolder;"><input
-					type="radio" name="verified" value="true"
-					<s:if test="verified">checked</s:if> />Yes <input
-					type="radio" name="verified" value="false"
-					<s:if test="!verified">checked</s:if> />No</td>
+				<td><s:property value="verified" /></td>
 				</s:iterator>
 			</tr>
 			<tr>
-				<td align="right">Verified Date:</td>
+				<td>Verified Date:</td>
 				<s:iterator value="oshas">
-				<td class="highlight"><s:date name="verifiedDate"
+				<td><s:date name="verifiedDate"
 					format="MM/dd/yyyy" /></td>
 				</s:iterator>
 			</tr>
 			<tr>
-				<td align="right">Issue:</td>
+				<td>Issue:</td>
 				<s:iterator value="oshas">
-				<td class="highlight"><s:select list="oshaProblems"
-					name="comment" cssClass="blueMain" /></td>
+				<td><s:property value="comment" /></td>
 				</s:iterator>
 			</tr>
 		</s:if>
@@ -145,17 +126,15 @@
 				<td>EMR</td>
 				<s:iterator value="emrQuestions">
 					<td><s:property value="audit.auditFor" /></td>
-				</s:iterator>
+				</s:iterator>	
 			</tr>
 			</thead>
 			<s:iterator value="emrQuestions">
-				<tr>
+				<tr>	
 					<td><s:property value="question.question" /></td>
 					<td><s:property value="answer" /></td>
 				</tr>
 			</s:iterator>
-
-			
 		
 		</s:if>
 		
