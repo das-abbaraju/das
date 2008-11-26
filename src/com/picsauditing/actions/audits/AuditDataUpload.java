@@ -99,7 +99,7 @@ public class AuditDataUpload extends AuditActionSupport {
 					return SUCCESS;
 				}
 				
-				FileUtils.copyFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID), getFileName(dataID), extension, true);
+				FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID), getFileName(dataID), extension, true);
 				
 				addActionMessage("Successfully uploaded <b>"+fileFileName+"</b> file");
 				data.setAnswer(extension);
