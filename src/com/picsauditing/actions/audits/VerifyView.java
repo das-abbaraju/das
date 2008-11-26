@@ -34,6 +34,7 @@ public class VerifyView extends ContractorActionSupport {
 
 		permissions.tryPermission(OpPerms.AuditVerification);
 		this.findContractor();
+		this.subHeading = "Verify PQF/OSHA/EMR";
 
 		for (ContractorAudit conAudit : contractor.getAudits()) {
 			if (conAudit.getAuditStatus().equals(AuditStatus.Pending)
@@ -287,29 +288,6 @@ public class VerifyView extends ContractorActionSupport {
 
 	public YesNo[] getYesNos() {
 		return YesNo.values();
-	}
-
-	public ArrayList<String> getOshaProblems() {
-		ArrayList<String> list = new ArrayList<String>();
-		list.add("");
-		list.add("Contradicting Data");
-		list.add("Missing 300");
-		list.add("Missing 300a");
-		list.add("Incomplete");
-		list.add("Incorrect Form");
-		list.add("Incorrect Year");
-		return list;
-	}
-
-	public ArrayList<String> getEmrProblems() {
-		ArrayList<String> list = new ArrayList<String>();
-		list.add("");
-		list.add("Need EMR");
-		list.add("Need Loss Run");
-		list.add("Not Insurance Issued");
-		list.add("Incorrect Upload");
-		list.add("Incorrect Year");
-		return list;
 	}
 
 	// public String getContractorNotes() {

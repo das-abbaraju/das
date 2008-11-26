@@ -417,6 +417,11 @@
 			<result>struts/contractors/verification_detail_wrapper.jsp</result>
 		</action>
 
+		<action name="VerifyAuditAjax"
+			class="com.picsauditing.actions.audits.VerifyAudit">
+			<result>struts/contractors/verification_audit.jsp</result>
+		</action>
+
 		<action name="VerifySaveFollowUpAjax" method="saveFollowUp"
 			class="com.picsauditing.actions.audits.VerifyView">
 			<result>struts/blank.jsp</result>

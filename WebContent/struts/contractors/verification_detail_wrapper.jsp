@@ -2,7 +2,9 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<s:include value="../reports/reportHeader.jsp" />
+<script src="js/prototype.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" /> 
 <script src="js/validate_contractor.js" type="text/javascript"></script>
 </head>
@@ -32,5 +34,7 @@
 <s:include value="verification_detail.jsp" />
 </div>
 
+<div id="verification_audit"></div>
+<div class="clear"></div>
 </body>
 </html>
