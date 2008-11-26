@@ -194,9 +194,30 @@ public class AuditCategoryAction extends AuditActionSupport {
 				
 				if( auditYear != 0 )
 				{
-//					this.getActiveAudits() 
-//					previousAudit = auditDao.findAuditFor(conAudit.getAuditType(), conAudit.getContractorAccount(), new Integer( auditYear - 1 ).toString() );
-//					nextAudit = auditDao.findAuditFor(conAudit.getAuditType(), conAudit.getContractorAccount(), new Integer( auditYear + 1 ).toString() );
+					for( ContractorAudit ca : getActiveAudits() ) {
+
+						if( ca.getAuditType().getAuditTypeID() == conAudit.getAuditType().getAuditTypeID() ) {
+						
+							String caAuditFor = ca.getAuditFor();
+							int caAuditYear = 0;
+
+							try {
+								caAuditYear = Integer.parseInt(caAuditFor);
+
+								if( caAuditYear == auditYear - 1 ) {
+									previousAudit = ca;
+								}
+								if( caAuditYear == auditYear + 1 ) {
+									nextAudit = ca;
+								}
+								
+								if( previousAudit != null && nextAudit != null ) {  //no sense continuing the loop if we already found them
+									break;
+								}
+							
+							} catch (Exception ignoreIt) {}
+						}
+					}
 				}
 			}
 		}
