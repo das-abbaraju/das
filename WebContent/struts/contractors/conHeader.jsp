@@ -167,9 +167,9 @@
 			<li><a href="ConAuditMaintain.action?auditID=<s:property value="auditID" />"
 				<s:if test="requestURI.contains('audit_maintain.jsp')">class="current"</s:if>>System Edit</a></li>
 		</pics:permission>
-		<s:if test="conAudit.auditType.Pqf">
+		<s:if test="conAudit.auditType.Pqf || conAudit.auditType.AnnualAddendum">
 			<pics:permission perm="AuditVerification">
-				<li><a href="VerifyView.action?auditID=<s:property value="auditID" />"
+				<li><a href="VerifyView.action?id=<s:property value="id" />"
 				<s:if test="requestURI.contains('pqf_verif')">class="current"</s:if>>Verify PQF</a></li>
 			</pics:permission>
 		</s:if>

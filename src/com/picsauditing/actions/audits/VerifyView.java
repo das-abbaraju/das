@@ -1,48 +1,31 @@
 package com.picsauditing.actions.audits;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
-import com.picsauditing.dao.AuditCategoryDataDAO;
+import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
 
-public class VerifyView extends AuditActionSupport {
-	private int oshaID = 0;
-	@Autowired
-	private OshaAudit osha;
-	private Map<Integer, AuditData> emr = new HashMap<Integer, AuditData>();
-	protected Map<Integer, AuditData> customVerification = null;
+public class VerifyView extends ContractorActionSupport {
 	private int followUp = 0;
-	private Map<Integer, AuditData> pqfDesktopVerification = null;
-	private int oshaCatDataId;
-	private int emrCatDataId;
+	private Map<Integer, AuditData> pqfQuestions = new LinkedHashMap<Integer, AuditData>();
+	private List<OshaAudit> oshas = new ArrayList<OshaAudit>(); 
+	protected AuditDataDAO auditDataDAO;
+	protected List<AuditData> emrQuestions = new ArrayList<AuditData>(); 
 
-	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao) {
-		super(accountDao, contractorAuditDAO, catDataDao, auditDataDao);
+	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO, AuditDataDAO auditDataDAO) {
+		super(accountDao, contractorAuditDAO);
+		this.auditDataDAO = auditDataDAO;
 	}
 
 	public String execute() throws Exception {
@@ -50,64 +33,77 @@ public class VerifyView extends AuditActionSupport {
 			return LOGIN;
 
 		permissions.tryPermission(OpPerms.AuditVerification);
-		this.findConAudit();
+		this.findContractor();
 
-		if (osha != null) {
-			permissions.tryPermission(OpPerms.AuditVerification, OpType.Edit);
-			for (OshaAudit osha2 : conAudit.getOshas()) {
-				if (osha2.getId() == osha.getId()) {
-					saveOSHA(osha2, osha);
-				}
-			}
-			auditDao.save(conAudit);
-		}
-
-		for (AuditCatData auditCatData : getCategories()) {
-			if (auditCatData.getCategory().getId() == 29)
-				oshaCatDataId = auditCatData.getId();
-			if (auditCatData.getCategory().getId() == 10)
-				emrCatDataId = auditCatData.getId();
-		}
-
-		if (emr.size() > 0) {
-			ArrayList<Integer> emrQuestions = new ArrayList<Integer>();
-			emrQuestions.add(AuditQuestion.EMR07);
-			emrQuestions.add(AuditQuestion.EMR06);
-			emrQuestions.add(AuditQuestion.EMR05);
-
-			Map<Integer, AuditData> emrDB = auditDataDao.findAnswers(this.auditID, emrQuestions);
-			saveAuditData(emrDB, AuditQuestion.EMR07);
-			saveAuditData(emrDB, AuditQuestion.EMR06);
-			saveAuditData(emrDB, AuditQuestion.EMR05);
-		}
-
-		if (customVerification != null) {
-			for (Integer i : customVerification.keySet()) {
-				AuditData aq = (AuditData) customVerification.get(i);
-
-				AuditData toMerge = auditDataDao.findAnswerToQuestion(this.auditID, i);
-
-				toMerge.setVerifiedAnswer(aq.getVerifiedAnswer());
-				toMerge.setComment(aq.getComment());
-
-				if (toMerge.isVerified() != aq.isVerified()) {
-					if (aq.isVerified()) {
-						toMerge.setDateVerified(new Date());
-						toMerge.setAuditor(new User(permissions.getUserId()));
-					} else {
-						toMerge.setDateVerified(null);
-						toMerge.setAuditor(null);
+		for (ContractorAudit conAudit : contractor.getAudits()) {
+			if (conAudit.getAuditStatus().equals(AuditStatus.Pending)
+					|| conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
+				if (conAudit.getAuditType().isPqf()) {
+					List<AuditData> temp = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
+					pqfQuestions = new LinkedHashMap<Integer, AuditData>();
+					for (AuditData ad : temp) {
+						pqfQuestions.put(ad.getQuestion().getQuestionID(), ad);
 					}
-					toMerge.setVerified(aq.isVerified());
 				}
-
-				auditDataDao.save(toMerge);
+				if (conAudit.getAuditType().isAnnualAddendum()) {
+					for (OshaAudit oshaAudit : conAudit.getOshas()) {
+						if (oshaAudit.isCorporate()) {
+							oshas.add(oshaAudit);
+						}
+					}
+					for (AuditData auditData : conAudit.getData()) {
+						emrQuestions.add(auditData);
+					}
+				}
 			}
-		}
+		}	
 
-		loadData();
+		// for (AuditCatData auditCatData : getCategories()) {
+		// if (auditCatData.getCategory().getId() == 29)
+		// oshaCatDataId = auditCatData.getId();
+		// if (auditCatData.getCategory().getId() == 10)
+		// emrCatDataId = auditCatData.getId();
+		// }
+		//
+		// if (emr.size() > 0) {
+		// ArrayList<Integer> emrQuestions = new ArrayList<Integer>();
+		// emrQuestions.add(AuditQuestion.EMR07);
+		// emrQuestions.add(AuditQuestion.EMR06);
+		// emrQuestions.add(AuditQuestion.EMR05);
+		//
+		// Map<Integer, AuditData> emrDB =
+		// auditDataDao.findAnswers(this.auditID, emrQuestions);
+		// saveAuditData(emrDB, AuditQuestion.EMR07);
+		// saveAuditData(emrDB, AuditQuestion.EMR06);
+		// saveAuditData(emrDB, AuditQuestion.EMR05);
+		// }
+		//
+		// if (customVerification != null) {
+		// for (Integer i : customVerification.keySet()) {
+		// AuditData aq = (AuditData) customVerification.get(i);
+		//
+		// AuditData toMerge = auditDataDao.findAnswerToQuestion(this.auditID,
+		// i);
+		//
+		// toMerge.setVerifiedAnswer(aq.getVerifiedAnswer());
+		// toMerge.setComment(aq.getComment());
+		//
+		// if (toMerge.isVerified() != aq.isVerified()) {
+		// if (aq.isVerified()) {
+		// toMerge.setDateVerified(new Date());
+		// toMerge.setAuditor(new User(permissions.getUserId()));
+		// } else {
+		// toMerge.setDateVerified(null);
+		// toMerge.setAuditor(null);
+		// }
+		// toMerge.setVerified(aq.isVerified());
+		// }
+		//
+		// auditDataDao.save(toMerge);
+		// }
+		// }
 
-		setVerifiedPercent();
+		// setVerifiedPercent();
 		return SUCCESS;
 	}
 
@@ -124,265 +120,170 @@ public class VerifyView extends AuditActionSupport {
 		oldOsha.setVerifiedDate(newOsha.getVerifiedDate());
 	}
 
-	private void setVerifiedPercent() {
-		int verified = 0;
+	// private void setVerifiedPercent() {
+	// int verified = 0;
+	//
+	// for (OshaAudit oshaAudit : conAudit.getOshas()) {
+	// if (oshaAudit != null && (oshaAudit.isVerified() ||
+	// !oshaAudit.isApplicable()))
+	// verified++;
+	// }
+	//
+	// if (getEmr1() != null && YesNo.Yes.equals(getEmr1().getIsCorrect()))
+	// verified++;
+	// if (getEmr2() != null && YesNo.Yes.equals(getEmr2().getIsCorrect()))
+	// verified++;
+	// if (getEmr3() != null && YesNo.Yes.equals(getEmr3().getIsCorrect()))
+	// verified++;
+	//
+	// int verifyTotal = 6;
+	//
+	// if (customVerification != null) {
+	// for (AuditData ad : customVerification.values()) {
+	// // Training and Safety Policy questions are only necessary to
+	// // validate
+	// // before a desktop audit. They are NOT required to be validated
+	// // before
+	// // Activating a PQF
+	// int catID = ad.getQuestion().getSubCategory().getCategory().getId();
+	// if (catID != AuditCategory.SAFETY_POLICIES && catID !=
+	// AuditCategory.TRAINING) {
+	// verifyTotal++;
+	// if (ad.isVerified())
+	// verified++;
+	// }
+	// }
+	// }
+	//
+	// conAudit.setPercentVerified(Math.round((float) (100 * verified) /
+	// verifyTotal));
+	//
+	// if (conAudit.getPercentVerified() == 100 &&
+	// conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
+	// conAudit.setAuditStatus(AuditStatus.Active);
+	// emailContractorOnAudit();
+	// }
+	// // Don't un-Activate it anymore, per conversation with Trevor, Jared,
+	// // John 5/16/08
+	// // This can cause more problems with PQFs that are already active during
+	// // the year
+	// // After we convert and get all our data reverified, we may be able to
+	// // turn this back on
+	// // else
+	// // conAudit.setAuditStatus(AuditStatus.Submitted);
+	//
+	// auditDao.save(conAudit);
+	// }
 
-		for (OshaAudit oshaAudit : conAudit.getOshas()) {
-			if (oshaAudit != null && (oshaAudit.isVerified() || !oshaAudit.isApplicable()))
-				verified++;
-		}
-
-		if (getEmr1() != null && YesNo.Yes.equals(getEmr1().getIsCorrect()))
-			verified++;
-		if (getEmr2() != null && YesNo.Yes.equals(getEmr2().getIsCorrect()))
-			verified++;
-		if (getEmr3() != null && YesNo.Yes.equals(getEmr3().getIsCorrect()))
-			verified++;
-
-		int verifyTotal = 6;
-
-		if (customVerification != null) {
-			for (AuditData ad : customVerification.values()) {
-				// Training and Safety Policy questions are only necessary to
-				// validate
-				// before a desktop audit. They are NOT required to be validated
-				// before
-				// Activating a PQF
-				int catID = ad.getQuestion().getSubCategory().getCategory().getId();
-				if (catID != AuditCategory.SAFETY_POLICIES && catID != AuditCategory.TRAINING) {
-					verifyTotal++;
-					if (ad.isVerified())
-						verified++;
-				}
-			}
-		}
-
-		conAudit.setPercentVerified(Math.round((float) (100 * verified) / verifyTotal));
-
-		if (conAudit.getPercentVerified() == 100 && conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
-			conAudit.setAuditStatus(AuditStatus.Active);
-			emailContractorOnAudit();
-		}
-		// Don't un-Activate it anymore, per conversation with Trevor, Jared,
-		// John 5/16/08
-		// This can cause more problems with PQFs that are already active during
-		// the year
-		// After we convert and get all our data reverified, we may be able to
-		// turn this back on
-		// else
-		// conAudit.setAuditStatus(AuditStatus.Submitted);
-
-		auditDao.save(conAudit);
-	}
-
-	private void saveAuditData(Map<Integer, AuditData> emrDB, int year) {
-		if (emrDB.get(year) == null) {
-			AuditData emrNewDB = new AuditData();
-			emrNewDB.setAudit(conAudit);
-			AuditQuestion auQuestion = new AuditQuestion();
-			auQuestion.setQuestionID(year);
-			emrNewDB.setQuestion(auQuestion);
-			emrNewDB.setNum(emr.get(year).getNum());
-			emrNewDB.setAnswer("");
-			emrDB.put(year, emrNewDB);
-		}
-		emrDB.get(year).setVerifiedAnswer(emr.get(year).getVerifiedAnswer());
-		emrDB.get(year).setComment(emr.get(year).getComment());
-		if (emrDB.get(year).getIsCorrect() != emr.get(year).getIsCorrect()) {
-			emrDB.get(year).setIsCorrect(emr.get(year).getIsCorrect());
-			if (YesNo.Yes.equals(emr.get(year).getIsCorrect()))
-				emrDB.get(year).setDateVerified(new Date());
-			else
-				emrDB.get(year).setDateVerified(null);
-		}
-		auditDataDao.save(emrDB.get(year));
-	}
-
-	private void loadData() {
-		// Retreive the osha record we selected
-		// or pick the only child if only one exists
-		int counter = 0;
-		for (OshaAudit oshaLog : conAudit.getOshas()) {
-			if (oshaLog.isCorporate()) {
-				counter++;
-				osha = oshaLog;
-				oshaID = osha.getId();
-			}
-		}
-		if (counter != 1) {
-			osha = null;
-			oshaID = 0;
-		}
-
-		// Now get the EMR data
-		ArrayList<Integer> emrQuestions = new ArrayList<Integer>();
-		emrQuestions.add(AuditQuestion.EMR07);
-		emrQuestions.add(AuditQuestion.EMR06);
-		emrQuestions.add(AuditQuestion.EMR05);
-		emrQuestions.add(872);
-		emrQuestions.add(1522);
-		emrQuestions.add(1618);
-
-		emr = auditDataDao.findAnswers(this.auditID, emrQuestions);
-
-		List<AuditData> temp = auditDataDao.findCustomPQFVerifications(this.auditID);
-
-		customVerification = new LinkedHashMap<Integer, AuditData>();
-		for (AuditData ad : temp) {
-			customVerification.put(ad.getQuestion().getQuestionID(), ad);
-		}
-		if (conAudit.getAuditStatus().equals(AuditStatus.Active)) {
-			Map<Integer, AuditData> safetyPolicies = auditDataDao.findByCategory(this.auditID,
-					AuditCategory.SAFETY_POLICIES);
-			Map<Integer, AuditData> training = auditDataDao.findByCategory(this.auditID, AuditCategory.TRAINING);
-			customVerification.putAll(safetyPolicies);
-			customVerification.putAll(training);
-		}
-	}
-
-	public String saveFollowUp() throws Exception {
-		this.findConAudit();
-
-		if (followUp > 0) {
-			Calendar followUpCal = Calendar.getInstance();
-			followUpCal.add(Calendar.DAY_OF_MONTH, followUp);
-			conAudit.setScheduledDate(followUpCal.getTime());
-			auditDao.save(conAudit);
-		}
-		output = new SimpleDateFormat("MM/dd").format(conAudit.getScheduledDate());
-		return SUCCESS;
-	}
-
-	private void appendOsha(StringBuffer sb, OshaAudit osha) {
-		if (!osha.isVerified()) {
-			sb.append(osha.getConAudit().getAuditFor());
-			sb.append(" OSHA - ");
-			sb.append(osha.getComment());
-			sb.append("\n");
-		}
-	}
-
-	public String sendEmail() throws Exception {
-		this.findConAudit();
-		loadData();
-
-		EmailBuilder emailBuilder = new EmailBuilder();
-		emailBuilder.setTemplate(11); // PQF Verification
-		emailBuilder.setPermissions(permissions);
-		emailBuilder.setConAudit(conAudit);
-
-		StringBuffer sb = new StringBuffer("");
-
-		for (OshaAudit osha : conAudit.getOshas()) {
-			appendOsha(sb, osha);
-		}
-
-		AuditData temp = getEmr1();
-		if (temp == null || !temp.isVerified()) {
-			sb.append(getYear1());
-			sb.append(" EMR - ");
-			if (temp == null)
-				sb.append("Missing EMR");
-			else
-				sb.append(temp.getComment());
-			sb.append("\n");
-		}
-
-		temp = getEmr2();
-		if (temp == null || !temp.isVerified()) {
-			sb.append(getYear2());
-			sb.append(" EMR - ");
-			if (temp == null)
-				sb.append("Missing EMR");
-			else
-				sb.append(temp.getComment());
-			sb.append("\n");
-		}
-
-		temp = getEmr3();
-		if (temp == null || !temp.isVerified()) {
-			sb.append(getYear3());
-			sb.append(" EMR - ");
-			if (temp == null)
-				sb.append("Missing EMR");
-			else
-				sb.append(temp.getComment());
-			sb.append("\n");
-		}
-
-		String items = sb.toString();
-
-		emailBuilder.addToken("missing_items", items);
-		emailBuilder.addToken("safetyManual", getSafetyManualAnswer());
-		EmailSender.send(emailBuilder.build());
-
-		String note = "PQF Verification email sent to " + emailBuilder.getSentTo();
-		ContractorBean.addNote(conAudit.getContractorAccount().getId(), permissions, note);
-
-		// message = conAudit.getContractorAccount().getNotes();
-		output = "The email was sent at and the contractor notes were stamped";
-		return SUCCESS;
-	}
-
-	public OshaAudit getOsha() {
-		return osha;
-	}
-
-	public void setOsha(OshaAudit osha) {
-		this.osha = osha;
-	}
-
-	public int getOshaID() {
-		return oshaID;
-	}
-
-	public void setOshaID(int oshaID) {
-		this.oshaID = oshaID;
-	}
-
-	public Map<Integer, AuditData> getEmr() {
-		return emr;
-	}
-
-	public void setEmr(HashMap<Integer, AuditData> emr) {
-		this.emr = emr;
-	}
-
-	public int getYear1() {
-		return 2007;
-	}
-
-	public int getYear2() {
-		return this.getYear1() - 1;
-	}
-
-	public int getYear3() {
-		return this.getYear1() - 2;
-	}
-
-	public void setEmr1(AuditData emr) {
-		this.emr.put(AuditQuestion.EMR07, emr);
-	}
-
-	public void setEmr2(AuditData emr) {
-		this.emr.put(AuditQuestion.EMR06, emr);
-	}
-
-	public void setEmr3(AuditData emr) {
-		this.emr.put(AuditQuestion.EMR05, emr);
-	}
-
-	public AuditData getEmr1() {
-		return emr.get(AuditQuestion.EMR07);
-	}
-
-	public AuditData getEmr2() {
-		return emr.get(AuditQuestion.EMR06);
-	}
-
-	public AuditData getEmr3() {
-		return emr.get(AuditQuestion.EMR05);
-	}
+	// private void saveAuditData(Map<Integer, AuditData> emrDB, int year) {
+	// if (emrDB.get(year) == null) {
+	// AuditData emrNewDB = new AuditData();
+	// emrNewDB.setAudit(conAudit);
+	// AuditQuestion auQuestion = new AuditQuestion();
+	// auQuestion.setQuestionID(year);
+	// emrNewDB.setQuestion(auQuestion);
+	// emrNewDB.setNum(emr.get(year).getNum());
+	// emrNewDB.setAnswer("");
+	// emrDB.put(year, emrNewDB);
+	// }
+	// emrDB.get(year).setVerifiedAnswer(emr.get(year).getVerifiedAnswer());
+	// emrDB.get(year).setComment(emr.get(year).getComment());
+	// if (emrDB.get(year).getIsCorrect() != emr.get(year).getIsCorrect()) {
+	// emrDB.get(year).setIsCorrect(emr.get(year).getIsCorrect());
+	// if (YesNo.Yes.equals(emr.get(year).getIsCorrect()))
+	// emrDB.get(year).setDateVerified(new Date());
+	// else
+	// emrDB.get(year).setDateVerified(null);
+	// }
+	// auditDataDao.save(emrDB.get(year));
+	// }
+	//
+	// public String saveFollowUp() throws Exception {
+	// this.findConAudit();
+	//
+	// if (followUp > 0) {
+	// Calendar followUpCal = Calendar.getInstance();
+	// followUpCal.add(Calendar.DAY_OF_MONTH, followUp);
+	// conAudit.setScheduledDate(followUpCal.getTime());
+	// auditDao.save(conAudit);
+	// }
+	// output = new
+	// SimpleDateFormat("MM/dd").format(conAudit.getScheduledDate());
+	// return SUCCESS;
+	// }
+	//
+	// private void appendOsha(StringBuffer sb, OshaAudit osha) {
+	// if (!osha.isVerified()) {
+	// sb.append(osha.getConAudit().getAuditFor());
+	// sb.append(" OSHA - ");
+	// sb.append(osha.getComment());
+	// sb.append("\n");
+	// }
+	// }
+	//
+	// public String sendEmail() throws Exception {
+	// this.findConAudit();
+	// loadData();
+	//
+	// EmailBuilder emailBuilder = new EmailBuilder();
+	// emailBuilder.setTemplate(11); // PQF Verification
+	// emailBuilder.setPermissions(permissions);
+	// emailBuilder.setConAudit(conAudit);
+	//
+	// StringBuffer sb = new StringBuffer("");
+	//
+	// for (OshaAudit osha : conAudit.getOshas()) {
+	// appendOsha(sb, osha);
+	// }
+	//
+	// AuditData temp = getEmr1();
+	// if (temp == null || !temp.isVerified()) {
+	// sb.append(getYear1());
+	// sb.append(" EMR - ");
+	// if (temp == null)
+	// sb.append("Missing EMR");
+	// else
+	// sb.append(temp.getComment());
+	// sb.append("\n");
+	// }
+	//
+	// temp = getEmr2();
+	// if (temp == null || !temp.isVerified()) {
+	// sb.append(getYear2());
+	// sb.append(" EMR - ");
+	// if (temp == null)
+	// sb.append("Missing EMR");
+	// else
+	// sb.append(temp.getComment());
+	// sb.append("\n");
+	// }
+	//
+	// temp = getEmr3();
+	// if (temp == null || !temp.isVerified()) {
+	// sb.append(getYear3());
+	// sb.append(" EMR - ");
+	// if (temp == null)
+	// sb.append("Missing EMR");
+	// else
+	// sb.append(temp.getComment());
+	// sb.append("\n");
+	// }
+	//
+	// String items = sb.toString();
+	//
+	// emailBuilder.addToken("missing_items", items);
+	// emailBuilder.addToken("safetyManual", getSafetyManualAnswer());
+	// EmailSender.send(emailBuilder.build());
+	//
+	// String note = "PQF Verification email sent to " +
+	// emailBuilder.getSentTo();
+	// ContractorBean.addNote(conAudit.getContractorAccount().getId(),
+	// permissions, note);
+	//
+	// // message = conAudit.getContractorAccount().getNotes();
+	// output = "The email was sent at and the contractor notes were stamped";
+	// return SUCCESS;
+	// }
 
 	public YesNo[] getYesNos() {
 		return YesNo.values();
@@ -411,20 +312,20 @@ public class VerifyView extends AuditActionSupport {
 		return list;
 	}
 
-	public String getContractorNotes() {
-		String notes = this.conAudit.getContractorAccount().getNotes();
-		notes = notes.replace("\n", "<br>");
-
-		int position = 0;
-		for (int i = 0; i < 5; i++) {
-			position = notes.indexOf("<br>", position + 1);
-			if (position == -1)
-				return notes;
-		}
-
-		notes = notes.substring(0, position);
-		return notes;
-	}
+	// public String getContractorNotes() {
+	// String notes = this.conAudit.getContractorAccount().getNotes();
+	// notes = notes.replace("\n", "<br>");
+	//
+	// int position = 0;
+	// for (int i = 0; i < 5; i++) {
+	// position = notes.indexOf("<br>", position + 1);
+	// if (position == -1)
+	// return notes;
+	// }
+	//
+	// notes = notes.substring(0, position);
+	// return notes;
+	// }
 
 	public int getFollowUp() {
 		return followUp;
@@ -435,55 +336,27 @@ public class VerifyView extends AuditActionSupport {
 
 	}
 
-	public Map<Integer, AuditData> getCustomVerification() {
-		return customVerification;
+	public Map<Integer, AuditData> getPqfQuestions() {
+		return pqfQuestions;
 	}
 
-	public void setCustomVerification(Map<Integer, AuditData> customVerification) {
-		this.customVerification = customVerification;
+	public void setPqfQuestions(Map<Integer, AuditData> pqfQuestions) {
+		this.pqfQuestions = pqfQuestions;
 	}
 
-	public AuditData getSafetyManualAnswer() {
-		return customVerification.get(AuditQuestion.MANUAL_PQF);
+	public List<OshaAudit> getOshas() {
+		return oshas;
 	}
 
-	public Map<Integer, AuditData> getPqfDesktopVerification() {
-		return pqfDesktopVerification;
+	public void setOshas(List<OshaAudit> oshas) {
+		this.oshas = oshas;
 	}
 
-	public void setPqfDesktopVerification(Map<Integer, AuditData> pqfDesktopVerification) {
-		this.pqfDesktopVerification = pqfDesktopVerification;
+	public List<AuditData> getEmrQuestions() {
+		return emrQuestions;
 	}
 
-	public AuditData getEmr3Upload() {
-		return emr.get(872);
-	}
-
-	public void setEmr3Upload(AuditData emr) {
-		this.emr.put(872, emr);
-	}
-
-	public AuditData getEmr2Upload() {
-		return emr.get(1522);
-	}
-
-	public void setEmr2Upload(AuditData emr) {
-		this.emr.put(1522, emr);
-	}
-
-	public AuditData getEmr1Upload() {
-		return emr.get(1618);
-	}
-
-	public void setEmr1Upload(AuditData emr) {
-		this.emr.put(1618, emr);
-	}
-
-	public int getOshaCatDataId() {
-		return oshaCatDataId;
-	}
-
-	public int getEmrCatDataId() {
-		return emrCatDataId;
+	public void setEmrQuestions(List<AuditData> emrQuestions) {
+		this.emrQuestions = emrQuestions;
 	}
 }
