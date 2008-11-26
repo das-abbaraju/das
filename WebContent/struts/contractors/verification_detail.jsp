@@ -162,3 +162,13 @@
 	</table>
 
 </s:form>
+
+<div>
+<s:iterator value="contractor.audits">
+	<s:if test="auditStatus.pendingSubmitted">
+		[<a href="#" onclick="showAudit(<s:property value="id"/>); return false;"><s:property value="auditFor"/> <s:property value="auditType.auditName"/></a>]
+	</s:if>
+</s:iterator>
+</div>
+
+<div id="verification_audit"></div>
