@@ -194,8 +194,9 @@ public class AuditCategoryAction extends AuditActionSupport {
 				
 				if( auditYear != 0 )
 				{
-					previousAudit = auditDao.findAuditFor(conAudit.getAuditType(), conAudit.getContractorAccount(), new Integer( auditYear - 1 ).toString() );
-					nextAudit = auditDao.findAuditFor(conAudit.getAuditType(), conAudit.getContractorAccount(), new Integer( auditYear + 1 ).toString() );
+//					this.getActiveAudits() 
+//					previousAudit = auditDao.findAuditFor(conAudit.getAuditType(), conAudit.getContractorAccount(), new Integer( auditYear - 1 ).toString() );
+//					nextAudit = auditDao.findAuditFor(conAudit.getAuditType(), conAudit.getContractorAccount(), new Integer( auditYear + 1 ).toString() );
 				}
 			}
 		}
