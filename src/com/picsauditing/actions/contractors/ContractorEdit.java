@@ -78,7 +78,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 							return SUCCESS;
 						}
 						String fileName = "logo_" + contractor.getId();
-						FileUtils.copyFile(logo, ftpDir, "/logos/", fileName, extension, true);
+						FileUtils.moveFile(logo, ftpDir, "/logos/", fileName, extension, true);
 						contractor.setLogoFile(fileName + "." + extension);
 					}
 
@@ -91,7 +91,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 							return SUCCESS;
 						}
 						String fileName = "brochure_" + contractor.getId();
-						FileUtils.copyFile(brochure, ftpDir, "/files/brochures/", fileName, extension, true);
+						FileUtils.moveFile(brochure, ftpDir, "/files/brochures/", fileName, extension, true);
 						contractor.setBrochureFile(extension);
 					}
 					Vector<String> errors = contractorValidator.validateContractor(contractor, password1, password2);

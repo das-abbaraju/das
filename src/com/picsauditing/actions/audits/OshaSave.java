@@ -109,7 +109,7 @@ public class OshaSave extends PicsActionSupport implements Preparable {
 			}
 	
 			try {
-				FileUtils.copyFile(uploadFile, getFtpDir(), "files/" + FileUtils.thousandize(id), getFileName(), ext, true);
+				FileUtils.moveFile(uploadFile, getFtpDir(), "files/" + FileUtils.thousandize(id), getFileName(), ext, true);
 			} catch (Exception e) {
 				addActionError("Failed to save file: " + e.getMessage());
 				e.printStackTrace();
