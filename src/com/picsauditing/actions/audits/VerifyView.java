@@ -364,7 +364,6 @@ public class VerifyView extends ContractorActionSupport {
 	public void setEmrs(Map<AuditQuestion, Map<String, AuditData>> emrs) {
 		this.emrs = emrs;
 	}
-<<<<<<< .mine
 
 	public Map<Integer, AuditData> getInfoSection() {
 		return infoSection;
@@ -374,8 +373,6 @@ public class VerifyView extends ContractorActionSupport {
 		this.infoSection = infoSection;
 	}
 	
-	
-=======
 
 	public SortedSet<String> getYears() {
 		return years;
@@ -384,5 +381,4 @@ public class VerifyView extends ContractorActionSupport {
 	public void setYears(SortedSet<String> years) {
 		this.years = years;
 	}
->>>>>>> .r3627
 }
