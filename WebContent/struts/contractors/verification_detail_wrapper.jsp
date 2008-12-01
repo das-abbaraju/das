@@ -14,16 +14,31 @@
 <div id="auditHeader">
 	<fieldset>
 	<ul>
-		<li><label>Type:</label>
-			<s:property value="conAudit.auditType.auditName" />
-			 #<s:property value="conAudit.id" />
+		<li><label>CSR:</label>
+			<strong><s:property value="contractor.auditor.name" /></strong>
+		</li>
+		<li><label>Risk Level:</label>
+			<strong><s:property value="contractor.riskLevel" /></strong>
 		</li>
 	</ul>
 	</fieldset>
 	<fieldset>
 	<ul>
-		<li><label>Status:</label>
-			<s:property value="conAudit.auditStatus" />
+		<li><label># of Employees:</label>
+			<strong><s:property value="infoSection[69].answer"/></strong>
+		</li>
+		<li><label>Total Revenue:</label>
+			<strong><s:property value="infoSection[1616].answer"/></strong>
+		</li>
+	</ul>
+	</fieldset>
+	<fieldset>
+	<ul>
+		<li><label>SIC:</label>
+			<strong><s:property value="infoSection[55].answer"/></strong>
+		</li>
+		<li><label>NAIC:</label>
+			<strong><s:property value="infoSection[57].answer"/></strong>
 		</li>
 	</ul>
 	</fieldset>

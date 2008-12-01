@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,8 @@ import com.picsauditing.jpa.entities.YesNo;
 public class VerifyView extends ContractorActionSupport {
 	private int followUp = 0;
 	private Map<Integer, AuditData> pqfQuestions = new LinkedHashMap<Integer, AuditData>();
-	private List<OshaAudit> oshas = new ArrayList<OshaAudit>();
+	private Map<Integer, AuditData> infoSection = new LinkedHashMap<Integer, AuditData>();
+	private List<OshaAudit> oshas = new ArrayList<OshaAudit>(); 
 	protected AuditDataDAO auditDataDAO;
 	protected SortedSet<String> years = new TreeSet<String>();
 	protected Map<AuditQuestion, Map<String, AuditData>> emrs = new TreeMap<AuditQuestion, Map<String, AuditData>>();
@@ -81,6 +83,9 @@ public class VerifyView extends ContractorActionSupport {
 		}
 		System.out.println(emrs);
 
+		
+		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(), Arrays.<Integer>asList( 69, 1616, 55 , 57 ) );
+		
 		// for (AuditCatData auditCatData : getCategories()) {
 		// if (auditCatData.getCategory().getId() == 29)
 		// oshaCatDataId = auditCatData.getId();
@@ -359,6 +364,18 @@ public class VerifyView extends ContractorActionSupport {
 	public void setEmrs(Map<AuditQuestion, Map<String, AuditData>> emrs) {
 		this.emrs = emrs;
 	}
+<<<<<<< .mine
+
+	public Map<Integer, AuditData> getInfoSection() {
+		return infoSection;
+	}
+
+	public void setInfoSection(Map<Integer, AuditData> infoSection) {
+		this.infoSection = infoSection;
+	}
+	
+	
+=======
 
 	public SortedSet<String> getYears() {
 		return years;
@@ -367,4 +384,5 @@ public class VerifyView extends ContractorActionSupport {
 	public void setYears(SortedSet<String> years) {
 		this.years = years;
 	}
+>>>>>>> .r3627
 }
