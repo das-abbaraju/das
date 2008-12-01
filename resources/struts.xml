@@ -700,6 +700,11 @@
 			<result>struts/blank.jsp</result>
 		</action>
 
+		<action name="MigrateFileStructure"
+			class="com.picsauditing.actions.MigrateFileStructure">
+			<result>struts/blank.jsp</result>
+		</action>
+
 		<!-- Remember to Categorize your new Struts pages -->
 	</package>
 </struts>
