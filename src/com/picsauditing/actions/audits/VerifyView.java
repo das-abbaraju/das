@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
@@ -11,6 +14,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
@@ -19,9 +23,10 @@ import com.picsauditing.jpa.entities.YesNo;
 public class VerifyView extends ContractorActionSupport {
 	private int followUp = 0;
 	private Map<Integer, AuditData> pqfQuestions = new LinkedHashMap<Integer, AuditData>();
-	private List<OshaAudit> oshas = new ArrayList<OshaAudit>(); 
+	private List<OshaAudit> oshas = new ArrayList<OshaAudit>();
 	protected AuditDataDAO auditDataDAO;
-	protected List<AuditData> emrQuestions = new ArrayList<AuditData>(); 
+	protected SortedSet<String> years = new TreeSet<String>();
+	protected Map<AuditQuestion, Map<String, AuditData>> emrs = new TreeMap<AuditQuestion, Map<String, AuditData>>();
 
 	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO, AuditDataDAO auditDataDAO) {
 		super(accountDao, contractorAuditDAO);
@@ -52,12 +57,29 @@ public class VerifyView extends ContractorActionSupport {
 							oshas.add(oshaAudit);
 						}
 					}
+					years.add(conAudit.getAuditFor());
+				}
+			}
+		}
+		for (ContractorAudit conAudit : contractor.getAudits()) {
+			if (conAudit.getAuditStatus().equals(AuditStatus.Pending)
+					|| conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
+				if (conAudit.getAuditType().isAnnualAddendum()) {
 					for (AuditData auditData : conAudit.getData()) {
-						emrQuestions.add(auditData);
+						Map<String, AuditData> inner = emrs.get(auditData.getQuestion());
+
+						if (inner == null) {
+							inner = new TreeMap<String, AuditData>();
+							for (String year : years)
+								inner.put(year, null);
+							emrs.put(auditData.getQuestion(), inner);
+						}
+						inner.put(conAudit.getAuditFor(), auditData);
 					}
 				}
 			}
-		}	
+		}
+		System.out.println(emrs);
 
 		// for (AuditCatData auditCatData : getCategories()) {
 		// if (auditCatData.getCategory().getId() == 29)
@@ -330,11 +352,19 @@ public class VerifyView extends ContractorActionSupport {
 		this.oshas = oshas;
 	}
 
-	public List<AuditData> getEmrQuestions() {
-		return emrQuestions;
+	public Map<AuditQuestion, Map<String, AuditData>> getEmrs() {
+		return emrs;
 	}
 
-	public void setEmrQuestions(List<AuditData> emrQuestions) {
-		this.emrQuestions = emrQuestions;
+	public void setEmrs(Map<AuditQuestion, Map<String, AuditData>> emrs) {
+		this.emrs = emrs;
+	}
+
+	public SortedSet<String> getYears() {
+		return years;
+	}
+
+	public void setYears(SortedSet<String> years) {
+		this.years = years;
 	}
 }

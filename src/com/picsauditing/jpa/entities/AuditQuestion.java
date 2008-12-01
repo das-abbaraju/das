@@ -27,7 +27,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "pqfquestions")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
-public class AuditQuestion implements java.io.Serializable {
+public class AuditQuestion implements java.io.Serializable, Comparable<AuditQuestion> {
 	static public final int EMR05 = 889;
 	static public final int EMR06 = 1519;
 	static public final int EMR07 = 1617;
@@ -476,5 +476,22 @@ public class AuditQuestion implements java.io.Serializable {
 
 	public void setCriteria(String criteria) {
 		this.criteria = criteria;
+	}
+
+	@Override
+	public int compareTo(AuditQuestion o) {
+		if (o == null)
+			throw new NullPointerException();
+		if (this.getQuestionID() == o.getQuestionID())
+			return 0;
+		
+		if (getSubCategory().getId() == o.getSubCategory().getId()) {
+			int result = this.getNumber() - o.getNumber();
+			if (result == 0)
+				return this.getQuestionID()- o.getQuestionID();
+			return result;
+		}
+		
+		return getSubCategory().getId() - o.getSubCategory().getId();
 	}
 }

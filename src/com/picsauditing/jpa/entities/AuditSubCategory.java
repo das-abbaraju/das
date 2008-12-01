@@ -93,11 +93,13 @@ public class AuditSubCategory implements java.io.Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		try {
+			final AuditSubCategory other = (AuditSubCategory) obj;
+			if (id != other.id)
+				return false;
+		} catch (Exception e) {
 			return false;
-		final AuditSubCategory other = (AuditSubCategory) obj;
-		if (id != other.id)
-			return false;
+		}
 		return true;
 	}
 

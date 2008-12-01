@@ -15,7 +15,7 @@
 						value="question.question" />
 					</td>
 					<td>	
-						<s:property value="answer" />
+						<s:property value="verifiedAnswerOrAnswer" />
 					</td>
 				</tr>
 			</s:iterator>
@@ -120,22 +120,23 @@
 			</tr>
 		</s:else>
 		
-		<s:if test="emrQuestions.size() > 0">
+		<s:if test="emrs.size() > 0">
 			<thead>
 			<tr>
 				<td>EMR</td>
-				<s:iterator value="emrQuestions">
-					<td><s:property value="audit.auditFor" /></td>
-				</s:iterator>	
+				<s:iterator value="years">
+					<td><s:property/></td>
+				</s:iterator>
 			</tr>
 			</thead>
-			<s:iterator value="emrQuestions">
-				<tr>	
-					<td><s:property value="question.question" /></td>
-					<td><s:property value="answer" /></td>
+			<s:iterator value="emrs.entrySet()">
+				<tr>
+					<td><s:property value="key.question" /></td>
+					<s:iterator value="value">
+						<td><s:property value="value.verifiedAnswerOrAnswer" /></td>
+					</s:iterator>
 				</tr>
 			</s:iterator>
-		
 		</s:if>
 		
 	</table>
@@ -149,3 +150,5 @@
 	</s:if>
 </s:iterator>
 </div>
+
+<div id="verification_audit"></div>
