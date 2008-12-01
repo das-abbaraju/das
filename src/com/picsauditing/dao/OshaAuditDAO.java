@@ -6,6 +6,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
 
@@ -41,4 +42,58 @@ public class OshaAuditDAO extends PicsDAO {
 
 	}
 
+	
+	//TODO: get rid of this after the release
+	@SuppressWarnings("unchecked")
+	public OshaAudit findNewOshaAuditFromOld(int oldId, int year) {
+		
+		StringBuilder query = new StringBuilder( " select oa.* " ) 
+					.append(" from " )
+					.append(" contractor_audit ca, osha o, osha_audit oa " )
+					.append(" where " ) 
+					.append(" o.oid = ? " )
+					.append(" and ca.auditfor = ? " )
+					.append(" and ca.conId = o.conId " )
+					.append(" and oa.shatype = o.shatype " )
+					.append(" and oa.location = o.location " )
+					.append(" and oa.description = o.description " )
+					.append(" and oa.auditid = ca.auditid " );
+		
+		Query qry = em.createNativeQuery( query.toString(), OshaAudit.class );
+		
+		qry.setParameter(1, oldId);
+		qry.setParameter(2, year);
+		return ( OshaAudit ) qry.getSingleResult();
+	}
+
+	//TODO: get rid of this after the release
+	@SuppressWarnings("unchecked")
+	public AuditData findDataIdFromQuestionAndContractor(int questionId, int contractorId, int year) {
+		
+		StringBuilder query = new StringBuilder( " select pd.* from " ) 
+				.append( " pqfdata pd, " )
+				.append( " contractor_audit ca " )
+				.append( " where " )
+				.append( " pd.auditId = ca.auditId " )
+				.append( " and pd.questionId = ? " )
+				.append( " and ca.conId = ? " );
+
+		if( year > 0 )
+		{
+			query.append(" and ca.auditFor = ? ");
+		}
+		
+		Query qry = em.createNativeQuery( query.toString(), AuditData.class );
+		
+		qry.setParameter(1, questionId);
+		qry.setParameter(2, contractorId);
+		
+		if( year > 0 )
+		{
+			qry.setParameter(3, year);
+		}
+		
+		return ( AuditData ) qry.getSingleResult();
+	}
+	
 }
