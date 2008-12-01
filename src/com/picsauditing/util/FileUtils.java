@@ -23,8 +23,32 @@ public class FileUtils {
 	 *            different extensions
 	 * @return
 	 */
+	static public void moveFile(File f, String ftpDir, String partialPath, String fileName, String extension,
+			boolean deleteDuplicates) throws Exception {
+		
+		File theNewFile = picsUploadLogic(ftpDir, partialPath, fileName,
+				extension, deleteDuplicates);
+
+		// finally, do the copy
+		if (!f.renameTo(theNewFile))
+			throw new Exception("Could not move file to " + theNewFile.getAbsolutePath());
+	}
+
+	
 	static public void copyFile(File f, String ftpDir, String partialPath, String fileName, String extension,
 			boolean deleteDuplicates) throws Exception {
+		
+		File theNewFile = picsUploadLogic(ftpDir, partialPath, fileName,
+				extension, deleteDuplicates);
+
+		// finally, do the copy
+		copyFile(f, theNewFile);
+	}
+
+
+	protected static File picsUploadLogic(String ftpDir, String partialPath,
+			String fileName, String extension, boolean deleteDuplicates)
+			throws FileNotFoundException, Exception {
 		File rootFile = new File(ftpDir);
 
 		if (rootFile == null || !rootFile.exists())
@@ -55,12 +79,16 @@ public class FileUtils {
 			if (theNewFile.exists() && !theNewFile.delete())
 				throw new Exception("unable to delete existing file");
 		}
-
-		// finally, do the copy
-		if (!f.renameTo(theNewFile))
-			throw new Exception("Could not move file to " + theNewFile.getAbsolutePath());
+		return theNewFile;
 	}
-
+	
+	
+	
+	
+	
+	
+	
+	
 	static public File[] getSimilarFiles(File folder, final String fileName) {
 		File[] fileList = folder.listFiles(new FilenameFilter() {
 			@Override
