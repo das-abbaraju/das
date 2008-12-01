@@ -18,7 +18,6 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showCompletedDate = true;
 	protected boolean showClosedDate = true;
 	protected boolean showExpiredDate = true;
-	protected boolean showOshaEmr = false;
 	protected boolean showPercentComplete = true;
 	protected boolean showUnConfirmedAudits = false;
 	protected boolean showConLicense = false;
@@ -106,14 +105,6 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.showExpiredDate = showExpiredDate;
 	}
 
-	public boolean isShowOshaEmr() {
-		return showOshaEmr;
-	}
-
-	public void setShowOshaEmr(boolean showOshaEmr) {
-		this.showOshaEmr = showOshaEmr;
-	}
-	
 	public boolean isShowPercentComplete() {
 		return showPercentComplete;
 	}

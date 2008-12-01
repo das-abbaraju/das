@@ -86,8 +86,6 @@ public class PicsMenu {
 			subMenu.addChild("Audit Calendar", "audit_calendar.jsp");
 		if (permissions.hasPermission(OpPerms.NCMS))
 			subMenu.addChild("NCMS Audits", "ReportNCMS.action");
-		if (permissions.hasPermission(OpPerms.AuditVerification)) 
-			subMenu.addChild("PQF Verification", "PqfVerification.action?filter.auditStatus=Submitted&filtered=false");
 		if(permissions.hasPermission(OpPerms.DevelopmentEnvironment))
 			subMenu.addChild("Answer Updates", "AuditDataUpdates.action");
 
@@ -97,8 +95,9 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.AuditVerification))
 			subMenu.addChild("Pending PQF", "ReportCompletePQF.action");
+		if (permissions.hasPermission(OpPerms.AuditVerification)) 
+			subMenu.addChild("PQF Verification", "PqfVerification.action?filter.visible=Y");
 
-		
 		subMenu = menu.addChild("Accounting");
 		if (permissions.hasPermission(OpPerms.ContractorActivation))
 			subMenu.addChild("Activation", "report_activation.jsp?changed=1");

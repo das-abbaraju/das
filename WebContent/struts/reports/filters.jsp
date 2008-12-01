@@ -316,33 +316,6 @@
 		</div>
 	</s:if>
 
-	<s:if test="filter.showOshaEmr">
-		<br clear="all" />
-		<div class="filterOption">
-		<p class="blueMain">Show Contractors that need:</p>
-		<table border="0" cellpadding="2" cellspacing="0" class="blueMain">
-			<tr>
-				<td></td>
-				<td>2007</td>
-				<td>2006</td>
-				<td>2005</td>
-			</tr>
-			<tr>
-				<td>OSHA</td>
-				<td><s:checkbox name="filter.osha1" /></td>
-				<td><s:checkbox name="filter.osha2" /></td>
-				<td><s:checkbox name="filter.osha3" /></td>
-			</tr>
-			<tr>
-				<td>EMR</td>
-				<td><s:checkbox name="filter.emr07" /></td>
-				<td><s:checkbox name="filter.emr06" /></td>
-				<td><s:checkbox name="filter.emr05" /></td>
-			</tr>
-		</table>
-		</div>
-	</s:if>
-
 	<s:if test="filter.showUnConfirmedAudits">
 		<br clear="all" />
 		<div class="filterOption">
