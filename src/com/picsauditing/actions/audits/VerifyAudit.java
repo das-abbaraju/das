@@ -1,14 +1,19 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.AuditData;
 
 public class VerifyAudit extends AuditActionSupport {
 	private static final long serialVersionUID = -4976847934505647430L;
+	private List<AuditData> pqfQuestions = null;
 
 	public VerifyAudit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao) {
@@ -46,4 +51,17 @@ public class VerifyAudit extends AuditActionSupport {
 		return list;
 	}
 
+	public List<AuditData> getPqfQuestions() {
+		if (pqfQuestions == null) {
+			pqfQuestions = auditDataDao.findCustomPQFVerifications(conAudit.getId());
+		}
+
+		return pqfQuestions;
+	}
+
+	public void setPqfQuestions(List<AuditData> pqfQuestions) {
+		this.pqfQuestions = pqfQuestions;
+	}
+
+	
 }
