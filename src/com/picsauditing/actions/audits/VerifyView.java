@@ -81,7 +81,6 @@ public class VerifyView extends ContractorActionSupport {
 				}
 			}
 		}
-		System.out.println(emrs);
 
 		
 		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(), Arrays.<Integer>asList( 69, 1616, 55 , 57 ) );

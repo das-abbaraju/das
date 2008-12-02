@@ -166,6 +166,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return true;
 
 		if (permissions.isContractor()) {
+			if (type.isAnnualAddendum() && conAudit.getAuditStatus().equals(AuditStatus.Active))
+				return false;
+
 			if (type.isCanContractorEdit())
 				return true;
 			else

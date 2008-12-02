@@ -2,9 +2,7 @@
 <html>
 <head>
 <title>Accounts Report</title>
-<script src="js/prototype.js" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css"/>
+<s:include value="reportHeader.jsp" />
 </head>
 <body>
 <h1>Manage <s:property value="accountType"/> Accounts</h1>
@@ -17,11 +15,13 @@
 	</s:else>
 </s:if>
 
-<s:form id="form1" name="form1" method="post">
-
-<s:hidden name="showPage" value="1"/>
-<s:hidden name="startsWith" />
-<s:hidden name="orderBy" />
+<s:form id="form1">
+	<s:hidden name="filter.ajax" />
+	<s:hidden name="filter.destinationAction" />
+	<s:hidden name="filter.allowMailMerge" />
+	<s:hidden name="showPage" value="1" />
+	<s:hidden name="filter.startsWith" />
+	<s:hidden name="orderBy" />
 </s:form>
 
 <div>
