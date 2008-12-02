@@ -83,7 +83,13 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (this.orderBy == null)
 			this.orderBy = "a.name";
-		sql.setType(SelectAccount.Type.Contractor);
+		if(forwardSingleResults) {
+			sql.addWhere("a.type IN ('Operator', 'Corporate', 'Contractor')");
+			sql.setType(null);
+			orderBy = "a.type, a.name";
+		} else { 
+			sql.setType(SelectAccount.Type.Contractor);
+		}
 		this.run(sql);
 
 		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
@@ -112,7 +118,10 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (forwardSingleResults && this.data.size() == 1) {
 			// Forward the user to the Contractor Details page
-			ServletActionContext.getResponse().sendRedirect("ContractorView.action?id=" + this.data.get(0).get("id"));
+			if(data.get(0).get("type").equals("Contractor"))
+				ServletActionContext.getResponse().sendRedirect("ContractorView.action?id=" + this.data.get(0).get("id"));
+			else
+				ServletActionContext.getResponse().sendRedirect("accounts_edit_operator.jsp?id=" + this.data.get(0).get("id"));
 		}
 
 		return SUCCESS;

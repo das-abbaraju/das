@@ -25,6 +25,8 @@ public class SelectAccount extends SelectSQL {
 		this.addField("a.id");
 		this.addField("a.name");
 		this.addField("a.active");
+		this.addField("a.type");
+
 	}
 
 	public Type getType() {

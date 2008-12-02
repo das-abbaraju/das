@@ -2,32 +2,50 @@
 <html>
 <head>
 <title>Contractor Search</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<s:include value="reportHeader.jsp" />
 </head>
 <body>
 <h1>Contractor Search <span class="sub">Quick Version</span></h1>
 
 <s:form id="form1" method="post">
+	<s:hidden name="filter.accountName"/>
+	<s:hidden name="filter.ajax" />
+	<s:hidden name="filter.destinationAction" />
+	<s:hidden name="filter.allowMailMerge" />
 	<s:hidden name="showPage" value="1" />
-	<s:hidden name="startsWith" />
+	<s:hidden name="filter.startsWith" />
 	<s:hidden name="orderBy" />
 </s:form>
 
-<div><s:property value="report.pageLinks" escape="false" /></div>
+<div>
+<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+</div>
 <table class="report">
 	<thead>
 	<tr>
-		<td>Contractor Name</td>
+		<td>Type</td>
+		<td>Name</td>
+
 	</tr>
 	</thead>
 	<s:iterator value="data">
 		<tr>
-			<td><a
-				href="ContractorView.action?id=<s:property value="[0].get('id')"/>"
-				><s:property value="[0].get('name')" /></a></td>
+			<td><s:property value="get('type')" /></td>
+			<td>
+				<s:if test="%{get('type').equals('Contractor')}">
+					<a href="ContractorView.action?id=<s:property value="get('id')"/>"
+					><s:property value="get('name')" /></a>
+				</s:if>
+				<s:else>
+					<a href="accounts_edit_operator.jsp?id=<s:property value="get('id')"/>"
+					><s:property value="get('name')" /></a>
+				</s:else>
+			</td>
 		</tr>
 	</s:iterator>
 </table>
-<div><s:property value="report.pageLinks" escape="false" /></div>
+<div>
+<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+</div>
 </body>
 </html>
