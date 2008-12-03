@@ -179,11 +179,11 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	public List<Integer> getQuestionIDs() {
 		List<Integer> questionIDs = new ArrayList<Integer>();
 		for (AuditQuestionOperatorAccount question : getAuditQuestions()) {
-			questionIDs.add(question.getAuditQuestion().getQuestionID());
+			questionIDs.add(question.getAuditQuestion().getId());
 		}
 		for (FlagQuestionCriteria criteria : getFlagQuestionCriteria()) {
 			if (criteria.getChecked().equals(YesNo.Yes))
-				questionIDs.add(criteria.getAuditQuestion().getQuestionID());
+				questionIDs.add(criteria.getAuditQuestion().getId());
 		}
 		if (questionIDs.contains(AuditQuestion.EMR_AVG)) {
 			// We can't calculate the EMR averages unless we get the individual years too
