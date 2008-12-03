@@ -280,4 +280,36 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		return AuditStatus.values();
 	}
 
+	public boolean isShowAuditFor() {
+		return showAuditFor;
+	}
+
+	public void setShowAuditFor(boolean showAuditFor) {
+		this.showAuditFor = showAuditFor;
+	}
+
+	public String[] getAuditFor() {
+		return auditFor;
+	}
+
+	public void setAuditFor(String[] auditFor) {
+		this.auditFor = auditFor;
+	}
+
+	public float getMinEMR() {
+		return minEMR;
+	}
+
+	public void setMinEMR(float minEMR) {
+		this.minEMR = minEMR;
+	}
+
+	public float getMaxEMR() {
+		return maxEMR;
+	}
+
+	public void setMaxEMR(float maxEMR) {
+		this.maxEMR = maxEMR;
+	}
+
 }
