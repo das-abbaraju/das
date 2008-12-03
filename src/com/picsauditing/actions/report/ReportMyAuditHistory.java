@@ -4,23 +4,18 @@ import com.picsauditing.jpa.entities.AuditStatus;
 
 @SuppressWarnings("serial")
 public class ReportMyAuditHistory extends ReportContractorAudits {
-	public String execute() throws Exception {
-		if (!forceLogin()) return LOGIN;
-
+	
+	@Override
+	public void buildQuery() {
 		skipPermissions = true;
+		super.buildQuery();
+
 		sql.addWhere("ca.auditorID=" + permissions.getUserId());
 		sql.addWhere("ca.auditStatus IN ('" + AuditStatus.Active + "')");
-
-		if (orderBy != null)
-			orderBy = "ca.closedDate DESC";
-		
-		if(filtered == null)
-			filtered = false;
+		orderByDefault = "ca.closedDate DESC";
 		
 		getFilter().setShowAuditor(false);
 		getFilter().setShowVisible(false);
-		
-		return super.execute();
 	}
 
 }

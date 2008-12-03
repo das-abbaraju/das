@@ -64,8 +64,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		buildQuery();
 		
 		run(sql);
-		if (filtered == null)
-			filtered = false;
 		
 		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
 		wizardSession.clear();
@@ -139,9 +137,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		wizardSession.clear();
 		wizardSession.setFilter(listType, filter);
 
-		if (filtered == null)
-			filtered = false;
-
 		return returnResult();
 	}
 
@@ -163,7 +158,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		String industryList = Strings.implodeForDB(f.getIndustry(), ",");
 		if (filterOn(industryList)) {
 			sql.addWhere("a.industry IN (" + industryList + ")");
-			filtered = true;
+			setFiltered(true);
 		}
 
 		if (filterOn(f.getCity(), ReportFilterAccount.DEFAULT_CITY))
@@ -194,7 +189,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getOperator())) {
 			String list = Strings.implode(f.getOperator(), ",");
 			sql.addWhere("a.id IN (SELECT subID FROM generalcontractors WHERE genID IN (" + list + ") )");
-			filtered = true;
+			setFiltered(true);
+
 		}
 
 		if (filterOn(f.getCertsOnly(), ReportFilterContractor.DEFAULT_CERTS)) {
@@ -228,7 +224,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getConAuditorId())) {
 			String list = Strings.implode(f.getConAuditorId(), ",");
 			sql.addWhere("c.welcomeAuditor_id IN (" + list + ")");
-			filtered = true;
+			setFiltered(true);
+
 		}
 
 		if (filterOn(f.getRiskLevel(), 0))
@@ -250,7 +247,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		String query = "a.id IN (SELECT ca.conID FROM contractor_audit ca JOIN pqfdata d USING (auditID) "
 				+ "WHERE ca.auditStatus IN ('Active','Submitted') AND ca.auditTypeID = 1 " + where + ")";
 		sql.addWhere(query);
-		filtered = true;
+		setFiltered(true);
 	}
 
 	/**

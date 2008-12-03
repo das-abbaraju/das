@@ -19,10 +19,15 @@ import com.picsauditing.util.SpringUtils;
 @SuppressWarnings("serial")
 public class ReportContractorAuditAssignment extends ReportContractorAudits {
 
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
+	@Override
+	public void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.AssignAudits);
+	}
+	
+	@Override
+	public void buildQuery() {
+		super.buildQuery();
+		
 		sql.addField("ca.contractorConfirm");
 		sql.addField("ca.auditorConfirm");
 		sql.addField("ca2.expiresDate AS current_expiresDate");
@@ -36,16 +41,10 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 			sql.addWhere("atype.isScheduled=1 OR atype.hasAuditor=1");
 		}
 
-		if (orderBy == null) {
-			orderBy = "ca.createdDate";
-		}
+		orderByDefault = "ca.createdDate";
 
 		getFilter().setShowAuditStatus(false);
 		getFilter().setShowUnConfirmedAudits(true);
-		if (filtered == null)
-			filtered = false;
-
-		return super.execute();
 	}
 
 	public boolean isCanEdit() {

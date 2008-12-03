@@ -30,13 +30,21 @@ public class ReportContractorAudits extends ReportAccount {
 		orderByDefault = "ca.createdDate DESC";
 	}
 
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
+	@Override
+	public void checkPermissions() throws Exception {
+		permissions.tryPermission(OpPerms.ContractorDetails);
+		if (permissions.isCorporate() || permissions.isOperator()) {
+			if (permissions.getCanSeeAudit().size() == 0)
+				throw new Exception("Your account does not have access to any audits. Please contact PICS.");
+		}
+	}
+	
+	@Override
+	public void buildQuery() {
+		super.buildQuery();
 
 		addFilterToSQL();
 
-		permissions.tryPermission(OpPerms.ContractorDetails);
 		sql.addField("ca.createdDate");
 		sql.addField("ca.expiresDate");
 		sql.addField("ca.scheduledDate");
@@ -56,23 +64,14 @@ public class ReportContractorAudits extends ReportAccount {
 		sql.addField("auditor.name auditor_name");
 		
 		if (permissions.isCorporate() || permissions.isOperator()) {
-			if (permissions.getCanSeeAudit().size() == 0) {
-				this.addActionError("Your account does not have access to any audits. Please contact PICS.");
-				return SUCCESS;
-			}
 			sql.addWhere("atype.auditTypeID IN (" + Strings.implode(permissions.getCanSeeAudit(), ",") + ")");
 		}
 
 		if (!permissions.isPicsEmployee())
 			getFilter().setShowAuditor(true);
 		
-		if (filtered == null)
-			filtered = true;
-		
 		getFilter().setShowCerts(false);
 		getFilter().setShowInsuranceStatus(false);
-
-		return super.executeOld();
 	}
 
 	protected void addFilterToSQL() {
@@ -81,25 +80,25 @@ public class ReportContractorAudits extends ReportAccount {
 		String auditTypeList = Strings.implode(f.getAuditTypeID(), ",");
 		if (filterOn(auditTypeList)) {
 			sql.addWhere("ca.auditTypeID IN (" + auditTypeList + ")");
-			filtered = true;
+			setFiltered(true);
 		}
 
 		String auditStatusList = Strings.implodeForDB(f.getAuditStatus(), ",");
 		if (filterOn(auditStatusList)) {
 			sql.addWhere("ca.auditStatus IN (" + auditStatusList + ")");
-			filtered = true;
+			setFiltered(true);
 		}
 
 		String auditorIdList = Strings.implode(f.getAuditorId(), ",");
 		if (filterOn(auditorIdList)) {
 			sql.addWhere("ca.auditorID IN (" + auditorIdList + ")");
-			filtered = true;
+			setFiltered(true);
 		}
 
 		String auditIDList = Strings.implode(f.getAuditID(), ",");
 		if (filterOn(auditIDList)) {
 			sql.addWhere("ca.auditID IN (" + auditIDList + ")");
-			filtered = true;
+			setFiltered(true);
 		}
 
 		if (filterOn(f.getCreatedDate1())) {

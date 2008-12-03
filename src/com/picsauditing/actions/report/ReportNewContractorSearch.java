@@ -20,40 +20,21 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 	public ReportNewContractorSearch(ContractorAccountDAO contractorAccountDAO, FacilityChanger facilityChanger) {
 		this.skipPermissions = true;
-		this.filtered = true;
+		this.filteredDefault = true;
 		this.facilityChanger = facilityChanger;
 		this.contractorAccountDAO = contractorAccountDAO;
 	}
 
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
+	@Override
+	public void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.SearchContractors);
+	}
+	
+	@Override
+	public void buildQuery() {
+		super.buildQuery();
 
-		if (button != null && id > 0) {
-			try {
-				ContractorAccount contractor = contractorAccountDAO.find(id);
-				facilityChanger.setPermissions(permissions);
-				facilityChanger.setContractor(id);
-				facilityChanger.setOperator(permissions.getAccountId());
-				if (button.equals("remove")) {
-					permissions.tryPermission(OpPerms.RemoveContractors);
-					facilityChanger.remove();
-					addActionMessage("Successfully removed " + contractor.getName());
-				}
-				if (button.equals("add")) {
-					permissions.tryPermission(OpPerms.AddContractors);
-					facilityChanger.add();
-					addActionMessage("Successfully added <a href='ContractorView.action?id=" + id + "'>"
-							+ contractor.getName() + "</a>");
-				}
-			} catch (Exception e) {
-				addActionError(e.getMessage());
-			}
-
-			return SUCCESS;
-		}
+		getFilter().setShowInParentCorporation(true);
 
 		if (permissions.isOperator()) {
 			// Anytime we query contractor accounts as an operator,
@@ -81,6 +62,40 @@ public class ReportNewContractorSearch extends ReportAccount {
 			sql.addWhere(whereQuery);
 		}
 
+		sql.addField("a.contact");
+		sql.addField("a.city");
+		sql.addField("a.state");
+		sql.addField("a.phone");
+		sql.addField("a.phone2");
+		sql.addWhere("a.active = 'Y'");
+	}
+	
+	@Override
+	public String execute() throws Exception {
+		if (button != null && id > 0) {
+			try {
+				ContractorAccount contractor = contractorAccountDAO.find(id);
+				facilityChanger.setPermissions(permissions);
+				facilityChanger.setContractor(id);
+				facilityChanger.setOperator(permissions.getAccountId());
+				if (button.equals("remove")) {
+					permissions.tryPermission(OpPerms.RemoveContractors);
+					facilityChanger.remove();
+					addActionMessage("Successfully removed " + contractor.getName());
+				}
+				if (button.equals("add")) {
+					permissions.tryPermission(OpPerms.AddContractors);
+					facilityChanger.add();
+					addActionMessage("Successfully added <a href='ContractorView.action?id=" + id + "'>"
+							+ contractor.getName() + "</a>");
+				}
+			} catch (Exception e) {
+				addActionError(e.getMessage());
+			}
+
+			return SUCCESS;
+		}
+		
 		if ((getFilter().getAccountName() == null
 				|| ReportFilterAccount.DEFAULT_NAME.equals(getFilter().getAccountName()) || getFilter()
 				.getAccountName().length() < 3)
@@ -88,17 +103,8 @@ public class ReportNewContractorSearch extends ReportAccount {
 			this.addActionMessage("Please enter a contractor name with atleast 3 characters or select a trade");
 			return SUCCESS;
 		}
-		orderByDefault = "a.name";
 
-		getFilter().setShowInParentCorporation(true);
-
-		sql.addField("a.contact");
-		sql.addField("a.city");
-		sql.addField("a.state");
-		sql.addField("a.phone");
-		sql.addField("a.phone2");
-		sql.addWhere("a.active = 'Y'");
-		return super.executeOld();
+		return super.execute();
 	}
 
 	public int getId() {

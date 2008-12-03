@@ -25,11 +25,10 @@ public class ReportFlagCriteria extends ReportAccount {
 		getFilter().setShowOperatorSingle(true);
 	}
 
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-		loadPermissions();
-
+	@Override
+	public void buildQuery() {
+		super.buildQuery();
+		
 		sql.addField("a.contact");
 		sql.addField("a.phone");
 		sql.addField("a.email");
@@ -125,7 +124,6 @@ public class ReportFlagCriteria extends ReportAccount {
 		sql.addJoin("LEFT JOIN osha ON osha.conID = a.id AND location = 'Corporate'");
 		sql.addWhere("a.active = 'Y'");
 		sql.addWhere("flags.flag IN ('Red','Amber')");
-		return super.executeOld();
 	}
 
 	public boolean isHasFatalities() {

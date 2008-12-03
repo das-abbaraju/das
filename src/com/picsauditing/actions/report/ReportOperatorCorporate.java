@@ -11,33 +11,32 @@ import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
 public class ReportOperatorCorporate extends ReportAccount {
-	protected String accountType;
+	protected String accountType = "Operator";
 	boolean canEdit = false;
 	boolean canDelete = false;
 	protected int accountID;
 
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-		loadPermissions();
-		if (accountType == null)
-			accountType = "Operator";
-
-		if (accountType.equals("Operator")) {
+	@Override
+	public void checkPermissions() throws Exception {
+		if (accountType.equals("Operator"))
 			permissions.tryPermission(OpPerms.ManageOperators);
+		else if (accountType.equals("Corporate"))
+			permissions.tryPermission(OpPerms.ManageCorporate);
+	}
+	
+	@Override
+	public void buildQuery() {
+		if (accountType.equals("Operator")) {
 			canEdit = permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit);
 			canDelete = permissions.hasPermission(OpPerms.ManageOperators, OpType.Delete);
-			sql
-					.addJoin("LEFT JOIN (SELECT genID, count(*) as subCount FROM generalContractors GROUP BY genID) sub ON sub.genID = a.id");
+			sql.addJoin("LEFT JOIN (SELECT genID, count(*) as subCount FROM generalContractors GROUP BY genID) sub ON sub.genID = a.id");
 			sql.addField("subCount");
 			sql.addWhere("a.type = 'Operator'");
 			sql.setType(Type.Operator);
 		} else if (accountType.equals("Corporate")) {
-			permissions.tryPermission(OpPerms.ManageCorporate);
 			canEdit = permissions.hasPermission(OpPerms.ManageCorporate, OpType.Edit);
 			canDelete = permissions.hasPermission(OpPerms.ManageCorporate, OpType.Delete);
-			sql
-					.addJoin("LEFT JOIN (SELECT corporateID, count(*) as subCount FROM facilities GROUP BY corporateID) sub ON sub.corporateID = a.id");
+			sql.addJoin("LEFT JOIN (SELECT corporateID, count(*) as subCount FROM facilities GROUP BY corporateID) sub ON sub.corporateID = a.id");
 			sql.addField("subCount");
 			sql.addWhere("a.type='Corporate'");
 			sql.setType(null);
@@ -46,9 +45,10 @@ public class ReportOperatorCorporate extends ReportAccount {
 		sql.addField("a.industry");
 		sql.addField("a.state");
 		sql.addField("a.city");
-		orderByDefault = "a.name";
-		this.run(sql);
-
+	}
+	
+	@Override
+	public String execute() throws Exception {
 		if ("Remove".equals(button)) {
 			OperatorAccountDAO operatorAccountDAO = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
 			OperatorAccount operatorAccount = operatorAccountDAO.find(accountID);
@@ -64,7 +64,7 @@ public class ReportOperatorCorporate extends ReportAccount {
 			if (!removed)
 				addActionError("Cannot Remove this account" + operatorAccount.getName());
 		}
-		return SUCCESS;
+		return super.execute();
 	}
 
 	public String getAccountType() {

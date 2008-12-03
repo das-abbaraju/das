@@ -26,7 +26,8 @@ public class ReportActionSupport extends PicsActionSupport {
 
 	protected boolean download = false;
 	protected boolean mailMerge = false;
-	protected Boolean filtered = null;
+	private Boolean filtered = null;
+	protected boolean filteredDefault = false;
 
 	public void run(SelectSQL sql) throws SQLException, IOException {
 		
@@ -41,6 +42,9 @@ public class ReportActionSupport extends PicsActionSupport {
 		}
 
 		isFiltered();
+		if (filtered == null)
+			filtered = filteredDefault;
+		
 		if (orderBy == null && orderByDefault != null)
 			orderBy = orderByDefault;
 		report.setOrderBy(this.orderBy, null);

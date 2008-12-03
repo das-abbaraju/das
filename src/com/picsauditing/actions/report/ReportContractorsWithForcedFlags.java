@@ -4,13 +4,16 @@ import com.picsauditing.access.OpPerms;
 
 @SuppressWarnings("serial")
 public class ReportContractorsWithForcedFlags extends ReportAccount {
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-		
+	
+	@Override
+	public void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.ForcedFlagsReport);
+	}
+	
+	@Override
+	public void buildQuery() {
+		super.buildQuery();
 		
-		//skipPermissions = true;
 		//if (!permissions.isOperator())
 			// SelectAccount.setPermissions already adds this table for operators
 		sql.addJoin("JOIN generalcontractors gc on gc.subid = a.id");
@@ -24,7 +27,5 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		sql.addField("gc.forceend");
 		sql.addWhere("gc.forceFlag IS NOT null");
 		orderByDefault = "o.name, a.name";
-		
-		return super.executeOld();
 	}
 }

@@ -28,15 +28,33 @@ public class ReportCompletePQF extends ReportContractorAudits {
 		this.emailBuilder = emailBuilder;
 	}
 
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
+	@Override
+	public void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.AuditVerification);
+	}
+	
+	@Override
+	public void buildQuery() {
+		super.buildQuery();
+		
 		sql.addWhere("ca.auditStatus = 'Pending'");
 		sql.addWhere("ca.auditTypeID = 1");
 		sql.addWhere("a.active = 'Y'");
 		sql.addOrderBy("ca.percentComplete DESC");
 
+		getFilter().setShowVisible(false);
+		getFilter().setShowTrade(false);
+		getFilter().setShowAuditType(false);
+		getFilter().setShowAuditStatus(false);
+		getFilter().setShowCompletedDate(false);
+		getFilter().setShowClosedDate(false);
+		getFilter().setShowExpiredDate(false);
+		getFilter().setShowPercentComplete(true);
+
+	}
+	
+	@Override
+	public String execute() throws Exception {
 		if ("SendEmail".equals(button)) {
 			if (sendMail.length > 0 && scheduledDate != null) {
 				for (int i = 0; i < sendMail.length; i++) {
@@ -65,15 +83,6 @@ public class ReportCompletePQF extends ReportContractorAudits {
 				}
 			}
 		}
-		getFilter().setShowVisible(false);
-		getFilter().setShowTrade(false);
-		getFilter().setShowAuditType(false);
-		getFilter().setShowAuditStatus(false);
-		getFilter().setShowCompletedDate(false);
-		getFilter().setShowClosedDate(false);
-		getFilter().setShowExpiredDate(false);
-		getFilter().setShowPercentComplete(true);
-
 		return super.execute();
 	}
 

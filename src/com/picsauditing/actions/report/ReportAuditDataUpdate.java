@@ -5,22 +5,21 @@ import com.picsauditing.access.OpPerms;
 @SuppressWarnings("serial")
 public class ReportAuditDataUpdate extends ReportContractorAudits {
 
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
+	@Override
+	public void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.DevelopmentEnvironment);
+	}
+
+	@Override
+	public void buildQuery() {
+		super.buildQuery();
+
 		sql.addField("pq.updateDate");
 		sql.addField("pq.answer");
 		sql.addField("p.question");
 		sql.addJoin("JOIN pqfdata pq on pq.auditID = ca.auditID");
 		sql.addJoin("JOIN pqfquestions p on p.questionID = pq.questionID");
 		sql.addWhere("pq.updateDate > ca.completedDate");
-		if (orderBy == null) {
-			orderBy = "pq.updateDate DESC";
-		}
-
-		if (filtered == null)
-			filtered = false;
-		return super.execute();
+		orderByDefault = "pq.updateDate DESC";
 	}
 }
