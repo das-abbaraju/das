@@ -22,10 +22,11 @@ import org.hibernate.annotations.Type;
 
 import com.picsauditing.access.OpPerms;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "useraccess")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
-public class UserAccess implements Comparable<UserAccess> {
+public class UserAccess implements java.io.Serializable, Comparable<UserAccess> {
 	private int id;
 	private User user;
 	private OpPerms opPerm;

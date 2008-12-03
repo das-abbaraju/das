@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "pqfoptions")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="global")

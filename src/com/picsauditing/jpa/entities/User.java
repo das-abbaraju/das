@@ -30,10 +30,11 @@ import org.hibernate.annotations.Type;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.util.Strings;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "users")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
-public class User implements Comparable<User> {
+public class User implements java.io.Serializable, Comparable<User> {
 	public static String DEFAULT_AUDITOR = "- Auditor -";
 	public static int GROUP_ADMIN = 10;
 	public static int GROUP_AUDITOR = 11;

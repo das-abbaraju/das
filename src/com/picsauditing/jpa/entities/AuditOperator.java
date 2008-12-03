@@ -19,10 +19,11 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_operator")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditOperator {
+public class AuditOperator implements java.io.Serializable {
 
 	protected int auditOperatorID = 0;
 	protected AuditType auditType;

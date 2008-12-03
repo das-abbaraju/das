@@ -14,11 +14,11 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "desktopmatrix")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
 public class DesktopMatrix implements java.io.Serializable {
-
 	private int id;
 	private AuditCategory category;
 	private AuditQuestion question;

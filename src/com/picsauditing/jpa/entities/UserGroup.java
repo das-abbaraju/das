@@ -10,9 +10,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "usergroup")
-public class UserGroup {
+public class UserGroup implements java.io.Serializable {
 	protected int userGroupID;
 	protected User user;
 	protected User group;

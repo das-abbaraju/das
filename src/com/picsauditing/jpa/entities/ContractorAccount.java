@@ -1,6 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,6 +30,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.Permissions;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_info")
 @PrimaryKeyJoinColumn(name = "id")

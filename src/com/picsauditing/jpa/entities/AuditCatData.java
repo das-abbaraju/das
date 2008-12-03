@@ -17,6 +17,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "pqfcatdata")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="temp")

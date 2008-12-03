@@ -31,7 +31,7 @@ import com.picsauditing.access.Permissions;
 @Entity
 @Table(name = "contractor_audit")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
-public class ContractorAudit {
+public class ContractorAudit implements java.io.Serializable {
 	private int id = 0;
 	private AuditType auditType;
 	private ContractorAccount contractorAccount;

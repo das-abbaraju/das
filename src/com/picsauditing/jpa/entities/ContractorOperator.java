@@ -25,12 +25,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "generalcontractors")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="temp")
 public class ContractorOperator implements java.io.Serializable {
-	private static final long serialVersionUID = 7554304496743322510L;
-	
 	private int id;
 	private OperatorAccount operatorAccount;
 	private ContractorAccount contractorAccount;

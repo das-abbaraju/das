@@ -18,12 +18,11 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "flags")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class ContractorOperatorFlag implements java.io.Serializable {
-	private static final long serialVersionUID = 490857279961564359L;
-
 	private int id;
 	private OperatorAccount operatorAccount;
 	private ContractorAccount contractorAccount;

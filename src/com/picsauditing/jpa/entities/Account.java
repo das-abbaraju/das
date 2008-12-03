@@ -28,6 +28,7 @@ import org.hibernate.annotations.Type;
 
 import com.picsauditing.util.Luhn;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "accounts")
 @Inheritance(strategy = InheritanceType.JOINED)

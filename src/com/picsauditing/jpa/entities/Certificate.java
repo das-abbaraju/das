@@ -18,9 +18,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "certificates")
-public class Certificate {
+public class Certificate implements java.io.Serializable {
 	protected int id;
 	protected ContractorAccount contractorAccount;
 	protected OperatorAccount operatorAccount;
