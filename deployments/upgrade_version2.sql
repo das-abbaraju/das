@@ -240,3 +240,11 @@ where emr.auditFor = '2005' and d.questionID = 891;
 delete from pqfdata where questionID in (127,126,889,1519,872,1522,1617,1618,891);
 
 delete from pqfquestions where questionID in (127,126,889,1519,872,1522,1617,1618,891);
+
+
+update pqfdata 
+	set answer = verifiedAnswer
+	where verifiedAnswer is not null and verifiedAnswer <> '';
+
+alter table pqfdata drop column verifiedAnswer;
+alter table pqfdata drop column isCorrect;
