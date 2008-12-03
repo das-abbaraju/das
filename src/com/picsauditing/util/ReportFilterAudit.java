@@ -1,13 +1,13 @@
 package com.picsauditing.util;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 
+@SuppressWarnings("serial")
 public class ReportFilterAudit extends ReportFilterContractor {
 
 	// Filter parameters
@@ -22,7 +22,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showUnConfirmedAudits = false;
 	protected boolean showConLicense = false;
 	protected boolean showExpiredLicense = false;
-
+	protected boolean showAuditFor = true;
 
 	// Filter values
 	protected int[] auditID;
@@ -42,12 +42,9 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean unScheduledAudits = false;
 	protected boolean conExpiredLic = false;
 	protected String validLicense = "Valid";
-	protected boolean osha1 = false;
-	protected boolean osha2 = false;
-	protected boolean osha3 = false;
-	protected boolean emr07 = false;
-	protected boolean emr06 = false;
-	protected boolean emr05 = false;
+	protected String[] auditFor;
+	protected float minEMR = 0;
+	protected float maxEMR = 100;
 
 	public boolean isShowAuditType() {
 		return showAuditType;
@@ -232,7 +229,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	public void setExpiredDate2(Date expiredDate2) {
 		this.expiredDate2 = expiredDate2;
 	}
-	
+
 	public String getPercentComplete1() {
 		return percentComplete1;
 	}
@@ -273,63 +270,10 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.validLicense = validLicense;
 	}
 
-	public boolean isOsha1() {
-		return osha1;
-	}
-
-	public void setOsha1(boolean osha1) {
-		this.osha1 = osha1;
-	}
-
-	public boolean isOsha2() {
-		return osha2;
-	}
-
-	public void setOsha2(boolean osha2) {
-		this.osha2 = osha2;
-	}
-
-	public boolean isOsha3() {
-		return osha3;
-	}
-
-	public void setOsha3(boolean osha3) {
-		this.osha3 = osha3;
-	}
-
-	public boolean isEmr07() {
-		return emr07;
-	}
-
-	public void setEmr07(boolean emr07) {
-		this.emr07 = emr07;
-	}
-
-	public boolean isEmr06() {
-		return emr06;
-	}
-
-	public void setEmr06(boolean emr06) {
-		this.emr06 = emr06;
-	}
-
-	public boolean isEmr05() {
-		return emr05;
-	}
-
-	public void setEmr05(boolean emr05) {
-		this.emr05 = emr05;
-	}
-
 	// Getting all the Lists
 	public List<AuditType> getAuditTypeList() {
-		AuditTypeDAO dao = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
-		List<AuditType> list = new ArrayList<AuditType>();
-		for (AuditType aType : dao.findAll()) {
-			if (permissions.canSeeAudit(aType))
-				list.add(aType);
-		}
-		return list;
+		AuditTypeDAO auditDAO = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
+		return new AuditTypeCache(auditDAO).getAuditTypes(permissions);
 	}
 
 	public AuditStatus[] getAuditStatusList() {

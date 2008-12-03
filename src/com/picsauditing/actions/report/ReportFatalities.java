@@ -4,14 +4,14 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 
 @SuppressWarnings("serial")
-public class ReportFatalities extends ReportAccount {
+public class ReportFatalities extends ReportAnnualAddendum {
 	protected int year;
 
 	public String execute() throws Exception {
 		if(!forceLogin())
 			return LOGIN;
 		permissions.tryPermission(OpPerms.FatalitiesReport);
-		sql.addJoin("INNER JOIN OSHA os ON os.conID = a.id");
+		sql.addJoin("JOIN OSHA os ON os.conID = a.id");
 		sql.addWhere("os.fatalities1 >0 OR os.fatalities2 >0 OR os.fatalities3 >0");
 		sql.addField("os.fatalities1");
 		sql.addField("os.fatalities2");

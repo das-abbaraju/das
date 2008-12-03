@@ -1,9 +1,11 @@
 package com.picsauditing.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditType;
 
@@ -48,6 +50,14 @@ public class AuditTypeCache extends BaseCache
 
 	public List<AuditType> getAuditTypes() {
 		return auditTypes;
+	}
+	public List<AuditType> getAuditTypes(Permissions permissions) {
+		List<AuditType> list = new ArrayList<AuditType>();
+		for (AuditType aType : auditTypes) {
+			if (permissions.canSeeAudit(aType))
+				list.add(aType);
+		}
+		return list;
 	}
 	public void setAuditTypes(List<AuditType> auditTypes) {
 		this.auditTypes = auditTypes;
