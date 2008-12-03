@@ -110,10 +110,10 @@
 		<s:iterator id="con" value="co.contractorAccount.audits">
 			<s:if test="#op.auditType.auditTypeID == #con.auditType.auditTypeID && (#con.auditStatus.toString().equals('Pending') || #con.auditStatus.toString().equals('Submitted'))">
 				<tr>
-					<td><a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditType.auditName" /></a></td>
-					<td><a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditStatus" /></a></td>
+					<td><a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditFor" /> <s:property value="auditType.auditName" /></a></td>
+					<td><s:property value="auditStatus" /></td>
 				</tr>
-			</s:if>	
+			</s:if>
 		</s:iterator>
 	</s:iterator>
 </table>
@@ -232,9 +232,7 @@
 					value="value.flagColor.smallIcon" escape="false" /></td>
 				<td><s:property value="key" /></td>
 				<td class="right">
-				<s:property value="value.verifiedAnswerOrAnswer" />
-				<s:property value="%{new java.lang.Float.parseFloat(value.verifiedAnswerOrAnswer).toString()}" />
-				<s:property value="%{new java.text.DecimalFormat('#,##0.000').format(java.lang.Float.parseFloat(value.verifiedAnswerOrAnswer))}" />
+				<s:property value="%{new java.text.DecimalFormat('#,##0.000').format(@java.lang.Float@parseFloat(value.verifiedAnswerOrAnswer))}" />
 				</td>
 			</tr>
 		</s:iterator>

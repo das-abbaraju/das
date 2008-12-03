@@ -124,5 +124,12 @@ public class Strings {
 		return value;
 	}
 	
+	public static float toFloat(String value) {
+		float newValue = 0;
+		try {
+			newValue = Float.parseFloat(value);
+		} catch (NumberFormatException e) {}
+		return newValue;
+	}
 	
 }

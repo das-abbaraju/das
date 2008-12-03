@@ -20,21 +20,12 @@
 				<td rowspan="2" style="font-weight: bold;"><s:property value="opPerm.description" /></td>
 
 				<pics:permission perm="EditUsers" type="Grant">
-					<s:if test="grantFlag">
-						<s:set name="tempList" value="#{'':'', 'true':'Grant', 'false':'Revoke'}"/>
-						<td><s:if test="opPerm.usesView()"><s:select list="#attr.tempList" name="viewFlag" onchange="javascript: return updatePermission('%{id}','View',this);"/></s:if></td>
-						<td><s:if test="opPerm.usesEdit()"><s:select list="#attr.tempList" name="editFlag" onchange="javascript: return updatePermission('%{id}','Edit',this);"/></s:if></td>
-						<td><s:if test="opPerm.usesDelete()"><s:select list="#attr.tempList" name="deleteFlag" onchange="javascript: return updatePermission('%{id}','Delete',this);"/></s:if></td>
-						<td><s:select list="#attr.tempList" name="grantFlag" onchange="javascript: return updatePermission('%{id}','Grant',this);"/></td>
-						<td><a href="#" class="remove" onclick="removePermission(<s:property value="id"/>); return false;">remove</a></td>
-					</s:if>
-					<s:else>
-					<td><s:property value="viewFlag ? 'Granted' : 'Revoked'"/></td>
-					<td><s:property value="editFlag ? 'Granted' : 'Revoked'"/></td>
-					<td><s:property value="deleteFlag ? 'Granted' : 'Revoked'"/></td>
-					<td></td>
-					<td></td>
-					</s:else>
+					<s:set name="tempList" value="#{'':'', 'true':'Grant', 'false':'Revoke'}"/>
+					<td><s:if test="opPerm.usesView()"><s:select list="#attr.tempList" name="viewFlag" onchange="javascript: return updatePermission('%{id}','View',this);"/></s:if></td>
+					<td><s:if test="opPerm.usesEdit()"><s:select list="#attr.tempList" name="editFlag" onchange="javascript: return updatePermission('%{id}','Edit',this);"/></s:if></td>
+					<td><s:if test="opPerm.usesDelete()"><s:select list="#attr.tempList" name="deleteFlag" onchange="javascript: return updatePermission('%{id}','Delete',this);"/></s:if></td>
+					<td><s:select list="#attr.tempList" name="grantFlag" onchange="javascript: return updatePermission('%{id}','Grant',this);"/></td>
+					<td><a href="#" class="remove" onclick="removePermission(<s:property value="id"/>); return false;">remove</a></td>
 				</pics:permission>
 				<pics:permission perm="EditUsers" type="Grant" negativeCheck="true">
 					<td><s:property value="viewFlag ? 'Granted' : 'Revoked'"/></td>

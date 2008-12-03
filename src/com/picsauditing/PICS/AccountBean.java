@@ -486,7 +486,7 @@ public class AccountBean extends DataBean {
 		try {
 			DBReady();
 			String sQuery = "SELECT * FROM (SELECT id, username FROM accounts UNION SELECT id, username FROM users)"
-					+ " t WHERE username = '" + username + "'";
+					+ " t WHERE username = '" + Utilities.escapeQuotes(username) + "'";
 			ResultSet SQLResult = SQLStatement.executeQuery(sQuery);
 			if (SQLResult.next()) {
 				if (id.equals(SQLResult.getString("id")))
