@@ -1,34 +1,24 @@
 package com.picsauditing.actions.report;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 
 @SuppressWarnings("serial")
 public class ReportFatalities extends ReportAnnualAddendum {
-	protected int year;
+	
+	@Override
+	public void checkPermissions() throws Exception {
+		permissions.tryPermission(OpPerms.FatalitiesReport);
+	}
+	
+	@Override
+	public void buildQuery() {
+		super.buildQuery();
+		sql.addJoin("JOIN osha_audit os ON os.auditID = ca.auditID");
+		sql.addWhere("os.fatalities > 0");
+		sql.addField("os.fatalities");
+	}
 
 	public String execute() throws Exception {
-		if(!forceLogin())
-			return LOGIN;
-		permissions.tryPermission(OpPerms.FatalitiesReport);
-		sql.addJoin("JOIN OSHA os ON os.conID = a.id");
-		sql.addWhere("os.fatalities1 >0 OR os.fatalities2 >0 OR os.fatalities3 >0");
-		sql.addField("os.fatalities1");
-		sql.addField("os.fatalities2");
-		sql.addField("os.fatalities3");
-		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
-		sql.addField("ca.auditID");
-		sql.addWhere("ca.auditTypeID = 1");
-		
-		return super.execute();
+		return super.execute2();
 	}
-
-	public int getYear() {
-		return DateBean.getCurrentYear();
-    }
-
-	public void setYear(int year) {
-		this.year = year;
-	}
-
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.Note;
 
 public class Strings {
@@ -49,6 +50,20 @@ public class Strings {
 			if (buffer.length() > 0)
 				buffer.append(delimiter);
 			buffer.append(o);
+		}
+		return buffer.toString();
+	}
+
+	public static String implodeForDB(String[] array, String delimiter) {
+		if (array == null)
+			return "";
+		StringBuffer buffer = new StringBuffer();
+		for (String o : array) {
+			if (buffer.length() > 0)
+				buffer.append(delimiter);
+			buffer.append("'");
+			buffer.append(Utilities.escapeQuotes(o));
+			buffer.append("'");
 		}
 		return buffer.toString();
 	}
