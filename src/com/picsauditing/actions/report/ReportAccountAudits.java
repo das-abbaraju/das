@@ -26,7 +26,7 @@ public class ReportAccountAudits extends ReportAccount {
         sql.addJoin("LEFT JOIN (" + certTable + ") certs ON certs.contractor_id = a.id");
         sql.addField("certs.certificateCount");
         
-        return super.execute();
+        return super.executeOld();
 	}
 
 	public boolean isPqfVisible() {

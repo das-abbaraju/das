@@ -59,7 +59,7 @@ public class ReportAnswerSearch extends ReportAccount {
 		if (questions.size() == 0)
 			return SUCCESS;
 
-		return super.execute();
+		return super.executeOld();
 	}
 
 	public void setQuestionSelect(String value) {

@@ -20,10 +20,6 @@ public class ReportAnnualAddendum extends ReportAccount {
 			sql.addWhere("ca.auditFor IN ("+ auditFor + ")");
 	}
 
-	public String execute() throws Exception {
-		return super.execute2();
-	}
-
 	@Override
 	public ReportFilterAudit getFilter() {
 		return filter;

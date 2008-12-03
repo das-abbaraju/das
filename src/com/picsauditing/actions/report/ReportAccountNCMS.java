@@ -25,6 +25,6 @@ public class ReportAccountNCMS extends ReportAccount {
 		sql.addField("d.ContractorsName");
 		sql.addField("d.lastReview");
 
-		return super.execute();
+		return super.executeOld();
 	}
 }

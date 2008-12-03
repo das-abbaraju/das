@@ -125,7 +125,7 @@ public class ReportFlagCriteria extends ReportAccount {
 		sql.addJoin("LEFT JOIN osha ON osha.conID = a.id AND location = 'Corporate'");
 		sql.addWhere("a.active = 'Y'");
 		sql.addWhere("flags.flag IN ('Red','Amber')");
-		return super.execute();
+		return super.executeOld();
 	}
 
 	public boolean isHasFatalities() {

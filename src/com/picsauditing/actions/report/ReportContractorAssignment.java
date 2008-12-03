@@ -21,6 +21,6 @@ public class ReportContractorAssignment extends ReportAccount {
 
 		getFilter().setShowAssignedCon(true);
 
-		return super.execute();
+		return super.executeOld();
 	}
 }

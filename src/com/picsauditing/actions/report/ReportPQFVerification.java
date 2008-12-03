@@ -35,6 +35,6 @@ public class ReportPQFVerification extends ReportAccount {
 		sql.addJoin("LEFT JOIN users csr ON csr.id = c.welcomeAuditor_id");
 		sql.addField("csr.name csr_name");
 
-		return super.execute();
+		return super.executeOld();
 	}
 }

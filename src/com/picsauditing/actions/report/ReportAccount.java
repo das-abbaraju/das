@@ -52,16 +52,17 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
 		addFilterToSQL();
-		if (this.orderBy == null)
-			this.orderBy = "a.name";
 	}
 	
-	final public String execute2() throws Exception {
+	// TODO make this method final
+	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
 		
 		checkPermissions();
 		buildQuery();
+		if (this.orderBy == null)
+			this.orderBy = "a.name";
 		run(sql);
 		if (filtered == null)
 			filtered = false;
@@ -99,7 +100,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	}
 
 	@Deprecated
-	public String execute() throws Exception {
+	public String executeOld() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
 		if (!skipPermissions)

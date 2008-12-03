@@ -38,7 +38,7 @@ public class ReportIncidenceRate extends ReportAccount {
 		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
 		sql.addField("ca.auditID");
 		sql.addWhere("ca.auditTypeID = 1");
-		return super.execute();
+		return super.executeOld();
 	}
 
 	public int getYear() {

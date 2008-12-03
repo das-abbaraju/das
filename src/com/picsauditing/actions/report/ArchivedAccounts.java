@@ -38,7 +38,7 @@ public class ArchivedAccounts extends ReportAccount {
 			facilityChanger.remove();
 		}
 		getFilter().setShowVisible(false);
-		return super.execute();
+		return super.executeOld();
 	}
 
 	public int getConID() {

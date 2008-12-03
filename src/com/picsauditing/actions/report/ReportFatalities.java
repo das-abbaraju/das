@@ -17,8 +17,4 @@ public class ReportFatalities extends ReportAnnualAddendum {
 		sql.addWhere("os.fatalities > 0");
 		sql.addField("os.fatalities");
 	}
-
-	public String execute() throws Exception {
-		return super.execute2();
-	}
 }

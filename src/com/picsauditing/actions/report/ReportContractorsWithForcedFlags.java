@@ -25,6 +25,6 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		sql.addWhere("gc.forceFlag IS NOT null");
 		this.orderBy = "o.name, a.name";
 		
-		return super.execute();
+		return super.executeOld();
 	}
 }

@@ -99,7 +99,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 		sql.addField("a.phone");
 		sql.addField("a.phone2");
 		sql.addWhere("a.active = 'Y'");
-		return super.execute();
+		return super.executeOld();
 	}
 
 	public int getId() {
