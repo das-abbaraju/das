@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
  * 
  * @author Trevor
  */
+@SuppressWarnings("serial")
 public class ContractorWidget extends ContractorActionSupport {
 	protected boolean reminderTask = false;
 	protected boolean openReq = false;

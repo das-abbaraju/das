@@ -6,6 +6,7 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 
+@SuppressWarnings("serial")
 public class ReloadQuestion extends PicsActionSupport {
 	private AuditQuestion question;
 

@@ -2,6 +2,7 @@ package com.picsauditing.actions.converters;
 
 import java.util.Map;
 
+@SuppressWarnings("unchecked")
 public class IntConverter extends EnumConverter {
 	public IntConverter() {
 		enumClass = int.class;

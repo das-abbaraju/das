@@ -6,6 +6,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.jpa.entities.UserAccess;
 
+@SuppressWarnings("serial")
 public class UserAccessUpdate extends PicsActionSupport {
 	protected UserAccessDAO userAccessDAO;
 	protected int accessId;

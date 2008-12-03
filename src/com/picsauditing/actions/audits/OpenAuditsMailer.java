@@ -11,6 +11,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.mail.EmailBuilder;
 
+@SuppressWarnings("serial")
 public class OpenAuditsMailer extends PicsActionSupport {
 
 	private ContractorAuditDAO contractorAuditDAO;

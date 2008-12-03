@@ -1,11 +1,8 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import com.picsauditing.PICS.OperatorBean;
@@ -25,6 +22,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.PermissionToViewContractor;
 
+@SuppressWarnings("serial")
 public class ContractorActionSupport extends PicsActionSupport {
 	protected int id = 0;
 	protected ContractorAccount contractor;

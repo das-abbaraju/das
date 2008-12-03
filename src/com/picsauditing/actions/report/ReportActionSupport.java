@@ -2,7 +2,6 @@ package com.picsauditing.actions.report;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -13,8 +12,8 @@ import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ColorAlternater;
-import com.picsauditing.util.DownloadTable;
 
+@SuppressWarnings("serial")
 public class ReportActionSupport extends PicsActionSupport {
 	protected Report report = new Report();
 	protected List<BasicDynaBean> data;

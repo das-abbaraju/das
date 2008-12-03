@@ -14,6 +14,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 
+@SuppressWarnings("serial")
 public class OrderAuditChildren extends PicsActionSupport {
 	protected Map<Integer, Integer> list = new HashMap<Integer, Integer>();
 	protected int id;

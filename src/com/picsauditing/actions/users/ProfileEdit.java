@@ -11,6 +11,7 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
+@SuppressWarnings("serial")
 public class ProfileEdit extends PicsActionSupport implements Preparable {
 	protected User u;
 	protected UserDAO dao;

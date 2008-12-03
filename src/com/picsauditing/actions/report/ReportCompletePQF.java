@@ -13,6 +13,7 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.SelectContractorAudit;
 
+@SuppressWarnings("serial")
 public class ReportCompletePQF extends ReportContractorAudits {
 	private Date followUpDate = null;
 	private String[] sendMail = null;

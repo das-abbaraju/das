@@ -1,12 +1,10 @@
 package com.picsauditing.mail;
 
-import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailStatus;
 
 /**
  * Run the email task every minute
@@ -16,6 +14,7 @@ import com.picsauditing.jpa.entities.EmailStatus;
  * @author Trevor
  *
  */
+@SuppressWarnings("serial")
 public class MailCron extends PicsActionSupport {
 
 	EmailQueueDAO emailQueueDAO;

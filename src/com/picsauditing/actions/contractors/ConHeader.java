@@ -6,6 +6,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 
+@SuppressWarnings("serial")
 public class ConHeader extends AuditActionSupport {
 	public ConHeader(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, 
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao) {

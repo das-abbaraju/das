@@ -8,6 +8,7 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
 
+@SuppressWarnings("serial")
 public class UsersLoggedWidget extends PicsActionSupport {
 	private List<ContractorAccount> loggedCon;
 	private List<User> loggedOp;

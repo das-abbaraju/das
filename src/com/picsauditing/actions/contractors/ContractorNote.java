@@ -19,6 +19,7 @@ import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
+@SuppressWarnings("serial")
 public class ContractorNote extends ContractorActionSupport implements Preparable {
 	private NoteDAO noteDAO;
 	private AccountDAO accountDAO;

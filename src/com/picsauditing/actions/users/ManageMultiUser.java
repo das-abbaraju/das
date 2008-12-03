@@ -3,6 +3,7 @@ package com.picsauditing.actions.users;
 import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.search.SelectAccount;
 
+@SuppressWarnings("serial")
 public class ManageMultiUser extends ReportActionSupport {
 
 	protected SelectAccount sql = new SelectAccount();

@@ -4,8 +4,7 @@ import java.util.Map;
 
 import org.apache.struts2.util.StrutsTypeConverter;
 
-import com.picsauditing.jpa.entities.YesNo;
-
+@SuppressWarnings("unchecked")
 abstract public class EnumConverter extends StrutsTypeConverter
 {
 	protected Class enumClass;

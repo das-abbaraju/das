@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.picsauditing.jpa.entities.YesNo;
 
+@SuppressWarnings("unchecked")
 public class YesNoConverter extends EnumConverter {
 	public YesNoConverter() {
 		enumClass = YesNo.class;

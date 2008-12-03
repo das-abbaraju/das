@@ -9,9 +9,8 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 
+@SuppressWarnings("serial")
 public class ReportUserPermissionMatrix extends ReportActionSupport {
-	private static final long serialVersionUID = 4977866366164495660L;
-	
 	private int accountID;
 	private List<User> users;
 	private Set<OpPerms> perms;

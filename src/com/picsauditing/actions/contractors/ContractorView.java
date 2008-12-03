@@ -7,6 +7,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.util.Images;
 
+@SuppressWarnings("serial")
 public class ContractorView extends ContractorActionSupport {
 	private AuditBuilder auditBuilder;
 

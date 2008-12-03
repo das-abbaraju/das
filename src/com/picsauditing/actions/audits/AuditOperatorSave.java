@@ -12,6 +12,7 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
+@SuppressWarnings("serial")
 public class AuditOperatorSave extends PicsActionSupport implements Preparable {
 
 	private AuditOperator ao = null;

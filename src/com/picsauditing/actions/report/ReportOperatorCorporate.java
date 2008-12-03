@@ -9,6 +9,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.SelectAccount.Type;
 import com.picsauditing.util.SpringUtils;
 
+@SuppressWarnings("serial")
 public class ReportOperatorCorporate extends ReportAccount {
 	protected String accountType;
 	boolean canEdit = false;

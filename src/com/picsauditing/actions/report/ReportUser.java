@@ -15,6 +15,7 @@ import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectUserUnion;
 import com.picsauditing.util.ReportFilterUser;
 
+@SuppressWarnings("serial")
 public class ReportUser extends ReportActionSupport {
 
 	protected boolean forwardSingleResults = false;

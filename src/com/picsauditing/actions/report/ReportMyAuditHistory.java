@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import com.picsauditing.jpa.entities.AuditStatus;
 
+@SuppressWarnings("serial")
 public class ReportMyAuditHistory extends ReportContractorAudits {
 	public String execute() throws Exception {
 		if (!forceLogin()) return LOGIN;

@@ -3,6 +3,7 @@ package com.picsauditing.actions.report;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 
+@SuppressWarnings("serial")
 public class ReportFatalities extends ReportAccount {
 	protected int year;
 

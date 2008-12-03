@@ -20,6 +20,7 @@ import com.picsauditing.search.SelectFilterDate;
 import com.picsauditing.util.ReportFilterAudit;
 import com.picsauditing.util.Strings;
 
+@SuppressWarnings("serial")
 public class ReportContractorAudits extends ReportAccount {
 
 	private ReportFilterAudit filter = new ReportFilterAudit();

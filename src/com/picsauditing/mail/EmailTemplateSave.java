@@ -17,8 +17,8 @@ import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.util.Strings;
 
+@SuppressWarnings("serial")
 public class EmailTemplateSave extends PicsActionSupport implements Preparable {
-	private static final long serialVersionUID = -7852679107862181163L;
 	private EmailTemplateDAO emailTemplateDAO;
 	private int id;
 	private EmailTemplate template;

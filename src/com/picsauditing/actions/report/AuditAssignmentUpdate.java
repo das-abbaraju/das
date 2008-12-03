@@ -24,6 +24,7 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
 
+@SuppressWarnings("serial")
 public class AuditAssignmentUpdate extends PicsActionSupport implements Preparable, ParameterAware, ServletRequestAware {
 
 	protected ContractorAudit contractorAudit = null;

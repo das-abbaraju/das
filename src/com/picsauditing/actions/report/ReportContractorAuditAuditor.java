@@ -8,6 +8,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.util.SpringUtils;
 
+@SuppressWarnings("serial")
 public class ReportContractorAuditAuditor extends ReportContractorAudits {
 
 	public String execute() throws Exception {

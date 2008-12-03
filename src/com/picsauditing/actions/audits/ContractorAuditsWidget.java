@@ -6,6 +6,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
 
+@SuppressWarnings("serial")
 public class ContractorAuditsWidget extends PicsActionSupport {
 	ContractorAuditDAO dao;
 	private List<ContractorAudit> upcoming;

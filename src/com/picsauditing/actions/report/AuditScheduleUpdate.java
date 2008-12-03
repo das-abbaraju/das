@@ -10,6 +10,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
 
+@SuppressWarnings("serial")
 public class AuditScheduleUpdate extends PicsActionSupport implements ServletRequestAware {
 	protected ContractorAudit contractorAudit = null;
 	protected ContractorAuditDAO dao = null;

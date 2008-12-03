@@ -13,6 +13,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 
+@SuppressWarnings("serial")
 public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 	protected int id = 0;

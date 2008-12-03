@@ -4,6 +4,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 
+@SuppressWarnings("serial")
 public class CorporateWidget extends PicsActionSupport {
 	protected int operatorCount;
 	protected int corporateCount;

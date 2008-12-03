@@ -11,6 +11,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
 
+@SuppressWarnings("serial")
 public class ContractorSave extends PicsActionSupport implements Preparable {
 
 	private ContractorAccount ca = null;

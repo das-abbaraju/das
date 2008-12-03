@@ -20,8 +20,8 @@ import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.search.Report;
 import com.picsauditing.util.SpringUtils;
 
+@SuppressWarnings("serial")
 public class UsersManage extends PicsActionSupport implements Preparable {
-	private static final long serialVersionUID = -167727120482502678L;
 
 	protected int accountId = 0;
 	protected User user;

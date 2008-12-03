@@ -12,6 +12,7 @@ import com.picsauditing.util.ReportFilterAccount;
  * @author Trevor
  * 
  */
+@SuppressWarnings("serial")
 public class ReportNewContractorSearch extends ReportAccount {
 	protected int id;
 	private ContractorAccountDAO contractorAccountDAO;

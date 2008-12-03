@@ -18,6 +18,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.DesktopMatrix;
 import com.picsauditing.jpa.entities.LowMedHigh;
 
+@SuppressWarnings("serial")
 public class ManageDesktopMatrix extends PicsActionSupport {
 	private int[] questionIDs = null;
 	

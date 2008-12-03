@@ -4,6 +4,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.ListType;
 
+@SuppressWarnings("serial")
 public class EmailWizard extends PicsActionSupport {
 	private ListType type = null;
 	private int listSize = 0;

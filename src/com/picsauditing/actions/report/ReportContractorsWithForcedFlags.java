@@ -2,7 +2,7 @@ package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
 
-
+@SuppressWarnings("serial")
 public class ReportContractorsWithForcedFlags extends ReportAccount {
 	public String execute() throws Exception {
 		if (!forceLogin())

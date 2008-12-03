@@ -16,6 +16,7 @@ import com.picsauditing.util.SpringUtils;
 //sql.addPQFQuestion(894, false, "requiredAnswer"); //q318.answer
 //sql.addWhere("q894.answer = 'Yes' OR c.daRequired IS NULL OR c.daRequired = 'Yes'");
 
+@SuppressWarnings("serial")
 public class ReportContractorAuditAssignment extends ReportContractorAudits {
 
 	public String execute() throws Exception {

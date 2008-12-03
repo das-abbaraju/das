@@ -7,6 +7,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 
+@SuppressWarnings("serial")
 public class ReportAnswerSearch extends ReportAccount {
 	protected List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
 	protected AuditQuestionDAO auditQuestionDAO;

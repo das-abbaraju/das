@@ -5,6 +5,7 @@ import java.util.Date;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 
+@SuppressWarnings("serial")
 public class ReportContractorLicenses extends ReportContractorAudits {
 
 	public String execute() throws Exception {

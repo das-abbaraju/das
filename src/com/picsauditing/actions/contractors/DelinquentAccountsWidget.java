@@ -6,6 +6,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 
+@SuppressWarnings("serial")
 public class DelinquentAccountsWidget extends PicsActionSupport {
 	ContractorAccountDAO accountDao;
 

@@ -14,6 +14,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.util.FileUtils;
 
+@SuppressWarnings("serial")
 public class MigrateFileStructure extends PicsActionSupport {
 
 	protected boolean migrateOshas = false;

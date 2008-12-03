@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
 
+@SuppressWarnings("serial")
 public class ReportAuditDataUpdate extends ReportContractorAudits {
 
 	public String execute() throws Exception {

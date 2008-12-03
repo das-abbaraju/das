@@ -19,6 +19,7 @@ import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
 
+@SuppressWarnings("serial")
 public class ContractorFlagAction extends ContractorActionSupport {
 	protected ContractorOperatorDAO contractorOperatorDao;
 	protected AuditDataDAO auditDataDAO;

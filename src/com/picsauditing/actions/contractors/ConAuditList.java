@@ -14,6 +14,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
+@SuppressWarnings("serial")
 public class ConAuditList extends ContractorActionSupport {
 	private AuditTypeDAO auditTypeDAO;
 	private int selectedAudit;

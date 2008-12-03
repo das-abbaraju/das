@@ -3,6 +3,7 @@ package com.picsauditing.actions.report;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.search.SelectAccount;
 
+@SuppressWarnings("serial")
 public class ReportAccountNCMS extends ReportAccount {
 
 	public String execute() throws Exception {

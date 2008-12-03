@@ -36,6 +36,7 @@ import com.picsauditing.util.Strings;
  * @author Trevor
  * 
  */
+@SuppressWarnings("serial")
 public class MassMailer extends PicsActionSupport {
 	private Set<Integer> ids = null;
 	private ListType type;

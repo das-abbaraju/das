@@ -24,6 +24,7 @@ import com.picsauditing.jpa.entities.State;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.SpringUtils;
 
+@SuppressWarnings("serial")
 public class ContractorEdit extends ContractorActionSupport implements Preparable {
 	private File logo = null;
 	private String logoFileName = null;

@@ -25,6 +25,7 @@ import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
+@SuppressWarnings("serial")
 public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	protected boolean forwardSingleResults = false;

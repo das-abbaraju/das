@@ -11,6 +11,7 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 
+@SuppressWarnings("serial")
 public class UserAccessSave extends UsersManage {
 	protected OpPerms opPerm;
 	protected UserAccessDAO userAccessDAO;

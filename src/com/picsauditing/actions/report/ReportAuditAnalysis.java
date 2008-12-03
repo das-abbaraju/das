@@ -2,7 +2,6 @@ package com.picsauditing.actions.report;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.sql.SQLException;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
@@ -11,11 +10,10 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.search.Database;
-import com.picsauditing.search.SelectFilter;
-import com.picsauditing.search.SelectFilterInteger;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
+@SuppressWarnings("serial")
 public class ReportAuditAnalysis extends PicsActionSupport {
 	private List<BasicDynaBean> data;
 	//private String where = "AND auditorID = 940 ";

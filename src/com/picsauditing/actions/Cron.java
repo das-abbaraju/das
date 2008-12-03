@@ -31,6 +31,7 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.SpringUtils;
 
+@SuppressWarnings("serial")
 public class Cron extends PicsActionSupport {
 
 	protected FlagCalculator2 flagCalculator = null;

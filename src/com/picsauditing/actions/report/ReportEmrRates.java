@@ -3,6 +3,7 @@ package com.picsauditing.actions.report;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.AuditQuestion;
 
+@SuppressWarnings("serial")
 public class ReportEmrRates extends ReportAccount {
 	protected int year = 2007;
 	protected float minRate = 0;

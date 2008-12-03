@@ -21,6 +21,7 @@ import com.picsauditing.util.Strings;
 
 
 
+@SuppressWarnings("serial")
 public class ManagePQFMatrix extends PicsActionSupport {
 	private int[] riskLevels = {1,2,3};
 	private int[] operators = null;

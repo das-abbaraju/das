@@ -7,6 +7,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.User;
 
+@SuppressWarnings("serial")
 public class UsersByOpPerm extends PicsActionSupport {
 	private OpPerms opPerm;
 	private List<User> users;

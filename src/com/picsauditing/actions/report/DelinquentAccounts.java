@@ -1,5 +1,6 @@
 package com.picsauditing.actions.report;
 
+@SuppressWarnings("serial")
 public class DelinquentAccounts extends ReportAccount {
 
 	public String execute() throws Exception {

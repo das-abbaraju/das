@@ -9,6 +9,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 
+@SuppressWarnings("serial")
 public class EmailQueueList extends PicsActionSupport {
 	protected List<EmailQueue> emails = null;
 	protected List<EmailQueue> emailsInQueue = new ArrayList<EmailQueue>();

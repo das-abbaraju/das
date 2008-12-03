@@ -8,6 +8,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 
+@SuppressWarnings("serial")
 public class QuestionSelect extends PicsActionSupport {
 	private String questionName;
 	List<AuditQuestion> questions = new ArrayList<AuditQuestion>();

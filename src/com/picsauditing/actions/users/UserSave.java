@@ -14,11 +14,8 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 
+@SuppressWarnings("serial")
 public class UserSave extends UsersManage {
-	private static final int MIN_PASSWORD_LENGTH = 5; // minimum required
-
-	// length of a password
-
 	public UserSave(OperatorAccountDAO operatorDao, UserDAO userDAO) {
 		super(operatorDao, userDAO);
 	}

@@ -5,6 +5,7 @@ import com.picsauditing.util.chart.Chart;
 import com.picsauditing.util.chart.ChartSingleSeries;
 import com.picsauditing.util.chart.Set;
 
+@SuppressWarnings("serial")
 public class ChartAction extends PicsActionSupport {
 	protected String FCTime;
 

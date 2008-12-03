@@ -5,6 +5,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.SpringUtils;
 
+@SuppressWarnings("serial")
 public class ArchivedAccounts extends ReportAccount {
 	protected int conID;
 

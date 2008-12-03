@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import com.picsauditing.jpa.entities.AuditType;
 
+@SuppressWarnings("serial")
 public class ReportAccountAudits extends ReportAccount {
 
 	public String execute() throws Exception {

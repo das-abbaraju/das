@@ -8,6 +8,7 @@ import com.picsauditing.dao.UserGroupDAO;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
 
+@SuppressWarnings("serial")
 public class UserGroupSave extends UsersManage {
 	protected int memberId;
 	protected int groupId;
