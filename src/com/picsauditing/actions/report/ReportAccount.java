@@ -41,6 +41,63 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		listType = ListType.Contractor;
 	}
 
+	/**
+	 * 
+	 * @throws Exception
+	 */
+	public void checkPermissions() throws Exception {
+	}
+	
+	public void buildQuery() {
+		if (!skipPermissions)
+			sql.setPermissions(permissions);
+		addFilterToSQL();
+		if (this.orderBy == null)
+			this.orderBy = "a.name";
+	}
+	
+	final public String execute2() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
+		
+		checkPermissions();
+		buildQuery();
+		run(sql);
+		if (filtered == null)
+			filtered = false;
+		
+		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
+		wizardSession.clear();
+		wizardSession.setFilter(listType, filter);
+
+		return returnResult();
+	}
+	
+	protected String returnResult() throws IOException {
+		if (mailMerge) {
+			Set<Integer> ids = new HashSet<Integer>();
+			for (DynaBean dynaBean : data) {
+				ids.add((Integer) dynaBean.get("id"));
+			}
+			WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
+			wizardSession.setIds(ids);
+			wizardSession.setListTypes(ListType.Contractor);
+			ServletActionContext.getResponse().sendRedirect("MassMailer.action");
+			this.addActionMessage("Redirected to MassMailer");
+			return BLANK;
+		}
+
+		if (forwardSingleResults && this.data.size() == 1) {
+			// Forward the user to the Contractor Details page
+			if(data.get(0).get("type").equals("Contractor"))
+				ServletActionContext.getResponse().sendRedirect("ContractorView.action?id=" + this.data.get(0).get("id"));
+			else
+				ServletActionContext.getResponse().sendRedirect("accounts_edit_operator.jsp?id=" + this.data.get(0).get("id"));
+		}
+
+		return SUCCESS;
+	}
+
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
@@ -100,31 +157,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			filtered = false;
 
 		return returnResult();
-	}
-
-	protected String returnResult() throws IOException {
-		if (mailMerge) {
-			Set<Integer> ids = new HashSet<Integer>();
-			for (DynaBean dynaBean : data) {
-				ids.add((Integer) dynaBean.get("id"));
-			}
-			WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
-			wizardSession.setIds(ids);
-			wizardSession.setListTypes(ListType.Contractor);
-			ServletActionContext.getResponse().sendRedirect("MassMailer.action");
-			this.addActionMessage("Redirected to MassMailer");
-			return BLANK;
-		}
-
-		if (forwardSingleResults && this.data.size() == 1) {
-			// Forward the user to the Contractor Details page
-			if(data.get(0).get("type").equals("Contractor"))
-				ServletActionContext.getResponse().sendRedirect("ContractorView.action?id=" + this.data.get(0).get("id"));
-			else
-				ServletActionContext.getResponse().sendRedirect("accounts_edit_operator.jsp?id=" + this.data.get(0).get("id"));
-		}
-
-		return SUCCESS;
 	}
 
 	private void addFilterToSQL() {

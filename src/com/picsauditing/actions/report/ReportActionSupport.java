@@ -27,6 +27,36 @@ public class ReportActionSupport extends PicsActionSupport {
 	protected boolean mailMerge = false;
 	protected Boolean filtered = null;
 
+	public void run(SelectSQL sql) throws SQLException, IOException {
+		
+		if (download) {
+			this.report.setLimit(100000);
+			showPage = 1;
+		}
+
+		if (mailMerge) {
+			this.report.setLimit(100000);
+			showPage = 1;
+		}
+
+		isFiltered();
+		report.setOrderBy(this.orderBy, null);
+		report.setSql(sql);
+
+		if (showPage > 0)
+			report.setCurrentPage(showPage);
+
+		data = report.getPage();
+		
+		if (download) {
+			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
+			filename += ".csv";
+
+			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+		}
+	}
+
 	public int getShowPage() {
 		return showPage;
 	}
@@ -53,45 +83,6 @@ public class ReportActionSupport extends PicsActionSupport {
 
 	public void setReport(Report report) {
 		this.report = report;
-	}
-
-	public void run(SelectSQL sql) throws SQLException, IOException {
-		
-		if (download) {
-			this.report.setLimit(100000);
-			showPage = 1;
-		}
-
-		if (mailMerge) {
-			this.report.setLimit(100000);
-			showPage = 1;
-		}
-
-		isFiltered();
-		report.setOrderBy(this.orderBy, null);
-		report.setSql(sql);
-
-		if (showPage > 0)
-			report.setCurrentPage(showPage);
-
-		data = report.getPage();
-		
-		if (download) {
-			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
-			filename += ".csv";
-
-			//DownloadTable file = new DownloadTable();
-			//file.setData(data);
-			//file.addColumn("id");
-			//file.addColumn("name");
-			//file.setFilename(filename);
-			
-			//ServletActionContext.getResponse().setContentType("application/octet-stream");
-			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
-			//ServletActionContext.getResponse().setContentType("text/csv");
-			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
-			//ServletActionContext.getResponse().getOutputStream().write(file.output());
-		}
 	}
 
 	public ColorAlternater getColor() {
