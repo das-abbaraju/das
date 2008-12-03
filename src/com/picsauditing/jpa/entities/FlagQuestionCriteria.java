@@ -31,6 +31,7 @@ public class FlagQuestionCriteria {
 	protected String comparison;
 	protected String value;
 	protected boolean validationRequired;
+	protected MultiYearScope multiYearScope; 
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -106,6 +107,16 @@ public class FlagQuestionCriteria {
 		this.validationRequired = validationRequired;
 	}
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "multiYearScope", nullable = true)
+	public MultiYearScope getMultiYearScope() {
+		return multiYearScope;
+	}
+
+	public void setMultiYearScope(MultiYearScope multiYearScope) {
+		this.multiYearScope = multiYearScope;
+	}
+	
 	@Transient
 	public boolean isFlagged(String answer) {
 		String questionType = auditQuestion.getQuestionType();
@@ -153,8 +164,6 @@ public class FlagQuestionCriteria {
 		return false;
 	}
 
-	
-	
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;
@@ -177,7 +186,4 @@ public class FlagQuestionCriteria {
 		return true;
 	}
 
-	
-	
-	
 }
