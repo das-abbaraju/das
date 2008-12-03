@@ -16,10 +16,8 @@ public class ReportAnnualAddendum extends ReportAccount {
 		sql.addField("ca.auditID");
 		sql.addField("auditFor"); 
 		sql.addWhere("pqf.auditStatus = 'Active' AND pqf.auditTypeID = 11");
-		String list = Strings.implode(getfil  , delimiter) 
-		sql.addWhere("pqf.auditFor IN = "+ auditFor);
-		String list = Strings.implode(f.getOfficeIn(), ",");
-		createPqfDataClause(sql, "AND d.questionID IN (" + list + ") AND d.answer LIKE 'Yes with Office'");
+		String list = Strings.implode(getFilter().getAuditFor(), ","); 
+		sql.addWhere("pqf.auditFor IN = ("+ auditFor + ")");
 
 		return super.execute();
 	}

@@ -42,7 +42,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean unScheduledAudits = false;
 	protected boolean conExpiredLic = false;
 	protected String validLicense = "Valid";
-	protected String[] auditFor;
+	protected int[] auditFor;
 	protected float minEMR = 0;
 	protected float maxEMR = 100;
 
@@ -288,11 +288,11 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.showAuditFor = showAuditFor;
 	}
 
-	public String[] getAuditFor() {
+	public int[] getAuditFor() {
 		return auditFor;
 	}
 
-	public void setAuditFor(String[] auditFor) {
+	public void setAuditFor(int[] auditFor) {
 		this.auditFor = auditFor;
 	}
 
