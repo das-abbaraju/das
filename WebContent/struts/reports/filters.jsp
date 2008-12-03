@@ -347,6 +347,36 @@
 		</div>
 	</s:if>
 	
+	<s:if test="filter.showAuditFor">
+		<div class="filterOption"><a href="#"
+			onclick="toggleBox('form1_auditFor'); return false;">Audit For
+		</a> = <span id="form1_auditFor_query">ALL</span><br />
+		<span id="form1_auditFor_select" style="display: none"
+			class="clearLink"> <s:select id="form1_auditFor" list="{2001,2002,2003,2004,2005,2006,2007,2008}"
+			cssClass="forms" name="filter.auditFor" multiple="true" size="5" />
+		<script type="text/javascript">updateQuery('form1_auditFor');</script>
+		<br />
+		<a class="clearLink" href="#"
+			onclick="clearSelected('form1_auditFor'); return false;">Clear</a>
+		</span></div>
+	</s:if>
+	
+	<s:if test="filter.showEmrRange">
+		<div class="filterOption"><a href="#" onclick="showTextBox('form1_emr'); return false;">EMR</a> 
+			<span id="form1_emr_query">= ALL</span><br /> 
+			<span id="form1_emr" style="display: none" class="clearLink"><s:textfield name="filter.minEMR"
+			id="form1_emr1" cssClass="forms" size="12" onfocus="clearText(this)" /> To: 
+			<s:textfield name="filter.maxEMR" id="form1_emr2"
+			cssClass="forms" size="12" onfocus="clearText(this)" />
+			<script
+			type="text/javascript">textQuery('form1_emr'); </script> <br />
+			<a class="clearLink" href="#"
+			onclick="clearTextField('form1_emr'); return false;">Clear</a></span>
+		</div>
+	</s:if>
+	
+	
+	
 	<br clear="all" />
 	<div class="alphapaging"><s:property
 		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>

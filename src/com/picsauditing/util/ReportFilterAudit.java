@@ -1,6 +1,7 @@
 package com.picsauditing.util;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.dao.AuditTypeDAO;
@@ -22,7 +23,8 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showUnConfirmedAudits = false;
 	protected boolean showConLicense = false;
 	protected boolean showExpiredLicense = false;
-	protected boolean showAuditFor = true;
+	protected boolean showAuditFor = false;
+	protected boolean showEmrRange = false;
 
 	// Filter values
 	protected int[] auditID;
@@ -42,7 +44,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean unScheduledAudits = false;
 	protected boolean conExpiredLic = false;
 	protected String validLicense = "Valid";
-	protected int[] auditFor;
+	protected String[] auditFor;
 	protected float minEMR = 0;
 	protected float maxEMR = 100;
 
@@ -288,11 +290,15 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.showAuditFor = showAuditFor;
 	}
 
-	public int[] getAuditFor() {
+	public String[] getAuditFor() {
+		String[] year = {"2008"};
+		if(auditFor == null) {
+			auditFor = year;
+		}
 		return auditFor;
 	}
 
-	public void setAuditFor(int[] auditFor) {
+	public void setAuditFor(String[] auditFor) {
 		this.auditFor = auditFor;
 	}
 
@@ -310,6 +316,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setMaxEMR(float maxEMR) {
 		this.maxEMR = maxEMR;
+	}
+
+	public boolean isShowEmrRange() {
+		return showEmrRange;
+	}
+
+	public void setShowEmrRange(boolean showEmrRange) {
+		this.showEmrRange = showEmrRange;
 	}
 
 }
