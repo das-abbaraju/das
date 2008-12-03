@@ -18,7 +18,6 @@ import com.picsauditing.util.ReportFilterUser;
 @SuppressWarnings("serial")
 public class ReportUser extends ReportActionSupport {
 
-	protected boolean forwardSingleResults = false;
 	protected boolean skipPermissions = false;
 
 	protected SelectUserUnion sql = new SelectUserUnion();
