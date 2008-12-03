@@ -24,6 +24,15 @@ public class ReportFlagCriteria extends ReportAccount {
 		this.operatorAccountDAO = operatorAccountDAO;
 		getFilter().setShowOperatorSingle(true);
 	}
+	
+	@Override
+	protected boolean runReport() {
+		if (!permissions.isOperator() && getFilter().getOperator() == null) {
+			addActionMessage("Please select an Operator");
+			return false;
+		}
+		return super.runReport();
+	}
 
 	@Override
 	public void buildQuery() {
@@ -37,11 +46,7 @@ public class ReportFlagCriteria extends ReportAccount {
 		sql.addField("c.riskLevel");
 
 		if (!permissions.isOperator()) {
-			if (getFilter().getOperator() == null) {
-				addActionMessage("Please select an Operator");
-				return SUCCESS;
-			} else
-				operatorID = getFilter().getOperator()[0];
+			operatorID = getFilter().getOperator()[0];
 		} else
 			operatorID = permissions.getAccountId();
 

@@ -15,7 +15,7 @@ public class ArchivedAccounts extends ReportAccount {
 	}
 	
 	@Override
-	public void buildQuery() {
+	protected void buildQuery() {
 		skipPermissions = true;
 		super.buildQuery();
 		

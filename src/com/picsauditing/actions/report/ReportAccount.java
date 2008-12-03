@@ -45,10 +45,14 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	 * 
 	 * @throws Exception
 	 */
-	public void checkPermissions() throws Exception {
+	protected void checkPermissions() throws Exception {
 	}
 	
-	public void buildQuery() {
+	protected boolean runReport() {
+		return true;
+	}
+	
+	protected void buildQuery() {
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
 		sql = new SelectAccount();
@@ -61,9 +65,10 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			return LOGIN;
 		
 		checkPermissions();
-		buildQuery();
-		
-		run(sql);
+		if (runReport()) {
+			buildQuery();
+			run(sql);
+		}
 		
 		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
 		wizardSession.clear();

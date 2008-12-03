@@ -14,6 +14,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 
 @Transactional
+@SuppressWarnings("unchecked")
 public class AuditDataDAO extends PicsDAO {
 	public AuditData save(AuditData o) {
 		if (o.getDataID() == 0) {
@@ -82,14 +83,6 @@ public class AuditDataDAO extends PicsDAO {
 		}
 	}
 
-	private void tryQuery(String sql, int auditID) {
-		Query query = em.createQuery(sql);
-		query.setParameter("auditID", auditID);
-		System.out.println(sql);
-		List list = query.getResultList();
-		return;
-	}
-	
 	/**
 	 * Get a list of questions that must be verified for this audit.
 	 * 
@@ -138,6 +131,7 @@ public class AuditDataDAO extends PicsDAO {
 		if (questionIds.size() == 0)
 			return new HashMap<Integer, AuditData>();
 
+		/*
 		if (questionIds.contains(AuditQuestion.EMR_AVG)) {
 			// We need to get the average EMR for the past 3 years
 			questionIds.remove(AuditQuestion.EMR_AVG);
@@ -145,6 +139,7 @@ public class AuditDataDAO extends PicsDAO {
 			questionIds.add(AuditQuestion.EMR06);
 			questionIds.add(AuditQuestion.EMR05);
 		}
+		*/
 
 		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id = ? AND question.id IN ("
 				+ glue(questionIds) + ")");
