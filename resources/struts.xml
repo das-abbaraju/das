@@ -427,11 +427,6 @@
 			<result>struts/blank.jsp</result>
 		</action>
 
-		<action name="VerifySwitchFilesAjax" method="switchFiles"
-			class="com.picsauditing.actions.contractors.SwitchFiles">
-			<result>struts/blank.jsp</result>
-		</action>
-
 		<action name="VerifySendEmailAjax" method="sendEmail"
 			class="com.picsauditing.actions.audits.VerifyView">
 			<result>struts/blank.jsp</result>
