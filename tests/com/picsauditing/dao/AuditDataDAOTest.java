@@ -52,7 +52,7 @@ public class AuditDataDAOTest {
 		auditdata.setAudit(new ContractorAudit());
 		auditdata.getAudit().setId(3259);
 		auditdata.setQuestion(new AuditQuestion());
-		auditdata.getQuestion().setQuestionID(48);
+		auditdata.getQuestion().setId(48);
 		auditdata.setNum(300);
 		auditdata.setAnswer("junit testing");
 		auditdata.setAuditor(new User());

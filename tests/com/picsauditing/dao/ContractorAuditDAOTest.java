@@ -67,7 +67,7 @@ public class ContractorAuditDAOTest {
 		AuditData answer = new AuditData();
 		answer.setAudit(contractoraudit);
 		answer.setQuestion(new AuditQuestion());
-		answer.getQuestion().setQuestionID(39); // City
+		answer.getQuestion().setId(39); // City
 		answer.setAnswer("Irvine");
 		dataDAO.save(answer);
 

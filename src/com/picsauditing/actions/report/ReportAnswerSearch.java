@@ -27,8 +27,8 @@ public class ReportAnswerSearch extends ReportAccount {
 		}
 
 		for (AuditQuestion question : questions) {
-			if (question != null && removeQuestion != question.getQuestionID()) {
-				AuditQuestion tempQuestion = auditQuestionDAO.find(question.getQuestionID());
+			if (question != null && removeQuestion != question.getId()) {
+				AuditQuestion tempQuestion = auditQuestionDAO.find(question.getId());
 				tempQuestion.setCriteria(question.getCriteria());
 				tempQuestion.setAnswer(question.getAnswer());
 				if (newQuestions.contains(tempQuestion))
@@ -40,10 +40,10 @@ public class ReportAnswerSearch extends ReportAccount {
 		questions = new ArrayList<AuditQuestion>();
 		questions.addAll(newQuestions);
 		for (AuditQuestion question : questions) {
-			sql.addAuditQuestion(question.getQuestionID(), question.getSubCategory().getCategory().getAuditType()
+			sql.addAuditQuestion(question.getId(), question.getSubCategory().getCategory().getAuditType()
 					.getAuditTypeID(), true);
 			if (question.getCriteria() != null && question.getCriteria().length() > 0) {
-				String qSearch = "q" + question.getQuestionID() + ".answer ";
+				String qSearch = "q" + question.getId() + ".answer ";
 				String qCriteria = question.getCriteria() + " '" + question.getAnswer().getAnswer() + "'";
 				if (question.getCriteria().equals("Contains"))
 					qCriteria = " LIKE '%" + question.getAnswer().getAnswer() + "%'";

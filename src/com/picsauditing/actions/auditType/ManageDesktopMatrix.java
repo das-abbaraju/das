@@ -65,7 +65,7 @@ public class ManageDesktopMatrix extends PicsActionSupport {
 		}
 		List<DesktopMatrix> matrixData = desktopMatrixDAO.findByQuestions(questionIDs);
 		for(DesktopMatrix row : matrixData) {
-			data.get(row.getCategory().getId()).put(row.getQuestion().getQuestionID(), true);
+			data.get(row.getCategory().getId()).put(row.getQuestion().getId(), true);
 		}
 		
 		if("Save".equals(button) && incoming != null) {
@@ -92,7 +92,7 @@ public class ManageDesktopMatrix extends PicsActionSupport {
 						}
 					}
 					for(AuditQuestion question : questions) {
-						if (question.getQuestionID() == questionID) {
+						if (question.getId() == questionID) {
 							matrix.setQuestion(question);
 						}
 					}
@@ -110,7 +110,7 @@ public class ManageDesktopMatrix extends PicsActionSupport {
 					// Delete the existing record
 					for (DesktopMatrix matrix : matrixData) {
 						if (matrix.getCategory().getId() == categoryID
-								&& matrix.getQuestion().getQuestionID() == questionID) {
+								&& matrix.getQuestion().getId() == questionID) {
 							addActionMessage("Removed "+matrix.getCategory().getCategory()+" for "+matrix.getQuestion().getQuestion());
 							desktopMatrixDAO.remove(matrix);
 							data.get(categoryID).put(questionID, false);

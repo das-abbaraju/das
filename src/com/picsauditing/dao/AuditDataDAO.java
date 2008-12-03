@@ -38,7 +38,7 @@ public class AuditDataDAO extends PicsDAO {
 
 	public List<AuditData> findByQuestionID(int questionID) {
 		Query query = em.createQuery("FROM AuditData d "
-				+ "WHERE d.question.questionID = ?");
+				+ "WHERE d.question.id = ?");
 		query.setParameter(1, questionID);
 		return query.getResultList();
 	}
@@ -64,7 +64,7 @@ public class AuditDataDAO extends PicsDAO {
 
 		Query query = em.createQuery("FROM AuditData d "
 				+ "WHERE audit IN (FROM ContractorAudit WHERE contractorAccount.id = ? AND auditStatus = 'Active') "
-				+ "AND question.questionID IN (" + glue(questionIds) + ")");
+				+ "AND question.id IN (" + glue(questionIds) + ")");
 		query.setParameter(1, conID);
 
 		return mapData(query.getResultList());
@@ -73,7 +73,7 @@ public class AuditDataDAO extends PicsDAO {
 
 	public AuditData findAnswerToQuestion(int auditId, int questionId) {
 		try {
-			Query query = em.createQuery("FROM AuditData d " + "WHERE audit.id = ? AND question.questionID =? ");
+			Query query = em.createQuery("FROM AuditData d " + "WHERE audit.id = ? AND question.id =? ");
 			query.setParameter(1, auditId);
 			query.setParameter(2, questionId);
 			return (AuditData) query.getSingleResult();
@@ -116,7 +116,7 @@ public class AuditDataDAO extends PicsDAO {
 		// For each question (including the safetyManual), get the ones answered in this audit
 		String sql = "SELECT d FROM AuditData d " +
 				"WHERE d.audit.id = :auditID " +
-				" AND (d.question.questionID = :safetyManual " +
+				" AND (d.question.id = :safetyManual " +
 				"	OR d.question IN (" + sqlQuestions + ")" +
 				" )";
 		//System.out.println(sql);
@@ -146,7 +146,7 @@ public class AuditDataDAO extends PicsDAO {
 			questionIds.add(AuditQuestion.EMR05);
 		}
 
-		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id = ? AND question.questionID IN ("
+		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id = ? AND question.id IN ("
 				+ glue(questionIds) + ")");
 		query.setParameter(1, auditID);
 
@@ -162,7 +162,7 @@ public class AuditDataDAO extends PicsDAO {
 	private Map<Integer, AuditData> mapData(List<AuditData> result) {
 		HashMap<Integer, AuditData> indexedResult = new HashMap<Integer, AuditData>();
 		for (AuditData row : result)
-			indexedResult.put(row.getQuestion().getQuestionID(), row);
+			indexedResult.put(row.getQuestion().getId(), row);
 		return indexedResult;
 	}
 
@@ -185,7 +185,7 @@ public class AuditDataDAO extends PicsDAO {
 		Query query = em
 				.createQuery("FROM AuditData d "
 						+ "WHERE audit IN (FROM ContractorAudit WHERE contractorAccount.id = ? AND auditStatus IN ('Active','Submitted','Pending')) "
-						+ "AND question.questionID =  " + questionId + "" + ")");
+						+ "AND question.id =  " + questionId + "" + ")");
 		query.setParameter(1, conID);
 		for (Object ad : query.getResultList()) {
 			AuditData auditData = (AuditData) ad;

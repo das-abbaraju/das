@@ -65,7 +65,7 @@ public class OrderAuditChildren extends PicsActionSupport {
 		if (type.equals("AuditSubCategory")) {
 			AuditSubCategory auditSubCategory = auditSubCategoryDAO.find(id);
 			for (AuditQuestion question : auditSubCategory.getQuestions()) {
-				question.setNumber((short)list.get(question.getQuestionID()).intValue());
+				question.setNumber((short)list.get(question.getId()).intValue());
 			}
 			auditSubCategoryDAO.save(auditSubCategory);
 		}		

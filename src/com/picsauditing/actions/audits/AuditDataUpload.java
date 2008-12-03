@@ -41,13 +41,13 @@ public class AuditDataUpload extends AuditActionSupport {
 			addActionError("No question supplied for upload");
 			return SUCCESS;
 		}
-		question = questionDAO.find(question.getQuestionID());
+		question = questionDAO.find(question.getId());
 		if (question == null) {
 			addActionError("Failed to find question");
 			return SUCCESS;
 		}
 		
-		AuditData data = auditDataDao.findAnswerToQuestion(conAudit.getId(), question.getQuestionID());
+		AuditData data = auditDataDao.findAnswerToQuestion(conAudit.getId(), question.getId());
 		if (data == null) {
 			// Add a new answer
 			data = new AuditData();
@@ -58,7 +58,7 @@ public class AuditDataUpload extends AuditActionSupport {
 		int dataID = data.getDataID();
 		
 		//String fileName = getFileName();
-		//String folderName = AuditQuestion.filesFolder + "/qID_" + question.getQuestionID();
+		//String folderName = AuditQuestion.filesFolder + "/qID_" + question.getId();
 		
 		if (button != null) {
 			if (button.equals("download")) {
@@ -99,7 +99,7 @@ public class AuditDataUpload extends AuditActionSupport {
 					return SUCCESS;
 				}
 				
-				FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID), getFileName(dataID), extension, true);
+				//FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID), getFileName(dataID), extension, true);
 				
 				addActionMessage("Successfully uploaded <b>"+fileFileName+"</b> file");
 				data.setAnswer(extension);

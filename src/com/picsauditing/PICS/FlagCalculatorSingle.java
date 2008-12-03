@@ -173,7 +173,7 @@ public class FlagCalculatorSingle {
 			if (criteria.getChecked().equals(YesNo.Yes)) {
 				// This question is required by the operator
 				
-				if (criteria.getAuditQuestion().getQuestionID() == AuditQuestion.EMR_AVG) {
+				if (criteria.getAuditQuestion().getId() == AuditQuestion.EMR_AVG) {
 					// Check the average of all three EMR years
 					float emrRateTotal = 0;
 					int years = 0;
@@ -218,7 +218,7 @@ public class FlagCalculatorSingle {
 					}
 				} else {
 					// Check all other audit data answers
-					AuditData data = auditAnswers.get(criteria.getAuditQuestion().getQuestionID());
+					AuditData data = auditAnswers.get(criteria.getAuditQuestion().getId());
 					if (data != null && data.getVerifiedAnswerOrAnswer() != null
 							&& data.getVerifiedAnswerOrAnswer().length() > 0) {
 						// The contractor has answered this question so it needs

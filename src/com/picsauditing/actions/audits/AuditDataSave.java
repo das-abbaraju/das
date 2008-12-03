@@ -47,7 +47,7 @@ public class AuditDataSave extends PicsActionSupport {
 
 			try {
 				newCopy = dao.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion()
-						.getQuestionID());
+						.getId());
 			} catch (NoResultException notReallyAProblem) {
 			}
 
@@ -71,7 +71,7 @@ public class AuditDataSave extends PicsActionSupport {
 						if (newCopy.getAudit().getAuditStatus().equals(AuditStatus.Submitted)) {
 							newCopy.setWasChanged(YesNo.Yes);
 
-							AuditQuestion question = questionDao.find(auditData.getQuestion().getQuestionID());
+							AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
 
 							if (question.getOkAnswer().indexOf(auditData.getAnswer()) == -1) {
 								newCopy.setDateVerified(null);

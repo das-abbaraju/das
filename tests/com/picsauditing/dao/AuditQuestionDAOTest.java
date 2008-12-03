@@ -57,10 +57,10 @@ public class AuditQuestionDAOTest {
 		auditquestion.setIsRedFlagQuestion(YesNo.No);
 		auditquestion = auditquestionDAO.save(auditquestion);
 		assertEquals("write junit test class", auditquestion.getQuestion());
-		assertTrue(auditquestion.getQuestionID() > 0);
-		auditquestionDAO.remove(auditquestion.getQuestionID());
+		assertTrue(auditquestion.getId() > 0);
+		auditquestionDAO.remove(auditquestion.getId());
 		AuditQuestion auditquestion1 = auditquestionDAO.find(auditquestion
-				.getQuestionID());
+				.getId());
 		assertNull(auditquestion1);
 	}
 
@@ -75,7 +75,7 @@ public class AuditQuestionDAOTest {
 	public void testFindBySubCategory() {
 		List<AuditQuestion> auditquestion = auditquestionDAO
 				.findBySubCategory(56);
-		assertEquals(970, auditquestion.get(0).getQuestionID());
+		assertEquals(970, auditquestion.get(0).getId());
 	}
 
 }

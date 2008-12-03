@@ -34,8 +34,8 @@ public class ContractorAuditDAO extends PicsDAO {
 	public void remove(ContractorAudit row, String ftpDir) {
 		for (AuditData auditData : row.getData()) {
 			if (auditData.getQuestion().getQuestionType().equals("File")) {
-				String FileName = ftpDir + "/files/pqf/qID_" + auditData.getQuestion().getQuestionID() + "/"
-						+ auditData.getQuestion().getQuestionID() + "_" + row.getContractorAccount().getId() + "."
+				String FileName = ftpDir + "/files/pqf/qID_" + auditData.getQuestion().getId() + "/"
+						+ auditData.getQuestion().getId() + "_" + row.getContractorAccount().getId() + "."
 						+ auditData.getAnswer();
 				FileUtils.deleteFile(FileName);
 			}

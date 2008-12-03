@@ -75,8 +75,8 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 
 			for (AuditData auditData : conAudit.getData()) {
 				if (auditData.getQuestion().getQuestionType().equals("File")) {
-					String FileName = getFtpDir() + "/files/pqf/qID_" + auditData.getQuestion().getQuestionID() + "/"
-							+ auditData.getQuestion().getQuestionID() + "_";
+					String FileName = getFtpDir() + "/files/pqf/qID_" + auditData.getQuestion().getId() + "/"
+							+ auditData.getQuestion().getId() + "_";
 					File oldFile = new File(FileName + oldconID + "." + auditData.getAnswer());
 					File newFile = new File(FileName + conAudit.getContractorAccount().getId() + "."
 							+ auditData.getAnswer());

@@ -50,7 +50,7 @@ public class VerifyView extends ContractorActionSupport {
 					List<AuditData> temp = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
 					pqfQuestions = new LinkedHashMap<Integer, AuditData>();
 					for (AuditData ad : temp) {
-						pqfQuestions.put(ad.getQuestion().getQuestionID(), ad);
+						pqfQuestions.put(ad.getQuestion().getId(), ad);
 					}
 				}
 				if (conAudit.getAuditType().isAnnualAddendum()) {

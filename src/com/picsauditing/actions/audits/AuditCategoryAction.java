@@ -232,7 +232,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 			List<Integer> officeLocQuestions = new ArrayList<Integer>();
 			if (subCategory.getCategory().getId() == AuditCategory.SERVICES_PERFORMED) {
 				for (AuditQuestion question : subCategory.getQuestions()) {
-					officeLocQuestions.add(question.getQuestionID());
+					officeLocQuestions.add(question.getId());
 				}
 			}
 
@@ -241,36 +241,36 @@ public class AuditCategoryAction extends AuditActionSupport {
 						.findAnswers(auditID, officeLocQuestions);
 				if (question.getQuestionType().equals("Office Location")
 						&& !officeLocationAnswer.containsKey(question
-								.getQuestionID())) {
+								.getId())) {
 					AuditData auditData = new AuditData();
 					auditData.setAudit(conAudit);
 					auditData.setQuestion(question);
 					auditData.setAnswer("No");
 					auditDataDao.save(auditData);
-					answers.put(question.getQuestionID(), auditData);
+					answers.put(question.getId(), auditData);
 				}
 
-				if (answers.containsKey(question.getQuestionID())) {
-					question.setAnswer(answers.get(question.getQuestionID()));
+				if (answers.containsKey(question.getId())) {
+					question.setAnswer(answers.get(question.getId()));
 				}
 				if (mode != null && mode.equals(EDIT)) {
 					AuditQuestion dependsOnQuestion = question
 							.getDependsOnQuestion();
 					if (dependsOnQuestion != null
-							&& dependsOnQuestion.getQuestionID() > 0) {
+							&& dependsOnQuestion.getId() > 0) {
 
 						if (!dependsOnQuestion.getSubCategory().getCategory()
 								.equals(catData.getCategory())
 								&& !answers.containsKey(dependsOnQuestion
-										.getQuestionID())) {
+										.getId())) {
 							// Get answer and add to answer map no matter what
-							answers.put(dependsOnQuestion.getQuestionID(),
+							answers.put(dependsOnQuestion.getId(),
 									auditDataDao.findAnswerToQuestion(
 											this.auditID, dependsOnQuestion
-													.getQuestionID()));
+													.getId()));
 						}
 						dependsOnQuestion.setAnswer(answers
-								.get(dependsOnQuestion.getQuestionID()));
+								.get(dependsOnQuestion.getId()));
 					}
 				}
 			}

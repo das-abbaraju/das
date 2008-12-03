@@ -28,24 +28,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "pqfquestions")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
 public class AuditQuestion implements java.io.Serializable, Comparable<AuditQuestion> {
-	static public final int EMR05 = 889;
-	static public final int EMR06 = 1519;
-	static public final int EMR07 = 1617;
-	
 	static public final int EMR = 2034;
-
-	static public int getEmrYear(int questionID) {
-		switch (questionID) {
-		case EMR07:
-			return 2007;
-		case EMR06:
-			return 2006;
-		case EMR05:
-			return 2005;
-		}
-		return 0;
-	}
-
 	static public final int EMR_AVG = 0;
 	static public final int MANUAL_PQF = 1331;
 
@@ -93,14 +76,15 @@ public class AuditQuestion implements java.io.Serializable, Comparable<AuditQues
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	public int getQuestionID() {
+	@Column(name="questionID", nullable=false)
+	public int getId() {
 		return this.questionID;
 	}
 
-	public void setQuestionID(int questionID) {
+	public void setId(int questionID) {
 		this.questionID = questionID;
 	}
-
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "subCategoryID", nullable = false)
 	public AuditSubCategory getSubCategory() {
@@ -482,13 +466,13 @@ public class AuditQuestion implements java.io.Serializable, Comparable<AuditQues
 	public int compareTo(AuditQuestion o) {
 		if (o == null)
 			throw new NullPointerException();
-		if (this.getQuestionID() == o.getQuestionID())
+		if (this.getId() == o.getId())
 			return 0;
 		
 		if (getSubCategory().getId() == o.getSubCategory().getId()) {
 			int result = this.getNumber() - o.getNumber();
 			if (result == 0)
-				return this.getQuestionID()- o.getQuestionID();
+				return this.getId()- o.getId();
 			return result;
 		}
 		

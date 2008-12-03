@@ -40,9 +40,9 @@ public class AuditPercentCalculator {
 
 		for (AuditSubCategory subCategory : catData.getCategory().getSubCategories()) {
 			for (AuditQuestion question : subCategory.getQuestions()) {
-				questionIDs.add(question.getQuestionID());
+				questionIDs.add(question.getId());
 				if ("Depends".equals(question.getDependsOnAnswer()) && question.getDependsOnQuestion() != null) {
-					int dependsOnQID = question.getDependsOnQuestion().getQuestionID();
+					int dependsOnQID = question.getDependsOnQuestion().getId();
 					questionIDs.add(dependsOnQID);
 				}
 			}
@@ -57,13 +57,13 @@ public class AuditPercentCalculator {
 			for (AuditQuestion question : subCategory.getQuestions()) {
 				if (question.getDependsOnQuestion() != null)
 					question.getDependsOnQuestion().setAnswer(
-							answers.get(question.getDependsOnQuestion().getQuestionID()));
+							answers.get(question.getDependsOnQuestion().getId()));
 
 				boolean isRequired = question.isRequired();
 
 				// if ("Depends".equals(question.getIsRequired())) {
 				// int dependsOnQID = question.getDependsOnQuestion()
-				// .getQuestionID();
+				// .getId();
 				// String dependsOnAnswer = question.getDependsOnAnswer();
 				// if (answers.get(dependsOnQID) != null
 				// &&
@@ -77,11 +77,11 @@ public class AuditPercentCalculator {
 
 				if (isRequired && question.getEffectiveDate().before(catData.getAudit().getCreatedDate())
 						&& question.getExpirationDate().after(catData.getAudit().getCreatedDate())) {
-					questID = question.getQuestionID();
+					questID = question.getId();
 					requiredCount++;
 				}
 
-				AuditData answer = answers.get(question.getQuestionID());
+				AuditData answer = answers.get(question.getId());
 				if (answer != null) {
 					String answerToQuestion = answer.getAnswer();
 					if (!"".equals(answerToQuestion)

@@ -13,7 +13,7 @@ import com.picsauditing.util.Strings;
 public class AuditQuestionDAO extends PicsDAO {
 
 	public AuditQuestion save(AuditQuestion o) {
-		if (o.getQuestionID() == 0) {
+		if (o.getId() == 0) {
 			em.persist(o);
 		} else {
 			o = em.merge(o);

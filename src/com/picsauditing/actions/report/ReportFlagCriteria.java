@@ -68,7 +68,7 @@ public class ReportFlagCriteria extends ReportAccount {
 
 		boolean avgQuestionChecked = false;
 		for (FlagQuestionCriteria flagQuestionCriteria : operatorAccount.getFlagQuestionCriteria()) {
-			if (flagQuestionCriteria.getAuditQuestion().getQuestionID() == AuditQuestion.EMR_AVG
+			if (flagQuestionCriteria.getAuditQuestion().getId() == AuditQuestion.EMR_AVG
 					&& flagQuestionCriteria.getChecked() == YesNo.Yes)
 				avgQuestionChecked = true;
 		}
@@ -80,9 +80,9 @@ public class ReportFlagCriteria extends ReportAccount {
 		Set<Integer> questionIds = new HashSet<Integer>();
 		for (FlagQuestionCriteria flagQuestionCriteria : operatorAccount.getFlagQuestionCriteria()) {
 			if ((flagQuestionCriteria.getChecked() == YesNo.Yes && flagQuestionCriteria.getAuditQuestion()
-					.getQuestionID() != AuditQuestion.EMR_AVG)
-					|| (avgQuestionChecked && emrs.contains(flagQuestionCriteria.getAuditQuestion().getQuestionID()))) {
-				int questionID = flagQuestionCriteria.getAuditQuestion().getQuestionID();
+					.getId() != AuditQuestion.EMR_AVG)
+					|| (avgQuestionChecked && emrs.contains(flagQuestionCriteria.getAuditQuestion().getId()))) {
+				int questionID = flagQuestionCriteria.getAuditQuestion().getId();
 				if (!questionIds.contains(questionID)) {
 					questionIds.add(questionID);
 					sql.addPQFQuestion(questionID);

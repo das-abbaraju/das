@@ -31,12 +31,12 @@ public class AuditData implements java.io.Serializable {
 	private AuditQuestion question;
 	private int num;
 	private String answer;
-	private User auditor;
 	private String comment;
-	private Date dateVerified;
 	private String verifiedAnswer;
 	private YesNo isCorrect;
 	private YesNo wasChanged;
+	private User auditor;
+	private Date dateVerified;
 	private User createdBy;
 	private Date creationDate;
 	private User updatedBy;

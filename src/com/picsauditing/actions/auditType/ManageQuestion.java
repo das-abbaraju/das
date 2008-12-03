@@ -44,7 +44,7 @@ public class ManageQuestion extends ManageSubCategory {
 	protected void load(AuditQuestion o) {
 		this.question = o;
 		if (question.getDependsOnQuestion() != null)
-			dependsOnQuestionID = Integer.toString(question.getDependsOnQuestion().getQuestionID());
+			dependsOnQuestionID = Integer.toString(question.getDependsOnQuestion().getId());
 		load(question.getSubCategory());
 	}
 	
@@ -76,9 +76,9 @@ public class ManageQuestion extends ManageSubCategory {
 			else {
 				try {
 					int questionId = Integer.parseInt(dependsOnQuestionID);
-					if (question.getDependsOnQuestion() == null || questionId != question.getDependsOnQuestion().getQuestionID()) {
+					if (question.getDependsOnQuestion() == null || questionId != question.getDependsOnQuestion().getId()) {
 						question.setDependsOnQuestion(new AuditQuestion());
-						question.getDependsOnQuestion().setQuestionID(questionId);
+						question.getDependsOnQuestion().setId(questionId);
 					}
 				} catch (NumberFormatException e) {
 					addActionError("Depends on Question must be a number");
@@ -99,14 +99,14 @@ public class ManageQuestion extends ManageSubCategory {
 	protected boolean delete() {
 		try {
 			// TODO check to see if AuditData exists for this question first
-			List<AuditData> list = auditDataDAO.findByQuestionID(question.getQuestionID());
+			List<AuditData> list = auditDataDAO.findByQuestionID(question.getId());
 			if (list.size() > 0) {
 				addActionError("Deleting Questions is not supported just yet.");
 				return false;
 			}
 			subCategory.getQuestions().remove(question);
 			id = question.getSubCategory().getId();
-			auditQuestionDao.remove(question.getQuestionID());
+			auditQuestionDao.remove(question.getId());
 			
 			recalculateCategory();
 			return true;

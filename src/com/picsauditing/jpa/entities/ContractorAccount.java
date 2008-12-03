@@ -705,7 +705,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 				&& audit.getAuditStatus().isActiveSubmitted()) {
 				// Store the EMR rates into a map for later use
 				for(AuditData answer : audit.getData())
-					if (answer.getQuestion().getQuestionID() == AuditQuestion.EMR)
+					if (answer.getQuestion().getId() == AuditQuestion.EMR)
 						emrs.put(audit.getAuditFor(), answer);
 			}
 		}
@@ -725,7 +725,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 				AuditData emr = emrs.get(key);
 				avg.setAudit(emr.getAudit());
 				AuditQuestion avgQuestion = new AuditQuestion();
-				avgQuestion.setQuestionID(AuditQuestion.EMR_AVG);
+				avgQuestion.setId(AuditQuestion.EMR_AVG);
 				// We may just want to query the EMR question from the DB
 				avgQuestion.setQuestion("Average EMR");
 				avg.setQuestion(avgQuestion);
