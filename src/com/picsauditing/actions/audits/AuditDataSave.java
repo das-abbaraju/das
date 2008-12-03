@@ -1,5 +1,6 @@
 package com.picsauditing.actions.audits;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.persistence.NoResultException;
@@ -25,6 +26,8 @@ public class AuditDataSave extends PicsActionSupport {
 	private AuditCategoryDataDAO catDataDAO;
 	private AuditPercentCalculator auditPercentCalculator;
 
+	private boolean toggleVerify = false;
+		
 	public AuditDataSave(AuditDataDAO dao, AuditCategoryDataDAO catDataDAO,
 			AuditPercentCalculator auditPercentCalculator, AuditQuestionDAO questionDao) {
 		this.dao = dao;
@@ -63,9 +66,11 @@ public class AuditDataSave extends PicsActionSupport {
 					// then we are not currently
 					// verifying
 					if (auditData.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer())) {
-						newCopy.setDateVerified(null);
-						newCopy.setIsCorrect(null);
-						newCopy.setVerifiedAnswer(null);
+
+						if( !toggleVerify ) {
+							newCopy.setDateVerified(null);
+						}
+						
 						newCopy.setAnswer(auditData.getAnswer());
 
 						if (newCopy.getAudit().getAuditStatus().equals(AuditStatus.Submitted)) {
@@ -73,25 +78,29 @@ public class AuditDataSave extends PicsActionSupport {
 
 							AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
 
-							if (question.getOkAnswer().indexOf(auditData.getAnswer()) == -1) {
-								newCopy.setDateVerified(null);
-								newCopy.setAuditor(null);
-							} else {
-								newCopy.setDateVerified(new Date());
-								newCopy.setAuditor(getUser());
+							if( !toggleVerify ) {
+								if (question.getOkAnswer().indexOf(auditData.getAnswer()) == -1) {
+									newCopy.setDateVerified(null);
+									newCopy.setAuditor(null);
+								} else {
+									newCopy.setDateVerified(new Date());
+									newCopy.setAuditor(getUser());
+								}
 							}
 						}
 					}
-				} else {
-					// we were handed the verification parms instead of the
-					// edit parms
+				}
 
-					if (auditData.getVerifiedAnswer() != null) {
-						newCopy.setVerifiedAnswer(auditData.getVerifiedAnswer());
-						if (auditData.getVerifiedAnswer().equals(newCopy.getAnswer()))
-							newCopy.setIsCorrect(YesNo.Yes);
-						else
-							newCopy.setIsCorrect(YesNo.No);
+				// we were handed the verification parms instead of the
+				// edit parms
+
+				if (toggleVerify == true) {
+
+					if( newCopy.isVerified() ) {
+						newCopy.setDateVerified(null);
+						newCopy.setAuditor(null);
+					}
+					else {
 						newCopy.setDateVerified(new Date());
 						newCopy.setAuditor(getUser());
 					}
@@ -116,13 +125,13 @@ public class AuditDataSave extends PicsActionSupport {
 				AuditCatData catData = catDataDAO.find(catDataID);
 				auditPercentCalculator.updatePercentageCompleted(catData);
 			}
-
+			auditData = newCopy;
 			output = "Saved";
 		} catch (Exception e) {
 			e.printStackTrace();
 			output = "An Error has Occurred";
 		}
-
+		
 		return SUCCESS;
 	}
 
@@ -137,4 +146,25 @@ public class AuditDataSave extends PicsActionSupport {
 	public void setCatDataID(int catDataID) {
 		this.catDataID = catDataID;
 	}
+
+	public boolean isToggleVerify() {
+		return toggleVerify;
+	}
+
+	public void setToggleVerify(boolean toggleVerify) {
+		this.toggleVerify = toggleVerify;
+	}
+
+	
+	public ArrayList<String> getEmrProblems() {
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("");
+		list.add("Need EMR");
+		list.add("Need Loss Run");
+		list.add("Not Insurance Issued");
+		list.add("Incorrect Upload");
+		list.add("Incorrect Year");
+		return list;
+	}
+
 }

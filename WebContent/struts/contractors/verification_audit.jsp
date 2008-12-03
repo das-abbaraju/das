@@ -3,30 +3,40 @@
 <h2><s:property value="conAudit.auditFor" /> <s:property
 	value="conAudit.auditType.auditName" /></h2>
 
+
 <s:form id="verify2">
 <s:if test="conAudit.auditType.pqf">
 	<fieldset style="clear: none; float: left; width: 50%; margin: 0.5em;"><legend><span>PQF
 	Questions</span></legend> <s:iterator value="pqfQuestions">
+		<s:div id="qid_%{question.id}">
 		<ol>
 			<li><s:property value="question.subCategory.subCategory"/><br />
 				<s:property value="question.subCategory.category.number"/>.<s:property value="question.subCategory.number"/>.<s:property value="question.number"/>
 				<s:property value="question.question"/></li>
-			<li><label>Is
-			Correct:</label> <s:checkbox name="verified" value="verified" /></li>
+
+			<li><label>Answer:</label> <s:textfield id="answer_%{question.id}" name="answer"></s:textfield>
+			<s:if test="verified == false">
+				<input id="verify_<s:property value="question.id"/>" type="submit" 
+					onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="question.subCategory.id"/>);" 
+					value="Verify"/>
+				<input id="unverify_<s:property value="question.id"/>" style="display: none;" type="submit" 
+					onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="question.subCategory.id"/>);" value="Unverify"/>
+			</s:if>
+			<s:else>
+				<input id="verify_<s:property value="question.id"/>" type="submit" style="display: none;" onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="question.subCategory.id"/>);" value="Verify"/>
+				<input id="unverify_<s:property value="question.id"/>" type="submit" onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="question.subCategory.id"/>);" value="Unverify"/>
+			</s:else></li>
+			
 			<s:if test="verified">
 				<li><label>Verified:</label><s:date name="dateVerified"
 					format="MM/dd/yyyy" /> by <s:property value="auditor.name"/></li>
 			</s:if>
-			<s:else>
-				<li><label>Issue:</label> <s:select list="emrProblems"
-					name="comment" /></li>
-			</s:else>
-			<li><label>Contractor Answer:</label> <s:textfield name="answer"></s:textfield> </li>
-			<li><label>Verified Answer:</label> <s:textfield name="verifiedAnswer"></s:textfield> </li>
+			<li><label>Comment:</label> <s:select id="comment_%{question.id}" list="emrProblems" name="comment" /></li>
 			<li>
 			<hr>
 			</li>
 		</ol>
+		</s:div>
 	</s:iterator></fieldset>
 </s:if>
 <s:else>

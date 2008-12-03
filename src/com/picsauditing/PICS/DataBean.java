@@ -1,14 +1,19 @@
 package com.picsauditing.PICS;
 
-import java.sql.*;
-import java.util.*;
+import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
+import java.util.Vector;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.RowSetDynaClass;
 
 import com.picsauditing.search.SelectSQL;
 
-public abstract class DataBean{
+public abstract class DataBean implements Serializable {
 	protected Vector<String> errorMessages = new Vector<String>();
 	protected boolean isSet = false;
 	protected Connection Conn = null;

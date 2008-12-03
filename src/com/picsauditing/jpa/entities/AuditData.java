@@ -33,8 +33,6 @@ public class AuditData implements java.io.Serializable {
 	private int num;
 	private String answer;
 	private String comment;
-	private String verifiedAnswer;
-	private YesNo isCorrect;
 	private YesNo wasChanged;
 	private User auditor;
 	private Date dateVerified;
@@ -119,35 +117,18 @@ public class AuditData implements java.io.Serializable {
 		this.dateVerified = dateVerified;
 	}
 
-	public String getVerifiedAnswer() {
-		return verifiedAnswer;
-	}
-
-	public void setVerifiedAnswer(String verifiedAnswer) {
-		this.verifiedAnswer = verifiedAnswer;
-	}
-
-	@Enumerated(EnumType.STRING)
-	public YesNo getIsCorrect() {
-		return isCorrect;
-	}
-
-	public void setIsCorrect(YesNo isCorrect) {
-		this.isCorrect = isCorrect;
-	}
-
 	@Transient
 	public boolean isVerified() {
-		return YesNo.Yes.equals(isCorrect);
+		return getDateVerified() != null;
 	}
 
-	public void setVerified(boolean isCorrect) {
-		this.isCorrect = isCorrect ? YesNo.Yes : YesNo.No;
+	public void setVerified(boolean inValue) {
+		this.setDateVerified( inValue ? new java.util.Date() : null );
 	}
 
 	@Transient
 	public boolean isUnverified() {
-		return YesNo.No.equals(isCorrect);
+		return getDateVerified() == null;
 	}
 
 	@Enumerated(EnumType.STRING)
@@ -199,8 +180,8 @@ public class AuditData implements java.io.Serializable {
 
 	@Transient
 	public String getVerifiedAnswerOrAnswer() {
-		if (verifiedAnswer != null && verifiedAnswer.length() > 0)
-			return verifiedAnswer;
+//		if (verifiedAnswer != null && verifiedAnswer.length() > 0)
+//			return verifiedAnswer;
 
 		if (answer != null)
 			return answer;

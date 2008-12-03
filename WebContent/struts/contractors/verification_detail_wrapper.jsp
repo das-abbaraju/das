@@ -7,8 +7,26 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" /> 
 <script src="js/validate_contractor.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+	function toggleVerify(auditId, questionId, catDataId ) {
+		var comment = $F($('comment_' + questionId));
+		var answer = $F($('answer_' + questionId)); 
+
+		var pars = 'auditData.audit.id='+auditId+'&catDataID='+catDataId+'&auditData.question.id=' + questionId + '&auditData.answer=' + answer + '&auditData.comment=' + comment;
+		var divName = 'qid_' + questionId;
+		var myAjax = new Ajax.Updater(divName,'AuditToggleVerifyAjax.action', 
+		{
+			method: 'post', 
+			parameters: pars
+		});
+		return false;
+	}
+</script>
+
+
 </head>
-<body>
+<body >
 <s:include value="conHeader.jsp" />
 
 <div id="auditHeader">

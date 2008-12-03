@@ -141,9 +141,9 @@ public class AuditDataDAO extends PicsDAO {
 		if (questionIds.contains(AuditQuestion.EMR_AVG)) {
 			// We need to get the average EMR for the past 3 years
 			questionIds.remove(AuditQuestion.EMR_AVG);
-			questionIds.add(AuditQuestion.EMR07);
-			questionIds.add(AuditQuestion.EMR06);
-			questionIds.add(AuditQuestion.EMR05);
+//			questionIds.add(AuditQuestion.EMR07);
+//			questionIds.add(AuditQuestion.EMR06);
+//			questionIds.add(AuditQuestion.EMR05);
 		}
 
 		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id = ? AND question.id IN ("

@@ -59,8 +59,8 @@ public class AuditDataDAOTest {
 		auditdata.getAuditor().setId(744);
 		auditdata.setComment("junit");
 		auditdata.setDateVerified(new Date());
-		auditdata.setVerifiedAnswer("test");
-		auditdata.setIsCorrect(YesNo.No);
+//		auditdata.setVerifiedAnswer("test");
+//		auditdata.setIsCorrect(YesNo.No);
 		auditdata.setWasChanged(YesNo.No);
 		auditdata = auditdataDAO.save(auditdata);
 		assertEquals("junit testing", auditdata.getAnswer());

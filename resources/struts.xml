@@ -357,6 +357,11 @@
 			class="com.picsauditing.actions.audits.AuditDataSave">
 			<result>struts/blank.jsp</result>
 		</action>
+		<action name="AuditToggleVerifyAjax"
+			class="com.picsauditing.actions.audits.AuditDataSave">
+			<param name="toggleVerify">true</param>
+			<result>struts/question_to_verify.jsp</result>
+		</action>
 		<action name="AuditDataUpload"
 			class="com.picsauditing.actions.audits.AuditDataUpload">
 			<result>struts/audits/audit_data_upload.jsp</result>

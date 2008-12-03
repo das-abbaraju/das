@@ -1,6 +1,7 @@
 package com.picsauditing.access;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +25,7 @@ import com.picsauditing.jpa.entities.YesNo;
  * Warning: this class is stored in the session Make sure you keep the footprint
  * very small
  */
-public class Permissions {
+public class Permissions implements Serializable {
 
 	private int userID;
 	private boolean loggedIn = false;
