@@ -77,20 +77,16 @@ public class ReportFlagCriteria extends ReportAccount {
 				avgQuestionChecked = true;
 		}
 
-		Set<Integer> emrs = new HashSet<Integer>();
-		emrs.add(AuditQuestion.EMR07);
-		emrs.add(AuditQuestion.EMR06);
-		emrs.add(AuditQuestion.EMR05);
 		Set<Integer> questionIds = new HashSet<Integer>();
 		for (FlagQuestionCriteria flagQuestionCriteria : operatorAccount.getFlagQuestionCriteria()) {
 			if ((flagQuestionCriteria.getChecked() == YesNo.Yes && flagQuestionCriteria.getAuditQuestion()
 					.getId() != AuditQuestion.EMR_AVG)
-					|| (avgQuestionChecked && emrs.contains(flagQuestionCriteria.getAuditQuestion().getId()))) {
+					|| (avgQuestionChecked && AuditQuestion.EMR == flagQuestionCriteria.getAuditQuestion().getId())) {
 				int questionID = flagQuestionCriteria.getAuditQuestion().getId();
 				if (!questionIds.contains(questionID)) {
 					questionIds.add(questionID);
 					sql.addPQFQuestion(questionID);
-					sql.addField("q" + questionID + ".verifiedAnswer AS verified" + questionID);
+					sql.addField("q" + questionID + ".answer AS verified" + questionID);
 				}
 			}
 		}
