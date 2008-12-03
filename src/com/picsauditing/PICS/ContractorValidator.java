@@ -37,7 +37,7 @@ public class ContractorValidator {
 		// Passwords
 		if (!Strings.isEmpty(password1)) {
 			// They are trying to set/reset the password
-			if (!password1.equals(password2))
+			if (!password1.equals(password2) && !password1.equals(contractor.getPassword()))
 				errorMessages.addElement("The passwords don't match");
 			
 			if (password1.length() < MIN_PASSWORD_LENGTH)

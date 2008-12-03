@@ -9,6 +9,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.Strings;
 
 public class ProfileEdit extends PicsActionSupport implements Preparable {
 	protected User u;
@@ -33,8 +34,8 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 			return SUCCESS;
 		}
 		if (button != null) {
-			if (password1 != null && password1.length() > 0) {
-				if (!password1.equals(password2))
+			if (!Strings.isEmpty(password1)) {
+				if (!password1.equals(password2) && !password1.equals(u.getPassword()))
 					addActionError("Passwords don't match");
 
 				Vector<String> errors = PasswordValidator.validateContractor(u, password1);
