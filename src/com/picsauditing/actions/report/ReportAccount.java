@@ -98,6 +98,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		return SUCCESS;
 	}
 
+	@Deprecated
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;

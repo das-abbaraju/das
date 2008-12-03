@@ -17,7 +17,8 @@
 			<s:if test="permissions.operator">
 				<td><a href="?orderBy=flag DESC">Flag</a></td>
 			</s:if>
-			<td><s:property value="auditFor" /></td>
+			<td>For</td>
+			<td>Fatalities</td>
 		</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -34,6 +35,7 @@
 					src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif"
 					width="12" height="15" border="0"></a></td>
 			</s:if>
+			<td class="center"><s:property value="get('auditFor')" /></td>
 			<td class="center"><s:property value="get('fatalities')" /></td>
 		</tr>
 	</s:iterator>
