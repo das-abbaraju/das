@@ -27,6 +27,7 @@ public class ReportContractorAudits extends ReportAccount {
 
 	public ReportContractorAudits() {
 		sql = new SelectContractorAudit();
+		orderByDefault = "ca.createdDate DESC";
 	}
 
 	public String execute() throws Exception {
@@ -62,9 +63,6 @@ public class ReportContractorAudits extends ReportAccount {
 			sql.addWhere("atype.auditTypeID IN (" + Strings.implode(permissions.getCanSeeAudit(), ",") + ")");
 		}
 
-		if (orderBy == null)
-			orderBy = "ca.createdDate DESC";
-
 		if (!permissions.isPicsEmployee())
 			getFilter().setShowAuditor(true);
 		
@@ -77,7 +75,7 @@ public class ReportContractorAudits extends ReportAccount {
 		return super.executeOld();
 	}
 
-	private void addFilterToSQL() {
+	protected void addFilterToSQL() {
 		ReportFilterAudit f = getFilter();
 
 		String auditTypeList = Strings.implode(f.getAuditTypeID(), ",");

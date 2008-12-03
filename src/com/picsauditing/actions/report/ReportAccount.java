@@ -28,7 +28,6 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class ReportAccount extends ReportActionSupport implements Preparable {
 
-	protected boolean forwardSingleResults = false;
 	protected boolean skipPermissions = false;
 
 	protected List<Integer> ids = new ArrayList<Integer>(); // ?? may need to
@@ -39,6 +38,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	public ReportAccount() {
 		listType = ListType.Contractor;
+		orderByDefault = "a.name";
 	}
 
 	/**
@@ -51,6 +51,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	public void buildQuery() {
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
+		sql = new SelectAccount();
 		addFilterToSQL();
 	}
 	
@@ -61,8 +62,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		
 		checkPermissions();
 		buildQuery();
-		if (this.orderBy == null)
-			this.orderBy = "a.name";
+		
 		run(sql);
 		if (filtered == null)
 			filtered = false;
@@ -86,14 +86,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			ServletActionContext.getResponse().sendRedirect("MassMailer.action");
 			this.addActionMessage("Redirected to MassMailer");
 			return BLANK;
-		}
-
-		if (forwardSingleResults && this.data.size() == 1) {
-			// Forward the user to the Contractor Details page
-			if(data.get(0).get("type").equals("Contractor"))
-				ServletActionContext.getResponse().sendRedirect("ContractorView.action?id=" + this.data.get(0).get("id"));
-			else
-				ServletActionContext.getResponse().sendRedirect("accounts_edit_operator.jsp?id=" + this.data.get(0).get("id"));
 		}
 
 		return SUCCESS;
@@ -140,15 +132,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			sql.addField("c.riskLevel");
 		}
 
-		if (this.orderBy == null)
-			this.orderBy = "a.name";
-		if(forwardSingleResults) {
-			sql.addWhere("a.type IN ('Operator', 'Corporate', 'Contractor')");
-			sql.setType(null);
-			orderBy = "a.type, a.name";
-		} else { 
-			sql.setType(SelectAccount.Type.Contractor);
-		}
+		sql.setType(SelectAccount.Type.Contractor);
 		this.run(sql);
 
 		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
@@ -161,21 +145,16 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		return returnResult();
 	}
 
-	private void addFilterToSQL() {
+	protected void addFilterToSQL() {
 		ReportFilterContractor f = getFilter();
 
 		/** **** Filters for Accounts ********** */
 		if (filterOn(f.getStartsWith()))
-			report.addFilter(new SelectFilter("name", "a.name LIKE '?%'", f.getStartsWith()));
+			report.addFilter(new SelectFilter("startsWith", "a.name LIKE '?%'", f.getStartsWith()));
 
 		if (filterOn(f.getAccountName(), ReportFilterAccount.DEFAULT_NAME)) {
 			String accountName = f.getAccountName().trim();
-			try {
-				int id = Integer.parseInt(accountName);
-				report.addFilter(new SelectFilterInteger("id", "a.id = ?", id));
-			} catch (NumberFormatException nfe) {
-				report.addFilter(new SelectFilter("accountName", "a.name LIKE '%?%'", accountName));
-			}
+			report.addFilter(new SelectFilter("accountName", "a.name LIKE '%?%'", accountName));
 		}
 
 		if (filterOn(f.getVisible(), ReportFilterAccount.DEFAULT_VISIBLE))

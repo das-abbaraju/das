@@ -23,7 +23,7 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		sql.addField("lower(gc.forceFlag) AS lflag");
 		sql.addField("gc.forceend");
 		sql.addWhere("gc.forceFlag IS NOT null");
-		this.orderBy = "o.name, a.name";
+		orderByDefault = "o.name, a.name";
 		
 		return super.executeOld();
 	}

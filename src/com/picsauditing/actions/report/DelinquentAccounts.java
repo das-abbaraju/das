@@ -12,8 +12,7 @@ public class DelinquentAccounts extends ReportAccount {
 		sql.addWhere("a.active = 'Y'");
 		sql.addWhere("c.mustPay = 'Yes'");
 		sql.addField("DATEDIFF(ADDDATE(c.lastInvoiceDate, 120),NOW()) AS DaysLeft");
-		if (this.orderBy == null)
-			this.orderBy = "c.lastInvoiceDate ASC";
+		orderByDefault = "c.lastInvoiceDate ASC";
 		getFilter().setShowVisible(false);
 	}
 }

@@ -19,7 +19,8 @@ public class ReportActionSupport extends PicsActionSupport {
 	protected List<BasicDynaBean> data;
 
 	protected ListType listType;
-	protected String orderBy;
+	protected String orderByDefault = null;
+	private String orderBy = null;
 	protected int showPage;
 	protected ColorAlternater color = new ColorAlternater();
 
@@ -40,6 +41,8 @@ public class ReportActionSupport extends PicsActionSupport {
 		}
 
 		isFiltered();
+		if (orderBy == null && orderByDefault != null)
+			orderBy = orderByDefault;
 		report.setOrderBy(this.orderBy, null);
 		report.setSql(sql);
 

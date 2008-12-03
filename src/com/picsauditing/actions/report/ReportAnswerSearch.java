@@ -1,11 +1,14 @@
 package com.picsauditing.actions.report;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings("serial")
 public class ReportAnswerSearch extends ReportAccount {
@@ -15,11 +18,16 @@ public class ReportAnswerSearch extends ReportAccount {
 	public ReportAnswerSearch(AuditQuestionDAO auditQuestionDAO) {
 		this.auditQuestionDAO = auditQuestionDAO;
 	}
-
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
+	
+	@Override
+	public void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.ContractorDetails);
+	}
+
+	@Override
+	public void buildQuery() {
+		super.buildQuery();
+
 		List<AuditQuestion> newQuestions = new ArrayList<AuditQuestion>();
 		int removeQuestion = -1;
 		try {
@@ -55,11 +63,12 @@ public class ReportAnswerSearch extends ReportAccount {
 				sql.addWhere(qSearch + qCriteria);
 			}
 		}
+	}
 
-		if (questions.size() == 0)
-			return SUCCESS;
-
-		return super.executeOld();
+	@Override
+	public void run(SelectSQL sql) throws SQLException, IOException {
+		if (questions.size() > 0)
+			super.run(sql);
 	}
 
 	public void setQuestionSelect(String value) {

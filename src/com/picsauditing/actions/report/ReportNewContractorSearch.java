@@ -88,8 +88,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 			this.addActionMessage("Please enter a contractor name with atleast 3 characters or select a trade");
 			return SUCCESS;
 		}
-		if (this.orderBy == null || orderBy.length() == 0)
-			this.orderBy = "a.name";
+		orderByDefault = "a.name";
 
 		getFilter().setShowInParentCorporation(true);
 

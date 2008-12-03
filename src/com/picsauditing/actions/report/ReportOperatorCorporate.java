@@ -46,8 +46,7 @@ public class ReportOperatorCorporate extends ReportAccount {
 		sql.addField("a.industry");
 		sql.addField("a.state");
 		sql.addField("a.city");
-		if (this.orderBy == null)
-			this.orderBy = "a.name";
+		orderByDefault = "a.name";
 		this.run(sql);
 
 		if ("Remove".equals(button)) {

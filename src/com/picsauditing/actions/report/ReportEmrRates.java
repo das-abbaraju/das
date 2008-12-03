@@ -16,7 +16,6 @@ public class ReportEmrRates extends ReportAnnualAddendum {
 	public void buildQuery() {
 		super.buildQuery();
 		
-		forwardSingleResults = false;
 		getFilter().setShowEmrRange(true);
 		getFilter().setShowAuditFor(true);
 		

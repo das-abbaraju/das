@@ -9,10 +9,16 @@ import com.picsauditing.util.SpringUtils;
 public class ArchivedAccounts extends ReportAccount {
 	protected int conID;
 
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
+	@Override
+	public void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.DelinquentAccounts);
+	}
+	
+	@Override
+	public void buildQuery() {
+		skipPermissions = true;
+		super.buildQuery();
+		
 		sql.addField("a.contact");
 		sql.addField("a.phone");
 		sql.addField("a.phone2");
@@ -22,13 +28,19 @@ public class ArchivedAccounts extends ReportAccount {
 		sql.addWhere("(c.lastPayment IS NULL OR c.lastPayment < c.lastInvoiceDate)");
 		sql.addWhere("a.active = 'N'");
 
-		setOrderBy("c.lastInvoiceDate ASC");
+		orderByDefault = "c.lastInvoiceDate ASC";
 
 		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.SQL);
 		qb.setActiveContractorsOnly(false);
 		qb.setWorkingFacilities(false);
 		sql.addWhere("1 " + qb.toString());
-		skipPermissions = true;
+		
+		getFilter().setShowVisible(false);
+	}
+	
+	@Override
+	public String execute() throws Exception {
+		loadPermissions();
 		if ("Remove".equals(button)) {
 			permissions.tryPermission(OpPerms.RemoveContractors);
 			FacilityChanger facilityChanger = (FacilityChanger) SpringUtils.getBean("FacilityChanger");
@@ -37,8 +49,8 @@ public class ArchivedAccounts extends ReportAccount {
 			facilityChanger.setPermissions(permissions);
 			facilityChanger.remove();
 		}
-		getFilter().setShowVisible(false);
-		return super.executeOld();
+		
+		return super.execute();
 	}
 
 	public int getConID() {
