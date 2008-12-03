@@ -15,6 +15,10 @@ public class ReportAnnualAddendum extends ReportAccount {
 		sql.addField("ca.auditFor");
 		sql.addWhere("ca.auditTypeID = 11");
 		
+		String auditStatusList = Strings.implodeForDB(getFilter().getAuditStatus(), ",");
+		if (!Strings.isEmpty(auditStatusList))	
+			sql.addWhere("ca.auditStatus IN (" + auditStatusList + ")");
+		
 		String auditFor = Strings.implodeForDB(getFilter().getAuditFor(), ",");
 		if (!Strings.isEmpty(auditFor))
 			sql.addWhere("ca.auditFor IN ("+ auditFor + ")");

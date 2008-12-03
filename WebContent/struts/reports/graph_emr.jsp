@@ -11,10 +11,8 @@
 
 <div id="search">
 <s:form>
-<s:checkbox name="show04" />2004
-<s:checkbox name="show05" />2005
-<s:checkbox name="show06" />2006
-<s:checkbox name="show07" />2007
+<s:select list="{2001,2002,2003,2004,2005,2006,2007,2008}"
+	cssClass="forms" name="years" multiple="true" size="5" />
 <s:select list="chartTypeList" name="chartType" />
 <s:submit value="Refresh" />
 </s:form>
