@@ -3,7 +3,7 @@
 <html>
 <head>
 <script src="js/prototype.js" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/summaryreport.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" /> 
 <script src="js/validate_contractor.js" type="text/javascript"></script>
@@ -104,7 +104,7 @@
 	<div class="clear"></div>
 </div>
 
-<div id="verification_detail">
+<div id="verification_detail" style="line-height: 15px;">
 <s:include value="verification_detail.jsp" />
 </div>
 

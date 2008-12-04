@@ -2,7 +2,7 @@
 
 <s:form id="verify">
 
-	<table class="report">
+	<table class="summary">
 		<s:if test="pqfQuestions.size() > 0 ">
 			<thead>
 				<tr><td colspan="3">PQF</td>
@@ -14,9 +14,14 @@
 					<td colspan="3" ><s:property value="question.subCategory.subCategory" />/<s:property
 						value="question.question" />
 					</td>
-					<td>	
-						<s:property value="verifiedAnswerOrAnswer" />
-					</td>
+					<s:if test="value.verified">
+						<td style="color : #006400;font-weight: bold;"><s:property value="verifiedAnswerOrAnswer" />
+						</td>	
+					</s:if>	
+					<s:else>
+						<td><s:property value="verifiedAnswerOrAnswer" />
+						</td>
+					</s:else>
 				</tr>
 			</s:iterator>
 		</s:if>
@@ -43,8 +48,7 @@
 				<td><s:if
 					test="file && file.name().equals('Yes')">
 					<a href="#"
-						onClick="window.open('servlet/showpdf?id=<s:property value="id" />&OID=<s:property value="oshaID" />&file=osha','Osha300Logs','scrollbars=yes,resizable=yes,width=700,height=450'); return false;"
-						onMouseOver="status='Osha 300 Logs'">Show File</a>
+						onClick="openOsha(<s:property value="id"/>)">Show File</a>
 				</s:if> <s:else>No File</s:else></td>
 				</s:iterator>
 			</tr>
@@ -93,7 +97,13 @@
 			<tr>
 				<td>Is Correct:</td>
 				<s:iterator value="oshas">
-				<td><s:property value="verified" /></td>
+					<s:if test="verified">
+						<td style="color : #006400;font-weight: bold;"><s:property value="verified" /></td>
+					</s:if>
+					<s:else>
+						<td><s:property value="verified" /></td>
+					</s:else>
+				
 				</s:iterator>
 			</tr>
 			<tr>
@@ -133,7 +143,12 @@
 				<tr>
 					<td><s:property value="key.question" /></td>
 					<s:iterator value="value">
+						<s:if test="value.verified">
+							<td style="color : #006400;font-weight: bold;"><s:property value="value.verifiedAnswerOrAnswer" /></td>
+						</s:if>
+						<s:else>
 						<td><s:property value="value.verifiedAnswerOrAnswer" /></td>
+						</s:else>
 					</s:iterator>
 				</tr>
 			</s:iterator>
@@ -145,7 +160,7 @@
 
 <div>
 <s:iterator value="contractor.audits">
-	<s:if test="auditStatus.pendingSubmitted">
+	<s:if test="auditStatus.pendingSubmitted && (auditType.Pqf || auditType.annualAddendum)">
 		[<a href="#" onclick="showAudit(<s:property value="id"/>); return false;"><s:property value="auditFor"/> <s:property value="auditType.auditName"/></a>]
 	</s:if>
 </s:iterator>

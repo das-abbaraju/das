@@ -1,0 +1,33 @@
+/******************** Primary Table class="report"  ************************/
+
+table.summary {
+	border-collapse: collapse;
+	border: 2px solid #003768;
+	color: #4C4D4D;
+	background: #f9f9f9;
+	clear: both;
+	margin: 2px;
+	height: 200%;
+	width: 100%;
+}
+table.summary td, table.summary th {
+	border: thin solid #A84D10;
+	font-size: 11px;
+}
+table.summary thead th, table.summary thead td {
+	border: 1px solid #e0e0e0;
+	text-align: center;
+	font-weight: bold;
+	background: #003768;
+	color: #FFF;
+}
+
+table.summary tbody tr:hover {
+	background: #EEE;
+	color: #A84D10;
+}
+
+table.summary td.center {
+	text-align: center;
+	float: none;
+}
