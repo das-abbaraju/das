@@ -24,8 +24,8 @@
 	<legend><span>Question</span></legend>
 	<ol>
 		<li><label>ID:</label>
-			<s:if test="question.questionID > 0">
-				<s:property value="question.questionID" />
+			<s:if test="question.id > 0">
+				<s:property value="question.id" />
 			</s:if>
 			<s:else>
 				NEW
@@ -128,7 +128,7 @@
 	<fieldset class="submit">
 		<div class="buttons">
 			<button class="positive" name="button" type="submit" value="save">Save</button>
-		<s:if test="question.questionID > 0">
+		<s:if test="question.id > 0">
 			<button name="button" class="negative" type="submit" value="delete">Delete</button>
 		</s:if>
 		</div>

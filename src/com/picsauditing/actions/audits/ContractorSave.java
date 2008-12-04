@@ -2,8 +2,8 @@ package com.picsauditing.actions.audits;
 
 import java.util.Date;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.AuditType;
@@ -17,9 +17,11 @@ public class ContractorSave extends PicsActionSupport implements Preparable {
 	private ContractorAccount ca = null;
 	private ContractorAccountDAO dao;
 	private int auditorId;
+	private AuditBuilder auditBuilder;  
 
-	public ContractorSave(ContractorAccountDAO dao) {
+	public ContractorSave(ContractorAccountDAO dao, AuditBuilder auditBuilder) {
 		this.dao = dao;
+		this.auditBuilder = auditBuilder;
 	}
 
 	public String execute() {
@@ -34,6 +36,7 @@ public class ContractorSave extends PicsActionSupport implements Preparable {
 		if (auditorId > 0) {
 			ca.setAuditor(new User());
 			ca.getAuditor().setId(auditorId);
+			auditBuilder.buildAudits(ca);
 			
 			for (ContractorAudit conAudit : ca.getAudits()) {
 				System.out.println(" found " + conAudit.getAuditType().getAuditName());

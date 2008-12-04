@@ -43,40 +43,44 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	/**
 	 * 
+	 * 
+	 * 
 	 * @throws Exception
 	 */
 	protected void checkPermissions() throws Exception {
 	}
-	
+
 	protected boolean runReport() {
 		return true;
 	}
-	
+
 	protected void buildQuery() {
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
 		sql = new SelectAccount();
+		sql.setType(SelectAccount.Type.Contractor);
+
 		addFilterToSQL();
 	}
-	
+
 	// TODO make this method final
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		checkPermissions();
 		if (runReport()) {
 			buildQuery();
 			run(sql);
 		}
-		
+
 		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
 		wizardSession.clear();
 		wizardSession.setFilter(listType, filter);
 
 		return returnResult();
 	}
-	
+
 	protected String returnResult() throws IOException {
 		if (mailMerge) {
 			Set<Integer> ids = new HashSet<Integer>();
