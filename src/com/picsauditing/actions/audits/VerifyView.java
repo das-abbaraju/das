@@ -9,6 +9,8 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import com.picsauditing.PICS.Grepper;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.AuditDataDAO;
@@ -375,10 +377,16 @@ public class VerifyView extends ContractorActionSupport {
 	}
 
 	public List<ContractorAudit> getVerificationAudits() {
+		if( verificationAudits == null ) {
+			verificationAudits = new Grepper<ContractorAudit>() {
+				@Override
+				public boolean check(ContractorAudit t) {
+					return t.getAuditStatus().isPendingSubmitted() 
+					&& (t.getAuditType().isAnnualAddendum() || t.getAuditType().isPqf());
+				} }.grep( getVerificationAudits() );
+		}
+
 		return verificationAudits;
 	}
 
-	public void setVerificationAudits(List<ContractorAudit> verificationAudits) {
-		this.verificationAudits = verificationAudits;
-	}
 }
