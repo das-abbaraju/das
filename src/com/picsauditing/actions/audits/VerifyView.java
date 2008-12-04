@@ -383,7 +383,7 @@ public class VerifyView extends ContractorActionSupport {
 				public boolean check(ContractorAudit t) {
 					return t.getAuditStatus().isPendingSubmitted() 
 					&& (t.getAuditType().isAnnualAddendum() || t.getAuditType().isPqf());
-				} }.grep( getVerificationAudits() );
+				} }.grep( getActiveAudits() );
 		}
 
 		return verificationAudits;
