@@ -13,15 +13,56 @@
 		var comment = $F($('comment_' + questionId));
 		var answer = $F($('answer_' + questionId)); 
 
+		$('status_'+questionId).innerHTML="<img src='images/ajax_process.gif' />";
+
 		var pars = 'auditData.audit.id='+auditId+'&catDataID='+catDataId+'&auditData.question.id=' + questionId + '&auditData.answer=' + answer + '&auditData.comment=' + comment;
 		var divName = 'qid_' + questionId;
 		var myAjax = new Ajax.Updater(divName,'AuditToggleVerifyAjax.action', 
 		{
 			method: 'post', 
-			parameters: pars
+			parameters: pars,
+			onComplete : function() {
+			$('status_'+questionId).innerHTML='';
+			}
 		});
 		return false;
 	}
+	function toggleOSHAVerify( oshaId ) {
+		var comment = $F($('comment_' + oshaId));
+		var applicable = $F($('applicable_' + oshaId));
+	
+		$('status_'+oshaId).innerHTML="<img src='images/ajax_process.gif' />";
+	
+		var pars = '';
+		
+		var manHours = $F($('manHours_' + oshaId)); 
+		var fatalities = $F($('fatalities_' + oshaId)); 
+		var lwc = $F($('lwc_' + oshaId)); 
+		var lwd = $F($('lwd_' + oshaId)); 
+		var imc = $F($('imc_' + oshaId)); 
+		var rwc = $F($('rwc_' + oshaId)); 
+		var tii = $F($('tii_' + oshaId)); 
+
+		pars = 'id='+oshaId+'&osha.comment=' + comment +'&osha.applicable='+applicable+'&osha.manHours='+manHours+'&osha.fatalities='+fatalities+'&osha.lostWorkCases='+lwc+'&osha.lostWorkDays='+lwd+'&osha.injuryIllnessCases='+imc+'&osha.restrictedWorkCases='+rwc+'&osha.recordableTotal='+tii + '&button=toggleVerify';
+
+		var divName = 'oid_' + oshaId;
+		var myAjax = new Ajax.Updater(divName,'AuditToggleOSHAVerifyAjax.action', 
+		{
+			method: 'post', 
+			parameters: pars,
+			onComplete : function() {
+			$('status_'+oshaId).innerHTML='';
+			}
+		});
+		return false;
+	}
+	
+	 function openOsha(oshaId) {
+		url = 'DownloadOsha.action?id='+oshaId;
+		title = 'Osha300Logs';
+		pars = 'scrollbars=yes,resizable=yes,width=700,height=450';
+        window.open(url,title,pars);
+	 }
 </script>
 
 
