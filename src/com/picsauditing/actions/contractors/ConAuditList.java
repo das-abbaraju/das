@@ -35,11 +35,9 @@ public class ConAuditList extends ContractorActionSupport {
 		findContractor();
 
 		for (ContractorAudit contractorAudit : getAudits()) {
-			if (contractorAudit.getAuditStatus().equals(AuditStatus.Pending)
-					|| contractorAudit.getAuditStatus().equals(AuditStatus.Submitted))
+			if (contractorAudit.getAuditStatus().isActiveSubmitted())
 				upComingAudits.add(contractorAudit);
-			if (contractorAudit.getAuditStatus().equals(AuditStatus.Active)
-					|| contractorAudit.getAuditStatus().equals(AuditStatus.Exempt))
+			if (contractorAudit.getAuditStatus().isActiveExempt())
 				currentAudits.add(contractorAudit);
 			if (contractorAudit.getAuditStatus().equals(AuditStatus.Expired))
 				expiredAudits.add(contractorAudit);

@@ -212,8 +212,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 				// We have to check (cAudit != conAudit) because we haven't set
 				// the status yet...it happens later
 				if (!cAudit.equals(conAudit)
-						&& (cAudit.getAuditStatus().equals(AuditStatus.Pending) || cAudit.getAuditStatus().equals(
-								AuditStatus.Submitted)) && cAudit.getAuditType().isCanContractorView()) {
+						&& cAudit.getAuditStatus().isPendingSubmitted() && cAudit.getAuditType().isCanContractorView()) {
 					// this contractor still has open audits to complete...don't
 					// send the email
 					allActive = false;

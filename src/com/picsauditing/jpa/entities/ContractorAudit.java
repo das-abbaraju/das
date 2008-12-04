@@ -123,8 +123,7 @@ public class ContractorAudit implements java.io.Serializable {
 			}
 			if (auditStatus.equals(AuditStatus.Active)) {
 				// If we're going "forward" then (re)set the closedDate
-				if (closedDate == null || this.auditStatus.equals(AuditStatus.Submitted)
-						|| this.auditStatus.equals(AuditStatus.Pending))
+				if (closedDate == null || this.auditStatus.isPendingSubmitted())
 					closedDate = new Date();
 
 				// If we're closed, there should always be a completedDate,
