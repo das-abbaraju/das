@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.apache.struts2.ServletActionContext;
@@ -37,18 +38,19 @@ public class OshaSave extends PicsActionSupport implements Preparable {
 			osha = oshaDAO.find(id);
 		}
 	}
-	
+
 	public String execute() throws Exception {
 		if (!forceLogin("Home.action"))
 			return LOGIN;
-		
+
 		if (button == null) {
 			oshaDAO.clear();
 			return INPUT;
 		}
 
 		if (button.equals("download")) {
-			Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext.getServletContext());
+			Downloader downloader = new Downloader(ServletActionContext
+					.getResponse(), ServletActionContext.getServletContext());
 			try {
 				File[] files = getFiles();
 				downloader.download(files[0], null);
@@ -58,11 +60,11 @@ public class OshaSave extends PicsActionSupport implements Preparable {
 				return BLANK;
 			}
 		}
-		
+
 		if (button.equals("Delete")) {
 			try {
 				// remove all osha files ie (pdf, jpg)
-				for(File oldFile : getFiles())
+				for (File oldFile : getFiles())
 					FileUtils.deleteFile(oldFile);
 			} catch (Exception e) {
 				addActionError("Failed to save file: " + e.getMessage());
@@ -76,7 +78,7 @@ public class OshaSave extends PicsActionSupport implements Preparable {
 		if (button.equals("Delete File")) {
 			try {
 				// remove all osha files ie (pdf, jpg)
-				for(File oldFile : getFiles())
+				for (File oldFile : getFiles())
 					FileUtils.deleteFile(oldFile);
 			} catch (Exception e) {
 				addActionError("Failed to save file: " + e.getMessage());
@@ -86,7 +88,7 @@ public class OshaSave extends PicsActionSupport implements Preparable {
 			}
 			osha.setFileUploaded(false);
 		}
-		
+
 		if (button.equals("Add New Location")) {
 			osha = new OshaAudit();
 			osha.setConAudit(new ContractorAudit());
@@ -97,19 +99,21 @@ public class OshaSave extends PicsActionSupport implements Preparable {
 			oshaDAO.save(osha);
 			return SUCCESS;
 		}
-		
+
 		// TODO verify data is saved correctly
-		
+
 		if (uploadFile != null) {
-			String ext = uploadFileFileName.substring(uploadFileFileName.lastIndexOf(".") + 1);
-	
+			String ext = uploadFileFileName.substring(uploadFileFileName
+					.lastIndexOf(".") + 1);
+
 			if (!FileUtils.checkFileExtension(ext)) {
 				addActionError(ext + " is not a valid file type for OSHA logs");
 				return INPUT;
 			}
-	
+
 			try {
-				FileUtils.moveFile(uploadFile, getFtpDir(), "files/" + FileUtils.thousandize(id), getFileName(), ext, true);
+				FileUtils.moveFile(uploadFile, getFtpDir(), "files/"
+						+ FileUtils.thousandize(id), getFileName(), ext, true);
 			} catch (Exception e) {
 				addActionError("Failed to save file: " + e.getMessage());
 				e.printStackTrace();
@@ -118,32 +122,46 @@ public class OshaSave extends PicsActionSupport implements Preparable {
 			}
 			osha.setFileUploaded(true);
 		}
-		
-		//osha.setVerified(false);
-		osha.setVerifiedDate(null);
+
+		// osha.setVerified(false);
+
+		if (button.equals("toggleVerify")) {
+			if (osha.isVerified()) {
+				osha.setVerifiedDate(null);
+				osha.getConAudit().setAuditor(null);
+				
+			} else {
+				osha.setVerifiedDate(new Date());
+				osha.getConAudit().setAuditor(getUser());
+			}
+		} else {
+			osha.setVerifiedDate(null);
+		}
+
 		osha.setUpdateDate(new Date());
 		oshaDAO.save(osha);
 
 		return SUCCESS;
 	}
-	
+
 	private String getFileName() {
 		return PICSFileType.osha.toString() + "_" + id;
 	}
-	
+
 	private File[] getFiles() {
-		File oshaDir = new File(getFtpDir() + "/files/" + FileUtils.thousandize(id));
+		File oshaDir = new File(getFtpDir() + "/files/"
+				+ FileUtils.thousandize(id));
 		return FileUtils.getSimilarFiles(oshaDir, getFileName());
 	}
 
 	public int getId() {
 		return id;
 	}
-	
+
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public OshaAudit getOsha() {
 		return osha;
 	}
@@ -195,4 +213,18 @@ public class OshaSave extends PicsActionSupport implements Preparable {
 	public void setUploadFileContentType(String temp) {
 	}
 
+	
+	public ArrayList<String> getOshaProblems() {
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("");
+		list.add("Contradicting Data");
+		list.add("Missing 300");
+		list.add("Missing 300a");
+		list.add("Incomplete");
+		list.add("Incorrect Form");
+		list.add("Incorrect Year");
+		return list;
+	}
+
+	
 }
