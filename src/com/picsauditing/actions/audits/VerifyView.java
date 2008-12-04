@@ -30,7 +30,7 @@ public class VerifyView extends ContractorActionSupport {
 	protected AuditDataDAO auditDataDAO;
 	protected SortedSet<String> years = new TreeSet<String>();
 	protected Map<AuditQuestion, Map<String, AuditData>> emrs = new TreeMap<AuditQuestion, Map<String, AuditData>>();
-	protected List<ContractorAudit> verificationAudits = new ArrayList<ContractorAudit>();
+	protected List<ContractorAudit> verificationAudits = null;
 
 	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO, AuditDataDAO auditDataDAO) {
 		super(accountDao, contractorAuditDAO);
