@@ -16,7 +16,6 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.YesNo;
@@ -25,10 +24,11 @@ public class VerifyView extends ContractorActionSupport {
 	private int followUp = 0;
 	private Map<Integer, AuditData> pqfQuestions = new LinkedHashMap<Integer, AuditData>();
 	private Map<Integer, AuditData> infoSection = new LinkedHashMap<Integer, AuditData>();
-	private List<OshaAudit> oshas = new ArrayList<OshaAudit>(); 
+	private List<OshaAudit> oshas = new ArrayList<OshaAudit>();
 	protected AuditDataDAO auditDataDAO;
 	protected SortedSet<String> years = new TreeSet<String>();
 	protected Map<AuditQuestion, Map<String, AuditData>> emrs = new TreeMap<AuditQuestion, Map<String, AuditData>>();
+	protected List<ContractorAudit> verificationAudits = new ArrayList<ContractorAudit>();
 
 	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO, AuditDataDAO auditDataDAO) {
 		super(accountDao, contractorAuditDAO);
@@ -43,48 +43,42 @@ public class VerifyView extends ContractorActionSupport {
 		this.findContractor();
 		this.subHeading = "Verify PQF/OSHA/EMR";
 
-		for (ContractorAudit conAudit : contractor.getAudits()) {
-			if (conAudit.getAuditStatus().equals(AuditStatus.Pending)
-					|| conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
-				if (conAudit.getAuditType().isPqf()) {
-					List<AuditData> temp = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
-					pqfQuestions = new LinkedHashMap<Integer, AuditData>();
-					for (AuditData ad : temp) {
-						pqfQuestions.put(ad.getQuestion().getId(), ad);
-					}
-				}
-				if (conAudit.getAuditType().isAnnualAddendum()) {
-					for (OshaAudit oshaAudit : conAudit.getOshas()) {
-						if (oshaAudit.isCorporate()) {
-							oshas.add(oshaAudit);
-						}
-					}
-					years.add(conAudit.getAuditFor());
+		for (ContractorAudit conAudit : getVerificationAudits()) {
+			if (conAudit.getAuditType().isPqf()) {
+				List<AuditData> temp = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
+				pqfQuestions = new LinkedHashMap<Integer, AuditData>();
+				for (AuditData ad : temp) {
+					pqfQuestions.put(ad.getQuestion().getId(), ad);
 				}
 			}
-		}
-		for (ContractorAudit conAudit : contractor.getAudits()) {
-			if (conAudit.getAuditStatus().equals(AuditStatus.Pending)
-					|| conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
-				if (conAudit.getAuditType().isAnnualAddendum()) {
-					for (AuditData auditData : conAudit.getData()) {
-						Map<String, AuditData> inner = emrs.get(auditData.getQuestion());
-
-						if (inner == null) {
-							inner = new TreeMap<String, AuditData>();
-							for (String year : years)
-								inner.put(year, null);
-							emrs.put(auditData.getQuestion(), inner);
-						}
-						inner.put(conAudit.getAuditFor(), auditData);
+			if (conAudit.getAuditType().isAnnualAddendum()) {
+				for (OshaAudit oshaAudit : conAudit.getOshas()) {
+					if (oshaAudit.isCorporate()) {
+						oshas.add(oshaAudit);
 					}
+				}
+				years.add(conAudit.getAuditFor());
+			}
+		}
+		for (ContractorAudit conAudit : getVerificationAudits()) {
+			if (conAudit.getAuditType().isAnnualAddendum()) {
+				for (AuditData auditData : conAudit.getData()) {
+					Map<String, AuditData> inner = emrs.get(auditData.getQuestion());
+
+					if (inner == null) {
+						inner = new TreeMap<String, AuditData>();
+						for (String year : years)
+							inner.put(year, null);
+						emrs.put(auditData.getQuestion(), inner);
+					}
+					inner.put(conAudit.getAuditFor(), auditData);
 				}
 			}
 		}
 
-		
-		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(), Arrays.<Integer>asList( 69, 1616, 55 , 57 ) );
-		
+		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(), Arrays
+				.<Integer> asList(69, 1616, 55, 57));
+
 		// for (AuditCatData auditCatData : getCategories()) {
 		// if (auditCatData.getCategory().getId() == 29)
 		// oshaCatDataId = auditCatData.getId();
@@ -371,7 +365,6 @@ public class VerifyView extends ContractorActionSupport {
 	public void setInfoSection(Map<Integer, AuditData> infoSection) {
 		this.infoSection = infoSection;
 	}
-	
 
 	public SortedSet<String> getYears() {
 		return years;
@@ -379,5 +372,13 @@ public class VerifyView extends ContractorActionSupport {
 
 	public void setYears(SortedSet<String> years) {
 		this.years = years;
+	}
+
+	public List<ContractorAudit> getVerificationAudits() {
+		return verificationAudits;
+	}
+
+	public void setVerificationAudits(List<ContractorAudit> verificationAudits) {
+		this.verificationAudits = verificationAudits;
 	}
 }
