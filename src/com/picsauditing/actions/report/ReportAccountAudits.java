@@ -6,7 +6,7 @@ import com.picsauditing.jpa.entities.AuditType;
 public class ReportAccountAudits extends ReportAccount {
 
 	@Override
-	public void buildQuery() {
+	protected void buildQuery() {
 		super.buildQuery();
 
 		sql.addAudit(AuditType.PQF);

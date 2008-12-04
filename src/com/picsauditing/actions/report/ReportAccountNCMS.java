@@ -1,18 +1,17 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.search.SelectAccount;
 
 @SuppressWarnings("serial")
 public class ReportAccountNCMS extends ReportAccount {
 
 	@Override
-	public void checkPermissions() throws Exception {
+	protected void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.NCMS);
 	}
 
 	@Override
-	public void buildQuery() {
+	protected void buildQuery() {
 		super.buildQuery();
 		sql.addJoin("JOIN ncms_desktop d " + "ON (c.taxID = d.fedTaxID AND c.taxID != '') OR a.name=d.ContractorsName");
 		sql

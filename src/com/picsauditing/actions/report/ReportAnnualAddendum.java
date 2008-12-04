@@ -8,7 +8,7 @@ public class ReportAnnualAddendum extends ReportAccount {
 	private ReportFilterAudit filter = new ReportFilterAudit();
 
 	@Override
-	public void buildQuery() {
+	protected void buildQuery() {
 		super.buildQuery();
 		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
 		sql.addField("ca.auditID");

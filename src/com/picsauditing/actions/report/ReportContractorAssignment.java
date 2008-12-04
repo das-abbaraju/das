@@ -4,7 +4,7 @@ package com.picsauditing.actions.report;
 public class ReportContractorAssignment extends ReportAccount {
 
 	@Override
-	public void buildQuery() {
+	protected void buildQuery() {
 		super.buildQuery();
 		
 		getFilter().setShowAssignedCon(true);

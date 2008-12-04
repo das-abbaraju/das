@@ -11,7 +11,6 @@ import javax.servlet.http.Cookie;
 import com.picsauditing.PICS.AccountBean;
 import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.DataBean;
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.PermissionsBean;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
@@ -269,22 +268,6 @@ public class LoginController extends DataBean {
 		if (!isUser) {
 			ContractorBean cBean = new ContractorBean();
 			cBean.setFromDB(permissions.getAccountIdString());
-
-			// if ("".equals(cBean.accountDate)) {
-			// cBean.accountDate = DateBean.getTodaysDate();
-			// cBean.writeToDB();
-			// //
-			// response.sendRedirect("con_selectFacilities.jsp?id="+permissions.getAccountIdString());
-			// return;
-			// }
-			// String loginStartDate = "1/1" + "/" +
-			// String.valueOf(DateBean.getCurrentYear());
-			// String loginStartDate =
-			// this.getServletContext().getInitParameter("loginStartDate");
-			// if(DateBean.isFirstBeforeSecond(prevLastLogin,loginStartDate)) {
-			// response.sendRedirect("con_selectFacilities.jsp?id="+permissions.getAccountIdString());
-			// return;
-			// }
 		}
 
 		MenuComponent menu = PicsMenu.getMenu(permissions);

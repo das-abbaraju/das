@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Constants {
 	
-	public static final String[] STATE_ARRAY = {
+	private static final String[] STATE_ARRAY = {
 "Alabama","Yes","http://www.genconbd.state.al.us/DATABASE-LIVE/RosterResult.asp","txtlicenseno","action","Search",";",
 "Alaska","Yes","http://www.dced.state.ak.us/occ/OccSearch/main.cfm?CFID=1607376&CFTOKEN=46ef7aacf0153993-C1C5CF3D-C169-2801-9511A03E87A050E8","LicNum",";",
 "Arkansas","No","http://www.state.ar.us/clb/search.html?","LicNum","action","search",";",
@@ -56,10 +56,9 @@ public class Constants {
 				temp.append("</form>");
 				} else {
 				temp.append("<a target=\"_blank\" href=\"").append(link).append(licNum).append("\"><img src=\"images/checklicense.gif\" alt='Check License' border=\"0\"></a>");
-				} //else post
-			} // if
-			//String option = (String)li.next();
-		} // while
+				}
+			}
+		}
 		
 		String junk = temp.toString();
 		return temp.toString();

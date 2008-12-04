@@ -1,165 +1,26 @@
 package com.picsauditing.PICS;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.ListIterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
-import com.picsauditing.jpa.entities.AuditType;
-
 /**
  * @see Inputs not sure what the difference is
  */
 public class Utilities {
-	/*
-	 * History 5/631/05 jj - added getCountrySelect() 1/6/05 jj - added
-	 * getBGColor() 1/1/05 jj - moved getMenuTag method from ContractorBean.java
-	 * to here and made static
-	 * 
-	 */
-	static final String AUTO_SUBMIT = "submit();";
+	
 	static final String NO_ON_CHANGE_SCRIPT = "";
 	static final boolean ARRAY_WITH_VALUES = true;
 	static final boolean ARRAY_WITHOUT_VALUES = false;
 	static final boolean MULTIPLE = true;
 	static final boolean SINGLE = false;
-	static final String[] COUNTRY_ARRAY = { "- Country -", "USA", "Afganistan", "Albania",
-			"Algeria", "American Samoa", "Andorra", "Angola", "Anguila",
-			"Antarctica", "Antigua and Barbuda", "Argentina", "Armenia",
-			"Aruba", "Australia", "Austria", "Azerjaijan", "Bahamas",
-			"Bahrain", "Bangladesh", "Barbados", "Belarus", "Belguim",
-			"Belize", "Benin", "Bermuda", "Bhutan", "Bolivia",
-			"Bosnia and Herzegovina", "Botswana", "Bouvet Island", "Brazil",
-			"British Indian Ocean territory", "Brunei Darussalam", "Bulgaria",
-			"Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada",
-			"Cape Verde", "Cayman Islands", "Central African Republic", "Chad",
-			"Chile", "China", "Christmas Island", "Cocos (Keeling) Islands",
-			"Colombia", "Comoros", "Congo", "Cook Islands", "Costa Rica",
-			"Cote d'Ivoire (Ivory Coast)", "Croatia (Hrvatska)", "Cuba",
-			"Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica",
-			"Dominican Republic", "East Timor", "Ecuador", "Egypt",
-			"El Salvador", "Equatorial Guinea", "Eritrea", "Estonia",
-			"Ethiopia", "Falkland Islands", "Faroe Islands", "Fiji", "Finland",
-			"France", "French Guiana", "French Polynesia",
-			"French Southern Territories", "Gabon", "Gambia", "Georgia",
-			"Germany", "Ghana", "Greece", "Greenland", "Grenada", "Guadaloupe",
-			"Guam", "Guatamala", "Guinea-Bissau", "Guinea", "Guyana", "Haiti",
-			"Heard and McDonald Islands", "Honduras", "Hong Kong", "Hungary",
-			"Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland",
-			"Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan",
-			"Kenya", "Kiribati", "Korea (north)", "Korea (south)", "Kuwait",
-			"Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia",
-			"Liechtenstein", "Lithuania", "Luxembourg", "Macau", "Macedonia",
-			"Madagascar", "Malasia", "Malawi", "Maldives", "Mali", "Malta",
-			"Marshal Islands", "Martinique", "Mauritania", "Maurritius",
-			"Mayotte", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia",
-			"Montserrat", "Morocco", "Mozambique", "Mynamar", "Namibia",
-			"Nauru", "Nepal", "Netherland Antilles", "Netherlands",
-			"New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria",
-			"Niue", "Norfolk Island", "Northern Marianas Islands", "Norway",
-			"Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea",
-			"Paraguay", "Peru", "Philippines", "Pitcairn", "Poland",
-			"Portugal", "Puerto Rico", "Qatar", "Reunion", "Romania",
-			"Russian Federation", "Rwanda", "Saint Helena",
-			"Saint Kitts and Nevis", "Saint Lucia",
-			"Saint Pierre and Miquelon", "Saint Vincent and the Grenadines",
-			"Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia",
-			"Senegal", "Seychelles", "Sierra Leone", "Singapore",
-			"Slovak Republic", "Slovenia", "Solomon Islands", "Somalia",
-			"South Africa", "South Georgia and the South Sandwich Islands",
-			"Spain", "Sri Lanka", "Sudan", "Suriname",
-			"Svalbard and Jan Mayen Islands", "Swaziland", "Sweden",
-			"Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania",
-			"Thailand", "Togo", "Tokelau", "Tonga", "Trinidad and Tobego",
-			"Tunisia", "Turkey", "Turkmenistan", "Turks and Caicos Islands",
-			"Tuvalu", "Uganda", "Ukraine", "United Arab Emirates",
-			"United Kingdom", "Uruguay", "USA", "Uzbekistan", "Vanuatu",
-			"Vatican City", "Venezuela", "Vietnam", "Virgin Islands (British)",
-			"Virgin Islands (US)", "Wallis and Futuna Islands",
-			"Western Sahara", "Yemen", "Yugoslavia", "Zaire", "Zambia",
-			"Zimbabwe" };
-
-	static final String[] STATE_ARRAY = { "AL", "Alabama", "AK", "Alaska",
-			"AZ", "Arizona", "AR", "Arkansas", "CA", "California", "CO",
-			"Colorado", "CT", "Connecticut", "DE", "Delaware", "FL", "Florida",
-			"GA", "Georgia", "HI", "Hawaii", "ID", "Idaho", "IL", "Illinois",
-			"IN", "Indiana", "IA", "Iowa", "KS", "Kansas", "KY", "Kentucky",
-			"LA", "Louisiana", "ME", "Maine", "MD", "Maryland", "MA",
-			"Massachusetts", "MI", "Michigan", "MN", "Minnesota", "MS",
-			"Mississippi", "MO", "Missouri", "MT", "Montana", "NE", "Nebraska",
-			"NV", "Nevada", "NH", "New Hampshire", "NJ", "New Jersey", "NM",
-			"New Mexico", "NY", "New York", "NC", "North Carolina", "ND",
-			"North Dakota", "OH", "Ohio", "OK", "Oklahoma", "OR", "Oregon",
-			"PA", "Pennsylvania", "RI", "Rhode Island", "SC", "South Carolina",
-			"SD", "South Dakota", "TN", "Tennessee", "TX", "Texas", "UT",
-			"Utah", "VT", "Vermont", "VA", "Virginia", "WA", "Washington",
-			"DC", "Washington D.C.", "WV", "West Virginia", "WI", "Wisconsin",
-			"WY", "Wyoming" };
-
-	// public static String getStateSelect(String name, String classType, String
-	// selectedState) throws Exception {
-	// return inputSelect2(name, classType, selectedState, STATE_ARRAY);
-	// }//getStateSelect
-
-	public static String convertStateLongToShort(String state) {
-		if (state.length() <= 2)
-			return state;
-		ArrayList<String> tempAL = new ArrayList<String>();
-		tempAL.addAll(Arrays.asList(STATE_ARRAY));
-		for (int i = 1; i < tempAL.size(); i += 2) {
-			if (state.equalsIgnoreCase((String) tempAL.get(i)))
-				return (String) tempAL.get(i - 1);
-		}// for
-		return state;
-	}// convertStateLongToShort
-
-	public static String convertStateShortToLong(String state) {
-		state = convertStateLongToShort(state);
-		if (state.length() > 2)
-			return state;
-		ArrayList<String> tempAL = new ArrayList<String>();
-		tempAL.addAll(Arrays.asList(STATE_ARRAY));
-		for (int i = 0; i < tempAL.size(); i += 2) {
-			if (state.equalsIgnoreCase((String) tempAL.get(i)))
-				return (String) tempAL.get(i + 1);
-		}// for
-		return state;
-	}// convertStateShortToLong
-
-	public static String getCity(String address) {
-		try {
-			int i = address.indexOf('\r');
-			int j = address.indexOf(',', i);
-			return address.substring(i, j);
-		} catch (Exception e) {
-			return "";
-		}// catch
-	}// getCity
-
-	public static String getState(String address) {
-		try {
-			int i = address.lastIndexOf(' ');
-			int j = address.lastIndexOf(' ', i - 1);
-			return address.substring(j + 1, i);
-		} catch (Exception e) {
-			return "";
-		}// catch
-	}// getState
-
-	public static String getZip(String address) {
-		try {
-			int i = address.lastIndexOf(' ');
-			return address.substring(i + 1);
-		} catch (Exception e) {
-			return "";
-		}// catch
-	}// getZip
-
-	public static String getCountrySelect(String name, String classType,
-			String selectedCountry) throws Exception {
-		return inputSelect(name, classType, selectedCountry, COUNTRY_ARRAY);
-	}// getStateCountry
 
 	public static String escapeHTML(String value) {
 		if (value == null)
@@ -218,7 +79,7 @@ public class Utilities {
 				temp.append(value.charAt(i));
 		}// for
 		return temp.toString();
-	}// escapeNewLines
+	}
 
 	/**
 	 * Replaces single quotes in a string with two single quotes. This formats
@@ -250,46 +111,6 @@ public class Utilities {
 		return strval.toString();
 	}// escapeQuotes
 
-	public static boolean isValidInteger(String number) {
-		try {
-			Integer.parseInt(number);
-			return true;
-		}// try
-		catch (Exception e) {
-			return false;
-		}// catch
-	}// isValidInteger
-
-	public static boolean isValidInteger2(String number, int min, int max) {
-		try {
-			int i = Integer.parseInt(number);
-			return ((i >= min) && (i <= max));
-		}// try
-		catch (Exception e) {
-			return false;
-		}// catch
-	}// isValidInteger2
-
-	public static boolean isValidFloat(String number) {
-		try {
-			Float.parseFloat(number);
-			return true;
-		}// try
-		catch (Exception e) {
-			return false;
-		}// catch
-	}// isValidFloat
-
-	public static boolean isValidFloat2(String number, float min, float max) {
-		try {
-			float f = Float.parseFloat(number);
-			return ((f >= min) && (f <= max));
-		}// try
-		catch (Exception e) {
-			return false;
-		}// catch
-	}// isValidFloat2
-
 	public static boolean isValidEmail(String email) {
 		boolean result = false;
 		if (null == email)
@@ -303,14 +124,6 @@ public class Utilities {
 		return result;
 	}// isValidEmail
 
-	public static String printErrorMessages(java.util.Vector errorMessages) {
-		StringBuffer out = new StringBuffer();
-		for (int i = 0; i < errorMessages.size(); i++) {
-			out.append(errorMessages.elementAt(i) + "<br>");
-		}// for
-		return out.toString();
-	}// printErrorMessages
-
 	public static boolean arrayContains(String[] array, String value) {
 		boolean isIncluded = false;
 		if (array == null || value == null) {
@@ -323,17 +136,9 @@ public class Utilities {
 			}// if
 		}// for
 		return isIncluded;
-	}// arrayContains
+	}
 
-	public static String checkSelected(String s1, String s2) {
-		if ((null == s1) || (null == s2))
-			return "";
-		if (s1.equals(s2))
-			return " selected";
-		else
-			return "";
-	}// checkSelected
-
+	@SuppressWarnings("unchecked")
 	public static String inputSelectAll(String name, String classType,
 			String selectedOption, String[] optionsArray, String firstOption,
 			String firstValue, String onChangeScript, boolean arrayWithValues,
@@ -385,26 +190,19 @@ public class Utilities {
 				null, null);
 	}// inputSelect
 
-	public static String inputSelectSubmit(String name, String classType,
-			String selectedOption, String[] optionsArray) {
-		return inputSelectAll(name, classType, selectedOption, optionsArray,
-				null, null, AUTO_SUBMIT, ARRAY_WITHOUT_VALUES, SINGLE, null,
-				null);
-	}// inputSelect
-
 	public static String inputSelectFirst(String name, String classType,
 			String selectedOption, String[] optionsArray, String firstOption) {
 		return inputSelectAll(name, classType, selectedOption, optionsArray,
 				firstOption, null, NO_ON_CHANGE_SCRIPT, ARRAY_WITHOUT_VALUES,
 				SINGLE, null, null);
-	}// inputSelectFist
+	}
 
 	public static String inputSelect2(String name, String classType,
 			String selectedOption, String[] optionsArray) {
 		return inputSelectAll(name, classType, selectedOption, optionsArray,
 				null, null, NO_ON_CHANGE_SCRIPT, ARRAY_WITH_VALUES, SINGLE,
 				null, null);
-	}// inputSelect2
+	}
 
 	public static String inputSelect2First(String name, String classType,
 			String selectedOption, String[] optionsArray, String firstValue,
@@ -414,27 +212,11 @@ public class Utilities {
 				ARRAY_WITH_VALUES, SINGLE, null, null);
 	}
 
-	public static String inputSelect2FirstSubmit(String name, String classType,
-			String selectedOption, String[] optionsArray, String firstValue,
-			String firstOption) {
-		return inputSelectAll(name, classType, selectedOption, optionsArray,
-				firstOption, firstValue, AUTO_SUBMIT, ARRAY_WITH_VALUES,
-				SINGLE, null, null);
-	}
-
 	public static String inputMultipleSelect(String name, String classType,
 			String size, String selectedOption, String[] optionsArray) {
 		return inputSelectAll(name, classType, selectedOption, optionsArray,
 				null, null, NO_ON_CHANGE_SCRIPT, ARRAY_WITHOUT_VALUES,
 				MULTIPLE, size, null);
-	}
-
-	public static String inputMultipleSelectMultiples(String name,
-			String classType, String size, String[] selectedOptions,
-			String[] optionsArray) {
-		return inputSelectAll(name, classType, null, optionsArray, null, null,
-				NO_ON_CHANGE_SCRIPT, ARRAY_WITHOUT_VALUES, MULTIPLE, size,
-				selectedOptions);
 	}
 
 	public static String inputMultipleSelect2Multiples(String name,
@@ -443,7 +225,7 @@ public class Utilities {
 		return inputSelectAll(name, classType, null, optionsArray, null, null,
 				NO_ON_CHANGE_SCRIPT, ARRAY_WITH_VALUES, MULTIPLE, size,
 				selectedOptions);
-	}// inputMultipleSelect2Multiples
+	}
 
 	public static String inputMultipleSelect2MultiplesScript(String name,
 			String classType, String size, String[] selectedOptions,
@@ -451,7 +233,7 @@ public class Utilities {
 		return inputSelectAll(name, classType, null, optionsArray, null, null,
 				onChangeScript, ARRAY_WITH_VALUES, MULTIPLE, size,
 				selectedOptions);
-	}// inputMultipleSelect2Multiples
+	}
 
 	public static String checkedBox(String s1) {
 		if ("Yes".equals(s1) || "Y".equals(s1))
@@ -467,34 +249,12 @@ public class Utilities {
 			return "";
 	}// checked
 
-	public static String getMenuTag(HttpServletRequest req, String thisLink,
-			String thisPage, String id, String queryString, String thisQuery,
-			String title) {
-		if (null == thisLink)
-			thisLink = "";
-		if (null == thisQuery)
-			thisQuery = "";
-		String ctxPath = req.getContextPath();
-		thisLink = ctxPath + "/" + thisLink;
-		if (null != id)
-			if ("".equals(queryString))
-				queryString = "id=" + id;
-			else
-				queryString += "&id=" + id;
-		if (thisPage.equals(thisLink) && thisQuery.equals(queryString))
-			return "<span class=redMain>" + title + "</span>";
-		if ("".equals(queryString))
-			return "<a class=blueMain href=" + thisLink + ">" + title + "</a>";
-		return "<a class=blueMain href=" + thisLink + "?" + queryString + ">"
-				+ title + "</a>";
-	}// getMenuTag
-
 	public static String getBGColor(int count) {
 		if ((count % 2) == 0)
 			return " bgcolor=\"#FFFFFF\"";
 		else
 			return "";
-	}// getBGColor
+	}
 
 	public static String getYesNoRadio(String name, String selected) {
 		StringBuffer temp = new StringBuffer();
@@ -510,6 +270,7 @@ public class Utilities {
 		return temp.toString();
 	}// getYesNoReadio
 
+	@SuppressWarnings("unchecked")
 	public static String getRadioInput(String name, String classType,
 			String selected, String[] optionsArray) {
 		StringBuffer temp = new StringBuffer();
@@ -529,12 +290,6 @@ public class Utilities {
 		return temp.toString();
 	}// getReadioInput
 
-	public static String getTextAreaInput(String name, String classType,
-			String value, String cols, String rows) {
-		return "<textarea class=" + classType + " name=" + name + " rows="
-				+ rows + " cols=" + cols + ">" + value + "</textarea>";
-	}// getTextAreaInput
-
 	public static String getCheckBoxInput(String name, String classType,
 			String value) {
 		return "<input type=checkbox class='" + classType + "' name='" + name
@@ -546,20 +301,6 @@ public class Utilities {
 		return "<input type=checkbox class=" + classType + " name=" + name
 				+ (value ? " checked" : "") + ">";
 	}
-
-	public static String convertPercentToDecimal(String num) {
-		float temp = 0;
-		try {
-			if (-1 != num.indexOf("%"))
-				num = num.substring(0, num.indexOf("%") - 1);
-			temp = Float.parseFloat(num);
-		} catch (Exception e) {
-			temp = 0;
-		}// catch
-		if (temp > 2)
-			temp = temp / 100;
-		return Float.toString(temp);
-	}// convertPercentToDecimal
 
 	public static String intToDB(String num) {
 		try {
@@ -576,18 +317,6 @@ public class Utilities {
 		return "No";
 	}// getIsChecked
 
-	public static String printRequest(
-			javax.servlet.http.HttpServletRequest request) {
-		Enumeration e = request.getParameterNames();
-		StringBuffer temp = new StringBuffer();
-		while (e.hasMoreElements()) {
-			String name = (String) e.nextElement();
-			String value = request.getParameter(name);
-			temp.append(name).append("=").append(value).append(",");
-		}// while
-		return temp.toString();
-	}// printRequest
-
 	public static String convertNullString(String str, String def) {
 		if (str == null)
 			return def;
@@ -595,6 +324,7 @@ public class Utilities {
 			return str;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static Map<String, String> requestParamsToMap(
 			HttpServletRequest request) {
 		Map<String, String> params = new HashMap<String, String>();

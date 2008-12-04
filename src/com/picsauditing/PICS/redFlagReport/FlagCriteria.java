@@ -53,6 +53,7 @@ public class FlagCriteria extends DataBean {
 		}//finally
 	}//setFromDB
 
+	@SuppressWarnings("unchecked")
 	public void setFromRequest(javax.servlet.http.HttpServletRequest request) throws Exception {
 		flagOshaCriteriaDO.setFromRequest(request);
 		Enumeration e = request.getParameterNames();

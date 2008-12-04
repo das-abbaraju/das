@@ -35,7 +35,7 @@ public class ReportFlagCriteria extends ReportAccount {
 	}
 
 	@Override
-	public void buildQuery() {
+	protected void buildQuery() {
 		super.buildQuery();
 		
 		sql.addField("a.contact");

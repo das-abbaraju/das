@@ -68,6 +68,7 @@ public class Strings {
 		return buffer.toString();
 	}
 
+	@SuppressWarnings("unchecked")
 	public static String implodeForDB(Enum[] array, String delimiter) {
 		if (array == null)
 			return "";

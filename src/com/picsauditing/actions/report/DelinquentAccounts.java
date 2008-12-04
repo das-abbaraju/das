@@ -4,7 +4,7 @@ package com.picsauditing.actions.report;
 public class DelinquentAccounts extends ReportAccount {
 
 	@Override
-	public void buildQuery() {
+	protected void buildQuery() {
 		super.buildQuery();
 		sql.addField("c.lastInvoiceDate");
 		sql.addWhere("DATEDIFF(NOW(),c.lastInvoiceDate) > 75");

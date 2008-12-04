@@ -40,7 +40,7 @@ public class ReportContractorAudits extends ReportAccount {
 	}
 	
 	@Override
-	public void buildQuery() {
+	protected void buildQuery() {
 		super.buildQuery();
 
 		addFilterToSQL();

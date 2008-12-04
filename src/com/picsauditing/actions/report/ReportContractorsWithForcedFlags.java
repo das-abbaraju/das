@@ -11,7 +11,7 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 	}
 	
 	@Override
-	public void buildQuery() {
+	protected void buildQuery() {
 		super.buildQuery();
 		
 		//if (!permissions.isOperator())

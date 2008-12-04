@@ -3,23 +3,13 @@ package com.picsauditing.PICS;
 import java.util.*;
 // String escapeQuotes(String value)
 // String escapeHTML(String value)
-// boolean isValidInteger(String number)
-// boolean isValidInteger2(String number, int min, int max)
-// boolean isValidFloat(String number)
-// boolean isValidFloat2(String number, float min, float max)
 // boolean isValidEmail(String email)
-// String printErrorMessages(Vector errorMessages)
-// boolean arrayContains(String[] array, String value)
 
 /**
  * @see Utilities not sure what the difference is
  */
 public class Inputs {
-/*	History
-	5/631/05 jj - added getCountrySelect()
-	1/6/05 jj - added getBGColor()
-	
-*/
+
 	static final boolean AUTO_SUBMIT = true;
 	static final boolean NO_AUTO_SUBMIT = false;
 	static final boolean ARRAY_WITH_VALUES = true;
@@ -79,10 +69,6 @@ public class Inputs {
 		return inputSelect(name, classType, selectedState, (String[])tempAL.toArray(new String[0]));
 	}//getStateSelect
 
-	public static String getCountrySelect(String name, String classType, String selectedCountry) throws Exception {
-		return inputSelect(name, classType, selectedCountry, COUNTRY_ARRAY);
-	}//getStateCountry
-
 	public static String getHourSelect(String name, String classType, String selectedOption) {
 		ArrayList<String> tempAL = new ArrayList<String>();
 		tempAL.add("--");
@@ -98,29 +84,6 @@ public class Inputs {
 		String[] AMPM_ARRAY = {"--","am","pm"};
 		return inputSelect(name, classType, selectedOption,AMPM_ARRAY);
 	}//getAMPMSelect
-
-	public static boolean arrayContains(String[] array, String value) {
-		boolean isIncluded = false;
-		if (array == null || value == null) {
-			return false;
-		}//if
-		for (int i = 0; i < array.length; i++) {
-			if (value.equals(array[i])) {
-				isIncluded = true;
-				break;
-			}//if
-		}//for
-		return isIncluded;
-	}//arrayContains
-	
-	public static String checkSelected(String s1, String s2) {
-		if ((null == s1) || (null == s2))
-			return "";
-		if (s1.equals(s2))
-			return " selected";
-		else
-			return "";
-	}//checkSelected
 	
 	public static String inputSelectAll(String name, String classType, String selectedOption, String[] optionsArray,
 			String firstOption, String firstValue, boolean autoSubmit, boolean arrayWithValues, boolean multiple, 
@@ -173,7 +136,7 @@ public class Inputs {
 	public static String inputSelectSubmit(String name, String classType, String selectedOption, String[] optionsArray) {
 		return inputSelectAll(name,classType,selectedOption,optionsArray,null,null,AUTO_SUBMIT,
 			ARRAY_WITHOUT_VALUES,SINGLE,null,null);
-	}//inputSelect
+	}
 
 	public static String inputSelectFirst(String name, String classType, String selectedOption, String[] optionsArray, String firstOption) {
 		return inputSelectAll(name,classType,selectedOption,optionsArray,firstOption,null,NO_AUTO_SUBMIT,
@@ -194,28 +157,12 @@ public class Inputs {
 											String firstValue, String firstOption) {
 		return inputSelectAll(name,classType,selectedOption,optionsArray,firstOption,firstValue,NO_AUTO_SUBMIT,
 			ARRAY_WITH_VALUES,SINGLE,null,null);
-	}//inputSelect2First
-
-	public static String inputSelect2FirstSubmit(String name, String classType, String selectedOption, String[] optionsArray, 
-											String firstValue, String firstOption) {
-		return inputSelectAll(name,classType,selectedOption,optionsArray,firstOption,firstValue,AUTO_SUBMIT,
-			ARRAY_WITH_VALUES,SINGLE,null,null);
-	}//inputSelect2FirstSubmit
-
-	public static String inputSelect2Submit(String name, String classType, String selectedOption, String[] optionsArray) {
-		return inputSelectAll(name,classType,selectedOption,optionsArray,null,null,AUTO_SUBMIT,
-			ARRAY_WITH_VALUES,SINGLE,null,null);
-	}//inputSelect2Submit
+	}
 
 	public static String inputMultipleSelect(String name, String classType, String size, String selectedOption, String[] optionsArray) {
 		return inputSelectAll(name,classType,selectedOption,optionsArray,null,null,NO_AUTO_SUBMIT,
 			ARRAY_WITHOUT_VALUES,MULTIPLE,size,null);
 	}//inputMultipleSelect
-
-	public static String inputMultipleSelectMultiples(String name, String classType, String size, String[] selectedOptions, String[] optionsArray) {
-		return inputSelectAll(name,classType,null,optionsArray,null,null,NO_AUTO_SUBMIT,
-			ARRAY_WITHOUT_VALUES,MULTIPLE,size,selectedOptions);
-	}//inputMultipleSelectMulitples
 
 	public static String inputMultipleSelect2Multiples(String name, String classType, String size, String[] selectedOptions, String[] optionsArray) {
 		return inputSelectAll(name,classType,null,optionsArray,null,null,NO_AUTO_SUBMIT,
@@ -304,11 +251,6 @@ public class Inputs {
 	}//getReadioInput
 	
 	
-	public static String getTextAreaInput(String name, String classType, String value, String cols, String rows) {
-		return "<textarea class="+classType+" name="+name+" rows="+rows+" cols="+cols+">"+
-			value+"</textarea>";
-	}//getTextAreaInput
-
 	public static String getCheckBoxInput(String name, String classType, String value, String checkedValue) {
 		return "<input type=checkbox class="+classType+" name="+name+" value=\""+checkedValue+"\" "+getChecked(value,checkedValue)+">";
 	}//getCheckBoxInput

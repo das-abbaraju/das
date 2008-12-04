@@ -25,7 +25,7 @@ public class ReportAnswerSearch extends ReportAccount {
 	}
 
 	@Override
-	public void buildQuery() {
+	protected void buildQuery() {
 		super.buildQuery();
 
 		List<AuditQuestion> newQuestions = new ArrayList<AuditQuestion>();

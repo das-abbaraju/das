@@ -31,7 +31,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 	}
 	
 	@Override
-	public void buildQuery() {
+	protected void buildQuery() {
 		super.buildQuery();
 
 		getFilter().setShowInParentCorporation(true);

@@ -175,7 +175,6 @@
 <div id="footercontent">
 Copyright &copy; 2008
 <a href="<%= URLUtils.getProtocol( request ) %>://www.picsauditing.com/" class="footer">PICS</a> |
-<% // <a href="about.jsp" class="footer">About PICS</a> | %>
 <a href="contact.jsp" class="footer">Contact Us</a>
 </div>
 </div>

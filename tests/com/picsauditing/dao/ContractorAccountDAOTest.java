@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.Calendar;
 import java.util.List;
 
@@ -40,12 +40,15 @@ public class ContractorAccountDAOTest {
 
 	// @Test
 	public void testSaveAndRemove() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(2008, 01, 12);
+		
 		ContractorAccount contractoraccount = new ContractorAccount();
 		contractoraccount.setName("PICS");
 		contractoraccount.setUsername("testpics120");
 		contractoraccount.setPassword("testpics");
-		contractoraccount.setPasswordChange(new Date(2008, 01, 12));
-		contractoraccount.setLastLogin(Calendar.getInstance().getTime());
+		contractoraccount.setPasswordChange(cal.getTime());
+		contractoraccount.setLastLogin(new Date());
 		contractoraccount.setContact("pics admin");
 		contractoraccount.setAddress("17701 cowan");
 		contractoraccount.setCity("irvine");
@@ -59,21 +62,20 @@ public class ContractorAccountDAOTest {
 		contractoraccount.setIndustry(Industry.Construction);
 		contractoraccount.setActive('y');
 		contractoraccount.setCreatedBy("pics");
-		contractoraccount.setDateCreated(new Date(2008, 04, 04));
+		contractoraccount.setDateCreated(new Date());
 		contractoraccount.setSeesAllB('n');
 		contractoraccount.setActivationEmailsB("pics@picsauditing.com");
 		contractoraccount.setSendActivationEmailB('n');
-		contractoraccount.setEmailConfirmedDate(new Date(2008, 12, 42));
+		contractoraccount.setEmailConfirmedDate(cal.getTime());
 		contractoraccount.setTaxId("test17701");
 		contractoraccount.setMainTrade("Consulting");
 		contractoraccount.setTrades("Contractors Prescreening");
 		contractoraccount.setSubTrades("junit testing");
-		contractoraccount.setAccountDate(new Date(2008, 04, 19));
+		contractoraccount.setAccountDate(cal.getTime());
 		contractoraccount.setPaid("yes");
-		contractoraccount.setLastPayment(new Date(2008, 04, 26));
+		contractoraccount.setLastPayment(cal.getTime());
 		contractoraccount.setBillingCycle(3);
-		contractoraccount.setIsExempt("no");
-		contractoraccount.setMembershipDate(new Date(2004, 12, 12));
+		contractoraccount.setMembershipDate(cal.getTime());
 		contractoraccount.setPayingFacilities(10);
 		contractoraccount.setRiskLevel(LowMedHigh.Med);
 		contractoraccount = (ContractorAccount) accountDAO.save(contractoraccount);

@@ -186,6 +186,7 @@ public class ContractorAuditDAO extends PicsDAO {
 		return this.save(cAudit);
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<ContractorAccount> findContractorsWithExpiringAudits() {
 		int startDay = 59; // between 50 and 70 days in the future
 		int range = 10;
