@@ -126,7 +126,7 @@ public class Inputs {
 		}//while
 		temp.append("</select>\n");
 		return temp.toString();
-	}//inputSelectAll
+	}
 	
 	public static String inputSelect(String name, String classType, String selectedOption, String[] optionsArray) {
 		return inputSelectAll(name,classType,selectedOption,optionsArray,null,null,NO_AUTO_SUBMIT,

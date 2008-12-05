@@ -232,7 +232,7 @@
 					value="value.flagColor.smallIcon" escape="false" /></td>
 				<td><s:property value="key" /></td>
 				<td class="right">
-				<s:property value="%{new java.text.DecimalFormat('#,##0.000').format(@java.lang.Float@parseFloat(value.verifiedAnswerOrAnswer))}" />
+				<s:property value="%{new java.text.DecimalFormat('#,##0.000').format(@java.lang.Float@parseFloat(value.answer))}" />
 				</td>
 			</tr>
 		</s:iterator>
@@ -250,12 +250,14 @@
 			</tr>
 		</thead>
 		<s:iterator value="auditData">
-			<tr class="<s:property value="value.flagColor" />">
-				<td class="center"><s:property
-					value="value.flagColor.smallIcon" escape="false" /></td>
-				<td class="center"><s:property value="value.verifiedAnswerOrAnswer" /></td>
-				<td><s:property value="value.question.question" /></td>
-			</tr>
+			<s:iterator value="value">
+				<tr class="<s:property value="value.flagColor" />">
+					<td class="center"><s:property
+						value="value.flagColor.smallIcon" escape="false" /></td>
+					<td class="center"><s:property value="value.answer" /></td>
+					<td><s:property value="value.question.question" /></td>
+				</tr>
+			</s:iterator>
 		</s:iterator>
 	</table>
 </s:if>

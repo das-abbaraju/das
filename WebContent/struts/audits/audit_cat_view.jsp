@@ -18,7 +18,7 @@
 		</s:if>
 		
 		<s:elseif test="questionType == 'License'">
-			<s:property value="answer.verifiedAnswerOrAnswer" />
+			<s:property value="answer.answer" />
 			<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(question, answer.answer)" escape="false" />
 		</s:elseif>
 		

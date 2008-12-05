@@ -124,11 +124,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public AuditData getAuditData(int questionID) {
 		List<Integer> ids = new ArrayList<Integer>();
 		ids.add(questionID);
-		Map<Integer, AuditData> answers = auditDataDao.findAnswersByContractor(conAudit.getContractorAccount().getId(),
-				ids);
-		if (answers == null || answers.size() == 0)
+		Map<Integer, Map<String, AuditData>> answers = null;
+		answers = auditDataDao.findAnswersByContractor(conAudit.getContractorAccount().getId(), ids);
+		if (answers == null)
 			return null;
-		return answers.get(AuditQuestion.MANUAL_PQF);
+		
+		for(AuditData answer : answers.get(questionID).values())
+			return answer;
+		return null;
 	}
 
 	public Map<Integer, AuditData> getDataForSafetyManual() {

@@ -1,8 +1,10 @@
 package com.picsauditing.dao;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -59,19 +61,45 @@ public class AuditDataDAO extends PicsDAO {
 		return findByCategory(auditID, auditCategory);
 	}
 
-	public Map<Integer, AuditData> findAnswersByContractor(int conID, List<Integer> questionIds) {
+	/**
+	 * Find all answers for given questions for this contractor
+	 * Each question may include more than one answer if there are multiple audits "for"
+	 * Questions can come from any audit type that is Submitted or Active
+	 * 
+	 * @param conID
+	 * @param questionIds
+	 * @return Map containing QuestionID => AuditFor => AuditData
+	 */
+	public Map<Integer, Map<String, AuditData>> findAnswersByContractor(int conID, Collection<Integer> questionIds) {
 		if (questionIds.size() == 0)
-			return new HashMap<Integer, AuditData>();
+			return new HashMap<Integer, Map<String, AuditData>>();
 
-		Query query = em.createQuery("FROM AuditData d "
-				+ "WHERE audit IN (FROM ContractorAudit WHERE contractorAccount.id = ? AND auditStatus = 'Active') "
-				+ "AND question.id IN (" + glue(questionIds) + ")");
+		Query query = em.createQuery("SELECT d FROM AuditData d " +
+				"WHERE d.audit.contractorAccount.id = ? " +
+				"AND d.audit.auditStatus IN ('Submitted', 'Active') " +
+				"AND d.question.id IN (" + glue(questionIds) + ") " +
+				"ORDER BY d.audit.auditStatus DESC");
+		// Sort it first by Submitted, then by Active, so when we load the map
+		// the Active values will override the Submitted ones
 		query.setParameter(1, conID);
 
-		return mapData(query.getResultList());
+		List<AuditData> result = query.getResultList();
 
+		Map<Integer, Map<String, AuditData>> indexedResult = new HashMap<Integer, Map<String, AuditData>>();
+		for (AuditData row : result) {
+			int id = row.getQuestion().getId();
+			Map<String, AuditData> dataMap = new HashMap<String, AuditData>();
+			if (indexedResult.containsKey(id))
+				dataMap = indexedResult.get(id);
+			String key = row.getAudit().getAuditFor();
+			if (key == null)
+				key = "";
+			dataMap.put(key, row);
+			indexedResult.put(id, dataMap);
+		}
+		return indexedResult;
 	}
-
+	
 	public AuditData findAnswerToQuestion(int auditId, int questionId) {
 		try {
 			Query query = em.createQuery("FROM AuditData d " + "WHERE audit.id = ? AND question.id =? ");
@@ -144,7 +172,6 @@ public class AuditDataDAO extends PicsDAO {
 		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id = ? AND question.id IN ("
 				+ glue(questionIds) + ")");
 		query.setParameter(1, auditID);
-
 		return mapData(query.getResultList());
 	}
 
@@ -167,7 +194,7 @@ public class AuditDataDAO extends PicsDAO {
 	 * 
 	 * @return
 	 */
-	private String glue(List<Integer> listIDs) {
+	private String glue(Collection<Integer> listIDs) {
 		StringBuilder ids = new StringBuilder();
 		ids.append("-1"); // so we don't have to worry about this ',110,243'
 		for (Integer id : listIDs)

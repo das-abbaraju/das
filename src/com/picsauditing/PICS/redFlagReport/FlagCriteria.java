@@ -3,6 +3,7 @@ package com.picsauditing.PICS.redFlagReport;
 import java.sql.ResultSet;
 import java.util.*;
 import com.picsauditing.PICS.*;
+import com.picsauditing.jpa.entities.MultiYearScope;
 
 /**
  * A FlagCriteria is a set of criteria for a given Operator used to set contractors to a specific flag color
@@ -27,7 +28,7 @@ public class FlagCriteria extends DataBean {
 
 	public FlagCriteriaDO getFlagCriteriaDO(String questionID){
 		return flagCriteriaMap.get(questionID);
-	}//getFlagCriteriaDO
+	}
 
 	public void setFromDB(String op_ID,String fStatus) throws Exception {
 		opID = op_ID;
@@ -36,8 +37,10 @@ public class FlagCriteria extends DataBean {
 		try{
 			flagOshaCriteriaDO = new FlagOshaCriteriaDO();
 			flagOshaCriteriaDO.setFromDB(opID, flagStatus);
+			
 			DBReady();
-			String selectQuery = "SELECT * FROM flagCriteria WHERE opID="+Utilities.intToDB(opID)+" AND flagStatus='"+flagStatus+"';";
+			String selectQuery = "SELECT * FROM flagCriteria WHERE opID="+Utilities.intToDB(opID)
+					+" AND flagStatus='"+Utilities.escapeQuotes(flagStatus)+"'";
 			flagCriteriaMap = new TreeMap<String, FlagCriteriaDO>();
 			ResultSet rs = SQLStatement.executeQuery(selectQuery);
 			while (rs.next()){
@@ -46,12 +49,12 @@ public class FlagCriteria extends DataBean {
 				flagCriteriaDO.setFromResultSet(rs);
 				// stuff the DO into the map using the questionID as the key
 				flagCriteriaMap.put(rs.getString("questionID"),flagCriteriaDO);
-			}//while
+			}
 			rs.close();
 		}finally{
 			DBClose();
-		}//finally
-	}//setFromDB
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	public void setFromRequest(javax.servlet.http.HttpServletRequest request) throws Exception {
@@ -66,24 +69,28 @@ public class FlagCriteria extends DataBean {
 				String value = request.getParameter("hurdleValueQ_"+qID);
 				String comparison = request.getParameter("hurdleComparisonQ_"+qID);
 				String tempIsFlagged= Utilities.getIsChecked(request.getParameter("flagQ_"+qID));
-				flagCriteriaMap.put(qID,new FlagCriteriaDO(opID,qID,flagStatus,tempIsFlagged,questionType,comparison,value));
-			}//if
-		}//while
-	}//setFromRequest
+				String scope = request.getParameter("hurdleScope_"+qID);
+				MultiYearScope multiYearScope = null;
+				if (scope != null)
+					multiYearScope = MultiYearScope.valueOf(scope);
+				flagCriteriaMap.put(qID,new FlagCriteriaDO(opID,qID,flagStatus,tempIsFlagged,questionType,comparison,value,multiYearScope));
+			}
+		}
+	}
 
 	public void writeToDB() throws Exception {
 		if ((null == opID) || ("".equals(opID)))
 			throw new Exception("can't write operator info to DB because id is not set");
 		flagOshaCriteriaDO.writeToDB();
 
-		StringBuffer insertQuery = new StringBuffer("INSERT INTO flagCriteria (opID, questionID, flagStatus, isChecked, comparison, value) VALUES ");
+		StringBuffer insertQuery = new StringBuffer("INSERT INTO flagCriteria (opID, questionID, flagStatus, isChecked, comparison, value, multiYearScope) VALUES ");
 		boolean doInsert = false;
 		if (null != flagCriteriaMap && flagCriteriaMap.size()>0)
 			doInsert = true;
 			for(FlagCriteriaDO flagCriteriaDO: flagCriteriaMap.values()) {
 				insertQuery.append("("+opID+",").append(flagCriteriaDO.questionID).append(",'").append(flagCriteriaDO.flagStatus).
-						append("','").append(flagCriteriaDO.isChecked).
-						append("','").append(flagCriteriaDO.comparison).append("','").append(flagCriteriaDO.value).append("'),");
+						append("','").append(flagCriteriaDO.isChecked).append("','").append(flagCriteriaDO.comparison).
+						append("','").append(flagCriteriaDO.value).append("','").append(flagCriteriaDO.multiYearScope).append("'),");
 			}
 		try{
 			DBReady();
@@ -126,23 +133,29 @@ public class FlagCriteria extends DataBean {
 		if (!flagCriteriaMap.containsKey(questionID))
 			return "No";
 		return (flagCriteriaMap.get(questionID).isChecked);
-	}//getIsCheckedFromMap
+	}
 
 	public String getValueFromMap(String questionID){
 		if (!flagCriteriaMap.containsKey(questionID))
 			return "";
 		return (flagCriteriaMap.get(questionID).value);
-	}//getValueFromMap
+	}
 
 	public String getComparisonFromMap(String questionID){
 		if (!flagCriteriaMap.containsKey(questionID))
 			return "";
 		return (flagCriteriaMap.get(questionID).comparison);
-	}//getComparisonFromMap
+	}
+
+	public MultiYearScope getScopeFromMap(String questionID){
+		if (!flagCriteriaMap.containsKey(questionID))
+			return null;
+		return (flagCriteriaMap.get(questionID).multiYearScope);
+	}
 
 	public String getTimeRadio(String name,String classType,String selected) {
 		return Inputs.getRadioInputWithOptions(name,classType,selected, TIME_ARRAY, TIME_OPTIONS_ARRAY);
-	}//getTimeRadio
+	}
 
 	public String getFlagStatusSelect(String name,String classType,String selected) {
 		return Inputs.inputSelectSubmit(name, classType, selected,FLAG_ARRAY);

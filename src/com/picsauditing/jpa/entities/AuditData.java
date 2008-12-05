@@ -179,17 +179,6 @@ public class AuditData implements java.io.Serializable {
 	}
 
 	@Transient
-	public String getVerifiedAnswerOrAnswer() {
-//		if (verifiedAnswer != null && verifiedAnswer.length() > 0)
-//			return verifiedAnswer;
-
-		if (answer != null)
-			return answer;
-
-		return "";
-	}
-
-	@Transient
 	public FlagColor getFlagColor() {
 		return flagColor;
 	}

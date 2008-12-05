@@ -10,9 +10,9 @@ import com.picsauditing.jpa.entities.AuditType;
  * 
  * @author Jeff Jensen
  */
+@SuppressWarnings("serial")
 public class HurdleQuestions extends DataBean {
 	public int auditTypeID;
-	//public String auditType = "";
 	public String questionID = "";
 	public String catNum = "";
 	public String subCatNum = "";
@@ -44,7 +44,7 @@ public class HurdleQuestions extends DataBean {
 		if ("Yes/No/NA".equals(questionType) || "Yes/No".equals(questionType) || "Manual".equals(questionType))
 			return Inputs.inputSelect("hurdleValueQ_"+questionID,"forms",value,Inputs.YES_NO_NA_ARRAY);
 		return "<input type=hidden name=hurdleValueQ_"+questionID+" value=0>";
-	}//getValueInput
+	}
 	
 	public void setList(String opID) throws Exception {
 		String selectQuery = "SELECT pc.auditTypeID, pc.number, ps.number, pq.number, questionID, question, questionType " +
@@ -52,7 +52,10 @@ public class HurdleQuestions extends DataBean {
 								"JOIN pqfSubCategories ps ON (catID=categoryID) " +
 								"JOIN pqfQuestions pq ON (subCatID=subCategoryID) " +
 								"WHERE isRedFlagQuestion='Yes' " +
-								"AND pc.catID IN (SELECT catID FROM pqfopmatrix WHERE opID = " + opID + ") " +
+								"AND ( " + 
+								"(pc.auditTypeID = 1 AND pc.catID IN (SELECT catID FROM pqfopmatrix WHERE opID = " + opID + ")) " +
+								"OR (pc.auditTypeID > 1 AND pc.auditTypeID IN (SELECT auditTypeID FROM audit_operator WHERE opID = " + opID + " AND canSee = 1))" +
+								") " + 
 								"ORDER BY pc.number, ps.number, pq.number";
 		try {
 			DBReady();
@@ -70,7 +73,7 @@ public class HurdleQuestions extends DataBean {
 		count++;
 		setFromResultSet(listRS);
 		return true;
-	}//isNextRecord
+	}
 
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
 		//auditType = SQLResult.getString("auditType");
@@ -81,16 +84,8 @@ public class HurdleQuestions extends DataBean {
 		questionNum = SQLResult.getString("pq.number");
 		question = SQLResult.getString("question");
 		questionType = SQLResult.getString("questionType");
-	}//setFromResultSet
-	
-	public void setEmrAveQuestion() throws Exception {
-		//auditType = "PQF";
-		auditTypeID = AuditType.PQF;
-		questionID = FlagCriteria.EMR_AVE_QUESTION_ID;
-		question = "What is your EMR average for the last 3 years?";
-		questionType = "Decimal Number";
 	}
-
+	
 	public void closeList() throws Exception {
 		count = 0;
 		if (null != listRS) {

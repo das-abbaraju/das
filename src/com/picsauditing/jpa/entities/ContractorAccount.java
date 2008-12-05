@@ -732,11 +732,11 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 				if (emr.isUnverified())
 					avg.setVerified(false);
 				try {
-					float rate = Float.parseFloat(emr.getVerifiedAnswerOrAnswer());
+					float rate = Float.parseFloat(emr.getAnswer());
 					rateTotal += rate;
 					count++;
 				} catch (Exception e) {
-					System.out.println("Failed to parse EMR rate:" + emr.getVerifiedAnswerOrAnswer() + " for contractor " + id);
+					System.out.println("Failed to parse EMR rate:" + emr.getAnswer() + " for contractor " + id);
 				}
 			}
 			float avgRateFloat = rateTotal / count;

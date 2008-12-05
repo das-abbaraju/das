@@ -27,7 +27,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected int opID;
 	protected ContractorOperator co;
 	protected FlagCalculatorSingle calculator = new FlagCalculatorSingle();
-	protected Map<Integer, AuditData> auditData;
+	protected Map<Integer, Map<String, AuditData>> auditData;
 	protected ContractorOperatorFlagDAO coFlagDao;
 	protected String action = "";
 
@@ -155,11 +155,11 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		this.co = co;
 	}
 
-	public Map<Integer, AuditData> getAuditData() {
+	public Map<Integer, Map<String, AuditData>> getAuditData() {
 		return auditData;
 	}
 
-	public void setAuditData(Map<Integer, AuditData> auditData) {
+	public void setAuditData(Map<Integer, Map<String, AuditData>> auditData) {
 		this.auditData = auditData;
 	}
 

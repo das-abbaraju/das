@@ -6,9 +6,11 @@ import static org.junit.Assert.assertNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -94,12 +96,12 @@ public class AuditDataDAOTest {
 		assertEquals("Pacific Industrial Contractor Screening", auditdata.get(37).getAnswer());
 	}
 
-	// @Test
+	@Test
 	public void findAnswersByContractor() {
-		ArrayList<Integer> questionIds = new ArrayList<Integer>();
+		Set<Integer> questionIds = new HashSet<Integer>();
 		questionIds.add(91);
 		questionIds.add(101);
-		Map<Integer, AuditData> data = auditdataDAO.findAnswersByContractor(2657, questionIds);
+		Map<Integer, Map<String, AuditData>> data = auditdataDAO.findAnswersByContractor(2657, questionIds);
 		assertEquals(2, data.size());
 	}
 	

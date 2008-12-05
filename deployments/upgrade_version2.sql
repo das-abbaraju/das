@@ -246,5 +246,4 @@ update pqfdata
 	set answer = verifiedAnswer
 	where verifiedAnswer is not null and verifiedAnswer <> '';
 
-alter table pqfdata drop column verifiedAnswer;
-alter table pqfdata drop column isCorrect;
+alter table pqfdata drop column verifiedAnswer, drop column isCorrect;

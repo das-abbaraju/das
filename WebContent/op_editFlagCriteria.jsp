@@ -2,6 +2,7 @@
 <%@ include file="includes/main.jsp"%>
 <%@page import="com.picsauditing.PICS.redFlagReport.*"%>
 <%@page import="com.picsauditing.util.SpringUtils"%>
+<%@page import="com.picsauditing.util.Strings"%>
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page" />
 <%
 	String opID = null;
@@ -19,7 +20,7 @@
 	aBean.setFromDB(opID);
 	
 	String flagStatus = request.getParameter("flagStatus");
-	if (null == flagStatus)
+	if (Strings.isEmpty(flagStatus))
 		flagStatus = "Red";
 	
 	FlagCriteria flagCriteria = new FlagCriteria();
@@ -46,6 +47,7 @@
 	HurdleQuestions hurdleQuestions = null;
 	
 %>
+<%@page import="com.picsauditing.jpa.entities.MultiYearScope"%>
 <html>
 <head>
 <title>Manage Flag Criteria</title>
@@ -124,7 +126,6 @@ if (canEditFlagCriteria) {
 
 <%
 	hurdleQuestions = new HurdleQuestions();
-	hurdleQuestions.setEmrAveQuestion();
 %>
 <table class="report">
 	<thead>
@@ -132,23 +133,10 @@ if (canEditFlagCriteria) {
 		<td class="center" colspan=2><%=flagStatus%> Flag PQF Questions</td>
 		<td class="center">Criteria</td>
 		<td class="center">Include?</td>
-		<td></td>
+		<td>Scope</td>
+		<td>Contractor Answers</td>
 	</tr>
 	</thead>
-	<tr>
-		<td></td>
-		<td><%=hurdleQuestions.question%></td>
-		<td><nobr> <%=hurdleQuestions.getComparisonInput(flagCriteria
-									.getComparisonFromMap(hurdleQuestions.questionID))%>
-		<%=hurdleQuestions.getValueInput(flagCriteria.getValueFromMap(hurdleQuestions.questionID))%>
-		</nobr></td>
-		<td class="center">
-			<input type="hidden" name="hurdleQuestion_<%=hurdleQuestions.questionID%>" />
-			<input type="hidden" name="hurdleTypeQ_<%=hurdleQuestions.questionID%>" value="<%=hurdleQuestions.questionType%>" />
-			<%=Inputs.getCheckBoxInput("flagQ_" + hurdleQuestions.questionID, "forms", flagCriteria.getIsCheckedFromMap(hurdleQuestions.questionID), "Yes")%>
-		</td>
-		<td></td>
-	</tr>
 	<%
 		hurdleQuestions.setList(opID);
 		while (hurdleQuestions.isNext()) {
@@ -156,7 +144,7 @@ if (canEditFlagCriteria) {
 	<tr>
 	<%
 	if (!hurdleQuestions.questionID.equals("401") && !hurdleQuestions.questionID.equals("755")) {
-	%>		
+	%>
 		<td class="right"><%=hurdleQuestions.catNum%>.<%=hurdleQuestions.subCatNum%>.<%=hurdleQuestions.questionNum%></td>
 		<td><%=hurdleQuestions.question%></td>
 		<td><nobr><%=hurdleQuestions.getComparisonInput(flagCriteria
@@ -168,12 +156,22 @@ if (canEditFlagCriteria) {
 			<input type="hidden" name="hurdleTypeQ_<%=hurdleQuestions.questionID%> value="<%=hurdleQuestions.questionType%>" />
 			<%=Inputs.getCheckBoxInput("flagQ_" + hurdleQuestions.questionID, "forms", flagCriteria.getIsCheckedFromMap(hurdleQuestions.questionID), "Yes")%>
 		</td>
-		<td><nobr><a href="QuestionAnswerSearch.action?
-		button=Add&filter.ajax=false&questions[99].questionID=<%= hurdleQuestions.questionID %>">Search Answer</a>
-		</nobr></td>
+		<td><select class="forms" name="hurdleScope_<%=hurdleQuestions.questionID%>">
+		<%
+		if (hurdleQuestions.questionID.equals("2034")) {
+			for(MultiYearScope scope : MultiYearScope.values()) {
+				String selected = scope.equals(flagCriteria.getScopeFromMap(hurdleQuestions.questionID)) ? " selected='selected'" : "";
+				%><option value="<%=scope%>" <%=selected%>><%=scope.getDescription()%></option><%
+			}
+		}
+		%></select>
+		</td>
+		<td><a href="QuestionAnswerSearch.action?
+		button=Add&filter.ajax=false&questions[99].questionID=<%= hurdleQuestions.questionID %>">Show</a>
+		</td>
 	<%
 	}
-	%>		
+	%>
 	</tr>
 	<%
 		}
