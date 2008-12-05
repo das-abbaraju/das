@@ -12,7 +12,7 @@
 	<span class="answer">
 		<s:if test="questionType == 'File'">
 			<s:if test="answer.answer.length() > 0">
-				<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&question.questionID=<s:property value="questionID"/>" target="_BLANK">Uploaded</a>
+				<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&question.id=<s:property value="id"/>" target="_BLANK">Uploaded</a>
 			</s:if>
 			<s:else>File Not Uploaded</s:else>
 		</s:if>
@@ -24,7 +24,7 @@
 		
 		<s:else>
 			<s:if test="answer.verified && answer.answer.length() > 0">
-				 <s:property value="answer.answer" />&nbsp;&nbsp;<a href="javascript:showAnswer(<s:property value="questionID"/>);" style="color : rgb(168, 77, 16);font-weight : normal;">Changed by PICS</a> 
+				 <s:property value="answer.answer" />&nbsp;&nbsp;<a href="javascript:showAnswer(<s:property value="id"/>);" style="color : rgb(168, 77, 16);font-weight : normal;">Changed by PICS</a> 
 			</s:if>
 			<s:else>
 				<s:property value="answer.answer" />
@@ -36,7 +36,7 @@
 		
 	</span>
 	<br/>
-	<span id="showText_<s:property value="questionID"/>" style="display: none" class="verified">
+	<span id="showText_<s:property value="id"/>" style="display: none" class="verified">
 		Previous Answer changed from "<s:property value="answer.answer"/>" on <s:date name="answer.dateVerified" format="MMM d, yyyy" />
 	</span></td>
 </tr>

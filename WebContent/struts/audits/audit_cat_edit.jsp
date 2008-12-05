@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<tr id="status_<s:property value="questionID"/>" class="group<s:if test="#shaded">Shaded</s:if>">
+<tr id="status_<s:property value="id"/>" class="group<s:if test="#shaded">Shaded</s:if>">
 	<td class="right"><s:property value="category.number"/>.<s:property value="subCategory.number"/>.<s:property value="number"/>&nbsp;&nbsp;
-	<a name="q<s:property value="questionID"/>" /></td>
+	<a name="q<s:property value="id"/>" /></td>
 	<td class="question<s:if test="required">Required</s:if>"><s:property value="question" escape="false"/>
 		<s:if test="linkUrl1.length() > 0"><a href="http://<s:property value="linkUrl1"/>" target="_BLANK" title="opens in new window"><s:property value="linkText1"/></a></s:if>
 		<s:if test="linkUrl2.length() > 0"><a href="http://<s:property value="linkUrl2"/>" target="_BLANK" title="opens in new window"><s:property value="linkText2"/></a></s:if>
@@ -10,76 +10,76 @@
 		<s:if test="linkUrl5.length() > 0"><a href="http://<s:property value="linkUrl5"/>" target="_BLANK" title="opens in new window"><s:property value="linkText5"/></a></s:if>
 		<s:if test="linkUrl6.length() > 0"><a href="http://<s:property value="linkUrl6"/>" target="_BLANK" title="opens in new window"><s:property value="linkText6"/></a></s:if>
 	</td>
-	<td class="answer" id="td_answer_<s:property value="questionID"/>">
+	<td class="answer" id="td_answer_<s:property value="id"/>">
 		<s:if test="questionType == 'Text'">
-			<s:textfield id="answer_%{questionID}" name="answer.answer" size="30" onchange="javascript:saveAnswer(%{questionID}, this);"/>
+			<s:textfield id="answer_%{id}" name="answer.answer" size="30" onchange="javascript:saveAnswer(%{id}, this);"/>
 		</s:if>
 		<s:if test="questionType == 'License'">
-			<s:textfield name="answer.answer" size="30" onchange="javascript:saveAnswer(%{questionID}, this);"/>
+			<s:textfield name="answer.answer" size="30" onchange="javascript:saveAnswer(%{id}, this);"/>
 			<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(question, answer.answer)" escape="false" />			
 		</s:if>
 		<s:if test="questionType == 'Date'">
-			<nobr><s:textfield id="answer_%{questionID}" name="answer.answer" size="8" 
-			onchange="javascript:saveAnswer(%{questionID}, this);"/> <span style="font-style: italic; font-size: 12px;">example: 12/31/1999</span>
+			<nobr><s:textfield id="answer_%{id}" name="answer.answer" size="8" 
+			onchange="javascript:saveAnswer(%{id}, this);"/> <span style="font-style: italic; font-size: 12px;">example: 12/31/1999</span>
 		</s:if>
 		<s:if test="questionType == 'Check Box' || questionType == 'Industry' || questionType == 'Main Work'">
-			<s:checkbox fieldValue="X" value="answer.answer.length() == 1" name="answer.answer" onclick="javascript:saveAnswer(%{questionID}, this);" />
+			<s:checkbox fieldValue="X" value="answer.answer.length() == 1" name="answer.answer" onclick="javascript:saveAnswer(%{id}, this);" />
 		</s:if>
 		<s:if test="questionType == 'Yes/No'">
-			<s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" value="answer.answer" name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
+			<s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" value="answer.answer" name="question_%{id}" onclick="javascript:saveAnswer(%{id}, this);"></s:radio>
 		</s:if>
 		<s:if test="questionType == 'Yes/No/NA'">
-			<s:radio theme="pics" list="#{'Yes':'Yes','No':'No','NA':'NA'}" value="answer.answer" name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
+			<s:radio theme="pics" list="#{'Yes':'Yes','No':'No','NA':'NA'}" value="answer.answer" name="question_%{id}" onclick="javascript:saveAnswer(%{id}, this);"></s:radio>
 		</s:if>
 		<s:if test="questionType == 'Office'">
-			<s:radio theme="pics" list="#{'Yes':'Yes','No':'No','NA':'NA'}" value="answer.answer" name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
+			<s:radio theme="pics" list="#{'Yes':'Yes','No':'No','NA':'NA'}" value="answer.answer" name="question_%{id}" onclick="javascript:saveAnswer(%{id}, this);"></s:radio>
 		</s:if>
 		<s:if test="questionType == 'Manual'">
-			<s:radio theme="pics" list="#{'Yes':'Yes','No':'No','NA':'NA'}" value="answer.answer" name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
-			<br>Comments: <s:textfield id="comments_%{questionID}" name="answer.comment" size="30" onblur="javascript:saveComment(%{questionID}, this);"/>
+			<s:radio theme="pics" list="#{'Yes':'Yes','No':'No','NA':'NA'}" value="answer.answer" name="question_%{id}" onclick="javascript:saveAnswer(%{id}, this);"></s:radio>
+			<br>Comments: <s:textfield id="comments_%{id}" name="answer.comment" size="30" onblur="javascript:saveComment(%{id}, this);"/>
 		</s:if>
 		<s:if test="questionType == 'Office Location'">
-			<s:radio theme="pics" list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" value="%{answer.answer}"  name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
+			<s:radio theme="pics" list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" value="%{answer.answer}"  name="question_%{id}" onclick="javascript:saveAnswer(%{id}, this);"></s:radio>
 		</s:if>
 		<s:if test="questionType == 'State'">
-			<s:select list="stateList" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:select>
+			<s:select list="stateList" value="answer.answer" name="question_%{id}" onchange="javascript:saveAnswer(%{id}, this);"></s:select>
 		</s:if>
 		<s:if test="questionType == 'Country'">
-			<s:select list="countryList" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:select>
+			<s:select list="countryList" value="answer.answer" name="question_%{id}" onchange="javascript:saveAnswer(%{id}, this);"></s:select>
 		</s:if>
 		<s:if test="questionType == 'Money'">
-			<s:textfield name="%{'answer_answer_'.concat(questionID)}" value="%{answer.answer}" size="19" onchange="validateNumber('answer_answer_%{questionID}','Question %{number}');  document.MM_returnValue && saveAnswer(%{questionID}, this)" />
+			<s:textfield name="%{'answer_answer_'.concat(id)}" value="%{answer.answer}" size="19" onchange="validateNumber('answer_answer_%{id}','Question %{number}');  document.MM_returnValue && saveAnswer(%{id}, this)" />
 		</s:if>
 		<s:if test="questionType == 'Decimal Number'">
-			<s:textfield name="%{'answer_answer_'.concat(questionID)}" value="%{answer.answer}" size="19" onchange="$('%{'answer_answer_'.concat(questionID)}').value = parseFloat($('%{'answer_answer_'.concat(questionID)}').value).toFixed(3); validateDecimal('answer_answer_%{questionID}','Question %{number}'); document.MM_returnValue && saveAnswer(%{questionID}, this)" />
+			<s:textfield name="%{'answer_answer_'.concat(id)}" value="%{answer.answer}" size="19" onchange="$('%{'answer_answer_'.concat(id)}').value = parseFloat($('%{'answer_answer_'.concat(id)}').value).toFixed(3); validateDecimal('answer_answer_%{id}','Question %{number}'); document.MM_returnValue && saveAnswer(%{id}, this)" />
 		</s:if>
 		<s:if test="questionType == 'Service'">
-			<nobr><s:checkbox fieldValue="C" value="answer.answer.indexOf('C') != -1" name="question_%{questionID}_C" onclick="javascript:saveAnswer(%{questionID}, this);" /> C</nobr>
-			<nobr><s:checkbox fieldValue="S" value="answer.answer.indexOf('S') != -1" name="question_%{questionID}_S" onclick="javascript:saveAnswer(%{questionID}, this);" /> S</nobr>
+			<nobr><s:checkbox fieldValue="C" value="answer.answer.indexOf('C') != -1" name="question_%{id}_C" onclick="javascript:saveAnswer(%{id}, this);" /> C</nobr>
+			<nobr><s:checkbox fieldValue="S" value="answer.answer.indexOf('S') != -1" name="question_%{id}_S" onclick="javascript:saveAnswer(%{id}, this);" /> S</nobr>
 		</s:if>
 		<s:if test="questionType == 'Radio'">
-			<s:radio theme="pics" list="options" listKey="optionName" listValue="optionName" value="answer.answer" name="question_%{questionID}" onclick="javascript:saveAnswer(%{questionID}, this);"></s:radio>
+			<s:radio theme="pics" list="options" listKey="optionName" listValue="optionName" value="answer.answer" name="question_%{id}" onclick="javascript:saveAnswer(%{id}, this);"></s:radio>
 		</s:if>
 		<s:if test="questionType == 'Drop Down'">
 			<% // TODO We never actually use Drop Down on any questions. We should evaluate if we want to ever support them. %>
-			<s:select list="options" listKey="optionName" listValue="optionName" value="answer.answer" name="question_%{questionID}" onchange="javascript:saveAnswer(%{questionID}, this);"></s:select>
+			<s:select list="options" listKey="optionName" listValue="optionName" value="answer.answer" name="question_%{id}" onchange="javascript:saveAnswer(%{id}, this);"></s:select>
 		</s:if>
 		<s:if test="questionType == 'File'">
 			<nobr>
 				<s:if test="answer.answer.length() > 0">
-					<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&question.questionID=<s:property value="questionID"/>" target="_BLANK">View File</a>
+					<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&question.id=<s:property value="id"/>" target="_BLANK">View File</a>
 				</s:if>
 				<s:else>File Not Uploaded</s:else>
 				<s:if test="catDataID > 0">
-				<input id="show_button_<s:property value="questionID"/>" type="button" 
+				<input id="show_button_<s:property value="id"/>" type="button" 
 					value="<s:if test="answer.answer.length() > 0">Edit</s:if><s:else>Add</s:else> File" 
-					onclick="showFileUpload(<s:property value="questionID"/>);"
+					onclick="showFileUpload(<s:property value="id"/>);"
 					title="Opens in new window (please disable your popup blocker)" />
 				</s:if>	
 			</nobr>
 		</s:if>
 	</td>
-	<td align="center" id="required_td<s:property value="questionID"/>">
+	<td align="center" id="required_td<s:property value="id"/>">
 		<s:if test="required && (answer == null || answer.answer.length() < 1)">
 			<span class="redMain">*</span>
 		</s:if>
@@ -87,7 +87,7 @@
 </tr>
 <s:if test="questionType == 'Text Area'">
 	<tr class="group<s:if test="#shaded">Shaded</s:if>"><td>&nbsp;</td><td colspan="3" class="right">
-	<s:textarea cols="70" rows="4" value="%{answer.answer}" onchange="javascript:saveAnswer(%{questionID}, this);">
+	<s:textarea cols="70" rows="4" value="%{answer.answer}" onchange="javascript:saveAnswer(%{id}, this);">
 	</s:textarea>
 	</td>
 	</tr>
