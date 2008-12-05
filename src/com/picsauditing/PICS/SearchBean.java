@@ -674,7 +674,7 @@ public class SearchBean {
 		if ("".equals(searchEMRRate))
 			return "";
 		else
-			return SQLResult.getString("verifiedAnswer");
+			return SQLResult.getString("answer");
 	}
 
 	public String getPQFQuestionID() throws Exception {

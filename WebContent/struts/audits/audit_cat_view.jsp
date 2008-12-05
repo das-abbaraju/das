@@ -23,8 +23,8 @@
 		</s:elseif>
 		
 		<s:else>
-			<s:if test="answer.verified && answer.verifiedAnswer.length() > 0">
-				 <s:property value="answer.verifiedAnswer" />&nbsp;&nbsp;<a href="javascript:showAnswer(<s:property value="questionID"/>);" style="color : rgb(168, 77, 16);font-weight : normal;">Changed by PICS</a> 
+			<s:if test="answer.verified && answer.answer.length() > 0">
+				 <s:property value="answer.answer" />&nbsp;&nbsp;<a href="javascript:showAnswer(<s:property value="questionID"/>);" style="color : rgb(168, 77, 16);font-weight : normal;">Changed by PICS</a> 
 			</s:if>
 			<s:else>
 				<s:property value="answer.answer" />

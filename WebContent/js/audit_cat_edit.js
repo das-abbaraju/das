@@ -18,7 +18,7 @@ function changeAnswer(questionid, questionType) {
 }
 
 function saveVerifiedAnswer(questionid, elm) {
-	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.questionID=' + questionid + '&auditData.verifiedAnswer=' + escape($F(elm));
+	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.questionID=' + questionid + '&auditData.answer=' + escape($F(elm));
 	var divName = 'status_'+questionid;
 	var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
 	{

@@ -19,10 +19,10 @@
 							value="question.question" /></td>
 						<s:if test="value.verified">
 							<td style="color: #006400; font-weight: bold;"><s:property
-								value="verifiedAnswerOrAnswer" /></td>
+								value="answer" /></td>
 						</s:if>
 						<s:else>
-							<td><s:property value="verifiedAnswerOrAnswer" /></td>
+							<td><s:property value="answer" /></td>
 						</s:else>
 					</tr>
 				</s:iterator>
@@ -159,10 +159,10 @@
 						<s:iterator value="value">
 							<s:if test="value.verified">
 								<td style="color: #006400; font-weight: bold;"><s:property
-									value="value.verifiedAnswerOrAnswer" /></td>
+									value="value.answer" /></td>
 							</s:if>
 							<s:else>
-								<td><s:property value="value.verifiedAnswerOrAnswer" /></td>
+								<td><s:property value="value.answer" /></td>
 							</s:else>
 						</s:iterator>
 					</tr>

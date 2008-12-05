@@ -21,20 +21,20 @@ public class ReportContractorLicenses extends ReportContractorAudits {
 		sql.addWhere("a.active = 'Y'");
 		sql.addPQFQuestion(401);
 		sql.addPQFQuestion(755);
-		sql.addField("q401.isCorrect AS isCorrect401");
-		sql.addField("q755.isCorrect AS isCorrect755");
+		sql.addField("q401.dateVerified AS dateVerified401");
+		sql.addField("q755.dateVerified AS dateVerified755");
 		sql.addField("q401.comment AS comment401");
 		sql.addField("q755.comment AS comment755");
 		
 		orderByDefault = "a.name";
 		
 		if (getFilter().isConExpiredLic()) {
-			sql.addWhere("q755.verifiedAnswer < '" + DateBean.format(new Date(), "yyyy-MM-dd") + "'");
+			sql.addWhere("q755.answer < '" + DateBean.format(new Date(), "yyyy-MM-dd") + "'");
 		}
 		if (getFilter().getValidLicense().equals("Valid"))
-			sql.addWhere("q401.isCorrect = 'Yes'");
+			sql.addWhere("q401.dateVerified IS NOT NULL");
 		if (getFilter().getValidLicense().equals("UnValid"))
-			sql.addWhere("q401.isCorrect <> 'Yes' OR q401.isCorrect IS NULL");
+			sql.addWhere("q401.dateVerified = NULL");
 		if (getFilter().getValidLicense().equals("All"))
 			sql.addWhere("1");
 
