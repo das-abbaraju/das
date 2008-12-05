@@ -149,7 +149,7 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 
 		
 		if (button.equals("toggleVerify")) {
-			auditDao.calculateVerifiedPercent( osha.getConAudit() );	
+			calculateVerifiedPercent( osha.getConAudit() );	
 		}			
 		
 		

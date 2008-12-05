@@ -119,7 +119,7 @@ public class AuditDataSave extends AuditActionSupport {
 
 			
 			if( toggleVerify ) {
-				auditDao.calculateVerifiedPercent( newCopy.getAudit() );
+				calculateVerifiedPercent( newCopy.getAudit() );
 			}
 			
 			// hook to calculation

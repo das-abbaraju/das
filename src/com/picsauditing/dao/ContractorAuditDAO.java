@@ -230,47 +230,5 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	// returns true if the percent verified becomes 100 and the status is
-	// changed
-	public void calculateVerifiedPercent(ContractorAudit conAudit) {
-
-		int verified = 0;
-		int verifiedTotal = 0;
-
-		if (conAudit.getAuditType().isAnnualAddendum()) {
-
-			for (OshaAudit oshaAudit : conAudit.getOshas()) {
-				if (oshaAudit != null && oshaAudit.isCorporate()) {
-					if ((oshaAudit.isVerified() || !oshaAudit.isApplicable())) {
-						verified++;
-					}
-					verifiedTotal++;
-				}
-			}
-
-			for (AuditData auditData : conAudit.getData()) {
-				// either the pqf or the EMF for the annual addendum
-				if (auditData.isVerified()) {
-					verified++;
-				}
-
-				verifiedTotal++;
-			}
-		}
-
-		if (conAudit.getAuditType().isPqf()) {
-
-			
-			
-			
-			
-		}
-
-		conAudit.setPercentVerified(Math.round((float) (100 * verified)
-				/ verifiedTotal));
-
-
-		save(conAudit);
-	}
 
 }
