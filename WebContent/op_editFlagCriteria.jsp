@@ -156,15 +156,17 @@ if (canEditFlagCriteria) {
 			<input type="hidden" name="hurdleTypeQ_<%=hurdleQuestions.questionID%> value="<%=hurdleQuestions.questionType%>" />
 			<%=Inputs.getCheckBoxInput("flagQ_" + hurdleQuestions.questionID, "forms", flagCriteria.getIsCheckedFromMap(hurdleQuestions.questionID), "Yes")%>
 		</td>
-		<td><select class="forms" name="hurdleScope_<%=hurdleQuestions.questionID%>">
+		<td>
 		<%
 		if (hurdleQuestions.questionID.equals("2034")) {
+			%><select class="forms" name="hurdleScope_<%=hurdleQuestions.questionID%>"><%
 			for(MultiYearScope scope : MultiYearScope.values()) {
 				String selected = scope.equals(flagCriteria.getScopeFromMap(hurdleQuestions.questionID)) ? " selected='selected'" : "";
 				%><option value="<%=scope%>" <%=selected%>><%=scope.getDescription()%></option><%
 			}
+			%></select><%
 		}
-		%></select>
+		%>
 		</td>
 		<td><a href="QuestionAnswerSearch.action?
 		button=Add&filter.ajax=false&questions[99].questionID=<%= hurdleQuestions.questionID %>">Show</a>

@@ -694,7 +694,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	/**
 	 * Get a map of the last 3 years of applicable emr data (verified or not)
 	 */
-	public Map<String, AuditData> getEmrs() throws Exception {
+	public Map<String, AuditData> getEmrs() {
 		if (emrs != null)
 			return emrs;
 		
@@ -709,41 +709,13 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 						emrs.put(audit.getAuditFor(), answer);
 			}
 		}
-		int count = emrs.size();
-		if (count > 3) {
-			System.out.println("Unhandled error getting EMR data for contractor " + id);
+		
+		if (emrs.size() > 3) {
 			// TODO handle this situation somehow
 			// like remove submitted records, or don't consider years before 3 years ago
+			System.out.println("Unhandled error getting EMR data for contractor " + id);
 		}
-		if (count > 0) {
-			AuditData avg = new AuditData();
-			avg.setVerified(true);
-			float rateTotal = 0;
-			// Reset this to zero because we're not sure how many answers we'll actually be able to parse
-			count = 0;
-			for(String key : emrs.keySet()) {
-				AuditData emr = emrs.get(key);
-				avg.setAudit(emr.getAudit());
-				AuditQuestion avgQuestion = new AuditQuestion();
-				avgQuestion.setId(AuditQuestion.EMR_AVG);
-				// We may just want to query the EMR question from the DB
-				avgQuestion.setQuestion("Average EMR");
-				avg.setQuestion(avgQuestion);
-				if (emr.isUnverified())
-					avg.setVerified(false);
-				try {
-					float rate = Float.parseFloat(emr.getAnswer());
-					rateTotal += rate;
-					count++;
-				} catch (Exception e) {
-					System.out.println("Failed to parse EMR rate:" + emr.getAnswer() + " for contractor " + id);
-				}
-			}
-			float avgRateFloat = rateTotal / count;
-			//avgRateFloat = Math.round(100 * avgRateFloat) / 100;
-			avg.setAnswer(Float.toString(avgRateFloat));
-			emrs.put(OshaAudit.AVG, avg);
-		}
+		AuditData.addAverageData(emrs);
 		return emrs;
 	}
 }

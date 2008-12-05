@@ -187,24 +187,12 @@ public class FlagCalculatorSingle {
 						for (AuditData data2 : answerMap.values())
 							data = data2;
 
-						if (data != null && data.getAnswer() != null && data.getAnswer().length() > 0) {
-							boolean isFlagged = false;
-
-							if (criteria.isValidationRequired() && !data.isVerified()) {
-								isFlagged = true;
-							}
-
-							if (criteria.isFlagged(data.getAnswer())) {
-								isFlagged = true;
-							}
-
-							if (isFlagged) {
-								data.setFlagColor(setFlagColor(data.getFlagColor(), criteria.getFlagColor()));
-								flagColor = setFlagColor(flagColor, criteria.getFlagColor());
-							}
-						}
+						flagColor = flagData(flagColor, criteria, data);
 					} else {
 						// We have multiple answers, this could be EMR
+						for (AuditData data : answerMap.values()) {
+							data.setFlagColor(null);
+						}
 						MultiYearScope scope = criteria.getMultiYearScope();
 						if (MultiYearScope.LastYearOnly.equals(scope)) {
 							AuditData data = null;
@@ -213,95 +201,23 @@ public class FlagCalculatorSingle {
 							int mostRecentYear = 0;
 							for (String yearString : answerMap.keySet()) {
 								int year = Integer.parseInt(yearString);
-								if (year > mostRecentYear)
+								if (year > mostRecentYear) {
+									mostRecentYear = year;
 									data = answerMap.get(yearString);
-							}
-
-							if (data != null && data.getAnswer() != null && data.getAnswer().length() > 0) {
-								// The contractor has answered this question so
-								// it needs
-								// to be correct
-								boolean isFlagged = false;
-
-								if (criteria.isValidationRequired() && !data.isVerified()) {
-									isFlagged = true;
-								}
-
-								if (criteria.isFlagged(data.getAnswer())) {
-									isFlagged = true;
-								}
-
-								if (isFlagged) {
-									data.setFlagColor(setFlagColor(data.getFlagColor(), criteria.getFlagColor()));
-									flagColor = setFlagColor(flagColor, criteria.getFlagColor());
 								}
 							}
-
+							flagColor = flagData(flagColor, criteria, data);
+							
 						} else if (MultiYearScope.AllThreeYears.equals(scope)) {
 							for (AuditData data : answerMap.values()) {
-								if (data != null && data.getAnswer() != null && data.getAnswer().length() > 0) {
-									// The contractor has answered this question
-									// so it needs
-									// to be correct
-									boolean isFlagged = false;
-
-									if (criteria.isValidationRequired() && !data.isVerified()) {
-										isFlagged = true;
-									}
-
-									if (criteria.isFlagged(data.getAnswer())) {
-										isFlagged = true;
-									}
-
-									if (isFlagged) {
-										data.setFlagColor(setFlagColor(data.getFlagColor(), criteria.getFlagColor()));
-										flagColor = setFlagColor(flagColor, criteria.getFlagColor());
-									}
-								}
+								flagColor = flagData(flagColor, criteria, data);
 							}
-
+							
 						} else if (MultiYearScope.ThreeYearAverage.equals(scope)) {
-							int years = 0;
-							float emrRateTotal = 0;
-							AuditData data = null;
-							for (AuditData yearlyData : answerMap.values()) {
-								if (yearlyData != null && !Strings.isEmpty(yearlyData.getAnswer())) {
-									try {
-										float rate = Float.parseFloat(yearlyData.getAnswer());
-										if (rate > 0) {
-											years++;
-											emrRateTotal += rate;
-											// we just need a dummy copy later
-											// for the average
-											data = yearlyData;
-										}
-									} catch (NumberFormatException e) {
-									}
-								}
-							}
-							if (years > 0) {
-								Float averageRate = emrRateTotal / years;
-								data.setAnswer(averageRate.toString());
-								if (data != null && data.getAnswer() != null && data.getAnswer().length() > 0) {
-									// The contractor has answered this question
-									// so it needs
-									// to be correct
-									boolean isFlagged = false;
-
-									if (criteria.isValidationRequired() && !data.isVerified()) {
-										isFlagged = true;
-									}
-
-									if (criteria.isFlagged(data.getAnswer())) {
-										isFlagged = true;
-									}
-
-									if (isFlagged) {
-										data.setFlagColor(setFlagColor(data.getFlagColor(), criteria.getFlagColor()));
-										flagColor = setFlagColor(flagColor, criteria.getFlagColor());
-									}
-								}
-							}
+							AuditData.addAverageData(answerMap);
+							AuditData data = answerMap.get(OshaAudit.AVG);
+							flagColor = flagData(flagColor, criteria, data);
+							
 						} else {
 							// This shouldn't happen
 							System.out.println("We have more than answer for "
@@ -357,6 +273,31 @@ public class FlagCalculatorSingle {
 		if (overrideColor != null)
 			return overrideColor;
 
+		return flagColor;
+	}
+
+	private FlagColor flagData(FlagColor flagColor, FlagQuestionCriteria criteria, AuditData data) {
+		if (data != null && data.getAnswer() != null && data.getAnswer().length() > 0) {
+			// The contractor has answered this question
+			// so it needs
+			// to be correct
+			boolean isFlagged = false;
+
+			if (criteria.isValidationRequired() && !data.isVerified()) {
+				isFlagged = true;
+			}
+
+			if (criteria.isFlagged(data.getAnswer())) {
+				isFlagged = true;
+			}
+
+			if (isFlagged) {
+				data.setFlagColor(setFlagColor(data.getFlagColor(), criteria.getFlagColor()));
+				flagColor = setFlagColor(flagColor, criteria.getFlagColor());
+			} else {
+				data.setFlagColor(FlagColor.Green);
+			}
+		}
 		return flagColor;
 	}
 
@@ -487,21 +428,6 @@ public class FlagCalculatorSingle {
 
 		// If everything is done, then quit with waiting on = no one
 		return WaitingOn.None;
-	}
-
-	private float getEmrRate(AuditData auditData) {
-		float NA = -1;
-		if (auditData == null)
-			return NA;
-		String value = auditData.getAnswer();
-		if (value == null)
-			return NA;
-
-		try {
-			return Float.parseFloat(value);
-		} catch (Exception e) {
-			return NA;
-		}
 	}
 
 	/**

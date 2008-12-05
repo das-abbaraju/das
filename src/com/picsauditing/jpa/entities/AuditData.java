@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Date;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -123,7 +124,7 @@ public class AuditData implements java.io.Serializable {
 	}
 
 	public void setVerified(boolean inValue) {
-		this.setDateVerified( inValue ? new java.util.Date() : null );
+		this.setDateVerified(inValue ? new java.util.Date() : null);
 	}
 
 	@Transient
@@ -230,6 +231,53 @@ public class AuditData implements java.io.Serializable {
 		if (dataID != other.dataID)
 			return false;
 		return true;
+	}
+
+	/**
+	 * Take a map of numerical AuditData answers and add an additional AuditData
+	 * containing an average. The new average will be verified only if all the
+	 * others are verified
+	 */
+	public static void addAverageData(Map<String, AuditData> dataMap) {
+		if (dataMap == null || dataMap.size() == 0)
+			return;
+
+		if (dataMap.get(OshaAudit.AVG) != null)
+			// We already have the average
+			return;
+		
+		AuditData avg = new AuditData();
+		AuditQuestion avgQuestion = new AuditQuestion();
+		avg.setVerified(true); // Assume it's all verified
+		ContractorAudit audit = new ContractorAudit();
+		audit.setAuditFor(OshaAudit.AVG);
+		avg.setAudit(audit);
+
+		float rateTotal = 0;
+		int count = 0;
+		for (AuditData data : dataMap.values()) {
+			avg.setQuestion(data.getQuestion());
+			avg.getAudit().setContractorAccount(data.getAudit().getContractorAccount());
+			avg.getAudit().setAuditType(data.getAudit().getAuditType());
+			
+			if (data.isUnverified())
+				avg.setVerified(false);
+
+			try {
+				float rate = Float.parseFloat(data.getAnswer());
+				rateTotal += rate;
+				count++;
+			} catch (Exception e) {
+				String error = "Failed to parse rate:" + data.getAnswer() + " for audit " + data.getAudit().getId();
+				System.out.println(error);
+			}
+		}
+		if (count > 0) {
+			Float avgRateFloat = rateTotal / count;
+			avgRateFloat = (float)Math.round(1000 * avgRateFloat) / 1000;
+			avg.setAnswer(avgRateFloat.toString());
+		}
+		dataMap.put(OshaAudit.AVG, avg);
 	}
 
 }
