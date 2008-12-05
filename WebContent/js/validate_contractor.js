@@ -4,5 +4,8 @@ function showAudit(auditID) {
 	var pars = 'auditID=' + auditID;
 	
 	var myAjax = new Ajax.Updater('verification_audit','VerifyAuditAjax.action', 
-		{method: 'post',parameters: pars});
+		{method: 'post',parameters: pars,
+		onComplete: function() {
+			$('verification_audit').scrollTo();
+		}});
 }

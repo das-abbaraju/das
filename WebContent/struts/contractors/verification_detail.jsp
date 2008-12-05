@@ -166,4 +166,3 @@
 </s:iterator>
 </div>
 
-<div id="verification_audit"></div>

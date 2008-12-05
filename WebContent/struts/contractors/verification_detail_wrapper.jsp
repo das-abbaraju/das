@@ -63,6 +63,29 @@
 		pars = 'scrollbars=yes,resizable=yes,width=700,height=450';
         window.open(url,title,pars);
 	 }
+	 
+	 function doneWithAudit() {
+	 	$('verification_audit').innerHTML='';
+	 	return refreshSummary();;
+	 }
+	 
+	 function refreshSummary() {
+		pars = 'id=' + <s:property value="contractor.id"/>;
+
+		$('verification_detail').innerHTML="<img src='images/ajax_process.gif' />";
+
+		var divName = 'verification_detail';
+		var myAjax = new Ajax.Updater(divName,'VerifyViewSummaryRefreshAjax.action', 
+		{
+			method: 'post', 
+			parameters: pars,
+			onComplete: function() {
+				$('auditHeader').scrollTo();
+			}
+		});
+		return false;
+	 }
+	 
 </script>
 
 
@@ -96,7 +119,7 @@
 		<li><label>SIC:</label>
 			<strong><s:property value="infoSection[55].answer"/></strong>
 		</li>
-		<li><label>NAIC:</label>
+		<li><label>NAICS:</label>
 			<strong><s:property value="infoSection[57].answer"/></strong>
 		</li>
 	</ul>

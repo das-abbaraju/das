@@ -3,7 +3,7 @@
 <h2><s:property value="conAudit.auditFor" /> <s:property
 	value="conAudit.auditType.auditName" /></h2>
 
-
+<input type="submit" onclick="return doneWithAudit();" value="Done"/>
 <s:form id="verify2">
 <s:if test="conAudit.auditType.pqf">
 	<fieldset style="clear: none; float: left; width: 50%; margin: 0.5em;"><legend><span>PQF
@@ -146,4 +146,7 @@
 		</s:if>
 	</s:iterator></fieldset>
 </s:else>
+	<div class="clear"/>
+	<input type="submit" onclick="return doneWithAudit();" value="Done"/>
+
 </s:form>
