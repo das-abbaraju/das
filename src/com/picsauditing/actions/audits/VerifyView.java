@@ -2,6 +2,7 @@ package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,9 +79,11 @@ public class VerifyView extends ContractorActionSupport {
 			}
 		}
 
-		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(), Arrays
-				.<Integer> asList(69, 1616, 55, 57));
-
+		Map<Integer, Map<String, AuditData>> tempAnswers = auditDataDAO.findAnswersByContractor(contractor.getId(), Arrays.<Integer>asList( 69, 1616, 55 , 57 ) );
+		infoSection = new HashMap<Integer, AuditData>();
+		for(Integer questionID : tempAnswers.keySet())
+			infoSection.put(questionID, tempAnswers.get(questionID).get("")); // Get the PQF data out
+		
 		// for (AuditCatData auditCatData : getCategories()) {
 		// if (auditCatData.getCategory().getId() == 29)
 		// oshaCatDataId = auditCatData.getId();
