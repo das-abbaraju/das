@@ -6,32 +6,30 @@ import java.util.Date;
 import javax.persistence.NoResultException;
 
 import com.picsauditing.PICS.AuditPercentCalculator;
-import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.YesNo;
 
-public class AuditDataSave extends PicsActionSupport {
+public class AuditDataSave extends AuditActionSupport {
 	private static final long serialVersionUID = 1103112846482868309L;
 	private AuditData auditData = null;
-	private AuditDataDAO dao = null;
 	private AuditQuestionDAO questionDao = null;
 
 	private int catDataID = 0;
-	private AuditCategoryDataDAO catDataDAO;
 	private AuditPercentCalculator auditPercentCalculator;
 
 	private boolean toggleVerify = false;
 		
-	public AuditDataSave(AuditDataDAO dao, AuditCategoryDataDAO catDataDAO,
-			AuditPercentCalculator auditPercentCalculator, AuditQuestionDAO questionDao) {
-		this.dao = dao;
-		this.catDataDAO = catDataDAO;
+	public AuditDataSave(ContractorAccountDAO accountDAO,AuditDataDAO dao, AuditCategoryDataDAO catDataDAO,
+			AuditPercentCalculator auditPercentCalculator, AuditQuestionDAO questionDao, ContractorAuditDAO conAuditDAO) {
+		super(accountDAO, conAuditDAO, catDataDAO, dao);
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.questionDao = questionDao;
 	}
@@ -49,7 +47,7 @@ public class AuditDataSave extends PicsActionSupport {
 			AuditData newCopy = null;
 
 			try {
-				newCopy = dao.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion()
+				newCopy = auditDataDao.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion()
 						.getId());
 			} catch (NoResultException notReallyAProblem) {
 			}
@@ -58,7 +56,7 @@ public class AuditDataSave extends PicsActionSupport {
 				// insert mode
 				auditData.setCreationDate(new Date());
 				auditData.setCreatedBy(this.getUser());
-				dao.save(auditData);
+				auditDataDao.save(auditData);
 			} else {
 				// update mode
 				if (auditData.getAnswer() != null) {
@@ -116,13 +114,18 @@ public class AuditDataSave extends PicsActionSupport {
 				newCopy.setUpdateDate(new Date());
 				newCopy.setUpdatedBy(this.getUser());
 
-				dao.save(newCopy);
+				auditDataDao.save(newCopy);
 			}
 
+			
+			if( toggleVerify ) {
+				auditDao.calculateVerifiedPercent( newCopy.getAudit() );
+			}
+			
 			// hook to calculation
 			// read/update the ContractorAudit and AuditCatData
 			if (catDataID > 0) {
-				AuditCatData catData = catDataDAO.find(catDataID);
+				AuditCatData catData = catDataDao.find(catDataID);
 				auditPercentCalculator.updatePercentageCompleted(catData);
 			}
 			auditData = newCopy;

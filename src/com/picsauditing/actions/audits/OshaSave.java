@@ -7,8 +7,13 @@ import java.util.Date;
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.PICSFileType;
-import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AuditCategoryDataDAO;
+import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
@@ -16,18 +21,19 @@ import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
 
-public class OshaSave extends PicsActionSupport implements Preparable {
+public class OshaSave extends AuditActionSupport implements Preparable {
 	private static final long serialVersionUID = 2529955727521548069L;
-	private int auditID;
 	private int conID;
 	private int catDataID;
-	private int id;
 	private OshaAudit osha;
 	private OshaAuditDAO oshaDAO;
 	private File uploadFile;
 	private String uploadFileFileName;
 
-	public OshaSave(OshaAuditDAO oshaDAO) {
+	public OshaSave(ContractorAccountDAO accountDAO, OshaAuditDAO oshaDAO, ContractorAuditDAO conAuditDAO, 
+				AuditCategoryDataDAO catDataDAO, AuditDataDAO dao) {
+		
+		super(accountDAO, conAuditDAO, catDataDAO, dao);
 		this.oshaDAO = oshaDAO;
 	}
 
@@ -141,6 +147,12 @@ public class OshaSave extends PicsActionSupport implements Preparable {
 		osha.setUpdateDate(new Date());
 		oshaDAO.save(osha);
 
+		
+		if (button.equals("toggleVerify")) {
+			auditDao.calculateVerifiedPercent( osha.getConAudit() );	
+		}			
+		
+		
 		return SUCCESS;
 	}
 
@@ -154,28 +166,12 @@ public class OshaSave extends PicsActionSupport implements Preparable {
 		return FileUtils.getSimilarFiles(oshaDir, getFileName());
 	}
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	public OshaAudit getOsha() {
 		return osha;
 	}
 
 	public void setOsha(OshaAudit osha) {
 		this.osha = osha;
-	}
-
-	public int getAuditID() {
-		return auditID;
-	}
-
-	public void setAuditID(int auditID) {
-		this.auditID = auditID;
 	}
 
 	public int getCatDataID() {
@@ -226,5 +222,4 @@ public class OshaSave extends PicsActionSupport implements Preparable {
 		return list;
 	}
 
-	
 }
