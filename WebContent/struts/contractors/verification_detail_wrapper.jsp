@@ -107,20 +107,30 @@
 	<fieldset>
 	<ul>
 		<li><label># of Employees:</label>
-			<strong><s:property value="infoSection[69].answer"/></strong>
+			<strong><s:if test="infoSection[69].answer"><s:property value="infoSection[69].answer"/></s:if><s:else>N/A</s:else></strong>
 		</li>
 		<li><label>Total Revenue:</label>
-			<strong><s:property value="infoSection[1616].answer"/></strong>
+			<strong><s:if test="infoSection[1616].answer"><s:property value="infoSection[1616].answer"/></s:if><s:else>N/A</s:else></strong>
 		</li>
 	</ul>
 	</fieldset>
 	<fieldset>
 	<ul>
 		<li><label>SIC:</label>
-			<strong><s:property value="infoSection[55].answer"/></strong>
+			<strong><s:if test="infoSection[55].answer"><s:property value="infoSection[55].answer"/></s:if><s:else>N/A</s:else></strong>
 		</li>
 		<li><label>NAICS:</label>
-			<strong><s:property value="infoSection[57].answer"/></strong>
+			<strong><s:if test="infoSection[57].answer"><s:property value="infoSection[57].answer"/></s:if><s:else>N/A</s:else></strong>
+		</li>
+	</ul>
+	</fieldset>
+	<fieldset>
+	<ul>
+		<li><label>Fatalities:</label>
+			<strong><s:if test="infoSection[103].answer"><s:property value="infoSection[103].answer"/></s:if><s:else>N/A</s:else></strong>
+		</li>
+		<li><label>Citations:</label>
+			<strong><s:if test="infoSection[104].answer"><s:property value="infoSection[104].answer"/></s:if><s:else>N/A</s:else></strong>
 		</li>
 	</ul>
 	</fieldset>
