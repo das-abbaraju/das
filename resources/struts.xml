@@ -436,17 +436,10 @@
 			<result>struts/contractors/verification_audit.jsp</result>
 		</action>
 
-		<action name="VerifySaveFollowUpAjax" method="saveFollowUp"
-			class="com.picsauditing.actions.audits.VerifyView">
+		<action name="ContractorAuditSaveAjax"
+			class="com.picsauditing.actions.audits.ConAuditSave">
 			<result>struts/blank.jsp</result>
 		</action>
-
-		<action name="VerifySendEmailAjax" method="sendEmail"
-			class="com.picsauditing.actions.audits.VerifyView">
-			<result>struts/blank.jsp</result>
-		</action>
-
-
 
 
 		<!-- Audits Manage -->
@@ -713,7 +706,7 @@
 			class="com.picsauditing.actions.MigrateFileStructure">
 			<result>struts/blank.jsp</result>
 		</action>
-
+		
 		<!-- Remember to Categorize your new Struts pages -->
 	</package>
 </struts>

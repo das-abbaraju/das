@@ -32,9 +32,6 @@
 						<s:if test="auditType.Pqf">
 							<td class="center">
 								<input type="button" value="Verify" onclick="showAudit(<s:property value="id"/>); return false;"/>
-								<s:if test="percentVerified == 100">
-									<br/><br/><input type="button" value="Activate" />
-								</s:if>
 							</td>
 						</s:if>
 					</s:iterator>
@@ -174,9 +171,6 @@
 							<td class="center">
 								<s:property value="auditFor"/>
 								<input type="button" value="Verify" onclick="showAudit(<s:property value="id"/>); return false;"/>
-								<s:if test="percentVerified == 100">
-									<br/><br/><input type="button" value="Activate"/>
-								</s:if>
 							</td>	
 						</s:if>
 					</s:iterator>

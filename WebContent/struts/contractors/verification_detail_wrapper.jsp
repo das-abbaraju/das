@@ -64,11 +64,20 @@
         window.open(url,title,pars);
 	 }
 	 
-	 function doneWithAudit() {
-	 	$('verification_audit').innerHTML='';
-	 	return refreshSummary();;
+	 function changeAuditStatus(id, auditStatus) {
+		var pars = 'auditID='+id+'&auditStatus='+auditStatus;
+		var myAjax = new Ajax.Updater('','ContractorAuditSaveAjax.action', 
+		{
+			method: 'post', 
+			parameters: pars,
+			onComplete : function() {
+			$('verification_audit').innerHTML='';
+			refreshSummary();
+			}
+		});
+		return false;
 	 }
-	 
+
 	 function refreshSummary() {
 		pars = 'id=' + <s:property value="contractor.id"/>;
 

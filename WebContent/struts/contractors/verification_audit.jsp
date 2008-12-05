@@ -3,7 +3,13 @@
 <h2><s:property value="conAudit.auditFor" /> <s:property
 	value="conAudit.auditType.auditName" /></h2>
 
-<input type="submit" onclick="return doneWithAudit();" value="Done"/>
+<div class="buttons">
+	<button class="positive" name="button" onclick="changeAuditStatus(<s:property value="conAudit.id"/>,'Active');">Approve</button>
+	<button class="negative" name="button" onclick="changeAuditStatus(<s:property value="conAudit.id"/>,'Pending');">Reject</button>
+</div>
+
+<br/>
+
 <s:form id="verify2">
 <s:if test="conAudit.auditType.pqf">
 	<fieldset style="clear: none; float: left; width: 50%; margin: 0.5em;"><legend><span>PQF
@@ -147,6 +153,10 @@
 	</s:iterator></fieldset>
 </s:else>
 	<div class="clear"/>
-	<input type="submit" onclick="return doneWithAudit();" value="Done"/>
+
+<div class="buttons">
+	<button class="positive" name="button" onclick="changeAuditStatus(<s:property value="conAudit.id"/>,'Active');">Approve</button>
+	<button class="negative" name="button" onclick="changeAuditStatus(<s:property value="conAudit.id"/>,'Pending');">Reject</button>
+</div>
 
 </s:form>
