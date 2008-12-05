@@ -15,11 +15,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
+
 import com.picsauditing.PICS.DateBean;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "flagcriteria")
+// We can't use this yet because hibernate doesn't save this 
+// data yet, see op_editFlagCriteria.jsp
 //@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="daily")
 public class FlagQuestionCriteria {
 	protected int id;
@@ -108,6 +113,7 @@ public class FlagQuestionCriteria {
 	}
 
 	@Enumerated(EnumType.STRING)
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.MultiYearScope") })
 	@Column(name = "multiYearScope", nullable = true)
 	public MultiYearScope getMultiYearScope() {
 		return multiYearScope;
@@ -126,8 +132,6 @@ public class FlagQuestionCriteria {
 			else
 				return !value.equals(answer);
 		if ("Date".equals(questionType)) {
-			DateBean db = new DateBean();
-			
 			try {
 				Date answerDate = DateBean.parseDate(answer);
 				if (">".equals(comparison))

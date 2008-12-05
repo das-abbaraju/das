@@ -216,36 +216,13 @@
 </s:if>
 </s:if>
 
-<s:if test="contractor.emrs.size > 0">
-	<table class="report" style="clear: none">
-		<thead>
-			<tr>
-				<td>Flag</td>
-				<td>EMR</td>
-				<td>Rate</td>
-			</tr>
-		</thead>
-		<tbody>
-		<s:iterator value="contractor.emrs">
-			<tr class="<s:property value="value.flagColor" />">
-				<td class="center"><s:property
-					value="value.flagColor.smallIcon" escape="false" /></td>
-				<td><s:property value="key" /></td>
-				<td class="right">
-				<s:property value="%{new java.text.DecimalFormat('#,##0.000').format(@java.lang.Float@parseFloat(value.answer))}" />
-				</td>
-			</tr>
-		</s:iterator>
-		</tbody>
-	</table>
-</s:if>
-
 <s:if test="auditData.size > 0">
 	<table class="report" style="clear: none">
 		<thead>
 			<tr>
 				<td>Flag</td>
 				<td>Answer</td>
+				<td>For</td>
 				<td>Audit Question</td>
 			</tr>
 		</thead>
@@ -255,6 +232,7 @@
 					<td class="center"><s:property
 						value="value.flagColor.smallIcon" escape="false" /></td>
 					<td class="center"><s:property value="value.answer" /></td>
+					<td><s:property value="value.audit.auditFor" /></td>
 					<td><s:property value="value.question.question" /></td>
 				</tr>
 			</s:iterator>

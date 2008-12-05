@@ -90,7 +90,9 @@ public class FlagCriteria extends DataBean {
 			for(FlagCriteriaDO flagCriteriaDO: flagCriteriaMap.values()) {
 				insertQuery.append("("+opID+",").append(flagCriteriaDO.questionID).append(",'").append(flagCriteriaDO.flagStatus).
 						append("','").append(flagCriteriaDO.isChecked).append("','").append(flagCriteriaDO.comparison).
-						append("','").append(flagCriteriaDO.value).append("','").append(flagCriteriaDO.multiYearScope).append("'),");
+						append("','").append(flagCriteriaDO.value).append("',");
+				insertQuery.append(flagCriteriaDO.multiYearScope == null ? "NULL" : "'"+flagCriteriaDO.multiYearScope+"'");
+				insertQuery.append("),");
 			}
 		try{
 			DBReady();
