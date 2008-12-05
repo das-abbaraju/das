@@ -5,11 +5,9 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.AuditData;
 
 /**
  * Class used to edit a ContractorAudit record with virtually no restrictions
@@ -19,15 +17,9 @@ import com.picsauditing.jpa.entities.AuditData;
  */
 public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 
-	protected OperatorAccountDAO opDao = null;
-	protected AuditTypeDAO auditTypeDao = null;
-
 	public ConAuditMaintain(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, OperatorAccountDAO opDao,
-			AuditTypeDAO auditTypeDao) {
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, OperatorAccountDAO opDao) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
-		this.opDao = opDao;
-		this.auditTypeDao = auditTypeDao;
 	}
 
 	public String execute() throws Exception {
@@ -36,18 +28,18 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 
 		permissions.tryPermission(OpPerms.AuditEdit);
 
-			if ("Save".equals(button)) {
-				auditDao.clear();
-				if (conAudit.getAuditor().getId() == 0)
-					conAudit.setAuditor(null);
-				auditDao.save(conAudit);
-				findConAudit();
-				addActionMessage("Successfully saved data");
-			}
-			if("Delete".equals(button)) {
-				auditDao.remove(conAudit, getFtpDir());
-				return "AuditList";
-			}
+		if ("Save".equals(button)) {
+			auditDao.clear();
+			if (conAudit.getAuditor().getId() == 0)
+				conAudit.setAuditor(null);
+			auditDao.save(conAudit);
+			findConAudit();
+			addActionMessage("Successfully saved data");
+		}
+		if ("Delete".equals(button)) {
+			auditDao.remove(conAudit, getFtpDir());
+			return "AuditList";
+		}
 
 		return SUCCESS;
 	}

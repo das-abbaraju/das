@@ -89,16 +89,13 @@ public class AuditBuilder {
 		}
 
 		/** *** PQF *** */
+		// Find the PQF audit for this contractor
+		// Only ever create ONE PQF audit
 		ContractorAudit pqfAudit = null;
 		for (ContractorAudit conAudit : currentAudits) {
 			if (conAudit.getAuditType().isPqf()) {
-				if (okStatuses.contains(conAudit.getAuditStatus())) {
-					// Contractor already has a PQF, don't add it
-					// TODO: handle multiple PQFs (Pending/Active) at the same
-					// time
-					pqfAudit = conAudit;
-					break;
-				}
+				pqfAudit = conAudit;
+				break;
 			}
 		}
 		if (pqfAudit == null) {
@@ -205,14 +202,16 @@ public class AuditBuilder {
 		Iterator<ContractorAudit> iter = currentAudits.iterator();
 		while (iter.hasNext()) {
 			ContractorAudit conAudit = iter.next();
-			if (conAudit.getAuditStatus().equals(AuditStatus.Pending) && conAudit.getPercentComplete() == 0 && !conAudit.isManuallyAdded()) {
-				// This audit hasn't been started yet, double check to make sure
+			if (conAudit.getAuditStatus().equals(AuditStatus.Pending) 
+					&& conAudit.getPercentComplete() == 0 
+					&& !conAudit.isManuallyAdded()) {
+				// This auto audit hasn't been started yet, double check to make sure
 				// it's still needed
 				boolean needed = false;
 
 				if (conAudit.getAuditType().isPqf())
 					needed = true;
-				if (conAudit.getAuditType().getAuditTypeID() == AuditType.WELCOME)
+				if (conAudit.getAuditType().isAnnualAddendum())
 					needed = true;
 
 				// this doesn't handle one rare case: when a 

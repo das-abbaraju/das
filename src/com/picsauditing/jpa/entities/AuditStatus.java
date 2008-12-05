@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public enum AuditStatus {
 	Pending,
 	Submitted,
+	Resubmitted,
 	Active,
 	Exempt,
 	Expired;
@@ -16,6 +17,20 @@ public enum AuditStatus {
 		for(AuditStatus value : AuditStatus.values())
 			values.add(value.name());
 		return values;
+	}
+	
+	/**
+	 * Is the status Active or Exempt
+	 * @return
+	 */
+	public boolean isActiveResubmittedExempt() {
+		if (this.equals(Active))
+			return true;
+		if (this.equals(Exempt))
+			return true;
+		if (this.equals(Resubmitted))
+			return true;
+		return false;
 	}
 	
 	/**
@@ -42,7 +57,7 @@ public enum AuditStatus {
 
 
 	/**
-	 * Is the status Active or Exempt or Submitted
+	 * Is the status Active or Submitted
 	 * @return
 	 */
 	public boolean isActiveSubmitted() {
@@ -54,7 +69,21 @@ public enum AuditStatus {
 	}
 
 	/**
-	 * Is the status Active or Exempt or Submitted
+	 * Is the status Pending or Submitted
+	 * @return
+	 */
+	public boolean isPendingSubmittedResubmitted() {
+		if (this.equals(Submitted))
+			return true;
+		if (this.equals(Resubmitted))
+			return true;
+		if (this.equals(Pending))
+			return true;
+		return false;
+	}
+	
+	/**
+	 * Is the status Pending or Submitted
 	 * @return
 	 */
 	public boolean isPendingSubmitted() {

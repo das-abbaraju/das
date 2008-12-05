@@ -90,32 +90,39 @@ public class FlagCalculatorSingle {
 
 				int annualAuditCount = 0;
 				for (ContractorAudit conAudit : conAudits) {
-					if (conAudit.getAuditStatus().equals(AuditStatus.Active)
-							|| conAudit.getAuditStatus().equals(audit.getRequiredAuditStatus()) // for
-							// Submitted
-							// Audit
-							|| conAudit.getAuditStatus().equals(AuditStatus.Exempt)) {
-						if (conAudit.getAuditType().equals(audit.getAuditType())
-								|| (conAudit.getAuditType().getAuditTypeID() == AuditType.NCMS && audit.getAuditType()
-										.getAuditTypeID() == AuditType.DESKTOP)) {
-							// We found a matching active audit for this
-							// contractor
-							debug(" ---- found");
+					boolean statusOK = false;
+					boolean typeOK = false;
+					if (conAudit.getAuditStatus() == AuditStatus.Active)
+						statusOK = true;
+					if (conAudit.getAuditStatus() == AuditStatus.Resubmitted)
+						statusOK = true;
+					if (conAudit.getAuditStatus() == AuditStatus.Exempt)
+						statusOK = true;
+					if (conAudit.getAuditStatus() == AuditStatus.Submitted
+							&& audit.getRequiredAuditStatus() == AuditStatus.Submitted)
+						statusOK = true;
+					if (conAudit.getAuditType().equals(audit.getAuditType()))
+						typeOK = true;
+					if (conAudit.getAuditType().getAuditTypeID() == AuditType.NCMS
+							&& audit.getAuditType().getAuditTypeID() == AuditType.DESKTOP)
+						typeOK = true;
 
-							if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM) {
-								// OSHA/EMR Audits may have additional
-								// requirements depending on operator settings
-								// Store the corporate records into a map for
-								// later use
-								annualAuditCount++;
-							} else {
-								audit.setContractorFlag(FlagColor.Green);
-							}
+					if (statusOK && typeOK) {
+						// We found a matching "valid" audit for this 
+						// contractor audit requirement
+						debug(" ---- found");
+
+						if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM) {
+							// We actually require THREE annual addendums 
+							// before we consider this requirement complete
+							annualAuditCount++;
+						} else {
+							audit.setContractorFlag(FlagColor.Green);
 						}
 					}
 				}
 				if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM && annualAuditCount >= 3) {
-					// Make sure we have three annual addendums
+					// Make sure we have atleast three annual addendums
 					audit.setContractorFlag(FlagColor.Green);
 				}
 				// If an active audit doesn't exist, then set
@@ -207,17 +214,17 @@ public class FlagCalculatorSingle {
 								}
 							}
 							flagColor = flagData(flagColor, criteria, data);
-							
+
 						} else if (MultiYearScope.AllThreeYears.equals(scope)) {
 							for (AuditData data : answerMap.values()) {
 								flagColor = flagData(flagColor, criteria, data);
 							}
-							
+
 						} else if (MultiYearScope.ThreeYearAverage.equals(scope)) {
 							AuditData.addAverageData(answerMap);
 							AuditData data = answerMap.get(OshaAudit.AVG);
 							flagColor = flagData(flagColor, criteria, data);
-							
+
 						} else {
 							// This shouldn't happen
 							System.out.println("We have more than answer for "
