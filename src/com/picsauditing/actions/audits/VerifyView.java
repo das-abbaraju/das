@@ -2,6 +2,8 @@ package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -11,7 +13,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.picsauditing.PICS.Grepper;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.AuditDataDAO;
@@ -79,11 +80,16 @@ public class VerifyView extends ContractorActionSupport {
 			}
 		}
 
-		Map<Integer, Map<String, AuditData>> tempAnswers = auditDataDAO.findAnswersByContractor(contractor.getId(), Arrays.<Integer>asList( 69, 1616, 55 , 57 ) );
+		Map<Integer, Map<String, AuditData>> tempAnswers = auditDataDAO.findAnswersByContractor(contractor.getId(),
+				Arrays.<Integer> asList(69, 1616, 55, 57));
 		infoSection = new HashMap<Integer, AuditData>();
-		for(Integer questionID : tempAnswers.keySet())
-			infoSection.put(questionID, tempAnswers.get(questionID).get("")); // Get the PQF data out
-		
+		for (Integer questionID : tempAnswers.keySet())
+			infoSection.put(questionID, tempAnswers.get(questionID).get("")); // Get
+																				// the
+																				// PQF
+																				// data
+																				// out
+
 		// for (AuditCatData auditCatData : getCategories()) {
 		// if (auditCatData.getCategory().getId() == 29)
 		// oshaCatDataId = auditCatData.getId();
@@ -380,15 +386,25 @@ public class VerifyView extends ContractorActionSupport {
 	}
 
 	public List<ContractorAudit> getVerificationAudits() {
-		if( verificationAudits == null ) {
+		if (verificationAudits == null) {
 			verificationAudits = new Grepper<ContractorAudit>() {
 				@Override
 				public boolean check(ContractorAudit t) {
-					return t.getAuditStatus().isPendingSubmitted() 
-					&& (t.getAuditType().isAnnualAddendum() || t.getAuditType().isPqf());
-				} }.grep( getActiveAudits() );
+					return t.getAuditStatus().isPendingSubmitted()
+							&& (t.getAuditType().isAnnualAddendum() || t.getAuditType().isPqf());
+				}
+			}.grep(getActiveAudits());
 		}
-
+		Collections.sort(verificationAudits, new Comparator<ContractorAudit>() {
+			@Override
+			public int compare(ContractorAudit o1, ContractorAudit o2) {
+				if (o1.getAuditFor() == null)
+					return -1;
+				if (o2.getAuditFor() == null)
+					return 1;
+				return o1.getAuditFor().compareTo(o2.getAuditFor());
+			}
+		});
 		return verificationAudits;
 	}
 
