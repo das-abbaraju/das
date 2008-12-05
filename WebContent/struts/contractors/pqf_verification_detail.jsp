@@ -323,17 +323,17 @@ function sendEmail() {
 								<input type="image" name="CheckLicense" src="images/checklicense.gif" alt='Check License' onclick="javascript: document.getElementById('form1').submit(); return false;"/>
 							</s:if>
 					</td>
-					<td><s:textfield name="%{'customVerification['.concat(question.questionID.toString().concat('].answer'))}" disabled="true" value="%{answer}"/></td>
-					<td><s:textfield name="%{'customVerification['.concat(question.questionID.toString().concat('].verifiedAnswer'))}" value="%{verifiedAnswer}"/></td>
+					<td><s:textfield name="%{'customVerification['.concat(question.id.toString().concat('].answer'))}" disabled="true" value="%{answer}"/></td>
+					<td><s:textfield name="%{'customVerification['.concat(question.id.toString().concat('].verifiedAnswer'))}" value="%{verifiedAnswer}"/></td>
 					<td><s:checkbox 
-						name="%{'customVerification['.concat(question.questionID.toString().concat('].verified'))}"
-						onclick="copyCustomAnswer(%{question.questionID});"
+						name="%{'customVerification['.concat(question.id.toString().concat('].verified'))}"
+						onclick="copyCustomAnswer(%{question.id});"
 						value="%{verified}"></s:checkbox>
 					</td>
 			</tr>
 			<tr class="blueMain">
 				<td align="right" colspan="2">Comments:</td>
-				<td style="padding-bottom: 10px;" colspan="2"><s:textfield name="%{'customVerification['.concat(question.questionID.toString().concat('].comment'))}" value="%{comment}" size="49"/></td>
+				<td style="padding-bottom: 10px;" colspan="2"><s:textfield name="%{'customVerification['.concat(question.id.toString().concat('].comment'))}" value="%{comment}" size="49"/></td>
 			</tr>
 			</s:iterator>
 			

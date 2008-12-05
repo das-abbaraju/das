@@ -72,7 +72,7 @@
 			list="filter.tradePerformedByList" cssClass="forms" name="filter.performedBy" />
 			<br />
 		<span id="form1_trade_select" style="display: none" class="clearLink">
-		<s:select id="form1_trade" list="filter.tradeList" listKey="questionID" listValue="question" cssClass="forms" name="filter.trade"
+		<s:select id="form1_trade" list="filter.tradeList" listKey="id" listValue="question" cssClass="forms" name="filter.trade"
 			multiple="true" size="5" /> <script type="text/javascript">updateQuery('form1_trade');</script>
 		<br />
 		<a class="clearLink" href="#"
@@ -182,7 +182,7 @@
 		In</a> = <span id="form1_stateLicensedIn_query">ALL</span><br />
 		<span id="form1_stateLicensedIn_select" style="display: none"
 			class="clearLink"> <s:select id="form1_stateLicensedIn" list="filter.stateLicensesList"
-			cssClass="forms" name="filter.stateLicensedIn" listKey="questionID" listValue="question" multiple="true" size="5" />
+			cssClass="forms" name="filter.stateLicensedIn" listKey="id" listValue="question" multiple="true" size="5" />
 		<script type="text/javascript">updateQuery('form1_stateLicensedIn');</script>
 		<br />
 		<a class="clearLink" href="#"
@@ -196,7 +196,7 @@
 			id="form1_worksIn_query">ALL</span><br />
 		<span id="form1_worksIn_select" style="display: none"
 			class="clearLink"> <s:select id="form1_worksIn" list="filter.worksInList"
-			cssClass="forms" name="filter.worksIn" listKey="questionID" listValue="question" multiple="true" size="5" /> <script
+			cssClass="forms" name="filter.worksIn" listKey="id" listValue="question" multiple="true" size="5" /> <script
 			type="text/javascript">updateQuery('form1_worksIn');</script> <br />
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_worksIn'); return false;">Clear</a> </span></div>
@@ -208,7 +208,7 @@
 		<span id="form1_officeIn_query">ALL</span><br />
 		<span id="form1_officeIn_select" style="display: none"
 			class="clearLink"> <s:select id="form1_officeIn" list="filter.officeInList"
-			cssClass="forms" name="filter.officeIn" listKey="questionID" listValue="question" multiple="true" size="5" /> <script
+			cssClass="forms" name="filter.officeIn" listKey="id" listValue="question" multiple="true" size="5" /> <script
 			type="text/javascript">updateQuery('form1_officeIn');</script> <br />
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_officeIn'); return false;">Clear</a> </span></div>

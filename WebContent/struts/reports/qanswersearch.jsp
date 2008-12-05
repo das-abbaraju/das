@@ -35,11 +35,11 @@ function getQuestionList() {
 	<s:iterator value="questions" status="stat">
 		<div class="filterOption">
 			<div class="buttons">
-				<s:hidden name="questions[%{#stat.index}].questionID" value="%{questionID}"></s:hidden>
+				<s:hidden name="questions[%{#stat.index}].id" value="%{id}"></s:hidden>
 				<s:hidden name="questions[%{#stat.index}].criteria" value="%{criteria}"></s:hidden>
 				<s:hidden name="questions[%{#stat.index}].answer.answer" value="%{answer.answer}"></s:hidden>
 				<s:property value="shortQuestion"/> <s:property value="criteria"/> <s:property value="answer.answer"/>
-				<button type="submit" class="negative" name="button" value="<s:property value="questionID"/>">Remove</button>
+				<button type="submit" class="negative" name="button" value="<s:property value="id"/>">Remove</button>
 			</div>
 		</div>
 	</s:iterator>
@@ -84,7 +84,7 @@ function getQuestionList() {
 			<td colspan="2"><a href="ContractorView.action?id=<s:property value="get('id')"/>"
 				><s:property value="get('name')" /></a></td>
 			<s:iterator value="questions">
-				<td><s:property value="%{get('answer' + questionID)}"/></td>
+				<td><s:property value="%{get('answer' + id)}"/></td>
 			</s:iterator>
 		</tr>
 	</s:iterator>

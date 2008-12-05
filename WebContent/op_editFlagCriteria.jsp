@@ -169,7 +169,7 @@ if (canEditFlagCriteria) {
 		%>
 		</td>
 		<td><a href="QuestionAnswerSearch.action?
-		button=Add&filter.ajax=false&questions[99].questionID=<%= hurdleQuestions.questionID %>">Show</a>
+		button=Add&filter.ajax=false&questions[99].id=<%= hurdleQuestions.questionID %>">Show</a>
 		</td>
 	<%
 	}

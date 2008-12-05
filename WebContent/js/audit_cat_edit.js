@@ -18,7 +18,7 @@ function changeAnswer(questionid, questionType) {
 }
 
 function saveVerifiedAnswer(questionid, elm) {
-	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.questionID=' + questionid + '&auditData.answer=' + escape($F(elm));
+	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.id=' + questionid + '&auditData.answer=' + escape($F(elm));
 	var divName = 'status_'+questionid;
 	var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
 	{
@@ -36,7 +36,7 @@ function saveVerifiedAnswer(questionid, elm) {
 
 function saveComment(questionid, elm) {
 	if (catDataID == 0) return;
-	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.questionID=' + questionid + '&auditData.comment=' + escape($F(elm));
+	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.id=' + questionid + '&auditData.comment=' + escape($F(elm));
 	var divName = 'status_'+questionid;
 	var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
 	{
@@ -90,7 +90,7 @@ function saveAnswer( questionid, elm ) {
 	}
 	
 	var divName = 'status_'+questionid;
-	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.questionID=' + questionid + '&auditData.answer=' + thevalue;
+	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.id=' + questionid + '&auditData.answer=' + thevalue;
 	
 	var myAjax = new Ajax.Updater('', 'AuditDataSaveAjax.action', 
 	{
@@ -111,7 +111,7 @@ function saveAnswer( questionid, elm ) {
 }
 
 function showFileUpload( questionid ) {
-	url = 'AuditDataUpload.action?auditID='+auditID+'&question.questionID=' + questionid;
+	url = 'AuditDataUpload.action?auditID='+auditID+'&question.id=' + questionid;
 	title = 'Upload'+ questionid;
 	pars = 'scrollbars=yes,resizable=yes,width=650,height=450,toolbar=0,directories=0,menubar=0';
 	fileUpload = window.open(url,title,pars);

@@ -41,15 +41,15 @@ function clearSelected(name) {
 	</div>
 
 	<div class="filterOption">Type of Work:<br />
-		<s:select id="questionsTOW" name="questionIDs" multiple="true" size="10" listKey="questionID" listValue="question" list="typeOfWork"></s:select>
+		<s:select id="questionsTOW" name="questionIDs" multiple="true" size="10" listKey="id" listValue="question" list="typeOfWork"></s:select>
 		<br /><a class="clearLink" href="#" onclick="clearSelected('questionsTOW'); return false;">Clear</a>
 	</div>
 	<div class="filterOption">Industries:<br />
-		<s:select id="questionsInd" name="questionIDs" multiple="true" size="10" listKey="questionID" listValue="question" list="industries"></s:select>
+		<s:select id="questionsInd" name="questionIDs" multiple="true" size="10" listKey="id" listValue="question" list="industries"></s:select>
 		<br /><a class="clearLink" href="#" onclick="clearSelected('questionsInd'); return false;">Clear</a>
 	</div>
 	<div class="filterOption">Services Performed:<br />
-		<s:select id="questionsSP" name="questionIDs" multiple="true" size="10" listKey="questionID" listValue="question" list="servicesPerformed"></s:select>
+		<s:select id="questionsSP" name="questionIDs" multiple="true" size="10" listKey="id" listValue="question" list="servicesPerformed"></s:select>
 		<br /><a class="clearLink" href="#" onclick="clearSelected('questionsSP'); return false;">Clear</a>
 	</div>
 	<br clear="all" />
@@ -73,8 +73,8 @@ function clearSelected(name) {
 		<tr>
 			<th><s:property value="number" />. <s:property value="category" /></th>
 			<s:iterator value="questions">
-				<td title="<s:property value="question"/>" class="center<s:if test="data.get([1].id).get(questionID)"> selected</s:if>">
-					<s:checkbox name="incoming['%{[1].id}_%{questionID}']" value="data.get([1].id).get(questionID)"></s:checkbox>
+				<td title="<s:property value="question"/>" class="center<s:if test="data.get([1].id).get(id)"> selected</s:if>">
+					<s:checkbox name="incoming['%{[1].id}_%{id}']" value="data.get([1].id).get(id)"></s:checkbox>
 				</td>
 			</s:iterator>
 		</tr>

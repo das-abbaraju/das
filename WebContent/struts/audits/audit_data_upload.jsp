@@ -13,7 +13,7 @@
 <script type="text/javascript">
 	function closePage() {
 		try {
-			opener.reloadQuestion(<s:property value="question.questionID"/>);
+			opener.reloadQuestion(<s:property value="question.id"/>);
 			opener.focus();
 		} catch(err) {}
 	}
@@ -37,7 +37,7 @@
 </div>
 <s:form enctype="multipart/form-data" method="POST">
 	<s:hidden name="auditID"/>
-	<s:hidden name="question.questionID"/>
+	<s:hidden name="question.id"/>
 	<br />
 	<s:file name="file" size="50"></s:file>
 	<div class="buttons">
@@ -50,7 +50,7 @@
 </s:form>
 <br clear="all"/>
 <s:if test="file.exists()">
-	<div><a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&question.questionID=<s:property value="question.questionID"/>" target="_BLANK">Open Existing <s:property value="fileSize" /> File</a></div>
+	<div><a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&question.id=<s:property value="question.id"/>" target="_BLANK">Open Existing <s:property value="fileSize" /> File</a></div>
 </s:if>
 
 </div>

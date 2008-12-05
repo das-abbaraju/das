@@ -27,7 +27,7 @@
 			</s:if>
 		</s:iterator>
 		<s:iterator value="operatorAccount.flagQuestionCriteria">
-			<s:if test="checked.toString().equals('Yes') && auditQuestion.questionID != 0">
+			<s:if test="checked.toString().equals('Yes') && auditQuestion.id != 0">
 				<td><s:property value="auditQuestion.columnHeader"/></td>
 			</s:if>
 		</s:iterator>
@@ -71,12 +71,12 @@
 				</s:if>
 			</s:iterator>
 			<s:iterator value="operatorAccount.flagQuestionCriteria">
-				<s:if test="checked.toString().equals('Yes') && auditQuestion.questionID != 0">
-					<td><s:if test="%{get('verified' + auditQuestion.questionID)} > 0">
-						<s:property value="%{get('verified' + auditQuestion.questionID)}"/>
+				<s:if test="checked.toString().equals('Yes') && auditQuestion.id != 0">
+					<td><s:if test="%{get('verified' + auditQuestion.id)} > 0">
+						<s:property value="%{get('verified' + auditQuestion.id)}"/>
 					</s:if>
 					<s:else>
-						<s:property value="%{get('answer' + auditQuestion.questionID)}"/>
+						<s:property value="%{get('answer' + auditQuestion.id)}"/>
 					</s:else>
 					</td>
 				</s:if>

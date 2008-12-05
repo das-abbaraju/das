@@ -2,5 +2,5 @@
 <s:iterator value="data"><s:property 
 value="get('id')" />,"<s:property 
 value="get('name')" escape="false" />"<s:iterator value="questions">,"<s:property 
-value="%{get('answer' + questionID)}" escape="false" />"</s:iterator>
+value="%{get('answer' + id)}" escape="false" />"</s:iterator>
 </s:iterator>
