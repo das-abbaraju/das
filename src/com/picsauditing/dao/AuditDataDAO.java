@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.TreeMap;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -88,7 +88,7 @@ public class AuditDataDAO extends PicsDAO {
 		Map<Integer, Map<String, AuditData>> indexedResult = new HashMap<Integer, Map<String, AuditData>>();
 		for (AuditData row : result) {
 			int id = row.getQuestion().getId();
-			Map<String, AuditData> dataMap = new HashMap<String, AuditData>();
+			Map<String, AuditData> dataMap = new TreeMap<String, AuditData>();
 			if (indexedResult.containsKey(id))
 				dataMap = indexedResult.get(id);
 			String key = row.getAudit().getAuditFor();
