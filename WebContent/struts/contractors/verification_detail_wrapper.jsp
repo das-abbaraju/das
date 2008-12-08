@@ -7,22 +7,22 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" /> 
 <script src="js/validate_contractor.js" type="text/javascript"></script>
+	<script type="text/javascript"
+		src="js/scriptaculous/scriptaculous.js?load=effects"></script>
 
 <script type="text/javascript">
 	function toggleVerify(auditId, questionId, catDataId ) {
 		var comment = $F($('comment_' + questionId));
 		var answer = $F($('answer_' + questionId)); 
 
-		$('status_'+questionId).innerHTML="<img src='images/ajax_process.gif' />";
+		setThinking($('status_'+questionId));
 
-		var pars = 'auditData.audit.id='+auditId+'&catDataID='+catDataId+'&auditData.question.id=' + questionId + '&auditData.answer=' + answer + '&auditData.comment=' + comment;
-		var divName = 'qid_' + questionId;
+		var pars = 'auditData.audit.id='+auditId+'&catDataID='+catDataId+'&auditData.question.id=' + questionId + '&auditData.answer=' + answer + '&auditData.comment=' + comment + '&toggleVerify=true';
 		var myAjax = new Ajax.Updater('','AuditToggleVerifyAjax.action', 
 		{
 			method: 'post', 
 			parameters: pars,
 			onComplete : function(transport) {
-				$('status_'+questionId).innerHTML='';
 				var json = transport.responseText.evalJSON();
 				
 				$('verified_' + questionId).toggle();
@@ -34,6 +34,7 @@
 					$('verify_' + questionId ).value = 'Verify';
 				}
 				setApproveButton( json.percentVerified );
+				stopThinking($('status_'+questionId));
 			}
 		});
 		return false;
@@ -42,7 +43,7 @@
 		var comment = $F($('comment_' + oshaId));
 		var applicable = $F($('applicable_' + oshaId));
 	
-		$('status_'+oshaId).innerHTML="<img src='images/ajax_process.gif' />";
+		setThinking($('status_'+oshaId));
 	
 		var pars = '';
 		
@@ -61,7 +62,6 @@
 			method: 'post', 
 			parameters: pars,
 			onComplete : function(transport) {
-			$('status_'+oshaId).innerHTML='';
 
 				var json = transport.responseText.evalJSON();
 				
@@ -75,10 +75,58 @@
 				}
 				
 				setApproveButton( json.percentVerified );
+				stopThinking($('status_'+oshaId));
 			}
 		});
 		return false;
 	}
+	function setComment(auditId, questionId, catDataId ) {
+		var comment = $F($('comment_' + questionId));
+
+		setThinking($('status_'+questionId));
+
+		var pars = 'auditData.audit.id='+auditId+'&catDataID='+catDataId+'&auditData.question.id=' + questionId + '&auditData.comment=' + comment;
+		var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
+		{
+			method: 'post', 
+			parameters: pars,
+			onComplete : function(transport) {
+			
+				new Effect.Highlight($('comment_' + questionId),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+			
+				stopThinking($('status_'+questionId));
+			}
+		});
+		return false;
+	}
+	function setOSHAComment( oshaId ) {
+		var comment = $F($('comment_' + oshaId));
+	
+		setThinking($('status_'+oshaId));
+	
+		var pars = 'id='+oshaId+'&osha.comment=' + comment + '&button=save';
+
+		var myAjax = new Ajax.Updater('','AuditToggleOSHAVerifyAjax.action', 
+		{
+			method: 'post', 
+			parameters: pars,
+			onComplete : function(transport) {
+			
+				new Effect.Highlight($('comment_' + oshaId),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+
+				stopThinking($('status_'+oshaId));
+			}
+		});
+		return false;
+	}
+	
+	function setThinking( thinkElement ) {
+		thinkElement.innerHTML="<img src='images/ajax_process.gif' />";
+	}
+	function stopThinking( thinkElement ) {
+		thinkElement.innerHTML="";
+	}
+	
 	
 	function setApproveButton( newPercent ) {
 	

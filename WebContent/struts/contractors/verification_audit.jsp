@@ -49,7 +49,7 @@
 			<li id="verified_<s:property value="question.id"/>" style="display: <s:property value="#attr.displayVerified"/>;"><label>Verified:</label><s:div cssStyle="display:inline;" id="verify_details_%{question.id}"><s:date name="dateVerified"
 				format="MM/dd/yyyy" /> by <s:property value="auditor.name"/></s:div></li>
 			
-			<li><label>Comment:</label> <s:select id="comment_%{question.id}" list="emrProblems" name="comment" /></li>
+			<li><label>Comment:</label> <s:select onchange="return setComment( %{conAudit.id}, %{question.id}, %{question.subCategory.id});" id="comment_%{question.id}" list="emrProblems" name="comment" /></li>
 			<li>
 			<hr>
 			</li>
@@ -88,7 +88,7 @@
 			<li id="verified_<s:property value="question.id"/>" style="display: <s:property value="#attr.displayVerified"/>;"><label>Verified:</label><s:div cssStyle="display:inline;" id="verify_details_%{question.id}"><s:date name="dateVerified"
 				format="MM/dd/yyyy" /> by <s:property value="auditor.name"/></s:div></li>
 
-			<li><label>Comment:</label> <s:select id="comment_%{question.id}" list="emrProblems" name="comment" /></li>
+			<li><label>Comment:</label> <s:select onchange="return setComment(%{conAudit.id}, %{question.id}, %{question.subCategory.id});" id="comment_%{question.id}" list="emrProblems" name="comment" /></li>
 			<li>
 			<hr>
 			</li>
@@ -122,7 +122,7 @@
 				<li id="verified_<s:property value="id"/>" style="display: <s:property value="#attr.displayVerified"/>;"><label>Verified:</label><s:div cssStyle="display:inline;" id="verify_details_%{id}"><s:date name="verifiedDate"
 						format="MM/dd/yyyy" /> by <s:property value="conAudit.auditor.name"/></s:div></li>
 				
-				<li><label>Comment:</label> <s:select id="comment_%{id}" list="oshaProblems"
+				<li><label>Comment:</label> <s:select onchange="return setOSHAComment(%{id});" id="comment_%{id}" list="oshaProblems"
 					name="comment" /></li>
 
 				<li>
