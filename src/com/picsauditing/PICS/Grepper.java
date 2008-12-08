@@ -10,12 +10,16 @@ public abstract class Grepper <T> {
 	public List<T> grep( List<T> in ) {
 		
 		List<T> output = new Vector<T>();
+
+		if( in != null ) {
 		
-		for( T t : in ) {
-			if( check(t)) {
-				output.add(t);
+			for( T t : in ) {
+				if( check(t)) {
+					output.add(t);
+				}
 			}
 		}
+		
 		return output;
 	}
 	
