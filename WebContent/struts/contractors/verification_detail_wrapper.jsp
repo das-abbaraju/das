@@ -17,12 +17,23 @@
 
 		var pars = 'auditData.audit.id='+auditId+'&catDataID='+catDataId+'&auditData.question.id=' + questionId + '&auditData.answer=' + answer + '&auditData.comment=' + comment;
 		var divName = 'qid_' + questionId;
-		var myAjax = new Ajax.Updater(divName,'AuditToggleVerifyAjax.action', 
+		var myAjax = new Ajax.Updater('','AuditToggleVerifyAjax.action', 
 		{
 			method: 'post', 
 			parameters: pars,
-			onComplete : function() {
-			$('status_'+questionId).innerHTML='';
+			onComplete : function(transport) {
+				$('status_'+questionId).innerHTML='';
+				var json = transport.responseText.evalJSON();
+				
+				$('verified_' + questionId).toggle();
+				
+				if( json.who ) {
+					$('verify_' + questionId ).value = 'Unverify';
+					$('verify_details_' + questionId).innerHTML = json.dateVerified + ' by ' + json.who;
+				} else {
+					$('verify_' + questionId ).value = 'Verify';
+				}
+				setApproveButton( json.percentVerified );
 			}
 		});
 		return false;
@@ -45,15 +56,39 @@
 
 		pars = 'id='+oshaId+'&osha.comment=' + comment +'&osha.applicable='+applicable+'&osha.manHours='+manHours+'&osha.fatalities='+fatalities+'&osha.lostWorkCases='+lwc+'&osha.lostWorkDays='+lwd+'&osha.injuryIllnessCases='+imc+'&osha.restrictedWorkCases='+rwc+'&osha.recordableTotal='+tii + '&button=toggleVerify';
 
-		var divName = 'oid_' + oshaId;
-		var myAjax = new Ajax.Updater(divName,'AuditToggleOSHAVerifyAjax.action', 
+		var myAjax = new Ajax.Updater('','AuditToggleOSHAVerifyAjax.action', 
 		{
 			method: 'post', 
 			parameters: pars,
-			onComplete : function() {
+			onComplete : function(transport) {
 			$('status_'+oshaId).innerHTML='';
+
+				var json = transport.responseText.evalJSON();
+				
+				$('verified_' + oshaId).toggle();
+				
+				if( json.who ) {
+					$('verify_' + oshaId ).value = 'Unverify';
+					$('verify_details_' + oshaId).innerHTML = json.dateVerified + ' by ' + json.who;
+				} else {
+					$('verify_' + oshaId ).value = 'Verify';
+				}
+				
+				setApproveButton( json.percentVerified );
 			}
 		});
+		return false;
+	}
+	
+	function setApproveButton( newPercent ) {
+	
+		if( newPercent == 100 ) {
+			$('approveButton1').show();
+			$('approveButton2').show();
+		} else {
+			$('approveButton1').hide();
+			$('approveButton2').hide();
+		}
 		return false;
 	}
 	

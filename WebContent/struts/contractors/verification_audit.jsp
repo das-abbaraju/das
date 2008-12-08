@@ -1,10 +1,18 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
+	<s:if test="conAudit.percentVerified != null && conAudit.percentVerified == 100">
+		<s:set name="showApproveButton" value="'inline'"/>
+	</s:if>
+	<s:else>
+		<s:set name="showApproveButton" value="'none'"/>
+	</s:else>
+
+
 <h2><s:property value="conAudit.auditFor" /> <s:property
 	value="conAudit.auditType.auditName" /></h2>
 
 <div class="buttons">
-	<button class="positive" name="button" onclick="changeAuditStatus(<s:property value="conAudit.id"/>,'Active');">Approve</button>
+	<button id="approveButton1" style="display: <s:property value="#attr.showApproveButton"/>;" class="positive" name="button" onclick="changeAuditStatus(<s:property value="conAudit.id"/>,'Active');">Approve</button>
 	<button class="negative" name="button" onclick="changeAuditStatus(<s:property value="conAudit.id"/>,'Pending');">Reject</button>
 </div>
 
@@ -22,23 +30,25 @@
 
 			<li><label>Answer:</label> <s:textfield id="answer_%{question.id}" name="answer"></s:textfield>
 			<s:if test="verified == false">
-				<input id="verify_<s:property value="question.id"/>" type="submit" 
-					onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="question.subCategory.id"/>);" 
-					value="Verify"/>
-				<input id="unverify_<s:property value="question.id"/>" style="display: none;" type="submit" 
-					onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="question.subCategory.id"/>);" value="Unverify"/>
-					<s:div cssStyle="display : inline;" id="status_%{question.id}"></s:div>
+				<s:set name="verifyText" value="'Verify'"/>
 			</s:if>
 			<s:else>
-				<input id="verify_<s:property value="question.id"/>" type="submit" style="display: none;" onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="question.subCategory.id"/>);" value="Verify"/>
-				<input id="unverify_<s:property value="question.id"/>" type="submit" onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="question.subCategory.id"/>);" value="Unverify"/>
-				<s:div cssStyle="display : inline;" id="status_%{question.id}"></s:div>
-			</s:else></li>
+				<s:set name="verifyText" value="'Unverify'"/>
+			</s:else>
+
+			<input id="verify_<s:property value="question.id"/>" type="submit" onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="question.subCategory.id"/>);"	value="<s:property value="#attr.verifyText"/>"/>
+			<s:div cssStyle="display : inline;" id="status_%{question.id}"></s:div></li>
 			
 			<s:if test="verified">
-				<li><label>Verified:</label><s:date name="dateVerified"
-					format="MM/dd/yyyy" /> by <s:property value="auditor.name"/></li>
+				<s:set name="displayVerified" value="'block'"/>
 			</s:if>
+			<s:else>
+				<s:set name="displayVerified" value="'none'"/>
+			</s:else>
+						
+			<li id="verified_<s:property value="question.id"/>" style="display: <s:property value="#attr.displayVerified"/>;"><label>Verified:</label><s:div cssStyle="display:inline;" id="verify_details_%{question.id}"><s:date name="dateVerified"
+				format="MM/dd/yyyy" /> by <s:property value="auditor.name"/></s:div></li>
+			
 			<li><label>Comment:</label> <s:select id="comment_%{question.id}" list="emrProblems" name="comment" /></li>
 			<li>
 			<hr>
@@ -57,24 +67,27 @@
 				<s:property value="question.question"/></li>
 
 			<li><label>Answer:</label> <s:textfield id="answer_%{question.id}" name="answer"></s:textfield>
+
 			<s:if test="verified == false">
-				<input id="verify_<s:property value="question.id"/>" type="submit" 
-					onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="question.subCategory.id"/>);" 
-					value="Verify"/>
-				<input id="unverify_<s:property value="question.id"/>" style="display: none;" type="submit" 
-					onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="question.subCategory.id"/>);" value="Unverify"/>
-					<s:div id="status_%{question.id}" cssStyle="display : inline;"></s:div>
+				<s:set name="verifyText" value="'Verify'"/>
 			</s:if>
 			<s:else>
-				<input id="verify_<s:property value="question.id"/>" type="submit" style="display: none;" onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="question.subCategory.id"/>);" value="Verify"/>
-				<input id="unverify_<s:property value="question.id"/>" type="submit" onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="question.subCategory.id"/>);" value="Unverify"/>
-				<s:div id="status_%{question.id}" cssStyle="display : inline;"></s:div>
-			</s:else></li>
+				<s:set name="verifyText" value="'Unverify'"/>
+			</s:else>
+
+			<input id="verify_<s:property value="question.id"/>" type="submit" onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="question.subCategory.id"/>);"	value="<s:property value="#attr.verifyText"/>"/>
+			<s:div cssStyle="display : inline;" id="status_%{question.id}"></s:div></li>
 			
 			<s:if test="verified">
-				<li><label>Verified:</label><s:date name="dateVerified"
-					format="MM/dd/yyyy" /> by <s:property value="auditor.name"/></li>
+				<s:set name="displayVerified" value="'block'"/>
 			</s:if>
+			<s:else>
+				<s:set name="displayVerified" value="'none'"/>
+			</s:else>
+						
+			<li id="verified_<s:property value="question.id"/>" style="display: <s:property value="#attr.displayVerified"/>;"><label>Verified:</label><s:div cssStyle="display:inline;" id="verify_details_%{question.id}"><s:date name="dateVerified"
+				format="MM/dd/yyyy" /> by <s:property value="auditor.name"/></s:div></li>
+
 			<li><label>Comment:</label> <s:select id="comment_%{question.id}" list="emrProblems" name="comment" /></li>
 			<li>
 			<hr>
@@ -88,22 +101,27 @@
 		<s:if test="corporate">
 		<s:div id="oid_%{id}">
 			<ol>
-				<s:if test="verified">
-					<input type="submit" style="display: none;" onclick="return toggleOSHAVerify(<s:property value="id"/>);" value="Verify"/>
-					<input type="submit" onclick="return toggleOSHAVerify(<s:property value="id"/>);" value="Unverify"/><s:div cssStyle="display : inline;" id="status_%{id}"></s:div>
-					<li><label>Verified:</label><s:date name="verifiedDate"
-						format="MM/dd/yyyy" /> by <s:property value="conAudit.auditor.name"/></li>
-
+				<s:if test="verified == false">
+					<s:set name="verifyText" value="'Verify'"/>
 				</s:if>
 				<s:else>
-					<input type="submit" 
-						onclick="return toggleOSHAVerify(<s:property value="id"/>);" 
-						value="Verify"/>
-					<input style="display: none;" type="submit" 
-						onclick="return toggleOSHAVerify(<s:property value="id"/>);" value="Unverify"/><s:div id="status_%{id}"></s:div>
+					<s:set name="verifyText" value="'Unverify'"/>
 				</s:else>
+			
+				<input id="verify_<s:property value="id"/>"type="submit" onclick="return toggleOSHAVerify(<s:property value="id"/>);" value="<s:property value="#attr.verifyText"/>"/>
+				<s:div id="status_%{id}"></s:div>
+				
 
-
+				<s:if test="verified">
+					<s:set name="displayVerified" value="'block'"/>
+				</s:if>
+				<s:else>
+					<s:set name="displayVerified" value="'none'"/>
+				</s:else>
+	
+				<li id="verified_<s:property value="id"/>" style="display: <s:property value="#attr.displayVerified"/>;"><label>Verified:</label><s:div cssStyle="display:inline;" id="verify_details_%{id}"><s:date name="verifiedDate"
+						format="MM/dd/yyyy" /> by <s:property value="conAudit.auditor.name"/></s:div></li>
+				
 				<li><label>Comment:</label> <s:select id="comment_%{id}" list="oshaProblems"
 					name="comment" /></li>
 
@@ -155,7 +173,8 @@
 	<div class="clear"/>
 
 <div class="buttons">
-	<button class="positive" name="button" onclick="changeAuditStatus(<s:property value="conAudit.id"/>,'Active');">Approve</button>
+
+	<button id="approveButton2" style="display: <s:property value="#attr.showApproveButton"/>;" class="positive" name="button" onclick="changeAuditStatus(<s:property value="conAudit.id"/>,'Active');">Approve</button>
 	<button class="negative" name="button" onclick="changeAuditStatus(<s:property value="conAudit.id"/>,'Pending');">Reject</button>
 </div>
 
