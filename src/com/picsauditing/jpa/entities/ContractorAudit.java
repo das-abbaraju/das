@@ -116,6 +116,14 @@ public class ContractorAudit implements java.io.Serializable {
 		if (auditStatus != null && this.auditStatus != null && !auditStatus.equals(this.auditStatus)) {
 			// If we're changing the status to Submitted or Active, then we need
 			// to set the dates
+			if (auditStatus.equals(AuditStatus.Pending)) {
+				if (closedDate != null)
+					closedDate = null;
+				if(completedDate != null)
+					completedDate = null;
+				if(expiresDate != null)
+					expiresDate = null;
+			}
 			if (auditStatus.equals(AuditStatus.Submitted)) {
 				// If we're going "forward" then (re)set the closedDate
 				if (completedDate == null)
