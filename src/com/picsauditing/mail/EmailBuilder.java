@@ -59,7 +59,8 @@ public class EmailBuilder {
 	public EmailQueue build() throws Exception {
 		EmailQueue email = new EmailQueue();
 
-		email.setEmailTemplate(template);
+		email.setEmailTemplate(new EmailTemplate());
+		email.getEmailTemplate().setId(template.getId());
 		email.setCreationDate(new Date());
 		email.setFromAddress(fromAddress);
 		email.setToAddresses(toAddresses);

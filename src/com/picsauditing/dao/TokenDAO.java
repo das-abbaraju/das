@@ -43,9 +43,8 @@ public class TokenDAO extends PicsDAO {
 					|| type.equals(ListType.ContractorOperator)
 					|| type.equals(ListType.Certificate))
 				where += ",'Contractor'";
-			where += ")";
 		}
-		
+		where += ")";
 		Query query = em.createQuery("FROM Token " + where + " ORDER BY listType, tokenName");
 		return query.getResultList();
 	}

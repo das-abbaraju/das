@@ -206,7 +206,7 @@ public class AuditData implements java.io.Serializable {
 
 	@Transient
 	public boolean isCommentLength() {
-		if (!isVerified() && comment.length() > 0)
+		if (!isVerified() && comment != null && comment.length() > 0)
 			return true;
 		return false;
 	}

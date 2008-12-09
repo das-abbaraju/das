@@ -177,6 +177,20 @@
 		});
 		return false;
 	 }
+	
+	function previewEmail() {
+		pars = 'id='+<s:property value="contractor.id" />;
+		$('emailTemplate').innerHTML ="<img src='images/ajax_process.gif' />";
+		var myAjax = new Ajax.Updater('emailTemplate', 'VerifyPreviewEmailAjax.action', {method: 'post', parameters: pars});
+	}
+	 
+	function sendEmail() {
+		pars = 'id='+<s:property value="contractor.id" />;
+		pars +='&emailBody=' +escape($F($('body')));
+		pars +='&emailSubject=' +escape($F($('subject')));
+		var myAjax = new Ajax.Updater('emailStatus', 'VerifySendEmailAjax.action', {method: 'post', parameters: pars});
+		new Effect.Highlight($('emailStatus'), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+	}
 	 
 </script>
 
@@ -235,5 +249,30 @@
 
 <div id="verification_audit"></div>
 <div class="clear"></div>
+	<table>
+		<tr bgcolor="#003366" class="whiteTitle">
+			<td>Contractor Notes:</td>
+		</tr>
+		<tr class="blueMain">
+			<td><s:property value="contractorNotes"
+				escape="false" /><br />
+			<a href="add_notes.jsp?id=<s:property value="id" />">...show all
+			notes</a></td>
+		</tr>
+		<tr class="blueMain">
+			<td><div class="buttons">
+					<button name="button" onclick="previewEmail();">Preview Email</button>
+					<button class="positive" name="button" onclick="sendEmail();">Send Email</button>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td id="emailTemplate"></td>
+		</tr>
+		<tr>
+			<td><div id="emailStatus" style="font-style: italic; color: red;"></div></td>
+		</tr>
+	</table>
+
 </body>
 </html>
