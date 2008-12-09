@@ -7,6 +7,24 @@
 <s:property value="conAudit.contractorAccount.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
+<script src="js/prototype.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/scriptaculous/scriptaculous.js?load=effects"></script>
+<script type="text/javascript">
+	function resubmitPqf() {
+		var data = $('confirm').checked;
+		if(!data) {
+			alert("Please check the check box");
+			return;
+		}
+		var pars = 'auditID='+<s:property value="auditID"/>+'&button=ReSubmit';
+		var myAjax = new Ajax.Updater('','ResubmitAuditAjax.action', 
+		{
+			method: 'post', 
+			parameters: pars,
+		});
+		return false;
+	}
+</script>
 </head>
 <body>
 <s:include value="conHeader.jsp" />
@@ -27,6 +45,13 @@
 		<s:submit value="%{'Close '.concat(conAudit.auditType.auditName)}" disabled="!canClose" />
 	</s:if>
 </s:form>
+<s:if test="canResubmit">
+	<div id="info">
+		<s:checkbox id="confirm" name="''"/> I verify that all information contained in this form is correct and up to date to the best of my ability.<br/>
+		<s:submit value="Resubmit PQF" onclick="resubmitPqf()"></s:submit>
+	</div>
+</s:if>
+
 
 <table class="report">
 	<thead>

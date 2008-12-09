@@ -54,6 +54,16 @@ public class ContractorAuditAction extends AuditActionSupport {
 			return LOGIN;
 		this.findConAudit();
 		
+		if("ReSubmit".equals(button)) {
+			conAudit.getAuditStatus();
+			if(conAudit.getAuditStatus().equals(AuditStatus.Active))
+				conAudit.setAuditStatus(AuditStatus.Resubmitted);
+			if(conAudit.getAuditStatus().isPendingSubmitted() || conAudit.getAuditStatus().equals(AuditStatus.Expired))
+				conAudit.setAuditStatus(AuditStatus.Submitted);
+			conAudit.setExpiresDate(DateBean.addMonths(conAudit.getExpiresDate(), 12));
+			auditDao.save(conAudit);
+			return SUCCESS;
+		}
 		// Some stuff like rebuilding categories and percentages doesn't have to be done everytime
 		boolean fullLoad = true;
 		// Try and guess to see if we need it or not
@@ -223,6 +233,15 @@ public class ContractorAuditAction extends AuditActionSupport {
 
 	public boolean isCanApply() {
 		return isCanApply;
+	}
+	
+	public boolean isCanResubmit() {
+		if(conAudit.getAuditType().isPqf() 
+				&& (!conAudit.getAuditStatus().equals(AuditStatus.Exempt) 
+						|| !conAudit.getAuditStatus().equals(AuditStatus.Resubmitted)) 
+				&& DateBean.getDateDifference(conAudit.getExpiresDate()) < 90)
+			return true;
+		return false;
 	}
 
 }

@@ -348,6 +348,11 @@
 			</result>
 		</action>
 
+		<action name="ResubmitAuditAjax"
+			class="com.picsauditing.actions.audits.ContractorAuditAction">
+			<result>struts/blank.jsp</result>
+		</action>
+
 		<action name="AuditCat"
 			class="com.picsauditing.actions.audits.AuditCategoryAction">
 			<result>struts/audits/audit_cat.jsp</result>
