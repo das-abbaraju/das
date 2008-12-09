@@ -429,6 +429,16 @@
 			class="com.picsauditing.actions.audits.VerifyView">
 			<result>struts/contractors/verification_detail.jsp</result>
 		</action>
+		
+		<action name="VerifyPreviewEmailAjax" method="previewEmail"
+			class="com.picsauditing.actions.audits.VerifyView">
+			<result>struts/contractors/verification_mail.jsp</result>
+		</action>
+
+		<action name="VerifySendEmailAjax" method="sendEmail"
+			class="com.picsauditing.actions.audits.VerifyView">
+			<result>struts/blank.jsp</result>
+		</action>
 
 		<action name="VerifyAuditAjax"
 			class="com.picsauditing.actions.audits.VerifyAudit">
