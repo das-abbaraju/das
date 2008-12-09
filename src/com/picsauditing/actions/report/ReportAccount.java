@@ -68,17 +68,26 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (!forceLogin())
 			return LOGIN;
 
+		// Figure out if this is mailmerge call or not
+		// This is not very robust, we should refactor this eventually
+		// if (!filter.isAjax() && filter.isAllowMailMerge()) {
+		if (button != null && button.contains("Write Email")) {
+			// This condition only occurs when sending results to the mail merge
+			// tool
+			this.mailMerge = true;
+		}
+
 		checkPermissions();
 		if (runReport()) {
 			buildQuery();
 			run(sql);
+			WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
+			wizardSession.clear();
+			wizardSession.setFilter(listType, filter);
+
+			return returnResult();
 		}
-
-		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
-		wizardSession.clear();
-		wizardSession.setFilter(listType, filter);
-
-		return returnResult();
+		return SUCCESS;
 	}
 
 	protected String returnResult() throws IOException {
@@ -93,6 +102,14 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			ServletActionContext.getResponse().sendRedirect("MassMailer.action");
 			this.addActionMessage("Redirected to MassMailer");
 			return BLANK;
+		}
+		
+		if (download) {
+			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
+			filename += ".csv";
+
+			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
 		}
 
 		return SUCCESS;

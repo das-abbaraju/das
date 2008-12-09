@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.ListType;
@@ -54,14 +53,6 @@ public class ReportActionSupport extends PicsActionSupport {
 			report.setCurrentPage(showPage);
 
 		data = report.getPage();
-		
-		if (download) {
-			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
-			filename += ".csv";
-
-			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
-			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
-		}
 	}
 
 	public int getShowPage() {
