@@ -9,13 +9,13 @@
 			<s:if test="pqfQuestions.size() > 0 ">
 				<thead>
 					<tr>
-						<td colspan="3">PQF</td>
+						<td>PQF</td>
 						<td>Answer</td>
 					</tr>
 				</thead>
 				<s:iterator value="pqfQuestions.values">
 					<tr>
-						<td colspan="3"><s:property
+						<td><s:property
 							value="question.subCategory.subCategory" />/<s:property
 							value="question.question" /></td>
 						<s:if test="value.verified">
@@ -28,7 +28,7 @@
 					</tr>
 				</s:iterator>
 				<tr>
-					<td colspan="3"></td>
+					<td></td>
 					<s:iterator value="verificationAudits">
 						<s:if test="auditType.Pqf">
 							<td class="center">
@@ -38,7 +38,9 @@
 					</s:iterator>
 				</tr>
 			</s:if>
-
+		</table>	
+		<br/>
+		<table class="summary">
 			<s:if test="oshas.size() > 0">
 				<thead>
 					<tr>
