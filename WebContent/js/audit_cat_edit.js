@@ -81,8 +81,6 @@ function saveComment(questionid, elm) {
 function saveAnswer( questionid, elm ) {
 	if (catDataID == 0) return;
 	
-	setThinking($('thinking_' + questionid));
-	
 	var thevalue = '';
 	
 	if( elm.type == 'checkbox') {
@@ -133,8 +131,6 @@ function saveAnswer( questionid, elm ) {
 				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 			else
 				alert("Failed to save answer" + transport.statusText + transport.responseText);
-				
-			stopThinking($('thinking_' + questionid));
 		}
 	});
 	return true;
