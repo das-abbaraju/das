@@ -1,3 +1,11 @@
+function setThinking( thinkElement ) {
+	thinkElement.innerHTML="<img src='images/ajax_process.gif' />";
+}
+function stopThinking( thinkElement ) {
+	thinkElement.innerHTML="";
+}
+
+
 function changeAnswer(questionid, questionType) {
 	var elm; 
 	
@@ -17,6 +25,9 @@ function changeAnswer(questionid, questionType) {
 function saveVerifiedAnswer(questionid, elm) {
 	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.id=' + questionid + '&auditData.answer=' + escape($F(elm)) + '&toggleVerify=true';
 	var divName = 'status_'+questionid;
+	
+	setThinking($('thinking_' + questionid));
+	
 	var myAjax = new Ajax.Updater('','AuditToggleVerifyAjax.action', 
 	{
 		method: 'post', 
@@ -34,6 +45,8 @@ function saveVerifiedAnswer(questionid, elm) {
 					$('verifyButton_' + questionid ).value = 'Verify';
 				}
 
+				stopThinking($('thinking_' + questionid));
+
 				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 
 		}
@@ -43,6 +56,8 @@ function saveVerifiedAnswer(questionid, elm) {
 
 function saveComment(questionid, elm) {
 	if (catDataID == 0) return;
+
+	setThinking($('thinking_' + questionid));
 
 	var comment = $F($('comments_' + questionid));
 	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.id=' + questionid + '&auditData.comment=' + comment;
@@ -56,6 +71,8 @@ function saveComment(questionid, elm) {
 				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 			else
 				alert("Failed to save comment" + transport.statusText + transport.responseText);
+				
+				stopThinking($('thinking_' + questionid));
 		}
 	});
 }
@@ -63,6 +80,8 @@ function saveComment(questionid, elm) {
 
 function saveAnswer( questionid, elm ) {
 	if (catDataID == 0) return;
+	
+	setThinking($('thinking_' + questionid));
 	
 	var thevalue = '';
 	
@@ -114,6 +133,8 @@ function saveAnswer( questionid, elm ) {
 				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 			else
 				alert("Failed to save answer" + transport.statusText + transport.responseText);
+				
+			stopThinking($('thinking_' + questionid));
 		}
 	});
 	return true;
