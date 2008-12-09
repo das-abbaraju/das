@@ -1,34 +1,41 @@
 function changeAnswer(questionid, questionType) {
-	var elm = 'answer_'+questionid;
-	var value = $F($(elm));
+	var elm; 
+	
 	if (questionType == 'Radio' || questionType == 'Yes/No' || questionType == 'Yes/No/NA') {
 		var selector = "input[type=radio][name='verifiedAnswer_"+questionid+"'][value='"+value+"']";
-		var input = $$(selector)[0];
-		input.checked = true;
+		elm = $$(selector)[0];
 	}
 	else if(questionType == 'Check Box') {
-		if(value = 'X') {
-			$('verifiedBox_'+questionid).checked = true;
-		}
+		elm = $('verifiedBox_'+questionid).checked;
 	}
 	else {		
-		$('verifiedBox_'+questionid).value = value;
+		elm = $('verifiedBox_'+questionid);
 	}
 	saveVerifiedAnswer(questionid, elm); 
 }
 
 function saveVerifiedAnswer(questionid, elm) {
-	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.id=' + questionid + '&auditData.answer=' + escape($F(elm));
+	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.id=' + questionid + '&auditData.answer=' + escape($F(elm)) + '&toggleVerify=true';
 	var divName = 'status_'+questionid;
-	var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
+	var myAjax = new Ajax.Updater('','AuditToggleVerifyAjax.action', 
 	{
 		method: 'post', 
 		parameters: pars,
 		onSuccess: function(transport) {
 			if (transport.status == 200)
+
+				$('verify_details_' + questionid).toggle();
+				var json = transport.responseText.evalJSON();
+				
+				if( json.who ) {
+					$('verifyButton_' + questionid ).value = 'Unverify';
+					$('verify_details_' + questionid).innerHTML = 'Verified on ' + json.dateVerified + ' by ' + json.who;
+				} else {
+					$('verifyButton_' + questionid ).value = 'Verify';
+				}
+
 				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-			else
-				alert("Failed to save comment" + transport.statusText + transport.responseText);
+
 		}
 	});
 }
@@ -36,7 +43,9 @@ function saveVerifiedAnswer(questionid, elm) {
 
 function saveComment(questionid, elm) {
 	if (catDataID == 0) return;
-	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.id=' + questionid + '&auditData.comment=' + escape($F(elm));
+
+	var comment = $F($('comments_' + questionid));
+	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.id=' + questionid + '&auditData.comment=' + comment;
 	var divName = 'status_'+questionid;
 	var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
 	{
