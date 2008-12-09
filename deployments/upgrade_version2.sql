@@ -1,4 +1,56 @@
--- ON LIVE BEFORE
+/** UPGRADE TABLES AND COLUMNS DDL **/
+
+alter table `audit_operator` 
+	add column `requiredAuditStatus` varchar(15)
+		COLLATE latin1_swedish_ci NULL DEFAULT 'Active' after `requiredForFlag`;
+
+alter table `contractor_audit` 
+	add column `auditFor` varchar(50)  COLLATE latin1_swedish_ci NULL after `manuallyAdded`, 
+	drop key `auditTypeID_conID_createdDate`, 
+	add KEY `auditTypeID_conID_createdDate`(`conID`,`auditTypeID`);
+
+alter table `flagcriteria` 
+	add column `multiYearScope` enum('LastYearOnly','ThreeYearAverage','AllThreeYears')  
+		COLLATE latin1_swedish_ci NULL after `validationRequired`;
+
+create table `osha_audit`(
+	`id` smallint(6) unsigned NOT NULL  auto_increment  , 
+	`auditID` mediumint(8) unsigned NOT NULL   , 
+	`SHAType` enum('OSHA','MSHA') COLLATE latin1_swedish_ci NOT NULL  DEFAULT 'OSHA'  , 
+	`location` varchar(100) COLLATE latin1_swedish_ci NULL   , 
+	`description` varchar(250) COLLATE latin1_swedish_ci NULL   , 
+	`auditorID` smallint(6) NULL  DEFAULT '0'  , 
+	`verifiedDate` date NULL   , 
+	`applicable` tinyint(4) NULL  DEFAULT '1'  , 
+	`fileUploaded` tinyint(4) NULL  DEFAULT '1'  , 
+	`manHours` int(10) unsigned NULL  DEFAULT '0'  , 
+	`fatalities` tinyint(3) unsigned NULL  DEFAULT '0'  , 
+	`lostWorkCases` smallint(5) unsigned NULL  DEFAULT '0'  , 
+	`lostWorkDays` smallint(5) unsigned NULL  DEFAULT '0'  , 
+	`injuryIllnessCases` smallint(5) unsigned NULL  DEFAULT '0'  , 
+	`restrictedWorkCases` smallint(5) unsigned NULL  DEFAULT '0'  , 
+	`recordableTotal` smallint(5) unsigned NULL  DEFAULT '0'  , 
+	`comment` varchar(250) COLLATE latin1_swedish_ci NULL   , 
+	`creationDate` datetime NULL   , 
+	`updateDate` datetime NULL   , 
+	PRIMARY KEY (`id`) , 
+	KEY `auditID`(`auditID`,`SHAType`,`location`) 
+)Engine=MyISAM DEFAULT CHARSET='latin1';
+
+
+alter table `pqfdata` 
+	change `auditorID` `auditorID` smallint(5) unsigned   NULL after `dateVerified`, 
+	change `wasChanged` `wasChanged` enum('No','Yes')  
+		COLLATE latin1_swedish_ci NULL DEFAULT 'No' after `auditorID`, 
+	add column `createdBy` int(11)   NULL after `wasChanged`, 
+	add column `creationDate` datetime   NULL after `createdBy`, 
+	add column `updatedBy` int(11)   NULL after `creationDate`, 
+	add column `updateDate` datetime   NULL after `updatedBy`;
+
+
+
+/** Add the Osha/EMR audit to all operators based on their PQF preferences **/
+
 delete from audit_operator where auditTypeID = 11;
 
 insert into audit_operator (auditTypeID, opID, minRiskLevel, requiredForFlag, requiredAuditStatus)
@@ -10,6 +62,8 @@ group by ao.opID;
 
 delete from contractor_audit
 where auditTypeID = 11;
+
+/** Create Osha/EMR audits for all contractors for years 2001-2007 **/
 
 insert into contractor_audit (createdDate, auditFor, auditTypeID, conID, auditStatus, auditorID, completedDate, closedDate, manuallyAdded)
 select '2007-12-31', '2007', 11, conID, auditStatus, auditorID, completedDate, closedDate, 0
@@ -131,33 +185,6 @@ where auditorID = 0;
 
 
 
-
-
-update notes set userID from whois and opID
-update notes set deletedUserID from whoDeleted and opID
-
-
-insert into note (accountID, creationDate, createdBy, summary, noteCategory, priority, viewableBy, body)
-select id, accountDate, 959, 'Contractor Notes Pre-Oct08', 'General', 3, 1, notes
-from contractor_info
-where notes > '';
-
-insert into note (accountID, creationDate, createdBy, summary, noteCategory, priority, viewableBy, body)
-select id, accountDate, 959, 'PICS-only Notes Pre-Oct08', 'General', 3, 1100, adminNotes
-from contractor_info
-where adminNotes > '';
-
-insert into note (accountID, creationDate, createdBy, updatedBy, updateDate, summary, noteCategory, status, priority, viewableBy, body)
-select conID, timeStamp, case ISNULL(userID) when 1 then 959 else userID end, deletedDate, deletedUserID, note, 'General', case isDeleted when 1 then 0 else 2 end, 3, opID, null
-from notes
-where length(note) <= 250;
-
-insert into note (accountID, creationDate, createdBy, updatedBy, updateDate, summary, noteCategory, status, priority, viewableBy, body)
-select conID, timeStamp, case ISNULL(userID) when 1 then 959 else userID end, deletedDate, deletedUserID, substring(note, 1, 255), 'General', case isDeleted when 1 then 0 else 2 end, 3, opID, substring(note, 255)
-from notes
-where length(note) > 250;
-
-
 delete from pqfdata where auditID in (select auditID from contractor_audit where auditTypeID = 11);
 
 insert into pqfdata (auditID, questionID, answer, comment, dateVerified, verifiedAnswer, auditorID, isCorrect)
@@ -246,4 +273,33 @@ update pqfdata
 	set answer = verifiedAnswer
 	where verifiedAnswer is not null and verifiedAnswer <> '';
 
-alter table pqfdata drop column verifiedAnswer, drop column isCorrect;
+alter table pqfdata 
+	drop column verifiedAnswer, 
+	drop column isCorrect;
+
+
+/**
+update notes set userID from whois and opID
+update notes set deletedUserID from whoDeleted and opID
+
+
+insert into note (accountID, creationDate, createdBy, summary, noteCategory, priority, viewableBy, body)
+select id, accountDate, 959, 'Contractor Notes Pre-Oct08', 'General', 3, 1, notes
+from contractor_info
+where notes > '';
+
+insert into note (accountID, creationDate, createdBy, summary, noteCategory, priority, viewableBy, body)
+select id, accountDate, 959, 'PICS-only Notes Pre-Oct08', 'General', 3, 1100, adminNotes
+from contractor_info
+where adminNotes > '';
+
+insert into note (accountID, creationDate, createdBy, updatedBy, updateDate, summary, noteCategory, status, priority, viewableBy, body)
+select conID, timeStamp, case ISNULL(userID) when 1 then 959 else userID end, deletedDate, deletedUserID, note, 'General', case isDeleted when 1 then 0 else 2 end, 3, opID, null
+from notes
+where length(note) <= 250;
+
+insert into note (accountID, creationDate, createdBy, updatedBy, updateDate, summary, noteCategory, status, priority, viewableBy, body)
+select conID, timeStamp, case ISNULL(userID) when 1 then 959 else userID end, deletedDate, deletedUserID, substring(note, 1, 255), 'General', case isDeleted when 1 then 0 else 2 end, 3, opID, substring(note, 255)
+from notes
+where length(note) > 250;
+*/

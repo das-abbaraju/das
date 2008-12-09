@@ -111,7 +111,7 @@ public class ContractorAuditDAO extends PicsDAO {
 		Query query = em
 				.createQuery("SELECT t FROM ContractorAudit t "
 						+ "WHERE t.contractorAccount.id = ? "
-						+ "AND auditStatus <> 'Expired' ORDER BY t.auditType.displayOrder");
+						+ "AND auditStatus <> 'Expired' ORDER BY t.auditType.displayOrder, t.auditFor, t.createdDate DESC");
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}

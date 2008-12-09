@@ -21,6 +21,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.PermissionToViewContractor;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorActionSupport extends PicsActionSupport {
@@ -126,8 +127,19 @@ public class ContractorActionSupport extends PicsActionSupport {
 				
 				for(ContractorAudit audit : auditList) {
 					// Create the linkText
-					// TODO add operator name and maybe the creation date and status too
+					// First use auditFor: Year in the cast of Annual Audit or Employee name in the case of OQ
 					String linkText = audit.getAuditFor();
+					
+					// If the audit is a desktop or office, we may want to add in pending status
+					if (Strings.isEmpty(linkText) && audit.getAuditStatus().isPendingSubmittedResubmitted())
+						linkText = audit.getAuditStatus().toString();
+					
+					// When all else fails, make sure there is something displayed
+					if (Strings.isEmpty(linkText))
+						linkText = audit.getAuditType().getAuditName();
+					else
+						linkText += " " +audit.getAuditType().getAuditName();
+					
 					subMenu.addChild(linkText, url + audit.getId());
 				}
 			}

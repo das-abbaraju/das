@@ -7,12 +7,15 @@ import com.picsauditing.search.SelectSQL;
 @SuppressWarnings("serial")
 public class ReportPQFVerification extends ReportAccount {
 	private static final long serialVersionUID = 6697393552632136569L;
-
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
+	
+	@Override
+	protected void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.AuditVerification);
+	}
+
+	@Override
+	protected void buildQuery() {
+		super.buildQuery();
 		
 		sql.setType(SelectAccount.Type.Contractor);
 		/**
@@ -20,7 +23,7 @@ public class ReportPQFVerification extends ReportAccount {
 		 * join generalcontractors gc on gc.genID = ao.opID
 		 * join contractor_audit ca on ca.auditTypeID = ao.auditTypeID and ca.conID = gc.subID
 		 * where ao.auditTypeID in (1,11) and ao.canSee = 1 and ao.requiredForFlag in ('Amber','Red')
-		 * and (ca.auditStatus = 'Pending' or (ca.auditStatus = 'Submitted' and ao.requiredAuditStatus = 'Active'))
+		 * and ca.auditStatus IN ('Submitted','Resubmitted') and ao.requiredAuditStatus = 'Active'
 		 */
 		SelectSQL subSelect = new SelectSQL("audit_operator ao");
 		subSelect.addField("ca.conID");
@@ -29,12 +32,10 @@ public class ReportPQFVerification extends ReportAccount {
 		subSelect.addWhere("ao.auditTypeID in (1,11)");
 		subSelect.addWhere("ao.canSee = 1");
 		subSelect.addWhere("ao.requiredForFlag in ('Amber','Red')");
-		subSelect.addWhere("ca.auditStatus = 'Pending' or (ca.auditStatus = 'Submitted' and ao.requiredAuditStatus = 'Active')");
+		subSelect.addWhere("ca.auditStatus IN ('Submitted','Resubmitted') and ao.requiredAuditStatus = 'Active'");
 		sql.addWhere("a.id IN (" + subSelect.toString() + ")");
 		
 		sql.addJoin("LEFT JOIN users csr ON csr.id = c.welcomeAuditor_id");
 		sql.addField("csr.name csr_name");
-
-		return super.executeOld();
 	}
 }

@@ -18,7 +18,7 @@
 <s:include value="conHeader.jsp" />
 
 <s:if test="upComingAudits.size() > 0">
-<h3>UpComing Audits</h3>
+<h3>Up Coming Audits</h3>
 <table class="report">
 	<thead>
 	<tr>

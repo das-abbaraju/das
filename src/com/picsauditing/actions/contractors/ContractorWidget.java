@@ -41,7 +41,7 @@ public class ContractorWidget extends ContractorActionSupport {
 			// get the balance due
 			// TODO - do some more testing with this
 			if (contractor.getUpgradeAmountOwed() > 0) {
-				openTasks.add("You have an invoice of <b>$" + contractor.getUpgradeAmountOwed() + "</b> due "
+				openTasks.add("You have an invoice upgrade of <b>$" + contractor.getUpgradeAmountOwed() + "</b> due "
 						+ contractor.getLastInvoiceDate() + ", please call 949-387-1940 x708 to make a payment");
 			}
 			if (contractor.getAnnualAmountOwed() > 0) {
@@ -50,14 +50,23 @@ public class ContractorWidget extends ContractorActionSupport {
 			}
 
 			for (ContractorAudit conAudit : getActiveAudits()) {
+				// TODO get the Tasks to show up right for OSHA/EMR
 				if (conAudit.getAuditType().isPqf() && conAudit.getAuditStatus().equals(AuditStatus.Pending)) {
 					openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-							+ "\">complete your Pre-Qualification Form</a>");
+							+ "\">complete and submit your Pre-Qualification Form</a>");
+				}
+
+				if (conAudit.getAuditType().isAnnualAddendum() && conAudit.getAuditStatus().equals(AuditStatus.Pending)) {
+					openTasks
+							.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
+									+ "\">upload and submit your EMR and/or OSHA forms for " + conAudit.getAuditFor()
+									+ " </a>");
 				}
 
 				if (conAudit.getAuditType().isHasRequirements()
 						&& conAudit.getAuditStatus().equals(AuditStatus.Submitted)
-						&& conAudit.getPercentVerified() < 100 && !conAudit.getAuditType().isPqf()) {
+						&& conAudit.getPercentVerified() < 100 && !conAudit.getAuditType().isPqf()
+						&& !conAudit.getAuditType().isAnnualAddendum()) {
 					String text = "You have <a href=\"Audit.action?auditID=" + conAudit.getId()
 							+ "\">open requirements from your recent " + conAudit.getAuditType().getAuditName()
 							+ "</a>";
@@ -67,6 +76,7 @@ public class ContractorWidget extends ContractorActionSupport {
 					}
 					openTasks.add(text);
 				}
+
 				if (conAudit.getAuditStatus().equals(AuditStatus.Pending)
 						&& conAudit.getAuditType().isCanContractorView()
 						&& !conAudit.getAuditType().isCanContractorEdit()) {
@@ -90,11 +100,11 @@ public class ContractorWidget extends ContractorActionSupport {
 			}
 			for (Certificate certificate : contractor.getCertificates()) {
 				if (certificate.getStatus().equals("Expired"))
-					openTasks.add("You have an <a href=\"contractor_upload_certificates.jsp?id=" + id
-							+ "\">Expired " + certificate.getType() + " Certificate</a>");
+					openTasks.add("You have an <a href=\"contractor_upload_certificates.jsp?id=" + id + "\">Expired "
+							+ certificate.getType() + " Certificate</a>");
 				if (certificate.getStatus().equals("Rejected"))
-					openTasks.add("You have a <a href=\"contractor_upload_certificates.jsp?id=" + id
-							+ "\">Rejected " + certificate.getType() + " Certificate</a>");
+					openTasks.add("You have a <a href=\"contractor_upload_certificates.jsp?id=" + id + "\">Rejected "
+							+ certificate.getType() + " Certificate</a>");
 			}
 
 		}
