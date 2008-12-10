@@ -41,8 +41,8 @@ public class ContractorAuditAction extends AuditActionSupport {
 	private int removeCategoryID = 0;
 
 	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, 
-			FlagCalculator2 flagCalculator2, AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder) {
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, FlagCalculator2 flagCalculator2,
+			AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.flagCalculator = flagCalculator2;
 		this.auditPercentCalculator = auditPercentCalculator;
@@ -53,18 +53,19 @@ public class ContractorAuditAction extends AuditActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		this.findConAudit();
-		
-		if("ReSubmit".equals(button)) {
+
+		if ("ReSubmit".equals(button)) {
 			conAudit.getAuditStatus();
-			if(conAudit.getAuditStatus().equals(AuditStatus.Active))
+			if (conAudit.getAuditStatus().equals(AuditStatus.Active))
 				conAudit.setAuditStatus(AuditStatus.Resubmitted);
-			if(conAudit.getAuditStatus().isPendingSubmitted() || conAudit.getAuditStatus().equals(AuditStatus.Expired))
+			if (conAudit.getAuditStatus().isPendingSubmitted() || conAudit.getAuditStatus().equals(AuditStatus.Expired))
 				conAudit.setAuditStatus(AuditStatus.Submitted);
 			conAudit.setExpiresDate(DateBean.addMonths(conAudit.getExpiresDate(), 12));
 			auditDao.save(conAudit);
 			return SUCCESS;
 		}
-		// Some stuff like rebuilding categories and percentages doesn't have to be done everytime
+		// Some stuff like rebuilding categories and percentages doesn't have to
+		// be done everytime
 		boolean fullLoad = true;
 		// Try and guess to see if we need it or not
 		if (auditStatus != null)
@@ -126,14 +127,17 @@ public class ContractorAuditAction extends AuditActionSupport {
 			}
 
 			if (conAudit.getExpiresDate() == null && conAudit.getCompletedDate() != null) {
-				Date dateToExpire = DateBean.addMonths(conAudit.getCompletedDate(), conAudit.getAuditType().getMonthsToExpire());
+				Date dateToExpire = DateBean.addMonths(conAudit.getCompletedDate(), conAudit.getAuditType()
+						.getMonthsToExpire());
 				conAudit.setExpiresDate(dateToExpire);
 			}
 
 			if (auditStatus.equals(AuditStatus.Submitted)) {
 				if (conAudit.getAuditType().isPqf()) {
 					// Add a note...
-					// TODO we should probably stop doing this...it's kind of pointless or at least we should do it for other audits too
+					// TODO we should probably stop doing this...it's kind of
+					// pointless or at least we should do it for other audits
+					// too
 					ContractorBean cBean = new ContractorBean();
 					cBean.setFromDB(conAudit.getContractorAccount().getIdString());
 					String notes = conAudit.getContractorAccount().getName() + " Submitted their PQF ";
@@ -144,21 +148,21 @@ public class ContractorAuditAction extends AuditActionSupport {
 				int typeID = conAudit.getAuditType().getAuditTypeID();
 				if (typeID == AuditType.DESKTOP || typeID == AuditType.DA) {
 					EmailBuilder emailBuilder = new EmailBuilder();
-					
+
 					// TODO combine these 2 templates
 					if (typeID == AuditType.DESKTOP)
 						emailBuilder.setTemplate(7); // Desktop Submission
 					else
 						emailBuilder.setTemplate(8); // D&A Submission
-					
+
 					emailBuilder.setPermissions(permissions);
 					emailBuilder.setConAudit(conAudit);
 					EmailSender.send(emailBuilder.build());
 
 				}
-				
+
 			}
-			
+
 			// Save the audit status
 			conAudit.setAuditStatus(auditStatus);
 			auditDao.save(conAudit);
@@ -234,13 +238,14 @@ public class ContractorAuditAction extends AuditActionSupport {
 	public boolean isCanApply() {
 		return isCanApply;
 	}
-	
+
 	public boolean isCanResubmit() {
-		if(conAudit.getAuditType().isPqf() 
-				&& (!conAudit.getAuditStatus().equals(AuditStatus.Exempt) 
-						|| !conAudit.getAuditStatus().equals(AuditStatus.Resubmitted)) 
-				&& DateBean.getDateDifference(conAudit.getExpiresDate()) < 90)
-			return true;
+		if (permissions.isContractor()) {
+			if (conAudit.getAuditType().isPqf()
+					&& (!conAudit.getAuditStatus().equals(AuditStatus.Exempt) || !conAudit.getAuditStatus().equals(
+							AuditStatus.Resubmitted)) && DateBean.getDateDifference(conAudit.getExpiresDate()) < 90)
+				return true;
+		}
 		return false;
 	}
 
