@@ -35,16 +35,16 @@
 						<s:textfield name="contractor.name" size="35" />
 					</li>
 					<li><label>Username:</label>
-						<s:textfield name="contractor.username" size="12" />
+						<s:textfield name="contractor.username" size="20" />
 							<pics:permission perm="SwitchUser">
 								<a href="login.jsp?switchUser=<s:property value="contractor.username"/>">Switch User</a>							
 							</pics:permission>
 					</li>
 					<li><label>Change Password:</label>
-						<s:password name="password1" size="12" />
+						<s:password name="password1" size="15" />
 					</li>
 					<li><label>Confirm Password:</label>
-						<s:password name="password2" size="12" />
+						<s:password name="password2" size="15" />
 					</li>
 					<li><label>Date Created:</label>
 						<s:date name="contractor.dateCreated" format="MMM d, yyyy" />
@@ -158,8 +158,8 @@
 					<li><label>Main Trade:</label>
 						<s:select cssStyle="font-size: 12px;" list="tradeList" name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" listKey="question" listValue="question"/>
 					</li>
-					<li><label>Risk Level:</label>		
-						<s:radio list="riskLevelList" name="contractor.riskLevel" theme="pics" />
+					<li><label>Risk Level:</label>
+						<s:property value="contractor.riskLevel"/>
 					</li>
 					<li><label>Requested By:</label>
 						<s:select cssStyle="font-size: 12px;" list="operatorList" name="contractor.requestedById" headerKey="0" headerValue="- Choose an operator -" listKey="id" listValue="name"/>
@@ -197,6 +197,9 @@
 				<ol>
 					<li><label>Visible?</label>
 						<s:radio list="#{'Y':'Yes','N':'No'}" name="contractor.active" theme="pics" />
+					</li>
+					<li><label>Risk Level:</label>
+						<s:radio list="riskLevelList" name="contractor.riskLevel" theme="pics" />
 					</li>
 					<li><label>Created by:</label>
 						<s:textfield name="contractor.createdBy" size="25" />
