@@ -134,15 +134,6 @@
 					</s:iterator>
 				</tr>
 			</s:if>
-			<s:else>
-				<tr>
-					<td>
-					<div class="error">Your OSHA is missing.Your PQF has no
-					Corporate record or has more than one Corporate record for OSHA. <br />
-					Please go to your PQF and resolve this Issue.</div>
-					</td>
-				</tr>
-			</s:else>
 
 			<s:if test="emrs.size() > 0">
 				<thead>

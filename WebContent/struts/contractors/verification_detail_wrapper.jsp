@@ -47,6 +47,7 @@
 		});
 		return false;
 	}
+	
 	function toggleOSHAVerify( oshaId ) {
 		var comment = $F($('comment_' + oshaId));
 		var applicable = $F($('applicable_' + oshaId));
@@ -88,6 +89,7 @@
 		});
 		return false;
 	}
+	
 	function setComment(auditId, questionId, catDataId ) {
 		var comment = $F($('comment_' + questionId));
 
@@ -107,6 +109,7 @@
 		});
 		return false;
 	}
+	
 	function setOSHAComment( oshaId ) {
 		var comment = $F($('comment_' + oshaId));
 	
@@ -131,10 +134,10 @@
 	function setThinking( thinkElement ) {
 		thinkElement.innerHTML="<img src='images/ajax_process.gif' />";
 	}
+	
 	function stopThinking( thinkElement ) {
 		thinkElement.innerHTML="";
 	}
-	
 	
 	function setApproveButton( newPercent ) {
 	
@@ -163,29 +166,12 @@
 			parameters: pars,
 			onComplete : function() {
 			$('verification_audit').innerHTML='';
-			refreshSummary();
+			$('auditHeader').scrollTo();
 			}
 		});
 		return false;
 	 }
 
-	 function refreshSummary() {
-		pars = 'id=' + <s:property value="contractor.id"/>;
-
-		$('verification_detail').innerHTML="<img src='images/ajax_process.gif' />";
-
-		var divName = 'verification_detail';
-		var myAjax = new Ajax.Updater(divName,'VerifyViewSummaryRefreshAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onComplete: function() {
-				$('auditHeader').scrollTo();
-			}
-		});
-		return false;
-	 }
-	
 	function previewEmail() {
 		pars = 'id='+<s:property value="contractor.id" />;
 		$('emailTemplate').innerHTML ="<img src='images/ajax_process.gif' />";

@@ -425,11 +425,6 @@
 			<result>struts/contractors/verification_detail_wrapper.jsp</result>
 		</action>
 
-		<action name="VerifyViewSummaryRefreshAjax"
-			class="com.picsauditing.actions.audits.VerifyView">
-			<result>struts/contractors/verification_detail.jsp</result>
-		</action>
-		
 		<action name="VerifyPreviewEmailAjax" method="previewEmail"
 			class="com.picsauditing.actions.audits.VerifyView">
 			<result>struts/contractors/verification_mail.jsp</result>
