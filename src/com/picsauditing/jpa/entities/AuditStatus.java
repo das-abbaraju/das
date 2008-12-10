@@ -93,4 +93,16 @@ public enum AuditStatus {
 			return true;
 		return false;
 	}
+	
+	/**
+	 * Is the status Pending or Expired
+	 * @return
+	 */
+	public boolean isPendingExpired() {
+		if (this.equals(Expired))
+			return true;
+		if (this.equals(Pending))
+			return true;
+		return false;
+	}
 }
