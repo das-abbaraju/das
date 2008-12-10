@@ -87,7 +87,7 @@ public class VerifyView extends ContractorActionSupport {
 		}
 
 		Map<Integer, Map<String, AuditData>> tempAnswers = auditDataDAO.findAnswersByContractor(contractor.getId(),
-				Arrays.<Integer> asList(69, 1616, 55, 57, 103, 104));
+				Arrays.<Integer> asList(69, 1616, 55, 57, 103, 104, 123, 124, 125));
 		infoSection = new HashMap<Integer, AuditData>();
 		for (Integer questionID : tempAnswers.keySet())
 			// Get the PQF data out

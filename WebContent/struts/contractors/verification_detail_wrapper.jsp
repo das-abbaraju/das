@@ -248,6 +248,19 @@
 		</li>
 	</ul>
 	</fieldset>
+	<fieldset>
+	<ul>
+		<li><label>EMR Origin:</label>
+			<strong><s:property value="infoSection[123].answer" default="N/A"/></strong>
+		</li>
+		<li><label>EMR Anniv.:</label>
+			<strong><s:property value="infoSection[124].answer"  default="N/A"/></strong>
+		</li>
+		<li><label>EMR Rate Type:</label>
+			<strong><s:property value="infoSection[125].answer"  default="N/A"/></strong>
+		</li>
+	</ul>
+	</fieldset>
 	<div class="clear"></div>
 </div>
 
