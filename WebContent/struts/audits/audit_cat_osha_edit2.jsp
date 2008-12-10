@@ -9,7 +9,7 @@
 <thead>
 <tr class="location">
 	<th>
-		<label>Type:</label><s:select name="osha.type" list="#{'OSHA':'OSHA','MSHA':'MSHA'}" value="%{type}" cssClass="forms"/>
+		<label>Type:</label><s:radio name="osha.type" list="#{'OSHA':'OSHA','MSHA':'MSHA'}" value="%{type}" cssClass="forms"/><br/>
 	    <label>Location:</label>
 	    <s:if test="location == 'Corporate'">
 	    	<s:property value="location"/>
