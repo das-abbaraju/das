@@ -10,19 +10,13 @@
 <script src="js/prototype.js" type="text/javascript"></script>
 <script type="text/javascript" src="js/scriptaculous/scriptaculous.js?load=effects"></script>
 <script type="text/javascript">
-	function resubmitPqf() {
-		var data = $('confirm').checked;
-		if(!data) {
-			alert("Please check the check box");
-			return;
+	function resubmitPqf(verifyCheckBox) {
+		var data = verifyCheckBox.checked;
+		if(data) {
+			$('resubmit').disabled = false;	
 		}
-		var pars = 'auditID='+<s:property value="auditID"/>+'&button=ReSubmit';
-		var myAjax = new Ajax.Updater('','ResubmitAuditAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-		});
-		return false;
+		else
+			$('resubmit').disabled = true;		
 	}
 </script>
 </head>
@@ -32,25 +26,25 @@
 <s:form>
 	<s:hidden name="auditID" />
 	<s:if test="canSubmit">
-		<s:hidden name="auditStatus" value="Submitted" />
-	</s:if>
-	<s:if test="conAudit.auditStatus.toString() == 'Pending'">
-		<s:submit value="%{'Submit '.concat(conAudit.auditType.auditName)}" disabled="!canSubmit" />
-		<span class="redMain">&nbsp;&nbsp;&nbsp;All sections must be filled out before submitting.</span>
+		<div id="alert">
+			<s:hidden name="auditStatus" value="Submitted" />
+			<s:submit value="%{'Submit '.concat(conAudit.auditType.auditName)}" />
+			<span class="redMain">&nbsp;&nbsp;&nbsp;All sections must be filled out before submitting.</span>
+		</div>
 	</s:if>
 	<s:if test="canClose">
-		<s:hidden name="auditStatus" value="Active" />
+		<div id="alert">
+			<s:hidden name="auditStatus" value="Active" />
+			<s:submit value="%{'Close '.concat(conAudit.auditType.auditName)}"/>
+		</div>
 	</s:if>
-	<s:if test="conAudit.auditStatus.toString() == 'Submitted'">
-		<s:submit value="%{'Close '.concat(conAudit.auditType.auditName)}" disabled="!canClose" />
+	<s:if test="canResubmit">
+		<div id="alert">
+			<s:checkbox name="''" onchange="resubmitPqf(this);"/> I have reviewed and updated my previously submitted data and verified its accuracy.<br/>
+			<s:submit id="resubmit" value="Resubmit PQF" name="button" disabled="true"></s:submit>
+		</div>
 	</s:if>
 </s:form>
-<s:if test="canResubmit">
-	<div id="info">
-		<s:checkbox id="confirm" name="''"/> I have reviewed and updated my previously submitted data and verified its accuracy.<br/>
-		<s:submit value="Resubmit PQF" onclick="resubmitPqf()"></s:submit>
-	</div>
-</s:if>
 
 
 <table class="report">
@@ -72,7 +66,7 @@
 	<s:iterator value="categories" status="rowStatus">
 		<s:if test="appliesB">
 			<tr>
-				<td class="right"><a name="<s:property value="id" />"><s:property value="category.number" /></td>
+				<td class="right"><a name="<s:property value="id" />"><s:property value="category.number" /></a></td>
 				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a></td>
 			<s:if test="conAudit.auditStatus.name() == 'Pending' || conAudit.auditType.pqf">
 				<td class="right"><s:property value="percentCompleted" />%</td>
@@ -91,7 +85,7 @@
 	<s:iterator value="categories" status="rowStatus">
 		<s:if test="!appliesB && permissions.picsEmployee">
 			<tr class="notapp">
-				<td class="right"><a name="<s:property value="id" />"><s:property value="category.number" /></td>
+				<td class="right"><a name="<s:property value="id" />"><s:property value="category.number" /></a></td>
 				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a></td>
 				<s:if test="conAudit.auditStatus.name() == 'Pending' || conAudit.auditType.pqf">
 					<td class="center" colspan="2">N/A</td>
