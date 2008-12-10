@@ -264,9 +264,9 @@ join contractor_audit pqf on pqf.auditID = d.auditID
 join contractor_audit emr on pqf.conID = emr.conID and emr.auditTypeID = 11
 where emr.auditFor = '2005' and d.questionID = 891;
 
-delete from pqfdata where questionID in (127,126,889,1519,872,1522,1617,1618,891);
+delete from pqfdata where questionID in (127,126,889,1519,872,1522,1617,1618);
 
-delete from pqfquestions where questionID in (127,126,889,1519,872,1522,1617,1618,891);
+delete from pqfquestions where questionID in (127,126,889,1519,872,1522,1617,1618);
 
 
 update pqfdata 
