@@ -59,7 +59,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 				conAudit.setAuditStatus(AuditStatus.Resubmitted);
 			if (conAudit.getAuditStatus().isPendingSubmitted() || conAudit.getAuditStatus().equals(AuditStatus.Expired))
 				conAudit.setAuditStatus(AuditStatus.Submitted);
-			conAudit.setExpiresDate(DateBean.addMonths(conAudit.getExpiresDate(), 12));
+			conAudit.setExpiresDate(DateBean.getMarchOfNextYear(new Date()));
 			auditDao.save(conAudit);
 			return SUCCESS;
 		}
