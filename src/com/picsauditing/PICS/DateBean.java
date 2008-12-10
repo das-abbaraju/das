@@ -387,4 +387,26 @@ public class DateBean {
 		return cal.getTime();
 	}
 
+	/**
+	 * this will not roll to the next march.  it will increment by a year
+	 * and then go to march.  Jan 1 2009 will return March 1 2010
+	 */ 
+	
+	public static Date getMarchOfNextYear(Date startDate) {
+		if (startDate == null)
+			return null;
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(startDate);
+		cal.add(Calendar.YEAR, 1);
+		
+		cal.set(Calendar.MONTH, Calendar.MARCH);
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		cal.set(Calendar.HOUR, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		
+		return cal.getTime();
+	}
 }
