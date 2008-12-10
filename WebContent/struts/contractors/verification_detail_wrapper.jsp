@@ -13,11 +13,19 @@
 <script type="text/javascript">
 	function toggleVerify(auditId, questionId, catDataId ) {
 		var comment = $F($('comment_' + questionId));
-		var answer = $F($('answer_' + questionId)); 
-
+		var answerelm = $('answer_' + questionId)
+		
+ 
 		setThinking($('status_'+questionId));
 
-		var pars = 'auditData.audit.id='+auditId+'&catDataID='+catDataId+'&auditData.question.id=' + questionId + '&auditData.answer=' + answer + '&auditData.comment=' + comment + '&toggleVerify=true';
+
+		var pars = 'auditData.audit.id='+auditId+'&catDataID='+catDataId+'&auditData.question.id=' + questionId + '&auditData.comment=' + comment + '&toggleVerify=true';
+		if( answerelm != null ) {
+			var answer = $F(answerelm);
+			pars = pars + '&auditData.answer=' + answer;		
+		}
+
+		
 		var myAjax = new Ajax.Updater('','AuditToggleVerifyAjax.action', 
 		{
 			method: 'post', 
