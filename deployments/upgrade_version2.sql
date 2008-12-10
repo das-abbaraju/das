@@ -278,6 +278,12 @@ alter table pqfdata
 	drop column isCorrect;
 
 
+delete from pqfsubcategories where categoryid in (select catid from pqfcategories where category = 'OSHA/MSHA INJURY AND ILLNESS DATA');
+delete from pqfcategories where category = 'OSHA/MSHA INJURY AND ILLNESS DATA';
+update pqfcategories set number = number - 1 where number > 8 and audittypeid = 1;
+
+
+
 /**
 update notes set userID from whois and opID
 update notes set deletedUserID from whoDeleted and opID
