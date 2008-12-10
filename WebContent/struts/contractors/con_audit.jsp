@@ -47,7 +47,7 @@
 </s:form>
 <s:if test="canResubmit">
 	<div id="info">
-		<s:checkbox id="confirm" name="''"/> I verify that all information contained in this form is correct and up to date to the best of my ability.<br/>
+		<s:checkbox id="confirm" name="''"/> I have reviewed and updated my previously submitted data and verified its accuracy.<br/>
 		<s:submit value="Resubmit PQF" onclick="resubmitPqf()"></s:submit>
 	</div>
 </s:if>
