@@ -54,12 +54,19 @@ public class ContractorAuditAction extends AuditActionSupport {
 			return LOGIN;
 		this.findConAudit();
 
-		if ("Resubmit PQF".equals(button)) {
-			if (conAudit.getAuditStatus().equals(AuditStatus.Active))
-				conAudit.setAuditStatus(AuditStatus.Resubmitted);
-			if (conAudit.getAuditStatus().isPendingSubmitted() || conAudit.getAuditStatus().equals(AuditStatus.Expired))
+		if ("Submit".equals(button)) {
+			if (conAudit.getAuditType().isPqf()) {
+				if (conAudit.getAuditStatus().isPendingExpired()
+						|| conAudit.getAuditStatus().equals(AuditStatus.Submitted))
+					conAudit.setAuditStatus(AuditStatus.Submitted);
+				if (conAudit.getAuditStatus().equals(AuditStatus.Active) && conAudit.getPercentVerified() == 100)
+					conAudit.setAuditStatus(AuditStatus.Active);
+				else
+					conAudit.setAuditStatus(AuditStatus.Resubmitted);
+				conAudit.setExpiresDate(DateBean.getMarchOfNextYear(new Date()));
+			}
+			else 
 				conAudit.setAuditStatus(AuditStatus.Submitted);
-			conAudit.setExpiresDate(DateBean.getMarchOfNextYear(new Date()));
 			auditDao.save(conAudit);
 			return SUCCESS;
 		}

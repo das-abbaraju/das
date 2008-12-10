@@ -13,10 +13,10 @@
 	function resubmitPqf(verifyCheckBox) {
 		var data = verifyCheckBox.checked;
 		if(data) {
-			$('resubmit').disabled = false;	
+			$('submit').disabled = false;	
 		}
 		else
-			$('resubmit').disabled = true;		
+			$('submit').disabled = true;		
 	}
 </script>
 </head>
@@ -27,15 +27,14 @@
 	<s:hidden name="auditID" />
 	<s:if test="canSubmit">
 		<div id="alert">
-			<s:hidden name="auditStatus" value="Submitted" />
-			<s:submit value="%{'Submit '.concat(conAudit.auditType.auditName)}" />
-			<span class="redMain">&nbsp;&nbsp;&nbsp;All sections must be filled out before submitting.</span>
-		</div>
-	</s:if>
-	<s:if test="canResubmit">
-		<div id="alert">
-			<s:checkbox name="''" onchange="resubmitPqf(this);"/> I have reviewed and updated my previously submitted data and verified its accuracy.<br/>
-			<s:submit id="resubmit" value="Resubmit PQF" name="button" disabled="true"></s:submit>
+			<s:checkbox name="''" onchange="resubmitPqf(this);"/>
+			<s:if test="conAudit.auditStatus.pendingExpired">
+				All sections must be filled out before submitting.<br/>
+			</s:if>
+			<s:else>
+				 I have reviewed and updated my previously submitted data and verified its accuracy.<br/>
+			</s:else>		
+			<s:submit id="submit" value="Submit" name="button" disabled="true"></s:submit>
 		</div>
 	</s:if>
 	<s:if test="canClose">

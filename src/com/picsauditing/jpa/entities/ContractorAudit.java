@@ -125,7 +125,7 @@ public class ContractorAudit implements java.io.Serializable {
 				if(expiresDate != null)
 					expiresDate = null;
 			}
-			if (auditStatus.equals(AuditStatus.Submitted)) {
+			if (auditStatus.equals(AuditStatus.Submitted) || auditStatus.equals(AuditStatus.Resubmitted)) {
 				// If we're going "forward" then (re)set the closedDate
 				if (completedDate == null)
 					completedDate = new Date();
