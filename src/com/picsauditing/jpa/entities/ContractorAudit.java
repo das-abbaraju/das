@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
 
 @Entity
@@ -273,29 +275,20 @@ public class ContractorAudit implements java.io.Serializable {
 			return true;
 	}
 
-	@Transient
-	// I think we should move this to AuditActionSupport instead (Trevor 5/7/08)
-	public boolean isCanEdit(Permissions permissions) {
-		if (permissions.isOnlyAuditor() && (permissions.getUserId() == getAuditor().getId())
-				&& (getAuditType().isCanContractorEdit() == false))
+	/**
+	 * 
+	 * 
+	 * @return True if audit expires this year and it's before March 1
+	 */
+	public boolean isAboutToExpire() {
+		Calendar current = Calendar.getInstance();
+		Calendar expires = Calendar.getInstance();
+		expires.setTime(expiresDate);
+		
+		if (current.get(Calendar.MONTH) < 2 
+				&& current.get(Calendar.YEAR) == expires.get(Calendar.YEAR))
 			return true;
-		if (permissions.isContractor() && (getAuditType().isCanContractorEdit() == true))
-			return true;
-		if (permissions.seesAllContractors())
-			return true;
-
-		return false;
-	}
-
-	@Transient
-	// I think we should move this to AuditActionSupport instead (Trevor 5/7/08)
-	public boolean isCanVerify(Permissions permissions) {
-		if (permissions.isOnlyAuditor() && (permissions.getUserId() == getAuditor().getId())
-				&& (getAuditType().isCanContractorEdit() == false))
-			return true;
-		if (permissions.seesAllContractors())
-			return true;
-
+		
 		return false;
 	}
 

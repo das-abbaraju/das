@@ -1,4 +1,4 @@
-<%@ taglib prefix="s" uri="/struts-tags"%>
+\<%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <html>
@@ -32,16 +32,16 @@
 			<span class="redMain">&nbsp;&nbsp;&nbsp;All sections must be filled out before submitting.</span>
 		</div>
 	</s:if>
-	<s:if test="canClose">
-		<div id="alert">
-			<s:hidden name="auditStatus" value="Active" />
-			<s:submit value="%{'Close '.concat(conAudit.auditType.auditName)}"/>
-		</div>
-	</s:if>
 	<s:if test="canResubmit">
 		<div id="alert">
 			<s:checkbox name="''" onchange="resubmitPqf(this);"/> I have reviewed and updated my previously submitted data and verified its accuracy.<br/>
 			<s:submit id="resubmit" value="Resubmit PQF" name="button" disabled="true"></s:submit>
+		</div>
+	</s:if>
+	<s:if test="canClose">
+		<div id="alert">
+			<s:hidden name="auditStatus" value="Active" />
+			<s:submit value="%{'Close '.concat(conAudit.auditType.auditName)}"/>
 		</div>
 	</s:if>
 </s:form>

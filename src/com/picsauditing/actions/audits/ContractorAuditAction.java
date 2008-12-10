@@ -187,6 +187,16 @@ public class ContractorAuditAction extends AuditActionSupport {
 			return false;
 		if (conAudit.getAuditStatus().equals(AuditStatus.Pending))
 			return true;
+		if (conAudit.getAuditType().isPqf()) {
+			// PQFs are perpetual audits and can be renewed
+			if (permissions.isContractor()) {
+				// We don't allow admins to resubmit audits (only contractors)
+				if (conAudit.getAuditStatus().equals(AuditStatus.Expired))
+					return true;
+				if (conAudit.isAboutToExpire())
+					return true;
+			}
+		}
 		return false;
 	}
 
@@ -196,22 +206,14 @@ public class ContractorAuditAction extends AuditActionSupport {
 	 * @return
 	 */
 	public boolean isCanClose() {
+		if (permissions.isContractor())
+			return false;
 		if (!isCanEdit())
 			return false;
 		if (conAudit.getPercentVerified() < 100)
 			return false;
 		if (conAudit.getAuditStatus().equals(AuditStatus.Submitted))
 			return true;
-		return false;
-	}
-
-	public boolean isCanResubmit() {
-		if (permissions.isContractor()) {
-			if (conAudit.getAuditType().isPqf()
-					&& (!conAudit.getAuditStatus().equals(AuditStatus.Exempt) || !conAudit.getAuditStatus().equals(
-							AuditStatus.Resubmitted)) && DateBean.getDateDifference(conAudit.getExpiresDate()) < 90)
-				return true;
-		}
 		return false;
 	}
 
