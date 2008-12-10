@@ -375,7 +375,10 @@
 		</div>
 	</s:if>
 	
-	
+	<s:if test="filter.showIncidenceRate">
+		<div class="filterOption">Incidence Rate <s:textfield name="filter.incidenceRate"
+			cssClass="forms" size="10" onfocus="clearText(this)" /></div>
+	</s:if>
 	
 	<br clear="all" />
 	<div class="alphapaging"><s:property

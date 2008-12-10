@@ -1,7 +1,6 @@
 package com.picsauditing.util;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.dao.AuditTypeDAO;
@@ -25,6 +24,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showExpiredLicense = false;
 	protected boolean showAuditFor = false;
 	protected boolean showEmrRange = false;
+	protected boolean showIncidenceRate = false;
 
 	// Filter values
 	protected int[] auditID;
@@ -47,6 +47,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected String[] auditFor;
 	protected float minEMR = 0;
 	protected float maxEMR = 100;
+	protected double incidenceRate = 0.0;
 
 	public boolean isShowAuditType() {
 		return showAuditType;
@@ -291,10 +292,6 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	}
 
 	public String[] getAuditFor() {
-		String[] year = {"2008"};
-		if(auditFor == null) {
-			auditFor = year;
-		}
 		return auditFor;
 	}
 
@@ -324,6 +321,22 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setShowEmrRange(boolean showEmrRange) {
 		this.showEmrRange = showEmrRange;
+	}
+
+	public boolean isShowIncidenceRate() {
+		return showIncidenceRate;
+	}
+
+	public void setShowIncidenceRate(boolean showIncidenceRate) {
+		this.showIncidenceRate = showIncidenceRate;
+	}
+
+	public double getIncidenceRate() {
+		return incidenceRate;
+	}
+
+	public void setIncidenceRate(double incidenceRate) {
+		this.incidenceRate = incidenceRate;
 	}
 
 }

@@ -157,15 +157,15 @@ public class PicsMenu {
 			subMenu.addChild("Contractor Licenses", "ReportContractorLicenses.action");
 		if (permissions.hasPermission(OpPerms.EMRReport)) {
 			subMenu.addChild("EMR Rates (Graph)", "GraphEmrRates.action");
-			subMenu.addChild("EMR Rates", "ReportEmrRates.action");
+			subMenu.addChild("EMR Rates", "ReportEmrRates.action?filter.auditFor=2008&filter.auditStatus=Active");
 		}
 		if (permissions.hasPermission(OpPerms.FatalitiesReport))
-			subMenu.addChild("Fatalities", "ReportFatalities.action");
+			subMenu.addChild("Fatalities", "ReportFatalities.action?filter.auditStatus=Active");
 		subMenu.addChild("Operator Flag Criteria", "ReportOperatorCriteria.action");
 		if (permissions.hasPermission(OpPerms.ForcedFlagsReport))
 			subMenu.addChild("Forced Flags", "ReportContractorsWithForcedFlags.action");
 		if (permissions.hasPermission(OpPerms.FatalitiesReport))
-			subMenu.addChild("Incidence Rates", "ReportIncidenceRate.action");
+			subMenu.addChild("Incidence Rates", "ReportIncidenceRate.action?filter.auditFor=2008&filter.auditStatus=Active");
 		if(permissions.seesAllContractors())
 			subMenu.addChild("User Multi-Login","MultiLoginUser.action");
 		if (permissions.hasPermission(OpPerms.EditUsers))

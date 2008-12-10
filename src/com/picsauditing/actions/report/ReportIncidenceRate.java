@@ -1,83 +1,28 @@
 package com.picsauditing.actions.report;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 
 @SuppressWarnings("serial")
-public class ReportIncidenceRate extends ReportAccount {
-	protected int year;
-	protected double incidenceRate;
-	protected boolean searchYear1 = false;
-	protected boolean searchYear2 = false;
-	protected boolean searchYear3 = false;
-	public String execute() throws Exception {
-		if(!forceLogin())
-			return LOGIN;
-		
+public class ReportIncidenceRate extends ReportAnnualAddendum {
+
+	@Override
+	public void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.FatalitiesReport);
-		sql.addJoin("INNER JOIN OSHA os ON os.conID = a.id");
-		if (searchYear1 == true)
-			sql.addWhere("(os.recordableTotal1*200000/os.manHours1 > "
-					+ incidenceRate + ")");
-		if (searchYear2 == true)
-			sql.addWhere("(os.recordableTotal2*200000/os.manHours2 > "
-					+ incidenceRate + ")");
-		if (searchYear3 == true)
-			sql.addWhere("(os.recordableTotal3*200000/os.manHours3 > "
-					+ incidenceRate + ")");
-		
+	}
+
+	@Override
+	public void buildQuery() {
+		super.buildQuery();
+
+		getFilter().setShowIncidenceRate(true);
+		getFilter().setShowAuditFor(true);
+
+		sql.addJoin("JOIN osha_audit os ON os.auditID = ca.auditID");
+		sql.addWhere("(os.recordableTotal*200000/os.manHours > " + getFilter().getIncidenceRate() + ")");
 		sql.addField("os.location");
 		sql.addField("os.description");
 		sql.addField("os.SHAType");
-		sql.addField("os.recordableTotal1");
-		sql.addField("os.manHours1");
-		sql.addField("os.recordableTotal2");
-		sql.addField("os.manHours2");
-		sql.addField("os.recordableTotal3");
-		sql.addField("os.manHours3");
-		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
-		sql.addField("ca.auditID");
-		sql.addWhere("ca.auditTypeID = 1");
-		return super.executeOld();
-	}
-
-	public int getYear() {
-		return DateBean.getCurrentYear();
-    }
-
-	public void setYear(int year) {
-		this.year = year;
-	}
-
-	public double getIncidenceRate() {
-		return incidenceRate;
-	}
-
-	public void setIncidenceRate(double incidenceRate) {
-		this.incidenceRate = incidenceRate;
-	}
-
-	public boolean isSearchYear1() {
-		return searchYear1;
-	}
-
-	public void setSearchYear1(boolean searchYear1) {
-		this.searchYear1 = searchYear1;
-	}
-
-	public boolean isSearchYear2() {
-		return searchYear2;
-	}
-
-	public void setSearchYear2(boolean searchYear2) {
-		this.searchYear2 = searchYear2;
-	}
-
-	public boolean isSearchYear3() {
-		return searchYear3;
-	}
-
-	public void setSearchYear3(boolean searchYear3) {
-		this.searchYear3 = searchYear3;
+		sql.addField("os.recordableTotal");
+		sql.addField("os.manHours");
 	}
 }
