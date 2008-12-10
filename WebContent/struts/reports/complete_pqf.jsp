@@ -26,7 +26,7 @@
 				<td></td>
 				<td>Email</td>
 				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
-				<td>PQF</td>
+				<td>Audit</td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','createdDate ASC');">Created</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','percentComplete ASC');">%Complete</a></td>
 				<td><a href="javascript: changeOrderBy('form1','scheduledDate ASC');">FollowUp</a></td>
@@ -42,7 +42,6 @@
 				<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="[0].get('auditName')"/></a></td>
 				<td class="reportDate"><s:date name="get('createdDate')"
 					format="M/d/yy" /></td>
-				</td>
 				<td align="center"><s:property value="get('percentComplete')"/></td>
 				<td><input class="blueMain" size="6" type="text"
 					name="scheduledDate[<s:property value="[0].get('auditID')"/>]"

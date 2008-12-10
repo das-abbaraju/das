@@ -38,7 +38,7 @@ public class ReportCompletePQF extends ReportContractorAudits {
 		super.buildQuery();
 		
 		sql.addWhere("ca.auditStatus = 'Pending'");
-		sql.addWhere("ca.auditTypeID = 1");
+		sql.addWhere("ca.auditTypeID IN (1,11)");
 		sql.addWhere("a.active = 'Y'");
 		sql.addOrderBy("ca.percentComplete DESC");
 

@@ -17,7 +17,7 @@ public class ContractorSave extends PicsActionSupport implements Preparable {
 	private ContractorAccount ca = null;
 	private ContractorAccountDAO dao;
 	private int auditorId;
-	private AuditBuilder auditBuilder;  
+	private AuditBuilder auditBuilder;
 
 	public ContractorSave(ContractorAccountDAO dao, AuditBuilder auditBuilder) {
 		this.dao = dao;
@@ -37,10 +37,11 @@ public class ContractorSave extends PicsActionSupport implements Preparable {
 			ca.setAuditor(new User());
 			ca.getAuditor().setId(auditorId);
 			auditBuilder.buildAudits(ca);
-			
+
 			for (ContractorAudit conAudit : ca.getAudits()) {
 				System.out.println(" found " + conAudit.getAuditType().getAuditName());
-				if (conAudit.getAuditType().isPqf()
+				if (conAudit.getAuditType().isPqf() 
+						|| conAudit.getAuditType().isAnnualAddendum()
 						|| conAudit.getAuditType().getAuditTypeID() == AuditType.WELCOME) {
 					conAudit.setAuditor(new User(auditorId));
 					conAudit.setAssignedDate(new Date());
