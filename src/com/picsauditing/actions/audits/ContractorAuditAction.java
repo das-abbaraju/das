@@ -54,8 +54,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 			return LOGIN;
 		this.findConAudit();
 
-		if ("ReSubmit".equals(button)) {
-			conAudit.getAuditStatus();
+		if ("Resubmit PQF".equals(button)) {
 			if (conAudit.getAuditStatus().equals(AuditStatus.Active))
 				conAudit.setAuditStatus(AuditStatus.Resubmitted);
 			if (conAudit.getAuditStatus().isPendingSubmitted() || conAudit.getAuditStatus().equals(AuditStatus.Expired))
@@ -206,6 +205,16 @@ public class ContractorAuditAction extends AuditActionSupport {
 		return false;
 	}
 
+	public boolean isCanResubmit() {
+		if (permissions.isContractor()) {
+			if (conAudit.getAuditType().isPqf()
+					&& (!conAudit.getAuditStatus().equals(AuditStatus.Exempt) || !conAudit.getAuditStatus().equals(
+							AuditStatus.Resubmitted)) && DateBean.getDateDifference(conAudit.getExpiresDate()) < 90)
+				return true;
+		}
+		return false;
+	}
+
 	public List<NcmsCategory> getNcmsCategories() {
 		try {
 			NcmsCategoryDAO dao = new NcmsCategoryDAO();
@@ -238,15 +247,4 @@ public class ContractorAuditAction extends AuditActionSupport {
 	public boolean isCanApply() {
 		return isCanApply;
 	}
-
-	public boolean isCanResubmit() {
-		if (permissions.isContractor()) {
-			if (conAudit.getAuditType().isPqf()
-					&& (!conAudit.getAuditStatus().equals(AuditStatus.Exempt) || !conAudit.getAuditStatus().equals(
-							AuditStatus.Resubmitted)) && DateBean.getDateDifference(conAudit.getExpiresDate()) < 90)
-				return true;
-		}
-		return false;
-	}
-
 }
