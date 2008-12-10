@@ -150,7 +150,7 @@ a img {
 }
 
 #content {
-	//position: relative;
+	position: static;
 	margin: 0;
 	padding: 45px;
 	height : 100%;
@@ -457,7 +457,7 @@ ul#navlist {
 	background-color: rgb(168, 77, 16);
 	text-decoration: none;
 }
-#navlist a.dropdown {
+#navlist a.dropdown, #navlist a.dropdown:hover {
 	background: #003768 url('../images/down.gif') no-repeat right center;
 	padding-right: 18px;
 }

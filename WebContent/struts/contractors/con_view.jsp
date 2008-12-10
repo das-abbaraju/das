@@ -8,7 +8,9 @@
 <body>
 <s:include value="conHeader.jsp" />
 <s:if test="!contractor.activeB">
-	<div id="alert">This contractor is no longer active</div>
+	<div id="alert">This contractor is not active.
+	<s:if test="contractor.lastPayment != null">They last paid on <s:property value="contractor.lastPayment"/>.</s:if>
+	</div>
 </s:if>
 <s:elseif test="contractor.paymentOverdue">
 	<div id="alert">This contractor has an outstanding invoice due</div>

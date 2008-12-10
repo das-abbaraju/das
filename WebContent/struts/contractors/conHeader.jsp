@@ -58,17 +58,6 @@
 		</li>
 	</s:iterator>
 </ul>
-<s:iterator value="auditMenu">
-<s:if test="children.size() > 1">
-	<div id="auditSubMenu<s:property value="url" />" class="auditSubMenu">
-	<ul>
-	<s:iterator value="children">
-		<li><a href="<s:property value="url" />"><span><s:property value="name" /></span></a></li>
-	</s:iterator>
-	</ul>
-	</div>
-</s:if>
-</s:iterator>
 </div>
 
 <s:if test="auditID > 0">
@@ -193,3 +182,15 @@
 </s:if>
 <s:include value="../actionMessages.jsp" />
 <div class="clear"></div>
+
+<s:iterator value="auditMenu">
+<s:if test="children.size() > 1">
+	<div id="auditSubMenu<s:property value="url" />" class="auditSubMenu">
+	<ul>
+	<s:iterator value="children">
+		<li><a href="<s:property value="url" />"><span><s:property value="name" /></span></a></li>
+	</s:iterator>
+	</ul>
+	</div>
+</s:if>
+</s:iterator>

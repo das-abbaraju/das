@@ -67,7 +67,7 @@
 
 <div id="headersearch">
 <form action="ContractorSearch.action" method="post">
-<input name="filter.accountName" type="text" class="blueMain" size="20" value="- Search -" onfocus="clearText(this)" onblur="unclearText(this)"/>
+<input name="filter.accountName" type="text" class="blueMain" size="20" onfocus="clearText(this)" onblur="unclearText(this)"/>
 <input type="submit" value="Search" class="blueMain" />
 </form>
 </div>
@@ -116,7 +116,6 @@
 	<img src='<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hc/90511184/?cmd=repstate&site=90511184&channel=web&&ver=1&imageUrl=<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
 	name='hcIcon' border=0 />
 </div>
-
 <!-- !begin content -->
 <decorator:body />
 <!-- !end content -->
