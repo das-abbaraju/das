@@ -59,14 +59,8 @@
 <s:iterator value="categories">
 	<s:if test="catDataID == id || (catDataID == 0 && appliesB)">
 		<h2>Category <s:property value="category.number"/> - <s:property value="category.category"/></h2>
-		<s:if test="category.id == 29">
-				<s:if test="mode == 'View'">
-					<s:iterator value="contractor.oshas">
-						<s:include value="audit_cat_osha.jsp"></s:include>
-					</s:iterator>
-				</s:if>
-		</s:if>
-		<s:elseif test="category.id == 151">
+
+		<s:if test="category.id == 151">
 				<s:if test="mode == 'View'">
 					<s:iterator value="conAudit.oshas">
 						<s:include value="audit_cat_osha2.jsp"></s:include>
@@ -95,7 +89,7 @@
 					</s:form>
 					</s:if>
 				</s:if>
-		</s:elseif>
+		</s:if>
 		<s:else>
 			<table class="audit">
 			<s:iterator value="category.subCategories">
