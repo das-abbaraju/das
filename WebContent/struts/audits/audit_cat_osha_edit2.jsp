@@ -31,7 +31,7 @@
 <s:if test="!corporate">
 <tr>
 	<th class="label">Site Description</th>
-	<td><s:textfield name="osha.description" value="%{description}" cssStyle="width: 100%" value="%{description}"></s:textfield></td>
+	<td><s:textfield name="osha.description" value="%{description}" cssStyle="width: 95%" value="%{description}" maxlength="250"></s:textfield></td>
 </tr>
 </s:if>
 <tr>
@@ -43,23 +43,23 @@
 	<td><s:textfield name="osha.fatalities" value="%{fatalities}" cssClass="osha"></s:textfield></td>
 </tr>
 <tr>
-	<th class="label">Number of Lost Workday Cases - Has lost days AND is <s:property value="descriptionOsMs"/></th>
+	<th class="label">Number of Lost Workday Cases - Has lost days AND is <s:property value="descriptionReportable"/></th>
 	<td><s:textfield name="osha.lostWorkCases" value="%{lostWorkCases}" cssClass="osha"></s:textfield></td>
 </tr>
 <tr>
-	<th class="label">Number of Lost Workdays - All lost workdays (regardless of restricted days) AND is <s:property value="descriptionOsMs"/></th>
+	<th class="label">Number of Lost Workdays - All lost workdays (regardless of restricted days) AND is <s:property value="descriptionReportable"/></th>
 	<td><s:textfield name="osha.lostWorkDays" value="%{lostWorkDays}" cssClass="osha"></s:textfield></td>
 </tr>
 <tr>
-	<th class="label">Injury & Illnesses Medical Cases - No lost OR restricted days AND is <s:property value="descriptionOsMs"/> (non-fatal)</th>
+	<th class="label">Injury & Illnesses Medical Cases - No lost OR restricted days AND is <s:property value="descriptionReportable"/> (non-fatal)</th>
 	<td><s:textfield name="osha.injuryIllnessCases" value="%{injuryIllnessCases}" cssClass="osha"></s:textfield></td>
 </tr>
 <tr>
-	<th class="label">Restricted Cases - Has restricted days AND no lost days AND is <s:property value="descriptionOsMs"/></th>
+	<th class="label">Restricted Cases - Has restricted days AND no lost days AND is <s:property value="descriptionReportable"/></th>
 	<td><s:textfield name="osha.restrictedWorkCases" value="%{restrictedWorkCases}" cssClass="osha"></s:textfield></td>
 </tr>
 <tr>
-	<th class="label">Total <s:property value="descriptionOsMs"/> Injuries and Illnesses</th>
+	<th class="label">Total <s:property value="descriptionReportable"/> Injuries and Illnesses</th>
 	<td><s:textfield name="osha.recordableTotal" value="%{recordableTotal}" cssClass="osha"></s:textfield></td>
 </tr>
 <tr>

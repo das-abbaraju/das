@@ -334,4 +334,13 @@ public class OshaAudit implements java.io.Serializable {
 			return false;
 		return true;
 	}
+	
+	@Transient
+	public String getDescriptionReportable() {
+		if (getType() != null && getType().equals(OshaType.MSHA))
+			return "MSHA Reportable";
+		else
+			return "OSHA Recordable";
+	}
+	
 }

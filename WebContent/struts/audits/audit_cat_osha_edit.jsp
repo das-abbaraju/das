@@ -37,7 +37,7 @@
 <s:if test="!corporate">
 <tr>
 	<th class="label">Site Description</th>
-	<td colspan="3"><s:textfield name="osha.description" cssStyle="width: 100%" value="%{description}"></s:textfield></td>
+	<td colspan="3"><s:textfield name="osha.description" cssStyle="width: 95%" value="%{description}"></s:textfield></td>
 </tr>
 </s:if>
 <tr>
@@ -53,31 +53,31 @@
 	<td><s:textfield name="year3.fatalities" cssClass="osha"></s:textfield></td>
 </tr>
 <tr>
-	<th class="label">Number of Lost Workday Cases - Has lost days AND is <s:property value="descriptionOsMs"/></th>
+	<th class="label">Number of Lost Workday Cases - Has lost days AND is <s:property value="descriptionReportable"/></th>
 	<td><s:textfield name="year1.lostWorkCases" cssClass="osha"></s:textfield></td>
 	<td><s:textfield name="year2.lostWorkCases" cssClass="osha"></s:textfield></td>
 	<td><s:textfield name="year3.lostWorkCases" cssClass="osha"></s:textfield></td>
 </tr>
 <tr>
-	<th class="label">Number of Lost Workdays - All lost workdays (regardless of restricted days) AND is <s:property value="descriptionOsMs"/></th>
+	<th class="label">Number of Lost Workdays - All lost workdays (regardless of restricted days) AND is <s:property value="descriptionReportable"/></th>
 	<td><s:textfield name="year1.lostWorkDays" cssClass="osha"></s:textfield></td>
 	<td><s:textfield name="year2.lostWorkDays" cssClass="osha"></s:textfield></td>
 	<td><s:textfield name="year3.lostWorkDays" cssClass="osha"></s:textfield></td>
 </tr>
 <tr>
-	<th class="label">Injury & Illnesses Medical Cases - No lost OR restricted days AND is <s:property value="descriptionOsMs"/> (non-fatal)</th>
+	<th class="label">Injury & Illnesses Medical Cases - No lost OR restricted days AND is <s:property value="descriptionReportable"/> (non-fatal)</th>
 	<td><s:textfield name="year1.injuryIllnessCases" cssClass="osha"></s:textfield></td>
 	<td><s:textfield name="year2.injuryIllnessCases" cssClass="osha"></s:textfield></td>
 	<td><s:textfield name="year3.injuryIllnessCases" cssClass="osha"></s:textfield></td>
 </tr>
 <tr>
-	<th class="label">Restricted Cases - Has restricted days AND no lost days AND is <s:property value="descriptionOsMs"/></th>
+	<th class="label">Restricted Cases - Has restricted days AND no lost days AND is <s:property value="descriptionReportable"/></th>
 	<td><s:textfield name="year1.restrictedWorkCases" cssClass="osha"></s:textfield></td>
 	<td><s:textfield name="year2.restrictedWorkCases" cssClass="osha"></s:textfield></td>
 	<td><s:textfield name="year3.restrictedWorkCases" cssClass="osha"></s:textfield></td>
 </tr>
 <tr>
-	<th class="label">Total <s:property value="descriptionOsMs"/> Injuries and Illnesses</th>
+	<th class="label">Total <s:property value="descriptionReportable"/> Injuries and Illnesses</th>
 	<td><s:textfield name="year1.recordableTotal" cssClass="osha"></s:textfield></td>
 	<td><s:textfield name="year2.recordableTotal" cssClass="osha"></s:textfield></td>
 	<td><s:textfield name="year3.recordableTotal" cssClass="osha"></s:textfield></td>
