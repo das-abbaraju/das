@@ -79,8 +79,9 @@ public class ReportContractorAudits extends ReportAccount {
 	}
 
 	protected void addFilterToSQL() {
-		ReportFilterAudit f = getFilter();
+		super.addFilterToSQL();
 
+		ReportFilterAudit f = getFilter();
 		String auditTypeList = Strings.implode(f.getAuditTypeID(), ",");
 		if (filterOn(auditTypeList)) {
 			sql.addWhere("ca.auditTypeID IN (" + auditTypeList + ")");
