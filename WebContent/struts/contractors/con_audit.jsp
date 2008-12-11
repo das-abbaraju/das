@@ -23,7 +23,15 @@
 <body>
 <s:include value="conHeader.jsp" />
 
-<s:property value="conAudit.auditStatus"/>
+<s:if test="permissions.contractor">
+	<s:if test="conAudit.auditStatus.activeSubmitted || conAudit.auditStatus.activeResubmittedExempt">
+		<s:iterator value="activeAudits">
+			<s:if test="auditStatus.pending && auditType.canContractorEdit">
+				<div id="info">Please complete the <a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditFor"/> <s:property value="auditType.auditName"/></a>.</div>
+			</s:if>
+		</s:iterator>
+	</s:if>
+</s:if>
 
 <s:form>
 	<s:hidden name="auditID" />

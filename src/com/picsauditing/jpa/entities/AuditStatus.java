@@ -19,6 +19,10 @@ public enum AuditStatus {
 		return values;
 	}
 	
+	public boolean isPending() {
+		return this.equals(Pending);
+	}
+	
 	/**
 	 * Is the status Active or Exempt
 	 * @return
