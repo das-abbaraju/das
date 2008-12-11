@@ -5,7 +5,7 @@
 	<property name="login.username" value="tallred" />
 	
 	<target name="test">
-		<webtest name="Admin Audits">
+		<webtest name="Audits Definitions">
 			&config;
 			<steps>
 				&login;
@@ -25,7 +25,6 @@
 					<setCheckbox name="auditType.canContractorView" checked="true" />
 					<setCheckbox name="auditType.canContractorEdit" checked="true" />
 					<setInputField name="auditType.monthsToExpire" value="3" />
-					<setInputField name="auditType.dateToExpire" value="7/1/99" />
 					<setInputField name="auditType.displayOrder" value="10" />
 					<clickButton description="Click Save/Submit" label="Save" />
 				</group>

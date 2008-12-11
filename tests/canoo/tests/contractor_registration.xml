@@ -112,32 +112,33 @@
 					<clickLink
 						description="Edit Company Info"
 						label="COMPANY INFORMATION" />
-						<setInputField htmlId="answer_635" value="Canoo's Test Contractor" />
-						<setInputField htmlId="answer_603" value="949-123-4567" />
-						<setInputField htmlId="answer_37" value="A really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, long company name goes here" />
-						<setInputField htmlId="answer_38" value="" />
+					<setInputField htmlId="answer_635" value="Canoo's Test Contractor" />
+					<setInputField htmlId="answer_603" value="949-123-4567" />
+					<setInputField htmlId="answer_37" value="A really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, long company name goes here" />
+					<setInputField htmlId="answer_38" value="" />
 					<clickLink description="Go To Category List" label="Up to Category List" />
+				</group>
+				<group description="Fill out PQF Update">
 					<clickLink
-						description="Edit Osha"
-						label="OSHA/MSHA INJURY AND ILLNESS DATA" />
-						<setInputField name="year1.manHours" value="400000" />
-						<setInputField name="year2.manHours" value="300000" />
-						<setRadioButton name="year3.na" value="Yes" />
+						description="Open PQF Update 2007"
+						label="2007 PQF Update" />
+					<clickLink
+						description="Open OSHA Section"
+						label="OSHA" />
+					<setInputField name="osha.manHours" value="400000" />
+					<setInputField name="osha.recordableTotal" value="10" />
+					<setRadioButton name="osha.applicable" value="true" />
 					<clickButton description="Save Osha" label="Save This Location" />
 				</group>
-
 				
 				<group description="Delete account">
-					<storeProperty description="Delete Account" 
+					<storeProperty description="Change login to Admin" 
 						name="login.username" 
 						propertyType="ant"
 						value="${admin.username}"/>
 					&login;
-					<clickLink description="Search For Contractors"
-						label="Search" />
-					<setInputField name="filter.accountName" value="Canoo's Test Contractor" />
+					<setInputField name="filter.accountName" value="Canoo's Test" />
 					<clickButton description="Search for Contractor" label="Search" />
-					<clickLink description="Edit the Contractor" htmlId="conEditLink" />
 					&contractor_delete;
 				</group>
 			</steps>

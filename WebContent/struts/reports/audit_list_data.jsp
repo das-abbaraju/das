@@ -36,16 +36,16 @@
 	<s:iterator value="data" status="stat">
 	<tr>
 		<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-		<td><a href="ContractorView.action?id=<s:property value="[0].get('id')"/>"><s:property value="[0].get('name')"/></a></td>
-		<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="[0].get('auditName')"/></a></td>
-		<td class="center"><s:date name="[0].get('createdDate')" format="M/d/yy" /></td>
-		<td class="center"><s:date name="[0].get('completedDate')" format="M/d/yy" /></td>
-		<td class="center"><s:date name="[0].get('closedDate')" format="M/d/yy" /></td>
-		<td class="center"><s:date name="[0].get('expiresDate')" format="M/d/yy" /></td>
-		<td><s:property value="[0].get('auditStatus')"/></td>
-		<td class="right"><s:property value="[0].get('percentComplete')"/>%</td>
+		<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
+		<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:property value="get('auditName')"/> <s:property value="get('auditFor')"/></a></td>
+		<td class="center"><s:date name="get('createdDate')" format="M/d/yy" /></td>
+		<td class="center"><s:date name="get('completedDate')" format="M/d/yy" /></td>
+		<td class="center"><s:date name="get('closedDate')" format="M/d/yy" /></td>
+		<td class="center"><s:date name="get('expiresDate')" format="M/d/yy" /></td>
+		<td><s:property value="get('auditStatus')"/></td>
+		<td class="right"><s:property value="get('percentComplete')"/>%</td>
 	    <s:if test="%{value = (!permissions.operator && !permissions.corporate)}">
-		<td><s:property value="[0].get('auditor_name')"/></td>
+		<td><s:property value="get('auditor_name')"/></td>
 		</s:if>
 	</tr>
 	</s:iterator>

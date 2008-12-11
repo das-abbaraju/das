@@ -91,6 +91,20 @@ public class ContractorOperator implements java.io.Serializable {
 	public void setWorkStatus(String workStatus) {
 		this.workStatus = workStatus;
 	}
+	
+	@Transient
+	public boolean isWorkStatusApproved() {
+		return "Y".equals(workStatus);
+	}
+	@Transient
+	public boolean isWorkStatusRejected() {
+		return "N".equals(workStatus);
+	}
+	@Transient
+	public boolean isWorkStatusPending() {
+		return "P".equals(workStatus);
+	}
+
 
 	@Enumerated(EnumType.STRING)
 	public FlagColor getForceFlag() {

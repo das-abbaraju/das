@@ -14,6 +14,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.mail.WizardSession;
+import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectContractorAudit;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterDate;
@@ -26,7 +27,6 @@ public class ReportContractorAudits extends ReportAccount {
 	private ReportFilterAudit filter = new ReportFilterAudit();
 
 	public ReportContractorAudits() {
-		sql = new SelectContractorAudit();
 		orderByDefault = "ca.createdDate DESC";
 	}
 
@@ -41,6 +41,10 @@ public class ReportContractorAudits extends ReportAccount {
 	
 	@Override
 	protected void buildQuery() {
+		sql = new SelectContractorAudit();
+		sql.setType(SelectAccount.Type.Contractor);
+		if (!skipPermissions)
+			sql.setPermissions(permissions);
 
 		addFilterToSQL();
 
@@ -54,6 +58,7 @@ public class ReportContractorAudits extends ReportAccount {
 		sql.addField("ca.percentComplete");
 		sql.addField("ca.percentVerified");
 		sql.addField("ca.auditorID");
+		sql.addField("ca.auditFor");
 
 		sql.addField("atype.isScheduled");
 		sql.addField("atype.hasAuditor");

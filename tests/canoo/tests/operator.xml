@@ -34,7 +34,7 @@
 					&body_verify;				
 				<clickLink 
 					description="Verify if Desktop Audit exists"
-					label="Desktop Audit (NCMS)" />
+					label="Desktop Audit" />
 					&body_verify;						
 				<clickLink 
 					description="Verify if Flag Report exists"

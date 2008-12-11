@@ -55,10 +55,10 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	}
 
 	protected void buildQuery() {
-		if (!skipPermissions)
-			sql.setPermissions(permissions);
 		sql = new SelectAccount();
 		sql.setType(SelectAccount.Type.Contractor);
+		if (!skipPermissions)
+			sql.setPermissions(permissions);
 
 		addFilterToSQL();
 	}

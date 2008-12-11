@@ -1,26 +1,30 @@
-<clickLink
-	description="PQF Audit"
-	label="PQF" />
-<clickLink
-	description="System Edit Page"
-	label="System Edit" />
-<clickButton
-	description="Delete PQF"
-	label="Delete" />
-<clickLink
-	description="Welcome Call Audit"
-	label="Welcome Call" />
-<clickLink
-	description="System Edit Page"
-	label="System Edit" />
-<clickButton
-	description="Delete Welcome Call"
-	label="Delete" />
-<clickLink
-	description="click on edit page"
-	label="Edit" />
-<clickButton
-	description="Delete the Contractor"
-	label="Delete" />
+<group description="Delete PQF">
+	<clickLink description="Goto PQF" label="PQF" />
+	<clickLink description="Open System Edit" label="System Edit" />
+	<clickButton description="Click Delete" label="Delete" />
+</group>
 
-	
+<group description="Delete Welcome Call">
+	<clickLink description="Goto Welcome Call" label="Welcome Call" />
+	<clickLink description="Open System Edit" label="System Edit" />
+	<clickButton description="Click Delete" label="Delete" />
+</group>
+
+<group description="Delete PQF Updates">
+	<clickLink description="Goto PQF Update 07" label="PQF Update 2007" />
+	<clickLink description="Open System Edit" label="System Edit" />
+	<clickButton description="Click Delete" label="Delete" />
+
+	<clickLink description="Goto PQF Update 06" label="PQF Update 2006" />
+	<clickLink description="Open System Edit" label="System Edit" />
+	<clickButton description="Click Delete" label="Delete" />
+
+	<clickLink description="Goto PQF Update 05" label="PQF Update 2005" />
+	<clickLink description="Open System Edit" label="System Edit" />
+	<clickButton description="Click Delete" label="Delete" />
+</group>
+
+<group description="Delete Contractor">
+	<clickLink description="click on edit page" label="Edit" />
+	<clickButton description="Delete the Contractor" label="Delete" />
+</group>
