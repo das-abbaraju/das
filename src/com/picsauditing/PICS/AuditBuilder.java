@@ -94,6 +94,11 @@ public class AuditBuilder {
 		ContractorAudit pqfAudit = null;
 		for (ContractorAudit conAudit : currentAudits) {
 			if (conAudit.getAuditType().isPqf()) {
+				if(conAudit.getAuditStatus().equals(AuditStatus.Expired)) {
+					// This should never happen...but just in case
+					conAudit.setAuditStatus(AuditStatus.Pending);
+					cAuditDAO.save(conAudit);
+				}
 				pqfAudit = conAudit;
 				break;
 			}
@@ -106,8 +111,10 @@ public class AuditBuilder {
 		/** * Add other Audits ** */
 		// Get a distinct list of AuditTypes that attached operators require
 		List<AuditType> list = auditTypeDAO.findWhere("t IN (SELECT auditType "
-				+ "FROM AuditOperator WHERE canSee=1 AND minRiskLevel BETWEEN 1 AND "
-				+ contractor.getRiskLevel().ordinal() + " " + "AND operatorAccount IN ("
+				+ "FROM AuditOperator " +
+						"WHERE auditType.auditTypeID > 1 AND canSee=1 " +
+						" AND minRiskLevel BETWEEN 1 AND " + contractor.getRiskLevel().ordinal() +
+						" AND operatorAccount IN ("
 				+ "SELECT operatorAccount FROM ContractorOperator " + "WHERE contractorAccount.id = "
 				+ contractor.getId() + "))");
 		int year = DateBean.getCurrentYear();
@@ -166,10 +173,11 @@ public class AuditBuilder {
 					boolean insertNow = true;
 					if (pqfAudit.getAuditStatus().equals(AuditStatus.Pending)) {
 						// The current PQF is stilling pending, does this audit
-						// require a PDF?
+						// require a PDF? (Desktop, Office, or D&A)
 						if (requiresSafetyManual.contains(auditType.getAuditTypeID()))
 							insertNow = false;
 					}
+					
 					if (auditType.getAuditTypeID() == AuditType.DESKTOP
 							&& pqfAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
 						// The current PQF has been submitted, but we need to
