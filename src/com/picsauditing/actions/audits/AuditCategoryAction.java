@@ -1,6 +1,8 @@
 package com.picsauditing.actions.audits;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -51,6 +53,8 @@ public class AuditCategoryAction extends AuditActionSupport {
 	protected ContractorAudit previousAudit = null;
 	protected ContractorAudit nextAudit = null;
 
+	protected OshaAudit averageOshas = null;
+	
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditCategoryDAO auditCategoryDAO;
 	private OshaAuditDAO oshaAuditDAO;
@@ -181,6 +185,8 @@ public class AuditCategoryAction extends AuditActionSupport {
 		}
 		auditPercentCalculator.percentCalculateComplete(conAudit);
 
+		ContractorAudit twoYearsAgo = null;
+		
 		if (conAudit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM) {
 
 			String auditFor = conAudit.getAuditFor();
@@ -204,6 +210,9 @@ public class AuditCategoryAction extends AuditActionSupport {
 							try {
 								caAuditYear = Integer.parseInt(caAuditFor);
 
+								if( caAuditYear == auditYear - 2 ) {
+									twoYearsAgo = ca;
+								}
 								if( caAuditYear == auditYear - 1 ) {
 									previousAudit = ca;
 								}
@@ -221,10 +230,13 @@ public class AuditCategoryAction extends AuditActionSupport {
 				}
 			}
 		}
-
+		
+		
 		return SUCCESS;
 	}
 
+	
+	
 	private void fillAnswers(AuditCatData catData,
 			Map<Integer, AuditData> answers) {
 		for (AuditSubCategory subCategory : catData.getCategory()
@@ -350,4 +362,13 @@ public class AuditCategoryAction extends AuditActionSupport {
 	}
 
 
+	public OshaAudit getAverageOsha() {
+		if( averageOshas == null ) {
+			Map<String, OshaAudit> temp = contractor.getOshas();
+			if( temp != null ) {
+				averageOshas = temp.get(OshaAudit.AVG);
+			}
+		}
+		return averageOshas;
+	}
 }

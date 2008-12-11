@@ -194,3 +194,9 @@
 	color: #ffffff;
 	font-weight: bold;
 }
+
+#content div.auditSubMenu a.current {
+	color: #fff;
+	background-color: rgb(168, 77, 16);
+	text-decoration: none;
+}

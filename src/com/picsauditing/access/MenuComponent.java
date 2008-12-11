@@ -9,6 +9,11 @@ public class MenuComponent implements Serializable {
 	private String name;
 	private String url;
 	private int id = 1;
+
+	protected int auditId = 0;
+	
+	protected boolean current = false;
+	
 	private ArrayList<MenuComponent> children = new ArrayList<MenuComponent>();
 
 	public MenuComponent() {
@@ -60,7 +65,7 @@ public class MenuComponent implements Serializable {
 	public boolean hasChildren() {
 		return children.size() > 0;
 	}
-
+	
 	public ArrayList<MenuComponent> getChildren() {
 		return children;
 	}
@@ -71,6 +76,8 @@ public class MenuComponent implements Serializable {
 		child.setId(this.children.size() + (100*this.id));
 		return child;
 	}
+	
+	
 
 	public MenuComponent addChild(String name, String url) {
 		MenuComponent child = new MenuComponent(name, url);
@@ -78,4 +85,40 @@ public class MenuComponent implements Serializable {
 		child.setId(this.children.size() + (100*this.id));
 		return child;
 	}
+
+	public MenuComponent addChild(String name, String url, int childAuditId) {
+		MenuComponent child = new MenuComponent(name, url);
+		this.children.add(child);
+		child.setId(this.children.size() + (100*this.id));
+		child.setAuditId(childAuditId);
+		return child;
+	}
+	
+	public boolean isCurrent() {
+		
+		if( current ) return true;
+		
+		for( MenuComponent child : children ) {
+			
+			if( child.isCurrent() ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void setCurrent(boolean current) {
+		this.current = current;
+	}
+
+	public int getAuditId() {
+		return auditId;
+	}
+
+	public void setAuditId(int auditId) {
+		this.auditId = auditId;
+	}
+
+	
+	
 }

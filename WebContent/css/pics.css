@@ -452,15 +452,17 @@ ul#navlist {
 	text-decoration: none;
 }
 
+#navlist a.dropdown, #navlist a.dropdown:hover {
+	background: #003768 url('../images/down.gif') no-repeat right center;
+	padding-right: 18px;
+}
+
 #navlist a.current {
 	color: #fff;
 	background-color: rgb(168, 77, 16);
 	text-decoration: none;
 }
-#navlist a.dropdown, #navlist a.dropdown:hover {
-	background: #003768 url('../images/down.gif') no-repeat right center;
-	padding-right: 18px;
-}
+
 
 /************* Search *************/
 #search {

@@ -119,32 +119,39 @@ public class ContractorActionSupport extends PicsActionSupport {
 			ContractorAudit conAudit = auditList.get(0);
 			if (auditList.size() == 1) {
 				// Just one audit of this type
-				menu.add(new MenuComponent(conAudit.getAuditType().getAuditName(), url + conAudit.getId()));
+				MenuComponent menuComponent = new MenuComponent(conAudit.getAuditType().getAuditName(), url + conAudit.getId());
+				menuComponent.setAuditId(conAudit.getId());
+				menu.add(menuComponent);
 			} else {
 				// We have more than one audit of this type, so create a subMenu with multiple children
 				MenuComponent subMenu = new MenuComponent(conAudit.getAuditType().getAuditName(), ""+ conAudit.getAuditType().getAuditTypeID());
+				subMenu.setAuditId(conAudit.getId());
 				menu.add(subMenu);
 				
 				for(ContractorAudit audit : auditList) {
-					// Create the linkText
-					// First use auditFor: Year in the cast of Annual Audit or Employee name in the case of OQ
-					String linkText = audit.getAuditFor();
-					
-					// If the audit is a desktop or office, we may want to add in pending status
-					if (Strings.isEmpty(linkText) && audit.getAuditStatus().isPendingSubmittedResubmitted())
-						linkText = audit.getAuditStatus().toString();
-					
-					// When all else fails, make sure there is something displayed
-					if (Strings.isEmpty(linkText))
-						linkText = audit.getAuditType().getAuditName();
-					else
-						linkText += " " +audit.getAuditType().getAuditName();
-					
-					subMenu.addChild(linkText, url + audit.getId());
+					String linkText = buildLinkText(audit);
+					subMenu.addChild(linkText, url + audit.getId(), audit.getId());
 				}
 			}
 		}
 		return menu;
+	}
+
+	public String buildLinkText(ContractorAudit audit) {
+		// Create the linkText
+		// First use auditFor: Year in the cast of Annual Audit or Employee name in the case of OQ
+		String linkText = audit.getAuditFor();
+		
+		// If the audit is a desktop or office, we may want to add in pending status
+		if (Strings.isEmpty(linkText) && audit.getAuditStatus().isPendingSubmittedResubmitted())
+			linkText = audit.getAuditStatus().toString();
+		
+		// When all else fails, make sure there is something displayed
+		if (Strings.isEmpty(linkText))
+			linkText = audit.getAuditType().getAuditName();
+		else
+			linkText += " " +audit.getAuditType().getAuditName();
+		return linkText;
 	}
 
 	public List<ContractorOperator> getOperators() {

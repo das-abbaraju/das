@@ -3,12 +3,15 @@ package com.picsauditing.actions.audits;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagCalculator2;
+import com.picsauditing.access.MenuComponent;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -256,4 +259,29 @@ public class ContractorAuditAction extends AuditActionSupport {
 	public boolean isCanApply() {
 		return isCanApply;
 	}
+	
+	public List<MenuComponent> getAuditMenu() {
+		List<MenuComponent> menu = super.getAuditMenu();
+		
+		if( conAudit != null ) {
+			for( MenuComponent comp : menu ) {
+				if( comp.getAuditId() == conAudit.getId() ) {
+					comp.setCurrent(true);
+					break;
+				}
+
+				if( comp.getChildren() != null ) {
+					for( MenuComponent child : comp.getChildren() ) {
+						if( child.getAuditId() == conAudit.getId() ) {
+							child.setCurrent(true);
+							return menu;
+						}
+					}
+				}
+			}
+		}		
+		
+		return menu;
+	}
+	
 }
