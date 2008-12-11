@@ -23,12 +23,7 @@
 		</s:elseif>
 		
 		<s:else>
-			<s:if test="answer.verified && answer.answer.length() > 0">
-				 <s:property value="answer.answer" />&nbsp;&nbsp;<a href="javascript:showAnswer(<s:property value="id"/>);" style="color : rgb(168, 77, 16);font-weight : normal;">Changed by PICS</a> 
-			</s:if>
-			<s:else>
-				<s:property value="answer.answer" />
-			</s:else>
+			<s:property value="answer.answer" />
 			<s:if test="questionType == 'Manual' && answer.answer.length() > 0">
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment: <s:property value="answer.comment"/>
 			</s:if>

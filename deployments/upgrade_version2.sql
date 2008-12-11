@@ -112,7 +112,7 @@ verifiedDate1, case NA1 when 'Yes' then 0 else 1 end, case file1YearAgo when 'Ye
 lostWorkDays1, injuryIllnessCases1, restrictedWorkCases1, recordableTotal1, comment1
 from osha
 join contractor_audit ca on ca.conID = osha.conID and auditTypeID = 11
-where auditFor = '2007' and manHours1 > 0;
+where auditFor = '2007';
 
 insert into osha_audit (auditID, SHAType, location, description, auditorID, 
 verifiedDate, applicable, fileUploaded, manHours, fatalities, lostWorkCases, 
@@ -122,7 +122,7 @@ verifiedDate2, case NA2 when 'Yes' then 0 else 1 end, case file2YearAgo when 'Ye
 lostWorkDays2, injuryIllnessCases2, restrictedWorkCases2, recordableTotal2, comment2
 from osha
 join contractor_audit ca on ca.conID = osha.conID and auditTypeID = 11
-where auditFor = '2006' and manHours2 > 0;
+where auditFor = '2006';
 
 insert into osha_audit (auditID, SHAType, location, description, auditorID, 
 verifiedDate, applicable, fileUploaded, manHours, fatalities, lostWorkCases, 
@@ -132,7 +132,7 @@ verifiedDate3, case NA3 when 'Yes' then 0 else 1 end, case file3YearAgo when 'Ye
 lostWorkDays3, injuryIllnessCases3, restrictedWorkCases3, recordableTotal3, comment3
 from osha
 join contractor_audit ca on ca.conID = osha.conID and auditTypeID = 11
-where auditFor = '2005' and manHours3 > 0;
+where auditFor = '2005';
 
 
 insert into osha_audit (auditID, SHAType, location, description,

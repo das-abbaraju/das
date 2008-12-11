@@ -267,6 +267,17 @@
 	</table>
 </s:if>
 
+<s:if test="co.operatorAccount.approvesRelationships.toString() == 'Yes'">
+	<s:property value="co.workStatus"/>
+	<s:if test="co.workStatus.equals('P')">
+		<div id="alert">The operator has not approved this contractor yet.</div>
+	</s:if>
+	<s:if test="co.workStatus == 'P'">
+		<div id="alert">The operator did not approve this contractor.</div>
+	</s:if>
+	<s:property value="co.workStatus"/>
+</s:if>
+
 <div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
 
 </body>

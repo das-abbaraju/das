@@ -26,10 +26,6 @@
 		pars = 'scrollbars=yes,resizable=yes,width=700,height=450';
 		window.open(url,title,pars);
 	}
-
-	function showAnswer(questionid) {
-		$('showText_'+questionid).show();
-	}
 </script>
 </head>
 <body>

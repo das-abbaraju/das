@@ -23,18 +23,28 @@
 <body>
 <s:include value="conHeader.jsp" />
 
+<s:property value="conAudit.auditStatus"/>
+
 <s:form>
 	<s:hidden name="auditID" />
 	<s:if test="canSubmit">
-		<div id="alert">
-			<s:checkbox name="''" onchange="resubmitPqf(this);"/>
+		<div id="alert" class="buttons" style="">
 			<s:if test="conAudit.auditStatus.pendingExpired">
-				All sections must be filled out before submitting.<br/>
+				<s:submit id="submit" value="Submit" name="button" cssStyle="font-size: 16px; padding: 8px; margin: 5px; color: darkgreen; font-weight: bold;"></s:submit>
+				<s:if test="conAudit.auditType.pqf">
+					<br />You're almost done! Please take another opportunity to double check your information.
+					<br />Click Submit when you're ready to send your information to PICS for review.
+					<br />You MUST click this button before your PQF can become Activated.
+				</s:if>
+				<s:else>
+					<br />Click Submit when you're ready to finalize the <s:property value="conAudit.auditType.auditName"/>.
+				</s:else>
 			</s:if>
 			<s:else>
+				<s:checkbox name="''" onchange="resubmitPqf(this);"/>
 				 I have reviewed and updated my previously submitted data and verified its accuracy.<br/>
-			</s:else>		
-			<s:submit id="submit" value="Submit" name="button" disabled="true"></s:submit>
+				<s:submit id="submit" value="Submit" name="button" disabled="true"></s:submit>
+			</s:else>
 		</div>
 	</s:if>
 	<s:if test="canClose">

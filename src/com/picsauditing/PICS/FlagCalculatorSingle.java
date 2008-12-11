@@ -329,12 +329,13 @@ public class FlagCalculatorSingle {
 		// Operator Relationship Approval
 		if (YesNo.Yes.equals(operator.getApprovesRelationships())) {
 			if (co.getWorkStatus().equals("P"))
-				return WaitingOn.Operator; // Operator needs to approve/reject
-			// this contractor
+				// Operator needs to approve/reject this contractor
+				return WaitingOn.Operator;
 			if (co.getWorkStatus().equals("N"))
-				return WaitingOn.None; // Operator has already rejected this
-			// contractor, and there's nothing else
-			// they can do
+				// Operator has already rejected this
+				// contractor, and there's nothing else
+				// they can do
+				return WaitingOn.None;
 		}
 
 		// Billing
@@ -410,20 +411,24 @@ public class FlagCalculatorSingle {
 					debug(" -- certificate" + certificate.getType() + " " + certificate.getOperatorAccount().getName());
 					count++;
 					if (certificate.getStatus().equals("Rejected"))
-						return WaitingOn.Contractor; // The contractor should
-					// upload a new cert
+						// The contractor should upload a new cert
+						return WaitingOn.Contractor;
 					if (certificate.getStatus().equals("Expired"))
-						return WaitingOn.Contractor; // The contractor should
-					// upload a new cert
+						// The contractor should upload a new cert
+						return WaitingOn.Contractor;
+					
+					// These next two sections may need to change as InsureGuard 
+					// gets more options regarding who can/should do each process
 					if (certificate.getStatus().equals("Pending"))
+						waitingOnOperator = true;
+					if (certificate.getVerified().equals(YesNo.No))
 						waitingOnPics = true;
 				}
 			}
 
 			if (count == 0)
-				return WaitingOn.Contractor; // The contractor hasn't
-			// uploaded any certificates for
-			// this operator
+				// The contractor hasn't uploaded any certificates for this operator
+				return WaitingOn.Contractor;
 		}
 
 		// Conclusion
