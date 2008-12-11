@@ -204,10 +204,6 @@
 		<li><label>Risk Level:</label>
 			<strong><s:property value="contractor.riskLevel" /></strong>
 		</li>
-	</ul>
-	</fieldset>
-	<fieldset>
-	<ul>
 		<li><label># of Employees:</label>
 			<strong><s:property value="infoSection[69].answer" default="N/A"/></strong>
 		</li>
@@ -224,10 +220,6 @@
 		<li><label>NAICS:</label>
 			<strong><s:property value="infoSection[57].answer" default="N/A"/></strong>
 		</li>
-	</ul>
-	</fieldset>
-	<fieldset>
-	<ul>
 		<li><label>Fatalities:</label>
 			<strong><s:property value="infoSection[103].answer" default="N/A"/></strong>
 		</li>
