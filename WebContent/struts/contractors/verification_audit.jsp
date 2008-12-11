@@ -92,7 +92,27 @@
 				<s:property value="question.subCategory.category.number"/>.<s:property value="question.subCategory.number"/>.<s:property value="question.number"/>
 				<s:property value="question.question"/></li>
 
-			<li><label>Answer:</label> <s:textfield id="answer_%{question.id}" name="answer"></s:textfield>
+			<s:if test="question.questionType != 'File'">
+				<li><label>Answer:</label>			
+				<s:textfield id="answer_%{question.id}" name="answer"/>
+			</s:if>
+			<s:else>
+				<li><label>File:</label> 
+				<s:if test="answer.length() > 0">
+						<a href="DownloadAuditData.action?auditID=<s:property value="conAudit.id"/>&question.id=<s:property value="question.id"/>" target="_BLANK">View File</a>
+							
+						<a
+							href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=152&mode=Edit"
+							target="_BLANK">Change File</a>
+					</s:if>
+					<s:else>
+						None. <a
+							href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=152&mode=Edit"
+							target="_BLANK">Upload New Files</a>
+					</s:else>
+			</s:else>
+
+
 
 			<s:if test="verified == false">
 				<s:set name="verifyText" value="'Verify'"/>
