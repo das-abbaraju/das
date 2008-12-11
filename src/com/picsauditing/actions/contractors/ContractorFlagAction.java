@@ -51,9 +51,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		limitedView = true;
 		findContractor();
 
-		if (contractor.isPaymentOverdue())
-			addActionError("This contractor has an outstanding invoice due");
-
 		if (opID == 0)
 			opID = permissions.getAccountId();
 

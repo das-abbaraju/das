@@ -5,24 +5,20 @@
 	<property name="register.username" value="canoo_contractor1" />
 	<property name="admin.username" value="tallred" />
 	<target name="test">
-		<webtest name="Contractor Registration">
+		<webtest name="Contractor Registration - Cleanup">
 			&config;
 			<steps>
-				<ifStep description="Clean out the contractor if the previous test failed">
-					<condition>
-						<storeProperty description="Delete Account" 
-							name="login.username" 
-							propertyType="ant"
-							value="${admin.username}"/>
-						&login;
-						<clickLink description="Search For Contractors"
-							label="Search" />
-						<setInputField name="accountName" value="Canoo's Test Contractor" />
-						<clickButton description="Search for Contractor" label="Search" />
-						<clickLink description="Edit the Contractor" htmlId="conEditLink" />
-					</condition>
-					&contractor_delete;
-				</ifStep>
+				<storeProperty description="Delete Account" 
+					name="login.username" 
+					propertyType="ant"
+					value="${admin.username}"/>
+				&login;
+				&contractor_delete;
+			</steps>
+		</webtest>
+		<webtest name="Contractor Registration - Register">
+			&config;
+			<steps>
 				<invoke
 					description="Register Link"
 					url="contractor_new_instructions.jsp" />
@@ -86,7 +82,12 @@
 					<clickButton description="Search for Contractor" name="button" />
 					<clickButton description="Make Visible" label="Activate" />
 				</group>
-				
+			</steps>
+		</webtest>
+		
+		<webtest name="Contractor Registration - PQF">
+			&config;
+			<steps>
 				<group description="Login correctly">
 					<storeProperty description="Login Correctly" 
 						name="login.username" 
@@ -95,7 +96,6 @@
 					&login;
 					&body_verify;
 				</group>
-
 				<group description="Fill out PQF">
 					<clickLink
 						description="Edit Page"
@@ -131,16 +131,18 @@
 					<clickButton description="Save Osha" label="Save This Location" />
 				</group>
 				
-				<group description="Delete account">
-					<storeProperty description="Change login to Admin" 
-						name="login.username" 
-						propertyType="ant"
-						value="${admin.username}"/>
-					&login;
-					<setInputField name="filter.accountName" value="Canoo's Test" />
-					<clickButton description="Search for Contractor" label="Search" />
-					&contractor_delete;
-				</group>
+			</steps>
+		</webtest>
+		
+		<webtest name="Contractor Registration - Cleanup">
+			&config;
+			<steps>
+				<storeProperty description="Change login to Admin" 
+					name="login.username" 
+					propertyType="ant"
+					value="${admin.username}"/>
+				&login;
+				&contractor_delete;
 			</steps>
 		</webtest>
 	</target>

@@ -1,30 +1,62 @@
-<group description="Delete PQF">
-	<clickLink description="Goto PQF" label="PQF" />
-	<clickLink description="Open System Edit" label="System Edit" />
-	<clickButton description="Click Delete" label="Delete" />
-</group>
+<ifStep description="Delete the Contractor if they exist">
+	<condition>
+		<setInputField name="filter.accountName" value="Canoo's Test" />
+		<clickButton description="Search for Contractor" label="Search" />
+		<verifyText description="Canoo's Test Contractor still exists" text="Canoo's Test Contractor" />
+	</condition>
+	
+	<ifStep description="Delete PQF">
+		<condition>
+			<clickLink description="Goto PQF" label="PQF" />
+			<clickLink description="Open System Edit" label="System Edit" />
+		</condition>
+		<clickButton description="Click Delete" label="Delete" />
+	</ifStep>
+	
+	<ifStep description="Delete Welcome Call">
+		<condition>
+			<clickLink description="Goto Welcome Call" label="Welcome Call" />
+		</condition>
+		<clickLink description="Open System Edit" label="System Edit" />
+		<clickButton description="Click Delete" label="Delete" />
+	</ifStep>
 
-<group description="Delete Welcome Call">
-	<clickLink description="Goto Welcome Call" label="Welcome Call" />
-	<clickLink description="Open System Edit" label="System Edit" />
-	<clickButton description="Click Delete" label="Delete" />
-</group>
+	<ifStep description="Delete PQF Updates">
+		<condition>
+			<clickLink description="Goto PQF Update 07" label="2007 PQF Update" />
+		</condition>
+		<clickLink description="Open System Edit" label="System Edit" />
+		<clickButton description="Click Delete" label="Delete" />
+	</ifStep>
 
-<group description="Delete PQF Updates">
-	<clickLink description="Goto PQF Update 07" label="PQF Update 2007" />
-	<clickLink description="Open System Edit" label="System Edit" />
-	<clickButton description="Click Delete" label="Delete" />
+	<ifStep description="Delete PQF Updates">
+		<condition>
+			<clickLink description="Goto PQF Update 06" label="2006 PQF Update" />
+		</condition>
+		<clickLink description="Open System Edit" label="System Edit" />
+		<clickButton description="Click Delete" label="Delete" />
+	</ifStep>
 
-	<clickLink description="Goto PQF Update 06" label="PQF Update 2006" />
-	<clickLink description="Open System Edit" label="System Edit" />
-	<clickButton description="Click Delete" label="Delete" />
+	<ifStep description="Delete PQF Updates">
+		<condition>
+			<clickLink description="Goto PQF Update 05" label="2005 PQF Update" />
+		</condition>
+		<clickLink description="Open System Edit" label="System Edit" />
+		<clickButton description="Click Delete" label="Delete" />
+	</ifStep>
 
-	<clickLink description="Goto PQF Update 05" label="PQF Update 2005" />
-	<clickLink description="Open System Edit" label="System Edit" />
-	<clickButton description="Click Delete" label="Delete" />
-</group>
+	<ifStep description="Delete PQF Updates">
+		<condition>
+			<clickLink description="Goto remaining PQF Update" label="PQF Update" />
+		</condition>
+		<clickLink description="Open System Edit" label="System Edit" />
+		<clickButton description="Click Delete" label="Delete" />
+	</ifStep>
 
-<group description="Delete Contractor">
-	<clickLink description="click on edit page" label="Edit" />
-	<clickButton description="Delete the Contractor" label="Delete" />
-</group>
+	<group description="Delete Contractor">
+		<clickLink description="click on edit page" label="Edit" />
+		<clickButton description="Delete the Contractor" label="Delete" />
+	</group>
+
+</ifStep>
+
