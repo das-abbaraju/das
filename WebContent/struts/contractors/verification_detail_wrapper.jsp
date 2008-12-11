@@ -180,8 +180,10 @@
 	 
 	function sendEmail() {
 		pars = 'id='+<s:property value="contractor.id" />;
-		pars +='&emailBody=' +escape($F($('body')));
-		pars +='&emailSubject=' +escape($F($('subject')));
+		if($('body') != null && $('subject') != null) {
+			pars +='&emailBody=' +escape($F($('body')));
+			pars +='&emailSubject=' +escape($F($('subject')));
+		}	
 		var myAjax = new Ajax.Updater('emailStatus', 'VerifySendEmailAjax.action', {method: 'post', parameters: pars});
 		new Effect.Highlight($('emailStatus'), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 	}

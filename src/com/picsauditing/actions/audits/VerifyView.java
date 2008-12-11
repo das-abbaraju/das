@@ -141,15 +141,8 @@ public class VerifyView extends ContractorActionSupport {
 	//
 	// auditDao.save(conAudit);
 	// }
-
-	public String previewEmail() throws Exception {
-		this.findContractor();
-
-		EmailBuilder emailBuilder = new EmailBuilder();
-		emailBuilder.setTemplate(11); // PQF Verification
-		emailBuilder.setPermissions(permissions);
-		emailBuilder.setContractor(contractor);
-
+	
+	public String addMissingItemsToEmail() {
 		StringBuffer sb = new StringBuffer("");
 
 		for (ContractorAudit conAudit : getVerificationAudits()) {
@@ -183,10 +176,16 @@ public class VerifyView extends ContractorActionSupport {
 				}
 			}
 		}
-
-		String items = sb.toString();
-
-		emailBuilder.addToken("missing_items", items);
+		return sb.toString();
+	}
+	
+	public String previewEmail() throws Exception {
+		this.findContractor();
+		EmailBuilder emailBuilder = new EmailBuilder();
+		emailBuilder.setTemplate(11); // PQF Verification
+		emailBuilder.setPermissions(permissions);
+		emailBuilder.setContractor(contractor);
+		emailBuilder.addToken("missing_items", addMissingItemsToEmail());
 		previewEmail = emailBuilder.build();
 
 		return SUCCESS;
@@ -198,11 +197,16 @@ public class VerifyView extends ContractorActionSupport {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setPermissions(permissions);
 		emailBuilder.setContractor(contractor);
-		EmailTemplate emailTemplate = new EmailTemplate();
-		emailTemplate.setId(11);
-		emailTemplate.setBody(emailBody);
-		emailTemplate.setSubject(emailSubject);
-		emailBuilder.setTemplate(emailTemplate);
+		if (emailBody == null && emailSubject == null) {
+			emailBuilder.setTemplate(11);
+			emailBuilder.addToken("missing_items", addMissingItemsToEmail());
+		} else {
+			EmailTemplate emailTemplate = new EmailTemplate();
+			emailTemplate.setId(11);
+			emailTemplate.setBody(emailBody);
+			emailTemplate.setSubject(emailSubject);
+			emailBuilder.setTemplate(emailTemplate);
+		}
 		EmailSender.send(emailBuilder.build());
 		String note = "PQF Verification email sent to " + emailBuilder.getSentTo();
 		ContractorBean.addNote(contractor.getId(), permissions, note);
