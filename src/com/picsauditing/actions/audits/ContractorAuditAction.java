@@ -59,16 +59,14 @@ public class ContractorAuditAction extends AuditActionSupport {
 
 		if ("Submit".equals(button)) {
 			if (conAudit.getAuditType().isPqf()) {
-				if (conAudit.getAuditStatus().isPendingExpired()
-						|| conAudit.getAuditStatus().equals(AuditStatus.Submitted))
-					conAudit.setAuditStatus(AuditStatus.Submitted);
 				if (conAudit.getAuditStatus().equals(AuditStatus.Active) && conAudit.getPercentVerified() == 100)
 					conAudit.setAuditStatus(AuditStatus.Active);
-				else
+				else if (conAudit.getAuditStatus().isActiveResubmittedExempt())
 					conAudit.setAuditStatus(AuditStatus.Resubmitted);
+				else
+					conAudit.setAuditStatus(AuditStatus.Submitted);
 				conAudit.setExpiresDate(DateBean.getMarchOfNextYear(new Date()));
-			}
-			else 
+			} else
 				conAudit.setAuditStatus(AuditStatus.Submitted);
 			auditDao.save(conAudit);
 			return SUCCESS;
@@ -259,29 +257,29 @@ public class ContractorAuditAction extends AuditActionSupport {
 	public boolean isCanApply() {
 		return isCanApply;
 	}
-	
+
 	public List<MenuComponent> getAuditMenu() {
 		List<MenuComponent> menu = super.getAuditMenu();
-		
-		if( conAudit != null ) {
-			for( MenuComponent comp : menu ) {
-				if( comp.getAuditId() == conAudit.getId() ) {
+
+		if (conAudit != null) {
+			for (MenuComponent comp : menu) {
+				if (comp.getAuditId() == conAudit.getId()) {
 					comp.setCurrent(true);
 					break;
 				}
 
-				if( comp.getChildren() != null ) {
-					for( MenuComponent child : comp.getChildren() ) {
-						if( child.getAuditId() == conAudit.getId() ) {
+				if (comp.getChildren() != null) {
+					for (MenuComponent child : comp.getChildren()) {
+						if (child.getAuditId() == conAudit.getId()) {
 							child.setCurrent(true);
 							return menu;
 						}
 					}
 				}
 			}
-		}		
-		
+		}
+
 		return menu;
 	}
-	
+
 }
