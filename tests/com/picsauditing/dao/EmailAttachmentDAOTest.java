@@ -52,7 +52,7 @@ public class EmailAttachmentDAOTest extends TestCase {
 		emailAttachmentDAO.save(emailAttachment);
 	}
 	
-	@Test
+	//@Test
 	public void testOpenFile() throws IOException {
 		EmailAttachment emailAttachment = emailAttachmentDAO.find(1);
 		System.out.println(emailAttachment.getFileSize());

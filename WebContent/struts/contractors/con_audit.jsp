@@ -119,6 +119,11 @@
 		</s:if>
 	</s:iterator>
 </table>
+<s:if test="conAudit.auditType.pqf">
+	<div id="info">
+		The OSHA and EMR categories have been moved to the PQF Update.
+	</div>
+</s:if>
 
 </body>
 </html>
