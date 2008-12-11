@@ -95,71 +95,27 @@ public class VerifyView extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
-	// private void setVerifiedPercent() {
-	// int verified = 0;
-	//
-	// for (OshaAudit oshaAudit : conAudit.getOshas()) {
-	// if (oshaAudit != null && (oshaAudit.isVerified() ||
-	// !oshaAudit.isApplicable()))
-	// verified++;
-	// }
-	//
-	// if (getEmr1() != null && YesNo.Yes.equals(getEmr1().getIsCorrect()))
-	// verified++;
-	// if (getEmr2() != null && YesNo.Yes.equals(getEmr2().getIsCorrect()))
-	// verified++;
-	// if (getEmr3() != null && YesNo.Yes.equals(getEmr3().getIsCorrect()))
-	// verified++;
-	//
-	// int verifyTotal = 6;
-	//
-	// if (customVerification != null) {
-	// for (AuditData ad : customVerification.values()) {
-	// // Training and Safety Policy questions are only necessary to
-	// // validate
-	// // before a desktop audit. They are NOT required to be validated
-	// // before
-	// // Activating a PQF
-	// int catID = ad.getQuestion().getSubCategory().getCategory().getId();
-	// if (catID != AuditCategory.SAFETY_POLICIES && catID !=
-	// AuditCategory.TRAINING) {
-	// verifyTotal++;
-	// if (ad.isVerified())
-	// verified++;
-	// }
-	// }
-	// }
-	//
-	// // Don't un-Activate it anymore, per conversation with Trevor, Jared,
-	// // John 5/16/08
-	// // This can cause more problems with PQFs that are already active during
-	// // the year
-	// // After we convert and get all our data reverified, we may be able to
-	// // turn this back on
-	// // else
-	// // conAudit.setAuditStatus(AuditStatus.Submitted);
-	//
-	// auditDao.save(conAudit);
-	// }
-	
 	public String addMissingItemsToEmail() {
 		StringBuffer sb = new StringBuffer("");
 
 		for (ContractorAudit conAudit : getVerificationAudits()) {
 			if (conAudit.getAuditType().isAnnualAddendum()) {
+				sb.append("\n\n");
+				sb.append(conAudit.getAuditFor()+ " PQF Update");
+				sb.append("\n");
+				sb.append("-------------------------------");
+				sb.append("\n");
 				for (OshaAudit oshaAudit : conAudit.getOshas()) {
 					if (oshaAudit.isCorporate() && !oshaAudit.isVerified()) {
-						sb.append(oshaAudit.getConAudit().getAuditFor());
-						sb.append(" OSHA - ");
+						sb.append("OSHA : ");
 						sb.append(oshaAudit.getComment());
 						sb.append("\n");
 					}
 				}
 				for (AuditData auditData : conAudit.getData()) {
 					if (!auditData.isVerified()) {
-						sb.append(conAudit.getAuditFor());
 						sb.append(auditData.getQuestion().getColumnHeaderOrQuestion());
-						sb.append(" " + auditData.getComment());
+						sb.append(" : " + auditData.getComment());
 						sb.append("\n");
 					}
 				}
@@ -168,9 +124,12 @@ public class VerifyView extends ContractorActionSupport {
 				List<AuditData> temp = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
 				for (AuditData ad : temp) {
 					if (!ad.isVerified()) {
-						sb.append(ad.getQuestion().getSubCategory().getSubCategory() + "/"
-								+ ad.getQuestion().getQuestion());
-						sb.append(" " + ad.getComment());
+						sb.append(ad.getQuestion().getSubCategory().getCategory().getNumber() + "."
+								+ ad.getQuestion().getSubCategory().getNumber() + "." + ad.getQuestion().getNumber());
+						sb.append(":"+ad.getQuestion().getSubCategory().getSubCategory() + "/"
+								+ ad.getQuestion().getColumnHeaderOrQuestion());
+						sb.append("\n");
+						sb.append("Comment : " + ad.getComment());
 						sb.append("\n");
 					}
 				}
@@ -178,7 +137,7 @@ public class VerifyView extends ContractorActionSupport {
 		}
 		return sb.toString();
 	}
-	
+
 	public String previewEmail() throws Exception {
 		this.findContractor();
 		EmailBuilder emailBuilder = new EmailBuilder();
