@@ -119,11 +119,12 @@ public class FileUtils {
 
 				if (!thisDir.exists()) {
 					if (!thisDir.mkdir()) {
-						return null;
+						throw new RuntimeException("unable to create directory: " + thisDir.getAbsolutePath() );
 					}
 				}
-				path = path + "/";
 			}
+			path = path + "/";
+			
 		}
 		return thisDir;
 	}
