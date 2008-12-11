@@ -61,8 +61,6 @@ public class AuditDataDAOTest {
 		auditdata.getAuditor().setId(744);
 		auditdata.setComment("junit");
 		auditdata.setDateVerified(new Date());
-//		auditdata.setVerifiedAnswer("test");
-//		auditdata.setIsCorrect(YesNo.No);
 		auditdata.setWasChanged(YesNo.No);
 		auditdata = auditdataDAO.save(auditdata);
 		assertEquals("junit testing", auditdata.getAnswer());
@@ -99,8 +97,8 @@ public class AuditDataDAOTest {
 	@Test
 	public void findAnswersByContractor() {
 		Set<Integer> questionIds = new HashSet<Integer>();
-		questionIds.add(91);
-		questionIds.add(101);
+		questionIds.add(1509);
+		questionIds.add(954);
 		Map<Integer, Map<String, AuditData>> data = auditdataDAO.findAnswersByContractor(2657, questionIds);
 		assertEquals(2, data.size());
 	}

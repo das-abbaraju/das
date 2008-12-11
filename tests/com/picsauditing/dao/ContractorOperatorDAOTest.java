@@ -3,7 +3,6 @@ package com.picsauditing.dao;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
-import java.util.Iterator;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,12 +12,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.util.SpringUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
@@ -54,6 +51,7 @@ public class ContractorOperatorDAOTest {
 		co.setContractorAccount(new ContractorAccount());
 		co.getContractorAccount().setId(3); // Ancon Marine
 		co.setDateAdded(new Date());
+		co.setWorkStatus("P");
 		co = contractorOperatorDao.save(co);
 		
 		contractorOperatorDao.remove(co);

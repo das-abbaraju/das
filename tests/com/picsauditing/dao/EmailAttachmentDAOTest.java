@@ -30,9 +30,9 @@ public class EmailAttachmentDAOTest extends TestCase {
 		EmailAttachment emailAttachment = new EmailAttachment();
 		emailAttachment.setEmailQueue(new EmailQueue());
 		emailAttachment.getEmailQueue().setId(2787);
-		emailAttachment.setFileName("brochure_1946.pdf");
+		emailAttachment.setFileName("brochure_43.pdf");
 		emailAttachment.setFileSize(10);
-		File file = new File("tests/brochure_1946.pdf");
+		File file = new File("M:/Development/ftp_dir/files/brochures/brochure_43.pdf");
 		String mimeType = new MimetypesFileTypeMap().getContentType(file);
 		System.out.println(mimeType);
 		//emailAttachment.setMimeType(mimeType);
@@ -54,8 +54,7 @@ public class EmailAttachmentDAOTest extends TestCase {
 	
 	@Test
 	public void testOpenFile() throws IOException {
-		EmailAttachment emailAttachment = emailAttachmentDAO.find(7);
-		byte[] fileData = emailAttachment.getContent();
-		System.out.println(fileData.length);
+		EmailAttachment emailAttachment = emailAttachmentDAO.find(1);
+		System.out.println(emailAttachment.getFileSize());
 	}
 }

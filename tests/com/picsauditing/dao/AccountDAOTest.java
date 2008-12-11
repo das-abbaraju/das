@@ -29,8 +29,8 @@ public class AccountDAOTest extends TestCase {
 
 	@Test
 	public void testFind() {
-		Account account = accountdao.find(3487);
-		assertEquals("Trevor Allred", account.getName());
+		Account account = accountdao.find(3);
+		assertEquals("Ancon Marine", account.getName());
 	}
 
 	@Test
