@@ -1,7 +1,9 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <tr id="status_<s:property value="id"/>" class="group<s:if test="#shaded">Shaded</s:if>">
 	<td class="right"><s:property value="category.number"/>.<s:property value="subCategory.number"/>.<s:property value="number"/>&nbsp;&nbsp;
-	<a name="q<s:property value="id"/>" /></td>
+	<a name="q<s:property value="id"/>" />&nbsp;&nbsp;
+	<br/><s:div id="thinking_%{id}"></s:div>
+	</td>
 	<td class="question<s:if test="required">Required</s:if>"><s:property value="question" escape="false"/>
 		<s:if test="linkUrl1.length() > 0"><a href="http://<s:property value="linkUrl1"/>" target="_BLANK" title="opens in new window"><s:property value="linkText1"/></a></s:if>
 		<s:if test="linkUrl2.length() > 0"><a href="http://<s:property value="linkUrl2"/>" target="_BLANK" title="opens in new window"><s:property value="linkText2"/></a></s:if>
