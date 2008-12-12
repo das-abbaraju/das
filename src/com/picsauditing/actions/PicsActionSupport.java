@@ -103,11 +103,12 @@ public class PicsActionSupport extends ActionSupport {
 	}
 
 	public User getUser() {
-		if (permissions.isContractor())
-			// Contractors don't have associated user accounts
-			return null;
 		if (user == null) {
-			user = getUser(permissions.getUserId());
+			if (permissions.isContractor())
+				// Contractors don't have associated user accounts (yet)
+				user = new User(User.CONTRACTOR);
+			else
+				user = getUser(permissions.getUserId());
 		}
 		return user;
 	}
