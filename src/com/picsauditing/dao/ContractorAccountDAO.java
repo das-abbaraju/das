@@ -1,6 +1,5 @@
 package com.picsauditing.dao;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,7 +81,13 @@ public class ContractorAccountDAO extends PicsDAO {
 		Query query = em.createQuery("FROM ContractorOperator WHERE contractorAccount = ? " + where
 				+ " ORDER BY operatorAccount.name");
 		query.setParameter(1, contractor);
-		return query.getResultList();
+		
+		// Make sure we have the list of operators
+		List<ContractorOperator> list = query.getResultList();
+		for(ContractorOperator co : list)
+			co.getOperatorAccount();
+		
+		return list;
 	}
 
 	public List<Integer> findIdsByOperator(OperatorAccount opAccount) {

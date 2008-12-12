@@ -125,6 +125,21 @@ public class AuditCategoryAction extends AuditActionSupport {
 					}
 				}
 			}
+			if (currentCategory == null) {
+				if (catID == 0)
+					throw new Exception("Failed to find category for audit");
+				
+				// Create a new Category for this catID
+				AuditCategory auditCategory = auditCategoryDAO.find(catID);
+				currentCategory = new AuditCatData();
+				currentCategory.setAudit(conAudit);
+				currentCategory.setCategory(auditCategory);
+				currentCategory = this.catDataDao.save(currentCategory);
+				
+				categories = null;
+				getCategories();
+			}
+			
 			if (mode == null
 					&& conAudit.getAuditStatus().equals(AuditStatus.Pending))
 				mode = EDIT;

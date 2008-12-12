@@ -154,12 +154,6 @@ public class ContractorActionSupport extends PicsActionSupport {
 		return linkText;
 	}
 
-	public List<ContractorOperator> getOperators() {
-		if (operators == null)
-			operators = accountDao.findOperators(contractor, permissions, "");
-		return operators;
-	}
-
 	public String getSubHeading() {
 		return subHeading;
 	}
@@ -265,6 +259,14 @@ public class ContractorActionSupport extends PicsActionSupport {
 		return false;
 	}
 	
+	// TODO change this to List<OperatorAccount> instead or figure out why we're getting an expection on isRequiresInsurance()
+	
+	public List<ContractorOperator> getOperators() {
+		if (operators == null)
+			operators = accountDao.findOperators(contractor, permissions, "");
+		return operators;
+	}
+
 	public List<ContractorOperator> getActiveOperators() {
 		if (activeOperators == null)
 			activeOperators = accountDao.findOperators(contractor, permissions, " AND operatorAccount.active = 'Y' ");

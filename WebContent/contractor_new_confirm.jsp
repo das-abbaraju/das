@@ -6,6 +6,8 @@
 	// This is a MAJOR security hole
 	String cID = request.getParameter("i");
 	aBean.setFromDB(cID);
+	if (aBean.lastLogin != null && !aBean.lastLogin.equals("1/1/01"))
+		throw new Exception("You can't access this page!");
 %>
 <html>
 <head>
