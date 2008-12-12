@@ -7,7 +7,7 @@ public class ReportAuditDataUpdate extends ReportContractorAudits {
 
 	@Override
 	public void checkPermissions() throws Exception {
-		permissions.tryPermission(OpPerms.DevelopmentEnvironment);
+		permissions.tryPermission(OpPerms.AuditVerification);
 	}
 
 	@Override
