@@ -115,6 +115,11 @@
 			</result>
 		</action>
 
+		<action name="ContractorNotes"
+			class="com.picsauditing.actions.contractors.ContractorNote">
+			<result>struts/contractors/con_notes.jsp</result>
+		</action>
+		
 
 
 		<!-- REPORTS Primary Search Pages (Contractor/Audit/User lists) -->
@@ -261,7 +266,14 @@
 
 		<action name="DelinquentContractorAccounts"
 			class="com.picsauditing.actions.report.DelinquentAccounts">
+			<param name="filter.ajax">true</param>
+			<param name="filter.allowMailMerge">true</param>
 			<result>/struts/reports/delinquent_conaccounts.jsp</result>
+		</action>
+
+		<action name="DelinquentContractorAccountsAjax"
+			class="com.picsauditing.actions.report.DelinquentAccounts">
+			<result>struts/reports/delinquent_conaccounts_data.jsp</result>
 		</action>
 
 		<action name="ArchivedContractorAccounts"
@@ -315,7 +327,10 @@
 			<result>struts/reports/qanswersearch_csv.jsp</result>
 		</action>
 
-
+		<action name="AuditDataUpdates"
+			class="com.picsauditing.actions.report.ReportAuditDataUpdate">
+			<result>struts/reports/audit_update.jsp</result>
+		</action>
 
 
 
@@ -341,9 +356,22 @@
 			class="com.picsauditing.actions.audits.AuditDataSave">
 			<result>struts/blank.jsp</result>
 		</action>
+		<action name="AuditToggleVerifyAjax"
+			class="com.picsauditing.actions.audits.AuditDataSave">
+			<result>struts/question_to_verify.jsp</result>
+		</action>
+		<action name="AuditToggleOSHAVerifyAjax"
+			class="com.picsauditing.actions.audits.OshaSave">
+			<result>struts/question_to_verify.jsp</result>
+		</action>
 		<action name="AuditDataUpload"
 			class="com.picsauditing.actions.audits.AuditDataUpload">
 			<result>struts/audits/audit_data_upload.jsp</result>
+		</action>
+		<action name="DownloadAuditData"
+			class="com.picsauditing.actions.audits.AuditDataUpload">
+			<param name="button">download</param>
+			<result>/struts/blank.jsp</result>
 		</action>
 		<action name="ReloadQuestionAjax"
 			class="com.picsauditing.actions.audits.ReloadQuestion">
@@ -359,6 +387,11 @@
 				<param name="mode">Edit</param>
 			</result>
 			<result name="input">/struts/blank.jsp</result>
+		</action>
+
+		<action name="DownloadOsha"
+			class="com.picsauditing.actions.audits.OshaSave">
+			<param name="button">download</param>
 		</action>
 
 		<action name="ConAuditMaintain"
@@ -380,7 +413,6 @@
 		</action>
 
 
-
 		<!-- PQF Verify -->
 		<action name="PqfVerification"
 			class="com.picsauditing.actions.report.ReportPQFVerification">
@@ -389,19 +421,12 @@
 
 		<action name="VerifyView"
 			class="com.picsauditing.actions.audits.VerifyView">
-			<result>
-				struts/contractors/pqf_verification_detail.jsp
-			</result>
+			<result>struts/contractors/verification_detail_wrapper.jsp</result>
 		</action>
 
-		<action name="VerifySaveFollowUpAjax" method="saveFollowUp"
+		<action name="VerifyPreviewEmailAjax" method="previewEmail"
 			class="com.picsauditing.actions.audits.VerifyView">
-			<result>struts/blank.jsp</result>
-		</action>
-
-		<action name="VerifySwitchFilesAjax" method="switchFiles"
-			class="com.picsauditing.actions.contractors.SwitchFiles">
-			<result>struts/blank.jsp</result>
+			<result>struts/contractors/verification_mail.jsp</result>
 		</action>
 
 		<action name="VerifySendEmailAjax" method="sendEmail"
@@ -409,7 +434,15 @@
 			<result>struts/blank.jsp</result>
 		</action>
 
+		<action name="VerifyAuditAjax"
+			class="com.picsauditing.actions.audits.VerifyAudit">
+			<result>struts/contractors/verification_audit.jsp</result>
+		</action>
 
+		<action name="ContractorAuditSaveAjax"
+			class="com.picsauditing.actions.audits.ConAuditSave">
+			<result>struts/blank.jsp</result>
+		</action>
 
 
 		<!-- Audits Manage -->
@@ -661,17 +694,22 @@
 			class="com.picsauditing.actions.audits.AuditOperatorSave">
 			<result>struts/operators/audit_operator_save.jsp</result>
 		</action>
+		
+		<action name="OperatorFlagCriteria"
+			class="com.picsauditing.actions.operators.OperatorFlagCriteria">
+			<result>struts/operators/op_flag_criteria.jsp</result>
+		</action>
 
-		<action name="DownloadAjax"
-			class="com.picsauditing.actions.Download">
+		<action name="Trevor"
+			class="com.picsauditing.actions.Trevor">
+			<result>struts/blank.jsp</result>
+		</action>
+
+		<action name="MigrateFileStructure"
+			class="com.picsauditing.actions.MigrateFileStructure">
+			<result>struts/blank.jsp</result>
 		</action>
 		
-		<action name="ContractorNotes"
-			class="com.picsauditing.actions.contractors.ContractorNote">
-			<result>struts/contractors/con_notes.jsp</result>
-		</action>
-		
-
 		<!-- Remember to Categorize your new Struts pages -->
 	</package>
 </struts>
