@@ -109,8 +109,8 @@ public class FileUtils {
 
 		for (int i = 0; i < folders.length; i++) {
 			String currentLevel = folders[i];
-			if (currentLevel.contains(".")) // don't create dir for files
-				break;
+			//if (currentLevel.contains(".")) // don't create dir for files
+			//	break;
 
 			if (currentLevel.length() > 0) {
 				path = path + currentLevel;
