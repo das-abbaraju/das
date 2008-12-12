@@ -22,7 +22,7 @@
 				<a href="Audit.action?auditID=<s:property value="auditID"/>">START</a>
 			</s:else></td>
 			<td style="width: 8%;" class="previous"><s:if test="previousAudit">
-				<a href="AuditCat.action?auditID=<s:property value="previousAudit.id"/>&catID=<s:property value="currentCategory.category.id"/>&mode=<s:property value="mode"/>"
+				<a href="Audit.action?auditID=<s:property value="previousAudit.id"/>&mode=<s:property value="mode"/>"
 				><s:property value="previousAudit.auditFor" /><br /><s:property
 					value="currentCategory.category.category" /></a>
 			</s:if></td>
@@ -32,7 +32,7 @@
 				value="currentCategory.category.category" /></a></td>
 
 			<td style="width: 8%;" class="next"><s:if test="nextAudit != null">
-				<a href="AuditCat.action?auditID=<s:property value="nextAudit.id"/>&catID=<s:property value="currentCategory.category.id"/>&mode=<s:property value="mode"/>"
+				<a href="Audit.action?auditID=<s:property value="nextAudit.id"/>&mode=<s:property value="mode"/>"
 				><s:property value="nextAudit.auditFor" /><br /><s:property
 					value="currentCategory.category.category" /></a>
 			</s:if></td>
