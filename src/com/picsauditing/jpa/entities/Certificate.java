@@ -26,12 +26,12 @@ public class Certificate implements java.io.Serializable {
 	protected ContractorAccount contractorAccount;
 	protected OperatorAccount operatorAccount;
 	protected String type;
-	protected Date expiration;
+	protected Date expiration = new Date();
 	protected int sentEmails = 0;
 	protected Date lastSentDate;
 	protected int liabilityLimit;
 	protected String namedInsured;
-	protected YesNo subrogationWaived;
+	protected YesNo subrogationWaived = YesNo.No;
 	protected String status = "Pending";
 	protected YesNo verified = YesNo.No;
 	protected String reason;
