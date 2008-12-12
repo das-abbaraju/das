@@ -32,10 +32,7 @@ List<BasicDynaBean> searchData = report.getPage();
 <html>
 <head>
 <title>Contractor Approvals</title>
-<script src="js/prototype.js" type="text/javascript"></script>
-<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
-<script src="js/Search.js" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<%@include file="struts/reports/reportHeader.jsp" %>
 <script type="text/javascript">
 function saveApproval(conID, status) {
 	pars = 'conID='+conID+'&workStatus='+status;
@@ -56,7 +53,7 @@ form.smallform {
 <h1>Contractor Approval</h1>
 
 <div id="search">
-<form id="form1" name="form1" action="con_approvals.jsp">
+<form id="form1" action="con_approvals.jsp">
 	Name: <input type="text" name="name" value="<%= report.getFilterValue("name") %>" size="20" class="blueMain" />
 	<select name="workStatus" class="blueMain">
 		<option value="" <%="".equals(report.getFilterValue("workStatus"))?" SELECTED":"" %>>All</option>
@@ -66,9 +63,11 @@ form.smallform {
 	</select>
 	<input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0"  onClick="runSearch( 'form1')" >
 	<input type="hidden" name="showPage" value="1"/>
-	<input type="hidden" name="startsWith"/>
+	<input type="hidden" name="filter.startsWith"/>
+	<input type="hidden" name="filter.ajax" value="false"/>	
 	<input type="hidden" name="orderBy"  value="<%=request.getParameter("orderBy") == null ? "gc.dateAdded DESC" : request.getParameter("orderBy") %>"/>
 </form>
+<div id="caldiv2" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
 </div>
 <div>
 <%=report.getPageLinksWithDynamicForm()%>
