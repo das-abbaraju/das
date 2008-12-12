@@ -151,7 +151,7 @@ public class AuditData implements java.io.Serializable {
 		this.createdBy = createdBy;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getCreationDate() {
 		return creationDate;
 	}
@@ -170,7 +170,7 @@ public class AuditData implements java.io.Serializable {
 		this.updatedBy = updatedBy;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getUpdateDate() {
 		return updateDate;
 	}

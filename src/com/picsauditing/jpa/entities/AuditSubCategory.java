@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -14,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -78,7 +80,16 @@ public class AuditSubCategory implements java.io.Serializable {
 		this.questions = questions;
 	}
 
-
+	@Transient
+	public List<AuditQuestion> getValidQuestions() {
+		List<AuditQuestion> list = new ArrayList<AuditQuestion>();
+		for(AuditQuestion question : getQuestions())
+			if (category.getValidDate().after(question.getEffectiveDate())
+					&& category.getValidDate().before(question.getExpirationDate()))
+				list.add(question);
+		return list;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;

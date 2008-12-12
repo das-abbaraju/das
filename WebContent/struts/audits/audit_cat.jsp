@@ -54,9 +54,8 @@
 
 <s:iterator value="categories">
 	<s:if test="catDataID == id || (catDataID == 0 && appliesB)">
-		<h2>Category <s:property value="category.number"/> - <s:property value="category.category"/></h2>
-
 		<s:if test="category.id == 151">
+			<h2>Category <s:property value="category.number"/> - <s:property value="category.category"/></h2>
 				<s:if test="mode == 'View'">
 					<s:iterator value="conAudit.oshas">
 						<s:include value="audit_cat_osha2.jsp"></s:include>
@@ -87,56 +86,59 @@
 				</s:if>
 		</s:if>
 		<s:else>
-			<table class="audit">
-			<s:iterator value="category.subCategories">
-				<s:if test="category.subCategories.length > 1">
-				<tr class="subCategory">
-					<td colspan="4">Sub Category <s:property value="category.number"/>.<s:property value="number"/> - 
-					<s:property value="subCategory" escape="false"/>
-					</td>
-				</tr>
-				</s:if>
-				<s:iterator value="questions">
-				<s:if test="catDataID == 0 || (effectiveDate.before(conAudit.createdDate) && expirationDate.after(conAudit.createdDate))">
-					<s:if test="isGroupedWithPrevious.toString() == 'No'">
-						<s:set name="shaded" value="!#shaded" scope="action"/>
+			<s:if test="category.validSubCategories.size() > 0">
+				<h2>Category <s:property value="category.number"/> - <s:property value="category.category"/></h2>
+	
+				<table class="audit">
+				<s:iterator value="category.validSubCategories">
+					<s:if test="category.validSubCategories.size() > 1">
+					<tr class="subCategory">
+						<td colspan="4">Sub Category <s:property value="category.number"/>.<s:property value="number"/> - 
+						<s:property value="subCategory" escape="false"/>
+						</td>
+					</tr>
 					</s:if>
+					<s:iterator value="validQuestions">
 					
-					<s:if test="title.length() > 0">
-						<tr class="group<s:if test="#shaded">Shaded</s:if>">
-							<td class="groupTitle" colspan="4"><s:property value="title" escape="false"/></td>
-						</tr>
-					</s:if>
-					<s:if test="mode == 'View'">
-						<s:if test="onlyReq">
-							<s:if test="answer.hasRequirements">
-								<s:include value="audit_cat_view.jsp"></s:include>
+						<s:if test="isGroupedWithPrevious.toString() == 'No'">
+							<s:set name="shaded" value="!#shaded" scope="action"/>
+						</s:if>
+						
+						<s:if test="title.length() > 0">
+							<tr class="group<s:if test="#shaded">Shaded</s:if>">
+								<td class="groupTitle" colspan="4"><s:property value="title" escape="false"/></td>
+							</tr>
+						</s:if>
+						<s:if test="mode == 'View'">
+							<s:if test="onlyReq">
+								<s:if test="answer.hasRequirements">
+									<s:include value="audit_cat_view.jsp"></s:include>
+								</s:if>
+							</s:if>
+							<s:else>
+								<s:if test="viewBlanks || answer.answer.length() > 0">
+									<s:include value="audit_cat_view.jsp"></s:include>
+								</s:if>
+							</s:else>
+						</s:if>
+						<s:if test="mode == 'Edit'">
+							<s:if test="!onlyReq || answer.hasRequirements">
+								<s:include value="audit_cat_edit.jsp"></s:include>
 							</s:if>
 						</s:if>
-						<s:else>
-							<s:if test="viewBlanks || answer.answer.length() > 0">
-								<s:include value="audit_cat_view.jsp"></s:include>
+						<s:if test="mode == 'Verify'">
+							<s:if test="answer.answer.length() > 0">	
+								<s:include value="audit_cat_verify.jsp"></s:include>
 							</s:if>
-						</s:else>
-					</s:if>
-					<s:if test="mode == 'Edit'">
-						<s:if test="!onlyReq || answer.hasRequirements">
-							<s:include value="audit_cat_edit.jsp"></s:include>
 						</s:if>
-					</s:if>
-					<s:if test="mode == 'Verify'">
-						<s:if test="answer.answer.length() > 0">	
-							<s:include value="audit_cat_verify.jsp"></s:include>
+						<s:if test="mode == 'ViewQ'">
+							<s:include value="audit_cat_questions.jsp"></s:include>
 						</s:if>
-					</s:if>
-					<s:if test="mode == 'ViewQ'">
-						<s:include value="audit_cat_questions.jsp"></s:include>
-					</s:if>
-				</s:if>
+					</s:iterator>
 				</s:iterator>
-			</s:iterator>
-			</table>
-			<span class="requiredStar">* Question is required</span>
+				</table>
+				<span class="requiredStar">* Question is required</span>
+			</s:if>
 		</s:else>
 	</s:if>
 </s:iterator>

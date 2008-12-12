@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -100,6 +102,17 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 
 		categories = catDataDao.findByAudit(conAudit, permissions);
+		
+		// For PQFs the valid date is today, for all other audits we use the creation date
+		// This is important when we figure out which questions should be display
+		// And therefore which subcategories have valid questions, 
+		// and which categories have subcategories
+		// We don't actually loop through the all the questions just yet, that's later
+		for(AuditCatData catData : categories)
+			if (conAudit.getAuditType().isPqf())
+				catData.getCategory().setValidDate(new Date());
+			else
+				catData.getCategory().setValidDate(conAudit.getCreatedDate());
 
 		return categories;
 	}

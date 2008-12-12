@@ -58,7 +58,7 @@ public class AuditType implements Comparable<AuditType> {
 	@Deprecated
 	protected Date dateToExpire;
 	protected int displayOrder = 100;
-
+	
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
 
 	@Id

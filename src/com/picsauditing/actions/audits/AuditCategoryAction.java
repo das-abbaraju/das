@@ -250,8 +250,6 @@ public class AuditCategoryAction extends AuditActionSupport {
 		return SUCCESS;
 	}
 
-	
-	
 	private void fillAnswers(AuditCatData catData,
 			Map<Integer, AuditData> answers) {
 		for (AuditSubCategory subCategory : catData.getCategory()

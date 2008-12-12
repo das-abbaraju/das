@@ -2,6 +2,8 @@ package com.picsauditing.jpa.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -14,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -37,7 +40,13 @@ public class AuditCategory implements java.io.Serializable {
 	private int numQuestions;
 	
 	List<AuditSubCategory> subCategories;
-	
+
+	/**
+	 * This is a transient field that allows us to figure out which categories, subcategories and questions should be displayed
+	 */
+	private Date validDate = null;
+
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "catID", nullable = false)
@@ -105,6 +114,25 @@ public class AuditCategory implements java.io.Serializable {
 		this.subCategories = subCategories;
 	}
 
+	@Transient
+	public List<AuditSubCategory> getValidSubCategories() {
+		List<AuditSubCategory> list = new ArrayList<AuditSubCategory>();
+		for(AuditSubCategory subCategory : getSubCategories())
+			if (subCategory.getValidQuestions().size() > 0)
+				list.add(subCategory);
+		return list;
+	}
+	
+	@Transient
+	public Date getValidDate() {
+		if (validDate == null)
+			return new Date();
+		return validDate;
+	}
+	
+	public void setValidDate(Date validDate) {
+		this.validDate = validDate;
+	}
 	
 	@Override
 	public int hashCode() {
