@@ -58,3 +58,53 @@ function D2H_ShowHelp(contextID, mainURL, wndName, uCommand)
 }
 helpURL = "help/c/default.htm";
 /********   DOC 2 HELP End ********/
+
+function startThinking( args ) {
+
+	 var oOptions = augment({
+      div: "mainThinkingDiv",
+      message: "Communicating with PICS",
+      type: "small"
+    }, args);
+	
+	var targetDiv = getElement(oOptions.div);
+	var innerSrc;
+	if( oOptions.type == 'small' ) {
+		innerSrc="<img src='images/ajax_process.gif' />";
+	}
+	if( oOptions.type == 'large' ) {
+		innerSrc="<img src='images/ajax_process2.gif' />";
+	}
+	
+	innerSrc=innerSrc+oOptions.message;
+	if(targetDiv != 'undefined') {
+		targetDiv.innerHTML=innerSrc;		
+	}
+	return true;
+}
+function stopThinking( args ) {
+	 var oOptions = augment({
+      div: "mainThinkingDiv"
+    }, args);
+	var targetDiv = getElement(oOptions.div);
+	if(targetDiv != 'undefined') {
+		targetDiv.innerHTML='';		
+	}
+	return true;
+}
+function augment (oSelf, oOther) {
+    if (oSelf == null) {
+        oSelf = {};
+    }
+    for (var i = 1; i < arguments.length; i++) {
+        var o = arguments[i];
+        if (typeof(o) != 'undefined' && o != null) {
+            for (var j in o) {
+                oSelf[j] = o[j];
+            }
+        }
+    }
+    return oSelf;
+}
+
+ 
