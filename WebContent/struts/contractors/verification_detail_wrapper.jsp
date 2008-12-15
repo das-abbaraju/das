@@ -15,9 +15,7 @@
 		var comment = $F($('comment_' + questionId));
 		var answerelm = $('answer_' + questionId)
 		
- 
-		setThinking($('status_'+questionId));
-
+		startThinking({div:'status_'+questionId});
 
 		var pars = 'auditData.audit.id='+auditId+'&catDataID='+catDataId+'&auditData.question.id=' + questionId + '&auditData.comment=' + comment + '&toggleVerify=true';
 		if( answerelm != null ) {
@@ -25,7 +23,6 @@
 			pars = pars + '&auditData.answer=' + answer;		
 		}
 
-		
 		var myAjax = new Ajax.Updater('','AuditToggleVerifyAjax.action', 
 		{
 			method: 'post', 
@@ -42,7 +39,7 @@
 					$('verify_' + questionId ).value = 'Verify';
 				}
 				setApproveButton( json.percentVerified );
-				stopThinking($('status_'+questionId));
+				stopThinking({div:'status_'+questionId});
 			}
 		});
 		return false;
@@ -52,8 +49,7 @@
 		var comment = $F($('comment_' + oshaId));
 		var applicable = $F($('applicable_' + oshaId));
 	
-		setThinking($('status_'+oshaId));
-	
+		startThinking({div:'status_'+oshaId});
 		var pars = '';
 		
 		var manHours = $F($('manHours_' + oshaId)); 
@@ -84,7 +80,7 @@
 				}
 				
 				setApproveButton( json.percentVerified );
-				stopThinking($('status_'+oshaId));
+				stopThinking({div:'status_'+oshaId});
 			}
 		});
 		return false;
@@ -92,8 +88,8 @@
 	
 	function setComment(auditId, questionId, catDataId ) {
 		var comment = $F($('comment_' + questionId));
-
-		setThinking($('status_'+questionId));
+		
+		startThinking({div:'status_'+questionId});
 
 		var pars = 'auditData.audit.id='+auditId+'&catDataID='+catDataId+'&auditData.question.id=' + questionId + '&auditData.comment=' + comment;
 		var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
@@ -104,7 +100,7 @@
 			
 				new Effect.Highlight($('comment_' + questionId),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 			
-				stopThinking($('status_'+questionId));
+				stopThinking({div:'status_'+questionId});
 			}
 		});
 		return false;
@@ -113,7 +109,7 @@
 	function setOSHAComment( oshaId ) {
 		var comment = $F($('comment_' + oshaId));
 	
-		setThinking($('status_'+oshaId));
+		startThinking({div:'status_'+oshaId});
 	
 		var pars = 'id='+oshaId+'&osha.comment=' + comment + '&button=save';
 
@@ -125,19 +121,12 @@
 			
 				new Effect.Highlight($('comment_' + oshaId),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 
-				stopThinking($('status_'+oshaId));
+				stopThinking({div:'status_'+oshaId});
 			}
 		});
 		return false;
 	}
 	
-	function setThinking( thinkElement ) {
-		thinkElement.innerHTML="<img src='images/ajax_process.gif' />";
-	}
-	
-	function stopThinking( thinkElement ) {
-		thinkElement.innerHTML="";
-	}
 	
 	function setApproveButton( newPercent ) {
 	
