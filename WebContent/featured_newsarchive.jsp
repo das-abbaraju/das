@@ -17,6 +17,11 @@
 		<td valign="top" bgcolor="#FFFFFF">
 		<table border="0" align="center" cellpadding="0" cellspacing="0">
 			<tr>
+				<td class="blueHome2"><strong>09/01/08</strong> <strong
+					class="articleTitle">Square D / Schneider Electric joins PICS</strong><br>
+				Square D  is a market-leading global brand of Schneider Electric for NEMA type electrical distribution and industrial control products, systems and services.  Schneider Electric, headquartered in Paris, France, is a global electrical industry leader with sales of approximately $23.7 billion (U.S.) in 2007.</td>
+			</tr>
+			<tr>
 				<td bgcolor="#F8F8F8" class="blueHome2"><strong>08/01/08</strong> <strong
 					class="articleTitle">New Belgium Brewing joins PICS</strong><br>
 				New Belgium is the nation's third largest mid-sized brewery. From its inception New Belgium has been committed to the preservation of the environment, brewing world class beer, promoting beer culture and having fun.  In 1998 New Belgium became the first wind-powered brewery in the United States.</td>

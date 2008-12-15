@@ -68,19 +68,19 @@ sets the highest standards possible in regard to contractor qualifications as th
                   <td bgcolor="#CCCCCC"><img src="images/spacer.gif" width="1" height="1"></td>
                   <td valign="top" bgcolor="#FFFFFF">
                   	<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+						<tr>
+                        	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">12/01/08</span>BASF Joins PICS</span><br>
+                            <br> 
+                            	BASF is the world's leading chemical company: The Chemical Company. Its portfolio ranges from oil and gas to chemicals, plastics, performance products, agricultural products and fine chemicals. As a reliable partner BASF helps its customers in virtually all industries to be more successful. With its high-value products and intelligent solutions, BASF plays an important role in finding answers to global challenges such as climate protection, energy efficiency, nutrition and mobility. BASF has more than 95,000 employees and posted sales of almost &euro;58 billion in 2007.</td></tr>
 				  		<tr>
-                        	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">09/23/08</span>2008 NSC Annual Congress & Expo</span><br>
+                        	<td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">09/23/08</span>2008 NSC Annual Congress & Expo</span><br>
                             <br> 
 								The National Safety Council, founded in 1913, serves as the nation's leading resource on industry trends, professional development, and strategies for advancing safety and health programs and practices. PICS CEO, John Moreland,  gave a demonstration of the free online tool for contractor pre-qualification.</td>
                         </tr>
                         <tr>
-                        	<td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">09/01/08</span>PICS EHS/VPP Resident Expert</span><br>
+                        	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">09/01/08</span>PICS EHS/VPP Resident Expert</span><br>
                             <br> 
                             	Dennis Truitt joins PICS with more than 20 years of experience managing health and safety in the highly-regulated petrochemical industry, including the VPP program. Prior to joining PICS, Dennis was the Refinery Safety Manager for the Valero Wilmington Refinery.</td></tr>
-						<tr>
-                        	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">09/01/08</span>Square D / Schneider Electric joins PICS</span><br>
-                            <br> 
-                            	Square D  is a market-leading global brand of Schneider Electric for NEMA type electrical distribution and industrial control products, systems and services.  Schneider Electric, headquartered in Paris, France, is a global electrical industry leader with sales of approximately $23.7 billion (U.S.) in 2007.</td></tr>
 						<tr>
                       		<td align="center" class="blueHome">&nbsp;<a href="featured_newsarchive.jsp" target="_self"><img src="images/NEWSARCHIVE_button3.gif" width="111" height="27" hspace="5" border="0"></a></td>
                     	</tr>
