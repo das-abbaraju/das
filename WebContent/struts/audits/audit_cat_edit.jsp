@@ -53,7 +53,7 @@
 			<s:textfield name="%{'answer_answer_'.concat(id)}" value="%{answer.answer}" size="19" onchange="validateNumber('answer_answer_%{id}','Question %{number}');  document.MM_returnValue && saveAnswer(%{id}, this)" />
 		</s:if>
 		<s:if test="questionType == 'Decimal Number'">
-			<s:textfield name="%{'answer_answer_'.concat(id)}" value="%{answer.answer}" size="19" onchange="$('%{'answer_answer_'.concat(id)}').value = parseFloat($('%{'answer_answer_'.concat(id)}').value).toFixed(3); validateDecimal('answer_answer_%{id}','Question %{number}'); document.MM_returnValue && saveAnswer(%{id}, this)" />
+			<s:textfield name="%{'answer_answer_'.concat(id)}" value="%{answer.answer}" size="19" onchange="var temp = parseFloat($('%{'answer_answer_'.concat(id)}').value).toFixed(3); if( temp == 'NaN' ) temp = ''; $('%{'answer_answer_'.concat(id)}').value = temp; validateDecimal('answer_answer_%{id}','Question %{number}'); document.MM_returnValue && saveAnswer(%{id}, this)" />
 		</s:if>
 		<s:if test="questionType == 'Service'">
 			<nobr><s:checkbox fieldValue="C" value="answer.answer.indexOf('C') != -1" name="question_%{id}_C" onclick="javascript:saveAnswer(%{id}, this);" /> C</nobr>
