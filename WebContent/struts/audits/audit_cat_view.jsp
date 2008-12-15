@@ -24,7 +24,7 @@
 		
 		<s:else>
 			<s:property value="answer.answer" />
-			<s:if test="questionType == 'Manual' && answer.answer.length() > 0">
+			<s:if test="questionType == 'Manual' && answer.comment.length() > 0">
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment: <s:property value="answer.comment"/>
 			</s:if>
 		</s:else>
@@ -32,7 +32,7 @@
 	</span>
 	<br/>
 	<span id="showText_<s:property value="id"/>" style="display: none" class="verified">
-		Previous Answer changed from "<s:property value="answer.answer"/>" on <s:date name="answer.dateVerified" format="MMM d, yyyy" />
+		Answer changed on <s:date name="answer.dateVerified" format="MMM d, yyyy" />
 	</span></td>
 </tr>
 <s:if test="answer.hasRequirements && conAudit.auditType.hasRequirements">

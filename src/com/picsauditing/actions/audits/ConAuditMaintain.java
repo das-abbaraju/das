@@ -56,8 +56,6 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 			auditID = new Integer(ids[0]).intValue();
 			findConAudit();
 		}
-		
-		isRequiresInsurance();
 	}
 
 }

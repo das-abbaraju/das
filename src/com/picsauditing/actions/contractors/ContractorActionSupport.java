@@ -169,6 +169,9 @@ public class ContractorActionSupport extends PicsActionSupport {
 	 * 
 	 */
 	public boolean isRequiresInsurance() {
+		if(!accountDao.isContained(getOperators().iterator().next()))
+			operators = null; 
+
 		if (permissions.isOperator()) {
 			for (ContractorOperator insurContractors : getOperators()) {
 				OperatorAccount op = insurContractors.getOperatorAccount();

@@ -63,4 +63,7 @@ abstract public class PicsDAO {
 		//em.close();
 	}
 	
+	public boolean isContained(Object o) {
+		return em.contains(o);
+	}
 }
