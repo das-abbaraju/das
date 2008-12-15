@@ -17,8 +17,9 @@ import com.picsauditing.dao.OperatorAccountDAO;
  */
 public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 
-	public ConAuditMaintain(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, OperatorAccountDAO opDao) {
+	public ConAuditMaintain(ContractorAccountDAO accountDao,
+			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
+			AuditDataDAO auditDataDao) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 	}
 
@@ -48,12 +49,15 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 		if (!forceLogin())
 			return;
 
-		String[] ids = (String[]) ActionContext.getContext().getParameters().get("auditID");
+		String[] ids = (String[]) ActionContext.getContext().getParameters()
+				.get("auditID");
 
 		if (ids != null && ids.length > 0) {
 			auditID = new Integer(ids[0]).intValue();
 			findConAudit();
 		}
+		
+		isRequiresInsurance();
 	}
 
 }
