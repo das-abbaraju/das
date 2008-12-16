@@ -71,7 +71,7 @@ public class ContractorWidget extends ContractorActionSupport {
 							+ "\">open requirements from your recent " + conAudit.getAuditType().getAuditName()
 							+ "</a>";
 					if (!openReq) {
-						text += "<br/>NOTE: Open requirements cannot be closed online. You must submit these items to audits@picsauditing.com or fax to 949-269-9110 for further review. Please attach a cover sheet to all submitted information.";
+						text += "<br/>NOTE: Open requirements cannot be closed online. You must submit these items to audits@picsauditing.com or fax to 949-269-9165 for further review. Please attach a cover sheet to all submitted information.";
 						openReq = true;
 					}
 					openTasks.add(text);
