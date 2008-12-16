@@ -19,7 +19,6 @@
 		</s:else>
 	</th>
 	<td class="location" style="text-align: center;"><s:property value="conAudit.auditFor"/></td>
-	<s:if test="corporate"><td class="label" style="text-align: center;">3 year avg.</td></s:if>
 </tr>
 </thead>
 <tbody>
@@ -28,7 +27,6 @@
 		<a href="#" onClick="window.open('reasons.html','name','scrollbars=1,resizable=1,width=800,height=600'); return false;">Valid exemptions</a>
 	</th>
 	<td><nobr><s:radio list="#{false:'Yes',true:'No'}" name="osha.applicable" value="%{applicable}"></s:radio></nobr></td>
-	<s:if test="corporate"><th class="label">&nbsp;</th></s:if>
 </tr>
 <s:if test="!corporate">
 <tr>
@@ -40,37 +38,30 @@
 <tr>
 	<th class="label">Total Man Hours Worked</th>
 	<td><s:textfield name="osha.manHours" value="%{manHours}" cssClass="osha"></s:textfield></td>
-	<s:if test="corporate"><td><s:property value="averageOsha.manHours"/></td></s:if>
 </tr>
 <tr>
 	<th class="label">Number of Fatalities</th>
 	<td><s:textfield name="osha.fatalities" value="%{fatalities}" cssClass="osha"></s:textfield></td>
-	<s:if test="corporate"><td><s:property value="averageOsha.fatalities"/></td></s:if>
 </tr>
 <tr>
 	<th class="label">Number of Lost Workday Cases - Has lost days AND is <s:property value="descriptionReportable"/></th>
 	<td><s:textfield name="osha.lostWorkCases" value="%{lostWorkCases}" cssClass="osha"></s:textfield></td>
-	<s:if test="corporate"><td><s:property value="averageOsha.lostWorkCases"/></td></s:if>
 </tr>
 <tr>
 	<th class="label">Number of Lost Workdays - All lost workdays (regardless of restricted days) AND is <s:property value="descriptionReportable"/></th>
 	<td><s:textfield name="osha.lostWorkDays" value="%{lostWorkDays}" cssClass="osha"></s:textfield></td>
-	<s:if test="corporate"><td><s:property value="averageOsha.lostWorkDays"/></td></s:if>
 </tr>
 <tr>
 	<th class="label">Injury & Illnesses Medical Cases - No lost OR restricted days AND is <s:property value="descriptionReportable"/> (non-fatal)</th>
 	<td><s:textfield name="osha.injuryIllnessCases" value="%{injuryIllnessCases}" cssClass="osha"></s:textfield></td>
-	<s:if test="corporate"><td><s:property value="averageOsha.injuryIllnessCases" /></td></s:if>
 </tr>
 <tr>
 	<th class="label">Restricted Cases - Has restricted days AND no lost days AND is <s:property value="descriptionReportable"/></th>
 	<td><s:textfield name="osha.restrictedWorkCases" value="%{restrictedWorkCases}" cssClass="osha"></s:textfield></td>
-	<s:if test="corporate"><td><s:property value="averageOsha.restrictedWorkCases"/></td></s:if>
 </tr>
 <tr>
 	<th class="label">Total <s:property value="descriptionReportable"/> Injuries and Illnesses</th>
 	<td><s:textfield name="osha.recordableTotal" value="%{recordableTotal}" cssClass="osha"></s:textfield></td>
-	<s:if test="corporate"><td><s:property value="averageOsha.recordableTotal"/></td></s:if>
 </tr>
 <tr>
 	<th class="label">Upload <s:property value="conAudit.auditFor"/> <s:property value="type"/> Log File(.pdf, .doc, .txt, .xls or .jpg)</th>
