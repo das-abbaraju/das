@@ -1,6 +1,7 @@
 package com.picsauditing.PICS;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +31,13 @@ public class AuditPercentCalculator {
 			return;
 		}
 
+		Date validDate = null;
+		if (catData.getAudit().getAuditType().isPqf())
+			validDate = new Date();
+		else
+			validDate = catData.getAudit().getCreatedDate();
+		catData.getCategory().setValidDate(validDate);
+		
 		int requiredAnsweredCount = 0;
 		int answeredCount = 0;
 		int requiredCount = 0;
@@ -38,8 +46,8 @@ public class AuditPercentCalculator {
 		// Get a list of questions/answers for this category
 		List<Integer> questionIDs = new ArrayList<Integer>();
 
-		for (AuditSubCategory subCategory : catData.getCategory().getSubCategories()) {
-			for (AuditQuestion question : subCategory.getQuestions()) {
+		for (AuditSubCategory subCategory : catData.getCategory().getValidSubCategories()) {
+			for (AuditQuestion question : subCategory.getValidQuestions()) {
 				questionIDs.add(question.getId());
 				if ("Depends".equals(question.getDependsOnAnswer()) && question.getDependsOnQuestion() != null) {
 					int dependsOnQID = question.getDependsOnQuestion().getId();
@@ -50,34 +58,16 @@ public class AuditPercentCalculator {
 		// Get a map of all answers in this audit
 		Map<Integer, AuditData> answers = auditDataDao.findAnswers(catData.getAudit().getId(), questionIDs);
 
-		int questID = 0;
-
 		// Get a list of questions/answers for this category
-		for (AuditSubCategory subCategory : catData.getCategory().getSubCategories()) {
-			for (AuditQuestion question : subCategory.getQuestions()) {
-				if (question.getDependsOnQuestion() != null)
-					question.getDependsOnQuestion().setAnswer(
-							answers.get(question.getDependsOnQuestion().getId()));
-
+		for (AuditSubCategory subCategory : catData.getCategory().getValidSubCategories()) {
+			for (AuditQuestion question : subCategory.getValidQuestions()) {
+				if (question.getDependsOnQuestion() != null) {
+					AuditData answer = answers.get(question.getDependsOnQuestion().getId());
+					question.getDependsOnQuestion().setAnswer(answer);
+				}
 				boolean isRequired = question.isRequired();
 
-				// if ("Depends".equals(question.getIsRequired())) {
-				// int dependsOnQID = question.getDependsOnQuestion()
-				// .getId();
-				// String dependsOnAnswer = question.getDependsOnAnswer();
-				// if (answers.get(dependsOnQID) != null
-				// &&
-				// dependsOnAnswer.equals(answers.get(dependsOnQID).getAnswer()))
-				// isRequired = true;
-				// if (answers.get(dependsOnQID) != null &&
-				// dependsOnAnswer.equals("Yes*")) {
-				// isRequired = true;
-				// }
-				// }
-
-				if (isRequired && question.getEffectiveDate().before(catData.getAudit().getCreatedDate())
-						&& question.getExpirationDate().after(catData.getAudit().getCreatedDate())) {
-					questID = question.getId();
+				if (isRequired) {
 					requiredCount++;
 				}
 
