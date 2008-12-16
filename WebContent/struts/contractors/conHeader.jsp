@@ -119,7 +119,7 @@
 	</fieldset>
 	<fieldset>
 	<ul>
-		<s:if test="conAudit.auditFor != null">
+		<s:if test="conAudit.auditType.annualAddendum && conAudit.auditFor != null">
 			<li><label>For:</label>
 				<s:property value="conAudit.auditFor"/>
 			</li>
