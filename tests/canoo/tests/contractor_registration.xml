@@ -118,10 +118,10 @@
 					<setInputField htmlId="answer_38" value="" />
 					<clickLink description="Go To Category List" label="Up to Category List" />
 				</group>
-				<group description="Fill out PQF Update">
+				<group description="Fill out Annual Update">
 					<clickLink
-						description="Open PQF Update 2007"
-						label="2007 PQF Update" />
+						description="Open Annual Update 2007"
+						label="2007 Annual Update" />
 					<clickLink
 						description="Open OSHA Section"
 						label="OSHA" />

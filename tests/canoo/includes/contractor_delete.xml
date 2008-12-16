@@ -21,33 +21,33 @@
 		<clickButton description="Click Delete" label="Delete" />
 	</ifStep>
 
-	<ifStep description="Delete PQF Updates">
+	<ifStep description="Delete Annual Updates">
 		<condition>
-			<clickLink description="Goto PQF Update 07" label="2007 PQF Update" />
+			<clickLink description="Goto Annual Update 07" label="2007 Annual Update" />
 		</condition>
 		<clickLink description="Open System Edit" label="System Edit" />
 		<clickButton description="Click Delete" label="Delete" />
 	</ifStep>
 
-	<ifStep description="Delete PQF Updates">
+	<ifStep description="Delete Annual Updates">
 		<condition>
-			<clickLink description="Goto PQF Update 06" label="2006 PQF Update" />
+			<clickLink description="Goto Annual Update 06" label="2006 Annual Update" />
 		</condition>
 		<clickLink description="Open System Edit" label="System Edit" />
 		<clickButton description="Click Delete" label="Delete" />
 	</ifStep>
 
-	<ifStep description="Delete PQF Updates">
+	<ifStep description="Delete Annual Updates">
 		<condition>
-			<clickLink description="Goto PQF Update 05" label="2005 PQF Update" />
+			<clickLink description="Goto Annual Update 05" label="2005 Annual Update" />
 		</condition>
 		<clickLink description="Open System Edit" label="System Edit" />
 		<clickButton description="Click Delete" label="Delete" />
 	</ifStep>
 
-	<ifStep description="Delete PQF Updates">
+	<ifStep description="Delete Annual Updates">
 		<condition>
-			<clickLink description="Goto remaining PQF Update" label="PQF Update" />
+			<clickLink description="Goto remaining Annual Update" label="Annual Update" />
 		</condition>
 		<clickLink description="Open System Edit" label="System Edit" />
 		<clickButton description="Click Delete" label="Delete" />
