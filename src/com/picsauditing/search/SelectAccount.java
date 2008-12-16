@@ -73,6 +73,16 @@ public class SelectAccount extends SelectSQL {
 		this.addField("q" + questionID + ".answer AS " + columnName);
 	}
 
+	public void addAnnualQuestion(int questionID, boolean require, String columnName, String name) {
+		String join = "";
+		if (!require)
+			join = "LEFT ";
+		join = join + "JOIN pqfdata q" + name + " on q" + name + ".auditID = "+name+".auditID AND q" + name
+				+ ".questionID = " + questionID;
+		this.addJoin(join);
+		this.addField("q" + name + ".answer AS " + columnName);
+	}
+
 	public void addAuditQuestion(int questionID, int auditTypeID, boolean require) {
 		String name = "ca"+ questionID;
 		this.addJoin("LEFT JOIN contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name

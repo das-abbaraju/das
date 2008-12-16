@@ -23,12 +23,26 @@
 		<td>Risk Level</td>
 		<s:iterator value="operatorAccount.audits">
 			<s:if test="canSee && minRiskLevel > 0">
-				<td><s:property value="auditType.auditName"/> Status</td>
+				<s:if test="auditType.annualAddendum">
+					<td><s:property value="auditType.auditName"/> 07 Status</td>
+					<td><s:property value="auditType.auditName"/> 06 Status</td>
+					<td><s:property value="auditType.auditName"/> 05 Status</td>
+				</s:if>
+				<s:else>
+					<td><s:property value="auditType.auditName"/> Status</td>
+				</s:else>
 			</s:if>
 		</s:iterator>
 		<s:iterator value="operatorAccount.flagQuestionCriteria">
 			<s:if test="checked.toString().equals('Yes') && auditQuestion.id != 0">
-				<td><s:property value="auditQuestion.columnHeader"/></td>
+				<s:if test="auditQuestion.id == 2034">
+					<td>07 EMR</td>
+					<td>06 EMR</td>
+					<td>05 EMR</td>
+				</s:if>
+				<s:else>
+					<td><s:property value="auditQuestion.columnHeader"/></td>
+				</s:else>
 			</s:if>
 		</s:iterator>
 		<s:if test="hasFatalities">
@@ -67,18 +81,26 @@
 			</td>
 			<s:iterator value="operatorAccount.audits">		
 				<s:if test="canSee && minRiskLevel > 0">
-					<td><span title="Completed - <s:property value="%{get(auditType.auditName + ' Completed')}"/>%"><s:property value="%{get(auditType.auditName + ' Status')}"/></span></td>
+					<s:if test="auditType.annualAddendum">
+						<td><span title="Completed - <s:property value="%{get('annual2007 Completed')}"/>%"><s:property value="%{get('annual2007 Status')}"/></span></td>
+						<td><span title="Completed - <s:property value="%{get('annual2006 Completed')}"/>%"><s:property value="%{get('annual2006 Status')}"/></span></td>
+						<td><span title="Completed - <s:property value="%{get('annual2005 Completed')}"/>%"><s:property value="%{get('annual2005 Status')}"/></span></td>
+					</s:if>
+					<s:else>
+						<td><span title="Completed - <s:property value="%{get(auditType.auditName + ' Completed')}"/>%"><s:property value="%{get(auditType.auditName + ' Status')}"/></span></td>
+					</s:else>
 				</s:if>
 			</s:iterator>
 			<s:iterator value="operatorAccount.flagQuestionCriteria">
 				<s:if test="checked.toString().equals('Yes') && auditQuestion.id != 0">
-					<td><s:if test="%{get('verified' + auditQuestion.id)} > 0">
-						<s:property value="%{get('verified' + auditQuestion.id)}"/>
+					<s:if test="auditQuestion.id == 2034">
+						<td><s:property value="%{get('answer2007')}"/></td>
+						<td><s:property value="%{get('answer2006')}"/></td>
+						<td><s:property value="%{get('answer2005')}"/></td>
 					</s:if>
 					<s:else>
-						<s:property value="%{get('answer' + auditQuestion.id)}"/>
+						<td><s:property value="%{get('answer' + auditQuestion.id)}"/></td>
 					</s:else>
-					</td>
 				</s:if>
 			</s:iterator>
 			<s:if test="hasFatalities">

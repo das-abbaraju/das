@@ -3,6 +3,7 @@ package com.picsauditing.actions.report;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -17,6 +18,7 @@ public class ReportFlagCriteria extends ReportAccount {
 	private boolean hasTrir = false;
 	private boolean hasLwcr = false;
 	private OperatorAccount operatorAccount;
+	private int year;
 
 	protected OperatorAccountDAO operatorAccountDAO;
 
@@ -57,16 +59,49 @@ public class ReportFlagCriteria extends ReportAccount {
 				int blank = name.indexOf(" ");
 				if (blank > 0)
 					name = name.substring(0, blank);
-				String year = "1";
-				if (name.equals("pqf")) {
-					year = "year(pqf.createdDate) = 2008";
+				if(auditOperator.getAuditType().getAuditTypeID() == 11) {
+					year = getYear();
+					name += year; 
+					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
+							+ ".auditTypeID = " + auditOperator.getAuditType().getAuditTypeID() + " AND " + name
+							+ ".auditStatus IN ('Pending','Submitted','Active') ");
+					sql.addField(name + ".auditStatus AS '" + name + " Status'");
+					sql.addField(name + ".percentComplete AS '" + name
+							+ " Completed'");
+					sql.addWhere(name + ".auditFor = "+ year);
+					sql.addJoin("LEFT JOIN osha_audit AS osha"+year+" ON osha"+year+".auditID = "+name+".auditID AND osha"+year+".location = 'Corporate'");
+
+					year = year-1;
+					name = "annual"+year;
+					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
+							+ ".auditTypeID = " + auditOperator.getAuditType().getAuditTypeID() + " AND " + name
+							+ ".auditStatus IN ('Pending','Submitted','Active') ");
+					sql.addField(name + ".auditStatus AS '" + name + " Status'");
+					sql.addField(name + ".percentComplete AS '" + name
+							+ " Completed'");
+					sql.addWhere(name + ".auditFor = "+ year);
+					sql.addJoin("LEFT JOIN osha_audit AS osha"+year+" ON osha"+year+".auditID = "+name+".auditID AND osha"+year+".location = 'Corporate'");
+
+					year = year-1;
+					name = "annual"+year;
+					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
+							+ ".auditTypeID = " + auditOperator.getAuditType().getAuditTypeID() + " AND " + name
+							+ ".auditStatus IN ('Pending','Submitted','Active') ");
+					sql.addField(name + ".auditStatus AS '" + name + " Status'");
+					sql.addField(name + ".percentComplete AS '" + name
+							+ " Completed'");
+					sql.addWhere(name + ".auditFor = "+ year);
+					sql.addJoin("LEFT JOIN osha_audit AS osha"+year+" ON osha"+year+".auditID = "+name+".auditID AND osha"+year+".location = 'Corporate'");
+
+				} 
+				else {
+					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
+							+ ".auditTypeID = " + auditOperator.getAuditType().getAuditTypeID() + " AND " + name
+							+ ".auditStatus IN ('Pending','Submitted','Active') ");
+					sql.addField(name + ".auditStatus AS '" + auditOperator.getAuditType().getAuditName() + " Status'");
+					sql.addField(name + ".percentComplete AS '" + auditOperator.getAuditType().getAuditName()
+							+ " Completed'");
 				}
-				sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
-						+ ".auditTypeID = " + auditOperator.getAuditType().getAuditTypeID() + " AND " + name
-						+ ".auditStatus IN ('Pending','Submitted','Active') AND " + year);
-				sql.addField(name + ".auditStatus AS '" + auditOperator.getAuditType().getAuditName() + " Status'");
-				sql.addField(name + ".percentComplete AS '" + auditOperator.getAuditType().getAuditName()
-						+ " Completed'");
 			}
 		}
 
@@ -85,8 +120,14 @@ public class ReportFlagCriteria extends ReportAccount {
 				int questionID = flagQuestionCriteria.getAuditQuestion().getId();
 				if (!questionIds.contains(questionID)) {
 					questionIds.add(questionID);
-					sql.addPQFQuestion(questionID);
-					sql.addField("q" + questionID + ".answer AS verified" + questionID);
+					if(flagQuestionCriteria.getAuditQuestion().getId() == AuditQuestion.EMR) {
+						sql.addAnnualQuestion(questionID, false, "answer2007", "annual2007");
+						sql.addAnnualQuestion(questionID, false, "answer2006", "annual2006");
+						sql.addAnnualQuestion(questionID, false, "answer2005", "annual2005");
+					}
+					else {
+						sql.addPQFQuestion(questionID);
+					}
 				}
 			}
 		}
@@ -94,21 +135,30 @@ public class ReportFlagCriteria extends ReportAccount {
 		for (FlagOshaCriteria flagOshaCriteria : operatorAccount.getFlagOshaCriteria()) {
 			if (!hasFatalities && flagOshaCriteria.getFatalities().isRequired()) {
 				hasFatalities = true;
-				sql.addField("osha.fatalities1 AS fatalities07");
-				sql.addField("osha.fatalities2 AS fatalities06");
-				sql.addField("osha.fatalities3 AS fatalities05");
+				year = getYear();
+				sql.addField("osha"+year+".fatalities AS fatalities07");
+				year = year-1;
+				sql.addField("osha"+year+".fatalities AS fatalities06");
+				year = year-1;
+				sql.addField("osha"+year+".fatalities AS fatalities05");
 			}
 			if (!hasTrir && flagOshaCriteria.getTrir().isRequired()) {
 				hasTrir = true;
-				sql.addField("(osha.recordableTotal1 * 200000 / osha.manHours1) AS trir07");
-				sql.addField("(osha.recordableTotal2 * 200000 / osha.manHours2) AS trir06");
-				sql.addField("(osha.recordableTotal3 * 200000 / osha.manHours3) AS trir05");
+				year = getYear();
+				sql.addField("(osha"+year+".recordableTotal * 200000 / osha"+year+".manHours) AS trir07");
+				year = year-1;
+				sql.addField("(osha"+year+".recordableTotal * 200000 / osha"+year+".manHours) AS trir06");
+				year = year-1;
+				sql.addField("(osha"+year+".recordableTotal * 200000 / osha"+year+".manHours) AS trir05");
 			}
 			if (!hasLwcr && flagOshaCriteria.getLwcr().isRequired()) {
 				hasLwcr = true;
-				sql.addField("(osha.lostWorkCases1 * 200000 / osha.manHours1) AS lwcr07");
-				sql.addField("(osha.lostWorkCases2 * 200000 / osha.manHours2) AS lwcr06");
-				sql.addField("(osha.lostWorkCases3 * 200000 / osha.manHours3) AS lwcr05");
+				year = getYear();
+				sql.addField("(osha"+year+".lostWorkCases * 200000 / osha"+year+".manHours) AS lwcr07");
+				year = year-1;
+				sql.addField("(osha"+year+".lostWorkCases * 200000 / osha"+year+".manHours) AS lwcr06");
+				year = year-1;
+				sql.addField("(osha"+year+".lostWorkCases * 200000 / osha"+year+".manHours) AS lwcr05");
 			}
 		}
 
@@ -122,7 +172,6 @@ public class ReportFlagCriteria extends ReportAccount {
 			sql.addWhere("gc.genID = " + operatorID);
 		}
 
-		sql.addJoin("LEFT JOIN osha ON osha.conID = a.id AND location = 'Corporate'");
 		sql.addWhere("a.active = 'Y'");
 		sql.addWhere("flags.flag IN ('Red','Amber')");
 	}
@@ -157,5 +206,9 @@ public class ReportFlagCriteria extends ReportAccount {
 
 	public void setOperatorAccount(OperatorAccount operatorAccount) {
 		this.operatorAccount = operatorAccount;
+	}
+	
+	public int getYear() {
+		return DateBean.getCurrentYear()-1;
 	}
 }
