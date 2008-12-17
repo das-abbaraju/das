@@ -62,7 +62,7 @@ function saveComment(questionid, elm) {
 			if (transport.status == 200)
 				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 			else
-				alert("Failed to save comment" + transport.statusText + transport.responseText);
+				alert("Did not get a response from server, may not have saved data" + transport.statusText + transport.responseText);
 				
 				stopThinking({div:'thinking_' + questionid});
 		}
