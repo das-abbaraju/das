@@ -235,7 +235,10 @@ function checkUsername(username) {
 					<span id="username_status"></span>
 				</li>
 				<li><label>Password:</label>
-					<s:password name="user.password" value=""/>
+					<s:password name="password1" value=""/>
+				</li>
+				<li><label>Confirm Password:</label>
+					<s:password name="password2" value=""/>
 				</li>
 					<s:if test="user != null">
 					<li><label>Last Login:</label>

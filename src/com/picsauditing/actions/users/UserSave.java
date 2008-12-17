@@ -13,9 +13,13 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class UserSave extends UsersManage {
+	protected String password1;
+	protected String password2;
+
 	public UserSave(OperatorAccountDAO operatorDao, UserDAO userDAO) {
 		super(operatorDao, userDAO);
 	}
@@ -47,6 +51,9 @@ public class UserSave extends UsersManage {
 				userDAO.clear();
 				return SUCCESS;
 			}
+
+			if (!Strings.isEmpty(password1) && !password1.equals(user.getPassword()))
+				user.setPassword(password1);
 
 			if (user.getDateCreated() == null)
 				user.setDateCreated(new Date());
@@ -111,14 +118,31 @@ public class UserSave extends UsersManage {
 		if (user.getEmail() == null || user.getEmail().length() == 0 || !Utilities.isValidEmail(user.getEmail()))
 			addActionError("Please enter a valid Email address.");
 
-		if (user.getPassword() == null)
-			addActionError("Please enter a password");
-		else {
-			Vector<String> errors = PasswordValidator.validateContractor(user, user.getPassword());
+		if (!Strings.isEmpty(password1)) {
+			if (!password1.equals(password2) && !password1.equals(user.getPassword()))
+				addActionError("Passwords don't match");
+
+			Vector<String> errors = PasswordValidator.validateContractor(user, password1);
 			for (String error : errors)
 				addActionError(error);
 		}
 
 		return getActionErrors().size() == 0;
+	}
+
+	public String getPassword1() {
+		return password1;
+	}
+
+	public void setPassword1(String password1) {
+		this.password1 = password1;
+	}
+
+	public String getPassword2() {
+		return password2;
+	}
+
+	public void setPassword2(String password2) {
+		this.password2 = password2;
 	}
 }
