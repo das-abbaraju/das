@@ -25,7 +25,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "pqfcategories")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="global")
-public class AuditCategory implements java.io.Serializable {
+public class AuditCategory implements java.io.Serializable, Comparable<AuditCategory> {
 	public static final int WORK_HISTORY = 6;
 	public static final int OSHA_AUDIT = 151;
 	public static final int TRAINING = 25;
@@ -156,6 +156,20 @@ public class AuditCategory implements java.io.Serializable {
 		return true;
 	}
 
+	
+	@Override
+	public int compareTo(AuditCategory other) {
+		if( other == null ) {
+			return 1;
+		}
+		
+		int cmp = getAuditType().compareTo(other.getAuditType());
+		
+		if( cmp != 0 ) 
+			return cmp;
+
+		return new Integer( getNumber() ).compareTo(new Integer(other.getNumber()));
+	}
 	
 	
 }
