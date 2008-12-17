@@ -3,6 +3,7 @@ package com.picsauditing.actions.audits;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -11,10 +12,11 @@ import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OshaAuditDAO;
+import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
@@ -29,12 +31,15 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 	private OshaAuditDAO oshaDAO;
 	private File uploadFile;
 	private String uploadFileFileName;
+	private AuditPercentCalculator auditPercentCalculator;
 
+	
 	public OshaSave(ContractorAccountDAO accountDAO, OshaAuditDAO oshaDAO, ContractorAuditDAO conAuditDAO, 
-				AuditCategoryDataDAO catDataDAO, AuditDataDAO dao) {
+				AuditCategoryDataDAO catDataDAO, AuditDataDAO dao, AuditPercentCalculator auditPercentCalculator ) {
 		
 		super(accountDAO, conAuditDAO, catDataDAO, dao);
 		this.oshaDAO = oshaDAO;
+		this.auditPercentCalculator = auditPercentCalculator;
 	}
 
 	@Override
@@ -149,7 +154,15 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 
 		
 		if (button.equals("toggleVerify")) {
-			calculateVerifiedPercent( osha.getConAudit() );	
+			if( osha.isCorporate() ){
+				List<AuditCatData> catDataList = catDataDao.findAllAuditCatData(osha.getConAudit().getId(), AuditCategory.OSHA_AUDIT);
+				
+				if( catDataList != null && catDataList.size() > 0 ) {
+					auditPercentCalculator.percentOshaComplete(osha, catDataList.get(0));	
+				}
+				
+				auditPercentCalculator.percentCalculateComplete(osha.getConAudit());
+			}
 		}			
 		
 		

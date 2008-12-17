@@ -17,7 +17,7 @@
 		
 		startThinking({div:'status_'+questionId});
 
-		var pars = 'auditData.audit.id='+auditId+'&catDataID='+catDataId+'&auditData.question.id=' + questionId + '&auditData.comment=' + comment + '&toggleVerify=true';
+		var pars = 'auditData.audit.id='+auditId+'&catDataID=-1&auditData.question.id=' + questionId + '&auditData.comment=' + comment + '&toggleVerify=true';
 		if( answerelm != null ) {
 			var answer = $F(answerelm);
 			pars = pars + '&auditData.answer=' + answer;		

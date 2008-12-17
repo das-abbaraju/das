@@ -85,11 +85,13 @@
 	</s:iterator></fieldset>
 </s:if>
 <s:else>
-	<fieldset style="clear: none; float: left; width: 50%; margin: 0.5em;"><legend><span>EMR
-	Questions</span></legend> <s:iterator value="conAudit.data">
+	<fieldset style="clear: none; float: left; width: 50%; margin: 0.5em;"><legend><span>Audit
+	Questions</span></legend>
+	<s:sort comparator="dataComparator" source="conAudit.data">
+	 <s:iterator>
 		<s:div id="qid_%{question.id}">
 		<ol>
-			<li><s:property value="question.subCategory.subCategory"/><br />
+			<li><strong><s:property value="question.subCategory.subCategory"/></strong><br />
 				<s:property value="question.subCategory.category.number"/>.<s:property value="question.subCategory.number"/>.<s:property value="question.number"/>
 				<s:property value="question.question"/></li>
 
@@ -141,7 +143,9 @@
 			</li>
 		</ol>
 		</s:div>
-	</s:iterator></fieldset>
+	</s:iterator>
+	</s:sort>
+	</fieldset>
 
 	<fieldset style="clear: none; float: left; width: 40%; margin: 0.5em;"><legend><span>OSHA</span></legend>
 	<s:iterator value="conAudit.oshas">

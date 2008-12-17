@@ -2,6 +2,7 @@ package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.NoResultException;
 
@@ -117,17 +118,27 @@ public class AuditDataSave extends AuditActionSupport {
 				auditDataDao.save(newCopy);
 			}
 
-			
-			if( toggleVerify ) {
-				calculateVerifiedPercent( newCopy.getAudit() );
-			}
-			
 			// hook to calculation
 			// read/update the ContractorAudit and AuditCatData
+			AuditCatData catData = null;
+			
 			if (catDataID > 0) {
-				AuditCatData catData = catDataDao.find(catDataID);
-				auditPercentCalculator.updatePercentageCompleted(catData);
+				catData = catDataDao.find(catDataID);
 			}
+			else if( toggleVerify ) {
+				List<AuditCatData> catDatas = catDataDao.findAllAuditCatData(auditData.getAudit().getId(), newCopy.getQuestion().getSubCategory().getCategory().getId());
+
+				if( catDatas != null && catDatas.size() != 0 ) {
+					catData = catDatas.get(0);
+				}
+			}
+
+			if( catData != null ) {
+				auditPercentCalculator.updatePercentageCompleted(catData);
+				conAudit = auditDao.find(auditData.getAudit().getId());
+				auditPercentCalculator.percentCalculateComplete(conAudit);
+			}
+			
 			auditData = newCopy;
 			output = "Saved";
 		} catch (Exception e) {
