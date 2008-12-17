@@ -28,6 +28,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class AuditCategory implements java.io.Serializable, Comparable<AuditCategory> {
 	public static final int WORK_HISTORY = 6;
 	public static final int OSHA_AUDIT = 151;
+	public static final int GENERAL_INFORMATION = 155;
+	public static final int EMR = 11;
+	public static final int MSHA = 174;
+	public static final int CANADIAN_STATISTICS = 175;
+	public static final int LOSS_RUN = 156;
 	public static final int TRAINING = 25;
 	public static final int SAFETY_POLICIES = 7;
 	public static final int SERVICES_PERFORMED = 28;
