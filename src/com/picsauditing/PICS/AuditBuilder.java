@@ -294,16 +294,18 @@ public class AuditBuilder {
 
 				if( answers != null && dependencies.get( cat.getId() ) != null ) {
 					AuditData answer = answers.get( dependencies.get( cat.getId() ) );
-					
-					if( "Yes".equals(answer.getAnswer())) {
-						include = true;
-					}
-					
-					if( "No".equals(answer.getAnswer()) 
-							&& answer.getQuestion().getId() == 2071 
-							&& cat.getId() == AuditCategory.LOSS_RUN ) {
-						include = true;
-					}
+					if(answer == null)
+						include = false;
+					else {
+						if ("Yes".equals(answer.getAnswer())) {
+							include = true;
+						}
+
+						if ("No".equals(answer.getAnswer()) && answer.getQuestion().getId() == 2071
+								&& cat.getId() == AuditCategory.LOSS_RUN) {
+							include = true;
+						}
+					}	
 					
 				}
 				else if ( dependencies.get( cat.getId() ) == null ) {
