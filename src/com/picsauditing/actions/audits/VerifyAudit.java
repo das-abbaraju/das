@@ -74,6 +74,7 @@ public class VerifyAudit extends AuditActionSupport {
 	}
 
 	
+	
 	public boolean isShowApproveButton() {
 		if (conAudit.getAuditType().isPqf() && getPqfQuestions().size() == 0)
 			return true;
