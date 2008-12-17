@@ -11,6 +11,7 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
 
@@ -49,7 +50,7 @@ public class AuditPercentCalculator {
 		for (AuditSubCategory subCategory : catData.getCategory().getValidSubCategories()) {
 			for (AuditQuestion question : subCategory.getValidQuestions()) {
 				questionIDs.add(question.getId());
-				if ("Depends".equals(question.getDependsOnAnswer()) && question.getDependsOnQuestion() != null) {
+				if ("Depends".equals(question.getIsRequired()) && question.getDependsOnQuestion() != null) {
 					int dependsOnQID = question.getDependsOnQuestion().getId();
 					questionIDs.add(dependsOnQID);
 				}
@@ -80,10 +81,17 @@ public class AuditPercentCalculator {
 						if (isRequired)
 							requiredAnsweredCount++;
 					}
-					if ("Yes".equals(answerToQuestion) || "NA".equals(answerToQuestion)) {
-						// This is a valid Desktop or Office audit answer so,
-						// it's "Verified"
-						verifiedCount++;
+
+					if( catData.getAudit().getAuditType().getAuditTypeID() == AuditType.OFFICE || catData.getAudit().getAuditType().getAuditTypeID() == AuditType.DESKTOP ) {
+						if ("Yes".equals(answerToQuestion) || "NA".equals(answerToQuestion)) {
+							// This is a valid Desktop or Office audit answer so,
+							// it's "Verified"
+							verifiedCount++;
+						}
+					}
+					else {
+						if( answer.isVerified() )
+							verifiedCount++;
 					}
 				}
 			}
@@ -134,10 +142,32 @@ public class AuditPercentCalculator {
 				percentVerified = 100;
 		}
 		conAudit.setPercentComplete(percentComplete);
-		if (conAudit.getAuditType().isHasRequirements() && !conAudit.getAuditType().isPqf())
+		if (conAudit.getAuditType().isHasRequirements() && !conAudit.getAuditType().isPqf() )
 			conAudit.setPercentVerified(percentVerified);
+		else if ( conAudit.getAuditType().isPqf() ) {
+			
+			List<AuditData> temp = auditDataDao.findCustomPQFVerifications(conAudit.getId());
+			verified = 0;
+			int verifiedTotal = 0;
+			
+			for (AuditData auditData : temp ) {
+				// either the pqf or the EMF for the annual addendum
+				if (auditData.isVerified()) {
+					verified++;
+				}
+				verifiedTotal++;
+			}
+			
+			conAudit.setPercentVerified(Math.round((float) (100 * verified)	/ verifiedTotal));
+		}
+			 
 	}
 
+	
+	
+	
+	
+	
 	public void percentOshaComplete(OshaAudit osha, AuditCatData catData) {
 		int count = 0;
 
@@ -154,6 +184,14 @@ public class AuditPercentCalculator {
 		catData.setRequiredCompleted(count);
 		catData.setNumRequired(2);
 		catData.setPercentCompleted(percentComplete);
+		
+		if( osha.isVerified()) {
+			catData.setPercentVerified(100);
+		}
+		else {
+			catData.setPercentVerified(0);
+		}
+		
 		catDataDao.save(catData);
 	}
 
