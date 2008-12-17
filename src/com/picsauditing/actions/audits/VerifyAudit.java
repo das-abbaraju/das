@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -61,6 +62,18 @@ public class VerifyAudit extends AuditActionSupport {
 		this.pqfQuestions = pqfQuestions;
 	}
 
+	public Comparator<AuditData> getDataComparator() {
+		return new Comparator<AuditData>() {
+			@Override
+			public int compare(AuditData o1, AuditData o2) {
+				if( o1 == null ) return -1;
+				
+				return o1.compareTo(o2);
+			}
+		};
+	}
+
+	
 	public boolean isShowApproveButton() {
 		if (conAudit.getAuditType().isPqf() && getPqfQuestions().size() == 0)
 			return true;
@@ -69,4 +82,7 @@ public class VerifyAudit extends AuditActionSupport {
 
 		return false;
 	}
+	
+	
+	
 }
