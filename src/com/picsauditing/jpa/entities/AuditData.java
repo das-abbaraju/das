@@ -26,7 +26,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "pqfdata")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
-public class AuditData implements java.io.Serializable {
+public class AuditData implements java.io.Serializable , Comparable<AuditData> {
 
 	private int dataID;
 	private ContractorAudit audit;
@@ -280,4 +280,19 @@ public class AuditData implements java.io.Serializable {
 		dataMap.put(OshaAudit.AVG, avg);
 	}
 
+	
+	@Override
+	public int compareTo(AuditData other) {
+		if( other == null ) {
+			return 1;
+		}
+		
+		int cmp = getQuestion().compareTo(other.getQuestion());
+		
+		if( cmp != 0 ) 
+			return cmp;
+
+		return new Integer( getDataID() ).compareTo(new Integer(other.getDataID()));
+	}
+	
 }

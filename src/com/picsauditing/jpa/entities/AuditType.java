@@ -242,7 +242,7 @@ public class AuditType implements Comparable<AuditType> {
 
 	@Override
 	public int compareTo(AuditType o) {
-		return (this.displayOrder - o.displayOrder);
+		return new Integer( this.displayOrder ).compareTo( new Integer( o.displayOrder ) );
 	}
 
 }

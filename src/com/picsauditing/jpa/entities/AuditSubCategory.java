@@ -23,7 +23,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "pqfsubcategories")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="global")
-public class AuditSubCategory implements java.io.Serializable {
+public class AuditSubCategory implements java.io.Serializable, Comparable<AuditSubCategory> {
 
 	private int id;
 	private String subCategory;
@@ -114,5 +114,18 @@ public class AuditSubCategory implements java.io.Serializable {
 		return true;
 	}
 
+	@Override
+	public int compareTo(AuditSubCategory other) {
+		if( other == null ) {
+			return 1;
+		}
+		
+		int cmp = getCategory().compareTo(other.getCategory());
+		
+		if( cmp != 0 ) 
+			return cmp;
 
+		return new Integer( getNumber() ).compareTo(new Integer(other.getNumber()));
+	}
+	
 }

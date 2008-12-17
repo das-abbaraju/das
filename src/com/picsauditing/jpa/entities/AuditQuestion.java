@@ -464,19 +464,16 @@ public class AuditQuestion implements java.io.Serializable, Comparable<AuditQues
 	}
 
 	@Override
-	public int compareTo(AuditQuestion o) {
-		if (o == null)
-			throw new NullPointerException();
-		if (this.getId() == o.getId())
-			return 0;
-		
-		if (getSubCategory().getId() == o.getSubCategory().getId()) {
-			int result = this.getNumber() - o.getNumber();
-			if (result == 0)
-				return this.getId()- o.getId();
-			return result;
+	public int compareTo(AuditQuestion other) {
+		if( other == null ) {
+			return 1;
 		}
 		
-		return getSubCategory().getId() - o.getSubCategory().getId();
+		int cmp = getSubCategory().compareTo(other.getSubCategory());
+		
+		if( cmp != 0 ) 
+			return cmp;
+
+		return new Integer( getNumber() ).compareTo(new Integer(other.getNumber()));
 	}
 }
