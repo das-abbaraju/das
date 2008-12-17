@@ -118,9 +118,21 @@ public class AuditPercentCalculator {
 	}
 
 	public void percentCalculateComplete(ContractorAudit conAudit) {
+		percentCalculateComplete(conAudit, false);
+	}
+
+	
+	public void percentCalculateComplete(ContractorAudit conAudit, boolean recalcCats) {
 		int required = 0;
 		int answered = 0;
 		int verified = 0;
+		
+		
+		if( recalcCats ) {
+			recalcAllAuditCatDatas(conAudit);
+		}
+		
+		
 		for (AuditCatData data : conAudit.getCategories()) {
 			if (!conAudit.getAuditType().isDynamicCategories() || data.isAppliesB()) {
 				// The category applies or the audit type doesn't have dynamic
@@ -161,6 +173,22 @@ public class AuditPercentCalculator {
 			conAudit.setPercentVerified(Math.round((float) (100 * verified)	/ verifiedTotal));
 		}
 			 
+	}
+
+	public void recalcAllAuditCatDatas(ContractorAudit conAudit) {
+		for (AuditCatData data : conAudit.getCategories()) {
+
+			if( ! conAudit.getAuditType().isAnnualAddendum() ) {
+				updatePercentageCompleted( data );
+			}
+			else {
+				for( OshaAudit osha : conAudit.getOshas() ) {
+					if( osha.isCorporate() ) {
+						percentOshaComplete( osha, data );							
+					}
+				}
+			}
+		}
 	}
 
 	
