@@ -274,6 +274,19 @@ public class AuditBuilder {
 					naCategories.add(category);
 			}
 		}
+//		else if(conAudit.getAuditType().isAnnualAddendum()) {
+//			for(AuditCatData auditCatData : conAudit.getCategories()) {
+//				if(auditCatData.getCategory().getId() == AuditCategory.GENERAL_INFORMATION) {
+//					
+//					
+//				}
+//					
+//				
+//			}
+//			
+//			
+//		}
+		
 		else if (conAudit.getAuditType().getAuditTypeID() == AuditType.DESKTOP) {
 			Date currentAuditDate = null;
 			int pqfAuditID = 0;

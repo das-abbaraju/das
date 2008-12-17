@@ -77,6 +77,8 @@ public class ContractorAuditAction extends AuditActionSupport {
 		// Try and guess to see if we need it or not
 		if (auditStatus != null)
 			fullLoad = false;
+		if(conAudit.getAuditType().isAnnualAddendum() && conAudit.getAuditStatus().isPendingSubmitted())
+			fullLoad = true;
 		if (conAudit.getAuditStatus().equals(AuditStatus.Active))
 			fullLoad = false;
 
