@@ -253,54 +253,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	}
 
-	public void calculateVerifiedPercent(ContractorAudit conAudit) {
-
-		int verified = 0;
-		int verifiedTotal = 0;
-
-		if (conAudit.getAuditType().isAnnualAddendum()) {
-
-			for (OshaAudit oshaAudit : conAudit.getOshas()) {
-				if (oshaAudit != null && oshaAudit.isCorporate()) {
-					if ((oshaAudit.isVerified() || !oshaAudit.isApplicable())) {
-						verified++;
-					}
-					verifiedTotal++;
-				}
-			}
-
-			for (AuditData auditData : conAudit.getData()) {
-				// either the pqf or the EMF for the annual addendum
-				if (auditData.isVerified()) {
-					verified++;
-				}
-
-				verifiedTotal++;
-			}
-		}
-
-		if (conAudit.getAuditType().isPqf()) {
-			List<AuditData> temp = auditDataDao.findCustomPQFVerifications(conAudit.getId());
-
-			for (AuditData auditData : temp ) {
-				// either the pqf or the EMF for the annual addendum
-				if (auditData.isVerified()) {
-					verified++;
-				}
-				verifiedTotal++;
-			}
-				
-			
-			
-			
-		}
-
-		conAudit.setPercentVerified(Math.round((float) (100 * verified)
-				/ verifiedTotal));
-
-
-		auditDao.save(conAudit);
-	}
 
 	
 }
