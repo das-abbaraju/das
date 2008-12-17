@@ -1,5 +1,5 @@
 package com.picsauditing.jpa.entities;
 
 public enum OshaType {
-	OSHA, MSHA;
+	OSHA, MSHA, COHS;
 }

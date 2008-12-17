@@ -1,12 +1,16 @@
 package com.picsauditing.PICS;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -274,18 +278,43 @@ public class AuditBuilder {
 					naCategories.add(category);
 			}
 		}
-//		else if(conAudit.getAuditType().isAnnualAddendum()) {
-//			for(AuditCatData auditCatData : conAudit.getCategories()) {
-//				if(auditCatData.getCategory().getId() == AuditCategory.GENERAL_INFORMATION) {
-//					
-//					
-//				}
-//					
-//				
-//			}
-//			
-//			
-//		}
+		else if(conAudit.getAuditType().isAnnualAddendum()) {
+			
+			Map<Integer, Integer> dependencies = new HashMap<Integer, Integer>();
+			dependencies.put(AuditCategory.OSHA_AUDIT, 2064);
+			dependencies.put(AuditCategory.MSHA, 2065);
+			dependencies.put(AuditCategory.CANADIAN_STATISTICS, 2066);
+			dependencies.put(AuditCategory.EMR, 2071);
+
+			Map<Integer, AuditData> answers = auditDataDAO.findAnswers(conAudit.getId(), new Vector<Integer>(dependencies.values()));
+			
+			for ( AuditCategory cat : conAudit.getAuditType().getCategories() ) {
+		
+				boolean include = false;
+
+				if( answers != null && dependencies.get( cat.getId() ) != null ) {
+					AuditData answer = answers.get( dependencies.get( cat.getId() ) );
+					
+					if( "Yes".equals(answer.getAnswer())) {
+						include = true;
+					}
+					
+					if( "No".equals(answer.getAnswer()) 
+							&& answer.getQuestion().getId() == 2071 
+							&& cat.getId() == AuditCategory.LOSS_RUN ) {
+						include = true;
+					}
+					
+				}
+				else if ( dependencies.get( cat.getId() ) == null ) {
+					include = true;
+				}
+				
+				if( include ) {
+					categories.add( cat );
+				}
+			}
+		}
 		
 		else if (conAudit.getAuditType().getAuditTypeID() == AuditType.DESKTOP) {
 			Date currentAuditDate = null;
