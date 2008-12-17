@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
-	<s:if test="conAudit.percentVerified != null && conAudit.percentVerified == 100">
+	<s:if test="showApproveButton">
 		<s:set name="showApproveButton" value="'inline'"/>
 	</s:if>
 	<s:else>
@@ -63,7 +63,7 @@
 				<s:set name="verifyText" value="'Unverify'"/>
 			</s:else>
 
-			<input id="verify_<s:property value="question.id"/>" type="submit" onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="question.subCategory.id"/>);"	value="<s:property value="#attr.verifyText"/>"/>
+			<li><input id="verify_<s:property value="question.id"/>" type="submit" onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="question.subCategory.id"/>);"	value="<s:property value="#attr.verifyText"/>"/>
 			<s:div cssStyle="display : inline;" id="status_%{question.id}"></s:div></li>
 			
 			<s:if test="verified">
@@ -122,7 +122,7 @@
 				<s:set name="verifyText" value="'Unverify'"/>
 			</s:else>
 
-			<input id="verify_<s:property value="question.id"/>" type="submit" onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="question.subCategory.id"/>);"	value="<s:property value="#attr.verifyText"/>"/>
+			<li><input id="verify_<s:property value="question.id"/>" type="submit" onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="question.subCategory.id"/>);"	value="<s:property value="#attr.verifyText"/>"/>
 			<s:div cssStyle="display : inline;" id="status_%{question.id}"></s:div></li>
 			
 			<s:if test="verified">

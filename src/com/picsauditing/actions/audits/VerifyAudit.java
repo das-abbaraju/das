@@ -1,9 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -63,5 +61,12 @@ public class VerifyAudit extends AuditActionSupport {
 		this.pqfQuestions = pqfQuestions;
 	}
 
-	
+	public boolean isShowApproveButton() {
+		if (conAudit.getAuditType().isPqf() && getPqfQuestions().size() == 0)
+			return true;
+		if (conAudit.getPercentVerified() == 100)
+			return true;
+
+		return false;
+	}
 }

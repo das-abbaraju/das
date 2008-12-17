@@ -6,13 +6,13 @@
 <s:else>
 	<s:form id="verify">
 		<table class="summary">
+			<thead>
+				<tr>
+					<td>PQF</td>
+					<td>Answer</td>
+				</tr>
+			</thead>
 			<s:if test="pqfQuestions.size() > 0 ">
-				<thead>
-					<tr>
-						<td>PQF</td>
-						<td>Answer</td>
-					</tr>
-				</thead>
 				<s:iterator value="pqfQuestions.values">
 					<tr>
 						<td><s:property
@@ -27,17 +27,17 @@
 						</s:else>
 					</tr>
 				</s:iterator>
-				<tr>
-					<td></td>
-					<s:iterator value="verificationAudits">
-						<s:if test="auditType.Pqf">
-							<td class="center">
-								<input type="button" value="Verify" onclick="showAudit(<s:property value="id"/>); return false;"/>
-							</td>
-						</s:if>
-					</s:iterator>
-				</tr>
 			</s:if>
+			<tr>
+				<td></td>
+				<s:iterator value="verificationAudits">
+					<s:if test="auditType.Pqf">
+						<td class="center">
+							<input type="button" value="Verify" onclick="showAudit(<s:property value="id"/>); return false;"/>
+						</td>
+					</s:if>
+				</s:iterator>
+			</tr>
 		</table>	
 		<br/>
 		<table class="summary">
@@ -163,7 +163,6 @@
 					<s:iterator value="verificationAudits">
 						<s:if test="auditType.annualAddendum">
 							<td class="center">
-								<s:property value="auditFor"/>
 								<input type="button" value="Verify" onclick="showAudit(<s:property value="id"/>); return false;"/>
 							</td>	
 						</s:if>
