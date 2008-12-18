@@ -1,7 +1,6 @@
 package com.picsauditing.PICS;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -221,11 +220,11 @@ public class AuditBuilder {
 				// it's still needed
 				boolean needed = false;
 
-				if (conAudit.getAuditType().isPqf())
+				if (conAudit.getAuditType().isPqf() || 
+						conAudit.getAuditType().getAuditTypeID() == AuditType.WELCOME ||
+						conAudit.getAuditType().isAnnualAddendum())
 					needed = true;
-				if (conAudit.getAuditType().isAnnualAddendum())
-					needed = true;
-
+			
 				// this doesn't handle one rare case: when a 
 				// contractor changes their OQ employees from Yes to No
 				// Since this would probably never happen, we won't add it
