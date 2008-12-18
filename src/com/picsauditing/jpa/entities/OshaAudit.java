@@ -63,8 +63,8 @@ public class OshaAudit implements java.io.Serializable {
 	private Float trir = null;
 	private Float lwcr = null;
 	
-	private Float cad7 = null;
-	private Float neer = null;
+	private Float cad7 = 0.0f;
+	private Float neer = 0.0f;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
