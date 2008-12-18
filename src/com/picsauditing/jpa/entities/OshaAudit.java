@@ -63,6 +63,8 @@ public class OshaAudit implements java.io.Serializable {
 	private Float trir = null;
 	private Float lwcr = null;
 	
+	private Float cad7 = null;
+	private Float neer = null;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -226,6 +228,22 @@ public class OshaAudit implements java.io.Serializable {
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+
+	public Float getCad7() {
+		return cad7;
+	}
+
+	public void setCad7(Float cad7) {
+		this.cad7 = cad7;
+	}
+
+	public Float getNeer() {
+		return neer;
+	}
+
+	public void setNeer(Float neer) {
+		this.neer = neer;
 	}
 
 	@Transient
