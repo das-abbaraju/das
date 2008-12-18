@@ -284,7 +284,8 @@ public class AuditBuilder {
 			dependencies.put(AuditCategory.MSHA, 2065);
 			dependencies.put(AuditCategory.CANADIAN_STATISTICS, 2066);
 			dependencies.put(AuditCategory.EMR, 2071);
-
+			dependencies.put(AuditCategory.LOSS_RUN, 2071);
+			
 			Map<Integer, AuditData> answers = auditDataDAO.findAnswers(conAudit.getId(), new Vector<Integer>(dependencies.values()));
 			
 			for ( AuditCategory cat : conAudit.getAuditType().getCategories() ) {
