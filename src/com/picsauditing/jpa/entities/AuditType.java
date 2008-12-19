@@ -242,7 +242,11 @@ public class AuditType implements Comparable<AuditType> {
 
 	@Override
 	public int compareTo(AuditType o) {
-		return new Integer( this.displayOrder ).compareTo( new Integer( o.displayOrder ) );
+		int i = new Integer( this.getDisplayOrder()).compareTo( new Integer( o.getDisplayOrder() ));
+		if(i == 0)
+			return new Integer( this.getAuditTypeID()).compareTo( new Integer( o.getAuditTypeID()));
+			
+		return i;
 	}
 
 }
