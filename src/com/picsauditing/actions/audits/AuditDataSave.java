@@ -12,6 +12,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -28,9 +29,9 @@ public class AuditDataSave extends AuditActionSupport {
 
 	private boolean toggleVerify = false;
 		
-	public AuditDataSave(ContractorAccountDAO accountDAO,AuditDataDAO dao, AuditCategoryDataDAO catDataDAO,
-			AuditPercentCalculator auditPercentCalculator, AuditQuestionDAO questionDao, ContractorAuditDAO conAuditDAO) {
-		super(accountDAO, conAuditDAO, catDataDAO, dao);
+	public AuditDataSave(ContractorAccountDAO accountDAO,AuditDataDAO dao, AuditCategoryDataDAO catDataDao,
+			AuditPercentCalculator auditPercentCalculator, AuditQuestionDAO questionDao, ContractorAuditDAO auditDao, OshaAuditDAO oshaAuditDAO) {
+		super(accountDAO, auditDao, catDataDao, dao);
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.questionDao = questionDao;
 	}
@@ -89,7 +90,6 @@ public class AuditDataSave extends AuditActionSupport {
 						}
 					}
 				}
-
 				// we were handed the verification parms instead of the
 				// edit parms
 
@@ -132,7 +132,7 @@ public class AuditDataSave extends AuditActionSupport {
 					catData = catDatas.get(0);
 				}
 			}
-
+			
 			if( catData != null ) {
 				auditPercentCalculator.updatePercentageCompleted(catData);
 				conAudit = auditDao.find(auditData.getAudit().getId());
