@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -47,6 +49,8 @@ public class AuditType implements Comparable<AuditType> {
 	protected int auditTypeID;
 
 	protected String auditName;
+	protected AuditTypeClass classType = AuditTypeClass.Audit;
+	protected int displayOrder = 100;
 	protected String description;
 	protected boolean hasMultiple;
 	protected boolean isScheduled;
@@ -55,9 +59,6 @@ public class AuditType implements Comparable<AuditType> {
 	protected boolean canContractorView;
 	protected boolean canContractorEdit;
 	protected Integer monthsToExpire;
-	@Deprecated
-	protected Date dateToExpire;
-	protected int displayOrder = 100;
 	
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
 
@@ -77,6 +78,23 @@ public class AuditType implements Comparable<AuditType> {
 
 	public void setAuditName(String auditName) {
 		this.auditName = auditName;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public AuditTypeClass getClassType() {
+		return classType;
+	}
+	
+	public void setClassType(AuditTypeClass classType) {
+		this.classType = classType;
+	}
+	
+	public int getDisplayOrder() {
+		return displayOrder;
+	}
+
+	public void setDisplayOrder(int displayOrder) {
+		this.displayOrder = displayOrder;
 	}
 
 	public String getDescription() {
@@ -142,23 +160,6 @@ public class AuditType implements Comparable<AuditType> {
 
 	public void setMonthsToExpire(Integer monthsToExpire) {
 		this.monthsToExpire = monthsToExpire;
-	}
-
-	@Temporal(value = TemporalType.DATE)
-	public Date getDateToExpire() {
-		return dateToExpire;
-	}
-
-	public void setDateToExpire(Date dateToExpire) {
-		this.dateToExpire = dateToExpire;
-	}
-
-	public int getDisplayOrder() {
-		return displayOrder;
-	}
-
-	public void setDisplayOrder(int displayOrder) {
-		this.displayOrder = displayOrder;
 	}
 
 	@OneToMany(mappedBy = "auditType")
