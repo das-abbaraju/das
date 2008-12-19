@@ -207,10 +207,14 @@ public class FlagCalculatorSingle {
 							// Get the most recent year
 							int mostRecentYear = 0;
 							for (String yearString : answerMap.keySet()) {
-								int year = Integer.parseInt(yearString);
-								if (year > mostRecentYear) {
-									mostRecentYear = year;
-									data = answerMap.get(yearString);
+								try {
+									int year = Integer.parseInt(yearString);
+									if (year > mostRecentYear) {
+										mostRecentYear = year;
+										data = answerMap.get(yearString);
+									}
+								} catch (Exception e) {
+									System.out.println("Ignoring answer with year key: " + yearString);
 								}
 							}
 							flagColor = flagData(flagColor, criteria, data);
