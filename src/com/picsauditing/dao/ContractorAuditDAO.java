@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
@@ -201,7 +202,10 @@ public class ContractorAuditDAO extends PicsDAO {
 		cAudit.setContractorAccount(contractor);
 		cAudit.setAuditType(auditType);
 		cAudit.setAuditFor(auditFor);
-
+		if(cAudit.getAuditType().getAuditTypeID() == 8) { 
+			cAudit.setRequestingOpAccount(new OperatorAccount());
+			cAudit.getRequestingOpAccount().setId(4744);
+		}	
 		if (startDate != null) {
 			Date dateToExpire = DateBean.addMonths(startDate, auditType
 					.getMonthsToExpire());
