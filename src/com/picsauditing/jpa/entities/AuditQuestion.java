@@ -33,9 +33,9 @@ public class AuditQuestion implements java.io.Serializable, Comparable<AuditQues
 	static public final int EMR_AVG = 0;
 	static public final int MANUAL_PQF = 1331;
 
-	static public final String[] TYPE_ARRAY = { "Check Box", "Country", "Date", "Decimal Number", "Drop Down", "File",
-			"Industry", "License", "Main Work", "Manual", "Money", "Office", "Office Location", "Radio", "Service",
-			"State", "Text", "Text Area", "Yes/No", "Yes/No/NA" };
+	static public final String[] TYPE_ARRAY = { "Check Box", "Country", "Date", "Decimal Number", 
+			"File", "FileCertificate", "Industry", "License", "Main Work", "Manual", "Money", 
+			"Office Location", "Radio", "Service", "State", "Text", "Text Area", "Yes/No", "Yes/No/NA" };
 
 	private int questionID;
 	private AuditSubCategory subCategory;

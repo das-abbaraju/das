@@ -33,9 +33,6 @@
 		<s:if test="questionType == 'Yes/No/NA'">
 			<s:radio theme="pics" list="#{'Yes':'Yes','No':'No','NA':'NA'}" value="answer.answer" name="question_%{id}" onclick="javascript:saveAnswer(%{id}, this);"></s:radio>
 		</s:if>
-		<s:if test="questionType == 'Office'">
-			<s:radio theme="pics" list="#{'Yes':'Yes','No':'No','NA':'NA'}" value="answer.answer" name="question_%{id}" onclick="javascript:saveAnswer(%{id}, this);"></s:radio>
-		</s:if>
 		<s:if test="questionType == 'Manual'">
 			<s:radio theme="pics" list="#{'Yes':'Yes','No':'No','NA':'NA'}" value="answer.answer" name="question_%{id}" onclick="javascript:saveAnswer(%{id}, this);"></s:radio>
 			<br>Comments: <s:textfield id="comments_%{id}" name="answer.comment" size="30" onblur="javascript:saveComment(%{id}, this);"/>
@@ -62,11 +59,7 @@
 		<s:if test="questionType == 'Radio'">
 			<s:radio theme="pics" list="options" listKey="optionName" listValue="optionName" value="answer.answer" name="question_%{id}" onclick="javascript:saveAnswer(%{id}, this);"></s:radio>
 		</s:if>
-		<s:if test="questionType == 'Drop Down'">
-			<% // TODO We never actually use Drop Down on any questions. We should evaluate if we want to ever support them. %>
-			<s:select list="options" listKey="optionName" listValue="optionName" value="answer.answer" name="question_%{id}" onchange="javascript:saveAnswer(%{id}, this);"></s:select>
-		</s:if>
-		<s:if test="questionType == 'File'">
+		<s:if test="questionType.startsWith('File')">
 			<nobr>
 				<s:if test="answer.answer.length() > 0">
 					<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&question.id=<s:property value="id"/>" target="_BLANK">View File</a>

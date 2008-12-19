@@ -38,7 +38,7 @@ public class AuditTypeDAO extends PicsDAO {
 		if (where.length() > 0)
 			where = "WHERE " + where;
 		
-        Query query = em.createQuery("FROM AuditType t "+where+" ORDER BY t.auditName");
+        Query query = em.createQuery("FROM AuditType t "+where+" ORDER BY t.classType, t.displayOrder, t.auditName");
         return query.getResultList();
 	}
 	
@@ -65,7 +65,7 @@ public class AuditTypeDAO extends PicsDAO {
 			where = "WHERE t IN (SELECT auditType FROM AuditOperator WHERE "+where+")";
 		}
 		
-        Query query = em.createQuery("FROM AuditType t "+where+" ORDER BY t.auditName");
+        Query query = em.createQuery("FROM AuditType t "+where+" ORDER BY t.classType, t.displayOrder, t.auditName");
         if(permissions.isOperator() || permissions.isCorporate())
         	query.setParameter(1, permissions.getAccountId());
         return query.getResultList();
