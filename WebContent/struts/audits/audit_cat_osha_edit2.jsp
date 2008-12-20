@@ -9,7 +9,6 @@
 <thead>
 <tr class="location">
 	<th>
-		<label>Type:</label><s:radio name="osha.type" list="#{'OSHA':'OSHA','MSHA':'MSHA'}" value="%{type}" cssClass="forms"/><br/>
 	    <label>Location:</label>
 	    <s:if test="location == 'Corporate'">
 	    	<s:property value="location"/>
@@ -22,12 +21,14 @@
 </tr>
 </thead>
 <tbody>
-<tr>
-	<th class="label">Were you exempt from submitting <s:property value="type"/> Logs? &nbsp;&nbsp;&nbsp;&nbsp;
-		<a href="#" onClick="window.open('reasons.html','name','scrollbars=1,resizable=1,width=800,height=600'); return false;">Valid exemptions</a>
-	</th>
-	<td><nobr><s:radio list="#{false:'Yes',true:'No'}" name="osha.applicable" value="%{applicable}"></s:radio></nobr></td>
-</tr>
+<s:if test="category.id in { 151, 174 }">
+	<tr>
+		<th class="label">Were you exempt from submitting <s:property value="type"/> Logs? &nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="#" onClick="window.open('reasons.html','name','scrollbars=1,resizable=1,width=800,height=600'); return false;">Valid exemptions</a>
+		</th>
+		<td><nobr><s:radio list="#{false:'Yes',true:'No'}" name="osha.applicable" value="%{applicable}"></s:radio></nobr></td>
+	</tr>
+</s:if>
 <s:if test="!corporate">
 <tr>
 	<th class="label">Site Description</th>
@@ -36,41 +37,55 @@
 </tr>
 </s:if>
 <tr>
-	<th class="label">Total Man Hours Worked</th>
+	<th class="label"><s:property value="getText('totalHoursWorked')"/></th>
 	<td><s:textfield name="osha.manHours" value="%{manHours}" cssClass="osha"></s:textfield></td>
 </tr>
 <tr>
-	<th class="label">Number of Fatalities</th>
+	<th class="label"><s:property value="getText('fatalities')"/></th>
 	<td><s:textfield name="osha.fatalities" value="%{fatalities}" cssClass="osha"></s:textfield></td>
 </tr>
 <tr>
-	<th class="label">Number of Lost Workday Cases - Has lost days AND is <s:property value="descriptionReportable"/></th>
+	<th class="label"><s:property value="getText('lostWorkDayCases.'.concat(type))"/></th>
 	<td><s:textfield name="osha.lostWorkCases" value="%{lostWorkCases}" cssClass="osha"></s:textfield></td>
 </tr>
 <tr>
-	<th class="label">Number of Lost Workdays - All lost workdays (regardless of restricted days) AND is <s:property value="descriptionReportable"/></th>
+	<th class="label"><s:property value="getText('lostWorkDays.'.concat(type))"/></th>
 	<td><s:textfield name="osha.lostWorkDays" value="%{lostWorkDays}" cssClass="osha"></s:textfield></td>
 </tr>
 <tr>
-	<th class="label">Injury & Illnesses Medical Cases - No lost OR restricted days AND is <s:property value="descriptionReportable"/> (non-fatal)</th>
+	<th class="label"><s:property value="getText('injuryAndIllness.'.concat(type))"/></th>
 	<td><s:textfield name="osha.injuryIllnessCases" value="%{injuryIllnessCases}" cssClass="osha"></s:textfield></td>
 </tr>
 <tr>
-	<th class="label">Restricted Cases - Has restricted days AND no lost days AND is <s:property value="descriptionReportable"/></th>
+	<th class="label"><s:property value="getText('restrictedCases.'.concat(type))"/></th>
 	<td><s:textfield name="osha.restrictedWorkCases" value="%{restrictedWorkCases}" cssClass="osha"></s:textfield></td>
 </tr>
 <tr>
-	<th class="label">Total <s:property value="descriptionReportable"/> Injuries and Illnesses</th>
+	<th class="label"><s:property value="getText('totalInjuriesAndIllnesses.'.concat(type))"/></th>
 	<td><s:textfield name="osha.recordableTotal" value="%{recordableTotal}" cssClass="osha"></s:textfield></td>
 </tr>
+<s:if test="category.id == 175">
+<tr>
+	<th class="label"><s:property value="getText('cad7.'.concat(type))"/></th>
+	<td><s:textfield name="osha.cad7" value="%{cad7}" cssClass="osha"/></td>
+	<td>&nbsp;</td>
+	<s:if test="corporate"><td>&nbsp;</td></s:if>
+</tr>
+<tr>
+	<th class="label"><s:property value="getText('neer.'.concat(type))"/></th>
+	<td><s:textfield name="osha.neer" value="%{neer}" cssClass="osha"/></td>
+	<td>&nbsp;</td>
+	<s:if test="corporate"><td>&nbsp;</td></s:if>
+</tr>
+</s:if>
 <tr>
 	<th class="label">Upload <s:property value="conAudit.auditFor"/> <s:property value="type"/> Log File(.pdf, .doc, .txt, .xls or .jpg)</th>
 	<td colspan="3">
-		<s:if test="fileUploaded">
-			<a href="#" onclick="openOsha(<s:property value="id"/>, 1); return false;">View File</a>
-		</s:if>
-		<s:if test="catDataID > 0">
-			<s:file name="uploadFile" size="10"></s:file></s:if></td>
+	<s:if test="fileUploaded">
+		<a href="#" onclick="openOsha(<s:property value="id"/>, 1); return false;">View File</a>
+	</s:if>
+	<s:if test="catDataID > 0">
+		<s:file name="uploadFile" size="10"></s:file></s:if></td>
 </tr>
 </tbody>
 <tfoot>
@@ -87,7 +102,7 @@
 </tfoot>
 </table>
 </s:form>
-<s:if test="permissions.contractor">
+<s:if test="permissions.contractor && category.id in {151,174}">
 	<table>
 		<tr>
 			<td></td>

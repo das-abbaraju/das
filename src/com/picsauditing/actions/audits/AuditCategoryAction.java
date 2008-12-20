@@ -1,6 +1,5 @@
 package com.picsauditing.actions.audits;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +57,14 @@ public class AuditCategoryAction extends AuditActionSupport {
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditCategoryDAO auditCategoryDAO;
 	private OshaAuditDAO oshaAuditDAO;
+	
+	protected static Map<Integer, OshaType> typeMapping = new HashMap<Integer, OshaType>();
+	
+	static {
+		typeMapping.put(AuditCategory.OSHA_AUDIT, OshaType.OSHA);
+		typeMapping.put(AuditCategory.MSHA, OshaType.MSHA);
+		typeMapping.put(AuditCategory.CANADIAN_STATISTICS, OshaType.COHS);
+	}
 
 	public AuditCategoryAction(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
@@ -170,12 +177,15 @@ public class AuditCategoryAction extends AuditActionSupport {
 		if (mode.equals(VERIFY) && !isCanVerify())
 			mode = VIEW;
 
+		
 		if (currentCategory != null) {
-			if (currentCategory.getCategory().getId() == AuditCategory.OSHA_AUDIT) {
+
+			
+			if (typeMapping.get( currentCategory.getCategory().getId() ) != null ) {
 				boolean hasOshaCorporate = false;
 				int percentComplete = 0;
 				for (OshaAudit osha : conAudit.getOshas()) {
-					if (osha.isCorporate()) {
+					if (osha.isCorporate() && matchesType( currentCategory.getCategory().getId(), osha.getType() ) ) {
 						hasOshaCorporate = true;
 						// Calculate percent complete too
 						auditPercentCalculator.percentOshaComplete(osha,
@@ -186,7 +196,8 @@ public class AuditCategoryAction extends AuditActionSupport {
 				if (mode.equals(EDIT) && !hasOshaCorporate) {
 					OshaAudit oshaAudit = new OshaAudit();
 					oshaAudit.setConAudit(conAudit);
-					oshaAudit.setType(OshaType.OSHA);
+					oshaAudit.setCorporate(true);
+					oshaAudit.setType(typeMapping.get(currentCategory.getCategory().getId()));
 					oshaAuditDAO.save(oshaAudit);
 					conAudit.getOshas().add(oshaAudit);
 
@@ -375,13 +386,24 @@ public class AuditCategoryAction extends AuditActionSupport {
 	}
 
 
-	public OshaAudit getAverageOsha() {
-		if( averageOshas == null ) {
-			Map<String, OshaAudit> temp = contractor.getOshas();
-			if( temp != null ) {
-				averageOshas = temp.get(OshaAudit.AVG);
-			}
+	public OshaAudit getAverageOsha(OshaType oshaType) {
+		OshaAudit response = null;
+		
+		Map<String, OshaAudit> temp = contractor.getOshas().get(oshaType);
+		
+		if( temp != null ) {
+			response = temp.get(OshaAudit.AVG);
 		}
-		return averageOshas;
+		
+		return response;
 	}
+	
+	public boolean matchesType( int categoryId, OshaType oa ) {
+		if( typeMapping.get(categoryId) == null || oa == null) return false;
+
+		if( oa == typeMapping.get(categoryId) ) return true;
+		
+		return false;
+	}
+	
 }

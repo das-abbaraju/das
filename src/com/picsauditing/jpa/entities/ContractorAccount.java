@@ -81,7 +81,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	protected Map<OperatorAccount, ContractorOperatorFlag> flags = new HashMap<OperatorAccount, ContractorOperatorFlag>();
 
 	// Transient helper methods
-	protected Map<String, OshaAudit> oshas = null;
+	protected Map<OshaType, Map<String, OshaAudit>> oshas = null;
 	protected Map<String, AuditData> emrs = null;
 
 	public ContractorAccount() {
@@ -619,73 +619,88 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	
 	@Transient
 	/**
-	 * Get a map of the last 3 years of applicable osha data (verified or not)
+	 * Get a double-keyed map, by OshaType and auditFor, for the last 3 
+	 * years of applicable osha data (verified or not)
 	 */
-	public Map<String, OshaAudit> getOshas() {
+	public Map<OshaType, Map<String, OshaAudit>> getOshas() {
 		if (oshas != null)
 			return oshas;
 		
-		oshas = new TreeMap<String, OshaAudit>();
+		oshas = new TreeMap<OshaType, Map<String, OshaAudit>>();
 		
 		for (ContractorAudit audit : getAudits()) {
 			if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM
 				&& audit.getAuditStatus().isActiveSubmitted()) {
 				// Store the corporate OSHA rates into a map for later use
 				for(OshaAudit osha : audit.getOshas())
-					if (osha.isCorporate() && osha.isApplicable())
-						oshas.put(audit.getAuditFor(), osha);
+					if (osha.isCorporate() && osha.isApplicable()) {
+						
+						Map<String, OshaAudit> theMap = oshas.get(osha.getType());
+						
+						if( theMap == null ) {
+							theMap = new TreeMap<String, OshaAudit>();
+							oshas.put(osha.getType(), theMap);
+						}
+						
+						theMap.put(audit.getAuditFor(), osha);
+						
+					}
 			}
 		}
+		for( OshaType oshaType : oshas.keySet() ) {
 		
-		int count = oshas.size();
-		if (count > 3) {
-			System.out.println("Unhandled error getting OSHA logs for contractor " + id);
-			// TODO handle this situation somehow
-			// like remove submitted records, or don't consider years before 3 years ago
-		}
-		if (count > 0) {
-			// Add in the average for the past 3 years
-			OshaAudit avg = new OshaAudit();
-			avg.setLostWorkCasesRate(0);
-			avg.setRecordableTotalRate(0);
+			Map<String, OshaAudit> theseOshas = oshas.get(oshaType);
 			
-			float manHours = 0;
-			float fatalities = 0;
-			float injuries = 0;
-			float lwc = 0;
-			float lwcr = 0;
-			float lwd = 0;
-			float tri = 0;
-			float trir = 0;
-			float rwc = 0;
-			
-			for(String key : oshas.keySet()) {
-				OshaAudit osha = oshas.get(key);
-				avg.setFactor(osha.getFactor());
-				avg.setApplicable(true);
-				avg.setConAudit(osha.getConAudit());
-				
-				manHours += osha.getManHours();
-				fatalities += osha.getFatalities();
-				injuries += osha.getInjuryIllnessCases();
-				lwc += osha.getLostWorkCases();
-				lwcr += osha.getLostWorkCasesRate();
-				lwd += osha.getLostWorkDays();
-				tri += osha.getRecordableTotal();
-				trir += osha.getRecordableTotalRate();
-				rwc += osha.getRestrictedWorkCases();
+			int count = theseOshas.size();
+			if (count > 3) {
+				System.out.println("Unhandled error getting OSHA logs for contractor " + id);
+				// TODO handle this situation somehow
+				// like remove submitted records, or don't consider years before 3 years ago
 			}
-			avg.setManHours(Math.round(manHours / count));
-			avg.setFatalities(Math.round(fatalities / count));
-			avg.setInjuryIllnessCases(Math.round(injuries / count));
-			avg.setLostWorkCases(Math.round(lwc / count));
-			avg.setLostWorkCasesRate(lwcr / count);
-			avg.setLostWorkDays(Math.round(lwd / count));
-			avg.setRecordableTotal(Math.round(tri / count));
-			avg.setRecordableTotalRate(trir / count);
-			avg.setRestrictedWorkCases(Math.round(rwc / count));
-			
-			oshas.put(OshaAudit.AVG, avg);
+			if (count > 0) {
+				// Add in the average for the past 3 years
+				OshaAudit avg = new OshaAudit();
+				avg.setLostWorkCasesRate(0);
+				avg.setRecordableTotalRate(0);
+				
+				float manHours = 0;
+				float fatalities = 0;
+				float injuries = 0;
+				float lwc = 0;
+				float lwcr = 0;
+				float lwd = 0;
+				float tri = 0;
+				float trir = 0;
+				float rwc = 0;
+				
+				for(String key : theseOshas.keySet()) {
+					OshaAudit osha = theseOshas.get(key);
+					avg.setFactor(osha.getFactor());
+					avg.setApplicable(true);
+					avg.setConAudit(osha.getConAudit());
+					
+					manHours += osha.getManHours();
+					fatalities += osha.getFatalities();
+					injuries += osha.getInjuryIllnessCases();
+					lwc += osha.getLostWorkCases();
+					lwcr += osha.getLostWorkCasesRate();
+					lwd += osha.getLostWorkDays();
+					tri += osha.getRecordableTotal();
+					trir += osha.getRecordableTotalRate();
+					rwc += osha.getRestrictedWorkCases();
+				}
+				avg.setManHours(Math.round(manHours / count));
+				avg.setFatalities(Math.round(fatalities / count));
+				avg.setInjuryIllnessCases(Math.round(injuries / count));
+				avg.setLostWorkCases(Math.round(lwc / count));
+				avg.setLostWorkCasesRate(lwcr / count);
+				avg.setLostWorkDays(Math.round(lwd / count));
+				avg.setRecordableTotal(Math.round(tri / count));
+				avg.setRecordableTotalRate(trir / count);
+				avg.setRestrictedWorkCases(Math.round(rwc / count));
+				
+				theseOshas.put(OshaAudit.AVG, avg);
+			}
 		}
 		return oshas;
 	}

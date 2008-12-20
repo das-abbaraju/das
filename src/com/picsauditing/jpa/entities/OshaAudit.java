@@ -307,6 +307,7 @@ public class OshaAudit implements java.io.Serializable {
 		this.trir = rate;
 	}
 
+	
 	@Transient
 	private float calculateRate(int value) {
 		if (isApplicable() && manHours > 0) {

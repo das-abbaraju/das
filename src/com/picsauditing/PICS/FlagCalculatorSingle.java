@@ -1,14 +1,11 @@
 package com.picsauditing.PICS;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
-import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.Certificate;
@@ -17,14 +14,13 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
-import com.picsauditing.jpa.entities.FlagOshaCriterion;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.util.Strings;
 
 /**
  * Determine the Flag color for a single contractor at a given facility. This
@@ -137,16 +133,21 @@ public class FlagCalculatorSingle {
 		debug(" flagColor=" + flagColor);
 
 		// Initialize the flag color to the default Green
-		for (String key : contractor.getOshas().keySet()) {
-			contractor.getOshas().get(key).setFlagColor(FlagColor.Green);
+		for( OshaType oshaType : contractor.getOshas().keySet() ) {
+			Map<String, OshaAudit> theseOshas = contractor.getOshas().get(oshaType);
+			
+			if( theseOshas != null ) {
+				for (OshaAudit oa : theseOshas.values() ) {
+					oa.setFlagColor(FlagColor.Green);
+				}
+			}
 		}
-
 		for (FlagOshaCriteria criteria : operator.getFlagOshaCriteria()) {
 			if (criteria.isRequired()) {
 				debug(" -- osha " + criteria.getFlagColor()); // Red or Amber
 
-				for (String key : contractor.getOshas().keySet()) {
-					OshaAudit osha = contractor.getOshas().get(key);
+				for (String key : contractor.getOshas().get(OshaType.OSHA).keySet()) {
+					OshaAudit osha = contractor.getOshas().get(OshaType.OSHA).get(key);
 					if ((key.equals(OshaAudit.AVG) && criteria.getLwcr().isTimeAverage())
 							|| (!key.equals(OshaAudit.AVG) && !criteria.getLwcr().isTimeAverage())) {
 						if (criteria.getLwcr().isFlagged(osha.getLostWorkCasesRate()))

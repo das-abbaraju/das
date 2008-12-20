@@ -10,16 +10,15 @@ import org.apache.struts2.ServletActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
 
@@ -104,7 +103,9 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 			osha = new OshaAudit();
 			osha.setConAudit(new ContractorAudit());
 			osha.getConAudit().setId(auditID);
-			osha.setType(OshaType.OSHA);
+			
+			AuditCatData auditCatData = catDataDao.find(catDataID);
+			osha.setType(OshaTypeConverter.getTypeFromCategory(auditCatData.getCategory().getId()));
 			osha.setLocation("Division");
 			osha.setCreationDate(new Date());
 			oshaDAO.save(osha);
@@ -152,10 +153,9 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 		osha.setUpdateDate(new Date());
 		oshaDAO.save(osha);
 
-		
 		if (button.equals("toggleVerify")) {
 			if( osha.isCorporate() ){
-				List<AuditCatData> catDataList = catDataDao.findAllAuditCatData(osha.getConAudit().getId(), AuditCategory.OSHA_AUDIT);
+				List<AuditCatData> catDataList = catDataDao.findAllAuditCatData(osha.getConAudit().getId(), OshaTypeConverter.getCategoryFromType(osha.getType()));
 				
 				if( catDataList != null && catDataList.size() > 0 ) {
 					auditPercentCalculator.percentOshaComplete(osha, catDataList.get(0));	

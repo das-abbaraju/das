@@ -54,36 +54,8 @@
 
 <s:iterator value="categories">
 	<s:if test="catDataID == id || (catDataID == 0 && appliesB)">
-		<s:if test="category.id == 151">
-			<h2>Category <s:property value="category.number"/> - <s:property value="category.category"/></h2>
-				<s:if test="mode == 'View'">
-					<s:iterator value="conAudit.oshas">
-						<s:include value="audit_cat_osha2.jsp"></s:include>
-					</s:iterator>
-				</s:if>
-				<s:if test="mode == 'Edit'">
-					<s:if test="permissions.admin || permissions.contractor">
-						<span class="redMain">You must input at least your corporate statistics. To further assist your clients, please
-						enter additional locations that you maintain OSHA/MSHA logs for that may be needed by your clients.<br/>
-						</span>
-					</s:if>
-					<s:if test="permissions.contractor">
-						<span style="font-size: 12px;color:#003768;">Provide the following numbers (excluding subcontractors) using your OSHA/MSHA 300 Forms from the past 3 years:</span><br/>
-					</s:if>
-					<s:if test="catDataID == 0">
-						<s:include value="audit_cat_osha_edit2.jsp"/>
-					</s:if>
-					<s:iterator value="conAudit.oshas">
-						<s:include value="audit_cat_osha_edit2.jsp"></s:include>
-					</s:iterator>
-					<s:if test="catDataID != 0">
-					<s:form action="OshaSave" method="POST" enctype="multipart/form-data">
-						<s:hidden name="auditID"></s:hidden>
-						<s:hidden name="catDataID"></s:hidden>
-						<s:submit name="button" value="Add New Location" cssStyle="padding: 6px;position: relative;left: 380px;"></s:submit>
-					</s:form>
-					</s:if>
-				</s:if>
+		<s:if test="category.id in { 151, 174, 175 }">
+			<s:include value="audit_cat_sha.jsp"></s:include>
 		</s:if>
 		<s:else>
 			<s:if test="category.validSubCategories.size() > 0">
