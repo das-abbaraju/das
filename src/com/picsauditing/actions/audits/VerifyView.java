@@ -25,6 +25,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 
@@ -63,7 +64,7 @@ public class VerifyView extends ContractorActionSupport {
 			}
 			if (conAudit.getAuditType().isAnnualAddendum()) {
 				for (OshaAudit oshaAudit : conAudit.getOshas()) {
-					if (oshaAudit.isCorporate()) {
+					if (oshaAudit.isCorporate() && oshaAudit.getType().equals(OshaType.OSHA)) {
 						oshas.add(oshaAudit);
 					}
 				}
