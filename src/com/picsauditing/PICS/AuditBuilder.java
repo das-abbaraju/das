@@ -298,12 +298,15 @@ public class AuditBuilder {
 					if(answer == null)
 						include = false;
 					else {
-						if ("Yes".equals(answer.getAnswer())) {
-							include = true;
-						}
-
 						if ("No".equals(answer.getAnswer()) && answer.getQuestion().getId() == 2033
 								&& cat.getId() == AuditCategory.LOSS_RUN) {
+							include = true;
+						}
+						else if ("Yes".equals(answer.getAnswer()) && answer.getQuestion().getId() == 2033
+								&& cat.getId() == AuditCategory.EMR) {
+							include = true;
+						}
+						else if ("Yes".equals(answer.getAnswer())) {
 							include = true;
 						}
 					}	
