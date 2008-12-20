@@ -146,24 +146,26 @@ public class FlagCalculatorSingle {
 			if (criteria.isRequired()) {
 				debug(" -- osha " + criteria.getFlagColor()); // Red or Amber
 
-				for (String key : contractor.getOshas().get(OshaType.OSHA).keySet()) {
-					OshaAudit osha = contractor.getOshas().get(OshaType.OSHA).get(key);
-					if ((key.equals(OshaAudit.AVG) && criteria.getLwcr().isTimeAverage())
-							|| (!key.equals(OshaAudit.AVG) && !criteria.getLwcr().isTimeAverage())) {
-						if (criteria.getLwcr().isFlagged(osha.getLostWorkCasesRate()))
-							osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+				if (contractor.getOshas() != null) {
+					for (String key : contractor.getOshas().get(OshaType.OSHA).keySet()) {
+						OshaAudit osha = contractor.getOshas().get(OshaType.OSHA).get(key);
+						if ((key.equals(OshaAudit.AVG) && criteria.getLwcr().isTimeAverage())
+								|| (!key.equals(OshaAudit.AVG) && !criteria.getLwcr().isTimeAverage())) {
+							if (criteria.getLwcr().isFlagged(osha.getLostWorkCasesRate()))
+								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+						}
+						if ((key.equals(OshaAudit.AVG) && criteria.getTrir().isTimeAverage())
+								|| (!key.equals(OshaAudit.AVG) && !criteria.getTrir().isTimeAverage())) {
+							if (criteria.getTrir().isFlagged(osha.getRecordableTotalRate()))
+								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+						}
+						if ((key.equals(OshaAudit.AVG) && criteria.getFatalities().isTimeAverage())
+								|| (!key.equals(OshaAudit.AVG) && !criteria.getFatalities().isTimeAverage())) {
+							if (criteria.getFatalities().isFlagged(osha.getFatalities()))
+								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+						}
+						flagColor = setFlagColor(flagColor, osha.getFlagColor());
 					}
-					if ((key.equals(OshaAudit.AVG) && criteria.getTrir().isTimeAverage())
-							|| (!key.equals(OshaAudit.AVG) && !criteria.getTrir().isTimeAverage())) {
-						if (criteria.getTrir().isFlagged(osha.getRecordableTotalRate()))
-							osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
-					}
-					if ((key.equals(OshaAudit.AVG) && criteria.getFatalities().isTimeAverage())
-							|| (!key.equals(OshaAudit.AVG) && !criteria.getFatalities().isTimeAverage())) {
-						if (criteria.getFatalities().isFlagged(osha.getFatalities()))
-							osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
-					}
-					flagColor = setFlagColor(flagColor, osha.getFlagColor());
 				}
 
 				if (answerOnly && flagColor.equals(FlagColor.Red))
