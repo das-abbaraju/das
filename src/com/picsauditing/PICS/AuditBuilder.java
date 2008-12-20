@@ -302,7 +302,7 @@ public class AuditBuilder {
 							include = true;
 						}
 
-						if ("No".equals(answer.getAnswer()) && answer.getQuestion().getId() == 2071
+						if ("No".equals(answer.getAnswer()) && answer.getQuestion().getId() == 2033
 								&& cat.getId() == AuditCategory.LOSS_RUN) {
 							include = true;
 						}
@@ -382,6 +382,9 @@ public class AuditBuilder {
 			catData.setAudit(conAudit);
 			catData.setApplies(YesNo.Yes);
 			catData.setOverride(false);
+			if(conAudit.getAuditType().isAnnualAddendum())
+				catData.setNumRequired(1);
+			
 			conAudit.getCategories().add(catData);
 		}
 		// Add all remaining N/A categories
