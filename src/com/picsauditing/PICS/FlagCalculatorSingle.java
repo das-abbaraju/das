@@ -146,7 +146,8 @@ public class FlagCalculatorSingle {
 			if (criteria.isRequired()) {
 				debug(" -- osha " + criteria.getFlagColor()); // Red or Amber
 
-				if (contractor.getOshas() != null) {
+				if (contractor.getOshas() != null 
+						&& contractor.getOshas().get(OshaType.OSHA) != null) {
 					for (String key : contractor.getOshas().get(OshaType.OSHA).keySet()) {
 						OshaAudit osha = contractor.getOshas().get(OshaType.OSHA).get(key);
 						if ((key.equals(OshaAudit.AVG) && criteria.getLwcr().isTimeAverage())
