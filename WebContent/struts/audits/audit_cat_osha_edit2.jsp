@@ -68,14 +68,10 @@
 <tr>
 	<th class="label"><s:property value="getText('cad7.'.concat(type))"/></th>
 	<td><s:textfield name="osha.cad7" value="%{cad7}" cssClass="osha"/></td>
-	<td>&nbsp;</td>
-	<s:if test="corporate"><td>&nbsp;</td></s:if>
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('neer.'.concat(type))"/></th>
 	<td><s:textfield name="osha.neer" value="%{neer}" cssClass="osha"/></td>
-	<td>&nbsp;</td>
-	<s:if test="corporate"><td>&nbsp;</td></s:if>
 </tr>
 </s:if>
 <tr>
