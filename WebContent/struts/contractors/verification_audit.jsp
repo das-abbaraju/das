@@ -149,7 +149,7 @@
 
 	<fieldset style="clear: none; float: left; width: 40%; margin: 0.5em;"><legend><span>OSHA</span></legend>
 	<s:iterator value="conAudit.oshas">
-		<s:if test="corporate">
+		<s:if test="corporate && type.name == 'OSHA'">
 		<s:div id="oid_%{id}">
 			<ol>
 				<s:if test="verified == false">
