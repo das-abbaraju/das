@@ -4,7 +4,7 @@
 	<td colspan="3"><s:property value="conAudit.auditFor"/> <s:property value="getText('dataHeader.'.concat(type))"/> <s:property value="location"/> <s:property value="description"/></td>
 	<s:if test="corporate"><td colspan="2" class="label" style="text-align: center; font-size: smaller;">3 year avg.</td></s:if>
 	</tr>
-<s:if test="applicable == false && category.id in {151,174} ">
+<s:if test="applicable == false && category.id in {151,157} ">
 	<tr>
 		<th class="label" colspan="3"><s:property value="contractor.name"/> was EXEMPT from submitting <s:property value="conAudit.auditFor"/> <s:property value="type"/> Logs</th>
 		<s:if test="corporate"><th colspan="2" class="label">&nbsp;</th></s:if>
@@ -58,7 +58,7 @@
 	<td><s:property value="%{format(recordableTotalRate)}"/></td>
 	<s:if test="corporate"><td><s:property value="getAverageOsha( type ).recordableTotal"/></td><td><s:property value="format(getAverageOsha( type ).recordableTotalRate)"/></td></s:if>
 </tr>
-<s:if test="category.id == 175">
+<s:if test="category.id == 158">
 <tr>
 	<th class="label"><s:property value="getText('cad7.'.concat(type))"/></th>
 	<td><s:property value="cad7"/></td>

@@ -16,7 +16,7 @@
 	</s:iterator>
 </s:if>
 <s:if test="mode == 'Edit'">
-	<s:if test="category.id in { 151, 174 }">		
+	<s:if test="category.id in { 151, 157 }">		
 		<s:if test="permissions.contractor">
 			<span style="font-size: 12px;color:#003768;">Provide the following numbers (excluding subcontractors) using your OSHA/MSHA 300 Forms from the past 3 years:</span><br/>
 		</s:if>

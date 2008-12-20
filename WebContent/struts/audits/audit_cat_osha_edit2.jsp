@@ -21,7 +21,7 @@
 </tr>
 </thead>
 <tbody>
-<s:if test="category.id in { 151, 174 }">
+<s:if test="category.id in { 151, 157 }">
 	<tr>
 		<th class="label">Were you exempt from submitting <s:property value="type"/> Logs? &nbsp;&nbsp;&nbsp;&nbsp;
 			<a href="#" onClick="window.open('reasons.html','name','scrollbars=1,resizable=1,width=800,height=600'); return false;">Valid exemptions</a>
@@ -64,7 +64,7 @@
 	<th class="label"><s:property value="getText('totalInjuriesAndIllnesses.'.concat(type))"/></th>
 	<td><s:textfield name="osha.recordableTotal" value="%{recordableTotal}" cssClass="osha"></s:textfield></td>
 </tr>
-<s:if test="category.id == 175">
+<s:if test="category.id == 158">
 <tr>
 	<th class="label"><s:property value="getText('cad7.'.concat(type))"/></th>
 	<td><s:textfield name="osha.cad7" value="%{cad7}" cssClass="osha"/></td>
@@ -102,7 +102,7 @@
 </tfoot>
 </table>
 </s:form>
-<s:if test="permissions.contractor && category.id in {151,174}">
+<s:if test="permissions.contractor && category.id in {151,157}">
 	<table>
 		<tr>
 			<td></td>

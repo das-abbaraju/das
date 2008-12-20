@@ -54,7 +54,7 @@
 
 <s:iterator value="categories">
 	<s:if test="catDataID == id || (catDataID == 0 && appliesB)">
-		<s:if test="category.id in { 151, 174, 175 }">
+		<s:if test="category.id in { 151, 157, 158 }">
 			<s:include value="audit_cat_sha.jsp"></s:include>
 		</s:if>
 		<s:else>
