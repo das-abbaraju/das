@@ -2,7 +2,7 @@
 <!DOCTYPE project SYSTEM "../dtd/Project.dtd">
 
 <project name="PICS" default="test">
-	<property name="login.username" value="gjepsen" />
+	<property name="login.username" value="michaelm" />
 	<target name="test">
 		<webtest name="Admin Billing">
 			&config;

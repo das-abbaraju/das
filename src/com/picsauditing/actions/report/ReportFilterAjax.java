@@ -28,23 +28,24 @@ public class ReportFilterAjax extends PicsActionSupport {
 			wizardSession.setListTypes(listType);
 		listType = wizardSession.getListType();
 		
-
-		if (listType.equals(ListType.Contractor)) {
-			ReportFilterContractor filter = wizardSession.getContractorFilter();
-			filter.setDestinationAction("ContractorList");
-			filter.setVisible("Y"); // default to only active contractors
-			this.filter = filter;
-		}
-		if (listType.equals(ListType.Audit)) {
-			ReportFilterAudit filter = wizardSession.getAuditFilter();
-			filter.setDestinationAction("ReportAuditList");
-			filter.setVisible("Y"); // default to only active contractors
-			this.filter = filter;
-		}
-		if (listType.equals(ListType.User)) {
-			ReportFilterUser filter = new ReportFilterUser();
-			filter.setDestinationAction("UserList");
-			this.filter = filter;
+		if (listType != null) {
+			if (listType.equals(ListType.Contractor)) {
+				ReportFilterContractor filter = wizardSession.getContractorFilter();
+				filter.setDestinationAction("ContractorList");
+				filter.setVisible("Y"); // default to only active contractors
+				this.filter = filter;
+			}
+			if (listType.equals(ListType.Audit)) {
+				ReportFilterAudit filter = wizardSession.getAuditFilter();
+				filter.setDestinationAction("ReportAuditList");
+				filter.setVisible("Y"); // default to only active contractors
+				this.filter = filter;
+			}
+			if (listType.equals(ListType.User)) {
+				ReportFilterUser filter = new ReportFilterUser();
+				filter.setDestinationAction("UserList");
+				this.filter = filter;
+			}
 		}
 		if (filter == null) {
 			filter = new ReportFilter();
