@@ -1,13 +1,13 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.Inputs;
+import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -58,14 +58,6 @@ public class AuditCategoryAction extends AuditActionSupport {
 	private AuditCategoryDAO auditCategoryDAO;
 	private OshaAuditDAO oshaAuditDAO;
 	
-	protected static Map<Integer, OshaType> typeMapping = new HashMap<Integer, OshaType>();
-	
-	static {
-		typeMapping.put(AuditCategory.OSHA_AUDIT, OshaType.OSHA);
-		typeMapping.put(AuditCategory.MSHA, OshaType.MSHA);
-		typeMapping.put(AuditCategory.CANADIAN_STATISTICS, OshaType.COHS);
-	}
-
 	public AuditCategoryAction(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao,
@@ -181,7 +173,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 		if (currentCategory != null) {
 
 			
-			if (typeMapping.get( currentCategory.getCategory().getId() ) != null ) {
+			if (OshaTypeConverter.getTypeFromCategory( currentCategory.getCategory().getId() ) != null ) {
 				boolean hasOshaCorporate = false;
 				int percentComplete = 0;
 				for (OshaAudit osha : conAudit.getOshas()) {
@@ -197,7 +189,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 					OshaAudit oshaAudit = new OshaAudit();
 					oshaAudit.setConAudit(conAudit);
 					oshaAudit.setCorporate(true);
-					oshaAudit.setType(typeMapping.get(currentCategory.getCategory().getId()));
+					oshaAudit.setType(OshaTypeConverter.getTypeFromCategory(currentCategory.getCategory().getId()));
 					oshaAuditDAO.save(oshaAudit);
 					conAudit.getOshas().add(oshaAudit);
 
@@ -399,10 +391,8 @@ public class AuditCategoryAction extends AuditActionSupport {
 	}
 	
 	public boolean matchesType( int categoryId, OshaType oa ) {
-		if( typeMapping.get(categoryId) == null || oa == null) return false;
-
-		if( oa == typeMapping.get(categoryId) ) return true;
-		
+		if( OshaTypeConverter.getTypeFromCategory(categoryId) == null || oa == null) return false;
+		if( oa == OshaTypeConverter.getTypeFromCategory(categoryId) ) return true;
 		return false;
 	}
 	
