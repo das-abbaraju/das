@@ -12,6 +12,7 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 
 @SuppressWarnings("serial")
 public class ManageAuditType extends PicsActionSupport implements Preparable {
@@ -156,6 +157,10 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 	public AuditType getAuditType() {
 		return auditType;
+	}
+	
+	public AuditTypeClass[] getClassList() {
+		return AuditTypeClass.values();
 	}
 
 	public void setAuditType(AuditType auditType) {

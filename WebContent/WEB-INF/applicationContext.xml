@@ -11,6 +11,7 @@
 	<bean id="SpringUtils" class="com.picsauditing.util.SpringUtils" />
 	
 	<bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO"/>
+	<bean id="AccountNameDAO" class="com.picsauditing.dao.AccountNameDAO"/>
 	<bean id="AppPropertyDAO" class="com.picsauditing.dao.AppPropertyDAO"/>
 	<bean id="AuditBuilder" class="com.picsauditing.PICS.AuditBuilder" scope="prototype"/>
 	<bean id="AuditDataDAO" class="com.picsauditing.dao.AuditDataDAO"/>

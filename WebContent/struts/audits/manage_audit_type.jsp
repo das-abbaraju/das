@@ -12,7 +12,6 @@
 <body>
 <s:include value="manage_audit_type_breadcrumbs.jsp" />
 
-
 <s:if test="auditType.auditTypeID > 0">
 	<div><a href="AuditOperator.action?aID=<s:property value="auditType.auditTypeID"/>">Edit Operator Access</a></div>
 </s:if>
@@ -31,6 +30,9 @@
 						</li>
 						<li><label>Name:</label>
 							<s:textfield name="auditType.auditName"></s:textfield>
+						</li>
+						<li><label>Class:</label>
+							<s:select list="classList" name="auditType.classType"></s:select>
 						</li>
 						<li><label>Description:</label>
 							<s:textfield name="auditType.description"></s:textfield>
