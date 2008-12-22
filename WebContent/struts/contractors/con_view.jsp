@@ -12,7 +12,7 @@
 	<s:if test="contractor.lastPayment != null">They last paid on <s:property value="contractor.lastPayment"/>.</s:if>
 	</div>
 </s:if>
-<s:elseif test="contractor.paymentOverdue">
+<s:elseif test="contractor.paymentOverdue && (permissions.admin || permissions.contractor)">
 	<div id="alert">This contractor has an outstanding invoice due</div>
 </s:elseif>
 <s:if test="permissions.admin && !contractor.mustPayB">
