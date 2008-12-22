@@ -2,7 +2,9 @@ package com.picsauditing.jpa.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -57,6 +61,7 @@ public class Account implements java.io.Serializable {
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
+	protected List<AccountName> names = new ArrayList<AccountName>();
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -299,6 +304,12 @@ public class Account implements java.io.Serializable {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+	
+	@OneToMany(mappedBy = "account")
+	@OrderBy("name")
+	public List<AccountName> getNames() {
+		return names;
 	}
 	
 	@Transient
