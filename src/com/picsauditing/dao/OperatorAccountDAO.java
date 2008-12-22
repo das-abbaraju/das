@@ -131,16 +131,16 @@ public class OperatorAccountDAO extends PicsDAO {
 
 		Query query = em.createQuery("SELECT count(*) FROM ContractorAudit ca WHERE ca.requestingOpAccount = ?");
 		query.setParameter(1, operatorAccount);
-		if ((Integer) query.getSingleResult() > 0)
+		if (Integer.parseInt(query.getSingleResult().toString()) > 0)
 			return false;
 
 		query = em.createQuery("SELECT count(*) FROM ContractorOperator co WHERE co.operatorAccount = ?");
 		query.setParameter(1, operatorAccount);
-		if ((Integer) query.getSingleResult() > 0)
+		if (Integer.parseInt(query.getSingleResult().toString()) > 0)
 			return false;
 
 		query = em.createQuery("SELECT count(*) FROM Facility f WHERE f.corporate.id = " + opID);
-		if ((Integer) query.getSingleResult() > 0)
+		if (Integer.parseInt(query.getSingleResult().toString()) > 0)
 			return false;
 
 		query = em.createQuery("DELETE FROM FlagQuestionCriteria fq WHERE fq.operatorAccount.id = " + opID);
