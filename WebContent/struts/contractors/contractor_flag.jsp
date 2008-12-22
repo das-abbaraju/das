@@ -165,52 +165,61 @@
 				<td></td>
 			</tr>
 		</thead>
-		<s:iterator value="contractor.oshas">
-			<tr class="<s:property value="value.flagColor" />">
-				<td class="center"><s:property
-					value="value.flagColor.smallIcon" escape="false" /></td>
-				<td><s:property value="key" /></td>
-				<s:if test="oshaFatalitiesUsed">
-					<td class="right"><s:property value="value.fatalities" /></td>
-					<td style="vertical-align: middle;">
-						<s:iterator value="co.operatorAccount.flagOshaCriteria">
-							<s:if test="fatalities.required && !key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG)">
-								&gt; <s:property value="fatalities.hurdle"/> = <s:property value="flagColor"/><br />
-							</s:if>
-						</s:iterator>
-					</td>
-				</s:if>
-				<s:if test="oshaLwcrUsed">
-					<td class="right"><s:property value="%{new java.text.DecimalFormat('#,##0.000').format(value.lostWorkCasesRate)}" /></td>
-					<td style="vertical-align: middle;">
-						<s:iterator value="co.operatorAccount.flagOshaCriteria">
-						<s:if test="lwcr.required">
-							<s:if test="(key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && lwcr.timeAverage) || (!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !lwcr.timeAverage)">
-								&gt; <s:property value="lwcr.hurdle"/> = <s:property value="flagColor"/><br />
-							</s:if>
+		<s:iterator value="contractor.oshas.entrySet()">
+			<s:iterator value="value">
+					<tr class="<s:property value="value.flagColor" />">
+						<td class="center"><s:property
+							value="value.flagColor.smallIcon" escape="false" /></td>
+						<td><s:property value="key" /></td>
+						<s:if test="oshaFatalitiesUsed">
+							<td class="right"><s:property value="value.fatalities" /></td>
+							<td style="vertical-align: middle;"><s:iterator
+								value="co.operatorAccount.flagOshaCriteria">
+								<s:if
+									test="fatalities.required && !key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG)">
+								&gt; <s:property value="fatalities.hurdle" /> = <s:property
+										value="flagColor" />
+									<br />
+								</s:if>
+							</s:iterator></td>
 						</s:if>
-						</s:iterator>
-					</td>
-				</s:if>
-				<s:if test="oshaTrirUsed">
-					<td class="right"><s:property
-						value="%{new java.text.DecimalFormat('#,##0.000').format(value.recordableTotalRate)}" /></td>
-					<td style="vertical-align: middle;">
-						<s:iterator value="co.operatorAccount.flagOshaCriteria">
-						<s:if test="trir.required">
-							<s:if test="(key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && trir.timeAverage) || (!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !trir.timeAverage)">
-	 							&gt; <s:property value="trir.hurdle"/> = <s:property value="flagColor"/><br />
-	 						</s:if>
+						<s:if test="oshaLwcrUsed">
+							<td class="right"><s:property
+								value="%{new java.text.DecimalFormat('#,##0.000').format(value.lostWorkCasesRate)}" /></td>
+							<td style="vertical-align: middle;"><s:iterator
+								value="co.operatorAccount.flagOshaCriteria">
+								<s:if test="lwcr.required">
+									<s:if
+										test="(key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && lwcr.timeAverage) || (!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !lwcr.timeAverage)">
+								&gt; <s:property value="lwcr.hurdle" /> = <s:property
+											value="flagColor" />
+										<br />
+									</s:if>
+								</s:if>
+							</s:iterator></td>
 						</s:if>
-						</s:iterator>
-					</td>
-				</s:if>
-				<td>
-					<s:if test="!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG)">
-						<a href="AuditCat.action?auditID=<s:property value="value.conAudit.id"/>&catID=151">Show</a>
-					</s:if>
-				</td>
-			</tr>
+						<s:if test="oshaTrirUsed">
+							<td class="right"><s:property
+								value="%{new java.text.DecimalFormat('#,##0.000').format(value.recordableTotalRate)}" /></td>
+							<td style="vertical-align: middle;"><s:iterator
+								value="co.operatorAccount.flagOshaCriteria">
+								<s:if test="trir.required">
+									<s:if
+										test="(key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && trir.timeAverage) || (!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !trir.timeAverage)">
+	 							&gt; <s:property value="trir.hurdle" /> = <s:property
+											value="flagColor" />
+										<br />
+									</s:if>
+								</s:if>
+							</s:iterator></td>
+						</s:if>
+						<td><s:if
+							test="!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG)">
+							<a
+								href="AuditCat.action?auditID=<s:property value="value.conAudit.id"/>&catID=151">Show</a>
+						</s:if></td>
+					</tr>
+				</s:iterator>
 		</s:iterator>
 	</table>
 </s:if>
