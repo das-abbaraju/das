@@ -71,7 +71,7 @@ sets the highest standards possible in regard to contractor qualifications as th
 						<tr>
                         	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">12/01/08</span>BASF Joins PICS</span><br>
                             <br> 
-                            	BASF is the world's leading chemical company: The Chemical Company. Its portfolio ranges from oil and gas to chemicals, plastics, performance products, agricultural products and fine chemicals. As a reliable partner BASF helps its customers in virtually all industries to be more successful. With its high-value products and intelligent solutions, BASF plays an important role in finding answers to global challenges such as climate protection, energy efficiency, nutrition and mobility. BASF has more than 95,000 employees and posted sales of almost &euro;58 billion in 2007.</td></tr>
+                            	BASF is the world's leading chemical company. Their portfolio ranges from oil and gas to chemicals, plastics, performance products, agricultural products and fine chemicals. As a reliable partner BASF helps its customers in virtually all industries to be more successful. With its high-value products and intelligent solutions, BASF plays an important role in finding answers to global challenges such as climate protection, energy efficiency, nutrition and mobility. BASF has more than 95,000 employees and posted sales of almost &euro;58 billion in 2007.</td></tr>
 				  		<tr>
                         	<td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">09/23/08</span>2008 NSC Annual Congress & Expo</span><br>
                             <br> 
