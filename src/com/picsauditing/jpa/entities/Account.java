@@ -312,6 +312,10 @@ public class Account implements java.io.Serializable {
 		return names;
 	}
 	
+	public void setNames(List<AccountName> names) {
+		this.names = names;
+	}
+	
 	@Transient
 	public boolean isContractor() {
 		return "Contractor".equals(type);
