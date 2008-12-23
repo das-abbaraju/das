@@ -41,10 +41,10 @@
 			<s:textfield name="question.expirationDate" value="%{ question.expirationDate && getText('short_dates', {question.expirationDate})}"/>
 		</li>
 		<li><label>Added:</label>
-			<s:date name="question.dateCreated" />
+			<s:date name="question.creationDate" />
 		</li>
 		<li><label>Updated:</label>
-			<s:date name="question.lastModified" />
+			<s:date name="question.updateDate" />
 		</li>	
 		<li><label>Column Header:</label>
 			<s:textfield name="question.columnHeader" size="20" maxlength="30"/>
@@ -73,6 +73,12 @@
 		<li><label>Question Type:</label>
 			<s:select list="questionTypes" name="question.questionType" />
 		</li>
+		<li><label>Allow Multiple Answers:</label>
+			<s:checkbox name="question.allowMultipleAnswers" />
+		</li>
+		<li><label>Parent Question:</label>
+			<s:select list="parentQuestionList" headerKey="" headerValue="" listKey="id" listValue="question" name="question.parentQuestion.id"></s:select>
+		</li>		
 		<li><label>Title:</label>
 			<s:textfield name="question.title" size="65"/>
 		</li>																																									

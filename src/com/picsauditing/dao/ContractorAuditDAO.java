@@ -74,7 +74,7 @@ public class ContractorAuditDAO extends PicsDAO {
 
 			oCAudit.getData().clear();
 			for (AuditData auditData : auList) {
-				auditData.setDataID(0);
+				auditData.setId(0);
 				auditData.setAudit(oCAudit);
 			}
 			oCAudit.getData().addAll(auList);

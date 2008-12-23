@@ -28,9 +28,10 @@ public class AuditDataSave extends AuditActionSupport {
 	private AuditPercentCalculator auditPercentCalculator;
 
 	private boolean toggleVerify = false;
-		
-	public AuditDataSave(ContractorAccountDAO accountDAO,AuditDataDAO dao, AuditCategoryDataDAO catDataDao,
-			AuditPercentCalculator auditPercentCalculator, AuditQuestionDAO questionDao, ContractorAuditDAO auditDao, OshaAuditDAO oshaAuditDAO) {
+
+	public AuditDataSave(ContractorAccountDAO accountDAO, AuditDataDAO dao, AuditCategoryDataDAO catDataDao,
+			AuditPercentCalculator auditPercentCalculator, AuditQuestionDAO questionDao, ContractorAuditDAO auditDao,
+			OshaAuditDAO oshaAuditDAO) {
 		super(accountDAO, auditDao, catDataDao, dao);
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.questionDao = questionDao;
@@ -56,8 +57,7 @@ public class AuditDataSave extends AuditActionSupport {
 
 			if (newCopy == null) {
 				// insert mode
-				auditData.setCreationDate(new Date());
-				auditData.setCreatedBy(this.getUser());
+				auditData.setAuditColumns(getUser());
 				auditDataDao.save(auditData);
 			} else {
 				// update mode
@@ -67,10 +67,10 @@ public class AuditDataSave extends AuditActionSupport {
 					// verifying
 					if (auditData.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer())) {
 
-						if( !toggleVerify ) {
+						if (!toggleVerify) {
 							newCopy.setDateVerified(null);
 						}
-						
+
 						newCopy.setAnswer(auditData.getAnswer());
 
 						if (newCopy.getAudit().getAuditStatus().equals(AuditStatus.Submitted)) {
@@ -78,7 +78,7 @@ public class AuditDataSave extends AuditActionSupport {
 
 							AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
 
-							if( !toggleVerify ) {
+							if (!toggleVerify) {
 								if (question.getOkAnswer().indexOf(auditData.getAnswer()) == -1) {
 									newCopy.setDateVerified(null);
 									newCopy.setAuditor(null);
@@ -95,11 +95,10 @@ public class AuditDataSave extends AuditActionSupport {
 
 				if (toggleVerify == true) {
 
-					if( newCopy.isVerified() ) {
+					if (newCopy.isVerified()) {
 						newCopy.setDateVerified(null);
 						newCopy.setAuditor(null);
-					}
-					else {
+					} else {
 						newCopy.setDateVerified(new Date());
 						newCopy.setAuditor(getUser());
 					}
@@ -121,31 +120,31 @@ public class AuditDataSave extends AuditActionSupport {
 			// hook to calculation
 			// read/update the ContractorAudit and AuditCatData
 			AuditCatData catData = null;
-			
+
 			if (catDataID > 0) {
 				catData = catDataDao.find(catDataID);
-			}
-			else if( toggleVerify ) {
-				List<AuditCatData> catDatas = catDataDao.findAllAuditCatData(auditData.getAudit().getId(), newCopy.getQuestion().getSubCategory().getCategory().getId());
+			} else if (toggleVerify) {
+				List<AuditCatData> catDatas = catDataDao.findAllAuditCatData(auditData.getAudit().getId(), newCopy
+						.getQuestion().getSubCategory().getCategory().getId());
 
-				if( catDatas != null && catDatas.size() != 0 ) {
+				if (catDatas != null && catDatas.size() != 0) {
 					catData = catDatas.get(0);
 				}
 			}
-			
-			if( catData != null ) {
+
+			if (catData != null) {
 				auditPercentCalculator.updatePercentageCompleted(catData);
 				conAudit = auditDao.find(auditData.getAudit().getId());
 				auditPercentCalculator.percentCalculateComplete(conAudit);
 			}
-			
+
 			auditData = newCopy;
 			output = "Saved";
 		} catch (Exception e) {
 			e.printStackTrace();
 			output = "An Error has Occurred";
 		}
-		
+
 		return SUCCESS;
 	}
 
@@ -169,7 +168,6 @@ public class AuditDataSave extends AuditActionSupport {
 		this.toggleVerify = toggleVerify;
 	}
 
-	
 	public ArrayList<String> getEmrProblems() {
 		ArrayList<String> list = new ArrayList<String>();
 		list.add("");

@@ -46,7 +46,7 @@ public class AuditDataDAOTest {
 		questions.add(48);
 		Map<Integer, AuditData> existingData = auditdataDAO.findAnswers(3259, questions);
 		for (Integer key : existingData.keySet()) {
-			auditdataDAO.remove(existingData.get(key).getDataID());
+			auditdataDAO.remove(existingData.get(key).getId());
 		}
 
 		// Create a new AuditData object and save it
@@ -55,7 +55,6 @@ public class AuditDataDAOTest {
 		auditdata.getAudit().setId(3259);
 		auditdata.setQuestion(new AuditQuestion());
 		auditdata.getQuestion().setId(48);
-		auditdata.setNum(300);
 		auditdata.setAnswer("junit testing");
 		auditdata.setAuditor(new User());
 		auditdata.getAuditor().setId(744);
@@ -70,8 +69,8 @@ public class AuditDataDAOTest {
 		HashMap<Integer, AuditData> testFindAnswers = (HashMap<Integer, AuditData>) auditdataDAO.findAnswers(3259,
 				questionid);
 		assertEquals("junit testing", testFindAnswers.get(48).getAnswer());
-		auditdataDAO.remove(auditdata.getDataID());
-		AuditData auditdata1 = auditdataDAO.find(auditdata.getDataID());
+		auditdataDAO.remove(auditdata.getId());
+		AuditData auditdata1 = auditdataDAO.find(auditdata.getId());
 		assertNull(auditdata1);
 	}
 
@@ -79,7 +78,6 @@ public class AuditDataDAOTest {
 	public void testFind() {
 		AuditData auditdata = auditdataDAO.find(15);
 		assertEquals("Yes", auditdata.getAnswer());
-		assertEquals(0, auditdata.getNum());
 	}
 
 	// @Test

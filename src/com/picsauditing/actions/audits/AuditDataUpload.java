@@ -55,7 +55,7 @@ public class AuditDataUpload extends AuditActionSupport {
 			data.setAudit(conAudit);
 		}
 		question.setAnswer(data);
-		int dataID = data.getDataID();
+		int dataID = data.getId();
 		
 		//String fileName = getFileName();
 		//String folderName = AuditQuestion.filesFolder + "/qID_" + question.getId();
@@ -84,7 +84,7 @@ public class AuditDataUpload extends AuditActionSupport {
 					return INPUT;
 				}
 				
-				auditDataDao.remove(data.getDataID());
+				auditDataDao.remove(data.getId());
 				addActionMessage("Successfully removed file");
 			}
 			if (button.startsWith("Upload")) {

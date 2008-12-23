@@ -82,4 +82,18 @@ public abstract class BaseTable {
 		if (creationDate == null)
 			creationDate = updateDate;
 	}
+	
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		try {
+			BaseTable other = (BaseTable) obj;
+			return id == other.getId();
+		} catch (Exception e) {
+			System.out.println("Error comparing BaseTable objects: " + e.getMessage());
+			return false;
+		}
+	}
 }

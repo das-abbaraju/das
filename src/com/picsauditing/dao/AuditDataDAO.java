@@ -19,7 +19,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 @SuppressWarnings("unchecked")
 public class AuditDataDAO extends PicsDAO {
 	public AuditData save(AuditData o) {
-		if (o.getDataID() == 0) {
+		if (o.getId() == 0) {
 			em.persist(o);
 		} else {
 			o = em.merge(o);
@@ -105,6 +105,21 @@ public class AuditDataDAO extends PicsDAO {
 			Query query = em.createQuery("FROM AuditData d " + "WHERE audit.id = ? AND question.id =? ");
 			query.setParameter(1, auditId);
 			query.setParameter(2, questionId);
+			return (AuditData) query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+	}
+	
+	public AuditData findAnswerToQuestion(int auditId, int questionId, int parentId) {
+		if (parentId == 0)
+			return findAnswerToQuestion(auditId, questionId);
+		
+		try {
+			Query query = em.createQuery("FROM AuditData d " + "WHERE audit.id = ? AND question.id = ? AND parentAnswer.id = ? ");
+			query.setParameter(1, auditId);
+			query.setParameter(2, questionId);
+			query.setParameter(3, parentId);
 			return (AuditData) query.getSingleResult();
 		} catch (NoResultException e) {
 			return null;
@@ -211,7 +226,7 @@ public class AuditDataDAO extends PicsDAO {
 		query.setParameter(1, conID);
 		for (Object ad : query.getResultList()) {
 			AuditData auditData = (AuditData) ad;
-			data.put(auditData.getDataID(), auditData);
+			data.put(auditData.getId(), auditData);
 		}
 		return data;
 	}

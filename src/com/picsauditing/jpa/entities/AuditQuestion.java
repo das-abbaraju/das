@@ -1,7 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.util.Date;
 import java.util.List;
 
@@ -10,8 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -28,21 +24,18 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "pqfquestions")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
-public class AuditQuestion implements java.io.Serializable, Comparable<AuditQuestion> {
+public class AuditQuestion extends BaseTable implements java.io.Serializable, Comparable<AuditQuestion> {
 	static public final int EMR = 2034;
 	static public final int EMR_AVG = 0;
 	static public final int MANUAL_PQF = 1331;
 
-	static public final String[] TYPE_ARRAY = { "Check Box", "Country", "Date", "Decimal Number", 
-			"File", "FileCertificate", "Industry", "License", "Main Work", "Manual", "Money", 
-			"Office Location", "Radio", "Service", "State", "Text", "Text Area", "Yes/No", "Yes/No/NA" };
+	static public final String[] TYPE_ARRAY = { "Check Box", "Country", "Date", "Decimal Number", "File",
+			"FileCertificate", "Industry", "License", "Main Work", "Manual", "Money", "Office Location", "Radio",
+			"Service", "State", "Text", "Text Area", "Yes/No", "Yes/No/NA" };
 
-	private int questionID;
 	private AuditSubCategory subCategory;
 	private int number;
 	private String question;
-	private Date dateCreated = new Date();
-	private Date lastModified = new Date();
 	private Date effectiveDate = new Date();
 	private Date expirationDate;
 	private YesNo hasRequirement = YesNo.No;
@@ -50,6 +43,7 @@ public class AuditQuestion implements java.io.Serializable, Comparable<AuditQues
 	private String requirement;
 	private YesNo isRedFlagQuestion = YesNo.No;
 	private String isRequired;
+	private AuditQuestion parentQuestion = null;
 	private AuditQuestion dependsOnQuestion = null;
 	private String dependsOnAnswer;
 	private String questionType;
@@ -57,6 +51,7 @@ public class AuditQuestion implements java.io.Serializable, Comparable<AuditQues
 	private YesNo isVisible = YesNo.Yes;
 	private YesNo isGroupedWithPrevious = YesNo.No;
 	private String columnHeader;
+	private boolean allowMultipleAnswers = false;
 	private String linkUrl1;
 	private String linkText1;
 	private String linkUrl2;
@@ -73,19 +68,9 @@ public class AuditQuestion implements java.io.Serializable, Comparable<AuditQues
 	protected List<AuditQuestionOperatorAccount> operator;
 	protected List<AuditQuestionOption> options;
 	protected AuditData answer;
+	protected List<AuditData> tuples;
 	private String criteria;
 
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name="questionID", nullable=false)
-	public int getId() {
-		return this.questionID;
-	}
-
-	public void setId(int questionID) {
-		this.questionID = questionID;
-	}
-	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "subCategoryID", nullable = false)
 	public AuditSubCategory getSubCategory() {
@@ -187,16 +172,6 @@ public class AuditQuestion implements java.io.Serializable, Comparable<AuditQues
 
 	public void setIsVisible(YesNo isVisible) {
 		this.isVisible = isVisible;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "lastModified", nullable = false, length = 10)
-	public Date getLastModified() {
-		return this.lastModified;
-	}
-
-	public void setLastModified(Date lastModified) {
-		this.lastModified = lastModified;
 	}
 
 	@Column(name = "title", nullable = false, length = 250)
@@ -314,15 +289,6 @@ public class AuditQuestion implements java.io.Serializable, Comparable<AuditQues
 	}
 
 	@Temporal(TemporalType.DATE)
-	public Date getDateCreated() {
-		return this.dateCreated;
-	}
-
-	public void setDateCreated(Date dateCreated) {
-		this.dateCreated = dateCreated;
-	}
-
-	@Temporal(TemporalType.DATE)
 	public Date getEffectiveDate() {
 		return effectiveDate;
 	}
@@ -358,13 +324,36 @@ public class AuditQuestion implements java.io.Serializable, Comparable<AuditQues
 		this.operator = operator;
 	}
 
+	public boolean isAllowMultipleAnswers() {
+		return allowMultipleAnswers;
+	}
+
+	public void setAllowMultipleAnswers(boolean allowMultipleAnswers) {
+		this.allowMultipleAnswers = allowMultipleAnswers;
+	}
+
 	@Transient
 	public AuditData getAnswer() {
+		if (isAllowMultipleAnswers()) {
+			throw new RuntimeException("use getTuples()");
+		}
 		return answer;
 	}
 
 	public void setAnswer(AuditData answer) {
 		this.answer = answer;
+	}
+	
+	@Transient
+	public List<AuditData> getTuples() {
+		if (!isAllowMultipleAnswers()) {
+			throw new RuntimeException("use getAnswer()");
+		}
+		return tuples;
+	}
+	
+	public void setTuples(List<AuditData> tuples) {
+		this.tuples = tuples;
 	}
 
 	@Transient
@@ -405,7 +394,7 @@ public class AuditQuestion implements java.io.Serializable, Comparable<AuditQues
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
-		result = PRIME * result + questionID;
+		result = PRIME * result + id;
 		return result;
 	}
 
@@ -418,7 +407,7 @@ public class AuditQuestion implements java.io.Serializable, Comparable<AuditQues
 		if (getClass() != obj.getClass())
 			return false;
 		final AuditQuestion other = (AuditQuestion) obj;
-		if (questionID != other.questionID)
+		if (id != other.getId())
 			return false;
 		return true;
 	}
@@ -465,15 +454,15 @@ public class AuditQuestion implements java.io.Serializable, Comparable<AuditQues
 
 	@Override
 	public int compareTo(AuditQuestion other) {
-		if( other == null ) {
+		if (other == null) {
 			return 1;
 		}
-		
+
 		int cmp = getSubCategory().compareTo(other.getSubCategory());
-		
-		if( cmp != 0 ) 
+
+		if (cmp != 0)
 			return cmp;
 
-		return new Integer( getNumber() ).compareTo(new Integer(other.getNumber()));
+		return new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
 	}
 }

@@ -1,5 +1,6 @@
 package com.picsauditing.actions.auditType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.PICS.DateBean;
@@ -19,11 +20,8 @@ public class ManageQuestion extends ManageSubCategory {
 	protected AuditDataDAO auditDataDAO;
 	private String dependsOnQuestionID = null;
 
-	public ManageQuestion(AuditTypeDAO auditTypeDao,
-			AuditCategoryDAO auditCategoryDao,
-			AuditSubCategoryDAO auditSubCategoryDao,
-			AuditQuestionDAO auditQuestionDao,
-			AuditDataDAO auditDataDAO) {
+	public ManageQuestion(AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
+			AuditSubCategoryDAO auditSubCategoryDao, AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO) {
 		super(auditTypeDao, auditCategoryDao, auditSubCategoryDao);
 		this.auditQuestionDao = auditQuestionDao;
 		this.auditDataDAO = auditDataDAO;
@@ -40,14 +38,14 @@ public class ManageQuestion extends ManageSubCategory {
 	protected void loadParent(int id) {
 		super.load(id);
 	}
-	
+
 	protected void load(AuditQuestion o) {
 		this.question = o;
 		if (question.getDependsOnQuestion() != null)
 			dependsOnQuestionID = Integer.toString(question.getDependsOnQuestion().getId());
 		load(question.getSubCategory());
 	}
-	
+
 	public boolean save() {
 		if (question != null) {
 			if (question.getQuestion() == null || question.getQuestion().length() == 0) {
@@ -56,27 +54,26 @@ public class ManageQuestion extends ManageSubCategory {
 			}
 			if (question.getNumber() == 0) {
 				int maxID = 0;
-				for(AuditQuestion sibling : subCategory.getQuestions()) {
+				for (AuditQuestion sibling : subCategory.getQuestions()) {
 					if (sibling.getNumber() > maxID)
 						maxID = sibling.getNumber();
 				}
 				question.setNumber(maxID + 1);
 			}
-			question.setLastModified(new java.util.Date());
-			
-			if (question.getDateCreated() == null)
-				question.setDateCreated(new java.util.Date());
+			question.setAuditColumns(this.getUser());
+
 			if (question.getEffectiveDate() == null)
-				question.setEffectiveDate(question.getDateCreated());
+				question.setEffectiveDate(question.getCreationDate());
 			if (question.getExpirationDate() == null)
 				question.setExpirationDate(DateBean.getEndOfTime());
-			
+
 			if (Strings.isEmpty(dependsOnQuestionID) || dependsOnQuestionID.equals("0"))
 				question.setDependsOnQuestion(null);
 			else {
 				try {
 					int questionId = Integer.parseInt(dependsOnQuestionID);
-					if (question.getDependsOnQuestion() == null || questionId != question.getDependsOnQuestion().getId()) {
+					if (question.getDependsOnQuestion() == null
+							|| questionId != question.getDependsOnQuestion().getId()) {
 						question.setDependsOnQuestion(new AuditQuestion());
 						question.getDependsOnQuestion().setId(questionId);
 					}
@@ -85,17 +82,17 @@ public class ManageQuestion extends ManageSubCategory {
 					return false;
 				}
 			}
-			
+
 			subCategory.getQuestions().add(question);
 			question = auditQuestionDao.save(question);
 			id = question.getSubCategory().getId();
-			
+
 			recalculateCategory();
 			return true;
 		}
 		return false;
 	}
-	
+
 	protected boolean delete() {
 		try {
 			// TODO check to see if AuditData exists for this question first
@@ -107,7 +104,7 @@ public class ManageQuestion extends ManageSubCategory {
 			subCategory.getQuestions().remove(question);
 			id = question.getSubCategory().getId();
 			auditQuestionDao.remove(question.getId());
-			
+
 			recalculateCategory();
 			return true;
 		} catch (Exception e) {
@@ -115,14 +112,14 @@ public class ManageQuestion extends ManageSubCategory {
 		}
 		return false;
 	}
-	
+
 	private void recalculateCategory() {
 		if (category != null && category.getId() > 0) {
 			// Renumber the category
 			int numQuestions = 0;
 			int numRequired = 0;
-			for(AuditSubCategory subCat : category.getSubCategories()) {
-				for(AuditQuestion tempQuestion : subCat.getQuestions()) {
+			for (AuditSubCategory subCat : category.getSubCategories()) {
+				for (AuditQuestion tempQuestion : subCat.getQuestions()) {
 					numQuestions++;
 					if (tempQuestion.isRequired())
 						numRequired++;
@@ -145,5 +142,18 @@ public class ManageQuestion extends ManageSubCategory {
 	public void setDependsOnQuestionID(String dependsOnQuestionID) {
 		this.dependsOnQuestionID = dependsOnQuestionID;
 	}
-	
+
+	/**
+	 * 
+	 * @return A list of questions in this category that come before and are
+	 *         enabled for "multiple" capability
+	 */
+	public List<AuditQuestion> getParentQuestionList() {
+		List<AuditQuestion> multiples = new ArrayList<AuditQuestion>();
+		for (AuditQuestion otherQuestion : subCategory.getQuestions()) {
+			if (otherQuestion.getNumber() < question.getNumber() && otherQuestion.isAllowMultipleAnswers())
+				multiples.add(otherQuestion);
+		}
+		return multiples;
+	}
 }

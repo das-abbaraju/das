@@ -1,17 +1,14 @@
 package com.picsauditing.jpa.entities;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Column;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -26,34 +23,20 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "pqfdata")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
-public class AuditData implements java.io.Serializable , Comparable<AuditData> {
+public class AuditData extends BaseTable implements java.io.Serializable, Comparable<AuditData> {
 
-	private int dataID;
 	private ContractorAudit audit;
 	private AuditQuestion question;
-	private int num;
+	private AuditData parentAnswer = null;
 	private String answer;
 	private String comment;
 	private YesNo wasChanged;
 	private User auditor;
 	private Date dateVerified;
-	private User createdBy;
-	private Date creationDate;
-	private User updatedBy;
-	private Date updateDate;
 
 	private FlagColor flagColor;
-
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "dataID", nullable = false, insertable = false, updatable = false)
-	public int getDataID() {
-		return dataID;
-	}
-
-	public void setDataID(int dataID) {
-		this.dataID = dataID;
-	}
+	
+	private List<AuditQuestion> questions;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "auditID", nullable = false, updatable = false)
@@ -74,13 +57,26 @@ public class AuditData implements java.io.Serializable , Comparable<AuditData> {
 	public void setQuestion(AuditQuestion question) {
 		this.question = question;
 	}
-
-	public int getNum() {
-		return num;
+	
+	@Transient
+	public List<AuditQuestion> getQuestions() {
+		if (!question.isAllowMultipleAnswers())
+			throw new RuntimeException("non-multiple answer questions can't have multiple child questions");
+		return questions;
 	}
-
-	public void setNum(int num) {
-		this.num = num;
+	
+	public void setQuestions(List<AuditQuestion> questions) {
+		this.questions = questions;
+	}
+	
+	@ManyToOne(cascade = CascadeType.REMOVE)
+	@JoinColumn(name = "parentID", updatable = false)
+	public AuditData getParentAnswer() {
+		return parentAnswer;
+	}
+	
+	public void setParentAnswer(AuditData parentAnswer) {
+		this.parentAnswer = parentAnswer;
 	}
 
 	public String getAnswer() {
@@ -141,44 +137,6 @@ public class AuditData implements java.io.Serializable , Comparable<AuditData> {
 		this.wasChanged = wasChanged;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "createdBy")
-	public User getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(User createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date getCreationDate() {
-		return creationDate;
-	}
-
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "updatedBy")
-	public User getUpdatedBy() {
-		return updatedBy;
-	}
-
-	public void setUpdatedBy(User updatedBy) {
-		this.updatedBy = updatedBy;
-	}
-
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date getUpdateDate() {
-		return updateDate;
-	}
-
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
-	}
-
 	@Transient
 	public FlagColor getFlagColor() {
 		return flagColor;
@@ -192,9 +150,12 @@ public class AuditData implements java.io.Serializable , Comparable<AuditData> {
 	public boolean isHasRequirements() {
 		// This may not be the best solution. We may want to make pqf not have
 		// open requirements.
+		// TODO Add new field that says, use the submitted mode
 		if (audit.getAuditType().isPqf())
 			return false;
 		if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM)
+			return false;
+		if (audit.getAuditType().getClassType().equals(AuditTypeClass.Policy))
 			return false;
 		return (YesNo.Yes.equals(wasChanged) || isRequirementOpen());
 	}
@@ -215,7 +176,7 @@ public class AuditData implements java.io.Serializable , Comparable<AuditData> {
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
-		result = PRIME * result + dataID;
+		result = PRIME * result + id;
 		return result;
 	}
 
@@ -228,7 +189,7 @@ public class AuditData implements java.io.Serializable , Comparable<AuditData> {
 		if (getClass() != obj.getClass())
 			return false;
 		final AuditData other = (AuditData) obj;
-		if (dataID != other.dataID)
+		if (this.getId() != other.getId())
 			return false;
 		return true;
 	}
@@ -292,7 +253,6 @@ public class AuditData implements java.io.Serializable , Comparable<AuditData> {
 		if( cmp != 0 ) 
 			return cmp;
 
-		return new Integer( getDataID() ).compareTo(new Integer(other.getDataID()));
+		return new Integer( getId() ).compareTo(new Integer(other.getId()));
 	}
-	
 }
