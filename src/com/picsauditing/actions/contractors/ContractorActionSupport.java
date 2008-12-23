@@ -14,6 +14,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -33,7 +34,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 	private List<ContractorOperator> operators;
 	protected boolean limitedView = false;
 	protected List<ContractorOperator> activeOperators;
-	
+
 	private PermissionToViewContractor permissionToViewContractor = null;
 
 	protected String subHeading;
@@ -60,7 +61,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 		loadPermissions();
 		if (id == 0 || permissions == null)
 			return false;
-		
+
 		if (permissionToViewContractor == null) {
 			permissionToViewContractor = new PermissionToViewContractor(id, permissions);
 			permissionToViewContractor.setActiveAudits(getActiveAudits());
@@ -100,37 +101,45 @@ public class ContractorActionSupport extends PicsActionSupport {
 	public List<MenuComponent> getAuditMenu() {
 		// Figure out which auditTypes are duplicate and which are not
 		Map<AuditType, List<ContractorAudit>> audits = new TreeMap<AuditType, List<ContractorAudit>>();
-		
+
 		// Take a list of A,B,B,C and convert it into (A)(B,B)(C)
-		for(ContractorAudit audit : getActiveAudits()) {
+		for (ContractorAudit audit : getActiveAudits()) {
 			if (!audit.equals(AuditStatus.Exempt)) {
 				AuditType t = audit.getAuditType();
-				if (!audits.containsKey(t))
-					audits.put(t, new ArrayList<ContractorAudit>());
-				audits.get(t).add(audit);
+				if (t.getClassType().equals(AuditTypeClass.Audit)) {
+					if (!audits.containsKey(t))
+						audits.put(t, new ArrayList<ContractorAudit>());
+					audits.get(t).add(audit);
+				}
 			}
 		}
-		
+
 		// Create the menu
 		List<MenuComponent> menu = new ArrayList<MenuComponent>();
 		String url = "Audit.action?auditID=";
-		for(AuditType t : audits.keySet()) {
-			List<ContractorAudit> auditList = audits.get(t);
-			ContractorAudit conAudit = auditList.get(0);
-			if (auditList.size() == 1) {
-				// Just one audit of this type
-				MenuComponent menuComponent = new MenuComponent(conAudit.getAuditType().getAuditName(), url + conAudit.getId());
-				menuComponent.setAuditId(conAudit.getId());
-				menu.add(menuComponent);
-			} else {
-				// We have more than one audit of this type, so create a subMenu with multiple children
-				MenuComponent subMenu = new MenuComponent(conAudit.getAuditType().getAuditName(), ""+ conAudit.getAuditType().getAuditTypeID());
-				subMenu.setAuditId(conAudit.getId());
-				menu.add(subMenu);
-				
-				for(ContractorAudit audit : auditList) {
-					String linkText = buildLinkText(audit);
-					subMenu.addChild(linkText, url + audit.getId(), audit.getId());
+		for (AuditType t : audits.keySet()) {
+			if (t.getClassType().equals(AuditTypeClass.Audit)) {
+				List<ContractorAudit> auditList = audits.get(t);
+				ContractorAudit conAudit = auditList.get(0);
+				if (auditList.size() == 1) {
+					// Just one audit of this type
+					MenuComponent menuComponent = new MenuComponent(conAudit.getAuditType().getAuditName(), url
+							+ conAudit.getId());
+					menuComponent.setAuditId(conAudit.getId());
+					menu.add(menuComponent);
+				} else {
+					// We have more than one audit of this type, so create a
+					// subMenu
+					// with multiple children
+					MenuComponent subMenu = new MenuComponent(conAudit.getAuditType().getAuditName(), ""
+							+ conAudit.getAuditType().getAuditTypeID());
+					subMenu.setAuditId(conAudit.getId());
+					menu.add(subMenu);
+
+					for (ContractorAudit audit : auditList) {
+						String linkText = buildLinkText(audit);
+						subMenu.addChild(linkText, url + audit.getId(), audit.getId());
+					}
 				}
 			}
 		}
@@ -139,18 +148,20 @@ public class ContractorActionSupport extends PicsActionSupport {
 
 	public String buildLinkText(ContractorAudit audit) {
 		// Create the linkText
-		// First use auditFor: Year in the cast of Annual Audit or Employee name in the case of OQ
+		// First use auditFor: Year in the cast of Annual Audit or Employee name
+		// in the case of OQ
 		String linkText = audit.getAuditFor();
-		
-		// If the audit is a desktop or office, we may want to add in pending status
+
+		// If the audit is a desktop or office, we may want to add in pending
+		// status
 		if (Strings.isEmpty(linkText) && audit.getAuditStatus().isPendingSubmittedResubmitted())
 			linkText = audit.getAuditStatus().toString();
-		
+
 		// When all else fails, make sure there is something displayed
 		if (Strings.isEmpty(linkText))
 			linkText = audit.getAuditType().getAuditName();
 		else
-			linkText += " " +audit.getAuditType().getAuditName();
+			linkText += " " + audit.getAuditType().getAuditName();
 		return linkText;
 	}
 
@@ -169,8 +180,8 @@ public class ContractorActionSupport extends PicsActionSupport {
 	 * 
 	 */
 	public boolean isRequiresInsurance() {
-		if(!accountDao.isContained(getOperators().iterator().next()))
-			operators = null; 
+		if (!accountDao.isContained(getOperators().iterator().next()))
+			operators = null;
 
 		if (permissions.isOperator()) {
 			for (ContractorOperator insurContractors : getOperators()) {
@@ -181,7 +192,8 @@ public class ContractorActionSupport extends PicsActionSupport {
 			return false;
 		}
 		// If Contractor or admin, any operator requiring certs will see this
-		// If corporate, then the operators list is already restricted to my facilities
+		// If corporate, then the operators list is already restricted to my
+		// facilities
 		for (ContractorOperator insurContractors : getOperators()) {
 			OperatorAccount op = insurContractors.getOperatorAccount();
 			if (op.getCanSeeInsurance().equals(YesNo.Yes))
@@ -198,27 +210,26 @@ public class ContractorActionSupport extends PicsActionSupport {
 	 */
 	public int getInsuranceCount() {
 		int count = 0;
-		
+
 		for (Certificate certificate : contractor.getCertificates()) {
 			if (permissions.isOperator()) {
 				if (permissions.getAccountId() == certificate.getOperatorAccount().getId())
 					count++;
-			}
-			else if (permissions.isCorporate()) {
-				for(ContractorOperator co :  getOperators()) {
+			} else if (permissions.isCorporate()) {
+				for (ContractorOperator co : getOperators()) {
 					if (co.getOperatorAccount().equals(certificate.getOperatorAccount())) {
 						count++;
 					}
 				}
-			}
-			else {
-				// Admins and contractors can see all the certs for this contractor
+			} else {
+				// Admins and contractors can see all the certs for this
+				// contractor
 				count++;
 			}
 		}
 		return count;
 	}
-	
+
 	public boolean isShowHeader() {
 		if (permissions.isContractor())
 			return true;
@@ -261,9 +272,10 @@ public class ContractorActionSupport extends PicsActionSupport {
 		}
 		return false;
 	}
-	
-	// TODO change this to List<OperatorAccount> instead or figure out why we're getting an expection on isRequiresInsurance()
-	
+
+	// TODO change this to List<OperatorAccount> instead or figure out why we're
+	// getting an expection on isRequiresInsurance()
+
 	public List<ContractorOperator> getOperators() {
 		if (operators == null)
 			operators = accountDao.findOperators(contractor, permissions, "");
@@ -275,6 +287,5 @@ public class ContractorActionSupport extends PicsActionSupport {
 			activeOperators = accountDao.findOperators(contractor, permissions, " AND operatorAccount.active = 'Y' ");
 		return activeOperators;
 	}
-
 
 }

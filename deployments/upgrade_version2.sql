@@ -1,5 +1,6 @@
 /** UPGRADE TABLES AND COLUMNS DDL **/
 
+update pqfdata set parentID = null;
 
 /**
 update pqfquestions set isVisible = CASE isVisible WHEN 2 THEN 1 ELSE 0 END;

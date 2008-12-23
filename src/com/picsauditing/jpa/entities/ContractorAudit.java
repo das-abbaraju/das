@@ -55,7 +55,8 @@ public class ContractorAudit implements java.io.Serializable {
 	
 	private List<AuditCatData> categories = new ArrayList<AuditCatData>();
 	private List<AuditData> data = new ArrayList<AuditData>();
-	protected List<OshaAudit> oshas;
+	private List<OshaAudit> oshas = new ArrayList<OshaAudit>();
+	private List<ContractorAuditOperator> operators = new ArrayList<ContractorAuditOperator>();
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -96,6 +97,15 @@ public class ContractorAudit implements java.io.Serializable {
 
 	public void setOshas(List<OshaAudit> oshas) {
 		this.oshas = oshas;
+	}
+
+	@OneToMany(mappedBy = "audit", cascade = { CascadeType.REMOVE })
+	public List<ContractorAuditOperator> getOperators() {
+		return operators;
+	}
+
+	public void setOperators(List<ContractorAuditOperator> operators) {
+		this.operators = operators;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -321,7 +331,7 @@ public class ContractorAudit implements java.io.Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		final ContractorAudit other = (ContractorAudit) obj;
-		if (id != other.id)
+		if (id != other.getId())
 			return false;
 		return true;
 	}

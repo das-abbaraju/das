@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -38,7 +39,6 @@ public class AuditQuestionDAOTest {
 		auditquestion.setDependsOnAnswer("fail or pass");
 		auditquestion.setQuestionType("text");
 		auditquestion.setIsVisible(YesNo.Yes);
-		auditquestion.setLastModified(new Date());
 		auditquestion.setTitle("junit test");
 		auditquestion.setIsGroupedWithPrevious(YesNo.Yes);
 		auditquestion.setLinkUrl1("test1");
@@ -53,8 +53,10 @@ public class AuditQuestionDAOTest {
 		auditquestion.setLinkText6("test1");
 		auditquestion.setEffectiveDate(new Date());
 		auditquestion.setExpirationDate(new Date());
-		auditquestion.setDateCreated(new Date(2008 - 04 - 07));
+		auditquestion.setAllowMultipleAnswers(true);
 		auditquestion.setIsRedFlagQuestion(YesNo.No);
+		auditquestion.setAuditColumns(new User(941));
+		
 		auditquestion = auditquestionDAO.save(auditquestion);
 		assertEquals("write junit test class", auditquestion.getQuestion());
 		assertTrue(auditquestion.getId() > 0);

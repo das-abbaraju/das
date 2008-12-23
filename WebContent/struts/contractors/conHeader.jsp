@@ -26,11 +26,6 @@
 		<li><a href="ContractorEdit.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('edit')">class="current"</s:if>>Edit</a></li>
 	</s:if>
-	<s:if test="requiresInsurance">
-		<li><a
-			href="contractor_upload_certificates.jsp?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('cert')">class="current"</s:if>>InsureGuard</a></li>
-	</s:if>
 	<s:if test="permissions.operator">
 		<li><a href="ContractorFlag.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('flag')">class="current"</s:if>>Flag
@@ -44,6 +39,11 @@
 	<s:if test="permissions.contractor">
 		<li><a href="con_viewForms.jsp?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('con_viewForms')">class="current"</s:if>>Forms & Docs</a></li>
+	</s:if>
+	<s:if test="requiresInsurance">
+		<li><a class="dropdown <s:if test="requestURI.contains('cert')"> current</s:if>" href="#"
+			onmouseover="cssdropdown.dropit(this, event, 'policySubMenu')"
+			>InsureGuard</a></li>
 	</s:if>
 	<li><a <s:if test="requestURI.contains('contractor_audits')">class="current"</s:if> 
 		href="ConAuditList.action?id=<s:property value="id" />">Audits</a></li>
@@ -195,3 +195,14 @@
 	</div>
 </s:if>
 </s:iterator>
+
+<div id="policySubMenu" class="auditSubMenu">
+<ul>
+<s:iterator value="activeAudits">
+	<s:if test="auditType.classType.toString() == 'Policy'">
+	<li><a href="Audit.action?auditID=<s:property value="id" />" <s:if test="current == true">class="current"</s:if>
+		><span><s:property value="auditType.auditName" /></span></a></li>
+	</s:if>
+</s:iterator>
+</ul>
+</div>
