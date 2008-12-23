@@ -99,8 +99,6 @@ public class AuditDataUpload extends AuditActionSupport {
 					return SUCCESS;
 				}
 				
-				FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID), getFileName(dataID), extension, true);
-				
 				addActionMessage("Successfully uploaded <b>"+fileFileName+"</b> file");
 				data.setAnswer(extension);
 				
@@ -112,7 +110,9 @@ public class AuditDataUpload extends AuditActionSupport {
 				data.setUpdateDate(new Date());
 				data.setUpdatedBy(this.getUser());
 				
-				auditDataDao.save(data);
+				data = auditDataDao.save(data);
+				dataID = data.getId();
+				FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID), getFileName(dataID), extension, true);
 			}
 		}
 		

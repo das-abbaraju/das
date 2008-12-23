@@ -42,14 +42,14 @@
 	<s:file name="file" size="50"></s:file>
 	<div class="buttons">
 		<a href="javascript: self.close();">Close and Return to Form</a>
-		<s:if test="file.exists()">
+		<s:if test="file != null && file.exists()">
 			<button class="negative" name="button" value="Delete" type="submit" onclick="return confirm('Are you sure you want to delete this file?');">Delete File</button>
 		</s:if>
 		<button class="positive right" name="button" value="Upload" type="submit">Upload File</button>
 	</div>
 </s:form>
 <br clear="all"/>
-<s:if test="file.exists()">
+<s:if test="file != null && file.exists()">
 	<div><a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&question.id=<s:property value="question.id"/>" target="_BLANK">Open Existing <s:property value="fileSize" /> File</a></div>
 </s:if>
 
