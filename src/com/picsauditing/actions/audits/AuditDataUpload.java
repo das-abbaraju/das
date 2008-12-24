@@ -43,29 +43,39 @@ public class AuditDataUpload extends AuditActionSupport {
 			return SUCCESS;
 		}
 
-		int questionID = answer.getQuestion().getId();
-		int dataID = 0;
-
+		int dataID = answer.getId();
+		int questionID = 0;
+		if (answer.getQuestion() != null)
+			questionID = answer.getQuestion().getId();
+		
 		try {
 			// Try to find the previous version using the passed in auditData
 			// record
-			int auditID = conAudit.getId();
-			int parentAnswerID = answer.getParentAnswer().getId();
-
-			answer = auditDataDao.findAnswerToQuestion(auditID, questionID, parentAnswerID);
+			if (dataID > 0)
+				answer = auditDataDao.find(dataID);
+			else {
+				int auditID = conAudit.getId();
+				int parentAnswerID = 0;
+				if (answer.getParentAnswer() != null)
+					parentAnswerID = answer.getParentAnswer().getId();
+	
+				answer = auditDataDao.findAnswerToQuestion(auditID, questionID, parentAnswerID);
+			}
 		} catch (NoResultException notReallyAProblem) {
 		}
 		
 		if (answer == null) {
+			dataID = 0;
 			answer = new AuditData();
 			answer.setAudit(conAudit);
-			AuditQuestion question = questionDAO.find(questionID);
+			AuditQuestion question = null;
+			if (questionID > 0)
+				question = questionDAO.find(questionID);
 			if (question == null) {
 				addActionError("Failed to find question");
 				return BLANK;
 			}
 			answer.setQuestion(question);
-			return SUCCESS;
 		} else
 			dataID = answer.getId();
 
