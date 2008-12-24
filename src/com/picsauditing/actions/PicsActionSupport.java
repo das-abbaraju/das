@@ -1,13 +1,10 @@
 package com.picsauditing.actions;
 
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -25,21 +22,24 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.URLUtils;
 
+@SuppressWarnings("serial")
 public class PicsActionSupport extends ActionSupport {
 	protected static String LOGIN_AJAX = "LoginAjax";
 	protected static String BLANK = "blank";
-	
+
 	protected Permissions permissions = null;
 
 	// replaces the obsolete message in cases where we need to print out a
 	// single string to the page
 	protected String output = null;
 	protected String button = null;
+	protected boolean debug = false;
 
 	private User user; // Current logged in user
 	private Account account; // Current logged in user's account
 	private List<User> auditorList;
 
+	@SuppressWarnings("unchecked")
 	protected void loadPermissions() {
 		if (permissions != null)
 			// Already set
@@ -56,6 +56,8 @@ public class PicsActionSupport extends ActionSupport {
 
 			if (autoLogin != null && autoLogin.length() != 0) {
 				try {
+					System.out.println("Autologging In user " + autoLogin
+							+ ". Remove pics.autoLogin from startup to remove this feature.");
 					UserDAO userDAO = (UserDAO) SpringUtils.getBean("UserDAO");
 					User user = userDAO.find(Integer.parseInt(autoLogin));
 					permissions.login(user);
@@ -100,6 +102,14 @@ public class PicsActionSupport extends ActionSupport {
 	protected void tryPermissions(OpPerms opPerms, OpType opType) throws Exception {
 		loadPermissions();
 		permissions.tryPermission(opPerms, opType);
+	}
+
+	public boolean isDebug() {
+		return debug;
+	}
+
+	public void setDebug(boolean debug) {
+		this.debug = debug;
 	}
 
 	public User getUser() {
@@ -167,20 +177,21 @@ public class PicsActionSupport extends ActionSupport {
 	}
 
 	/**
-	 * Get the directory to store file uploads
-	 * Use the System property or the Init parameter or C:/temp/
-	 * To set the System property add -Dpics.ftpDir=folder_location to your startup command
+	 * Get the directory to store file uploads Use the System property or the
+	 * Init parameter or C:/temp/ To set the System property add
+	 * -Dpics.ftpDir=folder_location to your startup command
+	 * 
 	 * @return
 	 */
 	static protected String getFtpDir() {
 		String ftpDir = System.getProperty("pics.ftpDir");
 		if (ftpDir != null && ftpDir.length() > 0)
 			return ftpDir;
-		
+
 		ftpDir = ServletActionContext.getServletContext().getInitParameter("FTP_DIR");
 		if (ftpDir != null && ftpDir.length() > 0)
 			return ftpDir;
-		
+
 		return "C:/temp";
 	}
 
@@ -207,22 +218,22 @@ public class PicsActionSupport extends ActionSupport {
 		}
 		return 0;
 	}
-	
+
 	public int getDaysLeft(Date invoiceDate) {
-		if(invoiceDate == null)
+		if (invoiceDate == null)
 			return 0;
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(invoiceDate);
-		cal.add(cal.DAY_OF_YEAR, 120);
+		cal.add(Calendar.DAY_OF_YEAR, 120);
 		return DateBean.getDateDifference(cal.getTime());
 	}
-	
+
 	public String getActionName() {
 		return ServletActionContext.getActionMapping().getName();
 	}
 
 	public String getProtocol() {
-		return URLUtils.getProtocol( ServletActionContext.getRequest() );
+		return URLUtils.getProtocol(ServletActionContext.getRequest());
 	}
-	
+
 }

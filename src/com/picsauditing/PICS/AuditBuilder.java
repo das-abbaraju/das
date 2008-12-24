@@ -19,12 +19,16 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.YesNo;
 
 /**
@@ -43,8 +47,7 @@ public class AuditBuilder {
 	private AuditDataDAO auditDataDAO;
 	private AuditCategoryDAO auditCategoryDAO;
 
-	public AuditBuilder(AuditTypeDAO auditTypeDAO,
-			ContractorAccountDAO contractorDAO, ContractorAuditDAO cAuditDAO,
+	public AuditBuilder(AuditTypeDAO auditTypeDAO, ContractorAccountDAO contractorDAO, ContractorAuditDAO cAuditDAO,
 			AuditDataDAO auditDataDAO, AuditCategoryDAO auditCategoryDAO) {
 		this.auditTypeDAO = auditTypeDAO;
 		this.contractorDAO = contractorDAO;
@@ -75,8 +78,8 @@ public class AuditBuilder {
 		List<Integer> requiresSafetyManual = new ArrayList<Integer>();
 		requiresSafetyManual.add(AuditType.DESKTOP);
 		requiresSafetyManual.add(AuditType.OFFICE); // I think Jesse said to go
-													// ahead and create the
-													// office audit right away
+		// ahead and create the
+		// office audit right away
 		requiresSafetyManual.add(AuditType.DA);
 
 		/** *** Welcome Call *** */
@@ -91,8 +94,7 @@ public class AuditBuilder {
 				}
 			}
 			if (needsWelcome) {
-				ContractorAudit welcomeCall = cAuditDAO.addPending(
-						AuditType.WELCOME, contractor);
+				ContractorAudit welcomeCall = cAuditDAO.addPending(AuditType.WELCOME, contractor);
 				currentAudits.add(welcomeCall);
 			}
 		}
@@ -119,18 +121,14 @@ public class AuditBuilder {
 
 		/** * Add other Audits ** */
 		// Get a distinct list of AuditTypes that attached operators require
-		List<AuditType> list = auditTypeDAO.findWhere("t IN (SELECT auditType "
-				+ "FROM AuditOperator "
-				+ "WHERE auditType.auditTypeID > 1 AND canSee=1 "
-				+ " AND minRiskLevel BETWEEN 1 AND "
-				+ contractor.getRiskLevel().ordinal()
-				+ " AND operatorAccount IN ("
-				+ "SELECT operatorAccount FROM ContractorOperator "
-				+ "WHERE contractorAccount.id = " + contractor.getId() + "))");
+		List<AuditType> list = auditTypeDAO.findWhere("t IN (SELECT auditType " + "FROM AuditOperator "
+				+ "WHERE auditType.auditTypeID > 1 AND canSee=1 " + " AND minRiskLevel BETWEEN 1 AND "
+				+ contractor.getRiskLevel().ordinal() + " AND operatorAccount IN ("
+				+ "SELECT operatorAccount FROM ContractorOperator " + "WHERE contractorAccount.id = "
+				+ contractor.getId() + "))");
 		int year = DateBean.getCurrentYear();
 		for (AuditType auditType : list) {
-			if (auditType.getAuditTypeID() == AuditType.DA
-					&& !"Yes".equals(contractor.getOqEmployees())) {
+			if (auditType.getAuditTypeID() == AuditType.DA && !"Yes".equals(contractor.getOqEmployees())) {
 				// Don't add the D&A audit because this contractor
 				// doesn't have employees subject OQ requirements
 				// Note: we could also just add a place holder "Exempt" audit
@@ -140,12 +138,9 @@ public class AuditBuilder {
 
 			if (auditType.getAuditTypeID() == AuditType.ANNUALADDENDUM) {
 				List<ContractorAudit> cList = contractor.getAudits();
-				addAnnualAddendum(cList, contractor, year - 1, auditType,
-						currentAudits);
-				addAnnualAddendum(cList, contractor, year - 2, auditType,
-						currentAudits);
-				addAnnualAddendum(cList, contractor, year - 3, auditType,
-						currentAudits);
+				addAnnualAddendum(cList, contractor, year - 1, auditType, currentAudits);
+				addAnnualAddendum(cList, contractor, year - 2, auditType, currentAudits);
+				addAnnualAddendum(cList, contractor, year - 3, auditType, currentAudits);
 			} else {
 				boolean found = false;
 				// For each audit this contractor SHOULD have
@@ -157,13 +152,10 @@ public class AuditBuilder {
 						int daysToExpiration = 0;
 						if (conAudit.getExpiresDate() == null)
 							// The expiration is null so put the days to
-							// expiration
-							// really big
+							// expiration really big
 							daysToExpiration = 1000;
 						else
-							daysToExpiration = DateBean
-									.getDateDifference(conAudit
-											.getExpiresDate());
+							daysToExpiration = DateBean.getDateDifference(conAudit.getExpiresDate());
 
 						if (daysToExpiration > 60) {
 							// The audit is still valid for atleast another 60
@@ -172,10 +164,8 @@ public class AuditBuilder {
 								// We found a matching audit type
 								found = true;
 							}
-							if (AuditType.NCMS == conAudit.getAuditType()
-									.getAuditTypeID()
-									&& AuditType.DESKTOP == auditType
-											.getAuditTypeID()) {
+							if (AuditType.NCMS == conAudit.getAuditType().getAuditTypeID()
+									&& AuditType.DESKTOP == auditType.getAuditTypeID()) {
 								// We needed a desktop and found an NCMS audit
 								found = true;
 							}
@@ -184,42 +174,33 @@ public class AuditBuilder {
 				}
 
 				if (!found) {
-					// The audit wasn't found, figure out if we should create it
-					// now
-					// or wait until later
+					// The audit wasn't found, figure out if we should 
+					// create it now or wait until later
 					boolean insertNow = true;
 					if (pqfAudit.getAuditStatus().equals(AuditStatus.Pending)) {
 						// The current PQF is stilling pending, does this audit
 						// require a PDF? (Desktop, Office, or D&A)
-						if (requiresSafetyManual.contains(auditType
-								.getAuditTypeID()))
+						if (requiresSafetyManual.contains(auditType.getAuditTypeID()))
 							insertNow = false;
 					}
 
 					if (auditType.getAuditTypeID() == AuditType.DESKTOP
-							&& pqfAudit.getAuditStatus().equals(
-									AuditStatus.Submitted)) {
+							&& pqfAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
 						// The current PQF has been submitted, but we need to
 						// know
 						// if the Safety Manual is there first before creating
 						// the
 						// desktop
-						AuditData safetyManual = auditDataDAO
-								.findAnswerToQuestion(pqfAudit.getId(),
-										AuditQuestion.MANUAL_PQF);
+						AuditData safetyManual = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(),
+								AuditQuestion.MANUAL_PQF);
 						if (safetyManual == null || !safetyManual.isVerified())
 							insertNow = false;
 					}
 					if (insertNow) {
-						System.out.println("Adding: "
-								+ auditType.getAuditTypeID()
-								+ auditType.getAuditName());
-						currentAudits.add(cAuditDAO.addPending(auditType,
-								contractor));
+						System.out.println("Adding: " + auditType.getAuditTypeID() + auditType.getAuditName());
+						currentAudits.add(cAuditDAO.addPending(auditType, contractor));
 					} else
-						System.out.println("Skipping: "
-								+ auditType.getAuditTypeID()
-								+ auditType.getAuditName());
+						System.out.println("Skipping: " + auditType.getAuditTypeID() + auditType.getAuditName());
 				}
 			}
 		}
@@ -236,16 +217,14 @@ public class AuditBuilder {
 		Iterator<ContractorAudit> iter = currentAudits.iterator();
 		while (iter.hasNext()) {
 			ContractorAudit conAudit = iter.next();
-			if (conAudit.getAuditStatus().equals(AuditStatus.Pending)
-					&& conAudit.getPercentComplete() == 0
+			if (conAudit.getAuditStatus().equals(AuditStatus.Pending) && conAudit.getPercentComplete() == 0
 					&& !conAudit.isManuallyAdded()) {
 				// This auto audit hasn't been started yet, double check to make
 				// sure
 				// it's still needed
 				boolean needed = false;
 
-				if (conAudit.getAuditType().isPqf()
-						|| conAudit.getAuditType().getAuditTypeID() == AuditType.WELCOME
+				if (conAudit.getAuditType().isPqf() || conAudit.getAuditType().getAuditTypeID() == AuditType.WELCOME
 						|| conAudit.getAuditType().isAnnualAddendum())
 					needed = true;
 
@@ -276,7 +255,51 @@ public class AuditBuilder {
 		if (fillAuditCategories) {
 			/** Generate Categories * */
 			for (ContractorAudit conAudit : currentAudits) {
+				fillAuditOperators(contractor, conAudit);
 				fillAuditCategories(conAudit);
+			}
+		}
+	}
+
+	/**
+	 * For each audit (policy), get a list of operators who have InsureGuard
+	 * and automatically require this policy, based on riskLevel
+	 * @param conAudit
+	 */
+	private void fillAuditOperators(ContractorAccount contractor, ContractorAudit conAudit) {
+		if (!AuditTypeClass.Policy.equals(conAudit.getAuditType().getClassType()))
+			return;
+		
+		for(ContractorOperator co : contractor.getOperators()) {
+			// For this auditType (General Liability) and 
+			// this contractor's associated operator (BP Cherry Point)
+			OperatorAccount operator = co.getOperatorAccount();
+			boolean required = false;
+			if (operator.getCanSeeInsurance().equals(YesNo.Yes)) {
+				debug(operator.getName() + " subscribes to InsureGuard");
+				for(AuditOperator ao : operator.getAudits()) {
+					if (conAudit.getAuditType().equals(ao.getAuditType()) 
+							&& ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal()
+							&& ao.isCanSee()) {
+						debug(contractor.getName() + " is required to have " + ao.getAuditType());
+						required = true;
+						break;
+					}
+				}
+				
+			}
+			if (required) {
+				// If we don't have one, then add it
+				boolean included = false;
+				for(ContractorAuditOperator cao : conAudit.getOperators()) {
+					if (cao.getOperator().equals(operator))
+						included = true;
+				}
+				if (!included) {
+					debug("Adding missing ContractorAuditOperator");
+				}
+			} else {
+				// Remove Pending records that are already on there
 			}
 		}
 	}
@@ -293,12 +316,11 @@ public class AuditBuilder {
 		Set<AuditCategory> naCategories = new HashSet<AuditCategory>();
 
 		if (conAudit.getAuditType().isPqf()) {
-			List<AuditCategory> pqfCategories = auditCategoryDAO
-					.findPqfCategories(conAudit.getContractorAccount());
+			List<AuditCategory> pqfCategories = auditCategoryDAO.findPqfCategories(conAudit.getContractorAccount());
 			categories.addAll(pqfCategories);
 
-			List<AuditCategory> allCategories = auditCategoryDAO
-					.findByAuditTypeID(conAudit.getAuditType().getAuditTypeID());
+			List<AuditCategory> allCategories = auditCategoryDAO.findByAuditTypeID(conAudit.getAuditType()
+					.getAuditTypeID());
 			for (AuditCategory category : allCategories) {
 				if (!categories.contains(category))
 					naCategories.add(category);
@@ -311,28 +333,31 @@ public class AuditBuilder {
 			dependencies.put(AuditCategory.CANADIAN_STATISTICS, 2066);
 			dependencies.put(AuditCategory.EMR, 2033);
 			dependencies.put(AuditCategory.LOSS_RUN, 2033);
+			int auditID = conAudit.getId();
 
-			Map<Integer, Map<Integer, AuditData>> answers = auditDataDAO.findAnswers(conAudit
-					.getId(), new Vector<Integer>(dependencies.values()));
+			Map<Integer, Map<Integer, AuditData>> answers = null;
+			answers = auditDataDAO.findAnswers(auditID, new Vector<Integer>(dependencies.values()));
 
 			for (AuditCategory cat : conAudit.getAuditType().getCategories()) {
 
 				boolean include = false;
 
 				if (answers != null && dependencies.get(cat.getId()) != null) {
-					int questionID = dependencies.get(cat.getId());
-					AuditData answer = answers.get(questionID).get(0);
+					AuditData answer = null;
+					try {
+						int questionID = dependencies.get(cat.getId());
+						answer = answers.get(questionID).get(0);
+					} catch (NullPointerException ignoreNulls) {}
+					
 					if (answer == null)
 						include = false;
 					else {
 
 						if (answer.getQuestion().getId() == 2033) {
 
-							if ("No".equals(answer.getAnswer())
-									&& cat.getId() == AuditCategory.LOSS_RUN) {
+							if ("No".equals(answer.getAnswer()) && cat.getId() == AuditCategory.LOSS_RUN) {
 								include = true;
-							} else if ("Yes".equals(answer.getAnswer())
-									&& cat.getId() == AuditCategory.EMR) {
+							} else if ("Yes".equals(answer.getAnswer()) && cat.getId() == AuditCategory.EMR) {
 								include = true;
 							}
 						} else {
@@ -355,15 +380,12 @@ public class AuditBuilder {
 		else if (conAudit.getAuditType().getAuditTypeID() == AuditType.DESKTOP) {
 			Date currentAuditDate = null;
 			int pqfAuditID = 0;
-			for (ContractorAudit audits : conAudit.getContractorAccount()
-					.getAudits()) {
+			for (ContractorAudit audits : conAudit.getContractorAccount().getAudits()) {
 				if (audits.getAuditType().isPqf()
-						&& (audits.getAuditStatus().equals(AuditStatus.Active) || audits
-								.getAuditStatus().equals(AuditStatus.Submitted))) {
+						&& (audits.getAuditStatus().equals(AuditStatus.Active) || audits.getAuditStatus().equals(
+								AuditStatus.Submitted))) {
 					// Found a Submitted/Active PQF
-					if (currentAuditDate == null
-							|| audits.getCompletedDate()
-									.after(currentAuditDate)) {
+					if (currentAuditDate == null || audits.getCompletedDate().after(currentAuditDate)) {
 						// Found the most recent one
 						currentAuditDate = audits.getCompletedDate();
 						pqfAuditID = audits.getId();
@@ -371,13 +393,12 @@ public class AuditBuilder {
 				}
 			}
 			if (pqfAuditID > 0) {
-				List<AuditCategory> desktopCategories = auditCategoryDAO
-						.findDesktopCategories(pqfAuditID);
+				List<AuditCategory> desktopCategories = auditCategoryDAO.findDesktopCategories(pqfAuditID);
 				categories.addAll(desktopCategories);
 			}
 
-			List<AuditCategory> allCategories = auditCategoryDAO
-					.findByAuditTypeID(conAudit.getAuditType().getAuditTypeID());
+			List<AuditCategory> allCategories = auditCategoryDAO.findByAuditTypeID(conAudit.getAuditType()
+					.getAuditTypeID());
 			debug("Categories to be included:");
 			for (AuditCategory category : categories)
 				debug("  " + category.getId() + " " + category.getCategory());
@@ -401,12 +422,10 @@ public class AuditBuilder {
 		for (AuditCatData catData : conAudit.getCategories()) {
 			if (!catData.isOverride()) {
 				if (categories.contains(catData.getCategory())) {
-					debug(catData.getCategory().getCategory()
-							+ " should be Yes, was " + catData.getApplies());
+					debug(catData.getCategory().getCategory() + " should be Yes, was " + catData.getApplies());
 					catData.setApplies(YesNo.Yes);
 				} else {
-					debug(catData.getCategory().getCategory()
-							+ " should be No, was " + catData.getApplies());
+					debug(catData.getCategory().getCategory() + " should be No, was " + catData.getApplies());
 					catData.setApplies(YesNo.No);
 				}
 			}
@@ -447,14 +466,12 @@ public class AuditBuilder {
 	 * rebuild them
 	 */
 	public void addAuditRenewals() {
-		List<ContractorAccount> contractors = cAuditDAO
-				.findContractorsWithExpiringAudits();
+		List<ContractorAccount> contractors = cAuditDAO.findContractorsWithExpiringAudits();
 		for (ContractorAccount contractor : contractors) {
 			try {
 				buildAudits(contractor);
 			} catch (Exception e) {
-				System.out.println("ERROR!! AuditBuiler.addAuditRenewals() "
-						+ e.getMessage());
+				System.out.println("ERROR!! AuditBuiler.addAuditRenewals() " + e.getMessage());
 			}
 		}
 	}
@@ -472,9 +489,8 @@ public class AuditBuilder {
 		this.fillAuditCategories = fillAuditCategories;
 	}
 
-	public void addAnnualAddendum(List<ContractorAudit> cList,
-			ContractorAccount contractor, int year, AuditType auditType,
-			List<ContractorAudit> currentAudits) {
+	public void addAnnualAddendum(List<ContractorAudit> cList, ContractorAccount contractor, int year,
+			AuditType auditType, List<ContractorAudit> currentAudits) {
 		boolean found = false;
 		for (ContractorAudit cAudit : cList) {
 			if (cAudit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM
@@ -488,10 +504,8 @@ public class AuditBuilder {
 		if (!found) {
 			Calendar startDate = Calendar.getInstance();
 			startDate.set(year, 11, 31);
-			System.out.println("Adding: " + auditType.getAuditTypeID()
-					+ auditType.getAuditName());
-			currentAudits.add(cAuditDAO.addPending(auditType, contractor,
-					Integer.toString(year), startDate.getTime()));
+			System.out.println("Adding: " + auditType.getAuditTypeID() + auditType.getAuditName());
+			currentAudits.add(cAuditDAO.addPending(auditType, contractor, Integer.toString(year), startDate.getTime()));
 		}
 	}
 }

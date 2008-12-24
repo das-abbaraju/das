@@ -63,8 +63,24 @@
 	</s:if>
 </s:form>
 
+<s:if test="conAudit.auditType.classType.toString() == 'Policy'">
+<table class="report" style="float: right;">
+	<thead>
+		<tr>
+			<th>Operator</th>
+			<th>Status</th>
+		</tr>
+	</thead>
+	<s:iterator value="conAudit.operators" status="rowStatus">
+		<tr>
+			<td><s:property value="operator.name"/></td>
+			<td><s:property value="status"/></td>
+		</tr>
+	</s:iterator>
+</table>
+</s:if>
 
-<table class="report">
+<table class="report" style="clear: none;">
 	<thead>
 		<tr>
 			<th>Num</th>

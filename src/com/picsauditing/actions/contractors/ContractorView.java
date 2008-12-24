@@ -22,6 +22,7 @@ public class ContractorView extends ContractorActionSupport {
 		limitedView = true;
 		findContractor();
 
+		auditBuilder.setDebug(debug);
 		auditBuilder.buildAudits(this.contractor);
 
 		this.subHeading = "Contractor Details";
