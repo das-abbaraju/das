@@ -45,6 +45,22 @@ function save(id, aID, oID, pKey) {
 	    }
 	}
 
+	var radioGrp = $('form1')['additionalInsuredFlag'+id];
+	for(i=0; i < radioGrp.length; i++){
+	    if (radioGrp[i].checked == true) {
+			pars = pars + '&ao.additionalInsuredFlag='+ radioGrp[i].value;
+	    }
+	}
+
+	var radioGrp = $('form1')['waiverSubFlag'+id];
+	for(i=0; i < radioGrp.length; i++){
+	    if (radioGrp[i].checked == true) {
+			pars = pars + '&ao.waiverSubFlag='+ radioGrp[i].value;
+	    }
+	}
+
+
+
 	var divName = 'td'+id;
 	new Effect.Highlight($(divName), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 	var myAjax = new Ajax.Updater(divName, 'AuditOperatorSaveAjax.action', {method: 'get', parameters: pars});
@@ -75,7 +91,8 @@ function save(id, aID, oID, pKey) {
 	<table class="report" cellspacing="1" cellpadding="3" border="0">
 		<tr class="whiteTitle" bgcolor="#003366" align="center">
 			<td>Operator/Audit</td>
-			<td>&nbsp;V &nbsp;| &nbsp;E &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Minimum Risk Level &amp; Flag Color &amp; Required Status</td>
+			<td>&nbsp;V &nbsp;| &nbsp;E &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Minimum Risk Level &amp; Flag Color &amp; Required Status 
+			<s:if test="className.toString().equals('Policy')">&amp; additionalInsuredFlag &amp; waiverSubFlag</s:if></td>
 		</tr>
 
 		<s:iterator value="data" status="stat">
@@ -109,6 +126,14 @@ function save(id, aID, oID, pKey) {
 					|
 					<s:radio name="requiredAuditStatus%{htmlID}" list="AuditStatusList" value="requiredAuditStatus" disabled="!canSee"
 					onchange="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
+					<s:if test="auditType.classType.toString().equals('Policy')">
+					|
+					<s:radio name="additionalInsuredFlag%{htmlID}" list="FlagColorList" value="additionalInsuredFlag" disabled="!canSee"
+					onchange="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
+					|
+					<s:radio name="waiverSubFlag%{htmlID}" list="FlagColorList" value="waiverSubFlag" disabled="!canSee"
+					onchange="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
+					</s:if>
 					</nobr>
 				</td>
 			</tr>

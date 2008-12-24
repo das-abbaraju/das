@@ -163,6 +163,14 @@ public class AuditOperatorList extends PicsActionSupport {
 		return "";
 	}
 
+	public String getClassName() {
+		if (this.aID > 0)
+			for (AuditType row : this.auditTypes)
+				if (this.aID == row.getAuditTypeID())
+					return row.getClassType().toString();
+		return "";
+	}
+
 	public List<AuditType> getAuditTypes() {
 		return auditTypes;
 	}
