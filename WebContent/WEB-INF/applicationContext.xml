@@ -28,6 +28,7 @@
 	<bean id="ContractorOperatorFlagDAO" class="com.picsauditing.dao.ContractorOperatorFlagDAO"/>
 	<bean id="DesktopMatrixDAO" class="com.picsauditing.dao.DesktopMatrixDAO"/>
 	<bean id="EmailAttachmentDAO" class="com.picsauditing.dao.EmailAttachmentDAO"/>
+	<bean id="FacilitiesDAO" class="com.picsauditing.dao.FacilitiesDAO"/>
 	<bean id="OperatorAccountDAO" class="com.picsauditing.dao.OperatorAccountDAO"/>
 	<bean id="OshaAuditDAO" class="com.picsauditing.dao.OshaAuditDAO"/>
 	<bean id="RulesRowDAO" class="com.picsauditing.dao.RulesRowDAO"/>
