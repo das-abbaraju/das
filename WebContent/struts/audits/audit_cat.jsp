@@ -70,20 +70,20 @@
 						</td>
 					</tr>
 					</s:if>
-					<s:iterator value="validQuestions">
+					<s:iterator value="answerList">
 					
-						<s:if test="isGroupedWithPrevious.toString() == 'No'">
+						<s:if test="question.isGroupedWithPrevious.toString() == 'No'">
 							<s:set name="shaded" value="!#shaded" scope="action"/>
 						</s:if>
 						
-						<s:if test="title.length() > 0">
+						<s:if test="question.title.length() > 0">
 							<tr class="group<s:if test="#shaded">Shaded</s:if>">
-								<td class="groupTitle" colspan="4"><s:property value="title" escape="false"/></td>
+								<td class="groupTitle" colspan="4"><s:property value="question.title" escape="false"/></td>
 							</tr>
 						</s:if>
 						<s:if test="mode == 'View'">
 							<s:if test="onlyReq">
-								<s:if test="answer.hasRequirements">
+								<s:if test="hasRequirements">
 									<s:include value="audit_cat_view.jsp"></s:include>
 								</s:if>
 							</s:if>
@@ -94,7 +94,7 @@
 							</s:else>
 						</s:if>
 						<s:if test="mode == 'Edit'">
-							<s:if test="!onlyReq || answer.hasRequirements">
+							<s:if test="!onlyReq || hasRequirements">
 								<s:include value="audit_cat_edit.jsp"></s:include>
 							</s:if>
 						</s:if>

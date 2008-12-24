@@ -50,22 +50,34 @@ public class AuditDataSave extends AuditActionSupport {
 			AuditData newCopy = null;
 
 			try {
-				newCopy = auditDataDao.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion()
-						.getId());
+				// Try to find the previous version using the passed in auditData record
+				int auditID = auditData.getAudit().getId();
+				int questionID = auditData.getQuestion().getId();
+				int parentAnswerID = auditData.getParentAnswer().getId();
+				
+				newCopy = auditDataDao.findAnswerToQuestion(auditID, questionID, parentAnswerID);
 			} catch (NoResultException notReallyAProblem) {
 			}
 
+			AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
+
 			if (newCopy == null) {
 				// insert mode
+				if (auditData.getParentAnswer() != null && auditData.getParentAnswer().getId() == 0)
+					auditData.setParentAnswer(null);
 				auditData.setAuditColumns(getUser());
 				auditDataDao.save(auditData);
+				if (question.isAllowMultipleAnswers()) {
+					auditData.setParentAnswer(auditData);
+					auditDataDao.save(auditData);
+				}
 			} else {
 				// update mode
 				if (auditData.getAnswer() != null) {
-					// if answer is being set,
-					// then we are not currently
-					// verifying
-					if (auditData.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer())) {
+					// if answer is being set, then
+					// we are not currently verifying
+					if (auditData.getAnswer() == null 
+							|| !newCopy.getAnswer().equals(auditData.getAnswer())) {
 
 						if (!toggleVerify) {
 							newCopy.setDateVerified(null);
@@ -75,8 +87,6 @@ public class AuditDataSave extends AuditActionSupport {
 
 						if (newCopy.getAudit().getAuditStatus().equals(AuditStatus.Submitted)) {
 							newCopy.setWasChanged(YesNo.Yes);
-
-							AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
 
 							if (!toggleVerify) {
 								if (question.getOkAnswer().indexOf(auditData.getAnswer()) == -1) {
@@ -90,10 +100,10 @@ public class AuditDataSave extends AuditActionSupport {
 						}
 					}
 				}
-				// we were handed the verification parms instead of the
-				// edit parms
+				// we were handed the verification parms 
+				// instead of the edit parms
 
-				if (toggleVerify == true) {
+				if (toggleVerify) {
 
 					if (newCopy.isVerified()) {
 						newCopy.setDateVerified(null);
@@ -107,18 +117,13 @@ public class AuditDataSave extends AuditActionSupport {
 				if (auditData.getComment() != null) {
 					newCopy.setComment(auditData.getComment());
 				}
-				if (newCopy.getCreationDate() == null)
-					newCopy.setCreationDate(new Date());
-				if (newCopy.getCreatedBy() == null)
-					newCopy.setCreatedBy(this.getUser());
-				newCopy.setUpdateDate(new Date());
-				newCopy.setUpdatedBy(this.getUser());
 
+				newCopy.setAuditColumns(getUser());
 				auditDataDao.save(newCopy);
 			}
 
-			// hook to calculation
-			// read/update the ContractorAudit and AuditCatData
+			// hook to calculation read/update 
+			// the ContractorAudit and AuditCatData
 			AuditCatData catData = null;
 
 			if (catDataID > 0) {

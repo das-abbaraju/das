@@ -46,7 +46,7 @@ public class AuditDataDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public Map<Integer, AuditData> findByCategory(int auditID, AuditCategory category) {
+	public Map<Integer, Map<Integer, AuditData>> findByCategory(int auditID, AuditCategory category) {
 		Query query = em.createQuery("FROM AuditData d "
 				+ "WHERE d.audit.id = :auditID AND d.question.subCategory.category = :category");
 		query.setParameter("auditID", auditID);
@@ -55,7 +55,7 @@ public class AuditDataDAO extends PicsDAO {
 		return mapData(query.getResultList());
 	}
 
-	public Map<Integer, AuditData> findByCategory(int auditID, int categoryID) {
+	public Map<Integer, Map<Integer, AuditData>> findByCategory(int auditID, int categoryID) {
 		AuditCategory auditCategory = new AuditCategory();
 		auditCategory.setId(categoryID);
 		return findByCategory(auditID, auditCategory);
@@ -102,7 +102,7 @@ public class AuditDataDAO extends PicsDAO {
 	
 	public AuditData findAnswerToQuestion(int auditId, int questionId) {
 		try {
-			Query query = em.createQuery("FROM AuditData d " + "WHERE audit.id = ? AND question.id =? ");
+			Query query = em.createQuery("FROM AuditData d " + "WHERE audit.id = ? AND question.id = ? AND parentAnswer IS NULL");
 			query.setParameter(1, auditId);
 			query.setParameter(2, questionId);
 			return (AuditData) query.getSingleResult();
@@ -163,16 +163,16 @@ public class AuditDataDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public Map<Integer, AuditData> findAnswers(int auditID) {
+	public Map<Integer, Map<Integer, AuditData>> findAnswers(int auditID) {
 		Query query = em.createQuery("SELECT d FROM AuditData d WHERE audit.id = ?");
 		query.setParameter(1, auditID);
 
 		return mapData(query.getResultList());
 	}
 
-	public Map<Integer, AuditData> findAnswers(int auditID, List<Integer> questionIds) {
+	public Map<Integer, Map<Integer, AuditData>> findAnswers(int auditID, List<Integer> questionIds) {
 		if (questionIds.size() == 0)
-			return new HashMap<Integer, AuditData>();
+			return null;
 
 		/*
 		if (questionIds.contains(AuditQuestion.EMR_AVG)) {
@@ -196,10 +196,18 @@ public class AuditDataDAO extends PicsDAO {
 	 * 
 	 * @return
 	 */
-	private Map<Integer, AuditData> mapData(List<AuditData> result) {
-		HashMap<Integer, AuditData> indexedResult = new HashMap<Integer, AuditData>();
-		for (AuditData row : result)
-			indexedResult.put(row.getQuestion().getId(), row);
+	private Map<Integer, Map<Integer, AuditData>> mapData(List<AuditData> result) {
+		HashMap<Integer, Map<Integer, AuditData>> indexedResult = new HashMap<Integer, Map<Integer, AuditData>>();
+		for (AuditData row : result) {
+			int questionID = row.getQuestion().getId();
+			if (indexedResult.get(questionID) == null)
+				indexedResult.put(questionID, new HashMap<Integer, AuditData>());
+			
+			int parentID = 0;
+			if (row.getParentAnswer() != null)
+				parentID = row.getParentAnswer().getId();
+			indexedResult.get(questionID).put(parentID, row);
+		}
 		return indexedResult;
 	}
 

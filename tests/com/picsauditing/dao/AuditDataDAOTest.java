@@ -44,9 +44,9 @@ public class AuditDataDAOTest {
 
 		ArrayList<Integer> questions = new ArrayList<Integer>();
 		questions.add(48);
-		Map<Integer, AuditData> existingData = auditdataDAO.findAnswers(3259, questions);
+		Map<Integer, Map<Integer, AuditData>> existingData = auditdataDAO.findAnswers(3259, questions);
 		for (Integer key : existingData.keySet()) {
-			auditdataDAO.remove(existingData.get(key).getId());
+			auditdataDAO.remove(existingData.get(key).get(0).getId());
 		}
 
 		// Create a new AuditData object and save it
@@ -66,9 +66,8 @@ public class AuditDataDAOTest {
 
 		List<Integer> questionid = new LinkedList<Integer>();
 		questionid.add(48);
-		HashMap<Integer, AuditData> testFindAnswers = (HashMap<Integer, AuditData>) auditdataDAO.findAnswers(3259,
-				questionid);
-		assertEquals("junit testing", testFindAnswers.get(48).getAnswer());
+		Map<Integer, Map<Integer, AuditData>> testFindAnswers = auditdataDAO.findAnswers(3259, questionid);
+		assertEquals("junit testing", testFindAnswers.get(48).get(0).getAnswer());
 		auditdataDAO.remove(auditdata.getId());
 		AuditData auditdata1 = auditdataDAO.find(auditdata.getId());
 		assertNull(auditdata1);
@@ -88,8 +87,8 @@ public class AuditDataDAOTest {
 		questionid.add(new Integer(39));
 		questionid.add(new Integer(40));
 		questionid.add(new Integer(41));
-		HashMap<Integer, AuditData> auditdata = (HashMap<Integer, AuditData>) auditdataDAO.findAnswers(249, questionid);
-		assertEquals("Pacific Industrial Contractor Screening", auditdata.get(37).getAnswer());
+		Map<Integer, Map<Integer, AuditData>> auditdata = auditdataDAO.findAnswers(249, questionid);
+		assertEquals("Pacific Industrial Contractor Screening", auditdata.get(37).get(0).getAnswer());
 	}
 
 	@Test

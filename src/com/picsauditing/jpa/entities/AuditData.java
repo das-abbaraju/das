@@ -28,15 +28,16 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	private ContractorAudit audit;
 	private AuditQuestion question;
 	private AuditData parentAnswer = null;
+
 	private String answer;
 	private String comment;
 	private YesNo wasChanged;
 	private User auditor;
 	private Date dateVerified;
 
+	// Transient properties
+	private List<AuditData> siblings;
 	private FlagColor flagColor;
-	
-	private List<AuditQuestion> questions;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "auditID", nullable = false, updatable = false)
@@ -57,24 +58,25 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	public void setQuestion(AuditQuestion question) {
 		this.question = question;
 	}
-	
+
 	@Transient
-	public List<AuditQuestion> getQuestions() {
-		if (!question.isAllowMultipleAnswers())
-			throw new RuntimeException("non-multiple answer questions can't have multiple child questions");
-		return questions;
+	public List<AuditData> getSiblings() {
+		// if (!question.isAllowMultipleAnswers())
+		// throw new RuntimeException("non-multiple answer questions can't have
+		// multiple child questions");
+		return siblings;
 	}
-	
-	public void setQuestions(List<AuditQuestion> questions) {
-		this.questions = questions;
+
+	public void setSiblings(List<AuditData> siblings) {
+		this.siblings = siblings;
 	}
-	
+
 	@ManyToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "parentID", updatable = false)
 	public AuditData getParentAnswer() {
 		return parentAnswer;
 	}
-	
+
 	public void setParentAnswer(AuditData parentAnswer) {
 		this.parentAnswer = parentAnswer;
 	}
@@ -172,26 +174,56 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		return false;
 	}
 
+	@Transient
+	public boolean isRequired() {
+		String isRequired = question.getIsRequired();
+		if (isRequired.equals("Yes"))
+			return true;
+
+		if (isRequired.equals("Depends")) {
+			if (question.getDependsOnQuestion() == null)
+				return false;
+			String dependsOnAnswer = question.getDependsOnAnswer();
+			if (dependsOnAnswer == null)
+				return false;
+
+			// TODO BEFORE RELEASE! figure out some way to get the answer of a dependent question 
+			// dependsOnQuestion.getAnswer();
+			AuditData contractorAnswer = null;
+
+			if (contractorAnswer == null)
+				// The contractor hasn't answered this question yet
+				return false;
+			// Such as "Yes" and "Yes with Office" answers.
+			if (dependsOnAnswer.equals("Yes*"))
+				return contractorAnswer.getAnswer().startsWith("Yes");
+
+			if (dependsOnAnswer.equals(contractorAnswer.getAnswer()))
+				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Get a unique ID for this answer regardless if it has been saved or not
+	 * @return
+	 */
+	@Transient
+	public String getDivId() {
+		String divId = "" + getQuestion().getId();
+		if (getParentAnswer() == null)
+			divId += "0";
+		else
+			divId += getParentAnswer().getId();
+		return divId;
+	}
+
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + id;
 		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final AuditData other = (AuditData) obj;
-		if (this.getId() != other.getId())
-			return false;
-		return true;
 	}
 
 	/**
@@ -206,7 +238,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		if (dataMap.get(OshaAudit.AVG) != null)
 			// We already have the average
 			return;
-		
+
 		AuditData avg = new AuditData();
 		AuditQuestion avgQuestion = new AuditQuestion();
 		avg.setVerified(true); // Assume it's all verified
@@ -220,7 +252,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 			avg.setQuestion(data.getQuestion());
 			avg.getAudit().setContractorAccount(data.getAudit().getContractorAccount());
 			avg.getAudit().setAuditType(data.getAudit().getAuditType());
-			
+
 			if (data.isUnverified())
 				avg.setVerified(false);
 
@@ -235,24 +267,23 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		}
 		if (count > 0) {
 			Float avgRateFloat = rateTotal / count;
-			avgRateFloat = (float)Math.round(1000 * avgRateFloat) / 1000;
+			avgRateFloat = (float) Math.round(1000 * avgRateFloat) / 1000;
 			avg.setAnswer(avgRateFloat.toString());
 		}
 		dataMap.put(OshaAudit.AVG, avg);
 	}
 
-	
 	@Override
 	public int compareTo(AuditData other) {
-		if( other == null ) {
+		if (other == null) {
 			return 1;
 		}
-		
+
 		int cmp = getQuestion().compareTo(other.getQuestion());
-		
-		if( cmp != 0 ) 
+
+		if (cmp != 0)
 			return cmp;
 
-		return new Integer( getId() ).compareTo(new Integer(other.getId()));
+		return new Integer(getId()).compareTo(new Integer(other.getId()));
 	}
 }

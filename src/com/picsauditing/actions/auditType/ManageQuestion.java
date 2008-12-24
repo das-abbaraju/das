@@ -114,6 +114,8 @@ public class ManageQuestion extends ManageSubCategory {
 	}
 
 	private void recalculateCategory() {
+		/**
+		 Because categories can have multiples, we can't calculate percent complete anymore
 		if (category != null && category.getId() > 0) {
 			// Renumber the category
 			int numQuestions = 0;
@@ -129,6 +131,7 @@ public class ManageQuestion extends ManageSubCategory {
 			category.setNumRequired(numRequired);
 			auditCategoryDao.save(category);
 		}
+		**/
 	}
 
 	public String[] getQuestionTypes() {

@@ -88,8 +88,14 @@ public abstract class BaseTable {
 			return true;
 		if (obj == null)
 			return false;
+		if (id == 0)
+			return false;
+		
 		try {
 			BaseTable other = (BaseTable) obj;
+			if (other.getId() == 0)
+				return false;
+			
 			return id == other.getId();
 		} catch (Exception e) {
 			System.out.println("Error comparing BaseTable objects: " + e.getMessage());

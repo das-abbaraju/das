@@ -11,49 +11,18 @@ function changeAnswer(questionid, questionType) {
 	else {		
 		elm = $('verifiedBox_'+questionid);
 	}
-	saveVerifiedAnswer(questionid, elm); 
 }
 
-function saveVerifiedAnswer(questionid, elm) {
-	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.id=' + questionid + '&auditData.answer=' + escape($F(elm)) + '&toggleVerify=true';
-	var divName = 'status_'+questionid;
-	
-	startThinking({div:'thinking_' + questionid});
-	
-	var myAjax = new Ajax.Updater('','AuditToggleVerifyAjax.action', 
-	{
-		method: 'post', 
-		parameters: pars,
-		onSuccess: function(transport) {
-			if (transport.status == 200)
-
-				$('verify_details_' + questionid).toggle();
-				var json = transport.responseText.evalJSON();
-				
-				if( json.who ) {
-					$('verifyButton_' + questionid ).value = 'Unverify';
-					$('verify_details_' + questionid).innerHTML = 'Verified on ' + json.dateVerified + ' by ' + json.who;
-				} else {
-					$('verifyButton_' + questionid ).value = 'Verify';
-				}
-
-				stopThinking({div:'thinking_' + questionid});
-
-				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-
-		}
-	});
-}
-
-
-function saveComment(questionid, elm) {
+function saveComment(questionid, parentid, elm) {
 	if (catDataID == 0) return;
 
 	startThinking({div:'thinking_' + questionid});
 
 	var comment = $F($('comments_' + questionid));
-	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.id=' + questionid + '&auditData.comment=' + comment;
-	var divName = 'status_'+questionid;
+	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.id=' + questionid + '&auditData.parentAnswer.id=' + parentid + '&auditData.comment=' + comment;
+	var divId = questionid + '' + parentid;
+	var divName = 'status_'+divId;
+	
 	var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
 	{
 		method: 'post', 
@@ -70,24 +39,28 @@ function saveComment(questionid, elm) {
 }
 
 
-function saveAnswer( questionid, elm ) {
+function saveAnswer( questionid, parentid, elm ) {
 	if (catDataID == 0) return;
+	if (parentid == null || parentid == '')
+		parentid = 0;
 	
+	var divId = questionid + '' + parentid;
+	var divName = 'status_'+divId;
 	var thevalue = '';
 	
 	if( elm.type == 'checkbox') {
 		if(
-			( elm.name == ('question_' + questionid + '_C') || elm.name == ('question_' + questionid + '_S') )
-			&& ( document.getElementById('question_' + questionid + '_C') != undefined 
-			&& document.getElementById('question_' + questionid + '_S') != undefined)  
+			( elm.name == ('question_' + divId + '_C') || elm.name == ('question_' + divId + '_S') )
+			&& ( document.getElementById('question_' + divId + '_C') != undefined 
+			&& document.getElementById('question_' + divId + '_S') != undefined)  
 			) {
 
-				if( document.getElementById('question_' + questionid + '_C').checked )
+				if( document.getElementById('question_' + divId + '_C').checked )
 				{
 					thevalue = thevalue + 'C';
 				}
 								
-				if( document.getElementById('question_' + questionid + '_S').checked )
+				if( document.getElementById('question_' + divId + '_S').checked )
 				{
 					thevalue = thevalue + 'S';
 				}
@@ -107,8 +80,7 @@ function saveAnswer( questionid, elm ) {
 		return false;
 	}
 	
-	var divName = 'status_'+questionid;
-	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.id=' + questionid + '&auditData.answer=' + thevalue;
+	var pars = 'catDataID='+catDataID+'&auditData.audit.id='+auditID+'&auditData.question.id=' + questionid + '&auditData.parentAnswer.id=' + parentid + '&auditData.answer=' + thevalue;
 	
 	var myAjax = new Ajax.Updater('', 'AuditDataSaveAjax.action', 
 	{
@@ -118,9 +90,9 @@ function saveAnswer( questionid, elm ) {
 			alert(exception);
 		},
 		onSuccess: function(transport) {
-			$('required_td'+questionid).innerHTML = '';
+			$('required_td'+divId).innerHTML = ' ';
 			if (transport.status == 200)
-				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11'});
 			else
 				alert("Failed to save answer" + transport.statusText + transport.responseText);
 		}
@@ -128,27 +100,32 @@ function saveAnswer( questionid, elm ) {
 	return true;
 }
 
-function showFileUpload( questionid ) {
-	url = 'AuditDataUpload.action?auditID='+auditID+'&question.id=' + questionid;
-	title = 'Upload'+ questionid;
+function showFileUpload( questionid, parentid ) {
+	if (parentid == null || parentid == '')
+		parentid = 0;
+		
+	url = 'AuditDataUpload.action?auditID='+auditID+'&answer.question.id=' + questionid+'&answer.parentAnswer.id=' + parentid;
+	title = 'Upload';
 	pars = 'scrollbars=yes,resizable=yes,width=650,height=450,toolbar=0,directories=0,menubar=0';
 	fileUpload = window.open(url,title,pars);
 	fileUpload.focus();
 }
 
-function reloadQuestion( questionid ) {
-	var pars = 'auditID='+auditID+'&questionID=' + questionid;
-	var divName = 'td_answer_'+questionid;
+function reloadQuestion( questionid, parentid ) {
+	if (parentid == null || parentid == '')
+		parentid = 0;
+		
+	var pars = 'auditID='+auditID+'&answer.question.id=' + questionid+'&answer.parentAnswer.id=' + parentid;
+	var divId = questionid + '' + parentid;
+	var divName = 'td_answer_'+divId;
 	$(divName).innerHTML="<img src='images/ajax_process.gif' />";
+	
 	var myAjax = new Ajax.Updater(divName,'ReloadQuestionAjax.action',
 	{
 		method: 'post', 
 		parameters: pars,
 		onSuccess: function(transport) {
-			if (transport.status == 200)
-				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-			else
-				alert("Failed to save comment" + transport.statusText + transport.responseText);
+			new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#F3F3F3'});
 		}
 	});
 }

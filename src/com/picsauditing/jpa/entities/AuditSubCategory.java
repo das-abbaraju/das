@@ -4,6 +4,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,15 +23,16 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "pqfsubcategories")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="global")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
 public class AuditSubCategory implements java.io.Serializable, Comparable<AuditSubCategory> {
 
 	private int id;
 	private String subCategory;
 	private AuditCategory category;
 	private int number;
-	
+
 	private List<AuditQuestion> questions;
+	private List<AuditData> answerList;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -81,15 +83,77 @@ public class AuditSubCategory implements java.io.Serializable, Comparable<AuditS
 	}
 
 	@Transient
-	public List<AuditQuestion> getValidQuestions() {
-		List<AuditQuestion> list = new ArrayList<AuditQuestion>();
-		for(AuditQuestion question : getQuestions())
+	public List<AuditData> getAnswerList() {
+		return answerList;
+	}
+
+	public boolean hasValidQuestions() {
+		for (AuditQuestion question : this.getQuestions())
 			if (category.getValidDate().after(question.getEffectiveDate())
 					&& category.getValidDate().before(question.getExpirationDate()))
-				list.add(question);
-		return list;
+				return true;
+		return false;
 	}
-	
+
+	/**
+	 * 
+	 * @param answerMap
+	 *            Map of questionID, parentID, AuditData. If parentID is null,
+	 *            then use 0
+	 */
+	public void build(ContractorAudit conAudit, Map<Integer, Map<Integer, AuditData>> answerMap) {
+		answerList = new ArrayList<AuditData>();
+
+		for (AuditQuestion question : getQuestions()) {
+			if (question.getParentQuestion() == null)
+				addChildren(conAudit, 0, question, answerMap);
+		}
+	}
+
+	private void addChildren(ContractorAudit conAudit, int rowID, AuditQuestion question,
+			Map<Integer, Map<Integer, AuditData>> answerMap) {
+		if (category.getValidDate().after(question.getEffectiveDate())
+				&& category.getValidDate().before(question.getExpirationDate())) {
+			// This is a valid question we want to include
+			Map<Integer, AuditData> answersForThisQuestion = answerMap.get(question.getId());
+			// System.out.println("Adding question:" + rowID + " " +
+			// question.getQuestion());
+			if (question.isAllowMultipleAnswers()) {
+				for (Integer childRowID : answersForThisQuestion.keySet()) {
+					// System.out.println("Put answer:" +
+					// answersForThisQuestion.get(childRowID).getAnswer());
+					answerList.add(answersForThisQuestion.get(childRowID));
+
+					for (AuditQuestion childQuestion : question.getChildQuestions()) {
+						addChildren(conAudit, childRowID, childQuestion, answerMap);
+					}
+				}
+				// Always add a blank entry
+				AuditData answer = new AuditData();
+				answer.setQuestion(question);
+				answer.setAudit(conAudit);
+				// System.out.println("Put new entry");
+				answerList.add(answer);
+			} else {
+				AuditData answer = null;
+				if (answersForThisQuestion != null)
+					answer = answersForThisQuestion.get(rowID);
+				if (answer == null) {
+					answer = new AuditData();
+					answer.setQuestion(question);
+					if (rowID > 0) {
+						answer.setParentAnswer(new AuditData());
+						answer.getParentAnswer().setId(rowID);
+					}
+					answer.setAudit(conAudit);
+				}
+				// System.out.println("Put single answer:" + answer.getId() + "
+				// " + answer.getAnswer());
+				answerList.add(answer);
+			}
+		}
+	}
+
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;
@@ -116,16 +180,16 @@ public class AuditSubCategory implements java.io.Serializable, Comparable<AuditS
 
 	@Override
 	public int compareTo(AuditSubCategory other) {
-		if( other == null ) {
+		if (other == null) {
 			return 1;
 		}
-		
+
 		int cmp = getCategory().compareTo(other.getCategory());
-		
-		if( cmp != 0 ) 
+
+		if (cmp != 0)
 			return cmp;
 
-		return new Integer( getNumber() ).compareTo(new Integer(other.getNumber()));
+		return new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
 	}
-	
+
 }

@@ -312,7 +312,7 @@ public class AuditBuilder {
 			dependencies.put(AuditCategory.EMR, 2033);
 			dependencies.put(AuditCategory.LOSS_RUN, 2033);
 
-			Map<Integer, AuditData> answers = auditDataDAO.findAnswers(conAudit
+			Map<Integer, Map<Integer, AuditData>> answers = auditDataDAO.findAnswers(conAudit
 					.getId(), new Vector<Integer>(dependencies.values()));
 
 			for (AuditCategory cat : conAudit.getAuditType().getCategories()) {
@@ -320,8 +320,8 @@ public class AuditBuilder {
 				boolean include = false;
 
 				if (answers != null && dependencies.get(cat.getId()) != null) {
-					AuditData answer = answers.get(dependencies
-							.get(cat.getId()));
+					int questionID = dependencies.get(cat.getId());
+					AuditData answer = answers.get(questionID).get(0);
 					if (answer == null)
 						include = false;
 					else {

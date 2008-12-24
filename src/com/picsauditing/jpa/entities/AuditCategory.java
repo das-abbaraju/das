@@ -123,7 +123,7 @@ public class AuditCategory implements java.io.Serializable, Comparable<AuditCate
 	public List<AuditSubCategory> getValidSubCategories() {
 		List<AuditSubCategory> list = new ArrayList<AuditSubCategory>();
 		for(AuditSubCategory subCategory : getSubCategories())
-			if (subCategory.getValidQuestions().size() > 0)
+			if (subCategory.hasValidQuestions())
 				list.add(subCategory);
 		return list;
 	}

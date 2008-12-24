@@ -94,7 +94,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 
 		getCategories();
 
-		Map<Integer, AuditData> answers = null;
+		Map<Integer, Map<Integer, AuditData>> answers = null;
 		if (catDataID > 0 || catID > 0) {
 			for (AuditCatData catData : categories) {
 				// We can open audits using either the catID or the catDataID
@@ -106,7 +106,9 @@ public class AuditCategoryAction extends AuditActionSupport {
 
 					answers = auditDataDao.findByCategory(auditID, catData
 							.getCategory());
-					fillAnswers(catData, answers);
+					for(AuditSubCategory subCategory : catData.getCategory().getSubCategories()) {
+						subCategory.build(conAudit, answers);
+					}
 					currentCategory = catData;
 
 					if (mode == null
@@ -124,6 +126,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 					}
 				}
 			}
+			
 			if (currentCategory == null) {
 				if (catID == 0)
 					throw new Exception("Failed to find category for audit");
@@ -155,7 +158,9 @@ public class AuditCategoryAction extends AuditActionSupport {
 			// When we want to show all categories
 			answers = auditDataDao.findAnswers(auditID);
 			for (AuditCatData catData : categories) {
-				fillAnswers(catData, answers);
+				for(AuditSubCategory subCategory : catData.getCategory().getSubCategories()) {
+					subCategory.build(conAudit, answers);
+				}
 			}
 		}
 
@@ -253,7 +258,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 		return SUCCESS;
 	}
 
-	private void fillAnswers(AuditCatData catData,
+/*	private void fillAnswers(AuditCatData catData,
 			Map<Integer, AuditData> answers) {
 		for (AuditSubCategory subCategory : catData.getCategory()
 				.getSubCategories()) {
@@ -304,6 +309,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 			}
 		}
 	}
+	*/
 
 	public int getCatDataID() {
 		return catDataID;

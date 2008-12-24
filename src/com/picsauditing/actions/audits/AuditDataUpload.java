@@ -1,7 +1,8 @@
 package com.picsauditing.actions.audits;
 
 import java.io.File;
-import java.util.Date;
+
+import javax.persistence.NoResultException;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -18,10 +19,10 @@ import com.picsauditing.util.FileUtils;
 
 public class AuditDataUpload extends AuditActionSupport {
 	private static final long serialVersionUID = 2438788697676816034L;
-	
+
 	protected AuditQuestionDAO questionDAO;
-	
-	private AuditQuestion question;
+
+	private AuditData answer;
 	private File file;
 	protected String fileContentType = null;
 	protected String fileFileName = null;
@@ -36,33 +37,42 @@ public class AuditDataUpload extends AuditActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		this.findConAudit();
-		
-		if (question == null) {
+
+		if (answer == null) {
 			addActionError("No question supplied for upload");
 			return SUCCESS;
 		}
-		question = questionDAO.find(question.getId());
-		if (question == null) {
-			addActionError("Failed to find question");
+
+		int questionID = answer.getQuestion().getId();
+		int dataID = 0;
+
+		try {
+			// Try to find the previous version using the passed in auditData
+			// record
+			int auditID = conAudit.getId();
+			int parentAnswerID = answer.getParentAnswer().getId();
+
+			answer = auditDataDao.findAnswerToQuestion(auditID, questionID, parentAnswerID);
+		} catch (NoResultException notReallyAProblem) {
+		}
+		
+		if (answer == null) {
+			answer = new AuditData();
+			answer.setAudit(conAudit);
+			AuditQuestion question = questionDAO.find(questionID);
+			if (question == null) {
+				addActionError("Failed to find question");
+				return BLANK;
+			}
+			answer.setQuestion(question);
 			return SUCCESS;
-		}
-		
-		AuditData data = auditDataDao.findAnswerToQuestion(conAudit.getId(), question.getId());
-		if (data == null) {
-			// Add a new answer
-			data = new AuditData();
-			data.setQuestion(question);
-			data.setAudit(conAudit);
-		}
-		question.setAnswer(data);
-		int dataID = data.getId();
-		
-		//String fileName = getFileName();
-		//String folderName = AuditQuestion.filesFolder + "/qID_" + question.getId();
-		
+		} else
+			dataID = answer.getId();
+
 		if (button != null) {
-			if (button.equals("download")) {
-				Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext.getServletContext());
+			if (dataID > 0 && button.equals("download")) {
+				Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext
+						.getServletContext());
 				try {
 					File[] files = getFiles(dataID);
 					downloader.download(files[0], null);
@@ -72,76 +82,73 @@ public class AuditDataUpload extends AuditActionSupport {
 					return BLANK;
 				}
 			}
-			
+
 			if (dataID > 0 && button.startsWith("Delete")) {
 				try {
 					// remove all files ie (pdf, jpg)
-					for(File oldFile : getFiles(dataID))
+					for (File oldFile : getFiles(dataID))
 						FileUtils.deleteFile(oldFile);
 				} catch (Exception e) {
 					addActionError("Failed to save file: " + e.getMessage());
 					e.printStackTrace();
 					return INPUT;
 				}
-				
-				auditDataDao.remove(data.getId());
+
+				auditDataDao.remove(answer.getId());
 				addActionMessage("Successfully removed file");
 			}
 			if (button.startsWith("Upload")) {
-				if( file == null || file.length() == 0 ) {
+				if (file == null || file.length() == 0) {
 					addActionError("File was missing or empty");
 					return SUCCESS;
 				}
-				String extension = fileFileName.substring( fileFileName.lastIndexOf(".") + 1 );
-				
-				if(!FileUtils.checkFileExtension(extension)) {
+				String extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
+
+				if (!FileUtils.checkFileExtension(extension)) {
 					addActionError("Bad File Extension");
 					return SUCCESS;
 				}
-				
-				addActionMessage("Successfully uploaded <b>"+fileFileName+"</b> file");
-				data.setAnswer(extension);
-				
-				if (data.getCreationDate() == null)
-					data.setCreationDate(new Date());
-				if (data.getCreatedBy() == null)
-					data.setCreatedBy(this.getUser());
-				
-				data.setUpdateDate(new Date());
-				data.setUpdatedBy(this.getUser());
-				
-				data = auditDataDao.save(data);
-				dataID = data.getId();
-				FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID), getFileName(dataID), extension, true);
+
+				addActionMessage("Successfully uploaded <b>" + fileFileName + "</b> file");
+				answer.setAnswer(extension);
+
+				answer.setAuditColumns(getUser());
+				auditDataDao.save(answer);
+				dataID = answer.getId();
+
+				FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID), getFileName(dataID),
+						extension, true);
 			}
 		}
-		
-		File[] files = getFiles(dataID);
-		if (files != null) {
-			if (files.length > 0)
-				file = files[0];
-			if (files.length > 1)
-				addActionError("Somehow, two files were uploaded.");
+
+		if (dataID > 0) {
+			File[] files = getFiles(dataID);
+			if (files != null) {
+				if (files.length > 0)
+					file = files[0];
+				if (files.length > 1)
+					addActionError("Somehow, two files were uploaded.");
+			}
 		}
-		
+
 		return SUCCESS;
 	}
-	
+
 	private String getFileName(int dataID) {
 		return PICSFileType.data + "_" + dataID;
 	}
-	
+
 	private File[] getFiles(int dataID) {
 		File dir = new File(getFtpDir() + "/files/" + FileUtils.thousandize(dataID));
 		return FileUtils.getSimilarFiles(dir, getFileName(dataID));
 	}
-	
-	public AuditQuestion getQuestion() {
-		return question;
+
+	public AuditData getAnswer() {
+		return answer;
 	}
 
-	public void setQuestion(AuditQuestion question) {
-		this.question = question;
+	public void setAnswer(AuditData answer) {
+		this.answer = answer;
 	}
 
 	public File getFile() {
@@ -167,7 +174,7 @@ public class AuditDataUpload extends AuditActionSupport {
 	public void setFileFileName(String fileFileName) {
 		this.fileFileName = fileFileName;
 	}
-	
+
 	public String getFileSize() {
 		return FileUtils.size(file);
 	}

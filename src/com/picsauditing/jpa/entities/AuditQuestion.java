@@ -67,8 +67,7 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 
 	protected List<AuditQuestionOperatorAccount> operator;
 	protected List<AuditQuestionOption> options;
-	protected AuditData answer;
-	protected List<AuditData> tuples;
+	protected List<AuditQuestion> childQuestions;
 	private String criteria;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -324,6 +323,16 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 		this.operator = operator;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "parentID")
+	public AuditQuestion getParentQuestion() {
+		return parentQuestion;
+	}
+
+	public void setParentQuestion(AuditQuestion parentQuestion) {
+		this.parentQuestion = parentQuestion;
+	}
+
 	public boolean isAllowMultipleAnswers() {
 		return allowMultipleAnswers;
 	}
@@ -331,53 +340,14 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	public void setAllowMultipleAnswers(boolean allowMultipleAnswers) {
 		this.allowMultipleAnswers = allowMultipleAnswers;
 	}
-
-	@Transient
-	public AuditData getAnswer() {
-		if (isAllowMultipleAnswers()) {
-			throw new RuntimeException("use getTuples()");
-		}
-		return answer;
-	}
-
-	public void setAnswer(AuditData answer) {
-		this.answer = answer;
+	
+	@OneToMany(mappedBy = "parentQuestion")
+	public List<AuditQuestion> getChildQuestions() {
+		return childQuestions;
 	}
 	
-	@Transient
-	public List<AuditData> getTuples() {
-		if (!isAllowMultipleAnswers()) {
-			throw new RuntimeException("use getAnswer()");
-		}
-		return tuples;
-	}
-	
-	public void setTuples(List<AuditData> tuples) {
-		this.tuples = tuples;
-	}
-
-	@Transient
-	public boolean isRequired() {
-
-		if (isRequired.equals("Yes"))
-			return true;
-		if (isRequired.equals("Depends")) {
-			if (dependsOnQuestion == null)
-				return false;
-			if (dependsOnAnswer == null)
-				return false;
-			AuditData contractorAnswer = dependsOnQuestion.getAnswer();
-			if (contractorAnswer == null)
-				// The contractor hasn't answered this question yet
-				return false;
-			// Such as "Yes" and "Yes with Office" answers.
-			if (dependsOnAnswer.equals("Yes*"))
-				return contractorAnswer.getAnswer().startsWith("Yes");
-
-			if (dependsOnAnswer.equals(contractorAnswer.getAnswer()))
-				return true;
-		}
-		return false;
+	public void setChildQuestions(List<AuditQuestion> childQuestions) {
+		this.childQuestions = childQuestions;
 	}
 
 	@OneToMany(mappedBy = "auditQuestion")
@@ -396,20 +366,6 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 		int result = 1;
 		result = PRIME * result + id;
 		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final AuditQuestion other = (AuditQuestion) obj;
-		if (id != other.getId())
-			return false;
-		return true;
 	}
 
 	@Column(length = 30)

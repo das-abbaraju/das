@@ -47,6 +47,8 @@ public class AuditPercentCalculator {
 		// Get a list of questions/answers for this category
 		List<Integer> questionIDs = new ArrayList<Integer>();
 
+		/*
+		 * TODO BEFORE RELEASE! FINISH CALCULATION!!
 		for (AuditSubCategory subCategory : catData.getCategory().getValidSubCategories()) {
 			for (AuditQuestion question : subCategory.getValidQuestions()) {
 				questionIDs.add(question.getId());
@@ -96,6 +98,7 @@ public class AuditPercentCalculator {
 				}
 			}
 		}
+		 */
 
 		catData.setNumAnswered(answeredCount);
 		catData.setNumRequired(requiredCount);
