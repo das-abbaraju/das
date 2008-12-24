@@ -51,8 +51,8 @@ public class Account implements java.io.Serializable {
 	protected String webUrl;
 	protected Industry industry;
 	protected char active;
-	protected String createdBy;
-	protected Date dateCreated;
+	protected String createdBy = "PICS";
+	protected Date dateCreated = new Date();
 	protected char seesAllB;
 	protected char sendActivationEmailB;
 	protected String activationEmailsB;

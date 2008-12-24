@@ -28,14 +28,15 @@ import org.hibernate.annotations.Type;
 public class OperatorAccount extends Account implements java.io.Serializable {
 	public static final String DEFAULT_NAME = "- Operator -";
 
-	private String activationEmails;
-	private String doSendActivationEmail;
-	private String doContractorsPay;
-	private YesNo canSeeInsurance;
-	private YesNo isCorporate;
+	private String activationEmails = "";
+	private String doSendActivationEmail = "No";
+	private String doContractorsPay = "No";
+	private YesNo canSeeInsurance = YesNo.No;
+	private YesNo isCorporate = YesNo.No;
 	private User insuranceAuditor;
-	private YesNo isUserManualUploaded;
-	private YesNo approvesRelationships;
+	private YesNo isUserManualUploaded = YesNo.No;
+	private YesNo approvesRelationships = YesNo.No;
+	private boolean verifiedByPics = false;
 
 	protected List<AuditQuestionOperatorAccount> auditQuestions = new ArrayList<AuditQuestionOperatorAccount>();
 	protected List<FlagQuestionCriteria> flagQuestionCriteria = new ArrayList<FlagQuestionCriteria>();
@@ -132,6 +133,16 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.approvesRelationships = approvesRelationships;
 	}
 
+	@Column(name = "verifiedByPics", nullable = false)
+	@Enumerated(EnumType.ORDINAL)
+	public boolean isVerifiedByPics() {
+		return verifiedByPics;
+	}
+
+	public void setVerifiedByPics(boolean verifiedByPics) {
+		this.verifiedByPics = verifiedByPics;
+	}
+	
 	@OneToMany(mappedBy = "operatorAccount")
 	public List<AuditQuestionOperatorAccount> getAuditQuestions() {
 		return auditQuestions;

@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -36,6 +37,8 @@ public class AuditOperator implements java.io.Serializable {
 	protected FlagColor requiredForFlag;
 	protected int orderedCount = -1;
 	protected Date orderDate;
+	protected FlagColor additionalInsuredFlag;
+	protected FlagColor waiverSubFlag;
 
 	private int htmlID = 0;
 	private FlagColor contractorFlag;
@@ -129,6 +132,27 @@ public class AuditOperator implements java.io.Serializable {
 	public void setRequiredAuditStatus(AuditStatus requiredAuditStatus) {
 		this.requiredAuditStatus = requiredAuditStatus;
 	}
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "additionalInsuredFlag", nullable = true)
+	public FlagColor getAdditionalInsuredFlag() {
+		return additionalInsuredFlag;
+	}
+
+	public void setAdditionalInsuredFlag(FlagColor additionalInsuredFlag) {
+		this.additionalInsuredFlag = additionalInsuredFlag;
+	}
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "waiverSubFlag", nullable = true)
+	public FlagColor getWaiverSubFlag() {
+		return waiverSubFlag;
+	}
+
+	public void setWaiverSubFlag(FlagColor waiverSubFlag) {
+		this.waiverSubFlag = waiverSubFlag;
+	}
+
 
 	/**
 	 * Unique ID used in HTML. We can't use the auditOperatorID because that may
@@ -179,8 +203,4 @@ public class AuditOperator implements java.io.Serializable {
 			return false;
 		return true;
 	}
-
-	
-	
-	
 }
