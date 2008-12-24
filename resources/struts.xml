@@ -190,8 +190,15 @@
 			class="com.picsauditing.actions.report.ReportOperatorCorporate">
 			<result>struts/reports/operator_corporate_data.jsp</result>
 		</action>
-
-
+		<action name="FacilitiesEdit"
+			class="com.picsauditing.actions.operators.FacilitiesEdit">
+			<result>struts/operators/operator_edit.jsp</result>
+		</action>
+		
+		<action name="AccountNameEditAjax"
+			class="com.picsauditing.actions.operators.FacilitiesEdit">
+			<result>/struts/blank.jsp</result>
+		</action>
 
 
 		<!-- REPORTS Other -->

@@ -5,7 +5,8 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
 
 <persistence-unit name="punit">
-  <class>com.picsauditing.jpa.entities.Account</class> 
+  <class>com.picsauditing.jpa.entities.Account</class>
+  <class>com.picsauditing.jpa.entities.AccountName</class>  
   <class>com.picsauditing.jpa.entities.AppProperty</class> 
   <class>com.picsauditing.jpa.entities.AuditCatData</class>
   <class>com.picsauditing.jpa.entities.AuditCategory</class>
@@ -18,14 +19,18 @@
   <class>com.picsauditing.jpa.entities.AuditStatus</class> 
   <class>com.picsauditing.jpa.entities.AuditSubCategory</class>
   <class>com.picsauditing.jpa.entities.AuditType</class>
+  <class>com.picsauditing.jpa.entities.AuditTypeClass</class>
+  <class>com.picsauditing.jpa.entities.BaseTable</class>
   <class>com.picsauditing.jpa.entities.Certificate</class> 
   <class>com.picsauditing.jpa.entities.ContractorAccount</class>
-  <class>com.picsauditing.jpa.entities.ContractorAudit</class> 
+  <class>com.picsauditing.jpa.entities.ContractorAudit</class>
+  <class>com.picsauditing.jpa.entities.ContractorAuditOperator</class> 
   <class>com.picsauditing.jpa.entities.ContractorOperator</class>
   <class>com.picsauditing.jpa.entities.ContractorOperatorFlag</class>
   <class>com.picsauditing.jpa.entities.DesktopMatrix</class>
   <class>com.picsauditing.jpa.entities.EmailAttachment</class>
   <class>com.picsauditing.jpa.entities.EmailQueue</class>
+  <class>com.picsauditing.jpa.entities.EmailStatus</class>
   <class>com.picsauditing.jpa.entities.EmailTemplate</class>
   <class>com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings</class> 
   <class>com.picsauditing.jpa.entities.Facility</class>
@@ -36,6 +41,7 @@
   <class>com.picsauditing.jpa.entities.Industry</class>
   <class>com.picsauditing.jpa.entities.ListType</class>
   <class>com.picsauditing.jpa.entities.LowMedHigh</class>	
+  <class>com.picsauditing.jpa.entities.MultiYearScope</class>
   <class>com.picsauditing.jpa.entities.NcmsCategory</class>
   <class>com.picsauditing.jpa.entities.Note</class>
   <class>com.picsauditing.jpa.entities.NoteCategory</class>
@@ -49,12 +55,12 @@
   <class>com.picsauditing.jpa.entities.State</class>
   <class>com.picsauditing.jpa.entities.Token</class>
   <class>com.picsauditing.jpa.entities.User</class> 
+  <class>com.picsauditing.jpa.entities.UserAccess</class>
   <class>com.picsauditing.jpa.entities.UserGroup</class>
   <class>com.picsauditing.jpa.entities.UserLoginLog</class>
-  <class>com.picsauditing.jpa.entities.UserAccess</class>
+  <class>com.picsauditing.jpa.entities.WaitingOn</class>
   <class>com.picsauditing.jpa.entities.Widget</class>
   <class>com.picsauditing.jpa.entities.WidgetUser</class>
-  <class>com.picsauditing.jpa.entities.WaitingOn</class>
   <class>com.picsauditing.jpa.entities.YesNo</class>
    
  <properties>
