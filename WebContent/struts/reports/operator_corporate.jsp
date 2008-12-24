@@ -8,10 +8,10 @@
 <h1>Manage <s:property value="accountType"/> Accounts</h1>
 <s:if test="canEdit">
 	<s:if test="accountType.equals('Corporate')">
-		<div><a href="accounts_new_operator.jsp?type=<s:property value="accountType"/>">Create New Corporate</a></div>
+		<div><a href="FacilitiesEdit.action?type=<s:property value="accountType"/>">Create New Corporate</a></div>
 	</s:if>
 	<s:else>
-		<div><a href="accounts_new_operator.jsp?type=<s:property value="accountType"/>">Create New</a></div>	
+		<div><a href="FacilitiesEdit.action?type=<s:property value="accountType"/>">Create New</a></div>	
 	</s:else>
 </s:if>
 
@@ -45,10 +45,10 @@
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			
 			<s:if test="%{[0].get('active') == \"Y\"}">
-			<td><a href="accounts_edit_operator.jsp?id=<s:property value="[0].get('id')"/>"><s:property value="[0].get('name')"/></a>
+			<td><a href="FacilitiesEdit.action?opID=<s:property value="[0].get('id')"/>&type=<s:property value="[0].get('type')"/>"><s:property value="[0].get('name')"/></a>
 			</td></s:if>
 			<s:else>
-			<td class="inactive"><a href="accounts_edit_operator.jsp?id=<s:property value="[0].get('id')"/>"><s:property value="[0].get('name')"/>*</a>
+			<td class="inactive"><a href="FacilitiesEdit.action?opID=<s:property value="[0].get('id')"/>&type=<s:property value="[0].get('type')"/>"><s:property value="[0].get('name')"/>*</a>
 			</td>
 			</s:else>
 			<td><s:property value="get('industry')"/></td>
