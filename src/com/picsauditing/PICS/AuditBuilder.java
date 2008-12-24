@@ -16,6 +16,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
@@ -29,6 +30,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 
 /**
@@ -40,20 +42,23 @@ import com.picsauditing.jpa.entities.YesNo;
 public class AuditBuilder {
 	private boolean debug = false;
 	private boolean fillAuditCategories = true;
+	private User user = null;
 
 	private AuditTypeDAO auditTypeDAO;
 	private ContractorAccountDAO contractorDAO;
 	private ContractorAuditDAO cAuditDAO;
 	private AuditDataDAO auditDataDAO;
 	private AuditCategoryDAO auditCategoryDAO;
+	private ContractorAuditOperatorDAO contractorAuditOperatorDAO;
 
 	public AuditBuilder(AuditTypeDAO auditTypeDAO, ContractorAccountDAO contractorDAO, ContractorAuditDAO cAuditDAO,
-			AuditDataDAO auditDataDAO, AuditCategoryDAO auditCategoryDAO) {
+			AuditDataDAO auditDataDAO, AuditCategoryDAO auditCategoryDAO, ContractorAuditOperatorDAO contractorAuditOperatorDAO) {
 		this.auditTypeDAO = auditTypeDAO;
 		this.contractorDAO = contractorDAO;
 		this.cAuditDAO = cAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.auditCategoryDAO = auditCategoryDAO;
+		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
 	}
 
 	/**
@@ -281,7 +286,7 @@ public class AuditBuilder {
 					if (conAudit.getAuditType().equals(ao.getAuditType()) 
 							&& ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal()
 							&& ao.isCanSee()) {
-						debug(contractor.getName() + " is required to have " + ao.getAuditType());
+						debug(contractor.getName() + " is required to have " + ao.getAuditType().getAuditName());
 						required = true;
 						break;
 					}
@@ -292,14 +297,31 @@ public class AuditBuilder {
 				// If we don't have one, then add it
 				boolean included = false;
 				for(ContractorAuditOperator cao : conAudit.getOperators()) {
-					if (cao.getOperator().equals(operator))
+					if (cao.getOperator().equals(operator)) {
 						included = true;
+						break;
+					}
 				}
 				if (!included) {
 					debug("Adding missing ContractorAuditOperator");
+					ContractorAuditOperator cao = new ContractorAuditOperator();
+					cao.setAudit(conAudit);
+					cao.setOperator(operator);
+					cao.setAuditColumns(user);
+					cao.setStatus("Pending");
+					contractorAuditOperatorDAO.save(cao);
 				}
 			} else {
 				// Remove Pending records that are already on there
+				Iterator<ContractorAuditOperator> iter = conAudit.getOperators().iterator();
+				while (iter.hasNext()) {
+					ContractorAuditOperator cao = iter.next();
+					if (cao.getOperator().equals(operator) && cao.getStatus().equals("Pending")) {
+						debug("Removing unneeded ContractorAuditOperator");
+						contractorAuditOperatorDAO.remove(cao);
+						iter.remove();
+					}
+				}
 			}
 		}
 	}
@@ -474,6 +496,14 @@ public class AuditBuilder {
 				System.out.println("ERROR!! AuditBuiler.addAuditRenewals() " + e.getMessage());
 			}
 		}
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	private void debug(String message) {

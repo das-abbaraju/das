@@ -23,6 +23,7 @@
 	<bean id="AuditQuestionDAO" class="com.picsauditing.dao.AuditQuestionDAO"/>
 	<bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO"/>
 	<bean id="ContractorAuditDAO" class="com.picsauditing.dao.ContractorAuditDAO"/>
+	<bean id="ContractorAuditOperatorDAO" class="com.picsauditing.dao.ContractorAuditOperatorDAO"/>
 	<bean id="ContractorAccountDAO" class="com.picsauditing.dao.ContractorAccountDAO"/>
 	<bean id="ContractorOperatorDAO" class="com.picsauditing.dao.ContractorOperatorDAO"/>
 	<bean id="ContractorOperatorFlagDAO" class="com.picsauditing.dao.ContractorOperatorFlagDAO"/>
