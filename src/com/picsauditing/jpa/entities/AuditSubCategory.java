@@ -119,13 +119,15 @@ public class AuditSubCategory implements java.io.Serializable, Comparable<AuditS
 			// System.out.println("Adding question:" + rowID + " " +
 			// question.getQuestion());
 			if (question.isAllowMultipleAnswers()) {
-				for (Integer childRowID : answersForThisQuestion.keySet()) {
-					// System.out.println("Put answer:" +
-					// answersForThisQuestion.get(childRowID).getAnswer());
-					answerList.add(answersForThisQuestion.get(childRowID));
-
-					for (AuditQuestion childQuestion : question.getChildQuestions()) {
-						addChildren(conAudit, childRowID, childQuestion, answerMap);
+				if (answersForThisQuestion != null) {
+					for (Integer childRowID : answersForThisQuestion.keySet()) {
+						// System.out.println("Put answer:" +
+						// answersForThisQuestion.get(childRowID).getAnswer());
+						answerList.add(answersForThisQuestion.get(childRowID));
+						
+						for (AuditQuestion childQuestion : question.getChildQuestions()) {
+							addChildren(conAudit, childRowID, childQuestion, answerMap);
+						}
 					}
 				}
 				// Always add a blank entry
