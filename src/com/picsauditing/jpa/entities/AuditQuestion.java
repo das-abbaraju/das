@@ -36,6 +36,8 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	private AuditSubCategory subCategory;
 	private int number;
 	private String question;
+	private String columnHeader;
+	private String uniqueCode;
 	private Date effectiveDate = new Date();
 	private Date expirationDate;
 	private YesNo hasRequirement = YesNo.No;
@@ -50,8 +52,8 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	private String title;
 	private YesNo isVisible = YesNo.Yes;
 	private YesNo isGroupedWithPrevious = YesNo.No;
-	private String columnHeader;
 	private boolean allowMultipleAnswers = false;
+	private int minimumTuples = 0;
 	private String linkUrl1;
 	private String linkText1;
 	private String linkUrl2;
@@ -324,7 +326,7 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "parentID")
+	@JoinColumn(name = "parentID", updatable = true)
 	public AuditQuestion getParentQuestion() {
 		return parentQuestion;
 	}
@@ -341,7 +343,25 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 		this.allowMultipleAnswers = allowMultipleAnswers;
 	}
 	
+	@Column(length = 50)
+	public String getUniqueCode() {
+		return uniqueCode;
+	}
+
+	public void setUniqueCode(String uniqueCode) {
+		this.uniqueCode = uniqueCode;
+	}
+
+	public int getMinimumTuples() {
+		return minimumTuples;
+	}
+
+	public void setMinimumTuples(int minimumTuples) {
+		this.minimumTuples = minimumTuples;
+	}
+
 	@OneToMany(mappedBy = "parentQuestion")
+	@OrderBy("number")
 	public List<AuditQuestion> getChildQuestions() {
 		return childQuestions;
 	}

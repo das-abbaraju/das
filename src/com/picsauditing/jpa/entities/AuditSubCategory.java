@@ -21,6 +21,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "pqfsubcategories")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
@@ -116,14 +117,13 @@ public class AuditSubCategory implements java.io.Serializable, Comparable<AuditS
 				&& category.getValidDate().before(question.getExpirationDate())) {
 			// This is a valid question we want to include
 			Map<Integer, AuditData> answersForThisQuestion = answerMap.get(question.getId());
-			// System.out.println("Adding question:" + rowID + " " +
-			// question.getQuestion());
+			//System.out.println("Adding question:" + rowID + " " + question.getQuestion());
 			if (question.isAllowMultipleAnswers()) {
 				if (answersForThisQuestion != null) {
-					for (Integer childRowID : answersForThisQuestion.keySet()) {
-						// System.out.println("Put answer:" +
-						// answersForThisQuestion.get(childRowID).getAnswer());
-						answerList.add(answersForThisQuestion.get(childRowID));
+					for (AuditData childData : answersForThisQuestion.values()) {
+						int childRowID = childData.getId();
+						//System.out.println("Put answer:" + childData.getAnswer());
+						answerList.add(childData);
 						
 						for (AuditQuestion childQuestion : question.getChildQuestions()) {
 							addChildren(conAudit, childRowID, childQuestion, answerMap);
@@ -149,8 +149,7 @@ public class AuditSubCategory implements java.io.Serializable, Comparable<AuditS
 					}
 					answer.setAudit(conAudit);
 				}
-				// System.out.println("Put single answer:" + answer.getId() + "
-				// " + answer.getAnswer());
+				//System.out.println("Put single answer:" + answer.getId() + " " + answer.getAnswer());
 				answerList.add(answer);
 			}
 		}

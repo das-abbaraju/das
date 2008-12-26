@@ -18,7 +18,8 @@ public class ManageQuestion extends ManageSubCategory {
 
 	protected AuditQuestionDAO auditQuestionDao;
 	protected AuditDataDAO auditDataDAO;
-	private String dependsOnQuestionID = null;
+	private int dependsOnQuestionID = 0;
+	private int parentQuestionID = 0;
 
 	public ManageQuestion(AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
 			AuditSubCategoryDAO auditSubCategoryDao, AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO) {
@@ -42,7 +43,9 @@ public class ManageQuestion extends ManageSubCategory {
 	protected void load(AuditQuestion o) {
 		this.question = o;
 		if (question.getDependsOnQuestion() != null)
-			dependsOnQuestionID = Integer.toString(question.getDependsOnQuestion().getId());
+			dependsOnQuestionID = question.getDependsOnQuestion().getId();
+		if (question.getParentQuestion() != null)
+			parentQuestionID = question.getParentQuestion().getId();
 		load(question.getSubCategory());
 	}
 
@@ -60,27 +63,29 @@ public class ManageQuestion extends ManageSubCategory {
 				}
 				question.setNumber(maxID + 1);
 			}
-			question.setAuditColumns(this.getUser());
+			question.setAuditColumns(getUser());
 
 			if (question.getEffectiveDate() == null)
 				question.setEffectiveDate(question.getCreationDate());
 			if (question.getExpirationDate() == null)
 				question.setExpirationDate(DateBean.getEndOfTime());
 
-			if (Strings.isEmpty(dependsOnQuestionID) || dependsOnQuestionID.equals("0"))
+			if (dependsOnQuestionID == 0)
 				question.setDependsOnQuestion(null);
-			else {
-				try {
-					int questionId = Integer.parseInt(dependsOnQuestionID);
-					if (question.getDependsOnQuestion() == null
-							|| questionId != question.getDependsOnQuestion().getId()) {
-						question.setDependsOnQuestion(new AuditQuestion());
-						question.getDependsOnQuestion().setId(questionId);
-					}
-				} catch (NumberFormatException e) {
-					addActionError("Depends on Question must be a number");
-					return false;
-				}
+			else if (question.getDependsOnQuestion() == null
+					|| dependsOnQuestionID != question.getDependsOnQuestion().getId()) {
+				// dependsOnQuestionID has changed
+				question.setDependsOnQuestion(new AuditQuestion());
+				question.getDependsOnQuestion().setId(dependsOnQuestionID);
+			}
+
+			if (parentQuestionID == 0)
+				question.setParentQuestion(null);
+			else if (question.getParentQuestion() == null
+					|| parentQuestionID != question.getParentQuestion().getId()) {
+				// parentQuestionID has changed
+				question.setParentQuestion(new AuditQuestion());
+				question.getParentQuestion().setId(parentQuestionID);
 			}
 
 			subCategory.getQuestions().add(question);
@@ -138,12 +143,20 @@ public class ManageQuestion extends ManageSubCategory {
 		return AuditQuestion.TYPE_ARRAY;
 	}
 
-	public String getDependsOnQuestionID() {
+	public int getDependsOnQuestionID() {
 		return dependsOnQuestionID;
 	}
 
-	public void setDependsOnQuestionID(String dependsOnQuestionID) {
+	public void setDependsOnQuestionID(int dependsOnQuestionID) {
 		this.dependsOnQuestionID = dependsOnQuestionID;
+	}
+
+	public int getParentQuestionID() {
+		return parentQuestionID;
+	}
+
+	public void setParentQuestionID(int parentQuestionID) {
+		this.parentQuestionID = parentQuestionID;
 	}
 
 	/**

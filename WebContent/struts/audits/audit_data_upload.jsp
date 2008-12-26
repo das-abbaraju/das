@@ -11,12 +11,12 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css" />
 
 <script type="text/javascript">
-	function closePage() {
-		try {
-			opener.reloadQuestion(<s:property value="question.id"/>);
-			opener.focus();
-		} catch(err) {}
-	}
+function closePage() {
+	try {
+		opener.reloadQuestion(<s:property value="answer.question.id"/>, '<s:property value="answer.parentAnswer.id"/>');
+		opener.focus();
+	} catch(err) {}
+}
 </script>
 
 </head>
@@ -26,34 +26,39 @@
 <div id="bodyholder">
 <div id="content">
 
-<h1> Upload <s:property value="conAudit.auditFor"/> <s:property value="question.columnHeader"/> File 
-<span class="sub"><s:property value="question.subCategory.category.category"/> &gt; <s:property value="question.subCategory.subCategory"/></span>
-</h1>
+<h1>Upload <s:property value="conAudit.auditFor" /> <s:property
+	value="answer.question.columnHeader" /> File <span class="sub"><s:property
+	value="answer.question.subCategory.category.category" /> &gt; <s:property
+	value="answer.question.subCategory.subCategory" /></span></h1>
 <s:include value="../actionMessages.jsp" />
 
-<div>
-<b><s:property value="question.subCategory.category.number"/>.<s:property value="question.subCategory.number"/>.<s:property value="question.number"/></b>
-&nbsp;&nbsp;<s:property value="question.question"/>
-</div>
+<div><b><s:property
+	value="answer.question.subCategory.category.number" />.<s:property
+	value="answer.question.subCategory.number" />.<s:property
+	value="answer.question.number" /></b> &nbsp;&nbsp;<s:property
+	value="answer.question.question" /></div>
 <s:form enctype="multipart/form-data" method="POST">
-	<s:hidden name="auditID"/>
-	<s:hidden name="question.id"/>
+	<s:hidden name="auditID" />
+	<s:hidden name="answer.question.id" />
+	<s:hidden name="answer.parentAnswer.id" />
 	<br />
 	<s:file name="file" size="50"></s:file>
-	<div class="buttons">
-		<a href="javascript: self.close();">Close and Return to Form</a>
-		<s:if test="file != null && file.exists()">
-			<button class="negative" name="button" value="Delete" type="submit" onclick="return confirm('Are you sure you want to delete this file?');">Delete File</button>
-		</s:if>
-		<button class="positive right" name="button" value="Upload" type="submit">Upload File</button>
+	<div class="buttons"><a href="javascript: self.close();">Close
+	and Return to Form</a> <s:if test="file != null && file.exists()">
+		<button class="negative" name="button" value="Delete" type="submit"
+			onclick="return confirm('Are you sure you want to delete this file?');">Delete
+		File</button>
+	</s:if>
+	<button class="positive right" name="button" value="Upload"
+		type="submit">Upload File</button>
 	</div>
-</s:form>
-<br clear="all"/>
+</s:form> <br clear="all" />
 <s:if test="file != null && file.exists()">
-	<div><a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&question.id=<s:property value="question.id"/>" target="_BLANK">Open Existing <s:property value="fileSize" /> File</a></div>
-</s:if>
-
-</div>
+	<div><a
+		href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&answer.question.id=<s:property value="answer.question.id"/>&answer.parentAnswer.id=<s:property value="answer.parentAnswer.id"/>"
+		target="_BLANK">Open Existing <s:property value="fileSize" />
+	File</a></div>
+</s:if></div>
 </div>
 </div>
 </body>

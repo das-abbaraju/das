@@ -45,10 +45,13 @@
 		</li>
 		<li><label>Updated:</label>
 			<s:date name="question.updateDate" />
-		</li>	
+		</li>
 		<li><label>Column Header:</label>
 			<s:textfield name="question.columnHeader" size="20" maxlength="30"/>
 		</li>	
+		<li><label>Field Identifier:</label>
+			<s:textfield name="question.uniqueCode" size="20" maxlength="50"/>
+		</li>
 		<li><label>Has Requirement:</label>
 			<s:checkbox name="question.hasRequirement" value="question.hasRequirement.name() == 'Yes' ? true : false"/>
 		</li>
@@ -66,6 +69,7 @@
 		</li>
 		<li><label>Depends on Question:</label>
 			<s:textfield name="dependsOnQuestionID" />
+			<s:if test="dependsOnQuestionID > 0"><a href="?id=<s:property value="dependsOnQuestionID" />">Show</a></s:if>
 		</li>
 		<li><label>Depends on Answer:</label>
 			<s:textfield name="question.dependsOnAnswer" />
@@ -73,15 +77,21 @@
 		<li><label>Question Type:</label>
 			<s:select list="questionTypes" name="question.questionType" />
 		</li>
-		<li><label>Allow Multiple Answers:</label>
+		<li><label>Allow Tuples:</label>
 			<s:checkbox name="question.allowMultipleAnswers" />
 		</li>
-		<li><label>Parent Question:</label>
-			<s:select list="parentQuestionList" headerKey="" headerValue="" listKey="id" listValue="question" name="question.parentQuestion.id"></s:select>
-		</li>		
+		<li><label>Minimium Tuples:</label>
+			<s:textfield name="question.minimumTuples" size="5"/>
+		</li>
+		<s:if test="parentQuestionList.size() > 0">
+			<li><label>Parent Question:</label>
+				<s:select list="parentQuestionList" headerKey="0" headerValue="" listKey="id" listValue="question" name="parentQuestionID"></s:select>
+				<s:if test="parentQuestionID > 0"><a href="?id=<s:property value="parentQuestionID" />">Show</a></s:if>
+			</li>
+		</s:if>
 		<li><label>Title:</label>
 			<s:textfield name="question.title" size="65"/>
-		</li>																																									
+		</li>
 		<li><label>Visible:</label>
 			<s:checkbox name="question.isVisible"  value="question.isVisible.name() == 'Yes' ? true : false"/>
 		</li>
@@ -140,5 +150,16 @@
 		</div>
 	</fieldset>
 </s:form>
+
+<s:if test="question.allowMultipleAnswers">
+	<h2>Child Questions included in Tuple</h2>
+	<ol>
+		<li><s:property value="question.question"/></li>
+	<s:iterator value="question.childQuestions">
+		<li><a href="?id=<s:property value="id"/>"><s:property value="question"/></a></li>
+	</s:iterator>
+	</ol>
+</s:if>
+
 </body>
 </html>

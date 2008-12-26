@@ -1,4 +1,16 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<s:if test="question.allowMultipleAnswers">
+	<tr id="tuple_<s:property value="divId"/>"><td colspan="4" class="tupleHeading">
+		<s:if test="id > 0">
+			<a href="#" class="remove right" style="font-size: 14px; font-weight: normal; text-decoration: none;" onclick="return false;">Remove</a>
+			<s:property value="answer"/>
+		</s:if>
+		<s:else>
+			<a href="#" class="edit right" style="font-size: 14px; font-weight: normal; text-decoration: none;" onclick="return false;">Add</a>
+			Add New
+		</s:else>
+		</td></tr>
+</s:if>
 <tr id="status_<s:property value="divId"/>" class="group<s:if test="#shaded">Shaded</s:if>">
 	<td class="right"><s:property value="category.number"/>.<s:property value="question.subCategory.number"/>.<s:property value="question.number"/>&nbsp;&nbsp;
 	<a name="q<s:property value="divId"/>" />&nbsp;&nbsp;

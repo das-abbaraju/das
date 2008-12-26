@@ -125,7 +125,13 @@ public class PicsActionSupport extends ActionSupport {
 
 	public User getUser(int userId) {
 		UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
-		return dao.find(userId);
+		try {
+			User user = dao.find(userId);
+			return user;
+		} catch (Exception e) {
+			System.out.println("Error finding user: " + e.getMessage());
+			return null;
+		}
 	}
 
 	public Account getAccount() {

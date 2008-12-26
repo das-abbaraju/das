@@ -48,18 +48,24 @@ public class AuditDataSave extends AuditActionSupport {
 				return LOGIN;
 
 			AuditData newCopy = null;
+			AuditQuestion question = null;
 
-			try {
-				// Try to find the previous version using the passed in auditData record
-				int auditID = auditData.getAudit().getId();
-				int questionID = auditData.getQuestion().getId();
-				int parentAnswerID = auditData.getParentAnswer().getId();
-				
-				newCopy = auditDataDao.findAnswerToQuestion(auditID, questionID, parentAnswerID);
-			} catch (NoResultException notReallyAProblem) {
+			// Try to find the previous version using the passed in auditData record
+			int auditID = auditData.getAudit().getId();
+			int questionID = auditData.getQuestion().getId();
+			question = questionDao.find(questionID);
+			int parentAnswerID = 0;
+			if(auditData.getParentAnswer() != null)
+				parentAnswerID = auditData.getParentAnswer().getId();
+			
+			if (question != null && question.isAllowMultipleAnswers() && parentAnswerID == 0) {
+				// The question is a "tuple" but the no parent was supplied
+				// It must be a new entry
+			} else {
+				try {
+						newCopy = auditDataDao.findAnswerToQuestion(auditID, questionID, parentAnswerID);
+				} catch (NoResultException notReallyAProblem) {}
 			}
-
-			AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
 
 			if (newCopy == null) {
 				// insert mode
