@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.AnswerMap;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
@@ -44,10 +45,9 @@ public class AuditDataDAOTest {
 
 		ArrayList<Integer> questions = new ArrayList<Integer>();
 		questions.add(48);
-		Map<Integer, Map<Integer, AuditData>> existingData = auditdataDAO.findAnswers(3259, questions);
-		for (Integer key : existingData.keySet()) {
-			auditdataDAO.remove(existingData.get(key).get(0).getId());
-		}
+		AnswerMap existingData = auditdataDAO.findAnswers(3259, questions);
+		
+		auditdataDAO.remove(existingData.get(48).getId());
 
 		// Create a new AuditData object and save it
 		AuditData auditdata = new AuditData();
@@ -66,8 +66,8 @@ public class AuditDataDAOTest {
 
 		List<Integer> questionid = new LinkedList<Integer>();
 		questionid.add(48);
-		Map<Integer, Map<Integer, AuditData>> testFindAnswers = auditdataDAO.findAnswers(3259, questionid);
-		assertEquals("junit testing", testFindAnswers.get(48).get(0).getAnswer());
+		AnswerMap testFindAnswers = auditdataDAO.findAnswers(3259, questionid);
+		assertEquals("junit testing", testFindAnswers.get(48).getAnswer());
 		auditdataDAO.remove(auditdata.getId());
 		AuditData auditdata1 = auditdataDAO.find(auditdata.getId());
 		assertNull(auditdata1);
@@ -87,8 +87,8 @@ public class AuditDataDAOTest {
 		questionid.add(new Integer(39));
 		questionid.add(new Integer(40));
 		questionid.add(new Integer(41));
-		Map<Integer, Map<Integer, AuditData>> auditdata = auditdataDAO.findAnswers(249, questionid);
-		assertEquals("Pacific Industrial Contractor Screening", auditdata.get(37).get(0).getAnswer());
+		AnswerMap auditdata = auditdataDAO.findAnswers(249, questionid);
+		assertEquals("Pacific Industrial Contractor Screening", auditdata.get(37).getAnswer());
 	}
 
 	@Test

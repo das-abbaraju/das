@@ -313,6 +313,14 @@ public class ContractorAudit implements java.io.Serializable {
 			return completedDate;
 		return closedDate;
 	}
+	
+	@Transient
+	public Date getValidDate() {
+		if (auditType.isPqf())
+			return new Date();
+		else
+			return createdDate;
+	}
 
 	@Override
 	public int hashCode() {

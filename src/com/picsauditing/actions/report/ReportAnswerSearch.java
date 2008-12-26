@@ -39,7 +39,7 @@ public class ReportAnswerSearch extends ReportAccount {
 			if (question != null && removeQuestion != question.getId()) {
 				AuditQuestion tempQuestion = auditQuestionDAO.find(question.getId());
 				tempQuestion.setCriteria(question.getCriteria());
-				tempQuestion.setAnswer(question.getAnswer());
+				tempQuestion.setCriteriaAnswer(question.getCriteriaAnswer());
 				if (newQuestions.contains(tempQuestion))
 					newQuestions.remove(tempQuestion); // remove the old first
 				newQuestions.add(tempQuestion);
@@ -53,13 +53,13 @@ public class ReportAnswerSearch extends ReportAccount {
 					.getAuditTypeID(), true);
 			if (question.getCriteria() != null && question.getCriteria().length() > 0) {
 				String qSearch = "q" + question.getId() + ".answer ";
-				String qCriteria = question.getCriteria() + " '" + question.getAnswer().getAnswer() + "'";
+				String qCriteria = question.getCriteria() + " '" + question.getCriteriaAnswer() + "'";
 				if (question.getCriteria().equals("Contains"))
-					qCriteria = " LIKE '%" + question.getAnswer().getAnswer() + "%'";
+					qCriteria = " LIKE '%" + question.getCriteriaAnswer() + "%'";
 				if (question.getCriteria().equals("Begins With"))
-					qCriteria = " LIKE '" + question.getAnswer().getAnswer() + "%'";
+					qCriteria = " LIKE '" + question.getCriteriaAnswer() + "%'";
 				if (question.getCriteria().equals("Ends With"))
-					qCriteria = " LIKE '%" + question.getAnswer().getAnswer() + "'";
+					qCriteria = " LIKE '%" + question.getCriteriaAnswer() + "'";
 				sql.addWhere(qSearch + qCriteria);
 			}
 		}

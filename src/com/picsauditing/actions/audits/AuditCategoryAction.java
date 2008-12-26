@@ -26,6 +26,7 @@ import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.AnswerMap;
 
 /**
  * Viewing audit Data including one or more categories and their subcategories
@@ -94,7 +95,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 
 		getCategories();
 
-		Map<Integer, Map<Integer, AuditData>> answers = null;
+		AnswerMap answers = null;
 		if (catDataID > 0 || catID > 0) {
 			for (AuditCatData catData : categories) {
 				// We can open audits using either the catID or the catDataID

@@ -71,6 +71,7 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	protected List<AuditQuestionOption> options;
 	protected List<AuditQuestion> childQuestions;
 	private String criteria;
+	private String criteriaAnswer;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "subCategoryID", nullable = false)
@@ -426,6 +427,14 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 
 	public void setCriteria(String criteria) {
 		this.criteria = criteria;
+	}
+
+	public String getCriteriaAnswer() {
+		return criteriaAnswer;
+	}
+
+	public void setCriteriaAnswer(String criteriaAnswer) {
+		this.criteriaAnswer = criteriaAnswer;
 	}
 
 	@Override

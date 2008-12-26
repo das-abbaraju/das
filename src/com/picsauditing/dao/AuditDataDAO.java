@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.util.AnswerMap;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -46,7 +47,7 @@ public class AuditDataDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public Map<Integer, Map<Integer, AuditData>> findByCategory(int auditID, AuditCategory category) {
+	public AnswerMap findByCategory(int auditID, AuditCategory category) {
 		Query query = em.createQuery("FROM AuditData d "
 				+ "WHERE d.audit.id = :auditID AND d.question.subCategory.category = :category");
 		query.setParameter("auditID", auditID);
@@ -55,7 +56,7 @@ public class AuditDataDAO extends PicsDAO {
 		return mapData(query.getResultList());
 	}
 
-	public Map<Integer, Map<Integer, AuditData>> findByCategory(int auditID, int categoryID) {
+	public AnswerMap findByCategory(int auditID, int categoryID) {
 		AuditCategory auditCategory = new AuditCategory();
 		auditCategory.setId(categoryID);
 		return findByCategory(auditID, auditCategory);
@@ -163,14 +164,14 @@ public class AuditDataDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public Map<Integer, Map<Integer, AuditData>> findAnswers(int auditID) {
+	public AnswerMap findAnswers(int auditID) {
 		Query query = em.createQuery("SELECT d FROM AuditData d WHERE audit.id = ?");
 		query.setParameter(1, auditID);
 
 		return mapData(query.getResultList());
 	}
 
-	public Map<Integer, Map<Integer, AuditData>> findAnswers(int auditID, List<Integer> questionIds) {
+	public AnswerMap findAnswers(int auditID, List<Integer> questionIds) {
 		if (questionIds.size() == 0)
 			return null;
 
@@ -191,23 +192,14 @@ public class AuditDataDAO extends PicsDAO {
 	}
 
 	/**
-	 * Convert a List into a Map Note: this could be a good candidate to go into
-	 * a Utility class
+	 * Convert a ResultList into an AnswerMap
 	 * 
 	 * @return
 	 */
-	private Map<Integer, Map<Integer, AuditData>> mapData(List<AuditData> result) {
-		HashMap<Integer, Map<Integer, AuditData>> indexedResult = new HashMap<Integer, Map<Integer, AuditData>>();
-		for (AuditData row : result) {
-			int questionID = row.getQuestion().getId();
-			if (indexedResult.get(questionID) == null)
-				indexedResult.put(questionID, new HashMap<Integer, AuditData>());
-			
-			int parentID = 0;
-			if (row.getParentAnswer() != null)
-				parentID = row.getParentAnswer().getId();
-			indexedResult.get(questionID).put(parentID, row);
-		}
+	private AnswerMap mapData(List<AuditData> result) {
+		AnswerMap indexedResult = new AnswerMap();
+		for (AuditData row : result)
+			indexedResult.add(row);
 		return indexedResult;
 	}
 

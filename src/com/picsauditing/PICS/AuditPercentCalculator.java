@@ -1,7 +1,6 @@
 package com.picsauditing.PICS;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +13,7 @@ import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.util.AnswerMap;
 
 public class AuditPercentCalculator {
 	private AuditDataDAO auditDataDao;
@@ -32,12 +32,7 @@ public class AuditPercentCalculator {
 			return;
 		}
 
-		Date validDate = null;
-		if (catData.getAudit().getAuditType().isPqf())
-			validDate = new Date();
-		else
-			validDate = catData.getAudit().getCreatedDate();
-		catData.getCategory().setValidDate(validDate);
+		catData.getCategory().setValidDate(catData.getAudit().getValidDate());
 		
 		int requiredAnsweredCount = 0;
 		int answeredCount = 0;
@@ -47,10 +42,8 @@ public class AuditPercentCalculator {
 		// Get a list of questions/answers for this category
 		List<Integer> questionIDs = new ArrayList<Integer>();
 
-		/*
-		 * TODO BEFORE RELEASE! FINISH CALCULATION!!
 		for (AuditSubCategory subCategory : catData.getCategory().getValidSubCategories()) {
-			for (AuditQuestion question : subCategory.getValidQuestions()) {
+			for (AuditQuestion question : subCategory.getQuestions()) {
 				questionIDs.add(question.getId());
 				if ("Depends".equals(question.getIsRequired()) && question.getDependsOnQuestion() != null) {
 					int dependsOnQID = question.getDependsOnQuestion().getId();
@@ -59,32 +52,35 @@ public class AuditPercentCalculator {
 			}
 		}
 		// Get a map of all answers in this audit
-		Map<Integer, AuditData> answers = auditDataDao.findAnswers(catData.getAudit().getId(), questionIDs);
-
+		AnswerMap answers = auditDataDao.findAnswers(catData.getAudit().getId(), questionIDs);
+		
 		// Get a list of questions/answers for this category
 		for (AuditSubCategory subCategory : catData.getCategory().getValidSubCategories()) {
-			for (AuditQuestion question : subCategory.getValidQuestions()) {
-				if (question.getDependsOnQuestion() != null) {
-					AuditData answer = answers.get(question.getDependsOnQuestion().getId());
-					question.getDependsOnQuestion().setAnswer(answer);
-				}
-				boolean isRequired = question.isRequired();
-
+			// for (AuditQuestion question : subCategory.getValidQuestions()) {
+			for (AuditQuestion question : subCategory.getQuestions()) {
+				boolean isRequired = "Yes".equals(question.getIsRequired());
 				if (isRequired) {
 					requiredCount++;
+				} else if ("Depends".equals(question.getIsRequired())) {
+					if (question.getDependsOnQuestion() != null) {
+						AuditData answer = answers.get(question.getDependsOnQuestion().getId());
+						question.getDependsOnQuestion().setCriteriaAnswer(answer.getAnswer());
+					}
 				}
-
 				AuditData answer = answers.get(question.getId());
+				
 				if (answer != null) {
 					String answerToQuestion = answer.getAnswer();
 					if (!"".equals(answerToQuestion)
-							&& !com.picsauditing.PICS.DateBean.NULL_DATE_DB.equals(answerToQuestion)) {
+							&& !DateBean.NULL_DATE_DB.equals(answerToQuestion)) {
+						// This answer isn't empty
 						answeredCount++;
 						if (isRequired)
 							requiredAnsweredCount++;
 					}
-
-					if( catData.getAudit().getAuditType().getAuditTypeID() == AuditType.OFFICE || catData.getAudit().getAuditType().getAuditTypeID() == AuditType.DESKTOP ) {
+					
+					int auditTypeID = catData.getAudit().getAuditType().getAuditTypeID();
+					if( auditTypeID == AuditType.OFFICE || auditTypeID == AuditType.DESKTOP ) {
 						if ("Yes".equals(answerToQuestion) || "NA".equals(answerToQuestion)) {
 							// This is a valid Desktop or Office audit answer so,
 							// it's "Verified"
@@ -98,7 +94,6 @@ public class AuditPercentCalculator {
 				}
 			}
 		}
-		 */
 
 		catData.setNumAnswered(answeredCount);
 		catData.setNumRequired(requiredCount);

@@ -37,8 +37,8 @@ function getQuestionList() {
 			<div class="buttons">
 				<s:hidden name="questions[%{#stat.index}].id" value="%{id}"></s:hidden>
 				<s:hidden name="questions[%{#stat.index}].criteria" value="%{criteria}"></s:hidden>
-				<s:hidden name="questions[%{#stat.index}].answer.answer" value="%{answer.answer}"></s:hidden>
-				<s:property value="shortQuestion"/> <s:property value="criteria"/> <s:property value="answer.answer"/>
+				<s:hidden name="questions[%{#stat.index}].criteriaAnswer" value="%{criteriaAnswer}"></s:hidden>
+				<s:property value="shortQuestion"/> <s:property value="criteria"/> <s:property value="criteriaAnswer"/>
 				<button type="submit" class="negative" name="button" value="<s:property value="id"/>">Remove</button>
 			</div>
 		</div>

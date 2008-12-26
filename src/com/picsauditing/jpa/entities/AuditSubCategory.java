@@ -21,6 +21,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.picsauditing.util.AnswerMap;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "pqfsubcategories")
@@ -102,7 +104,7 @@ public class AuditSubCategory implements java.io.Serializable, Comparable<AuditS
 	 *            Map of questionID, parentID, AuditData. If parentID is null,
 	 *            then use 0
 	 */
-	public void build(ContractorAudit conAudit, Map<Integer, Map<Integer, AuditData>> answerMap) {
+	public void build(ContractorAudit conAudit, AnswerMap answerMap) {
 		answerList = new ArrayList<AuditData>();
 
 		for (AuditQuestion question : getQuestions()) {
@@ -112,22 +114,19 @@ public class AuditSubCategory implements java.io.Serializable, Comparable<AuditS
 	}
 
 	private void addChildren(ContractorAudit conAudit, int rowID, AuditQuestion question,
-			Map<Integer, Map<Integer, AuditData>> answerMap) {
+			AnswerMap answerMap) {
 		if (category.getValidDate().after(question.getEffectiveDate())
 				&& category.getValidDate().before(question.getExpirationDate())) {
 			// This is a valid question we want to include
-			Map<Integer, AuditData> answersForThisQuestion = answerMap.get(question.getId());
 			//System.out.println("Adding question:" + rowID + " " + question.getQuestion());
 			if (question.isAllowMultipleAnswers()) {
-				if (answersForThisQuestion != null) {
-					for (AuditData childData : answersForThisQuestion.values()) {
-						int childRowID = childData.getId();
-						//System.out.println("Put answer:" + childData.getAnswer());
-						answerList.add(childData);
-						
-						for (AuditQuestion childQuestion : question.getChildQuestions()) {
-							addChildren(conAudit, childRowID, childQuestion, answerMap);
-						}
+				for (AuditData childData : answerMap.getAnswers(question.getId())) {
+					int childRowID = childData.getId();
+					//System.out.println("Put answer:" + childData.getAnswer());
+					answerList.add(childData);
+					
+					for (AuditQuestion childQuestion : question.getChildQuestions()) {
+						addChildren(conAudit, childRowID, childQuestion, answerMap);
 					}
 				}
 				// Always add a blank entry
@@ -137,9 +136,7 @@ public class AuditSubCategory implements java.io.Serializable, Comparable<AuditS
 				// System.out.println("Put new entry");
 				answerList.add(answer);
 			} else {
-				AuditData answer = null;
-				if (answersForThisQuestion != null)
-					answer = answersForThisQuestion.get(rowID);
+				AuditData answer = answerMap.get(rowID);
 				if (answer == null) {
 					answer = new AuditData();
 					answer.setQuestion(question);

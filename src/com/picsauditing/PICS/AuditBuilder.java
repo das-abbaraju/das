@@ -32,6 +32,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.AnswerMap;
 
 /**
  * Properly add/remove all necessary audits for a given contractor
@@ -357,7 +358,7 @@ public class AuditBuilder {
 			dependencies.put(AuditCategory.LOSS_RUN, 2033);
 			int auditID = conAudit.getId();
 
-			Map<Integer, Map<Integer, AuditData>> answers = null;
+			AnswerMap answers = null;
 			answers = auditDataDAO.findAnswers(auditID, new Vector<Integer>(dependencies.values()));
 
 			for (AuditCategory cat : conAudit.getAuditType().getCategories()) {
@@ -368,7 +369,7 @@ public class AuditBuilder {
 					AuditData answer = null;
 					try {
 						int questionID = dependencies.get(cat.getId());
-						answer = answers.get(questionID).get(0);
+						answer = answers.get(questionID);
 					} catch (NullPointerException ignoreNulls) {}
 					
 					if (answer == null)
