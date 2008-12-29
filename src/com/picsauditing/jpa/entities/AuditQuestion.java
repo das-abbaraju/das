@@ -429,6 +429,7 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 		this.criteria = criteria;
 	}
 
+	@Transient
 	public String getCriteriaAnswer() {
 		return criteriaAnswer;
 	}
