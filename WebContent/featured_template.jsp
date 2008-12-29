@@ -69,7 +69,7 @@
 		<p align="justify">Selecting service providers can be difficult,
 		and when Driscoll was asked why he and his team selected PICS for
 		contractor prequalification, he responded with positive referrals from
-		other current customers in dealing with com.picsauditing.PICS. He
+		other current customers in dealing with PICS. He
 		explained further, <strong>&ldquo;We chose PICS primarily
 		based on comments and recommendation from other COP refining
 		facilities and a couple of local competitors using the service. We
