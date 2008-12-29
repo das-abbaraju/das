@@ -24,9 +24,9 @@ public class TradesBean extends DataBean {
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
 			trades = new ArrayList<String>();
 			while (SQLResult.next()) {
-				trades.add(SQLResult.getString("questionID"));
+				trades.add(SQLResult.getString("id"));
 				trades.add(SQLResult.getString("question"));
-				tradeMap.put(SQLResult.getInt("questionID"), SQLResult.getString("question"));
+				tradeMap.put(SQLResult.getInt("id"), SQLResult.getString("question"));
 			}
 			SQLResult.close();
 		}finally{
