@@ -69,7 +69,9 @@
 			<nobr><s:checkbox fieldValue="S" value="answer.indexOf('S') != -1" name="question_%{id}_S" onclick="javascript:saveAnswer(%{question.id}, '%{parentAnswer.id}', this);" /> S</nobr>
 		</s:if>
 		<s:if test="question.questionType == 'Radio'">
-			<s:radio theme="pics" list="options" listKey="optionName" listValue="optionName" value="answer" name="question_%{id}" onclick="javascript:saveAnswer(%{question.id}, '%{parentAnswer.id}', this);"></s:radio>
+			<s:radio theme="pics" list="question.options" listKey="optionName" listValue="optionName" 
+				value="answer" name="question_%{id}" 
+				onclick="javascript:saveAnswer(%{question.id}, '%{parentAnswer.id}', this);"/>
 		</s:if>
 		<s:if test="question.questionType.startsWith('File')">
 			<nobr>
