@@ -6,6 +6,7 @@
 <title></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript" src="js/AutoComplete.js"></script>
 </head>
@@ -19,7 +20,7 @@
 <span class="blueMain">Select a Contractor</span>&nbsp;
 <s:textfield id="contractor_select" name="contractorSelect" size="60"></s:textfield>
 <script type="text/javascript">
-new AutoComplete('contractor_select', 'ContractorSelectAjax.action?accountName=', {
+new AutoComplete('contractor_select', 'ContractorSelectAjax.action?filter.accountName=', {
 	delay: 0.25,
 	resultFormat: AutoComplete.Options.RESULT_FORMAT_TEXT
 });
