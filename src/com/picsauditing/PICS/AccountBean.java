@@ -430,7 +430,7 @@ public class AccountBean extends DataBean {
 		}// finally
 		OperatorBean.resetSubCountTable();
 		// Delete certificates in DB and files
-		new CertificateBean().deleteAllCertificates(deleteID, path);
+		// new CertificateBean().deleteAllCertificates(deleteID, path);
 		// Delete files (audit, manual, prequal, update, logo, certificates)
 		java.io.File f = null;
 		f = new java.io.File(path + "files/manuals/manual_" + deleteID + ".pdf");

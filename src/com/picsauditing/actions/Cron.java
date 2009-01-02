@@ -13,7 +13,6 @@ import org.apache.struts2.ServletActionContext;
 import com.picsauditing.PICS.AccountBean;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.Billing;
-import com.picsauditing.PICS.CertificateBean;
 import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.Facilities;
 import com.picsauditing.PICS.FlagCalculator2;
@@ -73,14 +72,6 @@ public class Cron extends PicsActionSupport {
 			try {
 				startTask("\nRunning AccountBean optimizer...");
 				new AccountBean().optimizeDB();
-				endTask();
-			} catch (Throwable t) {
-				handleException(t);
-			}
-
-			try {
-				startTask("\nExpiring Certificates...");
-				new CertificateBean().makeExpiredCertificatesExpiredStatus();
 				endTask();
 			} catch (Throwable t) {
 				handleException(t);

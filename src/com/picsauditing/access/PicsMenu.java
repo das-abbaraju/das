@@ -106,14 +106,10 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.BillingUpgrades))
 			subMenu.addChild("Upgrade Payments", "report_upgradePayment.jsp?changed=1");
 
-		subMenu = menu.addChild("InsureGuard");
-		if (permissions.hasPermission(OpPerms.InsuranceApproval))
-			subMenu.addChild("Insurance Approval", "report_certificates.jsp?changed=1");
-		if (permissions.hasPermission(OpPerms.InsuranceVerification))
-			subMenu.addChild("Verification", "verify_insurance.jsp");
-		if (permissions.hasPermission(OpPerms.InsuranceVerification))
-			subMenu.addChild("Expired Certificates", "report_expiredCertificates.jsp?changed=1");
-
+		//subMenu = menu.addChild("InsureGuard");
+		//OpPerms.InsuranceApproval
+		//OpPerms.InsuranceVerification
+		
 		subMenu = menu.addChild("Management");
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
 			subMenu.addChild("Approve Contractors", "con_approvals.jsp");
