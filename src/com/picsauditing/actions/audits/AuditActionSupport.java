@@ -8,18 +8,20 @@ import java.util.Map;
 import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
@@ -102,13 +104,16 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 
 		categories = catDataDao.findByAudit(conAudit, permissions);
-		
-		// For PQFs the valid date is today, for all other audits we use the creation date
-		// This is important when we figure out which questions should be display
-		// And therefore which subcategories have valid questions, 
+
+		// For PQFs the valid date is today, for all other audits we use the
+		// creation date
+		// This is important when we figure out which questions should be
+		// display
+		// And therefore which subcategories have valid questions,
 		// and which categories have subcategories
-		// We don't actually loop through the all the questions just yet, that's later
-		for(AuditCatData catData : categories)
+		// We don't actually loop through the all the questions just yet, that's
+		// later
+		for (AuditCatData catData : categories)
 			if (conAudit.getAuditType().isPqf())
 				catData.getCategory().setValidDate(new Date());
 			else
@@ -141,8 +146,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 		answers = auditDataDao.findAnswersByContractor(conAudit.getContractorAccount().getId(), ids);
 		if (answers == null)
 			return null;
-		
-		for(AuditData answer : answers.get(questionID).values())
+
+		for (AuditData answer : answers.get(questionID).values())
 			return answer;
 		return null;
 	}
@@ -167,6 +172,17 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (conAudit.getAuditType().isPqf() && conAudit.getAuditStatus().equals(AuditStatus.Submitted))
 			if (permissions.isAuditor())
 				return true;
+		
+		if (conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
+				&& conAudit.getAuditStatus().equals(AuditStatus.Submitted)
+				&& permissions.hasPermission(OpPerms.InsuranceVerification, OpType.Edit)) {
+			if (permissions.isOperator() && conAudit.getOperators().size() == 1
+					&& conAudit.getOperators().get(0).getOperator().getId() == permissions.getAccountId()) {
+				return true;
+			}
+			if (permissions.seesAllContractors())
+				return true;
+		}
 		return false;
 	}
 
@@ -195,6 +211,13 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return false;
 
 		if (permissions.isOperator()) {
+
+			if (conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+				if (conAudit.getOperators().size() == 1
+						&& conAudit.getOperators().get(0).getOperator().getId() == permissions.getAccountId())
+					return true;
+			}
+
 			if (conAudit.getRequestingOpAccount() != null) {
 				for (AuditOperator auditOperator : conAudit.getRequestingOpAccount().getAudits()) {
 					if (auditOperator.getAuditType().equals(conAudit.getAuditType()) && auditOperator.isCanEdit())
@@ -227,8 +250,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			for (ContractorAudit cAudit : getActiveAudits()) {
 				// We have to check (cAudit != conAudit) because we haven't set
 				// the status yet...it happens later
-				if (!cAudit.equals(conAudit)
-						&& cAudit.getAuditStatus().isPendingSubmittedResubmitted() 
+				if (!cAudit.equals(conAudit) && cAudit.getAuditStatus().isPendingSubmittedResubmitted()
 						&& cAudit.getAuditType().isCanContractorView()) {
 					// this contractor still has open audits to complete...don't
 					// send the email
@@ -253,6 +275,4 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	}
 
-
-	
 }
