@@ -6,7 +6,6 @@ import java.sql.Statement;
 import java.util.HashSet;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.domain.IPicsDO;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.util.LinkBuilder;
@@ -548,14 +547,6 @@ public class SearchBean {
 		return true;
 	}
 	
-	public boolean isNextRecord(IPicsDO domObj) throws Exception {
-		if (!(count <= endResults && SQLResult.next()))
-			return false;
-		count++;
-		domObj.setFromResultSet(SQLResult);
-		return true;
-	}
-		
 	public void closeSearch() throws Exception {
 		numResults = 0;
 		count = 0;
