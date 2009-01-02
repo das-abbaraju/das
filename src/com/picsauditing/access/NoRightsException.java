@@ -6,6 +6,6 @@ public class NoRightsException extends Exception {
 		super("You do not have the "+oType+" "+opPerm+" right");
 	}
 	public NoRightsException(String groupName) {
-		super("You must be in the "+groupName+" to do this action");
+		super("You must be in the "+groupName+" group to do this action");
 	}
 }
