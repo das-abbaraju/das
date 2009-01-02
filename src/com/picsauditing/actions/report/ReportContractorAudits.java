@@ -198,6 +198,15 @@ public class ReportContractorAudits extends ReportAccount {
 			this.addActionMessage("Redirected to MassMailer");
 			return BLANK;
 		}
+		
+		if (download) {
+			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
+			filename += ".csv";
+
+			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+		}
+
 		return SUCCESS;
 	}
 
