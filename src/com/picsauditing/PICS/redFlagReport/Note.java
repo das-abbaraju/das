@@ -24,7 +24,7 @@ public class Note extends DataBean{
 	public int count = 0;
 
 	public Note(){
-	}//Note
+	}
 
 	public Note(String opID, String conID, String userID, String whoIs, String note){
 		this.opID = opID;
@@ -32,11 +32,11 @@ public class Note extends DataBean{
 		this.userID = userID;
 		this.whoIs = whoIs;
 		this.note = note;
-	}//Note
+	}
 
 	public String getNoteDisplay(){
 		return timeStamp+" ("+whoIs+"): "+note;
-	}//getNoteDisplay
+	}
 	
 	public void writeToDB()throws Exception{
 		try{
@@ -46,8 +46,8 @@ public class Note extends DataBean{
 			SQLStatement.executeUpdate(insertQuery);
 		}finally{
 			DBClose();
-		}//finally
-	}//writeToDB
+		}
+	}
 
 	public void deleteNote(String deleteID,Permissions permissions)throws Exception{
 		try{
@@ -57,8 +57,8 @@ public class Note extends DataBean{
 				SQLStatement.executeUpdate(updateQuery);
 		}finally{
 			DBClose();
-		}//finally
-	}//writeToDB
+		}
+	}
 
 	public void setList(String opID,String conID) throws Exception {
 		String selectQuery = "SELECT *,DATE_FORMAT(timeStamp,'%c/%e/%y') AS formattedDate "+
@@ -70,8 +70,8 @@ public class Note extends DataBean{
 		} catch (Exception e) {
 			closeList();
 			throw e;
-		}//catch		
-	}//setList
+		}		
+	}
 
 	/**
 	 * 
@@ -113,8 +113,8 @@ public class Note extends DataBean{
 		    return rsdc.getRows();
 		} finally {
 			DBClose();
-		}//catch		
-	}//getContractorNotes
+		}		
+	}
 
 	public void setFromResultSet(ResultSet SQLResult) throws Exception {
 		noteID = SQLResult.getString("noteID");
@@ -124,7 +124,7 @@ public class Note extends DataBean{
 		whoIs= SQLResult.getString("whoIs");
 		note = SQLResult.getString("note");
 		timeStamp = SQLResult.getString("formattedDate");
-	}//setFromResultSet
+	}
 
 	public boolean isNext() throws Exception{
 		if (!listRS.next())
@@ -132,7 +132,7 @@ public class Note extends DataBean{
 		count++;
 		setFromResultSet(listRS);
 		return true;
-	}//isNextRecord
+	}
 
 	public void closeList() throws Exception {
 		count = 0;
@@ -140,7 +140,7 @@ public class Note extends DataBean{
 		if (null != listRS) {
 			listRS.close();
 			listRS = null;
-		}//if
+		}
 		DBClose();
-	}//closeList
-}//Note
+	}
+}
