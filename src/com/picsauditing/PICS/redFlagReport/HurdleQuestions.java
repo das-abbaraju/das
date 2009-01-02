@@ -47,7 +47,7 @@ public class HurdleQuestions extends DataBean {
 	}
 	
 	public void setList(String opID) throws Exception {
-		String selectQuery = "SELECT pc.auditTypeID, pc.number, ps.number, pq.number, questionID, question, questionType " +
+		String selectQuery = "SELECT pc.auditTypeID, pc.number, ps.number, pq.number, pq.ID questionid, question, questionType " +
 								"FROM pqfCategories pc " +
 								"JOIN pqfSubCategories ps ON (catID=categoryID) " +
 								"JOIN pqfQuestions pq ON (subCatID=subCategoryID) " +
