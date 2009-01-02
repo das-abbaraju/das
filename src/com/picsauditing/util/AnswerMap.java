@@ -41,10 +41,26 @@ public class AnswerMap {
 		return get(questionID, 0);
 	}
 	
+	/**
+	 * Return the answer for this question. If no answer exists for this tuple, 
+	 * then try to return the answer to this question from the 0 tuple if it exists.
+	 * This is useful when trying to access "parent" data when on a child row.
+	 * @param questionID question.id
+	 * @param rowID Parent answer.id that is the anchor for this tuple
+	 * @return
+	 */
 	public AuditData get(int questionID, int rowID) {
+		if (rowID > 0 && getRows(questionID).get(rowID) == null)
+			return get(questionID);
 		return getRows(questionID).get(rowID);
 	}
-	
+
+	public AuditData get(AuditQuestion question, AuditData parent) {
+		if (parent == null)
+			return get(question.getId());
+		return get(question.getId(), parent.getId());
+	}
+
 	public List<AuditData> getAnswers(int questionID) {
 		List<AuditData> orderedList = new ArrayList<AuditData>();
 		
@@ -58,8 +74,21 @@ public class AnswerMap {
 		Map<Integer, AuditData> row = list.get(questionID);
 		if (row == null) {
 			row = new HashMap<Integer, AuditData>();
-			list.put(questionID, new HashMap<Integer, AuditData>());
+			list.put(questionID, row);
 		}
 		return row;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder output = new StringBuilder();
+		for(Integer questionID : list.keySet()) {
+			for(Integer rowID : list.get(questionID).keySet()) {
+				output.append("Q:").append(questionID).append(" ");
+				output.append("R:").append(rowID).append(" ");
+				output.append("Answer:").append(list.get(questionID).get(rowID)).append("\n");
+			}
+		}
+		return output.toString();
 	}
 }
