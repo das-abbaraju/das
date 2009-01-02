@@ -9,14 +9,6 @@
 			<steps>
 				&login;
 				
-				<storeProperty name="report_link" value="Expired Certificates" />
-				&click_report;
-				
-				<storeProperty name="report_link" value="InsureGuard" />
-				&click_report;
-				
-				<storeProperty name="report_link" value="Verification" />
-				&click_report;
 			</steps>
 		</webtest>
 	</target>

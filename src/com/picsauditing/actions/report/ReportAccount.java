@@ -256,17 +256,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (filterOn(f.getRiskLevel(), 0))
 			report.addFilter(new SelectFilterInteger("riskLevel", "c.riskLevel = '?'", f.getRiskLevel()));
-
-		if (filterOn(f.getInsuranceStatus())) {
-			String insurance = "";
-			if (f.getInsuranceStatus().equals("InComplete"))
-				insurance = "a.id in (select contractor_id from certificates where status <> 'Approved') "
-						+ "or a.id in (select id from accounts left join certificates on id = contractor_id where cert_id is null)";
-			if (f.getInsuranceStatus().equals("Complete"))
-				insurance = "a.id not in (select contractor_id from certificates where status <> 'Approved') "
-						+ "and a.id in (select id from accounts join certificates on id = contractor_id where status = 'Approved')";
-			report.addFilter(new SelectFilter("insuranceStatus", insurance, f.getInsuranceStatus()));
-		}
 	}
 
 	private void createPqfDataClause(SelectSQL sql, String where) {

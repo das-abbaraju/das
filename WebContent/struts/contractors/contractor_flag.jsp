@@ -26,6 +26,9 @@
 <div style="text-align: center; width: 100%">
 <s:if test="co.flag.waitingOn.ordinal() > 0"><div id="info" style="float: right; width: 200px">Currently waiting on <b><s:property value="co.flag.waitingOn"/></b></div></s:if>
 
+<s:if test="co.operatorAccount.canSeeInsurance.toString() == 'Yes'">
+</s:if>
+
 <table style="text-align: center;">
 	<tr>
 		<td rowspan="2" style="vertical-align: middle;"><s:property
@@ -252,29 +255,6 @@
 <pics:permission perm="EditFlagCriteria">
 <div><a href="op_editFlagCriteria.jsp?opID=<s:property value="opID" />">Edit Flag Criteria</a></div>
 </pics:permission>
-
-
-<s:if test="co.operatorAccount.canSeeInsurance.toString() == 'Yes'">
-	<table class="report">
-		<thead>
-			<tr>
-				<td>Flag</td>
-				<td>Insurance</td>
-				<td>Status</td>
-			</tr>
-		</thead>
-		<s:iterator value="contractor.certificates">		
-		<s:if test="opID == operatorAccount.id">
-			<tr class="<s:property value="flagColor" />">
-				<td class="center"><s:property
-					value="flagColor.smallIcon" escape="false" /></td>
-				<td><s:property value="type" /></td>
-				<td><s:property value="status" /></td>
-			</tr>
-		</s:if>
-		</s:iterator>
-	</table>
-</s:if>
 
 <s:if test="co.operatorAccount.approvesRelationships.toString() == 'Yes'">
 	<s:if test="co.workStatusPending">

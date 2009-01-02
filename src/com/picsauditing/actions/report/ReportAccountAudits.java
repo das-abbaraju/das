@@ -17,6 +17,8 @@ public class ReportAccountAudits extends ReportAccount {
 
 		filteredDefault = true;
 
+		// Getting the certificate info per contractor is too difficult!
+		/*
 		String certTable = "SELECT contractor_id, count(*) certificateCount FROM certificates WHERE status = 'Approved'";
 		if (permissions.isOperator())
 			certTable += " AND operator_id = " + permissions.getAccountId();
@@ -26,7 +28,7 @@ public class ReportAccountAudits extends ReportAccount {
 		certTable += " GROUP BY contractor_id";
 		sql.addJoin("LEFT JOIN (" + certTable + ") certs ON certs.contractor_id = a.id");
 		sql.addField("certs.certificateCount");
-
+		 */
 	}
 
 	public boolean isPqfVisible() {

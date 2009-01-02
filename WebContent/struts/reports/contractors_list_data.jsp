@@ -31,7 +31,6 @@
 			<s:if test="pqfVisible">
 				<td>PQF</td>
 			</s:if>
-			<td>Insur</td>
 		</pics:permission>
 		<s:if test="permissions.operator">
 			<td><a
@@ -73,13 +72,6 @@
 							</s:else>
 							</s:if></td>
 					</s:if>
-				<td class="center">
-					<s:if test="get('certificateCount') > 0">
-					<a 
-						href="contractor_upload_certificates.jsp?id=<s:property value="get('id')"/>"><img
-						src="images/icon_insurance.gif" width="20" height="20" border="0"></a>
-					</s:if>
-				</td>
 			</pics:permission>
 			<s:if test="permissions.operator">
 				<td class="center">
