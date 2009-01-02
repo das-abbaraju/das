@@ -64,7 +64,10 @@ public class AuditPercentCalculator {
 				} else if ("Depends".equals(question.getIsRequired())) {
 					if (question.getDependsOnQuestion() != null) {
 						AuditData answer = answers.get(question.getDependsOnQuestion().getId());
-						question.getDependsOnQuestion().setCriteriaAnswer(answer.getAnswer());
+
+						if( answer != null ) {
+							question.getDependsOnQuestion().setCriteriaAnswer(answer.getAnswer());
+						}
 					}
 				}
 				AuditData answer = answers.get(question.getId());
