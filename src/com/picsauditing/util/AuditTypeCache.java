@@ -8,6 +8,7 @@ import java.util.Map;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 
 @SuppressWarnings("unchecked")
 public class AuditTypeCache extends BaseCache 
@@ -54,14 +55,28 @@ public class AuditTypeCache extends BaseCache
 	public List<AuditType> getAuditTypes(Permissions permissions) {
 		List<AuditType> list = new ArrayList<AuditType>();
 		for (AuditType aType : auditTypes) {
-			if (permissions.canSeeAudit(aType))
+			if (aType.getClassType().equals(AuditTypeClass.Audit) && permissions.canSeeAudit(aType))
 				list.add(aType);
 		}
 		return list;
 	}
+	
+	public List<AuditType> getPolicyTypes(Permissions permissions) {
+		List<AuditType> list = new ArrayList<AuditType>();
+		for (AuditType aType : auditTypes) {
+			if (aType.getClassType().equals(AuditTypeClass.Policy) && permissions.canSeeAudit(aType))
+				list.add(aType);
+		}
+		return list;
+	}
+	public void setPolicyTypes(List<AuditType> auditTypes) {
+		this.auditTypes = auditTypes;
+	}
+	
 	public void setAuditTypes(List<AuditType> auditTypes) {
 		this.auditTypes = auditTypes;
 	}
+	
 	public Map<Integer, AuditType> getById() {
 		return byId;
 	}

@@ -103,6 +103,20 @@
 		</span></div>
 	</s:if>
 
+	<s:if test="filter.showPolicyType">
+		<div class="filterOption"><a href="#"
+			onclick="toggleBox('form1_auditTypeID'); return false;">Policy
+		Type</a> = <span id="form1_auditTypeID_query">ALL</span><br />
+		<span id="form1_auditTypeID_select" style="display: none"
+			class="clearLink"> <s:select id="form1_auditTypeID" list="filter.policyTypeList"
+			cssClass="forms" name="filter.auditTypeID" listKey="auditTypeID"
+			listValue="auditName" multiple="true" size="5" /> <script
+			type="text/javascript">updateQuery('form1_auditTypeID');</script> <br />
+		<a class="clearLink" href="#"
+			onclick="clearSelected('form1_auditTypeID'); return false;">Clear</a>
+		</span></div>
+	</s:if>
+
 	<s:if test="filter.showAuditStatus">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_auditStatus'); return false;">Audit

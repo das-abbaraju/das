@@ -12,6 +12,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	// Filter parameters
 	protected boolean showAuditType = true;
+	protected boolean showPolicyType = false;
 	protected boolean showAuditStatus = true;
 	protected boolean showAuditor = true;
 	protected boolean showCreatedDate = true;
@@ -137,6 +138,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.showExpiredLicense = showExpiredLicense;
 	}
 
+	public boolean isShowPolicyType() {
+		return showPolicyType;
+	}
+
+	public void setShowPolicyType(boolean showPolicyType) {
+		this.showPolicyType = showPolicyType;
+	}
+	
 	public int[] getAuditID() {
 		return auditID;
 	}
@@ -279,6 +288,11 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		return new AuditTypeCache(auditDAO).getAuditTypes(permissions);
 	}
 
+	public List<AuditType> getPolicyTypeList() {
+		AuditTypeDAO auditDAO = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
+		return new AuditTypeCache(auditDAO).getPolicyTypes(permissions);
+	}
+
 	public AuditStatus[] getAuditStatusList() {
 		return AuditStatus.values();
 	}
@@ -338,5 +352,4 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	public void setIncidenceRate(double incidenceRate) {
 		this.incidenceRate = incidenceRate;
 	}
-
 }
