@@ -106,10 +106,10 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.BillingUpgrades))
 			subMenu.addChild("Upgrade Payments", "report_upgradePayment.jsp?changed=1");
 
-		//subMenu = menu.addChild("InsureGuard");
-		//OpPerms.InsuranceApproval
-		//OpPerms.InsuranceVerification
-		
+		subMenu = menu.addChild("InsureGuard");
+		if (permissions.hasPermission(OpPerms.InsuranceApproval))
+			subMenu.addChild("Insurance Approval", "ReportInsuranceApproval.action");
+
 		subMenu = menu.addChild("Management");
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
 			subMenu.addChild("Approve Contractors", "con_approvals.jsp");
@@ -157,7 +157,7 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.FatalitiesReport))
 			subMenu.addChild("Fatalities", "ReportFatalities.action?filter.auditStatus=Active");
-		subMenu.addChild("Operator Flag Criteria", "ReportOperatorCriteria.action");
+		subMenu.addChild("Operator Flag Criteria", "ReportOperatorCriteria.action?filter.flagStatus=Red");
 		if (permissions.hasPermission(OpPerms.ForcedFlagsReport))
 			subMenu.addChild("Forced Flags", "ReportContractorsWithForcedFlags.action");
 		if (permissions.hasPermission(OpPerms.FatalitiesReport))

@@ -16,4 +16,13 @@ public enum LowMedHigh {
 		}
 		return map; 
 	}
+	
+	static public String getName(int id) {
+		for(LowMedHigh value : LowMedHigh.values()) {
+			if(value.ordinal() == id)
+				return value.toString();
+		}	
+		return "";
+	}
+
 }

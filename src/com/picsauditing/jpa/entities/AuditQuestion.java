@@ -26,7 +26,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
 public class AuditQuestion extends BaseTable implements java.io.Serializable, Comparable<AuditQuestion> {
 	static public final int EMR = 2034;
-	static public final int EMR_AVG = 0;
 	static public final int MANUAL_PQF = 1331;
 
 	static public final String[] TYPE_ARRAY = { "Additional Insured", "Check Box", "Country", "Date", "Decimal Number", "File",
