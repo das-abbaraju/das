@@ -79,6 +79,8 @@ order by contractor_id, type
 */
 
 
+alter table contractor_audit add column cert_id int   NULL  after `auditFor`
+
 --create the audits
 		--insert into contractor_audit
 		select distinct null auditid, at.auditTypeId, cert.contractor_id, now() createddate, 
@@ -87,30 +89,20 @@ order by contractor_id, type
 				when cert.verified = 'No' then 'Submitted' end status,
 			cert.expdate,
 			null auditorid,
-			now() assigneddate,
-			now() scheduleddate,
-			case when cert.status = 'Expired' then cert.expdate
-				when cert.status = 'Pending' then null
-				when cert.verified = 'Yes' then cert.lastSentDate
-				when cert.verified = 'No' then null end completeddate, 
-
-			case when cert.status = 'Expired' then cert.expdate
-				when cert.status = 'Pending' then null
-				when cert.verified = 'Yes' then cert.lastSentDate
-				when cert.verified = 'No' then null end closeddate,
+			null assigneddate,
+			null scheduleddate,
+			null completeddate, 
+			null closeddate,
 			null requestedbyopid,
 			null auditlocation,
-			case when cert.status = 'Expired' then 100
-				when cert.status = 'Pending' then 0
-				when cert.status = 'Rejected' then 0
-				when cert.verified = 'Approved' then 100 
-				when cert.verified = 'Yes' then 100 end percentcomplete,
+			100 percentcomplete,
 
 			case when cert.verified = 'Yes' then 100 else 0 end percentverified,
 			null contractorconfirm,
 			null auditorconfirm,
-			0 manuallyadded,
-			case when c_dup.cert_id is not null then concat('',c_dup.cert_id) else null end auditfor
+			1 manuallyadded,
+			null auditFor,
+			0 cert_id
 		from certificates_old cert 
 			join (
 				Select 'General Liability' as audittype,'General Liability' as certtype union
@@ -124,71 +116,32 @@ order by contractor_id, type
 				Select 'E&O Liability','E&O' ) mapper on cert.type = mapper.certtype
 
 			join audit_type at on at.auditName = mapper.audittype and at.classType = 'Policy'
-		left outer join (
-			select * from certificates_old d_dup where
-				exists ( 
-					select contractor_id, type from certificates_old a_dup where 
-					d_dup.contractor_id = a_dup.contractor_id
-					and d_dup.type = a_dup.type
-					and not exists
-					(
-					select *
-					from certificates_old b_dup
-					where b_dup.contractor_id = a_dup.contractor_id
-					group by contractor_id, type
-					having avg(b_dup.liabilitylimit) = a_dup.liabilitylimit
-					)
-				)
-			) c_dup on c_dup.cert_id = cert.cert_id
+			join (select contractor_id, type, min(cert_id) theId from certificates_old group by contractor_id, type)  cert2 on cert2.theid = cert.cert_id
+
 		where not exists (
 			select * from contractor_audit exist_check where exist_check.conid = cert.contractor_id and exist_check.audittypeid = at.audittypeid
 		)
-
-
 	
-	
+
 --create the conauditoperators
 	--insert into contractor_audit_operator
 	select null id, ca.auditid, cert.operator_id, 
 			case when cert.status = 'Expired' then 'Pending' else cert.status end , 
 
-	cert.reason notes, 12345 createdby, 12345 updatedby, now() creationDate, now() updateDate
+	cert.reason notes, 941 createdby, 941 updatedby, now() creationDate, now() updateDate
 	from certificates_old cert 
-		join (
-			Select 'General Liability' as audittype,'General Liability' as certtype union
-			Select 'Workers Comp','Worker''s Comp' union
-			Select 'Automobile Liability','Automobile' union
-			Select 'Excess/Umbrella Liability','Excess/Umbrella' union
-			Select 'Professional Liability','Professional Liability' union
-			Select 'Pollution Liability','Pollution Liability' union
-			Select 'Contractor Liability','Contractor Liability' union
-			Select 'Employer''s Liability','Employer''s Liability' union
-			Select 'E&O Liability','E&O' ) mapper on cert.type = mapper.certtype
-
-		join audit_type at on at.auditName = mapper.audittype and at.classType = 'Policy'
-		join contractor_audit ca on ca.conid = cert.contractor_id and ca.audittypeid = at.audittypeid
-
+		join contractor_audit ca on ca.cert_id = cert.cert_id
+		join audit_type at at.classType = 'Policy' and at.audittypeid = ca.audittypeid
 	where not exists
 		(select * from contractor_audit_operator cao where cao.auditid = ca.auditid and cao.opid = cert.operator_id)
-
 
 --create the pqfdata
 	--limits
 		--insert into pqfdata
-		select null id, ca.auditid, questionmapper.qid, null, cert.liabilitylimit, '', '0000-00-00', null, 'No', 12345, now(), 12345, now()
+		select null id, ca.auditid, questionmapper.qid, null, cert.liabilitylimit, '', '0000-00-00', null, 'No', 941, now(), 941, now()
 		from certificates_old cert 
-			join (
-				Select 'General Liability' as audittype,'General Liability' as certtype union
-				Select 'Workers Comp','Worker''s Comp' union
-				Select 'Automobile Liability','Automobile' union
-				Select 'Excess/Umbrella Liability','Excess/Umbrella' union
-				Select 'Professional Liability','Professional Liability' union
-				Select 'Pollution Liability','Pollution Liability' union
-				Select 'Contractor Liability','Contractor Liability' union
-				Select 'Employer''s Liability','Employer''s Liability' union
-				Select 'E&O Liability','E&O' ) mapper on cert.type = mapper.certtype
-			join audit_type at on at.auditName = mapper.audittype and at.classType = 'Policy'
-			join contractor_audit ca on ca.conid = cert.contractor_id and ca.audittypeid = at.audittypeid
+		join contractor_audit ca on ca.cert_id = cert.cert_id
+		join audit_type at on at.auditName = mapper.audittype and at.classType = 'Policy'
 			join (
 				Select 'General Liability' as audittype, 2074 qid union
 				Select 'Workers Comp', 2149 union
@@ -205,20 +158,10 @@ order by contractor_id, type
 	
 	--expiration dates		
 		--insert into pqfdata	
-	select null id, ca.auditid, questionmapper.qid, null, cert.expdate, '', '0000-00-00', null, 'No', 12345, now(), 12345, now()
+	select null id, ca.auditid, questionmapper.qid, null, cert.expdate, '', '0000-00-00', null, 'No', 941, now(), 941, now()
 	from certificates_old cert 
-		join (
-			Select 'General Liability' as audittype,'General Liability' as certtype union
-			Select 'Workers Comp','Worker''s Comp' union
-			Select 'Automobile Liability','Automobile' union
-			Select 'Excess/Umbrella Liability','Excess/Umbrella' union
-			Select 'Professional Liability','Professional Liability' union
-			Select 'Pollution Liability','Pollution Liability' union
-			Select 'Contractor Liability','Contractor Liability' union
-			Select 'Employer''s Liability','Employer''s Liability' union
-			Select 'E&O Liability','E&O' ) mapper on cert.type = mapper.certtype
+		join contractor_audit ca on ca.cert_id = cert.cert_id
 		join audit_type at on at.auditName = mapper.audittype and at.classType = 'Policy'
-		join contractor_audit ca on ca.conid = cert.contractor_id and ca.audittypeid = at.audittypeid
 		join (
 			Select 'General Liability' as audittype, 2082 qid union
 			Select 'Workers Comp', 2105 union
@@ -234,31 +177,28 @@ order by contractor_id, type
 
 	--file extensions
 		--insert into pqfdata
-		select null id, ca.auditid, questionmapper.qid, null, cert.ext, '', '0000-00-00', null, 'No', 12345, now(), 12345, now()
-	from certificates_old cert 
-		join (
-			Select 'General Liability' as audittype,'General Liability' as certtype union
-			Select 'Workers Comp','Worker''s Comp' union
-			Select 'Automobile Liability','Automobile' union
-			Select 'Excess/Umbrella Liability','Excess/Umbrella' union
-			Select 'Professional Liability','Professional Liability' union
-			Select 'Pollution Liability','Pollution Liability' union
-			Select 'Contractor Liability','Contractor Liability' union
-			Select 'Employer''s Liability','Employer''s Liability' union
-			Select 'E&O Liability','E&O' ) mapper on cert.type = mapper.certtype
-		join audit_type at on at.auditName = mapper.audittype and at.classType = 'Policy'
-		join contractor_audit ca on ca.conid = cert.contractor_id and ca.audittypeid = at.audittypeid
-		join (
-			Select 'General Liability' as audittype, 2073 qid union
-			Select 'Workers Comp', 2101 union
-			Select 'Automobile Liability',2107 union
-			Select 'Excess/Umbrella Liability',2113 union
-			Select 'Professional Liability',2119 union
-			Select 'Pollution Liability',2125 union
-			Select 'Contractor Liability',2131 union
-			Select 'Employer''s Liability',2137 union
-			Select 'E&O Liability',2143 ) questionmapper on questionmapper.audittype = at.auditname
-		where not exists ( select * from pqfdata abc where abc.auditid = ca.auditid and abc.questionid = questionmapper.qid ) 
+select 
+	null id, ca.auditid, questionmapper.qid, alreadythere.parentid, cert.namedinsured, '', '0000-00-00', null, 'No', 941, now(), 941, now()
+from certificates_old cert 
+	join contractor_audit ca on ca.cert_id = cert.cert_id
+	join audit_type at on at.auditName = mapper.audittype and at.classType = 'Policy'
+	join (
+		Select 'General Liability' as audittype, 2100 qid union
+		Select 'Workers Comp', 2202 union
+		Select 'Automobile Liability',2199 union
+		Select 'Excess/Umbrella Liability',2205 union
+		Select 'Professional Liability',2208 union
+		Select 'Pollution Liability',2211 union
+		Select 'Contractor Liability',2214 union
+		Select 'Employer''s Liability',2217 union
+		Select 'E&O Liability',2220 ) questionmapper on questionmapper.audittype = at.auditname
+	left join pqfdata alreadythere on alreadythere.questionid = questionmapper.qud and alreadythere.auditid = ca.auditid and alreadythere.parentid is null
+
+	where 
+		cert.namedinsured is not null and cert.namedinsured <> ''
+		and not exists 
+			( select * from pqfdata abc 
+				where abc.auditid = ca.auditid and abc.questionid = questionmapper.qid and abc.answer = cert.namedinsured ) 
 		
 	
 
@@ -266,18 +206,8 @@ order by contractor_id, type
 		--insert into pqfcatdata
 		select null id, catmapper.catid, ca.auditid, 0,0,0,'Yes',0,0,0,0
 			from certificates_old cert 
-				join (
-					Select 'General Liability' as audittype,'General Liability' as certtype union
-					Select 'Workers Comp','Worker''s Comp' union
-					Select 'Automobile Liability','Automobile' union
-					Select 'Excess/Umbrella Liability','Excess/Umbrella' union
-					Select 'Professional Liability','Professional Liability' union
-					Select 'Pollution Liability','Pollution Liability' union
-					Select 'Contractor Liability','Contractor Liability' union
-					Select 'Employer''s Liability','Employer''s Liability' union
-					Select 'E&O Liability','E&O' ) mapper on cert.type = mapper.certtype
+				join contractor_audit ca on ca.cert_id = cert.cert_id
 				join audit_type at on at.auditName = mapper.audittype and at.classType = 'Policy'
-				join contractor_audit ca on ca.conid = cert.contractor_id and ca.audittypeid = at.audittypeid
 				join (
 					Select 'General Liability' as audittype, 160 catid union
 					Select 'Workers Comp', 161 union
@@ -294,5 +224,6 @@ order by contractor_id, type
 /*
 we need to have something that:
 	periodically migrates additionalinsureds
-	make all gap questions have an effective date of X - Y	
+	make all gap questions have an effective date of X - Y
+	dups	
 */
