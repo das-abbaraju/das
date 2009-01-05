@@ -1,9 +1,10 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.Inputs;
@@ -14,14 +15,15 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OshaAuditDAO;
+import com.picsauditing.jpa.entities.AccountName;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.State;
@@ -403,4 +405,11 @@ public class AuditCategoryAction extends AuditActionSupport {
 		return false;
 	}
 	
+	public Set<String> getLegalNames() {
+		Set<String> list = new TreeSet<String>();
+		for(ContractorOperator co : contractor.getOperators())
+			for(AccountName legalName : co.getOperatorAccount().getNames())
+				list.add(legalName.getName());
+		return list;
+	}
 }

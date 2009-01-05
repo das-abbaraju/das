@@ -73,10 +73,7 @@ public class AuditDataSave extends AuditActionSupport {
 					auditData.setParentAnswer(null);
 				auditData.setAuditColumns(getUser());
 				auditDataDao.save(auditData);
-				if (question.isAllowMultipleAnswers()) {
-					auditData.setParentAnswer(auditData);
-					auditDataDao.save(auditData);
-				}
+				newCopy = auditData;
 			} else {
 				// update mode
 				if (auditData.getAnswer() != null) {
@@ -149,7 +146,6 @@ public class AuditDataSave extends AuditActionSupport {
 				auditPercentCalculator.percentCalculateComplete(conAudit);
 			}
 
-			auditData = newCopy;
 			output = "Saved";
 		} catch (Exception e) {
 			e.printStackTrace();

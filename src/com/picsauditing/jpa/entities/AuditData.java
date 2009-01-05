@@ -19,6 +19,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.picsauditing.PICS.DateBean;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "pqfdata")
@@ -117,6 +119,11 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	}
 
 	@Transient
+	public boolean isUnverified() {
+		return getDateVerified() == null;
+	}
+	
+	@Transient
 	public boolean isVerified() {
 		return getDateVerified() != null;
 	}
@@ -126,9 +133,29 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	}
 
 	@Transient
-	public boolean isUnverified() {
-		return getDateVerified() == null;
+	/**
+	 * Is the answer filled in with data or not?
+	 */
+	public boolean isAnswered() {
+		if (answer != null
+				&& answer.length() > 0
+				&& !answer.equals(DateBean.NULL_DATE_DB)) {
+			return true;
+		}
+		return false;
 	}
+	
+	@Transient
+	public boolean isOK() {
+		if (answer == null || question.getOkAnswer() == null)
+			return false;
+		
+		if (question.getOkAnswer().contains(answer))
+			return true;
+		
+		return false;
+	}
+
 
 	@Enumerated(EnumType.STRING)
 	public YesNo getWasChanged() {
@@ -225,7 +252,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		result = PRIME * result + id;
 		return result;
 	}
-
+	
 	/**
 	 * Take a map of numerical AuditData answers and add an additional AuditData
 	 * containing an average. The new average will be verified only if all the
@@ -286,4 +313,10 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 
 		return new Integer(getId()).compareTo(new Integer(other.getId()));
 	}
+
+	@Override
+	public String toString() {
+		return id + " '" + answer + "'";
+	}
+
 }

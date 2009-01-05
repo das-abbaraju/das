@@ -83,7 +83,8 @@ public class AuditBuilder {
 
 		List<Integer> requiresSafetyManual = new ArrayList<Integer>();
 		requiresSafetyManual.add(AuditType.DESKTOP);
-		requiresSafetyManual.add(AuditType.OFFICE); // I think Jesse said to go
+		requiresSafetyManual.add(AuditType.OFFICE);
+		// I think Jesse said to go
 		// ahead and create the
 		// office audit right away
 		requiresSafetyManual.add(AuditType.DA);

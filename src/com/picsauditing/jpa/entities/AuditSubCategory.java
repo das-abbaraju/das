@@ -115,14 +115,18 @@ public class AuditSubCategory implements java.io.Serializable, Comparable<AuditS
 
 	private void addChildren(ContractorAudit conAudit, int rowID, AuditQuestion question,
 			AnswerMap answerMap) {
+		boolean debug = false;
+		
 		if (category.getValidDate().after(question.getEffectiveDate())
 				&& category.getValidDate().before(question.getExpirationDate())) {
 			// This is a valid question we want to include
-			//System.out.println("Adding question:" + rowID + " " + question.getQuestion());
+			if (debug)
+				System.out.println("Adding question:" + rowID + " " + question.getQuestion());
 			if (question.isAllowMultipleAnswers()) {
-				for (AuditData childData : answerMap.getAnswers(question.getId())) {
+				for (AuditData childData : answerMap.getAnswerList(question.getId())) {
 					int childRowID = childData.getId();
-					//System.out.println("Put answer:" + childData.getAnswer());
+					if (debug)
+						System.out.println("Put answer:" + childData.getAnswer());
 					answerList.add(childData);
 					
 					for (AuditQuestion childQuestion : question.getChildQuestions()) {
@@ -133,10 +137,11 @@ public class AuditSubCategory implements java.io.Serializable, Comparable<AuditS
 				AuditData answer = new AuditData();
 				answer.setQuestion(question);
 				answer.setAudit(conAudit);
-				// System.out.println("Put new entry");
+				if (debug)
+					System.out.println("Put new entry");
 				answerList.add(answer);
 			} else {
-				AuditData answer = answerMap.get(rowID);
+				AuditData answer = answerMap.get(question.getId());
 				if (answer == null) {
 					answer = new AuditData();
 					answer.setQuestion(question);
@@ -146,7 +151,8 @@ public class AuditSubCategory implements java.io.Serializable, Comparable<AuditS
 					}
 					answer.setAudit(conAudit);
 				}
-				//System.out.println("Put single answer:" + answer.getId() + " " + answer.getAnswer());
+				if (debug)
+					System.out.println("Put single answer:" + answer.getId() + " " + answer.getAnswer());
 				answerList.add(answer);
 			}
 		}

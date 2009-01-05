@@ -1,8 +1,8 @@
 package com.picsauditing.PICS;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -10,7 +10,6 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.util.AnswerMap;
@@ -33,7 +32,7 @@ public class AuditPercentCalculator {
 		}
 
 		catData.getCategory().setValidDate(catData.getAudit().getValidDate());
-		
+
 		int requiredAnsweredCount = 0;
 		int answeredCount = 0;
 		int requiredCount = 0;
@@ -41,7 +40,6 @@ public class AuditPercentCalculator {
 
 		// Get a list of questions/answers for this category
 		List<Integer> questionIDs = new ArrayList<Integer>();
-
 		for (AuditSubCategory subCategory : catData.getCategory().getValidSubCategories()) {
 			for (AuditQuestion question : subCategory.getQuestions()) {
 				questionIDs.add(question.getId());
@@ -53,46 +51,89 @@ public class AuditPercentCalculator {
 		}
 		// Get a map of all answers in this audit
 		AnswerMap answers = auditDataDao.findAnswers(catData.getAudit().getId(), questionIDs);
-		
-		// Get a list of questions/answers for this category
-		for (AuditSubCategory subCategory : catData.getCategory().getValidSubCategories()) {
-			// for (AuditQuestion question : subCategory.getValidQuestions()) {
-			for (AuditQuestion question : subCategory.getQuestions()) {
-				boolean isRequired = "Yes".equals(question.getIsRequired());
-				if (isRequired) {
-					requiredCount++;
-				} else if ("Depends".equals(question.getIsRequired())) {
-					if (question.getDependsOnQuestion() != null) {
-						AuditData answer = answers.get(question.getDependsOnQuestion().getId());
+		System.out.println(answers);
 
-						if( answer != null ) {
-							question.getDependsOnQuestion().setCriteriaAnswer(answer.getAnswer());
-						}
-					}
-				}
-				AuditData answer = answers.get(question.getId());
-				
-				if (answer != null) {
-					String answerToQuestion = answer.getAnswer();
-					if (!"".equals(answerToQuestion)
-							&& !DateBean.NULL_DATE_DB.equals(answerToQuestion)) {
-						// This answer isn't empty
-						answeredCount++;
-						if (isRequired)
-							requiredAnsweredCount++;
-					}
+		// Get a list of questions/answers for this category
+		Date validDate = catData.getAudit().getValidDate();
+		for (AuditSubCategory subCategory : catData.getCategory().getValidSubCategories()) {
+			for (AuditQuestion question : subCategory.getQuestions()) {
+				if (validDate.after(question.getEffectiveDate())
+						&& validDate.before(question.getExpirationDate())) {
+					boolean isRequired = false;
 					
-					int auditTypeID = catData.getAudit().getAuditType().getAuditTypeID();
-					if( auditTypeID == AuditType.OFFICE || auditTypeID == AuditType.DESKTOP ) {
-						if ("Yes".equals(answerToQuestion) || "NA".equals(answerToQuestion)) {
-							// This is a valid Desktop or Office audit answer so,
-							// it's "Verified"
-							verifiedCount++;
+					if (question.isAllowMultipleAnswers()) {
+						AuditData answer = answers.get(question.getId());
+						// Only require the tuple if at least one minimum tuple is required
+						isRequired = question.getMinimumTuples() > 0;
+						if (isRequired)
+							requiredCount++;
+						
+						if (answer != null) {
+							if (answer.isAnswered()) {
+								answeredCount++;
+								if (isRequired)
+									requiredAnsweredCount++;
+							}
+							if (answer.isVerified() || answer.isOK())
+								verifiedCount++;
 						}
-					}
-					else {
-						if( answer.isVerified() )
-							verifiedCount++;
+
+					} else if (question.getParentQuestion() == null) {
+						AuditData answer = answers.get(question.getId());
+						// This question isn't part of a tuple
+						isRequired = "Yes".equals(question.getIsRequired());
+						if ("Depends".equals(question.getIsRequired())
+								&& question.getDependsOnQuestion() != null 
+								&& question.getDependsOnAnswer() != null) {
+							// This question is dependent on another question's answer
+							// Use the parentAnswer, so we get answers in the same tuple as this one
+							AuditData otherAnswer = answers.get(question.getDependsOnQuestion().getId());
+							if (question.getDependsOnAnswer().equals(otherAnswer.getAnswer()))
+								isRequired = true;
+						}
+						if (isRequired)
+							requiredCount++;
+						
+						if (answer != null) {
+							if (answer.isAnswered()) {
+								answeredCount++;
+								if (isRequired)
+									requiredAnsweredCount++;
+							}
+							if (answer.isVerified() || answer.isOK())
+								verifiedCount++;
+						}
+
+					} else {
+						// This must be part of a tuple
+						AuditQuestion parentQuestion = question.getParentQuestion();
+						for(AuditData rowAnchor : answers.getAnswerList(parentQuestion.getId())) {
+							// For each tuple, see if this question is required and filled in
+							AuditData answer = answers.get(question, rowAnchor);
+							
+							isRequired = "Yes".equals(question.getIsRequired());
+							if ("Depends".equals(question.getIsRequired())
+									&& question.getDependsOnQuestion() != null 
+									&& question.getDependsOnAnswer() != null) {
+								// This question is dependent on another question's answer
+								// Use the parentAnswer, so we get answers in the same tuple as this one
+								AuditData otherAnswer = answers.get(question.getDependsOnQuestion(), rowAnchor);
+								if (question.getDependsOnAnswer().equals(otherAnswer.getAnswer()))
+									isRequired = true;
+							}
+							if (isRequired)
+								requiredCount++;
+
+							if (answer != null) {
+								if (answer.isAnswered()) {
+									answeredCount++;
+									if (isRequired)
+										requiredAnsweredCount++;
+								}
+								if (answer.isVerified() || answer.isOK())
+									verifiedCount++;
+							}
+						}
 					}
 				}
 			}
@@ -117,23 +158,20 @@ public class AuditPercentCalculator {
 		}
 		catDataDao.save(catData);
 	}
-
+	
 	public void percentCalculateComplete(ContractorAudit conAudit) {
 		percentCalculateComplete(conAudit, false);
 	}
 
-	
 	public void percentCalculateComplete(ContractorAudit conAudit, boolean recalcCats) {
 		int required = 0;
 		int answered = 0;
 		int verified = 0;
-		
-		
-		if( recalcCats ) {
+
+		if (recalcCats) {
 			recalcAllAuditCatDatas(conAudit);
 		}
-		
-		
+
 		for (AuditCatData data : conAudit.getCategories()) {
 			if (!conAudit.getAuditType().isDynamicCategories() || data.isAppliesB()) {
 				// The category applies or the audit type doesn't have dynamic
@@ -155,48 +193,42 @@ public class AuditPercentCalculator {
 				percentVerified = 100;
 		}
 		conAudit.setPercentComplete(percentComplete);
-		if (conAudit.getAuditType().isHasRequirements() && !conAudit.getAuditType().isPqf() )
+		if (conAudit.getAuditType().isHasRequirements() && !conAudit.getAuditType().isPqf())
 			conAudit.setPercentVerified(percentVerified);
-		else if ( conAudit.getAuditType().isPqf() ) {
-			
+		else if (conAudit.getAuditType().isPqf()) {
+
 			List<AuditData> temp = auditDataDao.findCustomPQFVerifications(conAudit.getId());
 			verified = 0;
 			int verifiedTotal = 0;
-			
-			for (AuditData auditData : temp ) {
+
+			for (AuditData auditData : temp) {
 				// either the pqf or the EMF for the annual addendum
 				if (auditData.isVerified()) {
 					verified++;
 				}
 				verifiedTotal++;
 			}
-			
-			conAudit.setPercentVerified(Math.round((float) (100 * verified)	/ verifiedTotal));
+
+			conAudit.setPercentVerified(Math.round((float) (100 * verified) / verifiedTotal));
 		}
-			 
+
 	}
 
 	public void recalcAllAuditCatDatas(ContractorAudit conAudit) {
 		for (AuditCatData data : conAudit.getCategories()) {
 
-			if( ! conAudit.getAuditType().isAnnualAddendum() ) {
-				updatePercentageCompleted( data );
-			}
-			else {
-				for( OshaAudit osha : conAudit.getOshas() ) {
-					if( osha.isCorporate() ) {
-						percentOshaComplete( osha, data );							
+			if (!conAudit.getAuditType().isAnnualAddendum()) {
+				updatePercentageCompleted(data);
+			} else {
+				for (OshaAudit osha : conAudit.getOshas()) {
+					if (osha.isCorporate()) {
+						percentOshaComplete(osha, data);
 					}
 				}
 			}
 		}
 	}
 
-	
-	
-	
-	
-	
 	public void percentOshaComplete(OshaAudit osha, AuditCatData catData) {
 		int count = 0;
 
@@ -213,14 +245,13 @@ public class AuditPercentCalculator {
 		catData.setRequiredCompleted(count);
 		catData.setNumRequired(2);
 		catData.setPercentCompleted(percentComplete);
-		
-		if( osha.isVerified()) {
+
+		if (osha.isVerified()) {
 			catData.setPercentVerified(100);
-		}
-		else {
+		} else {
 			catData.setPercentVerified(0);
 		}
-		
+
 		catDataDao.save(catData);
 	}
 
