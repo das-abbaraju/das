@@ -180,7 +180,7 @@ public class FlagCalculatorSingle {
 			for (AuditData data : tempMap.values()) {
 				// The flag colors should always start Green, but sometimes they
 				// are still set from the previous operator's loop
-				data.setFlagColor(FlagColor.Green);
+				data.setFlagColor(null);
 			}
 		}
 
@@ -201,9 +201,9 @@ public class FlagCalculatorSingle {
 						flagColor = flagData(flagColor, criteria, data);
 					} else {
 						// We have multiple answers, this could be EMR
-						for (AuditData data : answerMap.values()) {
-							data.setFlagColor(null);
-						}
+						//for (AuditData data : answerMap.values()) {
+						//	data.setFlagColor(null);
+						//}
 						MultiYearScope scope = criteria.getMultiYearScope();
 						if (MultiYearScope.LastYearOnly.equals(scope)) {
 							AuditData data = null;
