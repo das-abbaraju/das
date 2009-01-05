@@ -344,4 +344,10 @@ public class Utilities {
 		return Integer.parseInt(columnValue.toString());
 
 	}
+
+	public static float getAverageEMR(float year1, float year2, float year3) {
+		Float avgRateFloat = year1+year2+year3 / 3;
+		avgRateFloat = (float) Math.round(1000 * avgRateFloat) / 1000;
+		return avgRateFloat;
+	}
 }

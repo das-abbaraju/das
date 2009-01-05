@@ -24,9 +24,9 @@
 		<s:iterator value="operatorAccount.audits">
 			<s:if test="canSee && minRiskLevel > 0">
 				<s:if test="auditType.annualAddendum">
+					<td><s:property value="auditType.auditName"/> 08 Status</td>
 					<td><s:property value="auditType.auditName"/> 07 Status</td>
 					<td><s:property value="auditType.auditName"/> 06 Status</td>
-					<td><s:property value="auditType.auditName"/> 05 Status</td>
 				</s:if>
 				<s:else>
 					<td><s:property value="auditType.auditName"/> Status</td>
@@ -34,11 +34,19 @@
 			</s:if>
 		</s:iterator>
 		<s:iterator value="operatorAccount.flagQuestionCriteria">
-			<s:if test="checked.toString().equals('Yes') && auditQuestion.id != 0">
+			<s:if test="flagColor.toString().equals(filter.flagStatus) && checked.toString().equals('Yes') && auditQuestion.id != 0">
 				<s:if test="auditQuestion.id == 2034">
-					<td>07 EMR</td>
-					<td>06 EMR</td>
-					<td>05 EMR</td>
+					<s:if test="multiYearScope.description.equals('All Three Years')">
+						<td>EMR 08</td>
+						<td>EMR 07</td>
+						<td>EMR 06</td>
+					</s:if>	
+					<s:elseif test="multiYearScope.description.equals('Last Year Only')">
+						<td>EMR 08</td>
+					</s:elseif>
+					<s:elseif test="multiYearScope.description.equals('Three Year Average')">
+						<td>EMR AVG</td>
+					</s:elseif>
 				</s:if>
 				<s:else>
 					<td><s:property value="auditQuestion.columnHeader"/></td>
@@ -46,19 +54,19 @@
 			</s:if>
 		</s:iterator>
 		<s:if test="hasFatalities">
+			<td>Fatalities '08</td>
 			<td>Fatalities '07</td>
 			<td>Fatalities '06</td>
-			<td>Fatalities '05</td>
 		</s:if>
 		<s:if test="hasTrir">
+			<td>TRIR '08</td>
 			<td>TRIR '07</td>
 			<td>TRIR '06</td>
-			<td>TRIR '05</td>
 		</s:if>
 		<s:if test="hasLwcr">
+			<td>LWCR '08</td>
 			<td>LWCR '07</td>
 			<td>LWCR '06</td>
-			<td>LWCR '05</td>
 		</s:if>
 	</tr>
 	</thead>
@@ -77,14 +85,14 @@
 				</td>
 			</s:if>
 			<td class="center">
-				<s:property value="[0].get('riskLevel')" />
+				<s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('riskLevel'))" />
 			</td>
 			<s:iterator value="operatorAccount.audits">		
 				<s:if test="canSee && minRiskLevel > 0">
 					<s:if test="auditType.annualAddendum">
+						<td><span title="Completed - <s:property value="%{get('annual2008 Completed')}"/>%"><s:property value="%{get('annual2008 Status')}"/></span></td>
 						<td><span title="Completed - <s:property value="%{get('annual2007 Completed')}"/>%"><s:property value="%{get('annual2007 Status')}"/></span></td>
 						<td><span title="Completed - <s:property value="%{get('annual2006 Completed')}"/>%"><s:property value="%{get('annual2006 Status')}"/></span></td>
-						<td><span title="Completed - <s:property value="%{get('annual2005 Completed')}"/>%"><s:property value="%{get('annual2005 Status')}"/></span></td>
 					</s:if>
 					<s:else>
 						<td><span title="Completed - <s:property value="%{get(auditType.auditName + ' Completed')}"/>%"><s:property value="%{get(auditType.auditName + ' Status')}"/></span></td>
@@ -92,11 +100,19 @@
 				</s:if>
 			</s:iterator>
 			<s:iterator value="operatorAccount.flagQuestionCriteria">
-				<s:if test="checked.toString().equals('Yes') && auditQuestion.id != 0">
+				<s:if test="flagColor.toString().equals(filter.flagStatus) && checked.toString().equals('Yes') && auditQuestion.id != 0">
 					<s:if test="auditQuestion.id == 2034">
-						<td><s:property value="%{get('answer2007')}"/></td>
-						<td><s:property value="%{get('answer2006')}"/></td>
-						<td><s:property value="%{get('answer2005')}"/></td>
+						<s:if test="multiYearScope.description.equals('All Three Years')">
+							<td><s:property value="%{get('answer2008')}"/></td>
+							<td><s:property value="%{get('answer2007')}"/></td>
+							<td><s:property value="%{get('answer2006')}"/></td>
+						</s:if>	
+						<s:elseif test="multiYearScope.description.equals('Last Year Only')">
+							<td><s:property value="%{get('answer2008')}"/></td>
+						</s:elseif>
+						<s:elseif test="multiYearScope.description.equals('Three Year Average')">
+							<td><s:property value="@com.picsauditing.PICS.Utilities@getAverageEMR(get('answer2008'),get('answer2007'),get('answer2006'))"/></td>				
+						</s:elseif>
 					</s:if>
 					<s:else>
 						<td><s:property value="%{get('answer' + auditQuestion.id)}"/></td>
@@ -104,19 +120,19 @@
 				</s:if>
 			</s:iterator>
 			<s:if test="hasFatalities">
+				<td><s:property value="get('fatalities08')"/></td>
 				<td><s:property value="get('fatalities07')"/></td>
 				<td><s:property value="get('fatalities06')"/></td>
-				<td><s:property value="get('fatalities05')"/></td>
 			</s:if>
 			<s:if test="hasTrir">
+				<td><s:property value="get('trir08')"/></td>
 				<td><s:property value="get('trir07')"/></td>
 				<td><s:property value="get('trir06')"/></td>
-				<td><s:property value="get('trir05')"/></td>
 			</s:if>
 			<s:if test="hasLwcr">
+				<td><s:property value="get('lwcr08')"/></td>
 				<td><s:property value="get('lwcr07')"/></td>
 				<td><s:property value="get('lwcr06')"/></td>
-				<td><s:property value="get('lwcr05')"/></td>
 			</s:if>
 		</tr>
 	</s:iterator>
