@@ -28,6 +28,10 @@
 		<s:if test="question.questionType == 'Text'">
 			<s:textfield id="answer_%{id}" name="answer" size="30" onchange="javascript:saveAnswer(%{question.id}, '%{parentAnswer.id}', this);"/>
 		</s:if>
+		<s:if test="question.questionType == 'Additional Insured'">
+			<s:select list="legalNames" headerKey="" headerValue="" value="answer" name="question_%{id}" 
+				onchange="javascript:saveAnswer(%{question.id}, '%{parentAnswer.id}', this);"/>
+		</s:if>
 		<s:if test="question.questionType == 'License'">
 			<s:textfield name="answer" size="30" onchange="javascript:saveAnswer(%{question.id}, '%{parentAnswer.id}', this);"/>
 			<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(question, answer)" escape="false" />			
