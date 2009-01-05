@@ -20,7 +20,7 @@
 </s:iterator>
 </ol>
 <s:if test="reminderTask">
-	<label>Reminder : </label>Please <a href="con_selectFacilities.jsp?id=<s:property value="contractor.id"/>">update your facility list.</a>
+	<label>Reminder : </label>Please <a href="con_selectFacilities.jsp?id=<s:property value="contractor.id"/>">update your facility list</a>
 </s:if>
 </body>
 </html>
