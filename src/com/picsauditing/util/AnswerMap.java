@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import com.picsauditing.jpa.entities.AuditData;
@@ -130,5 +131,9 @@ public class AnswerMap {
 			}
 		}
 		return output.toString();
+	}
+	
+	public Set<Integer> getKeySet() {
+		return list.keySet();
 	}
 }
