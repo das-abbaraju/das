@@ -7,6 +7,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.Certificate;
 
 @Transactional
@@ -33,6 +34,11 @@ public class CertificateDAO extends PicsDAO {
 		return a;
 	}
 
+	public List<Certificate> findAll() {
+		Query q = em.createQuery("from Certificate");
+		return q.getResultList();
+	}
+	
 	/**
 	 * This is for getting a list of certificates that we need to send emails on.
 	 * The final result of all of this logic below is that we send emails:
@@ -55,4 +61,17 @@ public class CertificateDAO extends PicsDAO {
 		query.setParameter("After14Days", calendar1.getTime());
 		return query.getResultList();
 	}
+	
+	@SuppressWarnings("unchecked")
+	public AuditData findDataIdGivenACertId(int certId) {
+		
+		StringBuilder query = new StringBuilder( " select pd.* " );
+		
+			Query qry = em.createNativeQuery( query.toString(), AuditData.class );
+		qry.setParameter(1, certId);
+		return ( AuditData ) qry.getSingleResult();
+	
+	}
+
+	
 }

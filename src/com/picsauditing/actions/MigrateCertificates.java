@@ -62,7 +62,7 @@ public class MigrateCertificates extends PicsActionSupport {
 				put("Professional Liability", "Professional Liability");
 				put("Pollution Liability", "Pollution Liability");
 				put("Contractor Liability", "Contractor Liability");
-				put("Employer's Liability", "Employer's Liability");
+				put("Employer's Liability", "Employer''s Liability");
 				put("E&O", "E&O Liability");
 			}
 		};

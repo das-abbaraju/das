@@ -724,6 +724,11 @@
 			<result>struts/operators/insurance_approval_detail.jsp</result>
 		</action>
 
+		<action name="MigrateCertificates"
+			class="com.picsauditing.actions.MigrateCertificates">
+			<result>struts/blank.jsp</result>
+		</action>
+
 		<!-- Remember to Categorize your new Struts pages -->
 	</package>
 </struts>

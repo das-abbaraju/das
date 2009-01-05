@@ -20,7 +20,7 @@ import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "certificates")
+@Table(name = "certificates_old")
 public class Certificate implements java.io.Serializable {
 	protected int id;
 	protected ContractorAccount contractorAccount;
