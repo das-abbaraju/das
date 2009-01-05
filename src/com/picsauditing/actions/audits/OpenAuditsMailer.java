@@ -31,8 +31,9 @@ public class OpenAuditsMailer extends PicsActionSupport {
 	}
 
 	private int process(int nextID) {
-		String where = "contractorAccount.active = 'Y' AND auditType.hasRequirements = 1 AND auditType.auditTypeID > 1 AND auditStatus = 'Submitted' AND auditID > "
-				+ nextID;
+		// Only send this to Desktop, Office and D&A
+		String where = "contractorAccount.active = 'Y' AND auditType.auditTypeID IN (2,3,6) " +
+				"AND auditStatus = 'Submitted' AND auditID > " + nextID;
 		List<ContractorAudit> list = contractorAuditDAO.findWhere(100, where, "auditID");
 
 		EmailBuilder emailBuilder = new EmailBuilder();
