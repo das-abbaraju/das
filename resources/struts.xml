@@ -712,6 +712,17 @@
 			class="com.picsauditing.actions.Trevor">
 			<result>struts/blank.jsp</result>
 		</action>
+		
+		<!-- Insurance Reports -->
+		<action name="ReportInsuranceApproval"
+			class="com.picsauditing.actions.report.ReportInsuranceApproval">
+			<result>struts/reports/opinsurance_approval.jsp</result>
+		</action>
+		
+		<action name="VerifyInsuranceApproval"
+			class="com.picsauditing.actions.audits.ApproveInsurance">
+			<result>struts/operators/insurance_approval_detail.jsp</result>
+		</action>
 
 		<!-- Remember to Categorize your new Struts pages -->
 	</package>
