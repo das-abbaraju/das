@@ -201,8 +201,8 @@ public class ApproveInsurance extends ContractorActionSupport {
 	public static Map<Integer, AuditData> getQuestionAnswer(int auditID) {
 		Map<Integer, AuditData> insuranceQuestions = new LinkedHashMap<Integer, AuditData>();
 		AnswerMap temp = auditDataDAO.findAnswers(auditID);
-		for (Integer ad : temp) {
-			for (AuditData auditData : temp.getAnswers(ad)) {
+		for (Integer ad : temp.getKeySet())  {
+			for (AuditData auditData : temp.getAnswerList(ad)) {
 				insuranceQuestions.put(ad, auditData);
 			}
 		}
