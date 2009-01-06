@@ -98,48 +98,58 @@ public class ContractorActionSupport extends PicsActionSupport {
 		return contractorNonExpiredAudits;
 	}
 
+	/**
+	 * Build a Menu (List<MenuComponent>) with the following:<br> * PQF<br> *
+	 * Annual Update<br> * InsureGuard<br> * Audits<br>
+	 * 
+	 * @return
+	 */
 	public List<MenuComponent> getAuditMenu() {
-		// Figure out which auditTypes are duplicate and which are not
-		Map<AuditType, List<ContractorAudit>> audits = new TreeMap<AuditType, List<ContractorAudit>>();
+		// Create the menu
+		List<MenuComponent> menu = new ArrayList<MenuComponent>();
+		String url = "Audit.action?auditID=";
 
-		// Take a list of A,B,B,C and convert it into (A)(B,B)(C)
+		// Add the PQF
 		for (ContractorAudit audit : getActiveAudits()) {
-			if (!audit.equals(AuditStatus.Exempt)) {
-				AuditType t = audit.getAuditType();
-				if (t.getClassType().equals(AuditTypeClass.Audit)) {
-					if (!audits.containsKey(t))
-						audits.put(t, new ArrayList<ContractorAudit>());
-					audits.get(t).add(audit);
+			if (audit.getAuditType().isPqf()) {
+				MenuComponent menuComponent = new MenuComponent("PQF", url + audit.getId());
+				menuComponent.setAuditId(audit.getId());
+				menu.add(menuComponent);
+			}
+		}
+
+		{ // Add the Annual Updates
+			MenuComponent subMenu = new MenuComponent("Annual Update", "ConAnnualUpdates.action?id=" + id);
+			menu.add(subMenu);
+			for (ContractorAudit audit : getActiveAudits()) {
+				if (audit.getAuditType().isAnnualAddendum()) {
+					String linkText = audit.getAuditFor() + " Update";
+					subMenu.addChild(linkText, url + audit.getId(), audit.getId());
 				}
 			}
 		}
 
-		// Create the menu
-		List<MenuComponent> menu = new ArrayList<MenuComponent>();
-		String url = "Audit.action?auditID=";
-		for (AuditType t : audits.keySet()) {
-			if (t.getClassType().equals(AuditTypeClass.Audit)) {
-				List<ContractorAudit> auditList = audits.get(t);
-				ContractorAudit conAudit = auditList.get(0);
-				if (auditList.size() == 1) {
-					// Just one audit of this type
-					MenuComponent menuComponent = new MenuComponent(conAudit.getAuditType().getAuditName(), url
-							+ conAudit.getId());
-					menuComponent.setAuditId(conAudit.getId());
-					menu.add(menuComponent);
-				} else {
-					// We have more than one audit of this type, so create a
-					// subMenu
-					// with multiple children
-					MenuComponent subMenu = new MenuComponent(conAudit.getAuditType().getAuditName(), ""
-							+ conAudit.getAuditType().getAuditTypeID());
-					subMenu.setAuditId(conAudit.getId());
-					menu.add(subMenu);
+		if (isRequiresInsurance()) {
+			// Add InsureGuard
+			MenuComponent subMenu = new MenuComponent("InsureGuard", "ConInsureGuard.action?id=" + id);
+			menu.add(subMenu);
+			for (ContractorAudit audit : getActiveAudits()) {
+				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
+						&& !audit.equals(AuditStatus.Exempt)) {
+					String linkText = buildLinkText(audit);
+					subMenu.addChild(linkText, url + audit.getId(), audit.getId());
+				}
+			}
+		}
 
-					for (ContractorAudit audit : auditList) {
-						String linkText = buildLinkText(audit);
-						subMenu.addChild(linkText, url + audit.getId(), audit.getId());
-					}
+		{ // Add All Other Audits
+			MenuComponent subMenu = new MenuComponent("Audits", "ConAuditList.action?id=" + id);
+			menu.add(subMenu);
+			for (ContractorAudit audit : getActiveAudits()) {
+				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Audit) && !audit.getAuditType().isPqf()
+						&& !audit.getAuditType().isAnnualAddendum()) {
+					String linkText = buildLinkText(audit);
+					subMenu.addChild(linkText, url + audit.getId(), audit.getId());
 				}
 			}
 		}
