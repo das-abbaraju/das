@@ -25,7 +25,7 @@
 			<tr>
 				<td class="right"><s:property
 					value="#stat.index + report.firstRowNumber" /></td>
-				<td><a href="VerifyInsuranceApproval.action?id=<s:property value="get('id')"/>"><s:property value="[0].get('name')"/></a>
+				<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="[0].get('name')"/></a>
 				</td>
 				<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="[0].get('auditName')"/></a></td>
 				<td><s:property value="get('auditor_name')"/></td>
