@@ -27,6 +27,7 @@
 					<td><s:property value="auditType.auditName"/> 08 Status</td>
 					<td><s:property value="auditType.auditName"/> 07 Status</td>
 					<td><s:property value="auditType.auditName"/> 06 Status</td>
+					<td><s:property value="auditType.auditName"/> 05 Status</td>
 				</s:if>
 				<s:else>
 					<td><s:property value="auditType.auditName"/> Status</td>
@@ -40,9 +41,13 @@
 						<td>EMR 08</td>
 						<td>EMR 07</td>
 						<td>EMR 06</td>
+						<td>EMR 05</td>
 					</s:if>	
 					<s:elseif test="multiYearScope.description.equals('Last Year Only')">
-						<td>EMR 08</td>
+						<td><s:if test="%{get('answer2008')} != null">
+							EMR 08</s:if>
+							<s:else>EMR 07</s:else>
+						</td>
 					</s:elseif>
 					<s:elseif test="multiYearScope.description.equals('Three Year Average')">
 						<td>EMR AVG</td>
@@ -57,16 +62,19 @@
 			<td>Fatalities '08</td>
 			<td>Fatalities '07</td>
 			<td>Fatalities '06</td>
+			<td>Fatalities '05</td>
 		</s:if>
 		<s:if test="hasTrir">
 			<td>TRIR '08</td>
 			<td>TRIR '07</td>
 			<td>TRIR '06</td>
+			<td>TRIR '05</td>
 		</s:if>
 		<s:if test="hasLwcr">
 			<td>LWCR '08</td>
 			<td>LWCR '07</td>
 			<td>LWCR '06</td>
+			<td>LWCR '05</td>
 		</s:if>
 	</tr>
 	</thead>
@@ -93,6 +101,7 @@
 						<td><span title="Completed - <s:property value="%{get('annual2008 Completed')}"/>%"><s:property value="%{get('annual2008 Status')}"/></span></td>
 						<td><span title="Completed - <s:property value="%{get('annual2007 Completed')}"/>%"><s:property value="%{get('annual2007 Status')}"/></span></td>
 						<td><span title="Completed - <s:property value="%{get('annual2006 Completed')}"/>%"><s:property value="%{get('annual2006 Status')}"/></span></td>
+						<td><span title="Completed - <s:property value="%{get('annual2005 Completed')}"/>%"><s:property value="%{get('annual2005 Status')}"/></span></td>
 					</s:if>
 					<s:else>
 						<td><span title="Completed - <s:property value="%{get(auditType.auditName + ' Completed')}"/>%"><s:property value="%{get(auditType.auditName + ' Status')}"/></span></td>
@@ -106,12 +115,19 @@
 							<td><s:property value="%{get('answer2008')}"/></td>
 							<td><s:property value="%{get('answer2007')}"/></td>
 							<td><s:property value="%{get('answer2006')}"/></td>
+							<td><s:property value="%{get('answer2005')}"/></td>
 						</s:if>	
 						<s:elseif test="multiYearScope.description.equals('Last Year Only')">
-							<td><s:property value="%{get('answer2008')}"/></td>
+							<td><s:if test="%{get('answer2008')} != null">
+									<s:property value="%{get('answer2008')}"/>
+								</s:if>
+								<s:else>
+									<s:property value="%{get('answer2007')}"/>
+								</s:else>
+							</td>
 						</s:elseif>
 						<s:elseif test="multiYearScope.description.equals('Three Year Average')">
-							<td><s:property value="@com.picsauditing.PICS.Utilities@getAverageEMR(get('answer2008'),get('answer2007'),get('answer2006'))"/></td>				
+							<td><s:property value="@com.picsauditing.PICS.Utilities@getAverageEMR(get('answer2008'),get('answer2007'),get('answer2006'),get('answer2005'))"/></td>				
 						</s:elseif>
 					</s:if>
 					<s:else>
@@ -123,16 +139,19 @@
 				<td><s:property value="get('fatalities08')"/></td>
 				<td><s:property value="get('fatalities07')"/></td>
 				<td><s:property value="get('fatalities06')"/></td>
+				<td><s:property value="get('fatalities05')"/></td>
 			</s:if>
 			<s:if test="hasTrir">
 				<td><s:property value="get('trir08')"/></td>
 				<td><s:property value="get('trir07')"/></td>
 				<td><s:property value="get('trir06')"/></td>
+				<td><s:property value="get('trir05')"/></td>
 			</s:if>
 			<s:if test="hasLwcr">
 				<td><s:property value="get('lwcr08')"/></td>
 				<td><s:property value="get('lwcr07')"/></td>
 				<td><s:property value="get('lwcr06')"/></td>
+				<td><s:property value="get('lwcr05')"/></td>
 			</s:if>
 		</tr>
 	</s:iterator>

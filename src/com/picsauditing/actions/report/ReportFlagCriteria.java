@@ -93,7 +93,17 @@ public class ReportFlagCriteria extends ReportAccount {
 					sql.addWhere(name + ".auditFor = " + year);
 					sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
 							+ ".auditID AND osha" + year + ".location = 'Corporate'");
-
+					
+					year = year - 1;
+					name = "annual" + year;
+					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
+							+ ".auditTypeID = " + auditOperator.getAuditType().getAuditTypeID() + " AND " + name
+							+ ".auditStatus IN ('Pending','Submitted','Active') ");
+					sql.addField(name + ".auditStatus AS '" + name + " Status'");
+					sql.addField(name + ".percentComplete AS '" + name + " Completed'");
+					sql.addWhere(name + ".auditFor = " + year);
+					sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
+							+ ".auditID AND osha" + year + ".location = 'Corporate'");
 				} else {
 					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
 							+ ".auditTypeID = " + auditOperator.getAuditType().getAuditTypeID() + " AND " + name
@@ -116,6 +126,7 @@ public class ReportFlagCriteria extends ReportAccount {
 						sql.addAnnualQuestion(questionID, false, "answer2008", "annual2008");
 						sql.addAnnualQuestion(questionID, false, "answer2007", "annual2007");
 						sql.addAnnualQuestion(questionID, false, "answer2006", "annual2006");
+						sql.addAnnualQuestion(questionID, false, "answer2005", "annual2005");
 					} else {
 						sql.addPQFQuestion(questionID);
 					}
@@ -133,6 +144,8 @@ public class ReportFlagCriteria extends ReportAccount {
 					sql.addField("osha" + year + ".fatalities AS fatalities07");
 					year = year - 1;
 					sql.addField("osha" + year + ".fatalities AS fatalities06");
+					year = year - 1;
+					sql.addField("osha" + year + ".fatalities AS fatalities05");
 				}
 				if (!hasTrir && flagOshaCriteria.getTrir().isRequired()) {
 					hasTrir = true;
@@ -142,6 +155,9 @@ public class ReportFlagCriteria extends ReportAccount {
 					sql.addField("(osha" + year + ".recordableTotal * 200000 / osha" + year + ".manHours) AS trir07");
 					year = year - 1;
 					sql.addField("(osha" + year + ".recordableTotal * 200000 / osha" + year + ".manHours) AS trir06");
+					year = year - 1;
+					sql.addField("(osha" + year + ".recordableTotal * 200000 / osha" + year + ".manHours) AS trir05");
+
 				}
 				if (!hasLwcr && flagOshaCriteria.getLwcr().isRequired()) {
 					hasLwcr = true;
@@ -151,6 +167,8 @@ public class ReportFlagCriteria extends ReportAccount {
 					sql.addField("(osha" + year + ".lostWorkCases * 200000 / osha" + year + ".manHours) AS lwcr07");
 					year = year - 1;
 					sql.addField("(osha" + year + ".lostWorkCases * 200000 / osha" + year + ".manHours) AS lwcr06");
+					year = year - 1;
+					sql.addField("(osha" + year + ".lostWorkCases * 200000 / osha" + year + ".manHours) AS lwcr05");
 				}
 			}
 		}

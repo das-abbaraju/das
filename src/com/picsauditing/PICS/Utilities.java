@@ -345,9 +345,16 @@ public class Utilities {
 
 	}
 
-	public static float getAverageEMR(float year1, float year2, float year3) {
-		Float avgRateFloat = year1+year2+year3 / 3;
+	public static float getAverageEMR(String year1, String year2, String year3, String year4) {
+		Float avgRateFloat = convertToFloat(year1)+ convertToFloat(year2)+ convertToFloat(year3)+ convertToFloat(year4)/ 3;
 		avgRateFloat = (float) Math.round(1000 * avgRateFloat) / 1000;
 		return avgRateFloat;
+	}
+	
+	public static float convertToFloat(String year1) {
+		if(year1 == null)
+			return 0.0f;
+		return Float.valueOf(year1).floatValue();
+		
 	}
 }
