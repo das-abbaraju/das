@@ -101,11 +101,27 @@
 
 		<action name="ConAuditList"
 			class="com.picsauditing.actions.contractors.ConAuditList">
+			<param name="auditClass">Audit</param>
 			<result>struts/contractors/contractor_audits.jsp</result>
 			<result name="saved" type="redirect-action">
 				<param name="actionName">ConAuditList</param>
 				<param name="id">${id}</param>
 			</result>
+		</action>
+
+		<action name="ConInsureGuard"
+			class="com.picsauditing.actions.contractors.ConAuditList">
+			<param name="auditClass">Policy</param>
+			<result>struts/contractors/contractor_insureguard.jsp</result>
+			<result name="saved" type="redirect-action">
+				<param name="actionName">ConPolicyList</param>
+				<param name="id">${id}</param>
+			</result>
+		</action>
+
+		<action name="ConAnnualUpdates"
+			class="com.picsauditing.actions.contractors.ConAnnualUpdates">
+			<result>struts/contractors/contractor_annual_updates.jsp</result>
 		</action>
 
 		<action name="ContractorEdit"

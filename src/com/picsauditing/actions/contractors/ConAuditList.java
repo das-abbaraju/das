@@ -11,6 +11,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
@@ -20,6 +21,7 @@ public class ConAuditList extends ContractorActionSupport {
 	private int selectedAudit;
 	private int selectedOperator;
 	private List<AuditType> auditTypeName;
+	private AuditTypeClass auditClass = AuditTypeClass.Audit;
 	public List<ContractorAudit> upComingAudits = new ArrayList<ContractorAudit>();
 	public List<ContractorAudit> currentAudits = new ArrayList<ContractorAudit>();
 	public List<ContractorAudit> expiredAudits = new ArrayList<ContractorAudit>();
@@ -35,14 +37,18 @@ public class ConAuditList extends ContractorActionSupport {
 		findContractor();
 
 		for (ContractorAudit contractorAudit : getAudits()) {
-			if (contractorAudit.getAuditStatus().isPendingSubmitted())
-				upComingAudits.add(contractorAudit);
-			else if (contractorAudit.getAuditStatus().isActiveResubmittedExempt())
-				currentAudits.add(contractorAudit);
-			else if (contractorAudit.getAuditStatus().equals(AuditStatus.Expired))
-				expiredAudits.add(contractorAudit);
-			
-			// There shouldn't be any others
+			// Only show Insurance policies or audits
+			if (contractorAudit.getAuditType().getClassType().equals(auditClass)) {
+				if (contractorAudit.getAuditStatus().isPendingSubmitted())
+					upComingAudits.add(contractorAudit);
+				else if (contractorAudit.getAuditStatus().isActiveResubmittedExempt())
+					currentAudits.add(contractorAudit);
+				else if (contractorAudit.getAuditStatus().equals(AuditStatus.Expired))
+					expiredAudits.add(contractorAudit);
+				else {
+					// There shouldn't be any others
+				}
+			}
 		}
 
 		if (button != null && button.equals("Create")) {
@@ -134,4 +140,14 @@ public class ConAuditList extends ContractorActionSupport {
 		}
 		return false;
 	}
+
+	public AuditTypeClass getAuditClass() {
+		return auditClass;
+	}
+
+	public void setAuditClass(AuditTypeClass auditClass) {
+		this.auditClass = auditClass;
+	}
+	
+	
 }
