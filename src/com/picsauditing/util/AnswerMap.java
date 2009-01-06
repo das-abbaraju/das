@@ -132,8 +132,4 @@ public class AnswerMap {
 		}
 		return output.toString();
 	}
-	
-	public Set<Integer> getKeySet() {
-		return list.keySet();
-	}
 }
