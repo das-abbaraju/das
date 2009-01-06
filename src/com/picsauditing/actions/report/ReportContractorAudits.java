@@ -23,7 +23,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportContractorAudits extends ReportAccount {
-
+	boolean showOnlyAudits = true;
 	private ReportFilterAudit filter = new ReportFilterAudit();
 
 	public ReportContractorAudits() {
@@ -38,13 +38,17 @@ public class ReportContractorAudits extends ReportAccount {
 				throw new Exception("Your account does not have access to any audits. Please contact PICS.");
 		}
 	}
-	
+
 	@Override
 	protected void buildQuery() {
 		sql = new SelectContractorAudit();
 		sql.setType(SelectAccount.Type.Contractor);
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
+
+		if (download) {
+			addDownload();
+		}
 
 		addFilterToSQL();
 
@@ -63,17 +67,18 @@ public class ReportContractorAudits extends ReportAccount {
 		sql.addField("atype.isScheduled");
 		sql.addField("atype.hasAuditor");
 		sql.addField("atype.hasRequirements");
-		
+
 		sql.addJoin("LEFT JOIN users auditor ON auditor.id = ca.auditorID");
 		sql.addField("auditor.name auditor_name");
-		
+
 		if (permissions.isCorporate() || permissions.isOperator()) {
 			sql.addWhere("atype.auditTypeID IN (" + Strings.implode(permissions.getCanSeeAudit(), ",") + ")");
 		}
-
+		if (showOnlyAudits)
+			sql.addWhere("atype.classType = 'Audit'");
 		if (!permissions.isPicsEmployee())
 			getFilter().setShowAuditor(true);
-		
+
 		getFilter().setShowCerts(false);
 		getFilter().setShowInsuranceStatus(false);
 	}
@@ -145,11 +150,13 @@ public class ReportContractorAudits extends ReportAccount {
 			report.addFilter(new SelectFilterDate("expiredDate2", "ca.expiresDate < '?'", DateBean.format(f
 					.getExpiredDate2(), "M/d/yy")));
 		}
-		
+
 		if (filterOn(f.getPercentComplete1())) {
-			report.addFilter(new SelectFilter("percentComplete1", "ca.percentComplete >= '?'", f.getPercentComplete1()));
+			report
+					.addFilter(new SelectFilter("percentComplete1", "ca.percentComplete >= '?'", f
+							.getPercentComplete1()));
 		}
-		
+
 		if (filterOn(f.getPercentComplete2())) {
 			report.addFilter(new SelectFilter("percentComplete2", "ca.percentComplete < '?'", f.getPercentComplete2()));
 		}
@@ -187,18 +194,18 @@ public class ReportContractorAudits extends ReportAccount {
 		if (mailMerge) {
 			Set<Integer> ids = new HashSet<Integer>();
 			for (DynaBean dynaBean : data) {
-				Long longID = (Long)dynaBean.get("auditID");
+				Long longID = (Long) dynaBean.get("auditID");
 				ids.add(longID.intValue());
 			}
 			WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
 			wizardSession.setIds(ids);
 			wizardSession.setListTypes(ListType.Audit);
-			
+
 			ServletActionContext.getResponse().sendRedirect("MassMailer.action");
 			this.addActionMessage("Redirected to MassMailer");
 			return BLANK;
 		}
-		
+
 		if (download) {
 			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
 			filename += ".csv";

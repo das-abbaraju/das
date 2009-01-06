@@ -107,6 +107,8 @@ public class PicsMenu {
 			subMenu.addChild("Upgrade Payments", "report_upgradePayment.jsp?changed=1");
 
 		subMenu = menu.addChild("InsureGuard");
+		if(permissions.hasPermission(OpPerms.InsuranceCerts))
+			subMenu.addChild("Policy List", "ReportPolicyList.action");
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))
 			subMenu.addChild("Insurance Approval", "ReportInsuranceApproval.action");
 

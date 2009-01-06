@@ -730,6 +730,23 @@
 		</action>
 		
 		<!-- Insurance Reports -->
+		<action name="ReportPolicyList"
+			class="com.picsauditing.actions.report.ReportPolicyList">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ReportPolicyList</param>
+			<result>struts/reports/policy_list.jsp</result>
+		</action>
+		
+		<action name="ReportPolicyListCSV"
+			class="com.picsauditing.actions.report.ReportPolicyList">
+			<param name="download">true</param>
+			<result>struts/reports/audit_list_csv.jsp</result>
+		</action>
+		<action name="ReportPolicyListAjax"
+			class="com.picsauditing.actions.report.ReportPolicyList">
+			<result>struts/reports/policy_list_data.jsp</result>
+		</action>
+		
 		<action name="ReportInsuranceApproval"
 			class="com.picsauditing.actions.report.ReportInsuranceApproval">
 			<result>struts/reports/opinsurance_approval.jsp</result>

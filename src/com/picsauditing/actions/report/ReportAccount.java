@@ -62,25 +62,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (download) {
 			// Add a bunch more fields that we can show in the download page
-			sql.addField("a.contact");
-			sql.addField("a.address");
-			sql.addField("a.city");
-			sql.addField("a.state");
-			sql.addField("a.zip");
-			sql.addField("a.phone");
-			sql.addField("a.phone2");
-			sql.addField("a.fax");
-			sql.addField("a.email");
-			sql.addField("a.web_URL");
-			sql.addField("a.dateCreated");
-			sql.addField("c.taxID");
-			sql.addField("c.secondContact");
-			sql.addField("c.secondPhone");
-			sql.addField("c.secondEmail");
-			sql.addField("c.billingContact");
-			sql.addField("c.billingPhone");
-			sql.addField("c.billingEmail");
-			sql.addField("c.riskLevel");
+			addDownload();
 		}
 
 		addFilterToSQL();
@@ -155,29 +137,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			// This condition only occurs when sending results to the mail merge
 			// tool
 			this.mailMerge = true;
-		}
-
-		if (download) {
-			// Add a bunch more fields that we can show in the download page
-			sql.addField("a.contact");
-			sql.addField("a.address");
-			sql.addField("a.city");
-			sql.addField("a.state");
-			sql.addField("a.zip");
-			sql.addField("a.phone");
-			sql.addField("a.phone2");
-			sql.addField("a.fax");
-			sql.addField("a.email");
-			sql.addField("a.web_URL");
-			sql.addField("a.dateCreated");
-			sql.addField("c.taxID");
-			sql.addField("c.secondContact");
-			sql.addField("c.secondPhone");
-			sql.addField("c.secondEmail");
-			sql.addField("c.billingContact");
-			sql.addField("c.billingPhone");
-			sql.addField("c.billingEmail");
-			sql.addField("c.riskLevel");
 		}
 
 		sql.setType(SelectAccount.Type.Contractor);
@@ -325,5 +284,27 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	public void setSql(SelectAccount sql) {
 		this.sql = sql;
+	}
+	
+	public void addDownload() {
+		sql.addField("a.contact");
+		sql.addField("a.address");
+		sql.addField("a.city");
+		sql.addField("a.state");
+		sql.addField("a.zip");
+		sql.addField("a.phone");
+		sql.addField("a.phone2");
+		sql.addField("a.fax");
+		sql.addField("a.email");
+		sql.addField("a.web_URL");
+		sql.addField("a.dateCreated");
+		sql.addField("c.taxID");
+		sql.addField("c.secondContact");
+		sql.addField("c.secondPhone");
+		sql.addField("c.secondEmail");
+		sql.addField("c.billingContact");
+		sql.addField("c.billingPhone");
+		sql.addField("c.billingEmail");
+		sql.addField("c.riskLevel");
 	}
 }
