@@ -10,7 +10,6 @@ import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.access.MenuComponent;
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -20,11 +19,8 @@ import com.picsauditing.dao.NcmsCategoryDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.NcmsCategory;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -71,25 +67,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 				else
 					conAudit.setAuditStatus(AuditStatus.Submitted);
 				conAudit.setExpiresDate(DateBean.getMarchOfNextYear(new Date()));
-			} else if (conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
-				if(permissions.isOperator() && 
-						conAudit.getOperators().size() == 1 && 
-						conAudit.getOperators().get(0).getOperator().getId() == permissions.getAccountId()) {
-					if(permissions.hasPermission(OpPerms.InsuranceVerification)) {
-						conAudit.setAuditStatus(AuditStatus.Active);
-						conAudit.setAuditor(new User(permissions.getUserId()));
-					}
-					if(permissions.hasPermission(OpPerms.InsuranceApproval)) {
-						ContractorAuditOperator conAuditOp = conAudit.getOperators().get(0);
-						conAuditOp.setStatus("Approved");
-						conAuditOp.setAuditColumns(new User(permissions.getUserId()));
-						contractorAuditOperatorDAO.save(conAuditOp);
-					}
-				}
-				else
-					conAudit.setAuditStatus(AuditStatus.Submitted);
-			}
-			else if (conAudit.getAuditType().isHasRequirements())
+			} else if (conAudit.getAuditType().isHasRequirements())
 				conAudit.setAuditStatus(AuditStatus.Submitted);
 			else
 				conAudit.setAuditStatus(AuditStatus.Active);

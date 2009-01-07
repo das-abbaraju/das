@@ -169,19 +169,15 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanVerify() {
-		if (conAudit.getAuditType().isPqf() && conAudit.getAuditStatus().equals(AuditStatus.Submitted))
+		if (conAudit.getAuditType().isPqf() 
+				&& conAudit.getAuditStatus().isActiveSubmitted())
 			if (permissions.isAuditor())
 				return true;
-		
+
 		if (conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
 				&& conAudit.getAuditStatus().equals(AuditStatus.Submitted)
 				&& permissions.hasPermission(OpPerms.InsuranceVerification, OpType.Edit)) {
-			if (permissions.isOperator() && conAudit.getOperators().size() == 1
-					&& conAudit.getOperators().get(0).getOperator().getId() == permissions.getAccountId()) {
-				return true;
-			}
-			if (permissions.seesAllContractors())
-				return true;
+			return true;
 		}
 		return false;
 	}
