@@ -297,5 +297,14 @@ public class ContractorActionSupport extends PicsActionSupport {
 			activeOperators = accountDao.findOperators(contractor, permissions, " AND operatorAccount.active = 'Y' ");
 		return activeOperators;
 	}
-
+	
+	public List<ContractorAudit> getAudits() {
+		List<ContractorAudit> temp = new ArrayList<ContractorAudit>();
+		List<ContractorAudit> list = auditDao.findByContractor(id);
+		for (ContractorAudit contractorAudit : list) {
+			if (permissions.canSeeAudit(contractorAudit.getAuditType()))
+				temp.add(contractorAudit);
+		}
+		return temp;
+	}
 }
