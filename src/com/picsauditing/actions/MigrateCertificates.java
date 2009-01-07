@@ -125,7 +125,7 @@ public class MigrateCertificates extends PicsActionSupport {
 		
 		additionalInsuredsQuestionIds = new HashMap<String, List<Integer>>() {
 			{
-				put("General Liability", Arrays.asList(2198));
+				put("General Liability", Arrays.asList(2098));
 				put("Workers Comp", Arrays.asList(2200));
 				put("Automobile Liability", Arrays.asList(2197));
 				put("Excess/Umbrella Liability", Arrays.asList(2203));
