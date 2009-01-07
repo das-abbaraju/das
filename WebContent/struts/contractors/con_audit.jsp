@@ -31,6 +31,9 @@
 			</s:if>
 		</s:iterator>
 	</s:if>
+	<s:if test="conAudit.auditType.pqf && conAudit.auditStatus.activeSubmitted && conAudit.aboutToExpire">
+		<div id="alert">Your PQF is about to expire, please review every section and re-submit it.</div>
+	</s:if>
 </s:if>
 
 <s:form>
