@@ -114,7 +114,7 @@
 			<param name="auditClass">Policy</param>
 			<result>struts/contractors/contractor_insureguard.jsp</result>
 			<result name="saved" type="redirect-action">
-				<param name="actionName">ConPolicyList</param>
+				<param name="actionName">ConInsureGuard</param>
 				<param name="id">${id}</param>
 			</result>
 		</action>

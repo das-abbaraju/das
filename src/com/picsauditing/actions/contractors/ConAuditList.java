@@ -38,15 +38,17 @@ public class ConAuditList extends ContractorActionSupport {
 
 		for (ContractorAudit contractorAudit : getAudits()) {
 			// Only show Insurance policies or audits
-			if (contractorAudit.getAuditType().getClassType().equals(auditClass)) {
-				if (contractorAudit.getAuditStatus().isPendingSubmitted())
-					upComingAudits.add(contractorAudit);
-				else if (contractorAudit.getAuditStatus().isActiveResubmittedExempt())
-					currentAudits.add(contractorAudit);
-				else if (contractorAudit.getAuditStatus().equals(AuditStatus.Expired))
-					expiredAudits.add(contractorAudit);
-				else {
-					// There shouldn't be any others
+			if (!contractorAudit.getAuditType().isAnnualAddendum()) {
+				if (contractorAudit.getAuditType().getClassType().equals(auditClass)) {
+					if (contractorAudit.getAuditStatus().isPendingSubmitted())
+						upComingAudits.add(contractorAudit);
+					else if (contractorAudit.getAuditStatus().isActiveResubmittedExempt())
+						currentAudits.add(contractorAudit);
+					else if (contractorAudit.getAuditStatus().equals(AuditStatus.Expired))
+						expiredAudits.add(contractorAudit);
+					else {
+						// There shouldn't be any others
+					}
 				}
 			}
 		}
@@ -82,22 +84,16 @@ public class ConAuditList extends ContractorActionSupport {
 			auditDao.save(conAudit);
 			return "saved";
 		}
-		auditTypeName = auditTypeDAO.findAll(permissions, true);
 		return SUCCESS;
 	}
 
-	// TODO Move the security into findbyContractor
-	public List<ContractorAudit> getAudits() {
-		List<ContractorAudit> temp = new ArrayList<ContractorAudit>();
-		List<ContractorAudit> list = auditDao.findByContractor(id);
-		for (ContractorAudit contractorAudit : list) {
-			if (permissions.canSeeAudit(contractorAudit.getAuditType()))
-				temp.add(contractorAudit);
-		}
-		return temp;
-	}
-
 	public List<AuditType> getAuditTypeName() {
+		List<AuditType> aList = auditTypeDAO.findAll(permissions, true);
+		auditTypeName = new ArrayList<AuditType>();
+		for (AuditType aType : aList) {
+			if (aType.getClassType().equals(auditClass))
+				auditTypeName.add(aType);
+		}
 		return auditTypeName;
 	}
 
@@ -130,9 +126,14 @@ public class ConAuditList extends ContractorActionSupport {
 	}
 
 	public boolean isManuallyAddAudit() {
-		if (permissions.isContractor())
+		if (permissions.isContractor()) {
+			if (auditClass.equals(AuditTypeClass.Policy))
+				return true;
 			return false;
-		if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit))
+		}
+
+		if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit)
+				|| permissions.hasPermission(OpPerms.InsuranceCerts, OpType.Edit))
 			return true;
 		if (permissions.isOperator() || permissions.isCorporate()) {
 			if (auditTypeName.size() > 0)
@@ -148,6 +149,5 @@ public class ConAuditList extends ContractorActionSupport {
 	public void setAuditClass(AuditTypeClass auditClass) {
 		this.auditClass = auditClass;
 	}
-	
-	
+
 }

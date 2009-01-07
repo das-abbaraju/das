@@ -139,7 +139,7 @@
 	<label>Select a Audit to be Created</label>
 	<s:select list="auditTypeName" listKey="auditTypeID" listValue="auditName" name="selectedAudit"/>
 	<pics:permission perm="AllOperators">
-		<s:select list="operators" listKey="operatorAccount.id" listValue="operatorAccount.name" name="selectedOperator" headerKey="" headerValue="- No Operator -"/>
+		<s:select list="operators" listKey="operatorAccount.id" listValue="operatorAccount.name" name="selectedOperator" headerKey="" headerValue="- Available to All Operators -"/>
 	</pics:permission>
 	<div class="buttons">
 		<button class="positive" name="button" type="submit" value="Create">Add</button>

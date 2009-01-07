@@ -46,12 +46,12 @@
 				<s:select list="auditTypeName" name="selectedAudit" cssClass="pics"
 					headerKey="" headerValue="- Select Policy Type -" 
 					listKey="auditTypeID" listValue="auditName" />
-				<pics:permission perm="AllOperators">
+				<s:if test="permissions.contractor || permissions.admin">
 					<br />
 					<s:select list="operators" name="selectedOperator"
 						headerKey="" headerValue="- Available to All Operators -"
 						listKey="operatorAccount.id" listValue="operatorAccount.name" />
-				</pics:permission>
+				</s:if>
 				<div class="buttons">
 					<button class="positive" name="button" type="submit" value="Create">Save</button>
 				</div>
