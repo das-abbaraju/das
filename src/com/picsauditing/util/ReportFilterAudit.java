@@ -14,6 +14,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showAuditType = true;
 	protected boolean showPolicyType = false;
 	protected boolean showAuditStatus = true;
+	protected boolean showCaoStatus = false;
 	protected boolean showAuditor = true;
 	protected boolean showCreatedDate = true;
 	protected boolean showCompletedDate = true;
@@ -26,11 +27,13 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showAuditFor = false;
 	protected boolean showEmrRange = false;
 	protected boolean showIncidenceRate = false;
+	
 
 	// Filter values
 	protected int[] auditID;
 	protected int[] auditTypeID;
 	protected AuditStatus[] auditStatus;
+	protected String[] caoStatus;
 	protected int[] auditorId;
 	protected Date createdDate1;
 	protected Date createdDate2;
@@ -64,6 +67,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setShowAuditStatus(boolean showAuditStatus) {
 		this.showAuditStatus = showAuditStatus;
+	}
+	
+	public boolean isShowCaoStatus() {
+		return showCaoStatus;
+	}
+
+	public void setShowCaoStatus(boolean showCaoStatus) {
+		this.showCaoStatus = showCaoStatus;
 	}
 
 	public boolean isShowAuditor() {
@@ -146,6 +157,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.showPolicyType = showPolicyType;
 	}
 	
+	
 	public int[] getAuditID() {
 		return auditID;
 	}
@@ -168,6 +180,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setAuditStatus(AuditStatus[] auditStatus) {
 		this.auditStatus = auditStatus;
+	}
+	
+	public String[] getCaoStatus() {
+		return caoStatus;
+	}
+
+	public void setCaoStatus(String[] caoStatus) {
+		this.caoStatus = caoStatus;
 	}
 
 	public int[] getAuditorId() {
@@ -297,6 +317,10 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		return AuditStatus.values();
 	}
 
+	public String[] getCaoStatusList() {
+		return new String[]{"Approved", "Rejected", "Pending"};
+	}
+	
 	public boolean isShowAuditFor() {
 		return showAuditFor;
 	}

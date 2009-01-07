@@ -66,4 +66,22 @@ public class AuditQuestionDAO extends PicsDAO {
 
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<AuditQuestion> findQuestionsByUniqueCodes(List<String> uniqueCodes) {
+		StringBuilder sb = new StringBuilder("SELECT t FROM AuditQuestion t WHERE t.uniqueCode in ( ");
+		
+		for( String code : uniqueCodes ) {
+			sb.append("'");
+			sb.append(code);
+			sb.append("',");
+		}
+		sb.deleteCharAt(sb.length() -1 );  //kill the last comma
+		sb.append(")");
+		
+		Query query = em.createQuery( sb.toString() );
+				
+		return query.getResultList();
+		
+	}
+	
 }

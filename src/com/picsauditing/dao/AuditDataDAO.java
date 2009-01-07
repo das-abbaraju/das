@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Vector;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.util.AnswerMap;
 
 @Transactional
@@ -181,6 +183,36 @@ public class AuditDataDAO extends PicsDAO {
 		return mapData(query.getResultList());
 	}
 
+	public Map<Integer, AnswerMap> findAnswers(List<Integer> auditIds, List<Integer> questionIds) {
+		if (questionIds.size() == 0)
+			return null;
+		
+		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id in (" + glue( auditIds ) + " ) and question.id IN ("
+				+ glue(questionIds) + ") ");
+
+		Map<Integer, AnswerMap> response = new HashMap<Integer, AnswerMap>();
+		List<AuditData> results = query.getResultList();
+		
+		ContractorAudit audit = null;
+		List<AuditData> temp = new Vector<AuditData>();
+		
+		for( AuditData data : results ) {
+			if( audit == null ) {
+				audit = data.getAudit();
+			}
+
+			if( data.getAudit().getId() != audit.getId() ) {
+				response.put( audit.getId(), mapData( temp ) );
+				temp = new Vector< AuditData >();
+				audit = data.getAudit();
+			}
+			
+			temp.add(data);
+		}
+		response.put( audit.getId(), mapData( temp ) );
+		return response;
+	}
+	
 	/**
 	 * Convert a ResultList into an AnswerMap
 	 * 
@@ -219,5 +251,28 @@ public class AuditDataDAO extends PicsDAO {
 			data.put(auditData.getId(), auditData);
 		}
 		return data;
+	}
+	
+	
+	public AnswerMap findAnswersByAuditAndUniqueCode( int auditId, String uniqueCode ) {
+		
+			Query query = em.createQuery("SELECT d FROM AuditData d JOIN AuditQuestion q WHERE d.audit.id = ? AND q.uniqueCode = ? ");
+					
+			query.setParameter(1, auditId);
+			query.setParameter(2, uniqueCode);
+			return mapData(query.getResultList());
+	}
+
+	public List<AuditData> findAnswersByAuditAndSubCategory( List<Integer> auditIds, String subCategoryName ) {
+		
+		StringBuilder sb = new StringBuilder("SELECT d FROM AuditData d JOIN d.question q JOIN q.subCategory sub")
+			.append( " WHERE sub.subCategory = ? and d.audit.id in ( " )
+			.append( glue( auditIds ) ) 
+			.append(" ) " );
+		
+		Query query = em.createQuery(  sb.toString() );
+		
+		query.setParameter(1, subCategoryName );
+		return query.getResultList();
 	}
 }

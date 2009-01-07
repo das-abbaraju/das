@@ -56,7 +56,7 @@ public class ContractorAuditOperator extends BaseTable {
 
 	@Transient
 	public String getRecommendedAction() {
-		return recommendedAction;
+		return System.currentTimeMillis() % 2 == 0 ? "Approve" : "Reject";
 	}
 
 	public void setRecommendedAction(String recommendedAction) {

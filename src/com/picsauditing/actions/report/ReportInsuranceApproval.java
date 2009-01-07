@@ -44,6 +44,7 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 
 	@Override
 	public void buildQuery() {
+		showOnlyAudits = false;
 		super.buildQuery();
 		sql.addField("ca.expiresDate");
 		sql.addField("ao.name as operatorName");

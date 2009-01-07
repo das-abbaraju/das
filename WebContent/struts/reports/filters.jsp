@@ -130,6 +130,19 @@
 		</span></div>
 	</s:if>
 
+	<s:if test="filter.showCaoStatus">
+		<div class="filterOption"><a href="#"
+			onclick="toggleBox('form1_caoStatus'); return false;">Op
+		Status</a> = <span id="form1_caoStatus_query">ALL</span><br />
+		<span id="form1_caoStatus_select" style="display: none"
+			class="clearLink"> <s:select id="form1_caoStatus" list="filter.caoStatusList"
+			cssClass="forms" name="filter.caoStatus" multiple="true" size="5" /> <script
+			type="text/javascript">updateQuery('form1_caoStatus');</script> <br />
+		<a class="clearLink" href="#"
+			onclick="clearSelected('form1_caoStatus'); return false;">Clear</a>
+		</span></div>
+	</s:if>
+
 	<s:if test="filter.showAuditor">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_auditorId'); return false;">Auditors</a> = <span
