@@ -56,25 +56,3 @@ select conID, timeStamp, case ISNULL(userID) when 1 then 959 else userID end, de
 from notes
 where length(note) > 250;
 */
-
-
-/*
-These contractors have two certificates for at least two separate operators, but the liabilitylimits are not the same.  Which
-
-select * from certificates_old d where
-exists ( 
-	select contractor_id, type from certificates_old a where 
-	d.contractor_id = a.contractor_id
-	and d.type = a.type
-	and not exists
-	(
-	select *
-	from certificates_old b
-	where b.contractor_id = a.contractor_id
-	group by contractor_id, type
-	having avg(b.liabilitylimit) = a.liabilitylimit
-	)
-)
-order by contractor_id, type
-*/
-
