@@ -12,28 +12,34 @@
 <script type="text/javascript">
 	function removeName(nameId) {
 		var pars = "button=RemoveName&nameId=" + nameId+'&opID='+<s:property value="operatorAccount.id"/>;
-		var myAjax = new Ajax.Updater('', 'AccountNameEditAjax.action', 
+		var divName ='operator_name';
+		$(divName).innerHTML="<img src='images/ajax_process.gif' />";
+		var myAjax = new Ajax.Updater(divName, 'AccountNameEditAjax.action', 
 		{
 			method: 'post', 
 			parameters: pars,
 			onSuccess: function(transport) { 
-				new Effect.Highlight(toHighlight, {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+				new Effect.Highlight($(divName), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 			}
 		});
+		return false;
 	}
 	
 	function addName() {
 		name = $('legalName').value;
 		var pars = "button=AddName&name=" + name+'&opID='+<s:property value="operatorAccount.id"/>;
-
-		var myAjax = new Ajax.Updater('', 'AccountNameEditAjax.action', 
+		var divName ='operator_name';
+		$(divName).innerHTML="<img src='images/ajax_process.gif' />";
+		var myAjax = new Ajax.Updater(divName, 'AccountNameEditAjax.action', 
 		{
 			method: 'post', 
 			parameters: pars,
 			onSuccess: function(transport) { 
-				new Effect.Highlight(toHighlight, {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+				
+				new Effect.Highlight($(divName), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 			}
 		});
+		return false;
 	}
 </script>
 </head>
@@ -159,16 +165,10 @@
 			<s:if test="type.equals('Operator') || !operatorAccount.corporate">
 					<fieldset>
 						<legend><span>Account Names</span></legend>
-						<ol><table class="report">
-						<s:iterator value="operatorAccount.names">
-							<tr><td><s:property value="name"/></td>
-							<td><a onclick="javascript:removeName(<s:property value="id"/>);"><img src="images/cross.png" width="18" height="18"/></a></td></tr>
-						</s:iterator>
-						<tr><td colspan="2">
-							<s:textfield id="legalName" name="legalName"/>
-							<input type="button" onclick="javascript: addName();" value="Add">
-						</td></tr>
-					</table></ol>
+						<ol><div id="operator_name">
+								<s:include value="operator_names.jsp" />
+							</div>
+						</ol>
 					</fieldset>	
 			</s:if>
 

@@ -213,7 +213,7 @@
 		
 		<action name="AccountNameEditAjax"
 			class="com.picsauditing.actions.operators.FacilitiesEdit">
-			<result>/struts/blank.jsp</result>
+			<result>/struts/operators/operator_names.jsp</result>
 		</action>
 
 

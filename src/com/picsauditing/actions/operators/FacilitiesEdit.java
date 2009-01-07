@@ -82,7 +82,6 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 				account.setName(name);
 				account.setAuditColumns(new User(permissions.getUserId()));
 				account = accountNameDAO.save(account);
-				operatorAccount.getNames().add(account);
 				return SUCCESS;
 			}
 
