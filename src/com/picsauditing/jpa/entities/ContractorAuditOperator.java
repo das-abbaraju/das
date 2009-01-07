@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "contractor_audit_operator")
@@ -13,6 +14,7 @@ public class ContractorAuditOperator extends BaseTable {
 	private OperatorAccount operator;
 	private String status;
 	private String notes;
+	private String recommendedAction;
 
 	@ManyToOne
 	@JoinColumn(name = "auditID", nullable = false, updatable = false)
@@ -52,4 +54,15 @@ public class ContractorAuditOperator extends BaseTable {
 		this.notes = notes;
 	}
 
+	@Transient
+	public String getRecommendedAction() {
+		return recommendedAction;
+	}
+
+	public void setRecommendedAction(String recommendedAction) {
+		this.recommendedAction = recommendedAction;
+	}
+
+	
+	
 }
