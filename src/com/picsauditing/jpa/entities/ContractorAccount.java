@@ -1,6 +1,8 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +31,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.util.comparators.ContractorAuditComparator;
 
 @SuppressWarnings("serial")
 @Entity
@@ -625,16 +628,16 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public Map<OshaType, Map<String, OshaAudit>> getOshas() {
 		if (oshas != null)
 			return oshas;
-		
+		int number = 0;
 		oshas = new TreeMap<OshaType, Map<String, OshaAudit>>();
 		
-		for (ContractorAudit audit : getAudits()) {
-			if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM
+		for (ContractorAudit audit : getSortedAudits()) {
+			if (number < 3 && audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM
 				&& audit.getAuditStatus().isActiveSubmitted()) {
 				// Store the corporate OSHA rates into a map for later use
 				for(OshaAudit osha : audit.getOshas())
 					if (osha.isCorporate() && osha.isApplicable()) {
-						
+						number++;
 						Map<String, OshaAudit> theMap = oshas.get(osha.getType());
 						
 						if( theMap == null ) {
@@ -652,11 +655,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			Map<String, OshaAudit> theseOshas = oshas.get(oshaType);
 			
 			int count = theseOshas.size();
-			if (count > 3) {
-				System.out.println("Unhandled error getting OSHA logs for contractor " + id);
-				// TODO handle this situation somehow
-				// like remove submitted records, or don't consider years before 3 years ago
-			}
 			if (count > 0) {
 				// Add in the average for the past 3 years
 				OshaAudit avg = new OshaAudit();
@@ -714,23 +712,26 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			return emrs;
 		
 		emrs = new HashMap<String, AuditData>();
-		
-		for (ContractorAudit audit : getAudits()) {
-			if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM
+		int number = 0;
+		for (ContractorAudit audit : getSortedAudits()) {
+			if (number < 3 && audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM
 				&& audit.getAuditStatus().isActiveSubmitted()) {
 				// Store the EMR rates into a map for later use
 				for(AuditData answer : audit.getData())
-					if (answer.getQuestion().getId() == AuditQuestion.EMR)
+					if (answer.getQuestion().getId() == AuditQuestion.EMR) {
+						number++;
 						emrs.put(audit.getAuditFor(), answer);
+					}	
 			}
 		}
 		
-		if (emrs.size() > 3) {
-			// TODO handle this situation somehow
-			// like remove submitted records, or don't consider years before 3 years ago
-			System.out.println("Unhandled error getting EMR data for contractor " + id);
-		}
 		AuditData.addAverageData(emrs);
 		return emrs;
+	}
+	
+	@Transient
+	public List<ContractorAudit> getSortedAudits() {
+		Collections.sort(getAudits(), new ContractorAuditComparator("createdDate -1"));
+		return getAudits();
 	}
 }
