@@ -1,11 +1,13 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.util.comparators.ContractorAuditComparator;
 
 public class ConAnnualUpdates extends ContractorActionSupport {
 	public List<ContractorAudit> annualAddendums = new ArrayList<ContractorAudit>();
@@ -30,5 +32,9 @@ public class ConAnnualUpdates extends ContractorActionSupport {
 
 	public List<ContractorAudit> getAnnualAddendums() {
 		return annualAddendums;
+	}
+	
+	public Comparator<ContractorAudit> getDateComparator() {
+		return new ContractorAuditComparator("createdDate -1");
 	}
 }

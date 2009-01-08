@@ -175,7 +175,7 @@ public class FlagCalculatorSingle {
 			}
 		}
 		debug(" flagColor=" + flagColor);
-
+		//TODO Use the getEmrs() map for the EMR data for the last 3 years.
 		for (Map<String, AuditData> tempMap : auditAnswers.values()) {
 			for (AuditData data : tempMap.values()) {
 				// The flag colors should always start Green, but sometimes they

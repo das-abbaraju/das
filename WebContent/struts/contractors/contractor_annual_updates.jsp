@@ -30,7 +30,8 @@
 		</pics:permission>	
 	</tr>
 	</thead>
-	<s:iterator value="annualAddendums" status="auditStatus">
+	<s:sort source="annualAddendums" comparator="dateComparator">
+	<s:iterator>
 		<tr>
 			<td><s:property value="auditStatus" /></td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
@@ -53,6 +54,7 @@
 			</pics:permission>
 		</tr>
 	</s:iterator>
+	</s:sort>
 </table>
 </s:if>
 </body>
