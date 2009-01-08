@@ -279,5 +279,46 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 			dataForThisAudit.add(answer);
 		}
 	}
-
+	
+	
+//	public void sendEmail(List<CertificateDO> list, Permissions permissions) throws Exception {
+//		for (CertificateDO cdo : list) {
+//
+//			AccountBean aBean = new AccountBean();
+//			String conID = cdo.getContractor_id();
+//			aBean.setFromDB(conID);
+//			String contactName = aBean.contact;
+//			String contractor = aBean.name;
+//
+//			AccountBean oAccountBean = new AccountBean();
+//			oAccountBean.setFromDB(cdo.getOperator_id());
+//			String operator = oAccountBean.name;
+//
+//			String message = "Hello " + contactName + ",\n\n" + contractor + "'s " + cdo.getType()
+//					+ " Insurance Certificate has been " + cdo.getStatus() + " by " + operator;
+//			if (!Strings.isEmpty(cdo.getReason()))
+//				message += " for the following reasons:\n\n" + cdo.getReason() + "\n\n";
+//
+//			if (cdo.getStatus().equals("Rejected")) {
+//				UserDAO userDAO = (UserDAO) SpringUtils.getBean("UserDAO");
+//				User user = userDAO.find(permissions.getUserId());
+//				message += "Please correct these issues and re-upload your insurance certificate to your "
+//						+ "PICS account.\n" + "If you have any specific questions about " + operator
+//						+ "'s insurance requirements, " + "please contact " + permissions.getName() + " at "
+//						+ user.getEmail() + ".";
+//			} else {
+//				message += "Please make sure that you keep up-to-date in PICS by uploading your "
+//						+ "insurance certificate when you renew your policy.";
+//			}
+//			message += "\n\nHave a great day,\n" + "PICS Customer Service";
+//
+//			EmailSender.send(aBean.email, operator + " insurance certificate " + cdo.getStatus(), message);
+//
+//			String newNote = cdo.getType() + " insurance certificate " + cdo.getStatus() + " by " + operator
+//					+ " for reason: " + cdo.getReason();
+//			Note note = new Note(cdo.getOperator_id(), cdo.getContractor_id(), permissions.getUserIdString(),
+//					permissions.getName(), newNote);
+//			note.writeToDB();
+//		}
+//	}
 }
