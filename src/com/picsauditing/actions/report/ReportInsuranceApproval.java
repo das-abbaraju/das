@@ -50,6 +50,8 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 		sql.addField("ao.name as operatorName");
 		sql.addField("cao.status as caoStatus");
 		sql.addField("cao.notes as caoNotes");
+		sql.addField("cao.id as caoId");
+		sql.addField("cao.recommendedAction as caoRecommendedAction");
 		sql
 				.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.auditID");
 
@@ -76,6 +78,7 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 		getFilter().setShowPolicyType(true);
 		getFilter().setShowCaoStatus(true);
 		getFilter().setShowAuditStatus(false);
+		getFilter().setShowRecommendedAction(true);
 	}
 
 	/**
@@ -144,7 +147,8 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 
 				AuditQuestion aiNameQuestion = byUniqueCode.get("aiName");
 
-				AuditData aiNameAnswer = answersForThisAudit.get(aiNameQuestion.getId());
+				AuditData aiNameAnswer = answersForThisAudit.get(aiNameQuestion
+						.getId());
 				if (aiNameAnswer != null) {
 
 					Map<Integer, List<AuditData>> byAuditId = questionData
@@ -163,24 +167,25 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 					}
 
 					if (aiNameAnswer != null) {
-						
-						//find get all the operator's legal names
-						if( getUser().getAccount().isOperator() ) {
-							OperatorAccount thisOp = (OperatorAccount) getUser().getAccount();
-							
+
+						// find get all the operator's legal names
+						if (getUser().getAccount().isOperator()) {
+							OperatorAccount thisOp = (OperatorAccount) getUser()
+									.getAccount();
+
 							List<AccountName> names = thisOp.getNames();
-							
-							if( names != null ) {
-								for( AccountName accountName : names ) {
-									if( accountName.getName().equalsIgnoreCase( aiNameAnswer.getAnswer())) {
-										answers.add(aiNameAnswer);	
+
+							if (names != null) {
+								for (AccountName accountName : names) {
+									if (accountName.getName().equalsIgnoreCase(
+											aiNameAnswer.getAnswer())) {
+										answers.add(aiNameAnswer);
 									}
 								}
 							}
-							
+
 						}
-						
-						
+
 					}
 				}
 			}
@@ -198,8 +203,6 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 						AnswerMap answersForThisAudit = answersForAllAudits
 								.get(thisAuditId);
 
-
-						
 						Map<Integer, List<AuditData>> byAuditId = questionData
 								.get(uniqueKey);
 
@@ -215,11 +218,12 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 							byAuditId.put(thisAuditId, answers);
 						}
 
-						List<AuditData> aiAnswers = questionData.get("aiName").get(thisAuditId);
-						
+						List<AuditData> aiAnswers = questionData.get("aiName")
+								.get(thisAuditId);
+
 						if (aiAnswers != null && aiAnswers.size() > 0) {
-							
-							for( AuditData aiAnswer : aiAnswers ) {
+
+							for (AuditData aiAnswer : aiAnswers) {
 								AuditData tmpData = answersForThisAudit.get(
 										question.getId(), aiAnswer.getId());
 								answers.add(tmpData);
@@ -281,44 +285,4 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 	}
 	
 	
-//	public void sendEmail(List<CertificateDO> list, Permissions permissions) throws Exception {
-//		for (CertificateDO cdo : list) {
-//
-//			AccountBean aBean = new AccountBean();
-//			String conID = cdo.getContractor_id();
-//			aBean.setFromDB(conID);
-//			String contactName = aBean.contact;
-//			String contractor = aBean.name;
-//
-//			AccountBean oAccountBean = new AccountBean();
-//			oAccountBean.setFromDB(cdo.getOperator_id());
-//			String operator = oAccountBean.name;
-//
-//			String message = "Hello " + contactName + ",\n\n" + contractor + "'s " + cdo.getType()
-//					+ " Insurance Certificate has been " + cdo.getStatus() + " by " + operator;
-//			if (!Strings.isEmpty(cdo.getReason()))
-//				message += " for the following reasons:\n\n" + cdo.getReason() + "\n\n";
-//
-//			if (cdo.getStatus().equals("Rejected")) {
-//				UserDAO userDAO = (UserDAO) SpringUtils.getBean("UserDAO");
-//				User user = userDAO.find(permissions.getUserId());
-//				message += "Please correct these issues and re-upload your insurance certificate to your "
-//						+ "PICS account.\n" + "If you have any specific questions about " + operator
-//						+ "'s insurance requirements, " + "please contact " + permissions.getName() + " at "
-//						+ user.getEmail() + ".";
-//			} else {
-//				message += "Please make sure that you keep up-to-date in PICS by uploading your "
-//						+ "insurance certificate when you renew your policy.";
-//			}
-//			message += "\n\nHave a great day,\n" + "PICS Customer Service";
-//
-//			EmailSender.send(aBean.email, operator + " insurance certificate " + cdo.getStatus(), message);
-//
-//			String newNote = cdo.getType() + " insurance certificate " + cdo.getStatus() + " by " + operator
-//					+ " for reason: " + cdo.getReason();
-//			Note note = new Note(cdo.getOperator_id(), cdo.getContractor_id(), permissions.getUserIdString(),
-//					permissions.getName(), newNote);
-//			note.writeToDB();
-//		}
-//	}
 }

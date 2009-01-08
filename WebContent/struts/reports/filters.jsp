@@ -143,6 +143,18 @@
 		</span></div>
 	</s:if>
 
+	<s:if test="filter.showRecommendedAction">
+		<div class="filterOption"><a href="#"
+			onclick="toggleBox('form1_recommendedAction'); return false;">PICS Recommendation</a> = <span id="form1_recommendedAction_query">ALL</span><br />
+		<span id="form1_recommendedAction_select" style="display: none"
+			class="clearLink"> <s:select id="form1_recommendedAction" list="filter.recommendedActionList"
+			cssClass="forms" name="filter.recommendedAction" multiple="true" size="5" /> <script
+			type="text/javascript">updateQuery('form1_recommendedAction');</script> <br />
+		<a class="clearLink" href="#"
+			onclick="clearSelected('form1_recommendedAction'); return false;">Clear</a>
+		</span></div>
+	</s:if>
+
 	<s:if test="filter.showAuditor">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_auditorId'); return false;">Auditors</a> = <span

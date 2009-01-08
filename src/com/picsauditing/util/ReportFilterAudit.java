@@ -27,6 +27,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showAuditFor = false;
 	protected boolean showEmrRange = false;
 	protected boolean showIncidenceRate = false;
+	protected boolean showRecommendedAction = false;
 	
 
 	// Filter values
@@ -52,6 +53,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected float minEMR = 0;
 	protected float maxEMR = 100;
 	protected double incidenceRate = 0.0;
+	protected String[] recommendedAction;
 
 	public boolean isShowAuditType() {
 		return showAuditType;
@@ -157,6 +159,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.showPolicyType = showPolicyType;
 	}
 	
+	public boolean isShowRecommendedAction() {
+		return showRecommendedAction;
+	}
+
+	public void setShowRecommendedAction(boolean showRecommendedAction) {
+		this.showRecommendedAction = showRecommendedAction;
+	}
+
 	
 	public int[] getAuditID() {
 		return auditID;
@@ -302,6 +312,15 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.validLicense = validLicense;
 	}
 
+	public String[] getRecommendedAction() {
+		return recommendedAction;
+	}
+
+	public void setRecommendedAction(String[] recommendedAction) {
+		this.recommendedAction = recommendedAction;
+	}
+
+
 	// Getting all the Lists
 	public List<AuditType> getAuditTypeList() {
 		AuditTypeDAO auditDAO = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
@@ -319,6 +338,10 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public String[] getCaoStatusList() {
 		return new String[]{"Approved", "Rejected", "Pending"};
+	}
+	
+	public String[] getRecommendedActionList() {
+		return new String[]{"Approve", "Reject"};
 	}
 	
 	public boolean isShowAuditFor() {

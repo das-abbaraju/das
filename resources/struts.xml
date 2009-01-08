@@ -751,6 +751,10 @@
 			class="com.picsauditing.actions.report.ReportInsuranceApproval">
 			<result>struts/reports/opinsurance_approval.jsp</result>
 		</action>
+		<action name="ReportInsuranceApprovalSave"
+			class="com.picsauditing.actions.report.ReportInsuranceApprovalSave">
+			<result>struts/blank.jsp</result>
+		</action>
 		
 		<action name="MigrateCertificates"
 			class="com.picsauditing.actions.MigrateCertificates">
