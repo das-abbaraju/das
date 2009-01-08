@@ -45,7 +45,8 @@ public class ContractorAuditAction extends AuditActionSupport {
 
 	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, FlagCalculator2 flagCalculator2,
-			AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder, ContractorAuditOperatorDAO contractorAuditOperatorDAO) {
+			AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder,
+			ContractorAuditOperatorDAO contractorAuditOperatorDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.flagCalculator = flagCalculator2;
 		this.auditPercentCalculator = auditPercentCalculator;
@@ -80,7 +81,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 		// Try and guess to see if we need it or not
 		if (auditStatus != null)
 			fullLoad = false;
-		if(conAudit.getAuditType().isAnnualAddendum() && conAudit.getAuditStatus().isPendingSubmitted())
+		if (conAudit.getAuditType().isAnnualAddendum() && conAudit.getAuditStatus().isPendingSubmitted())
 			fullLoad = true;
 		if (conAudit.getAuditStatus().equals(AuditStatus.Active))
 			fullLoad = false;
@@ -178,6 +179,18 @@ public class ContractorAuditAction extends AuditActionSupport {
 			// Save the audit status
 			conAudit.setAuditStatus(auditStatus);
 			auditDao.save(conAudit);
+
+			boolean activeAnnualUpdate = false;
+			if (conAudit.getAuditType().isAnnualAddendum() && conAudit.getAuditStatus().equals(AuditStatus.Active)
+					&& DateBean.getCurrentYear() - 1 == Integer.parseInt(conAudit.getAuditFor())) {
+				activeAnnualUpdate = true;
+				for (ContractorAudit audit : contractor.getAudits()) {
+					if (activeAnnualUpdate && audit.getAuditType().isAnnualAddendum()
+							&& Integer.parseInt(audit.getAuditFor()) == DateBean.getCurrentYear() - 4)
+						audit.setAuditStatus(AuditStatus.Expired);
+					auditDao.save(audit);
+				}
+			}
 
 			flagCalculator.runByContractor(conAudit.getContractorAccount().getId());
 		}
