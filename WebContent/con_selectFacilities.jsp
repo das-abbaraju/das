@@ -54,16 +54,24 @@
 	}
 	cBean.setFromDB(id);
 	OperatorAccountDAO operatorDao = (OperatorAccountDAO)SpringUtils.getBean("OperatorAccountDAO");
-	List<OperatorAccount> operators = operatorDao.findWhere(false, "a.active='Y'", permissions);
+	List<OperatorAccount> operators = operatorDao.findWhere(false, "a.active='Y' AND a.type='Operator'", permissions);
 	
-	int count = 0;
+	// Show Facilities selected
+	ContractorAccountDAO contractorDAO = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO"); 
+	ContractorAccount contractor = contractorDAO.find(Integer.parseInt(id));
+	Map<Integer, ContractorOperator> opMap = new HashMap<Integer, ContractorOperator>();
+	for(ContractorOperator co : contractor.getOperators())
+		opMap.put(co.getOperatorAccount().getId(), co);
 
 	FlagDO flagDO = new FlagDO();
 	HashMap<String, FlagDO> flagMap = flagDO.getFlagByContractor(id);
+	
 %>
 <%@page import="com.picsauditing.jpa.entities.ContractorAccount"%>
 <%@page import="com.picsauditing.dao.ContractorOperatorDAO"%>
 <%@page import="com.picsauditing.jpa.entities.ContractorOperator"%>
+<%@page import="com.picsauditing.dao.ContractorAccountDAO"%>
+<%@page import="com.picsauditing.jpa.entities.ContractorOperatorFlag"%>
 <html>
 <head>
 <title>Contractor Facilities</title>
@@ -107,27 +115,21 @@
 	</tr>
 	</thead>
 	<%
-		count = 0;
+		int count = 0;
 		// Show Facilities selected
-		ContractorOperatorDAO conOpDAO = (ContractorOperatorDAO) SpringUtils.getBean("ContractorOperatorDAO"); 
 		for (OperatorAccount operator : operators) {
-			
-			if( ! operator.isOperator() ) continue;
 			
 			String opID = operator.getId().toString();
 			String name = operator.getName();
-			ContractorOperator contractorOperator = conOpDAO.find(Integer.parseInt(conID), operator.getId());
 			String waitingOn = "";
+			String flagColor = "";
 			try {
-				waitingOn = contractorOperator.getFlag().getWaitingOn().toString();
+				ContractorOperatorFlag coflag = opMap.get(operator.getId()).getFlag();
+				waitingOn = coflag.getWaitingOn().toString();
+				flagColor = coflag.getFlagColor().toString().toLowerCase();
 			} catch (NullPointerException e) {}
 			
 			if (cBean.generalContractors.contains(opID)) {
-				oBean.setFromDB(opID);
-				String flagColor = "";
-				FlagDO opFlag = flagMap.get(opID);
-				if (opFlag != null)
-					flagColor = opFlag.getFlag().toLowerCase();
 				if (permissions.isCorporate() && !pBean.oBean.facilitiesAL.contains(opID)) {
 	%>
 	<input type="hidden" name="genID_<%=opID%>" value="Yes" />
@@ -176,16 +178,15 @@
 		// Show Facilities NOT selected
 		for (OperatorAccount operator : operators) {
 			if(!permissions.isOperator()) {
-				if( ! operator.isOperator() ) continue;
 				String opID = operator.getId().toString();
 				String name = operator.getName();
-					if (!cBean.generalContractors.contains(opID)) {
-						if (permissions.isCorporate() && pBean.oBean.facilitiesAL.contains(opID)
-							|| !permissions.isCorporate()) {
-							String flagColor = "";
-							FlagDO opFlag = flagMap.get(opID);
-							if (opFlag != null)
-								flagColor = opFlag.getFlag().toLowerCase();
+				if (!cBean.generalContractors.contains(opID)) {
+					if (permissions.isCorporate() && pBean.oBean.facilitiesAL.contains(opID)
+						|| !permissions.isCorporate()) {
+						String flagColor = "";
+						FlagDO opFlag = flagMap.get(opID);
+						if (opFlag != null)
+							flagColor = opFlag.getFlag().toLowerCase();
 	%>
 	<tr <%=Utilities.getBGColor(count++)%>>
 		<td class="center">
