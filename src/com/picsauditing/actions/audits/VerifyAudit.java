@@ -84,6 +84,11 @@ public class VerifyAudit extends AuditActionSupport {
 		return false;
 	}
 	
-	
-	
+	public boolean isShowOsha() {
+		AuditData auditData = auditDataDao.findAnswerToQuestion(conAudit.getId(), 2064);
+		if (auditData != null && "Yes".equals(auditData.getAnswer())) 
+				return true;
+
+		return false;
+	}
 }

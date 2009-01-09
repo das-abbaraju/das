@@ -87,7 +87,7 @@
 <s:else>
 	<fieldset style="clear: none; float: left; width: 50%; margin: 0.5em;"><legend><span>Audit
 	Questions</span></legend>
-	<s:sort comparator="dataComparator" source="conAudit.data">
+		<s:sort comparator="dataComparator" source="conAudit.data">
 	 <s:iterator>
 		<s:div id="qid_%{question.id}">
 		<ol>
@@ -146,12 +146,12 @@
 	</s:iterator>
 	</s:sort>
 	</fieldset>
-
-	<fieldset style="clear: none; float: left; width: 40%; margin: 0.5em;"><legend><span>OSHA</span></legend>
-	<s:iterator value="conAudit.oshas">
-		<s:if test="corporate && type.toString().equals('OSHA')">
-		<s:div id="oid_%{id}">
-			<ol>
+	<s:if test="showOsha">
+		<fieldset style="clear: none; float: left; width: 40%; margin: 0.5em;"><legend><span>OSHA</span></legend>
+		<s:iterator value="conAudit.oshas">
+			<s:if test="corporate && type.toString().equals('OSHA')">
+			<s:div id="oid_%{id}">
+				<ol>
 				<s:if test="verified == false">
 					<s:set name="verifyText" value="'Verify'"/>
 				</s:if>
@@ -219,7 +219,9 @@
 			</ol>
 		</s:div>
 		</s:if>
-	</s:iterator></fieldset>
+	</s:iterator>
+	</fieldset>
+	</s:if>
 </s:else>
 	<div class="clear"/>
 

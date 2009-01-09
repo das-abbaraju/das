@@ -63,8 +63,10 @@ public class VerifyView extends ContractorActionSupport {
 				}
 			}
 			if (conAudit.getAuditType().isAnnualAddendum()) {
+				AuditData auditData = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2064);
 				for (OshaAudit oshaAudit : conAudit.getOshas()) {
-					if (oshaAudit.isCorporate() && oshaAudit.getType().equals(OshaType.OSHA)) {
+					if (auditData != null && "Yes".equals(auditData.getAnswer()) 
+							&& oshaAudit.isCorporate() && oshaAudit.getType().equals(OshaType.OSHA)) {
 						oshas.add(oshaAudit);
 					}
 				}
@@ -281,5 +283,4 @@ public class VerifyView extends ContractorActionSupport {
 	public void setPreviewEmail(EmailQueue previewEmail) {
 		this.previewEmail = previewEmail;
 	}
-
 }
