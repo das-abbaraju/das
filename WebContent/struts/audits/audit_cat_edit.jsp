@@ -162,10 +162,10 @@
 	</s:if>
 </div>
 
-<s:if test="hasRequirements">
+<s:if test="#a.hasRequirements">
 	<span class="requirement">
 		Requirement:
-		<s:if test="requirementOpen">
+		<s:if test="#a.requirementOpen">
 			<span class="unverified">Open</span>
 		</s:if>
 		<s:else>
@@ -173,12 +173,12 @@
 		</s:else>
 		
 		<br>
-		<s:if test="requirement.length() > 0">
-			<s:if test="requirementOpen">
-				<div id="alert"><s:property value="requirement"/></div>
+		<s:if test="#q.requirement.length() > 0">
+			<s:if test="#a.requirementOpen">
+				<div id="alert"><s:property value="#q.requirement"/></div>
 			</s:if>
 			<s:else>
-				<s:property value="requirement"/>
+				<s:property value="#q.requirement"/>
 			</s:else>
 		</s:if>
 	</span>

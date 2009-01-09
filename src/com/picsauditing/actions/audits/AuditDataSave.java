@@ -170,7 +170,15 @@ public class AuditDataSave extends AuditActionSupport {
 
 		return SUCCESS;
 	}
-
+	
+	public String getMode() {
+		// When we're adding a tuple, we call audit_cat_question via audit_cat_tuples
+		// That page requires mode to be set
+		// Since we're always in edit mode when we're adding tuples, I'm going to hard code this
+		// We may need to pass it in though
+		return "Edit";
+	}
+	
 	public AuditData getAuditData() {
 		return auditData;
 	}
