@@ -93,10 +93,13 @@
 			<s:textfield name="question.title" size="65"/>
 		</li>
 		<li><label>Visible:</label>
-			<s:checkbox name="question.isVisible"  value="question.isVisible.name() == 'Yes' ? true : false"/>
+			<s:checkbox name="question.isVisible" value="question.isVisible.name() == 'Yes' ? true : false"/>
 		</li>
 		<li><label>Grouped with Previous:</label>
-			<s:checkbox name="question.isGroupedWithPrevious"  value="question.isGroupedWithPrevious.name() == 'Yes' ? true : false"/>
+			<s:checkbox name="question.isGroupedWithPrevious" value="question.isGroupedWithPrevious.name() == 'Yes' ? true : false"/>
+		</li>
+		<li><label>Show Comments:</label>
+			<s:checkbox name="question.showComment" value="question.showComment"/>
 		</li>
 	</ol>
 	</fieldset>

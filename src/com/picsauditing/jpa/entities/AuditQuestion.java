@@ -65,6 +65,7 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	private String linkText5;
 	private String linkUrl6;
 	private String linkText6;
+	private boolean showComment = false;
 
 	protected List<AuditQuestionOperatorAccount> operator;
 	protected List<AuditQuestionOption> options;
@@ -378,6 +379,15 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 
 	public void setOptions(List<AuditQuestionOption> options) {
 		this.options = options;
+	}
+	
+	@Enumerated(EnumType.ORDINAL)
+	public boolean isShowComment() {
+		return showComment;
+	}
+
+	public void setShowComment(boolean showComment) {
+		this.showComment = showComment;
 	}
 
 	@Override
