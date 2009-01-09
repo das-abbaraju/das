@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import com.picsauditing.dao.AuditCategoryDAO;
+import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -51,15 +52,18 @@ public class AuditBuilder {
 	private AuditDataDAO auditDataDAO;
 	private AuditCategoryDAO auditCategoryDAO;
 	private ContractorAuditOperatorDAO contractorAuditOperatorDAO;
+	private AuditCategoryDataDAO auditCategoryDataDAO;
 
 	public AuditBuilder(AuditTypeDAO auditTypeDAO, ContractorAccountDAO contractorDAO, ContractorAuditDAO cAuditDAO,
-			AuditDataDAO auditDataDAO, AuditCategoryDAO auditCategoryDAO, ContractorAuditOperatorDAO contractorAuditOperatorDAO) {
+			AuditDataDAO auditDataDAO, AuditCategoryDAO auditCategoryDAO,
+			ContractorAuditOperatorDAO contractorAuditOperatorDAO, AuditCategoryDataDAO auditCategoryDataDAO) {
 		this.auditTypeDAO = auditTypeDAO;
 		this.contractorDAO = contractorDAO;
 		this.cAuditDAO = cAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
+		this.auditCategoryDataDAO = auditCategoryDataDAO;
 	}
 
 	/**
@@ -181,7 +185,7 @@ public class AuditBuilder {
 				}
 
 				if (!found) {
-					// The audit wasn't found, figure out if we should 
+					// The audit wasn't found, figure out if we should
 					// create it now or wait until later
 					boolean insertNow = true;
 					if (pqfAudit.getAuditStatus().equals(AuditStatus.Pending)) {
@@ -269,36 +273,36 @@ public class AuditBuilder {
 	}
 
 	/**
-	 * For each audit (policy), get a list of operators who have InsureGuard
-	 * and automatically require this policy, based on riskLevel
+	 * For each audit (policy), get a list of operators who have InsureGuard and
+	 * automatically require this policy, based on riskLevel
+	 * 
 	 * @param conAudit
 	 */
 	private void fillAuditOperators(ContractorAccount contractor, ContractorAudit conAudit) {
 		if (!AuditTypeClass.Policy.equals(conAudit.getAuditType().getClassType()))
 			return;
-		
-		for(ContractorOperator co : contractor.getOperators()) {
-			// For this auditType (General Liability) and 
+
+		for (ContractorOperator co : contractor.getOperators()) {
+			// For this auditType (General Liability) and
 			// this contractor's associated operator (BP Cherry Point)
 			OperatorAccount operator = co.getOperatorAccount();
 			boolean required = false;
 			if (operator.getCanSeeInsurance().equals(YesNo.Yes)) {
 				debug(operator.getName() + " subscribes to InsureGuard");
-				for(AuditOperator ao : operator.getAudits()) {
-					if (conAudit.getAuditType().equals(ao.getAuditType()) 
-							&& ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal()
-							&& ao.isCanSee()) {
+				for (AuditOperator ao : operator.getAudits()) {
+					if (conAudit.getAuditType().equals(ao.getAuditType())
+							&& ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal() && ao.isCanSee()) {
 						debug(contractor.getName() + " is required to have " + ao.getAuditType().getAuditName());
 						required = true;
 						break;
 					}
 				}
-				
+
 			}
 			if (required) {
 				// If we don't have one, then add it
 				boolean included = false;
-				for(ContractorAuditOperator cao : conAudit.getOperators()) {
+				for (ContractorAuditOperator cao : conAudit.getOperators()) {
 					if (cao.getOperator().equals(operator)) {
 						included = true;
 						break;
@@ -371,8 +375,9 @@ public class AuditBuilder {
 					try {
 						int questionID = dependencies.get(cat.getId());
 						answer = answers.get(questionID);
-					} catch (NullPointerException ignoreNulls) {}
-					
+					} catch (NullPointerException ignoreNulls) {
+					}
+
 					if (answer == null)
 						include = false;
 					else {
@@ -397,6 +402,19 @@ public class AuditBuilder {
 
 				if (include) {
 					categories.add(cat);
+				}
+
+			}
+			Iterator<AuditCatData> iterator = conAudit.getCategories().iterator();
+			while (iterator.hasNext()) {
+				AuditCatData auditCatData = iterator.next();
+				if (removeCategory("No", answers.get(2064), auditCatData, AuditCategory.OSHA_AUDIT)
+						|| removeCategory("No", answers.get(2065), auditCatData, AuditCategory.MSHA)
+						|| removeCategory("No", answers.get(2066), auditCatData, AuditCategory.CANADIAN_STATISTICS)
+						|| removeCategory("No", answers.get(2033), auditCatData, AuditCategory.EMR)
+						|| removeCategory("Yes", answers.get(2033), auditCatData, AuditCategory.LOSS_RUN)) {
+					iterator.remove();
+					auditCategoryDataDAO.remove(auditCatData.getId());
 				}
 			}
 		}
@@ -539,5 +557,13 @@ public class AuditBuilder {
 			System.out.println("Adding: " + auditType.getAuditTypeID() + auditType.getAuditName());
 			currentAudits.add(cAuditDAO.addPending(auditType, contractor, Integer.toString(year), startDate.getTime()));
 		}
+	}
+
+	public boolean removeCategory(String answer, AuditData auditData, AuditCatData auditCatData, int categoryID) {
+		if (auditData != null) {
+			if (answer.equals(auditData.getAnswer()) && auditCatData.getCategory().getId() == categoryID)
+				return true;
+		}
+		return false;
 	}
 }
