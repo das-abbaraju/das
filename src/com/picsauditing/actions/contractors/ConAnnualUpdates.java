@@ -35,6 +35,6 @@ public class ConAnnualUpdates extends ContractorActionSupport {
 	}
 	
 	public Comparator<ContractorAudit> getDateComparator() {
-		return new ContractorAuditComparator("createdDate -1");
+		return new ContractorAuditComparator("auditFor -1");
 	}
 }

@@ -731,7 +731,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	
 	@Transient
 	public List<ContractorAudit> getSortedAudits() {
-		Collections.sort(getAudits(), new ContractorAuditComparator("createdDate -1"));
+		Collections.sort(getAudits(), new ContractorAuditComparator("auditFor -1"));
 		return getAudits();
 	}
 }
