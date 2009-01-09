@@ -101,6 +101,7 @@
 %>Please select all facilities where you work:<%
 	}
 	if (permissions.isAdmin() || permissions.isCorporate()) {
+%>Total Facility Count: <strong><%=opMap.size()%></strong><br><%		
 %>Assign <strong><%=aBean.name%></strong> to the following facilities:<%
 	}
 %>
