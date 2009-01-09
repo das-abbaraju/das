@@ -51,7 +51,7 @@ public class AuditDataDAO extends PicsDAO {
 
 	public AnswerMap findByCategory(int auditID, AuditCategory category) {
 		Query query = em.createQuery("FROM AuditData d "
-				+ "WHERE d.audit.id = :auditID AND d.question.subCategory.category = :category");
+				+ "WHERE d.audit.id = :auditID AND d.question.subCategory.category = :category ORDER BY d.creationDate");
 		query.setParameter("auditID", auditID);
 		query.setParameter("category", category);
 
@@ -167,7 +167,7 @@ public class AuditDataDAO extends PicsDAO {
 	}
 
 	public AnswerMap findAnswers(int auditID) {
-		Query query = em.createQuery("SELECT d FROM AuditData d WHERE audit.id = ?");
+		Query query = em.createQuery("SELECT d FROM AuditData d WHERE audit.id = ? ORDER BY d.creationDate");
 		query.setParameter(1, auditID);
 
 		return mapData(query.getResultList());
@@ -177,8 +177,9 @@ public class AuditDataDAO extends PicsDAO {
 		if (questionIds.size() == 0)
 			return null;
 
-		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id = ? AND question.id IN ("
-				+ glue(questionIds) + ")");
+		Query query = em.createQuery("SELECT d FROM AuditData d " + 
+				"WHERE audit.id = ? AND question.id IN (" + glue(questionIds) + ") " +
+				"ORDER BY d.creationDate");
 		query.setParameter(1, auditID);
 		return mapData(query.getResultList());
 	}

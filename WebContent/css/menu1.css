@@ -192,7 +192,6 @@
 #content div.auditSubMenu a:hover span {
 	background-position: right bottom;
 	color: #ffffff;
-	font-weight: bold;
 }
 
 #content div.auditSubMenu a.current {

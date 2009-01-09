@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.OperatorBean;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.access.NoRightsException;
@@ -160,18 +161,19 @@ public class ContractorActionSupport extends PicsActionSupport {
 		// Create the linkText
 		// First use auditFor: Year in the cast of Annual Audit or Employee name
 		// in the case of OQ
-		String linkText = audit.getAuditFor();
+		String linkText = "";
+		if (!Strings.isEmpty(audit.getAuditFor()))
+			linkText += audit.getAuditFor() + " ";
 
-		// If the audit is a desktop or office, we may want to add in pending
-		// status
-		if (Strings.isEmpty(linkText) && audit.getAuditStatus().isPendingSubmittedResubmitted())
-			linkText = audit.getAuditStatus().toString();
+		linkText += audit.getAuditType().getAuditName();
 
-		// When all else fails, make sure there is something displayed
-		if (Strings.isEmpty(linkText))
-			linkText = audit.getAuditType().getAuditName();
-		else
-			linkText += " " + audit.getAuditType().getAuditName();
+		int daysToExpire = 1000;
+		if (audit.getAuditType().isPqf())
+			daysToExpire = DateBean.getDateDifference(audit.getExpiresDate());
+
+		if (audit.getAuditStatus().isPendingSubmittedResubmitted() || daysToExpire < 60)
+			linkText = "<i>" + linkText + "</i>";
+
 		return linkText;
 	}
 

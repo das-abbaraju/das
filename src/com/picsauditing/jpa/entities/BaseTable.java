@@ -36,7 +36,7 @@ public abstract class BaseTable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "createdBy", nullable = false)
+	@JoinColumn(name = "createdBy", nullable = true)
 	public User getCreatedBy() {
 		return createdBy;
 	}
@@ -46,7 +46,7 @@ public abstract class BaseTable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "updatedBy", nullable = false)
+	@JoinColumn(name = "updatedBy", nullable = true)
 	public User getUpdatedBy() {
 		return updatedBy;
 	}
@@ -74,7 +74,9 @@ public abstract class BaseTable {
 	}
 
 	public void setAuditColumns(User user) {
-		updatedBy = user;
+		if (user != null)
+			updatedBy = user;
+		
 		updateDate = new Date();
 		
 		if (createdBy == null)

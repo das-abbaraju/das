@@ -76,9 +76,15 @@ public class AuditActionSupport extends ContractorActionSupport {
 				auditDao.save(conAudit);
 			}
 		}
+		
+		contractor = conAudit.getContractorAccount();
+		id = contractor.getId();
+		if (permissions.isContractor() && id != permissions.getAccountId())
+			throw new Exception("Contractors can only view their own audits");
 
-		this.id = conAudit.getContractorAccount().getId();
-		findContractor();
+		if (!checkPermissionToView())
+			throw new NoRightsException("No Rights to View this Contractor");
+
 		canSeeAudit();
 	}
 

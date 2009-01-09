@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -37,6 +38,7 @@ import com.picsauditing.util.AnswerMap;
  * @author Trevor
  * 
  */
+@SuppressWarnings("serial")
 public class AuditCategoryAction extends AuditActionSupport {
 
 	protected int catDataID = 0;
@@ -56,15 +58,14 @@ public class AuditCategoryAction extends AuditActionSupport {
 	protected ContractorAudit nextAudit = null;
 
 	protected OshaAudit averageOshas = null;
-	
+	protected AnswerMap answerMap = null;
+
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditCategoryDAO auditCategoryDAO;
 	private OshaAuditDAO oshaAuditDAO;
-	
-	public AuditCategoryAction(ContractorAccountDAO accountDao,
-			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao,
-			AuditPercentCalculator auditPercentCalculator,
+
+	public AuditCategoryAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
 			AuditCategoryDAO auditCategoryDAO, OshaAuditDAO oshaAuditDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.auditPercentCalculator = auditPercentCalculator;
@@ -73,15 +74,16 @@ public class AuditCategoryAction extends AuditActionSupport {
 	}
 
 	public String execute() throws Exception {
+		long startTime = Calendar.getInstance().getTimeInMillis();
+		
+		System.out.println("AuditCategoryAction started " + Calendar.getInstance().getTime().toString());
 		if (!forceLogin())
 			return LOGIN;
 		if (auditID == 0 && catID > 0) {
 			// Just Preview the Audit
 			AuditCategory auditCategory = auditCategoryDAO.find(catID);
-			for (AuditSubCategory auditSubCategory : auditCategory
-					.getSubCategories()) {
-				for (AuditQuestion auditQuestion : auditSubCategory
-						.getQuestions()) {
+			for (AuditSubCategory auditSubCategory : auditCategory.getSubCategories()) {
+				for (AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
 				}
 			}
 			categories = new ArrayList<AuditCatData>();
@@ -97,26 +99,18 @@ public class AuditCategoryAction extends AuditActionSupport {
 
 		getCategories();
 
-		AnswerMap answers = null;
 		if (catDataID > 0 || catID > 0) {
 			for (AuditCatData catData : categories) {
 				// We can open audits using either the catID or the catDataID
-				if (catData.getId() == catDataID
-						|| catData.getCategory().getId() == catID) {
+				if (catData.getId() == catDataID || catData.getCategory().getId() == catID) {
 					// Set the other one that isn't set
 					catDataID = catData.getId();
 					catID = catData.getCategory().getId();
 
-					answers = auditDataDao.findByCategory(auditID, catData
-							.getCategory());
-					for(AuditSubCategory subCategory : catData.getCategory().getSubCategories()) {
-						subCategory.build(conAudit, answers);
-					}
+					answerMap = auditDataDao.findByCategory(auditID, catData.getCategory());
 					currentCategory = catData;
 
-					if (mode == null
-							&& catData.getRequiredCompleted() < catData
-									.getNumRequired()) {
+					if (mode == null && catData.getRequiredCompleted() < catData.getNumRequired()) {
 						mode = EDIT;
 					}
 
@@ -129,26 +123,25 @@ public class AuditCategoryAction extends AuditActionSupport {
 					}
 				}
 			}
-			
+
 			if (currentCategory == null) {
 				if (catID == 0)
 					throw new Exception("Failed to find category for audit");
-				
+
 				// Create a new Category for this catID
 				AuditCategory auditCategory = auditCategoryDAO.find(catID);
 				currentCategory = new AuditCatData();
 				currentCategory.setAudit(conAudit);
 				currentCategory.setCategory(auditCategory);
 				currentCategory = this.catDataDao.save(currentCategory);
-				
+
 				categories = null;
 				getCategories();
 			}
-			
-			if (mode == null
-					&& conAudit.getAuditStatus().equals(AuditStatus.Pending))
+
+			if (mode == null && conAudit.getAuditStatus().equals(AuditStatus.Pending))
 				mode = EDIT;
-			if(mode == null && conAudit.getAuditStatus().isActiveSubmitted()
+			if (mode == null && conAudit.getAuditStatus().isActiveSubmitted()
 					&& conAudit.getAuditType().isPqf() && conAudit.isAboutToExpire())
 				mode = EDIT;
 			if (mode == null
@@ -158,12 +151,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 
 		} else {
 			// When we want to show all categories
-			answers = auditDataDao.findAnswers(auditID);
-			for (AuditCatData catData : categories) {
-				for(AuditSubCategory subCategory : catData.getCategory().getSubCategories()) {
-					subCategory.build(conAudit, answers);
-				}
-			}
+			answerMap = auditDataDao.findAnswers(auditID);
 		}
 
 		if (catDataID == 0)
@@ -175,20 +163,21 @@ public class AuditCategoryAction extends AuditActionSupport {
 			mode = VIEW;
 		if (mode.equals(VERIFY) && !isCanVerify())
 			mode = VIEW;
-
 		
+		if ("Quick".equals(button))
+			// used for testing
+			return SUCCESS;
+
 		if (currentCategory != null) {
 
-			
-			if (OshaTypeConverter.getTypeFromCategory( currentCategory.getCategory().getId() ) != null ) {
+			if (OshaTypeConverter.getTypeFromCategory(currentCategory.getCategory().getId()) != null) {
 				boolean hasOshaCorporate = false;
 				int percentComplete = 0;
 				for (OshaAudit osha : conAudit.getOshas()) {
-					if (osha.isCorporate() && matchesType( currentCategory.getCategory().getId(), osha.getType() ) ) {
+					if (osha.isCorporate() && matchesType(currentCategory.getCategory().getId(), osha.getType())) {
 						hasOshaCorporate = true;
 						// Calculate percent complete too
-						auditPercentCalculator.percentOshaComplete(osha,
-								currentCategory);
+						auditPercentCalculator.percentOshaComplete(osha, currentCategory);
 					}
 				}
 
@@ -204,16 +193,14 @@ public class AuditCategoryAction extends AuditActionSupport {
 					catDataDao.save(currentCategory);
 				}
 			} else {
-				auditPercentCalculator
-						.updatePercentageCompleted(currentCategory);
+				auditPercentCalculator.updatePercentageCompleted(currentCategory);
 			}
 		}
 		auditPercentCalculator.percentCalculateComplete(conAudit);
 
-		ContractorAudit twoYearsAgo = null;
-		
 		if (conAudit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM) {
 
+			ContractorAudit twoYearsAgo = null;
 			String auditFor = conAudit.getAuditFor();
 
 			if (auditFor != null && auditFor.length() > 0) {
@@ -221,97 +208,56 @@ public class AuditCategoryAction extends AuditActionSupport {
 
 				try {
 					auditYear = Integer.parseInt(auditFor);
-				} catch (Exception ignoreIt) {}
-				
-				if( auditYear != 0 )
-				{
-					for( ContractorAudit ca : getActiveAudits() ) {
+				} catch (Exception ignoreIt) {
+				}
 
-						if( ca.getAuditType().getAuditTypeID() == conAudit.getAuditType().getAuditTypeID() ) {
-						
+				if (auditYear != 0) {
+					for (ContractorAudit ca : getActiveAudits()) {
+
+						if (ca.getAuditType().getAuditTypeID() == conAudit.getAuditType().getAuditTypeID()) {
+
 							String caAuditFor = ca.getAuditFor();
 							int caAuditYear = 0;
 
 							try {
 								caAuditYear = Integer.parseInt(caAuditFor);
 
-								if( caAuditYear == auditYear - 2 ) {
+								if (caAuditYear == auditYear - 2) {
 									twoYearsAgo = ca;
 								}
-								if( caAuditYear == auditYear - 1 ) {
+								if (caAuditYear == auditYear - 1) {
 									previousAudit = ca;
 								}
-								if( caAuditYear == auditYear + 1 ) {
+								if (caAuditYear == auditYear + 1) {
 									nextAudit = ca;
 								}
-								
-								if( previousAudit != null && nextAudit != null ) {  //no sense continuing the loop if we already found them
+
+								if (previousAudit != null && nextAudit != null) {
+									// no sense continuing the loop if we
+									// already found them
 									break;
 								}
-							
-							} catch (Exception ignoreIt) {}
+
+							} catch (Exception ignoreIt) {
+							}
 						}
 					}
 				}
 			}
 		}
-		
-		
+		long endTime = Calendar.getInstance().getTimeInMillis();
+
+		System.out.println("AuditCategoryAction completed in " + (endTime - startTime) + " ms");
 		return SUCCESS;
 	}
 
-/*	private void fillAnswers(AuditCatData catData,
-			Map<Integer, AuditData> answers) {
-		for (AuditSubCategory subCategory : catData.getCategory()
-				.getSubCategories()) {
-			List<Integer> officeLocQuestions = new ArrayList<Integer>();
-			if (subCategory.getCategory().getId() == AuditCategory.SERVICES_PERFORMED) {
-				for (AuditQuestion question : subCategory.getQuestions()) {
-					officeLocQuestions.add(question.getId());
-				}
-			}
-
-			for (AuditQuestion question : subCategory.getQuestions()) {
-				Map<Integer, AuditData> officeLocationAnswer = auditDataDao
-						.findAnswers(auditID, officeLocQuestions);
-				if (question.getQuestionType().equals("Office Location")
-						&& !officeLocationAnswer.containsKey(question
-								.getId())) {
-					AuditData auditData = new AuditData();
-					auditData.setAudit(conAudit);
-					auditData.setQuestion(question);
-					auditData.setAnswer("No");
-					auditDataDao.save(auditData);
-					answers.put(question.getId(), auditData);
-				}
-
-				if (answers.containsKey(question.getId())) {
-					question.setAnswer(answers.get(question.getId()));
-				}
-				if (mode != null && mode.equals(EDIT)) {
-					AuditQuestion dependsOnQuestion = question
-							.getDependsOnQuestion();
-					if (dependsOnQuestion != null
-							&& dependsOnQuestion.getId() > 0) {
-
-						if (!dependsOnQuestion.getSubCategory().getCategory()
-								.equals(catData.getCategory())
-								&& !answers.containsKey(dependsOnQuestion
-										.getId())) {
-							// Get answer and add to answer map no matter what
-							answers.put(dependsOnQuestion.getId(),
-									auditDataDao.findAnswerToQuestion(
-											this.auditID, dependsOnQuestion
-													.getId()));
-						}
-						dependsOnQuestion.setAnswer(answers
-								.get(dependsOnQuestion.getId()));
-					}
-				}
-			}
-		}
+	public AnswerMap getAnswerMap() {
+		return answerMap;
 	}
-	*/
+
+	public void setAnswerMap(AnswerMap answerMap) {
+		this.answerMap = answerMap;
+	}
 
 	public int getCatDataID() {
 		return catDataID;
@@ -385,29 +331,30 @@ public class AuditCategoryAction extends AuditActionSupport {
 		this.nextAudit = nextAudit;
 	}
 
-
 	public OshaAudit getAverageOsha(OshaType oshaType) {
 		OshaAudit response = null;
-		
+
 		Map<String, OshaAudit> temp = contractor.getOshas().get(oshaType);
-		
-		if( temp != null ) {
+
+		if (temp != null) {
 			response = temp.get(OshaAudit.AVG);
 		}
-		
+
 		return response;
 	}
-	
-	public boolean matchesType( int categoryId, OshaType oa ) {
-		if( OshaTypeConverter.getTypeFromCategory(categoryId) == null || oa == null) return false;
-		if( oa == OshaTypeConverter.getTypeFromCategory(categoryId) ) return true;
+
+	public boolean matchesType(int categoryId, OshaType oa) {
+		if (OshaTypeConverter.getTypeFromCategory(categoryId) == null || oa == null)
+			return false;
+		if (oa == OshaTypeConverter.getTypeFromCategory(categoryId))
+			return true;
 		return false;
 	}
-	
+
 	public Set<String> getLegalNames() {
 		Set<String> list = new TreeSet<String>();
-		for(ContractorOperator co : contractor.getOperators())
-			for(AccountName legalName : co.getOperatorAccount().getNames())
+		for (ContractorOperator co : contractor.getOperators())
+			for (AccountName legalName : co.getOperatorAccount().getNames())
 				list.add(legalName.getName());
 		return list;
 	}

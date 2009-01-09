@@ -60,56 +60,53 @@
 		<s:else>
 			<s:if test="category.validSubCategories.size() > 0">
 				<h2>Category <s:property value="category.number"/> - <s:property value="category.category"/></h2>
-	
-				<table class="audit">
+				<s:set name="shaded" value="true" scope="action"/>
 				<s:iterator value="category.validSubCategories">
-					<s:if test="category.validSubCategories.size() > 1">
-					<tr class="subCategory">
-						<td colspan="4">Sub Category <s:property value="category.number"/>.<s:property value="number"/> - 
-						<s:property value="subCategory" escape="false"/>
-						</td>
-					</tr>
-					</s:if>
-					<s:iterator value="answerList">
-					
-						<s:if test="question.isGroupedWithPrevious.toString() == 'No'">
-							<s:set name="shaded" value="!#shaded" scope="action"/>
+					<div class="subCategory">
+						<s:if test="category.validSubCategories.size() > 1">
+							<h3 class="subCategory">
+								Sub Category <s:property value="category.number"/>.<s:property value="number"/> - 
+								<s:property value="subCategory" escape="false"/>
+							</h3>
 						</s:if>
-						
-						<s:if test="question.title.length() > 0">
-							<tr class="group<s:if test="#shaded">Shaded</s:if>">
-								<td class="groupTitle" colspan="4"><s:property value="question.title" escape="false"/></td>
-							</tr>
-						</s:if>
-						<s:if test="mode == 'View'">
-							<s:if test="onlyReq">
-								<s:if test="hasRequirements">
-									<s:include value="audit_cat_view.jsp"></s:include>
+						<s:iterator value="questions">
+							<s:if test="parentQuestion == null">
+								<s:if test="title.length() > 0">
+									<h4 class="groupTitle">
+										<s:property value="title" escape="false"/>
+									</h4>
 								</s:if>
-							</s:if>
-							<s:else>
-								<s:if test="viewBlanks || answer.length() > 0">
-									<s:include value="audit_cat_view.jsp"></s:include>
+								
+								<s:if test="category.validDate.after(effectiveDate) && category.validDate.before(expirationDate)">
+									<s:set name="q" value="[0]" />
+									<s:if test="#q.allowMultipleAnswers">
+										<!-- Tuple Anchor Question -->
+										<div id="tuple_<s:property value="#q.id"/>">
+											<s:include value="audit_cat_tuples.jsp"></s:include>
+										</div>
+									</s:if>
+									<s:else>
+										<!-- Single Leaf Question -->
+										<s:set name="a" value="answerMap.get(#q.id)" />
+										<s:if test="#q.isGroupedWithPrevious.toString() == 'No'">
+											<s:set name="shaded" value="!#shaded" scope="action"/>
+										</s:if>
+										
+										<div id="node__<s:property value="#q.id"/>" class="question <s:if test="#shaded">shaded</s:if>">
+											<s:include value="audit_cat_question.jsp"></s:include>
+										</div>
+									</s:else>
 								</s:if>
-							</s:else>
-						</s:if>
-						<s:if test="mode == 'Edit'">
-							<s:if test="!onlyReq || hasRequirements">
-								<s:include value="audit_cat_edit.jsp"></s:include>
+								
+								
+								
 							</s:if>
-						</s:if>
-						<s:if test="mode == 'Verify'">
-							<s:if test="answer.length() > 0">	
-								<s:include value="audit_cat_verify.jsp"></s:include>
-							</s:if>
-						</s:if>
-						<s:if test="mode == 'ViewQ'">
-							<s:include value="audit_cat_questions.jsp"></s:include>
-						</s:if>
-					</s:iterator>
+						</s:iterator>
+					</div>
 				</s:iterator>
-				</table>
-				<span class="requiredStar">* Question is required</span>
+				<s:if test="mode == 'Edit'">
+					<div class="requiredLegend">Starred questions are required</div>
+				</s:if>
 			</s:if>
 		</s:else>
 	</s:if>

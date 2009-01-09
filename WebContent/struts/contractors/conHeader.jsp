@@ -182,7 +182,7 @@
 	<div id="auditSubMenu<s:property value="url" />" class="auditSubMenu">
 	<ul>
 	<s:iterator value="children">
-		<li><a href="<s:property value="url"/>" <s:if test="current == true">class="current"</s:if>><span><s:property value="name" /></span></a></li>
+		<li><a href="<s:property value="url"/>" <s:if test="current == true">class="current"</s:if>><span><s:property value="name" escape="false" /></span></a></li>
 	</s:iterator>
 	</ul>
 	</div>

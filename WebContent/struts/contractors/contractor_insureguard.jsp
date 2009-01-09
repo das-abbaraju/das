@@ -84,18 +84,18 @@
 </s:if>
 <s:if test="expiredAudits.size() > 0">
 <br/>
-<h3>Expired Audits</h3>
+<h3>Expired Policies</h3>
 <table class="report">
 	<thead>
 	<tr>
 		<th>Type</th>
-		<th>Expired</th>
+		<th>Effective</th>
 	</tr>
 	</thead>
 	<s:iterator value="expiredAudits" status="auditStatus">
 		<tr>
 			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
-			<td><s:date name="expiresDate" format="M/d/yy" /></td>
+			<td><s:date name="createdDate" format="M/d/yy" /></td>
 		</tr>
 	</s:iterator>
 </table>

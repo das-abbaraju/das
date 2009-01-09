@@ -20,7 +20,7 @@ public class ConAuditList extends ContractorActionSupport {
 	private AuditTypeDAO auditTypeDAO;
 	private int selectedAudit;
 	private int selectedOperator;
-	private List<AuditType> auditTypeName;
+	private List<AuditType> auditTypeList;
 	private AuditTypeClass auditClass = AuditTypeClass.Audit;
 	public List<ContractorAudit> upComingAudits = new ArrayList<ContractorAudit>();
 	public List<ContractorAudit> currentAudits = new ArrayList<ContractorAudit>();
@@ -84,19 +84,14 @@ public class ConAuditList extends ContractorActionSupport {
 			auditDao.save(conAudit);
 			return "saved";
 		}
+		auditTypeList = auditTypeDAO.findAll(permissions, true, auditClass);
 		return SUCCESS;
 	}
 
 	public List<AuditType> getAuditTypeName() {
-		List<AuditType> aList = auditTypeDAO.findAll(permissions, true);
-		auditTypeName = new ArrayList<AuditType>();
-		for (AuditType aType : aList) {
-			if (aType.getClassType().equals(auditClass))
-				auditTypeName.add(aType);
-		}
-		return auditTypeName;
+		return auditTypeList;
 	}
-
+	
 	public int getSelectedAudit() {
 		return selectedAudit;
 	}
@@ -136,7 +131,7 @@ public class ConAuditList extends ContractorActionSupport {
 				|| permissions.hasPermission(OpPerms.InsuranceCerts, OpType.Edit))
 			return true;
 		if (permissions.isOperator() || permissions.isCorporate()) {
-			if (auditTypeName.size() > 0)
+			if (auditTypeList.size() > 0)
 				return true;
 		}
 		return false;

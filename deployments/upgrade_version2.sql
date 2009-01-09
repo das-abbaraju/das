@@ -11,19 +11,18 @@ alter table `pqfdata`
 
 update pqfdata set parentID = null;
 
+
 alter table `pqfquestions` 
 	change `questionID` `id` smallint(6)   NOT NULL auto_increment first,
 	drop key `PRIMARY`, add PRIMARY KEY(`id`);
 
 alter table `pqfquestions` 
-	change `subCategoryID` `subCategoryID` smallint(6)   NOT NULL DEFAULT '0' after `id`, 
 	add column `createdBy` int(11)   NULL after `question`, 
 	add column `updatedBy` int(11)   NULL after `createdBy`, 
 	change `dateCreated` `creationDate` datetime   NOT NULL after `updatedBy`, 
 	change `lastModified` `updateDate` datetime   NOT NULL after `creationDate`, 
 	add column `allowMultipleAnswers` tinyint(4)   NULL DEFAULT '0' after `isRequired`, 
 	add column `parentID` smallint(5) unsigned   NULL after `isRedFlagQuestion`;
-
 
 /**
 update pqfquestions set isVisible = CASE isVisible WHEN 2 THEN 1 ELSE 0 END;

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.NoResultException;
-
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -18,10 +16,12 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.AnswerMap;
 
 public class AuditDataSave extends AuditActionSupport {
 	private static final long serialVersionUID = 1103112846482868309L;
 	private AuditData auditData = null;
+	private AnswerMap answerMap;
 	private AuditQuestionDAO questionDao = null;
 
 	private int catDataID = 0;
@@ -38,44 +38,48 @@ public class AuditDataSave extends AuditActionSupport {
 	}
 
 	public String execute() throws Exception {
+		if ("testTuple".equals(button)) {
+			AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
+			auditData.setQuestion(question);
+			
+			List<Integer> questionIds = new ArrayList<Integer>();
+			questionIds.add(auditData.getQuestion().getId());
+			answerMap = auditDataDao.findAnswers(auditID, questionIds);
+			return "tuple";
+		}
 
+		if ("removeTuple".equals(button)) {
+			try {
+				auditDataDao.remove(auditData.getId());
+				addActionMessage("Successfully removed answer group");
+			} catch (Exception e) {
+				addActionError("Failed to remove answer group");
+			}
+			return BLANK;
+		}
+		
 		if (catDataID == 0) {
 			addActionError("Missing catDataID");
-			return SUCCESS;
+			return BLANK;
 		}
+		
 		try {
 			if (!forceLogin())
 				return LOGIN;
-
-			AuditData newCopy = null;
-			AuditQuestion question = null;
-
-			// Try to find the previous version using the passed in auditData record
-			int auditID = auditData.getAudit().getId();
-			int questionID = auditData.getQuestion().getId();
-			question = questionDao.find(questionID);
-			int parentAnswerID = 0;
-			if(auditData.getParentAnswer() != null)
-				parentAnswerID = auditData.getParentAnswer().getId();
 			
-			if (question != null && question.isAllowMultipleAnswers() && parentAnswerID == 0) {
-				// The question is a "tuple" but the no parent was supplied
-				// It must be a new entry
-			} else {
-				try {
-						newCopy = auditDataDao.findAnswerToQuestion(auditID, questionID, parentAnswerID);
-				} catch (NoResultException notReallyAProblem) {}
-			}
-
-			if (newCopy == null) {
+			getUser();
+			
+			if (auditData.getId() == 0) {
 				// insert mode
+				AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
+				auditData.setQuestion(question);
+				
 				if (auditData.getParentAnswer() != null && auditData.getParentAnswer().getId() == 0)
 					auditData.setParentAnswer(null);
-				auditData.setAuditColumns(getUser());
-				auditDataDao.save(auditData);
-				newCopy = auditData;
 			} else {
 				// update mode
+				AuditData newCopy = auditDataDao.find(auditData.getId());
+				
 				if (auditData.getAnswer() != null) {
 					// if answer is being set, then
 					// we are not currently verifying
@@ -92,7 +96,7 @@ public class AuditDataSave extends AuditActionSupport {
 							newCopy.setWasChanged(YesNo.Yes);
 
 							if (!toggleVerify) {
-								if (question.getOkAnswer().indexOf(auditData.getAnswer()) == -1) {
+								if (newCopy.getQuestion().getOkAnswer().indexOf(auditData.getAnswer()) == -1) {
 									newCopy.setDateVerified(null);
 									newCopy.setAuditor(null);
 								} else {
@@ -121,9 +125,11 @@ public class AuditDataSave extends AuditActionSupport {
 					newCopy.setComment(auditData.getComment());
 				}
 
-				newCopy.setAuditColumns(getUser());
-				auditDataDao.save(newCopy);
+				auditData = newCopy;
 			}
+			auditID = auditData.getAudit().getId();
+			auditData.setAuditColumns(getUser());
+			auditData = auditDataDao.save(auditData);
 
 			// hook to calculation read/update 
 			// the ContractorAudit and AuditCatData
@@ -132,7 +138,7 @@ public class AuditDataSave extends AuditActionSupport {
 			if (catDataID > 0) {
 				catData = catDataDao.find(catDataID);
 			} else if (toggleVerify) {
-				List<AuditCatData> catDatas = catDataDao.findAllAuditCatData(auditData.getAudit().getId(), newCopy
+				List<AuditCatData> catDatas = catDataDao.findAllAuditCatData(auditData.getAudit().getId(), auditData
 						.getQuestion().getSubCategory().getCategory().getId());
 
 				if (catDatas != null && catDatas.size() != 0) {
@@ -146,10 +152,20 @@ public class AuditDataSave extends AuditActionSupport {
 				auditPercentCalculator.percentCalculateComplete(conAudit);
 			}
 
-			output = "Saved";
+			List<Integer> questionIds = new ArrayList<Integer>();
+			questionIds.add(auditData.getQuestion().getId());
+			if (auditData.getQuestion().getIsRequired().equals("Depends"))
+				questionIds.add(auditData.getQuestion().getDependsOnQuestion().getId());
+			answerMap = auditDataDao.findAnswers(auditID, questionIds);
+
 		} catch (Exception e) {
 			e.printStackTrace();
-			output = "An Error has Occurred";
+			addActionError(e.getMessage());
+			return BLANK;
+		}
+		
+		if ("addTuple".equals(button)) {
+			return "tuple";
 		}
 
 		return SUCCESS;
@@ -165,6 +181,10 @@ public class AuditDataSave extends AuditActionSupport {
 
 	public void setCatDataID(int catDataID) {
 		this.catDataID = catDataID;
+	}
+	
+	public AnswerMap getAnswerMap() {
+		return answerMap;
 	}
 
 	public boolean isToggleVerify() {

@@ -1,40 +1,40 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<tr class="group<s:if test="#shaded">Shaded</s:if>">
-	<td class="right" width="60px"><s:property value="category.number"/>.<s:property value="question.subCategory.number"/>.<s:property value="question.number"/>&nbsp;&nbsp;</td>
-	<td class="question"><s:property value="question.question" escape="false"/>
-		<s:if test="question.linkUrl1 > ''"><a href="http://<s:property value="question.linkUrl1"/>" target="_BLANK" title="opens in new window"><s:property value="question.linkText1"/></a></s:if>
-		<s:if test="question.linkUrl2 > ''"><a href="http://<s:property value="question.linkUrl2"/>" target="_BLANK" title="opens in new window"><s:property value="question.linkText2"/></a></s:if>
-		<s:if test="question.linkUrl3 > ''"><a href="http://<s:property value="question.linkUrl3"/>" target="_BLANK" title="opens in new window"><s:property value="question.linkText3"/></a></s:if>
-		<s:if test="question.linkUrl4 > ''"><a href="http://<s:property value="question.linkUrl4"/>" target="_BLANK" title="opens in new window"><s:property value="question.linkText4"/></a></s:if>
-		<s:if test="question.linkUrl5 > ''"><a href="http://<s:property value="question.linkUrl5"/>" target="_BLANK" title="opens in new window"><s:property value="question.linkText5"/></a></s:if>
-		<s:if test="question.linkUrl6 > ''"><a href="http://<s:property value="question.linkUrl6"/>" target="_BLANK" title="opens in new window"><s:property value="question.linkText6"/></a></s:if>
+<span class="question">
+	<a name="q<s:property value="#q.id"/>"></a>
+	<s:property value="#q.subCategory.category.number"/>.<s:property value="#q.subCategory.number"/>.<s:property value="#q.number"/>&nbsp;&nbsp;
 	
-	<span class="answer">
-		<s:if test="questionType == 'File'">
-			<s:if test="id > 0 && answer.length() > 0">
-				<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&question.id=<s:property value="id"/>" target="_BLANK">Uploaded</a>
-			</s:if>
-			<s:else>File Not Uploaded</s:else>
+	<s:property value="#q.question" escape="false"/>
+	<br />
+	<s:if test="#q.linkUrl1.length() > 0"><a href="http://<s:property value="#q.linkUrl1"/>" target="_BLANK" title="opens in new window"><s:property value="linkText1"/></a></s:if>
+	<s:if test="#q.linkUrl2.length() > 0"><a href="http://<s:property value="#q.linkUrl2"/>" target="_BLANK" title="opens in new window"><s:property value="linkText2"/></a></s:if>
+	<s:if test="#q.linkUrl3.length() > 0"><a href="http://<s:property value="#q.linkUrl3"/>" target="_BLANK" title="opens in new window"><s:property value="linkText3"/></a></s:if>
+	<s:if test="#q.linkUrl4.length() > 0"><a href="http://<s:property value="#q.linkUrl4"/>" target="_BLANK" title="opens in new window"><s:property value="linkText4"/></a></s:if>
+	<s:if test="#q.linkUrl5.length() > 0"><a href="http://<s:property value="#q.linkUrl5"/>" target="_BLANK" title="opens in new window"><s:property value="linkText5"/></a></s:if>
+	<s:if test="#q.linkUrl6.length() > 0"><a href="http://<s:property value="#q.linkUrl6"/>" target="_BLANK" title="opens in new window"><s:property value="linkText6"/></a></s:if>
+</span>
+
+<span class="answerDisplay">
+	<s:if test="#q.questionType == 'File'">
+		<s:if test="#a.id > 0 && #a.answer.length() > 0">
+			<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&answer.id=<s:property value="#a.id"/>" 
+				target="_BLANK">View File</a>
 		</s:if>
-		
-		<s:elseif test="questionType == 'License'">
-			<s:property value="answer" />
-			<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(question, answer)" escape="false" />
-		</s:elseif>
-		
-		<s:else>
-			<s:property value="answer" />
-			<s:if test="questionType == 'Manual' && comment.length() > 0">
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment: <s:property value="comment"/>
-			</s:if>
-		</s:else>
-		
-	</span>
-	<br/>
-	<span id="showText_<s:property value="id"/>" style="display: none" class="verified">
+		<s:else>File Not Uploaded</s:else>
+	</s:if>
+	<s:else>
+		<s:property value="#a.answer" />
+		<s:if test="#q.questionType == 'License'">
+			<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />
+		</s:if>
+		<s:if test="#q.questionType == 'Manual' && #a.comment.length() > 0">
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment: <s:property value="#a.comment"/>
+		</s:if>
+	</s:else>
+
+	<span id="showText_<s:property value="#a.id"/>" style="display: none" class="verified">
 		Answer changed on <s:date name="dateVerified" format="MMM d, yyyy" />
-	</span></td>
-</tr>
+	</span>
+</span>
 <s:if test="hasRequirements && conAudit.auditType.hasRequirements">
 	<tr class="group<s:if test="#shaded">Shaded</s:if>">
 		<td class="center">Requirement</td>
@@ -58,3 +58,4 @@
 		</td>
 	</tr>
 </s:if>
+<br clear="all"/>

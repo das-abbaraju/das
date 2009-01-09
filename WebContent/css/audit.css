@@ -1,3 +1,86 @@
+/** Audit Data ***/
+
+h3.subCategory {
+}
+
+h4.groupTitle {
+	margin-left: 25px;
+	margin-top: 10px;
+	color: #A84D10;
+	font-weight: bold;
+}
+
+#content div.subCategory {
+	margin-top: 15px;
+	margin-left: 10px;
+	padding-left: 5px;
+}
+
+span.question {
+	float: left;
+	padding-left: 20px;
+	padding-right: 15px;
+	max-width: 60%;
+	color: #111;
+}
+
+div.answer {
+	float: left;
+	max-width: 60%;
+}
+
+span.answerDisplay {
+	font-weight: bold;
+	color: #003768;
+}
+
+#content div.shaded, h4.shaded {
+	background-color: #EEEEEE;
+}
+
+span.required {
+	background: transparent url(../images/yellow_star.gif) no-repeat
+		left center;
+	color: #272;
+	font-weight: bold;
+}
+
+div.thinking {
+	float: right;
+}
+
+#content div.requiredLegend {
+	margin: 5px;
+	margin-left: 20px;
+	padding-left: 20px;
+	background: transparent url(../images/yellow_star.gif) no-repeat
+		left center;
+	color: #272;
+	font-weight: bold;
+}
+
+#content div.tuple {
+	margin-left: 10px;
+	border-bottom: 1px dashed #A84D10;
+	width: 100%;
+}
+
+input.hidden {
+	display: none;
+}
+
+/** END Audit Data ***/
+
+/** Table Report override for Category list **/
+table.report tr.na {
+	color: #999;
+}
+
+table.report tr.na a {
+	font-style: italic;
+	color: #999;
+}
+
 /** Audit Header ***/
 #content #auditHeader {
 	border-top: 2px solid #C3C3C3;
@@ -65,115 +148,9 @@
 	font-size: 13px;
 	color: white;
 }
+/** END Audit Header ***/
 
-/** Audit Table Report override ***/
-table.report tr.na {
-	color: #999;
-}
-
-table.report tr.na a {
-	font-style: italic;
-	color: #999;
-}
-/** Audit Table ***/
-
-table.audit {
-	margin-top: 10px;
-	margin-bottom: 10px;
-	table-layout: auto;
-	border-collapse: collapse;
-}
-
-.auditSave {
-	font-size: 16px;
-	padding: 5px;
-}
-
-table.audit tr.subCategory td {
-	border-bottom: 2px solid #A84D10;
-	color:#A84D10;
-	font-family:Helvetica,Arial,Verdana,sans-serif;
-	font-size:24px;
-	font-weight:bold;
-	letter-spacing:-1px;
-	padding-top: 15px;
-}
-
-table.audit td.right {
-	text-align: right;
-	float: none;
-}
-
-table.audit td.tupleHeading {
-	border-bottom: 1px dashed #A84D10;
-	text-align: center;
-	font-size:20px;
-	color:#A84D10;
-	font-weight:bold;
-	padding-top: 10px;
-}
-
-table.audit tr.groupShaded {
-	background-color: #EEEEEE;
-}
-
-table.audit tr.group {
-	background-color: white;
-}
-
-table.audit td.groupTitle {
-	color: #A84D10;
-	font-weight: bold;
-}
-
-#content div.required {
-	color: #003768;
-	font-weight: bold;
-	float: right;
-	border: 1px dashed #003768;
-}
-
-table.audit td.questionRequired {
-	color: #003768;
-	font-weight: bold;
-}
-
-table.audit td.question {
-	
-}
-
-table.audit td.answer {
-	width: 50px;
-}
-
-table.audit td {
-	font-size: 15px;
-	color: #4C4D4D;
-	height: 30px;
-	padding: 5px;
-}
-
-
-span.answer {
-	color: #003768;
-	font-weight: bold;
-	margin-left: 20px;
-}
-
-span.verified {
-	color: #272;
-	padding-left: 20px;
-	background: transparent url(../images/okCheck.gif) no-repeat
-		left center;
-}
-
-span.unverified {
-	color: #900;
-	padding-left: 20px;
-	background: transparent url(../images/notOkCheck.gif) no-repeat
-		left center;
-}
-
+/** Category Header+Footer Navigation **/
 table.footerNav {
 	border: 1px #A84D10 dashed;
 	width: 100%;
@@ -213,6 +190,7 @@ table.footerNav td.next {
 	width: 20%;
 	text-align: right;
 }
+/** END Category Header+Footer Navigation **/
 
 /*** OSHA **/
 table.osha {
@@ -271,15 +249,5 @@ table.osha tfoot th {
 	background-color: #EEE;
 }
 
-.requiredStar {
-	color:#A84D10;
-	font-size: 14px;
-	padding: 5px;
-	margin: 3px;
-	font-weight: bold;
-}
-
-#content div.verifyBox {
-	margin-left: 20px;
-}
+/*** END OSHA **/
 

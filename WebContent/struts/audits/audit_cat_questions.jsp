@@ -9,4 +9,4 @@
 		<td><span class="redMain">Req:</span></td>
 		<td><div id="info"><s:property value="requirement"/></div></td>
 	</tr>
-</s:if>	
+</s:if>

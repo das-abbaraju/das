@@ -2,9 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,12 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import com.picsauditing.util.AnswerMap;
 
 @SuppressWarnings("serial")
 @Entity
@@ -35,7 +30,6 @@ public class AuditSubCategory implements java.io.Serializable, Comparable<AuditS
 	private int number;
 
 	private List<AuditQuestion> questions;
-	private List<AuditData> answerList;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -85,77 +79,12 @@ public class AuditSubCategory implements java.io.Serializable, Comparable<AuditS
 		this.questions = questions;
 	}
 
-	@Transient
-	public List<AuditData> getAnswerList() {
-		return answerList;
-	}
-
 	public boolean hasValidQuestions() {
 		for (AuditQuestion question : this.getQuestions())
 			if (category.getValidDate().after(question.getEffectiveDate())
 					&& category.getValidDate().before(question.getExpirationDate()))
 				return true;
 		return false;
-	}
-
-	/**
-	 * 
-	 * @param answerMap
-	 *            Map of questionID, parentID, AuditData. If parentID is null,
-	 *            then use 0
-	 */
-	public void build(ContractorAudit conAudit, AnswerMap answerMap) {
-		answerList = new ArrayList<AuditData>();
-
-		for (AuditQuestion question : getQuestions()) {
-			if (question.getParentQuestion() == null)
-				addChildren(conAudit, 0, question, answerMap);
-		}
-	}
-
-	private void addChildren(ContractorAudit conAudit, int rowID, AuditQuestion question,
-			AnswerMap answerMap) {
-		boolean debug = false;
-		
-		if (category.getValidDate().after(question.getEffectiveDate())
-				&& category.getValidDate().before(question.getExpirationDate())) {
-			// This is a valid question we want to include
-			if (debug)
-				System.out.println("Adding question:" + rowID + " " + question.getQuestion());
-			if (question.isAllowMultipleAnswers()) {
-				for (AuditData childData : answerMap.getAnswerList(question.getId())) {
-					int childRowID = childData.getId();
-					if (debug)
-						System.out.println("Put answer:" + childData.getAnswer());
-					answerList.add(childData);
-					
-					for (AuditQuestion childQuestion : question.getChildQuestions()) {
-						addChildren(conAudit, childRowID, childQuestion, answerMap);
-					}
-				}
-				// Always add a blank entry
-				AuditData answer = new AuditData();
-				answer.setQuestion(question);
-				answer.setAudit(conAudit);
-				if (debug)
-					System.out.println("Put new entry");
-				answerList.add(answer);
-			} else {
-				AuditData answer = answerMap.get(question.getId());
-				if (answer == null) {
-					answer = new AuditData();
-					answer.setQuestion(question);
-					if (rowID > 0) {
-						answer.setParentAnswer(new AuditData());
-						answer.getParentAnswer().setId(rowID);
-					}
-					answer.setAudit(conAudit);
-				}
-				if (debug)
-					System.out.println("Put single answer:" + answer.getId() + " " + answer.getAnswer());
-				answerList.add(answer);
-			}
-		}
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 
 import java.util.Collection;
 import java.util.List;
@@ -48,7 +49,7 @@ public class AuditTypeDAO extends PicsDAO {
     }
 	
 	@SuppressWarnings("unchecked")
-    public List<AuditType> findAll(Permissions permissions, boolean canEdit) {
+    public List<AuditType> findAll(Permissions permissions, boolean canEdit, AuditTypeClass auditClass) {
 		String where = "";
 		
 		if (permissions.isOperator() || permissions.isCorporate()) {
@@ -63,6 +64,14 @@ public class AuditTypeDAO extends PicsDAO {
 				where += " AND canSee = 1";
 			
 			where = "WHERE t IN (SELECT auditType FROM AuditOperator WHERE "+where+")";
+		}
+		
+		if (auditClass != null) {
+			if (where.length() > 0)
+				where += " AND ";
+			else
+				where = "WHERE ";
+			where += "t.classType = '" + auditClass.toString() + "'";
 		}
 		
         Query query = em.createQuery("FROM AuditType t "+where+" ORDER BY t.classType, t.displayOrder, t.auditName");
