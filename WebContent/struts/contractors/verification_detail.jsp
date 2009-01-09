@@ -6,20 +6,19 @@
 <s:else>
 	<s:form id="verify">
 		<table class="summary">
-			<thead>
-				<tr>
-					<td>PQF</td>
-					<td>Answer</td>
-				</tr>
-			</thead>
 			<s:if test="pqfQuestions.size() > 0 ">
 				<s:iterator value="pqfQuestions.values">
+					<thead>
+						<tr>
+							<td>PQF</td>
+							<td>Answer</td>
+						</tr>
+					</thead>
 					<tr>
-						<td><s:property
-							value="question.subCategory.subCategory" />/<s:property
+						<td><s:property value="question.subCategory.subCategory" />/<s:property
 							value="question.question" /></td>
 						<s:if test="verified">
-							<td class="center"  style="color: #006400; font-weight: bold;"><s:property
+							<td class="center" style="color: #006400; font-weight: bold;"><s:property
 								value="answer" /></td>
 						</s:if>
 						<s:else>
@@ -28,17 +27,17 @@
 					</tr>
 				</s:iterator>
 			</s:if>
-			<tr>
-				<td></td>
-				<s:iterator value="verificationAudits">
-					<s:if test="auditType.Pqf">
+			<s:iterator value="verificationAudits">
+				<s:if test="auditType.Pqf">
+					<tr>
 						<td class="center">
-							<input type="button" value="Verify" onclick="showAudit(<s:property value="id"/>); return false;"/>
+							<input type="button" value="Verify <s:property value="auditType.auditName"/> " onclick="showAudit(<s:property value="id"/>); return false;"/>
 						</td>
-					</s:if>
-				</s:iterator>
-			</tr>
-		</table>	
+					</tr>	
+				</s:if>
+			</s:iterator>
+		</table>
+			
 		<br/>
 		<table class="summary">
 			<s:if test="oshas.size() > 0">

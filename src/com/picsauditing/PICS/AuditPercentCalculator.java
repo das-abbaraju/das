@@ -12,6 +12,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.AnswerMap;
 
 public class AuditPercentCalculator {
@@ -232,28 +233,37 @@ public class AuditPercentCalculator {
 
 	public void percentOshaComplete(OshaAudit osha, AuditCatData catData) {
 		int count = 0;
+		int percentComplete = 0;
+		int numRequired = 2;
 
-		if (!osha.isApplicable())
-			count = 2;
-		else {
+		if (osha.getType().equals(OshaType.OSHA)) {
 			if (osha.getManHours() > 0)
 				count++;
 			if (osha.isFileUploaded())
 				count++;
-		}
+			percentComplete = Math.round(count * 100 / 2);
 
-		int percentComplete = Math.round(count * 100 / 2);
+			if (osha.isVerified()) {
+				catData.setPercentVerified(100);
+			} else {
+				catData.setPercentVerified(0);
+			}
+
+		}
+		if (osha.getType().equals(OshaType.MSHA) 
+				|| osha.getType().equals(OshaType.COHS)) {
+			numRequired = 1;
+			if (osha.getManHours() > 0)
+				count++;
+			percentComplete = Math.round(count * 100);
+			if(percentComplete == 100)
+				catData.setPercentVerified(100);
+		}
+		
 		catData.setRequiredCompleted(count);
-		catData.setNumRequired(2);
+		catData.setNumRequired(numRequired);
 		catData.setPercentCompleted(percentComplete);
-
-		if (osha.isVerified()) {
-			catData.setPercentVerified(100);
-		} else {
-			catData.setPercentVerified(0);
-		}
-
+		
 		catDataDao.save(catData);
 	}
-
 }
