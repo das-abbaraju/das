@@ -160,7 +160,7 @@
 			<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
 			Questions</a></li>
 		</s:if>
-		<s:if test="conAudit.auditType.auditTypeID > 1 && conAudit.auditType.hasRequirements && (conAudit.auditStatus.toString().equals('Submitted') || conAudit.auditStatus.toString().equals('Active'))">
+		<s:if test="conAudit.auditType.hasRequirements && conAudit.auditStatus.activeSubmitted">
 			<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true" 
 				<s:if test="onlyReq">class="current"</s:if>>View Requirements</a></li>
 			<s:if test="permissions.auditor">

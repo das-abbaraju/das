@@ -88,10 +88,10 @@
 		<tr>
 			<th>Num</th>
 			<th>Category</th>
-		<s:if test="conAudit.auditStatus.name() == 'Pending' || conAudit.auditType.pqf || conAudit.auditType.annualAddendum">
+		<s:if test="conAudit.auditStatus.name() == 'Pending' || conAudit.auditType.pqf">
 			<th colspan="2">Complete</th>
 		</s:if>
-		<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.auditType.hasRequirements && !conAudit.auditType.pqf && !conAudit.auditType.annualAddendum">
+		<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.auditType.hasRequirements">
 			<th colspan="2">Requirements</th>
 		</s:if>
 		<s:if test="canApply">
@@ -104,11 +104,11 @@
 			<tr>
 				<td class="right"><a name="<s:property value="id" />"><s:property value="category.number" /></a></td>
 				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a></td>
-			<s:if test="conAudit.auditStatus.name() == 'Pending' || conAudit.auditType.pqf || conAudit.auditType.annualAddendum">
+			<s:if test="conAudit.auditStatus.name() == 'Pending' || conAudit.auditType.pqf">
 				<td class="right"><s:property value="percentCompleted" />%</td>
 				<td><s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if></td>
 			</s:if>
-			<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.auditType.hasRequirements && !conAudit.auditType.pqf && !conAudit.auditType.annualAddendum">
+			<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.auditType.hasRequirements">
 				<td class="right"><s:property value="percentVerified" />%</td>
 				<td><s:if test="percentVerified == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if></td>
 			</s:if>
@@ -126,7 +126,7 @@
 				<s:if test="conAudit.auditStatus.name() == 'Pending' || conAudit.auditType.pqf">
 					<td class="center" colspan="2">N/A</td>
 				</s:if>
-				<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.auditType.hasRequirements && !conAudit.auditType.pqf">
+				<s:if test="conAudit.auditStatus.name() == 'Submitted' && conAudit.auditType.hasRequirements">
 					<td colspan="2"></td>
 				</s:if>
 				<s:if test="canApply">
