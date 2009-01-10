@@ -59,6 +59,7 @@ public class AuditType implements Comparable<AuditType> {
 	protected boolean canContractorView;
 	protected boolean canContractorEdit;
 	protected Integer monthsToExpire;
+	protected boolean mustVerify;
 	
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
 
@@ -160,6 +161,14 @@ public class AuditType implements Comparable<AuditType> {
 
 	public void setMonthsToExpire(Integer monthsToExpire) {
 		this.monthsToExpire = monthsToExpire;
+	}
+	
+	public boolean isMustVerify() {
+		return mustVerify;
+	}
+
+	public void setMustVerify(boolean mustVerify) {
+		this.mustVerify = mustVerify;
 	}
 
 	@OneToMany(mappedBy = "auditType")

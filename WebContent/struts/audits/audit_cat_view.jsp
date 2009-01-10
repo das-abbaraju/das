@@ -26,7 +26,7 @@
 		<s:if test="#q.questionType == 'License'">
 			<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />
 		</s:if>
-		<s:if test="#q.questionType == 'Manual' && #a.comment.length() > 0">
+		<s:if test="#q.showComment && #a.comment.length() > 0">
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment: <s:property value="#a.comment"/>
 		</s:if>
 	</s:else>
@@ -35,7 +35,8 @@
 		Answer changed on <s:date name="dateVerified" format="MMM d, yyyy" />
 	</span>
 </span>
-<s:if test="hasRequirements && conAudit.auditType.hasRequirements">
+
+<s:if test="#a.hasRequirements && conAudit.auditType.hasRequirements">
 	<tr class="group<s:if test="#shaded">Shaded</s:if>">
 		<td class="center">Requirement</td>
 		<td>Status:

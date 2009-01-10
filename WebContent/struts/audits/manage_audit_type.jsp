@@ -37,6 +37,12 @@
 						<li><label>Description:</label>
 							<s:textfield name="auditType.description"></s:textfield>
 						</li>
+						<li><label>Has Requirements:</label>
+							<s:checkbox name="auditType.hasRequirements" />
+						</li>
+						<li><label>Must Verify:</label>
+							<s:checkbox name="auditType.mustVerify" />
+						</li>
 						<li><label>Has Multiple:</label>
 							<s:checkbox name="auditType.hasMultiple" />
 						</li>
@@ -45,9 +51,6 @@
 						</li>
 						<li><label>Has Auditor:</label>
 							<s:checkbox name="auditType.hasAuditor" />
-						</li>
-						<li><label>Has Requirements:</label>
-							<s:checkbox name="auditType.hasRequirements" />
 						</li>
 						<li><label>Contractor Can View:</label>
 							<s:checkbox name="auditType.canContractorView" />

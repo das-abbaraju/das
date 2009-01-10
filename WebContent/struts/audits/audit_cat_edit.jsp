@@ -106,12 +106,6 @@
 		<s:radio theme="pics" list="#{'Yes':'Yes','No':'No','NA':'NA'}" name="question_%{#divID}" value="%{#a.answer}" 
 			onclick="saveAnswer('%{#divID}', this);"></s:radio>
 	</s:if>
-	<s:if test="#q.questionType == 'Manual'">
-		<s:radio theme="pics" list="#{'Yes':'Yes','No':'No','NA':'NA'}" name="question_%{#divID}" value="%{#a.answer}"
-			onclick="saveAnswer('%{#divID}', this);"></s:radio>
-		<br>Comments: <s:textfield id="comments_%{#divID}" name="comment" size="30" 
-			onblur="javascript:saveComment(%{#divID}, this);"/>
-	</s:if>
 	<s:if test="#q.questionType == 'Office Location'">
 		<s:radio theme="pics" list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" 
 			name="question_%{id}" value="%{#a.answer}"
@@ -159,6 +153,10 @@
 				title="Opens in new window (please disable your popup blocker)" />
 			</s:if>
 		</nobr>
+	</s:if>
+	<s:if test="#q.showComment">
+		<br>Comments: <s:textfield id="comments_%{#divID}" name="comment" size="30" 
+			onblur="javascript:saveComment(%{#divID}, this);"/>
 	</s:if>
 </div>
 

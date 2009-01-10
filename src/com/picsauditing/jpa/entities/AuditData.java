@@ -180,14 +180,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 
 	@Transient
 	public boolean isHasRequirements() {
-		// This may not be the best solution. We may want to make pqf not have
-		// open requirements.
-		// TODO Add new field that says, use the submitted mode
-		if (audit.getAuditType().isPqf())
-			return false;
-		if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM)
-			return false;
-		if (audit.getAuditType().getClassType().equals(AuditTypeClass.Policy))
+		if (!audit.getAuditType().isHasRequirements())
 			return false;
 		return (YesNo.Yes.equals(wasChanged) || isRequirementOpen());
 	}
