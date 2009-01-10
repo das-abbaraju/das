@@ -85,58 +85,58 @@
 			onchange="saveAnswer('%{#divID}', this);"/>
 	</s:if>
 	<s:if test="#q.questionType == 'Date'">
-		<s:textfield id="answer_%{#divID}" name="answer" value="%{#a.answer}" size="8" 
+		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="8" 
 			onchange="saveAnswer('%{#divID}', this);"/>
 			<span style="font-style: italic; font-size: 12px;">example: 12/31/1999</span>
 	</s:if>
 	<s:if test="#q.questionType == 'License'">
-		<s:textfield name="answer" value="#a.answer" size="30" 
+		<s:textfield name="answer%{#divID}" value="#a.answer" size="30" 
 			onchange="saveAnswer('%{#divID}', this);"/>
-		<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(question, answer)" escape="false" />			
+		<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />			
 	</s:if>
 	<s:if test="#q.questionType == 'Check Box' || #q.questionType == 'Industry' || #q.questionType == 'Main Work'">
-		<s:checkbox fieldValue="X" value="#a.id > 0 && #a.answer.length() == 1" name="answer"
+		<s:checkbox fieldValue="X" value="#a.id > 0 && #a.answer.length() == 1" name="answer%{#divID}"
 			onclick="saveAnswer('%{#divID}', this);" />
 	</s:if>
 	<s:if test="#q.questionType == 'Yes/No'">
-		<s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="question_%{#divID}" value="%{#a.answer}" 
+		<s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="answer%{#divID}" value="%{#a.answer}" 
 			onclick="saveAnswer('%{#divID}', this);"></s:radio>
 	</s:if>
 	<s:if test="#q.questionType == 'Yes/No/NA'">
-		<s:radio theme="pics" list="#{'Yes':'Yes','No':'No','NA':'NA'}" name="question_%{#divID}" value="%{#a.answer}" 
+		<s:radio theme="pics" list="#{'Yes':'Yes','No':'No','NA':'NA'}" name="answer%{#divID}" value="%{#a.answer}" 
 			onclick="saveAnswer('%{#divID}', this);"></s:radio>
 	</s:if>
 	<s:if test="#q.questionType == 'Office Location'">
 		<s:radio theme="pics" list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" 
-			name="question_%{id}" value="%{#a.answer}"
+			name="answer%{#divID}" value="%{#a.answer}"
 			onclick="saveAnswer('%{#divID}', this);"></s:radio>
 	</s:if>
 	<s:if test="#q.questionType == 'State'">
-		<s:select list="stateList" value="%{#a.answer}" name="question_%{id}" 
+		<s:select list="stateList" value="%{#a.answer}" name="answer%{#divID}" 
 			onchange="saveAnswer('%{#divID}', this);"></s:select>
 	</s:if>
 	<s:if test="#q.questionType == 'Country'">
-		<s:select list="countryList" value="%{#a.answer}" name="question_%{id}" 
+		<s:select list="countryList" value="%{#a.answer}" name="answer%{#divID}" 
 			onchange="saveAnswer('%{#divID}', this);"></s:select>
 	</s:if>
 	<s:if test="#q.questionType == 'Money'">
-		<s:textfield name="%{'answer_answer_'.concat(id)}" value="%{#a.answer}" size="19" 
+		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="19" 
 			onchange="validateNumber(this, 'Question %{#q.number}');
 			document.MM_returnValue && saveAnswer('%{#divID}', this);" />
 	</s:if>
 	<s:if test="#q.questionType == 'Decimal Number'">
-		<s:textfield name="%{'answer_answer_'.concat(id)}" value="%{#a.answer}" size="19" 
+		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="19" 
 			onchange="var temp = parseFloat($('%{'answer_answer_'.concat(#divID)}').value).toFixed(3); if( temp == 'NaN' ) temp = ''; $('%{'answer_answer_'.concat(#divID)}').value = temp; validateDecimal('answer_answer_%{id}','Question %{number}'); document.MM_returnValue && saveAnswer('%{#divID}', this)" />
 	</s:if>
 	<s:if test="#q.questionType == 'Service'">
-		<nobr><s:checkbox fieldValue="C" value="answer.indexOf('C') != -1" name="question_%{#divID}_C" 
+		<nobr><s:checkbox fieldValue="C" value="#a.answer.indexOf('C') != -1" name="answer%{#divID}" 
 			onclick="saveAnswer('%{#divID}', this);" /> C</nobr>
-		<nobr><s:checkbox fieldValue="S" value="answer.indexOf('S') != -1" name="question_%{#divID}_S" 
+		<nobr><s:checkbox fieldValue="S" value="#a.answer.indexOf('S') != -1" name="answer%{#divID}" 
 			onclick="saveAnswer('%{#divID}', this);" /> S</nobr>
 	</s:if>
 	<s:if test="#q.questionType == 'Radio'">
 		<s:radio theme="pics" list="#q.options" listKey="optionName" listValue="optionName" 
-			value="answer" name="question_%{#divID}" 
+			value="#a.answer" name="answer%{#divID}" 
 			onclick="saveAnswer('%{#divID}', this);"/>
 	</s:if>
 	<s:if test="#q.questionType.startsWith('File')">
