@@ -15,12 +15,12 @@
 	<s:hidden name="id" />
 	<s:hidden name="parentID" value="%{question.subCategory.id}" />
 	<s:hidden name="question.subCategory.id" />
-	<fieldset class="submit">
+	<fieldset class="form submit">
 		<div class="buttons">
 			<button class="positive" name="button" type="submit" value="save">Save</button>
 		</div>
 	</fieldset>
-	<fieldset>
+	<fieldset class="form">
 	<legend><span>Question</span></legend>
 	<ol>
 		<li><label>ID:</label>
@@ -103,7 +103,7 @@
 		</li>
 	</ol>
 	</fieldset>
-	<fieldset>
+	<fieldset class="form">
 	<legend><span>Useful Links</span></legend>
 	<ol>
 		<li><label>URL 1:</label>
@@ -144,7 +144,7 @@
 		</li>									
 	</ol>
 	</fieldset>
-	<fieldset class="submit">
+	<fieldset class="form submit">
 		<div class="buttons">
 			<button class="positive" name="button" type="submit" value="save">Save</button>
 		<s:if test="question.id > 0">
