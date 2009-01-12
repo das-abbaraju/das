@@ -11,6 +11,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -30,7 +31,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	private ContractorAudit audit;
 	private AuditQuestion question;
 	private AuditData parentAnswer = null;
-
+	private List<AuditData> childrenAnswers = null;
 	private String answer;
 	private String comment;
 	private YesNo wasChanged;
@@ -81,6 +82,15 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 
 	public void setParentAnswer(AuditData parentAnswer) {
 		this.parentAnswer = parentAnswer;
+	}
+
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy="parentAnswer")
+	public List<AuditData> getChildrenAnswers() {
+		return childrenAnswers;
+	}
+
+	public void setChildrenAnswers(List<AuditData> childrenAnswers) {
+		this.childrenAnswers = childrenAnswers;
 	}
 
 	public String getAnswer() {
