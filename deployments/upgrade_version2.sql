@@ -25,6 +25,43 @@ alter table `pqfquestions`
 	add column `parentID` smallint(5) unsigned   NULL after `isRedFlagQuestion`;
 
 /**
+ * Updated the questionType from Manual to Yes/No/NA and set showComment to true
+ */
+
+update pqfquestions set showComment = 1 
+where questionType = 'Manual';
+
+update pqfquestions set questionType = 'Yes/No/NA' 
+where questionType = 'Manual';
+
+/**
+ * Adding radio Options (Green, Yellow, Red) to support integrity management2 audit
+ * questions.
+ */
+insert into pqfoptions (questionID, optionName, visible, number)
+values(?,?,?,?)
+(2092, Green, Yes, 1)
+(2092, Yellow, Yes, 5)
+(2092, Red, Yes, 10)
+(2093, Green, Yes, 1)
+(2093, Yellow, Yes, 5)
+(2093, Red, Yes, 10)
+(2094, Green, Yes, 1)
+(2094, Yellow, Yes, 5)
+(2094, Red, Yes, 10)
+(2095, Green, Yes, 1)
+(2095, Yellow, Yes, 5)
+(2095, Red, Yes, 10)
+(2096, Green, Yes, 1)
+(2096, Yellow, Yes, 5)
+(2096, Red, Yes, 10)
+(2097, Green, Yes, 1)
+(2097, Yellow, Yes, 5)
+(2097, Red, Yes, 10);
+
+
+
+/**
 update pqfquestions set isVisible = CASE isVisible WHEN 2 THEN 1 ELSE 0 END;
 update pqfquestions set hasRequirement = CASE hasRequirement WHEN 2 THEN 1 ELSE 0 END;
 update pqfquestions set isGroupedWithPrevious = CASE isGroupedWithPrevious WHEN 2 THEN 1 ELSE 0 END;
