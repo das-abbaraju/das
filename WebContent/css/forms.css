@@ -1,7 +1,7 @@
 /******************** New Primary class="forms"  ************************/
 
 
-form fieldset {
+fieldset.form {
 	margin: 0 0 -1em 0;
 	padding: 0 0 1em 0;
 	border-style: none;
@@ -14,16 +14,16 @@ form fieldset {
 	color: #404245;
 }
 
-form fieldset.alt {
+fieldset.alt {
 	background-color: #F0F0F0;
 }
 
-form fieldset legend {
+fieldset.form legend {
 	color: #A84D10;
 	font-weight: bold;
 	padding: 0;
 }
-form fieldset legend span {
+fieldset.form legend span {
 	position: absolute;
 	margin-top: 0.5em;
 	left: 0.74em;
@@ -31,13 +31,13 @@ form fieldset legend span {
 	font-size: 135%;
 }
 
-form fieldset ol {
+fieldset.form ol {
 	margin-top: 3.5em;
 	padding-left: 10px;
 	list-style: none;
 }
 
-form fieldset li {
+fieldset.form li {
 	float: left;
 	clear: left;
 	width: 100%;
@@ -46,7 +46,7 @@ form fieldset li {
 	font-size: 15px;
 }
 
-form fieldset.submit {
+fieldset.submit {
 	padding-top: 1em;
 	padding-bottom: 1em;
 	padding-left: 10em;
@@ -57,7 +57,7 @@ form fieldset.submit {
 	background-image: none;
 }
 
-form fieldset label {
+fieldset.form label {
 	float: left;
 	width: 10em;
 	margin-right: 1em;
@@ -67,7 +67,7 @@ form fieldset label {
 	color: #003768;
 }
 
-form fieldset label.input {
+fieldset.form label.input {
 	float: none;
 	width: inherit;
 	margin-right: auto;
@@ -77,14 +77,14 @@ form fieldset label.input {
 	color: inherit;
 }
 
-form fieldset input[type=text], form fieldset select {
+fieldset.form input[type=text], fieldset.form select {
 	color: #404245;
 	font-size: 14px;
 	padding: 2px;
 	border-style: inset;
 }
 
-form fieldset input[type=text]:FOCUS, form fieldset select:FOCUS {
+fieldset.form input[type=text]:FOCUS, fieldset.form select:FOCUS {
 	color: #003768;
 	background-color: #FFE;
 }
