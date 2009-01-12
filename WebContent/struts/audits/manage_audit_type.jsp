@@ -21,7 +21,7 @@
 		<s:form id="save">
 		<s:hidden name="id"></s:hidden>
 			<div>
-				<fieldset>
+				<fieldset class="form">
 				<legend><span>Audit Type</span></legend>
 					<ol>
 						<li><label>ID:</label>
