@@ -2,6 +2,7 @@ package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -19,12 +20,15 @@ import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AccountName;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.State;
@@ -245,6 +249,37 @@ public class AuditCategoryAction extends AuditActionSupport {
 				}
 			}
 		}
+		
+		
+		if( answerMap != null && conAudit.getAuditType().getClassType() == AuditTypeClass.Policy && getUser().getAccount().isOperator() ) {
+			for( AuditCategory cat : conAudit.getAuditType().getCategories() ) {
+				for( AuditSubCategory subCat : cat.getSubCategories() ) {
+					for( AuditQuestion qstn : subCat.getQuestions() ) {
+						if( qstn.getUniqueCode() != null && qstn.getUniqueCode().equals("aiName")) {
+							List<AuditData> answers = answerMap.getAnswerList( qstn.getId() );
+							
+							for( AuditData answer : answers ) {
+								OperatorAccount thisOp = (OperatorAccount) getUser().getAccount();
+
+								List<AccountName> names = thisOp.getNames();
+								boolean found = false;
+								for (AccountName accountName : names) {
+									if (accountName.getName().equalsIgnoreCase( answer.getAnswer() ) ) {
+										found = true;
+										break;
+									}
+								}
+								
+								if( ! found ) {
+									answerMap.remove( answer );
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
 		long endTime = Calendar.getInstance().getTimeInMillis();
 
 		System.out.println("AuditCategoryAction completed in " + (endTime - startTime) + " ms");
