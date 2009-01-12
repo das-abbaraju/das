@@ -79,6 +79,11 @@ public class AuditDataDAOTest {
 		assertEquals("Yes", auditdata.getAnswer());
 	}
 
+	//@Test
+	public void testCascadeDelete() {
+		//AuditData answer = auditdataDAO.find( 2300347 );
+		auditdataDAO.remove(2302497);
+	}
 	// @Test
 	public void testFindAnswers() {
 		List<Integer> questionid = new LinkedList<Integer>();
@@ -91,7 +96,7 @@ public class AuditDataDAOTest {
 		assertEquals("Pacific Industrial Contractor Screening", auditdata.get(37).getAnswer());
 	}
 
-	@Test
+	// @Test
 	public void findAnswersByContractor() {
 		Set<Integer> questionIds = new HashSet<Integer>();
 		questionIds.add(1509);
@@ -100,7 +105,7 @@ public class AuditDataDAOTest {
 		assertEquals(2, data.size());
 	}
 	
-	@Test
+	// @Test
 	public void findCustomAnswers() {
 		List<AuditData> list = auditdataDAO.findCustomPQFVerifications(1687);
 		//for(AuditData data : list) {
