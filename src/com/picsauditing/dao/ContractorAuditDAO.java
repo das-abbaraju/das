@@ -3,6 +3,7 @@ package com.picsauditing.dao;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.persistence.Query;
@@ -63,7 +64,7 @@ public class ContractorAuditDAO extends PicsDAO {
 		}
 	}
 
-	public void copy(ContractorAudit oCAudit, ContractorAccount nContractor) {
+	public void copy(ContractorAudit oCAudit, ContractorAccount nContractor, Map<Integer, AuditData> preToPostAuditDataIdMapper) {
 		if (oCAudit != null) {
 			List<AuditData> auList = new Vector<AuditData>(oCAudit.getData());
 			List<AuditCatData> acList = new Vector<AuditCatData>(oCAudit
@@ -74,6 +75,8 @@ public class ContractorAuditDAO extends PicsDAO {
 
 			oCAudit.getData().clear();
 			for (AuditData auditData : auList) {
+				preToPostAuditDataIdMapper.put(auditData.getId(), auditData);
+				
 				auditData.setId(0);
 				auditData.setAudit(oCAudit);
 			}

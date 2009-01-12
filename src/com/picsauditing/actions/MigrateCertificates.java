@@ -534,7 +534,7 @@ public class MigrateCertificates extends PicsActionSupport {
 			String fileBase = "files/"
 					+ FileUtils.thousandize(fileQuestion
 							.getId());
-			String newFileName = ""
+			String newFileName = "data_"
 					+ fileQuestion.getId();
 
 			FileUtils.moveFile(certificate, getFtpDir(),

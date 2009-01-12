@@ -1,7 +1,9 @@
 package com.picsauditing.actions.audits;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import com.picsauditing.PICS.AuditBuilder;
@@ -70,21 +72,44 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 					auditDao.remove(existingAudit.getId(), getFtpDir());
 				}
 			}
+			
+			
 			// copy audit now
 			findConAudit();
-			auditDao.copy(conAudit, nConAccount);
+			
+			Map<Integer, AuditData> preToPostAuditDataIdMapper = new HashMap<Integer, AuditData>();
+			
+			auditDao.copy(conAudit, nConAccount, preToPostAuditDataIdMapper);
 
-//			for (AuditData auditData : conAudit.getData()) {
-//				if (auditData.getQuestion().getQuestionType().equals("File")) {
-//					String FileName = getFtpDir() + "/files/pqf/qID_" + auditData.getQuestion().getId() + "/"
-//							+ auditData.getQuestion().getId() + "_";
-//					File oldFile = new File(FileName + oldconID + "." + auditData.getAnswer());
-//					File newFile = new File(FileName + conAudit.getContractorAccount().getId() + "."
-//							+ auditData.getAnswer());
-//					if (oldFile.exists())
-//						FileUtils.copyFile(oldFile, newFile);
-//				}
-//			}
+			ContractorAudit oldConAudit = auditDao.find(auditID);
+			
+			for (AuditData auditData : oldConAudit.getData()) {
+				
+				if (auditData.getQuestion().getQuestionType().equals("File")) {
+
+					AuditData newAnswer = preToPostAuditDataIdMapper.get(auditData.getId());  
+					
+					String newFileBase = "files/"
+						+ FileUtils.thousandize(preToPostAuditDataIdMapper.get(auditData.getId()).getId());
+					String newFileName = "data_" + auditData.getId();
+
+					
+					String oldFileBase = "files/"
+						+ FileUtils.thousandize(auditData.getId());
+					String oldFileName = "data_" + auditData.getId() + "." + newAnswer.getAnswer();
+
+					File oldFile = new File( getFtpDir() + "/" + oldFileBase, oldFileName );
+					try {
+						FileUtils.copyFile(oldFile, getFtpDir(),
+								newFileBase, newFileName,
+								newAnswer.getAnswer(), true);
+					}
+					catch( Exception couldntCopyTheFile ) {
+						couldntCopyTheFile.printStackTrace();
+					}
+				}
+			}
+			
 			ContractorBean cBean = new ContractorBean();
 			cBean.setFromDB(conAudit.getContractorAccount().getIdString());
 			String notes = conAudit.getAuditType().getAuditName() + " Copied from Contractor " + oldconID;
