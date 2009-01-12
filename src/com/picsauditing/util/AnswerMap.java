@@ -2,9 +2,9 @@ package com.picsauditing.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import com.picsauditing.jpa.entities.AuditData;
@@ -132,4 +132,54 @@ public class AnswerMap {
 		}
 		return output.toString();
 	}
+	
+	
+	/**
+	 * 1.) recursively removes all children of this auditData, then 2.) removes this auditData itself.
+	 * @param auditData
+	 */
+	
+	public void remove( AuditData auditData ) {
+		
+		//1
+		List<AuditQuestion> childQuestions = auditData.getQuestion().getChildQuestions();
+		if( childQuestions != null ) {
+			for( AuditQuestion question : childQuestions ) {
+
+				List<AuditData> children = getAnswerList( question.getId(), auditData.getId());
+				
+				if( children != null ) {
+					for( AuditData child : children ) {
+						remove( child );
+					}
+				}
+				
+			}
+		}
+		
+		
+		//2
+		List<AuditData> possibleMatches = null;
+		
+		if( auditData.getParentAnswer() != null ) {
+			possibleMatches = getDataList(auditData.getQuestion().getId(), auditData.getParentAnswer().getId());
+		}
+		else {
+			possibleMatches = getDataList(auditData.getQuestion().getId(),0);
+		}
+		
+		for( Iterator<AuditData> iterator = possibleMatches.iterator(); iterator.hasNext();) {
+			AuditData possible = iterator.next();
+			if( possible.compareTo(auditData) == 0 ) {
+
+								
+				iterator.remove();
+				break;
+			}
+		}		
+		
+		
+	}
+	
+	
 }
