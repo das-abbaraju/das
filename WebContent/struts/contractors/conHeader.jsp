@@ -58,7 +58,7 @@
 
 <s:if test="auditID > 0">
 <div id="auditHeader">
-	<fieldset class="form">
+	<fieldset>
 	<ul>
 		<li><label>Type:</label>
 			<s:property value="conAudit.auditType.auditName" />
@@ -74,7 +74,7 @@
 		</s:if>
 	</ul>
 	</fieldset>
-	<fieldset class="form">
+	<fieldset>
 	<ul>
 		<li><label>Status:</label>
 			<s:property value="conAudit.auditStatus" />
@@ -110,7 +110,7 @@
 		</s:if>
 	</ul>
 	</fieldset>
-	<fieldset class="form">
+	<fieldset>
 	<ul>
 		<s:if test="conAudit.auditType.annualAddendum && conAudit.auditFor != null">
 			<li><label>For:</label>
