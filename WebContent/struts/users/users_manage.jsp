@@ -208,7 +208,7 @@ function checkUsername(username) {
 					</s:if>
 				</pics:permission>
 			</div>
-			<fieldset>
+			<fieldset class="form">
 			<legend><span>User Details</span></legend>		
 			<ol>
 				<li><label>
@@ -252,7 +252,7 @@ function checkUsername(username) {
 			</ol>
 			</fieldset>
 			<s:if test="user.id > 0 && !user.group">
-			<fieldset>
+			<fieldset class="form">
 			<div>
 				<pics:permission perm="SwitchUser">
 					<a href="login.jsp?switchUser=<s:property value="user.username"/>">Switch to this User</a> | 

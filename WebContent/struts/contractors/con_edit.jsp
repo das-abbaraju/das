@@ -28,7 +28,7 @@
 	<table>
 		<tr>
 			<td style="vertical-align: top; width: 50%;">
-				<fieldset>
+				<fieldset class="form">
 				<legend><span>Details</span></legend>
 				<ol>
 					<li><label>Name:</label>
@@ -57,7 +57,7 @@
 					</li>
 				</ol>
 				</fieldset>
-				<fieldset>
+				<fieldset class="form">
 				<legend><span>Billing Details</span></legend>
 				<ol>
 				<s:if test="contractor.mustPay.equals('Yes') && contractor.newBillingAmount > 0">
@@ -85,7 +85,7 @@
 				</s:else>
 				</ol>
 				</fieldset>
-				<fieldset>
+				<fieldset class="form">
 				<legend><span>Primary Address</span></legend>
 				<ol>
 					<li><label>Address:</label>
@@ -120,7 +120,7 @@
 					</li>
 				</ol>
 				</fieldset>
-				<fieldset>
+				<fieldset class="form">
 				<legend><span>Secondary Address</span></legend>
 				<ol>		
 					<li><label>Second Contact:</label>
@@ -146,7 +146,7 @@
 					</li>
 				</ol>
 				</fieldset>
-				<fieldset>
+				<fieldset class="form">
 				<legend><span>Industry Details</span></legend>
 				<ol>
 					<li><label>Tax ID:</label>
@@ -169,7 +169,7 @@
 					</li>
 				</ol>
 				</fieldset>
-				<fieldset>
+				<fieldset class="form">
 				<legend><span>Company Identification</span></legend>
 				<ol>
 					<li><label>Company Logo:</label>
@@ -192,7 +192,7 @@
 			</td>
 		<s:if test="permissions.admin">
 			<td style="vertical-align: top; width: 50%; padding-left: 10px;">
-				<fieldset>
+				<fieldset class="form">
 				<legend><span>PICS Admin Fields</span></legend>
 				<ol>
 					<li><label>Visible?</label>

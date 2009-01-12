@@ -76,7 +76,7 @@
 	<table>
 		<tr>
 			<td style="vertical-align: top; width: 50%;">
-				<fieldset>
+				<fieldset class="form">
 				<legend><span>Details</span></legend>
 				<ol>
 					<li><label>Name:</label>
@@ -90,7 +90,7 @@
 					</li>
 				</ol>
 				</fieldset>
-				<fieldset>
+				<fieldset class="form">
 				<legend><span>Primary Address</span></legend>
 				<ol>
 					<li><label>Address:</label>
@@ -124,7 +124,7 @@
 				</fieldset>
 			</td>
 			<td style="vertical-align: top; width: 50%; padding-left: 10px;">
-				<fieldset>
+				<fieldset class="form">
 				<legend><span>Admin Fields</span></legend>
 				<ol>
 					<li><label>Visible?</label>
@@ -163,7 +163,7 @@
 				</ol>
 				</fieldset>
 			<s:if test="type.equals('Operator') || !operatorAccount.corporate">
-					<fieldset>
+					<fieldset class="form">
 						<legend><span>Account Names</span></legend>
 						<ol><div id="operator_name">
 								<s:include value="operator_names.jsp" />

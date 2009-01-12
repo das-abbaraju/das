@@ -21,7 +21,7 @@ function checkUsername(username) {
 
 <s:form cssStyle="width: 500px">
 	<s:hidden name="u.id" />
-	<fieldset>
+	<fieldset class="form">
 	<legend><span>Profile</span></legend>
 	<ol>
 		<li><label>Assigned to account:</label>
@@ -36,7 +36,7 @@ function checkUsername(username) {
 			<s:date name="u.lastLogin" /></li>
 	</ol>
 	</fieldset>
-	<fieldset>
+	<fieldset class="form">
 	<legend><span>Username &amp; Password</span></legend>
 	<ol>
 		<li><label for="u.username">Username:</label>
@@ -48,7 +48,7 @@ function checkUsername(username) {
 			<s:password name="password2" value="" /></li>
 	</ol>
 	</fieldset>
-	<fieldset class="submit">
+	<fieldset class="form submit">
 		<div class="buttons">
 			<button id="saveButton" class="positive" value="Save Profile" name="button" type="submit">Save Profile</button>
 		</div>
