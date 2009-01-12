@@ -16,7 +16,7 @@
 
 <s:form action="ConAuditMaintain" cssStyle="width: 400px">
 	<s:hidden name="auditID" />
-<fieldset>
+<fieldset class="form">
 	<legend><span>System Edit</span></legend>
 	<ol>
 		<li><label>Audit Status:</label>
@@ -33,7 +33,7 @@
 			<s:textfield name="conAudit.percentVerified" size="4"/>%</li>
 	</ol>
 </fieldset>
-<fieldset>
+<fieldset class="form">
 	<legend><span>Audit Dates</span></legend>
 	<ol>
 		<li><label>Created Date:</label>
@@ -55,7 +55,7 @@
 		<li style="font-style: italic;">* Dates are in this format: 01/31/08 12:03 AM</li>
 	</ol>
 </fieldset>
-<fieldset class="submit">
+<fieldset class="form submit">
 	<div class="buttons">
 		<button class="positive" name="button" value="Save" type="submit">Save</button>
 		<pics:permission perm="AuditEdit" type="Delete">
