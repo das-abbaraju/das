@@ -16,7 +16,7 @@
 	<s:hidden name="id" />
 	<s:hidden name="parentID" value="%{subCategory.category.id}" />
 	<s:hidden name="subCategory.category.id" />
-		<fieldset>
+		<fieldset class="form">
 		<legend><span>Sub Category</span></legend>
 		<ol>
 			<li><label>ID:</label>
@@ -32,7 +32,7 @@
 			</li>				
 		</ol>
 		</fieldset>
-		<fieldset class="submit">
+		<fieldset class="form submit">
 			<div class="buttons">
 				<button class="positive" name="button" type="submit" value="save">Save</button>
 			<s:if test="subCategory.questions.size == 0">
