@@ -2,7 +2,6 @@ package com.picsauditing.actions.contractors;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 import com.opensymphony.xwork2.Preparable;
@@ -20,7 +19,6 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.SpringUtils;
 
@@ -138,10 +136,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public Industry[] getIndustryList() {
 		return Industry.values();
-	}
-
-	public Map<String, String> getStateList() {
-		return State.getStates(true);
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {

@@ -1,10 +1,14 @@
 package com.picsauditing.actions.audits;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.PICS.AuditPercentCalculator;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
@@ -23,7 +27,6 @@ public class AuditDataSave extends AuditActionSupport {
 	private AuditData auditData = null;
 	private AnswerMap answerMap;
 	private AuditQuestionDAO questionDao = null;
-
 	private int catDataID = 0;
 	private AuditPercentCalculator auditPercentCalculator;
 
@@ -68,30 +71,34 @@ public class AuditDataSave extends AuditActionSupport {
 				return LOGIN;
 			
 			getUser();
-			
 			if (auditData.getId() == 0) {
 				// insert mode
 				AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
 				auditData.setQuestion(question);
+				if(!checkAnswerFormat(auditData, null))
+					return SUCCESS;
 				
 				if (auditData.getParentAnswer() != null && auditData.getParentAnswer().getId() == 0)
 					auditData.setParentAnswer(null);
 			} else {
 				// update mode
 				AuditData newCopy = auditDataDao.find(auditData.getId());
-				
 				if (auditData.getAnswer() != null) {
 					// if answer is being set, then
 					// we are not currently verifying
 					if (auditData.getAnswer() == null 
 							|| !newCopy.getAnswer().equals(auditData.getAnswer())) {
 
+						if(!checkAnswerFormat(auditData, newCopy)) {
+							auditData = newCopy;
+							return SUCCESS;
+						}
+
 						if (!toggleVerify) {
 							newCopy.setDateVerified(null);
 						}
 
 						newCopy.setAnswer(auditData.getAnswer());
-
 						if (newCopy.getAudit().getAuditStatus().equals(AuditStatus.Submitted)) {
 							newCopy.setWasChanged(YesNo.Yes);
 
@@ -127,6 +134,7 @@ public class AuditDataSave extends AuditActionSupport {
 
 				auditData = newCopy;
 			}
+			
 			auditID = auditData.getAudit().getId();
 			auditData.setAuditColumns(getUser());
 			auditData = auditDataDao.save(auditData);
@@ -213,5 +221,51 @@ public class AuditDataSave extends AuditActionSupport {
 		list.add("Incorrect Year");
 		return list;
 	}
-
+	
+	public boolean validateNumber(String answer) {
+		if (answer == null || answer.length() == 0)
+            return false;
+        for (int i = 0; i < answer.length(); i++) {
+            if (Character.isDigit(answer.charAt(i)) 
+            		|| (answer.charAt(i) == '.') 
+            		|| (answer.charAt(i) == ',') 
+            		|| (answer.charAt(i) == '-'))
+            	return true;
+        }
+        return false;
+	}
+	
+	public boolean isValidDate(String answer) {
+		SimpleDateFormat s = new SimpleDateFormat("MM/dd/yyyy");
+		Date newDate = DateBean.parseDate(answer);
+		if(newDate != null && s.format(newDate).equals(answer) && newDate.toString().length() == 10)
+			return true;
+	
+		return false;
+	}
+	
+	public boolean checkAnswerFormat(AuditData auditData, AuditData databaseCopy) {
+		if(databaseCopy == null)
+			databaseCopy = auditData;
+		if("Money".equals(databaseCopy.getQuestion().getQuestionType()) 
+				|| "Decimal Number".equals(databaseCopy.getQuestion().getQuestionType())) {
+			if(!validateNumber(auditData.getAnswer())) {
+				addActionError(auditData.getAnswer() +" must contain a " + databaseCopy.getQuestion().getQuestionType());
+				return false;
+			}
+			if("Decimal Number".equals(databaseCopy.getQuestion().getQuestionType())) {
+				float value = Float.parseFloat(auditData.getAnswer());
+				NumberFormat format = new DecimalFormat("#0.000"); 
+				auditData.setAnswer(format.format(value));
+			}	
+		}
+		if("Date".equals(databaseCopy.getQuestion().getQuestionType())) {
+			if(!isValidDate(auditData.getAnswer())) {
+				addActionError("Invalid Date Format");
+				return false;
+			}
+		}
+		
+		return true;
+	}
 }

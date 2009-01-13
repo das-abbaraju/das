@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.DateBean;
@@ -15,6 +18,7 @@ import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.AccountName;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
@@ -23,8 +27,10 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.State;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 
@@ -76,7 +82,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 				auditDao.save(conAudit);
 			}
 		}
-		
+
 		contractor = conAudit.getContractorAccount();
 		id = contractor.getId();
 		if (permissions.isContractor() && id != permissions.getAccountId())
@@ -175,8 +181,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanVerify() {
-		if (conAudit.getAuditType().isPqf() 
-				&& conAudit.getAuditStatus().isActiveSubmitted())
+		if (conAudit.getAuditType().isPqf() && conAudit.getAuditStatus().isActiveSubmitted())
 			if (permissions.isAuditor())
 				return true;
 
@@ -277,4 +282,13 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	}
 
+	public Set<String> getLegalNames() {
+		Set<String> list = new TreeSet<String>();
+		if (conAudit != null) {
+			for (ContractorOperator co : conAudit.getContractorAccount().getOperators())
+				for (AccountName legalName : co.getOperatorAccount().getNames())
+					list.add(legalName.getName());
+		}
+		return list;
+	}
 }
