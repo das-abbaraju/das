@@ -23,7 +23,7 @@ public class ReportInsuranceApprovalSave extends PicsActionSupport {
 	protected Map<Integer, ContractorAuditOperator> caos = null;
 	protected List<Integer> caoids = null;
 
-	protected List<CaoStatus> newStatuses = null;
+	protected List<String> newStatuses = null;
 
 	public ReportInsuranceApprovalSave(ContractorAuditOperatorDAO conAuditOperatorDAO, NoteDAO noteDao) {
 		this.conAuditOperatorDAO = conAuditOperatorDAO;
@@ -38,7 +38,10 @@ public class ReportInsuranceApprovalSave extends PicsActionSupport {
 		CaoStatus newStatus = null;
 
 		if (newStatuses != null && newStatuses.size() > 0) {
-			newStatus = newStatuses.get(0);
+			try {
+				newStatus = CaoStatus.valueOf( newStatuses.get(0) );	
+			}
+			catch( Exception emptyStringsDontTurnIntoEnumsVeryWell ) {}
 		}
 
 		for (Integer i : caoids) {
@@ -85,11 +88,11 @@ public class ReportInsuranceApprovalSave extends PicsActionSupport {
 		this.caos = caos;
 	}
 
-	public List<CaoStatus> getNewStatuses() {
+	public List<String> getNewStatuses() {
 		return newStatuses;
 	}
 
-	public void setNewStatuses(List<CaoStatus> newStatuses) {
+	public void setNewStatuses(List<String> newStatuses) {
 		this.newStatuses = newStatuses;
 	}
 

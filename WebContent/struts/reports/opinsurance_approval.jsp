@@ -71,7 +71,7 @@
 		</thead>
 		<tr>
 				<td colspan="11" style="text-align: right;">
-					Set all statuses to: <s:select cssClass="statusSelects" onchange="javascript: return syncSelects(this);" name="newStatuses" list="#{'':'No Change','Approved':'Approve','Pending':'Pending','Rejected':'Reject'}"/>	
+					Set all statuses to: <s:select cssClass="statusSelects" onchange="javascript: return syncSelects(this);" name="newStatuses" list="#{'':'No Change','Approved':'Approved','Missing':'Missing','Rejected':'Rejected'}"/>	
 					<input type="submit" onclick="javascript: return saveRows('approveInsuranceForm');" value="Update Checked"/>		
 				</td>
 				<td style="text-align: center;">
@@ -109,8 +109,8 @@
 				</td>
 				<td style="width: 120px; font-size: smaller;" class="notes"><s:textarea name="caos[%{get('caoId')}].notes" value="%{get('caoNotes')}" rows="4" cols="20"/></td>
 				<td style="font-size: smaller; text-align: center;" >
-					<s:if test="get('caoRecommendedStatus') == null"></s:if>
-					<s:elseif test="get('caoRecommendedStatus') == 'Approve'">
+					<s:if test="( get('caoRecommendedStatus') == null ) || ( get('caoRecommendedStatus') == 'Missing' )"></s:if>
+					<s:elseif test="get('caoRecommendedStatus') == 'Approved'">
 						<img src="images/okCheck.gif" width="18" height="15" border="0" />
 					</s:elseif>
 					<s:else>
@@ -124,7 +124,7 @@
 		</s:iterator>
 		<tr>
 				<td colspan="11" style="text-align: right;">
-					Set all statuses to: <s:select cssClass="statusSelects" onchange="javascript: return syncSelects(this);" name="newStatuses" list="#{'':'No Change','Approved':'Approve','Pending':'Pending','Rejected':'Reject'}"/>
+					Set all statuses to: <s:select cssClass="statusSelects" onchange="javascript: return syncSelects(this);" name="newStatuses" list="#{'':'No Change','Approved':'Approved','Missing':'Missing','Rejected':'Rejected'}"/>
 					<input type="submit" onclick="javascript: return saveRows('approveInsuranceForm');" value="Update Checked"/>		
 				</td>
 				<td style="text-align: center;">
