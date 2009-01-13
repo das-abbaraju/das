@@ -245,7 +245,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 		}
 		
 		
-		if( answerMap != null && conAudit.getAuditType().getClassType() == AuditTypeClass.Policy && getUser().getAccount().isOperator() ) {
+		if( answerMap != null && conAudit.getAuditType().getClassType() == AuditTypeClass.Policy && getUser().getAccount() != null && getUser().getAccount().isOperator() ) {
 			for( AuditCategory cat : conAudit.getAuditType().getCategories() ) {
 				for( AuditSubCategory subCat : cat.getSubCategories() ) {
 					for( AuditQuestion qstn : subCat.getQuestions() ) {

@@ -19,6 +19,8 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.AnswerMap;
 
@@ -138,6 +140,18 @@ public class AuditDataSave extends AuditActionSupport {
 			auditID = auditData.getAudit().getId();
 			auditData.setAuditColumns(getUser());
 			auditData = auditDataDao.save(auditData);
+			
+			
+			if( auditData.getAudit() != null ) {
+				ContractorAudit tempAudit = auditData.getAudit();
+			
+				if( tempAudit.getAuditType().getClassType() == AuditTypeClass.Policy 
+						&& tempAudit.getAuditStatus() == AuditStatus.Active ) {
+					
+					tempAudit.setAuditStatus(AuditStatus.Resubmitted);
+					auditDao.save(tempAudit);
+				}
+			}
 
 			// hook to calculation read/update 
 			// the ContractorAudit and AuditCatData
@@ -238,7 +252,7 @@ public class AuditDataSave extends AuditActionSupport {
 	public boolean isValidDate(String answer) {
 		SimpleDateFormat s = new SimpleDateFormat("MM/dd/yyyy");
 		Date newDate = DateBean.parseDate(answer);
-		if(newDate != null && s.format(newDate).equals(answer) && newDate.toString().length() == 10)
+		if(newDate != null && s.format(newDate).equals(answer) && answer.length() == 10)
 			return true;
 	
 		return false;
