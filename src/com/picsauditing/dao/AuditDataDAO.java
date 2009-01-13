@@ -210,7 +210,11 @@ public class AuditDataDAO extends PicsDAO {
 			
 			temp.add(data);
 		}
-		response.put( audit.getId(), mapData( temp ) );
+		
+		if( audit != null ) {
+			response.put( audit.getId(), mapData( temp ) );
+		}
+		
 		return response;
 	}
 	
