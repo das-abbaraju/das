@@ -139,9 +139,27 @@ if (canEditFlagCriteria) {
 	</thead>
 	<%
 		hurdleQuestions.setList(opID);
+	
+		String currentClassType = null;
+		boolean changed = false;
 		while (hurdleQuestions.isNext()) {
+			
+			
+			if( currentClassType == null || ! hurdleQuestions.classType.equals(currentClassType) ) {
+				currentClassType = hurdleQuestions.classType;
+				changed = true;
+			}
+
+			
+			if( changed ) {		
 	%>
+			<tr><td colspan="6"><strong><%= currentClassType.equals( "Audit" ) ? "Audit Answers" : "Insurance Limits" %></strong></td></tr>
+	<%  
+      changed = false;
+		} %>	
+	
 	<tr>
+	
 	<%
 	if (!hurdleQuestions.questionID.equals("401") && !hurdleQuestions.questionID.equals("755")) {
 	%>

@@ -19,6 +19,7 @@ public class HurdleQuestions extends DataBean {
 	public String questionNum = "";
 	public String question = "";
 	public String questionType = "";
+	public String classType = "";
 	public ArrayList<String> qIDsAL = null;
 	static final String[] COMPARISON_NUMBER_ARRAY = {">","<","="};
 	static final String[] COMPARISON_CHECKED_ARRAY = {"=","!="};
@@ -28,7 +29,7 @@ public class HurdleQuestions extends DataBean {
 	ResultSet listRS = null;
 
 	public String getComparisonInput(String comparison){
-		if ("Decimal Number".equals(questionType))
+		if ("Decimal Number".equals(questionType) || "Money".equals(questionType))
 			return Inputs.inputSelect("hurdleComparisonQ_"+questionID,"forms",comparison,COMPARISON_NUMBER_ARRAY);
 		if ("Check Box".equals(questionType) || "Yes/No/NA".equals(questionType) || 
 				"Yes/No".equals(questionType) || "Manual".equals(questionType))
@@ -37,7 +38,7 @@ public class HurdleQuestions extends DataBean {
 	}//getComparisonInput
 
 	public String getValueInput(String value){
-		if ("Decimal Number".equals(questionType))
+		if ("Decimal Number".equals(questionType) || "Money".equals(questionType))
 			return "<input class=forms type=text size=5 name=hurdleValueQ_"+questionID+" value='"+value+"'>";
 		if ("Check Box".equals(questionType))
 			return Inputs.inputSelect2("hurdleValueQ_"+questionID,"forms",value,VALUE_CHECKED_ARRAY);
@@ -47,8 +48,9 @@ public class HurdleQuestions extends DataBean {
 	}
 	
 	public void setList(String opID) throws Exception {
-		String selectQuery = "SELECT pc.auditTypeID, pc.number, ps.number, pq.number, pq.ID questionid, question, questionType " +
-								"FROM pqfCategories pc " +
+		String selectQuery = "SELECT at.classType, pc.auditTypeID, pc.number, ps.number, pq.number, pq.ID questionid, concat(case when at.classType = 'Policy' then concat(pc.category , ' - ') else '' end,  pq.question) question, questionType " +
+								"FROM audit_type at " + 
+								"JOIN pqfCategories pc ON (pc.auditTypeId = at.auditTypeId)" +
 								"JOIN pqfSubCategories ps ON (catID=categoryID) " +
 								"JOIN pqfQuestions pq ON (subCatID=subCategoryID) " +
 								"WHERE isRedFlagQuestion='Yes' " +
@@ -56,7 +58,7 @@ public class HurdleQuestions extends DataBean {
 								"(pc.auditTypeID = 1 AND pc.catID IN (SELECT catID FROM pqfopmatrix WHERE opID = " + opID + ")) " +
 								"OR (pc.auditTypeID > 1 AND pc.auditTypeID IN (SELECT auditTypeID FROM audit_operator WHERE opID = " + opID + " AND canSee = 1))" +
 								") " + 
-								"ORDER BY pc.number, ps.number, pq.number";
+								"ORDER BY at.classType, pc.number, ps.number, pq.number";
 		try {
 			DBReady();
 			listRS = SQLStatement.executeQuery(selectQuery);
@@ -84,6 +86,7 @@ public class HurdleQuestions extends DataBean {
 		questionNum = SQLResult.getString("pq.number");
 		question = SQLResult.getString("question");
 		questionType = SQLResult.getString("questionType");
+		classType = SQLResult.getString("classType");
 	}
 	
 	public void closeList() throws Exception {
