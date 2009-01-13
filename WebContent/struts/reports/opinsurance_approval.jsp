@@ -109,8 +109,8 @@
 				</td>
 				<td style="width: 120px; font-size: smaller;" class="notes"><s:textarea name="caos[%{get('caoId')}].notes" value="%{get('caoNotes')}" rows="4" cols="20"/></td>
 				<td style="font-size: smaller; text-align: center;" >
-					<s:if test="get('caoRecommendedAction') == null"></s:if>
-					<s:elseif test="get('caoRecommendedAction') == 'Approve'">
+					<s:if test="get('caoRecommendedStatus') == null"></s:if>
+					<s:elseif test="get('caoRecommendedStatus') == 'Approve'">
 						<img src="images/okCheck.gif" width="18" height="15" border="0" />
 					</s:elseif>
 					<s:else>

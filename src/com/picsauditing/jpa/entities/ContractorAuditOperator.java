@@ -2,19 +2,20 @@ package com.picsauditing.jpa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name = "contractor_audit_operator")
 public class ContractorAuditOperator extends BaseTable {
 	private ContractorAudit audit;
 	private OperatorAccount operator;
-	private String status;
+	private CaoStatus status = CaoStatus.Missing;
+	private CaoStatus recommendedStatus = CaoStatus.Missing;
 	private String notes;
-	private String recommendedAction;
 
 	@ManyToOne
 	@JoinColumn(name = "auditID", nullable = false, updatable = false)
@@ -36,16 +37,27 @@ public class ContractorAuditOperator extends BaseTable {
 		this.operator = operator;
 	}
 
-	@Column(nullable = false, length = 30)
-	public String getStatus() {
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	public CaoStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(CaoStatus status) {
 		this.status = status;
 	}
 
-	@Column(nullable = true, length = 255)
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	public CaoStatus getRecommendedStatus() {
+		return recommendedStatus;
+	}
+
+	public void setRecommendedStatus(CaoStatus recommendedStatus) {
+		this.recommendedStatus = recommendedStatus;
+	}
+
+	@Column(length = 255)
 	public String getNotes() {
 		return notes;
 	}
@@ -54,11 +66,4 @@ public class ContractorAuditOperator extends BaseTable {
 		this.notes = notes;
 	}
 
-	public String getRecommendedAction() {
-		return recommendedAction;
-	}
-
-	public void setRecommendedAction(String recommendedAction) {
-		this.recommendedAction = recommendedAction;
-	}
 }

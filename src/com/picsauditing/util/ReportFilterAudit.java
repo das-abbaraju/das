@@ -6,6 +6,7 @@ import java.util.List;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.CaoStatus;
 
 @SuppressWarnings("serial")
 public class ReportFilterAudit extends ReportFilterContractor {
@@ -27,7 +28,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showAuditFor = false;
 	protected boolean showEmrRange = false;
 	protected boolean showIncidenceRate = false;
-	protected boolean showRecommendedAction = false;
+	protected boolean showRecommendedStatus = false;
 	
 
 	// Filter values
@@ -53,7 +54,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected float minEMR = 0;
 	protected float maxEMR = 100;
 	protected double incidenceRate = 0.0;
-	protected String[] recommendedAction;
+	protected String[] recommendedStatus;
 
 	public boolean isShowAuditType() {
 		return showAuditType;
@@ -159,12 +160,12 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.showPolicyType = showPolicyType;
 	}
 	
-	public boolean isShowRecommendedAction() {
-		return showRecommendedAction;
+	public boolean isShowRecommendedStatus() {
+		return showRecommendedStatus;
 	}
 
-	public void setShowRecommendedAction(boolean showRecommendedAction) {
-		this.showRecommendedAction = showRecommendedAction;
+	public void setShowRecommendedStatus(boolean showRecommendedStatus) {
+		this.showRecommendedStatus = showRecommendedStatus;
 	}
 
 	
@@ -312,12 +313,12 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.validLicense = validLicense;
 	}
 
-	public String[] getRecommendedAction() {
-		return recommendedAction;
+	public String[] getRecommendedStatus() {
+		return recommendedStatus;
 	}
 
-	public void setRecommendedAction(String[] recommendedAction) {
-		this.recommendedAction = recommendedAction;
+	public void setRecommendedStatus(String[] recommendedStatus) {
+		this.recommendedStatus = recommendedStatus;
 	}
 
 
@@ -336,12 +337,8 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		return AuditStatus.values();
 	}
 
-	public String[] getCaoStatusList() {
-		return new String[]{"Approved", "Rejected", "Pending"};
-	}
-	
-	public String[] getRecommendedActionList() {
-		return new String[]{"Approve", "Reject"};
+	public CaoStatus[] getCaoStatusList() {
+		return CaoStatus.values();
 	}
 	
 	public boolean isShowAuditFor() {

@@ -26,6 +26,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -286,14 +287,18 @@ public class AuditBuilder {
 			// For this auditType (General Liability) and
 			// this contractor's associated operator (BP Cherry Point)
 			OperatorAccount operator = co.getOperatorAccount();
+			
+			boolean visible = false;
 			boolean required = false;
 			if (operator.getCanSeeInsurance().equals(YesNo.Yes)) {
 				debug(operator.getName() + " subscribes to InsureGuard");
 				for (AuditOperator ao : operator.getAudits()) {
 					if (conAudit.getAuditType().equals(ao.getAuditType())
-							&& ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal() && ao.isCanSee()) {
-						debug(contractor.getName() + " is required to have " + ao.getAuditType().getAuditName());
-						required = true;
+							&& ao.isCanSee()) {
+						visible = true;
+						if (ao.getMinRiskLevel() > 0 && ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal())
+							required = true;
+						debug(contractor.getName() + " can see " + (required ? "required " : " ") + ao.getAuditType().getAuditName());
 						break;
 					}
 				}
@@ -314,7 +319,6 @@ public class AuditBuilder {
 					cao.setAudit(conAudit);
 					cao.setOperator(operator);
 					cao.setAuditColumns(user);
-					cao.setStatus("Pending");
 					contractorAuditOperatorDAO.save(cao);
 				}
 			} else {
@@ -322,7 +326,7 @@ public class AuditBuilder {
 				Iterator<ContractorAuditOperator> iter = conAudit.getOperators().iterator();
 				while (iter.hasNext()) {
 					ContractorAuditOperator cao = iter.next();
-					if (cao.getOperator().equals(operator) && cao.getStatus().equals("Pending")) {
+					if (cao.getOperator().equals(operator) && cao.getStatus().isTemporary()) {
 						debug("Removing unneeded ContractorAuditOperator");
 						contractorAuditOperatorDAO.remove(cao);
 						iter.remove();
@@ -332,6 +336,8 @@ public class AuditBuilder {
 		}
 	}
 
+
+	
 	/**
 	 * Determine which categories should be on a given audit and add ones that
 	 * aren't there and remove ones that shouldn't be there

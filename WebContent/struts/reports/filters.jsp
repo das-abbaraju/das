@@ -143,15 +143,15 @@
 		</span></div>
 	</s:if>
 
-	<s:if test="filter.showRecommendedAction">
+	<s:if test="filter.showRecommendedStatus">
 		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_recommendedAction'); return false;">PICS Recommendation</a> = <span id="form1_recommendedAction_query">ALL</span><br />
-		<span id="form1_recommendedAction_select" style="display: none"
-			class="clearLink"> <s:select id="form1_recommendedAction" list="filter.recommendedActionList"
-			cssClass="forms" name="filter.recommendedAction" multiple="true" size="5" /> <script
-			type="text/javascript">updateQuery('form1_recommendedAction');</script> <br />
+			onclick="toggleBox('form1_recommendedStatus'); return false;">PICS Recommendation</a> = <span id="form1_recommendedStatus_query">ALL</span><br />
+		<span id="form1_recommendedStatus_select" style="display: none"
+			class="clearLink"> <s:select id="form1_recommendedStatus" list="filter.caoStatusList"
+			cssClass="forms" name="filter.recommendedStatus" multiple="true" size="5" /> <script
+			type="text/javascript">updateQuery('form1_recommendedStatus');</script> <br />
 		<a class="clearLink" href="#"
-			onclick="clearSelected('form1_recommendedAction'); return false;">Clear</a>
+			onclick="clearSelected('form1_recommendedStatus'); return false;">Clear</a>
 		</span></div>
 	</s:if>
 

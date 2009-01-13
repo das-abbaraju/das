@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -454,10 +455,22 @@ public class MigrateCertificates extends PicsActionSupport {
 		conAuditOperator.setAudit(audit);
 		conAuditOperator.setNotes(connectedCert.getReason());
 		conAuditOperator.setOperator(connectedCert.getOperatorAccount());
-		if (connectedCert.getStatus().equals("Expired")) {
-			conAuditOperator.setStatus("Pending");
-		} else {
-			conAuditOperator.setStatus(connectedCert.getStatus());
+		
+		/*
+		 * OldStatus: Approved, Expired, Pending, Rejected
+		 * CaoStatus: NotApplicable, Missing, Approved, Rejected
+		 * Approved => Approved
+		 * Rejected => Rejected
+		 * Expired => Missing
+		 * Pending => Missing
+		 */
+		CaoStatus newStatus = CaoStatus.Missing;
+		try {
+			String oldStatus = connectedCert.getStatus();
+			newStatus = CaoStatus.valueOf(oldStatus);
+		} catch (Exception justUseMissing) {
+		} finally {
+			conAuditOperator.setStatus(newStatus);
 		}
 
 		conAuditOperator.setCreatedBy(new User());

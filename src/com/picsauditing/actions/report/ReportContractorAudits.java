@@ -66,7 +66,6 @@ public class ReportContractorAudits extends ReportAccount {
 
 		sql.addField("atype.isScheduled");
 		sql.addField("atype.hasAuditor");
-		sql.addField("atype.hasRequirements");
 
 		sql.addJoin("LEFT JOIN users auditor ON auditor.id = ca.auditorID");
 		sql.addField("auditor.name auditor_name");
@@ -105,9 +104,9 @@ public class ReportContractorAudits extends ReportAccount {
 			setFiltered(true);
 		}
 
-		String caoRecommendedAction = Strings.implodeForDB(f.getRecommendedAction(), ",");
-		if (filterOn(caoRecommendedAction)) {
-			sql.addWhere("cao.recommendedAction IN (" + caoRecommendedAction + ")");
+		String caoRecommendedStatus = Strings.implodeForDB(f.getRecommendedStatus(), ",");
+		if (filterOn(caoRecommendedStatus)) {
+			sql.addWhere("cao.recommendedStatus IN (" + caoRecommendedStatus + ")");
 			setFiltered(true);
 		}
 		

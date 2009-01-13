@@ -51,7 +51,7 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 		sql.addField("cao.status as caoStatus");
 		sql.addField("cao.notes as caoNotes");
 		sql.addField("cao.id as caoId");
-		sql.addField("cao.recommendedAction as caoRecommendedAction");
+		sql.addField("cao.recommendedStatus as caoRecommendedStatus");
 		sql
 				.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.auditID");
 
@@ -78,7 +78,7 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 		getFilter().setShowPolicyType(true);
 		getFilter().setShowCaoStatus(true);
 		getFilter().setShowAuditStatus(false);
-		getFilter().setShowRecommendedAction(true);
+		getFilter().setShowRecommendedStatus(true);
 	}
 
 	/**

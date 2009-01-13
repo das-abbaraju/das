@@ -8,9 +8,12 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
@@ -83,7 +86,7 @@ public class FlagCalculatorSingle {
 				// The contractor requires this audit, make sure they have an
 				// active one
 				audit.setContractorFlag(audit.getRequiredForFlag());
-
+				
 				int annualAuditCount = 0;
 				for (ContractorAudit conAudit : conAudits) {
 					boolean statusOK = false;
@@ -449,7 +452,7 @@ public class FlagCalculatorSingle {
 		// If everything is done, then quit with waiting on = no one
 		return WaitingOn.None;
 	}
-
+	
 	/**
 	 * Set the flag color, but only let it get worse Green to Red but not
 	 * reverse
