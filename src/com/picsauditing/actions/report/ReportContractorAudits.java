@@ -152,6 +152,13 @@ public class ReportContractorAudits extends ReportAccount {
 					.getClosedDate2(), "M/d/yy")));
 		}
 
+		if( filterOn( f.getHasClosedDate() ) ) {
+			if( f.getHasClosedDate().equals("true") ) 
+				sql.addWhere("ca.closedDate is not null ");
+			else
+				sql.addWhere("ca.closedDate is null ");
+		}
+		
 		if (filterOn(f.getExpiredDate1())) {
 			report.addFilter(new SelectFilterDate("expiredDate1", "ca.expiresDate >= '?'", DateBean.format(f
 					.getExpiredDate1(), "M/d/yy")));

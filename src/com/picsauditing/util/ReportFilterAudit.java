@@ -20,6 +20,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showCreatedDate = true;
 	protected boolean showCompletedDate = true;
 	protected boolean showClosedDate = true;
+	protected boolean showHasClosedDate = false;
 	protected boolean showExpiredDate = true;
 	protected boolean showPercentComplete = true;
 	protected boolean showUnConfirmedAudits = false;
@@ -35,7 +36,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected int[] auditID;
 	protected int[] auditTypeID;
 	protected AuditStatus[] auditStatus;
-	protected String[] caoStatus;
+	protected CaoStatus[] caoStatus;
 	protected int[] auditorId;
 	protected Date createdDate1;
 	protected Date createdDate2;
@@ -43,6 +44,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected Date completedDate2;
 	protected Date closedDate1;
 	protected Date closedDate2;
+	protected String hasClosedDate;
 	protected Date expiredDate1;
 	protected Date expiredDate2;
 	protected String percentComplete1;
@@ -167,6 +169,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	public void setShowRecommendedStatus(boolean showRecommendedStatus) {
 		this.showRecommendedStatus = showRecommendedStatus;
 	}
+	
+	public boolean isShowHasClosedDate() {
+		return showHasClosedDate;
+	}
+
+	public void setShowHasClosedDate(boolean showHasClosedDate) {
+		this.showHasClosedDate = showHasClosedDate;
+	}
 
 	
 	public int[] getAuditID() {
@@ -193,11 +203,11 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.auditStatus = auditStatus;
 	}
 	
-	public String[] getCaoStatus() {
+	public CaoStatus[] getCaoStatus() {
 		return caoStatus;
 	}
 
-	public void setCaoStatus(String[] caoStatus) {
+	public void setCaoStatus(CaoStatus[] caoStatus) {
 		this.caoStatus = caoStatus;
 	}
 
@@ -255,6 +265,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setClosedDate2(Date closedDate2) {
 		this.closedDate2 = closedDate2;
+	}
+	
+	public String getHasClosedDate() {
+		return hasClosedDate;
+	}
+
+	public void setHasClosedDate(String hasClosedDate) {
+		this.hasClosedDate = hasClosedDate;
 	}
 
 	public Date getExpiredDate1() {

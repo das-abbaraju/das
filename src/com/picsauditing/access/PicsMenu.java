@@ -110,7 +110,9 @@ public class PicsMenu {
 		if(permissions.hasPermission(OpPerms.InsuranceCerts))
 			subMenu.addChild("Policy List", "ReportPolicyList.action");
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))
-			subMenu.addChild("Insurance Approval", "ReportInsuranceApproval.action?filter.caoStatus=Missing");
+			subMenu.addChild("Insurance Approval", "ReportInsuranceApproval.action?filter.caoStatus=Missing&filter.auditStatus=Submitted&filter.auditStatus=Active");
+		if (permissions.hasPermission(OpPerms.InsuranceApproval))
+			subMenu.addChild("Recently Updated Policies", "ReportInsuranceApproval.action?filter.hasClosedDate=true&filter.caoStatus=Approved&filter.caoStatus=Rejected&filter.auditStatus=Resubmitted");
 
 		subMenu = menu.addChild("Management");
 		if (permissions.hasPermission(OpPerms.ContractorApproval))

@@ -56,7 +56,7 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 				.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.auditID");
 
 		sql.addJoin("JOIN accounts ao on ao.id = cao.opID");
-		sql.addWhere("ca.auditStatus IN ('Submitted','Active')");
+		//sql.addWhere("ca.auditStatus IN ('Submitted','Active')");
 		// sql.addWhere("cao.status = 'Pending'");
 		sql.addWhere("atype.classType = 'Policy'");
 		sql.addWhere("a.active = 'Y'");
@@ -69,6 +69,7 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 		getFilter().setShowTrade(false);
 		getFilter().setShowCompletedDate(false);
 		getFilter().setShowClosedDate(false);
+		getFilter().setShowHasClosedDate(true);
 		getFilter().setShowExpiredDate(false);
 		getFilter().setShowPercentComplete(true);
 		getFilter().setShowAuditType(false);
@@ -77,7 +78,7 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 		getFilter().setShowCreatedDate(false);
 		getFilter().setShowPolicyType(true);
 		getFilter().setShowCaoStatus(true);
-		getFilter().setShowAuditStatus(false);
+		getFilter().setShowAuditStatus(true);
 		getFilter().setShowRecommendedStatus(true);
 	}
 

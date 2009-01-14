@@ -321,6 +321,10 @@
 		</div>
 	</s:if>
 
+	<s:if test="filter.showHasClosedDate">
+		<div class="filterOption"><s:hidden name="filter.hasClosedDate"/></div>
+	</s:if>
+
 	<s:if test="filter.showExpiredDate">
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_expiredDate'); return false;">Expired Date</a> 
 			<span id="form1_expiredDate_query">= ALL</span><br /> 
