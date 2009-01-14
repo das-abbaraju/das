@@ -85,8 +85,8 @@ public class ContractorAudit implements java.io.Serializable {
 		return contractorAccount;
 	}
 
-	public void setContractorAccount(ContractorAccount contractorAccount) {
-		this.contractorAccount = contractorAccount;
+	public void setContractorAccount(ContractorAccount contractor) {
+		this.contractorAccount = contractor;
 	}
 
 	@OneToMany(mappedBy = "conAudit", cascade = { CascadeType.REMOVE })

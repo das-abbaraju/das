@@ -57,8 +57,8 @@ public class ContractorOperator implements java.io.Serializable {
 		return operatorAccount;
 	}
 
-	public void setOperatorAccount(OperatorAccount operatorAccount) {
-		this.operatorAccount = operatorAccount;
+	public void setOperatorAccount(OperatorAccount operator) {
+		this.operatorAccount = operator;
 	}
 
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -67,8 +67,8 @@ public class ContractorOperator implements java.io.Serializable {
 		return contractorAccount;
 	}
 
-	public void setContractorAccount(ContractorAccount contractorAccount) {
-		this.contractorAccount = contractorAccount;
+	public void setContractorAccount(ContractorAccount contractor) {
+		this.contractorAccount = contractor;
 	}
 
 	@Temporal(TemporalType.DATE)

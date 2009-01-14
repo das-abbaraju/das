@@ -111,8 +111,8 @@ public class AuditOperator implements java.io.Serializable {
 		return operatorAccount;
 	}
 
-	public void setOperatorAccount(OperatorAccount account) {
-		this.operatorAccount = account;
+	public void setOperatorAccount(OperatorAccount operator) {
+		this.operatorAccount = operator;
 	}
 
 	@Enumerated(EnumType.STRING)
@@ -170,10 +170,12 @@ public class AuditOperator implements java.io.Serializable {
 		return htmlID;
 	}
 
+	/**
+	 * Temporary field to store ??
+	 * @return
+	 */
 	@Transient
 	public FlagColor getContractorFlag() {
-		if (contractorFlag == null)
-			contractorFlag = requiredForFlag;
 		return contractorFlag;
 	}
 
