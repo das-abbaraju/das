@@ -19,6 +19,19 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 public class AnswerMap {
 	private Map<Integer, Map<Integer, List<AuditData>>> list = new HashMap<Integer, Map<Integer, List<AuditData>>>();
 
+	
+	public AnswerMap( AnswerMap toCopy ) {
+		for( Integer a : toCopy.list.keySet() ) {
+			Map<Integer, List<AuditData>> temp = toCopy.list.get(a);
+			
+			for( Integer b : temp.keySet() ) {
+				for(AuditData value : temp.get(b) ) {
+					getDataList(a, b).add(value);					
+				}
+			}
+		}
+	}
+	
 	/** *************** Fill the AnswerMap ***************** */
 	public void add(AuditData answer) {
 		if (answer == null)
