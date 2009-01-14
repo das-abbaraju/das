@@ -17,7 +17,7 @@
 	<s:hidden name="id" />
 	<s:hidden name="parentID" value="%{category.auditType.auditTypeID}" />
 	<s:hidden name="category.auditType.auditTypeID" />
-	<fieldset>
+	<fieldset class="form">
 	<legend><span>Category</span></legend>
 		<ol>
 			<li><label>ID:</label>

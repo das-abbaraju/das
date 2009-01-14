@@ -181,6 +181,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanVerify() {
+		if(!conAudit.getAuditType().isMustVerify())
+			return false;
 		if (conAudit.getAuditType().isPqf() && conAudit.getAuditStatus().isActiveSubmitted())
 			if (permissions.isAuditor())
 				return true;

@@ -291,6 +291,8 @@ public class ContractorAudit implements java.io.Serializable {
 	 */
 	@Transient
 	public boolean isAboutToExpire() {
+		if(expiresDate == null) 
+			return false;
 		Calendar current = Calendar.getInstance();
 		Calendar expires = Calendar.getInstance();
 		expires.setTime(expiresDate);
