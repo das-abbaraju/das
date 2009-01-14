@@ -29,7 +29,7 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	static public final int MANUAL_PQF = 1331;
 
 	static public final String[] TYPE_ARRAY = { "Additional Insured", "Check Box", "Country", "Date", "Decimal Number", "File",
-			"FileCertificate", "Industry", "License", "Main Work", "Manual", "Money", "Office Location", "Radio",
+			"FileCertificate", "Industry", "License", "Main Work", "Money", "Office Location", "Radio",
 			"Service", "State", "Text", "Text Area", "Yes/No", "Yes/No/NA" };
 
 	private AuditSubCategory subCategory;

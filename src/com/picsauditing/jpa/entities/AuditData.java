@@ -21,6 +21,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 @Entity
@@ -202,7 +203,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 
 	@Transient
 	public boolean isCommentLength() {
-		if (!isVerified() && comment != null && comment.length() > 0)
+		if (!Strings.isEmpty(comment))
 			return true;
 		return false;
 	}

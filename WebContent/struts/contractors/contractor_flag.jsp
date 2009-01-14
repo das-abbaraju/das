@@ -129,7 +129,7 @@
 		</tr>
 	</thead>
 	<s:iterator value="co.operatorAccount.audits">
-		<s:if test="requiredForFlag && requiredForFlag.name() in {'Red', 'Amber'} &&
+		<s:if test="canSee && requiredForFlag && requiredForFlag.name() in {'Red', 'Amber'} &&
 		   minRiskLevel <= contractor.riskLevel.ordinal()">  
 			<tr class="<s:property value="contractorFlag" />">
 				<td class="center"><s:property value="contractorFlag.smallIcon"

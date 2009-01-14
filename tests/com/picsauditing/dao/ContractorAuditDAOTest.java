@@ -126,7 +126,7 @@ public class ContractorAuditDAOTest {
 	public void testCopy() throws Exception {
 		ContractorAccountDAO ncon = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
 		ContractorAudit oAudit = contractorauditDAO.find(3521);
-		contractorauditDAO.copy(oAudit, ncon.find(1533));
+		//contractorauditDAO.copy(oAudit, ncon.find(1533));
 	}
 	
 	@Test
