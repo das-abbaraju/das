@@ -20,6 +20,8 @@ public class AnswerMap {
 	private Map<Integer, Map<Integer, List<AuditData>>> list = new HashMap<Integer, Map<Integer, List<AuditData>>>();
 
 	
+	public AnswerMap() { }
+	
 	public AnswerMap( AnswerMap toCopy ) {
 		for( Integer a : toCopy.list.keySet() ) {
 			Map<Integer, List<AuditData>> temp = toCopy.list.get(a);
