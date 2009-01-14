@@ -302,42 +302,66 @@ public class AuditBuilder {
 						break;
 					}
 				}
-
 			}
-			if (required) {
-				// If we don't have one, then add it
-				boolean included = false;
-				for (ContractorAuditOperator cao : conAudit.getOperators()) {
-					if (cao.getOperator().equals(operator)) {
-						included = true;
-						break;
+			
+			ContractorAuditOperator cao = null;
+			for(ContractorAuditOperator cao2 : conAudit.getOperators()) {
+				if (cao2.getOperator().equals(operator)) {
+					cao = cao2;
+					debug("Found cao for " + conAudit.getAuditType().getAuditName());
+				}
+			}
+
+			if (visible) {
+				if (required) {
+					// This cao is always required so add it if it doesn't exist
+					// and then calculate the recommended status
+					if (cao == null) {
+						// If we don't have one, then add it
+						debug("Adding missing required ContractorAuditOperator");
+						cao = new ContractorAuditOperator();
+						cao.setAudit(conAudit);
+						cao.setOperator(operator);
+						cao.setAuditColumns(user);
+						cao.setStatus(CaoStatus.Missing);
+						cao.setRecommendedStatus(CaoStatus.Missing);
+						conAudit.getOperators().add(cao);
+					}
+				} else {
+					// This cao might be required (if the operator manually requested it)
+					if (cao == null) {
+						// If we don't have one, then add it
+						debug("Adding missing non-required ContractorAuditOperator");
+						cao = new ContractorAuditOperator();
+						cao.setAudit(conAudit);
+						cao.setOperator(operator);
+						cao.setAuditColumns(user);
+						cao.setStatus(CaoStatus.NotApplicable);
+						cao.setRecommendedStatus(CaoStatus.NotApplicable);
+						conAudit.getOperators().add(cao);
+					}
+					if (CaoStatus.NotApplicable.equals(cao.getStatus())) {
+						// This operator has specifically stated they don't need this policy
+						cao.setRecommendedStatus(CaoStatus.NotApplicable);
 					}
 				}
-				if (!included) {
-					debug("Adding missing ContractorAuditOperator");
-					ContractorAuditOperator cao = new ContractorAuditOperator();
-					cao.setAudit(conAudit);
-					cao.setOperator(operator);
-					cao.setAuditColumns(user);
-					contractorAuditOperatorDAO.save(cao);
+			} else if(cao != null) {
+				// Remove the cao if it's temporary (N/A or Missing)
+				if (cao.getStatus().isTemporary()) {
+					debug("Removing unneeded ContractorAuditOperator");
+					contractorAuditOperatorDAO.remove(cao);
+					conAudit.getOperators().remove(cao);
+				} else {
+					cao.setRecommendedStatus(CaoStatus.NotApplicable);
 				}
-			} else {
-				// Remove Pending records that are already on there
-				Iterator<ContractorAuditOperator> iter = conAudit.getOperators().iterator();
-				while (iter.hasNext()) {
-					ContractorAuditOperator cao = iter.next();
-					if (cao.getOperator().equals(operator) && cao.getStatus().isTemporary()) {
-						debug("Removing unneeded ContractorAuditOperator");
-						contractorAuditOperatorDAO.remove(cao);
-						iter.remove();
-					}
-				}
+			}
+			if(cao != null) {
+				// IF we still have a "dirty" cao, record then save it
+				contractorAuditOperatorDAO.save(cao);
 			}
 		}
 	}
 
-
-	
 	/**
 	 * Determine which categories should be on a given audit and add ones that
 	 * aren't there and remove ones that shouldn't be there

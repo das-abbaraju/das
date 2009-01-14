@@ -1,6 +1,7 @@
 package com.picsauditing.PICS;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.AnswerMap;
 
 /**
  * Determine the Flag color for a single contractor at a given facility. This
@@ -39,7 +41,8 @@ public class FlagCalculatorSingle {
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
 	private List<ContractorAudit> conAudits;
-	private Map<Integer, Map<String, AuditData>> auditAnswers;
+	//private Map<Integer, Map<String, AuditData>> auditAnswers;
+	private AnswerMap answerMap;
 
 	/**
 	 * 1) Check to see all required audits are there 2) OSHA Data 3)
@@ -79,59 +82,91 @@ public class FlagCalculatorSingle {
 		debug(" flagColor=" + flagColor);
 
 		for (AuditOperator audit : operator.getAudits()) {
-			// Always start with Green
-			audit.setContractorFlag(FlagColor.Green);
-			if (contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel() && audit.getRequiredForFlag() != null) {
-				debug(" -- " + audit.getAuditType().getAuditName() + " - " + audit.getRequiredForFlag().toString());
-				// The contractor requires this audit, make sure they have an
-				// active one
-				audit.setContractorFlag(audit.getRequiredForFlag());
-				
-				int annualAuditCount = 0;
-				for (ContractorAudit conAudit : conAudits) {
-					boolean statusOK = false;
-					boolean typeOK = false;
-					if (conAudit.getAuditStatus() == AuditStatus.Active)
-						statusOK = true;
-					if (conAudit.getAuditStatus() == AuditStatus.Resubmitted)
-						statusOK = true;
-					if (conAudit.getAuditStatus() == AuditStatus.Exempt)
-						statusOK = true;
-					if (conAudit.getAuditStatus() == AuditStatus.Submitted
-							&& audit.getRequiredAuditStatus() == AuditStatus.Submitted)
-						statusOK = true;
-					if (conAudit.getAuditType().equals(audit.getAuditType()))
-						typeOK = true;
-					if (conAudit.getAuditType().getAuditTypeID() == AuditType.NCMS
-							&& audit.getAuditType().getAuditTypeID() == AuditType.DESKTOP)
-						typeOK = true;
-
-					if (statusOK && typeOK) {
-						// We found a matching "valid" audit for this 
-						// contractor audit requirement
-						debug(" ---- found");
-
-						if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM) {
-							// We actually require THREE annual addendums 
-							// before we consider this requirement complete
-							annualAuditCount++;
-						} else {
-							audit.setContractorFlag(FlagColor.Green);
+			audit.setContractorFlag(null);
+			if (audit.isCanSee()) {
+				// Always start with Green
+				audit.setContractorFlag(FlagColor.Green);
+				if (contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel() && audit.getRequiredForFlag() != null) {
+					debug(" -- " + audit.getAuditType().getAuditName() + " - " + audit.getRequiredForFlag().toString());
+					// The contractor requires this audit,
+					// make sure they have an active one
+					// If an active audit doesn't exist, then set
+					// the contractor's flag to the required color
+					audit.setContractorFlag(audit.getRequiredForFlag());
+					
+					int annualAuditCount = 0;
+					for (ContractorAudit conAudit : conAudits) {
+						boolean statusOK = false;
+						boolean typeOK = false;
+						if (conAudit.getAuditStatus() == AuditStatus.Active)
+							statusOK = true;
+						if (conAudit.getAuditStatus() == AuditStatus.Resubmitted)
+							statusOK = true;
+						if (conAudit.getAuditStatus() == AuditStatus.Exempt)
+							statusOK = true;
+						if (conAudit.getAuditStatus() == AuditStatus.Submitted
+								&& audit.getRequiredAuditStatus() == AuditStatus.Submitted)
+							statusOK = true;
+						if (conAudit.getAuditType().equals(audit.getAuditType()))
+							typeOK = true;
+						if (conAudit.getAuditType().getAuditTypeID() == AuditType.NCMS
+								&& audit.getAuditType().getAuditTypeID() == AuditType.DESKTOP)
+							typeOK = true;
+	
+						if (typeOK) {
+							if (statusOK) {
+								// We found a matching "valid" audit for this 
+								// contractor audit requirement
+								debug(" ---- found");
+		
+								if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM) {
+									// We actually require THREE annual addendums 
+									// before we consider this requirement complete
+									annualAuditCount++;
+								} else if(audit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+									// Policies have a different type of requirement
+									for(ContractorAuditOperator cao : conAudit.getOperators()) {
+										if (cao.getOperator().equals(operator) 
+												&& !CaoStatus.NotApplicable.equals(cao.getRecommendedStatus())
+												&& CaoStatus.Approved.equals(cao.getStatus())) {
+											// If the cao is applicable, then it must be approved for this operator
+											audit.setContractorFlag(FlagColor.Green);
+										}
+									}
+								} else {
+									// Regular audits (PQF, Desktop, Office, Field, IM, etc)
+									audit.setContractorFlag(FlagColor.Green);
+								}
+							}
+							
+							// There is one exception to the status issue
+							// If the operator says a Policy is N/A, then that 
+							// requirement is fine no matter what the auditStatus is
+							if (audit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+								for(ContractorAuditOperator cao : conAudit.getOperators()) {
+									if (cao.getOperator().equals(operator)) {
+										if (CaoStatus.NotApplicable.equals(cao.getRecommendedStatus())) {
+											// The computer believes this cao is no longer necessary
+											// This could be because the auditType is no longer visible
+											// to the operator or because the operator said it was N/A
+											audit.setContractorFlag(null);
+										}
+									}
+								}
+							}
 						}
+					} // end conAudit
+					if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM && annualAuditCount >= 3) {
+						// Make sure we have atleast three annual addendums
+						audit.setContractorFlag(FlagColor.Green);
 					}
+					flagColor = setFlagColor(flagColor, audit.getContractorFlag());
 				}
-				if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM && annualAuditCount >= 3) {
-					// Make sure we have atleast three annual addendums
-					audit.setContractorFlag(FlagColor.Green);
-				}
-				// If an active audit doesn't exist, then set
-				// the contractor's flag to the required color
-				flagColor = setFlagColor(flagColor, audit.getContractorFlag());
-			}
-			if (answerOnly && flagColor.equals(FlagColor.Red))
-				// Things can't get worse, just exit
-				return flagColor;
-		}
+				if (answerOnly && flagColor.equals(FlagColor.Red))
+					// Things can't get worse, just exit
+					return flagColor;
+			} // end if operator canSee audit
+		} // end for (operator audit)
 
 		debug(" flagColor=" + flagColor);
 
@@ -178,7 +213,14 @@ public class FlagCalculatorSingle {
 			}
 		}
 		debug(" flagColor=" + flagColor);
+		
 		//TODO Use the getEmrs() map for the EMR data for the last 3 years.
+		Map<ContractorAudit, AnswerMap> auditAnswerMap = new HashMap<ContractorAudit, AnswerMap>();
+		
+		for(AnswerMap answers : auditAnswerMap.values()) {
+			answers.resetFlagColors();
+		}
+		
 		for (Map<String, AuditData> tempMap : auditAnswers.values()) {
 			for (AuditData data : tempMap.values()) {
 				// The flag colors should always start Green, but sometimes they
@@ -192,7 +234,34 @@ public class FlagCalculatorSingle {
 		for (FlagQuestionCriteria criteria : operator.getFlagQuestionCriteria()) {
 			if (criteria.getChecked().equals(YesNo.Yes)) {
 				// This question is required by the operator
+				answerMap.get(criteria.getAuditQuestion().getId());
+				
+				AuditType criteriaAuditType = criteria.getAuditQuestion().getSubCategory().getCategory().getAuditType();
+				if (regular answer)
+					evaluate based on critera
+				
+				if (criteria.getMultiYearScope() is set)
+					find all audits matching auditType
+					
+				if (criteria question is a tuple)
+					auditAnswerMap.get(null).getAnswerList(questionID);
+					get the list of answers for that this anchor question
+					for each answer evaluate it based on criteria
+				
+				if (criteria question has a parent)
+					auditAnswerMap.get(null).getAnswerList(parentQuestionID);
+					get the list of answers for that parent question
+					for each parentAnswer get the childAnswer and evaluate it based on criteria
+					
+				
+				for(ContractorAudit conAudit : auditAnswerMap.keySet()) {
+					if (criteriaAuditType.equals(conAudit.getAuditType())) {
+						// We have an audit that may contain the answer to our question
+						auditAnswerMap.get(conAudit).get(criteria.getAuditQuestion().getId());
+					}
+				}
 				Map<String, AuditData> answerMap = auditAnswers.get(criteria.getAuditQuestion().getId());
+				
 				if (answerMap != null && answerMap.size() > 0) {
 					// The contractor has answered this question so it needs
 					// to be correct
@@ -361,86 +430,84 @@ public class FlagCalculatorSingle {
 
 		// PQF, Desktop & Office Audits
 		for (AuditOperator audit : operator.getAudits()) {
-			if (contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel() && audit.getRequiredForFlag() != null) {
+			if (contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel() 
+					&& audit.getRequiredForFlag() != null
+					&& !audit.getRequiredForFlag().equals(FlagColor.Green) ) {
 
 				for (ContractorAudit conAudit : conAudits) {
-					if (conAudit.getAuditType().equals(audit.getAuditType())
-							&& (conAudit.getAuditStatus().equals(AuditStatus.Pending) || (conAudit.getAuditStatus()
-									.equals(AuditStatus.Submitted) && audit.getRequiredAuditStatus().equals(
-									AuditStatus.Active)))) {
-						// We found a matching pending or submitted audit for
-						// this contractor
-						// Whose fault is it??
-						debug(" ---- found");
-						if (conAudit.getAuditType().isPqf()) {
-							if (conAudit.getAuditStatus().equals(AuditStatus.Pending))
-								return WaitingOn.Contractor; // The
-							// contractor
-							// still needs
-							// to submit
-							// their PQF
-							if (conAudit.getPercentVerified() > 0)
-								return WaitingOn.Contractor; // The
-							// contractor
-							// needs to send
-							// us updated
-							// information
-							// (EMR, OSHA,
-							// etc)
-
-							// This PQF must be submitted and not verified yet
-							// at all, so it's PICS' fault
-							waitingOnPics = true;
+					AuditStatus auditStatus = conAudit.getAuditStatus();
+					if (conAudit.getAuditType().equals(audit.getAuditType())) {
+						// We found a matching audit type. Is it required?
+						if (conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+							
+							if (auditStatus.equals(AuditStatus.Exempt) || auditStatus.equals(AuditStatus.Expired)) {
+								// Pending, Submitted, Resubmitted, or Active Policy
+								
+								// This is a Policy, find the CAO for this operator
+								for(ContractorAuditOperator cao : conAudit.getOperators()) {
+									if (cao.getOperator().equals(operator) 
+											&& !CaoStatus.NotApplicable.equals(cao.getRecommendedStatus())) {
+										// This Policy is required by the operator
+										if (!auditStatus.isComplete(audit.getRequiredAuditStatus()))
+											// The contractor needs to still submit it
+											return WaitingOn.Contractor;
+										
+										if (audit.getRequiredAuditStatus().equals(AuditStatus.Active) 
+												&& (auditStatus.isPendingSubmittedResubmitted()))
+											// This policy requires verification by PICS
+											waitingOnPics = true;
+										
+										if (auditStatus.equals(AuditStatus.Active))
+											// This is active, the operator needs to verify it
+											if (cao.getStatus().equals(CaoStatus.Missing))
+												waitingOnOperator = true;
+										
+										if (CaoStatus.Rejected.equals(cao.getStatus()))
+											// The operator rejected their certificate, 
+											// they should fix it and resubmit it
+											return WaitingOn.Contractor;
+									} // if
+								} // for cao
+							}
+							// end of policies
+						} else {
+							// This is a audit
+							if (!auditStatus.isComplete(audit.getRequiredAuditStatus())) {
+								// We found a matching pending or submitted audit still not finished
+								// Whose fault is it??
+								debug(" ---- still required");
+								if (conAudit.getAuditType().isPqf()) {
+									if (auditStatus.equals(AuditStatus.Pending))
+										// The contractor still needs to submit their PQF
+										return WaitingOn.Contractor;
+									if (conAudit.getPercentVerified() > 0)
+										// contractor needs to send us updated
+										// information (EMR, OSHA, etc)
+										// This PQF must be submitted and not verified yet
+										// at all, so it's PICS' fault
+										return WaitingOn.Contractor; // The
+									waitingOnPics = true;
+								} else if (conAudit.getAuditType().getAuditTypeID() == AuditType.OFFICE)
+									// either needs to
+									// schedule the
+									// audit or close
+									// out RQs
+									return WaitingOn.Contractor; // The contractor
+								else if (conAudit.getAuditType().getAuditTypeID() == AuditType.DESKTOP) {
+									if (auditStatus.equals(AuditStatus.Submitted))
+										// contractor
+										// needs to
+										// close out RQs
+										// This desktop still hasn't been performed by PICS
+										return WaitingOn.Contractor; // The
+									waitingOnPics = true;
+								}
+							} // if stillRequired
 						}
-						if (conAudit.getAuditType().getAuditTypeID() == AuditType.OFFICE)
-							return WaitingOn.Contractor; // The contractor
-						// either needs to
-						// schedule the
-						// audit or close
-						// out RQs
-						if (conAudit.getAuditType().getAuditTypeID() == AuditType.DESKTOP) {
-							if (conAudit.getAuditStatus().equals(AuditStatus.Submitted))
-								return WaitingOn.Contractor; // The
-							// contractor
-							// needs to
-							// close out RQs
-							// This desktop still hasn't been performed by PICS
-							waitingOnPics = true;
-						}
-
-					}
-				}
-			}
-		}
-
-		// Certificates
-		if (operator.getCanSeeInsurance().equals(YesNo.Yes)) {
-
-			int count = 0;
-			for (Certificate certificate : contractor.getCertificates()) {
-				if (certificate.getOperatorAccount().equals(operator)) {
-					debug(" -- certificate" + certificate.getType() + " " + certificate.getOperatorAccount().getName());
-					count++;
-					if (certificate.getStatus().equals("Rejected"))
-						// The contractor should upload a new cert
-						return WaitingOn.Contractor;
-					if (certificate.getStatus().equals("Expired"))
-						// The contractor should upload a new cert
-						return WaitingOn.Contractor;
-					
-					// These next two sections may need to change as InsureGuard 
-					// gets more options regarding who can/should do each process
-					if (certificate.getStatus().equals("Pending"))
-						waitingOnOperator = true;
-					if (certificate.getVerified().equals(YesNo.No))
-						waitingOnPics = true;
-				}
-			}
-
-			if (count == 0)
-				// The contractor hasn't uploaded any certificates for this operator
-				return WaitingOn.Contractor;
-		}
+					} // if auditType
+				} // for conAudits
+			} // if op.audit required
+		} // for operator.audits
 
 		// Conclusion
 		if (waitingOnPics)
@@ -451,6 +518,12 @@ public class FlagCalculatorSingle {
 
 		// If everything is done, then quit with waiting on = no one
 		return WaitingOn.None;
+	}
+	
+	public CaoStatus calculateCaoRecommendedStatus(ContractorAuditOperator cao) {
+		
+		
+		return CaoStatus.Missing;
 	}
 	
 	/**
@@ -532,6 +605,14 @@ public class FlagCalculatorSingle {
 
 	public void setAnswerOnly(boolean answerOnly) {
 		this.answerOnly = answerOnly;
+	}
+
+	public AnswerMap getAnswerMap() {
+		return answerMap;
+	}
+
+	public void setAnswerMap(AnswerMap answerMap) {
+		this.answerMap = answerMap;
 	}
 
 }

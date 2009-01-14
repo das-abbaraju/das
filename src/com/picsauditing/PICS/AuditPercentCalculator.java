@@ -52,7 +52,7 @@ public class AuditPercentCalculator {
 		}
 		// Get a map of all answers in this audit
 		AnswerMap answers = auditDataDao.findAnswers(catData.getAudit().getId(), questionIDs);
-		System.out.println(answers);
+		//System.out.println(answers);
 
 		// Get a list of questions/answers for this category
 		Date validDate = catData.getAudit().getValidDate();
@@ -63,7 +63,8 @@ public class AuditPercentCalculator {
 					boolean isRequired = false;
 					
 					if (question.isAllowMultipleAnswers()) {
-						AuditData answer = answers.get(question.getId());
+						//List<AuditData> answer = answers.getAnswerList(question.getId());
+						AuditData answer = answers.get(question.getId(), question.getId());
 						// Only require the tuple if at least one minimum tuple is required
 						isRequired = question.getMinimumTuples() > 0;
 						if (isRequired)
@@ -87,11 +88,9 @@ public class AuditPercentCalculator {
 							// This question is dependent on another question's answer
 							// Use the parentAnswer, so we get answers in the same tuple as this one
 							AuditData otherAnswer = answers.get(question.getDependsOnQuestion().getId());
-							if (otherAnswer != null) {
-								if (question.getDependsOnAnswer().equals(
-										otherAnswer.getAnswer()))
-									isRequired = true;
-							}
+							if (otherAnswer != null 
+									&& question.getDependsOnAnswer().equals(otherAnswer.getAnswer()))
+								isRequired = true;
 						}
 						if (isRequired)
 							requiredCount++;
