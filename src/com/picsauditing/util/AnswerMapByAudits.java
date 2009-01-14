@@ -12,15 +12,34 @@ public class AnswerMapByAudits {
 	
 	public AnswerMapByAudits() {}
 	
-	public AnswerMapByAudits( AnswerMapByAudits toCopy ) {
+	private AnswerMapByAudits( AnswerMapByAudits toCopy ) {
 		for( ContractorAudit audit : toCopy.data.keySet() ) {
 			AnswerMap mapCopy = new AnswerMap(toCopy.get( audit ));
 			put( audit, mapCopy );
 		}
 	}
-	public AnswerMapByAudits( AnswerMapByAudits toCopy, OperatorAccount operator) {
+	
+	private AnswerMapByAudits( AnswerMapByAudits toCopy, OperatorAccount operator) {
 		this( toCopy );
+		
+		
+		
+		
 	}
+	
+	
+	
+	public AnswerMapByAudits copy() {
+		AnswerMapByAudits response = new AnswerMapByAudits( this );
+		return response;
+	}
+	
+	public AnswerMapByAudits copy(OperatorAccount operator) {
+		AnswerMapByAudits response = new AnswerMapByAudits( this, operator );
+		return response;
+	}
+	
+	
 	
 	public AnswerMap get( ContractorAudit audit ) {
 		return data.get( audit );
