@@ -6,12 +6,14 @@ import javax.persistence.NoResultException;
 
 import org.apache.struts2.ServletActionContext;
 
+import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.util.Downloader;
@@ -26,11 +28,14 @@ public class AuditDataUpload extends AuditActionSupport {
 	private File file;
 	protected String fileContentType = null;
 	protected String fileFileName = null;
+	private AuditPercentCalculator auditPercentCalculator;
 
 	public AuditDataUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditQuestionDAO questionDAO) {
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditQuestionDAO questionDAO,
+			AuditPercentCalculator auditPercentCalculator) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.questionDAO = questionDAO;
+		this.auditPercentCalculator = auditPercentCalculator;
 	}
 
 	public String execute() throws Exception {
@@ -47,7 +52,7 @@ public class AuditDataUpload extends AuditActionSupport {
 		int questionID = 0;
 		if (answer.getQuestion() != null)
 			questionID = answer.getQuestion().getId();
-		
+
 		try {
 			// Try to find the previous version using the passed in auditData
 			// record
@@ -63,7 +68,7 @@ public class AuditDataUpload extends AuditActionSupport {
 			}
 		} catch (NoResultException notReallyAProblem) {
 		}
-		
+							
 		if (answer == null) {
 			dataID = 0;
 			answer = new AuditData();
@@ -140,7 +145,10 @@ public class AuditDataUpload extends AuditActionSupport {
 					addActionError("Somehow, two files were uploaded.");
 			}
 		}
-
+		for (AuditCatData auditCatData : getCategories()) {
+			if (auditCatData.getCategory() == answer.getQuestion().getSubCategory().getCategory())
+				auditPercentCalculator.updatePercentageCompleted(auditCatData);
+		}
 		return SUCCESS;
 	}
 
