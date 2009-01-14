@@ -24,10 +24,15 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 	protected AuditDataDAO auditDataDao = null;
 	protected AuditQuestionDAO auditQuestionDao = null;
 
-	// BusinessPurpose (limit, 'aiWaiver', etc), auditId
+	/**
+	 * Map of Purpose, AuditID, then List of Answers
+	 */
 	protected Map<String, Map<Integer, List<AuditData>>> questionData = null;
 
-	// AuditType, uniquecode
+	/**
+	 * Map of AuditType.Name, uniquecode : used to get the question (formal), 
+	 * which we'll use later to get the answer (actual)
+	 */
 	protected Map<String, Map<String, AuditQuestion>> questionsKeyedByUniqueKey = null;
 
 	public ReportInsuranceApproval(AuditDataDAO auditDataDao,
@@ -83,11 +88,11 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 	}
 
 	/**
-	 * returns the proper submap of the questionData, which holds supplemental
-	 * question data that is not returned in the main query known keys for this
-	 * data are : aiFile, aiWaiverSub, aiName, and limits
+	 * returns the proper answer(s) of the questionData, which holds supplemental
+	 * question data that is not returned in the main query 
 	 * 
 	 * @param auditId
+	 * @param purpose - kind of like a column name. Known keys for this are: aiFile, aiWaiverSub, aiName, or limits
 	 * @return List<AuditData>
 	 */
 	public List<AuditData> getDataForAudit(int auditId, String purpose) {
@@ -103,7 +108,11 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 		}
 	}
 
-	protected void loadSecondaryData() {
+	/**
+	 * Query all "child" answers associated with policies
+	 * (called only once)
+	 */
+	private void loadSecondaryData() {
 		try {
 
 			questionData = new HashMap<String, Map<Integer, List<AuditData>>>();
@@ -116,30 +125,70 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 						(String) bean.get("auditName"));
 			}
 
-			Map<Integer, List<AuditData>> limits = questionData.get("limits");
+			
+			Map<Integer, List<AuditData>> limits = null;
+			{
+				/*****  Load our Limits *****/
+				List<AuditData> answers = auditDataDao.findPolicyLimits(theseAudits);
 
-			if (limits == null) {
-				loadLimits(theseAudits, limits);
+				// if we got data, populate the "limits" section of our map
+				if (answers != null && answers.size() > 0) {
+					
+					limits = new HashMap<Integer, List<AuditData>>();
+					
+					// add the answers, keyed by auditid
+					for (AuditData answer : answers) {
+						int tempId = answer.getAudit().getId();
+				
+						List<AuditData> dataForThisAudit = limits.get(tempId);
+						
+						if (dataForThisAudit == null) {
+							dataForThisAudit = new Vector<AuditData>();
+							limits.put(tempId, dataForThisAudit);
+						}
+				
+						dataForThisAudit.add(answer);
+					}
+					
+					questionData.put("limits", limits);
+				}
 			}
 
+			// These are the 3 questions listed as part of the Additional Insured subCategory
 			List<AuditQuestion> questions = auditQuestionDao
 					.findQuestionsByUniqueCodes(Arrays.asList("aiName",
 							"aiFile", "aiWaiverSub"));
 
-			// figure out which questions we care about, based on their unique
-			// codes
-			loadQuestionsByUniqueCode(questions);
+			{
+				// Fill out the double map (AuditTypeName->UniqueCode->AuditQuestion)
+				// We need this later on so we can find the answer to these questions
+				questionsKeyedByUniqueKey = new HashMap<String, Map<String, AuditQuestion>>();
 
-			List<Integer> questionIDs = new Vector<Integer>();
-			for (AuditQuestion q : questions) {
-				questionIDs.add(q.getId());
+				for (AuditQuestion question : questions) {
+					String auditTypeName = question.getSubCategory().getCategory()
+							.getAuditType().getAuditName();
+
+					Map<String, AuditQuestion> forThisType = questionsKeyedByUniqueKey
+							.get(auditTypeName);
+
+					if (forThisType == null) {
+						forThisType = new HashMap<String, AuditQuestion>();
+						questionsKeyedByUniqueKey.put(auditTypeName, forThisType);
+					}
+
+					forThisType.put(question.getUniqueCode(), question);
+				}
 			}
 
+			
+			// Now we have all of our "formal data", let's go get the "actual data"
 			Map<Integer, AnswerMap> answersForAllAudits = auditDataDao
-					.findAnswers(theseAudits, questionIDs);
+					.findAnswersQuestionList(theseAudits, questions);
 
 			for (Integer thisAuditId : answersForAllAudits.keySet()) {
-
+				// We're looking at all the answers to additionalInsured questions for a given auditID
+				// First use the anchor column "aiName" to see if it applies to this operator
+				// Then add the other fields if necessary
 				Map<String, AuditQuestion> byUniqueCode = questionsKeyedByUniqueKey
 						.get(theseAuditTypes.get(thisAuditId));
 
@@ -167,27 +216,25 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 						byAuditId.put(thisAuditId, answers);
 					}
 
-					if (aiNameAnswer != null) {
+					// find get all the operator's legal names
+					if (permissions.isOperator()) {
+						OperatorAccount thisOp = (OperatorAccount) getUser()
+								.getAccount();
 
-						// find get all the operator's legal names
-						if (getUser().getAccount().isOperator()) {
-							OperatorAccount thisOp = (OperatorAccount) getUser()
-									.getAccount();
+						List<AccountName> names = thisOp.getNames();
 
-							List<AccountName> names = thisOp.getNames();
-
-							if (names != null) {
-								for (AccountName accountName : names) {
-									if (accountName.getName().equalsIgnoreCase(
-											aiNameAnswer.getAnswer())) {
-										answers.add(aiNameAnswer);
-									}
+						if (names != null) {
+							for (AccountName accountName : names) {
+								if (accountName.getName().equalsIgnoreCase(
+										aiNameAnswer.getAnswer())) {
+									answers.add(aiNameAnswer);
+									break;
 								}
 							}
-
 						}
 
 					}
+
 				}
 			}
 
@@ -238,52 +285,5 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 		}
 	}
 
-	protected void loadQuestionsByUniqueCode(List<AuditQuestion> questions) {
-		questionsKeyedByUniqueKey = new HashMap<String, Map<String, AuditQuestion>>();
-
-		for (AuditQuestion question : questions) {
-			String auditTypeName = question.getSubCategory().getCategory()
-					.getAuditType().getAuditName();
-
-			Map<String, AuditQuestion> forThisType = questionsKeyedByUniqueKey
-					.get(auditTypeName);
-
-			if (forThisType == null) {
-				forThisType = new HashMap<String, AuditQuestion>();
-				questionsKeyedByUniqueKey.put(auditTypeName, forThisType);
-			}
-
-			forThisType.put(question.getUniqueCode(), question);
-		}
-	}
-
-	protected void loadLimits(List<Integer> theseAudits,
-			Map<Integer, List<AuditData>> limits) {
-		List<AuditData> answers = auditDataDao
-				.findAnswersByAuditAndSubCategory(theseAudits, "Policy Limits");
-
-		// if we got data, populate the "limits" section of our map
-		if (answers != null && answers.size() > 0) {
-
-			limits = new HashMap<Integer, List<AuditData>>();
-			questionData.put("limits", limits);
-		}
-
-		// add the answers, keyed by auditid
-		for (AuditData answer : answers) {
-			int tempId = answer.getAudit().getId();
-
-			List<AuditData> dataForThisAudit = limits.get(tempId);
-
-			if (dataForThisAudit == null) {
-
-				dataForThisAudit = new Vector<AuditData>();
-				limits.put(tempId, dataForThisAudit);
-			}
-
-			dataForThisAudit.add(answer);
-		}
-	}
-	
 	
 }
