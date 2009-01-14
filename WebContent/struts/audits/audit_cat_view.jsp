@@ -14,7 +14,7 @@
 </span>
 
 <span class="answerDisplay">
-	<s:if test="#q.questionType == 'File'">
+	<s:if test="#q.questionType.startsWith('File')">
 		<s:if test="#a.id > 0 && #a.answer.length() > 0">
 			<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&answer.id=<s:property value="#a.id"/>" 
 				target="_BLANK">View File</a>
@@ -26,13 +26,12 @@
 		<s:if test="#q.questionType == 'License'">
 			<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />
 		</s:if>
-		<s:if test="#q.showComment && #a.comment.length() > 0">
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment: <s:property value="#a.comment"/>
-		</s:if>
 	</s:else>
-
+	<s:if test="#a.commentLength">
+		<br/>&nbsp;&nbsp;<span style="font-weight: normal">Comment: <s:property value="#a.comment"/></span>
+	</s:if>
 	<span id="showText_<s:property value="#a.id"/>" style="display: none" class="verified">
-		Answer changed on <s:date name="dateVerified" format="MMM d, yyyy" />
+		Answer changed on <s:date name="#a.dateVerified" format="MMM d, yyyy" />
 	</span>
 </span>
 

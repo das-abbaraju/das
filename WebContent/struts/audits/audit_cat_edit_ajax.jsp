@@ -6,5 +6,4 @@
 <s:if test="#q.allowMultipleAnswers">
 	<s:set name="parentAnswer" value="auditData" />
 </s:if>
-
 <s:include value="audit_cat_edit.jsp"></s:include>

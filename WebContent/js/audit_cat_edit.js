@@ -1,46 +1,74 @@
-function changeAnswer(answerid, questionid, questionType) {
-	var elm;
-	
-	if (questionType == 'Radio' || questionType == 'Yes/No' || questionType == 'Yes/No/NA') {
-		var selector = "input[type=radio][name='verifiedAnswer_"+questionid+"'][value='"+value+"']";
-		elm = $$(selector)[0];
-	}
-	else if(questionType == 'Check Box') {
-		elm = $('verifiedBox_'+questionid).checked;
-	}
-	else {		
-		elm = $('verifiedBox_'+questionid);
-	}
-}
-
-function saveComment(answerid, questionid, parentid, elm) {
+function verifyAnswer(questionid, answerid, parentid) {
 	if (catDataID == 0) return;
-
-	startThinking({div:'thinking_' + questionid});
-
-	var comment = $F($('comments_' + questionid));
-	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.id=' + questionid + '&auditData.parentAnswer.id=' + parentid + '&auditData.comment=' + comment;
-	var divId = questionid + '' + parentid;
-	var divName = 'status_'+divId;
+	if (parentid == null || parentid == '')
+		parentid = 0;
 	
-	var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
+	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.id=' + questionid 
+	+ '&auditData.id='+answerid+'&auditData.parentAnswer.id='+parentid+'&toggleVerify=true';
+	
+	var myAjax = new Ajax.Updater('','AuditToggleVerifyAjax.action', 
 	{
 		method: 'post', 
 		parameters: pars,
 		onSuccess: function(transport) {
 			if (transport.status == 200)
-				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-			else
-				alert("Did not get a response from server, may not have saved data" + transport.statusText + transport.responseText);
+
+				$('verify_details_' + questionid).toggle();
+				var json = transport.responseText.evalJSON();
 				
-				stopThinking({div:'thinking_' + questionid});
+				if( json.who ) {
+					$('verifyButton_' + questionid ).value = 'Unverify';
+					$('verify_details_' + questionid).innerHTML = 'Verified on ' + json.dateVerified + ' by ' + json.who;
+				} else {
+					$('verifyButton_' + questionid ).value = 'Verify';
+				}
+
+				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 		}
 	});
 }
 
+
+function saveComment(divId, elm) {
+	if (catDataID == 0) return;
+
+	var	answerid = $(divId + '_answerID').value;
+	var	questionid = $(divId + '_questionID').value;
+	var	parentid = $(divId + '_parentAnswerID').value;
+	var	allowMultiple = $(divId + '_multiple').value;
+	var pars = 'catDataID='+catDataID+'&auditData.audit.id='+auditID;
+	
+	if (answerid > 0) 
+		pars += '&auditData.id='+answerid;
+	
+
+	pars += '&auditData.question.id=' + questionid;
+	if (parentid > 0)
+		pars += '&auditData.parentAnswer.id=' + parentid;
+
+	pars += '&auditData.comment=' + escape(elm.value);
+	
+	startThinking({div:'thinking_' + divId, message: "Saving Comment"});
+	var myAjax = new Ajax.Updater('', 'AuditDataSaveAjax.action', 
+	{
+		method: 'post', 
+		parameters: pars,
+		onException: function(request, exception) {
+			alert(exception.message);
+		},
+		onSuccess: function(transport) {
+			stopThinking({div:'thinking_' + divId});
+			if (transport.status == 200)
+				new Effect.Highlight($('comment_'+divId),{duration: 0.75, startcolor:'#FFFF11'});
+			else
+				alert("Failed to save answer" + transport.statusText + transport.responseText);
+		}
+	});
+	return true;
+}
+
 function saveAnswer(divId, elm) {
 	if (catDataID == 0) return;
-	
 	var	answerid = $(divId + '_answerID').value;
 	var	questionid = $(divId + '_questionID').value;
 	var	parentid = $(divId + '_parentAnswerID').value;
@@ -66,17 +94,17 @@ function saveAnswer(divId, elm) {
 	var thevalue = '';
 	if( elm.type == 'checkbox') {
 		if(
-			( elm.name == ('question_' + divId + '_C') || elm.name == ('question_' + divId + '_S') )
-			&& ( document.getElementById('question_' + divId + '_C') != undefined 
-			&& document.getElementById('question_' + divId + '_S') != undefined)  
+			( elm.name == ('answer' + divId + '_C') || elm.name == ('answer' + divId + '_S') )
+			&& ( document.getElementById('answer' + divId + '_C') != undefined 
+			&& document.getElementById('answer' + divId + '_S') != undefined)  
 			) {
-
-				if( document.getElementById('question_' + divId + '_C').checked )
+				
+				if( document.getElementById('answer' + divId + '_C').checked )
 				{
 					thevalue = thevalue + 'C';
 				}
 								
-				if( document.getElementById('question_' + divId + '_S').checked )
+				if( document.getElementById('answer' + divId + '_S').checked )
 				{
 					thevalue = thevalue + 'S';
 				}
@@ -98,7 +126,6 @@ function saveAnswer(divId, elm) {
 	pars += '&auditData.answer=' + thevalue;
 	
 	startThinking({div:'thinking_' + divId, message: "Saving Answer"});
-	
 	var myAjax = new Ajax.Updater(divName, 'AuditDataSaveAjax.action', 
 	{
 		method: 'post', 
@@ -180,4 +207,14 @@ function reloadQuestion(answerid, questionid, parentid) {
 			new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#F3F3F3'});
 		}
 	});
+}
+
+function changeAuditStatus(id, auditStatus) {
+	var pars = 'auditID='+id+'&auditStatus='+auditStatus;
+	var myAjax = new Ajax.Updater('','ContractorAuditSaveAjax.action', 
+	{
+		method: 'post', 
+		parameters: pars
+	});
+	return false;
 }

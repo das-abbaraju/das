@@ -6,7 +6,7 @@
 		</s:if>
 	</s:if>
 	<s:else>
-		<s:if test="viewBlanks || answer.length() > 0">
+		<s:if test="viewBlanks || #a.answer.length() > 0">
 			<s:include value="audit_cat_view.jsp"></s:include>
 		</s:if>
 	</s:else>
@@ -17,8 +17,8 @@
 	</s:if>
 </s:if>
 <s:if test="mode == 'Verify'">
-	<s:if test="answer.length() > 0">	
-		<s:include value="audit_cat_verify.jsp"></s:include>
+	<s:if test="#a.answer.length() > 0">
+		<s:include value="audit_cat_edit.jsp"></s:include>
 	</s:if>
 </s:if>
 <s:if test="mode == 'ViewQ'">

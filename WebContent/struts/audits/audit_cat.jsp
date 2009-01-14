@@ -97,9 +97,6 @@
 										</div>
 									</s:else>
 								</s:if>
-								
-								
-								
 							</s:if>
 						</s:iterator>
 					</div>
@@ -113,6 +110,13 @@
 </s:iterator>
 <s:if test="catDataID > 0">
 <br clear="all"/>
+
+<s:if test="mode == 'Verify'">
+	<div class="buttons">
+		<button class="positive" name="button" onclick="changeAuditStatus(<s:property value="auditID"/>,'Active');">Approve</button>
+		<button class="negative" name="button" onclick="changeAuditStatus(<s:property value="auditID"/>,'Pending');">Reject</button>
+	</div>
+</s:if>
 <div class="buttons" style="float: right;">
 	<s:if test="nextCategory == null">
 		<a href="Audit.action?auditID=<s:property value="auditID"/>" class="positive">Next &gt;&gt;</a>

@@ -81,8 +81,8 @@
 			onchange="saveAnswer('%{#divID}', this);"/>
 	</s:if>
 	<s:if test="#q.questionType == 'Additional Insured'">
-		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="30" 
-			onchange="saveAnswer('%{#divID}', this);"/>
+		<s:select list="legalNames" value="%{#a.answer}" name="answer%{#divID}" 
+			onchange="saveAnswer('%{#divID}', this);"></s:select>
 	</s:if>
 	<s:if test="#q.questionType == 'Date'">
 		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="8" 
@@ -121,17 +121,16 @@
 	</s:if>
 	<s:if test="#q.questionType == 'Money'">
 		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="19" 
-			onchange="validateNumber(this, 'Question %{#q.number}');
-			document.MM_returnValue && saveAnswer('%{#divID}', this);" />
+			onchange="saveAnswer('%{#divID}', this);" />
 	</s:if>
 	<s:if test="#q.questionType == 'Decimal Number'">
 		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="19" 
-			onchange="var temp = parseFloat($('%{'answer_answer_'.concat(#divID)}').value).toFixed(3); if( temp == 'NaN' ) temp = ''; $('%{'answer_answer_'.concat(#divID)}').value = temp; validateDecimal('answer_answer_%{id}','Question %{number}'); document.MM_returnValue && saveAnswer('%{#divID}', this)" />
+			onchange="saveAnswer('%{#divID}', this)" />
 	</s:if>
 	<s:if test="#q.questionType == 'Service'">
-		<nobr><s:checkbox fieldValue="C" value="#a.answer.indexOf('C') != -1" name="answer%{#divID}" 
+		<nobr><s:checkbox fieldValue="C" value="%{#a.answer.indexOf('C') != -1}" name="answer%{#divID}_C" 
 			onclick="saveAnswer('%{#divID}', this);" /> C</nobr>
-		<nobr><s:checkbox fieldValue="S" value="#a.answer.indexOf('S') != -1" name="answer%{#divID}" 
+		<nobr><s:checkbox fieldValue="S" value="%{#a.answer.indexOf('S') != -1}" name="answer%{#divID}_S" 
 			onclick="saveAnswer('%{#divID}', this);" /> S</nobr>
 	</s:if>
 	<s:if test="#q.questionType == 'Radio'">
@@ -146,18 +145,38 @@
 					target="_BLANK">View File</a>
 			</s:if>
 			<s:else>File Not Uploaded</s:else>
-			<s:if test="catDataID > 0">
 			<input id="show_button_<s:property value="#q.id"/>" type="button" 
 				value="<s:if test="#a.id > 0 && #a.answer.length() > 0">Edit</s:if><s:else>Add</s:else> File" 
-				onclick="showFileUpload(<s:property value="#q.id"/>, '<s:property value="#a.parentAnswer.id"/>');"
+				onclick="showFileUpload('<s:property value="#a.id"/>', <s:property value="#q.id"/>, '<s:property value="#a.parentAnswer.id"/>');"
 				title="Opens in new window (please disable your popup blocker)" />
-			</s:if>
 		</nobr>
 	</s:if>
-	<s:if test="#q.showComment">
-		<br>Comments: <s:textfield id="comments_%{#divID}" name="comment" size="30" 
-			onblur="javascript:saveComment(%{#divID}, this);"/>
+	
+	<s:if test="mode == 'Verify'">
+		<s:if test="#a.verified == true">
+			<s:set name="verifyText" value="'Unverify'" />
+			<s:set name="verifyDetailDisplay" value="'inline'" />
+		</s:if>
+		<s:else>
+			<s:set name="verifyText" value="'Verify'" />
+			<s:set name="verifyDetailDisplay" value="'none'" />
+		</s:else>
+
+		<br/><input id="verifyButton_<s:property value="#q.id"/>" type="submit" onclick="return verifyAnswer(<s:property value="#q.id"/>, <s:property value="#a.id"/>, '<s:property value="#parentAnswer.id"/>');"
+		value="<s:property value="#attr.verifyText"/>" />
+
+		<span id="verify_details_<s:property value="#q.id"/>"
+		style='display: <s:property value ="#attr.verifyDetailDisplay"/>;'
+		class="verified">Verified on <s:date name="#a.dateVerified"
+		format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" /></span>
 	</s:if>
+	
+	<s:div id="comment_%{#divID}">
+		<s:if test="#q.showComment || mode == 'Verify'">
+			<br/>Comments: <s:textfield value="%{#a.comment}" size="30" 
+			onchange="javascript:saveComment('%{#divID}', this);"/>
+		</s:if>
+	</s:div>
 </div>
 
 <s:if test="#a.hasRequirements">
@@ -167,7 +186,7 @@
 			<span class="unverified">Open</span>
 		</s:if>
 		<s:else>
-			<span class="verified">Closed on <s:date name="dateVerified" format="MMM d, yyyy" /></span>
+			<span class="verified">Closed on <s:date name="#a.dateVerified" format="MMM d, yyyy" /></span>
 		</s:else>
 		
 		<br>
@@ -181,5 +200,5 @@
 		</s:if>
 	</span>
 </s:if>
-
 <br clear="all" />
+<s:include value="../actionMessages.jsp" />
