@@ -99,4 +99,8 @@ public class AnswerMapByAudits {
 			data.get(audit).resetFlagColors();
 		}
 	}
+	
+	public Set<ContractorAudit> getAuditSet() {
+		return data.keySet();
+	}
 }
