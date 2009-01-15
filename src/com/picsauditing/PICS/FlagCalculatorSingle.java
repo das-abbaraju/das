@@ -5,8 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -26,6 +29,7 @@ import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.AnswerMapByAudits;
 
 /**
  * Determine the Flag color for a single contractor at a given facility. This
@@ -42,6 +46,8 @@ public class FlagCalculatorSingle {
 	private OperatorAccount operator;
 	private List<ContractorAudit> conAudits;
 	//private Map<Integer, Map<String, AuditData>> auditAnswers;
+	private AnswerMapByAudits answerMapByAudits;
+	
 	private AnswerMap answerMap;
 
 	/**
@@ -217,42 +223,42 @@ public class FlagCalculatorSingle {
 		//TODO Use the getEmrs() map for the EMR data for the last 3 years.
 		Map<ContractorAudit, AnswerMap> auditAnswerMap = new HashMap<ContractorAudit, AnswerMap>();
 		
+		
 		for(AnswerMap answers : auditAnswerMap.values()) {
 			answers.resetFlagColors();
 		}
 		
-		for (Map<String, AuditData> tempMap : auditAnswers.values()) {
-			for (AuditData data : tempMap.values()) {
-				// The flag colors should always start Green, but sometimes they
-				// are still set from the previous operator's loop
-				data.setFlagColor(null);
-			}
-		}
 
 		// For each operator criteria, get the contractor's
 		// answer and see if it triggers the flag color
 		for (FlagQuestionCriteria criteria : operator.getFlagQuestionCriteria()) {
 			if (criteria.getChecked().equals(YesNo.Yes)) {
 				// This question is required by the operator
-				answerMap.get(criteria.getAuditQuestion().getId());
-				
+
+				AuditQuestion thisQuestion = criteria.getAuditQuestion();
 				AuditType criteriaAuditType = criteria.getAuditQuestion().getSubCategory().getCategory().getAuditType();
-				if (regular answer)
-					evaluate based on critera
+
 				
-				if (criteria.getMultiYearScope() is set)
-					find all audits matching auditType
-					
-				if (criteria question is a tuple)
-					auditAnswerMap.get(null).getAnswerList(questionID);
-					get the list of answers for that this anchor question
-					for each answer evaluate it based on criteria
+				//normal question
+				if( ! thisQuestion.isAllowMultipleAnswers() && CollectionUtils.isEmpty( thisQuestion.getChildQuestions() ) ) {
+//					evaluate based on critera
+				}
+				else if( criteria.getMultiYearScope() != null ) {  // multiyear scope is set
+//					find all audits matching auditType					
+				}
+				else if( thisQuestion.isAllowMultipleAnswers() ) { // if (criteria question is a tuple)
+
+//					auditAnswerMap.get(null).getAnswerList( thisQuestion.getId() );
+//					get the list of answers for that this anchor question
+//					for each answer evaluate it based on criteria
+				}
+				else if( thisQuestion.getParentQuestion() != null ) {//if (criteria question has a parent)
+//					auditAnswerMap.get(null).getAnswerList( thisQuestion.getParentQuestion().getId() );
+//					get the list of answers for that parent question
+//					for each parentAnswer get the childAnswer and evaluate it based on criteria
+				}
 				
-				if (criteria question has a parent)
-					auditAnswerMap.get(null).getAnswerList(parentQuestionID);
-					get the list of answers for that parent question
-					for each parentAnswer get the childAnswer and evaluate it based on criteria
-					
+				
 				
 				for(ContractorAudit conAudit : auditAnswerMap.keySet()) {
 					if (criteriaAuditType.equals(conAudit.getAuditType())) {
@@ -615,4 +621,11 @@ public class FlagCalculatorSingle {
 		this.answerMap = answerMap;
 	}
 
+	public AnswerMapByAudits getAnswerMapByAudits() {
+		return answerMapByAudits;
+	}
+
+	public void setAnswerMapByAudits(AnswerMapByAudits answerMapByAudits) {
+		this.answerMapByAudits = answerMapByAudits;
+	}
 }

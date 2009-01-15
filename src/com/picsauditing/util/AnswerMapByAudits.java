@@ -1,9 +1,13 @@
 package com.picsauditing.util;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
+import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class AnswerMapByAudits {
@@ -12,18 +16,54 @@ public class AnswerMapByAudits {
 	
 	public AnswerMapByAudits() {}
 	
-	private AnswerMapByAudits( AnswerMapByAudits toCopy ) {
+	public AnswerMapByAudits( AnswerMapByAudits toCopy ) {
 		for( ContractorAudit audit : toCopy.data.keySet() ) {
 			AnswerMap mapCopy = new AnswerMap(toCopy.get( audit ));
 			put( audit, mapCopy );
 		}
 	}
 	
-	private AnswerMapByAudits( AnswerMapByAudits toCopy, OperatorAccount operator) {
-		this( toCopy );
+	public AnswerMapByAudits( AnswerMapByAudits toCopy, OperatorAccount operator) {
+		if( Boolean.parseBoolean("true")) {
+			throw new RuntimeException( "remember to put in the precedence logic for two audits of the same type for the same contractor");	
+		}
+
+		for( ContractorAudit audit : toCopy.data.keySet() ) {
+			AnswerMap mapCopy = new AnswerMap(toCopy.get( audit ), operator );
+			put( audit, mapCopy );
+		}
 		
+		Set<ContractorAudit> auditSet = new HashSet<ContractorAudit> ( data.keySet() );
 		
-		
+		for( ContractorAudit audit : auditSet ) {
+			for( ContractorOperator contractorOperator : operator.getContractorOperators() ) {
+				if( "Y".equals( contractorOperator.getWorkStatus() ) ) {
+
+					boolean canSee = false;
+					
+					//check that they can see it
+					for( AuditOperator auditOperator : operator.getAudits() ) {
+						if( auditOperator.getAuditType().equals(audit.getAuditType())) {
+							if( auditOperator.isCanSee() ) {
+								canSee = true;	
+							}
+							break;
+						}
+					}
+					
+					if( canSee ) {
+
+						
+					}
+					else {
+						remove( audit );
+					}
+				}
+				else {
+					remove( audit );
+				}
+			}
+		}		
 		
 	}
 	
