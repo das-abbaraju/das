@@ -14,10 +14,13 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -42,6 +45,7 @@ public class FlagCalculator2 {
 	private OperatorAccountDAO operatorDAO;
 	private ContractorAccountDAO contractorDAO;
 	private ContractorAuditDAO conAuditDAO;
+	private ContractorAuditOperatorDAO caoDAO;
 	private AuditDataDAO auditDataDAO;
 	private ContractorOperatorFlagDAO coFlagDAO;
 	protected AppPropertyDAO appPropDao = null;
@@ -54,13 +58,14 @@ public class FlagCalculator2 {
 
 	public FlagCalculator2(OperatorAccountDAO operatorDAO, ContractorAccountDAO contractorDAO,
 			ContractorAuditDAO conAuditDAO, AuditDataDAO auditDataDAO, ContractorOperatorFlagDAO coFlagDAO,
-			AppPropertyDAO appProps) {
+			AppPropertyDAO appProps, ContractorAuditOperatorDAO caoDAO ) {
 		this.operatorDAO = operatorDAO;
 		this.contractorDAO = contractorDAO;
 		this.conAuditDAO = conAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.coFlagDAO = coFlagDAO;
 		this.appPropDao = appProps;
+		this.caoDAO = caoDAO;
 	}
 
 	public void runAll() {
@@ -251,6 +256,17 @@ public class FlagCalculator2 {
 
 			WaitingOn waitingOn = calcSingle.calculateWaitingOn();
 
+			for( ContractorAudit audit : answerMapByAudits.getAuditSet() ) {
+				
+				for( ContractorAuditOperator cao : audit.getOperators() ) {
+					if( cao.getStatus() == CaoStatus.Missing ) {
+						CaoStatus recommendedStatus = calcSingle.calculateCaoRecommendedStatus(cao);
+						cao.setRecommendedStatus(recommendedStatus);
+						caoDAO.save(cao);
+					}
+				}
+				
+			}
 			
 			try {
 				coFlag = contractor.getFlags().get(operator);
