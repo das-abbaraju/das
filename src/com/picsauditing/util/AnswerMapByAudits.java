@@ -93,4 +93,9 @@ public class AnswerMapByAudits {
 		if( audit != null ) 
 			data.remove(audit);
 	}
+
+	public void resetFlagColors() {
+		// TODO Auto-generated method stub
+		
+	}
 }
