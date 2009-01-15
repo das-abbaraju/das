@@ -95,7 +95,8 @@ public class AnswerMapByAudits {
 	}
 
 	public void resetFlagColors() {
-		// TODO Auto-generated method stub
-		
+		for( ContractorAudit audit : data.keySet() ) {
+			data.get(audit).resetFlagColors();
+		}
 	}
 }
