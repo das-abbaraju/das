@@ -17,12 +17,14 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.AnswerMapByAudits;
 
 /**
  * Business Engine used to calculate the flag color for a contractor at a given
@@ -221,13 +223,21 @@ public class FlagCalculator2 {
 		FlagCalculatorSingle calcSingle = new FlagCalculatorSingle();
 		calcSingle.setDebug(debug);
 
+		List<ContractorAudit> nonExpiredByContractor = conAuditDAO.findNonExpiredByContractor(contractor.getId());
+		
 		calcSingle.setContractor(contractor);
-		calcSingle.setConAudits(conAuditDAO.findNonExpiredByContractor(contractor.getId()));
+		
+		calcSingle.setConAudits(nonExpiredByContractor);
 		calcSingle.setAuditAnswers(auditDataDAO.findAnswersByContractor(contractor.getId(), questionIDs));
-
+		
+		AnswerMapByAudits answerMapByAudits = auditDataDAO.findAnswersByAudits( nonExpiredByContractor, questionIDs );
+		
+		
 		for (OperatorAccount operator : operators) {
-			// OperatorAccount operator = operators.get(0);
-
+			
+			//prune our answermapMAP for this operator
+			calcSingle.setAnswerMapByAudits(new AnswerMapByAudits(answerMapByAudits, operator));
+			
 			calcSingle.setOperator(operator);
 			//calcSingle.setDebug(true);
 			// Calculate the color of the flag right here
