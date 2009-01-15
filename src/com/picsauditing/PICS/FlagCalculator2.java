@@ -235,7 +235,9 @@ public class FlagCalculator2 {
 		
 		for (OperatorAccount operator : operators) {
 			
-			//prune our answermapMAP for this operator
+			//prune our answermapMAP for this operator (take out audits they can't see, and answers to questions they shouldn't see)
+			//also note that this uses the copy constructor, so our local variable answerMapByAUdits is not affected by pruning 
+			//on each run through the "operators" list.
 			calcSingle.setAnswerMapByAudits(new AnswerMapByAudits(answerMapByAudits, operator));
 			
 			calcSingle.setOperator(operator);
