@@ -9,7 +9,7 @@ import com.picsauditing.util.SpringUtils;
 
 public class EmailSender extends GMailSender {
 	private static int currentDefaultSender = 1;
-	private static final int NUMBER_OF_GMAIL_ACOUNTS = 6;
+	private static final int NUMBER_OF_GMAIL_ACOUNTS = 12;
 	private static String defaultPassword = "e3r4t5";
 	private EmailQueueDAO emailQueueDAO = null;
 
