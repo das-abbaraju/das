@@ -133,6 +133,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			co.setFlag(newFlag);
 		}
 
+
+		calculator.setAnswerMapByAudits(new AnswerMapByAudits(answerMapByAudits, co.getOperatorAccount()));
+
+		
 		FlagColor newColor = calculator.calculate();
 		if (newColor != null && !newColor.equals(co.getFlag().getFlagColor()))
 			co.getFlag().setLastUpdate(new Date());
