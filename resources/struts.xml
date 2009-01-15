@@ -132,6 +132,11 @@
 			</result>
 		</action>
 
+		<action name="ContractorPaymentOptions"
+			class="com.picsauditing.actions.contractors.ContractorPaymentOptions">
+			<result>struts/contractors/con_payment_options.jsp</result>
+		</action>
+		
 		<action name="ContractorNotes"
 			class="com.picsauditing.actions.contractors.ContractorNote">
 			<result>struts/contractors/con_notes.jsp</result>
