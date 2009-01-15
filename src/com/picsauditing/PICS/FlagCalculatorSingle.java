@@ -1,11 +1,11 @@
 package com.picsauditing.PICS;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.collections.CollectionUtils;
+import java.util.Set;
 
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
@@ -14,7 +14,6 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.CaoStatus;
-import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -45,10 +44,7 @@ public class FlagCalculatorSingle {
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
 	private List<ContractorAudit> conAudits;
-	//private Map<Integer, Map<String, AuditData>> auditAnswers;
 	private AnswerMapByAudits answerMapByAudits;
-	
-	private AnswerMap answerMap;
 
 	/**
 	 * 1) Check to see all required audits are there 2) OSHA Data 3)
@@ -220,147 +216,111 @@ public class FlagCalculatorSingle {
 		}
 		debug(" flagColor=" + flagColor);
 		
-		//TODO Use the getEmrs() map for the EMR data for the last 3 years.
-		Map<ContractorAudit, AnswerMap> auditAnswerMap = new HashMap<ContractorAudit, AnswerMap>();
+		answerMapByAudits.resetFlagColors();
 		
-		
-		for(AnswerMap answers : auditAnswerMap.values()) {
-			answers.resetFlagColors();
-		}
-		
-
 		// For each operator criteria, get the contractor's
 		// answer and see if it triggers the flag color
 		for (FlagQuestionCriteria criteria : operator.getFlagQuestionCriteria()) {
 			if (criteria.getChecked().equals(YesNo.Yes)) {
 				// This question is required by the operator
 
-				AuditQuestion thisQuestion = criteria.getAuditQuestion();
-				AuditType criteriaAuditType = criteria.getAuditQuestion().getSubCategory().getCategory().getAuditType();
-
+				FlagColor criteriaColor = null;
+				AuditQuestion criteriaQuestion = criteria.getAuditQuestion();
+				AuditType criteriaAuditType = criteriaQuestion.getSubCategory().getCategory().getAuditType();
 				
-				//normal question
-				if( ! thisQuestion.isAllowMultipleAnswers() && CollectionUtils.isEmpty( thisQuestion.getChildQuestions() ) ) {
-//					evaluate based on critera
-				}
-				else if( criteria.getMultiYearScope() != null ) {  // multiyear scope is set
-//					find all audits matching auditType					
-				}
-				else if( thisQuestion.isAllowMultipleAnswers() ) { // if (criteria question is a tuple)
-
-//					auditAnswerMap.get(null).getAnswerList( thisQuestion.getId() );
-//					get the list of answers for that this anchor question
-//					for each answer evaluate it based on criteria
-				}
-				else if( thisQuestion.getParentQuestion() != null ) {//if (criteria question has a parent)
-//					auditAnswerMap.get(null).getAnswerList( thisQuestion.getParentQuestion().getId() );
-//					get the list of answers for that parent question
-//					for each parentAnswer get the childAnswer and evaluate it based on criteria
-				}
+				List<ContractorAudit> matchingConAudits = answerMapByAudits.getAuditSet(criteriaAuditType);
 				
-				
-				
-				for(ContractorAudit conAudit : auditAnswerMap.keySet()) {
-					if (criteriaAuditType.equals(conAudit.getAuditType())) {
-						// We have an audit that may contain the answer to our question
-						auditAnswerMap.get(conAudit).get(criteria.getAuditQuestion().getId());
-					}
-				}
-				Map<String, AuditData> answerMap = auditAnswers.get(criteria.getAuditQuestion().getId());
-				
-				if (answerMap != null && answerMap.size() > 0) {
-					// The contractor has answered this question so it needs
-					// to be correct
-					if (answerMap.size() == 1) {
-						AuditData data = null;
-						for (AuditData data2 : answerMap.values())
-							data = data2;
-
-						flagColor = flagData(flagColor, criteria, data);
-					} else {
-						// We have multiple answers, this could be EMR
-						//for (AuditData data : answerMap.values()) {
-						//	data.setFlagColor(null);
-						//}
-						MultiYearScope scope = criteria.getMultiYearScope();
+				if (matchingConAudits.size() > 0) {
+					MultiYearScope scope = criteria.getMultiYearScope();
+					if( scope != null ) {
 						if (MultiYearScope.LastYearOnly.equals(scope)) {
 							AuditData data = null;
 
 							// Get the most recent year
 							int mostRecentYear = 0;
-							for (String yearString : answerMap.keySet()) {
+							for (ContractorAudit conAudit : matchingConAudits) {
 								try {
-									int year = Integer.parseInt(yearString);
+									int year = Integer.parseInt(conAudit.getAuditFor());
 									if (year > mostRecentYear) {
 										mostRecentYear = year;
-										data = answerMap.get(yearString);
+										data = answerMapByAudits.get(conAudit).get(criteriaQuestion.getId());
 									}
 								} catch (Exception e) {
-									System.out.println("Ignoring answer with year key: " + yearString);
+									System.out.println("Ignoring answer with year key: " + conAudit.getAuditFor());
 								}
 							}
-							flagColor = flagData(flagColor, criteria, data);
+							criteriaColor = flagData(criteriaColor, criteria, data);
 
 						} else if (MultiYearScope.AllThreeYears.equals(scope)) {
-							for (AuditData data : answerMap.values()) {
-								flagColor = flagData(flagColor, criteria, data);
+							for (ContractorAudit conAudit : matchingConAudits) {
+								AuditData data = answerMapByAudits.get(conAudit).get(criteriaQuestion.getId());
+								criteriaColor = flagData(criteriaColor, criteria, data);
 							}
 
 						} else if (MultiYearScope.ThreeYearAverage.equals(scope)) {
-							AuditData.addAverageData(answerMap);
-							AuditData data = answerMap.get(OshaAudit.AVG);
-							flagColor = flagData(flagColor, criteria, data);
+							List<AuditData> dataList = new ArrayList<AuditData>();
+							for (ContractorAudit conAudit : matchingConAudits) {
+								AuditData data = answerMapByAudits.get(conAudit).get(criteriaQuestion.getId());
+								dataList.add(data);
+							}
+							AuditData data = AuditData.addAverageData(dataList);
+							criteriaColor = flagData(criteriaColor, criteria, data);
+
+						}
+
+					} else {
+						if (criteria.getMultiYearScope() == null && matchingConAudits.size() > 1)
+							System.out.println("WARNING! Found more than one " + criteriaAuditType.getAuditName() 
+									+ " for conID=" + contractor.getId());
+						AnswerMap answerMap = answerMapByAudits.get(matchingConAudits.get(0));
+						
+						if(criteriaQuestion.isAllowMultipleAnswers() ) {
+							// this question is an anchor question that can have multiple answers
+							// figure out if we should be optimistic or pessimistic here
+							// I'm not going to spend much time on this 
+							// because there are no existing use cases of using this yet
+							for(AuditData data : answerMap.getAnswerList(criteriaQuestion.getId()))
+								criteriaColor = flagData(criteriaColor, criteria, data);
+							
+						} else if( criteriaQuestion.getParentQuestion() != null ) {
+							// These questions are "child" questions, so we must first find their parent
+							for(AuditData parentData : answerMap.getAnswerList(criteriaQuestion.getParentQuestion().getId())) {
+								// For each row, get the child answer and evaluate it
+								AuditData data = answerMap.get(criteriaQuestion.getId(), parentData.getId());
+								criteriaColor = flagData(criteriaColor, criteria, data);
+							}
 
 						} else {
-							// This shouldn't happen
-							System.out.println("We have more than answer for "
-									+ criteria.getAuditQuestion().getQuestion() + " and scope '" + scope
-									+ "' is not defined");
-							return FlagColor.Red;
+							// DEFAULT : this is a normal (root/non child/non multiple) question
+							AuditData data = answerMap.get(criteriaQuestion.getId());
+							criteriaColor = flagData(criteriaColor, criteria, data);
 						}
 					}
+				} // if matchingConAudits.size() > 0
+				
+				// Criteria for Policies don't affect the flag color, 
+				// but the ContractorAuditOperator.recommendedStatus instead
+				boolean isPolicyCriteria = criteriaAuditType.getClassType().equals(AuditTypeClass.Policy);
+
+				if (isPolicyCriteria) {
+					// Update the CAO Recommended Status
+					// If null or Amber, then set to Missing
+					CaoStatus caoStatus = CaoStatus.Missing;
+					if (criteriaColor.equals(FlagColor.Red))
+						caoStatus = CaoStatus.Rejected;
+					if (criteriaColor.equals(FlagColor.Green))
+						caoStatus = CaoStatus.Approved;
+					
+				} else {
+					// Update the Flag color
+					flagColor = setFlagColor(flagColor, criteriaColor);
 				}
+				
 				if (answerOnly && flagColor.equals(FlagColor.Red))
 					// Things can't get worse, just exit
 					return flagColor;
 			} // if criteria.isChecked...
 		} // for
-		debug(" flagColor=" + flagColor);
-
-		// Calculate the insurance certificate flags colors
-		if (operator.getCanSeeInsurance().equals(YesNo.Yes)) {
-			FlagColor certFlagColor = null;
-
-			for (Certificate certificate : contractor.getCertificates()) {
-				if (certificate.getOperatorAccount().equals(operator)) {
-					debug(" -- certificate" + certificate.getType() + " " + certificate.getOperatorAccount().getName());
-					certFlagColor = setFlagColor(certFlagColor, certificate.getFlagColor());
-
-					if (answerOnly && certFlagColor != null && certFlagColor.equals(FlagColor.Red))
-						// Things can't get worse, just exit
-						return certFlagColor;
-				}
-			}
-
-			if (certFlagColor == null) {
-				certFlagColor = FlagColor.Red;
-				if (!answerOnly) {
-					// Display the "No Approved Certificates" on the screen
-					Certificate certificate = new Certificate();
-					certificate.setFlagColor(FlagColor.Red);
-					certificate.setType("No Approved Certificates");
-					certificate.setOperatorAccount(operator);
-					certificate.setContractorAccount(contractor);
-					certificate.setStatus(""); // This has no status because
-					// it's not a real cert
-					contractor.getCertificates().add(certificate);
-				}
-			}
-
-			flagColor = setFlagColor(flagColor, certFlagColor);
-			debug(" flagColor=" + flagColor);
-		}
-
 		debug(" flagColor=" + flagColor);
 
 		if (overrideColor != null)
@@ -372,8 +332,7 @@ public class FlagCalculatorSingle {
 	private FlagColor flagData(FlagColor flagColor, FlagQuestionCriteria criteria, AuditData data) {
 		if (data != null && data.getAnswer() != null && data.getAnswer().length() > 0) {
 			// The contractor has answered this question
-			// so it needs
-			// to be correct
+			// so it needs to be correct
 			boolean isFlagged = false;
 
 			if (criteria.isValidationRequired() && !data.isVerified()) {
@@ -527,9 +486,63 @@ public class FlagCalculatorSingle {
 	}
 	
 	public CaoStatus calculateCaoRecommendedStatus(ContractorAuditOperator cao) {
+		AnswerMap answerMap = answerMapByAudits.get(cao.getAudit());
+		if (answerMap == null)
+			return CaoStatus.Missing;
+
+		if (!cao.getAudit().getAuditType().getClassType().equals(AuditTypeClass.Policy))
+			// This shouldn't happen ever, but just to make sure...
+			return null;
+
+		CaoStatus caoStatus = CaoStatus.Missing;
+		answerMap.resetFlagColors();
 		
+		// For each operator criteria, get the contractor's
+		// answer and see if it triggers the flag color
+		for (FlagQuestionCriteria criteria : operator.getFlagQuestionCriteria()) {
+			if (criteria.getChecked().equals(YesNo.Yes)) {
+				// This question is required by the operator
+
+				FlagColor criteriaColor = null;
+				AuditQuestion criteriaQuestion = criteria.getAuditQuestion();
+				AuditType criteriaAuditType = criteriaQuestion.getSubCategory().getCategory().getAuditType();
+				
+				if (criteriaAuditType.equals(cao.getAudit().getAuditType())) {
+					// only evaluate the criteria for this AuditType
+					
+					if(criteriaQuestion.isAllowMultipleAnswers() ) {
+						// this question is an anchor question that can have multiple answers
+						// figure out if we should be optimistic or pessimistic here
+						// I'm not going to spend much time on this 
+						// because there are no existing use cases of using this yet
+						for(AuditData data : answerMap.getAnswerList(criteriaQuestion.getId()))
+							criteriaColor = flagData(criteriaColor, criteria, data);
+						
+					} else if( criteriaQuestion.getParentQuestion() != null ) {
+						// These questions are "child" questions, so we must first find their parent
+						for(AuditData parentData : answerMap.getAnswerList(criteriaQuestion.getParentQuestion().getId())) {
+							// For each row, get the child answer and evaluate it
+							AuditData data = answerMap.get(criteriaQuestion.getId(), parentData.getId());
+							criteriaColor = flagData(criteriaColor, criteria, data);
+						}
+
+					} else {
+						// DEFAULT : this is a normal (root/non child/non multiple) question
+						AuditData data = answerMap.get(criteriaQuestion.getId());
+						criteriaColor = flagData(criteriaColor, criteria, data);
+					}
+
+					// Update the CAO Recommended Status
+					if (criteriaColor.equals(FlagColor.Red))
+						caoStatus = CaoStatus.Rejected;
+					if (!caoStatus.equals(CaoStatus.Rejected) && criteriaColor.equals(FlagColor.Green))
+						caoStatus = CaoStatus.Approved;
+					
+				}
+			} // if criteria.isChecked...
+		} // for
 		
-		return CaoStatus.Missing;
+		return caoStatus;
 	}
 	
 	/**
@@ -597,28 +610,12 @@ public class FlagCalculatorSingle {
 		this.conAudits = conAudits;
 	}
 
-	public Map<Integer, Map<String, AuditData>> getAuditAnswers() {
-		return auditAnswers;
-	}
-
-	public void setAuditAnswers(Map<Integer, Map<String, AuditData>> auditAnswers) {
-		this.auditAnswers = auditAnswers;
-	}
-
 	public boolean isAnswerOnly() {
 		return answerOnly;
 	}
 
 	public void setAnswerOnly(boolean answerOnly) {
 		this.answerOnly = answerOnly;
-	}
-
-	public AnswerMap getAnswerMap() {
-		return answerMap;
-	}
-
-	public void setAnswerMap(AnswerMap answerMap) {
-		this.answerMap = answerMap;
 	}
 
 	public AnswerMapByAudits getAnswerMapByAudits() {
