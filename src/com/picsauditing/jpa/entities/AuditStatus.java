@@ -111,21 +111,23 @@ public enum AuditStatus {
 	}
 	
 	/**
-	 * if minimumStatus is Active, then return true if Active, Exempt, Expired<br>
+	 * if minimumStatus is Active, then return true if Active, Exempt<br>
 	 * if minimumStatus is Submitted, then return true if Submitted, Resubmitted too
 	 * 
 	 * @param minimumStatus
 	 * @return
 	 */
 	public boolean isComplete(AuditStatus minimumStatus) {
-		if (this.equals(Pending))
-			return false;
-		if (Active.equals(minimumStatus)) {
+		if (this.equals(Active))
+			return true;
+		if (this.equals(Exempt))
+			return true;
+		if (Submitted.equals(minimumStatus)) {
 			if (this.equals(Submitted))
-				return false;
+				return true;
 			if (this.equals(Resubmitted))
-				return false;
+				return true;
 		}
-		return true;
+		return false;
 	}
 }
