@@ -725,7 +725,9 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			}
 		}
 		
-		AuditData.addAverageData(emrs);
+		AuditData avg = AuditData.addAverageData(emrs.values());
+		emrs.put(OshaAudit.AVG, avg);
+		
 		return emrs;
 	}
 	

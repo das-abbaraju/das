@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -265,16 +266,11 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	 * containing an average. The new average will be verified only if all the
 	 * others are verified
 	 */
-	public static void addAverageData(Map<String, AuditData> dataMap) {
-		if (dataMap == null || dataMap.size() == 0)
-			return;
-
-		if (dataMap.get(OshaAudit.AVG) != null)
-			// We already have the average
-			return;
+	public static AuditData addAverageData(Collection<AuditData> dataList) {
+		if (dataList == null || dataList.size() == 0)
+			return null;
 
 		AuditData avg = new AuditData();
-		AuditQuestion avgQuestion = new AuditQuestion();
 		avg.setVerified(true); // Assume it's all verified
 		ContractorAudit audit = new ContractorAudit();
 		audit.setAuditFor(OshaAudit.AVG);
@@ -282,7 +278,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 
 		float rateTotal = 0;
 		int count = 0;
-		for (AuditData data : dataMap.values()) {
+		for (AuditData data : dataList) {
 			avg.setQuestion(data.getQuestion());
 			avg.getAudit().setContractorAccount(data.getAudit().getContractorAccount());
 			avg.getAudit().setAuditType(data.getAudit().getAuditType());
@@ -304,7 +300,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 			avgRateFloat = (float) Math.round(1000 * avgRateFloat) / 1000;
 			avg.setAnswer(avgRateFloat.toString());
 		}
-		dataMap.put(OshaAudit.AVG, avg);
+		return avg;
 	}
 
 	@Override
