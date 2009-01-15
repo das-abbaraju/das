@@ -18,6 +18,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
+import com.picsauditing.util.AnswerMapByAudits;
 
 @SuppressWarnings("serial")
 public class ContractorFlagAction extends ContractorActionSupport {
@@ -69,8 +70,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		calculator.setOperator(co.getOperatorAccount());
 		calculator.setContractor(contractor);
 		calculator.setConAudits(contractor.getAudits());
-		auditData = auditDataDAO.findAnswersByContractor(contractor.getId(), co.getOperatorAccount().getQuestionIDs());
-		calculator.setAuditAnswers(auditData);
+		AnswerMapByAudits answerMapByAudits = auditDataDAO.findAnswersByAudits( contractor.getAudits(), co.getOperatorAccount().getQuestionIDs() );
+		
 
 		if ("Override".equals(action)) {
 			String text = "Changed the flag color to " + forceFlag;
@@ -82,6 +83,12 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			permissions.tryPermission(OpPerms.EditForcedFlags);
 			if (deleteAll == true) {
 				for (ContractorOperator operator : getOperators()) {
+					
+					//prune our answermapMAP for this operator (take out audits they can't see, and answers to questions they shouldn't see)
+					//also note that this uses the copy constructor, so our local variable answerMapByAUdits is not affected by pruning 
+					//on each run through the "operators" list.
+					calculator.setAnswerMapByAudits(new AnswerMapByAudits(answerMapByAudits, operator.getOperatorAccount()));
+
 					operator.setForceBegin(null);
 					operator.setForceEnd(null);
 					operator.setForceFlag(null);
