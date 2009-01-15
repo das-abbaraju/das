@@ -44,7 +44,9 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	protected List<AuditOperator> audits = new ArrayList<AuditOperator>();
 	protected List<Facility> corporateFacilities = new ArrayList<Facility>();
 	protected List<Facility> operatorFacilities = new ArrayList<Facility>();
-
+	protected List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>(); 
+	
+	
 	public OperatorAccount() {
 		this.type = "Operator";
 	}
@@ -217,4 +219,15 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	public void setOperatorFacilities(List<Facility> operatorFacilities) {
 		this.operatorFacilities = operatorFacilities;
 	}
+
+	@OneToMany(mappedBy = "operatorAccount")
+	public List<ContractorOperator> getContractorOperators() {
+		return contractorOperators;
+	}
+
+	public void setContractorOperators(List<ContractorOperator> contractorOperators) {
+		this.contractorOperators = contractorOperators;
+	}
+	
+	
 }
