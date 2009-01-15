@@ -31,6 +31,7 @@ public class AuditDataSave extends AuditActionSupport {
 	private AuditQuestionDAO questionDao = null;
 	private int catDataID = 0;
 	private AuditPercentCalculator auditPercentCalculator;
+	private String mode;
 
 	private boolean toggleVerify = false;
 
@@ -105,7 +106,7 @@ public class AuditDataSave extends AuditActionSupport {
 							newCopy.setWasChanged(YesNo.Yes);
 
 							if (!toggleVerify) {
-								if (newCopy.getQuestion().getOkAnswer().indexOf(auditData.getAnswer()) == -1) {
+								if (newCopy.isRequirementOpen()) {
 									newCopy.setDateVerified(null);
 									newCopy.setAuditor(null);
 								} else {
@@ -145,7 +146,7 @@ public class AuditDataSave extends AuditActionSupport {
 			if( auditData.getAudit() != null ) {
 				ContractorAudit tempAudit = auditData.getAudit();
 			
-				if( tempAudit.getAuditType().getClassType() == AuditTypeClass.Policy 
+				if(tempAudit.getAuditType() != null && tempAudit.getAuditType().getClassType() == AuditTypeClass.Policy 
 						&& tempAudit.getAuditStatus() == AuditStatus.Active ) {
 					
 					tempAudit.setAuditStatus(AuditStatus.Resubmitted);
@@ -198,9 +199,15 @@ public class AuditDataSave extends AuditActionSupport {
 		// That page requires mode to be set
 		// Since we're always in edit mode when we're adding tuples, I'm going to hard code this
 		// We may need to pass it in though
+		if("Verify".equals(mode))
+			return "Verify";
 		return "Edit";
 	}
 	
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+
 	public AuditData getAuditData() {
 		return auditData;
 	}

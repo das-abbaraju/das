@@ -54,12 +54,12 @@
 	
 	<s:property value="#q.question" escape="false"/>
 	<br />
-	<s:if test="#q.linkUrl1.length() > 0"><a href="http://<s:property value="#q.linkUrl1"/>" target="_BLANK" title="opens in new window"><s:property value="linkText1"/></a></s:if>
-	<s:if test="#q.linkUrl2.length() > 0"><a href="http://<s:property value="#q.linkUrl2"/>" target="_BLANK" title="opens in new window"><s:property value="linkText2"/></a></s:if>
-	<s:if test="#q.linkUrl3.length() > 0"><a href="http://<s:property value="#q.linkUrl3"/>" target="_BLANK" title="opens in new window"><s:property value="linkText3"/></a></s:if>
-	<s:if test="#q.linkUrl4.length() > 0"><a href="http://<s:property value="#q.linkUrl4"/>" target="_BLANK" title="opens in new window"><s:property value="linkText4"/></a></s:if>
-	<s:if test="#q.linkUrl5.length() > 0"><a href="http://<s:property value="#q.linkUrl5"/>" target="_BLANK" title="opens in new window"><s:property value="linkText5"/></a></s:if>
-	<s:if test="#q.linkUrl6.length() > 0"><a href="http://<s:property value="#q.linkUrl6"/>" target="_BLANK" title="opens in new window"><s:property value="linkText6"/></a></s:if>
+	<s:if test="#q.linkurl1 != null && #q.linkUrl1.length() > 0"><a href="http://<s:property value="#q.linkUrl1"/>" target="_BLANK" title="opens in new window"><s:property value="linkText1"/></a></s:if>
+	<s:if test="#q.linkurl2 != null && #q.linkUrl2.length() > 0"><a href="http://<s:property value="#q.linkUrl2"/>" target="_BLANK" title="opens in new window"><s:property value="linkText2"/></a></s:if>
+	<s:if test="#q.linkurl3 != null && #q.linkUrl3.length() > 0"><a href="http://<s:property value="#q.linkUrl3"/>" target="_BLANK" title="opens in new window"><s:property value="linkText3"/></a></s:if>
+	<s:if test="#q.linkurl4 != null && #q.linkUrl4.length() > 0"><a href="http://<s:property value="#q.linkUrl4"/>" target="_BLANK" title="opens in new window"><s:property value="linkText4"/></a></s:if>
+	<s:if test="#q.linkurl5 != null && #q.linkUrl5.length() > 0"><a href="http://<s:property value="#q.linkUrl5"/>" target="_BLANK" title="opens in new window"><s:property value="linkText5"/></a></s:if>
+	<s:if test="#q.linkurl6 != null && #q.linkUrl6.length() > 0"><a href="http://<s:property value="#q.linkUrl6"/>" target="_BLANK" title="opens in new window"><s:property value="linkText6"/></a></s:if>
 </span>
 
 <s:if test="#q.questionType == 'Text Area'">
@@ -151,32 +151,6 @@
 				title="Opens in new window (please disable your popup blocker)" />
 		</nobr>
 	</s:if>
-	
-	<s:if test="mode == 'Verify'">
-		<s:if test="#a.verified == true">
-			<s:set name="verifyText" value="'Unverify'" />
-			<s:set name="verifyDetailDisplay" value="'inline'" />
-		</s:if>
-		<s:else>
-			<s:set name="verifyText" value="'Verify'" />
-			<s:set name="verifyDetailDisplay" value="'none'" />
-		</s:else>
-
-		<br/><input id="verifyButton_<s:property value="#q.id"/>" type="submit" onclick="return verifyAnswer(<s:property value="#q.id"/>, <s:property value="#a.id"/>, '<s:property value="#parentAnswer.id"/>');"
-		value="<s:property value="#attr.verifyText"/>" />
-
-		<span id="verify_details_<s:property value="#q.id"/>"
-		style='display: <s:property value ="#attr.verifyDetailDisplay"/>;'
-		class="verified">Verified on <s:date name="#a.dateVerified"
-		format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" /></span>
-	</s:if>
-	
-	<s:div id="comment_%{#divID}">
-		<s:if test="#q.showComment || mode == 'Verify'">
-			<br/>Comments: <s:textfield value="%{#a.comment}" size="30" 
-			onchange="javascript:saveComment('%{#divID}', this);"/>
-		</s:if>
-	</s:div>
 </div>
 
 <s:if test="#a.hasRequirements">
@@ -202,3 +176,28 @@
 </s:if>
 <br clear="all" />
 <s:include value="../actionMessages.jsp" />
+	<nobr><s:div id="comment_%{#divID}" cssStyle="padding-left: 64px;">
+		<s:if test="#q.showComment || mode == 'Verify'">
+			Comments: <s:textfield value="%{#a.comment}" size="30" 
+			onchange="javascript:saveComment('%{#divID}', this);"/>
+		</s:if>
+	</s:div>
+
+	<s:if test="mode == 'Verify'">
+		<s:if test="#a.verified == true">
+			<s:set name="verifyText" value="'Unverify'" />
+			<s:set name="verifyDetailDisplay" value="'inline'" />
+		</s:if>
+		<s:else>
+			<s:set name="verifyText" value="'Verify'" />
+			<s:set name="verifyDetailDisplay" value="'none'" />
+		</s:else>
+		
+		<input id="verifyButton_<s:property value="#q.id"/>" type="submit" onclick="return verifyAnswer(<s:property value="#q.id"/>, <s:property value="#a.id"/>, '<s:property value="#parentAnswer.id"/>');"
+		value="<s:property value="#attr.verifyText"/>" />
+
+		<span id="verify_details_<s:property value="#q.id"/>"
+		style='display: <s:property value ="#attr.verifyDetailDisplay"/>;'
+		class="verified">Verified on <s:date name="#a.dateVerified"
+		format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" /></span>
+	</s:if></nobr>

@@ -19,7 +19,8 @@
 	var auditID = <s:property value="auditID"/>;
 	var catDataID = <s:property value="catDataID"/>;
 	var conID = <s:property value="conAudit.contractorAccount.id"/>;
-
+	var mode = '<s:property value="#parameters.mode"/>';
+	
 	function openOsha(logID, year) {
 		url = 'DownloadOsha.action?id='+logID;
 		title = 'Osha300Logs';
@@ -71,7 +72,7 @@
 						</s:if>
 						<s:iterator value="questions">
 							<s:if test="parentQuestion == null">
-								<s:if test="title.length() > 0">
+								<s:if test="title != null && title.length() > 0">
 									<h4 class="groupTitle">
 										<s:property value="title" escape="false"/>
 									</h4>

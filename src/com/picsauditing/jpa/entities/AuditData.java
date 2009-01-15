@@ -199,6 +199,8 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 
 	@Transient
 	public boolean isRequirementOpen() {
+		if(question.getOkAnswer() == null)
+			return false;
 		return (question.getOkAnswer().indexOf(answer) == -1);
 	}
 

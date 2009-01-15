@@ -17,9 +17,7 @@
 	</s:if>
 </s:if>
 <s:if test="mode == 'Verify'">
-	<s:if test="#a.answer.length() > 0">
-		<s:include value="audit_cat_edit.jsp"></s:include>
-	</s:if>
+	<s:include value="audit_cat_edit.jsp"></s:include>
 </s:if>
 <s:if test="mode == 'ViewQ'">
 	<s:include value="audit_cat_questions.jsp"></s:include>

@@ -36,7 +36,7 @@ function saveComment(divId, elm) {
 	var	questionid = $(divId + '_questionID').value;
 	var	parentid = $(divId + '_parentAnswerID').value;
 	var	allowMultiple = $(divId + '_multiple').value;
-	var pars = 'catDataID='+catDataID+'&auditData.audit.id='+auditID;
+	var pars = 'catDataID='+catDataID+'&auditData.audit.id='+auditID+'&mode='+mode;
 	
 	if (answerid > 0) 
 		pars += '&auditData.id='+answerid;
@@ -75,7 +75,7 @@ function saveAnswer(divId, elm) {
 	var	allowMultiple = $(divId + '_multiple').value;
 
 	var divName = 'node_'+parentid+'_'+questionid;
-	var pars = 'catDataID='+catDataID+'&auditData.audit.id='+auditID;
+	var pars = 'catDataID='+catDataID+'&auditData.audit.id='+auditID+'&mode='+mode;
 
 	if (answerid > 0) {
 		pars += '&auditData.id='+answerid;
