@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.AnswerMapByAudits;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -213,6 +214,46 @@ public class AuditDataDAO extends PicsDAO {
 		
 		if( audit != null ) {
 			response.put( audit.getId(), mapData( temp ) );
+		}
+		
+		return response;
+	}
+	
+	public AnswerMapByAudits findAnswersByAudits(List<ContractorAudit> audits, List<Integer> questionIds) {
+		if (questionIds.size() == 0)
+			return null;
+		
+		List<Integer> auditIds = new Vector<Integer>();
+		
+		for( ContractorAudit audit : audits ) {
+			auditIds.add(audit.getId());
+		}
+		
+		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id in (" + glue( auditIds ) + " ) and question.id IN ("
+				+ glue(questionIds) + ") ");
+		
+		AnswerMapByAudits response = new AnswerMapByAudits();
+		List<AuditData> results = query.getResultList();
+		
+		ContractorAudit audit = null;
+		List<AuditData> temp = new Vector<AuditData>();
+		
+		for( AuditData data : results ) {
+			if( audit == null ) {
+				audit = data.getAudit();
+			}
+			
+			if( data.getAudit().getId() != audit.getId() ) {
+				response.put( audit, mapData( temp ) );
+				temp = new Vector< AuditData >();
+				audit = data.getAudit();
+			}
+			
+			temp.add(data);
+		}
+		
+		if( audit != null ) {
+			response.put( audit, mapData( temp ) );
 		}
 		
 		return response;
