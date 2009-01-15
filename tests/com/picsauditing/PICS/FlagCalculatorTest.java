@@ -1,13 +1,10 @@
 package com.picsauditing.PICS;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import junit.framework.TestCase;
 
-import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -22,6 +19,7 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.AnswerMapByAudits;
 
 public class FlagCalculatorTest extends TestCase {
 	/* Create the main variables */
@@ -29,7 +27,7 @@ public class FlagCalculatorTest extends TestCase {
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
 	private List<ContractorAudit> conAudits;
-	private Map<Integer, Map<String, AuditData>> auditAnswers;
+	private AnswerMapByAudits answerMapByAudits;
 	
 	@Override
 	protected void setUp() throws Exception {
@@ -54,14 +52,14 @@ public class FlagCalculatorTest extends TestCase {
 		contractor.getOperators().add(co);
 		
 		conAudits = new ArrayList<ContractorAudit>();
-		auditAnswers = new HashMap<Integer, Map<String,AuditData>>();
+		answerMapByAudits = new AnswerMapByAudits();
 		
 		/* Initialize the calculator */
 		calculator.setDebug(true);
 		calculator.setContractor(contractor);
 		calculator.setOperator(operator);
 		calculator.setConAudits(conAudits);
-		calculator.setAuditAnswers(auditAnswers);
+		calculator.setAnswerMapByAudits(answerMapByAudits);
 	}
 	
 	/***** Unit Tests *************/

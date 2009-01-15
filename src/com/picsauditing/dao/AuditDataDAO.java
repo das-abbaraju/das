@@ -75,8 +75,9 @@ public class AuditDataDAO extends PicsDAO {
 	 * @return Map containing QuestionID => AuditFor => AuditData
 	 */
 	public Map<Integer, Map<String, AuditData>> findAnswersByContractor(int conID, Collection<Integer> questionIds) {
+		Map<Integer, Map<String, AuditData>> indexedResult = new HashMap<Integer, Map<String, AuditData>>();
 		if (questionIds.size() == 0)
-			return new HashMap<Integer, Map<String, AuditData>>();
+			return indexedResult;
 
 		Query query = em.createQuery("SELECT d FROM AuditData d " +
 				"WHERE d.audit.contractorAccount.id = ? " +
@@ -89,7 +90,6 @@ public class AuditDataDAO extends PicsDAO {
 
 		List<AuditData> result = query.getResultList();
 
-		Map<Integer, Map<String, AuditData>> indexedResult = new HashMap<Integer, Map<String, AuditData>>();
 		for (AuditData row : result) {
 			int id = row.getQuestion().getId();
 			Map<String, AuditData> dataMap = new TreeMap<String, AuditData>();
@@ -185,6 +185,14 @@ public class AuditDataDAO extends PicsDAO {
 		return mapData(query.getResultList());
 	}
 
+	public Map<Integer, AnswerMap> findAnswersQuestionList(List<Integer> auditIds, List<AuditQuestion> questions) {
+		List<Integer> questionIDs = new Vector<Integer>();
+		for (AuditQuestion q : questions) {
+			questionIDs.add(q.getId());
+		}
+		return findAnswers(auditIds, questionIDs);
+	}
+
 	public Map<Integer, AnswerMap> findAnswers(List<Integer> auditIds, List<Integer> questionIds) {
 		if (questionIds.size() == 0)
 			return null;
@@ -195,27 +203,12 @@ public class AuditDataDAO extends PicsDAO {
 		Map<Integer, AnswerMap> response = new HashMap<Integer, AnswerMap>();
 		List<AuditData> results = query.getResultList();
 		
-		ContractorAudit audit = null;
-		List<AuditData> temp = new Vector<AuditData>();
-		
-		for( AuditData data : results ) {
-			if( audit == null ) {
-				audit = data.getAudit();
-			}
-
-			if( data.getAudit().getId() != audit.getId() ) {
-				response.put( audit.getId(), mapData( temp ) );
-				temp = new Vector< AuditData >();
-				audit = data.getAudit();
-			}
-			
-			temp.add(data);
+		for(AuditData row : results) {
+			int auditID = row.getAudit().getId();
+			if (!response.containsKey(auditID))
+				response.put(auditID, new AnswerMap());
+			response.get(auditID).add(row);
 		}
-		
-		if( audit != null ) {
-			response.put( audit.getId(), mapData( temp ) );
-		}
-		
 		return response;
 	}
 	
@@ -309,7 +302,12 @@ public class AuditDataDAO extends PicsDAO {
 			return mapData(query.getResultList());
 	}
 
-	public List<AuditData> findAnswersByAuditAndSubCategory( List<Integer> auditIds, String subCategoryName ) {
+	/**
+	 * 
+	 * @param auditIds
+	 * @return Answers in the subcategories named Policy Limits for the given auditIds
+	 */
+	public List<AuditData> findPolicyLimits( List<Integer> auditIds) {
 		
 		StringBuilder sb = new StringBuilder("SELECT d FROM AuditData d JOIN d.question q JOIN q.subCategory sub")
 			.append( " WHERE sub.subCategory = ? and d.audit.id in ( " )
@@ -318,7 +316,9 @@ public class AuditDataDAO extends PicsDAO {
 		
 		Query query = em.createQuery(  sb.toString() );
 		
-		query.setParameter(1, subCategoryName );
+		// WARNING!! This is hard coded based on the sub category name of Policy AuditTypes
+		// If someone changes the subcategory name, this won't work anymore!!
+		query.setParameter(1, "Policy Limits" );
 		return query.getResultList();
 	}
 }
