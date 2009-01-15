@@ -27,12 +27,14 @@
 			<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />
 		</s:if>
 	</s:else>
-	<s:if test="#a.commentLength">
-		<br/>&nbsp;&nbsp;<span style="font-weight: normal">Comment: <s:property value="#a.comment"/></span>
+	<s:if test="#a.verified">
+		<span class="verified">
+			Answer verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" />
+		</span>
 	</s:if>
-	<span id="showText_<s:property value="#a.id"/>" style="display: none" class="verified">
-		Answer changed on <s:date name="#a.dateVerified" format="MMM d, yyyy" />
-	</span>
+	<s:if test="#a.commentLength">
+		<br/><div style="font-weight:normal;color: #111;padding-left: 64px;">Comment: <span style="color: #003768;"><s:property value="#a.comment"/></span></div>
+	</s:if>
 </span>
 
 <s:if test="#a.hasRequirements && conAudit.auditType.hasRequirements">

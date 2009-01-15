@@ -208,13 +208,3 @@ function reloadQuestion(answerid, questionid, parentid) {
 		}
 	});
 }
-
-function changeAuditStatus(id, auditStatus) {
-	var pars = 'auditID='+id+'&auditStatus='+auditStatus;
-	var myAjax = new Ajax.Updater('','ContractorAuditSaveAjax.action', 
-	{
-		method: 'post', 
-		parameters: pars
-	});
-	return false;
-}

@@ -10,6 +10,7 @@ import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.access.MenuComponent;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -19,6 +20,7 @@ import com.picsauditing.dao.NcmsCategoryDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.NcmsCategory;
 import com.picsauditing.jpa.entities.YesNo;
@@ -75,6 +77,19 @@ public class ContractorAuditAction extends AuditActionSupport {
 			auditDao.save(conAudit);
 			return SUCCESS;
 		}
+		
+		if("Approve".equals(button)) {
+			conAudit.setAuditStatus(AuditStatus.Active);
+			auditDao.save(conAudit);
+			return SUCCESS;
+		}
+
+		if("Reject".equals(button)) {
+			conAudit.setAuditStatus(AuditStatus.Pending);
+			auditDao.save(conAudit);
+			return SUCCESS;
+		}
+
 		// Some stuff like rebuilding categories and percentages doesn't have to
 		// be done everytime
 		boolean fullLoad = true;
@@ -234,6 +249,10 @@ public class ContractorAuditAction extends AuditActionSupport {
 	public boolean isCanClose() {
 		if (permissions.isContractor())
 			return false;
+		if(permissions.hasPermission(OpPerms.InsuranceVerification) && conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+			if(conAudit.getAuditStatus().equals(AuditStatus.Submitted) || conAudit.getAuditStatus().equals(AuditStatus.Resubmitted))
+				return true;
+		}
 		if (!isCanEdit())
 			return false;
 		if (conAudit.getPercentVerified() < 100)
