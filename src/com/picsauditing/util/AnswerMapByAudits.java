@@ -1,11 +1,14 @@
 package com.picsauditing.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.picsauditing.jpa.entities.AuditOperator;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -103,4 +106,15 @@ public class AnswerMapByAudits {
 	public Set<ContractorAudit> getAuditSet() {
 		return data.keySet();
 	}
+
+	public List<ContractorAudit> getAuditSet(AuditType matchingAuditType) {
+		List<ContractorAudit> matchingConAudits = new ArrayList<ContractorAudit>();
+		if (data.size() > 0)
+			for(ContractorAudit conAudit : data.keySet())
+				if (conAudit.getAuditType().equals(matchingAuditType))
+					matchingConAudits.add(conAudit);
+
+		return matchingConAudits;
+	}
+
 }
