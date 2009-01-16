@@ -403,7 +403,11 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public String getPaymentMethodStatus() {
 		return paymentMethodStatus;
 	}
-
+	/**
+	 * The Payment Method Statuses are Valid, Invalid, Missing, 
+	 * Pending, Approved, Rejected
+	 * @param paymentMethodStatus
+	 */
 	public void setPaymentMethodStatus(String paymentMethodStatus) {
 		this.paymentMethodStatus = paymentMethodStatus;
 	}

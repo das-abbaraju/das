@@ -9,6 +9,8 @@
 </head>
 <body>
 
+<s:include value="../actionMessages.jsp"></s:include>
+
 <form method="post" action="https://secure.braintreepaymentgateway.com/api/transact.php">
 	<s:hidden name="hash"></s:hidden>
 	<s:hidden name="key_id"></s:hidden>
@@ -16,8 +18,11 @@
 	<s:hidden name="amount"></s:hidden>
 	<s:hidden name="time"></s:hidden>
 	<s:hidden name="customer_vault_id"></s:hidden>
-	<input id="customer_vault" type="hidden" value="delete_customer" name="customer_vault"/>
-	<input id="redirect" type="hidden" value="http://localhost:8080/picsWeb2/ContractorPaymentOptions.action?id=<s:property value="id"/>" name="redirect"/>
+	<input type="radio" name="customer_vault" value="add_customer"/> Add
+	<input type="radio" name="customer_vault" value="update_customer"/> Update
+	<input type="radio" name="customer_vault" value="delete_customer"/> Delete
+	Report Type <input type="text" name="report_type" value="customer_vault"/>
+	<input type="hidden" name="redirect" value="http://localhost:8080/picsWeb2/ContractorPaymentOptions.action?id=<s:property value="id"/>"/>
 <br clear="all" />
 
 <s:hidden name="id" />
@@ -43,27 +48,6 @@
 		<li><label>Exp Date:</label>
 			<s:textfield name="ccexp" value="1010" size="10" />
 		</li>
-		<s:if test="response1 == '1'">
-		<li>
-			<s:property value="responsetext" />
-		</li>
-		</s:if>
-		<s:elseif test="response1 == '3'">
-		<li>aaa
-			 <s:property value="responsetext" />
-		</li>		
-		</s:elseif>		
-		<s:else>
-		<li>oh my
-			|<s:property value="response1" />|
-			|<s:property value="response1.getClass()" />|
-			|<s:property value="response1.equals( 3)" />|
-			|<s:property value="response1 == 3" />|
-			|<s:property value="response1.equals( '3')" />|
-			|<s:property value="response1 == '3'" />|
-			
-		</li>		
-		</s:else>		
 		<li>
 		<div class="buttons">
 			<button class="positive" name="button" type="submit" value="Submit">Submit</button>

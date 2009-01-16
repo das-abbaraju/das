@@ -3,6 +3,7 @@ package com.picsauditing.actions.contractors;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -29,6 +30,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private String hash;
 	private String key;
 	private String key_id;
+	private BrainTreeService.CreditCard cc;
 	
 	AppPropertyDAO appPropDao;
 	
@@ -47,6 +49,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		if (paymentMethod.equals(creditCard)) {
 			key = appPropDao.find("brainTree.key").getValue();
 			key_id = appPropDao.find("brainTree.key_id").getValue();
+			
+			cc = new CreditCard();
+			cc.setCardNumber("411111111111111111111");
+			cc.setExpirationDate("1010");
 		}
 		
 		if (response_code != null) {
@@ -225,6 +231,14 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		types.add("Visa");
 		types.add("Mastercard");
 		return types;
+	}
+
+	public BrainTreeService.CreditCard getCc() {
+		return cc;
+	}
+
+	public void setCc(BrainTreeService.CreditCard cc) {
+		this.cc = cc;
 	}
 
 
