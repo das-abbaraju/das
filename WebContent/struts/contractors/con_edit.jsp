@@ -1,6 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@page import="com.picsauditing.util.URLUtils"%>
 <html>
 <head>
 <title><s:property value="contractor.name" /></title>
@@ -13,6 +14,21 @@
 	var cal1 = new CalendarPopup('caldiv1');
 	cal1.offsetY = -110;
 	cal1.setCssPrefix("PICS");
+
+
+	function showPaymentOptions(conId, method) {
+ 
+ 		var buttonURL= window.location.href;
+ 		buttonURL = buttonURL.replace('http:', 'https:');
+ 		
+ 		var url = buttonURL.substr(0, buttonURL.lastIndexOf('/') ) + '/ContractorPaymentOptions.action?id=' + conId +'&paymentMethod=' + method; 
+		title = 'Contractor Payment Options';
+		pars = 'scrollbars=yes,resizable=yes,width=500,height=500,toolbar=0,directories=0,menubar=0';
+		popupWindow = window.open(url,title,pars);
+		popupWindow.focus();
+		return false;
+	}
+
 </script>
 </head>
 <body>
@@ -80,8 +96,12 @@
 						$<s:property value="contractor.newBillingAmount" />
 					</li>
 					<li><label>Payment Options:</label>
-						<a href="ContractorPaymentOptions.action?id=<s:property value="id"/>">Edit Payment Options</a>
+						<a onclick="javascript: return showPaymentOptions( <s:property value="id"/>, 'Credit Card');" href="#">Edit Credit Card</a> <img height="23px" width="23px" src="images/lock.gif"/><br/>
 					</li>
+					<li><label>&nbsp;</label>
+						<a onclick="javascript: return showPaymentOptions( <s:property value="id"/>, 'Billed');" href="#">Apply For Credit</a> <img height="23px" width="23px" src="images/lock.gif"/>
+					</li>
+
 				</s:if>
 				<s:else>
 					<li><label>Status:</label>no payment required</li>
