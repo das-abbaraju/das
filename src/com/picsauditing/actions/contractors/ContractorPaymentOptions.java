@@ -1,5 +1,8 @@
 package com.picsauditing.actions.contractors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 
@@ -8,6 +11,15 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	
 	private String paymentMethod = "Credit Card";
 	private String responseCode = null;
+	private String orderid = null;
+	private String amount = null;
+	private String response = null;
+	private String transactionid = null;
+	private String avsresponse = null;
+	private String cvvresponse = null;
+	private String customer_vault_id = null;
+	private String time = null;
+	private String hash = null;
 	
 	public ContractorPaymentOptions(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
 		super(accountDao, auditDao);
@@ -19,6 +31,12 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			return LOGIN;
 
 		this.findContractor();
+		
+		if (responseCode != null) {
+			// Hey we're receiving some sort of response
+			// TODO Verify the authenticity of the response
+			
+		}
 		
 		if (paymentMethod == null)
 			paymentMethod = "Credit Card";
@@ -58,34 +76,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		this.responseCode = responseCode;
 	}
 	
-	public void setAmount(String amount) {
-	}
-	
 	public void setAuthcode(String authcode) {
 	}
 	
-	public void setAvsresponse(String avsresponse) {
-	}
-	
-	public void setCvvresponse(String cvvresponse) {
-	}
-	
-	public void setHash(String hash) {
-	}
-	
-	public void setOrderid(String orderid) {
-	}
-	
-	public void setResponse(String response) {
-	}
-	
 	public void setResponsetext(String responsetext) {
-	}
-	
-	public void setTime(String time) {
-	}
-	
-	public void setTransactionid(String transactionid) {
 	}
 	
 	public void setType(String type) {
@@ -93,5 +87,86 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	
 	public void setUsername(String username) {
 	}
+
+	public String getOrderid() {
+		return orderid;
+	}
+
+	public void setOrderid(String orderid) {
+		this.orderid = orderid;
+	}
+
+	public String getAmount() {
+		return amount;
+	}
+
+	public void setAmount(String amount) {
+		this.amount = amount;
+	}
+
+	public String getResponse() {
+		return response;
+	}
+
+	public void setResponse(String response) {
+		this.response = response;
+	}
+
+	public String getTransactionid() {
+		return transactionid;
+	}
+
+	public void setTransactionid(String transactionid) {
+		this.transactionid = transactionid;
+	}
+
+	public String getAvsresponse() {
+		return avsresponse;
+	}
+
+	public void setAvsresponse(String avsresponse) {
+		this.avsresponse = avsresponse;
+	}
+
+	public String getCvvresponse() {
+		return cvvresponse;
+	}
+
+	public void setCvvresponse(String cvvresponse) {
+		this.cvvresponse = cvvresponse;
+	}
+
+	public String getCustomer_vault_id() {
+		return customer_vault_id;
+	}
+
+	public void setCustomer_vault_id(String customer_vault_id) {
+		this.customer_vault_id = customer_vault_id;
+	}
+
+	public String getTime() {
+		return time;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
+	}
+
+	public String getHash() {
+		return hash;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
+	}
 	/******** End BrainTree Setters *******/
+	
+	
+	
+	public List<String> getCreditCardTypes() {
+		List<String> types = new ArrayList<String>();
+		types.add("Visa");
+		types.add("Mastercard");
+		return types;
+	}
 }
