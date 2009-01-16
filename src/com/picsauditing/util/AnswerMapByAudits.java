@@ -30,10 +30,6 @@ public class AnswerMapByAudits {
 	}
 
 	public AnswerMapByAudits(AnswerMapByAudits toCopy, OperatorAccount operator) {
-		if (Boolean.parseBoolean("true")) {
-			throw new RuntimeException(
-					"remember to put in the precedence logic for two audits of the same type for the same contractor");
-		}
 
 		for (ContractorAudit audit : toCopy.data.keySet()) {
 			AnswerMap mapCopy = new AnswerMap(toCopy.get(audit), operator);
