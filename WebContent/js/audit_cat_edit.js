@@ -193,13 +193,10 @@ function showFileUpload(answerid, questionid, parentid) {
 function reloadQuestion(answerid, questionid, parentid) {
 	if (parentid == null || parentid == '')
 		parentid = 0;
-		
 	var pars = 'auditID='+auditID+'&answer.question.id=' + questionid+'&answer.parentAnswer.id=' + parentid;
-	var divId = questionid + '' + parentid;
-	var divName = 'td_answer_'+divId;
-	$(divName).innerHTML="<img src='images/ajax_process.gif' />";
+	var divName = 'node_'+parentid+'_'+questionid;
 	
-	var myAjax = new Ajax.Updater(divName,'ReloadQuestionAjax.action',
+	var myAjax = new Ajax.Updater('','ReloadQuestionAjax.action',
 	{
 		method: 'post', 
 		parameters: pars,

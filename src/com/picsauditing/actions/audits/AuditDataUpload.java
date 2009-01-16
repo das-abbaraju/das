@@ -145,10 +145,6 @@ public class AuditDataUpload extends AuditActionSupport {
 					addActionError("Somehow, two files were uploaded.");
 			}
 		}
-		for (AuditCatData auditCatData : getCategories()) {
-			if (auditCatData.getCategory() == answer.getQuestion().getSubCategory().getCategory())
-				auditPercentCalculator.updatePercentageCompleted(auditCatData);
-		}
 		return SUCCESS;
 	}
 

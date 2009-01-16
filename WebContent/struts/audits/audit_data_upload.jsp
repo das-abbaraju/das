@@ -9,11 +9,11 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css" />
-
+<script type="text/javascript" src="js/audit_cat_edit.js"></script>
 <script type="text/javascript">
 function closePage() {
 	try {
-		opener.reloadQuestion(<s:property value="answer.question.id"/>, '<s:property value="answer.parentAnswer.id"/>');
+		opener.reloadQuestion('<s:property value="answer.id"/>', <s:property value="answer.question.id"/>, '<s:property value="answer.parentAnswer.id"/>');
 		opener.focus();
 	} catch(err) {}
 }
