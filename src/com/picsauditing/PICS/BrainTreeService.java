@@ -18,7 +18,7 @@ public class BrainTreeService {
 	
 	public CreditCard getCustomerData() throws Exception {
 
-		CreditCard response = null;
+		CreditCard response = new CreditCard();
 
 		String urlBase = "https://secure.braintreepaymentgateway.com/api/query.php?customer_vault_id=81&report_type=customer_vault";
 		
@@ -80,7 +80,14 @@ public class BrainTreeService {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		CreditCard cc = new BrainTreeService().getCustomerData();
+		
+		BrainTreeService service = new BrainTreeService();
+		service.setUserName("testapi");
+		service.setPassword("password1");
+		
+		CreditCard cc = service.getCustomerData();
+		
+		System.out.println( cc.getCardNumber() );
 	}
 
 	public String getUserName() {
