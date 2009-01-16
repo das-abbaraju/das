@@ -108,6 +108,19 @@ public class Strings {
 		return value;
 	}
 
+	public static String md5(String seed) {
+		MessageDigest digest = null;
+		try {
+			digest = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			return e.getMessage();
+		}
+		digest.update(seed.getBytes());
+		byte[] hashed = digest.digest();
+		String value = Base64.encodeBytes(hashed);
+		return value;
+	}
+
 	public static ArrayList<Note> convertNotes(String oldNote) {
 		// ([0-9]{1,4}/[0-9]{1,2}/[0-9]{1,4})( [0-9]{1,2}:[0-9]{2} [AP]M .{3}?)? [\(]*(.*?)[\)]*: (.*)
 		//System.out.println(oldNote);
