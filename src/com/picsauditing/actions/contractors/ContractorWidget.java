@@ -56,6 +56,11 @@ public class ContractorWidget extends ContractorActionSupport {
 								+ "</b>, please call 949-387-1940 x708 to make a payment");
 			}
 
+			if (! contractor.isPaymentMethodStatusValid()) {
+				openTasks
+				.add("Please <a href=\"ContractorEdit.action?id=" +  contractor.getId() + "\">provide a valid payment method</a>");
+			}
+			
 
 			for (ContractorAudit conAudit : getActiveAudits()) {
 				// TODO get the Tasks to show up right for OSHA/EMR
@@ -64,14 +69,14 @@ public class ContractorWidget extends ContractorActionSupport {
 					if (conAudit.getAuditStatus().equals(AuditStatus.Pending)) {
 						text = "Please <a href=\"Audit.action?auditID="
 								+ conAudit.getId()
-								+ "\">complete and submit your Pre-Qualification Form</a>";
+								+ "\">complete and submit your Pre-Qualification Form</a><br/>";
 					} else if (conAudit.getAuditStatus().isActiveSubmitted()
 							&& conAudit.isAboutToExpire()) {
 						text = "Please <a href=\"Audit.action?auditID="
 								+ conAudit.getId()
-								+ "\">review and re-submit your Pre-Qualification Form</a>";
+								+ "\">review and re-submit your Pre-Qualification Form</a><br/>";
 					}
-					text += "<br/>NOTE: As of January 1, 2009 only electronic copies of your safety manual/IIPP will be accepted. If a hard copy is provided, a fee will be assessed in order to convert your manual into a PDF document.";
+					text += "NOTE: As of January 1, 2009 only electronic copies of your safety manual/IIPP will be accepted. If a hard copy is provided, a fee will be assessed in order to convert your manual into a PDF document.";
 					openTasks.add(text);
 				}
 				if (conAudit.getAuditType().isAnnualAddendum()
