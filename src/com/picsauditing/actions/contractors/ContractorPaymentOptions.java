@@ -24,18 +24,17 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private String avsresponse;
 	private String cvvresponse;
 	private String customer_vault_id;
+	private String customer_vault;
 	private String time;
 	private String hash;
 	private String key;
 	private String key_id;
-	private CreditCard cc;
 	
 	AppPropertyDAO appPropDao;
 	
-	public ContractorPaymentOptions(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AppPropertyDAO appPropDao, CreditCard cc) {
+	public ContractorPaymentOptions(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AppPropertyDAO appPropDao) {
 		super(accountDao, auditDao);
 		this.appPropDao = appPropDao;
-		this.cc = cc;
 	}
 	
 	public String execute() throws Exception {
@@ -57,8 +56,14 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 					customer_vault_id, time, key);
 			if (!newHash.equals(hash))
 				throw new Exception("Invalid hash from BrainTree");
-			contractor.setPaymentMethod(creditCard);
-			accountDao.save(contractor);
+			if (response_code.equals("100")) {
+				contractor.setPaymentMethodStatus("Approved");
+				contractor.setPaymentMethod(creditCard);
+				accountDao.save(contractor);
+				addActionMessage("Successfully Saved");
+			} else {
+				addActionError(responsetext);
+			}
 		}
 		
 		if (paymentMethod == null)
@@ -101,14 +106,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public void setAuthcode(String authcode) {
 	}
 	
-	public void setResponsetext(String responsetext) {
-		this.responsetext = responsetext;
-	}
-	
-	public String getResponsetext() {
-		return responsetext;
-	}	
-	
 	public void setType(String type) {
 	}
 	
@@ -137,6 +134,14 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	public void setResponse(String response) {
 		this.response = response;
+	}
+
+	public String getResponsetext() {
+		return responsetext;
+	}
+	
+	public void setResponsetext(String responsetext) {
+		this.responsetext = responsetext;
 	}
 
 	public String getTransactionid() {
@@ -201,6 +206,14 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	public void setKey_id(String key_id) {
 		this.key_id = key_id;
+	}
+	
+	public String getCustomer_vault() {
+		return customer_vault;
+	}
+
+	public void setCustomer_vault(String customer_vault) {
+		this.customer_vault = customer_vault;
 	}
 
 	/******** End BrainTree Setters *******/
