@@ -73,7 +73,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private int payingFacilities;
 	private User auditor;
 	private LowMedHigh riskLevel;
-	private Date lastViewOfFacilitiesPage;
+	private Date viewedFacilities;
 
 	private int annualUpdateEmails;
 	private String oqEmployees;
@@ -486,15 +486,9 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.lastPayment = lastPayment;
 	}
 
-	@Temporal(TemporalType.DATE)
-	public Date getLastViewOfFacilitiesPage() {
-		return lastViewOfFacilitiesPage;
-	}
-
-	public void setLastViewOfFacilitiesPage(Date lastViewOfFacilitiesPage) {
-		this.lastViewOfFacilitiesPage = lastViewOfFacilitiesPage;
-	}
-
+	
+	
+	
 	/**
 	 * The USD amount they paid on lastPayment date
 	 * 
@@ -509,6 +503,16 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.lastPaymentAmount = lastPaymentAmount;
 	}
 
+	@Temporal(TemporalType.DATE)
+	public Date getViewedFacilities() {
+		return viewedFacilities;
+	}
+
+	public void setViewedFacilities(Date viewedFacilities) {
+		this.viewedFacilities = viewedFacilities;
+	}
+
+	
 	/**
 	 * The date the lastPayment expires and the contractor is due to pay another
 	 * "period's" membership fee
@@ -745,4 +749,5 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		Collections.sort(getAudits(), new ContractorAuditComparator("auditFor -1"));
 		return getAudits();
 	}
+
 }
