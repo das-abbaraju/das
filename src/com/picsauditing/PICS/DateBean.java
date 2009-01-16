@@ -409,4 +409,11 @@ public class DateBean {
 		
 		return cal.getTime();
 	}
+	
+	public static String getBrainTreeDate() {
+		Date d = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddkkmmss");
+		sdf.setTimeZone( TimeZone.getTimeZone("GMT"));
+		return sdf.format(d);
+	}
 }
