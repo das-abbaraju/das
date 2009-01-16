@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -27,12 +28,14 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private String hash;
 	private String key;
 	private String key_id;
+	private CreditCard cc;
 	
 	AppPropertyDAO appPropDao;
 	
-	public ContractorPaymentOptions(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AppPropertyDAO appPropDao) {
+	public ContractorPaymentOptions(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AppPropertyDAO appPropDao, CreditCard cc) {
 		super(accountDao, auditDao);
 		this.appPropDao = appPropDao;
+		this.cc = cc;
 	}
 	
 	public String execute() throws Exception {
