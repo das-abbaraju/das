@@ -55,26 +55,6 @@ public class ContractorWidget extends ContractorActionSupport {
 								+ "</b>, please call 949-387-1940 x708 to make a payment");
 			}
 
-			if (contractor.getViewedFacilities() == null) {
-				openTasks
-						.add("Please review your  <a href=\"con_selectFacilities.jsp?id="
-								+ contractor.getId()
-								+ "\">list of facilities</a>");
-			} else {
-				Calendar ninetyDaysAgo = Calendar.getInstance();
-				ninetyDaysAgo.setTime(new Date());
-				ninetyDaysAgo.add(Calendar.DATE, -90);
-
-				if (contractor.getViewedFacilities().compareTo(
-						ninetyDaysAgo.getTime()) == -1) {
-
-					openTasks
-							.add("Please review your  <a href=\"con_selectFacilities.jsp?id="
-									+ contractor.getId()
-									+ "\">list of facilities</a>");
-				}
-
-			}
 
 			for (ContractorAudit conAudit : getActiveAudits()) {
 				// TODO get the Tasks to show up right for OSHA/EMR
@@ -169,11 +149,26 @@ public class ContractorWidget extends ContractorActionSupport {
 	}
 
 	public boolean isReminderTask() {
-		if (Calendar.getInstance().get(Calendar.MONTH) == 0
-				|| DateBean.getDateDifference(contractor.getAccountDate()) > -30) {
-			reminderTask = true;
+
+		if (Calendar.getInstance().get(Calendar.MONTH) == 0)
+			return true;
+
+		
+		if (contractor.getViewedFacilities() == null) {
+			return true;
+		} else {
+			Calendar ninetyDaysAgo = Calendar.getInstance();
+			ninetyDaysAgo.setTime(new Date());
+			ninetyDaysAgo.add(Calendar.DATE, -90);
+
+			if (contractor.getViewedFacilities().compareTo(
+					ninetyDaysAgo.getTime()) == -1) {
+				return true;
+			}
+
 		}
-		return reminderTask;
+		
+		return false;
 	}
 
 }

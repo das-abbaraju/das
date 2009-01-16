@@ -503,7 +503,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.lastPaymentAmount = lastPaymentAmount;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getViewedFacilities() {
 		return viewedFacilities;
 	}

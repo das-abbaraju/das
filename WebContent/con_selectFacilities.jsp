@@ -63,7 +63,7 @@
 	for(ContractorOperator co : contractor.getOperators())
 		opMap.put(co.getOperatorAccount().getId(), co);
 
-	contractor.setLastViewOfFacilitiesPage( new java.util.Date() );
+	contractor.setViewedFacilities( new java.util.Date() );
 	contractorDAO.save( contractor );
 	
 	
