@@ -30,6 +30,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
 
 @SuppressWarnings("serial")
@@ -74,6 +75,9 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private User auditor;
 	private LowMedHigh riskLevel;
 	private Date viewedFacilities;
+	private String paymentMethodStatus;
+	private String paymentToken;
+	private String paymentMethod;
 
 	private int annualUpdateEmails;
 	private String oqEmployees;
@@ -390,6 +394,53 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setPayingFacilities(int payingFacilities) {
 		this.payingFacilities = payingFacilities;
 	}
+	
+	/**
+	 * The Payment Method Statuses are Valid, Invalid, Missing, 
+	 * Pending, Approved, Rejected
+	 * @return
+	 */
+	public String getPaymentMethodStatus() {
+		return paymentMethodStatus;
+	}
+
+	public void setPaymentMethodStatus(String paymentMethodStatus) {
+		this.paymentMethodStatus = paymentMethodStatus;
+	}
+
+	@Transient
+	public boolean isPaymentMethodStatusValid() {
+		if(!Strings.isEmpty(paymentMethodStatus)) {
+			if("Valid".equals(paymentMethodStatus) || "Approved".equals(paymentMethodStatus)) 
+				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Token that we get back from Brain Tree 
+	 * to let the us access the contractor with token
+	 */
+	public String getPaymentToken() {
+		return paymentToken;
+	}
+
+	public void setPaymentToken(String paymentToken) {
+		this.paymentToken = paymentToken;
+	}
+
+	/**
+	 * The Payment methods are Cash and Credit Card
+	 * @return
+	 */
+	
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
 
 	/**
 	 * The date this is first activated. This is never reset afterwards.
@@ -554,7 +605,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setAuditor(User auditor) {
 		this.auditor = auditor;
 	}
-
+	
 	/**
 	 * Map of Contractor Flags with OperatorID as the key
 	 */
@@ -749,5 +800,4 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		Collections.sort(getAudits(), new ContractorAuditComparator("auditFor -1"));
 		return getAudits();
 	}
-
 }
