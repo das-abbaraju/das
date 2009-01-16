@@ -19,7 +19,11 @@
 	function showPaymentOptions(conId, method) {
  
  		var buttonURL= window.location.href;
- 		buttonURL = buttonURL.replace('http:', 'https:');
+ 		
+ 		if( buttonURL.indexOf( 'localhost' ) == -1 ) {
+ 			buttonURL = buttonURL.replace('http:', 'https:');
+ 			buttonURL = buttonURL.replace('8080', '443');
+ 		}
  		
  		var url = buttonURL.substr(0, buttonURL.lastIndexOf('/') ) + '/ContractorPaymentOptions.action?id=' + conId +'&paymentMethod=' + method; 
 		title = 'Contractor Payment Options';
