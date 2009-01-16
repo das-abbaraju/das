@@ -2,7 +2,6 @@ package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -74,6 +73,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private int payingFacilities;
 	private User auditor;
 	private LowMedHigh riskLevel;
+	private Date lastViewOfFacilitiesPage;
 
 	private int annualUpdateEmails;
 	private String oqEmployees;
@@ -484,6 +484,15 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	public void setLastPayment(Date lastPayment) {
 		this.lastPayment = lastPayment;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getLastViewOfFacilitiesPage() {
+		return lastViewOfFacilitiesPage;
+	}
+
+	public void setLastViewOfFacilitiesPage(Date lastViewOfFacilitiesPage) {
+		this.lastViewOfFacilitiesPage = lastViewOfFacilitiesPage;
 	}
 
 	/**
