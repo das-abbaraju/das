@@ -16,7 +16,7 @@ public class BrainTreeService {
 	protected String password = null;
 	
 	
-	public CreditCard getCustomerData( int contractorId ) throws Exception {
+	public CreditCard getCreditCard( int contractorId ) throws Exception {
 
 		CreditCard response = new CreditCard();
 
@@ -87,7 +87,7 @@ public class BrainTreeService {
 		service.setUserName("testapi");
 		service.setPassword("password1");
 		
-		CreditCard cc = service.getCustomerData(81);
+		CreditCard cc = service.getCreditCard(81);
 		
 		System.out.println( cc.getCardNumber() );
 	}
