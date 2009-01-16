@@ -63,6 +63,10 @@
 	for(ContractorOperator co : contractor.getOperators())
 		opMap.put(co.getOperatorAccount().getId(), co);
 
+	contractor.setLastViewOfFacilitiesPage( new java.util.Date() );
+	contractorDAO.save( contractor );
+	
+	
 	FlagDO flagDO = new FlagDO();
 	HashMap<String, FlagDO> flagMap = flagDO.getFlagByContractor(id);
 	
