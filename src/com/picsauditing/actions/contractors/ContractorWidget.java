@@ -55,7 +55,7 @@ public class ContractorWidget extends ContractorActionSupport {
 								+ "</b>, please call 949-387-1940 x708 to make a payment");
 			}
 
-			if (contractor.getLastViewOfFacilitiesPage() == null) {
+			if (contractor.getViewedFacilities() == null) {
 				openTasks
 						.add("Please review your  <a href=\"con_selectFacilities.jsp?id="
 								+ contractor.getId()
@@ -65,7 +65,7 @@ public class ContractorWidget extends ContractorActionSupport {
 				ninetyDaysAgo.setTime(new Date());
 				ninetyDaysAgo.add(Calendar.DATE, -90);
 
-				if (contractor.getLastViewOfFacilitiesPage().compareTo(
+				if (contractor.getViewedFacilities().compareTo(
 						ninetyDaysAgo.getTime()) == -1) {
 
 					openTasks
