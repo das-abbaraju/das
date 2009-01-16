@@ -10,44 +10,41 @@
 <body>
 
 <s:include value="conHeader.jsp"></s:include>
-<s:form id="save" method="POST" enctype="multipart/form-data">
-<div class="buttons">
-	<!-- <button class="positive" name="button" type="submit" value="Save">Save</button>  -->
-	<input type="submit" class="positive" name="button" value="Save"/>
-</div>
+<form method="post" action="https://secure.braintreepaymentgateway.com/api/transact.php">
+	<input id="key_id" type="hidden" value="776320" name="key_id"/>
+	<input id="orderid" type="hidden" value="12345" name="orderid"/>
+	<input id="ccnumber" type="hidden" value="4111111111111111" name="ccnumber"/>
+	<input id="ccexp" type="hidden" value="1010" name="ccexp"/>
+	<input id="amount" type="hidden" value="10.00" name="amount"/>
+	<input id="time" type="hidden" value=20090116173111 name="time"/>
+	<input id="hash" type="hidden" value="b55e7e5d73fabf16525896c760f8d115" name="hash"/>	
+	<input id="customer_vault" type="hidden" value="add_customer" name="customer_vault"/>
+	<input id="customer_vault_id" type="hidden" value="3256" name="customer_vault_id"/>
+	<input id="redirect" type="hidden" value="http://localhost:8080/picsWeb2/ContractorPaymentOptions.action?id=<s:property value="id"/>" name="redirect"/>
 <br clear="all" />
+
 <s:hidden name="id" />
 	<fieldset class="form">
-	<legend><span>Details</span></legend>
+	<legend><span>Primary Address</span></legend>
 	<ol>
-		<li><label>Name:</label>
-			<s:textfield name="contractor.name" size="35" />
+		<li><label>Address:</label>
+			<s:textfield name="contractor.address" size="35" />
 		</li>
-		<li><label>Username:</label>
-			<s:textfield name="contractor.username" size="20" />
-				<pics:permission perm="SwitchUser">
-					<a href="login.jsp?switchUser=<s:property value="contractor.username"/>">Switch User</a>							
-				</pics:permission>
+		<li>
+		<div class="buttons">
+			<!-- <button class="positive" name="button" type="submit" value="Save">Save</button>  -->
+			<input type="submit" class="positive" name="button" value="Submit"/>
+		</div>
 		</li>
-		<li><label>Change Password:</label>
-			<s:password name="password1" size="15" />
+		<s:if test="response_code == '100'">
+		<li>
+			Successful Transaction!!
 		</li>
-		<li><label>Confirm Password:</label>
-			<s:password name="password2" size="15" />
-		</li>
-		<li><label>Date Created:</label>
-			<s:date name="contractor.dateCreated" format="MMM d, yyyy" />
-		</li>
-		<li><label>First Login:</label>
-			<s:date name="contractor.getAccountDate" format="MMM d, yyyy" />
-		</li>
-		<li><label>Last Login:</label>
-			<s:date name="contractor.lastLogin" format="MMM d, yyyy" />
-		</li>
+		</s:if>
 	</ol>
-	</fieldset>
+	</fieldset>	
 	<br clear="all">
-</s:form>
+</form>
 
 </body>
 </html>

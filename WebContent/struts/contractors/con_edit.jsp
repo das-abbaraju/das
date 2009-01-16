@@ -79,6 +79,9 @@
 					<li><label>New Billing Amount:</label>
 						$<s:property value="contractor.newBillingAmount" />
 					</li>
+					<li><label>Payment Options:</label>
+						<a href="ContractorPaymentOptions.action?id=<s:property value="id"/>">Edit Payment Options</a>
+					</li>
 				</s:if>
 				<s:else>
 					<li><label>Status:</label>no payment required</li>
