@@ -146,13 +146,21 @@ public class AuditDataSave extends AuditActionSupport {
 			if( auditData.getAudit() != null ) {
 				ContractorAudit tempAudit = auditData.getAudit();
 			
-				if(tempAudit.getAuditType() != null && tempAudit.getAuditType().getClassType() == AuditTypeClass.Policy 
-						&& tempAudit.getAuditStatus() == AuditStatus.Active ) {
+				if( tempAudit.getAuditType() != null && tempAudit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
 					
-					tempAudit.setAuditStatus(AuditStatus.Resubmitted);
+					if( tempAudit.getAuditStatus() == AuditStatus.Active ) {
+						tempAudit.setAuditStatus(AuditStatus.Resubmitted);
+					}
+					
+					if( auditData.getQuestion().getUniqueCode() != null && auditData.getQuestion().getUniqueCode().equals("policyExpirationDate") ) {
+						tempAudit.setExpiresDate(DateBean.parseDate( auditData.getAnswer() ) );
+					}
+
 					auditDao.save(tempAudit);
 				}
 			}
+			
+			
 
 			// hook to calculation read/update 
 			// the ContractorAudit and AuditCatData
