@@ -14,10 +14,11 @@ import com.picsauditing.util.BrainTree;
 public class ContractorPaymentOptions extends ContractorActionSupport {
 	static public String creditCard = "Credit Card";
 	private String paymentMethod = creditCard;
-	private String responseCode = null;
+	private String response_code = null;
 	private String orderid = "";
 	private String amount = "";
 	private String response;
+	private String responsetext;
 	private String transactionid;
 	private String avsresponse;
 	private String cvvresponse;
@@ -46,7 +47,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			key_id = appPropDao.find("brainTree.key_id").getValue();
 		}
 		
-		if (responseCode != null) {
+		if (response_code != null) {
 			// Hey we're receiving some sort of response
 			String newHash = BrainTree.buildHash(orderid, amount, 
 					response, transactionid, avsresponse, cvvresponse, 
@@ -90,15 +91,20 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	/********** BrainTree Setters *********/
 	
-	public void setResponse_code(String responseCode) {
-		this.responseCode = responseCode;
+	public void setResponse_code(String response_code) {
+		this.response_code = response_code;
 	}
 	
 	public void setAuthcode(String authcode) {
 	}
 	
 	public void setResponsetext(String responsetext) {
+		this.responsetext = responsetext;
 	}
+	
+	public String getResponsetext() {
+		return responsetext;
+	}	
 	
 	public void setType(String type) {
 	}
@@ -122,7 +128,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		this.amount = amount;
 	}
 
-	public String getResponse() {
+	public String getResponse1() {
 		return response;
 	}
 
@@ -204,4 +210,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		types.add("Mastercard");
 		return types;
 	}
+
+
 }
