@@ -263,7 +263,7 @@ public class AuditBuilder {
 			cAuditDAO.remove(auditID);
 			fillAuditCategories = false;
 		}
-
+		
 		if (fillAuditCategories) {
 			/** Generate Categories * */
 			for (ContractorAudit conAudit : currentAudits) {
@@ -369,6 +369,22 @@ public class AuditBuilder {
 	 * @param conAudit
 	 */
 	public void fillAuditCategories(ContractorAudit conAudit) {
+		if (conAudit.getAuditType().isPqf()) {
+			// Only Active and Pending PQFs should be recalculated
+			if (conAudit.getAuditStatus().equals(AuditStatus.Submitted))
+				return;
+			if (conAudit.getAuditStatus().equals(AuditStatus.Resubmitted))
+				return;
+			if (conAudit.getAuditStatus().equals(AuditStatus.Expired))
+				return;
+			if (conAudit.getAuditStatus().equals(AuditStatus.Exempt))
+				return;
+		} else {
+			// Other Audits should only consider Pending
+			if (!conAudit.getAuditStatus().isPending())
+				return;
+		}
+		
 		// set of audit categories to be included in the audit
 		Set<AuditCategory> categories = new HashSet<AuditCategory>();
 		Set<AuditCategory> naCategories = new HashSet<AuditCategory>();
@@ -458,6 +474,7 @@ public class AuditBuilder {
 								AuditStatus.Submitted))) {
 					// Found a Submitted/Active PQF
 					if (currentAuditDate == null || audits.getCompletedDate().after(currentAuditDate)) {
+						//TODO we can only have 1 pqf anway so remove this logic
 						// Found the most recent one
 						currentAuditDate = audits.getCompletedDate();
 						pqfAuditID = audits.getId();
