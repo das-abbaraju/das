@@ -1,5 +1,6 @@
 package com.picsauditing.actions.contractors;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -151,8 +152,14 @@ public class ContractorWidget extends ContractorActionSupport {
 	public boolean isReminderTask() {
 
 		if (Calendar.getInstance().get(Calendar.MONTH) == 0)
-			return true;
-
+			if (contractor.getViewedFacilities() == null) {
+				return true;
+			} else {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+				if( ! sdf.format(contractor.getViewedFacilities()).equals(sdf.format(new Date()))) {
+					return true;	
+				}
+			}
 		
 		if (contractor.getViewedFacilities() == null) {
 			return true;
