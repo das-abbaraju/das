@@ -30,13 +30,14 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private String hash;
 	private String key;
 	private String key_id;
-	private BrainTreeService.CreditCard cc;
+	private BrainTreeService ccService;
 	
 	AppPropertyDAO appPropDao;
 	
-	public ContractorPaymentOptions(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AppPropertyDAO appPropDao) {
+	public ContractorPaymentOptions(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AppPropertyDAO appPropDao, BrainTreeService ccService) {
 		super(accountDao, auditDao);
 		this.appPropDao = appPropDao;
+		this.ccService = ccService;
 	}
 	
 	public String execute() throws Exception {
@@ -50,9 +51,12 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			key = appPropDao.find("brainTree.key").getValue();
 			key_id = appPropDao.find("brainTree.key_id").getValue();
 			
-			cc = new CreditCard();
-			cc.setCardNumber("411111111111111111111");
-			cc.setExpirationDate("1010");
+			if (contractor.getPaymentMethodStatus() != "Missing") {
+				ccService = new BrainTreeService();
+				ccService.getCreditCard(contractor.getId());
+				ccService.setUserName(appPropDao.find("brainTree.username").getValue());
+				ccService.setPassword(appPropDao.find("brainTree.password").getValue());
+			}
 		}
 		
 		if (response_code != null) {
