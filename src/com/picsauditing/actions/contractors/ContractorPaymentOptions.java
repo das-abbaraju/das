@@ -5,22 +5,55 @@ import com.picsauditing.dao.ContractorAuditDAO;
 
 @SuppressWarnings("serial")
 public class ContractorPaymentOptions extends ContractorActionSupport {
-	protected String responseCode = null;
+	
+	private String paymentMethod = "Credit Card";
+	private String responseCode = null;
 	
 	public ContractorPaymentOptions(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
 		super(accountDao, auditDao);
 	}
 	
 	public String execute() throws Exception {
+		// TODO allow contractors to edit this page during registration
 		if (!forceLogin())
 			return LOGIN;
 
 		this.findContractor();
-		this.subHeading = "Payment Options";
-
+		
+		if (paymentMethod == null)
+			paymentMethod = "Credit Card";
+		if (!paymentMethod.equals(contractor.getPaymentMethod())) {
+			// We have a new payment method, reset the status
+			contractor.setPaymentMethod(paymentMethod);
+			if (paymentMethod.equals("Credit Card"))
+				contractor.setPaymentMethodStatus("Missing");
+			else
+				contractor.setPaymentMethodStatus("Pending");
+			this.accountDao.save(contractor);
+		}
+		
+		if (button != null) {
+			if (button.equals("ApplyForCredit")) {
+				
+			}
+			if (button.equals("EditCreditCard")) {
+				
+			}
+		}
+		
 		return SUCCESS;
 	}
 
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
+
+	/********** BrainTree Setters *********/
+	
 	public void setResponse_code(String responseCode) {
 		this.responseCode = responseCode;
 	}
@@ -60,4 +93,5 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	
 	public void setUsername(String username) {
 	}
+	/******** End BrainTree Setters *******/
 }

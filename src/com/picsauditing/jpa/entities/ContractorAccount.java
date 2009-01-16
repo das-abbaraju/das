@@ -430,10 +430,9 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	/**
-	 * The Payment methods are Cash and Credit Card
+	 * The Payment methods are Billed and Credit Card
 	 * @return
 	 */
-	
 	public String getPaymentMethod() {
 		return paymentMethod;
 	}
