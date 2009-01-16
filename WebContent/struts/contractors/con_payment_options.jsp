@@ -3,42 +3,49 @@
 <%@ page language="java" errorPage="../exception_handler.jsp"%>
 <html>
 <head>
-<title>Payment Options</title>
+<title><s:property value="contractor.name" /> - Payment Method</title>
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/forms.css" />
 </head>
 <body>
 
+<h1><s:property value="contractor.name" /><span id="sub">Payment Method</span></h1>
+
 <s:include value="../actionMessages.jsp"></s:include>
 
+<s:if test="paymentMethod == 'Credit Card'">
 <form method="post" action="https://secure.braintreepaymentgateway.com/api/transact.php">
+	<input type="hidden" name="redirect" value="<s:property value="requestURI"/>?id=<s:property value="id"/>"/>
 	<s:hidden name="hash"></s:hidden>
 	<s:hidden name="key_id"></s:hidden>
 	<s:hidden name="orderid"></s:hidden>
 	<s:hidden name="amount"></s:hidden>
 	<s:hidden name="time"></s:hidden>
 	<s:hidden name="customer_vault_id"></s:hidden>
-	<input type="radio" name="customer_vault" value="add_customer"/> Add
-	<input type="radio" name="customer_vault" value="update_customer"/> Update
-	<input type="radio" name="customer_vault" value="delete_customer"/> Delete
-	Report Type <input type="text" name="report_type" value="customer_vault"/>
-	<input type="hidden" name="redirect" value="http://localhost:8080/picsWeb2/ContractorPaymentOptions.action?id=<s:property value="id"/>"/>
-<br clear="all" />
+	<s:if test="cc == null'">
+		<input type="hidden" name="customer_vault" value="add_customer"/>
+	</s:if>
+	<s:else>
+		<input type="hidden" name="customer_vault" value="update_customer"/>
+	</s:else>
 
-<s:hidden name="id" />
 	<fieldset class="form">
-	<s:if test="paymentMethod == 'Credit Card'">
-	<legend><span>Credit Card Details</span></legend>
+	<legend><span>Membership Details</span></legend>
 	<ol>
-		<li><label>Contractor Name:</label>
-			<s:property value="contractor.name" />
-		</li>
 		<li><label>Annual Membership Fee:</label>
 			$<s:property value="contractor.newBillingAmount" />
 		</li>
-		<li><label>Renewal Date:</label>
+		<li><label>Payment Expires:</label>
 			<s:date name="contractor.paymentExpires" format="MMM d, yyyy" />
 		</li>
+	</ol>
+	<legend><span>Credit Card Details</span></legend>
+	<ol>
+	<s:if test="contractor.paymentMethodStatusValid">
+		<li><label>Existing Card:</label>
+			<s:radio theme="pics" list="creditCardTypes" name="ccName"/>
+		</li>
+	</s:if>
 		<li><label>Credit Card Type:</label>
 			<s:radio theme="pics" list="creditCardTypes" name="ccName"/>
 		</li>

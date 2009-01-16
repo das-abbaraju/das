@@ -76,7 +76,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private LowMedHigh riskLevel;
 	private Date viewedFacilities;
 	private String paymentMethodStatus;
-	private String paymentToken;
 	private String paymentMethod;
 
 	private int annualUpdateEmails;
@@ -421,18 +420,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		return false;
 	}
 	
-	/**
-	 * Token that we get back from Brain Tree 
-	 * to let the us access the contractor with token
-	 */
-	public String getPaymentToken() {
-		return paymentToken;
-	}
-
-	public void setPaymentToken(String paymentToken) {
-		this.paymentToken = paymentToken;
-	}
-
 	/**
 	 * The Payment methods are Billed and Credit Card
 	 * @return
