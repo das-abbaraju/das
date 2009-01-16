@@ -16,17 +16,19 @@ public class BrainTreeService {
 	protected String password = null;
 	
 	
-	public CreditCard getCustomerData() throws Exception {
+	public CreditCard getCustomerData( int contractorId ) throws Exception {
 
 		CreditCard response = new CreditCard();
 
-		String urlBase = "https://secure.braintreepaymentgateway.com/api/query.php?customer_vault_id=81&report_type=customer_vault";
+		String urlBase = "https://secure.braintreepaymentgateway.com/api/query.php?report_type=customer_vault";
 		
 		StringBuilder request = new StringBuilder( urlBase )
 			.append("&username=")
 			.append(userName)
 			.append("&password=")
-			.append(password);
+			.append(password)
+			.append("&customer_vault_id=")
+			.append(new Integer(contractorId).toString());
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = dbf.newDocumentBuilder();
@@ -85,7 +87,7 @@ public class BrainTreeService {
 		service.setUserName("testapi");
 		service.setPassword("password1");
 		
-		CreditCard cc = service.getCustomerData();
+		CreditCard cc = service.getCustomerData(81);
 		
 		System.out.println( cc.getCardNumber() );
 	}
