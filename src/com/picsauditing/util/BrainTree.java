@@ -3,6 +3,7 @@ package com.picsauditing.util;
 
 public class BrainTree {
 	public static String buildHash(String orderID, String amount, String vaultID, String time, String key) {
+		// TODO add some warnings if the parameters look suspicious
 		StringBuilder salt = new StringBuilder();
 		salt.append(orderID).append("|");
 		salt.append(amount).append("|");

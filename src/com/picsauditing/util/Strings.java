@@ -1,5 +1,6 @@
 package com.picsauditing.util;
 
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -109,16 +110,14 @@ public class Strings {
 	}
 
 	public static String md5(String seed) {
-		MessageDigest digest = null;
 		try {
-			digest = MessageDigest.getInstance("MD5");
+			MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(seed.getBytes());
+            BigInteger number = new BigInteger(1,messageDigest);
+            return number.toString(16);
 		} catch (NoSuchAlgorithmException e) {
 			return e.getMessage();
 		}
-		digest.update(seed.getBytes());
-		byte[] hashed = digest.digest();
-		String value = Base64.encodeBytes(hashed);
-		return value;
 	}
 
 	public static ArrayList<Note> convertNotes(String oldNote) {
