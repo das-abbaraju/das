@@ -3,60 +3,78 @@ package com.picsauditing.actions.contractors;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.util.BrainTree;
 
 @SuppressWarnings("serial")
 public class ContractorPaymentOptions extends ContractorActionSupport {
-	
-	private String paymentMethod = "Credit Card";
+	static public String creditCard = "Credit Card";
+	private String paymentMethod = creditCard;
 	private String responseCode = null;
-	private String orderid = null;
-	private String amount = null;
-	private String response = null;
-	private String transactionid = null;
-	private String avsresponse = null;
-	private String cvvresponse = null;
-	private String customer_vault_id = null;
-	private String time = null;
-	private String hash = null;
+	private String orderid = "";
+	private String amount = "";
+	private String response;
+	private String transactionid;
+	private String avsresponse;
+	private String cvvresponse;
+	private String customer_vault_id;
+	private String time;
+	private String hash;
+	private String key;
+	private String key_id;
 	
-	public ContractorPaymentOptions(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
+	AppPropertyDAO appPropDao;
+	
+	public ContractorPaymentOptions(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AppPropertyDAO appPropDao) {
 		super(accountDao, auditDao);
+		this.appPropDao = appPropDao;
 	}
 	
 	public String execute() throws Exception {
 		// TODO allow contractors to edit this page during registration
 		if (!forceLogin())
 			return LOGIN;
-
+		
 		this.findContractor();
+		
+		if (paymentMethod.equals(creditCard)) {
+			key = appPropDao.find("brainTree.key").getValue();
+			key_id = appPropDao.find("brainTree.key_id").getValue();
+		}
 		
 		if (responseCode != null) {
 			// Hey we're receiving some sort of response
-			// TODO Verify the authenticity of the response
-			
+			String newHash = BrainTree.buildHash(orderid, amount, 
+					response, transactionid, avsresponse, cvvresponse, 
+					customer_vault_id, time, key);
+			if (!newHash.equals(hash))
+				throw new Exception("Invalid hash from BrainTree");
+			contractor.setPaymentMethod(creditCard);
+			accountDao.save(contractor);
 		}
 		
 		if (paymentMethod == null)
-			paymentMethod = "Credit Card";
+			paymentMethod = creditCard;
 		if (!paymentMethod.equals(contractor.getPaymentMethod())) {
 			// We have a new payment method, reset the status
 			contractor.setPaymentMethod(paymentMethod);
-			if (paymentMethod.equals("Credit Card"))
+			if (paymentMethod.equals(creditCard))
 				contractor.setPaymentMethodStatus("Missing");
 			else
 				contractor.setPaymentMethodStatus("Pending");
-			this.accountDao.save(contractor);
+			accountDao.save(contractor);
 		}
 		
-		if (button != null) {
-			if (button.equals("ApplyForCredit")) {
-				
-			}
-			if (button.equals("EditCreditCard")) {
-				
-			}
+		if (paymentMethod.equals(creditCard)) {
+			AppProperty prop = appPropDao.find("brainTree.key");
+			key = prop.getValue();
+			customer_vault_id = contractor.getIdString();
+			time = DateBean.getBrainTreeDate();
+			hash = BrainTree.buildHash(orderid, amount, customer_vault_id, time, key);
 		}
 		
 		return SUCCESS;
@@ -159,6 +177,23 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public void setHash(String hash) {
 		this.hash = hash;
 	}
+	
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public String getKey_id() {
+		return key_id;
+	}
+
+	public void setKey_id(String key_id) {
+		this.key_id = key_id;
+	}
+
 	/******** End BrainTree Setters *******/
 	
 	

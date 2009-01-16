@@ -10,7 +10,6 @@ import javax.persistence.EntityNotFoundException;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -48,7 +47,6 @@ public class FlagCalculator2 {
 	private ContractorAuditOperatorDAO caoDAO;
 	private AuditDataDAO auditDataDAO;
 	private ContractorOperatorFlagDAO coFlagDAO;
-	protected AppPropertyDAO appPropDao = null;
 
 	// List of operators to be processed
 	private List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
@@ -58,13 +56,12 @@ public class FlagCalculator2 {
 
 	public FlagCalculator2(OperatorAccountDAO operatorDAO, ContractorAccountDAO contractorDAO,
 			ContractorAuditDAO conAuditDAO, AuditDataDAO auditDataDAO, ContractorOperatorFlagDAO coFlagDAO,
-			AppPropertyDAO appProps, ContractorAuditOperatorDAO caoDAO ) {
+			ContractorAuditOperatorDAO caoDAO ) {
 		this.operatorDAO = operatorDAO;
 		this.contractorDAO = contractorDAO;
 		this.conAuditDAO = conAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.coFlagDAO = coFlagDAO;
-		this.appPropDao = appProps;
 		this.caoDAO = caoDAO;
 	}
 
