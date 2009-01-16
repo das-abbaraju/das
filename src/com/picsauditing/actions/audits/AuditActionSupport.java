@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.picsauditing.PICS.ContractorBean;
@@ -30,7 +29,6 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 
@@ -181,7 +179,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanVerify() {
-		if(!conAudit.getAuditType().isMustVerify())
+		if (!conAudit.getAuditType().isMustVerify())
 			return false;
 		if (conAudit.getAuditType().isPqf() && conAudit.getAuditStatus().isActiveSubmitted())
 			if (permissions.isAuditor())

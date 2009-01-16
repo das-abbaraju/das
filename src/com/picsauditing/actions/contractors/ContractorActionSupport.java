@@ -2,10 +2,7 @@ package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Inputs;
@@ -16,9 +13,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.jpa.entities.AccountName;
 import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;

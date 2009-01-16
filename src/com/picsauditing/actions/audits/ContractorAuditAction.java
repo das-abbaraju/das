@@ -77,14 +77,14 @@ public class ContractorAuditAction extends AuditActionSupport {
 			auditDao.save(conAudit);
 			return SUCCESS;
 		}
-		
-		if("Approve".equals(button)) {
+
+		if ("Approve".equals(button)) {
 			conAudit.setAuditStatus(AuditStatus.Active);
 			auditDao.save(conAudit);
 			return SUCCESS;
 		}
 
-		if("Reject".equals(button)) {
+		if ("Reject".equals(button)) {
 			conAudit.setAuditStatus(AuditStatus.Pending);
 			auditDao.save(conAudit);
 			return SUCCESS;
@@ -226,8 +226,13 @@ public class ContractorAuditAction extends AuditActionSupport {
 			return false;
 		if (conAudit.getPercentComplete() < 100)
 			return false;
-		if (conAudit.getAuditStatus().equals(AuditStatus.Pending))
+		if (conAudit.getAuditStatus().equals(AuditStatus.Pending)) {
+			if (permissions.isContractor() 
+					&& !conAudit.getContractorAccount().isPaymentMethodStatusValid()) {
+					return false;
+			}
 			return true;
+		}
 		if (conAudit.getAuditType().isPqf()) {
 			// PQFs are perpetual audits and can be renewed
 			if (permissions.isContractor()) {
@@ -249,8 +254,10 @@ public class ContractorAuditAction extends AuditActionSupport {
 	public boolean isCanClose() {
 		if (permissions.isContractor())
 			return false;
-		if(permissions.hasPermission(OpPerms.InsuranceVerification) && conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
-			if(conAudit.getAuditStatus().equals(AuditStatus.Submitted) || conAudit.getAuditStatus().equals(AuditStatus.Resubmitted))
+		if (permissions.hasPermission(OpPerms.InsuranceVerification)
+				&& conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+			if (conAudit.getAuditStatus().equals(AuditStatus.Submitted)
+					|| conAudit.getAuditStatus().equals(AuditStatus.Resubmitted))
 				return true;
 		}
 		if (!isCanEdit())
