@@ -1,7 +1,65 @@
 package com.picsauditing.PICS;
 
+import java.io.InputStream;
+import java.net.URL;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 public class BrainTreeService {
 
+	protected String userName = null;
+	protected String password = null;
+	
+	
+	public CreditCard getCustomerData() throws Exception {
+
+		CreditCard response = null;
+
+		String urlBase = "https://secure.braintreepaymentgateway.com/api/query.php?customer_vault_id=81&report_type=customer_vault";
+		
+		StringBuilder request = new StringBuilder( urlBase )
+			.append("&username=")
+			.append(userName)
+			.append("&password=")
+			.append(password);
+		
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db = dbf.newDocumentBuilder();
+		URL url = new URL(request.toString());
+		InputStream inputStream = url.openStream();
+		Document document = db.parse(inputStream);
+		inputStream.close();
+		
+		String cc = getValueFromDocument(document, "cc_number");
+		String expDate = getValueFromDocument(document, "cc_exp");
+
+		if( cc != null && expDate != null ) {
+			response.setCardNumber(cc);
+			response.setExpirationDate(expDate);
+		}
+		
+		return response;
+	}
+
+	protected String getValueFromDocument(Document document, String tagName) {
+		NodeList list = document.getElementsByTagName(tagName);	
+
+		for( int i = 0; i < list.getLength(); i++ ) {
+			Node node = list.item(i);
+			
+			Node value = node.getFirstChild();
+			
+			if( value.getNodeType() == Node.TEXT_NODE ) {
+				return value.getNodeValue();
+			}
+		}
+		return null;
+	}
 	
 	
 	public static class CreditCard {
@@ -20,5 +78,27 @@ public class BrainTreeService {
 			this.expirationDate = expirationDate;
 		}
 	}
+	
+	public static void main(String[] args) throws Exception {
+		CreditCard cc = new BrainTreeService().getCustomerData();
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	
 	
 }
