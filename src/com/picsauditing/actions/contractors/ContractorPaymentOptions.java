@@ -30,16 +30,14 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private String hash;
 	private String key;
 	private String key_id;
-	private BrainTreeService ccService;
+	private CreditCard cc;
 
 	AppPropertyDAO appPropDao;
 
 	public ContractorPaymentOptions(ContractorAccountDAO accountDao,
-			ContractorAuditDAO auditDao, AppPropertyDAO appPropDao,
-			BrainTreeService ccService) {
+			ContractorAuditDAO auditDao, AppPropertyDAO appPropDao) {
 		super(accountDao, auditDao);
 		this.appPropDao = appPropDao;
-		this.ccService = ccService;
 	}
 
 	public String execute() throws Exception {
@@ -50,16 +48,20 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		this.findContractor();
 
 		if (paymentMethod.equals(creditCard)) {
+			BrainTreeService ccService = new BrainTreeService();
+			ccService.setUserName(appPropDao.find("brainTree.username").getValue());
+			ccService.setPassword(appPropDao.find("brainTree.password").getValue());
+			
 			key = appPropDao.find("brainTree.key").getValue();
 			key_id = appPropDao.find("brainTree.key_id").getValue();
 
+			if ("Delete".equalsIgnoreCase(button)) {
+				ccService.deleteCreditCard(contractor.getId());
+				contractor.setPaymentMethodStatus("Missing");
+			}
+
 			if (contractor.getPaymentMethodStatus() != "Missing") {
-				ccService = new BrainTreeService();
-				ccService.getCreditCard(contractor.getId());
-				ccService.setUserName(appPropDao.find("brainTree.username")
-						.getValue());
-				ccService.setPassword(appPropDao.find("brainTree.password")
-						.getValue());
+				cc = ccService.getCreditCard(contractor.getId());
 			}
 		}
 
@@ -90,7 +92,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				contractor.setPaymentMethodStatus("Missing");
 			else
 				contractor.setPaymentMethodStatus("Pending");
-			accountDao.save(contractor);
 		}
 
 		if (paymentMethod.equals(creditCard)) {
@@ -102,9 +103,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 					time, key);
 		}
 
-		if (button.equalsIgnoreCase("Delete"))
-			ccService.deleteCreditCard(contractor.getId());
-
+		// We don't explicitly save, but it should happen here
+		// accountDao.save(contractor);
 		return SUCCESS;
 	}
 
@@ -244,11 +244,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		return types;
 	}
 
-	public BrainTreeService getCcService() {
-		return ccService;
-	}
-
-	public void setCcService(BrainTreeService ccService) {
-		this.ccService = ccService;
+	public CreditCard getCc() {
+		return cc;
 	}
 }

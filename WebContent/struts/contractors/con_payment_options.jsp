@@ -1,20 +1,44 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ page language="java" errorPage="../exception_handler.jsp"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
 <title><s:property value="contractor.name" /> - Payment Method</title>
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/forms.css" />
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 </head>
 <body>
-<h1><s:property value="contractor.name" /> <span class="sub">Payment Method</span></h1>
+<br />
+<div id="main">
+<div id="bodyholder">
+<div id="content">
 
+<div align="center"><a href="javascript: window.close();">Close Window</a></div>
 <s:include value="../actionMessages.jsp"></s:include>
+
+<fieldset class="form">
+<legend><span>Membership Details</span></legend>
+<ol>
+	<li><label>Company Name:</label>
+		<s:property value="contractor.name" />
+	</li>
+	<li><label>Annual Fee:</label>
+		$<s:property value="contractor.newBillingAmount" />
+	</li>
+	<li><label>Membership Expires:</label>
+		<s:date name="contractor.paymentExpires" format="MMM d, yyyy" />
+	</li>
+</ol>
+</fieldset>
 
 <s:if test="paymentMethod == 'Credit Card'">
 <form method="post" action="https://secure.braintreepaymentgateway.com/api/transact.php">
-	<input type="hidden" name="redirect" value="<s:property value="requestURI"/>?id=<s:property value="id"/>"/>
+	<input type="hidden" name="redirect" value="<s:property value="requestURL"/>?id=<s:property value="id"/>"/>
 	<s:hidden name="hash"></s:hidden>
 	<s:hidden name="key_id"></s:hidden>
 	<s:hidden name="orderid"></s:hidden>
@@ -28,18 +52,6 @@
 		<input type="hidden" name="customer_vault" value="update_customer"/>
 	</s:else>
 
-	<fieldset class="form">
-	<legend><span>Membership Details</span></legend>
-	<ol>
-		<li><label>Annual Fee:</label>
-			$<s:property value="contractor.newBillingAmount" />
-		</li>
-		<li><label>Membership Expires:</label>
-			<s:date name="contractor.paymentExpires" format="MMM d, yyyy" />
-		</li>
-	</ol>
-	</fieldset>
-	
 	<s:if test="contractor.paymentMethodStatusValid">
 	<fieldset class="form">
 	<legend><span>Existing Card</span></legend>
@@ -76,30 +88,23 @@
 		</div>
 		</li>
 	</ol>
-	</s:if>
-	<s:else>
-	<legend><span>PICS Credit Details</span></legend>
+	</fieldset>	
+</form>
+</s:if>
+<s:else>
+	<fieldset class="form">
+	<legend><span>Check</span></legend>
 	<ol>
-		<li><label>Contractor Name:</label>
-			<s:property value="contractor.name" />
-		</li>
 		<li><label>Membership Fee:</label>
 			$<s:property value="contractor.newBillingAmount" />
 		</li>
-		<li><label>Membership Date:</label>
-			<s:select list="#{1:1,2:2,3:3}"></s:select>
-			<s:date name="contractor.paymentExpires" format="MMM d, yyyy" />
-		</li>
-		<li>
-		<div class="buttons">
-			<button class="positive" name="button" type="submit" value="Submit">Submit</button>
-		</div>
-		</li>
 	</ol>
-	</s:else>
 	</fieldset>	
-	<br clear="all">
-</form>
+</s:else>
+<br clear="all" />
 
+</div>
+</div>
+</div>
 </body>
 </html>
