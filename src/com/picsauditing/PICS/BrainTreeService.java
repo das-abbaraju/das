@@ -88,6 +88,9 @@ public class BrainTreeService {
 	public static class CreditCard {
 		protected String cardNumber = null;
 		protected String expirationDate = null;
+		public String getCardType() {
+			return "Visa";
+		}
 		public String getCardNumber() {
 			return cardNumber;
 		}
@@ -101,7 +104,7 @@ public class BrainTreeService {
 			this.expirationDate = expirationDate;
 		}
 		
-		public String getExpiratoinDateViewable() {
+		public String getExpirationDateFormatted() {
 			
 			if( expirationDate != null ) {
 				try {
