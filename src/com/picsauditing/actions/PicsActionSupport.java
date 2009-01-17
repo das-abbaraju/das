@@ -164,6 +164,10 @@ public class PicsActionSupport extends ActionSupport {
 		return ServletActionContext.getRequest().getRequestURI();
 	}
 
+	public String getRequestURL() {
+		return ServletActionContext.getRequest().getRequestURL().toString();
+	}
+
 	public List<User> getAuditorList() {
 		if (auditorList == null) {
 			auditorList = new ArrayList<User>();
