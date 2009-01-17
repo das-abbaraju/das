@@ -48,6 +48,48 @@ public class BrainTreeService {
 		return response;
 	}
 
+	public void addCreditCard( int contractorId, CreditCard cc ) throws Exception {
+		
+		String urlBase = "https://secure.braintreepaymentgateway.com/api/transact.php?customer_vault=add_customer";
+		
+		StringBuilder request = new StringBuilder( urlBase )
+		.append("&username=")
+		.append(userName)
+		.append("&password=")
+		.append(password)
+		.append("&customer_vault_id=")
+		.append(new Integer(contractorId).toString())
+		.append("&ccnumber=")
+		.append(cc.getCardNumber())
+		.append("&ccexp=")
+		.append(cc.getExpirationDate());
+		
+		URL url = new URL(request.toString());
+		
+		InputStream inputStream = url.openStream();
+		inputStream.close();
+	}
+	
+	public void deleteCreditCard( int contractorId ) throws Exception {
+		
+		String urlBase = "https://secure.braintreepaymentgateway.com/api/transact.php?customer_vault=delete_customer";
+		
+		StringBuilder request = new StringBuilder( urlBase )
+		.append("&username=")
+		.append(userName)
+		.append("&password=")
+		.append(password)
+		.append("&customer_vault_id=")
+		.append(new Integer(contractorId).toString());
+		
+		URL url = new URL(request.toString());
+		InputStream inputStream = url.openStream();
+		inputStream.close();
+	}
+	
+	
+	
+	
 	protected String getValueFromDocument(Document document, String tagName) {
 		NodeList list = document.getElementsByTagName(tagName);	
 
@@ -86,10 +128,31 @@ public class BrainTreeService {
 		BrainTreeService service = new BrainTreeService();
 		service.setUserName("testapi");
 		service.setPassword("password1");
+
 		
-		CreditCard cc = service.getCreditCard(81);
+		CreditCard cc = new CreditCard();
+		cc.setCardNumber("4111111111111111");
+		cc.setExpirationDate("1010");
 		
+		service.addCreditCard(654321, cc);
+		
+		cc = service.getCreditCard(654321);
 		System.out.println( cc.getCardNumber() );
+
+		
+		service.deleteCreditCard(654321);
+
+		try {
+			cc = service.getCreditCard(654321);
+			System.out.println( cc.getCardNumber() );
+			
+		}
+		catch( Exception problem ) {
+			
+		}
+
+		
+	
 	}
 
 	public String getUserName() {
