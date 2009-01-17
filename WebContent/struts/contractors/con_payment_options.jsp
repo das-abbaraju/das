@@ -8,8 +8,7 @@
 	href="css/forms.css" />
 </head>
 <body>
-
-<h1><s:property value="contractor.name" /><span id="sub">Payment Method</span></h1>
+<h1><s:property value="contractor.name" /> <span class="sub">Payment Method</span></h1>
 
 <s:include value="../actionMessages.jsp"></s:include>
 
@@ -32,27 +31,43 @@
 	<fieldset class="form">
 	<legend><span>Membership Details</span></legend>
 	<ol>
-		<li><label>Annual Membership Fee:</label>
+		<li><label>Annual Fee:</label>
 			$<s:property value="contractor.newBillingAmount" />
 		</li>
-		<li><label>Payment Expires:</label>
+		<li><label>Membership Expires:</label>
 			<s:date name="contractor.paymentExpires" format="MMM d, yyyy" />
 		</li>
 	</ol>
-	<legend><span>Credit Card Details</span></legend>
-	<ol>
+	</fieldset>
+	
 	<s:if test="contractor.paymentMethodStatusValid">
-		<li><label>Existing Card:</label>
-			<s:radio theme="pics" list="creditCardTypes" name="ccName"/>
+	<fieldset class="form">
+	<legend><span>Existing Card</span></legend>
+	<ol>
+		<li><label>Type:</label>
+			<s:property value="cc.cardType"/>
 		</li>
+		<li><label>Number:</label>
+			<s:property value="cc.cardNumber"/>
+		</li>
+		<li><label>Expires:</label>
+			<s:property value="cc.expirationDateFormatted"/>
+		</li>
+		<li><a href="?id=<s:property value="id"/>&button=delete" class="remove">Remove Card</a></li>
+	</ol>
+	</fieldset>
 	</s:if>
-		<li><label>Credit Card Type:</label>
+
+	<fieldset class="form">
+	<legend><span>Add/Update Credit Card</span></legend>
+	<ol>
+		<li><label>Type:</label>
 			<s:radio theme="pics" list="creditCardTypes" name="ccName"/>
 		</li>
-		<li><label>Credit Card Number:</label>
+		<li><label>Number:</label>
 			<s:textfield name="ccnumber" value="4111111111111111" size="20" />
 		</li>
-		<li><label>Exp Date:</label>
+		<li><label>Expiration Date:</label>
 			<s:textfield name="ccexp" value="1010" size="10" />
 		</li>
 		<li>
@@ -72,6 +87,7 @@
 			$<s:property value="contractor.newBillingAmount" />
 		</li>
 		<li><label>Membership Date:</label>
+			<s:select list="#{1:1,2:2,3:3}"></s:select>
 			<s:date name="contractor.paymentExpires" format="MMM d, yyyy" />
 		</li>
 		<li>
@@ -79,11 +95,6 @@
 			<button class="positive" name="button" type="submit" value="Submit">Submit</button>
 		</div>
 		</li>
-		<s:if test="response == '1'">
-		<li>
-			<s:property value="responsetext" />
-		</li>
-		</s:if>
 	</ol>
 	</s:else>
 	</fieldset>	
