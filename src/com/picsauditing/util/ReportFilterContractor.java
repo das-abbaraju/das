@@ -37,7 +37,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showAssignedCon = false;
 	protected boolean showInParentCorporation = false;
 	protected boolean showWaitingOn = false;	
-	protected boolean showInsuranceStatus = true;	
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -54,7 +53,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean assignedCon = false;
 	protected boolean inParentCorporation = false;
 	protected String waitingOn;
-	protected String insuranceStatus;
 
 	private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
 
@@ -163,14 +161,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.showWaitingOn = showWaitingOn;
 	}
 
-	public boolean isShowInsuranceStatus() {
-		return showInsuranceStatus;
-	}
-
-	public void setShowInsuranceStatus(boolean showInsuranceStatus) {
-		this.showInsuranceStatus = showInsuranceStatus;
-	}
-
 	public String getPerformedBy() {
 		return performedBy;
 	}
@@ -275,7 +265,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		}
 		if (!permissions.hasPermission(OpPerms.InsuranceCerts)) {
 			setShowCerts(false);
-			setShowInsuranceStatus(false);
 		}
 	}
 
@@ -366,13 +355,5 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setWaitingOn(String waitingOn) {
 		this.waitingOn = waitingOn;
-	}
-
-	public String getInsuranceStatus() {
-		return insuranceStatus;
-	}
-
-	public void setInsuranceStatus(String insuranceStatus) {
-		this.insuranceStatus = insuranceStatus;
 	}
 }

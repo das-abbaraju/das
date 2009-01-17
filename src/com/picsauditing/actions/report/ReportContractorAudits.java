@@ -79,7 +79,6 @@ public class ReportContractorAudits extends ReportAccount {
 			getFilter().setShowAuditor(true);
 
 		getFilter().setShowCerts(false);
-		getFilter().setShowInsuranceStatus(false);
 	}
 
 	protected void addFilterToSQL() {

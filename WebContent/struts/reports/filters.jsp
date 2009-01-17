@@ -210,11 +210,6 @@
 	</s:if>
 
 	<br clear="all"/>
-	<s:if test="filter.showInsuranceStatus">
-		<div class="filterOption"><s:select list="#{'InComplete':'InComplete','Complete':'Complete'}" headerKey="" headerValue="- Insurance Status -"
-			cssClass="forms" name="filter.insuranceStatus" /></div>
-	</s:if>
-
 	<s:if test="filter.showLicensedIn">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_stateLicensedIn'); return false;">Licensed
