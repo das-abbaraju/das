@@ -38,7 +38,7 @@
 
 <s:if test="paymentMethod == 'Credit Card'">
 <form method="post" action="https://secure.braintreepaymentgateway.com/api/transact.php">
-	<input type="hidden" name="redirect" value="<s:property value="requestURL"/>?id=<s:property value="id"/>"/>
+	<input type="hidden" name="redirect" value="<s:property value="requestString"/>?id=<s:property value="id"/>"/>
 	<s:hidden name="hash"></s:hidden>
 	<s:hidden name="key_id"></s:hidden>
 	<s:hidden name="orderid"></s:hidden>

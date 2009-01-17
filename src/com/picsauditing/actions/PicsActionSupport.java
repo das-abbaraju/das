@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.interceptor.RequestAware;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
@@ -23,10 +25,12 @@ import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.URLUtils;
 
 @SuppressWarnings("serial")
-public class PicsActionSupport extends ActionSupport {
+public class PicsActionSupport extends ActionSupport implements RequestAware {
 	protected static String LOGIN_AJAX = "LoginAjax";
 	protected static String BLANK = "blank";
 
+	protected String requestURL = null;
+	
 	protected Permissions permissions = null;
 
 	// replaces the obsolete message in cases where we need to print out a
@@ -246,4 +250,14 @@ public class PicsActionSupport extends ActionSupport {
 		return URLUtils.getProtocol(ServletActionContext.getRequest());
 	}
 
+	@Override
+	public void setRequest(Map arg0) {
+		if( requestURL == null )
+			requestURL = ServletActionContext.getRequest().getRequestURL().toString();
+	}
+	
+	public String getRequestString() {
+		return requestURL;
+	}
+	
 }
