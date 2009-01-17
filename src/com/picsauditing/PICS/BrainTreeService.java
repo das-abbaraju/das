@@ -2,6 +2,7 @@ package com.picsauditing.PICS;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -99,6 +100,17 @@ public class BrainTreeService {
 		public void setExpirationDate(String expirationDate) {
 			this.expirationDate = expirationDate;
 		}
+		
+		public String getExpiratoinDateViewable() {
+			
+			if( expirationDate != null ) {
+				try {
+					return new SimpleDateFormat("MM/yy").format(new SimpleDateFormat("MMyy").parse(expirationDate));
+				}
+				catch( Exception e ) {}
+			}
+			return "";
+		}
 	}
 	
 
@@ -117,5 +129,5 @@ public class BrainTreeService {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 }
