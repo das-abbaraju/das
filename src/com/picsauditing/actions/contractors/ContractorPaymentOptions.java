@@ -47,73 +47,63 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 
-		if (button != null) {
-			if (button.equalsIgnoreCase("Submit")) {
-				this.findContractor();
+		this.findContractor();
 
-				if (paymentMethod.equals(creditCard)) {
-					key = appPropDao.find("brainTree.key").getValue();
-					key_id = appPropDao.find("brainTree.key_id").getValue();
+		if (paymentMethod.equals(creditCard)) {
+			key = appPropDao.find("brainTree.key").getValue();
+			key_id = appPropDao.find("brainTree.key_id").getValue();
 
-					if (contractor.getPaymentMethodStatus() != "Missing") {
-						ccService = new BrainTreeService();
-						ccService.getCreditCard(contractor.getId());
-						ccService.setUserName(appPropDao.find(
-								"brainTree.username").getValue());
-						ccService.setPassword(appPropDao.find(
-								"brainTree.password").getValue());
-					}
-				}
-
-				if (response_code != null) {
-					// Hey we're receiving some sort of response
-					String newHash = BrainTree.buildHash(orderid, amount,
-							response, transactionid, avsresponse, cvvresponse,
-							customer_vault_id, time, key);
-					if (!newHash.equals(hash))
-						throw new Exception("Invalid hash from BrainTree");
-					if (response_code.equals("100")) {
-						contractor.setPaymentMethodStatus("Approved");
-						contractor.setPaymentMethod(creditCard);
-						accountDao.save(contractor);
-						addActionMessage("Successfully Saved");
-					} else {
-						addActionError(responsetext);
-					}
-				}
-
-				if (paymentMethod == null)
-					paymentMethod = creditCard;
-
-				if (!paymentMethod.equals(contractor.getPaymentMethod())) {
-					// We have a new payment method, reset the status
-					contractor.setPaymentMethod(paymentMethod);
-					if (paymentMethod.equals(creditCard))
-						contractor.setPaymentMethodStatus("Missing");
-					else
-						contractor.setPaymentMethodStatus("Pending");
-					accountDao.save(contractor);
-				}
-
-				if (paymentMethod.equals(creditCard)) {
-					AppProperty prop = appPropDao.find("brainTree.key");
-					key = prop.getValue();
-					customer_vault_id = contractor.getIdString();
-					time = DateBean.getBrainTreeDate();
-					hash = BrainTree.buildHash(orderid, amount,
-							customer_vault_id, time, key);
-				}
-			} else if (button.equalsIgnoreCase("Delete")) {
-
-			} else {
-				// Because there are anomalies between browsers and how they
-				// pass
-				// in the button values, this is a catch all so we can get
-				// notified
-				// when the button name isn't set correctly
-				throw new Exception("no button action found called " + button);
+			if (contractor.getPaymentMethodStatus() != "Missing") {
+				ccService = new BrainTreeService();
+				ccService.getCreditCard(contractor.getId());
+				ccService.setUserName(appPropDao.find("brainTree.username")
+						.getValue());
+				ccService.setPassword(appPropDao.find("brainTree.password")
+						.getValue());
 			}
 		}
+
+		if (response_code != null) {
+			// Hey we're receiving some sort of response
+			String newHash = BrainTree.buildHash(orderid, amount, response,
+					transactionid, avsresponse, cvvresponse, customer_vault_id,
+					time, key);
+			if (!newHash.equals(hash))
+				throw new Exception("Invalid hash from BrainTree");
+			if (response_code.equals("100")) {
+				contractor.setPaymentMethodStatus("Approved");
+				contractor.setPaymentMethod(creditCard);
+				accountDao.save(contractor);
+				addActionMessage("Successfully Saved");
+			} else {
+				addActionError(responsetext);
+			}
+		}
+
+		if (paymentMethod == null)
+			paymentMethod = creditCard;
+
+		if (!paymentMethod.equals(contractor.getPaymentMethod())) {
+			// We have a new payment method, reset the status
+			contractor.setPaymentMethod(paymentMethod);
+			if (paymentMethod.equals(creditCard))
+				contractor.setPaymentMethodStatus("Missing");
+			else
+				contractor.setPaymentMethodStatus("Pending");
+			accountDao.save(contractor);
+		}
+
+		if (paymentMethod.equals(creditCard)) {
+			AppProperty prop = appPropDao.find("brainTree.key");
+			key = prop.getValue();
+			customer_vault_id = contractor.getIdString();
+			time = DateBean.getBrainTreeDate();
+			hash = BrainTree.buildHash(orderid, amount, customer_vault_id,
+					time, key);
+		}
+
+		if (button.equalsIgnoreCase("Delete"))
+			ccService.deleteCreditCard(contractor.getId());
 
 		return SUCCESS;
 	}
