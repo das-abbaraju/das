@@ -93,9 +93,6 @@
 					<li><label>Last Payment:</label>
 						$<s:property value="contractor.lastPaymentAmount" /> on <s:date name="contractor.lastPayment" format="MMM d, yyyy" />
 					</li>
-					<li><label>Billing Cycle:</label>
-						<s:property value="contractor.billingCycle" /> year(s)
-					</li>
 					<li><label>Payment Expires:</label>
 						<s:date name="contractor.paymentExpires" format="MMM d, yyyy" />
 					</li>
@@ -106,7 +103,7 @@
 						<a onclick="javascript: return showPaymentOptions( <s:property value="id"/>, 'Credit Card');" href="#">Edit Credit Card</a> <img height="23px" width="23px" src="images/lock.gif"/><br/>
 					</li>
 					<li><label>&nbsp;</label>
-						<a onclick="javascript: return showPaymentOptions( <s:property value="id"/>, 'Billed');" href="#">Apply For Credit</a> <img height="23px" width="23px" src="images/lock.gif"/>
+						<a onclick="javascript: return showPaymentOptions( <s:property value="id"/>, 'Billed');" href="#">Credit</a> <img height="23px" width="23px" src="images/lock.gif"/>
 					</li>
 
 				</s:if>
