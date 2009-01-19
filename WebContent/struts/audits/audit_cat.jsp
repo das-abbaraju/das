@@ -93,7 +93,7 @@
 											<s:set name="shaded" value="!#shaded" scope="action"/>
 										</s:if>
 										
-										<s:if test="#a.parentAnswer == null">
+										<s:if test="#a.parentAnswer != null">
 											<s:set name="paid" value="#a.parentAnswer.id"/>
 										</s:if>
 										<s:else>

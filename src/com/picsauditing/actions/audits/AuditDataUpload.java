@@ -110,6 +110,21 @@ public class AuditDataUpload extends AuditActionSupport {
 				}
 
 				auditDataDao.remove(answer.getId());
+
+
+				answer = new AuditData();
+				answer.setAudit(conAudit);
+				AuditQuestion question = null;
+				if (questionID > 0)
+					question = questionDAO.find(questionID);
+				if (question == null) {
+					addActionError("Failed to find question");
+					return BLANK;
+				}
+				answer.setQuestion(question);
+				
+				
+				
 				addActionMessage("Successfully removed file");
 			}
 			if (button.startsWith("Upload")) {
@@ -145,6 +160,13 @@ public class AuditDataUpload extends AuditActionSupport {
 					addActionError("Somehow, two files were uploaded.");
 			}
 		}
+		
+		for (AuditCatData auditCatData : getCategories()) {
+			if (auditCatData.getCategory() == answer.getQuestion().getSubCategory().getCategory())
+				auditPercentCalculator.updatePercentageCompleted(auditCatData);
+		}
+
+		
 		return SUCCESS;
 	}
 
