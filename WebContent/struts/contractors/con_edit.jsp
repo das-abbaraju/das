@@ -37,7 +37,10 @@
 </head>
 <body>
 
-<s:include value="conHeader.jsp"></s:include>
+<s:if test="permissions.active">
+	<s:include value="conHeader.jsp"></s:include>
+</s:if>
+<s:else><h1><s:property value="contractor.name" /></h1></s:else>
 <s:form id="save" method="POST" enctype="multipart/form-data">
 <div class="buttons">
 	<!-- <button class="positive" name="button" type="submit" value="Save">Save</button>  -->

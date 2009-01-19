@@ -44,6 +44,7 @@
 	<s:hidden name="orderid"></s:hidden>
 	<s:hidden name="amount"></s:hidden>
 	<s:hidden name="time"></s:hidden>
+	<s:hidden name="company"></s:hidden>
 	<s:hidden name="customer_vault_id"></s:hidden>
 	<s:if test="cc == null">
 		<input type="hidden" name="customer_vault" value="add_customer"/>

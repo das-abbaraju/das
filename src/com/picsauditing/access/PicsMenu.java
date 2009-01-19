@@ -48,7 +48,10 @@ public class PicsMenu {
 		if (permissions.isContractor()) {
 			// Don't show a menu for Contractors, they will use their sub menu
 			// for now
-			subMenu = menu.addChild("Home", "Home.action");
+			if (permissions.isActive())
+				subMenu = menu.addChild("Home", "Home.action");
+			else
+				subMenu = menu.addChild("Edit Account", "ContractorEdit.action");
 			return menu;
 		}
 

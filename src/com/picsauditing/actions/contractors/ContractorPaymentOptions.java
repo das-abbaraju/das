@@ -30,6 +30,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private String hash;
 	private String key;
 	private String key_id;
+	private String company;
 	private CreditCard cc;
 
 	AppPropertyDAO appPropDao;
@@ -115,7 +116,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		this.paymentMethod = paymentMethod;
 	}
 
-	/** ******** BrainTree Setters ******** */
+	/** ******** BrainTree Getters/Setters ******** */
 
 	public void setResponse_code(String response_code) {
 		this.response_code = response_code;
@@ -232,6 +233,15 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	public void setCustomer_vault(String customer_vault) {
 		this.customer_vault = customer_vault;
+	}
+
+	public String getCompany() {
+		company = contractor.getName();
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
 	}
 
 	/** ****** End BrainTree Setters ****** */

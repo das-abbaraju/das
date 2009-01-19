@@ -142,6 +142,11 @@ public class User implements java.io.Serializable, Comparable<User> {
 	public YesNo getIsActive() {
 		return isActive;
 	}
+	
+	@Transient
+	public boolean isActive(){
+		return YesNo.Yes.equals(isActive);
+	}
 
 	public void setIsActive(YesNo isActive) {
 		this.isActive = isActive;

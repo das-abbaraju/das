@@ -154,8 +154,8 @@ public class LoginController extends DataBean {
 			if (!aBean.password.equals(password))
 				return "The password is not correct";
 
-			if (!aBean.active.startsWith("Y"))
-				return "This user does not have permission to login.<br>Please contact PICS to activate your account.";
+			//if (!aBean.active.startsWith("Y"))
+				//return "This user does not have permission to login.<br>Please contact PICS to activate your account.";
 		}
 
 		// We are now ready to actually do the login (doLogin)

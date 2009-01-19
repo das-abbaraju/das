@@ -41,6 +41,7 @@ public class Permissions implements Serializable {
 	private String email;
 	private int adminID;
 	private boolean approvesRelationships = false;
+	private boolean active = false;
 
 	public void login(User user) throws Exception {
 		try {
@@ -50,6 +51,7 @@ public class Permissions implements Serializable {
 				throw new Exception("Missing User");
 			
 			loggedIn = true;
+			active = user.isActive();
 			username = user.getUsername();
 			name = user.getName();
 			accountID = user.getAccount().getId();
@@ -84,6 +86,7 @@ public class Permissions implements Serializable {
 				throw new Exception("Missing Account");
 
 			loggedIn = true;
+			active = aBean.isActive();
 			username = aBean.username;
 			name = aBean.name;
 			accountID = userID;
@@ -100,6 +103,7 @@ public class Permissions implements Serializable {
 	public void clear() {
 		userID = 0;
 		loggedIn = false;
+		active = false;
 		username = "";
 		name = "";
 		email = "";
@@ -341,5 +345,9 @@ public class Permissions implements Serializable {
 
 	public void setCorporateParent(Set<Integer> corporateParent) {
 		this.corporateParent = corporateParent;
+	}
+	
+	public boolean isActive() {
+		return active;
 	}
 }
