@@ -52,7 +52,9 @@
 </div>
 
 <br clear="all"/>
-
+<s:if test="mode == 'Edit'">
+	<div class="requiredLegend">Starred questions are required</div>
+</s:if>
 <s:iterator value="categories">
 	<s:if test="catDataID == id || (catDataID == 0 && appliesB)">
 		<s:if test="category.id in { 151, 157, 158 }">
@@ -109,9 +111,7 @@
 						</s:iterator>
 					</div>
 				</s:iterator>
-				<s:if test="mode == 'Edit'">
-					<div class="requiredLegend">Starred questions are required</div>
-				</s:if>
+
 			</s:if>
 		</s:else>
 	</s:if>
