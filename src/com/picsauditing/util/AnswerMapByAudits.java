@@ -31,9 +31,11 @@ public class AnswerMapByAudits {
 
 	public AnswerMapByAudits(AnswerMapByAudits toCopy, OperatorAccount operator) {
 
-		for (ContractorAudit audit : toCopy.data.keySet()) {
-			AnswerMap mapCopy = new AnswerMap(toCopy.get(audit), operator);
-			put(audit, mapCopy);
+		if( toCopy != null && toCopy.data != null ) {
+			for (ContractorAudit audit : toCopy.data.keySet()) {
+				AnswerMap mapCopy = new AnswerMap(toCopy.get(audit), operator);
+				put(audit, mapCopy);
+			}
 		}
 
 		Map<Integer, Map<String, List<ContractorAudit>>> byContractorIdAndAuditTypeName = new HashMap<Integer, Map<String, List<ContractorAudit>>>();
