@@ -74,5 +74,8 @@ public class ReloadQuestion extends PicsActionSupport {
 	public void setQuestionID(int questionID) {
 		this.questionID = questionID;
 	}
-
+	
+	public String getMode() {
+		return "Edit";
+	}
 }

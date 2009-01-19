@@ -93,7 +93,14 @@
 											<s:set name="shaded" value="!#shaded" scope="action"/>
 										</s:if>
 										
-										<div id="node__<s:property value="#q.id"/>" class="question <s:if test="#shaded">shaded</s:if>">
+										<s:if test="#a.parentAnswer == null">
+											<s:set name="paid" value="#a.parentAnswer.id"/>
+										</s:if>
+										<s:else>
+											<s:set name="paid" value="0"/>
+										</s:else>
+										
+										<div id="node_<s:property value="#attr.paid"/>_<s:property value="#q.id"/>" class="question <s:if test="#shaded">shaded</s:if>">
 											<s:include value="audit_cat_question.jsp"></s:include>
 										</div>
 									</s:else>

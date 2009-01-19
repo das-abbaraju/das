@@ -196,7 +196,7 @@ function reloadQuestion(answerid, questionid, parentid) {
 	var pars = 'auditID='+auditID+'&answer.question.id=' + questionid+'&answer.parentAnswer.id=' + parentid;
 	var divName = 'node_'+parentid+'_'+questionid;
 	
-	var myAjax = new Ajax.Updater('','ReloadQuestionAjax.action',
+	var myAjax = new Ajax.Updater(divName,'ReloadQuestionAjax.action',
 	{
 		method: 'post', 
 		parameters: pars,
