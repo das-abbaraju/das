@@ -9,7 +9,6 @@ import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.util.BrainTree;
 
 @SuppressWarnings("serial")
@@ -250,6 +249,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		List<String> types = new ArrayList<String>();
 		types.add("Visa");
 		types.add("Mastercard");
+		types.add("Discover Card");
 		return types;
 	}
 

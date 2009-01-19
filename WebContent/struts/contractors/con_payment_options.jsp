@@ -78,10 +78,10 @@
 			<s:radio theme="pics" list="creditCardTypes" name="ccName"/>
 		</li>
 		<li><label>Number:</label>
-			<s:textfield name="ccnumber" value="4111111111111111" size="20" />
+			<s:textfield name="ccnumber" size="20" />
 		</li>
 		<li><label>Expiration Date:</label>
-			<s:textfield name="ccexp" value="1010" size="10" />
+			<s:textfield name="ccexp" size="10" />
 		</li>
 		<li>
 		<div class="buttons">
