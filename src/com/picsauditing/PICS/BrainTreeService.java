@@ -11,6 +11,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.picsauditing.util.Strings;
+
 public class BrainTreeService {
 
 	protected String userName = null;
@@ -89,7 +91,19 @@ public class BrainTreeService {
 		protected String cardNumber = null;
 		protected String expirationDate = null;
 		public String getCardType() {
-			return "Visa";
+			// TODO make this more complete http://en.wikipedia.org/wiki/Credit_card_number
+			if (Strings.isEmpty(cardNumber))
+				return "";
+			String c = cardNumber.substring(0,1);
+			if (c.equals("3"))
+				return "American Express";
+			if (c.equals("4"))
+				return "Visa";
+			if (c.equals("5"))
+				return "Mastercard";
+			if (c.equals("6"))
+				return "Discover";
+			return "Unknown";
 		}
 		public String getCardNumber() {
 			return cardNumber;

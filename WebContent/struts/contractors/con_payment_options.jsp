@@ -13,7 +13,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 </head>
 <body>
-<br />
 <div id="main">
 <div id="bodyholder">
 <div id="content">
@@ -37,6 +36,7 @@
 </fieldset>
 
 <s:if test="paymentMethod == 'Credit Card'">
+
 <form method="post" action="https://secure.braintreepaymentgateway.com/api/transact.php">
 	<input type="hidden" name="redirect" value="<s:property value="requestString"/>?id=<s:property value="id"/>"/>
 	<s:hidden name="hash"></s:hidden>
@@ -45,7 +45,7 @@
 	<s:hidden name="amount"></s:hidden>
 	<s:hidden name="time"></s:hidden>
 	<s:hidden name="customer_vault_id"></s:hidden>
-	<s:if test="cc == null'">
+	<s:if test="cc == null">
 		<input type="hidden" name="customer_vault" value="add_customer"/>
 	</s:if>
 	<s:else>
@@ -101,8 +101,7 @@
 	</ol>
 	</fieldset>	
 </s:else>
-<br clear="all" />
-
+<br clear="all" /><br/><br/>
 </div>
 </div>
 </div>
