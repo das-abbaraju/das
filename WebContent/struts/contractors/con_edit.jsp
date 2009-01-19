@@ -20,7 +20,7 @@
  
  		var buttonURL= window.location.href;
  		
- 		if( buttonURL.indexOf( 'localhost' ) == -1 ) {
+ 		if( buttonURL.indexOf( 'www.picsauditing.com' ) != -1 ) {
  			buttonURL = buttonURL.replace('http:', 'https:');
  			buttonURL = buttonURL.replace('8080', '443');
  		}
