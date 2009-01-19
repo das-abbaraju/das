@@ -38,5 +38,7 @@
 		<pattern>/safety_2007.jsp</pattern>
 		<pattern>/ScheduleAuditUpdate.action</pattern>
 		<pattern>/managingsafety.jsp</pattern>
+		<pattern>/privacy_policy.jsp</pattern>
+		<pattern>/refund_policy.jsp</pattern>
 	</decorator>
 </decorators>
