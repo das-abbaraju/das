@@ -69,7 +69,14 @@
 <div class="answer">
 	<input type="text" class="hidden" id="<s:property value="#divID"/>_answerID" value="<s:property value="#a.id"/>" />
 	<input type="text" class="hidden" id="<s:property value="#divID"/>_questionID" value="<s:property value="#q.id"/>" />
-	<input type="text" class="hidden" id="<s:property value="#divID"/>_parentAnswerID" value="<s:property value="#parentAnswer.id"/>" />
+	
+	<s:if test="#parentAnswer != null && #parentAnswer.id != null">
+		<input type="text" class="hidden" id="<s:property value="#divID"/>_parentAnswerID" value="<s:property value="#parentAnswer.id"/>" />
+	</s:if>
+	<s:else>
+		<input type="text" class="hidden" id="<s:property value="#divID"/>_parentAnswerID" value="0" />
+	</s:else>
+	
 	<input type="text" class="hidden" id="<s:property value="#divID"/>_multiple" value="<s:property value="#q.allowMultipleAnswers"/>" />
 	<s:if test="#q.questionType == 'Text Area'">
 		<s:textarea cols="70" rows="4" name="answer%{#divID}" value="%{#a.answer}" cssStyle="margin-left: 80px; width: 100%;"
