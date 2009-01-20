@@ -458,13 +458,13 @@ public class MigrateCertificates extends PicsActionSupport {
 		
 		/*
 		 * OldStatus: Approved, Expired, Pending, Rejected
-		 * CaoStatus: NotApplicable, Missing, Approved, Rejected
+		 * CaoStatus: NotApplicable, Awaiting, Approved, Rejected
 		 * Approved => Approved
 		 * Rejected => Rejected
-		 * Expired => Missing
-		 * Pending => Missing
+		 * Expired => Awaiting
+		 * Pending => Awaiting
 		 */
-		CaoStatus newStatus = CaoStatus.Missing;
+		CaoStatus newStatus = CaoStatus.Awaiting;
 		try {
 			String oldStatus = connectedCert.getStatus();
 			newStatus = CaoStatus.valueOf(oldStatus);

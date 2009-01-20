@@ -256,7 +256,7 @@ public class FlagCalculator2 {
 			for( ContractorAudit audit : answerMapByAudits.getAuditSet() ) {
 				
 				for( ContractorAuditOperator cao : audit.getOperators() ) {
-					if( cao.getStatus() == CaoStatus.Missing ) {
+					if( cao.getStatus() == CaoStatus.Awaiting ) {
 						CaoStatus recommendedStatus = calcSingle.calculateCaoRecommendedStatus(cao);
 						cao.setRecommendedStatus(recommendedStatus);
 						caoDAO.save(cao);

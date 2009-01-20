@@ -55,7 +55,7 @@
 <br/><br/>
 <strong>By default, these show in order they were entered in the PICS system.</strong>
 <br/><br/>
-Set all statuses to: <s:select cssClass="statusSelects" onchange="javascript: return syncSelects(this);" name="newStatuses" list="#{'':'No Change','Approved':'Approved','Missing':'Missing','Rejected':'Rejected'}"/>	
+Set all statuses to: <s:select cssClass="statusSelects" onchange="javascript: return syncSelects(this);" name="newStatuses" list="#{'':'No Change','Approved':'Approved','Awaiting':'Awaiting','Rejected':'Rejected'}"/>	
 <input type="submit" onclick="javascript: return saveRows('approveInsuranceForm');" value="Update Selected"/>		
 	<table class="report">
 		<thead>
@@ -77,7 +77,7 @@ Set all statuses to: <s:select cssClass="statusSelects" onchange="javascript: re
 					<input type="checkbox" class="massCheckable" checked="checked" name="caoids" value="<s:property value="get('caoId')"/>"/>
 				</td>
 				<td style="text-align: center;" >
-					<s:if test="( get('caoRecommendedStatus') == null ) || ( get('caoRecommendedStatus') == 'Missing' )"></s:if>
+					<s:if test="( get('caoRecommendedStatus') == null ) || ( get('caoRecommendedStatus') == 'Awaiting' )"></s:if>
 					<s:elseif test="get('caoRecommendedStatus') == 'Approved'">
 						<img src="images/okCheck.gif" width="18" height="15" border="0" />
 					</s:elseif>
@@ -116,7 +116,7 @@ Set all statuses to: <s:select cssClass="statusSelects" onchange="javascript: re
 					<input title="Check all" type="checkbox" onclick="setAllChecked(this);" checked="checked"/>
 				</td>
 				<td colspan="8" style="text-align: left;">
-					Set all statuses to: <s:select cssClass="statusSelects" onchange="javascript: return syncSelects(this);" name="newStatuses" list="#{'':'No Change','Approved':'Approved','Missing':'Missing','Rejected':'Rejected'}"/>
+					Set all statuses to: <s:select cssClass="statusSelects" onchange="javascript: return syncSelects(this);" name="newStatuses" list="#{'':'No Change','Approved':'Approved','Awaiting':'Awaiting','Rejected':'Rejected'}"/>
 					<input type="submit" onclick="javascript: return saveRows('approveInsuranceForm');" value="Update Selected"/>		
 				</td>
 		</tr>

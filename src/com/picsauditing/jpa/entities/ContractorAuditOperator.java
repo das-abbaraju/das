@@ -13,8 +13,8 @@ import javax.persistence.Table;
 public class ContractorAuditOperator extends BaseTable {
 	private ContractorAudit audit;
 	private OperatorAccount operator;
-	private CaoStatus status = CaoStatus.Missing;
-	private CaoStatus recommendedStatus = CaoStatus.Missing;
+	private CaoStatus status = CaoStatus.Awaiting;
+	private CaoStatus recommendedStatus = CaoStatus.Awaiting;
 	private String notes;
 
 	@ManyToOne

@@ -323,8 +323,8 @@ public class AuditBuilder {
 						cao.setAudit(conAudit);
 						cao.setOperator(operator);
 						cao.setAuditColumns(user);
-						cao.setStatus(CaoStatus.Missing);
-						cao.setRecommendedStatus(CaoStatus.Missing);
+						cao.setStatus(CaoStatus.Awaiting);
+						cao.setRecommendedStatus(CaoStatus.Awaiting);
 						conAudit.getOperators().add(cao);
 					}
 				} else {
@@ -346,7 +346,7 @@ public class AuditBuilder {
 					}
 				}
 			} else if(cao != null) {
-				// Remove the cao if it's temporary (N/A or Missing)
+				// Remove the cao if it's temporary (N/A or Awaiting)
 				if (cao.getStatus().isTemporary()) {
 					debug("Removing unneeded ContractorAuditOperator");
 					contractorAuditOperatorDAO.remove(cao);

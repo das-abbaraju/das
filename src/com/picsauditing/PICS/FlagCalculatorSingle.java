@@ -417,7 +417,7 @@ public class FlagCalculatorSingle {
 										
 										if (auditStatus.equals(AuditStatus.Active))
 											// This is active, the operator needs to verify it
-											if (cao.getStatus().equals(CaoStatus.Missing))
+											if (cao.getStatus().equals(CaoStatus.Awaiting))
 												waitingOnOperator = true;
 										
 										if (CaoStatus.Rejected.equals(cao.getStatus()))
@@ -481,13 +481,13 @@ public class FlagCalculatorSingle {
 	public CaoStatus calculateCaoRecommendedStatus(ContractorAuditOperator cao) {
 		AnswerMap answerMap = answerMapByAudits.get(cao.getAudit());
 		if (answerMap == null)
-			return CaoStatus.Missing;
+			return CaoStatus.Awaiting;
 
 		if (!cao.getAudit().getAuditType().getClassType().equals(AuditTypeClass.Policy))
 			// This shouldn't happen ever, but just to make sure...
 			return null;
 
-		CaoStatus caoStatus = CaoStatus.Missing;
+		CaoStatus caoStatus = CaoStatus.Awaiting;
 		answerMap.resetFlagColors();
 		
 		// For each operator criteria, get the contractor's
