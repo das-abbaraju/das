@@ -280,7 +280,7 @@ public class AuditDataSave extends AuditActionSupport {
 		
 		if("Money".equals(databaseCopy.getQuestion().getQuestionType()) || "Decimal Number".equals(databaseCopy.getQuestion().getQuestionType())) {
 			if(!validateNumber(auditData.getAnswer())) {
-				addActionError(auditData.getAnswer() +" must contain a " + databaseCopy.getQuestion().getQuestionType());
+				addActionError("The input must be a number.");
 				return false;
 			}
 			else if("Decimal Number".equals(databaseCopy.getQuestion().getQuestionType())) {
