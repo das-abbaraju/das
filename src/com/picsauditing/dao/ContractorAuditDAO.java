@@ -14,12 +14,10 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
 
@@ -36,16 +34,14 @@ public class ContractorAuditDAO extends PicsDAO {
 	}
 
 	public void remove(ContractorAudit row, String ftpDir) {
-//		for (AuditData auditData : row.getData()) {
-//			if (auditData.getQuestion().getQuestionType().equals("File")) {
-//				String FileName = ftpDir + "/files/pqf/qID_"
-//						+ auditData.getQuestion().getId() + "/"
-//						+ auditData.getQuestion().getId() + "_"
-//						+ row.getContractorAccount().getId() + "."
-//						+ auditData.getAnswer();
-//				FileUtils.deleteFile(FileName);
-//			}
-//		}
+		for (AuditData auditData : row.getData()) {
+			if (auditData.getQuestion().getQuestionType().startsWith("File")) {
+				String Filepath = ftpDir + "/files/"
+				       	+ FileUtils.thousandize(auditData.getId());
+				String FileName = "data_" + auditData.getId() + "." + auditData.getAnswer();
+				FileUtils.deleteFile(Filepath + FileName);
+			}
+		}
 		remove(row);
 	}
 
@@ -237,5 +233,38 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-
+	/**
+	 * This is for getting a list of policies that we need to send emails on.
+	 * The final result of all of this logic below is that we send emails:
+	 * 14 days before it expires
+	 * 7 days after it expires
+	 * 26 days after it expires
+	 * for a total of 3 emails
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ContractorAudit> findExpiredCertificates() {
+		String hql = "SELECT ca FROM ContractorAudit ca "
+				+ "WHERE ca.auditType.classType = 'Policy' "
+				+ "AND ca.auditStatus = 'Pending' "
+				+ "AND (ca.contractorAccount NOT IN (SELECT contractorAccount FROM EmailQueue et " 
+				+ "WHERE et.sentDate > :Before14Days "
+				+ "AND et.emailTemplate.id = 10)"
+				+ ") "
+				+ "AND EXISTS ( "
+				+ "SELECT ca2 FROM ContractorAudit ca2 "
+				+ "WHERE ca.auditType = ca2.auditType "
+				+ "AND ca.contractorAccount = ca2.contractorAccount "
+				+ "AND ca2.expiresDate BETWEEN :Before14Days AND :After26Days "
+				+ ") "
+				+ "ORDER BY ca.contractorAccount";
+		Query query  = em.createQuery(hql);
+		query.setMaxResults(100);
+		Calendar calendar1 = Calendar.getInstance();
+		calendar1.add(calendar1.WEEK_OF_YEAR, -2);
+		query.setParameter("Before14Days", calendar1.getTime());
+		calendar1.add(calendar1.DAY_OF_YEAR, 40);
+		query.setParameter("After26Days", calendar1.getTime());
+		return query.getResultList();
+	}
 }

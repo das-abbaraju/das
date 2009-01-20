@@ -135,4 +135,11 @@ public class ContractorAuditDAOTest {
 		List<ContractorAudit> conList = contractorauditDAO.findWhere(50,where, "expiresDate");
 		System.out.println(conList.size());
 	}
+
+	@Test
+	public void testFindExpiredCertificate() {
+		List<ContractorAudit> conList = contractorauditDAO.findExpiredCertificates();
+		System.out.println("List Size is :" + conList.size() + " Contractor Account " +conList.get(0).getContractorAccount().getId());
+	}
 }
+
