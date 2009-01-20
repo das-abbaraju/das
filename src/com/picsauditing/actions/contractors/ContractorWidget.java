@@ -10,6 +10,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAudit;
 
@@ -89,12 +90,20 @@ public class ContractorWidget extends ContractorActionSupport {
 									+ conAudit.getAuditFor() + " </a>");
 				}
 
+				if (conAudit.getAuditType().getClassType() == AuditTypeClass.Policy 
+						&& conAudit.getAuditStatus()
+						.equals(AuditStatus.Pending)) {
+					openTasks
+					.add("Please <a href=\"Audit.action?auditID="
+							+ conAudit.getId()
+							+ "\">upload and submit your insurance data for your "
+							+ conAudit.getAuditType().getAuditName() + " Policy </a>");
+				}
+
 				if (conAudit.getAuditType().isHasRequirements()
 						&& conAudit.getAuditStatus().equals(
 								AuditStatus.Submitted)
-						&& conAudit.getPercentVerified() < 100
-						&& !conAudit.getAuditType().isPqf()
-						&& !conAudit.getAuditType().isAnnualAddendum()) {
+						&& conAudit.getPercentVerified() < 100 ) {
 					String text = "You have <a href=\"Audit.action?auditID="
 							+ conAudit.getId()
 							+ "\">open requirements from your recent "
@@ -127,28 +136,31 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 			}
 
-			if (isRequiresInsurance() && getInsuranceCount() == 0) {
-				openTasks
-						.add("Please <a href=\"contractor_upload_certificates.jsp?id="
-								+ id
-								+ "\">upload your insurance certificates</a>");
-			}
-			for (Certificate certificate : contractor.getCertificates()) {
-				if (certificate.getStatus().equals("Expired"))
-					openTasks
-							.add("You have an <a href=\"contractor_upload_certificates.jsp?id="
-									+ id
-									+ "\">Expired "
-									+ certificate.getType()
-									+ " Certificate</a>");
-				if (certificate.getStatus().equals("Rejected"))
-					openTasks
-							.add("You have a <a href=\"contractor_upload_certificates.jsp?id="
-									+ id
-									+ "\">Rejected "
-									+ certificate.getType()
-									+ " Certificate</a>");
-			}
+
+			
+			
+//			if (isRequiresInsurance() && getInsuranceCount() == 0) {
+//				openTasks
+//						.add("Please <a href=\"contractor_upload_certificates.jsp?id="
+//								+ id
+//								+ "\">upload your insurance certificates</a>");
+//			}
+//			for (Certificate certificate : contractor.getCertificates()) {
+//				if (certificate.getStatus().equals("Expired"))
+//					openTasks
+//							.add("You have an <a href=\"contractor_upload_certificates.jsp?id="
+//									+ id
+//									+ "\">Expired "
+//									+ certificate.getType()
+//									+ " Certificate</a>");
+//				if (certificate.getStatus().equals("Rejected"))
+//					openTasks
+//							.add("You have a <a href=\"contractor_upload_certificates.jsp?id="
+//									+ id
+//									+ "\">Rejected "
+//									+ certificate.getType()
+//									+ " Certificate</a>");
+//			}
 
 		}
 		return openTasks;
