@@ -85,7 +85,7 @@
 						<s:date name="contractor.paymentExpires" format="MMM d, yyyy" />
 					</li>
 					<li><label>Next Billing Amount:</label>
-						$<s:property value="contractor.newBillingAmount" />
+						USD <s:property value="contractor.newBillingAmount" />
 					</li>
 					<li><label>Payment Method:</label>
 						<a onclick="javascript: return showPaymentOptions( <s:property value="id"/>, 'Credit Card');" href="#">Edit Credit Card</a> <img height="23px" width="23px" src="images/lock.gif"/><br/>
@@ -247,7 +247,7 @@
 							<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 					</li>
 					<li><label>Last Invoice:</label>
-						$<s:textfield name="contractor.billingAmount" size="6" /> on 
+						USD <s:textfield name="contractor.billingAmount" size="6" /> on 
 						<input name="contractor.lastInvoiceDate" id="lastInvoiceDate" 
 							type="text" class="forms" size="10" 
 							value="<s:date name="contractor.lastInvoiceDate" format="MM/dd/yyyy" />" />
@@ -257,7 +257,7 @@
 							<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 					</li>
 					<li><label>Last Payment:</label>
-						$<s:textfield name="contractor.lastPaymentAmount" size="6" /> on 
+						USD <s:textfield name="contractor.lastPaymentAmount" size="6" /> on 
 						<input name="contractor.lastPayment" id="lastPayment" 
 							type="text" class="forms" size="10" 
 							value="<s:date name="contractor.lastPayment" format="MM/dd/yyyy" />" />
@@ -276,7 +276,7 @@
 						<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 					</li>
 					<li><label>Next Billing Amount:</label>
-						$<s:property value="contractor.newBillingAmount" />
+						USD <s:property value="contractor.newBillingAmount" />
 					</li>
 				</ol>
 				</fieldset>
