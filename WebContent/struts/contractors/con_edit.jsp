@@ -84,22 +84,13 @@
 				<legend><span>Billing Details</span></legend>
 				<ol>
 				<s:if test="contractor.mustPay.equals('Yes') && contractor.newBillingAmount > 0">
-					<li><label title="Your annual period starts each year on this day">Membership Date:</label>
-						<s:date name="contractor.membershipDate" format="MMM d" />
-					</li>
-					<li><label>Last Invoice:</label>
-						$<s:property value="contractor.billingAmount" /> on <s:date name="contractor.lastInvoiceDate" format="MMM d, yyyy" />
-					</li>
-					<li><label>Last Payment:</label>
-						$<s:property value="contractor.lastPaymentAmount" /> on <s:date name="contractor.lastPayment" format="MMM d, yyyy" />
-					</li>
-					<li><label>Payment Expires:</label>
+					<li><label>Next Billing Date:</label>
 						<s:date name="contractor.paymentExpires" format="MMM d, yyyy" />
 					</li>
-					<li><label>New Billing Amount:</label>
+					<li><label>Next Billing Amount:</label>
 						$<s:property value="contractor.newBillingAmount" />
 					</li>
-					<li><label>Payment Options:</label>
+					<li><label>Payment Method:</label>
 						<a onclick="javascript: return showPaymentOptions( <s:property value="id"/>, 'Credit Card');" href="#">Edit Credit Card</a> <img height="23px" width="23px" src="images/lock.gif"/><br/>
 					</li>
 					<li><label>&nbsp;</label>
@@ -278,10 +269,7 @@
 							onclick="cal1.select($('lastPayment'), 'anchorlastPayment','MM/dd/yyyy'); return false;">
 							<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 					</li>
-					<li><label>Billing Cycle:</label>
-						<s:textfield name="contractor.billingCycle" size="1" /> year(s)
-					</li>
-					<li><label>Payment Expires:</label>
+					<li><label>Next Billing Date:</label>
 						<input name="contractor.paymentExpires" id="paymentExpires" 
 							type="text" class="forms" size="10" 
 							value="<s:date name="contractor.paymentExpires" format="MM/dd/yyyy" />" />
@@ -290,7 +278,7 @@
 							onclick="cal1.select($('paymentExpires'), 'anchorpaymentExpires','MM/dd/yyyy'); return false;">
 						<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 					</li>
-					<li><label>New Billing Amount:</label>
+					<li><label>Next Billing Amount:</label>
 						$<s:property value="contractor.newBillingAmount" />
 					</li>
 				</ol>
