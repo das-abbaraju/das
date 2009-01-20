@@ -40,6 +40,8 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 		// sql = new SelectContractorAudit();
 		this.auditDataDao = auditDataDao;
 		this.auditQuestionDao = auditQuestionDao;
+		
+		orderByDefault = "ca.createdDate";
 	}
 
 	@Override
@@ -70,6 +72,8 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 			sql.addWhere("cao.opid = " + getUser().getAccount().getIdString());
 		}
 
+		
+		
 		getFilter().setShowVisible(false);
 		getFilter().setShowTrade(false);
 		getFilter().setShowCompletedDate(false);

@@ -52,21 +52,23 @@
 <div><s:property value="report.pageLinksWithDynamicForm"
 	escape="false" /></div>
 <s:form id="approveInsuranceForm" method="post" cssClass="forms">
-
-<br/><br/>Set all statuses to: <s:select cssClass="statusSelects" onchange="javascript: return syncSelects(this);" name="newStatuses" list="#{'':'No Change','Approved':'Approved','Missing':'Missing','Rejected':'Rejected'}"/>	
-<input type="submit" onclick="javascript: return saveRows('approveInsuranceForm');" value="Update Checked"/>		
+<br/><br/>
+<strong>By default, these show in order they were entered in the PICS system.</strong>
+<br/><br/>
+Set all statuses to: <s:select cssClass="statusSelects" onchange="javascript: return syncSelects(this);" name="newStatuses" list="#{'':'No Change','Approved':'Approved','Missing':'Missing','Rejected':'Rejected'}"/>	
+<input type="submit" onclick="javascript: return saveRows('approveInsuranceForm');" value="Update Selected"/>		
 	<table class="report">
 		<thead>
 			<tr>
 				<td>Select All<br/><input title="Check all" type="checkbox" onclick="setAllChecked(this);" checked="checked"/></td>
-				<td title="PICS Recommendation" style="cursor: help;">?</td>
-				<td>Policy</td>
+				<td title="PICS Recommendation" style="cursor: help;">Recommend</td>
+				<td><a href="javascript: changeOrderBy('form1','a.name');">Policy</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','expiresDate ASC');">Expires</a></td>
 				<td>Limits</td>
 				<td title="Waiver of Subrogation">Waiver</td>
-				<td>Additional<br/>Insured</td>
+				<td>Additional Insured<br/>(Click For File)</td>
 				<td>Notes</td>
-				<td>Your<br/>Response</td>
+				<td>Approval<br/>Status</td>
 			</tr>
 		</thead>
 		<s:iterator value="data" status="stat">
@@ -90,7 +92,7 @@
 				<td class="reportDate"><s:date name="get('expiresDate')" format="M/d/yy" /></td>
 				<td >
 					<s:iterator value="getDataForAudit(get('auditID'),'limits')">
-						<s:property value="new java.text.DecimalFormat('$#,##0').format(new java.lang.Long(answer))"/>-<s:property value="question.question"/><br/>
+						<s:property value="new java.text.DecimalFormat('$#,##0').format(new java.lang.Long(answer))"/> - <s:property value="question.question"/><br/>
 					</s:iterator>
 				</td>
 				<td>
@@ -115,7 +117,7 @@
 				</td>
 				<td colspan="8" style="text-align: left;">
 					Set all statuses to: <s:select cssClass="statusSelects" onchange="javascript: return syncSelects(this);" name="newStatuses" list="#{'':'No Change','Approved':'Approved','Missing':'Missing','Rejected':'Rejected'}"/>
-					<input type="submit" onclick="javascript: return saveRows('approveInsuranceForm');" value="Update Checked"/>		
+					<input type="submit" onclick="javascript: return saveRows('approveInsuranceForm');" value="Update Selected"/>		
 				</td>
 		</tr>
 	</table>
