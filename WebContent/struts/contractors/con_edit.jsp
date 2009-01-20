@@ -30,6 +30,19 @@
 		popupWindow.focus();
 		return false;
 	}
+	
+	function showPaymentMethodOption(elm) {
+		var option =  $F(elm);
+		if(option == 'Check') {
+			$('creditcard_show').hide();
+			$('check_show').show();
+		}
+		if(option == 'Credit Card') {
+			$('check_show').hide();
+			$('creditcard_show').show();
+		}
+		return false;
+	}
 </script>
 </head>
 <body>
@@ -80,24 +93,58 @@
 				<fieldset class="form">
 				<legend><span>Billing Details</span></legend>
 				<ol>
-				<s:if test="contractor.mustPay.equals('Yes') && contractor.newBillingAmount > 0">
-					<li><label>Next Billing Date:</label>
-						<s:date name="contractor.paymentExpires" format="MMM d, yyyy" />
-					</li>
-					<li><label>Next Billing Amount:</label>
-						USD <s:property value="contractor.newBillingAmount" />
-					</li>
+				<s:if test="permissions.contractor">
+				<li><div id="info">
+					<s:if test="contractor.activeB">
+						As an improvement, you may now pay by credit card.  Even though you are providing your credit card information at this time, your card will not be charged until the next billing date.  PICS will email you 7 days prior to renewal before any charges are applied.  If you have questions, contact PICS Accounting any time at (800) 506-7427 x 2.
+					</s:if>
+					<s:else>
+						Please enter your credit card information, which will expedite the registration process.  Your membership is valid for 12 months from the charge date.  An upgrade fee will be charged if you add any facilities to your account.  PICS will email you 7 days prior to any charge. If you have questions, contact PICS Accounting anytime at (800) 506-7427 x 2.
+					</s:else>
+					</div>
+				</li>
+				</s:if>
+				<s:if test="contractor.newBillingAmount > 0">
+					<s:if test="contractor.activeB">
+						<li><label>Next Billing Date:</label> <s:date
+							name="contractor.paymentExpires" format="MMM d, yyyy" /></li>
+						<li><label>Next Billing Amount:</label> $<s:property
+							value="contractor.newBillingAmount" /> USD</li>
+					</s:if>
+					<s:else>
+						<li><label>Membership Fee:</label> $<s:property
+							value="contractor.newBillingAmount" /> USD</li>
+						<li><label>Activation Fee:</label> $<s:property value="contractor.activationFee"/> USD</li>
+						<li><label>Total:</label> $<s:property value="contractor.activationFee+contractor.newBillingAmount"/> USD </li>
+					</s:else>
 					<li><label>Payment Method:</label>
-						<a onclick="javascript: return showPaymentOptions( <s:property value="id"/>, 'Credit Card');" href="#">Edit Credit Card</a> <img height="23px" width="23px" src="images/lock.gif"/><br/>
+						<s:if test="contractor.newBillingAmount < 500 && !permissions.admin">
+							<s:radio list="#{'Check':'Check','Credit Card':'Credit Card'}" name="contractor.paymentMethod" theme="pics" disabled="true"/>
+						</s:if>
+						<s:else>
+							<s:radio list="#{'Check':'Check','Credit Card':'Credit Card'}" name="contractor.paymentMethod" theme="pics" onchange="javascript : return showPaymentMethodOption(this);"/>
+						</s:else>
 					</li>
-					<li><label>&nbsp;</label>
-						<a onclick="javascript: return showPaymentOptions( <s:property value="id"/>, 'Billed');" href="#">Credit</a> <img height="23px" width="23px" src="images/lock.gif"/>
+					<li>
+						<s:if test="contractor.paymentMethodCreditCard">
+							<s:set name="creditcard_show" value="'inline'"/>								
+							<s:set name="check_show" value="'none'"/>
+						</s:if>
+						<s:else>
+							<s:set name="creditcard_show" value="'none'"/>								
+							<s:set name="check_show" value="'inline'"/>
+						</s:else>
+						<span id="creditcard_show" style="display: <s:property value="#attr.creditcard_show"/>;"> Credit card payment is required for billing amounts less than $500. <a onclick="javascript: return showPaymentOptions( <s:property value="id"/>, 'Credit Card');" href="#" title="Opens In a Secure Window">Edit Credit Card</a><br/></span>
+						<span id="check_show" style="display: <s:property value="#attr.check_show"/>;"> Your invoice will be generated on <s:date name="@com.picsauditing.PICS.DateBean@getFirstofMonth(contractor.paymentExpires,-1)" format="MMM d, yyyy"/> and emailed to <s:property value="contractor.contact"/> and <s:property value="contractor.billingContact"/> with payment terms of net 30.</span>
 					</li>
-
 				</s:if>
 				<s:else>
 					<li><label>Status:</label>no payment required</li>
 				</s:else>
+				<li><label>&nbsp;</label>
+						<a href="privacy_policy.jsp">Privacy Policy</a> 
+						| <a href="refund_policy.jsp">Refund Policy</a>
+				</li>
 				</ol>
 				</fieldset>
 				<fieldset class="form">

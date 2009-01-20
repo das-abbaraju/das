@@ -76,7 +76,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private LowMedHigh riskLevel;
 	private Date viewedFacilities;
 	private String paymentMethodStatus;
-	private String paymentMethod;
+	private String paymentMethod = "Credit Card";
 
 	private int annualUpdateEmails;
 	private String oqEmployees;
@@ -434,6 +434,13 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.paymentMethod = paymentMethod;
 	}
 
+	@Transient
+	public boolean isPaymentMethodCreditCard() {
+		if(!Strings.isEmpty(paymentMethod) && "Credit Card".equals(paymentMethod))
+			return true;
+		return false;
+	}
+
 	/**
 	 * The date this is first activated. This is never reset afterwards.
 	 */
@@ -584,6 +591,14 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	public void setNewBillingAmount(int newBillingAmount) {
 		this.newBillingAmount = newBillingAmount;
+	}
+	
+	@Transient
+	public int getActivationFee() {
+		if(lastPayment == null)
+			return 99;
+		else
+			return 199;
 	}
 
 	// Other relationships //

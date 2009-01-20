@@ -1,9 +1,15 @@
 package com.picsauditing.PICS;
 
-import java.util.*;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.TreeMap;
 
 import javax.servlet.ServletContext;
 
@@ -384,6 +390,23 @@ public class DateBean {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(startDate);
 		cal.add(Calendar.MONTH, months);
+		return cal.getTime();
+	}
+
+	/**
+	 * Get the first date of a month before
+	 * @param startDate
+	 * @param months
+	 * @return
+	 */
+	public static Date getFirstofMonth(Date startDate, int months) {
+		if (startDate == null || months == 0)
+			return null;
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(startDate);
+		cal.add(Calendar.MONTH, months);
+		cal.set(Calendar.DATE, 1);
 		return cal.getTime();
 	}
 
