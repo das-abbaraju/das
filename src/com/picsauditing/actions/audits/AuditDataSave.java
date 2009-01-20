@@ -267,7 +267,8 @@ public class AuditDataSave extends AuditActionSupport {
 	public boolean isValidDate(String answer) {
 		SimpleDateFormat s = new SimpleDateFormat("MM/dd/yyyy");
 		Date newDate = DateBean.parseDate(answer);
-		if(newDate != null && s.format(newDate).equals(answer) && answer.length() == 10)
+		
+		if(newDate != null && s.format(newDate).equals(answer))
 			return true;
 	
 		return false;
@@ -276,23 +277,35 @@ public class AuditDataSave extends AuditActionSupport {
 	public boolean checkAnswerFormat(AuditData auditData, AuditData databaseCopy) {
 		if(databaseCopy == null)
 			databaseCopy = auditData;
-		if("Money".equals(databaseCopy.getQuestion().getQuestionType()) 
-				|| "Decimal Number".equals(databaseCopy.getQuestion().getQuestionType())) {
+		
+		if("Money".equals(databaseCopy.getQuestion().getQuestionType()) || "Decimal Number".equals(databaseCopy.getQuestion().getQuestionType())) {
 			if(!validateNumber(auditData.getAnswer())) {
 				addActionError(auditData.getAnswer() +" must contain a " + databaseCopy.getQuestion().getQuestionType());
 				return false;
 			}
-			if("Decimal Number".equals(databaseCopy.getQuestion().getQuestionType())) {
+			else if("Decimal Number".equals(databaseCopy.getQuestion().getQuestionType())) {
 				float value = Float.parseFloat(auditData.getAnswer());
-				NumberFormat format = new DecimalFormat("#0.000"); 
+				NumberFormat format = new DecimalFormat("#,##0.000"); 
 				auditData.setAnswer(format.format(value));
-			}	
+			}
+			else
+			{
+				float value = Float.parseFloat(auditData.getAnswer());
+				NumberFormat format = new DecimalFormat("#,##0"); 
+				auditData.setAnswer(format.format(value));
+			}
 		}
+		
 		if("Date".equals(databaseCopy.getQuestion().getQuestionType())) {
-			if(!isValidDate(auditData.getAnswer())) {
+			SimpleDateFormat s = new SimpleDateFormat("MM/dd/yyyy");
+			Date newDate = DateBean.parseDate(auditData.getAnswer());
+			
+			if (newDate == null) {
 				addActionError("Invalid Date Format");
 				return false;
 			}
+			else
+				auditData.setAnswer(s.format(newDate));
 		}
 		
 		return true;
