@@ -413,7 +413,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	@Transient
 	public boolean isPaymentMethodStatusValid() {
-		if(!Strings.isEmpty(paymentMethod) && "Credit".equals(paymentMethod))
+		if(!Strings.isEmpty(paymentMethod) && "Check".equals(paymentMethod))
 			return true;
 		if(!Strings.isEmpty(paymentMethodStatus)) {
 			if("Valid".equals(paymentMethodStatus) || "Approved".equals(paymentMethodStatus)) 
@@ -423,7 +423,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 	
 	/**
-	 * The Payment methods are Billed and Credit Card
+	 * The Payment methods are Credit Card and Check
 	 * @return
 	 */
 	public String getPaymentMethod() {
