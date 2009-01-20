@@ -153,7 +153,7 @@ if (canEditFlagCriteria) {
 			
 			if( changed ) {		
 	%>
-			<tr><td colspan="6"><strong><%= currentClassType.equals( "Audit" ) ? "Audit Answers" : "Insurance Limits" %></strong></td></tr>
+			<tr><td colspan="6"><strong><%= currentClassType.equals( "Audit" ) ? "Audit Answers" : "Insurance Limits - Any criteria in this secion will be used to make suggestions on the insurance policy approval report and will not directly affect the flag color." %></strong></td></tr>
 	<%  
       changed = false;
 		} %>	
