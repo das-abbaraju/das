@@ -59,6 +59,12 @@ values(?,?,?,?)
 (2097, Yellow, Yes, 5)
 (2097, Red, Yes, 10);
 
+/**
+ * Changed the listType to Contractor if Certificate
+ * 
+ */
+update email_template set listType = 'Contractor'
+where templateID = 10;
 
 /**
  * remove the verification permissions for everyone who isn't pics
