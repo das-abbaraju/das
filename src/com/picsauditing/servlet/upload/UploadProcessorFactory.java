@@ -2,7 +2,6 @@ package com.picsauditing.servlet.upload;
 
 public class UploadProcessorFactory {
 	public static final int PREQUAL_OSHA = 0;
-	public static final int CERTIFICATE = 1;
 	public static final int CONTRACTOR = 2;
 	public static final int FORM = 3;
 	public static final int PQF = 4;
@@ -13,9 +12,6 @@ public class UploadProcessorFactory {
 		switch(i){
 			case PREQUAL_OSHA:
 				uploadable = new Prequal_OSHAProcessor();				
-				break;
-			case CERTIFICATE:
-				uploadable = new CertificateProcessor();
 				break;
 			case CONTRACTOR:
 				uploadable = new ContractorProcessor();
@@ -31,7 +27,7 @@ public class UploadProcessorFactory {
 				break;
 			default:
 				uploadable = new SimpleUploadProcessor();
-		}//switch
+		}
 		return uploadable;
-	}//getUploadProcessor
-}//UploadProcessorFactory 
+	}
+} 
