@@ -119,39 +119,13 @@
 
 	<s:if test="filter.showAuditStatus">
 		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_auditStatus'); return false;">Audit
-		Status</a> = <span id="form1_auditStatus_query">ALL</span><br />
+			onclick="toggleBox('form1_auditStatus'); return false;">Status</a> = <span id="form1_auditStatus_query">ALL</span><br />
 		<span id="form1_auditStatus_select" style="display: none"
 			class="clearLink"> <s:select id="form1_auditStatus" list="filter.auditStatusList"
 			cssClass="forms" name="filter.auditStatus" multiple="true" size="5" /> <script
 			type="text/javascript">updateQuery('form1_auditStatus');</script> <br />
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_auditStatus'); return false;">Clear</a>
-		</span></div>
-	</s:if>
-
-	<s:if test="filter.showCaoStatus">
-		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_caoStatus'); return false;">Op
-		Status</a> = <span id="form1_caoStatus_query">ALL</span><br />
-		<span id="form1_caoStatus_select" style="display: none"
-			class="clearLink"> <s:select id="form1_caoStatus" list="filter.caoStatusList"
-			cssClass="forms" name="filter.caoStatus" multiple="true" size="5" /> <script
-			type="text/javascript">updateQuery('form1_caoStatus');</script> <br />
-		<a class="clearLink" href="#"
-			onclick="clearSelected('form1_caoStatus'); return false;">Clear</a>
-		</span></div>
-	</s:if>
-
-	<s:if test="filter.showRecommendedStatus">
-		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_recommendedStatus'); return false;">PICS Recommendation</a> = <span id="form1_recommendedStatus_query">ALL</span><br />
-		<span id="form1_recommendedStatus_select" style="display: none"
-			class="clearLink"> <s:select id="form1_recommendedStatus" list="filter.caoStatusList"
-			cssClass="forms" name="filter.recommendedStatus" multiple="true" size="5" /> <script
-			type="text/javascript">updateQuery('form1_recommendedStatus');</script> <br />
-		<a class="clearLink" href="#"
-			onclick="clearSelected('form1_recommendedStatus'); return false;">Clear</a>
 		</span></div>
 	</s:if>
 
@@ -417,6 +391,32 @@
 		<div class="filterOption">Incidence Rate <s:textfield name="filter.incidenceRate"
 			cssClass="forms" size="10" onfocus="clearText(this)" /></div>
 	</s:if>
+
+	<s:if test="filter.showCaoStatus">
+		<div class="filterOption"><a href="#"
+			onclick="toggleBox('form1_caoStatus'); return false;">Certificate
+		Approval</a> = <span id="form1_caoStatus_query">ALL</span><br />
+		<span id="form1_caoStatus_select" style="display: none"
+			class="clearLink"> <s:select id="form1_caoStatus" list="filter.caoStatusList"
+			cssClass="forms" name="filter.caoStatus" multiple="true" size="5" /> <script
+			type="text/javascript">updateQuery('form1_caoStatus');</script> <br />
+		<a class="clearLink" href="#"
+			onclick="clearSelected('form1_caoStatus'); return false;">Clear</a>
+		</span></div>
+	</s:if>
+
+	<s:if test="filter.showRecommendedStatus">
+		<div class="filterOption"><a href="#"
+			onclick="toggleBox('form1_recommendedStatus'); return false;">PICS Recommendation</a> = <span id="form1_recommendedStatus_query">ALL</span><br />
+		<span id="form1_recommendedStatus_select" style="display: none"
+			class="clearLink"> <s:select id="form1_recommendedStatus" list="filter.caoStatusList"
+			cssClass="forms" name="filter.recommendedStatus" multiple="true" size="5" /> <script
+			type="text/javascript">updateQuery('form1_recommendedStatus');</script> <br />
+		<a class="clearLink" href="#"
+			onclick="clearSelected('form1_recommendedStatus'); return false;">Clear</a>
+		</span></div>
+	</s:if>
+
 	
 	<br clear="all" />
 	<div class="alphapaging"><s:property
