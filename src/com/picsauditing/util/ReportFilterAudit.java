@@ -56,7 +56,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected float minEMR = 0;
 	protected float maxEMR = 100;
 	protected double incidenceRate = 0.0;
-	protected String[] recommendedStatus;
+	protected CaoStatus[] recommendedStatus;
 
 	public boolean isShowAuditType() {
 		return showAuditType;
@@ -331,14 +331,13 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.validLicense = validLicense;
 	}
 
-	public String[] getRecommendedStatus() {
+	public CaoStatus[] getRecommendedStatus() {
 		return recommendedStatus;
 	}
 
-	public void setRecommendedStatus(String[] recommendedStatus) {
+	public void setRecommendedStatus(CaoStatus[] recommendedStatus) {
 		this.recommendedStatus = recommendedStatus;
 	}
-
 
 	// Getting all the Lists
 	public List<AuditType> getAuditTypeList() {
