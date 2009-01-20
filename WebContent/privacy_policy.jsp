@@ -6,7 +6,9 @@
 <meta name="iconName" content="contact" />
 </head>
 <body>
-<h1 align=center>Privacy Policy Statement</h1>This is the web site of <b>PICS</b>.<br>
+<div class="blueMain">
+<h1 align=center>Privacy Policy Statement</h1>
+This is the web site of <b>PICS</b>.<br>
 <p>Our postal address is <br>
 <b>P.O. Box 51387<br>
 Irvine, CA 92619-1387</b></p>
@@ -28,6 +30,6 @@ Consumers can access this information by e-mail us at the above address, write t
 Consumers can have this information corrected by sending us e-mail at the above address, calling us at the above telephone number.</p>
 <p>With respect to security: When we transfer and receive certain types of sensitive information such as financial or health information, we redirect visitors to a secure server and will notify visitors through a pop-up screen on our site.</p>
 <p>If you feel that this site is not following its stated information policy, you may contact us at the above addresses or phone number.</p>
-
+</div>
 </body>
 </html>
