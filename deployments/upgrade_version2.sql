@@ -60,6 +60,12 @@ values(?,?,?,?)
 (2097, Red, Yes, 10);
 
 
+/**
+ * remove the verification permissions for everyone who isn't pics
+ */
+delete from useraccess 
+where userid in ( select u.id from users u where u.accountid != 1100 )
+and accesstype = 'InsuranceVerification'
 
 /**
 update pqfquestions set isVisible = CASE isVisible WHEN 2 THEN 1 ELSE 0 END;
