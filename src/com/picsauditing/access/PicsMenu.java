@@ -112,6 +112,8 @@ public class PicsMenu {
 		subMenu = menu.addChild("InsureGuard");
 		if(permissions.hasPermission(OpPerms.InsuranceCerts))
 			subMenu.addChild("Policy List", "ReportPolicyList.action");
+		if(permissions.hasPermission(OpPerms.InsuranceVerification))
+			subMenu.addChild("InsureGuard Verification", "PolicyVerification.action?filter.visible=Y");
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))
 			subMenu.addChild("Insurance Approval", "ReportInsuranceApproval.action?filter.caoStatus=Missing&filter.auditStatus=Submitted&filter.auditStatus=Active");
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))

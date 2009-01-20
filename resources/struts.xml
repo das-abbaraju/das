@@ -767,6 +767,11 @@
 			<result>struts/blank.jsp</result>
 		</action>
 		
+		<action name="PolicyVerification"
+			class="com.picsauditing.actions.report.ReportPolicyVerification">
+			<result>struts/reports/policy_verification.jsp</result>
+		</action>
+
 		<action name="MigrateCertificates"
 			class="com.picsauditing.actions.MigrateCertificates">
 			<result>struts/blank.jsp</result>
