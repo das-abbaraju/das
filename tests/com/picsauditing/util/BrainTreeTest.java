@@ -19,4 +19,15 @@ public class BrainTreeTest extends TestCase {
 		assertEquals("70b71f5c7ec93657c006e5b9f72e021d", hash);
 	}
 
+	public void testHashGenerator3() {
+		// Used values from http://tools.getbraintree.com/hasher
+		String hash = BrainTree.buildHash("", "", "1", "0", "", "", "891", "20090120054536", "UVgCejU48ANga4mKF77WFXfm2yUve76W");
+		assertEquals("b91b1cba19380839575c68ffdf6434d8", hash);
+	}
+
+	public void testHashGenerator3Bad() {
+		// Used values from http://tools.getbraintree.com/hasher
+		String hash = BrainTree.buildHash("", "", "1", "0", "", "", "891", "20090120054506", "UVgCejU48ANga4mKF77WFXfm2yUve76W");
+		assertEquals("066eb76738cfe1ba4c545b1a2025c7f3", hash);
+	}
 }

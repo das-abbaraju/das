@@ -11,13 +11,24 @@
 <meta http-equiv="Expires" content="0" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+<script type="text/javascript" src="js/prototype.js"></script>
+<script language="JavaScript">
+
+function updateExpDate() {
+	$('ccexp').value = $F('expMonth') + $F('expYear');
+}
+
+</script>
 </head>
 <body>
 <div id="main">
 <div id="bodyholder">
 <div id="content">
 
-<div align="center"><a href="javascript: window.close();">Close Window</a></div>
+<div align="center">
+<a href="javascript: window.close();">Close Window</a> |
+<a href="?id=<s:property value="id" />">Refresh Window</a>
+</div>
 <s:include value="../actionMessages.jsp"></s:include>
 
 <fieldset class="form">
@@ -26,18 +37,18 @@
 	<li><label>Company Name:</label>
 		<s:property value="contractor.name" />
 	</li>
-	<li><label>Annual Fee:</label>
-		$<s:property value="contractor.newBillingAmount" />
-	</li>
-	<li><label>Membership Expires:</label>
+	<li><label>Next Billing Date:</label>
 		<s:date name="contractor.paymentExpires" format="MMM d, yyyy" />
+	</li>
+	<li><label>Next Billing Amount:</label>
+		$<s:property value="contractor.newBillingAmount" />
 	</li>
 </ol>
 </fieldset>
 
 <s:if test="paymentMethod == 'Credit Card'">
 
-<form method="post" action="https://secure.braintreepaymentgateway.com/api/transact.php">
+<form method="post" action="https://secure.braintreepaymentgateway.com/api/transact.php" onsubmit="updateExpDate();">
 	<input type="hidden" name="redirect" value="<s:property value="requestString"/>?id=<s:property value="id"/>"/>
 	<s:hidden name="hash"></s:hidden>
 	<s:hidden name="key_id"></s:hidden>
@@ -53,7 +64,7 @@
 		<input type="hidden" name="customer_vault" value="update_customer"/>
 	</s:else>
 
-	<s:if test="contractor.paymentMethodStatusValid">
+	<s:if test="cc != null">
 	<fieldset class="form">
 	<legend><span>Existing Card</span></legend>
 	<ol>
@@ -72,7 +83,8 @@
 	</s:if>
 
 	<fieldset class="form">
-	<legend><span>Add/Update Credit Card</span></legend>
+	<legend><span><s:if test="cc == null">Add</s:if><s:else>Replace</s:else>
+	 Credit Card</span></legend>
 	<ol>
 		<li><label>Type:</label>
 			<s:radio theme="pics" list="creditCardTypes" name="ccName"/>
@@ -81,7 +93,9 @@
 			<s:textfield name="ccnumber" size="20" />
 		</li>
 		<li><label>Expiration Date:</label>
-			<s:textfield name="ccexp" size="10" />
+			<s:select id="expMonth" list="#{'01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec'}"></s:select>
+			<s:select id="expYear" list="#{'09':2009,10:2010,11:2011,12:2012,13:2013,14:2014,15:2015,16:2016,17:2017,18:2018,19:2019}"></s:select>
+			<s:textfield id="ccexp" name="ccexp" cssStyle="display: none" />
 		</li>
 		<li>
 		<div class="buttons">
@@ -96,9 +110,6 @@
 	<fieldset class="form">
 	<legend><span>Check</span></legend>
 	<ol>
-		<li><label>Membership Fee:</label>
-			$<s:property value="contractor.newBillingAmount" />
-		</li>
 	</ol>
 	</fieldset>	
 </s:else>

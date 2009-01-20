@@ -15,24 +15,21 @@
 	cal1.offsetY = -110;
 	cal1.setCssPrefix("PICS");
 
-
 	function showPaymentOptions(conId, method) {
  
  		var buttonURL= window.location.href;
  		
  		if( buttonURL.indexOf( 'www.picsauditing.com' ) != -1 ) {
  			buttonURL = buttonURL.replace('http:', 'https:');
- 			buttonURL = buttonURL.replace('8080', '443');
  		}
  		
  		var url = buttonURL.substr(0, buttonURL.lastIndexOf('/') ) + '/ContractorPaymentOptions.action?id=' + conId +'&paymentMethod=' + method; 
 		title = 'Contractor Payment Options';
-		pars = 'scrollbars=yes,resizable=yes,width=500,height=500,toolbar=0,directories=0,menubar=0';
+		pars = 'scrollbars=yes,resizable=yes,width=700,height=600,toolbar=0,directories=0,menubar=0';
 		popupWindow = window.open(url,title,pars);
 		popupWindow.focus();
 		return false;
 	}
-
 </script>
 </head>
 <body>

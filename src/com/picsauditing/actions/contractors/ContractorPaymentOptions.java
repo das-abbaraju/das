@@ -10,6 +10,7 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.util.BrainTree;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorPaymentOptions extends ContractorActionSupport {
@@ -78,7 +79,9 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				contractor.setPaymentMethod(creditCard);
 				accountDao.save(contractor);
 				addActionMessage("Successfully Saved");
-			} else {
+			} else if (!Strings.isEmpty(responsetext)) {
+				int endPos = responsetext.indexOf("REFID");
+				responsetext.substring(0, endPos - 1);
 				addActionError(responsetext);
 			}
 		}
