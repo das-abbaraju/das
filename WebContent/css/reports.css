@@ -10,6 +10,7 @@ table.report {
 }
 table.report td, table.report th {
 	border: thin solid #A84D10;
+	vertical-align: middle;
 	padding: 4px;
 	font-size: 13px;
 }

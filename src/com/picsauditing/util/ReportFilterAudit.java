@@ -16,6 +16,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showPolicyType = false;
 	protected boolean showAuditStatus = true;
 	protected boolean showCaoStatus = false;
+	protected boolean showRecommendedStatus = false;
 	protected boolean showAuditor = true;
 	protected boolean showCreatedDate = true;
 	protected boolean showCompletedDate = true;
@@ -29,7 +30,6 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showAuditFor = false;
 	protected boolean showEmrRange = false;
 	protected boolean showIncidenceRate = false;
-	protected boolean showRecommendedStatus = false;
 	
 
 	// Filter values
@@ -37,6 +37,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected int[] auditTypeID;
 	protected AuditStatus[] auditStatus;
 	protected CaoStatus[] caoStatus;
+	protected CaoStatus[] recommendedStatus;
 	protected int[] auditorId;
 	protected Date createdDate1;
 	protected Date createdDate2;
@@ -56,7 +57,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected float minEMR = 0;
 	protected float maxEMR = 100;
 	protected double incidenceRate = 0.0;
-	protected CaoStatus[] recommendedStatus;
+	
 
 	public boolean isShowAuditType() {
 		return showAuditType;
