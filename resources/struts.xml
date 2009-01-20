@@ -94,6 +94,11 @@
 			<result>struts/contractors/con_view.jsp</result>
 		</action>
 
+		<action name="ContractorRegistration"
+			class="com.picsauditing.actions.contractors.ContractorRegistration">
+			<result>struts/contractors/con_registration.jsp</result>
+		</action>
+
 		<action name="ContractorFlag"
 			class="com.picsauditing.actions.contractors.ContractorFlagAction">
 			<result>struts/contractors/contractor_flag.jsp</result>

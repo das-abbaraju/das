@@ -1,11 +1,4 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
-<%
-	boolean submitted = (null != request.getParameter("submit.x"));
-	if (submitted) {
-		response.sendRedirect("contractor_new.jsp");
-		return;
-	}
-%>
 <html>
 <head>
 <title>Registration Instructions</title>
@@ -14,8 +7,6 @@
 <meta name="iconName" content="register" />
 </head>
 <body>
-<form name="form1" method="post"
-	action="contractor_new_instructions.jsp">
 <table width="520" align="center" cellpadding="0" cellspacing="0">
 	<tr>
 		<td valign="top" class="blueMain">
@@ -36,15 +27,10 @@
 				button below.</td>
 			</tr>
 		</table>
-		<br>
-		<p align="center"><input type="image" name="submit" id="submit"
-			value="Continue" src="images/button_continue.jpg" width="84"
-			height="27" border="0"></p>
+		<p align="center"><a href="contractor_new.jsp"><img src="images/button_continue.jpg" width="84"
+			height="27" border="0"></a></p>
 		</td>
 	</tr>
 </table>
-</form>
-<br>
-<br>
 </body>
 </html>

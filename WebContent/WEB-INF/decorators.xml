@@ -30,7 +30,9 @@
 		<pattern>/featured*</pattern>
 		<pattern>/forgot_password.jsp</pattern>
 		<pattern>/contractor_new.jsp</pattern>
+		<pattern>/ContractorRegistration.action</pattern>
 		<pattern>/contractor_new_instructions.jsp</pattern>
+		<pattern>/ContractorRegistration.action</pattern>
 		<pattern>/contractor_new_confirm.jsp</pattern>
 		<pattern>/milestonepartnership.jsp</pattern>
 		<pattern>/article_OSHA300.jsp</pattern>

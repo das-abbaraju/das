@@ -1,0 +1,1 @@
+this is the starting page for the new contractor registration page(s)
