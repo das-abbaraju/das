@@ -1,11 +1,11 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>PQF Verification</title>
+<title>Policy Verification</title>
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
-<h1>PQF Verification</h1>
+<h1>Policy Verification</h1>
 <s:include value="filters.jsp" />
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
