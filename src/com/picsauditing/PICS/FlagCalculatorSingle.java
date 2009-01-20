@@ -303,14 +303,7 @@ public class FlagCalculatorSingle {
 				boolean isPolicyCriteria = criteriaAuditType.getClassType().equals(AuditTypeClass.Policy);
 
 				if (isPolicyCriteria) {
-					// Update the CAO Recommended Status
-					// If null or Amber, then set to Missing
-					CaoStatus caoStatus = CaoStatus.Missing;
-					if (criteriaColor.equals(FlagColor.Red))
-						caoStatus = CaoStatus.Rejected;
-					if (criteriaColor.equals(FlagColor.Green))
-						caoStatus = CaoStatus.Approved;
-					
+					// Policy Criteria are only "suggestions," see calculateCaoRecommendedStatus()
 				} else {
 					// Update the Flag color
 					flagColor = setFlagColor(flagColor, criteriaColor);
