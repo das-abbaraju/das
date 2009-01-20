@@ -6,7 +6,6 @@ public enum ListType {
 	Audit("Contractors by Audit"),
 	User("Users"),
 	ContractorOperator("Contractors by Operator"),
-	Certificate("Certificates"),
 	Operator("Operators")
 	;
 	

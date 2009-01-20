@@ -6,10 +6,8 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.jpa.entities.Token;
-import com.picsauditing.util.Strings;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -34,14 +32,12 @@ public class TokenDAO extends PicsDAO {
 		Token t = em.find(Token.class, id);
 		return t;
 	}
-	
+
 	public List<Token> findByType(ListType type) {
 		String where = "WHERE listType IN ('ALL'";
 		if (type != null) {
 			where += ",'" + type.toString() + "'";
-			if (type.equals(ListType.Audit)
-					|| type.equals(ListType.ContractorOperator)
-					|| type.equals(ListType.Certificate))
+			if (type.equals(ListType.Audit) || type.equals(ListType.ContractorOperator))
 				where += ",'Contractor'";
 		}
 		where += ")";
