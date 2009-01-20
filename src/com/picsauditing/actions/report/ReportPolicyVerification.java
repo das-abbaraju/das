@@ -1,6 +1,7 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
 
@@ -16,7 +17,23 @@ public class ReportPolicyVerification extends ReportAccount {
 	@Override
 	protected void buildQuery() {
 		super.buildQuery();
-		
+		/*
+		 * Base this on ReportContractorAudits
+		 * 
+		 * Refactor showOnlyAudits
+		 * 
+		 * List of Submitted Policies (with the option to get Pending ones too)
+		 * where the auditID in (select auditID from CAO where caoStatus = Missing) audit_operator.status = Active
+		 * 
+		 * Contractor Name
+		 * Policy Type
+		 * Submitted Date
+		 * Status
+		 * 
+		 * Low priority - get the first audit off the list and forward to the AuditCat page for that audit 
+		 */
+		showOnlyAudits = AuditTypeClass.Policy;
+
 		sql.addField("ca.auditStatus");
 		sql.addField("at.auditName");
 		sql.addField("ca.auditID");
@@ -25,6 +42,7 @@ public class ReportPolicyVerification extends ReportAccount {
 		sql.addJoin("JOIN audit_type at on at.auditTypeID = ca.auditTypeID");
 		sql.addWhere("at.classType = 'Policy'");
 		sql.addWhere("ca.auditStatus IN ('Submitted','Resubmitted')");
+		
 		SelectSQL subSelect = new SelectSQL("audit_operator ao");
 		subSelect.addField("ca.conID");
 		subSelect.addJoin("JOIN generalcontractors gc on gc.genID = ao.opID");

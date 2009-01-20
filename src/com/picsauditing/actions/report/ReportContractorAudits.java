@@ -23,6 +23,8 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportContractorAudits extends ReportAccount {
+	// TODO turn this to atype.classType = 'Audit'
+	// ClassType 
 	boolean showOnlyAudits = true;
 	private ReportFilterAudit filter = new ReportFilterAudit();
 
