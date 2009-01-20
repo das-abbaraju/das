@@ -93,6 +93,11 @@
 			<result>struts/contractors/con_view.jsp</result>
 		</action>
 
+		<action name="ContractorRegistration"
+			class="com.picsauditing.actions.contractors.ContractorRegistration">
+			<result>struts/contractors/con_registration.jsp</result>
+		</action>
+
 		<action name="ContractorFlag"
 			class="com.picsauditing.actions.contractors.ContractorFlagAction">
 			<result>struts/contractors/contractor_flag.jsp</result>
@@ -100,11 +105,27 @@
 
 		<action name="ConAuditList"
 			class="com.picsauditing.actions.contractors.ConAuditList">
+			<param name="auditClass">Audit</param>
 			<result>struts/contractors/contractor_audits.jsp</result>
 			<result name="saved" type="redirect-action">
 				<param name="actionName">ConAuditList</param>
 				<param name="id">${id}</param>
 			</result>
+		</action>
+
+		<action name="ConInsureGuard"
+			class="com.picsauditing.actions.contractors.ConAuditList">
+			<param name="auditClass">Policy</param>
+			<result>struts/contractors/contractor_insureguard.jsp</result>
+			<result name="saved" type="redirect-action">
+				<param name="actionName">ConInsureGuard</param>
+				<param name="id">${id}</param>
+			</result>
+		</action>
+
+		<action name="ConAnnualUpdates"
+			class="com.picsauditing.actions.contractors.ConAnnualUpdates">
+			<result>struts/contractors/contractor_annual_updates.jsp</result>
 		</action>
 
 		<action name="ContractorEdit"
@@ -115,6 +136,11 @@
 			</result>
 		</action>
 
+		<action name="ContractorPaymentOptions"
+			class="com.picsauditing.actions.contractors.ContractorPaymentOptions">
+			<result>struts/contractors/con_payment_options.jsp</result>
+		</action>
+		
 		<action name="ContractorNotes"
 			class="com.picsauditing.actions.contractors.ContractorNote">
 			<result>struts/contractors/con_notes.jsp</result>
@@ -189,8 +215,15 @@
 			class="com.picsauditing.actions.report.ReportOperatorCorporate">
 			<result>struts/reports/operator_corporate_data.jsp</result>
 		</action>
-
-
+		<action name="FacilitiesEdit"
+			class="com.picsauditing.actions.operators.FacilitiesEdit">
+			<result>struts/operators/operator_edit.jsp</result>
+		</action>
+		
+		<action name="AccountNameEditAjax"
+			class="com.picsauditing.actions.operators.FacilitiesEdit">
+			<result>/struts/operators/operator_names.jsp</result>
+		</action>
 
 
 		<!-- REPORTS Other -->
@@ -354,7 +387,8 @@
 
 		<action name="AuditDataSaveAjax"
 			class="com.picsauditing.actions.audits.AuditDataSave">
-			<result>struts/blank.jsp</result>
+			<result>struts/audits/audit_cat_edit_ajax.jsp</result>
+			<result name="tuple">struts/audits/audit_cat_tuples_ajax.jsp</result>
 		</action>
 		<action name="AuditToggleVerifyAjax"
 			class="com.picsauditing.actions.audits.AuditDataSave">
@@ -704,12 +738,39 @@
 			class="com.picsauditing.actions.Trevor">
 			<result>struts/blank.jsp</result>
 		</action>
-
-		<action name="MigrateFileStructure"
-			class="com.picsauditing.actions.MigrateFileStructure">
+		
+		<!-- Insurance Reports -->
+		<action name="ReportPolicyList"
+			class="com.picsauditing.actions.report.ReportPolicyList">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ReportPolicyList</param>
+			<result>struts/reports/policy_list.jsp</result>
+		</action>
+		
+		<action name="ReportPolicyListCSV"
+			class="com.picsauditing.actions.report.ReportPolicyList">
+			<param name="download">true</param>
+			<result>struts/reports/audit_list_csv.jsp</result>
+		</action>
+		<action name="ReportPolicyListAjax"
+			class="com.picsauditing.actions.report.ReportPolicyList">
+			<result>struts/reports/policy_list_data.jsp</result>
+		</action>
+		
+		<action name="ReportInsuranceApproval"
+			class="com.picsauditing.actions.report.ReportInsuranceApproval">
+			<result>struts/reports/opinsurance_approval.jsp</result>
+		</action>
+		<action name="ReportInsuranceApprovalSave"
+			class="com.picsauditing.actions.report.ReportInsuranceApprovalSave">
 			<result>struts/blank.jsp</result>
 		</action>
 		
+		<action name="MigrateCertificates"
+			class="com.picsauditing.actions.MigrateCertificates">
+			<result>struts/blank.jsp</result>
+		</action>
+
 		<!-- Remember to Categorize your new Struts pages -->
 	</package>
 </struts>
