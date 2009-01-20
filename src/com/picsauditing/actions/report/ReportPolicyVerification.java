@@ -23,7 +23,7 @@ public class ReportPolicyVerification extends ReportAccount {
 		 * Refactor showOnlyAudits
 		 * 
 		 * List of Submitted Policies (with the option to get Pending ones too)
-		 * where the auditID in (select auditID from CAO where caoStatus = Missing) audit_operator.status = Active
+		 * where the auditID in (select auditID from CAO where caoStatus = Awaiting) audit_operator.status = Active
 		 * 
 		 * Contractor Name
 		 * Policy Type
