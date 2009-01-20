@@ -35,6 +35,12 @@ public class DateBeanTest extends TestCase {
 		Date expected = DateBean.parseDate("2001-02-03");
 		
 		Date actual;
+		actual = DateBean.parseDate("2/3/2001");
+		assertEquals(expected, actual);
+		actual = DateBean.parseDate("2-3-01");
+		assertEquals(expected, actual);
+		actual = DateBean.parseDate("2/3/01");
+		assertEquals(expected, actual);
 		actual = DateBean.parseDate("02-03-2001");
 		assertEquals(expected, actual);
 		actual = DateBean.parseDate("2001/02/03");

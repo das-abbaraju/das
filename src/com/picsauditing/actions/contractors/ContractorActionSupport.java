@@ -125,7 +125,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 			for (ContractorAudit audit : getActiveAudits()) {
 				if (audit.getAuditType().isAnnualAddendum()) {
 					String linkText = audit.getAuditFor() + " Update";
-					subMenu.addChild(linkText, url + audit.getId(), audit.getId());
+					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), "");
 				}
 			}
 		}
@@ -137,8 +137,10 @@ public class ContractorActionSupport extends PicsActionSupport {
 			for (ContractorAudit audit : getActiveAudits()) {
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
 						&& !audit.equals(AuditStatus.Exempt)) {
-					String linkText = buildLinkText(audit);
-					subMenu.addChild(linkText, url + audit.getId(), audit.getId());
+					String year = DateBean.format(audit.getEffectiveDate(), "yy");
+					String linkText = audit.getAuditType().getAuditName() + " '" + year;
+					
+					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), audit.getAuditStatus().toString());
 				}
 			}
 		}
@@ -149,32 +151,16 @@ public class ContractorActionSupport extends PicsActionSupport {
 			for (ContractorAudit audit : getActiveAudits()) {
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Audit) && !audit.getAuditType().isPqf()
 						&& !audit.getAuditType().isAnnualAddendum()) {
-					String linkText = buildLinkText(audit);
-					subMenu.addChild(linkText, url + audit.getId(), audit.getId());
+					String year = DateBean.format(audit.getEffectiveDate(), "yy");
+					String linkText = audit.getAuditType().getAuditName() + " '" + year;
+					if (!Strings.isEmpty(audit.getAuditFor()))
+						linkText = audit.getAuditFor() + " " + linkText;
+					
+					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), audit.getAuditStatus().toString());
 				}
 			}
 		}
 		return menu;
-	}
-
-	public String buildLinkText(ContractorAudit audit) {
-		// Create the linkText
-		// First use auditFor: Year in the cast of Annual Audit or Employee name
-		// in the case of OQ
-		String linkText = "";
-		if (!Strings.isEmpty(audit.getAuditFor()))
-			linkText += audit.getAuditFor() + " ";
-
-		linkText += audit.getAuditType().getAuditName();
-
-		int daysToExpire = 1000;
-		if (audit.getAuditType().isPqf())
-			daysToExpire = DateBean.getDateDifference(audit.getExpiresDate());
-
-		if (audit.getAuditStatus().isPendingSubmittedResubmitted() || daysToExpire < 60)
-			linkText = "<i>" + linkText + "</i>";
-
-		return linkText;
 	}
 
 	public String getSubHeading() {

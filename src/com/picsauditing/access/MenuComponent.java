@@ -8,6 +8,7 @@ public class MenuComponent implements Serializable {
 
 	private String name;
 	private String url;
+	private String title;
 	private int id = 1;
 
 	protected int auditId = 0;
@@ -61,6 +62,14 @@ public class MenuComponent implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
 	public boolean hasChildren() {
 		return children.size() > 0;
@@ -86,9 +95,10 @@ public class MenuComponent implements Serializable {
 		return child;
 	}
 
-	public MenuComponent addChild(String name, String url, int childAuditId) {
+	public MenuComponent addChild(String name, String url, int childAuditId, String title) {
 		MenuComponent child = new MenuComponent(name, url);
 		this.children.add(child);
+		child.setTitle(title);
 		child.setId(this.children.size() + (100*this.id));
 		child.setAuditId(childAuditId);
 		return child;

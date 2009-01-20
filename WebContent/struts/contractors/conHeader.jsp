@@ -44,12 +44,12 @@
 		<li>
 		<s:if test="children.size() > 1">
 			<a class="dropdown <s:if test="current == true"> current</s:if>" href="<s:property value="url" />" 
-				onmouseover="cssdropdown.dropit(this, event, 'auditSubMenu<s:property value="url" />')">
-				<s:property value="name" /></a>
+				onmouseover="cssdropdown.dropit(this, event, 'auditSubMenu<s:property value="url" />')"
+				title="<s:property value="title" />"><s:property value="name" /></a>
 		</s:if>
 		<s:else>
-			<a href="<s:property value="url" />" class="<s:if test="current == true"> current</s:if>">
-			<s:property value="name" /></a>
+			<a href="<s:property value="url" />" class="<s:if test="current == true"> current</s:if>"
+			title="<s:property value="title" />"><s:property value="name" /></a>
 		</s:else>
 		</li>
 	</s:iterator>
@@ -182,7 +182,8 @@
 	<div id="auditSubMenu<s:property value="url" />" class="auditSubMenu">
 	<ul>
 	<s:iterator value="children">
-		<li><a href="<s:property value="url"/>" <s:if test="current == true">class="current"</s:if>><span><s:property value="name" escape="false" /></span></a></li>
+		<li><a href="<s:property value="url"/>"	<s:if test="current == true">class="current"</s:if>
+				title="<s:property value="title" />"><span><s:property value="name" escape="false" /></span></a></li>
 	</s:iterator>
 	</ul>
 	</div>
