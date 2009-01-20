@@ -12,7 +12,7 @@ public class ReportPolicyList extends ReportContractorAudits {
 
 	@Override
 	public void buildQuery() {
-		showOnlyAudits = false;
+		//showOnlyAudits = false;
 
 		super.buildQuery();
 

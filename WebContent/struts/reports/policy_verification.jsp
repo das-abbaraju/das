@@ -17,6 +17,7 @@
 		<td></td>
 		<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
 		<td>Policy</td>
+		<td>Submitted</td>
 		<td>Status</td>
 	</tr>
 	</thead>
@@ -25,6 +26,7 @@
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
 			<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:property value="get('auditName')"/></a></td>
+			<td><s:date name="get('completedDate')" format="M/d/yy"/></td>
 			<td><s:property value="get('auditStatus')"/></td>
 		
 		</tr>

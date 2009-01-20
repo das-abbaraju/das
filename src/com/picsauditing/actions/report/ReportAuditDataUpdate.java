@@ -12,7 +12,7 @@ public class ReportAuditDataUpdate extends ReportContractorAudits {
 
 	@Override
 	public void buildQuery() {
-		showOnlyAudits = false;
+		//showOnlyAudits = false;
 		super.buildQuery();
 		
 		sql.addField("pq.updateDate");

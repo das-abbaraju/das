@@ -12,6 +12,7 @@ import org.apache.struts2.ServletActionContext;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.mail.WizardSession;
 import com.picsauditing.search.SelectAccount;
@@ -23,9 +24,8 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportContractorAudits extends ReportAccount {
-	// TODO turn this to atype.classType = 'Audit'
-	// ClassType 
-	boolean showOnlyAudits = true;
+	//boolean showOnlyAudits = true;
+	protected AuditTypeClass auditTypeClass = AuditTypeClass.Audit;
 	private ReportFilterAudit filter = new ReportFilterAudit();
 
 	public ReportContractorAudits() {
@@ -33,7 +33,7 @@ public class ReportContractorAudits extends ReportAccount {
 	}
 
 	@Override
-	public void checkPermissions() throws Exception {
+	protected void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.ContractorDetails);
 		if (permissions.isCorporate() || permissions.isOperator()) {
 			if (permissions.getCanSeeAudit().size() == 0)
@@ -75,8 +75,9 @@ public class ReportContractorAudits extends ReportAccount {
 		if (permissions.isCorporate() || permissions.isOperator()) {
 			sql.addWhere("atype.auditTypeID IN (" + Strings.implode(permissions.getCanSeeAudit(), ",") + ")");
 		}
-		if (showOnlyAudits)
-			sql.addWhere("atype.classType = 'Audit'");
+		if (auditTypeClass != null)
+			sql.addWhere("atype.classType = '"+ auditTypeClass.toString() + "'");
+		
 		if (!permissions.isPicsEmployee())
 			getFilter().setShowAuditor(true);
 
