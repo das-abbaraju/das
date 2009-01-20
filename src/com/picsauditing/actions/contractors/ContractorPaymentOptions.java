@@ -81,8 +81,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				addActionMessage("Successfully Saved");
 			} else if (!Strings.isEmpty(responsetext)) {
 				int endPos = responsetext.indexOf("REFID");
-				responsetext.substring(0, endPos - 1);
-				addActionError(responsetext);
+				addActionError(responsetext.substring(0, endPos - 1));
 			}
 		}
 
