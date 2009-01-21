@@ -33,6 +33,16 @@ alter table `contractor_info`
 rename table `certificates` to `certificates_old`;
 
 
+update audit_type
+set mustVerify = 1
+where auditTypeID in (1,11) or classType = 'Policy';
+
+update audit_type
+set hasRequirements = 0
+where mustVerify = 1;
+
+update pqfquestions set questionType = 'Additional Insured' where id = 2262;
+
 /**
  * Changed the listType to Contractor if Certificate
  * 
