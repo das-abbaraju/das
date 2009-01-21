@@ -18,7 +18,6 @@ import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
-import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -30,6 +29,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.FileUtils;
 
 
@@ -221,18 +221,26 @@ public class MigrateCertificates extends PicsActionSupport {
 					
 					createLiabilityLimitAnswers(audit, connectedCert);
 					createExpirationDateAnswers(audit, connectedCert);
-		
+					createWaiverAnswers(audit, connectedCert);
+					
 					if( connectedCert.getNamedInsured() == null || connectedCert.getNamedInsured().length() == 0 ) {
 						fileQuestion = createNonNamedFileAnswers(audit, connectedCert);
 					}
 					else {
 						AuditData namedInsured = createAdditionalInsuredAnswers(audit, connectedCert);
-						
-						createWaiverAnswers(audit, connectedCert, namedInsured);
 						fileQuestion = createFileAnswers(audit, connectedCert, namedInsured);
 					}
 					
 					moveFile( audit, connectedCert, fileQuestion );
+		
+					AuditStatus currentStatus = audit.getAuditStatus();
+					audit.setAuditStatus(AuditStatus.Pending);
+					
+					auditBuilder.fillAuditCategories(audit);
+					auditPercentCalculator.percentCalculateComplete(audit);
+				
+					audit.setAuditStatus(currentStatus);
+					auditDAO.save(audit);
 					
 				}					
 			}
@@ -240,7 +248,9 @@ public class MigrateCertificates extends PicsActionSupport {
 				System.out.println(e);
 			}
 		}
-
+		
+		
+		
 
 		clearDaos();
 
@@ -252,57 +262,67 @@ public class MigrateCertificates extends PicsActionSupport {
 				.getAuditType().getAuditName());
 
 		for (Integer questionId : questionIds) {
-			
-			AuditData ad = new AuditData();
-			ad.setAudit(audit);
-			
-			ad.setAnswer(new Integer( cert.getLiabilityLimit()).toString() );
-			
-			ad.setQuestion(new AuditQuestion());
-			ad.getQuestion().setId(questionId);
-			ad.setComment("");
-			ad.setWasChanged(YesNo.No);
-
-			ad.setCreatedBy(new User());
-			ad.getCreatedBy().setId(941);
-
-			ad.setUpdatedBy(new User());
-			ad.getUpdatedBy().setId(941);
-
-			ad.setCreationDate(new Date());
-			ad.setUpdateDate(new Date());
-			
-			auditDataDAO.save(ad);
+			if( doesNotYetExist(questionId, audit)) {
+				AuditData ad = new AuditData();
+				ad.setAudit(audit);
+				
+				ad.setAnswer(new Integer( cert.getLiabilityLimit()).toString() );
+				
+				ad.setQuestion(new AuditQuestion());
+				ad.getQuestion().setId(questionId);
+				ad.setComment("");
+				ad.setWasChanged(YesNo.No);
+	
+				ad.setCreatedBy(new User());
+				ad.getCreatedBy().setId(941);
+	
+				ad.setUpdatedBy(new User());
+				ad.getUpdatedBy().setId(941);
+	
+				ad.setCreationDate(new Date());
+				ad.setUpdateDate(new Date());
+				
+				auditDataDAO.save(ad);
+			}
 		}
 	}
 
+	
+	
+	protected boolean doesNotYetExist( Integer questionId, ContractorAudit audit ) {
+		AuditData answer = auditDataDAO.findAnswerToQuestion(audit.getId(), questionId);
+		return answer == null;
+	}
+	
+	
 	protected void createExpirationDateAnswers(ContractorAudit audit,
 			Certificate cert) {
 		List<Integer> questionIds = expirationDateQuestionIds.get(audit
 				.getAuditType().getAuditName());
 		
 		for (Integer questionId : questionIds) {
-			
-			AuditData ad = new AuditData();
-			ad.setAudit(audit);
-			
-			ad.setAnswer( cert.getExpiration().toString() );
-			
-			ad.setQuestion(new AuditQuestion());
-			ad.getQuestion().setId(questionId);
-			ad.setComment("");
-			ad.setWasChanged(YesNo.No);
-			
-			ad.setCreatedBy(new User());
-			ad.getCreatedBy().setId(941);
-			
-			ad.setUpdatedBy(new User());
-			ad.getUpdatedBy().setId(941);
-			
-			ad.setCreationDate(new Date());
-			ad.setUpdateDate(new Date());
-			
-			auditDataDAO.save(ad);
+			if( doesNotYetExist(questionId, audit)) {
+				AuditData ad = new AuditData();
+				ad.setAudit(audit);
+				
+				ad.setAnswer( cert.getExpiration().toString() );
+				
+				ad.setQuestion(new AuditQuestion());
+				ad.getQuestion().setId(questionId);
+				ad.setComment("");
+				ad.setWasChanged(YesNo.No);
+				
+				ad.setCreatedBy(new User());
+				ad.getCreatedBy().setId(941);
+				
+				ad.setUpdatedBy(new User());
+				ad.getUpdatedBy().setId(941);
+				
+				ad.setCreationDate(new Date());
+				ad.setUpdateDate(new Date());
+				
+				auditDataDAO.save(ad);
+			}
 		}
 	}
 	
@@ -342,36 +362,37 @@ public class MigrateCertificates extends PicsActionSupport {
 	}
 	
 	protected AuditData createWaiverAnswers(ContractorAudit audit,
-			Certificate cert, AuditData parent) {
+			Certificate cert) {
 		List<Integer> questionIds = waiverQuestionIds.get(audit
 				.getAuditType().getAuditName());
 		
 		AuditData ad = null;
 		
 		for (Integer questionId : questionIds) {
-			
-			ad = new AuditData();
-			ad.setAudit(audit);
-			
-			ad.setParentAnswer(parent);
-			
-			ad.setAnswer( cert.getSubrogationWaived().name() );
-			
-			ad.setQuestion(new AuditQuestion());
-			ad.getQuestion().setId(questionId);
-			ad.setComment("");
-			ad.setWasChanged(YesNo.No);
-			
-			ad.setCreatedBy(new User());
-			ad.getCreatedBy().setId(941);
-			
-			ad.setUpdatedBy(new User());
-			ad.getUpdatedBy().setId(941);
-			
-			ad.setCreationDate(new Date());
-			ad.setUpdateDate(new Date());
-			
-			auditDataDAO.save(ad);
+			if( doesNotYetExist(questionId, audit)) {
+				ad = new AuditData();
+				ad.setAudit(audit);
+				
+				//ad.setParentAnswer(parent);
+				
+				ad.setAnswer( cert.getSubrogationWaived().name() );
+				
+				ad.setQuestion(new AuditQuestion());
+				ad.getQuestion().setId(questionId);
+				ad.setComment("");
+				ad.setWasChanged(YesNo.No);
+				
+				ad.setCreatedBy(new User());
+				ad.getCreatedBy().setId(941);
+				
+				ad.setUpdatedBy(new User());
+				ad.getUpdatedBy().setId(941);
+				
+				ad.setCreationDate(new Date());
+				ad.setUpdateDate(new Date());
+				
+				auditDataDAO.save(ad);
+			}
 		}
 		
 		return ad;
@@ -421,27 +442,28 @@ public class MigrateCertificates extends PicsActionSupport {
 		AuditData ad = null;
 		
 		for (Integer questionId : questionIds) {
-			
-			ad = new AuditData();
-			ad.setAudit(audit);
-			
-			ad.setAnswer( cert.getFileExtension() );
-			
-			ad.setQuestion(new AuditQuestion());
-			ad.getQuestion().setId(questionId);
-			ad.setComment("");
-			ad.setWasChanged(YesNo.No);
-			
-			ad.setCreatedBy(new User());
-			ad.getCreatedBy().setId(941);
-			
-			ad.setUpdatedBy(new User());
-			ad.getUpdatedBy().setId(941);
-			
-			ad.setCreationDate(new Date());
-			ad.setUpdateDate(new Date());
-			
-			auditDataDAO.save(ad);
+			if( doesNotYetExist(questionId, audit)) {
+				ad = new AuditData();
+				ad.setAudit(audit);
+				
+				ad.setAnswer( cert.getFileExtension() );
+				
+				ad.setQuestion(new AuditQuestion());
+				ad.getQuestion().setId(questionId);
+				ad.setComment("");
+				ad.setWasChanged(YesNo.No);
+				
+				ad.setCreatedBy(new User());
+				ad.getCreatedBy().setId(941);
+				
+				ad.setUpdatedBy(new User());
+				ad.getUpdatedBy().setId(941);
+				
+				ad.setCreationDate(new Date());
+				ad.setUpdateDate(new Date());
+				
+				auditDataDAO.save(ad);
+			}
 		}
 		
 		return ad;
