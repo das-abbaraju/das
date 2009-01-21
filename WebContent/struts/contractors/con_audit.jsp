@@ -34,6 +34,13 @@
 	<s:if test="conAudit.auditType.pqf && conAudit.auditStatus.activeSubmitted && conAudit.aboutToExpire">
 		<div id="alert">Your PQF is about to expire, please review every section and re-submit it.</div>
 	</s:if>
+	<s:if test="conAudit.auditType.desktop && conAudit.auditStatus.submitted">
+		<div id="info">The PICS auditor has submitted your Desktop Audit. There are 
+			<a href="?auditID=<s:property value="auditID" />&onlyReq=true" title="Click to see ALL Open Requirements">Open Requirements</a>
+			that need your attention. Please refer to the <a href="help/c/default.htm?turl=HTMLDocuments%2Fdesktopaudit.htm" title="Click Here to View the Help Guide">Help Guide</a> 
+			for additional instructions on how to close out your audit.
+		</div>
+	</s:if>
 	<s:if test="conAudit.auditStatus.name() == 'Pending' && !conAudit.contractorAccount.paymentMethodStatusValid">
 		<div id="info">Before you will be able to submit your information for review, you must <a href="ContractorEdit.action?id=<s:property value="conAudit.contractorAccount.id"/>"> provide a valid payment method</a>.</div>		
 	</s:if>
