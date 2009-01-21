@@ -41,6 +41,7 @@ public class AuditCategory implements java.io.Serializable, Comparable<AuditCate
 	private AuditType auditType;
 	private String category;
 	private int number;
+	private int numRequired;
 	private int numQuestions;
 	
 	List<AuditSubCategory> subCategories;
@@ -88,6 +89,15 @@ public class AuditCategory implements java.io.Serializable, Comparable<AuditCate
 
 	public void setNumber(int number) {
 		this.number = number;
+	}
+
+	@Column(nullable = false)
+	public int getNumRequired() {
+		return this.numRequired;
+	}
+
+	public void setNumRequired(int numRequired) {
+		this.numRequired = numRequired;
 	}
 
 	@Column(nullable = false)
