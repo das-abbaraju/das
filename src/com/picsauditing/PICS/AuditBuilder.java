@@ -532,9 +532,10 @@ public class AuditBuilder {
 			catData.setAudit(conAudit);
 			catData.setApplies(YesNo.Yes);
 			catData.setOverride(false);
-			if (conAudit.getAuditType().isAnnualAddendum())
+			if(category.getNumRequired() == 0)
 				catData.setNumRequired(1);
-
+			else
+				catData.setNumRequired(category.getNumRequired());
 			conAudit.getCategories().add(catData);
 		}
 		// Add all remaining N/A categories
@@ -545,6 +546,10 @@ public class AuditBuilder {
 			catData.setAudit(conAudit);
 			catData.setApplies(YesNo.No);
 			catData.setOverride(false);
+			if(category.getNumRequired() == 0)
+				catData.setNumRequired(1);
+			else
+				catData.setNumRequired(category.getNumRequired());
 			conAudit.getCategories().add(catData);
 		}
 		cAuditDAO.save(conAudit);
