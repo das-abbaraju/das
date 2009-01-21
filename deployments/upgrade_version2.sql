@@ -30,6 +30,7 @@ alter table `contractor_info`
 	add column `paymentMethod` varchar(20)  COLLATE latin1_swedish_ci NULL after `viewedFacilities`, 
 	add column `paymentMethodStatus` varchar(20)  COLLATE latin1_swedish_ci NULL after `paymentMethod`;
 
+rename table `certificates` to `certificates_old`;
 
 
 /**
