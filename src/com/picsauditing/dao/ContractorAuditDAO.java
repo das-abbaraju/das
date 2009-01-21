@@ -263,7 +263,7 @@ public class ContractorAuditDAO extends PicsDAO {
 		Calendar calendar1 = Calendar.getInstance();
 		calendar1.add(calendar1.WEEK_OF_YEAR, -2);
 		query.setParameter("Before14Days", calendar1.getTime());
-		calendar1.add(calendar1.DAY_OF_YEAR, 40);
+		calendar1.add(calendar1.DATE, 40);
 		query.setParameter("After26Days", calendar1.getTime());
 		return query.getResultList();
 	}

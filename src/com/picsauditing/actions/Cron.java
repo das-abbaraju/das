@@ -3,7 +3,9 @@ package com.picsauditing.actions;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.NoResultException;
 import javax.servlet.ServletContext;
@@ -17,13 +19,12 @@ import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.Facilities;
 import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.Certificate;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.mail.EmailBuilder;
@@ -37,8 +38,7 @@ public class Cron extends PicsActionSupport {
 	protected OperatorAccountDAO operatorDAO = null;
 	protected AppPropertyDAO appPropDao = null;
 	protected AuditBuilder auditBuilder = null;
-	protected CertificateDAO certificateDAO = null;
-	ContractorAuditDAO contractorAuditDAO = null;
+	protected ContractorAuditDAO contractorAuditDAO = null;
 
 	protected long startTime = 0L;
 	StringBuffer report = null;
@@ -46,12 +46,11 @@ public class Cron extends PicsActionSupport {
 	protected boolean flagsOnly = false;
 
 	public Cron(FlagCalculator2 fc2, OperatorAccountDAO ops, AppPropertyDAO appProps, AuditBuilder ab,
-			CertificateDAO certificateDAO, ContractorAuditDAO contractorAuditDAO) {
+			ContractorAuditDAO contractorAuditDAO) {
 		this.flagCalculator = fc2;
 		this.operatorDAO = ops;
 		this.appPropDao = appProps;
 		this.auditBuilder = ab;
-		this.certificateDAO = certificateDAO;
 		this.contractorAuditDAO = contractorAuditDAO;
 	}
 
@@ -158,7 +157,7 @@ public class Cron extends PicsActionSupport {
 			toAddress = prop.getValue();
 		} catch (NoResultException notFound) {
 		}
-		
+			
 		if (toAddress == null || toAddress.length() == 0) {
 			toAddress = "admin@picsauditing.com";
 		}
@@ -185,26 +184,26 @@ public class Cron extends PicsActionSupport {
 	}
 
 	public void sendEmailExpiredCertificates() throws Exception {
-		List<Certificate> cList = certificateDAO.findExpiredCertificate();
+		List<ContractorAudit> cList = contractorAuditDAO.findExpiredCertificates();
 		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
 		EmailBuilder emailBuilder = new EmailBuilder();
-		for (Certificate certificate : cList) {
+		Set<ContractorAccount> policies = new HashSet<ContractorAccount>();
+
+		for (ContractorAudit cAudit : cList) {
+			policies.add(cAudit.getContractorAccount());
+		}
+		for (ContractorAccount policy : policies) {
 			emailBuilder.clear();
 			emailBuilder.setTemplate(10); // Certificate Expiration
 			emailBuilder.setPermissions(permissions);
-			emailBuilder.setContractor(certificate.getContractorAccount());
-			emailBuilder.addToken("certificate", certificate);
+			emailBuilder.setContractor(policy);
+			emailBuilder.addToken("policies", policy);
 			EmailQueue email = emailBuilder.build();
 			email.setPriority(30);
 			emailQueueDAO.save(email);
-			
-			ContractorBean.addNote(certificate.getContractorAccount().getId(), permissions,
-					"Sent Certificate Expiration email to " + emailBuilder.getSentTo());
 
-			certificate.setSentEmails(certificate.getSentEmails() + 1);
-			certificate.setLastSentDate(new Date());
-			certificateDAO.save(certificate);
+			ContractorBean.addNote(policy.getId(), permissions, "Sent " + " Policy Expiration Email to "
+					+ emailBuilder.getSentTo());
 		}
 	}
-
 }

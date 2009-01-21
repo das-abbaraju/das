@@ -323,6 +323,19 @@ public class ContractorAudit implements java.io.Serializable {
 		else
 			return createdDate;
 	}
+	
+	@Transient
+	public boolean getExpiringPolicies() {
+		if(expiresDate == null)
+			return false;
+		Calendar cal1 = Calendar.getInstance();
+		cal1.add(cal1.WEEK_OF_YEAR, -2);
+		Calendar cal2 = Calendar.getInstance();
+		cal2.add(cal2.DATE, 26);
+		if(expiresDate.after(cal1.getTime()) && expiresDate.before(cal2.getTime())) 
+			return true;
+		return false;
+	}
 
 	@Override
 	public int hashCode() {
