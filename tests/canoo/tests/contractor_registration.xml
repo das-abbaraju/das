@@ -5,7 +5,7 @@
 	<property name="register.username" value="canoo_contractor1" />
 	<property name="admin.username" value="jfazeli" />
 	<target name="test">
-		<webtest name="Contractor Registration - Cleanup">
+		<webtest name="Contractor Registration - Pre Cleanup">
 			&config;
 			<steps>
 				<storeProperty description="Delete Account" 
@@ -25,7 +25,7 @@
 				&body_verify;
 				<clickLink
 					description="Edit Page"
-					url="contractor_new.jsp" />
+					href="contractor_new.jsp" />
 				
 				<clickButton description="Continue" name="submit" />
 				&body_verify;
@@ -70,8 +70,10 @@
 					value="${register.username}"/>
 				&login;
 				&body_verify;
-				<verifyText  description="Verify you can't login yet"
-				      text="activate your account" />
+				<verifyText description="Verify Activation Fee"
+				      text="Activation Fee" />
+				<verifyText description="Verify Activation Fee"
+				      text="$99 USD" />
 				
 				<group description="Activate the new Account">
 					<storeProperty description="Activate Account" 
@@ -116,16 +118,22 @@
 					<clickLink
 						description="Edit Company Info"
 						label="COMPANY INFORMATION" />
-					<setInputField htmlId="answer_635" value="Canoo's Test Contractor" />
-					<setInputField htmlId="answer_603" value="949-123-4567" />
-					<setInputField htmlId="answer_37" value="A really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, long company name goes here" />
-					<setInputField htmlId="answer_38" value="" />
+					<setInputField htmlId="answerq635" value="Canoo's Test Contractor" />
+					<setInputField htmlId="answerq603" value="949-123-4567" />
+					<setInputField htmlId="answerq37" value="A really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, long company name goes here" />
+					<setInputField htmlId="answerq38" value="" />
 					<clickLink description="Go To Category List" label="Up to Category List" />
 				</group>
 				<group description="Fill out Annual Update">
 					<clickLink
 						description="Open Annual Update 2007"
-						label="2007 Annual Update" />
+						label="2007 Update" />
+					<clickLink
+						description="GENERAL INFORMATION"
+						label="GENERAL INFORMATION" />
+					<setRadioButton htmlId="answerq2064Yes" />
+					<sleep seconds="2" />
+					<clickLink description="Go To Category List" label="Up to Category List" />
 					<clickLink
 						description="Open OSHA Section"
 						label="OSHA" />
@@ -138,7 +146,7 @@
 			</steps>
 		</webtest>
 		
-		<webtest name="Contractor Registration - Cleanup">
+		<webtest name="Contractor Registration - Post Cleanup">
 			&config;
 			<steps>
 				<storeProperty description="Change login to Admin" 
