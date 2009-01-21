@@ -97,7 +97,7 @@
 			<span style="font-style: italic; font-size: 12px;">example: 12/31/1999</span>
 	</s:if>
 	<s:if test="#q.questionType == 'License'">
-		<s:textfield name="answer%{#divID}" value="#a.answer" size="30" 
+		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="30" 
 			onchange="saveAnswer('%{#divID}', this);"/>
 		<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />			
 	</s:if>
@@ -141,7 +141,7 @@
 			onclick="saveAnswer('%{#divID}', this);" /> S</nobr>
 	</s:if>
 	<s:if test="#q.questionType == 'Radio'">
-		<s:radio theme="pics" list="#q.options" listKey="optionName" listValue="optionName" 
+		<s:radio theme="pics" list="#q.optionsVisible" listKey="optionName" listValue="optionName" 
 			value="#a.answer" name="answer%{#divID}" 
 			onclick="saveAnswer('%{#divID}', this);"/>
 	</s:if>
