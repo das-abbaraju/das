@@ -65,6 +65,7 @@
 
 	if (permissions.isContractor() && permissions.getAdminID() == 0) {
 		contractor.setViewedFacilities( new java.util.Date() );
+	}
 	contractorDAO.save( contractor );
 	
 	
