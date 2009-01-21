@@ -242,6 +242,8 @@ public class MigrateCertificates extends PicsActionSupport {
 					audit.setAuditStatus(currentStatus);
 					auditDAO.save(audit);
 					
+					
+					certDao.remove(cert.getId());
 				}					
 			}
 			catch( Exception e ) {
