@@ -279,7 +279,8 @@ public class AuditBuilder {
 	 * 
 	 * @param conAudit
 	 */
-	private void fillAuditOperators(ContractorAccount contractor, ContractorAudit conAudit) {
+	//TODO: I made this public for the InsureGuard migration.  We need to come to a decision after the migration if it should stay that way.
+	public void fillAuditOperators(ContractorAccount contractor, ContractorAudit conAudit) {
 		if (!AuditTypeClass.Policy.equals(conAudit.getAuditType().getClassType()))
 			return;
 

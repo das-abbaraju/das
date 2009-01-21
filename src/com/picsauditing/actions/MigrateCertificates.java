@@ -237,11 +237,11 @@ public class MigrateCertificates extends PicsActionSupport {
 					audit.setAuditStatus(AuditStatus.Pending);
 					
 					auditBuilder.fillAuditCategories(audit);
+					auditBuilder.fillAuditOperators(audit.getContractorAccount(), audit);
 					auditPercentCalculator.percentCalculateComplete(audit);
 				
 					audit.setAuditStatus(currentStatus);
 					auditDAO.save(audit);
-					
 					
 					certDao.remove(cert.getId());
 				}					
