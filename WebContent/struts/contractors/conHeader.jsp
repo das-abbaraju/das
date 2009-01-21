@@ -42,7 +42,7 @@
 	</s:if>
 	<s:iterator value="auditMenu">
 		<li>
-		<s:if test="children.size() > 1">
+		<s:if test="children.size() > 0">
 			<a class="dropdown <s:if test="current == true"> current</s:if>" href="<s:property value="url" />" 
 				onmouseover="cssdropdown.dropit(this, event, 'auditSubMenu<s:property value="url" />')"
 				title="<s:property value="title" />"><s:property value="name" /></a>
@@ -178,7 +178,7 @@
 <div class="clear"></div>
 
 <s:iterator value="auditMenu">
-<s:if test="children.size() > 1">
+<s:if test="children.size() > 0">
 	<div id="auditSubMenu<s:property value="url" />" class="auditSubMenu">
 	<ul>
 	<s:iterator value="children">
