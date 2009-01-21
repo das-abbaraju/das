@@ -23,12 +23,30 @@
 			cBean.id = aBean.id;
 			cBean.writeNewToDB(FACILITIES);
 			cBean.buildAudits();
-
+			
+			// Send the Welcome Email on contractor registration
+			ContractorAccountDAO dao = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
+			ContractorAccount contractor = dao.find(Integer.parseInt(cBean.id));
+			EmailBuilder emailBuilder = new EmailBuilder();
+			emailBuilder.setTemplate(2); // Welcome Email
+			emailBuilder.setContractor(contractor);
+			EmailQueue emailQueue = emailBuilder.build();
+			emailQueue.setPriority(90);
+			EmailSender.send(emailQueue);
+			cBean.setFromDB(cBean.id);
+			cBean.addAdminNote(cBean.id, "System", "Welcome Email Sent", DateBean.getTodaysDate());
+			cBean.writeToDB();
 			response.sendRedirect("contractor_new_confirm.jsp?i="+aBean.id);
 			return;
 		}
 	}
 %>
+<%@page import="com.picsauditing.dao.ContractorAccountDAO"%>
+<%@page import="com.picsauditing.util.SpringUtils"%>
+<%@page import="com.picsauditing.jpa.entities.ContractorAccount"%>
+<%@page import="com.picsauditing.mail.EmailBuilder"%>
+<%@page import="com.picsauditing.jpa.entities.EmailQueue"%>
+<%@page import="com.picsauditing.mail.EmailSender"%>
 <html>
 <head>
 <title>Contractor Registration</title>

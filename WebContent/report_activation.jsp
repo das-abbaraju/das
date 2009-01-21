@@ -21,20 +21,6 @@ try{
 		message += "<b>"+sBean.aBean.name+"</b> has been made visible";
 		sBean.aBean.writeToDB();
 		sBean.cBean.writeToDB();
-		
-		ContractorAccountDAO dao = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
-		ContractorAccount contractor = dao.find(Integer.parseInt(actionID));
-		EmailBuilder emailBuilder = new EmailBuilder();
-		emailBuilder.setTemplate(2); // Welcome Email
-		emailBuilder.setPermissions(permissions);
-		emailBuilder.setContractor(contractor);
-		EmailQueue emailQueue = emailBuilder.build();
-		emailQueue.setPriority(90);
-		EmailSender.send(emailQueue);
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(actionID);
-		cBean.addAdminNote(actionID, "("+permissions.getUsername()+")", "Welcome Email Sent ", DateBean.getTodaysDate());
-		cBean.writeToDB();
 	}
 
 	if ("Paid".equals(action)){
