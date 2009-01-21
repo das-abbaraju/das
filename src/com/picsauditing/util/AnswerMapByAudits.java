@@ -14,6 +14,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.YesNo;
 
 public class AnswerMapByAudits {
 
@@ -48,7 +49,8 @@ public class AnswerMapByAudits {
 		for (ContractorAudit audit : auditSet) {
 			for (ContractorOperator contractorOperator : operator
 					.getContractorOperators()) {
-				if ("Y".equals(contractorOperator.getWorkStatus())) {
+				if ("Y".equals(contractorOperator.getWorkStatus()) 
+						|| ( operator.getApprovesRelationships() != null && operator.getApprovesRelationships() == YesNo.No ) ) {
 
 					boolean canSee = false;
 
