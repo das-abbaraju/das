@@ -23,6 +23,10 @@
 					description="Register Link"
 					url="contractor_new_instructions.jsp" />
 				&body_verify;
+				<clickLink
+					description="Edit Page"
+					url="contractor_new.jsp" />
+				
 				<clickButton description="Continue" name="submit" />
 				&body_verify;
 				<group description="Register and Save">
