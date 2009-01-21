@@ -61,6 +61,34 @@ public class ContractorAuditAction extends AuditActionSupport {
 			return LOGIN;
 		this.findConAudit();
 
+		// Some stuff like rebuilding categories and percentages doesn't have to
+		// be done everytime
+
+		auditBuilder.fillAuditCategories(conAudit);
+		
+		if (conAudit.getAuditType().isDynamicCategories() && permissions.isPicsEmployee()) {
+			isCanApply = true;
+
+			if (applyCategoryID > 0) {
+				for (AuditCatData data : conAudit.getCategories()) {
+					if (data.getId() == applyCategoryID) {
+						data.setApplies(YesNo.Yes);
+						data.setOverride(true);
+					}
+				}
+			}
+			if (removeCategoryID > 0) {
+				for (AuditCatData data : conAudit.getCategories()) {
+					if (data.getId() == removeCategoryID) {
+						data.setApplies(YesNo.No);
+						data.setOverride(true);
+					}
+				}
+			}
+		}
+		// Calculate and set the percent complete
+		auditPercentCalculator.percentCalculateComplete(conAudit);
+
 		if ("Submit".equals(button)) {
 			if (conAudit.getAuditType().isPqf()) {
 				if (conAudit.getAuditStatus().equals(AuditStatus.Active) && conAudit.getPercentVerified() == 100)
@@ -90,53 +118,11 @@ public class ContractorAuditAction extends AuditActionSupport {
 			return SUCCESS;
 		}
 
-		// Some stuff like rebuilding categories and percentages doesn't have to
-		// be done everytime
-		boolean fullLoad = true;
-		// Try and guess to see if we need it or not
-		if (auditStatus != null)
-			fullLoad = false;
-		if (conAudit.getAuditType().isAnnualAddendum() && conAudit.getAuditStatus().isPendingSubmitted())
-			fullLoad = true;
-		if (conAudit.getAuditStatus().equals(AuditStatus.Active))
-			fullLoad = false;
-
-		if (fullLoad)
-			auditBuilder.fillAuditCategories(conAudit);
-		
-		if (conAudit.getAuditType().isDynamicCategories() && permissions.isPicsEmployee()) {
-			isCanApply = true;
-
-			if (applyCategoryID > 0) {
-				for (AuditCatData data : conAudit.getCategories()) {
-					if (data.getId() == applyCategoryID) {
-						data.setApplies(YesNo.Yes);
-						data.setOverride(true);
-					}
-				}
-			}
-			if (removeCategoryID > 0) {
-				for (AuditCatData data : conAudit.getCategories()) {
-					if (data.getId() == removeCategoryID) {
-						data.setApplies(YesNo.No);
-						data.setOverride(true);
-					}
-				}
-			}
-		}
-		if (fullLoad)
-			// Calculate and set the percent complete
-			auditPercentCalculator.percentCalculateComplete(conAudit);
-
 		if (auditStatus != null && !auditStatus.equals(conAudit.getAuditStatus())) {
 			// We're changing the status
-			if (!conAudit.getAuditType().isHasRequirements() && auditStatus.equals(AuditStatus.Submitted)) {
-				// This audit should skip directly to Active when Submitted
-				auditStatus = AuditStatus.Active;
-			}
 			if (auditStatus.equals(AuditStatus.Active)) {
 				conAudit.setClosedDate(new Date());
-				if (conAudit.getAuditType().isHasMultiple()) {
+				if (!conAudit.getAuditType().isHasMultiple()) {
 					// This audit can only have one active audit, expire the
 					// previous one
 					for (ContractorAudit oldAudit : conAudit.getContractorAccount().getAudits()) {
@@ -147,6 +133,20 @@ public class ContractorAuditAction extends AuditActionSupport {
 								oldAudit.setAuditStatus(AuditStatus.Expired);
 								auditDao.save(oldAudit);
 							}
+						}
+					}
+				}
+				
+				if (conAudit.getAuditType().isAnnualAddendum()
+						&& DateBean.getCurrentYear() - 1 == Integer.parseInt(conAudit.getAuditFor())) {
+					// We're activating the most recent year's audit (ie 2008)
+					for (ContractorAudit audit : contractor.getAudits()) {
+						if (audit.getAuditType().isAnnualAddendum()
+								&& Integer.parseInt(audit.getAuditFor()) < DateBean.getCurrentYear() - 3
+								&& !audit.getAuditStatus().isExpired()) {
+							// Any annual audit before 2006 (ie 2005)
+							audit.setAuditStatus(AuditStatus.Expired);
+							auditDao.save(audit);
 						}
 					}
 				}
@@ -194,18 +194,6 @@ public class ContractorAuditAction extends AuditActionSupport {
 			// Save the audit status
 			conAudit.setAuditStatus(auditStatus);
 			auditDao.save(conAudit);
-
-			boolean activeAnnualUpdate = false;
-			if (conAudit.getAuditType().isAnnualAddendum() && conAudit.getAuditStatus().equals(AuditStatus.Active)
-					&& DateBean.getCurrentYear() - 1 == Integer.parseInt(conAudit.getAuditFor())) {
-				activeAnnualUpdate = true;
-				for (ContractorAudit audit : contractor.getAudits()) {
-					if (activeAnnualUpdate && audit.getAuditType().isAnnualAddendum()
-							&& Integer.parseInt(audit.getAuditFor()) == DateBean.getCurrentYear() - 4)
-						audit.setAuditStatus(AuditStatus.Expired);
-					auditDao.save(audit);
-				}
-			}
 
 			flagCalculator.runByContractor(conAudit.getContractorAccount().getId());
 		}
