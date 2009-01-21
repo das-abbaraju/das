@@ -70,7 +70,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 				else
 					conAudit.setAuditStatus(AuditStatus.Submitted);
 				conAudit.setExpiresDate(DateBean.getMarchOfNextYear(new Date()));
-			} else if (conAudit.getAuditType().isHasRequirements())
+			} else if (conAudit.getAuditType().isHasRequirements() || conAudit.getAuditType().isMustVerify())
 				conAudit.setAuditStatus(AuditStatus.Submitted);
 			else
 				conAudit.setAuditStatus(AuditStatus.Active);
@@ -103,7 +103,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 
 		if (fullLoad)
 			auditBuilder.fillAuditCategories(conAudit);
-
+		
 		if (conAudit.getAuditType().isDynamicCategories() && permissions.isPicsEmployee()) {
 			isCanApply = true;
 
