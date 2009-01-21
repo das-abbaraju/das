@@ -15,7 +15,7 @@
 	
 	<ifStep description="Delete Welcome Call">
 		<condition>
-			<clickLink description="Goto Welcome Call" label="Welcome Call" />
+			<clickLink description="Goto Welcome Call" label="Welcome Call '09" />
 		</condition>
 		<clickLink description="Open System Edit" label="System Edit" />
 		<clickButton description="Click Delete" label="Delete" />
@@ -23,7 +23,7 @@
 
 	<ifStep description="Delete Annual Updates">
 		<condition>
-			<clickLink description="Goto Annual Update 07" label="2007 Annual Update" />
+			<clickLink description="Goto Annual Update 08" label="2008 Update" />
 		</condition>
 		<clickLink description="Open System Edit" label="System Edit" />
 		<clickButton description="Click Delete" label="Delete" />
@@ -31,7 +31,7 @@
 
 	<ifStep description="Delete Annual Updates">
 		<condition>
-			<clickLink description="Goto Annual Update 06" label="2006 Annual Update" />
+			<clickLink description="Goto Annual Update 07" label="2007 Update" />
 		</condition>
 		<clickLink description="Open System Edit" label="System Edit" />
 		<clickButton description="Click Delete" label="Delete" />
@@ -39,22 +39,14 @@
 
 	<ifStep description="Delete Annual Updates">
 		<condition>
-			<clickLink description="Goto Annual Update 05" label="2005 Annual Update" />
-		</condition>
-		<clickLink description="Open System Edit" label="System Edit" />
-		<clickButton description="Click Delete" label="Delete" />
-	</ifStep>
-
-	<ifStep description="Delete Annual Updates">
-		<condition>
-			<clickLink description="Goto remaining Annual Update" label="Annual Update" />
+			<clickLink description="Goto Annual Update 06" label="2006 Update" />
 		</condition>
 		<clickLink description="Open System Edit" label="System Edit" />
 		<clickButton description="Click Delete" label="Delete" />
 	</ifStep>
 
 	<group description="Delete Contractor">
-		<clickLink description="click on edit page" label="Edit" />
+		<clickLink description="click on edit page" htmlId="conEditLink" />
 		<clickButton description="Delete the Contractor" label="Delete" />
 	</group>
 
