@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -55,6 +56,11 @@ public class AuditQuestionOption implements java.io.Serializable {
 
 	public YesNo getVisible() {
 		return visible;
+	}
+	
+	@Transient
+	public boolean isVisibleB() {
+		return YesNo.Yes.equals(visible);
 	}
 
 	public void setVisible(YesNo visible) {

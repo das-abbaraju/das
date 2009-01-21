@@ -194,6 +194,8 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	public boolean isHasRequirements() {
 		if (!audit.getAuditType().isHasRequirements())
 			return false;
+		if (!getQuestion().isHasRequirementB())
+			return false;
 		return (YesNo.Yes.equals(wasChanged) || isRequirementOpen());
 	}
 

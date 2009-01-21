@@ -215,6 +215,11 @@ public class AuditType implements Comparable<AuditType> {
 	}
 
 	@Transient
+	public boolean isDesktop() {
+		return (auditTypeID == DESKTOP);
+	}
+
+	@Transient
 	public boolean isAnnualAddendum() {
 		return (auditTypeID == ANNUALADDENDUM);
 	}

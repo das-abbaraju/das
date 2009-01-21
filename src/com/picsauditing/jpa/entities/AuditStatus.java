@@ -22,7 +22,20 @@ public enum AuditStatus {
 	public boolean isPending() {
 		return this.equals(Pending);
 	}
+
+	public boolean isSubmitted() {
+		return this.equals(Submitted);
+	}
 	
+	public boolean isActive() {
+		return this.equals(Active);
+	}
+	
+	public boolean isExpired() {
+		return this.equals(Expired);
+	}
+	
+
 	/**
 	 * Is the status Active or Exempt
 	 * @return

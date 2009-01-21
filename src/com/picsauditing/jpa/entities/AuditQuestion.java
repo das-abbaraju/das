@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -104,6 +105,11 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	@Enumerated(EnumType.STRING)
 	public YesNo getHasRequirement() {
 		return this.hasRequirement;
+	}
+	
+	@Transient
+	public boolean isHasRequirementB() {
+		return YesNo.Yes.equals(hasRequirement);
 	}
 
 	public void setHasRequirement(YesNo hasRequirement) {
@@ -374,6 +380,15 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	@OneToMany(mappedBy = "auditQuestion")
 	@OrderBy("number")
 	public List<AuditQuestionOption> getOptions() {
+		return options;
+	}
+	
+	@Transient
+	public List<AuditQuestionOption> getOptionsVisible() {
+		List<AuditQuestionOption> options = new ArrayList<AuditQuestionOption>();
+		for(AuditQuestionOption o : getOptions())
+			if (o.isVisibleB())
+				options.add(o);
 		return options;
 	}
 
