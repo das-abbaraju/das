@@ -29,6 +29,12 @@
 			<li><label>Category Name:</label>
 				<s:textfield name="category.category" size="30" />
 			</li>
+			<li><label># of Questions:</label>
+				<s:property value="category.numQuestions"/>
+			</li>
+			<li><label># Required:</label>
+				<s:property value="category.numRequired"/>
+			</li>
 		</ol>
 	</fieldset>
 	<fieldset class="form submit">
