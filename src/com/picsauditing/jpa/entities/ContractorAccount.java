@@ -554,6 +554,9 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
+	/**
+	 * The date the contractor last reviewed their facility list
+	 */
 	public Date getViewedFacilities() {
 		return viewedFacilities;
 	}

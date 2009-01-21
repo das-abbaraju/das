@@ -9,9 +9,6 @@ alter table `pqfdata`
 	drop column `num`, 
 	drop key `questionContractor`, add KEY `questionContractor`(`auditID`,`questionID`,`parentID`);
 
-update pqfdata set parentID = null;
-
-
 alter table `pqfquestions` 
 	change `questionID` `id` smallint(6)   NOT NULL auto_increment first,
 	drop key `PRIMARY`, add PRIMARY KEY(`id`);
@@ -20,44 +17,20 @@ alter table `pqfquestions`
 	add column `createdBy` int(11)   NULL after `question`, 
 	add column `updatedBy` int(11)   NULL after `createdBy`, 
 	change `dateCreated` `creationDate` datetime   NOT NULL after `updatedBy`, 
-	change `lastModified` `updateDate` datetime   NOT NULL after `creationDate`, 
-	add column `allowMultipleAnswers` tinyint(4)   NULL DEFAULT '0' after `isRequired`, 
-	add column `parentID` smallint(5) unsigned   NULL after `isRedFlagQuestion`;
+	change `lastModified` `updateDate` datetime   NOT NULL after `creationDate`;
 
-/**
- * Updated the questionType from Manual to Yes/No/NA and set showComment to true
- */
+alter table `audit_type` 
+	add column `mustVerify` tinyint(3)   NOT NULL DEFAULT '0' after `classType`, 
+	change `hasRequirements` `hasRequirements` tinyint(3) unsigned   NOT NULL after `mustVerify`, 
+	change `displayOrder` `displayOrder` tinyint(4)   NULL DEFAULT '100' after `hasRequirements`, 
+	change `canContractorView` `canContractorView` tinyint(3) unsigned   NOT NULL after `hasAuditor`, COMMENT='';
 
-update pqfquestions set showComment = 1 
-where questionType = 'Manual';
+alter table `contractor_info` 
+	add column `viewedFacilities` datetime   NULL after `oqEmployees`, 
+	add column `paymentMethod` varchar(20)  COLLATE latin1_swedish_ci NULL after `viewedFacilities`, 
+	add column `paymentMethodStatus` varchar(20)  COLLATE latin1_swedish_ci NULL after `paymentMethod`;
 
-update pqfquestions set questionType = 'Yes/No/NA' 
-where questionType = 'Manual';
 
-/**
- * Adding radio Options (Green, Yellow, Red) to support integrity management2 audit
- * questions.
- */
-insert into pqfoptions (questionID, optionName, visible, number)
-values(?,?,?,?)
-(2092, Green, Yes, 1)
-(2092, Yellow, Yes, 5)
-(2092, Red, Yes, 10)
-(2093, Green, Yes, 1)
-(2093, Yellow, Yes, 5)
-(2093, Red, Yes, 10)
-(2094, Green, Yes, 1)
-(2094, Yellow, Yes, 5)
-(2094, Red, Yes, 10)
-(2095, Green, Yes, 1)
-(2095, Yellow, Yes, 5)
-(2095, Red, Yes, 10)
-(2096, Green, Yes, 1)
-(2096, Yellow, Yes, 5)
-(2096, Red, Yes, 10)
-(2097, Green, Yes, 1)
-(2097, Yellow, Yes, 5)
-(2097, Red, Yes, 10);
 
 /**
  * Changed the listType to Contractor if Certificate
@@ -72,6 +45,44 @@ where templateID = 10;
 delete from useraccess 
 where userid in ( select u.id from users u where u.accountid != 1100 )
 and accesstype = 'InsuranceVerification'
+
+
+/** Make sure these are set correctly **/
+
+update pqfquestions set showComment = 1 
+where questionType = 'Manual';
+
+update pqfquestions set questionType = 'Yes/No/NA' 
+where questionType = 'Manual';
+
+-- Limits are all Flaggable
+update pqfquestions
+set isRedFlagQuestion = 'Yes'
+where subCategoryID in (select subCatID from pqfsubcategories where subCategory = 'Policy Limits');
+
+-- aiNames are tuples
+update pqfquestions
+set allowMultipleAnswers = 1, isRequired = 'No', isRedFlagQuestion = 'Yes', questionType = 'Additional Insured'
+where uniqueCode = 'aiName';
+
+update pqfquestions
+set isRequired = 'Yes'
+where uniqueCode = 'aiFile';
+
+update pqfquestions
+set isRequired = 'Yes', isRedFlagQuestion = 'Yes', questionType = 'Yes/No/NA'
+where uniqueCode = 'aiWaiverSub';
+
+update pqfquestions q1, pqfquestions q2
+set q1.parentID = q2.id
+where q1.uniqueCode like 'aiFile' and q2.uniqueCode like 'aiName'
+and q1.subCategoryID = q2.subCategoryID;
+
+update pqfquestions q1, pqfsubcategories s1, pqfsubcategories s2
+set q1.subCategoryID = s2.subCatID
+where q1.subCategoryID = s1.subCatID
+and s1.categoryID = s2.categoryID and s2.number = 1
+and uniqueCode = 'aiWaiverSub';
 
 /**
 update pqfquestions set isVisible = CASE isVisible WHEN 2 THEN 1 ELSE 0 END;

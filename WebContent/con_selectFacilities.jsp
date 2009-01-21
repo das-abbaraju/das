@@ -63,7 +63,8 @@
 	for(ContractorOperator co : contractor.getOperators())
 		opMap.put(co.getOperatorAccount().getId(), co);
 
-	contractor.setViewedFacilities( new java.util.Date() );
+	if (permissions.isContractor() && permissions.getAdminID() == 0) {
+		contractor.setViewedFacilities( new java.util.Date() );
 	contractorDAO.save( contractor );
 	
 	

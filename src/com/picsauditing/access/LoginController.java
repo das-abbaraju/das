@@ -243,8 +243,7 @@ public class LoginController extends DataBean {
 		} else {
 			// Contractors
 			permissions.login(this.aBean);
-			// this.prevLastLogin = this.aBean.lastLogin;
-			if (updateLastLogin)
+			if (permissions.isActive() && updateLastLogin)
 				this.aBean.updateLastLogin();
 
 			// Most (if not all) of this below should eventually be phased out

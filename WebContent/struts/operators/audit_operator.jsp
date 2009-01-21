@@ -126,14 +126,6 @@ function save(id, aID, oID, pKey) {
 					|
 					<s:radio name="requiredAuditStatus%{htmlID}" list="AuditStatusList" value="requiredAuditStatus" disabled="!canSee"
 					onchange="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
-					<s:if test="auditType.classType.toString().equals('Policy')">
-					|
-					<s:radio name="additionalInsuredFlag%{htmlID}" list="FlagColorList" value="additionalInsuredFlag" disabled="!canSee"
-					onchange="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
-					|
-					<s:radio name="waiverSubFlag%{htmlID}" list="FlagColorList" value="waiverSubFlag" disabled="!canSee"
-					onchange="save('%{htmlID}', '%{auditType.auditTypeID}', '%{operatorAccount.id}', '%{auditOperatorID}')" />
-					</s:if>
 					</nobr>
 				</td>
 			</tr>

@@ -54,7 +54,7 @@
 				<div id="alert"><s:property value="requirement"/></div>
 			</s:if>
 			<s:else>
-				<span class="answer"><s:property value="requirement"/></span>
+				<div id="info"><s:property value="requirement"/></div>
 			</s:else>
 		</s:if>
 		</td>
