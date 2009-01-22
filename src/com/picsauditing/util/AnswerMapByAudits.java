@@ -6,9 +6,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.Vector;
 
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -193,6 +196,12 @@ public class AnswerMapByAudits {
 		for (ContractorAudit audit : data.keySet()) {
 			data.get(audit).resetFlagColors();
 		}
+	}
+	
+	public Map<AuditQuestion, AuditData> getAuditQuestionAnswerMap() {
+		Map<AuditQuestion, AuditData> map = new TreeMap<AuditQuestion, AuditData>();
+		
+		return map;
 	}
 
 	public Set<ContractorAudit> getAuditSet() {
