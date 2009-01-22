@@ -3,7 +3,6 @@ package com.picsauditing.jpa.entities;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -42,7 +41,6 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 
 	// Transient properties
 	private List<AuditData> siblings;
-	private FlagColor flagColor;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "auditID", nullable = false, updatable = false)
@@ -184,15 +182,6 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 
 	public void setWasChanged(YesNo wasChanged) {
 		this.wasChanged = wasChanged;
-	}
-
-	@Transient
-	public FlagColor getFlagColor() {
-		return flagColor;
-	}
-
-	public void setFlagColor(FlagColor flagColor) {
-		this.flagColor = flagColor;
 	}
 
 	@Transient

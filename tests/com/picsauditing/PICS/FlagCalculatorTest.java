@@ -19,7 +19,6 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.util.AnswerMapByAudits;
 
 public class FlagCalculatorTest extends TestCase {
 	/* Create the main variables */
@@ -27,7 +26,7 @@ public class FlagCalculatorTest extends TestCase {
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
 	private List<ContractorAudit> conAudits;
-	private AnswerMapByAudits answerMapByAudits;
+	private List<AuditCriteriaAnswer> acaList;
 	
 	@Override
 	protected void setUp() throws Exception {
@@ -52,14 +51,14 @@ public class FlagCalculatorTest extends TestCase {
 		contractor.getOperators().add(co);
 		
 		conAudits = new ArrayList<ContractorAudit>();
-		answerMapByAudits = new AnswerMapByAudits();
+		acaList = new ArrayList<AuditCriteriaAnswer>();
 		
 		/* Initialize the calculator */
 		calculator.setDebug(true);
 		calculator.setContractor(contractor);
 		calculator.setOperator(operator);
 		calculator.setConAudits(conAudits);
-		calculator.setAnswerMapByAudits(answerMapByAudits);
+		calculator.setAcaList(acaList);
 	}
 	
 	/***** Unit Tests *************/

@@ -228,26 +228,24 @@
 </s:if>
 </s:if>
 
-<s:if test="auditData.size > 0">
+<s:if test="acaList > 0">
 	<table class="report" style="clear: none">
 		<thead>
 			<tr>
 				<td>Flag</td>
 				<td>Answer</td>
 				<td>For</td>
-				<td>Audit Question</td>
+				<td>Question</td>
 			</tr>
 		</thead>
-		<s:iterator value="auditData">
-			<s:iterator value="value">
-				<tr class="<s:property value="value.flagColor" />">
-					<td class="center"><s:property
-						value="value.flagColor.smallIcon" escape="false" /></td>
-					<td class="center"><s:property value="value.answer" /></td>
-					<td><s:property value="value.audit.auditFor" /></td>
-					<td><s:property value="value.question.question" /></td>
-				</tr>
-			</s:iterator>
+		<s:iterator value="acaList">
+			<tr class="<s:property value="resultColor" />">
+				<td class="center"><s:property
+					value="resultColor.smallIcon" escape="false" /></td>
+				<td class="center"><s:property value="answer.answer" /></td>
+				<td><s:property value="answer.audit.auditFor" /></td>
+				<td><s:property value="question.question" /></td>
+			</tr>
 		</s:iterator>
 	</table>
 </s:if>

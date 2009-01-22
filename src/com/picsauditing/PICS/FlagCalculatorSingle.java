@@ -1,13 +1,10 @@
 package com.picsauditing.PICS;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
-import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -18,15 +15,11 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
-import com.picsauditing.jpa.entities.FlagQuestionCriteria;
-import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.util.AnswerMap;
-import com.picsauditing.util.AnswerMapByAudits;
 
 /**
  * Determine the Flag color for a single contractor at a given facility. This
@@ -42,7 +35,7 @@ public class FlagCalculatorSingle {
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
 	private List<ContractorAudit> conAudits;
-	private AnswerMapByAudits answerMapByAudits;
+	protected List<AuditCriteriaAnswer> acaList;
 
 	/**
 	 * 1) Check to see all required audits are there 2) OSHA Data 3)
@@ -214,135 +207,16 @@ public class FlagCalculatorSingle {
 		}
 		debug(" flagColor=" + flagColor);
 		
-		answerMapByAudits.resetFlagColors();
 		
-		// For each operator criteria, get the contractor's
-		// answer and see if it triggers the flag color
-		for (FlagQuestionCriteria criteria : operator.getFlagQuestionCriteria()) {
-			if (criteria.getChecked().equals(YesNo.Yes)) {
-				// This question is required by the operator
-
-				FlagColor criteriaColor = null;
-				AuditQuestion criteriaQuestion = criteria.getAuditQuestion();
-				AuditType criteriaAuditType = criteriaQuestion.getSubCategory().getCategory().getAuditType();
-				
-				List<ContractorAudit> matchingConAudits = answerMapByAudits.getAuditSet(criteriaAuditType);
-				
-				if (matchingConAudits.size() > 0) {
-					MultiYearScope scope = criteria.getMultiYearScope();
-					if( scope != null ) {
-						if (MultiYearScope.LastYearOnly.equals(scope)) {
-							AuditData data = null;
-
-							// Get the most recent year
-							int mostRecentYear = 0;
-							for (ContractorAudit conAudit : matchingConAudits) {
-								try {
-									int year = Integer.parseInt(conAudit.getAuditFor());
-									if (year > mostRecentYear) {
-										mostRecentYear = year;
-										data = answerMapByAudits.get(conAudit).get(criteriaQuestion.getId());
-									}
-								} catch (Exception e) {
-									System.out.println("Ignoring answer with year key: " + conAudit.getAuditFor());
-								}
-							}
-							criteriaColor = flagData(criteriaColor, criteria, data);
-
-						} else if (MultiYearScope.AllThreeYears.equals(scope)) {
-							for (ContractorAudit conAudit : matchingConAudits) {
-								AuditData data = answerMapByAudits.get(conAudit).get(criteriaQuestion.getId());
-								criteriaColor = flagData(criteriaColor, criteria, data);
-							}
-
-						} else if (MultiYearScope.ThreeYearAverage.equals(scope)) {
-							List<AuditData> dataList = new ArrayList<AuditData>();
-							for (ContractorAudit conAudit : matchingConAudits) {
-								AuditData data = answerMapByAudits.get(conAudit).get(criteriaQuestion.getId());
-								if( data != null ) {
-									dataList.add(data);
-								}
-							}
-							AuditData data = AuditData.addAverageData(dataList);
-							criteriaColor = flagData(criteriaColor, criteria, data);
-
-						}
-
-					} else {
-						if (criteria.getMultiYearScope() == null && matchingConAudits.size() > 1)
-							System.out.println("WARNING! Found more than one " + criteriaAuditType.getAuditName() 
-									+ " for conID=" + contractor.getId());
-						AnswerMap answerMap = answerMapByAudits.get(matchingConAudits.get(0));
-						
-						if(criteriaQuestion.isAllowMultipleAnswers() ) {
-							// this question is an anchor question that can have multiple answers
-							// figure out if we should be optimistic or pessimistic here
-							// I'm not going to spend much time on this 
-							// because there are no existing use cases of using this yet
-							for(AuditData data : answerMap.getAnswerList(criteriaQuestion.getId()))
-								criteriaColor = flagData(criteriaColor, criteria, data);
-							
-						} else if( criteriaQuestion.getParentQuestion() != null ) {
-							// These questions are "child" questions, so we must first find their parent
-							for(AuditData parentData : answerMap.getAnswerList(criteriaQuestion.getParentQuestion().getId())) {
-								// For each row, get the child answer and evaluate it
-								AuditData data = answerMap.get(criteriaQuestion.getId(), parentData.getId());
-								criteriaColor = flagData(criteriaColor, criteria, data);
-							}
-
-						} else {
-							// DEFAULT : this is a normal (root/non child/non multiple) question
-							AuditData data = answerMap.get(criteriaQuestion.getId());
-							criteriaColor = flagData(criteriaColor, criteria, data);
-						}
-					}
-				} // if matchingConAudits.size() > 0
-				
-				// Criteria for Policies don't affect the flag color, 
-				// but the ContractorAuditOperator.recommendedStatus instead
-				boolean isPolicyCriteria = criteriaAuditType.getClassType().equals(AuditTypeClass.Policy);
-
-				if (isPolicyCriteria) {
-					// Policy Criteria are only "suggestions," see calculateCaoRecommendedStatus()
-				} else {
-					// Update the Flag color
-					flagColor = setFlagColor(flagColor, criteriaColor);
-				}
-				
-				if (answerOnly && flagColor.equals(FlagColor.Red))
-					// Things can't get worse, just exit
-					return flagColor;
-			} // if criteria.isChecked...
-		} // for
-		debug(" flagColor=" + flagColor);
+		for(AuditCriteriaAnswer aca : acaList) {
+			//if (aca.getClassType() == Audit)
+			flagColor = setFlagColor(flagColor, aca.getResultColor());
+		}
+		debug(" aca flagColor=" + flagColor);
 
 		if (overrideColor != null)
 			return overrideColor;
 
-		return flagColor;
-	}
-
-	private FlagColor flagData(FlagColor flagColor, FlagQuestionCriteria criteria, AuditData data) {
-		if (data != null && data.getAnswer() != null && data.getAnswer().length() > 0) {
-			// The contractor has answered this question
-			// so it needs to be correct
-			boolean isFlagged = false;
-
-			if (criteria.isValidationRequired() && !data.isVerified()) {
-				isFlagged = true;
-			}
-
-			if (criteria.isFlagged(data.getAnswer())) {
-				isFlagged = true;
-			}
-
-			if (isFlagged) {
-				data.setFlagColor(setFlagColor(data.getFlagColor(), criteria.getFlagColor()));
-				flagColor = setFlagColor(flagColor, criteria.getFlagColor());
-			} else {
-				data.setFlagColor(FlagColor.Green);
-			}
-		}
 		return flagColor;
 	}
 
@@ -479,69 +353,24 @@ public class FlagCalculatorSingle {
 	}
 	
 	public CaoStatus calculateCaoRecommendedStatus(ContractorAuditOperator cao) {
-		AnswerMap answerMap = answerMapByAudits.get(cao.getAudit());
-		if (answerMap == null)
-			return CaoStatus.Awaiting;
-
-		if (!cao.getAudit().getAuditType().getClassType().equals(AuditTypeClass.Policy))
-			// This shouldn't happen ever, but just to make sure...
-			return null;
-
-		CaoStatus caoStatus = null; //CaoStatus.Awaiting;
-		answerMap.resetFlagColors();
+		debug(" calculateCaoRecommendedStatus");
 		
-		// For each operator criteria, get the contractor's
-		// answer and see if it triggers the flag color
-		for (FlagQuestionCriteria criteria : operator.getFlagQuestionCriteria()) {
-			if (criteria.getChecked().equals(YesNo.Yes)) {
-				// This question is required by the operator
-
-				FlagColor criteriaColor = null;
-				AuditQuestion criteriaQuestion = criteria.getAuditQuestion();
-				AuditType criteriaAuditType = criteriaQuestion.getSubCategory().getCategory().getAuditType();
-				
-				if (criteriaAuditType.equals(cao.getAudit().getAuditType())) {
-					// only evaluate the criteria for this AuditType
-					
-					if(criteriaQuestion.isAllowMultipleAnswers() ) {
-						// this question is an anchor question that can have multiple answers
-						// figure out if we should be optimistic or pessimistic here
-						// I'm not going to spend much time on this 
-						// because there are no existing use cases of using this yet
-						for(AuditData data : answerMap.getAnswerList(criteriaQuestion.getId()))
-							criteriaColor = flagData(criteriaColor, criteria, data);
-						
-					} else if( criteriaQuestion.getParentQuestion() != null ) {
-						// These questions are "child" questions, so we must first find their parent
-						for(AuditData parentData : answerMap.getAnswerList(criteriaQuestion.getParentQuestion().getId())) {
-							// For each row, get the child answer and evaluate it
-							AuditData data = answerMap.get(criteriaQuestion.getId(), parentData.getId());
-							criteriaColor = flagData(criteriaColor, criteria, data);
-						}
-
-					} else {
-						// DEFAULT : this is a normal (root/non child/non multiple) question
-						AuditData data = answerMap.get(criteriaQuestion.getId());
-						criteriaColor = flagData(criteriaColor, criteria, data);
-					}
-
-					// Update the CAO Recommended Status
-					if( criteriaColor != null ) {
-						if (criteriaColor.equals(FlagColor.Red))
-							return CaoStatus.Rejected;
-						if (!caoStatus.equals(CaoStatus.Rejected) && criteriaColor.equals(FlagColor.Green))
-							caoStatus = CaoStatus.Approved;
-					}
-						
-				}
-			} // if criteria.isChecked...
-		} // for
-		
-		if( caoStatus == null ) {
-			caoStatus = CaoStatus.Awaiting;
+		FlagColor flagColor = null;
+		for(AuditCriteriaAnswer aca : acaList) {
+			//if (aca.getClassType() == Policy and aca.answer.audit == cao.getAudit())
+			flagColor = setFlagColor(flagColor, aca.getResultColor());
 		}
 		
-		return caoStatus;
+		if( flagColor == null )
+			return CaoStatus.Awaiting;
+
+		if (flagColor.equals(FlagColor.Red))
+			return CaoStatus.Rejected;
+		
+		if (flagColor.equals(FlagColor.Green))
+			return CaoStatus.Approved;
+		
+		return CaoStatus.Awaiting;
 	}
 	
 	/**
@@ -617,11 +446,7 @@ public class FlagCalculatorSingle {
 		this.answerOnly = answerOnly;
 	}
 
-	public AnswerMapByAudits getAnswerMapByAudits() {
-		return answerMapByAudits;
-	}
-
-	public void setAnswerMapByAudits(AnswerMapByAudits answerMapByAudits) {
-		this.answerMapByAudits = answerMapByAudits;
+	public void setAcaList(List<AuditCriteriaAnswer> acaList) {
+		this.acaList = acaList;
 	}
 }

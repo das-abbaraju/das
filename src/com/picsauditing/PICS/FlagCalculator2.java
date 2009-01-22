@@ -17,6 +17,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -242,11 +243,14 @@ public class FlagCalculator2 {
 		for (OperatorAccount opFromDifferentTransaction : operators) {  
 			
 			OperatorAccount operator = operatorDAO.find(opFromDifferentTransaction.getId());
+			
 			//prune our answermapMAP for this operator (take out audits they can't see, and answers to questions they shouldn't see)
 			//also note that this uses the copy constructor, so our local variable answerMapByAUdits is not affected by pruning 
 			//on each run through the "operators" list.
-			calcSingle.setAnswerMapByAudits(new AnswerMapByAudits(answerMapByAudits, operator));
-			
+			AnswerMapByAudits answerMapForOperator = new AnswerMapByAudits(answerMapByAudits, operator);
+			AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, operator.getFlagQuestionCriteria());
+			calcSingle.setAcaList(acaBuilder.getAuditCriteriaAnswers());
+
 			calcSingle.setOperator(operator);
 			//calcSingle.setDebug(true);
 			// Calculate the color of the flag right here
@@ -259,21 +263,19 @@ public class FlagCalculator2 {
 
 			WaitingOn waitingOn = calcSingle.calculateWaitingOn();
 
-			AnswerMapByAudits answerMapForAllAudits = auditDataDAO.findAnswersByAudits( contractor.getAudits(), null );
-			calcSingle.setAnswerMapByAudits(new AnswerMapByAudits(answerMapForAllAudits, operator));
-			
-			for( ContractorAudit audit : calcSingle.getAnswerMapByAudits().getAuditSet() ) {
-				
-				for( ContractorAuditOperator cao : audit.getOperators() ) {
-					if( cao.getStatus() == CaoStatus.Awaiting ) {
-						CaoStatus recommendedStatus = calcSingle.calculateCaoRecommendedStatus(cao);
-						cao.setRecommendedStatus(recommendedStatus);
-						caoDAO.save(cao);
+			for( ContractorAudit audit : contractor.getAudits() ) {
+				if( audit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
+					for (ContractorAuditOperator cao : audit.getOperators()) {
+						if (cao.getStatus() == CaoStatus.Awaiting) {
+							CaoStatus recommendedStatus = calcSingle
+									.calculateCaoRecommendedStatus(cao);
+							cao.setRecommendedStatus(recommendedStatus);
+							caoDAO.save(cao);
+						}
 					}
 				}
-				
 			}
-			
+
 			try {
 				coFlag = contractor.getFlags().get(operator);
 			} catch (Exception e) {

@@ -1,11 +1,14 @@
 package com.picsauditing.actions.contractors;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.Set;
+import java.util.TreeSet;
 
+import com.picsauditing.PICS.AuditCriteriaAnswer;
+import com.picsauditing.PICS.AuditCriteriaAnswerBuilder;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagCalculatorSingle;
 import com.picsauditing.PICS.redFlagReport.Note;
@@ -16,7 +19,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
-import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -35,10 +38,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected int opID;
 	protected ContractorOperator co;
 	protected FlagCalculatorSingle calculator = new FlagCalculatorSingle();
-	protected Map<Integer, Map<String, AuditData>> auditData;
 	protected ContractorOperatorFlagDAO coFlagDao;
 	protected String action = "";
 
+	protected List<AuditCriteriaAnswer> acaList;
 	protected Date forceEnd;
 	protected FlagColor forceFlag;
 	protected boolean overrideAll = false;
@@ -80,9 +83,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		calculator.setOperator(co.getOperatorAccount());
 		calculator.setContractor(contractor);
 		calculator.setConAudits(contractor.getAudits());
-		AnswerMapByAudits answerMapByAudits = auditDataDAO.findAnswersByAudits( contractor.getAudits(), co.getOperatorAccount().getQuestionIDs() );
 		
-
+		List<Integer> criteriaQuestionIDs = co.getOperatorAccount().getQuestionIDs();
+		AnswerMapByAudits answerMapByAudits = auditDataDAO.findAnswersByAudits( contractor.getAudits(), criteriaQuestionIDs );
+		
 		if ("Override".equals(action)) {
 			String text = "Changed the flag color to " + forceFlag;
 			Note note = new Note(co.getOperatorAccount().getIdString(), co.getContractorAccount().getIdString(),
@@ -92,19 +96,23 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		if ("deleteOverride".equals(action)) {
 			permissions.tryPermission(OpPerms.EditForcedFlags);
 			if (deleteAll == true) {
-				for (ContractorOperator operator : getOperators()) {
+				for (ContractorOperator co2 : getOperators()) {
 					
 					//prune our answermapMAP for this operator (take out audits they can't see, and answers to questions they shouldn't see)
 					//also note that this uses the copy constructor, so our local variable answerMapByAUdits is not affected by pruning 
 					//on each run through the "operators" list.
-					calculator.setAnswerMapByAudits(new AnswerMapByAudits(answerMapByAudits, operator.getOperatorAccount()));
+					
+					// Make sure the operator has only the answers that are visible to them
+					AnswerMapByAudits answerMapForOperator = new AnswerMapByAudits(answerMapByAudits, co.getOperatorAccount());
+					AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, co.getOperatorAccount().getFlagQuestionCriteria());
+					calculator.setAcaList(acaBuilder.getAuditCriteriaAnswers());
 
-					operator.setForceBegin(null);
-					operator.setForceEnd(null);
-					operator.setForceFlag(null);
+					co2.setForceBegin(null);
+					co2.setForceEnd(null);
+					co2.setForceFlag(null);
 					FlagColor newColor = calculator.calculate();
-					operator.getFlag().setFlagColor(newColor);
-					contractorOperatorDao.save(operator);
+					co2.getFlag().setFlagColor(newColor);
+					contractorOperatorDao.save(co2);
 				}
 				return SUCCESS;
 			} else {
@@ -142,26 +150,21 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			newFlag = coFlagDao.save(newFlag);
 			co.setFlag(newFlag);
 		}
-
 		
-		List<ContractorAudit> toRecommend = new Vector<ContractorAudit>(); 
-		for( ContractorAudit tempAudit : contractor.getAudits() ) {
-			if( tempAudit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
-				toRecommend.add( tempAudit );
-			}
-		}
+		// Make sure the operator has only the answers that are visible to them
+		AnswerMapByAudits answerMapForOperator = new AnswerMapByAudits(answerMapByAudits, co.getOperatorAccount());
+		AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, co.getOperatorAccount().getFlagQuestionCriteria());
+		calculator.setAcaList(acaBuilder.getAuditCriteriaAnswers());
 		
-		
-		answerMapByAudits = auditDataDAO.findAnswersByAudits( toRecommend, null );
-		calculator.setAnswerMapByAudits(new AnswerMapByAudits(answerMapByAudits, co.getOperatorAccount()));
-
-		for (ContractorAudit audit : answerMapByAudits.getAuditSet() ) {
-			for (ContractorAuditOperator cao : audit.getOperators()) {
-				if (cao.getStatus() == CaoStatus.Awaiting) {
-					CaoStatus recommendedStatus = calculator
-							.calculateCaoRecommendedStatus(cao);
-					cao.setRecommendedStatus(recommendedStatus);
-					caoDAO.save(cao);
+		for( ContractorAudit audit : contractor.getAudits() ) {
+			if( audit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
+				for (ContractorAuditOperator cao : audit.getOperators()) {
+					if (cao.getStatus() == CaoStatus.Awaiting) {
+						CaoStatus recommendedStatus = calculator
+								.calculateCaoRecommendedStatus(cao);
+						cao.setRecommendedStatus(recommendedStatus);
+						caoDAO.save(cao);
+					}
 				}
 			}
 		}
@@ -190,14 +193,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 	public void setCo(ContractorOperator co) {
 		this.co = co;
-	}
-
-	public Map<Integer, Map<String, AuditData>> getAuditData() {
-		return auditData;
-	}
-
-	public void setAuditData(Map<Integer, Map<String, AuditData>> auditData) {
-		this.auditData = auditData;
 	}
 
 	// Other helper getters for osha criteria
@@ -237,6 +232,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return false;
 	}
 
+	public List<AuditCriteriaAnswer> getAcaList() {
+		return acaList;
+	}
+	
 	public FlagColor[] getFlagList() {
 		return FlagColor.values();
 	}
