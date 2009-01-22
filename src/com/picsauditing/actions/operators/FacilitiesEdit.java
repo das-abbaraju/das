@@ -129,7 +129,7 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 				if (auditorid > 0)
 					operatorAccount.setInsuranceAuditor(new User(auditorid));
 				operatorAccountDAO.save(operatorAccount);
-				addActionMessage("Successfully modified " + operatorAccount);
+				addActionMessage("Successfully modified " + operatorAccount.getName());
 			} else {
 				throw new Exception("no button action found called " + button);
 			}

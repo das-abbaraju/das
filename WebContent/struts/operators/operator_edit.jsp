@@ -44,7 +44,6 @@
 </script>
 </head>
 <body>
-
 <s:if test="operatorAccount == null">
 	<h1>Create New <s:property value="type"/> Account</h1>
 </s:if>
@@ -65,7 +64,7 @@
 </ul>
 </div>
 </s:else>
-
+<s:include value="../actionMessages.jsp" />
 <s:form id="save" method="POST" enctype="multipart/form-data">
 <div class="buttons">
 	<input type="submit" class="positive" name="button" value="Save"/>
