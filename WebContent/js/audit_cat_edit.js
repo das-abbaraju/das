@@ -48,6 +48,7 @@ function saveComment(divId, elm) {
 
 	pars += '&auditData.comment=' + escape(elm.value);
 	
+	var divName = 'node_'+parentid+'_'+questionid;
 	startThinking({div:'thinking_' + divId, message: "Saving Comment"});
 	var myAjax = new Ajax.Updater('', 'AuditDataSaveAjax.action', 
 	{
@@ -59,7 +60,7 @@ function saveComment(divId, elm) {
 		onSuccess: function(transport) {
 			stopThinking({div:'thinking_' + divId});
 			if (transport.status == 200)
-				new Effect.Highlight($('comment_'+divId),{duration: 0.75, startcolor:'#FFFF11'});
+				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11'});
 			else
 				alert("Failed to save answer" + transport.statusText + transport.responseText);
 		}

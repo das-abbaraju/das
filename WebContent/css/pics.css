@@ -510,15 +510,15 @@ div#info {
 }
 
 div#alert {
-	border-top: 2px solid #feabab;
-	border-bottom: 2px solid #feabab;
+	border-top: 2px solid #D0AE10;
+	border-bottom: 2px solid #D0AE10;
 	padding-top: 1em;
 	padding-right: 1em;
 	padding-bottom: 1em;
 	padding-left: 5em;
 	margin-top: 10px;
 	margin-bottom: 10px;
-	background: #ffdfdf url('../images/icon-warning.gif') no-repeat 10px 10px;
+	background: #FBF2C9 url('../images/icon-warning.gif') no-repeat 10px 10px;
 	width: 86%
 }
 

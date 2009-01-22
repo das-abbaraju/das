@@ -158,53 +158,55 @@
 				title="Opens in new window (please disable your popup blocker)" />
 		</nobr>
 	</s:if>
+	
+	<s:if test="#a.verified && !#q.hasRequirementB">
+		<span class="verified">
+			Answer verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" />
+		</span>
+	</s:if>
+	<s:if test="#a.hasRequirements">
+		<br />
+		<span class="requirement">
+			<label>Requirement:</label>
+			<s:if test="#a.requirementOpen">
+				<span class="unverified">Open</span>
+			</s:if>
+			<s:elseif test="#a.wasChangedB">
+				<span class="verified">Closed on <s:date name="#a.dateVerified" format="MMM d, yyyy" /></span>
+			</s:elseif>
+		</span>
+	</s:if>
+	<s:if test="#q.showComment || mode == 'Verify'">
+		<br/>
+		<label>Comments:</label>
+		<s:textfield value="%{#a.comment}" size="30"
+			onchange="saveComment('%{#divID}', this);"/>
+	</s:if>
 </div>
 
-<s:if test="#a.hasRequirements">
-	<span class="requirement">
-		Requirement:
-		<s:if test="#a.requirementOpen">
-			<span class="unverified">Open</span>
-		</s:if>
-		<s:else>
-			<span class="verified">Closed on <s:date name="#a.dateVerified" format="MMM d, yyyy" /></span>
-		</s:else>
-		
-		<br>
-		<s:if test="#q.requirement.length() > 0">
-			<s:if test="#a.requirementOpen">
-				<div id="alert"><s:property value="#q.requirement" escape="false"/></div>
-			</s:if>
-			<s:else>
-				<s:property value="#q.requirement"/>
-			</s:else>
-		</s:if>
-	</span>
+<s:if test="#a.hasRequirements && #a.requirementOpen">
+	<br clear="all"/>
+	<div id="error"><s:property value="#q.requirement" escape="false"/></div>
 </s:if>
-<br clear="all" />
+
 <s:include value="../actionMessages.jsp" />
-	<nobr><s:div id="comment_%{#divID}" cssStyle="padding-left: 64px;">
-		<s:if test="#q.showComment || mode == 'Verify'">
-			Comments: <s:textfield value="%{#a.comment}" size="30" 
-			onchange="javascript:saveComment('%{#divID}', this);"/>
-		</s:if>
-	</s:div>
 
-	<s:if test="mode == 'Verify'">
-		<s:if test="#a.verified == true">
-			<s:set name="verifyText" value="'Unverify'" />
-			<s:set name="verifyDetailDisplay" value="'inline'" />
-		</s:if>
-		<s:else>
-			<s:set name="verifyText" value="'Verify'" />
-			<s:set name="verifyDetailDisplay" value="'none'" />
-		</s:else>
-		
-		<input id="verifyButton_<s:property value="#q.id"/>" type="submit" onclick="return verifyAnswer(<s:property value="#q.id"/>, <s:property value="#a.id"/>, '<s:property value="#parentAnswer.id"/>');"
-		value="<s:property value="#attr.verifyText"/>" />
+<s:if test="mode == 'Verify'">
+	<s:if test="#a.verified == true">
+		<s:set name="verifyText" value="'Unverify'" />
+		<s:set name="verifyDetailDisplay" value="'inline'" />
+	</s:if>
+	<s:else>
+		<s:set name="verifyText" value="'Verify'" />
+		<s:set name="verifyDetailDisplay" value="'none'" />
+	</s:else>
+	
+	<input id="verifyButton_<s:property value="#q.id"/>" type="submit" onclick="return verifyAnswer(<s:property value="#q.id"/>, <s:property value="#a.id"/>, '<s:property value="#parentAnswer.id"/>');"
+	value="<s:property value="#attr.verifyText"/>" />
 
-		<span id="verify_details_<s:property value="#q.id"/>"
-		style='display: <s:property value ="#attr.verifyDetailDisplay"/>;'
-		class="verified">Verified on <s:date name="#a.dateVerified"
-		format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" /></span>
-	</s:if></nobr>
+	<span id="verify_details_<s:property value="#q.id"/>"
+	style='display: <s:property value ="#attr.verifyDetailDisplay"/>;'
+	class="verified">Verified on <s:date name="#a.dateVerified"
+	format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" /></span>
+</s:if>
+<br clear="all"/>

@@ -176,6 +176,11 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	public YesNo getWasChanged() {
 		return wasChanged;
 	}
+	
+	@Transient
+	public boolean isWasChangedB() {
+		return YesNo.Yes.equals(wasChanged);
+	}
 
 	public void setWasChanged(YesNo wasChanged) {
 		this.wasChanged = wasChanged;

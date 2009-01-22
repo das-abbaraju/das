@@ -21,6 +21,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.picsauditing.util.Strings;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "pqfquestions")
@@ -109,6 +111,8 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	
 	@Transient
 	public boolean isHasRequirementB() {
+		if (Strings.isEmpty(requirement))
+			return false;
 		return YesNo.Yes.equals(hasRequirement);
 	}
 

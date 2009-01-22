@@ -24,12 +24,9 @@ span.question {
 	color: #111;
 }
 
-div.answer {
+#content div.answer {
 	float: left;
 	max-width: 60%;
-}
-
-span.answerDisplay {
 	font-weight: bold;
 	color: #003768;
 }

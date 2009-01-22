@@ -13,7 +13,7 @@
 	<s:if test="#q.linkUrl6.length() > 0"><a href="http://<s:property value="#q.linkUrl6"/>" target="_BLANK" title="opens in new window"><s:property value="linkText6"/></a></s:if>
 </span>
 
-<span class="answerDisplay">
+<div class="answer">
 	<s:if test="#q.questionType.startsWith('File')">
 		<s:if test="#a.id > 0 && #a.answer.length() > 0">
 			<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&answer.id=<s:property value="#a.id"/>" 
@@ -27,37 +27,33 @@
 			<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />
 		</s:if>
 	</s:else>
-	<s:if test="#a.verified">
+	
+	<s:if test="#a.verified && !#q.hasRequirementB">
 		<span class="verified">
 			Answer verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" />
 		</span>
 	</s:if>
-	<s:if test="#a.commentLength">
-		<br/><div style="font-weight:normal;color: #111;padding-left: 64px;">Comment: <span style="color: #003768;"><s:property value="#a.comment"/></span></div>
-	</s:if>
-</span>
-
-<s:if test="#a.hasRequirements && conAudit.auditType.hasRequirements">
-	<tr class="group<s:if test="#shaded">Shaded</s:if>">
-		<td class="center">Requirement</td>
-		<td>Status:
-		<s:if test="requirementOpen">
-			<span class="unverified">Open</span>
-		</s:if>
-		<s:else>
-			<span class="verified">Closed on <s:date name="dateVerified" format="MMM d, yyyy" /></span>
-		</s:else>
-		
-		<br>
-		<s:if test="requirement.length() > 0">
-			<s:if test="requirementOpen">
-				<div id="alert"><s:property value="requirement"/></div>
+	<s:if test="#a.hasRequirements">
+		<br />
+		<span class="requirement">
+			<label>Requirement:</label>
+			<s:if test="#a.requirementOpen">
+				<span class="unverified">Open</span>
 			</s:if>
-			<s:else>
-				<div id="info"><s:property value="requirement"/></div>
-			</s:else>
-		</s:if>
-		</td>
-	</tr>
+			<s:elseif test="#a.wasChangedB">
+				<span class="verified">Closed on <s:date name="#a.dateVerified" format="MMM d, yyyy" /></span>
+			</s:elseif>
+		</span>
+	</s:if>
+	<s:if test="#a.commentLength">
+		<br/>
+		<label>Comment:</label> <s:property value="#a.comment"/>
+	</s:if>
+</div>
+
+<s:if test="#a.hasRequirements && #a.requirementOpen">
+	<br clear="all"/>
+	<div id="error"><s:property value="#q.requirement" escape="false"/></div>
 </s:if>
+
 <br clear="all"/>
