@@ -46,7 +46,7 @@ public class UserSave extends UsersManage {
 			addActionMessage("Welcome Email sent to " + user.getEmail());
 		}
 
-		if ("Save".equals(button)) {
+		if ("Save".equalsIgnoreCase(button)) {
 			if (!isOK()) {
 				userDAO.clear();
 				return SUCCESS;
@@ -81,7 +81,7 @@ public class UserSave extends UsersManage {
 			user = userDAO.save(user);
 		}
 
-		if ("Remove".equals(button)) {
+		if ("Delete".equalsIgnoreCase(button)) {
 			permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
 			userDAO.remove(user);
 
