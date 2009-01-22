@@ -53,7 +53,7 @@
 		<ul id="navlist">
 			<li><a class="current"
 				href="FacilitiesEdit.action?opID=<s:property value="operatorAccount.id"/>">Edit</a></li>
-			<s:if test="!operatorAccount.isCorporate">
+			<s:if test="!operatorAccount.corporate">
 				<li><a href="AuditOperator.action?oID=<s:property value="operatorAccount.id"/>">Audits</a></li>
 			</s:if>
 			<li><a href="UsersManage.action?accountId=<s:property value="operatorAccount.id"/>">Users</a></li>
@@ -163,7 +163,7 @@
 				</fieldset>
 			<s:if test="type.equals('Operator') || !operatorAccount.corporate">
 					<fieldset class="form">
-						<legend><span>Account Names</span></legend>
+						<legend><span>Legal Additional Insured Names</span></legend>
 						<ol><div id="operator_name">
 								<s:include value="operator_names.jsp" />
 							</div>
