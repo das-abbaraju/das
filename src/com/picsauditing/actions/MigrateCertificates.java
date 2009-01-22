@@ -12,6 +12,8 @@ import org.apache.commons.io.FilenameUtils;
 
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
+import com.picsauditing.dao.AuditCategoryDAO;
+import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.CertificateDAO;
@@ -45,6 +47,9 @@ public class MigrateCertificates extends PicsActionSupport {
 	protected AuditBuilder auditBuilder = null;
 	protected AuditPercentCalculator auditPercentCalculator = null;
 
+	private AuditCategoryDataDAO auditCategoryDataDAO;
+	private AuditCategoryDAO auditCategoryDAO;
+	
 	protected static Map<String, String> auditTypeMapper = null;
 	protected static Map<String, List<Integer>> liabilityLimitQuestionIds = null;
 	protected static Map<String, List<Integer>> expirationDateQuestionIds = null;
@@ -156,7 +161,9 @@ public class MigrateCertificates extends PicsActionSupport {
 	public MigrateCertificates(CertificateDAO certDao,
 			ContractorAccountDAO contractorDao, AuditTypeDAO auditTypeDAO,
 			ContractorAuditDAO auditDao, AuditDataDAO auditDataDao,
-			ContractorAuditOperatorDAO conAuditOperatorDao, AuditBuilder auditBuilder, AuditPercentCalculator auditPercentCalculator) {
+			ContractorAuditOperatorDAO conAuditOperatorDao, AuditBuilder auditBuilder, AuditPercentCalculator auditPercentCalculator,
+			AuditCategoryDAO auditCategoryDAO, AuditCategoryDataDAO auditCategoryDataDAO
+		) {
 		this.certDao = certDao;
 		this.contractorDAO = contractorDao;
 		this.auditTypeDAO = auditTypeDAO;
@@ -165,6 +172,10 @@ public class MigrateCertificates extends PicsActionSupport {
 		this.auditDataDAO = auditDataDao;
 		this.auditBuilder = auditBuilder;
 		this.auditPercentCalculator = auditPercentCalculator;
+		this.auditCategoryDAO = auditCategoryDAO;
+		this.auditCategoryDataDAO = auditCategoryDataDAO;
+		
+		
 	}
 
 	public String execute() throws Exception {
@@ -176,7 +187,7 @@ public class MigrateCertificates extends PicsActionSupport {
 
 		keyListByContractorAndCertType(allCerts, byContractor);
 
-		certDao.clear();
+		clearDaos();
 
 		for (Integer thisContractor : byContractor.keySet()) {
 
@@ -189,9 +200,7 @@ public class MigrateCertificates extends PicsActionSupport {
 
 				migrateCerts(thisContractor, certType, certs);
 			}
-
 		}
-
 
 		return SUCCESS;
 	}
@@ -213,45 +222,46 @@ public class MigrateCertificates extends PicsActionSupport {
 			try {
 				AuditData fileQuestion = null;
 				
-				if( getFile(audit, cert).exists() ) {
+			
+				Certificate connectedCert = certDao.find(cert.getId());
 				
-					Certificate connectedCert = certDao.find(cert.getId());
-					
-					createContractorAuditOperator(connectedCert, audit);
-					
-					createLiabilityLimitAnswers(audit, connectedCert);
-					createExpirationDateAnswers(audit, connectedCert);
-					createWaiverAnswers(audit, connectedCert);
-					
-					if( connectedCert.getNamedInsured() == null || connectedCert.getNamedInsured().length() == 0 ) {
-						fileQuestion = createNonNamedFileAnswers(audit, connectedCert);
-					}
-					else {
-						AuditData namedInsured = createAdditionalInsuredAnswers(audit, connectedCert);
-						fileQuestion = createFileAnswers(audit, connectedCert, namedInsured);
-					}
-					
-					moveFile( audit, connectedCert, fileQuestion );
-		
-					AuditStatus currentStatus = audit.getAuditStatus();
-					audit.setAuditStatus(AuditStatus.Pending);
-					
-					auditBuilder.fillAuditCategories(audit);
-					auditBuilder.fillAuditOperators(audit.getContractorAccount(), audit);
-					auditPercentCalculator.percentCalculateComplete(audit);
+				createContractorAuditOperator(connectedCert, audit);
 				
-					audit.setAuditStatus(currentStatus);
-					auditDAO.save(audit);
-					
-					certDao.remove(cert.getId());
-				}					
+				createLiabilityLimitAnswers(audit, connectedCert);
+				createExpirationDateAnswers(audit, connectedCert);
+				createWaiverAnswers(audit, connectedCert);
+				
+				if( connectedCert.getNamedInsured() == null || connectedCert.getNamedInsured().length() == 0 ) {
+					fileQuestion = createNonNamedFileAnswers(audit, connectedCert);
+				}
+				else {
+					AuditData namedInsured = createAdditionalInsuredAnswers(audit, connectedCert);
+					fileQuestion = createFileAnswers(audit, connectedCert, namedInsured);
+				}
+				
+				AuditStatus currentStatus = audit.getAuditStatus();
+				audit.setAuditStatus(AuditStatus.Pending);
+				
+				auditPercentCalculator.percentCalculateComplete(audit);
+			
+				audit.setAuditStatus(currentStatus);
+				auditDAO.save(audit);
+
+				try {
+					if( getFile(audit, cert).exists() ) {
+						moveFile( audit, connectedCert, fileQuestion );
+					}
+				}
+				catch( Exception problemMovingFile ) {
+					problemMovingFile.printStackTrace();
+				}
+				
+				certDao.remove(cert.getId());
 			}
 			catch( Exception e ) {
-				System.out.println(e);
+				e.printStackTrace();
 			}
 		}
-		
-		
 		
 
 		clearDaos();
@@ -475,10 +485,20 @@ public class MigrateCertificates extends PicsActionSupport {
 	protected void createContractorAuditOperator(Certificate connectedCert,
 			ContractorAudit audit) {
 
+		
+		try {
+			
+			ContractorAuditOperator cao = conAuditOperatorDAO.find(audit.getId(), connectedCert.getOperatorAccount().getId());
+
+			if( cao != null ) return;
+		}
+		catch( Exception noResult ) {}
+		
+		
 		ContractorAuditOperator conAuditOperator = new ContractorAuditOperator();
-		conAuditOperator.setAudit(audit);
 		conAuditOperator.setNotes(connectedCert.getReason());
 		conAuditOperator.setOperator(connectedCert.getOperatorAccount());
+		conAuditOperator.setAudit(audit);
 		
 		/*
 		 * OldStatus: Approved, Expired, Pending, Rejected
@@ -506,7 +526,11 @@ public class MigrateCertificates extends PicsActionSupport {
 		conAuditOperator.setCreationDate(new Date());
 		conAuditOperator.setUpdateDate(new Date());
 
-		conAuditOperatorDAO.save(conAuditOperator);
+		try {
+			conAuditOperatorDAO.save(conAuditOperator);
+			
+		}
+		catch(Exception e) { e.printStackTrace(); } //no need to throw it because we only care that exists
 	}
 
 	protected ContractorAudit createContractorAudit(
@@ -522,7 +546,7 @@ public class MigrateCertificates extends PicsActionSupport {
 		List<ContractorAudit> audits = null;
 		ContractorAudit audit = null;
 		try {
-			audits = auditDAO.findWhere(1, "t.contractorAccount.id = " + contractor.getIdString() + " AND auditType.auditTypeID = " + auditTypes.get(0).getAuditTypeID(), "");	
+			audits = auditDAO.findWhere(1, " contractorAccount.id = " + contractor.getIdString() + " AND auditType.auditTypeID = " + auditTypes.get(0).getAuditTypeID(), "");	
 		}
 		catch( Exception weHandleThatNext ) {}
 		
@@ -627,5 +651,8 @@ public class MigrateCertificates extends PicsActionSupport {
 		auditDAO.clear();
 		conAuditOperatorDAO.clear();
 		auditDataDAO.clear();
+		auditCategoryDAO.clear();
+		auditCategoryDataDAO.clear();
+
 	}
 }
