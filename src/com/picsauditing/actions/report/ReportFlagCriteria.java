@@ -37,6 +37,21 @@ public class ReportFlagCriteria extends ReportAccount {
 		return super.runReport();
 	}
 
+	
+	protected String sanitize( String input ) {
+		
+		int blank = input.indexOf(" ");
+		if (blank > 0)
+			input = input.substring(0, blank);
+		
+		return input
+			.toLowerCase()
+			.replaceAll("'", "_apos_")
+			.replace("&", "_and_")
+			.replace("/", "_");
+		
+	}
+	
 	@Override
 	protected void buildQuery() {
 		super.buildQuery();
@@ -56,10 +71,8 @@ public class ReportFlagCriteria extends ReportAccount {
 		operatorAccount = operatorAccountDAO.find(operatorID);
 		for (AuditOperator auditOperator : operatorAccount.getAudits()) {
 			if (auditOperator.isCanSee() && auditOperator.getMinRiskLevel() > 0) {
-				String name = auditOperator.getAuditType().getAuditName().toLowerCase();
-				int blank = name.indexOf(" ");
-				if (blank > 0)
-					name = name.substring(0, blank);
+				String name = auditOperator.getAuditType().getAuditName();
+				name = sanitize( name );
 				if (auditOperator.getAuditType().getAuditTypeID() == 11) {
 					year = getYear();
 					name += year;
