@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.persistence.NoResultException;
+
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -273,6 +275,10 @@ public class AuditBuilder {
 		}
 	}
 
+	public void fillAuditOperators( Integer contractorId, Integer auditId ) {
+		fillAuditOperators( contractorDAO.find(contractorId), cAuditDAO.find(auditId));
+	}
+	
 	/**
 	 * For each audit (policy), get a list of operators who have InsureGuard and
 	 * automatically require this policy, based on riskLevel
@@ -305,13 +311,14 @@ public class AuditBuilder {
 				}
 			}
 			
-			ContractorAuditOperator cao = null;
-			for(ContractorAuditOperator cao2 : conAudit.getOperators()) {
-				if (cao2.getOperator().equals(operator)) {
-					cao = cao2;
-					debug("Found cao for " + conAudit.getAuditType().getAuditName());
-				}
-			}
+			ContractorAuditOperator cao = contractorAuditOperatorDAO.find(conAudit.getId(), operator.getId());
+
+//			for(ContractorAuditOperator cao2 : conAudit.getOperators()) {
+//				if (cao2.getOperator().equals(operator)) {
+//					cao = cao2;
+//					debug("Found cao for " + conAudit.getAuditType().getAuditName());
+//				}
+//			}
 
 			if (visible) {
 				if (required) {
@@ -326,7 +333,7 @@ public class AuditBuilder {
 						cao.setAuditColumns(user);
 						cao.setStatus(CaoStatus.Awaiting);
 						cao.setRecommendedStatus(CaoStatus.Awaiting);
-						conAudit.getOperators().add(cao);
+						//conAudit.getOperators().add(cao);  
 					}
 				} else {
 					// This cao might be required (if the operator manually requested it)
@@ -339,7 +346,7 @@ public class AuditBuilder {
 						cao.setAuditColumns(user);
 						cao.setStatus(CaoStatus.NotApplicable);
 						cao.setRecommendedStatus(CaoStatus.NotApplicable);
-						conAudit.getOperators().add(cao);
+						//conAudit.getOperators().add(cao);
 					}
 					if (CaoStatus.NotApplicable.equals(cao.getStatus())) {
 						// This operator has specifically stated they don't need this policy
@@ -363,6 +370,10 @@ public class AuditBuilder {
 		}
 	}
 
+	public void fillAuditCategories( Integer auditId ) {
+		fillAuditCategories( cAuditDAO.find(auditId ));
+	}
+	
 	/**
 	 * Determine which categories should be on a given audit and add ones that
 	 * aren't there and remove ones that shouldn't be there
@@ -382,7 +393,7 @@ public class AuditBuilder {
 				return;
 		} else {
 			// Other Audits should only consider Pending
-			if (!conAudit.getAuditStatus().isPending())
+			if (!conAudit.getAuditStatus().isPending() && conAudit.getAuditType().getClassType() == AuditTypeClass.Audit)
 				return;
 		}
 		
