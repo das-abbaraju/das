@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -150,7 +151,7 @@ public class FlagQuestionCriteria {
 				return value.equals(answer);
 			else
 				return !value.equals(answer);
-		if ("Decimal Number".equals(questionType)){
+		if ("Decimal Number".equals(questionType) || "Money".equals(questionType)){
 			float tempRate = 0;
 			float tempCutoff = 0;
 			try {
@@ -164,6 +165,19 @@ public class FlagQuestionCriteria {
 			if ("<".equals(comparison))
 					return (tempRate < tempCutoff);
 			return (tempRate == tempCutoff);
+		}
+		if( "Additional Insured".equals(questionType ) ) {
+			if( operatorAccount != null ) {
+				List<AccountName> names = getOperatorAccount().getNames();
+				
+				if( names != null && names.size() > 0 ) {
+					for( AccountName name : names ) {
+						if( name.getName().equalsIgnoreCase(answer.trim())) {
+							return true;
+						}
+					}
+				}
+			}
 		}
 		return false;
 	}
