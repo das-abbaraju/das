@@ -168,12 +168,13 @@ public class FlagCalculator2 {
 			if ((count++ % testValue) == 0) {
 				questionIDs = null;
 
+
 				operatorDAO.close();
 				contractorDAO.close();
 				conAuditDAO.close();
+				caoDAO.close();
 				auditDataDAO.close();
 				coFlagDAO.close();
-				contractorDAO.close();
 
 				System.gc();
 
@@ -233,9 +234,13 @@ public class FlagCalculator2 {
 		
 		AnswerMapByAudits answerMapByAudits = auditDataDAO.findAnswersByAudits( nonExpiredByContractor, questionIDs );
 		
-		
-		for (OperatorAccount operator : operators) {
+		//since the @Transactional annotation is on this method (and it seems for good reason), and not on the class 
+		//level, the runCalc method actually runs from within a different transaction than the transaction in which 
+		//the operator was initially loaded, which means we can't traverse it's graph.  
+		//Reloading the operator on the first line here will give us a connected operator in scope.
+		for (OperatorAccount opFromDifferentTransaction : operators) {  
 			
+			OperatorAccount operator = operatorDAO.find(opFromDifferentTransaction.getId());
 			//prune our answermapMAP for this operator (take out audits they can't see, and answers to questions they shouldn't see)
 			//also note that this uses the copy constructor, so our local variable answerMapByAUdits is not affected by pruning 
 			//on each run through the "operators" list.
