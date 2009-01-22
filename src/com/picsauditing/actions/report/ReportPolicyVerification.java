@@ -1,6 +1,11 @@
 package com.picsauditing.actions.report;
 
+import java.io.IOException;
+
+import org.apache.commons.beanutils.BasicDynaBean;
+
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
 
@@ -15,38 +20,30 @@ public class ReportPolicyVerification extends ReportContractorAudits {
 
 	@Override
 	protected void buildQuery() {
+		auditTypeClass = AuditTypeClass.Policy;
 		super.buildQuery();
-		/*
-		 * List of Submitted Policies (with the option to get Pending ones too)
-		 * where the auditID in (select auditID from CAO where caoStatus = Awaiting) audit_operator.status = Active
-		 * 
-		 * Contractor Name
-		 * Policy Type
-		 * Submitted Date
-		 * Status
-		 * 
-		 * Low priority - get the first audit off the list and forward to the AuditCat page for that audit 
-		 */
-		//showOnlyAudits = AuditTypeClass.Policy;
-
-//		sql.addField("ca.auditStatus");
-//		sql.addField("at.auditName");
-//		sql.addField("ca.auditID");
-//		sql.setType(SelectAccount.Type.Contractor);
-//		sql.addJoin("JOIN contractor_audit ca on ca.conID = a.id");
-//		sql.addJoin("JOIN audit_type at on at.auditTypeID = ca.auditTypeID");
-//		sql.addWhere("at.classType = 'Policy'");
-//		sql.addWhere("ca.auditStatus IN ('Submitted','Resubmitted')");
 		
-		SelectSQL subSelect = new SelectSQL("audit_operator ao");
-		subSelect.addField("ca.conID");
-		subSelect.addJoin("JOIN generalcontractors gc on gc.genID = ao.opID");
-		subSelect.addJoin("JOIN contractor_audit ca on ca.auditTypeID = ao.auditTypeID and ca.conID = gc.subID");
-		subSelect.addJoin("JOIN audit_type at on at.auditTypeID = ca.auditTypeID");
-		subSelect.addWhere("at.classType = 'Policy'");
+		// Only show policies that are required by operators ( that haven't decided yet
+		SelectSQL subSelect = new SelectSQL("contractor_audit_operator cao");
+		subSelect.addJoin("JOIN contractor_audit ca ON cao.auditID = ca.auditID");
+		subSelect.addJoin("JOIN audit_operator ao ON ca.auditTypeID = ao.auditTypeID AND cao.opID = ao.opID");
+		subSelect.addField("ca.auditID");
 		subSelect.addWhere("ao.canSee = 1");
 		subSelect.addWhere("ao.requiredForFlag in ('Amber','Red')");
-		subSelect.addWhere("ca.auditStatus IN ('Submitted','Resubmitted') and ao.requiredAuditStatus = 'Active'");
-		sql.addWhere("a.id IN (" + subSelect.toString() + ")");
+		subSelect.addWhere("ao.requiredAuditStatus = 'Active'");
+		subSelect.addWhere("cao.status = 'Awaiting'");
+		sql.addWhere("ca.auditID IN (" + subSelect.toString() + ")");
+	}
+	
+	@Override
+	protected String returnResult() throws IOException {
+		if ("showNext".equals(button)) {
+			if (data != null && data.size() > 0) {
+				BasicDynaBean firstRow = data.get(0);
+				// TODO forward to the AuditCat page for that audit
+				return SUCCESS;
+			}
+		}
+		return super.returnResult();
 	}
 }

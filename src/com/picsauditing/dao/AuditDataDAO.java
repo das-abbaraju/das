@@ -213,7 +213,7 @@ public class AuditDataDAO extends PicsDAO {
 	}
 	
 	public AnswerMapByAudits findAnswersByAudits(List<ContractorAudit> audits, List<Integer> questionIds) {
-		if (questionIds.size() == 0)
+		if (questionIds != null && questionIds.size() == 0)
 			return null;
 		
 		List<Integer> auditIds = new Vector<Integer>();
@@ -222,8 +222,16 @@ public class AuditDataDAO extends PicsDAO {
 			auditIds.add(audit.getId());
 		}
 		
-		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id in (" + glue( auditIds ) + " ) and question.id IN ("
+		Query query = null;
+		
+		if( questionIds != null && questionIds.size() > 0 ) {
+			query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id in (" + glue( auditIds ) + " ) and question.id IN ("
 				+ glue(questionIds) + ") ");
+		}
+		else {
+			query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id in (" + glue( auditIds ) + " ) ");
+			
+		}
 		
 		AnswerMapByAudits response = new AnswerMapByAudits();
 		List<AuditData> results = query.getResultList();

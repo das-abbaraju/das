@@ -24,7 +24,6 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportContractorAudits extends ReportAccount {
-	//boolean showOnlyAudits = true;
 	protected AuditTypeClass auditTypeClass = AuditTypeClass.Audit;
 	private ReportFilterAudit filter = new ReportFilterAudit();
 

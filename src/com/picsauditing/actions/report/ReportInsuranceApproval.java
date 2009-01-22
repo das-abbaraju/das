@@ -15,6 +15,7 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AccountName;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.AnswerMap;
 
@@ -51,21 +52,21 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 
 	@Override
 	public void buildQuery() {
-		//showOnlyAudits = false;
+		auditTypeClass = AuditTypeClass.Policy;
 		super.buildQuery();
+		
 		sql.addField("ca.expiresDate");
 		sql.addField("ao.name as operatorName");
 		sql.addField("cao.status as caoStatus");
 		sql.addField("cao.notes as caoNotes");
 		sql.addField("cao.id as caoId");
 		sql.addField("cao.recommendedStatus as caoRecommendedStatus");
-		sql
-				.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.auditID");
+		sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.auditID");
+		sql.addJoin("JOIN audit_operator a_op on a_op.auditTypeID = atype.auditTypeID AND a_op.opID = cao.opID");
 
 		sql.addJoin("JOIN accounts ao on ao.id = cao.opID");
 		//sql.addWhere("ca.auditStatus IN ('Submitted','Active')");
 		// sql.addWhere("cao.status = 'Pending'");
-		sql.addWhere("atype.classType = 'Policy'");
 		sql.addWhere("a.active = 'Y'");
 
 		if (getUser().getAccount().isOperator()) {

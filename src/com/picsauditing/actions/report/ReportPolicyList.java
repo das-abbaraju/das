@@ -1,6 +1,7 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 
 @SuppressWarnings("serial")
 public class ReportPolicyList extends ReportContractorAudits {
@@ -12,7 +13,7 @@ public class ReportPolicyList extends ReportContractorAudits {
 
 	@Override
 	public void buildQuery() {
-		//showOnlyAudits = false;
+		auditTypeClass = AuditTypeClass.Policy;
 
 		super.buildQuery();
 
