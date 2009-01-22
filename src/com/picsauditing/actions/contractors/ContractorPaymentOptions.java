@@ -50,6 +50,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		if (paymentMethod == null)
 			paymentMethod = creditCard;
+		if (contractor.getPaymentMethodStatus() == null)
+			contractor.setPaymentMethodStatus("Missing");
 
 		if (!paymentMethod.equals(contractor.getPaymentMethod())) {
 			// We have a new payment method, reset the status

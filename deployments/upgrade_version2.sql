@@ -27,18 +27,16 @@ alter table `audit_type`
 
 alter table `contractor_info` 
 	add column `viewedFacilities` datetime   NULL after `oqEmployees`, 
-	add column `paymentMethod` varchar(20)  COLLATE latin1_swedish_ci NULL after `viewedFacilities`, 
+	add column `paymentMethod` varchar(20)  COLLATE latin1_swedish_ci NULL DEFAULT 'Credit Card' after `viewedFacilities`, 
 	add column `paymentMethodStatus` varchar(20)  COLLATE latin1_swedish_ci NULL after `paymentMethod`;
 
-rename table `certificates` to `certificates_old`;
+create table `certificates_old` as
+select * from `certificates`;
 
-
-update audit_type
-set mustVerify = 1
+update audit_type set mustVerify = 1
 where auditTypeID in (1,11) or classType = 'Policy';
 
-update audit_type
-set hasRequirements = 0
+update audit_type set hasRequirements = 0
 where mustVerify = 1;
 
 update pqfquestions set questionType = 'Additional Insured' where id = 2262;
@@ -54,8 +52,12 @@ where templateID = 10;
  * remove the verification permissions for everyone who isn't pics
  */
 delete from useraccess 
-where userid in ( select u.id from users u where u.accountid != 1100 )
-and accesstype = 'InsuranceVerification'
+where userid in ( select u.id from users u where u.accountid != 1100 or u.id = 1555 )
+and accesstype = 'InsuranceVerification';
+
+delete from useraccess 
+where userid in ( select u.id from users u where u.accountid = 1100 and u.id != 1555 )
+and accesstype = 'InsuranceApproval';
 
 
 /** Make sure these are set correctly **/
