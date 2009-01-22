@@ -2,10 +2,8 @@ package com.picsauditing.PICS;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
@@ -528,17 +526,19 @@ public class FlagCalculatorSingle {
 					}
 
 					// Update the CAO Recommended Status
-					if (criteriaColor.equals(FlagColor.Red))
-						caoStatus = CaoStatus.Rejected;
-					if (!caoStatus.equals(CaoStatus.Rejected) && criteriaColor.equals(FlagColor.Green))
-						caoStatus = CaoStatus.Approved;
-					
+					if( criteriaColor != null ) {
+						if (criteriaColor.equals(FlagColor.Red))
+							return CaoStatus.Rejected;
+						if (!caoStatus.equals(CaoStatus.Rejected) && criteriaColor.equals(FlagColor.Green))
+							caoStatus = CaoStatus.Approved;
+					}
+						
 				}
 			} // if criteria.isChecked...
 		} // for
 		
 		if( caoStatus == null ) {
-			caoStatus = CaoStatus.Approved;
+			caoStatus = CaoStatus.Awaiting;
 		}
 		
 		return caoStatus;
