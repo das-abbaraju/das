@@ -11,9 +11,14 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.CaoStatus;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -36,14 +41,17 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected FlagColor forceFlag;
 	protected boolean overrideAll = false;
 	protected boolean deleteAll = false;
+	
+	private ContractorAuditOperatorDAO caoDAO;
 
 	public ContractorFlagAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorOperatorDAO contractorOperatorDao, AuditDataDAO auditDataDAO,
-			ContractorOperatorFlagDAO contractorOperatorFlagDAO) {
+			ContractorOperatorFlagDAO contractorOperatorFlagDAO, ContractorAuditOperatorDAO caoDAO) {
 		super(accountDao, auditDao);
 		this.contractorOperatorDao = contractorOperatorDao;
 		this.auditDataDAO = auditDataDAO;
 		this.coFlagDao = contractorOperatorFlagDAO;
+		this.caoDAO = caoDAO;
 	}
 
 	public String execute() throws Exception {
@@ -134,8 +142,21 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		}
 
 
+		answerMapByAudits = auditDataDAO.findAnswersByAudits( contractor.getAudits(), null );
 		calculator.setAnswerMapByAudits(new AnswerMapByAudits(answerMapByAudits, co.getOperatorAccount()));
 
+		for (ContractorAudit audit : answerMapByAudits.getAuditSet() ) {
+			if (audit.getAuditType().getClassType() == AuditTypeClass.Policy) {
+				for (ContractorAuditOperator cao : audit.getOperators()) {
+					if (cao.getStatus() == CaoStatus.Awaiting) {
+						CaoStatus recommendedStatus = calculator
+								.calculateCaoRecommendedStatus(cao);
+						cao.setRecommendedStatus(recommendedStatus);
+						caoDAO.save(cao);
+					}
+				}
+			}
+		}
 		
 		FlagColor newColor = calculator.calculate();
 		if (newColor != null && !newColor.equals(co.getFlag().getFlagColor()))
