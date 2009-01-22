@@ -34,4 +34,19 @@ public enum FlagColor {
 			return "<img src=\"images/icon_"+this.toString().toLowerCase()+
 				"Flag.gif\" width=\"10\" height=\"12\" border=\"0\" title=\""+this.toString()+"\" />";
 	}
+	
+	
+	public static FlagColor getWorseColor( FlagColor color1, FlagColor color2) {
+		if (color2 == null)
+			return color1;
+
+		if (color1 == null) {
+			System.out.println("WARNING: oldColor == null");
+			return color2;
+		}
+
+		if (color2.ordinal() > color1.ordinal())
+			color1 = color2;
+		return color1;
+	}
 }
