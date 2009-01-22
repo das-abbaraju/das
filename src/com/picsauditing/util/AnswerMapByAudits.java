@@ -137,28 +137,32 @@ public class AnswerMapByAudits {
 			}
 		}
 
-		if (auditOperator.getRequiredAuditStatus() != null
-				&& auditOperator.getRequiredAuditStatus() == AuditStatus.Submitted
-				&& audit.getAuditStatus() == AuditStatus.Submitted) {
-			score = 100;
-		} else if (audit.getAuditStatus() == AuditStatus.Active)
-			score = 90;
-		else if (audit.getAuditStatus() == AuditStatus.Resubmitted)
-			score = 80;
-		else if (audit.getAuditStatus() == AuditStatus.Exempt)
-			score = 70;
-		else if (auditOperator.getRequiredAuditStatus() != null
-				&& auditOperator.getRequiredAuditStatus() == AuditStatus.Submitted
-				&& audit.getAuditStatus() != AuditStatus.Submitted) {
-			score = 60;
-		} else if (audit.getAuditStatus() == AuditStatus.Pending)
-			score = 50;
-
-		if (audit.getRequestingOpAccount() != null
-				&& audit.getRequestingOpAccount().equals(operator)) {
-			score += 101;
+		if( auditOperator != null ) {
+			if (auditOperator.getRequiredAuditStatus() != null
+					&& auditOperator.getRequiredAuditStatus() == AuditStatus.Submitted
+					&& audit.getAuditStatus() == AuditStatus.Submitted) {
+				score = 100;
+			} else if (audit.getAuditStatus() == AuditStatus.Active)
+				score = 90;
+			else if (audit.getAuditStatus() == AuditStatus.Resubmitted)
+				score = 80;
+			else if (audit.getAuditStatus() == AuditStatus.Exempt)
+				score = 70;
+			else if (auditOperator.getRequiredAuditStatus() != null
+					&& auditOperator.getRequiredAuditStatus() == AuditStatus.Submitted
+					&& audit.getAuditStatus() != AuditStatus.Submitted) {
+				score = 60;
+			} else if (audit.getAuditStatus() == AuditStatus.Pending)
+				score = 50;
+	
+			if (audit.getRequestingOpAccount() != null
+					&& audit.getRequestingOpAccount().equals(operator)) {
+				score += 101;
+			}
 		}
-
+		else {
+			score = 1;
+		}
 		return score;
 	}
 
