@@ -1,15 +1,17 @@
 package com.picsauditing.PICS;
 
 import java.util.List;
+import java.util.Vector;
 
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.util.AnswerMapByAudits;
 
 public class AuditCriteriaAnswerBuilder {
 	
-	protected AnswerMapByAudits answerMapByAudits = null;
-	protected List<FlagQuestionCriteria> criteria = null;
+	private AnswerMapByAudits answerMapByAudits = null;
+	private List<FlagQuestionCriteria> criteria = null;
 	
+	private List<AuditCriteriaAnswer> auditCriteriaAnswers = null;
 	
 	public AuditCriteriaAnswerBuilder( AnswerMapByAudits answerMapByAudits, List<FlagQuestionCriteria> criteria) {
 		this.answerMapByAudits = answerMapByAudits;
@@ -17,9 +19,27 @@ public class AuditCriteriaAnswerBuilder {
 	}
 	
 	
-	public List<AuditCriteriaAnswer> getFlagCalculationUnits() {
+	public List<AuditCriteriaAnswer> getAuditCriteriaAnswers() {
+	
+		if( auditCriteriaAnswers == null ) {
+			build();
+		}
 		
-		return null;
+		return auditCriteriaAnswers;
+	}
+	
+	
+	private void build() {
+		
+		auditCriteriaAnswers = new Vector<AuditCriteriaAnswer>();
 	}
 
+
+	public AnswerMapByAudits getAnswerMapByAudits() {
+		return answerMapByAudits;
+	}
+
+	public List<FlagQuestionCriteria> getCriteria() {
+		return criteria;
+	}
 }
