@@ -128,11 +128,11 @@
 	</s:if>
 	<s:if test="#q.questionType == 'Money'">
 		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="19" 
-			onchange="saveAnswer('%{#divID}', this);" />
+			onchange="saveAnswer('%{#divID}', this);" cssClass="number" />
 	</s:if>
 	<s:if test="#q.questionType == 'Decimal Number'">
 		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="19" 
-			onchange="saveAnswer('%{#divID}', this)" />
+			onchange="saveAnswer('%{#divID}', this)" cssClass="number" />
 	</s:if>
 	<s:if test="#q.questionType == 'Service'">
 		<nobr><s:checkbox fieldValue="C" value="%{#a.answer.indexOf('C') != -1}" name="answer%{#divID}_C" 
@@ -173,7 +173,7 @@
 		<br>
 		<s:if test="#q.requirement.length() > 0">
 			<s:if test="#a.requirementOpen">
-				<div id="alert"><s:property value="#q.requirement"/></div>
+				<div id="alert"><s:property value="#q.requirement" escape="false"/></div>
 			</s:if>
 			<s:else>
 				<s:property value="#q.requirement"/>

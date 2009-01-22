@@ -1,5 +1,8 @@
 package com.picsauditing.util;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,5 +84,17 @@ public class StringsTest extends TestCase {
 		for (Note note : notes) {
 			System.out.println(note.getSummary());
 		}
+	}
+	
+	@Test
+	public void testParseFloat() {
+		NumberFormat format = new DecimalFormat("#,##0"); 
+		
+		String answer = "1234567890";
+		
+		BigDecimal value = new BigDecimal(answer);
+		String valueString = format.format(value);
+		
+		assertEquals("1,234,567,890", valueString);
 	}
 }

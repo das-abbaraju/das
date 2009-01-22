@@ -1,5 +1,6 @@
 package com.picsauditing.actions.audits;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -23,6 +24,7 @@ import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.Strings;
 
 public class AuditDataSave extends AuditActionSupport {
 	private static final long serialVersionUID = 1103112846482868309L;
@@ -251,54 +253,46 @@ public class AuditDataSave extends AuditActionSupport {
 		return list;
 	}
 	
-	public boolean validateNumber(String answer) {
-		if (answer == null || answer.length() == 0)
-            return false;
-        for (int i = 0; i < answer.length(); i++) {
-            if (Character.isDigit(answer.charAt(i)) 
-            		|| (answer.charAt(i) == '.') 
-            		|| (answer.charAt(i) == ',') 
-            		|| (answer.charAt(i) == '-'))
-            	return true;
-        }
-        return false;
-	}
-	
-	public boolean isValidDate(String answer) {
-		SimpleDateFormat s = new SimpleDateFormat("MM/dd/yyyy");
-		Date newDate = DateBean.parseDate(answer);
-		
-		if(newDate != null && s.format(newDate).equals(answer))
-			return true;
-	
-		return false;
-	}
-	
 	public boolean checkAnswerFormat(AuditData auditData, AuditData databaseCopy) {
+		// Null or blank answers are always OK
+		String answer = auditData.getAnswer();
+		if (Strings.isEmpty(answer))
+			return true;
+		
 		if(databaseCopy == null)
 			databaseCopy = auditData;
+		String questionType = databaseCopy.getQuestion().getQuestionType();
 		
-		if("Money".equals(databaseCopy.getQuestion().getQuestionType()) || "Decimal Number".equals(databaseCopy.getQuestion().getQuestionType())) {
-			if(!validateNumber(auditData.getAnswer())) {
-				addActionError("The input must be a number.");
+		if("Money".equals(questionType) 
+				|| "Decimal Number".equals(questionType)) {
+			// Strip the commas, just in case they are in the wrong place
+			// We add them back in later
+			answer = answer.replace(",", "");
+			
+			boolean hasBadChar = false;
+	        for (int i = 0; i < answer.length(); i++) {
+	        	char c = answer.charAt(i);
+	            if (!Character.isDigit(c) 
+	            		&& (c != '.') 
+	            		&& (c != '-'))
+	            	hasBadChar = true;
+	        }
+
+			if(hasBadChar) {
+				addActionError("The answer must be a number.");
 				return false;
 			}
-			else if("Decimal Number".equals(databaseCopy.getQuestion().getQuestionType())) {
-				float value = Float.parseFloat(auditData.getAnswer());
-				NumberFormat format = new DecimalFormat("#,##0.000"); 
-				auditData.setAnswer(format.format(value));
-			}
-			else
-			{
-				float value = Float.parseFloat(auditData.getAnswer());
-				NumberFormat format = new DecimalFormat("#,##0"); 
-				auditData.setAnswer(format.format(value));
-			}
+			
+			NumberFormat format = new DecimalFormat("#,##0"); 
+			if("Decimal Number".equals(questionType))
+				format = new DecimalFormat("#,##0.000");
+			BigDecimal value = new BigDecimal(answer);
+			auditData.setAnswer(format.format(value));
 		}
 		
 		if("Date".equals(databaseCopy.getQuestion().getQuestionType())) {
 			SimpleDateFormat s = new SimpleDateFormat("MM/dd/yyyy");
-			Date newDate = DateBean.parseDate(auditData.getAnswer());
+			Date newDate = DateBean.parseDate(answer);
 			
 			if (newDate == null) {
 				addActionError("Invalid Date Format");

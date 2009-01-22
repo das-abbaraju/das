@@ -65,8 +65,9 @@ div.thinking {
 	width: 100%;
 }
 
-input.hidden {
-	display: none;
+input.number {
+	text-align: right;
+	padding-right: 10px;
 }
 
 span.verified {
