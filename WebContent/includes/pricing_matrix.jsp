@@ -1,46 +1,43 @@
 <%@page import="com.picsauditing.PICS.BillContractor"%>
-<%
-com.picsauditing.util.ColorAlternater color = new com.picsauditing.util.ColorAlternater();
-%>
-<table border="0" cellspacing="1" cellpadding="1">
-	<tr class="whiteTitle">
-		<td colspan="3" bgcolor="#993300" align="center">PICS Annual Membership Price</td>
+<h2>PICS Annual Membership Price</h2>
+<table class="report">
+	<thead>
+		<tr>
+			<td>Facilities</td>
+			<td>Audited</td>
+			<td>PQF-Only</td>
+		</tr>	
+	</thead>
+	<tr>
+		<td>1</td>
+		<td>$<%=BillContractor.price1Op%></td>
+		<td>$99</td>
 	</tr>
-	<tr class="whiteTitle">
-		<td bgcolor="#993300" align="center">Facilities</td>
-		<td bgcolor="#003366" align="center">Audited</td>
-		<td bgcolor="#003366" align="center"><nobr>PQF-Only</nobr></td>
+	<tr>
+		<td>2-4</td>
+		<td>$<%=BillContractor.price2Ops%></td>
+		<td>$99</td>
 	</tr>
-	<tr class=blueMain <%=color.nextBgColor()%>>
-		<td class="center">1</td>
-		<td class="money">$<%=BillContractor.price1Op%></td>
-		<td class="money">$99</td>
+	<tr>
+		<td>5-8</td>
+		<td>$<%=BillContractor.price5Ops%></td>
+		<td>$99</td>
 	</tr>
-	<tr class=blueMain <%=color.nextBgColor()%>>
-		<td class="center">2-4</td>
-		<td class="money">$<%=BillContractor.price2Ops%></td>
-		<td class="money">$99</td>
+	<tr>
+		<td>9-12</td>
+		<td>$<%=BillContractor.price9Ops%></td>
+		<td>$99</td>
 	</tr>
-	<tr class=blueMain <%=color.nextBgColor()%>>
-		<td class="center">5-8</td>
-		<td class="money">$<%=BillContractor.price5Ops%></td>
-		<td class="money">$99</td>
+	<tr>
+		<td>13-19</td>
+		<td>$<%=BillContractor.price13Ops%></td>
+		<td>$99</td>
 	</tr>
-	<tr class=blueMain <%=color.nextBgColor()%>>
-		<td class="center">9-12</td>
-		<td class="money">$<%=BillContractor.price9Ops%></td>
-		<td class="money">$99</td>
-	</tr>
-	<tr class=blueMain <%=color.nextBgColor()%>>
-		<td class="center">13-19</td>
-		<td class="money">$<%=BillContractor.price13Ops%></td>
-		<td class="money">$99</td>
-	</tr>
-	<tr class=blueMain <%=color.nextBgColor()%>>
-		<td class="center">20+</td>
-		<td class="money">$<%=BillContractor.priceFull%></td>
-		<td class="money">$99</td>
+	<tr>
+		<td>20+</td>
+		<td>$<%=BillContractor.priceFull%></td>
+		<td>$99</td>
 	</tr>
 </table>
-<p class="redMain">* There is an account activation fee of $99 for new account registration, and $199 for reactivation</p>
 
+<p class="redMain">* There is an account activation fee of $99 for new account registration, and $199 for reactivation</p>
