@@ -38,18 +38,14 @@ public class ConAuditList extends ContractorActionSupport {
 
 		for (ContractorAudit contractorAudit : getAudits()) {
 			// Only show Insurance policies or audits
-			if (!contractorAudit.getAuditType().isAnnualAddendum()) {
-				if (contractorAudit.getAuditType().getClassType().equals(auditClass)) {
-					if (contractorAudit.getAuditStatus().isPendingSubmitted())
-						upComingAudits.add(contractorAudit);
-					else if (contractorAudit.getAuditStatus().isActiveResubmittedExempt())
-						currentAudits.add(contractorAudit);
-					else if (contractorAudit.getAuditStatus().equals(AuditStatus.Expired))
-						expiredAudits.add(contractorAudit);
-					else {
-						// There shouldn't be any others
-					}
-				}
+			if (contractorAudit.getAuditStatus().isPendingSubmitted())
+				upComingAudits.add(contractorAudit);
+			else if (contractorAudit.getAuditStatus().isActiveResubmittedExempt())
+				currentAudits.add(contractorAudit);
+			else if (contractorAudit.getAuditStatus().equals(AuditStatus.Expired))
+				expiredAudits.add(contractorAudit);
+			else {
+				// There shouldn't be any others
 			}
 		}
 
@@ -91,7 +87,7 @@ public class ConAuditList extends ContractorActionSupport {
 	public List<AuditType> getAuditTypeName() {
 		return auditTypeList;
 	}
-	
+
 	public int getSelectedAudit() {
 		return selectedAudit;
 	}
