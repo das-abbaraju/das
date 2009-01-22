@@ -184,7 +184,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getTrade())) {
 			String tradeList = Strings.implode(f.getTrade(), ",");
 			String answerFilter = "";
-			if (filterOn(f.getPerformedBy(), ReportFilterContractor.DEFAULT_PERFORMED_BY))
+			if (!filterOn(f.getPerformedBy(), ReportFilterContractor.DEFAULT_PERFORMED_BY))
 				answerFilter = "_%";
 			else {
 				if ("Sub Contracted".equals(f.getPerformedBy()))
