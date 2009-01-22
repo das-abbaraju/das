@@ -33,17 +33,14 @@ public class AuditCriteriaAnswer {
 
 	
 	public FlagColor getResultColor() {
-		if (resultColor == null) {
-			calculate();
-		}
-
-		return resultColor;
+		return getResultColor(false);
 	}
 
-	private void calculate() {
+	public FlagColor getResultColor(boolean recalculate) {
+		if (!recalculate && resultColor != null)
+			return resultColor;
 
-		FlagColor response = null;
-		
+		resultColor = FlagColor.Green;
 		for( FlagColor currentColor : criteriaMap.keySet() ) {
 			
 			FlagQuestionCriteria criteria = criteriaMap.get(currentColor);
@@ -62,13 +59,11 @@ public class AuditCriteriaAnswer {
 				}
 	
 				if (isFlagged) {
-					response = FlagColor.getWorseColor(response, criteria.getFlagColor());
-				} else {
-					response = FlagColor.Green;
+					resultColor = FlagColor.getWorseColor(resultColor, criteria.getFlagColor());
 				}
 			}
 		}
-		resultColor = response;
+		return resultColor;
 	}
 
 	
