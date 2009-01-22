@@ -46,16 +46,7 @@ public class AuditDataSave extends AuditActionSupport {
 	}
 
 	public String execute() throws Exception {
-		if ("testTuple".equals(button)) {
-			AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
-			auditData.setQuestion(question);
-			
-			List<Integer> questionIds = new ArrayList<Integer>();
-			questionIds.add(auditData.getQuestion().getId());
-			answerMap = auditDataDao.findAnswers(auditID, questionIds);
-			return "tuple";
-		}
-
+		
 		if ("removeTuple".equals(button)) {
 			try {
 				auditDataDao.remove(auditData.getId());
@@ -142,6 +133,9 @@ public class AuditDataSave extends AuditActionSupport {
 			
 			auditID = auditData.getAudit().getId();
 			auditData.setAuditColumns(getUser());
+			if ("reload".equals(button)) {
+				return SUCCESS;
+			}
 			auditData = auditDataDao.save(auditData);
 			
 			

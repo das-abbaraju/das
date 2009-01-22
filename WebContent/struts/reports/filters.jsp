@@ -361,10 +361,10 @@
 	
 	<s:if test="filter.showAuditFor">
 		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_auditFor'); return false;">Audit For
+			onclick="toggleBox('form1_auditFor'); return false;">For Year
 		</a> = <span id="form1_auditFor_query">ALL</span><br />
 		<span id="form1_auditFor_select" style="display: none"
-			class="clearLink"> <s:select id="form1_auditFor" list="{2001,2002,2003,2004,2005,2006,2007,2008}"
+			class="clearLink"> <s:select id="form1_auditFor" list="#{'2008':'2008','2007':'2007','2006':'2006','2005':'2005','2004':'2004','2003':'2003','2002':'2002','2001':'2001'}"
 			cssClass="forms" name="filter.auditFor" multiple="true" size="5" />
 		<script type="text/javascript">updateQuery('form1_auditFor');</script>
 		<br />

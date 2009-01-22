@@ -13,14 +13,15 @@
 <script type="text/javascript">
 function closePage() {
 	try {
-		opener.reloadQuestion('<s:property value="answer.id"/>', <s:property value="answer.question.id"/>, '<s:property value="answer.parentAnswer.id"/>');
+		opener.reloadQuestion('<s:property value="divId"/>', '<s:property value="answer.id"/>');
 		opener.focus();
 	} catch(err) {}
+	self.close();
 }
 </script>
 
 </head>
-<body onunload="closePage()">
+<body>
 <br />
 <div id="main">
 <div id="bodyholder">
@@ -39,11 +40,12 @@ function closePage() {
 	value="answer.question.question" /></div>
 <s:form enctype="multipart/form-data" method="POST">
 	<s:hidden name="auditID" />
+	<s:hidden name="divId" />
 	<s:hidden name="answer.question.id" />
 	<s:hidden name="answer.parentAnswer.id" />
 	<br />
 	<s:file name="file" size="50"></s:file>
-	<div class="buttons"><a href="javascript: self.close();">Close
+	<div class="buttons"><a href="javascript: closePage();">Close
 	and Return to Form</a> <s:if test="file != null && file.exists()">
 		<button class="negative" name="button" value="Delete" type="submit"
 			onclick="return confirm('Are you sure you want to delete this file?');">Delete

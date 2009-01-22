@@ -53,7 +53,7 @@
 
 <br clear="all"/>
 <s:if test="mode == 'Edit'">
-	<div class="requiredLegend">Starred questions are required</div>
+	<div class="requiredLegend">Starred questions (if any) are required</div>
 </s:if>
 <s:iterator value="categories">
 	<s:if test="catDataID == id || (catDataID == 0 && appliesB)">
@@ -91,20 +91,29 @@
 									<s:else>
 										<!-- Single Leaf Question -->
 										<s:set name="a" value="answerMap.get(#q.id)" />
-										<s:if test="#q.isGroupedWithPrevious.toString() == 'No'">
-											<s:set name="shaded" value="!#shaded" scope="action"/>
+										<s:set name="visible" value="#q.visible" />
+										<s:if test="onlyReq && !#a.hasRequirements">
+											<s:set name="visible" value="false" />
 										</s:if>
-										
-										<s:if test="#a.parentAnswer != null">
-											<s:set name="paid" value="#a.parentAnswer.id"/>
+										<s:if test="!viewBlanks && (#a == null || #a.answer == null || #a.answer.length() == 0)">
+											<s:set name="visible" value="false" />
 										</s:if>
-										<s:else>
-											<s:set name="paid" value="0"/>
-										</s:else>
-										
-										<div id="node_<s:property value="#attr.paid"/>_<s:property value="#q.id"/>" class="question <s:if test="#shaded">shaded</s:if>">
-											<s:include value="audit_cat_question.jsp"></s:include>
-										</div>
+										<s:if test="#visible">
+											<s:if test="#q.isGroupedWithPrevious.toString() == 'No'">
+												<s:set name="shaded" value="!#shaded" scope="action"/>
+											</s:if>
+	
+											<s:if test="#a.parentAnswer != null">
+												<s:set name="paid" value="#a.parentAnswer.id"/>
+											</s:if>
+											<s:else>
+												<s:set name="paid" value="0"/>
+											</s:else>
+											
+											<div id="node_<s:property value="#attr.paid"/>_<s:property value="#q.id"/>" class="question <s:if test="#shaded">shaded</s:if>">
+												<s:include value="audit_cat_question.jsp"></s:include>
+											</div>
+										</s:if>
 									</s:else>
 								</s:if>
 							</s:if>

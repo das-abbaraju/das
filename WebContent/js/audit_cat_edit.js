@@ -144,6 +144,42 @@ function saveAnswer(divId, elm) {
 	return true;
 }
 
+function reloadQuestion(divId, answerid) {
+	if (catDataID == 0) return;
+	
+	var	questionid = $(divId + '_questionID').value;
+	var	parentid = $(divId + '_parentAnswerID').value;
+	var	allowMultiple = $(divId + '_multiple').value;
+
+	var divName = 'node_'+parentid+'_'+questionid;
+	var pars = 'button=reload&catDataID='+catDataID+'&auditData.audit.id='+auditID+'&mode='+mode;
+
+	if (answerid > 0) {
+		pars += '&auditData.id='+answerid;
+		if (allowMultiple == 'true')
+			divName = 'node_'+answerid+'_'+questionid;
+	} else {
+		pars += '&auditData.question.id=' + questionid;
+		if (parentid > 0)
+			pars += '&auditData.parentAnswer.id=' + parentid;
+	}
+	
+	startThinking({div:'thinking_' + divId, message: "Saving Answer"});
+	var myAjax = new Ajax.Updater(divName, 'AuditDataSaveAjax.action', 
+	{
+		method: 'post', 
+		parameters: pars,
+		onException: function(request, exception) {
+			alert(exception.message);
+		},
+		onSuccess: function(transport) {
+			new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11'});
+		}
+	});
+	return true;
+
+}
+
 function addTuple(questionid) {
 	var elm = $('answerq'+questionid);
 	var thevalue = escape(elm.value);
@@ -180,29 +216,14 @@ function removeTuple(answerid) {
 	});
 }
 
-function showFileUpload(answerid, questionid, parentid) {
+function showFileUpload(answerid, questionid, parentid, divId) {
 	if (parentid == null || parentid == '')
 		parentid = 0;
-		
-	url = 'AuditDataUpload.action?auditID='+auditID+'&answer.question.id=' + questionid+'&answer.parentAnswer.id=' + parentid;
+	
+	url = 'AuditDataUpload.action?auditID='+auditID+'&answer.question.id=' + questionid+'&answer.parentAnswer.id=' + parentid + '&divId=' + divId;
 	title = 'Upload';
 	pars = 'scrollbars=yes,resizable=yes,width=650,height=450,toolbar=0,directories=0,menubar=0';
 	fileUpload = window.open(url,title,pars);
 	fileUpload.focus();
 }
 
-function reloadQuestion(answerid, questionid, parentid) {
-	if (parentid == null || parentid == '')
-		parentid = 0;
-	var pars = 'auditID='+auditID+'&answer.question.id=' + questionid+'&answer.parentAnswer.id=' + parentid;
-	var divName = 'node_'+parentid+'_'+questionid;
-	
-	var myAjax = new Ajax.Updater(divName,'ReloadQuestionAjax.action',
-	{
-		method: 'post', 
-		parameters: pars,
-		onSuccess: function(transport) {
-			new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#F3F3F3'});
-		}
-	});
-}

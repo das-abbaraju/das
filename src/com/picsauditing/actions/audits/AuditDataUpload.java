@@ -24,6 +24,7 @@ public class AuditDataUpload extends AuditActionSupport {
 
 	protected AuditQuestionDAO questionDAO;
 
+	private String divId;
 	private AuditData answer;
 	private File file;
 	protected String fileContentType = null;
@@ -50,6 +51,7 @@ public class AuditDataUpload extends AuditActionSupport {
 
 		int dataID = answer.getId();
 		int questionID = 0;
+		int parentAnswerID = 0;
 		if (answer.getQuestion() != null)
 			questionID = answer.getQuestion().getId();
 
@@ -60,7 +62,6 @@ public class AuditDataUpload extends AuditActionSupport {
 				answer = auditDataDao.find(dataID);
 			else {
 				int auditID = conAudit.getId();
-				int parentAnswerID = 0;
 				if (answer.getParentAnswer() != null)
 					parentAnswerID = answer.getParentAnswer().getId();
 	
@@ -68,11 +69,15 @@ public class AuditDataUpload extends AuditActionSupport {
 			}
 		} catch (NoResultException notReallyAProblem) {
 		}
-							
+		
 		if (answer == null) {
 			dataID = 0;
 			answer = new AuditData();
 			answer.setAudit(conAudit);
+			if (parentAnswerID > 0) {
+				answer.setParentAnswer(new AuditData());
+				answer.getParentAnswer().setId(parentAnswerID);
+			}
 			AuditQuestion question = null;
 			if (questionID > 0)
 				question = questionDAO.find(questionID);
@@ -215,4 +220,13 @@ public class AuditDataUpload extends AuditActionSupport {
 		return FileUtils.size(file);
 	}
 
+	public String getDivId() {
+		return divId;
+	}
+
+	public void setDivId(String divId) {
+		this.divId = divId;
+	}
+
+	
 }

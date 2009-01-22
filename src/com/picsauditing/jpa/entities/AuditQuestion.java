@@ -182,6 +182,11 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 		return this.isVisible;
 	}
 
+	@Transient
+	public boolean isVisible() {
+		return YesNo.Yes.equals(isVisible);
+	}
+
 	public void setIsVisible(YesNo isVisible) {
 		this.isVisible = isVisible;
 	}
