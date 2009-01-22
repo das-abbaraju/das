@@ -394,8 +394,8 @@
 
 	<s:if test="filter.showCaoStatus">
 		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_caoStatus'); return false;">Certificate
-		Approval</a> = <span id="form1_caoStatus_query">ALL</span><br />
+			onclick="toggleBox('form1_caoStatus'); return false;">Approval Status
+			</a> = <span id="form1_caoStatus_query">ALL</span><br />
 		<span id="form1_caoStatus_select" style="display: none"
 			class="clearLink"> <s:select id="form1_caoStatus" list="filter.caoStatusList"
 			cssClass="forms" name="filter.caoStatus" multiple="true" size="5" /> <script
