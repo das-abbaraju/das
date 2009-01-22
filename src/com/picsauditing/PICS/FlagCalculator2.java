@@ -3,6 +3,7 @@ package com.picsauditing.PICS;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -258,7 +259,10 @@ public class FlagCalculator2 {
 
 			WaitingOn waitingOn = calcSingle.calculateWaitingOn();
 
-			for( ContractorAudit audit : answerMapByAudits.getAuditSet() ) {
+			AnswerMapByAudits answerMapForAllAudits = auditDataDAO.findAnswersByAudits( contractor.getAudits(), null );
+			calcSingle.setAnswerMapByAudits(new AnswerMapByAudits(answerMapForAllAudits, operator));
+			
+			for( ContractorAudit audit : calcSingle.getAnswerMapByAudits().getAuditSet() ) {
 				
 				for( ContractorAuditOperator cao : audit.getOperators() ) {
 					if( cao.getStatus() == CaoStatus.Awaiting ) {

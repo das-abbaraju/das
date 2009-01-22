@@ -2,7 +2,9 @@ package com.picsauditing.actions.contractors;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagCalculatorSingle;
@@ -141,19 +143,25 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			co.setFlag(newFlag);
 		}
 
-
-		answerMapByAudits = auditDataDAO.findAnswersByAudits( contractor.getAudits(), null );
+		
+		List<ContractorAudit> toRecommend = new Vector<ContractorAudit>(); 
+		for( ContractorAudit tempAudit : contractor.getAudits() ) {
+			if( tempAudit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
+				toRecommend.add( tempAudit );
+			}
+		}
+		
+		
+		answerMapByAudits = auditDataDAO.findAnswersByAudits( toRecommend, null );
 		calculator.setAnswerMapByAudits(new AnswerMapByAudits(answerMapByAudits, co.getOperatorAccount()));
 
 		for (ContractorAudit audit : answerMapByAudits.getAuditSet() ) {
-			if (audit.getAuditType().getClassType() == AuditTypeClass.Policy) {
-				for (ContractorAuditOperator cao : audit.getOperators()) {
-					if (cao.getStatus() == CaoStatus.Awaiting) {
-						CaoStatus recommendedStatus = calculator
-								.calculateCaoRecommendedStatus(cao);
-						cao.setRecommendedStatus(recommendedStatus);
-						caoDAO.save(cao);
-					}
+			for (ContractorAuditOperator cao : audit.getOperators()) {
+				if (cao.getStatus() == CaoStatus.Awaiting) {
+					CaoStatus recommendedStatus = calculator
+							.calculateCaoRecommendedStatus(cao);
+					cao.setRecommendedStatus(recommendedStatus);
+					caoDAO.save(cao);
 				}
 			}
 		}
