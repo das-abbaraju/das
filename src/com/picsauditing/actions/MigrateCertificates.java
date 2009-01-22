@@ -239,12 +239,6 @@ public class MigrateCertificates extends PicsActionSupport {
 					fileQuestion = createFileAnswers(audit, connectedCert, namedInsured);
 				}
 				
-				AuditStatus currentStatus = audit.getAuditStatus();
-				audit.setAuditStatus(AuditStatus.Pending);
-				
-				auditPercentCalculator.percentCalculateComplete(audit);
-			
-				audit.setAuditStatus(currentStatus);
 				auditDAO.save(audit);
 
 				try {
