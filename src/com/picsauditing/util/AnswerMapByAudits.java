@@ -192,12 +192,6 @@ public class AnswerMapByAudits {
 			data.remove(audit);
 	}
 
-	public void resetFlagColors() {
-		for (ContractorAudit audit : data.keySet()) {
-			data.get(audit).resetFlagColors();
-		}
-	}
-	
 	public Map<AuditQuestion, AuditData> getAuditQuestionAnswerMap() {
 		Map<AuditQuestion, AuditData> map = new TreeMap<AuditQuestion, AuditData>();
 		

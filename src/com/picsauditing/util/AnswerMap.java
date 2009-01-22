@@ -253,21 +253,4 @@ public class AnswerMap {
 		
 	}
 	
-	public void resetFlagColors() {
-		// The flag colors should always start Green, but sometimes they
-		// are still set from the previous operator's loop
-		
-		for( Integer questionID : list.keySet() ) {
-			Map<Integer, List<AuditData>> temp = list.get(questionID );
-			
-			for( Integer rowId : temp.keySet() ) {
-				List<AuditData> data = temp.get(rowId);
-				
-				for( AuditData answer : data ) {
-					answer.setFlagColor(null);
-				}
-			}
-		}
-	}
-
 }
