@@ -10,13 +10,13 @@ import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 public class AuditCriteriaAnswer {
 
 	private AuditData answer = null;
-	private Map<FlagColor, FlagQuestionCriteria> criteria = null;
+	private Map<FlagColor, FlagQuestionCriteria> criteriaMap = null;
 	private FlagColor resultColor = null;
 
 	public AuditCriteriaAnswer(AuditData answer,
-			Map<FlagColor, FlagQuestionCriteria> criteria) {
+			Map<FlagColor, FlagQuestionCriteria> criteriaMap) {
 		this.answer = answer;
-		this.criteria = criteria;
+		this.criteriaMap = criteriaMap;
 	}
 
 	public AuditData getAnswer() {
@@ -24,11 +24,11 @@ public class AuditCriteriaAnswer {
 	}
 
 	public Map<FlagColor, FlagQuestionCriteria> getCriteria() {
-		return criteria;
+		return criteriaMap;
 	}
 
 	public FlagQuestionCriteria getResultReason() {
-		return criteria.get(getResultColor());
+		return criteriaMap.get(getResultColor());
 	}
 
 	
@@ -42,11 +42,39 @@ public class AuditCriteriaAnswer {
 
 	private void calculate() {
 
-		resultColor = FlagColor.Green;
-	}
+		FlagColor response = null;
+		
+		for( FlagColor currentColor : criteriaMap.keySet() ) {
+			
+			FlagQuestionCriteria criteria = criteriaMap.get(currentColor);
+			
+			if (answer != null && answer.getAnswer() != null && answer.getAnswer().length() > 0) {
+				// The contractor has answered this question
+				// so it needs to be correct
+				boolean isFlagged = false;
 	
-	public AuditTypeClass getAuditClassType() {
+				if (criteria.isValidationRequired() && !answer.isVerified()) {
+					isFlagged = true;
+				}
+	
+				if (criteria.isFlagged(answer.getAnswer())) {
+					isFlagged = true;
+				}
+	
+				if (isFlagged) {
+					response = FlagColor.getWorseColor(response, criteria.getFlagColor());
+				} else {
+					response = FlagColor.Green;
+				}
+			}
+		}
+		resultColor = response;
+	}
+
+	
+	
+	public AuditTypeClass getClassType() {
 		return answer.getAudit().getAuditType().getClassType();
 	}
-	
+
 }

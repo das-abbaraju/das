@@ -209,8 +209,8 @@ public class FlagCalculatorSingle {
 		
 		
 		for(AuditCriteriaAnswer aca : acaList) {
-			//if (aca.getClassType() == Audit)
-			flagColor = setFlagColor(flagColor, aca.getResultColor());
+			if (aca.getClassType() == AuditTypeClass.Audit)
+				flagColor = setFlagColor(flagColor, aca.getResultColor());
 		}
 		debug(" aca flagColor=" + flagColor);
 
@@ -357,8 +357,8 @@ public class FlagCalculatorSingle {
 		
 		FlagColor flagColor = null;
 		for(AuditCriteriaAnswer aca : acaList) {
-			//if (aca.getClassType() == Policy and aca.answer.audit == cao.getAudit())
-			flagColor = setFlagColor(flagColor, aca.getResultColor());
+			if (aca.getClassType() == AuditTypeClass.Policy && aca.getAnswer().getAudit().equals( cao.getAudit() ) )
+				flagColor = setFlagColor(flagColor, aca.getResultColor());
 		}
 		
 		if( flagColor == null )
