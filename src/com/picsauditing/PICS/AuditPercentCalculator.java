@@ -76,8 +76,13 @@ public class AuditPercentCalculator {
 								if (isRequired)
 									requiredAnsweredCount++;
 							}
-							if (answer.isVerified() || answer.isOK())
-								verifiedCount++;
+							if (answer.getQuestion().isHasRequirementB()) {
+								if (answer.isOK())
+									verifiedCount++;
+							} else {
+								if (answer.isVerified())
+									verifiedCount++;
+							}
 						}
 
 					} else if (question.getParentQuestion() == null) {
@@ -101,8 +106,14 @@ public class AuditPercentCalculator {
 								if (isRequired)
 									requiredAnsweredCount++;
 							}
-							if (answer.isVerified() || answer.isOK())
-								verifiedCount++;
+							
+							if (answer.getQuestion().isHasRequirementB()) {
+								if (answer.isOK())
+									verifiedCount++;
+							} else {
+								if (answer.isVerified())
+									verifiedCount++;
+							}
 						}
 
 					} else {
@@ -131,8 +142,13 @@ public class AuditPercentCalculator {
 									if (isRequired)
 										requiredAnsweredCount++;
 								}
-								if (answer.isVerified() || answer.isOK())
-									verifiedCount++;
+								if (answer.getQuestion().isHasRequirementB()) {
+									if (answer.isOK())
+										verifiedCount++;
+								} else {
+									if (answer.isVerified())
+										verifiedCount++;
+								}
 							}
 						}
 					}
@@ -194,25 +210,23 @@ public class AuditPercentCalculator {
 				percentVerified = 100;
 		}
 		conAudit.setPercentComplete(percentComplete);
-		if (conAudit.getAuditType().isHasRequirements() && !conAudit.getAuditType().isPqf())
-			conAudit.setPercentVerified(percentVerified);
-		else if (conAudit.getAuditType().isPqf()) {
-
-			List<AuditData> temp = auditDataDao.findCustomPQFVerifications(conAudit.getId());
-			verified = 0;
-			int verifiedTotal = 0;
-
-			for (AuditData auditData : temp) {
-				// either the pqf or the EMF for the annual addendum
-				if (auditData.isVerified()) {
-					verified++;
+		if (conAudit.getAuditType().isHasRequirements() || conAudit.getAuditType().isMustVerify()) {
+			if (conAudit.getAuditType().isPqf()) {
+				List<AuditData> temp = auditDataDao.findCustomPQFVerifications(conAudit.getId());
+				verified = 0;
+				int verifiedTotal = 0;
+				for (AuditData auditData : temp) {
+					// either the pqf or the EMF for the annual addendum
+					if (auditData.isVerified()) {
+						verified++;
+					}
+					verifiedTotal++;
 				}
-				verifiedTotal++;
+				conAudit.setPercentVerified(Math.round((float) (100 * verified) / verifiedTotal));
 			}
-
-			conAudit.setPercentVerified(Math.round((float) (100 * verified) / verifiedTotal));
-		}
-
+			else
+				conAudit.setPercentVerified(percentVerified);
+		}	
 	}
 
 	public void recalcAllAuditCatDatas(ContractorAudit conAudit) {

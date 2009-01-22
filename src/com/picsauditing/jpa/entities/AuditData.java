@@ -159,7 +159,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	
 	@Transient
 	public boolean isOK() {
-		if (question.getHasRequirement().equals(YesNo.No))
+		if (!question.isHasRequirementB())
 			return true;
 		
 		if (answer == null || question.getOkAnswer() == null)
