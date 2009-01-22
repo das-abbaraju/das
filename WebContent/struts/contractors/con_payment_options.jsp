@@ -37,12 +37,23 @@ function updateExpDate() {
 	<li><label>Company Name:</label>
 		<s:property value="contractor.name" />
 	</li>
-	<li><label>Next Billing Date:</label>
-		<s:date name="contractor.paymentExpires" format="MMM d, yyyy" />
-	</li>
-	<li><label>Next Billing Amount:</label>
-		$<s:property value="contractor.newBillingAmount" />
-	</li>
+<s:if test="contractor.newBillingAmount > 0">
+	<s:if test="contractor.activeB">
+		<li><label>Next Billing Date:</label> <s:date
+			name="contractor.paymentExpires" format="MMM d, yyyy" /></li>
+		<li><label>Next Billing Amount:</label> $<s:property
+			value="contractor.newBillingAmount" /> USD</li>
+	</s:if>
+	<s:else>
+		<li><label>Membership Fee:</label> $<s:property
+			value="contractor.newBillingAmount" /> USD</li>
+		<li><label>Activation Fee:</label> $<s:property value="contractor.activationFee"/> USD</li>
+		<li><label>Total:</label> $<s:property value="contractor.activationFee+contractor.newBillingAmount"/> USD </li>
+	</s:else>
+</s:if>
+<s:else>
+	<li><label>Status:</label>no payment required</li>
+</s:else>
 </ol>
 </fieldset>
 
