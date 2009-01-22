@@ -137,9 +137,11 @@
 <br/><br/>
 </s:if>
 <s:if test="manuallyAddAudit">
-<div id="addAudit">
-	<a href="#" onclick="showAddAudit(); return false;">Add Audit Manually</a>
-</div>
+	<s:if test="auditTypeName.size > 0">
+		<div id="addAudit">
+			<a href="#" onclick="showAddAudit(); return false;">Add Audit Manually</a>
+		</div>
+	</s:if>	
 <div id="addAuditManually" style="display: none;">
 <s:form method="post" id="form1" >
 	<s:hidden name="id" value="%{id}"/>

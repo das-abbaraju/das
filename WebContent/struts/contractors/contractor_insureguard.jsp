@@ -33,11 +33,13 @@
 	</s:iterator>
 	
 <s:if test="manuallyAddAudit">
-	<tr>
-		<td id="addAudit" colspan="2" class="center">
-			<a href="#" onclick="showAddAudit(); return false;">Add New Policy</a>
-		</td>
-	</tr>
+	<s:if test="auditTypeName.size > 0">
+		<tr>
+			<td id="addAudit" colspan="2" class="center">
+				<a href="#" onclick="showAddAudit(); return false;">Add New Policy</a>
+			</td>
+		</tr>
+	</s:if>
 	<tr id="addAuditManually" style="display: none;">
 		<td>New</td>
 		<td>
