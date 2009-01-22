@@ -37,16 +37,18 @@ public class ConAuditList extends ContractorActionSupport {
 		findContractor();
 
 		for (ContractorAudit contractorAudit : getAudits()) {
-			// Only show Insurance policies or audits
-			if (contractorAudit.getAuditStatus().isPendingSubmitted())
-				upComingAudits.add(contractorAudit);
-			else if (contractorAudit.getAuditStatus().isActiveResubmittedExempt())
-				currentAudits.add(contractorAudit);
-			else if (contractorAudit.getAuditStatus().equals(AuditStatus.Expired))
-				expiredAudits.add(contractorAudit);
-			else {
+			// Only show Insurance policies or all of them
+			if(auditClass.equals(AuditTypeClass.Audit) || contractorAudit.getAuditType().getClassType().equals(auditClass)) {
+				if (contractorAudit.getAuditStatus().isPendingSubmitted())
+					upComingAudits.add(contractorAudit);
+				else if (contractorAudit.getAuditStatus().isActiveResubmittedExempt())
+					currentAudits.add(contractorAudit);
+				else if (contractorAudit.getAuditStatus().equals(AuditStatus.Expired))
+					expiredAudits.add(contractorAudit);
+				else {
 				// There shouldn't be any others
-			}
+				}
+			}	
 		}
 
 		if (button != null && button.equals("Create")) {
