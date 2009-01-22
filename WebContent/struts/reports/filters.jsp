@@ -173,11 +173,6 @@
 		</div>
 	</s:if>
 
-	<s:if test="filter.showCerts">
-		<div class="filterOption"><s:select list="filter.certsOptions"
-			cssClass="forms" name="filter.certsOnly" /></div>
-	</s:if>
-	
 	<s:if test="filter.showRiskLevel">
 		<div class="filterOption"><s:select list="#{'1':'Low', '2':'Med', '3':'High'}"  
 			headerKey="0" headerValue="- Risk Level -" cssClass="forms" name="filter.riskLevel"/></div>

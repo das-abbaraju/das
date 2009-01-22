@@ -80,7 +80,6 @@ public class ReportContractorAudits extends ReportAccount {
 		if (!permissions.isPicsEmployee())
 			getFilter().setShowAuditor(true);
 
-		getFilter().setShowCerts(false);
 	}
 
 	protected void addFilterToSQL() {

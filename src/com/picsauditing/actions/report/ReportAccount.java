@@ -202,10 +202,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		}
 
-		if (filterOn(f.getCertsOnly(), ReportFilterContractor.DEFAULT_CERTS)) {
-			report.addFilter(new SelectFilter("certsOnly", "c.isOnlyCerts = '?'", f.getCertsOnly()));
-		}
-
 		if (filterOn(f.getStateLicensedIn())) {
 			String list = Strings.implode(f.getStateLicensedIn(), ",");
 			createPqfDataClause(sql, "AND d.questionID IN (" + list + ") AND d.answer > ''");

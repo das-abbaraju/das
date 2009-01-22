@@ -26,7 +26,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showOperator = true;
 	protected boolean showOperatorSingle = false;
 	protected boolean showTrade = true;
-	protected boolean showCerts = true;
 	protected boolean showLicensedIn = true;
 	protected boolean showWorksIn = true;
 	protected boolean showOfficeIn = true;
@@ -42,7 +41,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected String performedBy;
 	protected int[] trade;
 	protected int[] operator;
-	protected String certsOnly;
 	protected int[] stateLicensedIn;
 	protected int[] worksIn;
 	protected String taxID = DEFAULT_TAX_ID;
@@ -79,14 +77,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowTrade(boolean showTrade) {
 		this.showTrade = showTrade;
-	}
-
-	public boolean isShowCerts() {
-		return showCerts;
-	}
-
-	public void setShowCerts(boolean showCerts) {
-		this.showCerts = showCerts;
 	}
 
 	public boolean isShowLicensedIn() {
@@ -185,14 +175,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.operator = operator;
 	}
 
-	public String getCertsOnly() {
-		return certsOnly;
-	}
-
-	public void setCertsOnly(String certsOnly) {
-		this.certsOnly = certsOnly;
-	}
-
 	public int[] getStateLicensedIn() {
 		return stateLicensedIn;
 	}
@@ -263,9 +245,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		if (permissions.isPicsEmployee()) {
 			setShowConAuditor(true);
 			setShowRiskLevel(true);
-		}
-		if (!permissions.hasPermission(OpPerms.InsuranceCerts)) {
-			setShowCerts(false);
 		}
 	}
 
