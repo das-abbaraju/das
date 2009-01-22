@@ -487,7 +487,7 @@ public class FlagCalculatorSingle {
 			// This shouldn't happen ever, but just to make sure...
 			return null;
 
-		CaoStatus caoStatus = CaoStatus.Awaiting;
+		CaoStatus caoStatus = null; //CaoStatus.Awaiting;
 		answerMap.resetFlagColors();
 		
 		// For each operator criteria, get the contractor's
@@ -534,6 +534,10 @@ public class FlagCalculatorSingle {
 				}
 			} // if criteria.isChecked...
 		} // for
+		
+		if( caoStatus == null ) {
+			caoStatus = CaoStatus.Approved;
+		}
 		
 		return caoStatus;
 	}
