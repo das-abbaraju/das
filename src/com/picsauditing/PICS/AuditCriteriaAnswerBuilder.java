@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Vector;
 
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -43,6 +44,8 @@ public class AuditCriteriaAnswerBuilder {
 	@SuppressWarnings("unchecked")
 	private void build() {
 
+		auditCriteriaAnswers = new Vector<AuditCriteriaAnswer>();
+		
 		Map<AuditQuestion, Map<FlagColor, FlagQuestionCriteria>> criteriaMapByQuestion = new HashMap<AuditQuestion, Map<FlagColor, FlagQuestionCriteria>>();
 		
 		ContractorAccount contractor = null;
