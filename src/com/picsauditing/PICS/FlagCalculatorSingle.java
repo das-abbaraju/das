@@ -261,7 +261,9 @@ public class FlagCalculatorSingle {
 							List<AuditData> dataList = new ArrayList<AuditData>();
 							for (ContractorAudit conAudit : matchingConAudits) {
 								AuditData data = answerMapByAudits.get(conAudit).get(criteriaQuestion.getId());
-								dataList.add(data);
+								if( data != null ) {
+									dataList.add(data);
+								}
 							}
 							AuditData data = AuditData.addAverageData(dataList);
 							criteriaColor = flagData(criteriaColor, criteria, data);
