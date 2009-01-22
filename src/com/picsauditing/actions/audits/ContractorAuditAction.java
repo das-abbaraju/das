@@ -92,30 +92,24 @@ public class ContractorAuditAction extends AuditActionSupport {
 		if ("Submit".equals(button)) {
 			if (conAudit.getAuditType().isPqf()) {
 				if (conAudit.getAuditStatus().equals(AuditStatus.Active) && conAudit.getPercentVerified() == 100)
-					conAudit.setAuditStatus(AuditStatus.Active);
+					auditStatus = AuditStatus.Active;
 				else if (conAudit.getAuditStatus().isActiveResubmittedExempt())
-					conAudit.setAuditStatus(AuditStatus.Resubmitted);
+					auditStatus = AuditStatus.Resubmitted;
 				else
-					conAudit.setAuditStatus(AuditStatus.Submitted);
+					auditStatus = AuditStatus.Submitted;
 				conAudit.setExpiresDate(DateBean.getMarchOfNextYear(new Date()));
 			} else if (conAudit.getAuditType().isHasRequirements() || conAudit.getAuditType().isMustVerify())
-				conAudit.setAuditStatus(AuditStatus.Submitted);
+				auditStatus = AuditStatus.Submitted;
 			else
-				conAudit.setAuditStatus(AuditStatus.Active);
-			auditDao.save(conAudit);
-			return SUCCESS;
+				auditStatus = AuditStatus.Active;
 		}
 
 		if ("Approve".equals(button)) {
-			conAudit.setAuditStatus(AuditStatus.Active);
-			auditDao.save(conAudit);
-			return SUCCESS;
+			auditStatus = AuditStatus.Active;
 		}
 
 		if ("Reject".equals(button)) {
-			conAudit.setAuditStatus(AuditStatus.Pending);
-			auditDao.save(conAudit);
-			return SUCCESS;
+			auditStatus = AuditStatus.Pending;
 		}
 
 		if (auditStatus != null && !auditStatus.equals(conAudit.getAuditStatus())) {
@@ -186,9 +180,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 					emailBuilder.setPermissions(permissions);
 					emailBuilder.setConAudit(conAudit);
 					EmailSender.send(emailBuilder.build());
-
 				}
-
 			}
 
 			// Save the audit status
