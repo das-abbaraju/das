@@ -3,6 +3,7 @@ package com.picsauditing.PICS;
 import java.util.Map;
 
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 
@@ -30,6 +31,7 @@ public class AuditCriteriaAnswer {
 		return criteria.get(getResultColor());
 	}
 
+	
 	public FlagColor getResultColor() {
 		if (resultColor == null) {
 			calculate();
@@ -42,4 +44,9 @@ public class AuditCriteriaAnswer {
 
 		resultColor = FlagColor.Green;
 	}
+	
+	public AuditTypeClass getAuditClassType() {
+		return answer.getAudit().getAuditType().getClassType();
+	}
+	
 }
