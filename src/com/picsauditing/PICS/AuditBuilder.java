@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import javax.persistence.NoResultException;
-
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -46,7 +44,6 @@ import com.picsauditing.util.log.PicsLogger;
  * 
  */
 public class AuditBuilder {
-	private boolean debug = false;
 	private boolean fillAuditCategories = true;
 	private User user = null;
 
@@ -293,6 +290,7 @@ public class AuditBuilder {
 		if (!AuditTypeClass.Policy.equals(conAudit.getAuditType().getClassType()))
 			return;
 
+		PicsLogger.start("AuditOperators");
 		for (ContractorOperator co : contractor.getOperators()) {
 			// For this auditType (General Liability) and
 			// this contractor's associated operator (BP Cherry Point)
@@ -301,14 +299,14 @@ public class AuditBuilder {
 			boolean visible = false;
 			boolean required = false;
 			if (operator.getCanSeeInsurance().equals(YesNo.Yes)) {
-				debug(operator.getName() + " subscribes to InsureGuard");
+				PicsLogger.log(operator.getName() + " subscribes to InsureGuard");
 				for (AuditOperator ao : operator.getAudits()) {
 					if (conAudit.getAuditType().equals(ao.getAuditType())
 							&& ao.isCanSee()) {
 						visible = true;
 						if (ao.getMinRiskLevel() > 0 && ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal())
 							required = true;
-						debug(contractor.getName() + " can see " + (required ? "required " : " ") + ao.getAuditType().getAuditName());
+						PicsLogger.log(contractor.getName() + " can see " + (required ? "required " : " ") + ao.getAuditType().getAuditName());
 						break;
 					}
 				}
@@ -319,7 +317,7 @@ public class AuditBuilder {
 //			for(ContractorAuditOperator cao2 : conAudit.getOperators()) {
 //				if (cao2.getOperator().equals(operator)) {
 //					cao = cao2;
-//					debug("Found cao for " + conAudit.getAuditType().getAuditName());
+//					PicsLogger.log("Found cao for " + conAudit.getAuditType().getAuditName());
 //				}
 //			}
 
@@ -329,7 +327,7 @@ public class AuditBuilder {
 					// and then calculate the recommended status
 					if (cao == null) {
 						// If we don't have one, then add it
-						debug("Adding missing required ContractorAuditOperator");
+						PicsLogger.log("Adding missing required ContractorAuditOperator");
 						cao = new ContractorAuditOperator();
 						cao.setAudit(conAudit);
 						cao.setOperator(operator);
@@ -342,7 +340,7 @@ public class AuditBuilder {
 					// This cao might be required (if the operator manually requested it)
 					if (cao == null) {
 						// If we don't have one, then add it
-						debug("Adding missing non-required ContractorAuditOperator");
+						PicsLogger.log("Adding missing non-required ContractorAuditOperator");
 						cao = new ContractorAuditOperator();
 						cao.setAudit(conAudit);
 						cao.setOperator(operator);
@@ -359,7 +357,7 @@ public class AuditBuilder {
 			} else if(cao != null) {
 				// Remove the cao if it's temporary (N/A or Awaiting)
 				if (cao.getStatus().isTemporary()) {
-					debug("Removing unneeded ContractorAuditOperator");
+					PicsLogger.log("Removing unneeded ContractorAuditOperator");
 					contractorAuditOperatorDAO.remove(cao);
 					conAudit.getOperators().remove(cao);
 				} else {
@@ -371,6 +369,7 @@ public class AuditBuilder {
 				contractorAuditOperatorDAO.save(cao);
 			}
 		}
+		PicsLogger.stop();
 	}
 
 	public void fillAuditCategories( Integer auditId ) {
@@ -400,6 +399,7 @@ public class AuditBuilder {
 				return;
 		}
 		
+		PicsLogger.start("AuditCategories", "auditID=" + conAudit.getId() + " type=" + conAudit.getAuditType().getAuditName());
 		// set of audit categories to be included in the audit
 		Set<AuditCategory> categories = new HashSet<AuditCategory>();
 		Set<AuditCategory> naCategories = new HashSet<AuditCategory>();
@@ -503,33 +503,33 @@ public class AuditBuilder {
 
 			List<AuditCategory> allCategories = auditCategoryDAO.findByAuditTypeID(conAudit.getAuditType()
 					.getAuditTypeID());
-			debug("Categories to be included:");
+			PicsLogger.log("Categories to be included:");
 			for (AuditCategory category : categories)
-				debug("  " + category.getId() + " " + category.getCategory());
+				PicsLogger.log("  " + category.getId() + " " + category.getCategory());
 
 			for (AuditCategory category : allCategories) {
 				if (!categories.contains(category)) {
-					debug("Don't include  " + category.getCategory());
+					PicsLogger.log("Don't include  " + category.getCategory());
 					naCategories.add(category);
 				} else
-					debug("Include  " + category.getCategory());
+					PicsLogger.log("Include  " + category.getCategory());
 			}
 		} else {
 			categories.addAll(conAudit.getAuditType().getCategories());
 		}
 
-		debug("Categories to be included: " + categories.size());
-		debug("Categories to be not included: " + naCategories.size());
+		PicsLogger.log("Categories to be included: " + categories.size());
+		PicsLogger.log("Categories to be not included: " + naCategories.size());
 
 		// Now we know which categories should be there, figure out which ones
 		// actually are and make adjustments
 		for (AuditCatData catData : conAudit.getCategories()) {
 			if (!catData.isOverride()) {
 				if (categories.contains(catData.getCategory())) {
-					debug(catData.getCategory().getCategory() + " should be Yes, was " + catData.getApplies());
+					PicsLogger.log(catData.getCategory().getCategory() + " should be Yes, was " + catData.getApplies());
 					catData.setApplies(YesNo.Yes);
 				} else {
-					debug(catData.getCategory().getCategory() + " should be No, was " + catData.getApplies());
+					PicsLogger.log(catData.getCategory().getCategory() + " should be No, was " + catData.getApplies());
 					catData.setApplies(YesNo.No);
 				}
 			}
@@ -540,7 +540,7 @@ public class AuditBuilder {
 		}
 
 		// Add all remaining applicable categories
-		debug("Adding Categories to be included: " + categories.size());
+		PicsLogger.log("Adding Categories to be included: " + categories.size());
 		for (AuditCategory category : categories) {
 			AuditCatData catData = new AuditCatData();
 			catData.setCategory(category);
@@ -554,7 +554,7 @@ public class AuditBuilder {
 			conAudit.getCategories().add(catData);
 		}
 		// Add all remaining N/A categories
-		debug("Adding Categories to be not included: " + naCategories.size());
+		PicsLogger.log("Adding Categories to be not included: " + naCategories.size());
 		for (AuditCategory category : naCategories) {
 			AuditCatData catData = new AuditCatData();
 			catData.setCategory(category);
@@ -568,6 +568,7 @@ public class AuditBuilder {
 			conAudit.getCategories().add(catData);
 		}
 		cAuditDAO.save(conAudit);
+		PicsLogger.stop();
 	}
 
 	/**
@@ -591,15 +592,6 @@ public class AuditBuilder {
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-
-	private void debug(String message) {
-		if (debug)
-			System.out.println("Debug AuditBuilder: " + message);
-	}
-
-	public void setDebug(boolean debug) {
-		this.debug = debug;
 	}
 
 	public void setFillAuditCategories(boolean fillAuditCategories) {
