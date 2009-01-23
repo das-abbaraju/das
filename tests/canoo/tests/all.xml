@@ -18,8 +18,13 @@
 		
 		<ant antfile="operator.xml"/>
 		<ant antfile="contractor_registration.xml"/>
-	<!-- 
-		Comment out tests you don't want to run right now
-	-->
+	</target>
+	
+	<target name="adhoc" description="Run a few tests when debugging">
+		<ant antfile="operator.xml"/>
+	</target>
+	
+	<target name="live_fixer" description="Run a Quick Fix routine on Live">
+		<ant antfile="live_fixer.xml"/>
 	</target>
 </project>
