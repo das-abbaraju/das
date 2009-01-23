@@ -43,41 +43,42 @@ public class ReportInsuranceApprovalSave extends PicsActionSupport {
 			}
 			catch( Exception emptyStringsDontTurnIntoEnumsVeryWell ) {}
 		}
-
-		for (Integer i : caoids) {
-
-			boolean dirty = false;
-			boolean statusChanged = false;
-
-			ContractorAuditOperator existing = conAuditOperatorDAO.find(i);
-			ContractorAuditOperator newVersion = caos.get(i);
-
-			if (existing.getNotes() != null && newVersion.getNotes() != null) {
-
-				if (((existing.getNotes() == null) ^ (newVersion.getNotes() == null))
-						|| !existing.getNotes().equals(newVersion.getNotes())) {
-
-					existing.setNotes(newVersion.getNotes());
+		if( caoids != null && caoids.size() > 0 ) {
+			for (Integer i : caoids) {
+	
+				boolean dirty = false;
+				boolean statusChanged = false;
+	
+				ContractorAuditOperator existing = conAuditOperatorDAO.find(i);
+				ContractorAuditOperator newVersion = caos.get(i);
+	
+				if (existing.getNotes() != null && newVersion.getNotes() != null) {
+	
+					if (((existing.getNotes() == null) ^ (newVersion.getNotes() == null))
+							|| !existing.getNotes().equals(newVersion.getNotes())) {
+	
+						existing.setNotes(newVersion.getNotes());
+						dirty = true;
+					}
+				}
+	
+				if (newStatus != null && !newStatus.equals(existing.getStatus())) {
+					existing.setStatus(newStatus);
+					existing.setAuditColumns(getUser());
 					dirty = true;
+					statusChanged = true;
+				}
+
+				if (dirty) {
+					conAuditOperatorDAO.save(existing);
+				}
+
+				if (statusChanged) {
+					sendEmail(existing);
 				}
 			}
-
-			if (newStatus != null && !newStatus.equals(existing.getStatus())) {
-				existing.setStatus(newStatus);
-				existing.setAuditColumns(getUser());
-				dirty = true;
-				statusChanged = true;
-			}
-
-			if (dirty) {
-				conAuditOperatorDAO.save(existing);
-			}
-
-			if (statusChanged) {
-				sendEmail(existing);
-			}
 		}
-
+		
 		return SUCCESS;
 	}
 
