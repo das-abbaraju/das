@@ -1,8 +1,10 @@
 package com.picsauditing.util.log;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class PicsLogger {
+	static private SimpleDateFormat formatter = new SimpleDateFormat("MMMdd HH:mm:ss.S");
 	
 	static boolean isLogging() {
 		return true;
@@ -11,8 +13,7 @@ public class PicsLogger {
 	static public void log(String message) {
 		if (!isLogging())
 			return;
-		Date now = new Date();
-		System.out.println(now + " " + message);
+		out(now() + " " + message);
 	}
 	
 	static public void start(String stopWatchName) {
@@ -22,8 +23,7 @@ public class PicsLogger {
 	static public void start(String stopWatchName, String message) {
 		if (!isLogging())
 			return;
-		Date now = new Date();
-		System.out.println("Starting: " + stopWatchName + now + " " + message);
+		out("Starting: " + stopWatchName + now() + " " + message);
 	}
 	
 	static public void stop(String message) {
@@ -32,5 +32,17 @@ public class PicsLogger {
 
 	static public void stop() {
 		stop("");
+	}
+	
+	static private String now() {
+		return formatter.format(new Date());
+	}
+	
+	/**
+	 * Send logging out to sysout, DB, screen, stdOut??
+	 * @param message
+	 */
+	static private void out(String message) {
+		System.out.println(message);
 	}
 }
