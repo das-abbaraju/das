@@ -16,19 +16,27 @@
 	cal1.setCssPrefix("PICS");
 
 	function showPaymentOptions(conId, method) {
- 
  		var buttonURL= window.location.href;
  		
  		if( buttonURL.indexOf( 'www.picsauditing.com' ) != -1 ) {
  			buttonURL = buttonURL.replace('http:', 'https:');
  		}
- 		
  		var url = buttonURL.substr(0, buttonURL.lastIndexOf('/') ) + '/ContractorPaymentOptions.action?id=' + conId +'&paymentMethod=' + method; 
 		title = 'Contractor Payment Options';
 		pars = 'scrollbars=yes,resizable=yes,width=700,height=600,toolbar=1,directories=0,menubar=0';
 		popupWindow = window.open(url,title,pars);
 		popupWindow.focus();
 		return false;
+	}
+	
+	function setPaymentUrl() {
+ 		var buttonURL= window.location.href;
+
+ 		if( buttonURL.indexOf( 'www.picsauditing.com' ) != -1 ) {
+ 			buttonURL = buttonURL.replace('http:', 'https:');
+ 		}
+ 		var url = buttonURL.substr(0, buttonURL.lastIndexOf('/') ) + '/ContractorPaymentOptions.action?id=' + <s:property value="id"/> +'&paymentMethod=Credit Card'; 
+		$('cc_link').href=url;
 	}
 	
 	function showPaymentMethodOption(elm) {
@@ -45,7 +53,7 @@
 	}
 </script>
 </head>
-<body>
+<body onload="javascript: setPaymentUrl();">
 
 <s:if test="permissions.active">
 	<s:include value="conHeader.jsp"></s:include>
@@ -134,7 +142,9 @@
 							<s:set name="creditcard_show" value="'none'"/>								
 							<s:set name="check_show" value="'inline'"/>
 						</s:else>
-						<span id="creditcard_show" style="display: <s:property value="#attr.creditcard_show"/>;"> Credit card payment is required for billing amounts less than $500. <a onclick="javascript: return showPaymentOptions( <s:property value="id"/>, 'Credit Card');" href="#" title="Opens In a Secure Window">Edit Credit Card</a><br/></span>
+
+
+						<span id="creditcard_show" style="display: <s:property value="#attr.creditcard_show"/>;"> Credit card payment is required for billing amounts less than $500. <a id="cc_link" href="#" target="_BLANK" title="Opens In a Secure Window">Edit Credit Card</a><br/></span>
 						<span id="check_show" style="display: <s:property value="#attr.check_show"/>;"> Your invoice will be generated on <s:date name="@com.picsauditing.PICS.DateBean@getFirstofMonth(contractor.paymentExpires,-1)" format="MMM d, yyyy"/> and emailed to <s:property value="contractor.contact"/> and <s:property value="contractor.billingContact"/> with payment terms of net 30.</span>
 					</li>
 				</s:if>
