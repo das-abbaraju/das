@@ -48,8 +48,6 @@ public class AuditCriteriaAnswerBuilder {
 		
 		Map<AuditQuestion, List<FlagQuestionCriteria>> criteriaMapByQuestion = new HashMap<AuditQuestion, List<FlagQuestionCriteria>>();
 		
-		ContractorAccount contractor = null;
-		
 		for( FlagQuestionCriteria criteria : criterias ) {
 			if (criteria.getChecked().equals(YesNo.Yes)) { // This question is required by the operator
 				List<FlagQuestionCriteria> criteriaForQuestion = criteriaMapByQuestion.get(criteria.getAuditQuestion());
@@ -72,10 +70,10 @@ public class AuditCriteriaAnswerBuilder {
 			
 			
 			List<Map<FlagColor, FlagQuestionCriteria>> listOfCriteriaMapsForThisQuestion = new Vector<Map<FlagColor, FlagQuestionCriteria>>();
+			Map<FlagColor, FlagQuestionCriteria> tempMap = new TreeMap<FlagColor, FlagQuestionCriteria>();
 			if( criteriasForThisQuestion.size() == 1 ) {
 				FlagQuestionCriteria thisCriteria = criteriasForThisQuestion.get(0);
 
-				Map<FlagColor, FlagQuestionCriteria> tempMap = new TreeMap<FlagColor, FlagQuestionCriteria>();
 				tempMap.put(thisCriteria.getFlagColor(), thisCriteria);
 				
 				listOfCriteriaMapsForThisQuestion.add( tempMap );
@@ -87,7 +85,6 @@ public class AuditCriteriaAnswerBuilder {
 				if( criteria1.getMultiYearScope() != null && criteria2.getMultiYearScope() != null
 						&& criteria1.getMultiYearScope() != criteria2.getMultiYearScope() ) {
 					
-					Map<FlagColor, FlagQuestionCriteria> tempMap = new TreeMap<FlagColor, FlagQuestionCriteria>();
 					tempMap.put(criteria1.getFlagColor(), criteria1);
 					
 					listOfCriteriaMapsForThisQuestion.add( tempMap );
@@ -99,7 +96,6 @@ public class AuditCriteriaAnswerBuilder {
 					
 				}
 				else {
-					Map<FlagColor, FlagQuestionCriteria> tempMap = new TreeMap<FlagColor, FlagQuestionCriteria>();
 					tempMap.put(criteria1.getFlagColor(), criteria1);
 					tempMap.put(criteria2.getFlagColor(), criteria2);
 					
@@ -111,10 +107,14 @@ public class AuditCriteriaAnswerBuilder {
 			}
 			
 			
-			//at this point we're going
+			//at this point we finally have our list of maps and we can start looking for answers
 			for( Map<FlagColor, FlagQuestionCriteria> thisMap : listOfCriteriaMapsForThisQuestion ) {
 				
-				FlagQuestionCriteria representativeCriteria = thisMap.values().iterator().next();
+				// Get the first criteria from the map to use in "common" calculations below
+				MultiYearScope scope = null;
+				for(FlagQuestionCriteria fqc : thisMap.values())
+					if (scope == null)
+						scope = fqc.getMultiYearScope();
 				
 				AuditType criteriaAuditType = question.getSubCategory().getCategory().getAuditType();
 				
@@ -122,9 +122,6 @@ public class AuditCriteriaAnswerBuilder {
 	
 				if( matchingConAudits.size() > 0 ) {
 				
-					contractor = matchingConAudits.get(0).getContractorAccount();
-					
-					MultiYearScope scope = representativeCriteria.getMultiYearScope();
 					if( scope != null ) {
 						if (MultiYearScope.LastYearOnly.equals(scope)) {
 							AuditData data = null;
@@ -164,9 +161,11 @@ public class AuditCriteriaAnswerBuilder {
 						}
 	
 					} else {
-						if (representativeCriteria.getMultiYearScope() == null && matchingConAudits.size() > 1)
+						if (matchingConAudits.size() > 1) {
+							ContractorAccount contractor = matchingConAudits.get(0).getContractorAccount();
 							System.out.println("WARNING! Found more than one " + criteriaAuditType.getAuditName() 
 									+ " for conID=" + contractor.getId());
+						}
 						
 						AnswerMap answerMap = answerMapByAudits.get(matchingConAudits.get(0));
 						

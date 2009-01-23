@@ -228,7 +228,7 @@
 </s:if>
 </s:if>
 
-<s:if test="acaList > 0">
+<s:if test="acaListAudits.size() > 0">
 	<table class="report" style="clear: none">
 		<thead>
 			<tr>
@@ -238,13 +238,13 @@
 				<td>Question</td>
 			</tr>
 		</thead>
-		<s:iterator value="acaList">
+		<s:iterator value="acaListAudits">
 			<tr class="<s:property value="resultColor" />">
 				<td class="center"><s:property
 					value="resultColor.smallIcon" escape="false" /></td>
 				<td class="center"><s:property value="answer.answer" /></td>
-				<td><s:property value="answer.audit.auditFor" /></td>
-				<td><s:property value="question.question" /></td>
+				<td><s:property value="answer.audit.auditType.auditName" /> <s:property value="answer.audit.auditFor" /></td>
+				<td><s:property value="answer.question.question" /></td>
 			</tr>
 		</s:iterator>
 	</table>

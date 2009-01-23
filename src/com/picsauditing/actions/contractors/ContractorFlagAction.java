@@ -105,8 +105,9 @@ public class ContractorFlagAction extends ContractorActionSupport {
 					// Make sure the operator has only the answers that are visible to them
 					AnswerMapByAudits answerMapForOperator = new AnswerMapByAudits(answerMapByAudits, co.getOperatorAccount());
 					AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, co.getOperatorAccount().getFlagQuestionCriteria());
-					calculator.setAcaList(acaBuilder.getAuditCriteriaAnswers());
-
+					acaList = acaBuilder.getAuditCriteriaAnswers();
+					calculator.setAcaList(acaList);
+					
 					co2.setForceBegin(null);
 					co2.setForceEnd(null);
 					co2.setForceFlag(null);
@@ -154,7 +155,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		// Make sure the operator has only the answers that are visible to them
 		AnswerMapByAudits answerMapForOperator = new AnswerMapByAudits(answerMapByAudits, co.getOperatorAccount());
 		AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, co.getOperatorAccount().getFlagQuestionCriteria());
-		calculator.setAcaList(acaBuilder.getAuditCriteriaAnswers());
+		acaList = acaBuilder.getAuditCriteriaAnswers();
+		calculator.setAcaList(acaList);
 		
 		for( ContractorAudit audit : contractor.getAudits() ) {
 			if( audit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
@@ -234,6 +236,14 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 	public List<AuditCriteriaAnswer> getAcaList() {
 		return acaList;
+	}
+	
+	public List<AuditCriteriaAnswer> getAcaListAudits() {
+		List<AuditCriteriaAnswer> list = new ArrayList<AuditCriteriaAnswer>();
+		for(AuditCriteriaAnswer aca : acaList)
+			if (aca.getClassType().isAudit())
+				list.add(aca);
+		return list;
 	}
 	
 	public FlagColor[] getFlagList() {

@@ -233,43 +233,8 @@ public class AuditDataDAO extends PicsDAO {
 			
 		}
 		
-		AnswerMapByAudits response = new AnswerMapByAudits();
 		List<AuditData> results = query.getResultList();
-		
-		ContractorAudit audit = null;
-		List<AuditData> temp = new Vector<AuditData>();
-		
-		for( AuditData data : results ) {
-			if( audit == null ) {
-				audit = data.getAudit();
-			}
-			
-			if( data.getAudit().getId() != audit.getId() ) {
-				response.put( audit, mapData( temp ) );
-				temp = new Vector< AuditData >();
-				audit = data.getAudit();
-			}
-			
-			temp.add(data);
-		}
-		
-		if( audit != null ) {
-			response.put( audit, mapData( temp ) );
-		}
-		
-		return response;
-	}
-	
-	/**
-	 * Convert a ResultList into an AnswerMap
-	 * 
-	 * @return
-	 */
-	private AnswerMap mapData(List<AuditData> result) {
-		AnswerMap indexedResult = new AnswerMap();
-		for (AuditData row : result)
-			indexedResult.add(row);
-		return indexedResult;
+		return AuditDataDAO.buildAnswerMapByAudits(results);
 	}
 
 	/**
@@ -328,5 +293,43 @@ public class AuditDataDAO extends PicsDAO {
 		// If someone changes the subcategory name, this won't work anymore!!
 		query.setParameter(1, "Policy Limits" );
 		return query.getResultList();
+	}
+	
+	static public AnswerMapByAudits buildAnswerMapByAudits(List<AuditData> results) {
+		AnswerMapByAudits response = new AnswerMapByAudits();
+		
+		ContractorAudit audit = null;
+		List<AuditData> temp = new Vector<AuditData>();
+		
+		for( AuditData data : results ) {
+			if( audit == null ) {
+				audit = data.getAudit();
+			}
+			
+			if( data.getAudit().getId() != audit.getId() ) {
+				response.put( audit, mapData( temp ) );
+				temp = new Vector< AuditData >();
+				audit = data.getAudit();
+			}
+			
+			temp.add(data);
+		}
+		
+		if( audit != null ) {
+			response.put( audit, mapData( temp ) );
+		}
+		return response;
+	}
+	
+	/**
+	 * Convert a ResultList into an AnswerMap
+	 * 
+	 * @return
+	 */
+	static private AnswerMap mapData(List<AuditData> result) {
+		AnswerMap indexedResult = new AnswerMap();
+		for (AuditData row : result)
+			indexedResult.add(row);
+		return indexedResult;
 	}
 }
