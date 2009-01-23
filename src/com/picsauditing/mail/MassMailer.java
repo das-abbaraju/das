@@ -40,7 +40,7 @@ import com.picsauditing.util.Strings;
 public class MassMailer extends PicsActionSupport {
 	private Set<Integer> ids = null;
 	private ListType type;
-
+	
 	private int templateID = 0; // 0 means no template selected at all
 	final public static int BLANK_EMAIL = -1;
 	private String templateName;
@@ -72,6 +72,14 @@ public class MassMailer extends PicsActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+		
+		// TODO find these bad chars
+		/*
+		test = test.replace('“', '"');
+		test = test.replace('”', '"');
+		test = test.replace("`", "'");
+		*/
+
 		permissions.tryPermission(OpPerms.EmailTemplates);
 
 		// Start the main logic for actions that require passing the contractors
