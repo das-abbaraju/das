@@ -64,6 +64,7 @@ public class ReportInsuranceApprovalSave extends PicsActionSupport {
 
 			if (newStatus != null && !newStatus.equals(existing.getStatus())) {
 				existing.setStatus(newStatus);
+				existing.setAuditColumns(getUser());
 				dirty = true;
 				statusChanged = true;
 			}
