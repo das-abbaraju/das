@@ -21,6 +21,10 @@ try{
 		message += "<b>"+sBean.aBean.name+"</b> has been made visible";
 		sBean.aBean.writeToDB();
 		sBean.cBean.writeToDB();
+		ContractorBean cBean = new ContractorBean();
+		cBean.setFromDB(actionID);
+		cBean.addAdminNote(actionID, "("+permissions.getUsername()+")", " Activated the account ", DateBean.getTodaysDate());
+		cBean.writeToDB();
 	}
 
 	if ("Paid".equals(action)){
