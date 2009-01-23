@@ -74,9 +74,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			String newHash = BrainTree.buildHash(orderid, amount, response,
 					transactionid, avsresponse, cvvresponse, customer_vault_id,
 					time, key);
-			if (!newHash.equals(hash))
-				addActionError("Invalid hash response from merchant");
-			else if (response_code.equals("100")) {
+			if (!newHash.equals(hash)) {
+				addActionError(responsetext);
+				addActionError("Invalid response from merchant, if you have questions about this error, please contact us.");
+			} else if (response_code.equals("100")) {
 				contractor.setPaymentMethodStatus("Approved");
 				contractor.setPaymentMethod(creditCard);
 				accountDao.save(contractor);
