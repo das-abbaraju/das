@@ -1,6 +1,7 @@
 package com.picsauditing.actions.auditType;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.PICS.DateBean;
@@ -119,15 +120,20 @@ public class ManageQuestion extends ManageSubCategory {
 	}
 
 	private void recalculateCategory() {
+		Date today = new Date();
 		if (category != null && category.getId() > 0) {
+
 			// Renumber the category
 			int numQuestions = 0;
 			int numRequired = 0;
 			for (AuditSubCategory subCat : category.getSubCategories()) {
 				for (AuditQuestion tempQuestion : subCat.getQuestions()) {
-					numQuestions++;
-					if ("Yes".equals(tempQuestion.getIsRequired()))
-						numRequired++;
+					if (today.after(tempQuestion.getEffectiveDate())
+							&& today.before(tempQuestion.getExpirationDate())) {
+						numQuestions++;
+						if ("Yes".equals(tempQuestion.getIsRequired()))
+							numRequired++;
+					}
 				}
 			}
 			category.setNumQuestions(numQuestions);
