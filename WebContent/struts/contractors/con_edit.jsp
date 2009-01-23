@@ -35,7 +35,7 @@
  		if( buttonURL.indexOf( 'www.picsauditing.com' ) != -1 ) {
  			buttonURL = buttonURL.replace('http:', 'https:');
  		}
- 		var url = buttonURL.substr(0, buttonURL.lastIndexOf('/') ) + '/ContractorPaymentOptions.action?id=' + <s:property value="id"/> +'&paymentMethod=Credit Card'; 
+ 		var url = buttonURL.substr(0, buttonURL.lastIndexOf('/') ) + '/ContractorPaymentOptions.action?id=' + <s:property value="contractor.id"/> +'&paymentMethod=Credit Card'; 
 		$('cc_link').href=url;
 	}
 	
@@ -130,7 +130,7 @@
 							<s:radio list="#{'Check':'Check','Credit Card':'Credit Card'}" name="contractor.paymentMethod" theme="pics" disabled="true"/>
 						</s:if>
 						<s:else>
-							<s:radio list="#{'Check':'Check','Credit Card':'Credit Card'}" name="contractor.paymentMethod" theme="pics" onchange="javascript : return showPaymentMethodOption(this);"/>
+							<s:radio list="#{'Check':'Check','Credit Card':'Credit Card'}" name="contractor.paymentMethod" theme="pics" onclick="javascript : showPaymentMethodOption(this); return true;"/>
 						</s:else>
 					</li>
 					<li>
