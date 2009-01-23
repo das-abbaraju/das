@@ -54,7 +54,6 @@ public class FlagCalculatorTest extends TestCase {
 		acaList = new ArrayList<AuditCriteriaAnswer>();
 		
 		/* Initialize the calculator */
-		calculator.setDebug(true);
 		calculator.setContractor(contractor);
 		calculator.setOperator(operator);
 		calculator.setConAudits(conAudits);

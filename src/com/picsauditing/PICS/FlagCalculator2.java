@@ -29,6 +29,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.AnswerMapByAudits;
+import com.picsauditing.util.log.PicsLogger;
 
 /**
  * Business Engine used to calculate the flag color for a contractor at a given
@@ -40,8 +41,6 @@ import com.picsauditing.util.AnswerMapByAudits;
 public class FlagCalculator2 {
 
 	// protected EntityManager em = null;
-
-	private boolean debug = false;
 
 	private OperatorAccountDAO operatorDAO;
 	private ContractorAccountDAO contractorDAO;
@@ -126,7 +125,7 @@ public class FlagCalculator2 {
 		for (Integer conID : contractorIDs) {
 
 			try {
-				System.out.println("FlagCalculator2: calculating flags for : " + conID);
+				PicsLogger.start("Flag.calculate", "for : " + conID);
 				runCalc(questionIDs, conID);
 			} catch (Throwable t) {
 				System.out.println("Error: " + t.getMessage());
@@ -165,6 +164,8 @@ public class FlagCalculator2 {
 				if (++errorCount == 10) {
 					break;
 				}
+			} finally {
+				PicsLogger.stop();
 			}
 
 			if ((count++ % testValue) == 0) {
@@ -226,7 +227,6 @@ public class FlagCalculator2 {
 
 		// debug("FlagCalculator: Operator data ready...starting calculations");
 		FlagCalculatorSingle calcSingle = new FlagCalculatorSingle();
-		calcSingle.setDebug(debug);
 
 		List<ContractorAudit> nonExpiredByContractor = conAuditDAO.findNonExpiredByContractor(contractor.getId());
 		
@@ -252,7 +252,6 @@ public class FlagCalculator2 {
 			calcSingle.setAcaList(acaBuilder.getAuditCriteriaAnswers());
 
 			calcSingle.setOperator(operator);
-			//calcSingle.setDebug(true);
 			// Calculate the color of the flag right here
 			FlagColor color = calcSingle.calculate();
 			debug(" - FlagColor returned: " + color);
@@ -334,22 +333,7 @@ public class FlagCalculator2 {
 	}
 
 	protected void debug(String message) {
-		if (!debug)
-			return;
-		Date now = new Date();
-		System.out.println(now.toString() + message);
+		PicsLogger.log(message);
 	}
-
-	public boolean isDebug() {
-		return debug;
-	}
-
-	public void setDebug(boolean debug) {
-		this.debug = debug;
-	}
-	/*
-	 * @PersistenceContext public void setEntityManager( EntityManager em ) {
-	 * this.em = em; }
-	 */
 
 }

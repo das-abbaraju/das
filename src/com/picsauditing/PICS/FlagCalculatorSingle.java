@@ -1,6 +1,5 @@
 package com.picsauditing.PICS;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +29,6 @@ import com.picsauditing.util.log.PicsLogger;
  * @author Trevor
  */
 public class FlagCalculatorSingle {
-	private boolean debug = false;
 	private boolean answerOnly = true;
 
 	private ContractorAccount contractor;
@@ -401,17 +399,7 @@ public class FlagCalculatorSingle {
 	}
 
 	protected void debug(String message) {
-		if (!debug)
-			return;
 		PicsLogger.log(message);
-	}
-
-	public boolean isDebug() {
-		return debug;
-	}
-
-	public void setDebug(boolean debug) {
-		this.debug = debug;
 	}
 
 	public ContractorAccount getContractor() {

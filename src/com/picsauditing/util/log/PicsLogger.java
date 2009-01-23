@@ -16,10 +16,14 @@ public class PicsLogger {
 	}
 	
 	static public void start(String stopWatchName) {
+		start(stopWatchName, "");
+	}
+	
+	static public void start(String stopWatchName, String message) {
 		if (!isLogging())
 			return;
 		Date now = new Date();
-		System.out.println("Starting: " + stopWatchName + now);
+		System.out.println("Starting: " + stopWatchName + now + " " + message);
 	}
 	
 	static public void stop(String message) {

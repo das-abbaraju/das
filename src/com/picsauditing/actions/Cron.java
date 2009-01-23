@@ -114,7 +114,6 @@ public class Cron extends PicsActionSupport {
 
 		try {
 			startTask("\nCalculating Flags...");
-			flagCalculator.setDebug(true);
 			flagCalculator.runAll();
 			endTask();
 		} catch (Throwable t) {
