@@ -22,7 +22,6 @@ public class ContractorView extends ContractorActionSupport {
 		limitedView = true;
 		findContractor();
 
-		auditBuilder.setDebug(debug);
 		auditBuilder.setUser(getUser());
 		auditBuilder.buildAudits(this.contractor);
 

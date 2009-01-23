@@ -37,7 +37,6 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	// single string to the page
 	protected String output = null;
 	protected String button = null;
-	protected boolean debug = false;
 
 	private User user; // Current logged in user
 	private Account account; // Current logged in user's account
@@ -106,14 +105,6 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	protected void tryPermissions(OpPerms opPerms, OpType opType) throws Exception {
 		loadPermissions();
 		permissions.tryPermission(opPerms, opType);
-	}
-
-	public boolean isDebug() {
-		return debug;
-	}
-
-	public void setDebug(boolean debug) {
-		this.debug = debug;
 	}
 
 	public User getUser() {

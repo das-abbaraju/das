@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.log.PicsLogger;
 
 /**
  * Determine the Flag color for a single contractor at a given facility. This
@@ -402,8 +403,7 @@ public class FlagCalculatorSingle {
 	protected void debug(String message) {
 		if (!debug)
 			return;
-		Date now = new Date();
-		System.out.println(now.toString() + message);
+		PicsLogger.log(message);
 	}
 
 	public boolean isDebug() {
