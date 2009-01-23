@@ -192,8 +192,8 @@
 		<li><label>Risk Level:</label>
 			<strong><s:property value="contractor.riskLevel" /></strong>
 		</li>
-		<li><label># of Employees:</label>
-			<strong><s:property value="infoSection[69].answer" default="N/A"/></strong>
+		<li><label>Seasonal Employees:</label>
+			<strong><s:property value="infoSection[71].answer" default="N/A"/></strong>
 		</li>
 		<li><label>Total Revenue:</label>
 			<strong><s:property value="infoSection[1616].answer" default="N/A"/></strong>
