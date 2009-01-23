@@ -244,6 +244,8 @@ public class ContractorAuditAction extends AuditActionSupport {
 			return false;
 		if (conAudit.getPercentVerified() < 100)
 			return false;
+		if (conAudit.getAuditType().isMustVerify())
+			return false;
 		if (conAudit.getAuditStatus().equals(AuditStatus.Submitted))
 			return true;
 		return false;
