@@ -139,13 +139,14 @@ public class AuditCriteriaAnswerBuilder {
 									System.out.println("Ignoring answer with year key: " + conAudit.getAuditFor());
 								}
 							}
-							
-							auditCriteriaAnswers.add(new AuditCriteriaAnswer( data, thisMap));
+							if( data != null && data.getAnswer() != null && data.getAnswer().length() > 0 )
+								auditCriteriaAnswers.add(new AuditCriteriaAnswer( data, thisMap));
 	
 						} else if (MultiYearScope.AllThreeYears.equals(scope)) {
 							for (ContractorAudit conAudit : matchingConAudits) {
 								AuditData data = answerMapByAudits.get(conAudit).get(question.getId());
-								auditCriteriaAnswers.add(new AuditCriteriaAnswer( data, thisMap));
+								if( data != null && data.getAnswer() != null && data.getAnswer().length() > 0 )
+									auditCriteriaAnswers.add(new AuditCriteriaAnswer( data, thisMap));
 							}
 	
 						} else if (MultiYearScope.ThreeYearAverage.equals(scope)) {
@@ -157,7 +158,8 @@ public class AuditCriteriaAnswerBuilder {
 								}
 							}
 							AuditData data = AuditData.addAverageData(dataList);
-							auditCriteriaAnswers.add(new AuditCriteriaAnswer( data, thisMap));
+							if( data != null && data.getAnswer() != null && data.getAnswer().length() > 0 )
+								auditCriteriaAnswers.add(new AuditCriteriaAnswer( data, thisMap));
 						}
 	
 					} else {
@@ -174,21 +176,27 @@ public class AuditCriteriaAnswerBuilder {
 							// figure out if we should be optimistic or pessimistic here
 							// I'm not going to spend much time on this 
 							// because there are no existing use cases of using this yet
-							for(AuditData data : answerMap.getAnswerList(question.getId()))
-								auditCriteriaAnswers.add(new AuditCriteriaAnswer( data, thisMap));
+							for(AuditData data : answerMap.getAnswerList(question.getId())) {
+								if( data != null && data.getAnswer() != null && data.getAnswer().length() > 0 ) {
+									auditCriteriaAnswers.add(new AuditCriteriaAnswer( data, thisMap));
+								}
+							}
 							
 						} else if( question.getParentQuestion() != null ) {
 							// These questions are "child" questions, so we must first find their parent
 							for(AuditData parentData : answerMap.getAnswerList(question.getParentQuestion().getId())) {
 								// For each row, get the child answer and evaluate it
 								AuditData data = answerMap.get(question.getId(), parentData.getId());
-								auditCriteriaAnswers.add(new AuditCriteriaAnswer( data, thisMap));
+								if( data != null && data.getAnswer() != null && data.getAnswer().length() > 0 ) {
+									auditCriteriaAnswers.add(new AuditCriteriaAnswer( data, thisMap));
+								}
 							}
 	
 						} else {
 							// DEFAULT : this is a normal (root/non child/non multiple) question
 							AuditData data = answerMap.get(question.getId());
-							auditCriteriaAnswers.add(new AuditCriteriaAnswer( data, thisMap));
+							if( data != null && data.getAnswer() != null && data.getAnswer().length() > 0 )
+								auditCriteriaAnswers.add(new AuditCriteriaAnswer( data, thisMap));
 						}
 					}
 				}
