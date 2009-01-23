@@ -61,7 +61,7 @@
 				format="MM/dd/yyyy" /> by <s:property value="auditor.name"/></s:div>
 			</li>
 			<li>
-				<label>Comment:</label> <s:textfield onblur="return setComment( %{conAudit.id}, %{question.id}, %{question.subCategory.id});" id="comment_%{question.id}" name="comment" />
+				<label>Comment:</label> <s:textfield onblur="return setComment( %{conAudit.id}, %{question.id}, %{id});" id="comment_%{question.id}" name="comment" />
 			</li>
 			<s:if test="question.questionType == 'License'">
 				<li>
@@ -120,7 +120,14 @@
 			</s:else>
 			<li id="verified_<s:property value="question.id"/>" style="display: <s:property value="#attr.displayVerified"/>;"><label>Verified:</label><s:div cssStyle="display:inline;" id="verify_details_%{question.id}"><s:date name="dateVerified"
 				format="MM/dd/yyyy" /> by <s:property value="auditor.name"/></s:div></li>
-			<li><label>Comment:</label> <s:select onchange="return setComment(%{conAudit.id}, %{question.id}, %{question.subCategory.id});" id="comment_%{question.id}" list="emrProblems" name="comment" /></li>
+			<li><label>Comment:</label> 
+				<s:if test="question.subCategory.category.id == 152">
+					<s:select onchange="return setComment(%{conAudit.id}, %{question.id}, %{id});" id="comment_%{question.id}" list="emrProblems" name="comment" />
+				</s:if>
+				<s:else>
+					<s:textfield onblur="return setComment( %{conAudit.id}, %{question.id}, %{id});" id="comment_%{question.id}" name="comment" />
+				</s:else>
+			</li>
 			<li>
 			<hr>
 			</li>

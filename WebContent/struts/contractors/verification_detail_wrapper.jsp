@@ -85,12 +85,12 @@
 		return false;
 	}
 	
-	function setComment(auditId, questionId, catDataId ) {
+	function setComment(auditId, questionId, answerId ) {
 		var comment = $F($('comment_' + questionId));
 		
 		startThinking({div:'status_'+questionId});
 
-		var pars = 'auditData.audit.id='+auditId+'&catDataID='+catDataId+'&auditData.question.id=' + questionId + '&auditData.comment=' + comment;
+		var pars = 'auditData.audit.id='+auditId+'&catDataID=-1&auditData.id='+answerId+'&auditData.question.id=' + questionId + '&auditData.comment=' + comment;
 		var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
 		{
 			method: 'post', 
