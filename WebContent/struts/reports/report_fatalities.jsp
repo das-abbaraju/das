@@ -17,7 +17,7 @@
 			<s:if test="permissions.operator">
 				<td><a href="?orderBy=flag DESC">Flag</a></td>
 			</s:if>
-			<td>For</td>
+			<td><a href="?orderBy=ca.auditFor DESC">For</a></td>
 			<td>Fatalities</td>
 		</tr>
 	</thead>
