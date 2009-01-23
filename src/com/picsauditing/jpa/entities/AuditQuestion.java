@@ -191,7 +191,7 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 		this.isVisible = isVisible;
 	}
 
-	@Column(name = "title", nullable = false, length = 250)
+	@Column(name = "title", length = 250)
 	public String getTitle() {
 		return this.title;
 	}
