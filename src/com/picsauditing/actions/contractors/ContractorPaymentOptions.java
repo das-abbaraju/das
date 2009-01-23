@@ -260,6 +260,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		types.add("Visa");
 		types.add("Mastercard");
 		types.add("Discover Card");
+		types.add("American Express");
 		return types;
 	}
 
