@@ -37,6 +37,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.log.PicsLogger;
 
 /**
  * Properly add/remove all necessary audits for a given contractor
@@ -80,6 +81,7 @@ public class AuditBuilder {
 	}
 
 	public void buildAudits(ContractorAccount contractor) {
+		PicsLogger.start("BuildAudits", " conID=" + contractor.getId());
 		List<ContractorAudit> currentAudits = contractor.getAudits();
 
 		List<AuditStatus> okStatuses = new ArrayList<AuditStatus>();
@@ -273,6 +275,7 @@ public class AuditBuilder {
 				fillAuditCategories(conAudit);
 			}
 		}
+		PicsLogger.stop();
 	}
 
 	public void fillAuditOperators( Integer contractorId, Integer auditId ) {
