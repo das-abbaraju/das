@@ -36,6 +36,8 @@ select * from `certificates`;
 update audit_type set mustVerify = 1
 where auditTypeID in (1,11) or classType = 'Policy';
 
+update contractor_info set paymentMethodStatus = 'Missing';
+
 update audit_type set hasRequirements = 0
 where mustVerify = 1;
 
