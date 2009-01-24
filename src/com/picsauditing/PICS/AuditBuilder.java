@@ -275,18 +275,13 @@ public class AuditBuilder {
 		PicsLogger.stop();
 	}
 
-	public void fillAuditOperators( Integer contractorId, Integer auditId ) {
-		fillAuditOperators( contractorDAO.find(contractorId), cAuditDAO.find(auditId));
-	}
-	
 	/**
 	 * For each audit (policy), get a list of operators who have InsureGuard and
 	 * automatically require this policy, based on riskLevel
 	 * 
 	 * @param conAudit
 	 */
-	//TODO: I made this public for the InsureGuard migration.  We need to come to a decision after the migration if it should stay that way.
-	public void fillAuditOperators(ContractorAccount contractor, ContractorAudit conAudit) {
+	private void fillAuditOperators(ContractorAccount contractor, ContractorAudit conAudit) {
 		if (!AuditTypeClass.Policy.equals(conAudit.getAuditType().getClassType()))
 			return;
 
@@ -312,14 +307,12 @@ public class AuditBuilder {
 				}
 			}
 			
-			ContractorAuditOperator cao = contractorAuditOperatorDAO.find(conAudit.getId(), operator.getId());
-
-//			for(ContractorAuditOperator cao2 : conAudit.getOperators()) {
-//				if (cao2.getOperator().equals(operator)) {
-//					cao = cao2;
-//					PicsLogger.log("Found cao for " + conAudit.getAuditType().getAuditName());
-//				}
-//			}
+			// Now find isolate the cao record for this operator
+			ContractorAuditOperator cao = null;
+			for(ContractorAuditOperator cao2 : conAudit.getOperators()) {
+				 if (cao2.getOperator().equals(operator))
+					cao = cao2;
+			}
 
 			if (visible) {
 				if (required) {
@@ -334,7 +327,7 @@ public class AuditBuilder {
 						cao.setAuditColumns(user);
 						cao.setStatus(CaoStatus.Awaiting);
 						cao.setRecommendedStatus(CaoStatus.Awaiting);
-						//conAudit.getOperators().add(cao);  
+						conAudit.getOperators().add(cao);
 					}
 				} else {
 					// This cao might be required (if the operator manually requested it)
@@ -347,7 +340,7 @@ public class AuditBuilder {
 						cao.setAuditColumns(user);
 						cao.setStatus(CaoStatus.NotApplicable);
 						cao.setRecommendedStatus(CaoStatus.NotApplicable);
-						//conAudit.getOperators().add(cao);
+						conAudit.getOperators().add(cao);
 					}
 					if (CaoStatus.NotApplicable.equals(cao.getStatus())) {
 						// This operator has specifically stated they don't need this policy
@@ -372,10 +365,6 @@ public class AuditBuilder {
 		PicsLogger.stop();
 	}
 
-	public void fillAuditCategories( Integer auditId ) {
-		fillAuditCategories( cAuditDAO.find(auditId ));
-	}
-	
 	/**
 	 * Determine which categories should be on a given audit and add ones that
 	 * aren't there and remove ones that shouldn't be there

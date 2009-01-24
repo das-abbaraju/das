@@ -31,8 +31,9 @@ public class BuildCertAudits extends PicsActionSupport {
 			List<ContractorAudit> audits = auditDao.findWhere(999999,"auditType.id = " + auditid,"");
 			int processed = 0;
 			for( ContractorAudit audit : audits) {
-				auditBuilder.fillAuditCategories(audit);
-				auditBuilder.fillAuditOperators(audit.getContractorAccount(), audit);
+				// Removed these lines now the conversion is over, so we can make them private again
+				// auditBuilder.fillAuditCategories(audit);
+				// auditBuilder.fillAuditOperators(audit.getContractorAccount(), audit);
 				auditPercentCalculator.percentCalculateComplete(audit, true);
 				System.out.println("processed : " + ++processed + " out of " + audits.size() + " for auditid: " + auditid);
 			}
