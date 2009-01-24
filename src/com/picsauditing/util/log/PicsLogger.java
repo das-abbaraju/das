@@ -65,7 +65,7 @@ public class PicsLogger {
 		log("Starting: " + watch.getName() + " " + message);
 	}
 
-	static public void stop(String message) {
+	static long stop(String message) {
 
 		MyLogger logger = getLogger();
 
@@ -74,15 +74,18 @@ public class PicsLogger {
 		watch = logger.pop();
 
 		if (watch != null) {
+			
 			Date now = new Date();
-			log("Completed: " + watch.getName() + " (" + (now.getTime() - watch.getDate().getTime()) + "ms)");
-			return;
+
+			long millis = now.getTime() - watch.getDate().getTime();
+			log("Completed: " + watch.getName() + " (" + millis + "ms)");
+			return millis;
 		}
 		throw new RuntimeException("pop called with nothing to pop");
 	}
 
-	static public void stop() {
-		stop("");
+	static long void stop() {
+		return stop("");
 	}
 
 	static private MyLogger getLogger() {
