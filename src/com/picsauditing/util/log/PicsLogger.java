@@ -84,7 +84,7 @@ public class PicsLogger {
 		throw new RuntimeException("pop called with nothing to pop");
 	}
 
-	static long stop() {
+	static public long stop() {
 		return stop("");
 	}
 
