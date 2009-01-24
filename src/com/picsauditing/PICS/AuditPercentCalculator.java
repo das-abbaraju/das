@@ -130,7 +130,8 @@ public class AuditPercentCalculator {
 								// This question is dependent on another question's answer
 								// Use the parentAnswer, so we get answers in the same tuple as this one
 								AuditData otherAnswer = answers.get(question.getDependsOnQuestion(), rowAnchor);
-								if (question.getDependsOnAnswer().equals(otherAnswer.getAnswer()))
+								
+								if (otherAnswer != null && question.getDependsOnAnswer().equals(otherAnswer.getAnswer()))
 									isRequired = true;
 							}
 							if (isRequired)
