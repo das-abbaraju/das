@@ -236,14 +236,15 @@ public class FlagCalculator2 {
 		
 		AnswerMapByAudits answerMapByAudits = auditDataDAO.findAnswersByAudits( nonExpiredByContractor, questionIDs );
 		
-		//since the @Transactional annotation is on this method (and it seems for good reason), and not on the class 
-		//level, the runCalc method actually runs from within a different transaction than the transaction in which 
-		//the operator was initially loaded, which means we can't traverse it's graph.  
-		//Reloading the operator on the first line here will give us a connected operator in scope.
-		for (OperatorAccount opFromDifferentTransaction : operators) {  
-			
-			OperatorAccount operator = operatorDAO.find(opFromDifferentTransaction.getId());
-			
+//		//since the @Transactional annotation is on this method (and it seems for good reason), and not on the class 
+//		//level, the runCalc method actually runs from within a different transaction than the transaction in which 
+//		//the operator was initially loaded, which means we can't traverse it's graph.  
+//		//Reloading the operator on the first line here will give us a connected operator in scope.
+//		for (OperatorAccount opFromDifferentTransaction : operators) {  
+//			
+//			OperatorAccount operator = operatorDAO.find(opFromDifferentTransaction.getId());
+		for (OperatorAccount operator : operators) {  
+		
 			//prune our answermapMAP for this operator (take out audits they can't see, and answers to questions they shouldn't see)
 			//also note that this uses the copy constructor, so our local variable answerMapByAUdits is not affected by pruning 
 			//on each run through the "operators" list.
@@ -268,8 +269,12 @@ public class FlagCalculator2 {
 						if (cao.getStatus() == CaoStatus.Awaiting) {
 							CaoStatus recommendedStatus = calcSingle
 									.calculateCaoRecommendedStatus(cao);
-							cao.setRecommendedStatus(recommendedStatus);
-							caoDAO.save(cao);
+							
+							//TODO: this check can save us an update statement.  It was taking forever and we don't know why. 
+							if( recommendedStatus != cao.getRecommendedStatus() ) {
+								cao.setRecommendedStatus(recommendedStatus);
+								caoDAO.save(cao);
+							}
 						}
 					}
 				}
