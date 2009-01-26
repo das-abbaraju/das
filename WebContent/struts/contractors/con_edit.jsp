@@ -112,46 +112,40 @@
 					</div>
 				</li>
 				</s:if>
-				<s:if test="contractor.newBillingAmount > 0">
-					<s:if test="contractor.activeB">
-						<li><label>Next Billing Date:</label> <s:date
-							name="contractor.paymentExpires" format="MMM d, yyyy" /></li>
-						<li><label>Next Billing Amount:</label> $<s:property
-							value="contractor.newBillingAmount" /> USD</li>
-					</s:if>
-					<s:else>
-						<li><label>Membership Fee:</label> $<s:property
-							value="contractor.newBillingAmount" /> USD</li>
-						<li><label>Activation Fee:</label> $<s:property value="contractor.activationFee"/> USD</li>
-						<li><label>Total:</label> $<s:property value="contractor.activationFee+contractor.newBillingAmount"/> USD </li>
-					</s:else>
-					<li><label>Payment Method:</label>
-						<s:if test="contractor.newBillingAmount < 500 && !permissions.admin">
-							<s:radio list="#{'Check':'Check','Credit Card':'Credit Card'}" name="contractor.paymentMethod" theme="pics" disabled="true"/>
-						</s:if>
-						<s:else>
-							<s:radio list="#{'Check':'Check','Credit Card':'Credit Card'}" name="contractor.paymentMethod" theme="pics" onclick="javascript : showPaymentMethodOption(this); return true;"/>
-						</s:else>
-					</li>
-					<li>
-						<s:if test="contractor.paymentMethodCreditCard">
-							<s:set name="creditcard_show" value="'inline'"/>								
-							<s:set name="check_show" value="'none'"/>
-						</s:if>
-						<s:else>
-							<s:set name="creditcard_show" value="'none'"/>								
-							<s:set name="check_show" value="'inline'"/>
-						</s:else>
-
-
-						<span id="creditcard_show" style="display: <s:property value="#attr.creditcard_show"/>;"> Credit card payment is required for billing amounts less than $500. <a id="cc_link" href="#" target="_BLANK" title="Opens In a Secure Window">Edit Credit Card</a><br/></span>
-						<span id="check_show" style="display: <s:property value="#attr.check_show"/>;"> Your invoice will be generated on <s:date name="@com.picsauditing.PICS.DateBean@getFirstofMonth(contractor.paymentExpires,-1)" format="MMM d, yyyy"/> and emailed to <s:property value="contractor.email"/> 
-						<s:if test="!@com.picsauditing.util.Strings@isEmpty(contractor.billingEmail) && !contractor.email.equals(contractor.billingEmail)">	and <s:property value="contractor.billingEmail"/></s:if> with payment terms of net 30.</span>
-					</li>
+				<s:if test="contractor.activeB">
+					<li><label>Next Billing Date:</label> <s:date
+						name="contractor.paymentExpires" format="MMM d, yyyy" /></li>
+					<li><label>Next Billing Amount:</label> $<s:property
+						value="contractor.newBillingAmount" /> USD</li>
 				</s:if>
 				<s:else>
-					<li><label>Status:</label>no payment required</li>
+					<li><label>Membership Fee:</label> $<s:property
+						value="contractor.newBillingAmount" /> USD</li>
+					<li><label>Activation Fee:</label> $<s:property value="contractor.activationFee"/> USD</li>
+					<li><label>Total:</label> $<s:property value="contractor.activationFee+contractor.newBillingAmount"/> USD </li>
 				</s:else>
+				<li><label>Payment Method:</label>
+					<s:if test="contractor.newBillingAmount < 500 && !permissions.admin">
+						<s:radio list="#{'Check':'Check','Credit Card':'Credit Card'}" name="contractor.paymentMethod" theme="pics" disabled="true"/>
+					</s:if>
+					<s:else>
+						<s:radio list="#{'Check':'Check','Credit Card':'Credit Card'}" name="contractor.paymentMethod" theme="pics" onclick="javascript : showPaymentMethodOption(this); return true;"/>
+					</s:else>
+				</li>
+				<li>
+					<s:if test="contractor.paymentMethodCreditCard">
+						<s:set name="creditcard_show" value="'inline'"/>								
+						<s:set name="check_show" value="'none'"/>
+					</s:if>
+					<s:else>
+						<s:set name="creditcard_show" value="'none'"/>								
+						<s:set name="check_show" value="'inline'"/>
+					</s:else>
+
+					<span id="creditcard_show" style="display: <s:property value="#attr.creditcard_show"/>;"> Credit card payment is required for billing amounts less than $500. <a id="cc_link" href="#" target="_BLANK" title="Opens In a Secure Window">Edit Credit Card</a><br/></span>
+					<span id="check_show" style="display: <s:property value="#attr.check_show"/>;"> Your invoice will be generated on <s:date name="@com.picsauditing.PICS.DateBean@getFirstofMonth(contractor.paymentExpires,-1)" format="MMM d, yyyy"/> and emailed to <s:property value="contractor.email"/> 
+					<s:if test="!@com.picsauditing.util.Strings@isEmpty(contractor.billingEmail) && !contractor.email.equals(contractor.billingEmail)">	and <s:property value="contractor.billingEmail"/></s:if> with payment terms of net 30.</span>
+				</li>
 				<li><label>&nbsp;</label>
 						<a href="privacy_policy.jsp">Privacy Policy</a> 
 						| <a href="refund_policy.jsp">Refund Policy</a>

@@ -598,6 +598,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	
 	@Transient
 	public int getActivationFee() {
+		if(newBillingAmount == 0)
+			return 0;
 		if(lastPayment == null)
 			return 99;
 		else
