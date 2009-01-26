@@ -15,9 +15,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.YesNo;
 
 public class AnswerMapByAudits {
 
@@ -33,6 +31,9 @@ public class AnswerMapByAudits {
 		}
 	}
 
+	/**
+	 * Given a set of answers to an audit, figure out if the operator can see the audit and the answers in it
+	 */
 	public AnswerMapByAudits(AnswerMapByAudits toCopy, OperatorAccount operator) {
 
 		if( toCopy != null && toCopy.data != null ) {
@@ -46,56 +47,47 @@ public class AnswerMapByAudits {
 
 		// wrote this as a second set to avoid any
 		// concurrentmodificationexceptions
-		Set<ContractorAudit> auditSet = new HashSet<ContractorAudit>(data
-				.keySet());
+		Set<ContractorAudit> auditSet = new HashSet<ContractorAudit>();
+		auditSet.addAll(data.keySet());
 
 		for (ContractorAudit audit : auditSet) {
-			for (ContractorOperator contractorOperator : operator
-					.getContractorOperators()) {
-				if ("Y".equals(contractorOperator.getWorkStatus()) 
-						|| ( operator.getApprovesRelationships() != null && operator.getApprovesRelationships() == YesNo.No ) ) {
+			boolean canSeeAudit = false;
 
-					boolean canSee = false;
-
-					// check that they can see it
-					for (AuditOperator auditOperator : operator.getAudits()) {
-						if (auditOperator.getAuditType().equals(
-								audit.getAuditType())) {
-							if (auditOperator.isCanSee()) {
-								canSee = true;
-							}
-							break;
-						}
+			// check that they can see it
+			for (AuditOperator auditOperator : operator.getAudits()) {
+				if (auditOperator.getAuditType().equals(
+						audit.getAuditType())) {
+					if (auditOperator.isCanSee()) {
+						canSeeAudit = true;
 					}
-
-					if (canSee) {
-
-						Map<String, List<ContractorAudit>> byAuditTypeName = byContractorIdAndAuditTypeName
-								.get(audit.getContractorAccount().getId());
-
-						if (byAuditTypeName == null) {
-							byAuditTypeName = new HashMap<String, List<ContractorAudit>>();
-							byContractorIdAndAuditTypeName.put(audit
-									.getContractorAccount().getId(),
-									byAuditTypeName);
-						}
-
-						List<ContractorAudit> audits = byAuditTypeName
-								.get(audit.getAuditType().getAuditName());
-
-						if (audits == null) {
-							audits = new Vector<ContractorAudit>();
-							byAuditTypeName.put(audit.getAuditType()
-									.getAuditName(), audits);
-						}
-
-						audits.add(audit);
-					} else {
-						remove(audit);
-					}
-				} else {
-					remove(audit);
+					break;
 				}
+			}
+
+			if (canSeeAudit) {
+
+				Map<String, List<ContractorAudit>> byAuditTypeName = byContractorIdAndAuditTypeName
+						.get(audit.getContractorAccount().getId());
+
+				if (byAuditTypeName == null) {
+					byAuditTypeName = new HashMap<String, List<ContractorAudit>>();
+					byContractorIdAndAuditTypeName.put(audit
+							.getContractorAccount().getId(),
+							byAuditTypeName);
+				}
+
+				List<ContractorAudit> audits = byAuditTypeName
+						.get(audit.getAuditType().getAuditName());
+
+				if (audits == null) {
+					audits = new Vector<ContractorAudit>();
+					byAuditTypeName.put(audit.getAuditType()
+							.getAuditName(), audits);
+				}
+
+				audits.add(audit);
+			} else {
+				remove(audit);
 			}
 		}
 
