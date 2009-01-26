@@ -1,6 +1,7 @@
 package com.picsauditing.util;
 
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -158,6 +159,14 @@ public class Strings {
 			newValue = Float.parseFloat(value);
 		} catch (NumberFormatException e) {}
 		return newValue;
+	}
+	
+	
+	public static String stripNonStandardCharacters( String input ) {
+		input = input.replace('“', '"');
+		input = input.replace('”', '"');
+		input = input.replace("`", "'");
+		return input;
 	}
 	
 }
