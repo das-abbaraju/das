@@ -646,8 +646,8 @@ public class AccountBean extends DataBean {
 	public void updateEmailConfirmedDate(String username) throws Exception {
 		try {
 			DBReady();
-			SQLStatement.executeUpdate("UPDATE accounts SET emailConfirmedDate=CURDATE(),"
-					+ "active='Y' WHERE username='" + username + "'");
+			SQLStatement.executeUpdate("UPDATE accounts SET emailConfirmedDate=CURDATE() "
+					+ "WHERE username='" + username + "'");
 		} finally {
 			DBClose();
 		}
