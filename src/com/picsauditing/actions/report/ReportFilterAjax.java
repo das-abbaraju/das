@@ -56,7 +56,7 @@ public class ReportFilterAjax extends PicsActionSupport {
 		filter.setAllowCollapsed(false);
 		filter.setAllowMailMerge(true);
 
-		if (listType.equals(ListType.User))
+		if (listType != null && listType.equals(ListType.User))
 			return "userfilters";
 
 		return SUCCESS;
