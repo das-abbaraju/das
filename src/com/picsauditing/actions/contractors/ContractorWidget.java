@@ -117,7 +117,8 @@ public class ContractorWidget extends ContractorActionSupport {
 
 				if (conAudit.getAuditStatus().equals(AuditStatus.Pending)
 						&& conAudit.getAuditType().isCanContractorView()
-						&& !conAudit.getAuditType().isCanContractorEdit()) {
+						&& !conAudit.getAuditType().isCanContractorEdit() 
+						&& conAudit.getAuditType().isHasAuditor()) {
 					String text = "Prepare for an <a href=\"Audit.action?auditID="
 							+ conAudit.getId()
 							+ "\">upcoming "
