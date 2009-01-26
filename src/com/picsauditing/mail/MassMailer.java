@@ -156,6 +156,7 @@ public class MassMailer extends PicsActionSupport {
 				for (Integer id : ids) {
 					addTokens(id);
 					EmailQueue email = emailBuilder.build();
+					email.setEmailTemplate(null);
 					emailQueueDAO.save(email);
 				}
 				wizardSession.clear();

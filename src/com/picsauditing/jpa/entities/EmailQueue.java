@@ -166,7 +166,7 @@ public class EmailQueue implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "templateID")
+	@JoinColumn(name = "templateID", nullable=true)
 	public EmailTemplate getEmailTemplate() {
 		return emailTemplate;
 	}
