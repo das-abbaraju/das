@@ -155,17 +155,13 @@ public class ContractorAuditAction extends AuditActionSupport {
 			}
 
 			if (auditStatus.equals(AuditStatus.Submitted)) {
+				String notes = "";
 				if (conAudit.getAuditType().isPqf()) {
 					// Add a note...
 					// TODO we should probably stop doing this...it's kind of
 					// pointless or at least we should do it for other audits
 					// too
-					ContractorBean cBean = new ContractorBean();
-					cBean.setFromDB(conAudit.getContractorAccount().getIdString());
-					String notes = conAudit.getContractorAccount().getName() + " Submitted their PQF ";
-					cBean.addNote(conAudit.getContractorAccount().getIdString(), permissions.getName(), notes, DateBean
-							.getTodaysDate());
-					cBean.writeToDB();
+					notes = conAudit.getContractorAccount().getName() + " Submitted their PQF ";
 				}
 				int typeID = conAudit.getAuditType().getAuditTypeID();
 				if (typeID == AuditType.DESKTOP || typeID == AuditType.DA) {
@@ -180,7 +176,14 @@ public class ContractorAuditAction extends AuditActionSupport {
 					emailBuilder.setPermissions(permissions);
 					emailBuilder.setConAudit(conAudit);
 					EmailSender.send(emailBuilder.build());
+					
+					notes = conAudit.getAuditType().getAuditName() + " Submission email sent for outstanding requirements.";
 				}
+				ContractorBean cBean = new ContractorBean();
+				cBean.setFromDB(conAudit.getContractorAccount().getIdString());
+				cBean.addNote(conAudit.getContractorAccount().getIdString(), permissions.getName(), notes, DateBean
+						.getTodaysDate());
+				cBean.writeToDB();
 			}
 
 			// Save the audit status
