@@ -41,8 +41,6 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 		// sql = new SelectContractorAudit();
 		this.auditDataDao = auditDataDao;
 		this.auditQuestionDao = auditQuestionDao;
-		
-		orderByDefault = "ca.createdDate";
 	}
 
 	@Override
