@@ -179,6 +179,9 @@ public class ContractorAuditAction extends AuditActionSupport {
 					
 					notes = conAudit.getAuditType().getAuditName() + " Submission email sent for outstanding requirements.";
 				}
+				else
+					notes = conAudit.getAuditType().getAuditName() + " Submitted";
+				
 				ContractorBean cBean = new ContractorBean();
 				cBean.setFromDB(conAudit.getContractorAccount().getIdString());
 				cBean.addNote(conAudit.getContractorAccount().getIdString(), permissions.getName(), notes, DateBean
