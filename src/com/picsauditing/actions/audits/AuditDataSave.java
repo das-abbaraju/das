@@ -140,8 +140,14 @@ public class AuditDataSave extends AuditActionSupport {
 			
 			
 			if( auditData.getAudit() != null ) {
-				ContractorAudit tempAudit = auditData.getAudit();
-			
+				ContractorAudit tempAudit = null;
+				if(!auditDao.isContained(auditData.getAudit())) {
+					findConAudit();
+					tempAudit = conAudit;
+				}	
+				else
+					tempAudit = auditData.getAudit();
+				
 				if( tempAudit.getAuditType() != null && tempAudit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
 					
 					if( tempAudit.getAuditStatus() == AuditStatus.Active ) {
