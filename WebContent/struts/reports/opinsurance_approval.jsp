@@ -53,10 +53,6 @@
 	escape="false" /></div>
 <s:form id="approveInsuranceForm" method="post" cssClass="forms">
 <br/><br/>
-<strong>By default, these show in order they were entered in the PICS system.</strong>
-<br/><br/>
-Set all statuses to: <s:select cssClass="statusSelects" onchange="javascript: return syncSelects(this);" name="newStatuses" list="#{'':'No Change','Approved':'Approved','Awaiting':'Awaiting','Rejected':'Rejected'}"/>	
-<input type="submit" onclick="javascript: return saveRows('approveInsuranceForm');" value="Update Selected"/>		
 	<table class="report">
 		<thead>
 			<tr>
@@ -74,7 +70,7 @@ Set all statuses to: <s:select cssClass="statusSelects" onchange="javascript: re
 		<s:iterator value="data" status="stat">
 			<tr>
 				<td style="text-align: center;">
-					<input type="checkbox" class="massCheckable" checked="checked" name="caoids" value="<s:property value="get('caoId')"/>"/>
+					<input type="checkbox" class="massCheckable" name="caoids" value="<s:property value="get('caoId')"/>"/>
 				</td>
 				<td style="text-align: center;" >
 					<s:if test="( get('caoRecommendedStatus') == null ) || ( get('caoRecommendedStatus') == 'Awaiting' )"></s:if>
