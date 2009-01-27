@@ -241,7 +241,7 @@ public class AuditDataDAO extends PicsDAO {
 		Map<Integer, AuditData> data = new HashMap<Integer, AuditData>();
 		Query query = em
 				.createQuery("FROM AuditData d "
-						+ "WHERE audit IN (FROM ContractorAudit WHERE contractorAccount.id = ? AND auditStatus IN ('Active','Submitted','Pending')) "
+						+ "WHERE audit IN (FROM ContractorAudit WHERE contractorAccount.id = ? AND auditStatus IN ('Active','Submitted','Pending','Resubmitted')) "
 						+ "AND question.id =  " + questionId + "" + ")");
 		query.setParameter(1, conID);
 		for (Object ad : query.getResultList()) {
