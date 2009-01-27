@@ -43,7 +43,14 @@
 			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
 			<td><s:property value="auditFor"/></td>
 			<td><s:date name="createdDate" format="M/d/yy" /></td>
-			<td><s:property value="requestingOpAccount.name" /></td>
+			<td>
+				<s:if test="requestingOpAccount.name != null">
+					<s:property value="requestingOpAccount.name" />
+				</s:if>
+				<s:else>
+					Shared
+				</s:else>
+			</td>
 			<td><s:property value="auditor.name" /></td>
 			<td><s:date name="scheduledDate" format="M/d/yy HH:mm" /></td>
 			<td align="right"><s:if test="auditStatus.toString() == 'Pending'">
@@ -63,6 +70,33 @@
 			</pics:permission>
 		</tr>
 	</s:iterator>
+	<s:if test="manuallyAddAudit">
+		<s:if test="auditTypeName.size > 0">
+			<tr>
+				<td id="addAudit" colspan="11" class="center">
+					<a href="#" onclick="showAddAudit(); return false;">Add Audit Manually</a>
+				</td>
+			</tr>
+		</s:if>
+		<tr id="addAuditManually" style="display: none;">
+		<s:form method="post" id="form1">
+			<td>
+			<div class="buttons">
+				<button class="positive" name="button" type="submit" value="Add">Add</button>
+			</div>
+			</td>
+			<td colspan="3" class="center">
+				<s:hidden name="id" value="%{id}"/>
+				<s:select list="auditTypeName" listKey="auditTypeID" listValue="auditName" headerKey="" headerValue="- Select an Audit to be Created -" name="selectedAudit"/>
+			</td>
+			<td colspan="7" class="center">
+				<pics:permission perm="AllOperators">
+					<s:select list="operators" listKey="operatorAccount.id" listValue="operatorAccount.name" name="selectedOperator" headerKey="" headerValue="- Shared by All Operators -"/>
+				</pics:permission>
+			</td>
+		</s:form>	
+	</div>
+	</s:if>		
 </table>
 </s:if>
 <s:if test="currentAudits.size() > 0">
@@ -90,7 +124,14 @@
 			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
 			<td><s:property value="auditFor"/></td>
 			<td><s:date name="closedDate" format="M/d/yy" /></td>
-			<td><s:property value="requestingOpAccount.name" /></td>
+			<td>
+				<s:if test="requestingOpAccount.name != null">
+					<s:property value="requestingOpAccount.name" />
+				</s:if>
+				<s:else>
+					Shared
+				</s:else>
+			</td>
 			<td><s:property value="auditor.name" /></td>
 			<td><s:date name="expiresDate" format="M/d/yy" /></td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />">View</a></td>
@@ -101,8 +142,16 @@
 			</pics:permission>
 		</tr>
 	</s:iterator>
+	
+
 </table>
 </s:if>
+
+
+
+
+
+
 <s:if test="expiredAudits.size() > 0">
 <br/>
 <h3>Expired Audits</h3>
@@ -135,26 +184,6 @@
 	</s:iterator>
 </table>
 <br/><br/>
-</s:if>
-<s:if test="manuallyAddAudit">
-	<s:if test="auditTypeName.size > 0">
-		<div id="addAudit">
-			<a href="#" onclick="showAddAudit(); return false;">Add Audit Manually</a>
-		</div>
-	</s:if>	
-<div id="addAuditManually" style="display: none;">
-<s:form method="post" id="form1" >
-	<s:hidden name="id" value="%{id}"/>
-	<label>Select a Audit to be Created</label>
-	<s:select list="auditTypeName" listKey="auditTypeID" listValue="auditName" name="selectedAudit"/>
-	<pics:permission perm="AllOperators">
-		<s:select list="operators" listKey="operatorAccount.id" listValue="operatorAccount.name" name="selectedOperator" headerKey="" headerValue="- Available to All Operators -"/>
-	</pics:permission>
-	<div class="buttons">
-		<button class="positive" name="button" type="submit" value="Add">Add</button>
-	</div>
-</s:form>	
-</div>
 </s:if>
 </body>
 </html>
