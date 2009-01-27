@@ -23,47 +23,53 @@
 	<tr>
 		<th>Status</th>
 		<th>Type</th>
+		<th>Operator</th>
 	</tr>
 	</thead>
 	<s:iterator value="upComingAudits" status="auditStatus">
 		<tr>
 			<td><s:property value="auditStatus" /></td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
+			<s:if test="requestingOpAccount.name != null">
+				<td><s:property value="requestingOpAccount.name" /></td>
+			</s:if>
+			<s:else>
+				<td>Shared</td>
+			</s:else>
 		</tr>
 	</s:iterator>
-	
-<s:if test="manuallyAddAudit">
-	<s:if test="auditTypeName.size > 0">
-		<tr>
-			<td id="addAudit" colspan="2" class="center">
-				<a href="#" onclick="showAddAudit(); return false;">Add New Policy</a>
+	<s:if test="manuallyAddAudit">
+		<s:if test="auditTypeName.size > 0">
+			<tr>
+				<td id="addAudit" colspan="3" class="center">
+					<a href="#" onclick="showAddAudit(); return false;">Add New Policy</a>
+				</td>
+			</tr>
+		</s:if>
+		<tr id="addAuditManually" style="display: none;">
+		<s:form method="post" id="form1" >
+			<td>
+			<div class="buttons">
+				<button class="positive" name="button" type="submit" value="Add">Add</button>
+			</div>
 			</td>
-		</tr>
-	</s:if>
-	<tr id="addAuditManually" style="display: none;">
-		<td>New</td>
-		<td>
-			<s:form method="post" id="form1" >
+			<td>
 				<s:hidden name="id" value="%{id}"/>
 				<s:select list="auditTypeName" name="selectedAudit" cssClass="pics"
-					headerKey="" headerValue="- Select Policy Type -" 
-					listKey="auditTypeID" listValue="auditName" />
+					headerKey="" headerValue="- Select Policy Type -" listKey="auditTypeID" listValue="auditName" />
+			</td>
+			<td>
 				<s:if test="permissions.contractor || permissions.admin">
-					<br />
-					<s:select list="operators" name="selectedOperator"
-						headerKey="" headerValue="- Available to All Operators -"
-						listKey="operatorAccount.id" listValue="operatorAccount.name" />
+				<s:select list="operators" name="selectedOperator"
+					headerKey="" headerValue="- Shared by All Operators -" listKey="operatorAccount.id" listValue="operatorAccount.name" />
 				</s:if>
-				<div class="buttons">
-					<button class="positive" name="button" type="submit" value="Create">Save</button>
-				</div>
+			</td>
 			</s:form>
-		</td>
-	</tr>
-</s:if>
-
-	
+		</tr>
+	</s:if>
 </table>
+
+
 <s:if test="currentAudits.size() > 0">
 <br/>
 <h3>Current Policies</h3>
