@@ -3,9 +3,9 @@ package com.picsauditing.PICS;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -105,7 +105,7 @@ public class FlagCalculator2 {
 			contractorIDs = contractorDAO.findAll();
 		}
 		debug("...getting question for operators");
-
+		List<Integer> oList = new Vector<Integer>();
 		List<Integer> questionIDs = new ArrayList<Integer>();
 		// Create a list of questions that the operators want to ask
 		for (OperatorAccount operator : operators) {
@@ -113,6 +113,7 @@ public class FlagCalculator2 {
 			operator.getFlagOshaCriteria();
 			operator.getAudits();
 			questionIDs.addAll(operator.getQuestionIDs());
+			oList.add(operator.getId());
 		}
 
 		int count = 1;
@@ -183,6 +184,9 @@ public class FlagCalculator2 {
 
 				questionIDs = new ArrayList<Integer>();
 
+				operators.clear();
+				operators = operatorDAO.findOperators(oList);
+				
 				for (OperatorAccount operator : operators) {
 					// Read the operator data from database
 					operator.getFlagOshaCriteria();

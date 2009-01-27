@@ -237,20 +237,6 @@ public class AuditDataDAO extends PicsDAO {
 		return AuditDataDAO.buildAnswerMapByAudits(results);
 	}
 
-	/**
-	 * Convert a List into a comma-delimited String Note: this could be a good
-	 * candidate to go into a Utility class
-	 * 
-	 * @return
-	 */
-	private String glue(Collection<Integer> listIDs) {
-		StringBuilder ids = new StringBuilder();
-		ids.append("-1"); // so we don't have to worry about this ',110,243'
-		for (Integer id : listIDs)
-			ids.append(",").append(id);
-		return ids.toString();
-	}
-
 	public Map<Integer, AuditData> findAnswersForSafetyManual(int conID, int questionId) {
 		Map<Integer, AuditData> data = new HashMap<Integer, AuditData>();
 		Query query = em

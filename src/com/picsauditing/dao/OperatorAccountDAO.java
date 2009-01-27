@@ -101,6 +101,13 @@ public class OperatorAccountDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public List<OperatorAccount> findOperators(List<Integer> opIds) {
+		
+		Query query = em.createQuery("select a from OperatorAccount a where a.id in (" + glue(opIds) + ") order by a.type, a.name");
+		
+		return query.getResultList();
+	}
+	
 	public int getContractorCount(int id, Permissions permissions) {
 		Account operator = find(id);
 		String where;
