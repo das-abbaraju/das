@@ -151,7 +151,7 @@
 		<s:select list="operators" listKey="operatorAccount.id" listValue="operatorAccount.name" name="selectedOperator" headerKey="" headerValue="- Available to All Operators -"/>
 	</pics:permission>
 	<div class="buttons">
-		<button class="positive" name="button" type="submit" value="Create">Add</button>
+		<button class="positive" name="button" type="submit" value="Add">Add</button>
 	</div>
 </s:form>	
 </div>
