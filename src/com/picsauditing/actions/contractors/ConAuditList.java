@@ -53,7 +53,7 @@ public class ConAuditList extends ContractorActionSupport {
 			}
 		}
 
-		if (button != null && button.equals("Create")) {
+		if (button != null && button.equals("Add")) {
 			boolean alreadyExists = false;
 			if (permissions.isOperator() || permissions.isCorporate())
 				selectedOperator = permissions.getAccountId();
