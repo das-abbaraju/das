@@ -39,7 +39,7 @@ public class HurdleQuestions extends DataBean {
 
 	public String getValueInput(String value){
 		if ("Decimal Number".equals(questionType) || "Money".equals(questionType))
-			return "<input class=forms type=text size=5 name=hurdleValueQ_"+questionID+" value='"+value+"'>";
+			return "<input class=forms type=text size=10 name=hurdleValueQ_"+questionID+" value='"+value+"'>";
 		if ("Check Box".equals(questionType))
 			return Inputs.inputSelect2("hurdleValueQ_"+questionID,"forms",value,VALUE_CHECKED_ARRAY);
 		if ("Yes/No/NA".equals(questionType) || "Yes/No".equals(questionType) || "Manual".equals(questionType))
