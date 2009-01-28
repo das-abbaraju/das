@@ -77,6 +77,10 @@ public class AuditOperator implements java.io.Serializable {
 		this.canEdit = canEdit;
 	}
 
+	/**
+	 * 0 None, 1 Low, 2 Med, 3 High
+	 * @return
+	 */
 	public int getMinRiskLevel() {
 		return minRiskLevel;
 	}

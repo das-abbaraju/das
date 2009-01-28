@@ -5,8 +5,8 @@ import java.util.TreeMap;
 
 import junit.framework.TestCase;
 
+import com.picsauditing.EntityFactory;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.jpa.entities.MultiYearScope;
@@ -16,21 +16,16 @@ public class AuditCriteriaAnswerTest extends TestCase {
 
 	private AuditCriteriaAnswer newAca() {
 		// Initialize answer, question, redFlag, amberFlag
-		AuditQuestion question = new AuditQuestion();
-		question.setQuestion("jUnit Question");
-
-		AuditData answer = new AuditData();
-		answer.setQuestion(question);
-		answer.setAnswer("1.5");
+		AuditData answer = EntityFactory.makeAuditData("1.5");
 
 		Map<FlagColor, FlagQuestionCriteria> criteriaMap = new TreeMap<FlagColor, FlagQuestionCriteria>();
 		FlagQuestionCriteria redFlag = new FlagQuestionCriteria();
 		FlagQuestionCriteria amberFlag = new FlagQuestionCriteria();
 		redFlag.setFlagColor(FlagColor.Red);
-		redFlag.setAuditQuestion(question);
+		redFlag.setAuditQuestion(answer.getQuestion());
 		redFlag.setChecked(YesNo.Yes);
 		amberFlag.setFlagColor(FlagColor.Amber);
-		amberFlag.setAuditQuestion(question);
+		amberFlag.setAuditQuestion(answer.getQuestion());
 		amberFlag.setChecked(YesNo.Yes);
 
 		criteriaMap.put(FlagColor.Amber, amberFlag);

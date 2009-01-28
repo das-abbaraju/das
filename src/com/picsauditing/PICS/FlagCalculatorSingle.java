@@ -78,7 +78,8 @@ public class FlagCalculatorSingle {
 				// Always start with Green
 				audit.setContractorFlag(FlagColor.Green);
 				// removed contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel() (needs further review)
-				if (audit.getRequiredForFlag() != null && !audit.getRequiredForFlag().equals(FlagColor.Green)) {
+				if ( (audit.getMinRiskLevel() == 0 || contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel())
+						&& audit.getRequiredForFlag() != null && !audit.getRequiredForFlag().equals(FlagColor.Green)) {
 					debug(" -- " + audit.getAuditType().getAuditName() + " - " + audit.getRequiredForFlag().toString());
 					// The contractor requires this audit,
 					// make sure they have an active one
