@@ -112,7 +112,7 @@
 					<input title="Check all" type="checkbox" onclick="setAllChecked(this);" checked="checked"/>
 				</td>
 				<td colspan="8" style="text-align: left;">
-					Set all statuses to: <s:select cssClass="statusSelects" onchange="javascript: return syncSelects(this);" name="newStatuses" list="#{'':'No Change','Approved':'Approved','Awaiting':'Awaiting','Rejected':'Rejected'}"/>
+					Set all statuses to: <s:select cssClass="statusSelects" onchange="javascript: return syncSelects(this);" name="newStatuses" list="#{'':'No Change','Approved':'Approved','Awaiting':'Awaiting','NotApplicable':'Not Applicable','Rejected':'Rejected'}"/>
 					<input type="submit" onclick="javascript: return saveRows('approveInsuranceForm');" value="Update Selected"/>		
 				</td>
 		</tr>
