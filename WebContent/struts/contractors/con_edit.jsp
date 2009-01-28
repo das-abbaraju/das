@@ -91,7 +91,7 @@
 						<s:date name="contractor.dateCreated" format="MMM d, yyyy" />
 					</li>
 					<li><label>First Login:</label>
-						<s:date name="contractor.getAccountDate" format="MMM d, yyyy" />
+						<s:date name="contractor.accountDate" format="MMM d, yyyy" />
 					</li>
 					<li><label>Last Login:</label>
 						<s:date name="contractor.lastLogin" format="MMM d, yyyy" />
