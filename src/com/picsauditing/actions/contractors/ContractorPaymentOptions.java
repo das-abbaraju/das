@@ -11,6 +11,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.util.BrainTree;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ContractorPaymentOptions extends ContractorActionSupport {
@@ -50,6 +51,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		if (paymentMethod == null)
 			paymentMethod = creditCard;
+		
 		if (contractor.getPaymentMethodStatus() == null)
 			contractor.setPaymentMethodStatus("Missing");
 
@@ -75,23 +77,30 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 					transactionid, avsresponse, cvvresponse, customer_vault_id,
 					time, key);
 			if (!newHash.equals(hash)) {
-				addActionError(responsetext);
-				addActionError("Invalid response from merchant, if you have questions about this error, please contact us.");
-			} else if (response_code.equals("100")) {
-				contractor.setPaymentMethodStatus("Approved");
-				contractor.setPaymentMethod(creditCard);
-				accountDao.save(contractor);
-				addActionMessage("Successfully Saved");
-			} else if (!Strings.isEmpty(responsetext)) {
+				PicsLogger.log("Hash issues for Contractor id= "
+						+ contractor.getIdString());
+				// addActionError(responsetext);
+				// addActionError("Invalid response from merchant, if you have
+				// questions about this error, please contact us.");
+			}
+
+			if (!Strings.isEmpty(responsetext) && !response.equals("1")) {
 				String errorMessage = responsetext;
 				try {
 					int endPos = responsetext.indexOf("REFID");
 					if (endPos > 1)
 						responsetext.substring(0, endPos - 1);
-				} catch (Exception justUseThePlainResponseText) {}
+				} catch (Exception justUseThePlainResponseText) {
+				}
 				addActionError(errorMessage);
+			} else {
+				contractor.setPaymentMethodStatus("Approved");
+				contractor.setPaymentMethod(creditCard);
+				accountDao.save(contractor);
+				addActionMessage("Successfully Saved");
 			}
 		}
+		
 
 		BrainTreeService ccService = new BrainTreeService();
 		ccService.setUserName(appPropDao.find("brainTree.username").getValue());
