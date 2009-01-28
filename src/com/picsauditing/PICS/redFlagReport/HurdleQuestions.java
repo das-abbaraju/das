@@ -58,7 +58,7 @@ public class HurdleQuestions extends DataBean {
 								"(pc.auditTypeID = 1 AND pc.catID IN (SELECT catID FROM pqfopmatrix WHERE opID = " + opID + ")) " +
 								"OR (pc.auditTypeID > 1 AND pc.auditTypeID IN (SELECT auditTypeID FROM audit_operator WHERE opID = " + opID + " AND canSee = 1))" +
 								") " + 
-								"ORDER BY at.classType, pc.number, ps.number, pq.number";
+								"ORDER BY at.classType, at.auditName, pc.number, ps.number, pq.number";
 		try {
 			DBReady();
 			listRS = SQLStatement.executeQuery(selectQuery);

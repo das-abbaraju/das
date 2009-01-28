@@ -29,6 +29,7 @@ import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
 import com.picsauditing.util.AnswerMapByAudits;
+import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ContractorFlagAction extends ContractorActionSupport {
@@ -65,6 +66,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		limitedView = true;
 		findContractor();
 
+		PicsLogger.start("ContractorFlagAction");
 		if (opID == 0)
 			opID = permissions.getAccountId();
 
@@ -115,6 +117,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 					co2.getFlag().setFlagColor(newColor);
 					contractorOperatorDao.save(co2);
 				}
+				PicsLogger.stop();
 				return SUCCESS;
 			} else {
 				co.setForceBegin(null);
@@ -134,6 +137,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 					operator.getFlag().setFlagColor(forceFlag);
 					contractorOperatorDao.save(operator);
 				}
+				PicsLogger.stop();
 				return SUCCESS;
 			} else {
 				co.setForceEnd(forceEnd);
@@ -154,10 +158,12 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		
 		// Make sure the operator has only the answers that are visible to them
 		AnswerMapByAudits answerMapForOperator = new AnswerMapByAudits(answerMapByAudits, co.getOperatorAccount());
+		PicsLogger.log(" Found " + answerMapForOperator.getAuditSet().size() + " audits in answerMapForOperator");
 		AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, co.getOperatorAccount().getFlagQuestionCriteria());
 		acaList = acaBuilder.getAuditCriteriaAnswers();
 		calculator.setAcaList(acaList);
 		
+		PicsLogger.start("CaoStatus");
 		for( ContractorAudit audit : contractor.getAudits() ) {
 			if( audit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
 				for (ContractorAuditOperator cao : audit.getOperators()) {
@@ -170,14 +176,18 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				}
 			}
 		}
+		PicsLogger.stop();
 		
+		PicsLogger.start("Flag.calculate");
 		FlagColor newColor = calculator.calculate();
+		PicsLogger.stop();
 		if (newColor != null && !newColor.equals(co.getFlag().getFlagColor()))
 			co.getFlag().setLastUpdate(new Date());
 		co.getFlag().setFlagColor(newColor);
 		co.getFlag().setWaitingOn(calculator.calculateWaitingOn());
 		contractorOperatorDao.save(co);
 
+		PicsLogger.stop();
 		return SUCCESS;
 	}
 

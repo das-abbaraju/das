@@ -18,6 +18,7 @@ import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.AnswerMapByAudits;
+import com.picsauditing.util.log.PicsLogger;
 
 public class AuditCriteriaAnswerBuilder {
 	
@@ -43,6 +44,7 @@ public class AuditCriteriaAnswerBuilder {
 	
 	@SuppressWarnings("unchecked")
 	private void build() {
+		PicsLogger.start("AuditCriteriaAnswerBuilder.build");
 
 		auditCriteriaAnswers = new Vector<AuditCriteriaAnswer>();
 		
@@ -202,6 +204,7 @@ public class AuditCriteriaAnswerBuilder {
 				}
 			}
 		}
+		PicsLogger.stop();
 	}
 
 

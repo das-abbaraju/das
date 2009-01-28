@@ -52,7 +52,6 @@ public class FlagCalculatorSingle {
 	 */
 	public FlagColor calculate() {
 		debug("FlagCalculator.calculate(" + contractor.getId() + "," + operator.getId() + ")");
-		debug(" answerOnly=" + answerOnly);
 
 		// Start positive and see if there are any violations
 		FlagColor flagColor = FlagColor.Green;
@@ -71,14 +70,15 @@ public class FlagCalculatorSingle {
 			// Things can't get worse, just exit
 			return overrideColor;
 
-		debug(" flagColor=" + flagColor);
+		debug(" post override flagColor=" + flagColor);
 
 		for (AuditOperator audit : operator.getAudits()) {
 			audit.setContractorFlag(null);
 			if (audit.isCanSee()) {
 				// Always start with Green
 				audit.setContractorFlag(FlagColor.Green);
-				if (contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel() && audit.getRequiredForFlag() != null) {
+				// removed contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel() (needs further review)
+				if (audit.getRequiredForFlag() != null && !audit.getRequiredForFlag().equals(FlagColor.Green)) {
 					debug(" -- " + audit.getAuditType().getAuditName() + " - " + audit.getRequiredForFlag().toString());
 					// The contractor requires this audit,
 					// make sure they have an active one
@@ -88,65 +88,56 @@ public class FlagCalculatorSingle {
 					
 					int annualAuditCount = 0;
 					for (ContractorAudit conAudit : conAudits) {
-						boolean statusOK = false;
-						boolean typeOK = false;
-						if (conAudit.getAuditStatus() == AuditStatus.Active)
-							statusOK = true;
-						if (conAudit.getAuditStatus() == AuditStatus.Resubmitted)
-							statusOK = true;
-						if (conAudit.getAuditStatus() == AuditStatus.Exempt)
-							statusOK = true;
-						if (conAudit.getAuditStatus() == AuditStatus.Submitted
-								&& audit.getRequiredAuditStatus() == AuditStatus.Submitted)
-							statusOK = true;
-						if (conAudit.getAuditType().equals(audit.getAuditType()))
-							typeOK = true;
-						if (conAudit.getAuditType().getAuditTypeID() == AuditType.NCMS
-								&& audit.getAuditType().getAuditTypeID() == AuditType.DESKTOP)
-							typeOK = true;
-	
-						if (typeOK) {
-							if (statusOK) {
-								// We found a matching "valid" audit for this 
-								// contractor audit requirement
-								debug(" ---- found");
-		
-								if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM) {
-									// We actually require THREE annual addendums 
-									// before we consider this requirement complete
-									annualAuditCount++;
-								} else if(audit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
-									// Policies have a different type of requirement
-									for(ContractorAuditOperator cao : conAudit.getOperators()) {
-										if (cao.getOperator().equals(operator) 
-												&& !CaoStatus.NotApplicable.equals(cao.getRecommendedStatus())
-												&& CaoStatus.Approved.equals(cao.getStatus())) {
-											// If the cao is applicable, then it must be approved for this operator
-											audit.setContractorFlag(FlagColor.Green);
-										}
+						if (conAudit.getAuditType().getClassType().isAudit()) {
+							boolean statusOK = false;
+							boolean typeOK = false;
+							if (conAudit.getAuditStatus() == AuditStatus.Active)
+								statusOK = true;
+							if (conAudit.getAuditStatus() == AuditStatus.Resubmitted)
+								statusOK = true;
+							if (conAudit.getAuditStatus() == AuditStatus.Exempt)
+								statusOK = true;
+							if (conAudit.getAuditStatus() == AuditStatus.Submitted
+									&& audit.getRequiredAuditStatus() == AuditStatus.Submitted)
+								statusOK = true;
+							if (conAudit.getAuditType().equals(audit.getAuditType()))
+								typeOK = true;
+							if (conAudit.getAuditType().getAuditTypeID() == AuditType.NCMS
+									&& audit.getAuditType().getAuditTypeID() == AuditType.DESKTOP)
+								typeOK = true;
+							
+							if (typeOK) {
+								if (statusOK) {
+									// We found a matching "valid" audit for this 
+									// contractor audit requirement
+									debug(" ---- found");
+			
+									if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM) {
+										// We actually require THREE annual addendums 
+										// before we consider this requirement complete
+										annualAuditCount++;
+									} else {
+										// Regular audits (PQF, Desktop, Office, Field, IM, etc)
+										audit.setContractorFlag(FlagColor.Green);
 									}
-								} else {
-									// Regular audits (PQF, Desktop, Office, Field, IM, etc)
-									audit.setContractorFlag(FlagColor.Green);
 								}
 							}
 							
-							// There is one exception to the status issue
-							// If the operator says a Policy is N/A, then that 
-							// requirement is fine no matter what the auditStatus is
-							if (audit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
-								for(ContractorAuditOperator cao : conAudit.getOperators()) {
-									if (cao.getOperator().equals(operator)) {
-										if (CaoStatus.NotApplicable.equals(cao.getRecommendedStatus())) {
-											// The computer believes this cao is no longer necessary
-											// This could be because the auditType is no longer visible
-											// to the operator or because the operator said it was N/A
-											audit.setContractorFlag(null);
-										}
+						} else {
+							// For Policies
+							for(ContractorAuditOperator cao : conAudit.getOperators()) {
+								if (cao.getOperator().equals(operator)) {
+									if (CaoStatus.NotApplicable.equals(cao.getRecommendedStatus())
+											|| CaoStatus.NotApplicable.equals(cao.getStatus())) {
+										audit.setContractorFlag(null);
+									}
+									if (CaoStatus.Approved.equals(cao.getStatus())) {
+										audit.setContractorFlag(FlagColor.Green);
 									}
 								}
 							}
 						}
+						
 					} // end conAudit
 					if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM && annualAuditCount >= 3) {
 						// Make sure we have atleast three annual addendums
@@ -160,7 +151,7 @@ public class FlagCalculatorSingle {
 			} // end if operator canSee audit
 		} // end for (operator audit)
 
-		debug(" flagColor=" + flagColor);
+		debug(" post audit flagColor=" + flagColor);
 
 		// Initialize the flag color to the default Green
 		for( OshaType oshaType : contractor.getOshas().keySet() ) {
@@ -204,14 +195,15 @@ public class FlagCalculatorSingle {
 					return flagColor;
 			}
 		}
-		debug(" flagColor=" + flagColor);
+		debug(" post osha flagColor=" + flagColor);
 		
 		
+		debug(" evaluating " + acaList.size() + " question criteria");
 		for(AuditCriteriaAnswer aca : acaList) {
 			if (aca.getClassType() == AuditTypeClass.Audit)
 				flagColor = setFlagColor(flagColor, aca.getResultColor());
 		}
-		debug(" aca flagColor=" + flagColor);
+		debug(" post aca flagColor=" + flagColor);
 
 		if (overrideColor != null)
 			return overrideColor;
