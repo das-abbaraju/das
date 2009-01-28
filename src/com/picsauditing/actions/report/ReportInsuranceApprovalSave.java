@@ -108,15 +108,17 @@ public class ReportInsuranceApprovalSave extends PicsActionSupport {
 
 	public void sendEmail(ContractorAuditOperator cao) throws Exception {
 
-		try {
-			EmailBuilder emailBuilder = new EmailBuilder();
-			emailBuilder.setTemplate(33); // Insurance Approval Status Change
-			emailBuilder.setPermissions(permissions);
-			emailBuilder.setContractor(cao.getAudit().getContractorAccount());
-			emailBuilder.addToken("cao", cao);
-			EmailSender.send(emailBuilder.build());
-		} catch (Exception e) {
-			e.printStackTrace();
+		if( cao.getStatus() != CaoStatus.NotApplicable ) {
+			try {
+				EmailBuilder emailBuilder = new EmailBuilder();
+				emailBuilder.setTemplate(33); // Insurance Approval Status Change
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setContractor(cao.getAudit().getContractorAccount());
+				emailBuilder.addToken("cao", cao);
+				EmailSender.send(emailBuilder.build());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		String newNote = cao.getAudit().getAuditType().getAuditName() + " insurance certificate " + cao.getStatus()
