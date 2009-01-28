@@ -132,6 +132,6 @@ public class UserAccess implements java.io.Serializable, Comparable<UserAccess> 
 			return 1;
 		if (o.getOpPerm() == null)
 			return -1;
-		return this.opPerm.getDescription().compareToIgnoreCase(o.getOpPerm().getDescription());
+		return opPerm.getDescription().compareToIgnoreCase(o.getOpPerm().getDescription());
 	}
 }
