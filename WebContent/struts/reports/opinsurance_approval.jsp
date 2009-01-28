@@ -45,7 +45,6 @@
 	}
 </SCRIPT>
 </head>
-
 <body>
 <h1>Insurance Policy Approval</h1>
 <s:include value="filters.jsp" />
@@ -59,6 +58,9 @@
 				<td>Select All<br/><input title="Check all" type="checkbox" onclick="setAllChecked(this);" checked="checked"/></td>
 				<td title="PICS Recommendation" style="cursor: help;">Recommend</td>
 				<td><a href="javascript: changeOrderBy('form1','a.name');">Policy</a></td>
+				<s:if test="requiresActivePolicy">	
+					<td>Status</td>
+				</s:if>
 				<td align="center"><a href="javascript: changeOrderBy('form1','expiresDate ASC');">Expires</a></td>
 				<td>Limits</td>
 				<td title="Waiver of Subrogation">Waiver</td>
@@ -85,8 +87,11 @@
 					<a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="[0].get('name')"/></a> -
 					<a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="[0].get('auditName')"/></a> 
 				</td>
+				<s:if test="requiresActivePolicy">
+					<td><s:property value="get('auditStatus')"/></td>
+				</s:if>
 				<td class="reportDate"><s:date name="get('expiresDate')" format="M/d/yy" /></td>
-				<td >
+				<td>
 					<s:iterator value="getDataForAudit(get('auditID'),'limits')">
 						<s:property value="new java.text.DecimalFormat('$#,##0').format(new java.lang.Long(answer))"/> - <s:property value="question.question"/><br/>
 					</s:iterator>
@@ -121,9 +126,8 @@
 		
 	</div>
 </s:form>
-<div>
-<s:property value="report.pageLinksWithDynamicForm" escape="false" />
-</div>
+<div><s:property value="report.pageLinksWithDynamicForm"
+	escape="false" /></div>
 </body>
 </html>
 				

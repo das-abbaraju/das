@@ -15,6 +15,7 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AccountName;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.AnswerMap;
@@ -53,7 +54,7 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 	public void buildQuery() {
 		auditTypeClass = AuditTypeClass.Policy;
 		super.buildQuery();
-		
+		sql.addField("a_op.requiredAuditStatus");
 		sql.addField("ca.expiresDate");
 		sql.addField("ao.name as operatorName");
 		sql.addField("cao.status as caoStatus");
@@ -288,6 +289,16 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 			e.printStackTrace();
 		}
 	}
-
+	
+	public boolean isRequiresActivePolicy() {
+		if(permissions.seesAllContractors())
+			return true;
+		for (DynaBean bean : data) {
+			String status = bean.get("requiredAuditStatus").toString();
+			if(status.equals(AuditStatus.Active.toString()))
+				return true;
+		}
+		return false;
+	}
 	
 }
