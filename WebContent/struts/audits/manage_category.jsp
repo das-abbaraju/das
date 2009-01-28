@@ -49,22 +49,28 @@
 
 <s:if test="id != 0">
 	<div>
-	<ul id="list">
-		<s:iterator value="category.subCategories">
-			<li id="item_<s:property value="id"/>"
-				title="Drag and drop to change order"><s:property
-				value="number" />. <a
-				href="ManageSubCategory.action?id=<s:property value="id"/>"><s:property
-				value="subCategory" /></a></li>
-		</s:iterator>
-	</ul>
-	<a href="AuditCat.action?catID=<s:property value="category.id" />">Preview Category</a>&nbsp;&nbsp;
-	<a href="ManageSubCategory.action?button=AddNew&parentID=<s:property value="category.id"/>&subCategory.category.id=<s:property value="category.id"/>">Add
-		New Sub Category</a> <script type="text/javascript">
-			//<![CDATA[Sortable.create("list",{onUpdate:function(){new Ajax.Updater('list-info', 'OrderAuditChildrenAjax.action?id=<s:property value="category.id"></s:property>&type=AuditCategory', {asynchronous:true, evalScripts:true, onComplete:function(request){new Effect.Highlight("list",{});}, parameters:Sortable.serialize("list")})}})	//]]>
-	</script>
-	<div id="list-info"></div>
+		<ul id="list" title="Drag and drop to change order">
+			<s:iterator value="category.subCategories">
+				<li id="item_<s:property value="id"/>"
+					title="Drag and drop to change order"><s:property
+					value="number" />.
+					<a
+					href="ManageSubCategory.action?id=<s:property value="id"/>"><s:property
+					value="subCategory" /></a></li>
+			</s:iterator>
+		</ul>
+		
+		<a href="AuditCat.action?catID=<s:property value="category.id" />">Preview Category</a>&nbsp;&nbsp;
+		<a href="ManageSubCategory.action?button=AddNew&parentID=<s:property value="category.id"/>&subCategory.category.id=<s:property value="category.id"/>">Add
+			New Sub Category</a>
+		<div id="list-info"></div>
 	</div>
+	<script type="text/javascript">
+	//<![CDATA[
+	Sortable.create("list",
+		{onUpdate:function(){new Ajax.Updater('list-info', 'OrderAuditChildrenAjax.action?id=<s:property value="category.id"></s:property>&type=AuditCategory', {asynchronous:true, evalScripts:true, onComplete:function(request){new Effect.Highlight("list",{});}, parameters:Sortable.serialize("list")})}})
+	//]]>
+	</script>
 </s:if>
 </body>
 </html>
