@@ -154,8 +154,13 @@ public class AuditDataSave extends AuditActionSupport {
 						tempAudit.setAuditStatus(AuditStatus.Resubmitted);
 					}
 					
-					if( auditData.getQuestion().getUniqueCode() != null && auditData.getQuestion().getUniqueCode().equals("policyExpirationDate") ) {
+					if( auditData.getQuestion().getUniqueCode() != null && auditData.getQuestion().getUniqueCode().equals("policyExpirationDate") 
+							&& tempAudit.getExpiresDate() != null ) {
 						tempAudit.setExpiresDate(DateBean.parseDate( auditData.getAnswer() ) );
+					}
+					if( auditData.getQuestion().getUniqueCode() != null && auditData.getQuestion().getUniqueCode().equals("policyEffectiveDate") 
+							&& tempAudit.getCreatedDate() != null ) {
+						tempAudit.setCreatedDate(DateBean.parseDate( auditData.getAnswer() ) );
 					}
 
 					auditDao.save(tempAudit);
