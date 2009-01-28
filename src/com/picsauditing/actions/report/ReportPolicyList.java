@@ -16,11 +16,16 @@ public class ReportPolicyList extends ReportContractorAudits {
 		auditTypeClass = AuditTypeClass.Policy;
 
 		super.buildQuery();
-
-		sql.addWhere("atype.classType = 'Policy'");
+		
+		if(permissions.isOperator()) {
+			sql.addField("cao.status AS CaoStatus");
+			sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.auditID");
+			sql.addWhere("cao.opID = "+permissions.getAccountId());
+		}
 		getFilter().setShowPolicyType(true);
 		getFilter().setShowAuditType(false);
 		getFilter().setShowAuditor(false);
 		getFilter().setShowConAuditor(false);
+		getFilter().setShowCaoStatus(true);
 	}
 }

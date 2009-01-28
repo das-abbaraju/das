@@ -22,14 +22,15 @@
 		<td></td>
 	    <th><a href="javascript: changeOrderBy('form1','a.name');" >Contractor</a></th>
 	    <td><a href="javascript: changeOrderBy('form1','atype.auditName');" >Type</a></td>
+	    <s:if test="permissions.operator || permissions.corporate">
+		    <td>Approval Status</td>
+	    </s:if>
 	    <td><a href="javascript: changeOrderBy('form1','ca.createdDate DESC');" >Created</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.completedDate DESC');" >Submitted</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.closedDate DESC');" >Closed</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.expiresDate DESC');" >Expired</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.auditStatus DESC');" >Status</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.percentComplete');" >Comp%</a></td>
-	    <s:if test="%{value = (!permissions.operator && !permissions.corporate)}">
-	    </s:if>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -37,6 +38,9 @@
 		<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 		<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
 		<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:property value="get('auditName')"/> <s:property value="get('auditFor')"/></a></td>
+	    <s:if test="permissions.operator || permissions.corporate">
+		    <td><s:property value="get('CaoStatus')"/></td>
+	    </s:if>
 		<td class="center"><s:date name="get('createdDate')" format="M/d/yy" /></td>
 		<td class="center"><s:date name="get('completedDate')" format="M/d/yy" /></td>
 		<td class="center"><s:date name="get('closedDate')" format="M/d/yy" /></td>
