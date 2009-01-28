@@ -161,16 +161,7 @@ public class AuditBuilder {
 				// active audit that isn't scheduled to expire soon
 				for (ContractorAudit conAudit : contractor.getAudits()) {
 					if (okStatuses.contains(conAudit.getAuditStatus())) {
-						// The contractor audit is not expired
-						int daysToExpiration = 0;
-						if (conAudit.getExpiresDate() == null)
-							// The expiration is null so put the days to
-							// expiration really big
-							daysToExpiration = 1000;
-						else
-							daysToExpiration = DateBean.getDateDifference(conAudit.getExpiresDate());
-
-						if (daysToExpiration > 60) {
+						if ( !conAudit.willExpireSoon() ) {
 							// The audit is still valid for atleast another 60
 							// days
 							if (conAudit.getAuditType().equals(auditType)) {

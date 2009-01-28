@@ -27,6 +27,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
 
 @Entity
@@ -317,6 +318,23 @@ public class ContractorAudit implements java.io.Serializable {
 		if (auditStatus.equals(AuditStatus.Submitted))
 			return completedDate;
 		return closedDate;
+	}
+
+	
+	@Transient
+	public boolean willExpireSoon() {
+		int daysToExpiration = 0;
+		if (getExpiresDate() == null)
+			daysToExpiration = 1000;
+		else
+			daysToExpiration = DateBean.getDateDifference(getExpiresDate());
+		
+		if( getAuditType().getClassType() == AuditTypeClass.Policy ) {
+			return daysToExpiration <= 15;
+		}
+		else {
+			return daysToExpiration <= 60;
+		}
 	}
 	
 	@Transient
