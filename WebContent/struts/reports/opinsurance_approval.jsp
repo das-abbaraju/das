@@ -113,9 +113,7 @@
 				</td>
 		</tr>
 	</table>
-		
-		
-	</div>
+	
 </s:form>
 <div><s:property value="report.pageLinksWithDynamicForm"
 	escape="false" /></div>
