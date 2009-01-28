@@ -21,7 +21,6 @@
   <class>com.picsauditing.jpa.entities.AuditType</class>
   <class>com.picsauditing.jpa.entities.AuditTypeClass</class>
   <class>com.picsauditing.jpa.entities.BaseTable</class>
-  <class>com.picsauditing.jpa.entities.Certificate</class> 
   <class>com.picsauditing.jpa.entities.ContractorAccount</class>
   <class>com.picsauditing.jpa.entities.ContractorAudit</class>
   <class>com.picsauditing.jpa.entities.ContractorAuditOperator</class> 

@@ -83,7 +83,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	protected List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 	protected List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
-	protected List<Certificate> certificates = new ArrayList<Certificate>();
 	protected Map<OperatorAccount, ContractorOperatorFlag> flags = new HashMap<OperatorAccount, ContractorOperatorFlag>();
 
 	// Transient helper methods
@@ -629,15 +628,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	public void setFlags(Map<OperatorAccount, ContractorOperatorFlag> flags) {
 		this.flags = flags;
-	}
-
-	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.REMOVE })
-	public List<Certificate> getCertificates() {
-		return certificates;
-	}
-
-	public void setCertificates(List<Certificate> certificates) {
-		this.certificates = certificates;
 	}
 
 	// /// Transient/Helper Methods ///////

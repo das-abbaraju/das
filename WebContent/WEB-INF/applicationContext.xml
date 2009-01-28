@@ -40,7 +40,6 @@
 	<bean id="UserLoginLogDAO" class="com.picsauditing.dao.UserLoginLogDAO"/>
 	<bean id="OperatorFormDAO" class="com.picsauditing.dao.OperatorFormDAO"/>
 	<bean id="TokenDAO" class="com.picsauditing.dao.TokenDAO"/>
-	<bean id="CertificateDAO" class="com.picsauditing.dao.CertificateDAO"/>
 	<bean id="EmailQueueDAO" class="com.picsauditing.dao.EmailQueueDAO"/>
 	<bean id="EmailTemplateDAO" class="com.picsauditing.dao.EmailTemplateDAO"/>
 	<bean id="NoteDAO" class="com.picsauditing.dao.NoteDAO"/>

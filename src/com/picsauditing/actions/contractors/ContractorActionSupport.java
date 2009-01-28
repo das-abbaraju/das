@@ -15,7 +15,6 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -139,7 +138,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 						&& !audit.equals(AuditStatus.Exempt)) {
 					String year = DateBean.format(audit.getEffectiveDate(), "yy");
 					String linkText = audit.getAuditType().getAuditName() + " '" + year;
-					
+
 					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), audit.getAuditStatus().toString());
 				}
 			}
@@ -155,7 +154,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 					String linkText = audit.getAuditType().getAuditName() + " '" + year;
 					if (!Strings.isEmpty(audit.getAuditFor()))
 						linkText = audit.getAuditFor() + " " + linkText;
-					
+
 					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), audit.getAuditStatus().toString());
 				}
 			}
@@ -198,34 +197,6 @@ public class ContractorActionSupport extends PicsActionSupport {
 				return true;
 		}
 		return false;
-	}
-
-	/**
-	 * Only show the insurance link for contractors who are linked to an
-	 * operator that collects insurance data. Also, don't show the link to users
-	 * who don't have the InsuranceCerts permission.
-	 * 
-	 */
-	public int getInsuranceCount() {
-		int count = 0;
-
-		for (Certificate certificate : contractor.getCertificates()) {
-			if (permissions.isOperator()) {
-				if (permissions.getAccountId() == certificate.getOperatorAccount().getId())
-					count++;
-			} else if (permissions.isCorporate()) {
-				for (ContractorOperator co : getOperators()) {
-					if (co.getOperatorAccount().equals(certificate.getOperatorAccount())) {
-						count++;
-					}
-				}
-			} else {
-				// Admins and contractors can see all the certs for this
-				// contractor
-				count++;
-			}
-		}
-		return count;
 	}
 
 	public boolean isShowHeader() {
@@ -285,7 +256,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 			activeOperators = accountDao.findOperators(contractor, permissions, " AND operatorAccount.active = 'Y' ");
 		return activeOperators;
 	}
-	
+
 	public List<ContractorAudit> getAudits() {
 		List<ContractorAudit> temp = new ArrayList<ContractorAudit>();
 		List<ContractorAudit> list = auditDao.findByContractor(id);
@@ -295,11 +266,11 @@ public class ContractorActionSupport extends PicsActionSupport {
 		}
 		return temp;
 	}
-	
+
 	public TreeMap<String, String> getStateList() {
 		return State.getStates(true);
 	}
-	
+
 	public String[] getCountryList() {
 		return Inputs.COUNTRY_ARRAY;
 	}
