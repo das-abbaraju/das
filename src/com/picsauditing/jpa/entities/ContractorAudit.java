@@ -306,6 +306,9 @@ public class ContractorAudit implements java.io.Serializable {
 
 	@Transient
 	public Date getEffectiveDate() {
+		if( getAuditType().getClassType() == AuditTypeClass.Policy )
+			return createdDate;
+		
 		if (auditStatus.equals(AuditStatus.Pending)) {
 			if (auditor != null && assignedDate != null)
 				return assignedDate;
