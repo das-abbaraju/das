@@ -34,15 +34,6 @@
 		return false;
 	}
 	
-	function syncSelects( elm ) {
-		var objs = document.getElementsByClassName('statusSelects');
-		
-		for( var i = 0; i < objs.length; i++  ) {
-			var current = objs[i];
-			current.value = elm.value;
-		}
-		return false;
-	}
 </SCRIPT>
 </head>
 <body>
@@ -55,7 +46,7 @@
 	<table class="report">
 		<thead>
 			<tr>
-				<td>Select All<br/><input title="Check all" type="checkbox" onclick="setAllChecked(this);" checked="checked"/></td>
+				<td>&nbsp;</td>
 				<td title="PICS Recommendation" style="cursor: help;">Recommend</td>
 				<td><a href="javascript: changeOrderBy('form1','a.name');">Policy</a></td>
 				<s:if test="requiresActivePolicy">	
@@ -93,7 +84,7 @@
 				<td class="reportDate"><s:date name="get('expiresDate')" format="M/d/yy" /></td>
 				<td>
 					<s:iterator value="getDataForAudit(get('auditID'),'limits')">
-						<s:property value="new java.text.DecimalFormat('$#,##0').format(new java.lang.Long(answer))"/> - <s:property value="question.question"/><br/>
+						<s:property value="getFormattedDollarAmount(answer)"/> - <s:property value="question.question"/><br/>
 					</s:iterator>
 				</td>
 				<td>
@@ -114,10 +105,10 @@
 		</s:iterator>
 		<tr>
 				<td style="text-align: center;">
-					<input title="Check all" type="checkbox" onclick="setAllChecked(this);" checked="checked"/>
+					<nobr><input title="Check all" type="checkbox" onclick="setAllChecked(this);"/> Select All</nobr>
 				</td>
 				<td colspan="8" style="text-align: left;">
-					Set all statuses to: <s:select cssClass="statusSelects" onchange="javascript: return syncSelects(this);" name="newStatuses" list="#{'':'No Change','Approved':'Approved','Awaiting':'Awaiting','NotApplicable':'Not Applicable','Rejected':'Rejected'}"/>
+					Set statuses to: <s:select cssClass="statusSelects" name="newStatuses" list="#{'':'No Change','Approved':'Approved','Awaiting':'Awaiting','NotApplicable':'Not Applicable','Rejected':'Rejected'}"/>
 					<input type="submit" onclick="javascript: return saveRows('approveInsuranceForm');" value="Update Selected"/>		
 				</td>
 		</tr>
