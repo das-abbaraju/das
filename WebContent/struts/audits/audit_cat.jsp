@@ -32,6 +32,24 @@
 <body>
 <s:if test="auditID > 0">
 <s:include value="../contractors/conHeader.jsp" />
+
+<s:if test="conAudit.auditType.classType.toString() == 'Policy' && !canEdit">
+	<s:if test="permissions.operator">
+		<div id="alert">More than one facility has access to this data. Please contact PICS if any changes are needed.</div>
+	</s:if>
+	<s:if test="conAudit.willExpireSoon() && !conAudit.auditStatus.expired">
+		<div id="alert">This policy is about to Expire. Please update your information on 
+			<s:iterator value="conAudit.contractorAccount.audits" id="newPending">
+				<s:if test="#newPending.auditType.classType.toString() == 'Policy' && conAudit.id != #newPending.id">
+					<s:if test="conAudit.auditType == #newPending.auditType && #newPending.auditStatus.pending">
+						<a href="Audit.action?auditID=<s:property value="#newPending.id"/>"><s:property value="#newPending.auditType.auditName"/></a>
+					</s:if>
+				</s:if>
+			</s:iterator>
+		</div>
+	</s:if>
+</s:if>
+
 <s:include value="audit_cat_nav.jsp" />
 </s:if>
 <div id="auditToolbar" class="right">

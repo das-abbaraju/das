@@ -207,7 +207,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (permissions.isContractor()) {
 			if (type.isAnnualAddendum() && conAudit.getAuditStatus().equals(AuditStatus.Active))
 				return false;
-
+			if(type.getClassType().equals(AuditTypeClass.Policy) && conAudit.willExpireSoon())
+				return false;
+			
 			if (type.isCanContractorEdit())
 				return true;
 			else
@@ -218,8 +220,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return false;
 
 		if (permissions.isOperator()) {
-
 			if (conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+				if(conAudit.willExpireSoon())
+					return false;
 				if (conAudit.getOperators().size() == 1
 						&& conAudit.getOperators().get(0).getOperator().getId() == permissions.getAccountId())
 					return true;
