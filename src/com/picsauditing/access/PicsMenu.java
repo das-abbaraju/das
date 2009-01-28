@@ -152,7 +152,7 @@ public class PicsMenu {
 			subMenu.addChild("Edit Corporate", "ReportAccountList.action?accountType=Corporate");
 		if (permissions.hasPermission(OpPerms.ManageOperators))
 			subMenu.addChild("Edit Operators", "ReportAccountList.action?accountType=Operator");
-		if (permissions.hasPermission(OpPerms.ManageOperators))
+		if (permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit))
 			subMenu.addChild("Assign Audit/Operator", "AuditOperator.action");
 		
 		subMenu = menu.addChild("Reports");

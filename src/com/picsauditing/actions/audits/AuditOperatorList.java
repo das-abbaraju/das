@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditOperatorDAO;
 import com.picsauditing.dao.AuditTypeDAO;
@@ -42,7 +43,7 @@ public class AuditOperatorList extends PicsActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		permissions.tryPermission(OpPerms.ManageOperators);
+		permissions.tryPermission(OpPerms.ManageOperators, OpType.Edit);
 
 		operators = operatorDAO.findWhere(false, "", permissions);
 
