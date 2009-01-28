@@ -92,10 +92,12 @@
 		</tr>
 	</thead>
 	<s:iterator value="conAudit.operators" status="rowStatus">
-		<tr>
-			<td><s:property value="operator.name"/></td>
-			<td><s:property value="status"/></td>
-		</tr>
+		<s:if test="operator.id == permissions.accountId">
+			<tr>
+				<td><s:property value="operator.name"/></td>
+				<td><s:property value="status"/></td>
+			</tr>
+		</s:if>
 	</s:iterator>
 </table>
 </s:if>
