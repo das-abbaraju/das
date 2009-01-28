@@ -1,5 +1,6 @@
 package com.picsauditing.actions.report;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -202,8 +203,13 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 
 				AuditQuestion aiNameQuestion = byUniqueCode.get("aiName");
 
-				AuditData aiNameAnswer = answersForThisAudit.get(aiNameQuestion
-						.getId());
+				AuditData aiNameAnswer = null;
+				
+				if( aiNameQuestion != null && answersForThisAudit != null ) {
+					aiNameAnswer = answersForThisAudit.get(aiNameQuestion
+							.getId());	
+				}
+				
 				if (aiNameAnswer != null) {
 
 					Map<Integer, List<AuditData>> byAuditId = questionData
@@ -301,4 +307,20 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 		return false;
 	}
 	
+	public static String getFormattedDollarAmount( String answer )  {
+		String response = "$0";
+		
+		try {
+			String temp = answer.replaceAll(",", "");
+			DecimalFormat decimalFormat = new DecimalFormat("$#,##0");
+			
+			Long input = new Long( temp );
+			
+			response = decimalFormat.format(input);
+		}
+		catch( Exception e ) {
+			System.out.println("unable to format as money: " + answer);
+		}
+		return response;
+	}
 }
