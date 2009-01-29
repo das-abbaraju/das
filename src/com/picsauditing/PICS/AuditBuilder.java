@@ -86,6 +86,7 @@ public class AuditBuilder {
 		okStatuses.add(AuditStatus.Pending);
 		okStatuses.add(AuditStatus.Submitted);
 		okStatuses.add(AuditStatus.Exempt);
+		okStatuses.add(AuditStatus.Resubmitted);
 
 		List<Integer> requiresSafetyManual = new ArrayList<Integer>();
 		requiresSafetyManual.add(AuditType.DESKTOP);
