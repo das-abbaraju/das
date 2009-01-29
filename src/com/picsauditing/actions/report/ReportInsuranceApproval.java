@@ -98,7 +98,7 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 	 * question data that is not returned in the main query 
 	 * 
 	 * @param auditId
-	 * @param purpose - kind of like a column name. Known keys for this are: aiFile, aiWaiverSub, aiName, or limits
+	 * @param purpose - kind of like a column name. Known keys for this are: aiFile, aiWaiverSub, aiName, aiMatches, aiOther or limits
 	 * @return List<AuditData>
 	 */
 	public List<AuditData> getDataForAudit(int auditId, String purpose) {
@@ -163,7 +163,7 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 			// These are the 3 questions listed as part of the Additional Insured subCategory
 			List<AuditQuestion> questions = auditQuestionDao
 					.findQuestionsByUniqueCodes(Arrays.asList("aiName",
-							"aiFile", "aiWaiverSub"));
+							"aiFile", "aiWaiverSub", "aiMatches", "aiOther"));
 
 			{
 				// Fill out the double map (AuditTypeName->UniqueCode->AuditQuestion)
@@ -203,49 +203,51 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 
 				AuditQuestion aiNameQuestion = byUniqueCode.get("aiName");
 
-				AuditData aiNameAnswer = null;
+				List<AuditData> aiNameAnswers = null;
 				
 				if( aiNameQuestion != null && answersForThisAudit != null ) {
-					aiNameAnswer = answersForThisAudit.get(aiNameQuestion
+					aiNameAnswers = answersForThisAudit.getAnswerList(aiNameQuestion
 							.getId());	
 				}
 				
-				if (aiNameAnswer != null) {
+				if (aiNameAnswers != null) {
 
-					Map<Integer, List<AuditData>> byAuditId = questionData
-							.get("aiName");
-
-					if (byAuditId == null) {
-						byAuditId = new HashMap<Integer, List<AuditData>>();
-						questionData.put("aiName", byAuditId);
-					}
-
-					List<AuditData> answers = byAuditId.get(thisAuditId);
-
-					if (answers == null) {
-						answers = new Vector<AuditData>();
-						byAuditId.put(thisAuditId, answers);
-					}
-
-					// find get all the operator's legal names
-					if (permissions.isOperator()) {
-						OperatorAccount thisOp = (OperatorAccount) getUser()
-								.getAccount();
-
-						List<AccountName> names = thisOp.getNames();
-
-						if (names != null) {
-							for (AccountName accountName : names) {
-								if (accountName.getName().equalsIgnoreCase(
-										aiNameAnswer.getAnswer())) {
-									answers.add(aiNameAnswer);
-									break;
+					for( AuditData aiNameAnswer : aiNameAnswers ) {
+						
+						Map<Integer, List<AuditData>> byAuditId = questionData
+								.get("aiName");
+	
+						if (byAuditId == null) {
+							byAuditId = new HashMap<Integer, List<AuditData>>();
+							questionData.put("aiName", byAuditId);
+						}
+	
+						List<AuditData> answers = byAuditId.get(thisAuditId);
+	
+						if (answers == null) {
+							answers = new Vector<AuditData>();
+							byAuditId.put(thisAuditId, answers);
+						}
+	
+						// find get all the operator's legal names
+						if (permissions.isOperator()) {
+							OperatorAccount thisOp = (OperatorAccount) getUser()
+									.getAccount();
+	
+							List<AccountName> names = thisOp.getNames();
+	
+							if (names != null) {
+								for (AccountName accountName : names) {
+									if (accountName.getName().equalsIgnoreCase(
+											aiNameAnswer.getAnswer())) {
+										answers.add(aiNameAnswer);
+										break;
+									}
 								}
 							}
+	
 						}
-
 					}
-
 				}
 			}
 
@@ -285,7 +287,16 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 							for (AuditData aiAnswer : aiAnswers) {
 								AuditData tmpData = answersForThisAudit.get(
 										question.getId(), aiAnswer.getId());
-								answers.add(tmpData);
+								if( tmpData != null ) {
+									if( uniqueKey.equals("aiWaiverSub")) {
+										if( answers.size() == 0 ) {
+											answers.add(tmpData);
+										}
+									}
+									else {
+										answers.add(tmpData);
+									}
+								}
 							}
 						}
 					}
@@ -307,7 +318,7 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 		return false;
 	}
 	
-	public static String getFormattedDollarAmount( String answer )  {
+	public String getFormattedDollarAmount( String answer )  {
 		String response = "$0";
 		
 		try {
@@ -322,5 +333,34 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 			System.out.println("unable to format as money: " + answer);
 		}
 		return response;
+	}
+	
+	public String getAiNameOrSupercededName( AuditData aiName ) {
+		String response = "";
+		
+		List<AuditData> matchAnswers = getDataForAudit( aiName.getAudit().getId(), "aiMatches");
+		List<AuditData> otherAnswers = getDataForAudit( aiName.getAudit().getId(), "aiOther");
+		
+		if( aiName != null ) {
+			
+			response = aiName.getAnswer();
+			
+			if( matchAnswers != null ) {
+				for( AuditData matchAnswer : matchAnswers ) {
+					if( matchAnswer != null && "No".equals(matchAnswer.getAnswer()) && matchAnswer.getParentAnswer().getId() == aiName.getId()) {
+						if( otherAnswers != null ) {
+							for( AuditData otherAnswer : otherAnswers ) {
+								if( otherAnswer != null && otherAnswer.getAnswer() != null && otherAnswer.getParentAnswer().getId() == aiName.getId() ) {
+									return otherAnswer.getAnswer();
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return response;
+		
 	}
 }

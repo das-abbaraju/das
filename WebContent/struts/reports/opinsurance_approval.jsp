@@ -94,9 +94,18 @@
 				</td>
 				<td>
 					<s:iterator value="getDataForAudit(get('auditID'),'aiName')">
-						<s:iterator value="getDataForAudit(get('auditID'),'aiFile')">
-							<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&answer.id=<s:property value="id"/>" target="_BLANK"><s:property value="[1].answer"/></a><br/>
-						</s:iterator>
+						<s:set name="nameQuestion" value="top"/>
+						<s:set name="aiFiles" value="getDataForAudit(get('auditID'),'aiFile')"/>
+						<s:if test="( #aiFiles != null ) && (#aiFiles.size() > 0 )">
+							<s:iterator value="#aiFiles">
+								<s:if test="parentAnswer.id == #nameQuestion.id">
+									<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&answer.id=<s:property value="id"/>" target="_BLANK"><s:property value="getAiNameOrSupercededName(#nameQuestion)"/></a><br/>
+								</s:if>
+							</s:iterator>
+						</s:if>
+						<s:else>
+							<s:property value="getAiNameOrSupercededName(#nameQuestion)"/></a><br/>						
+						</s:else>
 					</s:iterator>
 				</td>
 				<td><s:textfield name="caos[%{get('caoId')}].notes" value="%{get('caoNotes')}"/></td>
