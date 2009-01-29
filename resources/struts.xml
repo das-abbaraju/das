@@ -769,14 +769,18 @@
 			<result>struts/reports/policy_verification.jsp</result>
 		</action>
 
-		<action name="MigrateCertificates"
-			class="com.picsauditing.actions.MigrateCertificates">
-			<result>struts/blank.jsp</result>
-		</action>
 		<action name="BuildCertAudits"
 			class="com.picsauditing.actions.BuildCertAudits">
 			<result>struts/blank.jsp</result>
 		</action>
+
+		<!--  Development struts mappings -->
+		<!-- 
+		<action name="MigrateCertificates"
+			class="com.picsauditing.actions.MigrateCertificates">
+			<result>struts/blank.jsp</result>
+		</action>
+		-->
 
 		<!-- Remember to Categorize your new Struts pages -->
 	</package>
