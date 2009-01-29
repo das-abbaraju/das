@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -155,11 +157,11 @@ public class AuditDataSave extends AuditActionSupport {
 					}
 					
 					if( auditData.getQuestion().getUniqueCode() != null && auditData.getQuestion().getUniqueCode().equals("policyExpirationDate") 
-							&& tempAudit.getExpiresDate() != null ) {
+							&& !StringUtils.isEmpty(auditData.getAnswer())) {
 						tempAudit.setExpiresDate(DateBean.parseDate( auditData.getAnswer() ) );
 					}
 					if( auditData.getQuestion().getUniqueCode() != null && auditData.getQuestion().getUniqueCode().equals("policyEffectiveDate") 
-							&& tempAudit.getCreatedDate() != null ) {
+							&& !StringUtils.isEmpty(auditData.getAnswer())) {
 						tempAudit.setCreatedDate(DateBean.parseDate( auditData.getAnswer() ) );
 					}
 
