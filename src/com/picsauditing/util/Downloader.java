@@ -33,7 +33,7 @@ public class Downloader {
 
 	public void download(InputStream in, int size, String contentType, String filename) throws IOException {
 		try {
-			resp.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+			resp.setHeader("Content-Disposition", "inline; filename=\"" + filename + "\"");
 			resp.setContentType(contentType);
 			resp.setContentLength(size);
 			byte[] bbuf = new byte[DEFAULT_BUFFER_SIZE];
