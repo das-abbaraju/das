@@ -18,6 +18,11 @@ function getQuestionList() {
 		}
 		);
 }
+
+function setId(Id) {
+	$('removeQuestionId').value = Id;
+	return true;
+}
 </script>
 </head>
 <body>
@@ -31,6 +36,7 @@ function getQuestionList() {
 	<s:hidden name="showPage" value="1" />
 	<s:hidden name="filter.startsWith" />
 	<s:hidden name="orderBy" />
+	<input type="hidden" value="" id="removeQuestionId" name="removeQuestionId">
 
 	<s:iterator value="questions" status="stat">
 		<div class="filterOption">
@@ -39,7 +45,7 @@ function getQuestionList() {
 				<s:hidden name="questions[%{#stat.index}].criteria" value="%{criteria}"></s:hidden>
 				<s:hidden name="questions[%{#stat.index}].criteriaAnswer" value="%{criteriaAnswer}"></s:hidden>
 				<s:property value="shortQuestion"/> <s:property value="criteria"/> <s:property value="criteriaAnswer"/>
-				<button type="submit" class="negative" name="button" value="<s:property value="id"/>">Remove</button>
+				<button type="submit" class="negative" name="button" value="Remove" onclick="javascript : return setId(<s:property value="id"/>);">Remove</button>
 			</div>
 		</div>
 	</s:iterator>

@@ -9,11 +9,13 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportAnswerSearch extends ReportAccount {
 	protected List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
 	protected AuditQuestionDAO auditQuestionDAO;
+	protected String removeQuestionId;
 
 	public ReportAnswerSearch(AuditQuestionDAO auditQuestionDAO) {
 		this.auditQuestionDAO = auditQuestionDAO;
@@ -31,7 +33,8 @@ public class ReportAnswerSearch extends ReportAccount {
 		List<AuditQuestion> newQuestions = new ArrayList<AuditQuestion>();
 		int removeQuestion = -1;
 		try {
-			removeQuestion = Integer.parseInt(button);
+			if(!Strings.isEmpty(removeQuestionId))
+				removeQuestion = Integer.parseInt(removeQuestionId);
 		} catch (Exception e) {
 		}
 
@@ -81,6 +84,14 @@ public class ReportAnswerSearch extends ReportAccount {
 
 	public void setQuestions(List<AuditQuestion> questions) {
 		this.questions = questions;
+	}
+
+	public String getRemoveQuestionId() {
+		return removeQuestionId;
+	}
+
+	public void setRemoveQuestionId(String removeQuestionId) {
+		this.removeQuestionId = removeQuestionId;
 	}
 
 }
