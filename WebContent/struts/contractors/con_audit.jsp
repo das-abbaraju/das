@@ -82,7 +82,6 @@
 		</div>
 	</s:if>
 </s:form>
-
 <s:if test="conAudit.auditType.classType.toString() == 'Policy'">
 <table class="report" style="float: right;">
 	<thead>
@@ -91,6 +90,7 @@
 			<th>Status</th>
 		</tr>
 	</thead>
+	<tbody>
 	<s:iterator value="conAudit.operators" status="rowStatus">
 		<s:if test="permissions.operator || permissions.corporate">
 			<s:if test="operator.id == permissions.accountId">
@@ -98,12 +98,26 @@
 					<td><s:property value="operator.name"/></td>
 					<td><s:property value="status"/></td>
 				</tr>
+				<s:if test="notes != null && notes.length() > 0">
 				<tr>
-					<td colspan="2"><s:property value="notes"/></td>
+					<td colspan="2">&nbsp;&nbsp;<s:property value="notes"/></td>
 				</tr>
+				</s:if>
 			</s:if>
 		</s:if>
+		<s:else>
+				<tr>
+					<td><s:property value="operator.name"/></td>
+					<td><s:property value="status"/></td>
+				</tr>
+				<s:if test="notes != null && notes.length() > 0">
+				<tr>
+					<td colspan="2">&nbsp;&nbsp;<s:property value="notes"/></td>
+				</tr>
+				</s:if>
+		</s:else>
 	</s:iterator>
+	</tbody>
 </table>
 </s:if>
 
