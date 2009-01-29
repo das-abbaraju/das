@@ -181,6 +181,6 @@
 		The OSHA and EMR categories have been moved to the Annual Update.
 	</div>
 </s:if>
-
+<br clear="both"/>
 </body>
 </html>
