@@ -79,6 +79,9 @@
 		<li><label>Status:</label>
 			<s:property value="conAudit.auditStatus" />
 		</li>
+		<li><label>Description:</label>
+			<s:property value="conAudit.statusDescription" />
+		</li>
 		<s:if test="conAudit.auditStatus.name() == 'Submitted'">
 			<s:if test="conAudit.auditType.PQF">
 				<li><label>Verified:</label>
