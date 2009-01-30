@@ -82,12 +82,12 @@ public class BillContractor extends DataBean {
 			if (cansee.getMinRiskLevel() > 0) {
 				if (cansee.getMinRiskLevel() <= Integer
 						.parseInt(cBean.riskLevel)) {
-					if (cansee.getAuditType().getAuditTypeID() == AuditType.DA
+					if (cansee.getAuditType().getId() == AuditType.DA
 							&& "Yes".equals(cBean.oqEmployees))
 						return true;
-					if (cansee.getAuditType().getAuditTypeID() == AuditType.DESKTOP)
+					if (cansee.getAuditType().getId() == AuditType.DESKTOP)
 						return true;
-					if (cansee.getAuditType().getAuditTypeID() == AuditType.OFFICE)
+					if (cansee.getAuditType().getId() == AuditType.OFFICE)
 						return true;
 				}
 			}

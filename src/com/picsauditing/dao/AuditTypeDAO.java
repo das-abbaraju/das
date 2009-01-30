@@ -1,5 +1,7 @@
 package com.picsauditing.dao;
 
+import java.util.List;
+
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -8,13 +10,10 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 
-import java.util.Collection;
-import java.util.List;
-
 @Transactional
 public class AuditTypeDAO extends PicsDAO {
 	public AuditType save(AuditType o) {
-		if (o.getAuditTypeID() == 0) {
+		if (o.getId() == 0) {
 			em.persist(o);
 		} else {
 			o = em.merge(o);

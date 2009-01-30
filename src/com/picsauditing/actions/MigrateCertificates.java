@@ -507,7 +507,7 @@ public class MigrateCertificates extends PicsActionSupport {
 //		List<ContractorAudit> audits = null;
 //		ContractorAudit audit = null;
 //		try {
-//			audits = auditDAO.findWhere(1, " contractorAccount.id = " + contractor.getIdString() + " AND auditType.auditTypeID = " + auditTypes.get(0).getAuditTypeID(), "");	
+//			audits = auditDAO.findWhere(1, " contractorAccount.id = " + contractor.getIdString() + " AND auditType.auditTypeID = " + auditTypes.get(0).getId(), "");	
 //		}
 //		catch( Exception weHandleThatNext ) {}
 //		

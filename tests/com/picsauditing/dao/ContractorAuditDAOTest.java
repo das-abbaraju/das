@@ -42,7 +42,7 @@ public class ContractorAuditDAOTest {
 	public void testSaveAndRemove() {
 		ContractorAudit contractoraudit = new ContractorAudit();
 		contractoraudit.setAuditType(new AuditType());
-		contractoraudit.getAuditType().setAuditTypeID(8);
+		contractoraudit.getAuditType().setId(8);
 		contractoraudit.setContractorAccount(new ContractorAccount());
 		contractoraudit.getContractorAccount().setId(1003);
 		contractoraudit.setCreationDate(Calendar.getInstance().getTime());

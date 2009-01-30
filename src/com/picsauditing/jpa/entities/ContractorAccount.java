@@ -698,7 +698,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		oshas = new TreeMap<OshaType, Map<String, OshaAudit>>();
 		
 		for (ContractorAudit audit : getSortedAudits()) {
-			if (number < 3 && audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM
+			if (number < 3 && audit.getAuditType().getId() == AuditType.ANNUALADDENDUM
 				&& audit.getAuditStatus().isActiveSubmitted()) {
 				// Store the corporate OSHA rates into a map for later use
 				for(OshaAudit osha : audit.getOshas())
@@ -780,7 +780,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		emrs = new HashMap<String, AuditData>();
 		int number = 0;
 		for (ContractorAudit audit : getSortedAudits()) {
-			if (number < 3 && audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM
+			if (number < 3 && audit.getAuditType().getId() == AuditType.ANNUALADDENDUM
 				&& audit.getAuditStatus().isActiveSubmitted()) {
 				// Store the EMR rates into a map for later use
 				for(AuditData answer : audit.getData())

@@ -866,7 +866,7 @@ public class ContractorBean extends DataBean {
 			audits = new HashMap<Integer, ContractorAudit>();
 			for (ContractorAudit cAudit : auditList) {
 				if (!cAudit.getAuditType().isHasMultiple())
-					audits.put(cAudit.getAuditType().getAuditTypeID(), cAudit);
+					audits.put(cAudit.getAuditType().getId(), cAudit);
 			}
 		}
 		return audits;

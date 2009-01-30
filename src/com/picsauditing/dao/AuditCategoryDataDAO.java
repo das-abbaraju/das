@@ -41,7 +41,7 @@ public class AuditCategoryDataDAO extends PicsDAO {
 	@SuppressWarnings("unchecked")
 	public List<AuditCatData> findByAudit(ContractorAudit contractorAudit, Permissions permissions) {
 		String where = "";
-		if (contractorAudit.getAuditType().getAuditTypeID() == AuditType.PQF) {
+		if (contractorAudit.getAuditType().getId() == AuditType.PQF) {
 			// This is a PQF, so it has special query criteria
 			if (!permissions.isAdmin()) // TODO change this to be a permission
 				where += "AND d.applies = 'Yes' "; // Show only the admins the full PQF
@@ -75,7 +75,7 @@ public class AuditCategoryDataDAO extends PicsDAO {
 			Query query = em.createQuery(queryString);
 			
 			query.setParameter("conAudit", contractorAudit.getId());
-			setOptionalParameter(query, "auditType", contractorAudit.getAuditType().getAuditTypeID());
+			setOptionalParameter(query, "auditType", contractorAudit.getAuditType().getId());
 			setOptionalParameter(query, "id", permissions.getAccountId());
 			setOptionalParameter(query, "risk", contractorAudit.getContractorAccount().getRiskLevel());
 			

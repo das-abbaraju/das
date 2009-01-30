@@ -37,7 +37,7 @@ public class AuditTypeCache extends BaseCache
 			
 			for( AuditType obj : list )
 			{
-				byId.put(obj.getAuditTypeID(), obj);
+				byId.put(obj.getId(), obj);
 				byName.put(obj.getAuditName(), obj);
 			}
 			

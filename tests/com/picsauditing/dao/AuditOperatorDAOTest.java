@@ -30,7 +30,7 @@ public class AuditOperatorDAOTest {
 	public void testSaveAndRemove() {
 		AuditOperator auditoperator = new AuditOperator();
 		auditoperator.setAuditType(new AuditType());
-		auditoperator.getAuditType().setAuditTypeID(5);
+		auditoperator.getAuditType().setId(5);
 		auditoperator.setOperatorAccount(new OperatorAccount());
 		auditoperator.getOperatorAccount().setId(228);
 		auditoperator.setMinRiskLevel(2);

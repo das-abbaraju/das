@@ -63,8 +63,8 @@ public class AuditTypeDaoTest extends TestCase {
 			row.setAuditName("JUnit Test");
 			row.setDescription("this is a test");
 			row = dao.save(row);
-			assertTrue(row.getAuditTypeID() > 0);
-			dao.remove(row.getAuditTypeID());
+			assertTrue(row.getId() > 0);
+			dao.remove(row.getId());
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}

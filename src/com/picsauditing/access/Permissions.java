@@ -315,7 +315,7 @@ public class Permissions implements Serializable {
 
 		// For Operators and corporate
 		if (canSeeAudits != null)
-			return canSeeAudits.contains(auditType.getAuditTypeID());
+			return canSeeAudits.contains(auditType.getId());
 		return false;
 	}
 

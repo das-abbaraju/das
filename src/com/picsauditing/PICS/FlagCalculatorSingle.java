@@ -103,8 +103,8 @@ public class FlagCalculatorSingle {
 								statusOK = true;
 							if (conAudit.getAuditType().equals(audit.getAuditType()))
 								typeOK = true;
-							if (conAudit.getAuditType().getAuditTypeID() == AuditType.NCMS
-									&& audit.getAuditType().getAuditTypeID() == AuditType.DESKTOP)
+							if (conAudit.getAuditType().getId() == AuditType.NCMS
+									&& audit.getAuditType().getId() == AuditType.DESKTOP)
 								typeOK = true;
 							
 							if (typeOK) {
@@ -113,7 +113,7 @@ public class FlagCalculatorSingle {
 									// contractor audit requirement
 									debug(" ---- found");
 			
-									if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM) {
+									if (audit.getAuditType().getId() == AuditType.ANNUALADDENDUM) {
 										// We actually require THREE annual addendums 
 										// before we consider this requirement complete
 										annualAuditCount++;
@@ -140,7 +140,7 @@ public class FlagCalculatorSingle {
 						}
 						
 					} // end conAudit
-					if (audit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM && annualAuditCount >= 3) {
+					if (audit.getAuditType().getId() == AuditType.ANNUALADDENDUM && annualAuditCount >= 3) {
 						// Make sure we have atleast three annual addendums
 						audit.setContractorFlag(FlagColor.Green);
 					}
@@ -311,13 +311,13 @@ public class FlagCalculatorSingle {
 										// at all, so it's PICS' fault
 										return WaitingOn.Contractor; // The
 									waitingOnPics = true;
-								} else if (conAudit.getAuditType().getAuditTypeID() == AuditType.OFFICE)
+								} else if (conAudit.getAuditType().getId() == AuditType.OFFICE)
 									// either needs to
 									// schedule the
 									// audit or close
 									// out RQs
 									return WaitingOn.Contractor; // The contractor
-								else if (conAudit.getAuditType().getAuditTypeID() == AuditType.DESKTOP) {
+								else if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
 									if (auditStatus.equals(AuditStatus.Submitted))
 										// contractor
 										// needs to

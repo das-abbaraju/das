@@ -186,7 +186,7 @@ public class ContractorAuditDAO extends PicsDAO {
 	public ContractorAudit addPending(int auditTypeID,
 			ContractorAccount contractor) {
 		AuditType auditType = new AuditType();
-		auditType.setAuditTypeID(auditTypeID);
+		auditType.setId(auditTypeID);
 		return this.addPending(auditType, contractor);
 	}
 
@@ -201,7 +201,7 @@ public class ContractorAuditDAO extends PicsDAO {
 		cAudit.setContractorAccount(contractor);
 		cAudit.setAuditType(auditType);
 		cAudit.setAuditFor(auditFor);
-		if(cAudit.getAuditType().getAuditTypeID() == 8) { 
+		if(cAudit.getAuditType().getId() == 8) { 
 			cAudit.setRequestingOpAccount(new OperatorAccount());
 			cAudit.getRequestingOpAccount().setId(4744);
 		}	

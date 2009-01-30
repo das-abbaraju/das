@@ -151,7 +151,7 @@ public class OperatorBean extends DataBean {
 				AuditOperator tempRow = new AuditOperator();
 				//tempRow.setAuditTypeID(SQLResult.getInt("auditTypeID"));
 				tempRow.setAuditType(new AuditType());
-				tempRow.getAuditType().setAuditTypeID(SQLResult.getInt("auditTypeID"));
+				tempRow.getAuditType().setId(SQLResult.getInt("auditTypeID"));
 				canSeeAudits.add(tempRow);
 			}
 			SQLResult.close();
@@ -259,7 +259,7 @@ public class OperatorBean extends DataBean {
 		if (canSeeAudits.size() == 0)
 			return false;
 		for (AuditOperator audit : canSeeAudits) {
-			if (audit.getAuditType().getAuditTypeID() == auditID)
+			if (audit.getAuditType().getId() == auditID)
 				return audit.isCanSee();
 		}
 		return false;
@@ -268,7 +268,7 @@ public class OperatorBean extends DataBean {
 	public boolean isAuditRequired(int auditID, int conRiskLevel) {
 		if (canSeeAudits == null || canSeeAudits.size() == 0) return false;
 		for (AuditOperator audit : canSeeAudits) {
-			if (audit.getAuditType().getAuditTypeID() == auditID)
+			if (audit.getAuditType().getId() == auditID)
 				return conRiskLevel >= audit.getMinRiskLevel();
 		}
 		return false;
@@ -284,8 +284,8 @@ public class OperatorBean extends DataBean {
 		
 		Set<Integer> canSeeAuditIds = new HashSet<Integer>();
 		for (AuditOperator audit : canSeeAudits) {
-			canSeeAuditIds.add(audit.getAuditType().getAuditTypeID());
-			if (audit.getAuditType().getAuditTypeID() == AuditType.DESKTOP)
+			canSeeAuditIds.add(audit.getAuditType().getId());
+			if (audit.getAuditType().getId() == AuditType.DESKTOP)
 				// Operators who can see desktop audits can also view NCMS too
 				canSeeAuditIds.add(AuditType.NCMS);
 		}

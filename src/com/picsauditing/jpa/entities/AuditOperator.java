@@ -129,7 +129,7 @@ public class AuditOperator extends BaseTable implements java.io.Serializable {
 	public int getHtmlID() {
 		htmlID = 0;
 		if (getAuditType() != null)
-			htmlID = (getAuditType().getAuditTypeID() * 100000);
+			htmlID = (getAuditType().getId() * 100000);
 		if (getOperatorAccount() != null)
 			htmlID += getOperatorAccount().getId();
 		return htmlID;
