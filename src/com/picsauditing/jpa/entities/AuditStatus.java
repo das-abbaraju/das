@@ -19,6 +19,18 @@ public enum AuditStatus {
 		return values;
 	}
 	
+	public boolean isActive() {
+		return this.equals(Active);
+	}
+	
+	public boolean isExempt() {
+		return this.equals(Exempt);
+	}	
+	
+	public boolean isExpired() {
+		return this.equals(Expired);
+	}
+	
 	public boolean isPending() {
 		return this.equals(Pending);
 	}
@@ -27,12 +39,8 @@ public enum AuditStatus {
 		return this.equals(Submitted);
 	}
 	
-	public boolean isActive() {
-		return this.equals(Active);
-	}
-	
-	public boolean isExpired() {
-		return this.equals(Expired);
+	public boolean isResubmitted() {
+		return this.equals(Resubmitted);
 	}
 	
 
