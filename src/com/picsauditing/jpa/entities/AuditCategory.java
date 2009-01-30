@@ -140,7 +140,7 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		if (getClass() != obj.getClass())
 			return false;
 		final AuditCategory other = (AuditCategory) obj;
-		if (id != other.id)
+		if (id != other.getId())
 			return false;
 		return true;
 	}

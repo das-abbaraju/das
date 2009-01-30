@@ -416,7 +416,7 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 
 	@Override
 	public int hashCode() {
-		final int PRIME = 31;
+		final int PRIME = 33;
 		int result = 1;
 		result = PRIME * result + id;
 		return result;

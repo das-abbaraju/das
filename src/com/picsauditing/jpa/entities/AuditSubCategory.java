@@ -73,7 +73,7 @@ public class AuditSubCategory extends BaseTable implements java.io.Serializable,
 
 	@Override
 	public int hashCode() {
-		final int PRIME = 31;
+		final int PRIME = 32;
 		int result = 1;
 		result = PRIME * result + id;
 		return result;
@@ -87,7 +87,7 @@ public class AuditSubCategory extends BaseTable implements java.io.Serializable,
 			return false;
 		try {
 			final AuditSubCategory other = (AuditSubCategory) obj;
-			if (id != other.id)
+			if (id != other.getId())
 				return false;
 		} catch (Exception e) {
 			return false;
