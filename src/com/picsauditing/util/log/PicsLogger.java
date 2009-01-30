@@ -23,7 +23,11 @@ public class PicsLogger {
 			fqn = watch.getFqn();
 		}
 
-		boolean shouldLog = true;
+		if( fqn.length() != 1 ) {
+			fqn = fqn + "|"; 
+		}
+		
+		boolean shouldLog = false;
 
 		for (LoggingRule rule : rules) {
 
@@ -71,7 +75,7 @@ public class PicsLogger {
 
 		StopWatch watch = null;
 
-		watch = logger.pop();
+		watch = logger.top();
 
 		if (watch != null) {
 			
@@ -79,6 +83,7 @@ public class PicsLogger {
 
 			long millis = now.getTime() - watch.getDate().getTime();
 			log("Completed: " + watch.getName() + " (" + millis + "ms)");
+			logger.pop();
 			return millis;
 		}
 		throw new RuntimeException("pop called with nothing to pop");
@@ -102,4 +107,10 @@ public class PicsLogger {
 		return new SimpleDateFormat(dateFormat).format(date);
 	}
 
+	public static SortedSet<LoggingRule> getRules() {
+		return rules;
+	}
+	public static void setRules(SortedSet<LoggingRule> rules) {
+		PicsLogger.rules = rules;
+	}
 }
