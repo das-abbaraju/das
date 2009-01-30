@@ -5,7 +5,7 @@ value="get('name')" escape="false" />",<s:if test="permissions.operator">"<s:pro
 value="get('flag')" escape="false" />","<s:property 
 value="get('waitingOn')" escape="false" />",<pics:permission perm="ViewUnApproved">"<s:property 
 value="get('workStatus')" escape="false" />",</pics:permission></s:if>"<s:property 
-value="get('dateCreated')" escape="false" />","<s:property 
+value="get('creationDate')" escape="false" />","<s:property 
 value="get('riskLevel')" escape="false" />","<s:property 
 value="get('industry')" escape="false" />","<s:property 
 value="get('main_trade')" escape="false" />","<s:property 

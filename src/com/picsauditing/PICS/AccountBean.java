@@ -55,7 +55,7 @@ public class AccountBean extends DataBean {
 	public String industry = "";
 	public String active = "N";
 	public String createdBy = "";
-	public String dateCreated = "";
+	public String creationDate = "";
 	public String oldPassword = ""; // used for determining if the password has
 	// changed
 	public String emailConfirmedDate = "";
@@ -198,7 +198,7 @@ public class AccountBean extends DataBean {
 			industry = SQLResult.getString("industry");
 			active = SQLResult.getString("active");
 			createdBy = SQLResult.getString("createdBy");
-			dateCreated = DateBean.toShowFormat(SQLResult.getString("dateCreated"));
+			creationDate = DateBean.toShowFormat(SQLResult.getString("creationDate"));
 			emailConfirmedDate = DateBean.toShowFormat(SQLResult.getString("emailConfirmedDate"));
 			oldPassword = password;
 			this.isSet = true;
@@ -228,7 +228,7 @@ public class AccountBean extends DataBean {
 	public boolean writeNewToDB() throws Exception {
 		String insertQuery = "INSERT INTO accounts (id,type,name,username,password,passwordChange,lastLogin,"
 				+ "contact,address,city,state,zip,phone,phone2,fax,email,web_URL,industry,active,createdBy,"
-				+ "dateCreated) VALUES (''+0,'"
+				+ "creationDate) VALUES (''+0,'"
 				+ type
 				+ "','"
 				+ eqDB(name)

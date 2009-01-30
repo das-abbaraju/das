@@ -88,7 +88,7 @@
 						<s:password name="password2" size="15" />
 					</li>
 					<li><label>Date Created:</label>
-						<s:date name="contractor.dateCreated" format="MMM d, yyyy" />
+						<s:date name="contractor.creationDate" format="MMM d, yyyy" />
 					</li>
 					<li><label>First Login:</label>
 						<s:date name="contractor.accountDate" format="MMM d, yyyy" />

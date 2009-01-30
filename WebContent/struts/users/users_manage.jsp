@@ -217,7 +217,7 @@ function checkUsername(username) {
 					<s:property value="user.id"/>
 				</li>
 				<li><label>Date Created:</label>
-					<s:date name="user.dateCreated" format="MM/d/yyyy" />
+					<s:date name="user.creationDate" format="MM/d/yyyy" />
 				</li>
 				<li><label>Display Name:</label>
 					<s:textfield name="user.name" size="30"/>

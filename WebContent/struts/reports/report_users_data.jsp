@@ -43,7 +43,7 @@
 			</td>
 			<td><s:property value="get('phone')" /></td>
 			<td><s:property value="get('email')" /></td>
-			<td><s:date name="get('dateCreated')" format="MM/dd/yyyy"/></td>
+			<td><s:date name="get('creationDate')" format="MM/dd/yyyy"/></td>
 			<td><s:date name="get('lastLogin')" format="MM/dd/yyyy hh:mm" /></td>
 		</tr>
 	</s:iterator>

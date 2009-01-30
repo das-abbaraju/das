@@ -31,7 +31,7 @@ function checkUsername(username) {
 		<li><label for="u.email">Email address:</label>
 			<s:textfield name="u.email" size="30"/></li>
 		<li><label>Created:</label>
-			<s:date name="u.dateCreated" /></li>
+			<s:date name="u.creationDate" /></li>
 		<li><label>Last login:</label>
 			<s:date name="u.lastLogin" /></li>
 	</ol>

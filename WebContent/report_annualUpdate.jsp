@@ -43,7 +43,7 @@ sql.addAudit(AuditType.OFFICE);
 sql.setType(SelectAccount.Type.Contractor);
 sql.addWhere("active='Y' AND isOnlyCerts='No'");
 
-sql.addField("a.dateCreated");
+sql.addField("a.creationDate");
 sql.addField("a.lastLogin");
 sql.addField("c.lastAnnualUpdateEmailDate");
 sql.addField("c.annualUpdateEmails");
@@ -58,7 +58,7 @@ report.addFilter(new SelectFilter("startsWith", "a.name LIKE '?%'", request.getP
 report.addFilter(new SelectFilterInteger("minTimes", "c.annualUpdateEmails >= '?'", request.getParameter("minTimes"), "0", "0"));
 report.addFilter(new SelectFilterInteger("maxTimes", "c.annualUpdateEmails <= '?'", request.getParameter("maxTimes"), "9", ""));
 report.addFilter(new SelectFilterDate("pqfDate", "ca"+AuditType.PQF+".completedDate < '?'", request.getParameter("pqfDate"), "1/1/2008", ""));
-report.addFilter(new SelectFilterDate("dateCreated", "a.dateCreated < '?'", request.getParameter("dateCreated"), "1/1/2008", ""));
+report.addFilter(new SelectFilterDate("creationDate", "a.creationDate < '?'", request.getParameter("creationDate"), "1/1/2008", ""));
 
 report.setPageByResult(request.getParameter("showPage"));
 report.setLimit(50);
@@ -90,7 +90,7 @@ List<BasicDynaBean> searchData = report.getPage();
 	Sent Email Range: <input type="text" name="minTimes" value="<%=report.getFilterValue("minTimes")%>" size="2" class="blueSmall" />
 		and <input type="text" name="maxTimes" value="<%=report.getFilterValue("maxTimes")%>" size="2" class="blueSmall" /><br />
 	PQF Submitted before: <input type="text" name="pqfDate" value="<%=report.getFilterValue("pqfDate")%>" size="10" class="blueSmall" /><br />
-	Registered before: <input type="text" name="dateCreated" value="<%=report.getFilterValue("dateCreated")%>" size="10" class="blueSmall" /><br />
+	Registered before: <input type="text" name="creationDate" value="<%=report.getFilterValue("creationDate")%>" size="10" class="blueSmall" /><br />
 	<input name="imageField" type="image" src="images/button_search.gif" width="70" height="23" border="0" >
 	<input type="hidden" name="showPage" value="1"/>
 	<input type="hidden" name="startsWith" />
@@ -115,7 +115,7 @@ List<BasicDynaBean> searchData = report.getPage();
 		<td><a href="?orderBy=annualUpdateEmails"
 			>Times</a></td>
 		<td><a href="?orderBy=name" >Contractor</a></td>
-		<td><a href="?orderBy=dateCreated DESC"
+		<td><a href="?orderBy=creationDate DESC"
 			>Created</a></td>
 		<td><a href="?orderBy=lastLogin DESC"
 			>Last Login</a></td>
@@ -138,7 +138,7 @@ List<BasicDynaBean> searchData = report.getPage();
 		<td class="center"><%=row.get("annualUpdateEmails")%></td>
 		<td><a href="ContractorView.action?id=<%=row.get("id")%>"
 			class="active"><%=row.get("name")%></a></td>
-		<td class="center"><%=DateBean.toShowFormat(row.get("dateCreated"))%></td>
+		<td class="center"><%=DateBean.toShowFormat(row.get("creationDate"))%></td>
 		<td class="center"><%=DateBean.toShowFormat(row.get("lastLogin"))%></td>
 		<td class="center"><%=DateBean.toShowFormat(row.get("pqfSubmittedDate"))%></td>
 		<td class="center"><%=DateBean.toShowFormat(row.get("auditDate"))%></td>

@@ -105,7 +105,7 @@ public class ContractorAccountDAO extends PicsDAO {
 		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
 
 		String hql = "FROM ContractorAccount contractorAccount WHERE 1=1 " + qb.toString()
-				+ " ORDER BY dateCreated DESC";
+				+ " ORDER BY creationDate DESC";
 		Query query = em.createQuery(hql);
 		query.setMaxResults(limit);
 		return query.getResultList();

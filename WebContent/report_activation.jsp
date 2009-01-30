@@ -11,7 +11,7 @@ try{
 	String message = "";
 	sBean.orderBy = request.getParameter("orderBy");
 	if (null==sBean.orderBy)
-		sBean.orderBy = "dateCreated DESC";
+		sBean.orderBy = "creationDate DESC";
 	
 	if ("Activate".equals(action)) {
 		sBean.aBean.setFromDB(actionID);
@@ -163,7 +163,7 @@ try{
      		  <input type="hidden" name="filter.destinationAction" value=""/>
      		  <input type="hidden" name="showPage" value="1"/>
 		      <input type="hidden" name="filter.startsWith" value="<%=sBean.selected_startsWith == null ? "" : sBean.selected_startsWith %>"/>
-		      <input type="hidden" name="orderBy"  value="<%=sBean.orderBy == null ? "dateCreated DESC" : sBean.orderBy %>"/>
+		      <input type="hidden" name="orderBy"  value="<%=sBean.orderBy == null ? "creationDate DESC" : sBean.orderBy %>"/>
 	<div id="caldiv2" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
 	<div class="alphapaging">
 	<%=sBean.getStartsWithLinksWithDynamicForm()%>
@@ -181,7 +181,7 @@ try{
 	<tr>
 		<td></td>
 		<td colspan="2" bgcolor="#003366"><a href="javascript: changeOrderBy('form1','name');" class="whiteTitle">Contractor</a></td>
-		<td  bgcolor="#003366"><a href="javascript: changeOrderBy('form1','dateCreated DESC');" class="whiteTitle">Created</a></td>
+		<td  bgcolor="#003366"><a href="javascript: changeOrderBy('form1','creationDate DESC');" class="whiteTitle">Created</a></td>
 		<td  bgcolor="#003366"><a href="javascript: changeOrderBy('form1','membershipDate DESC');" class="whiteTitle">Member</a></td>
 		<td  bgcolor="#003366"><a href="javascript: changeOrderBy('form1','requestedByID DESC');" class="whiteTitle">Requester</a></td>
 		<td ><a href="javascript: changeOrderBy('form1','payingFacilities');" class="whiteTitle">Paying Fac.</a></td>
@@ -202,7 +202,7 @@ try{
 				  <a target="_blank" href="ContractorEdit.action?id=<%=sBean.aBean.id%>" class="<%=sBean.getTextColor()%>">
 				  <%=sBean.aBean.name%></a>
 				</td>
-				<td class="center"><%=sBean.aBean.dateCreated%></td>
+				<td class="center"><%=sBean.aBean.creationDate%></td>
 				<td class="center"><%=sBean.cBean.membershipDate%></td>
 				<td class="center"><%=FACILITIES.getNameFromID(sBean.cBean.requestedByID)%></td>
 			    <td class="center"><%=sBean.cBean.payingFacilities%></td>

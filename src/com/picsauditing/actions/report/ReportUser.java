@@ -54,7 +54,7 @@ public class ReportUser extends ReportActionSupport {
 		sql.addField("u.columnType");
 		sql.addField("u.accountID");
 		sql.addField("u.name");
-		sql.addField("u.dateCreated");
+		sql.addField("u.creationDate");
 		sql.addField("u.lastLogin");
 		sql.addField("u.username");
 		sql.addField("u.id");
