@@ -89,61 +89,65 @@ public class FlagCalculatorSingle {
 					
 					int annualAuditCount = 0;
 					for (ContractorAudit conAudit : conAudits) {
-						if (conAudit.getAuditType().getClassType().isAudit()) {
-							boolean statusOK = false;
-							boolean typeOK = false;
-							if (conAudit.getAuditStatus() == AuditStatus.Active)
-								statusOK = true;
-							if (conAudit.getAuditStatus() == AuditStatus.Resubmitted)
-								statusOK = true;
-							if (conAudit.getAuditStatus() == AuditStatus.Exempt)
-								statusOK = true;
-							if (conAudit.getAuditStatus() == AuditStatus.Submitted
-									&& audit.getRequiredAuditStatus() == AuditStatus.Submitted)
-								statusOK = true;
-							if (conAudit.getAuditType().equals(audit.getAuditType()))
-								typeOK = true;
-							if (conAudit.getAuditType().getId() == AuditType.NCMS
-									&& audit.getAuditType().getId() == AuditType.DESKTOP)
-								typeOK = true;
-							
-							if (typeOK) {
-								if (statusOK) {
-									// We found a matching "valid" audit for this 
-									// contractor audit requirement
-									debug(" ---- found");
-			
-									if (audit.getAuditType().getId() == AuditType.ANNUALADDENDUM) {
-										// We actually require THREE annual addendums 
-										// before we consider this requirement complete
-										annualAuditCount++;
-									} else {
-										// Regular audits (PQF, Desktop, Office, Field, IM, etc)
-										audit.setContractorFlag(FlagColor.Green);
-									}
-								}
-							}
-							
-						} else {
-							// For Policies
-							for(ContractorAuditOperator cao : conAudit.getOperators()) {
-								if (cao.getOperator().equals(operator)) {
-									if (CaoStatus.NotApplicable.equals(cao.getRecommendedStatus())
-											|| CaoStatus.NotApplicable.equals(cao.getStatus())) {
-										audit.setContractorFlag(null);
-									}
-									if (CaoStatus.Approved.equals(cao.getStatus())) {
-										audit.setContractorFlag(FlagColor.Green);
-									}
-								}
-							}
-						}
+						if (conAudit.getAuditType().equals(audit.getAuditType())) {
 						
-					} // end conAudit
+							if (conAudit.getAuditType().getClassType().isAudit()) {
+								boolean statusOK = false;
+								boolean typeOK = false;
+								if (conAudit.getAuditStatus() == AuditStatus.Active)
+									statusOK = true;
+								if (conAudit.getAuditStatus() == AuditStatus.Resubmitted)
+									statusOK = true;
+								if (conAudit.getAuditStatus() == AuditStatus.Exempt)
+									statusOK = true;
+								if (conAudit.getAuditStatus() == AuditStatus.Submitted
+										&& audit.getRequiredAuditStatus() == AuditStatus.Submitted)
+									statusOK = true;
+								if (conAudit.getAuditType().equals(audit.getAuditType()))
+									typeOK = true;
+								if (conAudit.getAuditType().getId() == AuditType.NCMS
+										&& audit.getAuditType().getId() == AuditType.DESKTOP)
+									typeOK = true;
+								
+								if (typeOK) {
+									if (statusOK) {
+										// We found a matching "valid" audit for this 
+										// contractor audit requirement
+										debug(" ---- found");
+				
+										if (audit.getAuditType().getId() == AuditType.ANNUALADDENDUM) {
+											// We actually require THREE annual addendums 
+											// before we consider this requirement complete
+											annualAuditCount++;
+										} else {
+											// Regular audits (PQF, Desktop, Office, Field, IM, etc)
+											audit.setContractorFlag(FlagColor.Green);
+										}
+									}
+								}
+								
+							} else {
+								// For Policies
+								for(ContractorAuditOperator cao : conAudit.getOperators()) {
+									if (cao.getOperator().equals(operator)) {
+										if (CaoStatus.NotApplicable.equals(cao.getStatus())) {
+											audit.setContractorFlag(null);
+											debug(" ---- found N/A");
+										}
+										if (CaoStatus.Approved.equals(cao.getStatus())) {
+											audit.setContractorFlag(FlagColor.Green);
+											debug(" ---- found");
+										}
+									}
+								}
+							}
+						} // end if auditType
+					} // end for conAudit
 					if (audit.getAuditType().getId() == AuditType.ANNUALADDENDUM && annualAuditCount >= 3) {
 						// Make sure we have atleast three annual addendums
 						audit.setContractorFlag(FlagColor.Green);
 					}
+					debug(" ---- flagColor=" + audit.getContractorFlag());
 					flagColor = setFlagColor(flagColor, audit.getContractorFlag());
 				}
 				if (answerOnly && flagColor.equals(FlagColor.Red))
@@ -264,7 +268,7 @@ public class FlagCalculatorSingle {
 						// We found a matching audit type. Is it required?
 						if (conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
 							
-							if (auditStatus.equals(AuditStatus.Exempt) || auditStatus.equals(AuditStatus.Expired)) {
+							if (!auditStatus.equals(AuditStatus.Exempt) && !auditStatus.equals(AuditStatus.Expired)) {
 								// Pending, Submitted, Resubmitted, or Active Policy
 								
 								// This is a Policy, find the CAO for this operator

@@ -102,39 +102,40 @@
 </div>
 </s:if>
 
-<table class="report" style="float: right">
-	<thead>
-		<tr>
-			<td>Upcoming Audits</td>
-			<td>Status</td>
-		</tr>
-	</thead>
-	<s:iterator id="op" value="co.operatorAccount.audits">
-		<s:iterator id="con" value="co.contractorAccount.audits">
-			<s:if test="#op.auditType.id == #con.auditType.id && (#con.auditStatus.toString().equals('Pending') || #con.auditStatus.toString().equals('Submitted'))">
-				<tr>
-					<td><a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditFor" /> <s:property value="auditType.auditName" /></a></td>
-					<td><s:property value="auditStatus" /></td>
-				</tr>
-			</s:if>
-		</s:iterator>
-	</s:iterator>
-</table>
-
 <table class="report" style="clear: none;">
 	<thead>
 		<tr>
 			<td>Flag</td>
-			<td>Required Audits</td>
+			<td>Requirement</td>
+			<td>Upcoming</td>
 		</tr>
 	</thead>
-	<s:iterator value="co.operatorAccount.audits">
-		<s:if test="canSee && requiredForFlag && requiredForFlag.name() in {'Red', 'Amber'} &&
-		   minRiskLevel <= contractor.riskLevel.ordinal()">  
+	<s:iterator id="op" value="co.operatorAccount.audits">
+		<s:if test="contractorFlag != null">
 			<tr class="<s:property value="contractorFlag" />">
 				<td class="center"><s:property value="contractorFlag.smallIcon"
 					escape="false" /></td>
 				<td><s:property value="auditType.auditName" /></td>
+				<td>
+				<s:iterator id="con" value="co.contractorAccount.audits">
+					<s:if test="#op.auditType.id == #con.auditType.id">
+						<s:if test="#op.auditType.classType.audit">
+							<s:if test="#con.auditStatus.pendingSubmitted">
+								<a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditFor" /> <s:property value="auditType.auditName" /></a>
+								<s:property value="auditStatus" /><br />
+							</s:if>
+						</s:if>
+						<s:else>
+							<s:iterator value="#con.operators">
+								<s:if test="status.toString()=='Awaiting'">
+									<a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditType.auditName" /></a>
+									<s:property value="status"/>
+								</s:if>
+							</s:iterator>
+						</s:else>
+					</s:if>
+				</s:iterator>
+				</td>
 			</tr>
 		</s:if>
 	</s:iterator>
