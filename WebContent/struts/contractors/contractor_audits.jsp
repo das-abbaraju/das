@@ -42,7 +42,7 @@
 			<td><s:property value="auditStatus" /></td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
 			<td><s:property value="auditFor"/></td>
-			<td><s:date name="createdDate" format="M/d/yy" /></td>
+			<td><s:date name="creationDate" format="M/d/yy" /></td>
 			<td>
 				<s:if test="requestingOpAccount.name != null">
 					<s:property value="requestingOpAccount.name" />

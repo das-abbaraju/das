@@ -137,7 +137,7 @@ public class ContractorAuditDAO extends PicsDAO {
 				permissions, PermissionQueryBuilder.HQL);
 		return findWhere(limit, "auditStatus IN ('Pending', 'Submitted') "
 				+ permQuery.toString() + getAuditWhere(permissions),
-				"createdDate DESC");
+				"creationDate DESC");
 	}
 
 	public List<ContractorAudit> findRecentlyClosed(int limit,

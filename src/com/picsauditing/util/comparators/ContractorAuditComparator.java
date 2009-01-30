@@ -30,7 +30,7 @@ public class ContractorAuditComparator implements Comparator<ContractorAudit> {
 
 	private String getSortField(String fieldName) {
 		if (fieldName == null)
-			return "createdDate";
+			return "creationDate";
 		return fieldName;
 	}
 
@@ -44,7 +44,7 @@ public class ContractorAuditComparator implements Comparator<ContractorAudit> {
 		String[] value = getSort(fieldName);
 		int comparison = 0;
 
-		if (getSortField(value[0]).equalsIgnoreCase("createdDate")) {
+		if (getSortField(value[0]).equalsIgnoreCase("creationDate")) {
 			comparison = o1.getCreationDate().compareTo(o2.getCreationDate());
 		}
 

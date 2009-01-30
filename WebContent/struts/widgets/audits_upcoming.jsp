@@ -11,7 +11,7 @@
 		<tr>
 			<td><a href="ContractorView.action?id=<s:property value="contractorAccount.id"/>"><s:property value="contractorAccount.name"/></a></td>
 			<td><a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditType.auditName"/></a></td>
-			<td class="center"><s:date name="createdDate" format="M/d/yy" /></td>
+			<td class="center"><s:date name="creationDate" format="M/d/yy" /></td>
 		</tr>
 	</s:iterator>
 	<s:if test="upcoming.size == 0">

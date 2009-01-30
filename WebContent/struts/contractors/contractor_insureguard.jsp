@@ -84,7 +84,7 @@
 	<s:iterator value="currentAudits" status="auditStatus">
 		<tr>
 			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
-			<td><s:date name="createdDate" format="M/d/yy" /></td>
+			<td><s:date name="creationDate" format="M/d/yy" /></td>
 			<td><s:date name="expiresDate" format="M/d/yy" /></td>
 		</tr>
 	</s:iterator>
@@ -103,7 +103,7 @@
 	<s:iterator value="expiredAudits" status="auditStatus">
 		<tr>
 			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
-			<td><s:date name="createdDate" format="M/d/yy" /></td>
+			<td><s:date name="creationDate" format="M/d/yy" /></td>
 		</tr>
 	</s:iterator>
 </table>
