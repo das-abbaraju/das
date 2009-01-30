@@ -29,6 +29,7 @@ import org.hibernate.annotations.Type;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 @Entity
@@ -297,6 +298,7 @@ public class User implements java.io.Serializable, Comparable<User> {
 	public Set<UserAccess> getPermissions() {
 		// Our permissions are empty, so go get some
 		Set<UserAccess> permissions = new TreeSet<UserAccess>();
+		PicsLogger.start("User.Permissions", "userID=" + id);
 
 		if (isSuperUser()) {
 			// This is the Super User Group, which should have grant ability on
@@ -318,6 +320,8 @@ public class User implements java.io.Serializable, Comparable<User> {
 				perm.setGrantFlag(true);
 				permissions.add(perm);
 			}
+			//PicsLogger.log(message)
+			PicsLogger.stop();
 			return permissions;
 		}
 
@@ -326,16 +330,17 @@ public class User implements java.io.Serializable, Comparable<User> {
 			debug(this.getName() + " - Getting inherited perms for " + userGroup.getGroup().getName());
 			Set<UserAccess> tempPerms = userGroup.getGroup().getPermissions();
 			for (UserAccess perm : tempPerms) {
-				this.add(permissions, perm, false);
+				add(permissions, perm, false);
 			}
 		}
 
 		// READ the permissions assigned directly to this THIS user/group
 		for (UserAccess perm : ownedPermissions) {
 			if (perm != null)
-				this.add(permissions, perm, true);
+				add(permissions, perm, true);
 		}
 
+		PicsLogger.stop();
 		return permissions;
 	}
 
@@ -345,19 +350,19 @@ public class User implements java.io.Serializable, Comparable<User> {
 	 * @param perm The actual UserAccess object owned by either the current user or one of its parent groups.
 	 * @param overrideBoth True if perm is from "this", false if perm is from a parent
 	 */
-	private void add(Set<UserAccess> permissions, UserAccess connectPerm, boolean overrideBoth) {
+	static private void add(Set<UserAccess> permissions, UserAccess connectPerm, boolean overrideBoth) {
 		if (connectPerm == null || connectPerm.getOpPerm() == null)
 			return;
 
 		// Create a disconnected copy of UserAccess (perm)
 		UserAccess perm = new UserAccess( connectPerm );
-		debug(this.getName() + " - - Adding perm " + perm.getOpPerm().getDescription() + " V:" + perm.getViewFlag()
+		PicsLogger.log(" - - Adding perm " + perm.getOpPerm().getDescription() + " V:" + perm.getViewFlag()
 				+ " E:" + perm.getEditFlag() + " D:" + perm.getDeleteFlag() + " G:" + perm.getGrantFlag());
 		
 		for (UserAccess origPerm : permissions) {
 			if (origPerm.getOpPerm().equals(perm.getOpPerm())) {
 				if (overrideBoth) {
-					debug(" overriding previous values (these are ownedPermissions)");
+					PicsLogger.log(" overriding previous values (these are ownedPermissions)");
 					// Override the previous settings, regardless if Granting or
 					// Revoking
 					if (perm.getViewFlag() != null)
@@ -369,7 +374,7 @@ public class User implements java.io.Serializable, Comparable<User> {
 					if (perm.getGrantFlag() != null)
 						origPerm.setGrantFlag(perm.getGrantFlag());
 				} else {
-					debug(" optimistic granting (merging with sibling perms)");
+					PicsLogger.log(" optimistic granting (merging with sibling perms)");
 					// Optimistic Granting
 					// if the user has two groups with the same perm type,
 					// and one grants but the other revokes, then the users WILL

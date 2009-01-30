@@ -8,6 +8,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
+import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ReportUserPermissionMatrix extends ReportActionSupport {
@@ -24,24 +25,46 @@ public class ReportUserPermissionMatrix extends ReportActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		
+		PicsLogger.start("ReportUserPermissionMatrix");
 		if (accountID == 0 || !permissions.hasPermission(OpPerms.AllOperators))
 			accountID = permissions.getAccountId();
+
+		User user1553 = userDAO.find(1553);
+		PicsLogger.log("User: 1553");
+		for(UserAccess access : user1553.getPermissions()) {
+			PicsLogger.log("  perm "+ access.getOpPerm() + 
+					access.getUser().getId() + 
+					" V:" + access.getViewFlag() + 
+					" E:" + access.getEditFlag() + 
+					" D:" + access.getDeleteFlag() + 
+					" G:" + access.getGrantFlag());
+		}
+		User user1858 = userDAO.find(1858);
+		PicsLogger.log("User: 1858");
+		for(UserAccess access : user1858.getPermissions()) {
+			PicsLogger.log("  perm "+ access.getOpPerm() + 
+					access.getUser().getId() + 
+					" V:" + access.getViewFlag() + 
+					" E:" + access.getEditFlag() + 
+					" D:" + access.getDeleteFlag() + 
+					" G:" + access.getGrantFlag());
+		}
 		
 		perms = new TreeSet<OpPerms>();
-		users = userDAO.findByAccountID(accountID, "Yes", "");
+		users = userDAO.findByAccountID(accountID, "Yes", "Yes");
 		for(User user : users) {
-			//System.out.println("User: "+user.getName());
+			PicsLogger.log("User: "+user.getId()+user.getName());
 			for(UserAccess access : user.getPermissions()) {
-//				System.out.println("  perm "+ access.getOpPerm() + 
-//						" V:" + access.getViewFlag() + 
-//						" E:" + access.getEditFlag() + 
-//						" D:" + access.getDeleteFlag() + 
-//						" G:" + access.getGrantFlag());
+				PicsLogger.log("  perm "+ access.getOpPerm() + 
+						" V:" + access.getViewFlag() + 
+						" E:" + access.getEditFlag() + 
+						" D:" + access.getDeleteFlag() + 
+						" G:" + access.getGrantFlag());
 				perms.add(access.getOpPerm());
 			}
 		}
 		
-		
+		PicsLogger.stop();
 		return SUCCESS;
 	}
 
