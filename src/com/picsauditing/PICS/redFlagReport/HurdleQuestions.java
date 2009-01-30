@@ -51,11 +51,11 @@ public class HurdleQuestions extends DataBean {
 		String selectQuery = "SELECT at.classType, pc.auditTypeID, pc.number, ps.number, pq.number, pq.ID questionid, concat(case when at.classType = 'Policy' then concat(pc.category , ' - ') else '' end,  pq.question) question, questionType " +
 								"FROM audit_type at " + 
 								"JOIN pqfCategories pc ON (pc.auditTypeId = at.id)" +
-								"JOIN pqfSubCategories ps ON (catID=categoryID) " +
-								"JOIN pqfQuestions pq ON (subCatID=subCategoryID) " +
+								"JOIN pqfSubCategories ps ON (pc.id=categoryID) " +
+								"JOIN pqfQuestions pq ON (ps.id=subCategoryID) " +
 								"WHERE isRedFlagQuestion='Yes' " +
 								"AND ( " + 
-								"(pc.auditTypeID = 1 AND pc.catID IN (SELECT catID FROM pqfopmatrix WHERE opID = " + opID + ")) " +
+								"(pc.auditTypeID = 1 AND pc.id IN (SELECT catID FROM pqfopmatrix WHERE opID = " + opID + ")) " +
 								"OR (pc.auditTypeID > 1 AND pc.auditTypeID IN (SELECT auditTypeID FROM audit_operator WHERE opID = " + opID + " AND canSee = 1))" +
 								") " + 
 								"ORDER BY at.classType, at.auditName, pc.number, ps.number, pq.number";

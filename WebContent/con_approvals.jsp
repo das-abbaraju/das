@@ -11,13 +11,13 @@ SelectAccount sql = new SelectAccount();
 sql.setType(SelectAccount.Type.Contractor);
 sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID="+ permissions.getAccountId());
 
-sql.addField("gc.dateAdded");
+sql.addField("gc.creationDate");
 sql.addField("gc.workStatus");
 sql.addWhere("active='Y'");
 
 Report report = new Report();
 report.setSql(sql);
-report.setOrderBy(request.getParameter("orderBy"), "gc.dateAdded DESC");
+report.setOrderBy(request.getParameter("orderBy"), "gc.creationDate DESC");
 
 report.setPageByResult(request.getParameter("showPage"));
 report.setLimit(50);
@@ -65,7 +65,7 @@ form.smallform {
 	<input type="hidden" name="showPage" value="1"/>
 	<input type="hidden" name="filter.startsWith"/>
 	<input type="hidden" name="filter.ajax" value="false"/>	
-	<input type="hidden" name="orderBy"  value="<%=request.getParameter("orderBy") == null ? "gc.dateAdded DESC" : request.getParameter("orderBy") %>"/>
+	<input type="hidden" name="orderBy"  value="<%=request.getParameter("orderBy") == null ? "gc.creationDate DESC" : request.getParameter("orderBy") %>"/>
 </form>
 <div id="caldiv2" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
 </div>
@@ -78,7 +78,7 @@ form.smallform {
 	<thead>
 	<tr>
 		<td colspan=2><a href="javascript: changeOrderBy('form1','a.name');" class="whiteTitle">Contractor</a></td>
-		<td class="center"><a href="javascript: changeOrderBy('form1','gc.dateAdded DESC');" class="whiteTitle">Date Added</a></td>
+		<td class="center"><a href="javascript: changeOrderBy('form1','gc.creationDate DESC');" class="whiteTitle">Date Added</a></td>
 		<td class="center"><a href="javascript: changeOrderBy('form1','workStatus');" class="whiteTitle">Approved</a></td>
 		<td>&nbsp;</td>
 		<td>Notes</td>
@@ -93,7 +93,7 @@ form.smallform {
 		<%= color.nextBgColor() %>>
 		<td class="right"><%=color.getCounter()%></td>
 		<td><a href="ContractorView.action?id=<%=rowID%>"><%=row.get("name")%></a></td>
-		<td><%=DateBean.toShowFormat(row.get("dateAdded"))%></td>
+		<td><%=DateBean.toShowFormat(row.get("creationDate"))%></td>
 		<td>
 		<% if (permissions.hasPermission(OpPerms.ContractorApproval, OpType.Edit)) { %>
 			<form class="smallform">
