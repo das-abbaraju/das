@@ -36,10 +36,10 @@ public class ReportAuditAnalysis extends PicsActionSupport {
 			"DATE_FORMAT(completedDate, '%Y%m') sortBy, " +
 			"0 createdCount, count(*) completeCount, 0 closedCount " +
 			"FROM contractor_audit WHERE completedDate > 0 " + where + 
-			"GROUP BY sortBy union select DATE_FORMAT(createdDate, '%b %Y') label, " +
-			"DATE_FORMAT(createdDate, '%Y%m') sortBy, " +
-			"count(*) createdCount, 0 completeCount, 0 closedCount " +
-			"FROM contractor_audit WHERE createdDate > 0 AND createdDate > '2001-01-01 00:00:00'" + where + 
+			"GROUP BY sortBy union select DATE_FORMAT(creationDate, '%b %Y') label, " +
+			"DATE_FORMAT(creationDate, '%Y%m') sortBy, " +
+			"count(*) creationDate, 0 completeCount, 0 closedCount " +
+			"FROM contractor_audit WHERE creationDate > 0 AND creationDate > '2001-01-01 00:00:00'" + where + 
 			"GROUP BY sortBy) t group by sortBy " +
 			"ORDER BY sortBy desc";
 
