@@ -135,6 +135,9 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 		<td align="center"><a
 			href="?changed=0&showPage=1&orderBy=payingFacilities DESC"
 			class="whiteTitle">Pay Fac</a></td>
+		<td align="center"><a 
+			href="?changed=0&showPage=1&orderBy=paymentMethodStatus" 
+			class="whiteTitle">CC</a></td>
 		<td align="center"><a
 			href="?changed=0&showPage=1&orderBy=membershipDate"
 			class="whiteTitle">Member Since</a></td>
@@ -156,6 +159,8 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 			class="whiteTitle">New Pmt Level</a></td>
 	</tr></thead>
 	<%
+
+	
 		int totalNewInvoices = 0;
 		int totalToCollect = 0;
 		while (sBean.isNextRecord()) {
@@ -165,12 +170,18 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 					- Integer.parseInt(sBean.cBean.lastPaymentAmount);
 			totalToCollect += toCollect;
 			totalNewInvoices += newInvoice;
+			
+			String paymentMethodStatus = sBean.cBean.paymentMethodStatus;
+			String hasCreditCard = "N";
+			if ("Valid".equals(paymentMethodStatus) || "Approved".equals(paymentMethodStatus))
+				hasCreditCard = "Y";
 	%>
 	<tr <%=sBean.getBGColor()%>>
 		
 		<td align="right"><%=sBean.count - 1%></td>
 		<td><a href="ContractorEdit.action?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class="<%=sBean.getTextColor()%>"> <%=sBean.getActiveStar()%><%=sBean.aBean.name%></a></td>
 		<td><%=sBean.cBean.payingFacilities%></td>
+		<td><%=hasCreditCard%></td>
 		<td><%=sBean.cBean.membershipDate%></td>
 		<td><%=sBean.cBean.paymentExpires%></td>
 		<td id="inv_history_<%= sBean.aBean.id %>">$<%=sBean.cBean.billingAmount%></td>
