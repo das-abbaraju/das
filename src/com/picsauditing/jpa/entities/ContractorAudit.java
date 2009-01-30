@@ -53,7 +53,8 @@ public class ContractorAudit implements java.io.Serializable {
 	private Date auditorConfirm;
 	private boolean manuallyAdded;
 	private String auditFor;
-	
+	private String statusDescription;
+
 	private List<AuditCatData> categories = new ArrayList<AuditCatData>();
 	private List<AuditData> data = new ArrayList<AuditData>();
 	private List<OshaAudit> oshas = new ArrayList<OshaAudit>();
@@ -125,18 +126,20 @@ public class ContractorAudit implements java.io.Serializable {
 	}
 
 	public void setAuditStatus(AuditStatus auditStatus) {
-		if (auditStatus != null && this.auditStatus != null && !auditStatus.equals(this.auditStatus)) {
+		if (auditStatus != null && this.auditStatus != null
+				&& !auditStatus.equals(this.auditStatus)) {
 			// If we're changing the status to Submitted or Active, then we need
 			// to set the dates
 			if (auditStatus.equals(AuditStatus.Pending)) {
 				if (closedDate != null)
 					closedDate = null;
-				if(completedDate != null)
+				if (completedDate != null)
 					completedDate = null;
-				if(expiresDate != null)
+				if (expiresDate != null)
 					expiresDate = null;
 			}
-			if (auditStatus.equals(AuditStatus.Submitted) || auditStatus.equals(AuditStatus.Resubmitted)) {
+			if (auditStatus.equals(AuditStatus.Submitted)
+					|| auditStatus.equals(AuditStatus.Resubmitted)) {
 				// If we're going "forward" then (re)set the closedDate
 				if (completedDate == null)
 					completedDate = new Date();
@@ -279,7 +282,8 @@ public class ContractorAudit implements java.io.Serializable {
 	@Transient
 	// I think we should move this to AuditActionSupport instead (Trevor 5/7/08)
 	public boolean isCanView(Permissions permissions) {
-		if (permissions.isContractor() && (getAuditType().isCanContractorView() == false))
+		if (permissions.isContractor()
+				&& (getAuditType().isCanContractorView() == false))
 			return false;
 		else
 			return true;
@@ -292,24 +296,24 @@ public class ContractorAudit implements java.io.Serializable {
 	 */
 	@Transient
 	public boolean isAboutToExpire() {
-		if(expiresDate == null) 
+		if (expiresDate == null)
 			return false;
 		Calendar current = Calendar.getInstance();
 		Calendar expires = Calendar.getInstance();
 		expires.setTime(expiresDate);
-		
-		if (current.get(Calendar.MONTH) < 2 
+
+		if (current.get(Calendar.MONTH) < 2
 				&& current.get(Calendar.YEAR) == expires.get(Calendar.YEAR))
 			return true;
-		
+
 		return false;
 	}
 
 	@Transient
 	public Date getEffectiveDate() {
-		if( getAuditType().getClassType() == AuditTypeClass.Policy )
+		if (getAuditType().getClassType() == AuditTypeClass.Policy)
 			return createdDate;
-		
+
 		if (auditStatus.equals(AuditStatus.Pending)) {
 			if (auditor != null && assignedDate != null)
 				return assignedDate;
@@ -320,7 +324,6 @@ public class ContractorAudit implements java.io.Serializable {
 		return closedDate;
 	}
 
-	
 	@Transient
 	public boolean willExpireSoon() {
 		int daysToExpiration = 0;
@@ -328,15 +331,14 @@ public class ContractorAudit implements java.io.Serializable {
 			daysToExpiration = 1000;
 		else
 			daysToExpiration = DateBean.getDateDifference(getExpiresDate());
-		
-		if( getAuditType().getClassType() == AuditTypeClass.Policy ) {
+
+		if (getAuditType().getClassType() == AuditTypeClass.Policy) {
 			return daysToExpiration <= 15;
-		}
-		else {
+		} else {
 			return daysToExpiration <= 60;
 		}
 	}
-	
+
 	@Transient
 	public Date getValidDate() {
 		if (auditType.isPqf())
@@ -344,16 +346,17 @@ public class ContractorAudit implements java.io.Serializable {
 		else
 			return createdDate;
 	}
-	
+
 	@Transient
 	public boolean getExpiringPolicies() {
-		if(expiresDate == null)
+		if (expiresDate == null)
 			return false;
 		Calendar cal1 = Calendar.getInstance();
 		cal1.add(cal1.WEEK_OF_YEAR, -2);
 		Calendar cal2 = Calendar.getInstance();
 		cal2.add(cal2.DATE, 26);
-		if(expiresDate.after(cal1.getTime()) && expiresDate.before(cal2.getTime())) 
+		if (expiresDate.after(cal1.getTime())
+				&& expiresDate.before(cal2.getTime()))
 			return true;
 		return false;
 	}
@@ -407,8 +410,9 @@ public class ContractorAudit implements java.io.Serializable {
 	}
 
 	/**
-	 * Who, what, or when is this audit for? Examples: 
-	 * OSHA/EMR for "2005" IM for "John Doe" 
+	 * Who, what, or when is this audit for? Examples: OSHA/EMR for "2005" IM
+	 * for "John Doe"
+	 * 
 	 * @return
 	 */
 	public String getAuditFor() {
@@ -417,6 +421,67 @@ public class ContractorAudit implements java.io.Serializable {
 
 	public void setAuditFor(String auditFor) {
 		this.auditFor = auditFor;
+	}
+
+	@Transient
+	public String getStatusDescription() {
+		int x;
+
+		x = 0;
+
+		if (auditStatus.isActive())
+			if (auditType.isMustVerify())
+				if (auditType.isPqf() || auditType.isAnnualAddendum())
+					statusDescription = "Annual requirements have been verified. "
+							+ this.getAuditType().getClassType().toString()
+							+ " is closed.";
+				else
+					statusDescription = this.getAuditType().getClassType()
+							.toString()
+							+ " has been verified.";
+			else if (auditType.isHasRequirements())
+				statusDescription = "All the requirements for this "
+						+ this.getAuditType().getClassType().toString()
+						+ "have been met."
+						+ this.getAuditType().getClassType().toString()
+						+ "closed.";
+			else
+				statusDescription = this.getAuditType().getClassType()
+						.toString()
+						+ " closed.";
+
+		if (auditStatus.isExempt())
+			statusDescription = this.getAuditType().getClassType().toString()
+					+ " is not required.";
+
+		if (auditStatus.isExpired())
+			statusDescription = this.getAuditType().getClassType().toString()
+					+ " is no longer active.";
+
+		if (auditStatus.isPending())
+			if (auditType.isMustVerify())
+				statusDescription = this.getAuditType().getClassType()
+						.toString()
+						+ " has not been submitted.";
+			else
+				statusDescription = this.getAuditType().getClassType()
+						.toString()
+						+ " has not been started.";
+
+		if (auditStatus.isSubmitted())
+			if (auditType.isMustVerify())
+				statusDescription = this.getAuditType().getClassType()
+						.toString()
+						+ " has been sent.  Awaiting verification.";
+			else
+				statusDescription = this.getAuditType().getClassType()
+						.toString()
+						+ " has been submitted but there are requirements pending.";
+
+		if (auditStatus.isResubmitted())
+			statusDescription = "Policy updated; pending approval of changes.";
+
+		return statusDescription;
 	}
 
 }
