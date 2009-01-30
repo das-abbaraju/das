@@ -7,6 +7,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.picsauditing.util.Strings;
 
 @Entity
 @Table(name = "contractor_audit_operator")
@@ -65,5 +68,11 @@ public class ContractorAuditOperator extends BaseTable {
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
-
+	
+	@Transient
+	public boolean isNotesLength() {
+		if(Strings.isEmpty(notes))
+			return false;
+		return true;
+	}
 }
