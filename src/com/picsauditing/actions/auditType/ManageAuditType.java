@@ -110,7 +110,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				return false;
 			}
 			auditType = auditTypeDao.save(auditType);
-			id = auditType.getAuditTypeID();
+			id = auditType.getId();
 			return true;
 		} catch (Exception e) {
 			addActionError(e.getMessage());
@@ -125,8 +125,8 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				return false;
 			}
 
-			auditTypeDao.remove(auditType.getAuditTypeID());
-			id = auditType.getAuditTypeID();
+			auditTypeDao.remove(auditType.getId());
+			id = auditType.getId();
 			return true;
 		} catch (Exception e) {
 			addActionError(e.getMessage());

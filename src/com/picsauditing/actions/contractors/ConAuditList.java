@@ -61,7 +61,7 @@ public class ConAuditList extends ContractorActionSupport {
 			for (ContractorAudit conAudit : contractor.getAudits()) {
 				if (conAudit.getRequestingOpAccount() != null
 						&& conAudit.getRequestingOpAccount().getId() == selectedOperator
-						&& conAudit.getAuditType().getAuditTypeID() == selectedAudit)
+						&& conAudit.getAuditType().getId() == selectedAudit)
 					alreadyExists = true;
 			}
 			if (alreadyExists) {
@@ -70,7 +70,7 @@ public class ConAuditList extends ContractorActionSupport {
 			}
 			ContractorAudit conAudit = new ContractorAudit();
 			conAudit.setAuditType(new AuditType());
-			conAudit.getAuditType().setAuditTypeID(selectedAudit);
+			conAudit.getAuditType().setId(selectedAudit);
 			conAudit.setContractorAccount(contractor);
 			conAudit.setAuditColumns(this.getUser());
 			conAudit.setAuditStatus(AuditStatus.Pending);

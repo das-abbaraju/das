@@ -42,7 +42,7 @@ public class ContractorSave extends PicsActionSupport implements Preparable {
 				System.out.println(" found " + conAudit.getAuditType().getAuditName());
 				if (conAudit.getAuditType().isPqf() 
 						|| conAudit.getAuditType().isAnnualAddendum()
-						|| conAudit.getAuditType().getAuditTypeID() == AuditType.WELCOME) {
+						|| conAudit.getAuditType().getId() == AuditType.WELCOME) {
 					conAudit.setAuditor(new User(auditorId));
 					conAudit.setAssignedDate(new Date());
 					System.out.println(" updated auditorID to " + auditorId);

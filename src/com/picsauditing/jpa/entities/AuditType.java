@@ -1,21 +1,15 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
@@ -24,7 +18,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "audit_type")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
-public class AuditType implements Comparable<AuditType> {
+public class AuditType extends BaseTable implements Comparable<AuditType> {
 	public static final int PQF = 1;
 	public static final int DESKTOP = 2;
 	public static final int OFFICE = 3;
@@ -43,10 +37,8 @@ public class AuditType implements Comparable<AuditType> {
 	}
 
 	public AuditType(int id) {
-		this.auditTypeID = id;
+		this.id = id;
 	}
-
-	protected int auditTypeID;
 
 	protected String auditName;
 	protected AuditTypeClass classType = AuditTypeClass.Audit;
@@ -60,18 +52,8 @@ public class AuditType implements Comparable<AuditType> {
 	protected boolean canContractorEdit;
 	protected Integer monthsToExpire;
 	protected boolean mustVerify;
-	
+
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public int getAuditTypeID() {
-		return auditTypeID;
-	}
-
-	public void setAuditTypeID(int auditTypeID) {
-		this.auditTypeID = auditTypeID;
-	}
 
 	public String getAuditName() {
 		return auditName;
@@ -85,11 +67,11 @@ public class AuditType implements Comparable<AuditType> {
 	public AuditTypeClass getClassType() {
 		return classType;
 	}
-	
+
 	public void setClassType(AuditTypeClass classType) {
 		this.classType = classType;
 	}
-	
+
 	public int getDisplayOrder() {
 		return displayOrder;
 	}
@@ -162,7 +144,7 @@ public class AuditType implements Comparable<AuditType> {
 	public void setMonthsToExpire(Integer monthsToExpire) {
 		this.monthsToExpire = monthsToExpire;
 	}
-	
+
 	public boolean isMustVerify() {
 		return mustVerify;
 	}
@@ -202,33 +184,33 @@ public class AuditType implements Comparable<AuditType> {
 
 	@Transient
 	public boolean isShowManual() {
-		if (this.auditTypeID == OFFICE)
+		if (this.id == OFFICE)
 			return true;
-		if (this.auditTypeID == DESKTOP)
+		if (this.id == DESKTOP)
 			return true;
 		return false;
 	}
 
 	@Transient
 	public boolean isPqf() {
-		return (auditTypeID == PQF);
+		return (id == PQF);
 	}
 
 	@Transient
 	public boolean isDesktop() {
-		return (auditTypeID == DESKTOP);
+		return (id == DESKTOP);
 	}
 
 	@Transient
 	public boolean isAnnualAddendum() {
-		return (auditTypeID == ANNUALADDENDUM);
+		return (id == ANNUALADDENDUM);
 	}
 
 	@Transient
 	public boolean isDynamicCategories() {
 		if (isPqf())
 			return true;
-		if (auditTypeID == DESKTOP)
+		if (id == DESKTOP)
 			return true;
 		return false;
 	}
@@ -237,7 +219,7 @@ public class AuditType implements Comparable<AuditType> {
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
-		result = PRIME * result + auditTypeID;
+		result = PRIME * result + id;
 		return result;
 	}
 
@@ -250,17 +232,17 @@ public class AuditType implements Comparable<AuditType> {
 		if (getClass() != obj.getClass())
 			return false;
 		final AuditType other = (AuditType) obj;
-		if (auditTypeID != other.auditTypeID)
+		if (id != other.id)
 			return false;
 		return true;
 	}
 
 	@Override
 	public int compareTo(AuditType o) {
-		int i = new Integer( this.getDisplayOrder()).compareTo( new Integer( o.getDisplayOrder() ));
-		if(i == 0)
-			return new Integer( this.getAuditTypeID()).compareTo( new Integer( o.getAuditTypeID()));
-			
+		int i = new Integer(this.getDisplayOrder()).compareTo(new Integer(o.getDisplayOrder()));
+		if (i == 0)
+			return new Integer(this.getId()).compareTo(new Integer(o.getId()));
+
 		return i;
 	}
 

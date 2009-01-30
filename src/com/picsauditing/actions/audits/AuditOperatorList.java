@@ -56,9 +56,9 @@ public class AuditOperatorList extends PicsActionSupport {
 		Iterator<AuditType> iter = auditTypes.iterator();
 		while (iter.hasNext()) {
 			AuditType audit = iter.next();
-			if (audit.getAuditTypeID() == AuditType.NCMS)
+			if (audit.getId() == AuditType.NCMS)
 				iter.remove();
-			if (audit.getAuditTypeID() == aID)
+			if (audit.getId() == aID)
 				selectedAudit = audit;
 		}
 
@@ -103,13 +103,13 @@ public class AuditOperatorList extends PicsActionSupport {
 
 			List<AuditOperator> rawData = dataDAO.findByOperator(oID);
 			for (AuditOperator row : rawData) {
-				rawDataIndexed.put(row.getAuditType().getAuditTypeID(), row);
+				rawDataIndexed.put(row.getAuditType().getId(), row);
 			}
 			rawData = null; // we don't need this anymore
 
 			// AuditOperator temp = rawData.get(0);
 			for (AuditType aType : auditTypes) {
-				AuditOperator newRow = rawDataIndexed.get(aType.getAuditTypeID());
+				AuditOperator newRow = rawDataIndexed.get(aType.getId());
 				if (newRow == null) {
 					newRow = new AuditOperator();
 					newRow.setOperatorAccount(selectedObject);
@@ -159,7 +159,7 @@ public class AuditOperatorList extends PicsActionSupport {
 	public String getAName() {
 		if (this.aID > 0)
 			for (AuditType row : this.auditTypes)
-				if (this.aID == row.getAuditTypeID())
+				if (this.aID == row.getId())
 					return row.getAuditName();
 		return "";
 	}
@@ -167,7 +167,7 @@ public class AuditOperatorList extends PicsActionSupport {
 	public String getClassName() {
 		if (this.aID > 0)
 			for (AuditType row : this.auditTypes)
-				if (this.aID == row.getAuditTypeID())
+				if (this.aID == row.getId())
 					return row.getClassType().toString();
 		return "";
 	}

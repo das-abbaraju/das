@@ -27,7 +27,7 @@ public class AuditTypeLegacy {
 	public int getAuditTypeID() {
 		if (auditType == null)
 			return 0;
-		return auditType.getAuditTypeID();
+		return auditType.getId();
 	}
 
 	public AuditType getAuditType() {

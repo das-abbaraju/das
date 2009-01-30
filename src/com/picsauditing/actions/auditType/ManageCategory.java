@@ -46,7 +46,7 @@ public class ManageCategory extends ManageAuditType {
 				category.setNumber(maxID + 1);
 			}
 			category = auditCategoryDao.save(category);
-			id = category.getAuditType().getAuditTypeID();
+			id = category.getAuditType().getId();
 			return true;
 		}
 		return false;
@@ -59,7 +59,7 @@ public class ManageCategory extends ManageAuditType {
 				return false;
 			}
 			
-			id = category.getAuditType().getAuditTypeID();
+			id = category.getAuditType().getId();
 			auditCategoryDao.remove(category.getId());
 			return true;
 		} catch (Exception e) {

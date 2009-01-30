@@ -60,7 +60,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (permissions.isPicsEmployee())
 			return;
 		if (permissions.isOperator() || permissions.isCorporate()) {
-			if (!permissions.getCanSeeAudit().contains(conAudit.getAuditType().getAuditTypeID()))
+			if (!permissions.getCanSeeAudit().contains(conAudit.getAuditType().getId()))
 				throw new NoRightsException(conAudit.getAuditType().getAuditName());
 		}
 		if (permissions.isContractor()) {

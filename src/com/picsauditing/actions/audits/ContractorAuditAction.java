@@ -163,7 +163,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 					// too
 					notes = conAudit.getContractorAccount().getName() + " Submitted their PQF ";
 				}
-				int typeID = conAudit.getAuditType().getAuditTypeID();
+				int typeID = conAudit.getAuditType().getId();
 				if (typeID == AuditType.DESKTOP || typeID == AuditType.DA) {
 					EmailBuilder emailBuilder = new EmailBuilder();
 
@@ -196,7 +196,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 			flagCalculator.runByContractor(conAudit.getContractorAccount().getId());
 		}
 
-		if (this.conAudit.getAuditType().getAuditTypeID() == AuditType.NCMS)
+		if (this.conAudit.getAuditType().getId() == AuditType.NCMS)
 			return "NCMS";
 
 		return SUCCESS;

@@ -196,7 +196,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 		}
 		auditPercentCalculator.percentCalculateComplete(conAudit);
 
-		if (conAudit.getAuditType().getAuditTypeID() == AuditType.ANNUALADDENDUM) {
+		if (conAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM) {
 
 			ContractorAudit twoYearsAgo = null;
 			String auditFor = conAudit.getAuditFor();
@@ -212,7 +212,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 				if (auditYear != 0) {
 					for (ContractorAudit ca : getActiveAudits()) {
 
-						if (ca.getAuditType().getAuditTypeID() == conAudit.getAuditType().getAuditTypeID()) {
+						if (ca.getAuditType().getId() == conAudit.getAuditType().getId()) {
 
 							String caAuditFor = ca.getAuditFor();
 							int caAuditYear = 0;
