@@ -53,7 +53,7 @@ public class ReportContractorAudits extends ReportAccount {
 
 		addFilterToSQL();
 
-		sql.addField("ca.createdDate");
+		sql.addField("ca.creationDate createdDate");
 		sql.addField("ca.expiresDate");
 		sql.addField("ca.scheduledDate");
 		sql.addField("ca.completedDate");
@@ -118,7 +118,7 @@ public class ReportContractorAudits extends ReportAccount {
 
 		String auditIDList = Strings.implode(f.getAuditID(), ",");
 		if (filterOn(auditIDList)) {
-			sql.addWhere("ca.auditID IN (" + auditIDList + ")");
+			sql.addWhere("ca.id IN (" + auditIDList + ")");
 			setFiltered(true);
 		}
 
