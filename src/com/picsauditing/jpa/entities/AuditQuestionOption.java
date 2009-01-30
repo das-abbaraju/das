@@ -1,11 +1,6 @@
 package com.picsauditing.jpa.entities;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -17,24 +12,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "pqfoptions")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="global")
-public class AuditQuestionOption implements java.io.Serializable {
-	private int id;
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
+public class AuditQuestionOption extends BaseTable implements java.io.Serializable {
 	private AuditQuestion auditQuestion;
 	private String optionName;
 	private YesNo visible;
 	private int number;
-
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "optionID")
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	@ManyToOne
 	@JoinColumn(name = "questionID", nullable = false)
@@ -57,7 +40,7 @@ public class AuditQuestionOption implements java.io.Serializable {
 	public YesNo getVisible() {
 		return visible;
 	}
-	
+
 	@Transient
 	public boolean isVisibleB() {
 		return YesNo.Yes.equals(visible);
@@ -75,7 +58,6 @@ public class AuditQuestionOption implements java.io.Serializable {
 		this.number = number;
 	}
 
-	
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;
@@ -98,5 +80,4 @@ public class AuditQuestionOption implements java.io.Serializable {
 		return true;
 	}
 
-	
 }

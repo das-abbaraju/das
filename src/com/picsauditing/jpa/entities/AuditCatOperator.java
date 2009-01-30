@@ -1,14 +1,9 @@
 package com.picsauditing.jpa.entities;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -19,23 +14,11 @@ import javax.persistence.Table;
 /**
  * A list of Audit Categories that an operator want on their Audits
  */
-public class AuditCatOperator implements java.io.Serializable {
+public class AuditCatOperator extends BaseTable implements java.io.Serializable {
 
-	protected int id;
 	protected AuditCategory category;
 	protected OperatorAccount operatorAccount;
 	protected LowMedHigh riskLevel;
-
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", nullable = false)
-	public Integer getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "catID", nullable = false)
@@ -66,7 +49,6 @@ public class AuditCatOperator implements java.io.Serializable {
 		this.riskLevel = riskLevel;
 	}
 
-	
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;
@@ -89,6 +71,4 @@ public class AuditCatOperator implements java.io.Serializable {
 		return true;
 	}
 
-	
-	
 }

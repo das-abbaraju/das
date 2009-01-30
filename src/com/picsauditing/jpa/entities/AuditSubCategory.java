@@ -1,14 +1,10 @@
 package com.picsauditing.jpa.entities;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -22,25 +18,13 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "pqfsubcategories")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
-public class AuditSubCategory implements java.io.Serializable, Comparable<AuditSubCategory> {
+public class AuditSubCategory extends BaseTable implements java.io.Serializable, Comparable<AuditSubCategory> {
 
-	private int id;
 	private String subCategory;
 	private AuditCategory category;
 	private int number;
 
 	private List<AuditQuestion> questions;
-
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "subCatID", nullable = false, insertable = false, updatable = false, unique = true)
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	public String getSubCategory() {
 		return subCategory;

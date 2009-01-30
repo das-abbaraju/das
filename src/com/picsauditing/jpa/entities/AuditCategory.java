@@ -1,7 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,8 +7,6 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -24,8 +20,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "pqfcategories")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="global")
-public class AuditCategory implements java.io.Serializable, Comparable<AuditCategory> {
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
+public class AuditCategory extends BaseTable implements java.io.Serializable, Comparable<AuditCategory> {
 	public static final int WORK_HISTORY = 6;
 	public static final int OSHA_AUDIT = 151;
 	public static final int GENERAL_INFORMATION = 155;
@@ -36,32 +32,20 @@ public class AuditCategory implements java.io.Serializable, Comparable<AuditCate
 	public static final int TRAINING = 25;
 	public static final int SAFETY_POLICIES = 7;
 	public static final int SERVICES_PERFORMED = 28;
-	
-	private int id;
+
 	private AuditType auditType;
 	private String category;
 	private int number;
 	private int numRequired;
 	private int numQuestions;
-	
+
 	List<AuditSubCategory> subCategories;
 
 	/**
-	 * This is a transient field that allows us to figure out which categories, subcategories and questions should be displayed
+	 * This is a transient field that allows us to figure out which categories,
+	 * subcategories and questions should be displayed
 	 */
 	private Date validDate = null;
-
-
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "catID", nullable = false)
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "auditTypeID", nullable = false)
@@ -108,7 +92,7 @@ public class AuditCategory implements java.io.Serializable, Comparable<AuditCate
 	public void setNumQuestions(int numQuestions) {
 		this.numQuestions = numQuestions;
 	}
-	
+
 	@OneToMany(mappedBy = "category")
 	@OrderBy("number")
 	public List<AuditSubCategory> getSubCategories() {
@@ -122,23 +106,23 @@ public class AuditCategory implements java.io.Serializable, Comparable<AuditCate
 	@Transient
 	public List<AuditSubCategory> getValidSubCategories() {
 		List<AuditSubCategory> list = new ArrayList<AuditSubCategory>();
-		for(AuditSubCategory subCategory : getSubCategories())
+		for (AuditSubCategory subCategory : getSubCategories())
 			if (subCategory.hasValidQuestions())
 				list.add(subCategory);
 		return list;
 	}
-	
+
 	@Transient
 	public Date getValidDate() {
 		if (validDate == null)
 			return new Date();
 		return validDate;
 	}
-	
+
 	public void setValidDate(Date validDate) {
 		this.validDate = validDate;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;
@@ -161,20 +145,18 @@ public class AuditCategory implements java.io.Serializable, Comparable<AuditCate
 		return true;
 	}
 
-	
 	@Override
 	public int compareTo(AuditCategory other) {
-		if( other == null ) {
+		if (other == null) {
 			return 1;
 		}
-		
+
 		int cmp = getAuditType().compareTo(other.getAuditType());
-		
-		if( cmp != 0 ) 
+
+		if (cmp != 0)
 			return cmp;
 
-		return new Integer( getNumber() ).compareTo(new Integer(other.getNumber()));
+		return new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
 	}
-	
-	
+
 }

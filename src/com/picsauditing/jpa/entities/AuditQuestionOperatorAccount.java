@@ -1,11 +1,6 @@
 package com.picsauditing.jpa.entities;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -16,22 +11,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "pqfquestion_operator")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="daily")
-public class AuditQuestionOperatorAccount implements java.io.Serializable {
-	protected int id;
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
+public class AuditQuestionOperatorAccount extends BaseTable implements java.io.Serializable {
 	protected OperatorAccount operatorAccount;
 	protected AuditQuestion auditQuestion;
-
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", nullable = false)
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	@ManyToOne
 	@JoinColumn(name = "opID", nullable = false, updatable = false)
@@ -52,7 +35,6 @@ public class AuditQuestionOperatorAccount implements java.io.Serializable {
 	public void setAuditQuestion(AuditQuestion auditQuestion) {
 		this.auditQuestion = auditQuestion;
 	}
-
 
 	@Override
 	public int hashCode() {
@@ -75,6 +57,5 @@ public class AuditQuestionOperatorAccount implements java.io.Serializable {
 			return false;
 		return true;
 	}
-
 
 }

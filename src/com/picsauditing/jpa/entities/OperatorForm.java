@@ -1,12 +1,8 @@
 package com.picsauditing.jpa.entities;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -14,23 +10,11 @@ import javax.persistence.Table;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "operatorforms")
-public class OperatorForm implements java.io.Serializable {
+public class OperatorForm extends BaseTable implements java.io.Serializable {
 
-	protected int id;
 	protected OperatorAccount operatorAccount;
 	protected String formName;
 	protected String file;
-
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "formID", nullable = false)
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "opID", nullable = false)
