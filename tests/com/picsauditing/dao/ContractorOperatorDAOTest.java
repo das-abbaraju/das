@@ -50,7 +50,7 @@ public class ContractorOperatorDAOTest {
 		co.getOperatorAccount().setId(1813); // Cherry Point
 		co.setContractorAccount(new ContractorAccount());
 		co.getContractorAccount().setId(3); // Ancon Marine
-		co.setDateAdded(new Date());
+		co.setCreationDate(new Date());
 		co.setWorkStatus("P");
 		co = contractorOperatorDao.save(co);
 		

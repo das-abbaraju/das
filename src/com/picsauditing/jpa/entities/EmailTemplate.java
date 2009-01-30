@@ -2,20 +2,13 @@ package com.picsauditing.jpa.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -24,16 +17,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "email_template")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
-public class EmailTemplate implements java.io.Serializable {
-	private int id;
+public class EmailTemplate extends BaseTable implements java.io.Serializable {
 	private int accountID;
 	private String templateName = "";
 	private String subject;
 	private String body;
-	private User createdBy;
-	private Date creationDate;
-	private User updatedBy;
-	private Date updateDate;
 	private ListType listType;
 	private boolean allowsVelocity = false;
 
@@ -72,44 +60,6 @@ public class EmailTemplate implements java.io.Serializable {
 
 	public void setBody(String body) {
 		this.body = body;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "createdBy")
-	public User getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(User createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	@Temporal(TemporalType.DATE)
-	public Date getCreationDate() {
-		return creationDate;
-	}
-
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "updatedBy")
-	public User getUpdatedBy() {
-		return updatedBy;
-	}
-
-	public void setUpdatedBy(User updatedBy) {
-		this.updatedBy = updatedBy;
-	}
-
-	@Temporal(TemporalType.DATE)
-	public Date getUpdateDate() {
-		return updateDate;
-	}
-
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
 	}
 
 	public String getTemplateName() {

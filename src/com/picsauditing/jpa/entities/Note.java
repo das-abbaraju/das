@@ -1,7 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.File;
 import java.util.Date;
 
@@ -10,8 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -25,13 +21,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "note")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
-public class Note implements java.io.Serializable {
-	private int id;
+public class Note extends BaseTable implements java.io.Serializable {
 	private Account account;
-	private Date creationDate;
-	private User createdBy;
-	private Date updateDate;
-	private User updatedBy;
 	private String summary = "";
 	private NoteCategory noteCategory;
 	private LowMedHigh priority;
@@ -42,17 +33,6 @@ public class Note implements java.io.Serializable {
 	private String body;
 	private File attachment;
 
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "noteID")
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "accountID")
 	public Account getAccount() {
@@ -61,44 +41,6 @@ public class Note implements java.io.Serializable {
 
 	public void setAccount(Account account) {
 		this.account = account;
-	}
-
-	@Temporal(TemporalType.DATE)
-	public Date getCreationDate() {
-		return creationDate;
-	}
-
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "createdBy")
-	public User getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(User createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	@Temporal(TemporalType.DATE)
-	public Date getUpdateDate() {
-		return updateDate;
-	}
-
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "updatedBy")
-	public User getUpdatedBy() {
-		return updatedBy;
-	}
-
-	public void setUpdatedBy(User updatedBy) {
-		this.updatedBy = updatedBy;
 	}
 
 	@Column(name = "summary", nullable = false)

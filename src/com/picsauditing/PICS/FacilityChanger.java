@@ -1,6 +1,5 @@
 package com.picsauditing.PICS;
 
-import java.util.Date;
 import java.util.Iterator;
 
 import com.picsauditing.access.Permissions;
@@ -11,6 +10,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 
@@ -53,7 +53,7 @@ public class FacilityChanger {
 		ContractorOperator co = new ContractorOperator();
 		co.setContractorAccount(contractor);
 		co.setOperatorAccount(operator);
-		co.setDateAdded(new Date());
+		co.setAuditColumns(new User(permissions.getUserId()));
 		contractorOperatorDAO.save(co);
 		contractor.getOperators().add(co);
 

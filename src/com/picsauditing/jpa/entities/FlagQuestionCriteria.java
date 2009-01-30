@@ -1,7 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.util.Date;
 import java.util.List;
 
@@ -9,8 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -27,8 +23,7 @@ import com.picsauditing.PICS.DateBean;
 // We can't use this yet because hibernate doesn't save this 
 // data yet, see op_editFlagCriteria.jsp
 //@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="daily")
-public class FlagQuestionCriteria {
-	protected int id;
+public class FlagQuestionCriteria extends BaseTable {
 	protected OperatorAccount operatorAccount;
 	protected AuditQuestion auditQuestion;
 	protected FlagColor flagColor;
@@ -37,21 +32,10 @@ public class FlagQuestionCriteria {
 	protected String comparison;
 	protected String value;
 	protected boolean validationRequired;
-	protected MultiYearScope multiYearScope; 
+	protected MultiYearScope multiYearScope;
 
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "criteriaID", nullable = false)
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	@ManyToOne(optional=false)
-	@JoinColumn(name="opID", nullable=false)
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "opID", nullable = false)
 	public OperatorAccount getOperatorAccount() {
 		return operatorAccount;
 	}
@@ -68,9 +52,9 @@ public class FlagQuestionCriteria {
 	public void setFlagColor(FlagColor flagColor) {
 		this.flagColor = flagColor;
 	}
-	
-	@ManyToOne(optional=false)
-	@JoinColumn(name="questionID", nullable=false)
+
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "questionID", nullable = false)
 	public AuditQuestion getAuditQuestion() {
 		return auditQuestion;
 	}
@@ -123,7 +107,7 @@ public class FlagQuestionCriteria {
 	public void setMultiYearScope(MultiYearScope multiYearScope) {
 		this.multiYearScope = multiYearScope;
 	}
-	
+
 	@Transient
 	public boolean isFlagged(String answer) {
 		String questionType = auditQuestion.getQuestionType();
@@ -151,7 +135,7 @@ public class FlagQuestionCriteria {
 				return value.equals(answer);
 			else
 				return !value.equals(answer);
-		if ("Decimal Number".equals(questionType) || "Money".equals(questionType)){
+		if ("Decimal Number".equals(questionType) || "Money".equals(questionType)) {
 			float tempRate = 0;
 			float tempCutoff = 0;
 			try {
@@ -161,18 +145,18 @@ public class FlagQuestionCriteria {
 				return true;
 			}
 			if (">".equals(comparison))
-					return (tempRate > tempCutoff);
+				return (tempRate > tempCutoff);
 			if ("<".equals(comparison))
-					return (tempRate < tempCutoff);
+				return (tempRate < tempCutoff);
 			return (tempRate == tempCutoff);
 		}
-		if( "Additional Insured".equals(questionType ) ) {
-			if( operatorAccount != null ) {
+		if ("Additional Insured".equals(questionType)) {
+			if (operatorAccount != null) {
 				List<AccountName> names = getOperatorAccount().getNames();
-				
-				if( names != null && names.size() > 0 ) {
-					for( AccountName name : names ) {
-						if( name.getName().equalsIgnoreCase(answer.trim())) {
+
+				if (names != null && names.size() > 0) {
+					for (AccountName name : names) {
+						if (name.getName().equalsIgnoreCase(answer.trim())) {
 							return true;
 						}
 					}

@@ -1,14 +1,10 @@
 package com.picsauditing.jpa.entities;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -18,27 +14,15 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "flagoshacriteria")
 //@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="daily")
-public class FlagOshaCriteria {
-	protected int id;
+public class FlagOshaCriteria extends BaseTable {
 	protected OperatorAccount operatorAccount;
 	protected FlagColor flagColor;
 	protected FlagOshaCriterion lwcr;
 	protected FlagOshaCriterion trir;
 	protected FlagOshaCriterion fatalities;
 
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "criteriaID", nullable = false)
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	@ManyToOne(optional=false)
-	@JoinColumn(name="opID", nullable=false)
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "opID", nullable = false)
 	public OperatorAccount getOperatorAccount() {
 		return operatorAccount;
 	}
@@ -55,7 +39,7 @@ public class FlagOshaCriteria {
 	public void setFlagColor(FlagColor flagColor) {
 		this.flagColor = flagColor;
 	}
-	
+
 	@Embedded
 	@AttributeOverrides( { @AttributeOverride(name = "flag", column = @Column(name = "flaglwcr")),
 			@AttributeOverride(name = "hurdle", column = @Column(name = "lwcrHurdle")),
@@ -94,12 +78,8 @@ public class FlagOshaCriteria {
 
 	@Transient
 	public boolean isRequired() {
-		return lwcr.isRequired() 
-			|| trir.isRequired() 
-			|| fatalities.isRequired();
+		return lwcr.isRequired() || trir.isRequired() || fatalities.isRequired();
 	}
-	
-
 
 	@Override
 	public int hashCode() {
@@ -122,6 +102,5 @@ public class FlagOshaCriteria {
 			return false;
 		return true;
 	}
-
 
 }

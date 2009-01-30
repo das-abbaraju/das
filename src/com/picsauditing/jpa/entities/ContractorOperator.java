@@ -1,16 +1,11 @@
 package com.picsauditing.jpa.entities;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -28,30 +23,17 @@ import org.hibernate.annotations.FetchMode;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "generalcontractors")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="temp")
-public class ContractorOperator implements java.io.Serializable {
-	private int id;
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
+public class ContractorOperator extends BaseTable implements java.io.Serializable {
 	private OperatorAccount operatorAccount;
 	private ContractorAccount contractorAccount;
-	private Date dateAdded;
 	private String workStatus = "P";
 	private FlagColor forceFlag;
 	private Date forceBegin;
 	private Date forceEnd;
 	private ContractorOperatorFlag flag;
 
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(nullable = false)
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "genID", nullable = false, updatable = false)
 	public OperatorAccount getOperatorAccount() {
 		return operatorAccount;
@@ -61,7 +43,7 @@ public class ContractorOperator implements java.io.Serializable {
 		this.operatorAccount = operator;
 	}
 
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "subID", nullable = false, updatable = false)
 	public ContractorAccount getContractorAccount() {
 		return contractorAccount;
@@ -71,17 +53,10 @@ public class ContractorOperator implements java.io.Serializable {
 		this.contractorAccount = contractor;
 	}
 
-	@Temporal(TemporalType.DATE)
-	public Date getDateAdded() {
-		return this.dateAdded;
-	}
-
-	public void setDateAdded(Date dateAdded) {
-		this.dateAdded = dateAdded;
-	}
-
 	/**
-	 * Assume Yes if the operator approvesRelationships=No, otherwise this should default to P and then be approved or rejected
+	 * Assume Yes if the operator approvesRelationships=No, otherwise this
+	 * should default to P and then be approved or rejected
+	 * 
 	 * @return P=Pending, Y=Yes, N=No
 	 */
 	public String getWorkStatus() {
@@ -91,20 +66,21 @@ public class ContractorOperator implements java.io.Serializable {
 	public void setWorkStatus(String workStatus) {
 		this.workStatus = workStatus;
 	}
-	
+
 	@Transient
 	public boolean isWorkStatusApproved() {
 		return "Y".equals(workStatus);
 	}
+
 	@Transient
 	public boolean isWorkStatusRejected() {
 		return "N".equals(workStatus);
 	}
+
 	@Transient
 	public boolean isWorkStatusPending() {
 		return "P".equals(workStatus);
 	}
-
 
 	@Enumerated(EnumType.STRING)
 	public FlagColor getForceFlag() {
@@ -157,10 +133,8 @@ public class ContractorOperator implements java.io.Serializable {
 
 	@OneToOne
 	@Fetch(FetchMode.JOIN)
-	@JoinColumns({
-		@JoinColumn(name="genID", referencedColumnName="opID", insertable=false, updatable=false),
-		@JoinColumn(name="subID", referencedColumnName="conID", insertable=false, updatable=false)
-	})
+	@JoinColumns( { @JoinColumn(name = "genID", referencedColumnName = "opID", insertable = false, updatable = false),
+			@JoinColumn(name = "subID", referencedColumnName = "conID", insertable = false, updatable = false) })
 	public ContractorOperatorFlag getFlag() {
 		return flag;
 	}
@@ -169,8 +143,6 @@ public class ContractorOperator implements java.io.Serializable {
 		this.flag = flag;
 	}
 
-	
-	
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;
@@ -193,6 +165,4 @@ public class ContractorOperator implements java.io.Serializable {
 		return true;
 	}
 
-	
-	
 }
