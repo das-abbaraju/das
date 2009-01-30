@@ -46,16 +46,18 @@
 	<table class="report">
 		<thead>
 			<tr>
-				<td>&nbsp;</td>
-				<td title="PICS Recommendation" style="cursor: help;">Recommend</td>
-				<td><a href="javascript: changeOrderBy('form1','a.name');">Policy</a></td>
+				<td>Select</td>
+				<td title="PICS Recommendation" style="cursor: help;">Compliant?</td>
+				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
+				<td><a href="javascript: changeOrderBy('form1','atype.auditName');">Policy</a></td>
 				<s:if test="requiresActivePolicy">	
 					<td>Status</td>
 				</s:if>
 				<td align="center"><a href="javascript: changeOrderBy('form1','expiresDate ASC');">Expires</a></td>
 				<td>Limits</td>
 				<td title="Waiver of Subrogation">Waiver</td>
-				<td>Additional Insured<br/>(Click For File)</td>
+				<td>Additional Insured</td>
+				<td>Certificate</td>
 				<td>Notes</td>
 				<td>Approval<br/>Status</td>
 			</tr>
@@ -75,7 +77,9 @@
 					</s:else>
 				</td>
 				<td>
-					<a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="[0].get('name')"/></a> -
+					<a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="[0].get('name')"/></a>
+				</td>
+				<td>
 					<a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="[0].get('auditName')"/></a> 
 				</td>
 				<s:if test="requiresActivePolicy">
@@ -95,18 +99,18 @@
 				<td>
 					<s:iterator value="getDataForAudit(get('auditID'),'aiName')">
 						<s:set name="nameQuestion" value="top"/>
-						<s:set name="aiFiles" value="getDataForAudit(get('auditID'),'aiFile')"/>
-						<s:if test="( #aiFiles != null ) && (#aiFiles.size() > 0 )">
-							<s:iterator value="#aiFiles">
-								<s:if test="parentAnswer.id == #nameQuestion.id">
-									<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&answer.id=<s:property value="id"/>" target="_BLANK"><s:property value="getAiNameOrSupercededName(#nameQuestion)"/></a><br/>
-								</s:if>
-							</s:iterator>
-						</s:if>
-						<s:else>
-							<s:property value="getAiNameOrSupercededName(#nameQuestion)"/></a><br/>						
-						</s:else>
+						<s:property value="getAiNameOrSupercededName(#nameQuestion)"/></a><br/>						
 					</s:iterator>
+				</td>
+				<td>
+					<s:set name="aiFiles" value="getDataForAudit(get('auditID'),'policyFile')"/>
+					<s:if test="( #aiFiles != null ) && (#aiFiles.size() > 0 )">
+						<s:iterator value="#aiFiles">
+							<s:if test="parentAnswer.id == #nameQuestion.id">
+								<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&answer.id=<s:property value="id"/>" target="_BLANK"><img src="images/icon_insurance.gif"/></a><br/>
+							</s:if>
+						</s:iterator>
+					</s:if>
 				</td>
 				<td><s:textfield name="caos[%{get('caoId')}].notes" value="%{get('caoNotes')}"/></td>
 				<td><s:property value="get('caoStatus')"/></td>
@@ -116,8 +120,8 @@
 				<td style="text-align: center;">
 					<nobr><input title="Check all" type="checkbox" onclick="setAllChecked(this);"/> Select All</nobr>
 				</td>
-				<td colspan="8" style="text-align: left;">
-					Set statuses to: <s:select cssClass="statusSelects" name="newStatuses" list="#{'':'No Change','Approved':'Approved','Awaiting':'Awaiting','NotApplicable':'Not Applicable','Rejected':'Rejected'}"/>
+				<td colspan="10" style="text-align: left;">
+					Set statuses to: <s:select cssClass="statusSelects" name="newStatuses" list="#{'Approved':'Approved','Rejected':'Rejected','NotApplicable':'Not Applicable'}"/>
 					<input type="submit" onclick="javascript: return saveRows('approveInsuranceForm');" value="Update Selected"/>		
 				</td>
 		</tr>

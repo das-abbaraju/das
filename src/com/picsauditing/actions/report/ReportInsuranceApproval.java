@@ -98,7 +98,7 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 	 * question data that is not returned in the main query 
 	 * 
 	 * @param auditId
-	 * @param purpose - kind of like a column name. Known keys for this are: aiFile, aiWaiverSub, aiName, aiMatches, aiOther or limits
+	 * @param purpose - kind of like a column name. Known keys for this are: policyFile, aiWaiverSub, aiName, aiMatches, aiOther or limits
 	 * @return List<AuditData>
 	 */
 	public List<AuditData> getDataForAudit(int auditId, String purpose) {
@@ -163,7 +163,7 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 			// These are the 3 questions listed as part of the Additional Insured subCategory
 			List<AuditQuestion> questions = auditQuestionDao
 					.findQuestionsByUniqueCodes(Arrays.asList("aiName",
-							"aiFile", "aiWaiverSub", "aiMatches", "aiOther"));
+							"policyFile", "aiWaiverSub", "aiMatches", "aiOther"));
 
 			{
 				// Fill out the double map (AuditTypeName->UniqueCode->AuditQuestion)
@@ -245,7 +245,9 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 									}
 								}
 							}
-	
+						}
+						else if ( permissions.seesAllContractors() ) {
+							answers.add(aiNameAnswer);
 						}
 					}
 				}
