@@ -95,7 +95,7 @@
 		Type</a> = <span id="form1_auditTypeID_query">ALL</span><br />
 		<span id="form1_auditTypeID_select" style="display: none"
 			class="clearLink"> <s:select id="form1_auditTypeID" list="filter.auditTypeList"
-			cssClass="forms" name="filter.auditTypeID" listKey="auditTypeID"
+			cssClass="forms" name="filter.auditTypeID" listKey="id"
 			listValue="auditName" multiple="true" size="5" /> <script
 			type="text/javascript">updateQuery('form1_auditTypeID');</script> <br />
 		<a class="clearLink" href="#"
@@ -109,7 +109,7 @@
 		Type</a> = <span id="form1_auditTypeID_query">ALL</span><br />
 		<span id="form1_auditTypeID_select" style="display: none"
 			class="clearLink"> <s:select id="form1_auditTypeID" list="filter.policyTypeList"
-			cssClass="forms" name="filter.auditTypeID" listKey="auditTypeID"
+			cssClass="forms" name="filter.auditTypeID" listKey="id"
 			listValue="auditName" multiple="true" size="5" /> <script
 			type="text/javascript">updateQuery('form1_auditTypeID');</script> <br />
 		<a class="clearLink" href="#"

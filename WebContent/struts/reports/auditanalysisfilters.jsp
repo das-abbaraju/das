@@ -65,7 +65,7 @@ function updateQuery(name) {
 		id="form1_auditTypeID_query">ALL</span><br />
 	<span id="form1_auditTypeID_select" style="display: none" class="clearLink">
 	<s:select list="auditTypeList"
-		cssClass="forms" name="auditTypeID" listKey="auditTypeID"
+		cssClass="forms" name="auditTypeID" listKey="id"
 		listValue="auditName" multiple="true" size="5" /> 
 		<script	type="text/javascript">updateQuery('form1_auditTypeID');</script> <br />
 	<a class="clearLink" href="#"
