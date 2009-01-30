@@ -1,7 +1,5 @@
 package com.picsauditing.actions.users;
 
-import java.util.Date;
-
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserGroupDAO;
@@ -47,8 +45,7 @@ public class UserGroupSave extends UsersManage {
 					
 				uGroup.setGroup(newGroup);
 				uGroup.setUser(user);
-				uGroup.setCreationDate(new Date());
-				uGroup.setCreatedBy(permissions.getUserId());
+				uGroup.setAuditColumns(this.getUser());
 				userGroupDAO.save(uGroup);
 				user.getGroups().add(uGroup);
 			}
@@ -74,8 +71,7 @@ public class UserGroupSave extends UsersManage {
 				
 				uGroup.setUser(newUser);
 				uGroup.setGroup(user);
-				uGroup.setCreationDate(new Date());
-				uGroup.setCreatedBy(permissions.getUserId());
+				uGroup.setAuditColumns(this.getUser());
 				userGroupDAO.save(uGroup);
 				user.getMembers().add(uGroup);
 			}

@@ -1,6 +1,5 @@
 package com.picsauditing.actions.users;
 
-import java.util.Date;
 import java.util.Vector;
 
 import com.picsauditing.PICS.PasswordValidator;
@@ -55,8 +54,7 @@ public class UserSave extends UsersManage {
 			if (!Strings.isEmpty(password1) && !password1.equals(user.getPassword()))
 				user.setPassword(password1);
 
-			if (user.getCreationDate() == null)
-				user.setCreationDate(new Date());
+			user.setAuditColumns(this.getUser());
 
 			if (user.getAccount() == null) {
 				user.setAccount(new Account());

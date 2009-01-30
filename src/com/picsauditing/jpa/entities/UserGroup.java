@@ -1,11 +1,6 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -13,22 +8,9 @@ import javax.persistence.Table;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "usergroup")
-public class UserGroup implements java.io.Serializable {
-	protected int userGroupID;
+public class UserGroup extends BaseTable implements java.io.Serializable {
 	protected User user;
 	protected User group;
-	protected Date creationDate;
-	protected int createdBy;
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public int getUserGroupID() {
-		return userGroupID;
-	}
-
-	public void setUserGroupID(int userGroupID) {
-		this.userGroupID = userGroupID;
-	}
 
 	@ManyToOne(optional=false)
 	@JoinColumn(name="userID", nullable=false)
@@ -50,28 +32,11 @@ public class UserGroup implements java.io.Serializable {
 		this.group = group;
 	}
 
-	public Date getCreationDate() {
-		return creationDate;
-	}
-
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
-	}
-
-	public int getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(int createdBy) {
-		this.createdBy = createdBy;
-	}
-
-
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
-		result = PRIME * result + userGroupID;
+		result = PRIME * result + id;
 		return result;
 	}
 
@@ -84,7 +49,7 @@ public class UserGroup implements java.io.Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		final UserGroup other = (UserGroup) obj;
-		if (userGroupID != other.userGroupID)
+		if (id != other.id)
 			return false;
 		return true;
 	}

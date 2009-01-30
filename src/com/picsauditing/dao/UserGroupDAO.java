@@ -12,7 +12,7 @@ import com.picsauditing.jpa.entities.UserGroup;
 @SuppressWarnings("unchecked")
 public class UserGroupDAO extends PicsDAO {
 	public UserGroup save(UserGroup o) {
-		if (o.getUserGroupID() == 0) {
+		if (o.getId() == 0) {
 			em.persist(o);
 		} else {
 			o = em.merge(o);

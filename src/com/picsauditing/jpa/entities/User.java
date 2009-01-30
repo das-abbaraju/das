@@ -10,9 +10,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -49,7 +46,6 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		return (id == GROUP_SU);
 	}
 
-	private int id = 0;
 	private String username;
 	private String password;
 	private YesNo isGroup;
@@ -77,16 +73,6 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	}
 
 	public User(int id) {
-		this.id = id;
-	}
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
 		this.id = id;
 	}
 
