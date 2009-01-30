@@ -25,7 +25,7 @@ public class FormBean extends DataBean {
 	static final String DEFAULT_SELECT_CATEGORY = "SELECT A CATEGORY";
 	static final String DEFAULT_SELECT_FORM = "SELECT A FORM";
 
-	public String formID = "";
+	public String id = "";
 	public String formName = "";
 	public String file = "";
 	public String opID = "";
@@ -51,7 +51,7 @@ public class FormBean extends DataBean {
 
 	public boolean isNextForm(PermissionsBean pBean) throws Exception{
 		if (li.hasNext()){
-			formID = (String)li.next();
+			id = (String)li.next();
 			formName = (String)li.next();
 			file = (String)li.next();
 			opID = (String)li.next();
@@ -107,11 +107,11 @@ public class FormBean extends DataBean {
 				categories.add(SQLResult.getString("name"));
 			}//while
 			SQLResult.close();
-			selectQuery = "SELECT * FROM operatorForms LEFT JOIN accounts ON (id=opID) ORDER BY name,formName";
+			selectQuery = "SELECT * FROM operatorForms of LEFT JOIN accounts a ON (a.id=of.opID) ORDER BY a.name,of.formName";
 			SQLResult = SQLStatement.executeQuery(selectQuery);
 			formsAL = new ArrayList<String>();
 			while (SQLResult.next()) {
-				formsAL.add(SQLResult.getString("formID"));
+				formsAL.add(SQLResult.getString("id"));
 				formsAL.add(SQLResult.getString("formName"));
 				formsAL.add(SQLResult.getString("file"));
 				formsAL.add(SQLResult.getString("opID"));
@@ -161,7 +161,7 @@ public class FormBean extends DataBean {
 			String shortName=renameFormFile(fileName, fID);
 			
 			String updateQuery = "UPDATE operatorForms SET formName='"+Utilities.escapeQuotes(newName)+"',file='"+shortName+
-				"',opID="+newCatID+" WHERE formID="+fID+";";
+				"',opID="+newCatID+" WHERE id="+fID+";";
 				SQLStatement.executeUpdate(updateQuery);
 		}finally{
 			DBClose();
@@ -200,7 +200,7 @@ public class FormBean extends DataBean {
 		}
 		
 		String updateQuery = "UPDATE operatorForms SET formName='"+Utilities.escapeQuotes(newFormName)+"',file='"+Utilities.escapeQuotes(newFileName)+
-			"' WHERE formID="+editFormID+";";
+			"' WHERE id="+editFormID+";";
 		try{
 			DBReady();
 			SQLStatement.executeUpdate(updateQuery);
@@ -246,7 +246,7 @@ public class FormBean extends DataBean {
 		java.io.File fileToDelete = new java.io.File(path+"/forms/"+deleteFile);
 		if (fileToDelete.exists())
 			fileToDelete.delete();
-		String Query = "DELETE FROM operatorForms WHERE formID="+deleteFormID+";";
+		String Query = "DELETE FROM operatorForms WHERE id="+deleteFormID+";";
 		try{
 			DBReady();
 			SQLStatement.executeUpdate(Query);

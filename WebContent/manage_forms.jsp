@@ -12,7 +12,9 @@ if (permissions.isAdmin() || permissions.isOperator() || permissions.isCorporate
 	}
 }
 
-String path = application.getInitParameter("FTP_DIR");
+String path = System.getProperty("pics.ftpDir");
+if(Strings.isEmpty(path))
+	path = application.getInitParameter("FTP_DIR");
 boolean isSubmitted = "Yes".equals(request.getParameter("isSubmitted"));
 fBean.setFromDB();
 String editCatID = "";
@@ -44,6 +46,7 @@ if (isSubmitted){
 
 }//if
 %>
+<%@page import="com.picsauditing.util.Strings"%>
 <html>
 <head>
 <title>Manage Forms</title>
