@@ -703,6 +703,10 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
+		<action name="LoggerConfig" class="com.picsauditing.actions.LoggerConfig">
+			<result>/struts/blank.jsp</result>
+		</action>
+
 		<action name="OpenAuditsMailer"
 			class="com.picsauditing.actions.audits.OpenAuditsMailer">
 			<result>/struts/blank.jsp</result>
