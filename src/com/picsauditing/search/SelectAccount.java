@@ -67,7 +67,7 @@ public class SelectAccount extends SelectSQL {
 		String join = "";
 		if (!require)
 			join = "LEFT ";
-		join = join + "JOIN pqfdata q" + questionID + " on q" + questionID + ".auditID = pqf.auditID AND q" + questionID
+		join = join + "JOIN pqfdata q" + questionID + " on q" + questionID + ".auditID = pqf.id AND q" + questionID
 				+ ".questionID = " + questionID;
 		this.addJoin(join);
 		this.addField("q" + questionID + ".answer AS " + columnName);
@@ -77,7 +77,7 @@ public class SelectAccount extends SelectSQL {
 		String join = "";
 		if (!require)
 			join = "LEFT ";
-		join = join + "JOIN pqfdata q" + name + " on q" + name + ".auditID = "+name+".auditID AND q" + name
+		join = join + "JOIN pqfdata q" + name + " on q" + name + ".auditID = "+name+".id AND q" + name
 				+ ".questionID = " + questionID;
 		this.addJoin(join);
 		this.addField("q" + name + ".answer AS " + columnName);
@@ -92,7 +92,7 @@ public class SelectAccount extends SelectSQL {
 		String join = "";
 		if (!require)
 			join = "LEFT ";
-		join = join + "JOIN pqfdata q" + questionID + " on q" + questionID + ".auditID = "+ name +".auditID AND q" + questionID
+		join = join + "JOIN pqfdata q" + questionID + " on q" + questionID + ".auditID = "+ name +".id AND q" + questionID
 				+ ".questionID = " + questionID;
 		this.addJoin(join);
 		this.addField("q" + questionID + ".answer AS answer" + questionID);
@@ -118,7 +118,7 @@ public class SelectAccount extends SelectSQL {
 				+ auditTypeID + ".auditStatus IN ('Active','Exempt') AND ca" + auditTypeID + ".auditTypeID = "
 				+ auditTypeID;
 		this.addJoin(join);
-		this.addField("ca" + auditTypeID + ".auditID AS ca" + auditTypeID + "_auditID");
+		this.addField("ca" + auditTypeID + ".id AS ca" + auditTypeID + "_auditID");
 		this.addField("ca" + auditTypeID + ".auditStatus AS ca" + auditTypeID + "_auditStatus");
 	}
 

@@ -83,7 +83,7 @@ public class ReportFlagCriteria extends ReportAccount {
 					sql.addField(name + ".percentComplete AS '" + name + " Completed'");
 					sql.addWhere(name + ".auditFor = " + year);
 					sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
-							+ ".auditID AND osha" + year + ".location = 'Corporate'");
+							+ ".id AND osha" + year + ".location = 'Corporate'");
 
 					year = year - 1;
 					name = "annual" + year;
@@ -94,7 +94,7 @@ public class ReportFlagCriteria extends ReportAccount {
 					sql.addField(name + ".percentComplete AS '" + name + " Completed'");
 					sql.addWhere(name + ".auditFor = " + year);
 					sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
-							+ ".auditID AND osha" + year + ".location = 'Corporate'");
+							+ ".id AND osha" + year + ".location = 'Corporate'");
 
 					year = year - 1;
 					name = "annual" + year;
@@ -105,7 +105,7 @@ public class ReportFlagCriteria extends ReportAccount {
 					sql.addField(name + ".percentComplete AS '" + name + " Completed'");
 					sql.addWhere(name + ".auditFor = " + year);
 					sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
-							+ ".auditID AND osha" + year + ".location = 'Corporate'");
+							+ ".id AND osha" + year + ".location = 'Corporate'");
 					
 					year = year - 1;
 					name = "annual" + year;
@@ -116,7 +116,7 @@ public class ReportFlagCriteria extends ReportAccount {
 					sql.addField(name + ".percentComplete AS '" + name + " Completed'");
 					sql.addWhere(name + ".auditFor = " + year);
 					sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
-							+ ".auditID AND osha" + year + ".location = 'Corporate'");
+							+ ".id AND osha" + year + ".location = 'Corporate'");
 				} else {
 					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
 							+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name

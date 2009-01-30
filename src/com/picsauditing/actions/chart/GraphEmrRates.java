@@ -36,7 +36,7 @@ public class GraphEmrRates extends ChartMSAction {
 
 		SelectSQL sql = new SelectSQL("accounts a");
 		sql.addJoin("JOIN contractor_audit pqf ON pqf.conID = a.id");
-		sql.addJoin("JOIN pqfdata d ON d.auditID = pqf.auditID");
+		sql.addJoin("JOIN pqfdata d ON d.auditID = pqf.id");
 		sql.addField("pqf.auditFor as series");
 		sql.addField("floor(d.answer*10)/10 as label");
 		sql.addField("count(*) as value");

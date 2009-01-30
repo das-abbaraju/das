@@ -11,7 +11,7 @@ public class ReportAnnualAddendum extends ReportAccount {
 	protected void buildQuery() {
 		super.buildQuery();
 		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
-		sql.addField("ca.auditID");
+		sql.addField("ca.id auditID");
 		sql.addField("ca.auditFor");
 		sql.addWhere("ca.auditTypeID = 11");
 		

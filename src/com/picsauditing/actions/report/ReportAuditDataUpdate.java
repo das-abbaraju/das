@@ -19,7 +19,7 @@ public class ReportAuditDataUpdate extends ReportContractorAudits {
 		sql.addField("pq.updateDate");
 		sql.addField("pq.answer");
 		sql.addField("p.question");
-		sql.addJoin("JOIN pqfdata pq on pq.auditID = ca.auditID");
+		sql.addJoin("JOIN pqfdata pq on pq.auditID = ca.id");
 		sql.addJoin("JOIN pqfquestions p on p.id = pq.questionID");
 		sql.addWhere("pq.updateDate > ca.completedDate");
 		orderByDefault = "pq.updateDate DESC";
