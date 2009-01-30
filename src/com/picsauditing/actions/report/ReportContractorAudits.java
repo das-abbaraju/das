@@ -123,12 +123,12 @@ public class ReportContractorAudits extends ReportAccount {
 		}
 
 		if (filterOn(f.getCreatedDate1())) {
-			report.addFilter(new SelectFilterDate("createdDate1", "ca.createdDate >= '?'", DateBean.format(f
+			report.addFilter(new SelectFilterDate("createdDate1", "ca.creationDate >= '?'", DateBean.format(f
 					.getCreatedDate1(), "M/d/yy")));
 		}
 
 		if (filterOn(f.getCreatedDate2())) {
-			report.addFilter(new SelectFilterDate("createdDate2", "ca.createdDate < '?'", DateBean.format(f
+			report.addFilter(new SelectFilterDate("createdDate2", "ca.creationDate < '?'", DateBean.format(f
 					.getCreatedDate2(), "M/d/yy")));
 		}
 

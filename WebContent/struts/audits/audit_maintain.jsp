@@ -37,7 +37,7 @@
 	<legend><span>Audit Dates</span></legend>
 	<ol>
 		<li><label>Created Date:</label>
-			<s:textfield name="conAudit.createdDate" value="%{conAudit.createdDate && getText('dates', {conAudit.createdDate})}"/></li>
+			<s:textfield name="conAudit.creationDate" value="%{conAudit.creationDate && getText('dates', {conAudit.creationDate})}"/></li>
 		<li><label>Expires Date:</label>
 			<s:textfield name="conAudit.expiresDate" value="%{conAudit.expiresDate && getText('dates', {conAudit.expiresDate})}"/></li>
 		<li><label>Assigned Date:</label>

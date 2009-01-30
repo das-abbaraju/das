@@ -41,7 +41,7 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 			sql.addWhere("atype.isScheduled=1 OR atype.hasAuditor=1");
 		}
 
-		orderByDefault = "ca.createdDate";
+		orderByDefault = "ca.creationDate";
 
 		getFilter().setShowAuditStatus(false);
 		getFilter().setShowUnConfirmedAudits(true);

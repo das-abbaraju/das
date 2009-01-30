@@ -25,7 +25,7 @@
 	    <s:if test="permissions.operator || permissions.corporate">
 		    <td>Approval Status</td>
 	    </s:if>
-	    <td><a href="javascript: changeOrderBy('form1','ca.createdDate DESC');" >Created</a></td>
+	    <td><a href="javascript: changeOrderBy('form1','ca.creationDate DESC');" >Created</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.completedDate DESC');" >Submitted</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.closedDate DESC');" >Closed</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.expiresDate DESC');" >Expired</a></td>
