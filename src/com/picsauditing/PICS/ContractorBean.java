@@ -54,6 +54,8 @@ public class ContractorBean extends DataBean {
 	public int facilitiesCount = 0;
 	public String isOnlyCerts = "No";
 	public String setTrades = "";
+	
+	public String paymentMethodStatus = "";
 
 	public String accountDate = ""; // The first time a user logs into this
 									// Contractor account
@@ -400,6 +402,8 @@ public class ContractorBean extends DataBean {
 		membershipDate = DateBean.toShowFormat(SQLResult.getString("membershipDate"));
 		lastPayment = DateBean.toShowFormat(SQLResult.getString("lastPayment"));
 		lastPaymentAmount = SQLResult.getString("lastPaymentAmount");
+		
+		paymentMethodStatus = SQLResult.getString("paymentMethodStatus");
 
 		paymentExpires = DateBean.toShowFormat(SQLResult.getString("paymentExpires"));
 		lastInvoiceDate = DateBean.toShowFormat(SQLResult.getString("lastInvoiceDate"));
