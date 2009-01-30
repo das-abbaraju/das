@@ -35,7 +35,7 @@ import com.picsauditing.util.log.PicsLogger;
 @Entity
 @Table(name = "users")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
-public class User implements java.io.Serializable, Comparable<User> {
+public class User extends BaseTable implements java.io.Serializable, Comparable<User> {
 	public static String DEFAULT_AUDITOR = "- Auditor -";
 	public static int GROUP_ADMIN = 10;
 	public static int GROUP_AUDITOR = 11;
@@ -56,7 +56,6 @@ public class User implements java.io.Serializable, Comparable<User> {
 	private String email;
 	private String name;
 	private YesNo isActive;
-	private Date dateCreated;
 	private Date lastLogin;
 	private Account account;
 
@@ -151,14 +150,6 @@ public class User implements java.io.Serializable, Comparable<User> {
 
 	public void setIsActive(YesNo isActive) {
 		this.isActive = isActive;
-	}
-
-	public Date getDateCreated() {
-		return dateCreated;
-	}
-
-	public void setDateCreated(Date dateCreated) {
-		this.dateCreated = dateCreated;
 	}
 
 	public Date getLastLogin() {

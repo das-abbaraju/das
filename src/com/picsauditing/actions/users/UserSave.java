@@ -55,8 +55,8 @@ public class UserSave extends UsersManage {
 			if (!Strings.isEmpty(password1) && !password1.equals(user.getPassword()))
 				user.setPassword(password1);
 
-			if (user.getDateCreated() == null)
-				user.setDateCreated(new Date());
+			if (user.getCreationDate() == null)
+				user.setCreationDate(new Date());
 
 			if (user.getAccount() == null) {
 				user.setAccount(new Account());
