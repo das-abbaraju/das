@@ -19,7 +19,7 @@ public class SelectContractorAudit extends SelectAccount {
 		this.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
 		this.addJoin("JOIN audit_type atype ON atype.id = ca.auditTypeID");
 
-		this.addField("ca.auditID");
+		this.addField("ca.id auditID");
 		this.addField("ca.auditTypeID");
 		this.addField("atype.auditName");
 		this.addField("ca.auditStatus");
@@ -43,7 +43,7 @@ public class SelectContractorAudit extends SelectAccount {
 		String join = "";
 		if (!require)
 			join = "LEFT ";
-		join = join + "JOIN pqfdata q" + questionID + " on q" + questionID + ".auditID = ca.auditID AND q" + questionID
+		join = join + "JOIN pqfdata q" + questionID + " on q" + questionID + ".id = ca.id AND q" + questionID
 				+ ".questionID = " + questionID;
 		this.addJoin(join);
 		this.addField("q" + questionID + ".answer AS " + columnName);

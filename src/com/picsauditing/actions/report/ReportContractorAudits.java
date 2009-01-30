@@ -28,7 +28,7 @@ public class ReportContractorAudits extends ReportAccount {
 	private ReportFilterAudit filter = new ReportFilterAudit();
 
 	public ReportContractorAudits() {
-		orderByDefault = "ca.createdDate DESC";
+		orderByDefault = "ca.creationDate DESC";
 	}
 
 	@Override
