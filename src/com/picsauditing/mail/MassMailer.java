@@ -175,7 +175,7 @@ public class MassMailer extends PicsActionSupport {
 			sql.addOrderBy("a.name");
 		} else if (ListType.Audit.equals(type)) {
 			sql = new SelectContractorAudit();
-			sql.addWhere("ca.auditID IN (" + idList + ")");
+			sql.addWhere("ca.id IN (" + idList + ")");
 			sql.addOrderBy("a.name");
 			sql.addOrderBy("atype.auditName");
 		} else {

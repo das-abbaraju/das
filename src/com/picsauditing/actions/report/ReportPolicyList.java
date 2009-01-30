@@ -19,7 +19,7 @@ public class ReportPolicyList extends ReportContractorAudits {
 		
 		if(permissions.isOperator()) {
 			sql.addField("cao.status AS CaoStatus");
-			sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.auditID");
+			sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
 			sql.addWhere("cao.opID = "+permissions.getAccountId());
 		}
 		getFilter().setShowPolicyType(true);

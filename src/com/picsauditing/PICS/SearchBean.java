@@ -237,7 +237,7 @@ public class SearchBean {
 		else {
 			whereQuery += "AND (tradeQ.questionID='"+selected_trade+"' ";
 			joinQuery +="JOIN contractor_audit ca ON (ca.conID = accounts.id)";
-			joinQuery += "INNER JOIN pqfData tradeQ ON (tradeQ.auditID = ca.auditID) ";
+			joinQuery += "INNER JOIN pqfData tradeQ ON (tradeQ.auditID = ca.id) ";
 			
 			if (!isSet(selected_performedBy, DEFAULT_PERFORMED_BY)) {
 				selected_performedBy = DEFAULT_PERFORMED_BY;
@@ -255,21 +255,21 @@ public class SearchBean {
 		else {
 			whereQuery += "AND (licensedInQ.questionID='"+selected_stateLicensedIn+"' AND licensedInQ.answer<>'') ";
 			joinQuery +="JOIN contractor_audit ca ON (ca.conID = accounts.id)";
-			joinQuery += "INNER JOIN pqfData licensedInQ ON (licensedInQ.auditID = ca.auditID) ";
+			joinQuery += "INNER JOIN pqfData licensedInQ ON (licensedInQ.auditID = ca.id) ";
 		}
 		if (!isSet(selected_worksIn, DEFAULT_LICENSED_IN_ID))
 			selected_worksIn = DEFAULT_LICENSED_IN_ID;
 		else {
 			whereQuery += "AND (worksInQ.questionID='"+selected_worksIn+"' AND worksInQ.answer<>'No') ";
-			joinQuery +="JOIN contractor_audit ca ON (ca.auditID = accounts.id)";
-			joinQuery += "INNER JOIN pqfData worksInQ ON (worksInQ.auditID = ca.auditID)";
+			joinQuery +="JOIN contractor_audit ca ON (ca.id = accounts.id)";
+			joinQuery += "INNER JOIN pqfData worksInQ ON (worksInQ.auditID = ca.id)";
 		}
 		if (!isSet(selected_officeIn, DEFAULT_LICENSED_IN_ID))
 			selected_officeIn =  DEFAULT_LICENSED_IN_ID;
 		else {
 			whereQuery += "AND (officeInQ.questionID='"+selected_officeIn+"' AND officeInQ.answer LIKE '%Office') ";
-			joinQuery +="JOIN contractor_audit ca ON (ca.auditID = accounts.id)";
-			joinQuery += "INNER JOIN pqfData officeInQ ON (officeInQ.auditID = ca.auditID) ";
+			joinQuery +="JOIN contractor_audit ca ON (ca.id = accounts.id)";
+			joinQuery += "INNER JOIN pqfData officeInQ ON (officeInQ.auditID = ca.id) ";
 		}
 			
 		

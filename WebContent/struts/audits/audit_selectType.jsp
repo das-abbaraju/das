@@ -19,7 +19,7 @@
 <tr>
 	<td class="center"><s:property value="displayOrder"/></td>
 	<td><s:property value="classType"/></td>
-	<td><a href="ManageAuditType.action?id=<s:property value="auditTypeID"/>"><s:property value="auditName"/></a></td>
+	<td><a href="ManageAuditType.action?id=<s:property value="id"/>"><s:property value="auditName"/></a></td>
 </tr>
 </s:iterator>
 <tr><td></td><td class="center" colspan="2"><a href="?button=Add New">Add New</a></td></tr>

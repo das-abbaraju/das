@@ -57,7 +57,7 @@ public class OshaAuditDAO extends PicsDAO {
 					.append(" and oa.shatype = o.shatype " )
 					.append(" and oa.location = o.location " )
 					.append(" and oa.description = o.description " )
-					.append(" and oa.auditid = ca.auditid " );
+					.append(" and oa.auditid = ca.id " );
 		
 		Query qry = em.createNativeQuery( query.toString(), OshaAudit.class );
 		
@@ -74,7 +74,7 @@ public class OshaAuditDAO extends PicsDAO {
 				.append( " pqfdata pd, " )
 				.append( " contractor_audit ca " )
 				.append( " where " )
-				.append( " pd.auditId = ca.auditId " )
+				.append( " pd.auditId = ca.id " )
 				.append( " and pd.questionId = ? " )
 				.append( " and ca.conId = ? " );
 

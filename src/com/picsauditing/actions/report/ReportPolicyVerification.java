@@ -25,14 +25,14 @@ public class ReportPolicyVerification extends ReportContractorAudits {
 		
 		// Only show policies that are required by operators ( that haven't decided yet
 		SelectSQL subSelect = new SelectSQL("contractor_audit_operator cao");
-		subSelect.addJoin("JOIN contractor_audit ca ON cao.auditID = ca.auditID");
+		subSelect.addJoin("JOIN contractor_audit ca ON cao.auditID = ca.id");
 		subSelect.addJoin("JOIN audit_operator ao ON ca.auditTypeID = ao.auditTypeID AND cao.opID = ao.opID");
-		subSelect.addField("ca.auditID");
+		subSelect.addField("ca.id auditID");
 		subSelect.addWhere("ao.canSee = 1");
 		subSelect.addWhere("ao.requiredForFlag in ('Amber','Red')");
 		subSelect.addWhere("ao.requiredAuditStatus = 'Active'");
 		subSelect.addWhere("cao.status = 'Awaiting'");
-		sql.addWhere("ca.auditID IN (" + subSelect.toString() + ")");
+		sql.addWhere("ca.id IN (" + subSelect.toString() + ")");
 	}
 	
 	@Override
