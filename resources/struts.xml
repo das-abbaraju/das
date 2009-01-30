@@ -232,6 +232,12 @@
 			class="com.picsauditing.actions.report.ReportNewContractorSearch">
 			<result>struts/reports/newContractor_operator.jsp</result>
 		</action>
+		<action name="NewContractorSearchCSV"
+			class="com.picsauditing.actions.report.ReportNewContractorSearch">
+			<result>struts/reports/newContractor_operator_csv.jsp</result>
+		</action>
+
+
 
 		<action name="AuditListAuditor"
 			class="com.picsauditing.actions.report.ReportContractorAuditAuditor">
@@ -704,6 +710,10 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
+		<action name="LoggerConfig" class="com.picsauditing.actions.LoggerConfig">
+			<result>/struts/blank.jsp</result>
+		</action>
+
 		<action name="OpenAuditsMailer"
 			class="com.picsauditing.actions.audits.OpenAuditsMailer">
 			<result>/struts/blank.jsp</result>
@@ -757,11 +767,17 @@
 		
 		<action name="ReportInsuranceApproval"
 			class="com.picsauditing.actions.report.ReportInsuranceApproval">
+			<param name="reportName">Insurance Approval Struts</param>
 			<result>struts/reports/opinsurance_approval.jsp</result>
 		</action>
 		<action name="ReportInsuranceApprovalSave"
 			class="com.picsauditing.actions.report.ReportInsuranceApprovalSave">
 			<result>struts/blank.jsp</result>
+		</action>
+		<action name="ReportUpdatedPolicies"
+			class="com.picsauditing.actions.report.ReportInsuranceApproval">
+			<param name="reportName">Recently Updated Policies Struts</param>
+			<result>struts/reports/opinsurance_approval.jsp</result>
 		</action>
 		
 		<action name="PolicyVerification"
