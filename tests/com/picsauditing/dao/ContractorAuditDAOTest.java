@@ -45,7 +45,7 @@ public class ContractorAuditDAOTest {
 		contractoraudit.getAuditType().setAuditTypeID(8);
 		contractoraudit.setContractorAccount(new ContractorAccount());
 		contractoraudit.getContractorAccount().setId(1003);
-		contractoraudit.setCreatedDate(Calendar.getInstance().getTime());
+		contractoraudit.setCreationDate(Calendar.getInstance().getTime());
 		contractoraudit.setAuditStatus(AuditStatus.Active);
 		contractoraudit.setExpiresDate(new Date());
 		contractoraudit.setAuditor(new User());

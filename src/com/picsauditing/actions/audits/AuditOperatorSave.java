@@ -28,10 +28,11 @@ public class AuditOperatorSave extends PicsActionSupport implements Preparable {
 		if (!forceLogin())
 			return LOGIN;
 
-		if (ao.getAuditOperatorID() == 0) {
+		if (ao.getId() == 0) {
 			if (operatorID > 0) {
 				ao.setOperatorAccount(new OperatorAccount());
 				ao.getOperatorAccount().setId(operatorID);
+				ao.setAuditColumns(this.getUser());
 			}
 		}
 		

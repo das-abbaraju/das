@@ -45,7 +45,7 @@ public class ContractorAuditComparator implements Comparator<ContractorAudit> {
 		int comparison = 0;
 
 		if (getSortField(value[0]).equalsIgnoreCase("createdDate")) {
-			comparison = o1.getCreatedDate().compareTo(o2.getCreatedDate());
+			comparison = o1.getCreationDate().compareTo(o2.getCreationDate());
 		}
 
 		if (getSortField(value[0]).equalsIgnoreCase("auditFor")) {

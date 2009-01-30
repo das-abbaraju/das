@@ -39,7 +39,7 @@ public class AuditOperatorDAOTest {
 		auditoperator.setCanSee(false);
 		auditoperator.setOrderDate(Calendar.getInstance().getTime());
 		auditoperator = auditoperatorDAO.save(auditoperator);
-		assertTrue(auditoperator.getAuditOperatorID() > 0);
+		assertTrue(auditoperator.getId() > 0);
 
 		List<AuditOperator> testFindByOperator = auditoperatorDAO.findByOperator(228);
 		assertTrue(testFindByOperator.size() > 0);
@@ -47,8 +47,8 @@ public class AuditOperatorDAOTest {
 		List<AuditOperator> testFindByAudit = auditoperatorDAO.findByAudit(5);
 		assertTrue(testFindByAudit.size() > 0);
 
-		auditoperatorDAO.remove(auditoperator.getAuditOperatorID());
-		AuditOperator auditoperator1 = auditoperatorDAO.find(auditoperator.getAuditOperatorID());
+		auditoperatorDAO.remove(auditoperator.getId());
+		AuditOperator auditoperator1 = auditoperatorDAO.find(auditoperator.getId());
 		assertNull(auditoperator1);
 	}
 
@@ -61,7 +61,7 @@ public class AuditOperatorDAOTest {
 	// @Test
 	public void testFindByAudit() {
 		List<AuditOperator> auditoperator = auditoperatorDAO.findByAudit(1);
-		assertEquals(451, auditoperator.get(0).getAuditOperatorID());
+		assertEquals(451, auditoperator.get(0).getId());
 	}
 
 	// @Test

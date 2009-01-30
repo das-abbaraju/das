@@ -28,7 +28,7 @@ public class UserDaoTest extends TestCase {
 			System.out.println(row.getAccount().getName());
 			System.out.println(operator.getActivationEmails());
 			
-			assertEquals(2921, row.getAccount().getId().intValue());
+			assertEquals(2921, row.getAccount().getId());
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}

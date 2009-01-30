@@ -11,7 +11,7 @@ import java.util.List;
 @Transactional
 public class AuditOperatorDAO extends PicsDAO {
 	public AuditOperator save(AuditOperator o) {
-		if (o.getAuditOperatorID() == 0) {
+		if (o.getId() == 0) {
 			em.persist(o);
 		} else {
 			o = em.merge(o);

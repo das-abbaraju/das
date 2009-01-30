@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Date;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -25,6 +25,7 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
@@ -61,8 +62,8 @@ public class ContractorAccountDAOTest {
 		contractoraccount.setWebUrl("www.picsauditing.com");
 		contractoraccount.setIndustry(Industry.Construction);
 		contractoraccount.setActive('y');
-		contractoraccount.setCreatedBy("pics");
-		contractoraccount.setDateCreated(new Date());
+		contractoraccount.setCreatedBy(new User(1100));
+		contractoraccount.setCreationDate(new Date());
 		contractoraccount.setSeesAllB('n');
 		contractoraccount.setActivationEmailsB("pics@picsauditing.com");
 		contractoraccount.setSendActivationEmailB('n');

@@ -97,7 +97,7 @@ public class AuditBuilder {
 		requiresSafetyManual.add(AuditType.DA);
 
 		/** *** Welcome Call *** */
-		if (DateBean.getDateDifference(contractor.getDateCreated()) > -90) {
+		if (DateBean.getDateDifference(contractor.getCreationDate()) > -90) {
 			// Create the welcome call for all accounts created in the past 90
 			// days
 			boolean needsWelcome = true;

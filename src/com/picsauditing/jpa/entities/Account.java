@@ -30,10 +30,9 @@ import com.picsauditing.util.Luhn;
 @Entity
 @Table(name = "accounts")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Account implements java.io.Serializable {
+public class Account extends BaseTable implements java.io.Serializable {
 	static public int PicsID = 1100;
 
-	protected int id;
 	protected String name;
 	protected String username;
 	protected String password;
@@ -51,8 +50,6 @@ public class Account implements java.io.Serializable {
 	protected String webUrl;
 	protected Industry industry;
 	protected char active;
-	protected String createdBy = "PICS";
-	protected Date dateCreated = new Date();
 	protected char seesAllB;
 	protected char sendActivationEmailB;
 	protected String activationEmailsB;
@@ -63,20 +60,9 @@ public class Account implements java.io.Serializable {
 	// protected List<ContractorOperator> contractors;
 	protected List<AccountName> names = new ArrayList<AccountName>();
 
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", nullable = false)
-	public Integer getId() {
-		return this.id;
-	}
-
 	@Transient
 	public String getIdString() {
 		return ((Integer) this.id).toString();
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	@Transient
@@ -241,25 +227,6 @@ public class Account implements java.io.Serializable {
 		this.active = active;
 	}
 
-	@Column(name = "createdBy", nullable = false, length = 10)
-	public String getCreatedBy() {
-		return this.createdBy;
-	}
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "dateCreated", nullable = false, length = 10)
-	public Date getDateCreated() {
-		return this.dateCreated;
-	}
-
-	public void setDateCreated(Date dateCreated) {
-		this.dateCreated = dateCreated;
-	}
-
 	@Column(name = "seesAll_B", length = 1)
 	public char getSeesAllB() {
 		return this.seesAllB;
@@ -360,7 +327,7 @@ public class Account implements java.io.Serializable {
 		try {
 			// Try to cast this to an account
 			final Account other = (Account) obj;
-			if (id == other.getId().intValue())
+			if (id == other.getId())
 				return true;
 			return false;
 		} catch (Exception e) {

@@ -127,7 +127,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			if (conAudit.getAuditType().isPqf())
 				catData.getCategory().setValidDate(new Date());
 			else
-				catData.getCategory().setValidDate(conAudit.getCreatedDate());
+				catData.getCategory().setValidDate(conAudit.getCreationDate());
 
 		return categories;
 	}

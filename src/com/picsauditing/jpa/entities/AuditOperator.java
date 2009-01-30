@@ -6,9 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -23,11 +20,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "audit_operator")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditOperator implements java.io.Serializable {
+public class AuditOperator extends BaseTable implements java.io.Serializable {
 
-	protected int auditOperatorID = 0;
 	protected AuditType auditType;
-
 	protected OperatorAccount operatorAccount;
 	protected boolean canSee;
 	protected boolean canEdit;
@@ -40,17 +35,6 @@ public class AuditOperator implements java.io.Serializable {
 	private int htmlID = 0;
 	private FlagColor contractorFlag;
 	
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public int getAuditOperatorID() {
-		return auditOperatorID;
-	}
-
-	public void setAuditOperatorID(int auditOperatorID) {
-		this.auditOperatorID = auditOperatorID;
-	}
-
 	@ManyToOne
 	@JoinColumn(name = "auditTypeID", nullable=false)
 	public AuditType getAuditType() {
@@ -169,7 +153,7 @@ public class AuditOperator implements java.io.Serializable {
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
-		result = PRIME * result + auditOperatorID;
+		result = PRIME * result + id;
 		return result;
 	}
 
@@ -182,7 +166,7 @@ public class AuditOperator implements java.io.Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		final AuditOperator other = (AuditOperator) obj;
-		if (auditOperatorID != other.auditOperatorID)
+		if (id != other.id)
 			return false;
 		return true;
 	}
