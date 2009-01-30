@@ -76,6 +76,7 @@ onclick="hideSearch()">Hide Filter Options</a></div>
     		<thead><tr>	
                 <td colspan="2" width="150"><a href="?changed=0&showPage=1&orderBy=name" class="whiteTitle">Contractor</a></td>
                 <td align="center"><a href="?changed=0&showPage=1&orderBy=payingFacilities DESC" class="whiteTitle">Pay Fac</a></td>
+                <td align="center"><a href="?changed=0&showPage=1&orderBy=paymentMethodStatus DESC" class="whiteTitle">CC</a></td>
 				<td align="center"><a href="?changed=0&showPage=1&orderBy=membershipDate DESC" class="whiteTitle">Member Since</a></td>
  			    <td align="center"><a href="?changed=0&showPage=1&orderBy=paymentExpires" class="whiteTitle">Expires</a></td>
  			    <td colspan=2 align="center"><a href="?changed=0&showPage=1&orderBy=lastInvoiceDate DESC" class="whiteTitle"><nobr>Last Inv</nobr></a></td>
@@ -87,12 +88,19 @@ onclick="hideSearch()">Hide Filter Options</a></div>
 	while (sBean.isNextRecord()){
 		totalNewPayments += Integer.parseInt(sBean.cBean.newBillingAmount);
 		sBean.cBean.setFacilitiesFromDB();
+		
+		String paymentMethodStatus = sBean.cBean.paymentMethodStatus;
+		String hasCreditCard = "N";
+		if ("Valid".equals(paymentMethodStatus) || "Approved".equals(paymentMethodStatus))
+			hasCreditCard = "Y";
+		
 %>			  <tr <%=sBean.getBGColor()%>>
 		  	  <form name="form2" id="form2" method="post" action="report_payment.jsp?changed=0&showPage=<%=sBean.showPage%>">
                 <td class="right"><%=sBean.count-1%></td>
 			    <td><a href="ContractorEdit.action?id=<%=sBean.aBean.id%>" title="view <%=sBean.aBean.name%> details" class="<%=sBean.getTextColor()%>">
 			    <%=sBean.getActiveStar()%><%=sBean.aBean.name%></a></td>
 			    <td><%=sBean.cBean.payingFacilities%></td>
+			    <td><%=hasCreditCard%></td>
 				<td><%=sBean.cBean.membershipDate%></td>
 			    <td><%=sBean.cBean.paymentExpires%></td>
 			    <td>$<%=sBean.cBean.billingAmount%></td>
