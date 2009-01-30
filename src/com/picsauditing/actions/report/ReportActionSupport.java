@@ -22,6 +22,7 @@ public class ReportActionSupport extends PicsActionSupport {
 	private String orderBy = null;
 	protected int showPage;
 	protected ColorAlternater color = new ColorAlternater();
+	protected String reportName = null;
 
 	protected boolean download = false;
 	protected boolean mailMerge = false;
@@ -137,4 +138,13 @@ public class ReportActionSupport extends PicsActionSupport {
 		}
 		return value.length > 0;
 	}
+
+	public String getReportName() {
+		return reportName;
+	}
+
+	public void setReportName(String reportName) {
+		this.reportName = reportName;
+	}
+	
 }
