@@ -37,6 +37,20 @@ public class UserAccess implements java.io.Serializable, Comparable<UserAccess> 
 	private Date lastUpdate;
 	private User grantedBy;
 
+	
+	public UserAccess() {}
+	
+	
+	public UserAccess( UserAccess other ) {
+		setUser( other.getUser() );
+		setOpPerm(other.getOpPerm());
+		setViewFlag(other.getViewFlag());
+		setEditFlag(other.getEditFlag());
+		setDeleteFlag(other.getDeleteFlag());
+		setGrantFlag(other.getGrantFlag());
+	}
+	
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "accessID")

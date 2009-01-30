@@ -339,12 +339,21 @@ public class User implements java.io.Serializable, Comparable<User> {
 		return permissions;
 	}
 
-	private void add(Set<UserAccess> permissions, UserAccess perm, boolean overrideBoth) {
-		if (perm == null || perm.getOpPerm() == null)
+	/**
+	 * 
+	 * @param permissions The new set of permission for this user (transient version of user.permissions)
+	 * @param perm The actual UserAccess object owned by either the current user or one of its parent groups.
+	 * @param overrideBoth True if perm is from "this", false if perm is from a parent
+	 */
+	private void add(Set<UserAccess> permissions, UserAccess connectPerm, boolean overrideBoth) {
+		if (connectPerm == null || connectPerm.getOpPerm() == null)
 			return;
 
+		// Create a disconnected copy of UserAccess (perm)
+		UserAccess perm = new UserAccess( connectPerm );
 		debug(this.getName() + " - - Adding perm " + perm.getOpPerm().getDescription() + " V:" + perm.getViewFlag()
 				+ " E:" + perm.getEditFlag() + " D:" + perm.getDeleteFlag() + " G:" + perm.getGrantFlag());
+		
 		for (UserAccess origPerm : permissions) {
 			if (origPerm.getOpPerm().equals(perm.getOpPerm())) {
 				if (overrideBoth) {
