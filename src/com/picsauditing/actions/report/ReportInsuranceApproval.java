@@ -63,7 +63,7 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 		sql.addField("cao.id as caoId");
 		sql.addField("cao.recommendedStatus as caoRecommendedStatus");
 		sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.auditID");
-		sql.addJoin("JOIN audit_operator a_op on a_op.auditTypeID = atype.auditTypeID AND a_op.opID = cao.opID");
+		sql.addJoin("JOIN audit_operator a_op on a_op.auditTypeID = atype.id AND a_op.opID = cao.opID");
 
 		sql.addJoin("JOIN accounts ao on ao.id = cao.opID");
 		//sql.addWhere("ca.auditStatus IN ('Submitted','Active')");

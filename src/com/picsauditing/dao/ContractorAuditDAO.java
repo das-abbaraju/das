@@ -99,7 +99,7 @@ public class ContractorAuditDAO extends PicsDAO {
 	public ContractorAudit findActiveByContractor(int conID, int auditTypeID) {
 		Query query = em
 				.createQuery("SELECT t FROM ContractorAudit t "
-						+ "WHERE t.contractorAccount.id = ? AND auditType.auditTypeID = ? "
+						+ "WHERE t.contractorAccount.id = ? AND auditType.id = ? "
 						+ "AND auditStatus IN ('Active','Exempt')");
 		query.setParameter(1, conID);
 		query.setParameter(2, auditTypeID);
@@ -159,7 +159,7 @@ public class ContractorAuditDAO extends PicsDAO {
 		if (permissions.getCanSeeAudit() == null)
 			return "AND 1=0";
 
-		String where = "AND auditType.auditTypeID IN (0";
+		String where = "AND auditType.id IN (0";
 		for (Integer id : permissions.getCanSeeAudit())
 			where += "," + id;
 		return where += ")";
@@ -219,7 +219,7 @@ public class ContractorAuditDAO extends PicsDAO {
 		int range = 10;
 
 		String hql = "SELECT DISTINCT ca.contractorAccount FROM ContractorAudit ca "
-				+ "WHERE ca.auditType.auditTypeID > 1 AND ca.auditType.hasMultiple = 0 "
+				+ "WHERE ca.auditType.id > 1 AND ca.auditType.hasMultiple = 0 "
 				+ "AND ca.expiresDate BETWEEN :startDate AND :endDate "
 				+ "ORDER BY ca.expiresDate";
 		Query query = em.createQuery(hql);

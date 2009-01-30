@@ -17,7 +17,7 @@ public class SelectContractorAudit extends SelectAccount {
 		this.setType(Type.Contractor);
 
 		this.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
-		this.addJoin("JOIN audit_type atype ON atype.auditTypeID = ca.auditTypeID");
+		this.addJoin("JOIN audit_type atype ON atype.id = ca.auditTypeID");
 
 		this.addField("ca.auditID");
 		this.addField("ca.auditTypeID");

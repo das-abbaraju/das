@@ -20,7 +20,7 @@ public class ChartAuditsClosed extends ChartMSAction {
 		String sqlString;
 		SelectSQL sql;
 		sql = new SelectSQL("contractor_audit ca");
-		sql.addJoin("JOIN audit_type t using (auditTypeID)");
+		sql.addJoin("JOIN audit_type t on t.id = ca.auditTypeID");
 
 		sql.addField("'Completed' as series");
 		sql.addField("date_format(completedDate, '%Y%m') as sortBy");
@@ -33,7 +33,7 @@ public class ChartAuditsClosed extends ChartMSAction {
 		sqlString = sql.toString();
 
 		sql = new SelectSQL("contractor_audit ca");
-		sql.addJoin("JOIN audit_type t using (auditTypeID)");
+		sql.addJoin("JOIN audit_type t on t.id = ca.auditTypeID");
 
 		sql.addField("'Closed' as series");
 		sql.addField("date_format(closedDate, '%Y%m') as sortBy");
@@ -47,7 +47,7 @@ public class ChartAuditsClosed extends ChartMSAction {
 		sqlString += sql.toString();
 
 		sql = new SelectSQL("contractor_audit ca");
-		sql.addJoin("JOIN audit_type t using (auditTypeID)");
+		sql.addJoin("JOIN audit_type t on t.id = ca.auditTypeID");
 
 		sql.addField("'New' as series");
 		sql.addField("date_format(createdDate, '%Y%m') as sortBy");

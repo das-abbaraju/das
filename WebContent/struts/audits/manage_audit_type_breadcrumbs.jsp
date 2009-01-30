@@ -22,10 +22,10 @@ function selectCrumb(selector, url) {
 	<a class="blueMain" href="ManageAuditType.action">Top</a>
 	<s:if test="auditType != null">
 		<s:if test="category == null">
-			&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain current" href="ManageAuditType.action?id=<s:property value="auditType.auditTypeID"/>"><s:property value="auditType.auditName"/></a>
+			&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain current" href="ManageAuditType.action?id=<s:property value="auditType.id"/>"><s:property value="auditType.auditName"/></a>
 		</s:if>
 		<s:else>
-			&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain" href="ManageAuditType.action?id=<s:property value="auditType.auditTypeID"/>"><s:property value="auditType.auditName"/></a>
+			&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain" href="ManageAuditType.action?id=<s:property value="auditType.id"/>"><s:property value="auditType.auditName"/></a>
 		</s:else>
 		<s:if test="category != null">
 			<s:if test="subCategory == null">

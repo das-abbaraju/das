@@ -136,7 +136,7 @@ public class AuditBuilder {
 		/** * Add other Audits ** */
 		// Get a distinct list of AuditTypes that attached operators require
 		List<AuditType> list = auditTypeDAO.findWhere("t IN (SELECT auditType " + "FROM AuditOperator "
-				+ "WHERE auditType.auditTypeID > 1 AND canSee=1 " + " AND minRiskLevel BETWEEN 1 AND "
+				+ "WHERE auditType.id > 1 AND canSee=1 " + " AND minRiskLevel BETWEEN 1 AND "
 				+ contractor.getRiskLevel().ordinal() + " AND operatorAccount IN ("
 				+ "SELECT operatorAccount FROM ContractorOperator " + "WHERE contractorAccount.id = "
 				+ contractor.getId() + "))");

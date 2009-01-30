@@ -10,7 +10,7 @@
 	type="text/javascript"></script>
 <script type="text/javascript">
 function save(id, aID, oID, pKey) {
-	pars = '&operatorID='+oID+'&ao.auditType.auditTypeID='+aID+'&ao.auditOperatorID='+pKey;
+	pars = '&operatorID='+oID+'&ao.auditType.id='+aID+'&ao.auditOperatorID='+pKey;
 	
 	var checkBox = $('form1')['canSee'+id];
 	if (checkBox.checked)
@@ -89,7 +89,7 @@ function save(id, aID, oID, pKey) {
 				<td style="vertical-align: middle;">
 				<s:if test="oID > 0">
 					<a
-						href="AuditOperator.action?aID=<s:property value="auditType.auditTypeID" />"><s:property
+						href="AuditOperator.action?aID=<s:property value="auditType.id" />"><s:property
 						value="auditType.auditName" /></a>
 				</s:if>
 				<s:else>

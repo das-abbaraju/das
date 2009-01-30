@@ -50,7 +50,7 @@ public class HurdleQuestions extends DataBean {
 	public void setList(String opID) throws Exception {
 		String selectQuery = "SELECT at.classType, pc.auditTypeID, pc.number, ps.number, pq.number, pq.ID questionid, concat(case when at.classType = 'Policy' then concat(pc.category , ' - ') else '' end,  pq.question) question, questionType " +
 								"FROM audit_type at " + 
-								"JOIN pqfCategories pc ON (pc.auditTypeId = at.auditTypeId)" +
+								"JOIN pqfCategories pc ON (pc.auditTypeId = at.id)" +
 								"JOIN pqfSubCategories ps ON (catID=categoryID) " +
 								"JOIN pqfQuestions pq ON (subCatID=subCategoryID) " +
 								"WHERE isRedFlagQuestion='Yes' " +

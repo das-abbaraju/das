@@ -32,7 +32,7 @@ public class AuditCategoryDAO extends PicsDAO {
     }
 
 	public List<AuditCategory> findByAuditTypeID(int id) {
-		String sql = "SELECT c FROM AuditCategory c WHERE c.auditType.auditTypeID = :auditTypeID";
+		String sql = "SELECT c FROM AuditCategory c WHERE c.auditType.id = :auditTypeID";
 		Query query = em.createQuery(sql);
 		query.setParameter("auditTypeID", id);
 		return query.getResultList();

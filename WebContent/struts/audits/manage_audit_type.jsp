@@ -12,8 +12,8 @@
 <body>
 <s:include value="manage_audit_type_breadcrumbs.jsp" />
 
-<s:if test="auditType.auditTypeID > 0">
-	<div><a href="AuditOperator.action?aID=<s:property value="auditType.auditTypeID"/>">Edit Operator Access</a></div>
+<s:if test="auditType.id > 0">
+	<div><a href="AuditOperator.action?aID=<s:property value="auditType.id"/>">Edit Operator Access</a></div>
 </s:if>
 <table>
 	<tr>
@@ -25,7 +25,7 @@
 				<legend><span>Audit Type</span></legend>
 					<ol>
 						<li><label>ID:</label>
-							<s:if test="auditType.auditTypeID > 0"><s:property value="auditType.auditTypeID" /></s:if>
+							<s:if test="auditType.id > 0"><s:property value="auditType.id" /></s:if>
 							<s:else>NEW</s:else>
 						</li>
 						<li><label>Name:</label>
@@ -71,7 +71,7 @@
 			<br clear="all">
 			<div class="buttons">
 				<button class="positive" name="button" type="submit" value="save">Save</button>
-				<s:if test="auditType.auditTypeID > 0 && auditType.categories.size == 0">
+				<s:if test="auditType.id > 0 && auditType.categories.size == 0">
 					<button name="button" class="negative" type="submit" value="delete">Delete</button>
 				</s:if>
 			</div>
@@ -86,11 +86,11 @@
 				</s:iterator>
 				</ul>
 				
-				<a href="ManageCategory.action?button=AddNew&parentID=<s:property value="auditType.auditTypeID"/>&category.auditType.auditTypeID=<s:property value="auditType.auditTypeID"/>">Add New Category</a>
+				<a href="ManageCategory.action?button=AddNew&parentID=<s:property value="auditType.id"/>&category.auditType.id=<s:property value="auditType.id"/>">Add New Category</a>
 				<script type="text/javascript">
 				//<![CDATA[
 				Sortable.create("list", 
-					{onUpdate:function(){new Ajax.Updater('list-info', 'OrderAuditChildrenAjax.action?id=<s:property value="auditType.auditTypeID"></s:property>&type=AuditType', {asynchronous:true, evalScripts:true, onComplete:function(request){new Effect.Highlight("list",{});}, parameters:Sortable.serialize("list")})}})
+					{onUpdate:function(){new Ajax.Updater('list-info', 'OrderAuditChildrenAjax.action?id=<s:property value="auditType.id"></s:property>&type=AuditType', {asynchronous:true, evalScripts:true, onComplete:function(request){new Effect.Highlight("list",{});}, parameters:Sortable.serialize("list")})}})
 				//]]>
 				</script>
 				<div id="list-info"></div>

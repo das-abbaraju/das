@@ -72,7 +72,7 @@ public class ReportContractorAudits extends ReportAccount {
 		sql.addField("auditor.name auditor_name");
 
 		if (permissions.isCorporate() || permissions.isOperator()) {
-			sql.addWhere("atype.auditTypeID IN (" + Strings.implode(permissions.getCanSeeAudit(), ",") + ")");
+			sql.addWhere("atype.id IN (" + Strings.implode(permissions.getCanSeeAudit(), ",") + ")");
 		}
 		if (auditTypeClass != null)
 			sql.addWhere("atype.classType = '"+ auditTypeClass.toString() + "'");

@@ -111,7 +111,7 @@
 	</thead>
 	<s:iterator id="op" value="co.operatorAccount.audits">
 		<s:iterator id="con" value="co.contractorAccount.audits">
-			<s:if test="#op.auditType.auditTypeID == #con.auditType.auditTypeID && (#con.auditStatus.toString().equals('Pending') || #con.auditStatus.toString().equals('Submitted'))">
+			<s:if test="#op.auditType.id == #con.auditType.id && (#con.auditStatus.toString().equals('Pending') || #con.auditStatus.toString().equals('Submitted'))">
 				<tr>
 					<td><a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditFor" /> <s:property value="auditType.auditName" /></a></td>
 					<td><s:property value="auditStatus" /></td>
