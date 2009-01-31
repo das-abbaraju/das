@@ -12,17 +12,15 @@
 </s:else>
 
 <s:if test="#q.allowMultipleAnswers">
+	<h4 class="groupTitle"><s:property value="#a.answer"/></h4>
 	<s:if test="#a.id > 0">
 		<a href="javascript: removeTuple(<s:property value="#a.id"/>);" class="remove right" 
 			style="font-size: 14px; font-weight: normal; text-decoration: none; position: relative; top: 5px;">Remove</a>
 	</s:if>
 	<s:else>
-		<a href="javascript: addTuple(<s:property value="#q.id"/>);" class="edit right" 
-			style="font-size: 14px; font-weight: normal; text-decoration: none; position: relative; top: 5px;">Add</a>
+		<a href="javascript: addTuple(<s:property value="#q.id"/>);" class="edit right"
+			style="font-size: 14px; font-weight: normal; text-decoration: none; position: relative; top: 5px; right: 20px;">Add</a>
 	</s:else>
-	<h4 class="groupTitle">
-		<s:property value="#a.answer"/>
-	</h4>
 </s:if>
 
 <div class="thinking" id="thinking_<s:property value="#divID"/>"></div>
@@ -88,7 +86,7 @@
 			onchange="saveAnswer('%{#divID}', this);"/>
 	</s:if>
 	<s:if test="#q.questionType == 'Additional Insured'">
-		<s:select list="legalNames" value="%{#a.answer}" name="answer%{#divID}" 
+		<s:select headerKey="" headerValue="- Choose an Operator Name -" list="legalNames" value="%{#a.answer}" name="answer%{#divID}" 
 			onchange="saveAnswer('%{#divID}', this);"></s:select>
 	</s:if>
 	<s:if test="#q.questionType == 'Date'">

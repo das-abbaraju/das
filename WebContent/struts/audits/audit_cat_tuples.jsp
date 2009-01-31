@@ -24,10 +24,10 @@
 </s:iterator>
 <s:if test="mode == 'Edit'">
 	<div class="tuple">
-		<h4 class="groupTitle">
-			Add New
-		</h4>
+		<h4 class="groupTitle">Add New</h4>
 		<s:set name="q" value="#anchorQuestion" />
+		<s:set name="requiredLeft" value="#anchorQuestion.minimumTuples - answerMap.getAnswerList(#anchorQuestion.id).size" />
+		<s:if test="#requiredLeft > 0"><span class="required" style="padding-left: 20px;"><s:property value="#requiredLeft"/> more required</span></s:if>
 		<s:set name="a" value="" />
 		<div class="question <s:if test="#shaded">shaded</s:if>">
 			<s:include value="audit_cat_question.jsp"></s:include>
