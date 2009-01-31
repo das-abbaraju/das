@@ -126,7 +126,7 @@
 		// Show Facilities selected
 		for (OperatorAccount operator : operators) {
 			
-			String opID = operator.getId().toString();
+			String opID = operator.getIdString();
 			String name = operator.getName();
 			String waitingOn = "";
 			String flagColor = "";
@@ -185,7 +185,7 @@
 		// Show Facilities NOT selected
 		for (OperatorAccount operator : operators) {
 			if(!permissions.isOperator()) {
-				String opID = operator.getId().toString();
+				String opID = operator.getIdString();
 				String name = operator.getName();
 				if (!cBean.generalContractors.contains(opID)) {
 					if (permissions.isCorporate() && pBean.oBean.facilitiesAL.contains(opID)
