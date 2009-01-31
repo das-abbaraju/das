@@ -33,17 +33,17 @@
 		
 		return false;
 	}
-	
+
 </SCRIPT>
 </head>
 <body>
-<h1>Insurance Policy Approval</h1>
+<h1><s:property value="reportName"/></h1>
 <s:include value="filters.jsp" />
 <div><s:property value="report.pageLinksWithDynamicForm"
 	escape="false" /></div>
 <s:form id="approveInsuranceForm" method="post" cssClass="forms">
 <br/><br/>
-	<table class="report">
+		<table class="report">
 		<thead>
 			<tr>
 				<td>Select</td>
@@ -57,7 +57,7 @@
 				<td>Limits</td>
 				<td title="Waiver of Subrogation">Waiver</td>
 				<td>Additional Insured</td>
-				<td>Certificate</td>
+				<td>Cert</td>
 				<td>Notes</td>
 				<td>Approval<br/>Status</td>
 			</tr>
@@ -65,7 +65,7 @@
 		<s:iterator value="data" status="stat">
 			<tr>
 				<td style="text-align: center;">
-					<input type="checkbox" class="massCheckable" name="caoids" value="<s:property value="get('caoId')"/>"/>
+					<input type="checkbox" onclick="javascript: return syncSelects()" class="massCheckable" name="caoids" value="<s:property value="get('caoId')"/>"/>
 				</td>
 				<td style="text-align: center;" >
 					<s:if test="( get('caoRecommendedStatus') == null ) || ( get('caoRecommendedStatus') == 'Awaiting' )"></s:if>
@@ -118,11 +118,11 @@
 		</s:iterator>
 		<tr>
 				<td style="text-align: center;">
-					<nobr><input title="Check all" type="checkbox" onclick="setAllChecked(this);"/> Select All</nobr>
+					<center><input title="Check all" type="checkbox" onclick="setAllChecked(this);"/><br/>Select<br/>All</center>
 				</td>
 				<td colspan="10" style="text-align: left;">
-					Set statuses to: <s:select cssClass="statusSelects" name="newStatuses" list="#{'Approved':'Approved','Rejected':'Rejected','NotApplicable':'Not Applicable'}"/>
-					<input type="submit" onclick="javascript: return saveRows('approveInsuranceForm');" value="Update Selected"/>		
+										<s:radio cssClass="statusSelects" name="newStatuses" list="#{'Approved':'Approve Selected','Rejected':'Reject Selected','NotApplicable':'Mark as N/A'}"/>
+					<input type="submit" onclick="javascript: return saveRows('approveInsuranceForm');" value="Update"/>		
 				</td>
 		</tr>
 	</table>
