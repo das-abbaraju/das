@@ -97,7 +97,12 @@
 										<s:property value="title" escape="false"/>
 									</h4>
 								</s:if>
-								
+								<s:if test="mode == 'ViewQ'">
+									<div class="question <s:if test="shaded">shaded</s:if>">
+										<s:include value="audit_cat_questions.jsp"></s:include>
+									</div>
+								</s:if>
+													
 								<s:if test="category.validDate.after(effectiveDate) && category.validDate.before(expirationDate)">
 									<s:set name="q" value="[0]" />
 									<s:if test="#q.allowMultipleAnswers">
