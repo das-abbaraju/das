@@ -767,7 +767,7 @@
 		
 		<action name="ReportInsuranceApproval"
 			class="com.picsauditing.actions.report.ReportInsuranceApproval">
-			<param name="reportName">Insurance Approval Struts</param>
+			<param name="reportName">Insurance Approval</param>
 			<result>struts/reports/opinsurance_approval.jsp</result>
 		</action>
 		<action name="ReportInsuranceApprovalSave"
@@ -776,7 +776,7 @@
 		</action>
 		<action name="ReportUpdatedPolicies"
 			class="com.picsauditing.actions.report.ReportInsuranceApproval">
-			<param name="reportName">Recently Updated Policies Struts</param>
+			<param name="reportName">Recently Updated Policies</param>
 			<result>struts/reports/opinsurance_approval.jsp</result>
 		</action>
 		
