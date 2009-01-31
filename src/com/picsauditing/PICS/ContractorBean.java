@@ -465,7 +465,7 @@ public class ContractorBean extends DataBean {
 			writeToDB();
 
 			DBReady();
-			String insertQuery = "INSERT INTO generalContractors (subID,genID,dateAdded) VALUES ";
+			String insertQuery = "INSERT INTO generalContractors (subID,genID,creationDate) VALUES ";
 			boolean doInsert = false;
 			for (String genID : newGeneralContractors) {
 				doInsert = true;

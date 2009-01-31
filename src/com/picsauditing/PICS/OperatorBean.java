@@ -431,7 +431,7 @@ public class OperatorBean extends DataBean {
 	}
 
 	public boolean addSubContractor(int genID, String subID) throws Exception {
-		String insertQuery = "INSERT IGNORE INTO generalContractors (subID,genID,dateAdded) " +
+		String insertQuery = "INSERT IGNORE INTO generalContractors (subID,genID,creationDate) " +
 				"VALUES ('"+subID+"','"+genID+"',NOW())";
 		try {
 			DBReady();
