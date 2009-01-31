@@ -238,7 +238,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	}
 
 	private void createPqfDataClause(SelectSQL sql, String where) {
-		String query = "a.id IN (SELECT ca.conID FROM contractor_audit ca JOIN pqfdata d USING (auditID) "
+		String query = "a.id IN (SELECT ca.conID FROM contractor_audit ca JOIN pqfdata d on ca.id = d.auditID "
 				+ "WHERE ca.auditStatus IN ('Active','Submitted') AND ca.auditTypeID = 1 " + where + ")";
 		sql.addWhere(query);
 		setFiltered(true);
