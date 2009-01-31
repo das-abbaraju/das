@@ -36,7 +36,7 @@
 	</s:if>
 	<s:if test="conAudit.auditType.desktop && conAudit.auditStatus.submitted">
 		<div id="info">The PICS auditor has submitted your Desktop Audit. There are 
-			<a href="?auditID=<s:property value="auditID" />&onlyReq=true" title="Click to see ALL Open Requirements">Open Requirements</a>
+			<a href="AuditCat.action?auditID=<s:property value="auditID" />&onlyReq=true" title="Click to see ALL Open Requirements">Open Requirements</a>
 			that need your attention. Please refer to the <a href="help/c/default.htm?turl=HTMLDocuments%2Fdesktopaudit.htm" target="_BLANK" title="Click Here to View the Help Guide in a new Window">Help Guide</a> 
 			for additional instructions on how to close out your audit.
 		</div>
