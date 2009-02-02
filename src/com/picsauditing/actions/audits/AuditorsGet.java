@@ -4,9 +4,7 @@ import java.util.List;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.AuditTypeCache;
 import com.picsauditing.util.AuditorCache;
 
 public class AuditorsGet extends ActionSupport

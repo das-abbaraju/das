@@ -33,12 +33,18 @@ public class ReportFilterAjax extends PicsActionSupport {
 				ReportFilterContractor filter = wizardSession.getContractorFilter();
 				filter.setDestinationAction("ContractorList");
 				filter.setVisible("Y"); // default to only active contractors
+				filter.setShowEmailSentDate(true);
+				filter.setShowEmailTemplate(true);
+				filter.setEmailListType(ListType.Contractor);
 				this.filter = filter;
 			}
 			if (listType.equals(ListType.Audit)) {
 				ReportFilterAudit filter = wizardSession.getAuditFilter();
 				filter.setDestinationAction("ReportAuditList");
 				filter.setVisible("Y"); // default to only active contractors
+				filter.setShowEmailSentDate(true);
+				filter.setShowEmailTemplate(true);
+				filter.setEmailListType(ListType.Audit);
 				this.filter = filter;
 			}
 			if (listType.equals(ListType.User)) {
@@ -55,7 +61,7 @@ public class ReportFilterAjax extends PicsActionSupport {
 		filter.setAjax(true);
 		filter.setAllowCollapsed(false);
 		filter.setAllowMailMerge(true);
-
+		
 		if (listType != null && listType.equals(ListType.User))
 			return "userfilters";
 

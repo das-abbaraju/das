@@ -1,16 +1,19 @@
 package com.picsauditing.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
@@ -35,7 +38,9 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showRiskLevel = false;
 	protected boolean showAssignedCon = false;
 	protected boolean showInParentCorporation = false;
-	protected boolean showWaitingOn = false;	
+	protected boolean showWaitingOn = false;
+	protected boolean showEmailSentDate = false;
+	protected boolean showEmailTemplate = false;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -51,6 +56,10 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean assignedCon = false;
 	protected boolean inParentCorporation = false;
 	protected String waitingOn;
+	protected Date emailSentDate1;
+	protected Date emailSentDate2;
+	protected String emailtemplate;
+	protected ListType emailListType;
 
 	private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
 
@@ -149,6 +158,22 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowWaitingOn(boolean showWaitingOn) {
 		this.showWaitingOn = showWaitingOn;
+	}
+	
+	public boolean isShowEmailSentDate() {
+		return showEmailSentDate;
+	}
+
+	public void setShowEmailSentDate(boolean showEmailSentDate) {
+		this.showEmailSentDate = showEmailSentDate;
+	}
+
+	public boolean isShowEmailTemplate() {
+		return showEmailTemplate;
+	}
+
+	public void setShowEmailTemplate(boolean showEmailTemplate) {
+		this.showEmailTemplate = showEmailTemplate;
 	}
 
 	public String getPerformedBy() {
@@ -305,6 +330,11 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		return WaitingOn.getMap();
 	}
 
+	public List<EmailTemplate> getEmailTemplateList() throws Exception {
+		EmailTemplateDAO dao = (EmailTemplateDAO) SpringUtils.getBean("EmailTemplateDAO");
+		return dao.findByAccountID(permissions.getAccountId(), getEmailListType());
+	}
+
 	public boolean isShowAssignedCon() {
 		return showAssignedCon;
 	}
@@ -335,5 +365,37 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setWaitingOn(String waitingOn) {
 		this.waitingOn = waitingOn;
+	}
+
+	public Date getEmailSentDate1() {
+		return emailSentDate1;
+	}
+
+	public void setEmailSentDate1(Date emailSentDate1) {
+		this.emailSentDate1 = emailSentDate1;
+	}
+
+	public Date getEmailSentDate2() {
+		return emailSentDate2;
+	}
+
+	public void setEmailSentDate2(Date emailSentDate2) {
+		this.emailSentDate2 = emailSentDate2;
+	}
+
+	public String getEmailtemplate() {
+		return emailtemplate;
+	}
+
+	public void setEmailtemplate(String emailtemplate) {
+		this.emailtemplate = emailtemplate;
+	}
+
+	public ListType getEmailListType() {
+		return emailListType;
+	}
+
+	public void setEmailListType(ListType emailListType) {
+		this.emailListType = emailListType;
 	}
 }
