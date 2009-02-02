@@ -201,6 +201,7 @@ public class ContractorAuditDAO extends PicsDAO {
 		cAudit.setContractorAccount(contractor);
 		cAudit.setAuditType(auditType);
 		cAudit.setAuditFor(auditFor);
+		cAudit.setCreationDate(new Date());
 		if(cAudit.getAuditType().getId() == 8) { 
 			cAudit.setRequestingOpAccount(new OperatorAccount());
 			cAudit.getRequestingOpAccount().setId(4744);
