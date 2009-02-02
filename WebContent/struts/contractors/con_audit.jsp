@@ -135,6 +135,9 @@
 		<s:if test="canApply">
 			<th>Apply</th>
 		</s:if>
+		<s:if test="conAudit.auditType.id == 17">
+			<th>Score</th>
+		</s:if>
 		</tr>
 	</thead>
 	<s:iterator value="categories" status="rowStatus">
@@ -152,6 +155,9 @@
 			</s:if>
 			<s:if test="canApply">
 				<td><s:form method="POST"><s:hidden name="auditID" value="%{auditID}" /><s:hidden name="removeCategoryID" value="%{id}" /><s:submit value="Remove"></s:submit></s:form></td>
+			</s:if>
+			<s:if test="conAudit.auditType.id == 17">
+				<th><s:property value="printableScore"/></th>
 			</s:if>
 			</tr>
 		</s:if>
