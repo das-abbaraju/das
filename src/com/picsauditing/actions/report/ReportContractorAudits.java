@@ -49,6 +49,10 @@ public class ReportContractorAudits extends ReportAccount {
 
 		if (download) {
 			addDownload();
+			sql.addField("atype.classType");
+			if(auditTypeClass == AuditTypeClass.Policy && permissions.isOperator()) {
+				sql.addField("cao.notes");
+			}	
 		}
 
 		addFilterToSQL();
