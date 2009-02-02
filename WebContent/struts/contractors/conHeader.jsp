@@ -138,6 +138,11 @@
 				<s:else>Not Uploaded</s:else>
 			</li>
 		</s:if>
+		<s:if test="conAudit.auditType.id == 17">
+			<li><label>IM Score:</label>
+				<s:property value="conAudit.printableScore"/>
+			</li>
+		</s:if>
 		<s:if test="conAudit.requestingOpAccount">
 			<li><label>For:</label>
 				<s:property value="conAudit.requestingOpAccount.name" />
