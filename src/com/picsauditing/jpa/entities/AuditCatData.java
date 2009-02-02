@@ -1,5 +1,8 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -28,6 +31,9 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 	private int numRequired = 0;
 	private int numAnswered = 0;
 	private boolean override = false;
+
+	private float score = 0;
+	private int scoreCount = 0;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "catID", nullable = false)
@@ -114,6 +120,22 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 		this.numAnswered = numAnswered;
 	}
 
+	public float getScore() {
+		return score;
+	}
+
+	public void setScore(float score) {
+		this.score = score;
+	}
+
+	public int getScoreCount() {
+		return scoreCount;
+	}
+
+	public void setScoreCount(int scoreCount) {
+		this.scoreCount = scoreCount;
+	}
+
 	@Enumerated(EnumType.ORDINAL)
 	@Column(nullable = false)
 	public boolean isOverride() {
@@ -147,5 +169,24 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 		return true;
 	}
 
-
+	@Transient
+	@SuppressWarnings("serial")
+	public String getPrintableScore() {
+		
+		if( getScoreCount() > 0 ) {
+		
+			int tempScore = Math.round(score);
+			
+			Map<Integer, String> map = new HashMap<Integer, String>() {{
+				put(0, "Red");
+				put(1, "Yellow");
+				put(2, "Green");
+			}};
+	
+			return map.get(tempScore);
+		}
+		else {
+			return "-";
+		}
+	}
 }

@@ -194,7 +194,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 				auditPercentCalculator.updatePercentageCompleted(currentCategory);
 			}
 		}
-		auditPercentCalculator.percentCalculateComplete(conAudit);
+		auditPercentCalculator.percentCalculateComplete(conAudit, conAudit.getAuditType().getId() == 17);
 
 		if (conAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM) {
 

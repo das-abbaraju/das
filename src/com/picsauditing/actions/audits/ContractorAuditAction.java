@@ -87,7 +87,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 			}
 		}
 		// Calculate and set the percent complete
-		auditPercentCalculator.percentCalculateComplete(conAudit);
+		auditPercentCalculator.percentCalculateComplete(conAudit, conAudit.getAuditType().getId() == 17);
 
 		if ("Submit".equals(button)) {
 			if (conAudit.getAuditType().isPqf()) {

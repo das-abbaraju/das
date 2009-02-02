@@ -3,7 +3,9 @@ package com.picsauditing.jpa.entities;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -43,6 +45,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	private String auditLocation;
 	private int percentComplete;
 	private int percentVerified;
+	private float score;
 	private Date contractorConfirm;
 	private Date auditorConfirm;
 	private boolean manuallyAdded;
@@ -209,6 +212,14 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	public void setPercentComplete(int percentComplete) {
 		this.percentComplete = percentComplete;
+	}
+	
+	public float getScore() {
+		return score;
+	}
+
+	public void setScore(float score) {
+		this.score = score;
 	}
 
 	public int getPercentVerified() {
@@ -437,4 +448,18 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		return statusDescription;
 	}
 
+	@Transient
+	@SuppressWarnings("serial")
+	public String getPrintableScore() {
+		int tempScore = Math.round(score);
+			
+		Map<Integer, String> map = new HashMap<Integer, String>() {{
+			put(-1, "None");
+			put(0, "Red");
+			put(1, "Yellow");
+			put(2, "Green");
+		}};
+
+		return map.get(tempScore);
+	}
 }

@@ -2,7 +2,9 @@ package com.picsauditing.PICS;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -38,6 +40,8 @@ public class AuditPercentCalculator {
 		int answeredCount = 0;
 		int requiredCount = 0;
 		int verifiedCount = 0;
+		int scoreCount = 0;
+		int score = 0;
 
 		// Get a list of questions/answers for this category
 		List<Integer> questionIDs = new ArrayList<Integer>();
@@ -54,12 +58,20 @@ public class AuditPercentCalculator {
 		AnswerMap answers = auditDataDao.findAnswers(catData.getAudit().getId(), questionIDs);
 		//System.out.println(answers);
 
+		@SuppressWarnings("serial")
+		Map<String, Integer> scoreMap = new HashMap<String, Integer>() {{
+			put("Red", 0);
+			put("Yellow", 1);
+			put("Green", 2);
+		}};
+		
 		// Get a list of questions/answers for this category
 		Date validDate = catData.getAudit().getValidDate();
 		for (AuditSubCategory subCategory : catData.getCategory().getValidSubCategories()) {
 			for (AuditQuestion question : subCategory.getQuestions()) {
 				if (validDate.after(question.getEffectiveDate())
 						&& validDate.before(question.getExpirationDate())) {
+					
 					boolean isRequired = false;
 					
 					if (question.isAllowMultipleAnswers()) {
@@ -72,6 +84,12 @@ public class AuditPercentCalculator {
 						
 						if (answer != null) {
 							if (answer.isAnswered()) {
+								
+								if( "Radio".equals(question.getQuestionType() ) ) {
+									Integer tempScore = scoreMap.get(answer.getAnswer());
+									score += tempScore != null ? tempScore: -1000;
+								}
+								
 								answeredCount++;
 								if (isRequired)
 									requiredAnsweredCount++;
@@ -102,6 +120,12 @@ public class AuditPercentCalculator {
 						
 						if (answer != null) {
 							if (answer.isAnswered()) {
+								
+								if( "Radio".equals(question.getQuestionType() ) ) {
+									Integer tempScore = scoreMap.get(answer.getAnswer());
+									score += tempScore != null ? tempScore: -1000;
+								}
+								
 								answeredCount++;
 								if (isRequired)
 									requiredAnsweredCount++;
@@ -139,6 +163,12 @@ public class AuditPercentCalculator {
 
 							if (answer != null) {
 								if (answer.isAnswered()) {
+									
+									if( "Radio".equals(question.getQuestionType() ) ) {
+										Integer tempScore = scoreMap.get(answer.getAnswer());
+										score += tempScore != null ? tempScore: -1000;
+									}
+									
 									answeredCount++;
 									if (isRequired)
 										requiredAnsweredCount++;
@@ -152,6 +182,10 @@ public class AuditPercentCalculator {
 								}
 							}
 						}
+					}
+					
+					if( "Radio".equals(question.getQuestionType() ) ) {
+						scoreCount++;
 					}
 				}
 			}
@@ -174,6 +208,13 @@ public class AuditPercentCalculator {
 			catData.setPercentCompleted(100);
 			catData.setPercentVerified(100);
 		}
+		
+		if( scoreCount > 0 ) {
+			float scoreAverage = (float) score/ (float) scoreCount;
+			catData.setScore( scoreAverage );
+			catData.setScoreCount(scoreCount);
+		}
+		
 		catDataDao.save(catData);
 	}
 	
@@ -185,6 +226,9 @@ public class AuditPercentCalculator {
 		int required = 0;
 		int answered = 0;
 		int verified = 0;
+		
+		int scoreCount = 0;
+		float runningScore = 0;
 
 		if (recalcCats) {
 			recalcAllAuditCatDatas(conAudit);
@@ -197,8 +241,21 @@ public class AuditPercentCalculator {
 				required += data.getNumRequired();
 				answered += data.getRequiredCompleted();
 				verified += (int) Math.round(data.getNumRequired() * data.getPercentVerified() / 100);
+				
+				if( data.getScoreCount() > 0 ) {
+					scoreCount += data.getScoreCount();
+					runningScore += (data.getScore() * data.getScoreCount());
+				}
 			}
 		}
+		
+		if( scoreCount > 0 ) {
+			conAudit.setScore( runningScore / (float) scoreCount);
+		}
+		else {
+			conAudit.setScore( -1 );
+		}
+		
 		int percentComplete = 0;
 		int percentVerified = 0;
 		if (required > 0) {
