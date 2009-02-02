@@ -13,7 +13,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
@@ -651,22 +650,27 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		oshas = new TreeMap<OshaType, Map<String, OshaAudit>>();
 
 		for (ContractorAudit audit : getSortedAudits()) {
-			if (number < 3 && audit.getAuditType().getId() == AuditType.ANNUALADDENDUM
-					&& audit.getAuditStatus().isActiveSubmitted()) {
-				// Store the corporate OSHA rates into a map for later use
-				for (OshaAudit osha : audit.getOshas())
-					if (osha.isCorporate() && osha.isApplicable()) {
-						number++;
-						Map<String, OshaAudit> theMap = oshas.get(osha.getType());
+			if (number < 3 && audit.getAuditType().getId() == AuditType.ANNUALADDENDUM) {
+				for (AuditCatData auditCatData : audit.getCategories()) {
+					if (auditCatData.getCategory().getId() == AuditCategory.OSHA_AUDIT 
+							&& auditCatData.getPercentCompleted() == 100) {
+						// Store the corporate OSHA rates into a map for later
+						// use
+						for (OshaAudit osha : audit.getOshas())
+							if (osha.isCorporate() && osha.isApplicable()) {
+								number++;
+								Map<String, OshaAudit> theMap = oshas.get(osha.getType());
 
-						if (theMap == null) {
-							theMap = new TreeMap<String, OshaAudit>();
-							oshas.put(osha.getType(), theMap);
-						}
+								if (theMap == null) {
+									theMap = new TreeMap<String, OshaAudit>();
+									oshas.put(osha.getType(), theMap);
+								}
 
-						theMap.put(audit.getAuditFor(), osha);
+								theMap.put(audit.getAuditFor(), osha);
 
+							}
 					}
+				}
 			}
 		}
 		for (OshaType oshaType : oshas.keySet()) {
@@ -733,16 +737,20 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		emrs = new HashMap<String, AuditData>();
 		int number = 0;
 		for (ContractorAudit audit : getSortedAudits()) {
-			if (number < 3 && audit.getAuditType().getId() == AuditType.ANNUALADDENDUM
-					&& audit.getAuditStatus().isActiveSubmitted()) {
-				// Store the EMR rates into a map for later use
-				for (AuditData answer : audit.getData())
-					if (answer.getQuestion().getId() == AuditQuestion.EMR) {
-						number++;
-						emrs.put(audit.getAuditFor(), answer);
+			if (number < 3 && audit.getAuditType().getId() == AuditType.ANNUALADDENDUM) {
+				for (AuditCatData auditCatData : audit.getCategories()) {
+					if (auditCatData.getCategory().getId() == AuditCategory.OSHA_AUDIT 
+							&& auditCatData.getPercentCompleted() == 100) {
+								// Store the EMR rates into a map for later use
+								for (AuditData answer : audit.getData())
+									if (answer.getQuestion().getId() == AuditQuestion.EMR) {
+										number++;
+										emrs.put(audit.getAuditFor(), answer);
+									}
 					}
+				}
 			}
-		}
+		}	
 
 		AuditData avg = AuditData.addAverageData(emrs.values());
 		emrs.put(OshaAudit.AVG, avg);
