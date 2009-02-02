@@ -10,6 +10,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import com.picsauditing.PICS.AccountBean;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -17,6 +18,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.SpringUtils;
 
 /**
  * This is the main class that is stored for each user containing information if
@@ -43,6 +45,33 @@ public class Permissions implements Serializable {
 	private boolean approvesRelationships = false;
 	private boolean active = false;
 
+	/**
+	 * User object with id=12 for contractors and userID for all others
+	 * @return a NON-JPA-ATTACHED User entity for the currently logged in user
+	 */
+	public User getUser() {
+		// TODO determine if we should start caching the User object
+		User user = new User();
+		if (isContractor())
+			// Contractors don't have associated user accounts (yet)
+			user.setId(User.CONTRACTOR);
+		else
+			user.setId(userID);
+		return user;
+	}
+
+	public User getUser(int userId) {
+		UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
+		try {
+			User user = dao.find(userId);
+			return user;
+		} catch (Exception e) {
+			System.out.println("Error finding user: " + e.getMessage());
+			return null;
+		}
+	}
+
+	
 	public void login(User user) throws Exception {
 		try {
 			clear();

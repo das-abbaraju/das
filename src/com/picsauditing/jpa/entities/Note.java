@@ -24,13 +24,13 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class Note extends BaseTable implements java.io.Serializable {
 	private Account account;
 	private String summary = "";
-	private NoteCategory noteCategory;
-	private LowMedHigh priority;
+	private NoteCategory noteCategory = NoteCategory.General;
+	private LowMedHigh priority = LowMedHigh.Med;
 	private Account viewableBy;
 	private boolean canContractorView = false;
 	private NoteStatus status = NoteStatus.Closed;
 	private Date followupDate;
-	private String body;
+	private String body = null;
 	private File attachment;
 
 	@ManyToOne(fetch = FetchType.LAZY)

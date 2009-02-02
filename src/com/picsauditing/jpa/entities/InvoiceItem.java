@@ -1,5 +1,8 @@
 package com.picsauditing.jpa.entities;
 
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
@@ -11,6 +14,8 @@ public class InvoiceItem extends BaseTable implements java.io.Serializable {
 	private int amount;
 	private String description;
 
+	@ManyToOne
+	@JoinColumn(name = "invoiceID")
 	public Invoice getInvoice() {
 		return invoice;
 	}
@@ -19,6 +24,8 @@ public class InvoiceItem extends BaseTable implements java.io.Serializable {
 		this.invoice = invoice;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "feeID")
 	public InvoiceFee getInvoiceFee() {
 		return invoiceFee;
 	}
@@ -35,6 +42,7 @@ public class InvoiceItem extends BaseTable implements java.io.Serializable {
 		this.amount = amount;
 	}
 
+	@Column(length=100)
 	public String getDescription() {
 		return description;
 	}

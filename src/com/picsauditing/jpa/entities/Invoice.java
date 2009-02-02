@@ -1,6 +1,8 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -15,6 +17,8 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 	private boolean paid;
 	private String totalAmount;
 	private String notes;
+	
+	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 
 	public Account getAccount() {
 		return account;
@@ -57,4 +61,12 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 		this.notes = notes;
 	}
 
+	public List<InvoiceItem> getItems() {
+		return items;
+	}
+
+	public void setItems(List<InvoiceItem> items) {
+		this.items = items;
+	}
+	
 }

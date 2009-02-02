@@ -73,16 +73,19 @@ public abstract class BaseTable {
 		this.updateDate = updateDate;
 	}
 
-	public void setAuditColumns(User user) {
-		if (user != null)
-			updatedBy = user;
-		
+	public void setAuditColumns() {
 		updateDate = new Date();
 		
 		if (createdBy == null)
 			createdBy = updatedBy;
 		if (creationDate == null)
 			creationDate = updateDate;
+	}
+	public void setAuditColumns(User user) {
+		if (user != null)
+			updatedBy = user;
+		
+		setAuditColumns();
 	}
 	
 	public boolean equals(Object obj) {

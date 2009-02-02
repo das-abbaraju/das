@@ -1,0 +1,42 @@
+package com.picsauditing.dao;
+
+import java.util.List;
+
+import javax.persistence.Query;
+
+import com.picsauditing.jpa.entities.InvoiceFee;
+
+public class InvoiceFeeDAO extends PicsDAO {
+	
+	public InvoiceFee save(InvoiceFee o) {
+		if (o.getId() == 0) {
+			em.persist(o);
+		} else {
+			o = em.merge(o);
+		}
+		return o;
+	}
+
+	public void remove(int id) {
+		InvoiceFee row = find(id);
+		if (row != null) {
+			em.remove(row);
+		}
+	}
+
+	public void remove(InvoiceFee row) {
+		if (row != null) {
+			em.remove(row);
+		}
+	}
+
+	public InvoiceFee find(int id) {
+		return em.find(InvoiceFee.class, id);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<InvoiceFee> findAll() {
+		Query query = em.createQuery("FROM InvoiceFee ORDER BY fee");
+		return query.getResultList();
+	}
+}

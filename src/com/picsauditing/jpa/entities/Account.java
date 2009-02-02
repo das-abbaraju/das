@@ -27,6 +27,8 @@ import com.picsauditing.util.Luhn;
 @Table(name = "accounts")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Account extends BaseTable implements java.io.Serializable {
+	static public int EVERYONE = 1;
+	static public int PRIVATE = 2;
 	static public int PicsID = 1100;
 
 	protected String name;
