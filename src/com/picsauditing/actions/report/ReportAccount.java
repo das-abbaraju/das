@@ -237,11 +237,11 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getRiskLevel(), 0))
 			report.addFilter(new SelectFilterInteger("riskLevel", "c.riskLevel = '?'", f.getRiskLevel()));
 
-		if(Integer.parseInt(f.getEmailtemplate()) > 0 || filterOn(f.getEmailSentDate1()) || filterOn(f.getEmailSentDate2())) {
+		if((filterOn(f.getEmailtemplate()) && Integer.parseInt(f.getEmailtemplate()) > 0) || filterOn(f.getEmailSentDate1()) || filterOn(f.getEmailSentDate2())) {
 			sql.addJoin("JOIN email_queue eq on eq.conid = a.id");	
 		}
 		
-		if (Integer.parseInt(f.getEmailtemplate()) > 0) {
+		if (filterOn(f.getEmailtemplate()) && Integer.parseInt(f.getEmailtemplate()) > 0) {
 			sql.addWhere("eq.templateID = "+ f.getEmailtemplate());
 			setFiltered(true);
 		}
