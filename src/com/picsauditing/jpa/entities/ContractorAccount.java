@@ -52,16 +52,13 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private Date lastPayment;
 	private int lastPaymentAmount;
 	private Date lastInvoiceDate;
-	private char accountNewComplete;
 	private String notes;
 	private String adminNotes;
 	private String mustPay = "Yes";
 	private Date paymentExpires;
 	private Date lastAnnualUpdateEmailDate;
 	private int requestedById;
-	private int billingCycle = 1;
 	private int billingAmount;
-	private String isExempt;
 	private String isOnlyCerts;
 	private String secondContact;
 	private String secondPhone;
@@ -106,7 +103,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.audits = audits;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "contractorAccount", cascade = { CascadeType.REMOVE })
+	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.REMOVE })
 	public List<ContractorOperator> getOperators() {
 		return this.operators;
 	}
@@ -116,7 +113,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	// /////////// GETTERS/SETTERS /////////////////
-	@Column(name = "taxID", nullable = true, length = 100)
+	@Column(name = "taxID", length = 100)
 	public String getTaxId() {
 		return this.taxId;
 	}
@@ -125,7 +122,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.taxId = taxId;
 	}
 
-	@Column(name = "main_trade", nullable = true, length = 100)
+	@Column(name = "main_trade", length = 100)
 	public String getMainTrade() {
 		return this.mainTrade;
 	}
@@ -134,7 +131,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.mainTrade = mainTrade;
 	}
 
-	@Column(name = "trades", nullable = true, length = 65535)
+	@Column(length = 65535)
 	public String getTrades() {
 		return this.trades;
 	}
@@ -143,7 +140,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.trades = trades;
 	}
 
-	@Column(name = "subTrades", nullable = true, length = 65535)
+	@Column(length = 65535)
 	public String getSubTrades() {
 		return this.subTrades;
 	}
@@ -152,7 +149,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.subTrades = subTrades;
 	}
 
-	@Column(name = "logo_file", nullable = true, length = 50)
+	@Column(name = "logo_file", length = 50)
 	public String getLogoFile() {
 		return this.logoFile;
 	}
@@ -161,7 +158,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.logoFile = logoFile;
 	}
 
-	@Column(name = "brochure_file", nullable = true, length = 3)
+	@Column(name = "brochure_file", length = 3)
 	public String getBrochureFile() {
 		return this.brochureFile;
 	}
@@ -170,7 +167,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.brochureFile = brochureFile;
 	}
 
-	@Column(name = "description", nullable = true, length = 65535)
+	@Column(name = "description", length = 65535)
 	public String getDescription() {
 		return this.description;
 	}
@@ -184,7 +181,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		return Utilities.escapeNewLines(this.description);
 	}
 
-	@Column(name = "notes", nullable = true, length = 16277215)
+	@Column(name = "notes", length = 16277215)
 	public String getNotes() {
 		return this.notes;
 	}
@@ -207,7 +204,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.notes = DateBean.getTodaysDateTime() + " " + userName + ": " + note + "\n" + this.notes;
 	}
 
-	@Column(name = "adminNotes", nullable = true, length = 16277215)
+	@Column(name = "adminNotes", length = 16277215)
 	public String getAdminNotes() {
 		return this.adminNotes;
 	}
@@ -217,7 +214,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "lastAnnualUpdateEmailDate", nullable = true, length = 10)
+	@Column(name = "lastAnnualUpdateEmailDate", length = 10)
 	public Date getLastAnnualUpdateEmailDate() {
 		return this.lastAnnualUpdateEmailDate;
 	}
@@ -226,7 +223,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.lastAnnualUpdateEmailDate = lastAnnualUpdateEmailDate;
 	}
 
-	@Column(name = "requestedByID", nullable = true)
+	@Column(name = "requestedByID")
 	public int getRequestedById() {
 		return this.requestedById;
 	}
@@ -235,7 +232,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.requestedById = requestedById;
 	}
 
-	@Column(name = "secondContact", nullable = true, length = 50)
+	@Column(name = "secondContact", length = 50)
 	public String getSecondContact() {
 		return this.secondContact;
 	}
@@ -244,7 +241,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.secondContact = secondContact;
 	}
 
-	@Column(name = "secondPhone", nullable = true, length = 50)
+	@Column(name = "secondPhone", length = 50)
 	public String getSecondPhone() {
 		return this.secondPhone;
 	}
@@ -253,7 +250,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.secondPhone = secondPhone;
 	}
 
-	@Column(name = "secondEmail", nullable = true, length = 50)
+	@Column(name = "secondEmail", length = 50)
 	public String getSecondEmail() {
 		return this.secondEmail;
 	}
@@ -262,7 +259,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.secondEmail = secondEmail;
 	}
 
-	@Column(name = "billingContact", nullable = true, length = 50)
+	@Column(name = "billingContact", length = 50)
 	public String getBillingContact() {
 		return this.billingContact;
 	}
@@ -271,7 +268,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.billingContact = billingContact;
 	}
 
-	@Column(name = "billingPhone", nullable = true, length = 50)
+	@Column(name = "billingPhone", length = 50)
 	public String getBillingPhone() {
 		return this.billingPhone;
 	}
@@ -280,7 +277,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.billingPhone = billingPhone;
 	}
 
-	@Column(name = "billingEmail", nullable = true, length = 50)
+	@Column(name = "billingEmail", length = 50)
 	public String getBillingEmail() {
 		return this.billingEmail;
 	}
@@ -299,7 +296,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.riskLevel = riskLevel;
 	}
 
-	@Column(name = "annualUpdateEmails", nullable = true)
+	@Column(name = "annualUpdateEmails")
 	public int getAnnualUpdateEmails() {
 		return annualUpdateEmails;
 	}
@@ -308,7 +305,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.annualUpdateEmails = annualUpdateEmails;
 	}
 
-	@Column(name = "oqEmployees", nullable = true)
+	@Column(name = "oqEmployees")
 	public String getOqEmployees() {
 		return oqEmployees;
 	}
@@ -318,28 +315,10 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	/**
-	 * Obsolete???
-	 * 
+	 * @deprecated
 	 * @return
 	 */
-	@Deprecated
-	@Column(name = "accountNewComplete", nullable = true, length = 1)
-	public char getAccountNewComplete() {
-		return this.accountNewComplete;
-	}
-
-	@Deprecated
-	public void setAccountNewComplete(char accountNewComplete) {
-		this.accountNewComplete = accountNewComplete;
-	}
-
-	/**
-	 * Is this account only doing certificates? TODO ask Jared, if these
-	 * accounts get audits created for them?
-	 * 
-	 * @return
-	 */
-	@Column(name = "isOnlyCerts", nullable = true, length = 3)
+	@Column(name = "isOnlyCerts", length = 3)
 	public String getIsOnlyCerts() {
 		return this.isOnlyCerts;
 	}
@@ -367,23 +346,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		return "Yes".equals(mustPay);
 	}
 
-	/**
-	 * Is this account a PQF-only account? Yes/No
-	 * 
-	 * @deprecated use the BillContractor.requiresAudit() method instead
-	 * @return
-	 */
-	@Deprecated
-	@Column(name = "isExempt", nullable = false, length = 3)
-	public String getIsExempt() {
-		return this.isExempt;
-	}
-
-	@Deprecated
-	public void setIsExempt(String isExempt) {
-		this.isExempt = isExempt;
-	}
-
 	@Column(name = "payingFacilities", nullable = false)
 	public int getPayingFacilities() {
 		return this.payingFacilities;
@@ -392,18 +354,21 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setPayingFacilities(int payingFacilities) {
 		this.payingFacilities = payingFacilities;
 	}
-	
+
 	/**
-	 * The Payment Method Statuses are Valid, Invalid, Missing, 
-	 * Pending, Approved, Rejected
+	 * The Payment Method Statuses are Valid, Invalid, Missing, Pending,
+	 * Approved, Rejected
+	 * 
 	 * @return
 	 */
 	public String getPaymentMethodStatus() {
 		return paymentMethodStatus;
 	}
+
 	/**
-	 * The Payment Method Statuses are Valid, Invalid, Missing, 
-	 * Pending, Approved, Rejected
+	 * The Payment Method Statuses are Valid, Invalid, Missing, Pending,
+	 * Approved, Rejected
+	 * 
 	 * @param paymentMethodStatus
 	 */
 	public void setPaymentMethodStatus(String paymentMethodStatus) {
@@ -412,17 +377,18 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	@Transient
 	public boolean isPaymentMethodStatusValid() {
-		if(!Strings.isEmpty(paymentMethod) && "Check".equals(paymentMethod))
+		if (!Strings.isEmpty(paymentMethod) && "Check".equals(paymentMethod))
 			return true;
-		if(!Strings.isEmpty(paymentMethodStatus)) {
-			if("Valid".equals(paymentMethodStatus) || "Approved".equals(paymentMethodStatus)) 
+		if (!Strings.isEmpty(paymentMethodStatus)) {
+			if ("Valid".equals(paymentMethodStatus) || "Approved".equals(paymentMethodStatus))
 				return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * The Payment methods are Credit Card and Check
+	 * 
 	 * @return
 	 */
 	public String getPaymentMethod() {
@@ -435,7 +401,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	@Transient
 	public boolean isPaymentMethodCreditCard() {
-		if(!Strings.isEmpty(paymentMethod) && "Credit Card".equals(paymentMethod))
+		if (!Strings.isEmpty(paymentMethod) && "Credit Card".equals(paymentMethod))
 			return true;
 		return false;
 	}
@@ -444,7 +410,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 * The date this is first activated. This is never reset afterwards.
 	 */
 	@Temporal(TemporalType.DATE)
-	@Column(name = "accountDate", nullable = true, length = 10)
+	@Column(name = "accountDate", length = 10)
 	public Date getAccountDate() {
 		return this.accountDate;
 	}
@@ -453,27 +419,18 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.accountDate = accountDate;
 	}
 
+	/**
+	 * The date the contractor paid their activation/reactivation fee
+	 * @return
+	 */
 	@Temporal(TemporalType.DATE)
-	@Column(name = "membershipDate", nullable = true, length = 10)
+	@Column(name = "membershipDate", length = 10)
 	public Date getMembershipDate() {
 		return this.membershipDate;
 	}
 
 	public void setMembershipDate(Date membershipDate) {
 		this.membershipDate = membershipDate;
-	}
-
-	// INVOICING Billing info
-	/**
-	 * Is this account on a 1 or 3 year billing cycle
-	 */
-	@Column(name = "billingCycle", nullable = false)
-	public int getBillingCycle() {
-		return this.billingCycle;
-	}
-
-	public void setBillingCycle(int billingCycle) {
-		this.billingCycle = billingCycle;
 	}
 
 	/**
@@ -496,7 +453,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
-	@Column(name = "lastInvoiceDate", nullable = true, length = 10)
+	@Column(name = "lastInvoiceDate", length = 10)
 	public Date getLastInvoiceDate() {
 		return this.lastInvoiceDate;
 	}
@@ -526,7 +483,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
-	@Column(name = "lastPayment", nullable = true, length = 10)
+	@Column(name = "lastPayment", length = 10)
 	public Date getLastPayment() {
 		return this.lastPayment;
 	}
@@ -535,15 +492,12 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.lastPayment = lastPayment;
 	}
 
-	
-	
-	
 	/**
 	 * The USD amount they paid on lastPayment date
 	 * 
 	 * @return
 	 */
-	@Column(name = "lastPaymentAmount", nullable = true)
+	@Column(name = "lastPaymentAmount")
 	public int getLastPaymentAmount() {
 		return this.lastPaymentAmount;
 	}
@@ -564,7 +518,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.viewedFacilities = viewedFacilities;
 	}
 
-	
 	/**
 	 * The date the lastPayment expires and the contractor is due to pay another
 	 * "period's" membership fee
@@ -572,7 +525,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
-	@Column(name = "paymentExpires", nullable = true, length = 10)
+	@Column(name = "paymentExpires", length = 10)
 	public Date getPaymentExpires() {
 		return this.paymentExpires;
 	}
@@ -594,12 +547,12 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setNewBillingAmount(int newBillingAmount) {
 		this.newBillingAmount = newBillingAmount;
 	}
-	
+
 	@Transient
 	public int getActivationFee() {
-		if(newBillingAmount == 0)
+		if (newBillingAmount == 0)
 			return 0;
-		if(lastPayment == null)
+		if (lastPayment == null)
 			return 99;
 		else
 			return 199;
@@ -616,7 +569,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setAuditor(User auditor) {
 		this.auditor = auditor;
 	}
-	
+
 	/**
 	 * Map of Contractor Flags with OperatorID as the key
 	 */
@@ -685,48 +638,48 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 				return true;
 		return false;
 	}
-	
+
 	@Transient
 	/**
-	 * Get a double-keyed map, by OshaType and auditFor, for the last 3 
-	 * years of applicable osha data (verified or not)
+	 * Get a double-keyed map, by OshaType and auditFor, for the last 3 years of
+	 * applicable osha data (verified or not)
 	 */
 	public Map<OshaType, Map<String, OshaAudit>> getOshas() {
 		if (oshas != null)
 			return oshas;
 		int number = 0;
 		oshas = new TreeMap<OshaType, Map<String, OshaAudit>>();
-		
+
 		for (ContractorAudit audit : getSortedAudits()) {
 			if (number < 3 && audit.getAuditType().getId() == AuditType.ANNUALADDENDUM
-				&& audit.getAuditStatus().isActiveSubmitted()) {
+					&& audit.getAuditStatus().isActiveSubmitted()) {
 				// Store the corporate OSHA rates into a map for later use
-				for(OshaAudit osha : audit.getOshas())
+				for (OshaAudit osha : audit.getOshas())
 					if (osha.isCorporate() && osha.isApplicable()) {
 						number++;
 						Map<String, OshaAudit> theMap = oshas.get(osha.getType());
-						
-						if( theMap == null ) {
+
+						if (theMap == null) {
 							theMap = new TreeMap<String, OshaAudit>();
 							oshas.put(osha.getType(), theMap);
 						}
-						
+
 						theMap.put(audit.getAuditFor(), osha);
-						
+
 					}
 			}
 		}
-		for( OshaType oshaType : oshas.keySet() ) {
-		
+		for (OshaType oshaType : oshas.keySet()) {
+
 			Map<String, OshaAudit> theseOshas = oshas.get(oshaType);
-			
+
 			int count = theseOshas.size();
 			if (count > 0) {
 				// Add in the average for the past 3 years
 				OshaAudit avg = new OshaAudit();
 				avg.setLostWorkCasesRate(0);
 				avg.setRecordableTotalRate(0);
-				
+
 				float manHours = 0;
 				float fatalities = 0;
 				float injuries = 0;
@@ -736,13 +689,13 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 				float tri = 0;
 				float trir = 0;
 				float rwc = 0;
-				
-				for(String key : theseOshas.keySet()) {
+
+				for (String key : theseOshas.keySet()) {
 					OshaAudit osha = theseOshas.get(key);
 					avg.setFactor(osha.getFactor());
 					avg.setApplicable(true);
 					avg.setConAudit(osha.getConAudit());
-					
+
 					manHours += osha.getManHours();
 					fatalities += osha.getFatalities();
 					injuries += osha.getInjuryIllnessCases();
@@ -762,13 +715,13 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 				avg.setRecordableTotal(Math.round(tri / count));
 				avg.setRecordableTotalRate(trir / count);
 				avg.setRestrictedWorkCases(Math.round(rwc / count));
-				
+
 				theseOshas.put(OshaAudit.AVG, avg);
 			}
 		}
 		return oshas;
 	}
-	
+
 	@Transient
 	/**
 	 * Get a map of the last 3 years of applicable emr data (verified or not)
@@ -776,27 +729,27 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public Map<String, AuditData> getEmrs() {
 		if (emrs != null)
 			return emrs;
-		
+
 		emrs = new HashMap<String, AuditData>();
 		int number = 0;
 		for (ContractorAudit audit : getSortedAudits()) {
 			if (number < 3 && audit.getAuditType().getId() == AuditType.ANNUALADDENDUM
-				&& audit.getAuditStatus().isActiveSubmitted()) {
+					&& audit.getAuditStatus().isActiveSubmitted()) {
 				// Store the EMR rates into a map for later use
-				for(AuditData answer : audit.getData())
+				for (AuditData answer : audit.getData())
 					if (answer.getQuestion().getId() == AuditQuestion.EMR) {
 						number++;
 						emrs.put(audit.getAuditFor(), answer);
-					}	
+					}
 			}
 		}
-		
+
 		AuditData avg = AuditData.addAverageData(emrs.values());
 		emrs.put(OshaAudit.AVG, avg);
-		
+
 		return emrs;
 	}
-	
+
 	@Transient
 	public List<ContractorAudit> getSortedAudits() {
 		Collections.sort(getAudits(), new ContractorAuditComparator("auditFor -1"));
