@@ -39,8 +39,7 @@ public class BillContractor extends DataBean {
 			return 0;
 		
 		// if it doesn't require an audit then it's only $99
-		cBean.isAudited(requiresAudit());
-		if (cBean.isAudited()) {
+		if (!requiresAudit()) {
 			cBean.newBillingAmount = Integer.toString(priceNoAudit);
 			return priceNoAudit;
 		}

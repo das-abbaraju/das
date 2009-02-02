@@ -34,6 +34,7 @@ import com.picsauditing.util.log.PicsLogger;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class User extends BaseTable implements java.io.Serializable, Comparable<User> {
 	public static String DEFAULT_AUDITOR = "- Auditor -";
+	public static int SYSTEM = 1;
 	public static int GROUP_ADMIN = 10;
 	public static int GROUP_AUDITOR = 11;
 	public static int CONTRACTOR = 12;

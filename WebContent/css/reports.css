@@ -44,11 +44,11 @@ table.report tbody tr:hover {
 	color: #A84D10;
 }
 
-table.report td.center {
+table.report td.center, table.report th.center {
 	text-align: center;
 	float: none;
 }
-table.report td.right {
+table.report td.right, table.report th.right {
 	text-align: right;
 	float: none;
 }

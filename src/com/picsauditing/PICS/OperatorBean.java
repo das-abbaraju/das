@@ -236,9 +236,8 @@ public class OperatorBean extends DataBean {
 			li.next();
 		}//while
 		return Utilities.inputSelect2First(name, classType, selectedFacility, (String[])tempAL.toArray(new String[0]), 
-			SearchBean.DEFAULT_GENERAL_VALUE, 
-			SearchBean.DEFAULT_GENERAL);
-	}//getFacilitySelect
+			"-2", "- Operator -");
+	}
 
  	public static Hashtable<String,String> subCountTable = null;
 	public int total = 0;

@@ -75,7 +75,6 @@ public class ContractorAccountDAOTest {
 		contractoraccount.setAccountDate(cal.getTime());
 		contractoraccount.setPaid("yes");
 		contractoraccount.setLastPayment(cal.getTime());
-		contractoraccount.setBillingCycle(3);
 		contractoraccount.setMembershipDate(cal.getTime());
 		contractoraccount.setPayingFacilities(10);
 		contractoraccount.setRiskLevel(LowMedHigh.Med);
