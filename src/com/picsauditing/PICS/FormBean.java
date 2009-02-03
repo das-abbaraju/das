@@ -14,6 +14,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import com.picsauditing.servlet.upload.UploadConHelper;
 import com.picsauditing.servlet.upload.UploadProcessorFactory;
+import com.picsauditing.util.Strings;
 
 public class FormBean extends DataBean {
 	public ArrayList<String> categories = null;
@@ -142,10 +143,16 @@ public class FormBean extends DataBean {
 		Map<String,String>params = (Map<String,String>)request.getAttribute("uploadfields");
 		String newName = params.get("newFormName");
 		
-		if (newName == null || newName.equals("")) {
+		if (Strings.isEmpty(newName)) {
 			errorMessages.addElement("You must fill in the Form Name field.");
 			return;
 		}//if	
+		
+		String fileName = (String)request.getAttribute("fileName");	
+		if(Strings.isEmpty(fileName)) {
+			errorMessages.addElement("You must select a file to upload");
+			return;
+		}
 		
 		try{
 			String newCatID = params.get("newFormCatID");
@@ -157,7 +164,6 @@ public class FormBean extends DataBean {
 			String fID = SQLResult.getString("GENERATED_KEY");
 			SQLResult.close();
 			
-			String fileName = (String)request.getAttribute("fileName");			
 			String shortName=renameFormFile(fileName, fID);
 			
 			String updateQuery = "UPDATE operatorForms SET formName='"+Utilities.escapeQuotes(newName)+"',file='"+shortName+
