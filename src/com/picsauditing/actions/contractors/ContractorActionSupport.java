@@ -13,6 +13,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -22,6 +23,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.PermissionToViewContractor;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -255,6 +257,11 @@ public class ContractorActionSupport extends PicsActionSupport {
 		if (activeOperators == null)
 			activeOperators = accountDao.findOperators(contractor, permissions, " AND operatorAccount.active = 'Y' ");
 		return activeOperators;
+	}
+	
+	public List<OperatorAccount> getOperatorList() throws Exception {
+		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
+		return dao.findWhere(false, "active='Y'", permissions);
 	}
 
 	public List<ContractorAudit> getAudits() {
