@@ -226,6 +226,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 				if (conAudit.getOperators().size() == 1
 						&& conAudit.getOperators().get(0).getOperator().getId() == permissions.getAccountId())
 					return true;
+				if(permissions.hasPermission(OpPerms.InsuranceEdit, OpType.Edit))
+					return true;
 			}
 
 			if (conAudit.getRequestingOpAccount() != null) {

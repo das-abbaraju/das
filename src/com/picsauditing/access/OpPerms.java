@@ -58,7 +58,9 @@ public enum OpPerms {
 	InsuranceCerts("Insurance Certificates", "Allows users to view (Read), upload (Edit), and delete insurance certificates"),
 	InsuranceVerification("Insurance Verification","Allows users to view the 'Insurance Verification' and 'Expired Insurance Certificates' reports (Read), and verify (Edit) the certificates",true,false),
 	InsuranceApproval("Insurance Approval","Allows users to view the Insurance Approval report (Read), and approve/reject (Edit) the insurance certificates",true,false),
-
+	InsuranceEdit("Insurance Edit","Allows Operators to Edit the Insurance",true,false),
+	
+	
 	Billing("Billing", "View Billing Details and Process Invoices", true, true),
 	// Will be replaced with billing; remove from Accounting Group
 	BillingUpgrades("Billing Upgrades", "Upgrade contractor subscriptions and send them invoices", true, false),
