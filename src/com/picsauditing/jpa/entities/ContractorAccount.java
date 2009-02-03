@@ -642,14 +642,16 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		oshas = new TreeMap<OshaType, Map<String, OshaAudit>>();
 
 		for (ContractorAudit audit : getSortedAudits()) {
-			if (number < 3 && audit.getAuditType().getId() == AuditType.ANNUALADDENDUM) {
+			if (number < 3 && audit.getAuditType().getId() == AuditType.ANNUALADDENDUM 
+					&& !audit.getAuditStatus().isExpired()) {
 				for (AuditCatData auditCatData : audit.getCategories()) {
 					if (auditCatData.getCategory().getId() == AuditCategory.OSHA_AUDIT 
 							&& auditCatData.getPercentCompleted() == 100) {
 						// Store the corporate OSHA rates into a map for later
 						// use
 						for (OshaAudit osha : audit.getOshas())
-							if (osha.isCorporate() && osha.isApplicable()) {
+							if (osha.getType().equals(OshaType.OSHA) 
+								&& osha.isCorporate() && osha.isApplicable()) {
 								number++;
 								Map<String, OshaAudit> theMap = oshas.get(osha.getType());
 
