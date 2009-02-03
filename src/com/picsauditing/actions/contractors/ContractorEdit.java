@@ -138,11 +138,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		return Industry.values();
 	}
 
-	public List<OperatorAccount> getOperatorList() throws Exception {
-		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
-		return dao.findWhere(false, "active='Y'", permissions);
-	}
-
 	public List<AuditQuestion> getTradeList() throws Exception {
 		return auditQuestionDAO.findQuestionByType("Service");
 	}
