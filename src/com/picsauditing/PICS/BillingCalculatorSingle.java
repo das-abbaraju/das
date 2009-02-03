@@ -8,6 +8,7 @@ import java.util.Vector;
 
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.InvoiceFee;
@@ -40,9 +41,24 @@ public class BillingCalculatorSingle {
 		int billable = 0;
 		for( OperatorAccount operator : payingOperators ) {
 			for( AuditOperator audit : operator.getAudits() ) {
-				if( audit.getRequiredAuditStatus() == AuditStatus.Active ) {
-					billable++;
-					break;
+				if (audit.getMinRiskLevel() > 0 ) {
+					if (audit.getMinRiskLevel() <= contractor.getRiskLevel().ordinal() ) {
+						if (audit.getAuditType().getId() == AuditType.DA
+								&& "Yes".equals(contractor.getOqEmployees())) {
+							billable++;
+							break;
+						}
+						
+						if (audit.getAuditType().getId() == AuditType.DESKTOP || audit.getAuditType().getId() == AuditType.OFFICE) {
+							billable++;
+							break;
+						}
+
+						if (audit.getRequiredAuditStatus() == AuditStatus.Active) {
+							billable++;
+							break;
+						}
+					}
 				}
 			}
 		}
