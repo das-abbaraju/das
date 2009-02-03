@@ -76,6 +76,12 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	private int annualUpdateEmails;
 	private String oqEmployees;
+	
+	private boolean renew;
+	private Date lastUpgradeDate;
+	private int balance;
+	private InvoiceFee membershipLevel;
+	private InvoiceFee newMembershiptLevel;	
 
 	protected List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 	protected List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
@@ -762,5 +768,48 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public List<ContractorAudit> getSortedAudits() {
 		Collections.sort(getAudits(), new ContractorAuditComparator("auditFor -1"));
 		return getAudits();
+	}
+
+	public boolean isRenew() {
+		return renew;
+	}
+
+	public void setRenew(boolean renew) {
+		this.renew = renew;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getLastUpgradeDate() {
+		return lastUpgradeDate;
+	}
+
+	public void setLastUpgradeDate(Date lastUpgradeDate) {
+		this.lastUpgradeDate = lastUpgradeDate;
+	}
+
+	public int getBalance() {
+		return balance;
+	}
+
+	public void setBalance(int balance) {
+		this.balance = balance;
+	}
+
+	@Column(name = "membershipLevelID")
+	public InvoiceFee getMembershipLevel() {
+		return membershipLevel;
+	}
+
+	public void setMembershipLevel(InvoiceFee membershipLevel) {
+		this.membershipLevel = membershipLevel;
+	}
+
+	@Column(name = "newMembershipLevelID")
+	public InvoiceFee getNewMembershiptLevel() {
+		return newMembershiptLevel;
+	}
+
+	public void setNewMembershiptLevel(InvoiceFee newMembershiptLevel) {
+		this.newMembershiptLevel = newMembershiptLevel;
 	}
 }
