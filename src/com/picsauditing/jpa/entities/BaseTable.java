@@ -23,6 +23,12 @@ public abstract class BaseTable {
 	protected User updatedBy;
 	protected Date creationDate;
 	protected Date updateDate;
+	
+	public BaseTable() {}
+	
+	public BaseTable(User user) {
+		setAuditColumns(user);
+	}
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)

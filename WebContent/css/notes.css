@@ -1,0 +1,113 @@
+/******************** Primary Table class="report"  ************************/
+
+table.notes {
+	border-collapse: collapse;
+	border: 2px solid #003768;
+	color: #4C4D4D;
+	background: #f9f9f9;
+	clear: both;
+	margin: 0;
+}
+
+table.notes td {
+	border: thin solid #A84D10;
+	padding: 4px;
+	font-size: 13px;
+}
+
+table.notes td a {
+	text-decoration: none;
+}
+
+table.notes td a:hover {
+	text-decoration: underline;
+}
+
+table.notes td.center {
+	text-align: center;
+	float: none;
+}
+
+table.notes td.priority {
+	vertical-align: middle;
+	text-align: center;
+}
+
+
+/******************** Filters ************************/
+
+table.notes th {
+	text-align: center;
+	background: #003768;
+	padding: 6px;
+	font-size:15px;
+	font-weight: bold;
+}
+
+ul.filters li {
+	display:inline;
+	list-style-type:none;
+}
+
+ul.filters li a {
+	color: #A84D10;
+	background: white;
+	text-decoration: none;
+	padding:2px;
+	margin-right: 14px;
+}
+
+ul.filters li a:hover {
+	color: #FFF;
+	background: #A84D10 url('../images/cross.png') no-repeat right center;
+	text-decoration: none;
+	padding-left:2px;
+	padding-right:16px;
+	padding-top:2px;
+	padding-bottom:2px;
+	margin-right: 0px;
+}
+
+
+/******************** Paging ************************/
+
+ul.paging {
+	display:block;
+	white-space:nowrap;
+	vertical-align: middle;
+	margin-left: 5px;
+}
+ul.paging li {
+	display:inline;
+	list-style-type:none;
+}
+ul.paging li a {
+	margin:1px;
+	padding:2px;
+	border: 1px solid #003768;
+	font-size:14px;
+	font-weight: bold;
+	text-decoration: none;
+	color: #003768;
+}
+ul.paging li a:hover {
+	margin:1px;
+	padding:2px;
+	font-size:14px;
+	font-weight: bold;
+	text-decoration: none;
+	color: #FFF;
+	background-color: #A84D10;
+	border:1px solid #A84D10;
+}
+
+ul.paging li a.current {
+	margin:1px;
+	padding:2px;
+	font-size:14px;
+	font-weight: bold;
+	text-decoration: none;
+	color: #FFF;
+	background-color: #A84D10;
+	border:1px solid #A84D10;
+}

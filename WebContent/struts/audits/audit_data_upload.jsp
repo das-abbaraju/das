@@ -21,7 +21,7 @@ function closePage() {
 </script>
 
 </head>
-<body>
+<body onunload="closePage();">
 <br />
 <div id="main">
 <div id="bodyholder">

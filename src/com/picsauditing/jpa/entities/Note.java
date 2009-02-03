@@ -33,8 +33,17 @@ public class Note extends BaseTable implements java.io.Serializable {
 	private String body = null;
 	private File attachment;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "accountID")
+	public Note() {}
+	
+	public Note(Account account, User user, String summary) {
+		super(user);
+		this.account = account;
+		this.summary = summary;
+		setViewableById(Account.EVERYONE);
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "accountID", nullable = false, updatable = false)
 	public Account getAccount() {
 		return account;
 	}
@@ -80,6 +89,13 @@ public class Note extends BaseTable implements java.io.Serializable {
 
 	public void setViewableBy(Account viewableBy) {
 		this.viewableBy = viewableBy;
+	}
+
+	public void setViewableById(int viewableBy) {
+		if (viewableBy == 0)
+			this.viewableBy = null;
+		this.viewableBy = new Account();
+		this.viewableBy.setId(viewableBy);
 	}
 
 	@Enumerated(EnumType.ORDINAL)
