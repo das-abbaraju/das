@@ -268,9 +268,6 @@
 					<li><label>Risk Level:</label>
 						<s:radio list="riskLevelList" name="contractor.riskLevel" theme="pics" />
 					</li>
-					<li><label>Created by:</label>
-						<s:textfield name="contractor.createdBy" size="25" />
-					</li>
 					<li><label>Password:</label>
 						<s:property value="contractor.password" />
 						<br />* We will eventually hide this field and allow you to reset the password instead.
