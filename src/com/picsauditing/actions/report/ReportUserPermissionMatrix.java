@@ -29,29 +29,8 @@ public class ReportUserPermissionMatrix extends ReportActionSupport {
 		if (accountID == 0 || !permissions.hasPermission(OpPerms.AllOperators))
 			accountID = permissions.getAccountId();
 
-		User user1553 = userDAO.find(1553);
-		PicsLogger.log("User: 1553");
-		for(UserAccess access : user1553.getPermissions()) {
-			PicsLogger.log("  perm "+ access.getOpPerm() + 
-					access.getUser().getId() + 
-					" V:" + access.getViewFlag() + 
-					" E:" + access.getEditFlag() + 
-					" D:" + access.getDeleteFlag() + 
-					" G:" + access.getGrantFlag());
-		}
-		User user1858 = userDAO.find(1858);
-		PicsLogger.log("User: 1858");
-		for(UserAccess access : user1858.getPermissions()) {
-			PicsLogger.log("  perm "+ access.getOpPerm() + 
-					access.getUser().getId() + 
-					" V:" + access.getViewFlag() + 
-					" E:" + access.getEditFlag() + 
-					" D:" + access.getDeleteFlag() + 
-					" G:" + access.getGrantFlag());
-		}
-		
 		perms = new TreeSet<OpPerms>();
-		users = userDAO.findByAccountID(accountID, "Yes", "Yes");
+		users = userDAO.findByAccountID(accountID, "Yes", "");
 		for(User user : users) {
 			PicsLogger.log("User: "+user.getId()+user.getName());
 			for(UserAccess access : user.getPermissions()) {

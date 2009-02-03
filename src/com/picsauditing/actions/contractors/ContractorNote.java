@@ -41,9 +41,8 @@ public class ContractorNote extends ContractorActionSupport implements Preparabl
 			return LOGIN;
 		findContractor();
 
-		if ("delete".equals(button)) {
+		if ("delete".equals(button) && note != null) {
 			permissions.tryPermission(OpPerms.EditNotes, OpType.Delete);
-			Note note = noteDAO.find(noteID);
 			note.setStatus(NoteStatus.Hidden);
 			noteDAO.save(note);
 			addActionMessage("Successfully removed the note");
@@ -78,8 +77,9 @@ public class ContractorNote extends ContractorActionSupport implements Preparabl
 	}
 
 	public void prepare() throws Exception {
-		note = noteDAO.find(noteID);
-		noteDAO.clear();
+		if (noteID > 0) {
+			note = noteDAO.find(noteID);
+		}
 	}
 
 	public List<Note> getOpenTasks() {

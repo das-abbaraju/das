@@ -1,23 +1,14 @@
 package com.picsauditing.dao;
 
-import java.io.File;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.PICS.ContractorBean;
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.Strings;
 
 @Transactional
 public class NoteDAO extends PicsDAO {
@@ -53,28 +44,18 @@ public class NoteDAO extends PicsDAO {
 		if (where == null)
 			where = "";
 		if (where.length() > 0)
-			where = "WHERE n.account.id = "+ id + " AND " + where;
-		Query query = em.createQuery("SELECT n FROM Note n " + where + " ORDER BY n.creationDate DESC");
+			where = "WHERE account.id = "+ id + " AND " + where;
+		Query query = em.createQuery("FROM Note n " + where + " ORDER BY creationDate DESC");
 		return query.getResultList();
 	}
 	
 	public void addPicsNote(Account account, User user, String summary) {
-		Note note = new Note();
-		note.setAccount(account);
-		note.setViewableBy(new Account());
-		note.getViewableBy().setId(Account.PicsID);
-		note.setAuditColumns(user);
-		note.setSummary(summary);
+		Note note = new Note(account, user, summary);
 		save(note);
 	}
 
 	public void addPicsAdminNote(Account account, User user, String summary) {
-		Note note = new Note();
-		note.setAccount(account);
-		note.setViewableBy(new Account());
-		note.getViewableBy().setId(Account.PicsID);
-		note.setAuditColumns(user);
-		note.setSummary(summary);
+		Note note = new Note(account, user, summary);
 		save(note);
 	}
 }

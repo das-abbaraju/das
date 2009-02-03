@@ -58,7 +58,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private Date lastAnnualUpdateEmailDate;
 	private int requestedById;
 	private int billingAmount;
-	private String isOnlyCerts;
 	private String secondContact;
 	private String secondPhone;
 	private String secondEmail;
@@ -317,19 +316,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	public void setOqEmployees(String oqEmployees) {
 		this.oqEmployees = oqEmployees;
-	}
-
-	/**
-	 * @deprecated
-	 * @return
-	 */
-	@Column(name = "isOnlyCerts", length = 3)
-	public String getIsOnlyCerts() {
-		return this.isOnlyCerts;
-	}
-
-	public void setIsOnlyCerts(String isOnlyCerts) {
-		this.isOnlyCerts = isOnlyCerts;
 	}
 
 	// //// BILLING/ACCOUNT - related columns //////
