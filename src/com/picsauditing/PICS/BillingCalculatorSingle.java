@@ -1,47 +1,91 @@
 package com.picsauditing.PICS;
 
-import java.util.HashSet;
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.Vector;
 
+import com.picsauditing.jpa.entities.AuditOperator;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class BillingCalculatorSingle {
-	private Set<OperatorAccount> payingOperators;
 	
-	public BillingCalculatorSingle(List<OperatorAccount> operators) {
-		payingOperators = new HashSet<OperatorAccount>();
-		for(OperatorAccount operator : operators) {
+	public InvoiceFee calculateAnnualFee(ContractorAccount contractor) throws Exception {
+
+		
+		List<ContractorOperator> contractorOperators = contractor.getOperators();
+		
+		List<OperatorAccount> payingOperators = new Vector<OperatorAccount>();
+		for(ContractorOperator contractorOperator : contractorOperators) {
+			OperatorAccount operator = contractorOperator.getOperatorAccount();
 			if (operator.getDoContractorsPay() != null && !operator.getDoContractorsPay().equals("No"))
 				payingOperators.add(operator);
 		}
-		/*
-		int facilityCount = countFacilities();
+
 		
 		// Contractors with no paying facilities are free
-		if (facilityCount == 0) return 0;
+		if (payingOperators.size() == 0) return null;
 		
 		// If only one facility is selected and it's a "multiple" 
 		// like Empire or BP Pipelines, then it's free too
-		if (facilityCount==1 && cBean.getFacilities().get(0).doContractorsPay.equals("Multiple"))
-			return 0;
+		if (payingOperators.size()==1 && payingOperators.get(0).getDoContractorsPay().equals("Multiple"))
+			return null;
+
 		
-		// if it doesn't require an audit then it's only $99
-		cBean.isAudited(requiresAudit());
-		if (cBean.isAudited()) {
-			cBean.newBillingAmount = Integer.toString(priceNoAudit);
-			return priceNoAudit;
+		int billable = 0;
+		for( OperatorAccount operator : payingOperators ) {
+			for( AuditOperator audit : operator.getAudits() ) {
+				if( audit.getRequiredAuditStatus() == AuditStatus.Active ) {
+					billable++;
+					break;
+				}
+			}
 		}
-		// All others use the pricing matrix
-		Integer newPrice = calculatePriceByFacilityCount(facilityCount);
-		cBean.newBillingAmount = newPrice.toString();
-		return newPrice;
-*/
-	}
 
-	public void calculateAnnualFee(ContractorAccount contractor) {
+		BigDecimal price = calculatePriceTier(billable);
+		
+		InvoiceFee fee = new InvoiceFee();
+		fee.setAmount(price.intValue());
+		fee.setVisible(true);
+		fee.setFee("fee");
+		
+		return fee;
 		
 	}
 
+	private BigDecimal calculatePriceTier(int billable) {
+		@SuppressWarnings("serial")
+		Map<Integer, BigDecimal> priceTiers = new TreeMap<Integer, BigDecimal>() {{
+			put( 0, new BigDecimal( 99 ) );
+			put( 1, new BigDecimal( 399 ) );
+			put( 2, new BigDecimal( 699 ) );
+			put( 5, new BigDecimal( 999 ) );
+			put( 9, new BigDecimal( 1299 ) );
+			put( 13, new BigDecimal( 1699 ) );
+			put( 14, new BigDecimal( 1999 ) );
+		}};
+
+		BigDecimal last = null;
+		for( int bottomOfTier : priceTiers.keySet() ) {
+			if( billable >= bottomOfTier ) {
+				last = priceTiers.get(bottomOfTier);
+			}
+			else {
+				break;
+			}
+		}
+		
+		if( last == null ) {
+			last = priceTiers.get(0);
+		}
+		
+		return last;
+	}
+	
+	
 }
