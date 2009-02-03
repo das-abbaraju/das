@@ -10,7 +10,7 @@
 	type="text/javascript"></script>
 <script type="text/javascript">
 function save(id, aID, oID, pKey) {
-	pars = '&operatorID='+oID+'&ao.auditType.id='+aID+'&ao.auditOperatorID='+pKey;
+	pars = '&operatorID='+oID+'&ao.auditType.id='+aID+'&ao.id='+pKey;
 	
 	var checkBox = $('form1')['canSee'+id];
 	if (checkBox.checked)
@@ -62,7 +62,7 @@ function save(id, aID, oID, pKey) {
 			listValue="name" value="oID"></s:select>
 	</s:if>
 	<s:else>
-		<s:select list="auditTypes" listKey="auditTypeID" cssClass="blueMain"
+		<s:select list="auditTypes" listKey="id" cssClass="blueMain"
 			onchange="location = '?aID='+this.options[this.selectedIndex].value;"
 			listValue="auditName" value="aID"></s:select>
 		<br /><a href="ManageAuditType.action?id=<s:property value="aID"/>">Manage Audit Definition</a>

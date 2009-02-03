@@ -42,7 +42,7 @@ public class AuditOperatorSave extends PicsActionSupport implements Preparable {
 	}
 
 	public void prepare() throws Exception {
-		String[] ids = (String[]) ActionContext.getContext().getParameters().get("ao.auditOperatorID");
+		String[] ids = (String[]) ActionContext.getContext().getParameters().get("ao.id");
 		int id = new Integer(ids[0]).intValue();
 		ao = dao.find(id);
 	}
