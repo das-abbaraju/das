@@ -56,7 +56,7 @@
 			<td>
 				<s:hidden name="id" value="%{id}"/>
 				<s:select list="auditTypeName" name="selectedAudit" cssClass="pics"
-					headerKey="" headerValue="- Select Policy Type -" listKey="auditTypeID" listValue="auditName" />
+					headerKey="" headerValue="- Select Policy Type -" listKey="id" listValue="auditName" />
 			</td>
 			<td>
 				<s:if test="permissions.contractor || permissions.admin">

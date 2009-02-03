@@ -87,7 +87,7 @@
 			</td>
 			<td colspan="3" class="center">
 				<s:hidden name="id" value="%{id}"/>
-				<s:select list="auditTypeName" listKey="auditTypeID" listValue="auditName" headerKey="" headerValue="- Select an Audit to be Created -" name="selectedAudit"/>
+				<s:select list="auditTypeName" listKey="id" listValue="auditName" headerKey="" headerValue="- Select an Audit to be Created -" name="selectedAudit"/>
 			</td>
 			<td colspan="7" class="center">
 				<pics:permission perm="AllOperators">
