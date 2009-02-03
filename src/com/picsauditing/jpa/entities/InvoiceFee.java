@@ -8,7 +8,7 @@ public class InvoiceFee extends BaseTable implements java.io.Serializable {
 
 	private String fee;
 	private int amount;
-	private boolean visible;
+	private boolean visible = true;
 
 	public String getFee() {
 		return fee;

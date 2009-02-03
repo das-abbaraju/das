@@ -170,18 +170,15 @@
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<result>struts/reports/contractors_list_data.jsp</result>
 		</action>
+		
 		<!-- Billing -->
-		<action name="BillingActivations"
-			class="com.picsauditing.actions.report.ReportActivations">
-			<result>struts/reports/billing_activations.jsp</result>
-		</action>
-		<action name="BillingRenewals"
+		<action name="ReportBilling"
 			class="com.picsauditing.actions.report.ReportBilling">
-			<result>struts/reports/billing_renewals.jsp</result>
+			<result>struts/reports/report_billing.jsp</result>
 		</action>
-		<action name="BillingUpgrades"
-			class="com.picsauditing.actions.report.ReportBillingUpgrades">
-			<result>struts/reports/billing_upgrades.jsp</result>
+		<action name="BillingDetail"
+			class="com.picsauditing.actions.contractors.BillingDetail">
+			<result>struts/contractors/billing_detail.jsp</result>
 		</action>
 
 		<!-- User List -->
