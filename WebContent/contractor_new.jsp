@@ -287,7 +287,7 @@ function change() {
 	if (oq == null) oq = $('oqNo').getValue();
 	if (oq == null) oq = '';
 	
-	var pars = 'action=pricing&riskLevel='+riskLevel+'&oqEmployees='+oq+'&facilities=0';
+	var pars = 'button=pricing&riskLevel='+riskLevel+'&oqEmployees='+oq+'&facilities=0';
 	
 	var defaultRequestedBy = '<%=cBean.requestedByID%>';
 	opt1 = $('generalContractors');
@@ -312,7 +312,7 @@ function change() {
 	
 	$('annualFee').innerHTML = '<img src="images/ajax_process.gif" width="20" height="20">';
 	
-	var myAjax = new Ajax.Updater('annualFee', 'contractor_new_ajax.jsp', {method: 'get', parameters: pars});
+	var myAjax2 = new Ajax.Updater('annualFee', 'CalculateFeeAjax.action', {method: 'get', parameters: pars});
 }
 change();
 //-->
