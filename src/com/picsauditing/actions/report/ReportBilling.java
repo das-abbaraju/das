@@ -11,23 +11,46 @@ public class ReportBilling extends ReportAccount {
 	public void buildQuery() {
 		super.buildQuery();
 		sql.addField("c.membershipDate");
+		sql.addField("c.paymentExpires");
 		sql.addField("f2.fee");
+
 		sql.addJoin("LEFT JOIN invoice_fee f1 ON c.membershipLevelID = f1.id");
 		sql.addJoin("LEFT JOIN invoice_fee f2 ON c.newMembershipLevelID = f2.id");
 		
 		sql.addWhere("c.mustPay = 'Yes'");
 		
+		getFilter().setShowBillingState(true);
+		String billingState = "All";
+		if (getFilter().getBillingState() != null)
+			billingState = getFilter().getBillingState();
+		
+
+		String where = "";
 		// Show activations and reactivations
-		String where = "(a.active = 'N' AND c.renew = 1)";
+		if (billingState.equals("All") || billingState.equals("Activations")) {
+			where += "(a.active = 'N' AND c.renew = 1)";
+		}
 		// Show renewals
-		where += " OR (a.active = 'Y' AND c.renew = 1 AND c.paymentExpires < NOW())";
+		if (billingState.equals("All") || billingState.equals("Renewals")) {
+			if (where.length() > 0) where += " OR ";
+			where += "(a.active = 'Y' AND c.renew = 1 AND c.paymentExpires < ADDDATE(NOW(), INTERVAL 1 MONTH))";
+		}
 		// Show upgrades
-		where += " OR (a.active = 'Y' AND f2.fee > f1.fee)";
+		if (billingState.equals("All") || billingState.equals("Upgrades")) {
+			// A note about non-renewal upgrades: just because a contractor doesn't want to renew
+			// at the end of the year, doesn't mean they shouldn't be charged an upgrade fee.
+			// However, we (the billing department) should be vigilent about reviewing upgrades 
+			// on non-renewable contractor accounts.
+			if (where.length() > 0) where += " OR ";
+			where += "(a.active = 'Y' AND f2.fee > f1.fee)";
+		}
+		
+		sql.addField("CASE " +
+				"WHEN a.active = 'N' THEN 'Activations' " +
+				"WHEN f2.fee > f1.fee THEN 'Upgrades' " +
+				"WHEN c.paymentExpires < ADDDATE(NOW(), INTERVAL 1 MONTH) THEN 'Renewals' " +
+				"ELSE 'Other' END billingStatus");
 		sql.addWhere(where);
 		
-		// A note about non-renewal upgrades: just because a contractor doesn't want to renew
-		// at the end of the year, doesn't mean they shouldn't be charged an upgrade fee.
-		// However, we (the billing department) should be vigilent about reviewing upgrades 
-		// on non-renewable contractor accounts.
 	}
 }

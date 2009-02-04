@@ -411,6 +411,12 @@
 		</span></div>
 	</s:if>
 	
+	<s:if test="filter.showBillingState">
+		<div class="filterOption">
+			<span>Billing State: <s:radio list="{'Activations', 'Renewals', 'Upgrades', 'All'}" name="filter.billingState"></s:radio></span>
+		</div>
+	</s:if>
+	
 	<s:if test="filter.showEmailTemplate">
 		<br clear="all" />
 		<div class="filterOption">

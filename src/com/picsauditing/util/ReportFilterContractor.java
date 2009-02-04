@@ -19,6 +19,7 @@ import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 
+@SuppressWarnings("serial")
 public class ReportFilterContractor extends ReportFilterAccount {
 	public static final String DEFAULT_TAX_ID = "- Tax ID -";
 	public static final String DEFAULT_CERTS = "- Ins. Certs -";
@@ -41,6 +42,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showWaitingOn = false;
 	protected boolean showEmailSentDate = false;
 	protected boolean showEmailTemplate = false;
+	protected boolean showBillingState = false;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -60,6 +62,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected Date emailSentDate2;
 	protected String emailtemplate;
 	protected ListType emailListType;
+	protected String billingState = "All";
 
 	private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
 
@@ -159,7 +162,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public void setShowWaitingOn(boolean showWaitingOn) {
 		this.showWaitingOn = showWaitingOn;
 	}
-	
+
 	public boolean isShowEmailSentDate() {
 		return showEmailSentDate;
 	}
@@ -174,6 +177,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowEmailTemplate(boolean showEmailTemplate) {
 		this.showEmailTemplate = showEmailTemplate;
+	}
+
+	public boolean isShowBillingState() {
+		return showBillingState;
+	}
+
+	public void setShowBillingState(boolean showBillingState) {
+		this.showBillingState = showBillingState;
 	}
 
 	public String getPerformedBy() {
@@ -325,7 +336,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public String[] getCertsOptions() {
 		return new String[] { DEFAULT_CERTS, "Yes", "Only Certs", "No", "Exclude Certs" };
 	}
-	
+
 	public Map<Integer, WaitingOn> getWaitingOnList() throws Exception {
 		return WaitingOn.getMap();
 	}
@@ -398,4 +409,13 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public void setEmailListType(ListType emailListType) {
 		this.emailListType = emailListType;
 	}
+
+	public String getBillingState() {
+		return billingState;
+	}
+
+	public void setBillingState(String billingState) {
+		this.billingState = billingState;
+	}
+	
 }

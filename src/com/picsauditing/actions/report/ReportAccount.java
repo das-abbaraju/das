@@ -31,8 +31,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	protected boolean skipPermissions = false;
 
-	protected List<Integer> ids = new ArrayList<Integer>(); // ?? may need to
-	// move to Filters
+	// ?? may need to move to Filters
+	protected List<Integer> ids = new ArrayList<Integer>();
 
 	protected SelectAccount sql = new SelectAccount();
 	private ReportFilterContractor filter = new ReportFilterContractor();
