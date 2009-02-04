@@ -80,7 +80,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private Date lastUpgradeDate;
 	private int balance;
 	private InvoiceFee membershipLevel;
-	private InvoiceFee newMembershiptLevel;	
+	private InvoiceFee newMembershipLevel;
+	private List<Invoice> invoices = new ArrayList<Invoice>();
 
 	protected List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 	protected List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
@@ -116,7 +117,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.operators = operators;
 	}
 
-	// /////////// GETTERS/SETTERS /////////////////
 	@Column(name = "taxID", length = 100)
 	public String getTaxId() {
 		return this.taxId;
@@ -793,11 +793,20 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	@Column(name = "newMembershipLevelID")
-	public InvoiceFee getNewMembershiptLevel() {
-		return newMembershiptLevel;
+	public InvoiceFee getNewMembershipLevel() {
+		return newMembershipLevel;
 	}
 
-	public void setNewMembershiptLevel(InvoiceFee newMembershiptLevel) {
-		this.newMembershiptLevel = newMembershiptLevel;
+	public void setNewMembershipLevel(InvoiceFee newMembershipLevel) {
+		this.newMembershipLevel = newMembershipLevel;
+	}
+
+	@OneToMany(mappedBy = "account")
+	public List<Invoice> getInvoices() {
+		return invoices;
+	}
+
+	public void setInvoices(List<Invoice> invoices) {
+		this.invoices = invoices;
 	}
 }
