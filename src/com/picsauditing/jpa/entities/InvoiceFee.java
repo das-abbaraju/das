@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -21,6 +22,7 @@ public class InvoiceFee extends BaseTable implements java.io.Serializable {
 		this.fee = fee;
 	}
 
+	@Column( name = "defaultAmount")
 	public int getAmount() {
 		return amount;
 	}

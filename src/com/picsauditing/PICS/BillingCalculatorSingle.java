@@ -1,11 +1,11 @@
 package com.picsauditing.PICS;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -15,6 +15,12 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class BillingCalculatorSingle {
+	
+	private InvoiceFeeDAO feeDao = null;
+	
+	public BillingCalculatorSingle( InvoiceFeeDAO feeDao ) {
+		this.feeDao = feeDao;
+	}
 	
 	public InvoiceFee calculateAnnualFee(ContractorAccount contractor) throws Exception {
 
@@ -63,30 +69,27 @@ public class BillingCalculatorSingle {
 			}
 		}
 
-		BigDecimal price = calculatePriceTier(billable);
+		String feeName = calculatePriceTier(billable);
 		
-		InvoiceFee fee = new InvoiceFee();
-		fee.setAmount(price.intValue());
-		fee.setVisible(true);
-		fee.setFee("fee");
+		InvoiceFee fee = feeDao.findByName(feeName);
 		
 		return fee;
 		
 	}
 
-	private BigDecimal calculatePriceTier(int billable) {
+	private String calculatePriceTier(int billable) {
 		@SuppressWarnings("serial")
-		Map<Integer, BigDecimal> priceTiers = new TreeMap<Integer, BigDecimal>() {{
-			put( 0, new BigDecimal( 99 ) );
-			put( 1, new BigDecimal( 399 ) );
-			put( 2, new BigDecimal( 699 ) );
-			put( 5, new BigDecimal( 999 ) );
-			put( 9, new BigDecimal( 1299 ) );
-			put( 13, new BigDecimal( 1699 ) );
-			put( 20, new BigDecimal( 1999 ) );
+		Map<Integer, String> priceTiers = new TreeMap<Integer, String>() {{
+			put( 0, "Activation" );
+			put( 1, "Facilities_1" );
+			put( 2, "Facilities_2to4" );
+			put( 5, "Facilities_5to8" );
+			put( 9, "Facilities_9to12" );
+			put( 13, "Facilities_13to19" );
+			put( 20, "Facilities_20plus" );
 		}};
 
-		BigDecimal last = null;
+		String last = null;
 		for( int bottomOfTier : priceTiers.keySet() ) {
 			if( billable >= bottomOfTier ) {
 				last = priceTiers.get(bottomOfTier);

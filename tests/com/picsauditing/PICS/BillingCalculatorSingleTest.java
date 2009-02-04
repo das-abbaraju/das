@@ -1,10 +1,17 @@
 package com.picsauditing.PICS;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Vector;
 
 import junit.framework.TestCase;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.jpa.entities.AuditOperator;
@@ -13,11 +20,20 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "/tests.xml")
+@TransactionConfiguration(defaultRollback = true)
+@Transactional
 public class BillingCalculatorSingleTest extends TestCase {
 
+	@Autowired
+	protected BillingCalculatorSingle calculator;
+	
+	@Test
 	public void testCalculate() throws Exception {
 		
-		BillingCalculatorSingle calculator = new BillingCalculatorSingle();
+		
 		ContractorAccount contractor = EntityFactory.makeContractor();
 
 		InvoiceFee fee = calculator.calculateAnnualFee(contractor);
@@ -40,7 +56,7 @@ public class BillingCalculatorSingleTest extends TestCase {
 		ops.get(1).setDoContractorsPay("Multiple");
 		
 		fee = calculator.calculateAnnualFee(contractor);
-		assertNotNull("two operator had a doContractorsPay with multiple...should not be null result", fee);
+		assertNotNull("two operators had a doContractorsPay with multiple...should not be null result", fee);
 		
 		
 		int i = 0;
