@@ -77,52 +77,57 @@ public class BillingCalculatorSingleTest extends TestCase {
 		
 
 		aops.get(2).setRequiredAuditStatus(AuditStatus.Active);
-		
-		fee = calculator.calculateAnnualFee(contractor);
-		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the second tier because there are 2 auditoperators with a requiredauditstatus = active", 699, fee.getAmount());
-		
 		aops.get(3).setRequiredAuditStatus(AuditStatus.Active);
 		aops.get(4).setRequiredAuditStatus(AuditStatus.Active);
-		aops.get(5).setRequiredAuditStatus(AuditStatus.Active);
 		
 		fee = calculator.calculateAnnualFee(contractor);
 		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the third tier because there are 3 auditoperators with a requiredauditstatus = active", 999, fee.getAmount());
+		assertEquals("Should be the second tier because there are 2-4 auditoperators with a requiredauditstatus = active", 699, fee.getAmount());
 		
-		
+		aops.get(5).setRequiredAuditStatus(AuditStatus.Active);
 		aops.get(6).setRequiredAuditStatus(AuditStatus.Active);
 		aops.get(7).setRequiredAuditStatus(AuditStatus.Active);
 		aops.get(8).setRequiredAuditStatus(AuditStatus.Active);
-		aops.get(9).setRequiredAuditStatus(AuditStatus.Active);
 		
 		fee = calculator.calculateAnnualFee(contractor);
 		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the fourth tier because there are 4 auditoperators with a requiredauditstatus = active", 1299, fee.getAmount());
+		assertEquals("Should be the third tier because there are 5-8 auditoperators with a requiredauditstatus = active", 999, fee.getAmount());
 		
 		
+		aops.get(9).setRequiredAuditStatus(AuditStatus.Active);
 		aops.get(10).setRequiredAuditStatus(AuditStatus.Active);
 		aops.get(11).setRequiredAuditStatus(AuditStatus.Active);
 		aops.get(12).setRequiredAuditStatus(AuditStatus.Active);
+		
+		fee = calculator.calculateAnnualFee(contractor);
+		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
+		assertEquals("Should be the fourth tier because there are 9-12 auditoperators with a requiredauditstatus = active", 1299, fee.getAmount());
+		
+		
 		aops.get(13).setRequiredAuditStatus(AuditStatus.Active);
-		
-		fee = calculator.calculateAnnualFee(contractor);
-		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the fifth tier because there are 5 auditoperators with a requiredauditstatus = active", 1699, fee.getAmount());
-		
-		
 		aops.get(14).setRequiredAuditStatus(AuditStatus.Active);
-		
-		fee = calculator.calculateAnnualFee(contractor);
-		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the sixth tier because there are 6 auditoperators with a requiredauditstatus = active", 1999, fee.getAmount());
-		
-		
 		aops.get(15).setRequiredAuditStatus(AuditStatus.Active);
 		aops.get(16).setRequiredAuditStatus(AuditStatus.Active);
 		aops.get(17).setRequiredAuditStatus(AuditStatus.Active);
 		aops.get(18).setRequiredAuditStatus(AuditStatus.Active);
 		aops.get(19).setRequiredAuditStatus(AuditStatus.Active);
+		
+		fee = calculator.calculateAnnualFee(contractor);
+		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
+		assertEquals("Should be the fifth tier because there are 13-19 auditoperators with a requiredauditstatus = active", 1699, fee.getAmount());
+		
+		aops.get(20).setRequiredAuditStatus(AuditStatus.Active);
+		
+		
+		fee = calculator.calculateAnnualFee(contractor);
+		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
+		assertEquals("Should be the sixth tier because there are 20+ auditoperators with a requiredauditstatus = active", 1999, fee.getAmount());
+		
+		aops.get(21).setRequiredAuditStatus(AuditStatus.Active);
+		aops.get(22).setRequiredAuditStatus(AuditStatus.Active);
+		aops.get(23).setRequiredAuditStatus(AuditStatus.Active);
+		aops.get(24).setRequiredAuditStatus(AuditStatus.Active);
+		
 		
 		fee = calculator.calculateAnnualFee(contractor);
 		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);

@@ -83,7 +83,7 @@ public class BillingCalculatorSingle {
 			put( 5, new BigDecimal( 999 ) );
 			put( 9, new BigDecimal( 1299 ) );
 			put( 13, new BigDecimal( 1699 ) );
-			put( 14, new BigDecimal( 1999 ) );
+			put( 20, new BigDecimal( 1999 ) );
 		}};
 
 		BigDecimal last = null;
@@ -102,6 +102,4 @@ public class BillingCalculatorSingle {
 		
 		return last;
 	}
-	
-	
 }
