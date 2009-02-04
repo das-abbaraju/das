@@ -1,11 +1,11 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>Report Billing</title>
+<title><s:property value="reportName" /></title>
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
-<h1>Report Billing</h1>
+<h1><s:property value="reportName" /></h1>
 <div id="alert">
 This page is still under Development.  Do not use.
 </div>
@@ -37,7 +37,7 @@ This page is still under Development.  Do not use.
 			<td class="right"><s:property value="get('creationDate')"/></td>
 			<td class="right"><s:property value="get('lastUpgradeDate')"/></td>
 			<td class="right"><s:property value="get('paymentExpires')"/></td>
-			<td><a href="BillingDetail.action?id=<s:property value="get('id')"/> target="BILLING_DETAIL">Billing Detail</a></td>
+			<td><a href="BillingDetail.action?id=<s:property value="get('id')"/>&target=BILLING_DETAIL">Billing Detail</a></td>
 		</tr>
 	</s:iterator>
 	</tbody>
