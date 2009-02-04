@@ -14,6 +14,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -28,11 +29,12 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 public class BillingCalculatorSingleTest extends TestCase {
 
 	@Autowired
-	protected BillingCalculatorSingle calculator;
+	protected InvoiceFeeDAO feeDao;
 	
 	@Test
 	public void testCalculate() throws Exception {
 		
+		BillingCalculatorSingle calculator = new BillingCalculatorSingle();
 		
 		ContractorAccount contractor = EntityFactory.makeContractor();
 
@@ -66,7 +68,7 @@ public class BillingCalculatorSingleTest extends TestCase {
 		
 		fee = calculator.calculateAnnualFee(contractor);
 		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the base fee because nobody is configured to require an Active Status", 99, fee.getAmount());
+		assertEquals("Should be the base fee because nobody is configured to require an Active Status", 99, lookup( fee ));
 		
 		List<AuditOperator> aops = new Vector<AuditOperator>();
 		
@@ -81,7 +83,7 @@ public class BillingCalculatorSingleTest extends TestCase {
 		
 		fee = calculator.calculateAnnualFee(contractor);
 		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the base fee because nobody is configured to require an Active Status", 99, fee.getAmount());
+		assertEquals("Should be the base fee because nobody is configured to require an Active Status", 99, lookup( fee ));
 		
 
 		
@@ -89,7 +91,7 @@ public class BillingCalculatorSingleTest extends TestCase {
 		
 		fee = calculator.calculateAnnualFee(contractor);
 		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the first tier because there is 1 auditoperator with a requiredauditstatus = active", 399, fee.getAmount());
+		assertEquals("Should be the first tier because there is 1 auditoperator with a requiredauditstatus = active", 399, lookup( fee ));
 		
 
 		aops.get(2).setRequiredAuditStatus(AuditStatus.Active);
@@ -98,7 +100,7 @@ public class BillingCalculatorSingleTest extends TestCase {
 		
 		fee = calculator.calculateAnnualFee(contractor);
 		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the second tier because there are 2-4 auditoperators with a requiredauditstatus = active", 699, fee.getAmount());
+		assertEquals("Should be the second tier because there are 2-4 auditoperators with a requiredauditstatus = active", 699, lookup( fee ));
 		
 		aops.get(5).setRequiredAuditStatus(AuditStatus.Active);
 		aops.get(6).setRequiredAuditStatus(AuditStatus.Active);
@@ -107,7 +109,7 @@ public class BillingCalculatorSingleTest extends TestCase {
 		
 		fee = calculator.calculateAnnualFee(contractor);
 		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the third tier because there are 5-8 auditoperators with a requiredauditstatus = active", 999, fee.getAmount());
+		assertEquals("Should be the third tier because there are 5-8 auditoperators with a requiredauditstatus = active", 999, lookup( fee ));
 		
 		
 		aops.get(9).setRequiredAuditStatus(AuditStatus.Active);
@@ -117,7 +119,7 @@ public class BillingCalculatorSingleTest extends TestCase {
 		
 		fee = calculator.calculateAnnualFee(contractor);
 		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the fourth tier because there are 9-12 auditoperators with a requiredauditstatus = active", 1299, fee.getAmount());
+		assertEquals("Should be the fourth tier because there are 9-12 auditoperators with a requiredauditstatus = active", 1299, lookup( fee ));
 		
 		
 		aops.get(13).setRequiredAuditStatus(AuditStatus.Active);
@@ -130,14 +132,14 @@ public class BillingCalculatorSingleTest extends TestCase {
 		
 		fee = calculator.calculateAnnualFee(contractor);
 		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the fifth tier because there are 13-19 auditoperators with a requiredauditstatus = active", 1699, fee.getAmount());
+		assertEquals("Should be the fifth tier because there are 13-19 auditoperators with a requiredauditstatus = active", 1699, lookup( fee ));
 		
 		aops.get(20).setRequiredAuditStatus(AuditStatus.Active);
 		
 		
 		fee = calculator.calculateAnnualFee(contractor);
 		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the sixth tier because there are 20+ auditoperators with a requiredauditstatus = active", 1999, fee.getAmount());
+		assertEquals("Should be the sixth tier because there are 20+ auditoperators with a requiredauditstatus = active", 1999, lookup( fee ));
 		
 		aops.get(21).setRequiredAuditStatus(AuditStatus.Active);
 		aops.get(22).setRequiredAuditStatus(AuditStatus.Active);
@@ -147,9 +149,14 @@ public class BillingCalculatorSingleTest extends TestCase {
 		
 		fee = calculator.calculateAnnualFee(contractor);
 		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should still be the sixth tier because there are at least 6 auditoperators with a requiredauditstatus = active", 1999, fee.getAmount());
+		assertEquals("Should still be the sixth tier because there are at least 6 auditoperators with a requiredauditstatus = active", 1999, lookup( fee ));
 		
 		
+	}
+	
+	private int lookup( InvoiceFee fee ) {
+		InvoiceFee connected = feeDao.find(fee.getId());
+		return connected.getAmount();
 	}
 	
 	
