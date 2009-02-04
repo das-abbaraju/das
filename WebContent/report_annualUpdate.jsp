@@ -13,6 +13,7 @@ if ("Send Emails".equals(action)) {
 	permissions.tryPermission(OpPerms.EmailAnnualUpdate, OpType.Edit);
 	EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
 	ContractorAccountDAO conAccountDAO = (ContractorAccountDAO)SpringUtils.getBean("ContractorAccountDAO");
+	NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 	EmailBuilder emailBuilder = new EmailBuilder();
 	java.util.Enumeration e = request.getParameterNames();
 	while (e.hasMoreElements()) {
@@ -27,8 +28,14 @@ if ("Send Emails".equals(action)) {
 			EmailQueue email = emailBuilder.build();
 			email.setPriority(30);
 			emailQueueDAO.save(email);
-			ContractorBean.addNote(contractor.getId(), permissions,
-					"Sent PICS annual update email to " + emailBuilder.getSentTo());
+			
+			Note note = new Note();
+			note.setAccount(contractor);
+			note.setAuditColumns(new User(permissions.getAccountId()));
+			note.setSummary("Sent PICS annual update email to " + emailBuilder.getSentTo());
+			note.setNoteCategory(NoteCategory.Billing);
+			noteDAO.save(note);
+
 			contractor.setAnnualUpdateEmails(contractor.getAnnualUpdateEmails() + 1);
 			contractor.setLastAnnualUpdateEmailDate(new Date());
 			conAccountDAO.save(contractor);
@@ -71,6 +78,10 @@ List<BasicDynaBean> searchData = report.getPage();
 <%@page import="com.picsauditing.jpa.entities.ContractorAccount"%>
 <%@page import="com.picsauditing.dao.EmailQueueDAO"%>
 <%@page import="com.picsauditing.jpa.entities.EmailQueue"%>
+<%@page import="com.picsauditing.jpa.entities.Note"%>
+<%@page import="com.picsauditing.jpa.entities.User"%>
+<%@page import="com.picsauditing.jpa.entities.NoteCategory"%>
+<%@page import="com.picsauditing.dao.NoteDAO"%>
 <html>
 <head>
 <title>Annual Update Emails</title>

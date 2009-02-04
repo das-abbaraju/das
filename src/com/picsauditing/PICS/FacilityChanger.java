@@ -5,10 +5,14 @@ import java.util.Iterator;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
@@ -24,17 +28,19 @@ public class FacilityChanger {
 	private ContractorAccountDAO contractorAccountDAO;
 	private OperatorAccountDAO operatorAccountDAO;
 	private AuditBuilder auditBuilder;
+	private NoteDAO noteDAO;
 
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
 	private Permissions permissions;
 
 	public FacilityChanger(ContractorAccountDAO contractorAccountDAO, OperatorAccountDAO operatorAccountDAO,
-			ContractorOperatorDAO contractorOperatorDAO, AuditBuilder auditBuilder) {
+			ContractorOperatorDAO contractorOperatorDAO, AuditBuilder auditBuilder, NoteDAO noteDAO) {
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.auditBuilder = auditBuilder;
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
+		this.noteDAO = noteDAO;
 	}
 
 	public void add() throws Exception {
@@ -56,8 +62,13 @@ public class FacilityChanger {
 		co.setAuditColumns(new User(permissions.getUserId()));
 		contractorOperatorDAO.save(co);
 		contractor.getOperators().add(co);
-
-		ContractorBean.addNote(contractor.getId(), permissions, "Added contractor to " + operator.getName());
+		
+		Note note = new Note();
+		note.setAccount(contractor);
+		note.setAuditColumns(new User(permissions.getAccountId()));
+		note.setSummary("Added contractor to " + operator.getName());
+		note.setNoteCategory(NoteCategory.ContractorAddition);
+		noteDAO.save(note);
 
 		// Send the contractor an email that the operator added them
 		EmailBuilder emailBuilder = new EmailBuilder();

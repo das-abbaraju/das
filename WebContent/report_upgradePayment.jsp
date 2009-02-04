@@ -7,6 +7,13 @@
 	scope="page" />
 <jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean"
 	scope="page" />
+<%@page import="com.picsauditing.util.SpringUtils"%>
+<%@page import="com.picsauditing.dao.NoteDAO"%>
+<%@page import="com.picsauditing.jpa.entities.Note"%>
+<%@page import="com.picsauditing.jpa.entities.User"%>
+<%@page import="com.picsauditing.jpa.entities.NoteCategory"%>
+<%@page import="com.picsauditing.jpa.entities.Account"%>
+	
 <%
 	permissions.tryPermission(OpPerms.BillingUpgrades);
 	String action = request.getParameter("action");
@@ -30,7 +37,16 @@
 		cBean.addAdminNote(action_id, "(" + permissions.getName() + ")", "Invoiced for $" + cBean.billingAmount+ " membership level", cBean.lastInvoiceDate);
 		if ("".equals(cBean.membershipDate)) {
 			cBean.membershipDate = DateBean.getTodaysDate();
-			cBean.addNote(action_id, "(" + permissions.getName() + ")", "Membership Date set today to "+ cBean.membershipDate, DateBean.getTodaysDateTime());
+			
+			NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
+			Note note = new Note();
+			note.setAccount(new Account());
+			note.getAccount().setId(Integer.parseInt(action_id));
+			note.setAuditColumns(new User(permissions.getAccountId()));
+			note.setSummary("Membership Date set today to "+ cBean.membershipDate);
+			note.setNoteCategory(NoteCategory.Billing);
+			noteDAO.save(note);
+
 		}
 		cBean.writeToDB();
 	}

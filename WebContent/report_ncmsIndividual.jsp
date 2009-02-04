@@ -11,6 +11,12 @@
 <%@page import="java.text.DateFormat"%>
 <%@page import="com.picsauditing.dao.ContractorAuditDAO"%>
 <%@page import="com.picsauditing.util.SpringUtils"%>
+<%@page import="com.picsauditing.dao.NoteDAO"%>
+<%@page import="com.picsauditing.jpa.entities.Note"%>
+<%@page import="com.picsauditing.jpa.entities.User"%>
+<%@page import="com.picsauditing.jpa.entities.NoteCategory"%>
+<%@page import="com.picsauditing.jpa.entities.Account"%>
+
 <%
 	Connection Conn = null;
 	Statement SQLStatement = null;
@@ -25,6 +31,7 @@
 		String action = request.getParameter("action");
 		String closedDate = request.getParameter("closedDate");
 		Conn = com.picsauditing.PICS.DBBean.getDBConnection();
+		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 		SQLStatement = Conn.createStatement();
 		if ("Approve".equals(action)) {
 			//link in db
@@ -42,14 +49,17 @@
 			conAudit.setContractorAccount(new ContractorAccount());
 			conAudit.getContractorAccount().setId(Integer.parseInt(conID));
 			conAudit.setPercentVerified(0);
-			conAudit.setCreatedDate(new Date());
+			conAudit.setAuditColumns(new User(permissions.getAccountId()));
 			conAudit.setAuditStatus(AuditStatus.Active);
 			conAuditdao.save(conAudit);
-			cBean.setFromDB(conID);
-			cBean.addNote(conID, "(" + permissions.getUsername() + ")",
-					"NCMS Desktop imported, approved", DateBean
-							.getTodaysDateTime());
-			cBean.writeToDB();
+			
+			Note note = new Note();
+			note.setAccount(new Account());
+			note.getAccount().setId(Integer.parseInt(conID));
+			note.setAuditColumns(new User(permissions.getAccountId()));
+			note.setSummary("NCMS Desktop imported, approved");
+			note.setNoteCategory(NoteCategory.Audits);
+			noteDAO.save(note);
 
 			Query = "UPDATE NCMS_Desktop SET remove='Yes',conID="
 					+ conID
@@ -81,11 +91,13 @@
 			Conn.close();
 			Conn = null;
 
-			cBean.setFromDB(conID);
-			cBean.addNote(conID, "(" + permissions.getUsername() + ")",
-					"NCMS Desktop imported, approved", DateBean
-							.getTodaysDateTime());
-			cBean.writeToDB();
+			Note note = new Note();
+			note.setAccount(new Account());
+			note.getAccount().setId(Integer.parseInt(conID));
+			note.setAuditColumns(new User(permissions.getAccountId()));
+			note.setSummary("NCMS Desktop imported, approved");
+			note.setNoteCategory(NoteCategory.Audits);
+			noteDAO.save(note);
 
 			response.sendRedirect("ReportNCMS.action");
 			return;
