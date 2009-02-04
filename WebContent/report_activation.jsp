@@ -181,20 +181,26 @@ try{
 	<tr>
 		<td></td>
 		<td colspan="2" bgcolor="#003366"><a href="javascript: changeOrderBy('form1','name');" class="whiteTitle">Contractor</a></td>
-		<td  bgcolor="#003366"><a href="javascript: changeOrderBy('form1','creationDate DESC');" class="whiteTitle">Created</a></td>
-		<td  bgcolor="#003366"><a href="javascript: changeOrderBy('form1','membershipDate DESC');" class="whiteTitle">Member</a></td>
-		<td  bgcolor="#003366"><a href="javascript: changeOrderBy('form1','requestedByID DESC');" class="whiteTitle">Requester</a></td>
-		<td ><a href="javascript: changeOrderBy('form1','payingFacilities');" class="whiteTitle">Paying Fac.</a></td>
+		<td bgcolor="#003366"><a href="javascript: changeOrderBy('form1','creationDate DESC');" class="whiteTitle">Created</a></td>
+		<td bgcolor="#003366"><a href="javascript: changeOrderBy('form1','membershipDate DESC');" class="whiteTitle">Member</a></td>
+		<td bgcolor="#003366"><a href="javascript: changeOrderBy('form1','paymentMethodStatus');" class="whiteTitle">CC</a></td>
+		<td bgcolor="#003366"><a href="javascript: changeOrderBy('form1','requestedByID DESC');" class="whiteTitle">Requester</a></td>
+		<td><a href="javascript: changeOrderBy('form1','payingFacilities');" class="whiteTitle">Paying Fac.</a></td>
 		<td colspan=2 ><a href="javascript: changeOrderBy('form1','lastInvoiceDate DESC');" class="whiteTitle"><nobr>Last Invoice</nobr></a></td>
 		<td colspan=2 ><a href="javascript: changeOrderBy('form1','newBillingAmount DESC');" class="whiteTitle"><nobr>New Invoice</nobr></a></td>
 		<td colspan=2 ><a href="javascript: changeOrderBy('form1','lastPayment DESC');" class="whiteTitle">Last Payment</a></td>
 		<td colspan=2 ><a href="javascript: changeOrderBy('form1','billingCycle');" class="whiteTitle">New Payment</a></td>
-		<td  bgcolor="#336699">Activate</td>
+		<td bgcolor="#336699">Activate</td>
 		<td width="25"  bgcolor="#336699">Y/N</td>
 		<td>&nbsp;</td>
 	</tr>
 	</thead>
-<%	while (sBean.isNextRecord()){%>
+<%	while (sBean.isNextRecord()){
+		String paymentMethodStatus = sBean.cBean.paymentMethodStatus;
+		String hasCreditCard = "N";
+		if ("Valid".equals(paymentMethodStatus) || "Approved".equals(paymentMethodStatus))
+			hasCreditCard = "Y";
+%>
 			  <tr <%=sBean.getBGColor()%> id="contractor_<%= sBean.aBean.id %>"> 
 			  <form name="form2" method="post" action="report_activation.jsp?changed=0&showPage=<%=sBean.showPage%>">
 				<td class="right" colspan="2"><%=sBean.count-1%></td>
@@ -204,6 +210,7 @@ try{
 				</td>
 				<td class="center"><%=sBean.aBean.creationDate%></td>
 				<td class="center"><%=sBean.cBean.membershipDate%></td>
+				<td><%=hasCreditCard%></td>
 				<td class="center"><%=FACILITIES.getNameFromID(sBean.cBean.requestedByID)%></td>
 			    <td class="center"><%=sBean.cBean.payingFacilities%></td>
 			    <td id="inv_history_<%= sBean.aBean.id %>" align="center" colspan="2"><%=sBean.cBean.billingAmount%> on <%=sBean.cBean.lastInvoiceDate%></td>
