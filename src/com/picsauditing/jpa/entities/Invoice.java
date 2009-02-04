@@ -11,7 +11,7 @@ import javax.persistence.TemporalType;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "invoice_item")
+@Table(name = "invoice")
 public class Invoice extends BaseTable implements java.io.Serializable {
 
 	private Account account;
