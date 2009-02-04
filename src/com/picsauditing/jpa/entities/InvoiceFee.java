@@ -1,8 +1,11 @@
 package com.picsauditing.jpa.entities;
 
+import javax.persistence.Entity;
 import javax.persistence.Table;
 
+
 @SuppressWarnings("serial")
+@Entity
 @Table(name = "invoice_fee")
 public class InvoiceFee extends BaseTable implements java.io.Serializable {
 
