@@ -330,7 +330,7 @@ public class AuditBuilder {
 						cao.setAudit(conAudit);
 						cao.setOperator(operator);
 						cao.setAuditColumns(user);
-						cao.setStatus(CaoStatus.NotApplicable);
+						cao.setStatus(CaoStatus.Awaiting);
 						cao.setRecommendedStatus(CaoStatus.NotApplicable);
 						conAudit.getOperators().add(cao);
 					}
