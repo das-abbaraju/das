@@ -13,6 +13,8 @@ try{
 	if (null==sBean.orderBy)
 		sBean.orderBy = "creationDate DESC";
 	
+	NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
+	
 	if ("Activate".equals(action)) {
 		sBean.aBean.setFromDB(actionID);
 		sBean.cBean.setFromDB(actionID);
@@ -21,10 +23,14 @@ try{
 		message += "<b>"+sBean.aBean.name+"</b> has been made visible";
 		sBean.aBean.writeToDB();
 		sBean.cBean.writeToDB();
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(actionID);
-		cBean.addAdminNote(actionID, "("+permissions.getUsername()+")", " Activated the account ", DateBean.getTodaysDate());
-		cBean.writeToDB();
+		
+		Note note = new Note();
+		note.setAccount(new Account());
+		note.getAccount().setId(Integer.parseInt(actionID));
+		note.setAuditColumns(new User(permissions.getAccountId()));
+		note.setSummary("Activated the account");
+		note.setNoteCategory(NoteCategory.Billing);
+		noteDAO.save(note);
 	}
 
 	if ("Paid".equals(action)){
@@ -40,17 +46,25 @@ try{
 		cBean.setFromDB(actionID);
 		cBean.lastInvoiceDate = DateBean.getTodaysDate();
 		cBean.billingAmount = invoiceAmount;
-		cBean.addAdminNote(actionID, "("+permissions.getUsername()+")", "Invoiced for $"+cBean.billingAmount+" membership level",cBean.lastInvoiceDate);
+
+		Note note = new Note();
+		note.setAccount(new Account());
+		note.getAccount().setId(Integer.parseInt(actionID));
+		note.setAuditColumns(new User(permissions.getAccountId()));
+		note.setSummary("Invoiced for $"+cBean.billingAmount+" membership level");
+		note.setNoteCategory(NoteCategory.Billing);
+		noteDAO.save(note);
+		
 		if ("".equals(cBean.membershipDate)){
 			cBean.membershipDate = DateBean.getTodaysDate();
-			NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
-			ContractorAccountDAO contractorAccountDAO = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
-			Note note = new Note();
-			note.setAccount(contractorAccountDAO.find(Integer.parseInt(cBean.id)));
-			note.setAuditColumns(new User(permissions.getAccountId()));
-			note.setSummary("Membership Date set today to "+cBean.membershipDate);
-			note.setNoteCategory(NoteCategory.Billing);
-			noteDAO.save(note);
+			
+			Note note1 = new Note();
+			note1.setAccount(new Account());
+			note1.getAccount().setId(Integer.parseInt(actionID));
+			note1.setAuditColumns(new User(permissions.getAccountId()));
+			note1.setSummary("Membership Date set today to "+cBean.membershipDate);
+			note1.setNoteCategory(NoteCategory.Billing);
+			noteDAO.save(note1);
 		}
 		cBean.writeToDB();
 		return;
@@ -72,7 +86,7 @@ try{
 	sBean.doSearch(request, SearchBean.ACTIVE_AND_NOT, 50, pBean, pBean.userID);
 %>
 <%@page import="com.picsauditing.jpa.entities.ContractorAccount"%>
-<%@page import="com.picsauditing.dao.ContractorAccountDAO"%>
+<%@page import="com.picsauditing.jpa.entities.Account"%>
 <%@page import="com.picsauditing.jpa.entities.EmailQueue"%>
 <%@page import="com.picsauditing.dao.NoteDAO"%>
 <%@page import="com.picsauditing.jpa.entities.Note"%>

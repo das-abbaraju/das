@@ -34,18 +34,27 @@
 		cBean.setFromDB(action_id);
 		cBean.lastInvoiceDate = DateBean.getTodaysDate();
 		cBean.billingAmount = invoiceAmount;
-		cBean.addAdminNote(action_id, "(" + permissions.getName() + ")", "Invoiced for $" + cBean.billingAmount+ " membership level", cBean.lastInvoiceDate);
+		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
+		
+		Note note = new Note();
+		note.setAccount(new Account());
+		note.getAccount().setId(Integer.parseInt(action_id));
+		note.setAuditColumns(new User(permissions.getAccountId()));
+		note.setSummary("Invoiced for $" + cBean.billingAmount+ " membership level");
+		note.setNoteCategory(NoteCategory.Billing);
+		noteDAO.save(note);
+
 		if ("".equals(cBean.membershipDate)) {
 			cBean.membershipDate = DateBean.getTodaysDate();
 			
-			NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
-			Note note = new Note();
-			note.setAccount(new Account());
-			note.getAccount().setId(Integer.parseInt(action_id));
-			note.setAuditColumns(new User(permissions.getAccountId()));
-			note.setSummary("Membership Date set today to "+ cBean.membershipDate);
-			note.setNoteCategory(NoteCategory.Billing);
-			noteDAO.save(note);
+			
+			Note note1 = new Note();
+			note1.setAccount(new Account());
+			note1.getAccount().setId(Integer.parseInt(action_id));
+			note1.setAuditColumns(new User(permissions.getAccountId()));
+			note1.setSummary("Membership Date set today to "+ cBean.membershipDate);
+			note1.setNoteCategory(NoteCategory.Billing);
+			noteDAO.save(note1);
 
 		}
 		cBean.writeToDB();

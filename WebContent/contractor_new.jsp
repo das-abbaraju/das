@@ -33,9 +33,15 @@
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setPriority(90);
 			EmailSender.send(emailQueue);
-			cBean.setFromDB(cBean.id);
-			cBean.addAdminNote(cBean.id, "System", "Welcome Email Sent", DateBean.getTodaysDate());
-			cBean.writeToDB();
+			
+			NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
+			Note note = new Note();
+			note.setAccount(contractor);
+			note.setCreationDate(new Date());
+			note.setSummary("Welcome Email Sent");
+			note.setNoteCategory(NoteCategory.General);
+			noteDAO.save(note);
+
 			response.sendRedirect("contractor_new_confirm.jsp?i="+aBean.id);
 			return;
 		}
@@ -47,6 +53,9 @@
 <%@page import="com.picsauditing.mail.EmailBuilder"%>
 <%@page import="com.picsauditing.jpa.entities.EmailQueue"%>
 <%@page import="com.picsauditing.mail.EmailSender"%>
+<%@page import="com.picsauditing.dao.NoteDAO"%>
+<%@page import="com.picsauditing.jpa.entities.Note"%>
+<%@page import="com.picsauditing.jpa.entities.NoteCategory"%>
 <html>
 <head>
 <title>Contractor Registration</title>

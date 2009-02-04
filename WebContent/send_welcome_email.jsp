@@ -5,6 +5,11 @@
 <%@page import="com.picsauditing.mail.EmailSender"%>
 <%@page import="com.picsauditing.dao.ContractorAccountDAO"%>
 <%@page import="com.picsauditing.util.SpringUtils"%>
+<%@page import="com.picsauditing.dao.NoteDAO"%>
+<%@page import="com.picsauditing.jpa.entities.Note"%>
+<%@page import="com.picsauditing.jpa.entities.User"%>
+<%@page import="com.picsauditing.jpa.entities.NoteCategory"%>
+
 <%
 String id = request.getParameter("id");
 if ((null == id) || ("".equals(id)))
@@ -18,10 +23,14 @@ emailBuilder.setContractor(contractor);
 EmailQueue emailQueue = emailBuilder.build();
 emailQueue.setPriority(90);
 EmailSender.send(emailQueue);
-ContractorBean cBean = new ContractorBean();
-cBean.setFromDB(id);
-cBean.addAdminNote(id, "("+permissions.getUsername()+")", "Welcome Email Sent "+ emailBuilder.getSentTo(), DateBean.getTodaysDate());
-cBean.writeToDB();
+
+NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
+Note note = new Note();
+note.setAccount(contractor);
+note.setAuditColumns(new User(permissions.getAccountId()));
+note.setSummary("Welcome Email Sent "+ emailBuilder.getSentTo());
+note.setNoteCategory(NoteCategory.General);
+noteDAO.save(note);
 
 String message = "A welcome email was sent to "+emailBuilder.getSentTo();
 
