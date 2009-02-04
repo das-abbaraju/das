@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -17,14 +18,16 @@ public class CalculateFee extends PicsActionSupport {
 	
 	private BillingCalculatorSingle billingCalculator = null;
 	private OperatorAccountDAO operatorDao = null;
+	private InvoiceFeeDAO feeDao = null;
 	private int riskLevel = 0;
 	private String oqEmployees = null;
 	private String facilities = null;
 	private InvoiceFee fee = null;
 
-	public CalculateFee( BillingCalculatorSingle billingCalculator, OperatorAccountDAO operatorAccountDAO) {
+	public CalculateFee( BillingCalculatorSingle billingCalculator, OperatorAccountDAO operatorAccountDAO, InvoiceFeeDAO feeDao) {
 		this.billingCalculator = billingCalculator;
 		this.operatorDao = operatorAccountDAO;
+		this.feeDao = feeDao;
 	}
 	
 	
@@ -55,6 +58,10 @@ public class CalculateFee extends PicsActionSupport {
 			}
 			
 			fee = billingCalculator.calculateAnnualFee(contractor);
+			
+			if( fee != null ) {
+				fee = feeDao.find(fee.getId());
+			}
 		}
 		return SUCCESS;
 	}

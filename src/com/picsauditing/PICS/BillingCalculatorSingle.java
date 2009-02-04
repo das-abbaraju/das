@@ -16,12 +16,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class BillingCalculatorSingle {
 	
-	private InvoiceFeeDAO feeDao = null;
-	
-	public BillingCalculatorSingle( InvoiceFeeDAO feeDao ) {
-		this.feeDao = feeDao;
-	}
-	
 	public InvoiceFee calculateAnnualFee(ContractorAccount contractor) throws Exception {
 
 		
@@ -69,27 +63,28 @@ public class BillingCalculatorSingle {
 			}
 		}
 
-		String feeName = calculatePriceTier(billable);
+		Integer feeId = calculatePriceTier(billable);
 		
-		InvoiceFee fee = feeDao.findByName(feeName);
+		InvoiceFee fee = new InvoiceFee();
+		fee.setId(feeId);
 		
 		return fee;
 		
 	}
 
-	private String calculatePriceTier(int billable) {
+	private Integer calculatePriceTier(int billable) {
 		@SuppressWarnings("serial")
-		Map<Integer, String> priceTiers = new TreeMap<Integer, String>() {{
-			put( 0, "Activation" );
-			put( 1, "Facilities_1" );
-			put( 2, "Facilities_2to4" );
-			put( 5, "Facilities_5to8" );
-			put( 9, "Facilities_9to12" );
-			put( 13, "Facilities_13to19" );
-			put( 20, "Facilities_20plus" );
+		Map<Integer, Integer> priceTiers = new TreeMap<Integer, Integer>() {{
+			put( 0, 9 );
+			put( 1, 3 );
+			put( 2, 4 );
+			put( 5, 5 );
+			put( 9, 6 );
+			put( 13, 7 );
+			put( 20, 8 );
 		}};
 
-		String last = null;
+		Integer last = null;
 		for( int bottomOfTier : priceTiers.keySet() ) {
 			if( billable >= bottomOfTier ) {
 				last = priceTiers.get(bottomOfTier);
