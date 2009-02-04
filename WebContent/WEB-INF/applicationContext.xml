@@ -43,6 +43,9 @@
 	<bean id="EmailQueueDAO" class="com.picsauditing.dao.EmailQueueDAO"/>
 	<bean id="EmailTemplateDAO" class="com.picsauditing.dao.EmailTemplateDAO"/>
 	<bean id="NoteDAO" class="com.picsauditing.dao.NoteDAO"/>
+	<bean id="InvoiceDAO" class="com.picsauditing.dao.InvoiceDAO"/>
+	<bean id="InvoiceItemDAO" class="com.picsauditing.dao.InvoiceItemDAO"/>
+	<bean id="InvoiceFeeDAO" class="com.picsauditing.dao.InvoiceFeeDAO"/>
 	
 	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
 	<bean id="FlagCalculator2" class="com.picsauditing.PICS.FlagCalculator2" scope="prototype"/>
