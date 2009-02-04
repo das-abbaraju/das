@@ -21,12 +21,16 @@ import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.SpringUtils;
@@ -185,6 +189,7 @@ public class Cron extends PicsActionSupport {
 	public void sendEmailExpiredCertificates() throws Exception {
 		List<ContractorAudit> cList = contractorAuditDAO.findExpiredCertificates();
 		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
+		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 		EmailBuilder emailBuilder = new EmailBuilder();
 		Set<ContractorAccount> policies = new HashSet<ContractorAccount>();
 
@@ -200,9 +205,14 @@ public class Cron extends PicsActionSupport {
 			EmailQueue email = emailBuilder.build();
 			email.setPriority(30);
 			emailQueueDAO.save(email);
-
-			ContractorBean.addNote(policy.getId(), permissions, "Sent " + " Policy Expiration Email to "
+			
+			Note note = new Note();
+			note.setAccount(policy);
+			note.setAuditColumns(this.getUser());
+			note.setSummary("Sent Policy Expiration Email to "
 					+ emailBuilder.getSentTo());
+			note.setNoteCategory(NoteCategory.Insurance);
+			noteDAO.save(note);
 		}
 	}
 }

@@ -8,17 +8,23 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.NoteStatus;
 
 @SuppressWarnings("serial")
 public class AuditScheduleUpdate extends PicsActionSupport implements ServletRequestAware {
 	protected ContractorAudit contractorAudit = null;
 	protected ContractorAuditDAO dao = null;
+	protected NoteDAO noteDAO = null;
 
 	protected HttpServletRequest request;
 
-	public AuditScheduleUpdate(ContractorAuditDAO dao) {
+	public AuditScheduleUpdate(ContractorAuditDAO dao, NoteDAO noteDAO) {
 		this.dao = dao;
+		this.noteDAO = noteDAO;
 	}
 
 	public String execute() {
@@ -43,9 +49,14 @@ public class AuditScheduleUpdate extends PicsActionSupport implements ServletReq
 
 		if (type.equals("c")) {
 			contractorAudit.setContractorConfirm(new Date());
-			String note = " Confirmed the " + contractorAudit.getAuditType().getAuditName();
-
-			contractorAudit.getContractorAccount().addNote(null, note);
+			String newNote = " Confirmed the " + contractorAudit.getAuditType().getAuditName();
+			
+			Note note = new Note();
+			note.setAccount(contractorAudit.getContractorAccount());
+			note.setAuditColumns(this.getUser());
+			note.setSummary(newNote);
+			note.setNoteCategory(NoteCategory.Audits);
+			noteDAO.save(note);
 		}
 		if (type.equals("a"))
 			contractorAudit.setAuditorConfirm(new Date());

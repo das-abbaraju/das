@@ -27,6 +27,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.mail.EmailBuilder;
@@ -277,8 +278,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 					emailBuilder.setPermissions(permissions);
 					emailBuilder.setContractor(contractor);
 					EmailSender.send(emailBuilder.build());
-					ContractorBean.addNote(contractor.getId(), permissions, "Sent Audits Thank You email to "
-							+ emailBuilder.getSentTo());
+					addNote(contractor, "Sent Audits Thank You email to "+ emailBuilder.getSentTo(), NoteCategory.Audits);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

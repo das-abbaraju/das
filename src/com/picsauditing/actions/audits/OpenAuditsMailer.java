@@ -6,10 +6,15 @@ import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
 public class OpenAuditsMailer extends PicsActionSupport {
@@ -35,7 +40,7 @@ public class OpenAuditsMailer extends PicsActionSupport {
 		String where = "contractorAccount.active = 'Y' AND auditType.id IN (2,3,6) " +
 				"AND auditStatus = 'Submitted' AND auditID > " + nextID;
 		List<ContractorAudit> list = contractorAuditDAO.findWhere(100, where, "auditID");
-
+		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 		EmailBuilder emailBuilder = new EmailBuilder();
 
 		nextID = 0;
@@ -53,8 +58,14 @@ public class OpenAuditsMailer extends PicsActionSupport {
 					email.setPriority(10);
 					email.setFromAddress("audits@picsauditing.com");
 					emailQueueDAO.save(email);
-					ContractorBean.addNote(conAudit.getContractorAccount().getId(), permissions,
-							"Sent Open Requirements Reminder email to " + emailBuilder.getSentTo());
+
+					Note note = new Note();
+					note.setAccount(conAudit.getContractorAccount());
+					note.setAuditColumns(this.getUser());
+					note.setSummary("Sent Open Requirements Reminder email to " + emailBuilder.getSentTo());
+					note.setNoteCategory(NoteCategory.Audits);
+					noteDAO.save(note);
+
 				} catch (Exception e) {
 					System.out.println("Error sending openRequirements email: " + e.getMessage());
 				}

@@ -16,12 +16,17 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -140,7 +145,14 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				EmailSender.send(email);
 			}
 		}
-		ContractorBean.addNote(contractorAudit.getContractorAccount().getId(), permissions, "Audit Schedule updated");
+		
+		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
+		Note note = new Note();
+		note.setAccount(contractorAudit.getContractorAccount());
+		note.setAuditColumns(this.getUser());
+		note.setSummary("Audit Schedule updated");
+		note.setNoteCategory(NoteCategory.Audits);
+		noteDAO.save(note);
 		return SUCCESS;
 	}
 

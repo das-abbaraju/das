@@ -24,6 +24,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.mail.EmailBuilder;
@@ -171,7 +172,7 @@ public class VerifyView extends ContractorActionSupport {
 		}
 		EmailSender.send(emailBuilder.build());
 		String note = "PQF Verification email sent to " + emailBuilder.getSentTo();
-		ContractorBean.addNote(contractor.getId(), permissions, note);
+		addNote(contractor, note, NoteCategory.Audits);
 
 		output = "The email was sent at and the contractor notes were stamped";
 		return SUCCESS;

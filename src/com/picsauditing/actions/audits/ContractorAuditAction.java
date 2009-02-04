@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.NcmsCategory;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -182,11 +183,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 				else
 					notes = conAudit.getAuditType().getAuditName() + " Submitted";
 				
-				ContractorBean cBean = new ContractorBean();
-				cBean.setFromDB(conAudit.getContractorAccount().getIdString());
-				cBean.addNote(conAudit.getContractorAccount().getIdString(), permissions.getName(), notes, DateBean
-						.getTodaysDate());
-				cBean.writeToDB();
+				addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits);
 			}
 
 			// Save the audit status

@@ -7,8 +7,12 @@ import java.util.Map;
 import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.SelectContractorAudit;
@@ -19,13 +23,15 @@ public class ReportCompletePQF extends ReportContractorAudits {
 	private String[] sendMail = null;
 	protected ContractorAuditDAO contractorAuditDAO;
 	protected EmailBuilder emailBuilder;
+	protected NoteDAO noteDAO;
 
 	protected Map<Integer, Date> scheduledDate;
 
-	public ReportCompletePQF(ContractorAuditDAO contractorAuditDAO, EmailBuilder emailBuilder) {
+	public ReportCompletePQF(ContractorAuditDAO contractorAuditDAO, EmailBuilder emailBuilder,NoteDAO noteDAO) {
 		sql = new SelectContractorAudit();
 		this.contractorAuditDAO = contractorAuditDAO;
 		this.emailBuilder = emailBuilder;
+		this.noteDAO = noteDAO;
 	}
 
 	@Override
@@ -74,8 +80,14 @@ public class ReportCompletePQF extends ReportContractorAudits {
 						emailBuilder.setConAudit(conAudit);
 						EmailQueue email = emailBuilder.build();
 						EmailSender.send(email);
-						ContractorBean.addNote(conAudit.getContractorAccount().getId(), permissions,
-								"Pending PQF email sent to " + email.getToAddresses());
+						
+						Note note = new Note();
+						note.setAccount(conAudit.getContractorAccount());
+						note.setAuditColumns(this.getUser());
+						note.setSummary("Pending PQF email sent to " + email.getToAddresses());
+						note.setNoteCategory(NoteCategory.Audits);
+						noteDAO.save(note);
+
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

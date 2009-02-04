@@ -43,7 +43,14 @@ try{
 		cBean.addAdminNote(actionID, "("+permissions.getUsername()+")", "Invoiced for $"+cBean.billingAmount+" membership level",cBean.lastInvoiceDate);
 		if ("".equals(cBean.membershipDate)){
 			cBean.membershipDate = DateBean.getTodaysDate();
-			cBean.addNote(actionID, "("+permissions.getUsername()+")", "Membership Date set today to "+cBean.membershipDate,DateBean.getTodaysDateTime());
+			NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
+			ContractorAccountDAO contractorAccountDAO = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
+			Note note = new Note();
+			note.setAccount(contractorAccountDAO.find(Integer.parseInt(cBean.id)));
+			note.setAuditColumns(new User(permissions.getAccountId()));
+			note.setSummary("Membership Date set today to "+cBean.membershipDate);
+			note.setNoteCategory(NoteCategory.Billing);
+			noteDAO.save(note);
 		}
 		cBean.writeToDB();
 		return;
@@ -67,6 +74,10 @@ try{
 <%@page import="com.picsauditing.jpa.entities.ContractorAccount"%>
 <%@page import="com.picsauditing.dao.ContractorAccountDAO"%>
 <%@page import="com.picsauditing.jpa.entities.EmailQueue"%>
+<%@page import="com.picsauditing.dao.NoteDAO"%>
+<%@page import="com.picsauditing.jpa.entities.Note"%>
+<%@page import="com.picsauditing.jpa.entities.User"%>
+<%@page import="com.picsauditing.jpa.entities.NoteCategory"%>
 <html>
 <head>
 <title>Activation</title>

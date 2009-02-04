@@ -13,12 +13,17 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.YesNo;
@@ -280,5 +285,26 @@ public class ContractorActionSupport extends PicsActionSupport {
 
 	public String[] getCountryList() {
 		return Inputs.COUNTRY_ARRAY;
+	}
+	
+	protected void addNote(ContractorAccount contractor, String newNote) throws Exception {
+		addNote(contractor, newNote, NoteCategory.General);
+	}
+	
+	protected void addNote(ContractorAccount contractor, String newNote, NoteCategory noteCategory) throws Exception {
+		addNote(contractor, newNote, noteCategory , LowMedHigh.Low, false);
+	}
+
+	protected void addNote(ContractorAccount contractor, String newNote, NoteCategory category, LowMedHigh priority, boolean canContractorView) throws Exception {
+		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
+		Note note = new Note();
+		note.setAccount(contractor);
+		note.setAuditColumns(this.getUser());
+		note.setSummary(newNote);
+		note.setPriority(priority);
+		note.setNoteCategory(category);
+		note.setCanContractorView(canContractorView);
+		note.setStatus(NoteStatus.Closed); 
+		noteDAO.save(note);
 	}
 }

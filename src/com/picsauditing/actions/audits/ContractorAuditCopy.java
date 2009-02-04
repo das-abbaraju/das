@@ -21,6 +21,8 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.util.FileUtils;
 
 /**
@@ -109,13 +111,9 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 					}
 				}
 			}
-			
-			ContractorBean cBean = new ContractorBean();
-			cBean.setFromDB(conAudit.getContractorAccount().getIdString());
+
 			String notes = conAudit.getAuditType().getAuditName() + " Copied from Contractor " + oldconID;
-			cBean.addNote(conAudit.getContractorAccount().getIdString(), permissions.getName(), notes, DateBean
-					.getTodaysDate());
-			cBean.writeToDB();
+			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits, LowMedHigh.Low, true); 
 			return "Audit";
 		}
 
