@@ -17,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -783,7 +784,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.balance = balance;
 	}
 
-	@Column(name = "membershipLevelID")
+	@ManyToOne
+	@JoinColumn(name = "membershipLevelID")
 	public InvoiceFee getMembershipLevel() {
 		return membershipLevel;
 	}
@@ -792,7 +794,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.membershipLevel = membershipLevel;
 	}
 
-	@Column(name = "newMembershipLevelID")
+	@ManyToOne
+	@JoinColumn(name = "newMembershipLevelID")
 	public InvoiceFee getNewMembershipLevel() {
 		return newMembershipLevel;
 	}
