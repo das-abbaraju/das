@@ -14,7 +14,7 @@
 	<tr>
 		<td><s:property value="user.account.name"/></td>
 		<td><a href="?accountId=<s:property value="user.account.id"/>&user.id=<s:property value="user.id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property value="user.name"/></a></td>
-		<td><a class="remove" href="#" onclick="removeMember(<s:property value="userGroupID"/>); return false;">remove</a></td>
+		<td><a class="remove" href="#" onclick="removeMember(<s:property value="id"/>); return false;">remove</a></td>
 	</tr>
 </s:iterator>
 </s:sort>
