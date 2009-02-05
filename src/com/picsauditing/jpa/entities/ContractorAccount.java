@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,7 +18,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -811,5 +811,58 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	public void setInvoices(List<Invoice> invoices) {
 		this.invoices = invoices;
+	}
+
+	@Transient
+	/**
+	 * The following are states of Billing Status:
+	 *     Membership Canceled
+	 *         Contractor is not active and membership is not set to renew.
+	 *     
+	 *     Activation
+	 *         Contractor is not active and Contractor does not have a membership
+	 *         
+	 *     Reactivation
+	 *         Contractor is not active and Contractor's membership expired
+	 *         
+	 *     Upgrade
+	 *         The number of facilities a contractor is at has increased.
+	 *     
+	 *     Do Not Renew
+	 *         Contractor's Membership is not set to renew.
+	 *         
+	 *     Renewal Overdue
+	 *         Contractor is active and the Membership Expiration Date is past.
+	 *         
+	 *     Renewal
+	 *         Contractor is active and the Membership Expiration Date is in the next 30 Days
+	 * 
+	 * @return A String of the current Billing Status
+	 */
+	public String getBillingStatus() {
+		// TODO: still need to determine if this is a reactivation or initial activation
+		if (!isActiveB()) {
+			if (!renew)
+				return "Membership Canceled";
+			else {
+				if (membershipDate == null)
+					return "Activation";
+				else
+					return "Reactivation";
+			}
+		}
+		if (newMembershipLevel.getAmount() > membershipLevel.getAmount())
+			return "Upgrade";
+
+		if (!renew)
+			return "Do not renew";
+		
+		int daysUntilRenewal = DateBean.getDateDifference(paymentExpires);
+		if (daysUntilRenewal < 0)
+			return "Renewal Overdue";
+		if (daysUntilRenewal < 30)
+			return "Renewal";
+		
+		return "Current";
 	}
 }
