@@ -38,8 +38,8 @@ public class OpenAuditsMailer extends PicsActionSupport {
 	private int process(int nextID) {
 		// Only send this to Desktop, Office and D&A
 		String where = "contractorAccount.active = 'Y' AND auditType.id IN (2,3,6) " +
-				"AND auditStatus = 'Submitted' AND auditID > " + nextID;
-		List<ContractorAudit> list = contractorAuditDAO.findWhere(100, where, "auditID");
+				"AND auditStatus = 'Submitted' AND id > " + nextID;
+		List<ContractorAudit> list = contractorAuditDAO.findWhere(100, where, "id");
 		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 		EmailBuilder emailBuilder = new EmailBuilder();
 
