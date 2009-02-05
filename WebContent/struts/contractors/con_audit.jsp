@@ -1,4 +1,4 @@
-\<%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <html>
@@ -17,6 +17,74 @@
 		}
 		else
 			$('submit').disabled = true;		
+	}
+	
+	function editCao( caoId ) {
+		startThinking( {div: 'caoThinking' } );
+		
+		var pars= 'cao.id=' + caoId;
+		var myAjax = new Ajax.Updater($('caoSection'),'CaoEditAjax.action', 
+		{
+			method: 'post', 
+			parameters: pars,
+			onComplete: function(transport) {
+				if (transport.status == 200) {
+					$('caoSection').show();
+				}
+				stopThinking( {div: 'caoThinking' } );
+			}
+		});
+	
+		return false;
+	}
+
+	function saveCao() {
+		startThinking( {div: 'caoThinking' } );
+		var pars= $('caoForm').serialize();
+		
+		var myAjax = new Ajax.Updater('caoSection','CaoEditAjax.action', 
+		{
+			method: 'post', 
+			parameters: pars,
+			onSuccess: function(transport) {
+				if (transport.status == 200) {
+					new Effect.Highlight($('caoSection'),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+					setMainFields();
+				}
+				stopThinking( {div: 'caoThinking' } );
+			}
+		});
+	
+		return false;
+	}
+	
+	function setMainFields( ) {
+		var caoStatusElm = $('caoForm')['cao.status'];
+		var caoId = $F($('cao.id'));
+		var noteValue = $F($('cao.notes'));
+
+		var caoStatus;
+		for( var i = 0; i < caoStatusElm.length; i++  ) {
+			var current = caoStatusElm[i];
+			if( current.checked ) {
+				caoStatus = current.value;
+				break;
+			}
+		}
+
+		
+		$('caoStatusMain_' + caoId).innerHTML = caoStatus;
+		
+
+		if( noteValue != '' ) {
+			$('caoNotesMain_' + caoId).show();
+			$('caoNotesMain_' + caoId).innerHTML = '&nbsp;&nbsp;' + noteValue;
+		}
+		else {
+			$('caoNotesMain_' + caoId).hide();
+		}
+	
+		return;	
 	}
 </script>
 </head>
@@ -96,25 +164,30 @@
 			<s:if test="operator.id == permissions.accountId">
 				<tr>
 					<td><s:property value="operator.name"/></td>
-					<td><s:property value="status"/></td>
+					<td><a href="#" id="caoStatusMain_<s:property value="id"/>" class="edit" onclick="javascript: return editCao(<s:property value="id"/>);"><s:property value="status"/></a></td>
 				</tr>
 				<s:if test="notes != null && notes.length() > 0">
 				<tr>
-					<td colspan="2">&nbsp;&nbsp;<s:property value="notes"/></td>
+					<td colspan="2" id="caoNotesMain_<s:property value="id"/>">&nbsp;&nbsp;<s:property value="notes"/></td>
 				</tr>
 				</s:if>
 			</s:if>
 		</s:if>
 		<s:else>
-				<tr>
-					<td><s:property value="operator.name"/></td>
-					<td><s:property value="status"/></td>
-				</tr>
-				<s:if test="notes != null && notes.length() > 0">
+			<tr>
+				<td><s:property value="operator.name"/></td>
+			<td>
+				<s:property value="status"/>
+			</td>
+			</tr>
+
+			<s:if test="notes != null && notes.length() > 0">
 				<tr>
 					<td colspan="2">&nbsp;&nbsp;<s:property value="notes"/></td>
 				</tr>
-				</s:if>
+			</s:if>
+
+			
 		</s:else>
 	</s:iterator>
 	</tbody>
@@ -187,6 +260,9 @@
 		The OSHA and EMR categories have been moved to the Annual Update.
 	</div>
 </s:if>
+<br clear="both"/>
+<div id="caoThinking"></div>
+<div id="caoSection"></div>
 <br clear="both"/>
 </body>
 </html>
