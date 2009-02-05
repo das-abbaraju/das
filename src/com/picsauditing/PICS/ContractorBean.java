@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -18,8 +19,13 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 
@@ -457,6 +463,7 @@ public class ContractorBean extends DataBean {
 	}
 
 	public void writeNewToDB(Facilities FACILITIES) throws Exception {
+		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 		try {
 			DBReady();
 			String Query = "INSERT INTO contractor_info (id) VALUES ('" + id + "');";
@@ -470,8 +477,15 @@ public class ContractorBean extends DataBean {
 			for (String genID : newGeneralContractors) {
 				doInsert = true;
 				insertQuery += "(" + id + "," + genID + ",NOW()),";
-				addNote(id, "", "Added this Contractor to " + FACILITIES.getNameFromID(genID)
-						+ "'s db at account registration", DateBean.getTodaysDateTime());
+
+				Note note = new Note();
+				note.setAccount(new Account());
+				note.getAccount().setId(Integer.parseInt(id));
+				note.setCreationDate(new Date());
+				note.setSummary("Added this Contractor to " + FACILITIES.getNameFromID(genID)
+						+ "'s db at account registration");
+				note.setNoteCategory(NoteCategory.ContractorAddition);
+				noteDAO.save(note);
 			}
 			insertQuery = insertQuery.substring(0, insertQuery.length() - 1) + ";";
 			if (doInsert)
@@ -693,6 +707,8 @@ public class ContractorBean extends DataBean {
 	// Records a payment by a contrator, invoked on Schedule Audits report
 	// 3/19/05 jj - added paymentExpires calculations
 	public void updateLastPayment(String id, String adminName, String amount) throws Exception {
+		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
+		String newNote = "";
 		setFromDB(id);
 		Calendar newPaymentExpiresCal = Calendar.getInstance();
 		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
@@ -706,21 +722,35 @@ public class ContractorBean extends DataBean {
 		} else {
 			membershipDate = showFormat.format(newPaymentExpiresCal.getTime());
 			newPaymentExpiresCal.add(Calendar.YEAR, 1);
-			addAdminNote(id, "(" + adminName + ")", "Membership date set today", membershipDate);
+			newNote = "Membership date set today";
 		}// else
 		paymentExpires = showFormat.format(newPaymentExpiresCal.getTime());
 		lastPayment = DateBean.getTodaysDate();
 		lastPaymentAmount = amount;
-		addAdminNote(id, "(" + adminName + ")", "Payment received for $" + amount + " for " + payingFacilities
-				+ " facilities", lastPayment);
+		newNote += "Payment received for $" + amount + " for " + payingFacilities + " facilities";
 		writeToDB();
+		Note note = new Note();
+		note.setAccount(new Account());
+		note.getAccount().setId(Integer.parseInt(id));
+		note.setCreationDate(new Date());
+		note.setSummary(newNote);
+		note.setNoteCategory(NoteCategory.Billing);
+		noteDAO.save(note);
+
 	}// updateLastPayment
 
 	public void upgradePayment(String id, String adminName, String newAmount) throws Exception {
 		setFromDB(id);
 		lastPayment = DateBean.getTodaysDate();
-		addAdminNote(id, "(" + adminName + ")", "Payment upgraded from $" + lastPaymentAmount + " to $" + newAmount
-				+ " for " + payingFacilities + " facilities", lastPayment);
+		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
+		Note note = new Note();
+		note.setAccount(new Account());
+		note.getAccount().setId(Integer.parseInt(id));
+		note.setCreationDate(new Date());
+		note.setSummary("Payment upgraded from $" + lastPaymentAmount + " to $" + newAmount
+				+ " for " + payingFacilities + " facilities");
+		note.setNoteCategory(NoteCategory.Billing);
+		noteDAO.save(note);
 		lastPaymentAmount = newAmount;
 		writeToDB();
 	}

@@ -30,26 +30,21 @@ try {
 		cBean.billingAmount = invoiceAmount;
 		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 		
+		String newNote = "Invoiced for $"+cBean.billingAmount+" membership level";
+		
+		if ("".equals(sBean.cBean.membershipDate)){
+			sBean.cBean.membershipDate = DateBean.getTodaysDate();
+			newNote += "Membership Date set to "+sBean.cBean.membershipDate;
+		}//if
+
 		Note note = new Note();
 		note.setAccount(new Account());
 		note.getAccount().setId(Integer.parseInt(action_id));
 		note.setAuditColumns(new User(permissions.getAccountId()));
-		note.setSummary("Invoiced for $"+cBean.billingAmount+" membership level");
+		note.setSummary(newNote);
 		note.setNoteCategory(NoteCategory.Billing);
 		noteDAO.save(note);
-		
-		if ("".equals(sBean.cBean.membershipDate)){
-			sBean.cBean.membershipDate = DateBean.getTodaysDate();
-			
-			Note note1 = new Note();
-			note1.setAccount(new Account());
-			note1.getAccount().setId(Integer.parseInt(action_id));
-			note1.setAuditColumns(new User(permissions.getAccountId()));
-			note1.setSummary("Membership Date set to "+sBean.cBean.membershipDate);
-			note1.setNoteCategory(NoteCategory.Billing);
-			noteDAO.save(note1);
 
-		}//if
 		cBean.writeToDB();
 	}//if Inv
 
