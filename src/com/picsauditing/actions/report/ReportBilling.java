@@ -12,10 +12,13 @@ public class ReportBilling extends ReportAccount {
 		super.buildQuery();
 		sql.addField("c.membershipDate");
 		sql.addField("c.paymentExpires");
-		sql.addField("f2.fee");
 
 		sql.addJoin("LEFT JOIN invoice_fee f1 ON c.membershipLevelID = f1.id");
 		sql.addJoin("LEFT JOIN invoice_fee f2 ON c.newMembershipLevelID = f2.id");
+		
+		sql.addField("f2.fee");
+		sql.addField("f2.defaultAmount");
+		sql.addField("a.creationDate");
 		
 		sql.addWhere("c.mustPay = 'Yes'");
 		
@@ -42,12 +45,12 @@ public class ReportBilling extends ReportAccount {
 			// However, we (the billing department) should be vigilent about reviewing upgrades 
 			// on non-renewable contractor accounts.
 			if (where.length() > 0) where += " OR ";
-			where += "(a.active = 'Y' AND f2.fee > f1.fee)";
+			where += "(a.active = 'Y' AND f2.defaultAmount > f1.defaultAmount)";
 		}
 		
 		sql.addField("CASE " +
 				"WHEN a.active = 'N' THEN 'Activations' " +
-				"WHEN f2.fee > f1.fee THEN 'Upgrades' " +
+				"WHEN f2.defaultAmount > f1.defaultAmount THEN 'Upgrades' " +
 				"WHEN c.paymentExpires < ADDDATE(NOW(), INTERVAL 1 MONTH) THEN 'Renewals' " +
 				"ELSE 'Other' END billingStatus");
 		sql.addWhere(where);
