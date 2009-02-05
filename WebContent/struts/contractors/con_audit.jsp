@@ -71,7 +71,7 @@
 	<s:if test="canClose">
 		<div id="alert" class="buttons" style="">
 			<s:if test="conAudit.auditType.classType.toString().equals('Policy') ">
-				<s:submit name="button" value="Approve" cssStyle="font-size: 16px; padding: 8px; margin: 5px; color: darkgreen; font-weight: bold;" />
+				<s:submit name="button" value="Verify" cssStyle="font-size: 16px; padding: 8px; margin: 5px; color: darkgreen; font-weight: bold;" />
 				<s:submit name="button" value="Reject" cssStyle="font-size: 16px; padding: 8px; margin: 5px; color: #d12f19;; font-weight: bold;" />
 				Click Approve when you have verified the <s:property value="conAudit.auditType.auditName"/>.  		
 			</s:if>

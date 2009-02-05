@@ -105,7 +105,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 				auditStatus = AuditStatus.Active;
 		}
 
-		if ("Approve".equals(button)) {
+		if ("Verify".equals(button)) {
 			auditStatus = AuditStatus.Active;
 		}
 
