@@ -9,7 +9,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "invoice_fee")
 public class InvoiceFee extends BaseTable implements java.io.Serializable {
-
+	public final static int ACTIVATION = 1;
 	private String fee;
 	private int amount;
 	private boolean visible = true;
