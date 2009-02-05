@@ -141,8 +141,11 @@ public class FlagCalculatorTest extends TestCase {
 		assertEquals(FlagColor.Red, calculator.calculate());
 		
 		cao.setRecommendedStatus(CaoStatus.NotApplicable);
+		assertEquals(FlagColor.Red, calculator.calculate());
+
+		cao.setStatus(CaoStatus.NotApplicable);
 		assertEquals(FlagColor.Green, calculator.calculate());
-		
+
 		conAudit.setAuditStatus(AuditStatus.Pending);
 		assertEquals("Pending policies where the operator said the cao was N/A are not required", 
 				FlagColor.Green, calculator.calculate());

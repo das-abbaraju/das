@@ -75,11 +75,29 @@ public class FlagCalculatorSingle {
 		for (AuditOperator audit : operator.getAudits()) {
 			audit.setContractorFlag(null);
 			if (audit.isCanSee()) {
+				boolean hasAudit = false;
+				for (ContractorAudit conAudit : conAudits) {
+					if (conAudit.getAuditType().equals(audit.getAuditType()) 
+							&& !conAudit.getAuditStatus().isExpired()) {
+						hasAudit = true;
+					}
+				}	
 				// Always start with Green
 				audit.setContractorFlag(FlagColor.Green);
 				// removed contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel() (needs further review)
-				if ( (audit.getMinRiskLevel() == 0 || contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel())
-						&& audit.getRequiredForFlag() != null && !audit.getRequiredForFlag().equals(FlagColor.Green)) {
+				boolean auditFlagRedOrAmber = audit.getRequiredForFlag() != null && !audit.getRequiredForFlag().equals(FlagColor.Green);
+				boolean contractorRiskLevelHighEnough = audit.getMinRiskLevel() > 0 && contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel();
+				boolean adHocExists = false;
+				// Setting the Flag Color to 
+				if(audit.getMinRiskLevel() == 0) {
+					if(hasAudit)
+						adHocExists = true;
+					else
+						audit.setContractorFlag(null);
+				}	
+						
+				if ((adHocExists || contractorRiskLevelHighEnough) 
+						&& auditFlagRedOrAmber) {
 					debug(" -- " + audit.getAuditType().getAuditName() + " - " + audit.getRequiredForFlag().toString());
 					// The contractor requires this audit,
 					// make sure they have an active one
