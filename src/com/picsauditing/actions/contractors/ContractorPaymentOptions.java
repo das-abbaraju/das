@@ -3,12 +3,15 @@ package com.picsauditing.actions.contractors;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.naming.factory.SendMailFactory;
+
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.BrainTree;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -71,6 +74,9 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		key = appPropDao.find("brainTree.key").getValue();
 		key_id = appPropDao.find("brainTree.key_id").getValue();
 
+		// StringBuffer to hold any Hash Problems
+		StringBuffer hashOutput = new StringBuffer("");
+		
 		if (response_code != null) {
 			// Hey we're receiving some sort of response
 			String newHash = BrainTree.buildHash(orderid, amount, response,
@@ -79,6 +85,31 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			if (!newHash.equals(hash)) {
 				PicsLogger.log("Hash issues for Contractor id= "
 						+ contractor.getIdString());
+				
+				hashOutput.append("CREDIT CARD HASH PROBLEM: ");
+				hashOutput.append("CONTRACTOR ID: " + contractor.getIdString() + " ");
+				hashOutput.append("PICS HASH: " + newHash + " ");
+				hashOutput.append("BASED ON: \n");
+				hashOutput.append("    ORDERID      : " + orderid + "\n");
+				hashOutput.append("    AMOUNT       : " + amount + "\n");
+				hashOutput.append("    RESPONSE     : " + response + "\n");
+				hashOutput.append("    TRANS ID     : " + transactionid + "\n");
+				hashOutput.append("    AVS RESP     : " + avsresponse + "\n");
+				hashOutput.append("    CVV RESP     : " + cvvresponse + "\n");
+				hashOutput.append("    CUST VAULT ID: " + customer_vault_id + "\n");
+				hashOutput.append("    TIME         : " + time + "\n");
+				
+				hashOutput.append("BRAINTREE HASH: " + hash + " ");
+				hashOutput.append("BASED ON: \n");
+				hashOutput.append("    ORDERID      : " + orderid + "\n");
+				hashOutput.append("    AMOUNT       : " + amount + "\n");
+				hashOutput.append("    CUST VAULT ID: " + customer_vault_id + "\n");
+				hashOutput.append("    TIME         : " + time + "\n");
+				
+				System.out.println(hashOutput.toString());
+				EmailSender mailer = new EmailSender();
+				mailer.sendMail("Credit Card Hash Error", hashOutput.toString(), "info@picsauditing.com", "errors@picsauditing.com");
+
 				// addActionError(responsetext);
 				// addActionError("Invalid response from merchant, if you have
 				// questions about this error, please contact us.");
@@ -120,6 +151,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		time = DateBean.getBrainTreeDate();
 		hash = BrainTree.buildHash(orderid, amount, customer_vault_id,
 				time, key);
+		
 
 		// We don't explicitly save, but it should happen here
 		// accountDao.save(contractor);
