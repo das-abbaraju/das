@@ -33,7 +33,7 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 	protected OperatorAccountDAO operatorAccountDAO;
 	protected FacilitiesDAO facilitiesDAO;
 	protected AccountNameDAO accountNameDAO;
-	protected int[] facilities = new int[45];
+	protected int[] facilities = new int[300];
 	protected int auditorid;
 	protected int nameId;
 	protected String name;
