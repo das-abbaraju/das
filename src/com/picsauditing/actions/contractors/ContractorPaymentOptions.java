@@ -9,6 +9,7 @@ import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.BrainTree;
 import com.picsauditing.util.Strings;
@@ -16,8 +17,7 @@ import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ContractorPaymentOptions extends ContractorActionSupport {
-	static public String creditCard = "Credit Card";
-	private String paymentMethod = creditCard;
+	private PaymentMethod paymentMethod = PaymentMethod.CreditCard;
 	private String response_code = null;
 	private String orderid = "";
 	private String amount = "";
@@ -50,22 +50,19 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		this.findContractor();
 
-		if (paymentMethod == null)
-			paymentMethod = creditCard;
-		
 		if (contractor.getPaymentMethodStatus() == null)
 			contractor.setPaymentMethodStatus("Missing");
 
 		if (!paymentMethod.equals(contractor.getPaymentMethod())) {
 			// We have a new payment method, reset the status
 			contractor.setPaymentMethod(paymentMethod);
-			if (paymentMethod.equals(creditCard))
+			if (paymentMethod.isCreditCard())
 				contractor.setPaymentMethodStatus("Missing");
 			else
 				contractor.setPaymentMethodStatus("Pending");
 		}
 
-		if (!creditCard.equals(paymentMethod))
+		if (!paymentMethod.isCreditCard())
 			return SUCCESS;
 		
 		// This is a credit card method
@@ -124,7 +121,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				addActionError(errorMessage);
 			} else {
 				contractor.setPaymentMethodStatus("Approved");
-				contractor.setPaymentMethod(creditCard);
+				contractor.setPaymentMethod(PaymentMethod.CreditCard);
 				accountDao.save(contractor);
 				addActionMessage("Successfully Saved");
 			}
@@ -156,11 +153,11 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
-	public String getPaymentMethod() {
+	public PaymentMethod getPaymentMethod() {
 		return paymentMethod;
 	}
 
-	public void setPaymentMethod(String paymentMethod) {
+	public void setPaymentMethod(PaymentMethod paymentMethod) {
 		this.paymentMethod = paymentMethod;
 	}
 

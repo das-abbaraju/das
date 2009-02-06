@@ -98,12 +98,6 @@ public class PicsMenu {
 			subMenu.addChild("PQF Verification", "PqfVerification.action?filter.visible=Y");
 
 		subMenu = menu.addChild("Accounting");
-		if (permissions.hasPermission(OpPerms.ContractorActivation))
-			subMenu.addChild("Activation", "report_activation.jsp?changed=1");
-		if (permissions.hasPermission(OpPerms.BillingUpgrades))
-			subMenu.addChild("Contractor Payments", "report_payment.jsp?changed=1");
-		if (permissions.hasPermission(OpPerms.BillingUpgrades))
-			subMenu.addChild("Upgrade Payments", "report_upgradePayment.jsp?changed=1");
 		if (permissions.hasPermission(OpPerms.Billing))
 			subMenu.addChild("Billing Report", "ReportBilling.action");		
 

@@ -67,7 +67,7 @@ public class FacilityChanger {
 		note.setAccount(contractor);
 		note.setAuditColumns(new User(permissions.getAccountId()));
 		note.setSummary("Added contractor to " + operator.getName());
-		note.setNoteCategory(NoteCategory.ContractorAddition);
+		note.setNoteCategory(NoteCategory.OperatorChanges);
 		noteDAO.save(note);
 
 		// Send the contractor an email that the operator added them
