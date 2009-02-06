@@ -8,15 +8,9 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.NoResultException;
-import javax.servlet.ServletContext;
-
-import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.AccountBean;
 import com.picsauditing.PICS.AuditBuilder;
-import com.picsauditing.PICS.Billing;
-import com.picsauditing.PICS.ContractorBean;
-import com.picsauditing.PICS.Facilities;
 import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -30,7 +24,6 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.SpringUtils;
@@ -75,17 +68,6 @@ public class Cron extends PicsActionSupport {
 			try {
 				startTask("\nRunning AccountBean optimizer...");
 				new AccountBean().optimizeDB();
-				endTask();
-			} catch (Throwable t) {
-				handleException(t);
-			}
-
-			try {
-				startTask("\nUpdating Paying Facilities...");
-				Facilities facilities = new Facilities();
-				facilities.setFacilitiesFromDB();
-				ServletContext application = ServletActionContext.getServletContext();
-				new Billing().updateAllPayingFacilities(application);
 				endTask();
 			} catch (Throwable t) {
 				handleException(t);
