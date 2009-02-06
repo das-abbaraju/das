@@ -123,6 +123,16 @@
 			</result>
 		</action>
 
+		<action name="ConIntegrityManagement"
+			class="com.picsauditing.actions.contractors.ConAuditList">
+			<param name="auditClass">IM</param>
+			<result>struts/contractors/contractor_integritymanagement.jsp</result>
+			<result name="saved" type="redirect-action">
+				<param name="actionName">ConIntegrityManagement</param>
+				<param name="id">${id}</param>
+			</result>
+		</action>
+
 		<action name="ConAnnualUpdates"
 			class="com.picsauditing.actions.contractors.ConAnnualUpdates">
 			<result>struts/contractors/contractor_annual_updates.jsp</result>

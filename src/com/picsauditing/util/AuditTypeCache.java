@@ -55,7 +55,7 @@ public class AuditTypeCache extends BaseCache
 	public List<AuditType> getAuditTypes(Permissions permissions) {
 		List<AuditType> list = new ArrayList<AuditType>();
 		for (AuditType aType : auditTypes) {
-			if (aType.getClassType().equals(AuditTypeClass.Audit) && permissions.canSeeAudit(aType))
+			if ((aType.getClassType().equals(AuditTypeClass.Audit) || aType.getClassType().equals(AuditTypeClass.IM)) && permissions.canSeeAudit(aType))
 				list.add(aType);
 		}
 		return list;

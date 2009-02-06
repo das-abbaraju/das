@@ -1,8 +1,11 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -20,6 +23,8 @@ public class ConAuditList extends ContractorActionSupport {
 	private AuditTypeDAO auditTypeDAO;
 	private int selectedAudit;
 	private int selectedOperator;
+	private String auditFor;
+	private Map<String, String> imScores = new HashMap<String, String>();
 	private List<AuditType> auditTypeList;
 	private AuditTypeClass auditClass = AuditTypeClass.Audit;
 	public List<ContractorAudit> upComingAudits = new ArrayList<ContractorAudit>();
@@ -36,6 +41,8 @@ public class ConAuditList extends ContractorActionSupport {
 			return LOGIN;
 		findContractor();
 
+		Map<String, List<ContractorAudit>> allIMAudits = new HashMap<String, List<ContractorAudit>>();
+		
 		for (ContractorAudit contractorAudit : getAudits()) {
 			// Only show Insurance policies or all of them
 			if (!contractorAudit.getAuditType().isAnnualAddendum()) {
@@ -49,21 +56,63 @@ public class ConAuditList extends ContractorActionSupport {
 					else {
 						// There shouldn't be any others
 					}
+					
+					if( auditClass == AuditTypeClass.IM ) {
+						List<ContractorAudit> imAudits = allIMAudits.get(contractorAudit.getAuditType().getAuditName());
+						
+						if( imAudits == null ) {
+							imAudits = new Vector<ContractorAudit>();
+							allIMAudits.put(contractorAudit.getAuditType().getAuditName(), imAudits);
+						}
+						imAudits.add(contractorAudit);
+					}					
 				}
 			}
 		}
 
+		if( auditClass == AuditTypeClass.IM ) {
+			for( String auditName : allIMAudits.keySet() ) {
+				int count = 0;
+				float score = 0;  
+				for( ContractorAudit audit : allIMAudits.get(auditName)) {
+					score += audit.getScore();
+					count += 1;
+				}
+				
+				int tempScore = -1;
+				
+				if( count != 0 ) {
+					
+					float average = score / (float) count;
+					
+					tempScore = Math.round(average);
+				}
+
+				Map<Integer, String> map = new HashMap<Integer, String>() {{
+					put(-1, "None");
+					put(0, "Red");
+					put(1, "Yellow");
+					put(2, "Green");
+				}};
+
+				imScores.put(auditName, map.get(tempScore));	
+			}
+		}
+		
 		if (button != null && button.equals("Add")) {
 			boolean alreadyExists = false;
 			if (permissions.isOperator() || permissions.isCorporate())
 				selectedOperator = permissions.getAccountId();
 
-			for (ContractorAudit conAudit : contractor.getAudits()) {
-				if (conAudit.getRequestingOpAccount() != null
-						&& conAudit.getRequestingOpAccount().getId() == selectedOperator
-						&& conAudit.getAuditType().getId() == selectedAudit)
-					alreadyExists = true;
+			if( auditClass != AuditTypeClass.IM ) {
+				for (ContractorAudit conAudit : contractor.getAudits()) {
+					if (conAudit.getRequestingOpAccount() != null
+							&& conAudit.getRequestingOpAccount().getId() == selectedOperator
+							&& conAudit.getAuditType().getId() == selectedAudit)
+						alreadyExists = true;
+				}
 			}
+
 			if (alreadyExists) {
 				addActionError("Audit already exists");
 				return SUCCESS;
@@ -71,6 +120,7 @@ public class ConAuditList extends ContractorActionSupport {
 			ContractorAudit conAudit = new ContractorAudit();
 			conAudit.setAuditType(new AuditType());
 			conAudit.getAuditType().setId(selectedAudit);
+			conAudit.setAuditFor(this.auditFor);
 			conAudit.setContractorAccount(contractor);
 			conAudit.setAuditColumns(this.getUser());
 			conAudit.setAuditStatus(AuditStatus.Pending);
@@ -85,6 +135,7 @@ public class ConAuditList extends ContractorActionSupport {
 			return "saved";
 		}
 		auditTypeList = auditTypeDAO.findAll(permissions, true, auditClass);
+		
 		return SUCCESS;
 	}
 
@@ -122,7 +173,7 @@ public class ConAuditList extends ContractorActionSupport {
 
 	public boolean isManuallyAddAudit() {
 		if (permissions.isContractor()) {
-			if (auditClass.equals(AuditTypeClass.Policy))
+			if (auditClass.equals(AuditTypeClass.Policy) || auditClass.equals(AuditTypeClass.IM))
 				return true;
 			return false;
 		}
@@ -145,4 +196,19 @@ public class ConAuditList extends ContractorActionSupport {
 		this.auditClass = auditClass;
 	}
 
+	public String getAuditFor() {
+		return auditFor;
+	}
+
+	public void setAuditFor(String auditFor) {
+		this.auditFor = auditFor;
+	}
+
+	public Map<String, String> getImScores() {
+		return imScores;
+	}
+
+	public void setImScores(Map<String, String> imScores) {
+		this.imScores = imScores;
+	}
 }

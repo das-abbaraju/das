@@ -15,6 +15,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -151,6 +152,20 @@ public class ContractorActionSupport extends PicsActionSupport {
 			}
 		}
 
+		if (isRequiresIntegrityManagement()) {
+			// Add InsureGuard
+			MenuComponent subMenu = new MenuComponent("Integrity Management", "ConIntegrityManagement.action?id=" + id);
+			menu.add(subMenu);
+			for (ContractorAudit audit : getActiveAudits()) {
+				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM)
+						&& !audit.equals(AuditStatus.Exempt)) {
+					String linkText = audit.getAuditType().getAuditName() + " " + audit.getAuditFor();
+					
+					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), audit.getAuditStatus().toString());
+				}
+			}
+		}
+		
 		{ // Add All Other Audits
 			MenuComponent subMenu = new MenuComponent("Audits", "ConAuditList.action?id=" + id);
 			menu.add(subMenu);
@@ -202,6 +217,41 @@ public class ContractorActionSupport extends PicsActionSupport {
 			OperatorAccount op = insurContractors.getOperatorAccount();
 			if (op.getCanSeeInsurance().equals(YesNo.Yes))
 				return true;
+		}
+		return false;
+	}
+
+	
+	/**
+	 * Only show the Integrity Management link for contractors who are linked to an
+	 * operator that subscribes to Integrity Management 
+	 */
+	public boolean isRequiresIntegrityManagement() {
+		if (!accountDao.isContained(getOperators().iterator().next()))
+			operators = null;
+		
+		if (permissions.isOperator()) {
+			for (ContractorOperator insurContractors : getOperators()) {
+				OperatorAccount op = insurContractors.getOperatorAccount();
+				for( AuditOperator audit : op.getAudits() ) {
+					if( audit.getAuditType().getClassType() == AuditTypeClass.IM && permissions.getAccountId() == op.getId()) {
+							return true;
+					}					
+				}
+				
+			}
+			return false;
+		}
+		// If Contractor or admin, any operator requiring certs will see this
+		// If corporate, then the operators list is already restricted to my
+		// facilities
+		for (ContractorOperator insurContractors : getOperators()) {
+			OperatorAccount op = insurContractors.getOperatorAccount();
+			for( AuditOperator audit : op.getAudits() ) {
+				if( audit.getAuditType().getClassType() == AuditTypeClass.IM ) {
+						return true;
+				}					
+			}
 		}
 		return false;
 	}

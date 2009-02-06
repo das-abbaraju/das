@@ -3,7 +3,7 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <html>
 <head>
-<title>Audit/Evaluations for <s:property value="contractor.name" /></title>
+<title>Integrity Management for <s:property value="contractor.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript">
@@ -14,91 +14,85 @@
 </script>
 </head>
 <body>
-<s:push value="#subHeading='Contractor Forms, Audits & Evaluations'"/>
+<s:push value="#subHeading='IntegrityManagement'"/>
 <s:include value="conHeader.jsp" />
 
-<s:if test="upComingAudits.size() > 0">
-<h3>Up Coming Audits</h3>
+
+<h3>Integrity Management Scores For This Contractor</h3>
+<table class="report">
+	<thead>
+	<tr>
+		<th>Audit Name</th>
+		<th>Overall Score</th>
+	</tr>
+	</thead>
+	<s:iterator value="imScores.keySet()" status="auditStatus">
+		<s:set name="auditName" value="top"/>
+		<tr>
+			<td><s:property value="#attr.auditName"/></td>
+			<td><s:property value="imScores.get(#attr.auditName)"/></td>
+		</tr>
+	</s:iterator>
+</table>
+<br/><br/>
+<h3>Integrity Management Audits</h3>
 <table class="report">
 	<thead>
 	<tr>
 		<th>Status</th>
 		<th>Type</th>
-		<th>For</th>
-		<th>Created</th>
 		<th>Operator</th>
-		<th>Auditor</th>
-		<th>Scheduled</th>
-		<th>Submitted</th>
-		<th>Closed</th>
-		<th>View</th>
-		<pics:permission perm="AuditCopy">
-			<th>Copy</th>
-		</pics:permission>	
+		<th>Score</th>
+		<th>For</th>
 	</tr>
 	</thead>
 	<s:iterator value="upComingAudits" status="auditStatus">
 		<tr>
 			<td><s:property value="auditStatus" /></td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
+			<s:if test="requestingOpAccount.name != null">
+				<td><s:property value="requestingOpAccount.name" /></td>
+			</s:if>
+			<s:else>
+				<td>Shared</td>
+			</s:else>
 			<td><s:property value="auditFor"/></td>
-			<td><s:date name="creationDate" format="M/d/yy" /></td>
-			<td>
-				<s:if test="requestingOpAccount.name != null">
-					<s:property value="requestingOpAccount.name" />
-				</s:if>
-				<s:else>
-					Shared
-				</s:else>
-			</td>
-			<td><s:property value="auditor.name" /></td>
-			<td><s:date name="scheduledDate" format="M/d/yy HH:mm" /></td>
-			<td align="right"><s:if test="auditStatus.toString() == 'Pending'">
-				<s:property value="percentComplete" />%</s:if> <s:else>
-				<s:date name="completedDate" format="M/d/yy" />
-			</s:else></td>
-			<td align="right"><s:if test="auditStatus.toString() == 'Submitted'">
-				<s:property value="percentVerified" />%</s:if> <s:else>
-				<s:date name="closedDate" format="M/d/yy" />
-			</s:else></td>
-			<td><a href="Audit.action?auditID=<s:property value="id" />">View</a></td>
-			<pics:permission perm="AuditCopy">
-				<td><s:if test="!auditType.annualAddendum && !auditType.classType.toString().equals('Policy')">
-						<a href="ConAuditCopy.action?auditID=<s:property value="id" />">Copy</a>
-					</s:if>					
-				</td>
-			</pics:permission>
+			<td><s:property value="printableScore"/></td>
 		</tr>
 	</s:iterator>
 	<s:if test="manuallyAddAudit">
 		<s:if test="auditTypeName.size > 0">
 			<tr>
-				<td id="addAudit" colspan="11" class="center">
-					<a href="#" onclick="showAddAudit(); return false;">Add Audit Manually</a>
+				<td id="addAudit" colspan="5" class="center">
+					<a href="#" onclick="showAddAudit(); return false;">Add New Integrity Management Audit</a>
 				</td>
 			</tr>
 		</s:if>
 		<tr id="addAuditManually" style="display: none;">
-		<s:form method="post" id="form1">
+		<s:form method="post" id="form1" >
 			<td>
 			<div class="buttons">
 				<button class="positive" name="button" type="submit" value="Add">Add</button>
 			</div>
 			</td>
-			<td colspan="3" class="center">
+			<td>
 				<s:hidden name="id" value="%{id}"/>
-				<s:select list="auditTypeName" listKey="id" listValue="auditName" headerKey="" headerValue="- Select an Audit to be Created -" name="selectedAudit"/>
+				<s:select list="auditTypeName" name="selectedAudit" cssClass="pics"
+					headerKey="" headerValue="- Select Audit Type -" listKey="id" listValue="auditName" />
 			</td>
-			<td colspan="7" class="center">
-				<pics:permission perm="AllOperators">
-					<s:select list="operators" listKey="operatorAccount.id" listValue="operatorAccount.name" name="selectedOperator" headerKey="" headerValue="- Shared by All Operators -"/>
-				</pics:permission>
+			<td>
+				<s:if test="permissions.contractor || permissions.admin">
+				<s:select list="operators" name="selectedOperator"
+					headerKey="" headerValue="- Shared by All Operators -" listKey="operatorAccount.id" listValue="operatorAccount.name" />
+				</s:if>
 			</td>
-		</s:form>	
-	</div>
-	</s:if>		
+			<td colspan="2"><s:textfield size="40" name="auditFor"/></td>
+			</s:form>
+		</tr>
+	</s:if>
 </table>
-</s:if>
+
+
 <s:if test="currentAudits.size() > 0">
 <br/>
 <h3>Current Audits</h3>
@@ -113,9 +107,6 @@
 		<th>Auditor</th>
 		<th>Expires</th>
 		<th>View</th>
-		<pics:permission perm="AuditCopy">
-			<th>Copy</th>
-		</pics:permission>	
 	</tr>
 	</thead>
 	<s:iterator value="currentAudits" status="auditStatus">
@@ -135,23 +126,10 @@
 			<td><s:property value="auditor.name" /></td>
 			<td><s:date name="expiresDate" format="M/d/yy" /></td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />">View</a></td>
-			<pics:permission perm="AuditCopy">
-				<td><s:if test="!auditType.annualAddendum && auditType.classType.toString().equals('Audit')">
-					<a href="ConAuditCopy.action?auditID=<s:property value="id" />">Copy</a>
-				</s:if></td>
-			</pics:permission>
 		</tr>
 	</s:iterator>
-	
-
 </table>
 </s:if>
-
-
-
-
-
-
 <s:if test="expiredAudits.size() > 0">
 <br/>
 <h3>Expired Audits</h3>
@@ -163,9 +141,6 @@
 		<th>Operator</th>
 		<th>Expired</th>
 		<th>View</th>
-		<pics:permission perm="AuditCopy">
-			<th>Copy</th>
-		</pics:permission>	
 	</tr>
 	</thead>
 	<s:iterator value="expiredAudits" status="auditStatus">
@@ -175,11 +150,6 @@
 			<td><s:property value="requestingOpAccount.name" /></td>
 			<td><s:date name="expiresDate" format="M/d/yy" /></td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />">View</a></td>
-			<pics:permission perm="AuditCopy">
-				<td><s:if test="!auditType.annualAddendum && !auditType.classType.toString().equals('Policy')">
-					<a href="ConAuditCopy.action?auditID=<s:property value="id" />">Copy</a>
-				</s:if></td>
-			</pics:permission>
 		</tr>
 	</s:iterator>
 </table>

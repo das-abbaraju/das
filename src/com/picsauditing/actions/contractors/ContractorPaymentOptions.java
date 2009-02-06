@@ -3,8 +3,6 @@ package com.picsauditing.actions.contractors;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.naming.factory.SendMailFactory;
-
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;

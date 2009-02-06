@@ -78,8 +78,15 @@ public class ReportContractorAudits extends ReportAccount {
 		if (permissions.isCorporate() || permissions.isOperator()) {
 			sql.addWhere("atype.id IN (" + Strings.implode(permissions.getCanSeeAudit(), ",") + ")");
 		}
-		if (auditTypeClass != null)
-			sql.addWhere("atype.classType = '"+ auditTypeClass.toString() + "'");
+		if (auditTypeClass != null) {
+			if( auditTypeClass == AuditTypeClass.Audit ) {
+				sql.addWhere("atype.classType in ( 'Audit', 'IM' ) ");
+			}
+			else {
+				sql.addWhere("atype.classType = '"+ auditTypeClass.toString() + "'");	
+			}
+		}
+			
 		
 		if (!permissions.isPicsEmployee())
 			getFilter().setShowAuditor(true);

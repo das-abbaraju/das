@@ -142,7 +142,7 @@
 				<s:else>Not Uploaded</s:else>
 			</li>
 		</s:if>
-		<s:if test="conAudit.auditType.id == 17">
+		<s:if test="conAudit.auditType.classType.name().equals('IM')">
 			<li><label>IM Score:</label>
 				<s:property value="conAudit.printableScore"/>
 			</li>

@@ -62,6 +62,8 @@ public class AuditTypeDAO extends PicsDAO {
 			else
 				where += " AND canSee = 1";
 			
+			where += " AND minRiskLevel != 1 ";
+			
 			where = "WHERE t IN (SELECT auditType FROM AuditOperator WHERE "+where+")";
 		}
 		
