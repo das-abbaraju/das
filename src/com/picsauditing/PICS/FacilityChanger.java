@@ -63,6 +63,9 @@ public class FacilityChanger {
 		contractorOperatorDAO.save(co);
 		contractor.getOperators().add(co);
 		
+		contractor.setRenew(true);
+		contractorAccountDAO.save(contractor);
+		
 		Note note = new Note();
 		note.setAccount(contractor);
 		note.setAuditColumns(new User(permissions.getAccountId()));
