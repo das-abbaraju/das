@@ -395,11 +395,6 @@ public class AccountBean extends DataBean {
 				OperatorBean.ONLY_ACTIVE);
 	}
 
-	public String getGeneralSelect(String name, String classType, String selectedOperator) throws Exception {
-		return Utilities.inputSelect(name, classType, selectedOperator,
-				getActiveGeneralsArray(OperatorBean.DONT_INCLUDE_PICS));
-	}
-
 	public void deleteAccount(String deleteID, String path) throws Exception {
 		// called aBean.deleteAccount(action_id,
 		// config.getServletContext().getRealPath("/"));
@@ -548,46 +543,6 @@ public class AccountBean extends DataBean {
 	public static String getIndustrySelect(String name, String classType, String selectedIndustry) throws Exception {
 		String[] industryArray = Strings.convertListToArray(Industry.getValuesWithDefault());
 		return Utilities.inputSelect(name, classType, selectedIndustry, industryArray);
-	}
-
-	public String getGeneralSelectMultiple(String name, String classType, String[] selectedContractors)
-			throws Exception {
-		setOBean();
-		String[] generals = o.getOperatorsArray(OperatorBean.DONT_INCLUDE_PICS, OperatorBean.INCLUDE_ID,
-				OperatorBean.INCLUDE_GENERALS, OperatorBean.INCLUDE_INACTIVE);
-		return Utilities.inputMultipleSelect2Multiples(name, classType, "10", selectedContractors, generals);
-	}
-
-	// ****** not sure to include only actives
-	public String getGeneralSelect2(String name, String classType, String selectedOption, boolean listDefault)
-			throws Exception {
-		setOBean();
-		String[] generals = o.getOperatorsArray(OperatorBean.DONT_INCLUDE_PICS, OperatorBean.INCLUDE_ID,
-				OperatorBean.INCLUDE_GENERALS, OperatorBean.ONLY_ACTIVE);
-		if (listDefault)
-			return Utilities.inputSelect2First(name, classType, selectedOption, generals,
-					SearchBean.DEFAULT_GENERAL_VALUE, SearchBean.DEFAULT_GENERAL);
-		else
-			return Utilities.inputSelect2(name, classType, selectedOption, generals);
-	}
-
-	public String getGeneralSelect3(String name, String classType, String selectedOption, boolean listDefault,
-			String contractor_id) throws Exception {
-		setOBean();
-		o.canSeeInsurance = "Yes";
-		String ret = "";
-		String[] generals = o.getOperatorsArray(OperatorBean.DONT_INCLUDE_PICS, OperatorBean.INCLUDE_ID,
-				OperatorBean.INCLUDE_GENERALS, OperatorBean.ONLY_ACTIVE);
-
-		String[] filteredGenerals = filteredGenerals(generals, contractor_id);
-
-		if (listDefault)
-			ret = Utilities.inputSelect2First(name, classType, selectedOption, filteredGenerals,
-					SearchBean.DEFAULT_GENERAL_VALUE, SearchBean.DEFAULT_GENERAL);
-		else
-			ret = Utilities.inputSelect2(name, classType, selectedOption, filteredGenerals);
-		o.canSeeInsurance = "No";
-		return ret;
 	}
 
 	public boolean isOK() throws Exception {

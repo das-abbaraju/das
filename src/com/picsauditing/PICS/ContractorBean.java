@@ -1,9 +1,7 @@
 package com.picsauditing.PICS;
 
 import java.sql.ResultSet;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -25,63 +23,37 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 
 public class ContractorBean extends DataBean {
-	// This is so contractors can be removed from the activation report without
-	// actually entering a valid login date.
-	// It's a hack, but what John wants doesn't make sense, and hopefully this
-	// is temporary BJ 2-15-05
-	public static final String REMOVE_FROM_REPORT = "1/1/50";
 	public static final String[] RISK_LEVEL_ARRAY = { "Low", "Med", "High" };
 	public static final String[] RISK_LEVEL_VALUES_ARRAY = { "1", "2", "3" };
 
 	public String id = "";
 	public String taxID = "";
 	public String main_trade = "";
-	public String trades = "0;";
-	public String subTrades = "0;";
 	public String logo_file = "No";
 	public String brochure_file = "No";
 	public String description = "";
 	public boolean isDescriptionChanged = false;
-	public String notes = "";
-	public String adminNotes = "";
-	public boolean isNotesChanged = false;
-	public boolean isAdminNotesChanged = false;
 	public String mustPay = "Yes";
 
 	public String requestedByID = "";
-	public String billingCycle = "";
-	public String billingAmount = "";
-	public String isExempt = "No";
 	public int facilitiesCount = 0;
-	public String isOnlyCerts = "No";
-	public String setTrades = "";
 	
 	public String paymentMethodStatus = "";
 
 	public String accountDate = ""; // The first time a user logs into this
 									// Contractor account
 	public String membershipDate = "";
-	public String lastPayment = "";
-	public String lastPaymentAmount = "";
-	public String paymentExpires = "";
-	public String lastInvoiceDate = "";
-	public String lastAnnualUpdateEmailDate = "";
 	public String riskLevel = "2";
-	public int annualUpdateEmails = 0;
 	// questionID=894
 	// 22.1.1 Does your company have employees who are covered under DOT OQ
 	// requirements?
 	public String oqEmployees = "";
 
 	private HashMap<Integer, ContractorAudit> audits;
-
-	int num_of_trades = 0;
-	int num_of_subTrades = 0;
 
 	// second contact
 	public String secondContact = "";
@@ -92,7 +64,6 @@ public class ContractorBean extends DataBean {
 	public String billingPhone = "";
 	public String billingEmail = "";
 	public String payingFacilities = "";
-	public String newBillingAmount = "";
 
 	private User primaryUser = new User();
 
@@ -103,7 +74,7 @@ public class ContractorBean extends DataBean {
 
 	public void setId(String s) {
 		id = s;
-	}// setId
+	}
 
 	private int getIdInteger() {
 		int id = 0;
@@ -117,32 +88,6 @@ public class ContractorBean extends DataBean {
 	public void setMain_trade(String s) {
 		main_trade = s;
 	}// setMain_trade
-
-	public void setTrades(String[] s) {
-		if (s == null) {
-			num_of_trades = 0;
-			trades = "0;";
-			return;
-		}// if
-		num_of_trades = s.length;
-		trades = String.valueOf(num_of_trades) + ";";
-		for (int i = 1; i <= num_of_trades; i++) {
-			trades += (s[i - 1] + ";");
-		}// for
-	}// setTrades
-
-	public void setSubTrades(String[] s) {
-		if (s == null) {
-			num_of_subTrades = 0;
-			subTrades = "0;";
-			return;
-		}// if
-		num_of_subTrades = s.length;
-		subTrades = String.valueOf(num_of_subTrades) + ";";
-		for (int i = 1; i <= num_of_subTrades; i++) {
-			subTrades += (s[i - 1] + ";");
-		}// for
-	}// setSubTrades
 
 	public void setGeneralContractorsFromStringArray(String[] s) {
 		newGeneralContractors = new ArrayList<String>();
@@ -177,14 +122,6 @@ public class ContractorBean extends DataBean {
 		return com.picsauditing.util.Luhn.addCheckDigit(id);
 	}
 
-	public void setTradeString(String s) {
-		trades = s;
-	}// setTradeString
-
-	public void setSubTradeString(String s) {
-		subTrades = s;
-	}// setSubTradeString
-
 	public void setLogo_file(String s) {
 		logo_file = s;
 	}// setLogo_file
@@ -204,21 +141,9 @@ public class ContractorBean extends DataBean {
 		accountDate = s;
 	}// setAccountDate
 
-	public void setLastPayment(String s) {
-		lastPayment = s;
-	}// setLastPayment
-
-	public void setNotes(String s) {
-		notes = s;
-	}// setNotes
-
 	public void setMustPay(String s) {
 		mustPay = s;
 	}// setMustPay
-
-	public void setPaymentExpires(String s) {
-		paymentExpires = s;
-	}// setPaymentExpires
 
 	public String getId() {
 		return id;
@@ -227,30 +152,6 @@ public class ContractorBean extends DataBean {
 	public String getMain_trade() {
 		return main_trade;
 	}// getMain_trade
-
-	public String[] getTrades() {
-		String[] temp = new String[num_of_trades];
-		int i1 = 0;
-		int i2 = trades.indexOf(";") + 1;
-		for (int i = 1; i <= num_of_trades; i++) {
-			i1 = trades.indexOf(";", i2);
-			temp[i - 1] = trades.substring(i2, i1);
-			i2 = i1 + 1;
-		}// for
-		return temp;
-	}// getTrades
-
-	public String[] getSubTrades() {
-		String[] temp = new String[num_of_subTrades];
-		int i1 = 0;
-		int i2 = trades.indexOf(";") + 1;
-		for (int i = 1; i <= num_of_subTrades; i++) {
-			i1 = subTrades.indexOf(";", i2);
-			temp[i - 1] = subTrades.substring(i2, i1);
-			i2 = i1 + 1;
-		}// for
-		return temp;
-	}// getSubTrades
 
 	public String[] getGeneralContractorsArray() {
 		return (String[]) generalContractors.toArray(new String[0]);
@@ -268,15 +169,8 @@ public class ContractorBean extends DataBean {
 	}// getDescriptionHTML
 
 	public String getAccountDate() {
-		if (REMOVE_FROM_REPORT.equals(accountDate))
-			return "";
-		else
-			return accountDate;
+		return accountDate;
 	}// getAccountDate
-
-	public String getNotesHTML() {
-		return Utilities.escapeHTML(notes);
-	}// getNotesHTM
 
 	public String getRiskLevelShow() {
 		try {
@@ -300,32 +194,6 @@ public class ContractorBean extends DataBean {
 		}// while
 		return false;
 	}
-
-	public String getTradesList() {
-		return trades.substring(trades.indexOf(";") + 1, trades.length() - 1).replaceAll(";", ", ");
-	}
-
-	public String getSubTradesList() {
-		if (subTrades.substring(0, 1).equals("0"))
-			return "";
-		return subTrades.substring(subTrades.indexOf(";") + 1, subTrades.length() - 1).replaceAll(";", ", ");
-	}
-
-	public int getNumOfTrades() {
-		return num_of_trades;
-	}// getNumOfTrades
-
-	public int getNumOfSubTrades() {
-		return num_of_subTrades;
-	}// getNumOfSubTrades
-
-	public boolean isTrade(String s) {
-		return (trades.indexOf(s) != -1);
-	}// isTrade
-
-	public boolean isSubTrade(String s) {
-		return (subTrades.indexOf(s) != -1);
-	}// isSubTrade
 
 	public String getIsLogoFile() {
 		if ("No".equals(logo_file))
@@ -386,8 +254,6 @@ public class ContractorBean extends DataBean {
 		id = SQLResult.getString("id");
 		taxID = SQLResult.getString("taxID");
 		main_trade = SQLResult.getString("main_trade");
-		trades = SQLResult.getString("trades");
-		subTrades = SQLResult.getString("subTrades");
 		logo_file = SQLResult.getString("logo_file");
 		brochure_file = SQLResult.getString("brochure_file");
 		// fix ms word apostrophes changed to ?
@@ -395,25 +261,13 @@ public class ContractorBean extends DataBean {
 		description = description.replace('?', '\'');
 		// }
 
-		notes = SQLResult.getString("notes");
-		adminNotes = SQLResult.getString("adminNotes");
 		mustPay = SQLResult.getString("mustPay");
 		requestedByID = SQLResult.getString("requestedByID");
-		billingAmount = SQLResult.getString("billingAmount");
-		billingCycle = SQLResult.getString("billingCycle");
-		isExempt = SQLResult.getString("isExempt");
-		isOnlyCerts = SQLResult.getString("isOnlyCerts");
 
 		accountDate = DateBean.toShowFormat(SQLResult.getString("accountDate"));
 		membershipDate = DateBean.toShowFormat(SQLResult.getString("membershipDate"));
-		lastPayment = DateBean.toShowFormat(SQLResult.getString("lastPayment"));
-		lastPaymentAmount = SQLResult.getString("lastPaymentAmount");
 		
 		paymentMethodStatus = SQLResult.getString("paymentMethodStatus");
-
-		paymentExpires = DateBean.toShowFormat(SQLResult.getString("paymentExpires"));
-		lastInvoiceDate = DateBean.toShowFormat(SQLResult.getString("lastInvoiceDate"));
-		lastAnnualUpdateEmailDate = DateBean.toShowFormat(SQLResult.getString("lastAnnualUpdateEmailDate"));
 
 		// second contact
 		secondContact = SQLResult.getString("secondContact");
@@ -424,35 +278,23 @@ public class ContractorBean extends DataBean {
 		billingPhone = SQLResult.getString("billingPhone");
 		billingEmail = SQLResult.getString("billingEmail");
 		payingFacilities = SQLResult.getString("payingFacilities");
-		newBillingAmount = SQLResult.getString("newBillingAmount");
 
 		riskLevel = SQLResult.getString("riskLevel");
-		annualUpdateEmails = SQLResult.getInt("annualUpdateEmails");
 		oqEmployees = SQLResult.getString("oqEmployees");
 	}
 
 	public void writeToDB() throws Exception {
 		String updateQuery = "UPDATE contractor_info SET " + "taxID='" + eqDB(taxID) + "',main_trade='" + main_trade
-				+ "',trades='" + trades + "',subTrades='" + subTrades + "',logo_file='" + logo_file
+				+ "',logo_file='" + logo_file
 				+ "',brochure_file='" + brochure_file + "',mustPay='" + mustPay + "',requestedByID='" + requestedByID
-				+ "',billingAmount='" + billingAmount + "',billingCycle='" + billingCycle + "',isOnlyCerts='"
-				+ isOnlyCerts +
-
-				"',accountDate='" + DateBean.toDBFormat(accountDate) + "',membershipDate='"
-				+ DateBean.toDBFormat(membershipDate) + "',lastPayment='" + DateBean.toDBFormat(lastPayment)
-				+ "',lastPaymentAmount='" + lastPaymentAmount + "',paymentExpires='"
-				+ DateBean.toDBFormat(paymentExpires) + "',lastInvoiceDate='" + DateBean.toDBFormat(lastInvoiceDate)
-				+ "',lastAnnualUpdateEmailDate='" + DateBean.toDBFormat(lastAnnualUpdateEmailDate)
+				+ "',accountDate='" + DateBean.toDBFormat(accountDate) + "',membershipDate='"
+				+ DateBean.toDBFormat(membershipDate)
 				+ "',secondContact='" + eqDB(secondContact) + "',secondPhone='" + eqDB(secondPhone) + "',secondEmail='"
 				+ eqDB(secondEmail) + "',billingContact='" + eqDB(billingContact) + "',billingPhone='"
-				+ eqDB(billingPhone) + "',riskLevel=" + riskLevel + ",annualUpdateEmails=" + annualUpdateEmails
+				+ eqDB(billingPhone) + "',riskLevel=" + riskLevel
 				+ ",oqEmployees='" + eqDB(oqEmployees) + "',billingEmail='" + eqDB(billingEmail);
 		if (isDescriptionChanged)
 			updateQuery += "',description='" + eqDB(description);
-		if (isNotesChanged)
-			updateQuery += "',notes='" + eqDB(notes);
-		if (isAdminNotesChanged)
-			updateQuery += "',adminNotes='" + eqDB(adminNotes);
 		updateQuery += "' WHERE id=" + id + ";";
 		try {
 			DBReady();
@@ -484,7 +326,7 @@ public class ContractorBean extends DataBean {
 				note.setCreationDate(new Date());
 				note.setSummary("Added this Contractor to " + FACILITIES.getNameFromID(genID)
 						+ "'s db at account registration");
-				note.setNoteCategory(NoteCategory.ContractorAddition);
+				note.setNoteCategory(NoteCategory.OperatorChanges);
 				noteDAO.save(note);
 			}
 			insertQuery = insertQuery.substring(0, insertQuery.length() - 1) + ";";
@@ -509,8 +351,7 @@ public class ContractorBean extends DataBean {
 		try {
 			DBReady();
 			String updateQuery = "UPDATE contractor_info SET payingFacilities="
-					+ Utilities.intToDB(this.payingFacilities) + ", newBillingAmount="
-					+ Utilities.intToDB(this.newBillingAmount) + ", isExempt='" + eqDB(isExempt) + "' " + "WHERE id="
+					+ Utilities.intToDB(this.payingFacilities) + " WHERE id="
 					+ Utilities.intToDB(this.id);
 			SQLStatement.executeUpdate(updateQuery);
 		} finally {
@@ -524,19 +365,10 @@ public class ContractorBean extends DataBean {
 		main_trade = m.get("main_trade");
 		setDescription(m.get("description"));
 		mustPay = m.get("mustPay");
-		paymentExpires = m.get("paymentExpires");
-		lastPayment = m.get("lastPayment");
-		lastPaymentAmount = m.get("lastPaymentAmount");
 
 		membershipDate = m.get("membershipDate");
-		lastInvoiceDate = m.get("lastInvoiceDate");
 		requestedByID = m.get("requestedByID");
-		billingAmount = m.get("billingAmount");
-		billingCycle = m.get("billingCycle");
 		// We only set this via the BillingContractor class now
-		// isExempt = m.get("isExempt");
-		isOnlyCerts = m.get("isOnlyCerts");
-		setTrades = m.get("trades");
 		// second contact
 		secondContact = m.get("secondContact");
 		secondEmail = m.get("secondEmail");
@@ -551,11 +383,6 @@ public class ContractorBean extends DataBean {
 
 		// setTrades(m.getValues("trades"));
 		// jj 10/28/06 setGeneralContractors(m.getValues("generalContractors"));
-
-		if (num_of_trades == 0) {
-			num_of_trades++;
-			trades = "1;" + main_trade + ";";
-		}// if
 
 		// Set the files from the db
 		if (!"".equals(id)) {
@@ -608,10 +435,6 @@ public class ContractorBean extends DataBean {
 
 	public boolean isOK() {
 		errorMessages = new Vector<String>();
-		if (num_of_trades == 0) {
-			num_of_trades++;
-			trades = "1;" + main_trade + ";";
-		}
 		if (main_trade.equals(TradesBean.DEFAULT_SELECT_TRADE))
 			errorMessages.addElement("Please select a main trade");
 		if (requestedByID.length() == 0)
@@ -626,10 +449,6 @@ public class ContractorBean extends DataBean {
 		else if (taxIDExists(taxID))
 			errorMessages.addElement("The tax ID <b>" + taxID
 					+ "</b> already exists.  Please contact a company representative.");
-		if (num_of_trades == 0) {
-			num_of_trades++;
-			trades = "1;" + main_trade + ";";
-		}
 		if (main_trade == null || main_trade.equals(TradesBean.DEFAULT_SELECT_TRADE))
 			errorMessages.addElement("Please select a main trade");
 		if (requestedByID == null || requestedByID.length() == 0)
@@ -677,139 +496,6 @@ public class ContractorBean extends DataBean {
 			DBClose();
 		}
 	}
-
-	public void addNote(String conID, String pre, String newNote, String notesDate) throws Exception {
-		notes = notesDate + " " + pre + ": " + newNote + "\n" + notes;
-		isNotesChanged = true;
-	}
-
-	static public void addNote(Integer conID, Permissions permissions, String newNote) throws Exception {
-		String currentUserDisplayName = "System";
-		if (permissions != null) {
-			if (permissions.getName() != null && permissions.getName().length() > 0)
-				currentUserDisplayName = permissions.getName();
-			else
-				currentUserDisplayName = permissions.getUsername();
-		}
-
-		ContractorBean cBean = new ContractorBean();
-		cBean.setFromDB(conID.toString());
-		cBean.addNote(conID.toString(), currentUserDisplayName, newNote, DateBean.getTodaysDateTime());
-		cBean.writeToDB();
-	}
-
-	public void addAdminNote(String conID, String pre, String newNote, String notesDate) throws Exception {
-		adminNotes = notesDate + " " + pre + ": " + newNote + "\n" + adminNotes;
-		isAdminNotesChanged = true;
-	}
-
-	// Jeff 2/2/05
-	// Records a payment by a contrator, invoked on Schedule Audits report
-	// 3/19/05 jj - added paymentExpires calculations
-	public void updateLastPayment(String id, String adminName, String amount) throws Exception {
-		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
-		String newNote = "";
-		setFromDB(id);
-		Calendar newPaymentExpiresCal = Calendar.getInstance();
-		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
-		if (!"".equals(paymentExpires)) {
-			newPaymentExpiresCal.setTime(showFormat.parse(paymentExpires));
-			newPaymentExpiresCal.add(Calendar.YEAR, 1);
-		} else if (!"".equals(membershipDate)) {
-			newPaymentExpiresCal.setTime(showFormat.parse(membershipDate));
-			while (newPaymentExpiresCal.before(Calendar.getInstance()))
-				newPaymentExpiresCal.add(Calendar.YEAR, 1);
-		} else {
-			membershipDate = showFormat.format(newPaymentExpiresCal.getTime());
-			newPaymentExpiresCal.add(Calendar.YEAR, 1);
-			newNote = "Membership date set today";
-		}// else
-		paymentExpires = showFormat.format(newPaymentExpiresCal.getTime());
-		lastPayment = DateBean.getTodaysDate();
-		lastPaymentAmount = amount;
-		newNote += "Payment received for $" + amount + " for " + payingFacilities + " facilities";
-		writeToDB();
-		Note note = new Note();
-		note.setAccount(new Account());
-		note.getAccount().setId(Integer.parseInt(id));
-		note.setCreationDate(new Date());
-		note.setSummary(newNote);
-		note.setNoteCategory(NoteCategory.Billing);
-		noteDAO.save(note);
-
-	}// updateLastPayment
-
-	public void upgradePayment(String id, String adminName, String newAmount) throws Exception {
-		setFromDB(id);
-		lastPayment = DateBean.getTodaysDate();
-		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
-		Note note = new Note();
-		note.setAccount(new Account());
-		note.getAccount().setId(Integer.parseInt(id));
-		note.setCreationDate(new Date());
-		note.setSummary("Payment upgraded from $" + lastPaymentAmount + " to $" + newAmount
-				+ " for " + payingFacilities + " facilities");
-		note.setNoteCategory(NoteCategory.Billing);
-		noteDAO.save(note);
-		lastPaymentAmount = newAmount;
-		writeToDB();
-	}
-
-	@Deprecated
-	public boolean isExempt() {
-		return isAudited();
-	}
-
-	@Deprecated
-	public boolean isAudited() {
-		// We should check the contractor's audits instead
-		return "Yes".equals(this.isExempt);
-	}
-
-	@Deprecated
-	public void isAudited(boolean value) {
-		if (value)
-			this.isExempt = "No";
-		else
-			this.isExempt = "Yes";
-	}
-
-	public void convertTrades() throws Exception {
-		try {
-			com.picsauditing.PICS.TradesBean tBean = new com.picsauditing.PICS.TradesBean();
-			tBean.setFromDB();
-			ArrayList<String> tradesAL = tBean.trades;
-			String Query = "SELECT * FROM contractor_info;";
-			DBReady();
-			ResultSet SQLResult = SQLStatement.executeQuery(Query);
-			while (SQLResult.next()) {
-				setFromResultSet(SQLResult);
-				ListIterator<String> li = tradesAL.listIterator();
-				String insertQuery = "REPLACE INTO pqfData (conID,questionID,answer) VALUES ";
-				boolean insert = false;
-				while (li.hasNext()) {
-					String qID = (String) li.next();
-					String trade = (String) li.next();
-					String answer = "";
-					if (-1 != trades.indexOf(trade))
-						answer += "C";
-					if (-1 != subTrades.indexOf(trade))
-						answer += "S";
-					if (!"".equals(answer)) {
-						insertQuery += "(" + id + "," + qID + ",'" + answer + "'),";
-						insert = true;
-					}// if
-				}// while
-				insertQuery = insertQuery.substring(0, insertQuery.length() - 1);
-				insertQuery += ";";
-				if (insert)
-					SQLStatement.executeUpdate(insertQuery);
-			}// while
-			SQLResult.close();
-		} finally {
-			DBClose();
-		}// finally
-	}// convertTrades
 
 	public void setUploadedFiles(HttpServletRequest request) {
 		String fn = (String) request.getAttribute("logo_file");
