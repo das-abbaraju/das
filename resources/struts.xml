@@ -200,6 +200,10 @@
 			class="com.picsauditing.actions.contractors.BillingDetail">
 			<result>struts/contractors/billing_detail.jsp</result>
 		</action>
+		<action name="InvoiceDetail"
+			class="com.picsauditing.actions.contractors.InvoiceDetail">
+			<result>struts/contractors/invoice_detail.jsp</result>
+		</action>		
 		<action name="CalculateFeeAjax"
 			class="com.picsauditing.actions.contractors.CalculateFee">
 			<result>struts/contractors/calculate_fee_ajax.jsp</result>
