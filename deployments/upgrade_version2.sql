@@ -1,3 +1,5 @@
+update audit_type set classType = 'IM' where id = 17;
+
 update contractor_info set membershipLevelID = 9 where billingAmount = 99;
 update contractor_info set membershipLevelID = 3 where billingAmount = 399;
 update contractor_info set membershipLevelID = 4 where billingAmount = 699;
@@ -18,6 +20,9 @@ update contractor_info set renew = 0
 	where id in (select id from accounts where active = 'N');
 update contractor_info set membershipLevelID = newMembershipLevelID 
 	where membershipLevelID is null and mustPay = 'Yes' and billingAmount > 0;
+update contractor_info set renew = 1
+	where accountDate is null OR accountDate = '0000-00-00';
+
 
 /******* INVOICES *************/
 -- Add all paid invoices
@@ -53,8 +58,55 @@ set paymentExpires = creationDate
 where (paymentExpires = '0000-00-00' or paymentExpires is null)
 and contractor_info.id = accounts.id;
 
+select * from users
+where id = 959
 
+/**** Notes Conversion *****/
+insert into note (accountID, creationDate, createdBy, summary, noteCategory, priority, viewableBy, body)
+select 
+	id as accountID, 
+	accountDate as creationDate,
+	959 as createdBy,
+	'Contractor Notes Pre-2009' as summary,
+	'General' as noteCategory,
+	2 as priorityMed,
+	1 as viewableByEveryone,
+	notes
+from contractor_info
+where notes > '';
 
+insert into note (accountID, creationDate, createdBy, summary, noteCategory, priority, viewableBy, body)
+select 
+	id, 
+	accountDate, 
+	959, 
+	'PICS-only Notes Pre-2009',
+	'Billing', 
+	2 as priorityMed,
+	1 as viewableByPics,
+	adminNotes
+from contractor_info
+where adminNotes > '';
+
+insert into note (accountID, creationDate, createdBy, updatedBy, updateDate, summary, noteCategory, status, priority, viewableBy)
+select 
+	conID as accountID,
+	timeStamp as creationDate, 
+	case ISNULL(userID) when 1 then 959 else userID end,
+	deletedDate,
+	deletedUserID,
+	note as summary,
+	'General' as noteCategory,
+	case isDeleted when 1 then 0 else 2 end as status,
+	2 as priorityMed,
+	opID as viewableBy
+from notes
+where length(note) <= 100;
+
+insert into note (accountID, creationDate, createdBy, updatedBy, updateDate, summary, noteCategory, status, priority, viewableBy, body)
+select conID, timeStamp, case ISNULL(userID) when 1 then 959 else userID end, deletedDate, deletedUserID, substring(note, 1, 100), 'General', case isDeleted when 1 then 0 else 2 end, 2, opID, substring(note, 100)
+from notes
+where length(note) > 100;
 
 /**
 update pqfquestions set isVisible = CASE isVisible WHEN 2 THEN 1 ELSE 0 END;
@@ -66,24 +118,5 @@ update pqfquestions set isRedFlagQuestion = CASE isRedFlagQuestion WHEN 2 THEN 1
 update notes set userID from whois and opID
 update notes set deletedUserID from whoDeleted and opID
 
-
-insert into note (accountID, creationDate, createdBy, summary, noteCategory, priority, viewableBy, body)
-select id, accountDate, 959, 'Contractor Notes Pre-Oct08', 'General', 3, 1, notes
-from contractor_info
-where notes > '';
-
-insert into note (accountID, creationDate, createdBy, summary, noteCategory, priority, viewableBy, body)
-select id, accountDate, 959, 'PICS-only Notes Pre-Oct08', 'General', 3, 1100, adminNotes
-from contractor_info
-where adminNotes > '';
-
-insert into note (accountID, creationDate, createdBy, updatedBy, updateDate, summary, noteCategory, status, priority, viewableBy, body)
-select conID, timeStamp, case ISNULL(userID) when 1 then 959 else userID end, deletedDate, deletedUserID, note, 'General', case isDeleted when 1 then 0 else 2 end, 3, opID, null
-from notes
-where length(note) <= 250;
-
-insert into note (accountID, creationDate, createdBy, updatedBy, updateDate, summary, noteCategory, status, priority, viewableBy, body)
-select conID, timeStamp, case ISNULL(userID) when 1 then 959 else userID end, deletedDate, deletedUserID, substring(note, 1, 255), 'General', case isDeleted when 1 then 0 else 2 end, 3, opID, substring(note, 255)
-from notes
-where length(note) > 250;
 */
+

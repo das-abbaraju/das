@@ -42,23 +42,13 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	private String taxId;
 	private String mainTrade;
-	private String trades;
-	private String subTrades;
 	private String logoFile;
 	private String brochureFile;
 	private String description;
 	private Date accountDate;
-	private String paid;
-	private Date lastPayment;
-	private int lastPaymentAmount;
-	private Date lastInvoiceDate;
-	private String notes;
-	private String adminNotes;
 	private String mustPay = "Yes";
 	private Date paymentExpires;
-	private Date lastAnnualUpdateEmailDate;
 	private int requestedById;
-	private int billingAmount;
 	private String secondContact;
 	private String secondPhone;
 	private String secondEmail;
@@ -66,15 +56,13 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private String billingPhone;
 	private String billingEmail;
 	private Date membershipDate;
-	private int newBillingAmount;
 	private int payingFacilities;
 	private User auditor;
 	private LowMedHigh riskLevel;
 	private Date viewedFacilities;
 	private String paymentMethodStatus;
-	private String paymentMethod = "Credit Card";
+	private PaymentMethod paymentMethod = PaymentMethod.CreditCard;
 
-	private int annualUpdateEmails;
 	private String oqEmployees;
 	
 	private boolean renew;
@@ -136,24 +124,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.mainTrade = mainTrade;
 	}
 
-	@Column(length = 65535)
-	public String getTrades() {
-		return this.trades;
-	}
-
-	public void setTrades(String trades) {
-		this.trades = trades;
-	}
-
-	@Column(length = 65535)
-	public String getSubTrades() {
-		return this.subTrades;
-	}
-
-	public void setSubTrades(String subTrades) {
-		this.subTrades = subTrades;
-	}
-
 	@Column(name = "logo_file", length = 50)
 	public String getLogoFile() {
 		return this.logoFile;
@@ -184,48 +154,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	@Transient
 	public String getDescriptionHTML() {
 		return Utilities.escapeNewLines(this.description);
-	}
-
-	@Column(name = "notes", length = 16277215)
-	public String getNotes() {
-		return this.notes;
-	}
-
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
-
-	/**
-	 * Append a new note to this contractor in the form of: M/d/yy h:mm a z User
-	 * Name: NOTE HERE previous notes
-	 * 
-	 * @param username
-	 * @param note
-	 */
-	public void addNote(Permissions permissions, String note) {
-		String userName = "SYSTEM";
-		if (permissions != null)
-			userName = permissions.getName();
-		this.notes = DateBean.getTodaysDateTime() + " " + userName + ": " + note + "\n" + this.notes;
-	}
-
-	@Column(name = "adminNotes", length = 16277215)
-	public String getAdminNotes() {
-		return this.adminNotes;
-	}
-
-	public void setAdminNotes(String adminNotes) {
-		this.adminNotes = adminNotes;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "lastAnnualUpdateEmailDate", length = 10)
-	public Date getLastAnnualUpdateEmailDate() {
-		return this.lastAnnualUpdateEmailDate;
-	}
-
-	public void setLastAnnualUpdateEmailDate(Date lastAnnualUpdateEmailDate) {
-		this.lastAnnualUpdateEmailDate = lastAnnualUpdateEmailDate;
 	}
 
 	@Column(name = "requestedByID")
@@ -301,15 +229,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.riskLevel = riskLevel;
 	}
 
-	@Column(name = "annualUpdateEmails")
-	public int getAnnualUpdateEmails() {
-		return annualUpdateEmails;
-	}
-
-	public void setAnnualUpdateEmails(int annualUpdateEmails) {
-		this.annualUpdateEmails = annualUpdateEmails;
-	}
-
 	@Column(name = "oqEmployees")
 	public String getOqEmployees() {
 		return oqEmployees;
@@ -369,13 +288,15 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	@Transient
 	public boolean isPaymentMethodStatusValid() {
-		if (!Strings.isEmpty(paymentMethod) && "Check".equals(paymentMethod))
-			return true;
-		if (!Strings.isEmpty(paymentMethodStatus)) {
-			if ("Valid".equals(paymentMethodStatus) || "Approved".equals(paymentMethodStatus))
+		if (paymentMethod == null)
+			return false;
+		if (paymentMethod.isCreditCard()) {
+			if ("Valid".equals(paymentMethodStatus))
 				return true;
+			return false;
 		}
-		return false;
+		// If Check
+		return true;
 	}
 
 	/**
@@ -383,19 +304,13 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 * 
 	 * @return
 	 */
-	public String getPaymentMethod() {
+	@Enumerated(EnumType.STRING)
+	public PaymentMethod getPaymentMethod() {
 		return paymentMethod;
 	}
 
-	public void setPaymentMethod(String paymentMethod) {
+	public void setPaymentMethod(PaymentMethod paymentMethod) {
 		this.paymentMethod = paymentMethod;
-	}
-
-	@Transient
-	public boolean isPaymentMethodCreditCard() {
-		if (!Strings.isEmpty(paymentMethod) && "Credit Card".equals(paymentMethod))
-			return true;
-		return false;
 	}
 
 	/**
@@ -425,79 +340,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.membershipDate = membershipDate;
 	}
 
-	/**
-	 * The last Invoiced amount
-	 * 
-	 * @return
-	 */
-	@Column(name = "billingAmount", nullable = false)
-	public int getBillingAmount() {
-		return this.billingAmount;
-	}
-
-	public void setBillingAmount(int billingAmount) {
-		this.billingAmount = billingAmount;
-	}
-
-	/**
-	 * The date we last sent an invoice to the contractor
-	 * 
-	 * @return
-	 */
-	@Temporal(TemporalType.DATE)
-	@Column(name = "lastInvoiceDate", length = 10)
-	public Date getLastInvoiceDate() {
-		return this.lastInvoiceDate;
-	}
-
-	public void setLastInvoiceDate(Date lastInvoiceDate) {
-		this.lastInvoiceDate = lastInvoiceDate;
-	}
-
-	// Payment Billing info
-	/**
-	 * This is not used anymore: Yes/No
-	 * 
-	 * @return
-	 */
-	@Column(name = "paid", nullable = true, length = 3)
-	public String getPaid() {
-		return this.paid;
-	}
-
-	public void setPaid(String paid) {
-		this.paid = paid;
-	}
-
-	/**
-	 * The date the contractor last paid their account in full
-	 * 
-	 * @return
-	 */
-	@Temporal(TemporalType.DATE)
-	@Column(name = "lastPayment", length = 10)
-	public Date getLastPayment() {
-		return this.lastPayment;
-	}
-
-	public void setLastPayment(Date lastPayment) {
-		this.lastPayment = lastPayment;
-	}
-
-	/**
-	 * The USD amount they paid on lastPayment date
-	 * 
-	 * @return
-	 */
-	@Column(name = "lastPaymentAmount")
-	public int getLastPaymentAmount() {
-		return this.lastPaymentAmount;
-	}
-
-	public void setLastPaymentAmount(int lastPaymentAmount) {
-		this.lastPaymentAmount = lastPaymentAmount;
-	}
-
 	@Temporal(TemporalType.TIMESTAMP)
 	/**
 	 * The date the contractor last reviewed their facility list
@@ -512,7 +354,11 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	/**
 	 * The date the lastPayment expires and the contractor is due to pay another
-	 * "period's" membership fee
+	 * "period's" membership fee. This should NEVER be null.
+	 * 
+	 * UPDATE contractor_info, accounts SET paymentExpires = creationDate
+	 * WHERE (paymentExpires = '0000-00-00' or paymentExpires is null) 
+	 *  AND contractor_info.id = accounts.id;
 	 * 
 	 * @return
 	 */
@@ -524,30 +370,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	public void setPaymentExpires(Date paymentExpires) {
 		this.paymentExpires = paymentExpires;
-	}
-
-	/**
-	 * The annual membership fee for this contractor
-	 * 
-	 * @return
-	 */
-	@Column(name = "newBillingAmount", nullable = false)
-	public int getNewBillingAmount() {
-		return this.newBillingAmount;
-	}
-
-	public void setNewBillingAmount(int newBillingAmount) {
-		this.newBillingAmount = newBillingAmount;
-	}
-
-	@Transient
-	public int getActivationFee() {
-		if (newBillingAmount == 0)
-			return 0;
-		if (lastPayment == null)
-			return 99;
-		else
-			return 199;
 	}
 
 	// Other relationships //
@@ -578,55 +400,21 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	// /// Transient/Helper Methods ///////
 
 	@Transient
+	@Deprecated
 	public int getUpgradeAmountOwed() {
-		if (!isActiveB())
-			// Inactive contractor must renew their account, they can't just
-			// upgrade
-			return 0;
-		if (!isMustPayB())
-			return 0;
-		if (paymentExpires != null && lastPayment != null && lastInvoiceDate != null) {
-			// TODO we really shouldn't have to check for nulls, we should fix
-			// the root cause instead
-			if (lastInvoiceDate.before(lastPayment) || lastInvoiceDate.equals(lastPayment))
-				// already paid the invoice
-				return 0;
-			if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) < 75)
-				// This is an invoice for annual payment
-				return 0;
-		}
-		// Removed this 10/27/08 because billingAmount actually reflect the
-		// difference, not the total amount required
-		if (billingAmount < lastPaymentAmount)
-			// they already overpaid (probably garbage data)
-			return 0;
-
-		// return newBillingAmount - lastPaymentAmount;
-		// Examples:
-		// $699 - $399
-		// $1197 - $225 in cases of 3 year billing cycles
-		return billingAmount - lastPaymentAmount;
+		return balance;
 	}
 
 	@Transient
+	@Deprecated
 	public int getAnnualAmountOwed() {
-		if (!isMustPayB())
-			return 0;
-		if (isActiveB() && paymentExpires != null && lastPayment != null && lastInvoiceDate != null) {
-			if (lastInvoiceDate.before(lastPayment) || lastInvoiceDate.equals(lastPayment))
-				// already paid the invoice
-				return 0;
-			if (DateBean.getDateDifference(lastInvoiceDate, paymentExpires) >= 75)
-				// This is an invoice for upgrade payment
-				return 0;
-		}
-		return billingAmount;
+		return balance;
 	}
 
 	@Transient
 	public boolean isPaymentOverdue() {
-		if (getUpgradeAmountOwed() > 0 || getAnnualAmountOwed() > 0)
-			if (lastInvoiceDate != null && lastInvoiceDate.before(new Date()))
+		for(Invoice invoice : getInvoices())
+			if (!invoice.isPaid() && invoice.getDueDate().before(new Date()))
 				return true;
 		return false;
 	}

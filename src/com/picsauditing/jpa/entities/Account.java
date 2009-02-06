@@ -262,7 +262,10 @@ public class Account extends BaseTable implements java.io.Serializable {
 		this.emailConfirmedDate = emailConfirmedDate;
 	}
 
-	@Column(name = "type")
+	/**
+	 * Contractor, Operator, Admin, Corporate
+	 * @return
+	 */
 	public String getType() {
 		return type;
 	}

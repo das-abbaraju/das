@@ -13,4 +13,8 @@ public enum PaymentMethod {
 	public String getDescription(){
 		return description;
 	}
+	
+	public boolean isCreditCard() {
+		return this.equals(CreditCard);
+	}
 }

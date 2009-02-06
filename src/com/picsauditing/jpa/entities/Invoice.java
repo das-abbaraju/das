@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -22,6 +24,10 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 	private Date dueDate;
 	private boolean paid;
 	private int totalAmount;
+	private Date paidDate;
+	private PaymentMethod paymentMethod;
+	private String checkNumber;
+	private String transactionID;
 	private String notes;
 	
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
@@ -59,6 +65,40 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 
 	public void setTotalAmount(int totalAmount) {
 		this.totalAmount = totalAmount;
+	}
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getPaidDate() {
+		return paidDate;
+	}
+
+	public void setPaidDate(Date paidDate) {
+		this.paidDate = paidDate;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public PaymentMethod getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(PaymentMethod paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
+
+	public String getCheckNumber() {
+		return checkNumber;
+	}
+
+	public void setCheckNumber(String checkNumber) {
+		this.checkNumber = checkNumber;
+	}
+
+	public String getTransactionID() {
+		return transactionID;
+	}
+
+	public void setTransactionID(String transactionID) {
+		this.transactionID = transactionID;
 	}
 
 	public String getNotes() {
