@@ -20,7 +20,7 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 	private Account account;
 	private Date dueDate;
 	private boolean paid;
-	private String totalAmount;
+	private int totalAmount;
 	private String notes;
 	
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
@@ -52,11 +52,11 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 		this.paid = paid;
 	}
 
-	public String getTotalAmount() {
+	public int getTotalAmount() {
 		return totalAmount;
 	}
 
-	public void setTotalAmount(String totalAmount) {
+	public void setTotalAmount(int totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 
