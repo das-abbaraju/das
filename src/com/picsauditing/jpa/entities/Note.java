@@ -52,7 +52,7 @@ public class Note extends BaseTable implements java.io.Serializable {
 		this.account = account;
 	}
 
-	@Column(name = "summary", nullable = false)
+	@Column(name = "summary", length = 150, nullable = false)
 	public String getSummary() {
 		return summary;
 	}
