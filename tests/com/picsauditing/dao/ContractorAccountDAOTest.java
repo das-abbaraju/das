@@ -70,11 +70,7 @@ public class ContractorAccountDAOTest {
 		contractoraccount.setEmailConfirmedDate(cal.getTime());
 		contractoraccount.setTaxId("test17701");
 		contractoraccount.setMainTrade("Consulting");
-		contractoraccount.setTrades("Contractors Prescreening");
-		contractoraccount.setSubTrades("junit testing");
 		contractoraccount.setAccountDate(cal.getTime());
-		contractoraccount.setPaid("yes");
-		contractoraccount.setLastPayment(cal.getTime());
 		contractoraccount.setMembershipDate(cal.getTime());
 		contractoraccount.setPayingFacilities(10);
 		contractoraccount.setRiskLevel(LowMedHigh.Med);
@@ -84,7 +80,7 @@ public class ContractorAccountDAOTest {
 
 		List<ContractorAccount> testFindWhere = contractoraccountDAO
 				.findWhere("main_Trade LIKE 'Consulting' AND taxId = 'test17701'");
-		assertEquals("junit testing", testFindWhere.get(0).getSubTrades());
+		assertEquals(LowMedHigh.Med, testFindWhere.get(0).getRiskLevel());
 
 		accountDAO.remove(contractoraccount.getId());
 		ContractorAccount contractoraccount1 = (ContractorAccount) accountDAO.find(contractoraccount.getId());

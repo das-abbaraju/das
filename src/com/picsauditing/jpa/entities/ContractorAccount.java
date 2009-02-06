@@ -1,7 +1,6 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,8 +28,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.util.Strings;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
 
 @SuppressWarnings("serial")
@@ -71,6 +68,9 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private InvoiceFee membershipLevel;
 	private InvoiceFee newMembershipLevel;
 	private List<Invoice> invoices = new ArrayList<Invoice>();
+
+	private boolean needsRecalculation;
+	private Date lastRecalculation;
 
 	protected List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 	protected List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
@@ -372,6 +372,22 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.paymentExpires = paymentExpires;
 	}
 
+	public boolean isNeedsRecalculation() {
+		return needsRecalculation;
+	}
+
+	public void setNeedsRecalculation(boolean needsRecalculation) {
+		this.needsRecalculation = needsRecalculation;
+	}
+
+	public Date getLastRecalculation() {
+		return lastRecalculation;
+	}
+
+	public void setLastRecalculation(Date lastRecalculation) {
+		this.lastRecalculation = lastRecalculation;
+	}
+	
 	// Other relationships //
 
 	@ManyToOne

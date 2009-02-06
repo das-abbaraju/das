@@ -25,6 +25,7 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailSender;
@@ -228,7 +229,16 @@ public class FlagCalculator2 {
 		// long startTime = System.currentTimeMillis();
 
 		ContractorAccount contractor = contractorDAO.find(conID);
-
+		
+		try {
+			BillingCalculatorSingle billSingle = new BillingCalculatorSingle();
+			InvoiceFee fee = billSingle.calculateAnnualFee(contractor);
+			contractor.setNewMembershipLevel(fee);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		
 		// debug("FlagCalculator: Operator data ready...starting calculations");
 		FlagCalculatorSingle calcSingle = new FlagCalculatorSingle();
 

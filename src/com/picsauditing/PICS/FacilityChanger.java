@@ -98,8 +98,15 @@ public class FacilityChanger {
 			if (co.getOperatorAccount().equals(operator)) {
 				contractorOperatorDAO.remove(co);
 				contractor.getOperators().remove(co);
-				contractor.addNote(permissions, "Removed " + co.getContractorAccount().getName()
+				
+				Note note = new Note();
+				note.setAccount(contractor);
+				note.setAuditColumns(new User(User.SYSTEM));
+				note.setSummary("Removed " + co.getContractorAccount().getName()
 						+ " from " + co.getOperatorAccount().getName() + "'s db");
+				note.setNoteCategory(NoteCategory.OperatorChanges);
+				noteDAO.save(note);
+
 				auditBuilder.buildAudits(contractor);
 				contractorAccountDAO.save(contractor);
 				return true;

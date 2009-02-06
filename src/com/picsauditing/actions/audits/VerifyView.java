@@ -12,18 +12,19 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
+import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
@@ -41,10 +42,13 @@ public class VerifyView extends ContractorActionSupport {
 	protected String emailBody;
 	protected String emailSubject;
 	protected EmailQueue previewEmail;
+	protected NoteDAO noteDAO;
 
-	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO, AuditDataDAO auditDataDAO) {
+	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO,
+			AuditDataDAO auditDataDAO, NoteDAO noteDAO) {
 		super(accountDao, contractorAuditDAO);
 		this.auditDataDAO = auditDataDAO;
+		this.noteDAO = noteDAO;
 	}
 
 	public String execute() throws Exception {
@@ -66,8 +70,8 @@ public class VerifyView extends ContractorActionSupport {
 			if (conAudit.getAuditType().isAnnualAddendum()) {
 				AuditData auditData = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2064);
 				for (OshaAudit oshaAudit : conAudit.getOshas()) {
-					if (auditData != null && "Yes".equals(auditData.getAnswer()) 
-							&& oshaAudit.isCorporate() && oshaAudit.getType().equals(OshaType.OSHA)) {
+					if (auditData != null && "Yes".equals(auditData.getAnswer()) && oshaAudit.isCorporate()
+							&& oshaAudit.getType().equals(OshaType.OSHA)) {
 						oshas.add(oshaAudit);
 					}
 				}
@@ -105,7 +109,7 @@ public class VerifyView extends ContractorActionSupport {
 		for (ContractorAudit conAudit : getVerificationAudits()) {
 			if (conAudit.getAuditType().isAnnualAddendum()) {
 				sb.append("\n\n");
-				sb.append(conAudit.getAuditFor()+ " PQF Update");
+				sb.append(conAudit.getAuditFor() + " PQF Update");
 				sb.append("\n");
 				sb.append("-------------------------------");
 				sb.append("\n");
@@ -130,7 +134,7 @@ public class VerifyView extends ContractorActionSupport {
 					if (!ad.isVerified()) {
 						sb.append(ad.getQuestion().getSubCategory().getCategory().getNumber() + "."
 								+ ad.getQuestion().getSubCategory().getNumber() + "." + ad.getQuestion().getNumber());
-						sb.append(":"+ad.getQuestion().getSubCategory().getSubCategory() + "/"
+						sb.append(":" + ad.getQuestion().getSubCategory().getSubCategory() + "/"
 								+ ad.getQuestion().getColumnHeaderOrQuestion());
 						sb.append("\n");
 						sb.append("Comment : " + ad.getComment());
@@ -178,18 +182,8 @@ public class VerifyView extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
-	public String getContractorNotes() {
-		String notes = contractor.getNotes();
-		notes = notes.replace("\n", "<br>");
-
-		int position = 0;
-		for (int i = 0; i < 5; i++) {
-			position = notes.indexOf("<br>", position + 1);
-			if (position == -1)
-				return notes;
-		}
-
-		notes = notes.substring(0, position);
+	public List<Note> getContractorNotes() {
+		List<Note> notes = noteDAO.findWhere(contractor.getId(), "noteCategory = 'Audits'", 10);
 		return notes;
 	}
 

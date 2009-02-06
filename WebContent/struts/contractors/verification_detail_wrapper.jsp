@@ -242,12 +242,13 @@
 		<tr bgcolor="#003366" class="whiteTitle">
 			<td>Contractor Notes:</td>
 		</tr>
-		<tr class="blueMain">
-			<td><s:property value="contractorNotes"
-				escape="false" /><br />
-			<a href="add_notes.jsp?id=<s:property value="id" />">...show all
-			notes</a></td>
-		</tr>
+		<s:iterator value="contractorNotes">
+			<tr class="blueMain">
+				<td><s:property value="summary"/></td>
+			</tr>
+		</s:iterator>
+		<tr><td><a href="add_notes.jsp?id=<s:property value="id" />">...show all
+				notes</a></td></tr>
 		<tr class="blueMain">
 			<td><div class="buttons">
 					<button name="button" onclick="previewEmail();">Preview Email</button>

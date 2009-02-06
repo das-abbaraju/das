@@ -6,7 +6,7 @@ import java.util.Vector;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.AuditBuilder;
-import com.picsauditing.PICS.BillContractor;
+import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.ContractorValidator;
 import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.access.OpPerms;
@@ -14,13 +14,9 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.Industry;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.util.FileUtils;
-import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
 public class ContractorEdit extends ContractorActionSupport implements Preparable {
@@ -102,10 +98,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 					contractor = accountDao.save(contractor);
 					auditBuilder.buildAudits(contractor);
-					BillContractor billContractor = new BillContractor();
-					billContractor.setContractor(contractor.getIdString());
-					int newBillingAmount = billContractor.calculatePrice();
-					contractor.setNewBillingAmount(newBillingAmount);
+					BillingCalculatorSingle billCalculatorSingle = new BillingCalculatorSingle();
+					InvoiceFee invoiceFee = billCalculatorSingle.calculateAnnualFee(contractor);
+					contractor.setNewMembershipLevel(invoiceFee);
 					contractor = accountDao.save(contractor);
 					flagCalculator2.runByContractor(contractor.getId());
 					addActionMessage("Successfully modified " + contractor.getName());

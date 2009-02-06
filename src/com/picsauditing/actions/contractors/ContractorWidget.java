@@ -12,6 +12,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.Invoice;
 
 /**
  * Widgets for a single contractor
@@ -43,19 +44,15 @@ public class ContractorWidget extends ContractorActionSupport {
 			openTasks = new ArrayList<String>();
 			// get the balance due
 			// TODO - do some more testing with this
-			if (contractor.getUpgradeAmountOwed() > 0) {
-				openTasks.add("You have an invoice upgrade of <b>$"
-						+ contractor.getUpgradeAmountOwed() + "</b> due "
-						+ contractor.getLastInvoiceDate()
-						+ ", please call 949-387-1940 x708 to make a payment");
+			if (contractor.getBalance() > 0) {
+				for(Invoice invoice : contractor.getInvoices()) {
+					if(!invoice.isPaid() && invoice.getTotalAmount() > 0) {
+						openTasks.add("You have an invoice of <b>$"
+								+ invoice.getTotalAmount() + "</b> due " + invoice.getDueDate()
+								+ ", please call 949-387-1940 x708 to make a payment");
+					}
+				}		
 			}
-			if (contractor.getAnnualAmountOwed() > 0) {
-				openTasks
-						.add("You have an invoice of <b>$"
-								+ (contractor.getAnnualAmountOwed())
-								+ "</b>, please call 949-387-1940 x708 to make a payment");
-			}
-
 			if (! contractor.isPaymentMethodStatusValid()) {
 				openTasks
 				.add("Please <a href=\"ContractorEdit.action?id=" +  contractor.getId() + "\">provide a valid payment method</a>");
