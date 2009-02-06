@@ -460,7 +460,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 * 
 	 * @return
 	 */
-	@Column(name = "paid", nullable = false, length = 3)
+	@Column(name = "paid", nullable = true, length = 3)
 	public String getPaid() {
 		return this.paid;
 	}

@@ -21,7 +21,7 @@ public class ContractorValidator {
 			errorMessages.addElement("Please indicate the account type.");
 			return errorMessages;
 		}
-		
+
 		// Username
 		if (Strings.isEmpty(contractor.getUsername()))
 			errorMessages.addElement("Please fill in the Username field.");
@@ -39,7 +39,7 @@ public class ContractorValidator {
 			// They are trying to set/reset the password
 			if (!password1.equals(password2) && !password1.equals(contractor.getPassword()))
 				errorMessages.addElement("The passwords don't match");
-			
+
 			if (password1.length() < MIN_PASSWORD_LENGTH)
 				errorMessages.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH
 						+ " characters in length.");
@@ -52,9 +52,7 @@ public class ContractorValidator {
 				contractor.setPasswordChange(new Date());
 			}
 		}
-		if (Strings.isEmpty(contractor.getPassword()))
-			errorMessages.addElement("Please fill in the Contact field.");
-		
+
 		// Contact and Address info
 		if (Strings.isEmpty(contractor.getContact()))
 			errorMessages.addElement("Please fill in the Contact field.");
@@ -67,9 +65,26 @@ public class ContractorValidator {
 		if (Strings.isEmpty(contractor.getPhone()))
 			errorMessages.addElement("Please fill in the Phone field.");
 
-		if (Strings.isEmpty(contractor.getEmail())
-				|| !Utilities.isValidEmail(contractor.getEmail()))
-			errorMessages.addElement("Please enter a valid email address. This is our main way of communicating with you.");
+		if (Strings.isEmpty(contractor.getEmail()) || !Utilities.isValidEmail(contractor.getEmail()))
+			errorMessages
+					.addElement("Please enter a valid email address. This is our main way of communicating with you.");
+		
+		// Risk Level
+		if(contractor.getRiskLevel() == null)
+			errorMessages
+			.addElement("Please select a riskLevel");
+		
+		// Tax Id
+		if (!java.util.regex.Pattern.matches("\\d{9}", contractor.getTaxId()))
+			errorMessages.addElement("Pleae enter your 9 digit tax ID with only digits 0-9, no dashes.");
+		else if (!verifyTaxID(contractor))
+			errorMessages.addElement("The tax ID <b>" + contractor.getTaxId()
+					+ "</b> already exists.  Please contact a company representative.");
+		// Main Trade
+		if (Strings.isEmpty(contractor.getMainTrade())
+				|| contractor.getMainTrade().equals(TradesBean.DEFAULT_SELECT_TRADE))
+			errorMessages.addElement("Please select a main trade");
+
 		return errorMessages;
 	}
 
@@ -80,4 +95,13 @@ public class ContractorValidator {
 
 		return false;
 	}
+
+	public boolean verifyTaxID(ContractorAccount contractorAccount) {
+		ContractorAccount cAccount = contractorAccountDAO.findName(contractorAccount.getTaxId());
+		if (cAccount == null || cAccount.equals(contractorAccount))
+			return true;
+
+		return false;
+	}
+
 }

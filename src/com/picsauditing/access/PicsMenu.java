@@ -38,10 +38,6 @@ public class PicsMenu {
 
 		if (!permissions.isLoggedIn()) {
 			subMenu = menu.addChild("Home", "index.jsp");
-			subMenu = menu.addChild("Register", "contractor_new_instructions.jsp");
-			subMenu = menu.addChild("Services", "services.jsp");
-			subMenu = menu.addChild("Clients", "clients.jsp");
-			subMenu = menu.addChild("Contact", "contact.jsp");
 			return menu;
 		}
 

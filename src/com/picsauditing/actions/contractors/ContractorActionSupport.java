@@ -21,6 +21,7 @@ import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -336,7 +337,15 @@ public class ContractorActionSupport extends PicsActionSupport {
 	public String[] getCountryList() {
 		return Inputs.COUNTRY_ARRAY;
 	}
+
+	public Industry[] getIndustryList() {
+		return Industry.values();
+	}
 	
+	public LowMedHigh[] getRiskLevelList() {
+		return LowMedHigh.values();
+	}
+
 	protected void addNote(ContractorAccount contractor, String newNote) throws Exception {
 		addNote(contractor, newNote, NoteCategory.General);
 	}

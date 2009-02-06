@@ -61,8 +61,7 @@
 <% } %></p>
 	</div>
 </div>
-<% if (!permissions.isContractor()) { %>
-
+<% if (permissions.getAccountId() > 0 && !permissions.isContractor()) { %>
 
 <div id="headersearch">
 <form action="ContractorSearch.action" method="post">
@@ -99,11 +98,12 @@
 <div id="content">
 <div id="helpbox">
 	<a href='javascript:D2H_ShowHelp(<decorator:getProperty property="meta.contextID" default="1" />, 
-	<% if(permissions.isContractor()) { %>"help/c/default.htm"
-	<% } else if(permissions.isOperator() || permissions.isCorporate()) { %>"help/o/default.htm"
-	<% } else { %>"help/a/default.htm"
-	<% } %>, "_BLANK", 1)'>Help Center</a> |
-	
+	<% if(permissions.getAccountId() > 0) { %>
+		<% if(permissions.isContractor()) { %>"help/c/default.htm"
+		<% } else if(permissions.isOperator() || permissions.isCorporate()) { %>"help/o/default.htm"
+		<% } else { %>"help/a/default.htm"
+		<% } %>, "_BLANK", 1)'>Help Center</a> |
+	<% } %>
 	<a id="_lpChatBtn"
 	onmouseover="showChat();"
 	onmouseout="hideChat();"

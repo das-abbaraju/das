@@ -122,6 +122,17 @@ public class ContractorAccountDAO extends PicsDAO {
 		}	
 	}
 
+	public ContractorAccount findTaxID(String taxId) {
+		if (taxId == null)
+			taxId = "";
+		try {
+			Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE taxId = " + "'" + taxId + "'");
+			return (ContractorAccount) query.getSingleResult();
+		} catch (NoResultException e) {	
+			return null;
+		}	
+	}
+	
 	public int getActiveContractorCounts(String where) {
 		if (where.equals(""))
 			where = "";

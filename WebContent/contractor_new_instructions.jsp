@@ -27,7 +27,7 @@
 				button below.</td>
 			</tr>
 		</table>
-		<p align="center"><a href="contractor_new.jsp"><img src="images/button_continue.jpg" width="84"
+		<p align="center"><a href="ContractorRegistration.action"><img src="images/button_continue.jpg" width="84"
 			height="27" border="0"></a></p>
 		</td>
 	</tr>

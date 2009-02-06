@@ -134,14 +134,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		return SUCCESS;
 	}
 
-	public Industry[] getIndustryList() {
-		return Industry.values();
-	}
-
-	public List<AuditQuestion> getTradeList() throws Exception {
-		return auditQuestionDAO.findQuestionByType("Service");
-	}
-
 	public void setLogo(File logo) {
 		this.logo = logo;
 	}
@@ -164,8 +156,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		this.brochureFileName = brochureFileName;
 	}
 
-	public LowMedHigh[] getRiskLevelList() {
-		return LowMedHigh.values();
+	public List<AuditQuestion> getTradeList() throws Exception {
+		return auditQuestionDAO.findQuestionByType("Service");
 	}
 
 	public String getPassword1() {
