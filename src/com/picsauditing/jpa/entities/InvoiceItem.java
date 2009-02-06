@@ -15,6 +15,15 @@ public class InvoiceItem extends BaseTable implements java.io.Serializable {
 	private InvoiceFee invoiceFee;
 	private int amount;
 	private String description;
+	
+	public InvoiceItem() {
+	}
+
+	public InvoiceItem(InvoiceFee fee) {
+		super();
+		invoiceFee = fee;
+		amount = fee.getAmount();
+	}
 
 	@ManyToOne
 	@JoinColumn(name = "invoiceID")
