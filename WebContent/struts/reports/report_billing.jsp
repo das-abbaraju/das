@@ -34,9 +34,9 @@ This page is still under Development.  Do not use.
 			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')" /></a></td>
 			<td class="right">$<s:property value="get('defaultAmount')"/></td>
 			<td><s:property value="get('billingStatus')"/></td>
-			<td class="right"><s:property value="get('creationDate')"/></td>
-			<td class="right"><s:property value="get('lastUpgradeDate')"/></td>
-			<td class="right"><s:property value="get('paymentExpires')"/></td>
+			<td class="right"><s:date name="get('creationDate')" format="M/d/yy"/></td>
+			<td class="right"><s:date name="get('lastUpgradeDate')" format="M/d/yy"/></td>
+			<td class="right"><s:date name="get('paymentExpires')" format="M/d/yy"/></td>
 			<td><a href="BillingDetail.action?id=<s:property value="get('id')"/>&target=BILLING_DETAIL">Billing Detail</a></td>
 		</tr>
 	</s:iterator>

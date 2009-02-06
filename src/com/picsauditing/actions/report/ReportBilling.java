@@ -19,6 +19,7 @@ public class ReportBilling extends ReportAccount {
 		sql.addField("f2.fee");
 		sql.addField("f2.defaultAmount");
 		sql.addField("a.creationDate");
+		sql.addField("c.lastUpgradeDate");
 		
 		sql.addWhere("c.mustPay = 'Yes'");
 		
