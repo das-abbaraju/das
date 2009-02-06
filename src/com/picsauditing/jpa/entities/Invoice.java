@@ -16,7 +16,8 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "invoice")
 public class Invoice extends BaseTable implements java.io.Serializable {
-
+	public final static int daysUntilDue = 30;
+	
 	private Account account;
 	private Date dueDate;
 	private boolean paid;
