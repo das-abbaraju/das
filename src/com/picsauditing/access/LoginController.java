@@ -52,7 +52,7 @@ public class LoginController extends DataBean {
 			return false;
 		}
 
-		///////////////////
+		// /////////////////
 		this.doLogin(request.getSession(), true);
 		logAttempt(permissions, username, password, request);
 		postLogin(request, response);
@@ -122,7 +122,7 @@ public class LoginController extends DataBean {
 
 		if (!getAccountByUsername(username))
 			return "No account exists with that username";
-		
+
 		// After this point we should always have a user or aBean set != null
 
 		if (isUser) {
@@ -131,10 +131,10 @@ public class LoginController extends DataBean {
 
 			if (user.getIsActive() != YesNo.Yes)
 				return "This user account is no longer active.<br>Please contact your administrator to reactivate it.";
-			
+
 			if (user.getLockUntil() != null && user.getLockUntil().after(new Date()))
 				return "This account is locked because of too many failed attempts";
-			
+
 			if (!user.getPassword().equals(password)) {
 				user.setFailedAttempts(user.getFailedAttempts() + 1);
 				// TODO parameterize this 7 here
@@ -154,8 +154,9 @@ public class LoginController extends DataBean {
 			if (!aBean.password.equals(password))
 				return "The password is not correct";
 
-			//if (!aBean.active.startsWith("Y"))
-				//return "This user does not have permission to login.<br>Please contact PICS to activate your account.";
+			// if (!aBean.active.startsWith("Y"))
+			// return "This user does not have permission to login.<br>Please
+			// contact PICS to activate your account.";
 		}
 
 		// We are now ready to actually do the login (doLogin)
@@ -229,11 +230,14 @@ public class LoginController extends DataBean {
 				pBean.oBean.setFromDB(permissions.getAccountIdString());
 				permissions.setCanSeeAudit(pBean.oBean.getCanSeeAuditIDSet());
 				permissions.setApprovesRelationships(pBean.oBean.isApprovesRelationships());
-				if(permissions.isOperator()) {
-					OperatorAccount operator = (OperatorAccount) user.getAccount();
-					for(Facility facility : operator.getCorporateFacilities()) {
+				OperatorAccount operator = (OperatorAccount) user.getAccount();
+				if (permissions.isOperator()) {
+					for (Facility facility : operator.getCorporateFacilities())
 						permissions.getCorporateParent().add(facility.getCorporate().getId());
-					}
+				}
+				if (permissions.isCorporate()) {
+					for (Facility facility : operator.getOperatorFacilities())
+						permissions.getOperatorChildren().add(facility.getOperator().getId());
 				}
 			}
 			// TODO we should allow each account to set their own timeouts

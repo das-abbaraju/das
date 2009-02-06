@@ -4,6 +4,7 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.Utilities;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -50,6 +51,21 @@ public class AccountDAO extends PicsDAO {
 		if (where.length() > 0)
 			where = "WHERE " + where;
 		Query query = em.createQuery("select a from Account a " + where + " order by a.name");
+		return query.getResultList();
+	}
+	
+	public List<Account> findViewableOperators(Permissions permissions) {
+		String where = "";
+		if (permissions.isOperator()) {
+			where = " AND (id IN (:accountID,1,2)" +
+				" OR id IN (SELECT corporate.id FROM Facility WHERE operator.id = :accountID))";
+		}
+		if (permissions.isCorporate()) {
+			where = " AND (id IN (:accountID,1,2)" +
+				" OR id IN (SELECT operator.id FROM Facility WHERE corporate.id = :accountID))";
+		}
+		Query query = em.createQuery("FROM Account a WHERE type != 'Contractor' AND active = 'Y' " + where + " ORDER BY a.type, a.name");
+		setOptionalParameter(query, "accountID", permissions.getAccountId());
 		return query.getResultList();
 	}
 	

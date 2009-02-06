@@ -133,7 +133,7 @@
 					</s:else>
 				</li>
 				<li>
-					<s:if test="contractor.paymentMethodCreditCard">
+					<s:if test="contractor.paymentMethod.creditCard">
 						<s:set name="creditcard_show" value="'inline'"/>								
 						<s:set name="check_show" value="'none'"/>
 					</s:if>
@@ -277,10 +277,6 @@
 							href="send_welcome_email.jsp?id=<s:property value="id"/>"
 							onClick="return confirm('Are you sure you want to send a welcome email to <s:property value="contractor.name"/>?');">Send
 							Welcome Email</a>
-					</li>
-					<li><label>Only Certificates?</label>
-						<s:radio list="#{'Yes':'Yes','No':'No'}"
-							name="contractor.isOnlyCerts" value="contractor.isOnlyCerts" theme="pics" />
 					</li>
 					<li><label>Must Pay?</label>
 						<s:radio list="#{'Yes':'Yes','No':'No'}" name="contractor.mustPay"

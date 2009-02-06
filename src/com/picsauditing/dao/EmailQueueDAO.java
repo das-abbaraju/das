@@ -52,4 +52,13 @@ public class EmailQueueDAO extends PicsDAO {
 		query.setMaxResults(limit);
 		return query.getResultList();
 	}
+
+	@SuppressWarnings("unchecked")
+	public List<EmailQueue> findByContractorId(int id) {
+		Query query = em.createQuery("FROM EmailQueue WHERE contractorAccount.id = :id"
+				+ " ORDER BY sentDate DESC");
+		query.setMaxResults(25);
+		query.setParameter("id", id);
+		return query.getResultList();
+	}
 }

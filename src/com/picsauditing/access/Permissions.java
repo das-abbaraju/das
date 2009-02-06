@@ -28,13 +28,15 @@ import com.picsauditing.util.SpringUtils;
  * very small
  */
 public class Permissions implements Serializable {
-
+	private static final long serialVersionUID = -3120292424348289561L;
+	
 	private int userID;
 	private boolean loggedIn = false;
 	private Set<Integer> groups = new HashSet<Integer>();
 	private Set<UserAccess> permissions = new HashSet<UserAccess>();
 	private Set<Integer> canSeeAudits = new HashSet<Integer>();
 	private Set<Integer> corporateParent = new HashSet<Integer>();
+	private Set<Integer> operatorChildren = new HashSet<Integer>();
 	private String username;
 	private String name;
 	private int accountID;
@@ -367,8 +369,6 @@ public class Permissions implements Serializable {
 	}
 
 	public Set<Integer> getCorporateParent() {
-		if(corporateParent == null)
-			corporateParent = new HashSet<Integer>();
 		return corporateParent;
 	}
 
@@ -376,6 +376,25 @@ public class Permissions implements Serializable {
 		this.corporateParent = corporateParent;
 	}
 	
+	public Set<Integer> getOperatorChildren() {
+		return operatorChildren;
+	}
+
+	public void setOperatorChildren(Set<Integer> operatorChildren) {
+		this.operatorChildren = operatorChildren;
+	}
+	
+	
+	public Set<Integer> getVisibleAccounts() {
+		Set<Integer> visibleAccounts = new HashSet<Integer>();
+		visibleAccounts.add(accountID);
+		if (isCorporate())
+			visibleAccounts.addAll(operatorChildren);
+		if (isOperator())
+			visibleAccounts.addAll(corporateParent);
+		return visibleAccounts;
+	}
+
 	public boolean isActive() {
 		return active;
 	}
