@@ -2,10 +2,9 @@ package com.picsauditing.util;
 
 import org.apache.struts2.ServletActionContext;
 
-import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.access.Permissions;
 
-public class ReportFilter extends ActionSupport {
+public class ReportFilter {
 	protected String destinationAction = "";
 	protected boolean ajax = false;
 	protected boolean allowCollapsed = true;

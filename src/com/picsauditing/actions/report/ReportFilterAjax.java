@@ -33,7 +33,6 @@ public class ReportFilterAjax extends PicsActionSupport {
 				ReportFilterContractor filter = wizardSession.getContractorFilter();
 				filter.setDestinationAction("ContractorList");
 				filter.setVisible("Y"); // default to only active contractors
-				filter.setShowEmailSentDate(true);
 				filter.setShowEmailTemplate(true);
 				filter.setEmailListType(ListType.Contractor);
 				this.filter = filter;
@@ -42,7 +41,6 @@ public class ReportFilterAjax extends PicsActionSupport {
 				ReportFilterAudit filter = wizardSession.getAuditFilter();
 				filter.setDestinationAction("ReportAuditList");
 				filter.setVisible("Y"); // default to only active contractors
-				filter.setShowEmailSentDate(true);
 				filter.setShowEmailTemplate(true);
 				filter.setEmailListType(ListType.Audit);
 				this.filter = filter;

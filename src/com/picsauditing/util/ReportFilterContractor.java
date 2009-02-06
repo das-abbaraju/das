@@ -40,7 +40,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showAssignedCon = false;
 	protected boolean showInParentCorporation = false;
 	protected boolean showWaitingOn = false;
-	protected boolean showEmailSentDate = false;
 	protected boolean showEmailTemplate = false;
 	protected boolean showBillingState = false;
 
@@ -161,14 +160,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowWaitingOn(boolean showWaitingOn) {
 		this.showWaitingOn = showWaitingOn;
-	}
-
-	public boolean isShowEmailSentDate() {
-		return showEmailSentDate;
-	}
-
-	public void setShowEmailSentDate(boolean showEmailSentDate) {
-		this.showEmailSentDate = showEmailSentDate;
 	}
 
 	public boolean isShowEmailTemplate() {

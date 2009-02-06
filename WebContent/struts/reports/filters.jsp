@@ -422,9 +422,7 @@
 		<div class="filterOption">
 			<s:select list="filter.emailTemplateList" headerKey="0" headerValue="-Email Template-" cssClass="forms" name="filter.emailtemplate" listKey="id" listValue="templateName"/>
 		</div>
-	</s:if>
 	
-	<s:if test="filter.showEmailSentDate">
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_emailSentDate'); return false;">Email Sent Date</a> 
 			<span id="form1_emailSentDate_query">= ALL</span><br /> 
 			<span id="form1_emailSentDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="8" 
