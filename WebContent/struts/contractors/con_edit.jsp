@@ -116,7 +116,7 @@
 					<li><label>Next Billing Date:</label> <s:date
 						name="contractor.paymentExpires" format="MMM d, yyyy" /></li>
 					<li><label>Next Billing Amount:</label> $<s:property
-						value="contractor.newBillingAmount" /> USD</li>
+						value="contractor.newMembershipLevel.amount" /> USD</li>
 				</s:if>
 				<s:else>
 					<li><label>Membership Fee:</label> $<s:property
@@ -290,38 +290,6 @@
 							id="anchormembershipDate" name="anchormembershipDate" 
 							onclick="cal1.select($('membershipDate'), 'anchormembershipDate','MM/dd/yyyy'); return false;">
 							<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-					</li>
-					<li><label>Last Invoice:</label>
-						USD <s:textfield name="contractor.billingAmount" size="6" /> on 
-						<input name="contractor.lastInvoiceDate" id="lastInvoiceDate" 
-							type="text" class="forms" size="10" 
-							value="<s:date name="contractor.lastInvoiceDate" format="MM/dd/yyyy" />" />
-						<a href="#" 
-							id="anchorlastInvoiceDate" name="anchorlastInvoiceDate" 
-							onclick="cal1.select($('lastInvoiceDate'), 'anchorlastInvoiceDate','MM/dd/yyyy'); return false;">
-							<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-					</li>
-					<li><label>Last Payment:</label>
-						USD <s:textfield name="contractor.lastPaymentAmount" size="6" /> on 
-						<input name="contractor.lastPayment" id="lastPayment" 
-							type="text" class="forms" size="10" 
-							value="<s:date name="contractor.lastPayment" format="MM/dd/yyyy" />" />
-						<a href="#" 
-							id="anchorlastPayment" name="anchorlastPayment" 
-							onclick="cal1.select($('lastPayment'), 'anchorlastPayment','MM/dd/yyyy'); return false;">
-							<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-					</li>
-					<li><label>Next Billing Date:</label>
-						<input name="contractor.paymentExpires" id="paymentExpires" 
-							type="text" class="forms" size="10" 
-							value="<s:date name="contractor.paymentExpires" format="MM/dd/yyyy" />" />
-						<a href="#" 
-							id="anchorpaymentExpires" name="anchorpaymentExpires" 
-							onclick="cal1.select($('paymentExpires'), 'anchorpaymentExpires','MM/dd/yyyy'); return false;">
-						<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-					</li>
-					<li><label>Next Billing Amount:</label>
-						USD <s:property value="contractor.newBillingAmount" />
 					</li>
 				</ol>
 				</fieldset>
