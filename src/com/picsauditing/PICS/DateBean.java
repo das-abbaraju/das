@@ -392,6 +392,16 @@ public class DateBean {
 		cal.add(Calendar.MONTH, months);
 		return cal.getTime();
 	}
+	
+	public static Date addDays(Date startDate, int days) {
+		if (startDate == null || days == 0)
+			return null;
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(startDate);
+		cal.add(Calendar.DATE, days);
+		return cal.getTime();
+	}	
 
 	/**
 	 * Get the first date of a month before
