@@ -8,7 +8,7 @@
 <s:include value="conHeader.jsp"></s:include>
 
 <br clear="all" />
-<s:hidden name="id" />
+
 	<table>
 		<tr>
 			<td style="vertical-align: top; width: 50%;">
@@ -62,7 +62,7 @@
 					<li><label>Renewal Date:</label>
 						<s:date name="contractor.paymentExpires" format="MMM d, yyyy" />
 					</li>
-					<li><label>Will be Renewed:</label>
+					<li><label>Will be Renewed:</label> 
 						<s:if test="contractor.renew == true">
 							Yes
 						</s:if>
@@ -76,23 +76,24 @@
 					<li><label>Last Upgrade Date:</label>
 						<s:date name="contractor.lastUpgradeDate" format="MMM d, yyyy" />
 					</li>
-					<li><label>Notes:</label>
-						<s:textarea name="" cols="40" rows="5" />
-					</li>
+
 				</ol>
 				</fieldset>
 			</td>
 			<s:if test="permissions.admin">
 			<td style="vertical-align: top; width: 50%; padding-left: 10px;">
 			<s:form id="save" method="POST" enctype="multipart/form-data">
+			<s:hidden name="id" />
 				<fieldset class="form">
 				<legend><span>Create Invoice</span></legend>
-				<ol>
-					<li><label>Membership Fee:</label>
-						$<s:property value="newMembershipFee.amount"/> USD
-					</li>
-					<li><label>Activation Fee:</label>
-						$<s:property value="activationFee.amount"/> USD
+				<ol>NEED TO FORMAT THIS BAD BOY... MAKE COLUMNS MORE READABLE
+					<s:iterator value="invoiceItems">
+						<li><label><s:property value="invoiceFee.fee"/>:</label>
+							$<s:property value="amount"/> USD
+						</li>
+					</s:iterator>
+					<li><label>Total:</label>
+						$<s:property value="invoiceTotal"/> USD
 					</li>
 				</ol>
 				<div class="buttons">
