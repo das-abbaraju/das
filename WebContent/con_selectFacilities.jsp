@@ -1,6 +1,12 @@
 <%@ page language="java" import="com.picsauditing.PICS.*"
 	errorPage="exception_handler.jsp"%>
-<%@ include file="includes/main.jsp"%>
+<%@page import="com.picsauditing.PICS.*"%>
+<%@page import="com.picsauditing.access.*"%>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
+<% if (!permissions.loginRequired(response, request)) return; %>
+<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean" scope="session" />
+<jsp:useBean id="FACILITIES" class="com.picsauditing.PICS.Facilities" scope ="application"/>
+<jsp:useBean id="AUDITORS" class="com.picsauditing.PICS.Auditors" scope="application"/>
 <%@page import="java.util.*"%>
 <%@page import="com.picsauditing.PICS.redFlagReport.FlagDO"%>
 <%@page import="com.picsauditing.util.SpringUtils"%>

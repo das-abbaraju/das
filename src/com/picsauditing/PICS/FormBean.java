@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.servlet.upload.UploadConHelper;
 import com.picsauditing.servlet.upload.UploadProcessorFactory;
 import com.picsauditing.util.Strings;
@@ -48,27 +49,27 @@ public class FormBean extends DataBean {
 		else
 			return "";
 //			throw new Exception("Invalid catID for Forms: "+catID);
-	}//getCategoryName
+	}
 
-	public boolean isNextForm(PermissionsBean pBean) throws Exception{
+	public boolean isNextForm(Permissions permissions) throws Exception{
 		if (li.hasNext()){
 			id = (String)li.next();
 			formName = (String)li.next();
 			file = (String)li.next();
 			opID = (String)li.next();
 			opName = getCategoryName(opID);
-			if (pBean.isAdmin() ||
-					(pBean.isContractor() && ("0".equals(opID) || pBean.allFacilitiesAL.contains(opID))) ||
-					(pBean.isOperator() && (pBean.userID.equals(opID) || pBean.oBean.corporatesAL.contains(opID))) ||
-					(pBean.isCorporate() && (pBean.userID.equals(opID) || pBean.oBean.facilitiesAL.contains(opID)))){
+			int operatorID = Integer.parseInt(opID);
+			if (permissions.isAdmin()
+				|| permissions.getAccountId() == operatorID
+				|| permissions.getCorporateParent().contains(operatorID)
+				|| permissions.getOperatorChildren().contains(operatorID)) {
 				count++;
 				return true;
-			}//if
-			else
-				return (isNextForm(pBean));
-		}//if
+			} else
+				return isNextForm(permissions);
+		}
 		return false;
-	}//isNextForm
+	}
 
 	public void closeList(){
 		li = null;

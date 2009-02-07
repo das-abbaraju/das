@@ -18,8 +18,8 @@ if(Strings.isEmpty(path))
 boolean isSubmitted = "Yes".equals(request.getParameter("isSubmitted"));
 fBean.setFromDB();
 String editCatID = "";
-if (!pBean.isAdmin())
-	editCatID = pBean.userID;
+if (!permissions.isAdmin())
+	editCatID = permissions.getAccountIdString();
 
 String editFormID = "";
 String newFormCatID = "";
@@ -69,14 +69,14 @@ if (isSubmitted){
                         <td colspan="2" align="center" class="redMain"><strong>Add 
                           a New Form</strong></td>
                       </tr>
-<%		if (pBean.isAdmin()){%>
+<%		if (permissions.isAdmin()){%>
                       <tr> 
                         <td align="right">Category</td>
                         <td><%=fBean.getCategorySelect("newFormCatID", "blueMain",newFormCatID)%> 
                         </td>
                       </tr>
 <%		}else
-			out.println("<input type=hidden name=newFormCatID value='"+pBean.userID+"'>");
+			out.println("<input type=hidden name=newFormCatID value='"+permissions.getAccountId()+"'>");
 %>
                       <tr> 
                         <td align="right"><nobr>Form Name</nobr></td>
@@ -106,11 +106,11 @@ if (isSubmitted){
                       </tr>
 					  <tr>
 					    <td colspan="2">
-<%		if (pBean.isAdmin()){%>
+<%		if (permissions.isAdmin()){%>
 						  <nobr><%=fBean.getCategorySelect("editCatID", "blueMain",editCatID)%>
                           <input name="action" type=submit class=forms value=Update></nobr>
 <%		}else
-			out.println("<input type=hidden name=editCatID value='"+pBean.userID+"'>");
+			out.println("<input type=hidden name=editCatID value='"+permissions.getAccountId()+"'>");
 %>
 						  <%=fBean.getFormSelect("editFormID","blueMain",editCatID,editFormID)%>
 						</td>
@@ -145,7 +145,7 @@ if (isSubmitted){
                   </form>
                 </td>
               </tr>
-<%		if (pBean.isAdmin()){%>
+<%		if (permissions.isAdmin()){%>
               <tr>
                 <td align="center" valign="top" bgcolor="#CCCCCC" class="blueMain" colspan="2">
 				  <form action="manage_forms.jsp?isSubmitted=Yes&action=Upload" method="post" name="form3" id="form3" enctype="multipart/form-data">
@@ -194,7 +194,7 @@ if (isSubmitted){
                       <td bgcolor="#993300" align="center">Facility</td>
                     </tr>
 <%		fBean.setList();
-		while (fBean.isNextForm(pBean)){		
+		while (fBean.isNextForm(permissions)){		
 %>
                     <tr class=blueMain align="center" <%=Utilities.getBGColor(fBean.count)%>>
                       <td align="right"><%=fBean.count%>.</td>
