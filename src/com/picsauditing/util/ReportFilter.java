@@ -1,10 +1,13 @@
 package com.picsauditing.util;
 
+import java.io.Serializable;
+
 import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.access.Permissions;
 
-public class ReportFilter {
+@SuppressWarnings("serial")
+public class ReportFilter implements Serializable {
 	protected String destinationAction = "";
 	protected boolean ajax = false;
 	protected boolean allowCollapsed = true;

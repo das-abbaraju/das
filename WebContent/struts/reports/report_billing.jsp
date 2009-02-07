@@ -6,9 +6,6 @@
 </head>
 <body>
 <h1><s:property value="reportName" /></h1>
-<div id="alert">
-This page is still under Development.  Do not use.
-</div>
 <s:include value="filters.jsp" />
 
 <div>

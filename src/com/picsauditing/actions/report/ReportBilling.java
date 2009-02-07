@@ -1,5 +1,7 @@
 package com.picsauditing.actions.report;
 
+import com.picsauditing.access.OpPerms;
+
 
 @SuppressWarnings("serial")
 public class ReportBilling extends ReportAccount {
@@ -56,5 +58,10 @@ public class ReportBilling extends ReportAccount {
 				"ELSE 'Other' END billingStatus");
 		sql.addWhere(where);
 		
+	}
+	
+	@Override
+	protected void checkPermissions() throws Exception {
+		tryPermissions(OpPerms.Billing);
 	}
 }

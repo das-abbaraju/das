@@ -63,7 +63,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected ListType emailListType;
 	protected String billingState = "All";
 
-	private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
+	//private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
 
 	// // setting the filter
 	public boolean isShowOperator() {
@@ -276,20 +276,24 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	// ///
+	private AuditQuestionDAO getQuestionDAO() {
+		return (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
+	}
+
 	public List<AuditQuestion> getStateLicensesList() throws Exception {
-		return aQuestionDAO.findQuestionByType("License");
+		return getQuestionDAO().findQuestionByType("License");
 	}
 
 	public List<AuditQuestion> getTradeList() throws Exception {
-		return aQuestionDAO.findQuestionByType("Service");
+		return getQuestionDAO().findQuestionByType("Service");
 	}
 
 	public List<AuditQuestion> getWorksInList() throws Exception {
-		return aQuestionDAO.findQuestionByType("Office Location");
+		return getQuestionDAO().findQuestionByType("Office Location");
 	}
 
 	public List<AuditQuestion> getOfficeInList() throws Exception {
-		return aQuestionDAO.findQuestionByType("Office Location");
+		return getQuestionDAO().findQuestionByType("Office Location");
 	}
 
 	public String[] getTradePerformedByList() {
