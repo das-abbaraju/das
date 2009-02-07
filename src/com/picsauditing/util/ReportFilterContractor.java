@@ -324,10 +324,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		return State.getStates(true);
 	}
 
-	public String[] getCertsOptions() {
-		return new String[] { DEFAULT_CERTS, "Yes", "Only Certs", "No", "Exclude Certs" };
-	}
-
 	public Map<Integer, WaitingOn> getWaitingOnList() throws Exception {
 		return WaitingOn.getMap();
 	}

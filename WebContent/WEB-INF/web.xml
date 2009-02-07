@@ -111,10 +111,6 @@
 		<session-timeout>60</session-timeout>
 	</session-config>
 	<servlet>
-		<servlet-name>showpdf</servlet-name>
-		<servlet-class>showpdf</servlet-class>
-	</servlet>
-	<servlet>
 		<servlet-name>loadPDF</servlet-name>
 		<servlet-class>loadPDF</servlet-class>
 	</servlet>
@@ -132,10 +128,6 @@
 			com.picsauditing.servlet.upload.StreamUploader
 		</servlet-class>
 	</servlet>
-	<servlet-mapping>
-		<servlet-name>showpdf</servlet-name>
-		<url-pattern>/servlet/showpdf</url-pattern>
-	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>loadPDF</servlet-name>
 		<url-pattern>/servlet/loadPDF</url-pattern>

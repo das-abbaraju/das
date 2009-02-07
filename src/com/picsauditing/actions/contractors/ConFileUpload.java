@@ -1,0 +1,51 @@
+package com.picsauditing.actions.contractors;
+
+import java.io.File;
+
+import org.apache.struts2.ServletActionContext;
+
+import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.util.Downloader;
+import com.picsauditing.util.FileUtils;
+
+public class ConFileUpload extends ContractorActionSupport {
+	private static final long serialVersionUID = 2438788697676816034L;
+
+	public ConFileUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
+		super(accountDao, auditDao);
+	}
+
+	public String execute() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
+		this.findContractor();
+
+		if (button != null) {
+			if (contractor.getId() > 0 && button.equals("download")) {
+				Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext
+						.getServletContext());
+				try {
+					File[] files = getFiles(contractor.getId());
+					downloader.download(files[0], null);
+					return null;
+				} catch (Exception e) {
+					addActionError("Failed to download file: " + e.getMessage());
+					return BLANK;
+				}
+			}
+		}
+
+		return SUCCESS;
+	}
+
+	private String getFileName(int conID) {
+		return PICSFileType.brochure + "_" + conID;
+	}
+
+	private File[] getFiles(int conID) {
+		File dir = new File(getFtpDir() + "/files/brochures/");
+		return FileUtils.getSimilarFiles(dir, getFileName(conID));
+	}
+}

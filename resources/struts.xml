@@ -145,7 +145,13 @@
 				<param name="actionName">ContractorList</param>
 			</result>
 		</action>
-
+		
+		<action name="DownloadContractorFile"
+			class="com.picsauditing.actions.contractors.ConFileUpload">
+			<param name="button">download</param>
+			<result name="input">/struts/blank.jsp</result>
+		</action>
+		
 		<action name="ContractorPaymentOptions"
 			class="com.picsauditing.actions.contractors.ContractorPaymentOptions">
 			<result>struts/contractors/con_payment_options.jsp</result>
