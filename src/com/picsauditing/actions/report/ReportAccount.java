@@ -21,6 +21,7 @@ import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterInteger;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.ReportFilter;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.SpringUtils;
@@ -88,6 +89,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (runReport()) {
 			buildQuery();
 			run(sql);
+			
 			WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
 			wizardSession.clear();
 			wizardSession.setFilter(listType, filter);
@@ -120,34 +122,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		}
 
 		return SUCCESS;
-	}
-
-	@Deprecated
-	public String executeOld() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-		if (!skipPermissions)
-			sql.setPermissions(permissions);
-
-		addFilterToSQL();
-
-		// Figure out if this is mailmerge call or not
-		// This is not very robust, we should refactor this eventually
-		// if (!filter.isAjax() && filter.isAllowMailMerge()) {
-		if (button != null && button.contains("Write Email")) {
-			// This condition only occurs when sending results to the mail merge
-			// tool
-			this.mailMerge = true;
-		}
-
-		sql.setType(SelectAccount.Type.Contractor);
-		this.run(sql);
-
-		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
-		wizardSession.clear();
-		wizardSession.setFilter(listType, filter);
-
-		return returnResult();
 	}
 
 	protected void addFilterToSQL() {

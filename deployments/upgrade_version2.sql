@@ -1,5 +1,11 @@
 update audit_type set classType = 'IM' where id = 17;
 
+update note set noteCategory = 'OperatorChanges'
+where noteCategory = 'ContractorAddition';
+
+
+update contractor_info set needsRecalculation = 0;
+
 update contractor_info set membershipLevelID = 9 where billingAmount = 99;
 update contractor_info set membershipLevelID = 3 where billingAmount = 399;
 update contractor_info set membershipLevelID = 4 where billingAmount = 699;

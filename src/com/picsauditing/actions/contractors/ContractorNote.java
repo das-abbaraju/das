@@ -30,7 +30,7 @@ public class ContractorNote extends ContractorActionSupport implements Preparabl
 	public Note note;
 	private String returnType = SUCCESS;
 	
-	private ReportFilterNote filter;
+	private ReportFilterNote filter = new ReportFilterNote();
 	
 	private NoteDAO noteDAO;
 	private AccountDAO accountDAO;
@@ -99,7 +99,7 @@ public class ContractorNote extends ContractorActionSupport implements Preparabl
 	}
 
 	public List<Note> getNotes() {
-		if (openTasks == null)
+		if (notes == null)
 			notes = noteDAO.findWhere(contractor.getId(), "n.status = 2" + getFilters("notes"), 25);
 		
 		return notes;
@@ -114,20 +114,20 @@ public class ContractorNote extends ContractorActionSupport implements Preparabl
 
 	private String getFilters(String listType) {
 		String filterString = "";
-		if (filter.getUserID().length > 0) {
+		if (filter.getUserID() != null && filter.getUserID().length > 0) {
 			filterString += " AND createdBy.id IN (" + Strings.implode(filter.getUserID(), ",") + ")";
 		}
-		if (filter.getUserAccountID().length > 0) {
+		if (filter.getUserAccountID() != null && filter.getUserAccountID().length > 0) {
 			filterString += " AND createdBy.account.id IN (" + Strings.implode(filter.getUserAccountID(), ",") + ")";
 		}
-		if (filter.getCategory().length > 0) {
+		if (filter.getCategory() != null && filter.getCategory().length > 0) {
 			Set<String> set = new HashSet<String>();
 			for(NoteCategory e : filter.getCategory())
 				set.add(e.name());
 			
 			filterString += " AND noteCategory.id IN (" + Strings.implodeForDB((String[])set.toArray(), ",") + ")";
 		}
-		if (filter.getPriority().length > 0) {
+		if (filter.getPriority() != null && filter.getPriority().length > 0) {
 			Set<Integer> set = new HashSet<Integer>();
 			for(LowMedHigh e : filter.getPriority())
 				set.add(e.ordinal());
