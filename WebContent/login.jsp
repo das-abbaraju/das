@@ -3,8 +3,6 @@
 <%@page import="com.picsauditing.access.*"%>
 <jsp:useBean id="permissions"
 	class="com.picsauditing.access.Permissions" scope="session" />
-<jsp:useBean id="pBean" class="com.picsauditing.PICS.PermissionsBean"
-	scope="session" />
 <jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean"
 	scope="page" />
 <%

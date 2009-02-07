@@ -108,7 +108,7 @@ form.smallform {
 		</td>
 		<td id="result_td<%=rowID%>" style="font-style: italic;">
 		</td>
-		<td><a href="add_notes.jsp?id=<%=rowID%>">Add Notes</a></td>
+		<td><a href="ContractorNotes.action?id=<%=rowID%>">Add Notes</a></td>
 	</tr>
 	<%
 		} // end foreach loop

@@ -15,12 +15,8 @@
 	<li><a id="conDetailLink" href="ContractorView.action?id=<s:property value="id" />"
 		<s:if test="requestURI.contains('con_view')">class="current"</s:if>>Details</a></li>
 	<s:if test="!permissions.contractor">
-		<li><a href="add_notes.jsp?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('add_notes')">class="current"</s:if>>Notes</a></li>
-	</s:if>
-	<s:if test="permissions.admin">
 		<li><a href="ContractorNotes.action?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('con_notes')">class="current"</s:if>>Notes2</a></li>
+			<s:if test="requestURI.contains('con_notes')">class="current"</s:if>>Notes</a></li>
 	</s:if>
 	<s:if test="permissions.admin">
 		<li><a id="conEditLink" href="ContractorEdit.action?id=<s:property value="id" />"
