@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.Strings;
 
 @Transactional
 public class OperatorFormDAO extends PicsDAO {
@@ -53,4 +55,11 @@ public class OperatorFormDAO extends PicsDAO {
 		}
 		return true;
 	}
+
+	@SuppressWarnings("unchecked")
+	public List<OperatorForm> findByOperators(Collection<Integer> operatorIds) {
+		Query query = em.createQuery("SELECT o FROM OperatorForm o WHERE o.operatorAccount.id IN (" + Strings.implode(operatorIds, ",") + ") ORDER BY o.operatorAccount.name, o.formName");
+		return query.getResultList();
+	}
+
 }

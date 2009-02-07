@@ -103,6 +103,11 @@
 			<result>struts/contractors/contractor_flag.jsp</result>
 		</action>
 
+		<action name="ContractorForms"
+			class="com.picsauditing.actions.forms.ContractorForms">
+			<result>struts/forms/con_forms.jsp</result>
+		</action>
+
 		<action name="ContractorFacilities"
 			class="com.picsauditing.actions.contractors.ContractorFacilities">
 			<result>/struts/contractors/contractor_facilities.jsp</result>
@@ -119,6 +124,7 @@
 			<param name="button">addOperator</param>
 			<result>/struts/blank.jsp</result>
 		</action>
+		
 		<action name="ContractorFacilityRemoveAjax"
 			class="com.picsauditing.actions.contractors.ContractorFacilities">
 			<param name="button">removeOperator</param>
@@ -128,10 +134,6 @@
 			class="com.picsauditing.actions.contractors.ContractorFacilities">
 			<result>/struts/contractors/contractor_facilities_assigned.jsp</result>
 		</action>
-
-
-
-
 
 		<action name="ConAuditList"
 			class="com.picsauditing.actions.contractors.ConAuditList">

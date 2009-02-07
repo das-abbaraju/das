@@ -41,8 +41,8 @@
 			<s:if test="requestURI.contains('con_selectFacilities')">class="current"</s:if>>Facilities</a></li>
 	</s:else>
 	<s:if test="permissions.contractor">
-		<li><a href="con_viewForms.jsp?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('con_viewForms')">class="current"</s:if>>Forms & Docs</a></li>
+		<li><a href="ContractorForms.action?id=<s:property value="id" />"
+			<s:if test="requestURI.contains('con_forms')">class="current"</s:if>>Forms & Docs</a></li>
 	</s:if>
 	<s:iterator value="auditMenu">
 		<li>
