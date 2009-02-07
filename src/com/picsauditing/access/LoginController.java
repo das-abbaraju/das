@@ -11,7 +11,6 @@ import javax.servlet.http.Cookie;
 import com.picsauditing.PICS.AccountBean;
 import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.PICS.DataBean;
-import com.picsauditing.PICS.PermissionsBean;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.Facility;
@@ -36,7 +35,6 @@ public class LoginController extends DataBean {
 	// private String prevLastLogin = "1/1/01";
 
 	private Permissions permissions;
-	private PermissionsBean pBean;
 	protected UserDAO userDAO = (UserDAO) SpringUtils.getBean("UserDAO");
 	protected UserLoginLogDAO loginLogDAO = (UserLoginLogDAO) SpringUtils.getBean("UserLoginLogDAO");;
 
@@ -88,17 +86,6 @@ public class LoginController extends DataBean {
 			request.getSession().setAttribute("permissions", permissions);
 		} else
 			permissions.clear();
-
-		// Also set the pBean for backwards compatibility...remove when we phase
-		// out the pBean completely
-		pBean = (PermissionsBean) request.getSession().getAttribute("pBean");
-		if (pBean == null) {
-			pBean = new PermissionsBean();
-			request.getSession().setAttribute("pBean", pBean);
-		}
-		// Stuff the session permissions object into the legacy pBean
-		pBean.setPermissions(permissions);
-		// End of the pBean
 	}
 
 	/**
@@ -221,15 +208,7 @@ public class LoginController extends DataBean {
 				this.aBean.updateLastLogin();
 			}
 
-			// Most (if not all) of this below should eventually be phased out
-			pBean.oBean = new com.picsauditing.PICS.OperatorBean();
-			pBean.setUserName(permissions.getName());
-
 			if (permissions.isOperator() || permissions.isCorporate()) {
-				pBean.oBean.isCorporate = permissions.isCorporate();
-				pBean.oBean.setFromDB(permissions.getAccountIdString());
-				permissions.setCanSeeAudit(pBean.oBean.getCanSeeAuditIDSet());
-				permissions.setApprovesRelationships(pBean.oBean.isApprovesRelationships());
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
 				if (permissions.isOperator()) {
 					for (Facility facility : operator.getCorporateFacilities())
@@ -249,18 +228,8 @@ public class LoginController extends DataBean {
 			permissions.login(this.aBean);
 			if (permissions.isActive() && updateLastLogin)
 				this.aBean.updateLastLogin();
-
-			// Most (if not all) of this below should eventually be phased out
-			pBean.userID = permissions.getAccountIdString();
-			pBean.setAllFacilitiesFromDB(permissions.getAccountIdString());
 		}
 
-		// Most (if not all) of this below should eventually be phased out
-		pBean.loggedIn = true;
-		pBean.setUserID(permissions.getAccountIdString());
-		pBean.setUserName(permissions.getUsername());
-		pBean.setUserType(permissions.getAccountType());
-		pBean.setCanSeeSet(canSeeSet());
 	}
 
 	/**
