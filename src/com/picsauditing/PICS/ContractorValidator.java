@@ -82,7 +82,7 @@ public class ContractorValidator {
 					+ "</b> already exists.  Please contact a company representative.");
 		// Main Trade
 		if (Strings.isEmpty(contractor.getMainTrade())
-				|| contractor.getMainTrade().equals(TradesBean.DEFAULT_SELECT_TRADE))
+				|| contractor.getMainTrade().equals("- Trade -"))
 			errorMessages.addElement("Please select a main trade");
 
 		return errorMessages;
