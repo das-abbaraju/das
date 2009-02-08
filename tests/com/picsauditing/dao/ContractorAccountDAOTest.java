@@ -46,9 +46,6 @@ public class ContractorAccountDAOTest {
 		
 		ContractorAccount contractoraccount = new ContractorAccount();
 		contractoraccount.setName("PICS");
-		contractoraccount.setUsername("testpics120");
-		contractoraccount.setPassword("testpics");
-		contractoraccount.setPasswordChange(cal.getTime());
 		contractoraccount.setLastLogin(new Date());
 		contractoraccount.setContact("pics admin");
 		contractoraccount.setAddress("17701 cowan");

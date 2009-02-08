@@ -37,9 +37,6 @@ public class OperatorAccountDAOTest {
 
 		OperatorAccount operatoraccount = new OperatorAccount();
 		operatoraccount.setName("PICS");
-		operatoraccount.setUsername("29");
-		operatoraccount.setPassword("testpics");
-		operatoraccount.setPasswordChange(new Date(2008, 12, 31));
 		operatoraccount.setLastLogin(Calendar.getInstance().getTime());
 		operatoraccount.setContact("pics admin");
 		operatoraccount.setAddress("17701 cowan");

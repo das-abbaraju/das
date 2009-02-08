@@ -121,10 +121,6 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 				} else {
 					permissions.tryPermission(OpPerms.ManageOperators, OpType.Edit);
 				}
-				if (opID == 0) {
-					operatorAccount.setUsername(Integer.toString(new Random().nextInt()));
-					operatorAccount.setPassword(Integer.toString(new Random().nextInt()));
-				}
 				operatorAccount.setType(type);
 				if (auditorid > 0)
 					operatorAccount.setInsuranceAuditor(new User(auditorid));
