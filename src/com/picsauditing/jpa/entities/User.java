@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -48,23 +49,28 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	}
 
 	private String username;
-	private String password;
 	private YesNo isGroup;
 	private String email;
+	private Date emailConfirmedDate;
 	private String name;
 	private YesNo isActive;
 	private Date lastLogin;
 	private Account account;
+	private String phone;
+	private String phoneIndex;
+	private String fax;
 
-	private List<UserGroup> groups = new ArrayList<UserGroup>();
-	private List<UserGroup> members = new ArrayList<UserGroup>();
-	private List<UserAccess> ownedPermissions = new ArrayList<UserAccess>();
-
+	private String password;
+	private Date passwordChanged;
+	private String newPassword;
+	private String resetHash;
 	private String passwordHistory;
 	private int failedAttempts = 0;
 	private Date lockUntil = null;
 
-	private boolean debug = false;
+	private List<UserGroup> groups = new ArrayList<UserGroup>();
+	private List<UserGroup> members = new ArrayList<UserGroup>();
+	private List<UserAccess> ownedPermissions = new ArrayList<UserAccess>();
 
 	public User() {
 	}
@@ -77,20 +83,13 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		this.id = id;
 	}
 
+	@Column(length = 100, nullable = false, unique = true)
 	public String getUsername() {
 		return username;
 	}
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
@@ -108,6 +107,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		this.isGroup = isGroup;
 	}
 
+	@Column(length = 100)
 	public String getEmail() {
 		return email;
 	}
@@ -116,6 +116,16 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		this.email = email;
 	}
 
+	@Temporal(TemporalType.DATE)
+	public Date getEmailConfirmedDate() {
+		return emailConfirmedDate;
+	}
+
+	public void setEmailConfirmedDate(Date emailConfirmedDate) {
+		this.emailConfirmedDate = emailConfirmedDate;
+	}
+
+	@Column(length = 255, nullable = false)
 	public String getName() {
 		return name;
 	}
@@ -129,9 +139,9 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	public YesNo getIsActive() {
 		return isActive;
 	}
-	
+
 	@Transient
-	public boolean isActive(){
+	public boolean isActive() {
 		return YesNo.Yes.equals(isActive);
 	}
 
@@ -139,12 +149,46 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		this.isActive = isActive;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getLastLogin() {
 		return lastLogin;
 	}
 
 	public void setLastLogin(Date lastLogin) {
 		this.lastLogin = lastLogin;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getPasswordChanged() {
+		return passwordChanged;
+	}
+
+	public void setPasswordChanged(Date passwordChanged) {
+		this.passwordChanged = passwordChanged;
+	}
+
+	public String getNewPassword() {
+		return newPassword;
+	}
+
+	public void setNewPassword(String newPassword) {
+		this.newPassword = newPassword;
+	}
+
+	public String getResetHash() {
+		return resetHash;
+	}
+
+	public void setResetHash(String resetHash) {
+		this.resetHash = resetHash;
 	}
 
 	public String getPasswordHistory() {
@@ -209,6 +253,33 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 
 	public void setLockUntil(Date lockUntil) {
 		this.lockUntil = lockUntil;
+	}
+
+	@Column(length = 50)
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	@Column(length = 10)
+	public String getPhoneIndex() {
+		return phoneIndex;
+	}
+
+	public void setPhoneIndex(String phoneIndex) {
+		this.phoneIndex = phoneIndex;
+	}
+
+	@Column(length = 15)
+	public String getFax() {
+		return fax;
+	}
+
+	public void setFax(String fax) {
+		this.fax = fax;
 	}
 
 	@ManyToOne(optional = false)
@@ -298,14 +369,13 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 				perm.setGrantFlag(true);
 				permissions.add(perm);
 			}
-			//PicsLogger.log(message)
+			// PicsLogger.log(message)
 			PicsLogger.stop();
 			return permissions;
 		}
 
 		// get all the groups this user (or group) is a part of
 		for (UserGroup userGroup : getGroups()) {
-			debug(this.getName() + " - Getting inherited perms for " + userGroup.getGroup().getName());
 			Set<UserAccess> tempPerms = userGroup.getGroup().getPermissions();
 			for (UserAccess perm : tempPerms) {
 				add(permissions, perm, false);
@@ -324,19 +394,24 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 
 	/**
 	 * 
-	 * @param permissions The new set of permission for this user (transient version of user.permissions)
-	 * @param perm The actual UserAccess object owned by either the current user or one of its parent groups.
-	 * @param overrideBoth True if perm is from "this", false if perm is from a parent
+	 * @param permissions
+	 *            The new set of permission for this user (transient version of
+	 *            user.permissions)
+	 * @param perm
+	 *            The actual UserAccess object owned by either the current user
+	 *            or one of its parent groups.
+	 * @param overrideBoth
+	 *            True if perm is from "this", false if perm is from a parent
 	 */
 	static private void add(Set<UserAccess> permissions, UserAccess connectPerm, boolean overrideBoth) {
 		if (connectPerm == null || connectPerm.getOpPerm() == null)
 			return;
 
 		// Create a disconnected copy of UserAccess (perm)
-		UserAccess perm = new UserAccess( connectPerm );
-		PicsLogger.log(" - - Adding perm " + perm.getOpPerm().getDescription() + " V:" + perm.getViewFlag()
-				+ " E:" + perm.getEditFlag() + " D:" + perm.getDeleteFlag() + " G:" + perm.getGrantFlag());
-		
+		UserAccess perm = new UserAccess(connectPerm);
+		PicsLogger.log(" - - Adding perm " + perm.getOpPerm().getDescription() + " V:" + perm.getViewFlag() + " E:"
+				+ perm.getEditFlag() + " D:" + perm.getDeleteFlag() + " G:" + perm.getGrantFlag());
+
 		for (UserAccess origPerm : permissions) {
 			if (origPerm.getOpPerm().equals(perm.getOpPerm())) {
 				if (overrideBoth) {
@@ -393,10 +468,5 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		}
 		// Then sort by name
 		return this.name.compareToIgnoreCase(o.name);
-	}
-
-	private void debug(String message) {
-		if (this.debug)
-			System.out.println(message);
 	}
 }

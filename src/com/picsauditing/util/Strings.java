@@ -1,12 +1,13 @@
 package com.picsauditing.util;
 
 import java.math.BigInteger;
-import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -167,6 +168,30 @@ public class Strings {
 		input = input.replace('”', '"');
 		input = input.replace("`", "'");
 		return input;
+	}
+	
+	public static String stripPhoneNumber(String phone) {
+		Set<Character> valid = new HashSet<Character>();
+		valid.add('2');
+		valid.add('3');
+		valid.add('4');
+		valid.add('5');
+		valid.add('6');
+		valid.add('7');
+		valid.add('8');
+		valid.add('9');
+		StringBuffer buffer = new StringBuffer();
+		for(int i=0; i < phone.length(); i++) {
+			char nextChar = phone.charAt(i);
+			if (buffer.toString().length() < 10 
+					&& valid.contains(nextChar)) {
+				buffer.append(nextChar);
+				valid.add('1');
+				valid.add('0');
+			}
+		}
+		
+		return buffer.toString();
 	}
 	
 }

@@ -1,7 +1,9 @@
 package com.picsauditing.access;
 
+import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.Cookie;
@@ -10,14 +12,19 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.SpringUtils;
 
 /**
  * Populate the permissions object in session with appropriate login credentials
@@ -62,19 +69,24 @@ public class LoginController extends PicsActionSupport {
 				return SUCCESS;
 			}
 
-			//getResponse().sendRedirect("Login.action");
 			return SUCCESS;
 		}
 		
 		if ("forgot".equals(button)) {
+			sendPasswordReminder();
+			return SUCCESS;
 		}
 		
 		if ("confirm".equals(button)) {
-			// TODO accountBean.sendPasswordEmail(email);
-			//aBean.updateEmailConfirmedDate(username_email);
-			addActionMessage("Thank you for confirming your email address. Please login to access the site.");
-			return button;
-
+			try {
+				user = userDAO.findName(username);
+				user.setEmailConfirmedDate(new Date());
+				userDAO.save(user);
+				addActionMessage("Thank you for confirming your email address.");
+			} catch (Exception e) {
+				addActionError("Sorry, your account confirmation failed");
+			}
+			return SUCCESS;
 		}
 		
 		// Login the user
@@ -111,6 +123,40 @@ public class LoginController extends PicsActionSupport {
 		return SUCCESS;
 	}
 
+	private boolean sendPasswordReminder() {
+		if (!Utilities.isValidEmail(email)) {
+			addActionError("Please enter a valid email address.");
+			return false;
+		}
+		EmailBuilder emailBuilder = new EmailBuilder();
+
+		List<User> matchingUsers = userDAO.findByEmail(email);
+		if (matchingUsers.size() == 0) {
+			addActionError("No account in our records has that email address.  Please verify it is "
+					+ "the one you used when creating your PICS company profile.");
+			return false;
+		}
+		try {
+			for(User matchingUser : matchingUsers) {
+				emailBuilder.setTemplate(24); // Password Reminder
+				emailBuilder.setUser(matchingUser);
+				EmailQueue emailQueue = emailBuilder.build();
+				emailQueue.setPriority(100);
+				
+				EmailSender sender = new EmailSender();
+				sender.sendNow(emailQueue);
+				
+				addActionMessage("An email has been sent to this address: <b>" + email + "</b> "
+						+ "with your PICS account login information");
+			}
+			
+			
+		} catch (Exception e) {
+			addActionError("Failed to send emails");
+		}
+		return true;
+	}
+	
 	/**
 	 * Figure out if the current username/password is a valid user or account
 	 * that can actually login. But don't actually login yet
@@ -132,11 +178,12 @@ public class LoginController extends PicsActionSupport {
 
 		// After this point we should always have a user
 
-		if (user.getAccount().getActive() != 'Y')
-			return "This account is no longer active.<br>Please contact PICS to activate your company.";
-
+		if (user.getAccount().isOperator() || user.getAccount().isCorporate())
+			if (!user.getAccount().isActiveB())
+				return user.getAccount().getName() + " is no longer active.<br>Please contact PICS if you have any questions.";
+		
 		if (user.getIsActive() != YesNo.Yes)
-			return "This user account is no longer active.<br>Please contact your administrator to reactivate it.";
+			return "This account for " + user.getAccount().getName() + " is no longer active.<br>Please contact your administrator to reactivate it.";
 
 		if (user.getLockUntil() != null && user.getLockUntil().after(new Date()))
 			return "This account is locked because of too many failed attempts";

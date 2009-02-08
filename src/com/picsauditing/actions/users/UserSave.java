@@ -75,6 +75,7 @@ public class UserSave extends UsersManage {
 				int maxHistory = 0;
 				// TODO u.getAccount().getPasswordPreferences().getMaxHistory()
 				user.addPasswordToHistory(user.getPassword(), maxHistory);
+				user.setPhoneIndex(Strings.stripPhoneNumber(user.getPhone()));
 			}
 			user = userDAO.save(user);
 		}

@@ -97,4 +97,12 @@ public class StringsTest extends TestCase {
 		
 		assertEquals("1,234,567,890", valueString);
 	}
+	
+	@Test
+	public void testPhoneStripper() {
+		assertEquals("9112223333", Strings.stripPhoneNumber("(911)222-3333"));
+		assertEquals("9112223333", Strings.stripPhoneNumber("911-222-3333"));
+		assertEquals("8002223333", Strings.stripPhoneNumber("1(800) 222-3333"));
+		assertEquals("9112223333", Strings.stripPhoneNumber("911.222.3333 x4"));
+	}
 }

@@ -1,10 +1,4 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
-<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean"
-	scope="page" />
-<%
-	String email = request.getParameter("email");
-	aBean.sendPasswordEmail(email);
-%>
 <html>
 <head>
 <title>PICS - Forgot Password</title>
@@ -18,7 +12,8 @@
 		<td width="145" class="blueMain"><br>
 		</td>
 		<td align="center" valign="top" class="blueMain">
-		<form name="form1" method="post" action="forgot_password.jsp">
+		<form name="form1" method="post" action="Login.action">
+			<input type="hidden" name="button" value="forgot" />
 		<table width="0" border="0" cellspacing="0" cellpadding="1">
 			<tr class="blueMain">
 				<td colspan="2" class="blueHeader">Forget your password?</td>
@@ -28,14 +23,6 @@
 				you submitted when you created your PICS company profile and we will
 				email you your username and password. If you have any problems, <a
 					href="contact.jsp" title="Contact PICS">contact us</a> directly.</td>
-			</tr>
-			<tr>
-				<td colspan="2" class="redMain">
-				<%
-					if (request.getParameter("email") != null)
-						out.println(aBean.getErrorMessages());
-				%>
-				</td>
 			</tr>
 			<tr>
 				<td class="redMain" align="right">Email address&nbsp;</td>

@@ -33,7 +33,7 @@ public class UserDaoTest extends TestCase {
 			fail(e.getMessage());
 		}
 	}
-
+	
 	@Test
 	public final void testFindAll() {
 		try {

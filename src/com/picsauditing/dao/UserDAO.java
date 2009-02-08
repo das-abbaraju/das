@@ -46,6 +46,13 @@ public class UserDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public List<User> findByEmail(String email) {
+		Query query = em.createQuery("SELECT u FROM User u WHERE email = ?");
+		query.setParameter(1, email);
+		query.setMaxResults(10);
+		return query.getResultList();
+	}
+
 	public List<User> findAuditors() {
 		List<User> userList = new ArrayList<User>();
 

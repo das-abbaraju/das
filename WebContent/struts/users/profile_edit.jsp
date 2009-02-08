@@ -30,6 +30,10 @@ function checkUsername(username) {
 			<s:textfield name="u.name" /></li>
 		<li><label for="u.email">Email address:</label>
 			<s:textfield name="u.email" size="30"/></li>
+		<li><label for="u.email">Phone:</label>
+			<s:textfield name="u.phone" size="20"/></li>
+		<li><label for="u.email">Fax:</label>
+			<s:textfield name="u.fax" size="20"/></li>
 		<li><label>Created:</label>
 			<s:date name="u.creationDate" /></li>
 		<li><label>Last login:</label>
@@ -40,7 +44,7 @@ function checkUsername(username) {
 	<legend><span>Username &amp; Password</span></legend>
 	<ol>
 		<li><label for="u.username">Username:</label>
-			<s:textfield name="u.username" onblur="checkUsername(this.value);"/>
+			<s:textfield name="u.username" onchange="checkUsername(this.value);"/>
 			<div id="username_status">&nbsp;</div></li>
 		<li><label for="password1">Password:</label>
 			<s:password name="password1" value="" /></li>

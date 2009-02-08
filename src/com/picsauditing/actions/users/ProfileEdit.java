@@ -50,6 +50,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 				u.addPasswordToHistory(password1, maxHistory);
 				u.setPassword(password1);
 			}
+			u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
 			u = dao.save(u);
 
 			addActionMessage("Your profile was saved successfully");
