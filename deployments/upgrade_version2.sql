@@ -1,3 +1,8 @@
+insert into users 
+      (username, password, isGroup, email, name, isActive, lastLogin, accountID, phone, fax, passwordChanged, createdBy, updatedBy, creationDate, updateDate)
+select username, password, 'No', email, contact, 'Yes', lastLogin, id, phone, fax, passwordChange, createdBy, updatedBy, creationDate, updateDate
+from accounts where type = 'Contractor';
+
 update audit_type set classType = 'IM' where id = 17;
 
 update note set noteCategory = 'OperatorChanges'

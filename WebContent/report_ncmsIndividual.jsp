@@ -1,11 +1,9 @@
 <%@page language="java" import="com.picsauditing.PICS.*,java.sql.*"
 	errorPage="exception_handler.jsp"%>
 <%@include file="includes/main.jsp"%>
-<jsp:useBean id="cBean" class="com.picsauditing.PICS.ContractorBean" scope="page" />
 <%@page import="com.picsauditing.jpa.entities.ContractorAudit"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="com.picsauditing.jpa.entities.AuditType"%>
-<%@page import="java.util.Date"%>
 <%@page import="com.picsauditing.jpa.entities.ContractorAccount"%>
 <%@page import="com.picsauditing.jpa.entities.AuditStatus"%>
 <%@page import="java.text.DateFormat"%>

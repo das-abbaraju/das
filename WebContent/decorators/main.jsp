@@ -55,9 +55,9 @@
 	<div id="boxbody">
 		<p><% if (permissions.isLoggedIn()) { %>
 <span id="name">Welcome, <%=permissions.getName() %></span>
-| <a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>">Home</a>| <a href="logout.jsp">Logout</a>
+| <a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>">Home</a>| <a href="Login.action?button=logout">Logout</a>
 <% } else { %>
-<span id="name">Welcome</span> | <a href="login.jsp">Login</a>
+<span id="name">Welcome</span> | <a href="Login.action">Login</a>
 <% } %></p>
 	</div>
 </div>
@@ -70,7 +70,7 @@
 </form>
 </div>
 <% } %>
-<div id="logo"><a href="Home.action" title="Return to the Home Dashboard"><img src="images/logo_r3.jpg" alt="image" width="105" height="112" /></a></div>
+<div id="logo"><a href="Home.action"><img src="images/logo_r3.jpg" alt="image" width="105" height="112" /></a></div>
 </div></div></div>
 
 <!-- !begin navigation -->

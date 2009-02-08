@@ -23,6 +23,10 @@
 				exception="com.picsauditing.access.NoRightsException"
 				result="NoRightsException" />
 		</global-exception-mappings>
+		<action name="Login" class="com.picsauditing.access.LoginController">
+			<result>struts/users/login.jsp</result>
+			<result name="forgot">struts/users/forgot_password.jsp</result>
+		</action>
 
 		<!-- Dashboard -->
 		<action name="Home" class="com.picsauditing.actions.Home">

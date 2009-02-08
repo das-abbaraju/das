@@ -32,9 +32,6 @@ public class Account extends BaseTable implements java.io.Serializable {
 	static public int PicsID = 1100;
 
 	protected String name;
-	protected String username;
-	protected String password;
-	protected Date passwordChange;
 	protected Date lastLogin;
 	protected String contact;
 	protected String address;
@@ -76,34 +73,6 @@ public class Account extends BaseTable implements java.io.Serializable {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	@Column(name = "username", unique = true, nullable = false, length = 50)
-	public String getUsername() {
-		return this.username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	@Column(name = "password", length = 50)
-	public String getPassword() {
-		return this.password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "passwordChange", length = 10)
-	public Date getPasswordChange() {
-		return this.passwordChange;
-	}
-
-	public void setPasswordChange(Date passwordChange) {
-		this.passwordChange = passwordChange;
 	}
 
 	@Column(name = "lastLogin", length = 19)

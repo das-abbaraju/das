@@ -46,7 +46,7 @@
 		</table>
 		</form>
 		<br>
-		<a href="login.jsp">Return to Login Page</a></td>
+		<a href="Login.action">Return to Login Page</a></td>
 		<td width="126" class="blueMain"></td>
 	</tr>
 </table>

@@ -9,10 +9,11 @@ import java.util.Set;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import com.picsauditing.PICS.AccountBean;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
@@ -47,33 +48,6 @@ public class Permissions implements Serializable {
 	private boolean approvesRelationships = false;
 	private boolean active = false;
 
-	/**
-	 * User object with id=12 for contractors and userID for all others
-	 * @return a NON-JPA-ATTACHED User entity for the currently logged in user
-	 */
-	public User getUser() {
-		// TODO determine if we should start caching the User object
-		User user = new User();
-		if (isContractor())
-			// Contractors don't have associated user accounts (yet)
-			user.setId(User.CONTRACTOR);
-		else
-			user.setId(userID);
-		return user;
-	}
-
-	public User getUser(int userId) {
-		UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
-		try {
-			User user = dao.find(userId);
-			return user;
-		} catch (Exception e) {
-			System.out.println("Error finding user: " + e.getMessage());
-			return null;
-		}
-	}
-
-	
 	public void login(User user) throws Exception {
 		try {
 			clear();
@@ -89,9 +63,18 @@ public class Permissions implements Serializable {
 			accountType = user.getAccount().getType();
 			accountName = user.getAccount().getName();
 			email = user.getEmail();
-			if (user.getAccount().getType().equals("Operator")) {
-				OperatorAccount operatorAccount = (OperatorAccount)user.getAccount(); 
-				approvesRelationships = YesNo.Yes.equals(operatorAccount.getApprovesRelationships());
+			
+			if (isOperator() || isCorporate()) {
+				OperatorAccount operator = (OperatorAccount) user.getAccount();
+				if (isOperator()) {
+					approvesRelationships = YesNo.Yes.equals(operator.getApprovesRelationships());
+					for (Facility facility : operator.getCorporateFacilities())
+						corporateParent.add(facility.getCorporate().getId());
+				}
+				if (isCorporate()) {
+					for (Facility facility : operator.getOperatorFacilities())
+						operatorChildren.add(facility.getOperator().getId());
+				}
 			}
 			permissions = user.getPermissions();
 			
@@ -99,31 +82,6 @@ public class Permissions implements Serializable {
 			for (UserGroup u : temp)
 				groups.add(u.getGroup().getId());
 			
-		} catch (Exception ex) {
-			// All or nothing, if something went wrong, then clear it all
-			clear();
-			throw ex;
-		}
-	}
-
-	public void login(AccountBean aBean) throws Exception {
-		try {
-			if (!aBean.type.equals("Contractor"))
-				return;
-
-			clear();
-			userID = Integer.parseInt(aBean.id);
-			if (userID == 0)
-				throw new Exception("Missing Account");
-
-			loggedIn = true;
-			active = aBean.isActive();
-			username = aBean.username;
-			name = aBean.name;
-			accountID = userID;
-			accountType = aBean.type;
-			accountName = name;
-			email = aBean.email;
 		} catch (Exception ex) {
 			// All or nothing, if something went wrong, then clear it all
 			clear();
@@ -251,7 +209,7 @@ public class Permissions implements Serializable {
 			fromCookie.setMaxAge(3600);
 			response.addCookie(fromCookie);
 		}
-		response.sendRedirect("logout.jsp?msg=Your session has timed out. Please log back in");
+		response.sendRedirect("Login.action?button=logout&msg=Your session has timed out. Please log back in");
 		return false;
 	}
 

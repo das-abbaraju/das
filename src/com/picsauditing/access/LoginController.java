@@ -1,16 +1,16 @@
 package com.picsauditing.access;
 
-import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import com.picsauditing.PICS.AccountBean;
-import com.picsauditing.PICS.ContractorBean;
-import com.picsauditing.PICS.DataBean;
+import org.apache.struts2.ServletActionContext;
+
+import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.Facility;
@@ -18,7 +18,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.util.SpringUtils;
 
 /**
  * Populate the permissions object in session with appropriate login credentials
@@ -27,226 +26,168 @@ import com.picsauditing.util.SpringUtils;
  * @author Glenn & Trevor
  * 
  */
-public class LoginController extends DataBean {
-	private boolean isUser = true;
+@SuppressWarnings("serial")
+public class LoginController extends PicsActionSupport {
 	private User user;
-	private AccountBean aBean;
-	private int loginByAdmin = 0;
-	// private String prevLastLogin = "1/1/01";
+	private String email;
+	private String username;
+	private String password;
+	private int switchToUser;
 
-	private Permissions permissions;
-	protected UserDAO userDAO = (UserDAO) SpringUtils.getBean("UserDAO");
-	protected UserLoginLogDAO loginLogDAO = (UserLoginLogDAO) SpringUtils.getBean("UserLoginLogDAO");;
+	protected UserDAO userDAO;
+	protected UserLoginLogDAO loginLogDAO;
 
-	public boolean login(String username, String password, javax.servlet.http.HttpServletRequest request,
-			javax.servlet.http.HttpServletResponse response) throws Exception {
-		setupPerms(request);
-
-		getErrors().clear();
-		String error = canLogin(username, password);
-		if (error.length() > 0) {
-			logAttempt(permissions, username, password, request);
-			getErrors().add(error);
-			return false;
-		}
-
-		// /////////////////
-		this.doLogin(request.getSession(), true);
-		logAttempt(permissions, username, password, request);
-		postLogin(request, response);
-
-		return true;
+	public LoginController(UserDAO userDAO, UserLoginLogDAO loginLogDAO) {
+		this.userDAO = userDAO;
+		this.loginLogDAO = loginLogDAO;
 	}
 
-	public boolean loginByAdmin(String userName, javax.servlet.http.HttpServletRequest request,
-			javax.servlet.http.HttpServletResponse response) throws Exception {
-		permissions = (Permissions) request.getSession().getAttribute("permissions");
-		permissions.tryPermission(OpPerms.SwitchUser);
-		this.loginByAdmin = this.permissions.getUserId();
-
-		if (!getAccountByUsername(userName))
-			return false;
-
-		setupPerms(request);
-		permissions.setAdminID(loginByAdmin);
-
-		// /////////////////
-		this.doLogin(request.getSession(), false);
-		logAttempt(permissions, userName, "switch_user", request);
-		postLogin(request, response);
-
-		return true;
-	}
-
-	private void setupPerms(javax.servlet.http.HttpServletRequest request) {
-		// Set the permissions from the session or create a new one if necessary
-		permissions = (Permissions) request.getSession().getAttribute("permissions");
-		if (permissions == null) {
-			permissions = new Permissions();
-			request.getSession().setAttribute("permissions", permissions);
-		} else
+	@Override
+	public String execute() throws Exception {
+		loadPermissions(false);
+		
+		if (button == null)
+			return SUCCESS;
+		
+		if ("logout".equals(button)) {
+			int adminID = permissions.getAdminID();
 			permissions.clear();
+			getRequest().getSession().invalidate();
+			if (adminID > 0) {
+				// Re login the admin on logout
+				user = userDAO.find(adminID);
+				
+				this.doLogin(false);
+				postLogin();
+				return SUCCESS;
+			}
+
+			//getResponse().sendRedirect("Login.action");
+			return SUCCESS;
+		}
+		
+		if ("forgot".equals(button)) {
+		}
+		
+		if ("confirm".equals(button)) {
+			// TODO accountBean.sendPasswordEmail(email);
+			//aBean.updateEmailConfirmedDate(username_email);
+			addActionMessage("Thank you for confirming your email address. Please login to access the site.");
+			return button;
+
+		}
+		
+		// Login the user
+		if (switchToUser > 0) {
+			permissions.tryPermission(OpPerms.SwitchUser);
+			int myCurrentID = permissions.getUserId();
+
+			user = userDAO.find(switchToUser);
+
+			permissions.clear();
+			permissions.setAdminID(myCurrentID);
+			
+			username = user.getUsername();
+			password = "switchUser";
+
+			doLogin(false);
+		} else {
+			loadPermissions(false);
+			permissions.clear();
+
+			String error = canLogin();
+			if (error.length() > 0) {
+				logAttempt();
+				addActionError(error);
+				return SUCCESS;
+			}
+
+			// /////////////////
+			doLogin(true);
+		}
+		logAttempt();
+		postLogin();
+
+		return SUCCESS;
 	}
 
 	/**
 	 * Figure out if the current username/password is a valid user or account
 	 * that can actually login. But don't actually login yet
 	 * 
-	 * @param username
-	 * @param password
 	 * @return
 	 * @throws Exception
 	 */
-	private String canLogin(String username, String password) throws Exception {
-		if (username == null || username.equals(""))
-			return "Enter a username";
+	private String canLogin() throws Exception {
+		if (username == null || username.length() < 3)
+			return "Enter a valid username";
 
-		// We have 108 contractors with username length = 3, so we can't stop
-		// them from logging in
-		// But going forward we'll require 4 or more
-		if (username.length() < 3)
-			return "Enter a username with atleast 5 characters";
-
-		if (!getAccountByUsername(username))
+		try {
+			user = userDAO.findName(username);
+		} catch (NoResultException e) {
+			user = null;
+		}
+		if (user == null)
 			return "No account exists with that username";
 
-		// After this point we should always have a user or aBean set != null
+		// After this point we should always have a user
 
-		if (isUser) {
-			if (user.getAccount().getActive() != 'Y')
-				return "This account is no longer active.<br>Please contact PICS to activate your company.";
+		if (user.getAccount().getActive() != 'Y')
+			return "This account is no longer active.<br>Please contact PICS to activate your company.";
 
-			if (user.getIsActive() != YesNo.Yes)
-				return "This user account is no longer active.<br>Please contact your administrator to reactivate it.";
+		if (user.getIsActive() != YesNo.Yes)
+			return "This user account is no longer active.<br>Please contact your administrator to reactivate it.";
 
-			if (user.getLockUntil() != null && user.getLockUntil().after(new Date()))
-				return "This account is locked because of too many failed attempts";
+		if (user.getLockUntil() != null && user.getLockUntil().after(new Date()))
+			return "This account is locked because of too many failed attempts";
 
-			if (!user.getPassword().equals(password)) {
-				user.setFailedAttempts(user.getFailedAttempts() + 1);
-				// TODO parameterize this 7 here
-				if (user.getFailedAttempts() > 7) {
-					// Lock this user out for 1 hour
-					Calendar calendar = Calendar.getInstance();
-					calendar.add(Calendar.HOUR, 1);
-					user.setFailedAttempts(0);
-					user.setLockUntil(calendar.getTime());
-					return "The password is not correct and the account has now been locked";
-				}
-				return "The password is not correct";
+		if (!user.getPassword().equals(password)) {
+			user.setFailedAttempts(user.getFailedAttempts() + 1);
+			// TODO parameterize this 7 here
+			if (user.getFailedAttempts() > 7) {
+				// Lock this user out for 1 hour
+				Calendar calendar = Calendar.getInstance();
+				calendar.add(Calendar.HOUR, 1);
+				user.setFailedAttempts(0);
+				user.setLockUntil(calendar.getTime());
+				return "The password is not correct and the account has now been locked";
 			}
-			user.setFailedAttempts(0);
-			user.setLockUntil(null); // it's no longer locked
-		} else {
-			if (!aBean.password.equals(password))
-				return "The password is not correct";
-
-			// if (!aBean.active.startsWith("Y"))
-			// return "This user does not have permission to login.<br>Please
-			// contact PICS to activate your account.";
+			return "The password is not correct";
 		}
+		user.setFailedAttempts(0);
+		user.setLockUntil(null); // it's no longer locked
 
 		// We are now ready to actually do the login (doLogin)
 		return "";
-	}
-
-	private boolean getAccountByUsername(String username) throws Exception {
-		Integer id = 0;
-		aBean = new AccountBean();
-		id = aBean.findID(username);
-		if (id > 0) {
-			aBean.setFromDB(id.toString());
-			user = null;
-			isUser = false;
-		} else {
-			try {
-				user = userDAO.findName(username);
-			} catch (NoResultException e) {
-				return false;
-			}
-			if (user != null) {
-				id = user.getId();
-				aBean.setFromDB(user.getAccount().getIdString());
-			} else
-				return false;
-		}
-		// The user or account we want to login as is now set as private
-		// variables
-		return true;
-	}
-
-	private boolean getAccountByID(String id) throws Exception {
-		aBean = new AccountBean();
-		user = userDAO.find(Integer.parseInt(id));
-		if (user != null) {
-			aBean.setFromDB(user.getAccount().getIdString());
-		} else {
-			// Wait this could be a contractor trying to login, check the
-			// accounts table
-			aBean.setFromDB(id);
-			if (!aBean.isSet())
-				return false;
-			user = null;
-			isUser = false;
-		}
-		// The user or account we want to login as is now set as private
-		// variables
-		return true;
 	}
 
 	/**
 	 * Perform the actual login process...store any info in the session that
 	 * will be required in later pages
 	 */
-	private void doLogin(javax.servlet.http.HttpSession session, boolean updateLastLogin) throws Exception {
-		if (isUser) {
-			permissions.login(this.user);
-			// this.prevLastLogin = this.user.getLastLogin().toString();
-			if (updateLastLogin) {
-				this.user.setLastLogin(new Date());
-				userDAO.save(user);
-				this.aBean.updateLastLogin();
-			}
-
-			if (permissions.isOperator() || permissions.isCorporate()) {
-				OperatorAccount operator = (OperatorAccount) user.getAccount();
-				if (permissions.isOperator()) {
-					for (Facility facility : operator.getCorporateFacilities())
-						permissions.getCorporateParent().add(facility.getCorporate().getId());
-				}
-				if (permissions.isCorporate()) {
-					for (Facility facility : operator.getOperatorFacilities())
-						permissions.getOperatorChildren().add(facility.getOperator().getId());
-				}
-			}
-			// TODO we should allow each account to set their own timeouts
-			// ie..session.setMaxInactiveInterval(user.getAccountTimeout());
-			if (permissions.isPicsEmployee())
-				session.setMaxInactiveInterval(3600);
-		} else {
-			// Contractors
-			permissions.login(this.aBean);
-			if (permissions.isActive() && updateLastLogin)
-				this.aBean.updateLastLogin();
+	private void doLogin(boolean updateLastLogin) throws Exception {
+		permissions.login(user);
+		if (updateLastLogin) {
+			user.setLastLogin(new Date());
+			user.getAccount().setLastLogin(new Date());
+			userDAO.save(user);
 		}
 
+		// TODO we should allow each account to set their own timeouts
+		// ie..session.setMaxInactiveInterval(user.getAccountTimeout());
+		if (permissions.isPicsEmployee())
+			getRequest().getSession().setMaxInactiveInterval(3600);
 	}
 
 	/**
 	 * After we're logged in, now what should we do?
 	 */
-	private void postLogin(javax.servlet.http.HttpServletRequest request,
-			javax.servlet.http.HttpServletResponse response) throws Exception {
-		if (!isUser) {
-			ContractorBean cBean = new ContractorBean();
-			cBean.setFromDB(permissions.getAccountIdString());
-		}
-
+	private void postLogin() throws Exception {
 		MenuComponent menu = PicsMenu.getMenu(permissions);
 
 		// Find out if the user previously timed out on a page, we'll forward
 		// back there below
-		Cookie[] cookiesA = request.getCookies();
+		Cookie[] cookiesA = getRequest().getCookies();
 		if (cookiesA != null) {
 			String fromURL = "";
 			for (int i = 0; i < cookiesA.length; i++) {
@@ -254,9 +195,9 @@ public class LoginController extends DataBean {
 					fromURL = cookiesA[i].getValue();
 					// Clear the cookie, now that we've used it once
 					Cookie fromCookie = new Cookie("from", "");
-					response.addCookie(fromCookie);
+					getResponse().addCookie(fromCookie);
 					if (fromURL.length() > 0) {
-						response.sendRedirect(fromURL);
+						getResponse().sendRedirect(fromURL);
 						return;
 					}
 				}
@@ -267,38 +208,13 @@ public class LoginController extends DataBean {
 		if (url == null)
 			throw new Exception("No Permissions or Default Webpages found");
 
-		response.sendRedirect(url);
+		getResponse().sendRedirect(url);
 		return;
 	}
 
-	public void logout(Permissions permissions, javax.servlet.http.HttpServletRequest request,
-			javax.servlet.http.HttpServletResponse response) throws Exception {
-		Integer adminID = permissions.getAdminID();
-		permissions.clear();
-		request.getSession().invalidate();
-		if (adminID > 0) {
-			setupPerms(request);
-			if (!getAccountByID(adminID.toString()))
-				;
+	private void logAttempt() throws Exception {
 
-			this.doLogin(request.getSession(), false);
-			postLogin(request, response);
-			return;
-		}
-
-		String temp = request.getParameter("msg");
-		String query = "";
-		if (null != temp && temp.length() > 0)
-			query = "?msg=" + temp;
-		response.sendRedirect("login.jsp" + query);
-	}
-
-	private void logAttempt(Permissions permissions, String username, String password,
-			javax.servlet.http.HttpServletRequest request) throws Exception {
-
-		String remoteAddress = "";
-		if (request != null)
-			remoteAddress = request.getRemoteAddr();
+		String remoteAddress = getRequest().getRemoteAddr();
 
 		char successful = 'N';
 		if (permissions.isLoggedIn()) {
@@ -320,32 +236,40 @@ public class LoginController extends DataBean {
 		loginLogDAO.save(loginLog);
 	}
 
-	/**
-	 * @deprecated
-	 */
-	private HashSet<String> canSeeSet() throws Exception {
-		try {
-			String id = permissions.getAccountIdString();
-			DBReady();
-			HashSet<String> canSeeSet = new HashSet<String>();
-			canSeeSet = new HashSet<String>();
-			if (permissions.isContractor()) {
-				canSeeSet.add(id);
-				return canSeeSet;
-			}
-			if (permissions.isCorporate()) {
-				id = "SELECT opID FROM facilities WHERE corporateID=" + id;
-			}
-			String selectQuery = "SELECT subID FROM accounts a JOIN generalcontractors gc ON a.id=subID "
-					+ "WHERE a.active='Y' AND genID IN (" + id + ")";
-			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
-			while (SQLResult.next())
-				canSeeSet.add(SQLResult.getString("subID"));
-			SQLResult.close();
-
-			return canSeeSet;
-		} finally {
-			DBClose();
-		}
+	
+	//////// GETTER & SETTERS ////////
+	private HttpServletRequest getRequest() {
+		return ServletActionContext.getRequest();
 	}
+
+	private HttpServletResponse getResponse() {
+		return ServletActionContext.getResponse();
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setSwitchToUser(int switchToUser) {
+		this.switchToUser = switchToUser;
+	}
+	
+	
+
 }

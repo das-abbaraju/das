@@ -78,7 +78,7 @@
 					<li><label>Username:</label>
 						<s:textfield name="contractor.username" size="20" />
 							<pics:permission perm="SwitchUser">
-								<a href="login.jsp?switchUser=<s:property value="contractor.username"/>">Switch User</a>							
+								<a href="Login.jsp?button=login&switchToUser=<s:property value="contractor.user.id"/>">Switch User</a>
 							</pics:permission>
 					</li>
 					<li><label>Change Password:</label>

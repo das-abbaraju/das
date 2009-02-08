@@ -41,32 +41,40 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	private User user; // Current logged in user
 	private Account account; // Current logged in user's account
 	private List<User> auditorList;
+	
+	protected void loadPermissions() {
+		loadPermissions(true);
+	}
 
 	@SuppressWarnings("unchecked")
-	protected void loadPermissions() {
+	protected void loadPermissions(boolean autoLogin) {
 		if (permissions != null)
 			// Already set
 			return;
-
-		if (ActionContext.getContext().getSession() == null)
-			System.out.println("Failed to get Struts session");
-		else
+		
+		if (ActionContext.getContext().getSession() == null) {
+			addActionError("Failed to get session");
+		} else
 			permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
+		
 		if (permissions == null) {
 			permissions = new Permissions();
+		}
 
-			String autoLogin = System.getProperty("pics.autoLogin");
+		if (autoLogin && !permissions.isLoggedIn()) {
 
-			if (autoLogin != null && autoLogin.length() != 0) {
+			String autoLoginID = System.getProperty("pics.autoLogin");
+
+			if (autoLoginID != null && autoLoginID.length() != 0) {
 				try {
-					System.out.println("Autologging In user " + autoLogin
+					System.out.println("Autologging In user " + autoLoginID
 							+ ". Remove pics.autoLogin from startup to remove this feature.");
 					UserDAO userDAO = (UserDAO) SpringUtils.getBean("UserDAO");
-					User user = userDAO.find(Integer.parseInt(autoLogin));
+					User user = userDAO.find(Integer.parseInt(autoLoginID));
 					permissions.login(user);
 					ActionContext.getContext().getSession().put("permissions", permissions);
 				} catch (Exception e) {
-					System.out.println("Problem autologging in.  Id supplied was: " + autoLogin);
+					System.out.println("Problem autologging in.  Id supplied was: " + autoLoginID);
 				}
 			}
 		}

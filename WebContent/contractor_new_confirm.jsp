@@ -1,6 +1,4 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
-<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean"
-	scope="page" />
 <html>
 <head>
 <title>Registration Confirmation</title>

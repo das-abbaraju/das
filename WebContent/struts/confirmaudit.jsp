@@ -9,7 +9,7 @@ background-color: #CCC;text-align: center;font-family: ">
 Thank You for Confirming this Audit.<br/><br/>
 
 <a href="index.jsp" class="redMain">PICS Website</a> |
-<a href="login.jsp" class="redMain">Login</a>
+<a href="Login.action" class="redMain">Login</a>
 
 </div>
 </body>

@@ -2,7 +2,6 @@ package com.picsauditing.actions.audits;
 
 import java.util.List;
 
-import com.picsauditing.PICS.ContractorBean;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
@@ -12,7 +11,6 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.util.SpringUtils;
 

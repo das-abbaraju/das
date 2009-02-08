@@ -27,9 +27,9 @@ public class AccountBean extends DataBean {
 	// length of a passord
 	OperatorBean o = null;
 	String accountDate = "";
-	public String userID = "0"; // used in check login, to set id for users not
+	public String userID = "0";
+	// used in check login, to set id for users not
 	// in main accounts table, but in users table
-	public HashSet<String> canSeeSet = new HashSet<String>(); // all
 	// subcontractors
 	// of a general
 	// contractor/operator

@@ -31,7 +31,8 @@
 		<table width="100%" border="0" cellpadding="0" cellspacing="0">
 			<tr>
 				<td valign="top">
-				<form action="login.jsp" method="post">
+				<form action="Login.action" method="post">
+					<input type="hidden" name="button" value="login" />
 				<table width="100%" border="0" cellspacing="0" cellpadding="0">
 					<tr>
 						<td width="146" height="218" align="center" valign="top"><a
@@ -42,7 +43,7 @@
 							{
 						%> <a class="blueMain"
 							href="Home.action">Back to PICS Online</a><br />
-						<a class="blueMain" href="logout.jsp">Logout</a> <%
+						<a class="blueMain" href="Login.action?button=logout">Logout</a> <%
  	} else if (!thisPage.getRequest().getRequestURI().contains("login"))
  	{
  %>

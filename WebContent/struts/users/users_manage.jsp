@@ -255,7 +255,7 @@ function checkUsername(username) {
 			<fieldset class="form">
 			<div>
 				<pics:permission perm="SwitchUser">
-					<a href="login.jsp?switchUser=<s:property value="user.username"/>">Switch to this User</a> | 
+					<a href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">Switch to this User</a> | 
 				</pics:permission>
 				<a href="UserSave.action?button=sendWelcomeEmail&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&user.id=<s:property value="user.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>">Send Welcome Email</a>
 			</div>

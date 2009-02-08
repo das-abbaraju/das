@@ -115,7 +115,8 @@ public class ContractorAccountDAO extends PicsDAO {
 		if (userName == null)
 			userName = "";
 		try {
-			Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE username = " + "'" + userName + "'");
+			Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE username = '?'");
+			query.setParameter(1, userName);
 			return (ContractorAccount) query.getSingleResult();
 		} catch (NoResultException e) {	
 			return null;

@@ -13,7 +13,7 @@ public class EmailSenderTest extends TestCase {
 		GMailSender mailer = new GMailSender(username, password);
 		try {
 			mailer.sendMail("Account Activation", 
-					"Welcome John Doe,\n\nPlease click on this link to confirm your receipt of this email:\nhttp://www.picsauditing.com/login.jsp?uname=canoo_contractor1", 
+					"Welcome John Doe,\n\nThis is a test email", 
 					"Trevor Allred <tallred@picsauditing.com>", 
 					"tallred@picsauditing.com");
 		} catch (Exception e) {
@@ -21,13 +21,4 @@ public class EmailSenderTest extends TestCase {
 		}
     }
 
-// Uses SpringUtils to load EmailQueueDAO class. 
-//	public void testSender() {
-//		try {
-//			EmailSender.send("Trevor Allred <tallred@picsauditing.com>", 
-//					"tester@picsauditing.com", null, "JUnit Test", "Test body");
-//		} catch (Exception e) {
-//			fail(e.getMessage());
-//		}
-//    }
 }
