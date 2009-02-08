@@ -105,4 +105,12 @@ public class StringsTest extends TestCase {
 		assertEquals("8002223333", Strings.stripPhoneNumber("1(800) 222-3333"));
 		assertEquals("9112223333", Strings.stripPhoneNumber("911.222.3333 x4"));
 	}
+	
+	@Test
+	public void testExtractAccountID() {
+		assertEquals(123456, Strings.extractAccountID("123456"));
+		assertEquals(123456, Strings.extractAccountID("123456.7"));
+		assertEquals(0, Strings.extractAccountID("Bob's Cranes"));
+		assertEquals(0, Strings.extractAccountID("1 Micro"));
+	}
 }

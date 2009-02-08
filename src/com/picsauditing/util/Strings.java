@@ -154,6 +154,27 @@ public class Strings {
 		return value;
 	}
 	
+	/**
+	 * Take an arbitrary string and return an integer if it could be an accountID.
+	 * Other wise return a 0
+	 * Examples: <br />
+	 * 11883 returns 11883<br />
+	 * 11883.4 returns 11883<br />
+	 * Foobar returns 0
+	 * @param query
+	 * @return
+	 */
+	public static int extractAccountID(String query) {
+		String expression = "^([1-9][0-9]*)(?:\\.([0-9]))?\\z";
+		Pattern pattern = Pattern.compile(expression, Pattern.CANON_EQ);
+		Matcher matcher = pattern.matcher(query);
+		while (matcher.find()) {
+			String idString = matcher.group(1);
+			return Integer.parseInt(idString);
+		}
+		return 0;
+	}
+
 	public static float toFloat(String value) {
 		float newValue = 0;
 		try {

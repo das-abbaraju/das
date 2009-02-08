@@ -9,6 +9,7 @@ import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterInteger;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterContractor;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportAccountQuick extends ReportAccount {
@@ -21,12 +22,11 @@ public class ReportAccountQuick extends ReportAccount {
 		ReportFilterContractor f = getFilter();
 		if (filterOn(f.getAccountName(), ReportFilterAccount.DEFAULT_NAME)) {
 			String accountName = f.getAccountName().trim();
-			try {
-				int id = Integer.parseInt(accountName);
+			int id = Strings.extractAccountID(accountName);
+			if (id > 0)
 				report.addFilter(new SelectFilterInteger("id", "a.id = ?", id));
-			} catch (NumberFormatException nfe) {
+			else
 				report.addFilter(new SelectFilter("accountName", "a.name LIKE '%?%'", accountName));
-			}
 		}
 
 	}
