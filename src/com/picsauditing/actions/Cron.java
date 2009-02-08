@@ -9,7 +9,6 @@ import java.util.Set;
 
 import javax.persistence.NoResultException;
 
-import com.picsauditing.PICS.AccountBean;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -66,9 +65,11 @@ public class Cron extends PicsActionSupport {
 			endTask();
 
 			try {
-				startTask("\nRunning AccountBean optimizer...");
-				new AccountBean().optimizeDB();
-				endTask();
+				// TODO - Move this to the db.picsauditing.com cron bash script
+				/*
+				 * OPTIMIZE TABLE OSHA,accounts,auditCategories,auditData,auditQuestions,certificates,contractor_info,"
+				+ "forms,generalContractors,loginLog,users;
+				 */
 			} catch (Throwable t) {
 				handleException(t);
 			}

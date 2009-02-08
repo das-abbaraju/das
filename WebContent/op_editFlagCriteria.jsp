@@ -3,7 +3,9 @@
 <%@page import="com.picsauditing.PICS.redFlagReport.*"%>
 <%@page import="com.picsauditing.util.SpringUtils"%>
 <%@page import="com.picsauditing.util.Strings"%>
-<jsp:useBean id="aBean" class="com.picsauditing.PICS.AccountBean" scope="page" />
+<%@page import="com.picsauditing.jpa.entities.MultiYearScope"%>
+<%@page import="com.picsauditing.jpa.entities.OperatorAccount"%>
+<%@page import="com.picsauditing.dao.OperatorAccountDAO"%>
 <%
 	String opID = null;
 	permissions.tryPermission(OpPerms.EditFlagCriteria);
@@ -17,7 +19,8 @@
 	if (permissions.isCorporate()) {
 		// TODO: make sure this operator is in this corporate group
 	}
-	aBean.setFromDB(opID);
+	OperatorAccountDAO operatorAccountDAO = (OperatorAccountDAO)SpringUtils.getBean("OperatorAccountDAO");
+	OperatorAccount operator = operatorAccountDAO.find(Integer.parseInt(opID));
 	
 	String flagStatus = request.getParameter("flagStatus");
 	if (Strings.isEmpty(flagStatus))
@@ -47,7 +50,6 @@
 	HurdleQuestions hurdleQuestions = null;
 	
 %>
-<%@page import="com.picsauditing.jpa.entities.MultiYearScope"%>
 <html>
 <head>
 <title>Manage Flag Criteria</title>
@@ -56,7 +58,7 @@
 </head>
 <body>
 <h1>Manage <%=flagStatus%> Flag Criteria
-<span class="sub"><%=aBean.name %></span>
+<span class="sub"><%=operator.getName() %></span>
 </h1>
 <div id="internalnavcontainer">
 <ul id="navlist">
