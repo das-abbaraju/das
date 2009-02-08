@@ -2,7 +2,6 @@ package com.picsauditing.util;
 
 import java.util.List;
 
-import com.picsauditing.PICS.OperatorBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -33,6 +32,9 @@ public class PermissionToViewContractor {
 		if (permissions == null)
 			return false;
 		
+		if (permissions.hasPermission(OpPerms.AllContractors))
+			return true;
+
 		if (permissions.isContractor()) {
 			return permissions.getAccountId() == this.id;
 		}
@@ -46,26 +48,14 @@ public class PermissionToViewContractor {
 			return false;
 		}
 		
-		if (permissions.hasPermission(OpPerms.AllContractors))
-			return true;
-
 		if (permissions.isOperator() || permissions.isCorporate()) {
 			// If we want to look at their detail, like PQF data
 			// Then we have to add them first (generalContractors).
 			if (permissions.isCorporate()) {
-				OperatorBean operator = new OperatorBean();
-				try {
-					operator.isCorporate = true;
-					operator.setFromDB(permissions.getAccountIdString());
-					// if any of this corporate operators can see this
-					// contractor,
-					// then the corporate users can see them too
-					for (String id : operator.facilitiesAL) {
-						for (ContractorOperator corporate : operators)
-							if (corporate.getOperatorAccount().getIdString().equals(id))
-								return true;
-					}
-				} catch (Exception e) {
+				for (ContractorOperator co : operators) {
+					int opID = co.getOperatorAccount().getId();
+					if (permissions.getOperatorChildren().contains(opID))
+						return true;
 				}
 				return false;
 			}

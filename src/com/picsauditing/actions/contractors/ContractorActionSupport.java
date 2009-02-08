@@ -6,7 +6,6 @@ import java.util.TreeMap;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Inputs;
-import com.picsauditing.PICS.OperatorBean;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
@@ -44,6 +43,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 	protected boolean limitedView = false;
 	protected List<ContractorOperator> activeOperators;
 
+	// TODO cleanup the PermissionToViewContractor duplicate code here
 	private PermissionToViewContractor permissionToViewContractor = null;
 
 	protected String subHeading;
@@ -286,16 +286,10 @@ public class ContractorActionSupport extends PicsActionSupport {
 	}
 
 	public boolean isCheckPermissionForCorporate() {
-		OperatorBean operator = new OperatorBean();
-		try {
-			operator.isCorporate = true;
-			operator.setFromDB(permissions.getAccountIdString());
-			for (String id : operator.facilitiesAL) {
-				for (ContractorOperator corporate : getOperators())
-					if (corporate.getOperatorAccount().getIdString().equals(id))
-						return true;
-			}
-		} catch (Exception e) {
+		for (ContractorOperator co : getOperators()) {
+			int opID = co.getOperatorAccount().getId();
+			if (permissions.getOperatorChildren().contains(opID))
+				return true;
 		}
 		return false;
 	}
