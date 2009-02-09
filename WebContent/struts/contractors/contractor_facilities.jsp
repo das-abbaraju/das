@@ -72,7 +72,7 @@
 <s:include value="conHeader.jsp"></s:include>
 
 <br clear="all" />
-<h1>Select Contractor Facilities</h1>
+<h1>Contractor Facilities</h1>
 
 <s:if test="permissions.contractor">Please specify all facilities where you work:</s:if>
 <div id="outermost">

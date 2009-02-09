@@ -12,7 +12,7 @@
 	<tbody>
 <s:sort source="contractor.operators" comparator="conOpComparator">
 <s:iterator>
-	<s:if test="(permissions.operator && (permissions.accountId == operatorAccount.id ) ) || permissions.contractor || permissions.picsEmployee">
+	<s:if test="(permissions.operator && (permissions.accountId == operatorAccount.id ) ) || permissions.contractor || permissions.picsEmployee || doCorporateCheck(top)">
 	<tr>
 		<td>
 			<s:if test="permissions.picsEmployee || permissions.corporate || permissions.contractor">

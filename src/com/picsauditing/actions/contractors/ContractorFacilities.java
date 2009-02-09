@@ -11,6 +11,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
@@ -39,6 +40,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 
+		limitedView = true;
 		findContractor();
 		
 		for( ContractorOperator co : contractor.getOperators() ) {
@@ -172,6 +174,21 @@ public class ContractorFacilities extends ContractorActionSupport {
 		this.opMap = opMap;
 	}
 
+	public boolean doCorporateCheck( ContractorOperator currentConOp ) {
+		
+		if( getUser().getAccount().isCorporate() ) {
+			
+			OperatorAccount op = (OperatorAccount) getUser().getAccount();
+			
+			for( Facility facility : op.getOperatorFacilities() ) {
+				if( facility.getOperator().equals(currentConOp.getOperatorAccount())) {
+					return true;
+				}
+			}
+		}
+		
+		return  false;
+	}
 	
 	
 }
