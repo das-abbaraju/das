@@ -7,12 +7,19 @@ import com.picsauditing.access.OpPerms;
 public class InvoiceReport extends ReportAccount {
 	
 	public InvoiceReport() {
-		orderByDefault = "paymentExpires";
+		orderByDefault = "i.dueDate";
 	}
 	
 	public void buildQuery() {
 		super.buildQuery();
-		sql.addWhere("paid = 0");
+		sql.addField("i.id as invoiceId");
+		sql.addField("i.totalAmount");
+		sql.addField("i.dueDate");
+		
+		sql.addJoin("JOIN invoice i ON i.accountID = c.id");
+		
+		sql.addWhere("i.paid = 0");
+		sql.addWhere("c.renew = 1");
 	}
 	
 	@Override
