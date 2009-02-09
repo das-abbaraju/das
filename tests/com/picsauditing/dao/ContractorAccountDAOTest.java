@@ -111,5 +111,4 @@ public class ContractorAccountDAOTest {
 		flagDAO.save(coFlag);
 		flagDAO.remove(coFlag.getId());
 	}
-
 }

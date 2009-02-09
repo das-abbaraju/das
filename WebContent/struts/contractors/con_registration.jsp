@@ -122,11 +122,11 @@
 					<fieldset class="form"><legend><span>Login Information</span></legend>
 						<ol>
 							<li><label>Username:</label>
-						 		<s:textfield name="contractor.username" onblur="checkUsername(this.value);"/>
+						 		<s:textfield name="user.username" onblur="checkUsername(this.value);"/>
 						 		<span id="username_status"></span><span class="redMain">* Please type in your desired user name</span>
 						 	</li>
 							<li><label>Password:</label> 
-								<s:password name="contractor.password"/>
+								<s:password name="user.password"/>
 								<span class="redMain">* At least 5 characters long and different from your username</span></li>
 							<li><label>Confirm Password:</label> 
 								<s:password name="confirmPassword"/>

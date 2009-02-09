@@ -62,7 +62,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	private String oqEmployees;
 	
-	private boolean renew;
+	private boolean renew = true;
 	private Date lastUpgradeDate;
 	private int balance;
 	private InvoiceFee membershipLevel;
