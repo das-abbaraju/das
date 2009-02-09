@@ -54,6 +54,7 @@ public class Account extends BaseTable implements java.io.Serializable {
 	// Other tables
 	// protected List<ContractorOperator> contractors;
 	protected List<AccountName> names = new ArrayList<AccountName>();
+	protected List<User> users;
 
 	@Transient
 	public String getIdString() {
@@ -252,7 +253,16 @@ public class Account extends BaseTable implements java.io.Serializable {
 	public void setNames(List<AccountName> names) {
 		this.names = names;
 	}
-	
+
+	@OneToMany(mappedBy = "account")
+	public List<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<User> users) {
+		this.users = users;
+	}
+
 	@Transient
 	public boolean isContractor() {
 		return "Contractor".equals(type);
