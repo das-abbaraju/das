@@ -22,16 +22,19 @@
 		</fieldset>
 		</td>
 		<td>
-		<fieldset class="form"><legend><span>Contractor
-		Information</span></legend>
+		<fieldset class="form"><legend><span>Billing Information</span></legend>
 		<ol>
-			<li><label>Name:</label> <s:property value="contractor.name" />
+			<li>
+				<label>Name:</label> <s:property value="account.name" />
 			</li>
-			<li><label>Address:</label> <s:property
-				value="contractor.address" /></li>
-			<li><label>City:</label><s:property value="contractor.city" />
-			<label>State:</label><s:property value="contractor.state" /> <label>Zip:</label><s:property
-				value="contractor.zip" /></li>
+			<li>
+				<label>Address:</label> <s:property value="account.address" />
+			</li>
+			<li>
+				<label>City:</label><s:property value="account.city" />
+				<label>State:</label><s:property value="account.state" /> 
+				<label>Zip:</label><s:property	value="account.zip" />
+			</li>
 		</ol>
 		</fieldset>
 		</td>
@@ -54,8 +57,7 @@
 					</li>
 				</ol>
 				<s:if test="permissions.admin">
-				<div class="buttons"><input type="submit" class="positive"
-					name="button" value="Submit" />
+				<div class="buttons"><input type="submit" class="positive" name="button" value="Charge" />
 				</div>
 				</s:if>
 				</fieldset>
