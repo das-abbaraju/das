@@ -1,4 +1,3 @@
-<%@page import="com.picsauditing.PICS.BillContractor"%>
 <h2>PICS Annual Membership Price</h2>
 <table class="report">
 	<thead>
@@ -10,32 +9,32 @@
 	</thead>
 	<tr>
 		<td>1</td>
-		<td>$<%=BillContractor.price1Op%></td>
+		<td>$399</td>
 		<td>$99</td>
 	</tr>
 	<tr>
 		<td>2-4</td>
-		<td>$<%=BillContractor.price2Ops%></td>
+		<td>$699</td>
 		<td>$99</td>
 	</tr>
 	<tr>
 		<td>5-8</td>
-		<td>$<%=BillContractor.price5Ops%></td>
+		<td>$999</td>
 		<td>$99</td>
 	</tr>
 	<tr>
 		<td>9-12</td>
-		<td>$<%=BillContractor.price9Ops%></td>
+		<td>$1299</td>
 		<td>$99</td>
 	</tr>
 	<tr>
 		<td>13-19</td>
-		<td>$<%=BillContractor.price13Ops%></td>
+		<td>$1699</td>
 		<td>$99</td>
 	</tr>
 	<tr>
 		<td>20+</td>
-		<td>$<%=BillContractor.priceFull%></td>
+		<td>$1999</td>
 		<td>$99</td>
 	</tr>
 </table>
