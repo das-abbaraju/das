@@ -76,7 +76,7 @@
 						<s:textfield name="contractor.name" size="35" />
 					</li>
 					<li><label>Username:</label>
-						<s:textfield name="contractor.username" size="20" />
+						<s:textfield name="user.username" size="20" />
 							<pics:permission perm="SwitchUser">
 								<a href="Login.jsp?button=login&switchToUser=<s:property value="contractor.user.id"/>">Switch User</a>
 							</pics:permission>
@@ -126,10 +126,10 @@
 				</s:else>
 				<li><label>Payment Method:</label>
 					<s:if test="contractor.newBillingAmount < 500 && !permissions.admin">
-						<s:radio list="#{'Check':'Check','Credit Card':'Credit Card'}" name="contractor.paymentMethod" theme="pics" disabled="true"/>
+						<s:radio list="#{'Check':'Check','CreditCard':'CreditCard'}" name="contractor.paymentMethod" theme="pics" disabled="true"/>
 					</s:if>
 					<s:else>
-						<s:radio list="#{'Check':'Check','Credit Card':'Credit Card'}" name="contractor.paymentMethod" theme="pics" onclick="javascript : showPaymentMethodOption(this); return true;"/>
+						<s:radio list="#{'Check':'Check','CreditCard':'CreditCard'}" name="contractor.paymentMethod" theme="pics" onclick="javascript : showPaymentMethodOption(this); return true;"/>
 					</s:else>
 				</li>
 				<li>

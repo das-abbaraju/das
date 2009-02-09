@@ -111,18 +111,6 @@ public class ContractorAccountDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public ContractorAccount findName(String userName) {
-		if (userName == null)
-			userName = "";
-		try {
-			Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE username = '?'");
-			query.setParameter(1, userName);
-			return (ContractorAccount) query.getSingleResult();
-		} catch (NoResultException e) {	
-			return null;
-		}	
-	}
-
 	public ContractorAccount findTaxID(String taxId) {
 		if (taxId == null)
 			taxId = "";

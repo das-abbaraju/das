@@ -3,12 +3,12 @@ package com.picsauditing.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.SpringUtils;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -79,18 +79,9 @@ public class UserDAO extends PicsDAO {
 				if (id != uID)
 					// This is in use by another user
 					return true;
-			} else {
-				AccountDAO accountDAO = (AccountDAO) SpringUtils.getBean("AccountDAO");
-				id = accountDAO.findByID(uName);
-				if (id > 0) {
-					// found an account with this username
-					if (id != uID)
-						// This is in use by another contractor
-						return true;
-				}
 			}
 		} catch (Exception e) {
-			System.out.println("Exception in checkUserName: "+ e.getMessage());
+			System.out.println("Exception in checkUserName: " + e.getMessage());
 		}
 		return false;
 	}
@@ -98,9 +89,14 @@ public class UserDAO extends PicsDAO {
 	public User findName(String userName) {
 		if (userName == null)
 			userName = "";
-		Query query = em.createQuery("SELECT u FROM User u WHERE username = ?");
-		query.setParameter(1, userName);
-		return (User) query.getSingleResult();
+
+		try {
+			Query query = em.createQuery("SELECT u FROM User u WHERE username = ?");
+			query.setParameter(1, userName);
+			return (User) query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 
 	public int getUsersCounts() {
@@ -118,20 +114,21 @@ public class UserDAO extends PicsDAO {
 	/**
 	 * 
 	 * @param id
-	 * @param isActive Yes, No, or ""
-	 * @param isGroup Yes, No, or ""
+	 * @param isActive
+	 *            Yes, No, or ""
+	 * @param isGroup
+	 *            Yes, No, or ""
 	 * @return
 	 */
 	public List<User> findByAccountID(int id, String isActive, String isGroup) {
 		String where = "";
 		if ("Yes".equals(isGroup) || "No".equals(isGroup))
 			where += " AND isGroup = '" + isGroup + "' ";
-		
+
 		if ("Yes".equals(isActive) || "No".equals(isActive))
 			where += " AND isActive = '" + isActive + "' ";
-		
-		Query query = em.createQuery("SELECT u FROM User u WHERE account.id = ? " + where +
-				" ORDER BY isGroup, name");
+
+		Query query = em.createQuery("SELECT u FROM User u WHERE account.id = ? " + where + " ORDER BY isGroup, name");
 
 		query.setParameter(1, id);
 		return query.getResultList();

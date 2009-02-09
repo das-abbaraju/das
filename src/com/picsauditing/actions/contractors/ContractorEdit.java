@@ -14,8 +14,10 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.FileUtils;
 
 @SuppressWarnings("serial")
@@ -24,20 +26,23 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	private String logoFileName = null;
 	private File brochure = null;
 	private String brochureFileName = null;
+	protected User user;
 	protected AuditBuilder auditBuilder;
 	protected FlagCalculator2 flagCalculator2;
 	protected AuditQuestionDAO auditQuestionDAO;
 	protected ContractorValidator contractorValidator;
+	protected UserDAO userDAO;
 	protected String password1 = null;
 	protected String password2 = null;
 
 	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditBuilder auditBuilder,
-			FlagCalculator2 flagCalculator2, AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator) {
+			FlagCalculator2 flagCalculator2, AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, UserDAO userDAO) {
 		super(accountDao, auditDao);
 		this.auditBuilder = auditBuilder;
 		this.flagCalculator2 = flagCalculator2;
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
+		this.userDAO = userDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -51,6 +56,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		}
 		if (conID > 0) {
 			contractor = accountDao.find(conID);
+			user = userDAO.findByAccountID(conID,"", "No").get(0);
 		}
 		accountDao.clear();
 	}
@@ -89,7 +95,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						FileUtils.moveFile(brochure, ftpDir, "/files/brochures/", fileName, extension, true);
 						contractor.setBrochureFile(extension);
 					}
-					Vector<String> errors = contractorValidator.validateContractor(contractor, password1, password2);
+					Vector<String> errors = contractorValidator.validateContractor(contractor, password1, password2, user);
 					if (errors.size() > 0) {
 						for(String error : errors)
 							addActionError(error);
@@ -97,6 +103,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					}
 
 					contractor = accountDao.save(contractor);
+					userDAO.save(user);
 					auditBuilder.buildAudits(contractor);
 					BillingCalculatorSingle billCalculatorSingle = new BillingCalculatorSingle();
 					InvoiceFee invoiceFee = billCalculatorSingle.calculateAnnualFee(contractor);
@@ -113,6 +120,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					return SUCCESS;
 				}
 				accountDao.remove(contractor, getFtpDir());
+				userDAO.remove(user);
 				return "ConList";
 			} else {
 				// Because there are anomalies between browsers and how they
@@ -169,5 +177,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public void setPassword2(String password2) {
 		this.password2 = password2;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 }

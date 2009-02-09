@@ -4,18 +4,22 @@ import java.util.Date;
 import java.util.Vector;
 
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
 public class ContractorValidator {
 	public final int MIN_PASSWORD_LENGTH = 5;
 	protected ContractorAccountDAO contractorAccountDAO;
+	protected UserDAO userDAO;
 
-	public ContractorValidator(ContractorAccountDAO contractorAccountDAO) {
+	public ContractorValidator(ContractorAccountDAO contractorAccountDAO, UserDAO userDAO) {
 		this.contractorAccountDAO = contractorAccountDAO;
+		this.userDAO = userDAO;
 	}
 
-	public Vector<String> validateContractor(ContractorAccount contractor, String password1, String password2) {
+	public Vector<String> validateContractor(ContractorAccount contractor, String password1, String password2, User user) {
 		Vector<String> errorMessages = new Vector<String>();
 		if (contractor.getType() == null) {
 			errorMessages.addElement("Please indicate the account type.");
@@ -23,9 +27,9 @@ public class ContractorValidator {
 		}
 
 		// Username
-		if (Strings.isEmpty(contractor.getPrimary().getUsername()))
+		if (Strings.isEmpty(user.getUsername()))
 			errorMessages.addElement("Please fill in the Username field.");
-		else if (!verifyUsername(contractor))
+		else if (!verifyUsername(user))
 			errorMessages.addElement("Username already exists. Please type another.");
 
 		// Company Name
@@ -37,19 +41,19 @@ public class ContractorValidator {
 		// Passwords
 		if (!Strings.isEmpty(password1)) {
 			// They are trying to set/reset the password
-			if (!password1.equals(password2) && !password1.equals(contractor.getPrimary().getPassword()))
+			if (!password1.equals(password2) && !password1.equals(user.getPassword()))
 				errorMessages.addElement("The passwords don't match");
 
 			if (password1.length() < MIN_PASSWORD_LENGTH)
 				errorMessages.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH
 						+ " characters in length.");
-			if (password1.equalsIgnoreCase(contractor.getPrimary().getUsername()))
+			if (password1.equalsIgnoreCase(user.getUsername()))
 				errorMessages.addElement("Please choose a password different from your username.");
 			if (password1.equalsIgnoreCase("password"))
 				errorMessages.addElement("You can't use that password");
 			if (errorMessages.size() == 0) {
-				contractor.getPrimary().setPassword(password1);
-				contractor.getPrimary().setPasswordChanged(new Date());
+				user.setPassword(password1);
+				user.setPasswordChanged(new Date());
 			}
 		}
 
@@ -88,16 +92,16 @@ public class ContractorValidator {
 		return errorMessages;
 	}
 
-	public boolean verifyUsername(ContractorAccount contractorAccount) {
-		ContractorAccount cAccount = contractorAccountDAO.findName(contractorAccount.getPrimary().getUsername());
-		if (cAccount == null || cAccount.equals(contractorAccount))
+	public boolean verifyUsername(User user) {
+		User foundUser = userDAO.findName(user.getUsername());
+		if (foundUser == null || foundUser.equals(user))
 			return true;
 
 		return false;
 	}
 
 	public boolean verifyTaxID(ContractorAccount contractorAccount) {
-		ContractorAccount cAccount = contractorAccountDAO.findName(contractorAccount.getTaxId());
+		ContractorAccount cAccount = contractorAccountDAO.findTaxID(contractorAccount.getTaxId());
 		if (cAccount == null || cAccount.equals(contractorAccount))
 			return true;
 
