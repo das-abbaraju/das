@@ -56,6 +56,18 @@ public class BrainTreeService {
 		InputStream inputStream = url.openStream();
 		inputStream.close();
 	}
+	
+	public void procesPayment(int acctId, int amount) throws Exception {
+		String urlBase = "https://secure.braintreepaymentgateway.com/api/transact.php?type=sale";
+		
+		StringBuilder request = new StringBuilder(urlBase).append("&username=").append(userName).append("&password=")
+		.append(password).append("&customer_vault_id=").append(new Integer(acctId).toString()).append("&amount=")
+		.append(new Integer(amount).toString());
+		
+		URL url = new URL(request.toString());
+		InputStream inputStream = url.openStream();
+		inputStream.close();
+	}
 
 	protected String getValueFromDocument(Document document, String tagName) {
 		NodeList list = document.getElementsByTagName(tagName);
