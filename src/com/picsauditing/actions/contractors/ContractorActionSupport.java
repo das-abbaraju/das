@@ -98,9 +98,9 @@ public class ContractorActionSupport extends PicsActionSupport {
 	public List<ContractorAudit> getActiveAudits() {
 		if (contractorNonExpiredAudits == null) {
 			contractorNonExpiredAudits = new ArrayList<ContractorAudit>();
-			List<ContractorAudit> list = auditDao.findNonExpiredByContractor(contractor.getId());
+			List<ContractorAudit> list = getAudits();
 			for (ContractorAudit contractorAudit : list) {
-				if (permissions.canSeeAudit(contractorAudit.getAuditType()))
+				if (!contractorAudit.getAuditStatus().isExpired())
 					contractorNonExpiredAudits.add(contractorAudit);
 			}
 		}
@@ -316,7 +316,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 
 	public List<ContractorAudit> getAudits() {
 		List<ContractorAudit> temp = new ArrayList<ContractorAudit>();
-		List<ContractorAudit> list = auditDao.findByContractor(id);
+		List<ContractorAudit> list = contractor.getAudits();
 		for (ContractorAudit contractorAudit : list) {
 			if (permissions.canSeeAudit(contractorAudit.getAuditType()))
 				temp.add(contractorAudit);

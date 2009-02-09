@@ -28,13 +28,6 @@ var conID = '<s:property value="id"/>';
 <s:include value="con_notes_email.jsp"></s:include>
 </div>
 
-<pics:permission perm="EditNotes" type="Edit">
-<a name="edit" />
-<div id="noteEdit"><div id="thinking_noteEdit"></div></div>
-<br clear="all"/>
-</pics:permission>
-
-
 <div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
 
 </body>

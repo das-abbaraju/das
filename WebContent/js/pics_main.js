@@ -107,4 +107,14 @@ function augment (oSelf, oOther) {
     return oSelf;
 }
 
- 
+function noteEditor(accountID) {
+	var day = new Date();
+	var id = day.getTime();
+	var url = 'NoteEditor.action?id=' + accountID;
+	var windowOptions = 'toolbar=0,scrollbars=1,location=1,statusbar=1,menubar=0,resizable=1,width=600,height=400,left=420,top=250';
+	
+	var wnd = window.open(url, id, windowOptions);
+	wnd.focus();
+
+}
+

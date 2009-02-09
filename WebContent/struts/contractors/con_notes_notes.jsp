@@ -1,6 +1,9 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
+<%@ page language="java" errorPage="exception_handler.jsp"%>
 
 <div id="thinking_notesList"></div>
+
 <table class="notes">
 	<thead>
 		<tr>
@@ -23,7 +26,11 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr><td class="center" colspan="4"><a href="NoteEditor.action?id=<s:property value="id"/>" target="NOTEEDITOR">Add a new note</a></td></tr>
+		<pics:permission perm="EditNotes" type="Edit">
+			<tr><td class="center" colspan="4">
+				<input type="button" onclick="noteEditor('<s:property value="id"/>');" value="Add Note">
+			</td></tr>
+		</pics:permission>
 		<s:iterator value="notes">
 		<tr>
 			<td class="center">
