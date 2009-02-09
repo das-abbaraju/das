@@ -52,10 +52,6 @@ public class OperatorAccountDAOTest {
 		operatoraccount.setActive('y');
 		operatoraccount.setCreatedBy(new User(1100));
 		operatoraccount.setCreationDate(new java.util.Date());
-		operatoraccount.setSeesAllB('n');
-		operatoraccount.setActivationEmailsB("pics123@picsauditing.com");
-		operatoraccount.setSendActivationEmailB('n');
-		operatoraccount.setEmailConfirmedDate(new Date(2008, 12, 42));
 		operatoraccount.setActivationEmails("pics@picsauditing.com");
 		operatoraccount.setDoSendActivationEmail("Yes");
 		operatoraccount.setDoContractorsPay("Multiple");

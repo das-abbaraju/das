@@ -48,7 +48,6 @@ public class Account extends BaseTable implements java.io.Serializable {
 	protected char seesAllB;
 	protected char sendActivationEmailB;
 	protected String activationEmailsB;
-	protected Date emailConfirmedDate;
 	protected String type;
 
 	// Other tables
@@ -193,43 +192,6 @@ public class Account extends BaseTable implements java.io.Serializable {
 
 	public void setActive(char active) {
 		this.active = active;
-	}
-
-	@Column(name = "seesAll_B", length = 1)
-	public char getSeesAllB() {
-		return this.seesAllB;
-	}
-
-	public void setSeesAllB(char seesAllB) {
-		this.seesAllB = seesAllB;
-	}
-
-	@Column(name = "sendActivationEmail_B", length = 1)
-	public char getSendActivationEmailB() {
-		return this.sendActivationEmailB;
-	}
-
-	public void setSendActivationEmailB(char sendActivationEmailB) {
-		this.sendActivationEmailB = sendActivationEmailB;
-	}
-
-	@Column(name = "activationEmails_B", length = 155)
-	public String getActivationEmailsB() {
-		return this.activationEmailsB;
-	}
-
-	public void setActivationEmailsB(String activationEmailsB) {
-		this.activationEmailsB = activationEmailsB;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "emailConfirmedDate", length = 10)
-	public Date getEmailConfirmedDate() {
-		return this.emailConfirmedDate;
-	}
-
-	public void setEmailConfirmedDate(Date emailConfirmedDate) {
-		this.emailConfirmedDate = emailConfirmedDate;
 	}
 
 	/**

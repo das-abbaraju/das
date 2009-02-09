@@ -61,10 +61,6 @@ public class ContractorAccountDAOTest {
 		contractoraccount.setActive('y');
 		contractoraccount.setCreatedBy(new User(1100));
 		contractoraccount.setCreationDate(new Date());
-		contractoraccount.setSeesAllB('n');
-		contractoraccount.setActivationEmailsB("pics@picsauditing.com");
-		contractoraccount.setSendActivationEmailB('n');
-		contractoraccount.setEmailConfirmedDate(cal.getTime());
 		contractoraccount.setTaxId("test17701");
 		contractoraccount.setMainTrade("Consulting");
 		contractoraccount.setAccountDate(cal.getTime());
