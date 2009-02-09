@@ -3,6 +3,9 @@
 		<pattern>/*.jsp</pattern>
 		<pattern>/*action</pattern>
 	</decorator>
+	<decorator name="simple" page="simple.jsp">
+		<pattern>/NoteEditor.action</pattern>
+	</decorator>
 	<decorator name="ignoreMe">
 		<pattern>/*Ajax.action</pattern>
 		<pattern>/*ajax*</pattern>
@@ -18,7 +21,6 @@
 		<pattern>/ChartXML*</pattern>
 		<pattern>/con_pricing.jsp</pattern>
 		<pattern>/ConHeader.action</pattern>
-		<pattern>/NoteEditor.action</pattern>
 	</decorator>
 	<decorator name="marketing" page="marketing.jsp">
 		<pattern>/index.jsp</pattern>

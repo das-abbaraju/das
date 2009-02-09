@@ -180,7 +180,7 @@
 						<s:textfield name="contractor.email" size="30" />
 					</li>
 					<li><label>Email Confirmed Date:</label>
-						<s:date name="contractor.emailConfirmedDate" format="MMM d, yyyy" />
+						<s:date name="user.emailConfirmedDate" format="MMM d, yyyy" />
 					</li>
 					<li><label>Contact:</label>
 						<s:textfield name="contractor.contact" size="20" />

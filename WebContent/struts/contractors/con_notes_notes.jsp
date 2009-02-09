@@ -28,7 +28,7 @@
 	<tbody>
 		<pics:permission perm="EditNotes" type="Edit">
 			<tr><td class="center" colspan="4">
-				<input type="button" onclick="noteEditor('<s:property value="id"/>');" value="Add Note">
+				<input type="button" onclick="noteEditor('<s:property value="id"/>', 0);" value="Add Note">
 			</td></tr>
 		</pics:permission>
 		<s:iterator value="notes">
@@ -56,7 +56,7 @@
 				</s:if>
 			</td>
 			<td class="center">
-				<a href="#edit" onclick="showEditNotes(<s:property value="id" />);" class="edit">Edit</a>
+				<a href="#edit" onclick="noteEditor('<s:property value="account.id"/>', '<s:property value="id" />');" class="edit">Edit</a>
 				<a href="javascript: remove('notes', <s:property value="id" />);" class="remove" onclick="return confirm('Are you sure you want to remove this note?');">Hide</a>
 			</td>
 		</tr>

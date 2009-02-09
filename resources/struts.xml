@@ -202,11 +202,11 @@
 			<result name="tasks">struts/contractors/con_notes_tasks.jsp</result>
 			<result name="notes">struts/contractors/con_notes_notes.jsp</result>
 			<result name="email">struts/contractors/con_notes_email.jsp</result>
-			<result name="edit">struts/contractors/con_notes_edit.jsp</result>
 		</action>
 		<action name="NoteEditor"
-			class="com.picsauditing.actions.contractors.ContractorNote">
-			<result>struts/contractors/con_notes_edit.jsp</result>
+			class="com.picsauditing.actions.contractors.NoteEditor">
+			<result name="edit">struts/contractors/con_notes_edit.jsp</result>
+			<result name="view">struts/contractors/con_notes_view.jsp</result>
 		</action>
 
 		<!-- REPORTS Primary Search Pages (Contractor/Audit/User lists) -->

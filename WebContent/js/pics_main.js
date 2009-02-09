@@ -107,11 +107,11 @@ function augment (oSelf, oOther) {
     return oSelf;
 }
 
-function noteEditor(accountID) {
+function noteEditor(accountID, noteID) {
 	var day = new Date();
 	var id = day.getTime();
-	var url = 'NoteEditor.action?id=' + accountID;
-	var windowOptions = 'toolbar=0,scrollbars=1,location=1,statusbar=1,menubar=0,resizable=1,width=600,height=400,left=420,top=250';
+	var url = 'NoteEditor.action?id=' + accountID + '&note.id=' + noteID;
+	var windowOptions = 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=700,height=500';
 	
 	var wnd = window.open(url, id, windowOptions);
 	wnd.focus();
