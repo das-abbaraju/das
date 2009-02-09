@@ -112,9 +112,4 @@ public class ContractorAccountDAOTest {
 		flagDAO.remove(coFlag.getId());
 	}
 
-	@Test
-	public final void testFindName() {
-		Account account = contractoraccountDAO.findName("Couch");
-		System.out.println(account.getName());
-	}
 }
