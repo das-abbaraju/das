@@ -430,7 +430,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	@Transient
 	public boolean isPaymentOverdue() {
 		for(Invoice invoice : getInvoices())
-			if (!invoice.isPaid() && invoice.getDueDate().before(new Date()))
+			if (!invoice.isPaid() && invoice.getDueDate() != null && invoice.getDueDate().before(new Date()))
 				return true;
 		return false;
 	}
