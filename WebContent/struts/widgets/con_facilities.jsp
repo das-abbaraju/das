@@ -16,6 +16,6 @@
 			<td class="center"><s:property value="flag.waitingOn"/></td>
 		</tr>
 	</s:iterator>
-	<tr><td colspan="3" class="right"><a href="con_selectFacilities.jsp?id=<s:property value="id" />">... add to more Facilities</a></td>
+	<tr><td colspan="3" class="right"><a href="ContractorFacilities.action?id=<s:property value="id" />">... add more Facilities</a></td>
 	</tr>
 </table>

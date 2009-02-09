@@ -71,7 +71,7 @@
 				<a title="Waiting On : <s:property value="flag.waitingOn"/>" href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="operatorAccount.name" /></a>
 			</li>
 			</s:iterator>
-			<li>...<a href="con_selectFacilities.jsp?id=<s:property value="id" />">see Facilities</a></li>
+			<li>...<a href="ContractorFacilities.action?id=<s:property value="id" />">see Facilities</a></li>
 		</ul>
 	</div>
 </div>

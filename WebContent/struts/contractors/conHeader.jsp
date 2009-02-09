@@ -33,8 +33,8 @@
 	</s:if>
 	<s:else>
 		<li><a
-			href="con_selectFacilities.jsp?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('con_selectFacilities')">class="current"</s:if>>Facilities</a></li>
+			href="ContractorFacilities.action?id=<s:property value="id" />"
+			<s:if test="requestURI.contains('ContractorFacilities.action')">class="current"</s:if>>Facilities</a></li>
 	</s:else>
 	<s:if test="permissions.contractor">
 		<li><a href="ContractorForms.action?id=<s:property value="id" />"
