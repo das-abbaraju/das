@@ -1,7 +1,9 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.FacilityChanger;
@@ -23,6 +25,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 	private OperatorAccount operator = null;
 	
 	private List<OperatorAccount> searchResults = null;
+	private Map<Integer, ContractorOperator> opMap = new HashMap<Integer, ContractorOperator>();
 	
 	
 	public ContractorFacilities(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, OperatorAccountDAO operatorDao, FacilityChanger facilityChanger) {
@@ -33,10 +36,20 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 	@Override
 	public String execute() throws Exception {
-//		if (!forceLogin())
-//			return LOGIN;
+		if (!forceLogin())
+			return LOGIN;
 
 		findContractor();
+		
+		for( ContractorOperator co : contractor.getOperators() ) {
+			opMap.put(co.getOperatorAccount().getId(), co);
+		}
+		
+		if (permissions.isContractor() && permissions.getAdminID() == 0) {
+			contractor.setViewedFacilities( new java.util.Date() );
+			accountDao.save( contractor );
+		}
+		
 
 		if( button != null ) {  
 			
@@ -150,5 +163,15 @@ public class ContractorFacilities extends ContractorActionSupport {
 			}	
 		};
 	}
+
+	public Map<Integer, ContractorOperator> getOpMap() {
+		return opMap;
+	}
+
+	public void setOpMap(Map<Integer, ContractorOperator> opMap) {
+		this.opMap = opMap;
+	}
+
+	
 	
 }

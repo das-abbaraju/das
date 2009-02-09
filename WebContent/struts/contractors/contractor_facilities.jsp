@@ -73,7 +73,10 @@
 
 <br clear="all" />
 <h1>Select Contractor Facilities</h1>
+
+<s:if test="permissions.contractor">Please specify all facilities where you work:</s:if>
 <div id="outermost">
+	<s:if test="permissions.contractor || permissions.seesAllContractors()">
 	<div id="left" style="width: 350px; float:left; margin: 0 10px 0 0;">
 		<form id="facilitySearch" action="nothing">
 			<s:hidden name="id"/>
@@ -87,7 +90,7 @@
 		<div id="thinkingDiv"></div>
 		<div id="results"></div>
 	</div>
-	
+	</s:if>
 	<s:if test="permissions.contractor || permissions.seesAllContractors()">
 		<div id="pricing" style="float: right; width: 250px; border: 1px solid black; margin: 0 10px 0 10px;">
 			<%@ include file="/includes/pricing_matrix.jsp"%><br>		
