@@ -40,7 +40,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 		if ("Register".equalsIgnoreCase(button)) {
 			contractor.setType("Contractor");
 			contractor.setActive('N');
-			Vector<String> errors = contractorValidator.validateContractor(contractor, contractor.getPassword(),
+			Vector<String> errors = contractorValidator.validateContractor(contractor, contractor.getPrimary().getPassword(),
 					confirmPassword);
 			if (errors.size() > 0) {
 				for (String error : errors)

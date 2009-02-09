@@ -3,14 +3,10 @@ package com.picsauditing.actions.operators;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.beanutils.BasicDynaBean;
-
 import com.opensymphony.xwork2.ActionSupport;
-import com.picsauditing.PICS.Facilities;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.util.SpringUtils;
 
 public class FacilitiesGet extends ActionSupport {
 	protected String filter = null;

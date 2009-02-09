@@ -23,7 +23,7 @@ public class ContractorValidator {
 		}
 
 		// Username
-		if (Strings.isEmpty(contractor.getUsername()))
+		if (Strings.isEmpty(contractor.getPrimary().getUsername()))
 			errorMessages.addElement("Please fill in the Username field.");
 		else if (!verifyUsername(contractor))
 			errorMessages.addElement("Username already exists. Please type another.");
@@ -37,19 +37,19 @@ public class ContractorValidator {
 		// Passwords
 		if (!Strings.isEmpty(password1)) {
 			// They are trying to set/reset the password
-			if (!password1.equals(password2) && !password1.equals(contractor.getPassword()))
+			if (!password1.equals(password2) && !password1.equals(contractor.getPrimary().getPassword()))
 				errorMessages.addElement("The passwords don't match");
 
 			if (password1.length() < MIN_PASSWORD_LENGTH)
 				errorMessages.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH
 						+ " characters in length.");
-			if (password1.equalsIgnoreCase(contractor.getUsername()))
+			if (password1.equalsIgnoreCase(contractor.getPrimary().getUsername()))
 				errorMessages.addElement("Please choose a password different from your username.");
 			if (password1.equalsIgnoreCase("password"))
 				errorMessages.addElement("You can't use that password");
 			if (errorMessages.size() == 0) {
-				contractor.setPassword(password1);
-				contractor.setPasswordChange(new Date());
+				contractor.getPrimary().setPassword(password1);
+				contractor.getPrimary().setPasswordChanged(new Date());
 			}
 		}
 
@@ -89,7 +89,7 @@ public class ContractorValidator {
 	}
 
 	public boolean verifyUsername(ContractorAccount contractorAccount) {
-		ContractorAccount cAccount = contractorAccountDAO.findName(contractorAccount.getUsername());
+		ContractorAccount cAccount = contractorAccountDAO.findName(contractorAccount.getPrimary().getUsername());
 		if (cAccount == null || cAccount.equals(contractorAccount))
 			return true;
 
