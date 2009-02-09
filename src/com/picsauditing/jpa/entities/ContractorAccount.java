@@ -17,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -46,6 +47,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private String mustPay = "Yes";
 	private Date paymentExpires;
 	private int requestedById;
+	//private List<User> users;
+	private User primary;
 	private String secondContact;
 	private String secondPhone;
 	private String secondEmail;
@@ -87,7 +90,16 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public ContractorAccount(int id) {
 		this.id = id;
 	}
-
+	
+	@OneToOne(mappedBy="account")
+	public User getPrimary() {
+		return primary;
+	}
+	
+	public void setPrimary(User primary) {
+		this.primary = primary;
+	}
+	
 	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	public List<ContractorAudit> getAudits() {
 		return this.audits;
