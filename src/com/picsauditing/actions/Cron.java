@@ -12,6 +12,7 @@ import javax.persistence.NoResultException;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.NoteDAO;
@@ -35,6 +36,7 @@ public class Cron extends PicsActionSupport {
 	protected AppPropertyDAO appPropDao = null;
 	protected AuditBuilder auditBuilder = null;
 	protected ContractorAuditDAO contractorAuditDAO = null;
+	protected ContractorAccountDAO contractorAccountDAO = null;
 
 	protected long startTime = 0L;
 	StringBuffer report = null;
@@ -42,12 +44,13 @@ public class Cron extends PicsActionSupport {
 	protected boolean flagsOnly = false;
 
 	public Cron(FlagCalculator2 fc2, OperatorAccountDAO ops, AppPropertyDAO appProps, AuditBuilder ab,
-			ContractorAuditDAO contractorAuditDAO) {
+			ContractorAuditDAO contractorAuditDAO, ContractorAccountDAO contractorAccountDAO) {
 		this.flagCalculator = fc2;
 		this.operatorDAO = ops;
 		this.appPropDao = appProps;
 		this.auditBuilder = ab;
 		this.contractorAuditDAO = contractorAuditDAO;
+		this.contractorAccountDAO = contractorAccountDAO;
 	}
 
 	public String execute() throws Exception {
@@ -102,6 +105,21 @@ public class Cron extends PicsActionSupport {
 		try {
 			startTask("\nCalculating Flags...");
 			flagCalculator.runAll();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+		
+		try {
+			startTask("\nInactivating Accounts via Billing Status...");
+			String where = "a.active = 'Y' AND c.renew = 0 AND paymentExpires < NOW()";
+			List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where); 
+			for (ContractorAccount conAcct : conAcctList) {
+				conAcct.setActive('N');
+				conAcct.setMembershipLevel(null);
+				conAcct.setPaymentExpires(null);
+				contractorAccountDAO.save(conAcct);
+			}
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);

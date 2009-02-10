@@ -15,7 +15,7 @@
 				<legend><span>Details</span></legend>
 				<ol>
 					<li><label>Name:</label>
-						<s:property value="contractor.name"/>
+						<a href="ContractorView.action?id=<s:property value="contractor.id"/>"><s:property value="contractor.name" /></a>
 					</li>
 					<li><label>Requested By:</label>
 						<s:property value="requestedBy.name"/>
@@ -24,9 +24,7 @@
 						<br/><s:property value="contractor.operators.size()"/>
 					</li>					
 					<li><label>Facilities:</label>
-						<s:iterator value="contractor.operators">
-							<br/><s:property value="operatorAccount.name"/>
-						</s:iterator>
+						<s:select list="contractor.operators" name="operatorAccount.name"/>
 					</li>
 					<li><label>Active:</label>
 						<s:property value="contractor.active"/>
