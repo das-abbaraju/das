@@ -1,11 +1,11 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>Policy List</title>
+<title>Contractor Policies</title>
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
-<h1>Policy List</h1>
+<h1>Contractor Policies</h1>
 
 <s:include value="filters.jsp" />
 
