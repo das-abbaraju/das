@@ -54,9 +54,6 @@ public class PicsMenu {
 		subMenu = menu.addChild("Contractors");
 		subMenu.addChild("Contractor List", "ContractorList.action");
 
-		if (permissions.hasPermission(OpPerms.ContractorDetails))
-			subMenu.addChild("Contact Info", "report_contactInfo.jsp?changed=1");
-
 		if (permissions.hasPermission(OpPerms.SearchContractors)) {
 			subMenu.addChild("Search For New", "NewContractorSearch.action?filter.performedBy=Self Performed");
 		}
