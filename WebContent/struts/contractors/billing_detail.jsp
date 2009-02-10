@@ -8,7 +8,6 @@
 <s:include value="conHeader.jsp"></s:include>
 
 <br clear="all" />
-
 	<table>
 		<tr>
 			<td style="vertical-align: top; width: 50%;">
@@ -21,6 +20,9 @@
 					<li><label>Requested By:</label>
 						<s:property value="requestedBy.name"/>
 					</li>
+					<li><label>Total Operator Count:</label>
+						<br/><s:property value="contractor.operators.size()"/>
+					</li>					
 					<li><label>Facilities:</label>
 						<s:iterator value="contractor.operators">
 							<br/><s:property value="operatorAccount.name"/>
@@ -51,10 +53,28 @@
 				<legend><span>Invoicing</span></legend>
 				<ol>
 					<li><label>Past Invoices:</label>
-							<br/>Invoice # Amount Paid Date Paid
-						<s:iterator value="contractor.invoices">
-							<br/><s:property value="id"/> <s:property value="totalAmount"/> <s:property value="paidDate"/>
-						</s:iterator>
+						<table class="report">
+							<thead>
+								<tr>
+									<td></td>
+		    						<th>Invoice #</a></th>
+									<th class="right">Amount</th>
+									<th class="right">Due Date</th>	    
+									<th class="right">Date Paid</th>	    
+								</tr>
+							</thead>
+							<tbody>
+							<s:iterator value="contractor.invoices" status="stat">
+								<tr>
+									<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
+									<td><a href="InvoiceDetail.action?id=<s:property value="id"/>"><s:property value="id" /></a></td>
+									<td class="right">$<s:property value="totalAmount" /></td>
+									<td class="right"><s:date name="dueDate" format="M/d/yy"/></td>
+									<td class="right"><s:date name="paidDate" format="M/d/yy"/></td>
+								</tr>
+							</s:iterator>
+							</tbody>
+						</table>					
 					</li>
 					<li><label>Current Balance:</label>
 						$<s:property value="contractor.balance" /> USD
@@ -86,7 +106,7 @@
 			<s:hidden name="id" />
 				<fieldset class="form">
 				<legend><span>Create Invoice</span></legend>
-				<ol>NEED TO FORMAT THIS BAD BOY... MAKE COLUMNS MORE READABLE
+				<ol>
 					<s:iterator value="invoiceItems">
 						<li><label><s:property value="invoiceFee.fee"/>:</label>
 							$<s:property value="amount"/> USD
