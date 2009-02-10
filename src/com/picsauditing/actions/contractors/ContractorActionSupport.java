@@ -14,6 +14,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -42,6 +43,8 @@ public class ContractorActionSupport extends PicsActionSupport {
 	private List<ContractorOperator> operators;
 	protected boolean limitedView = false;
 	protected List<ContractorOperator> activeOperators;
+	private List<Note> notes;
+	protected NoteCategory noteCategory = NoteCategory.General;
 
 	// TODO cleanup the PermissionToViewContractor duplicate code here
 	private PermissionToViewContractor permissionToViewContractor = null;
@@ -51,6 +54,12 @@ public class ContractorActionSupport extends PicsActionSupport {
 	public ContractorActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
 		this.accountDao = accountDao;
 		this.auditDao = auditDao;
+	}
+	
+	@Override
+	public String execute() throws Exception {
+		loadPermissions();
+		return SUCCESS;
 	}
 
 	protected void findContractor() throws Exception {
@@ -366,4 +375,22 @@ public class ContractorActionSupport extends PicsActionSupport {
 		note.setStatus(NoteStatus.Closed); 
 		noteDAO.save(note);
 	}
+	
+	public NoteCategory getNoteCategory() {
+		return noteCategory;
+	}
+
+	public void setNoteCategory(NoteCategory noteCategory) {
+		this.noteCategory = noteCategory;
+	}
+	
+	public List<Note> getNotes() {
+		if (notes == null) {
+			NoteDAO dao = (NoteDAO) SpringUtils.getBean("NoteDAO");
+			// status != " + NoteStatus.Closed.ordinal()
+			notes = dao.getNotes(id, permissions, "status != " + NoteStatus.Hidden.ordinal() + " AND noteCategory = '" + noteCategory.toString() + "'", 5);
+		}
+		return notes;
+	}
+	
 }

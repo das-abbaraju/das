@@ -14,7 +14,6 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.util.ReportFilterNote;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class NoteEditor extends ContractorActionSupport implements Preparable {
@@ -22,6 +21,7 @@ public class NoteEditor extends ContractorActionSupport implements Preparable {
 	private Note note;
 	private int viewableBy;
 	private int viewableByOther;
+	private boolean embedded = true;
 	private ReportFilterNote filter = new ReportFilterNote();
 
 	private AccountDAO accountDAO;
@@ -129,6 +129,14 @@ public class NoteEditor extends ContractorActionSupport implements Preparable {
 
 	public void setMode(String mode) {
 		this.mode = mode;
+	}
+
+	public boolean isEmbedded() {
+		return embedded;
+	}
+
+	public void setEmbedded(boolean embedded) {
+		this.embedded = embedded;
 	}
 
 	

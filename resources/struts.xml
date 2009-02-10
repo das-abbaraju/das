@@ -203,6 +203,10 @@
 			<result name="notes">struts/contractors/con_notes_notes.jsp</result>
 			<result name="email">struts/contractors/con_notes_email.jsp</result>
 		</action>
+		<action name="EmbeddedNotesAjax"
+			class="com.picsauditing.actions.contractors.ContractorActionSupport">
+			<result>struts/contractors/con_notes_embed.jsp</result>
+		</action>
 		<action name="NoteEditor"
 			class="com.picsauditing.actions.contractors.NoteEditor">
 			<result name="edit">struts/contractors/con_notes_edit.jsp</result>

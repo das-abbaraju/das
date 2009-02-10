@@ -72,7 +72,7 @@ public class NoteDAO extends PicsDAO {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<Note> getNotes(int accountID, Permissions permissions, String where) {
+	public List<Note> getNotes(int accountID, Permissions permissions, String where, int limit) {
 		if (Strings.isEmpty(where))
 			where = "1";
 
@@ -91,11 +91,12 @@ public class NoteDAO extends PicsDAO {
 		if (permissions.isOperator() || permissions.isCorporate())
 			permWhere += " OR (viewableBy.id IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + ")";
 
-		Query query = em.createQuery("FROM Note WHERE account.id = :accountID " + "AND status = "
-				+ NoteStatus.Closed.ordinal() + " AND (" + where + ") " + " AND (" + permWhere + ") "
-				+ " ORDER BY priority DESC, creationDate");
+		Query query = em.createQuery("FROM Note WHERE account.id = :accountID "
+				+ " AND (" + where + ") " + " AND (" + permWhere + ") "
+				+ " ORDER BY creationDate DESC");
 		query.setParameter("accountID", accountID);
 		query.setParameter("userID", permissions.getUserId());
+		query.setMaxResults(limit);
 		return query.getResultList();
 	}
 

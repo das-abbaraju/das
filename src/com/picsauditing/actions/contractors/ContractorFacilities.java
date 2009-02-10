@@ -14,6 +14,7 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 
@@ -36,6 +37,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 		this.operatorDao = operatorDao;
 		this.facilityChanger = facilityChanger;
 		this.subHeading = "Facilities";
+		this.noteCategory = NoteCategory.OperatorChanges;
 	}
 
 	@Override

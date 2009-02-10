@@ -7,6 +7,8 @@
 
 <script src="js/prototype.js" type="text/javascript"></script>
 
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
+<script src="js/notes.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 	function runSearch() {
@@ -100,6 +102,12 @@
 		<%@ include file="contractor_facilities_assigned.jsp"%><br>
 	</div>
 </div>
+
+
+<div id="notesList">
+<s:include value="con_notes_embed.jsp"></s:include>
+</div>
+
 <br clear="all" />
 </body>
 </html>

@@ -25,6 +25,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.util.AnswerMapByAudits;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -55,6 +56,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		this.auditDataDAO = auditDataDAO;
 		this.coFlagDao = contractorOperatorFlagDAO;
 		this.caoDAO = caoDAO;
+		this.noteCategory = NoteCategory.Flags;
 	}
 
 	public String execute() throws Exception {
