@@ -119,6 +119,7 @@ table.report tr.na a {
 
 #auditHeader fieldset label {
 	float: left;
+	line-height: 26px;
 	margin-right: .7em;
 	width: 8em;
 	text-align: right;
@@ -153,7 +154,6 @@ table.report tr.na a {
 }
 
 #auditHeaderNav a {
-	line-height: 26px;
 	padding: 6px 8px;
 	text-decoration: none;
 	background-color: #003768;

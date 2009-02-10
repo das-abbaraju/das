@@ -405,10 +405,6 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	@Transient
 	public String getStatusDescription() {
-		int x;
-
-		x = 0;
-
 		if (auditStatus.isActive())
 			if (auditType.isMustVerify())
 				if (auditType.isPqf() || auditType.isAnnualAddendum())
@@ -418,7 +414,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 					statusDescription = this.getAuditType().getClassType().toString() + " has been verified.";
 			else if (auditType.isHasRequirements())
 				statusDescription = "All the requirements for this " + this.getAuditType().getClassType().toString()
-						+ "have been met." + this.getAuditType().getClassType().toString() + "closed.";
+						+ " have been met. " + this.getAuditType().getClassType().toString() + " closed.";
 			else
 				statusDescription = this.getAuditType().getClassType().toString() + " closed.";
 
