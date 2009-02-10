@@ -91,28 +91,29 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 					operatorAccount.setIsCorporate(YesNo.Yes);
 					
 					if (facilities != null) {
-						List<Integer> newFacilities = new ArrayList<Integer>();
+						List<OperatorAccount> newFacilities = new ArrayList<OperatorAccount>();
 
 						for (int operatorID : facilities) {
-							newFacilities.add(Integer.valueOf(operatorID));
+							OperatorAccount opAccount = new OperatorAccount();
+							opAccount.setId(operatorID);
+							newFacilities.add(opAccount);
 						}
 
 						Iterator<Facility> facList = operatorAccount.getOperatorFacilities().iterator();
 						while (facList.hasNext()) {
 							Facility opFacilities = facList.next();
-							if (newFacilities.contains(opFacilities.getOperator().getId())) {
-								newFacilities.remove(opFacilities.getOperator().getId());
+							if (newFacilities.contains(opFacilities.getOperator())) {
+								newFacilities.remove(opFacilities.getOperator());
 							} else {
 								facilitiesDAO.remove(opFacilities);
 								facList.remove();
 							}
 						}
 
-						for (Integer newOpID : newFacilities) {
+						for (OperatorAccount opAccount : newFacilities) {
 							Facility facility = new Facility();
 							facility.setCorporate(operatorAccount);
-							facility.setOperator(new OperatorAccount());
-							facility.getOperator().setId(newOpID);
+							facility.setOperator(opAccount);
 							facilitiesDAO.save(facility);
 							operatorAccount.getOperatorFacilities().add(facility);
 						}
