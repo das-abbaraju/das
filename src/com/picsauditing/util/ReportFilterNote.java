@@ -4,18 +4,21 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.NoteStatus;
 
+@SuppressWarnings("serial")
 public class ReportFilterNote extends ReportFilter {
-	protected String[] keyword;
+	protected String keyword;
 	protected NoteCategory[] category;
 	protected LowMedHigh[] priority;
+	protected NoteStatus[] status;
 	protected int[] userID;
 	protected int[] userAccountID;
+	protected int[] viewableBy;
 
-	public String[] getKeyword() {
+	public String getKeyword() {
 		return keyword;
 	}
 
-	public void setKeyword(String[] keyword) {
+	public void setKeyword(String keyword) {
 		this.keyword = keyword;
 	}
 
@@ -51,16 +54,32 @@ public class ReportFilterNote extends ReportFilter {
 		this.userAccountID = userAccountID;
 	}
 
+	public NoteStatus[] getStatus() {
+		return status;
+	}
+
+	public void setStatus(NoteStatus[] status) {
+		this.status = status;
+	}
+
 	public LowMedHigh[] getPriorityList() {
 		return LowMedHigh.values();
 	}
 
-	public NoteCategory[] getNoteCategoryList() {
+	public NoteCategory[] getCategoryList() {
 		return NoteCategory.values();
 	}
 
-	public NoteStatus[] getNoteStatus() {
+	public NoteStatus[] getStatusList() {
 		return NoteStatus.values();
+	}
+
+	public int[] getViewableBy() {
+		return viewableBy;
+	}
+
+	public void setViewableBy(int[] viewableBy) {
+		this.viewableBy = viewableBy;
 	}
 
 }

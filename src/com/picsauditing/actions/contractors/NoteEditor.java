@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -12,6 +14,7 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.util.ReportFilterNote;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class NoteEditor extends ContractorActionSupport implements Preparable {
@@ -42,8 +45,9 @@ public class NoteEditor extends ContractorActionSupport implements Preparable {
 				viewableByOther = viewableBy;
 				viewableBy = 3;
 			}
-		} else
+		} else {
 			note = new Note();
+		}
 	}
 
 	@Override
@@ -54,15 +58,22 @@ public class NoteEditor extends ContractorActionSupport implements Preparable {
 		findContractor();
 		
 		if ("save".equals(button)) {
+			permissions.tryPermission(OpPerms.EditNotes, OpType.Edit);
+			if (note.getId() == 0) {
+				// This is a new note
+				note.setAccount(contractor);
+			}
 			if (viewableBy > 2)
-				note.setViewableById(viewableBy);
-			else
 				note.setViewableById(viewableByOther);
-			
+			else
+				note.setViewableById(viewableBy);
+			note.setAuditColumns(getUser());
 			noteDAO.save(note);
 			addActionMessage("Successfully saved Note");
 		}
 
+		if (viewableBy == 0)
+			viewableBy = Account.EVERYONE;
 		if (viewableByOther == 0)
 			viewableByOther = permissions.getAccountId();
 		
@@ -112,4 +123,13 @@ public class NoteEditor extends ContractorActionSupport implements Preparable {
 		this.viewableByOther = viewableByOther;
 	}
 
+	public String getMode() {
+		return mode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+
+	
 }

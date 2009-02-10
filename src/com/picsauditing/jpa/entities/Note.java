@@ -13,9 +13,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.picsauditing.PICS.Utilities;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 @Entity
@@ -129,6 +133,11 @@ public class Note extends BaseTable implements java.io.Serializable {
 
 	public String getBody() {
 		return body;
+	}
+	
+	@Transient
+	public String getBodyHtml() {
+		return Utilities.escapeHTML(body);
 	}
 
 	public void setBody(String body) {

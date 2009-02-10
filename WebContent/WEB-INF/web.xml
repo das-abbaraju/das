@@ -119,10 +119,6 @@
 		<servlet-class>viewPDF</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>viewExcel</servlet-name>
-		<servlet-class>viewExcel</servlet-class>
-	</servlet>
-	<servlet>
 		<servlet-name>StreamUploader</servlet-name>
 		<servlet-class>
 			com.picsauditing.servlet.upload.StreamUploader
@@ -135,10 +131,6 @@
 	<servlet-mapping>
 		<servlet-name>viewPDF</servlet-name>
 		<url-pattern>/servlet/viewPDF</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>viewExcel</servlet-name>
-		<url-pattern>/servlet/viewExcel.xls</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>StreamUploader</servlet-name>

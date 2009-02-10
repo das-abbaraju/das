@@ -8,25 +8,31 @@
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
+<link rel="stylesheet" type="text/css" media="print" href="css/print.css" /> 
+<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css" /> 
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css" />
+<script src="js/pics_main.js" type="text/javascript" ></script>
 <style type="text/css">
 #content {
 	padding: 15px;
 }
+
 #main {
 	margin: 10px;
 }
 </style>
+<decorator:head />
+
 </head>
-<body>
+<body onload="<decorator:getProperty property="body.onload" />" onunload="<decorator:getProperty property="body.onunload" />">
 <div id="main">
 <div id="bodyholder">
 <div id="content">
-
 <!-- !begin content -->
-<decorator:body />
-<!-- !end content -->
 
+<decorator:body />
+
+<!-- !end content -->
 </div>
 </div>
 </div>

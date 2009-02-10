@@ -116,13 +116,8 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	}
 
 	public User getUser() {
-		if (user == null) {
-			if (permissions.isContractor())
-				// Contractors don't have associated user accounts (yet)
-				user = new User(User.CONTRACTOR);
-			else
-				user = getUser(permissions.getUserId());
-		}
+		if (user == null)
+			user = getUser(permissions.getUserId());
 		return user;
 	}
 

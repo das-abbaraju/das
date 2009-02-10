@@ -71,9 +71,6 @@
 <body>
 <s:include value="conHeader.jsp"></s:include>
 
-<br clear="all" />
-<h1>Contractor Facilities</h1>
-
 <s:if test="permissions.contractor">Please specify all facilities where you work:</s:if>
 <div id="outermost">
 	<s:if test="permissions.contractor || permissions.seesAllContractors()">
@@ -81,10 +78,12 @@
 		<form id="facilitySearch" action="nothing">
 			<s:hidden name="id"/>
 			<div id="search">
-				Location:<s:textfield name="state"/><br/>
-				Corporate:<s:textfield name="corporate"/><br/>
+				<div class="buttons">
+					<button class="positive" name="button" type="button" 
+						onclick="runSearch()">Search</button>
+				</div>
+				Location: <s:select list="stateList" name="state"></s:select> <br />
 				Name:<s:textfield name="operator.name"/><br/>
-				<div class="searchButton"><s:submit cssStyle="font-size: 16px; padding: 8px; margin: 5px; color: darkgreen; font-weight: bold;" onclick="javascript: return runSearch();" value="Search"/></div>
 			</div>
 		</form>
 		<div id="thinkingDiv"></div>

@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.FacilityChanger;
@@ -14,6 +15,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.State;
 
 public class ContractorFacilities extends ContractorActionSupport {
 
@@ -33,6 +35,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 		super( accountDao , auditDao );
 		this.operatorDao = operatorDao;
 		this.facilityChanger = facilityChanger;
+		this.subHeading = "Facilities";
 	}
 
 	@Override
@@ -107,6 +110,10 @@ public class ContractorFacilities extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
+	public TreeMap<String, String> getStateList() {
+		return State.getStates(true);
+	}
+	
 	public String getState() {
 		return state;
 	}
