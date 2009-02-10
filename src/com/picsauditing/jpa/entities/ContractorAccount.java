@@ -44,7 +44,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private String description;
 	private Date accountDate;
 	private String mustPay = "Yes";
-	private Date paymentExpires;
 	private int requestedById;
 	private String secondContact;
 	private String secondPhone;
@@ -62,6 +61,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	private String oqEmployees;
 	
+	private Date paymentExpires;
 	private boolean renew = true;
 	private Date lastUpgradeDate;
 	private int balance;
@@ -627,7 +627,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 *         Contractor is not active and Contractor does not have a membership
 	 *         
 	 *     Reactivation
-	 *         Contractor is not active and Contractor's membership expired
+	 *         Contractor is not active, Contractor's membership expired and 
+	 *         they don't have a current Membership Level
 	 *         
 	 *     Upgrade
 	 *         The number of facilities a contractor is at has increased.
@@ -639,7 +640,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 *         Contractor is active and the Membership Expiration Date is past.
 	 *         
 	 *     Renewal
-	 *         Contractor is active and the Membership Expiration Date is in the next 30 Days
+	 *         Contractor is active and the Membership Expiration Date is in 
+	 *         the next 30 Days
 	 * 
 	 * @return A String of the current Billing Status
 	 */
@@ -651,10 +653,11 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			else {
 				if (membershipDate == null)
 					return "Activation";
-				else
+				else if (membershipLevel == null)
 					return "Reactivation";
 			}
 		}
+		
 		if (newMembershipLevel.getAmount() > membershipLevel.getAmount())
 			return "Upgrade";
 
