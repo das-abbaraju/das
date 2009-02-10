@@ -316,6 +316,12 @@ public class ContractorActionSupport extends PicsActionSupport {
 
 	public List<ContractorAudit> getAudits() {
 		List<ContractorAudit> temp = new ArrayList<ContractorAudit>();
+		try {
+			if(!accountDao.isContained(contractor)) 
+				findContractor();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		List<ContractorAudit> list = contractor.getAudits();
 		for (ContractorAudit contractorAudit : list) {
 			if (permissions.canSeeAudit(contractorAudit.getAuditType()))
