@@ -17,10 +17,16 @@
 function updateExpDate() {
 	$('ccexp').value = $F('expMonth') + $F('expYear');
 }
-
 </script>
 </head>
 <body>
+<s:if test="permissions.contractor && !permissions.active">
+	<s:include value="registrationHeader.jsp"></s:include>
+</s:if>
+<s:else>
+<s:include value="conHeader.jsp"></s:include>
+</s:else>
+
 <div id="main">
 	<div id="bodyholder">
 		<div id="content">
@@ -128,5 +134,10 @@ function updateExpDate() {
 			</div>
 		</div>
 	</div>
+	<s:if test="permissions.contractor && !permissions.active">
+		<div class="buttons" style="float: right;">
+			<a href="contractor_new_confirm.jsp" class="positive">Next</a>
+		</div>
+	</s:if>
 </body>
 </html>

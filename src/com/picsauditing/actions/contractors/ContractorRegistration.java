@@ -42,6 +42,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 		this.contractorValidator = contractorValidator;
 		this.noteDAO = noteDAO;
 		this.userDAO = userDAO;
+		this.subHeading = "New Contractor Information";
 	}
 
 	public String execute() throws Exception {
