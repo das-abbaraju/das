@@ -373,6 +373,11 @@
 			<result>/struts/reports/report_licenses.jsp</result>
 		</action>
 
+		<action name="ReportContractorOperatorFlagMatrix"
+			class="com.picsauditing.actions.report.ReportContractorOperatorFlagMatrix">
+			<result>/struts/reports/report_contractorOperatorFlagMatrix.jsp</result>
+		</action>
+
 		<action name="ReportIncidenceRate"
 			class="com.picsauditing.actions.report.ReportIncidenceRate">
 			<result>/struts/reports/report_incidenceRates.jsp</result>

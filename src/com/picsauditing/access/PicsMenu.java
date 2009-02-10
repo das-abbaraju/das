@@ -57,10 +57,8 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.SearchContractors)) {
 			subMenu.addChild("Search For New", "NewContractorSearch.action?filter.performedBy=Self Performed");
 		}
-		if (permissions.hasPermission(OpPerms.AllContractors))
-			subMenu.addChild("By Operator", "report_operatorContractor.jsp?visible=Y");
 		if (permissions.isCorporate() || permissions.getCorporateParent().size() > 0)
-			subMenu.addChild("By Operator", "report_operatorContractor.jsp?searchCorporate=Y");
+			subMenu.addChild("By Operator", "ReportContractorOperatorFlagMatrix.action");
 		if(permissions.hasPermission(OpPerms.DelinquentAccounts)) {
 			subMenu.addChild("Archived Accounts", "ArchivedContractorAccounts.action");
 			subMenu.addChild("Delinquent Accounts", "DelinquentContractorAccounts.action");
