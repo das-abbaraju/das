@@ -5,7 +5,9 @@ import java.util.Vector;
 
 import org.apache.struts2.ServletActionContext;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.ContractorValidator;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -61,7 +63,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			user.setAuditColumns(new User(User.CONTRACTOR));
 			user.setIsGroup(YesNo.No);
 			user.setName(contractor.getContact());
-			userDAO.save(user);
+			user = userDAO.save(user);
 
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(2); // Welcome Email
@@ -77,7 +79,11 @@ public class ContractorRegistration extends ContractorActionSupport {
 			note.setPriority(LowMedHigh.Low);
 			note.setViewableById(Account.EVERYONE);
 			noteDAO.save(note);
-
+			
+			Permissions permissions = new Permissions();
+			permissions.login(user);
+			ActionContext.getContext().getSession().put("permissions", permissions);
+			
 			ServletActionContext.getResponse().sendRedirect("ContractorFacilities.action?id=" + contractor.getId());
 			this.addActionMessage("Redirected to Facilities Page");
 			return BLANK;
