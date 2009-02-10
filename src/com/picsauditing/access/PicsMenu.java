@@ -103,11 +103,11 @@ public class PicsMenu {
 			subMenu.addChild("Policy List", "ReportPolicyList.action");
 		if(permissions.hasPermission(OpPerms.InsuranceVerification))
 			subMenu.addChild("InsureGuard Verification", "PolicyVerification.action?filter.visible=Y&filter.auditStatus=Submitted&filter.auditStatus=Resubmitted");
-		if (permissions.hasPermission(OpPerms.InsuranceApproval))
-			subMenu.addChild("Insurance Approval", "ReportInsuranceApproval.action?filter.caoStatus=Awaiting&filter.auditStatus=Submitted&filter.auditStatus=Active&filter.auditStatus=Resubmitted");
-		if (permissions.hasPermission(OpPerms.InsuranceApproval))
+		if (permissions.hasPermission(OpPerms.InsuranceApproval)) {
+			subMenu.addChild("Policies Awaiting", "ReportInsuranceApproval.action?filter.caoStatus=Awaiting&filter.auditStatus=Submitted&filter.auditStatus=Active&filter.auditStatus=Resubmitted");
 			subMenu.addChild("Recently Updated Policies", "ReportUpdatedPolicies.action?filter.hasClosedDate=true&filter.caoStatus=Approved&filter.caoStatus=Rejected&filter.auditStatus=Resubmitted");
-
+		}
+		
 		subMenu = menu.addChild("Management");
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
 			subMenu.addChild("Approve Contractors", "con_approvals.jsp");
