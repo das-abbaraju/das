@@ -34,7 +34,7 @@ public class ReportBilling extends ReportAccount {
 		String where = "";
 		// Show activations and reactivations
 		if (billingState.equals("All") || billingState.equals("Activations")) {
-			where += "(a.active = 'N' AND c.renew = 1)";
+			where += "(a.active = 'N' AND c.renew = 1 AND f1.id IS NULL)";
 		}
 		// Show renewals
 		if (billingState.equals("All") || billingState.equals("Renewals")) {
