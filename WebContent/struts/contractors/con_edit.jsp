@@ -282,6 +282,10 @@
 						<s:radio list="#{'Yes':'Yes','No':'No'}" name="contractor.mustPay"
 							value="contractor.mustPay" theme="pics" />
 					</li>
+					<li><label>Renew?</label>
+						<s:radio list="#{'true':'Yes','false':'No'}" name="contractor.renew"
+							value="contractor.renew" theme="pics" />
+					</li>					
 					<li><label>Membership Date:</label>
 						<input name="contractor.membershipDate" id="membershipDate" 
 							type="text" class="forms" size="10" 
