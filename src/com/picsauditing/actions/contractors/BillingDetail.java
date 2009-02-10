@@ -48,7 +48,8 @@ public class BillingDetail extends ContractorActionSupport {
 		currentMemebershipFee = contractor.getMembershipLevel();
 		newMembershipFee = contractor.getNewMembershipLevel();
 		
-		String billingStatus = contractor.getBillingStatus();
+		String billingStatus = "";
+		billingStatus = contractor.getBillingStatus();
 		boolean firstUpgrade = true;
 		
 		invoiceItems.clear();
@@ -127,8 +128,10 @@ public class BillingDetail extends ContractorActionSupport {
 			}
 			invoice.setTotalAmount(invoiceTotal);
 			
-			//contractor.setMembershipLevel(contractor.getNewMembershipLevel());
-			//TODO contractor.updateBalance();
+			int conBalance = contractor.getBalance();
+			contractor.setBalance(conBalance + invoiceTotal);
+			
+			contractor.setMembershipLevel(contractor.getNewMembershipLevel());
 			accountDao.save(contractor);
 			
 			addActionMessage("Invoice " + invoice.getId() + " has been created.");
