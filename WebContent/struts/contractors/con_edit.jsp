@@ -35,7 +35,7 @@
  		if( buttonURL.indexOf( 'www.picsauditing.com' ) != -1 ) {
  			buttonURL = buttonURL.replace('http:', 'https:');
  		}
- 		var url = buttonURL.substr(0, buttonURL.lastIndexOf('/') ) + '/ContractorPaymentOptions.action?id=' + <s:property value="contractor.id"/> +'&paymentMethod=Credit Card'; 
+ 		var url = buttonURL.substr(0, buttonURL.lastIndexOf('/') ) + '/ContractorPaymentOptions.action?id=' + <s:property value="contractor.id"/> +'&paymentMethod=CreditCard'; 
 		$('cc_link').href=url;
 	}
 	
@@ -45,7 +45,7 @@
 			$('creditcard_show').hide();
 			$('check_show').show();
 		}
-		if(option == 'Credit Card') {
+		if(option == 'CreditCard') {
 			$('check_show').hide();
 			$('creditcard_show').show();
 		}
@@ -286,7 +286,7 @@
 						<s:radio list="#{'true':'Yes','false':'No'}" name="contractor.renew"
 							value="contractor.renew" theme="pics" />
 					</li>					
-					<li><label>Membership Date:</label>
+					<li><label>Activation Date:</label>
 						<input name="contractor.membershipDate" id="membershipDate" 
 							type="text" class="forms" size="10" 
 							value="<s:date name="contractor.membershipDate" format="MM/dd/yyyy" />" />
