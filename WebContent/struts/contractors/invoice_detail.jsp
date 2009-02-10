@@ -16,7 +16,9 @@
 		<ol>
 			<li><label>Name:</label> PICS</li>
 			<li><label>Address:</label> 17701 Cowan St. Ste 140</li>
-			<li><label>City:</label>Irvine<label>State:</label>CA<label>Zip:</label>92614
+			<li><label>City:</label>Irvine</li>
+			<li><label>State:</label>CA</li>
+			<li><label>Zip:</label>92614</li>
 			</li>
 		</ol>
 		</fieldset>
@@ -24,16 +26,11 @@
 		<td>
 		<fieldset class="form"><legend><span>Billing Information</span></legend>
 		<ol>
-			<li>
-				<label>Name:</label> <s:property value="account.name" />
-			</li>
-			<li>
-				<label>Address:</label> <s:property value="account.address" />
-			</li>
-			<li>
-				<label>City:</label><s:property value="account.city" />
-				<label>State:</label><s:property value="account.state" /> 
-				<label>Zip:</label><s:property	value="account.zip" />
+			<li><label>Name: </label><a href="ContractorView.action?id=<s:property value="contractor.id"/>"><s:property value="contractor.name" /></a>
+			<li><label>Address:</label> <s:property value="contractor.address" /></li>
+			<li><label>City:</label><s:property value="contractor.city" /></li>
+			<li><label>State:</label><s:property value="account.state" /></li> 
+			<li><label>Zip:</label><s:property	value="account.zip" /></li>
 			</li>
 		</ol>
 		</fieldset>
@@ -45,20 +42,22 @@
 				<s:hidden name="id" />
 				<fieldset class="form"><legend><span>Invoice</span></legend>
 				<ol>
-					<s:iterator value="contractor.invoices">
-						<li>
-						<label><s:property value="items.invoiceFee.fee" />:</label> 
-							$<s:property value="amount" /> USD
-						</li>
-					</s:iterator>
 					<li>
-						<label>Total:</label> 
-						$<s:property value="totalAmount" /> USD
+						<label>Invoice #</label><s:property value="invoice.id" />
+					</li>
+					<li><label>Invoice Items:</label><br/>
+						<s:iterator value="invoice.items">
+							<br/><s:property value="invoiceFee.fee"/> $<s:property value="invoiceFee.amount"/> USD
+						</s:iterator>
+					</li>
+					<li>
+						<label>Invoice Total:</label> $<s:property value="invoice.totalAmount" /> USD
 					</li>
 				</ol>
-				<s:if test="permissions.admin">
-				<div class="buttons"><input type="submit" class="positive" name="button" value="Charge" />
-				</div>
+				<s:if test="permissions.admin && contractor.paymentMethodStatus != 'Missing' && !invoice.paid">
+					<div class="buttons">
+						<input type="submit" class="positive" name="button" value="Charge" />
+					</div>
 				</s:if>
 				</fieldset>
 			</s:form>
