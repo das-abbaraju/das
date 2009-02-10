@@ -14,8 +14,7 @@ public class ArchivedAccounts extends ReportAccount {
 		permissions.tryPermission(OpPerms.DelinquentAccounts);
 	}
 	
-	@Override
-	protected void buildQuery() {
+	public void buildQuery() {
 		skipPermissions = true;
 		super.buildQuery();
 		
@@ -23,12 +22,7 @@ public class ArchivedAccounts extends ReportAccount {
 		sql.addField("a.phone");
 		sql.addField("a.phone2");
 		sql.addField("a.email");
-		sql.addField("c.lastInvoiceDate");
-		sql.addWhere("DATEDIFF(NOW(),c.lastInvoiceDate) > 120");
-		sql.addWhere("(c.lastPayment IS NULL OR c.lastPayment < c.lastInvoiceDate)");
 		sql.addWhere("a.active = 'N'");
-
-		orderByDefault = "c.lastInvoiceDate ASC";
 
 		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.SQL);
 		qb.setActiveContractorsOnly(false);

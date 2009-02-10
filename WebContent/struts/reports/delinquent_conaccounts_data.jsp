@@ -25,7 +25,7 @@ membership by contacting PICS.
 				<a href="ContractorView.action?id=<s:property value="[0].get('id')"/>">
 				<s:property value="[0].get('name')" /></a>
 			</td>
-			<td class="center"><s:date name="[0].get('lastInvoiceDate')" format="M/d/yy" /></td>
+			<td class="center"><s:date name="[0].get('dueDate')" format="M/d/yy" /></td>
 			<td class="center"><s:property value="[0].get('DaysLeft')" /></td>
 		</tr>
 	</s:iterator>

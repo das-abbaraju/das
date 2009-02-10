@@ -1,18 +1,14 @@
 package com.picsauditing.actions.report;
 
 @SuppressWarnings("serial")
-public class DelinquentAccounts extends ReportAccount {
+public class DelinquentAccounts extends ReportContractorInvoice {
 
-	@Override
-	protected void buildQuery() {
+	public void buildQuery() {
 		super.buildQuery();
-		sql.addField("c.lastInvoiceDate");
-		sql.addWhere("DATEDIFF(NOW(),c.lastInvoiceDate) > 75");
-		sql.addWhere("(c.lastPayment IS NULL OR c.lastPayment < c.lastInvoiceDate)");
+		sql.addWhere("i.dueDate < NOW()");
+		sql.addWhere("i.paid = 0");
 		sql.addWhere("a.active = 'Y'");
-		sql.addWhere("c.mustPay = 'Yes'");
-		sql.addField("DATEDIFF(ADDDATE(c.lastInvoiceDate, 120),NOW()) AS DaysLeft");
-		orderByDefault = "c.lastInvoiceDate ASC";
+		sql.addField("DATEDIFF(ADDDATE(i.dueDate, 30),NOW()) AS DaysLeft");
 		getFilter().setShowVisible(false);
 	}
 }
