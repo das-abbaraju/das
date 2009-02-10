@@ -120,9 +120,7 @@
 				</s:if>
 				<s:else>
 					<li><label>Membership Fee:</label> $<s:property
-						value="contractor.newBillingAmount" /> USD</li>
-					<li><label>Activation Fee:</label> $<s:property value="contractor.activationFee"/> USD</li>
-					<li><label>Total:</label> $<s:property value="contractor.activationFee+contractor.newBillingAmount"/> USD </li>
+						value="contractor.newMembershipLevel.amount" /> USD</li>
 				</s:else>
 				<li><label>Payment Method:</label>
 					<s:if test="contractor.newBillingAmount < 500 && !permissions.admin">
@@ -262,9 +260,6 @@
 				<fieldset class="form">
 				<legend><span>PICS Admin Fields</span></legend>
 				<ol>
-					<li><label>Visible?</label>
-						<s:radio list="#{'Y':'Yes','N':'No'}" name="contractor.active" theme="pics" />
-					</li>
 					<li><label>Risk Level:</label>
 						<s:radio list="riskLevelList" name="contractor.riskLevel" theme="pics" />
 					</li>
