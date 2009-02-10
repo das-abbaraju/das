@@ -71,8 +71,12 @@
 
 </head>
 <body>
+<s:if test="permissions.contractor && !permissions.active">
+	<s:include value="registrationHeader.jsp"></s:include>
+</s:if>
+<s:else>
 <s:include value="conHeader.jsp"></s:include>
-
+</s:else>
 <s:if test="permissions.contractor">Please specify all facilities where you work:</s:if>
 <div id="outermost">
 	<s:if test="permissions.contractor || permissions.seesAllContractors()">
@@ -103,11 +107,14 @@
 	</div>
 </div>
 
-
 <div id="notesList">
 <s:include value="con_notes_embed.jsp"></s:include>
 </div>
-
 <br clear="all" />
+<s:if test="permissions.contractor && !permissions.active">
+	<div class="buttons" style="float: right;">
+		<a href="ContractorPaymentOptions.action?id=<s:property value="id" />" class="positive">Next</a>
+	</div>
+</s:if>
 </body>
 </html>

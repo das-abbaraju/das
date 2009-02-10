@@ -27,8 +27,15 @@
 				button below.</td>
 			</tr>
 		</table>
-		<p align="center"><a href="ContractorRegistration.action"><img src="images/button_continue.jpg" width="84"
-			height="27" border="0"></a></p>
+		<p align="center">
+		<%  if(request.getRequestURL().toString().startsWith("www")) { %>
+			<a href="https://www.picsauditing.com/ContractorRegistration.action"><img src="images/button_continue.jpg" width="84"
+				height="27" border="0"></a>
+		<% } else {%>
+			<a href="ContractorRegistration.action"><img src="images/button_continue.jpg" width="84"
+				height="27" border="0"></a>
+		<% } %>	
+		</p>
 		</td>
 	</tr>
 </table>

@@ -23,9 +23,8 @@
 </script>	
 </head>
 <body>
-<h1>New Contractor Information</h1>
+<s:include value="registrationHeader.jsp"></s:include>
 <span class="redMain">* - Indicates required information</span>
-<s:include value="../actionMessages.jsp" />
 <s:form method="POST">
 	<br clear="all" />
 	<table>
@@ -40,6 +39,8 @@
 							<s:textfield name="contractor.contact" size="35" /><span class="redMain">*</span></li>
 						<li><label>Web URL:</label> 
 							<s:textfield name="contractor.webUrl" size="35" />Example: www.site.com</li>
+						<li><label>Tax ID:</label> <s:textfield name="contractor.taxId"
+							size="9" maxLength="9" /><span class="redMain">* Only digits 0-9, no dashes</span></li>
 					</ol>
 				</fieldset>
 				<fieldset class="form">
@@ -83,8 +84,6 @@
 					<fieldset class="form">
 						<legend><span>Industry Details</span></legend>
 			<ol>
-				<li><label>Tax ID:</label> <s:textfield name="contractor.taxId"
-					size="9" maxLength="9" /><span class="redMain">* Only digits 0-9, no dashes</span></li>
 				<li><label>Industry:</label> <s:select list="industryList"
 					name="contractor.industry" />
 				<li><label>Main Trade:</label> <s:select list="tradeList"

@@ -2,13 +2,11 @@
 <html>
 <head>
 <title>Registration Confirmation</title>
-<meta name="color" content="#669966" />
-<meta name="flashName" content="REGISTER" />
-<meta name="iconName" content="register" />
 </head>
 <body>
+<h1>Registration Confirmation</h1>
 <br><br>
-<table width="400" cellpadding="0" cellspacing="0">
+<table width="950" cellpadding="0" cellspacing="0">
 	<tr>
 		<td class="blueMain">
 		<p>Congratulations, your account has been created! <br>
@@ -19,8 +17,7 @@
 		You must confirm the email address that you provided us before your
 		account will be activated. If you have a spam filter, we suggest you
 		add picsauditing.com to the safe sender domain list. Otherwise you may
-		not receive our automatically generated emails. After you receive your email
-		confirmation, you will be able to log in to our website.
+		not receive our automatically generated emails.
 		</td>
 	</tr>
 </table>

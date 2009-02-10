@@ -13,7 +13,6 @@
 		<pattern>/*download*</pattern>
 		<pattern>/Download*</pattern>
 		<pattern>/AuditDataUpload.action</pattern>
-		<pattern>/ContractorPaymentOptions.action</pattern>
 		<pattern>/user_edit.jsp</pattern>
 		<pattern>/exception_handler.jsp</pattern>
 		<pattern>/reasons.html</pattern>
@@ -34,7 +33,6 @@
 		<pattern>/forgot_password.jsp</pattern>
 		<pattern>/contractor_new.jsp</pattern>
 		<pattern>/contractor_new_instructions.jsp</pattern>
-		<pattern>/contractor_new_confirm.jsp</pattern>
 		<pattern>/milestonepartnership.jsp</pattern>
 		<pattern>/article_OSHA300.jsp</pattern>
 		<pattern>/Usergroup_2008.jsp</pattern>

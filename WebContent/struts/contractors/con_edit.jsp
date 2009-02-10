@@ -55,10 +55,13 @@
 </head>
 <body onload="javascript: setPaymentUrl();">
 
-<s:if test="permissions.active">
-	<s:include value="conHeader.jsp"></s:include>
+<s:if test="permissions.contractor && !permissions.active">
+	<s:include value="registrationHeader.jsp"></s:include>
 </s:if>
-<s:else><h1><s:property value="contractor.name" /></h1></s:else>
+<s:else>
+<s:include value="conHeader.jsp"></s:include>
+</s:else>
+
 <s:form id="save" method="POST" enctype="multipart/form-data">
 <div class="buttons">
 	<!-- <button class="positive" name="button" type="submit" value="Save">Save</button>  -->
@@ -314,7 +317,11 @@
 		</pics:permission>
 	</div>
 </s:form>
+<s:if test="permissions.contractor && !permissions.active">
+	<div class="buttons" style="float: right;">
+		<a href="ContractorFacilities.action?id=<s:property value="id" />" class="positive">Next</a>
+	</div>
+</s:if>
 <div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
-
 </body>
 </html>
