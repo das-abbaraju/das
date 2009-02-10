@@ -92,6 +92,11 @@
 			<result>struts/contractors/conHeader.jsp</result>
 		</action>
 
+		<action name="RegistrationHeader"
+			class="com.picsauditing.actions.contractors.ConHeader">
+			<result>struts/contractors/registrationHeader.jsp</result>
+		</action>
+
 		<action name="ContractorView"
 			class="com.picsauditing.actions.contractors.ContractorView">
 			<result>struts/contractors/con_view.jsp</result>
@@ -864,7 +869,7 @@
 		
 		<action name="ReportInsuranceApproval"
 			class="com.picsauditing.actions.report.ReportInsuranceApproval">
-			<param name="reportName">Insurance Approval</param>
+			<param name="reportName">Insurance Awaiting Decision</param>
 			<result>struts/reports/opinsurance_approval.jsp</result>
 		</action>
 		<action name="ReportInsuranceApprovalSave"
