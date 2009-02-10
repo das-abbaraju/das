@@ -6,7 +6,7 @@
 		<th>Operator Name</th>
 		<th>Waiting On</th>
 		<pics:permission perm="RemoveContractors">
-			<th>Remove Operator</th>		
+			<th>Remove<br/> Operator</th>		
 		</pics:permission>
 	</thead>
 	<tbody>
@@ -53,7 +53,7 @@
 	<s:if test="permissions.admin || permissions.isCorporate">
 	<tfoot>
 		
-		<tr><td>&nbsp;</td><td>Total Operator Count</td><td><s:property value="contractor.operators.size()"/></td></tr>
+		<tr><td>&nbsp;</td><td>Total Operator Count</td><td><s:property value="contractor.operators.size()"/></td><td>&nbsp;</td></tr>
 	</tfoot>
 	</s:if>
 	
