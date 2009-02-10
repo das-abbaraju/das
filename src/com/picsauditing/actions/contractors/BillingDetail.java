@@ -56,24 +56,30 @@ public class BillingDetail extends ContractorActionSupport {
 		// For Activation Fee and New Membership
 		if ("Activation".equals(billingStatus)) {
 			InvoiceFee fee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION); // create Activation fee
-			
-			invoiceItems.add(new InvoiceItem(newMembershipFee)); // add the Membership fee
+			if(newMembershipFee != null)
+				invoiceItems.add(new InvoiceItem(newMembershipFee)); // add the Membership fee
 			invoiceItems.add(new InvoiceItem(fee)); // add the Activation fee
 		}
 		
 		// For Reactivation Fee and Reactivating Membership
 		if ("Reactivation".equals(contractor.getBillingStatus())) {
 			InvoiceFee fee = invoiceFeeDAO.find(InvoiceFee.REACTIVATION); // create Reactivation fee
-			
-			invoiceItems.add(new InvoiceItem(newMembershipFee)); // add the Membership fee
+			if(newMembershipFee != null)
+				invoiceItems.add(new InvoiceItem(newMembershipFee)); // add the Membership fee
 			invoiceItems.add(new InvoiceItem(fee)); // add the Reactivation fee
 		}
 		
 		// For Upgrades
 		if ("Upgrade".equals(contractor.getBillingStatus())) {
-			int currAmt = currentMemebershipFee.getAmount();
-			int newAmt = newMembershipFee.getAmount();
-			int currId = currentMemebershipFee.getId();
+			int currAmt = 0;
+			int currId = 0;
+			int newAmt = 0;
+			if(currentMemebershipFee != null) {
+				currAmt = currentMemebershipFee.getAmount();
+				currId = currentMemebershipFee.getId();
+			}
+			if(newMembershipFee != null) 
+				newAmt = newMembershipFee.getAmount();
 			
 			// Loop through currentMembershipFee and newMembershipFee to grab
 			// Upgrade levels
@@ -94,7 +100,8 @@ public class BillingDetail extends ContractorActionSupport {
 		
 		// For Renewals
 		if ("Renewal".equals(contractor.getBillingStatus())){
-			invoiceItems.add(new InvoiceItem(currentMemebershipFee));
+			if(currentMemebershipFee != null)
+				invoiceItems.add(new InvoiceItem(currentMemebershipFee));
 		}
 
 		invoiceTotal = 0;
