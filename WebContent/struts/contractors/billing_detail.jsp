@@ -49,6 +49,8 @@
 					
 				</ol>
 				</fieldset>
+			</td>
+			<td>
 				<fieldset class="form">
 				<legend><span>Invoicing</span></legend>
 				<ol>
@@ -100,31 +102,32 @@
 				</ol>
 				</fieldset>
 			</td>
+		</tr>
+		<tr>
 			<s:if test="permissions.admin">
-			<td style="vertical-align: top; width: 50%; padding-left: 10px;">
-			<s:form id="save" method="POST" enctype="multipart/form-data">
-			<s:hidden name="id" />
-				<fieldset class="form">
-				<legend><span>Create Invoice</span></legend>
-				<ol>
-					<s:iterator value="invoiceItems">
-						<li><label><s:property value="invoiceFee.fee"/>:</label>
-							$<s:property value="amount"/> USD
+			<td colspan="2" style="vertical-align: top; width: 50%; padding-left: 10px;">
+				<s:form id="save" method="POST" enctype="multipart/form-data">
+				<s:hidden name="id" />
+					<fieldset class="form">
+					<legend><span>Create Invoice</span></legend>
+					<ol>
+						<s:iterator value="invoiceItems">
+							<li><label><s:property value="invoiceFee.fee"/>:</label>
+								$<s:property value="amount"/> USD
+							</li>
+						</s:iterator>
+						<li><label>Total:</label>
+							$<s:property value="invoiceTotal"/> USD
 						</li>
-					</s:iterator>
-					<li><label>Total:</label>
-						$<s:property value="invoiceTotal"/> USD
-					</li>
-				</ol>
-				<div class="buttons">
-					<input type="submit" class="positive" name="button" value="Create"/>
-				</div>
-				</fieldset>
+					</ol>
+					<div class="buttons">
+						<input type="submit" class="positive" name="button" value="Create"/>
+					</div>
+					</fieldset>
 				</s:form>
 			</td>
 		</s:if>			
 		</tr>
 	</table>
-	
 </body>
 </html>
