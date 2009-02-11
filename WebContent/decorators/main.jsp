@@ -61,7 +61,7 @@
 <% } %></p>
 	</div>
 </div>
-<% if (permissions.getAccountId() > 0 && !permissions.isContractor()) { %>
+<% if (permissions.isActive() && !permissions.isContractor()) { %>
 
 <div id="headersearch">
 <form action="ContractorSearch.action" method="post">
@@ -98,7 +98,7 @@
 <div id="content">
 <div id="helpbox">
 	<a href='javascript:D2H_ShowHelp(<decorator:getProperty property="meta.contextID" default="1" />, 
-	<% if(permissions.getAccountId() > 0) { %>
+	<% if(permissions.isActive()) { %>
 		<% if(permissions.isContractor()) { %>"help/c/default.htm"
 		<% } else if(permissions.isOperator() || permissions.isCorporate()) { %>"help/o/default.htm"
 		<% } else { %>"help/a/default.htm"
