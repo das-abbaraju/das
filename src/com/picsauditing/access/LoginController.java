@@ -1,6 +1,5 @@
 package com.picsauditing.access;
 
-import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -14,17 +13,14 @@ import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.util.SpringUtils;
 
 /**
  * Populate the permissions object in session with appropriate login credentials

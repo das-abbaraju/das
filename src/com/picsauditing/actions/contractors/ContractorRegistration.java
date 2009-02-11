@@ -59,7 +59,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			}
 			contractor.setAuditColumns(new User(User.CONTRACTOR));
 			contractor = accountDao.save(contractor);
-			user.setIsActive(YesNo.No);
+			user.setIsActive(YesNo.Yes);
 			user.setAccount(contractor);
 			user.setAuditColumns(new User(User.CONTRACTOR));
 			user.setIsGroup(YesNo.No);
