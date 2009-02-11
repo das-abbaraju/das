@@ -12,21 +12,6 @@
 		<param-value>M:/Development/ftp_dir</param-value>
 	</context-param>
 
-	<!-- Osha, Grace dates-->
-	<context-param>
-		<param-name>currentYearStart</param-name>
-		<param-value>12/17</param-value>
-	</context-param>
-	<context-param>
-		<param-name>loginStartDate</param-name>
-		<param-value>1/1</param-value>
-	</context-param>
-	<context-param>
-		<param-name>currentYearGrace</param-name>
-		<param-value>2/28</param-value>
-	</context-param>
-	<!-- END Osha, Grace dates -->
-
 	<listener>
 		<listener-class>
 			org.springframework.web.context.ContextLoaderListener
