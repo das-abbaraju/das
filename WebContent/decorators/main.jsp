@@ -70,7 +70,7 @@
 </form>
 </div>
 <% } %>
-<div id="logo"><a href="Home.action"><img src="images/logo_r3.jpg" alt="image" width="105" height="112" /></a></div>
+<div id="logo"><a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>"><img src="images/logo_r3.jpg" alt="image" width="105" height="112" /></a></div>
 </div></div></div>
 
 <!-- !begin navigation -->

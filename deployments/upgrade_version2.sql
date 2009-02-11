@@ -85,18 +85,24 @@ update contractor_info set renew = 1
 
 
 /******* INVOICES *************/
+update contractor_info set lastPayment = '0000-00-00' where lastPayment is null;
+update contractor_info set lastInvoiceDate = '0000-00-00' where lastInvoiceDate is null;
+
 -- Add all paid invoices
 insert into invoice (accountID, creationDate, createdBy, totalAmount, paid, paidDate)
 select c.id, lastPayment, 1, lastPaymentAmount, 1, lastPayment
 from contractor_info c
-where lastPaymentAmount > 0 and lastPayment > '0000-00-00';
+where lastPaymentAmount > 0 and (lastPayment > '0000-00-00');
 
--- Add all overdue invoices
+-- Add all unpaid invoices
 insert into invoice (accountID, creationDate, createdBy, totalAmount, paid)
 select c.id, lastInvoiceDate, 1, billingAmount, 0
 from contractor_info c
 where billingAmount > 0 and lastInvoiceDate > '0000-00-00'
 and lastInvoiceDate > lastPayment;
+
+update invoice set dueDate = adddate(creationDate, INTERVAL 1 MONTH);
+
 
 insert into invoice_item (invoiceID, creationDate, createdBy, amount)
 select id, creationDate, createdBy, totalAmount from invoice;

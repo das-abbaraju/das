@@ -247,11 +247,11 @@
 			<param name="reportName">Billing Report</param>
 			<result>struts/reports/report_billing.jsp</result>
 		</action>
-		<action name="InvoiceReport"
-			class="com.picsauditing.actions.report.InvoiceReport">
+		<action name="ReportUnpaidInvoices"
+			class="com.picsauditing.actions.report.ReportUnpaidInvoices">
 			<param name="reportName">Unpaid Invoices Report</param>
 			<result>struts/reports/invoice_report.jsp</result>
-		</action>		
+		</action>
 		<action name="BillingDetail"
 			class="com.picsauditing.actions.contractors.BillingDetail">
 			<result>struts/contractors/billing_detail.jsp</result>

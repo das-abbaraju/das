@@ -1,10 +1,13 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import javax.naming.NoPermissionException;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.FacilityChanger;
@@ -18,22 +21,23 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 
+@SuppressWarnings("serial")
 public class ContractorFacilities extends ContractorActionSupport {
 
 	private OperatorAccountDAO operatorDao = null;
 	private FacilityChanger facilityChanger = null;
-	
+
 	private String state = null;
 	private String corporate = null;
-	
+
 	private OperatorAccount operator = null;
-	
+
 	private List<OperatorAccount> searchResults = null;
 	private Map<Integer, ContractorOperator> opMap = new HashMap<Integer, ContractorOperator>();
-	
-	
-	public ContractorFacilities(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, OperatorAccountDAO operatorDao, FacilityChanger facilityChanger) {
-		super( accountDao , auditDao );
+
+	public ContractorFacilities(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			OperatorAccountDAO operatorDao, FacilityChanger facilityChanger) {
+		super(accountDao, auditDao);
 		this.operatorDao = operatorDao;
 		this.facilityChanger = facilityChanger;
 		this.subHeading = "Facilities";
@@ -47,75 +51,76 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 		limitedView = true;
 		findContractor();
-		
-		for( ContractorOperator co : contractor.getOperators() ) {
+
+		for (ContractorOperator co : contractor.getOperators()) {
 			opMap.put(co.getOperatorAccount().getId(), co);
 		}
-		
-		if (permissions.isContractor() && permissions.getAdminID() == 0) {
-			contractor.setViewedFacilities( new java.util.Date() );
-			accountDao.save( contractor );
-		}
-		
 
-		if( button != null ) {  
-			
-			if( button.equals("search")) {
-				
+		if (permissions.isOperator())
+			throw new NoPermissionException("Operators can't view this page");
+
+		if (permissions.isContractor() && permissions.getAdminID() == 0) {
+			contractor.setViewedFacilities(new Date());
+			accountDao.save(contractor);
+		}
+
+		if (button != null) {
+
+			if (button.equals("search")) {
+
 				String where = " active = 'Y' ";
-				
-				if( state != null && state.length() > 0) {
+
+				if (state != null && state.length() > 0) {
 					where += " and state = '" + state + "' ";
 				}
-				
-				if( operator.getName() != null && operator.getName().length() > 0 ) {
+
+				if (operator.getName() != null && operator.getName().length() > 0) {
 					where += " and name like '%" + operator.getName() + "%' ";
 				}
-					
-				if( corporate != null && corporate.length() > 0 ) {
-					where += " and a in ( select operator from Facility where corporate.name like '%" + corporate+ "%') ";
+
+				if (corporate != null && corporate.length() > 0) {
+					where += " and a in ( select operator from Facility where corporate.name like '%" + corporate
+							+ "%') ";
 				}
-				
+
 				searchResults = operatorDao.findWhere(false, where);
 				return SUCCESS;
 			}
 
 			boolean recalculate = false;
-			
+
 			facilityChanger.setContractor(contractor);
 			facilityChanger.setOperator(operator.getId());
 			facilityChanger.setPermissions(permissions);
-			
-			if( button.equals("addOperator")) {
+
+			if (button.equals("addOperator")) {
 				facilityChanger.add();
-				recalculate = true;				
-			}
-			
-			if( button.equals("removeOperator")) {
-			 	facilityChanger.remove();
 				recalculate = true;
 			}
-			
 
-			if( recalculate ) {
+			if (button.equals("removeOperator")) {
+				facilityChanger.remove();
+				recalculate = true;
+			}
+
+			if (recalculate) {
 				findContractor();
 				BillingCalculatorSingle calculator = new BillingCalculatorSingle();
 				InvoiceFee fee = calculator.calculateAnnualFee(contractor);
-				
+
 				contractor.setNewMembershipLevel(fee);
 				accountDao.save(contractor);
 			}
 			return SUCCESS;
 		}
-		
-		
+
 		return SUCCESS;
 	}
 
 	public TreeMap<String, String> getStateList() {
 		return State.getStates(true);
 	}
-	
+
 	public String getState() {
 		return state;
 	}
@@ -147,31 +152,33 @@ public class ContractorFacilities extends ContractorActionSupport {
 	public void setOperator(OperatorAccount operator) {
 		this.operator = operator;
 	}
-	
+
 	public Comparator<OperatorAccount> getOpComparator() {
 		return new Comparator<OperatorAccount>() {
-		@Override
+			@Override
 			public int compare(OperatorAccount o1, OperatorAccount o2) {
-				if( o2 == null || o2.getName() == null ) return 1;
-				if( o1 == null || o1.getName() == null) return -1;
-				
+				if (o2 == null || o2.getName() == null)
+					return 1;
+				if (o1 == null || o1.getName() == null)
+					return -1;
+
 				return o1.getName().compareTo(o2.getName());
-			}	
+			}
 		};
 	}
-	
+
 	public Comparator<ContractorOperator> getConOpComparator() {
-		
+
 		final Comparator<OperatorAccount> opComparator;
 		{
 			opComparator = getOpComparator();
 		}
-		
+
 		return new Comparator<ContractorOperator>() {
 			@Override
 			public int compare(ContractorOperator o1, ContractorOperator o2) {
 				return opComparator.compare(o1.getOperatorAccount(), o2.getOperatorAccount());
-			}	
+			}
 		};
 	}
 
@@ -183,21 +190,20 @@ public class ContractorFacilities extends ContractorActionSupport {
 		this.opMap = opMap;
 	}
 
-	public boolean doCorporateCheck( ContractorOperator currentConOp ) {
-		
-		if( getUser().getAccount().isCorporate() ) {
-			
+	public boolean doCorporateCheck(ContractorOperator currentConOp) {
+
+		if (getUser().getAccount().isCorporate()) {
+
 			OperatorAccount op = (OperatorAccount) getUser().getAccount();
-			
-			for( Facility facility : op.getOperatorFacilities() ) {
-				if( facility.getOperator().equals(currentConOp.getOperatorAccount())) {
+
+			for (Facility facility : op.getOperatorFacilities()) {
+				if (facility.getOperator().equals(currentConOp.getOperatorAccount())) {
 					return true;
 				}
 			}
 		}
-		
-		return  false;
+
+		return false;
 	}
-	
-	
+
 }
