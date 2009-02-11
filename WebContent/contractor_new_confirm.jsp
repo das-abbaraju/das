@@ -21,5 +21,9 @@
 		</td>
 	</tr>
 </table>
+<div class="buttons">
+	<a class="positive" href="Login.action?button=logout">Logout</a>
+</div>
+
 </body>
 </html>

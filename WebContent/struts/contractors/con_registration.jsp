@@ -14,10 +14,16 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />	
 <script language="JavaScript" SRC="js/prototype.js"></script>
 <script language="Javascript">	
-	function checkUsername(username) {
+function checkUsername(username) {
 	$('username_status').innerHTML = 'checking availability of username...';
 	pars = 'userID=0&username='+username;
 	var myAjax = new Ajax.Updater('username_status', 'user_ajax.jsp', {method: 'get', parameters: pars});
+}
+
+function checkTaxId(taxId) {
+	$('taxId_status').innerHTML = 'checking availability of taxId...';
+	pars = 'taxId='+taxId;
+	var myAjax = new Ajax.Updater('taxId_status', 'user_ajax.jsp', {method: 'get', parameters: pars});
 }
 	
 </script>	
@@ -40,7 +46,9 @@
 						<li><label>Web URL:</label> 
 							<s:textfield name="contractor.webUrl" size="35" />Example: www.site.com</li>
 						<li><label>Tax ID:</label> <s:textfield name="contractor.taxId"
-							size="9" maxLength="9" /><span class="redMain">* Only digits 0-9, no dashes</span></li>
+							size="9" maxLength="9" onblur="checkTaxId(this.value);" />
+							<span id="taxId_status"></span><span class="redMain">* Only digits 0-9, no dashes</span>
+							</li>
 					</ol>
 				</fieldset>
 				<fieldset class="form">

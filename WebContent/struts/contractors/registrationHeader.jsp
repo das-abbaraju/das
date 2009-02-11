@@ -15,8 +15,6 @@
 			<s:if test="requestURI.contains('payment')">class="current"</s:if>>3- Add Payment Options</a></li>
 		<li><a id="conConfirmLink" href="contractor_new_confirm.jsp"
 			<s:if test="requestURI.contains('confirm')">class="current"</s:if>>4- Finish</a></li>
-		<li><a id="conLogoutLink" href="Login.action?button=logout"
-			<s:if test="requestURI.contains('login')">class="current"</s:if>>5- Logout</a></li>
 	</s:if>
 	<s:else>
 		<li><a id="conRegisterLink" href="ContractorRegistration.action"
