@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -16,6 +17,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.FileUtils;
@@ -36,7 +38,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected String password2 = null;
 
 	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditBuilder auditBuilder,
-			FlagCalculator2 flagCalculator2, AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, UserDAO userDAO) {
+			FlagCalculator2 flagCalculator2, AuditQuestionDAO auditQuestionDAO,
+			ContractorValidator contractorValidator, UserDAO userDAO) {
 		super(accountDao, auditDao);
 		this.auditBuilder = auditBuilder;
 		this.flagCalculator2 = flagCalculator2;
@@ -56,7 +59,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		}
 		if (conID > 0) {
 			contractor = accountDao.find(conID);
-			user = userDAO.findByAccountID(conID,"", "No").get(0);
+			user = userDAO.findByAccountID(conID, "", "No").get(0);
 		}
 		accountDao.clear();
 	}
@@ -95,9 +98,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						FileUtils.moveFile(brochure, ftpDir, "/files/brochures/", fileName, extension, true);
 						contractor.setBrochureFile(extension);
 					}
-					Vector<String> errors = contractorValidator.validateContractor(contractor, password1, password2, user);
+					Vector<String> errors = contractorValidator.validateContractor(contractor, password1, password2,
+							user);
 					if (errors.size() > 0) {
-						for(String error : errors)
+						for (String error : errors)
 							addActionError(error);
 						return SUCCESS;
 					}
@@ -115,12 +119,31 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			} else if (button.equalsIgnoreCase("Delete")) {
 				permissions.tryPermission(OpPerms.RemoveContractors);
 				findContractor();
+				Iterator<ContractorAudit> auditList = contractor.getAudits().iterator();
+
+				while (auditList.hasNext()) {
+					ContractorAudit cAudit = auditList.next();
+					if (cAudit.getAuditStatus().isPending() && cAudit.getPercentComplete() == 0) {
+						auditList.remove();
+						auditDao.remove(cAudit);
+					}
+				}
+
 				if (contractor.getAudits().size() > 0) {
 					addActionError("Cannot Remove Contractor with Audits");
 					return SUCCESS;
 				}
+
+				Iterator<User> userList = contractor.getUsers().iterator();
+
+				while (userList.hasNext()) {
+					User user = userList.next();
+					userList.remove();
+					userDAO.remove(user);
+				}
+
 				accountDao.remove(contractor, getFtpDir());
-				userDAO.remove(user);
+
 				return "ConList";
 			} else {
 				// Because there are anomalies between browsers and how they
