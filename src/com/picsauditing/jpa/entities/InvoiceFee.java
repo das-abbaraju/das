@@ -11,6 +11,14 @@ import javax.persistence.Table;
 public class InvoiceFee extends BaseTable implements java.io.Serializable {
 	public final static int ACTIVATION = 1;
 	public final static int REACTIVATION = 2;
+	public final static int FREE = 3;
+	public final static int PQFONLY = 4;
+	public final static int FACILITIES1 = 5;
+	public final static int FACILITIES2 = 6;
+	public final static int FACILITIES5 = 7;
+	public final static int FACILITIES9 = 8;
+	public final static int FACILITIES13 = 9;
+	public final static int FACILITIES20 = 10;
 	private String fee;
 	private int amount;
 	private boolean visible = true;
