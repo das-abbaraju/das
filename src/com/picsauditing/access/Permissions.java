@@ -47,6 +47,7 @@ public class Permissions implements Serializable {
 	private int adminID;
 	private boolean approvesRelationships = false;
 	private boolean active = false;
+	private boolean accountActive = false;
 
 	public void login(User user) throws Exception {
 		try {
@@ -62,6 +63,7 @@ public class Permissions implements Serializable {
 			accountID = user.getAccount().getId();
 			accountType = user.getAccount().getType();
 			accountName = user.getAccount().getName();
+			accountActive = user.getAccount().isActiveB();
 			email = user.getEmail();
 			
 			if (isOperator() || isCorporate()) {
@@ -93,6 +95,7 @@ public class Permissions implements Serializable {
 		userID = 0;
 		loggedIn = false;
 		active = false;
+		accountActive = false;
 		username = "";
 		name = "";
 		email = "";
@@ -138,6 +141,10 @@ public class Permissions implements Serializable {
 
 	public String getAccountName() {
 		return accountName;
+	}
+
+	public boolean isAccountActive() {
+		return accountActive;
 	}
 
 	public String getEmail() {
