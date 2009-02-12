@@ -74,7 +74,7 @@ public class BillingCalculatorSingle {
 	private Integer calculatePriceTier(int billable) {
 		@SuppressWarnings("serial")
 		Map<Integer, Integer> priceTiers = new TreeMap<Integer, Integer>() {{
-			put( 0, 9 );
+			put( 0, 14 );
 			put( 1, 3 );
 			put( 2, 4 );
 			put( 5, 5 );
