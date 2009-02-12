@@ -60,7 +60,6 @@ public class ReportFlagCriteria extends ReportAccount {
 		sql.addField("a.phone");
 		sql.addField("a.email");
 		sql.addField("c.main_trade");
-		sql.addField("c.trades");
 		sql.addField("c.riskLevel");
 
 		if (!permissions.isOperator()) {
@@ -78,45 +77,41 @@ public class ReportFlagCriteria extends ReportAccount {
 					name += year;
 					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
 							+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
-							+ ".auditStatus IN ('Pending','Submitted','Active') ");
+							+ ".auditStatus IN ('Pending','Submitted','Active') AND "+ name + ".auditFor = "+ year);
 					sql.addField(name + ".auditStatus AS '" + name + " Status'");
 					sql.addField(name + ".percentComplete AS '" + name + " Completed'");
-					sql.addWhere(name + ".auditFor = " + year);
 					sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
-							+ ".id AND osha" + year + ".location = 'Corporate'");
+							+ ".id AND osha" + year + ".location = 'Corporate' AND osha" + year + ".SHAType = 'OSHA' ");
 
 					year = year - 1;
 					name = "annual" + year;
 					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
 							+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
-							+ ".auditStatus IN ('Pending','Submitted','Active') ");
+							+ ".auditStatus IN ('Pending','Submitted','Active') AND "+ name + ".auditFor = "+ year);
 					sql.addField(name + ".auditStatus AS '" + name + " Status'");
 					sql.addField(name + ".percentComplete AS '" + name + " Completed'");
-					sql.addWhere(name + ".auditFor = " + year);
 					sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
-							+ ".id AND osha" + year + ".location = 'Corporate'");
+							+ ".id AND osha" + year + ".location = 'Corporate' AND osha" + year + ".SHAType = 'OSHA'");
 
 					year = year - 1;
 					name = "annual" + year;
 					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
 							+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
-							+ ".auditStatus IN ('Pending','Submitted','Active') ");
+							+ ".auditStatus IN ('Pending','Submitted','Active') AND "+ name + ".auditFor = "+ year);
 					sql.addField(name + ".auditStatus AS '" + name + " Status'");
 					sql.addField(name + ".percentComplete AS '" + name + " Completed'");
-					sql.addWhere(name + ".auditFor = " + year);
 					sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
-							+ ".id AND osha" + year + ".location = 'Corporate'");
+							+ ".id AND osha" + year + ".location = 'Corporate' AND osha" + year + ".SHAType = 'OSHA'");
 					
 					year = year - 1;
 					name = "annual" + year;
 					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
 							+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
-							+ ".auditStatus IN ('Pending','Submitted','Active') ");
+							+ ".auditStatus IN ('Pending','Submitted','Active') AND "+ name + ".auditFor = "+ year);
 					sql.addField(name + ".auditStatus AS '" + name + " Status'");
 					sql.addField(name + ".percentComplete AS '" + name + " Completed'");
-					sql.addWhere(name + ".auditFor = " + year);
 					sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
-							+ ".id AND osha" + year + ".location = 'Corporate'");
+							+ ".id AND osha" + year + ".location = 'Corporate' AND osha" + year + ".SHAType = 'OSHA'");
 				} else {
 					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
 							+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
