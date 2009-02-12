@@ -55,7 +55,7 @@
 </head>
 <body onload="javascript: setPaymentUrl();">
 
-<s:if test="permissions.contractor && !permissions.active">
+<s:if test="permissions.contractor && !contractor.activeB">
 	<s:include value="registrationHeader.jsp"></s:include>
 </s:if>
 <s:else>
@@ -267,7 +267,7 @@
 						<s:radio list="riskLevelList" name="contractor.riskLevel" theme="pics" />
 					</li>
 					<li><label>Password:</label>
-						<s:property value="contractor.password" />
+						<s:property value="user.password" />
 						<br />* We will eventually hide this field and allow you to reset the password instead.
 					</li>
 					<li><label>Welcome Email:</label>
@@ -317,7 +317,7 @@
 		</pics:permission>
 	</div>
 </s:form>
-<s:if test="permissions.contractor && !permissions.active">
+<s:if test="permissions.contractor && !contractor.activeB">
 	<div class="buttons" style="float: right;">
 		<a href="ContractorFacilities.action?id=<s:property value="id" />" class="positive">Next</a>
 	</div>

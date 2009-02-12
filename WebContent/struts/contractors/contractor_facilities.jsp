@@ -71,7 +71,7 @@
 
 </head>
 <body>
-<s:if test="permissions.contractor && !permissions.active">
+<s:if test="permissions.contractor && !contractor.activeB">
 	<s:include value="registrationHeader.jsp"></s:include>
 </s:if>
 <s:else>
@@ -100,11 +100,21 @@
 	</div>
 </div>
 
-<div id="notesList">
-<s:include value="con_notes_embed.jsp"></s:include>
-</div>
+<s:if test="notes.size() > 0">
+	<div id="notesList">
+		<s:include value="con_notes_embed.jsp"></s:include>
+	</div>
+</s:if>
+<s:else>
+	<pics:permission perm="EditNotes" type="Edit">
+		<div id="notesList">
+			<s:include value="con_notes_embed.jsp"></s:include>
+		</div>
+	</pics:permission>
+</s:else>
+
 <br clear="all" />
-<s:if test="permissions.contractor && !permissions.active">
+<s:if test="permissions.contractor && !contractor.activeB">
 	<div class="buttons" style="float: right;">
 		<a href="ContractorPaymentOptions.action?id=<s:property value="id" />" class="positive">Next</a>
 	</div>

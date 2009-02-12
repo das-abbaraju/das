@@ -6,7 +6,7 @@
 <body>
 <h1>Registration Confirmation</h1>
 <br><br>
-<table width="950" cellpadding="0" cellspacing="0">
+<table width="500" cellpadding="0" cellspacing="0">
 	<tr>
 		<td class="blueMain">
 		<p>Congratulations, your account has been created! <br>

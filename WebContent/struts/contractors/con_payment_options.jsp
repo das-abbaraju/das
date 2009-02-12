@@ -20,7 +20,7 @@ function updateExpDate() {
 </script>
 </head>
 <body>
-<s:if test="permissions.contractor && !permissions.active">
+<s:if test="permissions.contractor && !contractor.activeB">
 	<s:include value="registrationHeader.jsp"></s:include>
 </s:if>
 <s:else>
@@ -134,7 +134,7 @@ function updateExpDate() {
 			</div>
 		</div>
 	</div>
-	<s:if test="permissions.contractor && !permissions.active">
+	<s:if test="permissions.contractor && !contractor.activeB">
 		<div class="buttons" style="float: right;">
 			<a href="contractor_new_confirm.jsp" class="positive">Next</a>
 		</div>
