@@ -9,17 +9,15 @@ import java.util.Set;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.util.SpringUtils;
 
 /**
  * This is the main class that is stored for each user containing information if
@@ -72,10 +70,20 @@ public class Permissions implements Serializable {
 					approvesRelationships = YesNo.Yes.equals(operator.getApprovesRelationships());
 					for (Facility facility : operator.getCorporateFacilities())
 						corporateParent.add(facility.getCorporate().getId());
+					for(AuditOperator auditOperator : operator.getAudits()) {
+						if(auditOperator.isCanSee())
+							canSeeAudits.add(auditOperator.getAuditType().getId());
+					}	
 				}
 				if (isCorporate()) {
-					for (Facility facility : operator.getOperatorFacilities())
+					for (Facility facility : operator.getOperatorFacilities()) {
 						operatorChildren.add(facility.getOperator().getId());
+						for(AuditOperator auditOperator : facility.getOperator().getAudits()) {
+							if(auditOperator.isCanSee())
+								canSeeAudits.add(auditOperator.getAuditType().getId());
+						}	
+
+					}	
 				}
 			}
 			permissions = user.getPermissions();

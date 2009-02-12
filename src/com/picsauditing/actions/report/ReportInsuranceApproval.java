@@ -13,8 +13,10 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AccountName;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -26,6 +28,7 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 
 	protected AuditDataDAO auditDataDao = null;
 	protected AuditQuestionDAO auditQuestionDao = null;
+	protected OperatorAccountDAO operatorAccountDAO = null;
 
 	/**
 	 * Map of Purpose, AuditID, then List of Answers
@@ -39,10 +42,11 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 	protected Map<String, Map<String, AuditQuestion>> questionsKeyedByUniqueKey = null;
 
 	public ReportInsuranceApproval(AuditDataDAO auditDataDao,
-			AuditQuestionDAO auditQuestionDao) {
+			AuditQuestionDAO auditQuestionDao, OperatorAccountDAO operatorAccountDAO) {
 		// sql = new SelectContractorAudit();
 		this.auditDataDao = auditDataDao;
 		this.auditQuestionDao = auditQuestionDao;
+		this.operatorAccountDAO = operatorAccountDAO;
 		this.report.setLimit(25);
 		orderByDefault = "a.name";
 	}
@@ -67,8 +71,25 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 		sql.addJoin("JOIN audit_operator a_op on a_op.auditTypeID = atype.id AND a_op.opID = cao.opID");
 
 		sql.addJoin("JOIN accounts ao on ao.id = cao.opID");
-		//sql.addWhere("ca.auditStatus IN ('Submitted','Active')");
-		// sql.addWhere("cao.status = 'Pending'");
+
+		if(permissions.isOperator()) {
+			boolean requiresActivePolicy = false;
+			OperatorAccount operator = operatorAccountDAO.find(permissions.getAccountId());
+			if(operator != null) {
+				for(AuditOperator auditOperator : operator.getAudits()) {
+					if(auditOperator.getAuditType().getClassType().equals(AuditTypeClass.Policy) 
+							&& auditOperator.getRequiredAuditStatus().isActive()) {
+						requiresActivePolicy = true;
+						break;
+					}	
+				}
+			}
+			if(requiresActivePolicy)
+				sql.addWhere("ca.auditStatus IN ('Resubmitted','Active')");
+			else
+				sql.addWhere("ca.auditStatus IN ('Submitted','Active','Resubmitted')");
+		}
+		
 		sql.addWhere("a.active = 'Y'");
 
 		if (getUser().getAccount().isOperator()) {
@@ -308,17 +329,6 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public boolean isRequiresActivePolicy() {
-		if(permissions.seesAllContractors())
-			return true;
-		for (DynaBean bean : data) {
-			String status = bean.get("requiredAuditStatus").toString();
-			if(status.equals(AuditStatus.Active.toString()))
-				return true;
-		}
-		return false;
 	}
 	
 	public String getFormattedDollarAmount( String answer )  {
