@@ -62,19 +62,16 @@ public class ContractorWidget extends ContractorActionSupport {
 			for (ContractorAudit conAudit : getActiveAudits()) {
 				// TODO get the Tasks to show up right for OSHA/EMR
 				if (conAudit.getAuditType().isPqf()) {
-					String safetyManualNote = "<br/>NOTE: As of January 1, 2009 only electronic copies of your safety manual/IIPP will be accepted. If a hard copy is provided, a fee will be assessed in order to convert your manual into a PDF document.";
-					String text = "";
 					if (conAudit.getAuditStatus().equals(AuditStatus.Pending)) {
-						text = "Please <a href=\"Audit.action?auditID="
+						openTasks.add("Please <a href=\"Audit.action?auditID="
 								+ conAudit.getId()
-								+ "\">complete and submit your Pre-Qualification Form</a>" + safetyManualNote;
+								+ "\">complete and submit your Pre-Qualification Form</a>");
 					} else if (conAudit.getAuditStatus().isActiveSubmitted()
 							&& conAudit.isAboutToExpire()) {
-						text = "Please <a href=\"Audit.action?auditID="
+						openTasks.add("Please <a href=\"Audit.action?auditID="
 								+ conAudit.getId()
-								+ "\">review and re-submit your Pre-Qualification Form</a>" + safetyManualNote;
+								+ "\">review and re-submit your Pre-Qualification Form</a>");
 					}
-					openTasks.add(text);
 				}
 				if (conAudit.getAuditType().isAnnualAddendum()
 						&& conAudit.getAuditStatus()
