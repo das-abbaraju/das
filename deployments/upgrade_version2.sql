@@ -4,6 +4,9 @@ ALTER TABLE `note`
 	CHANGE `viewableBy` `viewableBy` int(10) unsigned   NOT NULL DEFAULT '1' after `priority`, 
 	ADD COLUMN `username` varchar(200)  COLLATE latin1_swedish_ci NULL COMMENT 'temp column for conversion' after `attachment`, COMMENT='';
 
+create table contractor_notes as 
+select id, notes, adminnotes, 0 badNotes, 0 badAdminNotes from contractor_info;
+
 update audit_type set classType = 'IM' where id = 17;
 
 update contractor_info set paymentMethod = 'CreditCard' 
@@ -60,21 +63,23 @@ ALTER TABLE `accounts`
 	DROP COLUMN `emailConfirmedDate`, 
 	DROP KEY `username`, COMMENT='';
 
-update contractor_info set membershipLevelID = 9 where billingAmount = 99;
-update contractor_info set membershipLevelID = 3 where billingAmount = 399;
-update contractor_info set membershipLevelID = 4 where billingAmount = 699;
-update contractor_info set membershipLevelID = 5 where billingAmount = 999;
-update contractor_info set membershipLevelID = 6 where billingAmount = 1299;
-update contractor_info set membershipLevelID = 7 where billingAmount = 1699;
-update contractor_info set membershipLevelID = 8 where billingAmount = 1999;
+update contractor_info set membershipLevelID = 3 where billingAmount = 0 OR billingAmount IS NULL;
+update contractor_info set membershipLevelID = 4 where billingAmount = 99;
+update contractor_info set membershipLevelID = 5 where billingAmount = 399;
+update contractor_info set membershipLevelID = 6 where billingAmount = 699;
+update contractor_info set membershipLevelID = 7 where billingAmount = 999;
+update contractor_info set membershipLevelID = 8 where billingAmount = 1299;
+update contractor_info set membershipLevelID = 9 where billingAmount = 1699;
+update contractor_info set membershipLevelID = 10 where billingAmount = 1999;
 
-update contractor_info set newMembershipLevelID = 9 where newBillingAmount = 99;
-update contractor_info set newMembershipLevelID = 3 where newBillingAmount = 399;
-update contractor_info set newMembershipLevelID = 4 where newBillingAmount = 699;
-update contractor_info set newMembershipLevelID = 5 where newBillingAmount = 999;
-update contractor_info set newMembershipLevelID = 6 where newBillingAmount = 1299;
-update contractor_info set newMembershipLevelID = 7 where newBillingAmount = 1699;
-update contractor_info set newMembershipLevelID = 8 where newBillingAmount = 1999;
+update contractor_info set newMembershipLevelID = 3 where newBillingAmount = 0 OR newBillingAmount IS NULL;
+update contractor_info set newMembershipLevelID = 4 where newBillingAmount = 99;
+update contractor_info set newMembershipLevelID = 5 where newBillingAmount = 399;
+update contractor_info set newMembershipLevelID = 6 where newBillingAmount = 699;
+update contractor_info set newMembershipLevelID = 7 where newBillingAmount = 999;
+update contractor_info set newMembershipLevelID = 8 where newBillingAmount = 1299;
+update contractor_info set newMembershipLevelID = 9 where newBillingAmount = 1699;
+update contractor_info set newMembershipLevelID = 10 where newBillingAmount = 1999;
 
 update contractor_info set renew = 0 
 	where id in (select id from accounts where active = 'N');

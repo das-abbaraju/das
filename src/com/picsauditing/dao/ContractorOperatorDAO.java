@@ -7,7 +7,9 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.util.Strings;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -46,6 +48,20 @@ public class ContractorOperatorDAO extends PicsDAO {
 		} catch (NoResultException e) {
 			return null;
 		}
+	}
+
+	public List<ContractorOperator> findByContractor(int conID, Permissions permissions) {
+		
+		String where = "";
+		if (permissions.isCorporate()) {
+			String ids = Strings.implode(permissions.getOperatorChildren(), ",");
+			if (ids.length() == 0)
+				return null;
+			where = " AND operatorAccount.id IN (" + ids + ")";
+		}
+		Query query = em.createQuery("FROM ContractorOperator WHERE contractorAccount.id = ? " + where + " ORDER BY operatorAccount.name");
+		query.setParameter(1, conID);
+		return query.getResultList();
 	}
 
 	public List<ContractorOperator> findForcedFlagsByOpID(int opID) {

@@ -8,7 +8,7 @@
 function closePage() {
 	try {
 <s:if test="embedded">
-		opener.refreshCategory('<s:property value="id"/>', '<s:property value="note.noteCategory"/>');
+		opener.refreshNoteCategory('<s:property value="id"/>', '<s:property value="note.noteCategory"/>');
 </s:if>
 <s:else>
 		opener.refresh('notes');

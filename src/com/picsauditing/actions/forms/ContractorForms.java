@@ -9,6 +9,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorFormDAO;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorForm;
 
 @SuppressWarnings("serial")
@@ -35,7 +36,12 @@ public class ContractorForms extends ContractorActionSupport {
 	public List<OperatorForm> getForms() {
 		Set<Integer> ids = new HashSet<Integer>();
 		for(ContractorOperator co : contractor.getOperators()) {
+			// Add this contractor's operator(s)
 			ids.add(co.getOperatorAccount().getId());
+			for(Facility f : co.getOperatorAccount().getCorporateFacilities()) {
+				// Add this operator's corporate parent(s) too
+				ids.add(f.getCorporate().getId());
+			}
 		}
 		return operatorFormDAO.findByOperators(ids);
 	}

@@ -71,6 +71,11 @@ public class BillingCalculatorSingle {
 		
 	}
 
+	/**
+	 * 
+	 * @param billable the number of billable facilities
+	 * @return the InvoiceFee.id for the annual membership level
+	 */
 	private Integer calculatePriceTier(int billable) {
 		@SuppressWarnings("serial")
 		Map<Integer, Integer> priceTiers = new TreeMap<Integer, Integer>() {{

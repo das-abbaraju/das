@@ -1,5 +1,6 @@
 package com.picsauditing.PICS;
 
+import java.util.Date;
 import java.util.Iterator;
 
 import com.picsauditing.access.Permissions;
@@ -7,12 +8,14 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
@@ -33,6 +36,7 @@ public class FacilityChanger {
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
 	private Permissions permissions;
+	private User user;
 
 	public FacilityChanger(ContractorAccountDAO contractorAccountDAO, OperatorAccountDAO operatorAccountDAO,
 			ContractorOperatorDAO contractorOperatorDAO, AuditBuilder auditBuilder, NoteDAO noteDAO) {
@@ -59,19 +63,11 @@ public class FacilityChanger {
 		ContractorOperator co = new ContractorOperator();
 		co.setContractorAccount(contractor);
 		co.setOperatorAccount(operator);
-		co.setAuditColumns(new User(permissions.getUserId()));
+		co.setAuditColumns(user);
 		contractorOperatorDAO.save(co);
 		contractor.getOperators().add(co);
 		
-		contractor.setRenew(true);
-		contractorAccountDAO.save(contractor);
-		
-		Note note = new Note();
-		note.setAccount(contractor);
-		note.setAuditColumns(new User(permissions.getAccountId()));
-		note.setSummary("Added contractor to " + operator.getName());
-		note.setNoteCategory(NoteCategory.OperatorChanges);
-		noteDAO.save(note);
+		addNote("Linked contractor to " + operator.getName());
 
 		// Send the contractor an email that the operator added them
 		EmailBuilder emailBuilder = new EmailBuilder();
@@ -80,9 +76,20 @@ public class FacilityChanger {
 		emailBuilder.setContractor(contractor);
 		emailBuilder.addToken("operator", operator);
 		EmailQueue emailQueue = emailBuilder.build();
-		emailQueue.setPriority(80);
+		emailQueue.setPriority(60);
 		EmailSender.send(emailQueue);
 		auditBuilder.buildAudits(contractor);
+		
+		
+		// I don't think this should happen automatically
+		// Especially if it's no the contractor doing the adding (Trevor)
+		//contractor.setRenew(true);
+		contractor.setLastUpgradeDate(new Date());
+
+		BillingCalculatorSingle billCalc = new BillingCalculatorSingle();
+		InvoiceFee newFee = billCalc.calculateAnnualFee(contractor);
+		contractor.setNewMembershipLevel(newFee);
+		contractorAccountDAO.save(contractor);
 	}
 
 	public boolean remove() throws Exception {
@@ -102,21 +109,35 @@ public class FacilityChanger {
 				contractorOperatorDAO.remove(co);
 				contractor.getOperators().remove(co);
 				
-				Note note = new Note();
-				note.setAccount(contractor);
-				note.setAuditColumns(new User(User.SYSTEM));
-				note.setSummary("Removed " + co.getContractorAccount().getName()
+				addNote("Unlinked " + co.getContractorAccount().getName()
 						+ " from " + co.getOperatorAccount().getName() + "'s db");
-				note.setNoteCategory(NoteCategory.OperatorChanges);
-				noteDAO.save(note);
 
 				auditBuilder.buildAudits(contractor);
+				BillingCalculatorSingle billCalc = new BillingCalculatorSingle();
+				InvoiceFee newFee = billCalc.calculateAnnualFee(contractor);
+				contractor.setNewMembershipLevel(newFee);
 				contractorAccountDAO.save(contractor);
 				return true;
 			}
 		}
 
 		return false;
+	}
+	
+	private void addNote(String summary) {
+		// TODO I think we should add a new column on 
+		// operator table that is the viewableBy default
+		OperatorAccount viewableBy = operator;
+		for(Facility f : operator.getCorporateFacilities()) {
+			viewableBy = f.getCorporate();
+		}
+		
+		Note note = new Note(contractor, user, summary);
+		note.setNoteCategory(NoteCategory.OperatorChanges);
+		note.setCanContractorView(true);
+		note.setViewableBy(viewableBy);
+		noteDAO.save(note);
+
 	}
 
 	public ContractorAccount getContractor() {
@@ -149,6 +170,7 @@ public class FacilityChanger {
 
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
+		user = new User(permissions.getUserId());
 	}
 
 }

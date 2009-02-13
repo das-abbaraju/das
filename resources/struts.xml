@@ -122,28 +122,13 @@
 			<result>/struts/contractors/contractor_facilities.jsp</result>
 		</action>
 
-		<action name="ContractorFacilitiesSearchAjax"
+		<action name="ContractorFacilityAjax"
 			class="com.picsauditing.actions.contractors.ContractorFacilities">
-			<param name="button">search</param>
-			<result>/struts/contractors/contractor_facilities_results.jsp</result>
-		</action>
-
-		<action name="ContractorFacilityAddAjax"
-			class="com.picsauditing.actions.contractors.ContractorFacilities">
-			<param name="button">addOperator</param>
 			<result>/struts/blank.jsp</result>
+			<result name="load">/struts/contractors/contractor_facilities_assigned.jsp</result>
+			<result name="search">/struts/contractors/contractor_facilities_results.jsp</result>
 		</action>
 		
-		<action name="ContractorFacilityRemoveAjax"
-			class="com.picsauditing.actions.contractors.ContractorFacilities">
-			<param name="button">removeOperator</param>
-			<result>/struts/blank.jsp</result>
-		</action>
-		<action name="ContractorFacilityLoadAjax"
-			class="com.picsauditing.actions.contractors.ContractorFacilities">
-			<result>/struts/contractors/contractor_facilities_assigned.jsp</result>
-		</action>
-
 		<action name="ConAuditList"
 			class="com.picsauditing.actions.contractors.ConAuditList">
 			<param name="auditClass">Audit</param>

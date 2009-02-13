@@ -1,4 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
 <title><s:property value="contractor.name" /> Billing Detail</title>
@@ -12,52 +13,56 @@
 
 <script type="text/javascript">
 	function runSearch() {
-		startThinking( {div: 'thinkingDiv', type:'large' } );
+		startThinking( {div: 'thinkingSearchDiv', type:'large', message: 'Searching for matching facilities' } );
+		$('results').innerHtml = "";
 		var pars= $('facilitySearch').serialize();
-		var myAjax = new Ajax.Updater($('results'),'ContractorFacilitiesSearchAjax.action', 
+		pars += '&button=search';
+		var myAjax = new Ajax.Updater($('results'),'ContractorFacilityAjax.action', 
 		{
 			method: 'post', 
 			parameters: pars,
 			onComplete: function(transport) {
-				stopThinking( {div: 'thinkingDiv' } );
+				stopThinking( {div: 'thinkingSearchDiv' } );
 			}
 		});
-	
+		
 		return false;
 	}
 	function addOperator( conId, opId ) {
-		startThinking( {div: 'thinkingDiv', type:'large' } );
-		var pars= 'id=' + conId + '&operator.id=' + opId; 
-		var myAjax = new Ajax.Updater('','ContractorFacilityAddAjax.action', 
+		startThinking( {div: 'thinkingDiv', message: 'Linking contractor and operator' } );
+		var pars= 'id=' + conId + '&button=addOperator&operator.id=' + opId; 
+		var myAjax = new Ajax.Updater('','ContractorFacilityAjax.action', 
 		{
 			method: 'post', 
 			parameters: pars,
 			onComplete: function(transport) {
 				stopThinking( {div: 'thinkingDiv' } );
-				reloadOperators( conId );
 				$('results_' + opId).hide();
+				reloadOperators( conId );
+				refreshNoteCategory(conId, 'OperatorChanges');
 			}
 		});
 		return false;
 	}
 	function removeOperator( conId, opId ) {
-		startThinking( {div: 'thinkingDiv', type:'large' } );
-		var pars= 'id=' + conId + '&operator.id=' + opId; 
-		var myAjax = new Ajax.Updater('','ContractorFacilityRemoveAjax.action', 
+		startThinking( {div: 'thinkingDiv', message: 'Unlinking contractor and operator' } );
+		var pars= 'id=' + conId + '&button=removeOperator&operator.id=' + opId; 
+		var myAjax = new Ajax.Updater('','ContractorFacilityAjax.action', 
 		{
 			method: 'post', 
 			parameters: pars,
 			onComplete: function(transport) {
 				stopThinking( {div: 'thinkingDiv' } );
 				reloadOperators( conId );
+				refreshNoteCategory(conId, 'OperatorChanges');
 			}
 		});
 		return false;
 	}
 	function reloadOperators( conId ) {
-		startThinking( {div: 'thinkingDiv', type:'large' } );
-		var pars= 'id=' + conId; 
-		var myAjax = new Ajax.Updater($('facilities'),'ContractorFacilityLoadAjax.action', 
+		startThinking( {div: 'thinkingDiv', message: 'Refreshing Operator List' } );
+		var pars= 'id=' + conId + '&button=load';
+		var myAjax = new Ajax.Updater($('facilities'),'ContractorFacilityAjax.action', 
 		{
 			method: 'post', 
 			parameters: pars,
@@ -78,40 +83,40 @@
 <s:include value="conHeader.jsp"></s:include>
 </s:else>
 
-<s:if test="permissions.contractor"><div id="info">Please specify all facilities at which you work.</div></s:if>
-<div id="outermost">
-	<div id="left" style="width: 350px; float:left; margin: 0 10px 0 0;">
-		<form id="facilitySearch" action="nothing">
+<table width="100%">
+<tr>
+	<td style="width: 45%">
+		<div id="thinkingDiv"></div>
+		
+		<div id="facilities" >
+			<%@ include file="contractor_facilities_assigned.jsp"%>
+		</div>
+
+		<pics:permission perm="EditNotes" type="Edit">
+			<div id="notesList">
+				<s:include value="con_notes_embed.jsp"></s:include>
+			</div>
+		</pics:permission>
+	</td>
+	<td style="width: 10px"></td>
+	<td style="width: 50%">
+		<s:if test="permissions.contractor"><div id="info">Please specify all facilities at which you work.</div></s:if>
+		<form id="facilitySearch" onsubmit="runSearch(); return false;">
 			<s:hidden name="id"/>
 			<div id="search">
-				<div class="buttons">
+				<div class="buttons" style="min-height: 30px">
 					<button class="positive" name="button" type="button" 
 						onclick="runSearch()">Search</button>
+					<nobr>Name: <s:textfield cssClass="forms" name="operator.name" onkeypress="return false();"/></nobr>
+					<nobr>Location: <s:select cssClass="forms" list="stateList" onchange="runSearch()" name="state"></s:select></nobr>
 				</div>
-				Location: <s:select cssClass="pics" list="stateList" name="state"></s:select> <br />
-				Name:<s:textfield name="operator.name"/><br/>
 			</div>
 		</form>
-		<div id="thinkingDiv"></div>
+		<div id="thinkingSearchDiv"></div>
 		<div id="results"></div>
-	</div>
-	<div id="facilities" style="float: left; margin: 0 0 0 10px;">
-		<%@ include file="contractor_facilities_assigned.jsp"%><br>
-	</div>
-</div>
-
-<s:if test="notes.size() > 0">
-	<div id="notesList">
-		<s:include value="con_notes_embed.jsp"></s:include>
-	</div>
-</s:if>
-<s:else>
-	<pics:permission perm="EditNotes" type="Edit">
-		<div id="notesList">
-			<s:include value="con_notes_embed.jsp"></s:include>
-		</div>
-	</pics:permission>
-</s:else>
+	</td>
+</tr>
+</table>
 
 <br clear="all" />
 <s:if test="permissions.contractor && !contractor.activeB">

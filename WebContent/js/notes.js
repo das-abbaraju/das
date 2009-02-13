@@ -24,7 +24,7 @@ function refresh(returnType) {
 	var myAjax = new Ajax.Updater(divName, 'ContractorNotesAjax.action', {method: 'post', parameters: pars});
 }
 
-function refreshCategory(accountID, defaultCategory) {
+function refreshNoteCategory(accountID, defaultCategory) {
 	var divName = 'notesList';
 	var pars = 'id='+accountID+'&noteCategory='+defaultCategory;
 
@@ -32,7 +32,7 @@ function refreshCategory(accountID, defaultCategory) {
 	var myAjax = new Ajax.Updater(divName, 'EmbeddedNotesAjax.action', {method: 'post', parameters: pars});
 }
 
-function runSearch(returnType) {
+function runNoteSearch(returnType) {
 	var divName = returnType + 'List';
 
 	var pars = $(returnType+'Form').serialize();
