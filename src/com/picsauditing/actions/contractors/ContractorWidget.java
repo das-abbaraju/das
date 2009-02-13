@@ -47,15 +47,24 @@ public class ContractorWidget extends ContractorActionSupport {
 			if (contractor.getBalance() > 0) {
 				for(Invoice invoice : contractor.getInvoices()) {
 					if(!invoice.isPaid() && invoice.getTotalAmount() > 0) {
-						openTasks.add("You have an invoice of <b>$"
-								+ invoice.getTotalAmount() + "</b> due " + invoice.getDueDate()
-								+ ", please call 949-387-1940 x708 to make a payment");
+						try {
+							openTasks.add("You have an invoice of <b>$"
+									+ invoice.getTotalAmount() + "</b> due " + 
+									DateBean.toShowFormat(invoice.getDueDate())
+									+ ", please call 949-387-1940 x708 to make a payment");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
 				}		
 			}
 			if (! contractor.isPaymentMethodStatusValid()) {
-				openTasks
-				.add("Please <a href=\"ContractorEdit.action?id=" +  contractor.getId() + "\">provide a valid payment method</a>");
+				try {
+					openTasks
+					.add("Please <a href=\"ContractorEdit.action?id=" +  contractor.getId() + "\">update your payment method</a><br/>NOTE: You will not be billed until your renewal date "+ DateBean.toShowFormat(contractor.getPaymentExpires()));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			
 
