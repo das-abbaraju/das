@@ -4,7 +4,7 @@
 <title>Clients</title>
 </head>
 <body>
-	<table>
+	<table border="1">
 	<tr>
 		<td>sessionid</td>
 		<td>
@@ -82,7 +82,7 @@
 		</td>
 	</tr>
 	
-	
+	</table>
 	
 	
 
