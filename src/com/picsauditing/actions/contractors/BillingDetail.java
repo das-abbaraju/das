@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -45,57 +46,75 @@ public class BillingDetail extends ContractorActionSupport {
 			return LOGIN;
 
 		this.findContractor();
+		BillingCalculatorSingle bcs = new BillingCalculatorSingle();
+		bcs.calculateAnnualFee(contractor);
+		
 		currentMemebershipFee = contractor.getMembershipLevel();
 		newMembershipFee = contractor.getNewMembershipLevel();
 		
 		String billingStatus = "";
 		billingStatus = contractor.getBillingStatus();
-		boolean firstUpgrade = true;
 		
 		invoiceItems.clear();
 		
 		// For Activation Fee and New Membership
 		if ("Activation".equals(billingStatus)) {
-			InvoiceFee fee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION); // create Activation fee
+			InvoiceFee fee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
+			
 			if(newMembershipFee != null)
-				invoiceItems.add(new InvoiceItem(newMembershipFee)); // add the Membership fee
-			invoiceItems.add(new InvoiceItem(fee)); // add the Activation fee
+				invoiceItems.add(new InvoiceItem(newMembershipFee));
+			
+			invoiceItems.add(new InvoiceItem(fee));
 		}
 		
 		// For Reactivation Fee and Reactivating Membership
 		if ("Reactivation".equals(contractor.getBillingStatus())) {
-			InvoiceFee fee = invoiceFeeDAO.find(InvoiceFee.REACTIVATION); // create Reactivation fee
+			InvoiceFee fee = invoiceFeeDAO.find(InvoiceFee.REACTIVATION);
+			
 			if(newMembershipFee != null)
-				invoiceItems.add(new InvoiceItem(newMembershipFee)); // add the Membership fee
-			invoiceItems.add(new InvoiceItem(fee)); // add the Reactivation fee
+				invoiceItems.add(new InvoiceItem(newMembershipFee));
+			
+			invoiceItems.add(new InvoiceItem(fee));
 		}
 		
 		// For Upgrades
+		// Calculate a prorated amount depending on when the upgrade happens
+		// and when the actual membership expires
 		if ("Upgrade".equals(contractor.getBillingStatus())) {
-			int currAmt = 0;
-			int currId = 0;
-			int newAmt = 0;
-			if(currentMemebershipFee != null) {
-				currAmt = currentMemebershipFee.getAmount();
-				currId = currentMemebershipFee.getId();
-			}
-			if(newMembershipFee != null) 
-				newAmt = newMembershipFee.getAmount();
-			
-			// Loop through currentMembershipFee and newMembershipFee to grab
-			// Upgrade levels
-			while (currAmt < newAmt){
-				if (firstUpgrade) {					
-					currId += 7;
-					firstUpgrade = false;
+			if (newMembershipFee != null && currentMemebershipFee != null) {
+				double upgradeAmount = 0;
+				String description = "";
+				
+				if (currentMemebershipFee.getAmount() == 0) {
+					upgradeAmount = newMembershipFee.getAmount();
+					description = "Upgrade from $"
+						+ currentMemebershipFee.getAmount() + ". New Membership Level is: $ "
+						+ upgradeAmount;
 				}
-				else
-					currId += 1;
-				
-				InvoiceFee fee = invoiceFeeDAO.find(currId);
-				invoiceItems.add(new InvoiceItem(fee));
-				
-				currAmt += fee.getAmount();
+				else {
+					if (DateBean.getDateDifference(contractor.getPaymentExpires()) < 0) {
+						upgradeAmount = newMembershipFee.getAmount() - currentMemebershipFee.getAmount();
+						description = "Upgrade from $"
+								+ currentMemebershipFee.getAmount()
+								+ ". Uupgrade Amount $" + upgradeAmount;
+					}
+					else {
+						double daysUntilExpiration = DateBean.getDateDifference(contractor.getPaymentExpires());
+						double upgradeAmountDifference = newMembershipFee.getAmount() - currentMemebershipFee.getAmount();
+
+						double proratedCalc = (double)(upgradeAmountDifference / 365);
+						upgradeAmount = Math.round((daysUntilExpiration * proratedCalc));
+
+						description = "Upgrade from $"
+								+ currentMemebershipFee.getAmount()
+								+ ". Prorated $" + (int)upgradeAmount;
+					}
+				}
+					
+				InvoiceItem invoiceItem = new InvoiceItem();
+				invoiceItem.setAmount((int) upgradeAmount);
+				invoiceItem.setDescription(description);
+				invoiceItems.add(invoiceItem);
 			}
 		}
 		
