@@ -8,6 +8,20 @@
 <body>
 <h1>Search for New Contractors</h1>
 <s:include value="filters.jsp" />
+
+<s:if test="report.allRows == 0">
+	<div id="alert">No rows found matching the given criteria. Please try again.</div>
+</s:if>
+<s:else>
+<s:if test="!filter.allowMailMerge">
+	<div class="right"><a 
+		class="excel" 
+		<s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all <s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
+		href="javascript: download('NewContractorSearch');" 
+		title="Download all <s:property value="report.allRows"/> results to a CSV file"
+		>Download</a></div>
+</s:if>
+
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
@@ -79,6 +93,6 @@
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
-
+</s:else>
 </body>
 </html>
