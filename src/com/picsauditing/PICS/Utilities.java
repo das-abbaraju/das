@@ -346,9 +346,27 @@ public class Utilities {
 	}
 
 	public static float getAverageEMR(String year1, String year2, String year3, String year4) {
-		Float avgRateFloat = convertToFloat(year1)+ convertToFloat(year2)+ convertToFloat(year3)+ convertToFloat(year4)/ 3;
-		avgRateFloat = (float) Math.round(1000 * avgRateFloat) / 1000;
-		return avgRateFloat;
+		Float rateFloat = 0.0f;
+		int count = 0;
+		if(convertToFloat(year1) > 0) {
+			rateFloat += convertToFloat(year1);
+			count++;
+		}
+		if(convertToFloat(year2) > 0) {
+			rateFloat += convertToFloat(year2);
+			count++;
+		}
+		if(convertToFloat(year3) > 0) {
+			rateFloat += convertToFloat(year3);
+			count++;
+		}
+		if(count < 3 && convertToFloat(year4) > 0) {
+			rateFloat += convertToFloat(year4);
+			count++;
+		}
+		
+		Float avgRateFloat = rateFloat/count;
+		return (float) Math.round(1000 * avgRateFloat) / 1000;
 	}
 	
 	public static float convertToFloat(String year1) {
