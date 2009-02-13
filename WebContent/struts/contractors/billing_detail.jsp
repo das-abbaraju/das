@@ -110,9 +110,16 @@
 					<legend><span>Create Invoice</span></legend>
 					<ol>
 						<s:iterator value="invoiceItems">
-							<li><label><s:property value="invoiceFee.fee"/>:</label>
-								$<s:property value="amount"/> USD
-							</li>
+							<s:if test="invoiceFee != null">
+								<li><label><s:property value="invoiceFee.fee"/>:</label>
+									$<s:property value="amount"/> USD
+								</li>
+							</s:if>
+							<s:else>
+								<li><label><s:property value="description"/>:</label>
+									$<s:property value="amount"/> USD
+								</li>
+							</s:else>
 						</s:iterator>
 						<li><label>Total:</label>
 							$<s:property value="invoiceTotal"/> USD
