@@ -192,6 +192,8 @@ public class Strings {
 	}
 	
 	public static String stripPhoneNumber(String phone) {
+		if (phone == null)
+			return null;
 		Set<Character> valid = new HashSet<Character>();
 		valid.add('2');
 		valid.add('3');

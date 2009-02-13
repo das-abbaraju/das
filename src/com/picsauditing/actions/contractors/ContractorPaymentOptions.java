@@ -121,7 +121,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				}
 				addActionError(errorMessage);
 			} else {
-				contractor.setPaymentMethodStatus("Approved");
+				contractor.setPaymentMethodStatus("Valid");
 				contractor.setPaymentMethod(PaymentMethod.CreditCard);
 				accountDao.save(contractor);
 				addActionMessage("Successfully Saved");

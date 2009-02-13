@@ -292,6 +292,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		if (paymentMethod == null)
 			return false;
 		if (paymentMethod.isCreditCard()) {
+			if ("Approved".equals(paymentMethodStatus))
+				return true;
 			if ("Valid".equals(paymentMethodStatus))
 				return true;
 			return false;
