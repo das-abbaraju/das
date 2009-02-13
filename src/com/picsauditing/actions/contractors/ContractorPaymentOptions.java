@@ -122,6 +122,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				addActionError(errorMessage);
 			} else {
 				contractor.setPaymentMethodStatus("Valid");
+				contractor.setCcOnFile(true);
 				contractor.setPaymentMethod(PaymentMethod.CreditCard);
 				accountDao.save(contractor);
 				addActionMessage("Successfully Saved");
@@ -136,6 +137,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		if ("Delete".equalsIgnoreCase(button)) {
 			ccService.deleteCreditCard(contractor.getId());
 			contractor.setPaymentMethodStatus("Missing");
+			contractor.setCcOnFile(false);
 		}
 
 		if (!contractor.getPaymentMethodStatus().equals("Missing")) {

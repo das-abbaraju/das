@@ -17,7 +17,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -58,6 +57,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private LowMedHigh riskLevel;
 	private Date viewedFacilities;
 	private String paymentMethodStatus;
+	private boolean ccOnFile = false;
 	private PaymentMethod paymentMethod = PaymentMethod.CreditCard;
 
 	private String oqEmployees;
@@ -286,20 +286,30 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setPaymentMethodStatus(String paymentMethodStatus) {
 		this.paymentMethodStatus = paymentMethodStatus;
 	}
-
+	
 	@Transient
 	public boolean isPaymentMethodStatusValid() {
 		if (paymentMethod == null)
 			return false;
 		if (paymentMethod.isCreditCard()) {
-			if ("Approved".equals(paymentMethodStatus))
-				return true;
-			if ("Valid".equals(paymentMethodStatus))
+			if (ccOnFile)
 				return true;
 			return false;
 		}
 		// If Check
 		return true;
+	}
+
+	/**
+	 * Set to true if we have a credit card on file 
+	 * @return
+	 */
+	public boolean isCcOnFile() {
+		return ccOnFile;
+	}
+
+	public void setCcOnFile(boolean ccOnFile) {
+		this.ccOnFile = ccOnFile;
 	}
 
 	/**
