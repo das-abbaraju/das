@@ -30,9 +30,9 @@ function checkUsername(username) {
 			<s:textfield name="u.name" /></li>
 		<li><label for="u.email">Email address:</label>
 			<s:textfield name="u.email" size="30"/></li>
-		<li><label for="u.email">Phone:</label>
+		<li><label for="u.phone">Phone:</label>
 			<s:textfield name="u.phone" size="20"/></li>
-		<li><label for="u.email">Fax:</label>
+		<li><label for="u.fax">Fax:</label>
 			<s:textfield name="u.fax" size="20"/></li>
 		<li><label>Created:</label>
 			<s:date name="u.creationDate" /></li>

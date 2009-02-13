@@ -13,6 +13,8 @@ function updateExpDate() {
 </head>
 <body>
 
+getBillingStatus = Activation Renewal
+
 <s:if test="permissions.contractor && !contractor.activeB">
 	<s:include value="registrationHeader.jsp"></s:include>
 </s:if>

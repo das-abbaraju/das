@@ -240,11 +240,15 @@ function checkUsername(username) {
 				<li><label>Confirm Password:</label>
 					<s:password name="password2" value=""/>
 				</li>
-					<s:if test="user != null">
+				<li><label for="user.phone">Phone:</label>
+					<s:textfield name="user.phone" size="20"/></li>
+				<li><label for="user.fax">Fax:</label>
+					<s:textfield name="user.fax" size="20"/></li>
+				<s:if test="user != null">
 					<li><label>Last Login:</label>
 						<s:date name="user.lastLogin" />
 					</li>
-					</s:if>
+				</s:if>
 			</s:if>
 				<li><label>Active</label>
 					<s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio>
