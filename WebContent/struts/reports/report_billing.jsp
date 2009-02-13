@@ -34,7 +34,7 @@
 			<td class="right"><s:date name="get('creationDate')" format="M/d/yy"/></td>
 			<td class="right"><s:date name="get('lastUpgradeDate')" format="M/d/yy"/></td>
 			<td class="right"><s:date name="get('paymentExpires')" format="M/d/yy"/></td>
-			<td><a href="BillingDetail.action?id=<s:property value="get('id')"/>&target=BILLING_DETAIL">Billing Detail</a></td>
+			<td><a href="BillingDetail.action?id=<s:property value="get('id')"/>" target="BILLING_DETAIL">Billing Detail</a></td>
 		</tr>
 	</s:iterator>
 	</tbody>

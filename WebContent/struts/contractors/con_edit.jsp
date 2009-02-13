@@ -126,7 +126,7 @@
 						value="contractor.newMembershipLevel.amount" /> USD</li>
 				</s:else>
 				<li><label>Payment Method:</label>
-					<s:if test="contractor.newBillingAmount < 500 && !permissions.admin">
+					<s:if test="contractor.newMembershipLevel.amount < 500 && !permissions.admin">
 						<s:radio list="#{'Check':'Check','CreditCard':'CreditCard'}" name="contractor.paymentMethod" theme="pics" disabled="true"/>
 					</s:if>
 					<s:else>

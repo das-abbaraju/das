@@ -1,18 +1,18 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title><s:property value="contractor.name" /> Billing Detail</title>
+<title><s:property value="contractor.name" /> - Billing Detail</title>
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/forms.css" />
 </head>
 <body>
 <s:include value="conHeader.jsp"></s:include>
 
-<br clear="all" />
 <table>
 	<tr>
 		<td>
-		<fieldset class="form"><legend><span>PICS Information</span></legend>
+		<fieldset class="form">
+		<legend><span>PICS Information</span></legend>
 		<ol>
 			<li><label>Name:</label> PICS</li>
 			<li><label>Address:</label> 17701 Cowan St. Ste 140</li>

@@ -7,22 +7,18 @@
 <body>
 <s:include value="conHeader.jsp"></s:include>
 
-<br clear="all" />
 	<table>
 		<tr>
-			<td style="vertical-align: top; width: 50%;">
+			<td style="vertical-align: top; width: 48%;">
 				<fieldset class="form">
 				<legend><span>Details</span></legend>
 				<ol>
-					<li><label>Name:</label>
-						<a href="ContractorView.action?id=<s:property value="contractor.id"/>"><s:property value="contractor.name" /></a>
-					</li>
 					<li><label>Requested By:</label>
 						<s:property value="requestedBy.name"/>
 					</li>
 					<li><label>Total Operator Count:</label>
 						<br/><s:property value="contractor.operators.size()"/>
-					</li>					
+					</li>
 					<li><label>Facilities:</label>
 						<s:select list="contractor.operators" name="operatorAccount.name"/>
 					</li>
@@ -48,7 +44,9 @@
 				</ol>
 				</fieldset>
 			</td>
-			<td>
+			<td style="width: 5px;">
+			</td>
+			<td style="vertical-align: top; width: 48%;">
 				<fieldset class="form">
 				<legend><span>Invoicing</span></legend>
 				<ol>

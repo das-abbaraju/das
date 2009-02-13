@@ -12,20 +12,10 @@
 <s:if test="showHeader">
 <div id="internalnavcontainer">
 <ul id="navlist">
-	<li><a id="conDetailLink" href="ContractorView.action?id=<s:property value="id" />"
-		<s:if test="requestURI.contains('con_view')">class="current"</s:if>>Details</a></li>
-	<s:if test="!permissions.contractor">
-		<li><a href="ContractorNotes.action?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('con_notes')">class="current"</s:if>>Notes</a></li>
-	</s:if>
-	<s:if test="permissions.admin">
-		<li><a id="conEditLink" href="ContractorEdit.action?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('edit')">class="current"</s:if>>Edit</a></li>
-	</s:if>
-	<s:if test="permissions.contractor">
-		<li><a href="ContractorEdit.action?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('edit')">class="current"</s:if>>Edit</a></li>
-	</s:if>
+	<li>
+		<a class="dropdown" href="ContractorView.action?id=<s:property value="id" />" 
+			onmouseover="cssdropdown.dropit(this, event, 'contractorSubMenu')">Contractor Details</a>
+	</li>
 	<s:if test="permissions.operator">
 		<li><a href="ContractorFlag.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('flag')">class="current"</s:if>>Flag
@@ -184,6 +174,25 @@
 </s:if>
 <s:include value="../actionMessages.jsp" />
 <div class="clear"></div>
+
+<div id="contractorSubMenu" class="auditSubMenu">
+<ul>
+	<li><a href="ContractorView.action?id=<s:property value="id" />"
+		<s:if test="requestURI.contains('con_view')">class="current"</s:if>><span>Account Summary</span></a></li>
+	<s:if test="!permissions.contractor">
+		<li><a href="ContractorNotes.action?id=<s:property value="id" />"
+			<s:if test="requestURI.contains('con_notes')">class="current"</s:if>><span>Contractor Notes</span></a></li>
+	</s:if>
+	<s:if test="permissions.admin || permissions.contractor">
+		<li><a id="conEditLink" href="ContractorEdit.action?id=<s:property value="id" />"
+			<s:if test="requestURI.contains('edit')">class="current"</s:if>><span>Edit Account</span></a></li>
+		<li><a id="conEditLink" href="BillingDetail.action?id=<s:property value="id" />"
+			<s:if test="requestURI.contains('billing_detail')">class="current"</s:if>><span>Billing Details</span></a></li>
+		<li><a id="conEditLink" href="ContractorPaymentOptions.action?id=<s:property value="id" />"
+			<s:if test="requestURI.contains('payment_options')">class="current"</s:if>><span>Payment Options</span></a></li>
+	</s:if>
+</ul>
+</div>
 
 <s:iterator value="auditMenu">
 <s:if test="children.size() > 0">

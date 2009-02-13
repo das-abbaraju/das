@@ -41,6 +41,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			ContractorAuditDAO auditDao, AppPropertyDAO appPropDao) {
 		super(accountDao, auditDao);
 		this.appPropDao = appPropDao;
+		this.subHeading = "Payment Options";
 	}
 
 	public String execute() throws Exception {
