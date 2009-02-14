@@ -42,7 +42,7 @@ public class ConAuditList extends ContractorActionSupport {
 		findContractor();
 
 		Map<String, List<ContractorAudit>> allIMAudits = new HashMap<String, List<ContractorAudit>>();
-		
+
 		for (ContractorAudit contractorAudit : getAudits()) {
 			// Only show Insurance policies or all of them
 			if (!contractorAudit.getAuditType().isAnnualAddendum()) {
@@ -56,86 +56,94 @@ public class ConAuditList extends ContractorActionSupport {
 					else {
 						// There shouldn't be any others
 					}
-					
-					if( auditClass == AuditTypeClass.IM ) {
+
+					if (auditClass == AuditTypeClass.IM) {
 						List<ContractorAudit> imAudits = allIMAudits.get(contractorAudit.getAuditType().getAuditName());
-						
-						if( imAudits == null ) {
+
+						if (imAudits == null) {
 							imAudits = new Vector<ContractorAudit>();
 							allIMAudits.put(contractorAudit.getAuditType().getAuditName(), imAudits);
 						}
 						imAudits.add(contractorAudit);
-					}					
+					}
 				}
 			}
 		}
 
-		if( auditClass == AuditTypeClass.IM ) {
-			for( String auditName : allIMAudits.keySet() ) {
+		if (auditClass == AuditTypeClass.IM) {
+			for (String auditName : allIMAudits.keySet()) {
 				int count = 0;
-				float score = 0;  
-				for( ContractorAudit audit : allIMAudits.get(auditName)) {
+				float score = 0;
+				for (ContractorAudit audit : allIMAudits.get(auditName)) {
 					score += audit.getScore();
 					count += 1;
 				}
-				
+
 				int tempScore = -1;
-				
-				if( count != 0 ) {
-					
+
+				if (count != 0) {
+
 					float average = score / (float) count;
-					
+
 					tempScore = Math.round(average);
 				}
 
-				Map<Integer, String> map = new HashMap<Integer, String>() {{
-					put(-1, "None");
-					put(0, "Red");
-					put(1, "Yellow");
-					put(2, "Green");
-				}};
+				Map<Integer, String> map = new HashMap<Integer, String>() {
+					{
+						put(-1, "None");
+						put(0, "Red");
+						put(1, "Yellow");
+						put(2, "Green");
+					}
+				};
 
-				imScores.put(auditName, map.get(tempScore));	
+				imScores.put(auditName, map.get(tempScore));
 			}
 		}
-		
+
 		if (button != null && button.equals("Add")) {
 			boolean alreadyExists = false;
 			if (permissions.isOperator() || permissions.isCorporate())
 				selectedOperator = permissions.getAccountId();
 
-			if( auditClass != AuditTypeClass.IM ) {
+			if (auditClass != AuditTypeClass.IM) {
 				for (ContractorAudit conAudit : contractor.getAudits()) {
-					if (conAudit.getRequestingOpAccount() != null
-							&& conAudit.getRequestingOpAccount().getId() == selectedOperator
-							&& conAudit.getAuditType().getId() == selectedAudit)
-						alreadyExists = true;
+					if (conAudit.getAuditType().getId() == selectedAudit 
+							&& !conAudit.getAuditStatus().isExpired()) {
+						if ((selectedOperator == 0 
+								&& conAudit.getRequestingOpAccount() == null)
+								|| (conAudit.getRequestingOpAccount() != null 
+										&& conAudit.getRequestingOpAccount().getId() == selectedOperator)) {
+							alreadyExists = true;
+							break;
+						}
+					}
 				}
 			}
 
 			if (alreadyExists) {
 				addActionError("Audit already exists");
-				return SUCCESS;
+			} else {
+				ContractorAudit conAudit = new ContractorAudit();
+				conAudit.setAuditType(new AuditType());
+				conAudit.getAuditType().setId(selectedAudit);
+				conAudit.setAuditFor(this.auditFor);
+				conAudit.setContractorAccount(contractor);
+				conAudit.setAuditColumns(this.getUser());
+				conAudit.setAuditStatus(AuditStatus.Pending);
+				if (selectedOperator != 0) {
+					conAudit.setRequestingOpAccount(new OperatorAccount());
+					conAudit.getRequestingOpAccount().setId(selectedOperator);
+				}
+				conAudit.setPercentComplete(0);
+				conAudit.setPercentVerified(0);
+				conAudit.setManuallyAdded(true);
+				auditDao.save(conAudit);
+				return "saved";
 			}
-			ContractorAudit conAudit = new ContractorAudit();
-			conAudit.setAuditType(new AuditType());
-			conAudit.getAuditType().setId(selectedAudit);
-			conAudit.setAuditFor(this.auditFor);
-			conAudit.setContractorAccount(contractor);
-			conAudit.setAuditColumns(this.getUser());
-			conAudit.setAuditStatus(AuditStatus.Pending);
-			if (selectedOperator != 0) {
-				conAudit.setRequestingOpAccount(new OperatorAccount());
-				conAudit.getRequestingOpAccount().setId(selectedOperator);
-			}
-			conAudit.setPercentComplete(0);
-			conAudit.setPercentVerified(0);
-			conAudit.setManuallyAdded(true);
-			auditDao.save(conAudit);
-			return "saved";
 		}
 		auditTypeList = auditTypeDAO.findAll(permissions, true, auditClass);
-		
+
 		return SUCCESS;
 	}
 
