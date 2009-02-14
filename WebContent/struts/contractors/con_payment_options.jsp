@@ -12,9 +12,6 @@ function updateExpDate() {
 </script>
 </head>
 <body>
-
-getBillingStatus = Activation Renewal
-
 <s:if test="permissions.contractor && !contractor.activeB">
 	<s:include value="registrationHeader.jsp"></s:include>
 </s:if>
@@ -40,8 +37,8 @@ getBillingStatus = Activation Renewal
 	<s:else>
 		<li><label>Membership Fee:</label> $<s:property
 			value="contractor.newMembershipLevel.amount" /> USD</li>
-		<li><label>Activation Fee:</label> $<s:property value="contractor.activationFee"/> USD</li>
-		<li><label>Total:</label> $<s:property value="contractor.activationFee+contractor.newMembershipLevel.amount"/> USD </li>
+		<li><label>Activation Fee:</label> $<s:property value="activationFee.amount"/> USD</li>
+		<li><label>Total:</label> $<s:property value="activationFee.amount+contractor.newMembershipLevel.amount"/> USD </li>
 	</s:else>
 </s:if>
 <s:else>
