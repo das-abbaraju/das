@@ -9,6 +9,8 @@ import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.BrainTree;
@@ -34,13 +36,18 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private String key_id;
 	private String company;
 	private CreditCard cc;
+	private InvoiceFeeDAO invoiceFeeDAO;
+	
+	private InvoiceFee activationFee;
 
 	AppPropertyDAO appPropDao;
 
 	public ContractorPaymentOptions(ContractorAccountDAO accountDao,
-			ContractorAuditDAO auditDao, AppPropertyDAO appPropDao) {
+			ContractorAuditDAO auditDao, AppPropertyDAO appPropDao,
+			InvoiceFeeDAO invoiceFeeDAO) {
 		super(accountDao, auditDao);
 		this.appPropDao = appPropDao;
+		this.invoiceFeeDAO = invoiceFeeDAO;
 		this.subHeading = "Payment Options";
 	}
 
@@ -62,6 +69,11 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			else
 				contractor.setPaymentMethodStatus("Pending");
 		}
+		
+		if ("Activation".equals(contractor.getBillingStatus()))
+			activationFee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
+		if ("Reactivation".equals(contractor.getBillingStatus()))
+			activationFee = invoiceFeeDAO.find(InvoiceFee.REACTIVATION);
 
 		if (!paymentMethod.isCreditCard())
 			return SUCCESS;
@@ -305,5 +317,13 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	public CreditCard getCc() {
 		return cc;
+	}
+
+	public InvoiceFee getActivationFee() {
+		return activationFee;
+	}
+
+	public void setActivationFee(InvoiceFee activationFee) {
+		this.activationFee = activationFee;
 	}
 }
