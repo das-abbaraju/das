@@ -659,6 +659,10 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 * @return A String of the current Billing Status
 	 */
 	public String getBillingStatus() {
+		boolean noMembershipLevel = false;
+		if (membershipLevel == null)
+			noMembershipLevel = true;
+		
 		// TODO: still need to determine if this is a reactivation or initial activation
 		if (!isActiveB()) {
 			if (!renew)
@@ -666,12 +670,12 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			else {
 				if (membershipDate == null)
 					return "Activation";
-				else if (membershipLevel == null)
+				else if (noMembershipLevel)
 					return "Reactivation";
 			}
 		}
 		
-		if (newMembershipLevel.getAmount() > membershipLevel.getAmount())
+		if (!noMembershipLevel && (newMembershipLevel.getAmount() > membershipLevel.getAmount()))
 			return "Upgrade";
 
 		if (!renew)
