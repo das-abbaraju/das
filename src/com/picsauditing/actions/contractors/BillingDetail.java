@@ -52,13 +52,10 @@ public class BillingDetail extends ContractorActionSupport {
 		currentMemebershipFee = contractor.getMembershipLevel();
 		newMembershipFee = contractor.getNewMembershipLevel();
 		
-		String billingStatus = "";
-		billingStatus = contractor.getBillingStatus();
-		
 		invoiceItems.clear();
 		
 		// For Activation Fee and New Membership
-		if ("Activation".equals(billingStatus)) {
+		if ("Activation".equals(contractor.getBillingStatus())) {
 			InvoiceFee fee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
 			
 			if(newMembershipFee != null)
