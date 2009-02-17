@@ -84,16 +84,14 @@ public class BillingDetail extends ContractorActionSupport {
 				
 				if (currentMemebershipFee.getAmount() == 0) {
 					upgradeAmount = newMembershipFee.getAmount();
-					description = "Upgrade from $"
-						+ currentMemebershipFee.getAmount() + ". New Membership Level is: $ "
-						+ upgradeAmount;
+					description = "Membership Level is: $ "	+ (int)upgradeAmount;
 				}
 				else {
 					if (DateBean.getDateDifference(contractor.getPaymentExpires()) < 0) {
 						upgradeAmount = newMembershipFee.getAmount() - currentMemebershipFee.getAmount();
-						description = "Upgrade from $"
+						description = "Upgrading from $"
 								+ currentMemebershipFee.getAmount()
-								+ ". Uupgrade Amount $" + upgradeAmount;
+								+ ". Upgrade Amount $" + (int)upgradeAmount;
 					}
 					else {
 						double daysUntilExpiration = DateBean.getDateDifference(contractor.getPaymentExpires());
@@ -102,7 +100,7 @@ public class BillingDetail extends ContractorActionSupport {
 						double proratedCalc = (double)(upgradeAmountDifference / 365);
 						upgradeAmount = Math.round((daysUntilExpiration * proratedCalc));
 
-						description = "Upgrade from $"
+						description = "Upgrading from $"
 								+ currentMemebershipFee.getAmount()
 								+ ". Prorated $" + (int)upgradeAmount;
 					}
