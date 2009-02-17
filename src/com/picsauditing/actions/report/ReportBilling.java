@@ -19,7 +19,8 @@ public class ReportBilling extends ReportAccount {
 		sql.addJoin("LEFT JOIN invoice_fee f2 ON c.newMembershipLevelID = f2.id");
 		
 		sql.addField("f2.fee");
-		sql.addField("f2.defaultAmount");
+		sql.addField("f1.defaultAmount as oldAmount");
+		sql.addField("f2.defaultAmount as newAmount");
 		sql.addField("a.creationDate");
 		sql.addField("c.lastUpgradeDate");
 		
@@ -45,7 +46,7 @@ public class ReportBilling extends ReportAccount {
 		if (billingState.equals("All") || billingState.equals("Upgrades")) {
 			// A note about non-renewal upgrades: just because a contractor doesn't want to renew
 			// at the end of the year, doesn't mean they shouldn't be charged an upgrade fee.
-			// However, we (the billing department) should be vigilent about reviewing upgrades 
+			// However, we (the billing department) should be vigilant about reviewing upgrades 
 			// on non-renewable contractor accounts.
 			if (where.length() > 0) where += " OR ";
 			where += "(a.active = 'Y' AND f2.defaultAmount > f1.defaultAmount)";
