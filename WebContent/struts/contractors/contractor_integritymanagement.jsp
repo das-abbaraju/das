@@ -42,8 +42,8 @@
 		<th>Status</th>
 		<th>Type</th>
 		<th>Operator</th>
-		<th>Score</th>
 		<th>For</th>
+		<th>Score</th>
 	</tr>
 	</thead>
 	<s:iterator value="upComingAudits" status="auditStatus">
