@@ -29,12 +29,14 @@ public class BillingCalculatorSingle {
 
 		
 		// Contractors with no paying facilities are free
-		if (payingOperators.size() == 0) return null;
+		InvoiceFee theDefault = new InvoiceFee();
+		theDefault.setId(19);
+		if (payingOperators.size() == 0) return theDefault;
 		
 		// If only one facility is selected and it's a "multiple" 
 		// like Empire or BP Pipelines, then it's free too
 		if (payingOperators.size()==1 && payingOperators.get(0).getDoContractorsPay().equals("Multiple"))
-			return null;
+			return theDefault;
 
 		
 		int billable = 0;
