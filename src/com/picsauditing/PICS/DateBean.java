@@ -383,6 +383,43 @@ public class DateBean {
 		return d;
 	}
 	
+	public static Date parseDateTime(String dateString) {
+		//System.out.println("Attempting to parse " + dateString);
+		SimpleDateFormat df = new SimpleDateFormat();
+		df.setLenient(false);
+		
+		List<String> datePatterns = new ArrayList<String>();
+		datePatterns.add("MM-dd-yy");
+		datePatterns.add("MM/dd/yy");
+		datePatterns.add("yyyy-MM-dd");
+		datePatterns.add("yyyy/MM/dd");
+		datePatterns.add("MM-dd-yyyy");
+		datePatterns.add("MM/dd/yyyy");
+
+		
+		List<String> timePatterns = new ArrayList<String>();
+		timePatterns.add("hh:mm a z");
+		timePatterns.add("HH:mm z");
+		
+		Date d = null;
+outerLoop:		
+		for(String pattern : datePatterns) {
+			for( String timePattern : timePatterns ) {
+				try {
+					df.applyPattern(pattern + " " + timePattern);
+					d = df.parse(dateString);
+					System.out.println("parseDate (SUCCESS): from " + dateString + " into " + DateBean.format(d, "yyyy-MM-dd"));
+					break outerLoop;
+				} catch (ParseException e) {
+					//System.out.println(e.getMessage() + " using pattern: " + pattern);
+				}
+			}
+		}
+		if (d == null)
+			System.out.println("parseDate (FAILED): " + dateString);
+		return d;
+	}
+	
 	public static Date addMonths(Date startDate, int months) {
 		if (startDate == null || months == 0)
 			return null;
@@ -448,5 +485,9 @@ public class DateBean {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddkkmmss");
 		sdf.setTimeZone( TimeZone.getTimeZone("GMT"));
 		return sdf.format(d);
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(parseDateTime("3/10/08 6:56 AM PDT"));
 	}
 }
