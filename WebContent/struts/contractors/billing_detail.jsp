@@ -37,8 +37,13 @@
 					<li><label>Payment Method:</label>
 						<s:property value="contractor.paymentMethod" />
 					</li>
-					<li><label>Payment Method Status:</label>
-						<s:property value="contractor.paymentMethodStatus" />
+					<li><label>Credit Card on File?</label>
+						<s:if test="contractor.ccOnFile == true">
+							Yes
+						</s:if>
+						<s:else>
+							No
+						</s:else>
 					</li>
 					
 				</ol>
