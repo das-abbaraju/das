@@ -58,7 +58,7 @@ public class InvoiceDetail extends PicsActionSupport {
 		paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
 		paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
 		
-		if ("Edit".equals(button))
+		if (edit)
 			// allow for Edits
 		
 		if ("Charge".equals(button) && contractor.isCcOnFile()) {
