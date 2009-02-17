@@ -1,16 +1,18 @@
 package com.picsauditing.util;
 
+import java.io.StringReader;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.Note;
 
@@ -122,27 +124,6 @@ public class Strings {
 		}
 	}
 
-	public static ArrayList<Note> convertNotes(String oldNote) {
-		// ([0-9]{1,4}/[0-9]{1,2}/[0-9]{1,4})( [0-9]{1,2}:[0-9]{2} [AP]M .{3}?)? [\(]*(.*?)[\)]*: (.*)
-		//System.out.println(oldNote);
-		ArrayList<Note> notes = new ArrayList<Note>();
-
-		String expression = "^([0-9]{1,4}/[0-9]{1,2}/[0-9]{1,4})( [0-9]{1,2}:[0-9]{2} [AP]M .{3}?)? [\\(]*(.*?)[\\)]*: (.*)";
-		Pattern pattern = Pattern.compile(expression, Pattern.CANON_EQ);
-		Matcher matcher = pattern.matcher(oldNote);
-		Note note = new Note();
-		while (matcher.find()) {
-			System.out.println(matcher.groupCount() + " groups");
-			System.out.println("0 " + matcher.group(0));
-			System.out.println("1 " + matcher.group(1));
-			System.out.println("2 " + matcher.group(2));
-			System.out.println("3 " + matcher.group(3));
-			System.out.println("4 " + matcher.group(4));
-			System.out.println(String.format("I found the text \"%s\" starting at "
-					+ "index %d and ending at index %d.%n", matcher.group(), matcher.start(), matcher.end()));
-		}
-		return notes;
-	}
 
 	/**
 	 * @param seed
