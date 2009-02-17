@@ -96,8 +96,8 @@ div {
                       <td align="center">Invoice#</td>
                     </tr>
                     <tr>
-                      <td align="center">10/10/2008</td>
-                      <td align="center">10183</td>
+                      <td align="center"><s:date name="invoice.creationDate" format="MMM d, yyyy" /></td>
+                      <td align="center"><s:property value="invoice.id" /></td>
                     </tr>
                   </table>
                 </td>
