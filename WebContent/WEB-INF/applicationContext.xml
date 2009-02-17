@@ -25,6 +25,7 @@
 	<bean id="ContractorAuditDAO" class="com.picsauditing.dao.ContractorAuditDAO"/>
 	<bean id="ContractorAuditOperatorDAO" class="com.picsauditing.dao.ContractorAuditOperatorDAO"/>
 	<bean id="ContractorAccountDAO" class="com.picsauditing.dao.ContractorAccountDAO"/>
+	<bean id="ContractorNoteDAO" class="com.picsauditing.dao.ContractorNoteDAO"/>
 	<bean id="ContractorOperatorDAO" class="com.picsauditing.dao.ContractorOperatorDAO"/>
 	<bean id="ContractorOperatorFlagDAO" class="com.picsauditing.dao.ContractorOperatorFlagDAO"/>
 	<bean id="DesktopMatrixDAO" class="com.picsauditing.dao.DesktopMatrixDAO"/>
