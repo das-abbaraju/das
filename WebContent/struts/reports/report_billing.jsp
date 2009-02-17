@@ -16,7 +16,8 @@
 	<tr>
 		<td></td>
 	    <th><a href="javascript: changeOrderBy('form1','a.name');" >Contractor</a></th>
-		<th class="right"><a href="javascript: changeOrderBy('form1','defaultAmount');">Level</a></th>
+		<th class="right"><a href="javascript: changeOrderBy('form1','oldAmount');">Old Level</a></th>
+		<th class="right"><a href="javascript: changeOrderBy('form1','newAmount');">New Level</a></th>
 		<th class="right"><a href="javascript: changeOrderBy('form1','billingStatus');">State</a></th>	    
 		<th class="right"><a href="javascript: changeOrderBy('form1','creationDate');">Registered</a></th>	    
 		<th class="right"><a href="javascript: changeOrderBy('form1','lastUpgradeDate');">Upgraded</a></th>	    
@@ -29,7 +30,8 @@
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')" /></a></td>
-			<td class="right">$<s:property value="get('defaultAmount')"/></td>
+			<td class="right">$<s:property value="get('oldAmount')"/></td>
+			<td class="right">$<s:property value="get('newAmount')"/></td>
 			<td><s:property value="get('billingStatus')"/></td>
 			<td class="right"><s:date name="get('creationDate')" format="M/d/yy"/></td>
 			<td class="right"><s:date name="get('lastUpgradeDate')" format="M/d/yy"/></td>
