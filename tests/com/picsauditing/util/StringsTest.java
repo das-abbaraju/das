@@ -1,14 +1,17 @@
 package com.picsauditing.util;
 
+import java.io.BufferedReader;
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.junit.Test;
+import java.util.Vector;
 
 import junit.framework.TestCase;
+
+import org.junit.Test;
 
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.search.SelectUserUnion;
@@ -78,12 +81,46 @@ public class StringsTest extends TestCase {
 	}
 
 	@Test
-	public void testNotes() {
+	public void testNotes() throws Exception {
 		String noteText = FileUtils.readFile("tests/test_notes.txt");
-		ArrayList<Note> notes = Strings.convertNotes(noteText);
-		for (Note note : notes) {
-			System.out.println(note.getSummary());
+		
+		BufferedReader reader = new BufferedReader( new StringReader(noteText) );
+		
+		String line;
+		List<Note> notes = new Vector<Note>();
+		List<Note> thisSet = new Vector<Note>();
+		List<List<Note>> badNotes = new Vector<List<Note>>();
+		
+		while( ( line = reader.readLine() ) != null ) {
+			Note note = new Note();
+			note.setOriginalText(line);
+			notes.add(note);
 		}
+		
+		for( Note note : notes ) {
+			try {
+				
+				note.convertNote();
+				
+				if( thisSet.size() > 1 ) {
+					badNotes.add(new Vector<Note>(thisSet));
+				}
+				thisSet.clear();
+				thisSet.add(note);
+			}
+			catch( Exception e ) {
+				thisSet.add(note);
+			}
+		}
+		
+		for( List<Note> badSet : badNotes ) {
+			System.out.println("================================");
+			for( Note note : badSet ) {
+				System.out.println(note.getOriginalText());
+			}
+			System.out.println("================================");
+		}
+		
 	}
 	
 	@Test
