@@ -164,7 +164,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 
 		if (isRequiresIntegrityManagement()) {
 			// Add InsureGuard
-			MenuComponent subMenu = new MenuComponent("Integrity Management", "ConIntegrityManagement.action?id=" + id);
+			MenuComponent subMenu = new MenuComponent("IM", "ConIntegrityManagement.action?id=" + id);
 			menu.add(subMenu);
 			for (ContractorAudit audit : getActiveAudits()) {
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM)
