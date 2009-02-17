@@ -9,8 +9,16 @@ select id, notes, adminnotes, 0 badNotes, 0 badAdminNotes from contractor_info;
 
 update audit_type set classType = 'IM' where id = 17;
 
+ALTER TABLE `contractor_info` 
+	ADD COLUMN `ccOnFile` tinyint(3) unsigned   NOT NULL DEFAULT '0' after `paymentMethod`;
+
 update contractor_info set paymentMethod = 'CreditCard' 
 	where paymentMethod = 'Credit Card';
+
+UPDATE contractor_info
+set ccOnFile = 1
+where paymentMethodStatus IN ('Approved','Valid')
+and paymentMethod like 'Credit%Card';
 
 /* Alter table in target */
 ALTER TABLE `users` 
@@ -112,13 +120,13 @@ update invoice set dueDate = adddate(creationDate, INTERVAL 1 MONTH);
 insert into invoice_item (invoiceID, creationDate, createdBy, amount)
 select id, creationDate, createdBy, totalAmount from invoice;
 
-update invoice_item set feeID = 14 where amount = 99;
-update invoice_item set feeID = 3 where amount = 399;
-update invoice_item set feeID = 4 where amount = 699;
-update invoice_item set feeID = 5 where amount = 999;
-update invoice_item set feeID = 6 where amount = 1299;
-update invoice_item set feeID = 7 where amount = 1699;
-update invoice_item set feeID = 8 where amount = 1999;
+update invoice_item set feeID = 4 where amount = 99;
+update invoice_item set feeID = 5 where amount = 399;
+update invoice_item set feeID = 6 where amount = 699;
+update invoice_item set feeID = 7 where amount = 999;
+update invoice_item set feeID = 8 where amount = 1299;
+update invoice_item set feeID = 9 where amount = 1699;
+update invoice_item set feeID = 10 where amount = 1999;
 
 update contractor_info
 set paymentExpires = adddate(lastPayment, interval 1 year)
