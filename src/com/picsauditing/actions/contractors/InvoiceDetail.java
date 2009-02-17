@@ -18,6 +18,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class InvoiceDetail extends PicsActionSupport {
 	private int id;
+	private boolean edit = false;
 	private InvoiceDAO invoiceDAO;
 	private String response;	
 	private String responsetext;
@@ -30,7 +31,9 @@ public class InvoiceDetail extends PicsActionSupport {
 	
 	AppPropertyDAO appPropDao;
 	
-	public InvoiceDetail(InvoiceDAO invoiceDAO, AppPropertyDAO appPropDao, AccountDAO acctDAO, NoteDAO noteDAO, ContractorAccountDAO conAccountDAO) {
+	public InvoiceDetail(InvoiceDAO invoiceDAO, AppPropertyDAO appPropDao,
+			AccountDAO acctDAO, NoteDAO noteDAO,
+			ContractorAccountDAO conAccountDAO) {
 		this.invoiceDAO = invoiceDAO;
 		this.appPropDao = appPropDao;
 		this.acctDAO = acctDAO;
@@ -53,9 +56,12 @@ public class InvoiceDetail extends PicsActionSupport {
 		
 		BrainTreeService paymentService = new BrainTreeService();
 		paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
-		paymentService.setPassword(appPropDao.find("brainTree.password").getValue());		
+		paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
 		
-		if ("Charge".equals(button) && !contractor.getPaymentMethodStatus().equals("Missing")) {
+		if ("Edit".equals(button))
+			// allow for Edits
+		
+		if ("Charge".equals(button) && contractor.isCcOnFile()) {
 			paymentService.procesPayment(contractor.getId(), invoice.getTotalAmount());
 
 			if (!Strings.isEmpty(responsetext) && !response.equals("1")) {
@@ -130,4 +136,11 @@ public class InvoiceDetail extends PicsActionSupport {
 		return contractor;
 	}
 
+	public boolean isEdit() {
+		return edit;
+	}
+
+	public void setEdit(boolean edit) {
+		this.edit = edit;
+	}
 }
