@@ -883,8 +883,16 @@
 			class="com.picsauditing.actions.MigrateCertificates">
 			<result>struts/blank.jsp</result>
 		</action>
-		-->
 
+		-->
+		<action name="MigrateNotes"
+			class="com.picsauditing.actions.MigrateNotes">
+			<result>struts/blank.jsp</result>
+		</action>
+		<action name="ClearCache"
+			class="com.picsauditing.actions.ClearCacheAction">
+			<result>struts/blank.jsp</result>
+		</action>
 		<!-- Remember to Categorize your new Struts pages -->
 	</package>
 </struts>
