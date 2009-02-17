@@ -74,9 +74,9 @@ div {
           <td width="50%">
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
               <tr>
-                <td width="110"><img src="pics_logo.png" width="110" height="80" /></td>
+                <td width="110"><img src="img/pics_logo.png" width="110" height="80" /></td>
                 <td>
-                <div style="padding:10px;">(PICS) Pacific Industrial Contractor Screening<br />
+                <div style="padding:10px;">PICS<br />
                 P.O. Box 51387<br />
                 Irvine, CA 92619-1387</div>
                 </td>
@@ -115,10 +115,12 @@ div {
           <td>Bill To:</td>
         </tr>
         <tr>
-          <td>BP West Coast Products LLC<br />
-          Contacts Payable Department<br />
-          4519 Grandview Road<br />
-          Blaine, WA 98230</td>
+          <td><s:property value="contractor.name" /><br />
+          <s:if test="contractor.billingContact.length > 0">
+	          c/o <s:property value="contractor.billingContact" /><br />
+          </s:if>
+          <s:property value="contractor.address" /><br />
+          <s:property value="contractor.city" />, <s:property value="contractor.state" /> <s:property	value="contractor.zip" /></td>
         </tr>
       </table>
     </td>
@@ -134,13 +136,7 @@ div {
                   <div align="center">P.O. No.</div>
                 </td>
                 <td width="20%">
-                  <div align="center">Terms</div>
-                </td>
-                <td width="20%">
                   <div align="center">Due Date</div>
-                </td>
-                <td width="20%">
-                  <div align="center">Project</div>
                 </td>
                 <td width="20%">
                   <div align="center">Payment Method</div>
@@ -151,16 +147,10 @@ div {
                   <div align="center">Something</div>
                 </td>
                 <td width="20%" class="noborder">
-                  <div align="center">Net 30</div>
-                </td>
-                <td width="20%" class="noborder">
                   <div align="center">11/9/2008</div>
                 </td>
                 <td width="20%" class="noborder">
-                  <div align="center">Something</div>
-                </td>
-                <td width="20%" class="noborder">
-                  <div align="center">Credit Card?</div>
+                  <div align="center">Credit Card</div>
                 </td>
               </tr>
             </table>
@@ -177,91 +167,13 @@ div {
                   <div align="center">Description</div>
                 </td>
                 <td width="20%">
-                  <div align="center">Qty</div>
-                </td>
-                <td width="20%">
-                  <div align="center">Rate</div>
-                </td>
-                <td width="20%">
-                  <div align="center">Amount</div>
+                  <div align="center">Price</div>
                 </td>
               </tr>
               <tr>
-                <td width="20%" class="nobottom">line item</td>
-                <td width="20%" class="nobottom">desc</td>
-                <td width="20%" class="nobottom">100</td>
+                <td width="20%" class="nobottom">Annual Membership Level</td>
+                <td width="20%" class="nobottom">line item description</td>
                 <td width="20%" class="nobottom">$75</td>
-                <td width="20%" class="nobottom">1</td>
-              </tr>
-              <tr>
-                <td width="20%" class="nobottom">line item</td>
-                <td width="20%" class="nobottom">desc</td>
-                <td width="20%" class="nobottom">100</td>
-                <td width="20%" class="nobottom">$75</td>
-                <td width="20%" class="nobottom">1</td>
-              </tr>
-              <tr>
-                <td width="20%" class="nobottom">line item</td>
-                <td width="20%" class="nobottom">desc</td>
-                <td width="20%" class="nobottom">100</td>
-                <td width="20%" class="nobottom">$75</td>
-                <td width="20%" class="nobottom">1</td>
-              </tr>
-              <tr>
-                <td width="20%" class="nobottom">line item</td>
-                <td width="20%" class="nobottom">desc</td>
-                <td width="20%" class="nobottom">100</td>
-                <td width="20%" class="nobottom">$75</td>
-                <td width="20%" class="nobottom">1</td>
-              </tr>
-              <tr>
-                <td width="20%" class="nobottom">line item</td>
-                <td width="20%" class="nobottom">desc</td>
-                <td width="20%" class="nobottom">100</td>
-                <td width="20%" class="nobottom">$75</td>
-                <td width="20%" class="nobottom">1</td>
-              </tr>
-              <tr>
-                <td width="20%" class="nobottom">line item</td>
-                <td width="20%" class="nobottom">desc</td>
-                <td width="20%" class="nobottom">100</td>
-                <td width="20%" class="nobottom">$75</td>
-                <td width="20%" class="nobottom">1</td>
-              </tr>
-              <tr>
-                <td width="20%" class="nobottom">line item</td>
-                <td width="20%" class="nobottom">desc</td>
-                <td width="20%" class="nobottom">100</td>
-                <td width="20%" class="nobottom">$75</td>
-                <td width="20%" class="nobottom">1</td>
-              </tr>
-              <tr>
-                <td width="20%" class="nobottom">line item</td>
-                <td width="20%" class="nobottom">desc</td>
-                <td width="20%" class="nobottom">100</td>
-                <td width="20%" class="nobottom">$75</td>
-                <td width="20%" class="nobottom">1</td>
-              </tr>
-              <tr>
-                <td width="20%" class="nobottom">line item</td>
-                <td width="20%" class="nobottom">desc</td>
-                <td width="20%" class="nobottom">100</td>
-                <td width="20%" class="nobottom">$75</td>
-                <td width="20%" class="nobottom">1</td>
-              </tr>
-              <tr>
-                <td width="20%" class="nobottom">line item</td>
-                <td width="20%" class="nobottom">desc</td>
-                <td width="20%" class="nobottom">100</td>
-                <td width="20%" class="nobottom">$75</td>
-                <td width="20%" class="nobottom">1</td>
-              </tr>
-              <tr>
-                <td width="20%" class="nobottom">line item</td>
-                <td width="20%" class="nobottom">desc</td>
-                <td width="20%" class="nobottom">100</td>
-                <td width="20%" class="nobottom">$75</td>
-                <td width="20%" class="nobottom">1</td>
               </tr>
             </table>
             
@@ -365,27 +277,10 @@ div {
 <table>
 	<tr>
 		<td>
-		<fieldset class="form">
-		<legend><span>PICS Information</span></legend>
-		<ol>
-			<li><label>Name:</label> PICS</li>
-			<li><label>Address:</label> 17701 Cowan St. Ste 140</li>
-			<li><label>City:</label>Irvine</li>
-			<li><label>State:</label>CA</li>
-			<li><label>Zip:</label>92614</li>
-			</li>
-		</ol>
-		</fieldset>
 		</td>
 		<td>
 		<fieldset class="form"><legend><span>Billing Information</span></legend>
 		<ol>
-			<li><label>Name: </label><a href="ContractorView.action?id=<s:property value="contractor.id"/>"><s:property value="contractor.name" /></a>
-			<li><label>Address:</label> <s:property value="contractor.address" /></li>
-			<li><label>City:</label><s:property value="contractor.city" /></li>
-			<li><label>State:</label><s:property value="account.state" /></li> 
-			<li><label>Zip:</label><s:property	value="account.zip" /></li>
-			</li>
 		</ol>
 		</fieldset>
 		</td>
