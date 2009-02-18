@@ -420,25 +420,15 @@
 	<s:if test="filter.showEmailTemplate">
 		<br clear="all" />
 		<div class="filterOption">
-			<s:select list="filter.emailTemplateList" headerKey="0" headerValue="-Email Template-" cssClass="forms" name="filter.emailtemplate" listKey="id" listValue="templateName"/>
+			<s:select list="filter.emailTemplateList" headerKey="0" headerValue="-Email Template-" cssClass="forms" name="filter.emailTemplate" listKey="id" listValue="templateName"/>
 		</div>
 	
-		<div class="filterOption"><a href="#" onclick="showTextBox('form1_emailSentDate'); return false;">Email Sent Date</a> 
-			<span id="form1_emailSentDate_query">= ALL</span><br /> 
-			<span id="form1_emailSentDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="8" 
-			id="form1_emailSentDate1" name="filter.emailSentDate1" />
-			<a id="anchor_emailSentDate1" name="anchor_emailSentDate1"
-			onclick="cal2.select($('form1_emailSentDate1'),'anchor_emailSentDate1','M/d/yy'); return false;">
+		<div class="filterOption">Email Sent Date 
+			<s:textfield cssClass="forms" size="8" 
+			id="form1_emailSentDate" name="filter.emailSentDate" />
+			<a id="anchor_emailSentDate" name="anchor_emailSentDate"
+			onclick="cal2.select($('form1_emailSentDate'),'anchor_emailSentDate','M/d/yy'); return false;">
 			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-			To:<s:textfield cssClass="forms" size="8" 
-			id="form1_emailSentDate2" name="filter.emailSentDate2" />
-			<a id="anchor_emailSentDate2" name="anchor_emailSentDate2"
-			onclick="cal2.select($('form1_emailSentDate2'),'anchor_emailSentDate2','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-			<script
-			type="text/javascript">textQuery('form1_emailSentDate');</script> <br />
-			<a class="clearLink" href="#"
-			onclick="clearTextField('form1_emailSentDate'); return false;">Clear</a></span>
 		</div>
 	</s:if>
 	

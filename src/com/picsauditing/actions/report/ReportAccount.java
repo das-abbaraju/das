@@ -211,22 +211,14 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getRiskLevel(), 0))
 			report.addFilter(new SelectFilterInteger("riskLevel", "c.riskLevel = '?'", f.getRiskLevel()));
 
-		if((filterOn(f.getEmailtemplate()) && Integer.parseInt(f.getEmailtemplate()) > 0) || filterOn(f.getEmailSentDate1()) || filterOn(f.getEmailSentDate2())) {
-			sql.addJoin("JOIN email_queue eq on eq.conid = a.id");	
-		}
-		
-		if (filterOn(f.getEmailtemplate()) && Integer.parseInt(f.getEmailtemplate()) > 0) {
-			sql.addWhere("eq.templateID = "+ f.getEmailtemplate());
-			setFiltered(true);
-		}
-
-		if (filterOn(f.getEmailSentDate1())) {
-			sql.addWhere("sentDate < '"+ DateBean.format(f.getEmailSentDate1(), "M/d/yy")+"'");
-			setFiltered(true);
-		}
-
-		if (filterOn(f.getEmailSentDate2())) {
-			sql.addWhere("sentDate >= '"+ DateBean.format(f.getEmailSentDate2(), "M/d/yy")+"'");
+		if(filterOn(f.getEmailTemplate() > 0)) {
+			String emailQueueJoin = "LEFT JOIN email_queue eq on eq.conid = a.id AND eq.templateID = "
+					+ f.getEmailTemplate();
+			if (filterOn(f.getEmailSentDate())) {
+				emailQueueJoin += " AND eq.sentDate >= '"+ DateBean.format(f.getEmailSentDate(), "yyyy-M-d")+"'";
+			}
+			sql.addJoin(emailQueueJoin);
+			sql.addWhere("eq.emailID IS NULL");
 			setFiltered(true);
 		}
 	}

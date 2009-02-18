@@ -57,9 +57,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean assignedCon = false;
 	protected boolean inParentCorporation = false;
 	protected String waitingOn;
-	protected Date emailSentDate1;
-	protected Date emailSentDate2;
-	protected String emailtemplate;
+	protected Date emailSentDate;
+	protected int emailTemplate;
 	protected ListType emailListType;
 	protected String billingState = "All";
 
@@ -369,28 +368,20 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.waitingOn = waitingOn;
 	}
 
-	public Date getEmailSentDate1() {
-		return emailSentDate1;
+	public Date getEmailSentDate() {
+		return emailSentDate;
 	}
 
-	public void setEmailSentDate1(Date emailSentDate1) {
-		this.emailSentDate1 = emailSentDate1;
+	public void setEmailSentDate(Date emailSentDate) {
+		this.emailSentDate = emailSentDate;
 	}
 
-	public Date getEmailSentDate2() {
-		return emailSentDate2;
+	public int getEmailTemplate() {
+		return emailTemplate;
 	}
 
-	public void setEmailSentDate2(Date emailSentDate2) {
-		this.emailSentDate2 = emailSentDate2;
-	}
-
-	public String getEmailtemplate() {
-		return emailtemplate;
-	}
-
-	public void setEmailtemplate(String emailtemplate) {
-		this.emailtemplate = emailtemplate;
+	public void setEmailTemplate(int emailTemplate) {
+		this.emailTemplate = emailTemplate;
 	}
 
 	public ListType getEmailListType() {
