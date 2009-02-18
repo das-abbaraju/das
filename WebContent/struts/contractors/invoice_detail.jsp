@@ -65,6 +65,11 @@ div {
 <body>
 <s:include value="conHeader.jsp"></s:include>
 
+<s:form id="save" method="POST">
+<s:hidden name="edit"></s:hidden>
+<s:hidden name="id"></s:hidden>
+<s:hidden name="invoice.id"></s:hidden>
+
 <table width="770" border="0" cellspacing="0" cellpadding="4">
 	<tr>
 		<td>
@@ -132,17 +137,20 @@ div {
 		</td>
 		<s:if test="edit == false">
 			<td>
-				<a href="InvoiceDetail.action?id=<s:property value="invoice.id"/>&edit=true">Edit</a>
+				<a href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=true">Edit</a>
 			</td>
 		</s:if>
 		<s:else>
 			<td>
-				<a href="InvoiceDetail.action?id=<s:property value="invoice.id"/>&edit=false">View</a>
+				<a href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=false">View</a>
+				<br/>
+				<input type="submit" class="positive" name="button" value="Save"/>
 			</td>
 		</s:else>
 	</tr>
 	<tr>
 		<td>
+		
 		<table width="100%" border="0" cellspacing="0" cellpadding="0"
 			style="margin: 10px 0 0 0;">
 			<tr>
@@ -162,7 +170,14 @@ div {
 					</tr>
 					<tr>
 						<td width="20%" class="noborder">
-						<div align="center"><s:textfield name="poNumber" size="22"/></div>
+							<div align="center">
+							<s:if test="edit == true">
+								<s:textfield name="poNumber" size="20"/>
+							</s:if>
+							<s:else>
+								<s:property value="poNumber" />
+							</s:else>
+							</div>
 						</td>
 						<td width="20%" class="noborder">
 						<div align="center"><s:date name="invoice.dueDate"
@@ -193,17 +208,23 @@ div {
 						<div align="center">Price</div>
 						</td>
 					</tr>
-					<s:iterator value="invoice.items">
+					<s:iterator value="invoice.items" status="stat">
 					<tr>
 						<td width="20%" class="nobottom"><s:property value="invoiceFee.fee" /></td>
-						<td width="20%" class="nobottom"><s:property value="description" /></td>
-						<td width="20%" class="nobottom">$<s:property value="invoiceFee.amount" /> USD</td>
+						<s:if test="edit == true">
+							<td width="20%" class="nobottom"><s:textfield name="invoice.items[%{#stat.index}].description" value="%{description}" /></td>
+							<td width="20%" class="nobottom">$<s:textfield name="invoice.items[%{#stat.index}].amount" value="%{amount}" /> USD</td>
+						</s:if>
+						<s:else>
+							<td width="20%" class="nobottom"><s:property value="description" /></td>
+							<td width="20%" class="nobottom">$<s:property value="invoiceFee.amount" /> USD</td>
+						</s:else>
 					</tr>
 					</s:iterator>
 					<s:if test="edit == true">
-						<td width="20%" class="nobottom"><s:select list="feeList" name="fee" headerKey="" headerValue="- Select a New Fee to Add -" listKey="fee" listValue="fee"/></td>
-						<td width="20%" class="nobottom"><input type="submit" class="positive" name="button" value="Add"/></td>
-						<td width="20%" class="nobottom">$<s:property value="invoiceFee.amount" /> USD</td>
+						<tr>
+							<td colspan="3" class="nobottom"><s:select list="feeList" name="newFeeId" headerKey="0" headerValue="- Select a New Fee to Add -" listKey="id" listValue="fee"/></td>
+						</tr>
 					</s:if>
 				</table>
 
@@ -258,6 +279,7 @@ div {
 
 
 				</td>
+				
 			</tr>
 		</table>
 		</td>
@@ -311,5 +333,6 @@ div {
 		</td>
 	</tr>
 </table>
+</s:form>
 </body>
 </html>
