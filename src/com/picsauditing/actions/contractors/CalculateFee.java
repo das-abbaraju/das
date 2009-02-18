@@ -53,7 +53,6 @@ public class CalculateFee extends PicsActionSupport {
 				ContractorOperator co = new ContractorOperator();
 				co.setContractorAccount(contractor);
 				co.setOperatorAccount(op);
-				co.setWorkStatus("P");
 				contractor.getOperators().add(co);
 			}
 			

@@ -50,7 +50,6 @@ public class EntityFactory {
 		ContractorOperator co = new ContractorOperator();
 		co.setContractorAccount(contractor);
 		co.setOperatorAccount(operator);
-		co.setWorkStatus("P");
 		contractor.getOperators().add(co);
 		return co;
 	}

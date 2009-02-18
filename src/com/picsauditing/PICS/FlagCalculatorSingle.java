@@ -254,10 +254,10 @@ public class FlagCalculatorSingle {
 
 		// Operator Relationship Approval
 		if (YesNo.Yes.equals(operator.getApprovesRelationships())) {
-			if (co.getWorkStatus().equals("P"))
+			if (co.isWorkStatusPending())
 				// Operator needs to approve/reject this contractor
 				return WaitingOn.Operator;
-			if (co.getWorkStatus().equals("N"))
+			if (co.isWorkStatusRejected())
 				// Operator has already rejected this
 				// contractor, and there's nothing else
 				// they can do
