@@ -56,6 +56,12 @@ public class LoginController extends PicsActionSupport {
 			int adminID = permissions.getAdminID();
 			permissions.clear();
 			getRequest().getSession().invalidate();
+
+			Cookie cookie = new Cookie( "userName", "" );
+			cookie.setMaxAge( 0 );
+			
+			ServletActionContext.getResponse().addCookie( cookie );
+			
 			if (adminID > 0) {
 				// Re login the admin on logout
 				user = userDAO.find(adminID);
@@ -64,7 +70,7 @@ public class LoginController extends PicsActionSupport {
 				postLogin();
 				return SUCCESS;
 			}
-
+			
 			return SUCCESS;
 		}
 		
@@ -228,6 +234,12 @@ public class LoginController extends PicsActionSupport {
 	private void postLogin() throws Exception {
 		MenuComponent menu = PicsMenu.getMenu(permissions);
 
+		
+		Cookie userName = new Cookie("userName", permissions.getUsername());
+		userName.setMaxAge(-1);  //session scoped
+		getResponse().addCookie(userName);
+		
+		
 		// Find out if the user previously timed out on a page, we'll forward
 		// back there below
 		Cookie[] cookiesA = getRequest().getCookies();

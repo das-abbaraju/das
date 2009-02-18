@@ -7,6 +7,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.NoResultException;
+import javax.servlet.http.Cookie;
+
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
 
@@ -17,10 +20,16 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserLoginLog;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.URLUtils;
 
@@ -90,6 +99,91 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 			System.out.println("PicsActionSupport: Error occurred trying to login:" + e.getMessage());
 			return false;
 		}
+		
+		
+		
+		Cookie[] cookiesA = ServletActionContext.getRequest().getCookies();
+		if (cookiesA != null) {
+			for (int i = 0; i < cookiesA.length; i++) {
+				if ("userName".equals(cookiesA[i].getName())) {
+					if( ! cookiesA[i].getValue().equals(permissions.getUsername())) {
+
+						try {
+						
+							StringBuilder report = new StringBuilder();
+							report.append( "cookie user: " );
+							report.append( cookiesA[i].getValue() );
+							report.append( "\n" );
+							report.append( "permissions user: " );
+							report.append( permissions.getUsername() );
+							report.append( "\n\n\n" );
+							
+							UserLoginLogDAO loginDao = (UserLoginLogDAO) SpringUtils.getBean("UserLoginLogDAO");
+							
+							List<UserLoginLog> logins = loginDao.findRecentLogins(cookiesA[i].getValue(), 5);
+							
+							report.append( "recent logins for cookie user\n" );
+							for( UserLoginLog log : logins ) {
+								report.append("\t");
+								report.append(log.getUsername());
+								report.append("\t");
+								report.append(log.getLoginDate());
+								report.append("\t");
+								report.append(log.getRemoteAddress());
+								report.append("\t");
+								report.append(log.getSessionId() );
+								report.append( "\n" );
+							}
+							report.append( "\n\n\n" );
+							
+							
+							logins = loginDao.findRecentLogins(permissions.getUsername(), 5);
+							
+							report.append( "recent logins for permissions user\n" );
+							for( UserLoginLog log : logins ) {
+								report.append("\t");
+								report.append(log.getUsername());
+								report.append("\t");
+								report.append(log.getLoginDate());
+								report.append("\t");
+								report.append(log.getRemoteAddress());
+								report.append("\t");
+								report.append(log.getSessionId() );
+								report.append( "\n" );
+							}
+							report.append( "\n\n\n" );
+							
+							String toAddress = null;
+							try {
+								AppPropertyDAO appPropDao = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
+								
+								AppProperty prop = appPropDao.find("admin_email_address");
+								toAddress = prop.getValue();
+							} catch (NoResultException notFound) {
+							}
+								
+							if (toAddress == null || toAddress.length() == 0) {
+								toAddress = "admin@picsauditing.com";
+							}
+	
+							
+							EmailSender.send(toAddress, "Identity Mismatch Report", report.toString());
+							return false;
+						}
+						catch( Exception e ) {
+							throw new RuntimeException("error sending identity mismatch email"); 
+						}
+						
+					}
+					break;
+				}
+			}
+		}
+		
+		
+		
+		
+		
 		return true;
 	}
 
