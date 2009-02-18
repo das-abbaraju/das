@@ -797,6 +797,10 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
+		<action name="ContractorCron" class="com.picsauditing.actions.ContractorCron">
+			<result>/struts/blank.jsp</result>
+		</action>
+
 		<action name="LoggerConfig" class="com.picsauditing.actions.LoggerConfig">
 			<result>/struts/blank.jsp</result>
 		</action>

@@ -1,6 +1,7 @@
 package com.picsauditing.dao;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -50,7 +51,7 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public List<Integer> findAll() {
-		Query query = em.createQuery("select a.id from ContractorAccount a");
+		Query query = em.createQuery("select a.id from ContractorAccount a WHERE a.active = 'Y'");
 		return query.getResultList();
 	}
 
@@ -166,5 +167,40 @@ public class ContractorAccountDAO extends PicsDAO {
 			return null;
 		}
 	}
+	/**
+	 * Find ids for all active contractors who either need recalculation but haven't been calculated in the past 30 minutes or haven't been calculated in the past week
+	 * @return
+	 */
+	public List<Integer> findContractorsNeedingRecalculation() {
+		String hql = "SELECT c.id FROM ContractorAccount c " +
+				"WHERE (" +
+				"   (c.needsRecalculation = 1 AND c.lastRecalculation < :lastRunDate) " +
+				" OR c.lastRecalculation < :weekAgo " +
+				" OR c.lastRecalculation IS NULL " +
+				") AND c.active = 'Y' ORDER BY c.lastRecalculation";
+		Query query = em.createQuery(hql);
+		query.setMaxResults(5);
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.MINUTE, -30);
+		query.setParameter("lastRunDate", calendar.getTime());
+		
+		calendar.add(Calendar.WEEK_OF_YEAR, -1);
+		query.setParameter("weekAgo", calendar.getTime());
+		
+		return query.getResultList();
+	}
+	
+	public void updateContractorByOperatorLimited(int opAccount) {
+		String where = "UPDATE ContractorAccount a SET a.needsRecalculation = 1 WHERE EXISTS (SELECT co.contractorAccount FROM a.operators co WHERE co.operatorAccount.id = ?)";
+		Query query = em.createQuery(where);
+		query.setParameter(1, opAccount);
+		query.executeUpdate();
+	}
 
+	public void updateContractorByOperator() {
+		String where = "UPDATE ContractorAccount a SET a.needsRecalculation = 1 WHERE a.active = 'Y'";
+		Query query = em.createQuery(where);
+		query.executeUpdate();
+	}
 }
