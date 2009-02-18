@@ -130,6 +130,16 @@ div {
 			</tr>
 		</table>
 		</td>
+		<s:if test="edit == false">
+			<td>
+				<a href="InvoiceDetail.action?id=<s:property value="invoice.id"/>&edit=true">Edit</a>
+			</td>
+		</s:if>
+		<s:else>
+			<td>
+				<a href="InvoiceDetail.action?id=<s:property value="invoice.id"/>&edit=false">View</a>
+			</td>
+		</s:else>
 	</tr>
 	<tr>
 		<td>
@@ -141,7 +151,7 @@ div {
 					class="allborder noborder">
 					<tr>
 						<td width="20%">
-						<div align="center">P.O. No.</div>
+						<div align="center">PO #</div>
 						</td>
 						<td width="20%">
 						<div align="center">Due Date</div>
@@ -152,7 +162,7 @@ div {
 					</tr>
 					<tr>
 						<td width="20%" class="noborder">
-						<div align="center">Something</div>
+						<div align="center"><s:textfield name="poNumber" size="22"/></div>
 						</td>
 						<td width="20%" class="noborder">
 						<div align="center"><s:date name="invoice.dueDate"
@@ -190,23 +200,26 @@ div {
 						<td width="20%" class="nobottom">$<s:property value="invoiceFee.amount" /> USD</td>
 					</tr>
 					</s:iterator>
+					<s:if test="edit == true">
+						<td width="20%" class="nobottom"><s:select list="feeList" name="fee" headerKey="" headerValue="- Select a New Fee to Add -" listKey="fee" listValue="fee"/></td>
+						<td width="20%" class="nobottom"><input type="submit" class="positive" name="button" value="Add"/></td>
+						<td width="20%" class="nobottom">$<s:property value="invoiceFee.amount" /> USD</td>
+					</s:if>
 				</table>
 
 				<table width="100%" border="0" cellpadding="0" cellspacing="0"
 					class="">
 					<tr>
-						<td width="60"
-							style="border-right: 1px solid #333; border-top: 1px solid #333;">Thank
-						you for your business!</td>
-						<td width="40%"
-							style="border-bottom: 1px solid #333; border-right: 1px solid #333; border-top: 1px solid #333;">
+						<td width="60" style="border-right: 1px solid #333; border-top: 1px solid #333;">
+							Thank you for your business!</td>
+						<td width="40%"	style="border-bottom: 1px solid #333; border-right: 1px solid #333; border-top: 1px solid #333;">
 						<table width="100%" border="0" cellpadding="2" cellspacing="0"
 							class="">
 							<tr>
 								<td width="50%">
 								<h2>Total</h2>
 								</td>
-								<td align="right">$3,596.00</td>
+								<td align="right">$<s:property value="invoice.totalAmount" /> USD</td>
 							</tr>
 						</table>
 						</td>
@@ -296,33 +309,6 @@ div {
 			</tr>
 		</table>
 		</td>
-	</tr>
-</table>
-
-<table>
-	<tr>
-		<td colspan="2"><s:form id="save" method="POST"
-			enctype="multipart/form-data">
-			<s:hidden name="id" />
-			<fieldset class="form"><legend><span>Invoice</span></legend>
-			<ol>
-				<li><label>Invoice #</label><s:property value="invoice.id" />
-				</li>
-				<li><label>Invoice Items:</label><br />
-				<s:iterator value="invoice.items">
-					<br />
-					<s:property value="invoiceFee.fee" /> $<s:property
-						value="invoiceFee.amount" /> USD
-						</s:iterator></li>
-				<li><label>Invoice Total:</label> $<s:property
-					value="invoice.totalAmount" /> USD</li>
-			</ol>
-			<s:if
-				test="permissions.admin && contractor.paymentMethodStatus != 'Missing' && !invoice.paid">
-				<div class="buttons"><input type="submit" class="positive"
-					name="button" value="Charge" /></div>
-			</s:if></fieldset>
-		</s:form></td>
 	</tr>
 </table>
 </body>

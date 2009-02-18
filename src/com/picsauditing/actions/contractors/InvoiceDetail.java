@@ -1,6 +1,9 @@
 package com.picsauditing.actions.contractors;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.access.NoRightsException;
@@ -10,35 +13,46 @@ import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceDAO;
+import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class InvoiceDetail extends PicsActionSupport {
 	private int id;
 	private boolean edit = false;
+	
 	private InvoiceDAO invoiceDAO;
+	private NoteDAO noteDAO;
+	private AccountDAO acctDAO;
+	private ContractorAccountDAO conAccountDAO;
+	private InvoiceFeeDAO invoiceFeeDAO;
+	
 	private String response;	
 	private String responsetext;
 	private String transactionid;	
-	private NoteDAO noteDAO;
+	
 	private Invoice invoice;
 	private ContractorAccount contractor = new ContractorAccount();
-	private AccountDAO acctDAO;
-	private ContractorAccountDAO conAccountDAO;
+	
+	private Map<Integer, InvoiceItem> invoiceItems;
+	private List<InvoiceFee> feeList = new ArrayList<InvoiceFee>();
 	
 	AppPropertyDAO appPropDao;
 	
 	public InvoiceDetail(InvoiceDAO invoiceDAO, AppPropertyDAO appPropDao,
 			AccountDAO acctDAO, NoteDAO noteDAO,
-			ContractorAccountDAO conAccountDAO) {
+			ContractorAccountDAO conAccountDAO, InvoiceFeeDAO invoiceFeeDAO) {
 		this.invoiceDAO = invoiceDAO;
 		this.appPropDao = appPropDao;
 		this.acctDAO = acctDAO;
 		this.noteDAO = noteDAO;
 		this.conAccountDAO = conAccountDAO;
+		this.invoiceFeeDAO = invoiceFeeDAO;
 	}
 
 	public String execute() throws Exception {
@@ -46,6 +60,7 @@ public class InvoiceDetail extends PicsActionSupport {
 			return LOGIN;
 		
 		invoice = invoiceDAO.find(id);
+		feeList = invoiceFeeDAO.findAll();
 		
 		if (!permissions.hasPermission(OpPerms.AllContractors)
 				&& permissions.getAccountId() != invoice.getAccount().getId()) {
@@ -142,5 +157,17 @@ public class InvoiceDetail extends PicsActionSupport {
 
 	public void setEdit(boolean edit) {
 		this.edit = edit;
+	}
+
+	public Map<Integer, InvoiceItem> getInvoiceItems() {
+		return invoiceItems;
+	}
+
+	public void setInvoiceItems(Map<Integer, InvoiceItem> invoiceItems) {
+		this.invoiceItems = invoiceItems;
+	}
+
+	public List<InvoiceFee> getFeeList() {
+		return feeList;
 	}
 }
