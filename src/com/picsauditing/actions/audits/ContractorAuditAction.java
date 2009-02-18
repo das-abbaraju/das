@@ -7,7 +7,6 @@ import java.util.List;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -20,6 +19,7 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.NcmsCategory;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -36,7 +36,6 @@ import com.picsauditing.mail.EmailSender;
  */
 public class ContractorAuditAction extends AuditActionSupport {
 	protected AuditStatus auditStatus;
-	protected FlagCalculator2 flagCalculator;
 	protected AuditPercentCalculator auditPercentCalculator;
 	protected AuditBuilder auditBuilder;
 	protected ContractorAuditOperatorDAO contractorAuditOperatorDAO;
@@ -46,11 +45,9 @@ public class ContractorAuditAction extends AuditActionSupport {
 	private int removeCategoryID = 0;
 
 	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, FlagCalculator2 flagCalculator2,
-			AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder,
-			ContractorAuditOperatorDAO contractorAuditOperatorDAO) {
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
+			AuditBuilder auditBuilder, ContractorAuditOperatorDAO contractorAuditOperatorDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
-		this.flagCalculator = flagCalculator2;
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.auditBuilder = auditBuilder;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
@@ -65,7 +62,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 		// be done everytime
 
 		auditBuilder.fillAuditCategories(conAudit);
-		
+
 		if (conAudit.getAuditType().isDynamicCategories() && permissions.isPicsEmployee()) {
 			isCanApply = true;
 
@@ -130,7 +127,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 						}
 					}
 				}
-				
+
 				if (conAudit.getAuditType().isAnnualAddendum()
 						&& DateBean.getCurrentYear() - 1 == Integer.parseInt(conAudit.getAuditFor())) {
 					// We're activating the most recent year's audit (ie 2008)
@@ -176,12 +173,12 @@ public class ContractorAuditAction extends AuditActionSupport {
 					emailBuilder.setPermissions(permissions);
 					emailBuilder.setConAudit(conAudit);
 					EmailSender.send(emailBuilder.build());
-					
-					notes = conAudit.getAuditType().getAuditName() + " Submission email sent for outstanding requirements.";
-				}
-				else
+
+					notes = conAudit.getAuditType().getAuditName()
+							+ " Submission email sent for outstanding requirements.";
+				} else
 					notes = conAudit.getAuditType().getAuditName() + " Submitted";
-				
+
 				addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits);
 			}
 
@@ -189,7 +186,9 @@ public class ContractorAuditAction extends AuditActionSupport {
 			conAudit.setAuditStatus(auditStatus);
 			auditDao.save(conAudit);
 
-			flagCalculator.runByContractor(conAudit.getContractorAccount().getId());
+			ContractorAccount contractorAccount = conAudit.getContractorAccount();
+			contractor.setNeedsRecalculation(true);
+			accountDao.save(contractorAccount);
 		}
 
 		if (this.conAudit.getAuditType().getId() == AuditType.NCMS)
@@ -209,9 +208,8 @@ public class ContractorAuditAction extends AuditActionSupport {
 		if (conAudit.getPercentComplete() < 100)
 			return false;
 		if (conAudit.getAuditStatus().equals(AuditStatus.Pending)) {
-			if (permissions.isContractor() 
-					&& !conAudit.getContractorAccount().isPaymentMethodStatusValid()) {
-					return false;
+			if (permissions.isContractor() && !conAudit.getContractorAccount().isPaymentMethodStatusValid()) {
+				return false;
 			}
 			return true;
 		}
@@ -248,7 +246,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 			return false;
 		if (conAudit.getAuditType().isMustVerify())
 			return false;
-		if (conAudit.getAuditStatus().equals(AuditStatus.Submitted) 
+		if (conAudit.getAuditStatus().equals(AuditStatus.Submitted)
 				|| conAudit.getAuditStatus().equals(AuditStatus.Resubmitted))
 			return true;
 		return false;

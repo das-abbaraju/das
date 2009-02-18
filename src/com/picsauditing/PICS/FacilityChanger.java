@@ -8,12 +8,10 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -30,7 +28,6 @@ public class FacilityChanger {
 	private ContractorOperatorDAO contractorOperatorDAO;
 	private ContractorAccountDAO contractorAccountDAO;
 	private OperatorAccountDAO operatorAccountDAO;
-	private AuditBuilder auditBuilder;
 	private NoteDAO noteDAO;
 
 	private ContractorAccount contractor;
@@ -39,9 +36,8 @@ public class FacilityChanger {
 	private User user;
 
 	public FacilityChanger(ContractorAccountDAO contractorAccountDAO, OperatorAccountDAO operatorAccountDAO,
-			ContractorOperatorDAO contractorOperatorDAO, AuditBuilder auditBuilder, NoteDAO noteDAO) {
+			ContractorOperatorDAO contractorOperatorDAO, NoteDAO noteDAO) {
 		this.contractorOperatorDAO = contractorOperatorDAO;
-		this.auditBuilder = auditBuilder;
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.noteDAO = noteDAO;
@@ -78,17 +74,14 @@ public class FacilityChanger {
 		EmailQueue emailQueue = emailBuilder.build();
 		emailQueue.setPriority(60);
 		EmailSender.send(emailQueue);
-		auditBuilder.buildAudits(contractor);
-		
 		
 		// I don't think this should happen automatically
 		// Especially if it's no the contractor doing the adding (Trevor)
 		//contractor.setRenew(true);
 		contractor.setLastUpgradeDate(new Date());
-
-		BillingCalculatorSingle billCalc = new BillingCalculatorSingle();
-		InvoiceFee newFee = billCalc.calculateAnnualFee(contractor);
-		contractor.setNewMembershipLevel(newFee);
+		
+		contractor.setNeedsRecalculation(true);
+		
 		contractorAccountDAO.save(contractor);
 	}
 
@@ -112,10 +105,8 @@ public class FacilityChanger {
 				addNote("Unlinked " + co.getContractorAccount().getName()
 						+ " from " + co.getOperatorAccount().getName() + "'s db");
 
-				auditBuilder.buildAudits(contractor);
-				BillingCalculatorSingle billCalc = new BillingCalculatorSingle();
-				InvoiceFee newFee = billCalc.calculateAnnualFee(contractor);
-				contractor.setNewMembershipLevel(newFee);
+				contractor.setNeedsRecalculation(true);
+
 				contractorAccountDAO.save(contractor);
 				return true;
 			}

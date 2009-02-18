@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.CaoStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -19,15 +21,17 @@ public class ReportInsuranceApprovalSave extends PicsActionSupport {
 
 	protected ContractorAuditOperatorDAO conAuditOperatorDAO = null;
 	protected NoteDAO noteDao = null;
+	protected ContractorAccountDAO contractorAccountDAO; 
 
 	protected Map<Integer, ContractorAuditOperator> caos = null;
 	protected List<Integer> caoids = null;
 
 	protected List<String> newStatuses = null;
 
-	public ReportInsuranceApprovalSave(ContractorAuditOperatorDAO conAuditOperatorDAO, NoteDAO noteDao) {
+	public ReportInsuranceApprovalSave(ContractorAuditOperatorDAO conAuditOperatorDAO, NoteDAO noteDao, ContractorAccountDAO contractorAccountDAO) {
 		this.conAuditOperatorDAO = conAuditOperatorDAO;
 		this.noteDao = noteDao;
+		this.contractorAccountDAO = contractorAccountDAO;
 	}
 
 	public String execute() throws Exception {
@@ -74,6 +78,10 @@ public class ReportInsuranceApprovalSave extends PicsActionSupport {
 				}
 
 				if (statusChanged) {
+					ContractorAccount contractor = existing.getAudit().getContractorAccount();
+					contractor.setNeedsRecalculation(true);
+					contractorAccountDAO.save(contractor);
+
 					sendEmail(existing);
 				}
 			}

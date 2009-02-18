@@ -15,7 +15,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class BillingCalculatorSingle {
 	
-	public InvoiceFee calculateAnnualFee(ContractorAccount contractor) throws Exception {
+	public InvoiceFee calculateAnnualFee(ContractorAccount contractor) {
 
 		
 		List<ContractorOperator> contractorOperators = contractor.getOperators();

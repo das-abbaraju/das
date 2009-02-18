@@ -6,10 +6,7 @@ import java.util.List;
 import java.util.Vector;
 
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.AuditBuilder;
-import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.ContractorValidator;
-import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditQuestionDAO;
@@ -18,7 +15,6 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.FileUtils;
 
@@ -29,20 +25,16 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	private File brochure = null;
 	private String brochureFileName = null;
 	protected User user;
-	protected AuditBuilder auditBuilder;
-	protected FlagCalculator2 flagCalculator2;
 	protected AuditQuestionDAO auditQuestionDAO;
 	protected ContractorValidator contractorValidator;
 	protected UserDAO userDAO;
 	protected String password1 = null;
 	protected String password2 = null;
 
-	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditBuilder auditBuilder,
-			FlagCalculator2 flagCalculator2, AuditQuestionDAO auditQuestionDAO,
-			ContractorValidator contractorValidator, UserDAO userDAO) {
+	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, 
+			UserDAO userDAO) {
 		super(accountDao, auditDao);
-		this.auditBuilder = auditBuilder;
-		this.flagCalculator2 = flagCalculator2;
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
 		this.userDAO = userDAO;
@@ -108,12 +100,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 					contractor = accountDao.save(contractor);
 					userDAO.save(user);
-					auditBuilder.buildAudits(contractor);
-					BillingCalculatorSingle billCalculatorSingle = new BillingCalculatorSingle();
-					InvoiceFee invoiceFee = billCalculatorSingle.calculateAnnualFee(contractor);
-					contractor.setNewMembershipLevel(invoiceFee);
+
+					contractor.setNeedsRecalculation(true);
+
 					contractor = accountDao.save(contractor);
-					flagCalculator2.runByContractor(contractor.getId());
 					addActionMessage("Successfully modified " + contractor.getName());
 				}
 			} else if (button.equalsIgnoreCase("Delete")) {

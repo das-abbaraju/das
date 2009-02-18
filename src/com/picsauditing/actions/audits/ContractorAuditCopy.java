@@ -8,7 +8,6 @@ import java.util.Vector;
 
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
-import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -36,8 +35,8 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 
 	public ContractorAuditCopy(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, 
-			FlagCalculator2 flagCalculator2, AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder, ContractorAuditOperatorDAO contractorAuditOperatorDAO) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, flagCalculator2, auditPercentCalculator,
+			AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder, ContractorAuditOperatorDAO contractorAuditOperatorDAO) {
+		super(accountDao, auditDao, catDataDao, auditDataDao, auditPercentCalculator,
 				auditBuilder, contractorAuditOperatorDAO);
 	}
 

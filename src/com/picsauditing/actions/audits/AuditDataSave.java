@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.AnswerMap;
@@ -149,6 +150,10 @@ public class AuditDataSave extends AuditActionSupport {
 				}	
 				else
 					tempAudit = auditData.getAudit();
+				
+				ContractorAccount contractor = tempAudit.getContractorAccount();
+				contractor.setNeedsRecalculation(true);
+				accountDao.save(contractor);
 				
 				if( tempAudit.getAuditType() != null && tempAudit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
 					

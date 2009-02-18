@@ -385,6 +385,11 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.paymentExpires = paymentExpires;
 	}
 
+	/**
+	 * Used to determine if we need to calculate the flagColor, 
+	 * audits and billing
+	 * @return
+	 */
 	public boolean isNeedsRecalculation() {
 		return needsRecalculation;
 	}
@@ -393,6 +398,10 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.needsRecalculation = needsRecalculation;
 	}
 
+	/**
+	 * Sets the date and time when the calculator ran
+	 * @return
+	 */
 	public Date getLastRecalculation() {
 		return lastRecalculation;
 	}

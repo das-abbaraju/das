@@ -6,8 +6,11 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditOperatorDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -17,11 +20,13 @@ public class AuditOperatorSave extends PicsActionSupport implements Preparable {
 
 	private AuditOperator ao = null;
 	private AuditOperatorDAO dao;
+	private ContractorAccountDAO cAccountDAO;
 	private int operatorID;
 	private int auditTypeID;
 
-	public AuditOperatorSave(AuditOperatorDAO dao) {
+	public AuditOperatorSave(AuditOperatorDAO dao, ContractorAccountDAO cAccountDAO) {
 		this.dao = dao;
+		this.cAccountDAO = cAccountDAO;
 	}
 
 	public String execute() {
@@ -35,7 +40,11 @@ public class AuditOperatorSave extends PicsActionSupport implements Preparable {
 				ao.setAuditColumns(this.getUser());
 			}
 		}
-		
+		for(ContractorOperator conOp : ao.getOperatorAccount().getContractorOperators()) {
+			ContractorAccount cAccount = conOp.getContractorAccount();
+			cAccount.setNeedsRecalculation(true);
+			cAccountDAO.save(cAccount);
+		}
 		ao = dao.save(ao);
 
 		return SUCCESS;
