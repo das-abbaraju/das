@@ -55,7 +55,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 		this.accountDao = accountDao;
 		this.auditDao = auditDao;
 	}
-	
+
 	@Override
 	public String execute() throws Exception {
 		loadPermissions();
@@ -167,15 +167,14 @@ public class ContractorActionSupport extends PicsActionSupport {
 			MenuComponent subMenu = new MenuComponent("IM", "ConIntegrityManagement.action?id=" + id);
 			menu.add(subMenu);
 			for (ContractorAudit audit : getActiveAudits()) {
-				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM)
-						&& !audit.equals(AuditStatus.Exempt)) {
+				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM) && !audit.equals(AuditStatus.Exempt)) {
 					String linkText = audit.getAuditType().getAuditName() + " " + audit.getAuditFor();
-					
+
 					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), audit.getAuditStatus().toString());
 				}
 			}
 		}
-		
+
 		{ // Add All Other Audits
 			MenuComponent subMenu = new MenuComponent("Audits", "ConAuditList.action?id=" + id);
 			menu.add(subMenu);
@@ -231,24 +230,24 @@ public class ContractorActionSupport extends PicsActionSupport {
 		return false;
 	}
 
-	
 	/**
-	 * Only show the Integrity Management link for contractors who are linked to an
-	 * operator that subscribes to Integrity Management 
+	 * Only show the Integrity Management link for contractors who are linked to
+	 * an operator that subscribes to Integrity Management
 	 */
 	public boolean isRequiresIntegrityManagement() {
 		if (!accountDao.isContained(getOperators().iterator().next()))
 			operators = null;
-		
+
 		if (permissions.isOperator()) {
 			for (ContractorOperator insurContractors : getOperators()) {
 				OperatorAccount op = insurContractors.getOperatorAccount();
-				for( AuditOperator audit : op.getAudits() ) {
-					if( audit.getAuditType().getClassType() == AuditTypeClass.IM && permissions.getAccountId() == op.getId()) {
-							return true;
-					}					
+				for (AuditOperator audit : op.getAudits()) {
+					if (audit.getAuditType().getClassType() == AuditTypeClass.IM
+							&& permissions.getAccountId() == op.getId()) {
+						return true;
+					}
 				}
-				
+
 			}
 			return false;
 		}
@@ -257,10 +256,10 @@ public class ContractorActionSupport extends PicsActionSupport {
 		// facilities
 		for (ContractorOperator insurContractors : getOperators()) {
 			OperatorAccount op = insurContractors.getOperatorAccount();
-			for( AuditOperator audit : op.getAudits() ) {
-				if( audit.getAuditType().getClassType() == AuditTypeClass.IM ) {
-						return true;
-				}					
+			for (AuditOperator audit : op.getAudits()) {
+				if (audit.getAuditType().getClassType() == AuditTypeClass.IM) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -317,7 +316,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 			activeOperators = accountDao.findOperators(contractor, permissions, " AND operatorAccount.active = 'Y' ");
 		return activeOperators;
 	}
-	
+
 	public List<OperatorAccount> getOperatorList() throws Exception {
 		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
 		return dao.findWhere(false, "active='Y'", permissions);
@@ -326,11 +325,11 @@ public class ContractorActionSupport extends PicsActionSupport {
 	public List<ContractorAudit> getAudits() {
 		List<ContractorAudit> temp = new ArrayList<ContractorAudit>();
 		try {
-			if(!accountDao.isContained(contractor)) 
+			if (!accountDao.isContained(contractor))
 				findContractor();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		List<ContractorAudit> list = contractor.getAudits();
 		for (ContractorAudit contractorAudit : list) {
 			if (permissions.canSeeAudit(contractorAudit.getAuditType()))
@@ -350,7 +349,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 	public Industry[] getIndustryList() {
 		return Industry.values();
 	}
-	
+
 	public LowMedHigh[] getRiskLevelList() {
 		return LowMedHigh.values();
 	}
@@ -358,12 +357,13 @@ public class ContractorActionSupport extends PicsActionSupport {
 	protected void addNote(ContractorAccount contractor, String newNote) throws Exception {
 		addNote(contractor, newNote, NoteCategory.General);
 	}
-	
+
 	protected void addNote(ContractorAccount contractor, String newNote, NoteCategory noteCategory) throws Exception {
-		addNote(contractor, newNote, noteCategory , LowMedHigh.Low, false);
+		addNote(contractor, newNote, noteCategory, LowMedHigh.Low, false);
 	}
 
-	protected void addNote(ContractorAccount contractor, String newNote, NoteCategory category, LowMedHigh priority, boolean canContractorView) throws Exception {
+	protected void addNote(ContractorAccount contractor, String newNote, NoteCategory category, LowMedHigh priority,
+			boolean canContractorView) throws Exception {
 		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 		Note note = new Note();
 		note.setAccount(contractor);
@@ -372,10 +372,10 @@ public class ContractorActionSupport extends PicsActionSupport {
 		note.setPriority(priority);
 		note.setNoteCategory(category);
 		note.setCanContractorView(canContractorView);
-		note.setStatus(NoteStatus.Closed); 
+		note.setStatus(NoteStatus.Closed);
 		noteDAO.save(note);
 	}
-	
+
 	public NoteCategory getNoteCategory() {
 		return noteCategory;
 	}
@@ -383,14 +383,15 @@ public class ContractorActionSupport extends PicsActionSupport {
 	public void setNoteCategory(NoteCategory noteCategory) {
 		this.noteCategory = noteCategory;
 	}
-	
+
 	public List<Note> getNotes() {
 		if (notes == null) {
 			NoteDAO dao = (NoteDAO) SpringUtils.getBean("NoteDAO");
 			// status != " + NoteStatus.Closed.ordinal()
-			notes = dao.getNotes(id, permissions, "status != " + NoteStatus.Hidden.ordinal() + " AND noteCategory = '" + noteCategory.toString() + "'", 5);
+			notes = dao.getNotes(id, permissions, "status != " + NoteStatus.Hidden.ordinal() + " AND noteCategory = '"
+					+ noteCategory.toString() + "'", 5);
 		}
 		return notes;
 	}
-	
+
 }
