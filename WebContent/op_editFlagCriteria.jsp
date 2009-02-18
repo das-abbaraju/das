@@ -6,6 +6,7 @@
 <%@page import="com.picsauditing.jpa.entities.MultiYearScope"%>
 <%@page import="com.picsauditing.jpa.entities.OperatorAccount"%>
 <%@page import="com.picsauditing.dao.OperatorAccountDAO"%>
+<%@page import="com.picsauditing.dao.ContractorAccountDAO"%>
 <%
 	String opID = null;
 	permissions.tryPermission(OpPerms.EditFlagCriteria);
@@ -35,12 +36,12 @@
 		if (flagCriteria.isOK()) {
 			flagCriteria.writeToDB();
 			String actionFlag = request.getParameter("actionFlag");
-			FlagCalculator2 flagCalc2 = (FlagCalculator2)SpringUtils.getBean("FlagCalculator2");
+			ContractorAccountDAO cAccountDAO = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
 			if(actionFlag.equals("Limited")) {
-				flagCalc2.runByOperatorLimited(Integer.parseInt(opID));
+				cAccountDAO.updateContractorByOperatorLimited(Integer.parseInt(opID));
 			}
 			if(actionFlag.equals("All")) {
-				flagCalc2.runByOperator(Integer.parseInt(opID));
+				cAccountDAO.updateContractorByOperator();
 			}
 		}
 		

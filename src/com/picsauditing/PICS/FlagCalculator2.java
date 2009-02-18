@@ -49,6 +49,7 @@ public class FlagCalculator2 {
 	private ContractorAuditOperatorDAO caoDAO;
 	private AuditDataDAO auditDataDAO;
 	private ContractorOperatorFlagDAO coFlagDAO;
+	private AuditBuilder auditBuilder;
 
 	// List of operators to be processed
 	private List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
@@ -58,13 +59,14 @@ public class FlagCalculator2 {
 
 	public FlagCalculator2(OperatorAccountDAO operatorDAO, ContractorAccountDAO contractorDAO,
 			ContractorAuditDAO conAuditDAO, AuditDataDAO auditDataDAO, ContractorOperatorFlagDAO coFlagDAO,
-			ContractorAuditOperatorDAO caoDAO ) {
+			ContractorAuditOperatorDAO caoDAO, AuditBuilder auditBuilder) {
 		this.operatorDAO = operatorDAO;
 		this.contractorDAO = contractorDAO;
 		this.conAuditDAO = conAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.coFlagDAO = coFlagDAO;
 		this.caoDAO = caoDAO;
+		this.auditBuilder = auditBuilder;
 	}
 
 	public void runAll() {
@@ -230,14 +232,13 @@ public class FlagCalculator2 {
 
 		ContractorAccount contractor = contractorDAO.find(conID);
 		
-		try {
-			BillingCalculatorSingle billSingle = new BillingCalculatorSingle();
-			InvoiceFee fee = billSingle.calculateAnnualFee(contractor);
-			contractor.setNewMembershipLevel(fee);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
+		// Update the billing information for this contractor
+		BillingCalculatorSingle billSingle = new BillingCalculatorSingle();
+		InvoiceFee fee = billSingle.calculateAnnualFee(contractor);
+		contractor.setNewMembershipLevel(fee);
 		
+		// Run the auditBuilder for this contractor
+		auditBuilder.buildAudits(contractor);
 		
 		// debug("FlagCalculator: Operator data ready...starting calculations");
 		FlagCalculatorSingle calcSingle = new FlagCalculatorSingle();
@@ -337,6 +338,9 @@ public class FlagCalculator2 {
 				}
 			}
 		}
+		contractor.setNeedsRecalculation(false);
+		contractor.setLastRecalculation(new Date());
+
 		contractorDAO.save(contractor);
 
 		// destroy with a vengence!!!!
