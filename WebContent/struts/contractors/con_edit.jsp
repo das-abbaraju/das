@@ -263,6 +263,9 @@
 				<fieldset class="form">
 				<legend><span>PICS Admin Fields</span></legend>
 				<ol>
+					<li><label>Visible?</label>
+						<s:radio list="#{'Y':'Yes','N':'No'}" name="contractor.active" theme="pics" />
+					</li>
 					<li><label>Risk Level:</label>
 						<s:radio list="riskLevelList" name="contractor.riskLevel" theme="pics" />
 					</li>
