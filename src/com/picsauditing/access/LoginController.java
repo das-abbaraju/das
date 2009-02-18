@@ -271,6 +271,7 @@ public class LoginController extends PicsActionSupport {
 		loginLog.setPassword(password);
 		loginLog.setRemoteAddress(remoteAddress);
 		loginLog.setSuccessful(successful);
+		loginLog.setSessionId(getRequest().getSession().getId());
 		if (permissions.getUserId() > 0)
 			loginLog.setUserID(permissions.getUserId());
 		if (permissions.getAdminID() > 0)

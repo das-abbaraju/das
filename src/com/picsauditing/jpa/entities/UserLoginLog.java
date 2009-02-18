@@ -26,6 +26,7 @@ public class UserLoginLog {
 	private Date loginDate;
 	private String remoteAddress;
 	private User admin;
+	private String sessionId;
 
 	public UserLoginLog() {
 	}
@@ -103,6 +104,15 @@ public class UserLoginLog {
 	@Column(name = "successful", nullable = true)
 	public char getSuccessful() {
 		return successful;
+	}
+	
+	@Column( name= "sessionID" )
+	public String getSessionId() {
+		return sessionId;
+	}
+
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
 	}
 
 	@Override
