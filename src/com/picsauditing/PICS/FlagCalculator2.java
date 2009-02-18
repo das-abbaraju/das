@@ -232,9 +232,7 @@ public class FlagCalculator2 {
 
 		ContractorAccount contractor = contractorDAO.find(conID);
 		
-		// Update the billing information for this contractor
-		BillingCalculatorSingle billSingle = new BillingCalculatorSingle();
-		InvoiceFee fee = billSingle.calculateAnnualFee(contractor);
+		InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 		contractor.setNewMembershipLevel(fee);
 		
 		// Run the auditBuilder for this contractor

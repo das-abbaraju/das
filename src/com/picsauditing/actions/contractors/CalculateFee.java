@@ -16,7 +16,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 public class CalculateFee extends PicsActionSupport {
 
 	
-	private BillingCalculatorSingle billingCalculator = null;
 	private OperatorAccountDAO operatorDao = null;
 	private InvoiceFeeDAO feeDao = null;
 	private int riskLevel = 0;
@@ -24,8 +23,7 @@ public class CalculateFee extends PicsActionSupport {
 	private String facilities = null;
 	private InvoiceFee fee = null;
 
-	public CalculateFee( BillingCalculatorSingle billingCalculator, OperatorAccountDAO operatorAccountDAO, InvoiceFeeDAO feeDao) {
-		this.billingCalculator = billingCalculator;
+	public CalculateFee(OperatorAccountDAO operatorAccountDAO, InvoiceFeeDAO feeDao) {
 		this.operatorDao = operatorAccountDAO;
 		this.feeDao = feeDao;
 	}
@@ -56,7 +54,7 @@ public class CalculateFee extends PicsActionSupport {
 				contractor.getOperators().add(co);
 			}
 			
-			fee = billingCalculator.calculateAnnualFee(contractor);
+			fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 			
 			if( fee != null ) {
 				fee = feeDao.find(fee.getId());

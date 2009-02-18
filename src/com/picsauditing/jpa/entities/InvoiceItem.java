@@ -13,6 +13,7 @@ public class InvoiceItem extends BaseTable implements java.io.Serializable {
 
 	private Invoice invoice;
 	private InvoiceFee invoiceFee;
+	// TODO change this to decimal 
 	private int amount;
 	private String description;
 	

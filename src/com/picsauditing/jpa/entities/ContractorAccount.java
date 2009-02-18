@@ -45,6 +45,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private Date accountDate;
 	private String mustPay = "Yes";
 	private int requestedById;
+	//TODO private OperatorAccount requestedBy;
 	private String secondContact;
 	private String secondPhone;
 	private String secondEmail;
@@ -639,7 +640,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.invoices = invoices;
 	}
 
-	@Transient
 	/**
 	 * The following are states of Billing Status:
 	 *     Membership Canceled
@@ -667,7 +667,10 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 * 
 	 * @return A String of the current Billing Status
 	 */
+	@Transient
 	public String getBillingStatus() {
+		if (newMembershipLevel == null)
+			return "Not Calculated";
 		boolean noMembershipLevel = false;
 		if (membershipLevel == null)
 			noMembershipLevel = true;

@@ -112,8 +112,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 			if (recalculate) {
 				findContractor();
-				BillingCalculatorSingle calculator = new BillingCalculatorSingle();
-				InvoiceFee fee = calculator.calculateAnnualFee(contractor);
+				InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 
 				contractor.setNewMembershipLevel(fee);
 				accountDao.save(contractor);

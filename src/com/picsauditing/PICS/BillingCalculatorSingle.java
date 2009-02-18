@@ -15,7 +15,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class BillingCalculatorSingle {
 	
-	public InvoiceFee calculateAnnualFee(ContractorAccount contractor) {
+	static public InvoiceFee calculateAnnualFee(ContractorAccount contractor) {
 
 		
 		List<ContractorOperator> contractorOperators = contractor.getOperators();
@@ -30,7 +30,7 @@ public class BillingCalculatorSingle {
 		
 		// Contractors with no paying facilities are free
 		InvoiceFee theDefault = new InvoiceFee();
-		theDefault.setId(19);
+		theDefault.setId(InvoiceFee.FREE);
 		if (payingOperators.size() == 0) return theDefault;
 		
 		// If only one facility is selected and it's a "multiple" 
@@ -78,7 +78,7 @@ public class BillingCalculatorSingle {
 	 * @param billable the number of billable facilities
 	 * @return the InvoiceFee.id for the annual membership level
 	 */
-	private Integer calculatePriceTier(int billable) {
+	static private Integer calculatePriceTier(int billable) {
 		@SuppressWarnings("serial")
 		Map<Integer, Integer> priceTiers = new TreeMap<Integer, Integer>() {{
 			put( 0, 14 );
