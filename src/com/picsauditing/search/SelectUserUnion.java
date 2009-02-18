@@ -40,10 +40,6 @@ public class SelectUserUnion extends SelectSQL {
 				+ "FROM users where isGroup ='No' "
 				+ userWhere
 				+ " UNION "
-				+ "SELECT 'Acct' as tableType, 'Primary' as columnType, id, username, password, email, contact, case active when 'Y' THEN 'Yes' ELSE 'No' end, creationDate, lastLogin, id, phone "
-				+ "FROM accounts where type = 'Contractor' " 
-				+ contractorWhere 
-				+ " UNION "
 				+ "SELECT 'Acct' as tableType, 'Billing' as columnType, accounts.id, null, null, billingEmail, billingContact, case active when 'Y' THEN 'Yes' ELSE 'No' end, creationDate, lastLogin, accounts.id, billingPhone "
 				+ "FROM accounts "
 				+ "JOIN contractor_info c on c.id = accounts.id where type = 'Contractor' " 

@@ -37,6 +37,12 @@
 			title="must be 9 digits" /></div>
 	</s:if>
 
+	<s:if test="filter.showCompanyName">
+		<div class="filterOption">Company Name: <s:textfield
+			name="filter.companyName" cssClass="forms" size="15"
+			onfocus="clearText(this)" title="must be 9 digits" /></div>
+	</s:if>
+
 	<s:if test="filter.showPhone">
 		<div class="filterOption">Phone Number: <s:textfield name="filter.phoneNumber"
 			cssClass="forms" size="15" onfocus="clearText(this)"
@@ -48,7 +54,7 @@
 			name="filter.emailAddress" cssClass="forms" size="15"
 			onfocus="clearText(this)" title="must be 9 digits" /></div>
 	</s:if>
-
+	
 	<br clear="all" />
 	<div class="alphapaging"><s:property
 		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>

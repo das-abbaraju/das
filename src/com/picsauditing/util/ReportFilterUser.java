@@ -12,13 +12,15 @@ public class ReportFilterUser extends ReportFilter {
 	protected boolean showPhone = true;
 	protected boolean showEmail = true;
 	protected boolean showUser = true;
-
+	protected boolean showCompanyName = true;
+	
 	// /////// Parameter Values /////////////////
 	protected String startsWith;
 	protected String ContactName;
 	protected String PhoneNumber;
 	protected String EmailAddress;
 	protected String UserName;
+	protected String companyName;
 
 	public boolean isShowContact() {
 		return showContact;
@@ -50,6 +52,14 @@ public class ReportFilterUser extends ReportFilter {
 
 	public void setShowUser(boolean showUser) {
 		this.showUser = showUser;
+	}
+
+	public boolean isShowCompanyName() {
+		return showCompanyName;
+	}
+
+	public void setShowCompanyName(boolean showCompanyName) {
+		this.showCompanyName = showCompanyName;
 	}
 
 	public String getStartsWith() {
@@ -92,4 +102,11 @@ public class ReportFilterUser extends ReportFilter {
 		UserName = userName;
 	}
 
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
 }

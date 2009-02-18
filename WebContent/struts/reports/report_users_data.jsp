@@ -23,7 +23,7 @@
 	<s:iterator value="data" status="stat">
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td><s:if test="get('tableType') == 'Acct'">
+			<td><s:if test="get('tableType') == 'Acct' || get('AcctType') == 'Contractor'">
 					<a href="ContractorView.action?id=<s:property value="get('accountID')"/>">
 					<s:property value="get('companyName')" /></a>
 				</s:if>
@@ -32,8 +32,15 @@
 					<s:property value="get('companyName')" /></a>	
 				</s:else>
 			</td>
-			<td><s:property value="get('columnType')"/></td>
-			<td><s:if test="get('tableType') == 'Acct'">
+			<td>
+			<s:if test="get('columnType')== 'User' && get('AcctType') == 'Contractor'">
+				<s:property value="get('AcctType')"/>	
+			</s:if>
+			<s:else>
+				<s:property value="get('columnType')"/>
+			</s:else>
+			</td>
+			<td><s:if test="get('tableType') == 'Acct' || get('AcctType') == 'Contractor'">
 				<s:property value="get('name')" />
 				</s:if>
 				<s:else>

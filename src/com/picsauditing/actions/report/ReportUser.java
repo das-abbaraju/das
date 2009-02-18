@@ -62,7 +62,9 @@ public class ReportUser extends ReportActionSupport {
 		sql.addField("u.phone");
 		sql.addJoin("JOIN accounts a ON a.id = u.accountID");
 		sql.addField("a.name AS companyName");
+		sql.addField("a.type AS AcctType");
 		sql.addWhere("u.isActive = 'Yes'");
+		sql.addWhere("a.active = 'Y'");
 		sql.addOrderBy("u.name");
 
 		if (isFiltered())
@@ -108,6 +110,10 @@ public class ReportUser extends ReportActionSupport {
 
 		if (filterOn(f.getUserName())) {
 			report.addFilter(new SelectFilter("UserName", "u.username LIKE '%?%'", f.getUserName()));
+		}
+		
+		if (filterOn(f.getCompanyName())) {
+			report.addFilter(new SelectFilter("companyName", "a.name LIKE '%?%'", f.getCompanyName()));
 		}
 	}
 
