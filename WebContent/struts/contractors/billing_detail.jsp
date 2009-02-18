@@ -20,7 +20,7 @@
 						<br/><s:property value="contractor.operators.size()"/>
 					</li>
 					<li><label>Facilities:</label>
-						<s:select list="contractor.operators" name="operatorName" listKey="operatorAccount.name" listValue="operatorAccount.name"/>
+						<s:select size="3" disabled="true" list="contractor.operators" name="operatorName" listKey="operatorAccount.name" listValue="operatorAccount.name"/>
 					</li>
 					<li><label>Active:</label>
 						<s:property value="contractor.active"/>
