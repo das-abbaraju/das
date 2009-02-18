@@ -7,6 +7,40 @@
 	<constant name="struts.multipart.maxSize" value="1610612736" />
 
 	<package name="com.picsauditing" extends="struts-default">
+		<interceptors>
+			<interceptor name="http2https" class="com.picsauditing.interceptors.PicsInterceptor"/>
+		
+			<interceptor-stack name="picsStack">
+				<interceptor-ref name="exception"/>
+                <interceptor-ref name="alias"/> <!-- maybe we can kill this -->
+                <interceptor-ref name="servletConfig"/>
+                <interceptor-ref name="prepare"/>
+                <interceptor-ref name="i18n"/>
+                <interceptor-ref name="chain"/>
+                <interceptor-ref name="debugging"/>
+                <interceptor-ref name="profiling"/> <!-- maybe we can kill this -->
+                <interceptor-ref name="scopedModelDriven"/> <!-- maybe we can kill this -->
+                <interceptor-ref name="modelDriven"/> <!-- maybe we can kill this -->
+                <interceptor-ref name="fileUpload"/>
+                <interceptor-ref name="checkbox"/>
+                <interceptor-ref name="staticParams"/>
+                <interceptor-ref name="params">
+                  <param name="excludeParams">dojo\..*</param>
+                </interceptor-ref>
+                <interceptor-ref name="conversionError"/>
+                <interceptor-ref name="validation">
+                    <param name="excludeMethods">input,back,cancel,browse</param>
+                </interceptor-ref>
+                <interceptor-ref name="workflow">
+                    <param name="excludeMethods">input,back,cancel,browse</param>
+                </interceptor-ref>
+				<interceptor-ref name="http2https"/>                
+			</interceptor-stack>
+		
+		</interceptors>
+		
+ 		<default-interceptor-ref name="picsStack"/> 
+			
 		<global-results>
 			<result name="Exception">/exception_handler.jsp</result>
 			<result name="NoRightsException">
@@ -805,6 +839,15 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
+		<action name="InterceptorConfig" class="com.picsauditing.actions.InterceptorConfig">
+			<result>/struts/blank.jsp</result>
+		</action>
+
+		<action name="ClearCache"
+			class="com.picsauditing.actions.ClearCacheAction">
+			<result>struts/blank.jsp</result>
+		</action>
+
 		<action name="OpenAuditsMailer"
 			class="com.picsauditing.actions.audits.OpenAuditsMailer">
 			<result>/struts/blank.jsp</result>
@@ -891,10 +934,6 @@
 		-->
 		<action name="MigrateNotes"
 			class="com.picsauditing.actions.MigrateNotes">
-			<result>struts/blank.jsp</result>
-		</action>
-		<action name="ClearCache"
-			class="com.picsauditing.actions.ClearCacheAction">
 			<result>struts/blank.jsp</result>
 		</action>
 		<!-- Remember to Categorize your new Struts pages -->
