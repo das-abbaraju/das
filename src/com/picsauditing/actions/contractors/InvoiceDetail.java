@@ -1,7 +1,6 @@
 package com.picsauditing.actions.contractors;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,7 +24,6 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class InvoiceDetail extends PicsActionSupport implements Preparable {
