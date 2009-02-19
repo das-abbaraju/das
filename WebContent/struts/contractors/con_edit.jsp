@@ -127,10 +127,10 @@
 				</s:else>
 				<li><label>Payment Method:</label>
 					<s:if test="contractor.newMembershipLevel.amount < 500 && !permissions.admin">
-						<s:radio list="#{'Check':'Check','CreditCard':'CreditCard'}" name="contractor.paymentMethod" theme="pics" disabled="true"/>
+						<s:radio list="#{'Check':'Check','CreditCard':'Credit Card'}" name="contractor.paymentMethod" theme="pics" disabled="true"/>
 					</s:if>
 					<s:else>
-						<s:radio list="#{'Check':'Check','CreditCard':'CreditCard'}" name="contractor.paymentMethod" theme="pics" onclick="javascript : showPaymentMethodOption(this); return true;"/>
+						<s:radio list="#{'Check':'Check','CreditCard':'Credit Card'}" name="contractor.paymentMethod" theme="pics" onclick="javascript : showPaymentMethodOption(this); return true;"/>
 					</s:else>
 				</li>
 				<li>
