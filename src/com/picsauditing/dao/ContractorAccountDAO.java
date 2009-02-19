@@ -139,22 +139,6 @@ public class ContractorAccountDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<ContractorAccount> findDelinquentContractors(Permissions permissions, int limit) {
-		if (permissions == null)
-			return new ArrayList<ContractorAccount>();
-
-		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
-		qb.setActiveContractorsOnly(false);
-		String hql = "SELECT c FROM ContractorAccount c " +
-				"JOIN c.invoices as invoice WITH invoice.dueDate < NOW() AND invoice.paid = 0 " +
-				"WHERE c.active = 'Y' "
-				+ qb.toString() + " ORDER BY invoice.dueDate";
-		Query query = em.createQuery(hql);
-		query.setMaxResults(limit);
-		return query.getResultList();
-
-	}
-
 	public ContractorAccount findConID(String name) {
 		if (name == null)
 			name = "";

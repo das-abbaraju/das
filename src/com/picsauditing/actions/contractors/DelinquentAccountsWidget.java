@@ -3,15 +3,15 @@ package com.picsauditing.actions.contractors;
 import java.util.List;
 
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.dao.InvoiceDAO;
+import com.picsauditing.jpa.entities.Invoice;
 
 @SuppressWarnings("serial")
 public class DelinquentAccountsWidget extends PicsActionSupport {
-	ContractorAccountDAO accountDao;
+	InvoiceDAO invoiceDAO;
 
-	public DelinquentAccountsWidget(ContractorAccountDAO accountDao) {
-		this.accountDao = accountDao;
+	public DelinquentAccountsWidget(InvoiceDAO invoiceDAO) {
+		this.invoiceDAO = invoiceDAO;
 	}
 
 	public String execute() throws Exception {
@@ -21,7 +21,8 @@ public class DelinquentAccountsWidget extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public List<ContractorAccount> getDelinquentContractors() {
-		return accountDao.findDelinquentContractors(permissions, 10);
+	public List<Invoice> getDelinquentContractors() {
+		List<Invoice> iList = invoiceDAO.findDelinquentContractors(permissions, 10);
+		return iList;
 	}
 }

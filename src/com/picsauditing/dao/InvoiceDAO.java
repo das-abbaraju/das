@@ -1,6 +1,14 @@
 package com.picsauditing.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.Query;
+
+import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.util.PermissionQueryBuilder;
 
 public class InvoiceDAO extends PicsDAO {
 	public Invoice save(Invoice o) {
@@ -28,5 +36,22 @@ public class InvoiceDAO extends PicsDAO {
 	public Invoice find(int id) {
 		return em.find(Invoice.class, id);
 	}
+	
+	public List<Invoice> findDelinquentContractors(Permissions permissions, int limit) {
+		if (permissions == null)
+			return new ArrayList<Invoice>();
+
+		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
+		qb.setAccountAlias("i.account");
+		qb.setActiveContractorsOnly(false);
+		String hql = "SELECT i FROM Invoice i " +
+				"WHERE i.dueDate < NOW() AND i.paid = 0 " +
+				"AND i.account.active = 'Y' "
+				+ qb.toString() + " ORDER BY i.dueDate";
+		Query query = em.createQuery(hql);
+		query.setMaxResults(limit);
+		return query.getResultList();
+	}
+
 
 }
