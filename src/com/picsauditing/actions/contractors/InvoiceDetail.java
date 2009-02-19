@@ -18,6 +18,7 @@ import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
@@ -204,4 +205,24 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 	public boolean isShowHeader() {
 		return true;
 	}
+	
+	public String getContractorNotes() {
+		
+		if( getInvoice().getNotes() == null || getInvoice().getNotes().length() == 0) {
+		
+			AppProperty prop = appPropDao.find("invoice_comment");
+			
+			if( prop != null ) {
+				return prop.getValue();
+			}
+			else {
+				return "Thank you for your business.";	
+			}
+		}
+		else {
+			return getInvoice().getNotes();
+		}
+	}
+	
+	
 }

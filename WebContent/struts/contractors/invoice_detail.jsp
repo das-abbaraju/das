@@ -185,8 +185,8 @@ h1 {
 		<tr>
 			<td style="padding: 15px;">
 			Comments: 
-					<s:if test="edit"><br /><s:textarea name="invoice.notes" cols="60" rows="4" value="Thank you for your business."></s:textarea> </s:if>
-					<s:else><s:property value="invoice.notes"/>Thank you for your business. <br /><br /><br /></s:else>
+					<s:if test="edit"><br /><s:textarea name="invoice.notes" cols="60" rows="4" value="%{contractorNotes}"></s:textarea> </s:if>
+					<s:else><s:property value="contractorNotes"/><br /><br /><br /></s:else>
 			</td>
 		</tr>
 		<tr>
