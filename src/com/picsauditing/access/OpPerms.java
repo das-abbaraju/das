@@ -65,6 +65,7 @@ public enum OpPerms {
 	// Will be replaced with billing; remove from Accounting Group
 	BillingUpgrades("Billing Upgrades", "Upgrade contractor subscriptions and send them invoices", true, false),
 	DelinquentAccounts("Delinquent Accounts", "Allows users to view Delinquent Contractor Accounts", false, false),
+	CreditCard("Credit Card", "Allow users to perform add, edit and delete Credit Card functions for Accounts added to Braintree.", true, true),
 	
 	EmailAnnualUpdate("Email Annual Updates", "Send contractors reminder emails to update their PICS info. Edit permission is required to send the emails.", true, false),
 	EmailTemplates("Email Templates", "Allows PICS employees to edit the templates used to automatically send emails"),
