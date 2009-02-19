@@ -88,8 +88,11 @@ public class ContractorAuditAction extends AuditActionSupport {
 
 		if ("Submit".equals(button)) {
 			if (conAudit.getAuditType().isPqf()) {
-				if (conAudit.getAuditStatus().equals(AuditStatus.Active) && conAudit.getPercentVerified() == 100)
+				if (conAudit.getAuditStatus().equals(AuditStatus.Active) && conAudit.getPercentVerified() == 100) {
 					auditStatus = AuditStatus.Active;
+					if(conAudit.isAboutToExpire())
+						conAudit.setCompletedDate(new Date());
+				}	
 				else if (conAudit.getAuditStatus().isActiveResubmittedExempt())
 					auditStatus = AuditStatus.Resubmitted;
 				else
