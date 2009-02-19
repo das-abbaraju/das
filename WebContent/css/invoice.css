@@ -1,0 +1,43 @@
+table td, table th {
+	vertical-align: middle;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+table.allborder {
+	border-width: 1px;
+	border-spacing: 0;
+	border-collapse: collapse;
+	border-color: #333;
+	border-style: solid;
+}
+
+table.allborder td, table.allborder th {
+	font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+	border-width: 1px;
+	border-color: #444;
+	border-style: solid;
+	margin: 0;
+	padding: 6px;
+}
+
+table.allborder th {
+	text-align: center;
+	color: #444;
+	padding: 10px;
+	font-weight: normal;
+}
+
+table.allborder th.big, table.allborder td.big {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+table.allborder th.center, table.allborder td.center {
+	text-align: center;
+}
+
+table.allborder th.right, table.allborder td.right {
+	text-align: right;
+	float: none;
+}

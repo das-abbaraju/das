@@ -13,13 +13,18 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
+/**
+ * @author Trevor
+ * 
+ */
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "invoice")
 public class Invoice extends BaseTable implements java.io.Serializable {
 	public final static int daysUntilDue = 30;
-	
+
 	private Account account;
 	private Date dueDate;
 	private boolean paid;
@@ -28,8 +33,9 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 	private PaymentMethod paymentMethod;
 	private String checkNumber;
 	private String transactionID;
+	private String poNumber;
 	private String notes;
-	
+
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 
 	@ManyToOne
@@ -42,6 +48,20 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 		this.account = account;
 	}
 
+	@Transient
+	public boolean isOverdue() {
+		if (totalAmount <= 0)
+			return false;
+		
+		if (paid)
+			return false;
+		
+		if (dueDate == null)
+			return false;
+		
+		return dueDate.before(new Date());
+	}
+	
 	@Temporal(TemporalType.DATE)
 	public Date getDueDate() {
 		return dueDate;
@@ -66,7 +86,7 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 	public void setTotalAmount(int totalAmount) {
 		this.totalAmount = totalAmount;
 	}
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getPaidDate() {
 		return paidDate;
@@ -101,6 +121,14 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 		this.transactionID = transactionID;
 	}
 
+	public String getPoNumber() {
+		return poNumber;
+	}
+
+	public void setPoNumber(String poNumber) {
+		this.poNumber = poNumber;
+	}
+
 	public String getNotes() {
 		return notes;
 	}
@@ -117,5 +145,5 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 	public void setItems(List<InvoiceItem> items) {
 		this.items = items;
 	}
-	
+
 }

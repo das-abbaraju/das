@@ -57,6 +57,14 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		this.invoiceItemDAO = invoiceItemDAO;
 	}
 
+	@Override
+	public void prepare() throws Exception {
+		int invoiceId = getParameter("invoice.id");
+		invoice = invoiceDAO.find(invoiceId);
+		id = invoice.getAccount().getId();
+		contractor = (ContractorAccount) invoice.getAccount();
+	}
+
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
@@ -67,8 +75,6 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 				&& permissions.getAccountId() != invoice.getAccount().getId()) {
 			throw new NoRightsException("You can't view this invoice");
 		}
-		
-		contractor = (ContractorAccount) invoice.getAccount();
 		
 		if (edit) {
 			if ("Save".equals(button)) {
@@ -126,8 +132,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 					invoiceDAO.save(invoice);
 
 					int conBalance = contractor.getBalance();
-					contractor
-							.setBalance(conBalance - invoice.getTotalAmount());
+					contractor.setBalance(conBalance + invoice.getTotalAmount());
 					conAccountDAO.save(contractor);
 
 					noteDAO.addPicsAdminNote(invoice.getAccount(), getUser(),
@@ -141,19 +146,16 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		return SUCCESS;
 	}
 	
-	@Override
-	public void prepare() throws Exception {
-		int invoiceId = getParameter("invoice.id");
-		invoice = invoiceDAO.find(invoiceId);
-		id = invoice.getAccount().getId();
-	}
-
 	public int getId() {
 		return id;
 	}
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public ContractorAccount getContractor() {
+		return contractor;
 	}
 
 	public Invoice getInvoice() {
@@ -188,10 +190,6 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		this.transactionid = transactionid;
 	}
 
-	public ContractorAccount getContractor() {
-		return contractor;
-	}
-
 	public boolean isEdit() {
 		return edit;
 	}
@@ -212,5 +210,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		this.newFeeId = newFeeId;
 	}
 
-	
+	public boolean isShowHeader() {
+		return true;
+	}
 }
