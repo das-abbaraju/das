@@ -22,10 +22,10 @@
 							No
 						</s:else>
 					</li>
-					<li><label>Registration Date:</label>
+					<li><label title="The Date the Account was Created.">Registration Date:</label>
 						<s:date name="contractor.creationDate" format="MMM d, yyyy" />
 					</li>
-					<li><label title="the date the activation fee was paid">Activation Date:</label>
+					<li><label title="The Date the Activation Fee was Paid.">Activation Date:</label>
 						<s:date name="contractor.membershipDate" format="MMM d, yyyy" />
 					</li>
 					<li><label>Will be Renewed:</label> 
@@ -79,6 +79,9 @@
 				<fieldset class="form">
 				<legend><span>Invoicing</span></legend>
 				<ol>
+					<li><label>Current Balance:</label>
+						$<s:property value="contractor.balance" /> USD
+					</li>				
 					<li><label>Billing Status:</label>
 						<s:property value="contractor.billingStatus" />
 					</li>
@@ -90,9 +93,7 @@
 						$<s:property value="contractor.membershipLevel.amount" /> USD
 						<br ><s:property value="contractor.membershipLevel.fee" />
 					</li>
-					<li><label>Current Balance:</label>
-						$<s:property value="contractor.balance" /> USD
-					</li>
+
 				</ol>
 				</fieldset>
 
@@ -131,18 +132,22 @@
 					<thead>
 						<tr>
     						<th>Invoice #</a></th>
+    						<th>Date Created</th>
 							<th>Amount</th>
 							<th>Due Date</th>	    
-							<th>Date Paid</th>	    
+							<th>Date Paid</th>   
+							<th>Paid</th>
 						</tr>
 					</thead>
 					<tbody>
 					<s:iterator value="contractor.invoices">
 						<tr style="cursor: pointer;" onclick="window.location = 'InvoiceDetail.action?invoice.id=<s:property value="id"/>'">
 							<td class="center"><a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><s:property value="id" /></a></td>
-							<td class="right">$<s:property value="totalAmount" /></td>
+							<td class="right"><s:date name="creationDate" format="M/d/yy"/></td>
+							<td class="right">$<s:property value="totalAmount" /></td>							
 							<td class="right"><s:date name="dueDate" format="M/d/yy"/></td>
 							<td class="right"><s:date name="paidDate" format="M/d/yy"/></td>
+							<td class="right"><s:if test="paid">Yes</s:if><s:else>No</s:else></td>
 						</tr>
 					</s:iterator>
 					</tbody>

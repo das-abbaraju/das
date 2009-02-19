@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -137,7 +138,7 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 		this.notes = notes;
 	}
 
-	@OneToMany(mappedBy = "invoice")
+	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.ALL })
 	public List<InvoiceItem> getItems() {
 		return items;
 	}

@@ -86,7 +86,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 					}
 					updateTotals();
 					
-					//invoiceDAO.save(invoice);
+					
 				}
 			} else {
 				if (button.startsWith("Charge Credit Card") && contractor.isCcOnFile()) {
@@ -111,7 +111,9 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 			}
 		}
 		
+		
 		updateTotals();
+		invoiceDAO.save(invoice);
 		
 		return SUCCESS;
 	}
@@ -154,9 +156,8 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		newItem.setInvoice(invoice);
 		newItem.setAuditColumns(getUser());
 		
-		invoiceItemDAO.save(newItem);
-		
 		invoice.getItems().add(newItem);
+		//invoiceItemDAO.save(newItem);
 	}
 	
 	public int getId() {

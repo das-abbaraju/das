@@ -54,11 +54,13 @@ h1 {
 					</table>
 					
 					<div class="center">
-					<a class="edit noprint"
-						href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=<s:property value="!edit"/>">
-						<s:if test="edit">View</s:if>
-						<s:else>Edit</s:else>
-					</a>
+					<s:if test="invoice.paid">
+						<a class="edit noprint"
+							href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=<s:property value="!edit"/>">
+							<s:if test="edit">View</s:if>
+							<s:else>Edit</s:else>
+						</a>
+					</s:if>
 					<a class="print noprint" href="javascript: window.print();">Print</a>
 					<s:if test="edit">
 						<br />
@@ -88,7 +90,7 @@ h1 {
 					<s:property value="contractor.city" />, <s:property
 						value="contractor.state" /> <s:property value="contractor.zip" /></td>
 					<td>
-						<s:if test="edit"><s:textfield name="invoice.poNumber" size="10" /></s:if>
+						<s:if test="edit"><s:textfield name="invoice.poNumber" size="20" /></s:if>
 						<s:else><s:property value="invoice.poNumber" /></s:else>
 					</td>
 					<td class="center">
@@ -96,8 +98,7 @@ h1 {
 						<s:else><s:date name="invoice.dueDate" format="MMM d, yyyy" /></s:else>
 					</td>
 					<td class="center">
-						<s:if test="edit"><s:radio list="@com.picsauditing.jpa.entities.PaymentMethod@values()" name="invoice.paymentMethod" /></s:if>
-						<s:else><s:property value="invoice.paymentMethod.description" /></s:else>
+						<s:property value="invoice.paymentMethod.description" />
 					</td>
 				</tr>
 			</table>
@@ -161,8 +162,9 @@ h1 {
 							</td>
 						</s:if>
 						<s:else>
-							<td colspan="3">
 							<pics:permission perm="Billing" type="Edit">
+							<s:if test="invoice.totalAmount > 0">
+							<td colspan="3" class="print noprint">
 								<s:if test="invoice.paymentMethod.creditCard && contractor.ccOnFile">
 									<input type="submit" name="button" value="Charge Credit Card for $<s:property value="invoice.totalAmount" />">
 								</s:if>
@@ -170,8 +172,9 @@ h1 {
 									Check#<s:textfield name="invoice.checkNumber" size="8"></s:textfield>
 									<input type="submit" name="button" value="Collect Check for $<s:property value="invoice.totalAmount" />">
 								</s:else>
+								</td>
+							</s:if>	
 							</pics:permission>
-							</td>
 						</s:else>
 					</tr>
 				</table>
@@ -180,8 +183,8 @@ h1 {
 		<tr>
 			<td style="padding: 15px;">
 			Comments: 
-					<s:if test="edit"><br /><s:textarea name="invoice.notes" cols="60" rows="4"></s:textarea> </s:if>
-					<s:else><s:property value="invoice.notes"/> <br /><br /><br /></s:else>
+					<s:if test="edit"><br /><s:textarea name="invoice.notes" cols="60" rows="4" value="Thank you for your business."></s:textarea> </s:if>
+					<s:else><s:property value="invoice.notes"/>Thank you for your business. <br /><br /><br /></s:else>
 			</td>
 		</tr>
 		<tr>
@@ -195,8 +198,8 @@ h1 {
 					<th width="25%">Website</th>
 				</tr>
 				<tr>
-					<td class="center">949-387-1940</td>
-					<td class="center">949-269-9146</td>
+					<td class="center">(800) 506-PICS (7427)</td>
+					<td class="center">(949) 269-9146</td>
 					<td class="center">billing@picsauditing.com</td>
 					<td class="center">www.picsauditing.com</td>
 				</tr>

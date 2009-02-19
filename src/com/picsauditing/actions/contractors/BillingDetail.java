@@ -52,10 +52,6 @@ public class BillingDetail extends ContractorActionSupport {
 
 		invoiceItems.clear();
 
-		// TODO: Need to figure out if we have already created an invoice based
-		// on these
-		// items. If so skip.
-
 		// For Activation Fee and New Membership
 		if ("Activation".equals(contractor.getBillingStatus())) {
 			InvoiceFee fee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
