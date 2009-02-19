@@ -127,14 +127,13 @@ public class BillingDetail extends ContractorActionSupport {
 			invoice.setTotalAmount(invoiceTotal);
 			invoice.setAuditColumns(getUser());
 
-			invoiceDAO.save(invoice);
 			contractor.getInvoices().add(invoice);
 
 			for (InvoiceItem item : invoiceItems) {
 				item.setInvoice(invoice);
 				item.setAuditColumns(getUser());
-				invoiceItemDAO.save(item);
 			}
+			invoiceDAO.save(invoice);
 
 			int conBalance = contractor.getBalance();
 			contractor.setBalance(conBalance + invoiceTotal);

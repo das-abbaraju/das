@@ -266,6 +266,10 @@ insert into useraccess set
 	viewFlag = 1, editFlag = 1, deleteFlag = 1, grantFlag = 0, 
 	lastUpdate = NOW(), grantedByID = 941;
 
+update contractor_info, (select sum(totalamount) as total, accountid from invoice where paid = 0 group by accountid) invoice
+set balance = total
+where id = accountid;
+
 /**
 update pqfquestions set isVisible = CASE isVisible WHEN 2 THEN 1 ELSE 0 END;
 update pqfquestions set hasRequirement = CASE hasRequirement WHEN 2 THEN 1 ELSE 0 END;
