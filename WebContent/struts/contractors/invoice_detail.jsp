@@ -167,8 +167,13 @@ h1 {
 							<pics:permission perm="Billing" type="Edit">
 							<s:if test="invoice.totalAmount > 0">
 							<td colspan="3" class="print noprint">
-								<s:if test="invoice.paymentMethod.creditCard && contractor.ccOnFile">
-									<input type="submit" name="button" value="Charge Credit Card for $<s:property value="invoice.totalAmount" />">
+								<s:if test="invoice.paymentMethod.creditCard">
+									<s:if test="contractor.ccOnFile">
+										<input type="submit" name="button" value="Charge Credit Card for $<s:property value="invoice.totalAmount" />">
+									</s:if>
+									<s:else>
+										No Credit Card on File
+									</s:else>								
 								</s:if>
 								<s:else>
 									Check#<s:textfield name="invoice.checkNumber" size="8"></s:textfield>
