@@ -3,6 +3,7 @@ package com.picsauditing.PICS;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -11,24 +12,26 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.util.Strings;
 
 public class BrainTreeService {
+	private static String urlBase = "https://secure.braintreepaymentgateway.com/api/";
 
 	protected String userName = null;
 	protected String password = null;
 
 	public CreditCard getCreditCard(int contractorId) throws Exception {
 
-		String urlBase = "https://secure.braintreepaymentgateway.com/api/query.php?report_type=customer_vault";
+		StringBuilder request = new StringBuilder(urlBase).append("query.php?report_type=customer_vault");
+		appendUsernamePassword(request);
+		request.append("&customer_vault_id=").append(contractorId);
 
-		StringBuilder request = new StringBuilder(urlBase).append("&username=").append(userName).append("&password=")
-				.append(password).append("&customer_vault_id=").append(new Integer(contractorId).toString());
-
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db = dbf.newDocumentBuilder();
 		URL url = new URL(request.toString());
 		InputStream inputStream = url.openStream();
+		
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db = dbf.newDocumentBuilder();
 		Document document = db.parse(inputStream);
 		inputStream.close();
 
@@ -47,26 +50,40 @@ public class BrainTreeService {
 
 	public void deleteCreditCard(int contractorId) throws Exception {
 
-		String urlBase = "https://secure.braintreepaymentgateway.com/api/transact.php?customer_vault=delete_customer";
-
-		StringBuilder request = new StringBuilder(urlBase).append("&username=").append(userName).append("&password=")
-				.append(password).append("&customer_vault_id=").append(new Integer(contractorId).toString());
+		StringBuilder request = new StringBuilder(urlBase).append("transact.php?customer_vault=delete_customer");
+		appendUsernamePassword(request);
+		request.append("&customer_vault_id=").append(contractorId);
 
 		URL url = new URL(request.toString());
 		InputStream inputStream = url.openStream();
 		inputStream.close();
 	}
 	
-	public void procesPayment(int acctId, int amount) throws Exception {
-		String urlBase = "https://secure.braintreepaymentgateway.com/api/transact.php?type=sale";
+	public boolean processPayment(Invoice invoice) throws Exception {
+
+		StringBuilder request = new StringBuilder(urlBase).append("transact.php?type=sale");
+		appendUsernamePassword(request);
+		request.append("&customer_vault_id=").append(invoice.getAccount().getId());
+		request.append("&orderid=").append(invoice.getId());
+		request.append("&amount=").append(invoice.getTotalAmount());
 		
-		StringBuilder request = new StringBuilder(urlBase).append("&username=").append(userName).append("&password=")
-		.append(password).append("&customer_vault_id=").append(new Integer(acctId).toString()).append("&amount=")
-		.append(new Integer(amount).toString());
+		StringBuffer buffer = new StringBuffer();
 		
 		URL url = new URL(request.toString());
 		InputStream inputStream = url.openStream();
+		int nextByte;
+		while ((nextByte = inputStream.read()) > -1) {
+			buffer.append((char)nextByte);
+		}
 		inputStream.close();
+		Map<String, String> map = Strings.mapParams(buffer.toString());
+		String response = map.get("response");
+		if (response.equals("1")) {
+			invoice.setTransactionID(map.get("transactionid"));
+			return true;
+		} else {
+			throw new Exception(map.get("responsetext"));
+		}
 	}
 
 	protected String getValueFromDocument(Document document, String tagName) {
@@ -132,7 +149,7 @@ public class BrainTreeService {
 			return "";
 		}
 	}
-
+	
 	public String getUserName() {
 		return userName;
 	}
@@ -147,6 +164,11 @@ public class BrainTreeService {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	private void appendUsernamePassword(StringBuilder request) {
+		request.append("&username=").append(userName);
+		request.append("&password=").append(password);
 	}
 
 }

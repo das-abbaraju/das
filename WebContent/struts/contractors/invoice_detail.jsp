@@ -1,4 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
 <title><s:property value="contractor.name" /> - Invoice <s:property
@@ -90,8 +91,14 @@ h1 {
 						<s:if test="edit"><s:textfield name="invoice.poNumber" size="10" /></s:if>
 						<s:else><s:property value="invoice.poNumber" /></s:else>
 					</td>
-					<td><s:date name="invoice.dueDate" format="MMM d, yyyy" /></td>
-					<td><s:property value="invoice.paymentMethod" /></td>
+					<td class="center">
+						<s:if test="edit"><s:textfield name="invoice.dueDate" size="10" /></s:if>
+						<s:else><s:date name="invoice.dueDate" format="MMM d, yyyy" /></s:else>
+					</td>
+					<td class="center">
+						<s:if test="edit"><s:radio list="@com.picsauditing.jpa.entities.PaymentMethod@values()" name="invoice.paymentMethod" /></s:if>
+						<s:else><s:property value="invoice.paymentMethod.description" /></s:else>
+					</td>
 				</tr>
 			</table>
 			</td>
@@ -127,7 +134,7 @@ h1 {
 								</td>
 								<td class="right">
 									$<s:property
-										value="invoiceFee.amount" /> USD
+										value="amount" /> USD
 								</td>
 							</s:else>
 						</tr>
@@ -148,9 +155,23 @@ h1 {
 					<tr>
 						<s:if test="invoice.paid">
 							<th colspan="2" class="right">Paid</th>
-							<td><s:date name="invoice.paidDate" format="MMM d, yyyy"/></td>
+							<td>
+								<s:date name="invoice.paidDate" format="MMM d, yyyy"/>
+								<br /><s:property value="invoice.checkNumber" />
+							</td>
 						</s:if>
 						<s:else>
+							<td colspan="3">
+							<pics:permission perm="Billing" type="Edit">
+								<s:if test="invoice.paymentMethod.creditCard && contractor.ccOnFile">
+									<input type="submit" name="button" value="Charge Credit Card for $<s:property value="invoice.totalAmount" />">
+								</s:if>
+								<s:else>
+									Check#<s:textfield name="invoice.checkNumber" size="8"></s:textfield>
+									<input type="submit" name="button" value="Collect Check for $<s:property value="invoice.totalAmount" />">
+								</s:else>
+							</pics:permission>
+							</td>
 						</s:else>
 					</tr>
 				</table>
@@ -184,6 +205,5 @@ h1 {
 		</tr>
 	</table>
 </s:form>
-<div>https://www.picsauditing.com/InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/></div>
 </body>
 </html>

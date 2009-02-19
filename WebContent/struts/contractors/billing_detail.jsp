@@ -40,7 +40,7 @@
 						<s:date name="contractor.paymentExpires" format="MMM d, yyyy" />
 					</li>
 					<li><label>Payment Method:</label>
-						<s:property value="contractor.paymentMethod" />
+						<s:property value="contractor.paymentMethod.description" />
 					</li>
 					<li><label>Credit Card on File?</label>
 						<s:if test="contractor.ccOnFile">Yes</s:if>
@@ -139,7 +139,7 @@
 					<tbody>
 					<s:iterator value="contractor.invoices">
 						<tr style="cursor: pointer;" onclick="window.location = 'InvoiceDetail.action?invoice.id=<s:property value="id"/>'">
-							<td class="center"><a href="InvoiceDetail.action?id=<s:property value="invoice.id"/>"><s:property value="id" /></a></td>
+							<td class="center"><a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><s:property value="id" /></a></td>
 							<td class="right">$<s:property value="totalAmount" /></td>
 							<td class="right"><s:date name="dueDate" format="M/d/yy"/></td>
 							<td class="right"><s:date name="paidDate" format="M/d/yy"/></td>

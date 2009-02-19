@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import junit.framework.TestCase;
@@ -149,5 +150,14 @@ public class StringsTest extends TestCase {
 		assertEquals(123456, Strings.extractAccountID("123456.7"));
 		assertEquals(0, Strings.extractAccountID("Bob's Cranes"));
 		assertEquals(0, Strings.extractAccountID("1 Micro"));
+	}
+
+	public void testMapParams() {
+		String url = "response=3&responsetext=Invalid Customer Vault Id REFID:101460773&authcode=&transactionid=0&avsresponse=&cvvresponse=&orderid=123&type=sale&response_code=300&customer_vault_id=0";
+		Map<String, String> map = Strings.mapParams(url);
+		assertEquals("3", map.get("response"));
+		assertEquals("Invalid Customer Vault Id REFID:101460773", map.get("responsetext"));
+		assertEquals("", map.get("authcode"));
+		assertEquals("0", map.get("customer_vault_id"));
 	}
 }

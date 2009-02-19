@@ -1,8 +1,11 @@
 package com.picsauditing.actions.contractors;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BrainTreeService;
@@ -15,10 +18,13 @@ import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -34,14 +40,10 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 	
 	private int newFeeId;
 	
-	private String response;	
-	private String responsetext;
-	private String transactionid;	
-	
 	private Invoice invoice;
 	private ContractorAccount contractor;
 	
-	private List<InvoiceFee> feeList = new ArrayList<InvoiceFee>();
+	private List<InvoiceFee> feeList = null;
 	
 	AppPropertyDAO appPropDao;
 	
@@ -58,92 +60,103 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 	}
 
 	@Override
-	public void prepare() throws Exception {
+	public void prepare() {
 		int invoiceId = getParameter("invoice.id");
 		invoice = invoiceDAO.find(invoiceId);
 		id = invoice.getAccount().getId();
 		contractor = (ContractorAccount) invoice.getAccount();
 	}
 
-	public String execute() throws Exception {
+	public String execute() throws NoRightsException, IOException {
 		if (!forceLogin())
 			return LOGIN;
-		
-		feeList = invoiceFeeDAO.findAll();
 		
 		if (!permissions.hasPermission(OpPerms.AllContractors)
 				&& permissions.getAccountId() != invoice.getAccount().getId()) {
 			throw new NoRightsException("You can't view this invoice");
 		}
 		
-		if (edit) {
-			if ("Save".equals(button)) {
-				if (newFeeId > 0) {
-					
-					InvoiceItem newItem = new InvoiceItem();
-					InvoiceFee newFee = invoiceFeeDAO.find(newFeeId);
-					newItem.setInvoiceFee(newFee);
-					newItem.setAmount(newFee.getAmount());
-					newItem.setInvoice(invoice);
-					newItem.setAuditColumns(getUser());
-					
-					invoiceItemDAO.save(newItem);
-					
-					invoice.getItems().add(newItem);
-					newFeeId = 0;
-				}
-				
-				int invoiceTotalAmt = invoice.getTotalAmount();
-				int conBalance = contractor.getBalance();
-				for(InvoiceItem item : invoice.getItems()) {
-					invoiceTotalAmt += item.getAmount();
-				}
-				
-				conBalance += invoiceTotalAmt;
-				
-				invoice.setTotalAmount(invoiceTotalAmt);
-				contractor.setBalance(conBalance);
-				
-				invoiceDAO.save(invoice);
-				conAccountDAO.save(contractor);
-			}
-		} else {
-			if ("Charge".equals(button) && contractor.isCcOnFile()) {
-				BrainTreeService paymentService = new BrainTreeService();
-				paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
-				paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
-
-				paymentService.procesPayment(contractor.getId(), invoice.getTotalAmount());
-
-				if (!Strings.isEmpty(responsetext) && !response.equals("1")) {
-					String errorMessage = responsetext;
-					try {
-						int endPos = responsetext.indexOf("REFID");
-						if (endPos > 1)
-							responsetext.substring(0, endPos - 1);
-					} catch (Exception justUseThePlainResponseText) {
+		if (button != null) {
+			if (edit) {
+				if ("Save".equals(button)) {
+					edit = false;
+					if (newFeeId > 0) {
+						addInvoiceItem(newFeeId);
+						newFeeId = 0;
 					}
-					addActionError(errorMessage);
-				} else {
-					invoice.setPaid(true);
-					invoice.setPaidDate(new Date());
-					invoice.setTransactionID(transactionid);
-					invoice.setAuditColumns(getUser());
-					invoiceDAO.save(invoice);
-
-					int conBalance = contractor.getBalance();
-					contractor.setBalance(conBalance + invoice.getTotalAmount());
-					conAccountDAO.save(contractor);
-
-					noteDAO.addPicsAdminNote(invoice.getAccount(), getUser(),
-							"Paid the invoice");
-					addActionMessage("Transaction Successfully Processed. Invoice "
-							+ invoice.getId() + " has been Paid.");
+					updateTotals();
+					
+					//invoiceDAO.save(invoice);
 				}
+			} else {
+				if (button.startsWith("Charge Credit Card") && contractor.isCcOnFile()) {
+					BrainTreeService paymentService = new BrainTreeService();
+					paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
+					paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
+					
+					try {
+						paymentService.processPayment(invoice);
+						payInvoice();
+						addNote("Credit Card transaction completed for $" + invoice.getTotalAmount());
+					} catch (Exception e) {
+						this.addActionError("Failed to charge credit card. " + e.getMessage());
+						return SUCCESS;
+					}
+				}
+				if (button.startsWith("Collect Check")) {
+					payInvoice();
+					addNote("Received check for $" + invoice.getTotalAmount());
+				}
+				ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 			}
 		}
 		
+		updateTotals();
+		
 		return SUCCESS;
+	}
+	
+	private void updateTotals() {
+		if (!invoice.isPaid()) {
+			int total = 0;
+			for(InvoiceItem item : invoice.getItems())
+				total += item.getAmount();
+			invoice.setTotalAmount(total);
+			invoice.setPaymentMethod(contractor.getPaymentMethod());
+		}
+		
+		int balance = 0;
+		for(Invoice conInvoice : contractor.getInvoices())
+			if (!conInvoice.isPaid())
+				balance += conInvoice.getTotalAmount();
+		contractor.setBalance(balance);
+	}
+	private void payInvoice() {
+		invoice.setPaid(true);
+		invoice.setPaidDate(new Date());
+		invoice.setAuditColumns(getUser());
+		invoiceDAO.save(invoice);
+		updateTotals();
+	}
+	private void addNote(String subject) {
+		Note note = new Note(invoice.getAccount(), getUser(), subject);
+		note.setNoteCategory(NoteCategory.Billing);
+		note.setCanContractorView(true);
+		note.setViewableById(Account.PicsID);
+		noteDAO.save(note);
+	}
+	
+	private void addInvoiceItem(int feeId) {
+		InvoiceItem newItem = new InvoiceItem();
+		InvoiceFee newFee = invoiceFeeDAO.find(feeId);
+		newItem.setInvoiceFee(newFee);
+		newItem.setAmount(newFee.getAmount());
+		newItem.setInvoice(invoice);
+		newItem.setAuditColumns(getUser());
+		
+		invoiceItemDAO.save(newItem);
+		
+		invoice.getItems().add(newItem);
 	}
 	
 	public int getId() {
@@ -166,30 +179,6 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		this.invoice = invoice;
 	}
 
-	public String getResponse() {
-		return response;
-	}
-
-	public void setResponse(String response) {
-		this.response = response;
-	}
-
-	public String getResponsetext() {
-		return responsetext;
-	}
-
-	public void setResponsetext(String responsetext) {
-		this.responsetext = responsetext;
-	}
-
-	public String getTransactionid() {
-		return transactionid;
-	}
-
-	public void setTransactionid(String transactionid) {
-		this.transactionid = transactionid;
-	}
-
 	public boolean isEdit() {
 		return edit;
 	}
@@ -199,6 +188,9 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 	}
 
 	public List<InvoiceFee> getFeeList() {
+		if (feeList == null)
+			feeList = invoiceFeeDAO.findAll();
+		
 		return feeList;
 	}
 

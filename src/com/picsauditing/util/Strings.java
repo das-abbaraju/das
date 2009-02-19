@@ -6,8 +6,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -198,4 +200,16 @@ public class Strings {
 		return buffer.toString();
 	}
 	
+	public static Map<String, String> mapParams(String params) {
+		Map<String, String> paramMap = new HashMap<String, String>();
+		String expression = "(\\w*)=([^&]*)?";
+		Pattern pattern = Pattern.compile(expression, Pattern.CANON_EQ);
+		Matcher matcher = pattern.matcher(params);
+		while (matcher.find()) {
+			paramMap.put(matcher.group(1), matcher.group(2));
+		}
+		return paramMap;
+		
+	}
+
 }
