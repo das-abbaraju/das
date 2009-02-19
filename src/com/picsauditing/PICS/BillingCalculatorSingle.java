@@ -81,13 +81,13 @@ public class BillingCalculatorSingle {
 	static private Integer calculatePriceTier(int billable) {
 		@SuppressWarnings("serial")
 		Map<Integer, Integer> priceTiers = new TreeMap<Integer, Integer>() {{
-			put( 0, 14 );
-			put( 1, 3 );
-			put( 2, 4 );
-			put( 5, 5 );
-			put( 9, 6 );
-			put( 13, 7 );
-			put( 20, 8 );
+			put( 0, InvoiceFee.PQFONLY );
+			put( 1, InvoiceFee.FACILITIES1 );
+			put( 2, InvoiceFee.FACILITIES2 );
+			put( 5, InvoiceFee.FACILITIES5 );
+			put( 9, InvoiceFee.FACILITIES9 );
+			put( 13, InvoiceFee.FACILITIES13 );
+			put( 20, InvoiceFee.FACILITIES20 );
 		}};
 
 		Integer last = null;
