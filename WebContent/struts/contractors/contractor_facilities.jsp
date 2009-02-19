@@ -72,10 +72,16 @@
 		});
 		return false;
 	}
+	
+	function popUp(URL) {
+	day = new Date();
+	id = day.getTime();
+	eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=420');");
+	}
 </script>
 
 </head>
-<body>
+<body onload="runSearch();">
 <s:if test="permissions.contractor && !contractor.activeB">
 	<s:include value="registrationHeader.jsp"></s:include>
 </s:if>
@@ -100,7 +106,12 @@
 	</td>
 	<td style="width: 10px"></td>
 	<td style="width: 50%">
-		<s:if test="permissions.contractor"><div id="info">Please specify all facilities at which you work.</div></s:if>
+		<s:if test="permissions.contractor || permissions.admin">
+			<div id="info">Please specify all facilities at which you work.<br/>
+			The pricing is based on the number of facilities you select below. 
+			<a href="#" onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=420'); return false;">
+			Click here to view pricing (opens in new window)</a>	
+		</div></s:if>
 		<form id="facilitySearch" onsubmit="runSearch(); return false;">
 			<s:hidden name="id"/>
 			<div id="search">
