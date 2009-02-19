@@ -8,6 +8,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -56,14 +57,9 @@ public class ReportInsuranceApprovalSave extends PicsActionSupport {
 				ContractorAuditOperator existing = conAuditOperatorDAO.find(i);
 				ContractorAuditOperator newVersion = caos.get(i);
 	
-				if (existing.getNotes() != null && newVersion.getNotes() != null) {
-	
-					if (((existing.getNotes() == null) ^ (newVersion.getNotes() == null))
-							|| !existing.getNotes().equals(newVersion.getNotes())) {
-	
+				if (! (existing.getNotes() == null && newVersion.getNotes() == null ) ) {
 						existing.setNotes(newVersion.getNotes());
 						dirty = true;
-					}
 				}
 	
 				if (newStatus != null && !newStatus.equals(existing.getStatus())) {
@@ -133,6 +129,8 @@ public class ReportInsuranceApprovalSave extends PicsActionSupport {
 				+ " by " + cao.getOperator().getName() + " for reason: " + cao.getNotes();
 		Note note = new Note();
 		note.setAccount(cao.getAudit().getContractorAccount());
+		note.setViewableById(Account.EVERYONE);
+		note.setCanContractorView(true);
 		note.setNoteCategory(NoteCategory.Insurance);
 		note.setSummary("Insurance status changed");
 		note.setBody(newNote);
