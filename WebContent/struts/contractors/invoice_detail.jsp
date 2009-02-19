@@ -54,12 +54,14 @@ h1 {
 					</table>
 					
 					<div class="center">
-					<s:if test="!invoice.paid">
-						<a class="edit noprint"
-							href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=<s:property value="!edit"/>">
-							<s:if test="edit">View</s:if>
-							<s:else>Edit</s:else>
-						</a>
+					<s:if test="!permissions.contractor">
+						<s:if test="!invoice.paid">
+							<a class="edit noprint"
+								href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=<s:property value="!edit"/>">
+								<s:if test="edit">View</s:if>
+								<s:else>Edit</s:else>
+							</a>
+						</s:if>
 					</s:if>
 					<a class="print noprint" href="javascript: window.print();">Print</a>
 					<s:if test="edit">
