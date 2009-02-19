@@ -27,7 +27,7 @@
 			if (cAccount != null) {
 				%><%=taxId%> already exists. Please contact a company representative.<%
 				} else {
-				%><%=taxId%> is available<%
+				%><%
 				}
 		}		
 
