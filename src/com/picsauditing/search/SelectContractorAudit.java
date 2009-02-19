@@ -43,7 +43,7 @@ public class SelectContractorAudit extends SelectAccount {
 		String join = "";
 		if (!require)
 			join = "LEFT ";
-		join = join + "JOIN pqfdata q" + questionID + " on q" + questionID + ".id = ca.id AND q" + questionID
+		join = join + "JOIN pqfdata q" + questionID + " on q" + questionID + ".auditid = ca.id AND q" + questionID
 				+ ".questionID = " + questionID;
 		this.addJoin(join);
 		this.addField("q" + questionID + ".answer AS " + columnName);
