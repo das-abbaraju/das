@@ -88,7 +88,7 @@ public class MigrateNotes extends PicsActionSupport {
 				try {
 					if( note.convertNote() ) {
 						note.setCreatedBy(new User());
-						note.getCreatedBy().setId(1);
+						note.getCreatedBy().setId(1798);
 	
 						note.setAccount(new Account());
 						note.getAccount().setId(contractor.getId());
