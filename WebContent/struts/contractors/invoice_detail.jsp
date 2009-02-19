@@ -54,7 +54,7 @@ h1 {
 					</table>
 					
 					<div class="center">
-					<s:if test="invoice.paid">
+					<s:if test="!invoice.paid">
 						<a class="edit noprint"
 							href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=<s:property value="!edit"/>">
 							<s:if test="edit">View</s:if>
