@@ -233,9 +233,6 @@
 					<li><label>Requested By:</label>
 						<s:select cssStyle="font-size: 12px;" list="operatorList" name="contractor.requestedById" headerKey="0" headerValue="- Choose an operator -" listKey="id" listValue="name"/>
 					</li>
-					<li><label>Paying Facilities:</label>
-						<s:property value="contractor.payingFacilities" />
-					</li>
 				</ol>
 				</fieldset>
 				<fieldset class="form">
