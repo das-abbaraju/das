@@ -2,12 +2,11 @@
 <head>
 <title>Privacy Policy Statement</title>
 </head>
-<body bgcolor="#EEEEEE" background="images/watermark.gif">
-<div style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px;
-	color: #003366; line-height: 20px;">
-<h1 align=center>Privacy Policy Statement</h1>
+<body>
+<h1 align="center">Privacy Policy Statement</h1>
 <p style="text-align: center; width: "><input type="button" value="Close" onclick="window.close();" /></p>
 
+<div>
 This is the web site of <b>PICS</b>.<br>
 <p>Our postal address is <br>
 <b>P.O. Box 51387<br>

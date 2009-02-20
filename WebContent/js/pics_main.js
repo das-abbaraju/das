@@ -25,6 +25,12 @@ function getElement(whichLayer) {
 	return elem;
 }
 
+function openWindow(url, wndName)
+{
+	var wnd = window.open(url, wndName);
+	wnd.focus();
+}
+
 function clearText(thefield)
 {
 	if (thefield.defaultValue==thefield.value)
