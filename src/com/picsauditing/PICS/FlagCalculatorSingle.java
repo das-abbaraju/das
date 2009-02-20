@@ -401,7 +401,7 @@ public class FlagCalculatorSingle {
 			return oldColor;
 
 		if (oldColor == null) {
-			System.out.println("WARNING: oldColor == null");
+			//System.out.println("WARNING: oldColor == null");
 			// Now we've changed this because of insurance
 			// oldColor = FlagColor.Green;
 			return newColor;
