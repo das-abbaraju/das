@@ -7,7 +7,6 @@ import java.util.List;
 
 import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")

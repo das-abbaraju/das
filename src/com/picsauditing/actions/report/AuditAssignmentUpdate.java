@@ -17,6 +17,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Note;
@@ -142,15 +143,16 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				email.setCcAddresses(null);
 				EmailSender.send(email);
 			}
-		}
 		
-		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
-		Note note = new Note();
-		note.setAccount(contractorAudit.getContractorAccount());
-		note.setAuditColumns(this.getUser());
-		note.setSummary("Audit Schedule updated");
-		note.setNoteCategory(NoteCategory.Audits);
-		noteDAO.save(note);
+			NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
+			Note note = new Note();
+			note.setAccount(contractorAudit.getContractorAccount());
+			note.setAuditColumns(this.getUser());
+			note.setSummary("Audit Schedule updated");
+			note.setNoteCategory(NoteCategory.Audits);
+			note.setViewableById(Account.EVERYONE);
+			noteDAO.save(note);
+		}
 		return SUCCESS;
 	}
 
