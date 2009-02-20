@@ -41,7 +41,7 @@ public class PicsInterceptor extends AbstractInterceptor {
 		PicsLogger.start("picsinterceptor");
 		PicsLogger.log(request.getRequestURI());
 		PicsLogger.log("interceptor.enabled : " + System.getProperty("interceptor.enabled"));
-		if( environment != null && environment.equals("enabled")) {
+		if( environment != null && environment.equals("enabled") && url.indexOf("Ajax") == -1) {
 
 			if( url.toString().indexOf("https:") != -1 ) {
 				
