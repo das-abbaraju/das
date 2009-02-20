@@ -9,6 +9,7 @@
 <%@page import="com.picsauditing.jpa.entities.Note"%>
 <%@page import="com.picsauditing.jpa.entities.User"%>
 <%@page import="com.picsauditing.jpa.entities.NoteCategory"%>
+<%@page import="com.picsauditing.jpa.entities.Account"%>
 
 <%
 String id = request.getParameter("id");
@@ -30,6 +31,7 @@ note.setAccount(contractor);
 note.setAuditColumns(new User(permissions.getAccountId()));
 note.setSummary("Welcome Email Sent "+ emailBuilder.getSentTo());
 note.setNoteCategory(NoteCategory.General);
+note.setViewableById(Account.EVERYONE);
 noteDAO.save(note);
 
 String message = "A welcome email was sent to "+emailBuilder.getSentTo();

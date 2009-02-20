@@ -89,10 +89,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		AnswerMapByAudits answerMapByAudits = auditDataDAO.findAnswersByAudits( contractor.getAudits(), criteriaQuestionIDs );
 		
 		if ("Override".equals(action)) {
-			String text = "Changed the flag color to " + forceFlag;
-			Note note = new Note(co.getOperatorAccount().getIdString(), co.getContractorAccount().getIdString(),
-					permissions.getUserIdString(), permissions.getUsername(), text);
-			note.writeToDB();
+			String text = "Changed the flag color to " + forceFlag + " for "+ co.getOperatorAccount();
+			addNote(co.getContractorAccount(), text);
 		}
 		if ("deleteOverride".equals(action)) {
 			permissions.tryPermission(OpPerms.EditForcedFlags);

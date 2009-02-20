@@ -57,6 +57,7 @@
 			note.setAuditColumns(new User(permissions.getAccountId()));
 			note.setSummary("NCMS Desktop imported, approved");
 			note.setNoteCategory(NoteCategory.Audits);
+			note.setViewableById(Account.EVERYONE);
 			noteDAO.save(note);
 
 			Query = "UPDATE NCMS_Desktop SET remove='Yes',conID="

@@ -7,6 +7,7 @@ import java.util.Map;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Note;
@@ -84,6 +85,7 @@ public class ReportCompletePQF extends ReportContractorAudits {
 						note.setAuditColumns(this.getUser());
 						note.setSummary("Pending PQF email sent to " + email.getToAddresses());
 						note.setNoteCategory(NoteCategory.Audits);
+						note.setViewableById(Account.EVERYONE);
 						noteDAO.save(note);
 
 					} catch (Exception e) {
