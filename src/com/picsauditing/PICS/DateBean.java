@@ -372,7 +372,7 @@ public class DateBean {
 			try {
 				df.applyPattern(pattern);
 				d = df.parse(dateString);
-				System.out.println("parseDate (SUCCESS): from " + dateString + " into " + DateBean.format(d, "yyyy-MM-dd"));
+//				System.out.println("parseDate (SUCCESS): from " + dateString + " into " + DateBean.format(d, "yyyy-MM-dd"));
 				break;
 			} catch (ParseException e) {
 				//System.out.println(e.getMessage() + " using pattern: " + pattern);
@@ -408,7 +408,7 @@ outerLoop:
 				try {
 					df.applyPattern(pattern + " " + timePattern);
 					d = df.parse(dateString);
-					System.out.println("parseDate (SUCCESS): from " + dateString + " into " + DateBean.format(d, "yyyy-MM-dd"));
+//					System.out.println("parseDate (SUCCESS): from " + dateString + " into " + DateBean.format(d, "yyyy-MM-dd"));
 					break outerLoop;
 				} catch (ParseException e) {
 					//System.out.println(e.getMessage() + " using pattern: " + pattern);

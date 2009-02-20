@@ -167,8 +167,10 @@ public class AuditCriteriaAnswerBuilder {
 					} else {
 						if (matchingConAudits.size() > 1) {
 							ContractorAccount contractor = matchingConAudits.get(0).getContractorAccount();
-							System.out.println("WARNING! Found more than one " + criteriaAuditType.getAuditName() 
+							PicsLogger.start("acaBuilder_warnings");
+							PicsLogger.log("WARNING! Found more than one " + criteriaAuditType.getAuditName() 
 									+ " for conID=" + contractor.getId());
+							PicsLogger.stop();
 						}
 						
 						AnswerMap answerMap = answerMapByAudits.get(matchingConAudits.get(0));

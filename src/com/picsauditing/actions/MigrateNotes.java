@@ -2,7 +2,6 @@ package com.picsauditing.actions;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Vector;
@@ -17,6 +16,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorNote;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.log.PicsLogger;
 
 
 
@@ -28,7 +28,6 @@ public class MigrateNotes extends PicsActionSupport {
 	
 	protected ContractorNoteDAO contractorNoteDao = null;
 	protected NoteDAO noteDao = null;
-	protected PrintWriter writer = null;
 
 	public MigrateNotes( ContractorNoteDAO conDao, NoteDAO noteDao ) {
 		this.contractorNoteDao = conDao;
@@ -37,47 +36,36 @@ public class MigrateNotes extends PicsActionSupport {
 	
 	@Override
 	public String execute() throws Exception {
-		HttpServletResponse response = ServletActionContext.getResponse();
-		writer = response.getWriter();
 
-		response.setContentType("text/plain");
-		
+		PicsLogger.start("MigrateNotes");
 		
 		List<ContractorNote> notes = contractorNoteDao.findWhere("a.badNotes != -1 and a.badAdminNotes != -1");
-		writer.println("Processing : " + notes.size() + " records...");
-		writer.println("======================================================");
-		writer.println("======================================================");
-		writer.println();
-		writer.println();
-		writer.println();
-		writer.println();
-		writer.println();
+		
+		int count = 0;
+		int total = 0;
 		
 		for( ContractorNote note : notes ) {
 			if( note.getId() % modBy == remainder ) {
+				total++;
+			}
+		}
+		
+		
+		
+		for( ContractorNote note : notes ) {
+			count++;
+			if( note.getId() % modBy == remainder ) {
+				PicsLogger.log("" + Thread.currentThread().getId() + " migrating " + count + " of " + total + ". Contractor id: " + note.getId() );
 				migrateContractor(note);
 			}
 		}
 
-		writer.println();
-		writer.println();
-		writer.println();
-		writer.println();
-		writer.println();
-		writer.println("======================================================");
-		writer.println("======================================================");
-		writer.println("processing complete.");
-		writer.flush();
-		writer.close();
-		
+		PicsLogger.stop();
 		return SUCCESS;
 	}
 	
 	private void migrateContractor( ContractorNote contractor ) {
 
-		writer.println("processing contractor " + contractor.getId() );
-		writer.println("=======================");
-		writer.println();
 		
 		int badCount = 0;
 		int badAdminCount = 0;
@@ -100,7 +88,6 @@ public class MigrateNotes extends PicsActionSupport {
 						note.setViewableById(Account.EVERYONE);
 						
 						noteDao.save(note);
-						writer.println("created note: " + note.getId() );
 
 						if( thisSet.size() > 1 ) {  //should only happen if there has been an exception
 							badNotes.add(new Vector<Note>(thisSet));
@@ -173,7 +160,6 @@ public class MigrateNotes extends PicsActionSupport {
 						note.getAccount().setId(contractor.getId());
 						note.setViewableById(Account.PicsID);
 						noteDao.save(note);
-						writer.println("created admin note: " + note.getId() );		
 						
 						if( thisSet.size() > 1 ) {  //should only happen if there has been an exception
 							badNotes.add(new Vector<Note>(thisSet));
@@ -218,9 +204,6 @@ public class MigrateNotes extends PicsActionSupport {
 			}
 
 			
-			writer.println();
-			writer.println("bad notes: " + badCount + "\tbad admin notes: " + badAdminCount );
-			writer.println();
 			contractor.setAdminNote(newNotes.toString());
 			contractor.setBadAdminNotes(badAdminCount);
 			contractorNoteDao.save(contractor);
@@ -229,12 +212,6 @@ public class MigrateNotes extends PicsActionSupport {
 			e.printStackTrace();
 		}
 
-		writer.println("=======================");
-		writer.println();
-		writer.println();
-		writer.println();
-		
-		
 		
 	}
 	
