@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.util.Streams;
 
+import com.picsauditing.util.Strings;
+
 public abstract class AbstractUploadProcessor implements Uploadable {
 
     protected HttpServletRequest request = null;	
@@ -21,7 +23,9 @@ public abstract class AbstractUploadProcessor implements Uploadable {
 		
 	public void init(HttpServletRequest request){
 		this.request = request;
-		ftpDir = request.getSession().getServletContext().getInitParameter("FTP_DIR");
+		ftpDir = System.getProperty("pics.ftpDir");
+		if(Strings.isEmpty(ftpDir))
+			ftpDir = request.getSession().getServletContext().getInitParameter("FTP_DIR");
 		directory = (String)request.getAttribute("directory");
 		if(directory == null)
 			directory = "";
