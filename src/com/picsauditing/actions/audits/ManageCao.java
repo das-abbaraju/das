@@ -7,6 +7,7 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.Note;
@@ -121,6 +122,7 @@ public class ManageCao extends PicsActionSupport implements Preparable {
 		note.setSummary("Insurance status changed");
 		note.setBody(newNote);
 		note.setCreatedBy(getUser());
+		note.setViewableById(Account.EVERYONE);
 		note.setCreationDate(new Date());
 
 		noteDao.save(note);

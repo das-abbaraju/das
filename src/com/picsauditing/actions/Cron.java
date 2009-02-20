@@ -16,6 +16,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -202,6 +203,7 @@ public class Cron extends PicsActionSupport {
 			note.setSummary("Sent Policy Expiration Email to "
 					+ emailBuilder.getSentTo());
 			note.setNoteCategory(NoteCategory.Insurance);
+			note.setViewableById(Account.EVERYONE);
 			noteDAO.save(note);
 		}
 	}

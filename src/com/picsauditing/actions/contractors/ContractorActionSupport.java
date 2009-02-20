@@ -15,6 +15,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -371,6 +372,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 		note.setSummary(newNote);
 		note.setPriority(priority);
 		note.setNoteCategory(category);
+		note.setViewableById(Account.EVERYONE);
 		note.setCanContractorView(canContractorView);
 		note.setStatus(NoteStatus.Closed);
 		noteDAO.save(note);

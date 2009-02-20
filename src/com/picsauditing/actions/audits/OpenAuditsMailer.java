@@ -6,6 +6,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -62,6 +63,7 @@ public class OpenAuditsMailer extends PicsActionSupport {
 					note.setAuditColumns(this.getUser());
 					note.setSummary("Sent Open Requirements Reminder email to " + emailBuilder.getSentTo());
 					note.setNoteCategory(NoteCategory.Audits);
+					note.setViewableById(Account.EVERYONE);
 					noteDAO.save(note);
 
 				} catch (Exception e) {
