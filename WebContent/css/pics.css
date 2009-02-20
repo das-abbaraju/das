@@ -9,6 +9,11 @@ a img {
 	border: 0px none;
 }
 
+p {
+	padding-top: 3px;
+	padding-bottom: 8px;
+}
+
 #content div.clear {
 	float: none;
 	clear: both;

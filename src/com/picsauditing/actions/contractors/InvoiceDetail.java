@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -113,7 +114,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		
 		updateTotals();
 		invoiceDAO.save(invoice);
-		
+		conAccountDAO.save(contractor);
 		return SUCCESS;
 	}
 	
@@ -131,14 +132,41 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 			if (!conInvoice.isPaid())
 				balance += conInvoice.getTotalAmount();
 		contractor.setBalance(balance);
+		if (balance <= 0) {
+			// This contractor is fully paid up
+			
+		}
 	}
+	
 	private void payInvoice() {
 		invoice.setPaid(true);
 		invoice.setPaidDate(new Date());
 		invoice.setAuditColumns(getUser());
 		invoiceDAO.save(invoice);
+		
+		if (contractor.getMembershipDate() == null) {
+			for(InvoiceItem item : invoice.getItems()) {
+				if (item.getInvoiceFee().getFeeClass().equals("Activation")) {
+					contractor.setMembershipDate(new Date());
+					contractor.setAuditColumns(getUser());
+				}
+			}
+		}
+		if (!contractor.isActiveB()) {
+			for(InvoiceItem item : invoice.getItems()) {
+				if (item.getInvoiceFee().getFeeClass().equals("Membership")) {
+					contractor.setActive('Y');
+					Calendar cal = Calendar.getInstance();
+					cal.add(Calendar.YEAR, 1);
+					contractor.setPaymentExpires(cal.getTime());
+					contractor.setAuditColumns(getUser());
+				}
+			}
+		}
+		
 		updateTotals();
 	}
+	
 	private void addNote(String subject) {
 		Note note = new Note(invoice.getAccount(), getUser(), subject);
 		note.setNoteCategory(NoteCategory.Billing);

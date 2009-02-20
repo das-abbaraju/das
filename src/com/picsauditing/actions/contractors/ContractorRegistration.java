@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.User;
@@ -57,6 +58,9 @@ public class ContractorRegistration extends ContractorActionSupport {
 					addActionError(error);
 				return SUCCESS;
 			}
+			
+			// Default their current membership to 0
+			contractor.setMembershipLevel(new InvoiceFee(InvoiceFee.FREE));
 			contractor.setAuditColumns(new User(User.CONTRACTOR));
 			contractor = accountDao.save(contractor);
 			user.setIsActive(YesNo.Yes);
@@ -86,7 +90,6 @@ public class ContractorRegistration extends ContractorActionSupport {
 			ActionContext.getContext().getSession().put("permissions", permissions);
 			
 			ServletActionContext.getResponse().sendRedirect("ContractorFacilities.action?id=" + contractor.getId());
-			this.addActionMessage("Redirected to Facilities Page");
 			return BLANK;
 		}
 

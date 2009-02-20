@@ -137,8 +137,13 @@ public class BillingDetail extends ContractorActionSupport {
 
 			int conBalance = contractor.getBalance();
 			contractor.setBalance(conBalance + invoiceTotal);
-			if (contractor.isActiveB() && contractor.getPaymentExpires() != null) {
+			if (contractor.isActiveB()) {
+				if (contractor.getPaymentExpires() == null) {
+					// This should never happen...but just in case
+					contractor.setPaymentExpires(new Date());
+				}
 				Calendar cal = Calendar.getInstance();
+				cal.setTime(contractor.getPaymentExpires());
 				cal.add(Calendar.YEAR, 1);
 				contractor.setPaymentExpires(cal.getTime());
 			}
