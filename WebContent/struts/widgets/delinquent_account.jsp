@@ -3,7 +3,7 @@
 	<thead>
 		<tr>
 		<th>Contractor</th>
-		<th>InvoiceDate</th>
+		<th>Due Date</th>
 		<th>Days Left</th>
 		</tr>
 	</thead>

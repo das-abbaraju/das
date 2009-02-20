@@ -14,7 +14,7 @@ membership by contacting PICS.
 	<thead>
 	<tr>
 		<td colspan="2">Contractor Name</td>
-		<td>Invoice Date</td>
+		<td>Due Date</td>
 		<td>Days Left</td>
 	</tr>
 	</thead>
