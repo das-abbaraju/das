@@ -269,7 +269,7 @@
 		<action name="ReportUnpaidInvoices"
 			class="com.picsauditing.actions.report.ReportUnpaidInvoices">
 			<param name="reportName">Unpaid Invoices Report</param>
-			<result>struts/reports/invoice_report.jsp</result>
+			<result>struts/reports/unpaid_invoice_report.jsp</result>
 		</action>
 		<action name="BillingDetail"
 			class="com.picsauditing.actions.contractors.BillingDetail">
