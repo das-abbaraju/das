@@ -67,7 +67,7 @@
 <s:include value="../actionMessages.jsp" />
 <s:form id="save" method="POST" enctype="multipart/form-data">
 <div class="buttons">
-	<input type="submit" class="positive" name="button" value="Save"/>
+	<input type="submit" class="picsbutton positive" name="button" value="Save"/>
 </div>
 <br clear="all" />
 <s:hidden name="opID"/>
@@ -129,7 +129,7 @@
 					<li><label>Visible?</label>
 						<s:radio list="#{'Y':'Yes','N':'No'}" name="operatorAccount.active" theme="pics" />
 					</li>
-					<li><label>Receive email when contractor is activated:</label>
+					<li><label>Receive contractor activation emails:</label>
 						<s:radio list="#{'Yes':'Yes','No':'No'}" name="operatorAccount.doSendActivationEmail" theme="pics" />
 					</li>
 					<li><label>Approves Contractors:</label>
@@ -144,24 +144,29 @@
 						<s:checkbox name="operatorAccount.verifiedByPics" />	
 					</li>
 					
-					<s:if test="type.equals('Corporate') || operatorAccount.corporate">
+					<s:if test="!typeOperator">
 						<li><label>Facilities:</label>
 						<s:select list="operatorList" listValue="name" listKey="id" name="facilities" multiple="7" size="15"/>
 						</li>
 					</s:if>
 					<s:else>
+						<li><label>Corporate Parent(s):</label>
+							<s:iterator value="operatorAccount.corporateFacilities">
+								<a href="FacilitiesEdit.action?opID=<s:property value="corporate.id"/>"><s:property value="corporate.name"/></a><br />
+							</s:iterator>
+						</li>
 						<li><label>Contractors pay:</label>
 						<s:radio list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}" name="operatorAccount.doContractorsPay" theme="pics" />
 						</li>
 					</s:else>
 					<li><label>Send Emails to:</label>
 						<s:textfield name="operatorAccount.activationEmails"/>
-						* separate emails with commas ex: a@bb.com, c@dd.com
+						<br />* separate emails with commas ex: a@bb.com, c@dd.com
 					</li>
 									
 				</ol>
 				</fieldset>
-			<s:if test="type.equals('Operator') || !operatorAccount.corporate">
+			<s:if test="typeOperator">
 					<fieldset class="form">
 						<legend><span>Legal Additional Insured Names</span></legend>
 						<ol><div id="operator_name">
@@ -176,7 +181,7 @@
 	</table>
 	<br clear="all">
 	<div class="buttons">
-		<input type="submit" class="positive" name="button" value="Save"/>
+		<input type="submit" class="picsbutton positive" name="button" value="Save"/>
 	</div>
 </s:form>
 <div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>

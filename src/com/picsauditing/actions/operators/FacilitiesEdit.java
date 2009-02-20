@@ -55,7 +55,8 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 
 		if (opID > 0) {
 			operatorAccount = operatorAccountDAO.find(opID);
-			if(operatorAccount.getInsuranceAuditor() != null)
+			type = operatorAccount.getType();
+			if (operatorAccount.getInsuranceAuditor() != null)
 				auditorid = operatorAccount.getInsuranceAuditor().getId();
 			int i = 0;
 			for (Facility fac : operatorAccount.getOperatorFacilities()) {
@@ -89,7 +90,7 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 				if (operatorAccount.isCorporate()) {
 					permissions.tryPermission(OpPerms.ManageCorporate, OpType.Edit);
 					operatorAccount.setIsCorporate(YesNo.Yes);
-					
+
 					if (facilities != null) {
 						List<OperatorAccount> newFacilities = new ArrayList<OperatorAccount>();
 
@@ -130,7 +131,7 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 			} else {
 				throw new Exception("no button action found called " + button);
 			}
-		} 
+		}
 
 		return SUCCESS;
 	}
@@ -176,6 +177,10 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 		this.auditorid = auditorid;
 	}
 
+	public boolean isTypeOperator() {
+		return "Operator".equals(type);
+	}
+	
 	public String getType() {
 		return type;
 	}

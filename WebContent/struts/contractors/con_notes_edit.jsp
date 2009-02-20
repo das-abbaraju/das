@@ -25,16 +25,16 @@ function closePage() {
 <s:form id="editNotes">
 <s:hidden name="id"/>
 <s:hidden name="note.id"/>
+<s:hidden name="embedded"/>
 <fieldset class="form">
 	<div class="buttons">
-		<button class="positive" name="button" type="submit" value="save">
-			<s:if test="note.id > 0">Update</s:if><s:else>Add</s:else> Note
-		</button>
+		<input class="picsbutton positive" name="button" type="submit" value="Save" />
 		<s:if test="note.id > 0">
-			<button class="negative" name="button" type="submit" value="save" id="saveButton"
-				onclick="getElement('editNotes_note_statusHidden').checked=true;">Hide</button>
+			<pics:permission perm="EditNotes" type="Delete">
+				<input class="picsbutton negative" name="button" type="submit" value="Hide" />
+			</pics:permission>
 		</s:if>
-		<button name="button" type="button" value="cancel" onclick="closePage();">Close</button>
+		<input class="picsbutton" name="button" type="button" value="Close" onclick="closePage();" />
 	</div>
 <ol>
 	<li><label>Note:</label>

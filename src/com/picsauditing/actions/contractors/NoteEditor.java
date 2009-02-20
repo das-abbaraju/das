@@ -13,6 +13,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.util.ReportFilterNote;
 
 @SuppressWarnings("serial")
@@ -57,7 +58,13 @@ public class NoteEditor extends ContractorActionSupport implements Preparable {
 
 		findContractor();
 		
-		if ("save".equals(button)) {
+		if ("hide".equalsIgnoreCase(button)) {
+			permissions.tryPermission(OpPerms.EditNotes, OpType.Delete);
+			note.setStatus(NoteStatus.Hidden);
+			button = "save";
+		}
+		
+		if ("save".equalsIgnoreCase(button)) {
 			permissions.tryPermission(OpPerms.EditNotes, OpType.Edit);
 			if (note.getId() == 0) {
 				// This is a new note
@@ -71,7 +78,7 @@ public class NoteEditor extends ContractorActionSupport implements Preparable {
 			noteDAO.save(note);
 			addActionMessage("Successfully saved Note");
 		}
-
+		
 		if (viewableBy == 0)
 			viewableBy = Account.EVERYONE;
 		if (viewableByOther == 0)
