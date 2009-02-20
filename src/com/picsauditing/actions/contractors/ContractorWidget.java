@@ -58,7 +58,7 @@ public class ContractorWidget extends ContractorActionSupport {
 				}		
 			}
 			*/
-			if (! contractor.isPaymentMethodStatusValid()) {
+			if (!contractor.isPaymentMethodStatusValid()) {
 				try {
 					openTasks
 					.add("Please <a href=\"ContractorEdit.action?id=" +  contractor.getId() + "\">update your payment method</a><br/>NOTE: You will not be billed until your renewal date "+ DateBean.toShowFormat(contractor.getPaymentExpires()));

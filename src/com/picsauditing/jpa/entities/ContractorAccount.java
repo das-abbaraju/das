@@ -57,7 +57,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private User auditor;
 	private LowMedHigh riskLevel;
 	private Date viewedFacilities;
-	private String paymentMethodStatus;
 	private boolean ccOnFile = false;
 	private PaymentMethod paymentMethod = PaymentMethod.CreditCard;
 
@@ -268,25 +267,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.payingFacilities = payingFacilities;
 	}
 
-	/**
-	 * The Payment Method Statuses are Valid, Invalid, Missing, Pending,
-	 * Approved, Rejected
-	 * 
-	 * @return
-	 */
-	public String getPaymentMethodStatus() {
-		return paymentMethodStatus;
-	}
-
-	/**
-	 * The Payment Method Statuses are Valid, Invalid, Missing, Pending,
-	 * Approved, Rejected
-	 * 
-	 * @param paymentMethodStatus
-	 */
-	public void setPaymentMethodStatus(String paymentMethodStatus) {
-		this.paymentMethodStatus = paymentMethodStatus;
-	}
 	
 	@Transient
 	public boolean isPaymentMethodStatusValid() {

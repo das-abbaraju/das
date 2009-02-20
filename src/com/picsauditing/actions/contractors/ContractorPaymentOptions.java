@@ -58,16 +58,14 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		this.findContractor();
 
-		if (contractor.getPaymentMethodStatus() == null)
-			contractor.setPaymentMethodStatus("Missing");
-
+		// The payment method has changed.
 		if (!paymentMethod.equals(contractor.getPaymentMethod())) {
-			// We have a new payment method, reset the status
+			
 			contractor.setPaymentMethod(paymentMethod);
-			if (paymentMethod.isCreditCard())
-				contractor.setPaymentMethodStatus("Missing");
-			else
-				contractor.setPaymentMethodStatus("Pending");
+//			if (paymentMethod.isCreditCard())
+//				contractor.setPaymentMethodStatus("Missing");
+//			else
+//				contractor.setPaymentMethodStatus("Pending");
 		}
 		
 		if ("Activation".equals(contractor.getBillingStatus()))
@@ -102,19 +100,13 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				hashOutput.append("CONTRACTOR ID: " + contractor.getIdString() + "\n");
 				hashOutput.append("PICS HASH: " + newHash + " ");
 				hashOutput.append("BASED ON: \n");
-				hashOutput.append("    ORDERID      : " + orderid + "\n");
-				hashOutput.append("    AMOUNT       : " + amount + "\n");
 				hashOutput.append("    RESPONSE     : " + response + "\n");
 				hashOutput.append("    TRANS ID     : " + transactionid + "\n");
-				hashOutput.append("    AVS RESP     : " + avsresponse + "\n");
-				hashOutput.append("    CVV RESP     : " + cvvresponse + "\n");
 				hashOutput.append("    CUST VAULT ID: " + customer_vault_id + "\n");
 				hashOutput.append("    TIME         : " + time + "\n");
 				
 				hashOutput.append("BRAINTREE HASH: " + hash + " ");
 				hashOutput.append("BASED ON: \n");
-				hashOutput.append("    ORDERID      : " + orderid + "\n");
-				hashOutput.append("    AMOUNT       : " + amount + "\n");
 				hashOutput.append("    CUST VAULT ID: " + customer_vault_id + "\n");
 				hashOutput.append("    TIME         : " + time + "\n");
 				
@@ -133,7 +125,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				}
 				addActionError(errorMessage);
 			} else {
-				contractor.setPaymentMethodStatus("Valid");
 				contractor.setCcOnFile(true);
 				contractor.setPaymentMethod(PaymentMethod.CreditCard);
 				accountDao.save(contractor);
@@ -148,11 +139,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		
 		if ("Delete".equalsIgnoreCase(button)) {
 			ccService.deleteCreditCard(contractor.getId());
-			contractor.setPaymentMethodStatus("Missing");
 			contractor.setCcOnFile(false);
 		}
 
-		if (!contractor.getPaymentMethodStatus().equals("Missing")) {
+		if (contractor.isCcOnFile()) {
 			cc = ccService.getCreditCard(contractor.getId());
 		}
 		
