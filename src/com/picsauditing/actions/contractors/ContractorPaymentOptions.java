@@ -72,7 +72,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		
 		if ("Activation".equals(contractor.getBillingStatus()))
 			activationFee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
-		if ("Reactivation".equals(contractor.getBillingStatus()))
+		if ("Membership Canceled".equals(contractor.getBillingStatus()) || "Reactivation".equals(contractor.getBillingStatus()))
 			activationFee = invoiceFeeDAO.find(InvoiceFee.REACTIVATION);
 
 		if (!paymentMethod.isCreditCard())
@@ -90,12 +90,16 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			String newHash = BrainTree.buildHash(orderid, amount, response,
 					transactionid, avsresponse, cvvresponse, customer_vault_id,
 					time, key);
-			if (!newHash.equals(hash)) {
+			if (true) {
 				PicsLogger.log("Hash issues for Contractor id= "
 						+ contractor.getIdString());
 				
-				hashOutput.append("CREDIT CARD HASH PROBLEM: ");
-				hashOutput.append("CONTRACTOR ID: " + contractor.getIdString() + " ");
+				if (newHash.equals(hash))
+					hashOutput.append("CREDIT CARD HASH IS VALID: \n");
+				else
+					hashOutput.append("CREDIT CARD HASH PROBLEM: \n");
+				
+				hashOutput.append("CONTRACTOR ID: " + contractor.getIdString() + "\n");
 				hashOutput.append("PICS HASH: " + newHash + " ");
 				hashOutput.append("BASED ON: \n");
 				hashOutput.append("    ORDERID      : " + orderid + "\n");
@@ -114,13 +118,9 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				hashOutput.append("    CUST VAULT ID: " + customer_vault_id + "\n");
 				hashOutput.append("    TIME         : " + time + "\n");
 				
-				System.out.println(hashOutput.toString());
 				EmailSender mailer = new EmailSender();
-				mailer.sendMail("Credit Card Hash Error", hashOutput.toString(), "info@picsauditing.com", "errors@picsauditing.com");
-
-				// addActionError(responsetext);
-				// addActionError("Invalid response from merchant, if you have
-				// questions about this error, please contact us.");
+				String subject = "Credit Card Hash " + (newHash.equals(hash) ? "VALID" : "ERROR");
+				mailer.sendMail(subject, hashOutput.toString(), "info@picsauditing.com", "errors@picsauditing.com");
 			}
 
 			if (!Strings.isEmpty(responsetext) && !response.equals("1")) {

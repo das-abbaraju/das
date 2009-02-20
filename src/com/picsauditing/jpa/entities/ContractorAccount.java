@@ -612,7 +612,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "membershipLevelID")
+	@JoinColumn(name = "membershipLevelID", nullable = false)
 	public InvoiceFee getMembershipLevel() {
 		return membershipLevel;
 	}
@@ -671,9 +671,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public String getBillingStatus() {
 		if (newMembershipLevel == null)
 			return "Not Calculated";
-		boolean noMembershipLevel = false;
-		if (membershipLevel == null)
-			noMembershipLevel = true;
 		
 		// TODO: still need to determine if this is a reactivation or initial activation
 		if (!isActiveB()) {
@@ -682,12 +679,12 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			else {
 				if (membershipDate == null)
 					return "Activation";
-				else if (noMembershipLevel)
+				else
 					return "Reactivation";
 			}
 		}
 		
-		if (!noMembershipLevel && (newMembershipLevel.getAmount() > membershipLevel.getAmount()))
+		if (newMembershipLevel.getAmount() > membershipLevel.getAmount())
 			return "Upgrade";
 
 		if (!renew)

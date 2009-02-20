@@ -1,6 +1,7 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.InvoiceFee;
 
 
 @SuppressWarnings("serial")
@@ -33,11 +34,10 @@ public class ReportBilling extends ReportAccount {
 		if (getFilter().getBillingState() != null)
 			billingState = getFilter().getBillingState();
 		
-
 		String where = "";
 		// Show activations and reactivations
 		if (billingState.equals("All") || billingState.equals("Activations")) {
-			where += "(a.active = 'N' AND c.renew = 1 AND f1.id IS NULL)";
+			where += "(a.active = 'N' AND c.renew = 1 AND (f1.id IS NULL OR f1.id = " + InvoiceFee.FREE + "))";
 		}
 		// Show renewals
 		if (billingState.equals("All") || billingState.equals("Renewals")) {
