@@ -8,7 +8,7 @@ public class DelinquentAccounts extends ReportContractorInvoice {
 		sql.addWhere("i.dueDate < NOW()");
 		sql.addWhere("i.paid = 0");
 		sql.addWhere("a.active = 'Y'");
-		sql.addField("DATEDIFF(ADDDATE(i.dueDate, 30),NOW()) AS DaysLeft");
+		sql.addField("DATEDIFF(ADDDATE(i.dueDate, 90),NOW()) AS DaysLeft");
 		getFilter().setShowVisible(false);
 	}
 }

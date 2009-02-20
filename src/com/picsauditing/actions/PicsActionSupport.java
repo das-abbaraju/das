@@ -326,7 +326,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 			return 0;
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(invoiceDate);
-		cal.add(Calendar.DAY_OF_YEAR, 30);
+		cal.add(Calendar.DAY_OF_YEAR, 90);
 		return DateBean.getDateDifference(cal.getTime());
 	}
 
