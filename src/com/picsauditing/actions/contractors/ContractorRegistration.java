@@ -56,9 +56,13 @@ public class ContractorRegistration extends ContractorActionSupport {
 			if (errors.size() > 0) {
 				for (String error : errors)
 					addActionError(error);
+				if(!contractorValidator.verifyTaxID(contractor)) {
+					addActionError("The tax ID <b>" + contractor.getTaxId()
+							+ "</b> already exists.  Please contact a company representative.");
+				}	
 				return SUCCESS;
 			}
-			
+
 			// Default their current membership to 0
 			contractor.setMembershipLevel(new InvoiceFee(InvoiceFee.FREE));
 			contractor.setAuditColumns(new User(User.CONTRACTOR));

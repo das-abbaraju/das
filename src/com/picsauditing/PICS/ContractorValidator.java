@@ -81,9 +81,7 @@ public class ContractorValidator {
 		// Tax Id
 		if (!java.util.regex.Pattern.matches("\\d{9}", contractor.getTaxId()))
 			errorMessages.addElement("Pleae enter your 9 digit tax ID with only digits 0-9, no dashes.");
-		else if (!verifyTaxID(contractor))
-			errorMessages.addElement("The tax ID <b>" + contractor.getTaxId()
-					+ "</b> already exists.  Please contact a company representative.");
+
 		// Main Trade
 		if (Strings.isEmpty(contractor.getMainTrade())
 				|| contractor.getMainTrade().equals("- Trade -"))
