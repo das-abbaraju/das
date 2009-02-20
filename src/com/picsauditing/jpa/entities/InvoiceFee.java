@@ -56,6 +56,10 @@ public class InvoiceFee extends BaseTable implements java.io.Serializable {
 		this.visible = visible;
 	}
 
+	/**
+	 * Activation, Membership, Misc, Free, Other
+	 * @return
+	 */
 	public String getFeeClass() {
 		return feeClass;
 	}

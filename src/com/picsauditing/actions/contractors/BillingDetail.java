@@ -129,25 +129,30 @@ public class BillingDetail extends ContractorActionSupport {
 
 			contractor.getInvoices().add(invoice);
 
+			boolean invoiceIncludesMembership = false;
 			for (InvoiceItem item : invoiceItems) {
 				item.setInvoice(invoice);
 				item.setAuditColumns(getUser());
+				if (item.getInvoiceFee().getFeeClass().equals("Membership"))
+					invoiceIncludesMembership = true;
 			}
 			invoiceDAO.save(invoice);
 
 			int conBalance = contractor.getBalance();
 			contractor.setBalance(conBalance + invoiceTotal);
-			if (contractor.isActiveB()) {
-				if (contractor.getPaymentExpires() == null) {
-					// This should never happen...but just in case
-					contractor.setPaymentExpires(new Date());
+			if (invoiceIncludesMembership) {
+				if (contractor.isActiveB()) {
+					if (contractor.getPaymentExpires() == null) {
+						// This should never happen...but just in case
+						contractor.setPaymentExpires(new Date());
+					}
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(contractor.getPaymentExpires());
+					cal.add(Calendar.YEAR, 1);
+					contractor.setPaymentExpires(cal.getTime());
 				}
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(contractor.getPaymentExpires());
-				cal.add(Calendar.YEAR, 1);
-				contractor.setPaymentExpires(cal.getTime());
+				contractor.setMembershipLevel(contractor.getNewMembershipLevel());
 			}
-			contractor.setMembershipLevel(contractor.getNewMembershipLevel());
 			accountDao.save(contractor);
 
 			ServletActionContext.getResponse().sendRedirect("BillingDetail.action?id=" + id);

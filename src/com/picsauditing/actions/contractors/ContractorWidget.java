@@ -42,14 +42,13 @@ public class ContractorWidget extends ContractorActionSupport {
 	public List<String> getOpenTasks() {
 		if (openTasks == null) {
 			openTasks = new ArrayList<String>();
-			// get the balance due
-			// TODO - do some more testing with this
+			/*
 			if (contractor.getBalance() > 0) {
 				for(Invoice invoice : contractor.getInvoices()) {
 					if(!invoice.isPaid() && invoice.getTotalAmount() > 0) {
 						try {
-							openTasks.add("You have an invoice of <b>$"
-									+ invoice.getTotalAmount() + "</b> due " + 
+							openTasks.add("You have an <a href=\"Invoice.action?invoice.id=" + invoice.getId() +
+									"\">invoice of <b>$" + invoice.getTotalAmount() + "</b></a> due " + 
 									DateBean.toShowFormat(invoice.getDueDate())
 									+ ", please call 949-387-1940 x708 to make a payment");
 						} catch (Exception e) {
@@ -58,6 +57,7 @@ public class ContractorWidget extends ContractorActionSupport {
 					}
 				}		
 			}
+			*/
 			if (! contractor.isPaymentMethodStatusValid()) {
 				try {
 					openTasks
