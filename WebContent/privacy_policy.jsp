@@ -1,16 +1,13 @@
 <html>
 <head>
 <title>Privacy Policy Statement</title>
-<meta name="color" content="#CC6600" />
-<meta name="flashName" content="CONTACT" />
-<meta name="iconName" content="contact" />
 </head>
 <body>
-<div>
 <h1 align=center>Privacy Policy Statement</h1>
 
 <p style="text-align: center; width: "><input type="button" value="Close" onclick="window.close();" /></p>
 
+<div>
 This is the web site of <b>PICS</b>.<br>
 <p>Our postal address is <br>
 <b>P.O. Box 51387<br>
