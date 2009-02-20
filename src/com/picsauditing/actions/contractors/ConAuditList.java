@@ -2,7 +2,6 @@ package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -16,6 +15,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
 @SuppressWarnings("serial")
@@ -138,7 +138,11 @@ public class ConAuditList extends ContractorActionSupport {
 				conAudit.setPercentComplete(0);
 				conAudit.setPercentVerified(0);
 				conAudit.setManuallyAdded(true);
-				auditDao.save(conAudit);
+				conAudit = auditDao.save(conAudit);
+				
+				AuditType auditType = auditTypeDAO.find(selectedAudit);
+				addNote(conAudit.getContractorAccount(), "Added "+ auditType.getAuditName() + " manually", NoteCategory.Audits);
+				
 				return "saved";
 			}
 		}
