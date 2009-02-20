@@ -18,6 +18,7 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorFacilities extends ContractorActionSupport {
@@ -70,7 +71,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 					where += " and state = '" + state + "' ";
 				}
 
-				if (operator.getName() != null && operator.getName().length() > 0) {
+				if (operator != null && !Strings.isEmpty(operator.getName())) {
 					where += " and name like '%" + operator.getName() + "%' ";
 				}
 
