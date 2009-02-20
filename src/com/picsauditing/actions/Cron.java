@@ -10,7 +10,6 @@ import java.util.Set;
 import javax.persistence.NoResultException;
 
 import com.picsauditing.PICS.AuditBuilder;
-import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -31,7 +30,6 @@ import com.picsauditing.util.SpringUtils;
 @SuppressWarnings("serial")
 public class Cron extends PicsActionSupport {
 
-	protected FlagCalculator2 flagCalculator = null;
 	protected OperatorAccountDAO operatorDAO = null;
 	protected AppPropertyDAO appPropDao = null;
 	protected AuditBuilder auditBuilder = null;
@@ -43,9 +41,8 @@ public class Cron extends PicsActionSupport {
 
 	protected boolean flagsOnly = false;
 
-	public Cron(FlagCalculator2 fc2, OperatorAccountDAO ops, AppPropertyDAO appProps, AuditBuilder ab,
+	public Cron(OperatorAccountDAO ops, AppPropertyDAO appProps, AuditBuilder ab,
 			ContractorAuditDAO contractorAuditDAO, ContractorAccountDAO contractorAccountDAO) {
-		this.flagCalculator = fc2;
 		this.operatorDAO = ops;
 		this.appPropDao = appProps;
 		this.auditBuilder = ab;
@@ -102,14 +99,6 @@ public class Cron extends PicsActionSupport {
 			}
 		}
 
-		try {
-			startTask("\nCalculating Flags...");
-			flagCalculator.runAll();
-			endTask();
-		} catch (Throwable t) {
-			handleException(t);
-		}
-		
 		try {
 			startTask("\nInactivating Accounts via Billing Status...");
 			String where = "a.active = 'Y' AND c.renew = 0 AND paymentExpires < NOW()";
