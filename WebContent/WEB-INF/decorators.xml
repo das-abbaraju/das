@@ -22,6 +22,8 @@
 		<pattern>/ChartXML*</pattern>
 		<pattern>/con_pricing.jsp</pattern>
 		<pattern>/ConHeader.action</pattern>
+		<pattern>/privacy_policy.jsp</pattern>
+		<pattern>/refund_policy.jsp</pattern>
 	</decorator>
 	<decorator name="marketing" page="marketing.jsp">
 		<pattern>/index.jsp</pattern>

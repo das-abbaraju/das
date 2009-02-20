@@ -21,6 +21,17 @@ function updateExpDate() {
 
 <s:include value="../actionMessages.jsp"></s:include>
 
+<s:if test="permissions.contractor">
+	<div id="info">
+		<s:if test="contractor.activeB">
+			As an improvement, you may now pay by credit card.  Even though you are providing your credit card information at this time, your card will not be charged until the next billing date.  PICS will email you 7 days prior to renewal before any charges are applied.  If you have questions, contact PICS Accounting any time at (800) 506-7427 x 708.
+		</s:if>
+		<s:else>
+			Please enter your credit card information, which will expedite the registration process.  Your membership is valid for 12 months from the charge date.  An upgrade fee will be charged only if you add additional facilities to your account.  PICS will email you 7 days prior to any charge. If you have questions, contact PICS Accounting anytime at (800) 506-7427 x 708.
+		</s:else>
+	</div>
+</s:if>
+
 <fieldset class="form">
 <legend><span>Membership Details</span></legend>
 <ol>
@@ -44,6 +55,13 @@ function updateExpDate() {
 <s:else>
 	<li><label>Status:</label>no payment required</li>
 </s:else>
+<li><label>&nbsp;</label>
+	<a href="#" onClick="window.open('privacy_policy.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">
+	Privacy Policy </a> |
+	<a href="#" onClick="window.open('refund_policy.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">
+	Refund Policy </a> 							
+</li>
+
 </ol>
 </fieldset>
 
@@ -116,7 +134,7 @@ function updateExpDate() {
 </s:else>
 <br clear="all" /><br/><br/>
 
-<s:if test="permissions.contractor && !contractor.activeB">
+<s:if test="permissions.contractor && !contractor.activeB && contractor.paymentMethodStatusValid">
 	<div class="buttons" style="float: right;">
 		<a href="contractor_new_confirm.jsp" class="positive">Next</a>
 	</div>

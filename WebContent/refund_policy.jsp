@@ -2,13 +2,13 @@
 <head>
 <title>Refund Policy</title>
 </head>
-<body>
-
+<body bgcolor="#EEEEEE" background="images/watermark.gif">
+<div style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px;
+	color: #003366; line-height: 20px;">
 <h1 align=center>Refund Policy</h1>
 
 <p style="text-align: center; width: "><input type="button" value="Close" onclick="window.close();" /></p>
 
-<div>
 <p>Contractor is defined as any organization with a Contractor account with PICS.</p>
 
 <p>Full refunds will be offered only if Contractor's credit card is accidentally double charged or charged in error.  For example, if Contractor submits payment twice for the same membership, or if Contractor pays for membership with a credit card and also sends a check to PICS for membership.</p>
