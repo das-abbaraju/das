@@ -41,7 +41,7 @@ public enum FlagColor {
 			return color1;
 
 		if (color1 == null) {
-			System.out.println("WARNING: oldColor == null");
+//			System.out.println("WARNING: oldColor == null");
 			return color2;
 		}
 
