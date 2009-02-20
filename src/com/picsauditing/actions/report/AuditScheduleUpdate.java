@@ -9,10 +9,13 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.NoteStatus;
+import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class AuditScheduleUpdate extends PicsActionSupport implements ServletRequestAware {
@@ -53,9 +56,13 @@ public class AuditScheduleUpdate extends PicsActionSupport implements ServletReq
 			
 			Note note = new Note();
 			note.setAccount(contractorAudit.getContractorAccount());
-			note.setAuditColumns(this.getUser());
+			note.setAuditColumns(new User(contractorAudit.getContractorAccount().getId()));
 			note.setSummary(newNote);
 			note.setNoteCategory(NoteCategory.Audits);
+			note.setViewableById(Account.EVERYONE);
+			note.setPriority(LowMedHigh.Med);
+			note.setCanContractorView(false);
+			note.setStatus(NoteStatus.Closed);
 			noteDAO.save(note);
 		}
 		if (type.equals("a"))
