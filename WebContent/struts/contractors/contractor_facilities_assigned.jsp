@@ -7,9 +7,14 @@
 <s:else>
 
 <label># of Linked Facilities:</label> <s:property value="currentOperators.size()" /><br />
-<label>Next Payment Due:</label> <s:date name="contractor.paymentExpires" format="M/d/yy" /><br />
-<label>Current Membership Level:</label> $<s:property value="contractor.membershipLevel.amount" /> per year<br />
+<s:if test="contractor.paymentExpires != null">
+	<label>Next Payment Due:</label> <s:date name="contractor.paymentExpires" format="M/d/yy" /><br />
+</s:if>	
+<s:if test="contractor.membershipLevel.amount > 0"> 
+	<label>Current Membership Level:</label> $<s:property value="contractor.membershipLevel.amount" /> per year<br />
+</s:if>
 <label>New Membership Level:</label> $<s:property value="contractor.newMembershipLevel.amount" /> per year<br />
+<s:property value="contractor.newMembershipLevel.fee" />
 
 <table class="report">
 	<thead>
