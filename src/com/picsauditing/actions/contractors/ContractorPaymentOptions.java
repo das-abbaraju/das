@@ -131,8 +131,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				addActionMessage("Successfully Saved");
 			}
 		}
-		
-
+	
 		BrainTreeService ccService = new BrainTreeService();
 		ccService.setUserName(appPropDao.find("brainTree.username").getValue());
 		ccService.setPassword(appPropDao.find("brainTree.password").getValue());
@@ -142,16 +141,24 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			contractor.setCcOnFile(false);
 		}
 
-		if (contractor.isCcOnFile()) {
+		try {
 			cc = ccService.getCreditCard(contractor.getId());
 		}
+		catch( Exception communicationProblem ) {} //should not appear as if the user does not have a credit card 
+
+		if( cc == null || cc.getCardNumber() == null ) {
+			contractor.setCcOnFile(false);
+		}
+		else {
+			contractor.setCcOnFile(true);
+		}
+		
 		
 		// Setup the new variables for sending the CC to braintree
 		customer_vault_id = contractor.getIdString();
 		time = DateBean.getBrainTreeDate();
 		hash = BrainTree.buildHash(orderid, amount, customer_vault_id,
 				time, key);
-		
 
 		// We don't explicitly save, but it should happen here
 		// accountDao.save(contractor);
