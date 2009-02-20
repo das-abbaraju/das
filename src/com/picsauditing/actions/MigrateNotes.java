@@ -23,6 +23,9 @@ import com.picsauditing.jpa.entities.User;
 @SuppressWarnings( "serial" )
 public class MigrateNotes extends PicsActionSupport {
 
+	protected int remainder = 0;
+	protected int modBy = 1;
+	
 	protected ContractorNoteDAO contractorNoteDao = null;
 	protected NoteDAO noteDao = null;
 	protected PrintWriter writer = null;
@@ -51,7 +54,9 @@ public class MigrateNotes extends PicsActionSupport {
 		writer.println();
 		
 		for( ContractorNote note : notes ) {
-			migrateContractor(note);	
+			if( note.getId() % modBy == remainder ) {
+				migrateContractor(note);
+			}
 		}
 
 		writer.println();
@@ -248,6 +253,22 @@ public class MigrateNotes extends PicsActionSupport {
 		
 		return response;
 	}
+
+	public int getRemainder() {
+		return remainder;
+	}
+
+	public void setRemainder(int remainder) {
+		this.remainder = remainder;
+	}
+
+	public int getModBy() {
+		return modBy;
+	}
+
+	public void setModBy(int modBy) {
+		this.modBy = modBy;
+	}
 	
 	
 //	protected Date getDateFromBeginning( String line ) {
@@ -271,5 +292,7 @@ public class MigrateNotes extends PicsActionSupport {
 //
 //		return response;
 //	}
+	
+	
 	
 }
