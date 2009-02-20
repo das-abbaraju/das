@@ -126,32 +126,33 @@
 					</s:form>
 				</s:if>
 				
-				
-				<h3 style="margin-top: 450px">Past Invoices</h3>
-				<table class="report">
-					<thead>
-						<tr>
-    						<th>Invoice #</a></th>
-    						<th>Date Created</th>
-							<th>Amount</th>
-							<th>Due Date</th>	    
-							<th>Date Paid</th>   
-							<th>Paid</th>
-						</tr>
-					</thead>
-					<tbody>
-					<s:iterator value="contractor.invoices">
-						<tr style="cursor: pointer;" onclick="window.location = 'InvoiceDetail.action?invoice.id=<s:property value="id"/>'">
-							<td class="center"><a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><s:property value="id" /></a></td>
-							<td class="right"><s:date name="creationDate" format="M/d/yy"/></td>
-							<td class="right">$<s:property value="totalAmount" /></td>							
-							<td class="right"><s:date name="dueDate" format="M/d/yy"/></td>
-							<td class="right"><s:date name="paidDate" format="M/d/yy"/></td>
-							<td class="right"><s:if test="paid">Yes</s:if><s:else>No</s:else></td>
-						</tr>
-					</s:iterator>
-					</tbody>
-				</table>					
+				<s:if test="permissions.admin">
+					<h3 style="margin-top: 450px">Past Invoices</h3>
+					<table class="report">
+						<thead>
+							<tr>
+	    						<th>Invoice #</a></th>
+	    						<th>Date Created</th>
+								<th>Amount</th>
+								<th>Due Date</th>	    
+								<th>Date Paid</th>   
+								<th>Paid</th>
+							</tr>
+						</thead>
+						<tbody>
+						<s:iterator value="contractor.invoices">
+							<tr style="cursor: pointer;" onclick="window.location = 'InvoiceDetail.action?invoice.id=<s:property value="id"/>'">
+								<td class="center"><a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><s:property value="id" /></a></td>
+								<td class="right"><s:date name="creationDate" format="M/d/yy"/></td>
+								<td class="right">$<s:property value="totalAmount" /></td>							
+								<td class="right"><s:date name="dueDate" format="M/d/yy"/></td>
+								<td class="right"><s:date name="paidDate" format="M/d/yy"/></td>
+								<td class="right"><s:if test="paid">Yes</s:if><s:else>No</s:else></td>
+							</tr>
+						</s:iterator>
+						</tbody>
+					</table>					
+				</s:if>
 			</td>
 		</tr>
 	</table>
