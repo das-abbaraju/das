@@ -84,10 +84,12 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 					}	
 				}
 			}
-			if(requiresActivePolicy)
-				sql.addWhere("ca.auditStatus IN ('Resubmitted','Active')");
-			else
-				sql.addWhere("ca.auditStatus IN ('Submitted','Active','Resubmitted')");
+			if(getFilter().getAuditStatus() == null) {
+				if(requiresActivePolicy)
+					sql.addWhere("ca.auditStatus IN ('Resubmitted','Active')");
+				else
+					sql.addWhere("ca.auditStatus IN ('Submitted','Active','Resubmitted')");
+			}
 		}
 		
 		sql.addWhere("a.active = 'Y'");
