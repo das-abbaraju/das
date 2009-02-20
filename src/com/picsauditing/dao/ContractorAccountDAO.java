@@ -163,7 +163,7 @@ public class ContractorAccountDAO extends PicsDAO {
 				" OR c.lastRecalculation IS NULL " +
 				") AND c.active = 'Y' ORDER BY c.lastRecalculation";
 		Query query = em.createQuery(hql);
-		query.setMaxResults(5);
+		query.setMaxResults(10);
 		
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.MINUTE, -30);
