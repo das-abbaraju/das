@@ -148,10 +148,10 @@
 					<s:if test="!@com.picsauditing.util.Strings@isEmpty(contractor.billingEmail) && !contractor.email.equals(contractor.billingEmail)">	and <s:property value="contractor.billingEmail"/></s:if> with payment terms of net 30.</span>
 				</li>
 				<li><label>&nbsp;</label>
-					<a href="#" onClick="window.open('privacy_policy.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">
-						Privacy Policy </a> |
-					<a href="#" onClick="window.open('refund_policy.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">
-						Refund Policy </a> 							
+					<a href="#" onclick="return openWindow('privacy_policy.jsp','PRIVACY');"
+						title="Opens in new window">Privacy Policy</a> |
+					<a href="#" onclick="return openWindow('refund_policy.jsp','REFUND');"
+						title="Opens in new window">Refund Policy</a>
 				</li>
 				</ol>
 				</fieldset>

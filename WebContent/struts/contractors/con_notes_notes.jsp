@@ -11,15 +11,15 @@
 <table class="notes">
 	<thead>
 		<tr>
-			<th colspan="4">
-				<s:form id="notesForm">
+			<th colspan="3">
+				<s:form id="notesForm" onsubmit="runNoteSearch('notes'); return false;">
 					<s:hidden name="id"></s:hidden>
 					<s:hidden name="returnType" value="notes"></s:hidden>
 					<s:select list="filter.priorityList" headerKey="" headerValue="- Priority -"
-						onchange="runSearch('notes')" cssClass="forms" name="filter.priority" />
+						onchange="runNoteSearch('notes')" cssClass="forms" name="filter.priority" />
 					<s:select list="filter.categoryList" headerKey="" headerValue="- Category -"
-						onchange="runSearch('notes')" cssClass="forms" name="filter.category" />
-					<s:textfield onchange="runSearch('notes')" cssClass="forms" name="filter.keyword" size="10"></s:textfield>
+						onchange="runNoteSearch('notes')" cssClass="forms" name="filter.category" />
+					<s:textfield onchange="runNoteSearch('notes')" cssClass="forms" name="filter.keyword" size="10"></s:textfield>
 				</s:form>
 				<ul class="filters">
 					<s:if test="filter.userID.length > 0">
@@ -57,9 +57,6 @@
 				<s:if test="updateDate != null && updateDate.after(creationDate)">
 					<b>Edited:</b> by <s:property value="updatedBy.name" /> at <s:date name="updateDate" format="M/d/yy h:mm a" />
 				</s:if>
-			</td>
-			<td class="right">
-				<a href="#edit" onclick="noteEditor('<s:property value="account.id"/>', '<s:property value="id" />','edit')" class="edit">Edit</a>
 			</td>
 		</tr>
 		</s:iterator>

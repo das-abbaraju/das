@@ -174,7 +174,8 @@
 Copyright &copy; 2008
 <a href="<%= URLUtils.getProtocol( request ) %>://www.picsauditing.com/" class="footer">PICS</a> |
 <a href="contact.jsp" class="footer">Contact Us</a> |
-<a href="#" onclick="window.open('privacy_policy.jsp','PRIVACYPOLICY','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=600,height=500'); return false;">Privacy Policy</a>
+<a href="#" onclick="return openWindow('privacy_policy.jsp','PRIVACY');"
+	title="Opens in new window">Privacy Policy</a>
 </div>
 </div>
 </div>
