@@ -30,6 +30,13 @@ public class PicsInterceptor extends AbstractInterceptor {
 
 		HttpServletRequest request = ServletActionContext.getRequest();
 		String url = request.getRequestURL().toString();
+		
+		String queryString = request.getQueryString();
+		
+		if( queryString != null && queryString.length() > 0 ) {
+			url += "?" + queryString;
+		}
+		
 
 		PicsLogger.start("picsinterceptor");
 		PicsLogger.log(request.getRequestURI());
