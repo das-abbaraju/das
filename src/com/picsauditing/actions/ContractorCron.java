@@ -8,6 +8,7 @@ import java.util.List;
 import com.picsauditing.PICS.FlagCalculator2;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ContractorCron extends PicsActionSupport {
@@ -16,7 +17,6 @@ public class ContractorCron extends PicsActionSupport {
 	protected ContractorAccountDAO contractorAccountDAO = null;
 
 	protected long startTime = 0L;
-	StringBuffer report = null;
 
 	public ContractorCron(FlagCalculator2 fc2, ContractorAccountDAO contractorAccountDAO) {
 		this.flagCalculator = fc2;
@@ -25,46 +25,43 @@ public class ContractorCron extends PicsActionSupport {
 
 	public String execute() throws Exception {
 
-		report = new StringBuffer();
+		PicsLogger.start("contractorCron");
 
-		report.append("Starting ContractorCron Job at: ");
-		report.append(new Date().toString());
-		report.append("\n\n");
+		PicsLogger.log("Starting ContractorCron Job at: ");
+		PicsLogger.log(new Date().toString());
 		try {
-			startTask("\nRunning contractorCron...");
+			startTask("Running contractorCron...");
 
 			List<Integer> conIDsList = contractorAccountDAO.findContractorsNeedingRecalculation();
 
-			for (Integer conID : conIDsList) {
-				flagCalculator.runByContractor(conID);
-			}
+			flagCalculator.runByContractors(conIDsList);
 
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
 		}
-		report.append("\n\n\nCompleted ContractorCron Job at: ");
-		report.append(new Date().toString());
+		PicsLogger.log("Completed ContractorCron Job at: ");
+		PicsLogger.log(new Date().toString());
 
+		PicsLogger.stop();
 		return SUCCESS;
 	}
 
 	private void handleException(Throwable t) {
 		StringWriter sw = new StringWriter();
 		t.printStackTrace(new PrintWriter(sw));
-		report.append(t.getMessage());
-		report.append(sw.toString());
-		report.append("\n\n\n");
+		PicsLogger.log(t.getMessage());
+		PicsLogger.log(sw.toString());
 	}
 
 	protected void endTask() {
-		report.append("SUCCESS..(");
-		report.append(new Long(System.currentTimeMillis() - startTime).toString());
-		report.append(" millis )");
+		PicsLogger.log("SUCCESS..(");
+		PicsLogger.log(new Long(System.currentTimeMillis() - startTime).toString());
+		PicsLogger.log(" millis )");
 	}
 
 	protected void startTask(String taskName) {
 		startTime = System.currentTimeMillis();
-		report.append(taskName);
+		PicsLogger.log(taskName);
 	}
 }

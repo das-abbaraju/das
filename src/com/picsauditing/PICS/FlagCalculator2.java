@@ -91,6 +91,10 @@ public class FlagCalculator2 {
 		contractorIDs.add(conID);
 		execute();
 	}
+	public void runByContractors(List<Integer> cons) {
+		contractorIDs.addAll(cons);
+		execute();
+	}
 
 	public void runOne(int conID, int opID) {
 		OperatorAccount operator = operatorDAO.find(opID);
@@ -99,6 +103,7 @@ public class FlagCalculator2 {
 		execute();
 	}
 
+	@Transactional
 	private void execute() {
 		debug("FlagCalculator.execute()");
 		// Load ALL operators and contractors by default
@@ -119,11 +124,6 @@ public class FlagCalculator2 {
 			oList.add(operator.getId());
 		}
 
-		int count = 1;
-		int testValue = 5;
-		float lastAvg = 1000000;
-		long startTime = System.currentTimeMillis();
-
 		int errorCount = 0;
 
 		for (Integer conID : contractorIDs) {
@@ -133,7 +133,6 @@ public class FlagCalculator2 {
 				runCalc(questionIDs, conID);
 			} catch (Throwable t) {
 				System.out.println("Error: " + t.getMessage());
-
 				StringBuffer body = new StringBuffer();
 
 				body.append("There was an error calculating flags for contractor ");
@@ -171,62 +170,10 @@ public class FlagCalculator2 {
 			} finally {
 				PicsLogger.stop();
 			}
-
-			if ((count++ % testValue) == 0) {
-				questionIDs = null;
-
-
-				operatorDAO.close();
-				contractorDAO.close();
-				conAuditDAO.close();
-				caoDAO.close();
-				auditDataDAO.close();
-				coFlagDAO.close();
-
-				System.gc();
-
-				questionIDs = new ArrayList<Integer>();
-
-				operators.clear();
-				operators = operatorDAO.findOperators(oList);
-				
-				for (OperatorAccount operator : operators) {
-					// Read the operator data from database
-					operator.getFlagOshaCriteria();
-					operator.getAudits();
-					questionIDs.addAll(operator.getQuestionIDs());
-				}
-
-				long endTime = System.currentTimeMillis();
-
-				float thisAvg = (endTime - startTime) / testValue;
-
-				System.out.println("one iteration finished:  batch size: " + testValue + " average time : " + thisAvg);
-
-				if (thisAvg > lastAvg) {
-					testValue -= 3;
-
-					if (testValue < 5) {
-						testValue = 5;
-					}
-				} else {
-					testValue += 5;
-
-					if (testValue > 70) {
-						testValue = 20;
-					}
-
-				}
-				lastAvg = thisAvg;
-				count = 1;
-				startTime = System.currentTimeMillis();
-
-			}
-
 		}
 	}
 
-	@Transactional
+	
 	protected void runCalc(List<Integer> questionIDs, Integer conID) {
 		// long startTime = System.currentTimeMillis();
 
