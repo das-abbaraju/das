@@ -88,9 +88,13 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 						newFeeId = 0;
 					}
 					updateTotals();
-					
-					
 				}
+
+				if (button.startsWith("Change to")) {
+					changeInvoiceItem(contractor.getMembershipLevel(), contractor.getNewMembershipLevel());
+					addNote("Changed invoice " + invoice.getId() + " to " + contractor.getMembershipLevel().getFee());
+				}
+
 			} else {
 				if (button.startsWith("Charge Credit Card") && contractor.isCcOnFile()) {
 					BrainTreeService paymentService = new BrainTreeService();
@@ -110,12 +114,8 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 					payInvoice();
 					addNote("Received check for $" + invoice.getTotalAmount());
 				}
-				if (button.startsWith("Change to")) {
-					changeInvoiceItem(contractor.getMembershipLevel(), contractor.getNewMembershipLevel());
-					addNote("Changed invoice " + invoice.getId() + " to " + contractor.getMembershipLevel().getFee());
-				}
-				ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 			}
+			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 		}
 		
 		
@@ -220,7 +220,9 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		List <String> operatorsString = new ArrayList<String>();
 		
 		for (ContractorOperator co : contractor.getOperators()) {
-			if ("Yes".equals(co.getOperatorAccount().getDoContractorsPay()))
+			String doContractorsPay = co.getOperatorAccount().getDoContractorsPay();
+			
+			if (doContractorsPay.equals("Yes") || !doContractorsPay.equals("Multiple"))
 				operatorsString.add(co.getOperatorAccount().getName());
 		}
 		

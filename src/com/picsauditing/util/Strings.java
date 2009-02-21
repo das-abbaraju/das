@@ -1,11 +1,9 @@
 package com.picsauditing.util;
 
-import java.io.StringReader;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,9 +12,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
-import com.picsauditing.jpa.entities.Note;
 
 public class Strings {
 
@@ -90,7 +86,7 @@ public class Strings {
 		return buffer.toString();
 	}
 
-	public static String implode(Collection<Object> collection, String delimiter) {
+	public static String implode(Collection<Integer> collection, String delimiter) {
 		if (collection == null)
 			return "";
 		StringBuffer buffer = new StringBuffer();
