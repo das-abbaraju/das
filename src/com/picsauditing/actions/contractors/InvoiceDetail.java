@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.struts2.ServletActionContext;
@@ -20,7 +21,6 @@ import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Invoice;
@@ -194,17 +194,26 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 	}
 	
 	private void changeInvoiceItem(InvoiceFee currentFee, InvoiceFee newFee) {
-		invoice.getItems().remove(currentFee);
 		
-		currentFee = newFee;
 		
-		InvoiceItem changedItem = new InvoiceItem();
-		changedItem.setInvoiceFee(currentFee);
-		changedItem.setAmount(currentFee.getAmount());
-		changedItem.setInvoice(invoice);
-		changedItem.setAuditColumns(getUser());
+		for( Iterator<InvoiceItem> iterator = invoice.getItems().iterator(); iterator.hasNext();) {
+			InvoiceItem item =  iterator.next(); 
+			if( item.getInvoiceFee().getId() == currentFee.getId() ) {
+				iterator.remove();
+				invoiceItemDAO.remove(item);
+			}
+		}
 		
-		invoice.getItems().add(changedItem);
+			
+		InvoiceItem thisIsTheNewItemThatWeArePuttingOnTheInvoice = new InvoiceItem();
+		thisIsTheNewItemThatWeArePuttingOnTheInvoice.setInvoiceFee(newFee);
+		thisIsTheNewItemThatWeArePuttingOnTheInvoice.setAmount(newFee.getAmount());
+		thisIsTheNewItemThatWeArePuttingOnTheInvoice.setAuditColumns(getUser());
+		
+		thisIsTheNewItemThatWeArePuttingOnTheInvoice.setInvoice(invoice);
+		invoice.getItems().add(thisIsTheNewItemThatWeArePuttingOnTheInvoice);
+		
+		contractor.setMembershipLevel(newFee);
 	}	
 	
 	public String getOperators() {
