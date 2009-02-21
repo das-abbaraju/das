@@ -10,11 +10,13 @@ import org.apache.struts2.ServletActionContext;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
@@ -32,13 +34,16 @@ public class BillingDetail extends ContractorActionSupport {
 	private List<InvoiceItem> invoiceItems = new ArrayList<InvoiceItem>();
 
 	private OperatorAccount requestedBy = null;
+	
+	AppPropertyDAO appPropDao;
 
 	public BillingDetail(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, InvoiceDAO invoiceDAO,
-			InvoiceItemDAO invoiceItemDAO, InvoiceFeeDAO invoiceFeeDAO) {
+			InvoiceItemDAO invoiceItemDAO, InvoiceFeeDAO invoiceFeeDAO, AppPropertyDAO appPropDao) {
 		super(accountDao, auditDao);
 		this.invoiceDAO = invoiceDAO;
 		this.invoiceItemDAO = invoiceItemDAO;
 		this.invoiceFeeDAO = invoiceFeeDAO;
+		this.appPropDao = appPropDao;
 	}
 
 	public String execute() throws Exception {
@@ -127,6 +132,13 @@ public class BillingDetail extends ContractorActionSupport {
 			invoice.setTotalAmount(invoiceTotal);
 			invoice.setAuditColumns(getUser());
 
+			String notes = "Thank you for your business.";
+			AppProperty prop = appPropDao.find("invoice_comment");
+			if( prop != null ) {
+				notes = prop.getValue();
+			}
+			invoice.setNotes(notes);
+			
 			contractor.getInvoices().add(invoice);
 
 			boolean invoiceIncludesMembership = false;
