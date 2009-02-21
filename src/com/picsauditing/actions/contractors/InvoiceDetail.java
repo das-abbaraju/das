@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -21,11 +22,13 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class InvoiceDetail extends PicsActionSupport implements Preparable {
@@ -107,6 +110,10 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 					payInvoice();
 					addNote("Received check for $" + invoice.getTotalAmount());
 				}
+				if (button.startsWith("Change to")) {
+					changeInvoiceItem(contractor.getMembershipLevel(), contractor.getNewMembershipLevel());
+					addNote("Changed invoice " + invoice.getId() + " to " + contractor.getMembershipLevel().getFee());
+				}
 				ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 			}
 		}
@@ -184,7 +191,31 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		newItem.setAuditColumns(getUser());
 		
 		invoice.getItems().add(newItem);
-		//invoiceItemDAO.save(newItem);
+	}
+	
+	private void changeInvoiceItem(InvoiceFee currentFee, InvoiceFee newFee) {
+		invoice.getItems().remove(currentFee);
+		
+		currentFee = newFee;
+		
+		InvoiceItem changedItem = new InvoiceItem();
+		changedItem.setInvoiceFee(currentFee);
+		changedItem.setAmount(currentFee.getAmount());
+		changedItem.setInvoice(invoice);
+		changedItem.setAuditColumns(getUser());
+		
+		invoice.getItems().add(changedItem);
+	}	
+	
+	public String getOperators() {
+		List <String> operatorsString = new ArrayList<String>();
+		
+		for (ContractorOperator co : contractor.getOperators()) {
+			if ("Yes".equals(co.getOperatorAccount().getDoContractorsPay()))
+				operatorsString.add(co.getOperatorAccount().getName());
+		}
+		
+		return Strings.implode(operatorsString, ", ");
 	}
 	
 	public int getId() {
@@ -232,24 +263,6 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 
 	public boolean isShowHeader() {
 		return true;
-	}
-	
-	public String getContractorNotes() {
-		
-		if( getInvoice().getNotes() == null || getInvoice().getNotes().length() == 0) {
-		
-			AppProperty prop = appPropDao.find("invoice_comment");
-			
-			if( prop != null ) {
-				return prop.getValue();
-			}
-			else {
-				return "Thank you for your business.";	
-			}
-		}
-		else {
-			return getInvoice().getNotes();
-		}
 	}
 	
 	
