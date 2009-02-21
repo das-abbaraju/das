@@ -117,14 +117,11 @@ h1 {
 					<s:iterator value="invoice.items" status="stat">
 						<tr>
 							<td style="border-right: 0">
-								<s:property
-								value="invoiceFee.fee" />
+								<s:property value="invoiceFee.fee" />
 							</td>
 							<s:if test="edit">
 								<td>
-									<s:textfield
-										name="invoice.items[%{#stat.index}].description"
-										value="%{description}" size="30" /> (optional description)
+									<s:textfield name="invoice.items[%{#stat.index}].description" value="%{description}" size="30" /> (optional description)
 								</td>
 								<td class="right">
 									$<s:textfield value="%{amount}" size="6"
@@ -134,6 +131,9 @@ h1 {
 							<s:else>
 								<td style="border-left: 0">
 									<s:property value="description" />
+									<s:if test="invoiceFee.fee != contractor.newMembershipLevel.fee">
+										<input type="submit" name="button" value="Change to: <s:property value="contractor.newMembershipLevel.fee" />">
+									</s:if>
 								</td>
 								<td class="right">
 									$<s:property
@@ -190,8 +190,12 @@ h1 {
 		<tr>
 			<td style="padding: 15px;">
 			Comments: 
-					<s:if test="edit"><br /><s:textarea name="invoice.notes" cols="60" rows="4" value="%{contractorNotes}"></s:textarea> </s:if>
-					<s:else><s:property value="contractorNotes"/><br /><br /><br /></s:else>
+					<s:if test="edit"><br /><s:textarea name="invoice.notes" cols="60" rows="4"></s:textarea> </s:if>
+					<s:else>
+						<s:property value="invoice.notes"/><br />
+						<s:property value="operators"/>
+						<br /><br />
+					</s:else>
 			</td>
 		</tr>
 		<tr>
