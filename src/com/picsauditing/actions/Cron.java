@@ -24,6 +24,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.SpringUtils;
@@ -199,7 +200,7 @@ public class Cron extends PicsActionSupport {
 			
 			Note note = new Note();
 			note.setAccount(policy);
-			note.setAuditColumns(this.getUser());
+			note.setAuditColumns(new User(User.SYSTEM));
 			note.setSummary("Sent Policy Expiration Email to "
 					+ emailBuilder.getSentTo());
 			note.setNoteCategory(NoteCategory.Insurance);

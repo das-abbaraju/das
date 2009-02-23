@@ -3,7 +3,6 @@ package com.picsauditing.actions.operators;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
