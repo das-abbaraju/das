@@ -96,27 +96,30 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				PicsLogger.log("Hash issues for Contractor id= "
 						+ contractor.getIdString());
 				
-				if (newHash.equals(hash))
-					hashOutput.append("CREDIT CARD HASH IS VALID: \n");
-				else
+//				if (newHash.equals(hash))
+//					hashOutput.append("CREDIT CARD HASH IS VALID: \n");
+//				else
+//					hashOutput.append("CREDIT CARD HASH PROBLEM: \n");
+				
+				if (!newHash.equals(hash)) {
 					hashOutput.append("CREDIT CARD HASH PROBLEM: \n");
-				
-				hashOutput.append("CONTRACTOR ID: " + contractor.getIdString() + "\n");
-				hashOutput.append("PICS HASH: " + newHash + " ");
-				hashOutput.append("BASED ON: \n");
-				hashOutput.append("    RESPONSE     : " + response + "\n");
-				hashOutput.append("    TRANS ID     : " + transactionid + "\n");
-				hashOutput.append("    CUST VAULT ID: " + customer_vault_id + "\n");
-				hashOutput.append("    TIME         : " + time + "\n");
-				
-				hashOutput.append("BRAINTREE HASH: " + hash + " ");
-				hashOutput.append("BASED ON: \n");
-				hashOutput.append("    CUST VAULT ID: " + customer_vault_id + "\n");
-				hashOutput.append("    TIME         : " + time + "\n");
-				
-				EmailSender mailer = new EmailSender();
-				String subject = "Credit Card Hash " + (newHash.equals(hash) ? "VALID" : "ERROR");
-				mailer.sendMail(subject, hashOutput.toString(), "info@picsauditing.com", "errors@picsauditing.com");
+					hashOutput.append("CONTRACTOR ID: " + contractor.getIdString() + "\n");
+					hashOutput.append("PICS HASH: " + newHash + " ");
+					hashOutput.append("BASED ON: \n");
+					hashOutput.append("    RESPONSE     : " + response + "\n");
+					hashOutput.append("    TRANS ID     : " + transactionid + "\n");
+					hashOutput.append("    CUST VAULT ID: " + customer_vault_id + "\n");
+					hashOutput.append("    TIME         : " + time + "\n");
+					
+					hashOutput.append("BRAINTREE HASH: " + hash + " ");
+					hashOutput.append("BASED ON: \n");
+					hashOutput.append("    CUST VAULT ID: " + customer_vault_id + "\n");
+					hashOutput.append("    TIME         : " + time + "\n");
+					
+					EmailSender mailer = new EmailSender();
+					String subject = "Credit Card Hash " + (newHash.equals(hash) ? "VALID" : "ERROR");
+					mailer.sendMail(subject, hashOutput.toString(), "info@picsauditing.com", "errors@picsauditing.com");
+				}
 			}
 
 			if (!Strings.isEmpty(responsetext) && !response.equals("1")) {
