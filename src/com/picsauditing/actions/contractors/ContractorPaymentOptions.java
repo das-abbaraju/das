@@ -76,6 +76,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		if (!paymentMethod.isCreditCard())
 			return SUCCESS;
 		
+		// Setup the new variables for sending the CC to braintree
+		customer_vault_id = contractor.getIdString();
+		
+		
 		// This is a credit card method
 		key = appPropDao.find("brainTree.key").getValue();
 		key_id = appPropDao.find("brainTree.key_id").getValue();
@@ -153,12 +157,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			contractor.setCcOnFile(true);
 		}
 		
-		
-		// Setup the new variables for sending the CC to braintree
-		customer_vault_id = contractor.getIdString();
 		time = DateBean.getBrainTreeDate();
-		hash = BrainTree.buildHash(orderid, amount, customer_vault_id,
-				time, key);
+		hash = BrainTree.buildHash(orderid, amount, customer_vault_id, time, key);		
 
 		// We don't explicitly save, but it should happen here
 		// accountDao.save(contractor);
