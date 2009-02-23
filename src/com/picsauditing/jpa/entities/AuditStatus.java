@@ -139,6 +139,8 @@ public enum AuditStatus {
 	 * @return
 	 */
 	public boolean isComplete(AuditStatus minimumStatus) {
+		if(this.equals(Expired))
+			return true;
 		if (this.equals(Active))
 			return true;
 		if (this.equals(Exempt))
