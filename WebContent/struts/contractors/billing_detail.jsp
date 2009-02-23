@@ -63,10 +63,18 @@
 						<br />
 						<ul style="float: right; list-style-type: disc;">
 							<s:iterator value="contractor.operators">
-								<li><s:property value="operatorAccount.name"/></li>
+								<s:if test="permissions.admin">
+									<li><a href="AuditOperator.action?oID=<s:property value="operatorAccount.id" />"><s:property value="operatorAccount.name"/></a></li>
+								</s:if>
+								<s:else>
+									<li><s:property value="operatorAccount.name"/></li>
+								</s:else>
 							</s:iterator>
 						</ul>
 					</li>
+					<li><label>View Operators:</label>
+						<a href="ContractorFacilities.action?id=<s:property value="id" />">Facilities</a>
+					</li>					
 					<li><label>Last Upgrade Date:</label>
 						<s:date name="contractor.lastUpgradeDate" format="MMM d, yyyy" />
 					</li>
