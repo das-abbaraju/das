@@ -33,7 +33,9 @@ public class ContractorCron extends PicsActionSupport {
 
 			List<Integer> conIDsList = contractorAccountDAO.findContractorsNeedingRecalculation();
 
-			flagCalculator.runByContractors(conIDsList);
+			if( conIDsList != null && conIDsList.size() > 0 ) {
+				flagCalculator.runByContractors(conIDsList);
+			}
 
 			endTask();
 		} catch (Throwable t) {
