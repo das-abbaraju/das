@@ -128,7 +128,7 @@
 							</li>
 						</ol>
 						<div class="buttons">
-							<input type="submit" class="positive" name="button" value="Create"/>
+							<input type="submit" class="picsbutton positive" name="button" value="Create"/>
 						</div>
 						</fieldset>
 					</s:form>
