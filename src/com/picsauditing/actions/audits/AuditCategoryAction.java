@@ -28,6 +28,7 @@ import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.log.PicsLogger;
 
 /**
  * Viewing audit Data including one or more categories and their subcategories
@@ -74,9 +75,12 @@ public class AuditCategoryAction extends AuditActionSupport {
 	public String execute() throws Exception {
 		long startTime = Calendar.getInstance().getTimeInMillis();
 		
-		System.out.println("AuditCategoryAction started " + Calendar.getInstance().getTime().toString());
-		if (!forceLogin())
+		PicsLogger.start("AuditCategoryAction_execute");
+		
+		if (!forceLogin()) {
+			PicsLogger.stop();
 			return LOGIN;
+		}
 		if (auditID == 0 && catID > 0) {
 			// Just Preview the Audit
 			AuditCategory auditCategory = auditCategoryDAO.find(catID);
@@ -90,6 +94,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 			catData.setApplies(YesNo.Yes);
 			categories.add(catData);
 			mode = EDIT;
+			PicsLogger.stop();
 			return SUCCESS;
 		}
 
@@ -123,8 +128,11 @@ public class AuditCategoryAction extends AuditActionSupport {
 			}
 
 			if (currentCategory == null) {
-				if (catID == 0)
+				if (catID == 0) {
+					PicsLogger.stop();
 					throw new Exception("Failed to find category for audit");
+				}
+					
 
 				// Create a new Category for this catID
 				AuditCategory auditCategory = auditCategoryDAO.find(catID);
@@ -162,9 +170,11 @@ public class AuditCategoryAction extends AuditActionSupport {
 		if (mode.equals(VERIFY) && !isCanVerify())
 			mode = VIEW;
 		
-		if ("Quick".equals(button))
+		if ("Quick".equals(button)) {
 			// used for testing
+			PicsLogger.stop();
 			return SUCCESS;
+		}
 
 		if (currentCategory != null) {
 
@@ -274,9 +284,7 @@ public class AuditCategoryAction extends AuditActionSupport {
 			}
 		}
 		
-		long endTime = Calendar.getInstance().getTimeInMillis();
-
-		System.out.println("AuditCategoryAction completed in " + (endTime - startTime) + " ms");
+		PicsLogger.stop();
 		return SUCCESS;
 	}
 
