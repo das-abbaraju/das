@@ -12,7 +12,7 @@ public class BrainTree {
 		salt.append(time).append("|");
 		salt.append(key);
 		String hash = Strings.md5(salt.toString());
-		return hash;
+		return makeSureItsLongEnough(hash);
 	}
 	
 	public static String buildHash(String orderID, String amount, String response, String transactionid, 
@@ -31,6 +31,16 @@ public class BrainTree {
 		salt.append(time).append("|");
 		salt.append(key);
 		String hash = Strings.md5(salt.toString());
-		return hash;
+		return makeSureItsLongEnough(hash);
+	}
+	
+	public static String makeSureItsLongEnough( String input ) {
+		if( input == null) return input;
+		
+		while( input.length() < 32 ) {
+			input = "0" + input;
+		}
+		
+		return input;
 	}
 }
