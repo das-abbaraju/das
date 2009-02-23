@@ -56,6 +56,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		}
 		if (conID > 0) {
 			contractor = accountDao.find(conID);
+			
+			InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+			newFee = invoiceFeeDAO.find(newFee.getId());
+			contractor.setNewMembershipLevel(newFee);			
 			user = userDAO.findByAccountID(conID, "", "No").get(0);
 		}
 		accountDao.clear();
@@ -65,9 +69,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		if (!forceLogin())
 			return LOGIN;
 		
-		InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
-		newFee = invoiceFeeDAO.find(newFee.getId());
-		contractor.setNewMembershipLevel(newFee);		
+		
 
 		if (button != null) {
 			String ftpDir = getFtpDir();
