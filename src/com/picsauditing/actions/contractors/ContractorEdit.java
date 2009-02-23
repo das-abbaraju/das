@@ -6,15 +6,18 @@ import java.util.List;
 import java.util.Vector;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.ContractorValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.FileUtils;
 
@@ -26,6 +29,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	private String brochureFileName = null;
 	protected User user;
 	protected AuditQuestionDAO auditQuestionDAO;
+	private InvoiceFeeDAO invoiceFeeDAO;
 	protected ContractorValidator contractorValidator;
 	protected UserDAO userDAO;
 	protected String password1 = null;
@@ -33,10 +37,11 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, 
-			UserDAO userDAO) {
+			UserDAO userDAO, InvoiceFeeDAO invoiceFeeDAO) {
 		super(accountDao, auditDao);
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
+		this.invoiceFeeDAO = invoiceFeeDAO;
 		this.userDAO = userDAO;
 	}
 
@@ -59,6 +64,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+		
+		InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+		newFee = invoiceFeeDAO.find(newFee.getId());
+		contractor.setNewMembershipLevel(newFee);		
 
 		if (button != null) {
 			String ftpDir = getFtpDir();
