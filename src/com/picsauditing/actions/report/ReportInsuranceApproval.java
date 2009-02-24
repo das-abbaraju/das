@@ -18,7 +18,6 @@ import com.picsauditing.jpa.entities.AccountName;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.AnswerMap;
@@ -91,6 +90,9 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 					sql.addWhere("ca.auditStatus IN ('Submitted','Active','Resubmitted')");
 			}
 		}
+		if(permissions.isCorporate())
+			sql.addWhere("ca.auditStatus IN ('Submitted','Active','Resubmitted')");
+			
 		
 		sql.addWhere("a.active = 'Y'");
 
