@@ -31,18 +31,14 @@ public class ContractorCron extends PicsActionSupport {
 		
 			PicsLogger.start("contractorCron");
 	
-			PicsLogger.log("Starting ContractorCron Job at: ");
-			PicsLogger.log(new Date().toString());
 			try {
-				startTask("Running contractorCron...");
-	
 				List<Integer> conIDsList = contractorAccountDAO.findContractorsNeedingRecalculation();
 	
 				if( conIDsList != null && conIDsList.size() > 0 ) {
 					flagCalculator.runByContractors(conIDsList);
 				}
-	
-				endTask();
+				
+				PicsLogger.log("Cron completed successfully");
 			} catch (Throwable t) {
 				handleException(t);
 			}
@@ -60,14 +56,7 @@ public class ContractorCron extends PicsActionSupport {
 		PicsLogger.log(sw.toString());
 	}
 
-	protected void endTask() {
-		PicsLogger.log("SUCCESS..(");
-		PicsLogger.log(new Long(System.currentTimeMillis() - startTime).toString());
-		PicsLogger.log(" millis )");
-	}
-
 	protected void startTask(String taskName) {
-		startTime = System.currentTimeMillis();
 		PicsLogger.log(taskName);
 	}
 }
