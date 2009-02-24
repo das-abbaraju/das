@@ -130,7 +130,7 @@
 								<s:if test="opID == operator.id">
 									<s:if test="status.toString()=='Awaiting'">
 										<a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditType.auditName" /></a>
-										<s:property value="status"/><br/>
+										<s:property value="auditStatus" /> <s:property value="status"/><br/>
 									</s:if>
 								</s:if>
 							</s:iterator>
