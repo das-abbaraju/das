@@ -39,8 +39,12 @@ public class Home extends ContractorActionSupport {
 
 		for (WidgetUser widgetUser : widgetsToShowForUser) {
 			Widget widget = widgetUser.getWidget();
-			if (widget.getWidgetID() == 15 && !permissions.hasPermission(OpPerms.DelinquentAccounts))
-				continue;
+			
+			if(widget.getRequiredPermission() != null) {
+				if(!permissions.hasPermission(widget.getRequiredPermission()))
+					continue;
+			}
+			
 			// Set custom parameters from the user
 			widget.setExpanded(widgetUser.isExpanded());
 			widget.setCustomConfig(widgetUser.getCustomConfig());
