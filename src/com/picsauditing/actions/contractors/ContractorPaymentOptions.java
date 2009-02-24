@@ -52,7 +52,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	}
 
 	public String execute() throws Exception {
-		// TODO allow contractors to edit this page during registration
 		if (!forceLogin())
 			return LOGIN;
 
@@ -60,12 +59,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		// The payment method has changed.
 		if (!paymentMethod.equals(contractor.getPaymentMethod())) {
-			
 			contractor.setPaymentMethod(paymentMethod);
-//			if (paymentMethod.isCreditCard())
-//				contractor.setPaymentMethodStatus("Missing");
-//			else
-//				contractor.setPaymentMethodStatus("Pending");
 		}
 		
 		if ("Activation".equals(contractor.getBillingStatus()))
@@ -79,7 +73,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		// Setup the new variables for sending the CC to braintree
 		customer_vault_id = contractor.getIdString();
 		
-		
 		// This is a credit card method
 		key = appPropDao.find("brainTree.key").getValue();
 		key_id = appPropDao.find("brainTree.key_id").getValue();
@@ -87,39 +80,34 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		// StringBuffer to hold any Hash Problems
 		StringBuffer hashOutput = new StringBuffer("");
 		
+		// A response was received
 		if (response_code != null) {
-			// Hey we're receiving some sort of response
 			String newHash = BrainTree.buildHash(orderid, amount, response,
 					transactionid, avsresponse, cvvresponse, customer_vault_id,
 					time, key);
-			if (true) {
-				PicsLogger.log("Hash issues for Contractor id= "
-						+ contractor.getIdString());
-				
-//				if (newHash.equals(hash))
-//					hashOutput.append("CREDIT CARD HASH IS VALID: \n");
-//				else
-//					hashOutput.append("CREDIT CARD HASH PROBLEM: \n");
-				
-				if (!newHash.equals(hash)) {
-					hashOutput.append("CREDIT CARD HASH PROBLEM: \n");
-					hashOutput.append("CONTRACTOR ID: " + contractor.getIdString() + "\n");
-					hashOutput.append("PICS HASH: " + newHash + " ");
-					hashOutput.append("BASED ON: \n");
-					hashOutput.append("    RESPONSE     : " + response + "\n");
-					hashOutput.append("    TRANS ID     : " + transactionid + "\n");
-					hashOutput.append("    CUST VAULT ID: " + customer_vault_id + "\n");
-					hashOutput.append("    TIME         : " + time + "\n");
-					
-					hashOutput.append("BRAINTREE HASH: " + hash + " ");
-					hashOutput.append("BASED ON: \n");
-					hashOutput.append("    CUST VAULT ID: " + customer_vault_id + "\n");
-					hashOutput.append("    TIME         : " + time + "\n");
-					
-					EmailSender mailer = new EmailSender();
-					String subject = "Credit Card Hash " + (newHash.equals(hash) ? "VALID" : "ERROR");
-					mailer.sendMail(subject, hashOutput.toString(), "info@picsauditing.com", "errors@picsauditing.com");
-				}
+			
+			if (!newHash.equals(hash)) {
+				PicsLogger.log("Hash issues for Contractor id= " + contractor.getIdString());
+
+				hashOutput.append("CREDIT CARD HASH PROBLEM: \n");
+				hashOutput.append("CONTRACTOR ID: " + contractor.getIdString() + "\n");
+				hashOutput.append("PICS HASH: " + newHash + " ");
+				hashOutput.append("BASED ON: \n");
+				hashOutput.append("    RESPONSE     : " + response + "\n");
+				hashOutput.append("    TRANS ID     : " + transactionid + "\n");
+				hashOutput.append("    CUST VAULT ID: " + customer_vault_id	+ "\n");
+				hashOutput.append("    TIME         : " + time + "\n");
+
+				hashOutput.append("BRAINTREE HASH: " + hash + " ");
+				hashOutput.append("BASED ON: \n");
+				hashOutput.append("    CUST VAULT ID: " + customer_vault_id	+ "\n");
+				hashOutput.append("    TIME         : " + time + "\n");
+
+				EmailSender mailer = new EmailSender();
+				String subject = "Credit Card Hash "
+						+ (newHash.equals(hash) ? "VALID" : "ERROR");
+				mailer.sendMail(subject, hashOutput.toString(),
+						"info@picsauditing.com", "errors@picsauditing.com");
 			}
 
 			if (!Strings.isEmpty(responsetext) && !response.equals("1")) {
@@ -161,7 +149,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		}
 		
 		time = DateBean.getBrainTreeDate();
-		hash = BrainTree.buildHash(orderid, amount, customer_vault_id, time, key);		
+		hash = BrainTree.buildHash(orderid, amount, customer_vault_id, time, key);
 
 		// We don't explicitly save, but it should happen here
 		// accountDao.save(contractor);
