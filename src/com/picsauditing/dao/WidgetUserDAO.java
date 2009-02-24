@@ -3,6 +3,7 @@ package com.picsauditing.dao;
 import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;

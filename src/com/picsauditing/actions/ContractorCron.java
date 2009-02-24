@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.PICS.FlagCalculator2;
-import com.picsauditing.cron.CronMetricsAggregator;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.util.log.PicsLogger;
 

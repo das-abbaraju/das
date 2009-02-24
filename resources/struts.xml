@@ -117,7 +117,10 @@
 			<result>/struts/widgets/delinquent_account.jsp</result>
 		</action>
 
-
+		<action name="ContractorCronStatisticsAjax"
+			class="com.picsauditing.actions.contractors.ContractorCronStatistics">
+			<result>/struts/widgets/contractor_statistics.jsp</result>
+		</action>
 
 
 		<!-- Contractor Information -->
