@@ -47,22 +47,24 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public void prepare() throws Exception {
 		getPermissions();
-		int conID = 0;
-		if (permissions.isContractor())
-			conID = permissions.getAccountId();
-		else {
-			permissions.tryPermission(OpPerms.AllContractors);
-			conID = getParameter("id");
+		if (permissions.isLoggedIn()) {
+			int conID = 0;
+			if (permissions.isContractor())
+				conID = permissions.getAccountId();
+			else {
+				permissions.tryPermission(OpPerms.AllContractors);
+				conID = getParameter("id");
+			}
+			if (conID > 0) {
+				contractor = accountDao.find(conID);
+				
+				InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+				newFee = invoiceFeeDAO.find(newFee.getId());
+				contractor.setNewMembershipLevel(newFee);			
+				user = userDAO.findByAccountID(conID, "", "No").get(0);
+			}
+			accountDao.clear();
 		}
-		if (conID > 0) {
-			contractor = accountDao.find(conID);
-			
-			InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
-			newFee = invoiceFeeDAO.find(newFee.getId());
-			contractor.setNewMembershipLevel(newFee);			
-			user = userDAO.findByAccountID(conID, "", "No").get(0);
-		}
-		accountDao.clear();
 	}
 
 	public String execute() throws Exception {
