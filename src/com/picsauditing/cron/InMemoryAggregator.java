@@ -1,29 +1,69 @@
 package com.picsauditing.cron;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
 public class InMemoryAggregator implements CronMetricsAggregator {
 
+	private static boolean running  = false;
+	private static List<CronMetrics> stats = new Vector<CronMetrics>();
+
+	
+	private CronMetrics currentMetric = null;
+	private long startTime = 0L;
+	
+	
 	@Override
 	public void addContractor(int id, long time) {
-		// TODO Auto-generated method stub
-
+		currentMetric.addContractor(time);
 	}
 
 	@Override
 	public CronMetrics getMetrics(CronReportingPeriod timeFrame) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		CronMetrics summary = new CronMetrics();
+		
+		for( Iterator<CronMetrics> iterator = stats.iterator(); iterator.hasNext();) {
+			CronMetrics metric = iterator.next();
+
+			if( ( System.currentTimeMillis() - metric.getEndTime().getTime() ) > CronReportingPeriod.TwentyFourHours.getPeriod() ) {
+				iterator.remove();
+				break;
+			}
+			
+			summary.add(metric);
+		}
+		
+		return summary;
 	}
 
 	@Override
 	public boolean startJob() {
-		// TODO Auto-generated method stub
-		return false;
+		if( !startJobSync() )
+			return false;
+		
+		startTime = System.currentTimeMillis();
+		currentMetric = new CronMetrics();
+		currentMetric.setCronJobs(1);
+		return true;
 	}
 
 	@Override
 	public void stopJob() {
-		// TODO Auto-generated method stub
+		currentMetric.setTotalCronTime(System.currentTimeMillis() - startTime);
+		stopJobSync(currentMetric);
+	}
 
+	
+	private synchronized static boolean startJobSync() {
+		if( running ) return false;
+		running = true;
+		return true;
+	}
+	private synchronized static void stopJobSync(CronMetrics current) {
+		stats.add(current);		
+		running = false;
 	}
 
 }

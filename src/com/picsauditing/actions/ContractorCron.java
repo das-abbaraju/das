@@ -15,19 +15,19 @@ public class ContractorCron extends PicsActionSupport {
 
 	protected FlagCalculator2 flagCalculator = null;
 	protected ContractorAccountDAO contractorAccountDAO = null;
-	//protected CronMetricsAggregator cronMetrics = null;
+	protected CronMetricsAggregator cronMetrics = null;
 
 	protected long startTime = 0L;
 
-	public ContractorCron(FlagCalculator2 fc2, ContractorAccountDAO contractorAccountDAO /*, CronMetricsAggregator cronMetrics */) {
+	public ContractorCron(FlagCalculator2 fc2, ContractorAccountDAO contractorAccountDAO , CronMetricsAggregator cronMetrics ) {
 		this.flagCalculator = fc2;
 		this.contractorAccountDAO = contractorAccountDAO;
-//		this.cronMetrics = cronMetrics;
+		this.cronMetrics = cronMetrics;
 	}
 
 	public String execute() throws Exception {
 
-		//if( cronMetrics.startJob() ) {
+		if( cronMetrics.startJob() ) {
 		
 			PicsLogger.start("contractorCron");
 	
@@ -46,12 +46,10 @@ public class ContractorCron extends PicsActionSupport {
 			} catch (Throwable t) {
 				handleException(t);
 			}
-			PicsLogger.log("Completed ContractorCron Job at: ");
-			PicsLogger.log(new Date().toString());
 	
 			PicsLogger.stop();
-			//cronMetrics.stopJob();
-		//}
+			cronMetrics.stopJob();
+		}
 		return SUCCESS;
 	}
 

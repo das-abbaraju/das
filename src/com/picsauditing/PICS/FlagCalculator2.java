@@ -11,6 +11,7 @@ import javax.persistence.EntityNotFoundException;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.cron.CronMetricsAggregator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -50,6 +51,7 @@ public class FlagCalculator2 {
 	private AuditDataDAO auditDataDAO;
 	private ContractorOperatorFlagDAO coFlagDAO;
 	private AuditBuilder auditBuilder;
+	private CronMetricsAggregator cronMetrics;
 
 	// List of operators to be processed
 	private List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
@@ -129,8 +131,14 @@ public class FlagCalculator2 {
 		for (Integer conID : contractorIDs) {
 
 			try {
+				long conStart = System.currentTimeMillis();
 				PicsLogger.start("Flag.calculate", "for : " + conID);
 				runCalc(questionIDs, conID);
+				
+				if( cronMetrics != null ) {
+					cronMetrics.addContractor(conID, System.currentTimeMillis() - conStart );
+				}
+				
 			} catch (Throwable t) {
 				System.out.println("Error: " + t.getMessage());
 				StringBuffer body = new StringBuffer();
@@ -304,4 +312,11 @@ public class FlagCalculator2 {
 		PicsLogger.log(message);
 	}
 
+	public CronMetricsAggregator getCronMetrics() {
+		return cronMetrics;
+	}
+
+	public void setCronMetrics(CronMetricsAggregator cronMetrics) {
+		this.cronMetrics = cronMetrics;
+	}
 }

@@ -1,31 +1,34 @@
 package com.picsauditing.cron;
 
+import java.util.Date;
+
 public class CronMetrics {
 	private int cronJobs = 0;
-	private int totalCronTime = 0;
-	private int averageCronTime = 0;
+	private long totalCronTime = 0;
+	private long averageCronTime = 0;
+	private Date endTime = null;
 	
 	private int totalContractors = 0;
 	private long minContractorTime = 0;
 	private long maxContractorTime = 0;
 	private long averageContractorTime = 0L;
-	private long medianContractorTime = 0L;
+	
 	public int getCronJobs() {
 		return cronJobs;
 	}
 	public void setCronJobs(int cronJobs) {
 		this.cronJobs = cronJobs;
 	}
-	public int getTotalCronTime() {
+	public long getTotalCronTime() {
 		return totalCronTime;
 	}
-	public void setTotalCronTime(int totalCronTime) {
+	public void setTotalCronTime(long totalCronTime) {
 		this.totalCronTime = totalCronTime;
 	}
-	public int getAverageCronTime() {
+	public long getAverageCronTime() {
 		return averageCronTime;
 	}
-	public void setAverageCronTime(int averageCronTime) {
+	public void setAverageCronTime(long averageCronTime) {
 		this.averageCronTime = averageCronTime;
 	}
 	public int getTotalContractors() {
@@ -52,10 +55,47 @@ public class CronMetrics {
 	public void setAverageContractorTime(long averageContractorTime) {
 		this.averageContractorTime = averageContractorTime;
 	}
-	public long getMedianContractorTime() {
-		return medianContractorTime;
+	
+	public Date getEndTime() {
+		return endTime;
 	}
-	public void setMedianContractorTime(long medianContractorTime) {
-		this.medianContractorTime = medianContractorTime;
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public void addContractor( long time ) {
+		totalContractors++;
+		
+		if( minContractorTime == 0 ) {
+			minContractorTime = time;
+		}
+		else if( time < minContractorTime ) {
+			minContractorTime = time;
+		}
+
+		else if( time > maxContractorTime ) {
+			maxContractorTime = time;
+		}
+	}
+	
+	public void add( CronMetrics other ) {
+
+		cronJobs += other.getCronJobs();
+		totalCronTime += other.getTotalCronTime();
+		totalContractors += other.getTotalContractors();
+		
+		if( minContractorTime == 0 ) {
+			minContractorTime = other.minContractorTime;
+		}
+		else if( other.getMinContractorTime() < minContractorTime ) {
+			minContractorTime = other.getMinContractorTime();
+		}
+
+		if( other.getMaxContractorTime() > maxContractorTime ) {
+			maxContractorTime = other.getMaxContractorTime();
+		}
+
+		averageCronTime = totalCronTime / cronJobs;
+		averageContractorTime = totalCronTime / totalContractors;
 	}
 }
