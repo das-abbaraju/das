@@ -1,4 +1,13 @@
 <%@ page language="java" %>
+<%
+	String test = request.getParameter("test");
+	if (test != null) {
+		Cookie userName = new Cookie("testCookie", test);
+		userName.setMaxAge(1000);  //session scoped
+		response.addCookie(userName);
+	}
+%>
+
 <html>
 <head>
 <title>Clients</title>

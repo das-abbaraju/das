@@ -241,9 +241,9 @@ function checkUsername(username) {
 					<s:password name="password2" value=""/>
 				</li>
 				<li><label for="user.phone">Phone:</label>
-					<s:textfield name="user.phone" size="20"/></li>
+					<s:textfield name="user.phone" size="15"/>(optional)</li>
 				<li><label for="user.fax">Fax:</label>
-					<s:textfield name="user.fax" size="20"/></li>
+					<s:textfield name="user.fax" size="15"/>(optional)</li>
 				<s:if test="user != null">
 					<li><label>Last Login:</label>
 						<s:date name="user.lastLogin" />

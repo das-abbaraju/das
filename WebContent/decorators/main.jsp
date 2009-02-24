@@ -42,12 +42,6 @@
 <div id="header">
 <div id="headermain">
 
-<!--[if lte IE 6]>
-	<div id="unsupportedBrowser">
-		You are using an UnSupported Browser. Please upgrade to IE 7.
-	</div>
-<![endif]-->
-
 <div id="masthead">
 <!-- !begin header -->
 
@@ -175,7 +169,7 @@ Copyright &copy; 2008
 <a href="<%= URLUtils.getProtocol( request ) %>://www.picsauditing.com/" class="footer">PICS</a> |
 <a href="contact.jsp" class="footer">Contact Us</a> |
 <a href="#" onclick="return openWindow('privacy_policy.jsp','PRIVACY');"
-	title="Opens in new window">Privacy Policy</a>
+	title="Opens in new window" class="footer">Privacy Policy</a>
 </div>
 </div>
 </div>
