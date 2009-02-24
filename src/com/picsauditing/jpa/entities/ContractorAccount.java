@@ -45,7 +45,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private Date accountDate;
 	private String mustPay = "Yes";
 	private int requestedById;
-	//TODO private OperatorAccount requestedBy;
+	// TODO private OperatorAccount requestedBy;
 	private String secondContact;
 	private String secondPhone;
 	private String secondEmail;
@@ -61,7 +61,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private PaymentMethod paymentMethod = PaymentMethod.CreditCard;
 
 	private String oqEmployees;
-	
+
 	private Date paymentExpires;
 	private boolean renew = true;
 	private Date lastUpgradeDate;
@@ -88,7 +88,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public ContractorAccount(int id) {
 		this.id = id;
 	}
-	
+
 	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	public List<ContractorAudit> getAudits() {
 		return this.audits;
@@ -267,7 +267,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.payingFacilities = payingFacilities;
 	}
 
-	
 	@Transient
 	public boolean isPaymentMethodStatusValid() {
 		if (paymentMethod == null)
@@ -282,7 +281,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	/**
-	 * Set to true if we have a credit card on file 
+	 * Set to true if we have a credit card on file
+	 * 
 	 * @return
 	 */
 	public boolean isCcOnFile() {
@@ -322,6 +322,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	/**
 	 * The date the contractor paid their activation/reactivation fee
+	 * 
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -350,9 +351,9 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 * The date the lastPayment expires and the contractor is due to pay another
 	 * "period's" membership fee. This should NEVER be null.
 	 * 
-	 * UPDATE contractor_info, accounts SET paymentExpires = creationDate
-	 * WHERE (paymentExpires = '0000-00-00' or paymentExpires is null) 
-	 *  AND contractor_info.id = accounts.id;
+	 * UPDATE contractor_info, accounts SET paymentExpires = creationDate WHERE
+	 * (paymentExpires = '0000-00-00' or paymentExpires is null) AND
+	 * contractor_info.id = accounts.id;
 	 * 
 	 * @return
 	 */
@@ -367,8 +368,9 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	/**
-	 * Used to determine if we need to calculate the flagColor, 
-	 * audits and billing
+	 * Used to determine if we need to calculate the flagColor, audits and
+	 * billing
+	 * 
 	 * @return
 	 */
 	public boolean isNeedsRecalculation() {
@@ -381,6 +383,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	/**
 	 * Sets the date and time when the calculator ran
+	 * 
 	 * @return
 	 */
 	public Date getLastRecalculation() {
@@ -390,7 +393,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setLastRecalculation(Date lastRecalculation) {
 		this.lastRecalculation = lastRecalculation;
 	}
-	
+
 	// Other relationships //
 
 	@ManyToOne
@@ -432,7 +435,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	@Transient
 	public boolean isPaymentOverdue() {
-		for(Invoice invoice : getInvoices())
+		for (Invoice invoice : getInvoices())
 			if (!invoice.isPaid() && invoice.getDueDate() != null && invoice.getDueDate().before(new Date()))
 				return true;
 		return false;
@@ -450,16 +453,14 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		oshas = new TreeMap<OshaType, Map<String, OshaAudit>>();
 
 		for (ContractorAudit audit : getSortedAudits()) {
-			if (number < 3 && audit.getAuditType().getId() == AuditType.ANNUALADDENDUM 
-					&& !audit.getAuditStatus().isExpired()) {
+			if (number < 3) {
 				for (AuditCatData auditCatData : audit.getCategories()) {
-					if (auditCatData.getCategory().getId() == AuditCategory.OSHA_AUDIT 
+					if (auditCatData.getCategory().getId() == AuditCategory.OSHA_AUDIT
 							&& auditCatData.getPercentCompleted() == 100) {
 						// Store the corporate OSHA rates into a map for later
 						// use
 						for (OshaAudit osha : audit.getOshas())
-							if (osha.getType().equals(OshaType.OSHA) 
-								&& osha.isCorporate() && osha.isApplicable()) {
+							if (osha.getType().equals(OshaType.OSHA) && osha.isCorporate() && osha.isApplicable()) {
 								number++;
 								Map<String, OshaAudit> theMap = oshas.get(osha.getType());
 
@@ -539,20 +540,20 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		emrs = new HashMap<String, AuditData>();
 		int number = 0;
 		for (ContractorAudit audit : getSortedAudits()) {
-			if (number < 3 && audit.getAuditType().getId() == AuditType.ANNUALADDENDUM) {
+			if (number < 3) {
 				for (AuditCatData auditCatData : audit.getCategories()) {
-					if (auditCatData.getCategory().getId() == AuditCategory.OSHA_AUDIT 
+					if (auditCatData.getCategory().getId() == AuditCategory.OSHA_AUDIT
 							&& auditCatData.getPercentCompleted() == 100) {
-								// Store the EMR rates into a map for later use
-								for (AuditData answer : audit.getData())
-									if (answer.getQuestion().getId() == AuditQuestion.EMR) {
-										number++;
-										emrs.put(audit.getAuditFor(), answer);
-									}
+						// Store the EMR rates into a map for later use
+						for (AuditData answer : audit.getData())
+							if (answer.getQuestion().getId() == AuditQuestion.EMR) {
+								number++;
+								emrs.put(audit.getAuditFor(), answer);
+							}
 					}
 				}
 			}
-		}	
+		}
 
 		AuditData avg = AuditData.addAverageData(emrs.values());
 		emrs.put(OshaAudit.AVG, avg);
@@ -562,8 +563,14 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	@Transient
 	public List<ContractorAudit> getSortedAudits() {
-		Collections.sort(getAudits(), new ContractorAuditComparator("auditFor -1"));
-		return getAudits();
+		List<ContractorAudit> annualAList = new ArrayList<ContractorAudit>();
+		for (ContractorAudit contractorAudit : getAudits()) {
+			if (contractorAudit.getAuditType().isAnnualAddendum() && !contractorAudit.getAuditStatus().isExpired()) {
+				annualAList.add(contractorAudit);
+			}
+		}
+		Collections.sort(annualAList, new ContractorAuditComparator("auditFor -1"));
+		return annualAList;
 	}
 
 	public boolean isRenew() {
@@ -621,29 +628,24 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	/**
-	 * The following are states of Billing Status:
-	 *     Membership Canceled
-	 *         Contractor is not active and membership is not set to renew.
-	 *     
-	 *     Activation
-	 *         Contractor is not active and Contractor does not have a membership
-	 *         
-	 *     Reactivation
-	 *         Contractor is not active, Contractor's membership expired and 
-	 *         they don't have a current Membership Level
-	 *         
-	 *     Upgrade
-	 *         The number of facilities a contractor is at has increased.
-	 *     
-	 *     Do Not Renew
-	 *         Contractor's Membership is not set to renew.
-	 *         
-	 *     Renewal Overdue
-	 *         Contractor is active and the Membership Expiration Date is past.
-	 *         
-	 *     Renewal
-	 *         Contractor is active and the Membership Expiration Date is in 
-	 *         the next 30 Days
+	 * The following are states of Billing Status: Membership Canceled
+	 * Contractor is not active and membership is not set to renew.
+	 * 
+	 * Activation Contractor is not active and Contractor does not have a
+	 * membership
+	 * 
+	 * Reactivation Contractor is not active, Contractor's membership expired
+	 * and they don't have a current Membership Level
+	 * 
+	 * Upgrade The number of facilities a contractor is at has increased.
+	 * 
+	 * Do Not Renew Contractor's Membership is not set to renew.
+	 * 
+	 * Renewal Overdue Contractor is active and the Membership Expiration Date
+	 * is past.
+	 * 
+	 * Renewal Contractor is active and the Membership Expiration Date is in the
+	 * next 30 Days
 	 * 
 	 * @return A String of the current Billing Status
 	 */
@@ -651,8 +653,9 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public String getBillingStatus() {
 		if (newMembershipLevel == null)
 			return "Not Calculated";
-		
-		// TODO: still need to determine if this is a reactivation or initial activation
+
+		// TODO: still need to determine if this is a reactivation or initial
+		// activation
 		if (!isActiveB()) {
 			if (!renew)
 				return "Membership Canceled";
@@ -663,19 +666,19 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 					return "Reactivation";
 			}
 		}
-		
+
 		if (newMembershipLevel.getAmount() > membershipLevel.getAmount())
 			return "Upgrade";
 
 		if (!renew)
 			return "Do not renew";
-		
+
 		int daysUntilRenewal = DateBean.getDateDifference(paymentExpires);
 		if (daysUntilRenewal < 0)
 			return "Renewal Overdue";
 		if (daysUntilRenewal < 30)
 			return "Renewal";
-		
+
 		return "Current";
 	}
 }
