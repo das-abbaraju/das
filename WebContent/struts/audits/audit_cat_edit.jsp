@@ -104,17 +104,17 @@
 			onclick="saveAnswer('%{#divID}', this);" />
 	</s:if>
 	<s:if test="#q.questionType == 'Yes/No'">
-		<s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="answer%{#divID}" value="%{#a.answer}" 
-			onclick="saveAnswer('%{#divID}', this);"></s:radio>
+		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#{'Yes':'Yes','No':'No'}" name="answer%{#divID}" value="%{#a.answer}" 
+			onclick="$A($$('.question_%{#q.id}')).each(function(abc){abc.disable();}); saveAnswer('%{#divID}', this);"></s:radio>
 	</s:if>
 	<s:if test="#q.questionType == 'Yes/No/NA'">
-		<s:radio theme="pics" list="#{'Yes':'Yes','No':'No','NA':'NA'}" name="answer%{#divID}" value="%{#a.answer}" 
-			onclick="saveAnswer('%{#divID}', this);"></s:radio>
+		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#{'Yes':'Yes','No':'No','NA':'NA'}" name="answer%{#divID}" value="%{#a.answer}" 
+			onclick="$A($$('.question_%{#q.id}')).each(function(abc){abc.disable();}); saveAnswer('%{#divID}', this);"></s:radio>
 	</s:if>
 	<s:if test="#q.questionType == 'Office Location'">
-		<s:radio theme="pics" list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" 
+		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" 
 			name="answer%{#divID}" value="%{#a.answer}"
-			onclick="saveAnswer('%{#divID}', this);"></s:radio>
+			onclick="$A($$('.question_%{#q.id}')).each(function(abc){abc.disable();}); saveAnswer('%{#divID}', this);"></s:radio>
 	</s:if>
 	<s:if test="#q.questionType == 'State'">
 		<s:select list="stateList" value="%{#a.answer}" name="answer%{#divID}" 
@@ -139,9 +139,9 @@
 			onclick="saveAnswer('%{#divID}', this);" /> S</nobr>
 	</s:if>
 	<s:if test="#q.questionType == 'Radio'">
-		<s:radio theme="pics" list="#q.optionsVisible" listKey="optionName" listValue="optionName" 
+		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#q.optionsVisible" listKey="optionName" listValue="optionName" 
 			value="#a.answer" name="answer%{#divID}" 
-			onclick="saveAnswer('%{#divID}', this);"/>
+			onclick="$A($$('.question_%{#q.id}')).each(function(abc){abc.disable();}); saveAnswer('%{#divID}', this);"/>
 	</s:if>
 	<s:if test="#q.questionType.startsWith('File')">
 		<nobr>
