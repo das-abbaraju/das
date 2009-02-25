@@ -160,4 +160,11 @@ public class StringsTest extends TestCase {
 		assertEquals("", map.get("authcode"));
 		assertEquals("0", map.get("customer_vault_id"));
 	}
+
+	public void testIndexName() {
+		assertEquals(null, Strings.indexName(null));
+		assertEquals("HBOBQJOHNS5STARCRANEINCBJCRANE", 
+				Strings.indexName(" H. Bob & Q. John's 5 Star Crane Inc./BJ Crane"));
+		assertEquals("QWERTYASDFZXCV", Strings.indexName("QWERTYASDFZXCV"));
+	}
 }

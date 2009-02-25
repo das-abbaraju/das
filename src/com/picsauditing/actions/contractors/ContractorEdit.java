@@ -110,13 +110,12 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 							addActionError(error);
 						return SUCCESS;
 					}
+					contractor.setNeedsRecalculation(true);
+					contractor.setNameIndex();
 
 					contractor = accountDao.save(contractor);
 					userDAO.save(user);
 
-					contractor.setNeedsRecalculation(true);
-
-					contractor = accountDao.save(contractor);
 					addActionMessage("Successfully modified " + contractor.getName());
 				}
 			} else if (button.equalsIgnoreCase("Delete")) {

@@ -13,14 +13,13 @@ import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
 import com.picsauditing.util.Luhn;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 @Entity
@@ -32,6 +31,7 @@ public class Account extends BaseTable implements java.io.Serializable {
 	static public int PicsID = 1100;
 
 	protected String name;
+	protected String nameIndex;
 	protected Date lastLogin;
 	protected String contact;
 	protected String address;
@@ -73,6 +73,19 @@ public class Account extends BaseTable implements java.io.Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Column(length = 50)
+	public String getNameIndex() {
+		return this.nameIndex;
+	}
+
+	public void setNameIndex(String name) {
+		this.nameIndex = name;
+	}
+
+	public void setNameIndex() {
+		this.nameIndex = Strings.indexName(this.name);
 	}
 
 	@Column(name = "lastLogin", length = 19)

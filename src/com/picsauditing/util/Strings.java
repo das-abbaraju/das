@@ -97,7 +97,7 @@ public class Strings {
 		}
 		return buffer.toString();
 	}
-	
+
 	public static String implode(List<String> collection, String delimiter) {
 		if (collection == null)
 			return "";
@@ -126,14 +126,13 @@ public class Strings {
 	public static String md5(String seed) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] messageDigest = md.digest(seed.getBytes());
-            BigInteger number = new BigInteger(1,messageDigest);
-            return number.toString(16);
+			byte[] messageDigest = md.digest(seed.getBytes());
+			BigInteger number = new BigInteger(1, messageDigest);
+			return number.toString(16);
 		} catch (NoSuchAlgorithmException e) {
 			return e.getMessage();
 		}
 	}
-
 
 	/**
 	 * @param seed
@@ -144,14 +143,14 @@ public class Strings {
 		value = value.replace("+", "_");
 		return value;
 	}
-	
+
 	/**
-	 * Take an arbitrary string and return an integer if it could be an accountID.
-	 * Other wise return a 0
-	 * Examples: <br />
+	 * Take an arbitrary string and return an integer if it could be an
+	 * accountID. Other wise return a 0 Examples: <br />
 	 * 11883 returns 11883<br />
 	 * 11883.4 returns 11883<br />
 	 * Foobar returns 0
+	 * 
 	 * @param query
 	 * @return
 	 */
@@ -170,18 +169,18 @@ public class Strings {
 		float newValue = 0;
 		try {
 			newValue = Float.parseFloat(value);
-		} catch (NumberFormatException e) {}
+		} catch (NumberFormatException e) {
+		}
 		return newValue;
 	}
-	
-	
-	public static String stripNonStandardCharacters( String input ) {
+
+	public static String stripNonStandardCharacters(String input) {
 		input = input.replace('“', '"');
 		input = input.replace('”', '"');
 		input = input.replace("`", "'");
 		return input;
 	}
-	
+
 	public static String stripPhoneNumber(String phone) {
 		if (phone == null)
 			return null;
@@ -195,19 +194,18 @@ public class Strings {
 		valid.add('8');
 		valid.add('9');
 		StringBuffer buffer = new StringBuffer();
-		for(int i=0; i < phone.length(); i++) {
+		for (int i = 0; i < phone.length(); i++) {
 			char nextChar = phone.charAt(i);
-			if (buffer.toString().length() < 10 
-					&& valid.contains(nextChar)) {
+			if (buffer.toString().length() < 10 && valid.contains(nextChar)) {
 				buffer.append(nextChar);
 				valid.add('1');
 				valid.add('0');
 			}
 		}
-		
+
 		return buffer.toString();
 	}
-	
+
 	public static Map<String, String> mapParams(String params) {
 		Map<String, String> paramMap = new HashMap<String, String>();
 		String expression = "(\\w*)=([^&]*)?";
@@ -217,7 +215,26 @@ public class Strings {
 			paramMap.put(matcher.group(1), matcher.group(2));
 		}
 		return paramMap;
+
+	}
+
+	public static String indexName(String name) {
+		if (name == null)
+			return null;
+		name = name.toUpperCase();
+
+		String expression = "[A-Z0-9]+";
+		Pattern pattern = Pattern.compile(expression, Pattern.CANON_EQ);
+		Matcher matcher = pattern.matcher(name);
+
+		StringBuffer buf = new StringBuffer();
+		boolean found = false;
+		while ((found = matcher.find())) {
+			System.out.println(matcher.group());
+			buf.append(matcher.group());
+		}
 		
+		return buf.toString();
 	}
 
 }

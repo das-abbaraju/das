@@ -66,6 +66,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			// Default their current membership to 0
 			contractor.setMembershipLevel(new InvoiceFee(InvoiceFee.FREE));
 			contractor.setAuditColumns(new User(User.CONTRACTOR));
+			contractor.setNameIndex();
 			contractor = accountDao.save(contractor);
 			user.setIsActive(YesNo.Yes);
 			user.setAccount(contractor);

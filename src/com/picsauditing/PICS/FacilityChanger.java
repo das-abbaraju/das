@@ -65,19 +65,23 @@ public class FacilityChanger {
 		
 		addNote("Linked contractor to " + operator.getName());
 
-		// Send the contractor an email that the operator added them
-		EmailBuilder emailBuilder = new EmailBuilder();
-		emailBuilder.setTemplate(9); // Contractor Added
-		emailBuilder.setPermissions(permissions);
-		emailBuilder.setContractor(contractor);
-		emailBuilder.addToken("operator", operator);
-		EmailQueue emailQueue = emailBuilder.build();
-		emailQueue.setPriority(60);
-		EmailSender.send(emailQueue);
+		if (!permissions.isContractor()) {
+			// Send the contractor an email that the operator added them
+			EmailBuilder emailBuilder = new EmailBuilder();
+			emailBuilder.setTemplate(9); // Contractor Added
+			emailBuilder.setPermissions(permissions);
+			emailBuilder.setContractor(contractor);
+			emailBuilder.addToken("operator", operator);
+			EmailQueue emailQueue = emailBuilder.build();
+			emailQueue.setPriority(60);
+			EmailSender.send(emailQueue);
+		}
 		
-		// I don't think this should happen automatically
-		// Especially if it's no the contractor doing the adding (Trevor)
-		//contractor.setRenew(true);
+		if (permissions.isContractor())
+			// If the contractor logs in and adds a facility, 
+			// then let's assume they want to be part of PICS
+			contractor.setRenew(true);
+		
 		contractor.setLastUpgradeDate(new Date());
 		
 		contractor.setNeedsRecalculation(true);
