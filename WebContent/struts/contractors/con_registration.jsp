@@ -98,6 +98,9 @@ function checkTaxId(taxId) {
 					name="contractor.mainTrade" headerKey=""
 					headerValue="- Choose a trade -" listKey="question"
 					listValue="question" /><span class="redMain">*</span></li>
+				<li><label>Requested By:</label>
+						<s:select cssStyle="font-size: 12px;" list="operatorList" name="contractor.requestedById" headerKey="0" headerValue="- Choose an operator -" listKey="id" listValue="name"/>
+				</li>
 				<li><label>DOT OQ:</label> 
 					<s:radio list="#{'Yes':'Yes','No':'No'}"
 						name="contractor.oqEmployees" theme="pics"/></li>
