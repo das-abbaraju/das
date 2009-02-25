@@ -1,5 +1,6 @@
 package com.picsauditing.cron;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -32,7 +33,9 @@ public class InMemoryAggregator implements CronMetricsAggregator {
 				break;
 			}
 			
-			summary.add(metric);
+			if( ( System.currentTimeMillis() - metric.getEndTime().getTime() ) <= timeFrame.getPeriod() ) {
+				summary.add(metric);
+			}
 		}
 		
 		return summary;
@@ -52,6 +55,7 @@ public class InMemoryAggregator implements CronMetricsAggregator {
 	@Override
 	public void stopJob() {
 		currentMetric.setTotalCronTime(System.currentTimeMillis() - startTime);
+		currentMetric.setEndTime(new Date());
 		stopJobSync(currentMetric);
 	}
 

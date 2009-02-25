@@ -27,7 +27,8 @@ public class ContractorCron extends PicsActionSupport {
 	public String execute() throws Exception {
 
 		if( cronMetrics.startJob() ) {
-		
+			flagCalculator.setCronMetrics(cronMetrics);
+			
 			PicsLogger.start("contractorCron");
 	
 			try {

@@ -1,5 +1,7 @@
 package com.picsauditing.cron;
 
+import com.opensymphony.xwork2.util.ValueStack;
+
 public enum CronReportingPeriod {
 	TenMinutes ( 10 * 60 * 1000L ), 
 	ThirtyMinutes ( 30 * 60 * 1000L ), 
@@ -19,4 +21,5 @@ public enum CronReportingPeriod {
 	public long getPeriod() {
 		return period;
 	}
+	
 }

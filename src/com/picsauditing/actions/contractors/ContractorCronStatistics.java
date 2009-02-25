@@ -30,7 +30,7 @@ public class ContractorCronStatistics extends PicsActionSupport {
 		cronMList.add(5, metricsAggregator.getMetrics(CronReportingPeriod.SixHours));
 		cronMList.add(6, metricsAggregator.getMetrics(CronReportingPeriod.TwelveHours)); 		
 		cronMList.add(7, metricsAggregator.getMetrics(CronReportingPeriod.TwentyFourHours)); 		
-		
+
 		return SUCCESS;
 	}
 
@@ -42,4 +42,16 @@ public class ContractorCronStatistics extends PicsActionSupport {
 		this.cronMList = cronMList;
 	}
 
+	public CronMetricsAggregator getMetricsAggregator() {
+		return metricsAggregator;
+	}
+
+	public void setMetricsAggregator(CronMetricsAggregator metricsAggregator) {
+		this.metricsAggregator = metricsAggregator;
+	}
+	
+	public CronReportingPeriod[] getCronPeriods() {
+		return CronReportingPeriod.values();
+	}
+	
 }

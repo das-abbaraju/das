@@ -73,7 +73,7 @@ public class CronMetrics {
 			minContractorTime = time;
 		}
 
-		else if( time > maxContractorTime ) {
+		if( time > maxContractorTime ) {
 			maxContractorTime = time;
 		}
 	}
@@ -96,6 +96,9 @@ public class CronMetrics {
 		}
 
 		averageCronTime = totalCronTime / cronJobs;
-		averageContractorTime = totalCronTime / totalContractors;
+		
+		if( totalContractors != 0 ) {
+			averageContractorTime = totalCronTime / totalContractors;
+		}
 	}
 }
