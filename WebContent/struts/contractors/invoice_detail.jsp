@@ -66,7 +66,7 @@ h1 {
 					<a class="print noprint" href="javascript: window.print();">Print</a>
 					<s:if test="edit">
 						<br />
-						<input type="submit" class="positive" name="button" value="Save" />
+						<input type="submit" class="picsbutton positive" name="button" value="Save" />
 					</s:if>
 					</div>
 					</td>
