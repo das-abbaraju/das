@@ -18,4 +18,26 @@
 	<p><label>Assigned Representative:</label> <s:property value="contractor.auditor.name" /></p>
 	<p><label>Representative's Email:</label> <s:property value="contractor.auditor.email" /></p>
 </s:if>
+<p>
+	<label>Current Level:</label>
+	$<s:property value="contractor.membershipLevel.amount" /> USD <br />
+	<s:property value="contractor.membershipLevel.fee" />
+</p>
+<s:if test="!contractor.ccOnFile">
+	<a href="ContractorPaymentOptions.action?id=3" class="edit" style="float: right">Edit Credit Card Info</a>
+</s:if>
+<p>
+	<label>Credit Card on File?</label>
+	<s:if test="contractor.ccOnFile">Yes</s:if>
+	<s:else>
+		No
+	</s:else>
+</p>
+
+<s:if test="contractor.renew == false">
+	<div id="alert">
+		Your account is not set to renew and will expire on 
+		<s:property value="contractor.paymentExpires"/>.
+	</div>
+</s:if>
 
