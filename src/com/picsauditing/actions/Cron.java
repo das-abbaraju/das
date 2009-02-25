@@ -103,7 +103,7 @@ public class Cron extends PicsActionSupport {
 
 		try {
 			startTask("\nInactivating Accounts via Billing Status...");
-			String where = "a.active = 'Y' AND c.renew = 0 AND paymentExpires < NOW()";
+			String where = "a.active = 'Y' AND a.renew = 0 AND paymentExpires < NOW()";
 			List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where); 
 			for (ContractorAccount conAcct : conAcctList) {
 				conAcct.setActive('N');
