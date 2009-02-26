@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -626,6 +627,19 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setInvoices(List<Invoice> invoices) {
 		this.invoices = invoices;
 	}
+	
+	@Transient
+	public List<Invoice> getSortedInvoices() {
+		List<Invoice> sortedInvoiceList = new ArrayList(getInvoices());
+		Collections.sort(sortedInvoiceList, new Comparator<Invoice>() {
+			@Override
+			public int compare(Invoice invoiceOne, Invoice invoiceTwo) {
+								
+				return invoiceTwo.getCreationDate().compareTo(invoiceOne.getCreationDate());
+			}
+		});
+		return sortedInvoiceList;
+	}	
 
 	/**
 	 * The following are states of Billing Status: Membership Canceled
