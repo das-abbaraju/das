@@ -77,37 +77,26 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		key = appPropDao.find("brainTree.key").getValue();
 		key_id = appPropDao.find("brainTree.key_id").getValue();
 
-		// StringBuffer to hold any Hash Problems
-		StringBuffer hashOutput = new StringBuffer("");
-		
 		// A response was received
 		if (response_code != null) {
 			String newHash = BrainTree.buildHash(orderid, amount, response,
-					transactionid, avsresponse, cvvresponse, customer_vault_id,
-					time, key);
+					transactionid, avsresponse, cvvresponse, customer_vault_id,	time, key);
 			
-			if (!newHash.equals(hash)) {
+			if (response.equals("3")) {
+				PicsLogger.start("CC_Hash_Errors");
 				PicsLogger.log("Hash issues for Contractor id= " + contractor.getIdString());
-
-				hashOutput.append("CREDIT CARD HASH PROBLEM: \n");
-				hashOutput.append("CONTRACTOR ID: " + contractor.getIdString() + "\n");
-				hashOutput.append("PICS HASH: " + newHash + " ");
-				hashOutput.append("BASED ON: \n");
-				hashOutput.append("    RESPONSE     : " + response + "\n");
-				hashOutput.append("    TRANS ID     : " + transactionid + "\n");
-				hashOutput.append("    CUST VAULT ID: " + customer_vault_id	+ "\n");
-				hashOutput.append("    TIME         : " + time + "\n");
-
-				hashOutput.append("BRAINTREE HASH: " + hash + " ");
-				hashOutput.append("BASED ON: \n");
-				hashOutput.append("    CUST VAULT ID: " + customer_vault_id	+ "\n");
-				hashOutput.append("    TIME         : " + time + "\n");
-
-				EmailSender mailer = new EmailSender();
-				String subject = "Credit Card Hash "
-						+ (newHash.equals(hash) ? "VALID" : "ERROR");
-				mailer.sendMail(subject, hashOutput.toString(),
-						"info@picsauditing.com", "errors@picsauditing.com");
+				PicsLogger.log("CREDIT CARD HASH PROBLEM: ");
+				PicsLogger.log("CONTRACTOR ID: " + contractor.getIdString());
+				PicsLogger.log("PICS HASH: " + newHash);
+				PicsLogger.log("BASED ON:");
+				PicsLogger.log("    RESPONSE     : " + response);
+				PicsLogger.log("    TRANS ID     : " + transactionid);
+				PicsLogger.log("    CUST VAULT ID: " + customer_vault_id);
+				PicsLogger.log("    TIME         : " + time);
+				PicsLogger.log("BRAINTREE HASH: " + hash);
+				PicsLogger.log("BASED ON:");
+				PicsLogger.log("    CUST VAULT ID: " + customer_vault_id + "\n\n");
+				PicsLogger.stop();
 			}
 
 			if (!Strings.isEmpty(responsetext) && !response.equals("1")) {
