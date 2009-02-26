@@ -123,7 +123,7 @@ h1 {
 								<td>
 									<s:textfield name="invoice.items[%{#stat.index}].description" value="%{description}" size="30" /> (optional description)
 									<s:if test="invoiceFee.fee != contractor.newMembershipLevel.fee">
-										<input type="submit" name="button" value="Change to: <s:property value="contractor.newMembershipLevel.fee" />">
+										<input type="submit" class="picsbutton positive" name="button" value="Change to: <s:property value="contractor.newMembershipLevel.fee" />">
 									</s:if>									
 								</td>
 								<td class="right">
@@ -165,11 +165,12 @@ h1 {
 						</s:if>
 						<s:else>
 							<pics:permission perm="Billing" type="Edit">
-							<s:if test="invoice.totalAmount > 0">
 							<td colspan="3" class="print noprint">
+							<s:if test="invoice.totalAmount > 0">
+							
 								<s:if test="invoice.paymentMethod.creditCard">
 									<s:if test="contractor.ccOnFile">
-										<input type="submit" name="button" value="Charge Credit Card for $<s:property value="invoice.totalAmount" />">
+										<input type="submit" class="picsbutton positive" name="button" value="Charge Credit Card for $<s:property value="invoice.totalAmount" />">
 									</s:if>
 									<s:else>
 										No Credit Card on File
@@ -177,10 +178,13 @@ h1 {
 								</s:if>
 								<s:else>
 									Check#<s:textfield name="invoice.checkNumber" size="8"></s:textfield>
-									<input type="submit" name="button" value="Collect Check for $<s:property value="invoice.totalAmount" />">
+									<input type="submit" class="picsbutton positive" name="button" value="Collect Check for $<s:property value="invoice.totalAmount" />">
 								</s:else>
-								</td>
-							</s:if>	
+							</s:if>
+							<s:elseif test="invoice.totalAmount < 0 || invoice.totalAmount == 0">
+								<input type="submit" class="picsbutton positive" name="button" value="Mark Paid">
+							</s:elseif>
+							</td>	
 							</pics:permission>
 						</s:else>
 					</tr>

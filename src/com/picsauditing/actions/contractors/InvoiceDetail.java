@@ -114,6 +114,11 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 					payInvoice();
 					addNote("Received check for $" + invoice.getTotalAmount());
 				}
+				if (button.startsWith("Mark Paid")) {
+					markInvoicePaid();
+					addNote("Marked invoice paid with amount " + invoice.getTotalAmount() + ". No payment");
+				}
+				
 			}
 			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 		}
@@ -145,11 +150,17 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		}
 	}
 	
-	private void payInvoice() {
+	private void markInvoicePaid() {
 		invoice.setPaid(true);
 		invoice.setPaidDate(new Date());
 		invoice.setAuditColumns(getUser());
 		invoiceDAO.save(invoice);
+		
+		updateTotals();
+	}	
+	
+	private void payInvoice() {
+		markInvoicePaid();
 		
 		if (contractor.getMembershipDate() == null) {
 			for(InvoiceItem item : invoice.getItems()) {
