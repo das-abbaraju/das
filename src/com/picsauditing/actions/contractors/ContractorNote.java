@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.picsauditing.PICS.Utilities;
-import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
@@ -13,7 +12,6 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.util.ReportFilterNote;
 import com.picsauditing.util.Strings;
 
@@ -53,14 +51,14 @@ public class ContractorNote extends ContractorActionSupport {
 
 	public List<Note> getOpenTasks() {
 		if (openTasks == null)
-			openTasks = noteDAO.getNotes(contractor.getId(), permissions, "n.status = 1" + getFilters("tasks"), 25);
+			openTasks = noteDAO.getNotes(contractor.getId(), permissions, "status = 1" + getFilters("tasks"), 25);
 		
 		return openTasks;
 	}
 
 	public List<Note> getNotes() {
 		if (notes == null) 
-			notes = noteDAO.getNotes(contractor.getId(), permissions, "n.status = 2" + getFilters("notes"), 25);
+			notes = noteDAO.getNotes(contractor.getId(), permissions, "status = 2" + getFilters("notes"), 25);
 		
 		return notes;
 	}
