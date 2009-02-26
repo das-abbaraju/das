@@ -15,6 +15,8 @@ import com.picsauditing.util.Strings;
 public class ReportAccountQuick extends ReportAccount {
 	public void buildQuery() {
 		sql = new SelectAccount();
+		sql.addField("city");
+		sql.addField("state");
 		sql.addWhere("a.type IN ('Operator', 'Corporate', 'Contractor')");
 		sql.setPermissions(permissions);
 		orderByDefault = "a.type, a.name";

@@ -25,7 +25,8 @@
 	<tr>
 		<td>Type</td>
 		<td>Name</td>
-
+		<td>City</td>
+		<td>State</td>
 	</tr>
 	</thead>
 	<s:iterator value="data">
@@ -40,6 +41,12 @@
 					<a href="FacilitiesEdit.action?opID=<s:property value="get('id')"/>"
 					><s:property value="get('name')" /></a>
 				</s:else>
+			</td>
+			<td>
+				<s:property value="get('city')" />
+			</td>
+			<td>
+				<s:property value="get('state')" />
 			</td>
 		</tr>
 	</s:iterator>
