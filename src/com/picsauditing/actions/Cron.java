@@ -107,7 +107,6 @@ public class Cron extends PicsActionSupport {
 			List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where); 
 			for (ContractorAccount conAcct : conAcctList) {
 				conAcct.setActive('N');
-				conAcct.setMembershipLevel(null);
 				conAcct.setPaymentExpires(null);
 				contractorAccountDAO.save(conAcct);
 			}

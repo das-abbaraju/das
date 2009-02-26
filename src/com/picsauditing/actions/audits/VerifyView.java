@@ -183,7 +183,7 @@ public class VerifyView extends ContractorActionSupport {
 	}
 
 	public List<Note> getContractorNotes() {
-		List<Note> notes = noteDAO.findWhere(contractor.getId(), "noteCategory = 'Audits'", 10);
+		List<Note> notes = noteDAO.getNotes(contractor.getId(), permissions, "noteCategory = 'Audits'", 10);
 		return notes;
 	}
 

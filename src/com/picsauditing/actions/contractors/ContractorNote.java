@@ -53,14 +53,14 @@ public class ContractorNote extends ContractorActionSupport {
 
 	public List<Note> getOpenTasks() {
 		if (openTasks == null)
-			openTasks = noteDAO.findWhere(contractor.getId(), "n.status = 1" + getFilters("tasks"), 25);
+			openTasks = noteDAO.getNotes(contractor.getId(), permissions, "n.status = 1" + getFilters("tasks"), 25);
 		
 		return openTasks;
 	}
 
 	public List<Note> getNotes() {
-		if (notes == null)
-			notes = noteDAO.findWhere(contractor.getId(), "n.status = 2" + getFilters("notes"), 25);
+		if (notes == null) 
+			notes = noteDAO.getNotes(contractor.getId(), permissions, "n.status = 2" + getFilters("notes"), 25);
 		
 		return notes;
 	}

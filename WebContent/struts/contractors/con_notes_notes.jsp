@@ -45,7 +45,7 @@
 				<a class="filter" href="#" onclick="filter('notes', 'filter.userAccountID', '<s:property value="createdBy.account.id" />'); return false;"><s:property 
 					value="createdBy.account.name" /></a><br />
 				<a class="filter" href="#" onclick="filter('notes', 'filter.viewableBy', '<s:property value="viewableBy.id" />'); return false;"><s:property 
-					value="viewableBy.name" /></a> can see<br />
+					value="viewableBy.name" /></a><br />
 			</td>
 			<td class="priority"><a href="#" onclick="filter('notes', 'filter.priority', '<s:property value="priority" />'); return false;"><img src="images/star<s:property value="priority" />.gif" 
 				height="25" width="25" title="<s:property value="priority" /> Priority" /></a></td>
