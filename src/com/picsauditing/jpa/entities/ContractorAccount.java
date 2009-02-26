@@ -630,7 +630,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	
 	@Transient
 	public List<Invoice> getSortedInvoices() {
-		List<Invoice> sortedInvoiceList = new ArrayList(getInvoices());
+		List<Invoice> sortedInvoiceList = new ArrayList<Invoice>(getInvoices());
 		Collections.sort(sortedInvoiceList, new Comparator<Invoice>() {
 			@Override
 			public int compare(Invoice invoiceOne, Invoice invoiceTwo) {
