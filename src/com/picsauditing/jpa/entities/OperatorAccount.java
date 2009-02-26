@@ -30,7 +30,7 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 
 	private String activationEmails = "";
 	private String doSendActivationEmail = "No";
-	private String doContractorsPay = "No";
+	private String doContractorsPay = "Yes";
 	private YesNo canSeeInsurance = YesNo.No;
 	private YesNo isCorporate = YesNo.No;
 	private User insuranceAuditor;
@@ -74,7 +74,10 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.doSendActivationEmail = doSendActivationEmail;
 	}
 
-	@Column(name = "doContractorsPay", nullable = false, length = 8)
+	/**
+	 * Yes, No, Multiple
+	 */
+	@Column(nullable = false, length = 8)
 	public String getDoContractorsPay() {
 		return this.doContractorsPay;
 	}
