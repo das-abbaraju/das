@@ -148,7 +148,7 @@
 							</tr>
 						</thead>
 						<tbody>
-						<s:iterator value="contractor.invoices">
+						<s:iterator value="contractor.sortedInvoices">
 							<tr style="cursor: pointer;" onclick="window.location = 'InvoiceDetail.action?invoice.id=<s:property value="id"/>'">
 								<td class="center"><a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><s:property value="id" /></a></td>
 								<td class="right"><s:date name="creationDate" format="M/d/yy"/></td>
