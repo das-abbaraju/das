@@ -63,7 +63,8 @@ public class ReportFilterNote extends ReportFilter {
 	}
 
 	public LowMedHigh[] getPriorityList() {
-		return LowMedHigh.values();
+//		return LowMedHigh.values();
+		return new LowMedHigh[] { LowMedHigh.Low, LowMedHigh.Med, LowMedHigh.High };
 	}
 
 	public NoteCategory[] getCategoryList() {
