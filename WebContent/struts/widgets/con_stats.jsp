@@ -23,9 +23,7 @@
 	$<s:property value="contractor.membershipLevel.amount" /> USD <br />
 	<s:property value="contractor.membershipLevel.fee" />
 </p>
-<s:if test="!contractor.ccOnFile">
-	<a href="ContractorPaymentOptions.action?id=3" class="edit" style="float: right">Edit Credit Card Info</a>
-</s:if>
+<a href="ContractorPaymentOptions.action?id=<s:property value="contractor.id" />" class="edit" style="float: right">Edit Credit Card Info</a>
 <p>
 	<label>Credit Card on File?</label>
 	<s:if test="contractor.ccOnFile">Yes</s:if>
