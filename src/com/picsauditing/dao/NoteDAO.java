@@ -89,7 +89,7 @@ public class NoteDAO extends PicsDAO {
 
 		// Show intra-company notes users
 		if (permissions.isOperator() || permissions.isCorporate())
-			permWhere += " OR (viewableBy.id IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + ")";
+			permWhere += " OR (viewableBy.id IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + "))";
 
 		Query query = em.createQuery("FROM Note WHERE account.id = :accountID "
 				+ " AND (" + where + ") " + " AND (" + permWhere + ") "
