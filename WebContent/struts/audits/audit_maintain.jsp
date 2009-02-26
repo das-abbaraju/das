@@ -57,9 +57,9 @@
 </fieldset>
 <fieldset class="form submit">
 	<div class="buttons">
-		<button class="positive" name="button" value="Save" type="submit">Save</button>
+		<input type="submit" class="picsbutton positive" name="button" value="Save"/>
 		<pics:permission perm="AuditEdit" type="Delete">
-			<button name="button" class="negative" value="Delete" type="submit" onclick="return confirm('Are you sure you want to permanently remove this audit?');">Delete</button>
+			<input type="submit" class="picsbutton negative" name="button" value="Delete" onclick="return confirm('Are you sure you want to permanently remove this audit?');"/>
 		</pics:permission>
 	</div>
 </fieldset>
