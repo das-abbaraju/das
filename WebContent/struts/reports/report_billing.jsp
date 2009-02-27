@@ -20,7 +20,7 @@
 		<th class="right"><a href="javascript: changeOrderBy('form1','oldAmount');">Old Level</a></th>
 		<th class="right"><a href="javascript: changeOrderBy('form1','newAmount');">New Level</a></th>
 		<th class="right"><a href="javascript: changeOrderBy('form1','billingStatus');">State</a></th>
-		<th>CC<th>
+		<th>CC</th>
 		<th class="right"><a href="javascript: changeOrderBy('form1','creationDate');">Registered</a></th>	    
 		<th class="right"><a href="javascript: changeOrderBy('form1','lastUpgradeDate');">Upgraded</a></th>	    
 		<th class="right"><a href="javascript: changeOrderBy('form1','paymentExpires');">Renews</a></th>	    
@@ -35,12 +35,14 @@
 			<td class="right">$<s:property value="get('oldAmount')"/></td>
 			<td class="right">$<s:property value="get('newAmount')"/></td>
 			<td><s:property value="get('billingStatus')"/></td>
-			<s:if test="ccOnFile">
-				<td class="center">Yes</td>
-			</s:if>
-			<s:else>
-				<td class="center">No</td>
-			</s:else>
+			<td class="center">
+				<s:if test="ccOnFile">
+					Yes
+				</s:if>
+				<s:else>
+					No
+				</s:else>
+			</td>
 			<td class="right"><s:date name="get('creationDate')" format="M/d/yy"/></td>
 			<td class="right"><s:date name="get('lastUpgradeDate')" format="M/d/yy"/></td>
 			<td class="right"><s:date name="get('paymentExpires')" format="M/d/yy"/></td>
