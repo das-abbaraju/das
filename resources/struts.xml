@@ -921,6 +921,11 @@
 			class="com.picsauditing.actions.report.ReportPolicyVerification">
 			<result>struts/reports/policy_verification.jsp</result>
 		</action>
+		
+		<action name="PolicySaveAjax"
+			class="com.picsauditing.actions.audits.PolicySave">
+			<result>struts/blank.jsp</result>
+		</action>
 
 		<action name="BuildCertAudits"
 			class="com.picsauditing.actions.BuildCertAudits">

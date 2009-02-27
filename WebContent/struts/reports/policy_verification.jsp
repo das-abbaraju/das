@@ -25,7 +25,7 @@
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
-			<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:property value="get('auditName')"/></a></td>
+			<td><a href="AuditCat.action?auditID=<s:property value="get('auditID')"/>&catDataID=<s:property value="get('catdataID')" />"><s:property value="get('auditName')"/></a></td>
 			<td><s:date name="get('completedDate')" format="M/d/yy"/></td>
 			<td><s:property value="get('auditStatus')"/></td>
 		

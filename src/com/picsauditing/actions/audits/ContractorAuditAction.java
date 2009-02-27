@@ -104,14 +104,6 @@ public class ContractorAuditAction extends AuditActionSupport {
 				auditStatus = AuditStatus.Active;
 		}
 
-		if ("Verify".equals(button)) {
-			auditStatus = AuditStatus.Active;
-		}
-
-		if ("Reject".equals(button)) {
-			auditStatus = AuditStatus.Pending;
-		}
-
 		if (auditStatus != null && !auditStatus.equals(conAudit.getAuditStatus())) {
 			// We're changing the status
 			if (auditStatus.equals(AuditStatus.Active)) {

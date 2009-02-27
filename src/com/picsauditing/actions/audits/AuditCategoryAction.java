@@ -379,4 +379,8 @@ public class AuditCategoryAction extends AuditActionSupport {
 			return true;
 		return false;
 	}
+	
+	public boolean needsNextPolicyForContractor(){
+		return findNextRequiredPolicyForVerification(conAudit) != null;
+	}
 }

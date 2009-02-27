@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import org.apache.struts2.ServletActionContext;
+
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Inputs;
 import com.picsauditing.access.MenuComponent;
@@ -396,4 +398,24 @@ public class ContractorActionSupport extends PicsActionSupport {
 		return notes;
 	}
 
+	public ContractorAudit findNextRequiredPolicyForVerification(ContractorAudit conAudit) {
+		for (ContractorAudit contractorAudit : conAudit.getContractorAccount().getAudits()) {
+			if (!conAudit.equals(contractorAudit)
+					&& contractorAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
+					&& (contractorAudit.getAuditStatus().isSubmitted() || contractorAudit.getAuditStatus()
+							.isResubmitted())) {
+				for (ContractorOperator contractorOperator : conAudit.getContractorAccount().getOperators()) {
+					for (AuditOperator auditOperator : contractorOperator.getOperatorAccount().getAudits()) {
+						if (contractorAudit.getAuditType().equals(auditOperator.getAuditType())
+								&& auditOperator.isCanSee() && auditOperator.getMinRiskLevel() > 0
+								&& auditOperator.getRequiredAuditStatus().isActive()) {
+							return contractorAudit;
+						}
+					}
+				}
+			}
+		}
+
+		return null;
+	}
 }

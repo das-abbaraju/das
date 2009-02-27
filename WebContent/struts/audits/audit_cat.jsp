@@ -27,6 +27,26 @@
 		pars = 'scrollbars=yes,resizable=yes,width=700,height=450';
 		window.open(url,title,pars);
 	}
+
+	function changePolicyStatus(id, policyStatus) {
+		var redirectOptions = Form.getInputs("redirectOptionsForm","radio", "redirectOptions").find(function (radio) {return radio.checked;}).value
+		var pars = 'auditID='+id+'&policyStatus='+policyStatus+"&redirectOptions="+redirectOptions;
+		var myAjax = new Ajax.Updater('','PolicySaveAjax.action', 
+		{
+			method: 'post', 
+			parameters: pars,
+			onComplete : function(transport) {
+				alert('responseHeaders: ' + transport.getAllResponseHeaders());
+			 	alert('response header content-length: ' + transport.getResponseHeader('content-length'));
+				 alert('status: ' + transport.status);
+				 alert('statusText: ' + transport.statusText);
+				 alert('responseXML: ' + transport.responseXML);
+				 alert('responseText: ' + transport.responseText);
+				 window.open(transport);
+			}
+		});
+		return false;
+	 }
 </script>
 </head>
 <body>
@@ -150,7 +170,36 @@
 </s:iterator>
 <s:if test="catDataID > 0">
 <br clear="all"/>
-
+<pics:permission perm="InsuranceVerification">
+	<s:if test="conAudit.auditStatus.toString().equals('Submitted') || conAudit.auditStatus.toString().equals('Resubmitted')">
+		<div id="alert" class="buttons">
+			<s:if test="conAudit.auditType.classType.toString().equals('Policy') ">
+				<form id="redirectOptionsForm" method="get" action="PolicySaveAjax.action">
+					<input type="hidden" name="auditID" value="<s:property value="auditID" />"/>
+					<input type="submit" class="picsbutton positive" value="Verify" name="policyStatus" />
+					<input type="submit" class="picsbutton negative" value="Reject" name="policyStatus" />
+					Click Approve when you have verified the <s:property value="conAudit.auditType.auditName"/>. 
+					<br />
+				 	<s:if test="needsNextPolicyForContractor()"> 
+				 		<input type="radio" id="radioOldestPolicy" name="redirectOptions" value="oldestPolicy" />
+						<label for="radioOldestPolicy">Oldest Submitted Policy</label>
+						<input type="radio" id="radioNextPolicy" name="redirectOptions" value="nextPolicyForContractor" checked />
+						<label for="radioNextPolicy">Next Policy for Contractor</label>
+				 	</s:if>
+				 	<s:else>
+				 		<input type="radio" id="radioOldestPolicy" name="redirectOptions" value="oldestPolicy" checked />
+						<label for="radioOldestPolicy">Oldest Submitted Policy</label>
+				 	</s:else>
+				 	
+					<input type="radio" id="radioBackToReport" name="redirectOptions" value="backToReport" />
+					<label for="radioBackToReport">Back to Report</label>
+					<input type="radio" id="radioStay" name="redirectOptions" value="stay" />
+					<label for="radioStay">Stay on this Page</label>
+				</form>	
+			</s:if>
+		</div>
+	</s:if>
+</pics:permission>
 <div class="buttons" style="float: right;">
 	<s:if test="nextCategory == null">
 		<a href="Audit.action?auditID=<s:property value="auditID"/>" class="positive">Next &gt;&gt;</a>

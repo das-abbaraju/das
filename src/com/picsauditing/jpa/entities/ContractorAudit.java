@@ -118,6 +118,13 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 				// If we're going "forward" then (re)set the closedDate
 				if (completedDate == null)
 					completedDate = new Date();
+				for (ContractorAuditOperator cao : getOperators()){
+					if(cao.getAudit().getId() == this.id && cao.getAudit().getAuditType().getClassType().equals(AuditTypeClass.Policy) && cao.getStatus().equals(CaoStatus.Rejected)){
+						cao.setStatus(CaoStatus.Awaiting);
+						cao.setAuditColumns(new User(12));
+					}
+				}
+				
 			}
 			if (auditStatus.equals(AuditStatus.Active)) {
 				// If we're going "forward" then (re)set the closedDate
