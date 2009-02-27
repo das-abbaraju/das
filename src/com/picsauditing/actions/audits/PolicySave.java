@@ -31,10 +31,10 @@ public class PolicySave extends AuditActionSupport {
 
 		findConAudit();
 		if ("Verify".equals(policyStatus)) {
-			conAudit.setAuditStatus(AuditStatus.Active);
+			conAudit.changeStatus(AuditStatus.Active, getUser());
 		}
 		if ("Reject".equals(policyStatus)) {
-			conAudit.setAuditStatus(AuditStatus.Pending);
+			conAudit.changeStatus(AuditStatus.Pending, getUser());
 		}
 
 		auditDao.save(conAudit);

@@ -26,6 +26,7 @@ public class ReportPolicyList extends ReportContractorAudits {
 		getFilter().setShowAuditType(false);
 		getFilter().setShowAuditor(false);
 		getFilter().setShowConAuditor(false);
-		getFilter().setShowCaoStatus(true);
+		if(permissions.isOperator())
+			getFilter().setShowCaoStatus(true);
 	}
 }

@@ -121,7 +121,7 @@ public class AuditBuilder {
 			if (conAudit.getAuditType().isPqf()) {
 				if (conAudit.getAuditStatus().equals(AuditStatus.Expired)) {
 					// This should never happen...but just in case
-					conAudit.setAuditStatus(AuditStatus.Pending);
+					conAudit.changeStatus(AuditStatus.Pending, user);
 					cAuditDAO.save(conAudit);
 				}
 				pqfAudit = conAudit;
@@ -585,7 +585,7 @@ public class AuditBuilder {
 					&& year == Integer.parseInt(cAudit.getAuditFor())) {
 				if (cAudit.getAuditStatus().equals(AuditStatus.Expired))
 					// this should never happen actually...but just incase
-					cAudit.setAuditStatus(AuditStatus.Pending);
+					cAudit.changeStatus(AuditStatus.Pending, user);
 				found = true;
 			}
 		}

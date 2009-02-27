@@ -130,7 +130,7 @@ public class ConAuditList extends ContractorActionSupport {
 				conAudit.setAuditFor(this.auditFor);
 				conAudit.setContractorAccount(contractor);
 				conAudit.setAuditColumns(this.getUser());
-				conAudit.setAuditStatus(AuditStatus.Pending);
+				conAudit.changeStatus(AuditStatus.Pending, getUser());
 				if (selectedOperator != 0) {
 					conAudit.setRequestingOpAccount(new OperatorAccount());
 					conAudit.getRequestingOpAccount().setId(selectedOperator);

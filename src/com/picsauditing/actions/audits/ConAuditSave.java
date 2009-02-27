@@ -30,11 +30,11 @@ public class ConAuditSave extends AuditActionSupport {
 			
 			findConAudit();
 			if(auditStatus.equals(AuditStatus.Active.toString())) {
-				conAudit.setAuditStatus(AuditStatus.Active);
+				conAudit.changeStatus(AuditStatus.Active, getUser());
 				emailContractorOnAudit();
 			}	
 			if(auditStatus.equals(AuditStatus.Pending.toString())) {
-				conAudit.setAuditStatus(AuditStatus.Pending);
+				conAudit.changeStatus(AuditStatus.Pending, getUser());
 			}	
 				
 			contractorAuditDAO.save(conAudit);

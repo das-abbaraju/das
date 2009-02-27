@@ -103,41 +103,45 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	}
 
 	public void setAuditStatus(AuditStatus auditStatus) {
-		if (auditStatus != null && this.auditStatus != null && !auditStatus.equals(this.auditStatus)) {
-			// If we're changing the status to Submitted or Active, then we need
-			// to set the dates
-			if (auditStatus.equals(AuditStatus.Pending)) {
-				if (closedDate != null)
-					closedDate = null;
-				if (completedDate != null)
-					completedDate = null;
-				if (expiresDate != null)
-					expiresDate = null;
-			}
-			if (auditStatus.equals(AuditStatus.Submitted) || auditStatus.equals(AuditStatus.Resubmitted)) {
-				// If we're going "forward" then (re)set the closedDate
-				if (completedDate == null)
-					completedDate = new Date();
-				for (ContractorAuditOperator cao : getOperators()){
-					if(cao.getAudit().getId() == this.id && cao.getAudit().getAuditType().getClassType().equals(AuditTypeClass.Policy) && cao.getStatus().equals(CaoStatus.Rejected)){
+		this.auditStatus = auditStatus;
+	}
+
+	@Transient
+	public void changeStatus(AuditStatus auditStatus, User user) {
+		// If we're changing the status to Submitted or Active, then we need
+		// to set the dates
+		if (auditStatus.equals(AuditStatus.Pending)) {
+			if (closedDate != null)
+				closedDate = null;
+			if (completedDate != null)
+				completedDate = null;
+			if (expiresDate != null)
+				expiresDate = null;
+		}
+		if (auditStatus.equals(AuditStatus.Submitted) || auditStatus.equals(AuditStatus.Resubmitted)) {
+			// If we're going "forward" then (re)set the closedDate
+			completedDate = new Date();
+			if (getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+				for (ContractorAuditOperator cao : getOperators()) {
+					if (cao.getStatus().equals(CaoStatus.Rejected)) {
 						cao.setStatus(CaoStatus.Awaiting);
-						cao.setAuditColumns(new User(12));
+						cao.setAuditColumns(user);
 					}
 				}
-				
-			}
-			if (auditStatus.equals(AuditStatus.Active)) {
-				// If we're going "forward" then (re)set the closedDate
-				if (closedDate == null || this.auditStatus.isPendingSubmitted())
-					closedDate = new Date();
-
-				// If we're closed, there should always be a completedDate,
-				// so fill it in if it hasn't already been set
-				if (completedDate == null)
-					completedDate = closedDate;
 			}
 		}
-		this.auditStatus = auditStatus;
+		if (auditStatus.equals(AuditStatus.Active)) {
+			// If we're going "forward" then (re)set the closedDate
+			if (closedDate == null || this.auditStatus.isPendingSubmitted())
+				closedDate = new Date();
+
+			// If we're closed, there should always be a completedDate,
+			// so fill it in if it hasn't already been set
+			if (completedDate == null)
+				completedDate = closedDate;
+		}
+		setAuditColumns(user);
+		setAuditStatus(auditStatus);
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -220,7 +224,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	public void setPercentComplete(int percentComplete) {
 		this.percentComplete = percentComplete;
 	}
-	
+
 	public float getScore() {
 		return score;
 	}
@@ -455,13 +459,15 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	@SuppressWarnings("serial")
 	public String getPrintableScore() {
 		int tempScore = Math.round(score);
-			
-		Map<Integer, String> map = new HashMap<Integer, String>() {{
-			put(-1, "None");
-			put(0, "Red");
-			put(1, "Yellow");
-			put(2, "Green");
-		}};
+
+		Map<Integer, String> map = new HashMap<Integer, String>() {
+			{
+				put(-1, "None");
+				put(0, "Red");
+				put(1, "Yellow");
+				put(2, "Green");
+			}
+		};
 
 		return map.get(tempScore);
 	}

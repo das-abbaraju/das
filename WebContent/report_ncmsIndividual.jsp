@@ -48,7 +48,7 @@
 			conAudit.getContractorAccount().setId(Integer.parseInt(conID));
 			conAudit.setPercentVerified(0);
 			conAudit.setAuditColumns(new User(permissions.getAccountId()));
-			conAudit.setAuditStatus(AuditStatus.Active);
+			conAudit.changeStatus(AuditStatus.Active, new User(permissions.getUserId()));
 			conAuditdao.save(conAudit);
 			
 			Note note = new Note();
