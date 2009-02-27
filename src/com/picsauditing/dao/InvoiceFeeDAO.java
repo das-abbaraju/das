@@ -2,11 +2,13 @@ package com.picsauditing.dao;
 
 import java.util.List;
 
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
+
+import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.InvoiceFee;
 
+@Transactional
 public class InvoiceFeeDAO extends PicsDAO {
 	
 	public InvoiceFee save(InvoiceFee o) {

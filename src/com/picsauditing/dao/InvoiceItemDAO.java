@@ -1,7 +1,10 @@
 package com.picsauditing.dao;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.picsauditing.jpa.entities.InvoiceItem;
 
+@Transactional
 public class InvoiceItemDAO extends PicsDAO {
 	public InvoiceItem save(InvoiceItem o) {
 		if (o.getId() == 0) {

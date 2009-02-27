@@ -5,11 +5,13 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.util.PermissionQueryBuilder;
 
+@Transactional
 public class InvoiceDAO extends PicsDAO {
 	public Invoice save(Invoice o) {
 		if (o.getId() == 0) {
