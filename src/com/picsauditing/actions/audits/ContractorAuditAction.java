@@ -19,10 +19,13 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.NcmsCategory;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -178,14 +181,19 @@ public class ContractorAuditAction extends AuditActionSupport {
 			}
 
 			// Save the audit status
-			conAudit.setAuditStatus(auditStatus);
+			conAudit.changeStatus(auditStatus, getUser());
 			auditDao.save(conAudit);
 
 			ContractorAccount contractorAccount = conAudit.getContractorAccount();
 			contractor.setNeedsRecalculation(true);
 			accountDao.save(contractorAccount);
 		}
-
+		
+		if(isCanResubmitPolicy()) {
+			conAudit.changeStatus(auditStatus, getUser());
+			auditDao.save(conAudit);
+		}
+		
 		if (this.conAudit.getAuditType().getId() == AuditType.NCMS)
 			return "NCMS";
 
@@ -229,12 +237,6 @@ public class ContractorAuditAction extends AuditActionSupport {
 	public boolean isCanClose() {
 		if (permissions.isContractor())
 			return false;
-		if (permissions.hasPermission(OpPerms.InsuranceVerification)
-				&& conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
-			if (conAudit.getAuditStatus().equals(AuditStatus.Submitted)
-					|| conAudit.getAuditStatus().equals(AuditStatus.Resubmitted))
-				return true;
-		}
 		if (!isCanEdit())
 			return false;
 		if (conAudit.getPercentVerified() < 100)
@@ -303,5 +305,18 @@ public class ContractorAuditAction extends AuditActionSupport {
 
 		return menu;
 	}
+	
+	public boolean isCanResubmitPolicy() {
+		if(conAudit.getAuditStatus().isSubmitted() && 
+				conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+			for(ContractorAuditOperator cOperator : conAudit.getOperators()) {
+				if(cOperator.getStatus().equals(CaoStatus.Rejected))
+					return true;
+			}
+		}
+		
+		return false;
+	}	
+	
 
 }

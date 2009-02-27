@@ -136,6 +136,12 @@
 			</s:else>
 		</div>
 	</s:if>
+	<s:if test="canResubmitPolicy">
+		<div id="alert" class="buttons" style="">
+			<s:submit id="submit" value="Submit" name="button"></s:submit>
+			 I have reviewed and updated my previously submitted data.
+		</div>
+	</s:if>
 	<s:if test="canClose">
 		<div id="alert" class="buttons" style="">
 			<s:hidden name="auditStatus" value="Active" />
