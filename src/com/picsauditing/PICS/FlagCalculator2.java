@@ -110,7 +110,7 @@ public class FlagCalculator2 {
 		debug("FlagCalculator.execute()");
 		// Load ALL operators and contractors by default
 		if (operators.size() == 0)
-			operators = operatorDAO.findWhere(false, "type='Operator'");
+			operators = operatorDAO.findWhere(false, "type='Operator' and active='Y'");
 		if (contractorIDs.size() == 0) {
 			contractorIDs = contractorDAO.findAll();
 		}
@@ -295,17 +295,6 @@ public class FlagCalculator2 {
 		contractor.setLastRecalculation(new Date());
 
 		contractorDAO.save(contractor);
-
-		// destroy with a vengence!!!!
-		// for(OperatorAccount operator : contractor.getFlags().keySet()) {
-		// ContractorOperatorFlag flag = contractor.getFlags().get(operator);
-		// flag = null;
-		// }
-		// contractor.getFlags().clear();
-		// contractor = null;
-
-		// System.out.println( "" + conID + " " + (System.currentTimeMillis() -
-		// startTime) );
 	}
 
 	protected void debug(String message) {

@@ -3,6 +3,7 @@ package com.picsauditing.PICS;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -28,6 +29,7 @@ import com.picsauditing.util.log.PicsLogger;
  * 
  * @author Trevor
  */
+@Transactional
 public class FlagCalculatorSingle {
 	private boolean answerOnly = true;
 
