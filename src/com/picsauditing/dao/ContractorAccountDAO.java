@@ -161,7 +161,7 @@ public class ContractorAccountDAO extends PicsDAO {
 				"   (c.needsRecalculation = 1 AND c.lastRecalculation < :lastRunDate) " +
 				" OR c.lastRecalculation < :weekAgo " +
 				" OR c.lastRecalculation IS NULL " +
-				") AND c.active = 'Y' ORDER BY c.lastRecalculation";
+				") ORDER BY c.lastRecalculation";
 		Query query = em.createQuery(hql);
 		query.setMaxResults(10);
 		
@@ -169,7 +169,7 @@ public class ContractorAccountDAO extends PicsDAO {
 		calendar.add(Calendar.MINUTE, -30);
 		query.setParameter("lastRunDate", calendar.getTime());
 		
-		calendar.add(Calendar.WEEK_OF_YEAR, -1);
+		calendar.add(Calendar.DAY_OF_YEAR, -5);
 		query.setParameter("weekAgo", calendar.getTime());
 		
 		return query.getResultList();
