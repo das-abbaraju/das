@@ -211,10 +211,8 @@ public class AuditBuilder {
 		}
 
 		/** ** Remove unneeded audits *** */
-		// We can't clear until we're done reading all data from DB (lazy
+		// We can't delete until we're done reading all data from DB (lazy
 		// loading)
-		// But we can't delete until we do the clear
-		// so create a list, then delete
 		Set<Integer> auditsToRemove = new HashSet<Integer>();
 
 		// You have to use while iterator instead of a for loop
@@ -252,7 +250,7 @@ public class AuditBuilder {
 		}
 
 		for (Integer auditID : auditsToRemove) {
-			cAuditDAO.clear();
+			//cAuditDAO.clear();   //this was disconnecting our flag calculator
 			cAuditDAO.remove(auditID);
 			fillAuditCategories = false;
 		}
