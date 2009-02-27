@@ -50,6 +50,9 @@
 				<td title="PICS Recommendation" style="cursor: help;">Compliant?</td>
 				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
 				<td><a href="javascript: changeOrderBy('form1','atype.auditName');">Policy</a></td>
+				<s:if test="requiresActivePolicy">	
+					<td>Status</td>
+				</s:if>
 				<td align="center"><a href="javascript: changeOrderBy('form1','expiresDate ASC');">Expires</a></td>
 				<td>Limits</td>
 				<td title="Waiver of Subrogation">Waiver</td>
@@ -79,6 +82,9 @@
 				<td>
 					<a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="[0].get('auditName')"/></a> 
 				</td>
+				<s:if test="requiresActivePolicy">
+					<td><s:property value="get('auditStatus')"/></td>
+				</s:if>
 				<td class="reportDate"><s:date name="get('expiresDate')" format="M/d/yy" /></td>
 				<td>
 					<s:iterator value="getDataForAudit(get('auditID'),'limits')">

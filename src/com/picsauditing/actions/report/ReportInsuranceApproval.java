@@ -16,8 +16,8 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AccountName;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.AnswerMap;
@@ -47,7 +47,7 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 		this.auditQuestionDao = auditQuestionDao;
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.report.setLimit(25);
-		orderByDefault = "a.name";
+		orderByDefault = "ca.auditStatus ASC, ca.completedDate DESC";
 	}
 
 	@Override
@@ -70,30 +70,7 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 		sql.addJoin("JOIN audit_operator a_op on a_op.auditTypeID = atype.id AND a_op.opID = cao.opID");
 
 		sql.addJoin("JOIN accounts ao on ao.id = cao.opID");
-
-		if(permissions.isOperator()) {
-			boolean requiresActivePolicy = false;
-			OperatorAccount operator = operatorAccountDAO.find(permissions.getAccountId());
-			if(operator != null) {
-				for(AuditOperator auditOperator : operator.getAudits()) {
-					if(auditOperator.getAuditType().getClassType().equals(AuditTypeClass.Policy) 
-							&& auditOperator.getRequiredAuditStatus().isActive()) {
-						requiresActivePolicy = true;
-						break;
-					}	
-				}
-			}
-			if(getFilter().getAuditStatus() == null) {
-				if(requiresActivePolicy)
-					sql.addWhere("ca.auditStatus IN ('Resubmitted','Active')");
-				else
-					sql.addWhere("ca.auditStatus IN ('Submitted','Active','Resubmitted')");
-			}
-		}
-		if(permissions.isCorporate())
-			sql.addWhere("ca.auditStatus IN ('Submitted','Active','Resubmitted')");
-			
-		
+	
 		sql.addWhere("a.active = 'Y'");
 
 		if (getUser().getAccount().isOperator()) {
@@ -333,6 +310,17 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean isRequiresActivePolicy() {
+		if(permissions.seesAllContractors())
+			return true;
+		for (DynaBean bean : data) {
+			String status = bean.get("requiredAuditStatus").toString();
+			if(status.equals(AuditStatus.Active.toString()))
+				return true;
+		}
+		return false;
 	}
 	
 	public String getFormattedDollarAmount( String answer )  {
