@@ -92,6 +92,8 @@ public class ContractorValidator {
 
 	public boolean verifyUsername(User user) {
 		User foundUser = userDAO.findName(user.getUsername());
+		if(!userDAO.isContained(user))
+			user = userDAO.find(user.getId());
 		if (foundUser == null || foundUser.equals(user))
 			return true;
 
