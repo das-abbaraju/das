@@ -88,6 +88,8 @@
 				<td align="center"><a href="javascript: changeOrderBy('form1','scheduledDate,a.name');">Scheduled</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','auditLocation,a.name');">Location</a></td>
 				<td></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','a.city,a.name');">City</a></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','a.state,a.name');">State</a></td>
 			</tr>
 		</thead>
 		<s:iterator value="data" status="stat">
@@ -149,6 +151,8 @@
 				<td>
 					<input type="button" class="forms" value="Save" onclick="saveAudit('<s:property value="%{[0].get('auditID')}"/>'); return false;"/>
 				</td>
+				<td><s:property value="get('city')" /></td>
+				<td><s:property value="get('state')" /></td>
 			</tr>
 		</s:iterator>
 	</table>

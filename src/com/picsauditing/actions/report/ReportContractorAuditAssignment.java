@@ -28,6 +28,9 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 	public void buildQuery() {
 		super.buildQuery();
 		
+		sql.addField("a.city");
+		sql.addField("a.state");
+		
 		sql.addField("ca.contractorConfirm");
 		sql.addField("ca.auditorConfirm");
 		sql.addField("ca2.expiresDate AS current_expiresDate");
