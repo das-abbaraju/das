@@ -102,9 +102,10 @@ function checkTaxId(taxId) {
 						<s:select cssStyle="font-size: 12px;" list="operatorList" name="contractor.requestedById" headerKey="0" headerValue="- Choose an operator -" listKey="id" listValue="name"/>
 				</li>
 				<li><label>DOT OQ:</label> 
+					Does your company have employees who are covered under DOT OQ requirements?
+					<br />
 					<s:radio list="#{'Yes':'Yes','No':'No'}"
 						name="contractor.oqEmployees" theme="pics"/></li>
-				<li>Does your company have employees who are covered under DOT OQ requirements?</li>		
 				<li><label>Risk Level:</label>
 				<table class="report">
 					<tr><td>
