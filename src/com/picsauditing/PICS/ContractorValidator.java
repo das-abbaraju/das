@@ -80,7 +80,7 @@ public class ContractorValidator {
 		
 		// Tax Id
 		if (!java.util.regex.Pattern.matches("\\d{9}", contractor.getTaxId()))
-			errorMessages.addElement("Pleae enter your 9 digit tax ID with only digits 0-9, no dashes.");
+			errorMessages.addElement("Please enter your 9 digit tax ID with only digits 0-9, no dashes.");
 
 		// Main Trade
 		if (Strings.isEmpty(contractor.getMainTrade())

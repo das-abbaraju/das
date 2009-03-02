@@ -219,7 +219,12 @@
 				<legend><span>Industry Details</span></legend>
 				<ol>
 					<li><label>Tax ID:</label>
-						<s:textfield name="contractor.taxId" size="9" maxLength="9" />*(only digits 0-9, no dashes)
+						<s:if test="permissions.admin">
+							<s:textfield name="contractor.taxId" size="9" maxLength="9" />*(only digits 0-9, no dashes)
+						</s:if>
+						<s:else>
+							<s:property value="contractor.taxId"/>
+						</s:else>
 					</li>
 					<li><label>Industry:</label>
 						<s:select list="industryList" name="contractor.industry"/>
