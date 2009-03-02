@@ -28,7 +28,6 @@ import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
-import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.URLUtils;
