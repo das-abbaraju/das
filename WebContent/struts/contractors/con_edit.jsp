@@ -219,12 +219,7 @@
 				<legend><span>Industry Details</span></legend>
 				<ol>
 					<li><label>Tax ID:</label>
-						<s:if test="permissions.admin">
-							<s:textfield name="contractor.taxId" size="9" maxLength="9" />*(only digits 0-9, no dashes)
-						</s:if>
-						<s:else>
-							<s:property value="contractor.taxId"/>
-						</s:else>
+						<s:property value="contractor.taxId"/>
 					</li>
 					<li><label>Industry:</label>
 						<s:select list="industryList" name="contractor.industry"/>
@@ -275,6 +270,9 @@
 					<li><label>Password:</label>
 						<s:property value="user.password" />
 						<br />* We will eventually hide this field and allow you to reset the password instead.
+					</li>
+					<li><label>Tax ID:</label>
+						<s:textfield name="contractor.taxId" size="9" maxLength="9" />*(only digits 0-9, no dashes)
 					</li>
 					<li><label>Welcome Email:</label>
 						<a target="_blank"
