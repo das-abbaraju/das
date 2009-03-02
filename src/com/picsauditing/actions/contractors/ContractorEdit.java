@@ -114,6 +114,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					contractor.setNameIndex();
 
 					contractor = accountDao.save(contractor);
+					user.setEmail(contractor.getEmail());
 					userDAO.save(user);
 
 					addActionMessage("Successfully modified " + contractor.getName());

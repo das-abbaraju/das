@@ -73,6 +73,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			user.setAuditColumns(new User(User.CONTRACTOR));
 			user.setIsGroup(YesNo.No);
 			user.setName(contractor.getContact());
+			user.setEmail(contractor.getEmail());
 			user = userDAO.save(user);
 
 			EmailBuilder emailBuilder = new EmailBuilder();
