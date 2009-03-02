@@ -3,12 +3,14 @@ package com.picsauditing.actions.operators;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.interceptor.ServletRequestAware;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
@@ -86,6 +88,13 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 			}
 
 			if (button.equalsIgnoreCase("Save")) {
+				Vector<String> errors = validateAccount(operatorAccount);
+				if (errors.size() > 0) {
+					for (String error : errors)
+						addActionError(error);
+					return SUCCESS;
+				}
+
 				if (operatorAccount.isCorporate()) {
 					permissions.tryPermission(OpPerms.ManageCorporate, OpType.Edit);
 					operatorAccount.setIsCorporate(YesNo.Yes);
@@ -179,7 +188,7 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 	public boolean isTypeOperator() {
 		return "Operator".equals(type);
 	}
-	
+
 	public String getType() {
 		return type;
 	}
@@ -208,4 +217,20 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 	public void setServletRequest(HttpServletRequest request) {
 		this.request = request;
 	}
+
+	public Vector<String> validateAccount(OperatorAccount operatorAccount) {
+		Vector<String> errorMessages = new Vector<String>();
+		if (null == type)
+			errorMessages.addElement("Please indicate the account type");
+		if (operatorAccount.getName().length() == 0)
+			errorMessages.addElement("Please fill in the Company Name field");
+		if (operatorAccount.getName().length() < 3)
+			errorMessages.addElement("Your company name must be at least 3 characters long");
+
+		if ((operatorAccount.getEmail().length() == 0) || (!Utilities.isValidEmail(operatorAccount.getEmail())))
+			errorMessages
+					.addElement("Please enter a valid email address. This is our main way of communicating with you so it must be valid");
+		return errorMessages;
+	}
+
 }
