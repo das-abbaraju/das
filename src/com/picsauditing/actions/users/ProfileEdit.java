@@ -24,11 +24,21 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 		this.accountDao = accountDao;
 	}
 
+	public void prepare() throws Exception {
+		loadPermissions();
+		if (permissions == null)
+			return;
+		u = dao.find(permissions.getUserId());
+		dao.clear();
+	}
+
 	public String execute() throws Exception {
 		loadPermissions();
-		permissions.tryPermission(OpPerms.EditProfile);
+		
 		if (!permissions.isLoggedIn())
 			return LOGIN_AJAX;
+		
+		permissions.tryPermission(OpPerms.EditProfile);
 
 		if (dao.duplicateUsername(u.getUsername(), u.getId())) {
 			addActionError("Another user is already using the username: " + u.getUsername());
@@ -57,14 +67,6 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 		}
 
 		return SUCCESS;
-	}
-
-	public void prepare() throws Exception {
-		loadPermissions();
-		if (permissions == null)
-			return;
-		u = dao.find(permissions.getUserId());
-		dao.clear();
 	}
 
 	public User getU() {
