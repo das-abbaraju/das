@@ -36,7 +36,7 @@
 			<td class="right">$<s:property value="get('newAmount')"/></td>
 			<td><s:property value="get('billingStatus')"/></td>
 			<td class="center">
-				<s:if test="ccOnFile">
+				<s:if test="get('ccOnFile') == 1">
 					Yes
 				</s:if>
 				<s:else>
