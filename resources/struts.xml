@@ -838,6 +838,10 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
+		<action name="HuntsmanSync" class="com.picsauditing.actions.cron.HuntsmanSync">
+			<result>/struts/blank.jsp</result>
+		</action>
+
 		<action name="LoggerConfig" class="com.picsauditing.actions.LoggerConfig">
 			<result>/struts/blank.jsp</result>
 		</action>
