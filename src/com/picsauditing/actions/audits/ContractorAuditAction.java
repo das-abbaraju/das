@@ -93,10 +93,9 @@ public class ContractorAuditAction extends AuditActionSupport {
 			if (conAudit.getAuditType().isPqf()) {
 				if (conAudit.getAuditStatus().equals(AuditStatus.Active) && conAudit.getPercentVerified() == 100) {
 					auditStatus = AuditStatus.Active;
-					if(conAudit.isAboutToExpire())
+					if (conAudit.isAboutToExpire())
 						conAudit.setCompletedDate(new Date());
-				}	
-				else if (conAudit.getAuditStatus().isActiveResubmittedExempt())
+				} else if (conAudit.getAuditStatus().isActiveResubmittedExempt())
 					auditStatus = AuditStatus.Resubmitted;
 				else
 					auditStatus = AuditStatus.Submitted;
@@ -105,6 +104,12 @@ public class ContractorAuditAction extends AuditActionSupport {
 				auditStatus = AuditStatus.Submitted;
 			else
 				auditStatus = AuditStatus.Active;
+		}
+
+		if ("Resubmit".equals(button)) {
+			conAudit.changeStatus(AuditStatus.Submitted, getUser());
+			auditDao.save(conAudit);
+			return SUCCESS;
 		}
 
 		if (auditStatus != null && !auditStatus.equals(conAudit.getAuditStatus())) {
@@ -188,12 +193,7 @@ public class ContractorAuditAction extends AuditActionSupport {
 			contractor.setNeedsRecalculation(true);
 			accountDao.save(contractorAccount);
 		}
-		
-		if(isCanResubmitPolicy()) {
-			conAudit.changeStatus(auditStatus, getUser());
-			auditDao.save(conAudit);
-		}
-		
+
 		if (this.conAudit.getAuditType().getId() == AuditType.NCMS)
 			return "NCMS";
 
@@ -305,18 +305,17 @@ public class ContractorAuditAction extends AuditActionSupport {
 
 		return menu;
 	}
-	
+
 	public boolean isCanResubmitPolicy() {
-		if(conAudit.getAuditStatus().isSubmitted() && 
-				conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
-			for(ContractorAuditOperator cOperator : conAudit.getOperators()) {
-				if(cOperator.getStatus().equals(CaoStatus.Rejected))
+		if (conAudit.getAuditStatus().isSubmitted()
+				&& conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+			for (ContractorAuditOperator cOperator : conAudit.getOperators()) {
+				if (cOperator.getStatus().equals(CaoStatus.Rejected))
 					return true;
 			}
 		}
-		
+
 		return false;
-	}	
-	
+	}
 
 }
