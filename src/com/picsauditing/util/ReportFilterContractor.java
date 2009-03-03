@@ -42,6 +42,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showWaitingOn = false;
 	protected boolean showEmailTemplate = false;
 	protected boolean showBillingState = false;
+	protected boolean showRegistrationDate = true;
+	protected boolean showConWithPendingAudits = false;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -61,6 +63,11 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected int emailTemplate;
 	protected ListType emailListType;
 	protected String billingState = "All";
+	protected Date registrationDate1;
+	protected Date registrationDate2;
+	protected boolean pendingPqfAnnualUpdate = false;
+
+	
 
 	//private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
 
@@ -177,6 +184,22 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.showBillingState = showBillingState;
 	}
 
+	public boolean isShowRegistrationDate() {
+		return showRegistrationDate;
+	}
+
+	public void setShowRegistrationDate(boolean showRegistrationDate) {
+		this.showRegistrationDate = showRegistrationDate;
+	}
+
+	public boolean isShowConWithPendingAudits() {
+		return showConWithPendingAudits;
+	}
+
+	public void setShowConWithPendingAudits(boolean showConWithPendingAudits) {
+		this.showConWithPendingAudits = showConWithPendingAudits;
+	}
+
 	public String getPerformedBy() {
 		return performedBy;
 	}
@@ -271,6 +294,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		if (permissions.isPicsEmployee()) {
 			setShowConAuditor(true);
 			setShowRiskLevel(true);
+			setShowConWithPendingAudits(true);
 		}
 	}
 
@@ -399,5 +423,28 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public void setBillingState(String billingState) {
 		this.billingState = billingState;
 	}
-	
+
+	public Date getRegistrationDate1() {
+		return registrationDate1;
+	}
+
+	public void setRegistrationDate1(Date registrationDate1) {
+		this.registrationDate1 = registrationDate1;
+	}
+
+	public Date getRegistrationDate2() {
+		return registrationDate2;
+	}
+
+	public void setRegistrationDate2(Date registrationDate2) {
+		this.registrationDate2 = registrationDate2;
+	}
+
+	public boolean isPendingPqfAnnualUpdate() {
+		return pendingPqfAnnualUpdate;
+	}
+
+	public void setPendingPqfAnnualUpdate(boolean pendingPqfAnnualUpdate) {
+		this.pendingPqfAnnualUpdate = pendingPqfAnnualUpdate;
+	}
 }

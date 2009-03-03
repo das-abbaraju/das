@@ -432,6 +432,34 @@
 		</div>
 	</s:if>
 	
+	<s:if test="filter.showRegistrationDate">
+		<br clear="all">
+		<div class="filterOption"><a href="#" onclick="showTextBox('form1_registrationDate'); return false;">Registration Date</a> 
+			<span id="form1_registrationDate_query">= ALL</span><br /> 
+			<span id="form1_registrationDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="8" 
+			id="form1_registrationDate1" name="filter.registrationDate1" />
+			<a id="anchor_registrationDate1" name="anchor_registrationDate1"
+			onclick="cal2.select($('form1_registrationDate1'),'anchor_registrationDate1','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+			To:<s:textfield cssClass="forms" size="8" 
+			id="form1_registrationDate2" name="filter.registrationDate2" />
+			<a id="anchor_registrationDate2" name="anchor_registrationDate2"
+			onclick="cal2.select($('form1_registrationDate2'),'anchor_registrationDate2','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+			<script
+			type="text/javascript">textQuery('form1_registrationDate');</script> <br />
+			<a class="clearLink" href="#"
+			onclick="clearTextField('form1_registrationDate'); return false;">Clear</a></span>
+		</div>
+	</s:if>
+
+	<s:if test="filter.showConWithPendingAudits">
+		<br clear="all" />
+		<div class="filterOption">
+		<label><s:checkbox name="filter.pendingPqfAnnualUpdate" />Check to limit to contractors with pending PQF and Annual Updates</label>
+		</div>
+	</s:if>
+	
 	<br clear="all" />
 	<div class="alphapaging"><s:property
 		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>

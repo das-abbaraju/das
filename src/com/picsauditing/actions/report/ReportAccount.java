@@ -19,9 +19,9 @@ import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.mail.WizardSession;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectFilter;
+import com.picsauditing.search.SelectFilterDate;
 import com.picsauditing.search.SelectFilterInteger;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.ReportFilter;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.SpringUtils;
@@ -220,6 +220,22 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			sql.addJoin(emailQueueJoin);
 			sql.addWhere("eq.emailID IS NULL");
 			setFiltered(true);
+		}
+		
+		if (filterOn(f.getRegistrationDate1())) {
+			report.addFilter(new SelectFilterDate("registrationDate1", "a.creationDate >= '?'", DateBean.format(f
+					.getRegistrationDate1(), "M/d/yy")));
+		}
+
+		if (filterOn(f.getRegistrationDate2())) {
+			report.addFilter(new SelectFilterDate("registrationDate2", "a.creationDate < '?'", DateBean.format(f
+					.getRegistrationDate2(), "M/d/yy")));
+		}
+		
+		if(f.isPendingPqfAnnualUpdate()) {
+			String query = "a.id IN (SELECT ca.conID FROM contractor_audit ca "
+				+ "WHERE ca.auditStatus = 'Pending' AND ca.auditTypeID IN (1,11))";
+			sql.addWhere(query);
 		}
 	}
 
