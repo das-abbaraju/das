@@ -23,6 +23,7 @@ public class AuditSubCategory extends BaseTable implements java.io.Serializable,
 	private String subCategory;
 	private AuditCategory category;
 	private int number;
+	private String helpText;
 
 	private List<AuditQuestion> questions;
 
@@ -51,6 +52,14 @@ public class AuditSubCategory extends BaseTable implements java.io.Serializable,
 
 	public void setNumber(int number) {
 		this.number = number;
+	}
+
+	public String getHelpText() {
+		return helpText;
+	}
+
+	public void setHelpText(String helpText) {
+		this.helpText = helpText;
 	}
 
 	@OneToMany(mappedBy = "subCategory")
