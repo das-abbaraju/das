@@ -90,7 +90,7 @@ public class Cron extends PicsActionSupport {
 				List<ContractorAudit> conList = contractorAuditDAO.findWhere(70, where, "expiresDate");
 				for (ContractorAudit cAudit : conList) {
 					if (cAudit.getAuditType().isPqf())
-						cAudit.changeStatus(AuditStatus.Pending, getUser());
+						cAudit.changeStatus(AuditStatus.Pending, new User(User.SYSTEM));
 					else
 						cAudit.setAuditStatus(AuditStatus.Expired);
 					contractorAuditDAO.save(cAudit);
