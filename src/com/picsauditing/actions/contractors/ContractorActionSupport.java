@@ -112,7 +112,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 			contractorNonExpiredAudits = new ArrayList<ContractorAudit>();
 			List<ContractorAudit> list = getAudits();
 			for (ContractorAudit contractorAudit : list) {
-				if (!contractorAudit.getAuditStatus().isExpired())
+				if (contractorAudit.getAuditType().isPqf() || !contractorAudit.getAuditStatus().isExpired())
 					contractorNonExpiredAudits.add(contractorAudit);
 			}
 		}
