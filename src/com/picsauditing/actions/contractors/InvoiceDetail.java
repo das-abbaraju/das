@@ -23,11 +23,14 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -118,6 +121,15 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 					markInvoicePaid();
 					addNote("Marked invoice paid with amount " + invoice.getTotalAmount() + ". No payment");
 				}
+				if (button.startsWith("Email Invoice")) {
+					try {
+						emailInvoice();
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+					
+					addNote("Invoice emailed to " + contractor.getBillingEmail() + ". No payment");
+				}				
 				
 			}
 			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
@@ -128,6 +140,24 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		invoiceDAO.save(invoice);
 		conAccountDAO.save(contractor);
 		return SUCCESS;
+	}
+	
+	private void emailInvoice() throws Exception {
+		EmailBuilder emailBuilder = new EmailBuilder();
+		emailBuilder.setTemplate(45);
+		emailBuilder.setPermissions(permissions);
+		emailBuilder.setContractor(contractor);
+		emailBuilder.addToken("invoice", invoice);
+		emailBuilder.setFromAddress("billing@picsauditing.com");
+		emailBuilder.setToAddresses(contractor.getBillingEmail());
+		
+		EmailQueue email = emailBuilder.build();
+		email.setHtml(true);
+		
+		//EmailSender sender = new EmailSender();
+		//sender.sendNow(email);
+		
+		EmailSender.send(email);
 	}
 	
 	private void updateTotals() {
