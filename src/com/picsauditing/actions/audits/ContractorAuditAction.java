@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.struts2.ServletActionContext;
+
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
@@ -65,6 +67,10 @@ public class ContractorAuditAction extends AuditActionSupport {
 		// be done everytime
 
 		auditBuilder.fillAuditCategories(conAudit);
+
+		if (isSingleCat())
+			ServletActionContext.getResponse().sendRedirect(
+					"AuditCat.action?auditID=" + auditID + "&catDataID=" + getCategories().get(0).getId());
 
 		if (conAudit.getAuditType().isDynamicCategories() && permissions.isPicsEmployee()) {
 			isCanApply = true;
