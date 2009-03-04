@@ -12,73 +12,39 @@
 	bgcolor="#FFFFFF">
 	<tr>
 		<td width="275" align="center"><img
-			src="images/ConocoPhillips_logo.jpg" width="192" height="65"></td>
-		<td bgcolor="#CBE5FE" class="blueSmall">&ldquo;We chose PICS
-		primarily based on comments and recommendation from other COP refining
-		facilities and a couple of local competitors using the service.&quot;<br>
+			src="images/Huntsman_logo.jpg" width="192" height="65"></td>
+		<td bgcolor="#CBE5FE" class="blueSmall">&ldquo;PICS helped Huntsman elevate to the next level in contractor evaluation excellence overnight. &quot;<br>
 		<br>
-		<div align="right"><strong>John Driscoll</strong><br>
-		- Health, Safety &amp; Security Manager</div>
-		</td>
+		<div align="right"><strong>Liz McDaniel </strong><br>
+		- VP EHS Americas </div>
+	  </td>
 	</tr>
 	<tr>
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td class="blueHome"><span class="blueMain"><strong>ConocoPhillips
-		</strong>| OCT 2006</span></td>
+		<td class="blueHome"><span class="blueMain"><strong>Huntsman
+		</strong>| FEB 2009</span></td>
 	</tr>
 </table>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr valign="top">
 		<td class="blueHome">
 		<p align="justify"><strong><br>
+		Committing to Improve</strong><br>
+		Liz McDaniel, Huntsman’s Vice President of EHS, Americas, initiated a Contractor Evaluation Improvement effort in January 2008, and PICS was part of Huntsman’s plan. Huntsman has partnered with PICS to help achieve their goal to create a safer, more efficient workplace for both contractors and Huntsman employees.  Another key element to the plan was a global implementation of a behavioral-based safety program beginning in 2006, along with commitment from top management to create an award-winning safety culture at Huntsman.  </p>
+		<p align="justify"><strong>
 		Achieving Goals</strong><br>
-		John Driscoll, manager of health, safety and security at
-		ConocoPhillips’ San Francisco Refinery in Rodeo, California, recently
-		was head of the team that helped ConocoPhillips join the PICS
-		consortium for contractor prequalification services. They have
-		partnered with PICS to help achieve their goal to create a safer, more
-		efficient workplace. The San Francisco Refinery produces close to
-		80,000 barrels of crude oil per day, and is one of 12 US refineries
-		owned by ConocoPhillips.</p>
-		<p align="justify">Driscoll explained how PICS is going to help
-		the team achieve their goals: <br>
-		<strong>&ldquo;In a very competitive business it is essential
-		to identify, evaluate and execute value- added process changes to make
-		improvements.  Our existing process for safety & financial evaluation
-		and qualification of contractors for our work site is something we
-		very much value, and for years have resisted changing because of our
-		confidence in our people and our methods.  In the last year, due both
-		to changing internal resource demands and an increased emphasis
-		on continuous improvement we got serious about making and drawing
-		conclusions—and making the change if appropriate.  My conclusion was
-		that PICS can do what we do, and can do it with a higher efficiency
-		level.  Making the decision was then easy, and making the change,
-		although always a challenge, is going smoothly.&ldquo;</strong></p>
-		<p align="justify">Driscoll, a safety professional for 26 years in
-		Refining, Chemicals and Oil Production, understands the benefits of
-		prequalifying contractors. Most importantly, he understands the
-		importance of teaming up with contractors to create a better safety
-		culture for everyone. Driscoll has been at the San Francisco Refinery
-		for 6 years and through personal commitment has ensured that the risks
-		and relative safety are on an ongoing trend of improvement. Being a
-		leader and board member of CAER (Community Awareness and Emergency
-		Response) helps him be more aware of local Contra Costa County issues,
-		and improve the health and safety of employees and residents alike.</p>
-		<p align="justify">Selecting service providers can be difficult,
-		and when Driscoll was asked why he and his team selected PICS for
-		contractor prequalification, he responded with positive referrals from
-		other current customers in dealing with PICS. He
-		explained further, <strong>&ldquo;We chose PICS primarily
-		based on comments and recommendation from other COP refining
-		facilities and a couple of local competitors using the service. We
-		actually began discussions and relationship building over two years
-		ago, and the quality of the people with PICS eventually made an
-		impact. I have found John Moreland & Jared Smith to be very
-		professional and customer focused.  To date, I've been completely
-		satisfied with both the timeliness and quality of response and service
-		from them personally.&ldquo;</strong></p>
+		Huntsman Corporation recently announced that 2008 marked the lowest OSHA rate of occupational injuries in the company’s history.  Peter R. Huntsman, President and CEO of Huntsman Corporation, stated, <strong>&ldquo;I am very pleased with the culture of continuous improvement at Huntsman, especially as it relates to the safety of the associates and contractors at each of our sites. These investments in safety are among the most important we can make.&ldquo;</strong></p>
+		<p align="justify"><strong>
+		Forging Relationships</strong><br>
+		McDaniel discussed how PICS has enabled Huntsman Sites in North America to continue its legacy of safety excellence:   <strong>&ldquo;We view our contractors as partners in our safety systems and safe behaviors.  It is of the utmost importance to ensure that our contracting partners take their safety systems and their associates’ safe behaviors as seriously as Huntsman does.  Huntsman is constantly innovating in regards to safety excellence and the PICS effort allowed a ready-to-use platform to improve our Contractor Evaluation program.  Instead of building an internal database with Huntsman-based contractors, PICS allowed us instant access to contractors who already met our contractor without any effort on our part.  We were screening contractors to a higher standard inside of two months after partnering with PICS. &ldquo;</strong></p>
+		<p align="justify"><strong>
+		Leveraging Experience</strong><br>
+		McDaniel, an Environmental, Health and Safety professional for 27 years in the petrochemicals field, strongly supports continuous improvements in the EHS area. Huntsman’s culture includes improvement of safety for everyone -- associates and contractors, on our sites.  McDaniel moved through her career from being a site-based contributor committed to EHS excellence to the Vice President of EHS for Americas Region.  Working in a regional role has allowed McDaniel to incorporate regional programs such as PICS.  McDaniel’s personal and professional commitment to EHS excellence continues to drive her and her team to new and better programs and systems.</p>
+		<p align="justify"><strong>
+		Creating Value</strong><br>
+		Selecting service providers can be difficult, and when Liz was asked why she and her team selected PICS for contractor prequalification, she responded with positive referrals from other current customers in dealing with PICS. She explained further, <strong>&ldquo;We were very happy to see that many of our existing contractors already were members of the PICS consortium.  The fact that they had already passed the PICS audit confirmed that our contractor evaluation initiative was moving in the right direction.  PICS also allowed our sites to gain instant access to a database, which Huntsman would otherwise had to build internally at great expense.  PICS helped Huntsman elevate to the next level in contractor evaluation excellence overnight.&ldquo;</strong></p>
 		</td>
 	</tr>
 </table>
