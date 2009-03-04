@@ -97,7 +97,6 @@
 					</s:iterator>
 				</td>
 				<td>
-					<s:set name="nameQuestion" value="null"/>
 					<s:iterator value="getDataForAudit(get('auditID'),'aiName')">
 						<s:set name="nameQuestion" value="top"/>
 						<s:property value="getAiNameOrSupercededName(#nameQuestion)"/></a><br/>						
@@ -107,14 +106,26 @@
 					<s:set name="aiFiles" value="getDataForAudit(get('auditID'),'policyFile')"/>
 					<s:if test="( #aiFiles != null ) && (#aiFiles.size() > 0 )">
 						<s:iterator value="#aiFiles">
-							<s:if test="#attr.nameQuestion != null">
-								<s:if test="parentAnswer.id == #nameQuestion.id">
-									<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&answer.id=<s:property value="id"/>" target="_BLANK"><img src="images/icon_insurance.gif"/></a><br/>
+							<s:set name="currentFile" value="top"/>
+							<s:iterator value="getDataForAudit(get('auditID'),'aiName')">
+								<s:set name="nameQuestion" value="top"/>
+								<s:if test="#attr.nameQuestion != null">
+									<s:if test="#attr.currentFile.parentAnswer.id == #nameQuestion.id">
+										<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&answer.id=<s:property value="#attr.currentFile.id"/>" target="_BLANK">
+											<s:if test="#nameQuestion.answer == 'All'">
+												<img src="images/icon_DA.gif"/>
+											</s:if>
+											<s:else>
+												<img src="images/icon_insurance.gif"/>
+											</s:else>
+										</a><br/>
+									</s:if>
 								</s:if>
-							</s:if>
-							<s:else>
-								<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&answer.id=<s:property value="id"/>" target="_BLANK"><img src="images/icon_insurance.gif"/></a><br/>
-							</s:else>
+								<s:else>
+									<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&answer.id=<s:property value="#attr.currentFile.id"/>" target="_BLANK"><img src="images/icon_insurance.gif"/></a><br/>
+								</s:else>
+							</s:iterator>
+							
 						</s:iterator>
 					</s:if>
 				</td>
