@@ -261,6 +261,16 @@ public class AuditDataDAO extends PicsDAO {
 			return mapData(query.getResultList());
 	}
 
+	public List<AuditData> findAnswersByContractorAndUniqueCode( int conId, String uniqueCode ) {
+		Query query = em.createQuery("SELECT d FROM AuditData d JOIN AuditQuestion q " +
+				"WHERE d.audit.contractorAccount.id = ? AND q.uniqueCode = ? ");
+		
+		query.setParameter(1, conId);
+		query.setParameter(2, uniqueCode);
+		return query.getResultList();
+	}
+
+	
 	/**
 	 * 
 	 * @param auditIds
