@@ -42,7 +42,7 @@ public class ReportBilling extends ReportAccount {
 		// Show renewals
 		if (billingState.equals("All") || billingState.equals("Renewals")) {
 			if (where.length() > 0) where += " OR ";
-			where += "(a.active = 'Y' AND c.renew = 1 AND c.paymentExpires < ADDDATE(NOW(), INTERVAL 1 MONTH))";
+			where += "(a.active = 'Y' AND c.renew = 1 AND c.paymentExpires < ADDDATE(NOW(), INTERVAL 45 DAY))";
 		}
 		// Show upgrades
 		if (billingState.equals("All") || billingState.equals("Upgrades")) {
@@ -57,7 +57,7 @@ public class ReportBilling extends ReportAccount {
 		sql.addField("CASE " +
 				"WHEN a.active = 'N' THEN 'Activations' " +
 				"WHEN f2.defaultAmount > f1.defaultAmount THEN 'Upgrades' " +
-				"WHEN c.paymentExpires < ADDDATE(NOW(), INTERVAL 1 MONTH) THEN 'Renewals' " +
+				"WHEN c.paymentExpires < ADDDATE(NOW(), INTERVAL 45 DAY) THEN 'Renewals' " +
 				"ELSE 'Other' END billingStatus");
 		sql.addWhere(where);
 		
