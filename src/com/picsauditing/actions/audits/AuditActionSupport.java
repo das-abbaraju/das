@@ -104,6 +104,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return conAudit;
 	}
 
+	public boolean isSingleCat() {
+		return getCategories().size() == 1;
+	}
+	
 	public List<AuditCatData> getCategories() {
 		if (categories != null)
 			return categories;
