@@ -690,7 +690,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		int daysUntilRenewal = DateBean.getDateDifference(paymentExpires);
 		if (daysUntilRenewal < 0)
 			return "Renewal Overdue";
-		if (daysUntilRenewal < 30)
+		if (daysUntilRenewal < 45)
 			return "Renewal";
 
 		return "Current";
