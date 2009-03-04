@@ -130,6 +130,17 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 				}
 			}
 		}
+		if (auditStatus.equals(AuditStatus.Pending)){
+			completedDate = new Date();
+			if (getAuditType().getClassType().equals(AuditTypeClass.Policy)){
+				for (ContractorAuditOperator cao : getOperators()){
+					if (!cao.getStatus().equals(CaoStatus.NotApplicable)){
+						cao.setStatus(CaoStatus.Awaiting);
+						cao.setAuditColumns(user);
+					}
+				}
+			}
+		}
 		if (auditStatus.equals(AuditStatus.Active)) {
 			// If we're going "forward" then (re)set the closedDate
 			if (closedDate == null || this.auditStatus.isPendingSubmitted())

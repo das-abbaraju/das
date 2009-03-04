@@ -43,7 +43,7 @@ public class PolicySave extends AuditActionSupport {
 			ServletActionContext
 					.getResponse()
 					.sendRedirect(
-							"PolicyVerification.action?filter.visible=Y&filter.auditStatus=Submitted&filter.auditStatus=Resubmitted&button=getFirst");
+							"PolicyVerification.action?filter.visible=Y&filter.auditStatus=Submitted&filter.auditStatus=Resubmitted&filter.auditStatus=Active&button=getFirst");
 			return BLANK;
 		}
 		if ("nextPolicyForContractor".equals(redirectOptions)) {
@@ -63,7 +63,7 @@ public class PolicySave extends AuditActionSupport {
 			ServletActionContext
 					.getResponse()
 					.sendRedirect(
-							"PolicyVerification.action?filter.visible=Y&filter.auditStatus=Submitted&filter.auditStatus=Resubmitted");
+							"PolicyVerification.action?filter.visible=Y&filter.auditStatus=Submitted&filter.auditStatus=Resubmitted&filter.auditStatus=Active");
 			return BLANK;
 		}
 		if ("stay".equals(redirectOptions)) {
