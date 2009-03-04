@@ -52,9 +52,9 @@ sets the highest standards possible in regard to contractor qualifications as th
                   <td><br>
                     <table border="0" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td><img src="images/feature_operator.jpg" alt="Featured Operator" width="215" height="195" border="0" usemap="#Map"></td>
+                        <td><img src="images/featured_op_Huntsman.jpg" alt="Featured Operator Huntsman" width="215" height="195" border="0" usemap="#Map"></td>
                         <td width="13"><img src="images/spacer.gif" width="13" height="1"></td>
-                        <td><img src="images/feature_contractor.jpg" alt="Featured Contractor" width="215" height="195" border="0" usemap="#Map2"></td>
+                        <td><img src="images/feature_contractor.jpg" alt="Featured Contractor Bigge" width="215" height="195" border="0" usemap="#Map2"></td>
                         <td width="13"><img src="images/spacer.gif" width="1" height="1"></td>
                       </tr>
                       </table>
