@@ -11,6 +11,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -72,7 +73,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected void findConAudit() throws Exception {
 		conAudit = auditDao.find(auditID);
 		if (conAudit == null)
-			throw new Exception("Audit " + this.auditID + " not found");
+			throw new RecordNotFoundException("Audit " + this.auditID);
 
 		if (conAudit.getExpiresDate() != null) {
 			if (DateBean.getDateDifference(conAudit.getExpiresDate()) < 1) {

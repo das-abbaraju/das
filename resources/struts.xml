@@ -46,6 +46,9 @@
 			<result name="NoRightsException">
 				/no_rights_exception.jsp
 			</result>
+			<result name="RecordNotFoundException">
+				/record_not_found_exception.jsp
+			</result>
 			<result name="LoginAjax">struts/login_ajax.jsp</result>
 			<result name="login">/struts/login_ajax.jsp</result>
 			<result name="blank">/struts/blank.jsp</result>
@@ -56,6 +59,9 @@
 			<exception-mapping
 				exception="com.picsauditing.access.NoRightsException"
 				result="NoRightsException" />
+			<exception-mapping
+				exception="com.picsauditing.access.RecordNotFoundException"
+				result="RecordNotFoundException" />
 		</global-exception-mappings>
 		<action name="Login" class="com.picsauditing.access.LoginController">
 			<result>struts/users/login.jsp</result>
@@ -207,6 +213,7 @@
 			<result name="ConList" type="redirect-action">
 				<param name="actionName">ContractorList</param>
 			</result>
+			<result name="input">/struts/blank.jsp</result>
 		</action>
 		
 		<action name="DownloadContractorFile"
@@ -926,7 +933,7 @@
 			<result>struts/reports/policy_verification.jsp</result>
 		</action>
 		
-		<action name="PolicySaveAjax"
+		<action name="PolicySave"
 			class="com.picsauditing.actions.audits.PolicySave">
 			<result>struts/blank.jsp</result>
 		</action>

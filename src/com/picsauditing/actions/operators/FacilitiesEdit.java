@@ -1,6 +1,7 @@
 package com.picsauditing.actions.operators;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -25,6 +26,8 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.SpringUtils;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 public class FacilitiesEdit extends PicsActionSupport implements Preparable, ServletRequestAware {
@@ -78,12 +81,30 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 			}
 
 			if (button.equalsIgnoreCase("AddName")) {
-				AccountName account = new AccountName();
-				account.setAccount(new Account());
-				account.getAccount().setId(opID);
-				account.setName(name);
-				account.setAuditColumns(new User(permissions.getUserId()));
-				account = accountNameDAO.save(account);
+				boolean skip = false;
+				
+				for (AccountName an : operatorAccount.getNames()) {
+					if (an.getName().equalsIgnoreCase(name)) {
+						skip = true;
+						break;
+					}
+				}
+				if (!skip) {
+					AccountName account = new AccountName();
+					account.setAccount(new Account());
+					account.getAccount().setId(opID);
+					account.setName(name);
+					account.setAuditColumns(new User(permissions.getUserId()));
+					operatorAccount.getNames().add(account);
+					Collections.sort(operatorAccount.getNames(), new Comparator<AccountName>() {
+						@Override
+						public int compare(AccountName o1, AccountName o2) {
+							return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
+						}
+					});
+					account = accountNameDAO.save(account);
+					//operatorAccount.getNames().add(account);
+				}
 				return SUCCESS;
 			}
 

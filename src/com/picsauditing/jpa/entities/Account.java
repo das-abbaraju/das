@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -219,7 +220,7 @@ public class Account extends BaseTable implements java.io.Serializable {
 		this.type = type;
 	}
 	
-	@OneToMany(mappedBy = "account")
+	@OneToMany(mappedBy = "account", cascade = {CascadeType.ALL})
 	@OrderBy("name")
 	public List<AccountName> getNames() {
 		return names;
