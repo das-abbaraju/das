@@ -82,6 +82,7 @@ public class FlagCalculatorSingle {
 					if (conAudit.getAuditType().equals(audit.getAuditType()) 
 							&& !conAudit.getAuditStatus().isExpired()) {
 						hasAudit = true;
+						break;
 					}
 				}	
 				// Always start with Green
