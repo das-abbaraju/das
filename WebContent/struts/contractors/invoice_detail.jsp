@@ -64,6 +64,7 @@ h1 {
 						</s:if>
 					</s:if>
 					<a class="print noprint" href="javascript: window.print();">Print</a>
+					<input type="submit" class="picsbutton positive" name="button" value="Email Invoice">
 					<s:if test="edit">
 						<br />
 						<input type="submit" class="picsbutton positive" name="button" value="Save" />
@@ -85,7 +86,7 @@ h1 {
 				</tr>
 				<tr>
 					<td><s:property value="contractor.name" /><br />
-					<s:if test="contractor.billingContact.length > 0">
+					<s:if test="contractor.billingContact.length() > 0">
 						c/o <s:property value="contractor.billingContact" /><br />
 					</s:if>
 					<s:property value="contractor.address" /><br />
@@ -157,7 +158,10 @@ h1 {
 					</tr>
 					<tr>
 						<s:if test="invoice.paid">
-							<th colspan="2" class="right">Paid</th>
+							<td>
+								<input type="submit" class="picsbutton positive" name="button" value="Email Invoice">
+							</td>
+							<th  class="right">Paid</th>
 							<td>
 								<s:date name="invoice.paidDate" format="MMM d, yyyy"/>
 								<br /><s:property value="invoice.checkNumber" />
@@ -167,7 +171,6 @@ h1 {
 							<pics:permission perm="Billing" type="Edit">
 							<td colspan="3" class="print noprint">
 							<s:if test="invoice.totalAmount > 0">
-							
 								<s:if test="invoice.paymentMethod.creditCard">
 									<s:if test="contractor.ccOnFile">
 										<input type="submit" class="picsbutton positive" name="button" value="Charge Credit Card for $<s:property value="invoice.totalAmount" />">
