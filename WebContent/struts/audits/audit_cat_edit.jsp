@@ -17,10 +17,6 @@
 		<a href="javascript: removeTuple(<s:property value="#a.id"/>);" class="remove right" 
 			style="font-size: 14px; font-weight: normal; text-decoration: none; position: relative; top: 5px;">Remove</a>
 	</s:if>
-	<s:else>
-		<a href="javascript: addTuple(<s:property value="#q.id"/>);" class="edit right"
-			style="font-size: 14px; font-weight: normal; text-decoration: none; position: relative; top: 5px; right: 20px;">Add</a>
-	</s:else>
 </s:if>
 
 <div class="thinking" id="thinking_<s:property value="#divID"/>"></div>
@@ -86,8 +82,15 @@
 			onchange="saveAnswer('%{#divID}', this);"/>
 	</s:if>
 	<s:if test="#q.questionType == 'Additional Insured'">
-		<s:select headerKey="" headerValue="- Choose an Operator Name -" list="legalNames" value="%{#a.answer}" name="answer%{#divID}" 
+		<s:if test="#a.id > 0">
+			<s:select list="legalNames" value="%{#a.answer}" name="answer%{#divID}" 
 			onchange="saveAnswer('%{#divID}', this);"></s:select>
+		</s:if>
+		<s:else>
+			<s:radio theme="pics" cssClass="question_%{#q.id}" list="legalNamesFiltered" 
+			value="#a.answer" name="answer%{#divID}" 
+			onclick="$A($$('.question_%{#q.id}')).each(function(abc){abc.disable();}); saveAnswer('%{#divID}', this); javascript: addTuple(%{#q.id}, this);"/>
+		</s:else>
 	</s:if>
 	<s:if test="#q.questionType == 'Date'">
 		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="8" 

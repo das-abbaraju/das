@@ -180,10 +180,8 @@ function reloadQuestion(divId, answerid) {
 
 }
 
-function addTuple(questionid) {
-	var elm = $('answerq'+questionid);
+function addTuple(questionid, elm) {
 	var thevalue = escape(elm.value);
-	
 	startThinking({div:'thinking_q' + questionid, message: "Adding Answer Group"});
 
 	var pars = 'button=addTuple&catDataID='+catDataID+'&auditData.audit.id='+auditID+'&auditData.question.id=' + questionid + '&auditData.answer=' + thevalue;
