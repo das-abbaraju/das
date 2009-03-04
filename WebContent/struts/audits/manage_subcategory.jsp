@@ -12,7 +12,7 @@
 <body>
 <s:include value="manage_audit_type_breadcrumbs.jsp" />
 
-<s:form id="save" cssStyle="width: 600px;">
+<s:form id="save" cssStyle="width: 800px;">
 	<s:hidden name="id" />
 	<s:hidden name="parentID" value="%{subCategory.category.id}" />
 	<s:hidden name="subCategory.category.id" />
@@ -31,7 +31,7 @@
 				<s:textfield name="subCategory.subCategory" size="50" />
 			</li>				
 			<li><label>Help Text:</label>
-				<s:textarea name="subCategory.helpText" rows="5" cols="50"/>
+				<s:textarea name="subCategory.helpText" rows="3" cols="50"/>
 			</li>				
 		</ol>
 		</fieldset>
