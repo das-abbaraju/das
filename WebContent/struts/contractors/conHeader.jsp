@@ -138,6 +138,31 @@
 				<s:property value="conAudit.requestingOpAccount.name" />
 			</li>
 		</s:if>
+		<s:if test="conAudit.auditType.classType.toString() == 'Policy'">
+			<s:iterator value="conAudit.operators" status="rowStatus">
+				<s:if test="permissions.operator || permissions.corporate">
+					<s:if test="operator.id == permissions.accountId">
+						<li><label>Op Status:</label> 
+							<a href="#" id="caoStatusMain_<s:property value="id"/>" class="edit" onclick="javascript: return editCao(<s:property value="id"/>);"><s:property value="status"/></a>
+							<br />(<s:property value="operator.name"/>)
+							<s:if test="notes != null && notes.length() > 0">
+								<s:property value="notes"/>
+							</s:if>
+						</li>
+					</s:if>
+				</s:if>
+				<s:else>
+					<li>
+						<label>Op Status:</label>					
+						<s:property value="status"/>
+						<br />(<s:property value="operator.name"/>)		
+						<s:if test="notes != null && notes.length() > 0">
+							<s:property value="notes"/>
+						</s:if>
+					</li>
+				</s:else>
+			</s:iterator>
+		</s:if>
 	</ul>
 	</fieldset>
 	<div class="clear"></div>
@@ -166,8 +191,10 @@
 				</a></li>
 			</s:if>
 		</s:if>
-		<li><a href="Audit.action?auditID=<s:property value="auditID" />"
-			<s:if test="requestURI.contains('con_audit.jsp')">class="current"</s:if>>Categories</a></li>
+		<s:if test="!singleCat">
+			<li><a href="Audit.action?auditID=<s:property value="auditID" />"
+				<s:if test="requestURI.contains('con_audit.jsp')">class="current"</s:if>>Categories</a></li>
+		</s:if>
 	</ul>
 </div>
 </s:if>

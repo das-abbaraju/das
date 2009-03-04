@@ -73,7 +73,7 @@ public class PicsMenu {
 		}
 
 		if (permissions.hasPermission(OpPerms.ContractorDetails))
-			subMenu.addChild("Audit List", "ReportAuditList.action");
+			subMenu.addChild("Audit List", "ReportAuditList.action?filter.auditStatus=Submitted&filter.auditStatus=Resubmitted&filter.auditStatus=Active");
 		if (permissions.hasPermission(OpPerms.AssignAudits))
 			subMenu.addChild("Sched. &amp; Assign", "AuditAssignments.action?filter.visible=Y");
 		if (permissions.hasPermission(OpPerms.OfficeAuditCalendar))
