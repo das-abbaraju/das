@@ -2,6 +2,7 @@ package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +24,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -108,7 +110,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public boolean isSingleCat() {
 		return getCategories().size() == 1;
 	}
-	
+
 	public List<AuditCatData> getCategories() {
 		if (categories != null)
 			return categories;
@@ -189,9 +191,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (permissions.isContractor()) {
 			if (type.isAnnualAddendum() && conAudit.getAuditStatus().equals(AuditStatus.Active))
 				return false;
-			if(type.getClassType().equals(AuditTypeClass.Policy) && conAudit.willExpireSoon())
+			if (type.getClassType().equals(AuditTypeClass.Policy) && conAudit.willExpireSoon())
 				return false;
-			
+
 			if (type.isCanContractorEdit())
 				return true;
 			else
@@ -203,12 +205,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 		if (permissions.isOperator()) {
 			if (conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
-				if(conAudit.willExpireSoon())
-					return false;
+				if (conAudit.getAuditStatus().isPending())
+					return true;
 				if (conAudit.getOperators().size() == 1
 						&& conAudit.getOperators().get(0).getOperator().getId() == permissions.getAccountId())
-					return true;
-				if(permissions.hasPermission(OpPerms.InsuranceEdit, OpType.Edit))
 					return true;
 			}
 
@@ -259,7 +259,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 					emailBuilder.setPermissions(permissions);
 					emailBuilder.setContractor(contractor);
 					EmailSender.send(emailBuilder.build());
-					addNote(contractor, "Sent Audits Thank You email to "+ emailBuilder.getSentTo(), NoteCategory.Audits);
+					addNote(contractor, "Sent Audits Thank You email to " + emailBuilder.getSentTo(),
+							NoteCategory.Audits);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -267,14 +268,34 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 
 	}
-
-	public Set<String> getLegalNames() {
+	
+	public List<String> getLegalNames() {
 		Set<String> list = new TreeSet<String>();
+		boolean canSeeLegalName;
 		if (conAudit != null) {
-			for (ContractorOperator co : conAudit.getContractorAccount().getOperators())
-				for (AccountName legalName : co.getOperatorAccount().getNames())
-					list.add(legalName.getName());
+			for (ContractorOperator co : conAudit.getContractorAccount().getOperators()) {
+				canSeeLegalName = false;
+				if (permissions.isOperator()) {
+					if (co.getOperatorAccount().getId() == permissions.getAccountId()) {
+						canSeeLegalName = true;
+					} 
+				}
+				else {
+					canSeeLegalName = true;
+				}
+				if (canSeeLegalName) {
+					for (AccountName legalName : co.getOperatorAccount().getNames()) {
+						list.add(legalName.getName());
+					}
+				}
+
+			}
 		}
-		return list;
+		List<String> sortedList = new ArrayList<String>();
+		sortedList.add("All");
+		sortedList.addAll(list);
+
+		return sortedList;
 	}
+
 }

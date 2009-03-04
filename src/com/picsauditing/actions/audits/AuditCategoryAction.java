@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.actions.converters.OshaTypeConverter;
@@ -23,6 +25,7 @@ import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
@@ -258,7 +261,10 @@ public class AuditCategoryAction extends AuditActionSupport {
 		}
 		
 		
-		if( answerMap != null && conAudit.getAuditType().getClassType() == AuditTypeClass.Policy && getUser().getAccount() != null && getUser().getAccount().isOperator() ) {
+		if( answerMap != null 
+				&& conAudit.getAuditType().getClassType() == AuditTypeClass.Policy 
+				&& getUser().getAccount() != null 
+				&& getUser().getAccount().isOperator()) {
 			for( AuditCategory cat : conAudit.getAuditType().getCategories() ) {
 				for( AuditSubCategory subCat : cat.getSubCategories() ) {
 					for( AuditQuestion qstn : subCat.getQuestions() ) {
@@ -270,6 +276,8 @@ public class AuditCategoryAction extends AuditActionSupport {
 
 								List<AccountName> names = thisOp.getNames();
 								boolean found = false;
+								if(answer.getAnswer().equals("All"))
+									found = true;
 								for (AccountName accountName : names) {
 									if (accountName.getName().equalsIgnoreCase( answer.getAnswer() ) ) {
 										found = true;
@@ -386,4 +394,23 @@ public class AuditCategoryAction extends AuditActionSupport {
 	public boolean needsNextPolicyForContractor(){
 		return findNextRequiredPolicyForVerification(conAudit) != null;
 	}
+	
+	public List<String> getLegalNamesFiltered() {
+		List<String> sortedList = super.getLegalNames();
+		AuditQuestion aiName = null;
+		for(AuditSubCategory auditSubCategory : currentCategory.getCategory().getSubCategories()) {
+			for(AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
+				if(auditQuestion.getQuestionType().equals("Additional Insured")) 
+						aiName = auditQuestion;
+			}
+		}
+		if(aiName != null) {
+			for(AuditData auditData : answerMap.getAnswerList(aiName.getId())) {
+				sortedList.remove(auditData.getAnswer());
+			}	
+		}	
+		
+		return sortedList;
+	}
+
 }
