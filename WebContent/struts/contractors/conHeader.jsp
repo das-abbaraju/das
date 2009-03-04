@@ -144,7 +144,7 @@
 					<s:if test="operator.id == permissions.accountId">
 						<li><label>Op Status:</label> 
 							<a href="#" id="caoStatusMain_<s:property value="id"/>" class="edit" onclick="javascript: return editCao(<s:property value="id"/>);"><s:property value="status"/></a>
-							<br />(<s:property value="operator.name"/>)
+							(<s:property value="operator.name"/>)
 							<s:if test="notes != null && notes.length() > 0">
 								<s:property value="notes"/>
 							</s:if>
@@ -155,7 +155,7 @@
 					<li>
 						<label>Op Status:</label>					
 						<s:property value="status"/>
-						<br />(<s:property value="operator.name"/>)		
+						(<s:property value="operator.name"/>)		
 						<s:if test="notes != null && notes.length() > 0">
 							<s:property value="notes"/>
 						</s:if>
