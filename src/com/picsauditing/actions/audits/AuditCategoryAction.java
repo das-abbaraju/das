@@ -100,7 +100,10 @@ public class AuditCategoryAction extends AuditActionSupport {
 
 		this.findConAudit();
 
-		getCategories();
+		
+		if (isSingleCat()) {
+			catDataID = getCategories().get(0).getId();
+		}
 
 		if (catDataID > 0 || catID > 0) {
 			for (AuditCatData catData : categories) {
