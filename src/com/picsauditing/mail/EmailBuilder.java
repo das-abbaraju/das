@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.struts2.ServletActionContext;
+
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
@@ -18,6 +20,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.VelocityAdaptor;
+import org.apache.struts2.ServletActionContext;
 
 /**
  * Merges an email template with a map of token data and creates an email
@@ -31,7 +34,7 @@ public class EmailBuilder {
 	protected EmailTemplate template;
 
 	private List<Token> picsTags = null;
-	
+
 	protected String toAddresses = null;
 	protected String ccAddresses = null;
 	protected String bccAddresses = null;
@@ -78,11 +81,13 @@ public class EmailBuilder {
 			}
 		}
 
-		String subject = convertPicsTagsToVelocity(template.getSubject(), template.isAllowsVelocity());
+		String subject = convertPicsTagsToVelocity(template.getSubject(),
+				template.isAllowsVelocity());
 		subject = velocityAdaptor.merge(subject, tokens);
 		email.setSubject(subject);
-		
-		String body = convertPicsTagsToVelocity(template.getBody(), template.isAllowsVelocity());
+
+		String body = convertPicsTagsToVelocity(template.getBody(), template
+				.isAllowsVelocity());
 		body = velocityAdaptor.merge(body, tokens);
 		email.setBody(body);
 
@@ -92,7 +97,7 @@ public class EmailBuilder {
 		}
 		return email;
 	}
-	
+
 	// Custom token setters here
 	// We may consider moving this to another class or back to the controllers
 	public void setConAudit(ContractorAudit conAudit) {
@@ -111,6 +116,7 @@ public class EmailBuilder {
 		addToken("user", user);
 		toAddresses = user.getEmail();
 	}
+
 	// End of custom token setters
 
 	public String getSentTo() {
@@ -124,13 +130,14 @@ public class EmailBuilder {
 	}
 
 	public void setTemplate(int id) {
-		EmailTemplateDAO dao = (EmailTemplateDAO) SpringUtils.getBean("EmailTemplateDAO");
+		EmailTemplateDAO dao = (EmailTemplateDAO) SpringUtils
+				.getBean("EmailTemplateDAO");
 		setTemplate(dao.find(id));
 	}
 
 	private List<Token> getPicsTags() {
 		if (picsTags == null) {
-			TokenDAO dao = (TokenDAO)SpringUtils.getBean("TokenDAO");
+			TokenDAO dao = (TokenDAO) SpringUtils.getBean("TokenDAO");
 			picsTags = dao.findByType(template.getListType());
 		}
 		return picsTags;
@@ -147,8 +154,13 @@ public class EmailBuilder {
 	private String convertPicsTagsToVelocity(String text, boolean allowsVelocity) {
 		if (!allowsVelocity) {
 			// Strip out the velocity tags
+			System.out.println("SUBJECT BEFORE: " + text);
 			text = text.replace("${", "_");
 			text = text.replace("}", "_");
+			text = text.replace('“', '"');
+			text = text.replace('”', '"');
+			text = text.replace("`", "'");
+			System.out.println("SUBJECT AFTER: " + text);			
 		}
 		for (Token tag : getPicsTags()) {
 			// This token is valid for this type of email template

@@ -73,13 +73,6 @@ public class MassMailer extends PicsActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		
-		// TODO find these bad chars
-		/*
-		test = test.replace('“', '"');
-		test = test.replace('”', '"');
-		test = test.replace("`", "'");
-		*/
-
 		permissions.tryPermission(OpPerms.EmailTemplates);
 
 		// Start the main logic for actions that require passing the contractors

@@ -40,6 +40,7 @@ public class EmailQueue implements java.io.Serializable {
 	private Date sentDate;
 	private EmailTemplate emailTemplate;
 	private ContractorAccount contractorAccount;
+	private boolean html = false;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -205,6 +206,14 @@ public class EmailQueue implements java.io.Serializable {
 		if (id != other.id)
 			return false;
 		return true;
+	}
+
+	public boolean isHtml() {
+		return html;
+	}
+
+	public void setHtml(boolean html) {
+		this.html = html;
 	}
 
 }

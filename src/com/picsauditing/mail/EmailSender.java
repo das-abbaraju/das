@@ -38,11 +38,15 @@ public class EmailSender extends GMailSender {
 				fromAddress = email.getFromAddress();
 			else
 				fromAddress = getDefaultSender();
+			
+			html = email.isHtml();
 			this.sendMail(email.getSubject(), email.getBody(), fromAddress, email.getToAddresses());
 			email.setStatus(EmailStatus.Sent);
 			email.setSentDate(new Date());
+			
 			if (emailQueueDAO == null)
 				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
+			
 			emailQueueDAO.save(email);
 		} catch (javax.mail.internet.AddressException e) {
 			email.setStatus(EmailStatus.Error);

@@ -21,6 +21,7 @@ public class GMailSender extends javax.mail.Authenticator {
 	protected String user;
 	protected String password;
 	private Session session;
+	protected boolean html;
 
 	//static {   
 	//    Security.addProvider(new org.apache.harmony.xnet.provider.jsse.JSSEProvider());   
@@ -55,11 +56,13 @@ public class GMailSender extends javax.mail.Authenticator {
 			body = "";
 		}
 		DataHandler handler = new DataHandler(new ByteArrayDataSource(body
-				.getBytes(), "text/plain"));
+				.getBytes(), html ? "text/html" : "text/plain"));
+		
 		
 		message.setSender(new InternetAddress(sender));
 		InternetAddress[] replyTo = {new InternetAddress(sender)};
 		message.setReplyTo(replyTo);
+		
 		
 		message.setSubject(subject);
 		message.setDataHandler(handler);
@@ -76,6 +79,11 @@ public class GMailSender extends javax.mail.Authenticator {
 		private byte[] data;
 		private String type;
 
+	   /**
+	    * Create a DataSource from a String 
+	    * @param data is the contents of the mail message
+	    * @param type is the mime-type such as text/html
+	    */
 		public ByteArrayDataSource(byte[] data, String type) {
 			super();
 			this.data = data;
