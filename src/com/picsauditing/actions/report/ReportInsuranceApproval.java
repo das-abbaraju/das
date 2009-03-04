@@ -284,10 +284,15 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 							byAuditId.put(thisAuditId, answers);
 						}
 
-						List<AuditData> aiAnswers = questionData.get("aiName")
-								.get(thisAuditId);
+						
+						Map<Integer, List<AuditData>> tempMap = questionData.get("aiName");
+						
+						List<AuditData> aiAnswers = null;
+						
+						if( tempMap != null )
+							aiAnswers = tempMap.get(thisAuditId);
 
-						if (aiAnswers != null && aiAnswers.size() > 0) {
+						if ( ( aiAnswers != null && aiAnswers.size() > 0 ) ) {
 
 							for (AuditData aiAnswer : aiAnswers) {
 								AuditData tmpData = answersForThisAudit.get(
@@ -304,6 +309,21 @@ public class ReportInsuranceApproval extends ReportContractorAudits {
 								}
 							}
 						}
+						else if( "|General Liability|Automobile Liability|Excess/Umbrella Liability|Workers Comp|"
+								.indexOf(theseAuditTypes.get(thisAuditId)) == -1 ) {
+							AuditData tmpData = answersForThisAudit.get( question.getId() );
+							if( tmpData != null ) {
+								if( uniqueKey.equals("aiWaiverSub")) {
+									if( answers.size() == 0 ) {
+										answers.add(tmpData);
+									}
+								}
+								else {
+									answers.add(tmpData);
+								}
+							}
+						}
+
 					}
 				}
 			}
