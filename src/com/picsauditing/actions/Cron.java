@@ -122,12 +122,12 @@ public class Cron extends PicsActionSupport {
 			handleException(t);
 		}
 		
-		try {
+		/*try {
 			startTask("\nRunning Huntsman EBIX Support...");
 			processEbixData();
 		} catch (Throwable t) {
 			handleException(t);
-		}
+		}*/
 
 		report.append("\n\n\nCompleted Cron Job at: ");
 		report.append(new Date().toString());
