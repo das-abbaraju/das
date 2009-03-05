@@ -140,7 +140,7 @@ public class FlagCalculator2 {
 				}
 				
 			} catch (Throwable t) {
-				System.out.println("Error: " + t.getMessage());
+				t.printStackTrace();
 				StringBuffer body = new StringBuffer();
 
 				body.append("There was an error calculating flags for contractor ");

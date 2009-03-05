@@ -118,7 +118,7 @@
 											<s:else>
 												<img src="images/icon_insurance.gif"/>
 											</s:else>
-										</a>&nbsp;
+										</a> 
 									</s:if>
 								</s:if>
 								<s:else>

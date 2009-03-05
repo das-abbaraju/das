@@ -51,31 +51,31 @@
 		<td class="right"><s:property value="get('percentComplete')"/>%</td>
 		<td>
 		
-					<s:set name="aiFiles" value="getDataForAudit(get('auditID'),'policyFile')"/>
-					<s:if test="( #aiFiles != null ) && (#aiFiles.size() > 0 )">
-						<s:iterator value="#aiFiles">
-							<s:set name="currentFile" value="top"/>
-							<s:iterator value="getDataForAudit(get('auditID'),'aiName')">
-								<s:set name="nameQuestion" value="top"/>
-								<s:if test="#attr.nameQuestion != null">
-									<s:if test="#attr.currentFile.parentAnswer.id == #nameQuestion.id">
-										<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&answer.id=<s:property value="#attr.currentFile.id"/>" target="_BLANK">
-											<s:if test="#nameQuestion.answer == 'All'">
-												<img src="images/icon_DA.gif"/>
-											</s:if>
-											<s:else>
-												<img src="images/icon_insurance.gif"/>
-											</s:else>
-										</a>&nbsp;
-									</s:if>
+				<s:set name="aiFiles" value="getDataForAudit(get('auditID'),'policyFile')"/>
+				<s:if test="( #aiFiles != null ) && (#aiFiles.size() > 0 )">
+					<s:iterator value="#aiFiles">
+						<s:set name="currentFile" value="top"/>
+						<s:iterator value="getDataForAudit(get('auditID'),'aiName')">
+							<s:set name="nameQuestion" value="top"/>
+							<s:if test="#attr.nameQuestion != null">
+								<s:if test="#attr.currentFile.parentAnswer.id == #nameQuestion.id">
+									<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&answer.id=<s:property value="#attr.currentFile.id"/>" target="_BLANK">
+										<s:if test="#nameQuestion.answer == 'All'">
+											<img src="images/icon_DA.gif"/>
+										</s:if>
+										<s:else>
+											<img src="images/icon_insurance.gif"/>
+										</s:else>
+									</a> 
 								</s:if>
-								<s:else>
-									<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&answer.id=<s:property value="#attr.currentFile.id"/>" target="_BLANK"><img src="images/icon_insurance.gif"/></a><br/>
-								</s:else>
-							</s:iterator>
-							
+							</s:if>
+							<s:else>
+								<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&answer.id=<s:property value="#attr.currentFile.id"/>" target="_BLANK"><img src="images/icon_insurance.gif"/></a><br/>
+							</s:else>
 						</s:iterator>
-					</s:if>
+						
+					</s:iterator>
+				</s:if>
 		
 		
 		</td>
