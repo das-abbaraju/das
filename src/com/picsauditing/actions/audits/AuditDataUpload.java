@@ -32,6 +32,9 @@ public class AuditDataUpload extends AuditActionSupport {
 	protected String fileFileName = null;
 	private AuditPercentCalculator auditPercentCalculator;
 
+	private int copyDataID = 0;
+
+	
 	public AuditDataUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditQuestionDAO questionDAO,
 			AuditPercentCalculator auditPercentCalculator) {
@@ -93,6 +96,25 @@ public class AuditDataUpload extends AuditActionSupport {
 			answer.setQuestion(question);
 		} else
 			dataID = answer.getId();
+		
+		
+		if( copyDataID > 0 ) {
+			AuditData toCopy = auditDataDao.find(dataID);
+
+			if( toCopy != null ) {
+				for (File toCopyFile : getFiles(toCopy.getId())) {
+					file = toCopyFile;
+				}
+				fileFileName = "tempFile." + toCopy.getAnswer();
+			}
+			else {
+				addActionError("Could not find data record to copy");
+				return BLANK;
+			}
+		}
+		
+		
+		
 
 		if (button != null) {
 			if (dataID > 0 && button.equals("download")) {
@@ -233,5 +255,12 @@ public class AuditDataUpload extends AuditActionSupport {
 		this.divId = divId;
 	}
 
-	
+	public int getCopyDataID() {
+		return copyDataID;
+	}
+
+	public void setCopyDataID(int copyDataID) {
+		this.copyDataID = copyDataID;
+	}
+
 }
