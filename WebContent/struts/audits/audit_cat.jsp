@@ -92,29 +92,15 @@
 </script>
 </head>
 <body>
+
+<s:include value="audit_catHeader.jsp"/>
+
 <s:if test="auditID > 0">
-	<s:include value="../contractors/conHeader.jsp" />
-	
-	<s:if test="!conAudit.auditType.classType.audit">
-		<s:if test="permissions.operator && !canEdit">
-			<div id="alert">More than one facility has access to this data. Please contact PICS if any changes are needed.</div>
-		</s:if>
-		<s:if test="conAudit.willExpireSoon() && !conAudit.auditStatus.expired">
-			<div id="alert">This policy is about to Expire. Please update this information on 
-				<s:iterator value="conAudit.contractorAccount.audits" id="newPending">
-					<s:if test="!#newPending.auditType.classType.audit && conAudit.id != #newPending.id">
-						<s:if test="conAudit.auditType == #newPending.auditType && #newPending.auditStatus.pending">
-							<a href="Audit.action?auditID=<s:property value="#newPending.id"/>"><s:property value="#newPending.auditType.auditName"/></a>
-						</s:if>
-					</s:if>
-				</s:iterator>
-			</div>
-		</s:if>
-	</s:if>
 	<s:if test="!singleCat">
 		<s:include value="audit_cat_nav.jsp" />
 	</s:if>
 </s:if>
+
 <div id="auditToolbar" class="right">
 <s:if test="catDataID > 0">	
 	<s:if test="mode != 'View'">
@@ -258,6 +244,14 @@
 		<br clear="all"/>
 		<s:include value="audit_cat_nav.jsp" />
 	</s:if>
+	<s:else>
+		<s:if test="conAudit.percentComplete < 100">
+			<div id="info" class="buttons" style="">
+			<a href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>&mode=<s:property value="mode"/>" class="positive">Done</a>
+			Click Done when you're ready to submit the <s:property value="conAudit.auditType.auditName"/>
+			</div>
+		</s:if>
+	</s:else>
 </s:if>
 </body>
 </html>

@@ -1,11 +1,8 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.actions.converters.OshaTypeConverter;
@@ -15,7 +12,6 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OshaAuditDAO;
-import com.picsauditing.jpa.entities.AccountName;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
@@ -25,7 +21,6 @@ import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
@@ -41,7 +36,7 @@ import com.picsauditing.util.log.PicsLogger;
  * 
  */
 @SuppressWarnings("serial")
-public class AuditCategoryAction extends AuditActionSupport {
+public class AuditCategoryAction extends AuditCategorySingleAction {
 
 	protected int catDataID = 0;
 	protected String mode = null;
@@ -62,22 +57,18 @@ public class AuditCategoryAction extends AuditActionSupport {
 	protected OshaAudit averageOshas = null;
 	protected AnswerMap answerMap = null;
 
-	private AuditPercentCalculator auditPercentCalculator;
 	private AuditCategoryDAO auditCategoryDAO;
 	private OshaAuditDAO oshaAuditDAO;
 
 	public AuditCategoryAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
 			AuditCategoryDAO auditCategoryDAO, OshaAuditDAO oshaAuditDAO) {
-		super(accountDao, auditDao, catDataDao, auditDataDao);
-		this.auditPercentCalculator = auditPercentCalculator;
+		super(accountDao, auditDao, catDataDao, auditDataDao, auditPercentCalculator);
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.oshaAuditDAO = oshaAuditDAO;
 	}
 
 	public String execute() throws Exception {
-		long startTime = Calendar.getInstance().getTimeInMillis();
-		
 		PicsLogger.start("AuditCategoryAction_execute");
 		
 		if (!forceLogin()) {
@@ -100,9 +91,9 @@ public class AuditCategoryAction extends AuditActionSupport {
 			PicsLogger.stop();
 			return SUCCESS;
 		}
-
+		
 		this.findConAudit();
-
+		super.execute();
 		
 		if (isSingleCat()) {
 			catDataID = getCategories().get(0).getId();
@@ -210,7 +201,6 @@ public class AuditCategoryAction extends AuditActionSupport {
 				auditPercentCalculator.updatePercentageCompleted(currentCategory);
 			}
 		}
-		auditPercentCalculator.percentCalculateComplete(conAudit, conAudit.getAuditType().getId() == 17);
 
 		if (conAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM) {
 

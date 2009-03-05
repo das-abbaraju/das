@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
-import org.apache.struts2.ServletActionContext;
-
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Inputs;
 import com.picsauditing.access.MenuComponent;
@@ -16,7 +14,6 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
