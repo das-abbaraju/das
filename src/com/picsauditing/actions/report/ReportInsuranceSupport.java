@@ -195,7 +195,7 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 							if (names != null) {
 								for (AccountName accountName : names) {
 									if (accountName.getName().equalsIgnoreCase(
-											aiNameAnswer.getAnswer())) {
+											aiNameAnswer.getAnswer()) || aiNameAnswer.getAnswer().equalsIgnoreCase("All")) {
 										answers.add(aiNameAnswer);
 										break;
 									}
