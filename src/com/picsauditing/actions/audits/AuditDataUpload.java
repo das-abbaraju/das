@@ -44,7 +44,15 @@ public class AuditDataUpload extends AuditActionSupport {
 	}
 	
 	public List<AuditData> getFileList() {
-		return auditDataDao.findAnswersByContractorAndUniqueCode(conAudit.getId(), "policyList");
+		List<AuditData> temp = auditDataDao.findAnswersByContractorAndUniqueCode(conAudit.getContractorAccount().getId(), "policyFile");
+		for (AuditData ad : temp) {
+			if (ad.getParentAnswer() == null) {
+				ad.setParentAnswer(new AuditData());
+				ad.getParentAnswer().setAnswer("All");
+			}
+		}
+		
+		return temp;
 	}
 
 	public String execute() throws Exception {
