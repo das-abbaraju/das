@@ -1,16 +1,13 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<s:actionmessage/>
+<s:include value="../actionMessages.jsp" />
 <form id="caoForm">
-	<span style="margin: 20px;">
-		<s:hidden id="cao.id" name="cao.id"/>
-		<input type="hidden" name="button" value="save"/>
-		<s:radio name="cao.status" list="#{'Approved':'Approve', 'Rejected':'Reject', 'NotApplicable':'Mark as N/A', 'Awaiting':'Awaiting'}"/>
-	</span><br/> 
-	<span style="margin: 20px;">
-		<s:textarea id="cao.notes" name="cao.notes" cols="40" rows="5"/>
-	</span><br/>
-	<div class="buttons" style="margin: 20px;">
-		<s:submit cssStyle="font-size: 16px; padding: 8px; margin: 5px; color: darkgreen; font-weight: bold;" value="Save" onclick="javascript: return saveCao();"/>
-		<s:submit cssStyle="font-size: 16px; padding: 8px; margin: 5px; color: #d12f19;; font-weight: bold;" value="Close" onclick="javascript: $('caoSection').hide(); return false;"/>
+	<s:hidden id="cao.id" name="cao.id"/>
+	<input type="hidden" name="button" value="save"/>
+	<s:radio name="cao.status" list="#{'Approved':'Approve', 'Rejected':'Reject', 'NotApplicable':'Mark as N/A', 'Awaiting':'Awaiting'}"/>
+	<br />
+	<s:textarea id="cao.notes" name="cao.notes" cols="60" rows="2"/>
+	<div class="buttons">
+		<button type="button" class="positive" onclick="javascript: return saveCao();">Save</button>
+		<a class="negative" href="#" onclick="javascript: $('caoSection').hide(); return false;">Close</a>
 	</div>
 </form>

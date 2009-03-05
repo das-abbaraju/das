@@ -22,7 +22,7 @@
 	var mode = '<s:property value="#parameters.mode"/>';
 	
 	function editCao( caoId ) {
-		startThinking( {div: 'caoThinking' } );
+		startThinking( {div: 'caoSection', type: 'large' } );
 		
 		var pars= 'cao.id=' + caoId;
 		var myAjax = new Ajax.Updater($('caoSection'),'CaoEditAjax.action', 
@@ -33,62 +33,24 @@
 				if (transport.status == 200) {
 					$('caoSection').show();
 				}
-				stopThinking( {div: 'caoThinking' } );
 			}
 		});
-	
+		
 		return false;
 	}
 
 	function saveCao() {
-		startThinking( {div: 'caoThinking' } );
 		var pars= $('caoForm').serialize();
 		
+		startThinking( {div: 'caoSection', type: 'large' } );
 		var myAjax = new Ajax.Updater('caoSection','CaoEditAjax.action', 
 		{
 			method: 'post', 
-			parameters: pars,
-			onSuccess: function(transport) {
-				if (transport.status == 200) {
-					new Effect.Highlight($('caoSection'),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-					setMainFields();
-				}
-				stopThinking( {div: 'caoThinking' } );
-			}
+			parameters: pars
 		});
-	
+		
 		return false;
 	}
-	
-	function setMainFields( ) {
-		var caoStatusElm = $('caoForm')['cao.status'];
-		var caoId = $F($('cao.id'));
-		var noteValue = $F($('cao.notes'));
-
-		var caoStatus;
-		for( var i = 0; i < caoStatusElm.length; i++  ) {
-			var current = caoStatusElm[i];
-			if( current.checked ) {
-				caoStatus = current.value;
-				break;
-			}
-		}
-
-		
-		$('caoStatusMain_' + caoId).innerHTML = caoStatus;
-		
-
-		if( noteValue != '' ) {
-			$('caoNotesMain_' + caoId).show();
-			$('caoNotesMain_' + caoId).innerHTML = '&nbsp;&nbsp;' + noteValue;
-		}
-		else {
-			$('caoNotesMain_' + caoId).hide();
-		}
-	
-		return;	
-	}
-
 </script>
 </head>
 <body>
@@ -99,6 +61,7 @@
 	<s:if test="!singleCat">
 		<s:include value="audit_cat_nav.jsp" />
 	</s:if>
+	<div id="caoSection"></div>
 </s:if>
 
 <div id="auditToolbar" class="right">

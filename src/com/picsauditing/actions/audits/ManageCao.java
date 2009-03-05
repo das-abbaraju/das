@@ -107,6 +107,7 @@ public class ManageCao extends PicsActionSupport implements Preparable {
 				emailBuilder.setTemplate(33); // Insurance Approval Status Change
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setContractor(cao.getAudit().getContractorAccount());
+				emailBuilder.setBccAddresses(getUser().getEmail());
 				emailBuilder.addToken("cao", cao);
 				EmailSender.send(emailBuilder.build());
 			} catch (Exception e) {

@@ -142,7 +142,7 @@
 			<s:iterator value="conAudit.operators" status="rowStatus">
 				<s:if test="permissions.operator || permissions.corporate">
 					<s:if test="operator.id == permissions.accountId">
-						<li><label>Op Status:</label> 
+						<li><label>Op Status:</label>
 							<a href="#" id="caoStatusMain_<s:property value="id"/>" class="edit" onclick="javascript: return editCao(<s:property value="id"/>);"><s:property value="status"/></a>
 							(<s:property value="operator.name"/>)
 							<s:if test="notes != null && notes.length() > 0">

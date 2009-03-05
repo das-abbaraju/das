@@ -91,8 +91,5 @@
 	</div>
 </s:if>
 <br clear="both"/>
-<div id="caoThinking"></div>
-<div id="caoSection"></div>
-<br clear="both"/>
 </body>
 </html>

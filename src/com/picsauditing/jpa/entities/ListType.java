@@ -6,7 +6,8 @@ public enum ListType {
 	Audit("Contractors by Audit"),
 	User("Users"),
 	ContractorOperator("Contractors by Operator"),
-	Operator("Operators")
+	Operator("Operators"),
+	Invoice("Invoices")
 	;
 	
 	private String description;
