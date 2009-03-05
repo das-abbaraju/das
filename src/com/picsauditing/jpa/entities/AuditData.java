@@ -289,8 +289,8 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 				rateTotal += rate;
 				count++;
 			} catch (Exception e) {
-				String error = "Failed to parse rate:" + data.getAnswer() + " for audit " + data.getAudit().getId();
-				System.out.println(error);
+//				String error = "Failed to parse rate:" + data.getAnswer() + " for audit " + data.getAudit().getId();
+//				System.out.println(error);
 			}
 		}
 		if (count > 0) {
