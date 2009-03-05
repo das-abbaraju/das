@@ -245,7 +245,7 @@
 		<s:include value="audit_cat_nav.jsp" />
 	</s:if>
 	<s:else>
-		<s:if test="conAudit.percentComplete < 100">
+		<s:if test="conAudit.percentComplete < 100 && conAudit.auditStatus.pending">
 			<div id="info" class="buttons" style="">
 			<a href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>&mode=<s:property value="mode"/>" class="positive">Done</a>
 			Click Done when you're ready to submit the <s:property value="conAudit.auditType.auditName"/>
