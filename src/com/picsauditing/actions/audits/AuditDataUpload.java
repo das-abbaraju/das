@@ -52,6 +52,9 @@ public class AuditDataUpload extends AuditActionSupport {
 				ad.setParentAnswer(new AuditData());
 				ad.getParentAnswer().setAnswer("All");
 			}
+			if (ad.getAudit().getId() == this.auditID) {
+				temp.remove(ad);
+			}
 		}
 
 		return temp;
