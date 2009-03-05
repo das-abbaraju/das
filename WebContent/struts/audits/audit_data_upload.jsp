@@ -46,7 +46,7 @@ function closePage() {
 	<br />
 	<s:file name="file" size="50"></s:file>
 	<br />
-	<s:if test="fileList.size == 0">
+	<s:if test="fileList.size != 0">
 	OR <br />
 	<s:select id="copyList" name="copyDataID" list="fileList" listKey="id" listValue="audit.auditType.auditName.concat(' for ').concat(parentAnswer.answer)"/>
 	</s:if> 
