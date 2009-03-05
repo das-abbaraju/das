@@ -6,4 +6,8 @@ public enum AuditTypeClass {
 	public boolean isAudit() {
 		return Audit == this;
 	}
+	
+	public boolean isPolicy() {
+		return Policy == this;
+	}
 }
