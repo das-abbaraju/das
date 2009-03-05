@@ -238,9 +238,12 @@ public class ConAuditList extends ContractorActionSupport {
 		OperatorAccount thisOp = (OperatorAccount) getUser().getAccount();
 
 		for (AuditData answer : certificatesFiles) {
-			if (thisOp.isHasLegalName(answer.getAnswer())) {
+			if(answer.getParentAnswer() != null) {
+				if (thisOp.isHasLegalName(answer.getParentAnswer().getAnswer())) {
+					operatorList.add(answer);
+				}
+			} else
 				operatorList.add(answer);
-			}
 		}
 		return operatorList;
 	}
