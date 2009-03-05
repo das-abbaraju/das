@@ -4,7 +4,7 @@
 <title>Login</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css"/>
 </head>
-<body onload="document.login.username.focus();">
+<body onload="document.forms['login'].username.focus();">
 
 <s:include value="../actionMessages.jsp"></s:include>
 

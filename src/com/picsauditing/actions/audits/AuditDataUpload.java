@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.io.File;
+import java.util.List;
 
 import javax.persistence.NoResultException;
 
@@ -37,6 +38,10 @@ public class AuditDataUpload extends AuditActionSupport {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.questionDAO = questionDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
+	}
+	
+	public List<AuditData> getFileList() {
+		return auditDataDao.findAnswersByContractorAndUniqueCode(conAudit.getId(), "policyList");
 	}
 
 	public String execute() throws Exception {

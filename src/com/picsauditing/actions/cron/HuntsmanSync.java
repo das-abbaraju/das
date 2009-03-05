@@ -9,6 +9,7 @@ import org.apache.commons.net.ftp.FTPFile;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.jpa.entities.YesNo;
 
 public class HuntsmanSync extends PicsActionSupport {
 
@@ -20,6 +21,12 @@ public class HuntsmanSync extends PicsActionSupport {
 
 	public String execute() throws Exception {
 
+		processEbixData();
+
+		return SUCCESS;
+	}
+	
+	public void processEbixData() throws Exception {
 		String server = appPropDao.find("huntsmansync.ftp.server").getValue();
 		String username = appPropDao.find("huntsmansync.ftp.user").getValue();
 		String password = appPropDao.find("huntsmansync.ftp.password").getValue();
@@ -44,13 +51,11 @@ public class HuntsmanSync extends PicsActionSupport {
 
 				BufferedReader reader = null;
 
-				InputStream retrieveFileStream = ftp.retrieveFileStream(ftpFile
-						.getName());
+				InputStream retrieveFileStream = ftp.retrieveFileStream(ftpFile.getName());
 
 				if (retrieveFileStream != null) {
 
-					reader = new BufferedReader(new InputStreamReader(
-							retrieveFileStream));
+					reader = new BufferedReader(new InputStreamReader(retrieveFileStream));
 
 					String line = null;
 
@@ -62,12 +67,16 @@ public class HuntsmanSync extends PicsActionSupport {
 
 							if (data.length == 2) {
 								// contractor id
-								Integer contractorId = Integer
-										.parseInt(data[0]);
-								System.out.println(contractorId);
+								Integer contractorId = Integer.parseInt(data[0]);
 								// the other field. comes in as a Y/N.
-								String yn = data[1];
-								
+								YesNo yn;
+								if(data[1].equals("Y"))
+									yn = YesNo.Yes;
+								else
+									yn = YesNo.No;
+
+								System.out.println(contractorId + " " + yn);
+
 							} else {
 								// maybe append this to a report that gets
 								// emailed
@@ -77,15 +86,12 @@ public class HuntsmanSync extends PicsActionSupport {
 					}
 				} else {
 					// maybe append this to a report that gets emailed
-					System.out.println("unable to open connection: "
-							+ ftp.getReplyCode() + ":" + ftp.getReplyString());
+					System.out.println("unable to open connection: " + ftp.getReplyCode() + ":" + ftp.getReplyString());
 				}
 			}
 		}
 
 		ftp.logout();
 		ftp.disconnect();
-
-		return SUCCESS;
 	}
 }
