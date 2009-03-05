@@ -16,7 +16,7 @@
 <div id="auditHeader">
 <div class="buttons" style="float: right">
 	<button name="button" type="button" value="cancel" onclick="window.close();">Close</button>
-	<s:if test="permissions.admin || permissions.userID == note.createdBy.id">
+	<s:if test="permissions.admin || permissions.userId == note.createdBy.id">
 		<pics:permission perm="EditNotes" type="Edit">
 			<a href="?id=<s:property value="id"/>&note.id=<s:property value="note.id"/>&mode=edit&embedded=<s:property value="embedded"/>">Edit</a>
 		</pics:permission>
