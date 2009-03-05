@@ -44,8 +44,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected String descriptionOsMs;
 	private Map<Integer, AuditData> hasManual;
 
-	public AuditActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao) {
+	public AuditActionSupport(ContractorAccountDAO accountDao,
+			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
+			AuditDataDAO auditDataDao) {
 		super(accountDao, auditDao);
 		this.catDataDao = catDataDao;
 		this.auditDataDao = auditDataDao;
@@ -63,12 +64,15 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (permissions.isPicsEmployee())
 			return;
 		if (permissions.isOperator() || permissions.isCorporate()) {
-			if (!permissions.getCanSeeAudit().contains(conAudit.getAuditType().getId()))
-				throw new NoRightsException(conAudit.getAuditType().getAuditName());
+			if (!permissions.getCanSeeAudit().contains(
+					conAudit.getAuditType().getId()))
+				throw new NoRightsException(conAudit.getAuditType()
+						.getAuditName());
 		}
 		if (permissions.isContractor()) {
 			if (!conAudit.getAuditType().isCanContractorView())
-				throw new NoRightsException(conAudit.getAuditType().getAuditName());
+				throw new NoRightsException(conAudit.getAuditType()
+						.getAuditName());
 		}
 	}
 
@@ -147,8 +151,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public Map<Integer, AuditData> getDataForSafetyManual() {
-		Map<Integer, AuditData> answers = auditDataDao.findAnswersForSafetyManual(conAudit.getContractorAccount()
-				.getId(), AuditQuestion.MANUAL_PQF);
+		Map<Integer, AuditData> answers = auditDataDao
+				.findAnswersForSafetyManual(conAudit.getContractorAccount()
+						.getId(), AuditQuestion.MANUAL_PQF);
 		if (answers == null || answers.size() == 0)
 			return null;
 		return answers;
@@ -165,13 +170,16 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public boolean isCanVerify() {
 		if (!conAudit.getAuditType().isMustVerify())
 			return false;
-		if (conAudit.getAuditType().isPqf() && conAudit.getAuditStatus().isActiveSubmitted())
+		if (conAudit.getAuditType().isPqf()
+				&& conAudit.getAuditStatus().isActiveSubmitted())
 			if (permissions.isAuditor())
 				return true;
 
-		if (conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
+		if (conAudit.getAuditType().getClassType()
+				.equals(AuditTypeClass.Policy)
 				&& conAudit.getAuditStatus().equals(AuditStatus.Submitted)
-				&& permissions.hasPermission(OpPerms.InsuranceVerification, OpType.Edit)) {
+				&& permissions.hasPermission(OpPerms.InsuranceVerification,
+						OpType.Edit)) {
 			return true;
 		}
 		return false;
@@ -184,14 +192,17 @@ public class AuditActionSupport extends ContractorActionSupport {
 		AuditType type = conAudit.getAuditType();
 
 		// Auditors can edit their assigned audits
-		if (type.isHasAuditor() && !type.isCanContractorEdit() && conAudit.getAuditor() != null
+		if (type.isHasAuditor() && !type.isCanContractorEdit()
+				&& conAudit.getAuditor() != null
 				&& permissions.getUserId() == conAudit.getAuditor().getId())
 			return true;
 
 		if (permissions.isContractor()) {
-			if (type.isAnnualAddendum() && conAudit.getAuditStatus().equals(AuditStatus.Active))
+			if (type.isAnnualAddendum()
+					&& conAudit.getAuditStatus().equals(AuditStatus.Active))
 				return false;
-			if (type.getClassType().equals(AuditTypeClass.Policy) && conAudit.willExpireSoon())
+			if (type.getClassType().equals(AuditTypeClass.Policy)
+					&& conAudit.willExpireSoon())
 				return false;
 
 			if (type.isCanContractorEdit())
@@ -204,17 +215,22 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return false;
 
 		if (permissions.isOperator()) {
-			if (conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+			if (conAudit.getAuditType().getClassType().equals(
+					AuditTypeClass.Policy)) {
 				if (conAudit.getAuditStatus().isPending())
 					return true;
 				if (conAudit.getOperators().size() == 1
-						&& conAudit.getOperators().get(0).getOperator().getId() == permissions.getAccountId())
+						&& conAudit.getOperators().get(0).getOperator().getId() == permissions
+								.getAccountId())
 					return true;
 			}
 
 			if (conAudit.getRequestingOpAccount() != null) {
-				for (AuditOperator auditOperator : conAudit.getRequestingOpAccount().getAudits()) {
-					if (auditOperator.getAuditType().equals(conAudit.getAuditType()) && auditOperator.isCanEdit())
+				for (AuditOperator auditOperator : conAudit
+						.getRequestingOpAccount().getAudits()) {
+					if (auditOperator.getAuditType().equals(
+							conAudit.getAuditType())
+							&& auditOperator.isCanEdit())
 						return true;
 				}
 			}
@@ -244,7 +260,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 			for (ContractorAudit cAudit : getActiveAudits()) {
 				// We have to check (cAudit != conAudit) because we haven't set
 				// the status yet...it happens later
-				if (!cAudit.equals(conAudit) && cAudit.getAuditStatus().isPendingSubmittedResubmitted()
+				if (!cAudit.equals(conAudit)
+						&& cAudit.getAuditStatus()
+								.isPendingSubmittedResubmitted()
 						&& cAudit.getAuditType().isCanContractorView()) {
 					// this contractor still has open audits to complete...don't
 					// send the email
@@ -259,8 +277,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 					emailBuilder.setPermissions(permissions);
 					emailBuilder.setContractor(contractor);
 					EmailSender.send(emailBuilder.build());
-					addNote(contractor, "Sent Audits Thank You email to " + emailBuilder.getSentTo(),
-							NoteCategory.Audits);
+					addNote(contractor, "Sent Audits Thank You email to "
+							+ emailBuilder.getSentTo(), NoteCategory.Audits);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -268,23 +286,25 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 
 	}
-	
+
 	public List<String> getLegalNames() {
 		Set<String> list = new TreeSet<String>();
 		boolean canSeeLegalName;
 		if (conAudit != null) {
-			for (ContractorOperator co : conAudit.getContractorAccount().getOperators()) {
+			for (ContractorOperator co : conAudit.getContractorAccount()
+					.getOperators()) {
 				canSeeLegalName = false;
 				if (permissions.isOperator()) {
-					if (co.getOperatorAccount().getId() == permissions.getAccountId()) {
+					if (co.getOperatorAccount().getId() == permissions
+							.getAccountId()) {
 						canSeeLegalName = true;
-					} 
-				}
-				else {
+					}
+				} else {
 					canSeeLegalName = true;
 				}
 				if (canSeeLegalName) {
-					for (AccountName legalName : co.getOperatorAccount().getNames()) {
+					for (AccountName legalName : co.getOperatorAccount()
+							.getNames()) {
 						list.add(legalName.getName());
 					}
 				}

@@ -20,20 +20,89 @@
 	var catDataID = <s:property value="catDataID"/>;
 	var conID = <s:property value="conAudit.contractorAccount.id"/>;
 	var mode = '<s:property value="#parameters.mode"/>';
+	
+	function editCao( caoId ) {
+		startThinking( {div: 'caoThinking' } );
+		
+		var pars= 'cao.id=' + caoId;
+		var myAjax = new Ajax.Updater($('caoSection'),'CaoEditAjax.action', 
+		{
+			method: 'post', 
+			parameters: pars,
+			onComplete: function(transport) {
+				if (transport.status == 200) {
+					$('caoSection').show();
+				}
+				stopThinking( {div: 'caoThinking' } );
+			}
+		});
+	
+		return false;
+	}
+
+	function saveCao() {
+		startThinking( {div: 'caoThinking' } );
+		var pars= $('caoForm').serialize();
+		
+		var myAjax = new Ajax.Updater('caoSection','CaoEditAjax.action', 
+		{
+			method: 'post', 
+			parameters: pars,
+			onSuccess: function(transport) {
+				if (transport.status == 200) {
+					new Effect.Highlight($('caoSection'),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+					setMainFields();
+				}
+				stopThinking( {div: 'caoThinking' } );
+			}
+		});
+	
+		return false;
+	}
+	
+	function setMainFields( ) {
+		var caoStatusElm = $('caoForm')['cao.status'];
+		var caoId = $F($('cao.id'));
+		var noteValue = $F($('cao.notes'));
+
+		var caoStatus;
+		for( var i = 0; i < caoStatusElm.length; i++  ) {
+			var current = caoStatusElm[i];
+			if( current.checked ) {
+				caoStatus = current.value;
+				break;
+			}
+		}
+
+		
+		$('caoStatusMain_' + caoId).innerHTML = caoStatus;
+		
+
+		if( noteValue != '' ) {
+			$('caoNotesMain_' + caoId).show();
+			$('caoNotesMain_' + caoId).innerHTML = '&nbsp;&nbsp;' + noteValue;
+		}
+		else {
+			$('caoNotesMain_' + caoId).hide();
+		}
+	
+		return;	
+	}
+
 </script>
 </head>
 <body>
 <s:if test="auditID > 0">
 	<s:include value="../contractors/conHeader.jsp" />
 	
-	<s:if test="conAudit.auditType.classType.toString() == 'Policy' && !canEdit">
-		<s:if test="permissions.operator">
+	<s:if test="!conAudit.auditType.classType.audit">
+		<s:if test="permissions.operator && !canEdit">
 			<div id="alert">More than one facility has access to this data. Please contact PICS if any changes are needed.</div>
 		</s:if>
 		<s:if test="conAudit.willExpireSoon() && !conAudit.auditStatus.expired">
-			<div id="alert">This policy is about to Expire. Please update your information on 
+			<div id="alert">This policy is about to Expire. Please update this information on 
 				<s:iterator value="conAudit.contractorAccount.audits" id="newPending">
-					<s:if test="#newPending.auditType.classType.toString() == 'Policy' && conAudit.id != #newPending.id">
+					<s:if test="!#newPending.auditType.classType.audit && conAudit.id != #newPending.id">
 						<s:if test="conAudit.auditType == #newPending.auditType && #newPending.auditStatus.pending">
 							<a href="Audit.action?auditID=<s:property value="#newPending.id"/>"><s:property value="#newPending.auditType.auditName"/></a>
 						</s:if>
