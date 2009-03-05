@@ -62,8 +62,8 @@ function closePage() {
 			onclick="return confirm('Are you sure you want to delete this file?');">Delete
 		File</button>
 	</s:if>
-	<button class="positive right" name="button" value="Upload"
-		type="submit">Upload/Copy File</button>
+	<button class="positive right" name="button" value="Save"
+		type="submit">Save</button>
 	</div>
 </s:form> <br clear="all" />
 <s:if test="file != null && file.exists()">

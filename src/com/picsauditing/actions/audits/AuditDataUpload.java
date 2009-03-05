@@ -149,7 +149,7 @@ public class AuditDataUpload extends AuditActionSupport {
 
 				addActionMessage("Successfully removed file");
 			}
-			if (button.startsWith("Upload")) {
+			if (button.startsWith("Save")) {
 				if (copyDataID > 0) {
 					// COPY FILE
 					AuditData toCopy = auditDataDao.find(copyDataID);
