@@ -43,12 +43,9 @@
 				<td><s:iterator value="certificatesFiles">
 					<s:if test="audit.id == #conAudit.id">
 						<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&answer.id=<s:property value="id"/>" 
-						target="_BLANK"">
-						<s:if test="parentAnswer.answer != null">
-							<s:property value="parentAnswer.answer"/>
-						</s:if>
-						<s:else>View File</s:else>
-						</a>,
+						target="_BLANK" 
+						title="<s:if test="parentAnswer.answer != null"><s:property value="parentAnswer.answer"/></s:if>"><img src="images/icon_insurance.gif"/>
+						</a>
 					</s:if>
 				</s:iterator>
 				</td>
