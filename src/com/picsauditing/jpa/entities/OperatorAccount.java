@@ -24,7 +24,7 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "operators")
 @PrimaryKeyJoinColumn(name = "id")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="daily")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class OperatorAccount extends Account implements java.io.Serializable {
 	public static final String DEFAULT_NAME = "- Operator -";
 
@@ -44,9 +44,8 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	protected List<AuditOperator> audits = new ArrayList<AuditOperator>();
 	protected List<Facility> corporateFacilities = new ArrayList<Facility>();
 	protected List<Facility> operatorFacilities = new ArrayList<Facility>();
-	protected List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>(); 
-	
-	
+	protected List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
+
 	public OperatorAccount() {
 		this.type = "Operator";
 	}
@@ -147,7 +146,7 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	public void setVerifiedByPics(boolean verifiedByPics) {
 		this.verifiedByPics = verifiedByPics;
 	}
-	
+
 	@OneToMany(mappedBy = "operatorAccount")
 	public List<AuditQuestionOperatorAccount> getAuditQuestions() {
 		return auditQuestions;
@@ -231,6 +230,17 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	public void setContractorOperators(List<ContractorOperator> contractorOperators) {
 		this.contractorOperators = contractorOperators;
 	}
-	
-	
+
+	@Transient
+	public boolean isHasLegalName(String legalName) {
+		if (legalName.equals("All"))
+			return true;
+		for (AccountName accountName : getNames()) {
+			if (accountName.getName().equalsIgnoreCase(legalName)) {
+				return true;
+			}
+
+		}
+		return false;
+	}
 }

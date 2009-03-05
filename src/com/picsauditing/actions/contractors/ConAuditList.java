@@ -8,9 +8,11 @@ import java.util.Vector;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -21,6 +23,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 @SuppressWarnings("serial")
 public class ConAuditList extends ContractorActionSupport {
 	private AuditTypeDAO auditTypeDAO;
+	private AuditDataDAO auditDataDAO;
 	private int selectedAudit;
 	private int selectedOperator;
 	private String auditFor;
@@ -30,10 +33,13 @@ public class ConAuditList extends ContractorActionSupport {
 	public List<ContractorAudit> upComingAudits = new ArrayList<ContractorAudit>();
 	public List<ContractorAudit> currentAudits = new ArrayList<ContractorAudit>();
 	public List<ContractorAudit> expiredAudits = new ArrayList<ContractorAudit>();
+	public List<AuditData> certificatesFiles = new ArrayList<AuditData>();
 
-	public ConAuditList(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO) {
+	public ConAuditList(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO,
+			AuditDataDAO auditDataDAO) {
 		super(accountDao, auditDao);
 		this.auditTypeDAO = auditTypeDAO;
+		this.auditDataDAO = auditDataDAO;
 	}
 
 	public String execute() throws Exception {
@@ -108,12 +114,10 @@ public class ConAuditList extends ContractorActionSupport {
 
 			if (auditClass != AuditTypeClass.IM) {
 				for (ContractorAudit conAudit : contractor.getAudits()) {
-					if (conAudit.getAuditType().getId() == selectedAudit 
-							&& !conAudit.getAuditStatus().isExpired()) {
-						if ((selectedOperator == 0 
-								&& conAudit.getRequestingOpAccount() == null)
-								|| (conAudit.getRequestingOpAccount() != null 
-										&& conAudit.getRequestingOpAccount().getId() == selectedOperator)) {
+					if (conAudit.getAuditType().getId() == selectedAudit && !conAudit.getAuditStatus().isExpired()) {
+						if ((selectedOperator == 0 && conAudit.getRequestingOpAccount() == null)
+								|| (conAudit.getRequestingOpAccount() != null && conAudit.getRequestingOpAccount()
+										.getId() == selectedOperator)) {
 							alreadyExists = true;
 							break;
 						}
@@ -138,10 +142,11 @@ public class ConAuditList extends ContractorActionSupport {
 				conAudit.setPercentVerified(0);
 				conAudit.setManuallyAdded(true);
 				conAudit = auditDao.save(conAudit);
-				
+
 				AuditType auditType = auditTypeDAO.find(selectedAudit);
-				addNote(conAudit.getContractorAccount(), "Added "+ auditType.getAuditName() + " manually", NoteCategory.Audits);
-				
+				addNote(conAudit.getContractorAccount(), "Added " + auditType.getAuditName() + " manually",
+						NoteCategory.Audits);
+
 				return "saved";
 			}
 		}
@@ -221,5 +226,26 @@ public class ConAuditList extends ContractorActionSupport {
 
 	public void setImScores(Map<String, String> imScores) {
 		this.imScores = imScores;
+	}
+
+	public List<AuditData> getCertificatesFiles() {
+		certificatesFiles = auditDataDAO.findAnswersByContractorAndUniqueCode(contractor.getId(), "policyFile");
+		if (certificatesFiles == null)
+			return new ArrayList<AuditData>();
+		if (permissions.isContractor() || permissions.seesAllContractors() || permissions.isAuditor())
+			return certificatesFiles;
+		List<AuditData> operatorList = new ArrayList<AuditData>();
+		OperatorAccount thisOp = (OperatorAccount) getUser().getAccount();
+
+		for (AuditData answer : certificatesFiles) {
+			if (thisOp.isHasLegalName(answer.getAnswer())) {
+				operatorList.add(answer);
+			}
+		}
+		return operatorList;
+	}
+
+	public void setCertificatesFiles(List<AuditData> certificatesFiles) {
+		this.certificatesFiles = certificatesFiles;
 	}
 }

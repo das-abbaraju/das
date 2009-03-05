@@ -265,27 +265,15 @@ public class AuditCategoryAction extends AuditActionSupport {
 				&& conAudit.getAuditType().getClassType() == AuditTypeClass.Policy 
 				&& getUser().getAccount() != null 
 				&& getUser().getAccount().isOperator()) {
+			OperatorAccount thisOp = (OperatorAccount) getUser().getAccount();
+	
 			for( AuditCategory cat : conAudit.getAuditType().getCategories() ) {
 				for( AuditSubCategory subCat : cat.getSubCategories() ) {
 					for( AuditQuestion qstn : subCat.getQuestions() ) {
 						if( qstn.getUniqueCode() != null && qstn.getUniqueCode().equals("aiName")) {
 							List<AuditData> answers = answerMap.getAnswerList( qstn.getId() );
-							
 							for( AuditData answer : answers ) {
-								OperatorAccount thisOp = (OperatorAccount) getUser().getAccount();
-
-								List<AccountName> names = thisOp.getNames();
-								boolean found = false;
-								if(answer.getAnswer().equals("All"))
-									found = true;
-								for (AccountName accountName : names) {
-									if (accountName.getName().equalsIgnoreCase( answer.getAnswer() ) ) {
-										found = true;
-										break;
-									}
-								}
-								
-								if( ! found ) {
+								if( ! thisOp.isHasLegalName(answer.getAnswer())) {
 									answerMap.remove( answer );
 								}
 							}

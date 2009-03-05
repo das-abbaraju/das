@@ -24,9 +24,12 @@
 		<th>Status</th>
 		<th>Type</th>
 		<th>Operator</th>
+		<s:if test="certificatesFiles.size() > 0">
+			<th>File</th>
+		</s:if>
 	</tr>
 	</thead>
-	<s:iterator value="upComingAudits" status="auditStatus">
+	<s:iterator id="conAudit" value="upComingAudits" status="auditStatus">
 		<tr>
 			<td><s:property value="auditStatus" /></td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
@@ -36,6 +39,20 @@
 			<s:else>
 				<td>Shared</td>
 			</s:else>
+			<s:if test="certificatesFiles.size() > 0">
+				<td><s:iterator value="certificatesFiles">
+					<s:if test="audit.id == #conAudit.id">
+						<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&answer.id=<s:property value="id"/>" 
+						target="_BLANK"">
+						<s:if test="parentAnswer.answer != null">
+							<s:property value="parentAnswer.answer"/>
+						</s:if>
+						<s:else>View File</s:else>
+						</a>,
+					</s:if>
+				</s:iterator>
+				</td>
+			</s:if>
 		</tr>
 	</s:iterator>
 	<s:if test="manuallyAddAudit">
@@ -79,13 +96,30 @@
 		<th>Type</th>
 		<th>Effective</th>
 		<th>Expires</th>
+		<s:if test="certificatesFiles.size() > 0">
+			<th>File</th>
+		</s:if>
 	</tr>
 	</thead>
-	<s:iterator value="currentAudits" status="auditStatus">
+	<s:iterator id="conAudit" value="currentAudits" status="auditStatus">
 		<tr>
-			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
-			<td><s:date name="creationDate" format="M/d/yy" /></td>
-			<td><s:date name="expiresDate" format="M/d/yy" /></td>
+		<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
+		<td><s:date name="creationDate" format="M/d/yy" /></td>
+		<td><s:date name="expiresDate" format="M/d/yy" /></td>
+		<s:if test="certificatesFiles.size() > 0">
+			<td><s:iterator value="certificatesFiles">
+				<s:if test="audit.id == #conAudit.id">
+					<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&answer.id=<s:property value="id"/>" 
+					target="_BLANK"">
+						<s:if test="parentAnswer.answer != null">
+							<s:property value="parentAnswer.answer"/>
+						</s:if>
+						<s:else>View File</s:else>
+						</a>,
+					</s:if>
+				</s:iterator>
+			</td>
+		</s:if>
 		</tr>
 	</s:iterator>
 </table>
