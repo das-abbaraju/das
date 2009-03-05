@@ -103,7 +103,7 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 			response = decimalFormat.format(input);
 		}
 		catch( Exception e ) {
-			System.out.println("unable to format as money: " + answer);
+			//System.out.println("unable to format as money: " + answer);
 		}
 		return response;
 	}
