@@ -11,8 +11,8 @@ import java.util.Vector;
 import com.picsauditing.jpa.entities.AccountName;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.util.log.PicsLogger;
 
 /**
  * Two level map of questionID and rowID
@@ -144,7 +144,7 @@ public class AnswerMap {
 			return null;
 		
 		if (dataList.size() > 1)
-			System.out.println("WARNING! Returning the first entry, but multiple values were found in list.");
+			PicsLogger.log("WARNING! Returning the first entry, but multiple values were found in list.");
 		
 		return dataList.get(0);
 	}
