@@ -93,6 +93,9 @@
 					<li><label>Billing Status:</label>
 						<s:property value="contractor.billingStatus" />
 					</li>
+					<li><label>Must Pay:</label>
+						<s:property value="contractor.mustPay" />
+					</li>
 					<li><label>New Level:</label>
 						$<s:property value="contractor.newMembershipLevel.amount" /> USD
 						<br ><s:property value="contractor.newMembershipLevel.fee" />
