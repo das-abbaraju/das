@@ -3,6 +3,7 @@ package com.picsauditing.actions.contractors;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -11,6 +12,7 @@ import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
@@ -45,6 +47,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 	private ContractorAccountDAO conAccountDAO;
 	
 	private int newFeeId;
+	private BrainTreeService paymentService = new BrainTreeService();
 	
 	private Invoice invoice;
 	private ContractorAccount contractor;
@@ -100,12 +103,14 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 
 			} else {
 				if (button.startsWith("Charge Credit Card") && contractor.isCcOnFile()) {
-					BrainTreeService paymentService = new BrainTreeService();
 					paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
 					paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
 					
 					try {
 						paymentService.processPayment(invoice);
+						String ccNumber = getCCNum();
+						invoice.setCCNumber(ccNumber);
+						
 						payInvoice();
 						addNote("Credit Card transaction completed for $" + invoice.getTotalAmount());
 					} catch (Exception e) {
@@ -121,14 +126,14 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 					markInvoicePaid();
 					addNote("Marked invoice paid with amount " + invoice.getTotalAmount() + ". No payment");
 				}
-				if (button.startsWith("Email Invoice")) {
+				if (button.startsWith("Email")) {
 					try {
 						emailInvoice();
 					} catch (Exception e) {
 						// TODO: handle exception
 					}
 					
-					addNote("Invoice emailed to " + contractor.getBillingEmail() + ". No payment");
+					addNote("Invoice emailed to " + contractor.getBillingEmail());
 				}				
 				
 			}
@@ -148,16 +153,26 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		emailBuilder.setPermissions(permissions);
 		emailBuilder.setContractor(contractor);
 		emailBuilder.addToken("invoice", invoice);
+		emailBuilder.addToken("operators", getOperators());
+		emailBuilder.addToken("ccNumAndType", getCCNumAndType());
 		emailBuilder.setFromAddress("billing@picsauditing.com");
-		emailBuilder.setToAddresses(contractor.getBillingEmail());
+		emailBuilder.setToAddresses("msloan@picsauditing.com");
+		
+		// TODO: remove after testing
+		//emailBuilder.setToAddresses(contractor.getBillingEmail());
+		//emailBuilder.setCcAddresses(contractor.getEmail());
+		//emailBuilder.setBccAddresses("billing@picsauditing.com");
 		
 		EmailQueue email = emailBuilder.build();
+		if (invoice.isPaid())
+			email.setSubject("PICS Payment Receipt for Invoice " + invoice.getId());
+		email.setPriority(100);
 		email.setHtml(true);
-		
-		//EmailSender sender = new EmailSender();
-		//sender.sendNow(email);
-		
 		EmailSender.send(email);
+		
+		// TODO: remove after testing
+		EmailSender sender = new EmailSender();
+		sender.sendNow(email);
 	}
 	
 	private void updateTotals() {
@@ -200,6 +215,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 				}
 			}
 		}
+		
 		if (!contractor.isActiveB()) {
 			for(InvoiceItem item : invoice.getItems()) {
 				if (item.getInvoiceFee().getFeeClass().equals("Membership")) {
@@ -211,6 +227,13 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 				}
 			}
 		}
+		
+		// Send a receipt to the contractor
+		try {
+			emailInvoice();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}		
 		
 		updateTotals();
 	}
@@ -235,8 +258,6 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 	}
 	
 	private void changeInvoiceItem(InvoiceFee currentFee, InvoiceFee newFee) {
-		
-		
 		for( Iterator<InvoiceItem> iterator = invoice.getItems().iterator(); iterator.hasNext();) {
 			InvoiceItem item =  iterator.next(); 
 			if( item.getInvoiceFee().getId() == currentFee.getId() ) {
@@ -245,7 +266,6 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 			}
 		}
 		
-			
 		InvoiceItem thisIsTheNewItemThatWeArePuttingOnTheInvoice = new InvoiceItem();
 		thisIsTheNewItemThatWeArePuttingOnTheInvoice.setInvoiceFee(newFee);
 		thisIsTheNewItemThatWeArePuttingOnTheInvoice.setAmount(newFee.getAmount());
@@ -267,7 +287,30 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 				operatorsString.add(co.getOperatorAccount().getName());
 		}
 		
-		return Strings.implode(operatorsString, ", ");
+		Collections.sort(operatorsString);
+		
+		return "Your current list of Operators: " + Strings.implode(operatorsString, ", ");
+	}
+	
+	public String getCCNumAndType() {
+		String ccType = "";
+		BrainTreeService.CreditCard cc = new BrainTreeService.CreditCard();
+		cc.setCardNumber(invoice.getCCNumber());
+		ccType = cc.getCardType();
+		
+		return "Invoice Paid with a " + ccType + " card. Card number: " + invoice.getCCNumber() + " on:";
+	}
+	
+	private String getCCNum() {
+		String ccNum = "";
+		
+		try {
+			CreditCard cc = paymentService.getCreditCard(contractor.getId());
+			ccNum = cc.getCardNumber();
+		}
+		catch( Exception communicationProblem ) {}
+		
+		return ccNum;
 	}
 	
 	public int getId() {

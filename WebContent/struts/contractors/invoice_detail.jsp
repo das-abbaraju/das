@@ -64,7 +64,15 @@ h1 {
 						</s:if>
 					</s:if>
 					<a class="print noprint" href="javascript: window.print();">Print</a>
-					<input type="submit" class="picsbutton positive" name="button" value="Email Invoice">
+					<s:if test="!edit">
+						<s:if test="invoice.paid">
+							<input type="submit" class="picsbutton positive" name="button" value="Email Receipt">
+						</s:if>
+						<s:else>
+							<input type="submit" class="picsbutton positive" name="button" value="Email Invoice">
+						</s:else>
+					</s:if>
+					
 					<s:if test="edit">
 						<br />
 						<input type="submit" class="picsbutton positive" name="button" value="Save" />
@@ -153,20 +161,33 @@ h1 {
 						</tr>
 					</s:if>
 					<tr>
-						<th colspan="2" class="big right">Total</th>
+						<th colspan="2" class="big right">Invoice Total</th>
 						<td class="big right">$<s:property value="invoice.totalAmount" /> USD</td>
 					</tr>
 					<tr>
+						<th colspan="2" class="big right">Balance</th>
 						<s:if test="invoice.paid">
+							<td class="big right">$0 USD</td>
+						</s:if>
+						<s:else>
+							<td class="big right">$<s:property value="invoice.totalAmount" /> USD</td>
+						</s:else>
+					</tr>					
+					<tr>
+						<s:if test="invoice.paid && invoice.paymentMethod.creditCard">
+							<th colspan="2" class="right"><s:property value="CCNumAndType"/></th>
 							<td>
-								<input type="submit" class="picsbutton positive" name="button" value="Email Invoice">
+								<s:date name="invoice.paidDate" format="MMM d, yyyy"/>
+								<br />
 							</td>
-							<th  class="right">Paid</th>
+						</s:if>
+						<s:elseif test="invoice.paid && !invoice.paymentMethod.creditCard">
+							<th colspan="2" class="right">Paid</th>
 							<td>
 								<s:date name="invoice.paidDate" format="MMM d, yyyy"/>
 								<br /><s:property value="invoice.checkNumber" />
 							</td>
-						</s:if>
+						</s:elseif>
 						<s:else>
 							<pics:permission perm="Billing" type="Edit">
 							<td colspan="3" class="print noprint">

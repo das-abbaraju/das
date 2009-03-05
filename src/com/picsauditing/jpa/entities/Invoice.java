@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -35,6 +36,7 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 	private String checkNumber;
 	private String transactionID;
 	private String poNumber;
+	private String ccNumber;
 	private String notes;
 
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
@@ -145,6 +147,15 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 
 	public void setItems(List<InvoiceItem> items) {
 		this.items = items;
+	}
+
+	@Column(name = "ccNumber")
+	public String getCCNumber() {
+		return ccNumber;
+	}
+
+	public void setCCNumber(String ccNumber) {
+		this.ccNumber = ccNumber;
 	}
 
 }
