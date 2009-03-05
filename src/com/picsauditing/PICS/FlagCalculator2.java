@@ -181,7 +181,6 @@ public class FlagCalculator2 {
 		}
 	}
 
-	@Transactional
 	protected void runCalc(List<Integer> questionIDs, Integer conID) {
 		// long startTime = System.currentTimeMillis();
 
