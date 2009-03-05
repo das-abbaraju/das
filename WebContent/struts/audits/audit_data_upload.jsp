@@ -48,7 +48,7 @@ function closePage() {
 	<br />
 	<s:if test="fileList.size != 0">
 	OR <br />
-	<s:select id="copyList" name="copyDataID" list="fileList" listKey="id" listValue="audit.auditType.auditName.concat(' for ').concat(parentAnswer.answer)"/>
+	Copy from <s:select id="copyList" name="copyDataID" list="fileList" listKey="id" listValue="audit.auditType.auditName.concat(' for ').concat(parentAnswer.answer)"/>
 	</s:if> 
 	<div class="buttons"><a href="javascript: closePage();">Close
 	and Return to Form</a> <s:if test="file != null && file.exists()">
@@ -57,7 +57,7 @@ function closePage() {
 		File</button>
 	</s:if>
 	<button class="positive right" name="button" value="Upload"
-		type="submit">Upload File</button>
+		type="submit">Upload/Copy File</button>
 	</div>
 </s:form> <br clear="all" />
 <s:if test="file != null && file.exists()">

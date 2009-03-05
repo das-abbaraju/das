@@ -9,6 +9,7 @@ import javax.naming.NoPermissionException;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.FacilityChanger;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
@@ -68,11 +69,11 @@ public class ContractorFacilities extends ContractorActionSupport {
 				String where = " active = 'Y' ";
 
 				if (state != null && state.length() > 0) {
-					where += " and state = '" + state + "' ";
+					where += " and state = '" + Utilities.escapeQuotes(state) + "' ";
 				}
 
 				if (operator != null && !Strings.isEmpty(operator.getName())) {
-					where += " and name like '%" + operator.getName() + "%' ";
+					where += " and name like '%" + Utilities.escapeQuotes(operator.getName()) + "%' ";
 				}
 
 				searchResults = new ArrayList<OperatorAccount>();

@@ -204,20 +204,6 @@ public class FlagCalculator2 {
 		
 		AnswerMapByAudits answerMapByAudits = auditDataDAO.findAnswersByAudits( nonExpiredByContractor, questionIDs );
 		
-		for( ContractorAudit audit : contractor.getAudits() ) {
-			if( audit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
-				for (ContractorAuditOperator cao : audit.getOperators()) {
-					if (cao.getStatus() == CaoStatus.Awaiting) {
-						CaoStatus recommendedStatus = calcSingle
-								.calculateCaoRecommendedStatus(cao);
-						
-						cao.setRecommendedStatus(recommendedStatus);
-						caoDAO.save(cao);
-					}
-				}
-			}
-		}
-
 //		//since the @Transactional annotation is on this method (and it seems for good reason), and not on the class 
 //		//level, the runCalc method actually runs from within a different transaction than the transaction in which 
 //		//the operator was initially loaded, which means we can't traverse it's graph.  
@@ -244,6 +230,21 @@ public class FlagCalculator2 {
 			ContractorOperatorFlag coFlag = null;
 
 			WaitingOn waitingOn = calcSingle.calculateWaitingOn();
+
+			for( ContractorAudit audit : contractor.getAudits() ) {
+				if( audit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
+					for (ContractorAuditOperator cao : audit.getOperators()) {
+						if (cao.getOperator().equals(operator) 
+								&& cao.getStatus() == CaoStatus.Awaiting) {
+							CaoStatus recommendedStatus = calcSingle
+									.calculateCaoRecommendedStatus(cao);
+							
+							cao.setRecommendedStatus(recommendedStatus);
+							caoDAO.save(cao);
+						}
+					}
+				}
+			}
 
 			try {
 				coFlag = contractor.getFlags().get(operator);
