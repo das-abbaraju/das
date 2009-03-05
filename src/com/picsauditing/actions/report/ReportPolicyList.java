@@ -1,11 +1,21 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 
 @SuppressWarnings("serial")
-public class ReportPolicyList extends ReportContractorAudits {
+public class ReportPolicyList extends ReportInsuranceSupport {
 
+	
+	public ReportPolicyList(AuditDataDAO auditDataDao,
+			AuditQuestionDAO auditQuestionDao, OperatorAccountDAO operatorAccountDAO) {
+		super( auditDataDao, auditQuestionDao, operatorAccountDAO );
+	}
+
+	
 	@Override
 	public void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.InsuranceCerts);
