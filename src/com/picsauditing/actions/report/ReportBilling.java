@@ -56,8 +56,8 @@ public class ReportBilling extends ReportAccount {
 		
 		sql.addField("CASE " +
 				"WHEN a.active = 'N' THEN 'Activations' " +
-				"WHEN f2.defaultAmount > f1.defaultAmount THEN 'Upgrades' " +
 				"WHEN c.paymentExpires < ADDDATE(NOW(), INTERVAL 45 DAY) THEN 'Renewals' " +
+				"WHEN f2.defaultAmount > f1.defaultAmount THEN 'Upgrades' " +
 				"ELSE 'Other' END billingStatus");
 		sql.addWhere(where);
 		

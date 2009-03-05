@@ -78,7 +78,7 @@ public class BillingDetail extends ContractorActionSupport {
 		}
 
 		// For Renewals
-		if ("Renewal".equals(contractor.getBillingStatus())) {
+		if (contractor.getBillingStatus().startsWith("Renew")) {
 			if (contractor.getMembershipLevel() != null)
 				invoiceItems.add(new InvoiceItem(contractor.getMembershipLevel()));
 		}
