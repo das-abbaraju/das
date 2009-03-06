@@ -75,7 +75,7 @@
 				email.append("\nHeader-" + headerName + ": " + request.getHeader(headerName));
 			}
 			
-			mailer.sendMail("PICS NoRightsException", email.toString(), "errors@picsauditing.com", "errors@picsauditing.com");
+			mailer.sendMail("PICS NoRightsException", email.toString(), "errors@picsauditing.com", "errors@picsauditing.com", "", "");
 			
 		} catch (Exception e) {
 			// do nothing

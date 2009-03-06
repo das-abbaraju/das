@@ -38,7 +38,7 @@
 	EmailSender mailer = new EmailSender();
 
 	for (String toAddress : toAddresses)
-		mailer.sendMail("Email from PICS website", body, request.getParameter("email"), toAddress);
+		mailer.sendMail("Email from PICS website", body, request.getParameter("email"), toAddress,"","");
 %>
 <html>
 <head>
