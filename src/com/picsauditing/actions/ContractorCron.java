@@ -50,6 +50,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void handleException(Throwable t) {
+		t.printStackTrace();
 		StringWriter sw = new StringWriter();
 		t.printStackTrace(new PrintWriter(sw));
 		PicsLogger.log(t.getMessage());
