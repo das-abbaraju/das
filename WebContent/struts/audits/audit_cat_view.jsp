@@ -34,9 +34,12 @@
 		</span>
 	</s:if>
 	<s:if test="#a.hasRequirements">
-		<br />
-		<span class="requirement">
-			<label>Requirement:</label>
+		<br/><br/>
+		<s:if test="#a.requirementOpen">
+			<s:set name="extraClass" value="'boxed'"/>
+		</s:if>
+		<span class="requirement <s:property value="#extraClass" default=""/>">
+			<label>Requirement Status:</label>
 			<s:if test="#a.requirementOpen">
 				<span class="unverified">Open</span>
 			</s:if>
