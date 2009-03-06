@@ -211,7 +211,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getRiskLevel(), 0))
 			report.addFilter(new SelectFilterInteger("riskLevel", "c.riskLevel = '?'", f.getRiskLevel()));
 
-		if(filterOn(f.getEmailTemplate() > 0)) {
+		if(f.getEmailTemplate() > 0) {
 			String emailQueueJoin = "LEFT JOIN email_queue eq on eq.conid = a.id AND eq.templateID = "
 					+ f.getEmailTemplate();
 			if (filterOn(f.getEmailSentDate())) {

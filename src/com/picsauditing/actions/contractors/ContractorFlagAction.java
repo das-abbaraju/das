@@ -9,7 +9,6 @@ import com.picsauditing.PICS.AuditCriteriaAnswer;
 import com.picsauditing.PICS.AuditCriteriaAnswerBuilder;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagCalculatorSingle;
-import com.picsauditing.PICS.redFlagReport.Note;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
