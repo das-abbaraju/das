@@ -191,7 +191,7 @@ h1 {
 						<s:else>
 							<pics:permission perm="Billing" type="Edit">
 							<td colspan="3" class="print noprint">
-							<s:if test="invoice.totalAmount > 0">
+							<s:if test="invoice.totalAmount > 0 && ( invoice.paid == false ) ">
 								<s:if test="invoice.paymentMethod.creditCard">
 									<s:if test="contractor.ccOnFile">
 										<input type="submit" class="picsbutton positive" name="button" value="Charge Credit Card for $<s:property value="invoice.totalAmount" />">
