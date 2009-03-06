@@ -10,6 +10,9 @@ if (permissions.isAdmin() || permissions.isOperator() || permissions.isCorporate
 	if (!permissions.isAdmin()) {
 		opID = permissions.getAccountIdString();
 	}
+	else {
+		opID = "1100";
+	}
 }
 
 String path = System.getProperty("pics.ftpDir");
@@ -20,6 +23,8 @@ fBean.setFromDB();
 String editCatID = "";
 if (!permissions.isAdmin())
 	editCatID = permissions.getAccountIdString();
+else
+	editCatID = "1100";
 
 String editFormID = "";
 String newFormCatID = "";

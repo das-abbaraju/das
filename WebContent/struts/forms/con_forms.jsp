@@ -21,7 +21,7 @@
 		<s:iterator value="forms">
 		<tr>
 			<td><a href="forms/<s:property value="file"/>" target="_blank"><s:property value="formName"/></a></td>
-			<td><s:property value="operatorAccount.name"/></td>
+			<td><s:property value="account.name"/></td>
 		</tr>
 		</s:iterator>
 	</tbody>

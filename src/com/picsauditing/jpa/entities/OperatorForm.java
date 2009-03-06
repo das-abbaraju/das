@@ -12,18 +12,18 @@ import javax.persistence.Table;
 @Table(name = "operatorforms")
 public class OperatorForm extends BaseTable implements java.io.Serializable {
 
-	protected OperatorAccount operatorAccount;
+	protected Account account;
 	protected String formName;
 	protected String file;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "opID", nullable = false)
-	public OperatorAccount getOperatorAccount() {
-		return operatorAccount;
+	public Account getAccount() {
+		return account;
 	}
 
-	public void setOperatorAccount(OperatorAccount operatorAccount) {
-		this.operatorAccount = operatorAccount;
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 
 	@Column(name = "formName", nullable = false, length = 100)

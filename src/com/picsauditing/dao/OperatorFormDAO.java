@@ -40,7 +40,7 @@ public class OperatorFormDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<OperatorForm> findByopID(int opID) {
-		Query query = em.createQuery("SELECT o FROM OperatorForm o WHERE o.operatorAccount.id = ?");
+		Query query = em.createQuery("SELECT o FROM OperatorForm o WHERE o.account.id = ?");
 		query.setParameter(1, opID);
 		return query.getResultList();
 	}
@@ -58,7 +58,7 @@ public class OperatorFormDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<OperatorForm> findByOperators(Collection<Integer> operatorIds) {
-		Query query = em.createQuery("SELECT o FROM OperatorForm o WHERE o.operatorAccount.id IN (" + Strings.implode(operatorIds, ",") + ") ORDER BY o.operatorAccount.name, o.formName");
+		Query query = em.createQuery("SELECT o FROM OperatorForm o WHERE o.account.id IN (" + Strings.implode(operatorIds, ",") + ") ORDER BY o.account.name, o.formName");
 		return query.getResultList();
 	}
 

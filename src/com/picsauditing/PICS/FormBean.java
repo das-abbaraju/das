@@ -102,7 +102,7 @@ public class FormBean extends DataBean {
 			DBReady();
 			ResultSet SQLResult = SQLStatement.executeQuery(selectQuery);
 			categories = new ArrayList<String>();
-			categories.add("0");
+			categories.add("1100");
 			categories.add("PICS");
 			while (SQLResult.next()){
 				categories.add(SQLResult.getString("id"));
