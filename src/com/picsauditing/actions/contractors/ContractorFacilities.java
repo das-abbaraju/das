@@ -78,7 +78,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 				searchResults = new ArrayList<OperatorAccount>();
 				currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
-				for (OperatorAccount opToAdd : operatorDao.findWhere(false, where)) {
+				for (OperatorAccount opToAdd : operatorDao.findWhere(false, "active='Y'", permissions)) {
 					boolean linked = false;
 					for(ContractorOperator co : currentOperators) {
 						if (co.getOperatorAccount().equals(opToAdd))
