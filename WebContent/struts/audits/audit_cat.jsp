@@ -167,8 +167,8 @@
 	<br clear="all"/>
 	<pics:permission perm="InsuranceVerification">
 		<s:if test="conAudit.auditStatus.toString().equals('Submitted') || conAudit.auditStatus.toString().equals('Resubmitted')">
-			<div id="alert" class="buttons">
-				<s:if test="conAudit.auditType.classType.toString().equals('Policy') ">
+			<s:if test="conAudit.auditType.classType.toString().equals('Policy') ">
+				<div id="alert" class="buttons">
 					<form id="redirectOptionsForm" method="get" action="PolicySave.action">
 						<input type="hidden" name="auditID" value="<s:property value="auditID" />"/>
 						<input type="submit" class="picsbutton positive" value="Verify" name="policyStatus" />
@@ -191,8 +191,8 @@
 						<input type="radio" id="radioStay" name="redirectOptions" value="stay" />
 						<label for="radioStay">Stay on this Page</label>
 					</form>	
-				</s:if>
-			</div>
+				</div>
+			</s:if>
 		</s:if>
 	</pics:permission>
 	<s:if test="!singleCat">

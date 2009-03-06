@@ -56,9 +56,8 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 
 	AppPropertyDAO appPropDao;
 
-	public InvoiceDetail(InvoiceDAO invoiceDAO, AppPropertyDAO appPropDao,
-			NoteDAO noteDAO, ContractorAccountDAO conAccountDAO,
-			InvoiceFeeDAO invoiceFeeDAO, InvoiceItemDAO invoiceItemDAO) {
+	public InvoiceDetail(InvoiceDAO invoiceDAO, AppPropertyDAO appPropDao, NoteDAO noteDAO,
+			ContractorAccountDAO conAccountDAO, InvoiceFeeDAO invoiceFeeDAO, InvoiceItemDAO invoiceItemDAO) {
 		this.invoiceDAO = invoiceDAO;
 		this.appPropDao = appPropDao;
 		this.noteDAO = noteDAO;
@@ -96,19 +95,14 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 				}
 
 				if (button.startsWith("Change to")) {
-					changeInvoiceItem(contractor.getMembershipLevel(),
-							contractor.getNewMembershipLevel());
-					addNote("Changed invoice " + invoice.getId() + " to "
-							+ contractor.getMembershipLevel().getFee());
+					changeInvoiceItem(contractor.getMembershipLevel(), contractor.getNewMembershipLevel());
+					addNote("Changed invoice " + invoice.getId() + " to " + contractor.getMembershipLevel().getFee());
 				}
 
 			} else {
-				if (button.startsWith("Charge Credit Card")
-						&& contractor.isCcOnFile()) {
-					paymentService.setUserName(appPropDao.find(
-							"brainTree.username").getValue());
-					paymentService.setPassword(appPropDao.find(
-							"brainTree.password").getValue());
+				if (button.startsWith("Charge Credit Card") && contractor.isCcOnFile()) {
+					paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
+					paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
 
 					try {
 						paymentService.processPayment(invoice);
@@ -116,11 +110,9 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 						invoice.setCCNumber(ccNumber);
 
 						payInvoice();
-						addNote("Credit Card transaction completed for $"
-								+ invoice.getTotalAmount());
+						addNote("Credit Card transaction completed for $" + invoice.getTotalAmount());
 					} catch (Exception e) {
-						this.addActionError("Failed to charge credit card. "
-								+ e.getMessage());
+						this.addActionError("Failed to charge credit card. " + e.getMessage());
 						return SUCCESS;
 					}
 				}
@@ -130,8 +122,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 				}
 				if (button.startsWith("Mark Paid")) {
 					markInvoicePaid();
-					addNote("Marked invoice paid with amount "
-							+ invoice.getTotalAmount() + ". No payment");
+					addNote("Marked invoice paid with amount " + invoice.getTotalAmount() + ". No payment");
 				}
 				if (button.startsWith("Email")) {
 					try {
@@ -140,13 +131,11 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 						// TODO: handle exception
 					}
 
-					addNote("Invoice emailed to "
-							+ contractor.getBillingEmail());
+					addNote("Invoice emailed to " + contractor.getBillingEmail());
 				}
 
 			}
-			ServletActionContext.getResponse().sendRedirect(
-					"InvoiceDetail.action?invoice.id=" + invoice.getId());
+			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 		}
 
 		updateTotals();
@@ -165,14 +154,29 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		emailBuilder.addToken("ccNumAndType", getCCNumAndType());
 		emailBuilder.setFromAddress("billing@picsauditing.com");
 
-		emailBuilder.setToAddresses(contractor.getBillingEmail());
-		emailBuilder.setCcAddresses(contractor.getEmail());
+		List<String> emailAddresses = new ArrayList<String>();
+
+		if (!Strings.isEmpty(contractor.getBillingEmail()))
+			emailAddresses.add(contractor.getBillingEmail());
+		if (!Strings.isEmpty(contractor.getEmail())) {
+			if (!emailAddresses.contains(contractor.getEmail()))
+				emailAddresses.add(contractor.getEmail());
+		}
+		if (!Strings.isEmpty(contractor.getSecondEmail())) {
+			if (!emailAddresses.contains(contractor.getSecondEmail()))
+				emailAddresses.add(contractor.getSecondEmail());
+		}
+
+		emailBuilder.setToAddresses(emailAddresses.get(0));
+
+		if (emailAddresses.size() > 1)
+			emailBuilder.setCcAddresses(emailAddresses.get(1));
+
 		emailBuilder.setBccAddresses("billing@picsauditing.com");
 
 		EmailQueue email = emailBuilder.build();
 		if (invoice.isPaid())
-			email.setSubject("PICS Payment Receipt for Invoice "
-					+ invoice.getId());
+			email.setSubject("PICS Payment Receipt for Invoice " + invoice.getId());
 		email.setPriority(60);
 		email.setHtml(true);
 		EmailSender.send(email);
@@ -261,8 +265,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 	}
 
 	private void changeInvoiceItem(InvoiceFee currentFee, InvoiceFee newFee) {
-		for (Iterator<InvoiceItem> iterator = invoice.getItems().iterator(); iterator
-				.hasNext();) {
+		for (Iterator<InvoiceItem> iterator = invoice.getItems().iterator(); iterator.hasNext();) {
 			InvoiceItem item = iterator.next();
 			if (item.getInvoiceFee().getId() == currentFee.getId()) {
 				iterator.remove();
@@ -272,8 +275,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 
 		InvoiceItem thisIsTheNewItemThatWeArePuttingOnTheInvoice = new InvoiceItem();
 		thisIsTheNewItemThatWeArePuttingOnTheInvoice.setInvoiceFee(newFee);
-		thisIsTheNewItemThatWeArePuttingOnTheInvoice.setAmount(newFee
-				.getAmount());
+		thisIsTheNewItemThatWeArePuttingOnTheInvoice.setAmount(newFee.getAmount());
 		thisIsTheNewItemThatWeArePuttingOnTheInvoice.setAuditColumns(getUser());
 
 		thisIsTheNewItemThatWeArePuttingOnTheInvoice.setInvoice(invoice);
@@ -286,18 +288,15 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		List<String> operatorsString = new ArrayList<String>();
 
 		for (ContractorOperator co : contractor.getOperators()) {
-			String doContractorsPay = co.getOperatorAccount()
-					.getDoContractorsPay();
+			String doContractorsPay = co.getOperatorAccount().getDoContractorsPay();
 
-			if (doContractorsPay.equals("Yes")
-					|| !doContractorsPay.equals("Multiple"))
+			if (doContractorsPay.equals("Yes") || !doContractorsPay.equals("Multiple"))
 				operatorsString.add(co.getOperatorAccount().getName());
 		}
 
 		Collections.sort(operatorsString);
 
-		return "Your current list of Operators: "
-				+ Strings.implode(operatorsString, ", ");
+		return "Your current list of Operators: " + Strings.implode(operatorsString, ", ");
 	}
 
 	public String getCCNumAndType() {
@@ -306,8 +305,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		cc.setCardNumber(invoice.getCCNumber());
 		ccType = cc.getCardType();
 
-		return "Invoice Paid with a " + ccType + " card. Card number: "
-				+ invoice.getCCNumber() + " on:";
+		return "Invoice Paid with a " + ccType + " card. Card number: " + invoice.getCCNumber() + " on:";
 	}
 
 	private String getCCNum() {
