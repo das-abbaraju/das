@@ -6,6 +6,7 @@ import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailStatus;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 
 public class EmailSender extends GMailSender {
 	private static int currentDefaultSender = 1;
@@ -40,7 +41,8 @@ public class EmailSender extends GMailSender {
 				fromAddress = getDefaultSender();
 			
 			html = email.isHtml();
-			this.sendMail(email.getSubject(), email.getBody(), fromAddress, email.getToAddresses());
+			
+			this.sendMail(email.getSubject(), email.getBody(), fromAddress, email.getToAddresses(), email.getBccAddresses(), email.getCcAddresses());
 			email.setStatus(EmailStatus.Sent);
 			email.setSentDate(new Date());
 			

@@ -12,10 +12,12 @@ public class EmailSenderTest extends TestCase {
 		String password = "e3r4t5";
 		GMailSender mailer = new GMailSender(username, password);
 		try {
-			mailer.sendMail("Account Activation", 
+			mailer.sendMail("Test Activation", 
 					"Welcome John Doe,\n\nThis is a test email", 
 					"Trevor Allred <tallred@picsauditing.com>", 
-					"tallred@picsauditing.com");
+					"tester@picsauditing.com",
+					"tallred@picsauditing.com",
+					"tester@picsauditing.com");
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
