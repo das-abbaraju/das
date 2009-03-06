@@ -63,7 +63,7 @@ public class PolicySave extends AuditActionSupport {
 			ServletActionContext
 					.getResponse()
 					.sendRedirect(
-							"PolicyVerification.action?filter.visible=Y&filter.auditStatus=Submitted&filter.auditStatus=Resubmitted&filter.auditStatus=Active");
+							"PolicyVerification.action?filter.visible=Y&filter.auditStatus=Submitted&filter.auditStatus=Resubmitted");
 			return BLANK;
 		}
 		if ("stay".equals(redirectOptions)) {
