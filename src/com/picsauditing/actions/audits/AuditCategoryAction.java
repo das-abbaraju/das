@@ -70,7 +70,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 
 	public String execute() throws Exception {
 		PicsLogger.start("AuditCategoryAction_execute");
-		
+
 		if (!forceLogin()) {
 			PicsLogger.stop();
 			return LOGIN;
@@ -91,10 +91,10 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 			PicsLogger.stop();
 			return SUCCESS;
 		}
-		
+
 		this.findConAudit();
 		super.execute();
-		
+
 		if (isSingleCat()) {
 			catDataID = getCategories().get(0).getId();
 		}
@@ -129,7 +129,6 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 					PicsLogger.stop();
 					throw new Exception("Failed to find category for audit");
 				}
-					
 
 				// Create a new Category for this catID
 				AuditCategory auditCategory = auditCategoryDAO.find(catID);
@@ -144,11 +143,10 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 
 			if (mode == null && conAudit.getAuditStatus().equals(AuditStatus.Pending))
 				mode = EDIT;
-			if (mode == null && conAudit.getAuditStatus().isActiveSubmitted()
-					&& conAudit.getAuditType().isPqf() && conAudit.isAboutToExpire())
+			if (mode == null && conAudit.getAuditStatus().isActiveSubmitted() && conAudit.getAuditType().isPqf()
+					&& conAudit.isAboutToExpire())
 				mode = EDIT;
-			if (mode == null
-					&& conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
+			if (mode == null && conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
 				mode = EDIT;
 			}
 
@@ -166,7 +164,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 			mode = VIEW;
 		if (mode.equals(VERIFY) && !isCanVerify())
 			mode = VIEW;
-		
+
 		if ("Quick".equals(button)) {
 			// used for testing
 			PicsLogger.stop();
@@ -249,22 +247,19 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 				}
 			}
 		}
-		
-		
-		if( answerMap != null 
-				&& conAudit.getAuditType().getClassType() == AuditTypeClass.Policy 
-				&& getUser().getAccount() != null 
-				&& getUser().getAccount().isOperator()) {
+
+		if (answerMap != null && conAudit.getAuditType().getClassType() == AuditTypeClass.Policy
+				&& getUser().getAccount() != null && getUser().getAccount().isOperator()) {
 			OperatorAccount thisOp = (OperatorAccount) getUser().getAccount();
-	
-			for( AuditCategory cat : conAudit.getAuditType().getCategories() ) {
-				for( AuditSubCategory subCat : cat.getSubCategories() ) {
-					for( AuditQuestion qstn : subCat.getQuestions() ) {
-						if( qstn.getUniqueCode() != null && qstn.getUniqueCode().equals("aiName")) {
-							List<AuditData> answers = answerMap.getAnswerList( qstn.getId() );
-							for( AuditData answer : answers ) {
-								if( ! thisOp.isHasLegalName(answer.getAnswer())) {
-									answerMap.remove( answer );
+
+			for (AuditCategory cat : conAudit.getAuditType().getCategories()) {
+				for (AuditSubCategory subCat : cat.getSubCategories()) {
+					for (AuditQuestion qstn : subCat.getQuestions()) {
+						if (qstn.getUniqueCode() != null && qstn.getUniqueCode().equals("aiName")) {
+							List<AuditData> answers = answerMap.getAnswerList(qstn.getId());
+							for (AuditData answer : answers) {
+								if (!thisOp.isHasLegalName(answer.getAnswer())) {
+									answerMap.remove(answer);
 								}
 							}
 						}
@@ -272,7 +267,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 				}
 			}
 		}
-		
+
 		PicsLogger.stop();
 		return SUCCESS;
 	}
@@ -368,26 +363,26 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 			return true;
 		return false;
 	}
-	
-	public boolean needsNextPolicyForContractor(){
+
+	public boolean needsNextPolicyForContractor() {
 		return findNextRequiredPolicyForVerification(conAudit) != null;
 	}
-	
+
 	public List<String> getLegalNamesFiltered() {
 		List<String> sortedList = super.getLegalNames();
 		AuditQuestion aiName = null;
-		for(AuditSubCategory auditSubCategory : currentCategory.getCategory().getSubCategories()) {
-			for(AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
-				if(auditQuestion.getQuestionType().equals("Additional Insured")) 
-						aiName = auditQuestion;
+		for (AuditSubCategory auditSubCategory : currentCategory.getCategory().getSubCategories()) {
+			for (AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
+				if (auditQuestion.getQuestionType().equals("Additional Insured"))
+					aiName = auditQuestion;
 			}
 		}
-		if(aiName != null) {
-			for(AuditData auditData : answerMap.getAnswerList(aiName.getId())) {
+		if (aiName != null) {
+			for (AuditData auditData : answerMap.getAnswerList(aiName.getId())) {
 				sortedList.remove(auditData.getAnswer());
-			}	
-		}	
-		
+			}
+		}
+
 		return sortedList;
 	}
 

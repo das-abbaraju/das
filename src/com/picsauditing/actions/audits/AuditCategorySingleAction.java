@@ -1,53 +1,24 @@
 package com.picsauditing.actions.audits;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.actions.converters.OshaTypeConverter;
-import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.OshaAuditDAO;
-import com.picsauditing.jpa.entities.AccountName;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.OshaType;
-import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.util.AnswerMap;
-import com.picsauditing.util.log.PicsLogger;
 
-/**
- * Viewing audit Data including one or more categories and their subcategories
- * and data This handles View, Edit, and Verify all at the same time
- * 
- * @author Trevor
- * 
- */
 @SuppressWarnings("serial")
 public class AuditCategorySingleAction extends AuditActionSupport {
 

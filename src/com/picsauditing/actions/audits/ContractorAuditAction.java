@@ -40,17 +40,18 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
 			AuditBuilder auditBuilder, ContractorAuditOperatorDAO contractorAuditOperatorDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao, auditPercentCalculator);
-		this.auditBuilder = auditBuilder;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
+		this.auditBuilder = auditBuilder;
 	}
 
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
+		this.findConAudit();
+
 		// Some stuff like rebuilding categories and percentages doesn't have to
 		// be done everytime
-		this.findConAudit();
 		auditBuilder.fillAuditCategories(conAudit);
 
 		if (isSingleCat())
@@ -77,7 +78,7 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 				}
 			}
 		}
-		
+
 		super.execute();
 
 		if (this.conAudit.getAuditType().getId() == AuditType.NCMS)
