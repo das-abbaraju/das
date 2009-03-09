@@ -142,27 +142,37 @@
 			<s:iterator value="conAudit.operators" status="rowStatus">
 				<s:if test="permissions.operator || permissions.corporate">
 					<s:if test="operator.id == permissions.accountId">
-						<li><label>Op Status:</label>
+						<li>
+							<s:if test="notes != null && notes.length() > 0">
+								<label title="<s:property value="notes"/>" class="tooltipped">Op Status:</label> 
+							</s:if>
+							<s:else>
+								<label>Op Status:</label>
+							</s:else>
 							<a href="#" id="caoStatusMain_<s:property value="id"/>" class="edit" onclick="javascript: return editCao(<s:property value="id"/>);"><s:property value="status"/></a>
 							(<s:property value="operator.name"/>)
-							<s:if test="notes != null && notes.length() > 0">
-								<s:property value="notes"/>
-							</s:if>
 						</li>
 					</s:if>
 				</s:if>
 				<s:else>
 					<li>
-						<label>Op Status:</label>					
+					<s:if test="notes != null && notes.length() > 0">
+						<label title="<s:property value="notes"/>" class="tooltipped">Op Status:</label>
+					</s:if>
+					<s:else>
+						<label>Op Status:</label>
+					</s:else>				
 						<s:property value="status"/>
 						(<s:property value="operator.name"/>)		
-						<s:if test="notes != null && notes.length() > 0">
-							<s:property value="notes"/>
-						</s:if>
 					</li>
 				</s:else>
 			</s:iterator>
-		</s:if>
+			<!--<script type="text/javascript">
+				$$("label.tooltipped").each(function(link) { 
+					new Tooltip(link, {opacity:1.0, backgroundColor:"#dedede", textColor:"#000", mouseFollow:false} );  
+					});
+			</script>-->
+			</s:if>
 	</ul>
 	</fieldset>
 	<div class="clear"></div>
