@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -47,17 +48,19 @@ public class AuditDataUpload extends AuditActionSupport {
 		List<AuditData> temp = auditDataDao
 				.findAnswersByContractorAndUniqueCode(conAudit
 						.getContractorAccount().getId(), "policyFile");
+		List<AuditData> results = new ArrayList<AuditData>();
+		
 		for (AuditData ad : temp) {
 			if (ad.getParentAnswer() == null) {
 				ad.setParentAnswer(new AuditData());
 				ad.getParentAnswer().setAnswer("All");
 			}
-			if (ad.getAudit().getId() == this.auditID) {
-				temp.remove(ad);
+			if (ad.getAudit().getId() != this.auditID) {
+				results.add(ad);
 			}
 		}
 
-		return temp;
+		return results;
 	}
 
 	public String execute() throws Exception {
