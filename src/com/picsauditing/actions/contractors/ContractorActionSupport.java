@@ -157,7 +157,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 					String year = DateBean.format(audit.getEffectiveDate(), "yy");
 					String linkText = audit.getAuditType().getAuditName() + " '" + year;
 
-					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), audit.getAuditStatus().toString());
+					subMenu.addChild(linkText, "AuditCat.action?auditID=" + audit.getId() + "&catDataID=" + audit.getCategories().get(0).getId(), audit.getId(), audit.getAuditStatus().toString());
 				}
 			}
 		}
