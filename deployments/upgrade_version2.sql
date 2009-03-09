@@ -5,8 +5,4 @@ update pqfquestions set isGroupedWithPrevious = CASE isGroupedWithPrevious WHEN 
 update pqfquestions set isRedFlagQuestion = CASE isRedFlagQuestion WHEN 2 THEN 1 ELSE 0 END;
 */
 
-/**
- * delete all the account_name All.
- */
-
-delete from account_name where name = 'All'
+update operatorforms set opid = 1100 where opid = 0;

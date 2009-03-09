@@ -665,11 +665,15 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 */
 	@Transient
 	public String getBillingStatus() {
+		if (!isMustPayB())
+			return "Current";
+			
 		if (newMembershipLevel == null)
 			return "Not Calculated";
 
-		// TODO: still need to determine if this is a reactivation or initial
-		// activation
+		if (newMembershipLevel.getId() == InvoiceFee.FREE)
+			return "Current";
+		
 		if (!isActiveB()) {
 			if (!renew)
 				return "Membership Canceled";

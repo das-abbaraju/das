@@ -21,6 +21,7 @@ import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.Strings;
 
 /**
  * Populate the permissions object in session with appropriate login credentials
@@ -268,6 +269,8 @@ public class LoginController extends PicsActionSupport {
 	}
 
 	private void logAttempt() throws Exception {
+		if (Strings.isEmpty(username))
+			return;
 
 		String remoteAddress = getRequest().getRemoteAddr();
 

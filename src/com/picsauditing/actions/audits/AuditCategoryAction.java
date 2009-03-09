@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.struts2.ServletActionContext;
+
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDAO;
@@ -127,6 +129,10 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 			if (currentCategory == null) {
 				if (catID == 0) {
 					PicsLogger.stop();
+					if (auditID > 0) {
+						ServletActionContext.getResponse().sendRedirect("Audit.action?auditID=" + auditID);
+						return BLANK;
+					}
 					throw new Exception("Failed to find category for audit");
 				}
 
