@@ -74,7 +74,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		this.siblings = siblings;
 	}
 
-	@ManyToOne(cascade = CascadeType.REMOVE)
+	@ManyToOne
 	@JoinColumn(name = "parentID", updatable = false)
 	public AuditData getParentAnswer() {
 		return parentAnswer;
