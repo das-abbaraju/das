@@ -28,6 +28,13 @@ import org.hibernate.annotations.Type;
 public class OperatorAccount extends Account implements java.io.Serializable {
 	public static final String DEFAULT_NAME = "- Operator -";
 
+	private OperatorAccount parent;
+	
+	private boolean inheritFlagCriteria;
+	private boolean inheritInsuranceCriteria;
+	private boolean inheritAudits;
+	private boolean inheritLegalNames;
+
 	private String activationEmails = "";
 	private String doSendActivationEmail = "No";
 	private String doContractorsPay = "Yes";
@@ -229,6 +236,47 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 
 	public void setContractorOperators(List<ContractorOperator> contractorOperators) {
 		this.contractorOperators = contractorOperators;
+	}
+	
+	@JoinColumn(name = "parentID", nullable = true)
+	public OperatorAccount getParent() {
+		return parent;
+	}
+
+	public void setParent(OperatorAccount parent) {
+		this.parent = parent;
+	}
+
+	public boolean isInheritFlagCriteria() {
+		return inheritFlagCriteria;
+	}
+
+	public void setInheritFlagCriteria(boolean inheritFlagCriteria) {
+		this.inheritFlagCriteria = inheritFlagCriteria;
+	}
+
+	public boolean isInheritInsuranceCriteria() {
+		return inheritInsuranceCriteria;
+	}
+
+	public void setInheritInsuranceCriteria(boolean inheritInsuranceCriteria) {
+		this.inheritInsuranceCriteria = inheritInsuranceCriteria;
+	}
+
+	public boolean isInheritAudits() {
+		return inheritAudits;
+	}
+
+	public void setInheritAudits(boolean inheritAudits) {
+		this.inheritAudits = inheritAudits;
+	}
+
+	public boolean isInheritLegalNames() {
+		return inheritLegalNames;
+	}
+
+	public void setInheritLegalNames(boolean inheritLegalNames) {
+		this.inheritLegalNames = inheritLegalNames;
 	}
 
 	@Transient
