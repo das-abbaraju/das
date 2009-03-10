@@ -243,7 +243,7 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	 * returns a list of all the child operators associated with this account
 	 * @return
 	 */
-	@OneToMany(mappedBy = "parentID")
+	@OneToMany(mappedBy = "parent")
 	public List<OperatorAccount> getOperatorAccounts() {
 		return operatorAccounts;
 	}
