@@ -252,6 +252,7 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.operatorAccounts = operatorAccounts;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parentID", nullable = true)
 	public OperatorAccount getParent() {
 		return parent;
