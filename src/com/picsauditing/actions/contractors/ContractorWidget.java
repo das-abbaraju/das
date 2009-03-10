@@ -12,7 +12,6 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.Invoice;
 
 /**
  * Widgets for a single contractor
