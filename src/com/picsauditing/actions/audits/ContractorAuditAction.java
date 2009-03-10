@@ -29,7 +29,6 @@ import com.picsauditing.jpa.entities.YesNo;
 @SuppressWarnings("serial")
 public class ContractorAuditAction extends AuditCategorySingleAction {
 
-	protected AuditBuilder auditBuilder;
 	protected ContractorAuditOperatorDAO contractorAuditOperatorDAO;
 
 	private boolean isCanApply = false;
@@ -39,9 +38,8 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
 			AuditBuilder auditBuilder, ContractorAuditOperatorDAO contractorAuditOperatorDAO) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, auditPercentCalculator);
+		super(accountDao, auditDao, catDataDao, auditDataDao, auditPercentCalculator, auditBuilder);
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
-		this.auditBuilder = auditBuilder;
 	}
 
 	public String execute() throws Exception {

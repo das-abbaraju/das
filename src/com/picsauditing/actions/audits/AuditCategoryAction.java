@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.struts2.ServletActionContext;
 
+import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDAO;
@@ -64,8 +65,8 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 
 	public AuditCategoryAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
-			AuditCategoryDAO auditCategoryDAO, OshaAuditDAO oshaAuditDAO) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, auditPercentCalculator);
+			AuditCategoryDAO auditCategoryDAO, OshaAuditDAO oshaAuditDAO, AuditBuilder auditBuilder) {
+		super(accountDao, auditDao, catDataDao, auditDataDao, auditPercentCalculator, auditBuilder);
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.oshaAuditDAO = oshaAuditDAO;
 	}

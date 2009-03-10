@@ -2,6 +2,7 @@ package com.picsauditing.actions.audits;
 
 import java.util.Date;
 
+import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -24,11 +25,13 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 
 	protected AuditStatus auditStatus;
 	protected AuditPercentCalculator auditPercentCalculator;
+	protected AuditBuilder auditBuilder;
 
 	public AuditCategorySingleAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator) {
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.auditPercentCalculator = auditPercentCalculator;
+		this.auditBuilder = auditBuilder;
 	}
 
 	public String execute() throws Exception {
@@ -92,7 +95,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 						}
 					}
 				}
-
+				auditBuilder.buildAudits(contractor);
 				emailContractorOnAudit();
 			}
 
