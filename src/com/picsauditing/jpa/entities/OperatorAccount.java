@@ -221,6 +221,11 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.corporateFacilities = corporateFacilities;
 	}
 
+	/**
+	 * @see getOperatorAccounts()
+	 * @return a list of all "associated" operator accounts associated via the facilities intersection table
+	 * for example, BASF would contain BASF Port Arthur but not BASF Freeport Hub
+	 */
 	@OneToMany(mappedBy = "corporate")
 	public List<Facility> getOperatorFacilities() {
 		return operatorFacilities;
@@ -230,18 +235,10 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.operatorFacilities = operatorFacilities;
 	}
 
-	@OneToMany(mappedBy = "operatorAccount")
-	public List<ContractorOperator> getContractorOperators() {
-		return contractorOperators;
-	}
-
-	public void setContractorOperators(List<ContractorOperator> contractorOperators) {
-		this.contractorOperators = contractorOperators;
-	}
-	
 	/**
-	 * returns a list of all the child operators associated with this account
-	 * @return
+	 * @see getOperatorFacilities()
+	 * @return a list of all the "direct" child operators/corporates mapped through operator.parentID
+	 * for example, BASF would contain BASF Freeport Hub, but not BASF Port Arthur
 	 */
 	@OneToMany(mappedBy = "parent")
 	public List<OperatorAccount> getOperatorAccounts() {
@@ -262,6 +259,18 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.parent = parent;
 	}
 
+	/**
+	 * @return a list of contractors linked to this operator
+	 */
+	@OneToMany(mappedBy = "operatorAccount")
+	public List<ContractorOperator> getContractorOperators() {
+		return contractorOperators;
+	}
+
+	public void setContractorOperators(List<ContractorOperator> contractorOperators) {
+		this.contractorOperators = contractorOperators;
+	}
+	
 	public boolean isInheritFlagCriteria() {
 		return inheritFlagCriteria;
 	}
