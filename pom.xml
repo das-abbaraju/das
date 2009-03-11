@@ -212,6 +212,12 @@
       <version>20030805.205232</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.ws.commons.schema</groupId>
+      <artifactId>XmlSchema</artifactId>
+      <version>1.2</version>
+    </dependency>
+
 
     <dependency>
       <groupId>org.apache.axis2</groupId>
