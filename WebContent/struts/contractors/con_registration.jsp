@@ -106,7 +106,7 @@ function checkTaxId(taxId) {
 					<br />
 					<s:radio list="#{'Yes':'Yes','No':'No'}"
 						name="contractor.oqEmployees" theme="pics"/></li>
-				<li><label>Risk Level:</label>
+				<li><label>Risk Level:<span class="redMain">*</span></label>
 				<table class="report">
 					<tr><td>
 					<s:radio theme="pics" list="#{'Low':'Low</td><td><nobr>Delivery,

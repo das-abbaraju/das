@@ -53,13 +53,13 @@ public class ContractorRegistration extends ContractorActionSupport {
 			contractor.setActive('N');
 			Vector<String> errors = contractorValidator.validateContractor(contractor, user.getPassword(),
 					confirmPassword, user);
+			if(!contractorValidator.verifyTaxID(contractor)) {
+				errors.add("The tax ID <b>" + contractor.getTaxId()
+						+ "</b> already exists.  Please contact a company representative.");
+			}	
 			if (errors.size() > 0) {
 				for (String error : errors)
 					addActionError(error);
-				if(!contractorValidator.verifyTaxID(contractor)) {
-					addActionError("The tax ID <b>" + contractor.getTaxId()
-							+ "</b> already exists.  Please contact a company representative.");
-				}	
 				return SUCCESS;
 			}
 
