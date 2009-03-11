@@ -332,14 +332,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		if (permissions == null)
 			return null;
 		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
-		return dao.findWhere(false, "active='Y'", permissions);
+		return dao.findWhere(false, "", permissions);
 	}
 
 	public List<OperatorAccount> getOperatorListWithCorporate() throws Exception {
 		if (permissions == null)
 			return null;
 		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
-		return dao.findWhere(true, "active='Y'", permissions);
+		return dao.findWhere(true, "", permissions);
 	}
 
 	public List<User> getAuditorList() throws Exception {

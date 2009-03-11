@@ -319,7 +319,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 
 	public List<OperatorAccount> getOperatorList() throws Exception {
 		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
-		return dao.findWhere(false, "active='Y'", permissions);
+		return dao.findWhere(false, "", permissions);
 	}
 
 	public List<ContractorAudit> getAudits() {

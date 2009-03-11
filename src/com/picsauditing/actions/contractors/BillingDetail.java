@@ -15,11 +15,11 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.SpringUtils;
 
@@ -27,7 +27,6 @@ import com.picsauditing.util.SpringUtils;
 public class BillingDetail extends ContractorActionSupport {
 	private InvoiceFee activationFee = null;
 	private InvoiceDAO invoiceDAO = new InvoiceDAO();
-	private InvoiceItemDAO invoiceItemDAO = new InvoiceItemDAO();
 	private InvoiceFeeDAO invoiceFeeDAO;
 	private int invoiceTotal = 0;
 
@@ -38,12 +37,12 @@ public class BillingDetail extends ContractorActionSupport {
 	AppPropertyDAO appPropDao;
 
 	public BillingDetail(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, InvoiceDAO invoiceDAO,
-			InvoiceItemDAO invoiceItemDAO, InvoiceFeeDAO invoiceFeeDAO, AppPropertyDAO appPropDao) {
+			InvoiceFeeDAO invoiceFeeDAO, AppPropertyDAO appPropDao) {
 		super(accountDao, auditDao);
 		this.invoiceDAO = invoiceDAO;
-		this.invoiceItemDAO = invoiceItemDAO;
 		this.invoiceFeeDAO = invoiceFeeDAO;
 		this.appPropDao = appPropDao;
+		this.noteCategory = NoteCategory.Billing;
 	}
 
 	public String execute() throws Exception {

@@ -66,19 +66,21 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 			if (button.equals("search")) {
 
-				String where = " active = 'Y' ";
+				String where = "";
 
 				if (state != null && state.length() > 0) {
-					where += " and state = '" + Utilities.escapeQuotes(state) + "' ";
+					where += "state = '" + Utilities.escapeQuotes(state) + "'";
 				}
 
 				if (operator != null && !Strings.isEmpty(operator.getName())) {
-					where += " and name like '%" + Utilities.escapeQuotes(operator.getName()) + "%' ";
+					if (where.length() > 0)
+						where += " AND ";
+					where += "name LIKE '%" + Utilities.escapeQuotes(operator.getName()) + "%'";
 				}
 
 				searchResults = new ArrayList<OperatorAccount>();
 				currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
-				for (OperatorAccount opToAdd : operatorDao.findWhere(false, "active='Y'", permissions)) {
+				for (OperatorAccount opToAdd : operatorDao.findWhere(false, where, permissions)) {
 					boolean linked = false;
 					for(ContractorOperator co : currentOperators) {
 						if (co.getOperatorAccount().equals(opToAdd))

@@ -85,21 +85,20 @@
 
 <table width="100%">
 <tr>
-	<td style="width: 45%">
+	<td style="width: 45%; vertical-align: top;">
 		<div id="thinkingDiv"></div>
 		
 		<div id="facilities" >
 			<%@ include file="contractor_facilities_assigned.jsp"%>
 		</div>
-
+		
 		<pics:permission perm="EditNotes" type="Edit">
 			<div id="notesList">
 				<s:include value="con_notes_embed.jsp"></s:include>
 			</div>
 		</pics:permission>
 	</td>
-	<td style="width: 10px"></td>
-	<td style="width: 50%">
+	<td style="width: 45%; vertical-align: top;">
 		<s:if test="permissions.contractor || permissions.admin">
 			<div id="info">Please specify all facilities at which you work.<br/>
 			The pricing is based on the number of facilities you select below. 
@@ -109,7 +108,7 @@
 		<form id="facilitySearch" onsubmit="runSearch(); return false;">
 			<s:hidden name="id"/>
 			<div id="search">
-				<div class="buttons" style="min-height: 30px">
+				<div class="buttons" style="min-height: 30px;">
 					<button class="positive" name="button" type="button" 
 						onclick="runSearch()">Search</button>
 					<nobr>Name: <s:textfield cssClass="forms" name="operator.name" onkeypress="return false();"/></nobr>

@@ -40,43 +40,52 @@ public class OperatorAccountDAO extends PicsDAO {
 		return em.find(OperatorAccount.class, id);
 	}
 
+	/**
+	 * Return a list of Operators and Corporates if necessary
+	 * Depending on who is asking (permissions), we may need to the return the Corporate list in a special way
+	 * @param includeCorporate
+	 * @param where
+	 * @param permissions
+	 * @return
+	 */
 	public List<OperatorAccount> findWhere(boolean includeCorporate, String where, Permissions permissions) {
+		// Get a list of corporate accounts if this a Corporate or Operator account
 		List<OperatorAccount> corporateList = new ArrayList<OperatorAccount>();
+		if (includeCorporate) {
+			if (permissions.isCorporate()) {
+				Query query = em.createQuery("SELECT a FROM OperatorAccount a where a.id = :id");
+				query.setParameter("id", permissions.getAccountId());
+				corporateList = query.getResultList();
+			}
+			if (permissions.isOperator()) {
+				Query query = em.createQuery("select a.corporate from Facility a where a.operator.id = :id");
+				query.setParameter("id", permissions.getAccountId());
+				corporateList = query.getResultList();
+			}
+		}
 
+		// Now get the operator list
 		if (where == null)
 			where = "";
+		
+		if (where.length() > 0)
+			where += "AND ";
+		where += "a.active = 'Y' ";
 
 		if (permissions.isCorporate()) {
-			Query query = em.createQuery("SELECT a FROM OperatorAccount a where a.id = :id");
-			query.setParameter("id", permissions.getAccountId());
-			corporateList = query.getResultList();
-
-			if (where.length() > 0)
-				where += "AND ";
-
 			// Show corporate users operators in their facility
-			where += "a IN (SELECT operator FROM Facility " + "WHERE corporate = " + permissions.getAccountId() + ")";
-
-			includeCorporate = false;
+			where += "AND a IN (SELECT operator FROM Facility " + "WHERE corporate = " + permissions.getAccountId() + ")";
+			includeCorporate = false; // don't use the default findWhere to get corporates
 		}
 		if (permissions.isOperator()) {
-			Query query = em.createQuery("select a.corporate from Facility a where a.operator.id = :id");
-			query.setParameter("id", permissions.getAccountId());
-			corporateList = query.getResultList();
-
-			// Show operator users operators that share the same corporate
-			// facility
-			if (where.length() > 0)
-				where += "AND ";
-
-			where += "(a.id = " + permissions.getAccountId() + " OR a IN (SELECT operator FROM Facility "
+			// Show operator users operators that share the same corporate facility
+			where += "AND (a.id = " + permissions.getAccountId() + " OR a IN (SELECT operator FROM Facility "
 					+ "WHERE corporate IN (SELECT corporate FROM Facility " + "WHERE operator.id = "
 					+ permissions.getAccountId() + ")))";
-
-			includeCorporate = false;
+			includeCorporate = false; // don't use the default findWhere to get corporates
 		}
 		List<OperatorAccount> operatorList = findWhere(includeCorporate, where);
-
+		
 		if (corporateList.size() > 0) {
 			corporateList.addAll(operatorList);
 			return corporateList;
