@@ -6,33 +6,3 @@ update pqfquestions set isRedFlagQuestion = CASE isRedFlagQuestion WHEN 2 THEN 1
 */
 
 
-/* Update all operator.parentID's with the values that are in the facilities table */
-update operators child
-  join facilities f
-    on child.id = f.opid
-  join operators parent
-    on f.corporateid = parent.id
-set child.parentid = parent.id;
-
-/* Since there are multiple facilities table entries for BASF Hub users
- * these should be updated afterwards*/
-update operators child
-  join facilities f
-    on child.id = f.opid
-  join operators parent
-    on parent.id = f.corporateID
-set child.parentid = parent.id
-where parent.id in(select
-                     id
-                   from accounts
-                   where name like "%BASF HUB%");
-
-
-/*
- * Set the parentid of BASF Hub operators to BASF corporate
- */
-update operators o
-  join accounts a
-    on o.id = a.id
-set o.parentid = 6115
-where a.name like "%BASF HUB%";
