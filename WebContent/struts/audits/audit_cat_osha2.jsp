@@ -77,7 +77,7 @@
 <s:if test="!type.toString().equals('COHS')">	
 	<tr>
 		<th class="label">Uploaded Log Files</th>
-		<th colspan="2"><s:if test="fileUploaded"><a href="#" onclick="openOsha(<s:property value="id"/>, 1); return false;">Download</a></s:if></th>
+		<th colspan="2"><s:if test="fileUploaded"><a href="#" onclick="openOsha(<s:property value="id"/>); return false;">Download</a></s:if></th>
 		<s:if test="type.toString().equals('OSHA') && corporate"><th colspan="2" class="label">&nbsp;</th></s:if>
 	</tr>
 </s:if>	

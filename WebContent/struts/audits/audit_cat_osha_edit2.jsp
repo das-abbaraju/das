@@ -79,7 +79,7 @@
 		<th class="label">Upload <s:property value="conAudit.auditFor"/> <s:property value="type"/> Log File(.pdf, .doc, .txt, .xls or .jpg)</th>
 		<td colspan="3">
 		<s:if test="fileUploaded">
-			<a href="#" onclick="openOsha(<s:property value="id"/>, 1); return false;">View File</a>
+			<a href="#" onclick="openOsha(<s:property value="id"/>); return false;">View File</a>
 		</s:if>
 		<s:if test="catDataID > 0">
 			<s:file name="uploadFile" size="10"></s:file></s:if></td>

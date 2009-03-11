@@ -173,7 +173,7 @@
 				</s:else>
 				<s:div id="applicableFields" cssStyle="display : %{showApplicableFieldsDisplay};">
 					<li><label>File:</label> <s:if test="fileUploaded">
-						<a href="#" onclick="openOsha(<s:property value="id"/>,1); return false;"	target="_BLANK">View File</a>
+						<a href="#" onclick="openOsha(<s:property value="id"/>); return false;"	target="_BLANK">View File</a>
 						<a href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=151&mode=Edit" target="_BLANK">Change File</a>
 					</s:if>
 					<s:else>

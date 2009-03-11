@@ -224,10 +224,3 @@ function showFileUpload(answerid, questionid, parentid, divId) {
 	fileUpload = window.open(url,title,pars);
 	fileUpload.focus();
 }
-
-function openOsha(logID, year) {
-	url = 'DownloadOsha.action?id='+logID;
-	title = 'Osha300Logs';
-	pars = 'scrollbars=yes,resizable=yes,width=700,height=450';
-	window.open(url,title,pars);
-}
