@@ -16,6 +16,7 @@ public class QBWebConnectorSvcSkeleton {
 
 		System.out.println("authenticating: " + authenticate.getStrUserName() + "/" + authenticate.getStrPassword() );
 		
+		
 		response.getAuthenticateResult().addString("thisIsTheSessionId");
 		
 		if ( false ) { //were the credentials good? 
