@@ -1,8 +1,10 @@
-<not description="the word 'error' should not appear in the page">
-	<verifyText description="search for the word exception"
-		text="(?i:error)"
-		regex="true" />
-</not>
+<ifStep description="Test if we are expecting an error on the page" unless="${error_expected}">
+	<not description="the word 'error' should not appear in the page">
+		<verifyText description="search for the word exception"
+			text="(?i:error)"
+			regex="true" />
+	</not>
+</ifStep>
 <verifyText description="Checks for the copywrite in the footer"
 	text="&copy;" />
 <verifyText description="Checks for the existence of HTML body tags"

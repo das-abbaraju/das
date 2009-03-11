@@ -1,6 +1,6 @@
 <invoke
 	description="goto Login Page"
-	url="login.jsp" />
+	url="Login.action" />
 <setInputField description="set user name"
 	name="username"
 	value="${login.username}" />
@@ -8,5 +8,4 @@
 	name="password"
 	value="${login.password}" />
 <clickButton 
-	htmlId="Submit"
-	description="Click the submit button" />
+	label="Login"/>

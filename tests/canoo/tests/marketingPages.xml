@@ -19,8 +19,8 @@
 				<invoke
 					description="Get Featured Operator page"
 					url="featured_template.jsp" />
-				<verifyText  description="Make sure ConocoPhillips text is there"
-				      text="ConocoPhillips" />
+				<verifyText  description="Make sure Huntsman text is there"
+				      text="Huntsman" />
 				&body_verify;
 				
 				<invoke

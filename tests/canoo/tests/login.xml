@@ -9,13 +9,12 @@
 			<steps>
 				<invoke	
 					description="Get Contractors Page for Login" 
-					url="login.jsp" />
+					url="Login.action" />
 				<clickButton 
-					htmlId="Submit" 
-					description="Click the LOGIN button" />			
+					label="Login"/>		
 				<verifyText 
 					description="Attempt login without a username" 
-					text="Enter a username" />			
+					text="Enter a valid username" />			
 			</steps>
 		</webtest>
 		<webtest name="Login: good username; good password">
@@ -23,7 +22,7 @@
 			<steps>
 				<invoke
 					description="Get Contractors Page for Login"
-					url="login.jsp" />				
+					url="Login.action" />				
 				<setInputField 
 					description="set user name"
 					name="username"
@@ -33,8 +32,7 @@
 					name="password"
 					value="${login.password}" />
 				<clickButton 
-					htmlId="Submit"
-					description="Click the submit button" />
+					label="Login"/>
 					&body_verify;
 				<verifyText 
 					description="Verify logged in - Welcome"
@@ -47,9 +45,10 @@
 		<webtest name="Login: good username; bad password">
 		&config;
 			<steps> 
+				<property name="error_expected" value="true"/>
 				<invoke
 					description="Get Contractors Page for Login"
-					url="login.jsp" />
+					url="Login.action" />
 				<setInputField description="Set username"
 					name="username"
 					value="${login.username}" />
@@ -57,8 +56,7 @@
 					name="password"
 					value="BADPASS" />
 				<clickButton 
-					htmlId="Submit"
-					description="Click the LOGIN button" />
+					label="Login"/>
 					&body_verify;
 				<verifyText 
 					description="Invalid Password Attempt"
@@ -70,7 +68,7 @@
 			<steps>
 				<invoke
 					description="Get Contractors Page for Login"
-					url="login.jsp" />
+					url="Login.action" />
 				<setInputField description="Set username"
 					name="username"
 					value="usernamethatdoesnotexist" />
@@ -78,8 +76,7 @@
 					name="password"
 					value="BADPASS" />
 				<clickButton 
-					htmlId="Submit"
-					description="Click the LOGIN button" />
+					label="Login"/>
 				<verifyText description="No account exists with that username"
 					text="No account exists with that username" />			 	
 			 </steps>
@@ -89,17 +86,16 @@
 			<steps>
 			 	<invoke
 					description="Get Contractors Page for Login"
-					url="login.jsp" />
+					url="Login.action" />
 				<clickLink 
-					description="Retrieve Forgot Password page" 
-					label="click here"/>
+						description="Retrieve Forgot Password page"
+						label="Click here to have it sent to you"/>
 				<setInputField 
 					description="set email"
 					name="email"
 					value="${mail.username}" />
 				<clickButton 
-					name="submit"
-					description="Click the 'Send Password button" />
+					label="Send Password"/>
 				<invoke
 					description="Send Mail"
 					url="MailCron.action" />
