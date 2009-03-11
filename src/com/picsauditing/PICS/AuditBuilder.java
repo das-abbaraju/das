@@ -31,6 +31,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
@@ -162,7 +163,7 @@ public class AuditBuilder {
 				// active audit that isn't scheduled to expire soon
 				for (ContractorAudit conAudit : contractor.getAudits()) {
 					if (okStatuses.contains(conAudit.getAuditStatus())) {
-						if ( !conAudit.willExpireSoon() ) {
+						if (!conAudit.willExpireSoon()) {
 							// The audit is still valid for atleast another 60
 							// days
 							if (conAudit.getAuditType().equals(auditType)) {
@@ -250,11 +251,11 @@ public class AuditBuilder {
 		}
 
 		for (Integer auditID : auditsToRemove) {
-			//cAuditDAO.clear();   //this was disconnecting our flag calculator
+			// cAuditDAO.clear(); //this was disconnecting our flag calculator
 			cAuditDAO.remove(auditID);
 			fillAuditCategories = false;
 		}
-		
+
 		if (fillAuditCategories) {
 			/** Generate Categories * */
 			for (ContractorAudit conAudit : currentAudits) {
@@ -266,8 +267,8 @@ public class AuditBuilder {
 	}
 
 	/**
-	 * For each audit (policy), get a list of operators who have InsureGuard and
-	 * automatically require this policy, based on riskLevel
+	 * For each audit (policy), get a list of operators who have InsureGuard and automatically require this policy,
+	 * based on riskLevel
 	 * 
 	 * @param conAudit
 	 */
@@ -276,88 +277,130 @@ public class AuditBuilder {
 			return;
 
 		PicsLogger.start("AuditOperators");
+		
+		Map<Integer, OperatorAccount> corporateMap = new HashMap<Integer, OperatorAccount>();
+		
 		for (ContractorOperator co : contractor.getOperators()) {
 			// For this auditType (General Liability) and
 			// this contractor's associated operator (BP Cherry Point)
 			OperatorAccount operator = co.getOperatorAccount();
-			
+
 			boolean visible = false;
 			boolean required = false;
+
 			if (operator.getCanSeeInsurance().equals(YesNo.Yes)) {
 				PicsLogger.log(operator.getName() + " subscribes to InsureGuard");
 				for (AuditOperator ao : operator.getAudits()) {
-					if (conAudit.getAuditType().equals(ao.getAuditType())
-							&& ao.isCanSee()) {
+					if (conAudit.getAuditType().equals(ao.getAuditType()) && ao.isCanSee()) {
 						visible = true;
 						if (ao.getMinRiskLevel() > 0 && ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal())
 							required = true;
-						PicsLogger.log(contractor.getName() + " can see " + (required ? "required " : " ") + ao.getAuditType().getAuditName());
+						PicsLogger.log(contractor.getName() + " can see " + (required ? "required " : " ")
+								+ ao.getAuditType().getAuditName());
 						break;
 					}
 				}
 			}
-			
-			// Now find isolate the cao record for this operator
+
+			// Now find the existing cao record for this operator (if one exists)
 			ContractorAuditOperator cao = null;
-			for(ContractorAuditOperator cao2 : conAudit.getOperators()) {
-				 if (cao2.getOperator().equals(operator))
+			for (ContractorAuditOperator cao2 : conAudit.getOperators()) {
+				if (cao2.getOperator().equals(operator))
 					cao = cao2;
 			}
 
 			if (visible) {
-				if (required) {
-					// This cao is always required so add it if it doesn't exist
-					// and then calculate the recommended status
-					if (cao == null) {
-						// If we don't have one, then add it
-						PicsLogger.log("Adding missing required ContractorAuditOperator");
-						cao = new ContractorAuditOperator();
-						cao.setAudit(conAudit);
-						cao.setOperator(operator);
-						cao.setAuditColumns(user);
+				if (cao == null) {
+					// If we don't have one, then add it
+					PicsLogger.log("Adding missing cao");
+					cao = new ContractorAuditOperator();
+					cao.setAudit(conAudit);
+					cao.setOperator(operator);
+					cao.setAuditColumns(user);
+					cao.setInherit(true);
+					conAudit.getOperators().add(cao);
+					if (required) {
+						// This cao is always required so add it if it doesn't exist
+						// and then calculate the recommended status
 						cao.setStatus(CaoStatus.Awaiting);
 						cao.setRecommendedStatus(CaoStatus.Awaiting);
-						conAudit.getOperators().add(cao);
-					}
-				} else {
-					// This cao might be required (if the operator manually requested it)
-					if (cao == null) {
-						// If we don't have one, then add it
-						PicsLogger.log("Adding missing non-required ContractorAuditOperator");
-						cao = new ContractorAuditOperator();
-						cao.setAudit(conAudit);
-						cao.setOperator(operator);
-						cao.setAuditColumns(user);
+					} else {
+						// This cao might be required (if the operator manually requested it)
 						cao.setStatus(CaoStatus.NotApplicable);
-						cao.setRecommendedStatus(CaoStatus.NotApplicable);
-						conAudit.getOperators().add(cao);
-					}
-					if (CaoStatus.NotApplicable.equals(cao.getStatus())) {
-						// This operator has specifically stated they don't need this policy
 						cao.setRecommendedStatus(CaoStatus.NotApplicable);
 					}
 				}
-			} else if(cao != null) {
+				if (CaoStatus.NotApplicable.equals(cao.getStatus())) {
+					// This operator has specifically stated they don't need this policy
+					cao.setRecommendedStatus(CaoStatus.NotApplicable);
+				} else {
+					// If this cao is still needed for the operator, 
+					// then add the operator's ancestors to the map
+					buildMap(corporateMap, operator);
+				}
+				
+			} else if (cao != null) {
 				// Remove the cao if it's temporary (N/A or Awaiting)
 				if (cao.getStatus().isTemporary()) {
 					PicsLogger.log("Removing unneeded ContractorAuditOperator");
-					contractorAuditOperatorDAO.remove(cao);
 					conAudit.getOperators().remove(cao);
+					contractorAuditOperatorDAO.remove(cao);
 				} else {
 					cao.setRecommendedStatus(CaoStatus.NotApplicable);
 				}
 			}
-			if(cao != null) {
-				// IF we still have a "dirty" cao, record then save it
+			if (cao != null) {
+				// If we still have a "dirty" cao record, then save it
 				contractorAuditOperatorDAO.save(cao);
 			}
 		}
+
+		Iterator<ContractorAuditOperator> iter = conAudit.getOperators().iterator();
+		while (iter.hasNext()) {
+			ContractorAuditOperator corpCao = iter.next();
+			OperatorAccount corporate = corpCao.getOperator();
+			if (corporate.isCorporate() 
+					&& corpCao.getStatus().isTemporary()
+					&& !corporateMap.containsKey(corporate.getId())) {
+				// This cao is for a corporate account is no longer needed 
+				// and hasn't been approved or rejected yet
+				conAudit.getOperators().remove(corpCao);
+				contractorAuditOperatorDAO.remove(corpCao);
+			}
+		}
+		
+		// Remove from the map, all the caos we already have
+		for(ContractorAuditOperator cao : conAudit.getOperators()) {
+			corporateMap.remove(cao.getOperator().getId());
+		}
+		
+		// Add the remaining caos (if any)
+		for(OperatorAccount corporate : corporateMap.values()) {
+			PicsLogger.log("Adding missing cao");
+			ContractorAuditOperator cao = new ContractorAuditOperator();
+			cao.setAudit(conAudit);
+			cao.setOperator(corporate);
+			cao.setAuditColumns(user);
+			cao.setInherit(true);
+			conAudit.getOperators().add(cao);
+			cao.setStatus(CaoStatus.Awaiting);
+			cao.setRecommendedStatus(CaoStatus.Awaiting);
+			contractorAuditOperatorDAO.save(cao);
+		}
+
 		PicsLogger.stop();
+	}
+	
+	private void buildMap(Map<Integer, OperatorAccount> corporateMap, OperatorAccount operator) {
+		if (operator.getParent() == null)
+			return;
+		corporateMap.put(operator.getParent().getId(), operator.getParent());
+		buildMap(corporateMap, operator.getParent());
 	}
 
 	/**
-	 * Determine which categories should be on a given audit and add ones that
-	 * aren't there and remove ones that shouldn't be there
+	 * Determine which categories should be on a given audit and add ones that aren't there and remove ones that
+	 * shouldn't be there
 	 * 
 	 * @param conAudit
 	 */
@@ -374,11 +417,13 @@ public class AuditBuilder {
 				return;
 		} else {
 			// Other Audits should only consider Pending
-			if (!conAudit.getAuditStatus().isPending() && conAudit.getAuditType().getClassType() == AuditTypeClass.Audit)
+			if (!conAudit.getAuditStatus().isPending()
+					&& conAudit.getAuditType().getClassType() == AuditTypeClass.Audit)
 				return;
 		}
-		
-		PicsLogger.start("AuditCategories", "auditID=" + conAudit.getId() + " type=" + conAudit.getAuditType().getAuditName());
+
+		PicsLogger.start("AuditCategories", "auditID=" + conAudit.getId() + " type="
+				+ conAudit.getAuditType().getAuditName());
 		// set of audit categories to be included in the audit
 		Set<AuditCategory> categories = new HashSet<AuditCategory>();
 		Set<AuditCategory> naCategories = new HashSet<AuditCategory>();
@@ -387,8 +432,7 @@ public class AuditBuilder {
 			List<AuditCategory> pqfCategories = auditCategoryDAO.findPqfCategories(conAudit.getContractorAccount());
 			categories.addAll(pqfCategories);
 
-			List<AuditCategory> allCategories = auditCategoryDAO.findByAuditTypeID(conAudit.getAuditType()
-					.getId());
+			List<AuditCategory> allCategories = auditCategoryDAO.findByAuditTypeID(conAudit.getAuditType().getId());
 			for (AuditCategory category : allCategories) {
 				if (!categories.contains(category))
 					naCategories.add(category);
@@ -468,7 +512,7 @@ public class AuditBuilder {
 								AuditStatus.Submitted))) {
 					// Found a Submitted/Active PQF
 					if (currentAuditDate == null || audits.getCompletedDate().after(currentAuditDate)) {
-						//TODO we can only have 1 pqf anway so remove this logic
+						// TODO we can only have 1 pqf anway so remove this logic
 						// Found the most recent one
 						currentAuditDate = audits.getCompletedDate();
 						pqfAuditID = audits.getId();
@@ -480,8 +524,7 @@ public class AuditBuilder {
 				categories.addAll(desktopCategories);
 			}
 
-			List<AuditCategory> allCategories = auditCategoryDAO.findByAuditTypeID(conAudit.getAuditType()
-					.getId());
+			List<AuditCategory> allCategories = auditCategoryDAO.findByAuditTypeID(conAudit.getAuditType().getId());
 			PicsLogger.log("Categories to be included:");
 			for (AuditCategory category : categories)
 				PicsLogger.log("  " + category.getId() + " " + category.getCategory());
@@ -526,7 +569,7 @@ public class AuditBuilder {
 			catData.setAudit(conAudit);
 			catData.setApplies(YesNo.Yes);
 			catData.setOverride(false);
-			if(category.getNumRequired() == 0)
+			if (category.getNumRequired() == 0)
 				catData.setNumRequired(1);
 			else
 				catData.setNumRequired(category.getNumRequired());
@@ -540,7 +583,7 @@ public class AuditBuilder {
 			catData.setAudit(conAudit);
 			catData.setApplies(YesNo.No);
 			catData.setOverride(false);
-			if(category.getNumRequired() == 0)
+			if (category.getNumRequired() == 0)
 				catData.setNumRequired(1);
 			else
 				catData.setNumRequired(category.getNumRequired());
@@ -551,8 +594,7 @@ public class AuditBuilder {
 	}
 
 	/**
-	 * Business engine designed to find audits that are about to expire and
-	 * rebuild them
+	 * Business engine designed to find audits that are about to expire and rebuild them
 	 */
 	public void addAuditRenewals() {
 		List<ContractorAccount> contractors = cAuditDAO.findContractorsWithExpiringAudits();

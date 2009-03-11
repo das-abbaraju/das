@@ -258,6 +258,17 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	public void setParent(OperatorAccount parent) {
 		this.parent = parent;
 	}
+	
+	public boolean isDescendantOf(int id) {
+		if (getParent() == null)
+			// No parent exists
+			return false;
+		if (getParent().getId() == id)
+			// Yes, the parent matches
+			return true;
+		// Maybe the grandparent is a descendant of id
+		return getParent().isDescendantOf(id);
+	}
 
 	/**
 	 * @return a list of contractors linked to this operator
