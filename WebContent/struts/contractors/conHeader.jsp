@@ -141,31 +141,29 @@
 		<s:if test="conAudit.auditType.classType.toString() == 'Policy'">
 			<s:iterator value="conAudit.operators" status="rowStatus">
 				<s:if test="permissions.operator || permissions.corporate">
-					<s:if test="operator.id == permissions.accountId">
+					<s:if test="operator.id == permissions.accountId || operator.isDescendantOf(permissions.accountId) || permissions.corporateParent.contains(operator.id)">
 						<li>
-							<s:if test="notes != null && notes.length() > 0">
-								<label title="<s:property value="notes"/>" class="tooltipped">Op Status:</label> 
-							</s:if>
-							<s:else>
-								<label>Op Status:</label>
-							</s:else>
+							<label 
+								<s:if test="notes != null && notes.length() > 0">
+									title="<s:property value="notes"/>" 
+									class="tooltipped"
+								</s:if>>Op Status:</label>
 							<a href="#" id="caoStatusMain_<s:property value="id"/>" class="edit" onclick="javascript: return editCao(<s:property value="id"/>);"><s:property value="status"/></a>
 							(<s:property value="operator.name"/>)
 						</li>
 					</s:if>
 				</s:if>
-				<s:else>
+				<s:elseif test="!status.temporary">
 					<li>
-					<s:if test="notes != null && notes.length() > 0">
-						<label title="<s:property value="notes"/>" class="tooltipped">Op Status:</label>
-					</s:if>
-					<s:else>
-						<label>Op Status:</label>
-					</s:else>				
+						<label 
+							<s:if test="notes != null && notes.length() > 0">
+								title="<s:property value="notes"/>" 
+								class="tooltipped"
+							</s:if>>Op Status:</label>
 						<s:property value="status"/>
 						(<s:property value="operator.name"/>)		
 					</li>
-				</s:else>
+				</s:elseif>
 			</s:iterator>
 			<!--<script type="text/javascript">
 				$$("label.tooltipped").each(function(link) { 
