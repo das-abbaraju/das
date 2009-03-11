@@ -151,9 +151,8 @@
 					</s:if>
 					<s:else>
 						<li><label>Corporate Parent(s):</label>
-							<s:iterator value="operatorAccount.corporateFacilities">
-								<a href="FacilitiesEdit.action?opID=<s:property value="corporate.id"/>"><s:property value="corporate.name"/></a><br />
-							</s:iterator>
+							
+							<s:select list="operatorAccount.corporateFacilities" listKey="corporate.id" listValue="corporate.name" headerKey="0" headerValue=" - Select a Parent Facility - " name="parentid"/>
 						</li>
 						<li><label>Contractors pay:</label>
 						<s:radio list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}" name="operatorAccount.doContractorsPay" theme="pics" />
@@ -166,15 +165,13 @@
 									
 				</ol>
 				</fieldset>
-			<s:if test="typeOperator">
-					<fieldset class="form">
-						<legend><span>Legal Additional Insured Names</span></legend>
-						<ol><div id="operator_name">
-								<s:include value="operator_names.jsp" />
-							</div>
-						</ol>
-					</fieldset>	
-			</s:if>
+				<fieldset class="form">
+					<legend><span>Legal Additional Insured Names</span></legend>
+					<ol><div id="operator_name">
+							<s:include value="operator_names.jsp" />
+						</div>
+					</ol>
+				</fieldset>	
 
 			</td>
 		</tr>

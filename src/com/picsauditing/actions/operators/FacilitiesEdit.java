@@ -40,6 +40,7 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 	protected int[] facilities = new int[300];
 	protected int auditorid;
 	protected int nameId;
+	protected int parentid;
 	protected String name;
 	protected HttpServletRequest request;
 
@@ -67,6 +68,8 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 				facilities[i] = fac.getOperator().getId();
 				i++;
 			}
+			if (operatorAccount.getParent() != null)
+				parentid = operatorAccount.getParent().getId();
 		}
 	}
 
@@ -151,6 +154,10 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 
 				} else {
 					permissions.tryPermission(OpPerms.ManageOperators, OpType.Edit);
+					
+					if(parentid > 0) {
+						operatorAccount.setParent(operatorAccountDAO.find(parentid));
+					}
 				}
 				operatorAccount.setType(type);
 				if (auditorid > 0)
@@ -224,6 +231,14 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 
 	public void setNameId(int nameId) {
 		this.nameId = nameId;
+	}
+
+	public int getParentid() {
+		return parentid;
+	}
+
+	public void setParentid(int parentid) {
+		this.parentid = parentid;
 	}
 
 	public String getName() {
