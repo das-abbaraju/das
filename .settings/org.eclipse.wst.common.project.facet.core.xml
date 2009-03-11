@@ -5,4 +5,6 @@
   <fixed facet="jst.java"/>
   <installed facet="jst.java" version="6.0"/>
   <installed facet="jst.web" version="2.4"/>
+  <installed facet="axis2.core" version="1.1"/>
+  <installed facet="axis2.ext" version="1.1"/>
 </faceted-project>
