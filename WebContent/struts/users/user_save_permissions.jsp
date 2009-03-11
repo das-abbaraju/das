@@ -17,7 +17,9 @@
 		<s:iterator value="user.ownedPermissions">
 
 			<tr id="permission_<s:property value="id"/>">
-				<td rowspan="2" style="font-weight: bold;"><s:property value="opPerm.description" /></td>
+				<td rowspan="2" style="font-weight: bold; cursor: help" title="Changed <s:date name="lastUpdate" /> by <s:property value="grantedBy.name"/>">
+					<s:property value="opPerm.description" />
+				</td>
 
 				<pics:permission perm="EditUsers" type="Grant">
 					<s:set name="tempList" value="#{'':'', 'true':'Grant', 'false':'Revoke'}"/>
