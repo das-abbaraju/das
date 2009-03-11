@@ -2,7 +2,7 @@ package com.picsauditing.util.log;
 
 public class LoggingRule implements Comparable<LoggingRule> {
 	protected String name = null;
-	protected boolean logged = false;
+	protected boolean logged = true;
 
 	public LoggingRule() {
 		

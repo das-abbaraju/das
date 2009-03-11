@@ -276,10 +276,20 @@ public class AuditBuilder {
 		if (!AuditTypeClass.Policy.equals(conAudit.getAuditType().getClassType()))
 			return;
 
-		PicsLogger.start("AuditOperators");
+		PicsLogger.start("AuditOperators", conAudit.getAuditType().getAuditName());
 		
+		// Get distinct set of corporate caos that have already been "processed"
+		Set<Integer> processedCorporates = new HashSet<Integer>();
+		for(ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.getOperator().isCorporate() 
+					&& !cao.getStatus().isTemporary()
+					&& !cao.isInherit())
+				processedCorporates.add(cao.getOperator().getId());
+		}
+		PicsLogger.log("Found " + processedCorporates.size() + " processedCorporates");
+
 		Map<Integer, OperatorAccount> corporateMap = new HashMap<Integer, OperatorAccount>();
-		
+
 		for (ContractorOperator co : contractor.getOperators()) {
 			// For this auditType (General Liability) and
 			// this contractor's associated operator (BP Cherry Point)
@@ -305,10 +315,20 @@ public class AuditBuilder {
 			// Now find the existing cao record for this operator (if one exists)
 			ContractorAuditOperator cao = null;
 			for (ContractorAuditOperator cao2 : conAudit.getOperators()) {
-				if (cao2.getOperator().equals(operator))
+				if (cao2.getOperator().equals(operator)) {
 					cao = cao2;
+					break;
+				}
 			}
-
+			
+			// If this operator is a descendant of any of the processed corporates,
+			// then don't require this cao anymore.
+			for(Integer processedCorporate : processedCorporates)
+				if (operator.isDescendantOf(processedCorporate)) {
+					visible = false; // TOD add break here
+					break;
+				}
+			
 			if (visible) {
 				if (cao == null) {
 					// If we don't have one, then add it
@@ -342,9 +362,10 @@ public class AuditBuilder {
 			} else if (cao != null) {
 				// Remove the cao if it's temporary (N/A or Awaiting)
 				if (cao.getStatus().isTemporary()) {
-					PicsLogger.log("Removing unneeded ContractorAuditOperator");
+					PicsLogger.log("Removing unneeded ContractorAuditOperator " + cao.getId());
 					conAudit.getOperators().remove(cao);
 					contractorAuditOperatorDAO.remove(cao);
+					cao = null;
 				} else {
 					cao.setRecommendedStatus(CaoStatus.NotApplicable);
 				}

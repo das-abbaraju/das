@@ -29,7 +29,7 @@ public class ContractorCron extends PicsActionSupport {
 		if( cronMetrics.startJob() ) {
 			flagCalculator.setCronMetrics(cronMetrics);
 			
-			PicsLogger.start("contractorCron");
+			PicsLogger.start("ContractorCron");
 	
 			try {
 				List<Integer> conIDsList = contractorAccountDAO.findContractorsNeedingRecalculation();

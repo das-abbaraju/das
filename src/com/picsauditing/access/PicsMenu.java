@@ -132,9 +132,14 @@ public class PicsMenu {
 
 		if (permissions.hasPermission(OpPerms.EditFlagCriteria) && permissions.isOperator())
 			subMenu.addChild("Flag Criteria", "op_editFlagCriteria.jsp");
-
+		
 		if (permissions.hasPermission(OpPerms.EditProfile))
 			subMenu.addChild("Edit Profile", "ProfileEdit.action");
+		
+		if (permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
+			subMenu = menu.addChild("Dev");
+			subMenu.addChild("System Logging", "LoggerConfig.action");
+		}
 
 		subMenu = menu.addChild("Operators");
 		if (permissions.hasPermission(OpPerms.ManageCorporate))

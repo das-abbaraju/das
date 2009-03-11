@@ -72,7 +72,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 	}
 
 	public String execute() throws Exception {
-		PicsLogger.start("AuditCategoryAction_execute");
+		PicsLogger.start("AuditCategoryAction.execute");
 
 		if (!forceLogin()) {
 			PicsLogger.stop();
