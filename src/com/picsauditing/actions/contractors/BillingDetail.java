@@ -58,12 +58,15 @@ public class BillingDetail extends ContractorActionSupport {
 
 		// For Activation Fee and New Membership
 		if ("Activation".equals(contractor.getBillingStatus())) {
-			InvoiceFee fee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
-
-			if (contractor.getNewMembershipLevel() != null)
-				invoiceItems.add(new InvoiceItem(contractor.getNewMembershipLevel()));
-
-			invoiceItems.add(new InvoiceItem(fee));
+			if (contractor.getNewMembershipLevel().getId() != InvoiceFee.FREE
+					&& contractor.getMembershipLevel().getId() == InvoiceFee.FREE) {
+				InvoiceFee fee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
+	
+				if (contractor.getNewMembershipLevel() != null)
+					invoiceItems.add(new InvoiceItem(contractor.getNewMembershipLevel()));
+	
+				invoiceItems.add(new InvoiceItem(fee));
+			}
 		}
 
 		// For Reactivation Fee and Reactivating Membership
