@@ -24,6 +24,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorRegistration extends ContractorActionSupport {
@@ -53,6 +54,9 @@ public class ContractorRegistration extends ContractorActionSupport {
 			contractor.setActive('N');
 			Vector<String> errors = contractorValidator.validateContractor(contractor, user.getPassword(),
 					confirmPassword, user);
+			if(Strings.isEmpty(user.getPassword()))
+				errors.add("Please fill in the Password field.");
+
 			if(!contractorValidator.verifyTaxID(contractor)) {
 				errors.add("The tax ID <b>" + contractor.getTaxId()
 						+ "</b> already exists.  Please contact a company representative.");
