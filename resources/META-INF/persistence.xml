@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="1.0"
+	xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
+
+<persistence-unit name="punit">
+  
+  <class>com.picsauditing.jpa.entities.Account</class>
+  <class>com.picsauditing.jpa.entities.AccountName</class>  
+  <class>com.picsauditing.jpa.entities.AppProperty</class> 
+  <class>com.picsauditing.jpa.entities.AuditCatData</class>
+  <class>com.picsauditing.jpa.entities.AuditCategory</class>
+  <class>com.picsauditing.jpa.entities.AuditCatOperator</class>
+  <class>com.picsauditing.jpa.entities.AuditData</class>
+  <class>com.picsauditing.jpa.entities.AuditOperator</class> 
+  <class>com.picsauditing.jpa.entities.AuditQuestion</class>
+  <class>com.picsauditing.jpa.entities.AuditQuestionOperatorAccount</class>
+  <class>com.picsauditing.jpa.entities.AuditQuestionOption</class>
+  <class>com.picsauditing.jpa.entities.AuditStatus</class> 
+  <class>com.picsauditing.jpa.entities.AuditSubCategory</class>
+  <class>com.picsauditing.jpa.entities.AuditType</class>
+  <class>com.picsauditing.jpa.entities.AuditTypeClass</class>
+  <class>com.picsauditing.jpa.entities.BaseTable</class>
+  <class>com.picsauditing.jpa.entities.ContractorAccount</class>
+  <class>com.picsauditing.jpa.entities.ContractorAudit</class>
+  <class>com.picsauditing.jpa.entities.ContractorAuditOperator</class> 
+  <class>com.picsauditing.jpa.entities.ContractorOperator</class>
+  <class>com.picsauditing.jpa.entities.ContractorOperatorFlag</class>
+  <class>com.picsauditing.jpa.entities.DesktopMatrix</class>
+  <class>com.picsauditing.jpa.entities.EmailAttachment</class>
+  <class>com.picsauditing.jpa.entities.EmailQueue</class>
+  <class>com.picsauditing.jpa.entities.EmailStatus</class>
+  <class>com.picsauditing.jpa.entities.EmailTemplate</class>
+  <class>com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings</class> 
+  <class>com.picsauditing.jpa.entities.Facility</class>
+  <class>com.picsauditing.jpa.entities.FlagColor</class>
+  <class>com.picsauditing.jpa.entities.FlagOshaCriteria</class>
+  <class>com.picsauditing.jpa.entities.FlagOshaCriterion</class>
+  <class>com.picsauditing.jpa.entities.FlagQuestionCriteria</class>
+  <class>com.picsauditing.jpa.entities.Industry</class>
+  <class>com.picsauditing.jpa.entities.ListType</class>
+  <class>com.picsauditing.jpa.entities.LowMedHigh</class>	
+  <class>com.picsauditing.jpa.entities.MultiYearScope</class>
+  <class>com.picsauditing.jpa.entities.NcmsCategory</class>
+  <class>com.picsauditing.jpa.entities.Note</class>
+  <class>com.picsauditing.jpa.entities.NoteCategory</class>
+  <class>com.picsauditing.jpa.entities.Notes</class>
+  <class>com.picsauditing.jpa.entities.NoteStatus</class>
+  <class>com.picsauditing.jpa.entities.OperatorAccount</class>
+  <class>com.picsauditing.jpa.entities.OperatorForm</class>
+  <class>com.picsauditing.jpa.entities.OshaAudit</class>
+  <class>com.picsauditing.jpa.entities.OshaType</class>
+  <class>com.picsauditing.jpa.entities.RulesRow</class>
+  <class>com.picsauditing.jpa.entities.State</class>
+  <class>com.picsauditing.jpa.entities.Token</class>
+  <class>com.picsauditing.jpa.entities.User</class> 
+  <class>com.picsauditing.jpa.entities.UserAccess</class>
+  <class>com.picsauditing.jpa.entities.UserGroup</class>
+  <class>com.picsauditing.jpa.entities.UserLoginLog</class>
+  <class>com.picsauditing.jpa.entities.WaitingOn</class>
+  <class>com.picsauditing.jpa.entities.Widget</class>
+  <class>com.picsauditing.jpa.entities.WidgetUser</class>
+  <class>com.picsauditing.jpa.entities.YesNo</class>
+   
+ <properties>
+			<property name="hibernate.hbm2ddl.auto" value="" />
+			<property name="hibernate.max_fetch_depth" value="1" />
+			<property name="hibernate.show_sql" value="false" />
+
+			<property name="hibernate.cache.provider_class"
+				value="net.sf.ehcache.hibernate.SingletonEhCacheProvider" />
+			<property name="hibernate.generate_statistics" value="true" />
+
+			<property name="hibernate.cache.provider_configuration"
+				value="ehcache.xml" />
+			<property name="hibernate.cache.use_minimal_puts"
+				value="false" />
+			<property name="hibernate.cache.use_query_cache"
+				value="true" />
+			<property name="hibernate.cache.use_second_level_cache"
+				value="true" />
+			<property name="hibernate.cache.use_structured_entries"
+				value="true" />
+
+
+		</properties>
+	</persistence-unit>
+</persistence>
