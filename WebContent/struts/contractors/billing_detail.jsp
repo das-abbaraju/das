@@ -4,6 +4,10 @@
 <title><s:property value="contractor.name" /> Billing Detail</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
+<script src="js/notes.js" type="text/javascript"></script>
+
 </head>
 <body>
 <s:include value="conHeader.jsp"></s:include>
@@ -167,5 +171,11 @@
 			</td>
 		</tr>
 	</table>
+	
+<br /><br />
+<div id="notesList">
+	<s:include value="con_notes_embed.jsp"></s:include>
+</div>
+
 </body>
 </html>

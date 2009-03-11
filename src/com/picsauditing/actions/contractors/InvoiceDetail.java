@@ -106,8 +106,9 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 
 					try {
 						paymentService.processPayment(invoice);
-						String ccNumber = getCCNum();
-						invoice.setCCNumber(ccNumber);
+
+						CreditCard cc = paymentService.getCreditCard(contractor.getId());
+						invoice.setCcNumber(cc.getCardNumber());
 
 						payInvoice();
 						addNote("Credit Card transaction completed for $" + invoice.getTotalAmount());
@@ -127,11 +128,10 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 				if (button.startsWith("Email")) {
 					try {
 						emailInvoice();
+						addNote("Invoice emailed to " + contractor.getBillingEmail());
 					} catch (Exception e) {
 						// TODO: handle exception
 					}
-
-					addNote("Invoice emailed to " + contractor.getBillingEmail());
 				}
 
 			}
@@ -151,7 +151,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		emailBuilder.setContractor(contractor);
 		emailBuilder.addToken("invoice", invoice);
 		emailBuilder.addToken("operators", getOperators());
-		emailBuilder.addToken("ccNumAndType", getCCNumAndType());
+		emailBuilder.addToken("ccType", getCcType());
 		emailBuilder.setFromAddress("billing@picsauditing.com");
 
 		List<String> emailAddresses = new ArrayList<String>();
@@ -299,25 +299,10 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		return "Your current list of Operators: " + Strings.implode(operatorsString, ", ");
 	}
 
-	public String getCCNumAndType() {
-		String ccType = "";
+	public String getCcType() {
 		BrainTreeService.CreditCard cc = new BrainTreeService.CreditCard();
-		cc.setCardNumber(invoice.getCCNumber());
-		ccType = cc.getCardType();
-
-		return "Invoice Paid with a " + ccType + " card. Card number: " + invoice.getCCNumber() + " on:";
-	}
-
-	private String getCCNum() {
-		String ccNum = "";
-
-		try {
-			CreditCard cc = paymentService.getCreditCard(contractor.getId());
-			ccNum = cc.getCardNumber();
-		} catch (Exception communicationProblem) {
-		}
-
-		return ccNum;
+		cc.setCardNumber(invoice.getCcNumber());
+		return cc.getCardType();
 	}
 
 	public int getId() {

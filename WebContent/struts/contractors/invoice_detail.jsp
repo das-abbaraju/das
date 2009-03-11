@@ -175,7 +175,13 @@ h1 {
 					</tr>					
 					<tr>
 						<s:if test="invoice.paid && invoice.paymentMethod.creditCard">
-							<th colspan="2" class="right"><s:property value="CCNumAndType"/></th>
+							<th colspan="2" class="right">
+								<s:if test="cCType != 'Unknown'">
+									Paid with <s:property value="ccType"/> Card 
+										<s:property value="invoice.ccNumber"/><br />
+								</s:if>
+								TransactionID: <s:property value="invoice.transactionID"/>
+							</th>
 							<td>
 								<s:date name="invoice.paidDate" format="MMM d, yyyy"/>
 								<br />

@@ -150,11 +150,11 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 	}
 
 	@Column(name = "ccNumber")
-	public String getCCNumber() {
+	public String getCcNumber() {
 		return ccNumber;
 	}
 
-	public void setCCNumber(String ccNumber) {
+	public void setCcNumber(String ccNumber) {
 		this.ccNumber = ccNumber;
 	}
 
