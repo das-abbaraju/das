@@ -143,21 +143,18 @@
 					<li><label>Verified By PICS:</label>
 						<s:checkbox name="operatorAccount.verifiedByPics" />	
 					</li>
-					
+					<li><label>Parent Corporation / Division / Hub:</label>
+						
+						<s:select list="operatorAccount.corporateFacilities" listKey="corporate.id" listValue="corporate.name" headerKey="0" headerValue=" - Select a Parent Facility - " name="parentid"/>
+					</li>
 					<s:if test="!typeOperator">
 						<li><label>Facilities:</label>
 						<s:select list="operatorList" listValue="name" listKey="id" name="facilities" multiple="7" size="15"/>
 						</li>
 					</s:if>
-					<s:else>
-						<li><label>Corporate Parent(s):</label>
-							
-							<s:select list="operatorAccount.corporateFacilities" listKey="corporate.id" listValue="corporate.name" headerKey="0" headerValue=" - Select a Parent Facility - " name="parentid"/>
-						</li>
-						<li><label>Contractors pay:</label>
-						<s:radio list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}" name="operatorAccount.doContractorsPay" theme="pics" />
-						</li>
-					</s:else>
+					<li><label>Contractors pay:</label>
+					<s:radio list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}" name="operatorAccount.doContractorsPay" theme="pics" />
+					</li>
 					<li><label>Send Emails to:</label>
 						<s:textfield name="operatorAccount.activationEmails"/>
 						<br />* separate emails with commas ex: a@bb.com, c@dd.com
