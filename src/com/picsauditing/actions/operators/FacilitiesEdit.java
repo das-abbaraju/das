@@ -120,6 +120,13 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 						addActionError(error);
 					return SUCCESS;
 				}
+				
+
+				if(parentid > 0) {
+					operatorAccount.setParent(operatorAccountDAO.find(parentid));
+				} else {
+					parentid = operatorAccount.getParent().getId();
+				}
 
 				if (operatorAccount.isCorporate()) {
 					permissions.tryPermission(OpPerms.ManageCorporate, OpType.Edit);
@@ -156,10 +163,6 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 
 				} else {
 					permissions.tryPermission(OpPerms.ManageOperators, OpType.Edit);
-					
-					if(parentid > 0) {
-						operatorAccount.setParent(operatorAccountDAO.find(parentid));
-					}
 				}
 				operatorAccount.setType(type);
 				if (auditorid > 0)

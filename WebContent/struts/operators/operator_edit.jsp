@@ -143,22 +143,35 @@
 					<li><label>Verified By PICS:</label>
 						<s:checkbox name="operatorAccount.verifiedByPics" />	
 					</li>
-					<li><label>Parent Corporation / Division / Hub:</label>
+					<s:if test="operatorAccount.corporateFacilities.size() != 0 || operatorAccount.parent != null">
 						
-						<s:select list="operatorAccount.corporateFacilities" listKey="corporate.id" listValue="corporate.name" headerKey="0" headerValue=" - Select a Parent Facility - " name="parentid"/>
-					</li>
-					<li><label>Inherit Flags:</label>
-						<s:checkbox name="operatorAccount.inheritFlagCriteria" />	
-					</li>
-					<li><label>Inherit Insurance Criteria:</label>
-						<s:checkbox name="operatorAccount.inheritInsuranceCriteria" />	
-					</li>
-					<li><label>Inherit Audit Matrix:</label>
-						<s:checkbox name="operatorAccount.inheritAudits" />	
-					</li>
-					<li><label>Inherit Legal Names:</label>
-						<s:checkbox name="operatorAccount.inheritLegalNames" />	
-					</li>
+						<li><label>Parent Corporation / Division / Hub:</label>
+							<s:if test="operatorAccount.corporateFacilities.size() != 0">
+								<s:select list="operatorAccount.corporateFacilities"
+									listKey="corporate.id" listValue="corporate.name" headerKey="0"
+									headerValue=" - Select a Parent Facility - " name="parentid" />
+							</s:if>
+							<s:else>
+								<s:select 
+									list="#{operatorAccount.parent.id:operatorAccount.parent.name}"	
+									headerKey="0" headerValue=" - Select a Parent Facility - "
+									name="parentid" />
+							</s:else>
+						</li>
+					
+						<li><label>Inherit Flags:</label>
+							<s:checkbox name="operatorAccount.inheritFlagCriteria" />	
+						</li>
+						<li><label>Inherit Insurance Criteria:</label>
+							<s:checkbox name="operatorAccount.inheritInsuranceCriteria" />	
+						</li>
+						<li><label>Inherit Audit Matrix:</label>
+							<s:checkbox name="operatorAccount.inheritAudits" />	
+						</li>
+						<li><label>Inherit Legal Names:</label>
+							<s:checkbox name="operatorAccount.inheritLegalNames" />	
+						</li>
+					</s:if>
 					<s:if test="!typeOperator">
 						<li><label>Facilities:</label>
 						<s:select list="operatorList" listValue="name" listKey="id" name="facilities" multiple="7" size="15"/>
