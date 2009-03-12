@@ -85,10 +85,12 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 
 			if (button.equalsIgnoreCase("AddName")) {
 				boolean skip = false;
+				name = name.trim();
 				
 				for (AccountName an : operatorAccount.getNames()) {
 					if (an.getName().equalsIgnoreCase(name)) {
 						skip = true;
+						name = "";
 						break;
 					}
 				}
