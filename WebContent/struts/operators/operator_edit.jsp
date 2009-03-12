@@ -147,6 +147,18 @@
 						
 						<s:select list="operatorAccount.corporateFacilities" listKey="corporate.id" listValue="corporate.name" headerKey="0" headerValue=" - Select a Parent Facility - " name="parentid"/>
 					</li>
+					<li><label>Inherit Flags:</label>
+						<s:checkbox name="operatorAccount.inheritFlagCriteria" />	
+					</li>
+					<li><label>Inherit Insurance Criteria:</label>
+						<s:checkbox name="operatorAccount.inheritInsuranceCriteria" />	
+					</li>
+					<li><label>Inherit Audit Matrix:</label>
+						<s:checkbox name="operatorAccount.inheritAudits" />	
+					</li>
+					<li><label>Inherit Legal Names:</label>
+						<s:checkbox name="operatorAccount.inheritLegalNames" />	
+					</li>
 					<s:if test="!typeOperator">
 						<li><label>Facilities:</label>
 						<s:select list="operatorList" listValue="name" listKey="id" name="facilities" multiple="7" size="15"/>
@@ -175,7 +187,7 @@
 	</table>
 	<br clear="all">
 	<div class="buttons">
-		<input type="submit" class="picsbutton positive" name="button" value="Save"/>
+		<input type="submit" class="picsbutton positi`" name="button" value="Save"/>
 	</div>
 </s:form>
 <div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
