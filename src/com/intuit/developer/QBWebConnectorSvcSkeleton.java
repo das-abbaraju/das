@@ -20,10 +20,18 @@ public class QBWebConnectorSvcSkeleton {
 		PicsLogger.start("QBWebConnector" );		
 		
 		PicsLogger.log( "Authenticating user: " + authenticate.getStrUserName() );
-
-		String sessionId = GUID.asString();
 		
-		response.getAuthenticateResult().addString(sessionId);
+		String sessionId = null;
+		
+		try {
+			sessionId = QBWebConnectorWorker.authenticate(authenticate.getStrUserName(), authenticate.getStrPassword());
+			response.getAuthenticateResult().addString(sessionId);
+		}
+		catch( Exception e ) {
+			response.getAuthenticateResult().addString("NOSESSION");
+		}
+		
+		
 
 		if (false) { 
 			PicsLogger.log( "invalid credentials supplied for " + authenticate.getStrUserName() );
