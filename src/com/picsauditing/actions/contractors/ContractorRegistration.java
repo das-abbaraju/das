@@ -1,5 +1,6 @@
 package com.picsauditing.actions.contractors;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -79,7 +80,9 @@ public class ContractorRegistration extends ContractorActionSupport {
 			user.setName(contractor.getContact());
 			user.setEmail(contractor.getEmail());
 			user = userDAO.save(user);
-
+			contractor.setUsers(new ArrayList<User>());
+			contractor.getUsers().add(user);
+			
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(2); // Welcome Email
 			emailBuilder.setContractor(contractor);
