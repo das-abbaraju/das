@@ -125,7 +125,9 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 				if(parentid > 0) {
 					operatorAccount.setParent(operatorAccountDAO.find(parentid));
 				} else {
-					parentid = operatorAccount.getParent().getId();
+					if (operatorAccount.getParent() != null) {
+						parentid = operatorAccount.getParent().getId();
+					}
 				}
 
 				if (operatorAccount.isCorporate()) {
