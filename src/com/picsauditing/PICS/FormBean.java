@@ -13,13 +13,17 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FilenameUtils;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.servlet.upload.UploadConHelper;
 import com.picsauditing.servlet.upload.UploadProcessorFactory;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 public class FormBean extends DataBean {
 	public ArrayList<String> categories = null;
 	public ArrayList<String> formsAL = null;
+	OperatorAccountDAO opAccountDAO = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
 	ListIterator li = null;
 	public int count = 0;
 	public int totalCount = 0;
@@ -52,6 +56,10 @@ public class FormBean extends DataBean {
 	}
 
 	public boolean isNextForm(Permissions permissions) throws Exception{
+		OperatorAccount operAccount = null;
+		if(permissions.isOperator() || permissions.isCorporate()) {
+			operAccount = opAccountDAO.find(permissions.getAccountId());
+		}
 		if (li.hasNext()){
 			id = (String)li.next();
 			formName = (String)li.next();
@@ -59,7 +67,10 @@ public class FormBean extends DataBean {
 			opID = (String)li.next();
 			opName = getCategoryName(opID);
 			int operatorID = Integer.parseInt(opID);
-			if (permissions.isAdmin()
+			boolean hasParent = operAccount != null && operAccount.getParent() != null; 
+			if (permissions.isAdmin() 
+				|| operatorID == 1100
+				|| (hasParent && operAccount.getParent().getId() == operatorID)
 				|| permissions.getAccountId() == operatorID
 				|| permissions.getCorporateParent().contains(operatorID)
 				|| permissions.getOperatorChildren().contains(operatorID)) {
