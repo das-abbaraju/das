@@ -1,9 +1,10 @@
 <%@ page isErrorPage="true" language="java"
 	import="java.util.*, java.io.*, com.opensymphony.xwork2.ActionContext"%>
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
-<jsp:useBean id="mailer" class="com.picsauditing.mail.EmailSender" scope="page" />
-
-
+<%@page import="com.opensymphony.xwork2.ActionContext"%>
+<%@page import="com.picsauditing.jpa.entities.EmailQueue"%>
+<%@page import="com.picsauditing.mail.EmailSender"%>
+<html>
 <%
 /*
 	If the exception is coming from the non-struts world, ActionContext.getContext().getActionInvocation() will 
@@ -74,16 +75,17 @@
 			    String headerName = (String)e.nextElement();
 				email.append("\nHeader-" + headerName + ": " + request.getHeader(headerName));
 			}
-			
-			mailer.sendMail("PICS Exception Error", email.toString(), "errors@picsauditing.com", "errors@picsauditing.com", "","");
+			EmailQueue mail = new EmailQueue();
+			mail.setSubject("PICS Exception Error");
+			mail.setBody(email.toString());
+			mail.setToAddresses("errors@picsauditing.com");
+			EmailSender.send(mail);
 			
 		} catch (Exception e) {
 			// do nothing
 		}
 	}
 %>
-<%@page import="com.opensymphony.xwork2.ActionContext"%>
-<html>
 <head>
 <title>PICS Error</title>
 </head>
