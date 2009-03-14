@@ -850,7 +850,7 @@
 		</action>
 
 		<action name="LoggerConfig" class="com.picsauditing.actions.LoggerConfig">
-			<result>/struts/blank.jsp</result>
+			<result>/struts/misc/logger.jsp</result>
 		</action>
 
 		<action name="InterceptorConfig" class="com.picsauditing.actions.InterceptorConfig">

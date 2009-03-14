@@ -96,6 +96,13 @@ public class Note extends BaseTable implements java.io.Serializable {
 		return viewableBy;
 	}
 
+	public void setViewableByOperator(OperatorAccount operator) {
+		if (operator != null && operator.getParent() != null)
+			setViewableByOperator(operator.getParent());
+		else
+			this.viewableBy = operator;
+	}
+
 	public void setViewableBy(Account viewableBy) {
 		this.viewableBy = viewableBy;
 	}
