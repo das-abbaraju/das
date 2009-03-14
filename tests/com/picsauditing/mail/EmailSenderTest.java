@@ -1,5 +1,7 @@
 package com.picsauditing.mail;
 
+import java.util.Date;
+
 import com.picsauditing.jpa.entities.EmailQueue;
 
 import junit.framework.TestCase;
@@ -15,11 +17,11 @@ public class EmailSenderTest extends TestCase {
 		GMailSender mailer = new GMailSender(username, password);
 		EmailQueue email = new EmailQueue();
 		email.setSubject("Test Activation");
+		email.setFromAddress("info@picsauditing.com");
 		email.setBody("Welcome John Doe,\n\nThis is a test email");
-		email.setToAddresses("Trevor Allred <tallred@picsauditing.com>");
-		email.setCcAddresses("tester@picsauditing.com");
-		email.setBccAddresses("tallred@picsauditing.com");
-		
+		email.setToAddresses("knannapaneni@picsauditing.com");
+		email.setCcAddresses("tallred@picsauditing.com");
+		email.setCreationDate(new Date());
 		try {
 			mailer.sendMail(email);
 		} catch (Exception e) {

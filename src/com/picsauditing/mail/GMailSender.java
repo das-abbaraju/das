@@ -6,8 +6,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
@@ -46,25 +46,22 @@ public class GMailSender extends javax.mail.Authenticator {
 
 	public synchronized void sendMail(EmailQueue email) throws MessagingException {
 		MimeMessage message = new MimeMessage(session);
+		
+		DataHandler handler = new DataHandler(new ByteArrayDataSource(email.getBody()
+				.getBytes(), email.isHtml() ? "text/html" : "text/plain"));
 
 		message.setSentDate(email.getCreationDate());
-		//message.setSender(email.getFromAddress2());
-		message.setSender(new InternetAddress(email.getFromAddress()));
+		message.setSender(email.getFromAddress2());
 		
-		InternetAddress[] replyTo = {(InternetAddress)email.getFromAddress2()};
+		InternetAddress[] replyTo = {new InternetAddress(email.getFromAddress())};
 		message.setReplyTo(replyTo);
 		
-		if (email.getToAddresses().indexOf(',') > 0)
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email.getToAddresses()));
-		else
-			message.setRecipient(Message.RecipientType.TO, new InternetAddress(email.getToAddresses()));
-
-		//message.setRecipient(RecipientType.TO, email.getToAddresses2()[0]);
-		//message.setRecipients(RecipientType.CC, email.getCcAddresses2());
-		//message.setRecipients(RecipientType.BCC, email.getBccAddresses2());
+		message.setRecipients(RecipientType.TO, email.getToAddresses2());
+		message.setRecipients(RecipientType.CC, email.getCcAddresses2());
+		message.setRecipients(RecipientType.BCC, email.getBccAddresses2());
 
 		message.setSubject(email.getSubject());
-		message.setContent(email.getBody()+ (email.isHtml() ? "<br><br>" : "\n\n") + "gmail", email.isHtml() ? "text/html" : "text/plain");
+		message.setDataHandler(handler);
 		// DataSource ds = new ByteArrayDataSource(email.getBody().getBytes(), email.isHtml() ? "text/html" : "text/plain");
 		// message.setDataHandler(new DataHandler(ds));
 		Transport.send(message);
