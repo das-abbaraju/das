@@ -31,6 +31,7 @@ public class EmailSender {
 			useGmail = false;
 		
 		try {
+			useGmail = true;
 			if (useGmail) {
 				GMailSender gmailSender;
 				if (!Strings.isEmpty(email.getFromPassword())) {
