@@ -10,9 +10,7 @@
 	if (sendTo.equals("sales"))
 		toAddresses.add("jsmith@picsauditing.com");
 	if (sendTo.equals("billing"))
-		toAddresses.add("jsmith@picsauditing.com");
-	if (sendTo.equals("billing"))
-		toAddresses.add("gjepsen@picsauditing.com");
+		toAddresses.add("billing@picsauditing.com");
 	if (sendTo.equals("audits"))
 		toAddresses.add("jcota@picsauditing.com");
 	if (sendTo.equals("general"))
@@ -35,12 +33,17 @@
 		body += toAddress + "\n";
 	body += "\n" + request.getParameter("message");
 
-	EmailSender mailer = new EmailSender();
+	EmailQueue mail = new EmailQueue();
+	mail.setSubject("Email from PICS website");
+	mail.setBody(body);
+	mail.setToAddresses(Strings.implode(toAddresses, ","));
+	mail.setFromAddress(request.getParameter("email"));
 
-	for (String toAddress : toAddresses)
-		mailer.sendMail("Email from PICS website", body, request.getParameter("email"), toAddress,"","");
+	EmailSender.send(mail);
 %>
-<html>
+
+<%@page import="com.picsauditing.jpa.entities.EmailQueue"%>
+<%@page import="com.picsauditing.util.Strings"%><html>
 <head>
 <title>Confirm Contact</title>
 <meta name="color" content="#CC6600" />

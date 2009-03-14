@@ -18,7 +18,7 @@
 		message.append("  Email:      ").append(request.getParameter("email")).append("\n");
 
 		EmailSender mailer = new EmailSender();
-		mailer.sendMail(subject, message.toString(), from, to, "", "");
+		//mailer.sendMail(subject, message.toString(), from, to, "", "");
 
 		to = request.getParameter("email");
 		from = "info@picsauditing.com";
@@ -30,7 +30,8 @@
 		message.append("Additionally, if you would like to contact Milestone directly, please give them a call at (949)852-0909.");
 		message.append("\n\nThanks,\nPICS");
 
-		mailer.sendMail(subject, message.toString(), from, to, "", "");
+		//mailer.sendMail(subject, message.toString(), from, to, "", "");
+		throw new Exception("No longer available;");
 	}
 %>
 <html>
