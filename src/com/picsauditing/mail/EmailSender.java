@@ -29,7 +29,6 @@ public class EmailSender {
 			useGmail = false;
 		if (email.getToAddresses().endsWith("@picsauditing.com"))
 			useGmail = false;
-		useGmail = false;
 		
 		try {
 			if (useGmail) {
