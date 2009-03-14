@@ -2,27 +2,37 @@ package com.picsauditing.mail;
 
 import java.util.Properties;
 
-import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
+import javax.mail.Message.RecipientType;
 import javax.mail.internet.MimeMessage;
 
+import com.picsauditing.jpa.entities.EmailQueue;
+
 public class SendMail {
-	public static void main(String arg[]) throws Exception {
+
+	private Session session;
+	
+	public SendMail() {
 		Properties p = System.getProperties();
 		p.put("mail.transport.protocol", "smtp");
 		p.put("mail.smtp.host", "localhost");
-		Session session = Session.getInstance(p);
-		MimeMessage message = new MimeMessage(session);
-		message.setFrom(new InternetAddress("info@picsauditing.com"));
-
-		message.addRecipient(Message.RecipientType.TO, new InternetAddress("tallred@picsauditing.com"));
-		message.setSubject("SendMail Test");
-		String txt = "This is a test";
-		message.setContent(txt, "text/plain");
-		Transport.send(message);
-		message.writeTo(System.out);
-		System.out.println("Message Sent");
+		session = Session.getInstance(p);
 	}
+
+	public void send(EmailQueue email) throws Exception {
+		MimeMessage message = new MimeMessage(session);
+
+		message.setSender(email.getFromAddress2());
+
+		message.setRecipients(RecipientType.TO, email.getToAddresses2());
+		message.setRecipients(RecipientType.CC, email.getCcAddresses2());
+		message.setRecipients(RecipientType.BCC, email.getBccAddresses2());
+
+		message.setSubject(email.getSubject());
+		message.setContent(email.getBody(), email.isHtml() ? "text/html" : "text/plain");
+		Transport.send(message);
+		// message.writeTo(System.out);
+	}
+
 }

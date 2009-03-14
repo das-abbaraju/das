@@ -36,16 +36,7 @@ public class MailCron extends PicsActionSupport {
 		EmailSender sender = new EmailSender();
 		for (EmailQueue email : emails) {
 			try {
-				if (email.getFromPassword() != null && email.getFromPassword().length() > 0) {
-					// Use a specific email address like tallred@picsauditing.com
-					// We need the password to correctly authenticate with GMail
-					EmailSender customSender = new EmailSender(email.getFromAddress(), email.getFromPassword());
-					customSender.sendNow(email);
-					email.setFromPassword(null);
-				} else {
-					 // Use the default info@picsauditing.com address
-					sender.sendNow(email);
-				}
+				sender.sendNow(email);
 			} catch (Exception e) {
 				System.out.println("ERROR with MailCron: " + e.getMessage());
 				addActionError("Failed to send email: " + e.getMessage());

@@ -7,45 +7,48 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailStatus;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.log.PicsLogger;
 
-public class EmailSender extends GMailSender {
+public class EmailSender {
 	private static int currentDefaultSender = 1;
 	private static final int NUMBER_OF_GMAIL_ACOUNTS = 12;
 	private static String defaultPassword = "e3r4t5";
 	private EmailQueueDAO emailQueueDAO = null;
-
-	public EmailSender() {
-		super(getDefaultSender(), defaultPassword);
-	}
-
-	public EmailSender(String user, String password) {
-		super(user, password);
-	}
+	private static boolean useGmail = true;
 
 	/**
-	 * Try sending with the first email address info@picsauditing.com If it
-	 * errors try info2, info3, ...info6. If it still fails, then exit
+	 * Try sending with the first email address info@picsauditing.com If it errors try info2, info3, ...info6. If it
+	 * still fails, then try regular linux sendmail
 	 * 
 	 * @param email
 	 * @throws Exception
 	 */
 	private void sendMail(EmailQueue email, int attempts) throws Exception {
 		attempts++;
-		if (attempts > NUMBER_OF_GMAIL_ACOUNTS)
-			throw new Exception("Failed to send email, used all possible senders. See log file for more info.");
+		if (attempts > 2)
+			useGmail = false;
+		if (email.getToAddresses().endsWith("@picsauditing.com"))
+			useGmail = false;
+		
 		try {
-			String fromAddress = "";
-			if (email.getFromAddress() != null && email.getFromAddress().length() > 7)
-				fromAddress = email.getFromAddress();
-			else
-				fromAddress = getDefaultSender();
-			
-			html = email.isHtml();
-			
-			this.sendMail(email.getSubject(), email.getBody(), fromAddress, email.getToAddresses(), email.getBccAddresses(), email.getCcAddresses());
+			if (useGmail) {
+				GMailSender gmailSender;
+				if (!Strings.isEmpty(email.getFromPassword())) {
+					// Use a specific email address like tallred@picsauditing.com
+					// We need the password to correctly authenticate with GMail
+					gmailSender = new GMailSender(email.getFromAddress(), email.getFromPassword());
+				} else {
+					// Use the default info@picsauditing.com address
+					gmailSender = new GMailSender(getDefaultSender(), defaultPassword);
+				}
+				gmailSender.sendMail(email);
+			} else {
+				SendMail sendMail = new SendMail();
+				sendMail.send(email);
+			}
 			email.setStatus(EmailStatus.Sent);
 			email.setSentDate(new Date());
-			
+
 			if (emailQueueDAO == null)
 				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
 			
@@ -57,25 +60,43 @@ public class EmailSender extends GMailSender {
 			emailQueueDAO.save(email);
 		} catch (Exception e) {
 			System.out.println("Send Mail Exception with account " + currentDefaultSender + ": " + e.toString() + " "
-					+ e.getMessage() + 
-					"\nFROM: " + email.getFromAddress() + 
-					"\nTO: " + email.getToAddresses() + 
-					"\nSUBJECT: " + email.getSubject());
+					+ e.getMessage() + "\nFROM: " + email.getFromAddress() + "\nTO: " + email.getToAddresses()
+					+ "\nSUBJECT: " + email.getSubject());
 			changeDefaultSender();
 			this.sendMail(email, attempts);
 		}
 	}
 
 	/**
-	 * Send this through GMail
+	 * Send this through GMail or SendMail
 	 * 
 	 * @param email
 	 * @throws Exception
 	 */
 	public void sendNow(EmailQueue email) throws Exception {
-		sendMail(email, 0);
+		PicsLogger.start("EmailSender", email.getSubject() + " to " + email.getToAddresses());
+		try {
+			// Check all the addresses
+			if (email.getFromAddress2() == null)
+				email.setFromAddress(getDefaultSender());
+			if (email.getToAddresses2() == null) {
+				email.setToAddresses(email.getCcAddresses());
+			}
+			email.getCcAddresses2();
+			email.getBccAddresses2();
+			
+			sendMail(email, 0);
+			
+		} catch (javax.mail.internet.AddressException e) {
+			email.setStatus(EmailStatus.Error);
+			if (emailQueueDAO == null)
+				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
+			emailQueueDAO.save(email);
+		} finally {
+			PicsLogger.stop();
+		}
 	}
-
+	
 	private static String getDefaultSender() {
 		if (EmailSender.currentDefaultSender >= 2)
 			return "info" + currentDefaultSender + "@picsauditing.com";
@@ -115,7 +136,6 @@ public class EmailSender extends GMailSender {
 	}
 
 	public static void send(String toAddress, String subject, String body) throws Exception {
-
 		send(null, toAddress, null, subject, body);
 	}
 

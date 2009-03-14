@@ -4,6 +4,9 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Date;
 
+import javax.mail.Address;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -16,9 +19,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 @Entity
@@ -33,7 +39,7 @@ public class EmailQueue implements java.io.Serializable {
 	private String ccAddresses;
 	private String bccAddresses;
 	private String subject = "";
-	private String body;
+	private String body = "";
 	private int priority = 50;
 	private Date creationDate;
 	private User createdBy;
@@ -67,6 +73,13 @@ public class EmailQueue implements java.io.Serializable {
 	public String getFromAddress() {
 		return fromAddress;
 	}
+	
+	@Transient
+	public Address getFromAddress2() throws AddressException {
+		if (Strings.isEmpty(fromAddress))
+			return null;
+		return new InternetAddress(fromAddress);
+	}
 
 	public void setFromAddress(String fromAddress) {
 		this.fromAddress = fromAddress;
@@ -86,6 +99,13 @@ public class EmailQueue implements java.io.Serializable {
 		return toAddresses;
 	}
 
+	@Transient
+	public Address[] getToAddresses2() throws AddressException {
+		if (Strings.isEmpty(toAddresses))
+			return null;
+		return InternetAddress.parse(toAddresses);
+	}
+
 	public void setToAddresses(String toAddresses) {
 		this.toAddresses = toAddresses;
 	}
@@ -95,6 +115,13 @@ public class EmailQueue implements java.io.Serializable {
 		return ccAddresses;
 	}
 
+	@Transient
+	public Address[] getCcAddresses2() throws AddressException {
+		if (Strings.isEmpty(ccAddresses))
+			return null;
+		return InternetAddress.parse(ccAddresses);
+	}
+
 	public void setCcAddresses(String ccAddresses) {
 		this.ccAddresses = ccAddresses;
 	}
@@ -102,6 +129,13 @@ public class EmailQueue implements java.io.Serializable {
 	@Column(length = 1000)
 	public String getBccAddresses() {
 		return bccAddresses;
+	}
+
+	@Transient
+	public Address[] getBccAddresses2() throws AddressException {
+		if (Strings.isEmpty(bccAddresses))
+			return null;
+		return InternetAddress.parse(bccAddresses);
 	}
 
 	public void setBccAddresses(String bccAddresses) {

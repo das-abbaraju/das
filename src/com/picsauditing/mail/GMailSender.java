@@ -6,29 +6,21 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 
-import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.Message.RecipientType;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import com.picsauditing.util.Strings;
+import com.picsauditing.jpa.entities.EmailQueue;
 
 public class GMailSender extends javax.mail.Authenticator {
-	private String mailhost = "smtp.gmail.com";
-	protected String user;
-	protected String password;
+	private String user;
+	private String password;
 	private Session session;
-	protected boolean html;
-
-	// static {
-	// Security.addProvider(new
-	// org.apache.harmony.xnet.provider.jsse.JSSEProvider());
-	// }
 
 	public GMailSender(String user, String password) {
 		this.user = user;
@@ -36,7 +28,7 @@ public class GMailSender extends javax.mail.Authenticator {
 
 		Properties props = new Properties();
 		props.setProperty("mail.transport.protocol", "smtp");
-		props.setProperty("mail.host", mailhost);
+		props.setProperty("mail.host", "smtp.gmail.com");
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.port", "465");
 		props.put("mail.smtp.socketFactory.port", "465");
@@ -51,31 +43,22 @@ public class GMailSender extends javax.mail.Authenticator {
 		return new PasswordAuthentication(user, password);
 	}
 
-	public synchronized void sendMail(String subject, String body, String sender, String recipients, String bccAddress,
-			String ccAddress) throws MessagingException {
+	public synchronized void sendMail(EmailQueue email) throws MessagingException {
 		MimeMessage message = new MimeMessage(session);
-		if (body == null) {
-			body = "";
-		}
-		DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), html ? "text/html"
-				: "text/plain"));
 
-		message.setSender(new InternetAddress(sender));
-		InternetAddress[] replyTo = { new InternetAddress(sender) };
+		message.setSender(email.getFromAddress2());
+		
+		InternetAddress[] replyTo = {(InternetAddress)email.getFromAddress2()};
 		message.setReplyTo(replyTo);
-
-		message.setSubject(subject);
-		message.setDataHandler(handler);
-		if (recipients.indexOf(',') > 0)
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipients));
-		else
-			message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients));
-
-		if (!Strings.isEmpty(bccAddress))
-			message.setRecipient(Message.RecipientType.BCC, new InternetAddress(bccAddress));
-		if (!Strings.isEmpty(ccAddress))
-			message.setRecipient(Message.RecipientType.CC, new InternetAddress(ccAddress));
-
+		
+		message.setRecipients(RecipientType.TO, email.getToAddresses2());
+		message.setRecipients(RecipientType.CC, email.getCcAddresses2());
+		message.setRecipients(RecipientType.BCC, email.getBccAddresses2());
+		
+		message.setSubject(email.getSubject());
+		message.setContent(email.getBody(), email.isHtml() ? "text/html" : "text/plain");
+		// DataSource ds = new ByteArrayDataSource(email.getBody().getBytes(), email.isHtml() ? "text/html" : "text/plain");
+		// message.setDataHandler(new DataHandler(ds));
 		Transport.send(message);
 	}
 
