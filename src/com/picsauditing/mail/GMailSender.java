@@ -53,8 +53,8 @@ public class GMailSender extends javax.mail.Authenticator {
 		message.setReplyTo(replyTo);
 		
 		message.setRecipients(RecipientType.TO, email.getToAddresses2());
-		message.setRecipients(RecipientType.CC, email.getCcAddresses2());
-		message.setRecipients(RecipientType.BCC, email.getBccAddresses2());
+		//message.setRecipients(RecipientType.CC, email.getCcAddresses2());
+		//message.setRecipients(RecipientType.BCC, email.getBccAddresses2());
 
 		message.setSubject(email.getSubject());
 		message.setContent(email.getBody()+ (email.isHtml() ? "<br><br>" : "\n\n") + "gmail", email.isHtml() ? "text/html" : "text/plain");
