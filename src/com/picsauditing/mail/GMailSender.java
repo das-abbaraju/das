@@ -46,6 +46,7 @@ public class GMailSender extends javax.mail.Authenticator {
 	public synchronized void sendMail(EmailQueue email) throws MessagingException {
 		MimeMessage message = new MimeMessage(session);
 
+		message.setSentDate(email.getCreationDate());
 		message.setSender(email.getFromAddress2());
 		
 		InternetAddress[] replyTo = {(InternetAddress)email.getFromAddress2()};
@@ -54,9 +55,9 @@ public class GMailSender extends javax.mail.Authenticator {
 		message.setRecipients(RecipientType.TO, email.getToAddresses2());
 		message.setRecipients(RecipientType.CC, email.getCcAddresses2());
 		message.setRecipients(RecipientType.BCC, email.getBccAddresses2());
-		
+
 		message.setSubject(email.getSubject());
-		message.setContent(email.getBody(), email.isHtml() ? "text/html" : "text/plain");
+		message.setContent(email.getBody()+ (email.isHtml() ? "<br><br>" : "\n\n") + "gmail", email.isHtml() ? "text/html" : "text/plain");
 		// DataSource ds = new ByteArrayDataSource(email.getBody().getBytes(), email.isHtml() ? "text/html" : "text/plain");
 		// message.setDataHandler(new DataHandler(ds));
 		Transport.send(message);
