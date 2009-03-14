@@ -277,6 +277,8 @@ public class AuditBuilder {
 
 		PicsLogger.start("AuditOperators", conAudit.getAuditType().getAuditName());
 		
+		/*
+		 TODO add back in
 		// Get distinct set of corporate caos that have already been "processed"
 		Set<Integer> processedCorporates = new HashSet<Integer>();
 		for(ContractorAuditOperator cao : conAudit.getOperators()) {
@@ -286,8 +288,10 @@ public class AuditBuilder {
 				processedCorporates.add(cao.getOperator().getId());
 		}
 		PicsLogger.log("Found " + processedCorporates.size() + " processedCorporates");
-
+		
 		Map<Integer, OperatorAccount> corporateMap = new HashMap<Integer, OperatorAccount>();
+
+		*/
 
 		for (ContractorOperator co : contractor.getOperators()) {
 			// For this auditType (General Liability) and
@@ -320,6 +324,8 @@ public class AuditBuilder {
 				}
 			}
 			
+			/*
+		 	TODO add back in
 			// TODO Consider using Legal names to determine inheritablity
 			if (operator.isInheritInsuranceCriteria() && (cao == null || cao.isInherit())) {
 				// If this operator is a descendant of any of the processed corporates,
@@ -334,6 +340,7 @@ public class AuditBuilder {
 						break;
 					}
 			}
+			*/
 			
 			if (visible) {
 				if (cao == null) {
@@ -362,7 +369,10 @@ public class AuditBuilder {
 				} else {
 					// If this cao is still needed for the operator, 
 					// then add the operator's ancestors to the map
+					/*
+					 TODO add back in
 					buildMap(corporateMap, operator);
+					*/
 				}
 				
 			} else if (cao != null) {
@@ -385,6 +395,8 @@ public class AuditBuilder {
 			}
 		}
 
+		/*
+		 TODO add back in
 		Iterator<ContractorAuditOperator> iter = conAudit.getOperators().iterator();
 		while (iter.hasNext()) {
 			ContractorAuditOperator corpCao = iter.next();
@@ -417,6 +429,7 @@ public class AuditBuilder {
 			cao.setRecommendedStatus(CaoStatus.Awaiting);
 			contractorAuditOperatorDAO.save(cao);
 		}
+		*/
 
 		PicsLogger.stop();
 	}
