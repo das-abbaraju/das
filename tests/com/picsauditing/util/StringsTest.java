@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.mail.Address;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 import junit.framework.TestCase;
 
 import org.junit.Test;
@@ -21,6 +25,20 @@ public class StringsTest extends TestCase {
 
 	public StringsTest(String name) {
 		super(name);
+	}
+	
+	public void testEmail() {
+		try {
+			Address[] addresses = InternetAddress.parse("tallred@picsauditing.com");
+			System.out.println(addresses.toString());
+			addresses = InternetAddress.parse("tallred@picsauditing.com, kn@pics.com");
+			System.out.println(addresses.toString());
+			addresses = InternetAddress.parse("Trevor <tallred@picsauditing.com>");
+			System.out.println(addresses.toString());
+		} catch (AddressException e) {
+			// TODO Auto-generated catch block
+			fail();
+		}
 	}
 
 	public void testInsertSpaceNull() {
