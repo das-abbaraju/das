@@ -156,22 +156,26 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 								newFacilities.remove(opFacilities.getOperator());
 							} else {
 								facilitiesDAO.remove(opFacilities);
-								if (operatorAccount.equals(opFacilities.getOperator().getParent()))
+								if (operatorAccount.equals(opFacilities.getOperator().getParent())) {
 									opFacilities.getOperator().setParent(null);
+									operatorAccountDAO.save(opFacilities.getOperator());
+								}
 								facList.remove();
 							}
 						}
 
 						for (OperatorAccount opAccount : newFacilities) {
 							opAccount = operatorAccountDAO.find(opAccount.getId());
-							Facility facility = new Facility();
-							facility.setCorporate(operatorAccount);
-							facility.setOperator(opAccount);
-							facilitiesDAO.save(facility);
-							operatorAccount.getOperatorFacilities().add(facility);
-							if (opAccount.getParent() == null) {
-								opAccount.setParent(operatorAccount);
-								operatorAccountDAO.save(opAccount);
+							if (opAccount != null) {
+								Facility facility = new Facility();
+								facility.setCorporate(operatorAccount);
+								facility.setOperator(opAccount);
+								facilitiesDAO.save(facility);
+								operatorAccount.getOperatorFacilities().add(facility);
+								if (opAccount.getParent() == null) {
+									opAccount.setParent(operatorAccount);
+									operatorAccountDAO.save(opAccount);
+								}
 							}
 						}
 					}
