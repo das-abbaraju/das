@@ -68,8 +68,14 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 				facilities[i] = fac.getOperator().getId();
 				i++;
 			}
+
 			if (operatorAccount.getParent() != null)
 				parentid = operatorAccount.getParent().getId();
+			else if (operatorAccount.getCorporateFacilities().size() == 1) {
+				operatorAccount.setParent(operatorAccount.getCorporateFacilities().get(0).getCorporate());
+				operatorAccountDAO.save(operatorAccount);
+				parentid = operatorAccount.getParent().getId();
+			}
 		}
 	}
 
@@ -122,7 +128,7 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 				}
 				
 
-				if(parentid > 0) {
+				if (parentid > 0) {
 					operatorAccount.setParent(operatorAccountDAO.find(parentid));
 				} else {
 					if (operatorAccount.getParent() != null) {
@@ -150,16 +156,23 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 								newFacilities.remove(opFacilities.getOperator());
 							} else {
 								facilitiesDAO.remove(opFacilities);
+								if (operatorAccount.equals(opFacilities.getOperator().getParent()))
+									opFacilities.getOperator().setParent(null);
 								facList.remove();
 							}
 						}
 
 						for (OperatorAccount opAccount : newFacilities) {
+							opAccount = operatorAccountDAO.find(opAccount.getId());
 							Facility facility = new Facility();
 							facility.setCorporate(operatorAccount);
 							facility.setOperator(opAccount);
 							facilitiesDAO.save(facility);
 							operatorAccount.getOperatorFacilities().add(facility);
+							if (opAccount.getParent() == null) {
+								opAccount.setParent(operatorAccount);
+								operatorAccountDAO.save(opAccount);
+							}
 						}
 					}
 
