@@ -14,7 +14,6 @@ public class EmailSender {
 	private static final int NUMBER_OF_GMAIL_ACOUNTS = 12;
 	private static String defaultPassword = "e3r4t5";
 	private EmailQueueDAO emailQueueDAO = null;
-	private static boolean useGmail = true;
 
 	/**
 	 * Try sending with the first email address info@picsauditing.com If it errors try info2, info3, ...info6. If it
@@ -25,6 +24,7 @@ public class EmailSender {
 	 */
 	private void sendMail(EmailQueue email, int attempts) throws Exception {
 		attempts++;
+		boolean useGmail = true;
 		if (attempts > 2)
 			useGmail = false;
 		if (email.getToAddresses().endsWith("@picsauditing.com"))
