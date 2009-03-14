@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.util.Properties;
 
 import javax.activation.DataSource;
+import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
@@ -47,12 +48,18 @@ public class GMailSender extends javax.mail.Authenticator {
 		MimeMessage message = new MimeMessage(session);
 
 		message.setSentDate(email.getCreationDate());
-		message.setSender(email.getFromAddress2());
+		//message.setSender(email.getFromAddress2());
+		message.setSender(new InternetAddress(email.getFromAddress()));
 		
 		InternetAddress[] replyTo = {(InternetAddress)email.getFromAddress2()};
 		message.setReplyTo(replyTo);
 		
-		message.setRecipients(RecipientType.TO, email.getToAddresses2());
+		if (email.getToAddresses().indexOf(',') > 0)
+			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email.getToAddresses()));
+		else
+			message.setRecipient(Message.RecipientType.TO, new InternetAddress(email.getToAddresses()));
+
+		//message.setRecipient(RecipientType.TO, email.getToAddresses2()[0]);
 		//message.setRecipients(RecipientType.CC, email.getCcAddresses2());
 		//message.setRecipients(RecipientType.BCC, email.getBccAddresses2());
 
