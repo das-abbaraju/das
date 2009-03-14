@@ -39,19 +39,6 @@
 		return false;
 	}
 
-	function saveCao() {
-		var pars= $('caoForm').serialize();
-		
-		startThinking( {div: 'caoSection', type: 'large' } );
-		var myAjax = new Ajax.Updater('caoSection','CaoEditAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars
-		});
-		
-		return false;
-	}
-	
 	function openOsha(logID) {
 		url = 'DownloadOsha.action?id='+logID;
 		title = 'Osha300Logs';

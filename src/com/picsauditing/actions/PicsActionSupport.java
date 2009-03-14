@@ -1,5 +1,6 @@
 package com.picsauditing.actions;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -346,5 +347,8 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	public String getRequestString() {
 		return requestURL;
 	}
-	
+
+	public void redirect(String url) throws IOException {
+		ServletActionContext.getResponse().sendRedirect(url);
+	}
 }

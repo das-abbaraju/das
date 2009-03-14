@@ -201,9 +201,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 			if (type.isAnnualAddendum()
 					&& conAudit.getAuditStatus().equals(AuditStatus.Active))
 				return false;
-			if (type.getClassType().equals(AuditTypeClass.Policy)
-					&& conAudit.willExpireSoon())
-				return false;
+			if (type.getClassType().isPolicy()) {
+				if (conAudit.willExpireSoon())
+					// Never let them edit the old policy
+					return false;
+			}
 
 			if (type.isCanContractorEdit())
 				return true;

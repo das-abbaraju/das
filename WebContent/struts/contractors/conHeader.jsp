@@ -148,20 +148,21 @@
 									title="<s:property value="notes"/>" 
 									class="tooltipped"
 								</s:if>>Op Status:</label>
-							<a href="#" id="caoStatusMain_<s:property value="id"/>" class="edit" onclick="javascript: return editCao(<s:property value="id"/>);"><s:property value="status"/></a>
-							(<s:property value="operator.name"/>)
+							<a href="#" id="caoStatusMain_<s:property value="id"/>" class="edit" 
+								onclick="javascript: return editCao(<s:property value="id"/>);"><s:property value="status"/></a>
+							<span style="font-size: 10px; white-space: nowrap;"><s:property value="operator.name"/></span>
 						</li>
 					</s:if>
 				</s:if>
 				<s:elseif test="!status.temporary">
-					<li>
+					<li style="">
 						<label 
 							<s:if test="notes != null && notes.length() > 0">
 								title="<s:property value="notes"/>" 
 								class="tooltipped"
 							</s:if>>Op Status:</label>
 						<s:property value="status"/>
-						(<s:property value="operator.name"/>)		
+						<span style="font-size: 10px; white-space: nowrap;"><s:property value="operator.name"/></span>
 					</li>
 				</s:elseif>
 			</s:iterator>

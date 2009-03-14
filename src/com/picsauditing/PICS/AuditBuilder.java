@@ -31,7 +31,6 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
@@ -282,7 +281,7 @@ public class AuditBuilder {
 		Set<Integer> processedCorporates = new HashSet<Integer>();
 		for(ContractorAuditOperator cao : conAudit.getOperators()) {
 			if (cao.getOperator().isCorporate() 
-					&& !cao.getStatus().isTemporary()
+					&& !cao.getStatus().equals(CaoStatus.Awaiting)
 					&& !cao.isInherit())
 				processedCorporates.add(cao.getOperator().getId());
 		}
@@ -321,13 +320,20 @@ public class AuditBuilder {
 				}
 			}
 			
-			// If this operator is a descendant of any of the processed corporates,
-			// then don't require this cao anymore.
-			for(Integer processedCorporate : processedCorporates)
-				if (operator.isDescendantOf(processedCorporate)) {
-					visible = false; // TOD add break here
-					break;
-				}
+			// TODO Consider using Legal names to determine inheritablity
+			if (operator.isInheritInsuranceCriteria() && (cao == null || cao.isInherit())) {
+				// If this operator is a descendant of any of the processed corporates,
+				// then don't require this cao anymore.
+				for(Integer processedCorporate : processedCorporates)
+					// TODO - one day, this may not be sufficient. (weird case below)
+					// We'll need to check for operator inheritance along with ancestry
+					// For example, if I inherit from parent, but parent doesn't inherit 
+					// from grandparent but uncle inherits from grandparent, I would end up inheriting from grandparent (sometimes)
+					if (operator.isDescendantOf(processedCorporate)) {
+						visible = false;
+						break;
+					}
+			}
 			
 			if (visible) {
 				if (cao == null) {
@@ -360,8 +366,11 @@ public class AuditBuilder {
 				}
 				
 			} else if (cao != null) {
-				// Remove the cao if it's temporary (N/A or Awaiting)
-				if (cao.getStatus().isTemporary()) {
+				// This existing cao is either no longer needed by the operator (ie audit/operator matrix)
+				// or it has one or more parents that have already made a decision on this policy
+				
+				// Remove the cao if it's Awaiting
+				if (cao.getStatus().equals(CaoStatus.Awaiting)) {
 					PicsLogger.log("Removing unneeded ContractorAuditOperator " + cao.getId());
 					conAudit.getOperators().remove(cao);
 					contractorAuditOperatorDAO.remove(cao);
@@ -381,7 +390,7 @@ public class AuditBuilder {
 			ContractorAuditOperator corpCao = iter.next();
 			OperatorAccount corporate = corpCao.getOperator();
 			if (corporate.isCorporate() 
-					&& corpCao.getStatus().isTemporary()
+					&& corpCao.getStatus().equals(CaoStatus.Awaiting)
 					&& !corporateMap.containsKey(corporate.getId())) {
 				// This cao is for a corporate account is no longer needed 
 				// and hasn't been approved or rejected yet
@@ -415,6 +424,7 @@ public class AuditBuilder {
 	private void buildMap(Map<Integer, OperatorAccount> corporateMap, OperatorAccount operator) {
 		if (operator.getParent() == null)
 			return;
+		// TODO only do this if operator.isInheritInsuranceCritiera
 		corporateMap.put(operator.getParent().getId(), operator.getParent());
 		buildMap(corporateMap, operator.getParent());
 	}

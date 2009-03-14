@@ -198,6 +198,8 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	}
 
 	public boolean isCanResubmitPolicy() {
+		if (!isCanEdit())
+			return false;
 		if (conAudit.getAuditStatus().isSubmitted()
 				&& conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
 			for (ContractorAuditOperator cOperator : conAudit.getOperators()) {

@@ -1,6 +1,5 @@
 package com.picsauditing.actions.report;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -8,14 +7,9 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
 
 @SuppressWarnings("serial")
 public class ReportInsuranceApprovalSave extends PicsActionSupport {
@@ -78,7 +72,7 @@ public class ReportInsuranceApprovalSave extends PicsActionSupport {
 					contractor.setNeedsRecalculation(true);
 					contractorAccountDAO.save(contractor);
 
-					sendEmail(existing);
+					ContractorAuditOperatorDAO.saveNoteAndEmail(existing, permissions);
 				}
 			}
 		}
@@ -110,35 +104,5 @@ public class ReportInsuranceApprovalSave extends PicsActionSupport {
 		this.caoids = caoids;
 	}
 
-	public void sendEmail(ContractorAuditOperator cao) throws Exception {
-
-		if( cao.getStatus() != CaoStatus.NotApplicable ) {
-			try {
-				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(33); // Insurance Approval Status Change
-				emailBuilder.setPermissions(permissions);
-				emailBuilder.setContractor(cao.getAudit().getContractorAccount());
-				emailBuilder.addToken("cao", cao);
-				EmailSender.send(emailBuilder.build());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		String newNote = cao.getAudit().getAuditType().getAuditName() + " insurance certificate " + cao.getStatus()
-				+ " by " + cao.getOperator().getName() + " for reason: " + cao.getNotes();
-		Note note = new Note();
-		note.setAccount(cao.getAudit().getContractorAccount());
-		note.setViewableById(Account.EVERYONE);
-		note.setCanContractorView(true);
-		note.setNoteCategory(NoteCategory.Insurance);
-		note.setSummary("Insurance status changed");
-		note.setBody(newNote);
-		note.setCreatedBy(getUser());
-		note.setCreationDate(new Date());
-
-		noteDao.save(note);
-
-	}
 
 }

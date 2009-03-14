@@ -67,12 +67,12 @@
 		</div>
 	</s:if>
 	<s:if test="canResubmitPolicy">
-		<div id="alert" class="buttons" style="">
-			<s:submit id="submit" value="Resubmit" name="button"/>
-			 I have reviewed and updated information for : 
+		<div id="alert" class="buttons">
+			<button id="submit" value="Resubmit" name="button" class="positive">Resubmit</button>
+			 I have reviewed and updated information for: 
 			 <s:iterator value="conAudit.operators">
 			 	<s:if test="status.name() == 'Rejected'"> 
-			 		<s:property value="operator.name"/> ,
+			 		<br /><s:property value="operator.name"/>
 			 	</s:if>
 			 </s:iterator>
 		</div>

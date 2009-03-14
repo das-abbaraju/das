@@ -42,25 +42,18 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 	public void buildQuery() {
 		auditTypeClass = AuditTypeClass.Policy;
 		super.buildQuery();
-		sql.addField("a_op.requiredAuditStatus");
+		//sql.addField("a_op.requiredAuditStatus");
 		sql.addField("ca.expiresDate");
-		sql.addField("ao.name as operatorName");
 		sql.addField("cao.status as caoStatus");
 		sql.addField("cao.notes as caoNotes");
 		sql.addField("cao.id as caoId");
 		sql.addField("cao.recommendedStatus as caoRecommendedStatus");
 		sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
-		sql.addJoin("JOIN audit_operator a_op on a_op.auditTypeID = atype.id AND a_op.opID = cao.opID");
-
-		sql.addJoin("JOIN accounts ao on ao.id = cao.opID");
+		//sql.addJoin("JOIN audit_operator a_op on a_op.auditTypeID = atype.id AND a_op.opID = cao.opID");
 	
-		sql.addWhere("a.active = 'Y'");
+		//sql.addWhere("a.active = 'Y'");
 
-		if (getUser().getAccount().isOperator()) {
-			sql.addWhere("cao.opid = " + getUser().getAccount().getIdString());
-		}
-
-		
+		sql.addWhere("cao.opid = " + permissions.getAccountId());
 		
 		getFilter().setShowVisible(false);
 		getFilter().setShowTrade(false);

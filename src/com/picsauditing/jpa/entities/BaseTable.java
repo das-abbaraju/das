@@ -15,6 +15,8 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.picsauditing.access.Permissions;
+
 @Entity
 @MappedSuperclass
 public abstract class BaseTable {
@@ -23,9 +25,10 @@ public abstract class BaseTable {
 	protected User updatedBy;
 	protected Date creationDate;
 	protected Date updateDate;
-	
-	public BaseTable() {}
-	
+
+	public BaseTable() {
+	}
+
 	public BaseTable(User user) {
 		setAuditColumns(user);
 	}
@@ -81,19 +84,24 @@ public abstract class BaseTable {
 
 	public void setAuditColumns() {
 		updateDate = new Date();
-		
+
 		if (createdBy == null)
 			createdBy = updatedBy;
 		if (creationDate == null)
 			creationDate = updateDate;
 	}
+
 	public void setAuditColumns(User user) {
 		if (user != null)
 			updatedBy = user;
-		
+
 		setAuditColumns();
 	}
-	
+
+	public void setAuditColumns(Permissions permissions) {
+		setAuditColumns(new User(permissions.getUserId()));
+	}
+
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -101,12 +109,12 @@ public abstract class BaseTable {
 			return false;
 		if (id == 0)
 			return false;
-		
+
 		try {
 			BaseTable other = (BaseTable) obj;
 			if (other.getId() == 0)
 				return false;
-			
+
 			return id == other.getId();
 		} catch (Exception e) {
 			System.out.println("Error comparing BaseTable objects: " + e.getMessage());

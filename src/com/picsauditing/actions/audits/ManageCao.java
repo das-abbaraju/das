@@ -1,93 +1,64 @@
 package com.picsauditing.actions.audits;
 
-import java.util.Date;
-
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.contractors.ContractorActionSupport;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
 
 @SuppressWarnings("serial")
-public class ManageCao extends PicsActionSupport implements Preparable {
+public class ManageCao extends ContractorActionSupport implements Preparable {
+
+	protected ContractorAuditOperator cao = null;
+	protected CaoStatus caoBefore = null;
 
 	protected ContractorAuditOperatorDAO caoDao = null;
-	protected ContractorAuditOperator cao = null;
-
-	protected CaoStatus caoBefore = null;
-	
-	protected NoteDAO noteDao = null;
-	
-	public ManageCao(ContractorAuditOperatorDAO caoDao, NoteDAO noteDAO) {
+	public ManageCao(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, ContractorAuditOperatorDAO caoDao) {
+		super(accountDao, auditDao);
 		this.caoDao = caoDao;
-		this.noteDao = noteDAO;
-	}
-
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		if (button != null) {
-			if (button.equalsIgnoreCase("save")) {
-				if (save()) {
-					addActionMessage("Successfully saved"); // default message
-				}
-			}
-		}
-
-		return SUCCESS;
-	}
-
-	protected void load(int id) {
-		if (id != 0) {
-			load(caoDao.find(id));
-		}
-	}
-
-	protected void load(ContractorAuditOperator newType) {
-		this.cao = newType;
-		if( this.cao != null ) {
-			this.caoBefore = cao.getStatus();
-		}
 	}
 
 	@Override
 	public void prepare() throws Exception {
 
-		String[] ids = (String[]) ActionContext.getContext().getParameters().get("cao.id");
-
-		if (ids != null && ids.length > 0) {
-			int thisId = Integer.parseInt(ids[0]);
-			if (thisId > 0) {
-				load(thisId);
-				return; // don't try to load the parent too
-			}
+		int id = this.getParameter("cao.id");
+		if (id > 0) {
+			this.cao = caoDao.find(id);
+			if (this.cao != null)
+				this.caoBefore = cao.getStatus();
 		}
 	}
 
-	public boolean save() {
-		try {
-			if (cao == null)
-				return false;
+	public String execute() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
+		
+		if (cao == null || cao.getId() == 0)
+			throw new Exception("Missing cao");
+		
+		this.id = cao.getAudit().getContractorAccount().getId();
+		findContractor();
+		
+		if (button != null) {
+			if (button.equalsIgnoreCase("save")) {
+				// TODO figure out how to set the inherit flag
+				cao.setAuditColumns(getUser());
+				cao = caoDao.save(cao);
 
-			cao.setAuditColumns(getUser());
-			cao = caoDao.save(cao);
+				if (caoBefore != cao.getStatus())
+					ContractorAuditOperatorDAO.saveNoteAndEmail(cao, permissions);
 
-			if( caoBefore != cao.getStatus() ) {
-				sendEmail(cao);
+				contractor.setNeedsRecalculation(true);
+				accountDao.save(contractor);
+				
+				redirect("AuditCat.action?auditID=" + cao.getAudit().getId());
+				return SUCCESS;
 			}
-			return true;
-		} catch (Exception e) {
-			addActionError(e.getMessage());
 		}
-		return false;
+
+		return SUCCESS;
 	}
 
 	public ContractorAuditOperator getCao() {
@@ -97,37 +68,4 @@ public class ManageCao extends PicsActionSupport implements Preparable {
 	public void setCao(ContractorAuditOperator cao) {
 		this.cao = cao;
 	}
-	
-	
-	public void sendEmail(ContractorAuditOperator cao) throws Exception {
-
-		if( cao.getStatus() != CaoStatus.NotApplicable ) {
-			try {
-				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(33); // Insurance Approval Status Change
-				emailBuilder.setPermissions(permissions);
-				emailBuilder.setContractor(cao.getAudit().getContractorAccount());
-				emailBuilder.setBccAddresses(getUser().getEmail());
-				emailBuilder.addToken("cao", cao);
-				EmailSender.send(emailBuilder.build());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		String newNote = cao.getAudit().getAuditType().getAuditName() + " insurance certificate " + cao.getStatus()
-				+ " by " + cao.getOperator().getName() + " for reason: " + cao.getNotes();
-		Note note = new Note();
-		note.setAccount(cao.getAudit().getContractorAccount());
-		note.setNoteCategory(NoteCategory.Insurance);
-		note.setSummary("Insurance status changed");
-		note.setBody(newNote);
-		note.setCreatedBy(getUser());
-		note.setViewableById(Account.EVERYONE);
-		note.setCreationDate(new Date());
-
-		noteDao.save(note);
-
-	}
-
 }
