@@ -30,7 +30,9 @@ public class SendMail {
 		InternetAddress[] replyTo = {(InternetAddress)email.getFromAddress2()};
 		message.setReplyTo(replyTo);
 		
-		message.setRecipients(RecipientType.TO, email.getToAddresses2());
+		message.setRecipient(javax.mail.internet.MimeMessage.RecipientType.TO, email.getToAddresses2()[0]);
+		message.setRecipients(javax.mail.internet.MimeMessage.RecipientType.CC, email.getToAddresses2());
+		//message.setRecipients(RecipientType.TO, email.getToAddresses2());
 		//message.setRecipients(RecipientType.CC, email.getCcAddresses2());
 		//message.setRecipients(RecipientType.BCC, email.getBccAddresses2());
 
