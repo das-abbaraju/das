@@ -46,6 +46,8 @@
 	</ifStep>
 
 	<group description="Delete Contractor">
+		<setInputField name="filter.accountName" value="Canoo's Test" />
+		<clickButton description="Search for Contractor" label="Search" />
 		<clickLink description="click on edit page" htmlId="conEditLink" />
 		<clickButton description="Delete the Contractor" label="Delete" />
 	</group>

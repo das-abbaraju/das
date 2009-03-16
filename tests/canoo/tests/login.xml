@@ -81,7 +81,7 @@
 					text="No account exists with that username" />			 	
 			 </steps>
 		</webtest>
-		<webtest name="Login: forgot password; retrieve username, password">
+		<!--<webtest name="Login: forgot password; retrieve username, password">
 		&config;
 			<steps>
 			 	<invoke
@@ -122,5 +122,5 @@
 					text="(?is:Attn.*?Your username is: \w*.*?password is: \w*)"/>			 	
 			 </steps>
 		</webtest>
-	</target>
+	--></target>
 </project>

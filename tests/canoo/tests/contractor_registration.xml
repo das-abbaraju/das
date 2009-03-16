@@ -19,47 +19,44 @@
 		<webtest name="Contractor Registration - Register">
 			&config;
 			<steps>
-				<invoke
-					description="Register Link"
-					url="contractor_new_instructions.jsp" />
+				<invoke url="Login.action" />
+				<clickLink label="Click to Register your company" />
+				
 				&body_verify;
 				<clickLink
 					description="Edit Page"
-					href="contractor_new.jsp" />
-				
-				<clickButton description="Continue" name="submit" />
+					href="ContractorRegistration.action" />
+					
 				&body_verify;
 				<group description="Register and Save">
 					<!-- Register Correctly -->
-					<setInputField name="name" value="Canoo's Test Contractor" />
-					<setInputField name="contact" value="John Doe" />
-					<setInputField name="address" value="123 Main Street" />
-					<setInputField name="city" value="Tester" />
-					<setSelectField name="state" text="Wyoming" />
-					<setInputField name="zip" value="54321" />
-					<setInputField name="phone" value="(949) 123-4567" />
-					<setInputField name="phone2" value="(949) 123-4568" />
-					<setInputField name="fax" value="(949) 123-4569" />
-					<setInputField name="email" value="${mail.username}" />
-					<setInputField name="secondContact" value="secondContact" />
-					<setInputField name="secondPhone" value="(949) 123-4570" />
-					<setInputField name="secondEmail" value="secondEmail@picsauditing.com" />
-					<setInputField name="billingContact" value="billingContact" />
-					<setInputField name="billingPhone" value="(949) 123-4571" />
-					<setInputField name="billingEmail" value="billingEmail@picsauditing.com" />
-					<setInputField name="web_URL" value="http://www.picsauditing.com/canoo/" />
-					<setInputField name="taxID" value="789456123" />
-					<setSelectField name="industry" text="Power" />
-					<setSelectField name="main_trade" text="Boiler Repair" />
-					<setInputField name="description" value="This is a test account from Canoo webtest. Please delete me." />
-					<setInputField name="username" value="${register.username}" />
-					<setInputField name="password" value="${login.password}" />
+					<setInputField name="contractor.name" value="Canoo's Test Contractor" />
+					<setInputField name="contractor.contact" value="John Doe" />
+					<setInputField name="contractor.address" value="123 Main Street" />
+					<setInputField name="contractor.city" value="Tester" />
+					<setSelectField name="contractor.state" text="Wyoming" />
+					<setInputField name="contractor.zip" value="54321" />
+					<setInputField name="contractor.phone" value="(949) 123-4567" />
+					<setInputField name="contractor.phone2" value="(949) 123-4568" />
+					<setInputField name="contractor.fax" value="(949) 123-4569" />
+					<setInputField name="contractor.email" value="${mail.username}" />
+					<setInputField name="contractor.secondContact" value="secondContact" />
+					<setInputField name="contractor.secondPhone" value="(949) 123-4570" />
+					<setInputField name="contractor.secondEmail" value="secondEmail@picsauditing.com" />
+					<setInputField name="contractor.billingContact" value="billingContact" />
+					<setInputField name="contractor.billingPhone" value="(949) 123-4571" />
+					<setInputField name="contractor.billingEmail" value="billingEmail@picsauditing.com" />
+					<setInputField name="contractor.webUrl" value="http://www.picsauditing.com/canoo/" />
+					<setInputField name="contractor.taxId" value="789456123" />
+					<setSelectField name="contractor.industry" text="Power" />
+					<setSelectField name="contractor.mainTrade" text="Boiler Repair" />
+					<setSelectField name="contractor.requestedById" value="1197" />
+					<setRadioButton name="contractor.riskLevel" value="Low" />
+					<setInputField name="contractor.description" value="This is a test account from Canoo webtest. Please delete me." />
+					<setInputField name="user.username" value="${register.username}" />
+					<setInputField name="user.password" value="${login.password}" />
 					
-					<setSelectField description="BP Pipelines and Logistics" name="generalContractors" value="784" />
-					<setSelectField description="Shell Martinez Refinery" name="generalContractors" value="1197" multiselect="true" />
-					<setSelectField name="requestedByID" value="1197" />
-					
-					<clickButton description="Click Save/Submit" name="submit" />
+					<clickButton description="Click Register" name="button" />
 					&body_verify;
 				</group>
 					
@@ -70,7 +67,7 @@
 					value="${register.username}"/>
 				&login;
 				&body_verify;
-				<verifyText description="Verify Activation Fee"
+				<!--<verifyText description="Verify Activation Fee"
 				      text="Activation Fee" />
 				<verifyText description="Verify Activation Fee"
 				      text="$99 USD" />
@@ -87,11 +84,11 @@
 					<setInputField name="name" value="Canoo's Test Contractor" />
 					<clickButton description="Search for Contractor" name="button" />
 					<clickButton description="Make Visible" label="Activate" />
-				</group>
+				</group>-->
 			</steps>
 		</webtest>
 		
-		<webtest name="Contractor Registration - PQF">
+		<!--<webtest name="Contractor Registration - PQF">
 			&config;
 			<steps>
 				<group description="Login correctly">
@@ -144,7 +141,7 @@
 				</group>
 				
 			</steps>
-		</webtest>
+		</webtest>-->
 		
 		<webtest name="Contractor Registration - Post Cleanup">
 			&config;

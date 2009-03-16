@@ -2,12 +2,13 @@
 <!DOCTYPE project SYSTEM "../dtd/Project.dtd">
 
 <project name="PICS" default="test">
-	<property name="login.username" value="michaelm" />
+	<property name="login.username" value="shwang" />
 	<target name="test">
 		<webtest name="Admin Billing">
 			&config;
 			<steps>
 				&login;
+				<property name="error_expected" value="false" />
 				&body_verify;
 				
 				<storeProperty name="report_link" value="Activation" />
