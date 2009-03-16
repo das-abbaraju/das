@@ -794,6 +794,10 @@
 			<result>struts/chart_xml.jsp</result>
 		</action>
 
+		<action name="CorporateFlagByFacilityAjax"
+			class="com.picsauditing.actions.chart.ChartFlagCountCorp">
+			<result>struts/chart_xml.jsp</result>
+		</action>
 
 
 

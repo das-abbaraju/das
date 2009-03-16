@@ -19,6 +19,7 @@ abstract public class Chart extends AbstractElement {
 	protected boolean rotateLabels = false;
 	protected String clickURL;
 	protected boolean defaultAnimation = true;
+	protected boolean showLegend;
 
 	protected String numberPrefix;
 	
@@ -27,6 +28,7 @@ abstract public class Chart extends AbstractElement {
 	public String toString() {
 		xml.append("<chart");
 
+		append(xml, "showLegend", showLegend);
 		append(xml, "caption", caption);
 		append(xml, "subCaption", subCaption);
 		append(xml, "xAxisName", xAxisName);
@@ -168,6 +170,14 @@ abstract public class Chart extends AbstractElement {
 
 	public boolean isEmpty() {
 		return empty;
+	}
+
+	public boolean isShowLegend() {
+		return showLegend;
+	}
+
+	public void setShowLegend(boolean showLegend) {
+		this.showLegend = showLegend;
 	}
 
 }

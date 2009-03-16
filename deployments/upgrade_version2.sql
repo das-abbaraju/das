@@ -68,3 +68,17 @@ update operators
 set parentid = 1336
 where id = 1488
      or id = 1937;
+     
+/**
+ * Adding corporate graph for facilities flag 
+ *      
+*/
+ delete from widget_user where widgetID = 1 and userID = 646;
+ 
+ insert into widget (caption, widgetType, url,chartType) values
+	("Corporate Flag By Facility", "Chart", "CorporateFlagByFacilityAjax.action", 
+	"ScrollStackedColumn2D");
+ 
+insert into widget_user (widgetID, userID, expanded, column, sortOrder, customConfig)
+	values (17, 646, 1, 1, 10, null);
+	
