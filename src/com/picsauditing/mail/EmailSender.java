@@ -36,13 +36,16 @@ public class EmailSender {
 				if (!Strings.isEmpty(email.getFromPassword())) {
 					// Use a specific email address like tallred@picsauditing.com
 					// We need the password to correctly authenticate with GMail
+					PicsLogger.log("using Gmail to send email from " + email.getFromAddress());
 					gmailSender = new GMailSender(email.getFromAddress(), email.getFromPassword());
 				} else {
 					// Use the default info@picsauditing.com address
+					PicsLogger.log("using Gmail to send email from " + getDefaultSender());
 					gmailSender = new GMailSender(getDefaultSender(), defaultPassword);
 				}
 				gmailSender.sendMail(email);
 			} else {
+				PicsLogger.log("using localhost sendmail to send");
 				SendMail sendMail = new SendMail();
 				sendMail.send(email);
 			}
@@ -81,6 +84,7 @@ public class EmailSender {
 				email.setFromAddress(getDefaultSender());
 			if (email.getToAddresses2() == null) {
 				email.setToAddresses(email.getCcAddresses());
+				email.setCcAddresses(null);
 			}
 			email.getCcAddresses2();
 			email.getBccAddresses2();
