@@ -66,7 +66,17 @@ public class EmailSender {
 					+ e.getMessage() + "\nFROM: " + email.getFromAddress() + "\nTO: " + email.getToAddresses()
 					+ "\nSUBJECT: " + email.getSubject());
 			changeDefaultSender();
-			this.sendMail(email, attempts);
+			if (useGmail) {
+				this.sendMail(email, attempts);
+			} else {
+				PicsLogger.log("Failed to send email using sendmail...exiting");
+				email.setStatus(EmailStatus.Error);
+
+				if (emailQueueDAO == null)
+					emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
+				
+				emailQueueDAO.save(email);
+			}
 		}
 	}
 
