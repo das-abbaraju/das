@@ -31,28 +31,18 @@ public class ChartFlagCount extends ChartSSAction {
 		sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID");
 		sql.addJoin("JOIN flags f ON a.id = f.conID AND f.opID = gc.genID");
 		sql.addWhere("a.active = 'Y'");
-		if (permissions.isCorporate()) {
-		// // TODO Handle unapproved contractors for operators who manually
-		// approve
-		// sql.addJoin("JOIN facilities fac ON fac.opID = f.opID AND
-		// fac.corporateID = " + permissions.getAccountId());
-			sql.addJoin("JOIN facilities fac ON fac.opID = gc.genID AND fac.corporateID = " + permissions.getAccountId());
-		}
 
-		if (permissions.isOperator()) {
-			sql.addWhere("gc.genID = " + permissions.getAccountId());
-				if (permissions.isApprovesRelationships() && !permissions.hasPermission(OpPerms.ViewUnApproved)) {
-					sql.addWhere("gc.workStatus = 'Y'");
-				}
-		}
+		sql.addWhere("gc.genID = " + permissions.getAccountId());
+		if (permissions.isApprovesRelationships() && !permissions.hasPermission(OpPerms.ViewUnApproved)) {
+			sql.addWhere("gc.workStatus = 'Y'");
+		}	
 
 		ChartDAO db = new ChartDAO();
 		List<DataRow> data = db.select(sql.toString());
 		for (DataRow row : data) {
 			Set set = new Set(row);
 			set.setColor(FlagColor.valueOf(row.getLabel()).getHex());
-			if(permissions.isOperator())
-				set.setLink("ContractorList.action?filter.flagStatus=" + row.getLabel());
+			set.setLink("ContractorList.action?filter.flagStatus=" + row.getLabel());
 			chart.addSet(set);
 		}
 		return chart;
