@@ -2,6 +2,9 @@ package com.picsauditing.actions.users;
 
 import java.util.Vector;
 
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
+
 import com.picsauditing.PICS.PasswordValidator;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
@@ -77,7 +80,16 @@ public class UserSave extends UsersManage {
 				user.addPasswordToHistory(user.getPassword(), maxHistory);
 				user.setPhoneIndex(Strings.stripPhoneNumber(user.getPhone()));
 			}
-			user = userDAO.save(user);
+			try {
+				user = userDAO.save(user);
+				addActionMessage("User saved successfully.");
+			} catch(ConstraintViolationException e) {
+				addActionError("That Username is already in use.  Please select another.");
+				return SUCCESS;
+			} catch(DataIntegrityViolationException e) {
+				addActionError("That Username is already in use.  Please select another.");
+				return SUCCESS;
+			}
 		}
 
 		if ("Delete".equalsIgnoreCase(button)) {
@@ -108,11 +120,6 @@ public class UserSave extends UsersManage {
 		// Users only after this point
 		if (user.getUsername() == null || user.getUsername().length() < 5)
 			addActionError("Please choose a Username at least 5 characters long.");
-
-		if (user.getUsername() != null && user.getUsername().length() >= 5) {
-			if (userDAO.duplicateUsername(user.getUsername(), user.getId()))
-				addActionError("That Username is already in use.  Please select another.");
-		}
 
 		if (user.getEmail() == null || user.getEmail().length() == 0 || !Utilities.isValidEmail(user.getEmail()))
 			addActionError("Please enter a valid Email address.");
