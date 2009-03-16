@@ -30,10 +30,12 @@
 	<li><a class="edit" href="?button=add&rule.name=CC_Hash_Errors">CC_Hash_Errors</a></li>
 	<li><a class="edit" href="?button=add&rule.name=ContractorCron">ContractorCron</a></li>
 	<li><a class="edit" href="?button=add&rule.name=ContractorFlagAction">ContractorFlagAction</a></li>
+	<li><a class="edit" href="?button=add&rule.name=EmailSender">EmailSender</a></li>
 	<li><a class="edit" href="?button=add&rule.name=Flag.calculate">Flag.calculate</a></li>
 	<li><a class="edit" href="?button=add&rule.name=LoggerConfig.execute">LoggerConfig.execute</a></li>
 	<li><a class="edit" href="?button=add&rule.name=ReportUserPermissionMatrix">ReportUserPermissionMatrix</a></li>
 	<li><a class="edit" href="?button=add&rule.name=User.Permissions">User.Permissions</a></li>
+	<li><a class="edit" href="?button=add&rule.name=SelectSQL">SelectSQL</a></li>
 	<li><a class="edit" href="?button=add&rule.name=BuildAudits">BuildAudits</a></li>
 	<li><a class="edit" href="?button=add&rule.name=BuildAudits|AuditOperators">BuildAudits|AuditOperators</a></li>
 	<li><a class="edit" href="?button=add&rule.name=BuildAudits|AuditCategories">BuildAudits|AuditCategories</a></li>

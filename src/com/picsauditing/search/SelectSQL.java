@@ -2,6 +2,8 @@ package com.picsauditing.search;
 
 import java.util.ArrayList;
 
+import com.picsauditing.util.log.PicsLogger;
+
 public class SelectSQL {
 	protected String fromTable;
 	protected ArrayList<String> whereClause = new ArrayList<String>();
@@ -34,6 +36,7 @@ public class SelectSQL {
 	 * [LIMIT {limit}|LIMIT {startRow}, {limit}]
 	 */
 	public String toString() {
+		PicsLogger.start("SelectSQL");
 		if (fullClause.length() > 0) return fullClause;
 		
 		StringBuilder sql = new StringBuilder();
@@ -82,8 +85,8 @@ public class SelectSQL {
 			}
 			sql.append(this.limit);
 		}
-		System.out.println(sql.toString());
-		
+		PicsLogger.log(sql.toString());
+		PicsLogger.stop();
 		return sql.toString();
 	}
 
