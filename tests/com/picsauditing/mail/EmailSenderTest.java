@@ -28,5 +28,22 @@ public class EmailSenderTest extends TestCase {
 			fail(e.getMessage());
 		}
     }
+	
+	public void testSender() {
+		EmailSender sender = new EmailSender();
+		EmailQueue email = new EmailQueue();
+		email.setSubject("Test Activation");
+		email.setFromAddress("info@picsauditing.com");
+		email.setBody("Welcome John Doe,\n\nThis is a test email");
+		email.setToAddresses("knannapaneni@picsauditing.com");
+		email.setCcAddresses("tallred@picsauditing.com");
+		email.setCreationDate(new Date());
+		try {
+			sender.sendNow(email);
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+
+	}
 
 }
