@@ -20,15 +20,14 @@ import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.YesNo;
 
 /**
- * This is the main class that is stored for each user containing information if
- * they are logged in, which groups they're in, and what permission(s) they have
+ * This is the main class that is stored for each user containing information if they are logged in, which groups
+ * they're in, and what permission(s) they have
  * 
- * Warning: this class is stored in the session Make sure you keep the footprint
- * very small
+ * Warning: this class is stored in the session Make sure you keep the footprint very small
  */
 public class Permissions implements Serializable {
 	private static final long serialVersionUID = -3120292424348289561L;
-	
+
 	private int userID;
 	private boolean loggedIn = false;
 	private Set<Integer> groups = new HashSet<Integer>();
@@ -47,51 +46,43 @@ public class Permissions implements Serializable {
 	private boolean active = false;
 	private boolean accountActive = false;
 
+	public void clear() {
+		userID = 0;
+		loggedIn = false;
+		active = false;
+		username = "";
+		name = "";
+		email = "";
+		accountID = 0;
+		accountName = "";
+		accountType = "";
+		accountActive = false;
+		approvesRelationships = false;
+
+		adminID = 0;
+
+		permissions.clear();
+		groups.clear();
+		canSeeAudits.clear();
+		corporateParent.clear();
+		operatorChildren.clear();
+	}
+
 	public void login(User user) throws Exception {
 		try {
 			clear();
 			userID = user.getId();
 			if (userID == 0)
 				throw new Exception("Missing User");
-			
+
 			loggedIn = true;
 			active = user.isActive();
 			username = user.getUsername();
 			name = user.getName();
-			accountID = user.getAccount().getId();
-			accountType = user.getAccount().getType();
-			accountName = user.getAccount().getName();
-			accountActive = user.getAccount().isActiveB();
 			email = user.getEmail();
-			
-			if (isOperator() || isCorporate()) {
-				OperatorAccount operator = (OperatorAccount) user.getAccount();
-				if (isOperator()) {
-					approvesRelationships = YesNo.Yes.equals(operator.getApprovesRelationships());
-					for (Facility facility : operator.getCorporateFacilities())
-						corporateParent.add(facility.getCorporate().getId());
-					for(AuditOperator auditOperator : operator.getAudits()) {
-						if(auditOperator.isCanSee())
-							canSeeAudits.add(auditOperator.getAuditType().getId());
-					}	
-				}
-				if (isCorporate()) {
-					for (Facility facility : operator.getOperatorFacilities()) {
-						operatorChildren.add(facility.getOperator().getId());
-						for(AuditOperator auditOperator : facility.getOperator().getAudits()) {
-							if(auditOperator.isCanSee())
-								canSeeAudits.add(auditOperator.getAuditType().getId());
-						}	
 
-					}	
-				}
-			}
-			permissions = user.getPermissions();
-			
-			List<UserGroup> temp = user.getGroups();
-			for (UserGroup u : temp)
-				groups.add(u.getGroup().getId());
-			
+			setAccountPerms(user);
+
 		} catch (Exception ex) {
 			// All or nothing, if something went wrong, then clear it all
 			clear();
@@ -99,19 +90,45 @@ public class Permissions implements Serializable {
 		}
 	}
 
-	public void clear() {
-		userID = 0;
-		loggedIn = false;
-		active = false;
-		accountActive = false;
-		username = "";
-		name = "";
-		email = "";
-		accountID = 0;
-		accountName = "";
-		accountType = "";
-		permissions.clear();
-		groups.clear();
+	public void setAccountPerms(User user) throws Exception {
+		try {
+			accountID = user.getAccount().getId();
+			accountType = user.getAccount().getType();
+			accountName = user.getAccount().getName();
+			accountActive = user.getAccount().isActiveB();
+
+			if (isOperator() || isCorporate()) {
+				OperatorAccount operator = (OperatorAccount) user.getAccount();
+				if (isOperator()) {
+					approvesRelationships = YesNo.Yes.equals(operator.getApprovesRelationships());
+					for (Facility facility : operator.getCorporateFacilities())
+						corporateParent.add(facility.getCorporate().getId());
+					for (AuditOperator auditOperator : operator.getAudits()) {
+						if (auditOperator.isCanSee())
+							canSeeAudits.add(auditOperator.getAuditType().getId());
+					}
+				}
+				if (isCorporate()) {
+					for (Facility facility : operator.getOperatorFacilities()) {
+						operatorChildren.add(facility.getOperator().getId());
+						for (AuditOperator auditOperator : facility.getOperator().getAudits()) {
+							if (auditOperator.isCanSee())
+								canSeeAudits.add(auditOperator.getAuditType().getId());
+						}
+
+					}
+				}
+			}
+			permissions = user.getPermissions();
+
+			for (UserGroup u : user.getGroups())
+				groups.add(u.getGroup().getId());
+
+		} catch (Exception ex) {
+			// All or nothing, if something went wrong, then clear it all
+			clear();
+			throw ex;
+		}
 	}
 
 	public int getUserId() {
@@ -145,7 +162,6 @@ public class Permissions implements Serializable {
 	public String getAccountType() {
 		return accountType;
 	}
-
 
 	public String getAccountName() {
 		return accountName;
@@ -195,7 +211,7 @@ public class Permissions implements Serializable {
 		}
 		return false;
 	}
-	
+
 	private boolean isTrue(Boolean value) {
 		if (value == null)
 			return false;
@@ -348,7 +364,7 @@ public class Permissions implements Serializable {
 	public void setCorporateParent(Set<Integer> corporateParent) {
 		this.corporateParent = corporateParent;
 	}
-	
+
 	public Set<Integer> getOperatorChildren() {
 		return operatorChildren;
 	}
@@ -356,8 +372,7 @@ public class Permissions implements Serializable {
 	public void setOperatorChildren(Set<Integer> operatorChildren) {
 		this.operatorChildren = operatorChildren;
 	}
-	
-	
+
 	public Set<Integer> getVisibleAccounts() {
 		Set<Integer> visibleAccounts = new HashSet<Integer>();
 		visibleAccounts.add(accountID);

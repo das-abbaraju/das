@@ -67,7 +67,7 @@ public class LoginController extends PicsActionSupport {
 				// Re login the admin on logout
 				user = userDAO.find(adminID);
 				
-				this.doLogin(false);
+				permissions.login(user);
 				postLogin();
 				return SUCCESS;
 			}
@@ -94,20 +94,26 @@ public class LoginController extends PicsActionSupport {
 		
 		// Login the user
 		if (switchToUser > 0) {
-			permissions.tryPermission(OpPerms.SwitchUser);
-			int myCurrentID = permissions.getUserId();
-
-			user = userDAO.find(switchToUser);
-
-			permissions.clear();
-			permissions.setAdminID(myCurrentID);
+			if (permissions.getUserId() == switchToUser) {
+				// Switch back to myself
+				permissions.setAdminID(0);
+				user = getUser();
+			} else {
+				permissions.setAdminID(permissions.getUserId());
+				user = userDAO.find(switchToUser);
+			}
 			
-			username = user.getUsername();
-			password = "switchUser";
-
-			doLogin(false);
+			if (permissions.hasPermission(OpPerms.SwitchUser)) {
+				permissions.login(user);
+				password = "switchUser";
+			} else {
+				// Verify the user has access to login
+				permissions.setAccountPerms(user);
+				password = "switchAccount";
+			}
+			username = permissions.getUsername();
 		} else {
-			loadPermissions(false);
+			// Normal login, via the actual Login.action page
 			permissions.clear();
 
 			String error = canLogin();
@@ -118,7 +124,16 @@ public class LoginController extends PicsActionSupport {
 			}
 
 			// /////////////////
-			doLogin(true);
+			permissions.login(user);
+
+			user.setLastLogin(new Date());
+			user.getAccount().setLastLogin(new Date());
+			userDAO.save(user);
+			
+			// TODO we should allow each account to set their own timeouts
+			// ie..session.setMaxInactiveInterval(user.getAccountTimeout());
+			if (permissions.isPicsEmployee())
+				getRequest().getSession().setMaxInactiveInterval(3600);
 		}
 		logAttempt();
 		postLogin();
@@ -209,24 +224,6 @@ public class LoginController extends PicsActionSupport {
 
 		// We are now ready to actually do the login (doLogin)
 		return "";
-	}
-
-	/**
-	 * Perform the actual login process...store any info in the session that
-	 * will be required in later pages
-	 */
-	private void doLogin(boolean updateLastLogin) throws Exception {
-		permissions.login(user);
-		if (updateLastLogin) {
-			user.setLastLogin(new Date());
-			user.getAccount().setLastLogin(new Date());
-			userDAO.save(user);
-		}
-
-		// TODO we should allow each account to set their own timeouts
-		// ie..session.setMaxInactiveInterval(user.getAccountTimeout());
-		if (permissions.isPicsEmployee())
-			getRequest().getSession().setMaxInactiveInterval(3600);
 	}
 
 	/**
