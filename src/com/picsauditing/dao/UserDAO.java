@@ -74,7 +74,7 @@ public class UserDAO extends PicsDAO {
 		try {
 			User user = findName(uName);
 			if(user == null)
-				return true;
+				return false;
 			
 			int id = user.getId();
 			if (id > 0) {
