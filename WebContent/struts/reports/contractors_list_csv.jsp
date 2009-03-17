@@ -4,8 +4,8 @@ value="get('id')" />,"<s:property
 value="get('name')" escape="false" />",<s:if test="permissions.operator">"<s:property 
 value="get('flag')" escape="false" />","<s:property 
 value="get('waitingOn')" escape="false" />",<pics:permission perm="ViewUnApproved">"<s:property 
-value="get('workStatus')" escape="false" />",</pics:permission></s:if>"<s:property 
-value="get('creationDate')" escape="false" />","<s:property 
+value="get('workStatus')" escape="false" />",</pics:permission></s:if>"<s:date 
+name="get('creationDate')" format="M/d/yy" />","<s:property 
 value="get('riskLevel')" escape="false" />","<s:property 
 value="get('industry')" escape="false" />","<s:property 
 value="get('main_trade')" escape="false" />","<s:property 
