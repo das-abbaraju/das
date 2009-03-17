@@ -296,6 +296,11 @@ public class FlagCalculatorSingle {
 								for(ContractorAuditOperator cao : conAudit.getOperators()) {
 									if (cao.getOperator().equals(operator) 
 											&& !CaoStatus.NotApplicable.equals(cao.getRecommendedStatus())) {
+										
+										// This policy is already approved by operator
+										if(CaoStatus.Approved.equals(cao.getStatus()))
+											return WaitingOn.None;
+										
 										// This Policy is required by the operator
 										if (!auditStatus.isComplete(audit.getRequiredAuditStatus()))
 											// The contractor needs to still submit it
