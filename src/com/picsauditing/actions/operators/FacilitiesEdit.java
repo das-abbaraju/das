@@ -289,7 +289,7 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 
 		if ((operatorAccount.getEmail().length() == 0) || (!Utilities.isValidEmail(operatorAccount.getEmail())))
 			errorMessages
-					.addElement("Please enter a valid email address. This is our main way of communicating with you so it must be valid");
+					.addElement("Please enter a valid email address. This is our main way of communicating with you so it must be valid.");
 		return errorMessages;
 	}
 
