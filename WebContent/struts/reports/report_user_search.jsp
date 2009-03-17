@@ -1,5 +1,6 @@
+<%@ taglib prefix="s" uri="/struts-tags"%>
 <ul>
-    <li id="1">Diana Redwine - BP Cherry Point</li>
-    <li id="2">Mark Wallis - BP Cherry Point</li>
-    <li id="3">Ted Stevenson - BP Carson</li>
+	<s:iterator value="data">
+		<li id="<s:property value="get('id')"/>"><s:property value="get('name')" /> - <s:property value="get('accountName')" /></li>
+	</s:iterator>
 </ul>

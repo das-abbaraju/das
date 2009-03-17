@@ -1,7 +1,10 @@
 package com.picsauditing.search;
 
-import com.picsauditing.PICS.Utilities;
 
+/**
+ * Creates a basic SQL statement that looks like this:<br>
+ * SELECT u.id, u.name, u.isActive FROM users u;
+ */
 public class SelectUser extends SelectSQL {
 	public SelectUser() {
 		super();

@@ -311,7 +311,7 @@
 			<result>struts/reports/report_users_data.jsp</result>
 		</action>
 		<action name="UserSearchAjax"
-			class="com.picsauditing.actions.report.ReportUser">
+			class="com.picsauditing.actions.report.ReportUser2">
 			<result>struts/reports/report_user_search.jsp</result>
 		</action>
 

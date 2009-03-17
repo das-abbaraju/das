@@ -1,11 +1,6 @@
 package com.picsauditing.util;
 
-
 public class ReportFilterUser extends ReportFilter {
-//	public static final String DEFAULT_NAME = "- Contact Name - ";
-//	public static final String DEFAULT_PHONE = "- Phone Number -";
-//	public static final String DEFAULT_EMAIL = "- Email Address -";
-//	public static final String DEFAULT_USERNAME = "- UserName -";
 
 	// /////// Filter Visibility /////////////
 	protected boolean showContact = true;
@@ -13,14 +8,15 @@ public class ReportFilterUser extends ReportFilter {
 	protected boolean showEmail = true;
 	protected boolean showUser = true;
 	protected boolean showCompanyName = true;
-	
+
 	// /////// Parameter Values /////////////////
 	protected String startsWith;
-	protected String ContactName;
-	protected String PhoneNumber;
-	protected String EmailAddress;
-	protected String UserName;
+	protected String contactName;
+	protected String phoneNumber;
+	protected String emailAddress;
+	protected String userName;
 	protected String companyName;
+	protected String search;
 
 	public boolean isShowContact() {
 		return showContact;
@@ -71,35 +67,35 @@ public class ReportFilterUser extends ReportFilter {
 	}
 
 	public String getContactName() {
-		return ContactName;
+		return contactName;
 	}
 
 	public void setContactName(String contactName) {
-		ContactName = contactName;
+		this.contactName = contactName;
 	}
 
 	public String getPhoneNumber() {
-		return PhoneNumber;
+		return phoneNumber;
 	}
 
 	public void setPhoneNumber(String phoneNumber) {
-		PhoneNumber = phoneNumber;
+		this.phoneNumber = phoneNumber;
 	}
 
 	public String getEmailAddress() {
-		return EmailAddress;
+		return emailAddress;
 	}
 
 	public void setEmailAddress(String emailAddress) {
-		EmailAddress = emailAddress;
+		this.emailAddress = emailAddress;
 	}
 
 	public String getUserName() {
-		return UserName;
+		return userName;
 	}
 
 	public void setUserName(String userName) {
-		UserName = userName;
+		this.userName = userName;
 	}
 
 	public String getCompanyName() {
@@ -109,4 +105,13 @@ public class ReportFilterUser extends ReportFilter {
 	public void setCompanyName(String companyName) {
 		this.companyName = companyName;
 	}
+
+	public String getSearch() {
+		return search;
+	}
+
+	public void setSearch(String search) {
+		this.search = search;
+	}
+
 }
