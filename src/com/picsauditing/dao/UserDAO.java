@@ -73,6 +73,9 @@ public class UserDAO extends PicsDAO {
 	public boolean duplicateUsername(String uName, int uID) {
 		try {
 			User user = findName(uName);
+			if(user == null)
+				return true;
+			
 			int id = user.getId();
 			if (id > 0) {
 				// found a user with this username
