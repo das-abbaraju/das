@@ -5,13 +5,19 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.util.Strings;
 
 /**
  * Widgets for a single contractor
@@ -91,15 +97,34 @@ public class ContractorWidget extends ContractorActionSupport {
 									+ conAudit.getAuditFor() + " </a>");
 				}
 
-				if (conAudit.getAuditType().getClassType() == AuditTypeClass.Policy 
-						&& conAudit.getAuditStatus()
-						.equals(AuditStatus.Pending)) {
-					openTasks
-					.add("Please <a href=\"Audit.action?auditID="
+				if (conAudit.getAuditType().getClassType() == AuditTypeClass.Policy) { 
+					if(conAudit.getAuditStatus().equals(AuditStatus.Pending)) {
+						openTasks
+						.add("Please <a href=\"Audit.action?auditID="
 							+ conAudit.getId()
 							+ "\">upload and submit your insurance data for your "
 							+ conAudit.getAuditType().getAuditName() + " Policy </a>");
-				}
+					}
+					Set<String> rejectedOperators = new TreeSet<String>();
+					
+					for(ContractorAuditOperator cAuditOperator : conAudit.getOperators()) {
+						if(CaoStatus.Rejected.equals(cAuditOperator.getStatus())) {
+							AuditOperator ao = cAuditOperator.getOperator().getAuditMap().get(cAuditOperator.getAudit().getAuditType().getId());
+							if(ao.isCanSee() 
+									&& ao.getMinRiskLevel() > 0 
+									&& ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal()) {
+								rejectedOperators.add(cAuditOperator.getOperator().getName());
+							}
+						}	
+					}
+					if(rejectedOperators.size() > 0) {
+						openTasks
+						.add("<a href=\"Audit.action?auditID="
+							+ conAudit.getId()
+							+ "\">Update your "
+							+ conAudit.getAuditType().getAuditName() + " Policy rejected for </a>"+ Strings.implode(rejectedOperators, ","));
+					}
+				}		
 
 				if (conAudit.getAuditType().isHasRequirements()
 						&& conAudit.getAuditStatus().equals(
@@ -141,28 +166,6 @@ public class ContractorWidget extends ContractorActionSupport {
 
 			
 			
-//			if (isRequiresInsurance() && getInsuranceCount() == 0) {
-//				openTasks
-//						.add("Please <a href=\"contractor_upload_certificates.jsp?id="
-//								+ id
-//								+ "\">upload your insurance certificates</a>");
-//			}
-//			for (Certificate certificate : contractor.getCertificates()) {
-//				if (certificate.getStatus().equals("Expired"))
-//					openTasks
-//							.add("You have an <a href=\"contractor_upload_certificates.jsp?id="
-//									+ id
-//									+ "\">Expired "
-//									+ certificate.getType()
-//									+ " Certificate</a>");
-//				if (certificate.getStatus().equals("Rejected"))
-//					openTasks
-//							.add("You have a <a href=\"contractor_upload_certificates.jsp?id="
-//									+ id
-//									+ "\">Rejected "
-//									+ certificate.getType()
-//									+ " Certificate</a>");
-//			}
 
 		}
 		return openTasks;
