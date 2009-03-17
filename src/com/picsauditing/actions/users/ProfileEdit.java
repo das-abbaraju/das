@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.PasswordValidator;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -50,6 +51,11 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 					addActionError("Passwords don't match");
 
 				Vector<String> errors = PasswordValidator.validateContractor(u, password1);
+				
+				if (!Strings.isEmpty(u.getEmail()) && !Utilities.isValidEmail(u.getEmail())) {
+					errors.add("Please enter a valid email address. This is our main way of communicating with you so it must be valid.");
+				}
+				
 				for (String error : errors)
 					addActionError(error);
 
