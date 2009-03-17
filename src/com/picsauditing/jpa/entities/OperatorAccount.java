@@ -1,7 +1,9 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,11 +50,12 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	protected List<AuditQuestionOperatorAccount> auditQuestions = new ArrayList<AuditQuestionOperatorAccount>();
 	protected List<FlagQuestionCriteria> flagQuestionCriteria = new ArrayList<FlagQuestionCriteria>();
 	protected List<FlagOshaCriteria> flagOshaCriteria = new ArrayList<FlagOshaCriteria>();
-	protected List<AuditOperator> audits = new ArrayList<AuditOperator>();
 	protected List<Facility> corporateFacilities = new ArrayList<Facility>();
 	protected List<Facility> operatorFacilities = new ArrayList<Facility>();
 	protected List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
 	protected List<OperatorAccount> operatorAccounts = new ArrayList<OperatorAccount>();
+	protected List<AuditOperator> audits = new ArrayList<AuditOperator>();
+	protected Map<Integer, AuditOperator> auditMap = null;
 	
 	public OperatorAccount() {
 		this.type = "Operator";
@@ -192,6 +195,18 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	public void setAudits(List<AuditOperator> audits) {
 		this.audits = audits;
 	}
+
+	@Transient
+	public Map<Integer, AuditOperator> getAuditMap() {
+		if(auditMap == null) { 
+			auditMap = new HashMap<Integer, AuditOperator>();
+			for(AuditOperator auditOperator : getAudits()) {
+				auditMap.put(auditOperator.getAuditType().getId(), auditOperator);
+			}
+		}
+		return auditMap;
+	}
+
 
 	/**
 	 * Get a list of QuestionIDs that are Verified or Checked as part of a Flag
