@@ -18,6 +18,8 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
 
@@ -204,6 +206,13 @@ public class AuditDataUpload extends AuditActionSupport {
 							+ FileUtils.thousandize(dataID), getFileName(dataID),
 							extension, true);
 				}
+				if( conAudit.getAuditType() != null && conAudit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
+					
+					if( conAudit.getAuditStatus() == AuditStatus.Active ) {
+						conAudit.changeStatus(AuditStatus.Resubmitted, getUser());
+						auditDao.save(conAudit);
+					}
+				}	
 			}
 		}
 
@@ -222,7 +231,7 @@ public class AuditDataUpload extends AuditActionSupport {
 					.getSubCategory().getCategory())
 				auditPercentCalculator.updatePercentageCompleted(auditCatData);
 		}
-
+		
 		return SUCCESS;
 	}
 
