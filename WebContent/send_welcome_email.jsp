@@ -28,7 +28,7 @@ EmailSender.send(emailQueue);
 NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 Note note = new Note();
 note.setAccount(contractor);
-note.setAuditColumns(new User(permissions.getAccountId()));
+note.setAuditColumns(new User(permissions.getUserId()));
 note.setSummary("Welcome Email Sent "+ emailBuilder.getSentTo());
 note.setNoteCategory(NoteCategory.General);
 note.setViewableById(Account.EVERYONE);

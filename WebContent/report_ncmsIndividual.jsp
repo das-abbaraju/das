@@ -47,14 +47,14 @@
 			conAudit.setContractorAccount(new ContractorAccount());
 			conAudit.getContractorAccount().setId(Integer.parseInt(conID));
 			conAudit.setPercentVerified(0);
-			conAudit.setAuditColumns(new User(permissions.getAccountId()));
+			conAudit.setAuditColumns(new User(permissions.getUserId()));
 			conAudit.changeStatus(AuditStatus.Active, new User(permissions.getUserId()));
 			conAuditdao.save(conAudit);
 			
 			Note note = new Note();
 			note.setAccount(new Account());
 			note.getAccount().setId(Integer.parseInt(conID));
-			note.setAuditColumns(new User(permissions.getAccountId()));
+			note.setAuditColumns(new User(permissions.getUserId()));
 			note.setSummary("NCMS Desktop imported, approved");
 			note.setNoteCategory(NoteCategory.Audits);
 			note.setViewableById(Account.EVERYONE);
@@ -93,7 +93,7 @@
 			Note note = new Note();
 			note.setAccount(new Account());
 			note.getAccount().setId(Integer.parseInt(conID));
-			note.setAuditColumns(new User(permissions.getAccountId()));
+			note.setAuditColumns(new User(permissions.getUserId()));
 			note.setSummary("NCMS Desktop imported, approved");
 			note.setNoteCategory(NoteCategory.Audits);
 			noteDAO.save(note);
