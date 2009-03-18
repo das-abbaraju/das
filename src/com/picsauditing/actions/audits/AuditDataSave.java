@@ -99,9 +99,11 @@ public class AuditDataSave extends AuditActionSupport {
 						}
 
 						newCopy.setAnswer(auditData.getAnswer());
-						if (newCopy.getAudit().getAuditStatus().equals(AuditStatus.Submitted)) {
+						if (newCopy.getAudit().getAuditType().isHasRequirements() 
+								&& newCopy.getAudit().getAuditStatus().equals(AuditStatus.Submitted)
+								&& permissions.isPicsEmployee()) {
 							newCopy.setWasChanged(YesNo.Yes);
-
+							
 							if (!toggleVerify) {
 								if (newCopy.isRequirementOpen()) {
 									newCopy.setDateVerified(null);
