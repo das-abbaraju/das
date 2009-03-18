@@ -212,6 +212,14 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 		this.operatorAccount = operatorAccount;
 	}
 
+	public OperatorAccount getOperator() {
+		return operatorAccount;
+	}
+
+	public void setOperator(OperatorAccount operatorAccount) {
+		this.operatorAccount = operatorAccount;
+	}
+
 	public Industry[] getIndustryList() {
 		return Industry.values();
 	}

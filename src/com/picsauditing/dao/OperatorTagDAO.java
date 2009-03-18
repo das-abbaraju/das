@@ -38,7 +38,7 @@ public class OperatorTagDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<OperatorTag> findByOperator(int opID) {
-		Query query = em.createQuery("SELECT t FROM OperatorTag t WHERE t.operator.id = ?");
+		Query query = em.createQuery("SELECT t FROM OperatorTag t WHERE t.operator.id = ? ORDER BY tag");
 		query.setParameter(1, opID);
 		return query.getResultList();
 	}

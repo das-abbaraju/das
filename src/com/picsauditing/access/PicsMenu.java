@@ -111,6 +111,9 @@ public class PicsMenu {
 		subMenu = menu.addChild("Management");
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
 			subMenu.addChild("Approve Contractors", "con_approvals.jsp");
+		if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperator())
+			subMenu.addChild("Contractor Tags", "OperatorTags.action");
+		
 		if (permissions.hasPermission(OpPerms.EditUsers)) {
 			subMenu.addChild("Users", "UsersManage.action");
 			subMenu.addChild("User Permissions Matrix", "ReportUserPermissionMatrix.action");

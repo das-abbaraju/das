@@ -3,20 +3,40 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <html>
 <head>
-<title><s:property value="operatorAccount.name" /> Tags</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+<title><s:property value="operator.name" /> Tags</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
-<script type="text/javascript" src="js/prototype.js"></script>
 </head>
 <body>
-<h1><s:property value="operatorAccount.name" /> Tags</h1>
+<s:include value="opHeader.jsp"></s:include>
 
-<s:iterator value="tags">
-	<s:property value="id" />
-	<s:property value="tag" />
-	<s:property value="active" />
-	<br />
-</s:iterator>
+<a href="OperatorTags.action?id=<s:property value="id" />">Refresh</a>
+
+<s:form>
+	<s:hidden name="id" />
+	<table class="report">
+		<thead>
+			<tr>
+				<th>Tag Name</th>
+				<th>Visible</th>
+			</tr>
+		</thead>
+		<s:iterator value="tags" status="rowstatus">
+			<tr>
+				<td><s:hidden name="tags[%{#rowstatus.index}].id" value="%{id}" /> <s:textfield
+					name="tags[%{#rowstatus.index}].tag" value="%{tag}" /></td>
+				<td><s:checkbox name="tags[%{#rowstatus.index}].active" value="%{active}" /></td>
+			</tr>
+		</s:iterator>
+		<tr>
+			<td><s:textfield name="tags[%{tags.size}].tag" value="%{tag}" /></td>
+			<td>new</td>
+		</tr>
+	</table>
+
+	<div class="buttons">
+	<button type="submit" name="button" value="Save" class="positive">Save</button>
+	</div>
+</s:form>
 
 </body>
 </html>

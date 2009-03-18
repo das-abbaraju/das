@@ -48,21 +48,7 @@
 	<h1>Create New <s:property value="type"/> Account</h1>
 </s:if>
 <s:else>
-	<h1>Edit <s:property value="operatorAccount.name"/></h1>
-	<div id="internalnavcontainer">
-		<ul id="navlist">
-			<li><a class="current"
-				href="FacilitiesEdit.action?opID=<s:property value="operatorAccount.id"/>">Edit</a></li>
-			<s:if test="!operatorAccount.corporate">
-				<li><a href="AuditOperator.action?oID=<s:property value="operatorAccount.id"/>">Audits</a></li>
-			</s:if>
-			<li><a href="UsersManage.action?accountId=<s:property value="operatorAccount.id"/>">Users</a></li>
-			<li><a href="op_editFlagCriteria.jsp?opID=<s:property value="operatorAccount.id"/>">Flag
-				Criteria</a></li>
-			<li><a href="ReportAccountList.action?accountType=<s:property value="operatorAccount.type"/>">Return
-			to List</a></li>
-</ul>
-</div>
+	<s:include value="opHeader.jsp"></s:include>
 </s:else>
 <s:include value="../actionMessages.jsp" />
 <s:form id="save" method="POST" enctype="multipart/form-data">

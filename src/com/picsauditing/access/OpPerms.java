@@ -67,6 +67,7 @@ public enum OpPerms {
 	DelinquentAccounts("Delinquent Accounts", "Allows users to view Delinquent Contractor Accounts", false, false),
 	CreditCard("Credit Card", "Allow users to perform add, edit and delete Credit Card functions for Accounts added to Braintree.", true, true),
 	
+	ContractorTags("Contractor Tags", "Allow operators to tag and categorize their contractors into searchable groups."),
 	EmailAnnualUpdate("Email Annual Updates", "Send contractors reminder emails to update their PICS info. Edit permission is required to send the emails.", true, false),
 	EmailTemplates("Email Templates", "Allows PICS employees to edit the templates used to automatically send emails"),
 	EmailQueue("Email Queue","Allow PICS Employees to view the report for Email Queue"),

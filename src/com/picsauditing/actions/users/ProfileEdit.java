@@ -30,6 +30,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 		if (permissions == null)
 			return;
 		u = dao.find(permissions.getUserId());
+		u.getSwitchTos();
 		dao.clear();
 	}
 
