@@ -10,6 +10,7 @@ public class OperatorActionSupport extends PicsActionSupport {
 	protected int id;
 	protected OperatorAccountDAO operatorDao;
 	private OperatorAccount operator;
+	protected String subHeading;
 
 	public OperatorActionSupport(OperatorAccountDAO operatorDao) {
 		this.operatorDao = operatorDao;
@@ -47,6 +48,14 @@ public class OperatorActionSupport extends PicsActionSupport {
 			operator = operatorDao.find(id);
 		}
 		return operator;
+	}
+
+	public String getSubHeading() {
+		return subHeading;
+	}
+
+	public void setSubHeading(String subHeading) {
+		this.subHeading = subHeading;
 	}
 
 }

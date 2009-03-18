@@ -20,6 +20,7 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 	public OperatorTags(OperatorAccountDAO operatorDao, OperatorTagDAO operatorTagDAO) {
 		super(operatorDao);
 		this.operatorTagDAO = operatorTagDAO;
+		this.subHeading = "Contractor Tags";
 	}
 
 	@Override
