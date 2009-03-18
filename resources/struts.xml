@@ -346,6 +346,10 @@
 			class="com.picsauditing.actions.operators.FacilitiesEdit">
 			<result>struts/operators/operator_edit.jsp</result>
 		</action>
+		<action name="OperatorTags"
+			class="com.picsauditing.actions.operators.OperatorTags">
+			<result>struts/operators/operator_tags.jsp</result>
+		</action>
 		
 		<action name="AccountNameEditAjax"
 			class="com.picsauditing.actions.operators.FacilitiesEdit">

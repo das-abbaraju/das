@@ -242,8 +242,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	// //// BILLING/ACCOUNT - related columns //////
 	/**
-	 * Determines if this contractor must pay or not. It allows for PICS to
-	 * grant "free" lifetime accounts to certain contractors
+	 * Determines if this contractor must pay or not. It allows for PICS to grant "free" lifetime accounts to certain
+	 * contractors
 	 */
 	@Column(name = "mustPay", nullable = false, length = 3)
 	public String getMustPay() {
@@ -337,7 +337,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	/**
+	/*
 	 * The date the contractor last reviewed their facility list
 	 */
 	public Date getViewedFacilities() {
@@ -349,12 +349,11 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	/**
-	 * The date the lastPayment expires and the contractor is due to pay another
-	 * "period's" membership fee. This should NEVER be null.
+	 * The date the lastPayment expires and the contractor is due to pay another "period's" membership fee. This should
+	 * NEVER be null.
 	 * 
-	 * UPDATE contractor_info, accounts SET paymentExpires = creationDate WHERE
-	 * (paymentExpires = '0000-00-00' or paymentExpires is null) AND
-	 * contractor_info.id = accounts.id;
+	 * UPDATE contractor_info, accounts SET paymentExpires = creationDate WHERE (paymentExpires = '0000-00-00' or
+	 * paymentExpires is null) AND contractor_info.id = accounts.id;
 	 * 
 	 * @return
 	 */
@@ -369,8 +368,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	/**
-	 * Used to determine if we need to calculate the flagColor, audits and
-	 * billing
+	 * Used to determine if we need to calculate the flagColor, audits and billing
 	 * 
 	 * @return
 	 */
@@ -443,9 +441,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	@Transient
-	/**
-	 * Get a double-keyed map, by OshaType and auditFor, for the last 3 years of
-	 * applicable osha data (verified or not)
+	/*
+	 * Get a double-keyed map, by OshaType and auditFor, for the last 3 years of applicable osha data (verified or not)
 	 */
 	public Map<OshaType, Map<String, OshaAudit>> getOshas() {
 		if (oshas != null)
@@ -531,7 +528,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	@Transient
-	/**
+	/*
 	 * Get a map of the last 3 years of applicable emr data (verified or not)
 	 */
 	public Map<String, AuditData> getEmrs() {
@@ -627,39 +624,36 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setInvoices(List<Invoice> invoices) {
 		this.invoices = invoices;
 	}
-	
+
 	@Transient
 	public List<Invoice> getSortedInvoices() {
 		List<Invoice> sortedInvoiceList = new ArrayList<Invoice>(getInvoices());
 		Collections.sort(sortedInvoiceList, new Comparator<Invoice>() {
 			@Override
 			public int compare(Invoice invoiceOne, Invoice invoiceTwo) {
-								
+
 				return invoiceTwo.getCreationDate().compareTo(invoiceOne.getCreationDate());
 			}
 		});
 		return sortedInvoiceList;
-	}	
+	}
 
 	/**
-	 * The following are states of Billing Status: Membership Canceled
-	 * Contractor is not active and membership is not set to renew.
+	 * The following are states of Billing Status: Membership Canceled Contractor is not active and membership is not
+	 * set to renew.
 	 * 
-	 * Activation Contractor is not active and Contractor does not have a
-	 * membership
+	 * Activation Contractor is not active and Contractor does not have a membership
 	 * 
-	 * Reactivation Contractor is not active, Contractor's membership expired
-	 * and they don't have a current Membership Level
+	 * Reactivation Contractor is not active, Contractor's membership expired and they don't have a current Membership
+	 * Level
 	 * 
 	 * Upgrade The number of facilities a contractor is at has increased.
 	 * 
 	 * Do Not Renew Contractor's Membership is not set to renew.
 	 * 
-	 * Renewal Overdue Contractor is active and the Membership Expiration Date
-	 * is past.
+	 * Renewal Overdue Contractor is active and the Membership Expiration Date is past.
 	 * 
-	 * Renewal Contractor is active and the Membership Expiration Date is in the
-	 * next 30 Days
+	 * Renewal Contractor is active and the Membership Expiration Date is in the next 30 Days
 	 * 
 	 * @return A String of the current Billing Status
 	 */
@@ -667,13 +661,13 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public String getBillingStatus() {
 		if (!isMustPayB())
 			return "Current";
-			
+
 		if (newMembershipLevel == null)
 			return "Not Calculated";
 
 		if (newMembershipLevel.getId() == InvoiceFee.FREE)
 			return "Current";
-		
+
 		if (!isActiveB()) {
 			if (!renew)
 				return "Membership Canceled";

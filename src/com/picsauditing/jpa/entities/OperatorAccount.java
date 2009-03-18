@@ -54,6 +54,7 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	protected List<Facility> operatorFacilities = new ArrayList<Facility>();
 	protected List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
 	protected List<OperatorAccount> operatorAccounts = new ArrayList<OperatorAccount>();
+	protected List<OperatorTag> tags = new ArrayList<OperatorTag>();
 	protected List<AuditOperator> audits = new ArrayList<AuditOperator>();
 	protected Map<Integer, AuditOperator> auditMap = null;
 	
@@ -295,6 +296,15 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 
 	public void setContractorOperators(List<ContractorOperator> contractorOperators) {
 		this.contractorOperators = contractorOperators;
+	}
+
+	@OneToMany(mappedBy = "operator")
+	public List<OperatorTag> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<OperatorTag> value) {
+		this.tags = value;
 	}
 	
 	public boolean isInheritFlagCriteria() {
