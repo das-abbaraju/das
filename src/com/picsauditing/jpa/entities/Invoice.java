@@ -38,6 +38,7 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 	private String poNumber;
 	private String ccNumber;
 	private String notes;
+	private boolean qbSync;
 
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 
@@ -156,6 +157,14 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 
 	public void setCcNumber(String ccNumber) {
 		this.ccNumber = ccNumber;
+	}
+
+	public boolean isQbSync() {
+		return qbSync;
+	}
+
+	public void setQbSync(boolean qbSync) {
+		this.qbSync = qbSync;
 	}
 
 }

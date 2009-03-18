@@ -50,6 +50,7 @@ public class Account extends BaseTable implements java.io.Serializable {
 	protected char sendActivationEmailB;
 	protected String activationEmailsB;
 	protected String type;
+	protected boolean qbSync;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -206,6 +207,14 @@ public class Account extends BaseTable implements java.io.Serializable {
 
 	public void setActive(char active) {
 		this.active = active;
+	}
+	
+	public boolean isQbSync() {
+		return qbSync;
+	}
+
+	public void setQbSync(boolean qbSync) {
+		this.qbSync = qbSync;
 	}
 
 	/**
