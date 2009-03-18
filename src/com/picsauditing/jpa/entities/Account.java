@@ -51,6 +51,7 @@ public class Account extends BaseTable implements java.io.Serializable {
 	protected String activationEmailsB;
 	protected String type;
 	protected boolean qbSync;
+	protected String qbListID;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -209,12 +210,28 @@ public class Account extends BaseTable implements java.io.Serializable {
 		this.active = active;
 	}
 	
+	/**
+	 * True if QuickBooks Web Connector needs to pull this record into QuickBooks
+	 * @return
+	 */
 	public boolean isQbSync() {
 		return qbSync;
 	}
 
 	public void setQbSync(boolean qbSync) {
 		this.qbSync = qbSync;
+	}
+
+	/**
+	 * Unique Customer ID in QuickBooks, sample: 31A0000-1151296183
+	 * @return
+	 */
+	public String getQbListID() {
+		return qbListID;
+	}
+
+	public void setQbListID(String qbListID) {
+		this.qbListID = qbListID;
 	}
 
 	/**

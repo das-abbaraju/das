@@ -39,6 +39,7 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 	private String ccNumber;
 	private String notes;
 	private boolean qbSync;
+	protected String qbListID;
 
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 
@@ -159,12 +160,28 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 		this.ccNumber = ccNumber;
 	}
 
+	/**
+	 * True if QuickBooks Web Connector needs to pull this record into QuickBooks
+	 * @return
+	 */
 	public boolean isQbSync() {
 		return qbSync;
 	}
 
 	public void setQbSync(boolean qbSync) {
 		this.qbSync = qbSync;
+	}
+
+	/**
+	 * Unique Customer ID in QuickBooks, sample: 31A0000-1151296183
+	 * @return
+	 */
+	public String getQbListID() {
+		return qbListID;
+	}
+
+	public void setQbListID(String qbListID) {
+		this.qbListID = qbListID;
 	}
 
 }
