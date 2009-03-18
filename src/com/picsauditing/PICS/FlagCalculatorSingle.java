@@ -149,15 +149,17 @@ public class FlagCalculatorSingle {
 								
 							} else {
 								// For Policies
-								for(ContractorAuditOperator cao : conAudit.getOperators()) {
-									if (cao.getOperator().equals(operator)) {
-										if (CaoStatus.NotApplicable.equals(cao.getStatus())) {
-											audit.setContractorFlag(null);
-											debug(" ---- found N/A");
-										}
-										if (CaoStatus.Approved.equals(cao.getStatus())) {
-											audit.setContractorFlag(FlagColor.Green);
-											debug(" ---- found");
+								if(!conAudit.getAuditStatus().isExpired()) {
+									for(ContractorAuditOperator cao : conAudit.getOperators()) {
+										if (cao.getOperator().equals(operator)) {
+											if (CaoStatus.NotApplicable.equals(cao.getStatus())) {
+												audit.setContractorFlag(null);
+												debug(" ---- found N/A");
+											}
+											if (CaoStatus.Approved.equals(cao.getStatus())) {
+												audit.setContractorFlag(FlagColor.Green);
+												debug(" ---- found");
+											}
 										}
 									}
 								}
