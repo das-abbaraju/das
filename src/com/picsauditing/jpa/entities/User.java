@@ -343,8 +343,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		this.switchTos = switchTos;
 	}
 
-	@OneToMany(cascade = { CascadeType.ALL })
-	@JoinColumn(name = "switchToId")
+	@OneToMany(mappedBy = "switchTo", cascade = { CascadeType.ALL })
 	public List<UserSwitch> getSwitchFroms() {
 		return switchFroms;
 	}
