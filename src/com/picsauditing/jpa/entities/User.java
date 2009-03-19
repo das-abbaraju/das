@@ -72,6 +72,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	private List<UserGroup> members = new ArrayList<UserGroup>();
 	private List<UserAccess> ownedPermissions = new ArrayList<UserAccess>();
 	private List<UserSwitch> switchTos = new ArrayList<UserSwitch>();
+	private List<UserSwitch> switchFroms = new ArrayList<UserSwitch>();
 
 	public User() {
 	}
@@ -340,6 +341,16 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	
 	public void setSwitchTos(List<UserSwitch> switchTos) {
 		this.switchTos = switchTos;
+	}
+
+	@OneToMany(cascade = { CascadeType.ALL })
+	@JoinColumn(name = "switchToId")
+	public List<UserSwitch> getSwitchFroms() {
+		return switchFroms;
+	}
+
+	public void setSwitchFroms(List<UserSwitch> switchFroms) {
+		this.switchFroms = switchFroms;
 	}
 
 	// TODO: change this to a Set from a List

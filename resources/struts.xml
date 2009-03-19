@@ -742,6 +742,9 @@
 			<result name="member">
 				struts/users/user_save_members.jsp
 			</result>
+			<result name="userswitch">
+				struts/users/user_save_userswitch.jsp
+			</result>
 		</action>
 
 

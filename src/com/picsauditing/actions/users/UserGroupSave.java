@@ -3,8 +3,10 @@ package com.picsauditing.actions.users;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserGroupDAO;
+import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
+import com.picsauditing.jpa.entities.UserSwitch;
 
 @SuppressWarnings("serial")
 public class UserGroupSave extends UsersManage {
@@ -12,10 +14,12 @@ public class UserGroupSave extends UsersManage {
 	protected int groupId;
 	protected int userGroupId;
 	protected UserGroupDAO userGroupDAO;
+	protected UserSwitchDAO userSwitchDAO;
 
-	public UserGroupSave(OperatorAccountDAO operatorDao, UserDAO userDAO, UserGroupDAO userGroupDAO) {
+	public UserGroupSave(OperatorAccountDAO operatorDao, UserDAO userDAO, UserGroupDAO userGroupDAO, UserSwitchDAO userSwitchDAO) {
 		super(operatorDao, userDAO);
 		this.userGroupDAO = userGroupDAO;
+		this.userSwitchDAO = userSwitchDAO;
 	}
 
 	public String execute() throws Exception {
@@ -80,6 +84,35 @@ public class UserGroupSave extends UsersManage {
 		if ("RemoveMember".equals(button)) {
 			userGroupDAO.remove(userGroupId);
 			return "member";
+		}
+		if ("AddSwitchFrom".equals(button)) {
+			User member = userDAO.find(memberId);
+			
+			if(member != null) {		
+				UserSwitch userSwitch = userSwitchDAO.findByUserIdAndSwitchToId(memberId, user.getId());
+				
+				if (userSwitch != null) {
+					addActionError("That user already has the ability to switch to this group.");
+				} else {
+					userSwitch = new UserSwitch();
+					userSwitch.setUser(member);
+					userSwitch.setSwitchTo(user);
+					userSwitchDAO.save(userSwitch);					
+				}
+			}
+			
+			return "userswitch";
+		}
+		if("RemoveSwitchFrom".equals(button)) {
+			
+			if (memberId != 0) {
+				UserSwitch userSwitch = userSwitchDAO.findByUserIdAndSwitchToId(memberId, user.getId());
+				if (userSwitch != null) {
+					userSwitchDAO.remove(userSwitch.getId());
+				}
+			}
+			
+			return "userswitch";
 		}
 
 		return SUCCESS;

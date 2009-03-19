@@ -5,7 +5,7 @@
 <head>
 <title>Manage Users</title>
 <script type="text/javascript" src="js/prototype.js"></script>
-<script type="text/javascript" src="js/scriptaculous/scriptaculous.js?load=effects"></script>
+<script type="text/javascript" src="js/scriptaculous/scriptaculous.js?load=effects,controls"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script type="text/javascript">
@@ -84,9 +84,69 @@ function checkUsername(username) {
 	});
 }
 
+function loadAutocompleter(){}
+
+<s:if test="user.group">
+	loadAutocompleter = function() {
+		var myAjax = new Ajax.Autocompleter('userSwitchAdd', 'userSwitchAutocomplete', 'UserSearchAjax.action', 
+				{
+					paramName:'filter.search',
+					minChars: 3,
+					updateElement: addUserSwitch
+				} 
+		);
+	};
+
+	function addUserSwitch(li) {
+		$('userSwitchAdd').value = '';
+		var pars = 'button=AddSwitchFrom&user.id='+currentUserID+'&memberId='+li.id+"&accountId="+accountID;
+		var myAjax = new Ajax.Updater('userSwitch', 'UserGroupSaveAjax.action',
+				{
+					method: 'post',
+					parameters: pars,
+					onComplete: function() { loadAutocompleter(); $('userSwitchAdd').focus(); }
+				}
+		);
+	}
+
+	function removeUserSwitch(userId) {
+		var pars = 'button=RemoveSwitchFrom&user.id='+currentUserID+'&memberId='+userId+"&accountId="+accountID;
+		var myAjax = new Ajax.Updater('userSwitch', 'UserGroupSaveAjax.action',
+				{
+					method: 'post',
+					parameters: pars,
+					onComplete: function() { loadAutocompleter(); $('userSwitchAdd').focus(); }	
+				} 
+		);
+	}
+</s:if>
+
 </script>
+<style type="text/css">
+	div.autocomplete {
+  position:absolute;
+  width:250px;
+  background-color:white;
+  border:1px solid #888;
+  margin:0;
+  padding:0;
+}
+div.autocomplete ul {
+  list-style-type:none;
+  margin:0;
+  padding:0;
+}
+div.autocomplete ul li.selected { background-color: #ffb;}
+div.autocomplete ul li {
+  list-style-type:none;
+  display:block;
+  margin:0;
+  padding:2px;
+  cursor:pointer;
+}
+</style>
 </head>
-<body>
+<body onload="loadAutocompleter()">
 <h1>Manage User Accounts</h1>
 
 <table border="0">
@@ -307,6 +367,12 @@ function checkUsername(username) {
 			</s:iterator>
 			</tbody>
 			</table>
+		</s:if>
+		
+		<s:if test="user.group">
+			<div id="userSwitch">
+				<s:include value="user_save_userswitch.jsp" />
+			</div>
 		</s:if>
 	</s:if>
 </s:if>

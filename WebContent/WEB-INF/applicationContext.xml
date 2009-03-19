@@ -38,6 +38,7 @@
 	<bean id="UserDAO" class="com.picsauditing.dao.UserDAO"/>
 	<bean id="UserAccessDAO" class="com.picsauditing.dao.UserAccessDAO"/>
 	<bean id="UserGroupDAO" class="com.picsauditing.dao.UserGroupDAO"/>
+	<bean id="UserSwitchDAO" class="com.picsauditing.dao.UserSwitchDAO"/>
 	<bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO"/>
 	<bean id="UserLoginLogDAO" class="com.picsauditing.dao.UserLoginLogDAO"/>
 	<bean id="OperatorFormDAO" class="com.picsauditing.dao.OperatorFormDAO"/>
