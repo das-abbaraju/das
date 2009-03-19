@@ -1,4 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
 <title>Edit Profile</title>
@@ -57,18 +58,20 @@ function checkUsername(username) {
 			<button id="saveButton" class="positive" value="Save Profile" name="button" type="submit">Save Profile</button>
 		</div>
 	</fieldset>
-	<s:if test="u.switchTos.size > 0">
-	<fieldset class="form">
-	<legend><span>Switch Accounts</span></legend>
-	<img src="images/beta.jpg" width="98" height="100" style="float: right;" title="This is a new feature. Please send us your feedback or suggestions." />
-	<ol>
-		<li><a href="Login.action?button=switch&switchToUser=<s:property value="u.id" />"><s:property value="u.account.name" /> - Primary</a></li>
-		<s:iterator value="u.switchTos">
-			<li><a href="Login.action?button=switch&switchToUser=<s:property value="switchTo.id" />"><s:property value="switchTo.account.name" /> - <s:property value="switchTo.name" /></a></li>
-		</s:iterator>
-	</ol>
-	</fieldset>
-	</s:if>
+	<pics:permission perm="DevelopmentEnvironment">
+		<s:if test="u.switchTos.size > 0">
+		<fieldset class="form">
+		<legend><span>Switch Accounts</span></legend>
+		<img src="images/beta.jpg" width="98" height="100" style="float: right;" title="This is a new feature. Please send us your feedback or suggestions." />
+		<ol>
+			<li><a href="Login.action?button=switch&switchToUser=<s:property value="u.id" />"><s:property value="u.account.name" /> - Primary</a></li>
+			<s:iterator value="u.switchTos">
+				<li><a href="Login.action?button=switch&switchToUser=<s:property value="switchTo.id" />"><s:property value="switchTo.account.name" /> - <s:property value="switchTo.name" /></a></li>
+			</s:iterator>
+		</ol>
+		</fieldset>
+		</s:if>
+	</pics:permission>
 </s:form>
 
 </body>
