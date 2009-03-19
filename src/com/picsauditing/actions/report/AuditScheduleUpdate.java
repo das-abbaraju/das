@@ -56,7 +56,7 @@ public class AuditScheduleUpdate extends PicsActionSupport implements ServletReq
 			
 			Note note = new Note();
 			note.setAccount(contractorAudit.getContractorAccount());
-			note.setAuditColumns(new User(contractorAudit.getContractorAccount().getId()));
+			note.setAuditColumns(new User(contractorAudit.getContractorAccount().getUsers().get(0).getId()));
 			note.setSummary(newNote);
 			note.setNoteCategory(NoteCategory.Audits);
 			note.setViewableById(Account.EVERYONE);
