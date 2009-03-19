@@ -141,7 +141,7 @@
 		<s:if test="conAudit.auditType.classType.toString() == 'Policy'">
 			<s:iterator value="conAudit.operators" status="rowStatus">
 				<s:if test="permissions.operator || permissions.corporate">
-					<s:if test="operator.id == permissions.accountId || operator.isDescendantOf(permissions.accountId) || permissions.corporateParent.contains(operator.id) || true">
+					<s:if test="operator.id == permissions.accountId || operator.isDescendantOf(permissions.accountId) || permissions.corporateParent.contains(operator.id)">
 						<li>
 							<label 
 								<s:if test="notes != null && notes.length() > 0">
