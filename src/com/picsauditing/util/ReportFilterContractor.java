@@ -9,12 +9,14 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
@@ -44,6 +46,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showBillingState = false;
 	protected boolean showRegistrationDate = true;
 	protected boolean showConWithPendingAudits = false;
+	protected boolean showOpertorTagName = false;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -66,7 +69,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected Date registrationDate1;
 	protected Date registrationDate2;
 	protected boolean pendingPqfAnnualUpdate = false;
-
+	protected int operatorTagName;
 	
 
 	//private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
@@ -200,6 +203,22 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.showConWithPendingAudits = showConWithPendingAudits;
 	}
 
+	public boolean isPendingPqfAnnualUpdate() {
+		return pendingPqfAnnualUpdate;
+	}
+
+	public void setPendingPqfAnnualUpdate(boolean pendingPqfAnnualUpdate) {
+		this.pendingPqfAnnualUpdate = pendingPqfAnnualUpdate;
+	}
+	
+	public boolean isShowOpertorTagName() {
+		return showOpertorTagName;
+	}
+
+	public void setShowOpertorTagName(boolean showOpertorTagName) {
+		this.showOpertorTagName = showOpertorTagName;
+	}
+
 	public String getPerformedBy() {
 		return performedBy;
 	}
@@ -288,6 +307,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 			setShowFlagStatus(true);
 			setShowWaitingOn(true);
 			setShowRiskLevel(true);
+			setShowOpertorTagName(true);
 		}
 		if (permissions.isCorporate()) {
 		}
@@ -359,7 +379,12 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		EmailTemplateDAO dao = (EmailTemplateDAO) SpringUtils.getBean("EmailTemplateDAO");
 		return dao.findByAccountID(permissions.getAccountId(), getEmailListType());
 	}
-
+	
+	public List<OperatorTag> getOperatorTagNamesList() throws Exception {
+		OperatorTagDAO dao = (OperatorTagDAO) SpringUtils.getBean("OperatorTagDAO");
+		return dao.findByOperator(permissions.getAccountId());
+	}
+	
 	public boolean isShowAssignedCon() {
 		return showAssignedCon;
 	}
@@ -440,11 +465,12 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.registrationDate2 = registrationDate2;
 	}
 
-	public boolean isPendingPqfAnnualUpdate() {
-		return pendingPqfAnnualUpdate;
+	public int getOperatorTagName() {
+		return operatorTagName;
 	}
 
-	public void setPendingPqfAnnualUpdate(boolean pendingPqfAnnualUpdate) {
-		this.pendingPqfAnnualUpdate = pendingPqfAnnualUpdate;
+	public void setOperatorTagName(int operatorTagName) {
+		this.operatorTagName = operatorTagName;
 	}
+
 }

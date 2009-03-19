@@ -178,6 +178,13 @@
 	</s:if>
 
 	<br clear="all"/>
+
+	<s:if test="filter.showOpertorTagName">
+		<div class="filterOption">
+			<s:select list="filter.operatorTagNamesList" cssClass="forms" name="filter.operatorTagName" listKey="id" listValue="tag" headerKey="0" headerValue="- Operator Tag -"/>
+		</div>	
+	</s:if>
+
 	<s:if test="filter.showLicensedIn">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_stateLicensedIn'); return false;">Licensed

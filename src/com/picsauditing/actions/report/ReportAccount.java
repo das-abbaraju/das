@@ -237,6 +237,12 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 				+ "WHERE ca.auditStatus = 'Pending' AND ca.auditTypeID IN (1,11))";
 			sql.addWhere(query);
 		}
+		
+		if (filterOn(f.getOperatorTagName(), 0)) {
+			String query = "a.id IN (SELECT ct.conID from contractor_tag ct " 
+				+ "WHERE ct.tagID = "+  f.getOperatorTagName() +")";
+			sql.addWhere(query);
+		}	
 	}
 
 	private void createPqfDataClause(SelectSQL sql, String where) {
