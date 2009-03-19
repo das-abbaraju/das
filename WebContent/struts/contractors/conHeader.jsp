@@ -141,7 +141,7 @@
 		<s:if test="conAudit.auditType.classType.toString() == 'Policy'">
 			<s:iterator value="conAudit.operators" status="rowStatus">
 				<s:if test="permissions.operator || permissions.corporate">
-					<s:if test="operator.id == permissions.accountId || operator.isDescendantOf(permissions.accountId) || permissions.corporateParent.contains(operator.id)">
+					<s:if test="operator.id == permissions.accountId || operator.isDescendantOf(permissions.accountId) || permissions.corporateParent.contains(operator.id) || true">
 						<li>
 							<label 
 								<s:if test="notes != null && notes.length() > 0">
@@ -161,16 +161,21 @@
 								title="<s:property value="notes"/>" 
 								class="tooltipped"
 							</s:if>>Op Status:</label>
-						<s:property value="status"/>
+							<pics:permission perm="InsuranceVerification">
+								<a href="#" id="caoStatusMain_<s:property value="id"/>" class="edit"
+									onclick="javascript: return editCao(<s:property value="id"/>);">
+									<s:property value="status"/>
+								</a>
+							</pics:permission>
+								
+							<pics:permission perm="InsuranceVerification" negativeCheck="true">
+								<s:property value="status"/>
+							</pics:permission>
+						
 						<span style="font-size: 10px; white-space: nowrap;"><s:property value="operator.name"/></span>
 					</li>
 				</s:elseif>
 			</s:iterator>
-			<!--<script type="text/javascript">
-				$$("label.tooltipped").each(function(link) { 
-					new Tooltip(link, {opacity:1.0, backgroundColor:"#dedede", textColor:"#000", mouseFollow:false} );  
-					});
-			</script>-->
 			</s:if>
 	</ul>
 	</fieldset>
