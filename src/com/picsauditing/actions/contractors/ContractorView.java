@@ -48,14 +48,15 @@ public class ContractorView extends ContractorActionSupport {
 		if ("RemoveTag".equals(button)) {
 			contractorTagDAO.remove(tagId);
 		}
-		
-		operatorTags = getOperatorTagNamesList();
-		
-		for(ContractorTag contractorTag : contractor.getOperatorTags()) {
-			if(operatorTags.contains(contractorTag.getTag())) 
-				operatorTags.remove(contractorTag.getTag());
-		}
 
+		if (permissions.isOperator()) {
+			operatorTags = getOperatorTagNamesList();
+
+			for (ContractorTag contractorTag : contractor.getOperatorTags()) {
+				if (operatorTags.contains(contractorTag.getTag()))
+					operatorTags.remove(contractorTag.getTag());
+			}
+		}
 		auditBuilder.setUser(getUser());
 		auditBuilder.buildAudits(this.contractor);
 
@@ -86,6 +87,9 @@ public class ContractorView extends ContractorActionSupport {
 	}
 
 	public List<OperatorTag> getOperatorTagNamesList() throws Exception {
+		if(operatorTags != null && operatorTags.size() > 0)
+			return operatorTags;
+		
 		return operatorTagDAO.findByOperator(permissions.getAccountId());
 	}
 
