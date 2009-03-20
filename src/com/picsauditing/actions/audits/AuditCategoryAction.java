@@ -274,6 +274,12 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 				}
 			}
 		}
+		
+		if (conAudit.getAuditType().getClassType() == AuditTypeClass.Policy && 
+				"done".equals(button) && conAudit.getCategories().get(0).getPercentCompleted() == 100 &&
+				conAudit.getAuditStatus() == AuditStatus.Pending) {
+			conAudit.changeStatus(AuditStatus.Submitted, getUser());
+		}
 
 		PicsLogger.stop();
 		return SUCCESS;

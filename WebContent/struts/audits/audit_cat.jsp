@@ -77,7 +77,13 @@
 
 <br clear="all"/>
 <s:if test="mode == 'Edit'">
-	<div class="requiredLegend">Starred questions (if any) are required</div>
+	<div
+		<s:if test="'done' == button">
+			id="alert"
+		</s:if>
+	>
+	<div class="requiredLegend">Starred questions are required to continue from this page</div>
+	</div>
 </s:if>
 <s:iterator value="categories">
 	<s:if test="catDataID == id || (catDataID == 0 && appliesB)">
@@ -208,7 +214,7 @@
 				<a href="Audit.action?auditID=<s:property value="auditID"/>" class="positive">Done</a>
 			</s:if>
 			<s:else>
-				<a href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>&mode=<s:property value="mode"/>" class="positive">Done</a>
+				<a href="AuditCat.action?button=done&auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>&mode=<s:property value="mode"/>" class="positive">Done</a>
 			</s:else>	
 			Click Done when you're ready to submit the <s:property value="conAudit.auditType.auditName"/>
 			</div>
