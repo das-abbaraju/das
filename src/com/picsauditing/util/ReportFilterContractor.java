@@ -307,7 +307,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 			setShowFlagStatus(true);
 			setShowWaitingOn(true);
 			setShowRiskLevel(true);
-//			setShowOpertorTagName(true);
+			setShowOpertorTagName(true);
 		}
 		if (permissions.isCorporate()) {
 		}

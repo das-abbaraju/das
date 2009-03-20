@@ -145,6 +145,11 @@
 			<result>struts/contractors/con_view.jsp</result>
 		</action>
 
+		<action name="TagNameEditAjax"
+			class="com.picsauditing.actions.contractors.ContractorView">
+			<result>struts/contractors/contractorOperator_tags.jsp</result>
+		</action>
+
 		<action name="ContractorRegistration"
 			class="com.picsauditing.actions.contractors.ContractorRegistration">
 			<result>struts/contractors/con_registration.jsp</result>

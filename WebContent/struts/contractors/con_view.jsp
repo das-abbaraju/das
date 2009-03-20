@@ -4,6 +4,43 @@
 <html>
 <head>
 <title><s:property value="contractor.name" /></title>
+
+<link rel="stylesheet" type="text/css" media="screen"
+	href="css/reports.css" />
+<script type="text/javascript" src="js/prototype.js"></script>
+<script type="text/javascript">
+	function removeTag(tagId) {
+		var pars = "button=RemoveTag&tagId=" + tagId+'&id='+<s:property value="id"/>;
+		var divName ='conoperator_tags';
+		$(divName).innerHTML="<img src='images/ajax_process.gif' />";
+		var myAjax = new Ajax.Updater(divName, 'TagNameEditAjax.action', 
+		{
+			method: 'post', 
+			parameters: pars,
+			onSuccess: function(transport) { 
+				new Effect.Highlight($(divName), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+			}
+		});
+		return false;
+	}
+	
+	function addTag() {
+		var tagId = $('tagName').value;
+		var pars = "button=AddTag&tagId=" + tagId+'&id='+<s:property value="id"/>;
+		var divName ='conoperator_tags';
+		$(divName).innerHTML="<img src='images/ajax_process.gif' />";
+		var myAjax = new Ajax.Updater(divName, 'TagNameEditAjax.action', 
+		{
+			method: 'post', 
+			parameters: pars,
+			onSuccess: function(transport) { 
+				
+				new Effect.Highlight($(divName), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+			}
+		});
+		return false;
+	}
+</script>
 </head>
 <body>
 <s:include value="conHeader.jsp" />
@@ -73,6 +110,15 @@
 			</s:iterator>
 			<li>...<a href="ContractorFacilities.action?id=<s:property value="id" />">see Facilities</a></li>
 		</ul>
+		<s:if test= "permissions.operator && (contractor.operatorTags.size() > 0 || operatorTags.size() > 0)">
+			<fieldset class="form">
+				<legend><span>Operator Tag Names: </span></legend>
+				<ol><div id="conoperator_tags">
+					<s:include value="contractorOperator_tags.jsp" />
+					</div>
+				</ol>
+			</fieldset>
+		</s:if>	
 	</div>
 </div>
 <br clear="all" />
