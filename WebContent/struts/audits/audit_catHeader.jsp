@@ -69,7 +69,6 @@
 	<s:if test="canResubmitPolicy">
 		<div id="alert" class="buttons">
 			<button id="submit" value="Resubmit" name="button" class="positive">Resubmit</button>
-			<s:submit id="submit" value="Resubmit" name="button" cssClass="picsbutton positive" />
 			 I have reviewed and updated information for: 
 			 <s:iterator value="conAudit.operators">
 			 	<s:if test="status.name() == 'Rejected'"> 
