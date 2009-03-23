@@ -25,6 +25,12 @@ function checkTaxId(taxId) {
 	pars = 'taxId='+taxId;
 	var myAjax = new Ajax.Updater('taxId_status', 'user_ajax.jsp', {method: 'get', parameters: pars});
 }
+
+function checkName(name) {
+	$('name_status').innerHTML = 'checking availability of name...';
+	pars = 'companyName='+name;
+	var myAjax = new Ajax.Updater('name_status', 'user_ajax.jsp', {method: 'get', parameters: pars});
+}
 	
 </script>	
 </head>
@@ -40,7 +46,8 @@ function checkTaxId(taxId) {
 					<legend><span>Details</span></legend>
 					<ol>
 						<li><label>Company Name:</label>
-							<s:textfield name="contractor.name" size="35" /><span class="redMain">*</span></li>
+							<s:textfield name="contractor.name" size="35" onblur="checkName(this.value);"/>
+							<span id="name_status"></span><span class="redMain">*</span></li>
 						<li><label>Contact:</label>
 							<s:textfield name="contractor.contact" size="35" /><span class="redMain">*</span></li>
 						<li><label>Web URL:</label> 

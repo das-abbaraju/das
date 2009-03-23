@@ -60,8 +60,14 @@ public class ContractorRegistration extends ContractorActionSupport {
 
 			if(!contractorValidator.verifyTaxID(contractor)) {
 				errors.add("The tax ID <b>" + contractor.getTaxId()
-						+ "</b> already exists.  Please contact a company representative.");
+						+ "</b> already exists.  Please contact a PICS representative.");
 			}	
+			
+			if(!contractorValidator.verifyName(contractor)) {
+				errors.add("The name <b>" + contractor.getName()
+						+ "</b> already exists.  Please contact a PICS representative.");
+			}	
+
 			if (errors.size() > 0) {
 				for (String error : errors)
 					addActionError(error);

@@ -108,4 +108,11 @@ public class ContractorValidator {
 		return false;
 	}
 
+	public boolean verifyName(ContractorAccount contractorAccount) {
+		ContractorAccount cAccount = contractorAccountDAO.findConID(contractorAccount.getName());
+		if (cAccount == null || cAccount.equals(contractorAccount))
+			return true;
+
+		return false;
+	}
 }

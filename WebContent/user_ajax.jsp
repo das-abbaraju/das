@@ -7,6 +7,7 @@
 	try {
 		String username = request.getParameter("username");
 		String taxId = request.getParameter("taxId");
+		String companyName = request.getParameter("companyName");
 		if (!Strings.isEmpty(username)) {
 			int userID = 0;
 			try {
@@ -20,17 +21,23 @@
 				}
 			} catch (NumberFormatException e) {}
 		}	
-		
+		ContractorAccountDAO cAccountDAO = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
 		if (!Strings.isEmpty(taxId)) {
-			ContractorAccountDAO cAccountDAO = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
 			ContractorAccount cAccount = cAccountDAO.findTaxID(taxId);
 			if (cAccount != null) {
-				%><%=taxId%> already exists. Please contact a company representative.<%
+				%><%=taxId%> already exists. Please contact a PICS representative at 949-387-1940 ext 1.<br/><%
 				} else {
 				%><%
 				}
-		}		
-
+		}
+		if (!Strings.isEmpty(companyName)) {
+			ContractorAccount cAccount = cAccountDAO.findConID(companyName);
+			if (cAccount != null) {
+				%><%=companyName%> already exists. Please contact a PICS representative at 949-387-1940 ext 1.<br/><%
+				} else {
+				%><%
+				}
+		}
 	} catch (Exception e) {
 		%>Unknown Error Occurred: <%=e.getMessage()%><%
 	}
