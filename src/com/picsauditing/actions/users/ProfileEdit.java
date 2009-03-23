@@ -1,5 +1,6 @@
 package com.picsauditing.actions.users;
 
+import java.util.List;
 import java.util.Vector;
 
 import com.opensymphony.xwork2.Preparable;
@@ -9,7 +10,9 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserSwitch;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -17,12 +20,14 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 	protected User u;
 	protected UserDAO dao;
 	protected ContractorAccountDAO accountDao;
+	protected UserSwitchDAO userSwitchDao;
 	protected String password1;
 	protected String password2;
 
-	public ProfileEdit(UserDAO dao, ContractorAccountDAO accountDao) {
+	public ProfileEdit(UserDAO dao, ContractorAccountDAO accountDao, UserSwitchDAO userSwitchDao) {
 		this.dao = dao;
 		this.accountDao = accountDao;
+		this.userSwitchDao = userSwitchDao;
 	}
 
 	public void prepare() throws Exception {
@@ -30,7 +35,6 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 		if (permissions == null)
 			return;
 		u = dao.find(permissions.getUserId());
-		u.getSwitchTos();
 		dao.clear();
 	}
 
@@ -90,6 +94,10 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 
 	public void setPassword2(String password2) {
 		this.password2 = password2;
+	}
+	
+	public List<UserSwitch> getSwitchTos() {
+		return userSwitchDao.findByUserId(u.getId());
 	}
 
 }
