@@ -279,6 +279,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 				"done".equals(button) && conAudit.getCategories().get(0).getPercentCompleted() == 100 &&
 				conAudit.getAuditStatus() == AuditStatus.Pending) {
 			conAudit.changeStatus(AuditStatus.Submitted, getUser());
+			mode = "View";
 		}
 
 		PicsLogger.stop();
