@@ -179,7 +179,7 @@
 
 	<br clear="all"/>
 
-	<s:if test="filter.showOpertorTagName">
+	<s:if test="filter.showOpertorTagName && filter.operatorTagNamesList.size() > 0">
 		<div class="filterOption">
 			<s:select list="filter.operatorTagNamesList" cssClass="forms" name="filter.operatorTagName" listKey="id" listValue="tag" headerKey="0" headerValue="- Operator Tag -"/>
 		</div>	
