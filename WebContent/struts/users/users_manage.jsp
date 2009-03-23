@@ -368,11 +368,12 @@ div.autocomplete ul li {
 			</tbody>
 			</table>
 		</s:if>
-		
-		<s:if test="user.group">
-			<div id="userSwitch">
-				<s:include value="user_save_userswitch.jsp" />
-			</div>
+		<s:if test="permissions.admin">
+			<s:if test="user.group">
+				<div id="userSwitch">
+					<s:include value="user_save_userswitch.jsp" />
+				</div>
+			</s:if>
 		</s:if>
 	</s:if>
 </s:if>
