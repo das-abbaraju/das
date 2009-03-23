@@ -6,6 +6,7 @@ import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 
@@ -33,8 +34,13 @@ public class PolicySave extends AuditActionSupport {
 		if ("Verify".equals(policyStatus)) {
 			conAudit.changeStatus(AuditStatus.Active, getUser());
 		}
+
 		if ("Reject".equals(policyStatus)) {
 			conAudit.changeStatus(AuditStatus.Pending, getUser());
+			for (AuditCatData aCatData : conAudit.getCategories()) {
+				aCatData.setRequiredCompleted(aCatData.getRequiredCompleted() - 1);
+				catDataDao.save(aCatData);
+			}
 		}
 
 		auditDao.save(conAudit);
