@@ -64,7 +64,6 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 				emailBuilder.setTemplate(33); // Insurance Approval Status Change
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setFromAddress(permissions.getEmail());
-				emailBuilder.setBccAddresses(permissions.getEmail());
 				emailBuilder.setContractor(cao.getAudit().getContractorAccount());
 				emailBuilder.addToken("cao", cao);
 				EmailSender.send(emailBuilder.build());
