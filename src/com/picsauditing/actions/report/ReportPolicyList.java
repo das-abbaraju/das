@@ -36,6 +36,7 @@ public class ReportPolicyList extends ReportInsuranceSupport {
 		getFilter().setShowAuditType(false);
 		getFilter().setShowAuditor(false);
 		getFilter().setShowConAuditor(false);
+		getFilter().setShowAuditFor(false);
 		if(permissions.isOperator())
 			getFilter().setShowCaoStatus(true);
 	}

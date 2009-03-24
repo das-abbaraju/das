@@ -463,7 +463,7 @@
 	<s:if test="filter.showConWithPendingAudits">
 		<br clear="all" />
 		<div class="filterOption">
-		<label><s:checkbox name="filter.pendingPqfAnnualUpdate" />Check to limit to contractors with pending PQF and Annual Updates</label>
+		<label><s:checkbox name="filter.pendingPqfAnnualUpdate" />Show contractors with pending PQF and Annual Updates</label>
 		</div>
 	</s:if>
 	

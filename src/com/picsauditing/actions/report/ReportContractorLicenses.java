@@ -43,6 +43,7 @@ public class ReportContractorLicenses extends ReportContractorAudits {
 		getFilter().setShowExpiredLicense(true);
 		getFilter().setShowTradeInformation(false);
 		getFilter().setShowPrimaryInformation(false);
-		getFilter().setPendingPqfAnnualUpdate(false);
+		getFilter().setShowConWithPendingAudits(false);
+		getFilter().setShowAuditFor(false);
 	}
 }

@@ -89,6 +89,8 @@ public class ReportContractorAudits extends ReportAccount {
 		
 		if (!permissions.isPicsEmployee())
 			getFilter().setShowAuditor(true);
+		
+		getFilter().setShowAuditFor(true);
 
 	}
 
@@ -132,6 +134,12 @@ public class ReportContractorAudits extends ReportAccount {
 			setFiltered(true);
 		}
 
+		String auditFor = Strings.implodeForDB(f.getAuditFor(), ",");
+		if (filterOn(auditFor)) {
+			sql.addWhere("ca.auditFor IN ("+ auditFor + ")");
+			setFiltered(true);
+		}
+		
 		if (filterOn(f.getCreatedDate1())) {
 			report.addFilter(new SelectFilterDate("createdDate1", "ca.creationDate >= '?'", DateBean.format(f
 					.getCreatedDate1(), "M/d/yy")));

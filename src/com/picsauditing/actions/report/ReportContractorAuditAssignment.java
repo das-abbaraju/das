@@ -45,6 +45,7 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 
 		getFilter().setShowAuditStatus(false);
 		getFilter().setShowUnConfirmedAudits(true);
+		getFilter().setShowAuditFor(false);
 	}
 
 	public boolean isCanEdit() {

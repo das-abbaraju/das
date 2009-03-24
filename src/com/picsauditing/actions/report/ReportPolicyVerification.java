@@ -44,6 +44,7 @@ public class ReportPolicyVerification extends ReportContractorAudits {
 		
 		getFilter().setShowTradeInformation(false);
 		getFilter().setShowPrimaryInformation(false);
+		getFilter().setShowAuditFor(false);
 
 	}
 	
