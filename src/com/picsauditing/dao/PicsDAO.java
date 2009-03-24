@@ -12,14 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 abstract public class PicsDAO {
 	protected EntityManager em;
 	protected QueryMetaData queryMetaData = null;
-	
-	
+
 	@PersistenceContext
-	public void setEntityManager( EntityManager em )
-	{
+	public void setEntityManager(EntityManager em) {
 		this.em = em;
 	}
-
 
 	public QueryMetaData getQueryMetaData() {
 		return queryMetaData;
@@ -28,50 +25,42 @@ abstract public class PicsDAO {
 	public void setQueryMetaData(QueryMetaData queryMetaData) {
 		this.queryMetaData = queryMetaData;
 	}
-	
-	
-	protected void applyQueryMetaData( Query query )
-	{
+
+	protected void applyQueryMetaData(Query query) {
 		QueryMetaData qmd = getQueryMetaData();
-		if( qmd != null )
-		{
-			if( qmd.getMaxRows() != -1 )
-			{
+		if (qmd != null) {
+			if (qmd.getMaxRows() != -1) {
 				query.setMaxResults(qmd.getMaxRows());
 			}
-			
-			if( qmd.getStartRow() != -1  )
-			{
-				query.setFirstResult( qmd.getStartRow() );
+
+			if (qmd.getStartRow() != -1) {
+				query.setFirstResult(qmd.getStartRow());
 			}
 		}
 	}
-	
+
 	protected static void setOptionalParameter(Query query, String name, Object value) {
 		try {
 			query.setParameter(name, value);
-		} catch (IllegalArgumentException e) {}
+		} catch (IllegalArgumentException e) {
+		}
 	}
-	
-	public void clear()
-	{
+
+	public void clear() {
 		em.clear();
 	}
-	
-	
-	public void close()
-	{
+
+	public void close() {
 		clear();
-		//em.close();
+		// em.close();
 	}
-	
+
 	public boolean isContained(Object o) {
 		return em.contains(o);
 	}
-	
+
 	/**
-	 * Convert a List into a comma-delimited String Note: this could be a good
-	 * candidate to go into a Utility class
+	 * Convert a List into a comma-delimited String Note: this could be a good candidate to go into a Utility class
 	 * 
 	 * @return
 	 */
