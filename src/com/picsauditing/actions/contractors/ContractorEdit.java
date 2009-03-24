@@ -36,8 +36,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected String password2 = null;
 
 	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, 
-			UserDAO userDAO, InvoiceFeeDAO invoiceFeeDAO) {
+			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, UserDAO userDAO,
+			InvoiceFeeDAO invoiceFeeDAO) {
 		super(accountDao, auditDao);
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
@@ -57,10 +57,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			}
 			if (conID > 0) {
 				contractor = accountDao.find(conID);
-				
+
 				InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 				newFee = invoiceFeeDAO.find(newFee.getId());
-				contractor.setNewMembershipLevel(newFee);			
+				contractor.setNewMembershipLevel(newFee);
 				user = userDAO.findByAccountID(conID, "", "No").get(0);
 			}
 			accountDao.clear();
@@ -70,8 +70,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
-		
 
 		if (button != null) {
 			String ftpDir = getFtpDir();

@@ -34,9 +34,9 @@ public class AuditOperator extends BaseTable implements java.io.Serializable {
 
 	private int htmlID = 0;
 	private FlagColor contractorFlag;
-	
+
 	@ManyToOne
-	@JoinColumn(name = "auditTypeID", nullable=false)
+	@JoinColumn(name = "auditTypeID", nullable = false)
 	public AuditType getAuditType() {
 		return auditType;
 	}
@@ -63,6 +63,7 @@ public class AuditOperator extends BaseTable implements java.io.Serializable {
 
 	/**
 	 * 0 None, 1 Low, 2 Med, 3 High
+	 * 
 	 * @return
 	 */
 	public int getMinRiskLevel() {
@@ -90,8 +91,8 @@ public class AuditOperator extends BaseTable implements java.io.Serializable {
 		this.orderDate = orderDate;
 	}
 
-	@ManyToOne( fetch=FetchType.LAZY)
-	@JoinColumn(name = "opID", nullable=false)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "opID", nullable = false)
 	public OperatorAccount getOperatorAccount() {
 		return operatorAccount;
 	}
@@ -108,20 +109,18 @@ public class AuditOperator extends BaseTable implements java.io.Serializable {
 	public void setRequiredForFlag(FlagColor requiredForFlag) {
 		this.requiredForFlag = requiredForFlag;
 	}
-	
+
 	@Enumerated(EnumType.STRING)
 	public AuditStatus getRequiredAuditStatus() {
 		return requiredAuditStatus;
 	}
-	
+
 	public void setRequiredAuditStatus(AuditStatus requiredAuditStatus) {
 		this.requiredAuditStatus = requiredAuditStatus;
 	}
 
-
 	/**
-	 * Unique ID used in HTML. We can't use the auditOperatorID because that may
-	 * be blank for new records
+	 * Unique ID used in HTML. We can't use the auditOperatorID because that may be blank for new records
 	 * 
 	 * @return
 	 */
@@ -137,6 +136,7 @@ public class AuditOperator extends BaseTable implements java.io.Serializable {
 
 	/**
 	 * Temporary field to store ??
+	 * 
 	 * @return
 	 */
 	@Transient
@@ -148,7 +148,11 @@ public class AuditOperator extends BaseTable implements java.io.Serializable {
 		this.contractorFlag = contractorFlag;
 	}
 
-	
+	@Transient
+	public boolean isRequiredFor(ContractorAccount contractor) {
+		return (canSee && minRiskLevel > 0 && minRiskLevel <= contractor.getRiskLevel().ordinal());
+	}
+
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;
