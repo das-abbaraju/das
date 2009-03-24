@@ -9,6 +9,9 @@ public class ReportUnpaidInvoices extends ReportContractorInvoice {
 	
 	public void buildQuery() {
 		super.buildQuery();
+
+		getFilter().setShowPrimaryInformation(false);
+		getFilter().setShowTradeInformation(false);
 		sql.addWhere("i.paid = 0");
 	}
 	

@@ -16,5 +16,7 @@ public class ReportFatalities extends ReportAnnualAddendum {
 		sql.addJoin("JOIN osha_audit os ON os.auditID = ca.id");
 		sql.addWhere("os.fatalities > 0");
 		sql.addField("os.fatalities");
+		
+		getFilter().setPendingPqfAnnualUpdate(false);
 	}
 }

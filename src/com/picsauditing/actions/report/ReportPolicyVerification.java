@@ -41,6 +41,10 @@ public class ReportPolicyVerification extends ReportContractorAudits {
 		sql.addWhere("ca.id IN (" + subSelect.toString() + ")");
 		sql.addJoin("JOIN pqfcatdata pcd ON ca.id = pcd.auditID");
 		sql.addField("pcd.id catdataID");
+		
+		getFilter().setShowTradeInformation(false);
+		getFilter().setShowPrimaryInformation(false);
+
 	}
 	
 	@Override

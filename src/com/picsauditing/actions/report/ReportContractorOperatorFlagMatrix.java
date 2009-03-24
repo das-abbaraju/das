@@ -33,6 +33,9 @@ public class ReportContractorOperatorFlagMatrix extends ReportAccount {
 	protected void buildQuery() {
 		super.buildQuery();
 		
+		getFilter().setShowPrimaryInformation(false);
+		getFilter().setShowTradeInformation(false);
+		
 		List<Integer> ops = new Vector<Integer>();
 		
 		if( getUser().getAccount().isOperator() ) {

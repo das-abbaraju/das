@@ -16,6 +16,8 @@ public class ReportMyAuditHistory extends ReportContractorAudits {
 		
 		getFilter().setShowAuditor(false);
 		getFilter().setShowVisible(false);
+		getFilter().setShowPrimaryInformation(false);
+		getFilter().setShowTradeInformation(false);
 	}
 
 }

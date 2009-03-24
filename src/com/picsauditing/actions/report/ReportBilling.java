@@ -23,13 +23,16 @@ public class ReportBilling extends ReportAccount {
 		sql.addField("f1.defaultAmount as oldAmount");
 		sql.addField("f2.defaultAmount as newAmount");
 		sql.addWhere("f2.defaultAmount > 0");
-		sql.addField("a.creationDate");
 		sql.addField("c.ccOnFile");
 		sql.addField("c.lastUpgradeDate");
 		
 		sql.addWhere("c.mustPay = 'Yes'");
 		
 		getFilter().setShowBillingState(true);
+		getFilter().setShowConWithPendingAudits(false);
+		getFilter().setShowPrimaryInformation(false);
+		getFilter().setShowTradeInformation(false);
+		
 		String billingState = "All";
 		if (getFilter().getBillingState() != null)
 			billingState = getFilter().getBillingState();

@@ -23,6 +23,8 @@ public class ReportContractorAuditAuditor extends ReportContractorAudits {
 
 		getFilter().setShowAuditor(false);
 		getFilter().setShowVisible(false);
+		getFilter().setShowPrimaryInformation(false);
+		getFilter().setShowTradeInformation(false);
 	}
 	
 	public AuditStatus[] getAuditStatusList() {

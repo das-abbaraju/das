@@ -18,7 +18,8 @@ public class ReportEmrRates extends ReportAnnualAddendum {
 		
 		getFilter().setShowEmrRange(true);
 		getFilter().setShowAuditFor(true);
-		
+		getFilter().setPendingPqfAnnualUpdate(false);
+
 		sql.addJoin("JOIN pqfdata d ON d.auditID = ca.id");
 		sql.addField("d.answer");
 
@@ -26,6 +27,7 @@ public class ReportEmrRates extends ReportAnnualAddendum {
 		sql.addWhere("d.answer >= " + getFilter().getMinEMR());
 		sql.addWhere("d.answer < " + getFilter().getMaxEMR());
 		sql.addWhere("d.answer > ''");
+		
 	}
 
 }
