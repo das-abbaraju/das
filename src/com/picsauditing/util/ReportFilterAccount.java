@@ -14,6 +14,8 @@ public class ReportFilterAccount extends ReportFilter {
 	protected boolean showIndustry = true;
 	protected boolean showAddress = true;
 	protected boolean showVisible = false;
+	protected boolean showPrimaryInformation = true;
+	protected boolean showTradeInformation = true;
 	
 	///////// Parameter Values  /////////////////
 	protected String startsWith;
@@ -23,6 +25,8 @@ public class ReportFilterAccount extends ReportFilter {
 	protected String state;
 	protected String zip = DEFAULT_ZIP;
 	protected String visible;
+	protected boolean primaryInformation = false;
+	protected boolean tradeInformation = false;
 	
 	protected Permissions permissions = null;
 	public void setPermissions(Permissions permissions) {
@@ -71,6 +75,22 @@ public class ReportFilterAccount extends ReportFilter {
 
 	public void setShowVisible(boolean showVisible) {
 		this.showVisible = showVisible;
+	}
+
+	public boolean isShowPrimaryInformation() {
+		return showPrimaryInformation;
+	}
+
+	public void setShowPrimaryInformation(boolean showPrimaryInformation) {
+		this.showPrimaryInformation = showPrimaryInformation;
+	}
+
+	public boolean isShowTradeInformation() {
+		return showTradeInformation;
+	}
+
+	public void setShowTradeInformation(boolean showTradeInformation) {
+		this.showTradeInformation = showTradeInformation;
 	}
 
 	public String getStartsWith() {
@@ -129,9 +149,23 @@ public class ReportFilterAccount extends ReportFilter {
 		this.visible = visible;
 	}
 
+	public boolean isPrimaryInformation() {
+		return primaryInformation;
+	}
+
+	public void setPrimaryInformation(boolean primaryInformation) {
+		this.primaryInformation = primaryInformation;
+	}
+	
+	public boolean isTradeInformation() {
+		return tradeInformation;
+	}
+
+	public void setTradeInformation(boolean tradeInformation) {
+		this.tradeInformation = tradeInformation;
+	}
+
 	public Permissions getPermissions() {
 		return permissions;
 	}
-
-	
 }

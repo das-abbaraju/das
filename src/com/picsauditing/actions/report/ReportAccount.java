@@ -31,6 +31,8 @@ import com.picsauditing.util.Strings;
 public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	protected boolean skipPermissions = false;
+	protected Boolean showContactInfo = null;
+	protected Boolean showTradeInfo = null;
 
 	// ?? may need to move to Filters
 	protected List<Integer> ids = new ArrayList<Integer>();
@@ -62,18 +64,16 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
 
-		if (download) {
-			// Add a bunch more fields that we can show in the download page
-			addDownload();
-		}
-
+		sql.addField("a.fax");
+		sql.addField("a.creationDate");
+		sql.addField("c.taxID");
 		addFilterToSQL();
 	}
 
 	// TODO make this method final
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
+	//	if (!forceLogin())
+	//		return LOGIN;
 
 		// Figure out if this is mailmerge call or not
 		// This is not very robust, we should refactor this eventually
@@ -154,6 +154,26 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getZip(), ReportFilterAccount.DEFAULT_ZIP))
 			report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", f.getZip()));
 
+		if(f.isPrimaryInformation()) {
+			sql.addField("a.contact");
+			sql.addField("a.phone");
+			sql.addField("a.phone2");
+			sql.addField("a.email");
+			sql.addField("a.address");
+			sql.addField("a.city");
+			sql.addField("a.state");
+			sql.addField("a.zip");
+			sql.addField("c.secondContact");
+			sql.addField("c.secondPhone");
+			sql.addField("c.secondEmail");
+			sql.addField("a.web_URL");
+		}
+		
+		if(f.isTradeInformation()) {
+			sql.addField("c.main_trade");
+			sql.addField("a.industry");
+		}
+		
 		/** **** Filters for Contractors ********** */
 
 		if (filterOn(f.getTrade())) {
@@ -290,25 +310,19 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		this.sql = sql;
 	}
 	
-	public void addDownload() {
-		sql.addField("a.contact");
-		sql.addField("a.address");
-		sql.addField("a.city");
-		sql.addField("a.state");
-		sql.addField("a.zip");
-		sql.addField("a.phone");
-		sql.addField("a.phone2");
-		sql.addField("a.fax");
-		sql.addField("a.email");
-		sql.addField("a.web_URL");
-		sql.addField("a.creationDate");
-		sql.addField("c.taxID");
-		sql.addField("c.secondContact");
-		sql.addField("c.secondPhone");
-		sql.addField("c.secondEmail");
-		sql.addField("c.billingContact");
-		sql.addField("c.billingPhone");
-		sql.addField("c.billingEmail");
-		sql.addField("c.riskLevel");
+	public boolean isShowContact() {
+		if(getFilter() == null)
+			return false;
+		if(showContactInfo == null) 
+			showContactInfo = getFilter().isPrimaryInformation();
+		return showContactInfo;	
 	}
-}
+	
+	public boolean isShowTrade() {
+		if(getFilter() == null)
+			return false;
+		if(showTradeInfo == null) 
+			showTradeInfo = getFilter().isTradeInformation();
+		return showTradeInfo;	
+	}
+}	

@@ -467,6 +467,21 @@
 		</div>
 	</s:if>
 	
+	<s:if test="filter.showPrimaryInformation">
+		<br clear="all" />
+		<div class="filterOption">
+		<label><s:checkbox name="filter.primaryInformation" />
+		Show Contact Info</label>
+		</div>
+	</s:if>
+
+	<s:if test="filter.showTradeInformation">
+		<div class="filterOption">
+		<label><s:checkbox name="filter.tradeInformation" />
+		Show Trade Info</label>
+		</div>
+	</s:if>
+
 	<br clear="all" />
 	<div class="alphapaging"><s:property
 		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
