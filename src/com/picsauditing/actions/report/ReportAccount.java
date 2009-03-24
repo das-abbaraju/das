@@ -67,6 +67,11 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		sql.addField("a.fax");
 		sql.addField("a.creationDate");
 		sql.addField("c.taxID");
+		sql.addField("c.riskLevel");
+		sql.addField("c.billingContact");
+		sql.addField("c.billingPhone");
+		sql.addField("c.billingEmail");
+		
 		addFilterToSQL();
 	}
 
