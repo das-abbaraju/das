@@ -56,7 +56,7 @@
 				<td align="center"><a href="javascript: changeOrderBy('form1','expiresDate ASC');">Expires</a></td>
 				<td>Limits</td>
 				<td title="Waiver of Subrogation">Waiver</td>
-				<td>Additional Insured</td>
+				<td>Additional Insured / Certificate Holder</td>
 				<td>Cert</td>
 				<td>Notes</td>
 				<td>Approval<br/>Status</td>
