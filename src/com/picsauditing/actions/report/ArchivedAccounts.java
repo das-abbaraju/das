@@ -18,10 +18,6 @@ public class ArchivedAccounts extends ReportAccount {
 		skipPermissions = true;
 		super.buildQuery();
 		
-		sql.addField("a.contact");
-		sql.addField("a.phone");
-		sql.addField("a.phone2");
-		sql.addField("a.email");
 		sql.addWhere("a.active = 'N'");
 
 		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.SQL);
