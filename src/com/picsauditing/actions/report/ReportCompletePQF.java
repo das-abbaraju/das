@@ -55,7 +55,8 @@ public class ReportCompletePQF extends ReportContractorAudits {
 		getFilter().setShowClosedDate(false);
 		getFilter().setShowExpiredDate(false);
 		getFilter().setShowPercentComplete(true);
-
+		getFilter().setShowTradeInformation(false);
+		getFilter().setShowPrimaryInformation(false);
 	}
 	
 	@Override
