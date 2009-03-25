@@ -16,6 +16,7 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
 import com.picsauditing.PICS.AuditBuilder;
+import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -44,6 +45,7 @@ public class Cron extends PicsActionSupport {
 	protected AuditBuilder auditBuilder = null;
 	protected ContractorAuditDAO contractorAuditDAO = null;
 	protected ContractorAccountDAO contractorAccountDAO = null;
+	protected AuditPercentCalculator auditPercentCalculator;
 
 	protected long startTime = 0L;
 	StringBuffer report = null;
@@ -51,12 +53,13 @@ public class Cron extends PicsActionSupport {
 	protected boolean flagsOnly = false;
 
 	public Cron(OperatorAccountDAO ops, AppPropertyDAO appProps, AuditBuilder ab,
-			ContractorAuditDAO contractorAuditDAO, ContractorAccountDAO contractorAccountDAO) {
+			ContractorAuditDAO contractorAuditDAO, ContractorAccountDAO contractorAccountDAO, AuditPercentCalculator auditPercentCalculator) {
 		this.operatorDAO = ops;
 		this.appPropDao = appProps;
 		this.auditBuilder = ab;
 		this.contractorAuditDAO = contractorAuditDAO;
 		this.contractorAccountDAO = contractorAccountDAO;
+		this.auditPercentCalculator = auditPercentCalculator;
 	}
 
 	public String execute() throws Exception {
@@ -114,6 +117,23 @@ and expiresDate < NOW();
 					else
 						cAudit.setAuditStatus(AuditStatus.Expired);
 					contractorAuditDAO.save(cAudit);
+				}
+				endTask();
+			} catch (Throwable t) {
+				handleException(t);
+			}
+			
+			try {
+				startTask("\nRecalculating all the categories for Audits...");
+				List<ContractorAudit> conList = contractorAuditDAO.findAuditsNeedingRecalculation();
+				for (ContractorAudit cAudit : conList) {
+//					Long startTime = System.currentTimeMillis();
+					auditPercentCalculator.percentCalculateComplete(cAudit, true);
+//					System.out.println("categories : " + new Long(System.currentTimeMillis() - startTime).toString());
+					cAudit.setLastRecalculation(new Date());
+					cAudit.setAuditColumns(new User(User.SYSTEM));
+					contractorAuditDAO.save(cAudit);
+//					System.out.println("total : " + new Long(System.currentTimeMillis() - startTime).toString());
 				}
 				endTask();
 			} catch (Throwable t) {

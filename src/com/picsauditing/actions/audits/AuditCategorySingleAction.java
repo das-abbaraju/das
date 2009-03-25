@@ -37,7 +37,10 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	public String execute() throws Exception {
 
 		// Calculate and set the percent complete
-		auditPercentCalculator.percentCalculateComplete(conAudit, conAudit.getAuditType().getClassType().equals(
+		if(conAudit.getLastRecalculation() == null)
+			auditPercentCalculator.percentCalculateComplete(conAudit, true);
+		else	
+			auditPercentCalculator.percentCalculateComplete(conAudit, conAudit.getAuditType().getClassType().equals(
 				AuditTypeClass.IM));
 
 		if ("Submit".equals(button)) {

@@ -268,4 +268,22 @@ public class ContractorAuditDAO extends PicsDAO {
 		query.setParameter("After26Days", calendar1.getTime());
 		return query.getResultList();
 	}
+	
+	public List<ContractorAudit> findAuditsNeedingRecalculation() {
+		String hql = "SELECT ca FROM ContractorAudit ca " +
+				"WHERE (" +
+				" ca.lastRecalculation IS NULL " +
+				" OR ca.lastRecalculation < :threeMonthsAgo " +
+				") ORDER BY ca.auditType.id, ca.contractorAccount.lastLogin DESC";
+		Query query = em.createQuery(hql);
+		query.setMaxResults(10);
+		
+		Calendar calendar = Calendar.getInstance();
+		
+		calendar.add(Calendar.DAY_OF_YEAR, -90);
+		query.setParameter("threeMonthsAgo", calendar.getTime());
+		
+		return query.getResultList();
+	}
+
 }
