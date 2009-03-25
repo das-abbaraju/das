@@ -15,6 +15,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
+import com.picsauditing.util.Strings;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -140,12 +141,16 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public ContractorAccount findConID(String name) {
-		if (name == null)
-			name = "";
-		if (name.length() > 0)
-			name = "WHERE a.name = '" + name + "'";
 		try {
-			Query query = em.createQuery("SELECT a from ContractorAccount a " + name);
+			Query query;
+			if (Strings.isEmpty(name)){
+				query = em.createQuery("SELECT a FROM ContractorAccount a");
+			}
+			else {
+				query = em.createQuery("SELECT a FROM ContractorAccount a WHERE a.name = ?");
+				query.setParameter(1, name);
+			}
+			
 			return (ContractorAccount) query.getSingleResult();
 		} catch (NoResultException e) {
 			return null;
