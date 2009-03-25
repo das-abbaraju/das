@@ -40,7 +40,10 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 	private String notes;
 	private boolean qbSync;
 	protected String qbListID;
-
+	protected String qbPaymentListID;
+	
+	
+	
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 
 	@ManyToOne
@@ -183,5 +186,38 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 	public void setQbListID(String qbListID) {
 		this.qbListID = qbListID;
 	}
+
+	public String getQbPaymentListID() {
+		return qbPaymentListID;
+	}
+
+	public void setQbPaymentListID(String qbPaymentListID) {
+		this.qbPaymentListID = qbPaymentListID;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		
+		// We use to compare class names, but with Hibernate, the names get really weird
+		// Now we just ignore the names and just cast it to an Account object
+		// System.out.println("this.getClass() "+getClass().getName());
+		// System.out.println("obj.getClass()  "+obj.getClass().getName());
+		// System.out.println("obj.getClass().getSuperclass()  "+obj.getClass().getSuperclass().getName());
+		try {
+			// Try to cast this to an account
+			final Invoice other = (Invoice) obj;
+			if (id == other.getId())
+				return true;
+			return false;
+		} catch (Exception e) {
+			// something went wrong so these must not be equal
+			return false;
+		}
+	}
+	
 
 }

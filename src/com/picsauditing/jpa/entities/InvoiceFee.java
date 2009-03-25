@@ -23,6 +23,9 @@ public class InvoiceFee extends BaseTable implements java.io.Serializable {
 	private int amount;
 	private boolean visible = true;
 	private String feeClass;
+	private String qbFullName;
+
+	
 	
 	public InvoiceFee() {
 	}
@@ -66,6 +69,14 @@ public class InvoiceFee extends BaseTable implements java.io.Serializable {
 
 	public void setFeeClass(String feeClass) {
 		this.feeClass = feeClass;
+	}
+
+	public String getQbFullName() {
+		return qbFullName;
+	}
+
+	public void setQbFullName(String qbFullName) {
+		this.qbFullName = qbFullName;
 	}
 
 }

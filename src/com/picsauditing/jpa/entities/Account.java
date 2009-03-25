@@ -264,6 +264,11 @@ public class Account extends BaseTable implements java.io.Serializable {
 	public void setUsers(List<User> users) {
 		this.users = users;
 	}
+	
+	@Transient
+	public String getCountryCode() {
+		return "US";
+	}
 
 	@Transient
 	public boolean isContractor() {
