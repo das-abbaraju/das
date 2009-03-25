@@ -136,7 +136,7 @@ function updateExpDate() {
 
 <s:if test="permissions.contractor && !contractor.activeB && contractor.paymentMethodStatusValid">
 	<div class="buttons" style="float: right;">
-		<a href="contractor_new_confirm.jsp" class="positive">Next</a>
+		<a href="ContractorRegistrationFinish.action" class="positive">Next</a>
 	</div>
 </s:if>
 </body>

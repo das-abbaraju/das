@@ -155,6 +155,11 @@
 			<result>struts/contractors/con_registration.jsp</result>
 		</action>
 
+		<action name="ContractorRegistrationFinish"
+			class="com.picsauditing.actions.contractors.ContractorActionSupport">
+			<result>struts/contractors/con_registration_finish.jsp</result>
+		</action>
+		
 		<action name="ContractorFlag"
 			class="com.picsauditing.actions.contractors.ContractorFlagAction">
 			<result>struts/contractors/contractor_flag.jsp</result>
