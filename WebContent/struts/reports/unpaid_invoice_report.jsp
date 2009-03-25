@@ -16,9 +16,9 @@
 	<tr>
 		<td></td>
 	    <th><a href="javascript: changeOrderBy('form1','a.name');" >Contractor</a></th>
-		<th>CC</th>
-		<th>Invoice #</th>
-		<th>Invoice Total</th>
+		<th class="center"><a href="javascript: changeOrderBy('form1','ccOnFile DESC');">CC</a></th>
+		<th><a href="javascript: changeOrderBy('form1','i.id');">Invoice #</a></th>
+		<th><a href="javascript: changeOrderBy('form1','totalAmount DESC');">Invoice Total</a></th>
 		<th><a href="javascript: changeOrderBy('form1','dueDate');">Due Date</a></th>
 	</tr>
 	</thead>

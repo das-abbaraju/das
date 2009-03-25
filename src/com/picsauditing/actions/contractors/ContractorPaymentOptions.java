@@ -37,14 +37,13 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private String company;
 	private CreditCard cc;
 	private InvoiceFeeDAO invoiceFeeDAO;
-	
+
 	private InvoiceFee activationFee;
 
 	AppPropertyDAO appPropDao;
 
-	public ContractorPaymentOptions(ContractorAccountDAO accountDao,
-			ContractorAuditDAO auditDao, AppPropertyDAO appPropDao,
-			InvoiceFeeDAO invoiceFeeDAO) {
+	public ContractorPaymentOptions(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			AppPropertyDAO appPropDao, InvoiceFeeDAO invoiceFeeDAO) {
 		super(accountDao, auditDao);
 		this.appPropDao = appPropDao;
 		this.invoiceFeeDAO = invoiceFeeDAO;
@@ -61,27 +60,28 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		if (!paymentMethod.equals(contractor.getPaymentMethod())) {
 			contractor.setPaymentMethod(paymentMethod);
 		}
-		
+
 		if ("Activation".equals(contractor.getBillingStatus()))
 			activationFee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
-		if ("Membership Canceled".equals(contractor.getBillingStatus()) || "Reactivation".equals(contractor.getBillingStatus()))
+		if ("Membership Canceled".equals(contractor.getBillingStatus())
+				|| "Reactivation".equals(contractor.getBillingStatus()))
 			activationFee = invoiceFeeDAO.find(InvoiceFee.REACTIVATION);
 
 		if (!paymentMethod.isCreditCard())
 			return SUCCESS;
-		
+
 		// Setup the new variables for sending the CC to braintree
 		customer_vault_id = contractor.getIdString();
-		
+
 		// This is a credit card method
 		key = appPropDao.find("brainTree.key").getValue();
 		key_id = appPropDao.find("brainTree.key_id").getValue();
 
 		// A response was received
 		if (response_code != null) {
-			String newHash = BrainTree.buildHash(orderid, amount, response,
-					transactionid, avsresponse, cvvresponse, customer_vault_id,	time, key);
-			
+			String newHash = BrainTree.buildHash(orderid, amount, response, transactionid, avsresponse, cvvresponse,
+					customer_vault_id, time, key);
+
 			if (response.equals("3")) {
 				PicsLogger.start("CC_Hash_Errors");
 				PicsLogger.log("Hash issues for Contractor id= " + contractor.getIdString());
@@ -112,14 +112,17 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				contractor.setCcOnFile(true);
 				contractor.setPaymentMethod(PaymentMethod.CreditCard);
 				accountDao.save(contractor);
-				addActionMessage("Successfully Saved");
+				addActionMessage("Successfully added Credit Card");
+				addActionMessage("Your card has not been charged. PICS will review your registration " +
+						"to ensure its accuracy and charge your card " +
+						"within one business day and email you the receipt.");
 			}
 		}
-	
+
 		BrainTreeService ccService = new BrainTreeService();
 		ccService.setUserName(appPropDao.find("brainTree.username").getValue());
 		ccService.setPassword(appPropDao.find("brainTree.password").getValue());
-		
+
 		if ("Delete".equalsIgnoreCase(button)) {
 			ccService.deleteCreditCard(contractor.getId());
 			contractor.setCcOnFile(false);
@@ -127,16 +130,15 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		try {
 			cc = ccService.getCreditCard(contractor.getId());
-		}
-		catch( Exception communicationProblem ) {} //should not appear as if the user does not have a credit card 
+		} catch (Exception communicationProblem) {
+		} // should not appear as if the user does not have a credit card
 
-		if( cc == null || cc.getCardNumber() == null ) {
+		if (cc == null || cc.getCardNumber() == null) {
 			contractor.setCcOnFile(false);
-		}
-		else {
+		} else {
 			contractor.setCcOnFile(true);
 		}
-		
+
 		time = DateBean.getBrainTreeDate();
 		hash = BrainTree.buildHash(orderid, amount, customer_vault_id, time, key);
 

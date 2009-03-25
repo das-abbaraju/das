@@ -650,20 +650,15 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	/**
 	 * The following are states of Billing Status: Membership Canceled Contractor is not active and membership is not
-	 * set to renew.
-	 * 
-	 * Activation Contractor is not active and Contractor does not have a membership
-	 * 
-	 * Reactivation Contractor is not active, Contractor's membership expired and they don't have a current Membership
-	 * Level
-	 * 
-	 * Upgrade The number of facilities a contractor is at has increased.
-	 * 
-	 * Do Not Renew Contractor's Membership is not set to renew.
-	 * 
-	 * Renewal Overdue Contractor is active and the Membership Expiration Date is past.
-	 * 
-	 * Renewal Contractor is active and the Membership Expiration Date is in the next 30 Days
+	 * set to renew:<br /><br>
+	 * <b>Current</b> means the contractor doesn't owe anything right now<br>
+	 * <b>Activation</b> means the contractor is not active and has never been active<br>
+	 * <b>Reactivation</b> means the contractor was active, but is no longer active anymore<br>
+	 * <b>Upgrade</b> The number of facilities a contractor is at has increased.<br>
+	 * <b>Do not renew</b> means the contractor has asked not to renew their account<br>
+	 * <b>Membership Canceled</b> means the contractor closed their account and doesn't want to renew<br>
+	 * <b>Renewal Overdue</b> Contractor is active and the Membership Expiration Date is past.<br>
+	 * <b>Renewal</b> Contractor is active and the Membership Expiration Date is in the next 30 Days<br>
 	 * 
 	 * @return A String of the current Billing Status
 	 */

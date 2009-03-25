@@ -93,8 +93,21 @@ public class Cron extends PicsActionSupport {
 
 			try {
 				startTask("\nExpiring Audits...");
+				// TODO do mass update statements rather than query for loop update
+				/*
+				 update contractor_audit set auditStatus = 'Expired'
+where auditStatus IN ('Submitted','Exempt','Active')
+and auditTypeID = 11
+and expiresDate < NOW();
+
+
+update contractor_audit set auditStatus = 'Pending', closedDate = null, completedDate = null, expiresDate = null
+where auditStatus IN ('Submitted','Exempt','Active')
+and auditTypeID = 1
+and expiresDate < NOW();
+				 */
 				String where = "expiresDate < NOW() AND auditStatus IN ('Submitted','Exempt','Active')";
-				List<ContractorAudit> conList = contractorAuditDAO.findWhere(70, where, "expiresDate");
+				List<ContractorAudit> conList = contractorAuditDAO.findWhere(250, where, "expiresDate");
 				for (ContractorAudit cAudit : conList) {
 					if (cAudit.getAuditType().isPqf())
 						cAudit.changeStatus(AuditStatus.Pending, new User(User.SYSTEM));

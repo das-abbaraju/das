@@ -20,8 +20,8 @@ public class ReportBilling extends ReportAccount {
 		sql.addJoin("LEFT JOIN invoice_fee f2 ON c.newMembershipLevelID = f2.id");
 		
 		sql.addField("f2.fee");
-		sql.addField("f1.defaultAmount as oldAmount");
-		sql.addField("f2.defaultAmount as newAmount");
+		sql.addField("ROUND(f1.defaultAmount) as oldAmount");
+		sql.addField("ROUND(f2.defaultAmount) as newAmount");
 		sql.addWhere("f2.defaultAmount > 0");
 		sql.addField("c.ccOnFile");
 		sql.addField("c.lastUpgradeDate");

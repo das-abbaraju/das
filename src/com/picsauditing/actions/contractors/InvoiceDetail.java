@@ -127,8 +127,12 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 				}
 				if (button.startsWith("Email")) {
 					try {
-						emailInvoice();
-						addNote("Invoice emailed to " + contractor.getBillingEmail());
+						EmailQueue email = emailInvoice();
+						String note = "Invoice emailed to " + email.getToAddresses();
+						if (Strings.isEmpty(email.getCcAddresses()))
+							note += "and cc'd " + email.getCcAddresses();
+						addNote(note);
+						
 					} catch (Exception e) {
 						// TODO: handle exception
 					}
@@ -144,7 +148,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		return SUCCESS;
 	}
 
-	private void emailInvoice() throws Exception {
+	private EmailQueue emailInvoice() throws Exception {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(45);
 		emailBuilder.setPermissions(permissions);
@@ -180,6 +184,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		email.setPriority(60);
 		email.setHtml(true);
 		EmailSender.send(email);
+		return email;
 	}
 
 	private void updateTotals() {

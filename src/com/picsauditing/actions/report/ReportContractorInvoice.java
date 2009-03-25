@@ -12,7 +12,7 @@ public class ReportContractorInvoice extends ReportAccount {
 	public void buildQuery() {
 		super.buildQuery();
 		sql.addField("i.id as invoiceId");
-		sql.addField("i.totalAmount");
+		sql.addField("ROUND(i.totalAmount) as totalAmount");
 		sql.addField("i.dueDate");
 		sql.addField("c.ccOnFile");
 		

@@ -58,7 +58,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 
 	@Override
 	public String execute() throws Exception {
-		loadPermissions();
+		findContractor();
 		return SUCCESS;
 	}
 

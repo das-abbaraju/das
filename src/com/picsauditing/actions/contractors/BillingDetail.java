@@ -128,11 +128,24 @@ public class BillingDetail extends ContractorActionSupport {
 
 			Invoice invoice = new Invoice();
 			invoice.setAccount(contractor);
-			invoice.setDueDate(DateBean.addDays(new Date(), Invoice.daysUntilDue));
 			invoice.setPaid(false);
 			invoice.setItems(invoiceItems);
 			invoice.setTotalAmount(invoiceTotal);
 			invoice.setAuditColumns(getUser());
+			
+			if (contractor.getBillingStatus().equals("Activation") || contractor.getBillingStatus().equals("Reactivation")) {
+				invoice.setDueDate(new Date());
+			} else if (contractor.getBillingStatus().equals("Upgrade")) {
+				invoice.setDueDate(DateBean.addDays(contractor.getLastUpgradeDate(), 30));
+			} else if (contractor.getBillingStatus().startsWith("Renew")) {
+				invoice.setDueDate(contractor.getPaymentExpires());
+			} else {
+				// For all other statuses like (Current)
+				invoice.setDueDate(DateBean.addDays(new Date(), 30));
+			}
+			// Make sure the invoice isn't due within 7 days for active accounts
+			if (contractor.isActiveB() && DateBean.getDateDifference(invoice.getDueDate()) < 7)
+				invoice.setDueDate(DateBean.addDays(new Date(), 7));
 
 			String notes = "Thank you for your business.";
 			AppProperty prop = appPropDao.find("invoice_comment");
@@ -156,6 +169,7 @@ public class BillingDetail extends ContractorActionSupport {
 			contractor.setBalance(conBalance + invoiceTotal);
 			if (invoiceIncludesMembership) {
 				if (contractor.isActiveB()) {
+					// Bump the paymentExpires one year
 					if (contractor.getPaymentExpires() == null) {
 						// This should never happen...but just in case
 						contractor.setPaymentExpires(new Date());
@@ -169,7 +183,7 @@ public class BillingDetail extends ContractorActionSupport {
 			}
 			accountDao.save(contractor);
 
-			ServletActionContext.getResponse().sendRedirect("BillingDetail.action?id=" + id);
+			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 			return BLANK;
 		}
 		
